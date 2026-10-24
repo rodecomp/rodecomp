@@ -58,9 +58,6 @@ public:
   /* 0688 */ bool dynamicTextures;
   unsigned char unknown_0689[3];
   /* 068C */ HRESULT lastPresent;
-
-private:
-  bool SelectDisplayMode(D3DFORMAT format, UINT adapter, UINT width, UINT height, D3DSCANLINEORDERING ordering);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

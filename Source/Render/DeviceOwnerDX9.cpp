@@ -7,28 +7,38 @@ namespace {
   constexpr HRESULT deviceError = static_cast<HRESULT>(0x82000000u);
 }
 
+struct DisplayModeSelectorDX9 {
+  /* 0000 */ const D3DFORMAT& format;
+  /* 0004 */ DeviceOwnerDX9* owner;
+  /* 0008 */ const UINT& adapter;
+  /* 000C */ const UINT& width;
+  /* 0010 */ const UINT& height;
+
+  bool Select(D3DSCANLINEORDERING ordering);
+};
+
 // OFFSET: 0x0054B7C0
 // FUNCTION: fn_01906
-DeviceOwnerDX9::DeviceOwnerDX9()
-    : window(nullptr), direct3D(nullptr), device(nullptr), state{}, adapter(0), backBuffer(nullptr),
-      capturedBackBuffer(nullptr), dynamicTextures(false), lastPresent(0) {
+DeviceOwnerDX9::DeviceOwnerDX9() {
+  this->adapter = 0;
+  this->window = nullptr;
+  this->direct3D = nullptr;
+  this->device = nullptr;
   std::memset(
     &this->presentation, 0,
     sizeof(this->presentation) + sizeof(this->displayMode) + sizeof(this->backBufferDescription) + sizeof(this->caps)
   );
+  this->backBuffer = nullptr;
+  this->capturedBackBuffer = nullptr;
+  this->dynamicTextures = false;
+  this->lastPresent = 0;
 }
 
 // OFFSET: 0x0054B840
 // FUNCTION: fn_01908
-bool DeviceOwnerDX9::SelectDisplayMode(
-  D3DFORMAT format,
-  UINT selectedAdapter,
-  UINT width,
-  UINT height,
-  D3DSCANLINEORDERING ordering
-) {
+bool DisplayModeSelectorDX9::Select(D3DSCANLINEORDERING ordering) {
   D3DDISPLAYMODEFILTER filter{sizeof(filter), format, ordering};
-  const UINT count = this->direct3D->GetAdapterModeCountEx(selectedAdapter, &filter);
+  const UINT count = this->owner->direct3D->GetAdapterModeCountEx(this->adapter, &filter);
   UINT refresh = 0;
 
   for (UINT index = 0; index < count; ++index) {
@@ -36,11 +46,11 @@ bool DeviceOwnerDX9::SelectDisplayMode(
     mode.Size = sizeof(mode);
 
     if (
-      SUCCEEDED(this->direct3D->EnumAdapterModesEx(selectedAdapter, &filter, index, &mode)) && mode.Width == width &&
-      mode.Height == height && mode.RefreshRate >= refresh
+      SUCCEEDED(this->owner->direct3D->EnumAdapterModesEx(this->adapter, &filter, index, &mode)) &&
+      mode.Width == this->width && mode.Height == this->height && mode.RefreshRate >= refresh
     ) {
       refresh = mode.RefreshRate;
-      this->displayMode = mode;
+      this->owner->displayMode = mode;
     }
   }
 
@@ -122,9 +132,11 @@ HRESULT DeviceOwnerDX9::CreateDevice(UINT selectedAdapter, const DeviceOptionsDX
   this->presentation.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER | D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
 
   if (!this->presentation.Windowed) {
+    const D3DFORMAT format = D3DFMT_X8R8G8B8;
+    DisplayModeSelectorDX9 selectMode{format, this, selectedAdapter, width, height};
     if (
-      !this->SelectDisplayMode(D3DFMT_X8R8G8B8, selectedAdapter, width, height, D3DSCANLINEORDERING_PROGRESSIVE) &&
-      !this->SelectDisplayMode(D3DFMT_X8R8G8B8, selectedAdapter, width, height, D3DSCANLINEORDERING_INTERLACED)
+      !selectMode.Select(D3DSCANLINEORDERING_PROGRESSIVE) &&
+      !selectMode.Select(D3DSCANLINEORDERING_INTERLACED)
     ) {
       D3DDISPLAYMODEEX mode{};
       mode.Size = sizeof(mode);
