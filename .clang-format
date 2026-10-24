@@ -1,0 +1,45 @@
+BasedOnStyle: LLVM
+IndentWidth: 2
+NamespaceIndentation: All
+FixNamespaceComments: false
+TabWidth: 2
+UseTab: Never
+ColumnLimit: 120
+AlignAfterOpenBracket: BlockIndent
+ContinuationIndentWidth: 2
+AlwaysBreakAfterReturnType: None
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: false
+AllowShortIfStatementsOnASingleLine: Never
+InsertBraces: true
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: Never
+SpacesInParentheses: false
+SpaceBeforeParens: Custom
+SpaceBeforeParensOptions:
+  AfterControlStatements: true
+  AfterFunctionDefinitionName: false
+BinPackParameters: false
+AllowAllParametersOfDeclarationOnNextLine: false
+PenaltyBreakBeforeFirstCallParameter: 0
+PointerAlignment: Left
+# Include sorting:
+#   1. pch (must stay first)         2. other WoW.exe project headers
+#   3. generated gen/ headers        4. system <...> headers
+# Each group is alphabetised; Regroup re-buckets across blank lines.
+# IncludeIsMainRegex is set to never match so no header is auto-pinned above pch
+# (clang-format otherwise forces the "main" header to the very top).
+SortIncludes: CaseSensitive
+IncludeBlocks: Regroup
+IncludeIsMainRegex: "(WILL_NEVER_MATCH_zzz)$"
+IncludeCategories:
+  - Regex: '^"pch(-impl)?\.h"'
+    Priority: 1
+  - Regex: '^"gen/'
+    Priority: 3
+  - Regex: '^<'
+    Priority: 4
+  - Regex: '^"'
+    Priority: 2

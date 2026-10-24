@@ -1,0 +1,6 @@
+bin
+build
+cache/
+logs/
+tmp/
+scripts/data

@@ -1,0 +1,79 @@
+#include "Client/TextInputBuffer.h"
+#include "Render/TextContext.h"
+#include "UI/EditTextState.h"
+#include "UI/EditViewport.h"
+
+#include <algorithm>
+#include <bit>
+#include <cstdint>
+#include <cstring>
+
+// OFFSET: 0x00862FB0
+// FUNCTION: fn_10905
+void EditViewport::Synchronize() {
+  const int previousCursor = this->cursor;
+  this->input.CopyDisplayText(this->text);
+  this->input.Selection(this->anchor, this->cursor);
+  this->state.Trim();
+  const auto length = static_cast<std::uint32_t>(this->text.size());
+  bool clamped = false;
+
+  if (static_cast<std::uint32_t>(this->cursor) > length || static_cast<std::uint32_t>(this->anchor) > length) {
+    this->anchor = static_cast<int>(std::min(static_cast<std::uint32_t>(this->anchor), length));
+    this->cursor = static_cast<int>(std::min(static_cast<std::uint32_t>(this->cursor), length));
+    this->input.Select(this->anchor, this->cursor);
+    clamped = true;
+  }
+
+  if (this->cursor == 0) {
+    this->firstVisible = 0;
+    return;
+  }
+
+  const auto selection = static_cast<std::uint32_t>(std::max(this->input.cursor, this->input.anchor)) -
+                         static_cast<std::uint32_t>(std::min(this->input.cursor, this->input.anchor));
+
+  if (selection >= length) {
+    this->firstVisible = 0;
+  }
+
+  TextContext context(this->surface, this->fonts, this->locale);
+  context.SetFont(0, 12, 0, 0);
+  const auto measure = [&](const char* text, unsigned bytes) {
+    return context.Measure(text, static_cast<int>(bytes ? bytes : std::strlen(text))).cx;
+  };
+  const auto add = [](int left, int right) {
+    return std::bit_cast<std::int32_t>(static_cast<std::uint32_t>(left) + static_cast<std::uint32_t>(right));
+  };
+  const int available = add(this->width, -7);
+
+  if (this->cursor > previousCursor || clamped) {
+    const int before =
+      this->firstVisible == 0 ? 0 : measure(this->text.c_str(), static_cast<unsigned>(this->firstVisible));
+    const int position = add(add(measure(this->text.c_str(), static_cast<unsigned>(this->cursor)), 3), -before);
+
+    if (position > available) {
+      const char* end = this->text.c_str() + this->text.size();
+      const char* next = CharNextExA(static_cast<WORD>(this->codePage), this->text.c_str(), 0);
+
+      while (add(measure(next, 0), 3) > available && next < end) {
+        next = CharNextExA(static_cast<WORD>(this->codePage), next, 0);
+      }
+
+      const auto tail = static_cast<std::uint32_t>(std::strlen(next));
+      const auto candidate = static_cast<std::uint32_t>(this->firstVisible) + static_cast<std::uint32_t>(this->cursor) -
+                             static_cast<std::uint32_t>(previousCursor);
+      this->firstVisible =
+        std::bit_cast<std::int32_t>(std::min(static_cast<std::uint32_t>(this->cursor) - tail, candidate));
+    }
+  } else if (this->cursor < previousCursor) {
+    if (
+      add(measure(this->text.c_str(), static_cast<unsigned>(this->cursor)), 3) < available &&
+      this->firstVisible > this->cursor
+    ) {
+      this->firstVisible = add(add(this->firstVisible, this->cursor), -previousCursor);
+    }
+
+    this->firstVisible = std::max(this->firstVisible, 0);
+  }
+}

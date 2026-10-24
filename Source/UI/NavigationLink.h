@@ -1,0 +1,12 @@
+#ifndef RAGNAROK_SOURCE_UI_NAVIGATIONLINK_H
+#define RAGNAROK_SOURCE_UI_NAVIGATIONLINK_H
+
+#include <string>
+
+int DecodeNavigationNumber(std::string value);
+bool ParseNavigationLink(std::string value, std::string& name, int& x, int& y);
+std::string FormatNavigationLink(std::string value, bool brackets);
+void DisplayNavigationLink(std::string& output, std::string value);
+void ExtractNavigationLink(std::string& output, std::string value);
+
+#endif
