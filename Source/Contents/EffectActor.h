@@ -20,6 +20,7 @@ struct EffectActorState {
 // Recovered CAbleToMakeEffect lifecycle, not the larger CGameActor dispatcher.
 struct EffectActor : CRenderObject {
   EffectActor(ResourceMgr& resources, JobNames& names);
+  bool EffectVisible() const;
 
   EffectActorState state;
 };

@@ -1,4 +1,5 @@
 #include "Contents/EffectAttachments.h"
+#include "Contents/EffectActor.h"
 #include "Contents/RagEffectState.h"
 
 // OFFSET: 0x00CADBE0
@@ -58,4 +59,9 @@ void EffectAttachments::DetachAll() {
   this->effects.clear();
   this->first = nullptr;
   this->second = nullptr;
+}
+
+// FUNCTION: fn_21063
+bool EffectActor::EffectVisible() const {
+  return this->render.visible != 0 && this->render.enabled != 0;
 }
