@@ -9,8 +9,8 @@
 
 // OFFSET: 0x00AECDE0
 // FUNCTION: fn_18144
-ResourceName::ResourceName() {
-  this->Assign("");
+ResourceName::ResourceName(const char* name) {
+  this->Assign(name);
 }
 void ResourceName::Assign(const char* name) {
   myGPack::AssignNameKey(this->hash, this->text, name);
@@ -21,7 +21,6 @@ void ResourceName::Assign(const char* name) {
 CRes::CRes() : references(0) {
 }
 // OFFSET: 0x007498B0
-// FUNCTION: fn_07851
 CRes::~CRes() = default;
 // OFFSET: 0x00745260
 // FUNCTION: fn_07756
@@ -47,6 +46,11 @@ void CRes::MissingFile(CRenderSystemBase* system, const char* name) {
   char text[256];
   std::sprintf(text, "ResourceError : Can't find file %s\n", name);
   ShowErrorDialog(system, text, 0);
+}
+
+// FUNCTION: fn_18183
+std::uint32_t CRes::AddRef() {
+  return ++this->references;
 }
 // OFFSET: 0x00AF0BE0
 // FUNCTION: fn_18194

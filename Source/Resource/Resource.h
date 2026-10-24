@@ -12,7 +12,7 @@ class CRenderSystemBase;
 struct ResourceName {
   std::uint32_t hash;
   char text[252];
-  ResourceName();
+  explicit ResourceName(const char* name = "");
   void Assign(const char* name);
 };
 static_assert(sizeof(ResourceName) == 256);
@@ -30,6 +30,7 @@ public:
   virtual bool Load(const char* name) = 0;
   virtual void Unload();
   virtual void MissingFile(CRenderSystemBase* system, const char* name);
+  std::uint32_t AddRef();
   void Release();
 
   /* 0004 */ std::uint32_t references;
