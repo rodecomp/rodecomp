@@ -16,11 +16,20 @@ NAsyncWorkMgr::NAsyncWorkMgr(std::uint32_t workers)
 // OFFSET: 0x007315F0
 // FUNCTION: fn_07550
 NAsyncWorkMgr::~NAsyncWorkMgr() {
-  this->Stop();
-  for (NAsyncWorkThread* worker : this->m_workers) {
-    delete worker;
+  for (auto worker = this->m_workers.begin(); worker != this->m_workers.end(); ++worker) {
+    (*worker)->Stop();
   }
-  this->DestroyQueues();
+  for (auto worker = this->m_workers.begin(); worker != this->m_workers.end(); ++worker) {
+    delete *worker;
+  }
+  if (this->m_requests) {
+    delete this->m_requests;
+    this->m_requests = nullptr;
+  }
+  if (this->m_responses) {
+    delete this->m_responses;
+    this->m_responses = nullptr;
+  }
 }
 
 // OFFSET: 0x007316D0
@@ -94,8 +103,8 @@ void NAsyncWorkMgr::Submit(NAsyncWorkPtr& work) {
 // OFFSET: 0x007319E0
 // FUNCTION: fn_07555
 bool NAsyncWorkMgr::Start() {
-  for (NAsyncWorkThread* worker : this->m_workers) {
-    if (!worker->Start()) {
+  for (auto worker = this->m_workers.begin(); worker != this->m_workers.end(); ++worker) {
+    if (!(*worker)->Start()) {
       return false;
     }
   }
@@ -105,7 +114,7 @@ bool NAsyncWorkMgr::Start() {
 // OFFSET: 0x00731A10
 // FUNCTION: fn_07556
 void NAsyncWorkMgr::Stop() {
-  for (NAsyncWorkThread* worker : this->m_workers) {
-    worker->Stop();
+  for (auto worker = this->m_workers.begin(); worker != this->m_workers.end(); ++worker) {
+    (*worker)->Stop();
   }
 }
