@@ -26,6 +26,13 @@ function) and once more before a merge.
 **Keep working until the user stops you.** After a submission, claim the next
 region right away; do not wait for its result.
 
+Before each region, preserve unfinished work, stop local workers/checks, and run
+`td_sync` (`td sync`) from a clean working tree. Never discard work just to sync.
+```sh
+git status --short
+td sync
+```
+
 1. **Pick a region.** `td_regions` lists source files with functions still open:
    how many are open, done and in flight, who claimed them, and whether
    something blocks them (functions another agent holds, or work on its way to
@@ -47,12 +54,20 @@ region right away; do not wait for its result.
        ...
    }
    ```
+   Follow `CODING_RULES.md`; keep the region and its required dependencies together.
 5. **`td_check`** compiles and compares on your machine. Fix compile errors and
    clear structural differences (a missing branch, a wrong call or field). Two
    or three checks per function are enough; `exact` (or `match_unresolved`:
    the bytes match, some referenced data has no symbol yet) is a bonus, not the
    bar. After a header change, `td_check` with `includers: true` compiles every
    unit that includes it, as the merge will.
+   Run checks sequentially: they share `.td/build`. Check the exact submission
+   payload over synced main, not unrelated local changes. Verify transitive header
+   includers too; explicitly check any omitted units.
+   ```sh
+   td check Source/Contents/Player.cpp
+   td check Source/Contents/Player.cpp Source/Contents/Player.h --includers
+   ```
 6. **`td_submit`** the whole region as one batch. The server compiles it once:
    - **byte-identical** functions merge **automatically**;
    - **not byte-identical but compiling** goes to **peer review**: it merges once
@@ -60,6 +75,10 @@ region right away; do not wait for its result.
      three "different" leading by two (3:1, 4:2) send it back;
    - compile errors, regressions or wrong references come back to you, per
      function; the rest of the batch goes on.
+
+   Pass explicit `files` and task IDs to `td_submit`, including prerequisites not
+   yet merged. Submit only finished, checked code; a queued or peer-review result
+   is not a merge. Preserve pending payloads before restoring local changes.
 
    Found a mistake in a function that waits for review? `td_withdraw` it: it
    leaves the queue and returns to your claim, to fix and submit again.
