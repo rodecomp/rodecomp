@@ -3,7 +3,6 @@
 
 #include <windows.h>
 
-class DeviceOwnerDX9;
 class DeviceOwnerDX7;
 
 // Original renderer +0x250..+0x25B. Failed locking leaves every field intact;
@@ -13,8 +12,6 @@ struct RendererBackBuffer {
   int pitch;
   int bitsPerPixel;
 
-  bool Lock(const DeviceOwnerDX9& owner);
-  HRESULT Unlock(const DeviceOwnerDX9& owner);
   bool Lock(const DeviceOwnerDX7& owner);
   HRESULT Unlock(const DeviceOwnerDX7& owner);
 };

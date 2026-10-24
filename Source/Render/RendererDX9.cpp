@@ -16,7 +16,6 @@ CRendererDX9::CRendererDX9(DeviceOwnerDX9& owner, RendererDX9Context& context)
 }
 
 // OFFSET: 0x00564FE0
-// FUNCTION: fn_02210
 // OFFSET: 0x00565070
 // FUNCTION: fn_02211
 CRendererDX9::~CRendererDX9() = default;
@@ -167,14 +166,6 @@ bool CRendererDX9::SaveLogo(std::string filename) {
   return this->Operations(context).SaveScreenshot(
     *this->device, &this->m_context->system, filename.c_str(), 1, overlay, nullptr
   );
-}
-
-bool CRendererDX9::LockBackBuffer() {
-  return this->backBuffer.Lock(*this->device);
-}
-
-HRESULT CRendererDX9::UnlockBackBuffer() {
-  return this->backBuffer.Unlock(*this->device);
 }
 
 void CRendererDX9::Submit(RenderCommand* command, std::uint16_t flags) {
