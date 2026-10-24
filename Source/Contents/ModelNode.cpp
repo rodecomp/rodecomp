@@ -34,6 +34,14 @@ C3dNodeV2::C3dNodeV2() = default;
 // FUNCTION: fn_17477
 C3dNodeV2::~C3dNodeV2() = default;
 
+// FUNCTION: fn_17481
+void C3dNode::Initialize(const ModelNode&) {
+}
+
+// FUNCTION: fn_17506
+void C3dNode::Animate(double) {
+}
+
 // OFFSET: 0x00AB7050
 // FUNCTION: fn_17482
 void C3dNodeV1::Initialize(const ModelNode& resource) {

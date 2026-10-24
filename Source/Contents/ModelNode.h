@@ -25,8 +25,8 @@ public:
   C3dNode(const C3dNode&) = delete;
   C3dNode& operator=(const C3dNode&) = delete;
 
-  virtual void Initialize(const ModelNode& resource) = 0;
-  virtual void Animate(double frame) = 0;
+  virtual void Initialize(const ModelNode& resource);
+  virtual void Animate(double frame);
   virtual void Draw(
     const float* matrix,
     unsigned char reversed,
