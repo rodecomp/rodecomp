@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <emmintrin.h>
 #include <zlib.h>
 
 namespace {
@@ -24,23 +25,15 @@ namespace {
     return static_cast<std::uint8_t>((byte << 4) | (byte >> 4));
   }
 
-  void InitializeEntries(std::vector<myGPack::PakEntry>& entries, std::uint32_t count) {
-    std::size_t previous = entries.size();
-    entries.resize(count);
-    for (std::size_t i = previous; i < entries.size(); ++i) {
-      // Original value-initialization clears the complete record before name setup.
-      std::memset(&entries[i], 0, sizeof(entries[i]));
-      entries[i].name.Assign("");
-    }
-  }
-
   // OFFSET: 0x00658FC0
   // FUNCTION: fn_05116
   std::uint64_t ReadAuxiliaryIdentifier(const void* data, std::size_t size) {
     if (size != 0) {
-      const auto* bytes = static_cast<const std::uint8_t*>(data);
-      if (bytes[0] <= 1) {
-        return Read64(bytes + 4);
+      const __m128i header = _mm_loadu_si128(static_cast<const __m128i*>(data));
+      if (static_cast<std::uint8_t>(_mm_cvtsi128_si32(header)) <= 1) {
+        std::uint64_t identifier;
+        _mm_storel_epi64(reinterpret_cast<__m128i*>(&identifier), _mm_srli_si128(header, 4));
+        return identifier;
       }
     }
     return UINT64_MAX;
@@ -55,7 +48,7 @@ namespace {
 }
 
 // OFFSET: 0x00E555A0
-// FUNCTION: fn_24306
+// INLINED
 CGPak::CGPak() : m_file(nullptr), m_version(0), m_entryCount(0), m_tableOffset(0), m_tableSize(0) {
   this->Reset();
   InitializeCriticalSection(&this->m_criticalSection);
@@ -63,8 +56,8 @@ CGPak::CGPak() : m_file(nullptr), m_version(0), m_entryCount(0), m_tableOffset(0
 
 // OFFSET: 0x00AE97D0
 // FUNCTION: fn_18107
+// INLINED
 // OFFSET: 0x00AE98C0
-// FUNCTION: fn_18109
 CGPak::~CGPak() {
   DeleteCriticalSection(&this->m_criticalSection);
 }
@@ -73,12 +66,12 @@ CGPak::~CGPak() {
 // FUNCTION: fn_18130
 void CGPak::Reset() {
   this->m_entries.clear();
-  this->m_scratch.clear();
   this->m_file = nullptr;
   this->m_version = 0;
   this->m_entryCount = 0;
   this->m_tableOffset = 0;
   this->m_tableSize = 0;
+  this->m_scratch.clear();
 }
 
 // OFFSET: 0x00AEBDB0
@@ -98,7 +91,6 @@ bool CGPak::Open(CPakFile* file) {
     this->m_entryCount = Read32(header + 38) - Read32(header + 34) - 7;
     this->m_tableOffset = static_cast<std::uint64_t>(Read32(header + 30)) + 46;
   } else {
-    this->Reset();
     return false;
   }
 
@@ -130,7 +122,7 @@ bool CGPak::ReadTableV1() {
   this->m_tableSize =
     static_cast<std::uint32_t>(this->m_file->GetSize()) - static_cast<std::uint32_t>(this->m_tableOffset);
   const std::uint8_t* cursor = this->m_file->Read(this->m_tableOffset, this->m_tableSize);
-  InitializeEntries(this->m_entries, this->m_entryCount);
+  this->m_entries.resize(this->m_entryCount);
 
   std::uint32_t maximum = 0;
   std::uint32_t sequence = 1;
@@ -140,8 +132,8 @@ bool CGPak::ReadTableV1() {
     cursor += 4;
     char name[256];
     if (this->m_version < 0x101) {
-      std::size_t length = std::strlen(reinterpret_cast<const char*>(cursor)) + 1;
-      for (std::size_t j = 0; j < length; ++j) {
+      std::int32_t length = static_cast<std::int32_t>(std::strlen(reinterpret_cast<const char*>(cursor)) + 1);
+      for (std::int32_t j = 0; j < length; ++j) {
         name[j] = static_cast<char>(SwapNibbles(cursor[j]));
       }
     } else {
@@ -212,13 +204,14 @@ bool CGPak::ReadTableV2() {
     return false;
   }
 
-  InitializeEntries(this->m_entries, this->m_entryCount);
+  this->m_entries.resize(this->m_entryCount);
   const std::uint8_t* cursor = decoded.data();
   std::uint32_t maximum = 0;
-  for (myGPack::PakEntry& entry : this->m_entries) {
+  for (std::uint32_t i = 0; i < this->m_entryCount; ++i) {
     const char* name = reinterpret_cast<const char*>(cursor);
     const std::uint8_t* metadata = cursor + std::strlen(name) + 1;
     cursor = metadata + 17;
+    myGPack::PakEntry& entry = this->m_entries[i];
     entry.compressedSize = Read32(metadata);
     entry.alignedSize = Read32(metadata + 4);
     entry.originalSize = Read32(metadata + 8);
@@ -247,18 +240,21 @@ bool CGPak::ReadTableV3() {
     return false;
   }
 
-  InitializeEntries(this->m_entries, this->m_entryCount);
+  this->m_entries.resize(this->m_entryCount);
   const std::uint8_t* cursor = decoded.data();
   std::uint32_t maximum = 0;
-  for (myGPack::PakEntry& entry : this->m_entries) {
+  for (std::uint32_t i = 0; i < this->m_entryCount; ++i) {
     const char* name = reinterpret_cast<const char*>(cursor);
     const std::uint8_t* metadata = cursor + std::strlen(name) + 1;
     cursor = metadata + 21;
+    myGPack::PakEntry& entry = this->m_entries[i];
     entry.compressedSize = Read32(metadata);
     entry.alignedSize = Read32(metadata + 4);
     entry.originalSize = Read32(metadata + 8);
     entry.flags = metadata[12];
-    entry.dataOffset = Read64(metadata + 13);
+    const std::uint32_t offsetLow = Read32(metadata + 13);
+    reinterpret_cast<std::uint32_t*>(&entry.dataOffset)[1] = Read32(metadata + 17);
+    reinterpret_cast<std::uint32_t*>(&entry.dataOffset)[0] = offsetLow;
     entry.name.Assign(name);
     maximum = std::max(maximum, entry.alignedSize);
   }
@@ -278,7 +274,7 @@ bool CGPak::Find(const myGPack::PakName& name, myGPack::PakEntry* entry) const {
     return false;
   }
   if (entry) {
-    *entry = *found;
+    std::memcpy(entry, &*found, sizeof(*entry));
   }
   return true;
 }
