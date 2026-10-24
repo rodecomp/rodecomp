@@ -62,6 +62,18 @@ public:
     bool& multitexture,
     CRenderSystemBase* renderSystem
   );
+  std::uint16_t PackColor(int red, int green, int blue);
+  DWORD BlueMask();
+  DWORD BlueExpansion();
+  DWORD BlueShift();
+  IDirectDraw7* DirectDraw();
+  DWORD GreenMask();
+  DWORD GreenExpansion();
+  DWORD GreenShift();
+  DWORD RedMask();
+  DWORD RedExpansion();
+  DWORD RedShift();
+  IDirectDrawSurface7* RenderTarget();
 
   HWND window;
   DWORD width;

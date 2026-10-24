@@ -237,6 +237,62 @@ void CSurfaceDX7::Stretch(int, int, int width, int height) {
   this->m_owner->renderTarget->Blt(&destination, this->m_surface, nullptr, DDBLT_WAIT, nullptr);
 }
 
+
+// FUNCTION: fn_01788
+DWORD DeviceOwnerDX7::BlueMask() {
+  return this->blueMask;
+}
+
+// FUNCTION: fn_01789
+DWORD DeviceOwnerDX7::BlueExpansion() {
+  return this->blue.expansion;
+}
+
+// FUNCTION: fn_01790
+DWORD DeviceOwnerDX7::BlueShift() {
+  return this->blue.shift;
+}
+
+// FUNCTION: fn_01792
+IDirectDraw7* DeviceOwnerDX7::DirectDraw() {
+  return this->draw;
+}
+
+// FUNCTION: fn_01793
+DWORD DeviceOwnerDX7::GreenMask() {
+  return this->greenMask;
+}
+
+// FUNCTION: fn_01794
+DWORD DeviceOwnerDX7::GreenExpansion() {
+  return this->green.expansion;
+}
+
+// FUNCTION: fn_01795
+DWORD DeviceOwnerDX7::GreenShift() {
+  return this->green.shift;
+}
+
+// FUNCTION: fn_01797
+DWORD DeviceOwnerDX7::RedMask() {
+  return this->redMask;
+}
+
+// FUNCTION: fn_01798
+DWORD DeviceOwnerDX7::RedExpansion() {
+  return this->red.expansion;
+}
+
+// FUNCTION: fn_01799
+DWORD DeviceOwnerDX7::RedShift() {
+  return this->red.shift;
+}
+
+// FUNCTION: fn_01800
+IDirectDrawSurface7* DeviceOwnerDX7::RenderTarget() {
+  return this->renderTarget;
+}
+
 // OFFSET: 0x00542D60
 // FUNCTION: fn_01778
 CSurfaceWallpaperDX7::CSurfaceWallpaperDX7(DeviceOwnerDX7& owner, int width, int height)
