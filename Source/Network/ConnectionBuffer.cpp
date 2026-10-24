@@ -8,9 +8,6 @@ namespace {
   int Add(int left, int right) {
     return std::bit_cast<int>(static_cast<unsigned>(left) + static_cast<unsigned>(right));
   }
-  int Subtract(int left, int right) {
-    return std::bit_cast<int>(static_cast<unsigned>(left) - static_cast<unsigned>(right));
-  }
 }
 
 // OFFSET: 0x00C7EF60
@@ -33,7 +30,7 @@ void ConnectionBuffer::Reset(unsigned bytes) {
 // OFFSET: 0x00C7F050
 // FUNCTION: fn_20421
 int ConnectionBuffer::Available() const {
-  return Subtract(this->m_write, this->m_read);
+  return this->m_write - this->m_read;
 }
 
 // OFFSET: 0x00C7F0E0
@@ -85,7 +82,7 @@ bool ConnectionBuffer::Read(int bytes, void* destination) {
 // OFFSET: 0x00C7F2B0
 // FUNCTION: fn_20425
 bool ConnectionBuffer::Peek(int bytes, void* destination) const {
-  if (this->Available() < bytes) {
+  if (this->m_write - this->m_read < bytes) {
     return false;
   }
   std::memcpy(destination, this->m_data + this->m_read, bytes);
@@ -95,9 +92,9 @@ bool ConnectionBuffer::Peek(int bytes, void* destination) const {
 // OFFSET: 0x00C7F2E0
 // FUNCTION: fn_20426
 bool ConnectionBuffer::Consume(int bytes) {
-  if (this->Available() < bytes) {
+  if (this->m_write - this->m_read < bytes) {
     return false;
   }
-  this->m_read = Add(this->m_read, bytes);
+  this->m_read += bytes;
   return true;
 }
