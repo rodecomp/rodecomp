@@ -1,6 +1,24 @@
 #include "Render/RenderPrimitive.h"
+#include "Render/Renderer.h"
 
 #include <cstring>
+#include <new>
+
+// GLOBAL: gl_24481
+CRenderer* g_renderer;
+
+// FUNCTION: fn_02251
+RenderVertex* RenderVertex::Reset() {
+  this->x = 0;
+  this->y = 0;
+  this->z = 0;
+  this->rhw = 0;
+  this->diffuse = 0;
+  this->specular = 0xFF000000;
+  this->u = 0;
+  this->v = 0;
+  return this;
+}
 
 // OFFSET: 0x00569560
 // FUNCTION: fn_02263
@@ -47,6 +65,7 @@ RenderPrimitive::RenderPrimitive(const RenderPrimitive& other) : RenderPrimitive
   std::memcpy(this->quad, other.quad, sizeof(this->quad));
 }
 
+
 // OFFSET: 0x005692F0
 // FUNCTION: fn_02253
 RenderCommand* RenderCommand::FreeVertices() {
@@ -56,3 +75,6 @@ RenderCommand* RenderCommand::FreeVertices() {
   }
   return this;
 }
+
+
+

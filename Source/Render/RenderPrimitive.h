@@ -16,6 +16,8 @@ struct RenderVertex {
   std::uint32_t specular;
   float u;
   float v;
+
+  RenderVertex* Reset();
 };
 
 struct RenderTriangle {
@@ -43,6 +45,9 @@ struct RenderCommand {
 
   RenderCommand();
   RenderCommand* FreeVertices();
+  void AllocateTriangles(std::uint32_t triangleCount);
+  void SetPosition(std::uint32_t index, const float* position);
+  void Draw(int unused);
 };
 
 // Quad command acquired from renderer's reusable pool.
@@ -51,6 +56,7 @@ struct RenderPrimitive : RenderCommand {
 
   RenderPrimitive();
   RenderPrimitive(const RenderPrimitive& other);
+  RenderPrimitive& operator=(const RenderPrimitive& other);
 };
 
 static_assert(sizeof(RenderVertex) == 32);
