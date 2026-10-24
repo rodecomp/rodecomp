@@ -83,6 +83,22 @@ static void BuildFullKeyName(const char* keyname, char* buffer) {
 - Do not add WoW `// VERIFY:` hashes or use `re/tools/verify.py`; neither is this project's verification workflow.
 - Claims, submission scope and peer-review procedure follow `AGENTS.md` and current server guidance.
 
+## 2b. Cast chains mean the types are wrong
+
+A chain of casts (`static_cast<int>(static_cast<std::uint32_t>(...))`, `std::bit_cast` round trips) usually
+reproduces the compiler's output instead of the original source. Fix the declared types of the field,
+parameter or return value so the code reads naturally.
+
+```cpp
+// Wrong: hides that the value is stored as a 32-bit int
+return static_cast<int>(static_cast<std::uint32_t>(this->render.instant.Get(key)));
+
+// Right: the getter returns the original type
+return this->render.instant.Get(key);
+```
+
+Keep a cast only where the original source evidently had one (an explicit narrowing or a sign change).
+
 ## 3. Every field carries its offset
 
 Every recovered instance data member of a struct, class or union is prefixed with its evidenced x86 offset:
