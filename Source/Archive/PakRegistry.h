@@ -7,7 +7,6 @@
 #include <list>
 #include <utility>
 
-// Reconstructed owner name; original state is a list of file/archive pointers.
 class PakRegistry {
 public:
   ~PakRegistry();
@@ -15,7 +14,8 @@ public:
   bool Exists(const char* filename, bool looseOnly) const;
   void* Read(const char* filename, std::uint32_t* size, int option = 0);
   __declspec(noinline) void* ReadArchive(const char* filename, std::uint32_t* size);
-  static void __stdcall Free(void* buffer);
+  BOOL Free(void* buffer);
+  void ApplyAuxiliary(const void* data, std::uint32_t size);
 
 private:
   std::list<std::pair<CMemMapPakFile*, CGPak*>> m_archives;

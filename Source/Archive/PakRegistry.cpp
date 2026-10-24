@@ -3,27 +3,28 @@
 
 // STATIC: 0x016D5688
 // GLOBAL: gl_24380
-// Initializer constructs the list and registers teardown.
 PakRegistry g_pakRegistry;
 
 // OFFSET: 0x01095B80
 // FUNCTION: fn_41403
 PakRegistry::~PakRegistry() {
   for (auto& archive : this->m_archives) {
-    // Preserve original file-before-parser destruction order.
     delete archive.first;
     delete archive.second;
   }
+  this->m_archives.clear();
 }
 
 // OFFSET: 0x00AE99D0
+// FUNCTION: fn_18111
 bool PakRegistry::Add(const char* filename) {
   CGPak* archive = new CGPak;
   CMemMapPakFile* file = new CMemMapPakFile;
-  // The original retains the list item even if file opening or parsing fails.
-  file->Open(filename);
-  this->m_archives.emplace_back(file, archive);
-  return archive->Open(file);
+  if (file) {
+    file->Open(filename);
+  }
+  this->m_archives.emplace_front(file, archive);
+  return this->m_archives.front().second->Open(this->m_archives.front().first);
 }
 
 // OFFSET: 0x00AE9BF0
@@ -41,10 +42,10 @@ void* PakRegistry::Read(const char* filename, std::uint32_t* size, int) {
 // FUNCTION: fn_18114
 void* PakRegistry::ReadArchive(const char* filename, std::uint32_t* size) {
   for (const auto& archive : this->m_archives) {
+    myGPack::PakEntry entry;
     myGPack::PakName name;
     name.Assign(filename);
 
-    myGPack::PakEntry entry;
     if (archive.second->Find(name, &entry)) {
       *size = entry.originalSize;
 
@@ -82,8 +83,12 @@ bool PakRegistry::Exists(const char* filename, bool looseOnly) const {
   return true;
 }
 
+// FUNCTION: fn_18116
+void PakRegistry::ApplyAuxiliary(const void*, std::uint32_t) {
+}
+
 // OFFSET: 0x00AEA400
 // FUNCTION: fn_18118
-void __stdcall PakRegistry::Free(void* buffer) {
-  VirtualFree(buffer, 0, MEM_RELEASE);
+BOOL PakRegistry::Free(void* buffer) {
+  return VirtualFree(buffer, 0, MEM_RELEASE);
 }
