@@ -3,6 +3,7 @@
 #include "Render/Texture.h"
 
 #include <bit>
+#include <cstring>
 #include <mmsystem.h>
 
 // STATIC: 0x01312DE0
@@ -23,20 +24,19 @@ CTexture::CTexture()
 // OFFSET: 0x00572380
 // FUNCTION: fn_02465
 // OFFSET: 0x005723D0
-// FUNCTION: fn_02466
 CTexture::~CTexture() = default;
 
 // OFFSET: 0x00572460
 // FUNCTION: fn_02469
-void CTexture::Retain() {
+std::uint32_t CTexture::Retain() {
   this->unknown_0020 = timeGetTime();
-  ++this->unknown_001C;
+  return ++this->unknown_001C;
 }
 
 // OFFSET: 0x005724E0
 // FUNCTION: fn_02472
-void CTexture::Release() {
-  --this->unknown_001C;
+std::uint32_t CTexture::Release() {
+  return --this->unknown_001C;
 }
 
 // OFFSET: 0x00572450
@@ -53,15 +53,20 @@ std::uint32_t CTexture::Height() {
 
 // OFFSET: 0x005724A0
 // FUNCTION: fn_02471
-void CTexture::SetImageSize(std::uint32_t width, std::uint32_t height) {
+std::uint32_t CTexture::SetImageSize(std::uint32_t width, std::uint32_t height) {
   while (width > this->m_textureWidth) {
     width >>= 1;
   }
   while (height > this->m_textureHeight) {
     height >>= 1;
   }
-  this->m_width = width;
   this->m_height = height;
+  this->m_width = width;
+  return width;
+}
+
+int CTexture::SetName(const char* name) {
+  return strncpy_s(this->m_name, sizeof(this->m_name), name, _TRUNCATE);
 }
 
 namespace {

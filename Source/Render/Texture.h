@@ -57,9 +57,10 @@ public:
     float depthStart,
     float depthEnd
   );
-  void SetImageSize(std::uint32_t width, std::uint32_t height);
-  void Retain();
-  void Release();
+  std::uint32_t SetImageSize(std::uint32_t width, std::uint32_t height);
+  std::uint32_t Retain();
+  std::uint32_t Release();
+  int SetName(const char* name);
 
   // Source accessors for original direct texture-allocation dimensions.
   std::uint32_t TextureWidth() const {
