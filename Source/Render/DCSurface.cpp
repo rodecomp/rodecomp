@@ -10,6 +10,73 @@ std::shared_ptr<CSurface> AcquireBackBufferSurface(CRenderSystemBase* system) {
   return system ? system->BackBufferSurface() : std::shared_ptr<CSurface>{};
 }
 
+// FUNCTION: fn_02274
+CRenderer* RenderSystemHolder::CreateRenderer() {
+  return this->system ? this->system->CreateRenderer() : nullptr;
+}
+
+
+
+
+// FUNCTION: fn_02278
+HRESULT RenderSystemHolder::Close() {
+  return this->system ? this->system->Close() : static_cast<HRESULT>(0x8000000E);
+}
+
+
+// FUNCTION: fn_02280
+void RenderSystemHolder::UpdateOption() {
+  if (this->system) {
+    this->system->UpdateOption();
+  }
+}
+
+// FUNCTION: fn_02281
+void RenderSystemHolder::RestoreDisplayMode() {
+  if (this->system) {
+    this->system->RestoreDisplayMode();
+  }
+}
+
+// FUNCTION: fn_02282
+void RenderSystemHolder::PrepareErrorDialog() {
+  if (this->system) {
+    this->system->PrepareErrorDialog();
+  }
+}
+
+// FUNCTION: fn_02285
+std::int32_t RenderSystemHolder::Backend() const {
+  return this->system ? this->system->Backend() : -1;
+}
+
+
+// FUNCTION: fn_02287
+CTexture* RenderSystemHolder::BackBufferTexture() const {
+  return this->system ? this->system->BackBufferTexture() : nullptr;
+}
+
+// FUNCTION: fn_02288
+std::uint32_t RenderSystemHolder::Height() const {
+  return this->system ? this->system->Height() : 0;
+}
+
+// FUNCTION: fn_02292
+std::uint32_t RenderSystemHolder::Width() const {
+  return this->system ? this->system->Width() : 0;
+}
+
+// FUNCTION: fn_02294
+bool RenderSystemHolder::IsWindowed() const {
+  return this->system ? this->system->IsWindowed() : false;
+}
+
+// FUNCTION: fn_02295
+HRESULT RenderSystemHolder::TestDevice() const {
+  return this->system ? this->system->TestDevice() : static_cast<HRESULT>(0x8000000E);
+}
+
+
 // OFFSET: 0x00548FE0
 // FUNCTION: fn_01864
 CDCSurface::CDCSurface(std::shared_ptr<CSurface> surface) : m_surface(std::move(surface)) {

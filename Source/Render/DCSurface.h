@@ -15,34 +15,27 @@ struct ScreenDimensions {
   int width;
 };
 
-inline ScreenDimensions DefaultResolution() {
-  return ScreenDimensions{768, 1024};
-}
+ScreenDimensions* DefaultResolution(ScreenDimensions* output);
 
 struct RenderSystemHolder {
-  CRenderSystemBase* system;
+  /* 0000 */ CRenderSystemBase* system;
 
-  std::int32_t Backend() const {
-    return this->system ? this->system->Backend() : -1;
-  }
-  CTexture* BackBufferTexture() const {
-    return this->system ? this->system->BackBufferTexture() : nullptr;
-  }
-  std::uint32_t Width() const {
-    return this->system ? this->system->Width() : 0;
-  }
-  std::uint32_t Height() const {
-    return this->system ? this->system->Height() : 0;
-  }
-  bool IsWindowed() const {
-    return this->system ? this->system->IsWindowed() : false;
-  }
-  HRESULT TestDevice() const {
-    return this->system ? this->system->TestDevice() : static_cast<HRESULT>(0x8000000E);
-  }
-  HRESULT Present(bool option) const {
-    return this->system ? this->system->Present(option) : static_cast<HRESULT>(0x8000000E);
-  }
+  CRenderer* CreateRenderer();
+  CSurface* CreateSurface(std::uint32_t width, std::uint32_t height);
+  CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget);
+  CSurface* CreateSurfaceOrTexture(std::uint32_t width, std::uint32_t height);
+  HRESULT Close();
+  void DestroySurface(CSurface* surface);
+  void UpdateOption();
+  void RestoreDisplayMode();
+  void PrepareErrorDialog();
+  std::int32_t Backend() const;
+  CTexture* BackBufferTexture() const;
+  std::uint32_t Width() const;
+  std::uint32_t Height() const;
+  bool IsWindowed() const;
+  HRESULT TestDevice() const;
+  HRESULT Present(bool option) const;
 };
 
 __declspec(noinline) inline RenderSystemHolder* GetRenderSystemHolder() {
