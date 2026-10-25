@@ -1,12 +1,10 @@
 {
   "name": "rodecomp",
   "sourceDirs": [
-    "Source"
-  ],
-  "includeDirs": [
     "Source",
     "ThirdParty"
   ],
+  "includeDirs": [],
   "headerGlobs": [
     "Source/**/*.h",
     "Source/**/*.hpp",
@@ -14,19 +12,10 @@
   ],
   "toolchain": "ragnarok",
   "matchPolicy": {
-    "autoMergeIdentical": true,
-    "approvals": 1,
-    "approvalsWithHeaderChanges": 2,
+    "reviewAt": "match_unresolved",
     "maxCleanupCycles": 5,
-    "peerReviews": 3,
-    "peerMargin": 3,
-    "peerRejectMargin": 2
-  },
-  "lintLimits": {
-    "maxFiles": 64,
-    "maxFileBytes": 1048576,
-    "maxTotalBytes": 8388608,
-    "maxInitializerNumbers": 65536
+    "approvals": 1,
+    "approvalsWithHeaderChanges": 2
   },
   "compileCommands": "compile.json"
 }
