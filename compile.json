@@ -320,6 +320,7 @@
   "Source/Contents/Models/ModelRendering.cpp": 3,
   "Source/Contents/Models/ModelSpatial.cpp": 3,
   "Source/Contents/Models/ModelTextureAnimation.cpp": 3,
+  "Source/Contents/MovementRouteInterpolation.cpp": 4,
   "Source/Contents/Movies/BinkMovie.cpp": 3,
   "Source/Contents/Movies/BinkMovies.cpp": 3,
   "Source/Contents/Party/AdvenPartyInfo.cpp": 4,
