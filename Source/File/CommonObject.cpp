@@ -1,5 +1,5 @@
 #include "File/CommonObject.h"
-#include "Resource/BitmapResource.h"
+#include "Resource/Bitmap/BitmapResource.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -31,17 +31,13 @@ bool CCommonObject::LoadTokens(std::vector<char*>& tokens, const char* name, int
     tokens.reserve(4096);
   }
 
-  // ResourceBytes supplies the original resolved, archive-aware read boundary.
-  // No loose-file fallback is hidden in this table parser.
   if (!file.Open(name)) {
     file.Close();
     return false;
   }
 
   const auto bytes = static_cast<unsigned>(file.Size());
-  std::unique_ptr<char, decltype(&std::free)> buffer(
-    static_cast<char*>(std::malloc(static_cast<std::size_t>(bytes) + 1)), &std::free
-  );
+  std::unique_ptr<char, decltype(&std::free)> buffer(static_cast<char*>(std::malloc(static_cast<std::size_t>(bytes) + 1)), &std::free);
 
   if (!buffer) {
     file.Close();

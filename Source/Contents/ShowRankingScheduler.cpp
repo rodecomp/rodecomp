@@ -15,5 +15,6 @@ const void* CShowRankingScheduler::SetData(const void* data) {
   std::memset(this->rankingData, 0, sizeof(this->rankingData));
   errno = EINVAL;
   _invalid_parameter_noinfo();
+
   return nullptr;
 }

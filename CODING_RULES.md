@@ -80,7 +80,7 @@ static void BuildFullKeyName(const char* keyname, char* buffer) {
   changes. Include the real prerequisite interfaces, implementations and affected callers, or land them first.
 - Preserve functions that already match. Fix compile errors and structural differences; byte identity is a
   bonus, not permission to distort source or spend unbounded time tuning it.
-- Do not add WoW `// VERIFY:` hashes or use `re/tools/verify.py`; neither is this project's verification workflow.
+- Do not add game `// VERIFY:` hashes or use `re/tools/verify.py`; neither is this project's verification workflow.
 - Claims, submission scope and peer-review procedure follow `AGENTS.md` and current server guidance.
 
 ## 2b. Cast chains mean the types are wrong
@@ -152,7 +152,7 @@ class CResourceCache {
 
 - Reuse the appropriate header under `Source/` for shared enums and data types.
 - Use an existing `Types.h` if the subsystem has one; do not create a repository-wide `Types.h` migration.
-- Keep dependencies small and avoid cycles. Do not introduce WoW-specific DB or event headers.
+- Keep dependencies small and avoid cycles. Do not introduce game-specific DB or event headers.
 
 ## 6. Diagnostic file and line arguments preserve original behavior
 
@@ -166,6 +166,25 @@ the original instructions.
 - This target is Windows x86. Keep code in its assigned existing translation unit and subsystem headers.
 - Use the original Win32, DirectDraw, Direct3D, Lua and codec ABIs where evidenced. Preserve calling
   conventions, ownership, field widths and failure behavior.
-- Do not introduce WoW architecture macros, parallel `Win32/` / `Win64/` trees or a new portability layer.
 - Compile individual units with the configured Clank toolchain and `compile.json`, not a new build system.
 - Missing original instructions are a blocker, not permission to invent a fallback or partial implementation.
+
+## 8. Reconstruct source, not instructions
+
+- Prefer the original programmer's types and algorithms over instruction-shaped C++. Byte identity is a bonus,
+  never a reason for cryptic code. Use compiler intrinsics only with clear evidence that the original source
+  used them; an optimized SIMD instruction alone is not evidence. Scalar data is not `__m128i`.
+- Recover records and members instead of dereferencing integer pointers cast onto byte buffers. At a real
+  binary-format boundary, use a typed record or `memcpy` for unaligned fields; preserve layout and aliasing.
+- Apply namespace and API conventions consistently throughout a subsystem, including declarations and callers.
+- Group cohesive implementations and their headers in subsystem folders, e.g. `Client/Browser/`. Group by
+  actual ownership and dependencies, not a loose keyword; update includes and build metadata with every move.
+- Use SDK/library constants and identifiers directly: `WS_CHILD | WS_VISIBLE`, `CGID_DocHostCommandHandler`.
+  Do not duplicate documented definitions. Name game-specific choices with an enum, or `constexpr` when an enum
+  is unsuitable; do not turn serialized data, hashes or lookup tables into invented symbolic constants.
+- Do not include `<mmsystem.h>`; include the specific Windows API headers actually required. Formatter-control
+  comments are forbidden too. Preserve include dependencies without `clang-format` suppression comments.
+- Separate different logical phases with a blank line; keep related assignments together. Use a 160-column
+  limit, rather than wrapping short calls into instruction-like fragments. Formatting must not change behavior.
+- Leave exactly one blank line after an include block before declarations, including in headers. Never keep
+  more than one consecutive blank line; whitespace-only lines count as blank.

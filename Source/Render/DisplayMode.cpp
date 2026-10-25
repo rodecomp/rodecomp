@@ -73,17 +73,7 @@ extern char g_deviceName[40];
 // FUNCTION: fn_02297
 LSTATUS SaveDisplayDeviceSettings() {
   HKEY key = nullptr;
-  LSTATUS status = RegCreateKeyExA(
-    HKEY_LOCAL_MACHINE,
-    g_subKey,
-    0,
-    nullptr,
-    0,
-    KEY_ALL_ACCESS,
-    nullptr,
-    &key,
-    nullptr
-  );
+  LSTATUS status = RegCreateKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, nullptr);
 
   if (status == ERROR_SUCCESS) {
     RegSetValueExA(key, "GUIDDEVICE", 0, REG_BINARY, g_guidDevice, 16);

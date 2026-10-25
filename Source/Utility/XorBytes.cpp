@@ -1,7 +1,6 @@
 #include "Utility/XorBytes.h"
 
 namespace utility {
-
   // OFFSET: 0x005A45E0
   // FUNCTION: fn_03149
   void XorBytes(std::uint8_t* bytes, std::uint64_t length, std::uint64_t key) {
@@ -9,5 +8,4 @@ namespace utility {
       bytes[i] ^= static_cast<std::uint8_t>(key >> (8 * (i & 7)));
     }
   }
-
 }

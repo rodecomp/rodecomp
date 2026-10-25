@@ -3,7 +3,6 @@
 
 #include "Contents/InstantVar.h"
 
-// Low/high-word client operations on its CInstantVar at +0x7FA8.
 struct ClientOptions {
   CInstantVar& values;
   int Get(int id) const;

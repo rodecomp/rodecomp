@@ -1,6 +1,6 @@
-#include "Client/ErrorDialog.h"
-#include "Render/Texture.h"
-#include "Resource/BitmapResource.h"
+#include "Client/Application/ErrorDialog.h"
+#include "Render/Textures/Texture.h"
+#include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/EZeffectResource.h"
 #include "Resource/ResourceByteReader.h"
 
@@ -52,6 +52,7 @@ bool CEZeffectRes::Load(const char* name) {
     const std::string message = std::string("Str::Cannot find File : ") + name;
     ShowErrorDialog(this->m_context->renderSystem, message.c_str(), 0);
     this->Unload();
+
     return false;
   }
 
@@ -97,8 +98,6 @@ bool CEZeffectRes::Load(const char* name) {
 // OFFSET: 0x0074D320
 // FUNCTION: fn_07891
 void CEZeffectRes::Unload() {
-  // Original closes the retaining CFile without resetting clip slices/counts.
-  // Callers must not dereference them after unloading.
   std::vector<unsigned char>().swap(this->m_bytes);
 }
 

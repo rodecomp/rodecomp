@@ -4,7 +4,6 @@
 #include <cstring>
 
 namespace myGPack {
-
   // OFFSET: 0x00AECE00
   // FUNCTION: fn_18145
   PakName::PakName() {
@@ -19,14 +18,15 @@ namespace myGPack {
   }
 
   void AssignNameKey(std::uint32_t& result, char* destination, const char* source) {
-    // Source helper: copies through NUL without bounds checking.
     std::strcpy(destination, source);
     _strlwr(destination);
     const std::size_t length = std::strlen(destination);
     std::uint32_t hash = 5381;
+
     for (std::size_t i = 0; i < length; ++i) {
       hash = 33 * hash + static_cast<std::int8_t>(destination[i]);
     }
+
     result = hash;
   }
 
@@ -48,7 +48,7 @@ namespace myGPack {
     if (this->m_hash == other.m_hash) {
       return std::strcmp(this->m_name, other.m_name) < 0;
     }
+
     return this->m_hash < other.m_hash;
   }
-
 }

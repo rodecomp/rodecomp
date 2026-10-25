@@ -17,8 +17,8 @@ const char* TextureNames::ServiceName(const char* name) {
   static char path[260];
   std::strcpy(path, this->servicePrefix.c_str());
   std::strcat(path, name);
-  const bool exists =
-    std::strstr(name, ".txt") || std::strstr(name, ".xml") ? ResourceExists(path, 0) : this->resources.Exists(path);
+  const bool exists = std::strstr(name, ".txt") || std::strstr(name, ".xml") ? ResourceExists(path, 0) : this->resources.Exists(path);
+
   return exists ? path : name;
 }
 
@@ -36,17 +36,17 @@ const char* TextureNames::Resolve(const char* name) {
     return name;
   }
 
-  // Original detects a fourteen-byte marker anywhere but removes fifteen bytes
-  // from the beginning, rather than removing relative to the found marker.
   if (this->activeMode && this->skin.Selected()) {
     const std::string prefix(this->skin.Prefix());
     // STATIC: 0x016D58CC
     // GLOBAL: gl_24385
     static std::string selectedPath;
     selectedPath = prefix;
+
     if (original.size() > 15) {
       selectedPath.append(original.data() + 15, original.size() - 15);
     }
+
     this->skin.Prepare();
 
     if (this->resources.Exists(selectedPath.c_str())) {

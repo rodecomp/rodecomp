@@ -11,8 +11,6 @@ extern "C" {
 #include <list>
 #include <string>
 
-// Reconstructed name for the original one-pointer script wrapper. This does not
-// claim the unreconstructed application's native-registration initializer.
 class LuaScript {
 public:
   LuaScript();

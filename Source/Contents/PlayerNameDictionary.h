@@ -16,8 +16,6 @@ struct PlayerNameContext {
   const WORD& language;
 };
 
-// RTTI CPlayerNameDictionary. Original56-byte owned map and two deques;
-// reconstructed source adds one explicit context pointer.
 class CPlayerNameDictionary {
 public:
   explicit CPlayerNameDictionary(PlayerNameContext& context);

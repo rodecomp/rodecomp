@@ -5,8 +5,6 @@
 
 class DeviceOwnerDX7;
 
-// Original renderer +0x250..+0x25B. Failed locking leaves every field intact;
-// unlocking does not clear the last published pointer, pitch or bit depth.
 struct RendererBackBuffer {
   void* pixels;
   int pitch;

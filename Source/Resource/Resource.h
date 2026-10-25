@@ -7,8 +7,6 @@
 
 class CRenderSystemBase;
 
-// The resource owner's available name region is256 bytes total, unlike the
-// archive entry's260-byte reservation. Same unbounded assignment algorithm.
 struct ResourceName {
   std::uint32_t hash;
   char text[252];
@@ -17,8 +15,6 @@ struct ResourceName {
 };
 static_assert(sizeof(ResourceName) == 256);
 
-// Resource factory/load
-// are abstract; original unload remains a real empty base implementation.
 class CRes {
 public:
   CRes();

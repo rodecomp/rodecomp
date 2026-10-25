@@ -14,8 +14,6 @@ struct ResourceNameLess {
   bool operator()(const ResourceName* left, const ResourceName* right) const;
 };
 
-// Real resource-manager containers, registration and synchronized load. Names
-// are reconstructed; the singleton/static descriptor registration is separate.
 class ResourceMgr {
 public:
   explicit ResourceMgr(ResourceFailures& failures);

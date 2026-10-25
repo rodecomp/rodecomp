@@ -3,9 +3,6 @@
 
 #include <cstring>
 
-// Original CFile memory-backed Read contract over an explicit resource owner.
-// Failed reads leave output and cursor unchanged; loaders retain original
-// unchecked-read policy rather than inventing format validation.
 struct ResourceByteReader {
   const unsigned char* data;
   unsigned size;

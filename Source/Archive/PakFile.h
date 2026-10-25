@@ -5,8 +5,6 @@
 #include <vector>
 #include <windows.h>
 
-// Class names and inheritance are established by original RTTI.
-// Method and member names are reconstructed from their behavior.
 class CPakFile {
 public:
   virtual ~CPakFile();

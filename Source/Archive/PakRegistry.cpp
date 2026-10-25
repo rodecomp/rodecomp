@@ -12,6 +12,7 @@ PakRegistry::~PakRegistry() {
     delete archive.first;
     delete archive.second;
   }
+
   this->m_archives.clear();
 }
 
@@ -23,6 +24,7 @@ bool PakRegistry::Add(const char* filename) {
   if (file) {
     file->Open(filename);
   }
+
   this->m_archives.emplace_front(file, archive);
   return this->m_archives.front().second->Open(this->m_archives.front().first);
 }
@@ -79,6 +81,7 @@ bool PakRegistry::Exists(const char* filename, bool looseOnly) const {
   if (search == INVALID_HANDLE_VALUE) {
     return false;
   }
+
   FindClose(search);
   return true;
 }

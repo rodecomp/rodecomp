@@ -3,7 +3,6 @@
 
 #include "Archive/PakFile.h"
 
-// Class name established by original RTTI; field/method names reconstructed.
 class CMemMapPakFile : public CPakFile {
 public:
   CMemMapPakFile();

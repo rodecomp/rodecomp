@@ -1,23 +1,21 @@
 #ifndef RAGNAROK_SOURCE_RENDER_RENDERER_H
 #define RAGNAROK_SOURCE_RENDER_RENDERER_H
 
-#include "Render/LightmappedPrimitive.h"
-#include "Render/RenderCommandPool.h"
-#include "Render/RenderPrimitivePool.h"
-#include "Render/RenderQueues.h"
-#include "Render/RenderVertexPool.h"
+#include "Render/Primitives/LightmappedPrimitive.h"
+#include "Render/Primitives/RenderCommandPool.h"
+#include "Render/Primitives/RenderPrimitivePool.h"
+#include "Render/Primitives/RenderQueues.h"
+#include "Render/Primitives/RenderVertexPool.h"
 #include "Render/RendererBackBuffer.h"
-#include "Render/RendererFogDX9.h"
-#include "Render/RendererViewport.h"
-#include "Render/SpriteAtlas.h"
+#include "Render/DX9/RendererFogDX9.h"
+#include "Render/Projection/RendererViewport.h"
+#include "Render/Textures/SpriteAtlas.h"
 
 #include <string>
 
 class CRenderSystemBase;
 class CBitmapRes;
 
-// RTTI CRenderer. Backend virtuals retain the
-// original slot order; device-independent storage has one authoritative owner.
 class CRenderer {
 public:
   explicit CRenderer(CRenderSystemBase& system);
@@ -36,8 +34,7 @@ public:
   virtual void DrawAuxiliaryPrimitive(LightmappedPrimitive* primitive) = 0;
   virtual void DrawLightmappedPrimitive(LightmappedPrimitive* primitive) = 0;
   virtual void DrawPrimitive(RenderCommand* primitive) = 0;
-  virtual bool
-  RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture) = 0;
+  virtual bool RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture) = 0;
   virtual bool SaveBitmap(const char* filename, CBitmapRes* overlay) = 0;
   virtual bool SaveJpeg(const char* filename, CBitmapRes* overlay) = 0;
   virtual void CleanupTextures() = 0;

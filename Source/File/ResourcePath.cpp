@@ -13,9 +13,11 @@ std::string MakeResourcePath(std::string filename) {
   }
 
   std::size_t duplicate;
+
   while ((duplicate = path.find("//")) != std::string::npos) {
     path.replace(duplicate, 2, "/", 1);
   }
+
   return path;
 }
 
@@ -29,8 +31,7 @@ bool ResourceExists(const char* filename, int looseOnly) {
 // OFFSET: 0x00AE9EE0
 // FUNCTION: fn_18113
 void* ReadLooseResource(const char* filename, std::uint32_t* size) {
-  HANDLE file =
-    CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+  HANDLE file = CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
   if (file == INVALID_HANDLE_VALUE) {
     return nullptr;
   }
@@ -50,6 +51,5 @@ void* ReadLooseResource(const char* filename, std::uint32_t* size) {
   ReadFile(file, data, *size, &read, nullptr);
   CloseHandle(file);
 
-  // The original's non-.ebm post-read hook is an established empty routine.
   return data;
 }

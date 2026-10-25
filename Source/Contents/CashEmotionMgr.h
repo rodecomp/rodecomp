@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <unordered_map>
+
 struct CashEmotionData {
   int id;
   int subId;

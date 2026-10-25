@@ -1,4 +1,4 @@
-#include "Render/DeviceOwnerDX9.h"
+#include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/RenderAdapter.h"
 
 #include <cstring>
@@ -25,13 +25,11 @@ bool RenderAdapter::Matches(const RenderAdapter& selected) const {
   }
 
   if (this->backend == 1) {
-    return std::memcmp(&this->drawGuid, &selected.drawGuid, sizeof(GUID)) == 0 &&
-           std::memcmp(&this->renderGuid, &selected.renderGuid, sizeof(GUID)) == 0;
+    return std::memcmp(&this->drawGuid, &selected.drawGuid, sizeof(GUID)) == 0 && std::memcmp(&this->renderGuid, &selected.renderGuid, sizeof(GUID)) == 0;
   }
 
   if (this->backend == 2) {
-    return std::memcmp(&this->deviceGuid, &selected.deviceGuid, sizeof(GUID)) == 0 &&
-           this->deviceName == selected.deviceName;
+    return std::memcmp(&this->deviceGuid, &selected.deviceGuid, sizeof(GUID)) == 0 && this->deviceName == selected.deviceName;
   }
 
   return false;
@@ -73,9 +71,7 @@ std::vector<RenderAdapter> EnumerateAdaptersDX9() {
       D3DADAPTER_IDENTIFIER9 identifier;
 
       if (SUCCEEDED(direct3D->GetAdapterIdentifier(ordinal, 0, &identifier))) {
-        adapters.push_back(
-          {2, ordinal, identifier.Description, {}, {}, identifier.DeviceIdentifier, identifier.DeviceName}
-        );
+        adapters.push_back({2, ordinal, identifier.Description, {}, {}, identifier.DeviceIdentifier, identifier.DeviceName});
       }
     }
   }
@@ -90,16 +86,12 @@ std::vector<RenderAdapter> EnumerateAdaptersDX9() {
 // OFFSET: 0x0056E270
 // FUNCTION: fn_02375
 HRESULT InitializeConfiguredDeviceDX9(
-  DeviceOwnerDX9& owner,
-  HWND window,
-  const DeviceOptionsDX9& options,
-  const AdapterConfiguration& configuration,
-  bool serviceUsesDX7
+  DeviceOwnerDX9& owner, HWND window, const DeviceOptionsDX9& options, const AdapterConfiguration& configuration, bool serviceUsesDX7
 ) {
   const std::vector<RenderAdapter> adapters = EnumerateAdaptersDX9();
 
   if (adapters.empty()) {
-    MessageBoxA(nullptr, "No compatible devices", "Error", 0);
+    MessageBoxA(nullptr, "No compatible devices", "Error", MB_OK);
     return D3DERR_NOTAVAILABLE;
   }
 

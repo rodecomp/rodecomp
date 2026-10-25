@@ -1,7 +1,7 @@
 #include "Contents/MessageTable.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Base64.h"
-#include "Utility/LanguageCharset.h"
+#include "Utility/Text/LanguageCharset.h"
 
 #include <cstdio>
 #include <cstring>
@@ -23,15 +23,18 @@ namespace {
     if (field.empty()) {
       return;
     }
+
     std::string decoded = DecodeBase64(field);
     if (decoded.size() > 2) {
       if (decoded.front() == '"' && decoded.back() == '"') {
         decoded = decoded.substr(1, decoded.size() - 2);
       }
+
       for (std::size_t pos = 0; (pos = decoded.find("\\\"\"", pos)) != std::string::npos; ++pos) {
         decoded.replace(pos, 3, "\"");
       }
     }
+
     row.push_back(FromUtf8(decoded, g_textCodePage));
   }
 
@@ -40,6 +43,7 @@ namespace {
   void TransformFields(std::vector<std::string>& row) {
     const char* escapes[] = {"\\r", "\\n", "\\t", "\\'", "\\\"", "\\\\"};
     const char replacements[] = {'\r', '\n', '\t', '\'', '"', '\\'};
+
     for (std::string& text : row) {
       if (text.empty()) {
         text = "NO MSG";
@@ -69,14 +73,17 @@ const char* LookupMessage(int id, bool languagePrefix, int serviceType, WORD lan
     _snprintf_s(missing, sizeof(missing), _TRUNCATE, "NO MSG : %d", id);
     return missing;
   }
+
   auto found = g_messageStrings.find(id);
   if (found == g_messageStrings.end()) {
     return "NO MSG";
   }
+
   const std::string& text = found->second;
   if (!languagePrefix || text[0] == '/' || text == "NO MSG") {
     return text.c_str();
   }
+
   // STATIC: 0x016D57B4
   // GLOBAL: gl_24383
   static std::vector<std::string> cached(4698);
@@ -90,6 +97,7 @@ const char* LookupMessage(int id, bool languagePrefix, int serviceType, WORD lan
     _snprintf_s(buffer, sizeof(buffer), _TRUNCATE, "%s%s", prefix, text.c_str());
     result = buffer;
   }
+
   return result.c_str();
 }
 
@@ -99,20 +107,21 @@ const char* LookupMessage(int id, bool languagePrefix, int serviceType, WORD lan
 // FUNCTION: fn_18372
 bool ImportMessageCsv(std::string_view bytes) {
   g_messageStrings.clear();
-  if (
-    bytes.size() >= 2 &&
-    ((static_cast<unsigned char>(bytes[0]) == 0xFF && static_cast<unsigned char>(bytes[1]) == 0xFE) ||
-     (static_cast<unsigned char>(bytes[0]) == 0xFE && static_cast<unsigned char>(bytes[1]) == 0xFF))
-  ) {
+  if (bytes.size() >= 2 && ((static_cast<unsigned char>(bytes[0]) == 0xFF && static_cast<unsigned char>(bytes[1]) == 0xFE) ||
+                            (static_cast<unsigned char>(bytes[0]) == 0xFE && static_cast<unsigned char>(bytes[1]) == 0xFF))) {
     return false;
   }
+
   if (bytes.substr(0, 3) == "\xEF\xBB\xBF") {
     bytes.remove_prefix(3);
   }
+
   std::size_t cursor = 0;
+
   while (cursor < bytes.size()) {
     std::vector<std::string> row;
     std::string field;
+
     while (cursor < bytes.size()) {
       char value = bytes[cursor++];
       if (value == ',' || value == '\r' || value == '\n') {
@@ -121,6 +130,7 @@ bool ImportMessageCsv(std::string_view bytes) {
         if (value == '\n') {
           break;
         }
+
         if (value == '\r' && cursor < bytes.size() && bytes[cursor] == '\n') {
           ++cursor;
           break;
@@ -129,6 +139,7 @@ bool ImportMessageCsv(std::string_view bytes) {
         field.push_back(value);
       }
     }
+
     DecodeField(field, row);
     TransformFields(row);
     if (row.size() >= 2 && !row.front().empty()) {
@@ -140,5 +151,6 @@ bool ImportMessageCsv(std::string_view bytes) {
       }
     }
   }
+
   return true;
 }

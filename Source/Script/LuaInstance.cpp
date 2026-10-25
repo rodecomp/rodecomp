@@ -38,7 +38,7 @@ bool CLuaInstance::Execute(const std::string& name) {
   // STATIC: 0x010D9630
   // STRING: st_00223
   const char* error = lua_tostring(this->m_state, -1);
-  MessageBoxA(nullptr, error, "Lua Error", 0);
+  MessageBoxA(nullptr, error, "Lua Error", MB_OK);
 
   return false;
 }
@@ -47,7 +47,7 @@ bool CLuaInstance::Execute(const std::string& name) {
 // FUNCTION: fn_01129
 int CLuaInstance::LuaMessageBox(lua_State* state) {
   const std::string text = lua_tostring(state, -1);
-  MessageBoxA(nullptr, text.c_str(), "CLuaInstance", 0);
+  MessageBoxA(nullptr, text.c_str(), "CLuaInstance", MB_OK);
   return 0;
 }
 
@@ -57,9 +57,11 @@ bool CLuaInstance::LoadFile(const std::string& path, bool showError) {
   if (luaL_loadfile(this->m_state, path.c_str()) == 0 && lua_pcall(this->m_state, 0, LUA_MULTRET, 0) == 0) {
     return true;
   }
+
   if (showError) {
-    MessageBoxA(nullptr, lua_tostring(this->m_state, -1), path.c_str(), 0);
+    MessageBoxA(nullptr, lua_tostring(this->m_state, -1), path.c_str(), MB_OK);
   }
+
   return false;
 }
 
@@ -82,14 +84,13 @@ bool CLuaInstance::LoadFile(const std::string& path) {
   file.Read(buffer, size);
   file.Close();
 
-  if (luaL_loadbuffer(this->m_state, buffer, size, path.c_str()) == 0 &&
-      lua_pcall(this->m_state, 0, 0, 0) == 0) {
+  if (luaL_loadbuffer(this->m_state, buffer, size, path.c_str()) == 0 && lua_pcall(this->m_state, 0, 0, 0) == 0) {
     std::free(buffer);
     return true;
   }
 
   const char* error = lua_tostring(this->m_state, -1);
-  MessageBoxA(nullptr, error, path.c_str(), 0);
+  MessageBoxA(nullptr, error, path.c_str(), MB_OK);
   lua_pop(this->m_state, 1);
   std::free(buffer);
 
@@ -126,18 +127,22 @@ int CLuaInstance::ReadStrings(std::vector<std::string>& values, const char* glob
     lua_pop(this->m_state, 1);
     return (type != LUA_TNIL) + 1;
   }
+
   values.resize(lua_objlen(this->m_state, -1));
   lua_pushnil(this->m_state);
   std::size_t index = 0;
+
   while (lua_next(this->m_state, -2)) {
     type = lua_type(this->m_state, -1);
     if (type != LUA_TSTRING) {
       lua_pop(this->m_state, 3);
       return (type != LUA_TNIL) + 1;
     }
+
     values[index++] = lua_tostring(this->m_state, -1);
     lua_pop(this->m_state, 1);
   }
+
   lua_pop(this->m_state, 1);
   return 0;
 }

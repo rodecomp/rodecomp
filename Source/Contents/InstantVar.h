@@ -4,8 +4,6 @@
 #include <cstdint>
 #include <map>
 
-// RTTI CInstantVar. Embedded by CRenderObject at +0x118
-// and client at +0x7FA8. Initialization is inlined in their constructors.
 class CInstantVar {
 public:
   CInstantVar() = default;
@@ -15,8 +13,6 @@ public:
   void Clear();
 
 private:
-  // Original signed-key ordered tree, 32-byte x86 nodes containing an aligned
-  // 64-bit mapped value. A missing read does not insert a zero-valued node.
   std::map<int, std::int64_t> m_values;
 };
 

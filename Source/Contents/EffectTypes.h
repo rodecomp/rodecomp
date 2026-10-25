@@ -1,6 +1,0 @@
-#ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTTYPES_H
-#define RAGNAROK_SOURCE_CONTENTS_EFFECTTYPES_H
-
-int EffectLifetime(int id);
-
-#endif

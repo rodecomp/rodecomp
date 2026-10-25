@@ -1,4 +1,4 @@
-#include "Client/ErrorDialog.h"
+#include "Client/Application/ErrorDialog.h"
 #include "File/File.h"
 
 #include <cstring>
@@ -17,16 +17,16 @@ CFile::~CFile() {
 // FUNCTION: fn_02597
 bool CFile::OpenWrite(const char* path, CRenderSystemBase* renderSystem) {
   this->m_path = path;
-  this->m_handle = CreateFileA(
-    path, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr
-  );
+  this->m_handle = CreateFileA(path, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
   if (this->m_handle == INVALID_HANDLE_VALUE) {
     ShowErrorDialog(renderSystem, this->m_path.c_str(), 0);
     return false;
   }
+
   LARGE_INTEGER size;
   GetFileSizeEx(this->m_handle, &size);
   this->m_size = size.LowPart;
+
   return true;
 }
 
@@ -65,7 +65,7 @@ bool CFile::Peek(void* data, std::uint32_t bytes) {
     }
 
     LARGE_INTEGER distance;
-    // The reference zero-extends the negated low DWORD, not sign-extension.
+
     distance.QuadPart = static_cast<std::uint32_t>(0u - bytes);
     SetFilePointerEx(this->m_handle, distance, nullptr, FILE_CURRENT);
     return true;
@@ -86,6 +86,7 @@ bool CFile::Seek(std::uint32_t distance, DWORD origin) {
     LARGE_INTEGER offset;
     offset.QuadPart = distance;
     SetFilePointerEx(this->m_handle, offset, nullptr, origin);
+
     return true;
   }
 
@@ -118,7 +119,6 @@ bool CFile::Seek(std::uint32_t distance, DWORD origin) {
 void CFile::Close() {
   if (this->m_handle == INVALID_HANDLE_VALUE) {
     if (this->m_data) {
-      // Release helper.
       VirtualFree(this->m_data, 0, MEM_RELEASE);
       this->m_data = nullptr;
     }

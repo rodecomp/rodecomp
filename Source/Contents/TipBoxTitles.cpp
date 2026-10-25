@@ -20,8 +20,6 @@ namespace {
 
       current = CharNextExA(codePage, current, 0);
     }
-
-    // Original intentionally does not append the final partial segment.
   }
 }
 

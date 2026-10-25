@@ -25,7 +25,6 @@ const char* SkinInfo::Name() const {
 // FUNCTION: fn_09687
 const char* SkinInfo::Prefix() const {
   if (this->selected == -1) {
-    // Default string is twelve zero bytes.
     return "";
   }
 
@@ -68,6 +67,6 @@ void SkinInfo::Prepare() {
   const std::string input = std::string("skin/") + this->names[this->selected];
   const std::string output = std::string("_tmpskin_/") + this->names[this->selected];
   _spawnl(_P_WAIT, "runzip.exe", "runzip.exe", "-n", input.c_str(), "-d", output.c_str(), nullptr);
-  // Original marks preparation even when the process launch/extraction fails.
+
   this->prepared[this->selected] = 1;
 }

@@ -37,7 +37,6 @@ bool ForbiddenWords::Load(const char* name, CCommonObject& storage, ResourceByte
     }
 
     if (*first != '\0') {
-      // Original checks past leading whitespace but stores the untrimmed token.
       this->words.push_back(Lowercase(token, this->codePage));
     }
   }
@@ -60,15 +59,10 @@ bool ForbiddenWords::Allows(const char* text) const {
   const char* end = current + std::strlen(current);
 
   while (current < end) {
-    const auto* open =
-      _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("<iteml>"));
-    const auto* close =
-      _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("</iteml>"));
+    const auto* open = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("<iteml>"));
+    const auto* close = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("</iteml>"));
 
-    if (
-      open && close && std::strlen(current) != 0 &&
-      std::strlen(current) <= std::strlen(reinterpret_cast<const char*>(open))
-    ) {
+    if (open && close && std::strlen(current) != 0 && std::strlen(current) <= std::strlen(reinterpret_cast<const char*>(open))) {
       const auto skip = reinterpret_cast<const char*>(close) + 8 - reinterpret_cast<const char*>(open);
 
       for (std::ptrdiff_t index = 0; index < skip; ++index) {
@@ -99,7 +93,6 @@ bool ForbiddenWords::Contains(const char* text) const {
 // OFFSET: 0x00AE6050
 // FUNCTION: fn_18061
 void ForbiddenWords::Mask(char* text, std::string* value) const {
-  // Original process-wide scratch buffers; intentionally not reentrant.
   // STATIC: 0x016D4E60
   // GLOBAL: gl_24379
   static char valueBuffer[2048];
@@ -126,21 +119,15 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
   char* current = Lowercase(scanBuffer, this->codePage);
 
   while (std::strlen(current) != 0) {
-    const auto* open =
-      _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("<iteml>"));
-    const auto* close =
-      _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("</iteml>"));
+    const auto* open = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("<iteml>"));
+    const auto* close = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("</iteml>"));
 
-    if (
-      open && close && std::strlen(current) != 0 &&
-      std::strlen(current) <= std::strlen(reinterpret_cast<const char*>(open))
-    ) {
+    if (open && close && std::strlen(current) != 0 && std::strlen(current) <= std::strlen(reinterpret_cast<const char*>(open))) {
       const auto skip = reinterpret_cast<const char*>(close) + 8 - reinterpret_cast<const char*>(open);
 
       char* next = current;
 
       for (std::ptrdiff_t index = 0; index < skip; ++index) {
-        // Reloads the same source pointer on every iteration.
         next = CharNextExA(this->codePage, current, 0);
       }
 
@@ -159,8 +146,7 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
       advance = 0;
       const char* end = matchedWord + std::strlen(matchedWord);
 
-      for (const char* character = matchedWord; character < end;
-           character = CharNextExA(this->codePage, character, 0)) {
+      for (const char* character = matchedWord; character < end; character = CharNextExA(this->codePage, character, 0)) {
         ++advance;
       }
 

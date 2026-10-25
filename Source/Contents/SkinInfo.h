@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-// Borrowed fields of original skin owner off_1334630. Names/prefixes and
-// archive/prepared flags are kept on their real configuration owner.
 struct SkinInfo {
   int& selected;
   const std::vector<std::string>& names;

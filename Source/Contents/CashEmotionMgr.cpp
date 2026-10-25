@@ -1,5 +1,5 @@
 #include "Contents/CashEmotionMgr.h"
-#include "UI/ChatSuggestions.h"
+#include "UI/Chat/ChatSuggestions.h"
 
 #include <cstring>
 #include <new>
@@ -22,8 +22,8 @@ public:
 // OFFSET: 0x00596430
 // FUNCTION: fn_02915
 CCashEmotionMgr::CCashEmotionMgr()
-    : m_enabled(true), unknown_0005{}, m_action(nullptr), unknown_000C(0), unknown_0010{}, m_emotionsByPack{},
-      unknown_0050{}, m_packNames{}, unknown_00B0{}, m_commands{}, unknown_0198{} {
+    : m_enabled(true), unknown_0005{}, m_action(nullptr), unknown_000C(0), unknown_0010{}, m_emotionsByPack{}, unknown_0050{}, m_packNames{}, unknown_00B0{},
+      m_commands{}, unknown_0198{} {
 }
 
 // OFFSET: 0x00598520
@@ -33,6 +33,7 @@ CCashEmotionMgr::~CCashEmotionMgr() {
     this->m_action = nullptr;
   }
 }
+
 // OFFSET: 0x00598C70
 // FUNCTION: fn_02934
 void CCashEmotionMgr::Reset() {
@@ -95,6 +96,7 @@ int CCashEmotionMgr::ProcessChatCommand(const char* command) {
   const char* key = command + 1;
   auto it = this->m_commands.find(key);
   int actionId = 0;
+
   if (it != this->m_commands.end()) {
     actionId = it->second;
   }
@@ -116,6 +118,7 @@ const char* CCashEmotionMgr::GetPackName(int packId) {
   if (it == this->m_packNames.end()) {
     return nullptr;
   }
+
   return it->second.c_str();
 }
 

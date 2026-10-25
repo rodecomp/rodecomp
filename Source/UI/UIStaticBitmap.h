@@ -1,13 +1,12 @@
 #ifndef RAGNAROK_SOURCE_UI_UISTATICBITMAP_H
 #define RAGNAROK_SOURCE_UI_UISTATICBITMAP_H
 
-#include "UI/UIWindow.h"
+#include "UI/Window/UIWindow.h"
 
 #include <string>
 
 struct UIButtonContext;
 
-// UIStaticBitmap, 184-byte x86 value.
 class UIStaticBitmap : public UIWindow {
 public:
   UIStaticBitmap(UIWindowContext& windows, UIButtonContext& controls);

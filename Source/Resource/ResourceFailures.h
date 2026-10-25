@@ -13,8 +13,6 @@ protected:
   ~ResourceMessages() = default;
 };
 
-// Original failure owner's critical section+4 and set+28. Actual manager
-// message routing is explicit; missing-resource diagnostics are not discarded.
 class ResourceFailures {
 public:
   explicit ResourceFailures(ResourceMessages& messages);

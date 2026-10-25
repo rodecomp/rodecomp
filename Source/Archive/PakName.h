@@ -6,10 +6,8 @@
 
 namespace myGPack {
 
-  // Shared machine algorithm used with different owner-reserved buffer extents.
   void AssignNameKey(std::uint32_t& hash, char* destination, const char* source);
 
-  // Reconstructed name for the key embedded at archive entry offset 0x1C.
   class PakName {
   public:
     PakName();

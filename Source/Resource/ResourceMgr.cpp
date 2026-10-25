@@ -1,12 +1,13 @@
 #include "File/ResourcePath.h"
 #include "Resource/ResourceFailures.h"
 #include "Resource/ResourceMgr.h"
-#include "Utility/NSyncObject.h"
+#include "Utility/Threading/NSyncObject.h"
 
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
-#include <mmsystem.h>
+#include <windows.h>
+#include <timeapi.h>
 #include <optional>
 
 // OFFSET: 0x00AECEE0
@@ -15,6 +16,7 @@ bool ResourceNameLess::operator()(const ResourceName* left, const ResourceName* 
   if (left->hash != right->hash) {
     return left->hash < right->hash;
   }
+
   return std::strcmp(left->text, right->text) < 0;
 }
 
@@ -23,17 +25,21 @@ bool ResourceNameLess::operator()(const ResourceName* left, const ResourceName* 
 ResourceMgr::ResourceMgr(ResourceFailures& failures) : m_failures(&failures) {
   InitializeCriticalSection(&this->m_lock);
 }
+
 // OFFSET: 0x00AEE070
 // FUNCTION: fn_18169
 ResourceMgr::~ResourceMgr() {
   this->m_transient.clear();
+
   for (auto& resources : this->m_resources) {
     for (auto& [name, resource] : resources) {
       resource->Unload();
       delete resource;
     }
+
     resources.clear();
   }
+
   DeleteCriticalSection(&this->m_lock);
 }
 
@@ -53,10 +59,12 @@ int ResourceMgr::FindType(const char* extension) const {
   if (!extension) {
     return -1;
   }
+
   const auto entry = this->m_extensions.find(extension);
   if (entry != this->m_extensions.end()) {
     return entry->second;
   }
+
   char text[256];
   std::sprintf(text, "ResourceError : %s is Undefined Ext \n", extension);
   return -1;
@@ -69,6 +77,7 @@ CRes* ResourceMgr::Find(int type, const char* name) const {
   key.Assign(name);
   const auto& resources = this->m_resources[type];
   const auto entry = resources.find(&key);
+
   return entry == resources.end() ? nullptr : entry->second;
 }
 
@@ -78,23 +87,28 @@ bool ResourceMgr::Exists(const char* name) {
   if (!name) {
     return false;
   }
+
   char normalized[260] = {};
   strncpy_s(normalized, sizeof(normalized), name, _TRUNCATE);
+
   for (unsigned char* byte = reinterpret_cast<unsigned char*>(normalized); *byte; ++byte) {
     if (*byte >= 'A' && *byte <= 'Z') {
       *byte += 'a' - 'A';
     }
   }
+
   const char* dot = std::strrchr(normalized, '.');
   const int type = this->FindType(dot ? dot + 1 : nullptr);
   if (type < 0) {
     return false;
   }
+
   const std::string resolved = AddResourcePrefix(this->aliases.Resolve(normalized), this->m_prefixes[type]);
   if (CRes* existing = this->Find(type, resolved.c_str())) {
     existing->lastUse = timeGetTime();
     return true;
   }
+
   return ResourceExists(resolved.c_str(), 0);
 }
 
@@ -103,45 +117,54 @@ CRes* ResourceMgr::Load(const char* name) {
   if (!name) {
     return nullptr;
   }
+
   std::optional<NSyncObject> lock(std::in_place, &this->m_lock);
   char normalized[260] = {};
   _snprintf_s(normalized, sizeof(normalized), _TRUNCATE, "%s", name);
-  // Exact original byte_134B750 table folds ASCII only, not locale/codepage.
+
   for (unsigned char* byte = reinterpret_cast<unsigned char*>(normalized); *byte; ++byte) {
     if (*byte >= 'A' && *byte <= 'Z') {
       *byte += 'a' - 'A';
     }
   }
+
   const char* dot = std::strrchr(normalized, '.');
   const int type = this->FindType(dot ? dot + 1 : nullptr);
   if (type < 0) {
     return nullptr;
   }
+
   std::string resolved = AddResourcePrefix(this->aliases.Resolve(normalized), this->m_prefixes[type]);
   if (CRes* existing = this->Find(type, resolved.c_str())) {
     existing->lastUse = timeGetTime();
     return existing;
   }
+
   CRes* resource = this->m_prototypes[type]->Create();
   if (!resource) {
     return nullptr;
   }
+
   if (resource->Load(resolved.c_str()) != 1) {
     delete resource;
-    // Original reports only after releasing the resource lock.
+
     lock.reset();
     if (resolved.find("\\map\\") == std::string::npos) {
       this->m_failures->Report(name, resolved);
     }
+
     return nullptr;
   }
+
   resource->name.Assign(resolved.c_str());
   resource->type = type;
   resource->lastUse = timeGetTime();
   this->m_resources[type].emplace(&resource->name, resource);
+
   if (resource->IsTransient() == 1) {
     this->m_transient.push_back(resource);
   }
+
   return resource;
 }
 
@@ -170,23 +193,28 @@ void ResourceMgr::ClearUnused(const char* extension) {
   if (type < 0) {
     return;
   }
+
   auto& resources = this->m_resources[type];
+
   for (auto entry = resources.begin(); entry != resources.end();) {
     CRes* resource = entry->second;
     if (resource->references != 0) {
       ++entry;
       continue;
     }
+
     this->EraseTransient(resource);
     resource->Unload();
     delete resource;
     entry = resources.erase(entry);
   }
 }
+
 // OFFSET: 0x00AF0AE0
 // FUNCTION: fn_18193
 void ResourceMgr::ClearUnused() {
   timeGetTime();
+
   for (auto& resources : this->m_resources) {
     for (auto entry = resources.begin(); entry != resources.end();) {
       CRes* resource = entry->second;
@@ -194,6 +222,7 @@ void ResourceMgr::ClearUnused() {
         ++entry;
         continue;
       }
+
       this->EraseTransient(resource);
       resource->Unload();
       delete resource;

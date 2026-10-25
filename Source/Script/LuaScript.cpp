@@ -30,8 +30,7 @@ void LuaScript::Close() {
 // OFFSET: 0x00AFDD60
 // FUNCTION: fn_18335
 bool LuaScript::Execute(const void* bytes, std::size_t size) {
-  return this->m_state && luaL_loadbuffer(this->m_state, static_cast<const char*>(bytes), size, "buf") == 0 &&
-         lua_pcall(this->m_state, 0, 0, 0) == 0;
+  return this->m_state && luaL_loadbuffer(this->m_state, static_cast<const char*>(bytes), size, "buf") == 0 && lua_pcall(this->m_state, 0, 0, 0) == 0;
 }
 
 // OFFSET: 0x00AFD1D0
@@ -42,7 +41,7 @@ void LuaScript::Error(const char* caption, const char* format, ...) {
   va_start(arguments, format);
   _vsnprintf_s(text, sizeof(text), _TRUNCATE, format, arguments);
   va_end(arguments);
-  MessageBoxA(nullptr, text, caption, 0);
+  MessageBoxA(nullptr, text, caption, MB_OK);
 }
 
 // OFFSET: 0x00AFC9A0
@@ -51,16 +50,19 @@ bool LuaScript::Call(std::string function, const char* signature, ...) {
   if (!this->m_state) {
     return false;
   }
+
   va_list arguments;
   va_start(arguments, signature);
   lua_getglobal(this->m_state, function.c_str());
   int inputCount = 0;
+
   while (*signature) {
     luaL_checkstack(this->m_state, 1, "too many arguments");
     char option = *signature++;
     if (option == '>') {
       break;
     }
+
     switch (option) {
     case 'b':
       lua_pushboolean(this->m_state, static_cast<unsigned char>(va_arg(arguments, int)));
@@ -78,8 +80,10 @@ bool LuaScript::Call(std::string function, const char* signature, ...) {
       this->Error(function.c_str(), "invalid option (%c)", option);
       break;
     }
+
     ++inputCount;
   }
+
   int outputCount = static_cast<int>(std::strlen(signature));
   if (lua_pcall(this->m_state, inputCount, outputCount, 0)) {
     std::string error = lua_tostring(this->m_state, -1);
@@ -87,9 +91,11 @@ bool LuaScript::Call(std::string function, const char* signature, ...) {
     if (this->m_state) {
       lua_settop(this->m_state, 0);
     }
+
     va_end(arguments);
     return false;
   }
+
   for (int output = -outputCount; *signature; ++output) {
     switch (*signature++) {
     case 'b':
@@ -109,12 +115,14 @@ bool LuaScript::Call(std::string function, const char* signature, ...) {
       break;
     }
   }
+
   if (outputCount) {
     lua_pop(this->m_state, outputCount);
     if (this->m_state) {
       lua_settop(this->m_state, 0);
     }
   }
+
   va_end(arguments);
   return true;
 }
@@ -133,6 +141,7 @@ bool LuaScript::CallTable(std::string table, std::string function, const char* s
   lua_getfield(this->m_state, -1, function.c_str());
 
   int inputCount = 0;
+
   while (*signature) {
     luaL_checkstack(this->m_state, 1, "too many arguments");
 
@@ -169,6 +178,7 @@ bool LuaScript::CallTable(std::string table, std::string function, const char* s
     if (this->m_state) {
       lua_settop(this->m_state, 0);
     }
+
     va_end(arguments);
     return false;
   }
@@ -210,10 +220,12 @@ int LuaScript::GlobalInteger(const char* name) {
   if (!this->m_state) {
     return 0;
   }
+
   lua_getglobal(this->m_state, name);
   if (!lua_isnumber(this->m_state, -1)) {
     return -1;
   }
+
   int value = static_cast<int>(lua_tonumber(this->m_state, -1));
   lua_pop(this->m_state, 1);
   return value;
@@ -225,10 +237,12 @@ std::string LuaScript::GlobalString(const char* name) {
   if (!this->m_state) {
     return {};
   }
+
   lua_getglobal(this->m_state, name);
   if (!lua_isstring(this->m_state, -1)) {
     return {};
   }
+
   std::string value = lua_tostring(this->m_state, -1);
   lua_pop(this->m_state, 1);
   return value;
@@ -240,8 +254,9 @@ bool LuaScript::HasTable(const char* name) {
   if (!this->m_state) {
     return false;
   }
+
   lua_getglobal(this->m_state, name);
-  // The original deliberately leaves this fetched global on the stack.
+
   return lua_type(this->m_state, -1) == LUA_TTABLE;
 }
 
@@ -268,7 +283,6 @@ std::list<int> LuaScript::TableKeys(const char* name, int) {
     keys.sort();
   }
 
-  // A missing/non-table global remains on the stack in the original.
   return keys;
 }
 
@@ -293,15 +307,11 @@ int LuaScript::TableInteger(std::string table, int keyType, std::intptr_t key) {
     lua_pushstring(this->m_state, reinterpret_cast<const char*>(key));
     lua_gettable(this->m_state, -2);
   } else if (keyType != 2) {
-    // Unknown selectors construct signature "d": perform the integer lookup,
-    // but retain its value without attempting the absent output conversion.
     lua_pushnumber(this->m_state, static_cast<int>(key));
     lua_gettable(this->m_state, -2);
     return value;
   }
 
-  // Selector two constructs "ld"; the original input helper does not implement
-  // 'l', so it leaves the table itself for the numeric output check.
   if (lua_isnumber(this->m_state, -1)) {
     value = static_cast<int>(lua_tonumber(this->m_state, -1));
     lua_pop(this->m_state, 1);

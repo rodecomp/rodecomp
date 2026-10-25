@@ -5,9 +5,6 @@
 
 namespace myGPack {
 
-  // Reconstructed semantic class name; original symbol unavailable.
-  // The original stream routine processes complete eight-byte blocks, including
-  // one block for length <= 0. Callers must provide corresponding buffer space.
   class PakCipher {
   public:
     PakCipher();
@@ -25,13 +22,7 @@ namespace myGPack {
   std::uint8_t* __stdcall DerivePakKey(const char* name, std::uint8_t* key);
   int __stdcall InitialPermutation(std::uint8_t* block);
   int __stdcall FinalPermutation(std::uint8_t* block);
-  int __stdcall EncodeBlock(
-    int rounds,
-    const std::uint8_t (*roundKeys)[8],
-    std::uint32_t inputLow,
-    std::uint32_t inputHigh,
-    std::uint8_t* output
-  );
+  int __stdcall EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output);
 
 }
 

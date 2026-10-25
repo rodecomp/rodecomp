@@ -9,18 +9,23 @@ namespace {
     if (value >= 'A' && value <= 'Z') {
       return value - 'A';
     }
+
     if (value >= 'a' && value <= 'z') {
       return value - 'a' + 26;
     }
+
     if (value >= '0' && value <= '9') {
       return value - '0' + 52;
     }
+
     if (value == '+' || value == '-') {
       return 62;
     }
+
     if (value == '/' || value == '_') {
       return 63;
     }
+
     return value;
   }
 }
@@ -45,12 +50,15 @@ std::string DecodeBase64(std::string encoded, bool removeLinebreaks) {
   if (encoded.empty()) {
     return {};
   }
+
   if (removeLinebreaks) {
     encoded.erase(std::remove(encoded.begin(), encoded.end(), '\n'), encoded.end());
     return DecodeBase64(encoded, false);
   }
+
   std::string decoded;
   decoded.reserve(encoded.size() / 4 * 3);
+
   for (std::size_t pos = 0; pos < encoded.size(); pos += 4) {
     unsigned second = Position(encoded[pos + 1]);
     decoded.push_back(static_cast<char>((Position(encoded[pos]) << 2) + ((second >> 4) & 3)));
@@ -62,5 +70,6 @@ std::string DecodeBase64(std::string encoded, bool removeLinebreaks) {
       }
     }
   }
+
   return decoded;
 }

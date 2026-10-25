@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-// Original CTipBoxMgr map value. Unidentified scalar fields stay explicit.
 struct TipBoxEntry {
   TipBoxEntry();
   std::string title;
@@ -19,7 +18,6 @@ struct TipBoxEntry {
   std::int32_t unknown_004C[3];
 };
 
-// Borrow actual CTipBoxMgr table+16, missing value+188 and upper bound+280.
 struct TipBoxTitles {
   const std::map<int, TipBoxEntry>& entries;
   const TipBoxEntry& missing;

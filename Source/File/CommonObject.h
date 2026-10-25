@@ -5,8 +5,6 @@
 
 class ResourceBytes;
 
-// RTTI CCommonObject. Token pointers borrow the
-// retained file allocations until Clear/destruction, not the input file view.
 class CCommonObject {
 public:
   CCommonObject() = default;

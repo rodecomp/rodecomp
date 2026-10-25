@@ -11,20 +11,11 @@ class CFile {
 public:
   CFile();
   virtual ~CFile();
-  // Recovered write branch only; not a replacement for original general Open,
-  // whose archive read/extraction dependency remains unresolved.
+
   bool OpenWrite(const char* path, CRenderSystemBase* renderSystem);
   bool Open(const char* path) {
     this->m_path = path;
-    this->m_handle = CreateFileA(
-      path,
-      GENERIC_READ,
-      FILE_SHARE_READ,
-      nullptr,
-      OPEN_EXISTING,
-      FILE_ATTRIBUTE_NORMAL,
-      nullptr
-    );
+    this->m_handle = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (this->m_handle == INVALID_HANDLE_VALUE) {
       return false;
     }

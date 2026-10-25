@@ -7,8 +7,6 @@
 class CCommonObject;
 class ResourceBytes;
 
-// Borrowed pointer vector and charset owner. Words are
-// already normalized by their resource loader; this operation does not own them.
 struct ForbiddenWords {
   std::vector<const char*>& words;
   const unsigned short& codePage;

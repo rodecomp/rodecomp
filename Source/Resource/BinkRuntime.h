@@ -4,8 +4,6 @@
 #include <cstdint>
 #include <windows.h>
 
-// Public prefix read/written by the original wrapper, not the decoder's
-// complete private allocation. Supplied binkw32.dll is x86-only.
 struct BinkHandle {
   std::uint32_t width;
   std::uint32_t height;
@@ -13,7 +11,6 @@ struct BinkHandle {
   std::uint32_t frame;
 };
 
-// Host loader for original imported APIs; no fabricated original entry.
 class BinkRuntime {
 public:
   BinkRuntime();

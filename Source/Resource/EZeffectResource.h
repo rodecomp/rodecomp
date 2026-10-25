@@ -9,8 +9,6 @@
 class ResourceBytes;
 class CTexture;
 
-// Renderer texture owner. Loading keeps its real cache,
-// fallback and retain behavior; this resource never fabricates a texture.
 class EffectTextures {
 public:
   virtual CTexture* Load(const char* name, int format, bool option1, bool option2, bool option3) = 0;
@@ -39,8 +37,6 @@ struct EZeffectResourceContext {
   CRenderSystemBase*& renderSystem;
 };
 
-// RTTI CEZeffectRes. STR version 148 retains its backing
-// allocation; names and 124-byte frame records are borrowed slices, not copies.
 class CEZeffectRes : public CRes {
 public:
   explicit CEZeffectRes(EZeffectResourceContext& context);
@@ -56,8 +52,6 @@ public:
   /* 0120 */ EZeffectClip clips[60];
 
 private:
-  // Source replacement for the original retained CFile allocation. Required
-  // snapshot: ResourceBytes exposes borrowed bytes but cannot transfer storage.
   std::vector<unsigned char> m_bytes;
   EZeffectResourceContext* m_context;
 };

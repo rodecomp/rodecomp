@@ -9,8 +9,6 @@ class CRenderer;
 class CSurface;
 class CTexture;
 
-// RTTI: CRenderSystemBase. Names are reconstructed.
-// Backend lifecycle and resource factories are implemented by each concrete system.
 class CRenderSystemBase {
 public:
   // OFFSET: 0x0056B4D0
@@ -25,8 +23,7 @@ public:
   virtual CRenderer* CreateRenderer() = 0;
   virtual void DestroySurface(CSurface* surface) = 0;
   virtual CSurface* CreateSurface(std::uint32_t width, std::uint32_t height) = 0;
-  virtual CTexture*
-  CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool option1, bool option2) = 0;
+  virtual CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool option1, bool option2) = 0;
   virtual CSurface* CreateSurfaceOrTexture(std::uint32_t width, std::uint32_t height) = 0;
   virtual CTexture* BackBufferTexture() = 0;
   virtual std::shared_ptr<CSurface> BackBufferSurface() = 0;

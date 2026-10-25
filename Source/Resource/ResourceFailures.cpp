@@ -1,11 +1,12 @@
 #include "Resource/ResourceFailures.h"
-#include "Utility/NSyncObject.h"
+#include "Utility/Threading/NSyncObject.h"
 
 #include <cstring>
 
 ResourceFailures::ResourceFailures(ResourceMessages& messages) : m_messages(&messages) {
   InitializeCriticalSection(&this->m_lock);
 }
+
 ResourceFailures::~ResourceFailures() {
   DeleteCriticalSection(&this->m_lock);
 }
@@ -17,6 +18,7 @@ void ResourceFailures::Report(std::string requested, std::string resolved) {
   if (extension && _stricmp(extension, ".ebm") == 0) {
     return;
   }
+
   bool report;
   {
     NSyncObject lock(&this->m_lock);

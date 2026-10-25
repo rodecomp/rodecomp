@@ -1,16 +1,8 @@
-#include "Render/DeviceContext.h"
-#include "Resource/BitmapResource.h"
+#include "Render/DeviceContext/DeviceContext.h"
+#include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "UI/UIButton.h"
+#include "UI/Buttons/UIButton.h"
 #include "UI/UIStaticBitmap.h"
-
-#include <bit>
-
-namespace {
-  int Add(int left, int right) {
-    return std::bit_cast<int>(static_cast<unsigned>(left) + static_cast<unsigned>(right));
-  }
-}
 
 // OFFSET: 0x00850430
 UIStaticBitmap::UIStaticBitmap(UIWindowContext& windows, UIButtonContext& controls)
@@ -48,19 +40,19 @@ void UIStaticBitmap::Paint() {
 // OFFSET: 0x0085EE10
 // FUNCTION: fn_10849
 void UIStaticBitmap::Slot25(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->Slot25(Add(x, this->geometry.x), Add(y, this->geometry.y));
+  static_cast<UIWindow*>(this->parent)->Slot25((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085EA30
 // FUNCTION: fn_10836
 void UIStaticBitmap::Slot26(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->Slot26(Add(x, this->geometry.x), Add(y, this->geometry.y));
+  static_cast<UIWindow*>(this->parent)->Slot26((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085F8A0
 // FUNCTION: fn_10872
 void UIStaticBitmap::Slot27(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->Slot27(Add(x, this->geometry.x), Add(y, this->geometry.y));
+  static_cast<UIWindow*>(this->parent)->Slot27((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085F500
@@ -75,8 +67,8 @@ void UIStaticBitmap::Slot28(int x, int y) {
     int screenY = this->tooltipY;
 
     for (const UIWindow* window = this; window; window = static_cast<const UIWindow*>(window->parent)) {
-      screenX = Add(screenX, window->geometry.x);
-      screenY = Add(screenY, window->geometry.y);
+      screenX = (screenX + window->geometry.x);
+      screenY = (screenY + window->geometry.y);
     }
 
     this->m_controls->services.Tooltip(this->tooltip.c_str(), screenX, screenY, -1, false, true);
@@ -86,25 +78,25 @@ void UIStaticBitmap::Slot28(int x, int y) {
 // OFFSET: 0x0085FA80
 // FUNCTION: fn_10880
 void UIStaticBitmap::ResetCursor(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->ResetCursor(Add(x, this->geometry.x), Add(y, this->geometry.y));
+  static_cast<UIWindow*>(this->parent)->ResetCursor((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085F000
 // FUNCTION: fn_10854
 void UIStaticBitmap::Slot31(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->Slot31(Add(x, this->geometry.x), Add(y, this->geometry.y));
+  static_cast<UIWindow*>(this->parent)->Slot31((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085FEA0
 // FUNCTION: fn_10888
 void UIStaticBitmap::Slot32(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->Slot32(Add(x, this->geometry.x), Add(y, this->geometry.y));
+  static_cast<UIWindow*>(this->parent)->Slot32((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085FF00
 // FUNCTION: fn_10890
 void UIStaticBitmap::Slot33(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->Slot33(Add(x, this->geometry.x), Add(y, this->geometry.y));
+  static_cast<UIWindow*>(this->parent)->Slot33((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x00860010
