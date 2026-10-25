@@ -7,11 +7,11 @@
 #include <cstring>
 
 // OFFSET: 0x0084ED30
+// FUNCTION: fn_10652
 UIBmpTextButton::UIBmpTextButton(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls) {
 }
 
 // OFFSET: 0x00852360
-// FUNCTION: fn_10708
 UIBmpTextButton::~UIBmpTextButton() = default;
 
 // OFFSET: 0x007C2340

@@ -3,8 +3,7 @@
 #include "Resource/ResourceMgr.h"
 #include "UI/Lists/UIScrollBarNavi.h"
 
-// OFFSET: 0x00885EE0
-// FUNCTION: fn_11320
+// INLINED
 UIScrollBar_Navi::UIScrollBar_Navi(UIWindowContext& windows, FrameFocus& focus, ResourceMgr& resources)
     : UIScrollBar(windows, focus, resources), m_resources(&resources) {
   this->arrowLength = 7;
@@ -12,7 +11,6 @@ UIScrollBar_Navi::UIScrollBar_Navi(UIWindowContext& windows, FrameFocus& focus, 
 }
 
 // OFFSET: 0x00874080
-// FUNCTION: fn_11176
 UIScrollBar_Navi::~UIScrollBar_Navi() = default;
 
 // OFFSET: 0x0088E930

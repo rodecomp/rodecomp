@@ -4,7 +4,7 @@
 // OFFSET: 0x00ABFB10
 // FUNCTION: fn_17558
 void GroundGeometry::InitializeLighting(const C3dAttr& terrain) {
-  // STATIC: 0x01348128; center, north, south, east, west in that order.
+  // STATIC: 0x01348128
   constexpr int offsets[5][2] = {{0, 0}, {0, -1}, {0, 1}, {1, 0}, {-1, 0}};
   const int columns = 2 * this->width;
   const int rows = 2 * this->height;

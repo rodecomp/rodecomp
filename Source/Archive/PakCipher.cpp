@@ -64,6 +64,7 @@ namespace myGPack {
       std::memcpy(block, result, sizeof(result));
     }
 
+    // INLINED
     std::uint8_t SubstituteLastByte(std::uint8_t value) {
       switch (value) {
       case 0x00:
@@ -106,9 +107,8 @@ namespace myGPack {
   }
 
   // OFFSET: 0x00AE8460
-  // FUNCTION: fn_18096
   // OFFSET: 0x00AE92F0
-  // FUNCTION: fn_18105
+  // FUNCTION: fn_18096
   PakCipher::PakCipher(const std::uint8_t* key) {
     (void)key;
     std::memset(this->m_roundKeys, 0, sizeof(this->m_roundKeys));

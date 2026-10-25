@@ -23,8 +23,7 @@ int ShortcutBindings::Rotate(int index, int bank) const {
   return value < 36 ? value : value - 36;
 }
 
-// OFFSET: 0x0093B450
-// FUNCTION: fn_12760
+// INLINED
 void ShortcutBindings::Refresh(NormalItemSlot** slots, NormalItemSlot** itemSlots) {
   for (int index = 0; index < 36; ++index) {
     const int source = this->Rotate(index, this->mode);

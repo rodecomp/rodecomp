@@ -14,7 +14,6 @@ struct SpriteDrawingPolicy {
   bool& helmRobe;
 
   bool DrawOnTop() const;
-
   bool SetRobe(int robe);
 };
 

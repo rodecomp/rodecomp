@@ -2,6 +2,7 @@
 #include "Utility/Threading/NSyncObject.h"
 
 // OFFSET: 0x00736340
+// FUNCTION: fn_07619
 NMessageQueue::NMessageQueue() : m_semaphore(nullptr), m_enabled(false) {
   InitializeCriticalSection(&this->m_criticalSection);
 
@@ -12,9 +13,8 @@ NMessageQueue::NMessageQueue() : m_semaphore(nullptr), m_enabled(false) {
 }
 
 // OFFSET: 0x00736460
-// FUNCTION: fn_07620
 // OFFSET: 0x007364F0
-// FUNCTION: fn_07621
+// FUNCTION: fn_07620
 NMessageQueue::~NMessageQueue() {
   if (this->m_semaphore) {
     CloseHandle(this->m_semaphore);

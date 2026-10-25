@@ -7,6 +7,7 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   unsigned Component(unsigned pixel, DWORD mask, const DeviceOwnerDX7::Channel& channel) {
     return ((pixel & mask) >> (channel.shift & 31)) << (channel.expansion & 31);
   }

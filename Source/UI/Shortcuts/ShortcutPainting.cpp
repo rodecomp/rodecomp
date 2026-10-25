@@ -11,18 +11,19 @@
 namespace {
   constexpr char prefix[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA";
 
+  // INLINED
   CBitmapRes* Load(ResourceMgr& resources, const char* tail) {
     char path[200];
     std::sprintf(path, "%s%s", prefix, tail);
     return static_cast<CBitmapRes*>(resources.Load(path));
   }
 
+  // INLINED
   void Bitmap(UIWindow& window, CBitmapRes* image, int x, int y, bool transparent) {
     window.DrawBitmap(x, y, image ? &image->image : nullptr, transparent);
   }
 
   // OFFSET: 0x00A86200
-  // FUNCTION: fn_17019
   void Count(UIWindow& window, FontCache& fonts, const TextLocale& locale, int right, int y, int value) {
     char text[16];
     std::sprintf(text, "%d", value);

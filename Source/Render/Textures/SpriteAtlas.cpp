@@ -7,9 +7,11 @@
 #include <timeapi.h>
 
 namespace {
-  // STATIC: 0x010DD520 / 0x010DD524
+  // STATIC: 0x010DD520
+  // STATIC: 0x010DD524
   constexpr unsigned dimensions[5] = {32, 64, 128, 256, 512};
 
+  // INLINED
   unsigned Category(int dimension) {
     if (dimension > 256) {
       return 4;
@@ -31,8 +33,7 @@ namespace {
   }
 }
 
-// OFFSET: 0x00560A40
-// FUNCTION: fn_02161
+// INLINED
 SpriteAtlas::SpriteAtlas() : m_classes{} {
 }
 

@@ -181,9 +181,7 @@ void ChatInputFocus::Toggle() {
   }
 }
 
-// OFFSET: 0x00AA4730
-// FUNCTION: fn_17222
-
+// INLINED
 void ChatInputFocus::DismissOutside(ChatSuggestions& suggestions, UIWindow* companion, int button, int x, int y) {
   if (button != 1 || !suggestions.Visible()) {
     return;

@@ -19,9 +19,8 @@ CConnection::CConnection(ConnectionContext& context) : m_socket(INVALID_SOCKET),
 }
 
 // OFFSET: 0x00C7C280
-// FUNCTION: fn_20384
 // OFFSET: 0x00C7C2F0
-// FUNCTION: fn_20385
+// FUNCTION: fn_20384
 CConnection::~CConnection() = default;
 
 // OFFSET: 0x00C7C1C0
@@ -30,7 +29,6 @@ CRagConnection::CRagConnection(ConnectionContext& context) : CConnection(context
 }
 
 // OFFSET: 0x00C7C370
-// FUNCTION: fn_20386
 CRagConnection::~CRagConnection() = default;
 
 // OFFSET: 0x00C7C4D0

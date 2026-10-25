@@ -6,12 +6,11 @@
 #include <windows.h>
 
 // OFFSET: 0x00749580
-// FUNCTION: fn_07847
+// FUNCTION: fn_07861
 CBitmapRes::CBitmapRes(BitmapResourceContext& context) : m_context(&context) {
 }
 
-// OFFSET: 0x007498B0
-// FUNCTION: fn_07851
+// INLINED
 CBitmapRes::~CBitmapRes() = default;
 
 // OFFSET: 0x00749580

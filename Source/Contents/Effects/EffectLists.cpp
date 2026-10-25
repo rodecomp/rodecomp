@@ -1,4 +1,5 @@
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EffectTypes.h"
 
 // OFFSET: 0x00B25750
 // FUNCTION: fn_18783
@@ -32,6 +33,7 @@ CEffect* EffectLists::Find(int actor, int instance, int id) const {
   return nullptr;
 }
 
+// INLINED
 void EffectLists::RemoveActive(CEffect* effect) {
   const auto found = this->active.find(static_cast<int>(effect->actor));
 
@@ -104,11 +106,11 @@ void EffectLists::Add(int actor, CEffect* effect) {
   this->active[actor].push_back(effect);
 
   switch (effect->id) {
-  case 974:
-  case 1025:
-  case 1039:
-  case 1073:
-  case 1412:
+  case EF_EMITTER:
+  case EF_MAGIC_FLOOR:
+  case EF_EVILS_PAW:
+  case EF_ANIMATED_EMITTER:
+  case EF_NEW_RANGEDATTACK:
   case 2343:
     this->indexed[effect->id].push_back(effect);
     break;

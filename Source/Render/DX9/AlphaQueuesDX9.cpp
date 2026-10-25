@@ -7,6 +7,7 @@
 #include <cstdint>
 
 namespace {
+  // INLINED
   bool Before(const DepthPrimitive& left, const DepthPrimitive& right) {
     if (left.depth < right.depth) {
       return true;
@@ -19,6 +20,7 @@ namespace {
     return left.depth == right.depth && reinterpret_cast<std::uintptr_t>(left.primitive) < reinterpret_cast<std::uintptr_t>(right.primitive);
   }
 
+  // INLINED
   bool WritesDepth(const RenderCommand& command) {
     return (command.unknown_0014 & 0xFFu) != 0 && (command.unknown_0014 & 0xFF00u) != 0;
   }

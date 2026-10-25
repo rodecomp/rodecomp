@@ -3,8 +3,7 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 
-// OFFSET: 0x00ADC150
-// FUNCTION: fn_17928
+// INLINED
 void CameraState::Reset() {
   this->yaw = this->desiredYaw = 0;
   this->distance = this->desiredDistance = 300;

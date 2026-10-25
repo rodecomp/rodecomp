@@ -4,6 +4,7 @@
 #include "UI/Cooldowns/CooldownDrawing.h"
 
 namespace {
+  // INLINED
   void Submit(std::vector<RenderCommand*>& commands, RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd) {
     for (RenderCommand* command : commands) {
       queues.Submit(command, 513, depthAlpha, depthStart, depthEnd);

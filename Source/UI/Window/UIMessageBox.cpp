@@ -27,14 +27,14 @@ namespace {
 }
 
 // OFFSET: 0x008A3FC0
+// FUNCTION: fn_11663
 UIMessageBox::UIMessageBox(UIWindowContext& windows, UIFrameContext& frames, UIMessageBoxContext& dialog)
     : UIFrameWnd(windows, frames, 0), counting(0), protectedMessage(0), m_dialog(&dialog) {
 }
 
 // OFFSET: 0x008A5220
-// FUNCTION: fn_11680
 // OFFSET: 0x008A64E0
-// FUNCTION: fn_11698
+// FUNCTION: fn_11680
 UIMessageBox::~UIMessageBox() = default;
 
 // OFFSET: 0x008B8E60
@@ -88,12 +88,14 @@ void UIMessageBox::Paint() {
 void UIMessageBox::Slot18() {
 }
 
+// INLINED
 void UIMessageBox::FormatCountdown() {
   char text[512];
   std::sprintf(text, this->format.c_str(), this->remaining);
   this->messageText = text;
 }
 
+// INLINED
 void UIMessageBox::AddButton(const char* name, int id, int x, int y) {
   auto& controls = this->m_dialog->text.buttons;
   auto* button = new UIBitmapButton(*this->m_context, controls);

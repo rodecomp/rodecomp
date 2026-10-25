@@ -4,15 +4,17 @@
 #include "Client/Browser/BrowserFactory.h"
 #include "UI/Chat/ChatNotifications.h"
 
-#include <new>
+namespace {
+  constexpr unsigned maximumBrowserCount = 5;
+}
 
 // OFFSET: 0x00A8C840
 // FUNCTION: fn_17136
 CWebBrowser* BrowserFactory::Create(int width, int height) {
-  if (this->registry.browsers.size() >= 5) {
+  if (this->registry.browsers.size() >= maximumBrowserCount) {
     this->notifications.Refresh();
-    const char* message = LookupMessage(1578, this->languagePrefix, this->serviceType, this->language);
-    this->notifications.Text(message, 255, nullptr, 0, false);
+    const char* message = LookupMessage(MessageId::MSI_FAILED_ADD_TAB, this->languagePrefix, this->serviceType, this->language);
+    this->notifications.Text(message, RGB(255, 0, 0), nullptr, 0, false);
 
     return nullptr;
   }

@@ -13,11 +13,13 @@ namespace {
     return id - 8000u <= 60 || id - 8200u <= 41 || id - 8400u <= 57;
   }
 
+  // INLINED
   void Refresh(UIWindow& window) {
     window.SendMsg(nullptr, 23, 0, 0, 0, 0);
     window.Invalidate();
   }
 
+  // INLINED
   void RemoveFirst(ShortcutCooldowns& cooldowns, int slot) {
     for (ShortcutCooldownRecord& record : cooldowns.records) {
       const auto value = std::find_if(record.main.begin(), record.main.end(), [&](const CooldownState& state) { return state.slot == slot; });

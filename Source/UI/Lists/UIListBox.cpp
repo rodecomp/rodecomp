@@ -30,7 +30,7 @@ UIListBox::UIListBox(UIWindowContext& windows, UIListBoxContext& list)
 }
 
 // OFFSET: 0x00873690
-// FUNCTION: fn_11156
+// FUNCTION: fn_11105
 UIListBox::~UIListBox() = default;
 
 // OFFSET: 0x0087B640

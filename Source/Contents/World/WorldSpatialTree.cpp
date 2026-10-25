@@ -219,8 +219,8 @@ void WorldSpatialTree::RefreshBounds(int depth) {
 }
 
 // OFFSET: 0x00AC84F0
-// FUNCTION: fn_17673
 // OFFSET: 0x00AC86B0
+// FUNCTION: fn_17673
 // FUNCTION: fn_17676
 void WorldSpatialTree::InsertModel(C3dActor& model, int depth) {
   if (depth == 5) {

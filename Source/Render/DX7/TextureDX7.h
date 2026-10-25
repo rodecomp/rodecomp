@@ -39,6 +39,7 @@ public:
   bool CopyTexture(CTexture* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, int x, int y, int width, int height) override;
   bool Create(int width, int height, int format) override;
   bool CopySurface(IDirectDrawSurface7* source, const RECT* rectangle);
+  // INLINED
   IDirectDrawSurface7* NativeSurface() const {
     return this->m_surface;
   }

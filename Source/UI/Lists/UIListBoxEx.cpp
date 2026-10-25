@@ -25,7 +25,6 @@ UIListBoxEx::UIListBoxEx(UIWindowContext& windows, UIListBoxContext& list)
 }
 
 // OFFSET: 0x00873710
-// FUNCTION: fn_11157
 UIListBoxEx::~UIListBoxEx() = default;
 
 // OFFSET: 0x0087B690
@@ -116,6 +115,7 @@ void UIListBoxEx::Refresh() {
   this->verticalBar->Invalidate();
 }
 
+// INLINED
 int UIListBoxEx::LineAt(int x, int y) const {
   if (x < 0 || y < 0 || x >= this->geometry.width || y >= this->geometry.height) {
     return -1;

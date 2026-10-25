@@ -4,6 +4,7 @@
 #include <bit>
 
 namespace {
+  // INLINED
   float Horizontal(float x, const float* row) {
     return (x * row[0] + row[1] * 0.0f) + row[2];
   }

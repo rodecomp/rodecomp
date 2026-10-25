@@ -8,6 +8,7 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   std::uint16_t Convert16(std::uint32_t color, D3DFORMAT format) {
     switch (format) {
     case D3DFMT_R5G6B5:
@@ -21,6 +22,7 @@ namespace {
     }
   }
 
+  // INLINED
   UINT RoundUpPowerOfTwo(UINT value) {
     --value;
     value |= value >> 1;
@@ -34,6 +36,7 @@ namespace {
 }
 
 // OFFSET: 0x00572500
+// FUNCTION: fn_02474
 CTextureDX9::CTextureDX9(TextureDX9Context& context)
     : m_context(&context), m_renderTargetUsage(false), m_dynamic(false), m_allowDynamic(false), m_renderTarget(false), m_texture(nullptr), m_surface(nullptr),
       m_description{} {
@@ -85,8 +88,7 @@ CTextureDX9::CTextureDX9(TextureDX9Context& context, IDirect3DTexture9* texture)
   }
 }
 
-// OFFSET: 0x005728A0
-// FUNCTION: fn_02477
+// INLINED
 CTextureDX9::~CTextureDX9() {
   if (this->m_surface) {
     this->m_surface->Release();
@@ -208,9 +210,8 @@ SurfaceLock CTextureDX9::Lock() {
 }
 
 // OFFSET: 0x00572D50
-// FUNCTION: fn_02482
 // OFFSET: 0x005737A0
-// FUNCTION: fn_02492
+// FUNCTION: fn_02482
 void CTextureDX9::Filter() {
   if (!this->m_dynamic && !this->m_renderTarget && this->m_texture && this->m_texture->GetLevelCount() > 1) {
     this->m_context->d3dx->filterTexture(this->m_texture, nullptr, UINT(-1), DWORD(-1));
@@ -463,7 +464,6 @@ bool CTextureDX9::CopyTexture(CTexture* source, int sourceX, int sourceY, int so
 }
 
 // OFFSET: 0x00544410
-// FUNCTION: fn_01817
 void CTextureDX9::Draw(int x, int y, int width, int height, std::uint32_t color) {
   this->DrawTo(
     *this->m_context->primitives, *this->m_context->queues, x, y, width, height, color, this->m_context->depthAlpha, this->m_context->depthStart,
@@ -472,7 +472,6 @@ void CTextureDX9::Draw(int x, int y, int width, int height, std::uint32_t color)
 }
 
 // OFFSET: 0x00544610
-// FUNCTION: fn_01818
 void CTextureDX9::Stretch(int x, int y, int width, int height) {
   this->StretchTo(
     *this->m_context->primitives, *this->m_context->queues, x, y, width, height, this->m_context->depthAlpha, this->m_context->depthStart,

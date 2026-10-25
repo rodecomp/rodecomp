@@ -1,12 +1,10 @@
 #include "UI/Window/UIControl.h"
 
-// OFFSET: 0x00AA27B0
-// FUNCTION: fn_17217
+// INLINED
 CUIControl::CUIControl(UIWindowContext& context) : UIWindow(context, 0), hitEnabled(1) {
 }
 
 // OFFSET: 0x009C08C0
-// FUNCTION: fn_13979
 CUIControl::~CUIControl() = default;
 
 // OFFSET: 0x009D5490

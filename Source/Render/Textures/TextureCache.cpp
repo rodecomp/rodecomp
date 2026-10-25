@@ -8,6 +8,7 @@
 #include <windows.h>
 #include <timeapi.h>
 
+// INLINED
 bool TextureNameLess::operator()(const char* left, const char* right) const {
   return std::strcmp(left, right) < 0;
 }

@@ -1,7 +1,9 @@
 #ifndef RAGNAROK_SOURCE_CLIENT_BROWSER_WEBEVENTRECEIVER_H
 #define RAGNAROK_SOURCE_CLIENT_BROWSER_WEBEVENTRECEIVER_H
 
-#include "Client/Browser/BrowserInterface.h"
+#include <windows.h>
+#include <ole2.h>
+#include <exdisp.h>
 
 struct BrowserRegistry;
 

@@ -1,8 +1,10 @@
 #ifndef RAGNAROK_SOURCE_CLIENT_BROWSER_WEBBROWSER_H
 #define RAGNAROK_SOURCE_CLIENT_BROWSER_WEBBROWSER_H
 
-#include "Client/Browser/BrowserInterface.h"
-
+#include <windows.h>
+#include <ole2.h>
+#include <exdisp.h>
+#include <string>
 #include <cstddef>
 
 class BrowserClientSite;

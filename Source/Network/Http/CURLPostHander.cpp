@@ -16,9 +16,8 @@ CCURLPostHander::CCURLPostHander(std::string url)
 }
 
 // OFFSET: 0x005E9710
-// FUNCTION: fn_03956
 // OFFSET: 0x005E97D0
-// FUNCTION: fn_03957
+// FUNCTION: fn_03956
 CCURLPostHander::~CCURLPostHander() {
   if (this->m_easy) {
     g_curlMgr->easyCleanup(this->m_easy);

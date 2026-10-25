@@ -13,11 +13,13 @@ namespace {
     float values[4][3]{};
   };
 
+  // INLINED
   float InverseLength(float squared) {
     const float length = std::sqrt(squared);
     return 1.0f / length;
   }
 
+  // INLINED
   void Normalize(float* vector, bool yFirst) {
     const float first = yFirst ? vector[1] * vector[1] + vector[0] * vector[0] : vector[0] * vector[0] + vector[1] * vector[1];
     const float inverse = InverseLength(first + vector[2] * vector[2]);
@@ -26,12 +28,14 @@ namespace {
     vector[2] = inverse * vector[2];
   }
 
+  // INLINED
   void Add(float* result, const float* value) {
     result[0] = result[0] + value[0];
     result[1] = result[1] + value[1];
     result[2] = result[2] + value[2];
   }
 
+  // INLINED
   std::uint32_t
   LitColor(const float* normal, bool normalize, bool side, const float* direction, const float* diffuse, const float* ambient, const GroundQuad* source) {
     float vector[3] = {normal[0], normal[1], normal[2]};
@@ -64,8 +68,7 @@ namespace {
 GroundGeometry::GroundGeometry() : cellSize(10.0f), loaded(0) {
 }
 
-// OFFSET: 0x00ABDD80
-// FUNCTION: fn_17554
+// INLINED
 GroundGeometry::~GroundGeometry() {
   this->ClearLightmaps();
 }

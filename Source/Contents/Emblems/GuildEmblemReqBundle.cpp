@@ -6,10 +6,10 @@
 #include <timeapi.h>
 
 // OFFSET: 0x0065C5F0
+// FUNCTION: fn_05150
 CGuildEmblemReqBundle::CGuildEmblemReqBundle() = default;
 
-// OFFSET: 0x0065C8C0
-// FUNCTION: fn_05153
+// INLINED
 CGuildEmblemReqBundle::~CGuildEmblemReqBundle() = default;
 
 // OFFSET: 0x0065CA90

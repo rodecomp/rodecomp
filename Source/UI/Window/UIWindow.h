@@ -108,6 +108,7 @@ public:
   void InvalidateChildren();
   bool Contains(const UIWindow* window) const;
   UIWindow* FindUid(std::uint32_t uid);
+  // INLINED
   std::uint32_t Uid() const {
     return this->m_uid;
   }
@@ -123,9 +124,11 @@ public:
   );
   void FlushPrimitives(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
 
+  // INLINED
   bool HasTextBackground() const {
     return this->unknown_0044 != 0;
   }
+  // INLINED
   std::uint32_t TextBackground() const {
     return this->unknown_0048;
   }

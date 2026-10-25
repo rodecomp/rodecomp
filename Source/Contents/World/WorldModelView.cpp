@@ -7,10 +7,12 @@
 #include <cmath>
 
 namespace {
+  // INLINED
   float Absolute(float value) {
     return std::fabs(value);
   }
 
+  // INLINED
   void IncludeRectangle(const int* rectangle, int* output) {
     if (output[0] > rectangle[0]) {
       output[0] = rectangle[0];
@@ -81,8 +83,7 @@ int ModelViewPlanes::ClassifyOriented(const OrientedBounds& bounds) const {
   return clipped ? 2 : 1;
 }
 
-// OFFSET: 0x00ADC1E0
-// FUNCTION: fn_17930
+// INLINED
 int ClassifyModelView(const OrientedBounds& bounds, const ModelViewPlanes& planes) {
   bool clipped = false;
 
@@ -111,6 +112,7 @@ int ClassifyModelView(const OrientedBounds& bounds, const ModelViewPlanes& plane
   return clipped ? 2 : 1;
 }
 
+// INLINED
 void DrawWorldModelLeaves(
   std::list<WorldSpatialTree*>& clipped, std::list<WorldSpatialTree*>& inside, const ModelViewPlanes& planes, const float* matrix, unsigned frame, int updates,
   GroundGeometry& ground, ModelRenderContext& models, GroundLightingContext& lighting, int* visibleRectangle

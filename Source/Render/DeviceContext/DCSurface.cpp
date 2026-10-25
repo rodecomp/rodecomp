@@ -77,9 +77,8 @@ CDCSurface::CDCSurface(std::shared_ptr<CSurface> surface) : m_surface(std::move(
 }
 
 // OFFSET: 0x005490D0
-// FUNCTION: fn_01865
 // OFFSET: 0x00549180
-// FUNCTION: fn_01868
+// FUNCTION: fn_01865
 CDCSurface::~CDCSurface() = default;
 
 // OFFSET: 0x005492C0

@@ -1,8 +1,10 @@
 #include "Client/ClientOptions.h"
 #include "Client/Mode/ModeDragState.h"
+#include "Client/Mode/ModeEvents.h"
 #include "UI/Shortcuts/ShortcutActivation.h"
 #include "UI/Shortcuts/ShortcutBindings.h"
 #include "UI/Shortcuts/ShortcutControlEvents.h"
+#include "UI/Shortcuts/ShortcutCooldowns.h"
 #include "UI/Shortcuts/ShortcutDetails.h"
 #include "UI/Shortcuts/ShortcutDrop.h"
 #include "UI/Shortcuts/ShortcutLayout.h"
@@ -10,12 +12,21 @@
 #include "UI/Shortcuts/ShortcutPress.h"
 #include "UI/Shortcuts/ShortcutTooltip.h"
 #include "UI/Shortcuts/ShortcutUse.h"
+#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UICheckBox.h"
 #include "UI/Layout/WindowSnapping.h"
+#include "UI/Window/UIWindow.h"
+
+#include <cstdio>
+#include <cstdlib>
 
 namespace {}
 
 // OFFSET: 0x009122B0
+// FUNCTION: fn_12528
 UIShortCutWnd::UIShortCutWnd(UIWindowContext& windows, UIFrameContext& frames, ShortcutWindowContext& shortcuts)
     : UIFrameWnd(windows, frames, 0), m_shortcuts(&shortcuts) {
   this->m_controls.decrease = nullptr;
@@ -23,7 +34,6 @@ UIShortCutWnd::UIShortCutWnd(UIWindowContext& windows, UIFrameContext& frames, S
 }
 
 // OFFSET: 0x00915D90
-// FUNCTION: fn_12577
 UIShortCutWnd::~UIShortCutWnd() = default;
 
 // OFFSET: 0x0091E800
@@ -45,7 +55,6 @@ void UIShortCutWnd::Move(int x, int y) {
 }
 
 // OFFSET: 0x00917640
-// FUNCTION: fn_12589
 void UIShortCutWnd::Slot10(int x, int y, std::intptr_t value) {
   this->m_shortcuts->drop.Drop(*this, this->m_grid, x, y, *reinterpret_cast<const ModeDragState*>(value));
 }
@@ -80,7 +89,6 @@ void UIShortCutWnd::Show(int visible) {
 }
 
 // OFFSET: 0x0092A190
-// FUNCTION: fn_12654
 void UIShortCutWnd::Slot15(int, int) {
   this->m_controls =
     ShortcutControls::Create(*this, *this->m_context, this->m_shortcuts->buttons, this->m_shortcuts->options.Get(10), this->m_slots, this->m_itemSlots);
@@ -96,19 +104,16 @@ void UIShortCutWnd::Slot19() {
 }
 
 // OFFSET: 0x0092F8E0
-// FUNCTION: fn_12680
 void UIShortCutWnd::Paint() {
   this->m_shortcuts->painting.Paint(*this, this->m_grid, this->m_slots, this->m_itemSlots);
 }
 
 // OFFSET: 0x009310E0
-// FUNCTION: fn_12699
 void UIShortCutWnd::Slot25(int x, int y) {
   this->m_shortcuts->press.Press(*this, this->m_grid, x, y, this->m_slots, this->m_itemSlots);
 }
 
 // OFFSET: 0x00930900
-// FUNCTION: fn_12689
 void UIShortCutWnd::Slot26(int x, int y) {
   ActivateShortcut(
     *this, this->m_grid, x, y, this->m_shortcuts->itemSlotActive, this->m_shortcuts->currentRow, this->m_slots, this->m_shortcuts->automatic,
@@ -117,7 +122,6 @@ void UIShortCutWnd::Slot26(int x, int y) {
 }
 
 // OFFSET: 0x00932050
-// FUNCTION: fn_12711
 void UIShortCutWnd::Slot28(int x, int y) {
   this->m_shortcuts->tooltip.Hover(*this, this->m_grid, x, y, this->m_slots, this->m_itemSlots);
 }
@@ -130,9 +134,213 @@ void UIShortCutWnd::Slot31(int x, int y) {
 }
 
 // OFFSET: 0x009332D0
-// FUNCTION: fn_12724
 void UIShortCutWnd::Slot32(int x, int y) {
   this->m_shortcuts->details.Open(*this, this->m_grid, x, y, this->m_slots, this->m_itemSlots);
+}
+
+// INLINED
+inline void ShortcutControlEvents::Click(int id) {
+  switch (id) {
+  case 201:
+    this->visibility.Show(0);
+    return;
+
+  case 216:
+    if (this->window.geometry.visible == 0) {
+      this->visibility.Show(1);
+      return;
+    }
+
+    this->grid.rows = this->grid.rows + 1;
+
+    if (this->grid.rows > 4) {
+      this->grid.rows = 1;
+      this->visibility.Show(0);
+    }
+
+    this->window.SendMsg(nullptr, 14, 0, 0, 0, 0);
+    return;
+
+  case 217:
+    if (this->grid.rows > 1) {
+      --this->grid.rows;
+    }
+
+    this->window.SendMsg(nullptr, 14, 0, 0, 0, 0);
+    return;
+
+  case 549: {
+    const bool checked = this->options.Get(10) == 0;
+    this->options.Set(10, checked ? 1 : 0, 0);
+    this->controls.bank->geometry.unknown_0030 = checked ? 1 : 0;
+    this->controls.bank->Invalidate();
+
+    for (ShortcutCooldownRecord& record : this->cooldowns.records) {
+      record.main.clear();
+    }
+
+    this->window.SendMsg(nullptr, 23, 0, 0, 0, 0);
+    return;
+  }
+
+  case 588:
+  case 589: {
+    this->itemSlotActive = id == 588;
+    const bool active = this->itemSlotActive;
+
+    this->controls.showItems->Enable(active ? 0 : 1);
+    this->controls.showItems->SetDisabled(active ? 1 : 0);
+    this->controls.showItems->Invalidate();
+
+    this->controls.hideItems->Enable(active ? 1 : 0);
+    this->controls.hideItems->SetDisabled(active ? 0 : 1);
+    this->controls.hideItems->Invalidate();
+
+    this->window.SendMsg(nullptr, 14, 0, 0, 0, 0);
+    return;
+  }
+
+  default:
+    return;
+  }
+}
+
+// INLINED
+inline void ShortcutLayout::PlaceRowButtons() {
+  this->decrease.Move(this->window.geometry.width - this->decrease.geometry.width - 2, this->grid.rows * 33 - 28);
+  this->increase.Move(this->window.geometry.width - this->increase.geometry.width - 2, this->grid.rows * 33 - 13);
+  this->decrease.Enable(this->grid.rows == 1 ? 0 : 1);
+  this->increase.Enable(1);
+  this->increase.SetDisabled(this->grid.rows == 4 ? 1 : 0);
+  this->increase.Invalidate();
+}
+
+// INLINED
+inline void ShortcutLayout::ResizeRows() {
+  const int height = (this->itemSlotActive ? 43 : 10) + this->grid.rows * 33;
+  if (height == this->window.geometry.height) {
+    return;
+  }
+
+  this->window.Resize(this->window.geometry.width, height);
+
+  this->decrease.Move(this->window.geometry.width - this->decrease.geometry.width - 2, this->grid.rows * 33 - 28);
+  this->increase.Move(this->window.geometry.width - this->increase.geometry.width - 2, this->grid.rows * 33 - 13);
+  this->showItems.Move(247, height - 10);
+  this->hideItems.Move(247, height - 10);
+  this->decrease.Enable(this->grid.rows == 1 ? 0 : 1);
+  this->increase.Enable(1);
+  this->increase.SetDisabled(this->grid.rows == 4 ? 1 : 0);
+  this->increase.Invalidate();
+  this->window.Slot11();
+}
+
+// INLINED
+inline void ShortcutLayout::Restore(NormalItemSlotWindow* value) {
+  this->saved = value;
+  if (!value->IsValid(this->screenWidth, this->screenHeight, this->itemSlotActive)) {
+    value->Reset();
+  }
+
+  const int height = value->height;
+  this->window.Resize(this->window.geometry.width, height);
+  const int extent = this->itemSlotActive ? height - 43 : height;
+  this->showItems.Move(247, height - 10);
+  this->hideItems.Move(247, height - 10);
+  this->showItems.Enable(this->itemSlotActive ? 0 : 1);
+  this->showItems.SetDisabled(this->itemSlotActive ? 1 : 0);
+  this->showItems.Invalidate();
+  this->hideItems.Enable(this->itemSlotActive ? 1 : 0);
+  this->hideItems.SetDisabled(this->itemSlotActive ? 0 : 1);
+  this->hideItems.Invalidate();
+  this->grid.rows = extent / 33;
+  this->PlaceRowButtons();
+  this->window.SendMsg(nullptr, 23, 0, 0, 0, 0);
+  this->window.Move(value->x, value->y);
+}
+
+// OFFSET: 0x00940FE0
+inline void ShortcutLayout::Persist() {
+  if (!this->saved) {
+    return;
+  }
+
+  this->saved->x = this->window.geometry.x;
+  this->saved->y = this->window.geometry.y;
+  this->saved->width = this->window.geometry.width;
+  this->saved->height = this->window.geometry.height;
+}
+
+// INLINED
+inline void ShortcutUse::Use(const NormalItemSlot& slot) {
+  if (this->options.Get(5) > 0 || slot.itemId == 0) {
+    return;
+  }
+
+  if (slot.unknown_0000 != 0) {
+    CSkillInfo skill = this->skills.Lookup(slot.itemId);
+    if (skill.MatchesShortcut(&slot)) {
+      int level = slot.unknown_0005;
+      if ((skill.id == 6579 || skill.id == 6580) && skill.level < level) {
+        level = skill.level;
+      }
+
+      this->mode->SendModeMessage(113, reinterpret_cast<std::intptr_t>(&skill), level, 0, 0);
+    }
+
+    return;
+  }
+
+  ItemInfo item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
+  if (item.unknown_0000[1] == 0) {
+    return;
+  }
+
+  ModeEvents* mode = this->mode;
+
+  const auto use = [&]() { mode->SendModeMessage(27, item.unknown_0000[1], 0, 0, 0); };
+
+  switch (item.unknown_0000[0]) {
+  case 0:
+  case 1:
+  case 2:
+    if (std::atoi(item.itemId.c_str()) != 12802 || this->dialogs.Confirm(this->naming.Message(2373), 2, 0, 0, "Message", 280, 120) != 188) {
+      use();
+    }
+
+    break;
+
+  case 10:
+  case 16:
+  case 17:
+  case 19:
+    if (item.unknown_0000[3] == 0x8000) {
+      mode->SendModeMessage(87, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
+    }
+
+    break;
+
+  case 18:
+    if (this->itemConfirmationState >= 0) {
+      const std::string name = this->naming.DisplayName(item, 0);
+      char text[4096];
+
+      _snprintf_s(text, sizeof(text), _TRUNCATE, this->naming.Message(1226), name.c_str());
+
+      if (this->dialogs.Confirm(text, 2, 0, 0, "Message", 280, 120) == 187) {
+        use();
+      }
+    }
+
+    break;
+
+  default:
+    if (item.unknown_0000[2] != 0 && item.unknown_0000[3] == 0 && item.identified != 0) {
+      mode->SendModeMessage(19, item.unknown_0000[1], item.unknown_0000[2], 0, 0);
+    }
+
+    break;
+  }
 }
 
 // OFFSET: 0x0093B450

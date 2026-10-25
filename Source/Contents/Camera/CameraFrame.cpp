@@ -2,8 +2,6 @@
 #include "Contents/Ground/TerrainHeight.h"
 #include "Render/Renderer.h"
 
-#include <bit>
-
 // OFFSET: 0x00ADC150
 // FUNCTION: fn_17928
 void ResetCamera(CameraState& camera, CameraFrame& frame) {
@@ -13,8 +11,7 @@ void ResetCamera(CameraState& camera, CameraFrame& frame) {
   frame.up[2] = 0;
 }
 
-// OFFSET: 0x00ADBF60
-// FUNCTION: fn_17927
+// INLINED
 void CameraFrame::Build(const CameraState& camera, const TerrainHeight& terrain) {
   constexpr float pi = 3.141592f;
   AffineMatrix orbit;

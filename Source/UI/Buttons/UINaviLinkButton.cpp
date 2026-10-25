@@ -2,12 +2,12 @@
 #include "UI/Buttons/UINaviLinkButton.h"
 
 // OFFSET: 0x0086DF60
+// FUNCTION: fn_11062
 UINaviLinkButton::UINaviLinkButton(UIWindowContext& windows, UIButtonContext& buttons, NavigationDestination& navigation)
     : UITextButton(windows, buttons), m_navigation(&navigation) {
 }
 
 // OFFSET: 0x00873A90
-// FUNCTION: fn_11163
 UINaviLinkButton::~UINaviLinkButton() = default;
 
 // OFFSET: 0x00893050

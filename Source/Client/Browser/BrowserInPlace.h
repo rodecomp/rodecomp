@@ -6,6 +6,7 @@
 
 class BrowserInPlaceFrame final : public IOleInPlaceFrame {
 public:
+  // INLINED
   BrowserInPlaceFrame(IUnknown& site, HWND const& window) : m_site(site), m_window(window) {
   }
 
@@ -32,6 +33,7 @@ private:
 
 class BrowserInPlaceSite final : public IOleInPlaceSite {
 public:
+  // INLINED
   BrowserInPlaceSite(IUnknown& site, HWND const& window, IUnknown* const& browser) : m_site(site), m_window(window), m_browser(browser), m_frame(site, window) {
   }
 

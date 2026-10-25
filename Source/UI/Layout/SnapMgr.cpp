@@ -17,10 +17,12 @@ int g_snapDirection = 1;
 SnapObject* g_snapBoundary = nullptr;
 
 namespace {
+  // INLINED
   int Magnitude(int value) {
     return value < 0 ? (0 - value) : value;
   }
 
+  // FUNCTION: fn_09714
   bool ContainsUpward(SnapObject* object, SnapObject* target) {
     if (object == target) {
       return true;
@@ -42,13 +44,13 @@ CSnapMgr::CSnapMgr() : root(nullptr) {
 }
 
 // OFFSET: 0x007E23D0
-// FUNCTION: fn_09697
 // OFFSET: 0x007E2520
-// FUNCTION: fn_09698
+// FUNCTION: fn_09697
 CSnapMgr::~CSnapMgr() {
   this->Clear();
 }
 
+// INLINED
 SnapObject* CSnapMgr::Find(const UIWindow* window) const {
   for (SnapObject* object : this->objects) {
     if (object->window == window) {
@@ -59,6 +61,7 @@ SnapObject* CSnapMgr::Find(const UIWindow* window) const {
   return nullptr;
 }
 
+// INLINED
 void CSnapMgr::ResetVisited() {
   for (SnapObject* object : this->objects) {
     object->visited = 0;

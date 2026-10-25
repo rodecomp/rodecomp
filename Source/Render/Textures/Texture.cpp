@@ -23,8 +23,8 @@ CTexture::CTexture()
 }
 
 // OFFSET: 0x00572380
-// FUNCTION: fn_02465
 // OFFSET: 0x005723D0
+// FUNCTION: fn_02465
 CTexture::~CTexture() = default;
 
 // OFFSET: 0x00572460
@@ -68,11 +68,13 @@ std::uint32_t CTexture::SetImageSize(std::uint32_t width, std::uint32_t height) 
   return width;
 }
 
+// FUNCTION: fn_02470
 int CTexture::SetName(const char* name) {
   return strncpy_s(this->m_name, sizeof(this->m_name), name, _TRUNCATE);
 }
 
 namespace {
+  // INLINED
   void
   SetQuad(RenderPrimitive* primitive, CTexture* texture, int x, int y, int width, int height, std::uint32_t color, float u0, float v0, float u1, float v1) {
     constexpr float z = 0.00001f;

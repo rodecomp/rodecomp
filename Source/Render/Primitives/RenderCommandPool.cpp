@@ -2,8 +2,7 @@
 
 #include <new>
 
-// OFFSET: 0x00560A40
-// FUNCTION: fn_02161
+// INLINED
 RenderCommandPool::RenderCommandPool() {
   this->m_commands.resize(1024);
   this->m_current = this->m_commands.begin();
@@ -22,8 +21,7 @@ RenderCommand* RenderCommandPool::Acquire() {
   return new (command) RenderCommand;
 }
 
-// OFFSET: 0x0055A360
-// FUNCTION: fn_02079
+// INLINED
 void RenderCommandPool::Rewind() {
   this->m_current = this->m_commands.begin();
 }

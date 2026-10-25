@@ -105,8 +105,7 @@ void ShortcutCooldowns::ApplyStart(
   }
 }
 
-// OFFSET: 0x0093B450
-// FUNCTION: fn_12760
+// INLINED
 bool ShortcutCooldowns::RotateRows(int amount, int bank, int& rotation0, int& rotation1, const CooldownClock& clock) {
   const int rows = amount < 4 ? amount : amount % 4;
   if (rows <= 0) {
@@ -144,8 +143,7 @@ bool ShortcutCooldowns::RotateRows(int amount, int bank, int& rotation0, int& ro
   return true;
 }
 
-// OFFSET: 0x0092F8E0
-// FUNCTION: fn_12680
+// INLINED
 void ShortcutCooldowns::PaintMain(
   const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownDrawing& drawing, const CooldownClock& clock, RenderCommandPool& pool,
   CRenderSystemBase& system
@@ -154,8 +152,7 @@ void ShortcutCooldowns::PaintMain(
   this->Paint(icons, &ShortcutCooldownRecord::main, limit, x, y, drawing, clock, pool, system);
 }
 
-// OFFSET: 0x0092D660
-// FUNCTION: fn_12671
+// INLINED
 void ShortcutCooldowns::PaintAlternate(
   const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownDrawing& drawing, const CooldownClock& clock, RenderCommandPool& pool,
   CRenderSystemBase& system
@@ -163,6 +160,7 @@ void ShortcutCooldowns::PaintAlternate(
   this->Paint(icons, &ShortcutCooldownRecord::alternate, 0, x, y, drawing, clock, pool, system);
 }
 
+// INLINED
 void ShortcutCooldowns::Paint(
   const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing,
   const CooldownClock& clock, RenderCommandPool& pool, CRenderSystemBase& system

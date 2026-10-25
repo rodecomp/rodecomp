@@ -20,12 +20,12 @@ namespace {
 }
 
 // OFFSET: 0x007BAD00
+// FUNCTION: fn_09275
 UIApplyForPartyWnd::UIApplyForPartyWnd(UIWindowContext& windows, UIFrameContext& frames, UIApplyForPartyContext& application)
     : UIFrameWnd(windows, frames, 0), m_application(&application) {
 }
 
 // OFFSET: 0x007BB610
-// FUNCTION: fn_09283
 UIApplyForPartyWnd::~UIApplyForPartyWnd() = default;
 
 // OFFSET: 0x007C2400

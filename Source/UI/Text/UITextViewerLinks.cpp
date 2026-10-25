@@ -48,15 +48,10 @@ std::pair<int, int> UITextViewer::LinkPosition(unsigned position, unsigned added
 }
 
 // OFFSET: 0x008760D0
-// FUNCTION: fn_11205
 // OFFSET: 0x00878750
-// FUNCTION: fn_11212
 // OFFSET: 0x00876700
-// FUNCTION: fn_11206
 // OFFSET: 0x00877B00
-// FUNCTION: fn_11211
 // OFFSET: 0x00877020
-// FUNCTION: fn_11209
 void UITextViewer::AddLinks(const char* text, unsigned addedLines, int kind) {
   auto& owner = this->m_text->list;
   std::string parsed = RemoveTextColors(text, owner.codePage);
@@ -165,6 +160,7 @@ void UITextViewer::AddLinks(const char* text, unsigned addedLines, int kind) {
   }
 }
 
+// INLINED
 void UITextViewer::AppendText(char* text, int width, bool carriageReturns, bool pixels) {
   auto& owner = this->m_text->list;
   std::vector<std::string> wrapped;

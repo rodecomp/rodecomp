@@ -10,6 +10,7 @@
 namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CStopRecruitingAsyncWork.cpp";
 
+  // INLINED
   AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
@@ -22,8 +23,7 @@ CStopRecruitingAsyncWork::CStopRecruitingAsyncWork()
     : NAsyncWork("Stop_Recruiting"), m_accountId(0), m_masterAccountId(0), m_diagnostic(Diagnostic(false, "unknwon", 28)), m_context(nullptr) {
 }
 
-// OFFSET: 0x005D6140
-// FUNCTION: fn_03712
+// INLINED
 CStopRecruitingAsyncWork::~CStopRecruitingAsyncWork() = default;
 
 // OFFSET: 0x005D64A0

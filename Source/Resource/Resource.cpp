@@ -20,7 +20,7 @@ void ResourceName::Assign(const char* name) {
 CRes::CRes() : references(0) {
 }
 
-// OFFSET: 0x007498B0
+// INLINED
 CRes::~CRes() = default;
 
 // OFFSET: 0x00745260

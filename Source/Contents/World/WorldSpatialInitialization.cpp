@@ -46,6 +46,7 @@ void InitializeWorldSpatial(
   }
 }
 
+// INLINED
 void PublishWorldModels(WorldSpatialTree& root, C3dActor* const* models, int& published, int& pending) {
   std::atomic_ref<int> count(pending);
   const int ready = count.load(std::memory_order_acquire);

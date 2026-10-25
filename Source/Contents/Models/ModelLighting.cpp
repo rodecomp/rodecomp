@@ -7,15 +7,18 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   unsigned Byte(float value) {
     return static_cast<unsigned>(TruncateToInt(value)) & 255u;
   }
 
+  // INLINED
   float InverseLength(float squared) {
     const float root = std::sqrt(squared);
     return static_cast<float>(1.0 / static_cast<double>(root));
   }
 
+  // INLINED
   void Light(const float* normal, const float* matrix, const ModelLightingContext& context, float* output) {
     const float x = ((normal[0] * matrix[0] + normal[1] * matrix[3]) + normal[2] * matrix[6]) + 0.0f;
     const float y = ((normal[0] * matrix[1] + normal[1] * matrix[4]) + normal[2] * matrix[7]) + 0.0f;
@@ -30,6 +33,7 @@ namespace {
     }
   }
 
+  // INLINED
   std::uint32_t LitColor(std::uint32_t color, float alpha, bool shaded, const float* light) {
     std::uint32_t result = Byte(alpha * 255.0f) << 24;
     const float factor = shaded ? 0.5f : 1.0f;

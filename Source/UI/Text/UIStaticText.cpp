@@ -10,7 +10,6 @@ UIStaticText::UIStaticText(UIWindowContext& windows, UIButtonContext& controls)
 }
 
 // OFFSET: 0x00853050
-// FUNCTION: fn_10732
 UIStaticText::~UIStaticText() = default;
 
 // OFFSET: 0x008681C0

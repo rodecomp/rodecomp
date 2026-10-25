@@ -3,10 +3,12 @@
 #include <utility>
 
 namespace {
+  // INLINED
   bool Overlaps(int a, int b, int c, int d) {
     return (c >= a && c <= b) || (d >= a && d <= b) || (a >= c && a <= d) || (b >= c && b <= d);
   }
 
+  // INLINED
   bool Near(int value, int edge) {
     return value >= (edge - 10) && value <= (edge + 10);
   }

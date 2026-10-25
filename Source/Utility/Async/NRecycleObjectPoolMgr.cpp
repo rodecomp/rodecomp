@@ -1,7 +1,6 @@
 #include "Utility/Async/NRecycleObjectPoolMgr.h"
 
-// OFFSET: 0x00736A10
-// FUNCTION: fn_07631
+// INLINED
 std::size_t NRecycleObjectPoolMgr::NameHash::operator()(const std::string& name) const {
   std::uint32_t hash = 2166136261;
 
@@ -26,11 +25,12 @@ NRecycleObjectPoolMgr::NRecycleObjectPoolMgr() : m_enabled(false) {
 }
 
 // OFFSET: 0x00736DE0
-// FUNCTION: fn_07635
 // OFFSET: 0x00736E50
+// FUNCTION: fn_07635
 NRecycleObjectPoolMgr::~NRecycleObjectPoolMgr() = default;
 
 // OFFSET: 0x00736EE0
+// FUNCTION: fn_07637
 NRecycleObject* NRecycleObjectPoolMgr::Acquire(std::string poolName) {
   auto pool = this->m_pools.find(poolName);
   if (pool == this->m_pools.end()) {
@@ -41,6 +41,7 @@ NRecycleObject* NRecycleObjectPoolMgr::Acquire(std::string poolName) {
 }
 
 // OFFSET: 0x00736F60
+// FUNCTION: fn_07638
 void NRecycleObjectPoolMgr::Release(std::string poolName, NRecycleObject* object) {
   auto pool = this->m_pools.find(poolName);
   if (pool != this->m_pools.end()) {

@@ -67,7 +67,6 @@ UITextViewer::UITextViewer(UIWindowContext& windows, UITextViewerContext& text)
 }
 
 // OFFSET: 0x008747F0
-// FUNCTION: fn_11189
 UITextViewer::~UITextViewer() = default;
 
 // OFFSET: 0x008872A0

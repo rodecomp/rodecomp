@@ -4,8 +4,7 @@
 
 #include <algorithm>
 
-// OFFSET: 0x00560A40
-// FUNCTION: fn_02161
+// INLINED
 RenderQueues::RenderQueues() {
   this->queue_015C.reserve(1000);
   this->queue_0168.reserve(1000);
@@ -99,8 +98,7 @@ void RenderQueues::SubmitTriangle(RenderTriangle& triangle, std::uint16_t flags,
   this->Submit(command, flags, depthAlpha, depthStart, depthEnd);
 }
 
-// OFFSET: 0x0055A360
-// FUNCTION: fn_02079
+// INLINED
 void RenderQueues::Clear() {
   this->queue_015C.clear();
   this->queue_0168.clear();

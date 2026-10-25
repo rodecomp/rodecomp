@@ -13,8 +13,7 @@ namespace {
   }
 }
 
-// OFFSET: 0x00560A40
-// FUNCTION: fn_02161
+// INLINED
 RenderVertexPool::RenderVertexPool() : m_minimum(10240), m_used(0) {
   this->Activate(this->m_minimum);
 }
@@ -64,8 +63,7 @@ RenderVertex* RenderVertexPool::Acquire(unsigned count) {
   return block.data();
 }
 
-// OFFSET: 0x0055A360
-// FUNCTION: fn_02079
+// INLINED
 void RenderVertexPool::Rewind() {
   for (auto& block : this->m_active) {
     block->clear();

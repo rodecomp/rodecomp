@@ -1,5 +1,6 @@
 #include "Contents/ForbiddenWords.h"
 #include "File/CommonObject.h"
+#include "Utility/StackAlloc.h"
 
 #include <atlconv.h>
 #include <atlexcept.h>
@@ -48,7 +49,7 @@ bool ForbiddenWords::Load(const char* name, CCommonObject& storage, ResourceByte
 // FUNCTION: fn_18063
 bool ForbiddenWords::Allows(const char* text) const {
   const std::size_t size = std::strlen(text) + 1;
-  char* storage = static_cast<char*>(_malloca(size));
+  char* storage = static_cast<char*>(STACK_ALLOC(size));
 
   if (!storage) {
     return false;

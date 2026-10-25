@@ -1,7 +1,6 @@
 #include "Archive/PakFile.h"
 
 // OFFSET: 0x005EF660
-// FUNCTION: fn_04009
 CPakFile::~CPakFile() = default;
 
 namespace myGPack {
@@ -10,17 +9,16 @@ namespace myGPack {
   CReadPakFile::CReadPakFile() : m_handle(INVALID_HANDLE_VALUE), m_size(0) {
   }
 
-  // OFFSET: 0x005EF690
-  // FUNCTION: fn_04010
+  // INLINED
   CReadPakFile::~CReadPakFile() {
     this->Close();
   }
 
   // OFFSET: 0x005EF710
-  // FUNCTION: fn_04011
   CWritePakFile::~CWritePakFile() = default;
 
   // OFFSET: 0x005F7780
+  // FUNCTION: fn_04045
   std::uint64_t CReadPakFile::GetSize() const {
     return this->m_size;
   }

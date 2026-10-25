@@ -14,6 +14,7 @@ namespace {
   constexpr unsigned charsets[20] = {HANGUL_CHARSET,  ANSI_CHARSET, SHIFTJIS_CHARSET, GB2312_CHARSET,  CHINESEBIG5_CHARSET, THAI_CHARSET,
                                      TURKISH_CHARSET, ANSI_CHARSET, ANSI_CHARSET,     RUSSIAN_CHARSET, VIETNAMESE_CHARSET,  ARABIC_CHARSET};
 
+  // INLINED
   unsigned Hex(unsigned char value) {
     if (value >= '0' && value <= '9') {
       return value - '0';
@@ -26,10 +27,12 @@ namespace {
     return 0;
   }
 
+  // INLINED
   bool ValidHex(unsigned char value) {
     return (value >= '0' && value <= '9') || (value >= 'a' && value <= 'f') || (value >= 'A' && value <= 'F');
   }
 
+  // INLINED
   unsigned InlineCharset(const char* marker) {
     return 16 * Hex(static_cast<unsigned char>(marker[1])) + Hex(static_cast<unsigned char>(marker[2]));
   }
@@ -126,9 +129,7 @@ void TextContext::SetColor(COLORREF color) {
 }
 
 // OFFSET: 0x00550130
-// FUNCTION: fn_01967
 // OFFSET: 0x00550150
-// FUNCTION: fn_01968
 void TextContext::SetBackground(COLORREF color, int mode) {
   SetBkColor(this->m_dc, color);
   SetBkMode(this->m_dc, mode);

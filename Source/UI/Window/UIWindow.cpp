@@ -12,12 +12,50 @@
 
 #include <bit>
 #include <cstring>
+#include <windows.h>
+#include <timeapi.h>
+
+// INLINED
+inline WindowGeometry::WindowGeometry()
+    : width(0), height(0), x(0), y(0), surface(nullptr), visible(1), id(600), unknown_0030(0), unknown_0034(0), targetAlpha(255), alphaStart(timeGetTime()),
+      currentAlpha(255) {
+}
+
+// INLINED
+inline void WindowGeometry::Show(int state) {
+  this->visible = state;
+}
+
+// INLINED
+inline void WindowGeometry::SetId(int value) {
+  this->id = value;
+}
+
+// INLINED
+inline std::uint32_t WindowGeometry::Color() {
+  std::uint32_t value = this->currentAlpha;
+  if (value != this->targetAlpha) {
+    const std::uint32_t step = (timeGetTime() - this->alphaStart) >> 4;
+    const std::uint32_t candidate = value < this->targetAlpha ? value + step : value - step;
+    const bool keepCandidate = value < this->targetAlpha ? candidate < this->targetAlpha : this->targetAlpha < candidate;
+
+    value = keepCandidate ? candidate : this->targetAlpha;
+    this->currentAlpha = value;
+  }
+
+  if (value > 255) {
+    value = this->targetAlpha;
+    this->currentAlpha = value;
+  }
+
+  return (value << 24) + 0xFFFFFF;
+}
 
 // STATIC: 0x0145723C
 // GLOBAL: gl_24364
 std::uint32_t g_windowUid = 0xFFFFFFFFu;
 
-// ORIGINAL_SITE: 0x00AA4730 in fn_17222 (fragment)
+// INLINED
 void UIWindowContext::DestroyDeferredChildren() {
   for (UIWindow* window : this->deferredDeletion) {
     delete window;
@@ -27,14 +65,14 @@ void UIWindowContext::DestroyDeferredChildren() {
 }
 
 // OFFSET: 0x00A79A90
+// FUNCTION: fn_16914
 UIWindow::UIWindow(UIWindowContext& context, unsigned char cached)
     : unknown_0044(0), unknown_0048(0), unknown_004C(4), m_dirty(1), m_uid(++g_windowUid), m_cached(cached), m_clip(0), m_context(&context) {
 }
 
 // OFFSET: 0x00A79E90
-// FUNCTION: fn_16917
 // OFFSET: 0x00A7A050
-// FUNCTION: fn_16919
+// FUNCTION: fn_16917
 UIWindow::~UIWindow() {
   delete this->geometry.surface;
   this->geometry.surface = nullptr;
@@ -46,6 +84,7 @@ UIWindow::~UIWindow() {
   );
 }
 
+// INLINED
 UIWindow* UIWindow::Parent() const {
   return static_cast<UIWindow*>(this->parent);
 }
@@ -72,7 +111,8 @@ bool UIWindow::Slot03() {
   return false;
 }
 
-// ORIGINAL_SITE: 0x00A81D40 in fn_16987 (body)
+// OFFSET: 0x00A81D40
+// FUNCTION: fn_16987
 void UIWindow::Move(int x, int y) {
   this->geometry.Move(x, y);
 }
@@ -128,7 +168,8 @@ void UIWindow::Slot12() {
 void UIWindow::Slot13(int, int) {
 }
 
-// ORIGINAL_SITE: 0x005C9630 in fn_03632 (body)
+// OFFSET: 0x005C9630
+// FUNCTION: fn_03632
 void UIWindow::Show(int visible) {
   this->geometry.Show(visible);
 }
@@ -282,7 +323,8 @@ void UIWindow::InvalidateChildren() {
 void UIWindow::Slot39() {
 }
 
-// ORIGINAL_SITE: 0x00A7D6F0 in fn_16954 (body)
+// OFFSET: 0x00A7D6F0
+// FUNCTION: fn_16954
 std::uint32_t UIWindow::Color() {
   return this->geometry.Color();
 }
@@ -375,7 +417,8 @@ std::vector<std::uint32_t> UIWindow::Slot44() {
   return {};
 }
 
-// ORIGINAL_SITE: 0x005C8F60 in fn_03629 (body)
+// OFFSET: 0x005C8F60
+// FUNCTION: fn_03629
 void UIWindow::SetId(int value) {
   this->geometry.SetId(value);
 }

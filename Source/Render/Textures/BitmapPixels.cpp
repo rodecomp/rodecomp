@@ -5,18 +5,15 @@
 #include "Render/Textures/Texture.h"
 
 #include <algorithm>
-#include <bit>
 #include <cstring>
 #include <vector>
 
-// OFFSET: 0x00545790
-// FUNCTION: fn_01832
+// INLINED
 BitmapPixels::BitmapPixels(int newWidth, int newHeight) : dc(CreateCompatibleDC(nullptr)), bitmap(nullptr), previous(nullptr), pixels(nullptr) {
   this->Create(newWidth, newHeight);
 }
 
-// OFFSET: 0x00545B20
-// FUNCTION: fn_01836
+// INLINED
 BitmapPixels::~BitmapPixels() {
   SelectObject(this->dc, this->previous);
   DeleteObject(this->bitmap);
@@ -44,8 +41,7 @@ void BitmapPixels::UploadTexture(CRenderSystemBase& system, CTexture*& texture) 
   }
 }
 
-// OFFSET: 0x00547A80
-// FUNCTION: fn_01845
+// INLINED
 void BitmapPixels::Create(int newWidth, int newHeight) {
   this->width = newWidth;
   this->height = newHeight;

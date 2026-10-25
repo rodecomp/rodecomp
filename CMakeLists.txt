@@ -29,12 +29,10 @@ if(WIN32)
   target_sources(RagnarokUtility PRIVATE
     Source/Utility/GuidParse.cpp
     Source/Utility/Threading/NSyncObject.cpp
-    Source/Utility/Threading/CSyncObject.cpp
     Source/Utility/Threading/NThread.cpp
     Source/Utility/Async/NMessageQueue.cpp
     Source/Utility/Async/NMessageMgr.cpp
     Source/Utility/Async/NObject.cpp
-    Source/Utility/Async/NRecycleObject.cpp
     Source/Utility/Async/NRecycleObjectPoolMgr.cpp
     Source/Utility/Async/NAsyncWork.cpp
     Source/Utility/Async/NAsyncWorkQueue.cpp
@@ -121,11 +119,9 @@ if(WIN32)
     Source/Render/Primitives/UIRPData.cpp
     Source/Render/DX9/SurfaceDX9.cpp
     Source/Render/DX7/SurfaceDX7.cpp
-    Source/Render/DX9/D3DX9Runtime.cpp
     Source/Render/DX9/TextureDX9.cpp
     Source/Render/DX7/TextureDX7.cpp
     Source/Render/DX7/TextureBindingDX7.cpp
-    Source/Render/DX7/TextureAllocationDX7.cpp
     Source/Render/Textures/BitmapTextureCache.cpp
     Source/Render/Textures/SpriteAtlas.cpp
     Source/Render/DeviceContext/DeviceContext.cpp
@@ -156,7 +152,6 @@ if(WIN32)
     Source/Render/DX7/RenderToTextureDX7.cpp
     Source/Render/DX9/TextureModesDX9.cpp
     Source/Render/DX7/TextureModesDX7.cpp
-    Source/Render/TextureStageModes.cpp
     Source/Render/DX9/RendererFogDX9.cpp
     Source/Render/DX7/RendererFogDX7.cpp
     Source/Render/DX9/OpaqueQueuesDX9.cpp
@@ -181,7 +176,6 @@ if(WIN32)
   target_link_libraries(RagnarokRender PUBLIC gdi32 winmm gdiplus d3d9 ddraw dxguid)
 
   add_library(RagnarokUI STATIC
-    Source/UI/Layout/WindowGeometry.cpp
     Source/UI/Layout/WindowCoordinates.cpp
     Source/UI/Window/WindowAncestry.cpp
     Source/UI/Window/WindowRegistration.cpp
@@ -248,21 +242,15 @@ if(WIN32)
     Source/UI/Shop/ItemDrawing.cpp
     Source/UI/Shortcuts/ShortcutPainting.cpp
     Source/UI/Shortcuts/ShortcutBindings.cpp
-    Source/UI/Shortcuts/ShortcutLayout.cpp
     Source/UI/Shortcuts/ShortcutActivation.cpp
     Source/UI/Shortcuts/ShortcutControls.cpp
-    Source/UI/Shortcuts/ShortcutControlEvents.cpp
     Source/UI/Shortcuts/ShortcutTooltip.cpp
     Source/UI/Shortcuts/ShortcutPress.cpp
     Source/UI/Shortcuts/ShortcutDrop.cpp
-    Source/UI/Shortcuts/ShortcutUse.cpp
-    Source/UI/Shortcuts/ShortcutVisibility.cpp
     Source/UI/Shortcuts/ShortcutDetails.cpp
-    Source/UI/Shortcuts/SkillDetailClose.cpp
     Source/UI/Shortcuts/NormalItemSlotLoad.cpp
     Source/UI/Shortcuts/UIShortCutWnd.cpp
     Source/UI/Text/TextWrapping.cpp
-    Source/UI/Chat/ChatNotifications.cpp
     Source/Client/Browser/BrowserFactory.cpp
     Source/Client/Browser/BrowserPopupDispatch.cpp
     Source/UI/Window/WindowFrameUpdate.cpp
@@ -272,7 +260,6 @@ if(WIN32)
     Source/UI/Window/WindowBorder.cpp
     Source/UI/Edit/EditTextState.cpp
     Source/UI/Edit/EditViewport.cpp
-    Source/UI/Edit/EditPainting.cpp
     Source/UI/Shop/PriceColor.cpp
     Source/UI/Shop/MerchantShopRefresh.cpp
     Source/UI/Text/NavigationLink.cpp
@@ -290,7 +277,6 @@ if(WIN32)
     Source/Contents/Party/PartyRegistrationCompletion.cpp
     Source/Contents/Party/PartyInfoCompletion.cpp
     Source/Contents/Party/PartyJoinResult.cpp
-    Source/Contents/Party/PartyInvitation.cpp
   )
   target_include_directories(RagnarokUI PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Source")
   target_compile_features(RagnarokUI PUBLIC cxx_std_20)
@@ -314,8 +300,6 @@ if(WIN32)
     Source/Resource/Bitmap/BitmapImage.cpp
     Source/Resource/Bitmap/BitmapImagePng.cpp
     Source/Resource/Bitmap/BitmapImageJpeg.cpp
-    Source/Resource/Bitmap/IJL15Runtime.cpp
-    Source/Resource/Audio/MilesRuntime.cpp
     Source/Resource/Audio/WaveResource.cpp
     Source/Resource/Resource.cpp
     Source/Resource/Bitmap/BitmapResource.cpp
@@ -325,20 +309,15 @@ if(WIN32)
     Source/Resource/World/TerrainResource.cpp
     Source/Resource/World/GroundResource.cpp
     Source/Resource/World/WorldResource.cpp
-    Source/Resource/World/WorldEnvironment.cpp
-    Source/Resource/World/WorldObjects.cpp
     Source/Resource/Models/ModelMesh.cpp
     Source/Resource/Models/ModelResource.cpp
-    Source/Resource/Models/ModelNodeLoading.cpp
     Source/Resource/Models/ModelResourceV2.cpp
-    Source/Resource/Models/ModelNodeLoadingV2.cpp
     Source/Resource/Models/AnimatedModelResource.cpp
     Source/Contents/Models/ModelAnimation.cpp
     Source/Contents/Models/ModelQuaternion.cpp
     Source/Contents/Models/ModelNode.cpp
     Source/Contents/Models/ModelTextureAnimation.cpp
     Source/Contents/Models/ModelRendering.cpp
-    Source/Contents/Models/ModelTextureUV.cpp
     Source/Contents/Models/ModelLighting.cpp
     Source/Contents/Models/ModelNodeBounds.cpp
     Source/Contents/Models/ModelActor.cpp
@@ -346,10 +325,7 @@ if(WIN32)
     Source/Contents/Models/ModelPlayback.cpp
     Source/Contents/Models/ModelOcclusion.cpp
     Source/Contents/Models/ModelMovies.cpp
-    Source/Contents/World/WorldModelPlacement.cpp
     Source/Contents/World/WorldModelLoading.cpp
-    Source/Contents/World/WorldGroundImport.cpp
-    Source/Contents/World/WorldEnvironment.cpp
     Source/Contents/World/WorldSpatialTree.cpp
     Source/Contents/World/WorldSpatialInitialization.cpp
     Source/Contents/World/WorldRayQuery.cpp
@@ -379,10 +355,8 @@ if(WIN32)
     Source/Resource/ResourceTransient.cpp
     Source/Resource/TextureNames.cpp
     Source/Contents/SkinInfo.cpp
-    Source/Resource/BinkRuntime.cpp
     Source/Contents/Movies/BinkMovie.cpp
     Source/Contents/Movies/BinkMovies.cpp
-    Source/Render/Textures/ClientTextureSources.cpp
   )
   target_include_directories(RagnarokResource PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Source")
   target_compile_features(RagnarokResource PUBLIC cxx_std_20)
@@ -398,8 +372,6 @@ if(WIN32)
     Source/Network/Connection/Connection.cpp
     Source/Network/Packets/PacketLengths.cpp
     Source/Network/Connection/ConnectionRuntime.cpp
-    Source/Network/Packets/ShortcutPacket.cpp
-    Source/Network/Packets/PartyJoinPacket.cpp
   )
   target_include_directories(RagnarokNetwork PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Source")
   target_compile_features(RagnarokNetwork PUBLIC cxx_std_20)
@@ -416,7 +388,6 @@ if(WIN32)
     Source/Contents/UserData/AccountLinkedUserDataMgr.cpp
     Source/Contents/UserData/AccountService.cpp
     Source/Contents/Configuration/ScriptOptions.cpp
-    Source/Contents/Configuration/GraphicsConfiguration.cpp
     Source/Contents/Sound/SoundConfiguration.cpp
     Source/Contents/Sound/SoundMgr.cpp
     Source/Contents/Configuration/OptionWriter.cpp
@@ -484,9 +455,7 @@ if(WIN32)
     Source/Contents/World/WorldActors.cpp
     Source/Contents/Effects/EffectAttachments.cpp
     Source/Contents/Effects/EffectTypes.cpp
-    Source/Contents/Effects/RagEffectState.cpp
     Source/Contents/Effects/RagEffectInitialization.cpp
-    Source/Contents/Effects/RagEffectResourceSelection.cpp
     Source/Contents/Effects/EffectPrimitiveState.cpp
     Source/Contents/Effects/EffectPrimitiveColor.cpp
     Source/Contents/Effects/EffectPrimitiveMotion.cpp

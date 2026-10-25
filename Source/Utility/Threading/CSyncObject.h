@@ -12,6 +12,16 @@ private:
   CRITICAL_SECTION* m_criticalSection;
 };
 
+// INLINED
+inline CSyncObject::CSyncObject(CRITICAL_SECTION* criticalSection) : m_criticalSection(criticalSection) {
+  EnterCriticalSection(this->m_criticalSection);
+}
+
+// INLINED
+inline CSyncObject::~CSyncObject() {
+  LeaveCriticalSection(this->m_criticalSection);
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CSyncObject) == 8);
 #endif

@@ -76,6 +76,7 @@ std::string RemoveTextColors(const char* text, unsigned short codePage) {
 }
 
 // OFFSET: 0x00A7F660
+// FUNCTION: fn_16966
 std::string DisplayTextTag(std::string text, const std::string& begin, const std::string& end) {
   auto position = text.find(begin);
 

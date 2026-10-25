@@ -8,10 +8,12 @@
 #include <windows.h>
 
 namespace {
+  // INLINED
   bool Hex(unsigned char value) {
     return (value >= '0' && value <= '9') || (value >= 'a' && value <= 'f') || (value >= 'A' && value <= 'F');
   }
 
+  // INLINED
   unsigned Digit(unsigned char value) {
     if (value >= '0' && value <= '9') {
       return value - '0';

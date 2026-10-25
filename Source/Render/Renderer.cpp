@@ -10,7 +10,6 @@ CRenderer::CRenderer(CRenderSystemBase& system) : frame(0), unknown_003C(0), unk
 }
 
 // OFFSET: 0x00562090
-// FUNCTION: fn_02175
 // OFFSET: 0x00562260
-// FUNCTION: fn_02176
+// FUNCTION: fn_02175
 CRenderer::~CRenderer() = default;

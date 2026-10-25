@@ -13,9 +13,8 @@ ITEM_DESC::ITEM_DESC()
 }
 
 // OFFSET: 0x006D3610
-// FUNCTION: fn_06541
 // OFFSET: 0x006D3680
-// FUNCTION: fn_06542
+// FUNCTION: fn_06541
 ITEM_DESC::~ITEM_DESC() = default;
 
 // OFFSET: 0x006D5160
@@ -40,9 +39,8 @@ ITEM_DESC& ITEM_DESC::operator=(const ITEM_DESC& other) {
 }
 
 // OFFSET: 0x006D3A00
-// FUNCTION: fn_06545
 // OFFSET: 0x006D5890
-// FUNCTION: fn_06579
+// FUNCTION: fn_06545
 ITEM_DESC& ItemDescriptions::Find(int id) {
   static ITEM_DESC missing;
   const auto entry = this->values.find(id);

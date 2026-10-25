@@ -36,6 +36,7 @@ namespace {
     return ((color >> 16) & 0x8000) | ((color & 255) >> 3) | ((color >> 6) & 0x3E0) | ((color >> 9) & 0x7C00);
   }
 
+  // INLINED
   UINT AlignDimension(int value) {
     const std::uint32_t dimension = value;
     return dimension + ((0u - dimension) & 3);
@@ -65,8 +66,7 @@ CSurfaceDX9::CSurfaceDX9(SurfaceDX9Context& context, IDirect3DSurface9* surface)
   }
 }
 
-// OFFSET: 0x005708F0
-// FUNCTION: fn_02429
+// INLINED
 CSurfaceDX9::~CSurfaceDX9() {
   if (this->m_surface) {
     this->m_surface->Release();

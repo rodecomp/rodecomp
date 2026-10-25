@@ -19,9 +19,8 @@ CGndRes::CGndRes(GroundResourceContext& context) : loaded(0), width(0), height(0
 }
 
 // OFFSET: 0x0074E390
-// FUNCTION: fn_07908
 // OFFSET: 0x0074DD10
-// FUNCTION: fn_07902
+// FUNCTION: fn_07908
 CGndRes::~CGndRes() = default;
 
 // OFFSET: 0x0074DB10

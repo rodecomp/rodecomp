@@ -3,14 +3,14 @@
 #include "UI/Buttons/UIBitmapButton.h"
 
 // OFFSET: 0x0084EAB0
+// FUNCTION: fn_10650
 UIBitmapButton::UIBitmapButton(UIWindowContext& windowContext, UIButtonContext& buttonContext)
     : UIButton(windowContext, buttonContext), m_bitmapWidth(0), m_bitmapHeight(0), m_invalidateParent(0) {
 }
 
 // OFFSET: 0x008511B0
-// FUNCTION: fn_10689
 // OFFSET: 0x00852220
-// FUNCTION: fn_10705
+// FUNCTION: fn_10689
 UIBitmapButton::~UIBitmapButton() = default;
 
 // OFFSET: 0x008657A0

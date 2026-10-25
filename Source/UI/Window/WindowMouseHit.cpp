@@ -58,8 +58,7 @@ UIWindow* WindowMouseHit::HitTest(int x, int y) {
   return nullptr;
 }
 
-// OFFSET: 0x00AA4730
-// FUNCTION: fn_17222
+// INLINED
 bool WindowMouseCapture::Dispatch() {
   if (!this->capture) {
     return false;
@@ -107,9 +106,7 @@ bool WindowMouseCapture::Dispatch() {
   return true;
 }
 
-// OFFSET: 0x00AA4730
-// FUNCTION: fn_17222
-
+// INLINED
 int WindowMouseUncaptured::Dispatch() {
   const int x = this->mouse.x;
   const int y = this->mouse.y;

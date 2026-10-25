@@ -1,4 +1,5 @@
 #include "Network/TextEncoding.h"
+#include "Utility/StackAlloc.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -19,7 +20,7 @@ std::string ToUtf8(std::string text) {
   if (wide) {
     MultiByteToWideChar(g_textCodePage, 0, text.c_str(), lstrlenA(text.c_str()), wide, wideLength);
     int length = WideCharToMultiByte(CP_UTF8, 0, wide, -1, nullptr, 0, nullptr, nullptr);
-    char* converted = static_cast<char*>(_malloca(length + 1));
+    char* converted = static_cast<char*>(STACK_ALLOC(length + 1));
 
     if (converted) {
       WideCharToMultiByte(CP_UTF8, 0, wide, -1, converted, length, nullptr, nullptr);
@@ -43,7 +44,7 @@ std::string FromUtf8(std::string text) {
   BSTR wide = SysAllocStringLen(nullptr, wideLength);
   MultiByteToWideChar(CP_UTF8, 0, text.c_str(), lstrlenA(text.c_str()) + 1, wide, wideLength);
   int length = WideCharToMultiByte(g_textCodePage, 0, wide, -1, nullptr, 0, nullptr, nullptr);
-  char* converted = static_cast<char*>(_malloca(length + 1));
+  char* converted = static_cast<char*>(STACK_ALLOC(length + 1));
 
   if (converted) {
     WideCharToMultiByte(g_textCodePage, 0, wide, -1, converted, length, nullptr, nullptr);

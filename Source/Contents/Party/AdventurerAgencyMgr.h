@@ -3,6 +3,8 @@
 
 #include "Contents/Party/AdvenPartyInfo.h"
 
+#include <vector>
+
 struct AsyncDiagnostic;
 struct StopRecruitingContext;
 struct RegisterPartyContext;

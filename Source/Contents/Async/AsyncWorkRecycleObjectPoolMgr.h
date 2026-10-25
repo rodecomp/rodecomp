@@ -7,6 +7,7 @@ class CAsyncWorkRecycleObjectPoolMgr : public NRecycleObjectPoolMgr {
 public:
   CAsyncWorkRecycleObjectPoolMgr();
   ~CAsyncWorkRecycleObjectPoolMgr() override;
+  // INLINED
   bool Ready() const {
     return this->m_registered;
   }

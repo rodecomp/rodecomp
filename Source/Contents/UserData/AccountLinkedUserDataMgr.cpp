@@ -16,13 +16,11 @@
 // GLOBAL: gl_24351
 CAccountLinkedUserDataMgr* g_accountLinkedUserDataMgr;
 
-// OFFSET: 0x005BBF50
-// FUNCTION: fn_03459
+// INLINED
 CAccountLinkedUserDataMgr::CAccountLinkedUserDataMgr() : m_enabled(true), m_accountId(0), m_accountName("unknown"), m_loaded(false), unknown_0028(0) {
 }
 
-// OFFSET: 0x005BBDB0
-// FUNCTION: fn_03457
+// INLINED
 CAccountLinkedUserDataMgr::~CAccountLinkedUserDataMgr() = default;
 
 // OFFSET: 0x005BBF50

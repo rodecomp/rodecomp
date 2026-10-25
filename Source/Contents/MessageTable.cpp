@@ -102,9 +102,7 @@ const char* LookupMessage(int id, bool languagePrefix, int serviceType, WORD lan
 }
 
 // OFFSET: 0x00B00E40
-// FUNCTION: fn_18374
 // OFFSET: 0x00B00910
-// FUNCTION: fn_18372
 bool ImportMessageCsv(std::string_view bytes) {
   g_messageStrings.clear();
   if (bytes.size() >= 2 && ((static_cast<unsigned char>(bytes[0]) == 0xFF && static_cast<unsigned char>(bytes[1]) == 0xFE) ||

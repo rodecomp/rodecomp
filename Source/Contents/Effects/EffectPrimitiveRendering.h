@@ -19,7 +19,6 @@ struct EffectPrimitiveRenderContext {
 };
 
 void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectState& render, EffectPrimitiveRenderContext& context);
-
 void RenderEffectPrimitive15(
   EffectPrimitiveState& particle, const RenderObjectState& render, EffectPrimitiveRenderContext& context, const EffectVisibilityContext& visibility
 );

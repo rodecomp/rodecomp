@@ -6,6 +6,7 @@
 #include "UI/Buttons/UICheckBox.h"
 
 // OFFSET: 0x0084F010
+// FUNCTION: fn_10656
 UICheckBox::UICheckBox(UIWindowContext& windowContext, UIButtonContext& controls)
     : UIWindow(windowContext, 0), m_disabled(0), m_hidden(0), m_color(0), m_fontHeight(12), m_message(-1), m_notify(0), m_controls(&controls) {
   this->geometry.unknown_0030 = 0;
@@ -13,7 +14,7 @@ UICheckBox::UICheckBox(UIWindowContext& windowContext, UIButtonContext& controls
 }
 
 // OFFSET: 0x008525B0
-// FUNCTION: fn_10712
+// FUNCTION: fn_10691
 UICheckBox::~UICheckBox() = default;
 
 // OFFSET: 0x0085C8C0
@@ -48,6 +49,7 @@ void UICheckBox::Paint() {
   }
 }
 
+// INLINED
 void UICheckBox::Notify() {
   this->Invalidate();
   UIWindow* root = this;

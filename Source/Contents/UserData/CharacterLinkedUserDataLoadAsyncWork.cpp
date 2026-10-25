@@ -12,6 +12,7 @@ namespace {
                                 "\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\CharacterLinkedUserData\\CCh"
                                 "aracterLinkedUserDataLoadAsyncWork.cpp";
 
+  // INLINED
   AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
@@ -24,8 +25,7 @@ CCharacterLinkedUserDataLoadAsyncWork::CCharacterLinkedUserDataLoadAsyncWork()
     : NAsyncWork("CharacterLinkedUserData_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", 29)), m_context(nullptr) {
 }
 
-// OFFSET: 0x005E4E20
-// FUNCTION: fn_03917
+// INLINED
 CCharacterLinkedUserDataLoadAsyncWork::~CCharacterLinkedUserDataLoadAsyncWork() = default;
 
 // OFFSET: 0x005E5190

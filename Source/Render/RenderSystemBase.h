@@ -12,7 +12,6 @@ class CTexture;
 class CRenderSystemBase {
 public:
   // OFFSET: 0x0056B4D0
-  // FUNCTION: fn_02314
   virtual ~CRenderSystemBase() = default;
   virtual std::int32_t Backend() = 0;
   virtual HRESULT Initialize(HWND window) = 0;

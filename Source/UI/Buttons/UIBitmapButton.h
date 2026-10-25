@@ -11,9 +11,11 @@ public:
   ~UIBitmapButton() override;
   void Paint() override;
   bool SetBitmap(const char* name, int state, unsigned char exactSize);
+  // INLINED
   int BitmapWidth() const {
     return this->m_bitmapWidth;
   }
+  // INLINED
   int BitmapHeight() const {
     return this->m_bitmapHeight;
   }

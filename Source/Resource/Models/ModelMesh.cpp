@@ -4,6 +4,7 @@
 #include <map>
 
 namespace {
+  // INLINED
   void Normalize(float* vector) {
     const float squared = (vector[0] * vector[0] + vector[1] * vector[1]) + vector[2] * vector[2];
     const float length = std::sqrt(squared);

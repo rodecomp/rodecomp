@@ -27,6 +27,7 @@ ModelRenderContext::ModelRenderContext(
   }
 }
 
+// INLINED
 bool ModelTriangleVisible(const RenderVertex* a, const RenderVertex* b, const RenderVertex* c, const ModelRenderContext& context) {
   const float firstMinimumX = a->x > b->x ? b->x : a->x;
   const float minimumX = firstMinimumX > c->x ? c->x : firstMinimumX;
@@ -56,10 +57,12 @@ bool ModelTriangleVisible(const RenderVertex* a, const RenderVertex* b, const Re
 }
 
 namespace {
+  // INLINED
   unsigned Byte(float value) {
     return static_cast<unsigned>(TruncateToInt(value)) & 255u;
   }
 
+  // INLINED
   std::uint32_t Color(std::uint32_t source, unsigned char alpha, const float* scale) {
     const unsigned red = Byte(static_cast<float>((source >> 16) & 255u) * scale[0]);
     const unsigned green = Byte(static_cast<float>((source >> 8) & 255u) * scale[1]);
@@ -67,8 +70,32 @@ namespace {
 
     return (static_cast<unsigned>(alpha) << 24) | (red << 16) | (green << 8) | blue;
   }
+
+  // INLINED
+  float Rotated(float sine, float delta, float cosineProduct, bool subtract) {
+    const double product = static_cast<double>(sine) * delta;
+    return static_cast<float>(subtract ? cosineProduct - product : product + cosineProduct);
+  }
 }
 
+// INLINED
+inline void TransformModelUV(float& u, float& v, const ModelTextureTransform& transform) {
+  const float cosineU = ClientCos(transform.values[4]);
+  const float productU = cosineU * (u - 0.5f);
+  const float sineU = ClientSin(transform.values[4]);
+  const float rotatedU = Rotated(sineU, v - 0.5f, productU, true);
+  const float resultU = (rotatedU * transform.values[2] + 0.5f) + transform.values[0];
+  const float cosineV = ClientCos(transform.values[4]);
+  const float productV = cosineV * (v - 0.5f);
+  const float sineV = ClientSin(transform.values[4]);
+  const float rotatedV = Rotated(sineV, u - 0.5f, productV, false);
+  const float resultV = (rotatedV * transform.values[3] + 0.5f) + transform.values[1];
+
+  u = resultU;
+  v = resultV;
+}
+
+// INLINED
 void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context, bool modern) {
   AffineMatrix camera;
   std::memcpy(camera.values, matrix, sizeof(camera.values));

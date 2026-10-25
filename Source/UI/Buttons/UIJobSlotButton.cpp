@@ -1,11 +1,11 @@
 #include "UI/Buttons/UIJobSlotButton.h"
 
 // OFFSET: 0x007BAD70
+// FUNCTION: fn_09276
 UIJobSlotButton::UIJobSlotButton(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), selected(0) {
 }
 
 // OFFSET: 0x007BB6B0
-// FUNCTION: fn_09284
 UIJobSlotButton::~UIJobSlotButton() = default;
 
 // OFFSET: 0x007BFC70

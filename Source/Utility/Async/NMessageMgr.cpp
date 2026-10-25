@@ -8,18 +8,15 @@
 NMessageMgr* g_messageMgr;
 
 // OFFSET: 0x00732BF0
-// FUNCTION: fn_07582
 NInter::~NInter() = default;
 
-// OFFSET: 0x007359A0
-// FUNCTION: fn_07610
+// INLINED
 NMessageMgr::NMessageMgr() : m_enabled(false) {
   InitializeCriticalSection(&this->m_criticalSection);
   this->m_enabled = true;
 }
 
-// OFFSET: 0x00735920
-// FUNCTION: fn_07609
+// INLINED
 NMessageMgr::~NMessageMgr() {
   DeleteCriticalSection(&this->m_criticalSection);
 }

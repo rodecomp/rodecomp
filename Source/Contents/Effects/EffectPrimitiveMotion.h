@@ -14,7 +14,6 @@ struct EffectMotionContext {
 };
 
 bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context);
-
 bool UpdateEffectPrimitive15(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context, int updateTick);
 
 #endif

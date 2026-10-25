@@ -33,14 +33,13 @@ LightmappedPrimitive::LightmappedPrimitive(const LightmappedPrimitive& other) : 
   std::memcpy(this->quad, other.quad, sizeof(this->quad));
 }
 
-// ORIGINAL_SITE: 0x00561113 in fn_02161 (fragment)
+// INLINED
 LightmappedPrimitivePool::LightmappedPrimitivePool() {
   this->m_commands.resize(8192, LightmappedPrimitive());
   this->m_current = this->m_commands.begin();
 }
 
-// OFFSET: 0x00AC1D30
-// FUNCTION: fn_17592
+// INLINED
 LightmappedPrimitive* LightmappedPrimitivePool::Acquire() {
   if (this->m_current == this->m_commands.end()) {
     this->m_commands.emplace_back();
@@ -52,6 +51,7 @@ LightmappedPrimitive* LightmappedPrimitivePool::Acquire() {
   return new (primitive) LightmappedPrimitive;
 }
 
+// INLINED
 void LightmappedPrimitivePool::Rewind() {
   this->m_current = this->m_commands.begin();
 }
@@ -70,6 +70,7 @@ void LightmappedQueues::Submit(LightmappedPrimitive* primitive, int queue, bool 
   }
 }
 
+// INLINED
 void LightmappedQueues::Clear() {
   this->first.clear();
   this->second.clear();

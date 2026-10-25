@@ -7,6 +7,7 @@
 #include <timeapi.h>
 
 namespace {
+  // INLINED
   float Jitter(float divisor) {
     const int remainder = std::rand() % 5;
     const int selected = remainder >= 0 ? remainder : 0;

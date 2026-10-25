@@ -1,4 +1,4 @@
-// STATIC: 0x0115AA88 (4698 entries; final null sentinel omitted)
+// STATIC: 0x0115AA88
 // GLOBAL: gl_13433
   "MSI_DO_YOU_AGREE",
   "MSI_SERVER_CONNECTION_FAILED",

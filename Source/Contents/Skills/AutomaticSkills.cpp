@@ -3,6 +3,7 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   int ActiveOption(std::int16_t id) {
     switch (id) {
     case 2036:
@@ -16,6 +17,7 @@ namespace {
     }
   }
 
+  // INLINED
   void Cancel(CConnection& connection, std::int16_t id) {
     const std::uint16_t packet[2] = {2833, static_cast<std::uint16_t>(id)};
     connection.Send(sizeof(packet), packet);

@@ -4,6 +4,7 @@
 #include <cmath>
 
 namespace {
+  // INLINED
   float Length(float squared) {
     return std::sqrt(squared);
   }

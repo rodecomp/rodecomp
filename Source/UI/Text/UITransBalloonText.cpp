@@ -7,6 +7,7 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   int Family(unsigned mode) {
     switch (mode) {
     case 1:
@@ -34,11 +35,11 @@ namespace {
 }
 
 // OFFSET: 0x00850810
+// FUNCTION: fn_10680
 UITransBalloonText::UITransBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UIBalloonText(windows, text), m_borderColor(6052956) {
 }
 
 // OFFSET: 0x00853210
-// FUNCTION: fn_10735
 UITransBalloonText::~UITransBalloonText() = default;
 
 // OFFSET: 0x008632D0
@@ -71,6 +72,7 @@ void UITransBalloonText::Slot15(int, int) {
   this->m_fontMode = 0;
 }
 
+// INLINED
 void UITransBalloonText::SetColors(std::uint32_t text, std::uint32_t outline) {
   this->m_textColor = text;
   this->m_outlineColor = outline;

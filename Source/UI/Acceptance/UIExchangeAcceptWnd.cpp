@@ -10,12 +10,13 @@
 #include <cstring>
 
 // OFFSET: 0x008C7AA0
+// FUNCTION: fn_11941
 UIExchangeAcceptWnd::UIExchangeAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
     : UIChooseSellBuyWnd(windows, frames, acceptance), saved(nullptr) {
 }
 
 // OFFSET: 0x008CC9C0
-// FUNCTION: fn_12021
+// FUNCTION: fn_11996
 UIExchangeAcceptWnd::~UIExchangeAcceptWnd() = default;
 
 // OFFSET: 0x008E0380

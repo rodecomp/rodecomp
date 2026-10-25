@@ -5,7 +5,6 @@
 namespace {
   // OFFSET: 0x00554340
   // FUNCTION: fn_02022
-
   ModelRotationKey MatrixQuaternion(const AffineMatrix& matrix) {
     ModelRotationKey result{0, {0, 0, 0, 1}};
     const float trace = ((matrix.values[0] + 1.0f) + matrix.values[4]) + matrix.values[8];

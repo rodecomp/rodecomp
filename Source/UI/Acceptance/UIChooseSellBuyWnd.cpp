@@ -14,14 +14,15 @@ namespace {
 }
 
 // OFFSET: 0x008C73C0
+// FUNCTION: fn_11930
 UIChooseSellBuyWnd::UIChooseSellBuyWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
     : UIFrameWnd(windows, frames, 0), identity(0), m_acceptance(&acceptance) {
 }
 
 // OFFSET: 0x008CC430
-// FUNCTION: fn_12010
 UIChooseSellBuyWnd::~UIChooseSellBuyWnd() = default;
 
+// INLINED
 void UIChooseSellBuyWnd::AddChoice(const char* name, int id, int x, int y) {
   auto* button = new UIBitmapButton(*this->m_context, this->m_acceptance->text.buttons);
   const char* suffixes[] = {"", "_a", "_b"};
@@ -37,6 +38,7 @@ void UIChooseSellBuyWnd::AddChoice(const char* name, int id, int x, int y) {
   this->AddChild(button);
 }
 
+// INLINED
 void UIChooseSellBuyWnd::CreateViewer(int width, int height) {
   auto& text = this->m_acceptance->text;
   this->viewer = new UITextViewer(*this->m_context, text);

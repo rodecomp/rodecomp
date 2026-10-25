@@ -13,6 +13,7 @@ namespace {
                                 "\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AccountLinkedUserData\\CAcco"
                                 "untLinkedUserDataLoadAsyncWork.cpp";
 
+  // INLINED
   AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
@@ -25,8 +26,7 @@ CAccountLinkedUserDataLoadAsyncWork::CAccountLinkedUserDataLoadAsyncWork()
     : NAsyncWork("AccountLinkedUserData_Load"), m_accountId(0), m_diagnostic(Diagnostic(false, "unknwon", 26)), m_context(nullptr) {
 }
 
-// OFFSET: 0x005BA410
-// FUNCTION: fn_03442
+// INLINED
 CAccountLinkedUserDataLoadAsyncWork::~CAccountLinkedUserDataLoadAsyncWork() = default;
 
 // OFFSET: 0x005BA820

@@ -35,6 +35,9 @@ public:
   virtual ~NRecycleObjectPoolInter();
 };
 
+// OFFSET: 0x005782C0
+inline NRecycleObjectPoolInter::~NRecycleObjectPoolInter() = default;
+
 template <class T> class NRecycleObjectPool : public NRecycleObjectPoolInter {
 public:
   // OFFSET: 0x00575AC0
@@ -44,8 +47,7 @@ public:
     this->m_enabled = true;
   }
 
-  // OFFSET: 0x005775F0
-  // FUNCTION: fn_02536
+  // INLINED
   ~NRecycleObjectPool() override {
     for (T* object : this->m_objects) {
       delete object;

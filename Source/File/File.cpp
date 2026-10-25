@@ -3,18 +3,17 @@
 
 #include <cstring>
 
-// ORIGINAL_SITE: 0x00E48460 in fn_24220 (fragment)
+// INLINED
 CFile::CFile() : m_handle(INVALID_HANDLE_VALUE), m_data(nullptr), m_position(0), m_size(0) {
 }
 
 // OFFSET: 0x005222F0
-// FUNCTION: fn_01126
+// FUNCTION: fn_01124
 CFile::~CFile() {
   this->Close();
 }
 
-// OFFSET: 0x0057C030
-// FUNCTION: fn_02597
+// INLINED
 bool CFile::OpenWrite(const char* path, CRenderSystemBase* renderSystem) {
   this->m_path = path;
   this->m_handle = CreateFileA(path, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);

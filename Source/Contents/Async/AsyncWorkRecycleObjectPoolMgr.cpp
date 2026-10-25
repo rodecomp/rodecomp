@@ -17,14 +17,14 @@
 #include <new>
 
 // OFFSET: 0x00576660
+// FUNCTION: fn_02531
 CAsyncWorkRecycleObjectPoolMgr::CAsyncWorkRecycleObjectPoolMgr() : m_registered(false) {
   if (this->RegisterPools()) {
     this->m_registered = true;
   }
 }
 
-// OFFSET: 0x00578230
-// FUNCTION: fn_02550
+// INLINED
 CAsyncWorkRecycleObjectPoolMgr::~CAsyncWorkRecycleObjectPoolMgr() {
   for (const auto& entry : this->m_pools) {
     delete entry.second;
@@ -40,7 +40,7 @@ bool CAsyncWorkRecycleObjectPoolMgr::RegisterPools() {
       return false;
     }
 
-    pool.release();
+    (void) pool.release();
     return true;
   };
 

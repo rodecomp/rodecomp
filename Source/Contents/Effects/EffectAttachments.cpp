@@ -26,7 +26,7 @@ bool EffectAttachments::Contains(const RagEffectState* effect) const {
   return false;
 }
 
-// ORIGINAL_SITE: 0x00CB4416 in fn_21111 (fragment)
+// INLINED
 void EffectAttachments::Unlink(RagEffectState* effect) {
   if (!effect) {
     return;
@@ -47,7 +47,7 @@ void EffectAttachments::Unlink(RagEffectState* effect) {
   }
 }
 
-// OFFSET: 0x00CA8C40
+// INLINED
 void EffectAttachments::DetachAll() {
   for (RagEffectState* effect : this->effects) {
     if (effect) {

@@ -7,6 +7,7 @@
 
 class BrowserDocumentUI final : public IDocHostUIHandler {
 public:
+  // INLINED
   explicit BrowserDocumentUI(IUnknown& site) : m_site(site) {
   }
 

@@ -19,7 +19,6 @@ bool CRenderObject::Update() {
 
 // OFFSET: 0x00CBF920
 // FUNCTION: fn_21115
-
 void CRenderObject::SendObjectMessage(CGameObject*, int, int, int, int, int, int, int, int, int, int, int, int, int, int) {
 }
 

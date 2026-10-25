@@ -10,6 +10,7 @@
 #include <timeapi.h>
 
 // OFFSET: 0x008A3700
+// FUNCTION: fn_11657
 UIFrameWnd::UIFrameWnd(UIWindowContext& windowContext, UIFrameContext& frameContext, unsigned char cached)
     : UIWindow(windowContext, cached), m_dragX(0), m_dragY(0), m_message0(600), m_message1(600), m_frameContext(&frameContext) {
   this->m_textCache.max_load_factor(1.0f);
@@ -18,7 +19,7 @@ UIFrameWnd::UIFrameWnd(UIWindowContext& windowContext, UIFrameContext& frameCont
 
 // OFFSET: 0x008A4E90
 // OFFSET: 0x008A60E0
-// FUNCTION: fn_11692
+// FUNCTION: fn_11678
 UIFrameWnd::~UIFrameWnd() = default;
 
 // OFFSET: 0x005C4640

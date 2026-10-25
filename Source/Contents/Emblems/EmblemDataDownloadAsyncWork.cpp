@@ -10,6 +10,7 @@
 namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\Emblem\\CEmblemDataDownloadAsyncWork.cpp";
 
+  // INLINED
   AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
@@ -23,8 +24,7 @@ CEmblemDataDownloadAsyncWork::CEmblemDataDownloadAsyncWork()
       m_connection(nullptr) {
 }
 
-// OFFSET: 0x005E9FE0
-// FUNCTION: fn_03964
+// INLINED
 CEmblemDataDownloadAsyncWork::~CEmblemDataDownloadAsyncWork() = default;
 
 // OFFSET: 0x005EA350

@@ -26,10 +26,12 @@ int StringFormat(char* buffer, std::size_t sizeInBytes, std::size_t count, const
 namespace {
   class ThreadSafeBuffer {
   public:
+    // FUNCTION: fn_07592
     ThreadSafeBuffer() {
       InitializeCriticalSection(&this->m_criticalSection);
     }
 
+    // INLINED
     virtual ~ThreadSafeBuffer() {
       DeleteCriticalSection(&this->m_criticalSection);
     }

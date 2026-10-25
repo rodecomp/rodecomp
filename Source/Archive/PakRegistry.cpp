@@ -5,8 +5,7 @@
 // GLOBAL: gl_24380
 PakRegistry g_pakRegistry;
 
-// OFFSET: 0x01095B80
-// FUNCTION: fn_41403
+// INLINED
 PakRegistry::~PakRegistry() {
   for (auto& archive : this->m_archives) {
     delete archive.first;

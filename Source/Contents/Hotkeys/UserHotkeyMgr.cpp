@@ -4,6 +4,7 @@
 #include <new>
 
 namespace {
+  // INLINED
   bool HiddenInterfaceIndex(int index) {
     switch (index) {
     case 30:
@@ -64,11 +65,11 @@ namespace {
 CUserHotkeyMgr* g_userHotkeyMgr;
 
 // OFFSET: 0x005F7AA0
+// FUNCTION: fn_04052
 CUserHotkeyMgr::CUserHotkeyMgr() : m_enabled(true), m_loaded(false), m_changes(0), m_version2(false) {
 }
 
 // OFFSET: 0x005F7CE0
-// FUNCTION: fn_04054
 CUserHotkeyMgr::~CUserHotkeyMgr() = default;
 
 // OFFSET: 0x005F7F70

@@ -3,7 +3,7 @@
 #include <bit>
 #include <cstdint>
 
-// OFFSET: 0x009122B0
+// INLINED
 ShortcutGrid::ShortcutGrid() : hovered(-1), row(-1), rows(1) {
 }
 

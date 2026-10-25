@@ -6,8 +6,7 @@
 // GLOBAL: gl_24354
 CCURLMgr* g_curlMgr;
 
-// OFFSET: 0x005E9290
-// FUNCTION: fn_03952
+// INLINED
 CCURLMgr::CCURLMgr() : m_enabled(false), m_module(nullptr) {
   this->m_module = LoadLibraryA("libcurl.dll");
   if (this->m_module) {
@@ -27,8 +26,7 @@ CCURLMgr::CCURLMgr() : m_enabled(false), m_module(nullptr) {
   }
 }
 
-// OFFSET: 0x005E8F70
-// FUNCTION: fn_03950
+// INLINED
 CCURLMgr::~CCURLMgr() {
   this->globalCleanup();
   if (this->m_module) {

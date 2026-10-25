@@ -7,10 +7,12 @@
 
 #include <cstring>
 
+// INLINED
 AnimatedModelNode::AnimatedModelNode(TextureCache& textures)
     : model(nullptr), parent(nullptr), unknown_0040(0), vertexCount(0), textureVertexCount(0), faceCount(0), sharedTextureVertices(0), m_textures(textures) {
 }
 
+// INLINED
 AnimatedModelNode::~AnimatedModelNode() {
   for (CTexture* texture : this->textures) {
     texture->Release();
@@ -19,14 +21,14 @@ AnimatedModelNode::~AnimatedModelNode() {
 }
 
 // OFFSET: 0x007521F0
-// FUNCTION: fn_07956
+// FUNCTION: fn_07979
 C3dAnimModelRes::C3dAnimModelRes(ModelResourceContext& context)
     : shade(2), frameCount(0), animationLength(0), speed(1.0f), unknown_0150(0), unknown_0154(0.0f), unknown_0158(0.0f), unknown_015C(0.0f), alpha(255),
       m_context(&context) {
 }
 
 // OFFSET: 0x00753510
-// FUNCTION: fn_07960
+// FUNCTION: fn_07993
 C3dAnimModelRes::~C3dAnimModelRes() {
   this->Unload();
 }
@@ -38,7 +40,6 @@ C3dAnimModelRes* C3dAnimModelRes::Create() {
 }
 
 // OFFSET: 0x00752380
-// FUNCTION: fn_07957
 // OFFSET: 0x0075C710
 // FUNCTION: fn_08023
 void C3dAnimModelRes::Unload() {

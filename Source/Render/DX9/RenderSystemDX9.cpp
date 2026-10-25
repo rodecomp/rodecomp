@@ -14,9 +14,8 @@ CRenderSystemDX9::CRenderSystemDX9(RenderSystemDX9Context& context)
 }
 
 // OFFSET: 0x0056D180
-// FUNCTION: fn_02355
 // OFFSET: 0x0056D320
-// FUNCTION: fn_02358
+// FUNCTION: fn_02355
 CRenderSystemDX9::~CRenderSystemDX9() {
   delete this->m_device;
   this->m_device = nullptr;
@@ -39,6 +38,7 @@ void CRenderSystemDX9::RefreshContexts() {
 }
 
 // OFFSET: 0x0056E250
+// FUNCTION: fn_02373
 std::int32_t CRenderSystemDX9::Backend() {
   return 2;
 }

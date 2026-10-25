@@ -6,6 +6,7 @@
 
 struct AttachedEffect : CRenderObject {
   AttachedEffect(ResourceMgr& resources, JobNames& names);
+  ~AttachedEffect() override;
 
   RagEffectState state;
 };

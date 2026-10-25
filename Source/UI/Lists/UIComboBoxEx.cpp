@@ -28,7 +28,6 @@ UIComboBoxEx::UIComboBoxEx(UIWindowContext& windows, UIComboBoxContext& combo) :
 }
 
 // OFFSET: 0x00872C00
-// FUNCTION: fn_11136
 UIComboBoxEx::~UIComboBoxEx() = default;
 
 // OFFSET: 0x0087B5A0
@@ -207,6 +206,7 @@ int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   return 0;
 }
 
+// INLINED
 void UIComboBoxEx::DrawRows(bool centered) {
   const unsigned end = std::min(
     static_cast<unsigned>(this->lines.size()), static_cast<unsigned>((this->topLine + (this->geometry.height / this->lineHeight - this->bottomMargin)))
@@ -263,12 +263,12 @@ void UIComboBoxEx::Paint() {
 }
 
 // OFFSET: 0x00885250
-// FUNCTION: fn_11318
+// FUNCTION: fn_11036
 UIComboBoxEx2::UIComboBoxEx2(UIWindowContext& windows, UIComboBoxContext& combo) : UIComboBoxEx(windows, combo), alignment(0) {
 }
 
 // OFFSET: 0x00872B50
-// FUNCTION: fn_11135
+// FUNCTION: fn_11102
 UIComboBoxEx2::~UIComboBoxEx2() = default;
 
 // OFFSET: 0x00885EE0

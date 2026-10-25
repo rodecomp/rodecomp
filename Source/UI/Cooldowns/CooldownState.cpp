@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <timeapi.h>
 
+// INLINED
 std::uint32_t CooldownClock::Now() const {
   return this->restricted ? this->serverTick : timeGetTime();
 }

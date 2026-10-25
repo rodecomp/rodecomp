@@ -5,12 +5,12 @@
 #include "UI/UIStaticBitmap.h"
 
 // OFFSET: 0x00850430
+// FUNCTION: fn_10676
 UIStaticBitmap::UIStaticBitmap(UIWindowContext& windows, UIButtonContext& controls)
     : UIWindow(windows, 0), tooltipX(0), tooltipY(-20), forwardHover(0), m_controls(&controls) {
 }
 
 // OFFSET: 0x00852F20
-// FUNCTION: fn_10730
 UIStaticBitmap::~UIStaticBitmap() = default;
 
 // OFFSET: 0x00865740

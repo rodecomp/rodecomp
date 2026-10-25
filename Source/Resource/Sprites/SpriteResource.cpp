@@ -11,14 +11,14 @@
 #include <string>
 
 // OFFSET: 0x0075FE90
-// FUNCTION: fn_08053
+// FUNCTION: fn_08060
 CSprRes::CSprRes(SpriteResourceContext& context) : indexedCount(0), m_context(&context) {
 }
 
-// OFFSET: 0x00760BB0
-// FUNCTION: fn_08056
+// INLINED
 CSprRes::~CSprRes() = default;
 
+// FUNCTION: fn_08053
 CSprRes* CSprRes::Create() {
   return new CSprRes(*this->m_context);
 }

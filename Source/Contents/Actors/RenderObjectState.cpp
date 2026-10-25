@@ -8,14 +8,12 @@
 #include <windows.h>
 #include <timeapi.h>
 
-// OFFSET: 0x00CA8730
-// FUNCTION: fn_20991
+// INLINED
 RenderObjectState::RenderObjectState(ResourceMgr& resources, JobNames& names) : sprite(nullptr), action(nullptr) {
   this->Reset(resources, names);
 }
 
-// OFFSET: 0x00CA8F90
-// FUNCTION: fn_20998
+// INLINED
 RenderObjectState::~RenderObjectState() {
   if (this->sprite) {
     this->sprite->Release();

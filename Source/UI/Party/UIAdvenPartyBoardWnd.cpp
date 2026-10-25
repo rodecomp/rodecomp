@@ -28,13 +28,13 @@ namespace {
 }
 
 // OFFSET: 0x007BAC40
+// FUNCTION: fn_09274
 UIAdvenPartyBoardWnd::UIAdvenPartyBoardWnd(UIWindowContext& windows, UIFrameContext& frames, UIAdvenPartyBoardContext& board)
     : UIFrameWnd(windows, frames, 0), unknown_0104(0), unknown_0108(0), page(1), totalPages(1), unknown_0114(1), unknown_0118(0), selectedType(0),
       m_board(&board) {
 }
 
 // OFFSET: 0x007BB590
-// FUNCTION: fn_09282
 UIAdvenPartyBoardWnd::~UIAdvenPartyBoardWnd() = default;
 
 // OFFSET: 0x007C23C0
@@ -289,6 +289,7 @@ void UIAdvenPartyBoardWnd::SetOwnParty(CAdvenPartyInfo value) {
   this->Registration(true);
 }
 
+// INLINED
 void UIAdvenPartyBoardWnd::RefreshRows() {
   for (auto* row : this->rows) {
     row->Reset();
@@ -316,6 +317,7 @@ void UIAdvenPartyBoardWnd::RefreshRows() {
   this->Invalidate();
 }
 
+// INLINED
 void UIAdvenPartyBoardWnd::UpdatePagination() {
   if (this->page <= this->totalPages) {
     if (this->page != this->totalPages) {
@@ -342,6 +344,7 @@ void UIAdvenPartyBoardWnd::UpdatePagination() {
   this->refresh->Invalidate();
 }
 
+// INLINED
 void UIAdvenPartyBoardWnd::ResetSearch() {
   char number[10] = {};
   _snprintf_s(number, sizeof(number), _TRUNCATE, "%d", std::max((this->m_board->playerLevel - 5), 1));
@@ -361,6 +364,7 @@ void UIAdvenPartyBoardWnd::ResetSearch() {
   this->Invalidate();
 }
 
+// INLINED
 void UIAdvenPartyBoardWnd::Search(int trigger) {
   this->searching = 1;
   const auto digits = [](const char* text) {

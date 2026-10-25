@@ -4,6 +4,7 @@
 #include <json/value.h>
 #include <new>
 
+// INLINED
 std::uint32_t CAdventurerAgencyMgr::Id(double value) {
   if (!(value < 4294967296.0) || value <= -1.0) {
     return 0xFFFFFFFFu;
@@ -22,9 +23,8 @@ CAdventurerAgencyMgr::CAdventurerAgencyMgr() : enabled(true), registered(false),
 }
 
 // OFFSET: 0x005CA880
-// FUNCTION: fn_03650
 // OFFSET: 0x005CA8D0
-// FUNCTION: fn_03651
+// FUNCTION: fn_03650
 CAdventurerAgencyMgr::~CAdventurerAgencyMgr() = default;
 
 // OFFSET: 0x005CA940

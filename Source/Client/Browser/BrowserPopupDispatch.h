@@ -8,6 +8,7 @@ struct BrowserFactory;
 
 class BrowserPopupDispatch final : public IDispatch {
 public:
+  // INLINED
   BrowserPopupDispatch(IUnknown& site, BrowserFactory& factory, const int& width, const int& height)
       : m_site(site), m_factory(factory), m_width(width), m_height(height) {
   }

@@ -9,9 +9,8 @@ NAsyncWorkThread::NAsyncWorkThread(NAsyncWorkRequestQueue* requests, NAsyncWorkR
 }
 
 // OFFSET: 0x00732A80
-// FUNCTION: fn_07577
 // OFFSET: 0x00732B40
-// FUNCTION: fn_07581
+// FUNCTION: fn_07577
 NAsyncWorkThread::~NAsyncWorkThread() {
   g_messageMgr->Unregister(this->m_objectId, static_cast<NInter*>(this));
 }

@@ -8,12 +8,14 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   float Minimum4(float a, float b, float c, float d) {
     const float first = !(a > b) ? a : b;
     const float second = !(c > d) ? c : d;
     return first > second ? second : first;
   }
 
+  // INLINED
   float Maximum4(float a, float b, float c, float d) {
     const float first = !(b > a) ? a : b;
     const float second = !(d > c) ? c : d;
@@ -21,6 +23,7 @@ namespace {
   }
 }
 
+// INLINED
 bool GroundQuadVisible(const RenderVertex* vertices, const GroundRenderContext& context) {
   const float minimumX = Minimum4(vertices[0].x, vertices[1].x, vertices[2].x, vertices[3].x);
 
@@ -56,6 +59,7 @@ bool GroundQuadVisible(const RenderVertex* vertices, const GroundRenderContext& 
 }
 
 namespace {
+  // INLINED
   void Submit(const float* matrix, const GroundQuad& quad, bool clip, GroundRenderContext& context) {
     RenderVertex vertices[4]{};
 

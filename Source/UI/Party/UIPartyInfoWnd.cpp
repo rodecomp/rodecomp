@@ -7,13 +7,13 @@
 #include <cstdio>
 
 // OFFSET: 0x007BAE20
+// FUNCTION: fn_09277
 UIPartyInfoWnd::UIPartyInfoWnd(UIWindowContext& windows, UIButtonContext& buttons, PartyRowContext& row)
     : UIBitmapButton(windows, buttons), tanker(0), dealer(0), healer(0), assist(0), m_row(&row) {
   this->m_drawLabel = 0;
 }
 
 // OFFSET: 0x007BB740
-// FUNCTION: fn_09285
 UIPartyInfoWnd::~UIPartyInfoWnd() = default;
 
 // OFFSET: 0x007BBF00
@@ -44,8 +44,7 @@ void UIPartyInfoWnd::SetInfo(const CAdvenPartyInfo& value) {
   this->info = value;
 }
 
-// OFFSET: 0x007C0420
-// FUNCTION: fn_09312
+// INLINED
 void UIPartyInfoWnd::Reset() {
   this->m_drawLabel = 0;
   this->memo.clear();

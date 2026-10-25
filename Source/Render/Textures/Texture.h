@@ -9,7 +9,8 @@ struct SpriteRleImage;
 
 enum TextureFormat : std::int32_t { UnknownTextureFormat = -1, A1R5G5B5 = 0, A4R4G4B4 = 1, R5G6B5 = 2, X1R5G5B5 = 3, A8R8G8B8 = 4 };
 
-// STATIC: 0x01312DE0 / 0x01312DE4
+// STATIC: 0x01312DE0
+// STATIC: 0x01312DE4
 extern float g_textureOffsetX;
 extern float g_textureOffsetY;
 
@@ -33,12 +34,15 @@ public:
   std::uint32_t Release();
   int SetName(const char* name);
 
+  // INLINED
   std::uint32_t TextureWidth() const {
     return this->m_textureWidth;
   }
+  // INLINED
   std::uint32_t TextureHeight() const {
     return this->m_textureHeight;
   }
+  // INLINED
   std::int32_t Format() const {
     return this->m_format;
   }

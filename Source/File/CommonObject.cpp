@@ -6,8 +6,7 @@
 #include <memory>
 #include <new>
 
-// OFFSET: 0x006D3700
-// FUNCTION: fn_06543
+// INLINED
 CCommonObject::~CCommonObject() {
   this->Clear();
 }

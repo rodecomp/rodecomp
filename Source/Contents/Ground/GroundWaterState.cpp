@@ -6,8 +6,7 @@
 #include <algorithm>
 #include <cstdio>
 
-// OFFSET: 0x00ABD640
-// FUNCTION: fn_17546
+// INLINED
 GroundWaterState::GroundWaterState() : level(0.0f), animation(3), pitch(50), phase(2), type(0), height(1.0f), columns(1), rows(1), partitioned(false) {
 }
 
@@ -69,7 +68,7 @@ float GroundWaterState::Level(int width, int height, int column, int row) const 
 // OFFSET: 0x00AC1430
 // FUNCTION: fn_17581
 void GroundWaterState::Update(TextureCache& textures) {
-  // STATIC: 0x01159248; original client-code-page bytes, not a UTF-8 path.
+  // STATIC: 0x01159248
   constexpr char format[] = "\xBF\xF6\xC5\xCD\\water%d%02d.jpg";
   char name[32]{};
 

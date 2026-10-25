@@ -28,10 +28,12 @@ namespace {
     }
   }
 
+  // INLINED
   void CardIds(const ItemInfo& item, int (&ids)[4]) {
     std::memcpy(ids, item.unknown_001C, sizeof(ids));
   }
 
+  // INLINED
   int Copy(char* output, int capacity, const char* text) {
     const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
     return error == 0 || error == 80 ? (output ? static_cast<int>(strnlen(output, capacity)) : 0) : 0;

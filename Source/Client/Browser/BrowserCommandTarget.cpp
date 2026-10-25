@@ -29,7 +29,7 @@ HRESULT STDMETHODCALLTYPE BrowserCommandTarget::QueryStatus(const GUID*, ULONG, 
 // OFFSET: 0x00AB16A0
 // FUNCTION: fn_17353
 HRESULT STDMETHODCALLTYPE BrowserCommandTarget::Exec(const GUID* group, DWORD command, DWORD, VARIANT*, VARIANT*) {
-  // STATIC: 0x011B0880 (CGID_DocHostCommandHandler)
+  // STATIC: 0x011B0880
   if (!group || !IsEqualGUID(*group, CGID_DocHostCommandHandler)) {
     return OLECMDERR_E_UNKNOWNGROUP;
   }

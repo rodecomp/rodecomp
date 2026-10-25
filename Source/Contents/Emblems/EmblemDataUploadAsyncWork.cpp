@@ -11,6 +11,7 @@
 namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\Emblem\\CEmblemDataUploadAsyncWork.cpp";
 
+  // INLINED
   AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
@@ -23,8 +24,7 @@ CEmblemDataUploadAsyncWork::CEmblemDataUploadAsyncWork()
     : NAsyncWork("Emblem_Upload"), m_accountId(0), m_guildId(0), m_diagnostic(Diagnostic(false, "unknwon", 27)), m_owner(nullptr), m_context(nullptr) {
 }
 
-// OFFSET: 0x005EC350
-// FUNCTION: fn_03979
+// INLINED
 CEmblemDataUploadAsyncWork::~CEmblemDataUploadAsyncWork() = default;
 
 // OFFSET: 0x005EC6F0

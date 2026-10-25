@@ -10,6 +10,7 @@ public:
   virtual bool Execute();
   virtual void Complete();
 
+  // INLINED
   std::pair<std::uint32_t, std::uint32_t> GroupKey() const {
     return {m_group, m_key};
   }
@@ -26,6 +27,7 @@ public:
   NAsyncWorkPtr(NRecycleObjectPoolMgr* manager, std::string poolName);
   virtual ~NAsyncWorkPtr();
 
+  // INLINED
   NAsyncWork* Get() const {
     return this->m_work;
   }

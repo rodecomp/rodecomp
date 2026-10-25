@@ -3,11 +3,12 @@
 #include <bit>
 #include <cstring>
 
-namespace {
-  // STATIC: 0x01312438
-  // GLOBAL: gl_21913
-  constexpr float identity[12] = {1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0};
+// STATIC: 0x01312438
+// GLOBAL: gl_21913
+const float g_identityMatrix[12] = {1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0};
 
+namespace {
+  // INLINED
   void Rotate(float* values, const float* rotation) {
     for (unsigned row = 0; row < 4; ++row) {
       const float x = values[row * 3];
@@ -24,8 +25,9 @@ namespace {
   }
 }
 
+// INLINED
 void AffineMatrix::Identity() {
-  std::memcpy(this->values, identity, sizeof(identity));
+  std::memcpy(this->values, g_identityMatrix, sizeof(g_identityMatrix));
 }
 
 // OFFSET: 0x00555360

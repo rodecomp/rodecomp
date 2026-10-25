@@ -7,14 +7,12 @@
 // GLOBAL: gl_24353
 CCharacterLinkedUserDataMgr* g_characterLinkedUserDataMgr;
 
-// OFFSET: 0x005E5DD0
-// FUNCTION: fn_03923
+// INLINED
 CCharacterLinkedUserDataMgr::CCharacterLinkedUserDataMgr()
     : m_enabled(true), m_accountId(0), m_characterId(0), m_accountName("unknown"), m_loaded(false), m_pendingSaves(0) {
 }
 
-// OFFSET: 0x005E5D50
-// FUNCTION: fn_03922
+// INLINED
 CCharacterLinkedUserDataMgr::~CCharacterLinkedUserDataMgr() = default;
 
 // OFFSET: 0x005E5DD0

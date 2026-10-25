@@ -5,11 +5,13 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   std::uint32_t AlignDimension(int value) {
     const std::uint32_t dimension = value;
     return dimension + ((0u - dimension) & 3);
   }
 
+  // INLINED
   DDSURFACEDESC2 Description(DeviceOwnerDX7& owner, DWORD width, DWORD height) {
     DDSURFACEDESC2 description{};
     description.dwSize = sizeof(description);
@@ -24,10 +26,12 @@ namespace {
     return description;
   }
 
+  // INLINED
   std::uint16_t Channel(unsigned value, const DeviceOwnerDX7::Channel& channel) {
     return static_cast<std::uint16_t>((value >> (channel.expansion & 31)) << (channel.shift & 31));
   }
 
+  // FUNCTION: fn_01787
   std::uint16_t Color(DeviceOwnerDX7& owner, unsigned red, unsigned green, unsigned blue) {
     return static_cast<std::uint16_t>(Channel(red, owner.red) + Channel(green, owner.green) + Channel(blue, owner.blue));
   }
@@ -58,9 +62,8 @@ CSurfaceDX7::CSurfaceDX7(DeviceOwnerDX7& owner, IDirectDrawSurface7* surface) : 
 }
 
 // OFFSET: 0x00542DC0
-// FUNCTION: fn_01779
 // OFFSET: 0x00542E60
-// FUNCTION: fn_01781
+// FUNCTION: fn_01779
 CSurfaceDX7::~CSurfaceDX7() {
   if (this->m_surface) {
     this->m_surface->Release();

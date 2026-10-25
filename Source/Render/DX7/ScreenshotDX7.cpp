@@ -13,6 +13,7 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   std::uint16_t PackedColor(const DeviceOwnerDX7& owner, unsigned color) {
     const auto channel = [](unsigned value, const DeviceOwnerDX7::Channel& field) {
       return static_cast<std::uint16_t>((value >> (field.expansion & 31)) << (field.shift & 31));
@@ -20,6 +21,7 @@ namespace {
     return static_cast<std::uint16_t>(channel((color >> 16) & 255, owner.red) + channel((color >> 8) & 255, owner.green) + channel(color & 255, owner.blue));
   }
 
+  // INLINED
   unsigned char ExpandedChannel(unsigned value, DWORD mask, const DeviceOwnerDX7::Channel& field) {
     const auto component = static_cast<unsigned char>((value & mask) >> (field.shift & 31));
     return static_cast<unsigned char>(static_cast<unsigned>(component) << (field.expansion & 31));

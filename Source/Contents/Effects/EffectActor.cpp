@@ -1,10 +1,10 @@
 #include "Contents/Effects/EffectActor.h"
 
-// OFFSET: 0x00CA82E0
+// INLINED
 EffectActorState::EffectActorState() : unknown_0138(-1), unknown_013C(0), unknown_0140(0), first(nullptr), second(nullptr) {
 }
 
-// OFFSET: 0x00CA8C40
+// INLINED
 EffectActorState::~EffectActorState() {
   this->Attachments().DetachAll();
 }
@@ -14,6 +14,7 @@ EffectAttachments EffectActorState::Attachments() {
 }
 
 // OFFSET: 0x00CA82E0
+// FUNCTION: fn_20987
 EffectActor::EffectActor(ResourceMgr& resources, JobNames& names) : CRenderObject(resources, names) {
   this->render.unknown_0130[0] = 0;
 }

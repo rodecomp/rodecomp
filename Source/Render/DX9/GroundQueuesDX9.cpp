@@ -9,6 +9,7 @@
 #include <cstdint>
 
 namespace {
+  // INLINED
   bool TextureBefore(const RenderCommand* left, const RenderCommand* right) {
     return reinterpret_cast<std::uintptr_t>(left->texture) < reinterpret_cast<std::uintptr_t>(right->texture);
   }

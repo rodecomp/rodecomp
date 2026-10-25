@@ -15,7 +15,6 @@ ChatSuggestions* g_chatSuggestions = nullptr;
 class UICashEmotionMiniWnd {
 public:
   // OFFSET: 0x007C9200
-  // FUNCTION: fn_09428
   unsigned int Select(int actionId);
 };
 

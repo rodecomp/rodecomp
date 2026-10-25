@@ -15,6 +15,7 @@ public:
   bool Peek(int bytes, void* destination) const;
   bool Consume(int bytes);
 
+  // INLINED
   char* Data() const {
     return this->m_data + this->m_read;
   }

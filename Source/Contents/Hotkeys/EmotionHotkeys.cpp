@@ -85,8 +85,7 @@ bool EmotionHotkeys::LoadDefaults(std::uint32_t accountId, bool languagePrefix, 
   return this->current.size() == 10;
 }
 
-// OFFSET: 0x005BCE50
-// FUNCTION: fn_03469
+// INLINED
 void EmotionHotkeys::Export(Json::Value& data) const {
   Json::Value values;
 

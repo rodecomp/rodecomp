@@ -3,6 +3,7 @@
 #include <cmath>
 
 namespace {
+  // INLINED
   float Absolute(float value) {
     return std::fabs(value);
   }

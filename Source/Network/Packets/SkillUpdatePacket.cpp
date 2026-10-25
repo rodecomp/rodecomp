@@ -4,6 +4,7 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   template <class T> T Read(const unsigned char* bytes) {
     T value;
     std::memcpy(&value, bytes, sizeof(value));

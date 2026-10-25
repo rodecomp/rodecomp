@@ -5,6 +5,7 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   float InverseLength(float squared) {
     const float length = std::sqrt(squared);
     return 1.0f / length;

@@ -7,17 +7,16 @@
 #include <windows.h>
 #include <timeapi.h>
 
-// OFFSET: 0x0060AE30
-// FUNCTION: fn_04259
+// INLINED
 CPlayerNameDictionary::CPlayerNameDictionary(PlayerNameContext& context) : m_enabled(true), m_context(&context) {
 }
 
 // OFFSET: 0x0060A9D0
 // OFFSET: 0x0060AAE0
+// FUNCTION: fn_04256
 CPlayerNameDictionary::~CPlayerNameDictionary() = default;
 
 // OFFSET: 0x0060AFB0
-// FUNCTION: fn_04261
 // OFFSET: 0x0060B010
 // FUNCTION: fn_04262
 std::string CPlayerNameDictionary::Lookup(std::uint32_t id) {

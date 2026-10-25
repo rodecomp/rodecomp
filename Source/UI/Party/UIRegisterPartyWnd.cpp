@@ -46,12 +46,12 @@ namespace {
 }
 
 // OFFSET: 0x007BAF30
+// FUNCTION: fn_09278
 UIRegisterPartyWnd::UIRegisterPartyWnd(UIWindowContext& windows, UIFrameContext& frames, UIRegisterPartyContext& registration)
     : UIFrameWnd(windows, frames, 0), selectedType(0), m_registration(&registration) {
 }
 
 // OFFSET: 0x007BB810
-// FUNCTION: fn_09286
 UIRegisterPartyWnd::~UIRegisterPartyWnd() = default;
 
 // OFFSET: 0x007C2440

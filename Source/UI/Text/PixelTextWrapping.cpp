@@ -5,6 +5,7 @@
 #include <mbstring.h>
 
 namespace {
+  // INLINED
   unsigned Digit(unsigned char value) {
     if (value >= '0' && value <= '9') {
       return value - '0';

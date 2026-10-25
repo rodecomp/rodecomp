@@ -2,8 +2,7 @@
 
 #include <new>
 
-// OFFSET: 0x00560A40
-// FUNCTION: fn_02161
+// INLINED
 RenderPrimitivePool::RenderPrimitivePool() {
   this->m_commands.resize(512, RenderPrimitive());
   this->m_current = this->m_commands.begin();
@@ -27,8 +26,7 @@ RenderPrimitive* RenderPrimitivePool::Acquire() {
   return new (command) RenderPrimitive;
 }
 
-// OFFSET: 0x0055A360
-// FUNCTION: fn_02079
+// INLINED
 void RenderPrimitivePool::Rewind() {
   this->m_current = this->m_commands.begin();
 }

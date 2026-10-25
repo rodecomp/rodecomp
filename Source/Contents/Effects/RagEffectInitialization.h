@@ -12,6 +12,4 @@ void InitializeRagEffect(
   ServiceOptions& options, ResourceMgr& resources
 );
 
-void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& options, char* name);
-
 #endif

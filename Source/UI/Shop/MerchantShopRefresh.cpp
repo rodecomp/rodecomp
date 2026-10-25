@@ -98,6 +98,7 @@ void MerchantShopRefresh::Refresh() {
   this->backup.Clear();
 }
 
+// INLINED
 void StoreBackupContext::RefreshShop() {
   MerchantShopRefresh* window = this->shop ? this->shop : this->otherShop;
 

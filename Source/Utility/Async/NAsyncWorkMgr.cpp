@@ -11,9 +11,8 @@ NAsyncWorkMgr::NAsyncWorkMgr(std::uint32_t workers) : m_enabled(false), m_worker
 }
 
 // OFFSET: 0x00731530
-// FUNCTION: fn_07549
 // OFFSET: 0x007315F0
-// FUNCTION: fn_07550
+// FUNCTION: fn_07549
 NAsyncWorkMgr::~NAsyncWorkMgr() {
   for (auto worker = this->m_workers.begin(); worker != this->m_workers.end(); ++worker) {
     (*worker)->Stop();

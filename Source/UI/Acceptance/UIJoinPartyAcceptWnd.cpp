@@ -8,12 +8,12 @@
 #include <cstring>
 
 // OFFSET: 0x008C8240
+// FUNCTION: fn_11950
 UIJoinPartyAcceptWnd::UIJoinPartyAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
     : UIExchangeAcceptWnd(windows, frames, acceptance) {
 }
 
 // OFFSET: 0x008CCEE0
-// FUNCTION: fn_12031
 UIJoinPartyAcceptWnd::~UIJoinPartyAcceptWnd() = default;
 
 // OFFSET: 0x008FE780

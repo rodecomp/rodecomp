@@ -10,7 +10,8 @@
 #include <tuple>
 
 namespace {
-  // STATIC: 0x01311F00 / 0x01311ED0
+  // STATIC: 0x01311F00
+  // STATIC: 0x01311ED0
   const char* const primary[] = {
     "\xB1\xBC\xB8\xB2",
     "Arial",
@@ -34,6 +35,7 @@ namespace {
     return _stricmp(reinterpret_cast<const char*>(name), font->lfFaceName);
   }
 
+  // INLINED
   const char* PrivatePath(unsigned char bold) {
     return bold == 1 ? "system\\font\\SCDream6.otf" : "system\\font\\SCDream4.otf";
   }
@@ -82,9 +84,8 @@ void FontCache::CreateSystemFont(FontEntry& entry) {
 }
 
 // OFFSET: 0x0054DEE0
-// FUNCTION: fn_01949
 // OFFSET: 0x0054F8A0
-// FUNCTION: fn_01960
+// FUNCTION: fn_01949
 bool FontCache::CreatePrivateFont(FontEntry& entry) {
   const char* path = entry.family == 29 ? PrivatePath(entry.bold) : "";
   entry.privateResources = AddFontResourceExA(path, FR_PRIVATE, nullptr);

@@ -27,16 +27,13 @@ namespace {
   }
 }
 
-// OFFSET: 0x00DD70B0
-// FUNCTION: fn_23283
+// INLINED
 bool PartyMemberEffects::Enabled() const {
   const auto* mode = this->activeMode;
   return mode && (mode->playerOption48 != 0 || mode->playerOption54 != 0);
 }
 
-// OFFSET: 0x00DD70B0
-// FUNCTION: fn_23283
-
+// INLINED
 void PartyMemberEffects::EnsurePartyEffect(std::uint32_t accountId) {
   PartyEffectMode& mode = *this->activeMode;
 

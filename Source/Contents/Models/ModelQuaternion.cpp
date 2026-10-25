@@ -4,8 +4,8 @@
 #include <cmath>
 
 // OFFSET: 0x00554CD0
-// FUNCTION: fn_02030
 // OFFSET: 0x00554B90
+// FUNCTION: fn_02030
 // FUNCTION: fn_02029
 void QuaternionMatrix(const ModelRotationKey& key, AffineMatrix& output) {
   const float x = key.rotation[0];

@@ -21,6 +21,7 @@ class CAsyncWorkMgr : public NAsyncWorkMgr {
 public:
   explicit CAsyncWorkMgr(std::uint32_t workers);
   ~CAsyncWorkMgr() override;
+
   static bool Initialize(std::uint32_t workers);
   static void Shutdown();
 

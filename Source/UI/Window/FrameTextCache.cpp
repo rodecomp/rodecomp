@@ -1,6 +1,7 @@
 #include "UI/Window/FrameTextCache.h"
 
 namespace {
+  // INLINED
   std::uint32_t HashWord(std::uint32_t value) {
     std::uint32_t hash = 0x811C9DC5u;
 

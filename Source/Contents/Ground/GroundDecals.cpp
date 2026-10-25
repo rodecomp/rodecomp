@@ -31,6 +31,7 @@ bool GroundGeometry::CellRectangle(const C3dAttr& terrain, int column, int row, 
 }
 
 namespace {
+  // INLINED
   void DrawDecal(
     const GroundGeometry& ground, const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv,
     float bias, GroundRenderContext& context

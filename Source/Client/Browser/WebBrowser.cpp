@@ -2,6 +2,7 @@
 #include "Client/Browser/BrowserCreation.h"
 #include "Client/Browser/BrowserFrame.h"
 #include "Client/Browser/BrowserInputHandoff.h"
+#include "Client/Browser/BrowserInterface.h"
 #include "Client/Browser/WebBrowser.h"
 #include "Client/Browser/WebEventReceiver.h"
 
@@ -36,7 +37,6 @@ CWebBrowser::~CWebBrowser() {
 }
 
 // OFFSET: 0x00AB22B0
-// FUNCTION: fn_17413
 bool CWebBrowser::Create(int requestedWidth, int requestedHeight) {
   auto& dependencies = *this->context;
   auto sizing = Sizing(*this);
@@ -53,7 +53,6 @@ bool CWebBrowser::Create(int requestedWidth, int requestedHeight) {
 }
 
 // OFFSET: 0x00AB24D0
-// FUNCTION: fn_45432
 bool CWebBrowser::Close() {
   auto& dependencies = *this->context;
   auto sizing = Sizing(*this);
@@ -77,14 +76,12 @@ bool CWebBrowser::AttachExternalEvents(BrowserRegistry& registry) {
 }
 
 // OFFSET: 0x00AB3060
-// FUNCTION: fn_17421
 void CWebBrowser::Resize(int requestedWidth, int requestedHeight) {
   auto sizing = Sizing(*this);
   sizing.Resize(requestedWidth, requestedHeight);
 }
 
 // OFFSET: 0x00AB2E70
-// FUNCTION: fn_17419
 void CWebBrowser::Poll() {
   auto& dependencies = *this->context;
   auto sizing = Sizing(*this);
@@ -95,13 +92,11 @@ void CWebBrowser::Poll() {
 }
 
 // OFFSET: 0x00AB2D50
-// FUNCTION: fn_17418
 bool CWebBrowser::Navigate(std::string address) {
   return NavigateBrowser(this->browser, this->host, this->combo, std::move(address));
 }
 
 // OFFSET: 0x00AB3120
-// FUNCTION: fn_17422
 void CWebBrowser::ShowAuxiliary(unsigned char value) {
   auto sizing = Sizing(*this);
 

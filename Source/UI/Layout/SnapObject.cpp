@@ -2,6 +2,7 @@
 #include "UI/Window/UIWindow.h"
 
 namespace {
+  // INLINED
   bool Overlaps(int a, int b, int c, int d) {
     return (c >= a && c <= b) || (d >= a && d <= b) || (a >= c && a <= d) || (b >= c && b <= d);
   }
@@ -13,9 +14,7 @@ SnapObject::SnapObject() : window(nullptr), visited(0) {
 }
 
 // OFFSET: 0x007E2550
-// FUNCTION: fn_09699
 // OFFSET: 0x007E2360
-// FUNCTION: fn_09696
 SnapObject::~SnapObject() = default;
 
 // OFFSET: 0x007E2770

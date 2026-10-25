@@ -5,13 +5,11 @@
 #include <algorithm>
 #include <cmath>
 
-// OFFSET: 0x007B00F0
-// FUNCTION: fn_09165
+// INLINED
 NamedBinkMovie::NamedBinkMovie(BinkMovieContext& context) : decoder(std::make_unique<BinkMovie>(context)), radius(150.0f) {
 }
 
-// OFFSET: 0x007AFF80
-// FUNCTION: fn_09163
+// INLINED
 NamedBinkMovie::~NamedBinkMovie() = default;
 
 // OFFSET: 0x007AFB50

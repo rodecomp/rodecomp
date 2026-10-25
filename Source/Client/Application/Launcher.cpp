@@ -24,16 +24,14 @@ bool RestartFromCommandLine(char* commandLine) {
   return true;
 }
 
-// OFFSET: 0x00E5D390
-// FUNCTION: fn_24380
+// INLINED
 void ExitForProtectionCheck(const char* commandLine) {
   if (std::strstr(commandLine, "/check_themida")) {
     ExitProcess(0);
   }
 }
 
-// OFFSET: 0x00E5D390
-// FUNCTION: fn_24380
+// INLINED
 bool AcquireInstanceMutex(HANDLE* mutex) {
   *mutex = CreateMutexA(nullptr, TRUE, "MutexInit");
   return GetLastError() != ERROR_ALREADY_EXISTS;

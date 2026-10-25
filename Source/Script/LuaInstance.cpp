@@ -19,6 +19,7 @@ CLuaInstance::CLuaInstance() : m_state(luaL_newstate()) {
 }
 
 // OFFSET: 0x00522290
+// FUNCTION: fn_01125
 CLuaInstance::~CLuaInstance() {
   if (this->m_state) {
     lua_close(this->m_state);

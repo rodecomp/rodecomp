@@ -8,13 +8,11 @@
 // GLOBAL: gl_24355
 CEmblemDataMgr* g_emblemDataMgr;
 
-// OFFSET: 0x005EB150
-// FUNCTION: fn_03970
+// INLINED
 CEmblemDataMgr::CEmblemDataMgr() : m_enabled(true), m_uploading(false) {
 }
 
-// OFFSET: 0x005EB0D0
-// FUNCTION: fn_03969
+// INLINED
 CEmblemDataMgr::~CEmblemDataMgr() = default;
 
 // OFFSET: 0x005EB150

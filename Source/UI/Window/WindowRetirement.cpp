@@ -77,8 +77,7 @@ void WindowRetirement::DismissTransient(UIWindow*& transient) {
   }
 }
 
-// OFFSET: 0x00AA4730
-// FUNCTION: fn_17222
+// INLINED
 void WindowRetirement::DrainPending(
   const std::deque<UIWindow*>& modal, UIWindow*& reference_4F16C, WindowAncestry*& capture, WindowAncestry*& input, WindowAncestry*& hover
 ) {

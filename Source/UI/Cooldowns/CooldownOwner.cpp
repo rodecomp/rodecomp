@@ -1,7 +1,6 @@
 #include "UI/Cooldowns/CooldownOwner.h"
 
-// OFFSET: 0x00CA64C0
-// FUNCTION: fn_20960
+// INLINED
 CooldownOwner::CooldownOwner() : m_initialized(false) {
   this->m_drawing.normal.clear();
   this->m_drawing.reverse.clear();
@@ -9,8 +8,7 @@ CooldownOwner::CooldownOwner() : m_initialized(false) {
   this->m_initialized = true;
 }
 
-// OFFSET: 0x00CA60D0
-// FUNCTION: fn_20956
+// INLINED
 CooldownOwner::~CooldownOwner() {
   this->m_drawing.normal.clear();
   this->m_drawing.reverse.clear();

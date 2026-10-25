@@ -10,13 +10,14 @@
 #include <cstring>
 
 // OFFSET: 0x0084EDD0
+// FUNCTION: fn_10653
 UIButton::UIButton(UIWindowContext& windowContext, UIButtonContext& buttonContext)
     : UIWindow(windowContext, 0), m_disabled(0), m_argument(0), m_buttonContext(&buttonContext) {
   this->geometry.unknown_0030 = 0;
 }
 
 // OFFSET: 0x008523F0
-// FUNCTION: fn_10709
+// FUNCTION: fn_10690
 UIButton::~UIButton() = default;
 
 // OFFSET: 0x0085C450
@@ -140,8 +141,8 @@ void UIButton::ResetCursor(int, int) {
 }
 
 // OFFSET: 0x0085EED0
+// OFFSET: 0x03DE9C61
 // FUNCTION: fn_10852
-// ORIGINAL_SITE: 0x03DE9C61 in fn_10852 (body)
 void UIButton::Slot31(int x, int y) {
   FrameFocus& focus = this->m_buttonContext->focus;
   if (this->m_disabled != 0) {

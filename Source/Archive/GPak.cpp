@@ -7,18 +7,84 @@
 #include <zlib.h>
 
 namespace {
-  std::uint32_t Read32(const std::uint8_t* bytes) {
-    std::uint32_t value;
-    std::memcpy(&value, bytes, sizeof(value));
-    return value;
-  }
+#pragma pack(push, 1)
 
-  std::uint64_t Read64(const std::uint8_t* bytes) {
-    std::uint64_t value;
-    std::memcpy(&value, bytes, sizeof(value));
-    return value;
-  }
+  struct PakHeaderFile {
+    /* 0000 */ char signature[16];
+    /* 0010 */ std::uint8_t unknown_0010[14];
+    /* 001E */ std::uint32_t tableOffset;
+    /* 0022 */ std::uint32_t seed;
+    /* 0026 */ std::uint32_t entryCount;
+    /* 002A */ std::uint32_t version;
+  };
 
+  struct PakHeaderFile64 {
+    /* 0000 */ char signature[16];
+    /* 0010 */ std::uint8_t unknown_0010[14];
+    /* 001E */ std::uint64_t tableOffset;
+    /* 0026 */ std::uint32_t entryCount;
+    /* 002A */ std::uint32_t version;
+  };
+
+  struct PakTableFile {
+    /* 0000 */ std::uint32_t compressedSize;
+    /* 0004 */ std::uint32_t originalSize;
+  };
+
+  struct PakTableFileV3 {
+    /* 0000 */ std::uint32_t auxiliarySize;
+    /* 0004 */ std::uint32_t compressedSize;
+    /* 0008 */ std::uint32_t originalSize;
+  };
+
+  struct PakEntryFile {
+    /* 0000 */ std::uint32_t compressedSize;
+    /* 0004 */ std::uint32_t alignedSize;
+    /* 0008 */ std::uint32_t originalSize;
+    /* 000C */ std::uint8_t flags;
+    /* 000D */ std::uint32_t dataOffset;
+  };
+
+  struct PakEntryFileV3 {
+    /* 0000 */ std::uint32_t compressedSize;
+    /* 0004 */ std::uint32_t alignedSize;
+    /* 0008 */ std::uint32_t originalSize;
+    /* 000C */ std::uint8_t flags;
+    /* 000D */ std::uint64_t dataOffset;
+  };
+
+  struct PakAuxiliaryFile {
+    /* 0000 */ std::uint8_t version;
+    /* 0001 */ std::uint8_t unknown_0001[3];
+    /* 0004 */ std::uint64_t identifier;
+  };
+
+#pragma pack(pop)
+
+  static_assert(sizeof(PakHeaderFile) == 46);
+  static_assert(offsetof(PakHeaderFile, tableOffset) == 30);
+  static_assert(offsetof(PakHeaderFile, seed) == 34);
+  static_assert(offsetof(PakHeaderFile, entryCount) == 38);
+  static_assert(offsetof(PakHeaderFile, version) == 42);
+  static_assert(sizeof(PakHeaderFile64) == 46);
+  static_assert(offsetof(PakHeaderFile64, tableOffset) == 30);
+  static_assert(offsetof(PakHeaderFile64, entryCount) == 38);
+  static_assert(offsetof(PakHeaderFile64, version) == 42);
+  static_assert(sizeof(PakTableFile) == 8);
+  static_assert(offsetof(PakTableFile, originalSize) == 4);
+  static_assert(sizeof(PakTableFileV3) == 12);
+  static_assert(offsetof(PakTableFileV3, compressedSize) == 4);
+  static_assert(offsetof(PakTableFileV3, originalSize) == 8);
+  static_assert(sizeof(PakEntryFile) == 17);
+  static_assert(offsetof(PakEntryFile, flags) == 12);
+  static_assert(offsetof(PakEntryFile, dataOffset) == 13);
+  static_assert(sizeof(PakEntryFileV3) == 21);
+  static_assert(offsetof(PakEntryFileV3, flags) == 12);
+  static_assert(offsetof(PakEntryFileV3, dataOffset) == 13);
+  static_assert(sizeof(PakAuxiliaryFile) == 12);
+  static_assert(offsetof(PakAuxiliaryFile, identifier) == 4);
+
+  // INLINED
   std::uint8_t SwapNibbles(std::uint8_t byte) {
     return static_cast<std::uint8_t>((byte << 4) | (byte >> 4));
   }
@@ -27,21 +93,23 @@ namespace {
   // FUNCTION: fn_05116
   std::uint64_t ReadAuxiliaryIdentifier(const void* data, std::size_t size) {
     if (size != 0) {
-      const auto* header = static_cast<const std::uint8_t*>(data);
-      if (header[0] <= 1) {
-        return Read64(header + 4);
+      const auto* bytes = static_cast<const std::uint8_t*>(data);
+      if (bytes[0] <= 1) {
+        PakAuxiliaryFile header;
+        std::memcpy(&header, data, sizeof(header));
+        return header.identifier;
       }
     }
 
     return UINT64_MAX;
   }
 
+  // INLINED
   void SortEntries(std::vector<myGPack::PakEntry>& entries) {
     std::sort(entries.begin(), entries.end(), [](const auto& first, const auto& second) { return first.name < second.name; });
   }
 }
 
-// OFFSET: 0x00E555A0
 // INLINED
 CGPak::CGPak() : m_file(nullptr), m_version(0), m_entryCount(0), m_tableOffset(0), m_tableSize(0) {
   this->Reset();
@@ -49,9 +117,8 @@ CGPak::CGPak() : m_file(nullptr), m_version(0), m_entryCount(0), m_tableOffset(0
 }
 
 // OFFSET: 0x00AE97D0
-// FUNCTION: fn_18107
-// INLINED
 // OFFSET: 0x00AE98C0
+// FUNCTION: fn_18107
 CGPak::~CGPak() {
   DeleteCriticalSection(&this->m_criticalSection);
 }
@@ -76,15 +143,19 @@ bool CGPak::Open(CPakFile* file) {
   }
 
   this->m_file = file;
-  const std::uint8_t* header = file->Read(0, 46);
-  if (std::memcmp(header, "Event Horizon", 14) == 0) {
-    this->m_version = Read32(header + 42);
-    this->m_entryCount = Read32(header + 38);
-    this->m_tableOffset = Read64(header + 30) + 46;
-  } else if (std::memcmp(header, "Master of Magic", 16) == 0) {
-    this->m_version = Read32(header + 42);
-    this->m_entryCount = Read32(header + 38) - Read32(header + 34) - 7;
-    this->m_tableOffset = static_cast<std::uint64_t>(Read32(header + 30)) + 46;
+  const std::uint8_t* bytes = file->Read(0, sizeof(PakHeaderFile));
+  if (std::memcmp(bytes, "Event Horizon", 14) == 0) {
+    PakHeaderFile64 header;
+    std::memcpy(&header, bytes, sizeof(header));
+    this->m_version = header.version;
+    this->m_entryCount = header.entryCount;
+    this->m_tableOffset = header.tableOffset + sizeof(header);
+  } else if (std::memcmp(bytes, "Master of Magic", 16) == 0) {
+    PakHeaderFile header;
+    std::memcpy(&header, bytes, sizeof(header));
+    this->m_version = header.version;
+    this->m_entryCount = header.entryCount - header.seed - 7;
+    this->m_tableOffset = static_cast<std::uint64_t>(header.tableOffset) + sizeof(header);
   } else {
     return false;
   }
@@ -126,8 +197,9 @@ bool CGPak::ReadTableV1() {
   std::int32_t legacyKey = 95001;
 
   for (std::uint32_t i = 0; i < this->m_entryCount; ++i) {
-    std::uint32_t nameSize = Read32(cursor);
-    cursor += 4;
+    std::uint32_t nameSize;
+    std::memcpy(&nameSize, cursor, sizeof(nameSize));
+    cursor += sizeof(nameSize);
     char name[256];
 
     if (this->m_version < 0x101) {
@@ -173,13 +245,16 @@ bool CGPak::ReadTableV1() {
     }
 
     const std::uint8_t* metadata = cursor + nameSize;
-    cursor = metadata + 17;
+    PakEntryFile fileEntry;
+    std::memcpy(&fileEntry, metadata, sizeof(fileEntry));
+    cursor = metadata + sizeof(fileEntry);
+
     myGPack::PakEntry& entry = this->m_entries[i];
-    entry.compressedSize = Read32(metadata) - Read32(metadata + 8) - 715;
-    entry.alignedSize = Read32(metadata + 4) - 37579;
-    entry.originalSize = Read32(metadata + 8);
-    entry.flags = metadata[12];
-    entry.dataOffset = Read32(metadata + 13);
+    entry.compressedSize = fileEntry.compressedSize - fileEntry.originalSize - 715;
+    entry.alignedSize = fileEntry.alignedSize - 37579;
+    entry.originalSize = fileEntry.originalSize;
+    entry.flags = fileEntry.flags;
+    entry.dataOffset = fileEntry.dataOffset;
     entry.name.Assign(name);
 
     const char* extension = std::strrchr(name, '.');
@@ -199,15 +274,14 @@ bool CGPak::ReadTableV1() {
 // OFFSET: 0x00AEC420
 // FUNCTION: fn_18134
 bool CGPak::ReadTableV2() {
-  const std::uint8_t* prefix = this->m_file->Read(this->m_tableOffset, 8);
-  std::uint32_t compressed = Read32(prefix);
-  std::uint32_t original = Read32(prefix + 4);
-  this->m_tableSize = compressed + 8;
-  const std::uint8_t* source = this->m_file->Read(this->m_tableOffset + 8, compressed);
-  uLongf length = original + 8;
+  PakTableFile table;
+  std::memcpy(&table, this->m_file->Read(this->m_tableOffset, sizeof(table)), sizeof(table));
+  this->m_tableSize = table.compressedSize + sizeof(table);
+  const std::uint8_t* source = this->m_file->Read(this->m_tableOffset + sizeof(table), table.compressedSize);
+  uLongf length = table.originalSize + 8;
   std::vector<std::uint8_t> decoded(length);
 
-  if (uncompress(decoded.data(), &length, source, compressed) != Z_OK) {
+  if (uncompress(decoded.data(), &length, source, table.compressedSize) != Z_OK) {
     return false;
   }
 
@@ -218,13 +292,16 @@ bool CGPak::ReadTableV2() {
   for (std::uint32_t i = 0; i < this->m_entryCount; ++i) {
     const char* name = reinterpret_cast<const char*>(cursor);
     const std::uint8_t* metadata = cursor + std::strlen(name) + 1;
-    cursor = metadata + 17;
+    PakEntryFile fileEntry;
+    std::memcpy(&fileEntry, metadata, sizeof(fileEntry));
+    cursor = metadata + sizeof(fileEntry);
+
     myGPack::PakEntry& entry = this->m_entries[i];
-    entry.compressedSize = Read32(metadata);
-    entry.alignedSize = Read32(metadata + 4);
-    entry.originalSize = Read32(metadata + 8);
-    entry.flags = metadata[12];
-    entry.dataOffset = Read32(metadata + 13);
+    entry.compressedSize = fileEntry.compressedSize;
+    entry.alignedSize = fileEntry.alignedSize;
+    entry.originalSize = fileEntry.originalSize;
+    entry.flags = fileEntry.flags;
+    entry.dataOffset = fileEntry.dataOffset;
     entry.name.Assign(name);
     maximum = std::max(maximum, entry.alignedSize);
   }
@@ -237,16 +314,14 @@ bool CGPak::ReadTableV2() {
 // OFFSET: 0x00AEC620
 // FUNCTION: fn_18135
 bool CGPak::ReadTableV3() {
-  const std::uint8_t* prefix = this->m_file->Read(this->m_tableOffset, 12);
-  std::uint32_t extra = Read32(prefix);
-  std::uint32_t compressed = Read32(prefix + 4);
-  std::uint32_t original = Read32(prefix + 8);
-  this->m_tableSize = extra + compressed + 12;
-  const std::uint8_t* source = this->m_file->Read(this->m_tableOffset + 12, compressed);
-  uLongf length = original + 8;
+  PakTableFileV3 table;
+  std::memcpy(&table, this->m_file->Read(this->m_tableOffset, sizeof(table)), sizeof(table));
+  this->m_tableSize = table.auxiliarySize + table.compressedSize + sizeof(table);
+  const std::uint8_t* source = this->m_file->Read(this->m_tableOffset + sizeof(table), table.compressedSize);
+  uLongf length = table.originalSize + 8;
   std::vector<std::uint8_t> decoded(length);
 
-  if (uncompress(decoded.data(), &length, source, compressed) != Z_OK) {
+  if (uncompress(decoded.data(), &length, source, table.compressedSize) != Z_OK) {
     return false;
   }
 
@@ -257,13 +332,16 @@ bool CGPak::ReadTableV3() {
   for (std::uint32_t i = 0; i < this->m_entryCount; ++i) {
     const char* name = reinterpret_cast<const char*>(cursor);
     const std::uint8_t* metadata = cursor + std::strlen(name) + 1;
-    cursor = metadata + 21;
+    PakEntryFileV3 fileEntry;
+    std::memcpy(&fileEntry, metadata, sizeof(fileEntry));
+    cursor = metadata + sizeof(fileEntry);
+
     myGPack::PakEntry& entry = this->m_entries[i];
-    entry.compressedSize = Read32(metadata);
-    entry.alignedSize = Read32(metadata + 4);
-    entry.originalSize = Read32(metadata + 8);
-    entry.flags = metadata[12];
-    entry.dataOffset = Read64(metadata + 13);
+    entry.compressedSize = fileEntry.compressedSize;
+    entry.alignedSize = fileEntry.alignedSize;
+    entry.originalSize = fileEntry.originalSize;
+    entry.flags = fileEntry.flags;
+    entry.dataOffset = fileEntry.dataOffset;
     entry.name.Assign(name);
     maximum = std::max(maximum, entry.alignedSize);
   }
@@ -308,13 +386,14 @@ void CGPak::ReadAuxiliary(std::vector<std::uint8_t>& output, std::uint64_t* iden
       return;
     }
 
-    size = Read32(this->m_file->Read(this->m_tableOffset - 4, 4));
-    offset = this->m_tableOffset - size - 4;
+    std::memcpy(&size, this->m_file->Read(this->m_tableOffset - sizeof(size), sizeof(size)), sizeof(size));
+    offset = this->m_tableOffset - size - sizeof(size);
     break;
   case 0x300: {
-    const std::uint8_t* prefix = this->m_file->Read(this->m_tableOffset, 12);
-    size = Read32(prefix);
-    offset = this->m_tableOffset + Read32(prefix + 4) + 12;
+    PakTableFileV3 table;
+    std::memcpy(&table, this->m_file->Read(this->m_tableOffset, sizeof(table)), sizeof(table));
+    size = table.auxiliarySize;
+    offset = this->m_tableOffset + table.compressedSize + sizeof(table);
     break;
   }
   default:

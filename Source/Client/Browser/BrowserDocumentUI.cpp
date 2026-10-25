@@ -83,11 +83,13 @@ HRESULT STDMETHODCALLTYPE BrowserDocumentUI::TranslateAccelerator(MSG*, const GU
 }
 
 // OFFSET: 0x00AB17B0
+// FUNCTION: fn_17362
 HRESULT STDMETHODCALLTYPE BrowserDocumentUI::GetOptionKeyPath(LPOLESTR*, DWORD) {
   return S_FALSE;
 }
 
 // OFFSET: 0x00AB1740
+// FUNCTION: fn_17357
 HRESULT STDMETHODCALLTYPE BrowserDocumentUI::GetDropTarget(IDropTarget*, IDropTarget**) {
   return S_FALSE;
 }

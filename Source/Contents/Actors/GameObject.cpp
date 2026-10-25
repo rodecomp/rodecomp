@@ -13,8 +13,8 @@ CGameObject::CGameObject() : identity(++nextIdentity) {
 }
 
 // OFFSET: 0x00CA8EC0
-// FUNCTION: fn_20995
 // OFFSET: 0x00CA9230
+// FUNCTION: fn_20995
 CGameObject::~CGameObject() = default;
 
 // OFFSET: 0x00CAFD20

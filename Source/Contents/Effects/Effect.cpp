@@ -8,9 +8,8 @@ CEffect::CEffect(int value)
 }
 
 // OFFSET: 0x00B4DD10
-// FUNCTION: fn_18981
 // OFFSET: 0x00B4DDD0
-// FUNCTION: fn_18983
+// FUNCTION: fn_18981
 CEffect::~CEffect() = default;
 
 // OFFSET: 0x005A2150

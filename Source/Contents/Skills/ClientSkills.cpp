@@ -6,6 +6,7 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   CSkillInfo Find(const std::list<CSkillInfo>& values, std::uint32_t id) {
     for (const CSkillInfo& value : values) {
       if (value.id == id) {
@@ -101,7 +102,6 @@ void ClientSkills::Remove(std::uint32_t id, SkillWindows& windows) {
 }
 
 // OFFSET: 0x00DE0E40
-// FUNCTION: fn_23474
 int SkillUseLevels::Lookup(int id) const {
   const auto value = static_cast<std::uint32_t>(id);
   if (value - 1u <= 0x1F3Du) {
@@ -120,6 +120,7 @@ int SkillUseLevels::Lookup(int id) const {
 }
 
 // OFFSET: 0x00E07540
+// FUNCTION: fn_23746
 bool ClientSkills::Update(
   const CSkillInfo& value, unsigned char notify, unsigned char updateUnknown000C, LuaScript& script, const SkillUseLevels& levels, SkillWindows& windows
 ) {
@@ -193,9 +194,7 @@ bool ClientSkills::Update(
 }
 
 // OFFSET: 0x00E251C0
-// FUNCTION: fn_23902
 // OFFSET: 0x00E25200
-// FUNCTION: fn_23903
 void CompanionSkills::Notify() {
   if (this->window) {
     this->window->SendMsg(nullptr, 23, 0, 0, 0, 0);
@@ -207,9 +206,7 @@ void CompanionSkills::Notify() {
 }
 
 // OFFSET: 0x00E072F0
-// FUNCTION: fn_23741
 // OFFSET: 0x00E07380
-// FUNCTION: fn_23742
 bool CompanionSkills::Update(const CSkillInfo& value, unsigned char notify) {
   for (CSkillInfo& skill : this->skills) {
     if (skill.id == value.id) {

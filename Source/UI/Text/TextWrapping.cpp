@@ -55,10 +55,12 @@ void WrapPlainText(const char* text, std::vector<std::string>& lines, int width,
 }
 
 namespace {
+  // INLINED
   bool Hex(unsigned char value) {
     return (value >= '0' && value <= '9') || (value >= 'a' && value <= 'f') || (value >= 'A' && value <= 'F');
   }
 
+  // INLINED
   bool Color(const char* text, std::size_t bytes) {
     if (bytes <= 6 || *text != '^') {
       return false;

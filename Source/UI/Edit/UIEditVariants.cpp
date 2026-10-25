@@ -3,11 +3,11 @@
 #include "UI/Edit/UIEditCtrl.h"
 
 // OFFSET: 0x0084F250
+// FUNCTION: fn_10657
 UIEditCtrl2::UIEditCtrl2(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit) {
 }
 
 // OFFSET: 0x00852700
-// FUNCTION: fn_10714
 UIEditCtrl2::~UIEditCtrl2() = default;
 
 // OFFSET: 0x00863BF0
@@ -24,6 +24,7 @@ int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 }
 
 // OFFSET: 0x0084F7B0
+// FUNCTION: fn_10660
 UIEditCtrl4::UIEditCtrl4(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit), placeholderColor(0xFFFFFFFFu), placeholderEnabled(0) {
 }
 
@@ -48,11 +49,11 @@ void UIEditCtrl4::PaintText() {
 }
 
 // OFFSET: 0x0084F7B0
+// FUNCTION: fn_10661
 UIEditCtrl5::UIEditCtrl5(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl4(windows, edit) {
 }
 
 // OFFSET: 0x008528F0
-// FUNCTION: fn_10717
 UIEditCtrl5::~UIEditCtrl5() = default;
 
 // OFFSET: 0x00864140

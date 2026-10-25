@@ -6,12 +6,12 @@
 #include <cstring>
 
 // OFFSET: 0x0084EA20
+// FUNCTION: fn_10649
 UIBasicButton::UIBasicButton(UIWindowContext& windows, UIButtonContext& controls) : UIButton(windows, controls), invalidateParent(0) {
   this->geometry.height = 20;
 }
 
 // OFFSET: 0x00852170
-// FUNCTION: fn_10704
 UIBasicButton::~UIBasicButton() = default;
 
 // OFFSET: 0x00854240

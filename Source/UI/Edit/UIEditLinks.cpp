@@ -140,8 +140,7 @@ void UIEditCtrl::UpdateLinks() {
   this->linkedText += remaining;
 }
 
-// OFFSET: 0x008641C0
-// FUNCTION: fn_10914
+// INLINED
 void UIEditCtrl::InsertLink(const char* value) {
   const std::string name = FormatNavigationLink(value, false);
 

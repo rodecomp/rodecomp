@@ -12,6 +12,7 @@ namespace {
                                 "\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AccountLinkedUserData\\CAcco"
                                 "untLinkedUserDataSaveAsyncWork.cpp";
 
+  // INLINED
   AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
@@ -24,8 +25,7 @@ CAccountLinkedUserDataSaveAsyncWork::CAccountLinkedUserDataSaveAsyncWork()
     : NAsyncWork("AccountLinkedUserData_Save"), m_accountId(0), m_diagnostic(Diagnostic(false, "unknwon", 26)) {
 }
 
-// OFFSET: 0x005BDE60
-// FUNCTION: fn_03479
+// INLINED
 CAccountLinkedUserDataSaveAsyncWork::~CAccountLinkedUserDataSaveAsyncWork() = default;
 
 // OFFSET: 0x005BE1F0

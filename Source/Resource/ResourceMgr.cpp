@@ -11,7 +11,6 @@
 #include <optional>
 
 // OFFSET: 0x00AECEE0
-// FUNCTION: fn_18148
 bool ResourceNameLess::operator()(const ResourceName* left, const ResourceName* right) const {
   if (left->hash != right->hash) {
     return left->hash < right->hash;
@@ -20,8 +19,7 @@ bool ResourceNameLess::operator()(const ResourceName* left, const ResourceName* 
   return std::strcmp(left->text, right->text) < 0;
 }
 
-// OFFSET: 0x00AF1620
-// FUNCTION: fn_18209
+// INLINED
 ResourceMgr::ResourceMgr(ResourceFailures& failures) : m_failures(&failures) {
   InitializeCriticalSection(&this->m_lock);
 }
@@ -113,6 +111,7 @@ bool ResourceMgr::Exists(const char* name) {
 }
 
 // OFFSET: 0x00AEE770
+// FUNCTION: fn_18175
 CRes* ResourceMgr::Load(const char* name) {
   if (!name) {
     return nullptr;
@@ -179,6 +178,7 @@ void ResourceMgr::Remove(CRes* resource) {
   resources.erase(entry);
 }
 
+// INLINED
 void ResourceMgr::EraseTransient(CRes* resource) {
   auto entry = std::find(this->m_transient.begin(), this->m_transient.end(), resource);
   if (entry != this->m_transient.end()) {

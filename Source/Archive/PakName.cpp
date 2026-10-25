@@ -17,6 +17,7 @@ namespace myGPack {
     return *this;
   }
 
+  // INLINED
   void AssignNameKey(std::uint32_t& result, char* destination, const char* source) {
     std::strcpy(destination, source);
     _strlwr(destination);

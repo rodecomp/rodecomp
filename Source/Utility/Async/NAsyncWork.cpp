@@ -2,13 +2,18 @@
 
 #include <utility>
 
-// OFFSET: 0x005B9E50
-// FUNCTION: fn_03440
+// INLINED
+inline NRecycleObject::NRecycleObject(std::string poolName) : m_poolName(std::move(poolName)) {
+}
+
+// INLINED
+inline NRecycleObject::~NRecycleObject() = default;
+
+// INLINED
 NAsyncWork::NAsyncWork(std::string poolName) : NRecycleObject(std::move(poolName)), m_group(0), m_key(0) {
 }
 
-// OFFSET: 0x005BA4F0
-// FUNCTION: fn_03443
+// INLINED
 NAsyncWork::~NAsyncWork() = default;
 
 // OFFSET: 0x005BAEE0
@@ -38,9 +43,8 @@ NAsyncWorkPtr::NAsyncWorkPtr(NRecycleObjectPoolMgr* manager, std::string poolNam
 }
 
 // OFFSET: 0x00731B50
-// FUNCTION: fn_07561
 // OFFSET: 0x00731BD0
-// FUNCTION: fn_07562
+// FUNCTION: fn_07561
 NAsyncWorkPtr::~NAsyncWorkPtr() {
   if (this->m_work) {
     this->m_manager->Release(this->m_work->PoolName(), this->m_work);

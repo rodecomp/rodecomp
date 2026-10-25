@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <shellapi.h>
 
+// INLINED
 void UITextViewer::Activate(UITextButton* button, int id) {
   if (!button) {
     return;

@@ -3,6 +3,7 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   HRESULT DeviceError(unsigned code) {
     return static_cast<HRESULT>(0x82000000u | code);
   }
@@ -53,6 +54,7 @@ namespace {
     return candidate->dwZBufferBitDepth < 32 ? D3DENUMRET_OK : D3DENUMRET_CANCEL;
   }
 
+  // INLINED
   void ChannelMask(DeviceOwnerDX7::Channel& channel, DWORD mask) {
     channel = {0, 8};
 
@@ -71,6 +73,7 @@ namespace {
     } while (mask);
   }
 
+  // INLINED
   HRESULT SurfaceError(HRESULT status, unsigned code) {
     return status == DDERR_OUTOFVIDEOMEMORY ? status : DeviceError(code);
   }

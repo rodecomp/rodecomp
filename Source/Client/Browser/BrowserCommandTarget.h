@@ -7,6 +7,7 @@
 
 class BrowserCommandTarget final : public IOleCommandTarget {
 public:
+  // INLINED
   explicit BrowserCommandTarget(IUnknown& site) : m_site(site) {
   }
 

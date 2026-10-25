@@ -10,13 +10,13 @@ namespace {
 }
 
 // OFFSET: 0x0086CC20
+// FUNCTION: fn_11035
 UIComboBoxDefWnd::UIComboBoxDefWnd(UIWindowContext& windows, UIComboBoxHeaderContext& controls)
     : UIWindow(windows, 0), button(nullptr), list(nullptr), label(nullptr), borderless(0), expanded(0), red(255), green(255), blue(255), borderRed(0),
       borderGreen(0), borderBlue(0), dropdownHeight(40), m_controls(&controls) {
 }
 
 // OFFSET: 0x00872AE0
-// FUNCTION: fn_11134
 UIComboBoxDefWnd::~UIComboBoxDefWnd() = default;
 
 // OFFSET: 0x00885920
@@ -135,12 +135,12 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 }
 
 // OFFSET: 0x0086CBA0
+// FUNCTION: fn_11034
 UIComboBoxDef2Wnd::UIComboBoxDef2Wnd(UIWindowContext& windows, UIComboBoxHeaderContext& controls)
     : UIComboBoxDefWnd(windows, controls), skin(0), alignment(0), textOffset(0), previousTextX(0) {
 }
 
 // OFFSET: 0x00872A70
-// FUNCTION: fn_11133
 UIComboBoxDef2Wnd::~UIComboBoxDef2Wnd() = default;
 
 // OFFSET: 0x00885250

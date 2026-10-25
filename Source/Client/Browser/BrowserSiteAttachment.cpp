@@ -1,7 +1,6 @@
 #include "Client/Browser/BrowserInterface.h"
 #include "Client/Browser/BrowserSiteAttachment.h"
 
-#include <cstdint>
 #include <new>
 
 // OFFSET: 0x00AB2AB0

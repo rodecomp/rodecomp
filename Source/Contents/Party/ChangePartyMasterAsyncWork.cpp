@@ -10,6 +10,7 @@
 namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CChangePartyMasterAsyncWork.cpp";
 
+  // INLINED
   AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
@@ -22,8 +23,7 @@ CChangePartyMasterAsyncWork::CChangePartyMasterAsyncWork()
     : NAsyncWork("Change_PartyMaster"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", 27)), m_windows(nullptr) {
 }
 
-// OFFSET: 0x005CDC30
-// FUNCTION: fn_03678
+// INLINED
 CChangePartyMasterAsyncWork::~CChangePartyMasterAsyncWork() = default;
 
 // OFFSET: 0x005CE080

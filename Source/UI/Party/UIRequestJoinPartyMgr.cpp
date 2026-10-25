@@ -17,6 +17,7 @@ UIRequestJoinPartyMgr::UIRequestJoinPartyMgr(WindowManagerWindows& windows) : m_
 
 // OFFSET: 0x007BB470
 // OFFSET: 0x007BB880
+// FUNCTION: fn_09281
 UIRequestJoinPartyMgr::~UIRequestJoinPartyMgr() = default;
 
 // OFFSET: 0x007BBD50
@@ -72,8 +73,7 @@ void UIRequestJoinPartyMgr::Add(std::uint32_t accountId, std::uint32_t character
   }
 }
 
-// OFFSET: 0x007C1770
-// FUNCTION: fn_09315
+// INLINED
 void UIRequestJoinPartyMgr::Block(std::uint32_t accountId) {
   this->m_blocked.push_back(accountId);
 }

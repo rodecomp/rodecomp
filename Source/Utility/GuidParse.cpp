@@ -6,7 +6,6 @@
 namespace {
   // OFFSET: 0x00AFA440
   // FUNCTION: fn_18290
-
   int Scan(const char* text, std::size_t bytes, const char* format, ...) {
     va_list arguments;
     va_start(arguments, format);

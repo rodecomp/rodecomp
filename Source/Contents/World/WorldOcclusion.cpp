@@ -8,8 +8,7 @@
 #include "Utility/Math/ScalarConversion.h"
 #include <cstring>
 
-// OFFSET: 0x00CD5AD0
-// FUNCTION: fn_21286
+// INLINED
 void MarkWorldOcclusionRay(const float* ray, float actorLimit, float groundLimit, WorldSpatialTree& root, GroundGeometry& ground, bool markGround) {
   float actorRay[7];
   std::memcpy(actorRay, ray, 6 * sizeof(float));
@@ -41,6 +40,7 @@ void MarkWorldOcclusionRay(const float* ray, float actorLimit, float groundLimit
   }
 }
 
+// FUNCTION: fn_21286
 void MarkScreenWorldOcclusion(
   const RenderProjection& projection, int screenX, int screenY, float rendererScale, const float* origin, const float* cameraMatrix, float playerHeight,
   float cameraHeight, WorldSpatialTree& root, GroundGeometry& ground, bool markGround

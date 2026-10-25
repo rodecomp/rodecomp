@@ -6,11 +6,11 @@
 #include <cstring>
 
 // OFFSET: 0x00748A70
+// FUNCTION: fn_07833
 C3dAttr::C3dAttr(TerrainResourceContext& context) : width(0), height(0), cellSize(5), m_context(&context) {
 }
 
-// OFFSET: 0x00748860
-// FUNCTION: fn_07831
+// INLINED
 C3dAttr::~C3dAttr() = default;
 
 // OFFSET: 0x00748410

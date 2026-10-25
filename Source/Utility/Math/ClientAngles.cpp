@@ -3,18 +3,17 @@
 #include <bit>
 #include <cmath>
 
+// INLINED
 float ClientSin(float radians) {
   return std::sin(radians);
 }
 
+// INLINED
 float ClientCos(float radians) {
   return std::cos(radians);
 }
 
 namespace {
-  // OFFSET: 0x00554280
-  // FUNCTION: fn_02021
-
   struct AngleTables {
     float radians[361];
     float negativeRadians[361];
@@ -23,6 +22,7 @@ namespace {
     float cosine[361];
     float negativeCosine[361];
 
+    // INLINED
     AngleTables() {
       for (int index = 0; index <= 360; ++index) {
         const float angle = (static_cast<float>(index) / 180.0f) * 3.141592f;
@@ -38,6 +38,7 @@ namespace {
 
   const AngleTables tables;
 
+  // INLINED
   int Wrapped(int degrees) {
     return degrees > 360 || degrees < -360 ? degrees % 360 : degrees;
   }

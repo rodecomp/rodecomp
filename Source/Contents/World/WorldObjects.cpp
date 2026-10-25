@@ -13,9 +13,7 @@ void WorldObjects::Remove(CRenderObject* object) {
   }
 }
 
-// OFFSET: 0x00ACA320
-// FUNCTION: fn_17691
-
+// INLINED
 void WorldObjects::Clear() {
   auto entry = this->objects.begin();
 

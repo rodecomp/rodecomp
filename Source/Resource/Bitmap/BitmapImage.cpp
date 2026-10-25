@@ -7,39 +7,42 @@
 #include <windows.h>
 
 namespace {
+  // INLINED
   std::uint16_t Read16(const unsigned char* data) {
     std::uint16_t value;
     std::memcpy(&value, data, sizeof(value));
     return value;
   }
 
+  // INLINED
   std::uint32_t Read32(const unsigned char* data) {
     std::uint32_t value;
     std::memcpy(&value, data, sizeof(value));
     return value;
   }
 
+  // INLINED
   int Signed(std::uint32_t value) {
     return std::bit_cast<std::int32_t>(value);
   }
 
+  // INLINED
   std::size_t PixelBytes(int width, int height) {
     const std::uint32_t count = static_cast<std::uint32_t>(width) * static_cast<std::uint32_t>(height);
     return count > 0x3FFFFFFFu ? 0xFFFFFFFFu : count * 4u;
   }
 
+  // INLINED
   std::uint32_t Color(const unsigned char* data, unsigned alpha) {
     return data[0] | (data[1] << 8) | (data[2] << 16) | (alpha << 24);
   }
 }
 
-// OFFSET: 0x00749580
-// FUNCTION: fn_07847
+// INLINED
 BitmapImage::BitmapImage() : alpha(0), pixels(nullptr), auxiliary(nullptr) {
 }
 
-// OFFSET: 0x00749850
-// FUNCTION: fn_07850
+// INLINED
 void BitmapImage::Clear() {
   if (this->pixels) {
     std::free(this->pixels);
@@ -222,6 +225,7 @@ bool BitmapImage::DecodeTga(const void* input, int) {
   this->pixels = static_cast<std::uint32_t*>(std::malloc(PixelBytes(this->width, this->height)));
   const bool rgba = data[16] == 32;
   unsigned alpha = 255;
+  // INLINED
   auto read = [&]() {
     const unsigned char* pixel = source;
     source += 3;

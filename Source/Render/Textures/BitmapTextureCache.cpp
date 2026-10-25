@@ -5,19 +5,16 @@
 
 #include <algorithm>
 
-// OFFSET: 0x00545790
-// FUNCTION: fn_01832
+// INLINED
 BitmapTextureCache::BitmapTextureCache() : m_alpha(false) {
 }
 
-// OFFSET: 0x00545B20
-// FUNCTION: fn_01836
+// INLINED
 BitmapTextureCache::~BitmapTextureCache() {
   this->Clear();
 }
 
-// OFFSET: 0x00547A80
-// FUNCTION: fn_01845
+// INLINED
 void BitmapTextureCache::Clear() {
   for (CTexture* texture : this->m_textures) {
     delete texture;

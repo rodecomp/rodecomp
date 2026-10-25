@@ -78,8 +78,7 @@ void InputFocus::Next() {
   this->window = nullptr;
 }
 
-// OFFSET: 0x00A96F60
-// FUNCTION: fn_17197
+// INLINED
 void InputFocus::Advance() {
   if (!this->window) {
     this->Next();
@@ -103,9 +102,7 @@ void InputFocus::Advance() {
   this->First();
 }
 
-// OFFSET: 0x00AA4730
-// FUNCTION: fn_17222
-
+// INLINED
 void InputFocus::Refresh(UIWindow* const& excludedRoot) {
   if (this->window) {
     this->window->Invalidate();

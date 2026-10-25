@@ -1,3 +1,4 @@
+#include "Client/Browser/BrowserInterface.h"
 #include "Client/Browser/BrowserRegistry.h"
 #include "Client/Browser/WebEventReceiver.h"
 
@@ -14,6 +15,7 @@ CWebEventReceiver::CWebEventReceiver(BrowserRegistry& registry)
 }
 
 // OFFSET: 0x00AB38A0
+// FUNCTION: fn_17425
 CWebEventReceiver::~CWebEventReceiver() {
   OutputDebugStringA("~CWebEventReceiver() \n");
 }
@@ -75,6 +77,7 @@ HRESULT STDMETHODCALLTYPE CWebEventReceiver::GetIDsOfNames(REFIID, LPOLESTR*, UI
   return S_OK;
 }
 
+// INLINED
 void CWebEventReceiver::ReleaseDocument() {
   if (this->m_document) {
     UnadviseBrowserEvents(this->m_document, DIID_HTMLDocumentEvents2, this->m_documentCookie);

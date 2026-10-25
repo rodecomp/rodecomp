@@ -13,6 +13,7 @@ namespace {
   constexpr char saveSource[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\MCStoreBackUpData\\CMCStoreInfoBackupSaveAsyncWork."
                                 "cpp";
 
+  // INLINED
   AsyncDiagnostic Diagnostic(bool success, const char* text, const char* file, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, file, &line);
@@ -26,8 +27,7 @@ CMCStoreInfoBackupLoadAsyncWork::CMCStoreInfoBackupLoadAsyncWork()
       m_owner(nullptr), m_context(nullptr) {
 }
 
-// OFFSET: 0x00607EF0
-// FUNCTION: fn_04242
+// INLINED
 CMCStoreInfoBackupLoadAsyncWork::~CMCStoreInfoBackupLoadAsyncWork() = default;
 
 // OFFSET: 0x00608270
@@ -94,8 +94,7 @@ CMCStoreInfoBackupSaveAsyncWork::CMCStoreInfoBackupSaveAsyncWork()
       m_owner(nullptr), m_context(nullptr) {
 }
 
-// OFFSET: 0x00609170
-// FUNCTION: fn_04248
+// INLINED
 CMCStoreInfoBackupSaveAsyncWork::~CMCStoreInfoBackupSaveAsyncWork() = default;
 
 // OFFSET: 0x00609520

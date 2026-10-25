@@ -9,6 +9,7 @@ extern "C" {
 #include <windows.h>
 
 // OFFSET: 0x00AFC830
+// FUNCTION: fn_18323
 LuaScript::LuaScript() : m_state(nullptr) {
 }
 

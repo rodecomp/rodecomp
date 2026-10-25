@@ -14,6 +14,7 @@
 #include <zlib.h>
 
 namespace {
+  // INLINED
   std::string Basename(std::string path) {
     const auto separator = path.rfind('\\');
 

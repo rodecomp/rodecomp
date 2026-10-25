@@ -6,8 +6,8 @@
 #include <psapi.h>
 #include <ctime>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
-#include <string>
 
 // STATIC: 0x01389c78
 // GLOBAL: gl_24469
@@ -82,6 +82,7 @@ namespace {
     return namesBegin[jobId];
   }
 
+  // INLINED
   const char* ReadCurrentMapName() {
     if (g_world.state == 1 && g_world.gameMode != nullptr) {
       return reinterpret_cast<const char*>(g_world.gameMode) + 0x68;
@@ -98,7 +99,6 @@ CUnhandledExceptionHandler::CUnhandledExceptionHandler() {
 }
 
 // OFFSET: 0x00635A80
-// FUNCTION: fn_04702
 CUnhandledExceptionHandler::~CUnhandledExceptionHandler() = default;
 
 // OFFSET: 0x00635AB0
@@ -272,7 +272,7 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
     CHAR filename[256] = {};
     GetModuleFileNameA(module, filename, sizeof(filename));
 
-    DWORD timestamp = pGetTimestamp ? pGetTimestamp(module) : 0;
+    unsigned int timestamp = pGetTimestamp ? pGetTimestamp(module) : 0;
     sprintf(&g_crashString[strlen(g_crashString)], "Module Name: %s\r\n", filename);
 
     __time32_t timestampTime;
@@ -281,7 +281,7 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
     sprintf(&g_crashString[strlen(g_crashString)], "Time Stamp: 0x%08x - %s\r\n", timestamp, timeString);
     sprintf(&g_crashString[strlen(g_crashString)], "Version: 0x%08x\r\n", g_clientVersion);
     sprintf(&g_crashString[strlen(g_crashString)], "\r\n");
-    sprintf(&g_crashString[strlen(g_crashString)], "Exception Type: 0x%08x\r\n", exceptionInfo->ExceptionRecord->ExceptionCode);
+    sprintf(&g_crashString[strlen(g_crashString)], "Exception Type: 0x%08x\r\n", static_cast<unsigned int>(exceptionInfo->ExceptionRecord->ExceptionCode));
     sprintf(&g_crashString[strlen(g_crashString)], "\r\n");
 
     HANDLE process = GetCurrentProcess();
@@ -296,10 +296,18 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
     frame.AddrFrame.Mode = AddrModeFlat;
 
     sprintf(&g_crashString[strlen(g_crashString)], "\r\n");
-    sprintf(&g_crashString[strlen(g_crashString)], "eax: 0x%08x\tebx: 0x%08x\r\n", context->Eax, context->Ebx);
-    sprintf(&g_crashString[strlen(g_crashString)], "ecx: 0x%08x\tedx: 0x%08x\r\n", context->Ecx, context->Edx);
-    sprintf(&g_crashString[strlen(g_crashString)], "esi: 0x%08x\tedi: 0x%08x\r\n", context->Esi, context->Edi);
-    sprintf(&g_crashString[strlen(g_crashString)], "ebp: 0x%08x\tesp: 0x%08x\r\n", context->Ebp, context->Esp);
+    sprintf(
+      &g_crashString[strlen(g_crashString)], "eax: 0x%08x\tebx: 0x%08x\r\n", static_cast<unsigned int>(context->Eax), static_cast<unsigned int>(context->Ebx)
+    );
+    sprintf(
+      &g_crashString[strlen(g_crashString)], "ecx: 0x%08x\tedx: 0x%08x\r\n", static_cast<unsigned int>(context->Ecx), static_cast<unsigned int>(context->Edx)
+    );
+    sprintf(
+      &g_crashString[strlen(g_crashString)], "esi: 0x%08x\tedi: 0x%08x\r\n", static_cast<unsigned int>(context->Esi), static_cast<unsigned int>(context->Edi)
+    );
+    sprintf(
+      &g_crashString[strlen(g_crashString)], "ebp: 0x%08x\tesp: 0x%08x\r\n", static_cast<unsigned int>(context->Ebp), static_cast<unsigned int>(context->Esp)
+    );
     sprintf(&g_crashString[strlen(g_crashString)], "\r\n");
 
     for (int i = 0; i < 512; ++i) {
@@ -311,7 +319,7 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
         break;
       }
 
-      sprintf(&g_crashString[strlen(g_crashString)], "0x%08x\t", frame.AddrPC.Offset);
+      sprintf(&g_crashString[strlen(g_crashString)], "0x%08x\t", static_cast<unsigned int>(frame.AddrPC.Offset));
       pEnumerateLoadedModules(process, EnumerateLoadedModulesCallback, &frame.AddrPC.Offset);
       sprintf(&g_crashString[strlen(g_crashString)], "\r\n");
     }

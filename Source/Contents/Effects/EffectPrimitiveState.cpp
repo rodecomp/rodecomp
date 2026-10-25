@@ -1,13 +1,12 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/RagEffectState.h"
 #include "Contents/Actors/RenderObjectState.h"
+#include "Utility/Math/AffineMatrix.h"
 
-#include <bit>
 #include <cstdlib>
 #include <cstring>
 
-// OFFSET: 0x00BAD940
-// FUNCTION: fn_19761
+// INLINED
 EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
   this->textures = nullptr;
   this->unknown_0208 = 0;
@@ -132,16 +131,12 @@ EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
     }
   }
 
-  // STATIC: 0x01312438
-  // GLOBAL: gl_21913
-  constexpr float identity[12] = {1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0};
-  std::memcpy(this->matrix1, identity, sizeof(identity));
-  std::memcpy(this->matrix2, identity, sizeof(identity));
+  std::memcpy(this->matrix1, g_identityMatrix, sizeof(g_identityMatrix));
+  std::memcpy(this->matrix2, g_identityMatrix, sizeof(g_identityMatrix));
   std::memset(this->unknown_03E8, 0, sizeof(this->unknown_03E8));
 }
 
-// OFFSET: 0x00BAE2C0
-// FUNCTION: fn_19763
+// INLINED
 EffectPrimitiveState::~EffectPrimitiveState() {
   if (this->parent) {
     auto& related = this->parent->related;

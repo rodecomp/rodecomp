@@ -7,7 +7,7 @@
 #include <cstring>
 
 namespace {
-  // STATIC: 0x01387270; shared across devices, initially all bytes 0xFF.
+  // STATIC: 0x01387270
   DDPIXELFORMAT formats[5] = {
     {UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX},
     {UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX},
@@ -50,6 +50,7 @@ namespace {
     return D3DENUMRET_CANCEL;
   }
 
+  // INLINED
   RECT Rectangle(int x, int y, int width, int height) {
     return {x, y, x + width, y + height};
   }
@@ -90,6 +91,7 @@ namespace {
 }
 
 // OFFSET: 0x00543B00
+// FUNCTION: fn_01807
 CTextureDX7::CTextureDX7(TextureDX7Context& context) : m_owner(&context.owner), m_surface(nullptr), m_context(&context) {
   this->m_width = this->m_height = this->m_textureWidth = this->m_textureHeight = 1;
   this->m_format = TextureFormat::A1R5G5B5;
@@ -103,9 +105,8 @@ CTextureDX7::CTextureDX7(TextureDX7Context& context, int width, int height, int 
 }
 
 // OFFSET: 0x00543DC0
-// FUNCTION: fn_01809
 // OFFSET: 0x00543E30
-// FUNCTION: fn_01810
+// FUNCTION: fn_01809
 CTextureDX7::~CTextureDX7() {
   if (this->m_surface) {
     this->m_surface->Release();
@@ -328,14 +329,12 @@ void CTextureDX7::Fill(const RECT* rectangle, std::uint32_t color) {
 }
 
 // OFFSET: 0x00544410
-// FUNCTION: fn_01817
 void CTextureDX7::Draw(int x, int y, int width, int height, std::uint32_t color) {
   const auto& context = *this->m_context;
   this->DrawTo(context.primitives, context.queues, x, y, width, height, color, context.depthAlpha, context.depthStart, context.depthEnd);
 }
 
 // OFFSET: 0x00544610
-// FUNCTION: fn_01818
 void CTextureDX7::Stretch(int x, int y, int width, int height) {
   const auto& context = *this->m_context;
   this->StretchTo(context.primitives, context.queues, x, y, width, height, context.depthAlpha, context.depthStart, context.depthEnd);

@@ -23,6 +23,7 @@ public:
   void Close();
   bool Update();
   bool CopyTo(CTexture* texture);
+  // INLINED
   BinkHandle* Handle() const {
     return this->m_handle;
   }

@@ -10,6 +10,7 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   EffectVector3 Forward(float distance, const float* matrix) {
     const EffectVector3 point{0.0f, 0.0f, distance};
     return {

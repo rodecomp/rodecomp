@@ -53,6 +53,7 @@ public:
 
   void SetTooltip(const char* text);
 
+  // INLINED
   void SetDisabled(unsigned char value) {
     this->m_disabled = value;
   }

@@ -20,8 +20,7 @@
 // GLOBAL: gl_24349
 CAsyncWorkMgr* g_asyncWorkMgr;
 
-// OFFSET: 0x00573C50
-// FUNCTION: fn_02497
+// INLINED
 CAsyncWorkMgr::CAsyncWorkMgr(std::uint32_t workers) : NAsyncWorkMgr(workers), m_ready(false), m_pools(nullptr) {
   this->m_pools = new (std::nothrow) CAsyncWorkRecycleObjectPoolMgr;
 
@@ -35,8 +34,7 @@ CAsyncWorkMgr::CAsyncWorkMgr(std::uint32_t workers) : NAsyncWorkMgr(workers), m_
   }
 }
 
-// OFFSET: 0x00573B20
-// FUNCTION: fn_02496
+// INLINED
 CAsyncWorkMgr::~CAsyncWorkMgr() {
   this->DestroyQueues();
   delete this->m_pools;

@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_UTILITY_MATH_AFFINEMATRIX_H
 #define RAGNAROK_SOURCE_UTILITY_MATH_AFFINEMATRIX_H
 
+extern const float g_identityMatrix[12];
+
 float ClientSin(float radians);
 float ClientCos(float radians);
 float ClientRadians(int degrees);

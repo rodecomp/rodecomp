@@ -8,13 +8,13 @@
 #include <algorithm>
 
 // OFFSET: 0x0086E550
+// FUNCTION: fn_11073
 UIScrollBar::UIScrollBar(UIWindowContext& windows, FrameFocus& capture, ResourceMgr& resources)
     : UIWindow(windows, 0), state(0), maximum(0), position(0), vertical(1), pressX(0), pressY(0), dragAmount(0), total(0), visible(0), arrowLength(13),
       thickness(13), minimumThumb(1), horizontalStep(1), verticalStep(1), m_capture(&capture), m_resources(&resources) {
 }
 
 // OFFSET: 0x00873FA0
-// FUNCTION: fn_11174
 UIScrollBar::~UIScrollBar() = default;
 
 // OFFSET: 0x00897830

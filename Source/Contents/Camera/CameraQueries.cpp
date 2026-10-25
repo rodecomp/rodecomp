@@ -1,10 +1,10 @@
 #include "Contents/Camera/CameraFrame.h"
 #include "Contents/Ground/TerrainHeight.h"
 
-#include <bit>
 #include <cmath>
 
 namespace {
+  // INLINED
   float InverseLength(float squared) {
     const float root = std::sqrt(squared);
     return static_cast<float>(1.0 / static_cast<double>(root));

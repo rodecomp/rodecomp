@@ -5,7 +5,7 @@
 
 namespace {
   // OFFSET: 0x00737510
-
+  // FUNCTION: fn_07647
   void SetDebuggerThreadName(unsigned id, const char* name) {
     ULONG_PTR arguments[4] = {0x1000, reinterpret_cast<ULONG_PTR>(name), id, 0};
     __try {
@@ -21,14 +21,14 @@ NThread::NThread(std::string name) : m_threadId(0), unknown_0008(true), m_state(
 }
 
 // OFFSET: 0x00737290
-// FUNCTION: fn_07644
 // OFFSET: 0x00737350
-// FUNCTION: fn_07645
+// FUNCTION: fn_07644
 NThread::~NThread() {
   this->Stop();
 }
 
 // OFFSET: 0x007375C0
+// FUNCTION: fn_07648
 unsigned __stdcall NThread::Entry(void* parameter) {
   NThread* thread = static_cast<NThread*>(parameter);
   unsigned result = thread->Run();
@@ -37,7 +37,7 @@ unsigned __stdcall NThread::Entry(void* parameter) {
   return result;
 }
 
-// ORIGINAL_SITE: 0x00737420 in fn_07585 (fragment)
+// INLINED
 bool NThread::Start() {
   if (this->m_handle || this->m_state) {
     return false;
@@ -55,7 +55,7 @@ bool NThread::Start() {
   return true;
 }
 
-// ORIGINAL_SITE: 0x00737480 in fn_07586 (fragment)
+// INLINED
 void NThread::Stop() {
   switch (this->m_state) {
   case 2:

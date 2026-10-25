@@ -9,6 +9,7 @@
 namespace {
   class MemoryBuffer : public std::streambuf {
   public:
+    // INLINED
     MemoryBuffer(const void* data, int bytes) {
       char* begin = const_cast<char*>(static_cast<const char*>(data));
       this->setg(begin, begin, begin + bytes);

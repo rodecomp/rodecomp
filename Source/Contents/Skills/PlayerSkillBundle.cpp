@@ -4,6 +4,7 @@
 
 #include <algorithm>
 
+// INLINED
 std::size_t SkillIdHash::operator()(std::uint32_t id) const {
   std::uint32_t hash = 0x811C9DC5u;
 
@@ -14,12 +15,12 @@ std::size_t SkillIdHash::operator()(std::uint32_t id) const {
   return hash;
 }
 
-// OFFSET: 0x00770A30
-// FUNCTION: fn_08260
+// INLINED
 CPlayerSkillBundle::lcEXCInfo::lcEXCInfo() {
 }
 
 // OFFSET: 0x00770E90
+// FUNCTION: fn_08260
 CPlayerSkillBundle::lcEXCInfo::~lcEXCInfo() = default;
 
 // OFFSET: 0x0076FB70
@@ -28,9 +29,8 @@ CPlayerSkillBundle::CPlayerSkillBundle() : index(8) {
 }
 
 // OFFSET: 0x00770830
-// FUNCTION: fn_08258
 // OFFSET: 0x00770D40
-// FUNCTION: fn_08266
+// FUNCTION: fn_08258
 CPlayerSkillBundle::~CPlayerSkillBundle() = default;
 
 // OFFSET: 0x00773390

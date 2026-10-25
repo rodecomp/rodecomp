@@ -38,6 +38,7 @@ struct RenderSystemHolder {
   HRESULT Present(bool option) const;
 };
 
+// FUNCTION: fn_02102
 __declspec(noinline) inline RenderSystemHolder* GetRenderSystemHolder() {
   static RenderSystemHolder holder;
   return &holder;

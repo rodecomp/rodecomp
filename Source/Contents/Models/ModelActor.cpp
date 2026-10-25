@@ -4,18 +4,21 @@
 #include <windows.h>
 
 namespace {
+  // INLINED
   float Radians(float degrees) {
     return (degrees / 180.0f) * 3.141592f;
   }
 }
 
 // OFFSET: 0x00AB59A0
+// FUNCTION: fn_17461
 C3dActor::C3dActor()
     : position{}, rotation{}, scale{1, 1, 1}, offset{}, dirty(1), oriented{}, corners{}, minimum{}, maximum{}, enabled(1), renderFrame(0), occlusionEnabled(0),
       occluded(0), alpha(255), commandMode(0), color(0xFFFFFFFFu), playback(2), speed(0), shade(0) {
 }
 
 // OFFSET: 0x00AB6420
+// FUNCTION: fn_17470
 C3dActor::~C3dActor() {
   for (ModelVolume*& volume : this->volumes) {
     delete volume;
@@ -24,22 +27,22 @@ C3dActor::~C3dActor() {
 }
 
 // OFFSET: 0x00AB5BB0
+// FUNCTION: fn_17462
 C3dActorV1::C3dActorV1() : root(nullptr), frame(0), animationLength(0), lastTick(0) {
 }
 
-// OFFSET: 0x00AB69C0
-// FUNCTION: fn_17473
+// INLINED
 C3dActorV1::~C3dActorV1() {
   delete this->root;
   this->root = nullptr;
 }
 
 // OFFSET: 0x00AB5C30
+// FUNCTION: fn_17463
 C3dActorV2::C3dActorV2() : framesPerSecond(0), duration(0), startTick(GetTickCount()) {
 }
 
-// OFFSET: 0x00AB6A50
-// FUNCTION: fn_17474
+// INLINED
 C3dActorV2::~C3dActorV2() {
   for (C3dNodeV2*& root : this->roots) {
     delete root;
@@ -212,6 +215,7 @@ void C3dActor::CopyVolumes(const std::list<ModelVolume*>& source) {
   }
 }
 
+// INLINED
 bool C3dActor::Reversed() const {
   bool result = this->scale[0] >= 0.0f;
 
@@ -222,6 +226,7 @@ bool C3dActor::Reversed() const {
   return this->scale[2] < 0.0f ? !result : result;
 }
 
+// INLINED
 void C3dActor::Fade() {
   if (this->occluded == 1) {
     if (this->alpha > 90) {

@@ -9,11 +9,11 @@
 #include <string>
 
 // OFFSET: 0x007618D0
+// FUNCTION: fn_08070
 CWave::CWave(WaveResourceContext& context) : data(nullptr), milesAllocated(0), m_context(&context) {
 }
 
-// OFFSET: 0x00761870
-// FUNCTION: fn_08069
+// INLINED
 CWave::~CWave() = default;
 
 // OFFSET: 0x007613D0
@@ -84,8 +84,7 @@ void CWave::Unload() {
   this->milesAllocated = 0;
 }
 
-// OFFSET: 0x0044E060
-// FUNCTION: fn_45419
+// INLINED
 void RegisterWaveResource(ResourceMgr& resourceMgr, CWave& prototype) {
   resourceMgr.Register("wav", "wav\\", &prototype);
 }

@@ -34,9 +34,7 @@ bool SkillUsesPercentSp(int id) {
 }
 
 // OFFSET: 0x008224C0
-// FUNCTION: fn_10278
 // OFFSET: 0x00822550
-// FUNCTION: fn_10279
 std::string SkillTooltip(const char* hotkey, const char* name, int level, int sp, int ap, bool percent) {
   char text[4096];
   const char* format;

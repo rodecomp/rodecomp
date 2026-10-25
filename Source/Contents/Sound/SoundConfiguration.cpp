@@ -2,7 +2,6 @@
 
 // OFFSET: 0x00E59030
 // FUNCTION: fn_24366
-
 void SoundConfiguration::LoadRegistry(const char* baseKey) {
   HKEY key;
 

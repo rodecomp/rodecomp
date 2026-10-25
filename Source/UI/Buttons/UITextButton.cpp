@@ -6,11 +6,12 @@
 #include <cstring>
 
 // OFFSET: 0x0086EEB0
+// FUNCTION: fn_11085
 UITextButton::UITextButton(UIWindowContext& windows, UIButtonContext& buttons) : UIButton(windows, buttons), m_outlineColor(0xFFFFFF), m_value(0) {
 }
 
 // OFFSET: 0x00874690
-// FUNCTION: fn_11187
+// FUNCTION: fn_11110
 UITextButton::~UITextButton() = default;
 
 // OFFSET: 0x0087C590

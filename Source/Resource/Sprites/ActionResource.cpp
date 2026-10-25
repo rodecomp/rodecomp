@@ -10,6 +10,7 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   int RelativeCoordinate(int position, int extent, float scale) {
     const int center = extent / 2 + extent % 2;
     const float offset = static_cast<float>(center) * scale;
@@ -20,14 +21,14 @@ namespace {
 }
 
 // OFFSET: 0x007436B0
-// FUNCTION: fn_07749
+// FUNCTION: fn_07767
 CActRes::CActRes(ActionResourceContext& context) : maximumCells(0), m_context(&context) {
 }
 
-// OFFSET: 0x00744660
-// FUNCTION: fn_07752
+// INLINED
 CActRes::~CActRes() = default;
 
+// FUNCTION: fn_07749
 CActRes* CActRes::Create() {
   return new CActRes(*this->m_context);
 }

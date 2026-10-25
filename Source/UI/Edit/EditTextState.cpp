@@ -3,8 +3,7 @@
 
 #include <cstring>
 
-// OFFSET: 0x008680D0
-// FUNCTION: fn_10952
+// INLINED
 void EditTextState::SetText(const char* value) {
   this->text.assign(value, std::strlen(value));
   this->Trim();
@@ -55,7 +54,6 @@ void EditTextState::SelectAll() {
 }
 
 // OFFSET: 0x00858D50
-// FUNCTION: fn_10768
 int EditTextState::Length() const {
   return static_cast<int>(this->focused ? this->input.text.size() : this->text.size());
 }

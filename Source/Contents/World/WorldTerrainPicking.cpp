@@ -4,8 +4,7 @@
 #include "Render/Projection/RenderProjection.h"
 #include "Resource/World/TerrainResource.h"
 
-// OFFSET: 0x00CD4060
-// FUNCTION: fn_21274
+// INLINED
 bool PickTerrainRay(const float* ray, WorldSpatialTree& root, int& column, int& row) {
   WorldRayQuery query;
   query.Collect(ray, &root);

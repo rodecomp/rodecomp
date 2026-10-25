@@ -3,7 +3,6 @@
 #include "Utility/Text/LanguageCharset.h"
 
 #include <algorithm>
-#include <cstring>
 #include <intrin.h>
 
 // OFFSET: 0x00ACEF00
@@ -103,6 +102,7 @@ const char* ImeInput::Candidate(int index) const {
   // STATIC: 0x016D3978
   // GLOBAL: gl_24374
   static char output[256];
+
   if (index >= this->input.compositionState) {
     return "";
   }

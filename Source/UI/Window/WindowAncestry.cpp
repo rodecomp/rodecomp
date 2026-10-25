@@ -1,6 +1,6 @@
 #include "UI/Window/WindowAncestry.h"
 
-// OFFSET: 0x00A79A90
+// INLINED
 WindowAncestry::WindowAncestry() : parent(nullptr) {
 }
 

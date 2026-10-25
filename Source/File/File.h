@@ -25,6 +25,7 @@ public:
     this->m_size = size.LowPart;
     return true;
   }
+  // INLINED
   std::uint32_t GetSize() const {
     return this->m_size;
   }

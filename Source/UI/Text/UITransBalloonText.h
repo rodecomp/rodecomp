@@ -24,6 +24,7 @@ public:
   void Slot15(int width, int height) override;
   void Paint() override;
 
+  // INLINED
   void SetRichText(unsigned char value) {
     this->m_richText = value;
   }

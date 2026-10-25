@@ -6,6 +6,7 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   int Family(unsigned mode) {
     switch (mode) {
     case 1:
@@ -43,13 +44,13 @@ namespace {
 }
 
 // OFFSET: 0x0084E970
+// FUNCTION: fn_10648
 UIBalloonText::UIBalloonText(UIWindowContext& windows, BalloonTextContext& text)
     : UIWindow(windows, 0), unknown_007C(0), m_fontHeight(12), m_textColor(0xFFFFFF), m_outlineColor(0), m_richText(0), m_textContext(&text) {
   this->geometry.unknown_0034 = 0;
 }
 
 // OFFSET: 0x008520F0
-// FUNCTION: fn_10703
 UIBalloonText::~UIBalloonText() = default;
 
 // OFFSET: 0x00869E20

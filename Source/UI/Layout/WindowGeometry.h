@@ -26,6 +26,12 @@ struct WindowGeometry {
   std::uint32_t Color();
 };
 
+// INLINED
+inline void WindowGeometry::Move(int newX, int newY) {
+  this->x = newX;
+  this->y = newY;
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(WindowGeometry) == 48);
 #endif

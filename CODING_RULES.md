@@ -7,12 +7,13 @@ These apply to rodecomp: Ragnarok Online Ragexe 2026-02-19 (x86), built with MSV
 
 Code carries no explanatory comments: none inside functions, none above them, no file headers, no
 commented-out code. Allowed comments are Clank stable-ID annotations (`// FUNCTION:`, `// GLOBAL:`,
-`// STRING:`, `// VTABLE:`), existing `// OFFSET:` / `// STATIC:` provenance, `// INLINED` markers,
-and field-offset markers (`/* XXXX */`). Use only string literals evidenced in the original executable.
+`// STRING:`, `// VTABLE:`), existing `// OFFSET:` / `// STATIC:` provenance where permitted below,
+exact bare `// INLINED` markers, and field-offset markers (`/* XXXX */`). Use only string literals evidenced in the original executable.
 
 Put explanations in submission notes rather than adding source comments or creating documentation by default.
-Preserve existing provenance. If the submission gate rejects it, report the policy conflict rather than
-stripping it or disabling the gate. This document does not change the server's accepted syntax.
+Preserve existing provenance except `OFFSET` annotations attached to inline-only functions, which must be removed.
+If the submission gate rejects otherwise permitted provenance, report the policy conflict rather than stripping it
+or disabling the gate. This document does not change the server's accepted syntax.
 
 ## 2. Stable IDs identify implementations and data
 
@@ -26,8 +27,9 @@ void Player::Update(float dt) {
 ```
 
 - Stable-ID annotations contain IDs, never addresses. Addresses live in the symbol database.
-- Preserve existing `// OFFSET: 0x...` and `// STATIC: 0x...` provenance; do not invent addresses or
-  require new address comments as a substitute for stable IDs.
+- Preserve existing `// OFFSET: 0x...` provenance for standalone functions and `// STATIC: 0x...` provenance
+  for data. Inline-only functions must not carry `OFFSET` provenance. Do not invent addresses or require
+  new address comments as a substitute for stable IDs.
 - Use the existing ID of the actual original function. Do not annotate an ordinary destructor with a
   scalar-deleting destructor's ID, or stack a thunk's ID onto its target.
 - For symbols missing from the database, use `td_new_symbol` and its returned annotation.
@@ -54,9 +56,9 @@ int g_resourceReuseDelay;
 - Helper functions used only by one `.cpp` may stay `static` there, defined below the statics; they need no header
   declaration.
 
-### `// INLINED:` for functions that exist only inlined
+### `// INLINED` for functions that exist only inlined
 
-A function that exists only inlined is marked `// INLINED`, not given an invented standalone function ID:
+A function that exists only inlined has exactly one annotation, the bare line `// INLINED`, immediately above its definition:
 
 ```cpp
 // INLINED
@@ -65,9 +67,12 @@ static void BuildFullKeyName(const char* keyname, char* buffer) {
 }
 ```
 
-- Preserve existing evidenced inline ranges when present. Do not guess ranges for interleaved instructions.
-- When the copies cannot be delimited (many copies interleaved with surrounding code, or a copy that compiles to
-  no instructions), write a bare `// INLINED` without ranges.
+- `// INLINED` has no colon, address, range, stable ID, enclosing-function name, or other suffix.
+- An inline-only function's annotation block contains only the bare marker: no `// OFFSET:`, `// FUNCTION:`,
+  or other provenance comments. Remove other annotations when classifying a function as inline-only; preserve
+  supporting addresses and enclosing function IDs in review/submission notes, not source comments.
+  This overrides general provenance-preservation rules.
+- Do not invent a standalone ID or mark a source-only helper inline without original evidence.
 - Inlined code is checked through its callers, not submitted as an invented standalone original.
 
 ## 2a. Verification uses Clank
@@ -188,3 +193,30 @@ the original instructions.
   limit, rather than wrapping short calls into instruction-like fragments. Formatting must not change behavior.
 - Leave exactly one blank line after an include block before declarations, including in headers. Never keep
   more than one consecutive blank line; whitespace-only lines count as blank.
+
+### Reconstruct missing types
+
+Repeated offset reads or consecutive field-sized `memcpy`s on flat integers/buffers suggest a missing struct.
+Reconstruct it when the data forms a logical object; use named members, verify layout, and copy whole records
+where appropriate. Preserve packing, byte order and aliasing; do not invent structs for unrelated scalars.
+
+```cpp
+#pragma pack(push, 1)
+struct PakEntryFile {
+  /* 0000 */ std::uint32_t compressedSize;
+  /* 0004 */ std::uint32_t alignedSize;
+  /* 0008 */ std::uint32_t originalSize;
+  /* 000C */ std::uint8_t flags;
+  /* 000D */ std::uint32_t dataOffset;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(PakEntryFile) == 17);
+static_assert(offsetof(PakEntryFile, dataOffset) == 13);
+
+PakEntryFile fileEntry;
+std::memcpy(&fileEntry, metadata, sizeof(fileEntry));
+cursor = metadata + sizeof(fileEntry);
+entry.compressedSize = fileEntry.compressedSize;
+entry.dataOffset = fileEntry.dataOffset;
+```

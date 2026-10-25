@@ -10,6 +10,7 @@
 namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CLoadPartyInfoAsyncWork.cpp";
 
+  // INLINED
   AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
     return AsyncDiagnostic(&success, &message, sourceFile, &line);
@@ -22,8 +23,7 @@ CLoadPartyInfoAsyncWork::CLoadPartyInfoAsyncWork()
     : NAsyncWork("PartyInfo_Load"), m_accountId(0), m_characterId(0), m_diagnostic(Diagnostic(false, "unknwon", 25)), m_context(nullptr) {
 }
 
-// OFFSET: 0x005D0840
-// FUNCTION: fn_03693
+// INLINED
 CLoadPartyInfoAsyncWork::~CLoadPartyInfoAsyncWork() = default;
 
 // OFFSET: 0x005D0BB0

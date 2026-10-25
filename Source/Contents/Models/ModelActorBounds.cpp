@@ -4,19 +4,23 @@
 #include <cstring>
 
 namespace {
+  // INLINED
   float Absolute(float value) {
     return std::fabs(value);
   }
 
+  // INLINED
   float Radians(float degrees) {
     return (degrees / 180.0f) * 3.141592f;
   }
 
+  // INLINED
   float InverseLength(float squared) {
     const float root = std::sqrt(squared);
     return static_cast<float>(1.0 / static_cast<double>(root));
   }
 
+  // INLINED
   float Coordinate(const float* point, const float* matrix, unsigned axis) {
     return ((point[0] * matrix[axis] + point[1] * matrix[axis + 3]) + point[2] * matrix[axis + 6]) + matrix[axis + 9];
   }
@@ -56,6 +60,7 @@ void C3dActorV2::UpdateBounds() {
   this->FinishBounds(bounds, true);
 }
 
+// INLINED
 void C3dActor::FinishBounds(const float* bounds, bool modern) {
   for (unsigned axis = 0; axis < 3; ++axis) {
     this->minimum[axis] = 100000;

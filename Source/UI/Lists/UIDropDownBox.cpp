@@ -5,15 +5,13 @@
 
 #include <algorithm>
 
-// OFFSET: 0x00AA27B0
-// FUNCTION: fn_17217
+// INLINED
 CUIDropDownBox::CUIDropDownBox(UIWindowContext& context) : CUIControl(context), owner(nullptr) {
 }
 
 // OFFSET: 0x009E3300
-// FUNCTION: fn_45427
 // OFFSET: 0x009E3390
-// FUNCTION: fn_14415
+// FUNCTION: fn_45427
 CUIDropDownBox::~CUIDropDownBox() {
   this->Detach();
 }
