@@ -17,5 +17,8 @@
     "approvals": 1,
     "approvalsWithHeaderChanges": 2
   },
+  "lintLimits": {
+    "maxInitializerNumbers": 65536
+  },
   "compileCommands": "compile.json"
 }
