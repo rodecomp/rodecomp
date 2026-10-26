@@ -1,6 +1,8 @@
 #include "Network/TextEncoding.h"
 #include "Utility/StackAlloc.h"
 
+#include <cctype>
+
 #include <cstdlib>
 #include <cstring>
 #include <malloc.h>
@@ -136,5 +138,54 @@ std::string ToUtf8(const std::string& text, UINT codePage) {
 
   std::free(converted);
   SysFreeString(wide);
+  return result;
+}
+
+// FUNCTION: fn_18257
+void LowercaseText(std::string& text) {
+  for (unsigned index = 0; index < text.size(); ++index) {
+    if (static_cast<signed char>(text[index]) <= 0) {
+      ++index;
+    } else if (std::isupper(text[index]) != 0) {
+      text[index] += 32;
+    }
+  }
+}
+
+// FUNCTION: fn_18258
+std::wstring DecodeText(UINT codePage, const std::string& text) {
+  const int length = MultiByteToWideChar(codePage, 0, text.data(), static_cast<int>(text.size()), nullptr, 0);
+  if (length == 0) {
+    return {};
+  }
+  BSTR converted = SysAllocStringLen(nullptr, length);
+  if (converted == nullptr) {
+    return {};
+  }
+  if (MultiByteToWideChar(codePage, 0, text.data(), static_cast<int>(text.size()), converted, length) == 0) {
+    SysFreeString(converted);
+    return {};
+  }
+  std::wstring result(converted);
+  SysFreeString(converted);
+  return result;
+}
+
+// FUNCTION: fn_18265
+std::string EncodeText(UINT codePage, const std::wstring& text) {
+  const int length = WideCharToMultiByte(codePage, 0, text.c_str(), -1, nullptr, 0, nullptr, nullptr);
+  if (length == 0) {
+    return {};
+  }
+  char* converted = static_cast<char*>(std::malloc(length));
+  if (converted == nullptr) {
+    return {};
+  }
+  if (WideCharToMultiByte(codePage, 0, text.c_str(), -1, converted, length, nullptr, nullptr) == 0) {
+    std::free(converted);
+    return {};
+  }
+  std::string result(converted, std::strlen(converted));
+  std::free(converted);
   return result;
 }
