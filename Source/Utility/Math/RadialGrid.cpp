@@ -1,7 +1,8 @@
-#include "Utility/RadialGrid.h"
+#include "Utility/Math/RadialGrid.h"
 
 #include <cstdint>
 
+// OFFSET: 0x00AF61A0
 // FUNCTION: fn_18251
 std::vector<RadialGridPoint> GenerateRadialGrid(const RadialGridPoint& center, int radius) {
   std::vector<RadialGridPoint> points;

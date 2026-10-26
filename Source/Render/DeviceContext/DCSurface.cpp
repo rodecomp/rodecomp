@@ -10,16 +10,19 @@ std::shared_ptr<CSurface> AcquireBackBufferSurface(CRenderSystemBase* system) {
   return system ? system->BackBufferSurface() : std::shared_ptr<CSurface>{};
 }
 
+// OFFSET: 0x00569F10
 // FUNCTION: fn_02274
 CRenderer* RenderSystemHolder::CreateRenderer() {
   return this->system ? this->system->CreateRenderer() : nullptr;
 }
 
+// OFFSET: 0x00569F80
 // FUNCTION: fn_02278
 HRESULT RenderSystemHolder::Close() {
   return this->system ? this->system->Close() : E_ILLEGAL_METHOD_CALL;
 }
 
+// OFFSET: 0x00569FC0
 // FUNCTION: fn_02280
 void RenderSystemHolder::UpdateOption() {
   if (this->system) {
@@ -27,6 +30,7 @@ void RenderSystemHolder::UpdateOption() {
   }
 }
 
+// OFFSET: 0x00569FD0
 // FUNCTION: fn_02281
 void RenderSystemHolder::RestoreDisplayMode() {
   if (this->system) {
@@ -34,6 +38,7 @@ void RenderSystemHolder::RestoreDisplayMode() {
   }
 }
 
+// OFFSET: 0x00569FE0
 // FUNCTION: fn_02282
 void RenderSystemHolder::PrepareErrorDialog() {
   if (this->system) {
@@ -41,31 +46,37 @@ void RenderSystemHolder::PrepareErrorDialog() {
   }
 }
 
+// OFFSET: 0x0056A230
 // FUNCTION: fn_02285
 std::int32_t RenderSystemHolder::Backend() const {
   return this->system ? this->system->Backend() : -1;
 }
 
+// OFFSET: 0x0056A280
 // FUNCTION: fn_02287
 CTexture* RenderSystemHolder::BackBufferTexture() const {
   return this->system ? this->system->BackBufferTexture() : nullptr;
 }
 
+// OFFSET: 0x0056A290
 // FUNCTION: fn_02288
 std::uint32_t RenderSystemHolder::Height() const {
   return this->system ? this->system->Height() : 0;
 }
 
+// OFFSET: 0x0056A690
 // FUNCTION: fn_02292
 std::uint32_t RenderSystemHolder::Width() const {
   return this->system ? this->system->Width() : 0;
 }
 
+// OFFSET: 0x0056A790
 // FUNCTION: fn_02294
 bool RenderSystemHolder::IsWindowed() const {
   return this->system ? this->system->IsWindowed() : false;
 }
 
+// OFFSET: 0x0056A7A0
 // FUNCTION: fn_02295
 HRESULT RenderSystemHolder::TestDevice() const {
   return this->system ? this->system->TestDevice() : E_ILLEGAL_METHOD_CALL;

@@ -8,15 +8,15 @@ endif()
 add_subdirectory(ThirdParty)
 
 add_library(RagnarokUtility STATIC
-  Source/Utility/XorBytes.cpp
-  Source/Utility/Base64.cpp
+  Source/Utility/Cipher/XorBytes.cpp
+  Source/Utility/Text/Base64.cpp
   Source/Utility/Text/GroupedInteger.cpp
   Source/Utility/Text/LanguageCharset.cpp
   Source/Utility/Math/ClientAngles.cpp
   Source/Utility/Math/AffineMatrix.cpp
   Source/Utility/Math/AffineLookAt.cpp
   Source/Utility/Math/RayTriangle.cpp
-  Source/Utility/Rijndael.cpp
+  Source/Utility/Cipher/Rijndael.cpp
 )
 
 target_include_directories(RagnarokUtility PUBLIC

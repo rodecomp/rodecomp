@@ -28,6 +28,7 @@ CActRes::CActRes(ActionResourceContext& context) : maximumCells(0), m_context(&c
 // INLINED
 CActRes::~CActRes() = default;
 
+// OFFSET: 0x007436B0
 // FUNCTION: fn_07749
 CActRes* CActRes::Create() {
   return new CActRes(*this->m_context);

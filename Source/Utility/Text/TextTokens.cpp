@@ -1,4 +1,4 @@
-#include "Utility/TextTokens.h"
+#include "Utility/Text/TextTokens.h"
 
 #include <cstring>
 
@@ -17,12 +17,14 @@ const unsigned char g_colorHexDigit[256] = {
 // GLOBAL: gl_24543
 unsigned char g_inlineCharset = 0xFF;
 
+// OFFSET: 0x0054FF10
 // FUNCTION: fn_01963
 bool IsPipeColorToken(const char* text) {
   return g_inlineCharset == 0 && std::strlen(text) >= 3 && *text == '|' &&
          g_colorHexDigit[static_cast<unsigned char>(text[1])] != 0 && g_colorHexDigit[static_cast<unsigned char>(text[2])] != 0;
 }
 
+// OFFSET: 0x0054FF60
 // FUNCTION: fn_01964
 bool IsHexColorToken(const char* text, const char* end) {
   if (*text != '^' || end - text <= 6) {
@@ -38,6 +40,7 @@ bool IsHexColorToken(const char* text, const char* end) {
   return true;
 }
 
+// OFFSET: 0x009BA740
 // FUNCTION: fn_13883
 std::string __stdcall StripColorTokens(const char* text, std::uint32_t length) {
   std::string result;

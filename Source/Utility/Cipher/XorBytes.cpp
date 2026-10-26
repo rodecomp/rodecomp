@@ -1,4 +1,4 @@
-#include "Utility/XorBytes.h"
+#include "Utility/Cipher/XorBytes.h"
 
 namespace utility {
   // OFFSET: 0x005A45E0

@@ -1,6 +1,6 @@
 #include "Contents/MessageTable.h"
 #include "Network/TextEncoding.h"
-#include "Utility/Base64.h"
+#include "Utility/Text/Base64.h"
 #include "Utility/Text/LanguageCharset.h"
 
 #include <cstdio>

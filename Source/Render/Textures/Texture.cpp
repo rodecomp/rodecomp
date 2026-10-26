@@ -68,6 +68,7 @@ std::uint32_t CTexture::SetImageSize(std::uint32_t width, std::uint32_t height) 
   return width;
 }
 
+// OFFSET: 0x00572480
 // FUNCTION: fn_02470
 int CTexture::SetName(const char* name) {
   return strncpy_s(this->m_name, sizeof(this->m_name), name, _TRUNCATE);

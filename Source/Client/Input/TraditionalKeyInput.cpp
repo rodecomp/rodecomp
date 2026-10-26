@@ -114,6 +114,7 @@ const char* TraditionalKeyInput::NextCharArabic(const char* current, int) {
   return CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
 }
 
+// OFFSET: 0x00ACD7D0
 // FUNCTION: fn_17768
 void TraditionalKeyInputNoop() {}
 

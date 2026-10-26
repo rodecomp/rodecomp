@@ -53,6 +53,7 @@ void CRes::MissingFile(CRenderSystemBase* system, const char* name) {
   ShowErrorDialog(system, text, 0);
 }
 
+// OFFSET: 0x00AEFAD0
 // FUNCTION: fn_18183
 std::uint32_t CRes::AddRef() {
   return ++this->references;

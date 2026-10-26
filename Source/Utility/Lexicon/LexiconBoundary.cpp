@@ -1,5 +1,6 @@
-#include "Utility/LexiconBoundary.h"
+#include "Utility/Lexicon/LexiconBoundary.h"
 
+// OFFSET: 0x00AC4EA0
 // FUNCTION: fn_17634
 bool LexiconBoundary::Matches(unsigned char previous, unsigned char current, unsigned char options) const {
   if (previous == 0xDD) {

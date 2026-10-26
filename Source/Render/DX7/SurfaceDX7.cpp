@@ -31,6 +31,7 @@ namespace {
     return static_cast<std::uint16_t>((value >> (channel.expansion & 31)) << (channel.shift & 31));
   }
 
+  // OFFSET: 0x00543220
   // FUNCTION: fn_01787
   std::uint16_t Color(DeviceOwnerDX7& owner, unsigned red, unsigned green, unsigned blue) {
     return static_cast<std::uint16_t>(Channel(red, owner.red) + Channel(green, owner.green) + Channel(blue, owner.blue));
@@ -228,56 +229,67 @@ void CSurfaceDX7::Stretch(int, int, int width, int height) {
   this->m_owner->renderTarget->Blt(&destination, this->m_surface, nullptr, DDBLT_WAIT, nullptr);
 }
 
+// OFFSET: 0x00543270
 // FUNCTION: fn_01788
 DWORD DeviceOwnerDX7::BlueMask() {
   return this->blueMask;
 }
 
+// OFFSET: 0x00543280
 // FUNCTION: fn_01789
 DWORD DeviceOwnerDX7::BlueExpansion() {
   return this->blue.expansion;
 }
 
+// OFFSET: 0x00543290
 // FUNCTION: fn_01790
 DWORD DeviceOwnerDX7::BlueShift() {
   return this->blue.shift;
 }
 
+// OFFSET: 0x005432D0
 // FUNCTION: fn_01792
 IDirectDraw7* DeviceOwnerDX7::DirectDraw() {
   return this->draw;
 }
 
+// OFFSET: 0x005432E0
 // FUNCTION: fn_01793
 DWORD DeviceOwnerDX7::GreenMask() {
   return this->greenMask;
 }
 
+// OFFSET: 0x005432F0
 // FUNCTION: fn_01794
 DWORD DeviceOwnerDX7::GreenExpansion() {
   return this->green.expansion;
 }
 
+// OFFSET: 0x00543300
 // FUNCTION: fn_01795
 DWORD DeviceOwnerDX7::GreenShift() {
   return this->green.shift;
 }
 
+// OFFSET: 0x00543320
 // FUNCTION: fn_01797
 DWORD DeviceOwnerDX7::RedMask() {
   return this->redMask;
 }
 
+// OFFSET: 0x00543330
 // FUNCTION: fn_01798
 DWORD DeviceOwnerDX7::RedExpansion() {
   return this->red.expansion;
 }
 
+// OFFSET: 0x00543340
 // FUNCTION: fn_01799
 DWORD DeviceOwnerDX7::RedShift() {
   return this->red.shift;
 }
 
+// OFFSET: 0x00543350
 // FUNCTION: fn_01800
 IDirectDrawSurface7* DeviceOwnerDX7::RenderTarget() {
   return this->renderTarget;

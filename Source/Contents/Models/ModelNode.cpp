@@ -30,10 +30,12 @@ C3dNodeV2::C3dNodeV2() = default;
 // OFFSET: 0x00AB6C50
 C3dNodeV2::~C3dNodeV2() = default;
 
+// OFFSET: 0x00AB7040
 // FUNCTION: fn_17481
 void C3dNode::Initialize(const ModelNode&) {
 }
 
+// OFFSET: 0x00AB9110
 // FUNCTION: fn_17506
 void C3dNode::Animate(double) {
 }

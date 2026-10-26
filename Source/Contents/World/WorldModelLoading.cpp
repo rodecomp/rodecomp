@@ -87,6 +87,7 @@ void WorldModelLoading::Schedule(const WorldModelRecord& placement, const Terrai
   }
 }
 
+// OFFSET: 0x00AC8BF0
 // FUNCTION: fn_17680
 DWORD WINAPI WorldModelLoading::ThreadEntry(void* context) {
   static_cast<WorldModelLoading*>(context)->Run();

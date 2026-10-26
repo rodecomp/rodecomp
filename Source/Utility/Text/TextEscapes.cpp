@@ -1,5 +1,6 @@
-#include "Utility/TextEscapes.h"
+#include "Utility/Text/TextEscapes.h"
 
+// OFFSET: 0x00AF41D0
 // FUNCTION: fn_18244
 void DecodeTextEscapes(std::string& text) {
   for (std::size_t position = text.find("\\r"); position != std::string::npos; position = text.find("\\r")) {

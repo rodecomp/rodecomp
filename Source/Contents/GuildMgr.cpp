@@ -23,6 +23,7 @@ CGuildMgr::~CGuildMgr() {
   }
 }
 
+// OFFSET: 0x0065E290
 // FUNCTION: fn_05172
 bool CGuildMgr::Create() {
   if (g_guildMgr) {
@@ -43,6 +44,7 @@ bool CGuildMgr::Create() {
   return true;
 }
 
+// OFFSET: 0x0065E430
 // FUNCTION: fn_05173
 void CGuildMgr::Destroy() {
   if (g_guildMgr) {

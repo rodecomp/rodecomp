@@ -41,6 +41,7 @@ inline RagEffectState::~RagEffectState() {
   }
 }
 
+// OFFSET: 0x00BF84B0
 // FUNCTION: fn_20007
 AttachedEffect::AttachedEffect(ResourceMgr& resources, JobNames& names) : CRenderObject(resources, names) {
 }

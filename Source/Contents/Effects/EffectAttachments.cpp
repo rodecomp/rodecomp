@@ -60,6 +60,7 @@ void EffectAttachments::DetachAll() {
   this->second = nullptr;
 }
 
+// OFFSET: 0x00CADC20
 // FUNCTION: fn_21063
 bool EffectActor::EffectVisible() const {
   return this->render.visible != 0 && this->render.enabled != 0;

@@ -1,5 +1,6 @@
 #include "Contents/MovementRouteInterpolation.h"
 
+// OFFSET: 0x00AD92C0
 // FUNCTION: fn_17876
 int MovementRouteInterpolation::Sample(std::uint32_t tick, float* x, float* y, int* metadata) {
   if (this->points.empty()) {
@@ -57,6 +58,7 @@ int MovementRouteInterpolation::Sample(std::uint32_t tick, float* x, float* y, i
   return static_cast<int>(index);
 }
 
+// OFFSET: 0x00AD9500
 // FUNCTION: fn_17877
 std::uint32_t MovementRouteInterpolation::Segment() const {
   return this->segment;

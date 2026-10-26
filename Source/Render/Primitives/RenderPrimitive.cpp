@@ -8,6 +8,7 @@
 // GLOBAL: gl_24481
 CRenderer* g_renderer;
 
+// OFFSET: 0x00569270
 // FUNCTION: fn_02251
 RenderVertex* RenderVertex::Reset() {
   this->x = 0;

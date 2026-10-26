@@ -1,5 +1,6 @@
 #include "Render/Renderer.h"
 
+// OFFSET: 0x0055D480
 // FUNCTION: fn_02104
 float* CRenderer::ProjectViewport(const float* position, const float* matrix, float* x, float* y, float* reciprocalDepth) {
   const float inverse = 1.0f / (((matrix[2] * position[0] + matrix[5] * position[1]) + matrix[8] * position[2]) + matrix[11]);
@@ -11,6 +12,7 @@ float* CRenderer::ProjectViewport(const float* position, const float* matrix, fl
   return y;
 }
 
+// OFFSET: 0x0055D560
 // FUNCTION: fn_02105
 float* CRenderer::ProjectViewportCentered(
   const float* position, const float* matrix, float* x, float* y, float* reciprocalDepth, float width, float height

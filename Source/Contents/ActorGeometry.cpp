@@ -3,6 +3,7 @@
 
 #include <cmath>
 
+// OFFSET: 0x00CA9580
 // FUNCTION: fn_21007
 float __stdcall CRenderObject::Heading(float x, float z, float targetX, float targetZ) {
   const float deltaX = targetX - x;
@@ -19,6 +20,7 @@ float __stdcall CRenderObject::Heading(float x, float z, float targetX, float ta
   return angle;
 }
 
+// OFFSET: 0x00CA9610
 // FUNCTION: fn_21008
 void CRenderObject::Face(float x, float z) {
   const float deltaX = x - this->render.position[0];
@@ -37,6 +39,7 @@ void CRenderObject::Face(float x, float z) {
   }
 }
 
+// OFFSET: 0x00CA96C0
 // FUNCTION: fn_21009
 float CRenderObject::HorizontalDistance(float x, float z) const {
   const float deltaX = x - this->render.position[0];
@@ -44,6 +47,7 @@ float CRenderObject::HorizontalDistance(float x, float z) const {
   return SquareRoot(deltaZ * deltaZ + deltaX * deltaX);
 }
 
+// OFFSET: 0x00CA9700
 // FUNCTION: fn_21010
 float CRenderObject::Distance(float x, float y, float z) const {
   const float deltaX = x - this->render.position[0];

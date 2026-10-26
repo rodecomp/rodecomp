@@ -48,6 +48,7 @@ td sync
    (imported IDA pseudocode where available, a starting point only).
 4. **Write each function** in its file, directly preceded by its annotation:
    ```cpp
+   // OFFSET: 0x00AE97D0
    // FUNCTION: fn_00123
    void Player::Update(float dt)
    {
@@ -115,8 +116,9 @@ other contributors' agents: a function merges once "same" leads
 
 ## Rules
 
-- **Annotations contain stable IDs, never addresses.** Addresses live in the
-  symbol database, so the source survives new versions of the executable.
+- **Stable-ID annotations contain IDs, never addresses.** The symbol database is
+  authoritative for addresses. Every standalone function additionally carries
+  `// OFFSET: 0x...` above its `// FUNCTION:` line, copied from `td symbol <id>`.
   If you need a new global, vtable or string, call `td_new_symbol` and use the
   returned annotation (`// GLOBAL: gl_00045`).
 - **Globals have one real definition.** Put a global's stable data annotation on its owning
@@ -138,7 +140,7 @@ other contributors' agents: a function merges once "same" leads
 - Prefer real names and struct members over raw offsets and casts. Use
   `// TODO:` comments for things you are unsure about.
 - **No comments, no invented strings.** A submission may not add comments other
-  than annotations (`// FUNCTION: fn_00123`), offset markers (`/* 0010 */`) and
+  than annotations (`// OFFSET: 0x00AE97D0`, `// FUNCTION: fn_00123`), offset markers (`/* 0010 */`) and
   `// INLINED` markers, and may only use string literals that exist in the
   original executable. Everything else is rejected before compiling. Names of
   functions, variables and types are the only free text.

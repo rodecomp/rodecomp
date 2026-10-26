@@ -116,6 +116,7 @@ void JobInheritance::InitializeSkillTree(CPlayerSkillBundle& bundle, int job) {
   }
 }
 
+// OFFSET: 0x00DE0830
 // FUNCTION: fn_23461
 int __stdcall GetRealWeaponId(int weapon) {
   int real = 0;

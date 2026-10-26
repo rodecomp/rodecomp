@@ -22,6 +22,7 @@ namespace {
     return value < 0 ? (0 - value) : value;
   }
 
+  // OFFSET: 0x007E2DB0
   // FUNCTION: fn_09714
   bool ContainsUpward(SnapObject* object, SnapObject* target) {
     if (object == target) {

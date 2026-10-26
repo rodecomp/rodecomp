@@ -68,6 +68,7 @@ void BitmapPixels::Create(int newWidth, int newHeight) {
   this->previous = SelectObject(this->dc, this->bitmap);
 }
 
+// OFFSET: 0x00547A80
 // FUNCTION: fn_01845
 HGDIOBJ CDCBitmap::Create(int width, int height) {
   this->m_bitmap.width = width;

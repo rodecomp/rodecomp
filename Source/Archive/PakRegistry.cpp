@@ -85,6 +85,7 @@ bool PakRegistry::Exists(const char* filename, bool looseOnly) const {
   return true;
 }
 
+// OFFSET: 0x00AEA1F0
 // FUNCTION: fn_18116
 void PakRegistry::ApplyAuxiliary(const void*, std::uint32_t) {
 }

@@ -26,6 +26,7 @@ int StringFormat(char* buffer, std::size_t sizeInBytes, std::size_t count, const
 namespace {
   class ThreadSafeBuffer {
   public:
+    // OFFSET: 0x00733F00
     // FUNCTION: fn_07592
     ThreadSafeBuffer() {
       InitializeCriticalSection(&this->m_criticalSection);

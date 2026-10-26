@@ -18,6 +18,7 @@ CSprRes::CSprRes(SpriteResourceContext& context) : indexedCount(0), m_context(&c
 // INLINED
 CSprRes::~CSprRes() = default;
 
+// OFFSET: 0x0075FE90
 // FUNCTION: fn_08053
 CSprRes* CSprRes::Create() {
   return new CSprRes(*this->m_context);

@@ -31,6 +31,7 @@ DeviceOwnerDX9::DeviceOwnerDX9() {
   this->lastPresent = 0;
 }
 
+// OFFSET: 0x0054B830
 // FUNCTION: fn_01907
 void DeviceOwnerDX9Noop() {}
 

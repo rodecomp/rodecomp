@@ -1,4 +1,4 @@
-#include "Utility/XxHash32.h"
+#include "Utility/Hash/XxHash32.h"
 
 #include <bit>
 #include <cstring>
@@ -12,6 +12,7 @@ namespace {
   }
 }
 
+// OFFSET: 0x004D3490
 // FUNCTION: fn_00163
 std::uint32_t FinalizeXxHash32(std::uint32_t hash, const void* data, std::uint32_t remaining, int) {
   const auto* current = static_cast<const unsigned char*>(data);
@@ -38,6 +39,7 @@ std::uint32_t FinalizeXxHash32(std::uint32_t hash, const void* data, std::uint32
   return hash;
 }
 
+// OFFSET: 0x004D3320
 // FUNCTION: fn_00162
 std::uint32_t XxHash32(const void* data, std::uint32_t length, std::uint32_t seed) {
   const auto* current = static_cast<const unsigned char*>(data);

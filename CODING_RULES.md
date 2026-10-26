@@ -7,7 +7,7 @@ These apply to rodecomp: Ragnarok Online Ragexe 2026-02-19 (x86), built with MSV
 
 Code carries no explanatory comments: none inside functions, none above them, no file headers, no
 commented-out code. Allowed comments are Clank stable-ID annotations (`// FUNCTION:`, `// GLOBAL:`,
-`// STRING:`, `// VTABLE:`), existing `// OFFSET:` / `// STATIC:` provenance where permitted below,
+`// STRING:`, `// VTABLE:`), `// OFFSET:` provenance on standalone functions, existing `// STATIC:` provenance,
 exact bare `// INLINED` markers, and field-offset markers (`/* XXXX */`). Use only string literals evidenced in the original executable.
 
 Put explanations in submission notes rather than adding source comments or creating documentation by default.
@@ -17,19 +17,22 @@ or disabling the gate. This document does not change the server's accepted synta
 
 ## 2. Stable IDs identify implementations and data
 
-Every reconstructed standalone function gets its existing stable ID directly above its definition:
+Every reconstructed standalone function gets its `// OFFSET:` address and its existing stable ID directly above its definition:
 
 ```cpp
+// OFFSET: 0x00AE97D0
 // FUNCTION: fn_00123
 void Player::Update(float dt) {
     ...
 }
 ```
 
-- Stable-ID annotations contain IDs, never addresses. Addresses live in the symbol database.
-- Preserve existing `// OFFSET: 0x...` provenance for standalone functions and `// STATIC: 0x...` provenance
-  for data. Inline-only functions must not carry `OFFSET` provenance. Do not invent addresses or require
-  new address comments as a substitute for stable IDs.
+- `// OFFSET: 0x...` is mandatory on every standalone `// FUNCTION:` definition: one line per stacked ID, placed above
+  the `FUNCTION` lines, with the address `td symbol <id>` reports (eight uppercase hex digits). Never type an address
+  from memory or a decompiler listing that disagrees with the symbol database.
+- `FUNCTION`/`GLOBAL`/`STRING`/`VTABLE` annotations contain IDs, never addresses; the symbol database stays
+  authoritative. Preserve existing `// STATIC: 0x...` provenance for data. Inline-only functions must not carry
+  `OFFSET` provenance.
 - Use the existing ID of the actual original function. Do not annotate an ordinary destructor with a
   scalar-deleting destructor's ID, or stack a thunk's ID onto its target.
 - For symbols missing from the database, use `td_new_symbol` and its returned annotation.

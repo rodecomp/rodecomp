@@ -1,4 +1,4 @@
-#include "Utility/MD5.h"
+#include "Utility/Hash/MD5.h"
 
 #include <cstring>
 #include <cwchar>
@@ -14,6 +14,7 @@ namespace {
   }
 }
 
+// OFFSET: 0x00401C40
 // FUNCTION: fn_00121
 MD5::MD5() {
 }

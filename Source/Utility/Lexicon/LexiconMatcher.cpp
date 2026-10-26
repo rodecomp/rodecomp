@@ -1,7 +1,6 @@
-#include "Utility/LexiconMatcher.h"
+#include "Utility/Lexicon/LexiconMatcher.h"
 
-#include <cstdint>
-
+// OFFSET: 0x00AC48E0
 // FUNCTION: fn_17631
 int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* text, const unsigned char* end, int) {
   if (*text == 0) {
@@ -17,14 +16,13 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
       return matched;
     }
 
-    std::uint32_t offset = (static_cast<std::uint32_t>(entry[0] & 0x3F) << 16) |
-                           (static_cast<std::uint32_t>(entry[1]) << 8) | entry[2];
+    int offset = ((entry[0] & 0x3F) << 16) | (entry[1] << 8) | entry[2];
     entry += 3;
     const unsigned char* candidate = data + offset;
-    const unsigned int count = *candidate;
+    const int count = *candidate;
     if (count < 0x20 && candidate[1] == *text) {
       ++offset;
-      for (unsigned int index = 0; index < count; ++index) {
+      for (int index = 0; index < count; ++index) {
         if (data[offset++] != *text) {
           failed = true;
           break;
@@ -54,7 +52,7 @@ int __stdcall MatchLexicon(const unsigned char* data, int, const unsigned char* 
       ++matched;
       entry = candidate + 1;
       ++text;
-      if (static_cast<signed char>(*entry) < 0) {
+      if ((*entry & 0x80) != 0) {
         accepted = matched;
       }
     }

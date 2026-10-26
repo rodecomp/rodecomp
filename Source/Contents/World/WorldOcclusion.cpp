@@ -40,6 +40,7 @@ void MarkWorldOcclusionRay(const float* ray, float actorLimit, float groundLimit
   }
 }
 
+// OFFSET: 0x00CD5AD0
 // FUNCTION: fn_21286
 void MarkScreenWorldOcclusion(
   const RenderProjection& projection, int screenX, int screenY, float rendererScale, const float* origin, const float* cameraMatrix, float playerHeight,

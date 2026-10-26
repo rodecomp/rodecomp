@@ -1,5 +1,6 @@
-#include "Utility/LexiconSerializer.h"
+#include "Utility/Lexicon/LexiconSerializer.h"
 
+// OFFSET: 0x00AC3FF0
 // FUNCTION: fn_17630
 void LexiconSerializer::Destroy(LexiconNode* node) {
   if (node != nullptr) {
@@ -9,6 +10,7 @@ void LexiconSerializer::Destroy(LexiconNode* node) {
   }
 }
 
+// OFFSET: 0x00AC4D40
 // FUNCTION: fn_17633
 std::uint32_t LexiconSerializer::Serialize(LexiconNode* node, std::uint32_t offset, unsigned char terminal) {
   int siblings = 0;
