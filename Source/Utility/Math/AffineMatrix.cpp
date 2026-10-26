@@ -96,7 +96,7 @@ void AffineMatrix::RotateZ(float radians) {
 // OFFSET: 0x005550C0
 // FUNCTION: fn_02032
 void AffineMatrix::SetTranslation(float x, float y, float z) {
-  this->Identity();
+  std::memcpy(this->values, g_identityMatrix, sizeof(g_identityMatrix));
   this->values[9] = x;
   this->values[10] = y;
   this->values[11] = z;
@@ -105,7 +105,7 @@ void AffineMatrix::SetTranslation(float x, float y, float z) {
 // OFFSET: 0x00554B40
 // FUNCTION: fn_02028
 void AffineMatrix::SetScale(float x, float y, float z) {
-  this->Identity();
+  std::memcpy(this->values, g_identityMatrix, sizeof(g_identityMatrix));
   this->values[0] = x;
   this->values[4] = y;
   this->values[8] = z;
@@ -179,4 +179,56 @@ void AffineMatrix::Inverse(const AffineMatrix& source) {
   output[9] = -((secondX * a[10] + (minor * inverse) * a[9]) + thirdX * a[11]);
   output[10] = -((firstY * a[9] + secondY * a[10]) + thirdY * a[11]);
   output[11] = -((secondZ * a[10] + firstZ * a[9]) + thirdZ * a[11]);
+}
+
+// FUNCTION: fn_02026
+int AffineMatrix::IsIdentity() const {
+  const auto absolute = [](float value) {
+    return std::bit_cast<float>(std::bit_cast<unsigned>(value) & 0x7FFFFFFFu);
+  };
+  const float tolerance = 1.0e-5f;
+  if (absolute(this->values[0] - 1.0f) > tolerance || absolute(this->values[4] - 1.0f) > tolerance ||
+      absolute(this->values[8] - 1.0f) > tolerance || absolute(this->values[1]) > tolerance ||
+      absolute(this->values[2]) > tolerance || absolute(this->values[3]) > tolerance ||
+      absolute(this->values[5]) > tolerance || absolute(this->values[6]) > tolerance ||
+      absolute(this->values[7]) > tolerance || absolute(this->values[9]) > tolerance ||
+      absolute(this->values[10]) > tolerance || absolute(this->values[11]) > tolerance) {
+    return 0;
+  }
+  return 1;
+}
+
+// FUNCTION: fn_02031
+const float* AffineMatrix::SetAxisRotation(const float* axis, float radians) {
+  const float halfAngle = radians * 0.5f;
+  const float sine = ClientSin(halfAngle);
+  const float x = sine * axis[0];
+  const float y = sine * axis[1];
+  const float z = sine * axis[2];
+  const float cosine = ClientCos(halfAngle);
+  this->values[9] = 0.0f;
+  this->values[10] = 0.0f;
+  this->values[11] = 0.0f;
+  const float twiceX = x + x;
+  const float twiceY = y + y;
+  const float twiceZ = z + z;
+  const float wz = cosine * twiceZ;
+  const float wx = cosine * twiceX;
+  const float wy = cosine * twiceY;
+  const float xx = twiceX * x;
+  const float xy = twiceY * x;
+  const float yy = twiceY * y;
+  const float xz = twiceZ * x;
+  const float zz = twiceZ * z;
+  const float yz = twiceZ * y;
+  this->values[0] = 1.0f - (zz + yy);
+  this->values[1] = xy + wz;
+  this->values[3] = xy - wz;
+  this->values[2] = xz - wy;
+  this->values[6] = xz + wy;
+  this->values[4] = 1.0f - (zz + xx);
+  this->values[5] = yz + wx;
+  this->values[7] = yz - wx;
+  this->values[8] = 1.0f - (yy + xx);
+  return axis;
 }

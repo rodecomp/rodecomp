@@ -14,6 +14,8 @@ struct AffineMatrix {
   float values[12];
 
   void Identity();
+  int IsIdentity() const;
+  const float* SetAxisRotation(const float* axis, float radians);
   void SetXRotation(float radians);
   void SetYRotation(float radians);
   void SetZRotation(float radians);
