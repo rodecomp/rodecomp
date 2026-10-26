@@ -1,8 +1,6 @@
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Script/LuaScript.h"
 
-#include <cstdio>
-
 // OFFSET: 0x009109E0
 // FUNCTION: fn_12506
 HotkeyInfo::HotkeyInfo() : key1(0), key2(0) {
@@ -34,16 +32,33 @@ bool SkillUsesPercentSp(int id) {
 }
 
 // OFFSET: 0x008224C0
-// OFFSET: 0x00822550
-std::string SkillTooltip(const char* hotkey, const char* name, int level, int sp, int ap, bool percent) {
+// FUNCTION: fn_10278
+std::string SkillTooltipPercent(const char* hotkey, const char* name, int level, int sp, int ap) {
   char text[4096];
-  const char* format;
-  if (percent) {
-    format = ap != 0 ? "%s %s Use Lv %d (Sp : %d%%, Ap : %d)" : "%s %s Use Lv %d (Sp : %d%%)";
+  if (ap != 0) {
+    _snprintf_s(text, sizeof(text), _TRUNCATE, "%s %s Use Lv %d (Sp : %d%%, Ap : %d)", hotkey, name, level, sp, ap);
   } else {
-    format = ap != 0 ? "%s %s Use Lv %d (Sp : %d, Ap : %d)" : "%s %s Use Lv %d (Sp : %d)";
+    _snprintf_s(text, sizeof(text), _TRUNCATE, "%s %s Use Lv %d (Sp : %d%%)", hotkey, name, level, sp);
   }
-
-  _snprintf_s(text, sizeof(text), _TRUNCATE, format, hotkey, name, level, sp, ap);
   return text;
+}
+
+// OFFSET: 0x00822550
+// FUNCTION: fn_10279
+std::string SkillTooltipFlat(const char* hotkey, const char* name, int level, int sp, int ap) {
+  char text[4096];
+  if (ap != 0) {
+    _snprintf_s(text, sizeof(text), _TRUNCATE, "%s %s Use Lv %d (Sp : %d, Ap : %d)", hotkey, name, level, sp, ap);
+  } else {
+    _snprintf_s(text, sizeof(text), _TRUNCATE, "%s %s Use Lv %d (Sp : %d)", hotkey, name, level, sp);
+  }
+  return text;
+}
+
+// INLINED
+std::string SkillTooltip(const char* hotkey, const char* name, int level, int sp, int ap, bool percent) {
+  if (percent) {
+    return SkillTooltipPercent(hotkey, name, level, sp, ap);
+  }
+  return SkillTooltipFlat(hotkey, name, level, sp, ap);
 }
