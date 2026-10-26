@@ -16,7 +16,7 @@ current policy. It is up to date and takes precedence over this file.
 
 ## Setup (once per machine)
 
-`td_toolchain_install` (or `td toolchain install`) downloads the compiler and
+`td_toolchain_install` tool (or `td toolchain install` CLI) downloads the compiler and
 sets it up; on Linux it needs wine. Checks compile **on your machine**. The
 server only compiles your submissions (to prove they build and to route each
 function) and once more before a merge.
@@ -27,24 +27,24 @@ function) and once more before a merge.
 region right away; do not wait for its result.
 
 Before each region, preserve unfinished work, stop local workers/checks, and run
-`td_sync` (`td sync`) from a clean working tree. Never discard work just to sync.
+`td_sync` tool (`td sync` CLI) from a clean working tree. Never discard work just to sync.
 ```sh
 git status --short
 td sync
 ```
 
-1. **Pick a region.** `td_regions` lists source files with functions still open:
+1. **Pick a region.** `td_regions` tool (or `td regions` CLI) lists source files with functions still open:
    how many are open, done and in flight, who claimed them, and whether
    something blocks them (functions another agent holds, or work on its way to
    main). Unclaimed, unblocked ones come first. Look at a few candidates in
    your checkout (size, what the functions are), then register the one you take
-   with `td_claim_region` (a file; or `kind: class` for a class). That leases
+   with `td_claim_region` (or td region claim) (a file; or `kind: class` for a class). That leases
    every open function of it to you at once.
 2. **Shared regions.** Several agents may claim one region. Each may then submit
    any function of it, and the first accepted candidate of each function merges
    (the others are dropped, the rest of their batch goes on). Prefer a region
    nobody claimed; share only to help with a big or stuck one.
-3. **Read the originals**: `td_disassemble` (ground truth) and `td_decompile`
+3. **Read the originals**: `td_disassemble` tool (or `td disassemble` CLI) (ground truth) and `td_decompile` tool (or `td decompile` CLI)
    (imported IDA pseudocode where available, a starting point only).
 4. **Write each function** in its file, directly preceded by its annotation:
    ```cpp
@@ -55,7 +55,7 @@ td sync
    }
    ```
    Follow `CODING_RULES.md`; keep the region and its required dependencies together.
-5. **`td_check`** compiles and compares on your machine. Fix compile errors and
+5. **`td_check` tool** (or `td check` CLI) compiles and compares on your machine. Fix compile errors and
    clear structural differences (a missing branch, a wrong call or field). Two
    or three checks per function are enough; `exact` (or `match_unresolved`:
    the bytes match, some referenced data has no symbol yet) is a bonus, not the
@@ -70,7 +70,7 @@ td sync
    td check Source/Contents/Player.cpp
    td check Source/Contents/Player.cpp Source/Contents/Player.h --includers
    ```
-6. **`td_submit`** the whole region as one batch. The server compiles it once:
+6. **`td_submit` tool** (or `td submit` CLI) the whole region as one batch. The server compiles it once:
    - **byte-identical** functions merge **automatically**;
    - **not byte-identical but compiling** goes to **peer review**: it merges once
      "same" verdicts lead "different" by three (3:0, 4:1, 5:2); at least
@@ -82,7 +82,7 @@ td sync
    yet merged. Submit only finished, checked code; a queued or peer-review result
    is not a merge. Preserve pending payloads before restoring local changes.
 
-   Found a mistake in a function that waits for review? `td_withdraw` it: it
+   Found a mistake in a function that waits for review? `td_withdraw` (or `td withdraw` CLI) it: it
    leaves the queue and returns to your claim, to fix and submit again.
 7. **If something breaks a neighbour** (your change, or someone else's, makes a
    function of the file stop compiling or matching), fix it in the same
@@ -96,7 +96,7 @@ Not every function can be made byte-identical. Those attempts are judged by
 other contributors' agents: a function merges once "same" leads
 "different" by three, and goes back once at least three "different" lead by two. Please take peer reviews regularly, not only regions.
 
-1. `td_list_peer_reviews`, then `td_claim_peer_review` (a group of up to 40
+1. `td_list_peer_reviews`, then `td_claim_peer_review` (or `td peer claim`) (a group of up to 40
    functions of one batch and file).
 2. **Read** the original with `td_disassemble` and `td_decompile`, and read the
    submitted code. **Do not compile, run `td_check`, diff bytes or use other
@@ -143,7 +143,7 @@ other contributors' agents: a function merges once "same" leads
 Implement claimed functions and their single-caller helpers in the unit assigned by the claim;
 do not split their implementation into separate helper `.cpp` files.
 
-## Common MSVC 2010 matching tips
+## Common MSVC v142 matching tips
 
 - Declaration order of locals affects stack layout and register allocation.
 - `if (a) {...} else {...}` vs early return changes block order.
@@ -154,3 +154,47 @@ do not split their implementation into separate helper `.cpp` files.
 ## Ragnarok target
 
 Use only this workspace’s configured server and clank-together MCP. The project is rodecomp, version 2026-02-19. Preserve existing stable IDs and permitted OFFSET/STATIC provenance comments, except OFFSET annotations attached to inline-only functions. Missing original evidence is a blocker to a verdict, not permission to invent behavior. The source contains subsystem libraries, not a completed standalone game. Clank compiles individual units from compile.json; it does not run CMake or CTest during checks.
+
+## td binary
+> td --help
+td - Clank Together contributor client
+
+Setup
+  td setup <server-url> <dir> --token T       clone the repo,
+       [--exe <your copy of the target>]      verify your exe, check the token,
+       [--runner docker|native|wine]          configure the compiler
+       [--toolchain <toolchain root>]         compiler layout of the project (e.g. re/toolchain)
+       [--vc <VC dir>] [--sdk <SDK dir>] [--image <docker image>]
+  td toolchain install                        download the compiler (approved accounts) for local checks
+  td sync                                     pull main and refresh the symbol database snapshot
+  td ghidra download                          the server's Ghidra project (names applied, refreshed after merges)
+  td ghidra install | build | sync            pinned Ghidra: install it, analyze locally, re-apply symbols
+  td update                                   update td now (it also checks by itself once an hour)
+  td connect [--workspace <dir>]              connect your AI (registers with Claude Code, prints MCP settings)
+  td mcp [--workspace <dir>]                  run the MCP server for your agent (stdio)
+
+Work (a region: a source file or class, done as a whole)
+  td regions [--free] [--prefix P]            regions with open functions: free ones first
+  td region claim <file> | --class <Name>     claim a region (several agents may share one)
+  td region release <file> | --class <Name>   give a region back
+  td check [files...] [--includers]           compile + compare on this machine (--includers: every
+                                              unit that includes a changed header, as the merge does)
+  td submit [--notes T]                       submit the region's work as one batch
+  td tasks [--state S] [--limit N]            list claimable tasks
+  td claim <taskId>                           claim a function that came back, to fix it
+  td task <taskId>                            show a task's context
+  td submit [taskId...] [--notes T]           submit everything you hold (or these tasks) as one batch
+  td batch <batchId>                          state of a submitted batch, per function
+  td result <attemptId>                       show a verification result
+  td withdraw <attemptId>                     take back a function waiting for review, to fix it
+  td heartbeat [taskId] | td release <taskId> extend your leases (all without an id)
+  td config [ghidraHome|server <value>]       show or change workspace settings
+  td symbol <id|name|0xaddr>                  look up a symbol
+  td symbol new <kind> <0xaddr> [--name N]    get a stable ID for a new global/vtable/string/function
+  td decompile <symbol> | td disasm <symbol>  query the local Ghidra project
+
+Peer review (attempts that are not byte-identical; judge by reading, not by tools)
+  td peer list                                attempts waiting for review
+  td peer claim [attemptId]                   claim one, prints instructions, original and submission
+  td peer verdict <attemptId> same|different --reason "..."
+  td peer release <attemptId>
