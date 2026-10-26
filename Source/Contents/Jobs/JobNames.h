@@ -1,9 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_JOBS_JOBNAMES_H
 #define RAGNAROK_SOURCE_CONTENTS_JOBS_JOBNAMES_H
 
-#include <cstdint>
 #include <map>
-#include <string>
 #include <vector>
 
 class LuaScript;
