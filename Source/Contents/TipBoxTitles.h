@@ -27,8 +27,38 @@ struct TipBoxTitles {
   std::string Title(int id, std::string* abbreviated, int width) const;
 };
 
+class CTipBoxMgr {
+public:
+  CTipBoxMgr();
+  virtual ~CTipBoxMgr();
+
+  void AddParagraph(int id, std::string text);
+  TipBoxEntry& SelectRandomTip();
+  const TipBoxEntry& GetTip(int id) const;
+
+  static bool Create();
+  static void Destroy();
+
+  int m_width;
+  int m_height;
+  int m_maximumId;
+  std::map<int, TipBoxEntry> m_entries;
+  std::vector<int> m_randomList;
+  TipBoxEntry m_currentEntry;
+  std::uint32_t unknown_007C[8];
+  std::string unknown_009C;
+  int unknown_00B4;
+  bool m_initialized;
+  TipBoxEntry m_missing;
+  int unknown_0114;
+  int unknown_0118;
+};
+
+extern CTipBoxMgr* g_itemTagOwner;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(TipBoxEntry) == 88);
+static_assert(sizeof(CTipBoxMgr) == 284);
 #endif
 
 #endif
