@@ -17,7 +17,8 @@ current policy. It is up to date and takes precedence over this file.
 ## Setup (once per machine)
 
 `td_toolchain_install` tool (or `td toolchain install` CLI) downloads the compiler and
-sets it up; on Linux it needs wine. Checks compile **on your machine**. The
+sets it up. Windows runs it with `--runner native`; Linux needs `--runner wine` or
+`--runner docker`. Checks compile **on your machine**. The
 server only compiles your submissions (to prove they build and to route each
 function) and once more before a merge.
 
@@ -44,7 +45,7 @@ td sync
    any function of it, and the first accepted candidate of each function merges
    (the others are dropped, the rest of their batch goes on). Prefer a region
    nobody claimed; share only to help with a big or stuck one.
-3. **Read the originals**: `td_disassemble` tool (or `td disassemble` CLI) (ground truth) and `td_decompile` tool (or `td decompile` CLI)
+3. **Read the originals**: `td_disassemble` tool (or `td disasm` CLI) (ground truth) and `td_decompile` tool (or `td decompile` CLI)
    (imported IDA pseudocode where available, a starting point only).
 4. **Write each function** in its file, directly preceded by its annotation:
    ```cpp
@@ -158,6 +159,41 @@ other contributors' agents: a function merges once "same" leads
 Implement claimed functions and their single-caller helpers in the unit assigned by the claim;
 do not split their implementation into separate helper `.cpp` files.
 
+## Multi-agent workspace
+
+Several agents can work in parallel on one machine, each in its own clone (a "slot").
+The container folder holds the main clone (this repository), `workers/<slot>/` (one clone
+per agent) and `_work/<slot>/` (check logs and edit backups, outside every repository).
+
+- Each slot gets a copy of the main clone's `.td/` (`config.json`, `symbols.json`,
+  `target.exe`), hidden from git. Never print the token in `.td/config.json` or copy it
+  anywhere except a slot's `.td/`.
+- `scripts/workspace/` has a Linux/Git Bash and a Windows (PowerShell 5.1+) version of each helper:
+
+  | Purpose | Linux / Git Bash | Windows PowerShell |
+  |---|---|---|
+  | Create or refresh slots from `origin/main`; a dirty slot is skipped | `bash scripts/workspace/slot.sh w1 w2` | `powershell -ExecutionPolicy Bypass -File scripts/workspace/slot.ps1 w1 w2` |
+  | Save the slot's edits to `_work/<slot>/pre-check-*.patch`, run `td check` there, print one line per function | `bash scripts/workspace/check.sh w1 <files> [--includers] [--full]` | `powershell -ExecutionPolicy Bypass -File scripts/workspace/check.ps1 w1 <files> [--includers] [--full]` |
+  | Offline lookup in `.td/symbols.json` | `python3 scripts/workspace/sym.py <id\|name\|0xaddr> [--slot w1]` | `python scripts/workspace/sym.py <id\|name\|0xaddr> [--slot w1]` |
+
+  Run them from the main clone or from any slot. If the main clone is not named
+  `rodecomp`, set `RODECOMP_MAIN` to its path.
+- MCP: configure `td mcp --workspace <main clone>` as a stdio MCP server in your agent's
+  settings (`td connect` registers it for one client only). MCP tools act on the main
+  clone; the `td` CLI acts on the clone it runs in.
+- Read-only MCP tools are safe from any agent: `td_disassemble`, `td_decompile`,
+  `td_lookup_symbol`, `td_get_task`, `td_get_batch`, `td_get_result`, `td_new_symbol` and the
+  peer-review tools. Anything that changes a working tree runs as the CLI from your own slot:
+  `td region claim`, `td claim`, `td check <files>`, `td submit <taskIds> --files ...`,
+  `td heartbeat`, `td release`, `td sync`. The MCP `td_check`, `td_submit` and `td_sync`
+  are only for the single session that works in the main clone.
+- All agents share one account: **always pass explicit task IDs to `td submit`**, or it
+  submits every task the account holds. Never commit or push; the server merges.
+- Dispatch: create slots, pick independent free regions (`td regions --free`; avoid two
+  slots that change the same header), give each worker its own slot and region. A
+  peer-review worker needs no slot. When a worker reports its batch, refresh its slot
+  and give it the next region.
+
 ## Structural maintenance (maintainers)
 
 For data ownership, annotation moves and new owner units that belong to no function task:
@@ -208,7 +244,7 @@ Setup
   td ghidra download                          the server's Ghidra project (names applied, refreshed after merges)
   td ghidra install | build | sync            pinned Ghidra: install it, analyze locally, re-apply symbols
   td update                                   update td now (it also checks by itself once an hour)
-  td connect [--workspace <dir>]              connect your AI (registers with Claude Code, prints MCP settings)
+  td connect [--workspace <dir>]              register the MCP with a supported client, print MCP settings
   td mcp [--workspace <dir>]                  run the MCP server for your agent (stdio)
 
 Work (a region: a source file or class, done as a whole)
