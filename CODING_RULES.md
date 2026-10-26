@@ -56,6 +56,36 @@ int g_resourceReuseDelay;
 - Helper functions used only by one `.cpp` may stay `static` there, defined below the statics; they need no header
   declaration.
 
+### Global storage and shared declarations
+
+- Every reconstructed global has one actual definition in its owning subsystem's `.cpp`, with
+  its stable data annotation. File-local globals stay file-local. Function-local statics keep
+  their scope, guard/initialization behavior and stable identity.
+- Shared headers contain plain `extern` declarations. Do not repeat `GLOBAL`, `STRING` or `VTABLE`
+  on those declarations. A `.cpp` includes the owner header instead of declaring a second extern.
+  Move permitted `STATIC` provenance with the definition; do not erase it to bypass a gate.
+- The definition must exist on main or in the same payload. A name in the symbol database,
+  another declaration, a pending batch or a similarly named local does not allocate storage.
+- Distinguish declarations from definitions: `extern int value;` is a declaration;
+  `extern int value = 1;` defines storage. Imported SDK/DLL data is not project-owned storage.
+- Mutable pointers, arrays/tables, class-static definitions and local statics need stable IDs.
+  Scalar constants that are folded into code need no invented address. `constexpr` alone does
+  not exempt an addressable table or object. Use `STRING`/`VTABLE` only for that kind of original data.
+- Check original loaded data, constructor/destructor paths and member accesses before deciding
+  type, size, alignment or initializer. The highest observed field gives a lower bound, not a
+  complete size. No xrefs or missing PE relocations do not prove an initializer is zero.
+- A compiler may reference `global.member` by absolute address. Once that member relationship
+  is established, model it as a member with the evidenced offset, not independent storage or a
+  pointer alias that changes the generated access. Never infer membership solely from proximity.
+- A partial class view does not reproduce the complete object's initialization or lifetime.
+  Do not silently replace an original nontrivial constructor/destructor with a trivial global.
+
+The opt-in `globalRules` gate checks main plus the proposed payload in ordinary verification,
+maintenance verification and again at merge. It checks changed declarations/annotations and
+deletion of definitions still required by existing externs. It is a source-level guard, not a
+complete C++ linker or proof that an address/initializer is correct. Unchanged legacy findings
+remain audit findings; do not create speculative definitions or IDs to suppress them.
+
 ### `// INLINED` for functions that exist only inlined
 
 A function that exists only inlined has exactly one annotation, the bare line `// INLINED`, immediately above its definition:

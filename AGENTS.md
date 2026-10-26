@@ -119,6 +119,15 @@ other contributors' agents: a function merges once "same" leads
   symbol database, so the source survives new versions of the executable.
   If you need a new global, vtable or string, call `td_new_symbol` and use the
   returned annotation (`// GLOBAL: gl_00045`).
+- **Globals have one real definition.** Put a global's stable data annotation on its owning
+  `.cpp` definition, not on an `extern`. Shared declarations belong in its subsystem header;
+  source units include that header. A symbol-database record is not a C++ definition.
+  Recover initialization, object extent and lifetime from the original instructions and data,
+  not just symbol sizes. An evidenced member address uses `owner.member`, not a separate global.
+  Do not invent zero initialization or replace a nontrivial constructor with raw storage.
+  The project enables `globalRules`: both submission types and merge-time checks enforce
+  new/changed declarations and removal of required definitions. Existing unrelated violations
+  are not automatically corrected; report evidence gaps instead of manufacturing IDs.
 - **No inline assembly, `__emit`, byte arrays of code, `#pragma code_seg`,
   `#pragma comment`, `#line`, or `__declspec(naked/allocate)`.** These are
   rejected automatically, also when hidden behind macros.
@@ -146,6 +155,29 @@ other contributors' agents: a function merges once "same" leads
 
 Implement claimed functions and their single-caller helpers in the unit assigned by the claim;
 do not split their implementation into separate helper `.cpp` files.
+
+## Structural maintenance (maintainers)
+
+For data ownership, annotation moves and new owner units that belong to no function task:
+
+```sh
+td maintenance submit --files Source/Owner.cpp,Source/Owner.h --notes "Evidence and reason"
+td batch <batchId>
+```
+
+Name the exact locally checked payload and include all dependencies. Maintenance batches are
+maintainer-only; they run the source gates, compile affected units/includers and compare effective
+code with a fresh main build. A changed function uses the normal revision/review path instead.
+The server registers new source units in `compile.json` on merge. A queued batch is not a merge.
+
+The linked-code check does not validate data contents or reconstruct initialization/teardown.
+Prove those separately before submitting. An offset-asserted partial layout is not evidence of a
+complete object's size or constructor. Never retire a stable ID just because its address is
+near another symbol: establish the member relationship from `this`-relative accesses/lifetime.
+
+`td maintenance symbol <id> --size N --reason "binary evidence"` corrects a proven extent.
+`--retire --reason "owner ID, offset and evidence"` retires a mistaken global only after its
+annotation is removed from main. IDs remain reserved; unrelated symbols must not be renumbered.
 
 ## Common MSVC v142 matching tips
 

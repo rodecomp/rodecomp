@@ -11,6 +11,7 @@
     "Source/**/*.inl"
   ],
   "toolchain": "ragnarok",
+  "globalRules": true,
   "matchPolicy": {
     "reviewAt": "match_unresolved",
     "maxCleanupCycles": 5,
