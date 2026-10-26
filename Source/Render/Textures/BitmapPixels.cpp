@@ -688,7 +688,7 @@ void BitmapPixels::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, in
 
 // OFFSET: 0x00547670
 // FUNCTION: fn_01842
-void __stdcall ApplyPixelFilter(int filter, unsigned int* red, unsigned int* green, unsigned int* blue) {
+void ApplyPixelFilter(int filter, unsigned int* red, unsigned int* green, unsigned int* blue) {
   if (!filter) {
     return;
   }
