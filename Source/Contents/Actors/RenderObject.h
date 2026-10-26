@@ -14,6 +14,10 @@ public:
   virtual void SetScreenBounds(const float* bounds, float x, float y);
 
   virtual void SetScreenPosition(float x, float y);
+  static float __stdcall Heading(float x, float z, float targetX, float targetZ);
+  void Face(float x, float z);
+  float HorizontalDistance(float x, float z) const;
+  float Distance(float x, float y, float z) const;
 
   RenderObjectState render;
 };

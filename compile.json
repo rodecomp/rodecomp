@@ -239,6 +239,7 @@
   "Source/Client/Registry.cpp": 0,
   "Source/Client/ReplayPacketRecorder.cpp": 2,
   "Source/Client/Session.cpp": 0,
+  "Source/Contents/ActorGeometry.cpp": 4,
   "Source/Contents/ActorNameCard.cpp": 4,
   "Source/Contents/ActorNameDirectory.cpp": 4,
   "Source/Contents/Actors/AttackMotion.cpp": 4,

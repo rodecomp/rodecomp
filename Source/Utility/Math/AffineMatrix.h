@@ -8,6 +8,7 @@ float ClientCos(float radians);
 float ClientRadians(int degrees);
 float ClientSine(int degrees);
 float ClientCosine(int degrees);
+float SquareRoot(float value);
 
 struct AffineMatrix {
   float values[12];
