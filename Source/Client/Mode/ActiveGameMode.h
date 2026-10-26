@@ -4,16 +4,14 @@
 class CGameMode;
 
 struct CWorld {
-  unsigned char unknown_0000[4];
-  CGameMode* gameMode;
-  unsigned char unknown_0008[0x50];
-  int state;
+  /* 0000 */ int running;
+  /* 0004 */ CGameMode* gameMode;
+  /* 0008 */ unsigned char unknown_0008[0x50];
+  /* 0058 */ int state;
 
   CGameMode* ActiveGameMode();
 };
 
-// STATIC: 0x013495b8
-// GLOBAL: gl_24475
 extern CWorld g_world;
 
 #endif

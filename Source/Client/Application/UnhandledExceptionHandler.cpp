@@ -1,5 +1,8 @@
+#include "Client/Application/LaunchInfo.h"
+#include "Client/Application/Launcher.h"
 #include "Client/Mode/ActiveGameMode.h"
 #include "Client/Application/UnhandledExceptionHandler.h"
+#include "Client/Session.h"
 
 #include <windows.h>
 #include <dbghelp.h>
@@ -29,46 +32,14 @@ char g_moduleBaseName[260] = {};
 // GLOBAL: gl_24360
 char g_crashString[8096] = {};
 
-// STATIC: 0x0173ad64
-// GLOBAL: gl_24472
-extern uint32_t g_clientVersion;
-
-// STATIC: 0x0171dd30
-// GLOBAL: gl_24473
-extern uint32_t g_launchInfo[32];
-
-// STATIC: 0x01733550
-// GLOBAL: gl_24476
-extern int g_playerX;
-
-// STATIC: 0x01733554
-// GLOBAL: gl_24477
-extern int g_playerY;
-
-// STATIC: 0x0173a770
-// GLOBAL: gl_24478
-extern int64_t g_startTimeTicks;
-
-// STATIC: 0x0173a778
-// GLOBAL: gl_24479
-extern int64_t g_loginTimeTicks;
-
-// STATIC: 0x01732638
-// GLOBAL: gl_24474
-extern const uint8_t g_session[];
-
 namespace {
   int ReadPlayerJob() {
-    int job;
-    std::memcpy(&job, g_session + 0x1628, sizeof(job));
-    return job;
+    return g_session.m_job;
   }
 
   const char* ReadPlayerJobName(int jobId) {
-    const char* const* namesBegin;
-    const char* const* namesEnd;
-    std::memcpy(&namesBegin, g_session + 0xFA8, sizeof(namesBegin));
-    std::memcpy(&namesEnd, g_session + 0xFAC, sizeof(namesEnd));
+    const char* const* namesBegin = g_session.m_jobNamesBegin;
+    const char* const* namesEnd = g_session.m_jobNamesEnd;
 
     if (!namesBegin || !namesEnd || namesBegin >= namesEnd) {
       return "";
@@ -358,10 +329,10 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
 
     const char* mapName = ReadCurrentMapName();
     if (mapName != nullptr) {
-      sprintf(&g_crashString[strlen(g_crashString)], "%s %d %d\r\n", mapName, g_playerX, g_playerY);
+      sprintf(&g_crashString[strlen(g_crashString)], "%s %d %d\r\n", mapName, g_session.m_playerX, g_session.m_playerY);
     }
 
-    sprintf(&g_crashString[strlen(g_crashString)], "\r\n%I64d - %I64d", g_startTimeTicks / 10000000LL, g_loginTimeTicks / 10000000LL);
+    sprintf(&g_crashString[strlen(g_crashString)], "\r\n%I64d - %I64d", g_session.m_startTimeTicks / 10000000LL, g_session.m_loginTimeTicks / 10000000LL);
 
     int64_t reportTime = _Xtime_get_ticks() / 10000000LL;
     PROCESS_MEMORY_COUNTERS memCounters = {};

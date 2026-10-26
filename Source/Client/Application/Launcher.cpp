@@ -1,7 +1,12 @@
 #include "Client/Application/Launcher.h"
 
+#include <cstdint>
 #include <cstring>
 #include <windows.h>
+
+// STATIC: 0x0173ad64
+// GLOBAL: gl_24472
+std::uint32_t g_clientVersion;
 
 // OFFSET: 0x00E58820
 // FUNCTION: fn_24363

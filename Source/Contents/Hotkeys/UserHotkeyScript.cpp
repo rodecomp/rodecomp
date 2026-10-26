@@ -1,9 +1,6 @@
+#include "Client/Session.h"
 #include "Contents/Hotkeys/UserHotkeyScript.h"
 #include "Network/TextEncoding.h"
-
-// STATIC: 0x01738010
-// GLOBAL: gl_24495
-extern LuaScript* g_hotkeyLuaScript;
 
 // OFFSET: 0x005F7D60
 // FUNCTION: fn_04055
@@ -11,8 +8,8 @@ void ClearUserHotkeys() {
   std::string path = "SaveData\\UserKeys";
   path += ".lua";
   if (!path.empty()) {
-    if (g_hotkeyLuaScript != nullptr) {
-      g_hotkeyLuaScript->Call("ClearUserHotKeys", "s", path.c_str());
+    if (g_session.m_hotkeyScript != nullptr) {
+      g_session.m_hotkeyScript->Call("ClearUserHotKeys", "s", path.c_str());
     }
   }
 }
@@ -23,8 +20,8 @@ void SaveUserHotkeys() {
   std::string path = "SaveData\\UserKeys";
   path += ".lua";
   if (!path.empty()) {
-    if (g_hotkeyLuaScript != nullptr) {
-      g_hotkeyLuaScript->Call("SaveUserHotKeys2", "s", path.c_str());
+    if (g_session.m_hotkeyScript != nullptr) {
+      g_session.m_hotkeyScript->Call("SaveUserHotKeys2", "s", path.c_str());
     }
   }
 }
@@ -32,7 +29,7 @@ void SaveUserHotkeys() {
 // OFFSET: 0x005F8B20
 // FUNCTION: fn_04064
 void __stdcall ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description) {
-  g_hotkeyLuaScript->Call("ChangeUserHotKey", "ddsdd", tab + 1, index, description.c_str(), key1, key2);
+  g_session.m_hotkeyScript->Call("ChangeUserHotKey", "ddsdd", tab + 1, index, description.c_str(), key1, key2);
 }
 
 // OFFSET: 0x005BD660

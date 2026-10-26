@@ -1,3 +1,5 @@
+#include "Client/Registry.h"
+#include "Render/DeviceSelection.h"
 #include "Render/DisplayMode.h"
 
 #include <algorithm>
@@ -52,22 +54,6 @@ std::vector<DisplayMode> EnumerateDisplayModesDX9(UINT adapter) {
 
   return result;
 }
-
-// STATIC: 0x01348F80
-// GLOBAL: gl_21922
-extern const char* g_subKey;
-
-// STATIC: 0x0173A878
-// GLOBAL: gl_24397
-extern unsigned char g_guidDevice[16];
-
-// STATIC: 0x0173A888
-// GLOBAL: gl_24513
-extern unsigned char g_guidDriver[16];
-
-// STATIC: 0x0173A898
-// GLOBAL: gl_24514
-extern char g_deviceName[40];
 
 // OFFSET: 0x0056A7E0
 // FUNCTION: fn_02297
