@@ -13,7 +13,7 @@
 int StringFormat(char* buffer, std::size_t sizeInBytes, std::size_t count, const char* format, ...) {
   va_list args;
   va_start(args, format);
-  const int result = _vsnprintf_s(buffer, sizeInBytes, count, format, args);
+  const int result = __stdio_common_vsnprintf_s(_CRT_INTERNAL_LOCAL_PRINTF_OPTIONS, buffer, sizeInBytes, count, format, nullptr, args);
   va_end(args);
 
   if (result < 0) {
@@ -71,4 +71,14 @@ const char* FormatString(const char* format, ...) {
   va_end(args);
 
   return s_buffer.GetBuffer();
+}
+
+// FUNCTION: fn_18252
+std::string FormatOwnedString(const char* format, ...) {
+  char buffer[4096];
+  va_list arguments;
+  va_start(arguments, format);
+  _vsnprintf_s(buffer, sizeof(buffer), static_cast<std::size_t>(-1), format, arguments);
+  va_end(arguments);
+  return std::string(buffer, std::strlen(buffer));
 }
