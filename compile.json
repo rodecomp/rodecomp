@@ -387,6 +387,7 @@
   "Source/Contents/World/WorldTerrainPicking.cpp": 4,
   "Source/Contents/World/WorldViewSpatial.cpp": 3,
   "Source/File/CommonObject.cpp": 1,
+  "Source/File/DirectoryRemoval.cpp": 1,
   "Source/File/File.cpp": 1,
   "Source/File/FileCreation.cpp": 1,
   "Source/File/FileEnumeration.cpp": 1,
