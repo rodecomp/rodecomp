@@ -8,8 +8,8 @@
 
 void ClearUserHotkeys();
 void SaveUserHotkeys();
-void __stdcall ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description);
-void __stdcall LoadUserHotkeyTab(Json::Value& values, int tab);
+void ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description);
+void LoadUserHotkeyTab(Json::Value& values, int tab);
 
 inline void ClearUserHotkeys(LuaScript&) {
   ClearUserHotkeys();

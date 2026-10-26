@@ -28,13 +28,13 @@ void SaveUserHotkeys() {
 
 // OFFSET: 0x005F8B20
 // FUNCTION: fn_04064
-void __stdcall ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description) {
+void ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description) {
   g_session.m_hotkeyScript->Call("ChangeUserHotKey", "ddsdd", tab + 1, index, description.c_str(), key1, key2);
 }
 
 // OFFSET: 0x005BD660
 // FUNCTION: fn_03473
-void __stdcall LoadUserHotkeyTab(Json::Value& values, int tab) {
+void LoadUserHotkeyTab(Json::Value& values, int tab) {
   Json::Value entries = values;
 
   for (auto item = entries.begin(); item != entries.end(); ++item) {
