@@ -607,6 +607,7 @@
   "Source/Utility/NFileLog.cpp": 0,
   "Source/Utility/NIPAddr.cpp": 0,
   "Source/Utility/ProcessSecurity.cpp": 0,
+  "Source/Utility/RegistryKey.cpp": 0,
   "Source/Utility/Text/Base64.cpp": 0,
   "Source/Utility/Text/FormatString.cpp": 0,
   "Source/Utility/Text/GroupedInteger.cpp": 0,
