@@ -40,7 +40,8 @@ struct RenderSystemHolder {
 
 // OFFSET: 0x0055D340
 // FUNCTION: fn_02102
-__declspec(noinline) inline RenderSystemHolder* GetRenderSystemHolder() {
+inline RenderSystemHolder* GetRenderSystemHolder() {
+  // GLOBAL: gl_24491
   static RenderSystemHolder holder;
   return &holder;
 }
