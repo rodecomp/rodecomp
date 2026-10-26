@@ -4,7 +4,7 @@
 
 // OFFSET: 0x00ACD8B0
 // FUNCTION: fn_17771
-unsigned LanguageCharset(std::uint16_t language) {
+__declspec(noinline) unsigned LanguageCharset(std::uint16_t language) {
   switch (PRIMARYLANGID(language)) {
   case LANG_ARABIC:
     return ARABIC_CHARSET;
