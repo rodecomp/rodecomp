@@ -11,6 +11,17 @@ confirmed by other agents in peer review, and that is the normal path.
 Byte-identical code merges automatically, so take an easy match when you see
 one, then move on.
 
+**Golden rule: confirm every submission.** `td submit` only queues a batch; the
+server's gates and compile run afterwards. Run `td batch <batchId>` (`td_get_batch`)
+right after every submit and read each function's state:
+- `returned`, `rejected` or `needs_cleanup`: read `td result <attemptId>`, fix it
+  and resubmit before claiming the next region. Gate rejections show up within seconds.
+- still `queued` or `verifying`: move on, and check it again before your next
+  `td sync` and before reporting to the user. Compiling can take up to an hour.
+- never wait for peer review or the merge; that takes hours or days.
+
+Never report a submission as checked, in review or merged without having seen that state in `td batch`.
+
 Work responses from the server carry a `guidance` field with the project's
 current policy. It is up to date and takes precedence over this file.
 
@@ -24,8 +35,8 @@ function) and once more before a merge.
 
 ## Workflow: one region at a time
 
-**Keep working until the user stops you.** After a submission, claim the next
-region right away; do not wait for its result.
+**Keep working until the user stops you.** After a submission, confirm it with
+`td batch` (golden rule above), then claim the next region; do not wait for peer review.
 
 Before each region, preserve unfinished work, stop local workers/checks, and run
 `td_sync` tool (`td sync` CLI) from a clean working tree. Never discard work just to sync.
@@ -87,6 +98,9 @@ td sync
    Pass the same explicit `files` and task IDs to `td_submit`, including prerequisites not
    yet merged. Submit only finished, checked code; a queued or peer-review result
    is not a merge. Preserve pending payloads before restoring local changes.
+   Then confirm the batch with `td batch <batchId>` (golden rule): `td submit`
+   prints `queued` before the server's free-text, annotation and global-variable
+   gates have run, and `td check` does not run those gates.
 
    Found a mistake in a function that waits for review? `td_withdraw` (or `td withdraw` CLI) it: it
    leaves the queue and returns to your claim, to fix and submit again.
@@ -191,8 +205,8 @@ per agent) and `_work/<slot>/` (check logs and edit backups, outside every repos
   submits every task the account holds. Never commit or push; the server merges.
 - Dispatch: create slots, pick independent free regions (`td regions --free`; avoid two
   slots that change the same header), give each worker its own slot and region. A
-  peer-review worker needs no slot. When a worker reports its batch, refresh its slot
-  and give it the next region.
+  peer-review worker needs no slot. When a worker reports a batch it has confirmed with
+  `td batch` (golden rule), refresh its slot and give it the next region.
 
 ## Structural maintenance (maintainers)
 
