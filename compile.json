@@ -590,6 +590,7 @@
   "Source/Utility/CRC32.cpp": 0,
   "Source/Utility/Cipher/Rijndael.cpp": 0,
   "Source/Utility/Cipher/XorBytes.cpp": 0,
+  "Source/Utility/FileSignatureVerifier.cpp": 0,
   "Source/Utility/GuidParse.cpp": 0,
   "Source/Utility/Hash/MD5.cpp": 0,
   "Source/Utility/Hash/XxHash32.cpp": 0,
