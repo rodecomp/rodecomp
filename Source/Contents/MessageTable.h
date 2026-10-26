@@ -10,8 +10,6 @@ enum MessageId : int {
   MSI_FAILED_ADD_TAB = 1578
 };
 
-// STATIC: 0x016D5780
-// GLOBAL: gl_24382
 extern std::unordered_map<int, std::string> g_messageStrings;
 
 const char* LookupMessage(int id, bool languagePrefix, int serviceType, WORD language);

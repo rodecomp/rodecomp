@@ -37,13 +37,9 @@ private:
   CSnapMgr& operator=(const CSnapMgr&) = delete;
 };
 
-// STATIC: 0x01334698
 extern const int g_snapOppositeSide[4];
-// STATIC: 0x013346A8
 extern bool g_snapEnabled;
-// STATIC: 0x013346A4
 extern int g_snapDirection;
-// STATIC: 0x013346B0
 extern SnapObject* g_snapBoundary;
 
 #if defined(_WIN32) && !defined(_WIN64)

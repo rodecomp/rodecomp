@@ -73,8 +73,6 @@ private:
   /* 0024 */ CAsyncWorkRecycleObjectPoolMgr* m_pools;
 };
 
-// STATIC: 0x0138968C
-// GLOBAL: gl_24349
 extern CAsyncWorkMgr* g_asyncWorkMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)

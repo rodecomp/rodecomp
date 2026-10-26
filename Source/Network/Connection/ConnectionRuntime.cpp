@@ -8,8 +8,11 @@ namespace {
   HMODULE module;
 }
 // STATIC: 0x016FDC8C
-// STATIC: 0x016FDC90
+// GLOBAL: gl_24391
 int(WSAAPI* g_connectionSend)(SOCKET, const char*, int, int);
+
+// STATIC: 0x016FDC90
+// GLOBAL: gl_24392
 int(WSAAPI* g_connectionReceive)(SOCKET, char*, int, int);
 
 // OFFSET: 0x00C7C400

@@ -156,8 +156,6 @@ private:
   UIWindow& operator=(const UIWindow&) = delete;
 };
 
-// STATIC: 0x0145723C
-// GLOBAL: gl_24364
 extern std::uint32_t g_windowUid;
 
 #if defined(_WIN32) && !defined(_WIN64)

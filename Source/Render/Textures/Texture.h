@@ -9,8 +9,6 @@ struct SpriteRleImage;
 
 enum TextureFormat : std::int32_t { UnknownTextureFormat = -1, A1R5G5B5 = 0, A4R4G4B4 = 1, R5G6B5 = 2, X1R5G5B5 = 3, A8R8G8B8 = 4 };
 
-// STATIC: 0x01312DE0
-// STATIC: 0x01312DE4
 extern float g_textureOffsetX;
 extern float g_textureOffsetY;
 

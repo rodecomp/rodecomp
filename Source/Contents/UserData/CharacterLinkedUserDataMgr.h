@@ -40,8 +40,6 @@ protected:
   /* 0048 */ std::string m_loadUrl;
 };
 
-// STATIC: 0x013898BC
-// GLOBAL: gl_24353
 extern CCharacterLinkedUserDataMgr* g_characterLinkedUserDataMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)

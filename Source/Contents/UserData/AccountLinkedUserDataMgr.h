@@ -43,8 +43,6 @@ protected:
   /* 0044 */ std::string m_loadUrl;
 };
 
-// STATIC: 0x01389760
-// GLOBAL: gl_24351
 extern CAccountLinkedUserDataMgr* g_accountLinkedUserDataMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)

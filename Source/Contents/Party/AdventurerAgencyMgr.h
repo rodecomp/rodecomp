@@ -47,8 +47,6 @@ private:
   static std::uint32_t Id(double value);
 };
 
-// STATIC: 0x01389848
-// GLOBAL: gl_24352
 extern CAdventurerAgencyMgr* g_adventurerAgencyMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)

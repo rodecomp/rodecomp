@@ -28,8 +28,6 @@ protected:
   /* 0018 */ std::set<std::string> m_names;
 };
 
-// STATIC: 0x01389940
-// GLOBAL: gl_24357
 extern CWhisperBlockMgr* g_whisperBlockMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)

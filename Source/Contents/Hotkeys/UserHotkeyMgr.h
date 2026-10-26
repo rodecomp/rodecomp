@@ -36,8 +36,6 @@ protected:
   /* 0010 */ std::list<Hotkey> m_original;
 };
 
-// STATIC: 0x013898E4
-// GLOBAL: gl_24356
 extern CUserHotkeyMgr* g_userHotkeyMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)

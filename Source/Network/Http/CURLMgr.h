@@ -28,8 +28,6 @@ public:
   HMODULE m_module;
 };
 
-// STATIC: 0x013898CC
-// GLOBAL: gl_24354
 extern CCURLMgr* g_curlMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)

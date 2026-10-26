@@ -32,8 +32,6 @@ private:
   WindowManagerWindows* m_windows;
 };
 
-// STATIC: 0x01450CEC
-// GLOBAL: gl_24363
 extern UIRequestJoinPartyMgr* g_requestJoinPartyMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -21,8 +21,6 @@ struct FrameFocus {
   UIWindow* Get() const;
 };
 
-// STATIC: 0x014576A0
-// GLOBAL: gl_24367
 extern int g_dragWindowId;
 
 #endif

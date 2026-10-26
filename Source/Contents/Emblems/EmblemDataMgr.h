@@ -34,8 +34,6 @@ protected:
   /* 0038 */ bool m_uploading;
 };
 
-// STATIC: 0x013898D4
-// GLOBAL: gl_24355
 extern CEmblemDataMgr* g_emblemDataMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)

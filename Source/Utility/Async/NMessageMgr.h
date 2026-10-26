@@ -28,8 +28,6 @@ protected:
   /* 0020 */ std::map<std::uint32_t, NInter*> m_objects;
 };
 
-// STATIC: 0x0138D3EC
-// GLOBAL: gl_24361
 extern NMessageMgr* g_messageMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)
