@@ -1,9 +1,13 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemNaming.h"
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+
+// GLOBAL: gl_24500
+std::map<int, ITEM_DESC> g_itemDescriptions;
 
 // OFFSET: 0x006D3540
 // FUNCTION: fn_06540
@@ -13,7 +17,6 @@ ITEM_DESC::ITEM_DESC()
 }
 
 // OFFSET: 0x006D3610
-// OFFSET: 0x006D3680
 // FUNCTION: fn_06541
 ITEM_DESC::~ITEM_DESC() = default;
 
@@ -39,12 +42,38 @@ ITEM_DESC& ITEM_DESC::operator=(const ITEM_DESC& other) {
 }
 
 // OFFSET: 0x006D3A00
-// OFFSET: 0x006D5890
 // FUNCTION: fn_06545
 ITEM_DESC& ItemDescriptions::Find(int id) {
   static ITEM_DESC missing;
   const auto entry = this->values.find(id);
   return entry == this->values.end() ? missing : entry->second;
+}
+
+// FUNCTION: fn_06546
+ItemCardName& EnsureItemCardName(int id, std::map<int, ItemCardName>& values) {
+  const auto entry = values.find(id);
+  if (entry != values.end()) {
+    return entry->second;
+  }
+
+  return values[id];
+}
+
+// FUNCTION: fn_06547
+std::vector<const char*>& EnsureItemDescriptionLines(int id, std::map<int, std::vector<const char*>>& values) {
+  const auto entry = values.find(id);
+  if (entry != values.end()) {
+    return entry->second;
+  }
+
+  return values[id];
+}
+
+// OFFSET: 0x006D5890
+// FUNCTION: fn_06579
+ITEM_DESC& FindItemDescription(int id) {
+  ItemDescriptions descriptions{g_itemDescriptions};
+  return descriptions.Find(id);
 }
 
 // OFFSET: 0x006D3DC0

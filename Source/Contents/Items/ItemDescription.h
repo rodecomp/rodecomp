@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 
+struct ItemCardName;
 struct ItemInfo;
 
 class ITEM_DESC {
@@ -32,6 +33,10 @@ struct ItemDescriptions {
   const std::vector<const char*>& Description(const ItemInfo& item);
   int Name(const ItemInfo& item, char* output, int& capacity, unsigned char consume);
 };
+
+ITEM_DESC& FindItemDescription(int id);
+ItemCardName& EnsureItemCardName(int id, std::map<int, ItemCardName>& values);
+std::vector<const char*>& EnsureItemDescriptionLines(int id, std::map<int, std::vector<const char*>>& values);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ITEM_DESC) == 68);
