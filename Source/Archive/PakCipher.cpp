@@ -263,7 +263,7 @@ namespace myGPack {
 
   // OFFSET: 0x00AE9260
   // FUNCTION: fn_18104
-  int __stdcall InitialPermutation(std::uint8_t* block) {
+  int InitialPermutation(std::uint8_t* block) {
     std::uint8_t result[8] = {};
 
     for (unsigned i = 0; i < 64; ++i) {
@@ -282,7 +282,7 @@ namespace myGPack {
 
   // OFFSET: 0x00AE91D0
   // FUNCTION: fn_18103
-  int __stdcall FinalPermutation(std::uint8_t* block) {
+  int FinalPermutation(std::uint8_t* block) {
     std::uint8_t result[8] = {};
 
     for (unsigned i = 0; i < 64; ++i) {
@@ -301,7 +301,7 @@ namespace myGPack {
 
   // OFFSET: 0x00AE9020
   // FUNCTION: fn_18102
-  int __stdcall EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output) {
+  int EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output) {
     std::memcpy(output, &inputLow, 4);
     std::memcpy(output + 4, &inputHigh, 4);
     InitialPermutation(output);
@@ -372,7 +372,7 @@ namespace myGPack {
 
   // OFFSET: 0x00AEBC90
   // FUNCTION: fn_18131
-  std::uint8_t* __stdcall DerivePakKey(const char* name, std::uint8_t* key) {
+  std::uint8_t* DerivePakKey(const char* name, std::uint8_t* key) {
     const char* base = name;
     const std::size_t length = std::strlen(name);
     const char* const end = name + length;

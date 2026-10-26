@@ -19,10 +19,10 @@ namespace myGPack {
   };
 
   static_assert(sizeof(PakCipher) == 128);
-  std::uint8_t* __stdcall DerivePakKey(const char* name, std::uint8_t* key);
-  int __stdcall InitialPermutation(std::uint8_t* block);
-  int __stdcall FinalPermutation(std::uint8_t* block);
-  int __stdcall EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output);
+  std::uint8_t* DerivePakKey(const char* name, std::uint8_t* key);
+  int InitialPermutation(std::uint8_t* block);
+  int FinalPermutation(std::uint8_t* block);
+  int EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output);
 
 }
 
