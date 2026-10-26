@@ -61,8 +61,12 @@ td sync
    the bytes match, some referenced data has no symbol yet) is a bonus, not the
    bar. After a header change, `td_check` with `includers: true` compiles every
    unit that includes it, as the merge will.
-   Run checks sequentially: they share `.td/build`. Check the exact submission
-   payload over synced main, not unrelated local changes. Verify transitive header
+   Run checks sequentially: they share `.td/build`.
+   **Name your files** (`files: [...]`, or `td check <files>`): named files are
+   compiled over a clean HEAD, so other agents' uncommitted edits in a shared
+   checkout are left out. **Name every modified header your files depend on**:
+   an unnamed header is compiled as HEAD has it, not as you edited it.
+   Check the exact submission payload over synced main. Verify transitive header
    includers too; explicitly check any omitted units.
    If a smoke test is more complicated than the edit, you MUST NOT run it; use
    a targeted compile or existing check instead.
@@ -78,7 +82,7 @@ td sync
    - compile errors, regressions or wrong references come back to you, per
      function; the rest of the batch goes on.
 
-   Pass explicit `files` and task IDs to `td_submit`, including prerequisites not
+   Pass the same explicit `files` and task IDs to `td_submit`, including prerequisites not
    yet merged. Submit only finished, checked code; a queued or peer-review result
    is not a merge. Preserve pending payloads before restoring local changes.
 
@@ -177,13 +181,13 @@ Work (a region: a source file or class, done as a whole)
   td regions [--free] [--prefix P]            regions with open functions: free ones first
   td region claim <file> | --class <Name>     claim a region (several agents may share one)
   td region release <file> | --class <Name>   give a region back
-  td check [files...] [--includers]           compile + compare on this machine (--includers: every
-                                              unit that includes a changed header, as the merge does)
+  td check [files...] [--includers]           compile + compare on this machine; named files over a clean HEAD
+                                              (--includers: every unit that includes a changed header)
   td submit [--notes T]                       submit the region's work as one batch
   td tasks [--state S] [--limit N]            list claimable tasks
   td claim <taskId>                           claim a function that came back, to fix it
   td task <taskId>                            show a task's context
-  td submit [taskId...] [--notes T]           submit everything you hold (or these tasks) as one batch
+  td submit [taskId...] [--files a.cpp,b.h]   submit everything you hold (or these tasks, or only these files)
   td batch <batchId>                          state of a submitted batch, per function
   td result <attemptId>                       show a verification result
   td withdraw <attemptId>                     take back a function waiting for review, to fix it
