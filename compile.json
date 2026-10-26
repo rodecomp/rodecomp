@@ -489,6 +489,7 @@
   "Source/Resource/World/GroundResource.cpp": 3,
   "Source/Resource/World/TerrainResource.cpp": 3,
   "Source/Resource/World/WorldResource.cpp": 3,
+  "Source/Resource/XmlNode.cpp": 3,
   "Source/Script/LuaInstance.cpp": 5,
   "Source/Script/LuaScript.cpp": 5,
   "Source/UI/Acceptance/UIChooseSellBuyWnd.cpp": 2,
