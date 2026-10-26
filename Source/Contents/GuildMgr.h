@@ -1,0 +1,58 @@
+#ifndef RAGNAROK_SOURCE_CONTENTS_GUILDMGR_H
+#define RAGNAROK_SOURCE_CONTENTS_GUILDMGR_H
+
+#include <cstddef>
+#include <cstdint>
+#include <map>
+#include <vector>
+
+class CGuildEmblemReqBundle;
+
+class CGuild {
+public:
+  CGuild();
+  virtual ~CGuild();
+
+  /* 0004 */ int m_emblemVersion;
+};
+
+class CGuildMgr {
+public:
+  CGuildMgr();
+  virtual ~CGuildMgr();
+
+  static bool Create();
+  static void Destroy();
+
+  int GetEmblemVersion(std::uint32_t guildId) const;
+  void SetEmblemVersion(std::uint32_t guildId, int version);
+
+  struct MemberData {
+    /* 0000 */ int unknown_0000[5];
+  };
+  /* 0004 */ bool m_initialized;
+  /* 0008 */ std::map<std::uint32_t, CGuild> m_guilds;
+  /* 0010 */ CGuildEmblemReqBundle* m_reqBundle;
+  /* 0014 */ std::map<int, MemberData> m_members;
+  /* 001C */ int unknown_001C[2];
+  /* 0024 */ std::vector<int> m_unknownVector;
+  /* 0030 */ int m_timeout;
+};
+
+extern CGuildMgr* g_guildMgr;
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(CGuild) == 8);
+static_assert(offsetof(CGuild, m_emblemVersion) == 0x04);
+static_assert(sizeof(CGuildMgr) == 52);
+static_assert(sizeof(CGuildMgr::MemberData) == 20);
+static_assert(offsetof(CGuildMgr, m_initialized) == 0x04);
+static_assert(offsetof(CGuildMgr, m_guilds) == 0x08);
+static_assert(offsetof(CGuildMgr, m_reqBundle) == 0x10);
+static_assert(offsetof(CGuildMgr, m_members) == 0x14);
+static_assert(offsetof(CGuildMgr, unknown_001C) == 0x1C);
+static_assert(offsetof(CGuildMgr, m_unknownVector) == 0x24);
+static_assert(offsetof(CGuildMgr, m_timeout) == 0x30);
+#endif
+
+#endif

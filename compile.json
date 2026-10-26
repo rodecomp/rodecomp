@@ -295,6 +295,8 @@
   "Source/Contents/Ground/TerrainHeight.cpp": 4,
   "Source/Contents/Ground/TerrainPicking.cpp": 4,
   "Source/Contents/Ground/TerrainPlane.cpp": 4,
+  "Source/Contents/GuildEmblemState.cpp": 4,
+  "Source/Contents/GuildMgr.cpp": 4,
   "Source/Contents/Hotkeys/EmotionHotkeys.cpp": 4,
   "Source/Contents/Hotkeys/HotkeyInfo.cpp": 4,
   "Source/Contents/Hotkeys/UserHotkeyMgr.cpp": 4,
