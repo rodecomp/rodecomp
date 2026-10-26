@@ -5,5 +5,6 @@
 #include <windows.h>
 
 int ParseGuid(const char* text, std::size_t bytes, GUID& output, bool braced);
+int FormatGuid(char* text, std::size_t bytes, const GUID& value, bool braced);
 
 #endif

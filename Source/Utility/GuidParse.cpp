@@ -1,4 +1,5 @@
 #include "Utility/GuidParse.h"
+#include "Utility/Text/FormatString.h"
 
 #include <cstdarg>
 #include <cstdio>
@@ -25,4 +26,13 @@ int ParseGuid(const char* text, std::size_t bytes, GUID& output, bool braced) {
     &output.Data4[5], &output.Data4[6], &output.Data4[7]
   );
   return count == 11 ? 1 : count == EOF ? -1 : 0;
+}
+
+// FUNCTION: fn_18259
+int FormatGuid(char* text, std::size_t bytes, const GUID& value, bool braced) {
+  const char* format = braced ? "{%08X-%04hX-%04hX-%02hhX%02hhX-%02hhX%02hhX%02hhX%02hhX%02hhX%02hhX}" : "%08X-%04hX-%04hX-%02hhX%02hhX-%02hhX%02hhX%02hhX%02hhX%02hhX%02hhX";
+  return StringFormat(
+    text, bytes, static_cast<std::size_t>(-1), format, value.Data1, value.Data2, value.Data3, value.Data4[0], value.Data4[1], value.Data4[2], value.Data4[3],
+    value.Data4[4], value.Data4[5], value.Data4[6], value.Data4[7]
+  );
 }
