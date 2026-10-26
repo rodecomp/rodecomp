@@ -199,10 +199,34 @@ the original instructions.
 ## 7. Platform and build scope
 
 - This target is Windows x86. Keep code in its assigned existing translation unit and subsystem headers.
-- Use the original Win32, DirectDraw, Direct3D, Lua and codec ABIs where evidenced. Preserve calling
-  conventions, ownership, field widths and failure behavior.
+- Preserve fixed Win32, DirectDraw, Direct3D, Lua and codec boundary ABIs where evidenced; apply the
+  calling-convention rule below. Preserve ownership, field widths and failure behavior.
 - Compile individual units with the configured Clank toolchain and `compile.json`, not a new build system.
 - Missing original instructions are a blocker, not permission to invent a fallback or partial implementation.
+
+### Calling conventions: implicit by default
+
+- Do not add explicit calling conventions (`__cdecl`, `__stdcall`, `__fastcall`, `__thiscall`, etc.)
+  to code we reimplement. Use the compiler's normal C++ conventions for project-owned functions,
+  methods and internal function-pointer types. Decompiler output or a closer byte match alone is
+  not a reason to add one.
+- Specify a convention only when an actual ABI boundary requires it: calls into library or DLL
+  code we will not reimplement, callbacks invoked by external code, or fixed interfaces such as
+  Win32 callbacks and COM methods. Preserve required SDK macros (`WINAPI`, `CALLBACK`,
+  `STDMETHODCALLTYPE`, etc.) at those boundaries.
+- For dynamically loaded functions, the function-pointer type must carry the library's calling
+  convention. `GetProcAddress` and a cast do not infer or repair an incorrect function-pointer ABI.
+  For example, the existing Miles DLL binding requires `__stdcall`:
+
+  ```cpp
+  const char* (__stdcall* setRedistDirectory)(const char*);
+  this->setRedistDirectory = reinterpret_cast<decltype(this->setRedistDirectory)>(
+      GetProcAddress(this->m_module, "_AIL_set_redist_directory@4"));
+  ```
+
+- When changing an existing convention, update declarations, definitions and function-pointer
+  types consistently, and check affected callers in the same submission. Do not strip required
+  boundary conventions or change only a header while leaving a conflicting definition.
 
 ## 8. Reconstruct source, not instructions
 
