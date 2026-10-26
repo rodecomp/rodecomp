@@ -472,6 +472,7 @@
   "Source/Resource/Bitmap/BitmapImagePng.cpp": 3,
   "Source/Resource/Bitmap/BitmapResource.cpp": 3,
   "Source/Resource/EZeffectResource.cpp": 3,
+  "Source/Resource/GifLzw.cpp": 3,
   "Source/Resource/Models/AnimatedModelResource.cpp": 3,
   "Source/Resource/Models/ModelMesh.cpp": 3,
   "Source/Resource/Models/ModelResource.cpp": 3,
