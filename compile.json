@@ -593,6 +593,7 @@
   "Source/Utility/Text/FormatString.cpp": 0,
   "Source/Utility/Text/GroupedInteger.cpp": 0,
   "Source/Utility/Text/LanguageCharset.cpp": 0,
+  "Source/Utility/TextEscapes.cpp": 0,
   "Source/Utility/Threading/NSyncObject.cpp": 0,
   "Source/Utility/Threading/NThread.cpp": 0,
   "Source/Utility/Timestamp.cpp": 0,
