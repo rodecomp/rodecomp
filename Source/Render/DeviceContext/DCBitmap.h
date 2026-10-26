@@ -39,6 +39,7 @@ public:
   void Brighten(int x, int y, int width, int height, int amount) override;
   void Dim(int x, int y, int width, int height, int percent) override;
   void UploadTexture(CRenderSystemBase& system, CTexture*& texture);
+  HGDIOBJ Create(int width, int height);
   // INLINED
   void SetAlpha(bool alpha) {
     this->m_cache.m_alpha = alpha;

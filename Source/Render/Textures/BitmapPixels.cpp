@@ -1,3 +1,4 @@
+#include "Render/DeviceContext/DCBitmap.h"
 #include "Render/Textures/BitmapPixels.h"
 #include "Render/RenderSystemBase.h"
 #include "Render/Textures/SpriteAtlas.h"
@@ -65,6 +66,35 @@ void BitmapPixels::Create(int newWidth, int newHeight) {
   }
 
   this->previous = SelectObject(this->dc, this->bitmap);
+}
+
+// FUNCTION: fn_01845
+HGDIOBJ CDCBitmap::Create(int width, int height) {
+  this->m_bitmap.width = width;
+  this->m_bitmap.dirty = true;
+  this->m_bitmap.height = height;
+  this->m_cache.Clear();
+
+  BITMAPINFO info;
+  info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+  info.bmiHeader.biWidth = this->m_bitmap.width;
+  info.bmiHeader.biHeight = -static_cast<int>(this->m_bitmap.height);
+  info.bmiHeader.biPlanes = 1;
+  info.bmiHeader.biBitCount = 32;
+  info.bmiHeader.biCompression = BI_RGB;
+  info.bmiHeader.biSizeImage = 0;
+  info.bmiHeader.biXPelsPerMeter = 100;
+  info.bmiHeader.biYPelsPerMeter = 100;
+  info.bmiHeader.biClrUsed = 0;
+  info.bmiHeader.biClrImportant = 0;
+  this->m_bitmap.bitmap = CreateDIBSection(nullptr, &info, DIB_RGB_COLORS, reinterpret_cast<void**>(&this->m_bitmap.pixels), nullptr, 0);
+
+  if (!this->m_bitmap.bitmap) {
+    this->m_bitmap.pixels = nullptr;
+  }
+
+  this->m_bitmap.previous = SelectObject(this->m_bitmap.dc, this->m_bitmap.bitmap);
+  return this->m_bitmap.previous;
 }
 
 // OFFSET: 0x00547D40
