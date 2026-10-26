@@ -535,6 +535,7 @@
   "Source/UI/Party/UIRegisterPartyWnd.cpp": 2,
   "Source/UI/Party/UIRequestJoinPartyMgr.cpp": 2,
   "Source/UI/Party/UIRequestJoinPartyWnd.cpp": 2,
+  "Source/UI/PriceCommission.cpp": 2,
   "Source/UI/Shop/ItemDrawing.cpp": 2,
   "Source/UI/Shop/MerchantShopRefresh.cpp": 2,
   "Source/UI/Shop/PriceColor.cpp": 2,
