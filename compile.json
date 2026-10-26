@@ -236,6 +236,8 @@
   "Source/Client/Mode/ModeDragState.cpp": 2,
   "Source/Client/Mode/ModeTooltip.cpp": 2,
   "Source/Client/ReplayPacketRecorder.cpp": 2,
+  "Source/Contents/ActorNameCard.cpp": 4,
+  "Source/Contents/ActorNameDirectory.cpp": 4,
   "Source/Contents/Actors/AttackMotion.cpp": 4,
   "Source/Contents/Actors/GameObject.cpp": 4,
   "Source/Contents/Actors/RenderObject.cpp": 4,
