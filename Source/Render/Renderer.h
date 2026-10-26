@@ -41,6 +41,10 @@ public:
   virtual bool SaveLogo(std::string filename) = 0;
   virtual bool LockBackBuffer() = 0;
   virtual HRESULT UnlockBackBuffer() = 0;
+  float* ProjectViewport(const float* position, const float* matrix, float* x, float* y, float* reciprocalDepth);
+  float* ProjectViewportCentered(
+    const float* position, const float* matrix, float* x, float* y, float* reciprocalDepth, float width, float height
+  );
 
   /* 0004 */ RendererViewport viewport;
   /* 0038 */ unsigned frame;

@@ -463,6 +463,7 @@
   "Source/Render/Textures/Surface.cpp": 0,
   "Source/Render/Textures/Texture.cpp": 0,
   "Source/Render/Textures/TextureCache.cpp": 3,
+  "Source/Render/ViewportProjection.cpp": 0,
   "Source/Resource/Audio/WaveResource.cpp": 3,
   "Source/Resource/Bitmap/BitmapImage.cpp": 3,
   "Source/Resource/Bitmap/BitmapImageJpeg.cpp": 3,
