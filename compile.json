@@ -597,6 +597,7 @@
   "Source/Utility/Lexicon/LexiconBoundary.cpp": 0,
   "Source/Utility/Lexicon/LexiconMatcher.cpp": 0,
   "Source/Utility/Lexicon/LexiconSerializer.cpp": 0,
+  "Source/Utility/MD5.cpp": 0,
   "Source/Utility/Math/AffineLookAt.cpp": 0,
   "Source/Utility/Math/AffineMatrix.cpp": 0,
   "Source/Utility/Math/ClientAngles.cpp": 0,
