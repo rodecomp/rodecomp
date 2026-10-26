@@ -584,6 +584,7 @@
   "Source/Utility/Base64.cpp": 0,
   "Source/Utility/GuidParse.cpp": 0,
   "Source/Utility/LexiconBoundary.cpp": 0,
+  "Source/Utility/LexiconSerializer.cpp": 0,
   "Source/Utility/MD5.cpp": 0,
   "Source/Utility/Math/AffineLookAt.cpp": 0,
   "Source/Utility/Math/AffineMatrix.cpp": 0,
