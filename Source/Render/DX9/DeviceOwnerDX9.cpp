@@ -31,6 +31,9 @@ DeviceOwnerDX9::DeviceOwnerDX9() {
   this->lastPresent = 0;
 }
 
+// FUNCTION: fn_01907
+void DeviceOwnerDX9Noop() {}
+
 // OFFSET: 0x0054B840
 // FUNCTION: fn_01908
 bool DisplayModeSelectorDX9::Select(D3DSCANLINEORDERING ordering) {
