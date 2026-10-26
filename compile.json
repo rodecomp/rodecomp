@@ -598,6 +598,7 @@
   "Source/Utility/Math/ClientAngles.cpp": 0,
   "Source/Utility/Math/RadialGrid.cpp": 0,
   "Source/Utility/Math/RayTriangle.cpp": 0,
+  "Source/Utility/ProcessSecurity.cpp": 0,
   "Source/Utility/Text/Base64.cpp": 0,
   "Source/Utility/Text/FormatString.cpp": 0,
   "Source/Utility/Text/GroupedInteger.cpp": 0,
