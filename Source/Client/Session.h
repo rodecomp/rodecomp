@@ -68,6 +68,10 @@ public:
   /* 8140 */ std::int64_t m_loginTimeTicks;
   /* 8148 */ int unknown_8148;
 
+  int GetPetFood(int job);
+  void GetPetIllustName(int job, int, char* buffer);
+  int GetPetJobByEggItem(int eggItemId);
+  const char* GetPetString(int id);
   bool UpdateHomunSkill(const CSkillInfo& value, unsigned char notify);
   bool UpdateMercSkill(const CSkillInfo& value, unsigned char notify);
   void AddUnknownId(int id);
