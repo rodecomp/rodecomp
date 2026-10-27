@@ -3,7 +3,6 @@
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
 
-#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
