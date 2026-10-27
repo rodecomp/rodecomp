@@ -4,14 +4,16 @@
 #include "Contents/Camera/CameraState.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <cstddef>
+
 struct TerrainHeight;
 class CRenderer;
 
 struct CameraFrame {
-  float eye[3];
-  float up[3];
-  AffineMatrix view;
-  AffineMatrix inverse;
+  /* 0080 */ float eye[3];
+  /* 008C */ float up[3];
+  /* 0098 */ AffineMatrix view;
+  /* 00C8 */ AffineMatrix inverse;
 
   void Build(const CameraState& camera, const TerrainHeight& terrain);
   void Refresh(const CameraState& camera, const TerrainHeight& terrain, CRenderer& renderer);
@@ -28,5 +30,11 @@ void UpdateCameraFrame(
 );
 
 static_assert(sizeof(CameraFrame) == 120);
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(CameraFrame, up) + 0x80 == 0x8C);
+static_assert(offsetof(CameraFrame, view) + 0x80 == 0x98);
+static_assert(offsetof(CameraFrame, inverse) + 0x80 == 0xC8);
+#endif
 
 #endif
