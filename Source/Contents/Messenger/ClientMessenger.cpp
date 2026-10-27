@@ -274,6 +274,10 @@ struct SessionMessengerContext {
 // OFFSET: 0x00DD8540
 
 // OFFSET: 0x00DD85A0
+// FUNCTION: fn_23308
+void ClearMemberFlags(std::uint32_t* flags) {
+  *flags &= ~0x40u;
+}
 
 // OFFSET: 0x00DD85B0
 
@@ -338,6 +342,16 @@ int SessionMessengerContext::GetList7Size() const {
 }
 
 // OFFSET: 0x00DDF920
+// FUNCTION: fn_23435
+int SessionMessengerContext::GetList1788(int index) const {
+  if (index < 0) {
+    return 0;
+  }
+  if (index >= 11) {
+    return 0;
+  }
+  return this->listData[index][0];
+}
 
 // OFFSET: 0x00DDF9E0
 // FUNCTION: fn_23437
