@@ -9,8 +9,20 @@
 DeviceOwnerDX7* g_deviceOwnerDX7;
 
 // OFFSET: 0x0056AFE0
+// FUNCTION: fn_02307
+CRenderSystemDX7::CRenderSystemDX7() : m_defaultTexture(nullptr) {
+  this->m_device = new DeviceOwnerDX7;
+  g_deviceOwnerDX7 = this->m_device;
+}
 
 // OFFSET: 0x0056B500
+// FUNCTION: fn_02315
+CRenderSystemDX7::~CRenderSystemDX7() {
+  delete this->m_device;
+  this->m_device = nullptr;
+  this->m_backBuffer.reset();
+  delete this->m_defaultTexture;
+}
 
 // OFFSET: 0x0056B5F0
 // FUNCTION: fn_02318
@@ -60,6 +72,14 @@ void CRenderSystemDX7::UpdateOption() {
 }
 
 // OFFSET: 0x0056BBA0
+// FUNCTION: fn_02328
+CTexture* CRenderSystemDX7::BackBufferTexture() {
+  if (!this->m_defaultTexture) {
+    this->m_defaultTexture = new CTextureDX7(*reinterpret_cast<TextureDX7Context*>(this->m_device));
+  }
+
+  return this->m_defaultTexture;
+}
 
 // OFFSET: 0x0056BC70
 // FUNCTION: fn_02329
@@ -68,6 +88,14 @@ std::uint32_t CRenderSystemDX7::Height() {
 }
 
 // OFFSET: 0x0056BC80
+// FUNCTION: fn_02330
+std::shared_ptr<CSurface> CRenderSystemDX7::BackBufferSurface() {
+  if (!this->m_backBuffer) {
+    this->m_backBuffer = std::make_shared<CSurfaceDX7>(*this->m_device, this->m_device->renderTarget);
+  }
+
+  return this->m_backBuffer;
+}
 
 // OFFSET: 0x0056C290
 // FUNCTION: fn_02332
