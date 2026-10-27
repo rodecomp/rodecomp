@@ -145,7 +145,7 @@ bool CSprRes::Load(const char* name) {
 
       if (context.halfHeight != 0) {
         image->height /= 2;
-        image->unknown_0004 |= 1u << 16;
+        image->unknown_0006 = 1;
       }
     }
 
@@ -183,7 +183,7 @@ bool CSprRes::Load(const char* name) {
 
       if (context.halfHeight != 0) {
         image->height /= 2;
-        image->unknown_0004 |= 1u << 16;
+        image->unknown_0006 = 1;
       }
 
       this->images[1].push_back(image);
