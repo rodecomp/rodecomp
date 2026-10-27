@@ -95,6 +95,10 @@ void WindowResponseRecorder::Record(int windowId, int response, std::intptr_t b,
 // OFFSET: 0x00B86AB0
 
 // OFFSET: 0x00B86AD0
+// FUNCTION: fn_19335
+void Replay::UpdateDuration() {
+  this->header.duration = timeGetTime() - this->started;
+}
 
 // OFFSET: 0x00B86A80
 // FUNCTION: fn_19333
