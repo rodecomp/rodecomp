@@ -252,16 +252,113 @@ bool ClientSkills::UpdateAdditional(const CSkillInfo& value, int) {
 }
 
 // OFFSET: 0x00E072F0
+// FUNCTION: fn_23741
+bool CSession::UpdateHomunSkill(const CSkillInfo& value, unsigned char notify) {
+  for (CSkillInfo& skill : this->m_homunSkills) {
+    if (skill.id == value.id) {
+      skill.level = value.level;
+      skill.unknown_0014 = value.unknown_0014;
+      skill.unknown_001C = value.unknown_001C;
+      skill.unknown_0018 = value.unknown_0018;
+      skill.unknown_000C = value.unknown_000C;
+      skill.unknown_0034 = value.unknown_0034;
+      if (notify) {
+        this->NotifyHomunSkillWindows();
+      }
+
+      return false;
+    }
+  }
+
+  this->m_homunSkills.push_back(value);
+  if (notify) {
+    this->NotifyHomunSkillWindows();
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00E07380
+// FUNCTION: fn_23742
+bool CSession::UpdateMercSkill(const CSkillInfo& value, unsigned char notify) {
+  for (CSkillInfo& skill : this->m_mercSkills) {
+    if (skill.id == value.id) {
+      skill.level = value.level;
+      skill.unknown_0014 = value.unknown_0014;
+      skill.unknown_001C = value.unknown_001C;
+      skill.unknown_0018 = value.unknown_0018;
+      skill.unknown_000C = value.unknown_000C;
+      skill.unknown_0034 = value.unknown_0034;
+      if (notify) {
+        this->NotifyMercSkillWindows();
+      }
+
+      return false;
+    }
+  }
+
+  this->m_mercSkills.push_back(value);
+  if (notify) {
+    this->NotifyMercSkillWindows();
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00E07410
+// FUNCTION: fn_23743
+void CSession::AddUnknownId(int id) {
+  if (std::find(this->unknown_616C.begin(), this->unknown_616C.end(), id) == this->unknown_616C.end()) {
+    this->unknown_616C.push_back(id);
+  }
+}
 
 // OFFSET: 0x00E07930
+// FUNCTION: fn_23747
+void CSession::AddStackedItem(ItemInfo item) {
+  int index;
+  for (index = 0; index < 5; ++index) {
+    if (this->unknown_5C68[index].quantity != 0 && this->unknown_5C68[index].unknown_0000[1] == item.unknown_0000[1]) {
+      break;
+    }
+  }
+
+  if (index < 5) {
+    this->unknown_5C68[index].quantity += item.quantity;
+  } else {
+    for (index = 0; index < 5; ++index) {
+      if (this->unknown_5C68[index].quantity == 0) {
+        this->unknown_5C68[index] = item;
+        break;
+      }
+    }
+  }
+
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0458)) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00E07A10
+// FUNCTION: fn_23748
+void CSession::AddItemToFreeSlot(ItemInfo item) {
+  for (int index = 0; index < 5; ++index) {
+    if (this->unknown_5C68[index].quantity == 0) {
+      this->unknown_5C68[index] = item;
+      break;
+    }
+  }
+}
 
 // OFFSET: 0x00E081E0
+// FUNCTION: fn_23752
+bool CSession::IsListedId(int id, int variant) const {
+  if (variant == 0) {
+    return id == 19 || id == 4020 || id == 4042 || id == 4068 || id == 4075 || id == 4104 || id == 4263;
+  }
+
+  return id == 20 || id == 4021 || id == 4043 || id == 4069 || id == 4076 || id == 4105 || id == 4264;
+}
 
 // OFFSET: 0x00E08290
 // FUNCTION: fn_23754
@@ -317,16 +414,77 @@ void CSession::ClearUnknown0420() {
 }
 
 // OFFSET: 0x00E083D0
+// FUNCTION: fn_23760
+void CSession::EraseUnknownKey(std::int64_t key) {
+  auto first = this->unknown_0784.find(key);
+  if (first != this->unknown_0784.end()) {
+    this->unknown_0784.erase(first);
+  }
+
+  auto second = this->unknown_078C.find(key);
+  if (second != this->unknown_078C.end()) {
+    this->unknown_078C.erase(second);
+  }
+}
 
 // OFFSET: 0x00E08690
+// FUNCTION: fn_23764
+std::int64_t CSession::FindUnknown0784(std::int64_t key) const {
+  auto found = this->unknown_0784.find(key);
+  if (found != this->unknown_0784.end()) {
+    return found->second;
+  }
+
+  return -1;
+}
 
 // OFFSET: 0x00E086F0
+// FUNCTION: fn_23765
+std::int64_t CSession::FindUnknown078C(std::int64_t key) const {
+  auto found = this->unknown_078C.find(key);
+  if (found != this->unknown_078C.end()) {
+    return found->second;
+  }
+
+  return -1;
+}
 
 // OFFSET: 0x00E08750
+// FUNCTION: fn_23766
+SessionRecord6144 CSession::FindRecord6144(int key) const {
+  auto found = this->unknown_6144.find(key);
+  if (found != this->unknown_6144.end()) {
+    return found->second;
+  }
+
+  return SessionRecord6144();
+}
 
 // OFFSET: 0x00E08A00
+// FUNCTION: fn_23769
+int CSession::GetBeginEffectId(int skillId) const {
+  int effectId = -1;
+  bool hasEffect = false;
+  if (g_session.m_hotkeyScript->Call("HaveSkillEffectInfo", "d>b", skillId, &hasEffect) && hasEffect) {
+    g_session.m_hotkeyScript->Call("GetBeginEffectID", "d>d", skillId, &effectId);
+  }
+
+  return effectId;
+}
 
 // OFFSET: 0x00E08EE0
+// FUNCTION: fn_23773
+ItemInfo CSession::GetItem2B50(int index) const {
+  if (index == 15) {
+    return ItemInfo(0);
+  }
+
+  if (index >= 0 && index < 10) {
+    return this->unknown_2B50[index];
+  }
+
+  return ItemInfo(0);
+}
 
 // OFFSET: 0x00E08F70
 // FUNCTION: fn_23774
@@ -342,15 +500,96 @@ int CSession::CountItems5C68() const {
 }
 
 // OFFSET: 0x00E09080
+// FUNCTION: fn_23775
+void CSession::SplitDate(__time32_t time, std::uint16_t& year, std::uint16_t& month, std::uint16_t& day) const {
+  if (time < 0) {
+    time = 0;
+  }
+
+  const std::tm local = *_localtime32(&time);
+  year = static_cast<std::uint16_t>(local.tm_year + 1900);
+  month = static_cast<std::uint16_t>(local.tm_mon + 1);
+  day = static_cast<std::uint16_t>(local.tm_mday);
+}
 
 // OFFSET: 0x00E091F0
+// FUNCTION: fn_23776
+int CSession::GetDefaultOptionValue(const char* name, int fallback) const {
+  int value = -1;
+  this->m_hotkeyScript->Call("l_GetDefaultOptionValue", "s>d", name, &value);
+  return value == -1 ? fallback : value;
+}
 
 // OFFSET: 0x00E094B0
+// FUNCTION: fn_23777
+int CSession::FindUnknown0778(int key) const {
+  for (const std::pair<int, int>& entry : this->unknown_0778) {
+    if (entry.first == key) {
+      return entry.second;
+    }
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00E09510
+// FUNCTION: fn_23779
+CSkillInfo CSession::AdditionalSkillAt(int index) const {
+  if (this->m_additionalSkills.size() == 0) {
+    return CSkillInfo(-1);
+  }
+
+  int position = 0;
+  for (const CSkillInfo& skill : this->m_additionalSkills) {
+    if (position == index) {
+      return skill;
+    }
+
+    ++position;
+  }
+
+  return CSkillInfo(-1);
+}
 
 // OFFSET: 0x00E09650
+// FUNCTION: fn_23781
+CSkillInfo CSession::HomunSkillAt(int index) const {
+  if (this->m_homunSkills.size() == 0) {
+    return CSkillInfo(-1);
+  }
+
+  int position = 0;
+  for (const CSkillInfo& skill : this->m_homunSkills) {
+    if (position == index) {
+      return skill;
+    }
+
+    ++position;
+  }
+
+  return CSkillInfo(-1);
+}
 
 // OFFSET: 0x00E251C0
+// FUNCTION: fn_23902
+void CSession::NotifyHomunSkillWindows() {
+  if (g_windowMgr.window_03C4) {
+    g_windowMgr.window_03C4->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+
+  if (g_windowMgr.window_01E8) {
+    g_windowMgr.window_01E8->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00E25200
+// FUNCTION: fn_23903
+void CSession::NotifyMercSkillWindows() {
+  if (g_windowMgr.window_03CC) {
+    g_windowMgr.window_03CC->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+
+  if (g_windowMgr.window_01E8) {
+    g_windowMgr.window_01E8->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
