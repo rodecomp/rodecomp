@@ -22,6 +22,7 @@ public:
   void Slot35(int value) override;
   virtual int ThumbLength();
   int ThumbOffset();
+  int Position();
   int Travel();
   int Part(int x, int y);
 

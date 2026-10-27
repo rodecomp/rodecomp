@@ -56,6 +56,12 @@ int UIScrollBar::ThumbLength() {
   return std::max(length, 2);
 }
 
+// OFFSET: 0x00880AA0
+// FUNCTION: fn_11281
+int UIScrollBar::Position() {
+  return this->position;
+}
+
 // OFFSET: 0x00880AE0
 // FUNCTION: fn_11282
 int UIScrollBar::Travel() {
