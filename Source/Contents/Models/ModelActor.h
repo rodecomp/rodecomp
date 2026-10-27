@@ -11,14 +11,14 @@ public:
   C3dActor(const C3dActor&) = delete;
   C3dActor& operator=(const C3dActor&) = delete;
 
-  virtual void Assign(const C3dModelRes& resource) = 0;
+  virtual void Assign(const C3dModelRes& resource);
   virtual void UpdateTransform();
-  virtual void UpdateBounds() = 0;
-  virtual void Prepare(ModelLightingContext& context) = 0;
-  virtual void Animate(double frame) = 0;
-  virtual void Update() = 0;
-  virtual void Draw(const float* matrix, bool clip, ModelRenderContext& context) = 0;
-  virtual C3dNode* Find(const char* name) = 0;
+  virtual void UpdateBounds();
+  virtual void Prepare(ModelLightingContext& context);
+  virtual void Animate(double frame);
+  virtual void Update();
+  virtual void Draw(const float* matrix, bool clip, ModelRenderContext& context);
+  virtual C3dNode* Find(const char* name);
   virtual void MarkOccluded(const float* ray);
   virtual void SetSpeed(float speed);
   void CopyVolumes(const std::list<ModelVolume*>& source);

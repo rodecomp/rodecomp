@@ -33,8 +33,10 @@ C3dActorV1::C3dActorV1() : root(nullptr), frame(0), animationLength(0), lastTick
 
 // INLINED
 C3dActorV1::~C3dActorV1() {
-  delete this->root;
-  this->root = nullptr;
+  if (this->root) {
+    delete this->root;
+    this->root = nullptr;
+  }
 }
 
 // OFFSET: 0x00AB5C30
@@ -48,6 +50,13 @@ C3dActorV2::~C3dActorV2() {
     delete root;
     root = nullptr;
   }
+
+  this->roots.clear();
+}
+
+// OFFSET: 0x00AB6E80
+// FUNCTION: fn_17478
+void C3dActor::Assign(const C3dModelRes&) {
 }
 
 // OFFSET: 0x00AB6E90
@@ -110,6 +119,13 @@ void C3dActorV2::UpdateTransform() {
   this->dirty = 0;
 }
 
+// OFFSET: 0x00AB9650
+// FUNCTION: fn_17511
+void C3dActor::UpdateBounds() {
+}
+
+// OFFSET: 0x00ABBA50
+
 // OFFSET: 0x00ABBA60
 // FUNCTION: fn_17519
 void C3dActorV1::Prepare(ModelLightingContext& context) {
@@ -154,6 +170,11 @@ void C3dActorV2::Prepare(ModelLightingContext& context) {
   context.shade = previousShade;
 }
 
+// OFFSET: 0x00AB9060
+// FUNCTION: fn_17503
+void C3dActor::Animate(double) {
+}
+
 // OFFSET: 0x00AB9070
 // FUNCTION: fn_17504
 void C3dActorV1::Animate(double frame) {
@@ -187,6 +208,12 @@ void C3dActor::SetSpeed(float speed) {
 // FUNCTION: fn_17502
 void C3dActorV2::SetSpeed(float speed) {
   this->speed = speed;
+}
+
+// OFFSET: 0x00AB7850
+// FUNCTION: fn_17488
+C3dNode* C3dActor::Find(const char*) {
+  return nullptr;
 }
 
 // OFFSET: 0x00AB7860
@@ -238,6 +265,13 @@ void C3dActor::Fade() {
     this->alpha = static_cast<unsigned char>(this->alpha + 5);
   }
 }
+
+// OFFSET: 0x00AB7920
+// FUNCTION: fn_17492
+void C3dActor::Update() {
+}
+
+// OFFSET: 0x00AB7B40
 
 // OFFSET: 0x00AB7B50
 // FUNCTION: fn_17496
