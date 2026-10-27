@@ -480,6 +480,7 @@
   "Source/Resource/Models/ModelMesh.cpp": 3,
   "Source/Resource/Models/ModelResource.cpp": 3,
   "Source/Resource/Models/ModelResourceV2.cpp": 3,
+  "Source/Resource/PaletteResource.cpp": 3,
   "Source/Resource/Resource.cpp": 3,
   "Source/Resource/ResourceAliases.cpp": 3,
   "Source/Resource/ResourceFailures.cpp": 3,
