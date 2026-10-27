@@ -1,11 +1,14 @@
 #include "Client/Application/ErrorDialog.h"
 #include "Contents/Movies/BinkMovie.h"
+#include "File/File.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Render/Textures/Texture.h"
-#include "Resource/Bitmap/BitmapResource.h"
+
+#include <new>
 
 // OFFSET: 0x007AF6D0
 // FUNCTION: fn_09154
-BinkMovie::BinkMovie(BinkMovieContext& context) : m_handle(nullptr), m_state(0), m_loop(0), m_context(&context) {
+BinkMovie::BinkMovie() : m_handle(nullptr), m_state(0), m_loop(0), m_file(nullptr) {
 }
 
 // OFFSET: 0x007AF6F0
@@ -18,36 +21,40 @@ BinkMovie::~BinkMovie() {
 // FUNCTION: fn_09156
 void BinkMovie::Close() {
   if (this->m_handle) {
-    this->m_context->runtime.close(this->m_handle);
+    BinkClose(this->m_handle);
     this->m_handle = nullptr;
   }
 
-  std::vector<unsigned char>().swap(this->m_bytes);
+  if (this->m_file) {
+    this->m_file->Close();
+    delete this->m_file;
+    this->m_file = nullptr;
+  }
 }
 
 // OFFSET: 0x007AF840
 // FUNCTION: fn_09158
 bool BinkMovie::Open(const char* name, int loop, bool memory) {
   this->Close();
-  auto& context = *this->m_context;
 
   if (memory) {
-    if (!context.file.Open(name)) {
-      context.file.Close();
+    this->m_file = new (std::nothrow) CFile;
+    if (!this->m_file || !this->m_file->Open(name, 0, true, false)) {
       return false;
     }
 
-    const auto* bytes = static_cast<const unsigned char*>(context.file.Data());
-    this->m_bytes.assign(bytes, bytes + context.file.Size());
-    context.file.Close();
+    const char* data = static_cast<const char*>(this->m_file->GetData());
+    if (!data) {
+      return false;
+    }
 
-    this->m_handle = context.runtime.open(this->m_bytes.data(), 0x04104000u);
+    this->m_handle = BinkOpen(data, 0x04104000u);
   } else {
-    this->m_handle = context.runtime.open(name, 0x00104000u);
+    this->m_handle = BinkOpen(name, 0x00104000u);
   }
 
   if (!this->m_handle) {
-    ShowErrorDialog(context.renderSystem, context.runtime.error(), 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, BinkGetError(), 0);
     return false;
   }
 
@@ -59,17 +66,15 @@ bool BinkMovie::Open(const char* name, int loop, bool memory) {
 // OFFSET: 0x007AF990
 // FUNCTION: fn_09159
 bool BinkMovie::Update() {
-  auto& runtime = this->m_context->runtime;
-
-  if (this->m_state != 1 || runtime.wait(this->m_handle) != 0) {
+  if (this->m_state != 1 || BinkWait(this->m_handle) != 0) {
     return false;
   }
 
-  runtime.doFrame(this->m_handle);
+  BinkDoFrame(this->m_handle);
 
-  while (runtime.shouldSkip(this->m_handle) != 0) {
-    runtime.nextFrame(this->m_handle);
-    runtime.doFrame(this->m_handle);
+  while (BinkShouldSkip(this->m_handle) != 0) {
+    BinkNextFrame(this->m_handle);
+    BinkDoFrame(this->m_handle);
   }
 
   if (this->m_handle->frame == this->m_handle->frames) {
@@ -84,7 +89,7 @@ bool BinkMovie::Update() {
     }
   }
 
-  runtime.nextFrame(this->m_handle);
+  BinkNextFrame(this->m_handle);
   return true;
 }
 
@@ -101,7 +106,7 @@ bool BinkMovie::CopyTo(CTexture* texture) {
     return false;
   }
 
-  this->m_context->runtime.copyToBuffer(this->m_handle, locked.pixels, locked.pitch, locked.height, 0, 0, 5);
+  BinkCopyToBuffer(this->m_handle, locked.pixels, locked.pitch, locked.height, 0, 0, 5);
   texture->Unlock();
   const RECT rectangle{0, 0, static_cast<LONG>(locked.width), static_cast<LONG>(locked.height)};
   texture->Update(&rectangle);

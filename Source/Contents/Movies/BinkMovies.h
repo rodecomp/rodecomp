@@ -17,7 +17,7 @@ struct MoviePosition {
 };
 
 struct NamedBinkMovie {
-  explicit NamedBinkMovie(BinkMovieContext& context);
+  NamedBinkMovie();
   ~NamedBinkMovie();
   /* 0000 */ std::string name;
   /* 0018 */ std::unique_ptr<BinkMovie> decoder;
@@ -27,7 +27,7 @@ struct NamedBinkMovie {
 
 class BinkMovies {
 public:
-  explicit BinkMovies(BinkMovieContext& context);
+  BinkMovies();
   ~BinkMovies();
   NamedBinkMovie* Get(std::string name, int loop);
   void AddPosition(NamedBinkMovie& movie, float x, float y, float z);
@@ -35,7 +35,6 @@ public:
 
 private:
   /* 0000 */ std::list<std::unique_ptr<NamedBinkMovie>> m_movies;
-  BinkMovieContext* m_context;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

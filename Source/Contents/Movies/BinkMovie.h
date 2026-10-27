@@ -3,21 +3,12 @@
 
 #include "Resource/BinkRuntime.h"
 
-#include <vector>
-
-class ResourceBytes;
-class CRenderSystemBase;
+class CFile;
 class CTexture;
-
-struct BinkMovieContext {
-  BinkRuntime& runtime;
-  ResourceBytes& file;
-  CRenderSystemBase*& renderSystem;
-};
 
 class BinkMovie {
 public:
-  explicit BinkMovie(BinkMovieContext& context);
+  BinkMovie();
   ~BinkMovie();
   bool Open(const char* name, int loop, bool memory);
   void Close();
@@ -35,8 +26,12 @@ private:
   /* 0000 */ BinkHandle* m_handle;
   /* 0004 */ int m_state;
   /* 0008 */ int m_loop;
-  std::vector<unsigned char> m_bytes;
-  BinkMovieContext* m_context;
+  /* 000C */ int unknown_000C;
+  /* 0010 */ CFile* m_file;
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(BinkMovie) == 0x0014);
+#endif
 
 #endif

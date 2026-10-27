@@ -4,18 +4,20 @@
 #include "Utility/Math/ScalarConversion.h"
 #include <algorithm>
 #include <cmath>
+#include <new>
 
 // INLINED
-NamedBinkMovie::NamedBinkMovie(BinkMovieContext& context) : decoder(std::make_unique<BinkMovie>(context)), radius(150.0f) {
+NamedBinkMovie::NamedBinkMovie() : radius(150.0f) {
 }
 
 // INLINED
-NamedBinkMovie::~NamedBinkMovie() = default;
+NamedBinkMovie::~NamedBinkMovie() {
+  this->decoder.reset();
+}
 
 // OFFSET: 0x007AFB50
 // FUNCTION: fn_09161
-BinkMovies::BinkMovies(BinkMovieContext& context) : m_context(&context) {
-}
+BinkMovies::BinkMovies() = default;
 
 // OFFSET: 0x007AFED0
 // FUNCTION: fn_09162
@@ -30,9 +32,13 @@ NamedBinkMovie* BinkMovies::Get(std::string name, int loop) {
     }
   }
 
-  auto movie = std::make_unique<NamedBinkMovie>(*this->m_context);
+  std::unique_ptr<NamedBinkMovie> movie(new (std::nothrow) NamedBinkMovie);
+  if (!movie || name.empty()) {
+    return nullptr;
+  }
 
-  if (name.empty() || !movie->decoder->Open((std::string("video\\") + name).c_str(), loop, true)) {
+  movie->decoder.reset(new (std::nothrow) BinkMovie);
+  if (!movie->decoder || !movie->decoder->Open((std::string("video\\") + name).c_str(), loop, true)) {
     return nullptr;
   }
 
@@ -84,7 +90,7 @@ void BinkMovies::Update(TextureCache& textures, const float* playerPosition, int
         attenuation = static_cast<int>(level * 256u);
       }
 
-      this->m_context->runtime.setVolume(movie->decoder->Handle(), 0, attenuation);
+      BinkSetVolume(movie->decoder->Handle(), 0, attenuation);
     }
   }
 }
