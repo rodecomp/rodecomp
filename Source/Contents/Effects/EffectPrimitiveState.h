@@ -31,12 +31,31 @@ struct EffectPrimitiveRecord {
   /* 0088 */ std::uint32_t color;
 };
 
+struct EffectPrimitiveSlot {
+  /* 0000 */ unsigned char active;
+  /* 0001 */ unsigned char unknown_0001;
+  /* 0002 */ std::int16_t unknown_0002;
+  /* 0004 */ std::int16_t unknown_0004;
+  /* 0006 */ unsigned char unknown_0006[2];
+  /* 0008 */ float unknown_0008;
+  /* 000C */ int frame;
+  /* 0010 */ std::int16_t angle;
+  /* 0012 */ unsigned char unknown_0012[2];
+  /* 0014 */ float values[21];
+  /* 0068 */ unsigned char finished[21];
+  /* 007D */ unsigned char unknown_007D;
+  /* 007E */ std::int16_t unknown_007E;
+  /* 0080 */ float unknown_0080;
+  /* 0084 */ EffectVector3 unknown_0084[4];
+};
+
 struct EffectPrimitiveState {
   explicit EffectPrimitiveState(RenderObjectState& render);
   ~EffectPrimitiveState();
   void Initialize(RenderObjectState& render, RagEffectState& parent, const RenderObjectState& parentRender, int type, float x, float y, float z);
   void UpdateColor();
   void InitializeRecords(const RenderObjectState& render);
+  void GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue);
 
   /* 0138 */ std::uint32_t unknown_0138;
   /* 013C */ std::uint32_t unknown_013C;
@@ -100,12 +119,12 @@ struct EffectPrimitiveState {
   /* 02E8 */ float unknown_02E8;
   /* 02EC */ std::uint32_t unknown_02EC;
   /* 02F0 */ std::uint32_t unknown_02F0;
-  /* 02F4 */ std::uint32_t unknown_02F4;
-  /* 02F8 */ std::uint32_t unknown_02F8;
-  /* 02FC */ std::uint32_t unknown_02FC;
-  /* 0300 */ std::uint32_t unknown_0300;
-  /* 0304 */ std::uint32_t unknown_0304;
-  /* 0308 */ std::uint32_t unknown_0308;
+  /* 02F4 */ float unknown_02F4;
+  /* 02F8 */ float unknown_02F8;
+  /* 02FC */ float unknown_02FC;
+  /* 0300 */ float unknown_0300;
+  /* 0304 */ float unknown_0304;
+  /* 0308 */ float unknown_0308;
   /* 030C */ float unknown_030C;
   /* 0310 */ float unknown_0310;
   /* 0314 */ float unknown_0314;
@@ -138,7 +157,7 @@ struct EffectPrimitiveState {
   /* 03A0 */ EffectVector3 unknown_03A0;
   /* 03AC */ EffectVector3 unknown_03AC;
   /* 03B8 */ EffectVector3 corners[4];
-  /* 03E8 */ unsigned char unknown_03E8[720];
+  /* 03E8 */ EffectPrimitiveSlot slots[4];
   /* 06B8 */ EffectPrimitiveRecord records[50];
   /* 2210 */ RenderTriangle triangles[512];
   /* FA10 */ std::uint32_t unknown_FA10;
@@ -147,11 +166,15 @@ struct EffectPrimitiveState {
 
 static_assert(sizeof(EffectVector3) == 12);
 static_assert(sizeof(EffectPrimitiveRecord) == 140);
+static_assert(sizeof(EffectPrimitiveSlot) == 0xB4);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(EffectVector3, z) == 0x8);
 static_assert(offsetof(EffectPrimitiveRecord, corners) == 0xC);
 static_assert(offsetof(EffectPrimitiveRecord, matrix) == 0x48);
 static_assert(offsetof(EffectPrimitiveRecord, color) == 0x88);
+static_assert(offsetof(EffectPrimitiveSlot, values) == 0x14);
+static_assert(offsetof(EffectPrimitiveSlot, finished) == 0x68);
+static_assert(offsetof(EffectPrimitiveSlot, unknown_0084) == 0x84);
 static_assert(sizeof(EffectPrimitiveState) == 0xF8E0);
 #endif
 

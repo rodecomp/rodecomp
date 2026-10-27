@@ -133,7 +133,7 @@ EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
 
   std::memcpy(this->matrix1, g_identityMatrix, sizeof(g_identityMatrix));
   std::memcpy(this->matrix2, g_identityMatrix, sizeof(g_identityMatrix));
-  std::memset(this->unknown_03E8, 0, sizeof(this->unknown_03E8));
+  std::memset(this->slots, 0, sizeof(this->slots));
 }
 
 // INLINED
@@ -168,4 +168,20 @@ void EffectPrimitiveState::Initialize(
   render.position[1] = this->origin.y;
   render.position[2] = this->origin.z;
   this->unknown_013C = 0;
+}
+
+// OFFSET: 0x00BAE460
+// FUNCTION: fn_19765
+void EffectPrimitiveState::GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue) {
+  if (this->parent->unknown_11C88[0] != -1) {
+    *red = static_cast<unsigned char>(this->parent->unknown_11C88[0]);
+  }
+
+  if (this->parent->unknown_11C88[1] != -1) {
+    *green = static_cast<unsigned char>(this->parent->unknown_11C88[1]);
+  }
+
+  if (this->parent->unknown_11C88[2] != -1) {
+    *blue = static_cast<unsigned char>(this->parent->unknown_11C88[2]);
+  }
 }

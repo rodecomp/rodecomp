@@ -19,6 +19,16 @@ namespace {
       ((matrix[5] * point.y + matrix[2] * point.x) + point.z * matrix[8]) + matrix[11]
     };
   }
+
+  // INLINED
+  EffectVector3 Upward(float distance, const float* matrix) {
+    const EffectVector3 point{0.0f, -distance, 0.0f};
+    return {
+      ((matrix[3] * point.y + matrix[0] * point.x) + point.z * matrix[6]) + matrix[9],
+      ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10],
+      ((matrix[5] * point.y + matrix[2] * point.x) + point.z * matrix[8]) + matrix[11]
+    };
+  }
 }
 
 // OFFSET: 0x00BB8C50
@@ -238,4 +248,261 @@ bool UpdateEffectPrimitive15(EffectPrimitiveState& particle, RenderObjectState& 
   MoveEffectPrimitive(particle, render, context);
   ++particle.unknown_01E0;
   return particle.unknown_01E0 <= particle.lifetime;
+}
+
+// OFFSET: 0x00BB6180
+// FUNCTION: fn_19773
+bool ShrinkEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
+  render.position[0] = context.parentRender.position[0];
+  render.position[1] = context.parentRender.position[1];
+  render.position[2] = context.parentRender.position[2];
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = particle.slots[index];
+
+    if (slot.active != 1) {
+      continue;
+    }
+
+    float height = slot.unknown_0080 - 0.05f;
+    ++slot.frame;
+    slot.unknown_0080 = height;
+
+    if (height <= 0.0f) {
+      slot.unknown_0080 = 10.0f;
+      slot.unknown_0002 = 0;
+      height = 10.0f;
+    }
+
+    slot.unknown_0008 = height;
+    slot.unknown_007E = static_cast<std::int16_t>(static_cast<int>(90.0f - height * 9.0f));
+
+    if (slot.frame >= particle.lifetime - 40) {
+      slot.unknown_0002 -= 3;
+
+      if (slot.unknown_0002 < 0) {
+        slot.unknown_0002 = 0;
+      }
+    } else if (slot.unknown_0002 < 70) {
+      ++slot.unknown_0002;
+    }
+
+    for (int value = 0; value < 21; ++value) {
+      if (slot.finished[value] == 0) {
+        slot.values[value] = slot.unknown_0008;
+
+        if (slot.values[value] < 0.0f) {
+          slot.values[value] = 0;
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00BB62A0
+// FUNCTION: fn_19774
+bool PulseEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
+  render.position[0] = context.parentRender.position[0];
+  render.position[1] = context.parentRender.position[1];
+  render.position[2] = context.parentRender.position[2];
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = particle.slots[index];
+
+    if (slot.active != 1) {
+      continue;
+    }
+
+    float phase = slot.unknown_0080 + 0.1f;
+    const int frame = ++slot.frame;
+    slot.unknown_0080 = phase;
+
+    if (phase >= 13.0f) {
+      slot.unknown_0080 = 3.0f;
+      slot.unknown_0002 = 0;
+      phase = 3.0f;
+
+      if (frame > 50) {
+        slot.active = 0;
+      }
+    }
+
+    phase -= 3.0f;
+    float height;
+
+    if (phase > 5.0f) {
+      height = 10.0f - phase;
+
+      if (slot.unknown_0002 > 0) {
+        slot.unknown_0002 -= 2;
+      }
+    } else {
+      slot.unknown_0002 += 2;
+      height = phase;
+    }
+
+    slot.unknown_0008 = height * 2.0f;
+    slot.unknown_007E = static_cast<std::int16_t>(static_cast<int>(90.0f - phase * 5.0f));
+
+    for (int value = 0; value < 21; ++value) {
+      if (slot.finished[value] == 0) {
+        slot.values[value] = slot.unknown_0008;
+
+        if (slot.values[value] < 0.0f) {
+          slot.values[value] = 0;
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00BB6820
+// FUNCTION: fn_19777
+bool SpinEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
+  particle.origin = {
+    context.parentRender.position[0] + particle.velocity.x, context.parentRender.position[1] + particle.velocity.y,
+    context.parentRender.position[2] + particle.velocity.z
+  };
+
+  particle.unknown_02BC = particle.unknown_02C0 + particle.unknown_02BC;
+  particle.unknown_0334 = particle.unknown_0340 + particle.unknown_0334;
+  particle.unknown_0364 = particle.unknown_0368 + particle.unknown_0364;
+  particle.unknown_0310 = particle.unknown_0334 + particle.unknown_0310;
+  particle.unknown_0300 = particle.unknown_0308 + particle.unknown_0300;
+  particle.unknown_02FC = particle.unknown_0304 + particle.unknown_02FC;
+  particle.unknown_0330 = particle.unknown_033C + particle.unknown_0330;
+  particle.unknown_030C = particle.unknown_0330 + particle.unknown_030C;
+
+  AffineMatrix& matrix = *reinterpret_cast<AffineMatrix*>(particle.matrix1);
+  matrix.SetXRotation(ClientRadians(static_cast<int>(particle.unknown_0310)));
+  matrix.RotateY(ClientRadians(static_cast<int>(particle.unknown_030C)));
+
+  particle.unknown_0370 = Upward(particle.unknown_02BC, particle.matrix1);
+  particle.offset.y = particle.unknown_0370.y + particle.offset.y;
+  particle.offset.x = particle.unknown_0370.x + particle.offset.x;
+  particle.offset.z = particle.unknown_0370.z + particle.offset.z;
+  particle.unknown_030C = particle.unknown_0330 + particle.unknown_030C;
+  particle.unknown_02F4 += particle.unknown_02FC;
+  render.position[0] = particle.offset.x + particle.origin.x;
+  render.position[1] = particle.offset.y + particle.origin.y;
+  render.position[2] = particle.offset.z + particle.origin.z;
+  particle.unknown_02F8 += particle.unknown_0300;
+  particle.unknown_0360 = particle.unknown_0364 + particle.unknown_0360;
+
+  if (particle.unknown_0360 > particle.unknown_036C) {
+    particle.unknown_0360 = particle.unknown_036C;
+  }
+
+  if ((particle.flags & 1u) != 0 && particle.unknown_01E0 == particle.unknown_01F0) {
+    particle.unknown_0300 = -(particle.unknown_02F8 / static_cast<float>(particle.lifetime - particle.unknown_01E0 + 1));
+  }
+
+  particle.UpdateColor();
+
+  if (particle.unknown_01E0 % particle.unknown_01E8 == 0) {
+    const auto next = render.unknown_003C + 1u;
+    render.unknown_003C = next;
+
+    if (particle.unknown_0254 != 0) {
+      render.unknown_003C = static_cast<int>(next) % static_cast<int>(particle.textureCount);
+    } else if (next == particle.textureCount) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00BB6B30
+// FUNCTION: fn_19778
+bool RollEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
+  particle.origin = {
+    context.parentRender.position[0] + particle.velocity.x, context.parentRender.position[1] + particle.velocity.y,
+    context.parentRender.position[2] + particle.velocity.z
+  };
+
+  particle.unknown_02BC = particle.unknown_02C0 + particle.unknown_02BC;
+  particle.unknown_0300 = particle.unknown_0308 + particle.unknown_0300;
+  particle.unknown_02FC = particle.unknown_0304 + particle.unknown_02FC;
+  particle.unknown_0364 = particle.unknown_0368 + particle.unknown_0364;
+
+  AffineMatrix& matrix = *reinterpret_cast<AffineMatrix*>(particle.matrix1);
+  matrix.SetXRotation(ClientRadians(static_cast<int>(particle.unknown_0310)));
+  matrix.RotateY(ClientRadians(static_cast<int>(particle.unknown_030C)));
+
+  particle.unknown_0370 = Upward(particle.unknown_02BC, particle.matrix1);
+  particle.offset.x = particle.unknown_0370.x + particle.offset.x;
+  particle.offset.y = particle.unknown_0370.y + particle.offset.y;
+  particle.offset.z = particle.unknown_0370.z + particle.offset.z;
+  render.position[0] = particle.offset.x + particle.origin.x;
+  render.position[1] = particle.offset.y + particle.origin.y;
+  render.position[2] = particle.offset.z + particle.origin.z;
+  particle.unknown_030C = particle.unknown_0330 + particle.unknown_030C;
+  particle.unknown_02F8 = particle.unknown_0300 + particle.unknown_02F8;
+  particle.unknown_02F4 = particle.unknown_02FC + particle.unknown_02F4;
+  particle.unknown_0360 += particle.unknown_0364;
+
+  if (particle.unknown_0360 > particle.unknown_036C) {
+    particle.unknown_0360 = particle.unknown_036C;
+  }
+
+  if ((particle.flags & 1u) != 0 && particle.unknown_01E0 == particle.unknown_01F0) {
+    particle.unknown_0300 = -(particle.unknown_02F8 / static_cast<float>(particle.lifetime - particle.unknown_01E0 + 1));
+  }
+
+  particle.UpdateColor();
+
+  if (particle.unknown_01E0 % particle.unknown_01E8 == 0) {
+    const auto next = render.unknown_003C + 1u;
+    render.unknown_003C = next;
+
+    if (particle.unknown_0254 != 0) {
+      render.unknown_003C = static_cast<int>(next) % static_cast<int>(particle.textureCount);
+    } else if (next == particle.textureCount) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00BB8610
+// FUNCTION: fn_19784
+void AdvanceEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
+  particle.origin = {
+    context.parentRender.position[0] + particle.velocity.x, context.parentRender.position[1] + particle.velocity.y,
+    context.parentRender.position[2] + particle.velocity.z
+  };
+
+  if (particle.unknown_01E0 == particle.unknown_0200) {
+    particle.unknown_02BC = particle.unknown_029C;
+    particle.unknown_02C0 = particle.unknown_02A0;
+  }
+
+  particle.unknown_02BC = particle.unknown_02C0 + particle.unknown_02BC;
+  particle.unknown_0370 = Forward(particle.unknown_02BC, particle.matrix1);
+  particle.offset.x = particle.unknown_0370.x + particle.offset.x;
+  particle.offset.y = particle.unknown_0370.y + particle.offset.y;
+  particle.offset.z = particle.unknown_0370.z + particle.offset.z;
+  render.position[0] = particle.offset.x + particle.origin.x;
+  render.position[1] = particle.offset.y + particle.origin.y;
+  render.position[2] = particle.offset.z + particle.origin.z;
+
+  if ((particle.flags & 1u) != 0 && particle.unknown_01E0 == static_cast<int>(particle.unknown_01D4)) {
+    particle.unknown_02C0 = 0;
+    particle.unknown_02BC = 0;
+  }
+
+  if ((particle.flags & 2u) != 0) {
+    if (particle.unknown_01E0 == particle.lifetime - 30) {
+      particle.unknown_02BC = particle.unknown_02A4.y;
+      particle.unknown_02C0 = particle.unknown_02B0.y;
+    }
+  } else {
+    particle.UpdateColor();
+  }
 }
