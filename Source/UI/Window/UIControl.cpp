@@ -17,7 +17,7 @@ bool CUIControl::CanHitTest() {
 // FUNCTION: fn_14634
 void CUIControl::Slot10(int x, int y, std::intptr_t value) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot10(x + this->geometry.x, y + this->geometry.y, value);
+    this->parent->Slot10(x + this->geometry.x, y + this->geometry.y, value);
   }
 }
 
@@ -25,7 +25,7 @@ void CUIControl::Slot10(int x, int y, std::intptr_t value) {
 // FUNCTION: fn_14639
 void CUIControl::Slot25(int x, int y) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot25(x + this->geometry.x, y + this->geometry.y);
+    this->parent->Slot25(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
@@ -33,7 +33,7 @@ void CUIControl::Slot25(int x, int y) {
 // FUNCTION: fn_14638
 void CUIControl::Slot26(int x, int y) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot26(x + this->geometry.x, y + this->geometry.y);
+    this->parent->Slot26(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
@@ -41,7 +41,7 @@ void CUIControl::Slot26(int x, int y) {
 // FUNCTION: fn_14642
 void CUIControl::Slot27(int x, int y) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot27(x + this->geometry.x, y + this->geometry.y);
+    this->parent->Slot27(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
@@ -49,7 +49,7 @@ void CUIControl::Slot27(int x, int y) {
 // FUNCTION: fn_14641
 void CUIControl::Slot28(int x, int y) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot28(x + this->geometry.x, y + this->geometry.y);
+    this->parent->Slot28(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
@@ -57,7 +57,7 @@ void CUIControl::Slot28(int x, int y) {
 // FUNCTION: fn_14643
 void CUIControl::ResetCursor(int x, int y) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->ResetCursor(x + this->geometry.x, y + this->geometry.y);
+    this->parent->ResetCursor(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
@@ -65,7 +65,7 @@ void CUIControl::ResetCursor(int x, int y) {
 // FUNCTION: fn_14640
 void CUIControl::Slot31(int x, int y) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot31(x + this->geometry.x, y + this->geometry.y);
+    this->parent->Slot31(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
@@ -73,7 +73,7 @@ void CUIControl::Slot31(int x, int y) {
 // FUNCTION: fn_14645
 void CUIControl::Slot32(int x, int y) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot32(x + this->geometry.x, y + this->geometry.y);
+    this->parent->Slot32(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
@@ -81,7 +81,7 @@ void CUIControl::Slot32(int x, int y) {
 // FUNCTION: fn_14646
 void CUIControl::Slot33(int x, int y) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot33(x + this->geometry.x, y + this->geometry.y);
+    this->parent->Slot33(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
@@ -89,7 +89,7 @@ void CUIControl::Slot33(int x, int y) {
 // FUNCTION: fn_14644
 void CUIControl::Slot34(int x, int y) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot34(x + this->geometry.x, y + this->geometry.y);
+    this->parent->Slot34(x + this->geometry.x, y + this->geometry.y);
   }
 }
 
@@ -97,7 +97,7 @@ void CUIControl::Slot34(int x, int y) {
 // FUNCTION: fn_14647
 void CUIControl::Slot35(int value) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot35(value);
+    this->parent->Slot35(value);
   }
 }
 

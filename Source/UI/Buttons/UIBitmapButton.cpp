@@ -64,6 +64,6 @@ void UIBitmapButton::Paint() {
 
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
   if (this->m_invalidateParent != 0 && this->parent) {
-    static_cast<UIWindow*>(this->parent)->Invalidate();
+    this->parent->Invalidate();
   }
 }

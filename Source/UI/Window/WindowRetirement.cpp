@@ -80,7 +80,7 @@ void UIWindowMgr::DismissTransient() {
 
 // INLINED
 void WindowRetirement::DrainPending(
-  const std::deque<UIWindow*>& modal, UIWindow*& reference_4F16C, WindowAncestry*& capture, WindowAncestry*& input, WindowAncestry*& hover
+  const std::deque<UIWindow*>& modal, UIWindow*& reference_4F16C, UIWindow*& capture, UIWindow*& input, UIWindow*& hover
 ) {
   if (!modal.empty() && modal.back()) {
     return;

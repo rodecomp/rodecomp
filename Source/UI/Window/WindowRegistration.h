@@ -3,13 +3,13 @@
 
 #include <list>
 
-struct WindowAncestry;
+class UIWindow;
 
 struct WindowRegistration {
-  /* 018C */ std::list<WindowAncestry*> windows;
+  /* 018C */ std::list<UIWindow*> windows;
 
-  void Add(WindowAncestry* window);
-  void Remove(WindowAncestry* window);
+  void Add(UIWindow* window);
+  void Remove(UIWindow* window);
 
   void InvalidateAll();
 };

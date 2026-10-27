@@ -91,7 +91,7 @@ void UIComboBoxEx::Slot31(int x, int y) {
   if (UIWindow* target = windows.LookupWindow(this->targetId)) {
     target->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
   } else if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
+    this->parent->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
   }
 
   windows.CloseWindow(26);
@@ -129,7 +129,7 @@ void UIComboBoxEx::Refresh() {
   UIWindow* root = this;
 
   while (root->parent) {
-    root = static_cast<UIWindow*>(root->parent);
+    root = root->parent;
   }
 
   root->Invalidate();
@@ -261,7 +261,7 @@ void UIComboBoxEx::Paint() {
     this->FillRegion((this->geometry.width - 16), 0, 16, this->geometry.height, Palette(resources, 2, 2));
   }
 
-  static_cast<UIWindow*>(this->parent)->Invalidate();
+  this->parent->Invalidate();
 }
 
 // OFFSET: 0x0086CCE0
@@ -330,6 +330,6 @@ void UIComboBoxEx2::Paint() {
   }
 
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Invalidate();
+    this->parent->Invalidate();
   }
 }

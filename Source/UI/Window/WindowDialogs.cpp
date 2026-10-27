@@ -126,13 +126,13 @@ void WindowDialogs::RestoreInput() {
       }
 
       if (this->input) {
-        static_cast<UIWindow*>(this->input)->Slot24(child->Slot06() == this->input);
+        this->input->Slot24(child->Slot06() == this->input);
       }
 
       this->input = child->Slot06();
 
       if (this->input) {
-        static_cast<UIWindow*>(this->input)->Slot23();
+        this->input->Slot23();
       }
 
       return;
@@ -168,13 +168,13 @@ int WindowDialogs::Confirm(
   this->dialog.retirement.rendered.push_front(box);
 
   if (this->capture) {
-    this->suspendedRoots.insert(static_cast<UIWindow*>(this->capture)->Root());
+    this->suspendedRoots.insert(this->capture->Root());
   }
 
   this->capture = nullptr;
 
   if (this->input) {
-    static_cast<UIWindow*>(this->input)->Slot24(0);
+    this->input->Slot24(0);
   }
 
   this->input = nullptr;

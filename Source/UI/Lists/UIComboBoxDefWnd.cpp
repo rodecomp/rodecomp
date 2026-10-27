@@ -96,32 +96,32 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       this->Resize(
         this->geometry.width, this->expanded ? (this->geometry.height + this->list->geometry.height) : (this->geometry.height - this->list->geometry.height)
       );
-      static_cast<UIWindow*>(this->parent)->Invalidate();
+      this->parent->Invalidate();
       this->Invalidate();
       this->list->Invalidate();
       UIWindow* root = this;
 
       while (root->parent) {
-        root = static_cast<UIWindow*>(root->parent);
+        root = root->parent;
       }
 
       root->Invalidate();
 
       if (this->parent) {
-        static_cast<UIWindow*>(this->parent)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        this->parent->SendMsg(nullptr, 23, 0, 0, 0, 0);
       }
     }
 
     return 0;
   case 39:
-    if (WindowPolicy(this->m_controls->buttons.policy, this->m_controls->buttons.restricted, 3, static_cast<UIWindow*>(this->parent)->geometry.id) == 0 ||
+    if (WindowPolicy(this->m_controls->buttons.policy, this->m_controls->buttons.restricted, 3, this->parent->geometry.id) == 0 ||
         value < 0) {
       return 0;
     }
 
     this->label->SetText(this->list->lines[value].text.c_str(), 0);
     this->SendMsg(nullptr, 6, 273, 0, 0, 0);
-    static_cast<UIWindow*>(this->parent)->SendMsg(this, 39, value, 0, 0, 0);
+    this->parent->SendMsg(this, 39, value, 0, 0, 0);
     return 0;
   case 57:
     if (value >= 0) {

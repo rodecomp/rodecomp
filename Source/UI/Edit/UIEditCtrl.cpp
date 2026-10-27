@@ -282,7 +282,7 @@ void UIEditCtrl::Slot28(int x, int y) {
   if (!this->tooltip.empty()) {
     int left = 10, top = -20;
 
-    for (const UIWindow* window = this; window; window = static_cast<const UIWindow*>(window->parent)) {
+    for (const UIWindow* window = this; window; window = window->parent) {
       left += window->geometry.x;
       top += window->geometry.y;
     }
@@ -334,7 +334,7 @@ void UIEditCtrl::SetText(const char* value) {
   this->SelectAll();
 
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Invalidate();
+    this->parent->Invalidate();
   }
 }
 
@@ -368,10 +368,10 @@ void UIEditCtrl::PaintTextWithPolicy(bool alternate, const std::string* placehol
     this->m_edit->buttons.fonts,
     this->m_edit->buttons.locale
   };
-  UIWindow* parent = static_cast<UIWindow*>(this->parent);
+  UIWindow* parent = this->parent;
   int left = 0, top = 0;
 
-  for (const UIWindow* window = this; window; window = static_cast<const UIWindow*>(window->parent)) {
+  for (const UIWindow* window = this; window; window = window->parent) {
     left += window->geometry.x;
     top += window->geometry.y;
   }
@@ -492,6 +492,6 @@ UIEditCtrlWheel::~UIEditCtrlWheel() = default;
 // FUNCTION: fn_13408
 void UIEditCtrlWheel::Slot35(int value) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot35(value);
+    this->parent->Slot35(value);
   }
 }

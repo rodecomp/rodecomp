@@ -50,20 +50,20 @@ void UIStaticText::Paint() {
 // OFFSET: 0x0085EE40
 // FUNCTION: fn_10850
 void UIStaticText::Slot25(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->Slot25((x + this->geometry.x), (y + this->geometry.y));
+  this->parent->Slot25((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085EA60
 // FUNCTION: fn_10837
 void UIStaticText::Slot26(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->Slot26((x + this->geometry.x), (y + this->geometry.y));
+  this->parent->Slot26((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085F8D0
 // FUNCTION: fn_10873
 void UIStaticText::Slot27(int x, int y) {
   this->Slot28(x, y);
-  static_cast<UIWindow*>(this->parent)->Slot27((x + this->geometry.x), (y + this->geometry.y));
+  this->parent->Slot27((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085F580
@@ -76,7 +76,7 @@ void UIStaticText::Slot28(int, int) {
   int x = -6;
   int y = -4;
 
-  for (const UIWindow* node = this; node; node = static_cast<const UIWindow*>(node->parent)) {
+  for (const UIWindow* node = this; node; node = node->parent) {
     x = (x + node->geometry.x);
     y = (y + node->geometry.y);
   }
@@ -87,29 +87,29 @@ void UIStaticText::Slot28(int, int) {
 // OFFSET: 0x0085FAB0
 // FUNCTION: fn_10881
 void UIStaticText::ResetCursor(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->ResetCursor((x + this->geometry.x), (y + this->geometry.y));
+  this->parent->ResetCursor((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085F030
 // FUNCTION: fn_10855
 void UIStaticText::Slot31(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->Slot31((x + this->geometry.x), (y + this->geometry.y));
+  this->parent->Slot31((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085FED0
 // FUNCTION: fn_10889
 void UIStaticText::Slot32(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->Slot32((x + this->geometry.x), (y + this->geometry.y));
+  this->parent->Slot32((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x0085FF30
 // FUNCTION: fn_10891
 void UIStaticText::Slot33(int x, int y) {
-  static_cast<UIWindow*>(this->parent)->Slot33((x + this->geometry.x), (y + this->geometry.y));
+  this->parent->Slot33((x + this->geometry.x), (y + this->geometry.y));
 }
 
 // OFFSET: 0x00860020
 // FUNCTION: fn_10897
 void UIStaticText::Slot35(int value) {
-  static_cast<UIWindow*>(this->parent)->Slot35(value);
+  this->parent->Slot35(value);
 }

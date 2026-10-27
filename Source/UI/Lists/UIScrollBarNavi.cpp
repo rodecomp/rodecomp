@@ -53,5 +53,5 @@ void UIScrollBar_Navi::Paint() {
   }
 
   this->minimumThumb = 0;
-  static_cast<UIWindow*>(this->parent)->Invalidate();
+  this->parent->Invalidate();
 }

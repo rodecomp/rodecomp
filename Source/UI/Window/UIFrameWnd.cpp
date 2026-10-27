@@ -55,10 +55,9 @@ void UIFrameWnd::ToScreen(int& x, int& y) const {
   x += this->geometry.x;
   y += this->geometry.y;
 
-  for (const WindowAncestry* node = this->parent; node; node = node->parent) {
-    const UIWindow* window = static_cast<const UIWindow*>(node);
-    x += window->geometry.x;
-    y += window->geometry.y;
+  for (const UIWindow* node = this->parent; node; node = node->parent) {
+    x += node->geometry.x;
+    y += node->geometry.y;
   }
 }
 

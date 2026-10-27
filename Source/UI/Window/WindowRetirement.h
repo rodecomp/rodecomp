@@ -5,12 +5,11 @@
 
 class UIWindow;
 class UIWindowMgr;
-struct WindowAncestry;
 
 struct WindowRetirement {
   UIWindowMgr& windows;
 
-  void DrainPending(const std::deque<UIWindow*>& modal, UIWindow*& reference_4F16C, WindowAncestry*& capture, WindowAncestry*& input, WindowAncestry*& hover);
+  void DrainPending(const std::deque<UIWindow*>& modal, UIWindow*& reference_4F16C, UIWindow*& capture, UIWindow*& input, UIWindow*& hover);
 };
 
 #endif

@@ -70,5 +70,5 @@ void FrameFocus::Clear() {
 // OFFSET: 0x00A913F0
 // FUNCTION: fn_17158
 UIWindow* FrameFocus::Get() const {
-  return static_cast<UIWindow*>(this->focused);
+  return this->focused;
 }

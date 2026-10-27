@@ -86,7 +86,7 @@ void UIButton::Slot27(int x, int y) {
     this->Invalidate();
   }
 
-  UIWindow* parent = static_cast<UIWindow*>(this->parent);
+  UIWindow* parent = this->parent;
   if (parent == this->m_buttonContext->hoverParent) {
     parent->SendMsg(this, 6, 271, state != 0, 0, 0);
   }
@@ -95,7 +95,7 @@ void UIButton::Slot27(int x, int y) {
 // OFFSET: 0x0085F180
 // FUNCTION: fn_10858
 void UIButton::Slot28(int x, int y) {
-  UIWindow* parent = static_cast<UIWindow*>(this->parent);
+  UIWindow* parent = this->parent;
   if (parent && (this->geometry.id == 201 || this->geometry.id == 202) && parent->geometry.id != 203) {
     if (this->geometry.id == 202 && parent->geometry.id != 0) {
       this->m_tooltip.clear();
@@ -110,7 +110,7 @@ void UIButton::Slot28(int x, int y) {
   if (!this->m_tooltip.empty()) {
     int screenX = 0, screenY = -20;
 
-    for (const UIWindow* window = this; window; window = static_cast<const UIWindow*>(window->parent)) {
+    for (const UIWindow* window = this; window; window = window->parent) {
       screenX = (screenX + window->geometry.x);
       screenY = (screenY + window->geometry.y);
     }
@@ -161,7 +161,7 @@ void UIButton::Slot31(int x, int y) {
     this->geometry.unknown_0030 = 0;
   } else {
     this->geometry.unknown_0030 = 1;
-    UIWindow* parent = static_cast<UIWindow*>(this->parent);
+    UIWindow* parent = this->parent;
     if (parent) {
       if (WindowPolicy(this->m_buttonContext->policy, this->m_buttonContext->restricted, 3, parent->geometry.id) != 0) {
         int id = this->geometry.id;
@@ -174,7 +174,7 @@ void UIButton::Slot31(int x, int y) {
           if (id == 184 || id == 321) {
             this->m_buttonContext->services.Submit(parent);
             id = this->geometry.id;
-            parent = static_cast<UIWindow*>(this->parent);
+            parent = this->parent;
           }
 
           parent->SendMsg(this, 6, id, this->m_argument, 0, 0);

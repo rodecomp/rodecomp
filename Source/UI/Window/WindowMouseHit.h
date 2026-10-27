@@ -9,7 +9,6 @@
 
 class UIWindow;
 class CMouse;
-struct WindowAncestry;
 struct WindowOrdering;
 class WindowManagerWindows;
 struct WindowDropDown;
@@ -25,7 +24,7 @@ struct WindowMouseHit {
 };
 
 struct WindowMouseCapture {
-  WindowAncestry*& capture;
+  UIWindow*& capture;
   WindowOrdering& ordering;
   const CMouse& mouse;
   const int& previousX;
@@ -50,7 +49,7 @@ struct WindowMouseUncaptured {
   UIWindow*& pressedRoot;
   UIWindow* const& dismiss26;
   UIWindow* const& dismiss260;
-  WindowAncestry*& hover;
+  UIWindow*& hover;
 
   std::array<UIWindow**, 7> refresh;
   const int& refreshGate;

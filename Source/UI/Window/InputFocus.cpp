@@ -24,7 +24,7 @@ void InputFocus::Set(UIWindow* value) {
 // FUNCTION: fn_17257
 void InputFocus::First() {
   if (this->window) {
-    UIWindow* parent = static_cast<UIWindow*>(this->window->parent);
+    UIWindow* parent = this->window->parent;
 
     for (UIWindow* child : parent->m_children) {
       if (!child->Slot05()) {
@@ -54,7 +54,7 @@ void InputFocus::Next() {
     return;
   }
 
-  UIWindow* parent = static_cast<UIWindow*>(this->window->parent);
+  UIWindow* parent = this->window->parent;
   bool found = false;
 
   for (UIWindow* child : parent->m_children) {
@@ -85,7 +85,7 @@ void InputFocus::Advance() {
     return;
   }
 
-  UIWindow* parent = static_cast<UIWindow*>(this->window->parent);
+  UIWindow* parent = this->window->parent;
   bool found = false;
 
   for (UIWindow* child : parent->m_children) {

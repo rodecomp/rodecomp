@@ -422,6 +422,7 @@ public:
   UIWindow* LookupWindow(int id);
   void Schedule(UIWindow* window);
   void Destroy(UIWindow* window);
+  void ForgetWindowReferences(UIWindow* removed);
   void DismissTransient();
   void RegisterNamedWindow(std::string name, UIWindow* window);
   void InvalidateAll();

@@ -1,8 +1,6 @@
 #ifndef RAGNAROK_SOURCE_UI_WINDOW_FRAMEFOCUS_H
 #define RAGNAROK_SOURCE_UI_WINDOW_FRAMEFOCUS_H
 
-#include "UI/Window/WindowAncestry.h"
-
 #include <list>
 
 class UIWindow;
@@ -10,7 +8,7 @@ class WindowManagerWindows;
 
 struct FrameFocus {
   std::list<int>& order;
-  WindowAncestry*& focused;
+  UIWindow*& focused;
   WindowManagerWindows& windows;
 
   bool IsOrderFixed(int id);

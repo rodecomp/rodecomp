@@ -78,6 +78,6 @@ void UIBmpTextButton::Paint() {
   }
 
   if (this->m_invalidateParent == 1 && this->parent) {
-    static_cast<UIWindow*>(this->parent)->Invalidate();
+    this->parent->Invalidate();
   }
 }

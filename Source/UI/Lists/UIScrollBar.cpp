@@ -37,7 +37,7 @@ void UIScrollBar::Resize(int width, int height) {
 // OFFSET: 0x00882430
 // FUNCTION: fn_11303
 bool UIScrollBar::Slot08() {
-  return this->maximum == 0 && this->parent && static_cast<UIWindow*>(this->parent)->Slot08();
+  return this->maximum == 0 && this->parent && this->parent->Slot08();
 }
 
 // OFFSET: 0x00880C60
@@ -101,7 +101,7 @@ int UIScrollBar::Part(int x, int y) {
 // OFFSET: 0x00890720
 // FUNCTION: fn_11425
 void UIScrollBar::Slot25(int x, int y) {
-  UIWindow* owner = static_cast<UIWindow*>(this->parent);
+  UIWindow* owner = this->parent;
 
   if (this->maximum == 0) {
     owner->Slot25((x + this->geometry.x), (y + this->geometry.y));
@@ -150,14 +150,14 @@ void UIScrollBar::Slot26(int x, int y) {
   this->Slot25(x, y);
 
   if (this->maximum == 0) {
-    static_cast<UIWindow*>(this->parent)->Slot26((x + this->geometry.x), (y + this->geometry.y));
+    this->parent->Slot26((x + this->geometry.x), (y + this->geometry.y));
   }
 }
 
 // OFFSET: 0x008921D0
 // FUNCTION: fn_11468
 void UIScrollBar::Slot27(int x, int y) {
-  UIWindow* owner = static_cast<UIWindow*>(this->parent);
+  UIWindow* owner = this->parent;
 
   if (this->maximum == 0) {
     owner->Slot27((x + this->geometry.x), (y + this->geometry.y));
@@ -219,7 +219,7 @@ void UIScrollBar::Slot31(int x, int y) {
       this->m_capture->Clear();
     }
   } else {
-    static_cast<UIWindow*>(this->parent)->Slot31((x + this->geometry.x), (y + this->geometry.y));
+    this->parent->Slot31((x + this->geometry.x), (y + this->geometry.y));
   }
 }
 
@@ -227,14 +227,14 @@ void UIScrollBar::Slot31(int x, int y) {
 // FUNCTION: fn_11491
 void UIScrollBar::Slot33(int x, int y) {
   if (this->maximum == 0) {
-    static_cast<UIWindow*>(this->parent)->Slot33((x + this->geometry.x), (y + this->geometry.y));
+    this->parent->Slot33((x + this->geometry.x), (y + this->geometry.y));
   }
 }
 
 // OFFSET: 0x00892F20
 // FUNCTION: fn_11499
 void UIScrollBar::Slot35(int value) {
-  static_cast<UIWindow*>(this->parent)->Slot35(value);
+  this->parent->Slot35(value);
 }
 
 // OFFSET: 0x0088E310

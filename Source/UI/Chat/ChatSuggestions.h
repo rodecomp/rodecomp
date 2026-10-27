@@ -7,7 +7,6 @@
 
 class UIWindow;
 class WindowManagerWindows;
-struct WindowAncestry;
 class UIEditCtrl;
 struct InputFocus;
 struct ItemTagRetirement;
@@ -43,7 +42,7 @@ struct ChatRowLayout {
   ChatInputLayout& input;
   ChatHeaderLayout& header;
   WindowManagerWindows& windows;
-  WindowAncestry* const& capture;
+  UIWindow* const& capture;
   UIWindow* const& popup26;
   const std::vector<UIWindow*>& rows;
   const int& selected;

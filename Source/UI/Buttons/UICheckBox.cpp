@@ -55,12 +55,12 @@ void UICheckBox::Notify() {
   UIWindow* root = this;
 
   while (root->parent) {
-    root = static_cast<UIWindow*>(root->parent);
+    root = root->parent;
   }
 
   root->Invalidate();
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->SendMsg(this, 6, this->geometry.id, this->geometry.unknown_0030, 0, 0);
+    this->parent->SendMsg(this, 6, this->geometry.id, this->geometry.unknown_0030, 0, 0);
   }
 }
 
@@ -85,7 +85,7 @@ void UICheckBox::Slot25(int, int) {
   this->geometry.unknown_0030 = 1u - this->geometry.unknown_0030;
   this->Notify();
   if (this->m_notify != 0) {
-    static_cast<UIWindow*>(this->parent)->SendMsg(this, 2, this->m_message, 0, 0, 0);
+    this->parent->SendMsg(this, 2, this->m_message, 0, 0, 0);
   }
 }
 
@@ -103,7 +103,7 @@ void UICheckBox::Slot28(int x, int y) {
 
   int screenX = 0, screenY = -20;
 
-  for (const UIWindow* node = this; node; node = static_cast<const UIWindow*>(node->parent)) {
+  for (const UIWindow* node = this; node; node = node->parent) {
     screenX = (screenX + node->geometry.x);
     screenY = (screenY + node->geometry.y);
   }

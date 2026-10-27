@@ -2,9 +2,9 @@
 #define RAGNAROK_SOURCE_UI_WINDOW_UIWINDOW_H
 
 #include "Render/Primitives/UIRPData.h"
-#include "UI/Window/WindowAncestry.h"
 #include "UI/Layout/WindowGeometry.h"
 
+#include <cstddef>
 #include <unordered_set>
 #include <vector>
 
@@ -15,6 +15,7 @@ class CRenderer;
 struct ModeCursor;
 struct WindowRegistration;
 class UIWindow;
+class UIWindowMgr;
 struct RenderQueues;
 struct BitmapImage;
 class FontCache;
@@ -28,17 +29,13 @@ struct UIWindowContext {
   ModeCursor& cursor;
   std::uint32_t& cursorTick;
   WindowRegistration& registration;
-  WindowAncestry*& reference_019C;
-  WindowAncestry*& reference_01A0;
-  WindowAncestry*& reference_01B8;
-  WindowAncestry*& reference_0A30;
-  WindowAncestry*& reference_4F1D4;
+  UIWindowMgr& windowMgr;
   std::unordered_set<UIWindow*>& deferredDeletion;
 
   void DestroyDeferredChildren();
 };
 
-class UIWindow : public UIRPData, public WindowAncestry {
+class UIWindow : public UIRPData {
   friend struct WindowDialogs;
   friend struct InputFocus;
   friend class CUIDropDownBox;
@@ -107,6 +104,7 @@ public:
 
   void InvalidateChildren();
   bool Contains(const UIWindow* window) const;
+  bool IsDescendantOf(const UIWindow* ancestor) const;
   UIWindow* FindUid(std::uint32_t uid);
   // INLINED
   std::uint32_t Uid() const {
@@ -133,6 +131,7 @@ public:
     return this->unknown_0048;
   }
 
+  /* 0010 */ UIWindow* parent;
   /* 0014 */ WindowGeometry geometry;
 
 protected:
@@ -160,6 +159,7 @@ extern std::uint32_t g_windowUid;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UIWindow) == 128);
+static_assert(offsetof(UIWindow, parent) == 0x10);
 #endif
 
 #endif

@@ -39,7 +39,7 @@ void UITextButton::Paint() {
   }
 
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Invalidate();
+    this->parent->Invalidate();
   }
 
   TextContext context(*this->geometry.surface, this->m_buttonContext->fonts, this->m_buttonContext->locale);
@@ -91,7 +91,7 @@ void UITextButton::Slot27(int x, int y) {
 // FUNCTION: fn_11461
 void UITextButton::Slot28(int x, int y) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot28((x + this->geometry.x), (y + this->geometry.y));
+    this->parent->Slot28((x + this->geometry.x), (y + this->geometry.y));
   }
 
   UIButton::Slot28(x, y);
@@ -112,7 +112,7 @@ void UITextButton::Slot31(int x, int y) {
     this->geometry.unknown_0030 = 1;
 
     if (this->parent) {
-      static_cast<UIWindow*>(this->parent)->SendMsg(this, 98, this->geometry.id, this->m_value, 0, 0);
+      this->parent->SendMsg(this, 98, this->geometry.id, this->m_value, 0, 0);
       focus.Clear();
       return;
     }
@@ -127,7 +127,7 @@ void UITextButton::Slot31(int x, int y) {
 void UITextButton::Slot32(int, int) {
   if (this->m_disabled == 0) {
     if (this->parent) {
-      static_cast<UIWindow*>(this->parent)->SendMsg(this, 99, this->geometry.id, this->m_value, 0, 0);
+      this->parent->SendMsg(this, 99, this->geometry.id, this->m_value, 0, 0);
     }
 
     this->Invalidate();
@@ -149,7 +149,7 @@ void UITextButton::Slot33(int x, int y) {
     this->geometry.unknown_0030 = 1;
 
     if (this->parent) {
-      static_cast<UIWindow*>(this->parent)->SendMsg(this, 99, this->geometry.id, this->m_value, 0, 0);
+      this->parent->SendMsg(this, 99, this->geometry.id, this->m_value, 0, 0);
     }
   }
 
@@ -161,6 +161,6 @@ void UITextButton::Slot33(int x, int y) {
 // FUNCTION: fn_11500
 void UITextButton::Slot35(int value) {
   if (this->parent) {
-    static_cast<UIWindow*>(this->parent)->Slot35(value);
+    this->parent->Slot35(value);
   }
 }

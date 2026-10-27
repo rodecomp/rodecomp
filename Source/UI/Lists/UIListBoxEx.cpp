@@ -137,7 +137,7 @@ void UIListBoxEx::Slot25(int x, int y) {
 // FUNCTION: fn_11404
 void UIListBoxEx::Slot26(int, int) {
   if (this->selected != -1) {
-    static_cast<UIWindow*>(this->parent)->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
+    this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
   }
 }
 
@@ -156,7 +156,7 @@ void UIListBoxEx::Paint() {
     this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);
 
     if (this->parent) {
-      static_cast<UIWindow*>(this->parent)->Invalidate();
+      this->parent->Invalidate();
     }
   } else {
     const unsigned color = static_cast<unsigned char>(this->backgroundRed) | (static_cast<unsigned char>(this->backgroundGreen) << 8) |
@@ -209,13 +209,13 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->Invalidate();
 
     if (this->transparent != 0 && this->parent) {
-      static_cast<UIWindow*>(this->parent)->Invalidate();
+      this->parent->Invalidate();
     }
 
     UIWindow* root = this;
 
     while (root->parent) {
-      root = static_cast<UIWindow*>(root->parent);
+      root = root->parent;
     }
 
     root->Invalidate();
@@ -238,7 +238,7 @@ int UIListBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->Invalidate();
 
     if (this->transparent != 0 && this->parent) {
-      static_cast<UIWindow*>(this->parent)->Invalidate();
+      this->parent->Invalidate();
     }
 
     return (this->horizontalOffset - previous);

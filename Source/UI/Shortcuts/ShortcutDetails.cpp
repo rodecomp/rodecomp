@@ -11,10 +11,9 @@ namespace {
     x = (x + window.geometry.x);
     y = (y + window.geometry.y);
 
-    for (const WindowAncestry* node = window.parent; node; node = node->parent) {
-      const UIWindow* owner = static_cast<const UIWindow*>(node);
-      x = (x + owner->geometry.x);
-      y = (y + owner->geometry.y);
+    for (const UIWindow* node = window.parent; node; node = node->parent) {
+      x = (x + node->geometry.x);
+      y = (y + node->geometry.y);
     }
   }
 }

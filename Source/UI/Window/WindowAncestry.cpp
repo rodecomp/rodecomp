@@ -1,13 +1,10 @@
-#include "UI/Window/WindowAncestry.h"
-
-// INLINED
-WindowAncestry::WindowAncestry() : parent(nullptr) {
-}
+#include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x00A81C90
 // FUNCTION: fn_16985
-bool WindowAncestry::IsDescendantOf(const WindowAncestry* ancestor) const {
-  for (const WindowAncestry* node = this->parent; node; node = node->parent) {
+bool UIWindow::IsDescendantOf(const UIWindow* ancestor) const {
+  for (const UIWindow* node = this->parent; node; node = node->parent) {
     if (node == ancestor) {
       return true;
     }
@@ -18,27 +15,24 @@ bool WindowAncestry::IsDescendantOf(const WindowAncestry* ancestor) const {
 
 // OFFSET: 0x00A8C200
 // FUNCTION: fn_17130
-void ForgetWindowReferences(
-  WindowAncestry* removed, WindowAncestry*& reference_019C, WindowAncestry*& reference_01A0, WindowAncestry*& reference_01B8, WindowAncestry*& reference_0A30,
-  WindowAncestry*& reference_4F1D4
-) {
-  if (reference_019C && (reference_019C == removed || reference_019C->IsDescendantOf(removed))) {
-    reference_019C = nullptr;
+void UIWindowMgr::ForgetWindowReferences(UIWindow* removed) {
+  if (this->inputWindow && (this->inputWindow == removed || this->inputWindow->IsDescendantOf(removed))) {
+    this->inputWindow = nullptr;
   }
 
-  if (reference_01A0 && (reference_01A0 == removed || reference_01A0->IsDescendantOf(removed))) {
-    reference_01A0 = nullptr;
+  if (this->hoverWindow && (this->hoverWindow == removed || this->hoverWindow->IsDescendantOf(removed))) {
+    this->hoverWindow = nullptr;
   }
 
-  if (reference_01B8 && (reference_01B8 == removed || reference_01B8->IsDescendantOf(removed))) {
-    reference_01B8 = nullptr;
+  if (this->window_01B8 && (this->window_01B8 == removed || this->window_01B8->IsDescendantOf(removed))) {
+    this->window_01B8 = nullptr;
   }
 
-  if (reference_0A30 && reference_0A30 == removed) {
-    reference_0A30 = nullptr;
+  if (this->window_0A30 && this->window_0A30 == removed) {
+    this->window_0A30 = nullptr;
   }
 
-  if (reference_4F1D4 && (reference_4F1D4 == removed || reference_4F1D4->IsDescendantOf(removed))) {
-    reference_4F1D4 = nullptr;
+  if (this->window_4F1D4 && (this->window_4F1D4 == removed || this->window_4F1D4->IsDescendantOf(removed))) {
+    this->window_4F1D4 = nullptr;
   }
 }

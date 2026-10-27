@@ -100,7 +100,7 @@ void UIPartyInfoWnd::Paint() {
   text(315, this->memo.c_str(), static_cast<int>(this->memo.size()));
 
   if (this->m_invalidateParent != 0 && this->parent) {
-    static_cast<UIWindow*>(this->parent)->Invalidate();
+    this->parent->Invalidate();
   }
 }
 

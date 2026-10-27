@@ -125,7 +125,7 @@ void UITextViewer::Paint() {
   }
 
   if (this->transparent != 0 && this->parent) {
-    static_cast<UIWindow*>(this->parent)->Invalidate();
+    this->parent->Invalidate();
   }
 
   int divisor = (this->lineHeight - this->bottomMargin);

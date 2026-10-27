@@ -76,6 +76,6 @@ void UIBasicButton::Paint() {
   }
 
   if (this->invalidateParent == 1 && this->parent) {
-    static_cast<UIWindow*>(this->parent)->Invalidate();
+    this->parent->Invalidate();
   }
 }

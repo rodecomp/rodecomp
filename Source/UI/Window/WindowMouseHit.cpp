@@ -68,7 +68,7 @@ bool WindowMouseCapture::Dispatch() {
   const int y = this->mouse.y;
   int left;
   int top;
-  UIWindow* window = static_cast<UIWindow*>(this->capture);
+  UIWindow* window = this->capture;
   WindowScreenPosition(window, left, top);
   const int localX = x - left;
   const int localY = y - top;
@@ -79,28 +79,28 @@ bool WindowMouseCapture::Dispatch() {
       this->ordering.Promote(root);
     }
 
-    static_cast<UIWindow*>(this->capture)->Slot25(localX, localY);
+    this->capture->Slot25(localX, localY);
   }
 
   if (this->mouse.buttons[0] == 4 && (this->doubleClickGate == 0 || this->alternateDoubleClickGate == 0)) {
-    static_cast<UIWindow*>(this->capture)->Slot25(localX, localY);
-    static_cast<UIWindow*>(this->capture)->Slot26(localX, localY);
+    this->capture->Slot25(localX, localY);
+    this->capture->Slot26(localX, localY);
   }
 
-  static_cast<UIWindow*>(this->capture)->ResetCursor(localX, localY);
+  this->capture->ResetCursor(localX, localY);
 
   if (this->previousX == x && this->previousY == y) {
-    static_cast<UIWindow*>(this->capture)->Slot28(localX, localY);
+    this->capture->Slot28(localX, localY);
   } else {
-    static_cast<UIWindow*>(this->capture)->Slot27(localX, localY);
+    this->capture->Slot27(localX, localY);
   }
 
   if (this->mouse.wheel != 0) {
-    static_cast<UIWindow*>(this->capture)->Slot35(this->mouse.wheel);
+    this->capture->Slot35(this->mouse.wheel);
   }
 
   if (this->mouse.buttons[0] == 3) {
-    static_cast<UIWindow*>(this->capture)->Slot31(localX, localY);
+    this->capture->Slot31(localX, localY);
   }
 
   return true;
@@ -208,11 +208,11 @@ int WindowMouseUncaptured::Dispatch() {
     if (this->hover && this->hover != window) {
       int left;
       int top;
-      WindowScreenPosition(static_cast<UIWindow*>(this->hover), left, top);
+      WindowScreenPosition(this->hover, left, top);
       const int localX = x - left;
       const int localY = y - top;
-      static_cast<UIWindow*>(this->hover)->Slot27(localX, localY);
-      static_cast<UIWindow*>(this->hover)->ResetCursor(localX, localY);
+      this->hover->Slot27(localX, localY);
+      this->hover->ResetCursor(localX, localY);
     }
 
     this->hover = window;

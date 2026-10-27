@@ -8,6 +8,7 @@
 #include "Render/Textures/Texture.h"
 #include "Resource/Bitmap/BitmapImage.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowRegistration.h"
 
 #include <bit>
@@ -67,7 +68,7 @@ void UIWindowContext::DestroyDeferredChildren() {
 // OFFSET: 0x00A79A90
 // FUNCTION: fn_16914
 UIWindow::UIWindow(UIWindowContext& context, unsigned char cached)
-    : unknown_0044(0), unknown_0048(0), unknown_004C(4), m_dirty(1), m_uid(++g_windowUid), m_cached(cached), m_clip(0), m_context(&context) {
+    : parent(nullptr), unknown_0044(0), unknown_0048(0), unknown_004C(4), m_dirty(1), m_uid(++g_windowUid), m_cached(cached), m_clip(0), m_context(&context) {
 }
 
 // OFFSET: 0x00A79E90
@@ -78,15 +79,12 @@ UIWindow::~UIWindow() {
   this->geometry.surface = nullptr;
   this->DeleteChildren();
   this->m_context->registration.Remove(this);
-  ForgetWindowReferences(
-    this, this->m_context->reference_019C, this->m_context->reference_01A0, this->m_context->reference_01B8, this->m_context->reference_0A30,
-    this->m_context->reference_4F1D4
-  );
+  this->m_context->windowMgr.ForgetWindowReferences(this);
 }
 
 // INLINED
 UIWindow* UIWindow::Parent() const {
-  return static_cast<UIWindow*>(this->parent);
+  return this->parent;
 }
 
 // OFFSET: 0x00A82EB0
@@ -557,7 +555,7 @@ UIWindow* UIWindow::Root() {
   UIWindow* root = this;
 
   while (root->parent) {
-    root = static_cast<UIWindow*>(root->parent);
+    root = root->parent;
   }
 
   return root;
@@ -590,10 +588,7 @@ void UIWindow::DeferDeletion(UIWindow* window) {
     return;
   }
 
-  ForgetWindowReferences(
-    window, this->m_context->reference_019C, this->m_context->reference_01A0, this->m_context->reference_01B8, this->m_context->reference_0A30,
-    this->m_context->reference_4F1D4
-  );
+  this->m_context->windowMgr.ForgetWindowReferences(window);
   this->m_context->deferredDeletion.insert(window);
   window->Show(0);
 }

@@ -10,7 +10,6 @@ class UIMessageBox;
 struct UIWindowContext;
 struct UIFrameContext;
 struct UIMessageBoxContext;
-struct WindowAncestry;
 
 class ModalFramePump {
 public:
@@ -26,8 +25,8 @@ struct WindowDialogs {
   UIMessageBoxContext& dialog;
   int& result;
   std::set<UIWindow*>& suspendedRoots;
-  WindowAncestry*& capture;
-  WindowAncestry*& input;
+  UIWindow*& capture;
+  UIWindow*& input;
   std::deque<UIWindow*>& modal;
   int& alternateResult;
   UIMessageBox*& latest;

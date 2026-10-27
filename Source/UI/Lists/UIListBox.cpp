@@ -146,7 +146,7 @@ void UIListBox::Slot25(int x, int y) {
 // FUNCTION: fn_11403
 void UIListBox::Slot26(int, int) {
   if (this->selected != -1) {
-    static_cast<UIWindow*>(this->parent)->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
+    this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
   }
 }
 
@@ -172,7 +172,7 @@ void UIListBox::Paint() {
     }
 
     if (this->parent) {
-      static_cast<UIWindow*>(this->parent)->Invalidate();
+      this->parent->Invalidate();
     }
   } else if (this->geometry.surface) {
     const std::uint32_t color = (this->backgroundRed & 255) | ((this->backgroundGreen & 255) << 8) | ((this->backgroundBlue & 255) << 16);
@@ -241,7 +241,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
     this->Invalidate();
 
     if (this->transparent != 0 && this->parent) {
-      static_cast<UIWindow*>(this->parent)->Invalidate();
+      this->parent->Invalidate();
     }
 
     return (this->topLine - previous);
@@ -268,7 +268,7 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
     this->Invalidate();
 
     if (this->transparent != 0 && this->parent) {
-      static_cast<UIWindow*>(this->parent)->Invalidate();
+      this->parent->Invalidate();
     }
 
     return (this->horizontalOffset - previous);

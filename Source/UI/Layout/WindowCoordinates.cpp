@@ -9,7 +9,7 @@ void WindowScreenPosition(const UIWindow* window, int& x, int& y) {
   int horizontal = 0;
   int vertical = 0;
 
-  for (const UIWindow* node = window; node; node = static_cast<const UIWindow*>(node->parent)) {
+  for (const UIWindow* node = window; node; node = node->parent) {
     horizontal = (horizontal + node->geometry.x);
     vertical = (vertical + node->geometry.y);
   }
@@ -29,7 +29,7 @@ void WindowScreenBounds(const UIWindow* window, int& left, int& top, int& right,
   int horizontal = 0;
   int vertical = 0;
 
-  for (const UIWindow* node = window; node; node = static_cast<const UIWindow*>(node->parent)) {
+  for (const UIWindow* node = window; node; node = node->parent) {
     horizontal = (horizontal + node->geometry.x);
     vertical = (vertical + node->geometry.y);
   }
