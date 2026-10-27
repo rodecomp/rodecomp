@@ -12,8 +12,13 @@ AnimatedModelFrame::AnimatedModelFrame() : vertices(nullptr), textureVertices(nu
 // OFFSET: 0x00756680
 // FUNCTION: fn_07994
 AnimatedModelFrame::~AnimatedModelFrame() {
-  delete[] this->vertices;
-  delete[] this->textureVertices;
+  if (this->vertices) {
+    delete[] this->vertices;
+  }
+
+  if (this->textureVertices) {
+    delete[] this->textureVertices;
+  }
 }
 
 // INLINED
