@@ -25,6 +25,7 @@ UIListBoxEx::UIListBoxEx(UIWindowContext& windows, UIListBoxContext& list)
 }
 
 // OFFSET: 0x00873710
+// FUNCTION: fn_11157
 UIListBoxEx::~UIListBoxEx() = default;
 
 // OFFSET: 0x0087B690
