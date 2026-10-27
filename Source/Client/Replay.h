@@ -99,6 +99,8 @@ public:
   bool WriteSection(int id, std::vector<unsigned char>& bytes, int event);
   int WriteHeader(int event);
   std::vector<unsigned char> BuildMetadata();
+  float AnimationScale() const;
+  bool SetState(int state);
 };
 
 extern int g_replayAnimationScaling;

@@ -14,10 +14,24 @@ public:
   virtual void SetScreenBounds(const float* bounds, float x, float y);
 
   virtual void SetScreenPosition(float x, float y);
+  virtual void SetAnimation(unsigned animation, int motion, int repeat);
   static float __stdcall Heading(float x, float z, float targetX, float targetZ);
   void Face(float x, float z);
   float HorizontalDistance(float x, float z) const;
   float Distance(float x, float y, float z) const;
+  void SetAnimationSpeed(float speed);
+  void SetColor(int alpha, int red, int green, int blue);
+  void SetSequenceDeadline(std::uint32_t duration);
+  void SetSequenceInterval(unsigned char interval);
+  void SetAnimationSequence(
+    unsigned char animation0, unsigned char frame0, unsigned char animation1, unsigned char frame1,
+    unsigned char animation2, unsigned char frame2, unsigned char animation3, unsigned char frame3,
+    unsigned char animation4, unsigned char frame4, int timed, std::uint32_t duration, int loop
+  );
+  void SetFrameSequence(
+    unsigned char animation, unsigned char firstFrame, unsigned char lastFrame, unsigned char finishAnimation,
+    unsigned char finishFrame, int timed, std::uint32_t duration, int loop
+  );
 
   RenderObjectState render;
 };

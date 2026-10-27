@@ -3,6 +3,7 @@
 
 #include "Contents/InstantVar.h"
 
+#include <cstddef>
 #include <cstdint>
 #include <string>
 
@@ -57,14 +58,24 @@ struct RenderObjectState {
   /* 00AC */ int screenX;
   /* 00B0 */ int screenY;
   /* 00B4 */ unsigned char unknown_00B4;
-  /* 00B5 */ unsigned char unknown_00B5[13];
+  /* 00B5 */ unsigned char sequenceAnimation;
+  /* 00B6 */ unsigned char sequenceFrame;
+  /* 00B7 */ unsigned char sequenceAnimations[5];
+  /* 00BC */ unsigned char sequenceFrames[5];
+  /* 00C1 */ unsigned char sequenceLast;
   /* 00C2 */ unsigned char unknown_00C2;
-  /* 00C3 */ unsigned char unknown_00C3[5];
+  /* 00C3 */ unsigned char sequenceFinishAnimation;
+  /* 00C4 */ unsigned char sequenceFinishFrame;
+  /* 00C5 */ unsigned char sequenceIndex;
+  /* 00C6 */ unsigned char unknown_00C6[2];
   /* 00C8 */ std::uint32_t unknown_00C8;
-  /* 00CC */ unsigned char unknown_00CC[12];
+  /* 00CC */ int sequenceLoop;
+  /* 00D0 */ int sequenceTimed;
+  /* 00D4 */ int sequenceFinished;
   /* 00D8 */ std::uint32_t unknown_00D8;
   /* 00DC */ std::uint32_t unknown_00DC;
-  /* 00E0 */ unsigned char unknown_00E0[8];
+  /* 00E0 */ std::uint32_t sequenceTick;
+  /* 00E4 */ std::uint32_t sequenceDeadline;
   /* 00E8 */ std::uint32_t flags;
   /* 00EC */ std::uint32_t unknown_00EC;
   /* 00F0 */ std::uint16_t unknown_00F0;
@@ -94,6 +105,12 @@ struct RenderObjectState {
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenderObjectState) == 296);
+static_assert(offsetof(RenderObjectState, sequenceAnimation) == 0xA5);
+static_assert(offsetof(RenderObjectState, sequenceAnimations) == 0xA7);
+static_assert(offsetof(RenderObjectState, sequenceFrames) == 0xAC);
+static_assert(offsetof(RenderObjectState, sequenceFinishAnimation) == 0xB3);
+static_assert(offsetof(RenderObjectState, sequenceLoop) == 0xBC);
+static_assert(offsetof(RenderObjectState, sequenceDeadline) == 0xD4);
 #endif
 
 #endif
