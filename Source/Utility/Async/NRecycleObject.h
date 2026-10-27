@@ -56,7 +56,33 @@ public:
   }
 
   // OFFSET: 0x005782F0
+  // OFFSET: 0x005783D0
+  // OFFSET: 0x005784B0
+  // OFFSET: 0x00578590
+  // OFFSET: 0x00578670
+  // OFFSET: 0x00578750
+  // OFFSET: 0x00578830
+  // OFFSET: 0x00578910
+  // OFFSET: 0x005789F0
+  // OFFSET: 0x00578AD0
+  // OFFSET: 0x00578BB0
+  // OFFSET: 0x00578C90
+  // OFFSET: 0x00578D70
+  // OFFSET: 0x00578E50
   // FUNCTION: fn_02552
+  // FUNCTION: fn_02553
+  // FUNCTION: fn_02554
+  // FUNCTION: fn_02555
+  // FUNCTION: fn_02556
+  // FUNCTION: fn_02557
+  // FUNCTION: fn_02558
+  // FUNCTION: fn_02559
+  // FUNCTION: fn_02560
+  // FUNCTION: fn_02561
+  // FUNCTION: fn_02562
+  // FUNCTION: fn_02563
+  // FUNCTION: fn_02564
+  // FUNCTION: fn_02565
   T* Acquire() override {
     NSyncObject held(&this->m_criticalSection);
     T* object;
