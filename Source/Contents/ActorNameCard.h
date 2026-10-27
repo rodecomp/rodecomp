@@ -11,6 +11,31 @@ public:
   CActorNameCard();
   virtual ~CActorNameCard();
   void Reset();
+  // INLINED
+  void SetName(std::string value) {
+    this->name = value;
+  }
+  // INLINED
+  void SetValue1(std::string value) {
+    this->unknown_001C = value;
+  }
+  // INLINED
+  void SetValue2(std::string value) {
+    this->unknown_0034 = value;
+  }
+  // INLINED
+  void SetValue3(std::string value) {
+    this->unknown_004C = value;
+  }
+  // INLINED
+  void SetValue4(std::string value) {
+    this->unknown_0064 = value;
+  }
+  // INLINED
+  void SetValue5(std::string value, std::uint32_t number) {
+    this->unknown_007C = value;
+    this->unknown_0094 = number;
+  }
 
   /* 0004 */ std::string name;
   /* 001C */ std::string unknown_001C;

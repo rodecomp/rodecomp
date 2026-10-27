@@ -46,38 +46,17 @@ void CActorNameCardHolder::Clear() {
 void CActorNameCardHolder::Set(std::uint32_t id, std::string name, std::string value1, std::string value2, std::string value3, std::string value4,
                              std::string value5, std::uint32_t value) {
   CActorNameCard& card = this->cards[id];
-  {
-    const std::string copy(name);
-    card.name = copy;
-  }
-  {
-    const std::string copy(value1);
-    card.unknown_001C = copy;
-  }
-  {
-    const std::string copy(value2);
-    card.unknown_0034 = copy;
-  }
-  {
-    const std::string copy(value3);
-    card.unknown_004C = copy;
-  }
-  {
-    const std::string copy(value4);
-    card.unknown_0064 = copy;
-  }
-  {
-    const std::string copy(value5);
-    card.unknown_007C = copy;
-    card.unknown_0094 = value;
-  }
+  card.SetName(name);
+  card.SetValue1(value1);
+  card.SetValue2(value2);
+  card.SetValue3(value3);
+  card.SetValue4(value4);
+  card.SetValue5(value5, value);
   card.received = 1;
 }
 
 // OFFSET: 0x005C0E60
 // FUNCTION: fn_03507
 void CActorNameCardHolder::SetName(std::uint32_t id, std::string name) {
-  CActorNameCard& card = this->cards[id];
-  const std::string copy(name);
-  card.name = copy;
+  this->cards[id].SetName(name);
 }
