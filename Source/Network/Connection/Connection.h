@@ -46,12 +46,15 @@ public:
   void ResetBuffers();
   void SetDeferred(unsigned char value);
 
+  // INLINED
   SOCKET NativeSocket() const {
     return this->m_socket;
   }
+  // INLINED
   ConnectionBuffer& Input() {
     return this->m_input;
   }
+  // INLINED
   unsigned& SendDeadline() {
     return this->m_sendDeadline;
   }

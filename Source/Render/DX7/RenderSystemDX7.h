@@ -32,6 +32,7 @@ public:
   HRESULT TestDevice() override;
   HRESULT Present(bool option) override;
 
+  // INLINED
   DeviceOwnerDX7* Device() const {
     return this->m_device;
   }

@@ -8,6 +8,7 @@ extern "C" {
 #include <cstdint>
 
 namespace {
+  // INLINED
   CPlayerSkillBundle& Bundle(lua_State* state) {
     return *static_cast<CPlayerSkillBundle*>(lua_touserdata(state, lua_upvalueindex(1)));
   }
@@ -59,6 +60,7 @@ namespace {
   }
 }
 
+// INLINED
 void RegisterSkillTreeCallbacks(lua_State* state, CPlayerSkillBundle& bundle) {
   lua_pushlightuserdata(state, &bundle);
   lua_pushcclosure(state, AddSkill, 1);

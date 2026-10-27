@@ -25,6 +25,7 @@ private:
   HMODULE m_module;
 };
 
+// INLINED
 inline D3DX9Runtime::D3DX9Runtime() : m_module(LoadLibraryA("D3DX9_43.dll")) {
 
   if (!this->m_module) {
@@ -43,6 +44,7 @@ inline D3DX9Runtime::D3DX9Runtime() : m_module(LoadLibraryA("D3DX9_43.dll")) {
   }
 }
 
+// INLINED
 inline D3DX9Runtime::~D3DX9Runtime() {
   FreeLibrary(this->m_module);
 }

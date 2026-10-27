@@ -9,6 +9,7 @@
 #include <timeapi.h>
 
 namespace {
+  // INLINED
   bool Grouped(std::uint32_t id) {
     return id - 8000u <= 60 || id - 8200u <= 41 || id - 8400u <= 57;
   }

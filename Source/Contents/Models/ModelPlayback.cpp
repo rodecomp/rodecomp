@@ -4,6 +4,7 @@
 #include <windows.h>
 
 namespace {
+  // INLINED
   unsigned UnsignedFrame(double value) {
     if (!(value < 0x1p32) || value <= -1.0) {
       return 0xFFFFFFFFu;

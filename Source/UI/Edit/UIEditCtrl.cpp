@@ -187,9 +187,11 @@ void EditPainting::Draw() {
 }
   class LinkLayout : public EditLinkLayout {
   public:
+    // INLINED
     explicit LinkLayout(UIEditCtrl& control) : m_control(control) {
     }
 
+    // INLINED
     void Update() override {
       this->m_control.UpdateLinks();
     }

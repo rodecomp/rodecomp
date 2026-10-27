@@ -3,6 +3,7 @@
 #include <algorithm>
 
 namespace {
+  // INLINED
   void Append(std::vector<RenderVertex>& block, unsigned count) {
     const unsigned first = static_cast<unsigned>(block.size());
     block.resize(first + count);

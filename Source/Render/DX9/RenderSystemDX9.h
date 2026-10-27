@@ -49,6 +49,7 @@ public:
   HRESULT TestDevice() override;
   HRESULT Present(bool option) override;
 
+  // INLINED
   DeviceOwnerDX9& Device() {
     return *this->m_device;
   }

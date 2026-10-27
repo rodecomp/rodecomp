@@ -26,16 +26,19 @@ private:
   IDirectDraw7* const& m_directDraw;
 };
 
+// INLINED
 inline ClientTextureSources::ClientTextureSources(
   TextureNames& names, const int& modeType, BinkMovies* const& movies, CRenderSystemBase*& system, IDirectDraw7* const& directDraw
 )
     : m_names(names), m_modeType(modeType), m_movies(movies), m_system(system), m_directDraw(directDraw) {
 }
 
+// INLINED
 inline const char* ClientTextureSources::Resolve(const char* name) {
   return this->m_names.Resolve(name);
 }
 
+// INLINED
 inline bool ClientTextureSources::MovieSize(const char* name, int& width, int& height) {
   if (this->m_modeType != 1 || !this->m_movies) {
     return false;
@@ -52,6 +55,7 @@ inline bool ClientTextureSources::MovieSize(const char* name, int& width, int& h
   return true;
 }
 
+// INLINED
 inline void ClientTextureSources::CleanupTextures() {
   if (this->m_system && this->m_system->Backend() == 1 && this->m_directDraw) {
     this->m_directDraw->Compact();

@@ -9,6 +9,7 @@
 namespace {
   class ScreenshotOverlay : public UIRPData {
   public:
+    // INLINED
     const std::list<RenderPrimitive*>& Primitives() const {
       return this->m_primitives;
     }

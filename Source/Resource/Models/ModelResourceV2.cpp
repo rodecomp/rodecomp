@@ -19,6 +19,7 @@ namespace {
     return name;
   }
 
+  // INLINED
   void ReadKeys(ResourceByteReader& input, std::vector<ModelRotationKey>& keys, bool scale) {
     int count = 0;
     input.Read(&count, 4);

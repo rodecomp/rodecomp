@@ -3,9 +3,10 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/UIWindow.h"
 
-#include <cstdio>
+#include <stdio.h>
 
 namespace {
+  // INLINED
   void ToScreen(const UIWindow& window, int& x, int& y) {
     x = (x + window.geometry.x);
     y = (y + window.geometry.y);

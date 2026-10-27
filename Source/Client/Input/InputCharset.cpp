@@ -19,6 +19,7 @@ const char* InputCharset::Prefix(bool alternate) const {
   return prefix;
 }
 
+// INLINED
 unsigned InputCharset::CodePage(unsigned fallback) const {
   return this->enabled ? LanguageCodePage(this->language) : fallback;
 }

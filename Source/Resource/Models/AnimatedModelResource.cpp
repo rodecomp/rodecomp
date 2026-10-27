@@ -5,8 +5,6 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceByteReader.h"
 
-#include <cstring>
-
 // INLINED
 AnimatedModelNode::AnimatedModelNode(TextureCache& textures)
     : model(nullptr), parent(nullptr), unknown_0040(0), vertexCount(0), textureVertexCount(0), faceCount(0), sharedTextureVertices(0), m_textures(textures) {

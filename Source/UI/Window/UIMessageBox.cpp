@@ -17,6 +17,7 @@
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
 
+  // INLINED
   std::uint32_t Palette(ResourceMgr& resources, int x, int y) {
     const auto* resource = static_cast<CBitmapRes*>(resources.Load((std::string(prefix) + "colorchip.bmp").c_str()));
     const auto& image = resource->image;

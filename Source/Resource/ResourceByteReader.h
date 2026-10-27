@@ -8,6 +8,7 @@ struct ResourceByteReader {
   unsigned size;
   unsigned position = 0;
 
+  // INLINED
   bool Read(void* output, unsigned bytes) {
     if (position + bytes > size) {
       return false;

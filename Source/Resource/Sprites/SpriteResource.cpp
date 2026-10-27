@@ -7,7 +7,6 @@
 
 #include <cstdlib>
 #include <cstring>
-#include <new>
 #include <string>
 
 // OFFSET: 0x0075FE90

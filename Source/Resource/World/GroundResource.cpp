@@ -2,10 +2,10 @@
 #include "Resource/World/GroundResource.h"
 #include "Resource/ResourceByteReader.h"
 
-#include <bit>
 #include <cstring>
 
 namespace {
+  // INLINED
   const unsigned char* Slice(ResourceByteReader& input, std::uint32_t bytes) {
     const auto address = reinterpret_cast<std::uintptr_t>(input.data) + input.position;
     input.position += bytes;

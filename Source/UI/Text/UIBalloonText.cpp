@@ -32,6 +32,7 @@ namespace {
     }
   }
 
+  // INLINED
   SIZE Measure(UIBalloonText& window, BalloonTextContext& owner, const std::string& text, int family, int height) {
     if (text.empty()) {
       return {0, 0};

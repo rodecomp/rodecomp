@@ -30,6 +30,7 @@ void RendererViewport::SetSize(int columns, int rows, const float& projectionSca
   cotangent = projectionScale / this->uiScaleY;
 }
 
+// INLINED
 RenderProjection RendererViewport::Projection() const {
   return {this->scaleX, this->scaleY, this->centerX, this->centerY};
 }

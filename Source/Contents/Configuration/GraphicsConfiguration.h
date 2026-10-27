@@ -69,6 +69,7 @@ inline void GraphicsConfiguration::Load(LuaScript& script, ScriptOptions& option
   }
 }
 
+// INLINED
 inline AdapterConfiguration GraphicsConfiguration::Adapter() const {
   return {this->backend, this->drawGuid, this->renderGuid, this->deviceGuid, this->deviceName};
 }

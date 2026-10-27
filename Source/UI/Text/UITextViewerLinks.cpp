@@ -11,6 +11,7 @@
 
 #include <cstring>
 
+// INLINED
 std::string UITextViewer::ConvertChat(std::string text) {
   std::string converted;
   DisplayNavigationLink(converted, text);

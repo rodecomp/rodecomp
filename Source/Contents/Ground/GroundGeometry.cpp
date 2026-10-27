@@ -93,6 +93,7 @@ void GroundGeometry::Reset(int columns, int rows) {
   this->unknown_0058 = 0;
 }
 
+// INLINED
 GroundSpatial GroundGeometry::Spatial() const {
   return {this->width, this->height, this->cellSize, this->cells};
 }

@@ -216,6 +216,7 @@ void UIRegisterPartyWnd::SetInfo(CAdvenPartyInfo value) {
   this->Invalidate();
 }
 
+// INLINED
 const char* UIRegisterPartyWnd::Text(UIEditCtrl& control) const {
   const auto& edit = this->m_registration->edits;
   return edit.focus.window == &control ? edit.input.text.c_str() : control.text.c_str();

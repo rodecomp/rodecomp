@@ -40,6 +40,7 @@ namespace {
   }
 }
 
+// INLINED
 const char* ItemNaming::Message(int id) const {
   return LookupMessage(id, this->languagePrefix, this->service, this->language);
 }

@@ -11,6 +11,7 @@ ResourceName::ResourceName(const char* name) {
   this->Assign(name);
 }
 
+// INLINED
 void ResourceName::Assign(const char* name) {
   myGPack::AssignNameKey(this->hash, this->text, name);
 }
