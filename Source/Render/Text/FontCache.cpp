@@ -1,7 +1,6 @@
 #include "Render/Text/FontCache.h"
 
 #include <algorithm>
-#include <cstring>
 #include <objidl.h>
 
 #include <gdiplus.h>

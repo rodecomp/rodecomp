@@ -10,6 +10,7 @@
 #include <utility>
 
 namespace {
+  // INLINED
   BrowserWindowSizing Sizing(CWebBrowser& owner) {
     return {owner.browser, owner.screenWidth, owner.screenHeight, owner.rebar, owner.auxiliaryVisible, owner.width, owner.height};
   }
