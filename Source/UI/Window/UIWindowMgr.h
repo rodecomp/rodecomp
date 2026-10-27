@@ -39,6 +39,8 @@ struct WindowPolicyEntry {
   /* 0000 */ int actions[8];
 };
 
+class UIRoulletteWnd;
+
 class UIWindowMgr {
 public:
   /* 0004 */ int activeWindowId;
@@ -232,11 +234,11 @@ public:
   /* 031C */ std::uint32_t unknown_031C;
   /* 0320 */ UIWindow* window_0320;
   /* 0324 */ UIWindow* window_0324;
-  /* 0328 */ std::uint32_t unknown_0328;
+  /* 0328 */ UIWindow* unknown_0328;
   /* 032C */ UIWindow* window_032C;
-  /* 0330 */ std::uint32_t unknown_0330;
-  /* 0334 */ std::uint32_t unknown_0334;
-  /* 0338 */ std::uint32_t unknown_0338;
+  /* 0330 */ UIWindow* unknown_0330;
+  /* 0334 */ UIWindow* unknown_0334;
+  /* 0338 */ UIWindow* unknown_0338;
   /* 033C */ std::uint32_t unknown_033C;
   /* 0340 */ std::uint32_t unknown_0340;
   /* 0344 */ std::uint32_t unknown_0344;
@@ -313,7 +315,7 @@ public:
   /* 0458 */ std::uint32_t unknown_0458;
   /* 045C */ std::uint32_t unknown_045C;
   /* 0460 */ std::uint32_t unknown_0460;
-  /* 0464 */ std::uint32_t unknown_0464;
+  /* 0464 */ UIRoulletteWnd* unknown_0464;
   /* 0468 */ UIWindow* window_0468;
   /* 046C */ int unknown_046C;
   /* 0470 */ int unknown_0470;
@@ -422,6 +424,12 @@ public:
   void Destroy(UIWindow* window);
   void DismissTransient();
   void RegisterNamedWindow(std::string name, UIWindow* window);
+  void InvalidateAll();
+  void RefreshClanWnd();
+  void RefreshGuildWindows();
+  void RefreshRouletteWnd();
+  void EnableRouletteWnd();
+  char UpdateSnapRectangles();
 };
 
 extern UIWindowMgr g_windowMgr;
