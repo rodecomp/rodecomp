@@ -16,10 +16,36 @@ CRenderer* RenderSystemHolder::CreateRenderer() {
   return this->system ? this->system->CreateRenderer() : nullptr;
 }
 
+// OFFSET: 0x00569F20
+// FUNCTION: fn_02275
+CSurface* RenderSystemHolder::CreateSurface(std::uint32_t width, std::uint32_t height) {
+  return this->system ? this->system->CreateSurface(width, height) : nullptr;
+}
+
+// OFFSET: 0x00569F40
+// FUNCTION: fn_02276
+CTexture* RenderSystemHolder::CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget) {
+  return this->system ? this->system->CreateTexture(width, height, format, dynamic, renderTarget) : nullptr;
+}
+
+// OFFSET: 0x00569F60
+// FUNCTION: fn_02277
+CSurface* RenderSystemHolder::CreateSurfaceOrTexture(std::uint32_t width, std::uint32_t height) {
+  return this->system ? this->system->CreateSurfaceOrTexture(width, height) : nullptr;
+}
+
 // OFFSET: 0x00569F80
 // FUNCTION: fn_02278
 HRESULT RenderSystemHolder::Close() {
   return this->system ? this->system->Close() : E_ILLEGAL_METHOD_CALL;
+}
+
+// OFFSET: 0x00569FA0
+// FUNCTION: fn_02279
+void RenderSystemHolder::DestroySurface(CSurface* surface) {
+  if (this->system) {
+    this->system->DestroySurface(surface);
+  }
 }
 
 // OFFSET: 0x00569FC0
@@ -52,6 +78,14 @@ std::int32_t RenderSystemHolder::Backend() const {
   return this->system ? this->system->Backend() : -1;
 }
 
+// OFFSET: 0x0056A240
+// FUNCTION: fn_02286
+ScreenDimensions* DefaultResolution(ScreenDimensions* output) {
+  output->height = 768;
+  output->width = 1024;
+  return output;
+}
+
 // OFFSET: 0x0056A280
 // FUNCTION: fn_02287
 CTexture* RenderSystemHolder::BackBufferTexture() const {
@@ -80,6 +114,12 @@ bool RenderSystemHolder::IsWindowed() const {
 // FUNCTION: fn_02295
 HRESULT RenderSystemHolder::TestDevice() const {
   return this->system ? this->system->TestDevice() : E_ILLEGAL_METHOD_CALL;
+}
+
+// OFFSET: 0x0056A7C0
+// FUNCTION: fn_02296
+HRESULT RenderSystemHolder::Present(bool option) const {
+  return this->system ? this->system->Present(option) : E_ILLEGAL_METHOD_CALL;
 }
 
 // OFFSET: 0x00548FE0
