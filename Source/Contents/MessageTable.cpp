@@ -60,6 +60,30 @@ namespace {
 }
 
 // OFFSET: 0x00B00360
+// FUNCTION: fn_18368
+int FillMessageBuckets(int* first, std::uintptr_t last, int* value) {
+  int result = 0;
+  int* dest = first;
+  unsigned int count = (last - reinterpret_cast<std::uintptr_t>(first) + 3) >> 2;
+  if (reinterpret_cast<std::uintptr_t>(first) > last) {
+    count = 0;
+  }
+  if (count >= 4) {
+    result = *value;
+    if (first > value || &first[count - 1] < value) {
+      unsigned int aligned = count & ~3u;
+      dest = &first[aligned];
+      for (int* p = first; p != dest; ++p) {
+        *p = result;
+      }
+    }
+  }
+  for (; dest != reinterpret_cast<int*>(last); ++dest) {
+    result = *value;
+    *dest = *value;
+  }
+  return result;
+}
 
 struct MessageBucketVector {
   void* begin;
