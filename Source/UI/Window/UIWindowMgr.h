@@ -341,7 +341,7 @@ public:
   /* 04F4 */ int unknown_04F4;
   /* 04F8 */ int unknown_04F8;
   /* 04FC */ int unknown_04FC;
-  /* 0500 */ std::map<std::string, int> namedWindows;
+  /* 0500 */ std::map<std::string, UIWindow*> namedWindows;
   /* 0508 */ int unknown_0508;
   /* 050C */ std::list<UIWindow*> hiddenWindows;
   /* 0514 */ unsigned char unknown_0514[0x12];
@@ -421,6 +421,7 @@ public:
   void Schedule(UIWindow* window);
   void Destroy(UIWindow* window);
   void DismissTransient();
+  void RegisterNamedWindow(std::string name, UIWindow* window);
 };
 
 extern UIWindowMgr g_windowMgr;

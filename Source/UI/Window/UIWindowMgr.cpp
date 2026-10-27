@@ -621,3 +621,11 @@ UIWindowMgr::~UIWindowMgr() {
   this->savedRectangles.clear();
 }
 
+// OFFSET: 0x00A8B840
+// FUNCTION: fn_17124
+void UIWindowMgr::RegisterNamedWindow(std::string name, UIWindow* window) {
+  if (this->namedWindows.find(name) == this->namedWindows.end()) {
+    this->namedWindows[name] = window;
+  }
+}
+
