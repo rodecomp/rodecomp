@@ -5,6 +5,13 @@
 
 #include <new>
 
+// GLOBAL: gl_24503
+DeviceOwnerDX7* g_deviceOwnerDX7;
+
+// OFFSET: 0x0056AFE0
+
+// OFFSET: 0x0056B500
+
 // OFFSET: 0x0056B5F0
 // FUNCTION: fn_02318
 CSurface* CRenderSystemDX7::CreateSurface(std::uint32_t width, std::uint32_t height) {
@@ -52,6 +59,16 @@ void CRenderSystemDX7::UpdateOption() {
   }
 }
 
+// OFFSET: 0x0056BBA0
+
+// OFFSET: 0x0056BC70
+// FUNCTION: fn_02329
+std::uint32_t CRenderSystemDX7::Height() {
+  return this->m_device->height;
+}
+
+// OFFSET: 0x0056BC80
+
 // OFFSET: 0x0056C290
 // FUNCTION: fn_02332
 std::int32_t CRenderSystemDX7::Backend() {
@@ -62,4 +79,10 @@ std::int32_t CRenderSystemDX7::Backend() {
 // FUNCTION: fn_02333
 std::uint32_t CRenderSystemDX7::Width() {
   return this->m_device->width;
+}
+
+// OFFSET: 0x0056C4A0
+// FUNCTION: fn_02335
+bool CRenderSystemDX7::IsWindowed() {
+  return this->m_device->fullscreen != 0;
 }
