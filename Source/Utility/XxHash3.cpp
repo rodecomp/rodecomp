@@ -508,37 +508,225 @@ const unsigned char kSecret[192] = {
 std::uint32_t XXH_versionNumber() { return XXH_VERSION_NUMBER; }
 
 // OFFSET: 0x004DF120
+// FUNCTION: fn_00179
+std::uint64_t XXH64_avalanche(std::uint64_t hash) {
+  hash ^= hash >> 33;
+  hash *= XXH_PRIME64_2;
+  hash ^= hash >> 29;
+  hash *= XXH_PRIME64_3;
+  hash ^= hash >> 32;
+  return hash;
+}
 
 // OFFSET: 0x004DF670
+// FUNCTION: fn_00181
+std::uint64_t XXH64_round(std::uint64_t acc, std::uint64_t input) {
+  acc += input * XXH_PRIME64_2;
+  acc = Rotl64(acc, 31);
+  acc *= XXH_PRIME64_1;
+  return acc;
+}
 
 // OFFSET: 0x004DF400
+// FUNCTION: fn_00180
+std::uint64_t XXH64_finalize(std::uint64_t hash, const void* data, std::size_t length, XXH_alignment alignment) {
+  (void)alignment;
+  const std::uint8_t* current = static_cast<const std::uint8_t*>(data);
+  length &= 31;
+
+  while (length >= 8) {
+    std::uint64_t const k1 = XXH64_round(0, ReadLE64(current));
+    current += 8;
+    hash ^= k1;
+    hash = Rotl64(hash, 27) * XXH_PRIME64_1 + XXH_PRIME64_4;
+    length -= 8;
+  }
+
+  if (length >= 4) {
+    hash ^= static_cast<std::uint64_t>(ReadLE32(current)) * XXH_PRIME64_1;
+    current += 4;
+    hash = Rotl64(hash, 23) * XXH_PRIME64_2 + XXH_PRIME64_3;
+    length -= 4;
+  }
+
+  while (length > 0) {
+    hash ^= (*current++) * XXH_PRIME64_5;
+    hash = Rotl64(hash, 11) * XXH_PRIME64_1;
+    --length;
+  }
+
+  return XXH64_avalanche(hash);
+}
 
 // OFFSET: 0x004DEC70
+// FUNCTION: fn_00178
+std::uint64_t XXH3_rrmxmx(std::uint64_t hash, std::uint64_t length) {
+  hash ^= Rotl64(hash, 49) ^ Rotl64(hash, 24);
+  hash *= XXH_PRIME_MX2;
+  hash ^= (hash >> 35) + length;
+  hash *= XXH_PRIME_MX2;
+  return Xorshift64(hash, 28);
+}
 
 // OFFSET: 0x004DEAB0
+// FUNCTION: fn_00176
+std::uint64_t XXH3_mergeAccs(const std::uint64_t* acc, const void* secret, std::uint64_t start) {
+  std::uint64_t result = start;
+  const std::uint8_t* currentSecret = static_cast<const std::uint8_t*>(secret);
+
+  for (std::size_t i = 0; i < 4; ++i) {
+    result += Mix2Accs(acc + 2 * i, currentSecret + 16 * i);
+  }
+  return Avalanche64b3(result);
+}
 
 // OFFSET: 0x004DE830
+// FUNCTION: fn_00175
+std::uint64_t XXH3_len_129to240_64b(const void* data, std::size_t length, const void* secret, std::size_t secretSize,
+                                    std::uint64_t seed) {
+  (void)secretSize;
+  const std::uint8_t* input = static_cast<const std::uint8_t*>(data);
+  const std::uint8_t* secretBytes = static_cast<const std::uint8_t*>(secret);
+  std::uint64_t acc = length * XXH_PRIME64_1;
+  int const nbRounds = static_cast<int>(length) / 16;
+
+  for (int i = 0; i < 8; ++i) {
+    acc += Mix16B(input + (16 * i), secretBytes + (16 * i), seed);
+  }
+  acc = Avalanche64b3(acc);
+
+  for (int i = 8; i < nbRounds; ++i) {
+    acc += Mix16B(input + (16 * i), secretBytes + (16 * (i - 8)) + XXH3_MIDSIZE_STARTOFFSET, seed);
+  }
+  acc += Mix16B(input + length - 16, secretBytes + XXH_SECRET_SIZE_MIN - XXH3_MIDSIZE_LASTOFFSET, seed);
+  return Avalanche64b3(acc);
+}
 
 // OFFSET: 0x004DE270
+// FUNCTION: fn_00174
+XXH128_hash_t XXH3_len_129to240_128b(const void* data, std::size_t length, const void* secret, std::size_t secretSize,
+                                     std::uint64_t seed) {
+  (void)secretSize;
+  const std::uint8_t* input = static_cast<const std::uint8_t*>(data);
+  const std::uint8_t* secretBytes = static_cast<const std::uint8_t*>(secret);
+  XXH128_hash_t acc;
+  int const nbRounds = static_cast<int>(length) / 32;
+
+  acc.low64 = length * XXH_PRIME64_1;
+  acc.high64 = 0;
+  for (int i = 0; i < 4; ++i) {
+    acc = Mix32B(acc, input + (32 * i), input + (32 * i) + 16, secretBytes + (32 * i), seed);
+  }
+  acc.low64 = Avalanche64b3(acc.low64);
+  acc.high64 = Avalanche64b3(acc.high64);
+  for (int i = 4; i < nbRounds; ++i) {
+    acc = Mix32B(acc, input + (32 * i), input + (32 * i) + 16,
+                 secretBytes + XXH3_MIDSIZE_STARTOFFSET + (32 * (i - 4)), seed);
+  }
+  acc = Mix32B(acc, input + length - 16, input + length - 32,
+               secretBytes + XXH_SECRET_SIZE_MIN - XXH3_MIDSIZE_LASTOFFSET - 16, 0ULL - seed);
+
+  XXH128_hash_t h128;
+  h128.low64 = acc.low64 + acc.high64;
+  h128.high64 = (acc.low64 * XXH_PRIME64_1) + (acc.high64 * XXH_PRIME64_4) + ((length - seed) * XXH_PRIME64_2);
+  h128.low64 = Avalanche64b3(h128.low64);
+  h128.high64 = static_cast<std::uint64_t>(0) - Avalanche64b3(h128.high64);
+  return h128;
+}
 
 // OFFSET: 0x004DEBA0
+// FUNCTION: fn_00177
+void XXH3_reset_internal(XXH3_state_t* state, std::uint64_t seed, const void* secret, std::size_t secretSize) {
+  std::size_t const initStart = offsetof(XXH3_state_t, bufferedSize);
+  std::size_t const initLength = offsetof(XXH3_state_t, nbStripesPerBlock) - initStart;
+
+  std::memset(reinterpret_cast<char*>(state) + initStart, 0, initLength);
+  state->acc[0] = XXH_PRIME32_3;
+  state->acc[1] = XXH_PRIME64_1;
+  state->acc[2] = XXH_PRIME64_2;
+  state->acc[3] = XXH_PRIME64_3;
+  state->acc[4] = XXH_PRIME64_4;
+  state->acc[5] = XXH_PRIME32_2;
+  state->acc[6] = XXH_PRIME64_5;
+  state->acc[7] = XXH_PRIME32_1;
+  state->seed = seed;
+  state->useSeed = (seed != 0);
+  state->extSecret = static_cast<const unsigned char*>(secret);
+  state->secretLimit = secretSize - XXH_STRIPE_LEN;
+  state->nbStripesPerBlock = state->secretLimit / XXH_SECRET_CONSUME_RATE;
+}
 
 // OFFSET: 0x004DD1F0
+// FUNCTION: fn_00172
+__declspec(noinline) std::uint64_t XXH3_hashLong_64b_default(const void* data, std::size_t length, std::uint64_t seed,
+                                                             const void* secret, std::size_t secretSize) {
+  (void)seed;
+  (void)secret;
+  (void)secretSize;
+  return HashLong64bInternal(data, length, kSecret, sizeof(kSecret), Accumulate512, ScrambleAcc);
+}
 
 // OFFSET: 0x004DDA00
+// FUNCTION: fn_00173
+__declspec(noinline) std::uint64_t XXH3_hashLong_64b_withSeed(const void* data, std::size_t length, std::uint64_t seed,
+                                                              const void* secret, std::size_t secretSize) {
+  (void)secret;
+  (void)secretSize;
+  return HashLong64bWithSeedInternal(data, length, seed, Accumulate512, ScrambleAcc, InitCustomSecret);
+}
 
 // OFFSET: 0x004DC090
+// FUNCTION: fn_00170
+__declspec(noinline) XXH128_hash_t XXH3_hashLong_128b_default(const void* data, std::size_t length, std::uint64_t seed,
+                                                              const void* secret, std::size_t secretSize) {
+  (void)seed;
+  (void)secret;
+  (void)secretSize;
+  return HashLong128bInternal(data, length, kSecret, sizeof(kSecret), Accumulate512, ScrambleAcc);
+}
 
 // OFFSET: 0x004DC930
+// FUNCTION: fn_00171
+__declspec(noinline) XXH128_hash_t XXH3_hashLong_128b_withSeed(const void* data, std::size_t length, std::uint64_t seed,
+                                                               const void* secret, std::size_t secretSize) {
+  (void)secret;
+  (void)secretSize;
+  return HashLong128bWithSeedInternal(data, length, seed, Accumulate512, ScrambleAcc, InitCustomSecret);
+}
 
 // OFFSET: 0x004D84B0
+// FUNCTION: fn_00167
+std::uint64_t XXH3_64bits(const void* data, std::size_t length) {
+  return Hash64bitsInternal(data, length, 0, kSecret, sizeof(kSecret), XXH3_hashLong_64b_default);
+}
 
 // OFFSET: 0x004D9F30
+// FUNCTION: fn_00168
+std::uint64_t XXH3_64bits_withSecret(const void* data, std::size_t length, const void* secret, std::size_t secretSize) {
+  return Hash64bitsInternal(data, length, 0, secret, secretSize, HashLong64bWithSecret);
+}
 
 // OFFSET: 0x004DB600
+// FUNCTION: fn_00169
+std::uint64_t XXH3_64bits_withSeed(const void* data, std::size_t length, std::uint64_t seed) {
+  return Hash64bitsInternal(data, length, seed, kSecret, sizeof(kSecret), XXH3_hashLong_64b_withSeed);
+}
 
 // OFFSET: 0x004D3760
+// FUNCTION: fn_00164
+XXH128_hash_t XXH3_128bits(const void* data, std::size_t length) {
+  return Hash128bitsInternal(data, length, 0, kSecret, sizeof(kSecret), XXH3_hashLong_128b_default);
+}
 
 // OFFSET: 0x004D56F0
+// FUNCTION: fn_00165
+XXH128_hash_t XXH3_128bits_withSecret(const void* data, std::size_t length, const void* secret,
+                                      std::size_t secretSize) {
+  return Hash128bitsInternal(data, length, 0, secret, secretSize, HashLong128bWithSecret);
+}
 
 // OFFSET: 0x004D7930
+// FUNCTION: fn_00166
+XXH128_hash_t XXH3_128bits_withSeed(const void* data, std::size_t length, std::uint64_t seed) {
+  return Hash128bitsInternal(data, length, seed, kSecret, sizeof(kSecret), XXH3_hashLong_128b_withSeed);
+}
