@@ -10,7 +10,6 @@ CUIDropDownBox::CUIDropDownBox(UIWindowContext& context) : CUIControl(context), 
 }
 
 // OFFSET: 0x009E3300
-// OFFSET: 0x009E3390
 // FUNCTION: fn_45427
 CUIDropDownBox::~CUIDropDownBox() {
   this->Detach();
