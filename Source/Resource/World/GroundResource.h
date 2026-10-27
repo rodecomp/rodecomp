@@ -20,6 +20,12 @@ struct GroundWater {
   /* 0018 */ std::uint32_t unknown_0018[3];
 };
 
+struct GroundLegacyLightmap {
+  /* 0000 */ unsigned char bits[40];
+
+  void Decode(unsigned char* output) const;
+};
+
 class CGndRes : public CRes {
 public:
   CGndRes();
@@ -46,8 +52,8 @@ public:
   /* 015C */ std::vector<GroundWater> water;
   /* 0168 */ std::vector<const char*> textureNames;
   /* 0174 */ const unsigned char* lightmaps;
-  /* 0178 */ const unsigned char* legacyLightmapIndices;
-  /* 017C */ const unsigned char* legacyLightmapBytes;
+  /* 0178 */ const std::uint32_t* legacyLightmapIndices;
+  /* 017C */ const GroundLegacyLightmap* legacyLightmaps;
   /* 0180 */ const unsigned char* tiles;
   /* 0184 */ const unsigned char* cells;
 
@@ -60,6 +66,7 @@ private:
 
 static_assert(sizeof(GroundWaterParameters) == 24);
 static_assert(sizeof(GroundWater) == 36);
+static_assert(sizeof(GroundLegacyLightmap) == 40);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CGndRes) == 0x01B4);

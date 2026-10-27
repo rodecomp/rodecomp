@@ -66,10 +66,10 @@ bool CGndRes::Parse() {
   if (this->minor >= 7) {
     this->lightmaps = static_cast<const unsigned char*>(this->m_file.ReadPtr(static_cast<std::uint32_t>(this->lightmapCount) << 8));
   } else {
-    this->legacyLightmapIndices = static_cast<const unsigned char*>(this->m_file.ReadPtr(static_cast<std::uint32_t>(this->lightmapCount) << 4));
+    this->legacyLightmapIndices = static_cast<const std::uint32_t*>(this->m_file.ReadPtr(static_cast<std::uint32_t>(this->lightmapCount) << 4));
     std::uint32_t count;
     this->m_file.Read(&count, sizeof(count));
-    this->legacyLightmapBytes = static_cast<const unsigned char*>(this->m_file.ReadPtr(40u * count));
+    this->legacyLightmaps = static_cast<const GroundLegacyLightmap*>(this->m_file.ReadPtr(40u * count));
   }
   this->m_file.Read(&this->tileCount, sizeof(this->tileCount));
   this->tiles = static_cast<const unsigned char*>(this->m_file.ReadPtr(40u * static_cast<std::uint32_t>(this->tileCount)));
@@ -128,6 +128,25 @@ void CGndRes::Unload() {
   this->cells = nullptr;
 }
 
+// OFFSET: 0x0074E4B0
+void GroundLegacyLightmap::Decode(unsigned char* output) const {
+  int pixel = 0;
+
+  for (int bit = 0; bit < 320; bit += 5) {
+    const int shift = bit % 8;
+    const unsigned char* packed = this->bits + bit / 8;
+    unsigned char value;
+
+    if (shift >= 4) {
+      value = static_cast<unsigned char>(((packed[0] & (248 >> shift)) << shift) + (((248 << (8 - shift)) & packed[1]) >> (8 - shift)));
+    } else {
+      value = static_cast<unsigned char>((packed[0] & (248 >> shift)) << shift);
+    }
+
+    output[pixel++] = value;
+  }
+}
+
 // OFFSET: 0x0074E540
 // FUNCTION: fn_07910
 void CGndRes::Lightmap(int index, unsigned char* output) const {
@@ -136,30 +155,21 @@ void CGndRes::Lightmap(int index, unsigned char* output) const {
     return;
   }
 
-  std::uint32_t indices[4];
-  std::memcpy(indices, this->legacyLightmapIndices + 16u * static_cast<std::uint32_t>(index), sizeof(indices));
-  unsigned char decoded[4][64];
+  const std::uint32_t* indices = this->legacyLightmapIndices + 4 * index;
+  unsigned char brightness[64];
+  unsigned char red[64];
+  unsigned char green[64];
+  unsigned char blue[64];
+  this->legacyLightmaps[indices[0]].Decode(brightness);
+  this->legacyLightmaps[indices[1]].Decode(red);
+  this->legacyLightmaps[indices[2]].Decode(green);
+  this->legacyLightmaps[indices[3]].Decode(blue);
 
-  for (unsigned channel = 0; channel < 4; ++channel) {
-    const unsigned char* packed = this->legacyLightmapBytes + 40u * indices[channel];
-
-    for (unsigned bit = 0, pixel = 0; bit < 320; bit += 5, ++pixel) {
-      const unsigned shift = bit % 8;
-      unsigned value = ((248u >> shift) & packed[bit / 8]) << shift;
-
-      if (shift >= 4) {
-        value += ((248u << (8 - shift)) & packed[bit / 8 + 1]) >> (8 - shift);
-      }
-
-      decoded[channel][pixel] = static_cast<unsigned char>(value);
-    }
-  }
-
-  for (unsigned pixel = 0; pixel < 64; ++pixel) {
-    const unsigned transposed = pixel / 8 + 8 * (pixel & 7);
-    output[transposed] = decoded[0][pixel];
-    output[64 + 3 * transposed] = decoded[1][pixel];
-    output[65 + 3 * transposed] = decoded[2][pixel];
-    output[66 + 3 * transposed] = decoded[3][pixel];
+  for (int pixel = 0; pixel < 64; ++pixel) {
+    const unsigned transposed = static_cast<unsigned>(pixel) / 8 + 8 * (pixel & 7);
+    output[transposed] = brightness[pixel];
+    output[64 + 3 * transposed] = red[pixel];
+    output[65 + 3 * transposed] = green[pixel];
+    output[66 + 3 * transposed] = blue[pixel];
   }
 }
