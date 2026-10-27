@@ -19,6 +19,8 @@ public:
   ~TextContext();
   void SetFont(int family, int height, unsigned char bold, unsigned char italic);
   void SetColor(COLORREF color);
+  void SetBackgroundColor(COLORREF color);
+  void SetBackgroundMode(int mode);
   void SetBackground(COLORREF color, int mode);
   SIZE Measure(const char* text, int bytes);
   void Draw(int x, int y, const char* text, int bytes);

@@ -129,10 +129,20 @@ void TextContext::SetColor(COLORREF color) {
 }
 
 // OFFSET: 0x00550130
-// OFFSET: 0x00550150
-void TextContext::SetBackground(COLORREF color, int mode) {
+// FUNCTION: fn_01967
+void TextContext::SetBackgroundColor(COLORREF color) {
   SetBkColor(this->m_dc, color);
+}
+
+// OFFSET: 0x00550150
+// FUNCTION: fn_01968
+void TextContext::SetBackgroundMode(int mode) {
   SetBkMode(this->m_dc, mode);
+}
+
+void TextContext::SetBackground(COLORREF color, int mode) {
+  this->SetBackgroundColor(color);
+  this->SetBackgroundMode(mode);
 }
 
 // OFFSET: 0x00ACD9B0
