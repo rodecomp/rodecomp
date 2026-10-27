@@ -220,3 +220,145 @@ void ClientMessenger::SetPartyLeader(std::uint32_t accountId, int leader) {
     }
   }
 }
+
+struct SessionMessengerContext {
+  unsigned char pad_0000[0x1710];
+  /* 1710 */ std::list<MessengerMember> lists[12];
+  /* 1770 */ unsigned char pad_1770[0x18];
+  /* 1788 */ int listData[11][2];
+  /* 17E0 */ unsigned char pad_17E0[0x26E0];
+  /* 3EC0 */ int slots[10][62];
+  /* 4870 */ unsigned char pad_4870[0x9A0];
+  /* 5210 */ int slot5210;
+  /* 5214 */ unsigned char pad_5214[0x118];
+  /* 532C */ int stat2C;
+  /* 5330 */ int stat30;
+  /* 5334 */ int stat34;
+  /* 5338 */ int stat38;
+  /* 533C */ int stat3C;
+  /* 5340 */ int stats[12];
+  /* 5370 */ unsigned char pad_5370[0x1F8];
+  /* 5568 */ int bound68;
+  /* 556C */ int bound6C;
+  /* 5570 */ int bound70;
+  /* 5574 */ int bound74;
+
+  void UpdateRandomStats();
+  void ClearMemberLists();
+  void PurgeMatchingMembers1();
+  void ClearLists();
+  void InitSlots();
+  void PurgeMatchingMembers2();
+  void ResetSlots();
+
+  int GetList0Size() const;
+  int GetList11Size() const;
+  int GetList6Size() const;
+  int GetList8Size() const;
+  int GetList9Size() const;
+  int GetList10Size() const;
+  int GetList7Size() const;
+  int GetList1788(int index) const;
+  int GetList2Size() const;
+  int GetList4Size() const;
+  int GetList1Size() const;
+  int GetList5Size() const;
+};
+
+// OFFSET: 0x00DD80A0
+
+// OFFSET: 0x00DD8380
+
+// OFFSET: 0x00DD8450
+
+// OFFSET: 0x00DD8540
+
+// OFFSET: 0x00DD85A0
+
+// OFFSET: 0x00DD85B0
+
+// OFFSET: 0x00DD8660
+
+// OFFSET: 0x00DD8750
+// FUNCTION: fn_23311
+void SessionMessengerContext::ResetSlots() {
+  this->slot5210 = 0;
+  this->slots[0][0] = 0;
+  this->slots[1][0] = 0;
+  this->slots[2][0] = 0;
+  this->slots[3][0] = 0;
+  this->slots[4][0] = 0;
+  this->slots[5][0] = 0;
+  this->slots[6][0] = 0;
+  this->slots[7][0] = 0;
+  this->slots[8][0] = 0;
+  this->slots[9][0] = 0;
+}
+
+// OFFSET: 0x00DDF8B0
+// FUNCTION: fn_23428
+int SessionMessengerContext::GetList0Size() const {
+  return static_cast<int>(this->lists[0].size());
+}
+
+// OFFSET: 0x00DDF8C0
+// FUNCTION: fn_23429
+int SessionMessengerContext::GetList11Size() const {
+  return static_cast<int>(this->lists[11].size());
+}
+
+// OFFSET: 0x00DDF8D0
+// FUNCTION: fn_23430
+int SessionMessengerContext::GetList6Size() const {
+  return static_cast<int>(this->lists[6].size());
+}
+
+// OFFSET: 0x00DDF8E0
+// FUNCTION: fn_23431
+int SessionMessengerContext::GetList8Size() const {
+  return static_cast<int>(this->lists[8].size());
+}
+
+// OFFSET: 0x00DDF8F0
+// FUNCTION: fn_23432
+int SessionMessengerContext::GetList9Size() const {
+  return static_cast<int>(this->lists[9].size());
+}
+
+// OFFSET: 0x00DDF900
+// FUNCTION: fn_23433
+int SessionMessengerContext::GetList10Size() const {
+  return static_cast<int>(this->lists[10].size());
+}
+
+// OFFSET: 0x00DDF910
+// FUNCTION: fn_23434
+int SessionMessengerContext::GetList7Size() const {
+  return static_cast<int>(this->lists[7].size());
+}
+
+// OFFSET: 0x00DDF920
+
+// OFFSET: 0x00DDF9E0
+// FUNCTION: fn_23437
+int SessionMessengerContext::GetList2Size() const {
+  return static_cast<int>(this->lists[2].size());
+}
+
+// OFFSET: 0x00DDF9F0
+// FUNCTION: fn_23438
+int SessionMessengerContext::GetList4Size() const {
+  return static_cast<int>(this->lists[4].size());
+}
+
+// OFFSET: 0x00DDFA00
+// FUNCTION: fn_23439
+int SessionMessengerContext::GetList1Size() const {
+  return static_cast<int>(this->lists[1].size());
+}
+
+// OFFSET: 0x00DDFA10
+// FUNCTION: fn_23440
+int SessionMessengerContext::GetList5Size() const {
+  return static_cast<int>(this->lists[5].size());
+}
