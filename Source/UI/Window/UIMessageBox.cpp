@@ -7,7 +7,7 @@
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/WindowBorder.h"
-#include "UI/Window/WindowRetirement.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstdio>
 #include <windows.h>

@@ -1,6 +1,6 @@
 #include "UI/Window/UIMessageBox.h"
 #include "UI/Window/WindowDialogs.h"
-#include "UI/Window/WindowRetirement.h"
+#include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x00A91450
 // FUNCTION: fn_17160

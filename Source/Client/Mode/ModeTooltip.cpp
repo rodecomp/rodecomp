@@ -1,7 +1,7 @@
 #include "Client/Mode/ModeTooltip.h"
 #include "UI/Text/UITransBalloonText.h"
 #include "UI/Window/WindowOrdering.h"
-#include "UI/Window/WindowRetirement.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstring>
 #include <string>
@@ -60,7 +60,7 @@ void ModeTooltip::Show(const char* value, int x, int y, std::uint32_t color, uns
 
 // OFFSET: 0x00AD67A0
 // FUNCTION: fn_17843
-void ModeTooltip::Expire(WindowRetirement& retirement) {
+void ModeTooltip::Expire(UIWindowMgr& retirement) {
   if (!this->window) {
     return;
   }
@@ -71,4 +71,17 @@ void ModeTooltip::Expire(WindowRetirement& retirement) {
 
   retirement.Schedule(this->window);
   this->window = nullptr;
+}
+
+// OFFSET: 0x00AD64B0
+// FUNCTION: fn_17833
+std::uint32_t ModeTooltip::Clear() {
+  if (!this->window) {
+    return 0;
+  }
+
+  g_windowMgr.Schedule(this->window);
+  this->window = nullptr;
+  this->tick = timeGetTime();
+  return this->tick;
 }

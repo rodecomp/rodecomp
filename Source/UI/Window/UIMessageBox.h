@@ -8,13 +8,13 @@
 class UITextViewer;
 struct UITextViewerContext;
 struct UIButtonContext;
-struct WindowRetirement;
+class UIWindowMgr;
 
 struct WindowResponseRecorder;
 
 struct UIMessageBoxContext {
   UITextViewerContext& text;
-  WindowRetirement& retirement;
+  UIWindowMgr& retirement;
   WindowResponseRecorder& recorder;
   int& response;
   const int& screenWidth;

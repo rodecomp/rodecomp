@@ -1,31 +1,32 @@
+#include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowRetirement.h"
-#include "UI/Layout/WindowSnapping.h"
 
 #include <algorithm>
 
 // OFFSET: 0x00AA2C90
 // FUNCTION: fn_17219
-void WindowRetirement::Schedule(UIWindow* window) {
-  if (window == this->reference_03D4) {
-    this->reference_03D4 = nullptr;
+void UIWindowMgr::Schedule(UIWindow* window) {
+  if (window == this->window_03D4) {
+    this->window_03D4 = nullptr;
   }
 
-  if (window == this->reference_03D8) {
-    this->reference_03D8 = nullptr;
+  if (window == this->window_03D8) {
+    this->window_03D8 = nullptr;
   }
 
-  if (window == this->reference_03DC) {
-    this->reference_03DC = nullptr;
+  if (window == this->window_03DC) {
+    this->window_03DC = nullptr;
   }
 
-  if (window == this->reference_01B8) {
-    this->reference_01B8 = nullptr;
+  if (window == this->window_01B8) {
+    this->window_01B8 = nullptr;
   }
 
-  if (window == this->reference_4F2AC) {
-    this->reference_4F2AC = nullptr;
+  if (window == this->window_4F2AC) {
+    this->window_4F2AC = nullptr;
   }
 
   this->retired.push_back(window);
@@ -33,8 +34,8 @@ void WindowRetirement::Schedule(UIWindow* window) {
 
 // OFFSET: 0x00AA7250
 // FUNCTION: fn_17237
-void WindowRetirement::Destroy(UIWindow* window) {
-  const bool snappingEnabled = this->snapping.enabled;
+void UIWindowMgr::Destroy(UIWindow* window) {
+  const bool snappingEnabled = g_serviceOptions.Get(141) != 0;
 
   if (!window) {
     return;
@@ -43,13 +44,13 @@ void WindowRetirement::Destroy(UIWindow* window) {
   const auto rendered = std::find(this->rendered.begin(), this->rendered.end(), window);
 
   if (rendered != this->rendered.end()) {
-    if (snappingEnabled && this->snapping.enabled) {
-      this->snapping.rectangles.erase(window);
+    if (snappingEnabled && g_serviceOptions.Get(141) != 0) {
+      this->snapRectangles.erase(window);
     }
 
-    this->snapping.graph.Remove(window);
-    window->Slot11();
-    delete window;
+    g_snapMgr.Remove(*rendered);
+    (*rendered)->Slot11();
+    delete *rendered;
 
     this->rendered.erase(rendered);
     return;
@@ -60,8 +61,8 @@ void WindowRetirement::Destroy(UIWindow* window) {
       continue;
     }
 
-    window->Slot11();
-    delete window;
+    entry->second->Slot11();
+    delete entry->second;
 
     this->overlays.erase(entry);
     return;
@@ -70,10 +71,10 @@ void WindowRetirement::Destroy(UIWindow* window) {
 
 // OFFSET: 0x00AA71E0
 // FUNCTION: fn_17235
-void WindowRetirement::DismissTransient(UIWindow*& transient) {
-  if (transient) {
-    this->Schedule(transient);
-    transient = nullptr;
+void UIWindowMgr::DismissTransient() {
+  if (this->window_4F250) {
+    this->Schedule(this->window_4F250);
+    this->window_4F250 = nullptr;
   }
 }
 
@@ -85,7 +86,7 @@ void WindowRetirement::DrainPending(
     return;
   }
 
-  for (UIWindow* window : this->retired) {
+  for (UIWindow* window : this->windows.retired) {
     if (reference_4F16C == window) {
       reference_4F16C = nullptr;
     }
@@ -102,8 +103,8 @@ void WindowRetirement::DrainPending(
       hover = nullptr;
     }
 
-    this->Destroy(window);
+    this->windows.Destroy(window);
   }
 
-  this->retired.clear();
+  this->windows.retired.clear();
 }

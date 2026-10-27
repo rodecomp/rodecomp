@@ -4,11 +4,9 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Layout/SnapMgr.h"
-#include "UI/Layout/WindowSnapping.h"
 #include "UI/Lists/UIDropDownBox.h"
 #include "UI/Window/MiniPartyWndAreaMgr.h"
 #include "UI/Window/UIWindow.h"
-#include "UI/Window/WindowRetirement.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <algorithm>
@@ -595,11 +593,7 @@ void UIWindowMgr::Shutdown() {
   this->ResetWindows();
 
   for (UIWindow*& window : this->snapExcluded) {
-    const bool snappingEnabled = g_serviceOptions.Get(141) != 0;
-    WindowSnapping snapping{g_snapMgr, this->snapRectangles, this->snapExcluded, snappingEnabled, this->unknown_047C, this->unknown_0480};
-    WindowRetirement retirement{this->rendered, this->retired, this->overlays, snapping, this->window_03D4, this->window_03D8,
-                                this->window_03DC, this->window_01B8, this->window_4F2AC};
-    retirement.Destroy(window);
+    this->Destroy(window);
     window = nullptr;
   }
   this->snapExcluded.clear();

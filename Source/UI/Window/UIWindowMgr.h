@@ -418,6 +418,9 @@ public:
   void ResetWindows();
   void Shutdown();
   UIWindow* LookupWindow(int id);
+  void Schedule(UIWindow* window);
+  void Destroy(UIWindow* window);
+  void DismissTransient();
 };
 
 extern UIWindowMgr g_windowMgr;

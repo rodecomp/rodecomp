@@ -9,7 +9,7 @@ class UIWindow;
 struct UIWindowContext;
 struct BalloonTextContext;
 struct WindowOrdering;
-struct WindowRetirement;
+class UIWindowMgr;
 
 struct ModeTooltip {
   UITransBalloonText*& window;
@@ -23,7 +23,8 @@ struct ModeTooltip {
 
   void Show(const char* value, int x, int y, std::uint32_t color, unsigned char option, unsigned char convert);
 
-  void Expire(WindowRetirement& retirement);
+  void Expire(UIWindowMgr& retirement);
+  std::uint32_t Clear();
 };
 
 #endif
