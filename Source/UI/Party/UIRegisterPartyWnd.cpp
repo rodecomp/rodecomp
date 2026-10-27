@@ -35,7 +35,7 @@ namespace {
       return false;
     }
 
-    for (unsigned char value : text) {
+    for (char value : text) {
       if (!std::isdigit(value)) {
         return false;
       }
