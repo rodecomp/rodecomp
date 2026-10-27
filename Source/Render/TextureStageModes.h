@@ -122,6 +122,7 @@ namespace {
   };
 }
 
+// INLINED
 static inline std::span<const TextureStageWrite> TextureStageModeWrites(int mode) {
   switch (mode) {
   case 0:
