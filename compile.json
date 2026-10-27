@@ -622,6 +622,7 @@
   "Source/Utility/Threading/NSyncObject.cpp": 0,
   "Source/Utility/Threading/NThread.cpp": 0,
   "Source/Utility/Timestamp.cpp": 0,
+  "Source/Utility/Tokenizer.cpp": 0,
   "ThirdParty/jsoncpp/src/lib_json/json_reader.cpp": 8,
   "ThirdParty/jsoncpp/src/lib_json/json_value.cpp": 8,
   "ThirdParty/jsoncpp/src/lib_json/json_writer.cpp": 8,
