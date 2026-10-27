@@ -189,9 +189,9 @@ UIBitmapButton* UIFrameWnd::AddCloseButton(UIButtonContext& controls, const char
   }
 
   UIBitmapButton* button = new UIBitmapButton(*this->m_context, controls);
-  button->SetBitmap("\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\basic_interface\\sys_close_off.bmp", 0, 0);
-  button->SetBitmap("\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\basic_interface\\sys_close_on.bmp", 1, 0);
-  button->SetBitmap("\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\basic_interface\\sys_close_on.bmp", 2, 0);
+  button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0, 0);
+  button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 1, 0);
+  button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(width - 14, 3);
   button->SetId(201);

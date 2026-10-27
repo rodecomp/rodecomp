@@ -24,7 +24,7 @@
 #include <cstdlib>
 
 namespace {
-  constexpr char prefix[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\UIadventurerAgency\\";
+  constexpr char prefix[] = "유저인터페이스\\UIadventurerAgency\\";
 }
 
 // OFFSET: 0x007BAC40
@@ -221,7 +221,7 @@ void UIAdvenPartyBoardWnd::Slot15(int, int) {
   this->stop->Enable(0);
 
   auto* titleClose = new UIBitmapButton(*this->m_context, controls);
-  const std::string basic = std::string("\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\basic_interface\\");
+  const std::string basic = std::string("유저인터페이스\\basic_interface\\");
   titleClose->SetBitmap((basic + "sys_close_off.bmp").c_str(), 0, 0);
   titleClose->SetBitmap((basic + "sys_close_on.bmp").c_str(), 1, 0);
   titleClose->SetBitmap((basic + "sys_close_on.bmp").c_str(), 2, 0);
@@ -561,7 +561,7 @@ void UIAdvenPartyBoardWnd::Paint() {
   const auto load = [&](const char* path) { return static_cast<CBitmapRes*>(controls.resources.Load(path)); };
   auto* background = load((std::string(prefix) + "bg_agencyList.bmp").c_str());
   this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
-  constexpr char basic[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\basic_interface\\";
+  constexpr char basic[] = "유저인터페이스\\basic_interface\\";
   const auto skin = [&](const char* name) { return load((std::string(basic) + name).c_str()); };
   int left = 0;
   int right = 0;

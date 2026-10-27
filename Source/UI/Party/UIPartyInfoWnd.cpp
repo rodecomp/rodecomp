@@ -85,7 +85,7 @@ void UIPartyInfoWnd::Paint() {
   const auto text = [&](int x, const char* value, int bytes = 0) { this->DrawTextAt(controls.fonts, controls.locale, x, 5, value, bytes, 0, 12, 0, 0, 0); };
   text(11, this->levels.c_str());
   text(64, TypeName(this->type, controls.services));
-  constexpr char prefix[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\UIadventurerAgency\\";
+  constexpr char prefix[] = "유저인터페이스\\UIadventurerAgency\\";
   const char* jobs[] = {"def", "heal", "atk", "buf"};
   const bool flags[] = {this->info.tanker, this->info.healer, this->info.dealer, this->info.assist};
 

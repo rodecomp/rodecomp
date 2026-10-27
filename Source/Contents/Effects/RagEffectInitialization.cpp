@@ -303,22 +303,22 @@ static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& opti
     std::sprintf(name, "Pong%d.str", std::rand() % 3 + 1);
     break;
   case 204:
-    std::sprintf(name, "\273\241\260\243\306\367\274\307.str");
+    std::sprintf(name, "빨간포션.str");
     break;
   case 205:
-    std::sprintf(name, "\301\326\310\253\306\367\274\307.str");
+    std::sprintf(name, "주홍포션.str");
     break;
   case 206:
-    std::sprintf(name, "\263\353\266\365\306\367\274\307.str");
+    std::sprintf(name, "노란포션.str");
     break;
   case 207:
-    std::sprintf(name, "\307\317\276\341\306\367\274\307.str");
+    std::sprintf(name, "하얀포션.str");
     break;
   case 208:
-    std::sprintf(name, "\306\304\266\365\306\367\274\307.str");
+    std::sprintf(name, "파란포션.str");
     break;
   case 209:
-    std::sprintf(name, "\303\312\267\317\306\367\274\307.str");
+    std::sprintf(name, "초록포션.str");
     break;
   case 210:
     std::sprintf(name, "fruit.str");
@@ -333,23 +333,23 @@ static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& opti
     std::sprintf(name, "Keeping.str");
     break;
   case 218:
-    std::sprintf(name, "\301\375\301\337.str");
+    std::sprintf(name, "집중.str");
     break;
   case 219:
-    std::sprintf(name, "\260\242\274\272.str");
+    std::sprintf(name, "각성.str");
     break;
   case 220:
   case 756:
-    std::sprintf(name, "\271\366\274\255\305\251.str");
+    std::sprintf(name, "버서크.str");
     break;
   case 234:
     std::sprintf(name, "spell.str");
     break;
   case 235:
-    std::sprintf(name, "\265\360\275\272\306\347.str");
+    std::sprintf(name, "디스펠.str");
     break;
   case 244:
-    std::sprintf(name, "\270\305\301\367\267\316\265\345.str");
+    std::sprintf(name, "매직로드.str");
     break;
   case 245:
     std::sprintf(name, "holy_cross.str");
@@ -391,7 +391,7 @@ static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& opti
     std::sprintf(name, "strip_helm.str");
     break;
   case 273:
-    std::sprintf(name, "\277\254\310\257.str");
+    std::sprintf(name, "연환.str");
     break;
   case 305:
     std::sprintf(name, "p_success.str");
@@ -419,16 +419,16 @@ static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& opti
     std::sprintf(name, "sword.str");
     break;
   case 406:
-    std::sprintf(name, "\274\322\277\357\271\370.str");
+    std::sprintf(name, "소울번.str");
     break;
   case 407:
-    std::sprintf(name, "\273\347\266\367\310\277\260\372.str");
+    std::sprintf(name, "사람효과.str");
     break;
   case 440:
     std::sprintf(name, "asum.str");
     break;
   case 491:
-    std::sprintf(name, "\302\375\275\322\266\261.str");
+    std::sprintf(name, "찹쌀떡.str");
     break;
   case 492:
     std::sprintf(name, "ramadan.str");
@@ -486,10 +486,10 @@ static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& opti
     std::sprintf(name, "icy.str");
     break;
   case 646:
-    std::sprintf(name, "\306\256\267\242\305\267.str");
+    std::sprintf(name, "트랙킹.str");
     break;
   case 649:
-    std::sprintf(name, "\272\322\275\272\276\306\300\314.str");
+    std::sprintf(name, "불스아이.str");
     break;
   case 668:
   case 670:
@@ -523,7 +523,7 @@ static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& opti
     std::sprintf(name, "ado.str");
     break;
   case 722:
-    std::sprintf(name, "\300\314\261\327\264\317\274\307\272\352\267\271\300\314\305\251.str");
+    std::sprintf(name, "이그니션브레이크.str");
     break;
   case 727:
     std::sprintf(name, "crimson_r.str");

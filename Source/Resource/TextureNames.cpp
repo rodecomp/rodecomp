@@ -30,7 +30,7 @@ const char* TextureNames::Resolve(const char* name) {
   }
 
   const std::string original(name);
-  constexpr char marker[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA";
+  constexpr char marker[] = "유저인터페이스";
 
   if (original.find(marker, 0, 14) == std::string::npos) {
     return name;

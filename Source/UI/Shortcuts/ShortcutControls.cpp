@@ -5,7 +5,7 @@
 
 #include <new>
 
-#define SHORTCUT_RESOURCE "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA"
+#define SHORTCUT_RESOURCE "유저인터페이스"
 
 // OFFSET: 0x0092A190
 // FUNCTION: fn_12654
@@ -22,8 +22,8 @@ ShortcutControls ShortcutControls::Create(
   result.bank = new (std::nothrow) UICheckBox(windows, buttons);
   result.bank->SetSize(10, 26);
   result.bank->SetImages(
-    "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\shortcut_2_bts.bmp",
-    "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\shortcut_1_bts.bmp", ""
+    "유저인터페이스\\shortcut_2_bts.bmp",
+    "유저인터페이스\\shortcut_1_bts.bmp", ""
   );
   result.bank->SetId(549);
   result.bank->Move(3, 4);

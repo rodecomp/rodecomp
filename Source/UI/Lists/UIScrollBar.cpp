@@ -248,7 +248,7 @@ void UIScrollBar::Paint() {
     return;
   }
 
-  constexpr char prefix[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\";
+  constexpr char prefix[] = "유저인터페이스\\";
   const bool vertical = this->vertical == 1;
   const int length = vertical ? this->geometry.height : this->geometry.width;
   const auto draw = [&](const char* name, int coordinate, bool transparent) {
