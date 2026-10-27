@@ -1,7 +1,10 @@
 #include "Contents/Actors/RenderObject.h"
 
 #include "Client/Replay.h"
+#include "Contents/Actors/GameActor.h"
+#include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 #include "Utility/Math/ScalarConversion.h"
 
 #include <windows.h>
@@ -27,9 +30,43 @@ bool CRenderObject::Update() {
 void CRenderObject::SendObjectMessage(CGameObject*, int, int, int, int, int, int, int, int, int, int, int, int, int, int) {
 }
 
+// OFFSET: 0x00CBF930
+// FUNCTION: fn_21116
+void CRenderObject::SetActionName(ResourceMgr& resources, const char* name) {
+  if (this->render.action) {
+    this->render.action->Release();
+  }
+
+  this->render.action = static_cast<CActRes*>(resources.Load(name));
+
+  if (this->render.action) {
+    this->render.action->AddRef();
+  }
+}
+
 // OFFSET: 0x00CC2D40
 // FUNCTION: fn_21144
 void CRenderObject::SetScreenBounds(const float*, float, float) {
+}
+
+// OFFSET: 0x00CC2DA0
+// FUNCTION: fn_21146
+void CGameActor::SetUnknown0260(int value) {
+  this->unknown_0260 = value & 1;
+}
+
+// OFFSET: 0x00CC2E00
+// FUNCTION: fn_21151
+void CRenderObject::SetSpriteName(ResourceMgr& resources, const char* name) {
+  if (this->render.sprite) {
+    this->render.sprite->Release();
+  }
+
+  this->render.sprite = static_cast<CSprRes*>(resources.Load(name));
+
+  if (this->render.sprite) {
+    this->render.sprite->AddRef();
+  }
 }
 
 // OFFSET: 0x00CC3DC0
@@ -93,6 +130,21 @@ void CRenderObject::SetColor(int alpha, int red, int green, int blue) {
   }
   if (blue != -1) {
     this->render.color = (this->render.color & 0xFFFFFF00u) | static_cast<unsigned char>(blue);
+  }
+}
+
+// OFFSET: 0x00CC1C20
+// FUNCTION: fn_21125
+void CGameActor::SetUnknown0305(unsigned char value, int extra) {
+  this->unknown_0305 = value;
+  this->unknown_0308 = extra;
+}
+
+// OFFSET: 0x00CC1D20
+// FUNCTION: fn_21127
+void CGameActor::RaiseUnknown03C8(int value) {
+  if (value > 0 && this->unknown_03C8 < value) {
+    this->unknown_03C8 = value;
   }
 }
 
@@ -161,6 +213,12 @@ void CRenderObject::SetFrameSequence(
   this->render.sequenceTick = 1;
 }
 
+// OFFSET: 0x00CC2050
+// FUNCTION: fn_21134
+void CGameActor::SetUnknown02E4(int value) {
+  this->unknown_02E4 = value;
+}
+
 // OFFSET: 0x00CC2780
 // FUNCTION: fn_21140
 void CRenderObject::SetAnimationSpeed(float speed) {
@@ -170,4 +228,10 @@ void CRenderObject::SetAnimationSpeed(float speed) {
   if (speed > 0.0f) {
     this->render.speed = speed;
   }
+}
+
+// OFFSET: 0x00CC2810
+// FUNCTION: fn_21142
+void CGameActor::SetUnknown02C8(int value) {
+  this->unknown_02C8 = value;
 }

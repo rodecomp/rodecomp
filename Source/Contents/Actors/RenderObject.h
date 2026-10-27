@@ -22,6 +22,8 @@ public:
   float HorizontalDistance(float x, float z) const;
   float Distance(float x, float y, float z) const;
   void SetAnimationSpeed(float speed);
+  void SetActionName(ResourceMgr& resources, const char* name);
+  void SetSpriteName(ResourceMgr& resources, const char* name);
   void SetColor(int alpha, int red, int green, int blue);
   void SetSequenceDeadline(std::uint32_t duration);
   void SetSequenceInterval(unsigned char interval);
