@@ -20,7 +20,7 @@
 #include "UI/Layout/WindowSnapping.h"
 #include "UI/Window/UIWindow.h"
 
-#include <cstdio>
+#include <stdio.h>
 #include <cstdlib>
 
 namespace {}
@@ -34,7 +34,9 @@ UIShortCutWnd::UIShortCutWnd(UIWindowContext& windows, UIFrameContext& frames, S
 }
 
 // OFFSET: 0x00915D90
+// FUNCTION: fn_12577
 UIShortCutWnd::~UIShortCutWnd() = default;
+
 
 // OFFSET: 0x0091E800
 // FUNCTION: fn_12629
