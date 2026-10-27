@@ -20,11 +20,11 @@ AnimatedModelNode::~AnimatedModelNode() {
   }
 }
 
-// OFFSET: 0x007521F0
+// OFFSET: 0x007550E0
 // FUNCTION: fn_07979
 C3dAnimModelRes::C3dAnimModelRes(ModelResourceContext& context)
-    : shade(2), frameCount(0), animationLength(0), speed(1.0f), unknown_0150(0), unknown_0154(0.0f), unknown_0158(0.0f), unknown_015C(0.0f), alpha(255),
-      m_context(&context) {
+    : unknown_0110(0), unknown_0114(0), shade(2), frameCount(0), animationLength(0), speed(1.0f), unknown_0150(0), unknown_0154(0.0f), unknown_0158(0.0f),
+      unknown_015C(0.0f), alpha(255), m_context(&context) {
 }
 
 // OFFSET: 0x00753510

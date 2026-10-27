@@ -47,18 +47,20 @@ public:
   bool Load(const char* name) override;
   void Unload() override;
 
-  std::list<AnimatedModelNode*> nodes;
-  std::list<std::string> rootNames;
-  std::string sourceName;
-  int shade;
-  int frameCount;
-  int animationLength;
-  float speed;
-  std::uint32_t unknown_0150;
-  float unknown_0154;
-  float unknown_0158;
-  float unknown_015C;
-  std::uint32_t alpha;
+  /* 0110 */ std::uint32_t unknown_0110;
+  /* 0114 */ std::uint32_t unknown_0114;
+  /* 0118 */ std::list<AnimatedModelNode*> nodes;
+  /* 0120 */ std::list<std::string> rootNames;
+  /* 0128 */ std::string sourceName;
+  /* 0140 */ int shade;
+  /* 0144 */ int frameCount;
+  /* 0148 */ int animationLength;
+  /* 014C */ float speed;
+  /* 0150 */ std::uint32_t unknown_0150;
+  /* 0154 */ float unknown_0154;
+  /* 0158 */ float unknown_0158;
+  /* 015C */ float unknown_015C;
+  /* 0160 */ std::uint32_t alpha;
 
 private:
   ModelResourceContext* m_context;
