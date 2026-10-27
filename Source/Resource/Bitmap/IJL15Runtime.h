@@ -45,6 +45,7 @@ private:
   IJL15Runtime& operator=(const IJL15Runtime&) = delete;
 };
 
+// INLINED
 inline IJL15Runtime::IJL15Runtime() : m_module(LoadLibraryA("ijl15.dll")) {
   if (!this->m_module) {
     throw std::system_error(GetLastError(), std::system_category(), "ijl15.dll");
@@ -61,6 +62,7 @@ inline IJL15Runtime::IJL15Runtime() : m_module(LoadLibraryA("ijl15.dll")) {
   }
 }
 
+// INLINED
 inline IJL15Runtime::~IJL15Runtime() {
   FreeLibrary(this->m_module);
 }

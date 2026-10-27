@@ -129,6 +129,7 @@ void WorldModelLoading::Run() {
   }
 }
 
+// INLINED
 void WorldModelLoading::Publish(WorldSpatialTree& root) {
   C3dActor* const* data = this->models.data();
   PublishWorldModels(root, data, this->published, this->pending);

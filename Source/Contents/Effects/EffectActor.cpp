@@ -9,6 +9,7 @@ EffectActorState::~EffectActorState() {
   this->Attachments().DetachAll();
 }
 
+// INLINED
 EffectAttachments EffectActorState::Attachments() {
   return {this->effects, this->first, this->second};
 }

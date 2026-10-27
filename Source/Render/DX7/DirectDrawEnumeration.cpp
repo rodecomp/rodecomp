@@ -9,6 +9,7 @@ struct DirectDrawEnumeration::AdapterContext {
   DirectDrawDeviceRecord record{};
 };
 
+// INLINED
 DirectDrawEnumeration::DirectDrawEnumeration(const GUID& selectedDraw, RECT& monitor) : m_selectedDraw(selectedDraw), m_monitor(monitor) {
 }
 

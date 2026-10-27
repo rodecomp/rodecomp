@@ -83,11 +83,13 @@ private:
   HMODULE m_module;
 };
 
+// INLINED
 inline MilesRuntime& MilesRuntime::Get() {
   static MilesRuntime instance;
   return instance;
 }
 
+// INLINED
 inline MilesRuntime::MilesRuntime() : m_module(LoadLibraryA("Mss32.dll")) {
   if (!this->m_module) {
     throw std::system_error(GetLastError(), std::system_category(), "Mss32.dll");
@@ -158,6 +160,7 @@ inline MilesRuntime::MilesRuntime() : m_module(LoadLibraryA("Mss32.dll")) {
   }
 }
 
+// INLINED
 inline MilesRuntime::~MilesRuntime() {
   FreeLibrary(this->m_module);
 }
