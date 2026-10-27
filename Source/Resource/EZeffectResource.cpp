@@ -1,8 +1,7 @@
 #include "Client/Application/ErrorDialog.h"
 #include "Render/Textures/Texture.h"
-#include "Resource/Bitmap/BitmapResource.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Resource/EZeffectResource.h"
-#include "Resource/ResourceByteReader.h"
 
 #include <string>
 
@@ -27,7 +26,7 @@ EZeffectClip::~EZeffectClip() {
 // OFFSET: 0x0074CEE0
 // OFFSET: 0x0074D570
 // FUNCTION: fn_07893
-CEZeffectRes::CEZeffectRes(EZeffectResourceContext& context) : m_context(&context) {
+CEZeffectRes::CEZeffectRes() : unknown_D320(0) {
 }
 
 // OFFSET: 0x0074D6F0
@@ -38,55 +37,49 @@ CEZeffectRes::~CEZeffectRes() = default;
 // OFFSET: 0x0074CEE0
 // FUNCTION: fn_07889
 CEZeffectRes* CEZeffectRes::Create() {
-  return new CEZeffectRes(*this->m_context);
+  return new CEZeffectRes;
 }
 
 // OFFSET: 0x0074CFF0
 // FUNCTION: fn_07890
 bool CEZeffectRes::Load(const char* name) {
-  auto& file = this->m_context->file;
+  auto& file = this->m_file;
 
-  if (!file.Open(name)) {
+  if (!file.Open(name, 0, true, false)) {
     const std::string message = std::string("Str::Cannot find File : ") + name;
-    ShowErrorDialog(this->m_context->renderSystem, message.c_str(), 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, message.c_str(), 0);
     this->Unload();
 
     return false;
   }
 
-  const auto* data = static_cast<const unsigned char*>(file.Data());
-  this->m_bytes.assign(data, data + file.Size());
-  file.Close();
-  ResourceByteReader input{this->m_bytes.data(), static_cast<unsigned>(this->m_bytes.size())};
   unsigned char magic[4];
   int version;
-  input.Read(magic, sizeof(magic));
-  input.Read(&version, sizeof(version));
-  input.Read(&this->fps, sizeof(this->fps));
-  input.Read(&this->maximumFrame, sizeof(this->maximumFrame));
-  input.Read(&this->clipCount, sizeof(this->clipCount));
-  input.position += 16;
+  file.Read(magic, sizeof(magic));
+  file.Read(&version, sizeof(version));
+  file.Read(&this->fps, sizeof(this->fps));
+  file.Read(&this->maximumFrame, sizeof(this->maximumFrame));
+  file.Read(&this->clipCount, sizeof(this->clipCount));
+  file.Seek(16, FILE_CURRENT);
 
   if (version != 148) {
-    ShowErrorDialog(this->m_context->renderSystem, "LoadAniClip: Version is incorrect", 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, "LoadAniClip: Version is incorrect", 0);
     this->Unload();
     return false;
   }
 
   for (int index = 0; index < this->clipCount; ++index) {
     EZeffectClip& clip = this->clips[index];
-    input.Read(&clip.textureCount, sizeof(clip.textureCount));
+    file.Read(&clip.textureCount, sizeof(clip.textureCount));
 
     for (int texture = 0; texture < clip.textureCount; ++texture) {
-      clip.names[texture] = reinterpret_cast<const char*>(input.data + input.position);
-      input.position += 128;
+      clip.names[texture] = static_cast<const char*>(file.ReadPtr(128));
     }
 
-    input.Read(&clip.frameCount, sizeof(clip.frameCount));
+    file.Read(&clip.frameCount, sizeof(clip.frameCount));
 
     if (clip.frameCount > 0) {
-      clip.frames = input.data + input.position;
-      input.position += 124u * static_cast<unsigned>(clip.frameCount);
+      clip.frames = static_cast<const unsigned char*>(file.ReadPtr(124u * static_cast<unsigned>(clip.frameCount)));
     }
   }
 
@@ -96,7 +89,7 @@ bool CEZeffectRes::Load(const char* name) {
 // OFFSET: 0x0074D320
 // FUNCTION: fn_07891
 void CEZeffectRes::Unload() {
-  std::vector<unsigned char>().swap(this->m_bytes);
+  this->m_file.Close();
 }
 
 // OFFSET: 0x0074D850

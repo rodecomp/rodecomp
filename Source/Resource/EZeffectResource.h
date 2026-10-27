@@ -1,12 +1,12 @@
 #ifndef RAGNAROK_SOURCE_RESOURCE_EZEFFECTRESOURCE_H
 #define RAGNAROK_SOURCE_RESOURCE_EZEFFECTRESOURCE_H
 
+#include "File/File.h"
 #include "Resource/Resource.h"
 
+#include <cstddef>
 #include <cstdint>
-#include <vector>
 
-class ResourceBytes;
 class CTexture;
 
 class EffectTextures {
@@ -32,14 +32,9 @@ struct EZeffectClip {
   /* 01C8 */ CTexture* textures[110];
 };
 
-struct EZeffectResourceContext {
-  ResourceBytes& file;
-  CRenderSystemBase*& renderSystem;
-};
-
 class CEZeffectRes : public CRes {
 public:
-  explicit CEZeffectRes(EZeffectResourceContext& context);
+  CEZeffectRes();
   ~CEZeffectRes() override;
   CEZeffectRes* Create() override;
   bool Load(const char* name) override;
@@ -52,12 +47,15 @@ public:
   /* 0120 */ EZeffectClip clips[60];
 
 private:
-  std::vector<unsigned char> m_bytes;
-  EZeffectResourceContext* m_context;
+  /* D320 */ std::uint32_t unknown_D320;
+  /* D324 */ CFile m_file;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EZeffectClip) == 896);
+static_assert(offsetof(EZeffectClip, names) == 0x10);
+static_assert(offsetof(EZeffectClip, textures) == 0x1C8);
+static_assert(sizeof(CEZeffectRes) == 0xD350);
 #endif
 
 #endif
