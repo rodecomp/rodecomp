@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_PLAYERNAMEDICTIONARY_H
 #define RAGNAROK_SOURCE_CONTENTS_PLAYERNAMEDICTIONARY_H
 
+#include <cstddef>
 #include <cstdint>
 #include <deque>
 #include <map>
@@ -28,13 +29,19 @@ public:
 
 private:
   struct Entry {
-    std::string name;
-    std::uint32_t tick;
+    /* 0000 */ std::string name;
+    /* 0018 */ std::uint32_t tick;
   };
   struct Request {
-    std::uint32_t id;
-    std::uint32_t tick;
+    /* 0000 */ std::uint32_t id;
+    /* 0004 */ std::uint32_t tick;
   };
+#if defined(_WIN32) && !defined(_WIN64)
+  static_assert(sizeof(Entry) == 0x1C);
+  static_assert(offsetof(Entry, tick) == 0x18);
+  static_assert(sizeof(Request) == 0x08);
+  static_assert(offsetof(Request, tick) == 0x04);
+#endif
   /* 0004 */ bool m_enabled;
   /* 0008 */ std::map<std::uint32_t, Entry> m_names;
   /* 0010 */ std::deque<std::uint32_t> m_pending;

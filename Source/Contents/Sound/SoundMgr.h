@@ -55,7 +55,7 @@ public:
   /* 0004 */ HANDLE fadeThread = INVALID_HANDLE_VALUE;
   /* 0008 */ unsigned threadId = 0;
   /* 000C */ std::uint8_t initialized = 0;
-  std::uint8_t unknown_000D[3];
+  /* 000D */ std::uint8_t unknown_000D[3];
   /* 0010 */ int unknown = 0;
   /* 0014 */ int secondaryEnabled = 0;
   /* 0018 */ void* driver = nullptr;
@@ -85,13 +85,13 @@ public:
   /* 0410 */ void* secondaryStream = nullptr;
   /* 0414 */ std::uint8_t fadePending = 0;
   /* 0415 */ std::uint8_t reopenPending = 0;
-  std::uint8_t unknown_0416[2];
+  /* 0416 */ std::uint8_t unknown_0416[2];
   /* 0418 */ DWORD fadeExit = 1;
 
 private:
   static unsigned __stdcall FadeThread(void* direction);
 
-  /* 041C */ SoundMgrContext* m_context;
+  SoundMgrContext* m_context;
 };
 
 extern CSoundMgr* g_soundMgr;
@@ -101,6 +101,7 @@ static_assert(sizeof(std::string) == 0x18);
 static_assert(offsetof(CSoundMgr, fadeThread) == 0x004);
 static_assert(offsetof(CSoundMgr, threadId) == 0x008);
 static_assert(offsetof(CSoundMgr, initialized) == 0x00C);
+static_assert(offsetof(CSoundMgr, unknown_000D) == 0x000D);
 static_assert(offsetof(CSoundMgr, unknown) == 0x010);
 static_assert(offsetof(CSoundMgr, secondaryEnabled) == 0x014);
 static_assert(offsetof(CSoundMgr, driver) == 0x018);
@@ -130,6 +131,7 @@ static_assert(offsetof(CSoundMgr, sample3DCount) == 0x40C);
 static_assert(offsetof(CSoundMgr, secondaryStream) == 0x410);
 static_assert(offsetof(CSoundMgr, fadePending) == 0x414);
 static_assert(offsetof(CSoundMgr, reopenPending) == 0x415);
+static_assert(offsetof(CSoundMgr, unknown_0416) == 0x0416);
 static_assert(offsetof(CSoundMgr, fadeExit) == 0x418);
 static_assert(sizeof(CSoundMgr) == 0x420);
 #endif

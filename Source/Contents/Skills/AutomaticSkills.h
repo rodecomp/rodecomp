@@ -24,7 +24,7 @@ public:
   void Complete(int id);
 
 private:
-  std::set<int> m_ids;
+  /* 0000 */ std::set<int> m_ids;
   AutomaticSkillContext* m_context;
   AutomaticSkills(const AutomaticSkills&) = delete;
   AutomaticSkills& operator=(const AutomaticSkills&) = delete;

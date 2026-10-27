@@ -3,6 +3,7 @@
 
 #include "Contents/Skills/SkillInfo.h"
 
+#include <cstddef>
 #include <functional>
 #include <list>
 #include <map>
@@ -19,8 +20,8 @@ public:
   struct lcEXCInfo {
     lcEXCInfo();
     virtual ~lcEXCInfo();
-    std::int32_t previous;
-    std::int32_t target;
+    /* 0004 */ std::int32_t previous;
+    /* 0008 */ std::int32_t target;
   };
 
   CPlayerSkillBundle();
@@ -72,6 +73,8 @@ private:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CPlayerSkillBundle::lcEXCInfo) == 12);
+static_assert(offsetof(CPlayerSkillBundle::lcEXCInfo, previous) == 0x4);
+static_assert(offsetof(CPlayerSkillBundle::lcEXCInfo, target) == 0x8);
 static_assert(sizeof(CPlayerSkillBundle) == 120);
 #endif
 

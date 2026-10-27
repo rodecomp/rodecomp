@@ -30,13 +30,13 @@ public:
   /* 0034 */ AffineMatrix transform;
   /* 0064 */ AffineMatrix inverseTransform;
   /* 0094 */ unsigned char dirty;
-  unsigned char unknown_0095[3];
+  /* 0095 */ unsigned char unknown_0095[3];
   /* 0098 */ OrientedBounds oriented;
   /* 00D4 */ float corners[8][3];
   /* 0134 */ float minimum[3];
   /* 0140 */ float maximum[3];
   /* 014C */ unsigned char enabled;
-  unsigned char unknown_014D[3];
+  /* 014D */ unsigned char unknown_014D[3];
   /* 0150 */ unsigned renderFrame;
   /* 0154 */ unsigned char occlusionEnabled;
   /* 0155 */ unsigned char occluded;

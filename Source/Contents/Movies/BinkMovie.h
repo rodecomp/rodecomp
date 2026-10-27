@@ -32,9 +32,9 @@ public:
   }
 
 private:
-  BinkHandle* m_handle;
-  int m_state;
-  int m_loop;
+  /* 0000 */ BinkHandle* m_handle;
+  /* 0004 */ int m_state;
+  /* 0008 */ int m_loop;
   std::vector<unsigned char> m_bytes;
   BinkMovieContext* m_context;
 };

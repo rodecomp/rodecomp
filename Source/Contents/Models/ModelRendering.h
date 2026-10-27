@@ -13,8 +13,8 @@ class C3dNode;
 struct ModelTextureTransform;
 
 struct ModelFaceState {
-  std::uint32_t colors[3];
-  float uv[3][2];
+  /* 0000 */ std::uint32_t colors[3];
+  /* 000C */ float uv[3][2];
 };
 
 struct ModelLightingContext {

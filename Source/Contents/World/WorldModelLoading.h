@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_WORLD_WORLDMODELLOADING_H
 #define RAGNAROK_SOURCE_CONTENTS_WORLD_WORLDMODELLOADING_H
 
+#include <cstddef>
 #include <vector>
 #include <windows.h>
 
@@ -13,9 +14,14 @@ struct WorldSpatialTree;
 struct TerrainHeight;
 
 struct DeferredWorldModel {
-  float distance;
-  const WorldModelRecord* placement;
+  /* 0000 */ float distance;
+  /* 0004 */ const WorldModelRecord* placement;
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(DeferredWorldModel) == 8);
+static_assert(offsetof(DeferredWorldModel, placement) == 4);
+#endif
 
 struct WorldModelLoading {
   ResourceMgr& resources;

@@ -1,14 +1,15 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_SKILLS_SKILLINFO_H
 #define RAGNAROK_SOURCE_CONTENTS_SKILLS_SKILLINFO_H
 
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 
 class LuaScript;
 struct NormalItemSlot;
 struct SkillInfoEntry {
-  std::uint32_t unknown_0000;
-  std::uint32_t unknown_0004;
+  /* 0000 */ std::uint32_t unknown_0000;
+  /* 0004 */ std::uint32_t unknown_0004;
 };
 
 class CSkillInfo {
@@ -46,6 +47,7 @@ public:
 
 static_assert(sizeof(SkillInfoEntry) == 8);
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(SkillInfoEntry, unknown_0004) == 0x4);
 static_assert(sizeof(CSkillInfo) == 68);
 #endif
 
