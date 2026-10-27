@@ -129,6 +129,7 @@ void CGndRes::Unload() {
 }
 
 // OFFSET: 0x0074E4B0
+// FUNCTION: fn_07909
 void GroundLegacyLightmap::Decode(unsigned char* output) const {
   int pixel = 0;
 
