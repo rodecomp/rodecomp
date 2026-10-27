@@ -183,5 +183,31 @@ int FindMessageId(const char* name) {
 // OFFSET: 0x00B00E40
 
 // OFFSET: 0x00B00EC0
+// FUNCTION: fn_18375
+bool IsObfuscatedMessage(int id) {
+  if (g_serviceType != 0) {
+    return false;
+  }
+
+  switch (id) {
+  case 2919549:
+  case 2919550:
+  case 2919551:
+  case 2919552:
+  case 2919554:
+    return true;
+  default:
+    return false;
+  }
+}
 
 // OFFSET: 0x00B011B0
+// FUNCTION: fn_18377
+const char* GetMessageString(int id) {
+  auto found = g_messageStrings.find(id);
+  if (found == g_messageStrings.end()) {
+    return "";
+  }
+
+  return found->second.c_str();
+}
