@@ -33,6 +33,36 @@ bool CFile::OpenWrite(const char* path, CRenderSystemBase* renderSystem) {
 }
 
 // OFFSET: 0x0057C030
+// FUNCTION: fn_02597
+bool CFile::Open(const char* path, int mode, bool resourcePath, bool option) {
+  if (mode == 0) {
+    if (resourcePath) {
+      this->m_path = MakeResourcePath(path);
+    } else {
+      this->m_path = path;
+    }
+
+    this->m_position = 0;
+    this->m_data = g_pakRegistry.Read(this->m_path.c_str(), &this->m_size, option);
+    return this->m_data != nullptr;
+  }
+
+  if ((mode & 1) == 0) {
+    return false;
+  }
+
+  this->m_path = path;
+  this->m_handle = CreateFileA(path, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+  if (this->m_handle == INVALID_HANDLE_VALUE) {
+    ShowErrorDialog(GetRenderSystemHolder()->system, this->m_path.c_str(), 0);
+    return false;
+  }
+
+  LARGE_INTEGER size;
+  GetFileSizeEx(this->m_handle, &size);
+  this->m_size = size.LowPart;
+  return true;
+}
 
 // OFFSET: 0x0057C340
 // FUNCTION: fn_02601
