@@ -8,6 +8,8 @@ struct ResourceAliases {
   std::map<std::string, std::string> names;
 
   const char* Resolve(const char* name) const;
+  std::string ResolveMapName(const char* name) const;
+  void Load(int option);
 };
 
 std::string AddResourcePrefix(const char* name, const char* prefix);
