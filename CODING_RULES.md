@@ -243,6 +243,8 @@ Never use `/utf-8`, and never save sources as CP949/EUC-KR.
 - Prefer the original programmer's types and algorithms over instruction-shaped C++. Byte identity is a bonus,
   never a reason for cryptic code. Use compiler intrinsics only with clear evidence that the original source
   used them; an optimized SIMD instruction alone is not evidence. Scalar data is not `__m128i`.
+- Do not use `#pragma optimize` (including `#pragma optimize("y", off)`) to alter compiler optimization or frame-pointer settings.
+  Use the configured project compiler settings; byte matching does not justify source-level optimization overrides.
 - Recover records and members instead of dereferencing integer pointers cast onto byte buffers. At a real
   binary-format boundary, use a typed record or `memcpy` for unaligned fields; preserve layout and aliasing.
 - Apply namespace and API conventions consistently throughout a subsystem, including declarations and callers.
