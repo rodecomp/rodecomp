@@ -31,8 +31,7 @@ namespace {
     return static_cast<std::uint16_t>((value >> (channel.expansion & 31)) << (channel.shift & 31));
   }
 
-  // OFFSET: 0x00543220
-  // FUNCTION: fn_01787
+// INLINED
   std::uint16_t Color(DeviceOwnerDX7& owner, unsigned red, unsigned green, unsigned blue) {
     return static_cast<std::uint16_t>(Channel(red, owner.red) + Channel(green, owner.green) + Channel(blue, owner.blue));
   }
@@ -227,6 +226,16 @@ void CSurfaceDX7::Draw(int x, int y, int width, int height, std::uint32_t) {
 void CSurfaceDX7::Stretch(int, int, int width, int height) {
   RECT destination{0, 0, width, height};
   this->m_owner->renderTarget->Blt(&destination, this->m_surface, nullptr, DDBLT_WAIT, nullptr);
+}
+
+// OFFSET: 0x00543220
+// FUNCTION: fn_01787
+std::uint16_t DeviceOwnerDX7::PackColor(int red, int green, int blue) {
+  return static_cast<std::uint16_t>(
+    (static_cast<std::uint16_t>(red >> (this->red.expansion & 31)) << (this->red.shift & 31)) +
+    (static_cast<std::uint16_t>(green >> (this->green.expansion & 31)) << (this->green.shift & 31)) +
+    (static_cast<std::uint16_t>(blue >> (this->blue.expansion & 31)) << (this->blue.shift & 31))
+  );
 }
 
 // OFFSET: 0x00543270
