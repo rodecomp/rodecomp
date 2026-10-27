@@ -46,6 +46,9 @@ struct TextInputBuffer {
   void MoveBack(unsigned codePage);
 
   void MoveForward(unsigned codePage);
+  void SetFlag8C(unsigned char value);
+  void AdvanceCursor(int delta);
+  void RetreatCursor(int delta);
 
   void Character(unsigned value, LPARAM unused, unsigned codePage);
 
@@ -53,5 +56,7 @@ struct TextInputBuffer {
     unsigned key, LPARAM unused, unsigned codePage, bool password, UIWindow* blockedPasteFocus, WindowManagerWindows& windows, UIWindow* const& chatArrows
   );
 };
+
+void __stdcall SubACDD10();
 
 #endif

@@ -84,6 +84,11 @@ void TextInputBuffer::Selection(int& anchor, int& cursor) const {
   cursor = this->cursor;
 }
 
+// OFFSET: 0x00ACDD10
+// FUNCTION: fn_17774
+void __stdcall SubACDD10() {
+}
+
 // OFFSET: 0x00ACDD20
 // FUNCTION: fn_17775
 void TextInputBuffer::RefreshComposition(unsigned codePage) {
@@ -187,6 +192,8 @@ void TextInputBuffer::SelectionRange(int& begin, int& end) const {
   }
 }
 
+// OFFSET: 0x00ACE4B0
+
 // OFFSET: 0x00ACE4C0
 // FUNCTION: fn_17787
 void TextInputBuffer::MoveForward(unsigned codePage) {
@@ -199,6 +206,10 @@ void TextInputBuffer::MoveForward(unsigned codePage) {
     this->cursor = static_cast<int>(CharNextExA(static_cast<WORD>(codePage), begin + position, 0) - begin);
   }
 }
+
+// OFFSET: 0x00ACE5E0
+
+// OFFSET: 0x00ACE620
 
 // OFFSET: 0x00ACE660
 // FUNCTION: fn_17791
