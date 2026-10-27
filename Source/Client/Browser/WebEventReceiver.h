@@ -24,12 +24,12 @@ public:
 
 private:
   ~CWebEventReceiver();
-  LONG m_references;
-  IWebBrowser2* m_browser;
-  DWORD m_browserCookie;
-  IDispatch* m_document;
-  DWORD m_documentCookie;
-  HWND m_host;
+  /* 0004 */ LONG m_references;
+  /* 0008 */ IWebBrowser2* m_browser;
+  /* 000C */ DWORD m_browserCookie;
+  /* 0010 */ IDispatch* m_document;
+  /* 0014 */ DWORD m_documentCookie;
+  /* 0018 */ HWND m_host;
   BrowserRegistry& m_registry;
   void ReleaseDocument();
 };

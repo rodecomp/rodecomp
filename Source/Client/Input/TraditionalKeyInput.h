@@ -7,8 +7,8 @@
 #include <string>
 
 struct TraditionalKeyMapping {
-  std::uint8_t category;
-  std::uint8_t bytes[3];
+  /* 0000 */ std::uint8_t category;
+  /* 0001 */ std::uint8_t bytes[3];
 };
 
 struct TraditionalKeyInput {
