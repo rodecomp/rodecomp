@@ -3,6 +3,7 @@
 #include "Network/TextEncoding.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
+#include "Resource/SkinPalette.h"
 #include "Resource/Bitmap/BitmapImage.h"
 #include "UI/Edit/EditTextState.h"
 #include "UI/Edit/EditViewport.h"
@@ -479,6 +480,34 @@ void UIEditCtrl::TextColor(std::uint32_t primary, std::uint32_t secondary) {
   this->secondColor = secondary;
   this->textColor = primary;
   this->Invalidate();
+}
+
+// OFFSET: 0x00856FB0
+// FUNCTION: fn_10758
+void UIEditCtrl::DrawSelectionAt(int x, int y, int width) {
+  const int extent = x < 3 ? width + (x - 3) : width;
+  const int left = std::max(x, 3);
+  const int right = this->geometry.width;
+
+  if (left < right && extent > 0) {
+    unsigned red, green, blue;
+    SkinPaletteChannels(this->m_edit->buttons.resources, this->m_edit->textureNames, 6, 2, red, green, blue);
+    this->FillRegion(left, y, left + extent > right ? right - left : extent, 14, RGB(red, green, blue));
+  }
+}
+
+// OFFSET: 0x00857040
+// FUNCTION: fn_10759
+void UIEditCtrl::DrawSelection(int x, int width) {
+  const int extent = x < 3 ? width + (x - 3) : width;
+  const int left = std::max(x, 3);
+  const int right = this->geometry.width;
+
+  if (left < right && extent > 0) {
+    unsigned red, green, blue;
+    SkinPaletteChannels(this->m_edit->buttons.resources, this->m_edit->textureNames, 6, 2, red, green, blue);
+    this->FillRegion(left, 0, left + extent > right ? right - left : extent, this->geometry.height, RGB(red, green, blue));
+  }
 }
 
 // INLINED

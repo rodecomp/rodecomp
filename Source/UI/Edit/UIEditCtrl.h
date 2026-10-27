@@ -10,6 +10,7 @@ struct TextInputBuffer;
 struct InputCharset;
 struct UIButtonContext;
 struct BitmapImage;
+struct TextureNames;
 class WindowManagerWindows;
 class NavigationDestination;
 class UINaviLinkButton;
@@ -31,6 +32,7 @@ struct UIEditContext {
   UIWindow* const& permittedLinkInput;
   const int& screenWidth;
   const int& screenHeight;
+  TextureNames& textureNames;
 };
 
 class UIEditCtrl : public UIWindow {
@@ -56,6 +58,8 @@ public:
   void Background(int red, int green, int blue);
   void TextColor(std::uint32_t primary, std::uint32_t secondary);
   void UpdateLinks();
+  void DrawSelectionAt(int x, int y, int width);
+  void DrawSelection(int x, int width);
 
   /* 007C */ int anchor;
   /* 0080 */ int cursor;
