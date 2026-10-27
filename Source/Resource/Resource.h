@@ -3,13 +3,14 @@
 
 #include "Archive/PakName.h"
 
+#include <cstddef>
 #include <cstdint>
 
 class CRenderSystemBase;
 
 struct ResourceName {
-  std::uint32_t hash;
-  char text[252];
+  /* 0000 */ std::uint32_t hash;
+  /* 0004 */ char text[252];
   explicit ResourceName(const char* name = "");
   void Assign(const char* name);
 };
@@ -37,6 +38,7 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CRes) == 272);
+static_assert(offsetof(ResourceName, text) == 0x04);
 #endif
 
 #endif

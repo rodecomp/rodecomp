@@ -4,6 +4,7 @@
 #include "Contents/World/WorldSpatialTree.h"
 #include "Resource/Resource.h"
 
+#include <cstddef>
 #include <list>
 #include <string>
 
@@ -11,38 +12,38 @@ class ResourceBytes;
 struct ResourceByteReader;
 
 struct WorldModelRecord {
-  char name[40];
-  char model[80];
-  char node[80];
-  float position[3];
-  float rotation[3];
-  float scale[3];
-  int animation;
-  int unknown_00F0;
-  float animationSpeed;
-  unsigned char unknown_00F8[12];
-  unsigned char flag;
-  unsigned char unknown_0105[3];
-  int index;
+  /* 0000 */ char name[40];
+  /* 0028 */ char model[80];
+  /* 0078 */ char node[80];
+  /* 00C8 */ float position[3];
+  /* 00D4 */ float rotation[3];
+  /* 00E0 */ float scale[3];
+  /* 00EC */ int animation;
+  /* 00F0 */ int unknown_00F0;
+  /* 00F4 */ float animationSpeed;
+  /* 00F8 */ unsigned char unknown_00F8[12];
+  /* 0104 */ unsigned char flag;
+  /* 0105 */ unsigned char unknown_0105[3];
+  /* 0108 */ int index;
 };
 
 struct WorldSoundRecord {
-  char name[80];
-  char file[80];
-  float position[3];
-  float volume;
-  int width;
-  int height;
-  float range;
-  float cycle;
+  /* 0000 */ char name[80];
+  /* 0050 */ char file[80];
+  /* 00A0 */ float position[3];
+  /* 00AC */ float volume;
+  /* 00B0 */ int width;
+  /* 00B4 */ int height;
+  /* 00B8 */ float range;
+  /* 00BC */ float cycle;
 };
 
 struct WorldEffectRecord {
-  char name[80];
-  float position[3];
-  int id;
-  float delay;
-  float parameters[4];
+  /* 0000 */ char name[80];
+  /* 0050 */ float position[3];
+  /* 005C */ int id;
+  /* 0060 */ float delay;
+  /* 0064 */ float parameters[4];
 };
 
 struct WorldLighting {
@@ -101,6 +102,16 @@ static_assert(sizeof(WorldModelRecord) == 268);
 static_assert(sizeof(WorldSoundRecord) == 192);
 static_assert(sizeof(WorldEffectRecord) == 116);
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(WorldModelRecord, position) == 0x00C8);
+static_assert(offsetof(WorldModelRecord, animationSpeed) == 0x00F4);
+static_assert(offsetof(WorldModelRecord, flag) == 0x0104);
+static_assert(offsetof(WorldModelRecord, index) == 0x0108);
+static_assert(offsetof(WorldSoundRecord, position) == 0x00A0);
+static_assert(offsetof(WorldSoundRecord, cycle) == 0x00BC);
+static_assert(offsetof(WorldEffectRecord, position) == 0x0050);
+static_assert(offsetof(WorldEffectRecord, id) == 0x005C);
+static_assert(offsetof(WorldEffectRecord, delay) == 0x0060);
+static_assert(offsetof(WorldEffectRecord, parameters) == 0x0064);
 static_assert(sizeof(C3dWorldRes) == 468);
 #endif
 

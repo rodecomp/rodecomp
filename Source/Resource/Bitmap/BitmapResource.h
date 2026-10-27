@@ -4,6 +4,8 @@
 #include "Resource/Bitmap/BitmapImage.h"
 #include "Resource/Resource.h"
 
+#include <cstddef>
+
 class IJL15Runtime;
 
 class ResourceBytes {
@@ -32,7 +34,7 @@ public:
   void Unload() override;
   virtual bool Decode(const char* name, const void* data, int bytes, bool iconOnly);
 
-  BitmapImage image;
+  /* 0110 */ BitmapImage image;
 
 private:
   BitmapResourceContext* m_context;
@@ -40,6 +42,7 @@ private:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CBitmapRes) == 296);
+static_assert(offsetof(CBitmapRes, image) == 0x0110);
 #endif
 
 #endif

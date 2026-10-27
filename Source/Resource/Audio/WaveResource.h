@@ -25,7 +25,7 @@ public:
   /* 0114 */ int milesAllocated;
 
 private:
-  /* 0118 */ WaveResourceContext* m_context;
+  WaveResourceContext* m_context;
 };
 
 void RegisterWaveResource(ResourceMgr& resourceMgr, CWave& prototype);

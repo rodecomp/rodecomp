@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_RESOURCE_BINKRUNTIME_H
 #define RAGNAROK_SOURCE_RESOURCE_BINKRUNTIME_H
 
+#include <cstddef>
 #include <cstdint>
 #include <system_error>
 #include <windows.h>
@@ -8,9 +9,14 @@
 struct BinkHandle {
   std::uint32_t width;
   std::uint32_t height;
-  std::uint32_t frames;
-  std::uint32_t frame;
+  /* 0008 */ std::uint32_t frames;
+  /* 000C */ std::uint32_t frame;
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(BinkHandle, frames) == 0x08);
+static_assert(offsetof(BinkHandle, frame) == 0x0C);
+#endif
 
 class BinkRuntime {
 public:

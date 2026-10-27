@@ -15,19 +15,19 @@ struct ResourceByteReader;
 class C3dModelRes;
 
 struct ModelPositionKey {
-  int frame;
-  float position[3];
+  /* 0000 */ int frame;
+  /* 0004 */ float position[3];
 };
 
 struct ModelScaleKey {
-  int frame;
-  float scale[3];
-  float rotation[4];
+  /* 0000 */ int frame;
+  /* 0004 */ float scale[3];
+  /* 0010 */ float rotation[4];
 };
 
 struct ModelRotationKey {
-  int frame;
-  float rotation[4];
+  /* 0000 */ int frame;
+  /* 0004 */ float rotation[4];
 };
 
 struct ModelTextureKey {
@@ -40,12 +40,12 @@ using ModelTextureChannels = std::map<int, std::vector<ModelTextureKey>>;
 static_assert(sizeof(ModelTextureKey) == 8);
 
 struct ModelVolume {
-  float size[3];
-  float position[3];
-  float rotation[3];
-  float corners[8][3];
-  unsigned char unknown_0084[96];
-  int flag;
+  /* 0000 */ float size[3];
+  /* 000C */ float position[3];
+  /* 0018 */ float rotation[3];
+  /* 0024 */ float corners[8][3];
+  /* 0084 */ unsigned char unknown_0084[96];
+  /* 00E4 */ int flag;
 };
 
 class ModelNode {
