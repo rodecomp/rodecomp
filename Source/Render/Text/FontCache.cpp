@@ -11,7 +11,6 @@
 
 namespace {
   // STATIC: 0x01311F00
-  // STATIC: 0x01311ED0
   const char* const primary[] = {
     "\xB1\xBC\xB8\xB2",
     "Arial",
@@ -27,6 +26,7 @@ namespace {
     "Arial",
     "Tahoma"
   };
+  // STATIC: 0x01311ED0
   const char* const fallback[] = {"Gulim", "Arial", "MS Gothic", "SimSun", "MingLiU", "Tahoma", "Arial", "Verdana", "Verdana", "Arial", "Arial", "Tahoma"};
 
   // OFFSET: 0x0054F2C0
