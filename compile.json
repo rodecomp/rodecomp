@@ -352,6 +352,7 @@
   "Source/Contents/Models/ModelRendering.cpp": 3,
   "Source/Contents/Models/ModelSpatial.cpp": 3,
   "Source/Contents/Models/ModelTextureAnimation.cpp": 3,
+  "Source/Contents/MovementRoute.cpp": 4,
   "Source/Contents/MovementRouteInterpolation.cpp": 4,
   "Source/Contents/Movies/BinkMovie.cpp": 3,
   "Source/Contents/Movies/BinkMovies.cpp": 3,
