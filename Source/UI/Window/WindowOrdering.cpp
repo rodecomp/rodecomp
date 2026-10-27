@@ -8,6 +8,12 @@
 #include <algorithm>
 
 // OFFSET: 0x00A966E0
+// FUNCTION: fn_17184
+void UIWindowMgr::InvalidateAll() {
+  for (UIWindow* window : this->rendered) {
+    window->InvalidateChildren();
+  }
+}
 
 // OFFSET: 0x00A96710
 // FUNCTION: fn_17185
@@ -60,6 +66,38 @@ void UIWindowMgr::EnableRouletteWnd() {
 }
 
 // OFFSET: 0x00A96850
+// FUNCTION: fn_17189
+char UIWindowMgr::UpdateSnapRectangles() {
+  this->snapRectangles.clear();
+
+  const ServiceOptions* options = reinterpret_cast<const ServiceOptions*>(this);
+  if (options->Get(141) == 0) {
+    return 0;
+  }
+
+  for (UIWindow* window : this->rendered) {
+    if (window->geometry.visible == 0) {
+      continue;
+    }
+
+    bool excluded = false;
+    for (UIWindow* ex : this->snapExcluded) {
+      if (ex == window) {
+        excluded = true;
+        break;
+      }
+    }
+    if (excluded) {
+      continue;
+    }
+
+    if (options->Get(141) != 0 && window) {
+      this->snapRectangles[window].Set(window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height);
+    }
+  }
+
+  return 1;
+}
 
 // OFFSET: 0x00A976C0
 // FUNCTION: fn_17206
