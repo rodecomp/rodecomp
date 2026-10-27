@@ -13,7 +13,7 @@ UICheckBox::UICheckBox(UIWindowContext& windowContext, UIButtonContext& controls
   this->geometry.id = 213;
 }
 
-// OFFSET: 0x008525B0
+// OFFSET: 0x008514C0
 // FUNCTION: fn_10691
 UICheckBox::~UICheckBox() = default;
 
