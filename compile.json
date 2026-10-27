@@ -257,6 +257,7 @@
   "Source/Client/Mode/ModeCursor.cpp": 0,
   "Source/Client/Mode/ModeDragState.cpp": 2,
   "Source/Client/Mode/ModeTooltip.cpp": 2,
+  "Source/Client/ModeBaseEvents.cpp": 0,
   "Source/Client/ModeFade.cpp": 0,
   "Source/Client/ModeFadeOut.cpp": 0,
   "Source/Client/Registry.cpp": 0,
