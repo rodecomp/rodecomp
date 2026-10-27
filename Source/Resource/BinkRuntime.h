@@ -33,6 +33,7 @@ private:
   HMODULE m_module;
 };
 
+// INLINED
 inline BinkRuntime::BinkRuntime() : m_module(LoadLibraryA("binkw32.dll")) {
   if (!this->m_module) {
     throw std::system_error(GetLastError(), std::system_category(), "binkw32.dll");
@@ -55,6 +56,7 @@ inline BinkRuntime::BinkRuntime() : m_module(LoadLibraryA("binkw32.dll")) {
   }
 }
 
+// INLINED
 inline BinkRuntime::~BinkRuntime() {
   FreeLibrary(this->m_module);
 }

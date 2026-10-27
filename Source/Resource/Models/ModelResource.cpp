@@ -205,8 +205,7 @@ bool C3dModelResV1::Load(const char* name) {
   input.Read(magic, 4);
 
   if (std::strcmp(magic, "GRSM") != 0) {
-    constexpr char message[] = "모델파일이 아닙니다. 형식을 "
-                               "다시한번 확인해주세요.";
+    constexpr char message[] = "모델파일이 아닙니다. 형식을 다시한번 확인해주세요.";
     ShowErrorDialog(this->m_context->renderSystem, message, 0);
     file.Close();
 
@@ -220,8 +219,7 @@ bool C3dModelResV1::Load(const char* name) {
   input.Read(&minor, 1);
 
   if (major != 1 || minor > 5) {
-    constexpr char message[] = "지원되지 않는 버젼입니다. "
-                               "내용물이 깨져있을 수 있습니다";
+    constexpr char message[] = "지원되지 않는 버젼입니다. 내용물이 깨져있을 수 있습니다";
     ShowErrorDialog(this->m_context->renderSystem, message, 0);
     file.Close();
 

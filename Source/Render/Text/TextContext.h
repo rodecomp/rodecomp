@@ -1,7 +1,6 @@
 #ifndef RAGNAROK_SOURCE_RENDER_TEXT_TEXTCONTEXT_H
 #define RAGNAROK_SOURCE_RENDER_TEXT_TEXTCONTEXT_H
 
-#include <cstdint>
 #include <windows.h>
 
 class CDC;

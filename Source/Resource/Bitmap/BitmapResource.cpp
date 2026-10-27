@@ -1,6 +1,5 @@
 #include "Client/Application/ErrorDialog.h"
 #include "Resource/Bitmap/BitmapResource.h"
-#include "Resource/Bitmap/IJL15Runtime.h"
 
 #include <cstring>
 #include <windows.h>

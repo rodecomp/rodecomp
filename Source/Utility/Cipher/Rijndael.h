@@ -1,9 +1,6 @@
 #ifndef RAGNAROK_SOURCE_UTILITY_CIPHER_RIJNDAEL_H
 #define RAGNAROK_SOURCE_UTILITY_CIPHER_RIJNDAEL_H
 
-#include <cstddef>
-#include <cstdint>
-
 class CRijndael {
 public:
   enum { ECB = 0, CBC = 1, CFB = 2 };
@@ -23,18 +20,22 @@ public:
   void DefDecryptBlock(const char* in, char* result);
   void Xor(unsigned char* destination, const unsigned char* source);
 
+  // INLINED
   inline int GetKeyLength() const {
     return this->m_keylength;
   }
 
+  // INLINED
   inline int GetBlockSize() const {
     return this->m_blockSize;
   }
 
+  // INLINED
   inline int GetRounds() const {
     return this->m_iROUNDS;
   }
 
+  // INLINED
   inline void ResetChain() {
     for (int i = 0; i < this->m_blockSize; ++i) {
       this->m_chain[i] = this->m_chain0[i];

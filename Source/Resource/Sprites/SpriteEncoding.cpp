@@ -1,7 +1,6 @@
 #include "Resource/Sprites/SpriteResource.h"
 
 #include <cstddef>
-#include <new>
 
 // OFFSET: 0x00761070
 // FUNCTION: fn_08063
