@@ -1,5 +1,6 @@
 #include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeEvents.h"
+#include "Network/TextEncoding.h"
 #include "Render/DeviceContext/DCBitmap.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
@@ -7,11 +8,17 @@
 #include "Render/Text/TextContext.h"
 #include "Render/Textures/Texture.h"
 #include "Resource/Bitmap/BitmapImage.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Lists/UIListBoxNaviSearch.h"
+#include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowRegistration.h"
 
 #include <bit>
+#include <cstdlib>
 #include <cstring>
 #include <windows.h>
 #include <timeapi.h>
@@ -721,3 +728,296 @@ void UIWindow::FlushPrimitives(RenderQueues& queues, bool depthAlpha, float dept
 
   this->m_overlayPrimitives.clear();
 }
+
+// OFFSET: 0x00A7B450
+// FUNCTION: fn_16928
+void UIWindow::FillSurface(std::uint32_t color, const RECT* rectangle) {
+  if (this->geometry.surface) {
+    this->geometry.surface->Fill(rectangle, color);
+  }
+}
+
+// OFFSET: 0x00A7BB20
+// FUNCTION: fn_16934
+void UIWindow::DrawBitmapScaled(int x, int y, int width, int height, const BitmapImage* image, int option) {
+  if (!this->geometry.surface || !image) {
+    return;
+  }
+
+  this->geometry.surface->ScaleCopy(x, y, image->width, image->height, width, height, image->pixels, option);
+}
+
+// OFFSET: 0x00A7BBB0
+// FUNCTION: fn_16936
+void UIWindow::DrawBitmapRegion(int x, int y, const BitmapImage* image, bool transparent, bool whole, int left, int top, int right, int bottom) {
+  if (!this->geometry.surface || !image) {
+    return;
+  }
+
+  static_cast<CDCBitmap*>(this->geometry.surface)->SetAlpha(image->alpha != 0);
+  if (whole) {
+    this->geometry.surface->CopyRegion(x, y, 0, 0, image->width, image->height, image->pixels, image->width, image->height, transparent, false);
+  } else {
+    this->geometry.surface->CopyRegion(x, y, left, top, right, bottom, image->pixels, image->width, image->height, transparent, false);
+  }
+}
+
+// OFFSET: 0x00A7BDD0
+// FUNCTION: fn_16939
+void UIWindow::DrawAuxiliaryScaled(int mode, int x, int y, int width, int height, BitmapImage* image, int option, bool rebuild) {
+  if (!this->geometry.surface || !image) {
+    return;
+  }
+
+  if (rebuild) {
+    image->ClearAuxiliary();
+  }
+
+  image->CreateAuxiliary(mode);
+  if (image->auxiliary) {
+    this->geometry.surface->ScaleCopy(x, y, image->width, image->height, width, height, static_cast<const std::uint32_t*>(image->auxiliary), option);
+  }
+}
+
+// OFFSET: 0x00A7BE30
+// FUNCTION: fn_16940
+void UIWindow::DrawAuxiliary(int mode, int x, int y, BitmapImage* image, bool transparent, bool rebuild) {
+  if (!this->geometry.surface || !image) {
+    return;
+  }
+
+  if (rebuild) {
+    image->ClearAuxiliary();
+  }
+
+  image->CreateAuxiliary(mode);
+  if (image->auxiliary) {
+    this->geometry.surface->Copy(x, y, image->width, image->height, static_cast<const std::uint32_t*>(image->auxiliary), transparent);
+  }
+}
+
+// OFFSET: 0x00A7BE90
+// FUNCTION: fn_16941
+void UIWindow::DrawAmount(FontCache& fonts, const TextLocale& locale, int amount, std::string text, int x, int y) {
+  COLORREF color = 0;
+  COLORREF shadow = 0;
+  bool outlined = true;
+
+  if (amount >= 1000000000) {
+    color = 0x7F00FF;
+    shadow = 0xFF;
+  } else if (amount >= 100000000) {
+    color = 0x64C8C8;
+  } else if (amount >= 10000000) {
+    color = 0xFF;
+    outlined = false;
+  } else if (amount >= 1000000) {
+    color = 0xFF00;
+  } else if (amount >= 100000) {
+    color = 0xFF0000;
+    outlined = false;
+  } else if (amount >= 10000) {
+    color = 0xFF1EFF;
+    outlined = false;
+  } else if (amount >= 1000) {
+    color = 0xFFFF;
+    shadow = 0xFF;
+  } else if (amount >= 100) {
+    color = 0xFFFF00;
+    shadow = 0xFF0000;
+  } else if (amount >= 10) {
+    color = 0xC800C8;
+    shadow = 0xFF0000;
+  } else {
+    color = 0xFFFF00;
+  }
+
+  const char* characters = text.c_str();
+  const int bytes = static_cast<int>(std::strlen(characters));
+  TextContext context(*this->geometry.surface, fonts, locale);
+  context.SetFont(0, 12, 0, 0);
+  context.SetColor(color);
+  if (outlined) {
+    context.Draw(x, y, characters, bytes);
+    context.SetColor(shadow);
+    context.Draw(x - 1, y, characters, bytes);
+  } else {
+    context.Draw(x, y, characters, bytes);
+  }
+}
+
+// OFFSET: 0x00A80170
+// FUNCTION: fn_16971
+int UIWindow::TextHeight(
+  FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
+) {
+  if (!text) {
+    return 0;
+  }
+
+  if (!bytes) {
+    bytes = static_cast<unsigned>(std::strlen(text));
+    if (!bytes) {
+      return 0;
+    }
+  }
+
+  TextContext context(*this->geometry.surface, fonts, locale);
+  context.SetFont(family, height, bold, italic);
+  return context.Measure(text, bytes).cy;
+}
+
+// OFFSET: 0x00A80230
+// FUNCTION: fn_16972
+int UIWindow::VerticalTextHeight(FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold) {
+  if (!text) {
+    return 0;
+  }
+
+  if (!bytes) {
+    bytes = static_cast<unsigned>(std::strlen(text));
+    if (!bytes) {
+      return 0;
+    }
+  }
+
+  const char* end = text + bytes;
+  int total = 0;
+  const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text), locale.inlineCharset);
+  TextContext context(*this->geometry.surface, fonts, locale);
+  context.SetFont(family, height, bold, 0);
+  if (marker && *marker) {
+    text = marker + 3;
+  }
+
+  while (text < end) {
+    const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), text, 0);
+    total += context.Measure(text, static_cast<int>(next - text)).cy;
+    text = next;
+  }
+
+  return total;
+}
+
+// OFFSET: 0x00A80340
+// FUNCTION: fn_16973
+SIZE UIWindow::TextSize(
+  FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
+) {
+  SIZE size = {};
+  if (!text) {
+    return size;
+  }
+
+  if (!bytes) {
+    bytes = static_cast<unsigned>(std::strlen(text));
+    if (!bytes) {
+      return size;
+    }
+  }
+
+  TextContext context(*this->geometry.surface, fonts, locale);
+  context.SetFont(family, height, bold, italic);
+  size = context.Measure(text, bytes);
+  return size;
+}
+
+// OFFSET: 0x00A80430
+// FUNCTION: fn_16974
+SIZE UIWindow::VerticalTextSize(
+  FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
+) {
+  SIZE size = {};
+  if (!text) {
+    return size;
+  }
+
+  if (!bytes) {
+    bytes = static_cast<unsigned>(std::strlen(text));
+    if (!bytes) {
+      return size;
+    }
+  }
+
+  TextContext context(*this->geometry.surface, fonts, locale);
+  context.SetFont(family, height, bold, italic);
+  const char* end = text + bytes;
+  const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text), locale.inlineCharset);
+  if (marker && *marker) {
+    text = marker + 3;
+  }
+
+  while (text < end) {
+    const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), text, 0);
+    const SIZE part = context.Measure(text, static_cast<int>(next - text));
+    if (size.cx < part.cx) {
+      size.cx = part.cx;
+    }
+
+    size.cy += part.cy;
+    text = next;
+  }
+
+  return size;
+}
+
+// OFFSET: 0x00A80640
+// FUNCTION: fn_16976
+int UIWindow::FormattedTextWidth(FontCache& fonts, const TextLocale& locale, std::string text, int family, int height, unsigned char bold) {
+  int total = 0;
+  unsigned char currentBold = bold;
+  const char* current = text.c_str();
+  const char* end = current + std::strlen(current);
+
+  while (current != end) {
+    if (*current == '^') {
+      if (current[1] == 'b') {
+        currentBold = 1;
+        current += 2;
+        continue;
+      }
+
+      if (current[1] == '/' && current[2] == 'b') {
+        currentBold = bold;
+        current += 3;
+        continue;
+      }
+
+      char color[7] = {};
+      strncpy_s(color, sizeof(color), current + 1, 6);
+      char* parsed = nullptr;
+      std::strtol(color, &parsed, 16);
+      if (parsed - color == 6) {
+        current += 7;
+        continue;
+      }
+    } else if (current[1] == '\\' && current[2] == 'n') {
+      current += 2;
+      continue;
+    }
+
+    const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
+    const std::string character(current, next);
+    total += this->TextWidth(fonts, locale, character.c_str(), 0, family, height, currentBold, 0);
+    current = next;
+  }
+
+  return total;
+}
+
+// OFFSET: 0x00A836C0
+
+// OFFSET: 0x00A83FD0
+
+// OFFSET: 0x005C3340
+
+// OFFSET: 0x005C6F20
+// FUNCTION: fn_03593
+void UIListBox_NaviSearch::Slot26(int, int) {
+}
+
+// OFFSET: 0x005C6F40
+
+// OFFSET: 0x005C7360
+
+// OFFSET: 0x005C7AD0

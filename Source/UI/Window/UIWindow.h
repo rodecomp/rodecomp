@@ -5,6 +5,7 @@
 #include "UI/Layout/WindowGeometry.h"
 
 #include <cstddef>
+#include <string>
 #include <unordered_set>
 #include <vector>
 
@@ -20,6 +21,10 @@ struct RenderQueues;
 struct BitmapImage;
 class FontCache;
 struct TextLocale;
+struct tagRECT;
+struct tagSIZE;
+struct ActionFrame;
+class CSprRes;
 
 struct UIWindowContext {
   RenderPrimitivePool& primitives;
@@ -121,6 +126,21 @@ public:
     unsigned char italic
   );
   void FlushPrimitives(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
+  void FillSurface(std::uint32_t color, const tagRECT* rectangle);
+  void DrawBitmapScaled(int x, int y, int width, int height, const BitmapImage* image, int option);
+  void DrawBitmapRegion(int x, int y, const BitmapImage* image, bool transparent, bool whole, int left, int top, int right, int bottom);
+  void DrawAuxiliaryScaled(int mode, int x, int y, int width, int height, BitmapImage* image, int option, bool rebuild);
+  void DrawAuxiliary(int mode, int x, int y, BitmapImage* image, bool transparent, bool rebuild);
+  void DrawAmount(FontCache& fonts, const TextLocale& locale, int amount, std::string text, int x, int y);
+  int TextHeight(FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
+  int VerticalTextHeight(FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold);
+  tagSIZE TextSize(FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
+  tagSIZE VerticalTextSize(
+    FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
+  );
+  int FormattedTextWidth(FontCache& fonts, const TextLocale& locale, std::string text, int family, int height, unsigned char bold);
+  int RestoreEditTexts(const unsigned char* data);
+  bool FitSprite(const ActionFrame* frame, const CSprRes* sprite, int width, int height, int* x, int* y, float* scale);
 
   // INLINED
   bool HasTextBackground() const {
