@@ -1,5 +1,7 @@
 #include "UI/Window/UIControl.h"
 
+#include <windows.h>
+
 // INLINED
 CUIControl::CUIControl(UIWindowContext& context) : UIWindow(context, 0), hitEnabled(1) {
 }
@@ -99,6 +101,14 @@ void CUIControl::Slot35(int value) {
   if (this->parent) {
     this->parent->Slot35(value);
   }
+}
+
+// OFFSET: 0x009EF5F0
+// FUNCTION: fn_14637
+bool CUIControl::IsPointInside(int x, int y) {
+  RECT rect = {this->geometry.x, this->geometry.y, this->geometry.x + this->geometry.width, this->geometry.y + this->geometry.height};
+  POINT point = {x, y};
+  return PtInRect(&rect, point) != FALSE;
 }
 
 // OFFSET: 0x009EF5E0

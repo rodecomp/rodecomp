@@ -23,6 +23,8 @@ public:
   void Slot52(int value) override;
   virtual void Slot53(int value);
 
+  bool IsPointInside(int x, int y);
+
   /* 007C */ unsigned char hitEnabled;
 };
 
