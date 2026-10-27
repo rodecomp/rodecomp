@@ -274,6 +274,7 @@
   "Source/Contents/Actors/RenderObject.cpp": 4,
   "Source/Contents/Actors/RenderObjectState.cpp": 4,
   "Source/Contents/Actors/SpriteDrawingPolicy.cpp": 4,
+  "Source/Contents/AdventureGuideMgr.cpp": 4,
   "Source/Contents/Async/AsyncWorkMgr.cpp": 4,
   "Source/Contents/Async/AsyncWorkRecycleObjectPoolMgr.cpp": 4,
   "Source/Contents/Camera/CameraFrame.cpp": 3,
