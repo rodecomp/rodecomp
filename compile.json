@@ -278,6 +278,7 @@
   "Source/Contents/CashEmotionMgr.cpp": 4,
   "Source/Contents/Configuration/OptionWriter.cpp": 4,
   "Source/Contents/Configuration/ScriptOptions.cpp": 4,
+  "Source/Contents/Configuration/ServiceConfiguration.cpp": 4,
   "Source/Contents/Configuration/ServiceOptions.cpp": 4,
   "Source/Contents/Effects/AttachedEffect.cpp": 4,
   "Source/Contents/Effects/Effect.cpp": 0,
