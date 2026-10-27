@@ -235,6 +235,7 @@ if(WIN32)
     Source/UI/Window/UIMessageBox.cpp
     Source/UI/Window/WindowDialogs.cpp
     Source/Client/ReplayPacketRecorder.cpp
+    Source/Client/Replay.cpp
     Source/UI/Cooldowns/CooldownState.cpp
     Source/UI/Cooldowns/CooldownDrawing.cpp
     Source/UI/Cooldowns/CooldownOwner.cpp
