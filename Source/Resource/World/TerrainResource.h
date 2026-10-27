@@ -28,6 +28,7 @@ public:
 
 private:
   struct Cell : TerrainHeightCell {
+    // INLINED
     Cell() noexcept {
     }
   };

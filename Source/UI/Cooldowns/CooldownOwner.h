@@ -14,6 +14,7 @@ public:
 
   CooldownState* Find(unsigned id);
   void Erase(unsigned id);
+  // INLINED
   CooldownDrawing& Drawing() {
     return this->m_drawing;
   }
