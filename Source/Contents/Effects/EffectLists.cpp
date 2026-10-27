@@ -111,7 +111,7 @@ void EffectLists::Add(int actor, CEffect* effect) {
   case EF_EVILS_PAW:
   case EF_ANIMATED_EMITTER:
   case EF_NEW_RANGEDATTACK:
-  case 2343:
+  case EF_UNK_2343:
     this->indexed[effect->id].push_back(effect);
     break;
   }
