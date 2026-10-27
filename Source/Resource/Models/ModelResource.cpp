@@ -205,8 +205,8 @@ bool C3dModelResV1::Load(const char* name) {
   input.Read(magic, 4);
 
   if (std::strcmp(magic, "GRSM") != 0) {
-    constexpr char message[] = "\xB8\xF0\xB5\xA8\xC6\xC4\xC0\xCF\xC0\xCC \xBE\xC6\xB4\xD5\xB4\xCF\xB4\xD9. \xC7\xFC\xBD\xC4\xC0\xBB "
-                               "\xB4\xD9\xBD\xC3\xC7\xD1\xB9\xF8 \xC8\xAE\xC0\xCE\xC7\xD8\xC1\xD6\xBC\xBC\xBF\xE4.";
+    constexpr char message[] = "모델파일이 아닙니다. 형식을 "
+                               "다시한번 확인해주세요.";
     ShowErrorDialog(this->m_context->renderSystem, message, 0);
     file.Close();
 
@@ -220,8 +220,8 @@ bool C3dModelResV1::Load(const char* name) {
   input.Read(&minor, 1);
 
   if (major != 1 || minor > 5) {
-    constexpr char message[] = "\xC1\xF6\xBF\xF8\xB5\xC7\xC1\xF6 \xBE\xCA\xB4\xC2 \xB9\xF6\xC1\xAF\xC0\xD4\xB4\xCF\xB4\xD9. "
-                               "\xB3\xBB\xBF\xEB\xB9\xB0\xC0\xCC \xB1\xFA\xC1\xAE\xC0\xD6\xC0\xBB \xBC\xF6 \xC0\xD6\xBD\xC0\xB4\xCF\xB4\xD9";
+    constexpr char message[] = "지원되지 않는 버젼입니다. "
+                               "내용물이 깨져있을 수 있습니다";
     ShowErrorDialog(this->m_context->renderSystem, message, 0);
     file.Close();
 

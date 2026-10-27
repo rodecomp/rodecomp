@@ -14,7 +14,7 @@ UIListBoxEx::UIListBoxEx(UIWindowContext& windows, UIListBoxContext& list)
     : UIWindow(windows, 0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0), horizontalOffset(0), contentWidth(0),
       verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16), selectionColor(0),
       m_listContext(&list) {
-  constexpr char path[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\colorchip.bmp";
+  constexpr char path[] = "유저인터페이스\\colorchip.bmp";
   const auto* chip = static_cast<CBitmapRes*>(list.resources.Load(path));
 
   if (chip) {

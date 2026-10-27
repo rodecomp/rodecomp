@@ -20,6 +20,8 @@
    "-std:c++20",
    "-MD",
    "/FS",
+   "/source-charset:utf-8",
+   "/execution-charset:.949",
    "-c"
   ],
   [
@@ -40,6 +42,8 @@
    "-std:c++20",
    "-MD",
    "/FS",
+   "/source-charset:utf-8",
+   "/execution-charset:.949",
    "-c"
   ],
   [
@@ -64,6 +68,8 @@
    "-std:c++20",
    "-MD",
    "/FS",
+   "/source-charset:utf-8",
+   "/execution-charset:.949",
    "-c"
   ],
   [
@@ -85,6 +91,8 @@
    "-std:c++20",
    "-MD",
    "/FS",
+   "/source-charset:utf-8",
+   "/execution-charset:.949",
    "-c"
   ],
   [
@@ -109,6 +117,8 @@
    "-std:c++20",
    "-MD",
    "/FS",
+   "/source-charset:utf-8",
+   "/execution-charset:.949",
    "-c"
   ],
   [
@@ -128,6 +138,8 @@
    "-std:c++20",
    "-MD",
    "/FS",
+   "/source-charset:utf-8",
+   "/execution-charset:.949",
    "-c"
   ],
   [
@@ -141,6 +153,8 @@
    "/DNDEBUG",
    "-MD",
    "/FS",
+   "/source-charset:utf-8",
+   "/execution-charset:.949",
    "-c"
   ],
   [
@@ -156,6 +170,8 @@
    "/DNDEBUG",
    "-MD",
    "/FS",
+   "/source-charset:utf-8",
+   "/execution-charset:.949",
    "-c"
   ],
   [
@@ -175,6 +191,8 @@
    "-std:c++20",
    "-MD",
    "/FS",
+   "/source-charset:utf-8",
+   "/execution-charset:.949",
    "-c"
   ],
   [
@@ -188,6 +206,8 @@
    "/DNDEBUG",
    "-MD",
    "/FS",
+   "/source-charset:utf-8",
+   "/execution-charset:.949",
    "-c"
   ]
  ],

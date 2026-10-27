@@ -56,15 +56,15 @@ void JobNames::Initialize(JobNameInitialization& context) {
   this->names[JT_MER_SERA] = "MER_SERA";
 
   for (unsigned id = JT_MER_ARCHER01; id <= JT_MER_ARCHER10; ++id) {
-    this->names[id] = "\xBF\xA9\\\xC8\xB0\xBF\xEB\xBA\xB4";
+    this->names[id] = "여\\활용병";
   }
 
   for (unsigned id = JT_MER_LANCER01; id <= JT_MER_LANCER10; ++id) {
-    this->names[id] = "\xB3\xB2\\\xC3\xA2\xBF\xEB\xBA\xB4";
+    this->names[id] = "남\\창용병";
   }
 
   for (unsigned id = JT_MER_SWORDMAN01; id <= JT_MER_SWORDMAN10; ++id) {
-    this->names[id] = "\xB3\xB2\\\xB0\xCB\xBF\xEB\xBA\xB4";
+    this->names[id] = "남\\검용병";
   }
 
   context.sexLabels.resize(2, "F");

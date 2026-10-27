@@ -56,7 +56,7 @@ namespace {
 UITextViewer::UITextViewer(UIWindowContext& windows, UITextViewerContext& text)
     : UIListBox(windows, text.list), splitTipLinks(0), outline(0), bold(0), m_text(&text) {
   this->lineHeight = 18;
-  constexpr char path[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\colorchip.bmp";
+  constexpr char path[] = "유저인터페이스\\colorchip.bmp";
   const auto* chip = static_cast<CBitmapRes*>(text.list.resources.Load(path));
   const auto& image = chip->image;
   const std::uint32_t pixel = image.width > 18 && image.height > 2 ? image.pixels[18 + 2 * image.width] : 0x00FF0000u;

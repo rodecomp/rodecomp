@@ -3,7 +3,7 @@
 #include "Network/Http/CURLPostHander.h"
 #include "Network/TextEncoding.h"
 
-#include <cstdio>
+#include <stdio.h>
 #include <windows.h>
 #include <timeapi.h>
 

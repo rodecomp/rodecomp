@@ -4,14 +4,14 @@
 struct ServiceOptions;
 
 struct CameraState {
-  float target[3];
-  float pitch;
-  float yaw;
-  float distance;
-  float desiredTarget[3];
-  float desiredPitch;
-  float desiredYaw;
-  float desiredDistance;
+  /* 0020 */ float target[3];
+  /* 002C */ float pitch;
+  /* 0030 */ float yaw;
+  /* 0034 */ float distance;
+  /* 0038 */ float desiredTarget[3];
+  /* 0044 */ float desiredPitch;
+  /* 0048 */ float desiredYaw;
+  /* 004C */ float desiredDistance;
 
   void Reset();
   void AddDistance(float delta);
@@ -30,13 +30,13 @@ struct CameraProjectionOutputs {
 };
 
 struct CameraShake {
-  float horizontal;
-  float distance;
-  float pitch;
-  unsigned unknown_0010;
-  int enabled;
-  unsigned start;
-  unsigned duration;
+  /* 0004 */ float horizontal;
+  /* 0008 */ float distance;
+  /* 000C */ float pitch;
+  /* 0010 */ unsigned unknown_0010;
+  /* 0014 */ int enabled;
+  /* 0018 */ unsigned start;
+  /* 001C */ unsigned duration;
 
   void Apply(CameraState& camera, int& frameLatch);
   void Start(int enabled, unsigned duration, float horizontal, float distance, float pitch);
@@ -44,5 +44,6 @@ struct CameraShake {
 };
 
 static_assert(sizeof(CameraState) == 48);
+static_assert(sizeof(CameraShake) == 28);
 
 #endif

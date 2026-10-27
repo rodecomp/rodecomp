@@ -28,9 +28,9 @@ void UIButton::Paint() {
   }
 
   static const char* const backgrounds[] = {
-    "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\sml_button_up.bmp",
-    "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\sml_button_act.bmp",
-    "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\sml_button_down.bmp"
+    "유저인터페이스\\sml_button_up.bmp",
+    "유저인터페이스\\sml_button_act.bmp",
+    "유저인터페이스\\sml_button_down.bmp"
   };
 
   CBitmapRes* bitmap;

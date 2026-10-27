@@ -3,6 +3,7 @@
 
 #include <limits>
 
+// INLINED
 inline int TruncateToInt(double value) {
   return value > -2147483649.0 && value < 2147483648.0 ? static_cast<int>(value) : std::numeric_limits<int>::min();
 }

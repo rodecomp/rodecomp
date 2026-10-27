@@ -9,10 +9,10 @@
 // FUNCTION: fn_23391
 const char* ItemDragResource(ItemDescriptions& descriptions, const char* id, int identified) {
   static std::string resource;
-  resource = "\xBE\xC6\xC0\xCC\xC5\xDB\\";
+  resource = "아이템\\";
   const ITEM_DESC& value = descriptions.Find(std::atoi(id));
   const char* name = identified != 0 ? value.identifiedResource : value.unidentifiedResource;
-  resource += name ? name : "\xBB\xE7\xB0\xFA";
+  resource += name ? name : "사과";
 
   return resource.c_str();
 }
@@ -21,11 +21,11 @@ const char* ItemDragResource(ItemDescriptions& descriptions, const char* id, int
 // FUNCTION: fn_23392
 const char* SkillDragResource(ResourceMgr& resources, const char* name) {
   static std::string resource;
-  resource = "\xBE\xC6\xC0\xCC\xC5\xDB\\";
+  resource = "아이템\\";
   resource += name;
 
   if (!resources.Exists((resource + ".act").c_str())) {
-    resource = "\xBE\xC6\xC0\xCC\xC5\xDB\\am_berserkpitcher";
+    resource = "아이템\\am_berserkpitcher";
   }
 
   return resource.c_str();

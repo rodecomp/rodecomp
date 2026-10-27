@@ -40,7 +40,7 @@ void UIBasicButton::Paint() {
 
   if (this->m_disabled == 1 || this->geometry.unknown_0030 <= 2) {
     static constexpr const char* skins[] = {"out", "over", "press", "disable"};
-    const std::string prefix = std::string("\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\basic_interface\\btn_") + skins[state];
+    const std::string prefix = std::string("유저인터페이스\\basic_interface\\btn_") + skins[state];
     const auto drawBitmap = [&](const char* suffix, int x) {
       auto* bitmap = static_cast<CBitmapRes*>(this->m_buttonContext->resources.Load((prefix + suffix).c_str()));
       this->DrawBitmap(x, 0, bitmap ? &bitmap->image : nullptr, false);
