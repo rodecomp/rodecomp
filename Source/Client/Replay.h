@@ -110,6 +110,10 @@ public:
   std::vector<unsigned char> BuildMetadata();
   float AnimationScale() const;
   bool SetState(int state);
+  bool SetBaseFrame(std::uint32_t baseFrame);
+  void UpdateDuration();
+  bool WriteFinalSection();
+  bool SubB86660(void* packet, int a, int b);
 };
 
 extern int g_replayAnimationScaling;

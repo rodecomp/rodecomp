@@ -1,3 +1,4 @@
+#include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Network/Packets/PacketId.h"
@@ -90,3 +91,38 @@ void WindowResponseRecorder::Record(int windowId, int response, std::intptr_t b,
   const Response packet{0x038408AEu, 26, windowId, response, {static_cast<std::uint32_t>(b), static_cast<std::uint32_t>(c), static_cast<std::uint32_t>(d)}};
   this->packets.Record(sizeof(packet), &packet, 42, 0);
 }
+
+// OFFSET: 0x00B86AB0
+
+// OFFSET: 0x00B86AD0
+
+// OFFSET: 0x00B86A80
+// FUNCTION: fn_19333
+bool Replay::WriteFinalSection() {
+  if (this->records == 0) {
+    this->sections[1].id = 1;
+    this->sections[1].bytes = 0;
+    this->sections[1].fileOffset = this->fileOffset;
+  }
+  return true;
+}
+
+// OFFSET: 0x00B86660
+
+struct UIWindowRecorderContext {
+  unsigned char pad[0x2C];
+  int windowId;
+
+  void RecordEvent17000(int a, int b, void* c, int d);
+  void RecordEvent17001(int a, void* b, void* c);
+  void RecordEvent17002(int a, int b, int c, int d, int e);
+  void RecordEvent17003(int event, const char* text);
+};
+
+// OFFSET: 0x00A82F80
+
+// OFFSET: 0x00A83180
+
+// OFFSET: 0x00A83300
+
+// OFFSET: 0x00A83440
