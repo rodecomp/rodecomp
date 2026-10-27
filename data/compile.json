@@ -397,6 +397,7 @@
   "Source/Contents/Store/MCStoreInfoBackup.cpp": 4,
   "Source/Contents/Store/MCStoreInfoBackupAsyncWork.cpp": 4,
   "Source/Contents/Store/StoreBackupData.cpp": 4,
+  "Source/Contents/TerrainPathSearch.cpp": 4,
   "Source/Contents/TipBoxTitles.cpp": 4,
   "Source/Contents/UserData/AccountLinkedUserDataLoadAsyncWork.cpp": 4,
   "Source/Contents/UserData/AccountLinkedUserDataMgr.cpp": 4,
