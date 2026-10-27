@@ -1,8 +1,65 @@
+#include "UI/Window/UIRoulletteWnd.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/WindowOrdering.h"
 
 #include <algorithm>
+
+// OFFSET: 0x00A966E0
+
+// OFFSET: 0x00A96710
+// FUNCTION: fn_17185
+void UIWindowMgr::RefreshClanWnd() {
+  if (this->window_0444) {
+    this->window_0444->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00A96730
+// FUNCTION: fn_17186
+void UIWindowMgr::RefreshGuildWindows() {
+  if (this->window_0320) {
+    this->window_0320->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+  if (this->window_0324) {
+    this->window_0324->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+  if (this->unknown_0328) {
+    this->unknown_0328->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+  if (this->window_032C) {
+    this->window_032C->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+  if (this->unknown_0330) {
+    this->unknown_0330->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+  if (this->unknown_0334) {
+    this->unknown_0334->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+  if (this->unknown_0338) {
+    this->unknown_0338->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00A96810
+// FUNCTION: fn_17187
+void UIWindowMgr::RefreshRouletteWnd() {
+  if (this->unknown_0464) {
+    this->unknown_0464->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00A96830
+// FUNCTION: fn_17188
+void UIWindowMgr::EnableRouletteWnd() {
+  if (this->unknown_0464) {
+    this->unknown_0464->m_enabled = 1;
+  }
+}
+
+// OFFSET: 0x00A96850
 
 // OFFSET: 0x00A976C0
 // FUNCTION: fn_17206
