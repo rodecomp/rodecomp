@@ -8,6 +8,42 @@ BrowserClientSite::BrowserClientSite(HWND window, IUnknown& browser, BrowserFact
   this->m_browser->AddRef();
 }
 
+struct CCmdTargetEx {
+  CCmdTargetEx();
+  virtual ~CCmdTargetEx() = default;
+};
+
+// OFFSET: 0x00AB1480
+// FUNCTION: fn_17335
+CCmdTargetEx::CCmdTargetEx() = default;
+
+struct CIDispatchEx {
+  CIDispatchEx();
+  virtual ~CIDispatchEx() = default;
+};
+
+// OFFSET: 0x00AB1490
+// FUNCTION: fn_17336
+CIDispatchEx::CIDispatchEx() = default;
+
+struct CIDocHostUIHandlerEx {
+  CIDocHostUIHandlerEx();
+  virtual ~CIDocHostUIHandlerEx() = default;
+};
+
+// OFFSET: 0x00AB14A0
+// FUNCTION: fn_17337
+CIDocHostUIHandlerEx::CIDocHostUIHandlerEx() = default;
+
+struct CIOleInPlaceFrameEx {
+  CIOleInPlaceFrameEx();
+  virtual ~CIOleInPlaceFrameEx() = default;
+};
+
+// OFFSET: 0x00AB14B0
+// FUNCTION: fn_17338
+CIOleInPlaceFrameEx::CIOleInPlaceFrameEx() = default;
+
 // OFFSET: 0x00AB14E0
 // FUNCTION: fn_17339
 BrowserClientSite::~BrowserClientSite() {
