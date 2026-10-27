@@ -49,24 +49,72 @@ void ExportNormalItemSlots(Json::Value& data, const NormalItemSlot* slots, const
 }
 
 // OFFSET: 0x009A6110
+// FUNCTION: fn_13668
+int SkillListWndInfo::IsValid() const {
+  return this->width >= 280 && this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A6160
+// FUNCTION: fn_13669
+int StatusWndInfo::IsValid() const {
+  return this->width == 280 && this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A61A0
+// FUNCTION: fn_13670
+int SubChatHisWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A61E0
+// FUNCTION: fn_13671
+int AdvenPartyBoardWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A6220
+// FUNCTION: fn_13672
+int ApplyForPartyWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A6260
+// FUNCTION: fn_13673
+int RegisterPartyWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A62A0
+// FUNCTION: fn_13674
+int WhisperWndInfo::IsValid() const {
+  return this->width >= 280 && this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A62F0
+// FUNCTION: fn_13675
+bool MacroReporterWndInfo::IsValid() const {
+  return this->width > 0 && g_renderer->viewport.width - this->x >= this->width && this->height > 0 && g_renderer->viewport.height - this->y >= this->height;
+}
 
 // OFFSET: 0x009A6320
+// FUNCTION: fn_13676
+bool PreviewEquipWndInfo::IsValid() const {
+  return this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 && this->y <= g_renderer->viewport.height - 260;
+}
 
 // OFFSET: 0x009A6390
+// FUNCTION: fn_13677
+void AchTracingWndInfo::Reset() {
+  this->x = g_renderer->viewport.width - 350;
+  this->y = (g_renderer->viewport.height - 150) / 2;
+}
 
 // OFFSET: 0x009A6430
 // FUNCTION: fn_13679
@@ -188,6 +236,13 @@ void ItemCollectionWndInfo::Reset() {
 }
 
 // OFFSET: 0x009A6610
+// FUNCTION: fn_13693
+void ItemCompositionWndInfo::Reset() {
+  this->x = (g_renderer->viewport.width - 640) / 2 + 200;
+  this->y = g_renderer->viewport.height * 200 / 480;
+  this->width = 200;
+  this->height = 200;
+}
 
 // OFFSET: 0x009A6660
 // FUNCTION: fn_13694
@@ -199,6 +254,13 @@ void ItemStoreFindWndInfo::Reset() {
 }
 
 // OFFSET: 0x009A6680
+// FUNCTION: fn_13695
+void ItemIdentifyWndInfo::Reset() {
+  this->x = (g_renderer->viewport.width - 640) / 2 + 200;
+  this->y = g_renderer->viewport.height * 200 / 480;
+  this->width = 200;
+  this->height = 200;
+}
 
 // OFFSET: 0x009A66D0
 // FUNCTION: fn_13696
