@@ -31,6 +31,10 @@ public:
   std::uint32_t GetSize() const {
     return this->m_size;
   }
+  // INLINED
+  void* GetData() const {
+    return this->m_data;
+  }
   bool Write(const void* data, std::uint32_t bytes);
   bool Read(void* data, std::uint32_t bytes);
   bool Peek(void* data, std::uint32_t bytes);

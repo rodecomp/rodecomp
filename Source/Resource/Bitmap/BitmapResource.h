@@ -36,7 +36,7 @@ public:
 
   /* 0110 */ BitmapImage image;
 
-private:
+protected:
   BitmapResourceContext* m_context;
 };
 
