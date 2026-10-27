@@ -552,7 +552,7 @@ void CSoundMgr::PlayWave(const char* name, float x, float y, float z, int maximu
     return;
   }
 
-  static constexpr char permittedName[] = "\xB9\xF6\xC6\xB0\xBC\xD2\xB8\xAE.wav";
+  static constexpr char permittedName[] = "버튼소리.wav";
 
   if (this->unknown != 0 && std::strcmp(name, permittedName) != 0) {
     return;

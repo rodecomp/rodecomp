@@ -199,6 +199,13 @@ Do not substitute `__FILE__` or `__LINE__` merely to follow a different project'
 invent diagnostic literals. Distinguish compiler-generated diagnostics from application arguments using
 the original instructions.
 
+### Korean string literals
+
+Sources are UTF-8; `compile.json` passes `/source-charset:utf-8 /execution-charset:.949`, so write Korean
+literals as Hangul (`"유저인터페이스\\item\\%s.bmp"`), not CP949 escapes. Keep `\x` escapes for bytes
+that are not CP949 Hangul: other code pages (Shift-JIS, GBK, Big5 font names), byte-order marks and key codes.
+Never use `/utf-8`, and never save sources as CP949/EUC-KR.
+
 ## 7. Platform and build scope
 
 - This target is Windows x86. Keep code in its assigned existing translation unit and subsystem headers.

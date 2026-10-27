@@ -13,6 +13,7 @@ public:
   virtual ~CFile();
 
   bool OpenWrite(const char* path, CRenderSystemBase* renderSystem);
+  bool Open(const char* path, int mode, bool resourcePath, bool option);
   bool Open(const char* path) {
     this->m_path = path;
     this->m_handle = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);

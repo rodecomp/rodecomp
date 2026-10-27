@@ -89,7 +89,7 @@ ITEM_DESC& ItemDescriptions::Ensure(int id) {
 void ItemDescriptions::IconPath(char* output, const char* id, int identified) {
   const ITEM_DESC& value = this->Find(std::atoi(id));
   const char* resource = identified != 0 ? value.identifiedResource : value.unidentifiedResource;
-  std::sprintf(output, "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\item\\%s.bmp", resource);
+  std::sprintf(output, "유저인터페이스\\item\\%s.bmp", resource);
 }
 
 // OFFSET: 0x006D5730

@@ -23,7 +23,7 @@ void UIScrollBar_Navi::Paint() {
   }
 
   if (this->vertical == 1) {
-    constexpr char prefix[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\navigation_interface3\\";
+    constexpr char prefix[] = "유저인터페이스\\navigation_interface3\\";
     const auto load = [&](const char* name) { return static_cast<CBitmapRes*>(this->m_resources->Load((std::string(prefix) + name).c_str())); };
     const auto draw = [&](CBitmapRes* image, int y, bool transparent) { this->DrawBitmap(0, y, image ? &image->image : nullptr, transparent); };
     auto* up = load("Navi_scroll_up.bmp");

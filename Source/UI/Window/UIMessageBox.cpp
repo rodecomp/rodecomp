@@ -15,7 +15,7 @@
 #include <shellapi.h>
 
 namespace {
-  constexpr char prefix[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\";
+  constexpr char prefix[] = "유저인터페이스\\";
 
   std::uint32_t Palette(ResourceMgr& resources, int x, int y) {
     const auto* resource = static_cast<CBitmapRes*>(resources.Load((std::string(prefix) + "colorchip.bmp").c_str()));

@@ -9,7 +9,7 @@
 #include <cstring>
 
 namespace {
-  constexpr char prefix[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA";
+  constexpr char prefix[] = "유저인터페이스";
 
   // INLINED
   CBitmapRes* Load(ResourceMgr& resources, const char* tail) {

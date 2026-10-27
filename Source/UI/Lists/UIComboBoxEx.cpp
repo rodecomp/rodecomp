@@ -11,7 +11,7 @@
 
 namespace {
   unsigned Palette(ResourceMgr& resources, int column, int row) {
-    constexpr char path[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\colorchip.bmp";
+    constexpr char path[] = "유저인터페이스\\colorchip.bmp";
     auto* chip = static_cast<CBitmapRes*>(resources.Load(path));
     const int x = column * 4 + 2;
     const int y = row * 4 + 2;
@@ -233,7 +233,7 @@ void UIComboBoxEx::Paint() {
   auto& resources = this->m_listContext->resources;
   this->geometry.surface->Fill(nullptr, Palette(resources, 6, 6));
   this->FillRegion(1, 1, (this->geometry.width - 2), (this->geometry.height - 2), Palette(resources, 2, 2));
-  constexpr char prefix[] = "\xC0\xAF\xC0\xFA\xC0\xCE\xC5\xCD\xC6\xE4\xC0\xCC\xBD\xBA\\basic_interface\\";
+  constexpr char prefix[] = "유저인터페이스\\basic_interface\\";
   const char* names[] = {"sysboxs_lu.bmp", "sysboxs_ld.bmp", "sysboxs_ru.bmp", "sysboxs_rd.bmp"};
 
   for (int corner = 0; corner < 4; ++corner) {

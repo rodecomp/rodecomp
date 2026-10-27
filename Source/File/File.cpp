@@ -1,5 +1,8 @@
 #include "Client/Application/ErrorDialog.h"
 #include "File/File.h"
+#include "File/ResourcePath.h"
+#include "Archive/PakRegistry.h"
+#include "Render/DeviceContext/DCSurface.h"
 
 #include <cstring>
 
@@ -7,7 +10,7 @@
 CFile::CFile() : m_handle(INVALID_HANDLE_VALUE), m_data(nullptr), m_position(0), m_size(0) {
 }
 
-// OFFSET: 0x005222F0
+// OFFSET: 0x00522230
 // FUNCTION: fn_01124
 CFile::~CFile() {
   this->Close();
@@ -28,6 +31,8 @@ bool CFile::OpenWrite(const char* path, CRenderSystemBase* renderSystem) {
 
   return true;
 }
+
+// OFFSET: 0x0057C030
 
 // OFFSET: 0x0057C340
 // FUNCTION: fn_02601

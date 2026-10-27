@@ -69,7 +69,7 @@ float GroundWaterState::Level(int width, int height, int column, int row) const 
 // FUNCTION: fn_17581
 void GroundWaterState::Update(TextureCache& textures) {
   // STATIC: 0x01159248
-  constexpr char format[] = "\xBF\xF6\xC5\xCD\\water%d%02d.jpg";
+  constexpr char format[] = "워터\\water%d%02d.jpg";
   char name[32]{};
 
   for (GroundWaterSurface& surface : this->surfaces) {
