@@ -1,5 +1,6 @@
 #include "Contents/Sound/SoundMaker.h"
 
+#include "Contents/Actors/EffectActors.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Resource/World/WorldResource.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -20,6 +21,39 @@ CSoundMaker::CSoundMaker(ResourceMgr& resources, JobNames& names, SoundMakerCont
   this->height = 3;
   this->radius = SquareRoot(18.0f);
   this->lastTick = timeGetTime() - 4000u;
+}
+
+// OFFSET: 0x00DA2370
+// FUNCTION: fn_22365
+CBlowEffect::~CBlowEffect() = default;
+
+// OFFSET: 0x00DA2450
+// FUNCTION: fn_22367
+CCorpse::~CCorpse() = default;
+
+// OFFSET: 0x00DA2720
+// FUNCTION: fn_22373
+CMasterChaser::~CMasterChaser() = default;
+
+// OFFSET: 0x00DA27C0
+// FUNCTION: fn_22375
+CNumEffect::~CNumEffect() = default;
+
+// OFFSET: 0x00DA3980
+// FUNCTION: fn_22405
+bool CNumEffect::Update() {
+  const float elapsed = static_cast<float>((timeGetTime() - this->render.unknown_008C) / 24.0);
+  this->render.previousAnimation = this->render.animation;
+  this->render.position[1] = this->baseHeight - elapsed * 0.18f;
+  this->SetColor(static_cast<int>(255.0f - (elapsed + elapsed)), -1, -1, -1);
+
+  if (this->render.scale > 1.0f) {
+    this->render.scale = this->baseScale - elapsed * 0.24f;
+  } else if (this->render.scale < 1.0f) {
+    this->render.scale = 1.0f;
+  }
+
+  return elapsed <= 120.0f;
 }
 
 // OFFSET: 0x00DA3A60
@@ -82,6 +116,66 @@ bool CSoundMaker::Update() {
 // OFFSET: 0x00DA4960
 // FUNCTION: fn_22417
 void CSoundMaker::Draw(int) {
+}
+
+// OFFSET: 0x00DA4970
+// FUNCTION: fn_22418
+void CBlowEffect::SendObjectMessage(
+  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+) {
+  if (message != 14 || a != 0) {
+    CRenderObject::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    return;
+  }
+
+  const float* position = reinterpret_cast<const float*>(b);
+  this->render.position[0] = position[0];
+  this->render.position[1] = position[1];
+  this->render.position[2] = position[2];
+  this->render.visible = 1;
+  this->render.color = (d | e) ? 0xFFFF0000u : 0xFFFFFFFFu;
+  this->render.unknown_008C = timeGetTime();
+}
+
+// OFFSET: 0x00DA4AD0
+// FUNCTION: fn_22420
+void CCorpse::SendObjectMessage(
+  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+) {
+  CRenderObject::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00DA5610
+// FUNCTION: fn_22427
+void CNumEffect::SendObjectMessage(
+  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+) {
+  if (message == 14 && a == 0) {
+    const float* position = reinterpret_cast<const float*>(b);
+    this->render.position[0] = position[0];
+    this->render.position[1] = position[1];
+    this->render.position[2] = position[2];
+    this->render.visible = 1;
+    this->render.position[1] -= 12.0f;
+    this->baseHeight = this->render.position[1];
+
+    this->render.unknown_003C = d;
+    if (d > 9 || d < 0) {
+      this->render.unknown_003C = 0;
+    }
+
+    this->render.unknown_0078 = f;
+    this->render.scale = 5.0f;
+    this->baseScale = 5.0f;
+    this->render.unknown_008C = timeGetTime();
+    return;
+  }
+
+  if (message == 22 && a == 0) {
+    return;
+  }
+
+  CRenderObject::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00DA56E0
