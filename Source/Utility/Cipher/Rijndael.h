@@ -77,6 +77,9 @@ private:
   /* 0454 */ int t[MAX_BC];
 };
 
+void DecryptAes192(const char* input, char* output);
+void DecryptAes256(const char* input, char* output);
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CRijndael) == 0x474);
 #endif
