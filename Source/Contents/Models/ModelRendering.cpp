@@ -107,14 +107,14 @@ void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, b
   const unsigned char alpha = node.model->alpha;
   auto& projected = modern ? context.modernProjected : context.legacyProjected;
 
-  for (unsigned index = 0; index < node.mesh->vertices.size(); ++index) {
+  for (int index = 0; index < node.mesh->vertexCount; ++index) {
     context.projection.Project(node.mesh->vertices[index].data(), combined.values, projected[index]);
   }
 
-  RenderVertex* output = context.vertices.Acquire(static_cast<unsigned>(node.mesh->faces.size()) * 3u);
-  unsigned index = 0;
+  RenderVertex* output = context.vertices.Acquire(static_cast<unsigned>(node.mesh->faceCount) * 3u);
+  int index = 0;
 
-  while (index < node.mesh->faces.size()) {
+  while (index < node.mesh->faceCount) {
     const unsigned texture = node.mesh->faces[index].texture;
     RenderVertex* first = output;
 
@@ -174,7 +174,7 @@ void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, b
       }
 
       ++index;
-    } while (index < node.mesh->faces.size() && node.mesh->faces[index].texture == texture);
+    } while (index < node.mesh->faceCount && node.mesh->faces[index].texture == texture);
 
     if (output != first) {
       RenderCommand* command = context.commands.Acquire();

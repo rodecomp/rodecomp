@@ -4,12 +4,24 @@
 #include "Resource/Models/ModelResource.h"
 
 struct AnimatedModelFace {
-  std::uint32_t values[6];
+  /* 0000 */ std::uint32_t values[6];
 };
 
 struct AnimatedModelFrame {
-  std::vector<std::array<float, 3>> vertices;
-  std::vector<ModelTextureVertex> textureVertices;
+  AnimatedModelFrame();
+  ~AnimatedModelFrame();
+  AnimatedModelFrame(const AnimatedModelFrame&) = delete;
+  AnimatedModelFrame& operator=(const AnimatedModelFrame&) = delete;
+
+  /* 0000 */ std::array<float, 3>* vertices;
+  /* 0004 */ ModelTextureVertex* textureVertices;
+};
+
+struct AnimatedModelRecord {
+  ~AnimatedModelRecord();
+
+  /* 0000 */ unsigned char unknown_0000[0x84];
+  /* 0084 */ std::string* unknown_0084;
 };
 
 class C3dAnimModelRes;
@@ -20,20 +32,20 @@ struct AnimatedModelNode {
   AnimatedModelNode(const AnimatedModelNode&) = delete;
   AnimatedModelNode& operator=(const AnimatedModelNode&) = delete;
 
-  std::string name;
-  std::string parentName;
-  C3dAnimModelRes* model;
-  AnimatedModelNode* parent;
-  std::list<AnimatedModelNode*> children;
-  std::uint32_t unknown_0040;
-  int vertexCount;
-  int textureVertexCount;
-  int faceCount;
-  std::vector<AnimatedModelFace> faces;
-  std::vector<std::array<float, 3>> faceNormals;
-  std::vector<AnimatedModelFrame> frames;
-  std::vector<CTexture*> textures;
-  int sharedTextureVertices;
+  /* 0000 */ std::string name;
+  /* 0018 */ std::string parentName;
+  /* 0030 */ C3dAnimModelRes* model;
+  /* 0034 */ AnimatedModelNode* parent;
+  /* 0038 */ std::list<AnimatedModelNode*> children;
+  /* 0040 */ int vertexCount;
+  /* 0044 */ int textureVertexCount;
+  /* 0048 */ int faceCount;
+  /* 004C */ int textureCount;
+  /* 0050 */ std::array<float, 3>* faceNormals;
+  /* 0054 */ AnimatedModelFrame* frames;
+  /* 0058 */ AnimatedModelFace* faces;
+  /* 005C */ CTexture** textures;
+  /* 0060 */ int sharedTextureVertices;
 
 private:
   TextureCache& m_textures;
@@ -47,8 +59,8 @@ public:
   bool Load(const char* name) override;
   void Unload() override;
 
-  /* 0110 */ std::uint32_t unknown_0110;
-  /* 0114 */ std::uint32_t unknown_0114;
+  /* 0110 */ int unknown_0110;
+  /* 0114 */ AnimatedModelRecord* unknown_0114;
   /* 0118 */ std::list<AnimatedModelNode*> nodes;
   /* 0120 */ std::list<std::string> rootNames;
   /* 0128 */ std::string sourceName;
@@ -67,5 +79,17 @@ private:
 };
 
 static_assert(sizeof(AnimatedModelFace) == 24);
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(AnimatedModelFrame) == 8);
+static_assert(offsetof(AnimatedModelFrame, textureVertices) == 0x04);
+static_assert(offsetof(AnimatedModelNode, vertexCount) == 0x40);
+static_assert(offsetof(AnimatedModelNode, textureCount) == 0x4C);
+static_assert(offsetof(AnimatedModelNode, faceNormals) == 0x50);
+static_assert(offsetof(AnimatedModelNode, frames) == 0x54);
+static_assert(offsetof(AnimatedModelNode, faces) == 0x58);
+static_assert(offsetof(AnimatedModelNode, textures) == 0x5C);
+static_assert(offsetof(AnimatedModelNode, sharedTextureVertices) == 0x60);
+#endif
 
 #endif

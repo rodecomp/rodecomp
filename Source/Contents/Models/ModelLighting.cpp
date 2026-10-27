@@ -78,7 +78,7 @@ void C3dNode::OverrideColors() {
 // OFFSET: 0x00ABB450
 // FUNCTION: fn_17515
 void C3dNode::SampleGroundColors(const float* matrix, const float* position, const GroundGeometry& ground) {
-  for (unsigned index = 0; index < this->mesh->faces.size(); ++index) {
+  for (int index = 0; index < this->mesh->faceCount; ++index) {
     const ModelFace& face = this->mesh->faces[index];
 
     for (unsigned corner = 0; corner < 3; ++corner) {
@@ -107,7 +107,7 @@ void C3dNode::Prepare(const float* matrix, ModelLightingContext& context) {
   AffineMatrix combined;
   combined.Compose(this->transform, parentMatrix);
 
-  for (unsigned index = 0; index < this->mesh->faces.size(); ++index) {
+  for (int index = 0; index < this->mesh->faceCount; ++index) {
     const ModelFace& face = this->mesh->faces[index];
     float light[3];
 
@@ -131,9 +131,9 @@ void C3dNode::Prepare(const float* matrix, ModelLightingContext& context) {
     }
   }
 
-  unsigned index = 0;
+  int index = 0;
 
-  while (index < this->mesh->faces.size()) {
+  while (index < this->mesh->faceCount) {
     const unsigned texture = this->mesh->faces[index].texture;
     CTexture* image = this->textures[texture % this->textures.size()];
 
@@ -149,7 +149,7 @@ void C3dNode::Prepare(const float* matrix, ModelLightingContext& context) {
       }
 
       for (unsigned corner = 0; corner < 3; ++corner) {
-        if (this->mesh->textureVertices.empty()) {
+        if (this->mesh->textureVertexCount == 0) {
           state.uv[corner][0] = u;
           state.uv[corner][1] = v;
         } else {
@@ -160,7 +160,7 @@ void C3dNode::Prepare(const float* matrix, ModelLightingContext& context) {
       }
 
       ++index;
-    } while (index < this->mesh->faces.size() && this->mesh->faces[index].texture == texture);
+    } while (index < this->mesh->faceCount && this->mesh->faces[index].texture == texture);
   }
 
   this->SampleGroundColors(combined.values, context.position, context.ground);

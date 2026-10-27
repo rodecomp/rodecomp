@@ -2,11 +2,18 @@
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/Models/AnimatedModelResource.h"
 #include "Resource/Models/ModelResource.h"
 #include "Resource/ResourceByteReader.h"
 
 #include <algorithm>
 #include <cstring>
+
+// OFFSET: 0x00756D60
+// FUNCTION: fn_07997
+AnimatedModelRecord::~AnimatedModelRecord() {
+  delete[] this->unknown_0084;
+}
 
 // OFFSET: 0x00755630
 // FUNCTION: fn_07985
@@ -126,12 +133,12 @@ inline void C3dModelResV1::ReadNode(ResourceByteReader& input, unsigned minor, c
   input.Read(node->scale, sizeof(node->scale));
   node->mesh = std::make_unique<ModelMesh>();
   ModelMesh& mesh = *node->mesh;
-  int vertexCount = 0;
-  input.Read(&vertexCount, 4);
-  mesh.vertices.resize(static_cast<unsigned>(vertexCount));
-  input.Read(mesh.vertices.data(), static_cast<unsigned>(vertexCount) * 12u);
+  input.Read(&mesh.vertexCount, 4);
+  mesh.vertices = new std::array<float, 3>[mesh.vertexCount]{};
+  input.Read(mesh.vertices, static_cast<unsigned>(mesh.vertexCount) * 12u);
 
-  for (auto& vertex : mesh.vertices) {
+  for (int index = 0; index < mesh.vertexCount; ++index) {
+    auto& vertex = mesh.vertices[index];
     const float y = ((vertex[0] * matrix[1] + vertex[1] * matrix[4]) + matrix[7] * vertex[2]) + matrix[10];
     const float z = ((vertex[0] * matrix[2] + vertex[1] * matrix[5]) + matrix[8] * vertex[2]) + matrix[11];
     vertex[0] = ((vertex[0] * matrix[0] + vertex[1] * matrix[3]) + vertex[2] * matrix[6]) + matrix[9];
@@ -139,27 +146,27 @@ inline void C3dModelResV1::ReadNode(ResourceByteReader& input, unsigned minor, c
     vertex[2] = z;
   }
 
-  int textureVertexCount = 0;
-  input.Read(&textureVertexCount, 4);
-  mesh.textureVertices.resize(static_cast<unsigned>(textureVertexCount));
+  input.Read(&mesh.textureVertexCount, 4);
+  mesh.textureVertices = new ModelTextureVertex[mesh.textureVertexCount];
 
   if (minor == 1) {
     float uv[2];
 
-    for (auto& vertex : mesh.textureVertices) {
+    for (int index = 0; index < mesh.textureVertexCount; ++index) {
+      auto& vertex = mesh.textureVertices[index];
       input.Read(uv, sizeof(uv));
       vertex = {0xFFFFFFFFu, uv[0], uv[1]};
     }
   } else {
-    input.Read(mesh.textureVertices.data(), static_cast<unsigned>(textureVertexCount) * 12u);
+    input.Read(mesh.textureVertices, static_cast<unsigned>(mesh.textureVertexCount) * 12u);
   }
 
-  std::uint32_t faceCount = 0;
-  input.Read(&faceCount, 4);
-  mesh.faces.resize(faceCount);
+  input.Read(&mesh.faceCount, 4);
+  mesh.faces = new ModelFace[mesh.faceCount];
   unsigned char record[24];
 
-  for (ModelFace& face : mesh.faces) {
+  for (int index = 0; index < mesh.faceCount; ++index) {
+    ModelFace& face = mesh.faces[index];
     input.Read(record, minor == 1 ? 20 : 24);
     std::memcpy(face.vertices, record, sizeof(face.vertices));
     std::memcpy(face.textureVertices, record + 6, sizeof(face.textureVertices));
@@ -175,7 +182,7 @@ inline void C3dModelResV1::ReadNode(ResourceByteReader& input, unsigned minor, c
   }
 
   // INLINED
-  std::sort(mesh.faces.begin(), mesh.faces.end(), [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
+  std::sort(mesh.faces, mesh.faces + mesh.faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
   mesh.CalculateNormals();
   int rotationCount;
   input.Read(&rotationCount, 4);

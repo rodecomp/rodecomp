@@ -6,26 +6,46 @@
 #include "Resource/ResourceByteReader.h"
 
 // INLINED
+AnimatedModelFrame::AnimatedModelFrame() : vertices(nullptr), textureVertices(nullptr) {
+}
+
+// OFFSET: 0x00756680
+// FUNCTION: fn_07994
+AnimatedModelFrame::~AnimatedModelFrame() {
+  delete[] this->vertices;
+  delete[] this->textureVertices;
+}
+
+// INLINED
 AnimatedModelNode::AnimatedModelNode(TextureCache& textures)
-    : model(nullptr), parent(nullptr), unknown_0040(0), vertexCount(0), textureVertexCount(0), faceCount(0), sharedTextureVertices(0), m_textures(textures) {
+    : model(nullptr), parent(nullptr), vertexCount(0), faceCount(0), faceNormals(nullptr), frames(nullptr), faces(nullptr), textures(nullptr),
+      m_textures(textures) {
 }
 
 // INLINED
 AnimatedModelNode::~AnimatedModelNode() {
-  for (CTexture* texture : this->textures) {
-    texture->Release();
-    this->m_textures.Remove(texture);
+  delete[] this->frames;
+  delete[] this->faces;
+  delete[] this->faceNormals;
+
+  if (this->textures) {
+    for (int index = 0; index < this->textureCount; ++index) {
+      this->textures[index]->Release();
+      this->m_textures.Remove(this->textures[index]);
+    }
+
+    delete[] this->textures;
   }
 }
 
 // OFFSET: 0x007550E0
 // FUNCTION: fn_07979
 C3dAnimModelRes::C3dAnimModelRes(ModelResourceContext& context)
-    : unknown_0110(0), unknown_0114(0), shade(2), frameCount(0), animationLength(0), speed(1.0f), unknown_0150(0), unknown_0154(0.0f), unknown_0158(0.0f),
+    : unknown_0110(0), unknown_0114(nullptr), shade(2), frameCount(0), animationLength(0), speed(1.0f), unknown_0150(0), unknown_0154(0.0f), unknown_0158(0.0f),
       unknown_015C(0.0f), alpha(255), m_context(&context) {
 }
 
-// OFFSET: 0x00753510
+// OFFSET: 0x00756480
 // FUNCTION: fn_07993
 C3dAnimModelRes::~C3dAnimModelRes() {
   this->Unload();
@@ -41,6 +61,12 @@ C3dAnimModelRes* C3dAnimModelRes::Create() {
 // OFFSET: 0x0075C710
 // FUNCTION: fn_08023
 void C3dAnimModelRes::Unload() {
+  if (this->unknown_0114) {
+    delete[] this->unknown_0114;
+    this->unknown_0114 = nullptr;
+    this->unknown_0110 = 0;
+  }
+
   for (AnimatedModelNode* node : this->nodes) {
     delete node;
   }
@@ -99,7 +125,7 @@ bool C3dAnimModelRes::Load(const char* name) {
   for (int index = 0; index < nodeCount; ++index) {
     auto node = std::make_unique<AnimatedModelNode>(this->m_context->textures);
     node->model = this;
-    node->frames.resize(static_cast<unsigned>(this->frameCount));
+    node->frames = new AnimatedModelFrame[this->frameCount];
     std::uint32_t marker;
     input.Read(&marker, 4);
 
@@ -113,41 +139,43 @@ bool C3dAnimModelRes::Load(const char* name) {
     node->name = field;
     input.Read(field, sizeof(field));
     node->parentName = field;
-    int count;
-    input.Read(&count, 4);
+    input.Read(&node->textureCount, 4);
+    node->textures = new CTexture*[node->textureCount];
 
-    for (int texture = 0; texture < count; ++texture) {
+    for (int texture = 0; texture < node->textureCount; ++texture) {
       int id;
       input.Read(&id, 4);
       CTexture* value = this->m_context->textures.Load(names[id].c_str(), 0, false, true, false);
       value->Retain();
-      node->textures.push_back(value);
+      node->textures[texture] = value;
     }
 
     input.Read(&node->vertexCount, 4);
 
-    for (AnimatedModelFrame& frame : node->frames) {
-      frame.vertices.resize(static_cast<unsigned>(node->vertexCount));
-      input.Read(frame.vertices.data(), static_cast<unsigned>(node->vertexCount) * 12u);
+    for (int frameIndex = 0; frameIndex < this->frameCount; ++frameIndex) {
+      AnimatedModelFrame& frame = node->frames[frameIndex];
+      frame.vertices = new std::array<float, 3>[node->vertexCount]{};
+      input.Read(frame.vertices, static_cast<unsigned>(node->vertexCount) * 12u);
     }
 
     input.Read(&node->textureVertexCount, 4);
     input.Read(&node->sharedTextureVertices, 4);
 
     if (node->sharedTextureVertices) {
-      node->frames[0].textureVertices.resize(static_cast<unsigned>(node->textureVertexCount));
-      input.Read(node->frames[0].textureVertices.data(), static_cast<unsigned>(node->textureVertexCount) * 12u);
+      node->frames[0].textureVertices = new ModelTextureVertex[node->textureVertexCount];
+      input.Read(node->frames[0].textureVertices, static_cast<unsigned>(node->textureVertexCount) * 12u);
     } else {
-      for (AnimatedModelFrame& frame : node->frames) {
-        frame.textureVertices.resize(static_cast<unsigned>(node->textureVertexCount));
-        input.Read(frame.textureVertices.data(), static_cast<unsigned>(node->textureVertexCount) * 12u);
+      for (int frameIndex = 0; frameIndex < this->frameCount; ++frameIndex) {
+        AnimatedModelFrame& frame = node->frames[frameIndex];
+        frame.textureVertices = new ModelTextureVertex[node->textureVertexCount];
+        input.Read(frame.textureVertices, static_cast<unsigned>(node->textureVertexCount) * 12u);
       }
     }
 
     input.Read(&node->faceCount, 4);
-    node->faceNormals.resize(static_cast<unsigned>(node->faceCount));
-    node->faces.resize(static_cast<unsigned>(node->faceCount));
-    input.Read(node->faces.data(), static_cast<unsigned>(node->faceCount) * 24u);
+    node->faceNormals = new std::array<float, 3>[node->faceCount];
+    node->faces = new AnimatedModelFace[node->faceCount];
+    input.Read(node->faces, static_cast<unsigned>(node->faceCount) * 24u);
     this->nodes.push_back(node.release());
     input.Read(&marker, 4);
 

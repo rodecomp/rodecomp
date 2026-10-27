@@ -121,19 +121,17 @@ inline void C3dModelResV2::ReadNode(ResourceByteReader& input, unsigned minor, c
 
   input.Read(node->transform, sizeof(node->transform));
   ModelMesh& mesh = *node->mesh;
-  unsigned vertexCount = 0;
-  input.Read(&vertexCount, 4);
-  mesh.vertices.resize(vertexCount);
-  input.Read(mesh.vertices.data(), vertexCount * 12u);
-  unsigned textureVertexCount = 0;
-  input.Read(&textureVertexCount, 4);
-  mesh.textureVertices.resize(textureVertexCount);
-  input.Read(mesh.textureVertices.data(), textureVertexCount * 12u);
-  int faceCount = 0;
-  input.Read(&faceCount, 4);
-  mesh.faces.resize(static_cast<unsigned>(faceCount));
+  input.Read(&mesh.vertexCount, 4);
+  mesh.vertices = new std::array<float, 3>[mesh.vertexCount]{};
+  input.Read(mesh.vertices, static_cast<unsigned>(mesh.vertexCount) * 12u);
+  input.Read(&mesh.textureVertexCount, 4);
+  mesh.textureVertices = new ModelTextureVertex[mesh.textureVertexCount];
+  input.Read(mesh.textureVertices, static_cast<unsigned>(mesh.textureVertexCount) * 12u);
+  input.Read(&mesh.faceCount, 4);
+  mesh.faces = new ModelFace[mesh.faceCount];
 
-  for (ModelFace& face : mesh.faces) {
+  for (int index = 0; index < mesh.faceCount; ++index) {
+    ModelFace& face = mesh.faces[index];
     std::vector<unsigned char> bytes;
     unsigned char fixed[24];
     const unsigned char* record;
@@ -161,7 +159,7 @@ inline void C3dModelResV2::ReadNode(ResourceByteReader& input, unsigned minor, c
   }
 
   // INLINED
-  std::sort(mesh.faces.begin(), mesh.faces.end(), [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
+  std::sort(mesh.faces, mesh.faces + mesh.faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
   mesh.CalculateNormals();
   ReadKeys(input, node->scaleKeys, false);
   ReadKeys(input, node->rotationKeys, true);

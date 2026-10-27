@@ -10,7 +10,8 @@ void C3dNode::AccumulateBounds(float* bounds, const float* matrix) {
   AffineMatrix combined;
   combined.Compose(this->transform, parentMatrix);
 
-  for (const auto& vertex : this->mesh->vertices) {
+  for (int index = 0; index < this->mesh->vertexCount; ++index) {
+    const auto& vertex = this->mesh->vertices[index];
     const float x = ((vertex[0] * combined.values[0] + vertex[1] * combined.values[3]) + vertex[2] * combined.values[6]) + combined.values[9];
     const float y = ((vertex[1] * combined.values[4] + vertex[0] * combined.values[1]) + vertex[2] * combined.values[7]) + combined.values[10];
     const float z = ((vertex[0] * combined.values[2] + vertex[1] * combined.values[5]) + vertex[2] * combined.values[8]) + combined.values[11];

@@ -20,14 +20,39 @@ namespace {
 // FUNCTION: fn_07988
 ModelFace::ModelFace() = default;
 
+// OFFSET: 0x00551BA0
+// FUNCTION: fn_02007
+ModelMesh::ModelMesh()
+    : vertexCount(0), vertices(nullptr), faceCount(0), faces(nullptr), textureVertexCount(0), textureVertices(nullptr), faceNormals(nullptr),
+      vertexNormals(nullptr) {
+}
+
+// OFFSET: 0x00551E80
+// FUNCTION: fn_02009
+ModelMesh::~ModelMesh() {
+  delete[] this->vertices;
+  this->vertices = nullptr;
+  this->vertexCount = 0;
+  delete[] this->faces;
+  this->faces = nullptr;
+  this->faceCount = 0;
+  delete[] this->textureVertices;
+  this->textureVertices = nullptr;
+  this->textureVertexCount = 0;
+  delete[] this->faceNormals;
+  this->faceNormals = nullptr;
+  delete[] this->vertexNormals;
+  this->vertexNormals = nullptr;
+}
+
 // OFFSET: 0x00551FD0
 // FUNCTION: fn_02011
 void ModelMesh::CalculateNormals() {
-  if (this->faceNormals.empty()) {
-    this->faceNormals.resize(this->faces.size());
+  if (!this->faceNormals) {
+    this->faceNormals = new std::array<float, 3>[this->faceCount]{};
   }
 
-  for (unsigned index = 0; index < this->faces.size(); ++index) {
+  for (int index = 0; index < this->faceCount; ++index) {
     const ModelFace& face = this->faces[index];
     const auto& first = this->vertices[face.vertices[0]];
     const auto& second = this->vertices[face.vertices[1]];
@@ -46,25 +71,25 @@ void ModelMesh::CalculateNormals() {
     Normalize(normal.data());
   }
 
-  std::map<unsigned, std::vector<unsigned>> adjacent;
+  std::map<int, std::vector<int>> adjacent;
 
-  for (unsigned face = 0; face < this->faces.size(); ++face) {
-    for (unsigned corner = 0; corner < 3; ++corner) {
+  for (int face = 0; face < this->faceCount; ++face) {
+    for (int corner = 0; corner < 3; ++corner) {
       adjacent[this->faces[face].vertices[corner]].push_back(face);
     }
   }
 
-  if (this->vertexNormals.empty()) {
-    this->vertexNormals.resize(this->faces.size() * 3);
+  if (!this->vertexNormals) {
+    this->vertexNormals = new std::array<float, 3>[this->faceCount * 3]{};
   }
 
-  for (unsigned index = 0; index < this->faces.size(); ++index) {
+  for (int index = 0; index < this->faceCount; ++index) {
     const ModelFace& face = this->faces[index];
 
-    for (unsigned corner = 0; corner < 3; ++corner) {
+    for (int corner = 0; corner < 3; ++corner) {
       auto& normal = this->vertexNormals[index * 3 + corner];
 
-      for (unsigned neighbor : adjacent[face.vertices[corner]]) {
+      for (int neighbor : adjacent[face.vertices[corner]]) {
         const ModelFace& other = this->faces[neighbor];
 
         for (std::uint32_t group : face.smoothing) {
@@ -87,7 +112,7 @@ void ModelMesh::CalculateNormals() {
     }
   }
 
-  for (unsigned index = 0; index < this->faces.size() * 3; ++index) {
+  for (int index = 0; index < this->faceCount * 3; ++index) {
     Normalize(this->vertexNormals[index].data());
   }
 }

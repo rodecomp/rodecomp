@@ -9,7 +9,7 @@
 class C3dActor;
 
 struct ModelTextureTransform {
-  float values[5] = {0, 0, 1, 1, 0};
+  /* 0000 */ float values[5] = {0, 0, 1, 1, 0};
 };
 
 void SampleModelTexture(const ModelTextureChannels& channels, float frame, ModelTextureTransform& output);
@@ -30,17 +30,17 @@ public:
   void SampleGroundColors(const float* matrix, const float* position, const class GroundGeometry& ground);
   void AccumulateBounds(float* bounds, const float* matrix);
 
-  std::string name;
-  C3dActor* model;
-  C3dNode* parent;
-  std::list<C3dNode*> children;
-  ModelMesh* mesh;
-  AffineMatrix transform;
-  std::vector<CTexture*> textures;
-  float alpha;
-  std::vector<ModelFaceState> faceState;
-  std::vector<int> faceValues;
-  unsigned char unknown_0088;
+  /* 0004 */ std::string name;
+  /* 001C */ C3dActor* model;
+  /* 0020 */ C3dNode* parent;
+  /* 0024 */ std::list<C3dNode*> children;
+  /* 002C */ ModelMesh* mesh;
+  /* 0030 */ AffineMatrix transform;
+  /* 0060 */ std::vector<CTexture*> textures;
+  /* 006C */ float alpha;
+  /* 0070 */ std::vector<ModelFaceState> faceState;
+  /* 007C */ std::vector<int> faceValues;
+  /* 0088 */ unsigned char unknown_0088;
 };
 
 class C3dNodeV1 : public C3dNode {
@@ -51,9 +51,9 @@ public:
   void Animate(double frame) override;
   void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context) override;
 
-  std::vector<ModelScaleKey> scaleKeys;
-  std::vector<ModelRotationKey> rotationKeys;
-  std::vector<ModelPositionKey> positionKeys;
+  /* 008C */ std::vector<ModelScaleKey> scaleKeys;
+  /* 0098 */ std::vector<ModelRotationKey> rotationKeys;
+  /* 00A4 */ std::vector<ModelPositionKey> positionKeys;
 };
 
 class C3dNodeV2 : public C3dNode {
@@ -64,19 +64,26 @@ public:
   void Animate(double frame) override;
   void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context) override;
 
-  AffineMatrix resourceTransform;
-  AffineMatrix localTransform;
-  std::vector<ModelRotationKey> scaleKeys;
-  std::vector<ModelRotationKey> rotationKeys;
-  std::vector<ModelRotationKey> positionKeys;
-  std::map<int, ModelTextureChannels> textureKeys;
-  std::map<int, ModelTextureTransform> textureTransforms;
+  /* 008C */ AffineMatrix resourceTransform;
+  /* 00BC */ AffineMatrix localTransform;
+  /* 00EC */ std::vector<ModelRotationKey> scaleKeys;
+  /* 00F8 */ std::vector<ModelRotationKey> rotationKeys;
+  /* 0104 */ std::vector<ModelRotationKey> positionKeys;
+  /* 0110 */ std::map<int, ModelTextureChannels> textureKeys;
+  /* 0118 */ std::map<int, ModelTextureTransform> textureTransforms;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(C3dNode) == 140);
 static_assert(sizeof(C3dNodeV1) == 176);
 static_assert(sizeof(C3dNodeV2) == 288);
+static_assert(sizeof(ModelTextureTransform) == 20);
+static_assert(offsetof(C3dNode, mesh) == 0x2C);
+static_assert(offsetof(C3dNode, transform) == 0x30);
+static_assert(offsetof(C3dNode, faceState) == 0x70);
+static_assert(offsetof(C3dNodeV1, scaleKeys) == 0x8C);
+static_assert(offsetof(C3dNodeV2, resourceTransform) == 0x8C);
+static_assert(offsetof(C3dNodeV2, textureTransforms) == 0x118);
 #endif
 
 #endif

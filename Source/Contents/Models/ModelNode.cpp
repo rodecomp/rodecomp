@@ -75,8 +75,8 @@ void C3dNodeV1::Initialize(const ModelNode& base) {
     child->Initialize(*resourceChild);
   }
 
-  this->faceState.resize(this->mesh->faces.size());
-  this->faceValues.resize(this->mesh->faces.size() * 9u);
+  this->faceState.resize(this->mesh->faceCount);
+  this->faceValues.resize(this->mesh->faceCount * 9u);
 }
 
 // OFFSET: 0x00AB73F0
@@ -113,8 +113,8 @@ void C3dNodeV2::Initialize(const ModelNode& base) {
   this->alpha = static_cast<float>(resource.alpha) * 0.00390625f;
   this->textures.insert(this->textures.end(), resource.textures.begin(), resource.textures.end());
   this->alpha = static_cast<float>(resource.alpha) / 255.0f;
-  this->faceState.resize(this->mesh->faces.size());
-  this->faceValues.resize(this->mesh->faces.size() * 9u);
+  this->faceState.resize(this->mesh->faceCount);
+  this->faceValues.resize(this->mesh->faceCount * 9u);
 }
 
 // OFFSET: 0x00AB9120
