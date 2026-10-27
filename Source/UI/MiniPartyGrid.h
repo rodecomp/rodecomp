@@ -6,15 +6,15 @@
 #include <vector>
 
 struct MiniPartyGridPoint {
-  int x;
-  int y;
+  /* 0000 */ int x;
+  /* 0004 */ int y;
 };
 
 struct MiniPartyGridRectangle {
-  int left;
-  int top;
-  int right;
-  int bottom;
+  /* 0000 */ int left;
+  /* 0004 */ int top;
+  /* 0008 */ int right;
+  /* 000C */ int bottom;
 };
 
 struct MiniPartyGrid {
@@ -38,6 +38,10 @@ extern int g_miniPartyCellWidth;
 extern int g_miniPartyCellHeight;
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(MiniPartyGridPoint) == 0x08);
+static_assert(offsetof(MiniPartyGridPoint, y) == 0x04);
+static_assert(sizeof(MiniPartyGridRectangle) == 0x10);
+static_assert(offsetof(MiniPartyGridRectangle, bottom) == 0x0C);
 static_assert(offsetof(MiniPartyGrid, exclusions) == 0x1C);
 static_assert(offsetof(MiniPartyGrid, availableCells) == 0x28);
 static_assert(sizeof(MiniPartyGrid) == 0x34);

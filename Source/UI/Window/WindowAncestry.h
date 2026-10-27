@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_UI_WINDOW_WINDOWANCESTRY_H
 
 struct WindowAncestry {
-  WindowAncestry* parent;
+  /* 0010 */ WindowAncestry* parent;
 
   WindowAncestry();
   bool IsDescendantOf(const WindowAncestry* ancestor) const;

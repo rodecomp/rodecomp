@@ -3,13 +3,14 @@
 
 #include "Render/Primitives/RenderPrimitive.h"
 
+#include <cstddef>
 #include <map>
 
 struct CooldownEdge {
-  float origin;
-  float current;
-  int radius;
-  unsigned char increasing;
+  /* 0000 */ float origin;
+  /* 0004 */ float current;
+  /* 0008 */ int radius;
+  /* 000C */ unsigned char increasing;
 };
 
 struct CooldownClock {
@@ -42,6 +43,9 @@ struct CooldownState {
 
 static_assert(sizeof(CooldownEdge) == 16);
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(CooldownEdge, current) == 0x04);
+static_assert(offsetof(CooldownEdge, radius) == 0x08);
+static_assert(offsetof(CooldownEdge, increasing) == 0x0C);
 static_assert(sizeof(CooldownState) == 824);
 #endif
 

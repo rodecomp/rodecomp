@@ -133,7 +133,7 @@ public:
     return this->unknown_0048;
   }
 
-  WindowGeometry geometry;
+  /* 0014 */ WindowGeometry geometry;
 
 protected:
   /* 0044 */ unsigned char unknown_0044;

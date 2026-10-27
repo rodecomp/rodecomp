@@ -6,7 +6,7 @@
 struct WindowAncestry;
 
 struct WindowRegistration {
-  std::list<WindowAncestry*> windows;
+  /* 018C */ std::list<WindowAncestry*> windows;
 
   void Add(WindowAncestry* window);
   void Remove(WindowAncestry* window);

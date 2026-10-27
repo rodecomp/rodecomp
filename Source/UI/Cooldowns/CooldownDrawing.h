@@ -3,6 +3,7 @@
 
 #include "UI/Cooldowns/CooldownState.h"
 
+#include <cstddef>
 #include <vector>
 
 class RenderCommandPool;
@@ -10,8 +11,8 @@ class CRenderSystemBase;
 struct RenderQueues;
 
 struct CooldownDrawing {
-  std::vector<RenderCommand*> normal;
-  std::vector<RenderCommand*> reverse;
+  /* 0004 */ std::vector<RenderCommand*> normal;
+  /* 0010 */ std::vector<RenderCommand*> reverse;
 
   void Draw(
     int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY, const CooldownClock& clock,
@@ -23,5 +24,11 @@ struct CooldownDrawing {
 private:
   void DrawReverse(CooldownState& value, const CooldownClock& clock, RenderCommandPool& pool, CRenderSystemBase& system);
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(CooldownDrawing) == 0x18);
+static_assert(offsetof(CooldownDrawing, normal) == 0x00);
+static_assert(offsetof(CooldownDrawing, reverse) == 0x0C);
+#endif
 
 #endif

@@ -10,8 +10,8 @@ struct UIListBoxContext;
 class UIScrollBar;
 
 struct ExtendedListLine {
-  std::string text;
-  std::uint32_t color = 0;
+  /* 0000 */ std::string text;
+  /* 0018 */ std::uint32_t color = 0;
 };
 
 class UIListBoxEx : public UIWindow {

@@ -5,6 +5,7 @@
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Lists/UIListBoxEx.h"
 
+#include <cstddef>
 #include <vector>
 
 class UIStaticText;
@@ -18,10 +19,10 @@ struct UIComboBoxHeaderContext;
 struct PartyRowContext;
 struct ExtendedListLine;
 struct PartyBoardPlacement {
-  int x;
-  int y;
-  int width;
-  int height;
+  /* 0000 */ int x;
+  /* 0004 */ int y;
+  /* 0008 */ int width;
+  /* 000C */ int height;
 };
 
 struct AgencyRequestContext;
@@ -91,6 +92,9 @@ private:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(PartyBoardPlacement, y) == 0x04);
+static_assert(offsetof(PartyBoardPlacement, width) == 0x08);
+static_assert(offsetof(PartyBoardPlacement, height) == 0x0C);
 static_assert(sizeof(UIAdvenPartyBoardWnd) == 352);
 #endif
 
