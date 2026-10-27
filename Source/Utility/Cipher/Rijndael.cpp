@@ -23,20 +23,20 @@ static constexpr const char* s_errorBlockLength = "Incorrect block length";
 static constexpr const char* s_errorDataLength = "Data not multiple of Block Size";
 
 // GLOBAL: gl_24465
-static unsigned char s_defaultAesKey[32] = {
+static const unsigned char s_defaultAesKey[32] = {
   0x06, 0xA9, 0x21, 0x40, 0x36, 0xB8, 0xA1, 0x5B, 0x51, 0x2E, 0x03, 0xD5, 0x34, 0x12, 0x00, 0x06,
   0x06, 0xA9, 0x21, 0x40, 0x36, 0xB8, 0xA1, 0x5B, 0x51, 0x2E, 0x03, 0xD5, 0x34, 0x12, 0x00, 0x06,
 };
 
 // GLOBAL: gl_24466
-static unsigned char s_defaultAesChain[32] = {
+static const unsigned char s_defaultAesChain[32] = {
   0x3D, 0xAF, 0xBA, 0x42, 0x9D, 0x9E, 0xB4, 0x30, 0xB4, 0x22, 0xDA, 0x80, 0x2C, 0x9F, 0xAC, 0x41,
   0x3D, 0xAF, 0xBA, 0x42, 0x9D, 0x9E, 0xB4, 0x30, 0xB4, 0x22, 0xDA, 0x80, 0x2C, 0x9F, 0xAC, 0x41,
 };
 
 // OFFSET: 0x00617EA0
 // FUNCTION: fn_04399
-void DecryptAes192(const char* input, char* output) {
+void DecryptRijndael192(const char* input, char* output) {
   CRijndael cipher;
   cipher.MakeKey(reinterpret_cast<const char*>(s_defaultAesKey), reinterpret_cast<const char*>(s_defaultAesChain), 24, 24);
   cipher.DecryptBlock(input, output);
@@ -44,7 +44,7 @@ void DecryptAes192(const char* input, char* output) {
 
 // OFFSET: 0x00617F40
 // FUNCTION: fn_04400
-void DecryptAes256(const char* input, char* output) {
+void DecryptRijndael256(const char* input, char* output) {
   CRijndael cipher;
   cipher.MakeKey(reinterpret_cast<const char*>(s_defaultAesKey), reinterpret_cast<const char*>(s_defaultAesChain), 32, 32);
   cipher.DecryptBlock(input, output);
