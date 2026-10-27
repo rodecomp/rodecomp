@@ -3,10 +3,12 @@
 
 #include <cstring>
 
+// INLINED
 ResourceFailures::ResourceFailures(ResourceMessages& messages) : m_messages(&messages) {
   InitializeCriticalSection(&this->m_lock);
 }
 
+// INLINED
 ResourceFailures::~ResourceFailures() {
   DeleteCriticalSection(&this->m_lock);
 }

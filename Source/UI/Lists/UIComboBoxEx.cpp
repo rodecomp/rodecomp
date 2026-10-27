@@ -10,6 +10,7 @@
 #include <algorithm>
 
 namespace {
+  // INLINED
   unsigned Palette(ResourceMgr& resources, int column, int row) {
     constexpr char path[] = "유저인터페이스\\colorchip.bmp";
     auto* chip = static_cast<CBitmapRes*>(resources.Load(path));

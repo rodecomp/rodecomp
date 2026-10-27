@@ -2,6 +2,7 @@
 #include "UI/Edit/ItemTagRetirement.h"
 #include "UI/Window/UIWindow.h"
 
+// INLINED
 FocusedItemTagRemoval::FocusedItemTagRemoval(InputFocus& focus) : m_focus(focus) {
 }
 

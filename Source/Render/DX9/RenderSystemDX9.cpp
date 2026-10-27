@@ -23,6 +23,7 @@ CRenderSystemDX9::~CRenderSystemDX9() {
   delete this->m_defaultTexture;
 }
 
+// INLINED
 void CRenderSystemDX9::RefreshContexts() {
   this->m_surfaceContext = this->m_device->SurfaceContext();
   auto& context = this->m_textureContext;
@@ -43,6 +44,7 @@ std::int32_t CRenderSystemDX9::Backend() {
   return 2;
 }
 
+// INLINED
 HRESULT CRenderSystemDX9::Initialize(HWND window) {
   const HRESULT result =
     InitializeConfiguredDeviceDX9(*this->m_device, window, this->m_context->deviceOptions, this->m_context->adapter, this->m_context->serviceUsesDX7);

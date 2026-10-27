@@ -64,6 +64,7 @@ public:
   void
   StopRecruiting(std::uint32_t accountId, std::string world, std::string url, std::string token, std::uint32_t masterAccountId, StopRecruitingContext& context);
 
+  // INLINED
   CAsyncWorkRecycleObjectPoolMgr& Pools() {
     return *this->m_pools;
   }

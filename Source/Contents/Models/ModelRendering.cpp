@@ -10,6 +10,7 @@
 #include "Utility/Math/ScalarConversion.h"
 #include <cstring>
 
+// INLINED
 ModelRenderContext::ModelRenderContext(
   const RenderProjection& projection, RenderCommandPool& commands, RenderVertexPool& vertices, RenderQueues& queues, const int& width, const int& height,
   const bool& depthAlpha, const float& depthStart, const float& depthEnd, const bool& overrideColor, const bool& integerColor, const float* overrideScale,
