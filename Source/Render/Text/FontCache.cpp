@@ -1,10 +1,6 @@
 #include "Render/Text/FontCache.h"
 
 #include <algorithm>
-#include <objidl.h>
-
-#include <gdiplus.h>
-
 #include <string>
 #include <tuple>
 
@@ -43,8 +39,7 @@ namespace {
 // OFFSET: 0x0054D530
 // FUNCTION: fn_01935
 FontCache::FontCache() {
-  Gdiplus::GdiplusStartupInput input;
-  Gdiplus::GdiplusStartup(&this->m_gdiplus, &input, nullptr);
+  Gdiplus::GdiplusStartup(&this->m_gdiplus, &this->m_startup, nullptr);
 }
 
 // OFFSET: 0x0100F120
