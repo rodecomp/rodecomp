@@ -11,10 +11,12 @@ struct XmlNode {
   void Clear();
   XmlNode* FindChild(const char* name);
   XmlNode* FindSibling(const char* name);
+  const std::string& Text();
+  std::string DecodeEntity(const char* begin, const char* end);
 
   /* 0000 */ const char* name;
-  /* 0004 */ std::uint32_t unknown_0004;
-  /* 0008 */ std::uint32_t unknown_0008;
+  /* 0004 */ char* unknown_0004;
+  /* 0008 */ char* unknown_0008;
   /* 000C */ std::string text;
   /* 0024 */ XmlNode* sibling;
   /* 0028 */ XmlNode* child;
@@ -22,6 +24,9 @@ struct XmlNode {
 
 struct XmlDocument : XmlNode {
   void Reset();
+  char* TerminateName(char* begin, char* end);
+  char* ParseElements(XmlNode* parent, char* cursor, char* end);
+  bool Parse(const char* begin, const char* end);
 
   /* 002C */ void* buffer;
 };
