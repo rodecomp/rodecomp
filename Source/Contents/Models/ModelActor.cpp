@@ -125,6 +125,9 @@ void C3dActor::UpdateBounds() {
 }
 
 // OFFSET: 0x00ABBA50
+// FUNCTION: fn_17518
+void C3dActor::Prepare(ModelLightingContext&) {
+}
 
 // OFFSET: 0x00ABBA60
 // FUNCTION: fn_17519
@@ -272,6 +275,9 @@ void C3dActor::Update() {
 }
 
 // OFFSET: 0x00AB7B40
+// FUNCTION: fn_17495
+void C3dActor::Draw(const float*, bool, ModelRenderContext&) {
+}
 
 // OFFSET: 0x00AB7B50
 // FUNCTION: fn_17496
