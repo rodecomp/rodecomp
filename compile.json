@@ -238,6 +238,7 @@
   "Source/Client/Mode/ModeDragState.cpp": 2,
   "Source/Client/Mode/ModeTooltip.cpp": 2,
   "Source/Client/Registry.cpp": 0,
+  "Source/Client/Replay.cpp": 0,
   "Source/Client/ReplayPacketRecorder.cpp": 2,
   "Source/Client/Session.cpp": 0,
   "Source/Contents/ActorGeometry.cpp": 4,
