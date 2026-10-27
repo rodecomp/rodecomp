@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-struct ResourceByteReader;
+class CFile;
 class C3dAttr;
 struct GroundSpatial;
 class C3dActor;
@@ -15,7 +15,7 @@ struct WorldSpatialTree {
   WorldSpatialTree(const WorldSpatialTree&) = delete;
   WorldSpatialTree& operator=(const WorldSpatialTree&) = delete;
   void Subdivide(int depth);
-  void ReadBounds(ResourceByteReader& input, int depth);
+  void ReadBounds(CFile& input, int depth);
   void ClearChildren();
   void BindTerrain(C3dAttr& resource, int depth);
   void BindGround(GroundSpatial& resource, int depth);

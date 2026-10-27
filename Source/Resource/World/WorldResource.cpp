@@ -1,11 +1,9 @@
 #include "Client/Application/ErrorDialog.h"
-#include "Resource/Bitmap/BitmapResource.h"
-#include "Resource/ResourceByteReader.h"
+#include "File/File.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Resource/World/WorldResource.h"
 #include "Utility/Math/AffineMatrix.h"
 
-#include <array>
-#include <bit>
 #include <cstdio>
 #include <cstring>
 
@@ -15,6 +13,34 @@
 WorldLighting g_worldLighting{};
 
 namespace {
+  struct WorldModelFileRecord {
+    /* 0000 */ char model[80];
+    /* 0050 */ char node[80];
+    /* 00A0 */ float position[3]{};
+    /* 00AC */ float rotation[3]{};
+    /* 00B8 */ float scale[3]{};
+  };
+
+  struct WorldLightFileRecord {
+    /* 0000 */ char name[80];
+    /* 0050 */ float position[3]{};
+    /* 005C */ unsigned char unknown_005C[16];
+  };
+
+  struct WorldLegacySoundFileRecord {
+    /* 0000 */ char name[80];
+    /* 0050 */ char file[80];
+    /* 00A0 */ float position[3]{};
+    /* 00AC */ float volume;
+    /* 00B0 */ int width;
+    /* 00B4 */ int height;
+    /* 00B8 */ float range;
+  };
+
+  static_assert(sizeof(WorldModelFileRecord) == 0xC4);
+  static_assert(sizeof(WorldLightFileRecord) == 0x6C);
+  static_assert(sizeof(WorldLegacySoundFileRecord) == 0xBC);
+
   // OFFSET: 0x00763010
   // FUNCTION: fn_08075
   signed char CompareWorldVersion(const int targetVersion[2], const unsigned char* const fileVersion[2]) {
@@ -34,22 +60,27 @@ namespace {
 
     return 0;
   }
+
+  // OFFSET: 0x00763740
+  // FUNCTION: fn_08079
+  unsigned char IsUnsupportedWorldVersion(unsigned major, unsigned minor, unsigned build, char* message, unsigned capacity) {
+    return 0;
+  }
 }
 
 // OFFSET: 0x00763060
 // FUNCTION: fn_08076
-C3dWorldRes::C3dWorldRes(WorldResourceContext& context) : spatial(nullptr), lightDirection{}, diffuse{}, ambient{}, flag(0), m_context(&context) {
+C3dWorldRes::C3dWorldRes() : spatial(nullptr), lightDirection{}, diffuse{}, ambient{}, flag(0) {
 }
 
 // OFFSET: 0x00763550
-// OFFSET: 0x00762FE0
 // FUNCTION: fn_08077
 C3dWorldRes::~C3dWorldRes() = default;
 
 // OFFSET: 0x00761940
 // FUNCTION: fn_08071
 C3dWorldRes* C3dWorldRes::Create() {
-  return new C3dWorldRes(*this->m_context);
+  return new C3dWorldRes;
 }
 
 // OFFSET: 0x00761B40
@@ -77,7 +108,7 @@ void C3dWorldRes::Unload() {
 }
 
 // INLINED
-inline void C3dWorldRes::ReadEnvironment(ResourceByteReader& input, unsigned version) {
+inline void C3dWorldRes::ReadEnvironment(CFile& input, unsigned version) {
   if (version < 0x206u) {
     if (version >= 0x103u) {
       input.Read(&this->waterLevel, sizeof(this->waterLevel));
@@ -148,7 +179,7 @@ inline void C3dWorldRes::ReadEnvironment(ResourceByteReader& input, unsigned ver
 }
 
 // INLINED
-inline void C3dWorldRes::ReadObjects(ResourceByteReader& input, unsigned version, unsigned build, char* lastName) {
+inline void C3dWorldRes::ReadObjects(CFile& input, unsigned version, unsigned build, char* lastName) {
   int count;
   input.Read(&count, sizeof(count));
 
@@ -178,54 +209,55 @@ inline void C3dWorldRes::ReadObjects(ResourceByteReader& input, unsigned version
           input.Read(&modelIndex, sizeof(modelIndex));
         }
 
-        if (speed > 100.0f || !(0.0f < speed)) {
+        if (speed > 100.0f || speed <= 0.0f) {
           speed = 1.0f;
         }
       }
 
-      std::array<unsigned char, 196> wire;
-      std::memset(wire.data() + 160, 0, 36);
-      input.Read(wire.data(), static_cast<unsigned>(wire.size()));
+      WorldModelFileRecord wire;
+      input.Read(&wire, sizeof(wire));
       auto* record = new WorldModelRecord;
-      std::strcpy(record->name, lastName);
-      std::strcpy(record->model, reinterpret_cast<const char*>(wire.data()));
-      std::strcpy(record->node, reinterpret_cast<const char*>(wire.data() + 80));
-      std::memcpy(record->position, wire.data() + 160, 12);
-      std::memcpy(record->rotation, wire.data() + 172, 12);
-      std::memcpy(record->scale, wire.data() + 184, 12);
-      record->animationSpeed = speed;
-      record->animation = animation;
-      record->unknown_00F0 = unknown;
-      record->flag = flag != 0;
-      record->index = modelIndex;
-      this->models.push_back(record);
+
+      if (record) {
+        std::strcpy(record->name, lastName);
+        std::strcpy(record->model, wire.model);
+        std::strcpy(record->node, wire.node);
+        std::memcpy(record->position, wire.position, sizeof(record->position));
+        std::memcpy(record->rotation, wire.rotation, sizeof(record->rotation));
+        std::memcpy(record->scale, wire.scale, sizeof(record->scale));
+        record->animationSpeed = speed;
+        record->animation = animation;
+        record->unknown_00F0 = unknown;
+        record->flag = flag != 0;
+        record->index = modelIndex;
+        this->models.push_back(record);
+      }
       break;
     }
 
     case 2: {
-      unsigned char light[108];
-      std::memset(light + 72, 0, 12);
-      input.Read(light, sizeof(light));
+      WorldLightFileRecord light;
+      input.Read(&light, sizeof(light));
       break;
     }
 
     case 3: {
-      auto* record = new WorldSoundRecord;
-      std::memset(record->position, 0, sizeof(record->position));
+      WorldSoundRecord* record;
 
       if (version < 0x200u) {
-        unsigned char wire[188];
-        std::memset(wire + 160, 0, 12);
-        input.Read(wire, sizeof(wire));
-        std::strncpy(record->name, reinterpret_cast<const char*>(wire), 79);
-        std::strncpy(record->file, reinterpret_cast<const char*>(wire + 80), 79);
-        std::memcpy(record->position, wire + 160, 12);
-        std::memcpy(&record->volume, wire + 172, 4);
-        std::memcpy(&record->width, wire + 176, 4);
-        std::memcpy(&record->height, wire + 180, 4);
-        std::memcpy(&record->range, wire + 184, 4);
+        WorldLegacySoundFileRecord wire;
+        input.Read(&wire, sizeof(wire));
+        record = new WorldSoundRecord;
+        std::strncpy(record->name, wire.name, 79);
+        std::strncpy(record->file, wire.file, 79);
+        std::memcpy(record->position, wire.position, sizeof(record->position));
+        record->volume = wire.volume;
+        record->width = wire.width;
+        record->height = wire.height;
+        record->range = wire.range;
         record->cycle = 4.0f;
       } else {
+        record = new WorldSoundRecord;
         input.Read(record, sizeof(*record));
       }
 
@@ -235,7 +267,6 @@ inline void C3dWorldRes::ReadObjects(ResourceByteReader& input, unsigned version
 
     case 4: {
       auto* record = new WorldEffectRecord;
-      std::memset(record->position, 0, sizeof(record->position));
       input.Read(record, sizeof(*record));
       this->effects.push_back(record);
       break;
@@ -251,26 +282,18 @@ inline void C3dWorldRes::ReadObjects(ResourceByteReader& input, unsigned version
 // FUNCTION: fn_08073
 bool C3dWorldRes::Load(const char* name) {
   this->Unload();
-  auto& file = this->m_context->file;
-  struct CloseFile {
-    ResourceBytes& file;
+  CFile input;
 
-    ~CloseFile() {
-      file.Close();
-    }
-  } close{file};
-
-  if (!file.Open(name)) {
+  if (!input.Open(name, 0, true, false)) {
     return false;
   }
 
-  ResourceByteReader input{static_cast<const unsigned char*>(file.Data()), static_cast<unsigned>(file.Size())};
   char magic[5];
   input.Read(magic, 4);
   magic[4] = 0;
 
   if (std::strcmp(magic, "GRSW") != 0) {
-    ShowErrorDialog(this->m_context->renderSystem, "Invalid Format", 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, "Invalid Format", 0);
     return false;
   }
 
@@ -280,10 +303,11 @@ bool C3dWorldRes::Load(const char* name) {
   input.Read(&minor, 1);
   const unsigned version = static_cast<unsigned>(major) * 256u + minor;
 
+  char message[256];
+
   if (version > 0x207u) {
-    char message[256];
     std::snprintf(message, sizeof(message), "Unsupported Version\n current version: %d.%d < %d.%d", 2, 7, major, minor);
-    ShowErrorDialog(this->m_context->renderSystem, message, 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
 
     return false;
   }
@@ -294,6 +318,11 @@ bool C3dWorldRes::Load(const char* name) {
 
   if (major == 2 && minor >= 5) {
     input.Read(&build, sizeof(build));
+  }
+
+  if (IsUnsupportedWorldVersion(major, minor, build, message, sizeof(message)) == 1) {
+    ShowErrorDialog(GetRenderSystemHolder()->system, message, 0);
+    return false;
   }
 
   if (major == 2 && minor >= 2) {
@@ -321,8 +350,7 @@ bool C3dWorldRes::Load(const char* name) {
     unsigned count;
     input.Read(&count, sizeof(count));
 
-    const unsigned position = input.position + 4u * count;
-    input.position = position <= input.size ? position : input.size;
+    input.Seek(4u * count, FILE_CURRENT);
   }
 
   this->ReadObjects(input, version, build, lastName);
@@ -333,10 +361,10 @@ bool C3dWorldRes::Load(const char* name) {
     this->spatial->ReadBounds(input, 0);
   }
 
-  file.Close();
-  std::memcpy(this->m_context->lighting.ambient, this->ambient, sizeof(this->ambient));
-  std::memcpy(this->m_context->lighting.diffuse, this->diffuse, sizeof(this->diffuse));
-  std::memcpy(this->m_context->lighting.secondaryDiffuse, this->diffuse, sizeof(this->diffuse));
+  input.Close();
+  std::memcpy(g_worldLighting.ambient, this->ambient, sizeof(this->ambient));
+  std::memcpy(g_worldLighting.diffuse, this->diffuse, sizeof(this->diffuse));
+  std::memcpy(g_worldLighting.secondaryDiffuse, this->diffuse, sizeof(this->diffuse));
 
   return true;
 }

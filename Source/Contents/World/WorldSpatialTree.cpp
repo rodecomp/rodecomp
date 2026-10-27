@@ -5,7 +5,7 @@
 #include "Contents/Movies/BinkMovies.h"
 #include "Contents/World/WorldScene.h"
 #include "Contents/World/WorldSpatialTree.h"
-#include "Resource/ResourceByteReader.h"
+#include "File/File.h"
 #include "Resource/World/TerrainResource.h"
 
 // OFFSET: 0x00AC64F0
@@ -105,7 +105,7 @@ void WorldSpatialTree::Subdivide(int depth) {
 
 // OFFSET: 0x00AC8F60
 // FUNCTION: fn_17681
-void WorldSpatialTree::ReadBounds(ResourceByteReader& input, int depth) {
+void WorldSpatialTree::ReadBounds(CFile& input, int depth) {
   for (float& value : this->maximum) {
     input.Read(&value, sizeof(value));
   }

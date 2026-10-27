@@ -8,16 +8,15 @@
 #include <list>
 #include <string>
 
-class ResourceBytes;
-struct ResourceByteReader;
+class CFile;
 
 struct WorldModelRecord {
   /* 0000 */ char name[40];
   /* 0028 */ char model[80];
   /* 0078 */ char node[80];
-  /* 00C8 */ float position[3];
-  /* 00D4 */ float rotation[3];
-  /* 00E0 */ float scale[3];
+  /* 00C8 */ float position[3]{};
+  /* 00D4 */ float rotation[3]{};
+  /* 00E0 */ float scale[3]{};
   /* 00EC */ int animation;
   /* 00F0 */ int unknown_00F0;
   /* 00F4 */ float animationSpeed;
@@ -30,7 +29,7 @@ struct WorldModelRecord {
 struct WorldSoundRecord {
   /* 0000 */ char name[80];
   /* 0050 */ char file[80];
-  /* 00A0 */ float position[3];
+  /* 00A0 */ float position[3]{};
   /* 00AC */ float volume;
   /* 00B0 */ int width;
   /* 00B4 */ int height;
@@ -40,28 +39,22 @@ struct WorldSoundRecord {
 
 struct WorldEffectRecord {
   /* 0000 */ char name[80];
-  /* 0050 */ float position[3];
+  /* 0050 */ float position[3]{};
   /* 005C */ int id;
   /* 0060 */ float delay;
   /* 0064 */ float parameters[4];
 };
 
 struct WorldLighting {
-  float diffuse[3];
-  float secondaryDiffuse[3];
-  float ambient[3];
+  /* 0000 */ float diffuse[3];
+  /* 000C */ float secondaryDiffuse[3];
+  /* 0018 */ float ambient[3];
 };
 extern WorldLighting g_worldLighting;
 
-struct WorldResourceContext {
-  ResourceBytes& file;
-  CRenderSystemBase*& renderSystem;
-  WorldLighting& lighting;
-};
-
 class C3dWorldRes : public CRes {
 public:
-  explicit C3dWorldRes(WorldResourceContext& context);
+  C3dWorldRes();
   ~C3dWorldRes() override;
   C3dWorldRes* Create() override;
   bool Load(const char* name) override;
@@ -93,9 +86,8 @@ public:
   /* 01CD */ unsigned char unknown_01CD[3];
 
 private:
-  void ReadEnvironment(ResourceByteReader& input, unsigned version);
-  void ReadObjects(ResourceByteReader& input, unsigned version, unsigned build, char* lastName);
-  WorldResourceContext* m_context;
+  void ReadEnvironment(CFile& input, unsigned version);
+  void ReadObjects(CFile& input, unsigned version, unsigned build, char* lastName);
 };
 
 static_assert(sizeof(WorldModelRecord) == 268);
@@ -112,7 +104,19 @@ static_assert(offsetof(WorldEffectRecord, position) == 0x0050);
 static_assert(offsetof(WorldEffectRecord, id) == 0x005C);
 static_assert(offsetof(WorldEffectRecord, delay) == 0x0060);
 static_assert(offsetof(WorldEffectRecord, parameters) == 0x0064);
-static_assert(sizeof(C3dWorldRes) == 468);
+static_assert(offsetof(C3dWorldRes, models) == 0x0110);
+static_assert(offsetof(C3dWorldRes, effects) == 0x0118);
+static_assert(offsetof(C3dWorldRes, sounds) == 0x0120);
+static_assert(offsetof(C3dWorldRes, spatial) == 0x0128);
+static_assert(offsetof(C3dWorldRes, groundName) == 0x012C);
+static_assert(offsetof(C3dWorldRes, terrainName) == 0x0144);
+static_assert(offsetof(C3dWorldRes, sourceName) == 0x015C);
+static_assert(offsetof(C3dWorldRes, lightDirection) == 0x0194);
+static_assert(offsetof(C3dWorldRes, diffuse) == 0x01A0);
+static_assert(offsetof(C3dWorldRes, ambient) == 0x01AC);
+static_assert(offsetof(C3dWorldRes, flag) == 0x01CC);
+static_assert(sizeof(C3dWorldRes) == 0x01D0);
+static_assert(sizeof(WorldLighting) == 0x24);
 #endif
 
 #endif
