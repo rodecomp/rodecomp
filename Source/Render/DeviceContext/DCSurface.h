@@ -81,7 +81,7 @@ public:
   void Dim(int x, int y, int width, int height, int percent) override;
 
 private:
-  std::shared_ptr<CSurface> m_surface;
+  /* 0004 */ std::shared_ptr<CSurface> m_surface;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

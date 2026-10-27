@@ -52,7 +52,7 @@ public:
   /* 0040 */ int unknown_0040;
   /* 0044 */ int unknown_0044;
   /* 0048 */ unsigned char twoPass;
-  unsigned char unknown_0049[3];
+  /* 0049 */ unsigned char unknown_0049[3];
   /* 004C */ int unknown_004C;
   /* 0050 */ RenderCommandPool commands;
   /* 0070 */ RenderPrimitivePool primitives;
@@ -70,6 +70,15 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CRenderer) == 0x25C);
+static_assert(offsetof(CRenderer, unknown_0049) == 0x0049);
+static_assert(offsetof(CRenderer, commands) == 0x0050);
+static_assert(offsetof(CRenderer, primitives) == 0x0070);
+static_assert(offsetof(CRenderer, lightmapped) == 0x0090);
+static_assert(offsetof(CRenderer, vertices) == 0x00B0);
+static_assert(offsetof(CRenderer, atlas) == 0x00C0);
+static_assert(offsetof(CRenderer, fog) == 0x0150);
+static_assert(offsetof(CRenderer, queues) == 0x015C);
+static_assert(offsetof(CRenderer, backBuffer) == 0x0250);
 #endif
 
 #endif

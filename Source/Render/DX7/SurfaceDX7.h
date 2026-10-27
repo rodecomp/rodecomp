@@ -28,10 +28,10 @@ public:
   void Stretch(int x, int y, int width, int height) override;
 
 protected:
-  DeviceOwnerDX7* m_owner;
-  IDirectDrawSurface7* m_surface;
-  std::uint32_t m_width;
-  std::uint32_t m_height;
+  /* 0004 */ DeviceOwnerDX7* m_owner;
+  /* 0008 */ IDirectDrawSurface7* m_surface;
+  /* 000C */ std::uint32_t m_width;
+  /* 0010 */ std::uint32_t m_height;
 };
 
 class CSurfaceWallpaperDX7 : public CSurfaceDX7 {

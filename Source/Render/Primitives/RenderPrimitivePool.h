@@ -13,8 +13,8 @@ public:
   void Rewind();
 
 protected:
-  std::deque<RenderPrimitive> m_commands;
-  std::deque<RenderPrimitive>::iterator m_current;
+  /* 0070 */ std::deque<RenderPrimitive> m_commands;
+  /* 0084 */ std::deque<RenderPrimitive>::iterator m_current;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

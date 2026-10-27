@@ -38,9 +38,9 @@ public:
   }
 
 private:
-  DeviceOwnerDX7* m_device;
-  CTextureDX7* m_defaultTexture;
-  std::shared_ptr<CSurface> m_backBuffer;
+  /* 0004 */ DeviceOwnerDX7* m_device;
+  /* 0008 */ CTextureDX7* m_defaultTexture;
+  /* 000C */ std::shared_ptr<CSurface> m_backBuffer;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -46,12 +46,16 @@ public:
   /* 0680 */ IDirect3DSurface9* backBuffer;
   /* 0684 */ IDirect3DSurface9* capturedBackBuffer;
   /* 0688 */ bool dynamicTextures;
-  unsigned char unknown_0689[3];
+  /* 0689 */ unsigned char unknown_0689[3];
   /* 068C */ HRESULT lastPresent;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(DeviceOwnerDX9) == 0x690);
+static_assert(offsetof(DeviceOwnerDX9, state) == 0x000C);
+static_assert(offsetof(DeviceOwnerDX9, dynamicTextures) == 0x0688);
+static_assert(offsetof(DeviceOwnerDX9, unknown_0689) == 0x0689);
+static_assert(offsetof(DeviceOwnerDX9, lastPresent) == 0x068C);
 #endif
 
 #endif

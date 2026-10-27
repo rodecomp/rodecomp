@@ -15,10 +15,10 @@ public:
 
 private:
   using Block = std::vector<RenderVertex>;
-  unsigned m_minimum;
-  unsigned m_used;
-  std::forward_list<std::unique_ptr<Block>> m_active;
-  std::forward_list<std::unique_ptr<Block>> m_unused;
+  /* 00B0 */ unsigned m_minimum;
+  /* 00B4 */ unsigned m_used;
+  /* 00B8 */ std::forward_list<std::unique_ptr<Block>> m_active;
+  /* 00BC */ std::forward_list<std::unique_ptr<Block>> m_unused;
   Block& Activate(unsigned capacity);
 };
 

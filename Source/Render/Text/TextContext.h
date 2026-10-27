@@ -26,9 +26,9 @@ public:
   static unsigned Marker(const char* text, unsigned bytes, bool enabled);
 
 private:
-  HDC m_dc;
-  HGDIOBJ m_previous;
-  CDC* m_surface;
+  /* 0000 */ HDC m_dc;
+  /* 0004 */ HGDIOBJ m_previous;
+  /* 0008 */ CDC* m_surface;
   FontCache* m_fonts;
   const TextLocale* m_locale;
   int m_family;

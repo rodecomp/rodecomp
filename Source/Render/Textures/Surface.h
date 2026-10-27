@@ -1,16 +1,17 @@
 #ifndef RAGNAROK_SOURCE_RENDER_TEXTURES_SURFACE_H
 #define RAGNAROK_SOURCE_RENDER_TEXTURES_SURFACE_H
 
+#include <cstddef>
 #include <cstdint>
 #include <windows.h>
 
 struct SurfaceLock {
-  bool success;
-  void* pixels;
-  int pitch;
-  std::uint32_t width;
-  std::uint32_t height;
-  int bitsPerPixel;
+  /* 0000 */ bool success;
+  /* 0004 */ void* pixels;
+  /* 0008 */ int pitch;
+  /* 000C */ std::uint32_t width;
+  /* 0010 */ std::uint32_t height;
+  /* 0014 */ int bitsPerPixel;
 };
 
 class CSurface {
@@ -32,6 +33,11 @@ public:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CSurface) == 4);
 static_assert(sizeof(SurfaceLock) == 24);
+static_assert(offsetof(SurfaceLock, pixels) == 0x04);
+static_assert(offsetof(SurfaceLock, pitch) == 0x08);
+static_assert(offsetof(SurfaceLock, width) == 0x0C);
+static_assert(offsetof(SurfaceLock, height) == 0x10);
+static_assert(offsetof(SurfaceLock, bitsPerPixel) == 0x14);
 #endif
 
 #endif

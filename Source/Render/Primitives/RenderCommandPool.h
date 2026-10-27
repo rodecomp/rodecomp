@@ -12,8 +12,8 @@ public:
   void Rewind();
 
 private:
-  std::deque<RenderCommand> m_commands;
-  std::deque<RenderCommand>::iterator m_current;
+  /* 0050 */ std::deque<RenderCommand> m_commands;
+  /* 0064 */ std::deque<RenderCommand>::iterator m_current;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

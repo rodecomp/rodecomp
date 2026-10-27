@@ -18,8 +18,8 @@ public:
 
 protected:
   friend class CDCBitmap;
-  std::list<CTexture*> m_textures;
-  bool m_alpha;
+  /* 0020 */ std::list<CTexture*> m_textures;
+  /* 0028 */ bool m_alpha;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
