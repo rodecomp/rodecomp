@@ -11,7 +11,10 @@ public:
   /* 0000 */ unsigned char unknown_0000[0xF18];
   /* 0F18 */ int m_playerX;
   /* 0F1C */ int m_playerY;
-  /* 0F20 */ unsigned char unknown_0F20[0x88];
+  /* 0F20 */ unsigned char unknown_0F20[0x08];
+  /* 0F28 */ int m_score1;
+  /* 0F2C */ int m_score2;
+  /* 0F30 */ unsigned char unknown_0F30[0x78];
   /* 0FA8 */ const char* const* m_jobNamesBegin;
   /* 0FAC */ const char* const* m_jobNamesEnd;
   /* 0FB0 */ unsigned char unknown_0FB0[0x678];
@@ -29,6 +32,8 @@ extern CSession g_session;
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CSession, m_playerX) == 0xF18);
 static_assert(offsetof(CSession, m_playerY) == 0xF1C);
+static_assert(offsetof(CSession, m_score1) == 0xF28);
+static_assert(offsetof(CSession, m_score2) == 0xF2C);
 static_assert(offsetof(CSession, m_jobNamesBegin) == 0xFA8);
 static_assert(offsetof(CSession, m_jobNamesEnd) == 0xFAC);
 static_assert(offsetof(CSession, m_job) == 0x1628);
