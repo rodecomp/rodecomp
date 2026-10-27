@@ -33,10 +33,12 @@ char g_moduleBaseName[260] = {};
 char g_crashString[8096] = {};
 
 namespace {
+  // INLINED
   int ReadPlayerJob() {
     return g_session.m_job;
   }
 
+  // INLINED
   const char* ReadPlayerJobName(int jobId) {
     const char* const* namesBegin = g_session.m_jobNamesBegin;
     const char* const* namesEnd = g_session.m_jobNamesEnd;

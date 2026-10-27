@@ -51,6 +51,7 @@ namespace myGPack {
       2,  11, 1,  4,  14, 1,  7,  9,  4,  12, 10, 14, 8,  2,  13, 0,  15, 6,  12, 10, 9,  13, 0,  15, 3,  3,  5,  5,  6,  8,  11,
     };
 
+    // INLINED
     void Permute(std::uint8_t* block, const std::uint8_t* table, unsigned count) {
       std::uint8_t result[8] = {};
 
