@@ -9,7 +9,7 @@ public:
   virtual ~CSyncObject();
 
 private:
-  CRITICAL_SECTION* m_criticalSection;
+  /* 0004 */ CRITICAL_SECTION* m_criticalSection;
 };
 
 // INLINED

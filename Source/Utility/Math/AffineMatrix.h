@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_UTILITY_MATH_AFFINEMATRIX_H
 #define RAGNAROK_SOURCE_UTILITY_MATH_AFFINEMATRIX_H
 
+#include <cstddef>
+
 extern const float g_identityMatrix[12];
 
 float ClientSin(float radians);
@@ -11,7 +13,7 @@ float ClientCosine(int degrees);
 float SquareRoot(float value);
 
 struct AffineMatrix {
-  float values[12];
+  /* 0000 */ float values[12];
 
   void Identity();
   int IsIdentity() const;
@@ -32,5 +34,9 @@ struct AffineMatrix {
 };
 
 static_assert(sizeof(AffineMatrix) == 48);
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(AffineMatrix, values) == 0x0000);
+#endif
 
 #endif

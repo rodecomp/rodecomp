@@ -9,7 +9,7 @@ public:
   virtual ~NSyncObject();
 
 private:
-  CRITICAL_SECTION* m_criticalSection;
+  /* 0004 */ CRITICAL_SECTION* m_criticalSection;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

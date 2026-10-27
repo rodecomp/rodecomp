@@ -3,6 +3,7 @@
 
 #include "Utility/Async/NAsyncWork.h"
 
+#include <cstddef>
 #include <list>
 #include <utility>
 #include <windows.h>
@@ -29,8 +30,8 @@ protected:
 };
 
 struct NAsyncWorkResponse {
-  bool valid;
-  NAsyncWorkPtr work;
+  /* 0000 */ bool valid;
+  /* 0004 */ NAsyncWorkPtr work;
 };
 
 class NAsyncWorkResponseQueue {
@@ -52,6 +53,7 @@ protected:
 static_assert(sizeof(NAsyncWorkRequestQueue) == 56);
 static_assert(sizeof(NAsyncWorkResponseQueue) == 40);
 static_assert(sizeof(NAsyncWorkResponse) == 16);
+static_assert(offsetof(NAsyncWorkResponse, work) == 4);
 #endif
 
 #endif

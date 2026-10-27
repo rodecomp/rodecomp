@@ -16,7 +16,7 @@ public:
 protected:
   struct NameHash {
 
-    std::uint8_t unknown_0000 = 0;
+    /* 0000 */ std::uint8_t unknown_0000 = 0;
     std::size_t operator()(const std::string& name) const;
   };
 

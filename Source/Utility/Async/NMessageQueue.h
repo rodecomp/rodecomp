@@ -1,15 +1,16 @@
 #ifndef RAGNAROK_SOURCE_UTILITY_ASYNC_NMESSAGEQUEUE_H
 #define RAGNAROK_SOURCE_UTILITY_ASYNC_NMESSAGEQUEUE_H
 
+#include <cstddef>
 #include <cstdint>
 #include <deque>
 #include <windows.h>
 
 struct NMessage {
-  std::uint32_t id;
-  std::uint32_t argumentHigh;
-  std::uint32_t argumentLow;
-  bool valid;
+  /* 0000 */ std::uint32_t id;
+  /* 0004 */ std::uint32_t argumentHigh;
+  /* 0008 */ std::uint32_t argumentLow;
+  /* 000C */ bool valid;
 };
 
 class NMessageQueue {
@@ -25,9 +26,9 @@ public:
 
 protected:
   struct Record {
-    std::uint32_t argumentLow;
-    std::uint32_t argumentHigh;
-    std::uint32_t id;
+    /* 0000 */ std::uint32_t argumentLow;
+    /* 0004 */ std::uint32_t argumentHigh;
+    /* 0008 */ std::uint32_t id;
   };
 
   /* 0004 */ CRITICAL_SECTION m_criticalSection;
@@ -38,6 +39,9 @@ protected:
 
 static_assert(sizeof(NMessage) == 16);
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(NMessage, argumentHigh) == 4);
+static_assert(offsetof(NMessage, argumentLow) == 8);
+static_assert(offsetof(NMessage, valid) == 12);
 static_assert(sizeof(NMessageQueue) == 56);
 #endif
 
