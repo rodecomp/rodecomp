@@ -3,6 +3,13 @@
 #include <algorithm>
 
 namespace {
+  // STRING: st_01143
+  const char standardAlphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  // STRING: st_01144
+  const char urlAlphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  // GLOBAL: gl_24501
+  const char* const alphabets[] = {standardAlphabet, urlAlphabet};
+
   // OFFSET: 0x0061AD10
   // FUNCTION: fn_04416
   unsigned Position(unsigned char value) {
@@ -72,4 +79,39 @@ std::string DecodeBase64(std::string encoded, bool removeLinebreaks) {
   }
 
   return decoded;
+}
+
+// OFFSET: 0x00619D70
+std::string EncodeBase64(const std::string& input, bool urlSafe) {
+  const std::string bytes(input);
+  return EncodeBase64(reinterpret_cast<const unsigned char*>(bytes.c_str()), static_cast<unsigned int>(bytes.size()), urlSafe);
+}
+
+// OFFSET: 0x00619E10
+// FUNCTION: fn_04414
+std::string EncodeBase64(const unsigned char* input, unsigned int length, bool urlSafe) {
+  const char padding = urlSafe ? '.' : '=';
+  const char* alphabet = alphabets[urlSafe];
+  std::string encoded;
+  encoded.reserve(4 * ((length + 2) / 3));
+
+  for (unsigned int index = 0; index < length; index += 3) {
+    encoded.push_back(alphabet[input[index] >> 2]);
+    if (index + 1 < length) {
+      encoded.push_back(alphabet[((input[index] & 3) << 4) + (input[index + 1] >> 4)]);
+      if (index + 2 < length) {
+        encoded.push_back(alphabet[((input[index + 1] & 15) << 2) + (input[index + 2] >> 6)]);
+        encoded.push_back(alphabet[input[index + 2] & 63]);
+      } else {
+        encoded.push_back(alphabet[(input[index + 1] & 15) << 2]);
+        encoded.push_back(padding);
+      }
+    } else {
+      encoded.push_back(alphabet[(input[index] & 3) << 4]);
+      encoded.push_back(padding);
+      encoded.push_back(padding);
+    }
+  }
+
+  return encoded;
 }
