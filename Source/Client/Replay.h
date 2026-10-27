@@ -1,5 +1,6 @@
 #ifndef RAGNAROK_SOURCE_CLIENT_REPLAY_H
 #define RAGNAROK_SOURCE_CLIENT_REPLAY_H
+#include "Client/ReplayRecordOption.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -18,6 +19,14 @@ struct ReplayOptions {
   /* 0006 */ unsigned char recordRestricted;
   /* 0007 */ unsigned char unknown_0007;
   /* 0008 */ unsigned char unknown_0008[22];
+
+  unsigned char Get(ReplayRecordOption option) const {
+    return reinterpret_cast<const unsigned char*>(this)[static_cast<std::size_t>(option)];
+  }
+
+  void Set(ReplayRecordOption option, unsigned char value) {
+    reinterpret_cast<unsigned char*>(this)[static_cast<std::size_t>(option)] = value;
+  }
 };
 
 struct ReplayHeader {

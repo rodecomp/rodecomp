@@ -1,5 +1,6 @@
 #include "Client/ReplayPacketRecorder.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/PacketId.h"
 
 #include <cstring>
 #include <vector>
@@ -16,19 +17,19 @@ bool ReplayPacketRecorder::Record(std::uint16_t bytes, const void* packet, int e
   std::uint16_t id;
   std::memcpy(&id, packet, sizeof(id));
 
-  if (id != 2222) {
+  if (id != ID_REPLAY_WINDOW_RESPONSE) {
     if (this->lengths.IsRecorded(id) == 0) {
       return false;
     }
 
     switch (id) {
-    case 141:
-    case 142:
-    case 151:
-    case 265:
-    case 383:
-    case 732:
-    case 3038:
+    case ID_ZC_NOTIFY_CHAT:
+    case ID_ZC_NOTIFY_PLAYERCHAT:
+    case ID_ZC_WHISPER:
+    case ID_ZC_NOTIFY_CHAT_PARTY:
+    case ID_ZC_GUILD_CHAT:
+    case ID_ZC_BATTLEFIELD_CHAT:
+    case ID_ZC_ALLY_CHAT:
       if (this->recordRestricted == 0) {
         return false;
       }

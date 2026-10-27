@@ -1,5 +1,6 @@
 #ifndef RAGNAROK_SOURCE_CLIENT_REPLAYPACKETRECORDER_H
 #define RAGNAROK_SOURCE_CLIENT_REPLAYPACKETRECORDER_H
+#include "Client/ReplayRecordOption.h"
 
 #include <cstdint>
 #include <cstdio>
