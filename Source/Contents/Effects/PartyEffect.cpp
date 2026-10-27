@@ -6,7 +6,6 @@
 #include "Render/Textures/TextureCache.h"
 
 #include <limits>
-#include <new>
 
 // OFFSET: 0x00C2CF20
 // FUNCTION: fn_20088
