@@ -15,6 +15,7 @@ struct TextureBindingDX7 {
   /* 0274 */ IDirect3DDevice7* device = nullptr;
 
   void Set(unsigned stage, CTextureDX7* texture);
+  // INLINED
   void Set(IDirect3DDevice7* dev, unsigned stage, CTextureDX7* texture) {
     this->device = dev;
     this->Set(stage, texture);
