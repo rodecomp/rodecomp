@@ -11,6 +11,9 @@
 struct ReplayCachedPacket {
   /* 0000 */ bool enabled;
   /* 0004 */ std::vector<unsigned char> bytes;
+
+  ReplayCachedPacket() = default;
+  ReplayCachedPacket(const ReplayCachedPacket& other);
 };
 
 #pragma pack(push, 1)
@@ -65,6 +68,7 @@ struct ReplaySection {
 
   ReplaySection();
   ~ReplaySection();
+  void Clear();
 };
 #pragma pack(pop)
 

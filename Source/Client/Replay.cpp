@@ -36,11 +36,23 @@ static std::vector<unsigned char> BuildReplayTaggedRecord(std::uint16_t id, cons
   return record;
 }
 
+// OFFSET: 0x00B83920
+// FUNCTION: fn_19301
+ReplayCachedPacket::ReplayCachedPacket(const ReplayCachedPacket& other)
+    : enabled(other.enabled), bytes(other.bytes) {
+}
+
 // OFFSET: 0x00B839D0
 // FUNCTION: fn_19302
 ReplaySection::ReplaySection() : id(0), bytes(0), fileOffset(0) {
 }
 
+
+// OFFSET: 0x00B83A40
+
+// OFFSET: 0x00B83AE0
+
+// OFFSET: 0x00B83D00
 // OFFSET: 0x00B83D20
 // FUNCTION: fn_19306
 ReplaySection::~ReplaySection() {
