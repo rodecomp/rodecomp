@@ -354,3 +354,127 @@ std::string ItemNaming::DisplayName(const ItemInfo& item, unsigned char detailed
 
   return result;
 }
+
+
+// OFFSET: 0x005E11E0
+
+// OFFSET: 0x006D69C0
+
+// OFFSET: 0x006D70E0
+
+// OFFSET: 0x006D7660
+// FUNCTION: fn_06591
+const char* ItemResourcePath(const ItemInfo& item) {
+  int id = std::atoi(item.itemId.c_str());
+  ITEM_DESC& desc = FindItemDescription(id);
+  return item.identified == 1 ? desc.identifiedResource : desc.unidentifiedResource;
+}
+
+// OFFSET: 0x006D76B0
+// FUNCTION: fn_06592
+int ItemSlotsCount(const ItemInfo& item) {
+  int id = std::atoi(item.itemId.c_str());
+  return FindItemDescription(id).slots;
+}
+
+// OFFSET: 0x006D7760
+// FUNCTION: fn_06594
+int ItemUnidentifiedName(const ItemInfo& item, char* output, int& capacity, unsigned char consume) {
+  int id = std::atoi(item.itemId.c_str());
+  int written = Copy(output, capacity, FindItemDescription(id).unidentifiedName);
+  if (written > 0 && consume) {
+    capacity -= written;
+  }
+  return written;
+}
+
+// OFFSET: 0x006D78C0
+
+struct ItemNamingContext : public ItemNaming {
+  int Element(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
+  int Star(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
+  int Apprentice(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
+  int Refine(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
+  std::uint32_t CardColor(const ItemInfo& item, int slot) const;
+};
+
+// OFFSET: 0x006D5650
+
+// OFFSET: 0x006D6AA0
+// FUNCTION: fn_06583
+int ItemNamingContext::Element(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const {
+  const unsigned value = item.unknown_001C[4];
+  int message = 0;
+  int id = std::atoi(item.itemId.c_str());
+
+  switch (value) {
+  case 0:
+    message = id == 2634 || id == 2635 ? 2976 : 450;
+    break;
+  case 1:
+    message = 452;
+    break;
+  case 2:
+    message = 454;
+    break;
+  case 3:
+    message = 451;
+    break;
+  case 4:
+    message = 453;
+    break;
+  }
+
+  if (message) {
+    const char* text = this->Message(message);
+    const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
+    int written = (error == 0 || error == 80) && output ? static_cast<int>(strnlen(output, capacity)) : 0;
+    if (written > 0 && consume) {
+      capacity -= written;
+    }
+    return written;
+  }
+  return 0;
+}
+
+// OFFSET: 0x006D6B90
+// FUNCTION: fn_06584
+int ItemNamingContext::Star(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const {
+  int message = 0;
+  switch (item.unknown_001C[5]) {
+  case 5:
+    message = 459;
+    break;
+  case 10:
+    message = 460;
+    break;
+  case 15:
+    message = 461;
+    break;
+  }
+
+  if (message) {
+    const char* text = this->Message(message);
+    const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
+    int written = (error == 0 || error == 80) && output ? static_cast<int>(strnlen(output, capacity)) : 0;
+    if (written > 0 && consume) {
+      capacity -= written;
+    }
+    return written;
+  }
+  return 0;
+}
+
+// OFFSET: 0x006D6D50
+// FUNCTION: fn_06586
+int ItemNamingContext::Apprentice(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const {
+  const char* text = this->Message(756);
+  const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
+  int written = (error == 0 || error == 80) && output ? static_cast<int>(strnlen(output, capacity)) : 0;
+  if (written > 0 && consume) {
+    capacity -= written;
+  }
+  return written;
+}
+
+// OFFSET: 0x006D70A0
