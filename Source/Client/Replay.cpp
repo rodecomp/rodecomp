@@ -53,6 +53,12 @@ ReplaySection::ReplaySection() : id(0), bytes(0), fileOffset(0) {
 // OFFSET: 0x00B83AE0
 
 // OFFSET: 0x00B83D00
+// FUNCTION: fn_19305
+void ReplaySection::Clear() {
+  this->id = 0;
+  this->bytes = 0;
+  this->fileOffset = 0;
+}
 // OFFSET: 0x00B83D20
 // FUNCTION: fn_19306
 ReplaySection::~ReplaySection() {
