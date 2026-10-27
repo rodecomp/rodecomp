@@ -19,6 +19,7 @@ public:
   void SetGlobal(const std::string& name, int value);
   void SetGlobal(const std::string& name, double value);
   int ReadStrings(std::vector<std::string>& values, const char* global);
+  lua_State* GetState() const { return this->m_state; }
 
 protected:
   /* 0004 */ lua_State* m_state;
