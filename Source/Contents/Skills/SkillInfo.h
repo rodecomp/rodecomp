@@ -45,6 +45,11 @@ public:
   /* 0038 */ std::vector<SkillInfoEntry> entries;
 };
 
+void __stdcall Sub7739F0();
+bool Sub773A00(int skillId);
+bool Sub773CB0(int skillId);
+bool Sub773CD0(int skillId);
+bool Sub7745B0(int skillId);
 static_assert(sizeof(SkillInfoEntry) == 8);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(SkillInfoEntry, unknown_0004) == 0x4);

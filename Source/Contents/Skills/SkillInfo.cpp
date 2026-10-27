@@ -102,6 +102,17 @@ const char* CSkillInfo::DisplayName(LuaScript& script, int skillId) {
   return script.Call("GetSkillName", "d>s", skillId, &result) ? result : "Unknown-Skill";
 }
 
+// OFFSET: 0x007739F0
+// FUNCTION: fn_08319
+void __stdcall Sub7739F0() {
+}
+
+// OFFSET: 0x00773A00
+
+// OFFSET: 0x00773CB0
+
+// OFFSET: 0x00773CD0
+
 // OFFSET: 0x007737C0
 // FUNCTION: fn_08316
 const char* CSkillInfo::IdName(LuaScript& script) const {
@@ -121,3 +132,5 @@ bool CSkillInfo::UsesLevel(LuaScript& script, int skillId) {
   bool result = false;
   return script.Call("IsLevelUseSkill", "d>b", skillId, &result) ? result : false;
 }
+
+// OFFSET: 0x007745B0
