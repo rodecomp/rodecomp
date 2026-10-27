@@ -42,7 +42,8 @@ void C3dNode::Animate(double) {
 
 // OFFSET: 0x00AB7050
 // FUNCTION: fn_17482
-void C3dNodeV1::Initialize(const ModelNode& resource) {
+void C3dNodeV1::Initialize(const ModelNode& base) {
+  const auto& resource = static_cast<const ModelNodeV1&>(base);
   this->name = resource.name;
   this->mesh = resource.mesh.get();
   this->textures = resource.textures;
@@ -80,7 +81,8 @@ void C3dNodeV1::Initialize(const ModelNode& resource) {
 
 // OFFSET: 0x00AB73F0
 // FUNCTION: fn_17484
-void C3dNodeV2::Initialize(const ModelNode& resource) {
+void C3dNodeV2::Initialize(const ModelNode& base) {
+  const auto& resource = static_cast<const ModelNodeV2&>(base);
   this->name = resource.name;
   this->mesh = resource.mesh.get();
   std::memcpy(this->resourceTransform.values, resource.transform, sizeof(resource.transform));

@@ -36,7 +36,7 @@ namespace {
   }
 }
 
-// OFFSET: 0x00751ED0
+// OFFSET: 0x007555C0
 // FUNCTION: fn_07984
 C3dModelResV2::C3dModelResV2(ModelResourceContext& context) : C3dModelRes(context), framesPerSecond(0.0f), animationLength(0) {
 }
@@ -92,7 +92,7 @@ bool C3dModelResV2::Load(const char* name) {
 
 // INLINED
 inline void C3dModelResV2::ReadNode(ResourceByteReader& input, unsigned minor, const std::vector<std::string>& textureNames) {
-  auto node = std::make_unique<ModelNode>(this->m_context->textures);
+  auto node = std::make_unique<ModelNodeV2>();
   node->model = this;
   node->mesh = std::make_unique<ModelMesh>();
   node->name = ReadName(input);

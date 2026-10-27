@@ -9,32 +9,47 @@
 #include <cstring>
 
 // OFFSET: 0x00755630
-// OFFSET: 0x00750B10
 // FUNCTION: fn_07985
-ModelNode::ModelNode(TextureCache& textures) : model(nullptr), parent(nullptr), alpha(255), m_textures(textures) {
+ModelNode::ModelNode() : model(nullptr), parent(nullptr), alpha(255) {
 }
 
-// OFFSET: 0x007570F0
+// OFFSET: 0x007568E0
 // FUNCTION: fn_07996
 ModelNode::~ModelNode() {
   for (CTexture* texture : this->textures) {
     if (texture) {
       texture->Release();
-      this->m_textures.Remove(texture);
+      this->model->m_context->textures.Remove(texture);
     }
   }
+
+  this->textures.clear();
+  this->mesh.reset();
+  this->children.clear();
 }
+
+// INLINED
+ModelNodeV1::ModelNodeV1() = default;
+
+// INLINED
+ModelNodeV1::~ModelNodeV1() = default;
+
+// INLINED
+ModelNodeV2::ModelNodeV2() = default;
+
+// INLINED
+ModelNodeV2::~ModelNodeV2() = default;
 
 // OFFSET: 0x007553E0
 // FUNCTION: fn_07982
 C3dModelRes::C3dModelRes(ModelResourceContext& context) : major(0), shade(0), alpha(255), m_context(&context) {
 }
 
-// OFFSET: 0x00757090
+// OFFSET: 0x007567B0
 // FUNCTION: fn_07995
 C3dModelRes::~C3dModelRes() = default;
 
-// OFFSET: 0x00750A70
+// OFFSET: 0x00755560
 // FUNCTION: fn_07983
 C3dModelResV1::C3dModelResV1(ModelResourceContext& context) : C3dModelRes(context), animationLength(0) {
 }
@@ -81,7 +96,7 @@ void C3dModelRes::Unload() {
 
 // INLINED
 inline void C3dModelResV1::ReadNode(ResourceByteReader& input, unsigned minor, const std::vector<std::string>& textureNames) {
-  auto node = std::make_unique<ModelNode>(this->m_context->textures);
+  auto node = std::make_unique<ModelNodeV1>();
   node->model = this;
   node->alpha = this->alpha;
   char field[40]{};

@@ -50,33 +50,44 @@ struct ModelVolume {
 
 class ModelNode {
 public:
-  explicit ModelNode(TextureCache& textures);
-  ~ModelNode();
+  ModelNode();
+  virtual ~ModelNode();
   ModelNode(const ModelNode&) = delete;
   ModelNode& operator=(const ModelNode&) = delete;
 
-  std::string name;
-  std::string parentName;
-  C3dModelRes* model;
-  ModelNode* parent;
-  std::list<ModelNode*> children;
-  std::vector<class CTexture*> textures;
-  std::unique_ptr<ModelMesh> mesh;
-  unsigned char alpha;
-  unsigned char unknown_0055[3];
-  float position[3];
-  float scale[3];
-  float angle;
-  float axis[3];
-  float transform[12];
-  std::vector<ModelPositionKey> legacyPositionKeys;
-  std::vector<ModelRotationKey> rotationKeys;
-  std::vector<ModelRotationKey> scaleKeys;
-  std::vector<ModelRotationKey> positionKeys;
-  std::map<int, ModelTextureChannels> textureKeys;
+  /* 0004 */ std::string name;
+  /* 001C */ std::string parentName;
+  /* 0034 */ C3dModelRes* model;
+  /* 0038 */ ModelNode* parent;
+  /* 003C */ std::list<ModelNode*> children;
+  /* 0044 */ std::vector<class CTexture*> textures;
+  /* 0050 */ std::unique_ptr<ModelMesh> mesh;
+  /* 0054 */ unsigned char alpha;
+};
 
-private:
-  TextureCache& m_textures;
+class ModelNodeV1 : public ModelNode {
+public:
+  ModelNodeV1();
+  ~ModelNodeV1() override;
+
+  /* 0058 */ float position[3];
+  /* 0064 */ float axis[3];
+  /* 0070 */ float angle;
+  /* 0074 */ float scale[3];
+  /* 0080 */ std::vector<ModelPositionKey> legacyPositionKeys;
+  /* 008C */ std::vector<ModelRotationKey> rotationKeys;
+};
+
+class ModelNodeV2 : public ModelNode {
+public:
+  ModelNodeV2();
+  ~ModelNodeV2() override;
+
+  /* 0058 */ float transform[12];
+  /* 0088 */ std::vector<ModelRotationKey> scaleKeys;
+  /* 0094 */ std::vector<ModelRotationKey> rotationKeys;
+  /* 00A0 */ std::vector<ModelRotationKey> positionKeys;
+  /* 00AC */ std::map<int, ModelTextureChannels> textureKeys;
 };
 
 struct ModelResourceContext {
@@ -86,6 +97,7 @@ struct ModelResourceContext {
 };
 
 class C3dModelRes : public CRes {
+  friend class ModelNode;
 public:
   explicit C3dModelRes(ModelResourceContext& context);
   ~C3dModelRes() override;
@@ -93,15 +105,15 @@ public:
   ModelNode* FindNode(const char* name) const;
   void RegisterMovies(class BinkMovies& movies, const float* position) const;
 
-  int major;
-  std::list<ModelNode*> nodes;
-  std::list<std::string> rootNames;
-  std::map<std::string, ModelMesh*> meshes;
-  std::list<ModelVolume*> volumes;
-  std::string sourceName;
-  int shade;
-  unsigned char alpha;
-  std::list<std::string> movieNames;
+  /* 0110 */ int major;
+  /* 0114 */ std::list<ModelNode*> nodes;
+  /* 011C */ std::list<std::string> rootNames;
+  /* 0124 */ std::map<std::string, ModelMesh*> meshes;
+  /* 012C */ std::list<ModelVolume*> volumes;
+  /* 0134 */ std::string sourceName;
+  /* 014C */ int shade;
+  /* 0150 */ unsigned char alpha;
+  /* 0154 */ std::list<std::string> movieNames;
 
 protected:
   ModelResourceContext* m_context;
@@ -138,5 +150,11 @@ static_assert(sizeof(ModelPositionKey) == 16);
 static_assert(sizeof(ModelScaleKey) == 32);
 static_assert(sizeof(ModelRotationKey) == 20);
 static_assert(sizeof(ModelVolume) == 232);
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(ModelNode) == 0x58);
+static_assert(sizeof(ModelNodeV1) == 0x98);
+static_assert(sizeof(ModelNodeV2) == 0xB4);
+#endif
 
 #endif
