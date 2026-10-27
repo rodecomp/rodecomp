@@ -68,6 +68,8 @@ public:
   CRenderer& operator=(const CRenderer&) = delete;
 };
 
+extern CRenderer* g_renderer;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CRenderer) == 0x25C);
 static_assert(offsetof(CRenderer, unknown_0049) == 0x0049);
