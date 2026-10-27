@@ -2,6 +2,110 @@
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIWindowMgr.h"
 
+// GLOBAL: gl_24604
+int g_dialogKeyboardEnabled;
+
+// GLOBAL: gl_24605
+int g_dialogKeyboardBlocked;
+
+// OFFSET: 0x00A90950
+// FUNCTION: fn_17154
+bool UIWindowMgr::ProcessDialogKey(int, int key) {
+  if (g_dialogKeyboardEnabled == 0 || g_dialogKeyboardBlocked != 0) {
+    return false;
+  }
+
+  if (!this->window_01E8) {
+    return false;
+  }
+
+  switch (key) {
+  case 0x100001:
+    this->window_01E8->SendMsg(nullptr, 41, 0, 1, 0, 0);
+    return false;
+  case 0x110001:
+    this->window_01E8->SendMsg(nullptr, 41, 1, 1, 0, 0);
+    return false;
+  case 0x120001:
+    this->window_01E8->SendMsg(nullptr, 41, 2, 1, 0, 0);
+    return false;
+  case 0x130001:
+    this->window_01E8->SendMsg(nullptr, 41, 3, 1, 0, 0);
+    return false;
+  case 0x140001:
+    this->window_01E8->SendMsg(nullptr, 41, 4, 1, 0, 0);
+    return false;
+  case 0x150001:
+    this->window_01E8->SendMsg(nullptr, 41, 5, 1, 0, 0);
+    return false;
+  case 0x160001:
+    this->window_01E8->SendMsg(nullptr, 41, 6, 1, 0, 0);
+    return false;
+  case 0x170001:
+    this->window_01E8->SendMsg(nullptr, 41, 7, 1, 0, 0);
+    return false;
+  case 0x180001:
+    this->window_01E8->SendMsg(nullptr, 41, 8, 1, 0, 0);
+    return false;
+  case 0x1E0001:
+    this->window_01E8->SendMsg(nullptr, 41, 0, 2, 0, 0);
+    return false;
+  case 0x1F0001:
+    this->window_01E8->SendMsg(nullptr, 41, 1, 2, 0, 0);
+    return false;
+  case 0x200001:
+    this->window_01E8->SendMsg(nullptr, 41, 2, 2, 0, 0);
+    return false;
+  case 0x210001:
+    this->window_01E8->SendMsg(nullptr, 41, 3, 2, 0, 0);
+    return false;
+  case 0x220001:
+    this->window_01E8->SendMsg(nullptr, 41, 4, 2, 0, 0);
+    return false;
+  case 0x230001:
+    this->window_01E8->SendMsg(nullptr, 41, 5, 2, 0, 0);
+    return false;
+  case 0x240001:
+    this->window_01E8->SendMsg(nullptr, 41, 6, 2, 0, 0);
+    return false;
+  case 0x250001:
+    this->window_01E8->SendMsg(nullptr, 41, 7, 2, 0, 0);
+    return false;
+  case 0x260001:
+    this->window_01E8->SendMsg(nullptr, 41, 8, 2, 0, 0);
+    return false;
+  case 0x2C0001:
+    this->window_01E8->SendMsg(nullptr, 41, 0, 0, 0, 0);
+    return false;
+  case 0x2D0001:
+    this->window_01E8->SendMsg(nullptr, 41, 1, 0, 0, 0);
+    return false;
+  case 0x2E0001:
+    this->window_01E8->SendMsg(nullptr, 41, 2, 0, 0, 0);
+    return false;
+  case 0x2F0001:
+    this->window_01E8->SendMsg(nullptr, 41, 3, 0, 0, 0);
+    return false;
+  case 0x300001:
+    this->window_01E8->SendMsg(nullptr, 41, 4, 0, 0, 0);
+    return false;
+  case 0x310001:
+    this->window_01E8->SendMsg(nullptr, 41, 5, 0, 0, 0);
+    return false;
+  case 0x320001:
+    this->window_01E8->SendMsg(nullptr, 41, 6, 0, 0, 0);
+    return false;
+  case 0x330001:
+    this->window_01E8->SendMsg(nullptr, 41, 7, 0, 0, 0);
+    return false;
+  case 0x340001:
+    this->window_01E8->SendMsg(nullptr, 41, 8, 0, 0, 0);
+    return false;
+  default:
+    return false;
+  }
+}
+
 // OFFSET: 0x00A91450
 // FUNCTION: fn_17160
 UIWindow* WindowDialogs::Top() const {

@@ -41,4 +41,7 @@ struct WindowDialogs {
   int Confirm(const char* text, int type, bool defaultAccept, bool replace, int timeout, const char* caption, int width, int height, unsigned char protect);
 };
 
+extern int g_dialogKeyboardEnabled;
+extern int g_dialogKeyboardBlocked;
+
 #endif
