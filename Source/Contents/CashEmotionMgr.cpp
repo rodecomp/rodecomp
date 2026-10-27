@@ -1,6 +1,7 @@
 #include "Contents/CashEmotionMgr.h"
 #include "UI/Chat/ChatSuggestions.h"
 
+#include <algorithm>
 #include <cstring>
 #include <new>
 
@@ -17,6 +18,32 @@ public:
   // OFFSET: 0x007C9200
   unsigned int Select(int actionId);
 };
+
+// OFFSET: 0x00592290
+// FUNCTION: fn_02849
+CashEmotionCommand::CashEmotionCommand(const std::string& name, int packId, int emotionId) : name(name) {
+  this->Add(packId, emotionId);
+}
+
+// OFFSET: 0x005923D0
+// FUNCTION: fn_02850
+void CashEmotionCommand::Add(int packId, int emotionId) {
+  if (packId < 0 || emotionId < 0) {
+    return;
+  }
+
+  this->entries.emplace_back(packId, emotionId);
+}
+
+// OFFSET: 0x00592420
+// FUNCTION: fn_02851
+std::pair<int, int> CashEmotionCommand::Get(int index) const {
+  if (index < 0 || static_cast<std::size_t>(index) >= this->entries.size()) {
+    return std::pair<int, int>(-1, -1);
+  }
+
+  return this->entries[index];
+}
 
 // OFFSET: 0x00596430
 // FUNCTION: fn_02915
@@ -39,6 +66,16 @@ void CCashEmotionMgr::Reset() {
   this->m_emotionsByPack.clear();
   this->m_packNames.clear();
   this->m_commands.clear();
+}
+
+// OFFSET: 0x00598F40
+// FUNCTION: fn_02936
+void CCashEmotionMgr::ClearCommands() {
+  for (auto& entry : this->m_commands) {
+    delete reinterpret_cast<CashEmotionCommand*>(entry.second);
+  }
+
+  this->m_commands.erase(this->m_commands.begin(), this->m_commands.end());
 }
 
 // OFFSET: 0x00599650
@@ -155,4 +192,21 @@ const char* CCashEmotionMgr::GetEmotionName(int packId, int emotionId) {
   }
 
   return emoIt->second.name.c_str();
+}
+
+// OFFSET: 0x0059AC40
+// FUNCTION: fn_02963
+const char* CCashEmotionMgr::GetSprFileName(int sprId) {
+  auto it = this->m_sprNames.find(sprId);
+  if (it == this->m_sprNames.end()) {
+    return nullptr;
+  }
+
+  return it->second.c_str();
+}
+
+// OFFSET: 0x0059C490
+// FUNCTION: fn_02975
+bool CCashEmotionMgr::IsOwnedPack(int packId) {
+  return std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId) != this->m_ownedPacks.end();
 }
