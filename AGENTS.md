@@ -220,7 +220,7 @@ td batch <batchId>
 Name the exact locally checked payload and include all dependencies. Maintenance batches are
 maintainer-only; they run the source gates, compile affected units/includers and compare effective
 code with a fresh main build. A changed function uses the normal revision/review path instead.
-The server registers new source units in `compile.json` on merge. A queued batch is not a merge.
+The server registers new source units in `data/compile.json` on merge. A queued batch is not a merge.
 
 The linked-code check does not validate data contents or reconstruct initialization/teardown.
 Prove those separately before submitting. An offset-asserted partial layout is not evidence of a
@@ -241,7 +241,7 @@ annotation is removed from main. IDs remain reserved; unrelated symbols must not
 
 ## Ragnarok target
 
-Use only this workspace’s configured server and clank-together MCP. The project is rodecomp, version 2026-02-19. Preserve existing stable IDs and permitted OFFSET/STATIC provenance comments, except OFFSET annotations attached to inline-only functions. Missing original evidence is a blocker to a verdict, not permission to invent behavior. The source contains subsystem libraries, not a completed standalone game. Clank compiles individual units from compile.json; it does not run CMake or CTest during checks.
+Use only this workspace’s configured server and clank-together MCP. The project is rodecomp, version 2026-02-19. Preserve existing stable IDs and permitted OFFSET/STATIC provenance comments, except OFFSET annotations attached to inline-only functions. Missing original evidence is a blocker to a verdict, not permission to invent behavior. The source contains subsystem libraries, not a completed standalone game. Clank compiles individual units from data/compile.json; it does not run CMake or CTest during checks.
 
 ## td binary
 > td --help

@@ -2,10 +2,11 @@
 param()
 
 $ErrorActionPreference = 'Stop'
-$root = $PSScriptRoot.Replace('\', '/')
-$project = Get-Content -LiteralPath "$PSScriptRoot/decomp.json" -Raw | ConvertFrom-Json
-$compile = Get-Content -LiteralPath "$PSScriptRoot/$($project.compileCommands)" -Raw | ConvertFrom-Json
-$workspace = Get-Content -LiteralPath "$PSScriptRoot/.td/config.json" -Raw | ConvertFrom-Json
+$repoRoot = Split-Path -Parent $PSScriptRoot
+$root = $repoRoot.Replace('\', '/')
+$project = Get-Content -LiteralPath "$repoRoot/data/decomp.json" -Raw | ConvertFrom-Json
+$compile = Get-Content -LiteralPath "$repoRoot/$($project.compileCommands)" -Raw | ConvertFrom-Json
+$workspace = Get-Content -LiteralPath "$repoRoot/.td/config.json" -Raw | ConvertFrom-Json
 $runner = $workspace.runners.PSObject.Properties[$project.toolchain].Value
 
 if (-not $runner -or $runner.type -ne 'native' -or -not $runner.toolchainRoot) {
@@ -50,7 +51,7 @@ $commands = @(
   }
 )
 
-$outputDirectory = Join-Path $PSScriptRoot 'build/editor-x86'
+$outputDirectory = Join-Path $repoRoot 'build/editor-x86'
 [void](New-Item -ItemType Directory -Path $outputDirectory -Force)
 $output = Join-Path $outputDirectory 'compile_commands.json'
 $json = ConvertTo-Json -InputObject $commands -Depth 6

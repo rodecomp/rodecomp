@@ -112,7 +112,7 @@ static void BuildFullKeyName(const char* keyname, char* buffer) {
 
 - Read `td_disassemble` as ground truth and `td_decompile` as a starting point, not a specification.
 - Run `td_check` on each changed translation unit independently while fixing compilation errors.
-- After changing a header, check its includers before submitting. Compile using `compile.json`; Clank does
+- After changing a header, check its includers before submitting. Compile using `data/compile.json`; Clank does
   not run CMake, CTest or a complete application link during these checks.
 - Validate the exact proposed payload against clean current server main, without unrelated working-tree
   changes. Include the real prerequisite interfaces, implementations and affected callers, or land them first.
@@ -201,7 +201,7 @@ the original instructions.
 
 ### Korean string literals
 
-Sources are UTF-8; `compile.json` passes `/source-charset:utf-8 /execution-charset:.949`, so write Korean
+Sources are UTF-8; `data/compile.json` passes `/source-charset:utf-8 /execution-charset:.949`, so write Korean
 literals as Hangul (`"유저인터페이스\\item\\%s.bmp"`), not CP949 escapes. Keep `\x` escapes for bytes
 that are not CP949 Hangul: other code pages (Shift-JIS, GBK, Big5 font names), byte-order marks and key codes.
 Never use `/utf-8`, and never save sources as CP949/EUC-KR.
@@ -211,7 +211,7 @@ Never use `/utf-8`, and never save sources as CP949/EUC-KR.
 - This target is Windows x86. Keep code in its assigned existing translation unit and subsystem headers.
 - Preserve fixed Win32, DirectDraw, Direct3D, Lua and codec boundary ABIs where evidenced; apply the
   calling-convention rule below. Preserve ownership, field widths and failure behavior.
-- Compile individual units with the configured Clank toolchain and `compile.json`, not a new build system.
+- Compile individual units with the configured Clank toolchain and `data/compile.json`, not a new build system.
 - Missing original instructions are a blocker, not permission to invent a fallback or partial implementation.
 
 ### Calling conventions: implicit by default
