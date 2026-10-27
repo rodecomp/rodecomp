@@ -17,6 +17,7 @@ UIComboBoxDefWnd::UIComboBoxDefWnd(UIWindowContext& windows, UIComboBoxHeaderCon
 }
 
 // OFFSET: 0x00872AE0
+// FUNCTION: fn_11134
 UIComboBoxDefWnd::~UIComboBoxDefWnd() = default;
 
 // OFFSET: 0x00885920
@@ -141,6 +142,7 @@ UIComboBoxDef2Wnd::UIComboBoxDef2Wnd(UIWindowContext& windows, UIComboBoxHeaderC
 }
 
 // OFFSET: 0x00872A70
+// FUNCTION: fn_11133
 UIComboBoxDef2Wnd::~UIComboBoxDef2Wnd() = default;
 
 // OFFSET: 0x00885250
