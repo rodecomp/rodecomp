@@ -40,7 +40,7 @@ private:
 extern const int g_snapOppositeSide[4];
 extern bool g_snapEnabled;
 extern int g_snapDirection;
-extern SnapObject* g_snapBoundary;
+extern CSnapMgr g_snapMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CSnapMgr) == 16);

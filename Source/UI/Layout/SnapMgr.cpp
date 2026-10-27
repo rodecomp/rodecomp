@@ -12,9 +12,8 @@ bool g_snapEnabled = true;
 // STATIC: 0x013346A4
 // GLOBAL: gl_21917
 int g_snapDirection = 1;
-// STATIC: 0x013346B0
-// GLOBAL: gl_21919
-SnapObject* g_snapBoundary = nullptr;
+// GLOBAL: gl_24655
+CSnapMgr g_snapMgr;
 
 namespace {
   // INLINED
@@ -264,12 +263,12 @@ void CSnapMgr::MoveEdge(UIWindow* window, int dx, int dy, int side, WindowSnappi
     const int candidateBottom = ((object->window->geometry.y - dy) + down);
     const int screenHeight = snapping.screenHeight;
 
-    if (((y + height) - up) != 0 && (!g_snapBoundary || g_snapBoundary != object || candidateBottom == screenHeight)) {
+    if (((y + height) - up) != 0 && (!g_snapMgr.root || g_snapMgr.root != object || candidateBottom == screenHeight)) {
       bool moveSelf = side != 3;
       if (side == 3) {
-        bool boundaryAncestor = g_snapBoundary == object;
+        bool boundaryAncestor = g_snapMgr.root == object;
         if (!boundaryAncestor) {
-          for (SnapObject* next : g_snapBoundary->edges[1]) {
+          for (SnapObject* next : g_snapMgr.root->edges[1]) {
             if (next == object) {
               boundaryAncestor = true;
               break;

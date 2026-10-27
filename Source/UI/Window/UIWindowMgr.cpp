@@ -1,7 +1,24 @@
+#include "Client/Browser/WebBrowser.h"
 #include "Client/Mode/ActiveGameMode.h"
 #include "Client/Replay.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "UI/Layout/SnapMgr.h"
+#include "UI/Layout/WindowSnapping.h"
+#include "UI/Lists/UIDropDownBox.h"
+#include "UI/Window/MiniPartyWndAreaMgr.h"
+#include "UI/Window/UIWindow.h"
+#include "UI/Window/WindowRetirement.h"
 #include "UI/Window/UIWindowMgr.h"
+
+#include <algorithm>
+#include <new>
+
+// GLOBAL: gl_24525
+CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr = nullptr;
+
+// GLOBAL: gl_24366
+UIWindowMgr g_windowMgr;
 
 // OFFSET: 0x00A94FD0
 // FUNCTION: fn_17179
@@ -525,5 +542,88 @@ UIWindowMgr::UIWindowMgr()
   this->unknown_0058 = 0;
   this->unknown_4F238 = 151;
   this->unknown_4F23C = 37;
+}
+
+// OFFSET: 0x007375E0
+// FUNCTION: fn_07649
+CMiniPartyWndAreaMgr::CMiniPartyWndAreaMgr() {
+  SetRect(&this->area, 0, 0, g_windowMgr.unknown_047C, g_windowMgr.unknown_0480);
+}
+
+// OFFSET: 0x00AA66D0
+// FUNCTION: fn_17233
+void UIWindowMgr::Shutdown() {
+  if (!this->modalWindows.empty() && this->modalWindows.back()) {
+    this->activeWindowId = 185;
+  }
+
+  if (this->window_0A30 && this->window_0A30->geometry.visible) {
+    static_cast<CUIDropDownBox*>(this->window_0A30)->Detach();
+    this->window_0A30->Show(0);
+  }
+
+  for (UIWindow*& window : this->rendered) {
+    if (!this->modalWindows.empty() && this->modalWindows.back() && this->persistentWindows.find(window) != this->persistentWindows.end()) {
+      this->retainedPersistentWindow = true;
+    } else if (this->modalWindows.empty() || !this->modalWindows.back() ||
+               std::find(this->modalWindows.begin(), this->modalWindows.end(), window) == this->modalWindows.end()) {
+      this->persistentWindows.erase(window);
+      window->Slot11();
+      delete window;
+      window = nullptr;
+    }
+  }
+
+  for (auto& entry : this->browsers) {
+    delete entry.second;
+    entry.second = nullptr;
+  }
+  this->browsers.clear();
+  if (this->browser_09D0) {
+    delete this->browser_09D0;
+    this->browser_09D0 = nullptr;
+  }
+
+  for (auto entry = this->overlays.begin(); entry != this->overlays.end();) {
+    delete entry->second;
+    entry = this->overlays.erase(entry);
+  }
+  this->rendered.clear();
+  this->retired.clear();
+  this->snapRectangles.clear();
+  this->messageBoxes.clear();
+  this->ResetWindows();
+
+  for (UIWindow*& window : this->snapExcluded) {
+    const bool snappingEnabled = g_serviceOptions.Get(141) != 0;
+    WindowSnapping snapping{g_snapMgr, this->snapRectangles, this->snapExcluded, snappingEnabled, this->unknown_047C, this->unknown_0480};
+    WindowRetirement retirement{this->rendered, this->retired, this->overlays, snapping, this->window_03D4, this->window_03D8,
+                                this->window_03DC, this->window_01B8, this->window_4F2AC};
+    retirement.Destroy(window);
+    window = nullptr;
+  }
+  this->snapExcluded.clear();
+}
+
+// OFFSET: 0x00A8A1C0
+// FUNCTION: fn_17099
+UIWindowMgr::~UIWindowMgr() {
+  if (!g_miniPartyWndAreaMgr) {
+    g_miniPartyWndAreaMgr = new (std::nothrow) CMiniPartyWndAreaMgr;
+  }
+  if (g_miniPartyWndAreaMgr) {
+    delete g_miniPartyWndAreaMgr;
+    g_miniPartyWndAreaMgr = nullptr;
+  }
+
+  this->Shutdown();
+  if (this->unknown_0478) {
+    delete this->unknown_0478;
+    this->unknown_0478 = nullptr;
+  }
+  for (auto& entry : this->savedRectangles) {
+    delete entry.second;
+  }
+  this->savedRectangles.clear();
 }
 

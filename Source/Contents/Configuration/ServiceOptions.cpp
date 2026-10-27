@@ -1,5 +1,8 @@
 #include "Contents/Configuration/ServiceOptions.h"
 
+// GLOBAL: gl_24579
+ServiceOptions g_serviceOptions;
+
 // OFFSET: 0x006C17A0
 // FUNCTION: fn_06318
 unsigned char ServiceOptions::Get(int id) const {

@@ -416,8 +416,11 @@ public:
 
   void InitializeWindowPolicy();
   void ResetWindows();
+  void Shutdown();
   UIWindow* LookupWindow(int id);
 };
+
+extern UIWindowMgr g_windowMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(WindowTextEntry) == 0x1C);
