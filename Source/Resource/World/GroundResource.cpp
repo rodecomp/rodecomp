@@ -1,21 +1,10 @@
-#include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/World/GroundResource.h"
-#include "Resource/ResourceByteReader.h"
 
 #include <cstring>
 
-namespace {
-  // INLINED
-  const unsigned char* Slice(ResourceByteReader& input, std::uint32_t bytes) {
-    const auto address = reinterpret_cast<std::uintptr_t>(input.data) + input.position;
-    input.position += bytes;
-    return reinterpret_cast<const unsigned char*>(address);
-  }
-}
-
 // OFFSET: 0x0074E1C0
 // FUNCTION: fn_07906
-CGndRes::CGndRes(GroundResourceContext& context) : loaded(0), width(0), height(0), cellSize(10.0f), m_context(&context) {
+CGndRes::CGndRes() : loaded(0), width(0), height(0), cellSize(10.0f) {
 }
 
 // OFFSET: 0x0074E390
@@ -26,67 +15,68 @@ CGndRes::~CGndRes() = default;
 // OFFSET: 0x0074DB10
 // FUNCTION: fn_07899
 CGndRes* CGndRes::Create() {
-  return new CGndRes(*this->m_context);
+  return new CGndRes;
 }
 
 // OFFSET: 0x0074DC80
 // FUNCTION: fn_07900
 bool CGndRes::Load(const char* name) {
-  auto& file = this->m_context->file;
-
-  if (!file.Open(name)) {
+  if (!this->m_file.Open(name, 0, true, false)) {
     return false;
   }
 
-  const auto* bytes = static_cast<const unsigned char*>(file.Data());
-  this->m_bytes.assign(bytes, bytes + file.Size());
-  file.Close();
-  ResourceByteReader input{this->m_bytes.data(), static_cast<unsigned>(this->m_bytes.size())};
   std::uint32_t magic;
-  input.Read(&magic, sizeof(magic));
+  this->m_file.Read(&magic, sizeof(magic));
 
   if (magic != 0x4E475247u) {
     return false;
   }
 
   this->loaded = 1;
-  return this->Parse(input);
+  return this->Parse();
 }
 
 // OFFSET: 0x0074E650
 // FUNCTION: fn_07911
-bool CGndRes::Parse(ResourceByteReader& input) {
-  input.Read(&this->major, 1);
-  input.Read(&this->minor, 1);
+bool CGndRes::Parse() {
+  this->m_file.Read(&this->major, 1);
+  this->m_file.Read(&this->minor, 1);
 
   if (this->major != 1 || this->minor <= 6) {
     return false;
   }
 
-  input.Read(&this->width, sizeof(this->width));
-  input.Read(&this->height, sizeof(this->height));
-  input.Read(&this->cellSize, sizeof(this->cellSize));
-  input.Read(&this->textureCount, sizeof(this->textureCount));
+  this->m_file.Read(&this->width, sizeof(this->width));
+  this->m_file.Read(&this->height, sizeof(this->height));
+  this->m_file.Read(&this->cellSize, sizeof(this->cellSize));
+  this->m_file.Read(&this->textureCount, sizeof(this->textureCount));
   std::uint32_t nameBytes;
-  input.Read(&nameBytes, sizeof(nameBytes));
+  this->m_file.Read(&nameBytes, sizeof(nameBytes));
   this->textureNames.resize(static_cast<std::uint32_t>(this->textureCount));
 
   for (int index = 0; index < this->textureCount; ++index) {
-    this->textureNames[index] = reinterpret_cast<const char*>(Slice(input, nameBytes));
+    this->textureNames[index] = static_cast<const char*>(this->m_file.ReadPtr(nameBytes));
   }
 
-  input.Read(&this->lightmapCount, sizeof(this->lightmapCount));
+  this->m_file.Read(&this->lightmapCount, sizeof(this->lightmapCount));
   std::uint32_t unused[3];
-  input.Read(&unused[0], sizeof(unused[0]));
-  input.Read(&unused[1], sizeof(unused[1]));
-  input.Read(&unused[2], sizeof(unused[2]));
-  this->lightmaps = Slice(input, static_cast<std::uint32_t>(this->lightmapCount) << 8);
-  input.Read(&this->tileCount, sizeof(this->tileCount));
-  this->tiles = Slice(input, 40u * static_cast<std::uint32_t>(this->tileCount));
-  this->cells = Slice(input, 28u * static_cast<std::uint32_t>(this->width) * static_cast<std::uint32_t>(this->height));
+  this->m_file.Read(&unused[0], sizeof(unused[0]));
+  this->m_file.Read(&unused[1], sizeof(unused[1]));
+  this->m_file.Read(&unused[2], sizeof(unused[2]));
+  if (this->minor >= 7) {
+    this->lightmaps = static_cast<const unsigned char*>(this->m_file.ReadPtr(static_cast<std::uint32_t>(this->lightmapCount) << 8));
+  } else {
+    this->legacyLightmapIndices = static_cast<const unsigned char*>(this->m_file.ReadPtr(static_cast<std::uint32_t>(this->lightmapCount) << 4));
+    std::uint32_t count;
+    this->m_file.Read(&count, sizeof(count));
+    this->legacyLightmapBytes = static_cast<const unsigned char*>(this->m_file.ReadPtr(40u * count));
+  }
+  this->m_file.Read(&this->tileCount, sizeof(this->tileCount));
+  this->tiles = static_cast<const unsigned char*>(this->m_file.ReadPtr(40u * static_cast<std::uint32_t>(this->tileCount)));
+  this->cells = static_cast<const unsigned char*>(this->m_file.ReadPtr(28u * static_cast<std::uint32_t>(this->width) * static_cast<std::uint32_t>(this->height)));
 
   if (this->minor >= 8) {
-    this->ReadWater(input);
+    this->ReadWater();
   }
 
   return true;
@@ -94,11 +84,11 @@ bool CGndRes::Parse(ResourceByteReader& input) {
 
 // OFFSET: 0x0074E870
 // FUNCTION: fn_07912
-void CGndRes::ReadWater(ResourceByteReader& input) {
+void CGndRes::ReadWater() {
   GroundWater record;
-  input.Read(&record.parameters, sizeof(record.parameters));
-  input.Read(&this->waterWidth, sizeof(this->waterWidth));
-  input.Read(&this->waterHeight, sizeof(this->waterHeight));
+  this->m_file.Read(&record.parameters, sizeof(record.parameters));
+  this->m_file.Read(&this->waterWidth, sizeof(this->waterWidth));
+  this->m_file.Read(&this->waterHeight, sizeof(this->waterHeight));
   const float count = static_cast<float>(this->waterWidth * this->waterHeight);
   const auto reserveCount = count < 0.0f ? static_cast<std::uint32_t>(-1) : static_cast<std::uint32_t>(count);
   this->waterHeights.reserve(reserveCount);
@@ -113,7 +103,7 @@ void CGndRes::ReadWater(ResourceByteReader& input) {
     float level = 0.0f;
 
     for (int index = 0; static_cast<float>(index) < count; ++index) {
-      input.Read(&level, sizeof(level));
+      this->m_file.Read(&level, sizeof(level));
       this->waterHeights.push_back(level);
       record.parameters.level = level;
       std::memset(record.unknown_0018, 0, sizeof(record.unknown_0018));
@@ -121,7 +111,7 @@ void CGndRes::ReadWater(ResourceByteReader& input) {
     }
   } else if (this->minor == 9) {
     for (int index = 0; static_cast<float>(index) < count; ++index) {
-      input.Read(&record.parameters, sizeof(record.parameters));
+      this->m_file.Read(&record.parameters, sizeof(record.parameters));
       std::memset(record.unknown_0018, 0, sizeof(record.unknown_0018));
       this->water.push_back(record);
       this->waterHeights.push_back(record.parameters.level);

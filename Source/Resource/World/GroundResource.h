@@ -1,12 +1,10 @@
 #ifndef RAGNAROK_SOURCE_RESOURCE_WORLD_GROUNDRESOURCE_H
 #define RAGNAROK_SOURCE_RESOURCE_WORLD_GROUNDRESOURCE_H
 
+#include "File/File.h"
 #include "Resource/Resource.h"
 
 #include <vector>
-
-class ResourceBytes;
-struct ResourceByteReader;
 
 struct GroundWaterParameters {
   /* 0000 */ float level;
@@ -22,13 +20,9 @@ struct GroundWater {
   /* 0018 */ std::uint32_t unknown_0018[3];
 };
 
-struct GroundResourceContext {
-  ResourceBytes& file;
-};
-
 class CGndRes : public CRes {
 public:
-  explicit CGndRes(GroundResourceContext& context);
+  CGndRes();
   ~CGndRes() override;
   CGndRes* Create() override;
   bool Load(const char* name) override;
@@ -58,14 +52,17 @@ public:
   /* 0184 */ const unsigned char* cells;
 
 private:
-  bool Parse(ResourceByteReader& input);
-  void ReadWater(ResourceByteReader& input);
+  bool Parse();
+  void ReadWater();
 
-  std::vector<unsigned char> m_bytes;
-  GroundResourceContext* m_context;
+  /* 0188 */ CFile m_file;
 };
 
 static_assert(sizeof(GroundWaterParameters) == 24);
 static_assert(sizeof(GroundWater) == 36);
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(CGndRes) == 0x01B4);
+#endif
 
 #endif
