@@ -13,6 +13,8 @@
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UIListBoxNaviSearch.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
+#include "UI/Navigation/UIPrivateAirplaneWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowRegistration.h"
@@ -1006,10 +1008,129 @@ int UIWindow::FormattedTextWidth(FontCache& fonts, const TextLocale& locale, std
 }
 
 // OFFSET: 0x00A836C0
+// FUNCTION: fn_17006
+int UIWindow::RestoreEditTexts(const unsigned char* data) {
+  int offset = 4;
+  int count;
+  std::memcpy(&count, data, sizeof(count));
+  if (!count) {
+    return 0;
+  }
+
+  char text[260];
+  std::memset(text, 0, sizeof(text));
+
+  for (UIWindow* child : this->m_children) {
+    if (child->Slot46() != 2) {
+      continue;
+    }
+
+    int length;
+    std::memcpy(&length, data + offset, sizeof(length));
+    offset += 4;
+    if (!length) {
+      continue;
+    }
+
+    std::memset(text, 0, sizeof(text));
+    std::memcpy(text, data + offset, length);
+    offset += length;
+    static_cast<UIEditCtrl*>(child)->SetText(text);
+    child->Invalidate();
+  }
+
+  return offset;
+}
 
 // OFFSET: 0x00A83FD0
+// FUNCTION: fn_17008
+bool UIWindow::FitSprite(const ActionFrame* frame, const CSprRes* sprite, int width, int height, int* x, int* y, float* scale) {
+  if (!width || !height || !frame || !sprite || !x || !y || !scale) {
+    return false;
+  }
+
+  const SpriteFrameCell& first = frame->Cell(0);
+  if (first.image == -1) {
+    return false;
+  }
+
+  const SpriteRleImage* image = sprite->images[first.imageType][first.image];
+  if (!image) {
+    return false;
+  }
+
+  int left = static_cast<int>(static_cast<float>(first.x) * first.scaleX);
+  int top = static_cast<int>(static_cast<float>(first.y) * first.scaleY);
+  int right = static_cast<int>(static_cast<float>(image->width) * first.scaleX) + left;
+  int bottom = static_cast<int>(static_cast<float>(image->height) * first.scaleY) + top;
+
+  for (int index = 1; index < frame->cellCount; ++index) {
+    const SpriteFrameCell& cell = frame->Cell(index);
+    if (cell.image == -1) {
+      continue;
+    }
+
+    const SpriteRleImage* part = sprite->images[cell.imageType][cell.image];
+    if (!part) {
+      continue;
+    }
+
+    const int cellX = static_cast<int>(static_cast<float>(cell.x) * cell.scaleX);
+    const int cellWidth = static_cast<int>(static_cast<float>(part->width) * cell.scaleX);
+    const int cellY = static_cast<int>(static_cast<float>(cell.y) * cell.scaleY);
+    const int cellHeight = static_cast<int>(static_cast<float>(part->height) * cell.scaleY);
+    if (left > cellX) {
+      left = cellX;
+    }
+
+    if (right < cellX + cellWidth) {
+      right = cellX + cellWidth;
+    }
+
+    if (top > cellY) {
+      top = cellY;
+    }
+
+    if (bottom < cellY + cellHeight) {
+      bottom = cellY + cellHeight;
+    }
+  }
+
+  const int spanX = std::abs(left - right);
+  const int spanY = std::abs(top - bottom);
+  bool horizontal = true;
+  float fit;
+  if (spanX < spanY) {
+    horizontal = false;
+    fit = height < spanY ? static_cast<float>(height) / static_cast<float>(spanY) : 1.0f;
+  } else {
+    fit = width < spanX ? static_cast<float>(width) / static_cast<float>(spanX) : 1.0f;
+  }
+
+  *scale = fit;
+  if (fit == 1.0) {
+    *x = -left - static_cast<int>(static_cast<float>(width - spanX) * -0.5f);
+    *y = -top - static_cast<int>(static_cast<float>(height - spanY) * -0.5f);
+    return true;
+  }
+
+  *x = static_cast<int>(static_cast<float>(-left) * fit);
+  *y = static_cast<int>(static_cast<float>(-top) * *scale);
+  if (horizontal) {
+    *y -= static_cast<int>((static_cast<float>(height) - static_cast<float>(spanY) * *scale) * -0.5f);
+  } else {
+    *x += static_cast<int>((static_cast<float>(width) - static_cast<float>(spanX) * *scale) * 0.5f);
+  }
+
+  return true;
+}
 
 // OFFSET: 0x005C3340
+// FUNCTION: fn_03554
+void UIListBox_NaviSearch::Clear() {
+  UIListBox::Clear();
+  this->unknown_00D8 = this->unknown_00D4;
+}
 
 // OFFSET: 0x005C6F20
 // FUNCTION: fn_03593
@@ -1017,7 +1138,42 @@ void UIListBox_NaviSearch::Slot26(int, int) {
 }
 
 // OFFSET: 0x005C6F40
+// FUNCTION: fn_03595
+void UIListBox_NaviSearch::Slot25(int x, int y) {
+  this->selected = this->LineAt(x, y);
+  if (this->selected != -1) {
+    this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x005C7360
+// FUNCTION: fn_03614
+void UIListBox_NaviSearch::Slot35(int value) {
+  if (this->verticalOverflow != 0) {
+    this->SendMsg(this->verticalBar, 7, value >= 0 ? -6 : 6, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x005C7AD0
+// FUNCTION: fn_03622
+void UIListBox_NaviSearch::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->verticalBar->Resize(12, height);
+  this->verticalBar->Move((width - 13), 0);
+  this->horizontalBar->Resize((width - 13), 12);
+  this->horizontalBar->Move(0, (height - 13));
+  this->Refresh();
+}
+
+// OFFSET: 0x005C4690
+
+// OFFSET: 0x005C4AE0
+
+// OFFSET: 0x005CA060
+
+// OFFSET: 0x005C72C0
+// FUNCTION: fn_03605
+void UIPrivateAirplaneWnd::Slot19() {
+}
