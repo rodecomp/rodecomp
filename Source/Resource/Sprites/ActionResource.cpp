@@ -246,3 +246,26 @@ float CActRes::Speed(unsigned index) const {
 const char* CActRes::Sound(unsigned index) const {
   return index < this->sounds.size() ? this->sounds[index].c_str() : "";
 }
+
+// OFFSET: 0x00747170
+// FUNCTION: fn_07787
+const ActionFrame& CActRes::Frame(unsigned animation, unsigned frame) const {
+  const auto& frames = this->Animation(animation);
+  if (frame < frames.size()) {
+    return frames[frame];
+  }
+  if (!frames.empty()) {
+    return frames.front();
+  }
+
+  // GLOBAL: gl_24507
+  static const ActionFrame missing;
+  return missing;
+}
+
+// OFFSET: 0x00747370
+// FUNCTION: fn_07788
+unsigned CActRes::FrameCount(unsigned animation) const {
+  const auto& frames = this->Animation(animation);
+  return frames.empty() ? 1u : static_cast<unsigned>(frames.size());
+}

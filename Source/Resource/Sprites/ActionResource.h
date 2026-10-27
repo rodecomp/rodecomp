@@ -42,6 +42,8 @@ public:
   bool Load(const char* name) override;
   void Unload() override;
   const std::vector<ActionFrame>& Animation(unsigned index) const;
+  const ActionFrame& Frame(unsigned animation, unsigned frame) const;
+  unsigned FrameCount(unsigned animation) const;
   float Speed(unsigned index) const;
   const char* Sound(unsigned index) const;
 
