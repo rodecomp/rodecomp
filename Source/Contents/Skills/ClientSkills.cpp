@@ -1,8 +1,11 @@
 #include "Contents/Skills/ClientSkills.h"
+#include "Client/Session.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 
+#include <algorithm>
 #include <cstring>
 
 namespace {
@@ -193,8 +196,6 @@ bool ClientSkills::Update(
   return true;
 }
 
-// OFFSET: 0x00E251C0
-// OFFSET: 0x00E25200
 void CompanionSkills::Notify() {
   if (this->window) {
     this->window->SendMsg(nullptr, 23, 0, 0, 0, 0);
@@ -205,8 +206,6 @@ void CompanionSkills::Notify() {
   }
 }
 
-// OFFSET: 0x00E072F0
-// OFFSET: 0x00E07380
 bool CompanionSkills::Update(const CSkillInfo& value, unsigned char notify) {
   for (CSkillInfo& skill : this->skills) {
     if (skill.id == value.id) {
@@ -251,3 +250,107 @@ bool ClientSkills::UpdateAdditional(const CSkillInfo& value, int) {
   this->additional.push_back(value);
   return true;
 }
+
+// OFFSET: 0x00E072F0
+
+// OFFSET: 0x00E07380
+
+// OFFSET: 0x00E07410
+
+// OFFSET: 0x00E07930
+
+// OFFSET: 0x00E07A10
+
+// OFFSET: 0x00E081E0
+
+// OFFSET: 0x00E08290
+// FUNCTION: fn_23754
+void CSession::ClearItemQuantities() {
+  for (int index = 0; index < 5; ++index) {
+    this->unknown_5C68[index].quantity = 0;
+  }
+
+  this->unknown_6140 = 0;
+}
+
+// OFFSET: 0x00E082D0
+// FUNCTION: fn_23755
+void CSession::ResetItems3500() {
+  for (int index = 0; index < 10; ++index) {
+    this->unknown_3500[index].Reset();
+  }
+}
+
+// OFFSET: 0x00E08300
+// FUNCTION: fn_23756
+void CSession::ClearSlots06EB() {
+  this->unknown_06EB.unknown_0000 = 0;
+  this->unknown_06EB.itemId = 0;
+  this->unknown_06EB.unknown_0005 = 0;
+  this->unknown_06F2.unknown_0000 = 0;
+  this->unknown_06F2.itemId = 0;
+  this->unknown_06F2.unknown_0005 = 0;
+}
+
+// OFFSET: 0x00E08330
+// FUNCTION: fn_23757
+void CSession::ClearShortcutSlots() {
+  for (int index = 0; index < 36; ++index) {
+    this->m_shortcutSlots[index].unknown_0000 = 0;
+    this->m_shortcutSlots[index].itemId = 0;
+    this->m_shortcutSlots[index].unknown_0005 = 0;
+  }
+}
+
+// OFFSET: 0x00E08360
+// FUNCTION: fn_23758
+void CSession::ClearSecondaryShortcutSlots() {
+  std::memset(this->m_secondaryShortcutSlots, 0, sizeof(this->m_secondaryShortcutSlots));
+}
+
+// OFFSET: 0x00E08380
+// FUNCTION: fn_23759
+void CSession::ClearUnknown0420() {
+  for (int index = 0; index < 36; ++index) {
+    this->unknown_0420[index] = 0;
+  }
+}
+
+// OFFSET: 0x00E083D0
+
+// OFFSET: 0x00E08690
+
+// OFFSET: 0x00E086F0
+
+// OFFSET: 0x00E08750
+
+// OFFSET: 0x00E08A00
+
+// OFFSET: 0x00E08EE0
+
+// OFFSET: 0x00E08F70
+// FUNCTION: fn_23774
+int CSession::CountItems5C68() const {
+  int count = 0;
+  for (int index = 0; index < 5; ++index) {
+    if (this->unknown_5C68[index].quantity != 0) {
+      ++count;
+    }
+  }
+
+  return count;
+}
+
+// OFFSET: 0x00E09080
+
+// OFFSET: 0x00E091F0
+
+// OFFSET: 0x00E094B0
+
+// OFFSET: 0x00E09510
+
+// OFFSET: 0x00E09650
+
+// OFFSET: 0x00E251C0
+
+// OFFSET: 0x00E25200
