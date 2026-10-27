@@ -93,6 +93,14 @@ void WindowResponseRecorder::Record(int windowId, int response, std::intptr_t b,
 }
 
 // OFFSET: 0x00B86AB0
+// FUNCTION: fn_19334
+bool Replay::SetBaseFrame(std::uint32_t baseFrame) {
+  if (!baseFrame) {
+    return false;
+  }
+  this->baseFrame = baseFrame;
+  return true;
+}
 
 // OFFSET: 0x00B86AD0
 // FUNCTION: fn_19335
