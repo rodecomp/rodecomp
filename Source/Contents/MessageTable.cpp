@@ -1,3 +1,4 @@
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Text/Base64.h"
@@ -58,6 +59,19 @@ namespace {
   }
 }
 
+// OFFSET: 0x00B00360
+
+struct MessageBucketVector {
+  void* begin;
+  void* end;
+  void* capacity;
+
+  void Clear();
+};
+
+// OFFSET: 0x00B00520
+
+
 // OFFSET: 0x00B00130
 // FUNCTION: fn_18367
 void InsertMessage(int id, const char* text) {
@@ -101,8 +115,8 @@ const char* LookupMessage(int id, bool languagePrefix, int serviceType, WORD lan
   return result.c_str();
 }
 
-// OFFSET: 0x00B00E40
-// OFFSET: 0x00B00910
+void InsertMessageRow(std::vector<std::string>& row);
+
 bool ImportMessageCsv(std::string_view bytes) {
   g_messageStrings.clear();
   if (bytes.size() >= 2 && ((static_cast<unsigned char>(bytes[0]) == 0xFF && static_cast<unsigned char>(bytes[1]) == 0xFE) ||
@@ -140,15 +154,34 @@ bool ImportMessageCsv(std::string_view bytes) {
 
     DecodeField(field, row);
     TransformFields(row);
-    if (row.size() >= 2 && !row.front().empty()) {
-      for (int id = 0; id < 4698; ++id) {
-        if (std::strcmp(messageNames[id], row.front().c_str()) == 0) {
-          InsertMessage(id, row.back().c_str());
-          break;
-        }
-      }
-    }
+    InsertMessageRow(row);
   }
 
   return true;
 }
+
+// OFFSET: 0x00B00810
+// FUNCTION: fn_18370
+int FindMessageId(const char* name) {
+  if (!name || *name == '\0') {
+    return 4698;
+  }
+
+  for (int id = 0; id < 4699; ++id) {
+    if (messageNames[id] && std::strcmp(messageNames[id], name) == 0) {
+      return id;
+    }
+  }
+
+  return 4698;
+}
+
+// OFFSET: 0x00B00890
+
+// OFFSET: 0x00B00910
+
+// OFFSET: 0x00B00E40
+
+// OFFSET: 0x00B00EC0
+
+// OFFSET: 0x00B011B0
