@@ -1168,10 +1168,89 @@ void UIListBox_NaviSearch::Resize(int width, int height) {
 }
 
 // OFFSET: 0x005C4690
+// FUNCTION: fn_03575
+void UINavigationV4Wnd::LayoutWithoutDetails() {
+  this->unknown_00B8->Move(-1000, -1000);
+  this->unknown_00C4->Move(-1000, -1000);
+  this->unknown_00C0->Move((this->geometry.width - 42), 3);
+  this->unknown_00B4->Move((this->geometry.width - 14), 3);
+  this->unknown_00BC->Move((this->geometry.width - 28), 3);
+  this->unknown_00DC->Move(29, 21);
+  this->unknown_00E0->Move(94, 21);
+  this->unknown_00E4->Move(207, 21);
+  this->unknown_00CC->Move(236, 21);
+  this->unknown_00D0->Move(4, 21);
+  this->unknown_00C8->Move(237, 317);
+  this->unknown_00D4->Move(9, 321);
+  this->unknown_00D8->Move(203, 317);
+  this->unknown_00E8->Move(-1000, -1000);
+  this->unknown_00EC->Move(-1000, -1000);
+  this->unknown_00F0->Move(-1000, -1000);
+  this->unknown_00F4->Move(-1000, -1000);
+  this->unknown_00F8->Move(-1000, -1000);
+  this->unknown_00FC->Move(-1000, -1000);
+  this->unknown_0100->Move(-1000, -1000);
+  this->Invalidate();
+}
 
 // OFFSET: 0x005C4AE0
+// FUNCTION: fn_03577
+void UINavigationV4Wnd::LayoutWithDetails() {
+  this->unknown_00B8->Move(-1000, -1000);
+  this->unknown_00C4->Move(-1000, -1000);
+  this->unknown_00C0->Move((this->geometry.width - 42), 3);
+  this->unknown_00B4->Move((this->geometry.width - 14), 3);
+  this->unknown_00BC->Move((this->geometry.width - 28), 3);
+  this->unknown_00DC->Move(29, 21);
+  this->unknown_00E0->Move(94, 21);
+  this->unknown_00E4->Move(207, 21);
+  this->unknown_00CC->Move(236, 21);
+  this->unknown_00D0->Move(4, 21);
+  this->unknown_00C8->Move(237, 317);
+  this->unknown_00D4->Move(9, 321);
+  this->unknown_00D8->Move(203, 317);
+  this->unknown_00E8->Move(20, 48);
+  this->unknown_00EC->Move(1, 70);
+  this->unknown_00F0->Move(139, 166);
+  this->unknown_00F4->Move(146, 247);
+  this->unknown_00F8->Move(145, 263);
+  this->unknown_00FC->Move(207, 263);
+  this->unknown_0100->Move(145, 288);
+  this->Invalidate();
+}
 
 // OFFSET: 0x005CA060
+// FUNCTION: fn_03639
+void UINavigationV4Wnd::Slot11() {
+  NavigationWindowInfo* info = this->info;
+  if (!info) {
+    return;
+  }
+
+  info->width = this->geometry.width;
+  this->info->height = this->geometry.height;
+  const int margin = this->info->expanded ? 272 : 228;
+  const int maximumX = this->m_context->renderer.viewport.width - margin;
+  if (maximumX < this->geometry.x) {
+    this->geometry.x = maximumX;
+  }
+
+  if (this->geometry.x < 0) {
+    this->geometry.x = 0;
+  }
+
+  this->info->x = this->geometry.x;
+  const int maximumY = this->m_context->renderer.viewport.height - 338;
+  if (maximumY < this->geometry.y) {
+    this->geometry.y = maximumY;
+  }
+
+  if (this->geometry.y < 0) {
+    this->geometry.y = 0;
+  }
+
+  this->info->y = this->geometry.y;
+}
 
 // OFFSET: 0x005C72C0
 // FUNCTION: fn_03605
