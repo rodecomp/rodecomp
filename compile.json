@@ -266,6 +266,7 @@
   "Source/Contents/ActorNameDirectory.cpp": 4,
   "Source/Contents/Actors/AttackMotion.cpp": 4,
   "Source/Contents/Actors/GameObject.cpp": 4,
+  "Source/Contents/Actors/MercenaryAI.cpp": 4,
   "Source/Contents/Actors/RenderObject.cpp": 4,
   "Source/Contents/Actors/RenderObjectState.cpp": 4,
   "Source/Contents/Actors/SpriteDrawingPolicy.cpp": 4,
