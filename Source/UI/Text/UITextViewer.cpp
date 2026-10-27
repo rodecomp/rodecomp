@@ -12,6 +12,7 @@
 #include <algorithm>
 
 namespace {
+  // INLINED
   unsigned Digit(unsigned char value) {
     if (value >= '0' && value <= '9') {
       return value - '0';
@@ -28,6 +29,7 @@ namespace {
     return 0;
   }
 
+  // INLINED
   void ScanColors(const std::string& line, unsigned short codePage, std::uint32_t& color) {
     const char* current = line.c_str();
     const char* end = current + line.size();

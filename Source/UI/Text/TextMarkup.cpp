@@ -3,10 +3,12 @@
 #include <windows.h>
 
 namespace {
+  // INLINED
   bool Hex(unsigned char value) {
     return (value >= '0' && value <= '9') || (value >= 'a' && value <= 'f') || (value >= 'A' && value <= 'F');
   }
 
+  // INLINED
   bool Color(const char* text, const char* end) {
     if (*text != '^' || end - text < 6) {
       return false;

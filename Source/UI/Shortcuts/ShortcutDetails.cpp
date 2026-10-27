@@ -6,6 +6,7 @@
 #include "UI/Window/WindowRetirement.h"
 
 namespace {
+  // INLINED
   void ToScreen(const UIWindow& window, int& x, int& y) {
     x = (x + window.geometry.x);
     y = (y + window.geometry.y);
