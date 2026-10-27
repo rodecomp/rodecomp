@@ -24,10 +24,10 @@ public:
   }
 
 private:
-  char* m_data;
-  int m_read;
-  int m_write;
-  std::vector<char> m_storage;
+  /* 0000 */ char* m_data;
+  /* 0004 */ int m_read;
+  /* 0008 */ int m_write;
+  /* 000C */ std::vector<char> m_storage;
   ConnectionBuffer(const ConnectionBuffer&) = delete;
   ConnectionBuffer& operator=(const ConnectionBuffer&) = delete;
 };
