@@ -5,6 +5,9 @@
 
 namespace myGPack {
   namespace {
+    // GLOBAL: gl_24709
+    constexpr std::uint8_t s_bitMasks[8] = {0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
+
     // STATIC: 0x01159EC8
     // GLOBAL: gl_13428
     constexpr std::uint8_t s_initialPermutation[64] = {
@@ -17,6 +20,25 @@ namespace myGPack {
     constexpr std::uint8_t s_finalPermutation[64] = {
       40, 8, 48, 16, 56, 24, 64, 32, 39, 7, 47, 15, 55, 23, 63, 31, 38, 6, 46, 14, 54, 22, 62, 30, 37, 5, 45, 13, 53, 21, 61, 29,
       36, 4, 44, 12, 52, 20, 60, 28, 35, 3, 43, 11, 51, 19, 59, 27, 34, 2, 42, 10, 50, 18, 58, 26, 33, 1, 41, 9,  49, 17, 57, 25,
+    };
+
+    // GLOBAL: gl_24710
+    constexpr std::uint8_t s_keyRotations[16] = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
+
+    // GLOBAL: gl_24711
+    constexpr std::uint8_t s_keyPermutationTop[28] = {
+      57, 49, 41, 33, 25, 17, 9,  1,  58, 50, 42, 34, 26, 18, 10, 2, 59, 51, 43, 35, 27, 19, 11, 3, 60, 52, 44, 28,
+    };
+
+    // GLOBAL: gl_24712
+    constexpr std::uint8_t s_keyPermutationBottom[28] = {
+      63, 55, 47, 39, 31, 23, 15, 7,  62, 54, 46, 38, 30, 22, 14, 6, 61, 53, 45, 37, 29, 21, 13, 5, 28, 20, 12, 4,
+    };
+
+    // GLOBAL: gl_24713
+    constexpr std::uint8_t s_keyCompression[48] = {
+      14, 17, 11, 24, 1,  5,  3,  28, 15, 6,  21, 10, 23, 19, 12, 4,  26, 8,  16, 7,  27, 20, 13, 2,
+      41, 52, 31, 37, 47, 55, 30, 40, 51, 45, 33, 48, 44, 49, 39, 56, 34, 53, 46, 42, 50, 36, 29, 32,
     };
 
     // STATIC: 0x01159FC0
@@ -108,11 +130,58 @@ namespace myGPack {
   }
 
   // OFFSET: 0x00AE8460
-  // OFFSET: 0x00AE92F0
   // FUNCTION: fn_18096
   PakCipher::PakCipher(const std::uint8_t* key) {
-    (void)key;
-    std::memset(this->m_roundKeys, 0, sizeof(this->m_roundKeys));
+    this->BuildRoundKeys(key);
+  }
+
+  // OFFSET: 0x00AE92F0
+  // FUNCTION: fn_18105
+  void PakCipher::BuildRoundKeys(const std::uint8_t* key) {
+    std::uint8_t halves[8] = {};
+
+    for (unsigned i = 0; i < 28; ++i) {
+      const unsigned topBit = s_keyPermutationTop[i] - 1;
+      if (key[topBit >> 3] & s_bitMasks[topBit & 7]) {
+        halves[i >> 3] &= s_bitMasks[i & 7];
+      }
+
+      const unsigned bottomBit = s_keyPermutationBottom[i] - 1;
+      if (key[bottomBit >> 3] & s_bitMasks[bottomBit & 7]) {
+        halves[i >> 7] &= s_bitMasks[i & 7];
+      }
+    }
+
+    for (unsigned round = 0; round < 16; ++round) {
+      for (unsigned shift = 0; shift < s_keyRotations[round]; ++shift) {
+        const unsigned carryIn = (halves[0] & 0x80) != 0 ? 0x10 : 0;
+
+        for (unsigned byte = 0; byte < 3; ++byte) {
+          halves[byte] = static_cast<std::uint8_t>((halves[byte] << 1) | ((halves[byte + 1] & 0x80) != 0));
+        }
+
+        halves[3] = static_cast<std::uint8_t>((halves[3] << 1) | carryIn);
+
+        const unsigned bottomCarryIn = (halves[4] & 0x80) != 0 ? 0x10 : 0;
+
+        for (unsigned byte = 4; byte < 7; ++byte) {
+          halves[byte] = static_cast<std::uint8_t>((halves[byte] << 1) | ((halves[byte + 1] & 0x80) != 0));
+        }
+
+        halves[7] = static_cast<std::uint8_t>((halves[7] << 1) | bottomCarryIn);
+      }
+
+      std::memset(this->m_roundKeys[round], 0, sizeof(this->m_roundKeys[round]));
+
+      for (unsigned i = 0; i < 48; ++i) {
+        const unsigned bit = s_keyCompression[i] - 1;
+        const unsigned byte = bit < 28 ? bit >> 3 : (bit - 28) >> 7;
+        const unsigned mask = bit < 28 ? bit & 7 : (bit - 28) & 7;
+        if (halves[byte] & s_bitMasks[mask]) {
+          this->m_roundKeys[round][i / 6] |= s_bitMasks[i % 6];
+        }
+      }
+    }
   }
 
   // OFFSET: 0x00AE8490

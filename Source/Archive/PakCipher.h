@@ -16,6 +16,8 @@ namespace myGPack {
 
   private:
     /* 0000 */ std::uint8_t m_roundKeys[16][8];
+
+    void BuildRoundKeys(const std::uint8_t* key);
   };
 
   static_assert(sizeof(PakCipher) == 128);
