@@ -15,7 +15,7 @@ namespace myGPack {
     int DecodePrefix(const std::uint8_t* input, int length, std::uint8_t* output, int* outputLength) const;
 
   private:
-    std::uint8_t m_roundKeys[16][8];
+    /* 0000 */ std::uint8_t m_roundKeys[16][8];
   };
 
   static_assert(sizeof(PakCipher) == 128);

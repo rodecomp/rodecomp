@@ -11,14 +11,14 @@
 namespace myGPack {
 
   struct PakEntry {
-    std::uint32_t alignedSize;
-    std::uint32_t compressedSize;
-    std::uint32_t originalSize;
-    std::uint32_t unknown_000C;
-    std::uint64_t dataOffset;
-    std::uint8_t flags;
-    std::uint8_t unknown_0019[3];
-    PakName name;
+    /* 0000 */ std::uint32_t alignedSize;
+    /* 0004 */ std::uint32_t compressedSize;
+    /* 0008 */ std::uint32_t originalSize;
+    /* 000C */ std::uint32_t unknown_000C;
+    /* 0010 */ std::uint64_t dataOffset;
+    /* 0018 */ std::uint8_t flags;
+    /* 0019 */ std::uint8_t unknown_0019[3];
+    /* 001C */ PakName name;
   };
 
   static_assert(sizeof(PakEntry) == 288);

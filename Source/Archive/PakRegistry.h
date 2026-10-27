@@ -18,8 +18,12 @@ public:
   void ApplyAuxiliary(const void* data, std::uint32_t size);
 
 private:
-  std::list<std::pair<CMemMapPakFile*, CGPak*>> m_archives;
+  /* 0000 */ std::list<std::pair<CMemMapPakFile*, CGPak*>> m_archives;
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(PakRegistry) == 8);
+#endif
 
 extern PakRegistry g_pakRegistry;
 
