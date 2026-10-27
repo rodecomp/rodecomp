@@ -14,6 +14,9 @@ struct BitmapImage {
 
   BitmapImage();
   void Clear();
+  bool CreateAuxiliary(int mode);
+  std::uint32_t Pixel(int x, int y) const;
+  void ClearAuxiliary();
   bool DecodeBitmap(const void* data, int bytes, bool iconOnly);
   bool DecodeTga(const void* data, int bytes);
   bool DecodePng(const void* data, int bytes, const char* name);

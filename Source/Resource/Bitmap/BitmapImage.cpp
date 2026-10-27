@@ -57,6 +57,62 @@ void BitmapImage::Clear() {
   this->auxiliary = nullptr;
 }
 
+// OFFSET: 0x0074A680
+// FUNCTION: fn_07866
+bool BitmapImage::CreateAuxiliary(int mode) {
+  if (!this->pixels || this->auxiliary) {
+    return false;
+  }
+
+  this->auxiliary = std::malloc(PixelBytes(this->width, this->height));
+  std::memset(this->auxiliary, 255, 4u * this->width * this->height);
+  auto* output = static_cast<std::uint32_t*>(this->auxiliary);
+  for (int y = 0; y < this->height; ++y) {
+    for (int x = 0; x < this->width; ++x) {
+      const int index = x + y * this->width;
+      const std::uint32_t value = this->pixels[index];
+      unsigned red = (value >> 16) & 255;
+      unsigned green = (value >> 8) & 255;
+      unsigned blue = value & 255;
+      if (red != 255 || blue != 255 || green != 0) {
+        unsigned intensity = (red + green + blue) / 3;
+        const unsigned minimum = mode == 1 ? 120 : 100;
+        if (intensity < minimum) {
+          intensity = minimum;
+        }
+        red = green = blue = intensity;
+        if (mode == 2) {
+          red = 200;
+        } else if (mode == 3) {
+          green = 200;
+        } else if (mode == 4) {
+          blue = 200;
+        }
+      }
+      output[index] = (value & 0xFF000000u) | (red << 16) | (green << 8) | blue;
+    }
+  }
+  return true;
+}
+
+// OFFSET: 0x0074A7F0
+// FUNCTION: fn_07867
+std::uint32_t BitmapImage::Pixel(int x, int y) const {
+  if (x < 0 || x >= this->width || y < 0 || y >= this->height) {
+    return 0x00FF0000;
+  }
+  return this->pixels[x + y * this->width];
+}
+
+// OFFSET: 0x0074C540
+// FUNCTION: fn_07874
+void BitmapImage::ClearAuxiliary() {
+  if (this->auxiliary) {
+    std::free(this->auxiliary);
+    this->auxiliary = nullptr;
+  }
+}
+
 // OFFSET: 0x0074AB00
 // FUNCTION: fn_07869
 bool BitmapImage::DecodeBitmap(const void* input, int, bool iconOnly) {

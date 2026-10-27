@@ -513,6 +513,7 @@
   "Source/Resource/ResourceFailures.cpp": 3,
   "Source/Resource/ResourceMgr.cpp": 3,
   "Source/Resource/ResourceTransient.cpp": 3,
+  "Source/Resource/SkinPalette.cpp": 3,
   "Source/Resource/Sprites/ActionResource.cpp": 3,
   "Source/Resource/Sprites/SpriteEncoding.cpp": 3,
   "Source/Resource/Sprites/SpriteResource.cpp": 3,
