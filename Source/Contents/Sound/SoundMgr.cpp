@@ -33,7 +33,6 @@ CSoundMgr::CSoundMgr(SoundMgrContext& context) : m_context(&context) {
 }
 
 // OFFSET: 0x00638C40
-// OFFSET: 0x00638D50
 // FUNCTION: fn_45422
 CSoundMgr::~CSoundMgr() {
   this->Shutdown();
