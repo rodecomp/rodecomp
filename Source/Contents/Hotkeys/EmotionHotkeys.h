@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_HOTKEYS_EMOTIONHOTKEYS_H
 #define RAGNAROK_SOURCE_CONTENTS_HOTKEYS_EMOTIONHOTKEYS_H
 
+#include <cstddef>
 #include <cstdint>
 #include <json/value.h>
 #include <string>
@@ -9,8 +10,8 @@
 class CRenderSystemBase;
 
 struct EmotionHotkeys {
-  std::vector<std::string> current;
-  std::vector<std::string> saved;
+  /* 0FF8 */ std::vector<std::string> current;
+  /* 1004 */ std::vector<std::string> saved;
 
   void Load(Json::Value& data);
   bool HasChanges() const;
@@ -21,6 +22,7 @@ struct EmotionHotkeys {
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EmotionHotkeys) == 24);
+static_assert(offsetof(EmotionHotkeys, saved) == 12);
 #endif
 
 #endif

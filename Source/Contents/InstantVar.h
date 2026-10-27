@@ -13,7 +13,7 @@ public:
   void Clear();
 
 private:
-  std::map<int, std::int64_t> m_values;
+  /* 0004 */ std::map<int, std::int64_t> m_values;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

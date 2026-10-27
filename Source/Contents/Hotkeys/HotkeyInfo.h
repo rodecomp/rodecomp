@@ -1,15 +1,16 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_HOTKEYS_HOTKEYINFO_H
 #define RAGNAROK_SOURCE_CONTENTS_HOTKEYS_HOTKEYINFO_H
 
+#include <cstddef>
 #include <string>
 
 class LuaScript;
 
 struct HotkeyInfo {
-  int key1;
-  int key2;
-  std::string text;
-  std::string description;
+  /* 0000 */ int key1;
+  /* 0004 */ int key2;
+  /* 0008 */ std::string text;
+  /* 0020 */ std::string description;
   HotkeyInfo();
   ~HotkeyInfo();
 };
@@ -22,6 +23,8 @@ bool SkillUsesPercentSp(int id);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(HotkeyInfo) == 56);
+static_assert(offsetof(HotkeyInfo, text) == 8);
+static_assert(offsetof(HotkeyInfo, description) == 0x0020);
 #endif
 
 #endif

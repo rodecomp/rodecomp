@@ -3,6 +3,7 @@
 
 #include "Render/Primitives/RenderPrimitive.h"
 
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 
@@ -11,23 +12,23 @@ struct RagEffectState;
 class CTexture;
 
 struct EffectVector3 {
-  float x;
-  float y;
-  float z;
+  /* 0000 */ float x;
+  /* 0004 */ float y;
+  /* 0008 */ float z;
 };
 
 struct EffectPrimitiveRecord {
-  EffectVector3 position;
-  EffectVector3 corners[4];
-  std::uint32_t unknown_003C;
-  float scale;
-  float angle;
-  float matrix[12];
-  std::int32_t red;
-  std::int32_t green;
-  std::int32_t blue;
-  float alpha;
-  std::uint32_t color;
+  /* 0000 */ EffectVector3 position;
+  /* 000C */ EffectVector3 corners[4];
+  /* 003C */ std::uint32_t unknown_003C;
+  /* 0040 */ float scale;
+  /* 0044 */ float angle;
+  /* 0048 */ float matrix[12];
+  /* 0078 */ std::int32_t red;
+  /* 007C */ std::int32_t green;
+  /* 0080 */ std::int32_t blue;
+  /* 0084 */ float alpha;
+  /* 0088 */ std::uint32_t color;
 };
 
 struct EffectPrimitiveState {
@@ -147,6 +148,10 @@ struct EffectPrimitiveState {
 static_assert(sizeof(EffectVector3) == 12);
 static_assert(sizeof(EffectPrimitiveRecord) == 140);
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(EffectVector3, z) == 0x8);
+static_assert(offsetof(EffectPrimitiveRecord, corners) == 0xC);
+static_assert(offsetof(EffectPrimitiveRecord, matrix) == 0x48);
+static_assert(offsetof(EffectPrimitiveRecord, color) == 0x88);
 static_assert(sizeof(EffectPrimitiveState) == 0xF8E0);
 #endif
 

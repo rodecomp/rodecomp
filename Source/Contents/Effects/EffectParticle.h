@@ -13,7 +13,7 @@ struct RagEffectState;
 struct EffectParticle : CRenderObject {
   EffectParticle(ResourceMgr& resources, JobNames& names);
 
-  EffectPrimitiveState state;
+  /* 0138 */ EffectPrimitiveState state;
 };
 
 EffectParticle* CreateEffectParticle(
@@ -23,6 +23,7 @@ EffectParticle* CreateEffectParticle(
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EffectParticle) == 0xFA18);
+static_assert(offsetof(EffectParticle, state) == 0x138);
 #endif
 
 #endif

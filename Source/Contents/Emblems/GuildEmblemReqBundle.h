@@ -21,10 +21,13 @@ public:
 
 protected:
   struct Recent {
-    std::uint32_t guildId;
-    std::uint32_t version;
-    std::uint32_t tick;
+    /* 0000 */ std::uint32_t guildId;
+    /* 0004 */ std::uint32_t version;
+    /* 0008 */ std::uint32_t tick;
   };
+#if defined(_WIN32) && !defined(_WIN64)
+  static_assert(sizeof(Recent) == 0xC);
+#endif
   /* 0004 */ std::deque<std::pair<std::uint32_t, std::uint32_t>> m_pending;
   /* 0018 */ std::deque<Recent> m_recent;
 };

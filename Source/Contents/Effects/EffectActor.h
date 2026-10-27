@@ -4,6 +4,8 @@
 #include "Contents/Effects/EffectAttachments.h"
 #include "Contents/Actors/RenderObject.h"
 
+#include <cstddef>
+
 struct EffectActorState {
   EffectActorState();
   ~EffectActorState();
@@ -21,12 +23,13 @@ struct EffectActor : CRenderObject {
   EffectActor(ResourceMgr& resources, JobNames& names);
   bool EffectVisible() const;
 
-  EffectActorState state;
+  /* 0138 */ EffectActorState state;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EffectActorState) == 28);
 static_assert(sizeof(EffectActor) == 0x158);
+static_assert(offsetof(EffectActor, state) == 0x138);
 #endif
 
 #endif

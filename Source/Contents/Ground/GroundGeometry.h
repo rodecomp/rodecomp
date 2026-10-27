@@ -4,6 +4,7 @@
 #include "Contents/Ground/GroundSpatial.h"
 #include "Contents/Ground/GroundWaterState.h"
 
+#include <cstddef>
 #include <array>
 
 class CGndRes;
@@ -11,10 +12,10 @@ class TextureCache;
 struct GroundRenderContext;
 
 struct GroundLightmap {
-  unsigned char color[4];
-  CTexture* texture;
-  float uv[4][2];
-  std::uint32_t unknown_0028[4];
+  /* 0000 */ unsigned char color[4];
+  /* 0004 */ CTexture* texture;
+  /* 0008 */ float uv[4][2];
+  /* 0028 */ std::uint32_t unknown_0028[4];
 };
 
 class GroundGeometry {
@@ -75,6 +76,9 @@ private:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(GroundLightmap) == 56);
+static_assert(offsetof(GroundLightmap, texture) == 0x04);
+static_assert(offsetof(GroundLightmap, uv) == 0x08);
+static_assert(offsetof(GroundLightmap, unknown_0028) == 0x28);
 #endif
 
 #endif

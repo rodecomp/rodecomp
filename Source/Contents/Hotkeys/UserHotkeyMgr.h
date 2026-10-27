@@ -23,12 +23,15 @@ public:
 protected:
   friend class CAccountLinkedUserDataMgr;
   struct Hotkey {
-    int tab;
-    int index;
-    int key1;
-    int key2;
-    std::string description;
+    /* 0000 */ int tab;
+    /* 0004 */ int index;
+    /* 0008 */ int key1;
+    /* 000C */ int key2;
+    /* 0010 */ std::string description;
   };
+#if defined(_WIN32) && !defined(_WIN64)
+  static_assert(sizeof(Hotkey) == 40);
+#endif
   /* 0004 */ bool m_enabled;
   /* 0005 */ bool m_loaded;
   /* 0008 */ std::uint32_t m_changes;

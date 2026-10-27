@@ -4,6 +4,8 @@
 #include "Contents/Actors/GameObject.h"
 #include "Contents/Actors/RenderObjectState.h"
 
+#include <cstddef>
+
 class CRenderObject : public CGameObject {
 public:
   CRenderObject(ResourceMgr& resources, JobNames& names);
@@ -33,11 +35,12 @@ public:
     unsigned char finishFrame, int timed, std::uint32_t duration, int loop
   );
 
-  RenderObjectState render;
+  /* 0010 */ RenderObjectState render;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CRenderObject) == 0x138);
+static_assert(offsetof(CRenderObject, render) == 0x0010);
 #endif
 
 #endif

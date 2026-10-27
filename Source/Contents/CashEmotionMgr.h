@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_CASHEMOTIONMGR_H
 #define RAGNAROK_SOURCE_CONTENTS_CASHEMOTIONMGR_H
 
+#include <cstddef>
 #include <cstdint>
 #include <string>
 #include <unordered_map>
@@ -8,7 +9,7 @@
 struct CashEmotionData {
   int id;
   int subId;
-  std::string name;
+  /* 0008 */ std::string name;
 };
 
 class CCashEmotionMgr {
@@ -43,6 +44,7 @@ protected:
 extern CCashEmotionMgr* g_cashEmotionMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(CashEmotionData, name) == 0x08);
 static_assert(sizeof(CCashEmotionMgr) == 472);
 #endif
 
