@@ -220,3 +220,34 @@ CTexture* SpriteAtlas::Insert(
 
   return texture;
 }
+
+// OFFSET: 0x0056FE60
+// FUNCTION: fn_02412
+void SpriteAtlas::ClearExpired(std::uint32_t reuseDelay) {
+  const std::uint32_t threshold = timeGetTime() - reuseDelay;
+
+  for (Node*& head : this->m_classes) {
+    Node** link = &head;
+
+    while (Node* node = *link) {
+      if (node->page.lastUsed >= threshold) {
+        link = &node->next;
+        continue;
+      }
+
+      for (const SpriteAtlasRecord& record : node->page.records) {
+        this->m_lookup.erase({record.image, record.palette});
+      }
+
+      CTexture* texture = node->page.texture;
+      if (texture->unknown_001C) {
+        this->m_spare.push_back(texture);
+      } else {
+        delete texture;
+      }
+
+      *link = node->next;
+      delete node;
+    }
+  }
+}

@@ -43,6 +43,7 @@ public:
   CTexture* Insert(
     CRenderSystemBase& system, const SpriteRleImage* image, const std::uint32_t* palette, SpriteAtlasRecord& output, int serviceType, std::uint32_t reuseDelay
   );
+  void ClearExpired(std::uint32_t reuseDelay);
 
 private:
   struct Node {
