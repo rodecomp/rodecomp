@@ -3,6 +3,7 @@
 
 #include "UI/Layout/SnapRectangle.h"
 
+#include <windows.h>
 #include <cstddef>
 #include <cstdint>
 #include <deque>
@@ -58,9 +59,10 @@ public:
   /* 0048 */ int unknown_0048;
   /* 004C */ int unknown_004C;
   /* 0050 */ float unknown_0050;
-  /* 0054 */ int unknown_0054;
+  /* 0054 */ unsigned char unknown_0054;
+  /* 0055 */ unsigned char unknown_0055[3];
   /* 0058 */ int unknown_0058;
-  /* 005C */ int unknown_005C;
+  /* 005C */ std::uint32_t unknown_005C;
   /* 0060 */ int unknown_0060;
   /* 0064 */ int unknown_0064;
   /* 0068 */ int unknown_0068;
@@ -281,7 +283,9 @@ public:
   /* 03E8 */ std::uint32_t unknown_03E8;
   /* 03EC */ std::uint32_t unknown_03EC;
   /* 03F0 */ std::uint32_t unknown_03F0;
-  /* 03F4 */ unsigned char unknown_03F4[4];
+  /* 03F4 */ unsigned short unknown_03F4;
+  /* 03F6 */ unsigned char unknown_03F6;
+  /* 03F7 */ unsigned char unknown_03F7;
   /* 03F8 */ std::uint32_t unknown_03F8;
   /* 03FC */ std::uint32_t unknown_03FC;
   /* 0400 */ int modal;
@@ -324,7 +328,8 @@ public:
   /* 04A4 */ int unknown_04A4;
   /* 04A8 */ int unknown_04A8;
   /* 04AC */ int unknown_04AC;
-  /* 04B0 */ int unknown_04B0;
+  /* 04B0 */ unsigned char unknown_04B0;
+  /* 04B1 */ unsigned char unknown_04B1[3];
   /* 04B4 */ int unknown_04B4;
   /* 04B8 */ int unknown_04B8;
   /* 04BC */ int unknown_04BC;
@@ -339,9 +344,13 @@ public:
   /* 0500 */ std::map<std::string, int> namedWindows;
   /* 0508 */ int unknown_0508;
   /* 050C */ std::list<UIWindow*> hiddenWindows;
-  /* 0514 */ unsigned char unknown_0514[0x4B0];
-  /* 09C4 */ std::map<int, CWebBrowser*> browsers;
-  /* 09CC */ unsigned char unknown_09CC[0x18];
+  /* 0514 */ unsigned char unknown_0514[0x12];
+  /* 0526 */ bool unknown_0526;
+  /* 0527 */ unsigned char unknown_0527[0x49D];
+  /* 09C4 */ std::map<HWND, CWebBrowser*> browsers;
+  /* 09CC */ int unknown_09CC;
+  /* 09D0 */ CWebBrowser* browser_09D0;
+  /* 09D4 */ unsigned char unknown_09D4[0x10];
   /* 09E4 */ std::vector<UIWindow*> messageBoxes;
   /* 09F0 */ unsigned char unknown_09F0[0x40];
   /* 0A30 */ UIWindow* window_0A30;
@@ -406,6 +415,7 @@ public:
   UIWindowMgr();
 
   void InitializeWindowPolicy();
+  void ResetWindows();
   UIWindow* LookupWindow(int id);
 };
 
