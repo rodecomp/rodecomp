@@ -159,3 +159,40 @@ ItemInfo LookupClientItemByIdentity(const std::list<ItemInfo>& values, std::uint
 
   return ItemInfo(0);
 }
+
+// OFFSET: 0x006D5450
+
+// OFFSET: 0x006D54C0
+// FUNCTION: fn_06571
+bool ItemInfo::operator<(const ItemInfo& other) const {
+  return this->unknown_0044 < other.unknown_0044;
+}
+
+// OFFSET: 0x006D8B60
+
+// OFFSET: 0x006D8E60
+
+// OFFSET: 0x006D8FE0
+// FUNCTION: fn_06609
+bool ItemInfo::SetName(const char* name) {
+  this->unknown_0044 = name;
+  return this->unknown_0044.empty();
+}
+
+// OFFSET: 0x006D9010
+// FUNCTION: fn_06610
+void ItemInfo::SetItemId(int value) {
+  char buffer[16];
+  _itoa(value, buffer, 10);
+  this->itemId = buffer;
+}
+
+// OFFSET: 0x00DFB9D0
+
+// OFFSET: 0x00DFBD90
+
+// OFFSET: 0x00DFBDE0
+
+// OFFSET: 0x00DFBE40
+
+// OFFSET: 0x00DFBF70
