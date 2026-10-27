@@ -28,6 +28,7 @@ UIComboBoxEx::UIComboBoxEx(UIWindowContext& windows, UIComboBoxContext& combo) :
 }
 
 // OFFSET: 0x00872C00
+// FUNCTION: fn_11136
 UIComboBoxEx::~UIComboBoxEx() = default;
 
 // OFFSET: 0x0087B5A0
@@ -262,12 +263,12 @@ void UIComboBoxEx::Paint() {
   static_cast<UIWindow*>(this->parent)->Invalidate();
 }
 
-// OFFSET: 0x00885250
+// OFFSET: 0x0086CCE0
 // FUNCTION: fn_11036
 UIComboBoxEx2::UIComboBoxEx2(UIWindowContext& windows, UIComboBoxContext& combo) : UIComboBoxEx(windows, combo), alignment(0) {
 }
 
-// OFFSET: 0x00872B50
+// OFFSET: 0x008706D0
 // FUNCTION: fn_11102
 UIComboBoxEx2::~UIComboBoxEx2() = default;
 
