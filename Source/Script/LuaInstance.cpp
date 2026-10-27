@@ -9,6 +9,10 @@ extern "C" {
 #include <cstring>
 #include <windows.h>
 
+// STATIC: 0x010D9630
+// STRING: st_00223
+static const char luaErrorCaption[] = "Lua Error";
+
 // OFFSET: 0x005221E0
 // FUNCTION: fn_01123
 CLuaInstance::CLuaInstance() : m_state(luaL_newstate()) {
@@ -36,10 +40,8 @@ bool CLuaInstance::Execute(const std::string& name) {
     return true;
   }
 
-  // STATIC: 0x010D9630
-  // STRING: st_00223
   const char* error = lua_tostring(this->m_state, -1);
-  MessageBoxA(nullptr, error, "Lua Error", MB_OK);
+  MessageBoxA(nullptr, error, luaErrorCaption, MB_OK);
 
   return false;
 }
