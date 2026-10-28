@@ -203,6 +203,12 @@ UIBitmapButton* UIFrameWnd::AddCloseButton(UIButtonContext& controls, const char
 }
 
 // OFFSET: 0x008BA280
+// FUNCTION: fn_11780
+void UIReplayListBox::Slot25(int x, int y) {
+  this->selected = this->LineAt(x, y);
+  this->Invalidate();
+  this->parent->SendMsg(nullptr, 80, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x008BA500
 // FUNCTION: fn_11785
