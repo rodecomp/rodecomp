@@ -113,7 +113,7 @@ void CRenderObject::SetAnimation(unsigned animation, int, int repeat) {
 
   this->render.animation = animation;
   this->render.previousAnimation = animation;
-  this->render.unknown_003C = 0;
+  this->render.curMotion = 0;
   this->render.unknown_006C = repeat;
   this->render.unknown_009C[1] = 0;
   this->render.unknown_0060 = 1.0f;

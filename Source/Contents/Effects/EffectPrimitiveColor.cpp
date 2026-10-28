@@ -24,10 +24,10 @@ void EffectPrimitiveState::UpdateColor() {
       const float value = this->unknown_0258[1][index];
 
       if (valuesAndLimit) {
-        this->unknown_0324 = value;
+        this->alpha = value;
         this->unknown_02D4 = this->unknown_0258[2][index];
       } else {
-        this->unknown_0328 = value;
+        this->alphaSpeed = value;
       }
 
       this->unknown_01D8 = index + 1;
@@ -37,10 +37,10 @@ void EffectPrimitiveState::UpdateColor() {
   const float lower = this->unknown_02D8;
 
   if ((this->flags & 0x80u) != 0) {
-    const bool below = this->unknown_0328 >= 0.0f ? this->unknown_0324 < this->unknown_02D4 : lower < this->unknown_0324;
+    const bool below = this->alphaSpeed >= 0.0f ? this->alpha < this->unknown_02D4 : lower < this->alpha;
 
     if (!below) {
-      this->unknown_0328 *= -1.0f;
+      this->alphaSpeed *= -1.0f;
     }
   }
 
@@ -51,20 +51,20 @@ void EffectPrimitiveState::UpdateColor() {
     if (remaining > parentRemaining + 1) {
       this->unknown_015C = 1;
       this->flags &= ~0x80u;
-      this->unknown_0328 = -(this->unknown_0324 / static_cast<float>(parentRemaining));
+      this->alphaSpeed = -(this->alpha / static_cast<float>(parentRemaining));
     }
   }
 
   if (current == this->unknown_01F0) {
     this->flags &= ~0x80u;
     const int remaining = this->lifetime - current;
-    this->unknown_0328 = -(this->unknown_0324 / static_cast<float>(remaining)) * this->unknown_032C;
+    this->alphaSpeed = -(this->alpha / static_cast<float>(remaining)) * this->alphaDelta;
   }
 
-  const float sum = this->unknown_0328 + this->unknown_0324;
+  const float sum = this->alphaSpeed + this->alpha;
   const float minimum = lower > sum ? lower : sum;
   const float bounded = this->unknown_02D4 < minimum ? this->unknown_02D4 : minimum;
-  this->unknown_0324 = bounded;
+  this->alpha = bounded;
   const auto alpha = static_cast<std::uint32_t>(TruncateToInt(bounded));
   const auto color =
     ((alpha * 256u + static_cast<unsigned char>(this->red)) * 256u + static_cast<unsigned char>(this->green)) * 256u + static_cast<unsigned char>(this->blue);

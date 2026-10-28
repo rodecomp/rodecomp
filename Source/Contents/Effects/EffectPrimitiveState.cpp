@@ -54,7 +54,7 @@ EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
   this->unknown_0338 = 0;
   this->unknown_0358 = 0.0f;
   this->unknown_0364 = 0.0f;
-  this->unknown_0328 = 0.0f;
+  this->alphaSpeed = 0.0f;
   this->unknown_02EC = 0;
   this->unknown_02C0 = 0.0f;
   this->unknown_0320 = 0;
@@ -96,15 +96,15 @@ EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
   this->unknown_01EC = -1;
   this->unknown_01F0 = -1;
   this->unknown_01C0 = -1;
-  this->unknown_0324 = 254.0f;
-  this->unknown_032C = 1.0f;
+  this->alpha = 254.0f;
+  this->alphaDelta = 1.0f;
   this->unknown_02D4 = 254.0f;
   this->unknown_02D8 = 0;
   this->unknown_0254 = 1;
   this->unknown_01F4 = 1;
   this->unknown_01E8 = 4;
   render.previousAnimation = 0;
-  render.unknown_003C = 0;
+  render.curMotion = 0;
   this->textureCount = 1;
   this->unknown_02E4 = 0;
   this->unknown_02DC = 0;

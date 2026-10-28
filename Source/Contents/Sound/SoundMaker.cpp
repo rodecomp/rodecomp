@@ -352,9 +352,9 @@ void CNumEffect::SendObjectMessage(
     this->render.position[1] -= 12.0f;
     this->baseHeight = this->render.position[1];
 
-    this->render.unknown_003C = d;
+    this->render.curMotion = d;
     if (d > 9 || d < 0) {
-      this->render.unknown_003C = 0;
+      this->render.curMotion = 0;
     }
 
     this->render.unknown_0078 = f;

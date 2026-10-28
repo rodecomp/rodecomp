@@ -135,9 +135,9 @@ struct EffectPrimitiveState {
   /* 0318 */ float scale;
   /* 031C */ float unknown_031C;
   /* 0320 */ float unknown_0320;
-  /* 0324 */ float unknown_0324;
-  /* 0328 */ float unknown_0328;
-  /* 032C */ float unknown_032C;
+  /* 0324 */ float alpha;
+  /* 0328 */ float alphaSpeed;
+  /* 032C */ float alphaDelta;
   /* 0330 */ float unknown_0330;
   /* 0334 */ float unknown_0334;
   /* 0338 */ float unknown_0338;

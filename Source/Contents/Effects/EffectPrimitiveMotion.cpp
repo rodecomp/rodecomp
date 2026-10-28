@@ -271,11 +271,11 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   particle.UpdateColor();
 
   if (particle.unknown_01E0 % particle.unknown_01E8 == 0) {
-    const auto next = render.unknown_003C + 1u;
-    render.unknown_003C = next;
+    const auto next = render.curMotion + 1u;
+    render.curMotion = next;
 
     if (particle.unknown_0254 != 0) {
-      render.unknown_003C = static_cast<int>(next) % static_cast<int>(particle.textureCount);
+      render.curMotion = static_cast<int>(next) % static_cast<int>(particle.textureCount);
     } else if (next == particle.textureCount) {
       return false;
     }
@@ -454,11 +454,11 @@ bool SpinEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   particle.UpdateColor();
 
   if (particle.unknown_01E0 % particle.unknown_01E8 == 0) {
-    const auto next = render.unknown_003C + 1u;
-    render.unknown_003C = next;
+    const auto next = render.curMotion + 1u;
+    render.curMotion = next;
 
     if (particle.unknown_0254 != 0) {
-      render.unknown_003C = static_cast<int>(next) % static_cast<int>(particle.textureCount);
+      render.curMotion = static_cast<int>(next) % static_cast<int>(particle.textureCount);
     } else if (next == particle.textureCount) {
       return false;
     }
@@ -507,11 +507,11 @@ bool RollEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   particle.UpdateColor();
 
   if (particle.unknown_01E0 % particle.unknown_01E8 == 0) {
-    const auto next = render.unknown_003C + 1u;
-    render.unknown_003C = next;
+    const auto next = render.curMotion + 1u;
+    render.curMotion = next;
 
     if (particle.unknown_0254 != 0) {
-      render.unknown_003C = static_cast<int>(next) % static_cast<int>(particle.textureCount);
+      render.curMotion = static_cast<int>(next) % static_cast<int>(particle.textureCount);
     } else if (next == particle.textureCount) {
       return false;
     }
@@ -567,23 +567,23 @@ bool EffectParticle::AdvanceFrame() {
   }
 
   const unsigned animation = static_cast<unsigned>(this->render.previousAnimation);
-  ++this->render.unknown_003C;
+  ++this->render.curMotion;
 
   if (this->state.unknown_0254 != 0) {
-    this->render.unknown_003C =
-      static_cast<std::uint32_t>(static_cast<int>(this->render.unknown_003C) % static_cast<int>(action->FrameCount(animation)));
+    this->render.curMotion =
+      static_cast<std::uint32_t>(static_cast<int>(this->render.curMotion) % static_cast<int>(action->FrameCount(animation)));
     return true;
   }
 
   if ((this->state.flags & 0x800u) != 0) {
-    if (this->render.unknown_003C == action->FrameCount(animation)) {
-      --this->render.unknown_003C;
+    if (this->render.curMotion == action->FrameCount(animation)) {
+      --this->render.curMotion;
     }
 
     return true;
   }
 
-  return this->render.unknown_003C != action->FrameCount(animation);
+  return this->render.curMotion != action->FrameCount(animation);
 }
 
 // OFFSET: 0x00BB5E80
@@ -1487,6 +1487,218 @@ void EffectParticle::PrimSMA() {
   }
 }
 
+// OFFSET: 0x00BC2A60
+void EffectParticle::PrimShieldBoomerang3() {
+  EffectPrimitiveSlot* slots = this->state.slots;
+  FaceCamera(slots);
+
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  EffectPrimitiveSlot& slot = slots[0];
+
+  if (slot.life != 1) {
+    return;
+  }
+
+  ++slot.process;
+
+  if (slot.process <= 0) {
+    return;
+  }
+
+  const char interval = 3;
+
+  if (slot.process % interval == 0) {
+    if (slot.process > 3) {
+      FollowTrail(slots[3], slots[2], 25);
+    }
+
+    if (slot.process > 2) {
+      FollowTrail(slots[2], slots[1], 25);
+    }
+
+    if (slot.process > 1) {
+      FollowTrail(slots[1], slot, 150);
+    }
+  }
+
+  slot.fullDisplayAngle -= 15;
+
+  if (slot.fullDisplayAngle < 0) {
+    slot.fullDisplayAngle += 360;
+  }
+
+  if (slot.process <= 5) {
+    slot.alphaB += 45;
+
+    if (slot.alphaB > 255) {
+      slot.alphaB = 255;
+    }
+  }
+
+  if (slot.process >= 15) {
+    slot.alphaB -= 10;
+
+    if (slot.alphaB < 0) {
+      slot.alphaB = 0;
+    }
+  }
+
+  slot.vecBNow.x += slot.height[1] * g_cosTable[slot.rotStart];
+  slot.vecBNow.z += slot.height[1] * g_sinTable[slot.rotStart];
+}
+
+// OFFSET: 0x00BC3C70
+bool EffectParticle::PrimSuperAngel() {
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  EffectPrimitiveSlot& slot = this->state.slots[0];
+
+  if (slot.life == 1) {
+    ++slot.process;
+    slot.vecBNow.y -= 0.1f;
+    slot.vecBPre = slot.vecBNow;
+    this->state.offset = slot.vecBPre;
+
+    float& alpha = this->state.alpha;
+    const char kind = slot.flag1[0];
+
+    if (slot.process < 50) {
+      if (slot.flag1[1] == 0) {
+        if (kind == 1) {
+          if (alpha < 200.0f) {
+            alpha += 5.0f;
+          }
+        } else if (kind == 10) {
+          if (alpha < 255.0f) {
+            alpha += 10.0f;
+          }
+
+          if (alpha > 255.0f) {
+            alpha = 255.0f;
+          }
+        } else if (kind == 11) {
+          alpha = 0.0f;
+        } else if (kind >= 2) {
+          if (slot.process < 30 && alpha < 150.0f) {
+            alpha += 5.0f;
+          }
+        } else if (alpha < 245.0f) {
+          alpha += 5.0f;
+        }
+      } else if (alpha < static_cast<float>(40 - slot.flag1[1])) {
+        alpha += 1.0f;
+      }
+    }
+
+    if (slot.process > 30) {
+      int& motion = this->render.curMotion;
+
+      if (kind == 0) {
+        if (slot.process % 3 == 0) {
+          ++motion;
+        }
+
+        if (motion > 29) {
+          motion = 29;
+        }
+      } else if (kind == 1) {
+        if (slot.process % 3 == 0) {
+          ++motion;
+        }
+
+        if (motion > 29) {
+          motion = 29;
+        }
+      } else if (kind == 10 || kind == 11) {
+        if (slot.process % 4 == 0) {
+          ++motion;
+        }
+
+        if (motion > 15) {
+          motion = 15;
+        }
+      } else if (kind >= 2) {
+        if (slot.process % 3 == 0) {
+          ++motion;
+        }
+
+        if (motion > 29) {
+          motion = 29;
+        }
+      }
+    }
+
+    if (kind == 0) {
+      if (slot.process > 100) {
+        alpha -= 4.0f;
+
+        if (alpha < 0.0f) {
+          alpha = 0.0f;
+        }
+      }
+    } else if (kind == 2) {
+      if (slot.process > 30) {
+        alpha -= 3.0f;
+
+        if (alpha < 0.0f) {
+          alpha = 0.0f;
+        }
+      }
+    } else if (kind == 3) {
+      if (slot.process > 60) {
+        alpha -= 3.0f;
+
+        if (alpha < 0.0f) {
+          alpha = 0.0f;
+        }
+      }
+    } else if (kind == 4) {
+      if (slot.process > 70) {
+        alpha -= 3.0f;
+
+        if (alpha < 0.0f) {
+          alpha = 0.0f;
+        }
+      }
+    } else if (kind == 10) {
+      if (slot.process > 100) {
+        alpha -= 6.0f;
+
+        if (alpha < 0.0f) {
+          alpha = 0.0f;
+        }
+      }
+    } else if (slot.flag1[1] != 0) {
+      if (slot.process > 75) {
+        alpha -= 3.0f;
+
+        if (alpha < 0.0f) {
+          alpha = 0.0f;
+        }
+      }
+    } else if (slot.process > 75) {
+      alpha -= 6.0f;
+
+      if (alpha < 0.0f) {
+        alpha = 0.0f;
+      }
+    }
+  }
+
+  this->render.position[0] = this->state.offset.x;
+  this->render.position[1] = this->state.offset.y;
+  this->render.position[2] = this->state.offset.z;
+  this->UpdateRecords();
+  return true;
+}
+
 // OFFSET: 0x00BB6F30
 // FUNCTION: fn_19779
 bool EffectParticle::UpdateHit6() {
@@ -1841,7 +2053,7 @@ void EffectParticle::UpdateRecords() {
     record.unknown_003C = previous.unknown_003C;
     record.angle = previous.angle;
     std::memcpy(record.matrix, previous.matrix, sizeof(record.matrix));
-    record.alpha = this->state.unknown_0324 - this->state.unknown_0324 / static_cast<float>(count) * static_cast<float>(index);
+    record.alpha = this->state.alpha - this->state.alpha / static_cast<float>(count) * static_cast<float>(index);
 
     const std::uint32_t red = static_cast<unsigned char>(this->state.red);
     const std::uint32_t green = static_cast<unsigned char>(this->state.green);
@@ -1863,10 +2075,10 @@ void EffectParticle::UpdateRecords() {
   first.scale = this->state.scale;
   first.angle = this->state.unknown_030C;
   std::memcpy(first.matrix, this->state.matrix1, sizeof(first.matrix));
-  first.alpha = this->state.unknown_0324;
+  first.alpha = this->state.alpha;
 
   const std::uint32_t red = static_cast<unsigned char>(this->state.red);
   const std::uint32_t green = static_cast<unsigned char>(this->state.green);
   const std::uint32_t blue = static_cast<unsigned char>(this->state.blue);
-  first.color = (static_cast<std::uint32_t>(static_cast<int>(this->state.unknown_0324)) << 24) | (red << 16) | (green << 8) | blue;
+  first.color = (static_cast<std::uint32_t>(static_cast<int>(this->state.alpha)) << 24) | (red << 16) | (green << 8) | blue;
 }

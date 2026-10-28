@@ -23,7 +23,7 @@ struct RenderObjectState {
   /* 001C */ std::string name;
   /* 0034 */ int animation;
   /* 0038 */ int previousAnimation;
-  /* 003C */ std::uint32_t unknown_003C;
+  /* 003C */ int curMotion;
   /* 0040 */ std::uint32_t unknown_0040;
   /* 0044 */ std::uint32_t unknown_0044;
   /* 0048 */ std::uint32_t unknown_0048;

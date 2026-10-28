@@ -68,7 +68,7 @@ void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectSta
       vertex.v = v[triangleIndex][vertexIndex];
     }
 
-    triangle.texture = particle.textures[render.unknown_003C];
+    triangle.texture = particle.textures[render.curMotion];
   }
 
   for (unsigned index = 0; index < 2; ++index) {

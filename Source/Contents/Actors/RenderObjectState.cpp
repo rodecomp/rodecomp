@@ -33,7 +33,7 @@ void RenderObjectState::Reset(ResourceMgr& resources, JobNames& names) {
   this->animation = 0;
   this->previousAnimation = 0;
   this->unknown_0040 = 0;
-  this->unknown_003C = 0;
+  this->curMotion = 0;
   this->unknown_0044 = 0;
   this->angle = 0;
   this->scale = 1;

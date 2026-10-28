@@ -15,12 +15,12 @@ void EffectPrimitiveState::InitializeRecords(const RenderObjectState& render) {
     record.scale = this->scale;
     record.angle = this->unknown_030C;
     std::memcpy(record.matrix, this->matrix1, sizeof(record.matrix));
-    record.alpha = this->unknown_0324;
+    record.alpha = this->alpha;
     record.red = this->red;
     record.green = this->green;
     record.blue = this->blue;
 
-    const int alpha = TruncateToInt(this->unknown_0324);
+    const int alpha = TruncateToInt(this->alpha);
     record.color = static_cast<unsigned char>(this->blue) +
                    ((static_cast<unsigned char>(this->green) + ((static_cast<unsigned char>(this->red) + (static_cast<std::uint32_t>(alpha) << 8)) << 8)) << 8);
   }
