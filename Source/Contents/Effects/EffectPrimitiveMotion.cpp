@@ -1048,6 +1048,64 @@ void EffectParticle::PrimBubbleDrop() {
   }
 }
 
+// OFFSET: 0x00BBB9D0
+// FUNCTION: fn_19795
+void EffectParticle::PrimChemical2() {
+  FaceCamera(this->state.slots);
+
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process <= 20) {
+      slot.alphaB += 4;
+    } else if (slot.process > 50) {
+      slot.alphaB -= 2;
+
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00BBBB40
+
+// OFFSET: 0x00BBBC40
+// FUNCTION: fn_19797
+void EffectParticle::PrimChemical() {
+  FaceCamera(this->state.slots);
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process <= 10) {
+      slot.alphaB += 18;
+    } else if (slot.process > 20) {
+      slot.alphaB -= 15;
+
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
+      }
+    }
+  }
+}
 // OFFSET: 0x00BB6F30
 // FUNCTION: fn_19779
 bool EffectParticle::UpdateHit6() {

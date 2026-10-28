@@ -25,6 +25,9 @@ struct EffectParticle : CRenderObject {
   void PrimBottom();
   void PrimBottomOut();
   void PrimBubbleDrop();
+  void PrimChemical2();
+  void PrimChemical3();
+  void PrimChemical();
 
   bool AdvanceFrame();
   void UpdateRecords();
