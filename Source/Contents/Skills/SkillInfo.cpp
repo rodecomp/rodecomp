@@ -1,10 +1,82 @@
+#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/CGameMode.h"
+#include "Contents/Actors/GameActor.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/EffectActor.h"
+#include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EffectPrimitiveState.h"
+#include "Contents/MessageTable.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillInfo.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include "Contents/World/WorldScene.h"
+#include "Resource/World/TerrainResource.h"
 #include "Script/LuaScript.h"
 
+#include <cstdlib>
 #include <cstring>
 #include <memory>
+
+class CEfstAction_ChangeSize : public CEfstAction {
+public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_GenderChange : public CEfstAction {
+public:
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_ShowEffect : public CEfstAction {
+public:
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_RA_UNLIMIT : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+};
+
+class CEfstAction_UNLIMIT : public CEfstAction {
+public:
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_SHADOW_WEAPON : public CEfstAction {
+public:
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CEfstAction_DANCING_KNIFE : public CEfstAction {
+public:
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_SHADOW_EXCEED : public CEfstAction {
+public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_ABC_CHASING_BREAK : public CSkillAction {
+public:
+  bool Slot07() override;
+};
+
+class CSkillAction_ABC_CHASING_SHOT : public CSkillAction {
+public:
+  bool Slot07() override;
+};
+
+class CSkillAction_ABC_ABYSS_FLAME_ATK : public CSkillAction {
+public:
+  bool Slot03(int argument) override;
+};
 
 // GLOBAL: gl_24640
 CSkillActionMgr* g_skillActionMgr;
@@ -405,3 +477,65 @@ bool ShowsCastEffect(int skillId) {
     return true;
   }
 }
+
+// OFFSET: 0x007747B0
+
+// OFFSET: 0x007747E0
+
+// OFFSET: 0x00774E20
+
+// OFFSET: 0x00774F30
+
+// OFFSET: 0x00774FB0
+
+// OFFSET: 0x007756D0
+
+// OFFSET: 0x007764E0
+
+// OFFSET: 0x00776510
+
+// OFFSET: 0x00777910
+
+// OFFSET: 0x00777E80
+
+// OFFSET: 0x00777EE0
+
+// OFFSET: 0x00777F00
+
+// OFFSET: 0x00777F30
+
+// OFFSET: 0x00778140
+// FUNCTION: fn_08371
+bool CSkillAction_ABC_CHASING_BREAK::Slot07() {
+  return true;
+}
+
+// OFFSET: 0x00778580
+// FUNCTION: fn_08375
+bool CSkillAction_ABC_CHASING_SHOT::Slot07() {
+  return true;
+}
+
+// OFFSET: 0x007794D0
+// FUNCTION: fn_08385
+bool CSkillAction_ABC_ABYSS_FLAME_ATK::Slot03(int argument) {
+  return true;
+}
+
+// OFFSET: 0x0077ACC0
+
+// OFFSET: 0x0077AD90
+
+// OFFSET: 0x0077AEA0
+
+// OFFSET: 0x0077AF80
+
+// OFFSET: 0x0077B060
+
+// OFFSET: 0x0077B210
+
+// OFFSET: 0x0077B2E0
+
+// OFFSET: 0x0077B3A0
+
+// OFFSET: 0x0077B460
