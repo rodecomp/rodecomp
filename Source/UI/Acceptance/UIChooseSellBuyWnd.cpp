@@ -1,15 +1,19 @@
+#include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Chat/UIWhisperWnd.h"
 #include "UI/Dialogs/UIBookWnd.h"
 #include "UI/Dialogs/UIDisconnectedServerMsgWnd.h"
+#include "UI/Dialogs/UIGraffiStrboxWnd.h"
 #include "UI/Dialogs/UILoadingWnd.h"
 #include "UI/Dialogs/UIMenuWnd.h"
 #include "UI/Dialogs/UIMinimapZoomWnd.h"
@@ -26,14 +30,20 @@
 #include "UI/Items/UIExchangeWnd.h"
 #include "UI/Items/UIItemCollectionWnd.h"
 #include "UI/Items/UIItemIdentifyWnd.h"
+#include "UI/Items/UINotifyItemObtainWnd.h"
 #include "UI/Lists/UIComboBoxWnd.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Party/UIPartySettingWnd.h"
 #include "UI/Shop/UInCash_CallWnd.h"
+#include "UI/Skill/UISkillDescribeWnd.h"
 #include "UI/Status/UIStatusWnd.h"
 #include "UI/Text/UITextViewer.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Utility/Text/FormatString.h"
 
+#include <cstdio>
 #include <cstring>
 #include <windows.h>
 #include <timeapi.h>
@@ -119,9 +129,33 @@ void UIDisconnectedServerMsgWnd::Paint() {
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
 }
 
+// OFFSET: 0x008EE230
+// FUNCTION: fn_12223
+void UIGraffiStrboxWnd::Paint() {
+  auto& controls = *this->m_controls;
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+  this->DrawTextAt(controls.fonts, controls.locale, 17, 23, controls.services.MessageText(436), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 16, 22, controls.services.MessageText(436), 0, 0, 12, 0, 0, 0);
+}
+
 // OFFSET: 0x008EECD0
 // FUNCTION: fn_12228
 void UILoadingWnd::Paint() {
+}
+
+// OFFSET: 0x008EF0A0
+// FUNCTION: fn_12231
+void UIMinimapZoomWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->ClearSurface(0xFFFF00FF);
+  int column = 0;
+  int row = 0;
+  static_cast<CGameMode*>(g_world.ActiveGameMode())->PlayerCell(&column, &row);
+  const std::string text = FormatOwnedString(" %d  %d", column, row);
+  this->DrawTextAt(controls.fonts, controls.locale, 19, 128, text.c_str(), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 20, 128, text.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
 }
 
 // OFFSET: 0x008EF590
@@ -141,6 +175,34 @@ void UINotifyLevelUpWnd::Paint() {
 void UINotifyQuestWnd::Paint() {
 }
 
+// OFFSET: 0x008EF9A0
+// FUNCTION: fn_12239
+void UIPartyInvitationToWnd::Paint() {
+  auto& controls = *this->m_controls;
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(2056), 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+  this->DrawTextAt(controls.fonts, controls.locale, 10, 22, controls.services.MessageText(2058), 0, 0, 12, 0, 0, 0);
+}
+
+// OFFSET: 0x008EFA00
+// FUNCTION: fn_12240
+void UIPartySettingWnd::Paint() {
+  auto& controls = *this->m_controls;
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(this->m_mode == 50 ? 2054 : 291), 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+
+  if (this->m_mode == 70) {
+    this->DrawTextAt(controls.fonts, controls.locale, 10, 22, controls.services.MessageText(292), 0, 0, 12, 0, 0, 0);
+  } else if (this->m_mode == 50) {
+    this->DrawTextAt(controls.fonts, controls.locale, 10, 22, controls.services.MessageText(2057), 0, 0, 12, 0, 0, 0);
+  }
+
+  this->DrawTextAt(controls.fonts, controls.locale, 10, this->m_mode + 82, controls.services.MessageText(738), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 10, this->m_mode + 17, controls.services.MessageText(293), 0, 0, 12, 0, 0, 0);
+}
+
 // OFFSET: 0x008EFF60
 // FUNCTION: fn_12245
 void UIQuitWnd::Paint() {
@@ -155,11 +217,55 @@ void UIRestartWnd::Paint() {
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
 }
 
+// OFFSET: 0x008F0350
+// FUNCTION: fn_12249
+void UISelectCartWnd::Paint() {
+  auto& controls = *this->m_controls;
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(659), 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, this->geometry.height - left->image.height, &left->image, false);
+  const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_rd.bmp")));
+  this->DrawBitmap(this->geometry.width - right->image.width, this->geometry.height - right->image.height, &right->image, false);
+}
+
+// OFFSET: 0x008F0400
+// FUNCTION: fn_12250
+void UISkillDescribeWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  const UIWindow* text = this->m_text;
+  this->FillRegion(
+    text->geometry.width + text->geometry.x, text->geometry.y, this->geometry.width - text->geometry.width - text->geometry.x - 3, text->geometry.height,
+    RGB(red, green, blue)
+  );
+  DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xC3C3C3);
+  DrawRoundedBorder(*this, 2, 2, this->geometry.width - 4, this->geometry.height - 4, 0xFFFFFF);
+}
+
 // OFFSET: 0x008F2A90
 // FUNCTION: fn_12258
 void UIWaitWnd::Paint() {
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+}
+
+// OFFSET: 0x008F2AD0
+// FUNCTION: fn_12259
+void UIWhisperWnd::Paint() {
+  auto& controls = *this->m_controls;
+  char title[128];
+
+  if (!this->m_code.empty()) {
+    std::sprintf(title, "With  %s [%s]", this->m_name.c_str(), this->m_code.c_str());
+  } else {
+    std::sprintf(title, "With  %s", this->m_name.c_str());
+  }
+
+  DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xC0C0C0);
+  this->FillRegion(1, this->geometry.height - 20, this->geometry.width - 2, 1, 0xC0C0C0);
+  this->DrawTextAt(controls.fonts, controls.locale, 10, 3, title, 0, 0, 12, 0xFFFFFF, 0, 0);
 }
 
 // OFFSET: 0x008F2DE0
@@ -179,6 +285,27 @@ void UIItemIdentifyWnd::Slot26(int x, int y) {
 void UIStatusWnd::Slot26(int, int y) {
   if (y < 17) {
     this->SendMsg(this, 6, 202, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x008F3330
+// FUNCTION: fn_12266
+void UIWhisperWnd::Slot26(int, int y) {
+  if (y >= 17 || this->m_code.size() == 0) {
+    return;
+  }
+
+  HGLOBAL memory = GlobalAlloc(GHND, this->m_code.size() + 1);
+  void* data = GlobalLock(memory);
+  std::memcpy(data, this->m_code.c_str(), this->m_code.size());
+  GlobalUnWire(memory);
+
+  if (OpenClipboard(hWnd)) {
+    EmptyClipboard();
+    SetClipboardData(CF_TEXT, memory);
+    CloseClipboard();
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("C-Code copied to clipboard"), 0x64FFFF, 0, 0, 0);
   }
 }
 
@@ -334,6 +461,14 @@ void UIItemCollectionWnd::Slot19() {
   if (this->m_previewTick != 0 && timeGetTime() > this->m_previewTick + 100) {
     this->m_preview->Invalidate();
     this->m_previewTick = timeGetTime();
+  }
+}
+
+// OFFSET: 0x008F4FC0
+// FUNCTION: fn_12297
+void UINotifyItemObtainWnd::Slot19() {
+  if (timeGetTime() > this->m_shownTick + 5000) {
+    this->m_frameContext->windows.CloseWindow(58);
   }
 }
 

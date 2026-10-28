@@ -3,9 +3,23 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+#include <string>
+
+struct UIButtonContext;
+
 class UIWhisperWnd : public UIFrameWnd {
 public:
+  /* 00B4 */ unsigned char unknown_00B4[0x18];
+  /* 00CC */ std::string m_name;
+  /* 00E4 */ unsigned char unknown_00E4[0x20];
+  /* 0104 */ std::string m_code;
+
+  void Paint() override;
+  void Slot26(int x, int y) override;
   void Slot33(int x, int y) override;
+
+protected:
+  UIButtonContext* m_controls;
 };
 
 #endif
