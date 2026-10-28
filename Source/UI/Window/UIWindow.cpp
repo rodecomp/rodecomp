@@ -1267,6 +1267,45 @@ void UINavigationV4Wnd::Slot11() {
 }
 
 // OFFSET: 0x005C7140
+// FUNCTION: fn_03597
+void UINavigationroadiconWnd::Slot31(int x, int y) {
+  int slot = 0;
+  if (y >= 25 && y <= 55) {
+    if (x >= 11 && x <= 41) {
+      slot = 1;
+    } else if (x >= 47 && x <= 77) {
+      slot = 2;
+    } else if (x >= 83 && x <= 113) {
+      slot = 3;
+    } else if (x >= 119 && x <= 149) {
+      slot = 4;
+    }
+  }
+
+  if (slot == 0 && y >= 63 && y <= 91) {
+    if (x >= 11 && x <= 41) {
+      slot = 5;
+    } else if (x >= 47 && x <= 77) {
+      slot = 6;
+    } else if (x >= 83 && x <= 113) {
+      slot = 7;
+    } else if (x >= 119 && x <= 149) {
+      slot = 8;
+    }
+  }
+
+  if (slot != 0) {
+    if (g_windowMgr.window_4F174) {
+      g_windowMgr.window_4F174->SendMsg(nullptr, 40, slot, 0, 0, 0);
+    }
+
+    const int column = slot <= 4 ? slot : slot - 4;
+    this->icon->Move(column * 36 - 26, slot < 5 ? 24 : 60);
+  }
+
+  this->Invalidate();
+  UIFrameWnd::Slot31(x, y);
+}
 
 // OFFSET: 0x005C72A0
 // FUNCTION: fn_03604
