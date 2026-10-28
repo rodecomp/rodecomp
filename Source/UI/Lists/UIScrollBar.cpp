@@ -4,6 +4,10 @@
 #include "Resource/ResourceMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Lists/UIChatHisBox.h"
+#include "UI/Lists/UIImgMenu.h"
+#include "UI/Lists/UIListBoxEx.h"
+#include "UI/Lists/UITabControl.h"
 
 #include <algorithm>
 
@@ -314,4 +318,75 @@ void UIScrollBar::Configure(int x, int y, unsigned char vertical, int length) {
   this->Move(x, y);
   this->Slot15(width, height);
   this->Slot22(width, height);
+}
+
+// OFFSET: 0x00880800
+// FUNCTION: fn_11279
+int UIListBoxEx::FindLine(const std::string& text) {
+  const std::string key = text;
+  auto it = this->lines.begin();
+  for (; it != this->lines.end(); ++it) {
+    if (key == it->second.text) {
+      break;
+    }
+  }
+  return it == this->lines.end() ? -1 : it->first;
+}
+
+// OFFSET: 0x00880920
+// FUNCTION: fn_11280
+int UIImgMenu::ItemAt(int x, int y) {
+  const int width = this->geometry.width - 3;
+  if (x < 1 || x >= width || y < 1) {
+    return -1;
+  }
+  const int height = this->geometry.height - 3;
+  if (y >= height) {
+    return -1;
+  }
+
+  int size;
+  int offset;
+  if (this->horizontal != 0) {
+    size = width / this->count;
+    this->itemWidth = size;
+    offset = x;
+  } else {
+    size = height / this->count;
+    this->itemHeight = size;
+    offset = y;
+  }
+  return std::min(offset / size, this->count - 1);
+}
+
+// OFFSET: 0x00880B20
+// FUNCTION: fn_11283
+int UITabControl::TabCount() {
+  return static_cast<int>(this->labels.size());
+}
+
+// OFFSET: 0x00880B40
+// FUNCTION: fn_11284
+int UITabControl::TabAt(int x, int y) {
+  int offset = x;
+  if (this->layout == 0 || this->layout == 2) {
+    offset = y;
+  }
+  const int count = this->TabCount();
+  for (int index = 0; index < count; ++index) {
+    offset -= this->widths[index];
+    if (offset < 0) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+// OFFSET: 0x00880BB0
+// FUNCTION: fn_11285
+const char* UIChatHisBox::HistoryText(unsigned int index) {
+  if (index < this->history.size() && !this->history[index].empty()) {
+    return this->history[index].c_str();
+  }
+  return nullptr;
 }

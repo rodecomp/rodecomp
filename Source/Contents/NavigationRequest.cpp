@@ -3,6 +3,8 @@
 #include "Client/Mode/CGameMode.h"
 #include "Contents/World/WorldScene.h"
 
+#include <cstring>
+
 // OFFSET: 0x00B8DF10
 // FUNCTION: fn_19461
 std::uint16_t CNavi_Object::GetFlag() const {
@@ -179,4 +181,19 @@ CNavi_Object* CNaviInfo::FindNpcAt(int cellX, int cellY) {
 // FUNCTION: fn_19480
 std::vector<CNavi_Object*>* CNaviInfo::Npcs() {
   return &this->npcs;
+}
+
+// OFFSET: 0x00B8E010
+// FUNCTION: fn_19465
+CNavi_Link* CNaviInfo::FindMatchingLink(CNavi_Link link) {
+  const CNavi_Link target = link;
+  for (CNavi_Link* candidate : this->links) {
+    if (candidate->cellX == target.cellX && candidate->cellY == target.cellY && candidate->unknown_0080 == target.unknown_0080 &&
+        candidate->unknown_0084 == target.unknown_0084 && candidate->info != nullptr &&
+        std::strcmp(candidate->info->name.c_str(), target.info->name.c_str()) == 0 && candidate->linkedInfo != nullptr &&
+        std::strcmp(candidate->linkedInfo->name.c_str(), target.linkedInfo->name.c_str()) == 0) {
+      return candidate;
+    }
+  }
+  return nullptr;
 }

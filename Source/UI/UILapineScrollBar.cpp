@@ -81,3 +81,9 @@ void UILapineScrollBar::Paint() {
   this->minimumThumb = 0;
   this->parent->Invalidate();
 }
+
+// OFFSET: 0x00600260
+// FUNCTION: fn_04157
+void UILapineBox_IngredientListWnd::Paint() {
+  this->ClearSurface(0xFFF7F7);
+}

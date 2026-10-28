@@ -29,6 +29,7 @@ public:
   virtual void AddLine(const char* text, std::uint32_t color);
   virtual void Clear();
   virtual void Refresh();
+  int FindLine(const std::string& text);
 
   /* 007C */ int backgroundRed;
   /* 0080 */ int backgroundGreen;

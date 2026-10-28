@@ -14,6 +14,7 @@ struct ItemTagRetirement;
 struct ChatSuggestions {
   UIWindow& chat;
   UIWindow* const& window;
+  UIEditCtrl* const& input;
 
   bool Visible() const;
 

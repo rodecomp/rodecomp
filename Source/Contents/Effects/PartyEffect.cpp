@@ -1,7 +1,7 @@
+#include "Contents/Effects/AttachedEffect.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectParticle.h"
 #include "Contents/Effects/PartyEffect.h"
-#include "Contents/Effects/RagEffectState.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Render/Textures/TextureCache.h"
 
@@ -10,9 +10,12 @@
 // OFFSET: 0x00C2CF20
 // FUNCTION: fn_20088
 bool UpdatePartyEffect(
-  RagEffectState& effect, RenderObjectState& render, ResourceMgr& resources, JobNames& names, std::list<CRenderObject*>& worldObjects, TextureCache& textures,
-  const TerrainHeight& ground, int updateTick
+  AttachedEffect& self, ResourceMgr& resources, JobNames& names, std::list<CRenderObject*>& worldObjects, TextureCache& textures, const TerrainHeight& ground,
+  int updateTick
 ) {
+  RagEffectState& effect = self.state;
+  RenderObjectState& render = self.render;
+
   if (!effect.parent) {
     return false;
   }
@@ -36,7 +39,7 @@ bool UpdatePartyEffect(
   }
 
   if (effect.unknown_0178 == 0) {
-    EffectParticle* particle = CreateEffectParticle(effect, render, 15, 0, 0, 0, resources, names, worldObjects);
+    EffectParticle* particle = CreateEffectParticle(self, render, 15, 0, 0, 0, resources, names, worldObjects);
     effect.unknown_11C84 = &particle->state;
     EffectPrimitiveState& state = *effect.unknown_11C84;
     state.lifetime = 9999;

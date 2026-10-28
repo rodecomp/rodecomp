@@ -7,7 +7,9 @@
 
 class Timestamp {
 public:
+  Timestamp(__time32_t value);
   ~Timestamp();
+  void Set(__time32_t value);
   TIMESTAMP_STRUCT ToSqlTimestamp();
   int IsBefore(__time32_t other) const;
   int IsBeforeNow() const;

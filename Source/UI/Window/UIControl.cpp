@@ -1,4 +1,5 @@
 #include "UI/Window/UIControl.h"
+#include "UI/Lists/UIListBoxTemplate.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -150,3 +151,80 @@ void CUIControl::Slot52(int value) {
 // FUNCTION: fn_14036
 void CUIControl::Slot53(int) {
 }
+
+// OFFSET: 0x009F2B70
+// FUNCTION: fn_14726
+void CUIVScrollBar::SetTotal(int value) {
+  const int count = value > 1 ? value : 1;
+  this->total = count;
+  const int shown = this->visible <= count ? this->visible : count;
+  this->visible = shown;
+  this->maximum = count - shown;
+  this->Invalidate();
+}
+
+// OFFSET: 0x009F2E80
+// FUNCTION: fn_14732
+void CUIVScrollBar::SetVisible(int value) {
+  const int count = this->total;
+  const int shown = count < value ? count : value;
+  this->visible = shown;
+  this->maximum = count - shown;
+  this->Invalidate();
+}
+
+// OFFSET: 0x009F2530
+// FUNCTION: fn_14716
+void CUIVScrollBar::SetPosition(int value) {
+  int zero = 0;
+  const int* clamped = &this->maximum;
+  if (value <= this->maximum) {
+    clamped = value >= 0 ? &value : &zero;
+  }
+  if (!this->dragging) {
+    this->position = *clamped;
+  }
+  this->Show(this->total > this->visible);
+  this->Slot54();
+  if (this->onChange) {
+    this->onChange(this->position);
+  }
+  this->Invalidate();
+}
+
+// OFFSET: 0x009F25C0
+// FUNCTION: fn_14717
+void CUIVScrollBar::Slot54() {
+  CUIControl* bar = this->thumb;
+  float offset;
+  if (bar->hitEnabled) {
+    const int length = static_cast<int>((static_cast<float>(this->visible) / static_cast<float>(this->total)) * static_cast<float>(this->trackLength));
+    bar->Resize(this->geometry.width, length > 1 ? length : 1);
+    offset = (static_cast<float>(this->trackLength) / static_cast<float>(this->total)) * static_cast<float>(this->position);
+  } else {
+    if (this->total - this->visible <= 0) {
+      bar->Move(0, this->upButton->geometry.height);
+      return;
+    }
+    offset = static_cast<float>(this->position * (this->trackLength - bar->geometry.height)) / static_cast<float>(this->total - this->visible);
+  }
+  this->thumb->Move(0, static_cast<int>(offset + static_cast<float>(this->upButton->geometry.height)));
+}
+
+// OFFSET: 0x009F0290
+// FUNCTION: fn_14661
+void CUIListItem::SetSelected(bool selected) {
+  if (this->selected != selected) {
+    this->selected = selected;
+    if (!this->frozen) {
+      this->Invalidate();
+    }
+  }
+}
+
+template void CUIListBox<AdventureGuide::CUITab>::Resize(int, int);
+template void CUIListBox<AdventureGuide::CUISubTab>::Resize(int, int);
+template void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::OnScroll(int);
+template void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::OnScroll(int);
+template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::OnScroll(int);
+template void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::OnScroll(int);

@@ -6,16 +6,83 @@
 #include <functional>
 #include <map>
 #include <new>
+#include <utility>
 #include <vector>
 
-class CEfstAction;
+class CGameActor;
+class CRenderObject;
 class CSkillObjectAction;
 class LuaScript;
+struct EffectVector3;
 struct NormalItemSlot;
+
+struct EfstActionMessage {
+  /* 0000 */ const char* text;
+  /* 0004 */ std::uint32_t color;
+};
 
 class CSkillAction {
 public:
-  virtual bool Slot00() = 0;
+  virtual bool Slot00() {
+    return false;
+  }
+  virtual int Slot01() {
+    return 8;
+  }
+  virtual int Slot02() {
+    return 7;
+  }
+  virtual bool Slot03(int argument) {
+    return false;
+  }
+  virtual bool Slot04() {
+    return false;
+  }
+  virtual bool Slot05() {
+    return false;
+  }
+  virtual bool Slot06() {
+    return false;
+  }
+  virtual bool Slot07() {
+    return false;
+  }
+  virtual void Slot08(int level, CGameActor* source) {
+  }
+  virtual void Slot09(int argument1, int argument2, int argument3) {
+  }
+  virtual void Slot10(int argument1, int argument2, int argument3, int argument4, int argument5) {
+  }
+  virtual void Slot11(int level, CGameActor* source, CGameActor* target) {
+  }
+  virtual void Slot12(int argument1, int argument2, int argument3, int argument4, int argument5) {
+  }
+  virtual bool Slot13() {
+    return false;
+  }
+  virtual int Slot14() {
+    return 0;
+  }
+  virtual void Slot15(int level, CGameActor* source, CGameActor* target) {
+  }
+  virtual void Slot16(int level, CGameActor* source, CGameActor* target) {
+  }
+};
+
+class CEfstAction {
+public:
+  virtual void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  }
+  virtual void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  }
+  virtual void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  }
+  virtual EfstActionMessage Slot03() {
+    return {nullptr, 0xFFFF00};
+  }
+  virtual EfstActionMessage Slot04() {
+    return {nullptr, 0xFF};
+  }
 };
 
 struct SkillInfoEntry {
@@ -68,6 +135,14 @@ public:
   static CSkillActionMgr* GetInstance();
 
   bool IsSupportAction(int skillId);
+  std::pair<bool, int> ActionSlot01(int skillId);
+  std::pair<bool, int> ActionSlot02(int skillId);
+  int ActionSlot14(int skillId);
+  bool ActionSlot03(int skillId, int argument);
+  bool ActionSlot04(int skillId);
+  EfstActionMessage EfstSlot03(int efstId);
+  EfstActionMessage EfstSlot04(int efstId);
+  bool HasEfstAction(int efstId);
 };
 
 extern CSkillActionMgr* g_skillActionMgr;
@@ -85,6 +160,7 @@ bool IsOptionalSelfTargetSkill(int skillId);
 bool HidesUseFailureMessage(int skillId);
 bool IsSupportSkill(int skillId);
 bool ShowsCastEffect(int skillId);
+EffectVector3 CellWorldPosition(int column, int row);
 static_assert(sizeof(SkillInfoEntry) == 8);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(SkillInfoEntry, unknown_0004) == 0x4);
@@ -93,6 +169,8 @@ static_assert(offsetof(CSkillActionMgr, m_efstActions) == 0x0C);
 static_assert(offsetof(CSkillActionMgr, m_skillObjectActions) == 0x14);
 static_assert(sizeof(CSkillActionMgr) == 0x1C);
 static_assert(sizeof(CSkillAction) == 4);
+static_assert(sizeof(CEfstAction) == 4);
+static_assert(sizeof(EfstActionMessage) == 8);
 #endif
 
 #endif

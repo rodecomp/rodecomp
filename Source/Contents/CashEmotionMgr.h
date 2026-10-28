@@ -26,6 +26,10 @@ public:
 
   void Add(int packId, int emotionId);
   std::pair<int, int> Get(int index) const;
+  // INLINED
+  int Count() const {
+    return static_cast<int>(this->entries.size());
+  }
 
   /* 0000 */ std::string name;
   /* 0018 */ std::vector<std::pair<int, int>> entries;

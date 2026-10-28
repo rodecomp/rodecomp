@@ -20,6 +20,8 @@ class GroundGeometry;
 struct NaviCell {
   /* 0000 */ int x;
   /* 0004 */ int y;
+
+  int GetY() const;
 };
 
 struct NaviLink {
@@ -34,6 +36,12 @@ struct NaviDataEntry {
 };
 
 struct NaviRouteLine {
+  // OFFSET: 0x00B92F10
+  // FUNCTION: fn_19558
+  ~NaviRouteLine() {
+    this->text.clear();
+  }
+
   /* 0000 */ int kind;
   /* 0004 */ int x;
   /* 0008 */ int y;
@@ -79,6 +87,9 @@ public:
   virtual const char* GetTitle() const;
   virtual NaviCell* GetCell(NaviCell* out) const;
   virtual CNaviInfo* GetInfo() const;
+
+  bool HasId(const unsigned int& id) const;
+  bool IsNamed(const char* name) const;
 };
 
 // VTABLE: vt_01778
@@ -105,6 +116,17 @@ public:
   CNaviInfo* GetInfo() const override;
 };
 
+#pragma pack(push, 1)
+struct NaviObjectRecord {
+  /* 0000 */ int type;
+  /* 0004 */ int index;
+  /* 0008 */ int cellX;
+  /* 000C */ int cellY;
+  /* 0010 */ std::int16_t nameLength;
+  /* 0012 */ char name[1];
+};
+#pragma pack(pop)
+
 class CNaviInfo {
 public:
   ~CNaviInfo();
@@ -118,10 +140,12 @@ public:
   std::vector<CNavi_Link*>::iterator LinksEnd();
   int GetCellY() const;
   int GetIndex() const;
+  int GetCellX() const;
   CNavi_Link* FindLink(unsigned int key, bool byId);
   CNavi_Object* FindNpc(unsigned int key, bool byId);
   CNavi_Object* FindNpcAt(int cellX, int cellY);
   std::vector<CNavi_Object*>* Npcs();
+  CNavi_Link* FindMatchingLink(CNavi_Link link);
 
   /* 0000 */ int index;
   /* 0004 */ int type;
@@ -137,12 +161,22 @@ public:
 
 struct NavigationTarget {
   NavigationTarget() : type(-1), object(nullptr), x(-1), y(-1) {}
+
+  // INLINED
+  NavigationTarget(int type, void* object, int x, int y, std::string name) {
+    this->type = type;
+    this->object = object;
+    this->x = x;
+    this->y = y;
+    this->name = name;
+  }
+
   ~NavigationTarget();
 
   /* 0000 */ int type;
   /* 0004 */ void* object;
-  /* 0008 */ int x;
-  /* 000C */ int y;
+  /* 0008 */ int x = 0;
+  /* 000C */ int y = 0;
   /* 0010 */ std::string name;
 };
 
@@ -155,6 +189,8 @@ public:
   CNaviInfo* GetInfo();
   NaviCell* GetCell(NaviCell* out);
   void Clear();
+  void ClearAll();
+  CNavi_Link* FindLink(unsigned int key, bool byId);
   int FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allowGates, bool includeObjects, bool allowWarps, int side);
   void ResetLinkDepths();
 
@@ -190,6 +226,9 @@ public:
   std::string DestinationTitle();
   float FitToSquare(int* offsetX, int* offsetY, int width, int height, float size) const;
   void LoadSettings();
+  bool BuildRoute(int startX, int startY, int destX, int destY, bool collectCells);
+  NaviCell* MapCellToView(NaviCell* out, const char* mapName, int cellX, int cellY, float size);
+  std::string RouteText();
   void Reset(bool clearAll);
   void ClearRouteNodes();
   void ClearNodePaths();
@@ -197,6 +236,17 @@ public:
   bool UpdateGround();
   bool PlayerCell(int* column, int* row);
   bool LoadStates(std::vector<char> packet);
+  bool AddState(const std::vector<std::string>& tokens);
+  bool ParseFlags(const char* text, bool* first, bool* second, bool* third);
+  NaviCell ParseCell(const char* text);
+  std::vector<char> WriteTarget(NavigationTarget target);
+  std::vector<char> WriteObject(CNavi_Object* object);
+  void ClearSavedTarget();
+  void ClearCurrentObject();
+  void ClearStates();
+  void ClearNodes();
+  int FindNodePath(unsigned int index);
+  void SelectNodePath(std::string name);
 
   /* 0000 */ CNaviData data;
   /* 004C */ CPathFinder pathFinder;
@@ -254,6 +304,7 @@ static_assert(offsetof(CNaviInfo, visited) == 0x40);
 static_assert(offsetof(NaviDataEntry, cost) == 0x08);
 static_assert(offsetof(CNavi_Link, linkedLinks) == 0x8C);
 static_assert(sizeof(NaviCell) == 0x08);
+static_assert(offsetof(NaviObjectRecord, name) == 0x12);
 static_assert(sizeof(NaviDataEntry) == 0x0C);
 static_assert(sizeof(NaviRouteLine) == 0x2C);
 static_assert(offsetof(NaviRouteLine, text) == 0x0C);

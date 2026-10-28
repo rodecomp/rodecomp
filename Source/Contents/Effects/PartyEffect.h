@@ -3,8 +3,7 @@
 
 #include <list>
 
-struct RagEffectState;
-struct RenderObjectState;
+struct AttachedEffect;
 struct EffectParticle;
 struct JobNames;
 struct TerrainHeight;
@@ -13,8 +12,8 @@ class TextureCache;
 class CRenderObject;
 
 bool UpdatePartyEffect(
-  RagEffectState& effect, RenderObjectState& render, ResourceMgr& resources, JobNames& names, std::list<CRenderObject*>& worldObjects, TextureCache& textures,
-  const TerrainHeight& ground, int updateTick
+  AttachedEffect& self, ResourceMgr& resources, JobNames& names, std::list<CRenderObject*>& worldObjects, TextureCache& textures, const TerrainHeight& ground,
+  int updateTick
 );
 
 #endif

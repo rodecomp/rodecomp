@@ -3,13 +3,16 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICashEmotionSprBtn.h"
 #include "UI/CashEmotion/UICashEmotionPack.h"
 #include "UI/CashEmotion/UICashEmotionPiece.h"
 #include "UI/Chat/ChatSuggestions.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/WindowBorder.h"
 
 #include <algorithm>
+#include <array>
 #include <climits>
 #include <cstring>
 #include <iterator>
@@ -23,22 +26,34 @@ CCashEmotionMgr* g_cashEmotionMgr = nullptr;
 // GLOBAL: gl_24484
 ChatSuggestions* g_chatSuggestions = nullptr;
 
+class ICashEmotionAction {
+public:
+  virtual ~ICashEmotionAction();
+  virtual void Execute(int packId, int argument) = 0;
+};
+
 class UICashEmotionMiniWnd : public UIWindow {
 public:
-  // OFFSET: 0x007C9200
+  void Slot15(int width, int height) override;
+  void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
   unsigned int Select(int actionId);
+  void Select(CashEmotionCommand* command);
+  void Previous();
   void Refresh(int first);
+  void Next();
+  void SetIndex(int index);
 
 protected:
   /* 007C */ CashEmotionCommand* m_selected;
-  /* 0080 */ UICashEmotionPiece* m_first;
-  /* 0084 */ UICashEmotionPiece* m_second;
-  /* 0088 */ UICashEmotionPiece* m_third;
-  /* 008C */ UIButton* m_previous;
-  /* 0090 */ UIButton* m_next;
-  /* 0094 */ void* unknown_0094;
+  /* 0080 */ std::array<UICashEmotionPiece*, 3> m_pieces;
+  /* 008C */ UIBitmapButton* m_previous;
+  /* 0090 */ UIBitmapButton* m_next;
+  /* 0094 */ ICashEmotionAction* m_action;
   /* 0098 */ int m_page;
   /* 009C */ int m_selectedIndex;
+  UICashEmotionPieceContext* m_controls;
 };
 
 // OFFSET: 0x00592290
@@ -608,7 +623,7 @@ void CCashEmotionMgr::SetOwnedPack(int packId, unsigned int expiry) {
   for (auto it = this->m_expiry.begin(); it != this->m_expiry.end(); ++it) {
     if (it->first == packId) {
       if (expiry) {
-        it->second.seconds = expiry;
+        it->second.Set(expiry);
       } else {
         this->m_expiry.erase(it);
       }
@@ -617,7 +632,7 @@ void CCashEmotionMgr::SetOwnedPack(int packId, unsigned int expiry) {
   }
 
   if (expiry > 0) {
-    this->m_expiry.emplace_back(packId, Timestamp{static_cast<__time32_t>(expiry)});
+    this->m_expiry.emplace_back(packId, expiry);
   }
 }
 
@@ -648,40 +663,236 @@ bool CCashEmotionMgr::IsOwnedPack(int packId) {
   return std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId) != this->m_ownedPacks.end();
 }
 
+// OFFSET: 0x007C9200
+// FUNCTION: fn_09428
+void UICashEmotionMiniWnd::Select(CashEmotionCommand* command) {
+  this->m_selected = command;
+  this->m_page = 0;
+  this->m_selectedIndex = 0;
+  this->Refresh(0);
+
+  if (this->m_previous) {
+    this->m_previous->Enable(0);
+  }
+
+  if (this->m_selected && this->m_selected->Count() > 3) {
+    if (this->m_next) {
+      this->m_next->Enable(1);
+    }
+  } else if (this->m_next) {
+    this->m_next->Enable(0);
+  }
+}
+
+// OFFSET: 0x007C9290
+// FUNCTION: fn_09429
+void UICashEmotionMiniWnd::Previous() {
+  if (this->m_selectedIndex != 0) {
+    this->SetIndex(this->m_selectedIndex - 1);
+  }
+}
+
 // OFFSET: 0x007C92B0
 // FUNCTION: fn_09430
 void UICashEmotionMiniWnd::Refresh(int first) {
-  if (this->m_first) {
+  if (this->m_pieces[0]) {
     if (this->m_selected) {
       std::pair<int, int> entry = this->m_selected->Get(first);
       bool owned = entry.first == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(entry.first);
-      this->m_first->Set(entry.first, entry.second, false, false, !owned);
+      this->m_pieces[0]->Set(entry.first, entry.second, false, false, !owned);
     } else {
-      this->m_first->Set(-1, -1, false, false, false);
+      this->m_pieces[0]->Set(-1, -1, false, false, false);
     }
   }
 
-  if (this->m_second) {
+  if (this->m_pieces[1]) {
     if (this->m_selected) {
       std::pair<int, int> entry = this->m_selected->Get(first + 1);
       bool owned = entry.first == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(entry.first);
-      this->m_second->Set(entry.first, entry.second, false, false, !owned);
+      this->m_pieces[1]->Set(entry.first, entry.second, false, false, !owned);
     } else {
-      this->m_second->Set(-1, -1, false, false, false);
+      this->m_pieces[1]->Set(-1, -1, false, false, false);
     }
   }
 
-  if (this->m_third) {
+  if (this->m_pieces[2]) {
     if (this->m_selected) {
       std::pair<int, int> entry = this->m_selected->Get(first + 2);
       bool owned = entry.first == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(entry.first);
-      this->m_third->Set(entry.first, entry.second, false, false, !owned);
+      this->m_pieces[2]->Set(entry.first, entry.second, false, false, !owned);
     } else {
-      this->m_third->Set(-1, -1, false, false, false);
+      this->m_pieces[2]->Set(-1, -1, false, false, false);
     }
   }
 
   this->Invalidate();
+}
+
+// OFFSET: 0x007C94A0
+// FUNCTION: fn_09431
+void UICashEmotionMiniWnd::Slot15(int width, int height) {
+  int x = 24;
+  for (UICashEmotionPiece*& piece : this->m_pieces) {
+    piece = new (std::nothrow) UICashEmotionPiece(*this->m_context, *this->m_controls);
+    if (piece) {
+      piece->SetSize(42, 42);
+      piece->Move(x, 1);
+      this->AddChild(piece);
+      x += 49;
+    }
+  }
+
+  this->m_previous = new (std::nothrow) UIBitmapButton(*this->m_context, this->m_controls->buttons);
+  if (this->m_previous) {
+    this->m_previous->SetBitmap("유저인터페이스\\cashemotion\\btn_arrow_l_normal.bmp", 0, 0);
+    this->m_previous->SetBitmap("유저인터페이스\\cashemotion\\btn_arrow_l_over.bmp", 1, 0);
+    this->m_previous->SetBitmap("유저인터페이스\\cashemotion\\btn_arrow_l_press.bmp", 2, 0);
+    this->m_previous->SetSize(this->m_previous->BitmapWidth(), this->m_previous->BitmapHeight());
+    this->m_previous->Move(0, 0);
+    this->m_previous->SetId(1);
+    this->AddChild(this->m_previous);
+  }
+
+  this->m_next = new (std::nothrow) UIBitmapButton(*this->m_context, this->m_controls->buttons);
+  if (this->m_next) {
+    this->m_next->SetBitmap("유저인터페이스\\cashemotion\\bth_arrow_r_normal.bmp", 0, 0);
+    this->m_next->SetBitmap("유저인터페이스\\cashemotion\\bth_arrow_r_over.bmp", 1, 0);
+    this->m_next->SetBitmap("유저인터페이스\\cashemotion\\bth_arrow_r_press.bmp", 2, 0);
+    int buttonWidth = this->m_next->BitmapWidth();
+    this->m_next->SetSize(buttonWidth, this->m_next->BitmapHeight());
+    this->m_next->Move(this->geometry.width - buttonWidth, 0);
+    this->m_next->SetId(2);
+    this->AddChild(this->m_next);
+  }
+}
+
+// OFFSET: 0x007C96E0
+// FUNCTION: fn_09432
+void UICashEmotionMiniWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\bg_preview.bmp")));
+  if (background) {
+    this->DrawBitmap(0, 0, &background->image, false);
+  }
+
+  if (this->m_selectedIndex == -1) {
+    return;
+  }
+
+  int slot = this->m_selectedIndex - this->m_page;
+  if (slot <= -1) {
+    return;
+  }
+
+  UICashEmotionPiece* piece = this->m_pieces.at(slot);
+  if (!piece) {
+    return;
+  }
+
+  auto* highlight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\bg_preview_select.bmp")));
+  if (highlight) {
+    this->DrawBitmap(piece->geometry.x - 3, 0, &highlight->image, false);
+  }
+}
+
+// OFFSET: 0x007C9790
+// FUNCTION: fn_09433
+void UICashEmotionMiniWnd::Next() {
+  if (this->m_selected && this->m_selected->Count() > this->m_selectedIndex + 1) {
+    this->SetIndex(this->m_selectedIndex + 1);
+  }
+}
+
+// OFFSET: 0x007C97C0
+// FUNCTION: fn_09434
+void UICashEmotionMiniWnd::SetIndex(int index) {
+  if (index == this->m_selectedIndex) {
+    return;
+  }
+
+  this->m_selectedIndex = index;
+  if (this->m_selected) {
+    bool enable = index > 0 && this->m_selected->Count() > 1;
+    if (this->m_previous) {
+      this->m_previous->Enable(enable);
+    }
+
+    enable = this->m_selectedIndex + 1 < this->m_selected->Count() && this->m_selected->Count() > 1;
+    if (this->m_next) {
+      this->m_next->Enable(enable);
+    }
+  }
+
+  if (this->m_selectedIndex >= this->m_page + 3) {
+    this->m_page = this->m_selectedIndex - 2;
+    this->Refresh(this->m_page);
+  } else if (this->m_selectedIndex < this->m_page) {
+    this->m_page = this->m_selectedIndex;
+    this->Refresh(this->m_page);
+  }
+
+  this->Invalidate();
+}
+
+// OFFSET: 0x007C98A0
+// FUNCTION: fn_09435
+int UICashEmotionMiniWnd::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  std::pair<int, int> entry;
+
+  switch (message) {
+  case 6:
+    if (argument1 == 1) {
+      this->Previous();
+    } else if (argument1 == 2) {
+      this->Next();
+    }
+    return 0;
+  case 60:
+    this->Invalidate();
+    return 0;
+  case 174:
+    entry.first = static_cast<int>(argument1);
+    entry.second = static_cast<int>(argument2);
+    break;
+  case 176:
+    if (argument1 == 13) {
+      if (!this->m_selected) {
+        return 0;
+      }
+      entry = this->m_selected->Get(this->m_selectedIndex);
+      break;
+    }
+    if (argument1 == 37) {
+      this->Previous();
+    } else if (argument1 == 39) {
+      this->Next();
+    }
+    return 0;
+  default:
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  CashEmotionData* data = g_cashEmotionMgr->GetEmotionData(entry.first, entry.second);
+  if (!data) {
+    return 0;
+  }
+
+  int packId = data->id;
+  if (packId == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(packId)) {
+    if (g_chatSuggestions) {
+      if (g_chatSuggestions->input) {
+        g_chatSuggestions->input->SetText(data->name.c_str());
+      }
+      g_chatSuggestions->Show(0);
+    }
+  } else if (this->m_action) {
+    this->m_action->Execute(packId, 0);
+  }
+
+  return 0;
 }
 
 // OFFSET: 0x007C9D60

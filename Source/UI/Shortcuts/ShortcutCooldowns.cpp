@@ -1,4 +1,11 @@
 #include "Client/Session.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
+#include "Resource/TextureNames.h"
+#include "UI/Buttons/UIButton.h"
+#include "UI/Window/UIRebirthWnd.h"
+#include "UI/Window/UISeekPartyMBWnd.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
 
 #include <algorithm>
@@ -203,4 +210,33 @@ void ShortcutCooldowns::Paint(
 
     ++entry;
   }
+}
+
+// OFFSET: 0x0092DDE0
+// FUNCTION: fn_12673
+void UIRebirthWnd::Paint() {
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox1.bmp")));
+  this->DrawBitmap(0, 0, &background->image, false);
+}
+
+// OFFSET: 0x0092E230
+// FUNCTION: fn_12676
+void UISeekPartyMBWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, true, "", 0);
+  if (this->m_minimized) {
+    return;
+  }
+
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+
+  const RECT outer = {50, 95, 310, 293};
+  const RECT inner = {51, 96, 309, 292};
+  this->FillSurface(0, &outer);
+  this->FillSurface(0xF0F0F0, &inner);
+  this->DrawButtonBar(2, 0, 1);
 }

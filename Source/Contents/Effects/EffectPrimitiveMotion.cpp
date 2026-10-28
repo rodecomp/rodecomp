@@ -6,6 +6,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Contents/Effects/EffectParticle.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
+#include "Contents/Effects/AttachedEffect.h"
 #include "Contents/Effects/RagEffectState.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Resource/World/TerrainResource.h"
@@ -48,6 +49,33 @@ namespace {
       ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10],
       ((matrix[5] * point.y + matrix[2] * point.x) + point.z * matrix[8]) + matrix[11]
     };
+  }
+
+  // INLINED
+  void FaceCamera(EffectPrimitiveSlot* slots) {
+    const CView* view = static_cast<CGameMode*>(g_world.ActiveGameMode())->camera;
+    slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
+    slots[1].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.pitch) + 90);
+
+    if (slots[1].alphaT >= 360) {
+      slots[1].alphaT -= 360;
+    }
+  }
+
+  // INLINED
+  __forceinline void FollowTrail(EffectPrimitiveSlot& trail, const EffectPrimitiveSlot& previous, int fade) {
+    trail.fullDisplayAngle = previous.fullDisplayAngle;
+    trail.distance = previous.distance;
+    trail.height[8] = previous.height[8];
+    trail.alphaB = previous.alphaB - fade;
+
+    if (trail.alphaB < 0) {
+      trail.alphaB = 0;
+    }
+
+    trail.vecBNow = previous.vecBNow;
+    trail.fullDisplayAngle = previous.fullDisplayAngle;
+    trail.flag1[0] = previous.flag1[0];
   }
 }
 
@@ -136,8 +164,8 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   }
 
   if ((particle.flags & 0x400u) != 0) {
-    const float x = particle.parent->offset[0] - render.position[0];
-    const float z = particle.parent->offset[2] - render.position[2];
+    const float x = particle.master->state.offset[0] - render.position[0];
+    const float z = particle.master->state.offset[2] - render.position[2];
     const float distance = std::sqrt(z * z + x * x);
 
     if (3.0f >= distance) {
@@ -188,16 +216,16 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   }
 
   if ((particle.flags & 0x10u) != 0) {
-    particle.parent->offset[0] = particle.velocity.x + particle.offset.x;
-    particle.parent->offset[1] = particle.offset.y + particle.velocity.y;
-    particle.parent->offset[2] = particle.offset.z + particle.velocity.z;
+    particle.master->state.offset[0] = particle.velocity.x + particle.offset.x;
+    particle.master->state.offset[1] = particle.offset.y + particle.velocity.y;
+    particle.master->state.offset[2] = particle.offset.z + particle.velocity.z;
   }
 
   if ((particle.flags & 4u) != 0 && render.position[1] > context.ground.Height(render.position[0], render.position[2])) {
     particle.flags &= ~4u;
     particle.unknown_01E0 = particle.lifetime - 25;
     particle.unknown_02BC = 0;
-    particle.parent->unknown_0170 = 1;
+    particle.master->state.unknown_0170 = 1;
   }
 
   const int frame = particle.unknown_01E0;
@@ -257,7 +285,7 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
 // OFFSET: 0x00BAE7D0
 // FUNCTION: fn_19769
 bool UpdateEffectPrimitive15(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context, int updateTick) {
-  if (!particle.parent) {
+  if (!particle.master) {
     return false;
   }
 
@@ -280,39 +308,39 @@ bool ShrinkEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectStat
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = particle.slots[index];
 
-    if (slot.active != 1) {
+    if (slot.life != 1) {
       continue;
     }
 
-    float height = slot.unknown_0080 - 0.05f;
-    ++slot.frame;
-    slot.unknown_0080 = height;
+    float height = slot.distance - 0.05f;
+    ++slot.process;
+    slot.distance = height;
 
     if (height <= 0.0f) {
-      slot.unknown_0080 = 10.0f;
-      slot.unknown_0002 = 0;
+      slot.distance = 10.0f;
+      slot.alphaB = 0;
       height = 10.0f;
     }
 
-    slot.unknown_0008 = height;
-    slot.unknown_007E = static_cast<std::int16_t>(static_cast<int>(90.0f - height * 9.0f));
+    slot.maxHeight = height;
+    slot.riseAngle = static_cast<std::int16_t>(static_cast<int>(90.0f - height * 9.0f));
 
-    if (slot.frame >= particle.lifetime - 40) {
-      slot.unknown_0002 -= 3;
+    if (slot.process >= particle.lifetime - 40) {
+      slot.alphaB -= 3;
 
-      if (slot.unknown_0002 < 0) {
-        slot.unknown_0002 = 0;
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
       }
-    } else if (slot.unknown_0002 < 70) {
-      ++slot.unknown_0002;
+    } else if (slot.alphaB < 70) {
+      ++slot.alphaB;
     }
 
     for (int value = 0; value < 21; ++value) {
-      if (slot.finished[value] == 0) {
-        slot.values[value] = slot.unknown_0008;
+      if (slot.flag1[value] == 0) {
+        slot.height[value] = slot.maxHeight;
 
-        if (slot.values[value] < 0.0f) {
-          slot.values[value] = 0;
+        if (slot.height[value] < 0.0f) {
+          slot.height[value] = 0;
         }
       }
     }
@@ -331,21 +359,21 @@ bool PulseEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectState
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = particle.slots[index];
 
-    if (slot.active != 1) {
+    if (slot.life != 1) {
       continue;
     }
 
-    float phase = slot.unknown_0080 + 0.1f;
-    const int frame = ++slot.frame;
-    slot.unknown_0080 = phase;
+    float phase = slot.distance + 0.1f;
+    const int frame = ++slot.process;
+    slot.distance = phase;
 
     if (phase >= 13.0f) {
-      slot.unknown_0080 = 3.0f;
-      slot.unknown_0002 = 0;
+      slot.distance = 3.0f;
+      slot.alphaB = 0;
       phase = 3.0f;
 
       if (frame > 50) {
-        slot.active = 0;
+        slot.life = 0;
       }
     }
 
@@ -355,23 +383,23 @@ bool PulseEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectState
     if (phase > 5.0f) {
       height = 10.0f - phase;
 
-      if (slot.unknown_0002 > 0) {
-        slot.unknown_0002 -= 2;
+      if (slot.alphaB > 0) {
+        slot.alphaB -= 2;
       }
     } else {
-      slot.unknown_0002 += 2;
+      slot.alphaB += 2;
       height = phase;
     }
 
-    slot.unknown_0008 = height * 2.0f;
-    slot.unknown_007E = static_cast<std::int16_t>(static_cast<int>(90.0f - phase * 5.0f));
+    slot.maxHeight = height * 2.0f;
+    slot.riseAngle = static_cast<std::int16_t>(static_cast<int>(90.0f - phase * 5.0f));
 
     for (int value = 0; value < 21; ++value) {
-      if (slot.finished[value] == 0) {
-        slot.values[value] = slot.unknown_0008;
+      if (slot.flag1[value] == 0) {
+        slot.height[value] = slot.maxHeight;
 
-        if (slot.values[value] < 0.0f) {
-          slot.values[value] = 0;
+        if (slot.height[value] < 0.0f) {
+          slot.height[value] = 0;
         }
       }
     }
@@ -559,10 +587,10 @@ bool EffectParticle::AdvanceFrame() {
 // OFFSET: 0x00BB5E80
 // FUNCTION: fn_19772
 bool EffectParticle::UpdateFireWall() {
-  const RagEffectState* parent = this->state.parent;
-  this->render.position[0] = std::bit_cast<float>(parent->unknown_013C[3]);
-  this->render.position[1] = std::bit_cast<float>(parent->unknown_013C[4]);
-  this->render.position[2] = std::bit_cast<float>(parent->unknown_013C[5]);
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
 
   for (int index = 0; index < 4; ++index) {
     if (this->state.scale == 3.0f && index < 3) {
@@ -571,38 +599,38 @@ bool EffectParticle::UpdateFireWall() {
 
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
-    if (slot.active != 1) {
+    if (slot.life != 1) {
       continue;
     }
 
-    ++slot.frame;
+    ++slot.process;
 
     if (index < 3) {
-      slot.angle = static_cast<std::int16_t>(slot.angle + index + 3);
+      slot.rotStart = static_cast<std::int16_t>(slot.rotStart + index + 3);
     }
 
-    if (slot.angle >= 360) {
-      slot.angle = static_cast<std::int16_t>(slot.angle - 360);
+    if (slot.rotStart >= 360) {
+      slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
     }
 
     const int limit = this->state.lifetime - 40;
     bool grown = false;
 
-    if (slot.frame < limit) {
-      if (slot.frame < 20) {
+    if (slot.process < limit) {
+      if (slot.process < 20) {
         if (index == 3) {
-          this->state.slots[3].unknown_0002 = static_cast<std::int16_t>(this->state.slots[3].unknown_0002 + 8);
+          this->state.slots[3].alphaB = static_cast<std::int16_t>(this->state.slots[3].alphaB + 8);
 
-          if (this->state.slots[3].unknown_0002 > 100) {
-            this->state.slots[3].unknown_0002 = 100;
+          if (this->state.slots[3].alphaB > 100) {
+            this->state.slots[3].alphaB = 100;
           }
 
           grown = true;
         } else {
-          slot.unknown_0002 = static_cast<std::int16_t>(slot.unknown_0002 + 10);
+          slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 10);
 
-          if (slot.unknown_0002 > 180) {
-            slot.unknown_0002 = 180;
+          if (slot.alphaB > 180) {
+            slot.alphaB = 180;
           }
         }
       }
@@ -612,16 +640,16 @@ bool EffectParticle::UpdateFireWall() {
       }
     } else {
       if (index < 3) {
-        slot.unknown_0002 = static_cast<std::int16_t>(slot.unknown_0002 - 5);
+        slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 5);
 
-        if (slot.unknown_0002 < 0) {
-          slot.unknown_0002 = 0;
+        if (slot.alphaB < 0) {
+          slot.alphaB = 0;
         }
       } else {
-        slot.unknown_0002 = static_cast<std::int16_t>(slot.unknown_0002 - 3);
+        slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 3);
 
-        if (slot.unknown_0002 < 0) {
-          slot.unknown_0002 = 0;
+        if (slot.alphaB < 0) {
+          slot.alphaB = 0;
         }
 
         grown = true;
@@ -630,46 +658,46 @@ bool EffectParticle::UpdateFireWall() {
 
     if (!grown) {
       for (int sample = 0; sample < 21; ++sample) {
-        if (slot.finished[sample] == 0) {
-          if (slot.frame <= 90) {
-            slot.values[sample] = slot.unknown_0008 * ClientSine(sample * 9) * ClientSine(slot.frame);
+        if (slot.flag1[sample] == 0) {
+          if (slot.process <= 90) {
+            slot.height[sample] = slot.maxHeight * ClientSine(sample * 9) * ClientSine(slot.process);
           }
 
-          const float maximum = slot.unknown_0008 * ClientSine(sample * 9);
+          const float maximum = slot.maxHeight * ClientSine(sample * 9);
 
-          if (slot.values[sample] > maximum) {
-            slot.values[sample] = maximum;
-            slot.finished[sample] = 1;
+          if (slot.height[sample] > maximum) {
+            slot.height[sample] = maximum;
+            slot.flag1[sample] = 1;
           }
 
-          if (slot.values[sample] < 0.0f) {
-            slot.values[sample] = 0.0f;
+          if (slot.height[sample] < 0.0f) {
+            slot.height[sample] = 0.0f;
           }
         }
       }
     } else {
       for (int sample = 0; sample < 21; ++sample) {
-        if (slot.finished[sample] != 0) {
-          const float base = slot.unknown_0008 * ClientSine(sample * 9) * 0.55f;
-          slot.values[sample] = base;
-          slot.values[sample] = slot.unknown_0008 * ClientSine(sample * 9) * 0.45f * ClientSine(slot.frame % 360) + base;
+        if (slot.flag1[sample] != 0) {
+          const float base = slot.maxHeight * ClientSine(sample * 9) * 0.55f;
+          slot.height[sample] = base;
+          slot.height[sample] = slot.maxHeight * ClientSine(sample * 9) * 0.45f * ClientSine(slot.process % 360) + base;
         } else {
           float value;
 
-          if (slot.frame > 90) {
-            slot.finished[sample] = 1;
-            value = slot.values[sample];
+          if (slot.process > 90) {
+            slot.flag1[sample] = 1;
+            value = slot.height[sample];
           } else {
-            value = slot.unknown_0008 * ClientSine(sample * 9) * ClientSine(slot.frame);
-            slot.values[sample] = value;
+            value = slot.maxHeight * ClientSine(sample * 9) * ClientSine(slot.process);
+            slot.height[sample] = value;
           }
 
-          if (value > slot.unknown_0008 * ClientSine(sample * 9)) {
-            slot.finished[sample] = 1;
+          if (value > slot.maxHeight * ClientSine(sample * 9)) {
+            slot.flag1[sample] = 1;
           }
 
-          if (slot.values[sample] < 0.0f) {
-            slot.values[sample] = 0.0f;
+          if (slot.height[sample] < 0.0f) {
+            slot.height[sample] = 0.0f;
           }
         }
       }
@@ -682,10 +710,10 @@ bool EffectParticle::UpdateFireWall() {
 // OFFSET: 0x00BB63C0
 // FUNCTION: fn_19775
 bool EffectParticle::UpdateStoneCurse() {
-  const RagEffectState* parent = this->state.parent;
-  this->render.position[0] = std::bit_cast<float>(parent->unknown_013C[3]);
-  this->render.position[1] = std::bit_cast<float>(parent->unknown_013C[4]);
-  this->render.position[2] = std::bit_cast<float>(parent->unknown_013C[5]);
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
 
   for (int index = 0; index < 4; ++index) {
     if (this->state.scale == 3.0f && index < 3) {
@@ -694,59 +722,59 @@ bool EffectParticle::UpdateStoneCurse() {
 
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
-    if (slot.active != 1) {
+    if (slot.life != 1) {
       continue;
     }
 
-    ++slot.frame;
+    ++slot.process;
 
     if (index < 3) {
-      slot.angle = static_cast<std::int16_t>(slot.angle + index + 3);
+      slot.rotStart = static_cast<std::int16_t>(slot.rotStart + index + 3);
     }
 
-    if (slot.angle >= 360) {
-      slot.angle = static_cast<std::int16_t>(slot.angle - 360);
+    if (slot.rotStart >= 360) {
+      slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
     }
 
-    if (slot.frame < this->state.lifetime - 40) {
-      if (slot.frame < 20 && slot.unknown_0004 != 1) {
+    if (slot.process < this->state.lifetime - 40) {
+      if (slot.process < 20 && slot.alphaT != 1) {
         if (index == 3) {
-          this->state.slots[3].unknown_0002 = static_cast<std::int16_t>(this->state.slots[3].unknown_0002 + 8);
+          this->state.slots[3].alphaB = static_cast<std::int16_t>(this->state.slots[3].alphaB + 8);
 
-          if (this->state.slots[3].unknown_0002 > 60) {
-            this->state.slots[3].unknown_0002 = 60;
+          if (this->state.slots[3].alphaB > 60) {
+            this->state.slots[3].alphaB = 60;
           }
         } else {
-          slot.unknown_0002 = static_cast<std::int16_t>(slot.unknown_0002 + 10);
+          slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 10);
 
-          if (slot.unknown_0002 > 180) {
-            slot.unknown_0002 = 180;
+          if (slot.alphaB > 180) {
+            slot.alphaB = 180;
           }
         }
       }
     } else {
-      slot.unknown_0002 = static_cast<std::int16_t>(slot.unknown_0002 - (index >= 3 ? 2 : 5));
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB - (index >= 3 ? 2 : 5));
 
-      if (slot.unknown_0002 < 0) {
-        slot.unknown_0002 = 0;
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
       }
     }
 
     for (int sample = 0; sample < 21; ++sample) {
-      if (slot.finished[sample] == 0) {
-        if (slot.frame <= 90) {
-          slot.values[sample] = slot.unknown_0008 * ClientSine(sample * 9) * ClientSine(slot.frame);
+      if (slot.flag1[sample] == 0) {
+        if (slot.process <= 90) {
+          slot.height[sample] = slot.maxHeight * ClientSine(sample * 9) * ClientSine(slot.process);
         }
 
-        const float maximum = slot.unknown_0008 * ClientSine(sample * 9);
+        const float maximum = slot.maxHeight * ClientSine(sample * 9);
 
-        if (slot.values[sample] > maximum) {
-          slot.values[sample] = maximum;
-          slot.finished[sample] = 1;
+        if (slot.height[sample] > maximum) {
+          slot.height[sample] = maximum;
+          slot.flag1[sample] = 1;
         }
 
-        if (slot.values[sample] < 0.0f) {
-          slot.values[sample] = 0.0f;
+        if (slot.height[sample] < 0.0f) {
+          slot.height[sample] = 0.0f;
         }
       }
     }
@@ -758,10 +786,10 @@ bool EffectParticle::UpdateStoneCurse() {
 // OFFSET: 0x00BB65C0
 // FUNCTION: fn_19776
 void EffectParticle::UpdateBeginSpell() {
-  const RagEffectState* parent = this->state.parent;
-  this->state.origin.x = std::bit_cast<float>(parent->unknown_013C[3]) + this->state.velocity.x;
-  this->state.origin.y = std::bit_cast<float>(parent->unknown_013C[4]) + this->state.velocity.y;
-  this->state.origin.z = std::bit_cast<float>(parent->unknown_013C[5]) + this->state.velocity.z;
+  const AttachedEffect* master = this->state.master;
+  this->state.origin.x = master->render.position[0] + this->state.velocity.x;
+  this->state.origin.y = master->render.position[1] + this->state.velocity.y;
+  this->state.origin.z = master->render.position[2] + this->state.velocity.z;
 
   float base;
 
@@ -815,41 +843,218 @@ void EffectParticle::UpdateBeginSpell() {
 // OFFSET: 0x00BBAB10
 // FUNCTION: fn_19790
 void EffectParticle::PrimBottom2() {
-  const RagEffectState* parent = this->state.parent;
-  this->render.position[0] = std::bit_cast<float>(parent->unknown_013C[3]);
-  this->render.position[1] = std::bit_cast<float>(parent->unknown_013C[4]);
-  this->render.position[2] = std::bit_cast<float>(parent->unknown_013C[5]);
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
-    if (slot.active != 1) {
+    if (slot.life != 1) {
       continue;
     }
 
-    ++slot.frame;
+    ++slot.process;
 
-    if (slot.values[0] == 1.0f) {
-      slot.displayAngle += 4;
+    if (slot.height[0] == 1.0f) {
+      slot.fullDisplayAngle += 4;
     } else {
-      slot.displayAngle += 2;
+      slot.fullDisplayAngle += 2;
     }
 
-    if (slot.displayAngle >= 360) {
-      slot.displayAngle -= 360;
+    if (slot.fullDisplayAngle >= 360) {
+      slot.fullDisplayAngle -= 360;
     }
 
-    slot.unknown_0008 = 20.0f + 10.0f * ClientSine(slot.displayAngle);
+    slot.maxHeight = 20.0f + 10.0f * ClientSine(slot.fullDisplayAngle);
+  }
+}
+
+// OFFSET: 0x00BBABC0
+// FUNCTION: fn_19791
+void EffectParticle::PrimBottom() {
+  EffectPrimitiveSlot* slots = this->state.slots;
+  FaceCamera(slots);
+
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  EffectPrimitiveSlot& slot = slots[0];
+
+  if (slot.life != 1) {
+    return;
+  }
+
+  ++slot.process;
+
+  if (slot.process % 6 == 0) {
+    for (int index = 3; index > 0; --index) {
+      EffectPrimitiveSlot& trail = slots[index];
+      const EffectPrimitiveSlot& previous = slots[index - 1];
+
+      if (trail.life > 0) {
+        trail.fullDisplayAngle = previous.fullDisplayAngle;
+        trail.distance = previous.distance + 0.5f;
+        trail.height[8] = previous.height[8];
+        trail.alphaB = previous.alphaB - 50;
+
+        if (trail.alphaB < 0) {
+          trail.alphaB = 0;
+        }
+
+        trail.vecBNow = previous.vecBNow;
+        trail.fullDisplayAngle = previous.fullDisplayAngle;
+        trail.flag1[0] = previous.flag1[0];
+        trail.flag1[2] = 2;
+        trail.height[7] = 0;
+      }
+    }
+  }
+
+  slot.height[8] += 5.0f;
+
+  if (slot.height[8] >= 360.0f) {
+    slot.height[8] -= 360.0f;
+  }
+
+  ++slot.rotStart;
+
+  if (slot.rotStart >= 360) {
+    slot.rotStart -= 360;
+  }
+
+  slot.vecBNow.x = this->render.position[0];
+  slot.vecBNow.z = this->render.position[2];
+  slot.vecBPre.y = this->render.position[1] - 6.0f;
+  slot.vecBNow.y = slot.vecBPre.y + 3.0f * ClientSine(slot.rotStart);
+
+  if (slot.flag1[2] == 7) {
+    slot.fullDisplayAngle += 10;
+
+    if (slot.fullDisplayAngle >= 360) {
+      slot.fullDisplayAngle -= 360;
+    }
+  }
+}
+
+// OFFSET: 0x00BBAF30
+// FUNCTION: fn_19792
+void EffectParticle::PrimBottomOut() {
+  FaceCamera(this->state.slots);
+
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process <= 10) {
+      slot.alphaB += 25;
+    } else {
+      slot.alphaB -= 5;
+
+      if (slot.alphaB <= 0) {
+        slot.alphaB = 0;
+        slot.process = 0;
+        slot.vecBNow.y = slot.flag1[1] == 0 ? this->render.position[1] : this->render.position[1] - 5.0f;
+      }
+
+      slot.vecBNow.y -= 0.2f;
+    }
+
+    slot.height[8] += 5.0f;
+
+    if (slot.height[8] >= 360.0f) {
+      slot.height[8] -= 360.0f;
+    }
+
+    if (slot.flag1[1] == 1) {
+      slot.fullDisplayAngle += 5;
+
+      if (slot.fullDisplayAngle >= 360) {
+        slot.fullDisplayAngle -= 360;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00BBB120
+// FUNCTION: fn_19793
+void EffectParticle::PrimBubbleDrop() {
+  EffectPrimitiveSlot* slots = this->state.slots;
+  FaceCamera(slots);
+
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  EffectPrimitiveSlot& slot = slots[0];
+
+  if (slot.life != 1) {
+    return;
+  }
+
+  ++slot.process;
+
+  if (slot.process <= 0) {
+    return;
+  }
+
+  if (slot.process > 3) {
+    FollowTrail(slots[3], slots[2], 25);
+  }
+
+  if (slot.process > 2) {
+    FollowTrail(slots[2], slots[1], 25);
+  }
+
+  if (slot.process > 1) {
+    FollowTrail(slots[1], slot, 100);
+  }
+
+  if (slot.process <= 10) {
+    slot.alphaB += 20;
+  }
+
+  if (slot.process < slot.flag1[4]) {
+    slot.fullDisplayAngle -= 15;
+
+    if (slot.fullDisplayAngle < 0) {
+      slot.fullDisplayAngle += 360;
+    }
+
+    slot.vecBPre.y += slot.height[1];
+    slot.vecBNow = {
+      this->render.position[0] + slot.vecBPre.x, this->render.position[1] + slot.vecBPre.y, this->render.position[2] + slot.vecBPre.z
+    };
+  } else {
+    slot.alphaB -= 10;
+
+    if (slot.alphaB < 0) {
+      slot.alphaB = 0;
+    }
   }
 }
 
 // OFFSET: 0x00BB6F30
 // FUNCTION: fn_19779
 bool EffectParticle::UpdateHit6() {
-  const RagEffectState* parent = this->state.parent;
-  this->state.origin.x = std::bit_cast<float>(parent->unknown_013C[3]) + this->state.velocity.x;
-  this->state.origin.y = std::bit_cast<float>(parent->unknown_013C[4]) + this->state.velocity.y;
-  this->state.origin.z = std::bit_cast<float>(parent->unknown_013C[5]) + this->state.velocity.z;
+  const AttachedEffect* master = this->state.master;
+  this->state.origin.x = master->render.position[0] + this->state.velocity.x;
+  this->state.origin.y = master->render.position[1] + this->state.velocity.y;
+  this->state.origin.z = master->render.position[2] + this->state.velocity.z;
 
   const int frame = this->state.unknown_01E0;
 
@@ -930,7 +1135,7 @@ bool EffectParticle::UpdateHit6() {
   this->render.position[2] = this->state.offset.z + this->state.origin.z;
 
   if ((this->state.flags & 0x100u) != 0) {
-    if (3.0f >= this->HorizontalDistance(this->state.parent->offset[0], this->state.parent->offset[2])) {
+    if (3.0f >= this->HorizontalDistance(this->state.master->state.offset[0], this->state.master->state.offset[2])) {
       return false;
     }
   }
@@ -948,10 +1153,10 @@ bool EffectParticle::UpdateHit6() {
 // FUNCTION: fn_19780
 bool EffectParticle::UpdateCoin() {
   CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
-  const RagEffectState* parent = this->state.parent;
-  this->state.origin.z = std::bit_cast<float>(parent->unknown_013C[5]) + this->state.velocity.z;
-  this->state.origin.y = std::bit_cast<float>(parent->unknown_013C[4]) + this->state.velocity.y;
-  this->state.origin.x = std::bit_cast<float>(parent->unknown_013C[3]) + this->state.velocity.x;
+  const AttachedEffect* master = this->state.master;
+  this->state.origin.z = master->render.position[2] + this->state.velocity.z;
+  this->state.origin.y = master->render.position[1] + this->state.velocity.y;
+  this->state.origin.x = master->render.position[0] + this->state.velocity.x;
   this->state.unknown_02EC = this->state.unknown_02F0 + this->state.unknown_02EC;
 
   const float speed = this->state.unknown_02C0 + this->state.unknown_02BC;
@@ -1082,8 +1287,8 @@ bool EffectParticle::UpdateDetoxication() {
 // OFFSET: 0x00BB7EC0
 // FUNCTION: fn_19782
 bool EffectParticle::UpdateExit() {
-  const RagEffectState* parent = this->state.parent;
-  this->state.origin = {std::bit_cast<float>(parent->unknown_013C[3]), std::bit_cast<float>(parent->unknown_013C[4]), std::bit_cast<float>(parent->unknown_013C[5])};
+  const AttachedEffect* master = this->state.master;
+  this->state.origin = {master->render.position[0], master->render.position[1], master->render.position[2]};
 
   const float lateral = this->state.unknown_033C + this->state.unknown_0330;
   float vertical = this->state.unknown_02EC + this->state.unknown_02F0;
@@ -1146,10 +1351,10 @@ bool EffectParticle::UpdateExit() {
 // OFFSET: 0x00BB8180
 // FUNCTION: fn_19783
 bool EffectParticle::UpdateWarp() {
-  const RagEffectState* parent = this->state.parent;
+  const AttachedEffect* master = this->state.master;
   this->state.origin = {
-    std::bit_cast<float>(parent->unknown_013C[3]) + this->state.velocity.x, std::bit_cast<float>(parent->unknown_013C[4]) + this->state.velocity.y,
-    std::bit_cast<float>(parent->unknown_013C[5]) + this->state.velocity.z
+    master->render.position[0] + this->state.velocity.x, master->render.position[1] + this->state.velocity.y,
+    master->render.position[2] + this->state.velocity.z
   };
 
   const int angle = static_cast<int>(this->state.unknown_0314);

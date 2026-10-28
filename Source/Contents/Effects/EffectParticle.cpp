@@ -1,5 +1,5 @@
 #include "Contents/Effects/EffectParticle.h"
-#include "Contents/Effects/RagEffectState.h"
+#include "Contents/Effects/AttachedEffect.h"
 
 // OFFSET: 0x00BAD940
 // FUNCTION: fn_19761
@@ -9,13 +9,13 @@ EffectParticle::EffectParticle(ResourceMgr& resources, JobNames& names) : CRende
 // OFFSET: 0x00C1DE70
 // FUNCTION: fn_20076
 EffectParticle* CreateEffectParticle(
-  RagEffectState& parent, const RenderObjectState& parentRender, int type, float x, float y, float z, ResourceMgr& resources, JobNames& names,
+  AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z, ResourceMgr& resources, JobNames& names,
   std::list<CRenderObject*>& worldObjects
 ) {
   auto* particle = new EffectParticle(resources, names);
 
-  particle->state.Initialize(particle->render, parent, parentRender, type, x, y, z);
-  parent.related.push_back(&particle->state);
+  particle->state.Initialize(particle->render, master, masterRender, type, x, y, z);
+  master.state.related.push_back(&particle->state);
   worldObjects.push_back(particle);
 
   return particle;

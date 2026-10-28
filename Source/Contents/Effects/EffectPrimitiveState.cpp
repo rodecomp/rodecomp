@@ -1,5 +1,5 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
-#include "Contents/Effects/RagEffectState.h"
+#include "Contents/Effects/AttachedEffect.h"
 #include "Contents/Actors/RenderObjectState.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -10,7 +10,7 @@
 // FUNCTION: fn_19762
 EffectPrimitiveSlot::EffectPrimitiveSlot() {
   for (int i = 0; i < 4; ++i) {
-    this->unknown_0084[i] = {0.0f, 0.0f, 0.0f};
+    this->vectors[i] = {0.0f, 0.0f, 0.0f};
   }
 }
 
@@ -29,7 +29,7 @@ EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
   this->unknown_0158 = 0;
   this->unknown_015C = 0;
   this->unknown_0138 = 0;
-  this->parent = nullptr;
+  this->master = nullptr;
   this->unknown_01D4 = 0;
   this->unknown_01D8 = 0;
   this->unknown_01E0 = 0;
@@ -146,8 +146,8 @@ EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
 
 // INLINED
 EffectPrimitiveState::~EffectPrimitiveState() {
-  if (this->parent) {
-    auto& related = this->parent->related;
+  if (this->master) {
+    auto& related = this->master->state.related;
 
     for (auto entry = related.begin(); entry != related.end(); ++entry) {
       if (*entry == this) {
@@ -165,16 +165,16 @@ EffectPrimitiveState::~EffectPrimitiveState() {
 // OFFSET: 0x00BAE460
 // FUNCTION: fn_19765
 void EffectPrimitiveState::GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue) {
-  if (this->parent->unknown_11C88[0] != -1) {
-    *red = static_cast<unsigned char>(this->parent->unknown_11C88[0]);
+  if (this->master->state.unknown_11C88[0] != -1) {
+    *red = static_cast<unsigned char>(this->master->state.unknown_11C88[0]);
   }
 
-  if (this->parent->unknown_11C88[1] != -1) {
-    *green = static_cast<unsigned char>(this->parent->unknown_11C88[1]);
+  if (this->master->state.unknown_11C88[1] != -1) {
+    *green = static_cast<unsigned char>(this->master->state.unknown_11C88[1]);
   }
 
-  if (this->parent->unknown_11C88[2] != -1) {
-    *blue = static_cast<unsigned char>(this->parent->unknown_11C88[2]);
+  if (this->master->state.unknown_11C88[2] != -1) {
+    *blue = static_cast<unsigned char>(this->master->state.unknown_11C88[2]);
   }
 }
 
@@ -198,15 +198,15 @@ void __stdcall CalculateVectorAngle(float x, float y, std::int16_t* angle) {
 // OFFSET: 0x00BAE5D0
 // FUNCTION: fn_19767
 void EffectPrimitiveState::Initialize(
-  RenderObjectState& render, RagEffectState& parent, const RenderObjectState& parentRender, int type, float x, float y, float z
+  RenderObjectState& render, AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z
 ) {
   const float first = x + this->offset.x;
-  this->parent = &parent;
+  this->master = &master;
   this->type = type;
   this->offset.x = first;
   this->offset.y = y + this->offset.y;
   this->offset.z = z + this->offset.z;
-  this->origin = {parentRender.position[0], parentRender.position[1], parentRender.position[2]};
+  this->origin = {masterRender.position[0], masterRender.position[1], masterRender.position[2]};
   render.position[0] = this->origin.x;
   render.position[1] = this->origin.y;
   render.position[2] = this->origin.z;

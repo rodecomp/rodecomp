@@ -1,9 +1,81 @@
+#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/CGameMode.h"
+#include "Contents/Actors/GameActor.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/EffectActor.h"
+#include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EffectPrimitiveState.h"
+#include "Contents/MessageTable.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillInfo.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include "Contents/World/WorldScene.h"
+#include "Resource/World/TerrainResource.h"
 #include "Script/LuaScript.h"
 
+
 #include <memory>
+
+class CEfstAction_ChangeSize : public CEfstAction {
+public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_GenderChange : public CEfstAction {
+public:
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_ShowEffect : public CEfstAction {
+public:
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_RA_UNLIMIT : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+};
+
+class CEfstAction_UNLIMIT : public CEfstAction {
+public:
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_SHADOW_WEAPON : public CEfstAction {
+public:
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CEfstAction_DANCING_KNIFE : public CEfstAction {
+public:
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_SHADOW_EXCEED : public CEfstAction {
+public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_ABC_CHASING_BREAK : public CSkillAction {
+public:
+  bool Slot07() override;
+};
+
+class CSkillAction_ABC_CHASING_SHOT : public CSkillAction {
+public:
+  bool Slot07() override;
+};
+
+class CSkillAction_ABC_ABYSS_FLAME_ATK : public CSkillAction {
+public:
+  bool Slot03(int argument) override;
+};
 
 // GLOBAL: gl_24640
 CSkillActionMgr* g_skillActionMgr;
@@ -403,4 +475,203 @@ bool ShowsCastEffect(int skillId) {
   default:
     return true;
   }
+}
+
+// OFFSET: 0x007747B0
+// FUNCTION: fn_08327
+void CEfstAction_ChangeSize::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, 2374);
+  }
+}
+
+// OFFSET: 0x007747E0
+// FUNCTION: fn_08328
+void CEfstAction_ChangeSize::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x00774E20
+// FUNCTION: fn_08331
+void CEfstAction_GenderChange::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x00774F30
+// FUNCTION: fn_08334
+void CEfstAction_ShowEffect::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x00774FB0
+// FUNCTION: fn_08335
+void CSkillAction_RA_UNLIMIT::Slot08(int level, CGameActor* source) {
+  g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+}
+
+// OFFSET: 0x007756D0
+// FUNCTION: fn_08339
+void CEfstAction_UNLIMIT::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x007764E0
+// FUNCTION: fn_08346
+EfstActionMessage CEfstAction_SHADOW_WEAPON::Slot03() {
+  return {LookupMessage(3766), 0xFFFF00};
+}
+
+// OFFSET: 0x00776510
+// FUNCTION: fn_08347
+EfstActionMessage CEfstAction_SHADOW_WEAPON::Slot04() {
+  return {LookupMessage(3767), 0xFF};
+}
+
+// OFFSET: 0x00777910
+// FUNCTION: fn_08359
+void CEfstAction_DANCING_KNIFE::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x00777E80
+// FUNCTION: fn_08366
+void CEfstAction_SHADOW_EXCEED::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (!actor) {
+    return;
+  }
+
+  auto* effectActor = static_cast<EffectActor*>(actor);
+  while (effectActor->state.Attachments().HasId(1004)) {
+    actor->SendObjectMessage(nullptr, 109, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00777EE0
+// FUNCTION: fn_08367
+void CEfstAction_SHADOW_EXCEED::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, true);
+}
+
+// OFFSET: 0x00777F00
+// FUNCTION: fn_08368
+EfstActionMessage CEfstAction_SHADOW_EXCEED::Slot03() {
+  return {LookupMessage(3762), 0xFFFF00};
+}
+
+// OFFSET: 0x00777F30
+// FUNCTION: fn_08369
+EfstActionMessage CEfstAction_SHADOW_EXCEED::Slot04() {
+  return {LookupMessage(3763), 0xFF};
+}
+
+// OFFSET: 0x00778140
+// FUNCTION: fn_08371
+bool CSkillAction_ABC_CHASING_BREAK::Slot07() {
+  return true;
+}
+
+// OFFSET: 0x00778580
+// FUNCTION: fn_08375
+bool CSkillAction_ABC_CHASING_SHOT::Slot07() {
+  return true;
+}
+
+// OFFSET: 0x007794D0
+// FUNCTION: fn_08385
+bool CSkillAction_ABC_ABYSS_FLAME_ATK::Slot03(int argument) {
+  return true;
+}
+
+// OFFSET: 0x0077ACC0
+// FUNCTION: fn_08404
+std::pair<bool, int> CSkillActionMgr::ActionSlot01(int skillId) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  if (!action) {
+    return {false, 8};
+  }
+
+  return {true, action->Slot01()};
+}
+
+// OFFSET: 0x0077AD90
+// FUNCTION: fn_08405
+EffectVector3 CellWorldPosition(int column, int row) {
+  if (!g_world.ActiveGameMode() || !static_cast<CGameMode*>(g_world.ActiveGameMode())->scene ||
+      !static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->terrain) {
+    return EffectVector3{0.0f, 0.0f, 0.0f};
+  }
+
+  float x = 0.0f;
+  float y = 0.0f;
+  float z = 0.0f;
+  static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->terrain->Grid().CellOrigin(column, row, x, z);
+  y = static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->terrain->Grid().Height(x, z);
+  return EffectVector3{x + 2.5f, y + 0.0f, z + 2.5f};
+}
+
+// OFFSET: 0x0077AEA0
+// FUNCTION: fn_08406
+EfstActionMessage CSkillActionMgr::EfstSlot03(int efstId) {
+  const auto found = this->m_efstActions.find(efstId);
+  std::unique_ptr<CEfstAction> action(found != this->m_efstActions.end() ? found->second() : nullptr);
+  if (!action) {
+    return {nullptr, 0xFFFF00};
+  }
+
+  return action->Slot03();
+}
+
+// OFFSET: 0x0077AF80
+// FUNCTION: fn_08407
+EfstActionMessage CSkillActionMgr::EfstSlot04(int efstId) {
+  const auto found = this->m_efstActions.find(efstId);
+  std::unique_ptr<CEfstAction> action(found != this->m_efstActions.end() ? found->second() : nullptr);
+  if (!action) {
+    return {nullptr, 0xFF};
+  }
+
+  return action->Slot04();
+}
+
+// OFFSET: 0x0077B060
+// FUNCTION: fn_08408
+int CSkillActionMgr::ActionSlot14(int skillId) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  return action ? action->Slot14() : 0;
+}
+
+// OFFSET: 0x0077B210
+// FUNCTION: fn_08409
+std::pair<bool, int> CSkillActionMgr::ActionSlot02(int skillId) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  if (!action) {
+    return {false, 7};
+  }
+
+  return {true, action->Slot02()};
+}
+
+// OFFSET: 0x0077B2E0
+// FUNCTION: fn_08410
+bool CSkillActionMgr::ActionSlot03(int skillId, int argument) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  return action ? action->Slot03(argument) : false;
+}
+
+// OFFSET: 0x0077B3A0
+// FUNCTION: fn_08411
+bool CSkillActionMgr::ActionSlot04(int skillId) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  return action ? action->Slot04() : false;
+}
+
+// OFFSET: 0x0077B460
+// FUNCTION: fn_08412
+bool CSkillActionMgr::HasEfstAction(int efstId) {
+  return this->m_efstActions.find(efstId) != this->m_efstActions.end();
 }
