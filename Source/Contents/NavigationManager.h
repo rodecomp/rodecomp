@@ -20,6 +20,8 @@ class GroundGeometry;
 struct NaviCell {
   /* 0000 */ int x;
   /* 0004 */ int y;
+
+  int GetY() const;
 };
 
 struct NaviLink {
@@ -79,6 +81,9 @@ public:
   virtual const char* GetTitle() const;
   virtual NaviCell* GetCell(NaviCell* out) const;
   virtual CNaviInfo* GetInfo() const;
+
+  bool HasId(const unsigned int& id) const;
+  bool IsNamed(const char* name) const;
 };
 
 // VTABLE: vt_01778
@@ -118,6 +123,7 @@ public:
   std::vector<CNavi_Link*>::iterator LinksEnd();
   int GetCellY() const;
   int GetIndex() const;
+  int GetCellX() const;
   CNavi_Link* FindLink(unsigned int key, bool byId);
   CNavi_Object* FindNpc(unsigned int key, bool byId);
   CNavi_Object* FindNpcAt(int cellX, int cellY);
@@ -156,6 +162,8 @@ public:
   CNaviInfo* GetInfo();
   NaviCell* GetCell(NaviCell* out);
   void Clear();
+  void ClearAll();
+  CNavi_Link* FindLink(unsigned int key, bool byId);
   int FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allowGates, bool includeObjects, bool allowWarps, int side);
   void ResetLinkDepths();
 
@@ -191,6 +199,7 @@ public:
   std::string DestinationTitle();
   float FitToSquare(int* offsetX, int* offsetY, int width, int height, float size) const;
   void LoadSettings();
+  bool BuildRoute(int startX, int startY, int destX, int destY, bool collectCells);
   void Reset(bool clearAll);
   void ClearRouteNodes();
   void ClearNodePaths();

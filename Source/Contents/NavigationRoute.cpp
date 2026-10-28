@@ -1,6 +1,10 @@
 #include "Contents/NavigationManager.h"
 
 #include "Client/Registry.h"
+#include "Client/Session.h"
+#include "Resource/ResourceMgr.h"
+#include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/RegistryKey.h"
 
 #include <cstdio>
@@ -16,6 +20,28 @@ CNaviInfo* CNavigationManager::FindObject(const char* name) const {
   }
   return nullptr;
 }
+
+// OFFSET: 0x00B88840
+
+// OFFSET: 0x00B88910
+// FUNCTION: fn_19379
+int NaviCell::GetY() const {
+  return this->y;
+}
+
+// OFFSET: 0x00B88930
+
+// OFFSET: 0x00B8CF70
+
+// OFFSET: 0x00B8D0D0
+
+// OFFSET: 0x00B8E8E0
+// FUNCTION: fn_19496
+int CNaviInfo::GetCellX() const {
+  return this->cellX;
+}
+
+// OFFSET: 0x00B97750
 
 // OFFSET: 0x00B8D270
 // FUNCTION: fn_19434
