@@ -1,6 +1,14 @@
 #include "Client/ReplayPacketRecorder.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
+#include "Resource/SkinPalette.h"
+#include "UI/Window/UICntWnd.h"
+#include "UI/Window/UIChatRoomWnd.h"
+#include "UI/Window/UIBank_NewWnd.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "Client/Session.h"
+#include "Utility/Text/GroupedInteger.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Window/UILoginWnd.h"
 #include "UI/Window/UIMessageBox.h"
@@ -14,6 +22,7 @@
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstdio>
+#include <cstdlib>
 #include <windows.h>
 #include <timeapi.h>
 #include <shellapi.h>
@@ -112,6 +121,75 @@ void UISelectServerWnd::Slot18() {
 // FUNCTION: fn_11765
 void UILoginWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x008A6C20
+
+// OFFSET: 0x008C4B00
+// FUNCTION: fn_11888
+bool UIBank_NewWnd::IsNumeric(std::string text) {
+  for (unsigned char character : text) {
+    if (static_cast<unsigned char>(character - '0') > 9) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// OFFSET: 0x008B7AD0
+
+// OFFSET: 0x008B7CF0
+
+// OFFSET: 0x008B7DA0
+// FUNCTION: fn_11762
+void UICntWnd::Paint() {
+  this->DrawBorder(0, 0, 0, 0);
+}
+
+// OFFSET: 0x008A91E0
+// FUNCTION: fn_11721
+void UICntWnd::DrawBorder(int x, int y, int width, int height) {
+  if (width == 0) {
+    width = this->geometry.width;
+  }
+  if (height == 0) {
+    height = this->geometry.height;
+  }
+  auto& names = *this->m_textureNames;
+  const auto load = [&](const char* name) {
+    return static_cast<CBitmapRes*>(names.resources.Load(names.Resolve(name)));
+  };
+  const int innerWidth = width - 28;
+  const int columns = innerWidth / 14 + (innerWidth % 14 != 0);
+  for (int i = 0; i < columns; ++i) {
+    const auto* bitmap = load("유저인터페이스\\sysbox_mu.bmp");
+    this->DrawBitmap(x + 14 + i * 14, y, &bitmap->image, false);
+  }
+  const auto* bitmap = load("유저인터페이스\\sysbox_lu.bmp");
+  this->DrawBitmap(x, y, &bitmap->image, false);
+  bitmap = load("유저인터페이스\\sysbox_ru.bmp");
+  this->DrawBitmap(x + width - bitmap->image.width, y, &bitmap->image, false);
+  const int innerHeight = height - 28;
+  const int rows = innerHeight / 14 + (innerHeight % 14 != 0);
+  for (int i = 0; i < rows; ++i) {
+    bitmap = load("유저인터페이스\\sysbox_lm.bmp");
+    this->DrawBitmap(x, y + 14 + i * 14, &bitmap->image, false);
+  }
+  for (int i = 0; i < rows; ++i) {
+    bitmap = load("유저인터페이스\\sysbox_rm.bmp");
+    this->DrawBitmap(x + width - bitmap->image.width, y + 14 + i * 14, &bitmap->image, false);
+  }
+  for (int i = 0; i < columns; ++i) {
+    bitmap = load("유저인터페이스\\sysbox_md.bmp");
+    this->DrawBitmap(x + 14 + i * 14, y + height - bitmap->image.height, &bitmap->image, false);
+  }
+  bitmap = load("유저인터페이스\\sysbox_ld.bmp");
+  this->DrawBitmap(x, y + height - bitmap->image.height, &bitmap->image, false);
+  bitmap = load("유저인터페이스\\sysbox_rd.bmp");
+  this->DrawBitmap(x + width - bitmap->image.width, y + height - bitmap->image.height, &bitmap->image, false);
+  unsigned red, green, blue;
+  SkinPaletteChannels(names.resources, names, 2, 2, red, green, blue);
+  this->FillRegion(x + 14, y + 14, innerWidth, innerHeight, RGB(red, green, blue));
 }
 
 // INLINED
