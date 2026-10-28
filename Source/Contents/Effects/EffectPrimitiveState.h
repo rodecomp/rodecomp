@@ -33,7 +33,7 @@ struct EffectPrimitiveRecord {
 
 struct EffectPrimitiveSlot {
   EffectPrimitiveSlot();
-  /* 0000 */ unsigned char life;
+  /* 0000 */ char life;
   /* 0001 */ unsigned char unknown_0001;
   /* 0002 */ std::int16_t alphaB;
   /* 0004 */ std::int16_t alphaT;
@@ -43,7 +43,7 @@ struct EffectPrimitiveSlot {
   /* 0010 */ std::int16_t rotStart;
   /* 0012 */ unsigned char unknown_0012[2];
   /* 0014 */ float height[21];
-  /* 0068 */ unsigned char flag1[21];
+  /* 0068 */ char flag1[21];
   /* 007D */ unsigned char unknown_007D;
   /* 007E */ std::int16_t riseAngle;
   /* 0080 */ float distance;

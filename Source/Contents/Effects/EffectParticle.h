@@ -28,6 +28,12 @@ struct EffectParticle : CRenderObject {
   void PrimChemical2();
   void PrimChemical3();
   void PrimChemical();
+  void PrimEffectTexture2();
+  void PrimEffectTexture_Ani();
+  void PrimFirstAid();
+  void PrimIntimidate();
+  void PrimPoison();
+  void PrimGuard();
 
   bool AdvanceFrame();
   void UpdateRecords();

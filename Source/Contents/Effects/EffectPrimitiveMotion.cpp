@@ -7,6 +7,7 @@
 #include "Contents/Effects/EffectParticle.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/AttachedEffect.h"
+#include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/RagEffectState.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Resource/World/TerrainResource.h"
@@ -1106,6 +1107,174 @@ void EffectParticle::PrimChemical() {
     }
   }
 }
+
+// OFFSET: 0x00BBCB30
+// FUNCTION: fn_19800
+void EffectParticle::PrimEffectTexture2() {
+  FaceCamera(this->state.slots);
+
+  EffectPrimitiveSlot& slot = this->state.slots[0];
+
+  if (slot.life != 1) {
+    return;
+  }
+
+  ++slot.process;
+
+  if (slot.height[8] >= 360.0f) {
+    slot.height[8] -= 360.0f;
+  }
+
+  if (slot.process <= 30) {
+    slot.alphaB += 10;
+
+    if (slot.alphaB > 255) {
+      slot.alphaB = 255;
+    }
+  } else {
+    slot.alphaB -= 3;
+
+    if (slot.alphaB < 0) {
+      slot.alphaB = 0;
+    }
+  }
+
+  slot.vecBNow.y = slot.vecBPre.y;
+}
+
+// OFFSET: 0x00BBCF10
+// FUNCTION: fn_19802
+void EffectParticle::PrimEffectTexture_Ani() {
+  FaceCamera(this->state.slots);
+
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  EffectPrimitiveSlot& slot = this->state.slots[0];
+
+  if (slot.life != 1) {
+    return;
+  }
+
+  ++slot.process;
+
+  const int frameTicks = slot.flag1[4] == 0 ? 8 : 6;
+
+  if (slot.process % frameTicks == 0) {
+    ++slot.flag1[0];
+
+    if (slot.flag1[0] >= static_cast<int>(this->state.textureCount)) {
+      slot.flag1[0] = 0;
+    }
+  }
+
+  if (slot.alphaB >= 255) {
+    slot.alphaB = 255;
+  }
+
+  if (slot.alphaB < 0) {
+    slot.alphaB = 0;
+  }
+
+  slot.vecBNow.y = slot.vecBPre.y;
+  slot.vecBNow.x = this->render.position[0];
+  slot.vecBNow.z = this->render.position[2];
+}
+
+// OFFSET: 0x00BBD480
+// FUNCTION: fn_19805
+void EffectParticle::PrimFirstAid() {
+  FaceCamera(this->state.slots);
+
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  EffectPrimitiveSlot& slot = this->state.slots[0];
+
+  if (slot.life != 1) {
+    return;
+  }
+
+  ++slot.process;
+  slot.height[8] += 3.0f;
+
+  if (slot.height[8] >= 360.0f) {
+    slot.height[8] -= 360.0f;
+  }
+
+  if (slot.process <= 20) {
+    slot.alphaB += 4;
+  }
+
+  if (slot.process > 100) {
+    --slot.alphaB;
+
+    if (slot.alphaB < 0) {
+      slot.alphaB = 0;
+    }
+  }
+}
+
+// OFFSET: 0x00BBF3F0
+// FUNCTION: fn_19816
+void EffectParticle::PrimIntimidate() {
+  FaceCamera(this->state.slots);
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process > 0) {
+      slot.distance += slot.height[0];
+    }
+
+    if (slot.process <= 10 && slot.process > 0) {
+      if (slot.flag1[0] == 0) {
+        slot.alphaB += 15;
+      } else {
+        slot.alphaB += 25;
+      }
+    } else if (slot.process > 25) {
+      slot.alphaB -= 7;
+
+      if (slot.alphaB <= 0) {
+        slot.alphaB = 0;
+      }
+    }
+
+    if (slot.flag1[0] == 2) {
+      slot.rotStart += 3;
+    }
+
+    if (slot.rotStart >= 360) {
+      slot.rotStart -= 360;
+    }
+
+    if (slot.flag1[0] == 2) {
+      slot.height[2] += 3.0f;
+    } else {
+      slot.height[2] += 5.0f;
+    }
+
+    if (slot.height[2] >= 360.0f) {
+      slot.height[2] -= 360.0f;
+    }
+  }
+}
+
+// OFFSET: 0x00BC09F0
+
+// OFFSET: 0x00BBEA00
+
 // OFFSET: 0x00BB6F30
 // FUNCTION: fn_19779
 bool EffectParticle::UpdateHit6() {
