@@ -436,6 +436,7 @@ public:
   char UpdateSnapRectangles();
   bool ProcessDialogKey(int unused, int key);
   void NotifyMode();
+  void NotifyItemWindows(int accountId, int lower, int upper);
   int SendMsg(int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4, std::intptr_t argument5);
   bool IsOrderFixed(int id);
   void RemoveOrder(int id);
@@ -447,6 +448,8 @@ public:
 
 extern UIWindowMgr g_windowMgr;
 extern int g_dragWindowId;
+
+void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(WindowTextEntry) == 0x1C);

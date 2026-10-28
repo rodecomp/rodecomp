@@ -1,10 +1,23 @@
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Effects/PartyMemberEffects.h"
+#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Session.h"
+#include "Contents/ClientState.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Script/LuaInstance.h"
+#include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include <algorithm>
+#include <array>
 #include <cstddef>
+#include <cstdlib>
 #include <list>
+#include <map>
+#include <new>
+#include <unordered_map>
+#include <vector>
 
 void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
 
@@ -28,6 +41,175 @@ struct SessionItemLists {
 static_assert(offsetof(SessionItemLists, inventory) == 0x1710);
 static_assert(offsetof(SessionItemLists, items_1730) == 0x1730);
 static_assert(offsetof(SessionItemLists, items_1780) == 0x1780);
+#endif
+
+struct EquipmentProperty {
+  virtual ~EquipmentProperty() = default;
+};
+
+struct EquipmentProperty1 : EquipmentProperty {};
+
+struct EquipmentProperty2 : EquipmentProperty {};
+
+struct EquipmentProperty3 : EquipmentProperty {};
+
+struct EquipmentValueA {
+  /* 0000 */ int value;
+};
+
+struct EquipmentValueB {
+  /* 0000 */ int value;
+};
+
+struct EquipmentValueC {
+  /* 0000 */ int value;
+};
+
+struct EquipmentEntryA {
+  /* 0000 */ int value;
+};
+
+struct EquipmentEntryB {
+  /* 0000 */ int value;
+};
+
+struct EquipmentPropertyDefinition {
+  /* 0000 */ unsigned char unknown_0000[8];
+  /* 0008 */ std::string unknown_0008;
+  /* 0020 */ std::vector<std::string> unknown_0020;
+  /* 002C */ unsigned char unknown_002C[8];
+  /* 0034 */ std::vector<std::string> unknown_0034;
+  /* 0040 */ int unknown_0040;
+  /* 0044 */ std::string unknown_0044;
+  /* 005C */ std::map<int, int> unknown_005C;
+  /* 0064 */ std::string unknown_0064;
+  /* 007C */ int unknown_007C;
+};
+
+struct EquipmentPropertyGroup {
+  /* 0000 */ std::string unknown_0000;
+  /* 0018 */ std::map<std::int64_t, EquipmentPropertyDefinition*> definitions;
+  ~EquipmentPropertyGroup();
+};
+
+struct EquipmentPropertyStore {
+  /* 0000 */ std::map<int, std::map<int, EquipmentProperty*>> properties;
+  /* 0008 */ std::unordered_map<std::string, std::string> names;
+
+  EquipmentPropertyStore();
+  ~EquipmentPropertyStore();
+  void Clear();
+};
+
+struct EquipmentPropertyMaps {
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ std::unordered_map<int, int> first;
+  /* 0024 */ std::unordered_map<int, int> second;
+};
+
+namespace EquipmentProperties {
+  class CEquipmentPropertiesMgr {
+  public:
+    /* 0004 */ CLuaInstance script;
+    /* 000C */ std::uint16_t unknown_000C;
+    /* 0010 */ int unknown_0010;
+    /* 0014 */ int unknown_0014;
+    /* 0018 */ EquipmentPropertyStore* store;
+    /* 001C */ int unknown_001C;
+    /* 0020 */ int unknown_0020;
+    /* 0024 */ std::unordered_map<int, EquipmentProperty1*> properties1;
+    /* 0044 */ std::unordered_map<int, EquipmentProperty2*> properties2;
+    /* 0064 */ std::unordered_map<int, EquipmentProperty3*> properties3;
+    /* 0084 */ std::set<int> unknown_0084;
+    /* 008C */ std::map<int, EquipmentPropertyGroup> unknown_008C;
+    /* 0094 */ std::unordered_map<int, EquipmentPropertyMaps> unknown_0094;
+    /* 00B4 */ std::unordered_map<int, EquipmentValueA> unknown_00B4;
+    /* 00D4 */ std::unordered_map<int, std::pair<int, int>> unknown_00D4;
+    /* 00F4 */ std::unordered_map<int, std::pair<int, int>> unknown_00F4;
+    /* 0114 */ std::unordered_map<int, std::pair<int, int>> unknown_0114;
+    /* 0134 */ std::unordered_map<int, EquipmentValueA> unknown_0134;
+    /* 0154 */ std::unordered_map<int, std::array<int, 3>> unknown_0154;
+    /* 0174 */ std::unordered_map<int, EquipmentValueB> unknown_0174;
+    /* 0194 */ std::map<int, int> unknown_0194;
+    /* 019C */ std::unordered_map<int, EquipmentValueC> unknown_019C;
+    /* 01BC */ std::unordered_map<int, std::unordered_map<int, EquipmentEntryA>> unknown_01BC;
+    /* 01DC */ std::unordered_map<int, std::unordered_map<int, EquipmentEntryB>> unknown_01DC;
+
+    CEquipmentPropertiesMgr();
+    virtual ~CEquipmentPropertiesMgr();
+    void Clear();
+  };
+}
+
+// GLOBAL: gl_24723
+int g_resetMessengerRandomStats = 1;
+
+// GLOBAL: gl_24724
+EquipmentProperties::CEquipmentPropertiesMgr* g_equipmentPropertiesMgr;
+
+// OFFSET: 0x0068A340
+// FUNCTION: fn_05603
+EquipmentPropertyStore::EquipmentPropertyStore() = default;
+
+// OFFSET: 0x00698CE0
+// FUNCTION: fn_05771
+void EquipmentPropertyStore::Clear() {
+  for (auto& group : this->properties) {
+    for (auto& property : group.second) {
+      delete property.second;
+    }
+  }
+  this->properties.clear();
+  this->names.clear();
+}
+
+// OFFSET: 0x006965A0
+// FUNCTION: fn_05740
+EquipmentPropertyStore::~EquipmentPropertyStore() {
+  this->Clear();
+}
+
+// OFFSET: 0x0069BB80
+// FUNCTION: fn_05807
+EquipmentPropertyGroup::~EquipmentPropertyGroup() {
+  for (auto& definition : this->definitions) {
+    delete definition.second;
+  }
+}
+
+// OFFSET: 0x006A1AA0
+// FUNCTION: fn_06013
+EquipmentProperties::CEquipmentPropertiesMgr::CEquipmentPropertiesMgr()
+    : unknown_000C(1), unknown_0010(-1), unknown_0014(-1), store(new EquipmentPropertyStore), unknown_001C(0), unknown_0020(0) {
+}
+
+// OFFSET: 0x006ABE90
+// FUNCTION: fn_06170
+void EquipmentProperties::CEquipmentPropertiesMgr::Clear() {
+  this->unknown_001C = 0;
+  this->unknown_0084.clear();
+  for (auto& property : this->properties1) {
+    delete property.second;
+  }
+  this->properties1.clear();
+  for (auto& property : this->properties2) {
+    delete property.second;
+  }
+  this->properties2.clear();
+  for (auto& property : this->properties3) {
+    delete property.second;
+  }
+  this->properties3.clear();
+  this->store->Clear();
+}
+
+// OFFSET: 0x006A56C0
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(EquipmentPropertyDefinition) == 0x80);
+static_assert(sizeof(EquipmentPropertyGroup) == 0x20);
+static_assert(sizeof(EquipmentPropertyStore) == 0x28);
+static_assert(sizeof(EquipmentProperties::CEquipmentPropertiesMgr) == 0x1FC);
 #endif
 
 // OFFSET: 0x00DDFFE0
@@ -294,7 +476,93 @@ struct SessionMessengerContext {
   int GetList5Size() const;
 };
 
+struct ItemNotificationWindow : UIWindow {
+  /* 0080 */ unsigned char unknown_0080[0x34];
+  /* 00B4 */ MessengerMember member;
+};
+
+// OFFSET: 0x00AAAF10
+// FUNCTION: fn_17276
+void UIWindowMgr::NotifyItemWindows(int accountId, int lower, int upper) {
+  for (UIWindow* window : this->snapExcluded) {
+    bool matches;
+    {
+      MessengerMember member = static_cast<ItemNotificationWindow*>(window)->member;
+      matches = member.accountId == accountId;
+    }
+    if (matches) {
+      window->SendMsg(nullptr, 6, 34, accountId, lower, upper);
+      break;
+    }
+  }
+}
+
+// OFFSET: 0x00CD6E40
+// FUNCTION: fn_21290
+void CGameMode::NotifyItemBounds() {
+  if (this->itemWindow) {
+    this->itemWindow->Invalidate();
+  }
+  if (g_windowMgr.window_02C8) {
+    g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, g_session.unknown_1604, 0, 0);
+  }
+  g_windowMgr.NotifyItemWindows(g_session.unknown_1604, g_session.unknown_5568, g_session.unknown_556C);
+}
+
 // OFFSET: 0x00DD80A0
+// FUNCTION: fn_23304
+void SessionMessengerContext::UpdateRandomStats() {
+  if (g_resetMessengerRandomStats != 0) {
+    g_resetMessengerRandomStats = 0;
+    this->stat34 = std::max(std::rand() % 12, 0);
+    this->stat30 = std::max(std::rand() % 12, 0);
+    this->stat3C = std::max(std::rand() % 12, 0);
+    this->stat2C = std::max(std::rand() % 12, 0);
+    this->stat38 = std::max(std::rand() % 12, 0);
+  }
+
+  const int bound70 = this->bound70;
+  const int bound74 = this->bound74;
+  const int bound68 = this->bound68;
+  const int bound6C = this->bound6C;
+  this->stat34 = std::max(std::rand() % 12, 0);
+  this->stat2C = std::max(std::rand() % 12, 0);
+  this->stat38 = std::max(std::rand() % 12, 0);
+  this->stat30 = std::max(std::rand() % 12, 0);
+  this->stat3C = std::max(std::rand() % 12, 0);
+  for (int& value : this->stats) {
+    value = std::max(std::abs(std::rand()) % 1, 0);
+  }
+
+  const auto notify = [this]() {
+    if (g_world.ActiveGameMode()) {
+      if (g_windowMgr.unknown_01DC) {
+        if (this->bound6C < this->bound68 || this->bound74 < this->bound70) {
+          return;
+        }
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC)->Invalidate();
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC)->InvalidateChildren();
+      }
+      static_cast<CGameMode*>(g_world.ActiveGameMode())->NotifyItemBounds();
+    }
+  };
+  if (this->bound68 != bound68) {
+    this->bound68 = bound68;
+    notify();
+  }
+  if (this->bound6C != bound6C) {
+    this->bound6C = bound6C;
+    notify();
+  }
+  if (this->bound70 != bound70) {
+    this->bound70 = bound70;
+    notify();
+  }
+  if (this->bound74 != bound74) {
+    this->bound74 = bound74;
+    notify();
+  }
+}
 
 // OFFSET: 0x00DD8380
 

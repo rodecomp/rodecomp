@@ -21,7 +21,9 @@ public:
   /* 00D0 */ CView* camera;
   /* 00D4 */ unsigned char unknown_00D4[0x8C];
   /* 0160 */ CActorNameCardHolder nameCard;
-  /* 0194 */ unsigned char unknown_0194[0x174];
+  /* 0194 */ unsigned char unknown_0194[0x120];
+  /* 02B4 */ UIWindow* itemWindow;
+  /* 02B8 */ unsigned char unknown_02B8[0x50];
   /* 0308 */ ModeDragState drag;
   /* 03C8 */ unsigned char unknown_03C8[0x2A8];
 
@@ -29,6 +31,7 @@ public:
   void WorldCell(float x, float z, int& column, int& row) const;
   void PlayerCell(int* column, int* row) const;
   void ReceiveActorNameAll(const ActorNameAllPacket* packet);
+  void NotifyItemBounds();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

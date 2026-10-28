@@ -88,7 +88,9 @@ public:
   /* 156C */ XmlDocument m_petTalkTable;
   /* 159C */ XmlDocument m_monsterSkillInfo;
   /* 15CC */ XmlDocument m_monsterTalkTable;
-  /* 15FC */ unsigned char unknown_15FC[0x10];
+  /* 15FC */ unsigned char unknown_15FC[8];
+  /* 1604 */ int unknown_1604;
+  /* 1608 */ unsigned char unknown_1608[4];
   /* 160C */ char m_navigationPlayerMap[0x1C];
   /* 1628 */ int m_job;
   /* 162C */ unsigned char unknown_162C[0x24];
@@ -111,7 +113,10 @@ public:
   /* 52B8 */ std::vector<const char*> m_accessoryNames;
   /* 52C4 */ unsigned char unknown_52C4[0x294];
   /* 5558 */ int unknown_5558;
-  /* 555C */ unsigned char unknown_555C[0xD0];
+  /* 555C */ unsigned char unknown_555C[0xC];
+  /* 5568 */ int unknown_5568;
+  /* 556C */ int unknown_556C;
+  /* 5570 */ unsigned char unknown_5570[0xBC];
   /* 562C */ char m_mercenaryName[32];
   /* 564C */ int m_mercenaryStats[8];
   /* 566C */ int m_mercenaryHp;
