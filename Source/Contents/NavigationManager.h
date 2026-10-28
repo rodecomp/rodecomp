@@ -37,6 +37,8 @@ struct NaviDataEntry {
 };
 
 struct NaviRouteLine {
+  NaviRouteLine(int kind, int x, int y, const char* text, int color, int shadowColor);
+
   // OFFSET: 0x00B92F10
   // FUNCTION: fn_19558
   ~NaviRouteLine() {

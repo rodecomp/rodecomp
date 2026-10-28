@@ -206,6 +206,17 @@ CNavigationManager::CNavigationManager() {
   this->unknown_12B4 = false;
 }
 
+// OFFSET: 0x00B92950
+// FUNCTION: fn_19552
+NaviRouteLine::NaviRouteLine(int kind, int x, int y, const char* text, int color, int shadowColor) : x(0), y(0) {
+  this->kind = kind;
+  this->x = x;
+  this->y = y;
+  this->text = text;
+  this->color = color;
+  this->shadowColor = shadowColor;
+}
+
 // OFFSET: 0x00B92CA0
 // FUNCTION: fn_45448
 CNavigationManager::~CNavigationManager() {
