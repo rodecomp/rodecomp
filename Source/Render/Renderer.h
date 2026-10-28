@@ -45,6 +45,9 @@ public:
   float* ProjectViewportCentered(
     const float* position, const float* matrix, float* x, float* y, float* reciprocalDepth, float width, float height
   );
+  float ScaleDistance(float distance) const;
+  float UiScaleX() const;
+  float UiScaleY() const;
 
   /* 0004 */ RendererViewport viewport;
   /* 0038 */ unsigned frame;
