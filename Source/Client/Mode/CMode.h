@@ -22,10 +22,10 @@ public:
   /* 0020 */ std::uint32_t tooltipTick;
   /* 0024 */ std::uint32_t cursorTick;
   /* 0028 */ int unknown_0028;
-  /* 002C */ int unknown_002C;
+  /* 002C */ int screenshotRequested;
   /* 0030 */ int unknown_0030;
   /* 0034 */ int unknown_0034;
-  /* 0038 */ std::string unknown_0038;
+  /* 0038 */ std::string screenshotName;
   /* 0050 */ int unknown_0050;
   /* 0054 */ int unknown_0054;
 
@@ -39,12 +39,13 @@ public:
   virtual void Slot7(int value);
 
   CMode();
+  void TakeScreenshot();
   void DrawTexture(const tagRECT& rect, int angle, float rhw, std::uint32_t color, CTexture* texture, TextureRegion region);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CMode, cursorType) == 0x4);
-static_assert(offsetof(CMode, unknown_0038) == 0x38);
+static_assert(offsetof(CMode, screenshotName) == 0x38);
 static_assert(sizeof(CMode) == 0x58);
 #endif
 
