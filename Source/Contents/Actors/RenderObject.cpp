@@ -12,6 +12,7 @@
 #include "Utility/Math/ScalarConversion.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <cstring>
 #include <windows.h>
 #include <timeapi.h>
@@ -389,4 +390,31 @@ void CGameActor::Slot21(int) {
 // OFFSET: 0x00CC2E40
 // FUNCTION: fn_21152
 void CGameActor::Slot23(int, int) {
+}
+
+// OFFSET: 0x00CAA1F0
+// FUNCTION: fn_21015
+void CRenderObject::JitterBounds(float* output, const int* input, float offset, int spread, int base) {
+  if ((this->render.flags & 0x2000) == 0) {
+    return;
+  }
+
+  float jitter[4];
+  for (int index = 0; index < 4; ++index) {
+    int value = 0;
+    if (spread != 0) {
+      const int remainder = rand() % spread;
+      if (remainder >= 0) {
+        value = remainder;
+      }
+    }
+
+    CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+    jitter[index] = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(value - base);
+  }
+
+  output[0] = static_cast<float>(input[1]) + jitter[0];
+  output[2] = static_cast<float>(input[3]) + jitter[1];
+  output[1] = static_cast<float>(input[0]) + offset + jitter[2];
+  output[3] = static_cast<float>(input[2]) + offset + jitter[3];
 }

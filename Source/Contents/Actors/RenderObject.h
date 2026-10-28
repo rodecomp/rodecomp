@@ -34,6 +34,7 @@ public:
   );
   int HoverHeight();
   void ScaleByPulse(float& scale) const;
+  void JitterBounds(float* output, const int* input, float offset, int spread, int base);
   void ApplySwing(int mode, int& x, int& y, int& outX, int& outY) const;
   void SetInstantValue(int key, std::int64_t value);
   std::int64_t GetInstant(int key) const;
