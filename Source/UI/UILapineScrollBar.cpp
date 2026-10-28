@@ -5,6 +5,10 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 
+// OFFSET: 0x005FF800
+// FUNCTION: fn_04148
+void UILapineScrollBarNoop() {}
+
 // OFFSET: 0x005FF810
 // FUNCTION: fn_04149
 void UIIngredientInfoWnd::Slot10(int argument1, int argument2, std::intptr_t argument3) {
