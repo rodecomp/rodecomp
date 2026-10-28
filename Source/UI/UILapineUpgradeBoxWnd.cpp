@@ -1,0 +1,77 @@
+#include "UI/UILapineUpgradeBoxWnd.h"
+
+#include "Client/Mode/ModeDragState.h"
+#include "Client/Mode/ModeEvents.h"
+#include "UI/Buttons/UIBitmapButton.h"
+
+// OFFSET: 0x006035E0
+// FUNCTION: fn_04194
+void UILapineUpgradeBoxWnd::Slot10(int x, int y, std::intptr_t value) {
+  ModeEvents* mode = this->m_context->mode;
+  if (this->item.unknown_0000[1] > 0) {
+    mode->SendModeMessage(18, 0, 0, 0, 0);
+    return;
+  }
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source == 27) {
+    this->SendMsg(this, 31, drag->id, 0, 0, 0);
+  }
+  mode->SendModeMessage(18, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00603650
+// FUNCTION: fn_04195
+void UILapineUpgradeBox_IngredientInfoWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (this->parent) {
+    this->parent->Slot10(x + this->geometry.x, y + this->geometry.y, value);
+  }
+}
+
+// OFFSET: 0x006036D0
+// FUNCTION: fn_04197
+void UILapineUpgradeBox_IngredientInfoWnd::Move(int x, int y) {
+  UIWindow::Move(x, y);
+}
+
+// OFFSET: 0x00603DB0
+// FUNCTION: fn_04203
+void UILapineUpgradeBoxWnd::Slot26(int x, int y) {
+  if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] != 0) {
+    this->SendMsg(this, 104, this->item.unknown_0000[1], 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00603DF0
+// FUNCTION: fn_04204
+void UILapineUpgradeBox_IngredientInfoWnd::Slot26(int x, int y) {
+  if (this->item.unknown_0000[1] > 0) {
+    this->parent->SendMsg(this, 104, this->item.unknown_0000[1], 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00603EC0
+// FUNCTION: fn_04207
+void UILapineUpgradeBox_IngredientInfoWnd::Slot31(int x, int y) {
+  this->selected = 1;
+  this->Invalidate();
+  if (this->parent) {
+    this->parent->SendMsg(this, 6, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00604180
+// FUNCTION: fn_04213
+void UILapineUpgradeBox_IngredientInfoWnd::Slot35(int argument) {
+  if (this->parent) {
+    this->parent->Slot35(argument);
+  }
+}
+
+// OFFSET: 0x00605BB0
+// FUNCTION: fn_04225
+void UILapineUpgradeBoxWnd::SetWaiting(unsigned char value) {
+  this->waiting = value;
+  this->upgradeButton->SetDisabled(value);
+  this->upgradeButton->Invalidate();
+  this->Invalidate();
+}
