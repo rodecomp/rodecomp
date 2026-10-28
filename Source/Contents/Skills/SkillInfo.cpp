@@ -1,7 +1,6 @@
 #include "Client/Mode/ActiveGameMode.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Actors/GameActor.h"
-#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
