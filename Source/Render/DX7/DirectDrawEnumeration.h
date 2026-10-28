@@ -1,7 +1,6 @@
 #ifndef RAGNAROK_SOURCE_RENDER_DX7_DIRECTDRAWENUMERATION_H
 #define RAGNAROK_SOURCE_RENDER_DX7_DIRECTDRAWENUMERATION_H
 
-#include <array>
 #include <cstddef>
 #include <d3d.h>
 #include <ddraw.h>
@@ -29,24 +28,24 @@ struct DirectDrawDeviceRecord {
 class DirectDrawEnumeration {
 public:
   using Filter = HRESULT(__cdecl*)(const DDCAPS*, const D3DDEVICEDESC7*);
-  DirectDrawEnumeration(const GUID& selectedDraw, RECT& monitor);
-  HRESULT Enumerate(Filter filter);
-  void ClearModes();
-
-  std::array<DirectDrawDeviceRecord, 20> devices{};
-  unsigned devicesSeen = 0;
-  unsigned deviceCount = 0;
+  static HRESULT Enumerate(Filter filter);
+  static DirectDrawDeviceRecord* Devices();
+  static unsigned DeviceCount();
+  static unsigned DevicesSeen();
+  static void ClearModes();
 
 private:
-  struct AdapterContext;
-  const GUID& m_selectedDraw;
-  RECT& m_monitor;
-  Filter m_filter = nullptr;
   static BOOL WINAPI Adapter(GUID* guid, char* description, char* name, void* context, HMONITOR monitor);
   static HRESULT CALLBACK Mode(DDSURFACEDESC2* mode, void* context);
   static HRESULT CALLBACK Device(char* description, char* name, D3DDEVICEDESC7* device, void* context);
   static int __cdecl CompareModes(const void* left, const void* right);
 };
+
+extern RECT g_monitorRectangleDX7;
+extern DirectDrawDeviceRecord g_directDrawModes[20];
+extern unsigned g_directDrawModesSeen;
+extern unsigned g_directDrawModeCount;
+extern DirectDrawEnumeration::Filter g_directDrawFilter;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(DDCAPS) == 380);

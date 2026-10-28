@@ -8,9 +8,9 @@
 
 // OFFSET: 0x0056A590
 // FUNCTION: fn_02291
-std::vector<DisplayMode> EnumerateDisplayModes(int backend, unsigned deviceIndex, DirectDrawEnumeration& legacy) {
+std::vector<DisplayMode> EnumerateDisplayModes(int backend, unsigned deviceIndex) {
   if (backend == 1) {
-    return EnumerateDisplayModesDX7(legacy, deviceIndex);
+    return EnumerateDisplayModesDX7(deviceIndex);
   }
 
   if (backend == 2) {

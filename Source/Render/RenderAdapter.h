@@ -7,7 +7,6 @@
 #include <windows.h>
 
 class DeviceOwnerDX9;
-class DirectDrawEnumeration;
 struct DeviceOptionsDX9;
 
 struct RenderAdapter {
@@ -31,8 +30,8 @@ struct AdapterConfiguration {
 };
 
 RenderAdapter SelectedRenderAdapter(const AdapterConfiguration& configuration, bool serviceUsesDX7);
-std::vector<RenderAdapter> EnumerateRenderAdapters(int backend, DirectDrawEnumeration& legacy);
-std::vector<RenderAdapter> EnumerateAdaptersDX7(DirectDrawEnumeration& enumeration);
+std::vector<RenderAdapter> EnumerateRenderAdapters(int backend);
+std::vector<RenderAdapter> EnumerateAdaptersDX7();
 std::vector<RenderAdapter> EnumerateAdaptersDX9();
 HRESULT InitializeConfiguredDeviceDX9(
   DeviceOwnerDX9& owner, HWND window, const DeviceOptionsDX9& options, const AdapterConfiguration& configuration, bool serviceUsesDX7
