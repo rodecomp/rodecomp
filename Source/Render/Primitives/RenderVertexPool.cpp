@@ -64,6 +64,22 @@ RenderVertex* RenderVertexPool::Acquire(unsigned count) {
   return block.data();
 }
 
+// OFFSET: 0x00AB77A0
+RenderVertex* RenderVertexPool::Block::Append(unsigned count) {
+  const unsigned first = static_cast<unsigned>(this->size());
+  if (first + count > this->capacity()) {
+    return nullptr;
+  }
+
+  this->resize(first + count);
+
+  for (unsigned index = first; index < this->size(); ++index) {
+    (*this)[index].specular = 0xFF000000u;
+  }
+
+  return this->data() + (this->size() - count);
+}
+
 // INLINED
 void RenderVertexPool::Rewind() {
   for (auto& block : this->m_active) {

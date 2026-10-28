@@ -14,7 +14,10 @@ public:
   void Rewind();
 
 private:
-  using Block = std::vector<RenderVertex>;
+  struct Block : std::vector<RenderVertex> {
+    RenderVertex* Append(unsigned count);
+  };
+
   /* 00B0 */ unsigned m_minimum;
   /* 00B4 */ unsigned m_used;
   /* 00B8 */ std::forward_list<std::unique_ptr<Block>> m_active;

@@ -1,0 +1,6 @@
+#ifndef RAGNAROK_SOURCE_RENDER_TEXTUREQUAD_H
+#define RAGNAROK_SOURCE_RENDER_TEXTUREQUAD_H
+
+float RhwToDepth(float rhw);
+
+#endif

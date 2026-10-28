@@ -8,15 +8,25 @@
 #include <cstring>
 
 namespace {
+  // OFFSET: 0x00573170
+  std::uint16_t Color4444(std::uint32_t color) {
+    return ((color >> 16) & 0xF000) | ((color >> 12) & 0xF00) | ((color >> 8) & 0xF0) | ((color >> 4) & 0xF);
+  }
+
+  // OFFSET: 0x005731B0
+  std::uint16_t Color565(std::uint32_t color) {
+    return ((color >> 8) & 0xF800) | ((color >> 5) & 0x7E0) | ((color >> 3) & 0x1F);
+  }
+
   // INLINED
   std::uint16_t Convert16(std::uint32_t color, D3DFORMAT format) {
     switch (format) {
     case D3DFMT_R5G6B5:
-      return ((color & 255) >> 3) | ((color >> 5) & 0x7E0) | ((color >> 8) & 0xF800);
+      return Color565(color);
     case D3DFMT_A1R5G5B5:
       return ((color >> 16) & 0x8000) | ((color & 255) >> 3) | ((color >> 6) & 0x3E0) | ((color >> 9) & 0x7C00);
     case D3DFMT_A4R4G4B4:
-      return ((color & 255) >> 4) | ((color >> 8) & 0xF0) | ((color >> 12) & 0xF00) | ((color >> 16) & 0xF000);
+      return Color4444(color);
     default:
       return 0;
     }
