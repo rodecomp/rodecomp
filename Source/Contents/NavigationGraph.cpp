@@ -1,6 +1,7 @@
 #include "Contents/NavigationManager.h"
 
 // OFFSET: 0x00B89990
+// FUNCTION: fn_19390
 int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allowGates, bool includeObjects, bool allowWarps, int side) {
   for (NaviDataEntry& entry : this->entries) {
     entry.previous = -1;
@@ -177,6 +178,7 @@ done:
 }
 
 // OFFSET: 0x00B8A720
+// FUNCTION: fn_19394
 void CNaviData::ResetLinkDepths() {
   for (CNaviInfo* destination : this->destinations) {
     std::vector<CNavi_Link*>::iterator end = destination->LinksEnd();

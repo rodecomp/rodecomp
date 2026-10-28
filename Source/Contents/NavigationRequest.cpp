@@ -93,11 +93,13 @@ bool CNavigationManager::UpdateGround() {
 }
 
 // OFFSET: 0x00B8E350
+// FUNCTION: fn_19466
 std::vector<CNavi_Link*>::iterator CNaviInfo::LinksBegin() {
   return this->links.begin();
 }
 
 // OFFSET: 0x00B8E360
+// FUNCTION: fn_19467
 std::vector<CNavi_Link*>::iterator CNaviInfo::LinksEnd() {
   return this->links.end();
 }
@@ -109,6 +111,7 @@ bool CNaviInfo::IsVisited() const {
 }
 
 // OFFSET: 0x00B90410
+// FUNCTION: fn_19509
 void CNaviInfo::SetVisited(bool visited) {
   if (this->type == 5001) {
     this->visited = visited;

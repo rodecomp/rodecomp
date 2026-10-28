@@ -56,11 +56,13 @@ CNaviInfo* CNavi_Link::GetInfo() const {
 }
 
 // OFFSET: 0x00B8DB20
+// FUNCTION: fn_19444
 std::vector<NaviLink>::iterator CNavi_Link::LinkedBegin() {
   return this->linkedLinks.begin();
 }
 
 // OFFSET: 0x00B8DE60
+// FUNCTION: fn_19456
 std::vector<NaviLink>::iterator CNavi_Link::LinkedEnd() {
   return this->linkedLinks.end();
 }
@@ -72,6 +74,7 @@ CNaviInfo* CNavi_Link::GetLinkedInfo() const {
 }
 
 // OFFSET: 0x00B90400
+// FUNCTION: fn_19508
 void CNavi_Link::SetDepth(int depth) {
   this->depth = depth;
 }

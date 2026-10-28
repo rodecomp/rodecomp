@@ -13,6 +13,7 @@ struct NavigationStateRecord {
 #pragma pack(pop)
 
 // OFFSET: 0x00B974D0
+// FUNCTION: fn_19599
 bool CNavigationManager::LoadStates(std::vector<char> packet) {
   if (packet.begin() == packet.end()) {
     return false;
