@@ -7,12 +7,15 @@
 #include "Contents/Effects/EffectParticle.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/RagEffectState.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Resource/World/TerrainResource.h"
 #include "Contents/Actors/RenderObjectState.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 
 #include <bit>
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
@@ -903,6 +906,47 @@ bool EffectParticle::UpdateHit6() {
 
   if ((this->state.flags & 0x20u) != 0) {
     this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.ActiveGameMode())->camera->camera.yaw;
+  }
+
+  this->state.UpdateColor();
+  this->UpdateRecords();
+  return this->AdvanceFrame();
+}
+
+// OFFSET: 0x00BB75B0
+// FUNCTION: fn_19780
+bool EffectParticle::UpdateCoin() {
+  CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  const RagEffectState* parent = this->state.parent;
+  this->state.origin.z = std::bit_cast<float>(parent->unknown_013C[5]) + this->state.velocity.z;
+  this->state.origin.y = std::bit_cast<float>(parent->unknown_013C[4]) + this->state.velocity.y;
+  this->state.origin.x = std::bit_cast<float>(parent->unknown_013C[3]) + this->state.velocity.x;
+  this->state.unknown_02EC = this->state.unknown_02F0 + this->state.unknown_02EC;
+
+  const float speed = this->state.unknown_02C0 + this->state.unknown_02BC;
+  this->state.unknown_02BC = speed < 0.0f ? 0.0f : speed;
+  this->state.unknown_0370 = Forward(this->state.unknown_02BC, this->state.matrix1);
+
+  this->state.offset.x = this->state.unknown_0370.x + this->state.offset.x;
+  this->state.offset.y = this->state.offset.y + this->state.unknown_02EC;
+  this->state.offset.z = this->state.unknown_0370.z + this->state.offset.z;
+
+  this->render.position[0] = this->state.offset.x + this->state.origin.x;
+  this->render.position[1] = this->state.offset.y + this->state.origin.y;
+  this->render.position[2] = this->state.offset.z + this->state.origin.z;
+  this->state.scale = this->state.unknown_031C + this->state.scale;
+
+  if (this->state.unknown_02EC > 0.0f && this->render.position[1] > mode->scene->terrain->Grid().Height(this->render.position[0], this->render.position[2])) {
+    this->state.unknown_02EC = this->state.unknown_02EC / -1.5f;
+
+    if (this->state.unknown_0208 == 1) {
+      char name[52];
+      std::sprintf(name, "effect\\EF_Coin%d.wav", rand() % 3 + 1);
+      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->player);
+      g_soundMgr->PlayWave(
+        name, this->render.position[0] - player->render.position[0], 0.0f, this->render.position[2] - player->render.position[2], 250, 40, 1.0f, 0
+      );
+    }
   }
 
   this->state.UpdateColor();

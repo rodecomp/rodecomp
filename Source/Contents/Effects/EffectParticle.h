@@ -17,6 +17,7 @@ struct EffectParticle : CRenderObject {
   bool UpdateStoneCurse();
   void UpdateBeginSpell();
   bool UpdateHit6();
+  bool UpdateCoin();
   bool UpdateDetoxication();
   bool UpdateExit();
   bool UpdateWarp();
