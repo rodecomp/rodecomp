@@ -16,7 +16,7 @@ UIButton::UIButton(UIWindowContext& windowContext, UIButtonContext& buttonContex
   this->geometry.unknown_0030 = 0;
 }
 
-// OFFSET: 0x008523F0
+// OFFSET: 0x00851340
 // FUNCTION: fn_10690
 UIButton::~UIButton() = default;
 
