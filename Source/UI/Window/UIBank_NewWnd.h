@@ -10,6 +10,7 @@ struct TextureNames;
 class UIBank_NewWnd : public UIFrameWnd {
 public:
   long long AdjustAmount(int amount);
+  long long TransactionAmount(unsigned char deposit);
   void Paint() override;
   bool IsNumeric(std::string text);
 

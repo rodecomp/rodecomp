@@ -20,6 +20,9 @@
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIMerInfoWnd.h"
+#include "Render/Text/TextContext.h"
+#include <cstring>
 
 #include <cstdio>
 #include <cstdlib>
@@ -37,6 +40,19 @@ namespace {
     const std::uint32_t pixel = x >= 0 && y >= 0 && x < image.width && y < image.height ? image.pixels[y * image.width + x] : 0x00FF0000u;
 
     return ((pixel & 255) << 16) | (pixel & 0xFF00) | ((pixel >> 16) & 255);
+  }
+
+  // INLINED
+  void DrawTextRight(UIWindow& window, FontCache& fonts, const TextLocale& locale, int x, int y, const char* text, int bytes,
+                     int family, int height, std::uint32_t color, unsigned char bold) {
+    if (!bytes) {
+      bytes = static_cast<int>(std::strlen(text));
+    }
+    TextContext context(*window.geometry.surface, fonts, locale);
+    context.SetFont(family, height, bold, 0);
+    const int width = context.Measure(text, static_cast<int>(std::strlen(text))).cx;
+    context.SetColor(color);
+    context.Draw(x - width, y, text, bytes);
   }
 }
 
@@ -121,6 +137,102 @@ void UISelectServerWnd::Slot18() {
 // FUNCTION: fn_11765
 void UILoginWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x008B88F0
+// FUNCTION: fn_11767
+void UIMerInfoWnd::Paint() {
+  auto& controls = *this->m_controls;
+  auto& names = *this->m_textureNames;
+  const auto* background = static_cast<CBitmapRes*>(names.resources.Load(names.Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
+  this->DrawBitmap(0, 0, &background->image, false);
+  char title[50] = {};
+  const unsigned kind = g_session.m_mercenaryClass;
+  const int titleId = kind - 6017 <= 9 ? 1181 : kind - 6037 <= 9 ? 1182 : kind - 6027 <= 9 ? 1183 : 1367;
+  std::sprintf(title, controls.services.MessageText(titleId));
+  this->DrawTextAt(controls.fonts, controls.locale, 5, 2, title, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 24, controls.services.MessageText(407), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 47, controls.services.MessageText(408), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 111, controls.services.MessageText(1184), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 135, controls.services.MessageText(1185), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 159, controls.services.MessageText(1186), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 230, 133, controls.services.MessageText(1187), 0, 0, 12, 0, 0, 0);
+  char number[24] = {};
+  for (int i = 0; i < 8; ++i) {
+    const int value = i == 7 ? (2000 - g_session.m_mercenaryStats[i]) / 10 : g_session.m_mercenaryStats[i];
+    const int bytes = std::sprintf(number, "%d", value);
+    DrawTextRight(*this, controls.fonts, controls.locale, 79, 24 + 18 * i, number, bytes, 1, 14, 0, 0);
+  }
+  this->DrawTextAt(controls.fonts, controls.locale, 136, 24, g_session.m_mercenaryName, 0, 0, 12, 0x646464, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 135, 24, g_session.m_mercenaryName, 0, 0, 12, 0, 0, 0);
+  char level[12] = {};
+  _itoa(g_session.m_mercenaryLevel, level, 10);
+  this->DrawTextAt(controls.fonts, controls.locale, 135, 47, level, 0, 0, 12, 0, 0, 0);
+  if (g_session.m_mercenaryClass != -1) {
+    char text[128] = {};
+    int bytes = std::sprintf(text, "%d / %d", g_session.m_mercenaryHp, g_session.m_mercenaryMaxHp);
+    this->DrawTextAt(controls.fonts, controls.locale, 218, 70, text, bytes, 1, 14, 0, 0, 0);
+    bytes = std::sprintf(text, "%d / %d", g_session.m_mercenarySp, g_session.m_mercenaryMaxSp);
+    this->DrawTextAt(controls.fonts, controls.locale, 218, 85, text, bytes, 1, 14, 0, 0, 0);
+    std::strftime(text, 128, controls.services.MessageText(1260), _localtime32(&g_session.m_mercenaryExpiration));
+    this->DrawTextAt(controls.fonts, controls.locale, 155, 111, text, static_cast<int>(std::strlen(text)), 0, 12, 255, 0, 0);
+    bytes = std::sprintf(text, "%d", g_session.m_mercenaryLoyalty);
+    this->DrawTextAt(controls.fonts, controls.locale, 170, 133, text, bytes, 1, 14, 0, 0, 0);
+    bytes = std::sprintf(text, "%d", g_session.m_mercenarySummons);
+    this->DrawTextAt(controls.fonts, controls.locale, 170, 157, text, bytes, 1, 14, 0, 0, 0);
+    bytes = std::sprintf(text, "%d", g_session.m_mercenaryKills);
+    this->DrawTextAt(controls.fonts, controls.locale, 245, 157, text, bytes, 1, 14, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x008A6E20
+// FUNCTION: fn_11712
+long long UIBank_NewWnd::TransactionAmount(unsigned char deposit) {
+  auto& services = this->m_controls->services;
+  std::string text = this->m_amountEdit->Text();
+  this->m_amountEdit->SetText("");
+  const auto fail = [&](int notice, int status) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(services.MessageText(notice)), 255, 0, 0, 0);
+    this->m_status = services.MessageText(status);
+    return 0LL;
+  };
+  if (text == std::string(services.MessageText(2778))) {
+    const long long cash = g_session.m_zeny;
+    const long long balance = g_session.m_bankBalance;
+    const long long excess = cash + balance > 0x7FFFFFFF ? cash + balance - 0x7FFFFFFF : 0;
+    if (deposit) {
+      if (balance >= 0x7FFFFFFF) {
+        return fail(2787, 2783);
+      }
+      if (g_session.m_zeny == 0) {
+        return fail(2770, 2780);
+      }
+      const long long amount = cash - excess;
+      if (amount < 0) {
+        return fail(2465, 2780);
+      }
+      return amount;
+    }
+    if (balance == 0) {
+      return fail(2770, 2780);
+    }
+    const long long amount = balance - excess;
+    return cash + amount > 0x7FFFFFFF ? static_cast<long long>(0x7FFFFFFF - g_session.m_zeny) : amount;
+  }
+  if (text.empty()) {
+    return fail(2779, 2781);
+  }
+  if (!this->IsNumeric(text)) {
+    return fail(2488, 2782);
+  }
+  const long long amount = _atoi64(text.c_str());
+  if (amount > 0x7FFFFFFF) {
+    return fail(2768, 2783);
+  }
+  if (amount < 1) {
+    return fail(2769, 2784);
+  }
+  return amount;
 }
 
 // OFFSET: 0x008A6C20

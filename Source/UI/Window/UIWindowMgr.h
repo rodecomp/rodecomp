@@ -43,6 +43,7 @@ class UIRoulletteWnd;
 
 class UIWindowMgr {
 public:
+  int SendNotice(int selector, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d, std::intptr_t e);
   /* 0004 */ int activeWindowId;
   /* 0008 */ std::map<int, UIWindow*> windows;
   /* 0010 */ unsigned char unknown_0010[8];
