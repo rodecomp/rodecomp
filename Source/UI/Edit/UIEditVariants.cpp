@@ -29,6 +29,27 @@ int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   return 0;
 }
 
+// OFFSET: 0x0084F570
+// FUNCTION: fn_10659
+UIEditCtrl3::UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl2(windows, edit) {
+  this->unknown_0130 = 0;
+  this->unknown_0134 = 0;
+  this->unknown_0138 = 14;
+  this->unknown_013C = 0;
+  this->unknown_0140 = 0;
+  this->unknown_0144 = 0;
+  this->unknown_0148 = 0;
+  this->unknown_014C = 0;
+  this->unknown_0150 = 0;
+  this->unknown_0154 = 0;
+  this->unknown_0158 = 0;
+  this->unknown_015C = 0;
+  this->unknown_015E = 0;
+  this->unknown_0184 = 0;
+  this->unknown_0160 = 0;
+  this->unknown_0164 = 0;
+}
+
 // OFFSET: 0x0084F7B0
 // FUNCTION: fn_10660
 UIEditCtrl4::UIEditCtrl4(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit), placeholderColor(0xFFFFFFFFu), placeholderEnabled(0) {

@@ -3,7 +3,9 @@
 
 #include "UI/Window/UIWindow.h"
 
+#include <list>
 #include <string>
+#include <vector>
 
 struct InputFocus;
 struct TextInputBuffer;
@@ -109,6 +111,43 @@ public:
   UIEditCtrl2(UIWindowContext& windows, UIEditContext& edit);
   ~UIEditCtrl2() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+};
+
+struct UIEditCtrl3Entry {
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ int unknown_0008;
+};
+
+struct UIEditCtrl3Table {
+  /* 0000 */ std::vector<int> items;
+  /* 000C */ int count = 0;
+};
+
+class UIEditCtrl3 : public UIEditCtrl2 {
+public:
+  UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
+
+  /* 011C */ std::list<UIEditCtrl3Entry> entries;
+  /* 0124 */ std::vector<int> unknown_0124;
+  /* 0130 */ int unknown_0130;
+  /* 0134 */ unsigned char unknown_0134;
+  /* 0138 */ int unknown_0138;
+  /* 013C */ int unknown_013C;
+  /* 0140 */ int unknown_0140;
+  /* 0144 */ int unknown_0144;
+  /* 0148 */ int unknown_0148;
+  /* 014C */ int unknown_014C;
+  /* 0150 */ int unknown_0150;
+  /* 0154 */ int unknown_0154;
+  /* 0158 */ int unknown_0158;
+  /* 015C */ short unknown_015C;
+  /* 015E */ unsigned char unknown_015E;
+  /* 0160 */ int unknown_0160;
+  /* 0164 */ int unknown_0164;
+  /* 0168 */ std::vector<int> unknown_0168;
+  /* 0174 */ UIEditCtrl3Table unknown_0174;
+  /* 0184 */ short unknown_0184;
 };
 
 class UIEditCtrl4 : public UIEditCtrl {
