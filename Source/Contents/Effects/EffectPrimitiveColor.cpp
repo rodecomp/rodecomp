@@ -1,5 +1,5 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
-#include "Contents/Effects/RagEffectState.h"
+#include "Contents/Effects/AttachedEffect.h"
 #include "Utility/Math/ScalarConversion.h"
 
 // OFFSET: 0x00BC5E00
@@ -45,7 +45,7 @@ void EffectPrimitiveState::UpdateColor() {
   }
 
   if (this->unknown_015C == 0) {
-    const int parentRemaining = this->parent->lifetime - this->parent->unknown_0178;
+    const int parentRemaining = this->master->state.lifetime - this->master->state.unknown_0178;
     const int remaining = this->lifetime - current;
 
     if (remaining > parentRemaining + 1) {

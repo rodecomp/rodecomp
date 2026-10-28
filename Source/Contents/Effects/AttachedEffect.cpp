@@ -27,7 +27,7 @@ inline RagEffectState::RagEffectState()
 // INLINED
 inline RagEffectState::~RagEffectState() {
   for (EffectPrimitiveState* particle : this->related) {
-    particle->parent = nullptr;
+    particle->master = nullptr;
   }
 
   this->related.clear();

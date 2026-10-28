@@ -8,7 +8,7 @@
 
 struct JobNames;
 class ResourceMgr;
-struct RagEffectState;
+struct AttachedEffect;
 
 struct EffectParticle : CRenderObject {
   EffectParticle(ResourceMgr& resources, JobNames& names);
@@ -22,6 +22,7 @@ struct EffectParticle : CRenderObject {
   bool UpdateExit();
   bool UpdateWarp();
   void PrimBottom2();
+  void PrimBottom();
 
   bool AdvanceFrame();
   void UpdateRecords();
@@ -30,7 +31,7 @@ struct EffectParticle : CRenderObject {
 };
 
 EffectParticle* CreateEffectParticle(
-  RagEffectState& parent, const RenderObjectState& parentRender, int type, float x, float y, float z, ResourceMgr& resources, JobNames& names,
+  AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z, ResourceMgr& resources, JobNames& names,
   std::list<CRenderObject*>& worldObjects
 );
 

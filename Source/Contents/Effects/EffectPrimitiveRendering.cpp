@@ -1,4 +1,5 @@
 #include "Contents/Effects/EffectPrimitiveRendering.h"
+#include "Contents/Effects/AttachedEffect.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/EffectVisibility.h"
 #include "Contents/Actors/RenderObjectState.h"
@@ -86,7 +87,7 @@ void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectSta
 void RenderEffectPrimitive15(
   EffectPrimitiveState& particle, const RenderObjectState& render, EffectPrimitiveRenderContext& context, const EffectVisibilityContext& visibility
 ) {
-  if (particle.parent && PartyEffectVisible(*particle.parent, visibility)) {
+  if (particle.master && PartyEffectVisible(particle.master->state, visibility)) {
     DrawEffectPrimitive15(particle, render, context);
   }
 }

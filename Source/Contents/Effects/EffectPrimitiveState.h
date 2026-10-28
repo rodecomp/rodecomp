@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "Contents/Actors/RenderObjectState.h"
-struct RagEffectState;
+struct AttachedEffect;
 class CTexture;
 
 struct EffectVector3 {
@@ -33,34 +33,42 @@ struct EffectPrimitiveRecord {
 
 struct EffectPrimitiveSlot {
   EffectPrimitiveSlot();
-  /* 0000 */ unsigned char active;
+  /* 0000 */ unsigned char life;
   /* 0001 */ unsigned char unknown_0001;
-  /* 0002 */ std::int16_t unknown_0002;
-  /* 0004 */ std::int16_t unknown_0004;
-  /* 0006 */ std::int16_t displayAngle;
-  /* 0008 */ float unknown_0008;
-  /* 000C */ int frame;
-  /* 0010 */ std::int16_t angle;
+  /* 0002 */ std::int16_t alphaB;
+  /* 0004 */ std::int16_t alphaT;
+  /* 0006 */ std::int16_t fullDisplayAngle;
+  /* 0008 */ float maxHeight;
+  /* 000C */ int process;
+  /* 0010 */ std::int16_t rotStart;
   /* 0012 */ unsigned char unknown_0012[2];
-  /* 0014 */ float values[21];
-  /* 0068 */ unsigned char finished[21];
+  /* 0014 */ float height[21];
+  /* 0068 */ unsigned char flag1[21];
   /* 007D */ unsigned char unknown_007D;
-  /* 007E */ std::int16_t unknown_007E;
-  /* 0080 */ float unknown_0080;
-  /* 0084 */ EffectVector3 unknown_0084[4];
+  /* 007E */ std::int16_t riseAngle;
+  /* 0080 */ float distance;
+  union {
+    /* 0084 */ EffectVector3 vectors[4];
+    struct {
+      /* 0084 */ EffectVector3 vecBNow;
+      /* 0090 */ EffectVector3 vecTNow;
+      /* 009C */ EffectVector3 vecBPre;
+      /* 00A8 */ EffectVector3 vecTPre;
+    };
+  };
 };
 
 struct EffectPrimitiveState {
   explicit EffectPrimitiveState(RenderObjectState& render);
   ~EffectPrimitiveState();
-  void Initialize(RenderObjectState& render, RagEffectState& parent, const RenderObjectState& parentRender, int type, float x, float y, float z);
+  void Initialize(RenderObjectState& render, AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z);
   void UpdateColor();
   void InitializeRecords(const RenderObjectState& render);
   void GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue);
 
   /* 0138 */ std::uint32_t unknown_0138;
   /* 013C */ std::uint32_t unknown_013C;
-  /* 0140 */ RagEffectState* parent;
+  /* 0140 */ AttachedEffect* master;
   /* 0144 */ CTexture** textures;
   /* 0148 */ std::uint32_t unknown_0148;
   /* 014C */ EffectVector3 unknown_014C;
@@ -185,9 +193,9 @@ static_assert(offsetof(EffectVector3, z) == 0x8);
 static_assert(offsetof(EffectPrimitiveRecord, corners) == 0xC);
 static_assert(offsetof(EffectPrimitiveRecord, matrix) == 0x48);
 static_assert(offsetof(EffectPrimitiveRecord, color) == 0x88);
-static_assert(offsetof(EffectPrimitiveSlot, values) == 0x14);
-static_assert(offsetof(EffectPrimitiveSlot, finished) == 0x68);
-static_assert(offsetof(EffectPrimitiveSlot, unknown_0084) == 0x84);
+static_assert(offsetof(EffectPrimitiveSlot, height) == 0x14);
+static_assert(offsetof(EffectPrimitiveSlot, flag1) == 0x68);
+static_assert(offsetof(EffectPrimitiveSlot, vecBNow) == 0x84);
 static_assert(sizeof(EffectPrimitiveState) == 0xF8E0);
 #endif
 
