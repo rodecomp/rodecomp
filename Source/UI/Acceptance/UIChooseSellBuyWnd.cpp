@@ -113,6 +113,11 @@ void UIComboBoxWnd::Paint() {
 }
 
 // OFFSET: 0x008ED1B0
+// FUNCTION: fn_12219
+void UIDisconnectedServerMsgWnd::Paint() {
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_textureNames->Resolve("유저인터페이스\\win_msgbox.bmp")));
+  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+}
 
 // OFFSET: 0x008EECD0
 // FUNCTION: fn_12228
@@ -120,6 +125,11 @@ void UILoadingWnd::Paint() {
 }
 
 // OFFSET: 0x008EF590
+// FUNCTION: fn_12233
+void UINoticeConfirmWnd::Paint() {
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_textureNames->Resolve("유저인터페이스\\win_msgbox.bmp")));
+  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+}
 
 // OFFSET: 0x008EF7F0
 // FUNCTION: fn_12235
@@ -132,10 +142,25 @@ void UINotifyQuestWnd::Paint() {
 }
 
 // OFFSET: 0x008EFF60
+// FUNCTION: fn_12245
+void UIQuitWnd::Paint() {
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_textureNames->Resolve("유저인터페이스\\win_msgbox.bmp")));
+  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+}
 
 // OFFSET: 0x008EFFA0
+// FUNCTION: fn_12246
+void UIRestartWnd::Paint() {
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_textureNames->Resolve("유저인터페이스\\win_msgbox.bmp")));
+  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+}
 
 // OFFSET: 0x008F2A90
+// FUNCTION: fn_12258
+void UIWaitWnd::Paint() {
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_textureNames->Resolve("유저인터페이스\\win_msgbox.bmp")));
+  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+}
 
 // OFFSET: 0x008F2DE0
 // FUNCTION: fn_12261
@@ -143,10 +168,27 @@ void UInCash_CallWnd::Paint() {
 }
 
 // OFFSET: 0x008F32D0
+// FUNCTION: fn_12264
+void UIItemIdentifyWnd::Slot26(int x, int y) {
+  this->Slot25(x, y);
+  this->SendMsg(nullptr, 6, 184, 0, 0, 0);
+}
 
 // OFFSET: 0x008F3300
+// FUNCTION: fn_12265
+void UIStatusWnd::Slot26(int, int y) {
+  if (y < 17) {
+    this->SendMsg(this, 6, 202, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x008F3630
+// FUNCTION: fn_12268
+void UIBookWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    this->UIFrameWnd::Slot25(x, y);
+  }
+}
 
 // OFFSET: 0x008F3650
 // FUNCTION: fn_12269
@@ -159,6 +201,41 @@ void UIItemCollection_ComparisonWnd::Slot25(int, int) {
 }
 
 // OFFSET: 0x008F38E0
+// FUNCTION: fn_12273
+void UIItemIdentifyWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    this->UIFrameWnd::Slot25(x, y);
+    return;
+  }
+
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  const int previous = this->m_selected;
+  int selected = -1;
+
+  if (x <= this->geometry.width - 14 && x >= 4 && y >= 34 && y < this->m_rows * 32 + 34) {
+    const int row = (y - 34) / 32;
+    int visible = 0;
+    int index = 0;
+
+    for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it, ++index) {
+      if (index >= this->m_scroll * this->m_columns) {
+        if (visible == this->m_columns * row) {
+          selected = index;
+          break;
+        }
+        ++visible;
+      }
+    }
+  }
+
+  this->m_selected = selected;
+  if (previous != selected) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x008F39B0
 // FUNCTION: fn_12274
@@ -166,12 +243,41 @@ void UIMinimapZoomWnd::Slot25(int, int) {
 }
 
 // OFFSET: 0x008F39C0
+// FUNCTION: fn_12275
+void UIPartySettingWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    this->UIFrameWnd::Slot25(x, y);
+  }
+}
 
 // OFFSET: 0x008F39E0
+// FUNCTION: fn_12276
+void UIPetTamingDeceiveWnd::Slot25(int, int) {
+  if (g_replayAnimationScaling != 0 || this->m_started != 0) {
+    return;
+  }
+
+  this->m_state = 1;
+  this->m_frame = 7;
+  this->m_started = 1;
+  g_world.ActiveGameMode()->SendMsg(149, this->m_target, 0, 0, 0);
+}
 
 // OFFSET: 0x008F3A40
+// FUNCTION: fn_12277
+void UISelectCartWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    this->UIFrameWnd::Slot25(x, y);
+  }
+}
 
 // OFFSET: 0x008F3A60
+// FUNCTION: fn_12278
+void UIStatusWnd::Slot25(int x, int y) {
+  if (y < this->m_titleHeight) {
+    this->UIFrameWnd::Slot25(x, y);
+  }
+}
 
 // OFFSET: 0x008F3BA0
 // FUNCTION: fn_12281
@@ -179,6 +285,25 @@ void UICombinedCardItemCollection_ComparisonWnd::Slot31(int, int) {
 }
 
 // OFFSET: 0x008F3BB0
+// FUNCTION: fn_12282
+void UIEquipWnd::Slot31(int x, int y) {
+  this->UIFrameWnd::Slot31(x, y);
+
+  if (this->m_page != 3) {
+    return;
+  }
+
+  for (int i = 0; i < 4; ++i) {
+    const int left = 6 + i * 68;
+    if (left <= x && x <= left + 64 && y >= 58 && y <= 150) {
+      const int slot = this->m_firstSlot + i;
+      if (slot >= 0 && this->m_hoverSlot != slot) {
+        this->m_hoverSlot = slot;
+      }
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x008F3C50
 // FUNCTION: fn_12284
@@ -186,8 +311,17 @@ void UIItemCollection_ComparisonWnd::Slot31(int, int) {
 }
 
 // OFFSET: 0x008F4A80
+// FUNCTION: fn_12291
+void UIEquipWnd::Slot27(int x, int y) {
+  this->UIFrameWnd::Slot27(x, y);
+  this->Slot28(x, y);
+}
 
 // OFFSET: 0x008F4AB0
+// FUNCTION: fn_12292
+void UIMenuWnd::Slot27(int x, int y) {
+  this->Slot28(x, y);
+}
 
 // OFFSET: 0x008F4D40
 // FUNCTION: fn_12294
@@ -195,6 +329,13 @@ void UIEquipWnd::Slot19() {
 }
 
 // OFFSET: 0x008F4F80
+// FUNCTION: fn_12296
+void UIItemCollectionWnd::Slot19() {
+  if (this->m_previewTick != 0 && timeGetTime() > this->m_previewTick + 100) {
+    this->m_preview->Invalidate();
+    this->m_previewTick = timeGetTime();
+  }
+}
 
 // OFFSET: 0x008F50B0
 // FUNCTION: fn_12300
@@ -216,12 +357,42 @@ void UIWhisperWnd::Slot33(int, int) {
 }
 
 // OFFSET: 0x008F5A10
+// FUNCTION: fn_12310
+void UIExchangeWnd::Slot35(int delta) {
+  this->SendMsg(this->m_scrollBar, 7, delta < 0 ? 1 : -1, 0, 0, 0);
+}
 
 // OFFSET: 0x008F5A50
+// FUNCTION: fn_12311
+void UIItemIdentifyWnd::Slot35(int delta) {
+  if (this->m_scrollable == 0) {
+    return;
+  }
+
+  int step = this->m_rows - 1;
+  if (step > 3) {
+    step = 3;
+  }
+  this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
+}
 
 // OFFSET: 0x008F66B0
+// FUNCTION: fn_12320
+void UIComboBoxIDWnd::Resize(int width, int height) {
+  this->UIFrameWnd::Resize(width, height);
+  this->m_list->Resize(width, height);
+  this->m_list->Refresh();
+  this->m_list->Invalidate();
+}
 
 // OFFSET: 0x008F6700
+// FUNCTION: fn_12321
+void UIComboBoxWnd::Resize(int width, int height) {
+  this->UIFrameWnd::Resize(width, height);
+  this->m_list->Resize(width, height);
+  this->m_list->Refresh();
+  this->m_list->Invalidate();
+}
 
 // OFFSET: 0x008F8860
 // FUNCTION: fn_12332
