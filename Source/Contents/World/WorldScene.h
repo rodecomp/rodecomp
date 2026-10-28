@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <list>
 #include <map>
 #include <vector>
@@ -22,6 +23,8 @@ public:
   WorldScene(const WorldScene&) = delete;
   WorldScene& operator=(const WorldScene&) = delete;
   void Clear();
+  bool FindActorInCell(const float* position, std::function<bool(std::uint32_t)> predicate) const;
+  void ClearActorCells();
 
   /* 0004 */ CGameMode* gameMode;
   /* 0008 */ std::list<CRenderObject*> objects;

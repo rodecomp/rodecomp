@@ -1,7 +1,10 @@
 #include "Contents/World/WorldProximity.h"
+#include "Contents/World/WorldScene.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Resource/World/TerrainResource.h"
 
+#include <algorithm>
 #include <cstring>
 
 // OFFSET: 0x00AC93C0
@@ -28,4 +31,13 @@ void UpdateWorldProximityNotification(
     connection.Send(lengths.FixedLength(id), packet);
     notified = 1;
   }
+}
+
+// OFFSET: 0x00AC8A40
+
+// OFFSET: 0x00ACA180
+// FUNCTION: fn_17689
+void WorldScene::ClearActorCells() {
+  this->actorCells.clear();
+  this->unindexedActorIds.clear();
 }
