@@ -11,6 +11,14 @@ public:
 
   DWORD GetSize() const;
   DWORD GetError() const;
+  __declspec(noinline) BOOL Load(const wchar_t* filename);
+  BOOL Load(const char* filename);
+  int Check();
+  int VerifyHash(const wchar_t* name, DWORD hash);
+  __declspec(noinline) int VerifyBuffer(const wchar_t* name, const unsigned char* buf, unsigned int size);
+  int VerifyBuffer(const char* name, const unsigned char* buf, unsigned int size);
+  __declspec(noinline) int VerifyFile(const wchar_t* filename);
+  int VerifyFile(const char* filename);
 
 protected:
   // INLINED
