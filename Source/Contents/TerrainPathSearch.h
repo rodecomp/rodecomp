@@ -26,12 +26,14 @@ public:
 
 class CPathFinder {
 public:
+  CPathFinder();
+
   /* 0000 */ C3dAttr* attr;
   /* 0004 */ int destinationX;
   /* 0008 */ int destinationY;
   /* 000C */ int nodeCount;
   /* 0010 */ MovementPathNode nodes[150];
-  /* 1078 */ std::uint8_t unknown_1078[8];
+  /* 1078 */ std::map<int, MovementRouteInterpolation> unknown_1078;
   /* 1080 */ bool useNodePool;
   /* 1084 */ std::vector<MovementPathNode> nodePool;
   /* 1090 */ std::map<int, MovementPathNode*> nodeMap;

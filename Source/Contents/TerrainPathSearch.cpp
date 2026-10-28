@@ -1,5 +1,10 @@
 #include "Contents/TerrainPathSearch.h"
 
+// OFFSET: 0x00AD7E70
+// FUNCTION: fn_17860
+CPathFinder::CPathFinder() : useNodePool(false) {
+}
+
 // OFFSET: 0x00AD9840
 // FUNCTION: fn_17885
 void CPathFinder::Reset() {
