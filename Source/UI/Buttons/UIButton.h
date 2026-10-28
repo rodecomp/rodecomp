@@ -5,7 +5,6 @@
 
 #include <string>
 
-class FrameFocus;
 class ResourceMgr;
 class LuaScript;
 class FontCache;
@@ -23,7 +22,6 @@ protected:
 };
 
 struct UIButtonContext {
-  FrameFocus& focus;
   ResourceMgr& resources;
   LuaScript& behavior;
   FontCache& fonts;

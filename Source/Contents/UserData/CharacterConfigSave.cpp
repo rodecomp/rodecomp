@@ -1,5 +1,5 @@
 #include "Client/Session.h"
-#include "Client/ClientOptions.h"
+#include "Client/Session.h"
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/UserData/CharacterConfigSave.h"
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
@@ -40,7 +40,7 @@ void CCharacterLinkedUserDataMgr::Save(CharacterConfigSave& context, const char*
   Json::Value root;
   Json::Value data;
 
-  if (context.options.Get(7) != 0) {
+  if (g_session.GetOption(7) != 0) {
     Json::Value values;
 
     context.skills.ForEachGrouped([&](CSkillInfo* skill) {
@@ -59,7 +59,7 @@ void CCharacterLinkedUserDataMgr::Save(CharacterConfigSave& context, const char*
     data["UseSkillInfo"] = values;
   }
 
-  if (context.options.Get(8) != 0) {
+  if (g_session.GetOption(8) != 0) {
     Json::Value values;
 
     for (const CSkillInfo& skill : context.homunculusSkills) {

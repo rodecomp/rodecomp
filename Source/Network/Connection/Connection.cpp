@@ -1,7 +1,9 @@
 #include "Client/Application/ErrorDialog.h"
+#include "Client/Session.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Connection/ConnectionRuntime.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Render/DeviceContext/DCSurface.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -12,7 +14,7 @@
 
 // OFFSET: 0x00C7C110
 // FUNCTION: fn_20382
-CConnection::CConnection(ConnectionContext& context) : m_socket(INVALID_SOCKET), m_deferred(0), m_sendDeadline(0), m_context(&context) {
+CConnection::CConnection() : m_socket(INVALID_SOCKET), m_deferred(0), m_sendDeadline(0) {
   this->m_input.Reset(0xA000);
   this->m_output.Reset(0xA000);
   this->m_pending.Reset(0xA000);
@@ -25,7 +27,7 @@ CConnection::~CConnection() = default;
 
 // OFFSET: 0x00C7C1C0
 // FUNCTION: fn_20383
-CRagConnection::CRagConnection(ConnectionContext& context) : CConnection(context), unknown_006C(0) {
+CRagConnection::CRagConnection() : unknown_006C(0) {
 }
 
 // OFFSET: 0x00C7C370
@@ -56,7 +58,7 @@ bool CConnection::Connect(const ConnectionEndpoint& endpoint) {
   u_long nonblocking = 1;
 
   if (ioctlsocket(this->m_socket, FIONBIO, &nonblocking) == SOCKET_ERROR) {
-    ShowErrorDialog(this->m_context->renderSystem, "Failed to setup select mode", 0);
+    ShowErrorDialog(GetRenderSystemHolder()->system, "Failed to setup select mode", 0);
     return false;
   }
 
@@ -83,13 +85,6 @@ bool CConnection::Connect(const ConnectionEndpoint& endpoint) {
   }
 
   this->m_address.sin_port = htons(static_cast<u_short>(port));
-  ConnectionAddressCache& cache = this->m_context->addressCache;
-  if (cache.session != this->m_context->session || cache.address == 0) {
-    cache.address = this->m_address.sin_addr.s_addr;
-    cache.session = this->m_context->session;
-  }
-
-  this->m_address.sin_addr.s_addr = cache.address;
   if (connect(this->m_socket, reinterpret_cast<const sockaddr*>(&this->m_address), sizeof(this->m_address)) != SOCKET_ERROR ||
       WSAGetLastError() == WSAEWOULDBLOCK) {
     this->m_status = 0;
@@ -111,7 +106,7 @@ void CConnection::Close() {
   }
 
   this->m_status = 0;
-  this->m_context->options.Set(5, 0, 0);
+  g_session.m_options.Set(5, 0);
 }
 
 // OFFSET: 0x00C7CA40
@@ -302,9 +297,9 @@ void CConnection::SetDeferred(unsigned char value) {
 
 // OFFSET: 0x00C7D7D0
 // FUNCTION: fn_20409
-CRagConnection& GetRagConnection(ConnectionContext& context) {
+CRagConnection& GetRagConnection() {
   // STATIC: 0x016FDC98
   // GLOBAL: gl_24490
-  static CRagConnection connection(context);
+  static CRagConnection connection;
   return connection;
 }

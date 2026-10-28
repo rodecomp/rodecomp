@@ -5,7 +5,6 @@ struct NormalItemSlot;
 struct NormalItemSlotWindow;
 struct ShortcutVisibility;
 struct ServiceOptions;
-struct ClientOptions;
 struct SkillLevelRegistry;
 class WindowManagerWindows;
 
@@ -13,7 +12,6 @@ struct CharacterConfigLoad {
   int* useLevels;
   int* homunculusLevels;
   ServiceOptions& serviceOptions;
-  ClientOptions& options;
   SkillLevelRegistry& registry;
   bool& sortPrivate;
   NormalItemSlot* items;

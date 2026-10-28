@@ -1,7 +1,6 @@
 #ifndef RAGNAROK_SOURCE_UI_SHORTCUTS_SHORTCUTTOOLTIP_H
 #define RAGNAROK_SOURCE_UI_SHORTCUTS_SHORTCUTTOOLTIP_H
 
-#include "Client/ClientOptions.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
@@ -16,7 +15,6 @@ struct ShortcutTooltip {
   ClientSkills& skills;
   const std::list<ItemInfo>& inventory;
   ItemNaming& naming;
-  ClientOptions& options;
   LuaScript& script;
   ButtonServices* services;
   const bool& itemSlotActive;

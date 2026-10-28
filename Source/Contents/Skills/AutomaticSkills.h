@@ -7,7 +7,6 @@
 #include <set>
 
 struct AutomaticSkillContext {
-  ClientOptions& options;
   CConnection& connection;
   int& activeKey;
   const int& currentKey;

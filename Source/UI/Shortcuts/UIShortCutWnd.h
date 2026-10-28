@@ -14,7 +14,6 @@ struct ShortcutDetails;
 struct ShortcutUse;
 struct ShortcutVisibility;
 struct UIButtonContext;
-struct ClientOptions;
 struct CooldownClock;
 struct ModeDragState;
 struct NormalItemSlot;
@@ -23,7 +22,6 @@ class AutomaticSkills;
 
 struct ShortcutWindowContext {
   UIButtonContext& buttons;
-  ClientOptions& options;
   ShortcutBindings& bindings;
   ShortcutPainting& painting;
   ShortcutPress& press;

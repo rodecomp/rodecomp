@@ -2,7 +2,6 @@
 #include "UI/Shortcuts/SkillDetailClose.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
-#include "UI/Window/FrameFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 
 namespace {
@@ -44,7 +43,7 @@ inline bool SkillDetailClose::Close() {
   this->windowsById.erase(46);
 
   if (removed) {
-    this->focus.RemoveOrder(46);
+    g_windowMgr.RemoveOrder(46);
   }
 
   return removed;

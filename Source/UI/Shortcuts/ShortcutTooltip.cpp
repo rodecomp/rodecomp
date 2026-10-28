@@ -1,3 +1,4 @@
+#include "Client/Session.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "UI/Shortcuts/ShortcutTooltip.h"
 #include "UI/Buttons/UIButton.h"
@@ -63,7 +64,7 @@ void ShortcutTooltip::Hover(UIWindow& window, ShortcutGrid& grid, int x, int y, 
   }
 
   HotkeyInfo hotkey;
-  const int bank = this->options.Get(10);
+  const int bank = g_session.GetOption(10);
   if (bank == 0) {
     hotkey = GetHotkeyInfo(this->script, 0, index);
   } else if (bank == 1) {

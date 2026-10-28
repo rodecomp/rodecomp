@@ -1,4 +1,4 @@
-#include "Client/ClientOptions.h"
+#include "Client/Session.h"
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/UserData/CharacterConfigLoad.h"
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
@@ -32,8 +32,8 @@ void CCharacterLinkedUserDataMgr::CompleteLoad(
 
   if (type == 4) {
     context.registry.Load();
-    context.options.Set(7, 1, 0);
-    context.options.Set(8, 1, 0);
+    g_session.SetOption(7, 1, 0);
+    g_session.SetOption(8, 1, 0);
     this->m_loaded = true;
   } else if (type == 1) {
     Json::Value& data = root["data"];

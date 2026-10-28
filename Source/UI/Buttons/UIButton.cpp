@@ -3,7 +3,7 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Script/LuaScript.h"
-#include "UI/Window/FrameFocus.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/WindowPolicy.h"
 
@@ -58,7 +58,7 @@ void UIButton::Slot25(int, int) {
     return;
   }
 
-  this->m_buttonContext->focus.Set(this);
+  g_windowMgr.SetCapture(this);
   this->geometry.unknown_0030 = 2;
   this->Invalidate();
 }
@@ -78,7 +78,7 @@ void UIButton::Slot27(int x, int y) {
 
   unsigned state = 0;
   if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
-    state = this->m_buttonContext->focus.Get() == this ? 2 : 1;
+    state = g_windowMgr.Capture() == this ? 2 : 1;
   }
 
   if (this->geometry.unknown_0030 != state) {
@@ -144,16 +144,15 @@ void UIButton::ResetCursor(int, int) {
 // OFFSET: 0x03DE9C61
 // FUNCTION: fn_10852
 void UIButton::Slot31(int x, int y) {
-  FrameFocus& focus = this->m_buttonContext->focus;
   if (this->m_disabled != 0) {
-    if (focus.Get() == this) {
-      focus.Clear();
+    if (g_windowMgr.Capture() == this) {
+      g_windowMgr.ReleaseCapture();
     }
 
     return;
   }
 
-  if (focus.Get() != this) {
+  if (g_windowMgr.Capture() != this) {
     return;
   }
 
@@ -186,7 +185,7 @@ void UIButton::Slot31(int x, int y) {
   }
 
   this->Invalidate();
-  focus.Clear();
+  g_windowMgr.ReleaseCapture();
 }
 
 // OFFSET: 0x005FEAF0

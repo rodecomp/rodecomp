@@ -7,7 +7,6 @@
 #include <map>
 
 class UIWindow;
-struct FrameFocus;
 
 struct SkillDetailClose {
   UIWindow*& window;
@@ -17,7 +16,6 @@ struct SkillDetailClose {
   UIWindow*& reference_4F1D4;
   std::map<int, UIWindow*>& windowsById;
   UIWindowMgr& retirement;
-  FrameFocus& focus;
 
   bool Close();
 };

@@ -5,16 +5,13 @@
 
 class UIScrollBar_Navi : public UIScrollBar {
 public:
-  UIScrollBar_Navi(UIWindowContext& windows, FrameFocus& focus, ResourceMgr& resources);
+  explicit UIScrollBar_Navi(UIWindowContext& windows);
   ~UIScrollBar_Navi() override;
   void Paint() override;
-
-private:
-  ResourceMgr* m_resources;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIScrollBar_Navi) == 196);
+static_assert(sizeof(UIScrollBar_Navi) == sizeof(UIScrollBar));
 #endif
 
 #endif

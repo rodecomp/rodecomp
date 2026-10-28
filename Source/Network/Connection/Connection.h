@@ -1,12 +1,10 @@
 #ifndef RAGNAROK_SOURCE_NETWORK_CONNECTION_CONNECTION_H
 #define RAGNAROK_SOURCE_NETWORK_CONNECTION_CONNECTION_H
 
-#include "Client/ClientOptions.h"
 #include "Network/Connection/ConnectionBuffer.h"
 
 #include <winsock2.h>
 
-class CRenderSystemBase;
 class PacketLengths;
 
 struct ConnectionEndpoint {
@@ -15,21 +13,9 @@ struct ConnectionEndpoint {
   const char* overrideAddress;
 };
 
-struct ConnectionAddressCache {
-  unsigned address = 0;
-  unsigned session = 0xFFFFFFFFu;
-};
-
-struct ConnectionContext {
-  ClientOptions& options;
-  const unsigned& session;
-  ConnectionAddressCache& addressCache;
-  CRenderSystemBase* renderSystem;
-};
-
 class CConnection {
 public:
-  explicit CConnection(ConnectionContext& context);
+  CConnection();
   virtual ~CConnection();
   virtual bool Connect(const ConnectionEndpoint& endpoint);
   void Close();
@@ -68,23 +54,22 @@ protected:
   /* 0024 */ ConnectionBuffer m_output;
   /* 003C */ ConnectionBuffer m_input;
   /* 0054 */ ConnectionBuffer m_pending;
-  ConnectionContext* m_context;
 };
 
 class CRagConnection : public CConnection {
 public:
-  explicit CRagConnection(ConnectionContext& context);
+  CRagConnection();
   ~CRagConnection() override;
 
 private:
   /* 006C */ unsigned char unknown_006C;
 };
 
-CRagConnection& GetRagConnection(ConnectionContext& context);
+CRagConnection& GetRagConnection();
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CConnection) == 112);
-static_assert(sizeof(CRagConnection) == 116);
+static_assert(sizeof(CConnection) == 0x6C);
+static_assert(sizeof(CRagConnection) == 0x70);
 #endif
 
 #endif

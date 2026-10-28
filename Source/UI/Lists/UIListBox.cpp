@@ -46,8 +46,7 @@ void UIListBox::Configure(int x, int y, int width, int height, unsigned char val
 // OFFSET: 0x00886840
 // FUNCTION: fn_11326
 void UIListBox::Slot15(int width, int height) {
-  auto& owner = *this->m_listContext;
-  auto* vertical = new UIScrollBar(*this->m_context, owner.capture, owner.resources);
+  auto* vertical = new UIScrollBar(*this->m_context);
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
   vertical->vertical = 1;
@@ -57,7 +56,7 @@ void UIListBox::Slot15(int width, int height) {
   vertical->Slot22(verticalWidth, height);
   this->AddChild(vertical);
 
-  auto* horizontal = new UIScrollBar(*this->m_context, owner.capture, owner.resources);
+  auto* horizontal = new UIScrollBar(*this->m_context);
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
   horizontal->vertical = 0;

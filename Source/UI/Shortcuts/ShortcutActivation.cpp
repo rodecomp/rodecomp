@@ -1,4 +1,4 @@
-#include "Client/ClientOptions.h"
+#include "Client/Session.h"
 #include "Contents/Skills/AutomaticSkills.h"
 #include "UI/Shortcuts/ShortcutActivation.h"
 #include "UI/Window/UIWindow.h"
@@ -7,7 +7,7 @@
 // FUNCTION: fn_12689
 void ActivateShortcut(
   UIWindow& window, ShortcutGrid& grid, int x, int y, bool itemSlotActive, unsigned char& currentRow, const NormalItemSlot* const* slots,
-  AutomaticSkills& automatic, ClientOptions& options
+  AutomaticSkills& automatic
 ) {
   const int column = grid.HitTest(x, y, itemSlotActive, currentRow);
   if (column == -1) {
@@ -22,7 +22,7 @@ void ActivateShortcut(
 
   const NormalItemSlot& slot = *slots[index];
   if (slot.unknown_0000 != 0 && automatic.Contains(static_cast<std::uint16_t>(slot.itemId))) {
-    options.Set(AutomaticSkills::CancelOption(static_cast<std::int16_t>(slot.itemId)), 1, 0);
+    g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(slot.itemId)), 1, 0);
   } else {
     automatic.DisableAll();
   }

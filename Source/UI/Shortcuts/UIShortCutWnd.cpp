@@ -1,4 +1,4 @@
-#include "Client/ClientOptions.h"
+#include "Client/Session.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeEvents.h"
 #include "UI/Shortcuts/ShortcutActivation.h"
@@ -95,7 +95,7 @@ void UIShortCutWnd::Show(int visible) {
 // OFFSET: 0x0092A190
 void UIShortCutWnd::Slot15(int, int) {
   this->m_controls =
-    ShortcutControls::Create(*this, *this->m_context, this->m_shortcuts->buttons, this->m_shortcuts->options.Get(10), this->m_slots, this->m_itemSlots);
+    ShortcutControls::Create(*this, *this->m_context, this->m_shortcuts->buttons, g_session.GetOption(10), this->m_slots, this->m_itemSlots);
 }
 
 // OFFSET: 0x00932F30
@@ -120,8 +120,7 @@ void UIShortCutWnd::Slot25(int x, int y) {
 // OFFSET: 0x00930900
 void UIShortCutWnd::Slot26(int x, int y) {
   ActivateShortcut(
-    *this, this->m_grid, x, y, this->m_shortcuts->itemSlotActive, this->m_shortcuts->currentRow, this->m_slots, this->m_shortcuts->automatic,
-    this->m_shortcuts->options
+    *this, this->m_grid, x, y, this->m_shortcuts->itemSlotActive, this->m_shortcuts->currentRow, this->m_slots, this->m_shortcuts->automatic
   );
 }
 
@@ -174,8 +173,8 @@ inline void ShortcutControlEvents::Click(int id) {
     return;
 
   case 549: {
-    const bool checked = this->options.Get(10) == 0;
-    this->options.Set(10, checked ? 1 : 0, 0);
+    const bool checked = g_session.GetOption(10) == 0;
+    g_session.SetOption(10, checked ? 1 : 0, 0);
     this->controls.bank->geometry.unknown_0030 = checked ? 1 : 0;
     this->controls.bank->Invalidate();
 
@@ -277,7 +276,7 @@ inline void ShortcutLayout::Persist() {
 
 // INLINED
 inline void ShortcutUse::Use(const NormalItemSlot& slot) {
-  if (this->options.Get(5) > 0 || slot.itemId == 0) {
+  if (g_session.GetOption(5) > 0 || slot.itemId == 0) {
     return;
   }
 
@@ -354,7 +353,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
   switch (message) {
   case 6: {
-    ShortcutControlEvents events{*this, this->m_grid, this->m_controls, owner.visibility, owner.options, owner.bindings.cooldowns, owner.itemSlotActive};
+    ShortcutControlEvents events{*this, this->m_grid, this->m_controls, owner.visibility, owner.bindings.cooldowns, owner.itemSlotActive};
     events.Click(static_cast<int>(a));
     return 0;
   }

@@ -437,9 +437,16 @@ public:
   bool ProcessDialogKey(int unused, int key);
   void NotifyMode();
   int SendMsg(int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4, std::intptr_t argument5);
+  bool IsOrderFixed(int id);
+  void RemoveOrder(int id);
+  void BringToFront(int id);
+  void SetCapture(UIWindow* window);
+  void ReleaseCapture();
+  UIWindow* Capture() const;
 };
 
 extern UIWindowMgr g_windowMgr;
+extern int g_dragWindowId;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(WindowTextEntry) == 0x1C);

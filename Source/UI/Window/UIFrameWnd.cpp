@@ -1,4 +1,4 @@
-#include "UI/Window/FrameFocus.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Lists/UIReplayListBox.h"
@@ -67,11 +67,11 @@ void UIFrameWnd::ToScreen(int& x, int& y) const {
 // FUNCTION: fn_11779
 void UIFrameWnd::Slot25(int x, int y) {
   if (g_dragWindowId != this->geometry.id) {
-    this->m_frameContext->focus.BringToFront(this->geometry.id);
+    g_windowMgr.BringToFront(this->geometry.id);
     g_dragWindowId = this->geometry.id;
   }
 
-  this->m_frameContext->focus.Set(this);
+  g_windowMgr.SetCapture(this);
   this->ToScreen(x, y);
   this->m_dragX = x;
   this->m_dragY = y;
@@ -85,7 +85,7 @@ void UIFrameWnd::Slot25(int x, int y) {
 // OFFSET: 0x008BA510
 // FUNCTION: fn_11786
 void UIFrameWnd::Slot27(int x, int y) {
-  if (this->m_frameContext->focus.Get() != this || x <= -this->m_frameContext->dragLimitX || y <= -this->m_frameContext->dragLimitY) {
+  if (g_windowMgr.Capture() != this || x <= -this->m_frameContext->dragLimitX || y <= -this->m_frameContext->dragLimitY) {
     return;
   }
 
@@ -126,14 +126,14 @@ void UIFrameWnd::Slot28(int, int) {
 // OFFSET: 0x008BA2C0
 // FUNCTION: fn_11781
 void UIFrameWnd::Slot31(int, int) {
-  if (this->m_frameContext->focus.Get() != this) {
+  if (g_windowMgr.Capture() != this) {
     return;
   }
 
   g_dragWindowId = -1;
   this->geometry.targetAlpha = 255;
   this->geometry.alphaStart = timeGetTime();
-  this->m_frameContext->focus.Clear();
+  g_windowMgr.ReleaseCapture();
   this->m_frameContext->snapping.graph.Refresh(this);
 }
 

@@ -42,7 +42,7 @@ void UIListBoxEx::Configure(int x, int y, int width, int height, unsigned char v
 // FUNCTION: fn_11327
 void UIListBoxEx::Slot15(int width, int height) {
   auto& owner = *this->m_listContext;
-  auto* vertical = new UIScrollBar(*this->m_context, owner.capture, owner.resources);
+  auto* vertical = new UIScrollBar(*this->m_context);
   this->verticalBar = vertical;
   const int thickness = vertical->thickness;
   vertical->vertical = 1;
@@ -52,7 +52,7 @@ void UIListBoxEx::Slot15(int width, int height) {
   vertical->Slot22(thickness, height);
   this->AddChild(vertical);
 
-  auto* horizontal = new UIScrollBar(*this->m_context, owner.capture, owner.resources);
+  auto* horizontal = new UIScrollBar(*this->m_context);
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
   horizontal->vertical = 0;

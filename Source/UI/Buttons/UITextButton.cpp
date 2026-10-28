@@ -1,6 +1,6 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
-#include "UI/Window/FrameFocus.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Lists/UITreeView.h"
@@ -82,7 +82,7 @@ void UITextButton::Slot27(int x, int y) {
   }
 
   const bool inside = x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height;
-  const unsigned state = inside ? (this->m_buttonContext->focus.Get() == this ? 2 : 1) : 0;
+  const unsigned state = inside ? (g_windowMgr.Capture() == this ? 2 : 1) : 0;
   this->m_color = inside ? this->m_hoverColor : this->m_normalColor;
 
   if (this->geometry.unknown_0030 != state) {
@@ -104,9 +104,8 @@ void UITextButton::Slot28(int x, int y) {
 // OFFSET: 0x00891140
 // FUNCTION: fn_11445
 void UITextButton::Slot31(int x, int y) {
-  FrameFocus& focus = this->m_buttonContext->focus;
 
-  if (this->m_disabled != 0 || focus.Get() != this) {
+  if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
     return;
   }
 
@@ -117,13 +116,13 @@ void UITextButton::Slot31(int x, int y) {
 
     if (this->parent) {
       this->parent->SendMsg(this, 98, this->geometry.id, this->m_value, 0, 0);
-      focus.Clear();
+      g_windowMgr.ReleaseCapture();
       return;
     }
   }
 
   this->Invalidate();
-  focus.Clear();
+  g_windowMgr.ReleaseCapture();
 }
 
 // OFFSET: 0x00892B60
@@ -141,9 +140,8 @@ void UITextButton::Slot32(int, int) {
 // OFFSET: 0x00892D60
 // FUNCTION: fn_11494
 void UITextButton::Slot33(int x, int y) {
-  FrameFocus& focus = this->m_buttonContext->focus;
 
-  if (this->m_disabled != 0 || focus.Get() != this) {
+  if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
     return;
   }
 
@@ -158,7 +156,7 @@ void UITextButton::Slot33(int x, int y) {
   }
 
   this->Invalidate();
-  focus.Clear();
+  g_windowMgr.ReleaseCapture();
 }
 
 // OFFSET: 0x00892F30

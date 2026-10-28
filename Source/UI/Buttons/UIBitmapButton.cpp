@@ -16,7 +16,7 @@ UIBitmapButton::~UIBitmapButton() = default;
 // OFFSET: 0x008657A0
 // FUNCTION: fn_10931
 bool UIBitmapButton::SetBitmap(const char* name, int state, unsigned char exactSize) {
-  CBitmapRes* bitmap = static_cast<CBitmapRes*>(this->m_buttonContext->resources.Load(name));
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(name));
   if (!bitmap) {
     return false;
   }
@@ -48,18 +48,18 @@ void UIBitmapButton::Paint() {
 
   switch (this->geometry.unknown_0030) {
   case 0:
-    bitmap = static_cast<CBitmapRes*>(this->m_buttonContext->resources.Load(this->m_names[0].c_str()));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_names[0].c_str()));
     break;
   case 1:
-    bitmap = static_cast<CBitmapRes*>(this->m_buttonContext->resources.Load(this->m_names[1].c_str()));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_names[1].c_str()));
     break;
   case 2:
-    bitmap = static_cast<CBitmapRes*>(this->m_buttonContext->resources.Load(this->m_names[2].c_str()));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_names[2].c_str()));
     break;
   }
 
   if (this->m_disabled != 0 && !this->m_names[3].empty()) {
-    bitmap = static_cast<CBitmapRes*>(this->m_buttonContext->resources.Load(this->m_names[3].c_str()));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_names[3].c_str()));
   }
 
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);

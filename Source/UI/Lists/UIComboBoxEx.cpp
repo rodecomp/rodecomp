@@ -277,7 +277,7 @@ UIComboBoxEx2::~UIComboBoxEx2() = default;
 // FUNCTION: fn_11320
 void UIComboBoxEx2::Slot15(int width, int height) {
   auto& list = *this->m_listContext;
-  auto* vertical = new UIScrollBar_Navi(*this->m_context, list.capture, list.resources);
+  auto* vertical = new UIScrollBar_Navi(*this->m_context);
   this->verticalBar = vertical;
   vertical->vertical = 1;
   vertical->UIWindow::Resize(vertical->thickness, height);
@@ -286,7 +286,7 @@ void UIComboBoxEx2::Slot15(int width, int height) {
   vertical->Slot22(vertical->thickness, height);
   this->AddChild(vertical);
 
-  auto* horizontal = new UIScrollBar(*this->m_context, list.capture, list.resources);
+  auto* horizontal = new UIScrollBar(*this->m_context);
   this->horizontalBar = horizontal;
   horizontal->vertical = 0;
   horizontal->UIWindow::Resize((width - 7), horizontal->thickness);

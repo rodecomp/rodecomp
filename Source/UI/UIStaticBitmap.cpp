@@ -17,7 +17,7 @@ UIStaticBitmap::~UIStaticBitmap() = default;
 // FUNCTION: fn_10930
 void UIStaticBitmap::SetBitmap(const char* name) {
   this->bitmap = name;
-  const auto* resource = static_cast<CBitmapRes*>(this->m_controls->resources.Load(this->bitmap.c_str()));
+  const auto* resource = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->bitmap.c_str()));
   this->geometry.width = resource->image.width;
   this->geometry.height = resource->image.height;
 }
@@ -30,7 +30,7 @@ void UIStaticBitmap::Paint() {
   }
 
   if (this->geometry.unknown_0030 == 0) {
-    const auto* resource = static_cast<CBitmapRes*>(this->m_controls->resources.Load(this->bitmap.c_str()));
+    const auto* resource = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->bitmap.c_str()));
     this->DrawBitmap(0, 0, resource ? &resource->image : nullptr, false);
   } else if (this->geometry.unknown_0030 == 1 && this->geometry.surface) {
     this->geometry.surface->Fill(nullptr, 0xFFFF00FFu);

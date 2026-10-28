@@ -1,6 +1,5 @@
-#include "UI/Window/FrameFocus.h"
 #include "UI/Window/UIWindow.h"
-#include "UI/Window/WindowManagerWindows.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <algorithm>
 
@@ -10,7 +9,7 @@ int g_dragWindowId = -1;
 
 // OFFSET: 0x00A96A60
 // FUNCTION: fn_17192
-bool FrameFocus::IsOrderFixed(int id) {
+bool UIWindowMgr::IsOrderFixed(int id) {
   static constexpr int fixed[] = {0,   1,   2,   3,   4,   6,   7,   9,   14,  15,  16,  17,  18,  20,  21,  22,  23,    24,   26,  28,  29,  31,  32,
                                   33,  34,  35,  36,  39,  42,  45,  49,  50,  56,  58,  60,  61,  62,  63,  64,  65,    66,   67,  70,  73,  74,  78,
                                   79,  80,  81,  90,  91,  94,  95,  99,  100, 101, 104, 105, 107, 109, 111, 115, 116,   123,  124, 127, 128, 130, 131,
@@ -18,7 +17,7 @@ bool FrameFocus::IsOrderFixed(int id) {
                                   198, 199, 200, 204, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 253,   257,  258, 262, 267, 268, 269,
                                   271, 277, 278, 284, 285, 286, 289, 295, 301, 307, 325, 332, 343, 358, 359, 600, 10011, 10032};
   if (id == 145) {
-    UIWindow* window = this->windows.LookupWindow(145);
+    UIWindow* window = g_windowMgr.LookupWindow(145);
     return !window || window->geometry.visible == 0;
   }
 
@@ -27,14 +26,14 @@ bool FrameFocus::IsOrderFixed(int id) {
 
 // OFFSET: 0x00A8F720
 // FUNCTION: fn_17144
-void FrameFocus::RemoveOrder(int id) {
+void UIWindowMgr::RemoveOrder(int id) {
   if (this->IsOrderFixed(id)) {
     return;
   }
 
-  for (auto entry = this->order.begin(); entry != this->order.end(); ++entry) {
+  for (auto entry = this->windowHistory.begin(); entry != this->windowHistory.end(); ++entry) {
     if (*entry == id) {
-      this->order.erase(entry);
+      this->windowHistory.erase(entry);
       return;
     }
   }
@@ -42,33 +41,33 @@ void FrameFocus::RemoveOrder(int id) {
 
 // OFFSET: 0x00A95540
 // FUNCTION: fn_17180
-void FrameFocus::BringToFront(int id) {
+void UIWindowMgr::BringToFront(int id) {
   if (this->IsOrderFixed(id)) {
     return;
   }
 
   this->RemoveOrder(id);
   if (id == 203) {
-    this->order.push_back(id);
+    this->windowHistory.push_back(id);
   } else {
-    this->order.push_front(id);
+    this->windowHistory.push_front(id);
   }
 }
 
 // OFFSET: 0x00AA9B30
 // FUNCTION: fn_17255
-void FrameFocus::Set(UIWindow* window) {
-  this->focused = window;
+void UIWindowMgr::SetCapture(UIWindow* window) {
+  this->inputWindow = window;
 }
 
 // OFFSET: 0x00AA66C0
 // FUNCTION: fn_17232
-void FrameFocus::Clear() {
-  this->focused = nullptr;
+void UIWindowMgr::ReleaseCapture() {
+  this->inputWindow = nullptr;
 }
 
 // OFFSET: 0x00A913F0
 // FUNCTION: fn_17158
-UIWindow* FrameFocus::Get() const {
-  return this->focused;
+UIWindow* UIWindowMgr::Capture() const {
+  return this->inputWindow;
 }

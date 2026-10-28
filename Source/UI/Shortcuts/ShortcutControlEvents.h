@@ -6,7 +6,6 @@
 
 class UIWindow;
 struct ShortcutVisibility;
-struct ClientOptions;
 struct ShortcutCooldowns;
 
 struct ShortcutControlEvents {
@@ -14,7 +13,6 @@ struct ShortcutControlEvents {
   ShortcutGrid& grid;
   ShortcutControls& controls;
   ShortcutVisibility& visibility;
-  ClientOptions& options;
   ShortcutCooldowns& cooldowns;
   bool& itemSlotActive;
 

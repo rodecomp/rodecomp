@@ -4,14 +4,12 @@
 #include "UI/Window/FrameTextCache.h"
 #include "UI/Window/UIWindow.h"
 
-struct FrameFocus;
 struct WindowSnapping;
 class WindowManagerWindows;
 class UIBitmapButton;
 struct UIButtonContext;
 
 struct UIFrameContext {
-  FrameFocus& focus;
   WindowSnapping& snapping;
   WindowManagerWindows& windows;
   const int& dragLimitX;

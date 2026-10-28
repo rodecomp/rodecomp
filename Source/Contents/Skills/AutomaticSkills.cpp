@@ -1,4 +1,5 @@
 #include "Contents/Skills/AutomaticSkills.h"
+#include "Client/Session.h"
 
 #include <cstring>
 
@@ -64,9 +65,9 @@ void AutomaticSkills::DisableAll() {
   for (int id : this->m_ids) {
     const auto skill = static_cast<std::int16_t>(id);
     const int option = ActiveOption(skill);
-    if (this->m_context->options.Get(option) != 0) {
+    if (g_session.GetOption(option) != 0) {
       Cancel(this->m_context->connection, skill);
-      this->m_context->options.Set(option, 0, 0);
+      g_session.SetOption(option, 0, 0);
     }
   }
 }
@@ -83,12 +84,12 @@ void AutomaticSkills::Use(std::int16_t id, std::int16_t level, std::uint32_t tar
   this->m_context->connection.Send(sizeof(packet), packet);
   const int cancel = AutomaticSkills::CancelOption(id);
 
-  if (this->m_context->options.Get(cancel) != 0) {
+  if (g_session.GetOption(cancel) != 0) {
     Cancel(this->m_context->connection, id);
-    this->m_context->options.Set(cancel, 0, 0);
+    g_session.SetOption(cancel, 0, 0);
   } else {
     this->m_context->activeKey = this->m_context->currentKey;
-    this->m_context->options.Set(ActiveOption(id), 1, 0);
+    g_session.SetOption(ActiveOption(id), 1, 0);
   }
 }
 
@@ -96,6 +97,6 @@ void AutomaticSkills::Use(std::int16_t id, std::int16_t level, std::uint32_t tar
 // FUNCTION: fn_21406
 void AutomaticSkills::Complete(int id) {
   if (this->Contains(id)) {
-    this->m_context->options.Set(AutomaticSkills::CancelOption(static_cast<std::int16_t>(id)), 0, 0);
+    g_session.m_options.Set(AutomaticSkills::CancelOption(static_cast<std::int16_t>(id)), 0);
   }
 }

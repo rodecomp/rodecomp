@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CLIENT_SESSION_H
 #define RAGNAROK_SOURCE_CLIENT_SESSION_H
 
+#include "Contents/InstantVar.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
 #include "Contents/UserData/NormalItemSlots.h"
@@ -129,7 +130,9 @@ public:
   /* 616C */ std::vector<int> unknown_616C;
   /* 6178 */ unsigned char unknown_6178[0x1D68];
   /* 7EE0 */ std::map<int, RobeAlpha> m_robeAlpha;
-  /* 7EE8 */ unsigned char unknown_7EE8[0x1CC];
+  /* 7EE8 */ unsigned char unknown_7EE8[0xC0];
+  /* 7FA8 */ CInstantVar m_options;
+  /* 7FB4 */ unsigned char unknown_7FB4[0x100];
   /* 80B4 */ std::map<std::string, int> m_nameToId;
   /* 80BC */ std::map<int, SessionShop> m_shops;
   /* 80C4 */ unsigned char unknown_80C4[0x58];
@@ -140,6 +143,8 @@ public:
   /* 8140 */ std::int64_t m_loginTimeTicks;
   /* 8148 */ int unknown_8148;
 
+  int GetOption(int id) const;
+  void SetOption(int id, int value, int extra);
   std::uint32_t GetServerTime();
   std::uint32_t AddPingSample(std::uint32_t sample);
   std::uint32_t SetServerTime(std::uint32_t serverTime);
@@ -223,6 +228,8 @@ static_assert(sizeof(SessionRecord6144) == 0x38);
 static_assert(offsetof(SessionRecord6144, unknown_002C) == 0x2C);
 static_assert(offsetof(SessionRecord6144, unknown_0030) == 0x30);
 static_assert(offsetof(CSession, m_additionalSkills) == 0x4);
+static_assert(offsetof(CSession, m_options) == 0x7FA8);
+static_assert(offsetof(CSession, m_nameToId) == 0x80B4);
 static_assert(offsetof(CSession, m_level) == 0x1650);
 static_assert(offsetof(CSession, m_hotkeyPage) == 0xBC);
 static_assert(offsetof(CSession, m_pairValues) == 0x5BF4);
@@ -239,7 +246,6 @@ static_assert(offsetof(CSession, m_navigationPlayerMap) == 0x160C);
 static_assert(offsetof(CSession, unknown_1738) == 0x1738);
 static_assert(offsetof(CSession, unknown_1740) == 0x1740);
 static_assert(offsetof(CSession, m_itemSlots) == 0x4860);
-static_assert(offsetof(CSession, m_nameToId) == 0x80B4);
 static_assert(offsetof(CSession, m_shops) == 0x80BC);
 static_assert(offsetof(CSession, unknown_8134) == 0x8134);
 static_assert(offsetof(CSession, m_skillBundle) == 0xC);

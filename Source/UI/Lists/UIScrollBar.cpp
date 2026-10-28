@@ -2,16 +2,16 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "UI/Window/FrameFocus.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Lists/UIScrollBar.h"
 
 #include <algorithm>
 
 // OFFSET: 0x0086E550
 // FUNCTION: fn_11073
-UIScrollBar::UIScrollBar(UIWindowContext& windows, FrameFocus& capture, ResourceMgr& resources)
+UIScrollBar::UIScrollBar(UIWindowContext& windows)
     : UIWindow(windows, 0), state(0), maximum(0), position(0), vertical(1), pressX(0), pressY(0), dragAmount(0), total(0), visible(0), arrowLength(13),
-      thickness(13), minimumThumb(1), horizontalStep(1), verticalStep(1), m_capture(&capture), m_resources(&resources) {
+      thickness(13), minimumThumb(1), horizontalStep(1), verticalStep(1) {
 }
 
 // OFFSET: 0x00873FA0
@@ -131,7 +131,7 @@ void UIScrollBar::Slot25(int x, int y) {
       owner->SendMsg(this, vertical ? 9 : 11, 0, 0, 0, 0);
       break;
     case 2:
-      this->m_capture->Set(this);
+      g_windowMgr.SetCapture(this);
       this->state = 6;
       break;
     case 3:
@@ -199,7 +199,7 @@ void UIScrollBar::Slot27(int x, int y) {
     this->Invalidate();
   }
 
-  if (this->m_capture->Get() == this && owner && (this->vertical == 0 || this->vertical == 1)) {
+  if (g_windowMgr.Capture() == this && owner && (this->vertical == 0 || this->vertical == 1)) {
     const int distance = this->vertical == 0 ? (x - this->pressX) : (y - this->pressY);
     const int delta = ((distance * (this->maximum + 1)) / this->Travel() - this->dragAmount);
 
@@ -221,8 +221,8 @@ void UIScrollBar::ResetCursor(int, int) {
 // FUNCTION: fn_11440
 void UIScrollBar::Slot31(int x, int y) {
   if (this->maximum != 0) {
-    if (this->m_capture->Get() == this) {
-      this->m_capture->Clear();
+    if (g_windowMgr.Capture() == this) {
+      g_windowMgr.ReleaseCapture();
     }
   } else {
     this->parent->Slot31((x + this->geometry.x), (y + this->geometry.y));
@@ -259,7 +259,7 @@ void UIScrollBar::Paint() {
   const int length = vertical ? this->geometry.height : this->geometry.width;
   const auto draw = [&](const char* name, int coordinate, bool transparent) {
     const std::string path = std::string(prefix) + name;
-    auto* bitmap = static_cast<CBitmapRes*>(this->m_resources->Load(path.c_str()));
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path.c_str()));
     this->DrawBitmap(vertical ? 0 : coordinate, vertical ? coordinate : 0, bitmap ? &bitmap->image : nullptr, transparent);
   };
   draw(vertical ? "scroll0up.bmp" : "scroll1left.bmp", 1, false);

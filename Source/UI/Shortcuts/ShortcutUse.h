@@ -1,7 +1,6 @@
 #ifndef RAGNAROK_SOURCE_UI_SHORTCUTS_SHORTCUTUSE_H
 #define RAGNAROK_SOURCE_UI_SHORTCUTS_SHORTCUTUSE_H
 
-#include "Client/ClientOptions.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
@@ -14,7 +13,6 @@ struct ShortcutUse {
   ClientSkills& skills;
   const std::list<ItemInfo>& inventory;
   ItemNaming& naming;
-  ClientOptions& options;
   ModeEvents*& mode;
   ButtonServices& dialogs;
   const int& itemConfirmationState;

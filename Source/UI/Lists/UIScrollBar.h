@@ -3,12 +3,9 @@
 
 #include "UI/Window/UIWindow.h"
 
-struct FrameFocus;
-class ResourceMgr;
-
 class UIScrollBar : public UIWindow {
 public:
-  UIScrollBar(UIWindowContext& windows, FrameFocus& capture, ResourceMgr& resources);
+  explicit UIScrollBar(UIWindowContext& windows);
   ~UIScrollBar() override;
   void Resize(int width, int height) override;
   bool Slot08() override;
@@ -41,14 +38,10 @@ public:
   /* 00A8 */ int minimumThumb;
   /* 00AC */ int horizontalStep;
   /* 00B0 */ int verticalStep;
-
-private:
-  FrameFocus* m_capture;
-  ResourceMgr* m_resources;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UIScrollBar) == 192);
+static_assert(sizeof(UIScrollBar) == sizeof(UIWindow) + 0x38);
 #endif
 
 #endif

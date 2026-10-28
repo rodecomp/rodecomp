@@ -6,7 +6,6 @@
 #include <list>
 
 class CPlayerSkillBundle;
-struct ClientOptions;
 struct ServiceOptions;
 struct NormalItemSlot;
 struct NormalItemSlotWindow;
@@ -17,7 +16,6 @@ struct CharacterConfigSave {
   const int* useLevels;
   const int* additionalLevels;
   const int* homunculusLevels;
-  const ClientOptions& options;
   const ServiceOptions& serviceOptions;
   const bool& sortPrivate;
   const NormalItemSlot* items;
