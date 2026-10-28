@@ -628,6 +628,8 @@
   "Source/UI/Window/WindowPolicy.cpp": 2,
   "Source/UI/Window/WindowRegistration.cpp": 2,
   "Source/UI/Window/WindowRetirement.cpp": 2,
+  "Source/UI/WindowBackground.cpp": 2,
+  "Source/UI/WindowTitlebar.cpp": 2,
   "Source/Utility/AES.cpp": 0,
   "Source/Utility/Async/AsyncDiagnostic.cpp": 0,
   "Source/Utility/Async/NAsyncWork.cpp": 0,

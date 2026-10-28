@@ -1,8 +1,12 @@
 #include "Render/DeviceContext/DeviceContext.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowBorder.h"
 
 #include <algorithm>
+#include <cstdio>
 
 namespace {}
 
@@ -69,4 +73,74 @@ void FillTriangle(UIWindow& window, int x0, int y0, int x1, int y1, int x2, int 
     DeleteObject(brush);
     window.geometry.surface->ReleaseDC(dc);
   }
+}
+
+// OFFSET: 0x008D0920
+// FUNCTION: fn_12088
+int UIWindow::DrawButtonBar(TextureNames& names, int style, int width, int rows) {
+  if (width == 0) {
+    width = this->geometry.width;
+  }
+
+  int leftWidth = 0;
+  int rightWidth = 0;
+  int barHeight = 0;
+  char buffer[260];
+  const char* name;
+
+  if (style) {
+    std::sprintf(buffer, "유저인터페이스\\basic_interface\\btnbar_left%d.bmp", style);
+    name = buffer;
+  } else {
+    name = "유저인터페이스\\basic_interface\\btnbar_left.bmp";
+  }
+
+  auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(names.Resolve(name)));
+  if (left) {
+    leftWidth = left->image.width;
+    barHeight = left->image.height;
+
+    for (int row = 1; row <= rows; ++row) {
+      this->DrawBitmap(0, this->geometry.height - row * barHeight, &left->image, false);
+    }
+  }
+
+  if (style) {
+    std::sprintf(buffer, "유저인터페이스\\basic_interface\\btnbar_right%d.bmp", style);
+    name = buffer;
+  } else {
+    name = "유저인터페이스\\basic_interface\\btnbar_right.bmp";
+  }
+
+  auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(names.Resolve(name)));
+  if (right) {
+    rightWidth = right->image.width;
+
+    for (int row = 1; row <= rows; ++row) {
+      this->DrawBitmap(width - rightWidth, this->geometry.height - row * barHeight, &right->image, false);
+    }
+  }
+
+  if (style) {
+    std::sprintf(buffer, "유저인터페이스\\basic_interface\\btnbar_mid%d.bmp", style);
+    name = buffer;
+  } else {
+    name = "유저인터페이스\\basic_interface\\btnbar_mid.bmp";
+  }
+
+  auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(names.Resolve(name)));
+  if (!middle) {
+    return 0;
+  }
+
+  const int extent = width - rightWidth - leftWidth;
+  const int count = extent / middle->image.width + (extent % middle->image.width != 0);
+
+  for (int row = 1; row <= rows; ++row) {
+    for (int column = 0; column < count; ++column) {
+      this->DrawBitmap(leftWidth + column * middle->image.width, this->geometry.height - row * barHeight, &middle->image, false);
+    }
+  }
+
+  return middle->image.height;
 }

@@ -21,6 +21,7 @@ struct RenderQueues;
 struct BitmapImage;
 class FontCache;
 struct TextLocale;
+struct TextureNames;
 struct tagRECT;
 struct tagSIZE;
 struct ActionFrame;
@@ -141,6 +142,11 @@ public:
   int FormattedTextWidth(FontCache& fonts, const TextLocale& locale, std::string text, int family, int height, unsigned char bold);
   int RestoreEditTexts(const unsigned char* data);
   bool FitSprite(const ActionFrame* frame, const CSprRes* sprite, int width, int height, int* x, int* y, float* scale);
+  int DrawTitleBar(TextureNames& names, FontCache& fonts, const TextLocale& locale, bool closeButton, const char* title, int width);
+  int DrawTitleBarAt(TextureNames& names, FontCache& fonts, const TextLocale& locale, int x, int width, bool closeButton, const char* title);
+  void DrawPanelBackground(TextureNames& names, int y, int width, const char* bitmapName);
+  void DrawPanelBackgroundAt(TextureNames& names, int x, int y, int width, const char* bitmapName);
+  int DrawButtonBar(TextureNames& names, int style, int width, int rows);
 
   // INLINED
   bool HasTextBackground() const {
