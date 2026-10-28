@@ -1,7 +1,6 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/RagEffectState.h"
 #include "Contents/Actors/RenderObjectState.h"
-#include "Resource/Sprites/ActionResource.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstdlib>
