@@ -269,6 +269,7 @@
   "Source/Client/Session.cpp": 0,
   "Source/Contents/ActorGeometry.cpp": 4,
   "Source/Contents/ActorMovementRoute.cpp": 4,
+  "Source/Contents/ActorNameCache.cpp": 4,
   "Source/Contents/ActorNameCard.cpp": 4,
   "Source/Contents/ActorNameDirectory.cpp": 4,
   "Source/Contents/ActorNameRequests.cpp": 4,
