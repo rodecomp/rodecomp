@@ -29,6 +29,7 @@ public:
 
   std::string MapName();
   void WorldCell(float x, float z, int& column, int& row) const;
+  void SubcellPosition(int column, int row, int subColumn, int subRow, float& x, float& z) const;
   void PlayerCell(int* column, int* row) const;
   void ReceiveActorNameAll(const ActorNameAllPacket* packet);
   void NotifyItemBounds();

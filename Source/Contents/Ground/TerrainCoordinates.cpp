@@ -22,6 +22,15 @@ void TerrainHeight::CellCenter(int column, int row, float& x, float& z) const {
   z = ((static_cast<float>(row) - static_cast<float>(this->height) * 0.5f) * static_cast<float>(this->cellSize)) + offset;
 }
 
+// OFFSET: 0x00CD3620
+// FUNCTION: fn_21269
+void CGameMode::SubcellPosition(int column, int row, int subColumn, int subRow, float& x, float& z) const {
+  x = (static_cast<float>(column) - static_cast<float>(this->scene->terrain->width) * 0.5f) * static_cast<float>(this->scene->terrain->cellSize) +
+    static_cast<float>(subColumn) * static_cast<float>(this->scene->terrain->cellSize) * 0.0625f;
+  z = (static_cast<float>(row) - static_cast<float>(this->scene->terrain->height) * 0.5f) * static_cast<float>(this->scene->terrain->cellSize) +
+    static_cast<float>(subRow) * static_cast<float>(this->scene->terrain->cellSize) * 0.0625f;
+}
+
 // OFFSET: 0x00CD5230
 // FUNCTION: fn_21278
 void CGameMode::WorldCell(float x, float z, int& column, int& row) const {
