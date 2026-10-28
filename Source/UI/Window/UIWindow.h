@@ -26,6 +26,7 @@ struct tagRECT;
 struct tagSIZE;
 struct ActionFrame;
 class CSprRes;
+class CBitmapRes;
 
 struct UIWindowContext {
   RenderPrimitivePool& primitives;
@@ -147,6 +148,8 @@ public:
   void DrawPanelBackground(TextureNames& names, int y, int width, const char* bitmapName);
   void DrawPanelBackgroundAt(TextureNames& names, int x, int y, int width, const char* bitmapName);
   int DrawButtonBar(TextureNames& names, int style, int width, int rows);
+  int DrawButtonBarAt(TextureNames& names, int style, int x, int width, int rows);
+  CBitmapRes* LoadStyledBitmap(TextureNames& names, int style, const char* format, const char* name);
 
   // INLINED
   bool HasTextBackground() const {
