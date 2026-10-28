@@ -441,6 +441,26 @@ void UINewChatWnd::Move(int x, int y) {
   }
 }
 
+// OFFSET: 0x0093D090
+// FUNCTION: fn_12765
+void UINewChatWnd::Show(int visible) {
+  this->geometry.visible = visible;
+
+  if (visible != 0) {
+    this->Invalidate();
+    this->m_frameContext->snapping.Store(this);
+  } else if (this->m_frameContext->snapping.enabled) {
+    this->m_frameContext->snapping.rectangles.erase(this);
+  }
+
+  for (UIWindow* tab : this->m_tabs) {
+    tab->Show(this->geometry.visible);
+  }
+
+  for (unsigned int i = 0; i < g_windowMgr.retainedWindows.size(); ++i) {
+    g_windowMgr.retainedWindows[i]->Show(this->geometry.visible);
+  }
+}
 // OFFSET: 0x0091E960
 // FUNCTION: fn_12630
 void UIMemorialDunWnd::Move(int x, int y) {
