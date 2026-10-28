@@ -26,6 +26,7 @@ public:
   void SetActionSpeed(float speed);
   void DrawSprite(int argument, bool seasonal, float offset);
   void DrawShadow(int argument, float scale);
+  void SendValueMessage(int value, CGameObject* target);
   void SetActionName(ResourceMgr& resources, const char* name);
   void SetSpriteName(ResourceMgr& resources, const char* name);
   void SetColor(int alpha, int red, int green, int blue);

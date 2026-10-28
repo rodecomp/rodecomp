@@ -91,6 +91,15 @@ void CRenderObject::SetActionSpeed(float speed) {
 }
 
 // OFFSET: 0x00CB3FF0
+// FUNCTION: fn_21109
+void CRenderObject::SendValueMessage(int value, CGameObject* target) {
+  if (target) {
+    const std::int64_t wide = value;
+    target->SendObjectMessage(
+      nullptr, 29, 0, static_cast<int>(wide), static_cast<int>(wide >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    );
+  }
+}
 
 // OFFSET: 0x00CB4070
 
