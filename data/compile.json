@@ -260,6 +260,7 @@
   "Source/Client/ModeBaseEvents.cpp": 0,
   "Source/Client/ModeFade.cpp": 0,
   "Source/Client/ModeFadeOut.cpp": 0,
+  "Source/Client/ModeTransitions.cpp": 0,
   "Source/Client/Registry.cpp": 0,
   "Source/Client/Replay.cpp": 0,
   "Source/Client/ReplayControl.cpp": 0,
