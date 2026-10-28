@@ -1,8 +1,12 @@
 #include "UI/UILapineUpgradeBoxWnd.h"
 
+#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeEvents.h"
+#include "Contents/Items/ItemDescription.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Window/WindowManagerWindows.h"
 
 // OFFSET: 0x006035E0
 // FUNCTION: fn_04194
@@ -49,6 +53,27 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot26(int x, int y) {
   }
 }
 
+// OFFSET: 0x00603E20
+// FUNCTION: fn_04205
+void UILapineUpgradeBoxWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+  if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] != 0) {
+    ItemDescriptions descriptions{g_itemDescriptions};
+    static_cast<CGameMode*>(g_world.ActiveGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 26, this->item, 1, -1);
+  }
+}
+
+// OFFSET: 0x00603E80
+// FUNCTION: fn_04206
+void UILapineUpgradeBox_IngredientInfoWnd::Slot25(int x, int y) {
+  if (this->item.unknown_0000[1] != 0) {
+    ItemDescriptions descriptions{g_itemDescriptions};
+    static_cast<CGameMode*>(g_world.ActiveGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 27, this->item, this->quantity, -1);
+  }
+}
+
 // OFFSET: 0x00603EC0
 // FUNCTION: fn_04207
 void UILapineUpgradeBox_IngredientInfoWnd::Slot31(int x, int y) {
@@ -64,6 +89,24 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot31(int x, int y) {
 void UILapineUpgradeBox_IngredientInfoWnd::Slot35(int argument) {
   if (this->parent) {
     this->parent->Slot35(argument);
+  }
+}
+
+// OFFSET: 0x006040E0
+// FUNCTION: fn_04211
+void UILapineUpgradeBoxWnd::Slot32(int x, int y) {
+  if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] != 0) {
+    UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+    window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00604140
+// FUNCTION: fn_04212
+void UILapineUpgradeBox_IngredientInfoWnd::Slot32(int x, int y) {
+  if (this->item.unknown_0000[1] != 0) {
+    UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+    window->SendMsg(this, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
   }
 }
 

@@ -12,8 +12,10 @@ class UILapineUpgradeBox_IngredientInfoWnd : public UIFrameWnd {
 public:
   void Move(int x, int y) override;
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot31(int x, int y) override;
+  void Slot32(int x, int y) override;
   void Slot35(int argument) override;
 
   /* 00B8 */ ItemInfo item;
@@ -25,7 +27,9 @@ public:
 class UILapineUpgradeBoxWnd : public UIFrameWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
+  void Slot32(int x, int y) override;
   void SetWaiting(unsigned char value);
 
   /* 00B4 */ UIBitmapButton* closeButton;
