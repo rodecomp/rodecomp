@@ -61,4 +61,6 @@ static_assert(offsetof(FontEntry, font) == 0x0010);
 static_assert(offsetof(FontEntry, privateResources) == 0x0014);
 #endif
 
+extern FontCache g_fontCache;
+
 #endif

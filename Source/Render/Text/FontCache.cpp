@@ -36,6 +36,9 @@ namespace {
   }
 }
 
+// GLOBAL: gl_24541
+FontCache g_fontCache;
+
 // OFFSET: 0x0054D530
 // FUNCTION: fn_01935
 FontCache::FontCache() {
