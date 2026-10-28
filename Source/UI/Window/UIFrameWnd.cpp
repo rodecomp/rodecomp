@@ -1,6 +1,16 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UIReplayButton.h"
+#include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Text/UIStaticText.h"
+#include "UI/Text/UITextViewer.h"
+#include "UI/Window/UICntWnd.h"
+#include "UI/Window/UIMonsterInfoWnd.h"
+#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeEvents.h"
 #include "UI/Lists/UIReplayListBox.h"
 #include "UI/Window/UINoticeWnd.h"
 #include "UI/Window/UIFrameWnd.h"
@@ -8,8 +18,12 @@
 #include "UI/Layout/WindowSnapping.h"
 
 #include <cstdlib>
+#include <string>
 #include <windows.h>
 #include <timeapi.h>
+
+// GLOBAL: gl_24747
+std::uint32_t g_monsterInfoActorId;
 
 // OFFSET: 0x008A3700
 // FUNCTION: fn_11657
@@ -213,4 +227,104 @@ void UIReplayListBox::Slot25(int x, int y) {
 // OFFSET: 0x008BA500
 // FUNCTION: fn_11785
 void UINoticeWnd::Slot28(int, int) {
+}
+
+// OFFSET: 0x008BA310
+// FUNCTION: fn_11782
+void UIReplayButton::Slot31(int x, int y) {
+  if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
+    return;
+  }
+
+  if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
+    this->geometry.unknown_0030 = 0;
+  } else {
+    this->geometry.unknown_0030 = 1;
+    if (this->parent) {
+      this->parent->SendMsg(this, 6, this->geometry.id, this->m_argument, 0, 0);
+      this->parent->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    } else {
+      this->m_context->mode->SendModeMessage(0, this->geometry.id, this->m_argument, 0, 0);
+    }
+  }
+
+  this->Invalidate();
+  g_windowMgr.ReleaseCapture();
+}
+
+// OFFSET: 0x008BA3D0
+// FUNCTION: fn_11784
+void UIMonsterInfoWnd::Slot28(int x, int y) {
+  if (x < 161 || x > 259 || y < 31 || y > 41) {
+    return;
+  }
+
+  int screenX = 0;
+  int screenY = 0;
+  this->ToScreen(screenX, screenY);
+  std::string name = static_cast<CGameMode*>(g_world.ActiveGameMode())->nameCard.Name(g_monsterInfoActorId);
+  const std::size_t mark = name.find("#", 0);
+  if (mark != std::string::npos) {
+    name.erase(mark, name.size());
+  }
+
+  if (this->TextWidth(this->m_controls->fonts, this->m_controls->locale, name.c_str(), 0, 0, 12, 0, 0) > 100) {
+    this->m_controls->services.Tooltip(name.c_str(), screenX + x, screenY + y, -1, false, true);
+  }
+}
+
+// OFFSET: 0x008BB410
+// FUNCTION: fn_11798
+int UIAllyGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    if (a == 184) {
+      this->m_frameContext->windows.CloseWindow(72);
+      this->m_context->mode->SendModeMessage(120, this->identity, 1, 0, 0);
+    } else if (a == 185) {
+      this->m_frameContext->windows.CloseWindow(72);
+      this->m_context->mode->SendModeMessage(120, this->identity, 0, 0, 0);
+    }
+
+    return 0;
+  }
+
+  if (message != 74) {
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  this->identity = static_cast<std::uint32_t>(a);
+  std::string text = "(";
+  text += reinterpret_cast<const char*>(b);
+  text += ")";
+  text += this->m_acceptance->text.buttons.services.MessageText(393);
+  this->viewer->Clear();
+  this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+  return 0;
+}
+
+// OFFSET: 0x008BDB00
+// FUNCTION: fn_11801
+int UICntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    if (a == 184) {
+      this->m_context->mode->SendModeMessage(this->m_event, std::atoi(this->m_edit->Text()), 0, 0, 0);
+    }
+
+    g_windowMgr.Schedule(this);
+    return 0;
+  case 29:
+    this->m_text->SetText(reinterpret_cast<const char*>(a), 0);
+    return 0;
+  case 80:
+    this->m_event = static_cast<int>(a);
+    return 0;
+  case 81: {
+    char buffer[16];
+    this->m_edit->SetText(_itoa(static_cast<int>(a), buffer, 10));
+    return 0;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
 }
