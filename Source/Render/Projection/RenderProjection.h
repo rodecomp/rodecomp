@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_RENDER_PROJECTION_RENDERPROJECTION_H
 #define RAGNAROK_SOURCE_RENDER_PROJECTION_RENDERPROJECTION_H
 
+struct LightmappedVertex;
 struct RenderVertex;
 
 struct RenderProjection {
@@ -10,6 +11,7 @@ struct RenderProjection {
   const int& centerY;
 
   void Project(const float* position, const float* matrix, RenderVertex& output) const;
+  void Project(const float* position, const float* matrix, LightmappedVertex& output) const;
   void Ray(int x, int y, const float* origin, const float* matrix, float* output) const;
 };
 
