@@ -47,11 +47,6 @@ ReplayCachedPacket::ReplayCachedPacket(const ReplayCachedPacket& other)
 ReplaySection::ReplaySection() : id(0), bytes(0), fileOffset(0) {
 }
 
-
-// OFFSET: 0x00B83A40
-
-// OFFSET: 0x00B83AE0
-
 // OFFSET: 0x00B83D00
 // FUNCTION: fn_19305
 void ReplaySection::Clear() {
@@ -59,6 +54,7 @@ void ReplaySection::Clear() {
   this->bytes = 0;
   this->fileOffset = 0;
 }
+
 // OFFSET: 0x00B83D20
 // FUNCTION: fn_19306
 ReplaySection::~ReplaySection() {
