@@ -28,6 +28,7 @@
 #include "UI/Dialogs/UINotifyLevelUpWnd.h"
 #include "UI/Dialogs/UINotifyQuestWnd.h"
 #include "UI/Dialogs/UIPetTamingDeceiveWnd.h"
+#include "UI/Dialogs/UIProhibitListWnd.h"
 #include "UI/Dialogs/UIQuitWnd.h"
 #include "UI/Dialogs/UIRestartWnd.h"
 #include "UI/Dialogs/UISayDialogWnd.h"
@@ -536,6 +537,32 @@ void UISelectCartWnd::Slot25(int x, int y) {
   }
 }
 
+// OFFSET: 0x008F3860
+// FUNCTION: fn_12271
+void UIItemCollectionWnd::Slot25(int x, int y) {
+  if (x <= 60 || y >= 17) {
+    return;
+  }
+
+  this->UIFrameWnd::Slot25(x, y);
+  if (this->m_kind == 12) {
+    UIWindow* comparison = g_windowMgr.unknown_0220;
+    if (!comparison) {
+      return;
+    }
+    comparison->geometry.targetAlpha = this->geometry.targetAlpha;
+    comparison->geometry.alphaStart = this->geometry.alphaStart;
+  }
+
+  if (this->m_kind == 82) {
+    UIWindow* comparison = g_windowMgr.unknown_0224;
+    if (comparison) {
+      comparison->geometry.targetAlpha = this->geometry.targetAlpha;
+      comparison->geometry.alphaStart = this->geometry.alphaStart;
+    }
+  }
+}
+
 // OFFSET: 0x008F3A60
 // FUNCTION: fn_12278
 void UIStatusWnd::Slot25(int x, int y) {
@@ -547,6 +574,16 @@ void UIStatusWnd::Slot25(int x, int y) {
 // OFFSET: 0x008F3BA0
 // FUNCTION: fn_12281
 void UICombinedCardItemCollection_ComparisonWnd::Slot31(int, int) {
+}
+
+// OFFSET: 0x008F3B70
+// FUNCTION: fn_12280
+void UICombinedCardItemCollectionWnd::Slot31(int x, int y) {
+  this->UIFrameWnd::Slot31(x, y);
+  if (UIWindow* comparison = g_windowMgr.unknown_0224) {
+    comparison->geometry.targetAlpha = this->geometry.targetAlpha;
+    comparison->geometry.alphaStart = this->geometry.alphaStart;
+  }
 }
 
 // OFFSET: 0x008F3BB0
@@ -567,6 +604,16 @@ void UIEquipWnd::Slot31(int x, int y) {
       }
       return;
     }
+  }
+}
+
+// OFFSET: 0x008F3C20
+// FUNCTION: fn_12283
+void UIItemCollectionWnd::Slot31(int x, int y) {
+  this->UIFrameWnd::Slot31(x, y);
+  if (UIWindow* comparison = g_windowMgr.unknown_0220) {
+    comparison->geometry.targetAlpha = this->geometry.targetAlpha;
+    comparison->geometry.alphaStart = this->geometry.alphaStart;
   }
 }
 
@@ -645,6 +692,16 @@ void UIPetTamingDeceiveWnd::Slot19() {
     }
   } else if (this->m_frame == frame && this->m_delay <= this->m_maxDelay && timeGetTime() - this->m_finishTime >= 2000) {
     this->m_frameContext->windows.CloseWindow(91);
+  }
+}
+
+// OFFSET: 0x008F5070
+// FUNCTION: fn_12299
+void UIProhibitListWnd::Slot19() {
+  const int count = static_cast<int>(g_session.m_prohibitionLog.size());
+  if (this->m_count != count) {
+    this->m_count = count;
+    this->Invalidate();
   }
 }
 
