@@ -597,10 +597,26 @@ void UIEditCtrl::MoveReadingWindow(int x) {
 }
 
 // OFFSET: 0x00858B80
+// FUNCTION: fn_10764
+std::string UINaviLinkButton::Link() {
+  return this->link;
+}
 
 // OFFSET: 0x00858BE0
+// FUNCTION: fn_10765
+int UISpriteButton::FrameHeight(int action, int frame) {
+  auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->spriteName.c_str()));
+  auto* actions = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->actionName.c_str()));
+  return sprite->images[0][actions->Frame(action, frame).cells[0].image]->height;
+}
 
 // OFFSET: 0x00858C50
+// FUNCTION: fn_10766
+int UISpriteButton::FrameWidth(int action, int frame) {
+  auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->spriteName.c_str()));
+  auto* actions = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->actionName.c_str()));
+  return sprite->images[0][actions->Frame(action, frame).cells[0].image]->width;
+}
 
 // OFFSET: 0x0097E3E0
 // FUNCTION: fn_13327
@@ -620,8 +636,20 @@ void UIItemStoreSubWnd::Slot26(int, int) {
 }
 
 // OFFSET: 0x00985380
+// FUNCTION: fn_13364
+void UIMerchantItemMyShopWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIItemBaseWnd::Slot25(x, y);
+  }
+}
 
 // OFFSET: 0x009886C0
+// FUNCTION: fn_13386
+void UIItemWnd::Slot19() {
+  if (this->unknown_0128) {
+    this->unknown_0128->Slot19();
+  }
+}
 
 // OFFSET: 0x009886D0
 // FUNCTION: fn_13387
@@ -636,6 +664,12 @@ void UIMerchantItemShopWnd::Slot19() {
 }
 
 // OFFSET: 0x00988C20
+// FUNCTION: fn_13390
+void UINoticeMessageBox_LockSellItem::Slot19() {
+  if (this->startTick + this->duration < timeGetTime()) {
+    this->SendMsg(this, 6, 201, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x0098A220
 // FUNCTION: fn_13407
