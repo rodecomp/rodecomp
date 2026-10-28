@@ -8,12 +8,7 @@ CooldownOwner::CooldownOwner() : m_initialized(false) {
   this->m_initialized = true;
 }
 
-// INLINED
-CooldownOwner::~CooldownOwner() {
-  this->m_drawing.normal.clear();
-  this->m_drawing.reverse.clear();
-  this->m_values.clear();
-}
+// OFFSET: 0x00CA60D0
 
 // OFFSET: 0x00CA61A0
 // FUNCTION: fn_20957
@@ -43,6 +38,21 @@ void CooldownOwner::Erase(unsigned id) {
 // GLOBAL: gl_24487
 CooldownOwner* g_cooldownOwner = nullptr;
 
+
+// OFFSET: 0x00CA64C0
+// FUNCTION: fn_20960
+bool CreateCooldownOwner() {
+  if (g_cooldownOwner) {
+    return false;
+  }
+
+  g_cooldownOwner = new (std::nothrow) CooldownOwner;
+  if (!g_cooldownOwner) {
+    return false;
+  }
+
+  return true;
+}
 // OFFSET: 0x00CA6610
 // FUNCTION: fn_20961
 void DestroyCooldownOwner() {
