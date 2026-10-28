@@ -3,6 +3,13 @@
 #include "Script/LuaScript.h"
 
 #include <cstring>
+#include <memory>
+
+// GLOBAL: gl_24640
+CSkillActionMgr* g_skillActionMgr;
+
+// INLINED
+CSkillActionMgr::~CSkillActionMgr() = default;
 
 // OFFSET: 0x00773480
 // FUNCTION: fn_08311
@@ -184,6 +191,164 @@ bool Sub773CB0(int skillId) {
 }
 
 // OFFSET: 0x00773CD0
+// FUNCTION: fn_08322
+bool Sub773CD0(int skillId) {
+  switch (skillId) {
+  case 0x4:
+  case 0x1C:
+  case 0x1D:
+  case 0x22:
+  case 0x23:
+  case 0x35:
+  case 0x36:
+  case 0x42:
+  case 0x43:
+  case 0x44:
+  case 0x47:
+  case 0x48:
+  case 0x49:
+  case 0x6C:
+  case 0x8A:
+  case 0x8B:
+  case 0xE7:
+  case 0xEA:
+  case 0xEB:
+  case 0xEC:
+  case 0xED:
+  case 0xFF:
+  case 0x100:
+  case 0x106:
+  case 0x118:
+  case 0x119:
+  case 0x11A:
+  case 0x11B:
+  case 0x169:
+  case 0x1BD:
+  case 0x1BE:
+  case 0x1BF:
+  case 0x1C0:
+  case 0x1C1:
+  case 0x1C2:
+  case 0x1C3:
+  case 0x1C4:
+  case 0x1C5:
+  case 0x1C6:
+  case 0x1C7:
+  case 0x1C8:
+  case 0x1C9:
+  case 0x1CA:
+  case 0x1CC:
+  case 0x1CD:
+  case 0x1CE:
+  case 0x1CF:
+  case 0x1D0:
+  case 0x1D1:
+  case 0x1DF:
+  case 0x1EE:
+  case 0x234:
+  case 0x23C:
+  case 0x23D:
+  case 0x23E:
+  case 0x23F:
+  case 0x241:
+  case 0x251:
+  case 0x26D:
+  case 0x26E:
+  case 0x272:
+  case 0x27C:
+  case 0x27D:
+  case 0x281:
+  case 0x282:
+  case 0x283:
+  case 0x285:
+  case 0x286:
+  case 0x2B0:
+  case 0x2B1:
+  case 0x2B2:
+  case 0x2B3:
+  case 0x2B6:
+  case 0x2D9:
+  case 0x3F7:
+  case 0x7D1:
+  case 0x7DC:
+  case 0x7EA:
+  case 0x7F9:
+  case 0x7FA:
+  case 0x7FB:
+  case 0x802:
+  case 0x803:
+  case 0x804:
+  case 0x805:
+  case 0x8E3:
+  case 0x8EF:
+  case 0x912:
+  case 0x925:
+  case 0x929:
+  case 0x92B:
+  case 0x92C:
+  case 0x94F:
+  case 0x975:
+  case 0x979:
+  case 0x993:
+  case 0x9B0:
+  case 0x9B2:
+  case 0x9D3:
+  case 0x9E9:
+  case 0xA24:
+  case 0xA25:
+  case 0xA26:
+  case 0xA27:
+  case 0xA30:
+  case 0xA34:
+  case 0xBD1:
+  case 0xBD2:
+  case 0xBD3:
+  case 0xBD7:
+  case 0xBD8:
+  case 0xBD9:
+  case 0xBDA:
+  case 0x13AB:
+  case 0x13AE:
+  case 0x13AF:
+  case 0x13B0:
+  case 0x13B1:
+  case 0x13C8:
+  case 0x1494:
+  case 0x1495:
+  case 0x1497:
+  case 0x1498:
+  case 0x149B:
+  case 0x14A0:
+  case 0x14A1:
+  case 0x14A2:
+  case 0x14B2:
+  case 0x14B3:
+  case 0x14DB:
+  case 0x14F6:
+  case 0x14F8:
+  case 0x1F55:
+  case 0x2022:
+  case 0x2023:
+  case 0x2024:
+  case 0x2025:
+  case 0x2026:
+  case 0x2027:
+  case 0x202E:
+  case 0x202F:
+  case 0x2030:
+    return true;
+  default:
+    return CSkillActionMgr::GetInstance()->Sub77B4A0(skillId);
+  }
+}
+
+// OFFSET: 0x0077B4A0
+// FUNCTION: fn_08413
+bool CSkillActionMgr::Sub77B4A0(int skillId) {
+  auto it = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(it != this->m_skillActions.end() ? it->second() : nullptr);
+  return action ? action->Slot00() : false;
+}
 
 // OFFSET: 0x007737C0
 // FUNCTION: fn_08316
