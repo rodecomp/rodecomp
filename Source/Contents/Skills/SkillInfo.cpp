@@ -1,5 +1,6 @@
-#include "Contents/UserData/NormalItemSlots.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillInfo.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include "Script/LuaScript.h"
 
 #include <cstring>
@@ -36,16 +37,15 @@ CSkillInfo& CSkillInfo::operator=(const CSkillInfo& other) {
   }
 
   this->id = other.id;
-
-  std::memcpy(&this->unknown_000C, &other.unknown_000C, sizeof(this->unknown_000C));
+  this->unknown_000C = other.unknown_000C;
   this->level = other.level;
-  std::memcpy(&this->unknown_0014, &other.unknown_0014, sizeof(this->unknown_0014));
-  std::memcpy(&this->unknown_0018, &other.unknown_0018, sizeof(this->unknown_0018));
-  std::memcpy(&this->unknown_001C, &other.unknown_001C, sizeof(this->unknown_001C));
+  this->unknown_0014 = other.unknown_0014;
+  this->unknown_0018 = other.unknown_0018;
+  this->unknown_001C = other.unknown_001C;
   this->name = other.name;
-  std::memcpy(&this->unknown_0024, &other.unknown_0024, sizeof(this->unknown_0024));
+  this->unknown_0024 = other.unknown_0024;
   this->unknown_0028 = other.unknown_0028;
-  std::memcpy(&this->unknown_002C, &other.unknown_002C, sizeof(this->unknown_002C));
+  this->unknown_002C = other.unknown_002C;
   this->unknown_0030 = other.unknown_0030;
   this->unknown_0034 = other.unknown_0034;
   this->entries = other.entries;
@@ -99,10 +99,10 @@ const char* CSkillInfo::DisplayName(LuaScript& script) const {
 // OFFSET: 0x00773920
 // FUNCTION: fn_08318
 const char* CSkillInfo::DisplayName(LuaScript& script, int skillId) {
-  if (skillId == 5042) {
-    skillId = 5028;
-  } else if (skillId == 5043) {
-    skillId = 5036;
+  if (skillId == SU_CN_METEOR2) {
+    skillId = SU_CN_METEOR;
+  } else if (skillId == SU_LUNATICCARROTBEAT2) {
+    skillId = SU_LUNATICCARROTBEAT;
   }
 
   const char* result = nullptr;
@@ -116,68 +116,68 @@ void __stdcall Sub7739F0() {
 
 // OFFSET: 0x00773A00
 // FUNCTION: fn_08320
-bool Sub773A00(int skillId) {
+bool IsOptionalSelfTargetSkill(int skillId) {
   switch (skillId) {
-  case 28:
-  case 29:
-  case 30:
-  case 34:
-  case 35:
-  case 53:
-  case 54:
-  case 66:
-  case 67:
-  case 68:
-  case 71:
-  case 72:
-  case 73:
-  case 77:
-  case 78:
-  case 138:
-  case 139:
-  case 231:
-  case 234:
-  case 235:
-  case 236:
-  case 237:
-  case 255:
-  case 280:
-  case 281:
-  case 282:
-  case 283:
-  case 286:
-  case 289:
-  case 374:
-  case 402:
-  case 463:
-  case 464:
-  case 465:
-  case 466:
-  case 467:
-  case 468:
-  case 469:
-  case 470:
-  case 471:
-  case 472:
-  case 479:
-  case 1015:
-  case 2001:
-  case 2020:
-  case 2026:
-  case 2027:
-  case 2050:
-  case 2051:
-  case 2052:
-  case 2053:
-  case 2341:
-  case 2344:
-  case 2345:
-  case 2346:
-  case 2347:
-  case 2348:
-  case 2451:
-  case 2515:
-  case 8221:
+  case AL_HEAL:
+  case AL_INCAGI:
+  case AL_DECAGI:
+  case AL_BLESSING:
+  case AL_CURE:
+  case TF_DETOXIFY:
+  case ALL_RESURRECTION:
+  case PR_IMPOSITIO:
+  case PR_SUFFRAGIUM:
+  case PR_ASPERSIO:
+  case PR_SLOWPOISON:
+  case PR_STRECOVERY:
+  case PR_KYRIE:
+  case PR_TURNUNDEAD:
+  case PR_LEXAETERNA:
+  case AS_ENCHANTPOISON:
+  case AS_POISONREACT:
+  case AM_POTIONPITCHER:
+  case AM_CP_WEAPON:
+  case AM_CP_SHIELD:
+  case AM_CP_ARMOR:
+  case AM_CP_HELM:
+  case CR_DEVOTION:
+  case SA_FLAMELAUNCHER:
+  case SA_FROSTWEAPON:
+  case SA_LIGHTNINGLOADER:
+  case SA_SEISMICWEAPON:
+  case SA_DELUGE:
+  case SA_DISPELL:
+  case PF_SOULCHANGE:
+  case PF_MINDBREAKER:
+  case SL_KAAHI:
+  case SL_KAUPE:
+  case SL_KAITE:
+  case SL_KAINA:
+  case SL_STIN:
+  case SL_STUN:
+  case SL_SMA:
+  case SL_SWOO:
+  case SL_SKE:
+  case SL_SKA:
+  case CR_FULLPROTECTION:
+  case MO_KITRANSLATION:
+  case RK_ENCHANTBLADE:
+  case RK_PHANTOMTHRUST:
+  case GC_ANTIDOTE:
+  case GC_POISONINGWEAPON:
+  case AB_RENOVATIO:
+  case AB_HIGHNESSHEAL:
+  case AB_CLEARANCE:
+  case AB_EXPIATIO:
+  case SR_POWERVELOCITY:
+  case SR_GENTLETOUCH_QUIET:
+  case SR_GENTLETOUCH_CURE:
+  case SR_GENTLETOUCH_ENERGYGAIN:
+  case SR_GENTLETOUCH_CHANGE:
+  case SR_GENTLETOUCH_REVITALIZE:
+  case SO_STRIKING:
+  case AB_SECRAMENT:
+  case ML_DEVOTION:
       return true;
   default:
     return false;
@@ -186,165 +186,165 @@ bool Sub773A00(int skillId) {
 
 // OFFSET: 0x00773CB0
 // FUNCTION: fn_08321
-bool Sub773CB0(int skillId) {
-  return skillId == 0x1998 || skillId == 0x19C9;
+bool HidesUseFailureMessage(int skillId) {
+  return skillId == KR_CHOP_CHOP || skillId == AT_FURIOS_STORM;
 }
 
 // OFFSET: 0x00773CD0
 // FUNCTION: fn_08322
-bool Sub773CD0(int skillId) {
+bool IsSupportSkill(int skillId) {
   switch (skillId) {
-  case 0x4:
-  case 0x1C:
-  case 0x1D:
-  case 0x22:
-  case 0x23:
-  case 0x35:
-  case 0x36:
-  case 0x42:
-  case 0x43:
-  case 0x44:
-  case 0x47:
-  case 0x48:
-  case 0x49:
-  case 0x6C:
-  case 0x8A:
-  case 0x8B:
-  case 0xE7:
-  case 0xEA:
-  case 0xEB:
-  case 0xEC:
-  case 0xED:
-  case 0xFF:
-  case 0x100:
-  case 0x106:
-  case 0x118:
-  case 0x119:
-  case 0x11A:
-  case 0x11B:
-  case 0x169:
-  case 0x1BD:
-  case 0x1BE:
-  case 0x1BF:
-  case 0x1C0:
-  case 0x1C1:
-  case 0x1C2:
-  case 0x1C3:
-  case 0x1C4:
-  case 0x1C5:
-  case 0x1C6:
-  case 0x1C7:
-  case 0x1C8:
-  case 0x1C9:
-  case 0x1CA:
-  case 0x1CC:
-  case 0x1CD:
-  case 0x1CE:
-  case 0x1CF:
-  case 0x1D0:
-  case 0x1D1:
-  case 0x1DF:
-  case 0x1EE:
-  case 0x234:
-  case 0x23C:
-  case 0x23D:
-  case 0x23E:
-  case 0x23F:
-  case 0x241:
-  case 0x251:
-  case 0x26D:
-  case 0x26E:
-  case 0x272:
-  case 0x27C:
-  case 0x27D:
-  case 0x281:
-  case 0x282:
-  case 0x283:
-  case 0x285:
-  case 0x286:
-  case 0x2B0:
-  case 0x2B1:
-  case 0x2B2:
-  case 0x2B3:
-  case 0x2B6:
-  case 0x2D9:
-  case 0x3F7:
-  case 0x7D1:
-  case 0x7DC:
-  case 0x7EA:
-  case 0x7F9:
-  case 0x7FA:
-  case 0x7FB:
-  case 0x802:
-  case 0x803:
-  case 0x804:
-  case 0x805:
-  case 0x8E3:
-  case 0x8EF:
-  case 0x912:
-  case 0x925:
-  case 0x929:
-  case 0x92B:
-  case 0x92C:
-  case 0x94F:
-  case 0x975:
-  case 0x979:
-  case 0x993:
-  case 0x9B0:
-  case 0x9B2:
-  case 0x9D3:
-  case 0x9E9:
-  case 0xA24:
-  case 0xA25:
-  case 0xA26:
-  case 0xA27:
-  case 0xA30:
-  case 0xA34:
-  case 0xBD1:
-  case 0xBD2:
-  case 0xBD3:
-  case 0xBD7:
-  case 0xBD8:
-  case 0xBD9:
-  case 0xBDA:
-  case 0x13AB:
-  case 0x13AE:
-  case 0x13AF:
-  case 0x13B0:
-  case 0x13B1:
-  case 0x13C8:
-  case 0x1494:
-  case 0x1495:
-  case 0x1497:
-  case 0x1498:
-  case 0x149B:
-  case 0x14A0:
-  case 0x14A1:
-  case 0x14A2:
-  case 0x14B2:
-  case 0x14B3:
-  case 0x14DB:
-  case 0x14F6:
-  case 0x14F8:
-  case 0x1F55:
-  case 0x2022:
-  case 0x2023:
-  case 0x2024:
-  case 0x2025:
-  case 0x2026:
-  case 0x2027:
-  case 0x202E:
-  case 0x202F:
-  case 0x2030:
+  case SM_RECOVERY:
+  case AL_HEAL:
+  case AL_INCAGI:
+  case AL_BLESSING:
+  case AL_CURE:
+  case TF_DETOXIFY:
+  case ALL_RESURRECTION:
+  case PR_IMPOSITIO:
+  case PR_SUFFRAGIUM:
+  case PR_ASPERSIO:
+  case PR_SLOWPOISON:
+  case PR_STRECOVERY:
+  case PR_KYRIE:
+  case BS_REPAIRWEAPON:
+  case AS_ENCHANTPOISON:
+  case AS_POISONREACT:
+  case AM_POTIONPITCHER:
+  case AM_CP_WEAPON:
+  case AM_CP_SHIELD:
+  case AM_CP_ARMOR:
+  case AM_CP_HELM:
+  case CR_DEVOTION:
+  case CR_PROVIDENCE:
+  case MO_ABSORBSPIRITS:
+  case SA_FLAMELAUNCHER:
+  case SA_FROSTWEAPON:
+  case SA_LIGHTNINGLOADER:
+  case SA_SEISMICWEAPON:
+  case HP_ASSUMPTIO:
+  case SL_ALCHEMIST:
+  case AM_BERSERKPITCHER:
+  case SL_MONK:
+  case SL_STAR:
+  case SL_SAGE:
+  case SL_CRUSADER:
+  case SL_SUPERNOVICE:
+  case SL_KNIGHT:
+  case SL_WIZARD:
+  case SL_PRIEST:
+  case SL_BARDDANCER:
+  case SL_ROGUE:
+  case SL_ASSASIN:
+  case SL_BLACKSMITH:
+  case SL_HUNTER:
+  case SL_SOULLINKER:
+  case SL_KAIZEL:
+  case SL_KAAHI:
+  case SL_KAUPE:
+  case SL_KAITE:
+  case CR_FULLPROTECTION:
+  case SL_HIGH:
+  case MB_B_EXCLUDE:
+  case SL_DEATHKNIGHT:
+  case SL_COLLECTOR:
+  case SL_NINJA:
+  case SL_GUNNER:
+  case DA_RESET:
+  case DE_COIL:
+  case DA_FIRSTSLOT:
+  case DA_HEADDEF:
+  case DA_REWARD:
+  case DA_EARPLUG:
+  case DA_CONTRACT:
+  case DA_COPY:
+  case DA_CRYSTAL:
+  case DA_EXP:
+  case DA_REBUILD:
+  case DA_JOBCHANGE:
+  case GM_SANDMAN:
+  case CASH_BLESSING:
+  case CASH_INCAGI:
+  case CASH_ASSUMPTIO:
+  case ALL_ANGEL_PROTECT:
+  case NPC_CHEAL:
+  case MO_KITRANSLATION:
+  case RK_ENCHANTBLADE:
+  case RK_CRUSHSTRIKE:
+  case GC_ANTIDOTE:
+  case AB_CLEMENTIA:
+  case AB_CANTO:
+  case AB_CHEAL:
+  case AB_RENOVATIO:
+  case AB_HIGHNESSHEAL:
+  case AB_CLEARANCE:
+  case AB_EXPIATIO:
+  case NC_REPAIR:
+  case SC_SHADOWFORM:
+  case LG_PIETY:
+  case SR_POWERVELOCITY:
+  case SR_GENTLETOUCH_CURE:
+  case SR_GENTLETOUCH_CHANGE:
+  case SR_GENTLETOUCH_REVITALIZE:
+  case MI_HARMONIZE:
+  case WM_DEADHILLHERE:
+  case WM_GLOOMYDAY:
+  case SO_STRIKING:
+  case GN_BLOOD_SUCKER:
+  case GN_WALLOFTHORN:
+  case AB_SECRAMENT:
+  case ALL_ODINS_POWER:
+  case SP_SOULGOLEM:
+  case SP_SOULSHADOW:
+  case SP_SOULFALCON:
+  case SP_SOULFAIRY:
+  case SP_SOULREVOLVE:
+  case SP_KAUTE:
+  case KG_KAGEMUSYA:
+  case OB_ZANGETSU:
+  case OB_OBOROGENSOU:
+  case ECL_SNOWFLIP:
+  case ECL_PEONYMAMY:
+  case ECL_SADAGUI:
+  case ECL_SEQUOIADUST:
+  case SU_ARCLOUSEDASH:
+  case SU_TUNABELLY:
+  case SU_TUNAPARTY:
+  case SU_BUNCHOFSHRIMP:
+  case SU_FRESHSHRIMP:
+  case WE_ONEFOREVER:
+  case CD_REPARATIO:
+  case CD_MEDIALE_VOTUM:
+  case CD_ARGUTUS_VITA:
+  case CD_ARGUTUS_TELUM:
+  case CD_PRESENS_ACIES:
+  case CD_DILECTIO_HEAL:
+  case CD_RELIGIO:
+  case CD_BENEDICTUM:
+  case MT_A_MACHINE:
+  case MT_D_MACHINE:
+  case BO_ADVANCE_PROTECTION:
+  case EM_SPELL_ENCHANTING:
+  case EM_INCREASING_ACTIVITY:
+  case MH_PAIN_KILLER:
+  case MER_REGAIN:
+  case MER_TENDER:
+  case MER_BENEDICTION:
+  case MER_RECUPERATE:
+  case MER_MENTALCURE:
+  case MER_COMPRESS:
+  case MER_KYRIE:
+  case MER_BLESSING:
+  case MER_INCAGI:
     return true;
   default:
-    return CSkillActionMgr::GetInstance()->Sub77B4A0(skillId);
+    return CSkillActionMgr::GetInstance()->IsSupportAction(skillId);
   }
 }
 
 // OFFSET: 0x0077B4A0
 // FUNCTION: fn_08413
-bool CSkillActionMgr::Sub77B4A0(int skillId) {
+bool CSkillActionMgr::IsSupportAction(int skillId) {
   auto it = this->m_skillActions.find(skillId);
   std::unique_ptr<CSkillAction> action(it != this->m_skillActions.end() ? it->second() : nullptr);
   return action ? action->Slot00() : false;
@@ -372,34 +372,34 @@ bool CSkillInfo::UsesLevel(LuaScript& script, int skillId) {
 
 // OFFSET: 0x007745B0
 // FUNCTION: fn_08324
-bool Sub7745B0(int skillId) {
+bool ShowsCastEffect(int skillId) {
   switch (skillId) {
-  case 11:
-  case 12:
-  case 13:
-  case 14:
-  case 15:
-  case 16:
-  case 17:
-  case 18:
-  case 19:
-  case 20:
-  case 21:
-  case 27:
-  case 29:
-  case 30:
-  case 32:
-  case 33:
-  case 77:
-  case 86:
-  case 340:
-  case 690:
-  case 731:
-  case 2008:
-  case 2533:
-  case 2534:
-  case 2536:
-  case 5004:
+  case MG_NAPALMBEAT:
+  case MG_SAFETYWALL:
+  case MG_SOULSTRIKE:
+  case MG_COLDBOLT:
+  case MG_FROSTDIVER:
+  case MG_STONECURSE:
+  case MG_FIREBALL:
+  case MG_FIREWALL:
+  case MG_FIREBOLT:
+  case MG_LIGHTNINGBOLT:
+  case MG_THUNDERSTORM:
+  case AL_WARP:
+  case AL_INCAGI:
+  case AL_DECAGI:
+  case AL_CRUCIS:
+  case AL_ANGELUS:
+  case PR_TURNUNDEAD:
+  case WZ_WATERBALL:
+  case NPC_DARKSTRIKE:
+  case CASH_INCAGI:
+  case NPC_DRAGONBREATH:
+  case RK_DRAGONBREATH:
+  case ALL_ODINS_RECALL:
+  case RETURN_TO_ELDICASTES:
+  case ALL_GUARDIAN_RECALL:
+  case RK_DRAGONBREATH_WATER:
       return false;
   default:
     return true;

@@ -67,7 +67,7 @@ public:
 
   static CSkillActionMgr* GetInstance();
 
-  bool Sub77B4A0(int skillId);
+  bool IsSupportAction(int skillId);
 };
 
 extern CSkillActionMgr* g_skillActionMgr;
@@ -81,10 +81,10 @@ inline CSkillActionMgr* CSkillActionMgr::GetInstance() {
 }
 
 void __stdcall Sub7739F0();
-bool Sub773A00(int skillId);
-bool Sub773CB0(int skillId);
-bool Sub773CD0(int skillId);
-bool Sub7745B0(int skillId);
+bool IsOptionalSelfTargetSkill(int skillId);
+bool HidesUseFailureMessage(int skillId);
+bool IsSupportSkill(int skillId);
+bool ShowsCastEffect(int skillId);
 static_assert(sizeof(SkillInfoEntry) == 8);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(SkillInfoEntry, unknown_0004) == 0x4);
