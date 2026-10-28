@@ -133,7 +133,7 @@ public:
   /* 21A0 */ unsigned char unknown_21A0[0x9B0];
   /* 2B50 */ ItemInfo unknown_2B50[10];
   /* 3500 */ ItemInfo unknown_3500[10];
-  /* 3EB0 */ unsigned char unknown_3EB0[0x9B0];
+  /* 3EB0 */ ItemInfo m_exchangeItems[10];
   /* 4860 */ ItemInfo m_itemSlots[10];
   /* 5210 */ unsigned char unknown_5210[0x44];
   /* 5254 */ std::map<int, float> m_npcLocationRadius;
@@ -288,6 +288,19 @@ public:
   void SetPetAutoFeed(bool enabled);
   int GetRobeAlpha(int robeId);
   bool IsTopLayerRobe(int robe);
+  int IsExchangeItemListFull();
+  // INLINED
+  int GetFilledExchangeItemList() {
+    int count = 0;
+
+    for (int i = 0; i < 10; ++i) {
+      if (this->m_exchangeItems[i].quantity) {
+        ++count;
+      }
+    }
+
+    return count;
+  }
   int IsSkillIdInRange6018(unsigned id) const;
   int IsSkillIdInRange6001(unsigned id) const;
   const ActionFrame* GetSyncedFrame(CActRes* baseAct, CActRes* act, unsigned action, int baseFrame, std::uint32_t startTime, int* frame);

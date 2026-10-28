@@ -30,6 +30,12 @@ int CSession::SyncUnknown0E98() {
   return this->unknown_0E98;
 }
 
+// OFFSET: 0x00DF9B90
+// FUNCTION: fn_23562
+int CSession::IsExchangeItemListFull() {
+  return this->GetFilledExchangeItemList() == 10;
+}
+
 // OFFSET: 0x00DFFCF0
 // FUNCTION: fn_23633
 void CSession::ClearItemSelection() {
