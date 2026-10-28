@@ -125,3 +125,25 @@ void CTexture::StretchTo(
   SetQuad(primitive, this, x, y, width, height, 0xFFFFFFFF, u0, v0, u1, v1);
   queues.Submit(primitive, 513, depthAlpha, depthStart, depthEnd);
 }
+
+// OFFSET: 0x00544840
+// FUNCTION: fn_01819
+void CTexture::StretchTintedTo(
+  RenderPrimitivePool& pool, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha, float depthStart, float depthEnd
+) {
+  constexpr float z = 0.00001f;
+  constexpr float rhw = 0.99999f;
+  const float u0 = g_textureOffsetX / static_cast<float>(this->m_textureWidth);
+  const float v0 = g_textureOffsetY / static_cast<float>(this->m_textureHeight);
+  const float u1 = (static_cast<float>(this->m_width) + g_textureOffsetX) / static_cast<float>(this->m_textureWidth);
+  const float v1 = (static_cast<float>(this->m_height) + g_textureOffsetY) / static_cast<float>(this->m_textureHeight);
+  const int right = x + width;
+  const int bottom = y + height;
+  RenderPrimitive* primitive = pool.Acquire();
+  primitive->texture = this;
+  primitive->quad[0] = {static_cast<float>(x), static_cast<float>(y), z, rhw, color, 0xFFFFFFFF, u0, v0};
+  primitive->quad[1] = {static_cast<float>(right), static_cast<float>(y), z, rhw, color, 0xFFFFFFFF, u1, v0};
+  primitive->quad[2] = {static_cast<float>(x), static_cast<float>(bottom), z, rhw, color, 0xFFFFFFFF, u0, v1};
+  primitive->quad[3] = {static_cast<float>(right), static_cast<float>(bottom), z, rhw, 0xFFFFFFFF, 0xFFFFFFFF, u1, v1};
+  queues.Submit(primitive, 513, depthAlpha, depthStart, depthEnd);
+}

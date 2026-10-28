@@ -27,6 +27,9 @@ public:
     RenderPrimitivePool& pool, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha, float depthStart, float depthEnd
   );
   void StretchTo(RenderPrimitivePool& pool, RenderQueues& queues, int x, int y, int width, int height, bool depthAlpha, float depthStart, float depthEnd);
+  void StretchTintedTo(
+    RenderPrimitivePool& pool, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha, float depthStart, float depthEnd
+  );
   std::uint32_t SetImageSize(std::uint32_t width, std::uint32_t height);
   std::uint32_t Retain();
   std::uint32_t Touch();
