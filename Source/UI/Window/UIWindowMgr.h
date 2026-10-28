@@ -265,9 +265,9 @@ public:
   /* 0398 */ std::uint32_t unknown_0398;
   /* 039C */ std::uint32_t unknown_039C;
   /* 03A0 */ std::uint32_t unknown_03A0;
-  /* 03A4 */ std::uint32_t unknown_03A4;
+  /* 03A4 */ UIWindow* window_03A4;
   /* 03A8 */ std::uint32_t unknown_03A8;
-  /* 03AC */ std::uint32_t unknown_03AC;
+  /* 03AC */ UIWindow* window_03AC;
   /* 03B0 */ std::uint32_t unknown_03B0;
   /* 03B4 */ std::uint32_t unknown_03B4;
   /* 03B8 */ std::uint32_t unknown_03B8;

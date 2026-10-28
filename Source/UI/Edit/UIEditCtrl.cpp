@@ -12,6 +12,8 @@
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "Render/Renderer.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -523,4 +525,60 @@ void UIEditCtrlWheel::Slot35(int value) {
   if (this->parent) {
     this->parent->Slot35(value);
   }
+}
+
+// OFFSET: 0x0086A550
+// FUNCTION: fn_10977
+void UIEditCtrl::MoveCandidateWindow(int x) {
+  UIWindow* window = g_windowMgr.window_03A4;
+  if (window == nullptr) {
+    return;
+  }
+
+  int left = x;
+  int top = this->geometry.height + 6;
+  left += this->geometry.x;
+  top += this->geometry.y;
+  for (const UIWindow* node = this->parent; node != nullptr; node = node->parent) {
+    left += node->geometry.x;
+    top += node->geometry.y;
+  }
+
+  if (window->geometry.width + left > g_renderer->viewport.width) {
+    left = g_renderer->viewport.width - window->geometry.width;
+  }
+
+  if (window->geometry.height + top > g_renderer->viewport.height) {
+    top += -12 - this->geometry.height - window->geometry.height;
+  }
+
+  window->Move(left, top);
+}
+
+// OFFSET: 0x0086A5E0
+// FUNCTION: fn_10978
+void UIEditCtrl::MoveReadingWindow(int x) {
+  UIWindow* window = g_windowMgr.window_03AC;
+  if (window == nullptr) {
+    return;
+  }
+
+  int left = x;
+  int top = this->geometry.height + 6;
+  left += this->geometry.x;
+  top += this->geometry.y;
+  for (const UIWindow* node = this->parent; node != nullptr; node = node->parent) {
+    left += node->geometry.x;
+    top += node->geometry.y;
+  }
+
+  if (window->geometry.width + left > g_renderer->viewport.width) {
+    left = g_renderer->viewport.width - window->geometry.width;
+  }
+
+  if (window->geometry.height + top > g_renderer->viewport.height) {
+    top += -12 - this->geometry.height - window->geometry.height;
+  }
+
+  window->Move(left, top);
 }

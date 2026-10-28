@@ -60,6 +60,8 @@ public:
   void UpdateLinks();
   void DrawSelectionAt(int x, int y, int width);
   void DrawSelection(int x, int width);
+  void MoveCandidateWindow(int x);
+  void MoveReadingWindow(int x);
 
   /* 007C */ int anchor;
   /* 0080 */ int cursor;

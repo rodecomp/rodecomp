@@ -342,9 +342,9 @@ void UIWindowMgr::ResetWindows() {
   this->unknown_0300 = 0;
   this->unknown_0308 = 0;
   this->unknown_0304 = 0;
-  this->unknown_03A4 = 0;
+  this->window_03A4 = 0;
   this->unknown_03A8 = 0;
-  this->unknown_03AC = 0;
+  this->window_03AC = 0;
   this->unknown_030C = 0;
   this->unknown_0310 = 0;
   this->unknown_0314 = 0;
