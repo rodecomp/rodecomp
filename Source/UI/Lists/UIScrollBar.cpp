@@ -4,6 +4,10 @@
 #include "Resource/ResourceMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Lists/UIChatHisBox.h"
+#include "UI/Lists/UIImgMenu.h"
+#include "UI/Lists/UIListBoxEx.h"
+#include "UI/Lists/UITabControl.h"
 
 #include <algorithm>
 
@@ -315,3 +319,17 @@ void UIScrollBar::Configure(int x, int y, unsigned char vertical, int length) {
   this->Slot15(width, height);
   this->Slot22(width, height);
 }
+
+// OFFSET: 0x00880800
+
+// OFFSET: 0x00880920
+
+// OFFSET: 0x00880B20
+// FUNCTION: fn_11283
+int UITabControl::TabCount() {
+  return static_cast<int>(this->labels.size());
+}
+
+// OFFSET: 0x00880B40
+
+// OFFSET: 0x00880BB0
