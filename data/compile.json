@@ -444,6 +444,7 @@
   "Source/File/ResourcePath.cpp": 1,
   "Source/File/ShortcutFilename.cpp": 1,
   "Source/Network/ClientKeepalive.cpp": 0,
+  "Source/Network/ClientOptionPacket.cpp": 0,
   "Source/Network/Connection/Connection.cpp": 0,
   "Source/Network/Connection/ConnectionBuffer.cpp": 0,
   "Source/Network/Connection/ConnectionRuntime.cpp": 0,
