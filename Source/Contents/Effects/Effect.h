@@ -19,19 +19,23 @@ struct EffectEvent {
 class CEffect {
 public:
   explicit CEffect(int id);
-  virtual ~CEffect();
-  virtual void Close();
   virtual void Slot00(int argument);
   virtual void Slot01();
+  virtual void Slot02() = 0;
+  virtual void Slot03() {}
   virtual void Slot04();
+  virtual void Close();
+  virtual bool Slot06() = 0;
   virtual void Slot07();
   virtual void Slot08(int argument1, int argument2, int argument3);
+  virtual void Slot09(int) {}
   virtual void Slot10(int argument);
   virtual void Slot11(std::string name);
   virtual void Slot12();
   virtual void Slot13(int argument);
   virtual void Slot14(int argument);
   virtual void Slot15(int argument);
+  virtual void Slot16(int) {}
   virtual void Slot17(int argument);
   virtual void Slot18(int argument);
   virtual void Slot19(int argument);
@@ -44,7 +48,11 @@ public:
   virtual void Slot26(int argument);
   virtual void Slot27(int argument);
   virtual int Slot28();
+  virtual void Slot29(int id) = 0;
+  virtual ~CEffect();
+  virtual void Slot31() {}
   virtual void Slot32();
+  virtual bool Slot33() = 0;
   void AddEvent(int kind, const char* text, int frame, int argument);
   void SetEventFrame(int kind, int frame);
 

@@ -33,23 +33,14 @@ CEffect* EffectLists::Find(int actor, int instance, int id) const {
   return nullptr;
 }
 
-// INLINED
-void EffectLists::RemoveActive(CEffect* effect) {
-  const auto found = this->active.find(static_cast<int>(effect->actor));
-
-  if (found != this->active.end()) {
-    found->second.remove(effect);
-  }
-}
-
 // OFFSET: 0x00B253A0
 // FUNCTION: fn_18779
 void EffectLists::Retire(CEffect* effect, unsigned char removeActive) {
   if (effect) {
-    this->retirement.effects.push_back(effect);
+    this->retired.push_back(effect);
 
-    if (removeActive == 1) {
-      this->RemoveActive(effect);
+    if (removeActive == 1 && this->active.find(static_cast<int>(effect->actor)) != this->active.end()) {
+      this->active[static_cast<int>(effect->actor)].remove(effect);
     }
   }
 }
@@ -58,8 +49,11 @@ void EffectLists::Retire(CEffect* effect, unsigned char removeActive) {
 // FUNCTION: fn_18777
 void EffectLists::Retire(int actor, int id) {
   if (CEffect* effect = this->Find(actor, id)) {
-    this->retirement.effects.push_back(effect);
-    this->RemoveActive(effect);
+    this->retired.push_back(effect);
+
+    if (this->active.find(static_cast<int>(effect->actor)) != this->active.end()) {
+      this->active[static_cast<int>(effect->actor)].remove(effect);
+    }
   }
 }
 
@@ -68,8 +62,11 @@ void EffectLists::Retire(int actor, int id) {
 void EffectLists::Retire(int actor, int instance, int id) {
   if (actor > 0 && instance > 0) {
     if (CEffect* effect = this->Find(actor, instance, id)) {
-      this->retirement.effects.push_back(effect);
-      this->RemoveActive(effect);
+      this->retired.push_back(effect);
+
+      if (this->active.find(static_cast<int>(effect->actor)) != this->active.end()) {
+        this->active[static_cast<int>(effect->actor)].remove(effect);
+      }
     }
   }
 }
@@ -79,13 +76,15 @@ void EffectLists::Retire(int actor, int instance, int id) {
 void EffectLists::RetireActor(int actor) {
   const auto found = this->active.find(actor);
 
-  if (found != this->active.end()) {
-    for (CEffect* effect : found->second) {
-      this->retirement.effects.push_back(effect);
-    }
-
-    found->second.clear();
+  if (found == this->active.end()) {
+    return;
   }
+
+  for (auto effect = found->second.begin(); effect != found->second.end(); ++effect) {
+    this->retired.push_back(*effect);
+  }
+
+  found->second.clear();
 }
 
 // OFFSET: 0x00B25830
@@ -120,21 +119,27 @@ void EffectLists::Add(int actor, CEffect* effect) {
 // OFFSET: 0x00B254C0
 // FUNCTION: fn_18780
 void EffectLists::Clear() {
-  for (auto& [actor, effects] : this->active) {
-    this->RetireActor(actor);
+  for (auto entry = this->active.begin(); entry != this->active.end(); ++entry) {
+    this->RetireActor(entry->first);
   }
 
   this->active.clear();
   this->RetireActor(0);
   this->indexed.clear();
-  this->retirement.Clear();
+
+  for (auto effect = this->retired.begin(); effect != this->retired.end(); ++effect) {
+    (*effect)->Close();
+    delete *effect;
+  }
+
+  this->retired.clear();
 }
 
 // OFFSET: 0x00B255B0
 // FUNCTION: fn_18781
 void EffectLists::Release() {
-  for (auto& [id, allocator] : this->allocators) {
-    delete allocator;
+  for (auto entry = this->allocators.begin(); entry != this->allocators.end(); ++entry) {
+    delete entry->second;
   }
 
   this->allocators.clear();

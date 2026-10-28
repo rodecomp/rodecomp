@@ -3,21 +3,25 @@
 
 #include "Contents/Effects/Effect.h"
 
+#include <cstddef>
+#include <list>
 #include <map>
+#include <vector>
 
-class EffectAllocator {
-public:
-  virtual ~EffectAllocator() = default;
+struct CAllocator {
+  virtual ~CAllocator() = default;
   virtual CEffect* Create() = 0;
 };
 
-struct EffectLists {
-  std::map<int, std::list<CEffect*>>& active;
-  EffectRetirement& retirement;
-  std::map<int, std::vector<CEffect*>>& indexed;
-  std::map<int, EffectAllocator*>& allocators;
+class EffectLists {
+public:
+  /* 0004 */ bool initialized;
+  /* 0008 */ std::map<int, CAllocator*> allocators;
+  /* 0010 */ std::map<int, std::list<CEffect*>> active;
+  /* 0018 */ std::list<CEffect*> retired;
+  /* 0020 */ std::map<int, std::vector<CEffect*>> indexed;
 
-  ~EffectLists();
+  virtual ~EffectLists();
 
   CEffect* Find(int actor, int id) const;
   CEffect* Find(int actor, int instance, int id) const;
@@ -29,10 +33,15 @@ struct EffectLists {
   void RetireActor(int actor);
   void Clear();
   void Release();
-
-private:
-  void RemoveActive(CEffect* effect);
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(EffectLists) == 0x28);
+static_assert(offsetof(EffectLists, allocators) == 0x08);
+static_assert(offsetof(EffectLists, active) == 0x10);
+static_assert(offsetof(EffectLists, retired) == 0x18);
+static_assert(offsetof(EffectLists, indexed) == 0x20);
+#endif
 
 void DestroyEffectMgr();
 
