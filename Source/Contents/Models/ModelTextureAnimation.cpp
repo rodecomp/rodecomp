@@ -71,6 +71,16 @@ struct ModelKeyList3 : std::vector<ModelRotationKey> {
 };
 
 // OFFSET: 0x00541250
+// FUNCTION: fn_01730
+void ModelKeyList3::Read(CFile& file) {
+  int count = 0;
+  file.Read(&count, sizeof(count));
+  for (int i = 0; i < count; ++i) {
+    ModelRotationKey key{0, {0.0f, 0.0f, 0.0f, 1.0f}};
+    file.Read(&key, sizeof(key));
+    this->push_back(key);
+  }
+}
 
 struct ModelKeyList4 : std::vector<ModelRotationKey> {
   void Read(CFile& file);
