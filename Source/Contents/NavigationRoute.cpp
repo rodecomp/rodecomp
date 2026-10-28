@@ -392,3 +392,56 @@ CNavi_Object::~CNavi_Object() {
   this->info = nullptr;
   this->links.clear();
 }
+
+// OFFSET: 0x00B98E40
+// FUNCTION: fn_19610
+bool CNavigationManager::SavedTargetText(char* out, int size) {
+  if (out == nullptr || this->savedTarget.object == nullptr) {
+    return false;
+  }
+
+  std::memset(out, 0, size);
+  char text[0x104];
+  std::memset(text, 0, sizeof(text));
+
+  switch (this->savedTarget.type) {
+  case 0: {
+    CNaviInfo* info = static_cast<CNaviInfo*>(this->savedTarget.object);
+    NaviCell cellY;
+    NaviCell cellX;
+    const int y = this->data.GetCell(&cellY)->y;
+    const int x = this->data.GetCell(&cellX)->x;
+    std::sprintf(text, "%s %d %d", info->GetName(), x, y);
+    break;
+  }
+  case 1:
+    std::sprintf(text, "%s", static_cast<CNaviInfo*>(this->savedTarget.object)->GetName());
+    break;
+  case 2: {
+    CNavi_Object* object = static_cast<CNavi_Object*>(this->savedTarget.object);
+    CNaviInfo* info = object->GetInfo();
+    NaviCell cellY;
+    NaviCell cellX;
+    const int y = object->GetCell(&cellY)->y;
+    const int x = object->GetCell(&cellX)->x;
+    std::sprintf(text, "%s %d %d", info->GetName(), x, y);
+    break;
+  }
+  case 3:
+    std::sprintf(text, "%s", static_cast<CNavi_Object*>(this->savedTarget.object)->GetInfo()->GetName());
+    break;
+  default:
+    return false;
+  }
+
+  const int length = static_cast<int>(std::strlen(text));
+  if (size > length) {
+    std::memcpy(out, text, length);
+  } else {
+    char truncated[0x104];
+    std::memset(truncated, 0, sizeof(truncated));
+    std::memcpy(truncated, text, size - 4);
+    std::sprintf(out, "%s...", truncated);
+  }
+  return true;
+}
