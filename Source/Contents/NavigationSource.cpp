@@ -2,7 +2,9 @@
 #include "Client/Session.h"
 #include "Resource/ResourceMgr.h"
 
+#include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 // GLOBAL: gl_24627
@@ -270,3 +272,34 @@ void CNavigationManager::Reset(bool clearAll) {
   this->unknown_12A4 = nullptr;
   this->ClearRouteNodes();
 }
+
+// OFFSET: 0x00B93110
+
+// OFFSET: 0x00B93670
+
+// OFFSET: 0x00B938F0
+
+// OFFSET: 0x00B94890
+
+// OFFSET: 0x00B94B50
+
+// OFFSET: 0x00B950B0
+
+// OFFSET: 0x00B95260
+// FUNCTION: fn_19572
+void CNavigationManager::ClearCurrentObject() {
+  this->currentTarget.type = 0;
+  this->currentTarget.object = nullptr;
+}
+
+// OFFSET: 0x00B95AD0
+
+// OFFSET: 0x00B95AF0
+// FUNCTION: fn_19577
+void CNavigationManager::ClearNodes() {
+  this->nodes.clear();
+}
+
+// OFFSET: 0x00B95DC0
+
+// OFFSET: 0x00B95FB0
