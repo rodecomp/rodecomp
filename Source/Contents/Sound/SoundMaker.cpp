@@ -43,8 +43,6 @@ CNpc::~CNpc() {
   }
 }
 
-// OFFSET: 0x00DA2370
-// FUNCTION: fn_22365
 CBlowEffect::~CBlowEffect() = default;
 
 CBlurPC::~CBlurPC() = default;
@@ -59,16 +57,10 @@ CHalluPlant::~CHalluPlant() = default;
 
 CSoundMaker::~CSoundMaker() = default;
 
-// OFFSET: 0x00DA2450
-// FUNCTION: fn_22367
 CCorpse::~CCorpse() = default;
 
-// OFFSET: 0x00DA2720
-// FUNCTION: fn_22373
 CMasterChaser::~CMasterChaser() = default;
 
-// OFFSET: 0x00DA27C0
-// FUNCTION: fn_22375
 CNumEffect::~CNumEffect() = default;
 
 // OFFSET: 0x00DA3340
