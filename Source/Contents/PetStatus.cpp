@@ -78,6 +78,36 @@ int CSession::GetPetHungryState(int hunger) {
   return 0;
 }
 
+// OFFSET: 0x00E0B040
+// FUNCTION: fn_23811
+void CSession::GetPetHungryStateString(int hunger, char* buffer) {
+  if (hunger >= 0) {
+    if (hunger <= 10) {
+      std::strcpy(buffer, "배고픔");
+      return;
+    }
+    if (hunger <= 25) {
+      std::strcpy(buffer, "출출함");
+      return;
+    }
+    if (hunger <= 75) {
+      std::strcpy(buffer, "보통");
+      return;
+    }
+    if (hunger <= 90) {
+      std::strcpy(buffer, "배부름");
+      return;
+    }
+    if (hunger <= 100) {
+      std::strcpy(buffer, "아주 배부름");
+      return;
+    }
+  }
+
+  const char unknown[] = {'\xB8', '\xF4', '\xB6', '\xF3', '\xBF', '\xE4', '.', '\0'};
+  std::memcpy(buffer, unknown, sizeof(unknown));
+}
+
 // OFFSET: 0x00E12830
 // FUNCTION: fn_23817
 int CSession::GetPetEmotionNumber(int job, int action, int hungerLevel) {

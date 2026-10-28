@@ -200,6 +200,7 @@ public:
   int GetPetFriendlyState(int friendly);
   void GetPetFriendlyStateString(int friendly, char* buffer);
   int GetPetHungryState(int hunger);
+  void GetPetHungryStateString(int hunger, char* buffer);
   int GetPetEmotionNumber(int job, int action, int hungerLevel);
   void ClearItemSelection();
   bool IsReducedSkill(int skillId) const;
