@@ -212,6 +212,8 @@ public:
   void CollectCardItems();
   int GetRobeAlpha(int robeId);
   bool IsTopLayerRobe(int robe);
+  int IsSkillIdInRange6018(unsigned id) const;
+  int IsSkillIdInRange6001(unsigned id) const;
 };
 
 extern CSession g_session;

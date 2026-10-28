@@ -1,3 +1,4 @@
+#include "Client/Session.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
 
 #include <algorithm>
@@ -17,6 +18,18 @@ namespace {
   bool IsOtherRange(unsigned id) {
     return id - 8200u <= 41 || id - 8400u <= 57;
   }
+}
+
+// OFFSET: 0x00E1DCE0
+// FUNCTION: fn_23876
+int CSession::IsSkillIdInRange6018(unsigned id) const {
+  return id - 6018u <= 34;
+}
+
+// OFFSET: 0x00E1DD00
+// FUNCTION: fn_23877
+int CSession::IsSkillIdInRange6001(unsigned id) const {
+  return id - 6001u <= 51;
 }
 
 // OFFSET: 0x00D42070
