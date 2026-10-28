@@ -69,5 +69,25 @@ CNaviInfo* CNavi_Object::GetInfo() const {
 }
 
 // OFFSET: 0x00B89940
+// FUNCTION: fn_19387
+bool CNaviData::SetDestination(CNaviInfo* info, int cellX, int cellY) {
+  if (info == nullptr) {
+    return false;
+  }
+  this->info = info;
+  this->cellX = cellX;
+  this->cellY = cellY;
+  return true;
+}
 
 // OFFSET: 0x00BA1260
+// FUNCTION: fn_19638
+bool CNavigationManager::UpdateGround() {
+  CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  if (mode == nullptr || mode->scene == nullptr || mode->scene->terrain == nullptr) {
+    return false;
+  }
+  this->ground = mode->scene->ground;
+  this->pathFinder.attr = mode->scene->terrain;
+  return true;
+}

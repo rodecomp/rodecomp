@@ -1,6 +1,12 @@
 #include "Contents/NavigationManager.h"
 
 // OFFSET: 0x00B8D8D0
+// FUNCTION: fn_19436
+CNavi_Link::~CNavi_Link() {
+  this->type = 200;
+  this->linkedInfo = nullptr;
+  this->linkedLinks.clear();
+}
 
 // OFFSET: 0x00B8E5F0
 // FUNCTION: fn_19473
@@ -15,6 +21,12 @@ const char* CNavi_Link::GetName() const {
 }
 
 // OFFSET: 0x00B8E7D0
+// FUNCTION: fn_19483
+NaviCell* CNavi_Link::GetCell(NaviCell* out) const {
+  out->x = this->cellX;
+  out->y = this->cellY;
+  return out;
+}
 
 // OFFSET: 0x00B8E830
 // FUNCTION: fn_19487
@@ -35,3 +47,10 @@ int CNavi_Link::GetId() const {
 }
 
 // OFFSET: 0x00B8E8F0
+// FUNCTION: fn_19497
+CNaviInfo* CNavi_Link::GetInfo() const {
+  if (this->type == 400) {
+    return g_navigationManager.GetLinkedPlayerInfo();
+  }
+  return this->info;
+}
