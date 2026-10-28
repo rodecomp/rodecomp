@@ -24,6 +24,12 @@ struct SessionRecord6144 {
   /* 0031 */ std::uint8_t unknown_0031[7];
 };
 
+struct RobeAlpha {
+  /* 0000 */ int from;
+  /* 0004 */ int to;
+  /* 0008 */ int period;
+};
+
 struct SessionShop {
   /* 0000 */ unsigned char unknown_0000;
   /* 0004 */ std::vector<std::map<int, std::pair<int, int>>> unknown_0004;
@@ -59,7 +65,9 @@ public:
   /* 07A0 */ std::uint32_t m_averagePing;
   /* 07A4 */ unsigned char unknown_07A4[0x6F4];
   /* 0E98 */ int unknown_0E98;
-  /* 0E9C */ unsigned char unknown_0E9C[0x7C];
+  /* 0E9C */ unsigned char unknown_0E9C[0x64];
+  /* 0F00 */ int m_robe;
+  /* 0F04 */ unsigned char unknown_0F04[0x14];
   /* 0F18 */ int m_playerX;
   /* 0F1C */ int m_playerY;
   /* 0F20 */ unsigned char unknown_0F20[0x08];
@@ -119,7 +127,9 @@ public:
   /* 6144 */ std::map<int, SessionRecord6144> unknown_6144;
   /* 614C */ unsigned char unknown_614C[0x20];
   /* 616C */ std::vector<int> unknown_616C;
-  /* 6178 */ unsigned char unknown_6178[0x1F3C];
+  /* 6178 */ unsigned char unknown_6178[0x1D68];
+  /* 7EE0 */ std::map<int, RobeAlpha> m_robeAlpha;
+  /* 7EE8 */ unsigned char unknown_7EE8[0x1CC];
   /* 80B4 */ std::map<std::string, int> m_nameToId;
   /* 80BC */ std::map<int, SessionShop> m_shops;
   /* 80C4 */ unsigned char unknown_80C4[0x58];
@@ -196,6 +206,8 @@ public:
   int SyncUnknown0E98();
   std::string GetAccessoryName(int id);
   void CollectCardItems();
+  int GetRobeAlpha(int robeId);
+  bool IsTopLayerRobe(int robe);
 };
 
 extern CSession g_session;
@@ -237,6 +249,7 @@ static_assert(offsetof(CSession, m_mercSkillLevels) == 0x728);
 static_assert(offsetof(CSession, unknown_0778) == 0x778);
 static_assert(offsetof(CSession, unknown_0784) == 0x784);
 static_assert(offsetof(CSession, unknown_078C) == 0x78C);
+static_assert(offsetof(CSession, m_robe) == 0xF00);
 static_assert(offsetof(CSession, m_playerX) == 0xF18);
 static_assert(offsetof(CSession, m_playerY) == 0xF1C);
 static_assert(offsetof(CSession, m_score1) == 0xF28);
@@ -256,6 +269,7 @@ static_assert(offsetof(CSession, unknown_5C68) == 0x5C68);
 static_assert(offsetof(CSession, unknown_6140) == 0x6140);
 static_assert(offsetof(CSession, unknown_6144) == 0x6144);
 static_assert(offsetof(CSession, unknown_616C) == 0x616C);
+static_assert(offsetof(CSession, m_robeAlpha) == 0x7EE0);
 static_assert(offsetof(CSession, m_cardItems) == 0x811C);
 static_assert(offsetof(CSession, m_startTimeTicks) == 0x8138);
 static_assert(offsetof(CSession, m_loginTimeTicks) == 0x8140);
