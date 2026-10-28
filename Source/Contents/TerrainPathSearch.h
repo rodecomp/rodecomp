@@ -6,7 +6,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <map>
-#include <queue>
 #include <string>
 #include <vector>
 
@@ -18,11 +17,13 @@ struct MovementPathNodeCompare {
   }
 };
 
-class MovementOpenList : public std::priority_queue<MovementPathNode*, std::vector<MovementPathNode*>, MovementPathNodeCompare> {
+class MovementOpenList {
 public:
   std::vector<MovementPathNode*>& Nodes() {
-    return this->c;
+    return this->nodes;
   }
+
+  /* 0000 */ std::vector<MovementPathNode*> nodes;
 };
 
 class CPathFinder {
@@ -51,6 +52,8 @@ static_assert(offsetof(CPathFinder, attrCache) == 0x1078);
 static_assert(offsetof(CPathFinder, nodePool) == 0x1084);
 static_assert(offsetof(CPathFinder, nodeMap) == 0x1090);
 static_assert(offsetof(CPathFinder, openList) == 0x1098);
+static_assert(sizeof(MovementOpenList) == 0x0C);
+static_assert(sizeof(CPathFinder) == 0x10A4);
 #endif
 
 #endif
