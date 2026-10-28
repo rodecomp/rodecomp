@@ -596,5 +596,17 @@ int CSession::SetFlag(char value) {
 }
 
 // OFFSET: 0x00DFB490
+// FUNCTION: fn_23582
+bool IsScreenShakeActive() {
+  return g_screenShakeDuration != 0 && g_screenShakeMode == 2;
+}
 
 // OFFSET: 0x00E25DD0
+// FUNCTION: fn_23908
+void CSession::SetPlayerNameKey(const unsigned char* key) {
+  std::memcpy(this->m_playerNameKey, key, sizeof(this->m_playerNameKey));
+
+  for (unsigned int index = 0; index < sizeof(this->m_playerNameKey); ++index) {
+    this->m_playerNameKey[index] ^= g_playerNameKey[index];
+  }
+}

@@ -367,8 +367,47 @@ std::string ItemNaming::DisplayName(const ItemInfo& item, unsigned char detailed
 // OFFSET: 0x005E11E0
 
 // OFFSET: 0x006D69C0
+// FUNCTION: fn_06582
+const std::vector<const char*>& FindMetalProcessItems(int id) {
+  // GLOBAL: gl_24728
+  static std::vector<const char*> missing;
+  const auto entry = g_metalProcessItems.find(id);
+  return entry == g_metalProcessItems.end() ? missing : entry->second;
+}
 
 // OFFSET: 0x006D70E0
+// FUNCTION: fn_06590
+std::vector<unsigned char> ItemInfo::Serialize() const {
+  std::vector<unsigned char> result;
+  const auto append = [&result](std::uint16_t id, const void* data, std::uint32_t bytes) {
+    const auto record = BuildReplayTaggedRecord(id, data, bytes);
+    result.insert(result.end(), record.begin(), record.end());
+  };
+
+  append(281, nullptr, 0);
+  append(283, &this->unknown_0000[0], 4);
+  append(285, &this->unknown_0000[1], 4);
+  append(284, &this->unknown_0000[2], 4);
+  append(286, &this->unknown_0000[3], 4);
+  append(287, &this->quantity, 4);
+  append(288, &this->unknown_0014[0], 4);
+  append(289, &this->unknown_0014[1], 4);
+  append(290, this->unknown_001C, 16);
+  const int id = std::atoi(this->itemId.c_str());
+  append(291, &id, 4);
+  append(292, this->unknown_0044.c_str(), static_cast<std::uint32_t>(this->unknown_0044.size()));
+  append(293, &this->identified, 1);
+  append(294, &this->unknown_005D, 1);
+  append(295, &this->unknown_0060, 4);
+  append(296, &this->unknown_0064, 2);
+  append(297, &this->unknown_0068, 4);
+  append(298, &this->unknown_0070, 4);
+  append(299, &this->unknown_0088, 2);
+  append(300, &this->unknown_0098, 4);
+  append(301, this->unknown_009C, 25);
+  append(282, nullptr, 0);
+  return result;
+}
 
 // OFFSET: 0x006D7660
 // FUNCTION: fn_06591
@@ -397,6 +436,13 @@ int ItemUnidentifiedName(const ItemInfo& item, char* output, int& capacity, unsi
 }
 
 // OFFSET: 0x006D3770
+// FUNCTION: fn_06544
+ItemCardName& FindItemCardName(int id, std::map<int, ItemCardName>& values) {
+  // GLOBAL: gl_24676
+  static ItemCardName missing{};
+  const auto entry = values.find(id);
+  return entry == values.end() ? missing : entry->second;
+}
 
 // OFFSET: 0x006D78C0
 

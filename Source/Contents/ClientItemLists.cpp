@@ -268,6 +268,17 @@ bool ClientItemLists::Equip(const ItemInfo& item) {
 }
 
 // OFFSET: 0x00DD75C0
+// FUNCTION: fn_23291
+void ClientItemLists::AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C) {
+  ItemInfo value;
+  value.AssignBasic(item);
+  value.quantity = quantity;
+  value.unknown_006C = unknown_006C;
+  value.unknown_0060 = 0;
+  value.unknown_005D = 0;
+  value.SetItemId(std::atoi(value.itemId.c_str()));
+  this->items_1718.push_back(value);
+}
 
 // OFFSET: 0x00DD76C0
 // FUNCTION: fn_23292
@@ -337,6 +348,27 @@ void ClientItemLists::AddItem1730(const ItemInfo& item) {
 }
 
 // OFFSET: 0x00DD7970
+// FUNCTION: fn_23297
+void ClientItemLists::AddItem1718(const RawItemBasic& item, int mode) {
+  if (mode != 0) {
+    const ItemInfo owned = LookupClientItemByIdentity(this->inventory, item.id);
+    if (owned.unknown_0000[1] != 0) {
+      ItemInfo value(owned);
+      value.AssignBasic(item);
+      value.SetItemId(std::atoi(value.itemId.c_str()));
+      this->items_1718.push_back(value);
+    }
+  } else {
+    ItemInfo value;
+    value.AssignBasic(item);
+    value.unknown_0060 = 0;
+    value.unknown_005D = 0;
+    value.SetItemId(std::atoi(value.itemId.c_str()));
+    value.unknown_0000[2] = item.unknown_0034;
+    value.unknown_0070 = item.unknown_0038;
+    this->items_1718.push_back(value);
+  }
+}
 
 // OFFSET: 0x00DD7B30
 // FUNCTION: fn_23298

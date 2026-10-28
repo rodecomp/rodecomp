@@ -176,6 +176,19 @@ ItemInfo LookupClientItemByIdentity(const std::list<ItemInfo>& values, std::uint
 }
 
 // OFFSET: 0x006D5450
+// FUNCTION: fn_06570
+ItemInfo& ItemInfo::AssignBasic(const RawItemBasic& item) {
+  this->unknown_0000[1] = item.id;
+  this->unknown_0014[0] = item.unknown_0004;
+  this->unknown_0014[1] = item.unknown_0008;
+  this->unknown_0000[0] = item.unknown_000C;
+  this->identified = item.identified;
+  this->itemId = item.itemId;
+  this->unknown_0070 = item.unknown_0038;
+  this->unknown_0000[2] = item.unknown_0034;
+  this->unknown_0074[3] = item.id != -1;
+  return *this;
+}
 
 // OFFSET: 0x006D54C0
 // FUNCTION: fn_06571
@@ -184,8 +197,50 @@ bool ItemInfo::operator<(const ItemInfo& other) const {
 }
 
 // OFFSET: 0x006D8B60
+// FUNCTION: fn_06607
+std::list<int> SearchItemIds(std::string query, unsigned char cardsOnly, unsigned char partial) {
+  std::list<int> result;
+  for (const auto& entry : g_itemDescriptions) {
+    if (cardsOnly == 1 && g_itemCardNames.find(entry.first) == g_itemCardNames.end()) {
+      continue;
+    }
+
+    const char* name = entry.second.identifiedName;
+    if (name == nullptr || *name == '\0') {
+      continue;
+    }
+
+    if (MatchItemName(name, query, partial, &result, entry.first)) {
+      continue;
+    }
+
+    if (g_itemCardNames.find(entry.first) == g_itemCardNames.end()) {
+      continue;
+    }
+
+    if (FindItemCardName(entry.first, g_itemCardNames).prefix != nullptr &&
+        MatchItemName(FindItemCardName(entry.first, g_itemCardNames).prefix, query, partial, &result, entry.first)) {
+      continue;
+    }
+
+    if (FindItemCardName(entry.first, g_itemCardNames).suffix != nullptr) {
+      MatchItemName(FindItemCardName(entry.first, g_itemCardNames).suffix, query, partial, &result, entry.first);
+    }
+  }
+
+  return result;
+}
 
 // OFFSET: 0x006D8E60
+// FUNCTION: fn_06608
+bool MatchItemName(std::string name, std::string query, unsigned char partial, std::list<int>* result, int id) {
+  if ((partial == 1 && name.find(query) != std::string::npos) || name == query) {
+    result->push_back(id);
+    return true;
+  }
+
+  return false;
+}
 
 // OFFSET: 0x006D8FE0
 // FUNCTION: fn_06609
@@ -203,14 +258,82 @@ void ItemInfo::SetItemId(int value) {
 }
 
 // OFFSET: 0x00DFB9D0
+// FUNCTION: fn_23584
+bool CSession::HasRequiredItems() const {
+  for (const ItemInfo& required : this->unknown_1730) {
+    const ItemInfo owned = LookupClientItemByIdentity(this->m_inventoryItems, required.unknown_0000[1]);
+    if (owned.unknown_0000[1] == 0 || owned.quantity < required.quantity) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00DFBD90
+// FUNCTION: fn_23588
+bool CSession::IsSlotItemIdentity(std::uint32_t id) const {
+  if (id != 0 && id == this->unknown_16EC) {
+    return true;
+  }
+
+  for (int index = 0; index < 10; ++index) {
+    if (this->unknown_17F0[index].quantity == 1 && this->unknown_17F0[index].unknown_0000[1] == id) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 // OFFSET: 0x00DFBDE0
+// FUNCTION: fn_23589
+bool CSession::HasInventoryItem(std::uint32_t id) const {
+  for (const ItemInfo& value : this->m_inventoryItems) {
+    if (value.unknown_0000[1] == id) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 // OFFSET: 0x00DFBE40
+// FUNCTION: fn_23591
+bool CSession::HasItemId(int itemId) const {
+  const ItemInfo owned = LookupClientItemByIdentity(this->m_inventoryItems, this->unknown_16EC);
+  if (owned.unknown_0000[1] != 0 && std::atoi(owned.itemId.c_str()) == itemId) {
+    return true;
+  }
+
+  for (int index = 0; index < 10; ++index) {
+    if (std::atoi(this->unknown_17F0[index].itemId.c_str()) == itemId || std::atoi(this->unknown_2B50[index].itemId.c_str()) == itemId) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 // OFFSET: 0x00DFBF70
+// FUNCTION: fn_23592
+bool CSession::HasItemCount(int itemId, int count) const {
+  const ItemInfo owned = LookupClientItemByIdentity(this->m_inventoryItems, this->unknown_16EC);
+  if (owned.unknown_0000[1] != 0 && std::atoi(owned.itemId.c_str()) == itemId) {
+    return true;
+  }
+
+  for (int index = 0; index < 10; ++index) {
+    if (std::atoi(this->unknown_17F0[index].itemId.c_str()) == itemId && this->unknown_17F0[index].unknown_0060 >= count) {
+      return true;
+    }
+    if (std::atoi(this->unknown_2B50[index].itemId.c_str()) == itemId && this->unknown_2B50[index].unknown_0060 >= count) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 // OFFSET: 0x006D88D0
 // FUNCTION: fn_06600
