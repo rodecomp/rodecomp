@@ -3,6 +3,7 @@
 #include "Render/Textures/TextureCache.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/Models/AnimatedModelResource.h"
+#include "Resource/Models/GrannyModelResource.h"
 #include "Resource/Models/ModelResource.h"
 #include "Resource/ResourceByteReader.h"
 
@@ -305,4 +306,129 @@ bool C3dModelResV1::Load(const char* name) {
   file.Close();
 
   return true;
+}
+
+// OFFSET: 0x007577E0
+// FUNCTION: fn_08006
+void C3dGrannyModelRes::RebindMeshes(const C3dGrannyModelRes& target) {
+  for (int index = 0; index < this->instance->meshCount; ++index) {
+    GrannyMeshEntry& entry = this->instance->meshes[index];
+    GrannyFreeMeshBinding(entry.binding);
+    entry.binding = GrannyNewMeshBinding(entry.mesh, this->skeleton, target.skeleton);
+  }
+}
+
+// OFFSET: 0x00758E40
+// FUNCTION: fn_08009
+void C3dGrannyModelRes::InstantiateModel(GrannyModelInstance* target, const granny_model* model) {
+  const int boneCount = model->skeleton->boneCount;
+  if (this->maxBoneCount < boneCount) {
+    this->maxBoneCount = boneCount;
+  }
+
+  target->instance = GrannyInstantiateModel(model);
+  target->worldPose = GrannyNewWorldPose(boneCount);
+  target->meshCount = model->meshBindingCount;
+  target->meshes = new GrannyMeshEntry[target->meshCount];
+
+  for (int index = 0; index < target->meshCount; ++index) {
+    GrannyMeshEntry& entry = target->meshes[index];
+    granny_mesh* mesh = model->meshBindings[index].mesh;
+    entry.mesh = mesh;
+    granny_skeleton* skeleton = GrannyGetSourceSkeleton(target->instance);
+    entry.binding = GrannyNewMeshBinding(mesh, skeleton, skeleton);
+
+    const unsigned int indexCount = GrannyGetMeshIndexCount(mesh);
+    entry.indices = new std::uint16_t[indexCount];
+    if (indexCount != 0) {
+      GrannyCopyMeshIndices(mesh, 2, entry.indices);
+    }
+
+    const int vertexBytes = GrannyGetMeshVertexCount(mesh) * 32;
+    entry.vertices = nullptr;
+    if (!GrannyMeshIsRigid(mesh)) {
+      if (this->deformBufferSize < vertexBytes) {
+        this->deformBufferSize = vertexBytes;
+      }
+
+      entry.deformer = GrannyNewMeshDeformer(GrannyGetMeshVertexType(mesh), GrannyPNT332VertexType, 2);
+      if (!entry.deformer) {
+        ShowErrorDialog(this->m_context->renderSystem, "Granny didn't find a matching deformer for the vertex format used by mesh", 0);
+      }
+    } else {
+      entry.vertices = new unsigned char[vertexBytes];
+      GrannyCopyMeshVertices(mesh, GrannyPNT332VertexType, entry.vertices);
+      entry.deformer = nullptr;
+    }
+
+    entry.materialCount = mesh->materialBindingCount;
+    entry.textures = new GrannyTextureEntry*[entry.materialCount];
+
+    for (int material = 0; material < entry.materialCount; ++material) {
+      GrannyTextureEntry* found = nullptr;
+      const granny_texture* texture = GrannyGetMaterialTextureByType(mesh->materialBindings[material].material, 2);
+      if (texture) {
+        for (int textureIndex = 0; textureIndex < this->textureCount; ++textureIndex) {
+          if (std::strcmp(this->textures[textureIndex].name, texture->fromFileName) == 0) {
+            found = &this->textures[textureIndex];
+            break;
+          }
+        }
+      }
+
+      entry.textures[material] = found;
+    }
+  }
+}
+
+// OFFSET: 0x00759090
+// FUNCTION: fn_08010
+CTexture* C3dGrannyModelRes::CreateTexture(const granny_texture* texture, int) {
+  const bool hasAlpha = GrannyTextureHasAlpha(texture);
+  const int width = texture->width;
+  const int height = texture->height;
+  unsigned char* source = new unsigned char[height * width * 4];
+  unsigned char* pixels = new unsigned char[height * width * 4];
+  GrannyCopyTextureImage(texture, 0, 0, &GrannyRGBA8888PixelFormat, width, height, width * 4, source);
+
+  int format;
+  if (!hasAlpha) {
+    for (int y = 0; y < height; ++y) {
+      for (int x = 0; x < width; ++x) {
+        const int offset = (y * width + x) * 4;
+        pixels[offset + 0] = source[offset + 2];
+        pixels[offset + 1] = source[offset + 1];
+        pixels[offset + 2] = source[offset + 0];
+        pixels[offset + 3] = 0xFF;
+      }
+    }
+
+    format = 0;
+  } else {
+    for (int y = 0; y < height; ++y) {
+      for (int x = 0; x < width; ++x) {
+        const int offset = (y * width + x) * 4;
+        pixels[offset + 0] = source[offset + 2];
+        pixels[offset + 1] = source[offset + 1];
+        pixels[offset + 2] = source[offset + 0];
+        pixels[offset + 3] = source[offset + 3];
+      }
+    }
+
+    format = 1;
+  }
+
+  CTexture* result = this->m_context->textures.Upload(width, height, reinterpret_cast<const std::uint32_t*>(pixels), format, 0, false, false, false);
+  delete[] pixels;
+  delete[] source;
+  return result;
+}
+
+// OFFSET: 0x00759330
+// FUNCTION: fn_08011
+void C3dGrannyModelRes::FreeControl(granny_control* control) {
+  if (control) {
+    GrannySetControlActive(control, false);
+    GrannyFreeControl(control);
+  }
 }
