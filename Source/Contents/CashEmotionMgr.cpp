@@ -1,5 +1,13 @@
 #include "Contents/CashEmotionMgr.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
+#include "Resource/TextureNames.h"
+#include "UI/Buttons/UICashEmotionSprBtn.h"
+#include "UI/CashEmotion/UICashEmotionPack.h"
+#include "UI/CashEmotion/UICashEmotionPiece.h"
 #include "UI/Chat/ChatSuggestions.h"
+#include "UI/Window/WindowBorder.h"
 
 #include <algorithm>
 #include <climits>
@@ -569,6 +577,38 @@ void CCashEmotionMgr::AddShortcut(const std::string& name, int packId, int emoti
   }
 }
 
+// OFFSET: 0x0059C0A0
+// FUNCTION: fn_02972
+void CCashEmotionMgr::SetOwnedPack(int packId, unsigned int expiry) {
+  if (packId <= 0) {
+    return;
+  }
+
+  if (!this->IsOwnedPack(packId)) {
+    this->m_ownedPacks.push_back(packId);
+
+    auto it = std::find(this->m_unownedPacks.begin(), this->m_unownedPacks.end(), packId);
+    if (it != this->m_unownedPacks.end()) {
+      this->m_unownedPacks.erase(it);
+    }
+  }
+
+  for (auto it = this->m_expiry.begin(); it != this->m_expiry.end(); ++it) {
+    if (it->first == packId) {
+      if (expiry) {
+        it->second.seconds = expiry;
+      } else {
+        this->m_expiry.erase(it);
+      }
+      return;
+    }
+  }
+
+  if (expiry > 0) {
+    this->m_expiry.emplace_back(packId, Timestamp{static_cast<__time32_t>(expiry)});
+  }
+}
+
 // OFFSET: 0x0059C3A0
 // FUNCTION: fn_02973
 bool CCashEmotionMgr::IsChatProhibitEmotion(int emotionId) {
@@ -594,4 +634,300 @@ bool CCashEmotionMgr::IsPackAvailable(unsigned int now, int packId) {
 // FUNCTION: fn_02975
 bool CCashEmotionMgr::IsOwnedPack(int packId) {
   return std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId) != this->m_ownedPacks.end();
+}
+
+// OFFSET: 0x007C9D60
+
+// OFFSET: 0x007CA690
+
+// OFFSET: 0x007CA760
+// FUNCTION: fn_09447
+void UICashEmotionPack::Slot26(int, int) {
+}
+
+// OFFSET: 0x007CA770
+// FUNCTION: fn_09448
+void UICashEmotionPack::Slot25(int, int) {
+}
+
+// OFFSET: 0x007CA780
+// FUNCTION: fn_09449
+void UICashEmotionPack::Slot27(int, int) {
+}
+
+// OFFSET: 0x007CA790
+
+// OFFSET: 0x007CA7C0
+
+// OFFSET: 0x007CA7E0
+
+// OFFSET: 0x007CA870
+
+// OFFSET: 0x007CA8F0
+
+// OFFSET: 0x007CB9F0
+// FUNCTION: fn_09479
+UICashEmotionPiece::UICashEmotionPiece(UIWindowContext& windows, UICashEmotionPieceContext& controls)
+    : UIWindow(windows, 0), m_packId(0), m_emotionId(0), m_button(nullptr), m_hoverable(false), m_hovered(false), m_controls(&controls) {
+}
+
+// OFFSET: 0x007CBB30
+// FUNCTION: fn_09481
+void UICashEmotionPiece::Set(int packId, int emotionId, bool showTooltip, bool hoverable, bool locked) {
+  this->m_packId = packId;
+  this->m_emotionId = emotionId;
+  this->m_hoverable = hoverable;
+
+  CashEmotionData* data = g_cashEmotionMgr->GetEmotionData(packId, emotionId);
+  if (!data) {
+    if (this->m_button) {
+      this->m_button->Enable(0);
+    }
+    this->Invalidate();
+    return;
+  }
+
+  if (this->m_button) {
+    this->m_button->SetSprite(g_cashEmotionMgr->GetSprFileName(data->sprId));
+    this->m_button->SetActName(g_cashEmotionMgr->GetPackName(data->actId));
+    this->m_button->unknown_00C0 = std::max(data->unknown_0024, 0);
+    this->m_button->unknown_00BC = std::max(data->unknown_0020, 0);
+    if (showTooltip) {
+      this->m_button->SetTooltip(data->name.c_str());
+    } else {
+      this->m_button->m_tooltip.clear();
+    }
+    this->m_button->Enable(1);
+    this->m_button->SetSelected(locked);
+    this->m_button->Invalidate();
+  }
+
+  this->Invalidate();
+}
+
+// OFFSET: 0x007CBC70
+// FUNCTION: fn_09482
+void UICashEmotionPiece::Slot15(int width, int height) {
+  this->m_button = new (std::nothrow) UICashEmotionSprBtn(*this->m_context, this->m_controls->buttons, this);
+  if (this->m_button) {
+    this->m_button->SetSize(width, height);
+    this->m_button->Move(0, 0);
+    this->m_button->SetId(189);
+    this->AddChild(this->m_button);
+  }
+}
+
+// OFFSET: 0x007CBD30
+// FUNCTION: fn_09483
+void UICashEmotionPiece::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->m_hoverable && this->m_hovered) {
+    unsigned red;
+    unsigned green;
+    unsigned blue;
+    SkinPaletteChannels(ResourceMgr::Instance(), this->m_controls->textureNames, 14, 6, red, green, blue);
+    DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, RGB(red, green, blue));
+  }
+}
+
+// OFFSET: 0x007CBDA0
+// FUNCTION: fn_09484
+void UICashEmotionPiece::Slot26(int, int) {
+  if (this->parent) {
+    this->parent->SendMsg(this, 175, this->m_packId, this->m_emotionId, 0, 0);
+  }
+}
+
+// OFFSET: 0x007CBDD0
+// FUNCTION: fn_09485
+void UICashEmotionPiece::Slot47() {
+  this->m_hovered = true;
+  if (this->m_hoverable) {
+    this->SendMsg(this, 60, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x007CBE00
+// FUNCTION: fn_09486
+void UICashEmotionPiece::Slot48() {
+  this->m_hovered = false;
+  if (this->m_hoverable) {
+    this->SendMsg(this, 60, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x007CBE30
+// FUNCTION: fn_09487
+void UICashEmotionPiece::Slot19() {
+  if (this->m_button && this->m_button->unknown_00C4 != 0) {
+    this->m_button->Invalidate();
+  }
+}
+
+// OFFSET: 0x007CBE50
+// FUNCTION: fn_09488
+void UICashEmotionPiece::Slot35(int argument) {
+  if (this->parent) {
+    this->parent->Slot35(argument);
+  }
+}
+
+// OFFSET: 0x007CBE70
+// FUNCTION: fn_09489
+int UICashEmotionPiece::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  switch (message) {
+  case 6:
+    if (argument1 == 189 && this->parent) {
+      this->parent->SendMsg(this, 174, this->m_packId, this->m_emotionId, 0, 0);
+    }
+    return 0;
+  case 60:
+    this->Invalidate();
+    if (this->parent) {
+      this->parent->SendMsg(this, 60, 0, 0, 0, 0);
+    }
+    return 0;
+  default:
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+}
+
+// OFFSET: 0x007CC870
+// FUNCTION: fn_09499
+UICashEmotionSprBtn::UICashEmotionSprBtn(UIWindowContext& windowContext, UIButtonContext& buttonContext, UIWindow* target)
+    : UISpriteButton2(windowContext, buttonContext, target), m_selected(false) {
+}
+
+// OFFSET: 0x007CCE10
+// FUNCTION: fn_09503
+void UICashEmotionSprBtn::SetSelected(bool selected) {
+  if (selected != this->m_selected) {
+    this->m_selected = selected;
+    this->Invalidate();
+  }
+}
+
+// OFFSET: 0x008502C0
+// FUNCTION: fn_10674
+UISpriteButton2::UISpriteButton2(UIWindowContext& windowContext, UIButtonContext& buttonContext, UIWindow* target)
+    : UISpriteButton(windowContext, buttonContext), m_target(target) {
+}
+
+// OFFSET: 0x00850320
+// FUNCTION: fn_10675
+UISpriteButton::UISpriteButton(UIWindowContext& windowContext, UIButtonContext& buttonContext) : UIButton(windowContext, buttonContext) {
+  this->unknown_00BC = 0;
+  this->unknown_00C0 = 0;
+  this->unknown_00B4 = 0;
+  this->unknown_00B8 = 0;
+  this->unknown_00C4 = 0;
+  this->unknown_00C8 = 1;
+}
+
+// OFFSET: 0x0085E9B0
+// FUNCTION: fn_10834
+void UISpriteButton2::Slot26(int x, int y) {
+  this->Slot25(x, y);
+  if (this->m_target) {
+    this->m_target->Slot26(this->geometry.x + x, this->geometry.y + y);
+  }
+}
+
+// OFFSET: 0x0085E9F0
+// FUNCTION: fn_10835
+void UISpriteButton::Slot26(int x, int y) {
+  this->Slot25(x, y);
+  this->Root()->Slot26(this->geometry.x + x, this->geometry.y + y);
+}
+
+// OFFSET: 0x0085ED70
+// FUNCTION: fn_10847
+void UISpriteButton2::Slot25(int x, int y) {
+  UIButton::Slot25(x, y);
+  if (this->m_target) {
+    this->m_target->Slot25(this->geometry.x + x, this->geometry.y + y);
+  }
+}
+
+// OFFSET: 0x0085EDC0
+// FUNCTION: fn_10848
+void UISpriteButton::Slot25(int x, int y) {
+  UIButton::Slot25(x, y);
+  this->Root()->Slot25(this->geometry.x + x, this->geometry.y + y);
+}
+
+// OFFSET: 0x0085F160
+// FUNCTION: fn_10857
+void UISpriteButton2::Slot47() {
+  if (this->m_target) {
+    this->m_target->Slot47();
+  }
+}
+
+// OFFSET: 0x0085F480
+// FUNCTION: fn_10863
+void UISpriteButton2::Slot28(int x, int y) {
+  UIButton::Slot28(x, y);
+  if (this->m_target) {
+    this->m_target->Slot28(this->geometry.x + x, this->geometry.y + y);
+  }
+}
+
+// OFFSET: 0x0085F4C0
+// FUNCTION: fn_10864
+void UISpriteButton::Slot28(int x, int y) {
+  UIButton::Slot28(x, y);
+  this->Root()->Slot28(this->geometry.x + x, this->geometry.y + y);
+}
+
+// OFFSET: 0x0085F5E0
+// FUNCTION: fn_10867
+void UISpriteButton2::Slot48() {
+  if (this->m_target) {
+    this->m_target->Slot48();
+  }
+}
+
+// OFFSET: 0x0085F7A0
+// FUNCTION: fn_10870
+void UISpriteButton2::Slot27(int x, int y) {
+  UIButton::Slot27(x, y);
+  if (this->m_target) {
+    this->m_target->Slot27(this->geometry.x + x, this->geometry.y + y);
+  }
+}
+
+// OFFSET: 0x0085F870
+// FUNCTION: fn_10871
+void UISpriteButton::Slot27(int x, int y) {
+  this->Root()->Slot27(this->geometry.x + x, this->geometry.y + y);
+}
+
+// OFFSET: 0x0085FFF0
+// FUNCTION: fn_10895
+void UISpriteButton2::Slot35(int argument) {
+  if (this->m_target) {
+    this->m_target->Slot35(argument);
+  }
+}
+
+// OFFSET: 0x00865380
+// FUNCTION: fn_10924
+void UISpriteButton::SetActName(const char* name) {
+  this->actionName = name;
+}
+
+// OFFSET: 0x00867AD0
+// FUNCTION: fn_10946
+void UISpriteButton::SetSprite(const char* name) {
+  char baseName[256];
+  std::size_t length = std::strlen(name);
+  std::strcpy(baseName, name);
+  baseName[length - 3] = '\0';
+  this->spriteName = baseName;
+  this->spriteName += "spr";
+  this->actionName = baseName;
+  this->actionName += "act";
 }

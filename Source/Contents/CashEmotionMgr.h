@@ -131,6 +131,7 @@ public:
   const char* GetSprFileName(int sprId);
   std::vector<int> SortUnownedPacks(const char* filter);
   int GetPackUnknown24(int packId);
+  void SetOwnedPack(int packId, unsigned int expiry);
   int LookupSpecialEmotion(CashEmotionSpecial type);
   int LookupSpecialEmotion(CashEmotionSpecial type, const char* name);
   void AddShortcut(const std::string& name, int packId, int emotionId);
