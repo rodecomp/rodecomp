@@ -111,6 +111,59 @@ void DrawColoredText(
   }
 }
 
+// OFFSET: 0x00A84B80
+// FUNCTION: fn_17014
+void DrawStyledColoredText(
+  UIWindow& window, FontCache& fonts, const TextLocale& locale, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
+  int family, int height, unsigned char bold, unsigned char italic, bool shadow
+) {
+  if (bytes == 0) {
+    bytes = static_cast<unsigned>(std::strlen(text));
+  }
+
+  const char* current = text;
+  const char* end = text + bytes;
+  const char* marker = text + TextContext::Marker(text, bytes, locale.inlineCharset);
+  TextContext context(*window.geometry.surface, fonts, locale);
+  context.SetFont(family, height, bold, italic);
+
+  if (window.HasTextBackground()) {
+    context.SetBackground(window.TextBackground(), OPAQUE);
+  }
+
+  while (current < end) {
+    if (current && *current == '^') {
+      color = (Digit(current[2]) + 16 * Digit(current[1])) | ((Digit(current[4]) + 16 * Digit(current[3])) << 8) |
+              ((Digit(current[6]) + 16 * Digit(current[5])) << 16);
+      current += 7;
+    }
+
+    const char* next = SegmentEnd(current, end, codePage);
+    std::string segment(current, next);
+
+    if (marker && *marker != '\0') {
+      segment.insert(0, marker, 3);
+    }
+
+    if (next != current) {
+      if (shadow) {
+        context.SetColor(0);
+        context.Draw((x + 1), (y + 1), segment.c_str(), static_cast<int>(segment.size()));
+      }
+
+      context.SetColor(color);
+      context.Draw(x, y, segment.c_str(), static_cast<int>(segment.size()));
+      x = (x + context.Measure(current, static_cast<int>(next - current)).cx);
+    }
+
+    current = next;
+  }
+
+  if (window.HasTextBackground()) {
+    context.SetBackgroundMode(TRANSPARENT);
+  }
+}
+
 // OFFSET: 0x00A85720
 // FUNCTION: fn_17016
 void DrawOutlinedText(

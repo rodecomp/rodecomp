@@ -12,6 +12,11 @@ void DrawColoredText(
   int family, int height, bool shadow
 );
 
+void DrawStyledColoredText(
+  UIWindow& window, FontCache& fonts, const TextLocale& locale, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
+  int family, int height, unsigned char bold, unsigned char italic, bool shadow
+);
+
 void DrawOutlinedText(
   UIWindow& window, FontCache& fonts, const TextLocale& locale, int x, int y, const char* text, unsigned bytes, std::uint32_t color, std::uint32_t outline,
   int family, int height, unsigned char bold, unsigned char italic
