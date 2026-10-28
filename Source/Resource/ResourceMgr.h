@@ -24,6 +24,7 @@ public:
   int FindType(const char* extension) const;
   CRes* Find(int type, const char* name) const;
   CRes* Load(const char* name);
+  CRes* Load(std::string name);
   void Remove(CRes* resource);
   bool Exists(const char* name);
   void UnloadAll();
@@ -43,6 +44,7 @@ private:
   ResourceFailures* m_failures;
   std::uint32_t unknown_004C[17];
   void EraseTransient(CRes* resource);
+  CRes* LoadNamed(const char* name);
   ResourceMgr(const ResourceMgr&) = delete;
   ResourceMgr& operator=(const ResourceMgr&) = delete;
 };

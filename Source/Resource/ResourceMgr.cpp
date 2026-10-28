@@ -119,12 +119,8 @@ bool ResourceMgr::Exists(const char* name) {
 }
 
 // OFFSET: 0x00AEE770
-// FUNCTION: fn_18175
-CRes* ResourceMgr::Load(const char* name) {
-  if (!name) {
-    return nullptr;
-  }
-
+// INLINED
+__forceinline CRes* ResourceMgr::LoadNamed(const char* name) {
   std::optional<NSyncObject> lock(std::in_place, &this->m_lock);
   char normalized[260] = {};
   _snprintf_s(normalized, sizeof(normalized), _TRUNCATE, "%s", name);
@@ -173,6 +169,26 @@ CRes* ResourceMgr::Load(const char* name) {
   }
 
   return resource;
+}
+
+// OFFSET: 0x00AEE770
+// FUNCTION: fn_18175
+CRes* ResourceMgr::Load(const char* name) {
+  if (!name) {
+    return nullptr;
+  }
+
+  return this->LoadNamed(name);
+}
+
+// OFFSET: 0x00AEECC0
+// FUNCTION: fn_18176
+CRes* ResourceMgr::Load(std::string name) {
+  if (name.empty()) {
+    return nullptr;
+  }
+
+  return this->LoadNamed(name.c_str());
 }
 
 // OFFSET: 0x00AF0780
