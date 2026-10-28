@@ -1,8 +1,9 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_RAGEFFECTINITIALIZATION_H
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_RAGEFFECTINITIALIZATION_H
 
+#include "Contents/Actors/RenderObjectState.h"
+
 struct RagEffectState;
-struct RenderObjectState;
 struct EffectActor;
 struct ServiceOptions;
 class ResourceMgr;

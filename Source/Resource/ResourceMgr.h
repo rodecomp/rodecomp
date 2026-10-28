@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <map>
+#include <string>
 #include <vector>
 #include <windows.h>
 
@@ -25,6 +26,7 @@ public:
   CRes* Load(std::string name);
   void Remove(CRes* resource);
   bool Exists(const char* name);
+  bool Exists(std::string name);
   void UnloadAll();
   void ClearUnused(const char* extension);
   void ClearUnused();
