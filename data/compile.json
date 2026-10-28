@@ -615,6 +615,7 @@
   "Source/UI/Text/UITextViewerLinks.cpp": 2,
   "Source/UI/Text/UITextViewerMessages.cpp": 2,
   "Source/UI/Text/UITransBalloonText.cpp": 2,
+  "Source/UI/UIChangeMaterialWnd.cpp": 2,
   "Source/UI/UILapineScrollBar.cpp": 2,
   "Source/UI/UILapineUpgradeBoxWnd.cpp": 2,
   "Source/UI/UIStaticBitmap.cpp": 2,
