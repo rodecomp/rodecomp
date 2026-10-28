@@ -157,3 +157,21 @@ std::string TipBoxTitles::Title(int id, std::string* abbreviated, int width) con
 
   return result;
 }
+
+// OFFSET: 0x007ACF50
+
+// OFFSET: 0x007AD480
+
+// OFFSET: 0x007AD890
+// FUNCTION: fn_09130
+bool CTipBoxMgr::IsLastTip() const {
+  return this->unknown_00B4 == static_cast<int>(this->m_randomList.size() / 6) - 1;
+}
+
+// OFFSET: 0x007AD8C0
+
+// OFFSET: 0x007AD8D0
+
+// OFFSET: 0x007AD940
+
+// OFFSET: 0x007AE050

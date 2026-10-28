@@ -35,7 +35,13 @@ public:
   void AddParagraph(int id, std::string text);
   TipBoxEntry& SelectRandomTip();
   const TipBoxEntry& GetTip(int id) const;
-
+  void Sub7ACF50();
+  void RegisterLuaFunctions();
+  bool IsLastTip() const;
+  bool HasItems70() const;
+  bool HasItems18() const;
+  void Sub7AD940(int a);
+  bool SelectTip(int id);
   static bool Create();
   static void Destroy();
 
