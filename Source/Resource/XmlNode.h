@@ -23,6 +23,9 @@ struct XmlNode {
 };
 
 struct XmlDocument : XmlNode {
+  // INLINED
+  XmlDocument() : XmlNode("XMLDocument"), buffer(nullptr) {
+  }
   void Reset();
   char* TerminateName(char* begin, char* end);
   char* ParseElements(XmlNode* parent, char* cursor, char* end);

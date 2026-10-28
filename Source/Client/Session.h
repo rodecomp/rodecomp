@@ -5,6 +5,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include "Resource/XmlNode.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -81,7 +82,11 @@ public:
   /* 0FE4 */ std::list<std::uint32_t> m_pingSamples;
   /* 0FEC */ unsigned char unknown_0FEC[0x6C];
   /* 1058 */ int m_petActionTable[5][5][7];
-  /* 1314 */ unsigned char unknown_1314[0x2F8];
+  /* 1314 */ unsigned char unknown_1314[0x258];
+  /* 156C */ XmlDocument m_petTalkTable;
+  /* 159C */ XmlDocument m_monsterSkillInfo;
+  /* 15CC */ XmlDocument m_monsterTalkTable;
+  /* 15FC */ unsigned char unknown_15FC[0x10];
   /* 160C */ char m_navigationPlayerMap[0x1C];
   /* 1628 */ int m_job;
   /* 162C */ unsigned char unknown_162C[0x24];
@@ -215,6 +220,7 @@ public:
   int MercSkillLevel(int skillId) const;
   int HomunSkillLevel(int skillId) const;
   int SyncUnknown0E98();
+  void LoadXmlTables();
   std::string GetAccessoryName(int id);
   void CollectCardItems();
   int GetRobeAlpha(int robeId);
@@ -244,6 +250,8 @@ static_assert(offsetof(CSession, m_serverTimeOffset) == 0x794);
 static_assert(offsetof(CSession, m_serverTimeAdjustCount) == 0x798);
 static_assert(offsetof(CSession, m_averagePing) == 0x7A0);
 static_assert(offsetof(CSession, m_pingSamples) == 0xFE4);
+static_assert(offsetof(CSession, m_petTalkTable) == 0x156C);
+static_assert(offsetof(CSession, m_monsterTalkTable) == 0x15CC);
 static_assert(offsetof(CSession, m_navigationPlayerMap) == 0x160C);
 static_assert(offsetof(CSession, unknown_1738) == 0x1738);
 static_assert(offsetof(CSession, unknown_1740) == 0x1740);
