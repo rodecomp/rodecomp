@@ -20,3 +20,10 @@ int ShowErrorDialog(CRenderSystemBase* renderSystem, const char* text, UINT type
 }
 
 // OFFSET: 0x00AD6390
+// FUNCTION: fn_17829
+int ShowErrorDialog(int code) {
+  char text[80];
+  wsprintfA(text, "%d\n", code);
+  GetRenderSystemHolder()->PrepareErrorDialog();
+  return MessageBoxA(nullptr, text, "Error", MB_OK);
+}
