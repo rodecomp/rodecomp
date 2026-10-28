@@ -359,6 +359,7 @@
   "Source/Contents/Messenger/ClientMessenger.cpp": 4,
   "Source/Contents/Messenger/MessengerMember.cpp": 4,
   "Source/Contents/Messenger/WhisperBlockMgr.cpp": 4,
+  "Source/Contents/ModelKeyframes.cpp": 4,
   "Source/Contents/Models/ModelActor.cpp": 3,
   "Source/Contents/Models/ModelActorBounds.cpp": 3,
   "Source/Contents/Models/ModelAnimation.cpp": 3,
