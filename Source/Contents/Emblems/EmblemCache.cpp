@@ -1,4 +1,6 @@
 #include "Contents/Emblems/EmblemCache.h"
+#include "Contents/Emblems/GuildEmblemReqBundle.h"
+#include "Contents/GuildMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
 
@@ -108,6 +110,14 @@ void EmblemCache::Receive(std::uint16_t state, std::uint32_t guild, std::uint32_
     this->Store(this->data.data(), static_cast<std::uint32_t>(this->data.size()), guild, revision);
     this->Refresh(guild);
   }
+}
+
+// OFFSET: 0x0065EE40
+// FUNCTION: fn_05179
+void CGuildMgr::UpdateEmblemRequests(
+  CEmblemDataMgr& emblems, std::uint32_t accountId, const std::string& accountName, const char* token16, CConnection& connection, CAsyncWorkMgr& manager
+) {
+  this->m_reqBundle->Update(emblems, accountId, accountName, token16, connection, manager);
 }
 
 // OFFSET: 0x0065EE50

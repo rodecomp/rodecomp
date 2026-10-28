@@ -4,9 +4,13 @@
 #include <cstddef>
 #include <cstdint>
 #include <map>
+#include <string>
 #include <vector>
 
 class CGuildEmblemReqBundle;
+class CEmblemDataMgr;
+class CConnection;
+class CAsyncWorkMgr;
 
 class CGuild {
 public:
@@ -26,6 +30,9 @@ public:
 
   int GetEmblemVersion(std::uint32_t guildId) const;
   void SetEmblemVersion(std::uint32_t guildId, int version);
+  void UpdateEmblemRequests(
+    CEmblemDataMgr& emblems, std::uint32_t accountId, const std::string& accountName, const char* token16, CConnection& connection, CAsyncWorkMgr& manager
+  );
 
   struct MemberData {
     /* 0000 */ int unknown_0000[5];
