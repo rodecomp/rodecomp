@@ -12,10 +12,13 @@ public:
   long long TransactionAmount(unsigned char deposit);
   void Paint() override;
   bool IsNumeric(std::string text);
+  void AnimateLoading();
 
 protected:
   /* 00B4 */ UIEditCtrl* m_amountEdit;
   /* 00B8 */ std::string m_status;
+  /* 00D0 */ int unknown_00D0;
+  /* 00D4 */ UIWindow* m_loading[4];
   UIButtonContext* m_controls;
 };
 

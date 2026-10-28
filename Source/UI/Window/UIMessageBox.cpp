@@ -21,6 +21,18 @@
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIMerInfoWnd.h"
+#include "UI/Window/UIMessageBoxAutoreturn.h"
+#include "UI/Window/UIMonsterInfoWnd.h"
+#include "UI/Window/UITalkboxTrapInputWnd.h"
+#include "UI/Window/UIHomunInfoWnd.h"
+#include "UI/Window/UIPetInfoWnd.h"
+#include "UI/Window/UIReplayRECControlWnd.h"
+#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Registry.h"
+#include "Utility/Cipher/XorBytes.h"
+#include "UI/Window/UILoginOTPWnd.h"
+#include "UI/Window/InputFocus.h"
+#include "UI/Buttons/UIButton.h"
 #include "Render/Text/TextContext.h"
 #include <cstring>
 
@@ -32,6 +44,35 @@
 
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
+
+  template <std::size_t Length, std::uint64_t Key>
+  class EncryptedName {
+  public:
+    explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = source[index];
+      }
+    }
+
+    ~EncryptedName() {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = 0;
+      }
+    }
+
+    const char* Text() {
+      if (this->m_encrypted) {
+        utility::XorBytes(this->m_text, Length, Key);
+        this->m_encrypted = false;
+      }
+
+      return reinterpret_cast<const char*>(this->m_text);
+    }
+
+  private:
+    std::uint8_t m_text[Length];
+    bool m_encrypted;
+  };
 
   // INLINED
   std::uint32_t Palette(ResourceMgr& resources, int x, int y) {
@@ -516,3 +557,35 @@ int UIMessageBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 }
+
+// OFFSET: 0x008BFB70
+
+// OFFSET: 0x008BFBA0
+
+// OFFSET: 0x008C1DB0
+
+// OFFSET: 0x008C1ED0
+
+// OFFSET: 0x008C35A0
+
+// OFFSET: 0x008C35E0
+
+// OFFSET: 0x008C3630
+
+// OFFSET: 0x008C3670
+
+// OFFSET: 0x008C36B0
+
+// OFFSET: 0x008A6DC0
+
+// OFFSET: 0x008B84B0
+
+// OFFSET: 0x008C3620
+// FUNCTION: fn_11826
+void UILoginWnd::Slot11() {
+  this->SaveLogin();
+}
+
+// OFFSET: 0x008C39E0
+
+// OFFSET: 0x008C1F00

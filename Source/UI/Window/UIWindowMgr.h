@@ -424,6 +424,7 @@ public:
   UIWindow* LookupWindow(int id);
   void GetMiniPartyUsableArea(RECT* area);
   void Schedule(UIWindow* window);
+  void SetUnknown04DC(const char* text);
   void Destroy(UIWindow* window);
   void ForgetWindowReferences(UIWindow* removed);
   void DismissTransient();
