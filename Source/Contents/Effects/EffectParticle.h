@@ -34,6 +34,8 @@ struct EffectParticle : CRenderObject {
   void PrimIntimidate();
   void PrimPoison();
   void PrimGuard();
+  bool PrimLineLink();
+  void PrimSMA();
 
   bool AdvanceFrame();
   void UpdateRecords();

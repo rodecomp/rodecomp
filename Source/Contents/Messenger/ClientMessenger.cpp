@@ -595,9 +595,9 @@ void CGameMode::NotifyItemBounds() {
     this->itemWindow->Invalidate();
   }
   if (g_windowMgr.window_02C8) {
-    g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, g_session.unknown_1604, 0, 0);
+    g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, g_session.m_aid, 0, 0);
   }
-  g_windowMgr.NotifyItemWindows(g_session.unknown_1604, g_session.unknown_5568, g_session.unknown_556C);
+  g_windowMgr.NotifyItemWindows(g_session.m_aid, g_session.unknown_5568, g_session.unknown_556C);
 }
 
 // OFFSET: 0x00DD80A0

@@ -1,6 +1,7 @@
 #include "Contents/Effects/EffectPrimitiveMotion.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ActiveGameMode.h"
+#include "Client/Session.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/World/WorldScene.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -23,8 +24,8 @@
 
 namespace {
   // INLINED
-  EffectVector3 Forward(float distance, const float* matrix) {
-    const EffectVector3 point{0.0f, 0.0f, distance};
+  vector3d Forward(float distance, const float* matrix) {
+    const vector3d point{0.0f, 0.0f, distance};
     return {
       ((matrix[3] * point.y + matrix[0] * point.x) + point.z * matrix[6]) + matrix[9],
       ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10],
@@ -33,8 +34,8 @@ namespace {
   }
 
   // INLINED
-  EffectVector3 Upward(float distance, const float* matrix) {
-    const EffectVector3 point{0.0f, -distance, 0.0f};
+  vector3d Upward(float distance, const float* matrix) {
+    const vector3d point{0.0f, -distance, 0.0f};
     return {
       ((matrix[3] * point.y + matrix[0] * point.x) + point.z * matrix[6]) + matrix[9],
       ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10],
@@ -43,8 +44,8 @@ namespace {
   }
 
   // INLINED
-  EffectVector3 Lift(float distance, const float* matrix) {
-    const EffectVector3 point{0.0f, distance, 0.0f};
+  vector3d Lift(float distance, const float* matrix) {
+    const vector3d point{0.0f, distance, 0.0f};
     return {
       ((matrix[3] * point.y + matrix[0] * point.x) + point.z * matrix[6]) + matrix[9],
       ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10],
@@ -868,7 +869,7 @@ void EffectParticle::PrimBottom2() {
       slot.fullDisplayAngle -= 360;
     }
 
-    slot.maxHeight = 20.0f + 10.0f * ClientSine(slot.fullDisplayAngle);
+    slot.maxHeight = 20.0f + 10.0f * g_sinTable[slot.fullDisplayAngle];
   }
 }
 
@@ -930,7 +931,7 @@ void EffectParticle::PrimBottom() {
   slot.vecBNow.x = this->render.position[0];
   slot.vecBNow.z = this->render.position[2];
   slot.vecBPre.y = this->render.position[1] - 6.0f;
-  slot.vecBNow.y = slot.vecBPre.y + 3.0f * ClientSine(slot.rotStart);
+  slot.vecBNow.y = slot.vecBPre.y + 3.0f * g_sinTable[slot.rotStart];
 
   if (slot.flag1[2] == 7) {
     slot.fullDisplayAngle += 10;
@@ -1396,6 +1397,91 @@ void EffectParticle::PrimGuard() {
         slot.alphaB = 0;
       }
     }
+  }
+}
+
+// OFFSET: 0x00BBFAA0
+bool EffectParticle::PrimLineLink() {
+  CGameMode* gameMode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  const CRenderObject* target = nullptr;
+
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  EffectPrimitiveSlot& slot = this->state.slots[0];
+  ++slot.process;
+
+  slot.vecTNow = {this->render.position[0], this->render.position[1], this->render.position[2]};
+  slot.vecTNow.y -= 8.0f;
+
+  if (slot.height[4] == 2.0f) {
+    if (slot.process > 40) {
+      slot.alphaB -= 3;
+
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
+      }
+    } else if (slot.process < 20) {
+      slot.alphaB += 6;
+    }
+  } else if (slot.height[4] == 3.0f) {
+    const int phase = slot.process % 360;
+
+    if (slot.process <= 80) {
+      ++slot.alphaB;
+    }
+
+    slot.maxHeight += g_sinTable[phase] * 0.005f;
+  } else if (slot.process % 10 < 5) {
+    slot.alphaB += 2;
+  } else {
+    slot.alphaB -= 2;
+  }
+
+  if (slot.height[0] > 0.0f) {
+    if (slot.height[0] == static_cast<float>(g_session.m_aid)) {
+      target = reinterpret_cast<const CRenderObject*>(gameMode->scene->player);
+    } else {
+      target = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[0]));
+    }
+  }
+
+  if (target == nullptr) {
+    slot.life = 0;
+    slot.alphaB = 0;
+  } else {
+    slot.vecTPre = {target->render.position[0], target->render.position[1], target->render.position[2]};
+    slot.vecTPre.y -= 8.0f;
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00BC1AA0
+void EffectParticle::PrimSMA() {
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process <= 0) {
+      continue;
+    }
+
+    if (slot.process == 1) {
+      const float x = this->state.offset.x - this->render.position[0];
+      const float z = this->state.offset.z - this->render.position[2];
+      CalculateVectorAngle(x, z, &slot.rotStart);
+    }
+
+    slot.vecBNow.x += slot.height[1] * g_cosTable[slot.rotStart];
+    slot.vecBNow.z += slot.height[1] * g_sinTable[slot.rotStart];
   }
 }
 

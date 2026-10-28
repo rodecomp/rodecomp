@@ -13,35 +13,33 @@ float ClientCos(float radians) {
   return std::cos(radians);
 }
 
+// GLOBAL: gl_24568
+float g_radTable[722];
+
+// GLOBAL: gl_24572
+float g_sinTable[722];
+
+// GLOBAL: gl_24574
+float g_cosTable[722];
+
 namespace {
-  struct AngleTables {
-    float radians[361];
-    float negativeRadians[361];
-    float sine[361];
-    float negativeSine[361];
-    float cosine[361];
-    float negativeCosine[361];
-
-// OFFSET: 0x00554280
-// FUNCTION: fn_02021
-    AngleTables() {
-      for (int index = 0; index <= 360; ++index) {
-        const float angle = (static_cast<float>(index) / 180.0f) * 3.141592f;
-        radians[index] = angle;
-        sine[index] = ClientSin(angle);
-        cosine[index] = ClientCos(angle);
-        negativeRadians[index] = -angle;
-        negativeSine[index] = -sine[index];
-        negativeCosine[index] = -cosine[index];
-      }
-    }
-  };
-
-  const AngleTables tables;
-
   // INLINED
   int Wrapped(int degrees) {
     return degrees > 360 || degrees < -360 ? degrees % 360 : degrees;
+  }
+}
+
+// OFFSET: 0x00554280
+// FUNCTION: fn_02021
+void CreateTrigonometricTable() {
+  for (int index = 0; index <= 360; ++index) {
+    const float angle = (static_cast<float>(index) / 180.0f) * 3.141592f;
+    g_radTable[index] = angle;
+    g_sinTable[index] = ClientSin(angle);
+    g_cosTable[index] = ClientCos(angle);
+    g_radTable[index + 361] = -angle;
+    g_sinTable[index + 361] = -g_sinTable[index];
+    g_cosTable[index + 361] = -g_cosTable[index];
   }
 }
 
@@ -49,19 +47,19 @@ namespace {
 // FUNCTION: fn_02024
 float ClientRadians(int degrees) {
   const int index = Wrapped(degrees);
-  return tables.radians[index >= 0 ? index : 361 + index];
+  return g_radTable[index >= 0 ? index : 361 + index];
 }
 
 // OFFSET: 0x00554470
 // FUNCTION: fn_02025
 float ClientSine(int degrees) {
   const int index = Wrapped(degrees);
-  return tables.sine[index >= 0 ? index : 361 + index];
+  return g_sinTable[index >= 0 ? index : 361 + index];
 }
 
 // OFFSET: 0x005543D0
 // FUNCTION: fn_02023
 float ClientCosine(int degrees) {
   const int index = Wrapped(degrees);
-  return tables.cosine[index >= 0 ? index : 361 + index];
+  return g_cosTable[index >= 0 ? index : 361 + index];
 }

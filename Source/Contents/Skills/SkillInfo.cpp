@@ -595,10 +595,10 @@ std::pair<bool, int> CSkillActionMgr::ActionSlot01(int skillId) {
 
 // OFFSET: 0x0077AD90
 // FUNCTION: fn_08405
-EffectVector3 CellWorldPosition(int column, int row) {
+vector3d CellWorldPosition(int column, int row) {
   if (!g_world.ActiveGameMode() || !static_cast<CGameMode*>(g_world.ActiveGameMode())->scene ||
       !static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->terrain) {
-    return EffectVector3{0.0f, 0.0f, 0.0f};
+    return vector3d{0.0f, 0.0f, 0.0f};
   }
 
   float x = 0.0f;
@@ -606,7 +606,7 @@ EffectVector3 CellWorldPosition(int column, int row) {
   float z = 0.0f;
   static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->terrain->Grid().CellOrigin(column, row, x, z);
   y = static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->terrain->Grid().Height(x, z);
-  return EffectVector3{x + 2.5f, y + 0.0f, z + 2.5f};
+  return vector3d{x + 2.5f, y + 0.0f, z + 2.5f};
 }
 
 // OFFSET: 0x0077AEA0

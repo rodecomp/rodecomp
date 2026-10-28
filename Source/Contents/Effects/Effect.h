@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-struct EffectVector3;
+struct vector3d;
 
 struct EffectEvent {
   /* 0000 */ int kind;
@@ -44,7 +44,7 @@ public:
   virtual void Slot22(int argument);
   virtual void Slot23(int argument);
   virtual void Slot24(int argument1, int argument2, int argument3, int argument4, int argument5);
-  virtual EffectVector3 Slot25();
+  virtual vector3d Slot25();
   virtual void Slot26(int argument);
   virtual void Slot27(int argument);
   virtual int Slot28();

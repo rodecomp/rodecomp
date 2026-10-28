@@ -13,7 +13,7 @@ class CGameActor;
 class CRenderObject;
 class CSkillObjectAction;
 class LuaScript;
-struct EffectVector3;
+struct vector3d;
 struct NormalItemSlot;
 
 struct EfstActionMessage {
@@ -160,7 +160,7 @@ bool IsOptionalSelfTargetSkill(int skillId);
 bool HidesUseFailureMessage(int skillId);
 bool IsSupportSkill(int skillId);
 bool ShowsCastEffect(int skillId);
-EffectVector3 CellWorldPosition(int column, int row);
+vector3d CellWorldPosition(int column, int row);
 static_assert(sizeof(SkillInfoEntry) == 8);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(SkillInfoEntry, unknown_0004) == 0x4);

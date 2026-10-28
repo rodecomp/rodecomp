@@ -113,8 +113,8 @@ public:
   /* 159C */ XmlDocument m_monsterSkillInfo;
   /* 15CC */ XmlDocument m_monsterTalkTable;
   /* 15FC */ unsigned char unknown_15FC[8];
-  /* 1604 */ int unknown_1604;
-  /* 1608 */ unsigned char unknown_1608[4];
+  /* 1604 */ std::uint32_t m_aid;
+  /* 1608 */ std::uint32_t m_gid;
   /* 160C */ char m_navigationPlayerMap[0x1C];
   /* 1628 */ int m_job;
   /* 162C */ unsigned char unknown_162C[0x24];

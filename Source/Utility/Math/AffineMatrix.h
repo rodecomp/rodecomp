@@ -4,6 +4,11 @@
 #include <cstddef>
 
 extern const float g_identityMatrix[12];
+extern float g_radTable[722];
+extern float g_sinTable[722];
+extern float g_cosTable[722];
+
+void CreateTrigonometricTable();
 
 float ClientSin(float radians);
 float ClientCos(float radians);

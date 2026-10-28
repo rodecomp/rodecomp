@@ -8,18 +8,13 @@
 #include <vector>
 
 #include "Contents/Actors/RenderObjectState.h"
+#include "Utility/Math/Vector3d.h"
 struct AttachedEffect;
 class CTexture;
 
-struct EffectVector3 {
-  /* 0000 */ float x;
-  /* 0004 */ float y;
-  /* 0008 */ float z;
-};
-
 struct EffectPrimitiveRecord {
-  /* 0000 */ EffectVector3 position;
-  /* 000C */ EffectVector3 corners[4];
+  /* 0000 */ vector3d position;
+  /* 000C */ vector3d corners[4];
   /* 003C */ float unknown_003C;
   /* 0040 */ float scale;
   /* 0044 */ float angle;
@@ -48,12 +43,12 @@ struct EffectPrimitiveSlot {
   /* 007E */ std::int16_t riseAngle;
   /* 0080 */ float distance;
   union {
-    /* 0084 */ EffectVector3 vectors[4];
+    /* 0084 */ vector3d vectors[4];
     struct {
-      /* 0084 */ EffectVector3 vecBNow;
-      /* 0090 */ EffectVector3 vecTNow;
-      /* 009C */ EffectVector3 vecBPre;
-      /* 00A8 */ EffectVector3 vecTPre;
+      /* 0084 */ vector3d vecBNow;
+      /* 0090 */ vector3d vecTNow;
+      /* 009C */ vector3d vecBPre;
+      /* 00A8 */ vector3d vecTPre;
     };
   };
 };
@@ -71,7 +66,7 @@ struct EffectPrimitiveState {
   /* 0140 */ AttachedEffect* master;
   /* 0144 */ CTexture** textures;
   /* 0148 */ std::uint32_t unknown_0148;
-  /* 014C */ EffectVector3 unknown_014C;
+  /* 014C */ vector3d unknown_014C;
   /* 0158 */ std::uint32_t unknown_0158;
   /* 015C */ std::uint32_t unknown_015C;
   /* 0160 */ float matrix1[12];
@@ -112,8 +107,8 @@ struct EffectPrimitiveState {
   /* 0290 */ float unknown_0290[3];
   /* 029C */ float unknown_029C;
   /* 02A0 */ float unknown_02A0;
-  /* 02A4 */ EffectVector3 unknown_02A4;
-  /* 02B0 */ EffectVector3 unknown_02B0;
+  /* 02A4 */ vector3d unknown_02A4;
+  /* 02B0 */ vector3d unknown_02B0;
   /* 02BC */ float unknown_02BC;
   /* 02C0 */ float unknown_02C0;
   /* 02C4 */ float unknown_02C4;
@@ -159,13 +154,13 @@ struct EffectPrimitiveState {
   /* 0364 */ float unknown_0364;
   /* 0368 */ float unknown_0368;
   /* 036C */ float unknown_036C;
-  /* 0370 */ EffectVector3 unknown_0370;
-  /* 037C */ EffectVector3 origin;
-  /* 0388 */ EffectVector3 offset;
-  /* 0394 */ EffectVector3 velocity;
-  /* 03A0 */ EffectVector3 unknown_03A0;
-  /* 03AC */ EffectVector3 unknown_03AC;
-  /* 03B8 */ EffectVector3 corners[4];
+  /* 0370 */ vector3d unknown_0370;
+  /* 037C */ vector3d origin;
+  /* 0388 */ vector3d offset;
+  /* 0394 */ vector3d velocity;
+  /* 03A0 */ vector3d unknown_03A0;
+  /* 03AC */ vector3d unknown_03AC;
+  /* 03B8 */ vector3d corners[4];
   /* 03E8 */ EffectPrimitiveSlot slots[4];
   /* 06B8 */ EffectPrimitiveRecord records[50];
   /* 2210 */ RenderTriangle triangles[512];
@@ -185,11 +180,9 @@ struct EffectPrimitiveObject {
 
 void __stdcall CalculateVectorAngle(float x, float y, std::int16_t* angle);
 
-static_assert(sizeof(EffectVector3) == 12);
 static_assert(sizeof(EffectPrimitiveRecord) == 140);
 static_assert(sizeof(EffectPrimitiveSlot) == 0xB4);
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(EffectVector3, z) == 0x8);
 static_assert(offsetof(EffectPrimitiveRecord, corners) == 0xC);
 static_assert(offsetof(EffectPrimitiveRecord, matrix) == 0x48);
 static_assert(offsetof(EffectPrimitiveRecord, color) == 0x88);

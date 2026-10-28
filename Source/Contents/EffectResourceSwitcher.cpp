@@ -20,8 +20,8 @@ void CEffect::Slot11(std::string) {
 
 // OFFSET: 0x005A2170
 // FUNCTION: fn_03089
-EffectVector3 CEffect::Slot25() {
-  return EffectVector3{0.0f, 0.0f, 0.0f};
+vector3d CEffect::Slot25() {
+  return vector3d{0.0f, 0.0f, 0.0f};
 }
 
 // OFFSET: 0x005A2190

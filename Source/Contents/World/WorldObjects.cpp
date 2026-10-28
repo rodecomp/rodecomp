@@ -1,18 +1,18 @@
+#include "Client/Session.h"
 #include "Contents/Actors/RenderObject.h"
-#include "Contents/World/WorldActors.h"
 #include "Contents/World/WorldObjects.h"
 #include "Contents/World/WorldScene.h"
 #include "Contents/Effects/EffectLists.h"
 
 // OFFSET: 0x00AC8220
 // FUNCTION: fn_17667
-CRenderObject* WorldActors::Lookup(std::uint32_t accountId) const {
-  if (accountId == this->localAccountId) {
-    return this->localPlayer;
+CRenderObject* WorldScene::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
+  if (aid == g_session.m_aid) {
+    return reinterpret_cast<CRenderObject*>(this->player);
   }
 
   for (CRenderObject* actor : this->actors) {
-    if (actor->render.accountId == accountId) {
+    if (actor->render.accountId == aid) {
       return actor;
     }
   }

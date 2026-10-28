@@ -121,14 +121,14 @@ EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
   this->unknown_03A0 = {};
   this->unknown_03AC = {};
 
-  for (EffectVector3& corner : this->corners) {
+  for (vector3d& corner : this->corners) {
     corner = {};
   }
 
   for (EffectPrimitiveRecord& record : this->records) {
     record.position = {};
 
-    for (EffectVector3& corner : record.corners) {
+    for (vector3d& corner : record.corners) {
       corner = {};
     }
   }

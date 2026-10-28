@@ -24,6 +24,8 @@ public:
   WorldScene& operator=(const WorldScene&) = delete;
   void Clear();
   bool FindActorInCell(const float* position, std::function<bool(std::uint32_t)> predicate) const;
+  CRenderObject* GetGameActorByAID(std::uint32_t aid) const;
+  CRenderObject* GetGameActorByAidIncludeMe(std::uint32_t aid) const;
   void ClearActorCells();
 
   /* 0004 */ CGameMode* gameMode;

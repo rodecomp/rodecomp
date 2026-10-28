@@ -40,7 +40,7 @@ void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectSta
   const float bottomY = bottom * matrix[4] + zeroY;
   const float bottomZ = bottom * matrix[5] + zeroZ;
 
-  const EffectVector3 corners[4] = {
+  const vector3d corners[4] = {
     {(rightX + topX) + matrix[9], (rightY + topY) + matrix[10], (rightZ + topZ) + matrix[11]},
     {(leftX + topX) + matrix[9], (leftY + topY) + matrix[10], (leftZ + topZ) + matrix[11]},
     {(bottomX + rightX) + matrix[9], (bottomY + rightY) + matrix[10], (bottomZ + rightZ) + matrix[11]},
@@ -57,7 +57,7 @@ void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectSta
     RenderTriangle& triangle = particle.triangles[triangleIndex];
 
     for (unsigned vertexIndex = 0; vertexIndex < 3; ++vertexIndex) {
-      const EffectVector3& corner = corners[indices[triangleIndex][vertexIndex]];
+      const vector3d& corner = corners[indices[triangleIndex][vertexIndex]];
       const float position[3] = {corner.x + render.position[0], corner.y + render.position[1], corner.z + render.position[2]};
       RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       context.projection.Project(position, context.cameraMatrix, projected);

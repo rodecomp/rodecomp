@@ -3,6 +3,7 @@
 
 #include "Contents/Actors/GameObject.h"
 #include "Contents/Actors/RenderObjectState.h"
+#include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
 
@@ -22,6 +23,7 @@ public:
   void Face(float x, float z);
   float HorizontalDistance(float x, float z) const;
   float Distance(float x, float y, float z) const;
+  bool GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) const;
   void SetAnimationSpeed(float speed);
   void SetActionSpeed(float speed);
   void DrawSprite(int argument, bool seasonal, float offset);
