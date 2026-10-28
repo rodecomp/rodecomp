@@ -10,6 +10,7 @@
 #include <ctime>
 #include <list>
 #include <map>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -65,7 +66,9 @@ public:
   /* 1718 */ unsigned char unknown_1718[0x1438];
   /* 2B50 */ ItemInfo unknown_2B50[10];
   /* 3500 */ ItemInfo unknown_3500[10];
-  /* 3EB0 */ unsigned char unknown_3EB0[0x16A8];
+  /* 3EB0 */ unsigned char unknown_3EB0[0x1408];
+  /* 52B8 */ std::vector<const char*> m_accessoryNames;
+  /* 52C4 */ unsigned char unknown_52C4[0x294];
   /* 5558 */ int unknown_5558;
   /* 555C */ unsigned char unknown_555C[0x47C];
   /* 59D8 */ LuaScript* m_hotkeyScript;
@@ -122,6 +125,7 @@ public:
   char* ConvertTooltipText(const char* source, char* output) const;
   int MercSkillLevel(int skillId) const;
   int SyncUnknown0E98();
+  std::string GetAccessoryName(int id);
   void CollectCardItems();
 };
 
@@ -157,6 +161,7 @@ static_assert(offsetof(CSession, m_job) == 0x1628);
 static_assert(offsetof(CSession, m_inventoryItems) == 0x1710);
 static_assert(offsetof(CSession, unknown_2B50) == 0x2B50);
 static_assert(offsetof(CSession, unknown_3500) == 0x3500);
+static_assert(offsetof(CSession, m_accessoryNames) == 0x52B8);
 static_assert(offsetof(CSession, unknown_5558) == 0x5558);
 static_assert(offsetof(CSession, m_hotkeyScript) == 0x59D8);
 static_assert(offsetof(CSession, unknown_5C68) == 0x5C68);

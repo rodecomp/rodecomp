@@ -102,6 +102,8 @@ void LuaScript::Error(const char* caption, const char* format, ...) {
   MessageBoxA(nullptr, text, caption, MB_OK);
 }
 
+// OFFSET: 0x00AFDC60
+
 // OFFSET: 0x00AFC9A0
 // FUNCTION: fn_18326
 bool LuaScript::Call(std::string function, const char* signature, ...) {

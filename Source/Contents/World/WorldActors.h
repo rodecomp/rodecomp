@@ -12,6 +12,7 @@ struct WorldActors {
   const std::uint32_t& localAccountId;
 
   CRenderObject* Find(std::uint32_t accountId) const;
+  CRenderObject* Lookup(std::uint32_t accountId) const;
 
   bool TargetPosition(const float* origin, std::uint32_t accountId, float* output) const;
 };

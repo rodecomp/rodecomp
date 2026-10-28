@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <map>
 #include <queue>
+#include <string>
 #include <vector>
 
 class C3dAttr;
@@ -27,23 +28,26 @@ public:
 class CPathFinder {
 public:
   CPathFinder();
+  ~CPathFinder();
 
   /* 0000 */ C3dAttr* attr;
   /* 0004 */ int destinationX;
   /* 0008 */ int destinationY;
   /* 000C */ int nodeCount;
   /* 0010 */ MovementPathNode nodes[150];
-  /* 1078 */ std::map<int, MovementRouteInterpolation> unknown_1078;
+  /* 1078 */ std::map<std::string, C3dAttr*> attrCache;
   /* 1080 */ bool useNodePool;
   /* 1084 */ std::vector<MovementPathNode> nodePool;
   /* 1090 */ std::map<int, MovementPathNode*> nodeMap;
   /* 1098 */ MovementOpenList openList;
 
   void Reset();
+  int Height() const;
+  int Width() const;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(CPathFinder, unknown_1078) == 0x1078);
+static_assert(offsetof(CPathFinder, attrCache) == 0x1078);
 static_assert(offsetof(CPathFinder, nodePool) == 0x1084);
 static_assert(offsetof(CPathFinder, nodeMap) == 0x1090);
 static_assert(offsetof(CPathFinder, openList) == 0x1098);

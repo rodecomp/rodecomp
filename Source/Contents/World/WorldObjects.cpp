@@ -1,5 +1,8 @@
 #include "Contents/Actors/RenderObject.h"
+#include "Contents/World/WorldActors.h"
 #include "Contents/World/WorldObjects.h"
+
+// OFFSET: 0x00AC8220
 
 // OFFSET: 0x00ACA4E0
 // FUNCTION: fn_17692
@@ -22,3 +25,5 @@ void WorldObjects::Clear() {
     entry = this->objects.erase(entry);
   }
 }
+
+// OFFSET: 0x00ACA980

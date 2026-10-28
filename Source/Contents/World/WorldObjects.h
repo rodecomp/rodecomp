@@ -1,8 +1,10 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_WORLD_WORLDOBJECTS_H
 #define RAGNAROK_SOURCE_CONTENTS_WORLD_WORLDOBJECTS_H
 
+#include <cstdint>
 #include <list>
 
+class CGameObject;
 class CRenderObject;
 
 struct WorldObjects {
@@ -10,6 +12,7 @@ struct WorldObjects {
 
   void Remove(CRenderObject* object);
   void Clear();
+  void SendObjectMessage(CGameObject* sender, std::uint64_t identity, int message, int a, int b, int c, int d);
 };
 
 #endif

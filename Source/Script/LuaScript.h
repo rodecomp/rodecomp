@@ -31,6 +31,7 @@ protected:
 
 private:
   void Error(const char* caption, const char* format, ...);
+  bool TableField(const char* signature, ...);
 };
 
 #endif
