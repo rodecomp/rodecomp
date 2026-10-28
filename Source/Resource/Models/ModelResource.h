@@ -143,7 +143,9 @@ public:
 
 private:
   void ReadVersion(ResourceByteReader& input, unsigned minor);
-  void ReadNode(ResourceByteReader& input, unsigned minor, const std::vector<std::string>& textureNames);
+  void ReadVersion1(ResourceByteReader& input);
+  void ReadVersion2(ResourceByteReader& input);
+  void ReadVersion3(ResourceByteReader& input);
 };
 
 static_assert(sizeof(ModelPositionKey) == 16);
