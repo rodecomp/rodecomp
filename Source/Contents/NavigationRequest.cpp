@@ -131,10 +131,49 @@ int CNaviInfo::GetIndex() const {
 }
 
 // OFFSET: 0x00B8DF40
+// FUNCTION: fn_19464
+CNavi_Link* CNaviInfo::FindLink(unsigned int key, bool byId) {
+  if (byId) {
+    for (CNavi_Link* link : this->links) {
+      if (static_cast<unsigned int>(link->id) == key) {
+        return link;
+      }
+    }
+    return nullptr;
+  }
+  if (this->links.empty() || key >= this->links.size()) {
+    return nullptr;
+  }
+  return this->links[key];
+}
 
 // OFFSET: 0x00B8E640
+// FUNCTION: fn_19478
+CNavi_Object* CNaviInfo::FindNpc(unsigned int key, bool byId) {
+  if (byId) {
+    for (CNavi_Object* npc : this->npcs) {
+      if (static_cast<unsigned int>(npc->id) == key) {
+        return npc;
+      }
+    }
+    return nullptr;
+  }
+  if (this->npcs.empty() || key >= this->npcs.size()) {
+    return nullptr;
+  }
+  return this->npcs[key];
+}
 
 // OFFSET: 0x00B8E6F0
+// FUNCTION: fn_19479
+CNavi_Object* CNaviInfo::FindNpcAt(int cellX, int cellY) {
+  for (CNavi_Object* npc : this->npcs) {
+    if (npc->cellX == cellX && npc->cellY == cellY) {
+      return npc;
+    }
+  }
+  return nullptr;
+}
 
 // OFFSET: 0x00B8E750
 // FUNCTION: fn_19480
