@@ -175,7 +175,7 @@ struct EffectPrimitiveObject {
   bool AdvanceFrame();
 };
 
-void CalculateVectorAngle(float x, float y, std::int16_t* angle);
+void __stdcall CalculateVectorAngle(float x, float y, std::int16_t* angle);
 
 static_assert(sizeof(EffectVector3) == 12);
 static_assert(sizeof(EffectPrimitiveRecord) == 140);
