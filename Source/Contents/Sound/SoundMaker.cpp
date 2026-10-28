@@ -28,6 +28,18 @@ CSoundMaker::CSoundMaker(ResourceMgr& resources, JobNames& names, SoundMakerCont
 }
 
 // OFFSET: 0x00DA2220
+// FUNCTION: fn_22364
+CNpc::~CNpc() {
+  if (this->unknown_042C) {
+    g_windowMgr.Schedule(this->unknown_042C);
+    this->unknown_042C = nullptr;
+  }
+
+  if (this->unknown_0430) {
+    g_windowMgr.Schedule(this->unknown_0430);
+    this->unknown_0430 = nullptr;
+  }
+}
 
 // OFFSET: 0x00DA2370
 // FUNCTION: fn_22365
@@ -126,6 +138,12 @@ bool CSoundMaker::Update() {
 }
 
 // OFFSET: 0x00DA2B00
+// FUNCTION: fn_22379
+float* CPc::GetExtent(float* extent) const {
+  extent[0] = this->unknown_04EC - this->unknown_04E4;
+  extent[1] = this->unknown_04F0 - this->unknown_04E8;
+  return extent;
+}
 
 // OFFSET: 0x00DA4150
 // FUNCTION: fn_22411
@@ -157,6 +175,35 @@ void CBlowEffect::SendObjectMessage(
 }
 
 // OFFSET: 0x00DA4A00
+// FUNCTION: fn_22419
+void CBlurPC::SendObjectMessage(
+  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+) {
+  if (a != 0) {
+    CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    return;
+  }
+
+  switch (message) {
+    case 0:
+      this->SetColor(180, b, d, f);
+      this->unknown_04FC = 0x8000000;
+      break;
+    case 1:
+      this->render.color &= (b << 24) + 0xFFFFFF;
+      this->unknown_04FC = d << 24;
+      break;
+    case 2:
+      this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
+      break;
+    case 3:
+      this->render.unknown_009C[2] = 1;
+      break;
+    default:
+      CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+      break;
+  }
+}
 
 // OFFSET: 0x00DA4AD0
 // FUNCTION: fn_22420
@@ -167,12 +214,123 @@ void CCorpse::SendObjectMessage(
 }
 
 // OFFSET: 0x00DA4BF0
+// FUNCTION: fn_22422
+void CHalluNPC::SendObjectMessage(
+  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+) {
+  if (a != 0) {
+    CNpc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    return;
+  }
+
+  switch (message) {
+    case 0:
+      this->SetColor(180, b, d, f);
+      this->unknown_0444 = 0x8000000;
+      break;
+    case 1:
+      this->render.color &= (b << 24) + 0xFFFFFF;
+      this->unknown_0444 = d << 24;
+      break;
+    case 2:
+      this->unknown_0440 = *reinterpret_cast<const float*>(&b);
+      break;
+    case 3:
+      this->render.unknown_009C[2] = 1;
+      break;
+    default:
+      CNpc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+      break;
+  }
+}
 
 // OFFSET: 0x00DA4CC0
+// FUNCTION: fn_22423
+void CHalluPC2::SendObjectMessage(
+  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+) {
+  if (a != 0) {
+    CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    return;
+  }
+
+  switch (message) {
+    case 0:
+      this->SetColor(180, 255, 55, 55);
+      this->unknown_04FC = 0x8000000;
+      break;
+    case 1:
+      this->render.color &= (b << 24) + 0xFFFFFF;
+      this->unknown_04FC = d << 24;
+      break;
+    case 2:
+      this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
+      break;
+    case 3:
+      this->render.unknown_009C[2] = 1;
+      break;
+    default:
+      CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+      break;
+  }
+}
 
 // OFFSET: 0x00DA4D90
+// FUNCTION: fn_22424
+void CHalluPC::SendObjectMessage(
+  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+) {
+  if (a != 0) {
+    CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    return;
+  }
+
+  switch (message) {
+    case 0:
+      this->SetColor(180, b, d, f);
+      this->unknown_04FC = 0x8000000;
+      break;
+    case 1:
+      this->render.color &= (b << 24) + 0xFFFFFF;
+      this->unknown_04FC = d << 24;
+      break;
+    case 2:
+      this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
+      break;
+    case 3:
+      this->render.unknown_009C[2] = 1;
+      break;
+    default:
+      CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+      break;
+  }
+}
 
 // OFFSET: 0x00DA4E60
+// FUNCTION: fn_22425
+void CHalluPlant::SendObjectMessage(
+  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+) {
+  if (a != 0) {
+    CNpc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    return;
+  }
+
+  switch (message) {
+    case 0:
+      this->SetColor(180, b, d, f);
+      break;
+    case 1:
+      this->render.color &= (b << 24) + 0xFFFFFF;
+      break;
+    case 3:
+      this->render.unknown_009C[2] = 1;
+      break;
+    default:
+      CNpc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+      break;
+  }
+}
 
 // OFFSET: 0x00DA5610
 // FUNCTION: fn_22427
