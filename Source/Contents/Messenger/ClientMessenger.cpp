@@ -135,6 +135,8 @@ namespace EquipmentProperties {
     /* 01BC */ std::unordered_map<int, std::unordered_map<int, EquipmentEntryA>> unknown_01BC;
     /* 01DC */ std::unordered_map<int, std::unordered_map<int, EquipmentEntryB>> unknown_01DC;
 
+    static CEquipmentPropertiesMgr* GetInstance();
+
     CEquipmentPropertiesMgr();
     virtual ~CEquipmentPropertiesMgr();
     void Clear();
@@ -169,6 +171,7 @@ namespace EquipmentProperties {
     int& GetId();
     EquipmentPropertyStore& GetProperties();
     bool IsPretend();
+    void CallOnStartEquip(lua_State* state);
   };
 }
 
@@ -294,6 +297,31 @@ bool EquipmentProperties::CEquipment::IsPretend() {
     this->Load(false);
   }
   return this->m_pretend;
+}
+
+// OFFSET: 0x0068D9F0
+// FUNCTION: fn_05654
+EquipmentProperties::CEquipmentPropertiesMgr* EquipmentProperties::CEquipmentPropertiesMgr::GetInstance() {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) CEquipmentPropertiesMgr;
+  }
+  return g_equipmentPropertiesMgr;
+}
+
+// OFFSET: 0x0068BEA0
+// FUNCTION: fn_05622
+void EquipmentProperties::CEquipment::CallOnStartEquip(lua_State* state) {
+  lua_getfield(state, -1, "OnStartEquip");
+  if (lua_type(state, -1) != LUA_TFUNCTION) {
+    lua_settop(state, -2);
+    return;
+  }
+
+  if (lua_pcall(state, 0, 0, 0) != 0) {
+    std::string message = lua_tolstring(state, -1, nullptr);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0, 0, 0);
+    lua_settop(state, -2);
+  }
 }
 
 #if defined(_WIN32) && !defined(_WIN64)
