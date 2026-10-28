@@ -3,6 +3,12 @@
 
 #include <json/value.h>
 
+// GLOBAL: gl_24700
+int g_defaultPlacementWidth = 400;
+
+// GLOBAL: gl_24701
+int g_defaultPlacementHeight = 317;
+
 // OFFSET: 0x009A6C20
 // FUNCTION: fn_13725
 void NormalItemSlotWindow::Reset() {
@@ -215,6 +221,16 @@ void GuildHelperWndInfo::Reset() {
   this->y = 0;
   this->width = 200;
   this->height = 150;
+}
+
+// OFFSET: 0x009A65A0
+// FUNCTION: fn_13690
+void GuildWndInfo::Reset() {
+  this->x = 0;
+  this->y = 34;
+  this->width = g_defaultPlacementWidth;
+  this->height = g_defaultPlacementHeight;
+  this->unknown_0010 = 0;
 }
 
 // OFFSET: 0x009A65D0

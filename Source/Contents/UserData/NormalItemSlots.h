@@ -131,6 +131,12 @@ struct GuildHelperWndInfo : WindowPlacement {
   void Reset();
 };
 
+struct GuildWndInfo : WindowPlacement {
+  /* 0010 */ int unknown_0010;
+
+  void Reset();
+};
+
 struct HomunInfoWndInfo : WindowPlacement {
   void Reset();
 };
@@ -304,8 +310,12 @@ static_assert(sizeof(ItemStoreFindListInfo) == 0x14);
 static_assert(sizeof(ItemWndInfo) == 0x28);
 static_assert(sizeof(MiniMapWndInfo) == 0x24);
 static_assert(sizeof(MessengerGroupWndInfo) == 0x1C);
+static_assert(sizeof(GuildWndInfo) == 0x14);
 static_assert(sizeof(UnusedWndInfoB) == 0x18);
 #endif
+
+extern int g_defaultPlacementWidth;
+extern int g_defaultPlacementHeight;
 
 void ExportNormalItemSlots(Json::Value& data, const NormalItemSlot* slots, const NormalItemSlotWindow& window, bool active);
 
