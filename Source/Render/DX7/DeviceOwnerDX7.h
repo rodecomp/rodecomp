@@ -16,14 +16,17 @@ struct DeviceOptionsDX7 {
 struct TextureDX7Context;
 struct TextureAllocationDX7;
 class CRenderSystemBase;
+class CSurface;
 
 class DeviceOwnerDX7 {
 public:
   DeviceOwnerDX7();
+  ~DeviceOwnerDX7();
   HRESULT Initialize(HWND window, GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags);
   HRESULT CreateDevice(GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags);
   HRESULT CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags);
   HRESULT Close();
+  void DestroySurface(CSurface* surface);
   HRESULT Clear(DWORD color);
   HRESULT ClearDepth();
   HRESULT Present(bool wait);

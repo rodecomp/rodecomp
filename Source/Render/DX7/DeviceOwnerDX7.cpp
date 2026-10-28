@@ -1,6 +1,7 @@
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Render/DX7/DirectDrawEnumeration.h"
+#include "Render/Textures/Surface.h"
 
 #include <cstring>
 
@@ -87,6 +88,11 @@ DeviceOwnerDX7::DeviceOwnerDX7()
     : window(nullptr), width(0), height(0), primary(nullptr), backBuffer(nullptr), renderTarget(nullptr), depthBuffer(nullptr), draw(nullptr),
       direct3D(nullptr), device(nullptr), depthMemory(0), fullscreen(0), presentationOption(0), captureSurface(nullptr), red{0, 8}, green{0, 8}, blue{0, 8},
       alpha{0, 8}, bitDepth(0), redMask(0), greenMask(0), blueMask(0), alphaMask(0), surfacesLost(false) {
+}
+
+// OFFSET: 0x005494B0
+// FUNCTION: fn_01889
+DeviceOwnerDX7::~DeviceOwnerDX7() {
 }
 
 // OFFSET: 0x005498A0
@@ -334,6 +340,8 @@ HRESULT DeviceOwnerDX7::Close() {
   this->draw = nullptr;
   return drawReferences || deviceReferences ? DeviceError(11) : S_OK;
 }
+
+// OFFSET: 0x0054A8B0
 
 // OFFSET: 0x0054AAD0
 // FUNCTION: fn_01901
