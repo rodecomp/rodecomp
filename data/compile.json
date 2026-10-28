@@ -422,6 +422,7 @@
   "Source/Contents/Sound/SoundConfiguration.cpp": 4,
   "Source/Contents/Sound/SoundMaker.cpp": 4,
   "Source/Contents/Sound/SoundMgr.cpp": 4,
+  "Source/Contents/SpriteLayerOrder.cpp": 4,
   "Source/Contents/SpriteRidingPolicy.cpp": 4,
   "Source/Contents/Store/MCStoreInfoBackup.cpp": 4,
   "Source/Contents/Store/MCStoreInfoBackupAsyncWork.cpp": 4,
