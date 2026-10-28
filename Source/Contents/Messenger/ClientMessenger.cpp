@@ -141,6 +141,44 @@ namespace EquipmentProperties {
   };
 }
 
+namespace EquipmentProperties {
+  struct CEquipmentValueHash {
+    std::size_t operator()(int key) const {
+      return key;
+    }
+  };
+
+  struct CEquipmentInfo {
+    /* 0000 */ int unknown_0000;
+    /* 0004 */ std::unordered_map<int, int, CEquipmentValueHash> values;
+  };
+
+  class CEquipment {
+  public:
+    /* 0004 */ int m_id;
+    /* 0008 */ CEquipmentInfo* m_info;
+    /* 000C */ EquipmentPropertyStore m_properties;
+    /* 0034 */ bool m_pretend;
+
+    virtual ~CEquipment();
+    virtual void Load(bool force) = 0;
+    virtual void Clear();
+    virtual int GetType() = 0;
+    virtual int GetValue(const int& key);
+
+    int& GetId();
+    EquipmentPropertyStore& GetProperties();
+    bool IsPretend();
+  };
+}
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(EquipmentProperties::CEquipmentInfo) == 0x24);
+static_assert(offsetof(EquipmentProperties::CEquipment, m_properties) == 0xC);
+static_assert(offsetof(EquipmentProperties::CEquipment, m_pretend) == 0x34);
+static_assert(sizeof(EquipmentProperties::CEquipment) == 0x38);
+#endif
+
 // GLOBAL: gl_24723
 int g_resetMessengerRandomStats = 1;
 
@@ -209,6 +247,37 @@ EquipmentProperties::CEquipmentPropertiesMgr::~CEquipmentPropertiesMgr() {
   this->Clear();
   this->store->Clear();
   delete this->store;
+}
+
+// OFFSET: 0x0068B6C0
+
+// OFFSET: 0x0068CE10
+// FUNCTION: fn_05638
+void EquipmentProperties::CEquipment::Clear() {
+  this->m_properties.Clear();
+}
+
+// OFFSET: 0x0068C020
+
+// OFFSET: 0x0068C0F0
+// FUNCTION: fn_05628
+int& EquipmentProperties::CEquipment::GetId() {
+  return this->m_id;
+}
+
+// OFFSET: 0x0068C140
+// FUNCTION: fn_05633
+EquipmentPropertyStore& EquipmentProperties::CEquipment::GetProperties() {
+  return this->m_properties;
+}
+
+// OFFSET: 0x0068CEF0
+// FUNCTION: fn_05642
+bool EquipmentProperties::CEquipment::IsPretend() {
+  if (this->m_pretend == true) {
+    this->Load(false);
+  }
+  return this->m_pretend;
 }
 
 #if defined(_WIN32) && !defined(_WIN64)
