@@ -1,5 +1,6 @@
 #include "Render/Primitives/DepthAlpha.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
+#include "Render/Renderer.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -11,6 +12,13 @@
 // FUNCTION: fn_02248
 LightmappedCommand::LightmappedCommand()
     : vertices(nullptr), vertexCount(0), indices(nullptr), indexCount(0), texture(nullptr), lightmap(nullptr), primitiveType(D3DPT_TRIANGLESTRIP) {
+}
+
+// OFFSET: 0x00569090
+// FUNCTION: fn_02247
+ModelRenderCommand::ModelRenderCommand()
+    : vertices(nullptr), vertexCount(0), texture(nullptr), indices(nullptr), indexCount(0), unknown_0014(1), unknown_0018(0), unknown_001C(0), unknown_0020(0),
+      primitiveType(D3DPT_TRIANGLELIST) {
 }
 
 struct LightmappedBuffer {
@@ -52,6 +60,18 @@ LightmappedPrimitive::LightmappedPrimitive() : vertices(this->quad), vertexCount
 // FUNCTION: fn_02245
 LightmappedPrimitive::LightmappedPrimitive(const LightmappedPrimitive& other) : LightmappedPrimitive() {
   std::memcpy(this->quad, other.quad, sizeof(this->quad));
+}
+
+// OFFSET: 0x00569480
+// FUNCTION: fn_02258
+void LightmappedPrimitive::DrawLightmapped(int unused) {
+  g_renderer->DrawLightmappedPrimitive(this);
+}
+
+// OFFSET: 0x00569490
+// FUNCTION: fn_02259
+void LightmappedPrimitive::DrawAuxiliary(int unused) {
+  g_renderer->DrawAuxiliaryPrimitive(this);
 }
 
 // INLINED

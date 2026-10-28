@@ -32,9 +32,27 @@ struct LightmappedCommand {
   /* 0018 */ std::uint32_t primitiveType;
 };
 
+struct ModelRenderCommand {
+  ModelRenderCommand();
+
+  /* 0000 */ void* vertices;
+  /* 0004 */ std::int32_t vertexCount;
+  /* 0008 */ CTexture* texture;
+  /* 000C */ std::uint16_t* indices;
+  /* 0010 */ std::uint32_t indexCount;
+  /* 0014 */ std::uint16_t unknown_0014;
+  /* 0016 */ std::uint16_t unknown_0016;
+  /* 0018 */ std::uint32_t unknown_0018;
+  /* 001C */ std::uint32_t unknown_001C;
+  /* 0020 */ std::uint32_t unknown_0020;
+  /* 0024 */ std::uint32_t primitiveType;
+};
+
 struct LightmappedPrimitive {
   LightmappedPrimitive();
   LightmappedPrimitive(const LightmappedPrimitive& other);
+  void DrawAuxiliary(int unused);
+  void DrawLightmapped(int unused);
 
   /* 0000 */ LightmappedVertex* vertices;
   /* 0004 */ std::int32_t vertexCount;
@@ -68,6 +86,7 @@ static_assert(sizeof(LightmappedVertex) == 40);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(LightmappedPrimitive) == 188);
 static_assert(sizeof(LightmappedCommand) == 28);
+static_assert(sizeof(ModelRenderCommand) == 40);
 static_assert(sizeof(LightmappedPrimitivePool) == 0x20);
 static_assert(sizeof(LightmappedQueues) == 0x18);
 static_assert(offsetof(LightmappedVertex, lightU) == 0x0020);
