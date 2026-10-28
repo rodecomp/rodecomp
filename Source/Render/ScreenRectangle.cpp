@@ -5,6 +5,7 @@
 #include "Render/Textures/TextureCache.h"
 
 // OFFSET: 0x0054E590
+// FUNCTION: fn_01953
 void DrawBlendedRectangle(
   RenderPrimitivePool& primitives, TextureCache& textures, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha,
   float depthStart, float depthEnd
@@ -40,6 +41,7 @@ void DrawBlendedRectangle(
 }
 
 // OFFSET: 0x0054ED40
+// FUNCTION: fn_01954
 void DrawTexturedRectangle(
   RenderPrimitivePool& primitives, TextureCache& textures, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, CTexture* texture,
   bool depthAlpha, float depthStart, float depthEnd
@@ -79,6 +81,7 @@ void DrawTexturedRectangle(
 }
 
 // OFFSET: 0x0054EFD0
+// FUNCTION: fn_01955
 void DrawTextureRegion(
   RenderPrimitivePool& primitives, TextureCache& textures, RenderQueues& queues, float x, float y, float width, float height, std::uint32_t color,
   CTexture* texture, bool depthAlpha, float depthStart, float depthEnd

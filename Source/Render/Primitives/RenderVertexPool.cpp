@@ -65,6 +65,7 @@ RenderVertex* RenderVertexPool::Acquire(unsigned count) {
 }
 
 // OFFSET: 0x00AB77A0
+// FUNCTION: fn_17486
 RenderVertex* RenderVertexPool::Block::Append(unsigned count) {
   const unsigned first = static_cast<unsigned>(this->size());
   if (first + count > this->capacity()) {

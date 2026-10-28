@@ -9,11 +9,13 @@
 
 namespace {
   // OFFSET: 0x00573170
+  // FUNCTION: fn_02487
   std::uint16_t Color4444(std::uint32_t color) {
     return ((color >> 16) & 0xF000) | ((color >> 12) & 0xF00) | ((color >> 8) & 0xF0) | ((color >> 4) & 0xF);
   }
 
   // OFFSET: 0x005731B0
+  // FUNCTION: fn_02488
   std::uint16_t Color565(std::uint32_t color) {
     return ((color >> 8) & 0xF800) | ((color >> 5) & 0x7E0) | ((color >> 3) & 0x1F);
   }

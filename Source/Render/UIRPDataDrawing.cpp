@@ -4,6 +4,7 @@
 #include "Render/Textures/TextureCache.h"
 
 // OFFSET: 0x008130A0
+// FUNCTION: fn_10121
 void UIRPData::DrawStretched(RenderPrimitivePool& pool, int x, int y, CTexture* texture, std::uint32_t color, int width, int height) {
   if (!texture) {
     return;
@@ -42,6 +43,7 @@ void UIRPData::DrawStretched(RenderPrimitivePool& pool, int x, int y, CTexture* 
 }
 
 // OFFSET: 0x008134B0
+// FUNCTION: fn_10122
 void UIRPData::DrawNamed(RenderPrimitivePool& pool, TextureCache& textures, int x, int y, std::string name, std::uint32_t color, int width, int height) {
   CTexture* texture = textures.Load(name.c_str(), 0, true, true, false);
   if (!texture) {
@@ -95,6 +97,7 @@ void UIRPData::DrawNamed(RenderPrimitivePool& pool, TextureCache& textures, int 
 }
 
 // OFFSET: 0x00813A00
+// FUNCTION: fn_10123
 void UIRPData::SetSolid(RenderPrimitivePool& pool, int width, int height, std::uint32_t color) {
   this->m_primitives.clear();
 

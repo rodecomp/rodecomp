@@ -1,6 +1,7 @@
 #include "Render/RendererDX7.h"
 
 // OFFSET: 0x0055EC00
+// FUNCTION: fn_02113
 void CRendererDX7::SetClearColor(unsigned color) {
   this->clearColor = color;
 }
@@ -11,6 +12,7 @@ void CRendererDX7::SetCamera(const float* eye, const float* target, const float*
 }
 
 // OFFSET: 0x0055F690
+// FUNCTION: fn_02117
 void CRendererDX7::SetTextureFormat(unsigned format) {
   this->unknown_024C = format;
 }
