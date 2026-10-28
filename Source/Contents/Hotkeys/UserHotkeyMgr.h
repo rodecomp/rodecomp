@@ -14,6 +14,7 @@ public:
   static bool Initialize();
   static void Shutdown();
   void Reset();
+  int TabAt(int position) const;
   void LoadV2(LuaScript& script, Json::Value& data);
   void Capture(LuaScript& script);
   bool HasUserAssignments(LuaScript& script) const;

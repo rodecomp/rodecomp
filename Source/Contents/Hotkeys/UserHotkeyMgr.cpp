@@ -4,22 +4,39 @@
 #include <new>
 
 namespace {
+  enum InterfaceHotkey {
+    HK_BATTLEFIELDWND = 30,
+    HK_PARTY_RECRUIT = 33,
+    HK_PARTY_BOOKING_LIST = 34,
+    HK_EXMACRO_SETUPWND = 36,
+    HK_BUTTONS_RELOCATE = 43,
+    HK_MENUICON_HIDE = 45,
+    HK_TWITTERWND = 53,
+    HK_HUNTINGQUEST_INFO_ONOFF = 58,
+    HK_UNKNOWN_62 = 62,
+    HK_UNKNOWN_64 = 64,
+    HK_UNKNOWN_65 = 65,
+    HK_UNKNOWN_66 = 66,
+    HK_UNKNOWN_67 = 67,
+    HK_FIRST_HIDDEN = HK_BATTLEFIELDWND,
+  };
+
   // INLINED
   bool HiddenInterfaceIndex(int index) {
     switch (index) {
-    case 30:
-    case 33:
-    case 34:
-    case 36:
-    case 43:
-    case 45:
-    case 53:
-    case 58:
-    case 62:
-    case 64:
-    case 65:
-    case 66:
-    case 67:
+    case HK_BATTLEFIELDWND:
+    case HK_PARTY_RECRUIT:
+    case HK_PARTY_BOOKING_LIST:
+    case HK_EXMACRO_SETUPWND:
+    case HK_BUTTONS_RELOCATE:
+    case HK_MENUICON_HIDE:
+    case HK_TWITTERWND:
+    case HK_HUNTINGQUEST_INFO_ONOFF:
+    case HK_UNKNOWN_62:
+    case HK_UNKNOWN_64:
+    case HK_UNKNOWN_65:
+    case HK_UNKNOWN_66:
+    case HK_UNKNOWN_67:
       return true;
     default:
       return false;
@@ -34,7 +51,7 @@ namespace {
       if (tab == 1) {
         int hidden = 0;
 
-        for (int index = 30; index < count; ++index) {
+        for (int index = HK_FIRST_HIDDEN; index < count; ++index) {
           hidden += HiddenInterfaceIndex(index);
         }
 
@@ -48,8 +65,8 @@ namespace {
   // OFFSET: 0x00E12E50
   // FUNCTION: fn_23820
   int HotkeyIndex(LuaScript& script, int tab, int index) {
-    if (tab == 1 && index >= 30) {
-      for (int candidate = 30; candidate <= index; ++candidate) {
+    if (tab == 1 && index >= HK_FIRST_HIDDEN) {
+      for (int candidate = HK_FIRST_HIDDEN; candidate <= index; ++candidate) {
         index += HiddenInterfaceIndex(candidate);
       }
     }
@@ -99,6 +116,21 @@ void CUserHotkeyMgr::Shutdown() {
   if (g_userHotkeyMgr) {
     delete g_userHotkeyMgr;
     g_userHotkeyMgr = nullptr;
+  }
+}
+
+// OFFSET: 0x005F80A0
+// FUNCTION: fn_04058
+int CUserHotkeyMgr::TabAt(int position) const {
+  switch (position) {
+  case 1:
+    return 3;
+  case 2:
+    return 1;
+  case 3:
+    return 2;
+  default:
+    return 0;
   }
 }
 
