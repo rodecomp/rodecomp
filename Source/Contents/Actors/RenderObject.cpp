@@ -12,7 +12,7 @@
 #include "Utility/Math/ScalarConversion.h"
 
 #include <algorithm>
-
+#include <cstring>
 #include <windows.h>
 #include <timeapi.h>
 
@@ -236,6 +236,7 @@ void CRenderObject::SetAnimationSpeed(float speed) {
   }
 }
 
+
 // OFFSET: 0x00CC2810
 // FUNCTION: fn_21142
 void CGameActor::SetUnknown02C8(int value) {
@@ -338,4 +339,38 @@ void CRenderObject::ApplySwing(int mode, int& x, int& y, int& outX, int& outY) c
 // FUNCTION: fn_21138
 void CRenderObject::SetInstantValue(int key, std::int64_t value) {
   this->render.instant.Set(key, value);
+}
+
+// OFFSET: 0x00CC21F0
+// FUNCTION: fn_21136
+void CGameActor::Slot30() {
+}
+
+// OFFSET: 0x00CC27C0
+
+// OFFSET: 0x00CC2D50
+
+// OFFSET: 0x00CC2DC0
+// FUNCTION: fn_21147
+void CGameActor::Slot25(int) {
+}
+
+// OFFSET: 0x00CC2DD0
+// FUNCTION: fn_21148
+void CGameActor::Slot18(int, int, int) {
+}
+
+// OFFSET: 0x00CC2DE0
+// FUNCTION: fn_21149
+void CGameActor::Slot22(int) {
+}
+
+// OFFSET: 0x00CC2DF0
+// FUNCTION: fn_21150
+void CGameActor::Slot21(int) {
+}
+
+// OFFSET: 0x00CC2E40
+// FUNCTION: fn_21152
+void CGameActor::Slot23(int, int) {
 }
