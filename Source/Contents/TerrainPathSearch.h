@@ -2,14 +2,13 @@
 #define RAGNAROK_SOURCE_CONTENTS_TERRAINPATHSEARCH_H
 
 #include "Contents/MovementRouteInterpolation.h"
+#include "Resource/World/TerrainResource.h"
 
 #include <cstddef>
 #include <cstdint>
 #include <map>
 #include <string>
 #include <vector>
-
-class C3dAttr;
 
 struct MovementPathNodeCompare {
   bool operator()(const MovementPathNode* left, const MovementPathNode* right) const {
@@ -42,7 +41,15 @@ public:
   /* 1090 */ std::map<int, MovementPathNode*> nodeMap;
   /* 1098 */ MovementOpenList openList;
 
+  void Clear();
   void Reset();
+  bool CanMove(int startX, int startY, int targetX, int targetY, char flag) const;
+  MovementPathNode* FindOrCreateNode(int x, int y);
+  bool AddNeighbor(MovementPathNode* current, int cost, int nextX, int nextY, int metadata);
+  bool FindPath(
+    int startTick, int startX, int startY, int currentFractionX, int currentFractionY, int destX, int destY, int speed, MovementRouteInterpolation& route,
+    char flag
+  );
   int Height() const;
   int Width() const;
 };
