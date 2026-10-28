@@ -8,4 +8,12 @@ public:
   void Paint() override;
 };
 
+class UIScrollWnd : public UIWindow {
+};
+
+class UILapineBox_IngredientListWnd : public UIScrollWnd {
+public:
+  void Paint() override;
+};
+
 #endif
