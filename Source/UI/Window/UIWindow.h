@@ -25,6 +25,8 @@ struct tagRECT;
 struct tagSIZE;
 struct ActionFrame;
 class CSprRes;
+struct SpriteRleImage;
+struct SpriteFrameCell;
 class CBitmapRes;
 
 struct UIWindowContext {
@@ -148,6 +150,10 @@ public:
   int FormattedTextWidth(FontCache& fonts, const TextLocale& locale, std::string text, int family, int height, unsigned char bold);
   int RestoreEditTexts(const unsigned char* data);
   bool FitSprite(const ActionFrame* frame, const CSprRes* sprite, int width, int height, int* x, int* y, float* scale);
+  void AddSpriteCellOverlay(
+    int x, int y, int, int, const SpriteRleImage* image, const SpriteFrameCell* cell, float scale, float angle, std::uint32_t color,
+    const std::uint32_t* palette, float extentScale
+  );
   int DrawTitleBar(FontCache& fonts, const TextLocale& locale, bool closeButton, const char* title, int width);
   int DrawTitleBarAt(FontCache& fonts, const TextLocale& locale, int x, int width, bool closeButton, const char* title);
   void DrawPanelBackground(int y, int width, const char* bitmapName);
