@@ -22,6 +22,7 @@ public:
   HRESULT AcquireBackBuffer();
 
   UINT* AdjustTextureDimensions(UINT* output, UINT width, UINT height) const;
+  bool CanAutoGenerateMipmaps(D3DFORMAT format) const;
   HRESULT Close();
   HRESULT Present(int unused);
   HRESULT ClipFullscreenCursor();

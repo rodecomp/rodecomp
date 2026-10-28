@@ -505,6 +505,7 @@
   "Source/Render/DX9/SurfaceDX9.cpp": 0,
   "Source/Render/DX9/TextureDX9.cpp": 0,
   "Source/Render/DX9/TextureModesDX9.cpp": 0,
+  "Source/Render/DeviceCapabilitiesDX9.cpp": 0,
   "Source/Render/DeviceContext/DCBitmap.cpp": 0,
   "Source/Render/DeviceContext/DCSurface.cpp": 0,
   "Source/Render/DeviceContext/DeviceContext.cpp": 0,
