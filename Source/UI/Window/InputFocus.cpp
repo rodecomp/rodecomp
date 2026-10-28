@@ -47,6 +47,28 @@ void InputFocus::First() {
   this->window = nullptr;
 }
 
+// OFFSET: 0x00AA9C70
+// FUNCTION: fn_17258
+void InputFocus::Last() {
+  if (this->window) {
+    UIWindow* parent = this->window->parent;
+
+    for (auto it = parent->m_children.rbegin(); it != parent->m_children.rend(); ++it) {
+      UIWindow* child = *it;
+      if (child->Slot05()) {
+        this->Set(child);
+        return;
+      }
+    }
+
+    if (this->window) {
+      this->window->Slot24(0);
+    }
+  }
+
+  this->window = nullptr;
+}
+
 // OFFSET: 0x00AA9D20
 // FUNCTION: fn_17259
 void InputFocus::Next() {

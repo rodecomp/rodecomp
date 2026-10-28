@@ -7,6 +7,7 @@ struct InputFocus {
   UIWindow*& window;
   void Set(UIWindow* value);
   void First();
+  void Last();
   void Next();
   void Advance();
 
