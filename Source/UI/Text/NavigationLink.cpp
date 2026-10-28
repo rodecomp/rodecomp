@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <vector>
 
 // OFFSET: 0x00833160
 // FUNCTION: fn_10409
@@ -28,6 +29,26 @@ int DecodeNavigationNumber(std::string value) {
   }
 
   return static_cast<int>(result);
+}
+
+// OFFSET: 0x00833270
+// FUNCTION: fn_10410
+std::string EncodeNavigationNumber(int value) {
+  const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  std::vector<char> characters;
+
+  do {
+    characters.push_back(digits[value % 62]);
+    value /= 62;
+  } while (value >= 62);
+  characters.push_back(digits[value]);
+
+  std::string result;
+  const std::size_t count = characters.size();
+  for (std::size_t index = 0; index < count; ++index) {
+    result += characters[count - 1 - index];
+  }
+  return result;
 }
 
 // OFFSET: 0x00835890

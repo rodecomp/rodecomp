@@ -4,6 +4,7 @@
 #include <string>
 
 int DecodeNavigationNumber(std::string value);
+std::string EncodeNavigationNumber(int value);
 bool ParseNavigationLink(std::string value, std::string& name, int& x, int& y);
 std::string FormatNavigationLink(std::string value, bool brackets);
 void DisplayNavigationLink(std::string& output, std::string value);
