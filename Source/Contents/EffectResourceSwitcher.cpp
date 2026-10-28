@@ -14,8 +14,15 @@ void CEffect::Slot08(int, int, int) {
 }
 
 // OFFSET: 0x005A2130
+// FUNCTION: fn_03085
+void CEffect::Slot11(std::string) {
+}
 
 // OFFSET: 0x005A2170
+// FUNCTION: fn_03089
+EffectVector3 CEffect::Slot25() {
+  return EffectVector3{0.0f, 0.0f, 0.0f};
+}
 
 // OFFSET: 0x005A2190
 // FUNCTION: fn_03090
