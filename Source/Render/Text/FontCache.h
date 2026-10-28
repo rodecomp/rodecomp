@@ -3,6 +3,8 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <cstdint>
+#include <string>
 #include <vector>
 #include <windows.h>
 #include <objidl.h>
@@ -15,6 +17,8 @@ namespace Gdiplus {
 #include <gdiplus.h>
 
 struct FontEntry {
+  void RemovePrivateFont() const;
+
   /* 0000 */ int family;
   /* 0004 */ int height;
   /* 0008 */ unsigned charset;
@@ -41,6 +45,10 @@ private:
 
   friend struct FontCacheLayout;
 };
+
+HFONT __stdcall CreateEmbeddedFont(int height, std::int16_t family);
+std::string __stdcall PrivateFontFamilyName(const std::string& path);
+int FallbackFontIndex(const std::string& name);
 
 struct FontCacheLayout {
 #if defined(_WIN32) && !defined(_WIN64)

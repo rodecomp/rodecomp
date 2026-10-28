@@ -1,6 +1,9 @@
 #include "Render/Text/FontCache.h"
 
 #include <algorithm>
+#include <atlconv.h>
+#include <cstring>
+#include <iterator>
 #include <string>
 #include <tuple>
 
@@ -80,8 +83,50 @@ void FontCache::CreateSystemFont(FontEntry& entry) {
   );
 }
 
+// OFFSET: 0x0054DD70
+// FUNCTION: fn_01948
+HFONT __stdcall CreateEmbeddedFont(int height, std::int16_t family) {
+  LOGFONTA description = {};
+  description.lfWeight = FW_NORMAL;
+  description.lfCharSet = DEFAULT_CHARSET;
+  description.lfOutPrecision = OUT_RASTER_PRECIS;
+  description.lfQuality = PROOF_QUALITY;
+
+  switch (family) {
+  case 20:
+    std::strcpy(description.lfFaceName, "RixSquirrel_10.eot");
+    break;
+  case 21:
+    std::strcpy(description.lfFaceName, "RixLoveangel_10.eot");
+    break;
+  case 23:
+    std::strcpy(description.lfFaceName, "RixDiary_10.eot");
+    break;
+  case 24:
+    std::strcpy(description.lfFaceName, "RixMiniHeart_10.eot");
+    break;
+  case 25:
+    std::strcpy(description.lfFaceName, "RixFreshman_10.eot");
+    break;
+  case 26:
+    std::strcpy(description.lfFaceName, "RixKid_10.eot");
+    break;
+  case 27:
+    std::strcpy(description.lfFaceName, "RixMagic_10.eot");
+    break;
+  case 28:
+    std::strcpy(description.lfFaceName, "RixJJangu_10.eot");
+    break;
+  default:
+    std::strcpy(description.lfFaceName, "RixNHCgogo_10.eot");
+    break;
+  }
+
+  description.lfHeight = -MulDiv(13, 72, 72);
+  return CreateFontIndirectA(&description);
+}
+
 // OFFSET: 0x0054DEE0
-// OFFSET: 0x0054F8A0
 // FUNCTION: fn_01949
 bool FontCache::CreatePrivateFont(FontEntry& entry) {
   const char* path = entry.family == 29 ? PrivatePath(entry.bold) : "";
@@ -115,6 +160,15 @@ bool FontCache::CreatePrivateFont(FontEntry& entry) {
   return entry.privateResources > 0;
 }
 
+// OFFSET: 0x0054E140
+// FUNCTION: fn_01950
+void FontEntry::RemovePrivateFont() const {
+  if (this->privateResources > 0 && this->family == 29) {
+    const std::string path = this->bold == 1 ? std::string("system\\font\\SCDream6.otf") : std::string("system\\font\\SCDream4.otf");
+    RemoveFontResourceExA(path.c_str(), FR_PRIVATE, nullptr);
+  }
+}
+
 // OFFSET: 0x0054F360
 // FUNCTION: fn_01958
 HFONT FontCache::Get(int family, int height, unsigned charset, unsigned char bold, unsigned char italic) {
@@ -146,4 +200,34 @@ HFONT FontCache::Get(int family, int height, unsigned charset, unsigned char bol
     return std::tie(a.family, a.height, a.charset) < std::tie(b.family, b.height, b.charset);
   });
   return entry.font;
+}
+
+// OFFSET: 0x0054F830
+// FUNCTION: fn_01959
+int FallbackFontIndex(const std::string& name) {
+  const char* const* entry = std::begin(fallback);
+
+  for (; entry != std::end(fallback); ++entry) {
+    if (name == *entry) {
+      break;
+    }
+  }
+
+  return entry == std::end(fallback) ? 0 : static_cast<int>(entry - std::begin(fallback));
+}
+
+// OFFSET: 0x0054F8A0
+// FUNCTION: fn_01960
+std::string __stdcall PrivateFontFamilyName(const std::string& path) {
+  std::wstring wide;
+  wide.assign(path.begin(), path.end());
+  Gdiplus::PrivateFontCollection collection;
+  collection.AddFontFile(wide.c_str());
+  Gdiplus::FontFamily family;
+  int found = 0;
+  collection.GetFamilies(1, &family, &found);
+  WCHAR name[LF_FACESIZE];
+  std::memset(name, 0, sizeof(name));
+  family.GetFamilyName(name, 0);
+  return std::string(ATL::CW2A(name, CP_THREAD_ACP));
 }
