@@ -1,5 +1,7 @@
 #include "Contents/Effects/Effect.h"
 
+#include "Contents/Effects/EffectLists.h"
+
 // OFFSET: 0x00B4DAE0
 // FUNCTION: fn_18979
 CEffect::CEffect(int value)
@@ -22,6 +24,17 @@ void CEffect::Close() {
 void CEffect::AddEvent(int kind, const char* text, int frame, int argument) {
   EffectEvent event{kind, frame, argument, text ? text : ""};
   this->events.push_back(event);
+}
+
+// OFFSET: 0x00B4DF90
+// FUNCTION: fn_18985
+bool CEffect::RetireIfInactive() {
+  if (!this->Slot06()) {
+    g_effectMgr->Retire(this, 0);
+    return true;
+  }
+
+  return false;
 }
 
 // OFFSET: 0x00B4E170

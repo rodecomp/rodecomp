@@ -55,6 +55,7 @@ public:
   virtual bool Slot33() = 0;
   void AddEvent(int kind, const char* text, int frame, int argument);
   void SetEventFrame(int kind, int frame);
+  bool RetireIfInactive();
 
   /* 0004 */ int id;
   /* 0008 */ float position[3];
