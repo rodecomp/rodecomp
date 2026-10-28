@@ -24,4 +24,6 @@ private:
   void RemoveActive(CEffect* effect);
 };
 
+extern EffectLists* g_effectMgr;
+
 #endif

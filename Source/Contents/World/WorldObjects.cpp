@@ -1,6 +1,8 @@
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/World/WorldActors.h"
 #include "Contents/World/WorldObjects.h"
+#include "Contents/World/WorldScene.h"
+#include "Contents/Effects/EffectLists.h"
 
 // OFFSET: 0x00AC8220
 // FUNCTION: fn_17667
@@ -30,14 +32,27 @@ void WorldObjects::Remove(CRenderObject* object) {
   }
 }
 
-// INLINED
-void WorldObjects::Clear() {
+// GLOBAL: gl_24483
+EffectLists* g_effectMgr;
+
+// OFFSET: 0x00ACA320
+// FUNCTION: fn_17691
+void WorldScene::Clear() {
   auto entry = this->objects.begin();
 
   while (entry != this->objects.end()) {
     delete *entry;
     entry = this->objects.erase(entry);
   }
+
+  this->player = nullptr;
+  this->actors.clear();
+  this->unknown_0018.clear();
+  this->unknown_0020.clear();
+  g_effectMgr->Clear();
+  this->pendingActorIds.clear();
+  this->actorCells.clear();
+  this->unindexedActorIds.clear();
 }
 
 // OFFSET: 0x00ACA980

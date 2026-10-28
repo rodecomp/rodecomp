@@ -11,7 +11,6 @@ struct WorldObjects {
   std::list<CRenderObject*>& objects;
 
   void Remove(CRenderObject* object);
-  void Clear();
   void SendObjectMessage(CGameObject* sender, std::uint64_t identity, int message, int a, int b, int c, int d);
 };
 

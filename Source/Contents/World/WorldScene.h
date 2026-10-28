@@ -21,6 +21,7 @@ public:
   virtual ~WorldScene();
   WorldScene(const WorldScene&) = delete;
   WorldScene& operator=(const WorldScene&) = delete;
+  void Clear();
 
   /* 0004 */ CGameMode* gameMode;
   /* 0008 */ std::list<CRenderObject*> objects;
