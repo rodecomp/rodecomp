@@ -1,4 +1,6 @@
 #include "Render/DeviceContext/DeviceContext.h"
+#include "UI/UIBarGraph.h"
+#include "UI/Buttons/UIBmpRadioBtn.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Buttons/UIItemTagButton.h"
@@ -6,6 +8,7 @@
 #include "UI/Lists/UITreeView.h"
 #include "UI/UIStaticItem.h"
 
+#include <cstdio>
 #include <cstring>
 #include <string>
 
@@ -200,3 +203,76 @@ void UIItemTagButton::Slot28(int x, int y) {
 // FUNCTION: fn_11459
 void UIStaticItem_Illust::Slot28(int, int) {
 }
+
+// OFFSET: 0x00891810
+// FUNCTION: fn_11450
+void UIBmpRadioBtn::Slot28(int, int) {
+  if (!this->m_tooltip.empty()) {
+    int screenX = 0, screenY = -20;
+
+    for (const UIWindow* window = this; window; window = window->parent) {
+      screenX = (screenX + window->geometry.x);
+      screenY = (screenY + window->geometry.y);
+    }
+
+    this->m_controls->services.Tooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+  }
+}
+
+// OFFSET: 0x00891870
+// FUNCTION: fn_11451
+void UICaptchaImage::Slot28(int, int) {
+  if (!this->m_tooltip.empty()) {
+    int screenX = 0, screenY = -20;
+
+    for (const UIWindow* window = this; window; window = window->parent) {
+      screenX = (screenX + window->geometry.x);
+      screenY = (screenY + window->geometry.y);
+    }
+
+    this->m_controls->services.Tooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+  }
+}
+
+// OFFSET: 0x00891240
+// FUNCTION: fn_11447
+void UIBarGraph4::Slot28(int, int) {
+  if (!this->m_current || !this->m_maximum || *this->m_maximum < *this->m_current || *this->m_maximum == 0) {
+    return;
+  }
+
+  int screenX = 0, screenY = -16;
+
+  for (const UIWindow* window = this; window; window = window->parent) {
+    screenX = (screenX + window->geometry.x);
+    screenY = (screenY + window->geometry.y);
+  }
+
+  char text[260];
+  std::memset(text, 0, sizeof(text));
+  const int permille = static_cast<int>(static_cast<float>(*this->m_current) / static_cast<float>(*this->m_maximum) * 1000.0f);
+  std::sprintf(text, "%.1f %%", static_cast<float>(permille) * 0.1f);
+  this->m_controls->services.Tooltip(text, screenX, screenY, -1, false, true);
+}
+
+// OFFSET: 0x008918D0
+// FUNCTION: fn_11452
+void UIINT64BarGraph::Slot28(int, int) {
+  if (this->m_maximum < this->m_current || this->m_maximum == 0 || this->m_maximum == 99999999) {
+    return;
+  }
+
+  int screenX = 0, screenY = -16;
+
+  for (const UIWindow* window = this; window; window = window->parent) {
+    screenX = (screenX + window->geometry.x);
+    screenY = (screenY + window->geometry.y);
+  }
+
+  char text[260];
+  std::memset(text, 0, sizeof(text));
+  const int permille = static_cast<int>(static_cast<double>(this->m_current) / static_cast<double>(this->m_maximum) * 1000.0);
+  std::sprintf(text, "%.1f %%", static_cast<float>(permille) * 0.1f);
+  this->m_controls->services.Tooltip(text, screenX, screenY, -1, false, true);
+}
+
