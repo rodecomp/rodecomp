@@ -23,22 +23,34 @@ namespace {
     window.DrawBitmap(x, y, image ? &image->image : nullptr, transparent);
   }
 
-  // OFFSET: 0x00A86200
+  // INLINED
   void Count(UIWindow& window, int right, int y, int value) {
     char text[16];
     std::sprintf(text, "%d", value);
-    const int bytes = static_cast<int>(std::strlen(text));
-    TextContext context(*window.geometry.surface);
-    context.SetFont(0, 11, 0, 0);
-    const int left = (right - context.Measure(text, bytes).cx);
-    context.SetColor(0xFFFFFF);
-    context.Draw((left - 1), y, text, bytes);
-    context.Draw((left + 1), y, text, bytes);
-    context.Draw(left, (y - 1), text, bytes);
-    context.Draw(left, (y + 1), text, bytes);
-    context.SetColor(0);
-    context.Draw(left, y, text, bytes);
+    window.DrawRightOutlinedText(right, y, text, 0, 0, 0xFFFFFF, 0, 11, 0);
   }
+}
+
+// OFFSET: 0x00A86200
+// FUNCTION: fn_17019
+void UIWindow::DrawRightOutlinedText(
+  int right, int y, const char* text, int bytes, std::uint32_t color, std::uint32_t outline, int family, int height,
+  unsigned char bold
+) {
+  if (bytes == 0) {
+    bytes = static_cast<int>(std::strlen(text));
+  }
+
+  TextContext context(*this->geometry.surface);
+  context.SetFont(family, height, bold, 0);
+  const int left = right - context.Measure(text, static_cast<int>(std::strlen(text))).cx;
+  context.SetColor(outline);
+  context.Draw(left - 1, y, text, bytes);
+  context.Draw(left + 1, y, text, bytes);
+  context.Draw(left, y - 1, text, bytes);
+  context.Draw(left, y + 1, text, bytes);
+  context.SetColor(color);
+  context.Draw(left, y, text, bytes);
 }
 
 // OFFSET: 0x0092F8E0
