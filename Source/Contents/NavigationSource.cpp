@@ -1,8 +1,16 @@
 #include "Contents/NavigationManager.h"
 
 // OFFSET: 0x00B96980
+// FUNCTION: fn_19588
+NavigationTarget NavigationManager::GetCurrentTarget() const {
+  return this->currentTarget;
+}
 
 // OFFSET: 0x00B96AE0
+// FUNCTION: fn_19590
+NavigationTarget NavigationManager::GetSavedTarget() const {
+  return this->savedTarget;
+}
 
 // OFFSET: 0x00B971D0
 // FUNCTION: fn_19597
