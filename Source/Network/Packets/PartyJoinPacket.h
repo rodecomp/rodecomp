@@ -10,7 +10,7 @@
 #include <string>
 
 class CConnection;
-struct PacketLengths;
+class PacketLengths;
 class WindowManagerWindows;
 
 void SendPartyJoin(CConnection& connection, const PacketLengths& lengths, const std::uint32_t* accountId, const std::uint32_t* characterId);

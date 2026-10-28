@@ -2,11 +2,14 @@
 
 #include <algorithm>
 
+// GLOBAL: gl_24489
+PacketLengths g_packetLengths;
+
 // OFFSET: 0x00B09E50
 // FUNCTION: fn_18388
 PacketLengthResult PacketLengths::Lookup(int id) const {
-  const auto entry = this->values.find(id);
-  if (entry == this->values.end()) {
+  const auto entry = this->m_values.find(id);
+  if (entry == this->m_values.end()) {
     return {-1, 4};
   }
 
@@ -32,7 +35,7 @@ int PacketLengths::FixedLength(int id) const {
     return 4;
   }
 
-  return std::max(this->Lookup(id).length, 2);
+  return std::max(g_packetLengths.Lookup(id).length, 2);
 }
 
 namespace {
@@ -51,15 +54,21 @@ namespace {
 
 // OFFSET: 0x00B02260
 // FUNCTION: fn_18387
-void PacketLengths::Initialize(std::map<int, PacketLengthValue>& values) {
+void PacketLengths::Initialize() {
   for (const PacketRegistration& value : registrations) {
-    values.try_emplace(value.id, PacketLengthValue{value.length, value.variable, value.record});
+    this->m_values.try_emplace(value.id, PacketLengthValue{value.length, value.variable, value.record});
   }
+}
+
+// OFFSET: 0x00B01E70
+// FUNCTION: fn_18383
+PacketLengths::PacketLengths() {
+  this->Initialize();
 }
 
 // OFFSET: 0x00B02210
 // FUNCTION: fn_18386
 int PacketLengths::IsRecorded(int id) const {
-  const auto entry = this->values.find(id);
-  return entry == this->values.end() ? 0 : entry->second.record;
+  const auto entry = this->m_values.find(id);
+  return entry == this->m_values.end() ? 0 : entry->second.record;
 }

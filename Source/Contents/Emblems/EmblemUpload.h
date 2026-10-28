@@ -4,7 +4,7 @@
 #include <cstdint>
 
 class CConnection;
-struct PacketLengths;
+class PacketLengths;
 struct WindowDialogs;
 
 struct EmblemUploadContext {

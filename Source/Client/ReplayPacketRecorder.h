@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <cstdio>
 
-struct PacketLengths;
+class PacketLengths;
 
 struct ReplayPacketRecorder {
   const PacketLengths& lengths;

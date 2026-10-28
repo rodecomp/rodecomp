@@ -9,8 +9,6 @@
 #include <vector>
 #include <windows.h>
 
-class ResourceFailures;
-
 struct ResourceNameLess {
   bool operator()(const ResourceName* left, const ResourceName* right) const;
 };
@@ -41,7 +39,6 @@ private:
   std::vector<std::map<const ResourceName*, CRes*, ResourceNameLess>> m_resources;
   CRITICAL_SECTION m_lock;
   std::vector<CRes*> m_transient;
-  ResourceFailures* m_failures;
   std::uint32_t unknown_004C[17];
   void EraseTransient(CRes* resource);
   CRes* LoadNamed(const char* name);

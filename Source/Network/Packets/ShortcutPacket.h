@@ -10,7 +10,7 @@
 
 struct NormalItemSlot;
 class CConnection;
-struct PacketLengths;
+class PacketLengths;
 
 void SendShortcutUpdate(
   CConnection& connection, const PacketLengths& lengths, int index, int bank, const NormalItemSlot* bank0, const NormalItemSlot* bank1,

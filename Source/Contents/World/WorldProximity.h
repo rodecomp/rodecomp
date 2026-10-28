@@ -5,7 +5,7 @@
 #include <functional>
 
 class CConnection;
-struct PacketLengths;
+class PacketLengths;
 
 void UpdateWorldProximityNotification(
   unsigned char& notified, std::function<bool()> nearby, CConnection& connection, const PacketLengths& lengths, const std::uint32_t& accountId

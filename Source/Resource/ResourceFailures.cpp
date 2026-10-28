@@ -1,16 +1,16 @@
 #include "Resource/ResourceFailures.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/Threading/NSyncObject.h"
 
+#include <cstdint>
 #include <cstring>
 
-// INLINED
-ResourceFailures::ResourceFailures(ResourceMessages& messages) : m_messages(&messages) {
-  InitializeCriticalSection(&this->m_lock);
-}
+// GLOBAL: gl_24582
+ResourceFailures g_resourceFailures;
 
 // INLINED
-ResourceFailures::~ResourceFailures() {
-  DeleteCriticalSection(&this->m_lock);
+ResourceFailures::ResourceFailures() {
+  InitializeCriticalSection(&this->m_lock);
 }
 
 // OFFSET: 0x00AEE310
@@ -27,8 +27,8 @@ void ResourceFailures::Report(std::string requested, std::string resolved) {
     report = this->m_reported.insert(resolved).second;
   }
   if (report) {
-    this->m_messages->Message("Resource File Loading fail", 255);
-    this->m_messages->Message(requested.c_str(), 255);
-    this->m_messages->Message(resolved.c_str(), 255);
+    g_windowMgr.SendMsg(1, reinterpret_cast<std::intptr_t>("Resource File Loading fail"), 255, 0, 0, 0);
+    g_windowMgr.SendMsg(1, reinterpret_cast<std::intptr_t>(requested.c_str()), 255, 0, 0, 0);
+    g_windowMgr.SendMsg(1, reinterpret_cast<std::intptr_t>(resolved.c_str()), 255, 0, 0, 0);
   }
 }

@@ -15,13 +15,19 @@ struct PacketLengthResult {
   /* 0004 */ int length;
 };
 
-struct PacketLengths {
-  const std::map<int, PacketLengthValue>& values;
+class PacketLengths {
+public:
+  PacketLengths();
   PacketLengthResult Lookup(int id) const;
   int FixedLength(int id) const;
   int IsRecorded(int id) const;
-  static void Initialize(std::map<int, PacketLengthValue>& values);
+
+private:
+  /* 0000 */ std::map<int, PacketLengthValue> m_values;
+  void Initialize();
 };
+
+extern PacketLengths g_packetLengths;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(PacketLengthValue) == 0x0C);
@@ -29,6 +35,7 @@ static_assert(offsetof(PacketLengthValue, variable) == 0x04);
 static_assert(offsetof(PacketLengthValue, record) == 0x08);
 static_assert(sizeof(PacketLengthResult) == 0x08);
 static_assert(offsetof(PacketLengthResult, length) == 0x04);
+static_assert(sizeof(PacketLengths) == 0x08);
 #endif
 
 #endif

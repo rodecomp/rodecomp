@@ -153,7 +153,7 @@ __forceinline CRes* ResourceMgr::LoadNamed(const char* name) {
 
     lock.reset();
     if (resolved.find("\\map\\") == std::string::npos) {
-      this->m_failures->Report(name, resolved);
+      g_resourceFailures.Report(name, resolved);
     }
 
     return nullptr;

@@ -434,6 +434,7 @@ public:
   char UpdateSnapRectangles();
   bool ProcessDialogKey(int unused, int key);
   void NotifyMode();
+  int SendMsg(int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4, std::intptr_t argument5);
 };
 
 extern UIWindowMgr g_windowMgr;

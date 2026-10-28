@@ -7,7 +7,7 @@
 #include <winsock2.h>
 
 class CRenderSystemBase;
-struct PacketLengths;
+class PacketLengths;
 
 struct ConnectionEndpoint {
   const char* address;
