@@ -52,6 +52,7 @@ public:
   void DrawLit(const float* matrix, const int* rectangle, bool clip, struct GroundLightingContext& context);
   void WorldColor(float x, float unusedY, float z, std::uint32_t* output) const;
   void Lighting(int column, int row, float& red, float& green, float& blue) const;
+  int Slot12(int first, int second, int third, int fourth, int fifth) const;
   void LightmapSample(int column, int row, unsigned char& alpha, unsigned char& red, unsigned char& green, unsigned char& blue) const;
   bool TerrainCellCorners(const class C3dAttr& terrain, int column, int row, float* vertices) const;
   void InitializeLighting(const class C3dAttr& terrain);

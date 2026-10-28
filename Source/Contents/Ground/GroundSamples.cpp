@@ -39,6 +39,12 @@ void GroundGeometry::Lighting(int column, int row, float& red, float& green, flo
   blue = this->lighting[index][2];
 }
 
+// OFFSET: 0x00AC11C0
+// FUNCTION: fn_17578
+int GroundGeometry::Slot12(int, int, int, int, int) const {
+  return 0;
+}
+
 // OFFSET: 0x00AC11D0
 // FUNCTION: fn_17579
 void GroundGeometry::LightmapSample(int column, int row, unsigned char& alpha, unsigned char& red, unsigned char& green, unsigned char& blue) const {
