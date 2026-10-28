@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <vector>
 
-struct RenderObjectState;
+#include "Contents/Actors/RenderObjectState.h"
 struct RagEffectState;
 class CTexture;
 
@@ -32,6 +32,7 @@ struct EffectPrimitiveRecord {
 };
 
 struct EffectPrimitiveSlot {
+  EffectPrimitiveSlot();
   /* 0000 */ unsigned char active;
   /* 0001 */ unsigned char unknown_0001;
   /* 0002 */ std::int16_t unknown_0002;
@@ -163,6 +164,18 @@ struct EffectPrimitiveState {
   /* FA10 */ std::uint32_t unknown_FA10;
   /* FA14 */ std::uint32_t unknown_FA14;
 };
+
+class CActRes;
+
+struct EffectPrimitiveObject {
+  /* 0000 */ RenderObjectState render;
+  /* 0138 */ EffectPrimitiveState state;
+
+  CActRes* ActionResource();
+  bool AdvanceFrame();
+};
+
+void CalculateVectorAngle(float x, float y, std::int16_t* angle);
 
 static_assert(sizeof(EffectVector3) == 12);
 static_assert(sizeof(EffectPrimitiveRecord) == 140);

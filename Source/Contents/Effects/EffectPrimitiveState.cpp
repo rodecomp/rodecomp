@@ -1,10 +1,19 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/RagEffectState.h"
 #include "Contents/Actors/RenderObjectState.h"
+#include "Resource/Sprites/ActionResource.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstdlib>
 #include <cstring>
+
+// OFFSET: 0x00BAE170
+// FUNCTION: fn_19762
+EffectPrimitiveSlot::EffectPrimitiveSlot() {
+  for (int i = 0; i < 4; ++i) {
+    this->unknown_0084[i] = {0.0f, 0.0f, 0.0f};
+  }
+}
 
 // INLINED
 EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
@@ -152,6 +161,26 @@ EffectPrimitiveState::~EffectPrimitiveState() {
   std::free(this->textures);
 }
 
+// OFFSET: 0x00BAE3A0
+
+// OFFSET: 0x00BAE460
+// FUNCTION: fn_19765
+void EffectPrimitiveState::GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue) {
+  if (this->parent->unknown_11C88[0] != -1) {
+    *red = static_cast<unsigned char>(this->parent->unknown_11C88[0]);
+  }
+
+  if (this->parent->unknown_11C88[1] != -1) {
+    *green = static_cast<unsigned char>(this->parent->unknown_11C88[1]);
+  }
+
+  if (this->parent->unknown_11C88[2] != -1) {
+    *blue = static_cast<unsigned char>(this->parent->unknown_11C88[2]);
+  }
+}
+
+// OFFSET: 0x00BAE4B0
+
 // OFFSET: 0x00BAE5D0
 // FUNCTION: fn_19767
 void EffectPrimitiveState::Initialize(
@@ -168,20 +197,4 @@ void EffectPrimitiveState::Initialize(
   render.position[1] = this->origin.y;
   render.position[2] = this->origin.z;
   this->unknown_013C = 0;
-}
-
-// OFFSET: 0x00BAE460
-// FUNCTION: fn_19765
-void EffectPrimitiveState::GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue) {
-  if (this->parent->unknown_11C88[0] != -1) {
-    *red = static_cast<unsigned char>(this->parent->unknown_11C88[0]);
-  }
-
-  if (this->parent->unknown_11C88[1] != -1) {
-    *green = static_cast<unsigned char>(this->parent->unknown_11C88[1]);
-  }
-
-  if (this->parent->unknown_11C88[2] != -1) {
-    *blue = static_cast<unsigned char>(this->parent->unknown_11C88[2]);
-  }
 }
