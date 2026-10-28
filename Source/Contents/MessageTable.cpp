@@ -1,8 +1,12 @@
 #include "Client/Input/InputCharset.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
+#include "File/CommonObject.h"
+#include "File/File.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Text/Base64.h"
+#include "Utility/Text/FormatString.h"
+#include "Utility/Text/LanguageCharset.h"
 #include "Utility/Text/TextTokens.h"
 
 #include <cstdio>
@@ -12,6 +16,9 @@
 // STATIC: 0x016D5780
 // GLOBAL: gl_24382
 std::unordered_map<int, std::string> g_messageStrings;
+
+// GLOBAL: gl_24601
+static CCommonObject g_messageTableObject;
 
 namespace {
   const char* const messageNames[] = {
@@ -42,11 +49,13 @@ namespace {
 
   // OFFSET: 0x00B009D0
   // FUNCTION: fn_18373
-  void TransformFields(std::vector<std::string>& row) {
+  std::vector<std::string> TransformFields(const std::vector<std::string>& row) {
     const char* escapes[] = {"\\r", "\\n", "\\t", "\\'", "\\\"", "\\\\"};
     const char replacements[] = {'\r', '\n', '\t', '\'', '"', '\\'};
 
-    for (std::string& text : row) {
+    std::vector<std::string> result;
+    result.reserve(row.size());
+    for (std::string text : row) {
       if (text.empty()) {
         text = "NO MSG";
       } else {
@@ -56,8 +65,95 @@ namespace {
           }
         }
       }
+      result.push_back(std::move(text));
+    }
+    return result;
+  }
+}
+
+// OFFSET: 0x005B8410
+// FUNCTION: fn_03420
+bool CCommonObject::OpenCsv(const char* name, CFile& file) {
+  if (!name || !std::strstr(name, ".csv") || !file.Open(name, 0, true, false)) {
+    return false;
+  }
+
+  const unsigned char* data = static_cast<const unsigned char*>(file.GetData());
+  if (file.GetSize() >= 2) {
+    if (data[0] == 0xFF && data[1] == 0xFE) {
+      FormatOwnedString("Not Match Encoding Type : %d", 5);
+      return false;
+    }
+    if (data[0] == 0xFE && data[1] == 0xFF) {
+      FormatOwnedString("Not Match Encoding Type : %d", 7);
+      return false;
     }
   }
+
+  if (file.GetSize() >= 3 && data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF) {
+    file.Seek(3, FILE_CURRENT);
+  }
+  return true;
+}
+
+// OFFSET: 0x005B7910
+// FUNCTION: fn_03416
+std::vector<std::string> CCommonObject::ReadCsvRow(CFile& file, char) {
+  std::vector<std::string> row;
+  std::string field;
+
+  while (!file.IsEOF()) {
+    char value;
+    file.Read(&value, 1);
+    if (value == '\n' || value == '\r' || value == ',') {
+      DecodeField(field, row);
+      field.clear();
+      if (value == '\r') {
+        char next;
+        if (file.Peek(&next, 1) && next == '\n') {
+          file.Read(&value, 1);
+          break;
+        }
+      } else if (value == '\n') {
+        break;
+      }
+    } else {
+      field.push_back(value);
+    }
+  }
+
+  DecodeField(field, row);
+  return row;
+}
+
+// OFFSET: 0x005B7CD0
+// FUNCTION: fn_03418
+bool CCommonObject::LoadCsv(const char* name, std::vector<std::string> (*transform)(const std::vector<std::string>&),
+                            void (*insert)(std::vector<const char*>&)) {
+  CFile file;
+  if (!this->OpenCsv(name, file)) {
+    return false;
+  }
+
+  while (!file.IsEOF()) {
+    std::vector<std::string> row = this->ReadCsvRow(file, ',');
+    if (transform) {
+      row = transform(row);
+    }
+
+    if (insert) {
+      std::vector<const char*> fields;
+      fields.reserve(row.size());
+      const int count = static_cast<int>(row.size());
+      for (int i = 0; i < count; ++i) {
+        fields.push_back(row[i].c_str());
+      }
+      insert(fields);
+    }
+  }
+
+  file.Close();
+  return true;
 }
 
 // OFFSET: 0x00B00360
@@ -85,17 +181,6 @@ int FillMessageBuckets(int* first, std::uintptr_t last, int* value) {
   }
   return result;
 }
-
-struct MessageBucketVector {
-  void* begin;
-  void* end;
-  void* capacity;
-
-  void Clear();
-};
-
-// OFFSET: 0x00B00520
-
 
 // OFFSET: 0x00B00130
 // FUNCTION: fn_18367
@@ -138,7 +223,7 @@ const char* LookupMessage(int id) {
   return result.c_str();
 }
 
-void InsertMessageRow(std::vector<std::string>& row);
+void InsertMessageRow(std::vector<const char*>& row);
 
 bool ImportMessageCsv(std::string_view bytes) {
   g_messageStrings.clear();
@@ -176,8 +261,13 @@ bool ImportMessageCsv(std::string_view bytes) {
     }
 
     DecodeField(field, row);
-    TransformFields(row);
-    InsertMessageRow(row);
+    row = TransformFields(row);
+    std::vector<const char*> fields;
+    fields.reserve(row.size());
+    for (const std::string& text : row) {
+      fields.push_back(text.c_str());
+    }
+    InsertMessageRow(fields);
   }
 
   return true;
@@ -200,10 +290,31 @@ int FindMessageId(const char* name) {
 }
 
 // OFFSET: 0x00B00890
+// FUNCTION: fn_18371
+char* DecodeMessageRot(char* str) {
+  return str;
+}
 
 // OFFSET: 0x00B00910
+// FUNCTION: fn_18372
+void InsertMessageRow(std::vector<const char*>& row) {
+  const std::ptrdiff_t count = row.end() - row.begin();
+  if (count < 2) {
+    return;
+  }
+
+  int id = FindMessageId(row[0]);
+  if (id < 4698) {
+    g_messageStrings.emplace(id, row[count - 1]);
+  }
+}
 
 // OFFSET: 0x00B00E40
+// FUNCTION: fn_18374
+void ImportMessageTable() {
+  g_messageStrings.clear();
+  g_messageTableObject.LoadCsv("msgstringtable.csv", TransformFields, InsertMessageRow);
+}
 
 // OFFSET: 0x00B00EC0
 // FUNCTION: fn_18375
