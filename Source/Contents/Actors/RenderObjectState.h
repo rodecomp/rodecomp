@@ -55,7 +55,10 @@ struct RenderObjectState {
   /* 00A1 */ unsigned char enabled;
   /* 00A2 */ unsigned char unknown_00A2;
   /* 00A3 */ unsigned char unknown_00A3;
-  /* 00A4 */ std::uint16_t unknown_00A4;
+  union {
+    /* 00A4 */ std::uint16_t unknown_00A4;
+    /* 00A4 */ unsigned char unknown_00A4Bytes[2];
+  };
   /* 00A6 */ unsigned char unknown_00A6[2];
   /* 00A8 */ std::uint32_t unknown_00A8;
   /* 00AC */ int screenX;

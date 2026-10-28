@@ -7,6 +7,8 @@
 
 #include <cstddef>
 
+struct SpriteQuad;
+
 class CRenderObject : public CGameObject {
 public:
   CRenderObject(ResourceMgr& resources, JobNames& names);
@@ -28,6 +30,8 @@ public:
   void SetActionSpeed(float speed);
   void DrawSprite(int argument, bool seasonal, float offset);
   void DrawShadow(int argument, float scale);
+  void DrawQuad(const SpriteQuad& quad, const std::uint32_t* palette, int blend, float offsetX, float offsetY, int depthOffset);
+  void DrawFlippedQuad(SpriteQuad& quad, const std::uint32_t* palette, int blend, float x, float y, int depthOffset);
   void SendValueMessage(int value, CGameObject* target);
   void SetActionName(ResourceMgr& resources, const char* name);
   void SetSpriteName(ResourceMgr& resources, const char* name);
