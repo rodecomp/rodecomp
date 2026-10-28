@@ -418,3 +418,20 @@ void CRenderObject::JitterBounds(float* output, const int* input, float offset, 
   output[1] = static_cast<float>(input[0]) + offset + jitter[2];
   output[3] = static_cast<float>(input[2]) + offset + jitter[3];
 }
+
+// OFFSET: 0x00CAFEE0
+// FUNCTION: fn_21090
+void CGameActor::ProcessBodyState() {
+  switch (this->bodyState) {
+  case 1:
+  case 2:
+    this->render.unknown_009C[2] = 1;
+    break;
+  }
+}
+
+// OFFSET: 0x0077E3A0
+// FUNCTION: fn_08455
+int CGameActor::GetShield() {
+  return -1;
+}

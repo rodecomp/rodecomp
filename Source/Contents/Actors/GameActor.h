@@ -17,7 +17,9 @@ public:
   /* 0254 */ std::uint32_t routeStartTick;
   /* 0258 */ unsigned char unknown_0258[0x08];
   /* 0260 */ int unknown_0260;
-  /* 0264 */ unsigned char unknown_0264[0x64];
+  /* 0264 */ unsigned char unknown_0264[0x58];
+  /* 02BC */ int bodyState;
+  /* 02C0 */ unsigned char unknown_02C0[0x08];
   /* 02C8 */ int unknown_02C8;
   /* 02CC */ unsigned char unknown_02CC[0x18];
   /* 02E4 */ int unknown_02E4;
@@ -76,6 +78,8 @@ public:
   void SetUnknown02E4(int value);
   void SetUnknown02C8(int value);
   void SetUnknown0260(int value);
+  void ProcessBodyState();
+  int GetShield();
   bool FindRoute(int startX, int startY, int fractionX, int fractionY, int destX, int destY, int speed);
 };
 
@@ -85,6 +89,7 @@ static_assert(offsetof(CGameActor, route) == 0x220);
 static_assert(offsetof(CGameActor, unknown_0238) == 0x238);
 static_assert(offsetof(CGameActor, routeStartTick) == 0x254);
 static_assert(offsetof(CGameActor, unknown_0260) == 0x260);
+static_assert(offsetof(CGameActor, bodyState) == 0x2BC);
 static_assert(offsetof(CGameActor, unknown_02C8) == 0x2C8);
 static_assert(offsetof(CGameActor, unknown_02E4) == 0x2E4);
 static_assert(offsetof(CGameActor, unknown_0305) == 0x305);
