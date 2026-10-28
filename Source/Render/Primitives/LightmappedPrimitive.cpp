@@ -1,6 +1,7 @@
 #include "Render/Primitives/DepthAlpha.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 
+#include <cstdlib>
 #include <cstring>
 #include <windows.h>
 #include <d3d9types.h>
@@ -10,6 +11,26 @@
 // FUNCTION: fn_02248
 LightmappedCommand::LightmappedCommand()
     : vertices(nullptr), vertexCount(0), indices(nullptr), indexCount(0), texture(nullptr), lightmap(nullptr), primitiveType(D3DPT_TRIANGLESTRIP) {
+}
+
+struct LightmappedBuffer {
+  void* vertices;
+  int count;
+  void* indices;
+  void Clear();
+};
+
+// OFFSET: 0x00569310
+// FUNCTION: fn_02254
+void LightmappedBuffer::Clear() {
+  if (this->vertices) {
+    std::free(this->vertices);
+    this->vertices = nullptr;
+  }
+  if (this->indices) {
+    std::free(this->indices);
+    this->indices = nullptr;
+  }
 }
 
 // OFFSET: 0x00569020
