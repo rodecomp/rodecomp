@@ -182,6 +182,52 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
 }
 
 // OFFSET: 0x00878750
+// OFFSET: 0x00878750
+// FUNCTION: fn_11212
+bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
+  auto& owner = this->m_text->list;
+  std::string parsed = RemoveTextColors(text.c_str(), owner.codePage);
+  parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
+  parsed = DisplayTextTag(std::move(parsed), "<ITEM>", "</ITEM>");
+
+  if (this->m_text->chatConversions) {
+    parsed = this->ConvertChat(std::move(parsed));
+  }
+
+  parsed = DisplayTextTag(std::move(parsed), "<TIPBOX>", "</TIPBOX>");
+  std::string navigation;
+  DisplayNavigationLink(navigation, parsed);
+  parsed = std::move(navigation);
+  parsed = DisplayTextTag(std::move(parsed), "<QUEST>", "</QUEST>");
+
+  std::vector<TextLink> extracted;
+  ExtractTextLinks(parsed, "<URL>", "</URL>", extracted);
+
+  if (extracted.empty()) {
+    return false;
+  }
+
+  for (const auto& link : extracted) {
+    auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
+    button->Configure(link.display.c_str(), 0x00E6A300, 0, 12, 0, 1);
+    button->m_hoverColor = 0x00EFB700;
+    button->SetId(437);
+    const int height = button->geometry.height;
+    const int width = this->TextWidth(owner.fonts, owner.locale, link.display.c_str(), 0, 0, 12, 0, 0);
+    button->Resize(width + 1, height);
+    parsed = RemoveTextLinkInfo(parsed);
+    const auto position = this->LinkPosition(link.position, addedLines);
+    button->m_value = position.first;
+    button->Move(position.second, -100);
+    this->AddChild(button);
+    SplitTextLinkArguments(link.metadata, button->m_lines);
+    this->links.push_back(button);
+  }
+
+  this->SendMsg(nullptr, 7, 0, 0, 0, 0);
+  return true;
+}
+
 // INLINED
 void UITextViewer::AddLinks(const char* text, unsigned addedLines, int kind) {
   switch (kind) {
