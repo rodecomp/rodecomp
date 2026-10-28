@@ -3,9 +3,20 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+#include <string>
+#include <vector>
+
 class UIMenuWnd : public UIFrameWnd {
 public:
+  /* 00B4 */ int m_menuId;
+  /* 00B8 */ int m_selected;
+  /* 00BC */ int m_itemHeight;
+  /* 00C0 */ std::vector<std::string> m_items;
+
   void Slot27(int x, int y) override;
+  void Slot28(int x, int y) override;
+
+  int ItemAt(int x, int y);
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Client/Mode/ActiveGameMode.h"
 #include "Client/Mode/CGameMode.h"
@@ -587,6 +588,29 @@ void UIMenuWnd::Slot27(int x, int y) {
   this->Slot28(x, y);
 }
 
+// OFFSET: 0x008F4680
+// FUNCTION: fn_12289
+void UIMenuWnd::Slot28(int x, int y) {
+  const int previous = this->m_selected;
+  this->m_selected = this->ItemAt(x, y);
+  if (previous != this->m_selected) {
+    this->Invalidate();
+  }
+}
+
+// OFFSET: 0x008D99D0
+// FUNCTION: fn_12134
+int UIMenuWnd::ItemAt(int x, int y) {
+  if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
+    return -1;
+  }
+
+  int row = y / (this->m_itemHeight / 2);
+  const unsigned index = row < 0 ? 0 : row;
+  const unsigned last = static_cast<unsigned>(this->m_items.size()) - 1;
+  return index <= last ? index : last;
+}
+
 // OFFSET: 0x008F4D40
 // FUNCTION: fn_12294
 void UIEquipWnd::Slot19() {
@@ -647,6 +671,14 @@ void UIWhisperWnd::Slot33(int, int) {
 // FUNCTION: fn_12310
 void UIExchangeWnd::Slot35(int delta) {
   this->SendMsg(this->m_scrollBar, 7, delta < 0 ? 1 : -1, 0, 0, 0);
+}
+
+// OFFSET: 0x008F59C0
+// FUNCTION: fn_12309
+void UIEquipWnd::Slot35(int delta) {
+  if (g_session.unknown_80C8 > 4 && this->m_page == 3) {
+    this->SendMsg(this->m_scrollBar, 8, delta < 0 ? 1 : -1, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x008F5A50

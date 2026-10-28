@@ -194,7 +194,9 @@ public:
   /* 807C */ unsigned char unknown_807C[0x38];
   /* 80B4 */ std::map<std::string, int> m_nameToId;
   /* 80BC */ std::map<int, SessionShop> m_shops;
-  /* 80C4 */ unsigned char unknown_80C4[0x58];
+  /* 80C4 */ unsigned char unknown_80C4[4];
+  /* 80C8 */ int unknown_80C8;
+  /* 80CC */ unsigned char unknown_80CC[0x50];
   /* 811C */ std::vector<ItemInfo> m_cardItems;
   /* 8128 */ unsigned char unknown_8128[0x0C];
   /* 8134 */ int unknown_8134;
