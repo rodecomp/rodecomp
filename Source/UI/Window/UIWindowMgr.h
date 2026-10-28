@@ -419,6 +419,7 @@ public:
   void InitializeWindowPolicy();
   void ResetWindows();
   void Shutdown();
+  void SetScreenSize(int width, int height);
   UIWindow* LookupWindow(int id);
   void Schedule(UIWindow* window);
   void Destroy(UIWindow* window);

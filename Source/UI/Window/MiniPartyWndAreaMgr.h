@@ -7,6 +7,8 @@
 
 class CMiniPartyWndAreaMgr {
 public:
+  static CMiniPartyWndAreaMgr* Instance();
+
   /* 0004 */ RECT area;
   /* 0014 */ int columns;
   /* 0018 */ int rows;
