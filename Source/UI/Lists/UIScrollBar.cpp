@@ -287,3 +287,31 @@ void UIScrollBar::Paint() {
 
   draw(vertical ? "scroll0bar_down.bmp" : "scroll1bar_right.bmp", end, true);
 }
+
+// OFFSET: 0x0087BAA0
+// FUNCTION: fn_11250
+void UIScrollBar::Configure(int x, int y, unsigned char vertical, int length) {
+  this->vertical = vertical;
+
+  int width;
+  int height;
+  switch (vertical) {
+  case 0:
+    width = length;
+    height = this->thickness;
+    break;
+  case 1:
+    width = this->thickness;
+    height = length;
+    break;
+  default:
+    width = length;
+    height = length;
+    break;
+  }
+
+  this->UIWindow::Resize(width, height);
+  this->Move(x, y);
+  this->Slot15(width, height);
+  this->Slot22(width, height);
+}

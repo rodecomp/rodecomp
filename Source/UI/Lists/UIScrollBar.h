@@ -25,6 +25,7 @@ public:
   int Position();
   int Travel();
   int Part(int x, int y);
+  void Configure(int x, int y, unsigned char vertical, int length);
 
   /* 007C */ int state;
   /* 0080 */ int maximum;
