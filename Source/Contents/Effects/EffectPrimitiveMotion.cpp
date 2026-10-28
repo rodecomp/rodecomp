@@ -1081,6 +1081,50 @@ void EffectParticle::PrimChemical2() {
 }
 
 // OFFSET: 0x00BBBB40
+// FUNCTION: fn_19796
+void EffectParticle::PrimChemical3() {
+  FaceCamera(this->state.slots);
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process <= 10) {
+      if (slot.flag1[0] < 10) {
+        slot.alphaB += 12;
+      } else {
+        slot.alphaB += 20;
+      }
+    }
+
+    if (slot.flag1[0] >= 10) {
+      slot.height[3] += 0.05f;
+    }
+
+    slot.height[1] += slot.height[3];
+
+    if (slot.height[1] >= 200.0f) {
+      slot.height[1] -= 200.0f;
+    }
+
+    if (slot.process > 20) {
+      if (slot.flag1[0] < 10) {
+        slot.alphaB -= 4;
+      } else {
+        slot.alphaB -= 2;
+      }
+
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00BBBC40
 // FUNCTION: fn_19797
@@ -1272,8 +1316,88 @@ void EffectParticle::PrimIntimidate() {
 }
 
 // OFFSET: 0x00BC09F0
+// FUNCTION: fn_19824
+void EffectParticle::PrimPoison() {
+  FaceCamera(this->state.slots);
+
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.maxHeight >= 30.0f) {
+      slot.maxHeight -= 30.0f;
+    }
+
+    if (slot.flag1[10] == 1) {
+      if (slot.process < 10) {
+        if (slot.alphaB <= 45) {
+          slot.alphaB += 10;
+        }
+      } else if (slot.process > 65) {
+        if (slot.alphaB >= 10) {
+          slot.alphaB -= 10;
+        }
+      }
+    } else if (slot.alphaB <= 45) {
+      slot.alphaB += 5;
+    }
+  }
+}
 
 // OFFSET: 0x00BBEA00
+// FUNCTION: fn_19813
+void EffectParticle::PrimGuard() {
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process > 1 && slot.flag1[0] == 1) {
+      slot.rotStart += 10;
+    } else {
+      slot.rotStart = static_cast<std::int16_t>(static_cast<int>(this->state.master->state.parent->render.angle + 270.0f));
+    }
+
+    if (slot.rotStart >= 360) {
+      slot.rotStart -= 360;
+    }
+
+    if (slot.process < 10) {
+      if (slot.alphaB < 100) {
+        slot.alphaB += 20;
+      }
+    } else if (slot.process > 26) {
+      slot.height[0] += 0.1f;
+
+      if (slot.alphaB > 0) {
+        slot.alphaB -= 6;
+      }
+
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00BB6F30
 // FUNCTION: fn_19779
