@@ -201,6 +201,22 @@ unsigned TextContext::Marker(const char* text, unsigned bytes, bool enabled) {
   return bytes;
 }
 
+// OFFSET: 0x005504E0
+// FUNCTION: fn_01979
+void __stdcall Sub5504E0() {}
+
+// OFFSET: 0x005504F0
+// FUNCTION: fn_01980
+void __stdcall Sub5504F0() {}
+
+// OFFSET: 0x00550500
+// FUNCTION: fn_01981
+void __stdcall Sub550500() {}
+
+// OFFSET: 0x00550510
+// FUNCTION: fn_01982
+void __stdcall Sub550510() {}
+
 // OFFSET: 0x00550520
 // FUNCTION: fn_01983
 SIZE TextContext::MeasurePart(const char* text, int bytes, unsigned charset) {
