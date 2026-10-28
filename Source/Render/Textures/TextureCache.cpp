@@ -1,3 +1,4 @@
+#include "Render/DeviceContext/DCSurface.h"
 #include "Render/RenderSystemBase.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
@@ -44,6 +45,12 @@ CTexture* TextureCache::Upload(int width, int height, const std::uint32_t* pixel
   }
 
   return texture;
+}
+
+// OFFSET: 0x00571660
+// FUNCTION: fn_02450
+CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget) {
+  return GetRenderSystemHolder()->CreateTexture(width, height, format, dynamic, renderTarget);
 }
 
 // OFFSET: 0x00571930
@@ -131,6 +138,8 @@ void TextureCache::Clear() {
 
   this->m_textures.clear();
 }
+
+// OFFSET: 0x00571B70
 
 // OFFSET: 0x00571C50
 // FUNCTION: fn_02457

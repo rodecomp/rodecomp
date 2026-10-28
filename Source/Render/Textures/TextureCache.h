@@ -34,6 +34,7 @@ public:
   void Remove(CTexture* texture);
   void Clear();
   void ClearUnused();
+  void Reload();
 
 private:
   ResourceMgr& m_resources;
@@ -43,5 +44,7 @@ private:
   const unsigned& m_reuseDelay;
   std::map<const char*, CTexture*, TextureNameLess> m_textures;
 };
+
+CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget);
 
 #endif
