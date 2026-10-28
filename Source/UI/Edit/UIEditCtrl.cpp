@@ -28,6 +28,8 @@
 #include "UI/Shop/UIMerchantItemShopWnd.h"
 #include "UI/Shop/UINoticeMessageBox_LockSellItem.h"
 #include "UI/Skill/UISkillListWnd.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Shop/UIMerchantItemPurchaseMSGWnd.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -681,9 +683,30 @@ int UISpriteButton::FrameWidth(int action, int frame) {
   return sprite->images[0][actions->Frame(action, frame).cells[0].image]->width;
 }
 
+// OFFSET: 0x0097D220
+// FUNCTION: fn_13325
+void UINoticeMessageBox_LockSellItem::Slot15(int, int) {
+  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  button->SetBitmap("유저인터페이스\\inventory\\bt_close.bmp", 0, 0);
+  button->SetBitmap("유저인터페이스\\inventory\\bt_close.bmp", 1, 0);
+  button->SetBitmap("유저인터페이스\\inventory\\bt_close.bmp", 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(229, 4);
+  button->SetId(201);
+  this->AddChild(button);
+}
+
 // OFFSET: 0x0097E3E0
 // FUNCTION: fn_13327
 void UIItemWnd::Slot18() {
+}
+
+// OFFSET: 0x00981990
+// FUNCTION: fn_13340
+void UIMerchantItemPurchaseMSGWnd::Paint() {
+  this->ClearSurface(0xFFFFFFFF);
+  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, "", 0);
+  this->DrawButtonBar(2, 0, 1);
 }
 
 // OFFSET: 0x00984130
