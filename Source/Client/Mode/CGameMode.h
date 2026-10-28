@@ -9,6 +9,7 @@
 #include <string>
 
 class CView;
+struct ActorNameAllPacket;
 struct WorldScene;
 
 class CGameMode : public CMode {
@@ -27,6 +28,7 @@ public:
   std::string MapName();
   void WorldCell(float x, float z, int& column, int& row) const;
   void PlayerCell(int* column, int* row) const;
+  void ReceiveActorNameAll(const ActorNameAllPacket* packet);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
