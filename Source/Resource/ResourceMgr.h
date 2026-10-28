@@ -4,6 +4,7 @@
 #include "Resource/Resource.h"
 #include "Resource/ResourceAliases.h"
 
+#include <cstdint>
 #include <map>
 #include <vector>
 #include <windows.h>
@@ -16,14 +17,16 @@ struct ResourceNameLess {
 
 class ResourceMgr {
 public:
-  explicit ResourceMgr(ResourceFailures& failures);
+  ResourceMgr();
   ~ResourceMgr();
+  static ResourceMgr& Instance();
   void Register(const char* extension, const char* prefix, CRes* prototype);
   int FindType(const char* extension) const;
   CRes* Find(int type, const char* name) const;
   CRes* Load(const char* name);
   void Remove(CRes* resource);
   bool Exists(const char* name);
+  void UnloadAll();
   void ClearUnused(const char* extension);
   void ClearUnused();
   void ClearExpired(const unsigned& reuseDelay);
@@ -38,6 +41,7 @@ private:
   CRITICAL_SECTION m_lock;
   std::vector<CRes*> m_transient;
   ResourceFailures* m_failures;
+  std::uint32_t unknown_004C[17];
   void EraseTransient(CRes* resource);
   ResourceMgr(const ResourceMgr&) = delete;
   ResourceMgr& operator=(const ResourceMgr&) = delete;

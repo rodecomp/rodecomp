@@ -20,8 +20,16 @@ bool ResourceNameLess::operator()(const ResourceName* left, const ResourceName* 
 }
 
 // INLINED
-ResourceMgr::ResourceMgr(ResourceFailures& failures) : m_failures(&failures) {
+ResourceMgr::ResourceMgr() : unknown_004C{} {
   InitializeCriticalSection(&this->m_lock);
+}
+
+// OFFSET: 0x00AF1620
+// FUNCTION: fn_18209
+ResourceMgr& ResourceMgr::Instance() {
+  // GLOBAL: gl_24488
+  static ResourceMgr g_resourceMgr;
+  return g_resourceMgr;
 }
 
 // OFFSET: 0x00AEE070
@@ -183,6 +191,22 @@ void ResourceMgr::EraseTransient(CRes* resource) {
   auto entry = std::find(this->m_transient.begin(), this->m_transient.end(), resource);
   if (entry != this->m_transient.end()) {
     this->m_transient.erase(entry);
+  }
+}
+
+// OFFSET: 0x00AF0680
+// FUNCTION: fn_18189
+void ResourceMgr::UnloadAll() {
+  this->m_transient.clear();
+
+  for (std::size_t type = 0; type < this->m_resources.size(); ++type) {
+    auto& resources = this->m_resources[type];
+    for (auto entry = resources.begin(); entry != resources.end(); ++entry) {
+      entry->second->Unload();
+      delete entry->second;
+    }
+
+    resources.clear();
   }
 }
 
