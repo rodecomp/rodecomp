@@ -47,6 +47,28 @@ void CDCBitmap::Copy(int x, int y, int width, int height, const std::uint32_t* s
   this->m_bitmap.Copy(x, y, width, height, source, transparent);
 }
 
+
+// OFFSET: 0x005482D0
+// FUNCTION: fn_01853
+void CDCBitmap::SetAlpha(unsigned char maxLuminance) {
+  if (this->m_bitmap.height <= 0) {
+    return;
+  }
+
+  for (std::uint32_t y = 0; y < this->m_bitmap.height; ++y) {
+    for (std::uint32_t x = 0; x < this->m_bitmap.width; ++x) {
+      const std::uint32_t index = y * this->m_bitmap.width + x;
+      std::uint32_t pixel = this->m_bitmap.pixels[index];
+      const unsigned char r = pixel & 0xFF;
+      const unsigned char g = (pixel >> 8) & 0xFF;
+      const unsigned char b = (pixel >> 16) & 0xFF;
+      const unsigned char avg = static_cast<unsigned char>((r + g + b) / 3);
+      const unsigned char alpha = static_cast<unsigned char>((static_cast<float>(avg) / static_cast<float>(maxLuminance)) * 255.0f);
+      reinterpret_cast<unsigned char*>(&pixel)[3] = alpha;
+      this->m_bitmap.pixels[index] = pixel;
+    }
+  }
+}
 // OFFSET: 0x00547D80
 void CDCBitmap::ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int width, int height, const std::uint32_t* source, int option) {
   this->m_bitmap.ScaleCopy(x, y, sourceWidth, sourceHeight, width, height, source, option);

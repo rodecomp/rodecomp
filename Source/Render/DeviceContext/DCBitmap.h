@@ -40,6 +40,7 @@ public:
   void Dim(int x, int y, int width, int height, int percent) override;
   void UploadTexture(CRenderSystemBase& system, CTexture*& texture);
   HGDIOBJ Create(int width, int height);
+  void SetAlpha(unsigned char maxLuminance);
   // INLINED
   void SetAlpha(bool alpha) {
     this->m_cache.m_alpha = alpha;
