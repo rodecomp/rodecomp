@@ -63,6 +63,7 @@ public:
   std::size_t Erase(std::uint32_t id);
   bool Contains(std::uint32_t id) const;
   void Clear();
+  void ProcessRequests();
 
   struct Request {
     /* 0000 */ std::uint32_t id;

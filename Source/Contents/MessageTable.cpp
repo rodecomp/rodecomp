@@ -4855,6 +4855,35 @@ bool CCommonObject::LoadCsv(const char* name, std::vector<std::string> (*transfo
   return true;
 }
 
+// OFFSET: 0x005B7FE0
+// FUNCTION: fn_03419
+bool CCommonObject::LoadCsv(const char* name, std::function<std::vector<std::string>(std::vector<std::string>&)> transform,
+                            std::function<void(std::vector<const char*>&, std::any)> insert, std::any context) {
+  CFile file;
+  if (!this->OpenCsv(name, file)) {
+    return false;
+  }
+
+  while (!file.IsEOF()) {
+    std::vector<std::string> row = this->ReadCsvRow(file, ',');
+    if (transform) {
+      row = transform(row);
+    }
+
+    if (insert) {
+      std::vector<const char*> fields;
+      fields.reserve(row.size());
+      for (const std::string& field : row) {
+        fields.push_back(field.c_str());
+      }
+      insert(fields, context);
+    }
+  }
+
+  file.Close();
+  return true;
+}
+
 // OFFSET: 0x00B00360
 // FUNCTION: fn_18368
 int FillMessageBuckets(int* first, std::uintptr_t last, int* value) {
