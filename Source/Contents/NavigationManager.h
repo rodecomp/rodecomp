@@ -16,6 +16,7 @@ class CNavi_Object;
 class CSprRes;
 class CTexture;
 class GroundGeometry;
+class LuaScript;
 
 struct NaviCell {
   /* 0000 */ int x;
@@ -78,6 +79,8 @@ public:
   /* 0074 */ int unknown_0074;
   /* 0078 */ int unknown_0078;
 
+  CNavi_Object();
+  CNavi_Object(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info);
   virtual ~CNavi_Object();
   virtual int GetId() const;
   virtual int GetType() const;
@@ -119,6 +122,7 @@ public:
   std::vector<NaviLink>::iterator LinkedEnd();
   void AddLinkedLink(const NaviLink& link);
   void ClearLinkedLinks();
+  CNavi_Link(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info, CNaviInfo* linkedInfo, int unknown80, int unknown84);
 
   ~CNavi_Link() override;
   int GetId() const override;
@@ -153,6 +157,7 @@ struct NaviObjectRecord {
 
 class CNaviInfo {
 public:
+  CNaviInfo(int index, const char* name, const char* title, int cellX, int cellY, int type);
   ~CNaviInfo();
 
   bool HasName(const char* name) const;
@@ -217,6 +222,8 @@ public:
   NaviCell* GetCell(NaviCell* out);
   void Clear();
   void ClearAll();
+  bool AddDestination(CNaviInfo* info);
+  bool AddObject(CNavi_Link* link);
   CNavi_Link* FindLink(unsigned int key, bool byId);
   int FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allowGates, bool includeObjects, bool allowWarps, int side);
   void ResetLinkDepths();
@@ -253,6 +260,7 @@ public:
   std::string DestinationTitle();
   float FitToSquare(int* offsetX, int* offsetY, int width, int height, float size) const;
   void LoadSettings();
+  bool LoadScript(LuaScript* script);
   bool BuildRoute(int startX, int startY, int destX, int destY, bool collectCells);
   bool SavedTargetText(char* out, int size);
   int RequestRoute(int cellX, int cellY);

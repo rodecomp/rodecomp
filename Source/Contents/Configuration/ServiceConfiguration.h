@@ -3,5 +3,6 @@
 
 extern signed char g_language;
 extern int g_serviceType;
+extern int g_serviceMode;
 
 #endif

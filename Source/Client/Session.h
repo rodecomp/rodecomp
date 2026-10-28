@@ -215,6 +215,8 @@ public:
   void ClearUnknown1740(int id);
   void ClearUnknown1738(int id);
   std::uint32_t SyncServerTime(std::uint32_t serverTime);
+  void LoadNavigationScripts();
+  void LoadRobeAlpha();
   std::pair<int, int>* InsertPair(int key, int value);
   int SetPairValue(int value, int slot);
   int SetHotkeyEntry(char enabled, int id, int value, int slot);
