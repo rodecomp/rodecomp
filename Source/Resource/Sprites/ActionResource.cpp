@@ -63,7 +63,7 @@ bool CActRes::Load(const char* name) {
   input.Read(&header, sizeof(header));
 
   if (header.magic != 0x4341) {
-    ShowErrorDialog(context.renderSystem, "Illegal File Format", 0);
+    ShowErrorDialog(context.renderSystem, "Illegal file format", 0);
     ShowErrorDialog(context.renderSystem, name, 0);
     file.Close();
 
@@ -147,8 +147,8 @@ bool CActRes::Load(const char* name) {
             const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
 
             if (image) {
-              const int width = image->width * ((image->unknown_0004 & 0xFFFFu) != 0 ? 2 : 1);
-              const int height = image->height * ((image->unknown_0004 >> 16) != 0 ? 2 : 1);
+              const int width = image->width * (image->unknown_0004 != 0 ? 2 : 1);
+              const int height = image->height * (image->unknown_0006 != 0 ? 2 : 1);
               cell.x = RelativeCoordinate(cell.x, width, cell.scaleX);
               cell.y = RelativeCoordinate(cell.y, height, cell.scaleY);
             }
