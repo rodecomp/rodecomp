@@ -110,6 +110,10 @@ void __stdcall Sub7739F0() {
 // OFFSET: 0x00773A00
 
 // OFFSET: 0x00773CB0
+// FUNCTION: fn_08321
+bool Sub773CB0(int skillId) {
+  return skillId == 0x1998 || skillId == 0x19C9;
+}
 
 // OFFSET: 0x00773CD0
 
