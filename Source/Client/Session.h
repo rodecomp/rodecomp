@@ -175,6 +175,8 @@ public:
   int GetPetJobByEggItem(int eggItemId);
   const char* GetPetString(int id);
   const char* GetPetTalkName(int job);
+  const char* GetPetTalkActionName(int action);
+  const char* GetMonsterTalkEventName(int event);
   bool UpdateHomunSkill(const CSkillInfo& value, unsigned char notify);
   bool UpdateMercSkill(const CSkillInfo& value, unsigned char notify);
   void AddUnknownId(int id);
