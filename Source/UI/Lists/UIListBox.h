@@ -60,7 +60,7 @@ public:
   /* 00CC */ unsigned char centerVertically;
   /* 00D0 */ int textInset;
 
-private:
+protected:
   UIListBoxContext* m_listContext;
 };
 

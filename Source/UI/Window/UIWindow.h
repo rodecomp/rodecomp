@@ -28,6 +28,7 @@ class CSprRes;
 struct SpriteRleImage;
 struct SpriteFrameCell;
 class CBitmapRes;
+struct WindowReplayRecorder;
 
 struct UIWindowContext {
   RenderPrimitivePool& primitives;
@@ -148,6 +149,7 @@ public:
     FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
   );
   int FormattedTextWidth(FontCache& fonts, const TextLocale& locale, std::string text, int family, int height, unsigned char bold);
+  int RecordEditTexts(WindowReplayRecorder& recorder);
   int RestoreEditTexts(const unsigned char* data);
   bool FitSprite(const ActionFrame* frame, const CSprRes* sprite, int width, int height, int* x, int* y, float* scale);
   void AddSpriteCellOverlay(

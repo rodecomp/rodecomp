@@ -1,4 +1,8 @@
 #include "Client/Mode/CGameMode.h"
+#include "Client/Replay.h"
+#include "Client/ReplayPacketRecorder.h"
+#include "Contents/MessageTable.h"
+#include "Contents/NavigationManager.h"
 #include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Network/TextEncoding.h"
@@ -9,20 +13,32 @@
 #include "Render/Text/TextContext.h"
 #include "Render/Textures/Texture.h"
 #include "Resource/Bitmap/BitmapImage.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "UI/Buttons/UIButton.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UIListBoxNaviSearch.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Lists/UIScrollBarNavi.h"
+#include "UI/Text/ColoredText.h"
+#include "UI/UIStaticBitmap.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Navigation/UIPrivateAirplaneWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowManagerWindows.h"
+#include "UI/Window/WindowPolicy.h"
 #include "UI/Window/WindowRegistration.h"
 
+#include <algorithm>
 #include <bit>
 #include <cstdlib>
+#include <cstdio>
 #include <cstring>
+#include <string>
 #include <windows.h>
 #include <timeapi.h>
 
@@ -1382,4 +1398,221 @@ void UINavigationV4Wnd::Slot19() {
 // OFFSET: 0x005C72C0
 // FUNCTION: fn_03605
 void UIPrivateAirplaneWnd::Slot19() {
+}
+
+#pragma pack(push, 1)
+struct EditTextsRecord {
+  /* 0000 */ std::uint32_t marker;
+  /* 0004 */ std::uint16_t bytes;
+  /* 0006 */ int windowId;
+  /* 000A */ int count;
+  /* 000E */ unsigned char data[0xFF2];
+};
+#pragma pack(pop)
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(EditTextsRecord) == 0x1000);
+#endif
+
+// OFFSET: 0x00A834E0
+// FUNCTION: fn_17004
+int UIWindow::RecordEditTexts(WindowReplayRecorder& recorder) {
+  if (Replay::Instance().state != 2 || !WindowPolicy(recorder.policy, recorder.restricted, 6, this->geometry.id)) {
+    return 0;
+  }
+
+  EditTextsRecord record;
+  std::memset(&record, 0, sizeof(record));
+
+  int count = 0;
+  for (UIWindow* child : this->m_children) {
+    if (child->Slot46() == 2) {
+      ++count;
+    }
+  }
+
+  record.count = count;
+  int offset = 14;
+  if (count == 0) {
+    return offset;
+  }
+
+  for (UIWindow* child : this->m_children) {
+    if (child->Slot46() != 2) {
+      continue;
+    }
+
+    UIEditCtrl* edit = static_cast<UIEditCtrl*>(child);
+    const int length = edit->Length();
+    std::memcpy(reinterpret_cast<unsigned char*>(&record) + offset, &length, sizeof(length));
+    offset += 4;
+    if (length) {
+      std::memcpy(reinterpret_cast<unsigned char*>(&record) + offset, edit->Text(), length);
+      offset += length;
+    }
+  }
+
+  record.bytes = static_cast<std::uint16_t>(offset);
+  record.marker = 0x038608AEu;
+  record.windowId = this->geometry.id;
+  recorder.packets.Record(record.bytes, &record, 41, 0);
+  return offset;
+}
+
+// OFFSET: 0x005C4C80
+// FUNCTION: fn_03579
+void UIListBox_NaviSearch::Slot15(int width, int height) {
+  this->verticalBar = new UIScrollBar_Navi(*this->m_context);
+  this->verticalBar->Configure(width - 7, 0, 1, height);
+  this->AddChild(this->verticalBar);
+
+  this->horizontalBar = new UIScrollBar(*this->m_context);
+  this->horizontalBar->Configure(0, height - 13, 0, width - 13);
+  this->AddChild(this->horizontalBar);
+}
+
+// OFFSET: 0x005C6090
+// FUNCTION: fn_03586
+void UIListBox_NaviSearch::Paint() {
+  if (this->transparent != 0) {
+    this->ClearSurface(0xFFFF00FFu);
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+  } else {
+    this->ClearSurface((this->backgroundRed & 255) | ((this->backgroundGreen & 255) << 8) | ((this->backgroundBlue & 255) << 16));
+  }
+
+  this->FillRegion(this->geometry.width - 1, 0, 1, this->geometry.height, 0xEBDEDE);
+
+  const int first = this->topLine;
+  const int limit = this->geometry.height / this->lineHeight - this->bottomMargin + first;
+  const int end = static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
+  std::uint32_t color = 0;
+  const int* icons = reinterpret_cast<const int*>(this->unknown_00D4);
+
+  for (int index = first, row = 0; index < end; ++index, ++row) {
+    if (index == this->selected) {
+      this->FillRegion(0, row * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
+    }
+
+    int x = 3 - this->horizontalOffset;
+    const int y = this->lineHeight * row;
+    const int icon = icons[index];
+    if (icon > 0) {
+      const char* name = nullptr;
+      if (icon == 1) {
+        name = "유저인터페이스\\navigation_interface3\\icon_list_map.bmp";
+      } else if (icon == 2) {
+        name = "유저인터페이스\\navigation_interface3\\icon_list_npc.bmp";
+      } else if (icon == 3) {
+        name = "유저인터페이스\\navigation_interface3\\icon_list_mob.bmp";
+      } else if (icon == 100) {
+        name = "유저인터페이스\\navigation_interface3\\icon_list_Start.bmp";
+      } else if (icon == 200) {
+        name = "유저인터페이스\\navigation_interface3\\icon_list_Riute.bmp";
+      } else if (icon == 300) {
+        name = "유저인터페이스\\navigation_interface3\\icon_list_Target.bmp";
+      }
+
+      if (name) {
+        CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+        this->DrawBitmap(x, y, bitmap ? &bitmap->image : nullptr, false);
+      }
+
+      x += 11;
+    }
+
+    const std::string& line = this->lines[index];
+    DrawColoredText(*this, this->m_listContext->codePage, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
+  }
+}
+
+// OFFSET: 0x005C5D40
+// FUNCTION: fn_03582
+void UINavigationroadiconWnd::Slot15(int, int) {
+  this->AddCloseButton(*this->m_controls, LookupMessage(3045), 0);
+
+  this->icon = new UIStaticBitmap(*this->m_context, *this->m_controls);
+  this->icon->SetBitmap("유저인터페이스\\navigation_interface3\\img_roadIocn_bg_select.bmp");
+  this->icon->SetSize(this->icon->geometry.width, this->icon->geometry.height);
+
+  const int slot = g_navigationManager.viewIcon;
+  const int column = slot <= 4 ? slot : slot - 4;
+  this->icon->Move(slot >= 1 && slot <= 8 ? column * 36 - 26 : 0, slot < 5 ? 24 : 60);
+  this->icon->Show(1);
+  this->AddChild(this->icon);
+}
+
+// OFFSET: 0x005C6C70
+// FUNCTION: fn_03589
+void UINavigationroadiconWnd::Paint() {
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\bg_roadIocn_select.bmp")));
+  const int titleHeight = this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, true, LookupMessage(3203), 0);
+  this->DrawBitmap(0, titleHeight, bitmap ? &bitmap->image : nullptr, false);
+}
+
+// OFFSET: 0x005C8D70
+// FUNCTION: fn_03627
+int UINavigationroadiconWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
+  if (message == 6 && a == 201) {
+    this->m_frameContext->windows.CloseWindow(306);
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x005C6290
+// FUNCTION: fn_03587
+void UINavigationRuideWnd::Paint() {
+  this->FillRegion(0, 0, 272, 338, 0xCCCCCC);
+  const int titleHeight = this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, true, LookupMessage(3204), 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  this->DrawButtonBar(0, 0, 1);
+}
+
+// OFFSET: 0x005C73B0
+// FUNCTION: fn_03616
+std::string UINavigationV4Wnd::ObjectName(int type, void* object) {
+  std::string name;
+  if (type == 2) {
+    name.assign(static_cast<CNavi_Object*>(object)->GetName());
+  } else if (type == 3) {
+    name.assign(static_cast<CNavi_Object*>(object)->GetName());
+  } else if (type == 1) {
+    name.assign(static_cast<CNaviInfo*>(object)->GetName());
+  } else if (type == 0) {
+    name.assign(static_cast<CNaviInfo*>(object)->GetName());
+  }
+
+  return name;
+}
+
+// OFFSET: 0x005C77B0
+// FUNCTION: fn_03618
+std::string UINavigationV4Wnd::MobName(CNavi_Object* mob) {
+  char grade[50];
+  std::memset(grade, 0, sizeof(grade));
+  std::string name;
+  name.assign(mob->GetName());
+
+  const int level = mob->GetFlag();
+  if (level > 0) {
+    std::string text;
+    text.assign(LookupMessage(2453));
+    if (level > 99) {
+      text.assign(LookupMessage(2449));
+    } else if (level > 49) {
+      text.assign(LookupMessage(2450));
+    } else if (level >= 20 && level <= 49) {
+      text.assign(LookupMessage(2451));
+    } else if (level >= 5 && level <= 19) {
+      text = LookupMessage(2452);
+    }
+
+    std::sprintf(grade, " (%s)", text.c_str());
+  }
+
+  name.append(grade);
+  return name;
 }
