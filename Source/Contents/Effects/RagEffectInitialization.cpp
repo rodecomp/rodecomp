@@ -15,663 +15,663 @@ static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& opti
   name[0] = '\0';
 
   switch (effect.id) {
-  case 10:
+  case EF_COIN:
     std::sprintf(name, options.Get(229) != 0 ? "memor_min.str" : "Maemor.str");
     break;
-  case 13:
-  case 315:
+  case EF_GLASSWALL:
+  case EF_GLASSWALL2:
     std::sprintf(name, "SafetyWall.str");
     break;
-  case 23:
-  case 195:
+  case EF_STONECURSE:
+  case EF_PETRIFYATTACK:
     std::sprintf(name, "StoneCurse.str");
     break;
-  case 25:
+  case EF_FIREWALL:
     std::sprintf(name, "Firewall%d.str", std::rand() % 2 + 1);
     break;
-  case 29:
+  case EF_LIGHTBOLT:
     std::sprintf(name, "Lightning.str");
     break;
-  case 30:
+  case EF_THUNDERSTORM:
     std::sprintf(name, "ThunderStorm.str");
     break;
-  case 40:
+  case EF_SIGNUM:
     std::sprintf(name, "Cross.str");
     break;
-  case 41:
-  case 717:
+  case EF_ANGELUS:
+  case EF_WEWISH:
     std::sprintf(name, options.Get(229) != 0 ? "jong_mini.str" : "Angelus.str");
     break;
-  case 49:
-  case 603:
+  case EF_FIREHIT:
+  case EF_FIREHIT2:
     std::sprintf(name, "FireHit%d.str", std::rand() % 3 + 1);
     break;
-  case 52:
+  case EF_WINDHIT:
     std::sprintf(name, "WindHit%d.str", std::rand() % 3 + 1);
     break;
-  case 64:
+  case EF_ARROWSHOT:
     std::sprintf(name, "ArrowShot.str");
     break;
-  case 65:
+  case EF_INVENOM:
     std::sprintf(name, "Invenom.str");
     break;
-  case 66:
+  case EF_CURE:
     std::sprintf(name, options.Get(229) != 0 ? "cure_min.str" : "Cure.str");
     break;
-  case 67:
+  case EF_PROVOKE:
     std::sprintf(name, "Provoke.str");
     break;
-  case 68:
+  case EF_MVP:
     std::sprintf(name, "Mvp.str");
     break;
-  case 69:
+  case EF_SKIDTRAP:
     std::sprintf(name, "SkidTrap.str");
     break;
-  case 70:
+  case EF_BRANDISHSPEAR:
     std::sprintf(name, "Brandish.str");
     break;
-  case 75:
+  case EF_GLORIA:
     std::sprintf(name, options.Get(229) != 0 ? "gloria_min.str" : "Gloria.str");
     break;
-  case 76:
+  case EF_MAGNIFICAT:
     std::sprintf(name, options.Get(229) != 0 ? "magnificat_min.str" : "Magnificat.str");
     break;
-  case 77:
+  case EF_RESURRECTION:
     std::sprintf(name, options.Get(229) != 0 ? "resurrection_min.str" : "Resurrection.str");
     break;
-  case 78:
+  case EF_RECOVERY:
     std::sprintf(name, "Recovery.str");
     break;
-  case 83:
+  case EF_SANCTUARY:
     std::sprintf(name, "Sanctuary.str");
     break;
-  case 84:
+  case EF_IMPOSITIO:
     std::sprintf(name, "Impositio.str");
     break;
-  case 85:
+  case EF_LEXAETERNA:
     std::sprintf(name, options.Get(229) != 0 ? "lexaeterna_min.str" : "LexAeterna.str");
     break;
-  case 86:
+  case EF_ASPERSIO:
     std::sprintf(name, "Aspersio.str");
     break;
-  case 87:
+  case EF_LEXDIVINA:
     std::sprintf(name, "LexDivina.str");
     break;
-  case 88:
+  case EF_SUFFRAGIUM:
     std::sprintf(name, options.Get(229) != 0 ? "suffragium_min.str" : "Suffragium.str");
     break;
-  case 89:
+  case EF_STORMGUST:
     std::sprintf(name, "StormGust.str");
     break;
-  case 90:
+  case EF_LORD:
     std::sprintf(name, "Lord.str");
     break;
-  case 91:
+  case EF_BENEDICTIO:
     std::sprintf(name, "Benedictio.str");
     break;
-  case 92:
+  case EF_METEORSTORM:
     std::sprintf(name, "Meteor%d.str", std::rand() % 3 + 1);
     break;
-  case 95:
+  case EF_QUAGMIRE:
     std::sprintf(name, "Quagmire.str");
     break;
-  case 96:
+  case EF_FIREPILLAR:
     std::sprintf(name, "FirePillar.str");
     break;
-  case 97:
+  case EF_FIREPILLARBOMB:
     std::sprintf(name, "FirePillarBomb.str");
     break;
-  case 101:
+  case EF_REPAIRWEAPON:
     std::sprintf(name, "RepairWeapon.str");
     break;
-  case 102:
+  case EF_CRASHEARTH:
     std::sprintf(name, "CrashEarth.str");
     break;
-  case 103:
+  case EF_PERFECTION:
     std::sprintf(name, options.Get(229) != 0 ? "WeaponPerfection_min.str" : "WeaponPerfection.str");
     break;
-  case 104:
+  case EF_MAXPOWER:
     std::sprintf(name, options.Get(229) != 0 ? "maximize_min.str" : "MaximizePower.str");
     break;
-  case 106:
+  case EF_BLASTMINEBOMB:
     std::sprintf(name, "BlastMine.str");
     break;
-  case 107:
+  case EF_CLAYMORE:
     std::sprintf(name, "Claymore.str");
     break;
-  case 108:
+  case EF_FREEZING:
     std::sprintf(name, "Freezing.str");
     break;
-  case 109:
+  case EF_BUBBLE:
     std::sprintf(name, "Bubble%d.str", std::rand() % 4 + 1);
     break;
-  case 110:
+  case EF_GASPUSH:
     std::sprintf(name, "GasPush.str");
     break;
-  case 111:
+  case EF_SPRINGTRAP:
     std::sprintf(name, "Spring.str");
     break;
-  case 112:
+  case EF_KYRIE:
     std::sprintf(name, options.Get(229) != 0 ? "kyrie_min.str" : "Kyrie.str");
     break;
-  case 113:
+  case EF_MAGNUS:
     std::sprintf(name, "Magnus.str");
     break;
-  case 124:
+  case EF_VENOMDUST:
     std::sprintf(name, "VenomDust.str");
     break;
-  case 126:
+  case EF_POISONREACT:
     std::sprintf(name, "PoisonReact_1st.str");
     break;
-  case 127:
+  case EF_POISONREACT2:
     std::sprintf(name, "PoisonReact.str");
     break;
-  case 129:
+  case EF_SPLASHER:
     std::sprintf(name, "VenomSplasher.str");
     break;
-  case 130:
-  case 250:
-  case 369:
+  case EF_TWOHANDQUICKEN:
+  case EF_SPEARQUICKEN:
+  case EF_LKCONCENTRATION:
     std::sprintf(name, "TwoHand.str");
     break;
-  case 131:
+  case EF_AUTOCOUNTER:
     std::sprintf(name, "AutoCounter.str");
     break;
-  case 133:
+  case EF_FREEZE:
     std::sprintf(name, "Freeze.str");
     break;
-  case 134:
+  case EF_FREEZED:
     std::sprintf(name, "Freezed.str");
     break;
-  case 135:
+  case EF_ICECRASH:
     std::sprintf(name, "IceCrash.str");
     break;
-  case 136:
+  case EF_SLOWPOISON:
     std::sprintf(name, "slowp.str");
     break;
-  case 139:
+  case EF_SANDMAN:
     std::sprintf(name, "SandMan.str");
     break;
-  case 141:
+  case EF_PNEUMA:
     std::sprintf(name, "Pneuma%d.str", std::rand() % 3 + 1);
     break;
-  case 143:
+  case EF_SONICBLOW2:
     std::sprintf(name, "SonicBlow.str");
     break;
-  case 144:
+  case EF_BRANDISH2:
     std::sprintf(name, "Brandish2.str");
     break;
-  case 145:
+  case EF_SHOCKWAVE:
     std::sprintf(name, "ShockWave.str");
     break;
-  case 146:
+  case EF_SHOCKWAVEHIT:
     std::sprintf(name, "ShockWaveHit.str");
     break;
-  case 147:
+  case EF_EARTHHIT:
     std::sprintf(name, "EarthHit.str");
     break;
-  case 148:
+  case EF_PIERCESELF:
     std::sprintf(name, "Pierce.str");
     break;
-  case 149:
+  case EF_BOWLINGSELF:
     std::sprintf(name, "Bowling.str");
     break;
-  case 150:
+  case EF_SPEARSTABSELF:
     std::sprintf(name, "SpearStab.str");
     break;
-  case 151:
+  case EF_SPEARBMRSELF:
     std::sprintf(name, "SpearBoomerang.str");
     break;
-  case 152:
+  case EF_HOLYHIT:
     std::sprintf(name, "HolyHit.str");
     break;
-  case 153:
-  case 750:
+  case EF_CONCENTRATION:
+  case EF_CONCENTRATION2:
     std::sprintf(name, "Concentration.str");
     break;
-  case 154:
+  case EF_REFINEOK:
     std::sprintf(name, "bs_RefineSuccess.str");
     break;
-  case 155:
+  case EF_REFINEFAIL:
     std::sprintf(name, "bs_RefineFailed.str");
     break;
-  case 156:
+  case EF_JOBCHANGE:
     std::sprintf(name, "JobChange.str");
     break;
-  case 157:
+  case EF_LVUP:
     std::sprintf(name, "LevelUP.str");
     break;
-  case 158:
-  case 337:
+  case EF_JOBLVUP:
+  case EF_JOBLVUP50:
     std::sprintf(name, "JobLvUP.str");
     break;
-  case 167:
+  case EF_TAMINGSUCCESS:
     std::sprintf(name, "TamingSuccess.str");
     break;
-  case 168:
+  case EF_TAMINGFAILED:
     std::sprintf(name, "TamingFailed.str");
     break;
-  case 169:
+  case EF_ENERGYCOAT:
     std::sprintf(name, "EnergyCoat.str");
     break;
-  case 170:
+  case EF_CARTREVOLUTION:
     std::sprintf(name, "CartRevolution.str");
     break;
-  case 181:
+  case EF_MENTALBREAK:
     std::sprintf(name, "MentalBreak.str");
     break;
-  case 182:
+  case EF_MAGICALATTHIT:
     std::sprintf(name, "magical.str");
     break;
-  case 183:
+  case EF_SUI_EXPLOSION:
     std::sprintf(name, "sui_explosion.str");
     break;
-  case 185:
+  case EF_SUICIDE:
     std::sprintf(name, "suicide.str");
     break;
-  case 186:
+  case EF_COMBOATTACK1:
     std::sprintf(name, "yunta_1.str");
     break;
-  case 187:
+  case EF_COMBOATTACK2:
     std::sprintf(name, "yunta_2.str");
     break;
-  case 188:
+  case EF_COMBOATTACK3:
     std::sprintf(name, "yunta_3.str");
     break;
-  case 189:
+  case EF_COMBOATTACK4:
     std::sprintf(name, "yunta_4.str");
     break;
-  case 190:
+  case EF_COMBOATTACK5:
     std::sprintf(name, "yunta_5.str");
     break;
-  case 191:
+  case EF_GUIDEDATTACK:
     std::sprintf(name, "homing.str");
     break;
-  case 192:
+  case EF_POISONATTACK:
     std::sprintf(name, "poison.str");
     break;
-  case 193:
+  case EF_SILENCEATTACK:
     std::sprintf(name, "silence.str");
     break;
-  case 194:
+  case EF_STUNATTACK:
     std::sprintf(name, "stun.str");
     break;
-  case 197:
+  case EF_SLEEPATTACK:
     std::sprintf(name, "sleep.str");
     break;
-  case 199:
+  case EF_PONG:
     std::sprintf(name, "Pong%d.str", std::rand() % 3 + 1);
     break;
-  case 204:
+  case EF_POTION1:
     std::sprintf(name, "빨간포션.str");
     break;
-  case 205:
+  case EF_POTION2:
     std::sprintf(name, "주홍포션.str");
     break;
-  case 206:
+  case EF_POTION3:
     std::sprintf(name, "노란포션.str");
     break;
-  case 207:
+  case EF_POTION4:
     std::sprintf(name, "하얀포션.str");
     break;
-  case 208:
+  case EF_POTION5:
     std::sprintf(name, "파란포션.str");
     break;
-  case 209:
+  case EF_POTION6:
     std::sprintf(name, "초록포션.str");
     break;
-  case 210:
+  case EF_POTION7:
     std::sprintf(name, "fruit.str");
     break;
-  case 211:
+  case EF_POTION8:
     std::sprintf(name, "fruit_.str");
     break;
-  case 213:
+  case EF_DEFFENDER:
     std::sprintf(name, "Deffender.str");
     break;
-  case 214:
+  case EF_KEEPING:
     std::sprintf(name, "Keeping.str");
     break;
-  case 218:
+  case EF_POTION_CON:
     std::sprintf(name, "집중.str");
     break;
-  case 219:
+  case EF_POTION_:
     std::sprintf(name, "각성.str");
     break;
-  case 220:
-  case 756:
+  case EF_POTION_BERSERK:
+  case EF_POTION_BERSERK2:
     std::sprintf(name, "버서크.str");
     break;
-  case 234:
+  case EF_SPELLBREAKER:
     std::sprintf(name, "spell.str");
     break;
-  case 235:
+  case EF_DISPELL:
     std::sprintf(name, "디스펠.str");
     break;
-  case 244:
+  case EF_MAGICROD:
     std::sprintf(name, "매직로드.str");
     break;
-  case 245:
+  case EF_HOLYCROSS:
     std::sprintf(name, "holy_cross.str");
     break;
-  case 246:
+  case EF_SHIELDCHARGE:
     std::sprintf(name, "shield_charge.str");
     break;
-  case 248:
+  case EF_PROVIDENCE:
     std::sprintf(name, "providence.str");
     break;
-  case 251:
+  case EF_DEVOTION:
     std::sprintf(name, "devotion.str");
     break;
-  case 255:
+  case EF_FLAMELAUNCHER:
     std::sprintf(name, "enc_fire.str");
     break;
-  case 256:
+  case EF_FROSTWEAPON:
     std::sprintf(name, "enc_ice.str");
     break;
-  case 257:
+  case EF_LIGHTNINGLOADER:
     std::sprintf(name, "enc_wind.str");
     break;
-  case 258:
+  case EF_SEISMICWEAPON:
     std::sprintf(name, "enc_earth.str");
     break;
-  case 268:
+  case EF_STEALCOIN:
     std::sprintf(name, "steal_coin.str");
     break;
-  case 269:
+  case EF_STRIPWEAPON:
     std::sprintf(name, "strip_weapon.str");
     break;
-  case 270:
+  case EF_STRIPSHIELD:
     std::sprintf(name, "strip_shield.str");
     break;
-  case 271:
+  case EF_STRIPARMOR:
     std::sprintf(name, "strip_armor.str");
     break;
-  case 272:
+  case EF_STRIPHELM:
     std::sprintf(name, "strip_helm.str");
     break;
-  case 273:
+  case EF_CHAINCOMBO:
     std::sprintf(name, "연환.str");
     break;
-  case 305:
+  case EF_PHARMACY_OK:
     std::sprintf(name, "p_success.str");
     break;
-  case 306:
+  case EF_PHARMACY_FAIL:
     std::sprintf(name, "p_failed.str");
     break;
-  case 311:
+  case EF_LOUD:
     std::sprintf(name, "loud.str");
     break;
-  case 371:
+  case EF_ANGEL:
     std::sprintf(name, "angel.str");
     break;
-  case 372:
-  case 1033:
+  case EF_DEVIL:
+  case EF_DEATHSUMMON:
     std::sprintf(name, "devil.str");
     break;
-  case 390:
+  case EF_MELTDOWN:
     std::sprintf(name, "melt.str");
     break;
-  case 391:
+  case EF_CARTBOOST:
     std::sprintf(name, "cart.str");
     break;
-  case 392:
+  case EF_REJECTSWORD:
     std::sprintf(name, "sword.str");
     break;
-  case 406:
+  case EF_SOULBURN:
     std::sprintf(name, "소울번.str");
     break;
-  case 407:
+  case EF_SOULCHANGE:
     std::sprintf(name, "사람효과.str");
     break;
-  case 440:
+  case EF_ASSUMPTIO2:
     std::sprintf(name, "asum.str");
     break;
-  case 491:
+  case EF_MOCHI:
     std::sprintf(name, "찹쌀떡.str");
     break;
-  case 492:
+  case EF_LAMADAN:
     std::sprintf(name, "ramadan.str");
     break;
-  case 507:
+  case EF_MAPAE:
     std::sprintf(name, "mapae.str");
     break;
-  case 508:
-  case 612:
+  case EF_ITEMPOKJUK:
+  case EF_HAPGYEOK:
     std::sprintf(name, "itempokjuk.str");
     break;
-  case 565:
+  case EF_HFLIMOON1:
     std::sprintf(name, "moonlight_1.str");
     break;
-  case 566:
+  case EF_HFLIMOON2:
     std::sprintf(name, "moonlight_2.str");
     break;
-  case 567:
+  case EF_HFLIMOON3:
     std::sprintf(name, "moonlight_3.str");
     break;
-  case 568:
+  case EF_HO_UP:
     std::sprintf(name, "h_levelup.str");
     break;
-  case 569:
+  case EF_HAMIDEFENCE:
     std::sprintf(name, "defense.str");
     break;
-  case 593:
+  case EF_FOOD01:
     std::sprintf(name, "food_str.str");
     break;
-  case 594:
+  case EF_FOOD02:
     std::sprintf(name, "food_int.str");
     break;
-  case 595:
+  case EF_FOOD03:
     std::sprintf(name, "food_vit.str");
     break;
-  case 596:
+  case EF_FOOD04:
     std::sprintf(name, "food_agi.str");
     break;
-  case 597:
+  case EF_FOOD05:
     std::sprintf(name, "food_dex.str");
     break;
-  case 598:
+  case EF_FOOD06:
     std::sprintf(name, "food_luk.str");
     break;
-  case 608:
+  case EF_COOKING_OK:
     std::sprintf(name, "cook_suc.str");
     break;
-  case 609:
+  case EF_COOKING_FAIL:
     std::sprintf(name, "cook_fail.str");
     break;
-  case 635:
+  case EF_BAKU:
     std::sprintf(name, "fire dragon.str");
     break;
-  case 636:
+  case EF_HYOUSYOURAKU:
     std::sprintf(name, "icy.str");
     break;
-  case 646:
+  case EF_TRACKCASTING:
     std::sprintf(name, "트랙킹.str");
     break;
-  case 649:
+  case EF_BULLSEYE:
     std::sprintf(name, "불스아이.str");
     break;
-  case 668:
-  case 670:
+  case EF_DRAGONFEAR:
+  case EF_WIDECONFUSE:
     std::sprintf(name, "dfear.str");
     break;
-  case 669:
+  case EF_BLEEDING:
     std::sprintf(name, "wideb.str");
     break;
-  case 677:
+  case EF_CRITICALWOUND:
     std::sprintf(name, "cwound.str");
     break;
-  case 699:
+  case EF_FLOWERLEAF:
     std::sprintf(name, "flower_leaf.str");
     break;
-  case 704:
+  case EF_ITEM315:
     std::sprintf(name, "mobile_ef02.str");
     break;
-  case 705:
+  case EF_ITEM316:
     std::sprintf(name, "mobile_ef01.str");
     break;
-  case 706:
+  case EF_ITEM317:
     std::sprintf(name, "mobile_ef03.str");
     break;
-  case 708:
+  case EF_STORM_MIN:
     std::sprintf(name, "storm_min.str");
     break;
-  case 709:
+  case EF_POK_JAP:
     std::sprintf(name, "pokjuk_jap.str");
     break;
-  case 721:
+  case EF_ADO_STR:
     std::sprintf(name, "ado.str");
     break;
-  case 722:
+  case EF_IGN_STR:
     std::sprintf(name, "이그니션브레이크.str");
     break;
-  case 727:
+  case EF_CRIMSON_STR:
     std::sprintf(name, "crimson_r.str");
     break;
-  case 728:
+  case EF_HELL_STR:
     std::sprintf(name, "hell_in.str");
     break;
-  case 731:
+  case EF_DHOWL_STR:
     std::sprintf(name, "dragon_h.str");
     break;
-  case 734:
+  case EF_CHAINL_STR:
     std::sprintf(name, "chainlight.str");
     break;
-  case 745:
+  case EF_AIMED_STR:
     std::sprintf(name, "aimed.str");
     break;
-  case 746:
+  case EF_ARROWSTORM_STR:
     std::sprintf(name, "arrowstorm.str");
     break;
-  case 747:
+  case EF_LAULAMUS_STR:
     std::sprintf(name, "laulamus.str");
     break;
-  case 748:
+  case EF_LAUAGNUS_STR:
     std::sprintf(name, "lauagnus.str");
     break;
-  case 749:
+  case EF_MILSHIELD_STR:
     std::sprintf(name, "mil_shield.str");
     break;
-  case 795:
+  case EF_CRASHAXE:
     std::sprintf(name, "powerswing.str");
     break;
-  case 813:
+  case EF_ENERVATION:
     std::sprintf(name, "enervation.str");
     break;
-  case 814:
+  case EF_ENERVATION2:
     std::sprintf(name, "groomy.str");
     break;
-  case 815:
+  case EF_ENERVATION3:
     std::sprintf(name, "ignorance.str");
     break;
-  case 816:
+  case EF_ENERVATION4:
     std::sprintf(name, "laziness.str");
     break;
-  case 817:
+  case EF_ENERVATION5:
     std::sprintf(name, "unlucky.str");
     break;
-  case 818:
+  case EF_ENERVATION6:
     std::sprintf(name, "weakness.str");
     break;
-  case 920:
+  case EF_FIREWALL2:
     std::sprintf(name, "Firewall_per.str");
     break;
-  case 926:
+  case EF_SHOCKWAVE2:
     std::sprintf(name, "hunter_shockwave_blue.str");
     break;
-  case 959:
+  case EF_POISON_MIST:
     std::sprintf(name, "poison_mist.str");
     break;
-  case 960:
+  case EF_ERASER_CUTTER:
     std::sprintf(name, "eraser_cutter.str");
     break;
-  case 964:
+  case EF_LAVA_SLIDE:
     std::sprintf(name, "lava_slide.str");
     break;
-  case 965:
+  case EF_SONIC_CLAW:
     std::sprintf(name, "sonic_claw.str");
     break;
-  case 966:
+  case EF_TINDER_BREAKER:
     std::sprintf(name, "tinder.str");
     break;
-  case 967:
+  case EF_MIDNIGHT_FRENZY:
     std::sprintf(name, "mid_frenzy.str");
     break;
-  case 975:
+  case EF_VOLCANIC_ASH:
     std::sprintf(name, "vash00.str");
     break;
-  case 987:
+  case EF_2011RWC:
     std::sprintf(name, "rwc2011.str");
     break;
-  case 988:
+  case EF_2011RWC2:
     std::sprintf(name, "rwc2011_2.str");
     break;
-  case 1006:
+  case EF_NO100_FIRECRACKER:
     std::sprintf(name, "100.str");
     break;
-  case 1015:
+  case EF_RUN_MAKE_OK:
     std::sprintf(name, "rune_success.str");
     break;
-  case 1016:
+  case EF_RUN_MAKE_FAILURE:
     std::sprintf(name, "rune_fail.str");
     break;
-  case 1017:
+  case EF_MIRESULT_MAKE_OK:
     std::sprintf(name, "changematerial_su.str");
     break;
-  case 1018:
+  case EF_MIRESULT_MAKE_FAIL:
     std::sprintf(name, "changematerial_fa.str");
     break;
-  case 1019:
+  case EF_ALL_RAY_OF_PROTECTION:
     std::sprintf(name, "Guardian.str");
     break;
-  case 1020:
+  case EF_VENOMFOG:
     std::sprintf(name, "bubble%d_1.str", std::rand() % 4 + 1);
     break;
-  case 1021:
+  case EF_DUSTSTORM:
     std::sprintf(name, "dust.str");
     effect.unknown_11C80 = 10;
     break;
-  case 1029:
+  case EF_DANCE_BLADE_ATK:
     std::sprintf(name, "dancingblade.str");
     break;
-  case 1031:
+  case EF_INVINCIBLEOFF2:
     std::sprintf(name, "INVINCIBLEOFF2.str");
     break;
-  case 1040:
+  case EF_GC_DARKCROW:
     std::sprintf(name, "gc_darkcrow.str");
     effect.unknown_11C80 = 9999;
     break;
-  case 1042:
+  case EF_ALL_FULL_THROTTLE:
     std::sprintf(name, "all_full_throttle.str");
     break;
-  case 1043:
+  case EF_SR_FLASHCOMBO:
     std::sprintf(name, "sr_flashcombo.str");
     break;
-  case 1044:
+  case EF_RK_LUXANIMA:
     std::sprintf(name, "rk_luxanima.str");
     break;
-  case 1046:
+  case EF_SO_ELEMENTAL_SHIELD:
     std::sprintf(name, "so_elemental_shield.str");
     break;
-  case 1047:
+  case EF_AB_OFFERTORIUM:
     std::sprintf(name, "AB_OFFERTORIUM.str");
     break;
-  case 1048:
+  case EF_WL_TELEKINESIS_INTENSE:
     std::sprintf(name, "WL_TELEKINESIS_INTENSE.str");
     effect.unknown_11C80 = 9999;
     break;
-  case 1049:
+  case EF_GN_ILLUSIONDOPING:
     std::sprintf(name, "GN_ILLUSIONDOPING.str");
     break;
-  case 1050:
+  case EF_NC_MAGMA_ERUPTION:
     std::sprintf(name, "NC_MAGMA_ERUPTION.str");
     effect.unknown_11C80 = 9999;
     break;
-  case 1055:
+  case EF_NPC_CHILL:
     std::sprintf(name, "chill.str");
     effect.unknown_11C80 = 9999;
     break;
-  case 1057:
+  case EF_AB_OFFERTORIUM_RING:
     std::sprintf(name, "AB_OFFERTORIUM_ring.str");
     effect.unknown_11C80 = 9999;
     break;
