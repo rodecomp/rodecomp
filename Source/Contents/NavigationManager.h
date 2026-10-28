@@ -122,6 +122,7 @@ public:
   CNavi_Object* FindNpc(unsigned int key, bool byId);
   CNavi_Object* FindNpcAt(int cellX, int cellY);
   std::vector<CNavi_Object*>* Npcs();
+  CNavi_Link* FindMatchingLink(CNavi_Link link);
 
   /* 0000 */ int index;
   /* 0004 */ int type;
