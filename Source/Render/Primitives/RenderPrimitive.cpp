@@ -77,3 +77,33 @@ RenderCommand* RenderCommand::FreeVertices() {
 
   return this;
 }
+
+// OFFSET: 0x00569360
+// FUNCTION: fn_02255
+RenderPrimitive& RenderPrimitive::operator=(const RenderPrimitive& other) {
+  std::memcpy(this->quad, other.quad, sizeof(this->quad));
+  return *this;
+}
+
+// OFFSET: 0x00569380
+// FUNCTION: fn_02256
+void RenderCommand::AllocateTriangles(std::uint32_t triangleCount) {
+  const std::uint32_t vertexCount = triangleCount * 3;
+  auto* vertices = new RenderVertex[vertexCount];
+  for (std::uint32_t i = 0; i < vertexCount; ++i) {
+    vertices[i].Reset();
+  }
+  this->vertices = vertices;
+}
+
+// OFFSET: 0x00569470
+
+// OFFSET: 0x00569580
+// FUNCTION: fn_02264
+void RenderCommand::SetPosition(std::uint32_t index, const float* position) {
+  RenderVertex& vertex = this->vertices[index];
+  vertex.x = position[0];
+  vertex.y = position[1];
+  vertex.z = position[2];
+  vertex.rhw = position[3];
+}

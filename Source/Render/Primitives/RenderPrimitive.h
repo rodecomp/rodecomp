@@ -56,6 +56,8 @@ struct RenderPrimitive : RenderCommand {
   RenderPrimitive& operator=(const RenderPrimitive& other);
 };
 
+void DrawPrimitive(RenderCommand* primitive);
+
 static_assert(sizeof(RenderVertex) == 32);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenderCommand) == 40);
