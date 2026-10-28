@@ -15,3 +15,5 @@ int CSession::SyncUnknown0E98() {
 
   return this->unknown_0E98;
 }
+
+// OFFSET: 0x00DFFCF0

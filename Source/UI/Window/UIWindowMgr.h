@@ -432,6 +432,7 @@ public:
   void EnableRouletteWnd();
   char UpdateSnapRectangles();
   bool ProcessDialogKey(int unused, int key);
+  void NotifyMode();
 };
 
 extern UIWindowMgr g_windowMgr;

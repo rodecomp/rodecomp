@@ -196,3 +196,11 @@ void ItemInfo::SetItemId(int value) {
 // OFFSET: 0x00DFBE40
 
 // OFFSET: 0x00DFBF70
+
+// OFFSET: 0x006D88D0
+// FUNCTION: fn_06600
+bool ItemInfo::HasSpecialCard() const {
+  std::uint32_t card;
+  std::memcpy(&card, this->unknown_001C, sizeof(card));
+  return card == 254 || card == 255;
+}

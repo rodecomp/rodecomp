@@ -629,3 +629,4 @@ void UIWindowMgr::RegisterNamedWindow(std::string name, UIWindow* window) {
   }
 }
 
+// OFFSET: 0x00AA9B00

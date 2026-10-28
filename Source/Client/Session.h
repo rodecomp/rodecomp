@@ -58,7 +58,9 @@ public:
   /* 1058 */ int m_petActionTable[5][5][7];
   /* 1314 */ unsigned char unknown_1314[0x314];
   /* 1628 */ int m_job;
-  /* 162C */ unsigned char unknown_162C[0x1524];
+  /* 162C */ unsigned char unknown_162C[0xE4];
+  /* 1710 */ std::list<ItemInfo> m_inventoryItems;
+  /* 1718 */ unsigned char unknown_1718[0x1438];
   /* 2B50 */ ItemInfo unknown_2B50[10];
   /* 3500 */ ItemInfo unknown_3500[10];
   /* 3EB0 */ unsigned char unknown_3EB0[0x16A8];
@@ -111,6 +113,7 @@ public:
   void GetPetFriendlyStateString(int friendly, char* buffer);
   int GetPetHungryState(int hunger);
   int GetPetEmotionNumber(int job, int action, int hungerLevel);
+  void ClearItemSelection();
   int MercSkillLevel(int skillId) const;
   int SyncUnknown0E98();
 };
@@ -143,6 +146,7 @@ static_assert(offsetof(CSession, m_jobNamesEnd) == 0xFAC);
 static_assert(offsetof(CSession, unknown_0E98) == 0xE98);
 static_assert(offsetof(CSession, m_petActionTable) == 0x1058);
 static_assert(offsetof(CSession, m_job) == 0x1628);
+static_assert(offsetof(CSession, m_inventoryItems) == 0x1710);
 static_assert(offsetof(CSession, unknown_2B50) == 0x2B50);
 static_assert(offsetof(CSession, unknown_3500) == 0x3500);
 static_assert(offsetof(CSession, unknown_5558) == 0x5558);
