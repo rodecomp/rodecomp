@@ -1,16 +1,17 @@
 #include "Client/Application/ErrorDialog.h"
-#include "Resource/Bitmap/BitmapResource.h"
+#include "File/File.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Resource/Audio/MilesRuntime.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Audio/WaveResource.h"
 
 #include <cstdlib>
-#include <cstring>
+#include <new>
 #include <string>
 
 // OFFSET: 0x007618D0
 // FUNCTION: fn_08070
-CWave::CWave(WaveResourceContext& context) : data(nullptr), milesAllocated(0), m_context(&context) {
+CWave::CWave() : data(nullptr), milesAllocated(0) {
 }
 
 // INLINED
@@ -19,35 +20,32 @@ CWave::~CWave() = default;
 // OFFSET: 0x007613D0
 // FUNCTION: fn_08066
 CWave* CWave::Create() {
-  return new CWave(*this->m_context);
+  return new CWave;
 }
 
 // OFFSET: 0x00761470
 // FUNCTION: fn_08067
 bool CWave::Load(const char* name) {
-  auto& context = *this->m_context;
-  auto& file = context.file;
+  CFile file;
 
-  if (!file.Open(name)) {
-    const std::string message = std::string("Wave :: Cannot find File : ") + name;
-    ShowErrorDialog(context.renderSystem, message.c_str(), 0);
-    file.Close();
+  if (!file.Open(name, 0, true, false)) {
+    ShowErrorDialog(GetRenderSystemHolder()->system, (std::string("Wave :: Cannot find File : ") + std::string(name)).c_str(), 0);
 
     return false;
   }
 
-  const std::size_t size = static_cast<std::size_t>(file.Size());
+  const std::uint32_t size = file.GetSize();
   this->Unload();
 
-  void* raw = std::malloc(size);
-  std::memcpy(raw, file.Data(), size);
+  void* raw = ::operator new(size);
+  file.Read(raw, size);
   file.Close();
 
   auto& miles = MilesRuntime::Get();
-  const int type = miles.fileType(raw, static_cast<unsigned>(size));
+  const int type = miles.fileType(raw, size);
 
   if (type == 2) {
-    MilesSoundInfo info{};
+    MilesSoundInfo info;
     this->milesAllocated = 1;
     miles.wavInfo(raw, &info);
     miles.decompressADPCM(&info, &this->data, nullptr);
@@ -58,7 +56,7 @@ bool CWave::Load(const char* name) {
 
   if (type == 13) {
     this->milesAllocated = 1;
-    miles.decompressASI(raw, static_cast<unsigned>(size), name, &this->data, nullptr, nullptr);
+    miles.decompressASI(raw, size, name, &this->data, nullptr, nullptr);
     std::free(raw);
 
     return true;
