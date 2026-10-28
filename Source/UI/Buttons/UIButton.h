@@ -55,6 +55,10 @@ public:
   void SetDisabled(unsigned char value) {
     this->m_disabled = value;
   }
+  // INLINED
+  unsigned char Disabled() const {
+    return this->m_disabled;
+  }
   std::string label;
 
 protected:

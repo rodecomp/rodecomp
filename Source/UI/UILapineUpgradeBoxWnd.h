@@ -7,6 +7,7 @@
 #include <string>
 
 class UIBitmapButton;
+class UILapineUpgradeBox_IngredientListWnd;
 
 class UILapineUpgradeBox_IngredientInfoWnd : public UIFrameWnd {
 public:
@@ -27,15 +28,17 @@ public:
 class UILapineUpgradeBoxWnd : public UIFrameWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot19() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot32(int x, int y) override;
   void SetWaiting(unsigned char value);
+  UILapineUpgradeBox_IngredientInfoWnd* FindSelected();
 
   /* 00B4 */ UIBitmapButton* closeButton;
   /* 00B8 */ UIBitmapButton* upgradeButton;
   /* 00BC */ UIBitmapButton* selectButton;
-  /* 00C0 */ UIWindow* ingredientList;
+  /* 00C0 */ UILapineUpgradeBox_IngredientListWnd* ingredientList;
   /* 00C4 */ int ingredientId;
   /* 00C8 */ std::string title;
   /* 00E0 */ ItemInfo item;

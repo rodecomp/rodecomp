@@ -6,7 +6,11 @@
 #include "Client/Mode/ModeEvents.h"
 #include "Contents/Items/ItemDescription.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/UILapineScrollBar.h"
 #include "UI/Window/WindowManagerWindows.h"
+
+#include <windows.h>
+#include <timeapi.h>
 
 // OFFSET: 0x006035E0
 // FUNCTION: fn_04194
@@ -118,3 +122,17 @@ void UILapineUpgradeBoxWnd::SetWaiting(unsigned char value) {
   this->upgradeButton->Invalidate();
   this->Invalidate();
 }
+
+// OFFSET: 0x00603680
+
+// OFFSET: 0x00603DA0
+// FUNCTION: fn_04202
+void UILapineUpgradeBox_IngredientListWnd::Paint() {
+  this->ClearSurface(0xFFF7F7);
+}
+
+// OFFSET: 0x006041A0
+
+// OFFSET: 0x00605980
+
+// OFFSET: 0x00603FE0
