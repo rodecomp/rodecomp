@@ -1401,6 +1401,7 @@ void EffectParticle::PrimGuard() {
 }
 
 // OFFSET: 0x00BBFAA0
+// FUNCTION: fn_19818
 bool EffectParticle::PrimLineLink() {
   CGameMode* gameMode = static_cast<CGameMode*>(g_world.ActiveGameMode());
   const CRenderObject* target = nullptr;
@@ -1460,6 +1461,7 @@ bool EffectParticle::PrimLineLink() {
 }
 
 // OFFSET: 0x00BC1AA0
+// FUNCTION: fn_19830
 void EffectParticle::PrimSMA() {
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
