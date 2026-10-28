@@ -12,6 +12,7 @@ public:
   ~CRenderObject() override;
   bool Update() override;
   void SendObjectMessage(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) override;
+  void Draw(int argument) override;
 
   virtual void SetScreenBounds(const float* bounds, float x, float y);
 
@@ -22,6 +23,9 @@ public:
   float HorizontalDistance(float x, float z) const;
   float Distance(float x, float y, float z) const;
   void SetAnimationSpeed(float speed);
+  void SetActionSpeed(float speed);
+  void DrawSprite(int argument, bool seasonal, float offset);
+  void DrawShadow(int argument, float scale);
   void SetActionName(ResourceMgr& resources, const char* name);
   void SetSpriteName(ResourceMgr& resources, const char* name);
   void SetColor(int alpha, int red, int green, int blue);
