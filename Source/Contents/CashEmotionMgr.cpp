@@ -23,10 +23,22 @@ CCashEmotionMgr* g_cashEmotionMgr = nullptr;
 // GLOBAL: gl_24484
 ChatSuggestions* g_chatSuggestions = nullptr;
 
-class UICashEmotionMiniWnd {
+class UICashEmotionMiniWnd : public UIWindow {
 public:
   // OFFSET: 0x007C9200
   unsigned int Select(int actionId);
+  void Refresh(int first);
+
+protected:
+  /* 007C */ CashEmotionCommand* m_selected;
+  /* 0080 */ UICashEmotionPiece* m_first;
+  /* 0084 */ UICashEmotionPiece* m_second;
+  /* 0088 */ UICashEmotionPiece* m_third;
+  /* 008C */ UIButton* m_previous;
+  /* 0090 */ UIButton* m_next;
+  /* 0094 */ void* unknown_0094;
+  /* 0098 */ int m_page;
+  /* 009C */ int m_selectedIndex;
 };
 
 // OFFSET: 0x00592290
@@ -634,6 +646,42 @@ bool CCashEmotionMgr::IsPackAvailable(unsigned int now, int packId) {
 // FUNCTION: fn_02975
 bool CCashEmotionMgr::IsOwnedPack(int packId) {
   return std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId) != this->m_ownedPacks.end();
+}
+
+// OFFSET: 0x007C92B0
+// FUNCTION: fn_09430
+void UICashEmotionMiniWnd::Refresh(int first) {
+  if (this->m_first) {
+    if (this->m_selected) {
+      std::pair<int, int> entry = this->m_selected->Get(first);
+      bool owned = entry.first == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(entry.first);
+      this->m_first->Set(entry.first, entry.second, false, false, !owned);
+    } else {
+      this->m_first->Set(-1, -1, false, false, false);
+    }
+  }
+
+  if (this->m_second) {
+    if (this->m_selected) {
+      std::pair<int, int> entry = this->m_selected->Get(first + 1);
+      bool owned = entry.first == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(entry.first);
+      this->m_second->Set(entry.first, entry.second, false, false, !owned);
+    } else {
+      this->m_second->Set(-1, -1, false, false, false);
+    }
+  }
+
+  if (this->m_third) {
+    if (this->m_selected) {
+      std::pair<int, int> entry = this->m_selected->Get(first + 2);
+      bool owned = entry.first == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(entry.first);
+      this->m_third->Set(entry.first, entry.second, false, false, !owned);
+    } else {
+      this->m_third->Set(-1, -1, false, false, false);
+    }
+  }
+
+  this->Invalidate();
 }
 
 // OFFSET: 0x007C9D60

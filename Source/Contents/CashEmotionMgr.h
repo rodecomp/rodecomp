@@ -138,6 +138,10 @@ public:
   bool IsChatProhibitEmotion(int emotionId);
   bool IsPackAvailable(unsigned int now, int packId);
   bool IsOwnedPack(int packId);
+  // INLINED
+  int BasePackId() const {
+    return this->unknown_000C;
+  }
 
 protected:
   /* 0004 */ bool m_enabled;
