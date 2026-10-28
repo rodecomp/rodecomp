@@ -103,6 +103,39 @@ void LuaScript::Error(const char* caption, const char* format, ...) {
 }
 
 // OFFSET: 0x00AFDC60
+// FUNCTION: fn_18334
+bool LuaScript::TableField(const char* signature, ...) {
+  va_list arguments;
+  va_start(arguments, signature);
+
+  if (*signature == 'd') {
+    lua_pushnumber(this->m_state, va_arg(arguments, int));
+    lua_gettable(this->m_state, -2);
+  } else if (*signature == 's') {
+    lua_pushstring(this->m_state, va_arg(arguments, const char*));
+    lua_gettable(this->m_state, -2);
+  }
+
+  ++signature;
+
+  if (*signature == 'd' && lua_isnumber(this->m_state, -1)) {
+    *va_arg(arguments, int*) = static_cast<int>(lua_tonumber(this->m_state, -1));
+    lua_pop(this->m_state, 1);
+  }
+
+  if (*signature == 's' && lua_isstring(this->m_state, -1)) {
+    *va_arg(arguments, const char**) = lua_tostring(this->m_state, -1);
+    lua_pop(this->m_state, 1);
+  }
+
+  if (*signature == 'l' && lua_isnumber(this->m_state, -1)) {
+    *va_arg(arguments, double*) = lua_tonumber(this->m_state, -1);
+    lua_pop(this->m_state, 1);
+  }
+
+  va_end(arguments);
+  return true;
+}
 
 // OFFSET: 0x00AFC9A0
 // FUNCTION: fn_18326
