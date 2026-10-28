@@ -29,6 +29,7 @@ public:
   static void Destroy();
 
   int GetEmblemVersion(std::uint32_t guildId) const;
+  std::string GetEmblemFilename(std::uint32_t guildId);
   void SetEmblemVersion(std::uint32_t guildId, int version);
   void UpdateEmblemRequests(
     CEmblemDataMgr& emblems, std::uint32_t accountId, const std::string& accountName, const char* token16, CConnection& connection, CAsyncWorkMgr& manager

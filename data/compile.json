@@ -341,6 +341,7 @@
   "Source/Contents/Ground/TerrainHeight.cpp": 4,
   "Source/Contents/Ground/TerrainPicking.cpp": 4,
   "Source/Contents/Ground/TerrainPlane.cpp": 4,
+  "Source/Contents/GuildEmblemLookup.cpp": 4,
   "Source/Contents/GuildEmblemState.cpp": 4,
   "Source/Contents/GuildMgr.cpp": 4,
   "Source/Contents/HeadResources.cpp": 4,
