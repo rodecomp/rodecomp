@@ -306,6 +306,8 @@ public:
   std::string GetHeadPalName(int head, int job, int sex, int palette);
   std::string GetPlayerHeadPalName();
   std::string GetHeadSprName(int job, int sex, int* head);
+  std::string GetAccessoryActName(int job, int sex, int head, int accessory);
+  std::string GetAccessorySprName(int job, int sex, int head, int accessory);
 };
 
 extern CSession g_session;
