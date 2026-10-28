@@ -422,6 +422,7 @@ public:
   void Shutdown();
   void SetScreenSize(int width, int height);
   UIWindow* LookupWindow(int id);
+  void GetMiniPartyUsableArea(RECT* area);
   void Schedule(UIWindow* window);
   void Destroy(UIWindow* window);
   void ForgetWindowReferences(UIWindow* removed);

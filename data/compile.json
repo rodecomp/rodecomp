@@ -600,6 +600,7 @@
   "Source/UI/MiniPartyGrid.cpp": 2,
   "Source/UI/MiniPartyManager.cpp": 2,
   "Source/UI/MiniPartyPlacement.cpp": 2,
+  "Source/UI/MiniPartyUsableArea.cpp": 2,
   "Source/UI/Party/UIAdvenPartyBoardWnd.cpp": 2,
   "Source/UI/Party/UIApplyForPartyWnd.cpp": 2,
   "Source/UI/Party/UIPartyInfoWnd.cpp": 2,
