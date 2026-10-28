@@ -4,6 +4,8 @@
 #include "UI/Window/UIFrameWnd.h"
 
 class UIItemDropCntWnd : public UIFrameWnd {
+public:
+  void Paint() override;
 };
 
 class UIPasswordWnd : public UIItemDropCntWnd {

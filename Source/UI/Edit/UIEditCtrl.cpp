@@ -29,6 +29,7 @@
 #include "UI/Shop/UINoticeMessageBox_LockSellItem.h"
 #include "UI/Skill/UISkillListWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Dialogs/UIPasswordWnd.h"
 #include "UI/Shop/UIMerchantItemPurchaseMSGWnd.h"
 
 #include <algorithm>
@@ -699,6 +700,12 @@ void UINoticeMessageBox_LockSellItem::Slot15(int, int) {
 // OFFSET: 0x0097E3E0
 // FUNCTION: fn_13327
 void UIItemWnd::Slot18() {
+}
+
+// OFFSET: 0x0097E790
+// FUNCTION: fn_13329
+void UIItemDropCntWnd::Paint() {
+  this->DrawBorder(0, 0, 0, 0);
 }
 
 // OFFSET: 0x00981990
