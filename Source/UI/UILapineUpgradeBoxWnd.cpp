@@ -124,6 +124,15 @@ void UILapineUpgradeBoxWnd::SetWaiting(unsigned char value) {
 }
 
 // OFFSET: 0x00603680
+// FUNCTION: fn_04196
+void UILapineUpgradeBox_IngredientListWnd::Slot10(int x, int y, std::intptr_t value) {
+  CMode* mode = g_world.ActiveGameMode();
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source == 26) {
+    this->SendMsg(this, 31, drag->id, 0, 0, 0);
+  }
+  mode->SendMsg(18, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x00603DA0
 // FUNCTION: fn_04202
@@ -136,3 +145,36 @@ void UILapineUpgradeBox_IngredientListWnd::Paint() {
 // OFFSET: 0x00605980
 
 // OFFSET: 0x00603FE0
+// FUNCTION: fn_04210
+void UILapineUpgradeBoxWnd::Slot19() {
+  UILapineUpgradeBox_IngredientInfoWnd* selected = this->FindSelected();
+  if (!selected) {
+    if (this->selectButton->Disabled() == 0) {
+      this->selectButton->SetDisabled(1);
+      this->selectButton->Invalidate();
+      this->Invalidate();
+    }
+  } else if (this->selectButton->Disabled() == 1 && this->item.unknown_0000[1] == 0) {
+    this->selectButton->SetDisabled(0);
+    this->selectButton->Invalidate();
+    this->Invalidate();
+  }
+
+  if (this->waiting == 0) {
+    if (this->item.unknown_0000[1] != 0) {
+      if (this->upgradeButton->Disabled() == 1) {
+        this->upgradeButton->SetDisabled(0);
+        this->upgradeButton->Invalidate();
+        this->Invalidate();
+      }
+    } else if (this->upgradeButton->Disabled() == 0) {
+      this->upgradeButton->SetDisabled(1);
+      this->upgradeButton->Invalidate();
+      this->Invalidate();
+    }
+  }
+
+  if (this->noticeTick + this->noticeDuration < timeGetTime()) {
+    this->notice = "";
+  }
+}
