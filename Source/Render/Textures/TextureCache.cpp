@@ -140,6 +140,30 @@ void TextureCache::Clear() {
 }
 
 // OFFSET: 0x00571B70
+// FUNCTION: fn_02456
+void TextureCache::Reload() {
+  for (auto& [name, texture] : this->m_textures) {
+    auto* bitmap = static_cast<CBitmapRes*>(this->m_resources.Load(this->m_sources.Resolve(name)));
+
+    if (!bitmap) {
+      continue;
+    }
+
+    const auto& image = bitmap->image;
+
+    if (texture) {
+      if ((texture->unknown_0008 & 0xFF) == 1) {
+        texture->Create(image.width, image.height, texture->m_format);
+      } else {
+        texture->Create(image.width / this->m_reduction, image.height / this->m_reduction, texture->m_format);
+      }
+
+      texture->Upload(0, 0, image.width, image.height, image.pixels, 0, 0);
+    }
+
+    this->m_resources.Remove(bitmap);
+  }
+}
 
 // OFFSET: 0x00571C50
 // FUNCTION: fn_02457
