@@ -97,6 +97,10 @@ void RenderCommand::AllocateTriangles(std::uint32_t triangleCount) {
 }
 
 // OFFSET: 0x00569470
+// FUNCTION: fn_02257
+void RenderCommand::Draw(int unused) {
+  g_renderer->DrawPrimitive(this);
+}
 
 // OFFSET: 0x00569580
 // FUNCTION: fn_02264
