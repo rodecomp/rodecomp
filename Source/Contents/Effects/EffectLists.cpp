@@ -129,3 +129,29 @@ void EffectLists::Clear() {
   this->indexed.clear();
   this->retirement.Clear();
 }
+
+// OFFSET: 0x00B255B0
+// FUNCTION: fn_18781
+void EffectLists::Release() {
+  for (auto& [id, allocator] : this->allocators) {
+    delete allocator;
+  }
+
+  this->allocators.clear();
+  this->Clear();
+}
+
+// OFFSET: 0x00B1D530
+// FUNCTION: fn_45453
+EffectLists::~EffectLists() {
+  this->Release();
+}
+
+// OFFSET: 0x00B25730
+// FUNCTION: fn_18782
+void DestroyEffectMgr() {
+  if (g_effectMgr) {
+    delete g_effectMgr;
+    g_effectMgr = nullptr;
+  }
+}

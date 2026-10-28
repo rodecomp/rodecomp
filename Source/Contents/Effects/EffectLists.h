@@ -5,10 +5,19 @@
 
 #include <map>
 
+class EffectAllocator {
+public:
+  virtual ~EffectAllocator() = default;
+  virtual CEffect* Create() = 0;
+};
+
 struct EffectLists {
   std::map<int, std::list<CEffect*>>& active;
   EffectRetirement& retirement;
   std::map<int, std::vector<CEffect*>>& indexed;
+  std::map<int, EffectAllocator*>& allocators;
+
+  ~EffectLists();
 
   CEffect* Find(int actor, int id) const;
   CEffect* Find(int actor, int instance, int id) const;
@@ -19,10 +28,13 @@ struct EffectLists {
   void Retire(int actor, int instance, int id);
   void RetireActor(int actor);
   void Clear();
+  void Release();
 
 private:
   void RemoveActive(CEffect* effect);
 };
+
+void DestroyEffectMgr();
 
 extern EffectLists* g_effectMgr;
 
