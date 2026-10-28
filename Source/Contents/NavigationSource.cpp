@@ -1,7 +1,12 @@
 #include "Contents/NavigationManager.h"
+#include "Client/Session.h"
 #include "Resource/ResourceMgr.h"
 
+#include <cstdio>
 #include <cstring>
+
+// GLOBAL: gl_24627
+CNavigationManager g_navigationManager;
 
 // OFFSET: 0x00B96980
 // FUNCTION: fn_19588
@@ -102,3 +107,30 @@ int CNavigationManager::SaveCurrentTarget() {
   this->savedTarget = this->currentTarget;
   return 0;
 }
+
+// OFFSET: 0x00B880D0
+
+// OFFSET: 0x00B88530
+
+// OFFSET: 0x00B8CC10
+
+// INLINED
+NavigationTarget::~NavigationTarget() {
+  this->type = -1;
+  this->object = nullptr;
+  this->x = -1;
+  this->y = -1;
+  this->name.clear();
+}
+
+// OFFSET: 0x00B92580
+
+// OFFSET: 0x00B92CA0
+
+// OFFSET: 0x00B959D0
+
+// OFFSET: 0x00B95A20
+
+// OFFSET: 0x00B961A0
+
+// OFFSET: 0x00B96BA0

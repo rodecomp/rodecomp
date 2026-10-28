@@ -1,4 +1,7 @@
 #include "Contents/NavigationManager.h"
+#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/CGameMode.h"
+#include "Contents/World/WorldScene.h"
 
 // OFFSET: 0x00B8DF10
 // FUNCTION: fn_19461
@@ -64,3 +67,7 @@ int CNavi_Object::GetId() const {
 CNaviInfo* CNavi_Object::GetInfo() const {
   return this->info;
 }
+
+// OFFSET: 0x00B89940
+
+// OFFSET: 0x00BA1260

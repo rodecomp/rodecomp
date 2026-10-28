@@ -368,6 +368,7 @@
   "Source/Contents/MovementRouteInterpolation.cpp": 4,
   "Source/Contents/Movies/BinkMovie.cpp": 3,
   "Source/Contents/Movies/BinkMovies.cpp": 3,
+  "Source/Contents/NavigationLink.cpp": 4,
   "Source/Contents/NavigationRequest.cpp": 4,
   "Source/Contents/NavigationRoute.cpp": 4,
   "Source/Contents/NavigationSource.cpp": 4,

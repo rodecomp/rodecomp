@@ -81,8 +81,29 @@ public:
   virtual CNaviInfo* GetInfo() const;
 };
 
+// VTABLE: vt_01778
+class CNavi_Link : public CNavi_Object {
+public:
+  /* 007C */ CNaviInfo* linkedInfo;
+  /* 0080 */ int unknown_0080;
+  /* 0084 */ int unknown_0084;
+  /* 0088 */ int unknown_0088;
+  /* 008C */ std::vector<NaviLink> linkedLinks;
+
+  ~CNavi_Link() override;
+  int GetId() const override;
+  int GetType() const override;
+  int GetIndex() const override;
+  const char* GetName() const override;
+  const char* GetTitle() const override;
+  NaviCell* GetCell(NaviCell* out) const override;
+  CNaviInfo* GetInfo() const override;
+};
+
 class CNaviInfo {
 public:
+  ~CNaviInfo();
+
   bool HasName(const char* name) const;
   const char* GetName() const;
   const char* GetTitle() const;
@@ -100,6 +121,9 @@ public:
 };
 
 struct NavigationTarget {
+  NavigationTarget() : type(-1), object(nullptr), x(-1), y(-1) {}
+  ~NavigationTarget();
+
   /* 0000 */ int type;
   /* 0004 */ void* object;
   /* 0008 */ int x;
@@ -109,6 +133,10 @@ struct NavigationTarget {
 
 class CNaviData {
 public:
+  CNaviData();
+  ~CNaviData();
+
+  bool SetDestination(CNaviInfo* info, int cellX, int cellY);
   CNaviInfo* GetInfo();
   NaviCell* GetCell(NaviCell* out);
   void Clear();
@@ -126,6 +154,9 @@ public:
 
 class CNavigationManager {
 public:
+  CNavigationManager();
+  ~CNavigationManager();
+
   NavigationTarget GetCurrentTarget() const;
   std::string GetCurrentTargetName() const;
   NavigationTarget GetSavedTarget() const;
@@ -142,6 +173,11 @@ public:
   std::string DestinationTitle();
   float FitToSquare(int* offsetX, int* offsetY, int width, int height, float size) const;
   void LoadSettings();
+  void Reset(bool clearAll);
+  void ClearRouteNodes();
+  void ClearNodePaths();
+  CNaviInfo* GetLinkedPlayerInfo();
+  bool UpdateGround();
 
   /* 0000 */ CNaviData data;
   /* 004C */ CPathFinder pathFinder;
@@ -189,7 +225,12 @@ public:
   /* 1344 */ int viewIcon;
 };
 
+extern CNavigationManager g_navigationManager;
+
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(CNavi_Link) == 0x98);
+static_assert(offsetof(CNavi_Link, linkedInfo) == 0x7C);
+static_assert(offsetof(CNavi_Link, linkedLinks) == 0x8C);
 static_assert(sizeof(NaviCell) == 0x08);
 static_assert(sizeof(NaviDataEntry) == 0x0C);
 static_assert(sizeof(NaviRouteLine) == 0x2C);
