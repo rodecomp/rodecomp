@@ -5,9 +5,9 @@
 
 // OFFSET: 0x00569FF0
 // FUNCTION: fn_02283
-std::vector<RenderAdapter> EnumerateRenderAdapters(int backend, DirectDrawEnumeration& legacy) {
+std::vector<RenderAdapter> EnumerateRenderAdapters(int backend) {
   if (backend == 1) {
-    return EnumerateAdaptersDX7(legacy);
+    return EnumerateAdaptersDX7();
   }
 
   if (backend == 2) {

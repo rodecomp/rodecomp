@@ -13,11 +13,9 @@ struct DisplayMode {
   /* 000C */ std::string description;
 };
 
-class DirectDrawEnumeration;
+std::vector<DisplayMode> EnumerateDisplayModes(int backend, unsigned deviceIndex);
 
-std::vector<DisplayMode> EnumerateDisplayModes(int backend, unsigned deviceIndex, DirectDrawEnumeration& legacy);
-
-std::vector<DisplayMode> EnumerateDisplayModesDX7(DirectDrawEnumeration& enumeration, unsigned deviceIndex);
+std::vector<DisplayMode> EnumerateDisplayModesDX7(unsigned deviceIndex);
 
 std::vector<DisplayMode> EnumerateDisplayModesDX9(UINT adapter);
 

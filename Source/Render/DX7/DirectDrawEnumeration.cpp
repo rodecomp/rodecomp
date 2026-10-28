@@ -1,38 +1,65 @@
 #include "Render/DX7/DirectDrawEnumeration.h"
+#include "Render/DeviceSelection.h"
 
 #include <cstdlib>
 #include <cstring>
 #include <limits>
 
-struct DirectDrawEnumeration::AdapterContext {
-  DirectDrawEnumeration& owner;
-  DirectDrawDeviceRecord record{};
-};
+// GLOBAL: gl_24698
+RECT g_monitorRectangleDX7;
 
-// INLINED
-DirectDrawEnumeration::DirectDrawEnumeration(const GUID& selectedDraw, RECT& monitor) : m_selectedDraw(selectedDraw), m_monitor(monitor) {
-}
+// GLOBAL: gl_24690
+DirectDrawDeviceRecord g_directDrawModes[20];
+
+// GLOBAL: gl_24691
+unsigned g_directDrawModesSeen;
+
+// GLOBAL: gl_24689
+unsigned g_directDrawModeCount;
+
+// GLOBAL: gl_24714
+DirectDrawEnumeration::Filter g_directDrawFilter;
 
 // OFFSET: 0x007E9C00
 // FUNCTION: fn_09777
 HRESULT DirectDrawEnumeration::Enumerate(Filter filter) {
-  this->m_filter = filter;
-  DirectDrawEnumerateExA(Adapter, this, 7);
+  g_directDrawFilter = filter;
+  DirectDrawEnumerateExA(Adapter, nullptr, 7);
 
-  if (this->devicesSeen == 0) {
+  if (g_directDrawModesSeen == 0) {
     return static_cast<HRESULT>(0x81000002u);
   }
 
-  return this->deviceCount == 0 ? static_cast<HRESULT>(0x81000003u) : S_OK;
+  return g_directDrawModeCount == 0 ? static_cast<HRESULT>(0x81000003u) : S_OK;
 }
 
 // OFFSET: 0x007EA180
 // FUNCTION: fn_09785
 void DirectDrawEnumeration::ClearModes() {
-  for (unsigned index = 0; index < this->deviceCount; ++index) {
-    std::free(this->devices[index].modes);
-    this->devices[index].modes = nullptr;
+  for (unsigned index = 0; index < g_directDrawModeCount; ++index) {
+    if (g_directDrawModes[index].modes) {
+      std::free(g_directDrawModes[index].modes);
+      g_directDrawModes[index].modes = nullptr;
+    }
   }
+}
+
+// OFFSET: 0x007EA090
+// FUNCTION: fn_09780
+DirectDrawDeviceRecord* DirectDrawEnumeration::Devices() {
+  return g_directDrawModes;
+}
+
+// OFFSET: 0x007EA0A0
+// FUNCTION: fn_09781
+unsigned DirectDrawEnumeration::DeviceCount() {
+  return g_directDrawModeCount;
+}
+
+// OFFSET: 0x007EA0B0
+// FUNCTION: fn_09782
+unsigned DirectDrawEnumeration::DevicesSeen() {
+  return g_directDrawModesSeen;
 }
 
 // OFFSET: 0x007EA140
@@ -59,7 +86,7 @@ int __cdecl DirectDrawEnumeration::CompareModes(const void* left, const void* ri
 // OFFSET: 0x007EA0C0
 // FUNCTION: fn_09783
 HRESULT CALLBACK DirectDrawEnumeration::Mode(DDSURFACEDESC2* mode, void* context) {
-  auto& record = static_cast<AdapterContext*>(context)->record;
+  auto& record = *static_cast<DirectDrawDeviceRecord*>(context);
   const unsigned count = record.modeCount + 1;
   const std::size_t size = count > std::numeric_limits<std::size_t>::max() / sizeof(*mode) ? std::numeric_limits<std::size_t>::max() : count * sizeof(*mode);
   auto* replacement = static_cast<DDSURFACEDESC2*>(std::malloc(size));
@@ -79,11 +106,9 @@ HRESULT CALLBACK DirectDrawEnumeration::Mode(DDSURFACEDESC2* mode, void* context
 // OFFSET: 0x007E9C40
 // FUNCTION: fn_09778
 HRESULT CALLBACK DirectDrawEnumeration::Device(char*, char* name, D3DDEVICEDESC7* device, void* context) {
-  auto& adapter = *static_cast<AdapterContext*>(context);
-  auto& owner = adapter.owner;
-  const auto& source = adapter.record;
-  ++owner.devicesSeen;
-  auto& record = owner.devices[owner.deviceCount];
+  const auto& source = *static_cast<DirectDrawDeviceRecord*>(context);
+  ++g_directDrawModesSeen;
+  auto& record = g_directDrawModes[g_directDrawModeCount];
   std::memset(&record, 0, sizeof(record));
   record.hardware = device->dwDevCaps & D3DDEVCAPS_HWRASTERIZATION;
   record.device = *device;
@@ -102,7 +127,7 @@ HRESULT CALLBACK DirectDrawEnumeration::Device(char*, char* name, D3DDEVICEDESC7
     lstrcpynA(record.description, name, 39);
   }
 
-  if ((record.drawGuid && !record.hardware) || (owner.m_filter && FAILED(owner.m_filter(&record.driverCaps, &record.device)))) {
+  if ((record.drawGuid && !record.hardware) || (g_directDrawFilter && FAILED(g_directDrawFilter(&record.driverCaps, &record.device)))) {
     std::free(record.modes);
     return D3DENUMRET_OK;
   }
@@ -136,21 +161,20 @@ HRESULT CALLBACK DirectDrawEnumeration::Device(char*, char* name, D3DDEVICEDESC7
     }
   }
 
-  ++owner.deviceCount;
+  ++g_directDrawModeCount;
   record.primary = record.primaryAdapter;
   return D3DENUMRET_OK;
 }
 
 // OFFSET: 0x007E9EA0
 // FUNCTION: fn_09779
-BOOL WINAPI DirectDrawEnumeration::Adapter(GUID* guid, char* description, char*, void* context, HMONITOR monitor) {
-  auto& owner = *static_cast<DirectDrawEnumeration*>(context);
+BOOL WINAPI DirectDrawEnumeration::Adapter(GUID* guid, char* description, char*, void*, HMONITOR monitor) {
 
-  if (guid && monitor && std::memcmp(guid, &owner.m_selectedDraw, sizeof(GUID)) == 0) {
+  if (guid && monitor && std::memcmp(guid, g_guidDriver, sizeof(GUID)) == 0) {
     MONITORINFOEXA information;
     information.cbSize = sizeof(information);
     GetMonitorInfoA(monitor, &information);
-    owner.m_monitor = information.rcMonitor;
+    g_monitorRectangleDX7 = information.rcMonitor;
   }
 
   IDirectDraw7* draw = nullptr;
@@ -166,8 +190,7 @@ BOOL WINAPI DirectDrawEnumeration::Adapter(GUID* guid, char* description, char*,
     return TRUE;
   }
 
-  AdapterContext adapter{owner};
-  auto& record = adapter.record;
+  DirectDrawDeviceRecord record{};
   lstrcpynA(record.description, description, 39);
   record.driverCaps.dwSize = sizeof(DDCAPS);
   record.emulationCaps.dwSize = sizeof(DDCAPS);
@@ -182,9 +205,9 @@ BOOL WINAPI DirectDrawEnumeration::Adapter(GUID* guid, char* description, char*,
     record.primaryAdapter = 1;
   }
 
-  draw->EnumDisplayModes(0, nullptr, &adapter, Mode);
+  draw->EnumDisplayModes(0, nullptr, &record, Mode);
   std::qsort(record.modes, record.modeCount, sizeof(DDSURFACEDESC2), CompareModes);
-  render->EnumDevices(Device, &adapter);
+  render->EnumDevices(Device, &record);
   std::free(record.modes);
   render->Release();
   draw->Release();

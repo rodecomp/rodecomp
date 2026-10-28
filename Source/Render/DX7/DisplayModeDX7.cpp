@@ -5,18 +5,18 @@
 
 // OFFSET: 0x0056BDD0
 // FUNCTION: fn_02331
-std::vector<DisplayMode> EnumerateDisplayModesDX7(DirectDrawEnumeration& enumeration, unsigned deviceIndex) {
+std::vector<DisplayMode> EnumerateDisplayModesDX7(unsigned deviceIndex) {
   std::vector<DisplayMode> result;
 
-  if (enumeration.devicesSeen == 0 && FAILED(enumeration.Enumerate(nullptr))) {
+  if (DirectDrawEnumeration::DevicesSeen() == 0 && FAILED(DirectDrawEnumeration::Enumerate(nullptr))) {
     return result;
   }
 
-  if (deviceIndex >= enumeration.deviceCount) {
+  if (deviceIndex >= DirectDrawEnumeration::DeviceCount()) {
     return result;
   }
 
-  const auto& record = enumeration.devices[deviceIndex];
+  const auto& record = DirectDrawEnumeration::Devices()[deviceIndex];
 
   for (unsigned index = 0; index < record.modeCount; ++index) {
     const auto& mode = record.modes[index];
