@@ -9,6 +9,14 @@
 #include "UI/Lists/UITabControl.h"
 #include "UI/Lists/UITreeView.h"
 #include "UI/UIStaticItem.h"
+#include "Client/Session.h"
+#include "Contents/Hotkeys/HotkeyInfo.h"
+#include "Contents/Items/ItemNaming.h"
+#include "Contents/MessageTable.h"
+#include "Contents/Skills/ClientSkills.h"
+#include "UI/UIBasicCtrl.h"
+#include "Utility/Text/FormatString.h"
+#include "UI/Lists/UIMemberListBox.h"
 
 #include <cstdio>
 #include <cstring>
@@ -310,4 +318,138 @@ void UITabControl::Slot28(int x, int y) {
   }
 
   this->m_controls->services.Tooltip(this->tooltips[index].c_str(), screenX, screenY, -1, false, true);
+}
+
+// OFFSET: 0x00822660
+// FUNCTION: fn_10280
+std::string SkillUseTextPercent(const char* name, int level, int sp, int ap) {
+  if (ap == 0) {
+    return FormatOwnedString("%s Use Lv %d (Sp : %d%%)", name, level, sp);
+  }
+
+  return FormatOwnedString("%s Use Lv %d (Sp : %d%%, Ap : %d)", name, level, sp, ap);
+}
+
+// OFFSET: 0x008226F0
+// FUNCTION: fn_10281
+std::string SkillUseTextFlat(const char* name, int level, int sp, int ap) {
+  if (ap == 0) {
+    return FormatOwnedString("%s Use Lv %d (Sp : %d)", name, level, sp);
+  }
+
+  return FormatOwnedString("%s Use Lv %d (Sp : %d, Ap : %d)", name, level, sp, ap);
+}
+
+// OFFSET: 0x00891350
+// FUNCTION: fn_11448
+void UIBasicItemCtrl::Slot28(int, int) {
+  std::string text;
+
+  if (std::atoi(this->m_item.itemId.c_str()) < 1) {
+    text = this->m_tooltip;
+  } else if (this->m_item.unknown_0000[1] == 0) {
+    text = this->m_naming->DisplayName(this->m_item, 0);
+  } else if (this->m_item.unknown_0098 != 0) {
+    text = FormatOwnedString(LookupMessage(2551), this->m_naming->DisplayName(this->m_item, 0).c_str(), this->m_item.unknown_0098, this->m_item.quantity);
+  } else {
+    text = FormatOwnedString(LookupMessage(183), this->m_naming->DisplayName(this->m_item, 0).c_str(), this->m_item.quantity);
+  }
+
+  int screenX = 0, screenY = 0;
+
+  for (const UIWindow* window = this; window; window = window->parent) {
+    screenX = (screenX + window->geometry.x);
+    screenY = (screenY + window->geometry.y);
+  }
+
+  if (!text.empty()) {
+    this->m_controls->services.Tooltip(text.c_str(), screenX, screenY, -1, false, true);
+  }
+}
+
+// OFFSET: 0x008915E0
+// FUNCTION: fn_11449
+void UIBasicSkillCtrl::Slot28(int, int) {
+  if (this->m_skillId < 0) {
+    return;
+  }
+
+  int screenX = 0, screenY = 0;
+
+  for (const UIWindow* window = this; window; window = window->parent) {
+    screenX = (screenX + window->geometry.x);
+    screenY = (screenY + window->geometry.y);
+  }
+
+  LuaScript& script = *g_session.m_hotkeyScript;
+  CSkillInfo skill = this->m_skills->Lookup(static_cast<std::uint32_t>(this->m_skillId));
+  const int sp = skill.UseSpAmount(script, skill.level);
+  const int ap = skill.UseApAmount(script, skill.level);
+  std::string text;
+
+  if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
+    text = SkillUseTextPercent(skill.DisplayName(script), skill.level, sp, ap);
+  } else {
+    text = SkillUseTextFlat(skill.DisplayName(script), skill.level, sp, ap);
+  }
+
+  if (!text.empty()) {
+    this->m_controls->services.Tooltip(text.c_str(), screenX, screenY, -1, false, true);
+  }
+}
+
+// OFFSET: 0x00891BC0
+// FUNCTION: fn_11456
+void UIMemberListBox::Slot28(int, int y) {
+  const int line = this->topLine + y / this->lineHeight;
+  if (line < this->topLine) {
+    return;
+  }
+
+  unsigned visible = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine);
+  if (this->lines.size() < visible) {
+    visible = static_cast<unsigned>(this->lines.size());
+  }
+
+  if (line >= static_cast<int>(visible)) {
+    return;
+  }
+
+  const char* text = this->lines[line].c_str();
+  const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text, 0, 0, 12, 0, 0);
+  if (width <= this->geometry.width - this->verticalOverflow * 15) {
+    return;
+  }
+
+  int screenX = -4;
+  int screenY = y - y % this->lineHeight;
+
+  for (const UIWindow* window = this; window; window = window->parent) {
+    screenX = (screenX + window->geometry.x);
+    screenY = (screenY + window->geometry.y);
+  }
+
+  this->m_controls->services.Tooltip(this->lines[line].c_str(), screenX, screenY, -1, false, true);
+}
+
+// OFFSET: 0x00891E40
+// FUNCTION: fn_11458
+void UIStaticItem::Slot28(int, int) {
+  char text[260];
+  std::memset(text, 0, sizeof(text));
+  int capacity = sizeof(text);
+  this->m_descriptions->Name(this->m_item, text, capacity, 0);
+
+  if (std::strlen(text) == 0) {
+    return;
+  }
+
+  int screenX = 0, screenY = -20;
+
+  for (const UIWindow* window = this; window; window = window->parent) {
+    screenX = (screenX + window->geometry.x);
+    screenY = (screenY + window->geometry.y);
+  }
+
+  this->m_controls->services.Tooltip(text, screenX, screenY, -1, false, true);
 }

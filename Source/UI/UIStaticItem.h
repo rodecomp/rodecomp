@@ -1,9 +1,20 @@
 #ifndef RAGNAROK_SOURCE_UI_UISTATICITEM_H
 #define RAGNAROK_SOURCE_UI_UISTATICITEM_H
 
+#include "Contents/Items/ItemInfo.h"
 #include "UI/Window/UIWindow.h"
 
+struct ItemDescriptions;
+struct UIButtonContext;
+
 class UIStaticItem : public UIWindow {
+public:
+  void Slot28(int x, int y) override;
+
+protected:
+  /* 0080 */ ItemInfo m_item;
+  ItemDescriptions* m_descriptions;
+  UIButtonContext* m_controls;
 };
 
 class UIStaticItem_Illust : public UIStaticItem {
