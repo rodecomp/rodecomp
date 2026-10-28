@@ -58,7 +58,9 @@ public:
   /* 1058 */ int m_petActionTable[5][5][7];
   /* 1314 */ unsigned char unknown_1314[0x314];
   /* 1628 */ int m_job;
-  /* 162C */ unsigned char unknown_162C[0xE4];
+  /* 162C */ unsigned char unknown_162C[0x24];
+  /* 1650 */ int m_level;
+  /* 1654 */ unsigned char unknown_1654[0xBC];
   /* 1710 */ std::list<ItemInfo> m_inventoryItems;
   /* 1718 */ unsigned char unknown_1718[0x1438];
   /* 2B50 */ ItemInfo unknown_2B50[10];
@@ -130,6 +132,7 @@ static_assert(sizeof(SessionRecord6144) == 0x38);
 static_assert(offsetof(SessionRecord6144, unknown_002C) == 0x2C);
 static_assert(offsetof(SessionRecord6144, unknown_0030) == 0x30);
 static_assert(offsetof(CSession, m_additionalSkills) == 0x4);
+static_assert(offsetof(CSession, m_level) == 0x1650);
 static_assert(offsetof(CSession, m_skillBundle) == 0xC);
 static_assert(offsetof(CSession, m_homunSkills) == 0x84);
 static_assert(offsetof(CSession, m_mercSkills) == 0x8C);

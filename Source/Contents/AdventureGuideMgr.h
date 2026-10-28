@@ -8,6 +8,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 struct AdventureGuideDetail {
@@ -75,6 +76,9 @@ public:
 
   CAdventureGuideMgr();
   virtual ~CAdventureGuideMgr();
+
+  void GetEpisodeList(std::list<AdventureGuideEpisode>& out);
+  void GetContentsList(std::list<std::pair<int, AdventureGuideContents>>& out, int type, int id);
 };
 
 extern CAdventureGuideMgr* g_adventureGuideMgr;
