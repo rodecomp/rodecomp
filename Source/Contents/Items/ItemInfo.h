@@ -47,6 +47,7 @@ struct alignas(8) ItemInfo {
   bool SetName(const char* name);
   void SetItemId(int value);
   bool HasSpecialCard() const;
+  bool IsApprenticeItem() const;
   /* 0000 */ std::uint32_t unknown_0000[4];
   /* 0010 */ std::int32_t quantity;
   /* 0014 */ std::uint32_t unknown_0014[2];

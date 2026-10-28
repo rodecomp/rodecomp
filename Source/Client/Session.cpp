@@ -1,4 +1,8 @@
 #include "Client/Session.h"
+#include "Network/TextEncoding.h"
+
+#include <cstring>
+#include <windows.h>
 
 // STATIC: 0x01732638
 // GLOBAL: gl_24474
@@ -24,4 +28,37 @@ void CSession::ClearItemSelection() {
       item.unknown_0074[1] = 0;
     }
   }
+}
+
+// OFFSET: 0x00E3CFF0
+// FUNCTION: fn_24179
+bool CSession::IsReducedSkill(int skillId) const {
+  switch (skillId) {
+  case 4217:
+  case 4218:
+  case 4219:
+  case 4220:
+  case 4221:
+  case 4308:
+  case 4315:
+    return true;
+  default:
+    return false;
+  }
+}
+
+// OFFSET: 0x00DFF1F0
+// FUNCTION: fn_23614
+char* CSession::ConvertTooltipText(const char* source, char* output) const {
+  if (output != source) {
+    std::strcpy(output, source);
+  }
+
+  for (char* current = output; *current != '\0'; current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0)) {
+    if (*current == '_') {
+      *current = ' ';
+    }
+  }
+
+  return output;
 }

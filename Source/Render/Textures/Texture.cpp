@@ -34,6 +34,13 @@ std::uint32_t CTexture::Retain() {
   return ++this->unknown_001C;
 }
 
+// OFFSET: 0x005724F0
+// FUNCTION: fn_02473
+std::uint32_t CTexture::Touch() {
+  this->unknown_0020 = timeGetTime();
+  return this->unknown_0020;
+}
+
 // OFFSET: 0x005724E0
 // FUNCTION: fn_02472
 std::uint32_t CTexture::Release() {

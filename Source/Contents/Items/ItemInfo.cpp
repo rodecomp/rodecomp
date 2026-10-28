@@ -204,3 +204,10 @@ bool ItemInfo::HasSpecialCard() const {
   std::memcpy(&card, this->unknown_001C, sizeof(card));
   return card == 254 || card == 255;
 }
+
+// OFFSET: 0x006D89D0
+// FUNCTION: fn_06603
+bool ItemInfo::IsApprenticeItem() const {
+  const unsigned id = static_cast<unsigned>(std::atoi(this->itemId.c_str()));
+  return id - 9001u <= 498u || id - 10000u <= 999u;
+}

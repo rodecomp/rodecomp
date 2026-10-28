@@ -114,6 +114,8 @@ public:
   int GetPetHungryState(int hunger);
   int GetPetEmotionNumber(int job, int action, int hungerLevel);
   void ClearItemSelection();
+  bool IsReducedSkill(int skillId) const;
+  char* ConvertTooltipText(const char* source, char* output) const;
   int MercSkillLevel(int skillId) const;
   int SyncUnknown0E98();
 };

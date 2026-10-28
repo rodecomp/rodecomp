@@ -29,6 +29,7 @@ public:
   void StretchTo(RenderPrimitivePool& pool, RenderQueues& queues, int x, int y, int width, int height, bool depthAlpha, float depthStart, float depthEnd);
   std::uint32_t SetImageSize(std::uint32_t width, std::uint32_t height);
   std::uint32_t Retain();
+  std::uint32_t Touch();
   std::uint32_t Release();
   int SetName(const char* name);
 
