@@ -1,5 +1,6 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
+#include "Utility/Text/FormatString.h"
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
 
@@ -394,7 +395,6 @@ struct ItemNamingContext : public ItemNaming {
   int Element(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
   int Star(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
   int Apprentice(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
-  int Refine(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
   std::uint32_t CardColor(const ItemInfo& item, int slot) const;
 };
 
@@ -478,3 +478,19 @@ int ItemNamingContext::Apprentice(const ItemInfo& item, char* output, int& capac
 }
 
 // OFFSET: 0x006D70A0
+
+// OFFSET: 0x006D70A0
+// FUNCTION: fn_06589
+int ItemInfo::Refine(char* output, int& capacity, unsigned char consume) const {
+  const int bytes = StringFormat(output, capacity, static_cast<std::size_t>(-1), "+%d ", this->unknown_0060);
+
+  if (bytes <= 0) {
+    return 0;
+  }
+
+  if (consume) {
+    capacity -= bytes;
+  }
+
+  return bytes;
+}
