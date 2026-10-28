@@ -13,6 +13,17 @@ struct RagEffectState;
 struct EffectParticle : CRenderObject {
   EffectParticle(ResourceMgr& resources, JobNames& names);
 
+  bool UpdateFireWall();
+  bool UpdateStoneCurse();
+  void UpdateBeginSpell();
+  bool UpdateHit6();
+  bool UpdateDetoxication();
+  bool UpdateExit();
+  bool UpdateWarp();
+
+  bool AdvanceFrame();
+  void UpdateRecords();
+
   /* 0138 */ EffectPrimitiveState state;
 };
 

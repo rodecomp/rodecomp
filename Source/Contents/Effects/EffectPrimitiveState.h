@@ -20,7 +20,7 @@ struct EffectVector3 {
 struct EffectPrimitiveRecord {
   /* 0000 */ EffectVector3 position;
   /* 000C */ EffectVector3 corners[4];
-  /* 003C */ std::uint32_t unknown_003C;
+  /* 003C */ float unknown_003C;
   /* 0040 */ float scale;
   /* 0044 */ float angle;
   /* 0048 */ float matrix[12];
@@ -101,7 +101,7 @@ struct EffectPrimitiveState {
   /* 0258 */ std::vector<float> unknown_0258[4];
   /* 0288 */ float unknown_0288;
   /* 028C */ std::uint32_t unknown_028C;
-  /* 0290 */ unsigned char unknown_0290[12];
+  /* 0290 */ float unknown_0290[3];
   /* 029C */ float unknown_029C;
   /* 02A0 */ float unknown_02A0;
   /* 02A4 */ EffectVector3 unknown_02A4;
@@ -118,8 +118,8 @@ struct EffectPrimitiveState {
   /* 02E0 */ float unknown_02E0;
   /* 02E4 */ float unknown_02E4;
   /* 02E8 */ float unknown_02E8;
-  /* 02EC */ std::uint32_t unknown_02EC;
-  /* 02F0 */ std::uint32_t unknown_02F0;
+  /* 02EC */ float unknown_02EC;
+  /* 02F0 */ float unknown_02F0;
   /* 02F4 */ float unknown_02F4;
   /* 02F8 */ float unknown_02F8;
   /* 02FC */ float unknown_02FC;
@@ -131,17 +131,17 @@ struct EffectPrimitiveState {
   /* 0314 */ float unknown_0314;
   /* 0318 */ float scale;
   /* 031C */ float unknown_031C;
-  /* 0320 */ std::uint32_t unknown_0320;
+  /* 0320 */ float unknown_0320;
   /* 0324 */ float unknown_0324;
   /* 0328 */ float unknown_0328;
   /* 032C */ float unknown_032C;
   /* 0330 */ float unknown_0330;
   /* 0334 */ float unknown_0334;
-  /* 0338 */ std::uint32_t unknown_0338;
+  /* 0338 */ float unknown_0338;
   /* 033C */ float unknown_033C;
   /* 0340 */ float unknown_0340;
-  /* 0344 */ std::uint32_t unknown_0344;
-  /* 0348 */ std::uint32_t unknown_0348;
+  /* 0344 */ float unknown_0344;
+  /* 0348 */ float unknown_0348;
   /* 034C */ float unknown_034C;
   /* 0350 */ float unknown_0350;
   /* 0354 */ float unknown_0354;

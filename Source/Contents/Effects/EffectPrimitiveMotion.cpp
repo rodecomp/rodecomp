@@ -1,4 +1,13 @@
 #include "Contents/Effects/EffectPrimitiveMotion.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ActiveGameMode.h"
+#include "Contents/Camera/Camera.h"
+#include "Resource/World/TerrainResource.h"
+#include "Contents/World/WorldScene.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Contents/Effects/EffectParticle.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/RagEffectState.h"
 #include "Contents/Actors/RenderObjectState.h"
@@ -7,6 +16,8 @@
 
 #include <bit>
 #include <cmath>
+#include <cstdlib>
+#include <cstdio>
 #include <cstring>
 
 namespace {
@@ -23,6 +34,16 @@ namespace {
   // INLINED
   EffectVector3 Upward(float distance, const float* matrix) {
     const EffectVector3 point{0.0f, -distance, 0.0f};
+    return {
+      ((matrix[3] * point.y + matrix[0] * point.x) + point.z * matrix[6]) + matrix[9],
+      ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10],
+      ((matrix[5] * point.y + matrix[2] * point.x) + point.z * matrix[8]) + matrix[11]
+    };
+  }
+
+  // INLINED
+  EffectVector3 Lift(float distance, const float* matrix) {
+    const EffectVector3 point{0.0f, distance, 0.0f};
     return {
       ((matrix[3] * point.y + matrix[0] * point.x) + point.z * matrix[6]) + matrix[9],
       ((matrix[4] * point.y + matrix[1] * point.x) + point.z * matrix[7]) + matrix[10],
@@ -505,4 +526,597 @@ void AdvanceEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& r
   } else {
     particle.UpdateColor();
   }
+}
+
+// OFFSET: 0x00BAE3A0
+// FUNCTION: fn_19764
+bool EffectParticle::AdvanceFrame() {
+  CActRes* action = this->render.action;
+
+  if (this->state.unknown_01E0 % this->state.unknown_01E8 != 0) {
+    return true;
+  }
+
+  const unsigned animation = static_cast<unsigned>(this->render.previousAnimation);
+  ++this->render.unknown_003C;
+
+  if (this->state.unknown_0254 != 0) {
+    this->render.unknown_003C =
+      static_cast<std::uint32_t>(static_cast<int>(this->render.unknown_003C) % static_cast<int>(action->FrameCount(animation)));
+    return true;
+  }
+
+  if ((this->state.flags & 0x800u) != 0) {
+    if (this->render.unknown_003C == action->FrameCount(animation)) {
+      --this->render.unknown_003C;
+    }
+
+    return true;
+  }
+
+  return this->render.unknown_003C != action->FrameCount(animation);
+}
+
+// OFFSET: 0x00BB5E80
+// FUNCTION: fn_19772
+bool EffectParticle::UpdateFireWall() {
+  const RagEffectState* parent = this->state.parent;
+  this->render.position[0] = std::bit_cast<float>(parent->unknown_013C[3]);
+  this->render.position[1] = std::bit_cast<float>(parent->unknown_013C[4]);
+  this->render.position[2] = std::bit_cast<float>(parent->unknown_013C[5]);
+
+  for (int index = 0; index < 4; ++index) {
+    if (this->state.scale == 3.0f && index < 3) {
+      index = 3;
+    }
+
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.active != 1) {
+      continue;
+    }
+
+    ++slot.frame;
+
+    if (index < 3) {
+      slot.angle = static_cast<std::int16_t>(slot.angle + index + 3);
+    }
+
+    if (slot.angle >= 360) {
+      slot.angle = static_cast<std::int16_t>(slot.angle - 360);
+    }
+
+    const int limit = this->state.lifetime - 40;
+    bool grown = false;
+
+    if (slot.frame < limit) {
+      if (slot.frame < 20) {
+        if (index == 3) {
+          this->state.slots[3].unknown_0002 = static_cast<std::int16_t>(this->state.slots[3].unknown_0002 + 8);
+
+          if (this->state.slots[3].unknown_0002 > 100) {
+            this->state.slots[3].unknown_0002 = 100;
+          }
+
+          grown = true;
+        } else {
+          slot.unknown_0002 = static_cast<std::int16_t>(slot.unknown_0002 + 10);
+
+          if (slot.unknown_0002 > 180) {
+            slot.unknown_0002 = 180;
+          }
+        }
+      }
+
+      if (index == 3) {
+        grown = true;
+      }
+    } else {
+      if (index < 3) {
+        slot.unknown_0002 = static_cast<std::int16_t>(slot.unknown_0002 - 5);
+
+        if (slot.unknown_0002 < 0) {
+          slot.unknown_0002 = 0;
+        }
+      } else {
+        slot.unknown_0002 = static_cast<std::int16_t>(slot.unknown_0002 - 3);
+
+        if (slot.unknown_0002 < 0) {
+          slot.unknown_0002 = 0;
+        }
+
+        grown = true;
+      }
+    }
+
+    if (!grown) {
+      for (int sample = 0; sample < 21; ++sample) {
+        if (slot.finished[sample] == 0) {
+          if (slot.frame <= 90) {
+            slot.values[sample] = slot.unknown_0008 * ClientSine(sample * 9) * ClientSine(slot.frame);
+          }
+
+          const float maximum = slot.unknown_0008 * ClientSine(sample * 9);
+
+          if (slot.values[sample] > maximum) {
+            slot.values[sample] = maximum;
+            slot.finished[sample] = 1;
+          }
+
+          if (slot.values[sample] < 0.0f) {
+            slot.values[sample] = 0.0f;
+          }
+        }
+      }
+    } else {
+      for (int sample = 0; sample < 21; ++sample) {
+        if (slot.finished[sample] != 0) {
+          const float base = slot.unknown_0008 * ClientSine(sample * 9) * 0.55f;
+          slot.values[sample] = base;
+          slot.values[sample] = slot.unknown_0008 * ClientSine(sample * 9) * 0.45f * ClientSine(slot.frame % 360) + base;
+        } else {
+          float value;
+
+          if (slot.frame > 90) {
+            slot.finished[sample] = 1;
+            value = slot.values[sample];
+          } else {
+            value = slot.unknown_0008 * ClientSine(sample * 9) * ClientSine(slot.frame);
+            slot.values[sample] = value;
+          }
+
+          if (value > slot.unknown_0008 * ClientSine(sample * 9)) {
+            slot.finished[sample] = 1;
+          }
+
+          if (slot.values[sample] < 0.0f) {
+            slot.values[sample] = 0.0f;
+          }
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00BB63C0
+// FUNCTION: fn_19775
+bool EffectParticle::UpdateStoneCurse() {
+  const RagEffectState* parent = this->state.parent;
+  this->render.position[0] = std::bit_cast<float>(parent->unknown_013C[3]);
+  this->render.position[1] = std::bit_cast<float>(parent->unknown_013C[4]);
+  this->render.position[2] = std::bit_cast<float>(parent->unknown_013C[5]);
+
+  for (int index = 0; index < 4; ++index) {
+    if (this->state.scale == 3.0f && index < 3) {
+      index = 3;
+    }
+
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.active != 1) {
+      continue;
+    }
+
+    ++slot.frame;
+
+    if (index < 3) {
+      slot.angle = static_cast<std::int16_t>(slot.angle + index + 3);
+    }
+
+    if (slot.angle >= 360) {
+      slot.angle = static_cast<std::int16_t>(slot.angle - 360);
+    }
+
+    if (slot.frame < this->state.lifetime - 40) {
+      if (slot.frame < 20 && slot.unknown_0004 != 1) {
+        if (index == 3) {
+          this->state.slots[3].unknown_0002 = static_cast<std::int16_t>(this->state.slots[3].unknown_0002 + 8);
+
+          if (this->state.slots[3].unknown_0002 > 60) {
+            this->state.slots[3].unknown_0002 = 60;
+          }
+        } else {
+          slot.unknown_0002 = static_cast<std::int16_t>(slot.unknown_0002 + 10);
+
+          if (slot.unknown_0002 > 180) {
+            slot.unknown_0002 = 180;
+          }
+        }
+      }
+    } else {
+      slot.unknown_0002 = static_cast<std::int16_t>(slot.unknown_0002 - (index >= 3 ? 2 : 5));
+
+      if (slot.unknown_0002 < 0) {
+        slot.unknown_0002 = 0;
+      }
+    }
+
+    for (int sample = 0; sample < 21; ++sample) {
+      if (slot.finished[sample] == 0) {
+        if (slot.frame <= 90) {
+          slot.values[sample] = slot.unknown_0008 * ClientSine(sample * 9) * ClientSine(slot.frame);
+        }
+
+        const float maximum = slot.unknown_0008 * ClientSine(sample * 9);
+
+        if (slot.values[sample] > maximum) {
+          slot.values[sample] = maximum;
+          slot.finished[sample] = 1;
+        }
+
+        if (slot.values[sample] < 0.0f) {
+          slot.values[sample] = 0.0f;
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00BB65C0
+// FUNCTION: fn_19776
+void EffectParticle::UpdateBeginSpell() {
+  const RagEffectState* parent = this->state.parent;
+  this->state.origin.x = std::bit_cast<float>(parent->unknown_013C[3]) + this->state.velocity.x;
+  this->state.origin.y = std::bit_cast<float>(parent->unknown_013C[4]) + this->state.velocity.y;
+  this->state.origin.z = std::bit_cast<float>(parent->unknown_013C[5]) + this->state.velocity.z;
+
+  float base;
+
+  if (this->state.unknown_0200 == this->state.unknown_01E0) {
+    this->state.unknown_0350 = this->state.unknown_02A0;
+    base = this->state.unknown_029C;
+  } else {
+    base = this->state.unknown_034C;
+  }
+
+  const float horizontal = base + this->state.unknown_0350;
+  const float forwardX = this->state.unknown_033C + this->state.unknown_0330;
+  this->state.unknown_02BC = this->state.unknown_02C0 + this->state.unknown_02BC;
+  const float forwardZ = this->state.unknown_0304 + this->state.unknown_02FC;
+  this->state.unknown_0330 = forwardX;
+  const float angle = forwardX + this->state.unknown_030C;
+  this->state.unknown_034C = horizontal;
+  const float side = horizontal + this->state.unknown_0348;
+  this->state.unknown_02FC = forwardZ;
+  const float vertical = forwardZ + this->state.unknown_02F4;
+  this->state.unknown_030C = angle;
+  this->state.unknown_0348 = side;
+  this->state.unknown_02F4 = vertical;
+
+  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetXRotation(ClientRadians(static_cast<int>(this->state.unknown_0310)));
+  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateY(ClientRadians(static_cast<int>(this->state.unknown_030C)));
+
+  const float distance = this->state.unknown_02BC;
+  this->state.unknown_0370 = Forward(distance, this->state.matrix1);
+  const float offsetX = this->state.unknown_0370.x + this->state.offset.x;
+  const float offsetY = this->state.unknown_0370.y + this->state.offset.y;
+  const float offsetZ = this->state.unknown_0370.z + this->state.offset.z;
+  this->state.offset.x = offsetX;
+  this->state.offset.y = offsetY;
+  this->state.offset.z = offsetZ;
+  this->render.position[0] = offsetX + this->state.origin.x;
+  this->render.position[1] = offsetY + this->state.origin.y;
+  this->render.position[2] = offsetZ + this->state.origin.z;
+
+  float scale = this->state.unknown_02F4;
+
+  if ((this->state.flags & 1u) != 0 || scale > this->state.unknown_0348) {
+    scale = this->state.unknown_0348;
+  }
+
+  this->state.scale = scale;
+  this->state.UpdateColor();
+  this->UpdateRecords();
+}
+
+// OFFSET: 0x00BB6F30
+// FUNCTION: fn_19779
+bool EffectParticle::UpdateHit6() {
+  const RagEffectState* parent = this->state.parent;
+  this->state.origin.x = std::bit_cast<float>(parent->unknown_013C[3]) + this->state.velocity.x;
+  this->state.origin.y = std::bit_cast<float>(parent->unknown_013C[4]) + this->state.velocity.y;
+  this->state.origin.z = std::bit_cast<float>(parent->unknown_013C[5]) + this->state.velocity.z;
+
+  const int frame = this->state.unknown_01E0;
+
+  if (frame == this->state.unknown_0200) {
+    this->state.unknown_0370 = this->state.unknown_02A4;
+    this->state.unknown_03AC = this->state.unknown_02B0;
+  }
+
+  float vertical = this->state.unknown_02C0 + this->state.unknown_02BC;
+  float lateral = this->state.unknown_0320 + this->state.unknown_031C;
+  std::uint32_t flags = this->state.flags;
+  this->state.unknown_02BC = vertical;
+  this->state.unknown_031C = lateral;
+
+  if ((flags & 0x400u) != 0) {
+    const float z = this->state.unknown_03AC.z + this->state.unknown_0370.z;
+    const float x = this->state.unknown_03AC.x + this->state.unknown_0370.x;
+    const float y = this->state.unknown_03AC.y + this->state.unknown_0370.y;
+    this->state.unknown_0370.z = z;
+    this->state.offset.z = z + this->state.offset.z;
+    this->state.unknown_0370.x = x;
+    this->state.offset.x = x + this->state.offset.x;
+    this->state.unknown_0370.y = y;
+    this->state.offset.y = y + this->state.offset.y;
+    this->state.unknown_0314 = this->state.unknown_0338 + this->state.unknown_0314;
+    this->state.scale = lateral + this->state.scale;
+  } else if ((flags & 1u) != 0 || frame > this->state.unknown_01EC) {
+    const float side = lateral + this->state.scale;
+    this->state.unknown_0370 = Forward(vertical, this->state.matrix1);
+    this->state.offset.x = this->state.unknown_0370.x + this->state.offset.x;
+    this->state.offset.y = this->state.unknown_0370.y + this->state.offset.y;
+    this->state.offset.z = this->state.unknown_0370.z + this->state.offset.z;
+    this->state.scale = side;
+    this->state.unknown_0314 = this->state.unknown_0338 + this->state.unknown_0314;
+  }
+
+  flags = this->state.flags;
+
+  if ((flags & 2u) != 0) {
+    if (this->state.unknown_01E0 % this->state.unknown_01D4 == 0) {
+      this->state.unknown_01D4 = rand() % 8 + 12;
+      this->state.unknown_03A0.x = static_cast<float>(rand() % 5 + 5) / 100.0f;
+      this->state.unknown_03A0.z = static_cast<float>(rand() % 5 + 5) / 100.0f;
+
+      if (rand() % 2 == 0) {
+        this->state.unknown_03A0.x = -this->state.unknown_03A0.x;
+      }
+
+      if (rand() % 2 == 0) {
+        this->state.unknown_03A0.z = -this->state.unknown_03A0.z;
+      }
+    }
+
+    flags = this->state.flags;
+    this->state.offset.x = this->state.unknown_03A0.x + this->state.offset.x;
+  }
+
+  if ((flags & 4u) != 0 && this->state.unknown_01E0 % this->state.unknown_01D4 == 0) {
+    this->state.unknown_02BC = static_cast<float>(rand() % 35 + 15) / 100.0f;
+    this->state.unknown_030C = static_cast<float>(rand() % 80) + (this->state.unknown_030C - 40.0f);
+    this->state.unknown_0310 = static_cast<float>(rand() % 80) + (this->state.unknown_0310 - 40.0f);
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetYRotation(ClientRadians(static_cast<int>(this->state.unknown_030C)));
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateX(ClientRadians(static_cast<int>(this->state.unknown_0310)));
+    flags = this->state.flags;
+    this->state.unknown_01D4 = rand() % 10 + 5;
+  }
+
+  if ((flags & 8u) != 0 && this->state.unknown_01E0 % this->state.unknown_01D4 == 0) {
+    this->state.unknown_030C = static_cast<float>(rand() % 10) + (this->state.unknown_030C - 5.0f);
+    this->state.unknown_0310 = static_cast<float>(rand() % 10) + (this->state.unknown_0310 - 5.0f);
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetXRotation(ClientRadians(static_cast<int>(this->state.unknown_0310)));
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateY(ClientRadians(static_cast<int>(this->state.unknown_030C)));
+    this->state.unknown_01D4 = rand() % 15 + 5;
+  }
+
+  this->render.position[0] = this->state.offset.x + this->state.origin.x;
+  this->render.position[1] = this->state.offset.y + this->state.origin.y;
+  this->render.position[2] = this->state.offset.z + this->state.origin.z;
+
+  if ((this->state.flags & 0x100u) != 0) {
+    if (3.0f >= this->HorizontalDistance(this->state.parent->offset[0], this->state.parent->offset[2])) {
+      return false;
+    }
+  }
+
+  if ((this->state.flags & 0x20u) != 0) {
+    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.ActiveGameMode())->camera->camera.yaw;
+  }
+
+  this->state.UpdateColor();
+  this->UpdateRecords();
+  return this->AdvanceFrame();
+}
+
+// OFFSET: 0x00BB78A0
+// FUNCTION: fn_19781
+bool EffectParticle::UpdateDetoxication() {
+  float positionX = this->state.origin.x + this->state.velocity.x;
+  const float positionY = this->state.origin.y + this->state.velocity.y;
+  const float positionZ = this->state.origin.z + this->state.velocity.z;
+  const int frame = this->state.unknown_01E0;
+
+  if (frame == this->state.unknown_0200) {
+    this->state.unknown_0370 = this->state.unknown_02A4;
+    this->state.unknown_03AC = this->state.unknown_02B0;
+  }
+
+  float vertical = this->state.unknown_02C0 + this->state.unknown_02BC;
+  float lateral = this->state.unknown_0320 + this->state.unknown_031C;
+  std::uint32_t flags = this->state.flags;
+  this->state.unknown_02BC = vertical;
+  this->state.unknown_031C = lateral;
+
+  if ((flags & 0x400u) != 0) {
+    const float z = this->state.unknown_03AC.z + this->state.unknown_0370.z;
+    const float x = this->state.unknown_03AC.x + this->state.unknown_0370.x;
+    const float y = this->state.unknown_03AC.y + this->state.unknown_0370.y;
+    this->state.unknown_0370.z = z;
+    this->state.offset.z = z + this->state.offset.z;
+    this->state.unknown_0370.x = x;
+    this->state.offset.x = x + this->state.offset.x;
+    this->state.unknown_0370.y = y;
+    this->state.offset.y = y + this->state.offset.y;
+    this->state.unknown_0314 = this->state.unknown_0338 + this->state.unknown_0314;
+    this->state.scale = lateral + this->state.scale;
+  } else if ((flags & 1u) != 0 || frame > this->state.unknown_01EC) {
+    const float side = lateral + this->state.scale;
+    this->state.unknown_0370 = Forward(vertical, this->state.matrix1);
+    this->state.offset.x = this->state.unknown_0370.x + this->state.offset.x;
+    this->state.offset.y = this->state.unknown_0370.y + this->state.offset.y;
+    this->state.offset.z = this->state.unknown_0370.z + this->state.offset.z;
+    this->state.scale = side;
+    this->state.unknown_0314 = this->state.unknown_0338 + this->state.unknown_0314;
+  }
+
+  flags = this->state.flags;
+
+  if ((flags & 2u) != 0) {
+    if (this->state.unknown_01E0 % this->state.unknown_01D4 == 0) {
+      this->state.unknown_01D4 = rand() % 8 + 12;
+      this->state.unknown_03A0.x = static_cast<float>(rand() % 5 + 5) / 100.0f;
+      this->state.unknown_03A0.z = static_cast<float>(rand() % 5 + 5) / 100.0f;
+
+      if (rand() % 2 == 0) {
+        this->state.unknown_03A0.x = -this->state.unknown_03A0.x;
+      }
+
+      if (rand() % 2 == 0) {
+        this->state.unknown_03A0.z = -this->state.unknown_03A0.z;
+      }
+    }
+
+    flags = this->state.flags;
+    this->state.offset.x = this->state.unknown_03A0.x + this->state.offset.x;
+  }
+
+  if ((flags & 4u) != 0 && this->state.unknown_01E0 % this->state.unknown_01D4 == 0) {
+    this->state.unknown_02BC = static_cast<float>(rand() % 35 + 15) / 100.0f;
+    this->state.unknown_030C = static_cast<float>(rand() % 80) + (this->state.unknown_030C - 40.0f);
+    this->state.unknown_0310 = static_cast<float>(rand() % 80) + (this->state.unknown_0310 - 40.0f);
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetYRotation(ClientRadians(static_cast<int>(this->state.unknown_030C)));
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateX(ClientRadians(static_cast<int>(this->state.unknown_0310)));
+    this->state.unknown_01D4 = rand() % 10 + 5;
+    flags = this->state.flags;
+  }
+
+  if ((flags & 8u) != 0 && this->state.unknown_01E0 % this->state.unknown_01D4 == 0) {
+    this->state.unknown_030C = static_cast<float>(rand() % 10) + (this->state.unknown_030C - 5.0f);
+    this->state.unknown_0310 = static_cast<float>(rand() % 10) + (this->state.unknown_0310 - 5.0f);
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetXRotation(ClientRadians(static_cast<int>(this->state.unknown_0310)));
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateY(ClientRadians(static_cast<int>(this->state.unknown_030C)));
+    this->state.unknown_01D4 = rand() % 15 + 5;
+    flags = this->state.flags;
+  }
+
+  this->render.position[0] = positionX + this->state.offset.x;
+  this->render.position[1] = positionY + this->state.offset.y;
+  this->render.position[2] = positionZ + this->state.offset.z;
+
+  if ((flags & 0x20u) != 0) {
+    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.ActiveGameMode())->camera->camera.yaw;
+  }
+
+  this->state.UpdateColor();
+  this->UpdateRecords();
+  return this->AdvanceFrame();
+}
+
+// OFFSET: 0x00BB7EC0
+// FUNCTION: fn_19782
+bool EffectParticle::UpdateExit() {
+  const RagEffectState* parent = this->state.parent;
+  this->state.origin = {std::bit_cast<float>(parent->unknown_013C[3]), std::bit_cast<float>(parent->unknown_013C[4]), std::bit_cast<float>(parent->unknown_013C[5])};
+
+  const float lateral = this->state.unknown_033C + this->state.unknown_0330;
+  float vertical = this->state.unknown_02EC + this->state.unknown_02F0;
+  const float spread = this->state.unknown_034C + this->state.unknown_0350;
+  this->state.unknown_0330 = lateral;
+  const float angle = lateral + this->state.unknown_030C;
+  this->state.unknown_02EC = vertical;
+  vertical = vertical + this->state.velocity.y;
+  const float side = spread + this->state.unknown_0348;
+  this->state.unknown_030C = angle;
+  this->state.velocity.y = vertical;
+  this->state.unknown_0348 = side;
+
+  const float moveX = this->state.origin.x + this->state.velocity.x;
+  this->state.origin.y = vertical + this->state.origin.y;
+  this->state.origin.x = moveX;
+  this->state.origin.z = this->state.velocity.z + this->state.origin.z;
+  const int frame = this->state.unknown_01E0;
+  this->state.unknown_0314 = this->state.unknown_0338 + this->state.unknown_0314;
+
+  if (frame == this->state.unknown_0200) {
+    this->state.unknown_02EC = this->state.unknown_029C;
+    this->state.unknown_02F0 = this->state.unknown_02A0;
+  }
+
+  if (this->state.unknown_0158 != 0) {
+    int index = this->state.unknown_01D8;
+    const std::uint32_t count = static_cast<std::uint32_t>(this->state.unknown_0258[0].size());
+
+    if (index < 0 || static_cast<std::uint32_t>(index) >= count) {
+      index = 0;
+      this->state.unknown_01D8 = 0;
+    }
+
+    if (static_cast<float>(frame) == this->state.unknown_0258[0][index]) {
+      this->state.unknown_034C = this->state.unknown_0258[1][index];
+      this->state.unknown_0350 = this->state.unknown_0258[2][index];
+      this->state.unknown_01D8 = index + 1;
+    }
+  }
+
+  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetYRotation(ClientRadians(static_cast<int>(this->state.unknown_030C)));
+
+  const float distance = this->state.unknown_0348;
+  this->state.offset = Forward(distance, this->state.matrix1);
+  this->render.position[0] = this->state.offset.x + this->state.origin.x;
+  this->render.position[1] = this->state.offset.y + this->state.origin.y;
+  this->render.position[2] = this->state.offset.z + this->state.origin.z;
+
+  this->state.scale = this->state.unknown_031C + this->state.scale;
+  const float rotation = this->state.unknown_0334 + this->state.unknown_0310;
+  this->state.unknown_0310 = rotation;
+  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateZ(rotation);
+
+  this->state.UpdateColor();
+  this->UpdateRecords();
+  return this->AdvanceFrame();
+}
+
+// OFFSET: 0x00BB8180
+
+// OFFSET: 0x00BE6FE0
+// FUNCTION: fn_19931
+void EffectParticle::UpdateRecords() {
+  const int count = this->state.unknown_01F4;
+
+  for (int index = count - 1; index > 0; --index) {
+    EffectPrimitiveRecord& record = this->state.records[index];
+    const EffectPrimitiveRecord& previous = this->state.records[index - 1];
+    record.position = previous.position;
+
+    for (int corner = 0; corner < 4; ++corner) {
+      record.corners[corner] = previous.corners[corner];
+    }
+
+    record.unknown_003C = previous.unknown_003C;
+    record.angle = previous.angle;
+    std::memcpy(record.matrix, previous.matrix, sizeof(record.matrix));
+    record.alpha = this->state.unknown_0324 - this->state.unknown_0324 / static_cast<float>(count) * static_cast<float>(index);
+
+    const std::uint32_t red = static_cast<unsigned char>(this->state.red);
+    const std::uint32_t green = static_cast<unsigned char>(this->state.green);
+    const std::uint32_t blue = static_cast<unsigned char>(this->state.blue);
+    record.color = (static_cast<std::uint32_t>(static_cast<int>(record.alpha)) << 24) | (red << 16) | (green << 8) | blue;
+    record.scale = this->state.scale - this->state.scale / static_cast<float>(count) * static_cast<float>(index) * 0.5f;
+  }
+
+  EffectPrimitiveRecord& first = this->state.records[0];
+  first.position.x = this->render.position[0];
+  first.position.y = this->render.position[1];
+  first.position.z = this->render.position[2];
+
+  for (int corner = 0; corner < 4; ++corner) {
+    first.corners[corner] = this->state.corners[corner];
+  }
+
+  first.unknown_003C = this->state.unknown_0348;
+  first.scale = this->state.scale;
+  first.angle = this->state.unknown_030C;
+  std::memcpy(first.matrix, this->state.matrix1, sizeof(first.matrix));
+  first.alpha = this->state.unknown_0324;
+
+  const std::uint32_t red = static_cast<unsigned char>(this->state.red);
+  const std::uint32_t green = static_cast<unsigned char>(this->state.green);
+  const std::uint32_t blue = static_cast<unsigned char>(this->state.blue);
+  first.color = (static_cast<std::uint32_t>(static_cast<int>(this->state.unknown_0324)) << 24) | (red << 16) | (green << 8) | blue;
 }
