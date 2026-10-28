@@ -571,6 +571,7 @@
   "Source/Resource/World/WorldResource.cpp": 3,
   "Source/Resource/XmlNode.cpp": 3,
   "Source/Resource/XmlParsing.cpp": 3,
+  "Source/Script/LuaFileOperations.cpp": 5,
   "Source/Script/LuaInstance.cpp": 5,
   "Source/Script/LuaScript.cpp": 5,
   "Source/UI/Acceptance/UIChooseSellBuyWnd.cpp": 2,
