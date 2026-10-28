@@ -65,6 +65,9 @@ inline std::uint32_t WindowGeometry::Color() {
 // GLOBAL: gl_24364
 std::uint32_t g_windowUid = 0xFFFFFFFFu;
 
+// GLOBAL: gl_24611
+int g_navigationTab;
+
 // INLINED
 void UIWindowContext::DestroyDeferredChildren() {
   for (UIWindow* window : this->deferredDeletion) {
@@ -1167,6 +1170,17 @@ void UIListBox_NaviSearch::Resize(int width, int height) {
   this->Refresh();
 }
 
+// OFFSET: 0x005C3360
+// FUNCTION: fn_03555
+bool UINavigationV4Wnd::ClearRouteTexts() {
+  for (std::string& text : this->unknown_0104) {
+    text.clear();
+  }
+
+  this->unknown_0104.clear();
+  return true;
+}
+
 // OFFSET: 0x005C4690
 // FUNCTION: fn_03575
 void UINavigationV4Wnd::LayoutWithoutDetails() {
@@ -1250,6 +1264,16 @@ void UINavigationV4Wnd::Slot11() {
   }
 
   this->info->y = this->geometry.y;
+}
+
+// OFFSET: 0x005C7140
+
+// OFFSET: 0x005C72A0
+// FUNCTION: fn_03604
+void UINavigationV4Wnd::Slot19() {
+  if (g_navigationTab == 2) {
+    this->Invalidate();
+  }
 }
 
 // OFFSET: 0x005C72C0

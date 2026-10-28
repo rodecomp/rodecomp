@@ -3,6 +3,9 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+#include <string>
+#include <vector>
+
 struct NavigationWindowInfo {
   /* 0000 */ int x;
   /* 0004 */ int y;
@@ -14,6 +17,8 @@ struct NavigationWindowInfo {
 class UINavigationV4Wnd : public UIFrameWnd {
 public:
   void Slot11() override;
+  void Slot19() override;
+  bool ClearRouteTexts();
   void LayoutWithoutDetails();
   void LayoutWithDetails();
 
@@ -37,8 +42,17 @@ public:
   /* 00F8 */ UIWindow* unknown_00F8;
   /* 00FC */ UIWindow* unknown_00FC;
   /* 0100 */ UIWindow* unknown_0100;
-  /* 0104 */ unsigned char unknown_0104[12];
+  /* 0104 */ std::vector<std::string> unknown_0104;
   /* 0110 */ NavigationWindowInfo* info;
 };
+
+class UINavigationroadiconWnd : public UIFrameWnd {
+public:
+  void Slot31(int x, int y) override;
+
+  /* 00B4 */ UIWindow* icon;
+};
+
+extern int g_navigationTab;
 
 #endif
