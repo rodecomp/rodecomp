@@ -524,6 +524,7 @@
   "Source/Render/RendererDX7.cpp": 0,
   "Source/Render/ScreenGeometry.cpp": 0,
   "Source/Render/ScreenRectangle.cpp": 0,
+  "Source/Render/SpriteGeometry.cpp": 0,
   "Source/Render/Text/FontCache.cpp": 0,
   "Source/Render/Text/TextContext.cpp": 0,
   "Source/Render/TextureQuad.cpp": 0,
