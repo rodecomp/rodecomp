@@ -5,6 +5,14 @@
 
 class RegistryKey {
 public:
+  RegistryKey() : handle(nullptr) {}
+  ~RegistryKey() {
+    if (this->handle != nullptr) {
+      RegCloseKey(this->handle);
+    }
+    this->handle = nullptr;
+  }
+
   /* 0000 */ HKEY handle;
 
   bool Create(HKEY parent, const char* subKey);
