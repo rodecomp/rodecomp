@@ -54,6 +54,8 @@ public:
   int Width() const;
 };
 
+extern CPathFinder g_pathFinder;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CPathFinder, attrCache) == 0x1078);
 static_assert(offsetof(CPathFinder, nodePool) == 0x1084);

@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_ACTORS_GAMEACTOR_H
 
 #include "Contents/Actors/RenderObject.h"
+#include "Contents/MovementRouteInterpolation.h"
 
 #include <cstddef>
 
@@ -9,9 +10,12 @@ class CGameActor : public CRenderObject {
 public:
   ~CGameActor() override;
 
-  /* 0138 */ unsigned char unknown_0138[0x100];
+  /* 0138 */ unsigned char unknown_0138[0xE8];
+  /* 0220 */ MovementRouteInterpolation route;
   /* 0238 */ unsigned char unknown_0238;
-  /* 0239 */ unsigned char unknown_0239[0x27];
+  /* 0239 */ unsigned char unknown_0239[0x1B];
+  /* 0254 */ std::uint32_t routeStartTick;
+  /* 0258 */ unsigned char unknown_0258[0x08];
   /* 0260 */ int unknown_0260;
   /* 0264 */ unsigned char unknown_0264[0x64];
   /* 02C8 */ int unknown_02C8;
@@ -49,11 +53,14 @@ public:
   void SetUnknown02E4(int value);
   void SetUnknown02C8(int value);
   void SetUnknown0260(int value);
+  bool FindRoute(int startX, int startY, int fractionX, int fractionY, int destX, int destY, int speed);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CGameActor) == 0x410);
+static_assert(offsetof(CGameActor, route) == 0x220);
 static_assert(offsetof(CGameActor, unknown_0238) == 0x238);
+static_assert(offsetof(CGameActor, routeStartTick) == 0x254);
 static_assert(offsetof(CGameActor, unknown_0260) == 0x260);
 static_assert(offsetof(CGameActor, unknown_02C8) == 0x2C8);
 static_assert(offsetof(CGameActor, unknown_02E4) == 0x2E4);

@@ -113,6 +113,7 @@ public:
   int WriteHeader(int event);
   std::vector<unsigned char> BuildMetadata();
   float AnimationScale() const;
+  float DelayScale() const;
   bool SetState(int state);
   bool SetBaseFrame(std::uint32_t baseFrame);
   void UpdateDuration();
