@@ -5,6 +5,7 @@
 #include <windows.h>
 
 extern std::uint32_t g_clientVersion;
+extern char g_applicationDirectory[0x80];
 
 bool RestartFromCommandLine(char* commandLine);
 

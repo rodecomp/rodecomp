@@ -8,6 +8,9 @@
 // GLOBAL: gl_24472
 std::uint32_t g_clientVersion;
 
+// GLOBAL: gl_24584
+char g_applicationDirectory[0x80];
+
 // OFFSET: 0x00E58820
 // FUNCTION: fn_24363
 bool RestartFromCommandLine(char* commandLine) {

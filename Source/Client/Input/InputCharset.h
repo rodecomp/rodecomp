@@ -13,4 +13,6 @@ struct InputCharset {
   unsigned CodePage(unsigned fallback) const;
 };
 
+extern InputCharset* g_serverLanguage;
+
 #endif
