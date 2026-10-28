@@ -1,4 +1,5 @@
 #include "Archive/GPak.h"
+#include "Archive/GPakUpdate.h"
 #include "Archive/PakCipher.h"
 
 #include <algorithm>
@@ -411,4 +412,9 @@ void CGPak::ReadAuxiliary(std::vector<std::uint8_t>& output, std::uint64_t* iden
   if (identifier) {
     *identifier = ReadAuxiliaryIdentifier(output.data(), output.size());
   }
+}
+
+// OFFSET: 0x00E555A0
+// FUNCTION: fn_24306
+myGPack::CGPakUpdate::CGPakUpdate() {
 }

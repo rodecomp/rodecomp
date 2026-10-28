@@ -42,6 +42,8 @@ namespace myGPack {
 
   class CGPakUpdate : public CGPakRead {
   public:
+    CGPakUpdate();
+
     bool Open(const char* filename);
     bool Commit(CNotifier* notifier);
     void Close();
