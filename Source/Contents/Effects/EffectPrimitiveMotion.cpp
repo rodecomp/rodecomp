@@ -1702,6 +1702,7 @@ bool EffectParticle::PrimSuperAngel() {
 }
 
 // OFFSET: 0x00BC4730
+// FUNCTION: fn_19844
 void EffectParticle::PrimThrowItem() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
@@ -1782,6 +1783,7 @@ void EffectParticle::PrimThrowItem() {
 }
 
 // OFFSET: 0x00BC06B0
+// FUNCTION: fn_19822
 bool EffectParticle::PrimPeong() {
   FaceCamera(this->state.slots);
 
@@ -1831,6 +1833,7 @@ bool EffectParticle::PrimPeong() {
 }
 
 // OFFSET: 0x00BBDE10
+// FUNCTION: fn_19810
 void EffectParticle::PrimGI3() {
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];

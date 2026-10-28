@@ -389,6 +389,7 @@ bool ItemInfo::IsAboveItemId600() const {
 }
 
 // OFFSET: 0x005FCCF0
+// FUNCTION: fn_04106
 int ItemInfo::GetItemId() const {
   return std::atoi(this->itemId.c_str());
 }
