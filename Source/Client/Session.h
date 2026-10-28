@@ -106,7 +106,10 @@ public:
   /* 0FAC */ const char* const* m_jobNamesEnd;
   /* 0FB0 */ unsigned char unknown_0FB0[0x34];
   /* 0FE4 */ std::list<std::uint32_t> m_pingSamples;
-  /* 0FEC */ unsigned char unknown_0FEC[0x6C];
+  /* 0FEC */ unsigned char unknown_0FEC[0x24];
+  /* 1010 */ std::uint32_t unknown_1010;
+  /* 1014 */ unsigned char unknown_1014[4];
+  /* 1018 */ char unknown_1018[0x40];
   /* 1058 */ int m_petActionTable[5][5][7];
   /* 1314 */ unsigned char unknown_1314[0x258];
   /* 156C */ XmlDocument m_petTalkTable;
