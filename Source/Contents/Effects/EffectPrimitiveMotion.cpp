@@ -50,6 +50,33 @@ namespace {
       ((matrix[5] * point.y + matrix[2] * point.x) + point.z * matrix[8]) + matrix[11]
     };
   }
+
+  // INLINED
+  void FaceCamera(EffectPrimitiveSlot* slots) {
+    const CView* view = static_cast<CGameMode*>(g_world.ActiveGameMode())->camera;
+    slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
+    slots[1].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.pitch) + 90);
+
+    if (slots[1].alphaT >= 360) {
+      slots[1].alphaT -= 360;
+    }
+  }
+
+  // INLINED
+  __forceinline void FollowTrail(EffectPrimitiveSlot& trail, const EffectPrimitiveSlot& previous, int fade) {
+    trail.fullDisplayAngle = previous.fullDisplayAngle;
+    trail.distance = previous.distance;
+    trail.height[8] = previous.height[8];
+    trail.alphaB = previous.alphaB - fade;
+
+    if (trail.alphaB < 0) {
+      trail.alphaB = 0;
+    }
+
+    trail.vecBNow = previous.vecBNow;
+    trail.fullDisplayAngle = previous.fullDisplayAngle;
+    trail.flag1[0] = previous.flag1[0];
+  }
 }
 
 // OFFSET: 0x00BB8C50
@@ -847,15 +874,8 @@ void EffectParticle::PrimBottom2() {
 // OFFSET: 0x00BBABC0
 // FUNCTION: fn_19791
 void EffectParticle::PrimBottom() {
-  const CView* view = static_cast<CGameMode*>(g_world.ActiveGameMode())->camera;
   EffectPrimitiveSlot* slots = this->state.slots;
-
-  slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
-  slots[1].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.pitch) + 90);
-
-  if (slots[1].alphaT >= 360) {
-    slots[1].alphaT -= 360;
-  }
+  FaceCamera(slots);
 
   const AttachedEffect* master = this->state.master;
   this->render.position[0] = master->render.position[0];
@@ -916,6 +936,114 @@ void EffectParticle::PrimBottom() {
 
     if (slot.fullDisplayAngle >= 360) {
       slot.fullDisplayAngle -= 360;
+    }
+  }
+}
+
+// OFFSET: 0x00BBAF30
+// FUNCTION: fn_19792
+void EffectParticle::PrimBottomOut() {
+  FaceCamera(this->state.slots);
+
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process <= 10) {
+      slot.alphaB += 25;
+    } else {
+      slot.alphaB -= 5;
+
+      if (slot.alphaB <= 0) {
+        slot.alphaB = 0;
+        slot.process = 0;
+        slot.vecBNow.y = slot.flag1[1] == 0 ? this->render.position[1] : this->render.position[1] - 5.0f;
+      }
+
+      slot.vecBNow.y -= 0.2f;
+    }
+
+    slot.height[8] += 5.0f;
+
+    if (slot.height[8] >= 360.0f) {
+      slot.height[8] -= 360.0f;
+    }
+
+    if (slot.flag1[1] == 1) {
+      slot.fullDisplayAngle += 5;
+
+      if (slot.fullDisplayAngle >= 360) {
+        slot.fullDisplayAngle -= 360;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00BBB120
+// FUNCTION: fn_19793
+void EffectParticle::PrimBubbleDrop() {
+  EffectPrimitiveSlot* slots = this->state.slots;
+  FaceCamera(slots);
+
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  EffectPrimitiveSlot& slot = slots[0];
+
+  if (slot.life != 1) {
+    return;
+  }
+
+  ++slot.process;
+
+  if (slot.process <= 0) {
+    return;
+  }
+
+  if (slot.process > 3) {
+    FollowTrail(slots[3], slots[2], 25);
+  }
+
+  if (slot.process > 2) {
+    FollowTrail(slots[2], slots[1], 25);
+  }
+
+  if (slot.process > 1) {
+    FollowTrail(slots[1], slot, 100);
+  }
+
+  if (slot.process <= 10) {
+    slot.alphaB += 20;
+  }
+
+  if (slot.process < slot.flag1[4]) {
+    slot.fullDisplayAngle -= 15;
+
+    if (slot.fullDisplayAngle < 0) {
+      slot.fullDisplayAngle += 360;
+    }
+
+    slot.vecBPre.y += slot.height[1];
+    slot.vecBNow = {
+      this->render.position[0] + slot.vecBPre.x, this->render.position[1] + slot.vecBPre.y, this->render.position[2] + slot.vecBPre.z
+    };
+  } else {
+    slot.alphaB -= 10;
+
+    if (slot.alphaB < 0) {
+      slot.alphaB = 0;
     }
   }
 }

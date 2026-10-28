@@ -23,6 +23,8 @@ struct EffectParticle : CRenderObject {
   bool UpdateWarp();
   void PrimBottom2();
   void PrimBottom();
+  void PrimBottomOut();
+  void PrimBubbleDrop();
 
   bool AdvanceFrame();
   void UpdateRecords();
