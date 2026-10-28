@@ -7,6 +7,8 @@
 
 class CGameActor : public CRenderObject {
 public:
+  ~CGameActor() override;
+
   /* 0138 */ unsigned char unknown_0138[0x100];
   /* 0238 */ unsigned char unknown_0238;
   /* 0239 */ unsigned char unknown_0239[0x27];
@@ -29,6 +31,7 @@ public:
   /* 0378 */ float unknown_0378;
   /* 037C */ unsigned char unknown_037C[0x4C];
   /* 03C8 */ int unknown_03C8;
+  /* 03CC */ unsigned char unknown_03CC[0x44];
 
   void SetAnimation(unsigned animation, int motion, int repeat) override;
 
@@ -49,6 +52,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(CGameActor) == 0x410);
 static_assert(offsetof(CGameActor, unknown_0238) == 0x238);
 static_assert(offsetof(CGameActor, unknown_0260) == 0x260);
 static_assert(offsetof(CGameActor, unknown_02C8) == 0x2C8);

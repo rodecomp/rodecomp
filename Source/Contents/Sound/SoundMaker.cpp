@@ -1,7 +1,11 @@
 #include "Contents/Sound/SoundMaker.h"
 
 #include "Contents/Actors/EffectActors.h"
+#include "Contents/Actors/GndRiser.h"
+#include "Contents/Actors/Npc.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/Sound/SoundMgr.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Resource/World/WorldResource.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
@@ -23,6 +27,8 @@ CSoundMaker::CSoundMaker(ResourceMgr& resources, JobNames& names, SoundMakerCont
   this->lastTick = timeGetTime() - 4000u;
 }
 
+// OFFSET: 0x00DA2220
+
 // OFFSET: 0x00DA2370
 // FUNCTION: fn_22365
 CBlowEffect::~CBlowEffect() = default;
@@ -38,6 +44,12 @@ CMasterChaser::~CMasterChaser() = default;
 // OFFSET: 0x00DA27C0
 // FUNCTION: fn_22375
 CNumEffect::~CNumEffect() = default;
+
+// OFFSET: 0x00DA3340
+// FUNCTION: fn_22403
+bool CHalluPlant::Update() {
+  return ++this->unknown_0440 <= 60;
+}
 
 // OFFSET: 0x00DA3980
 // FUNCTION: fn_22405
@@ -113,6 +125,13 @@ bool CSoundMaker::Update() {
   return true;
 }
 
+// OFFSET: 0x00DA2B00
+
+// OFFSET: 0x00DA4150
+// FUNCTION: fn_22411
+void CGndRiser::Draw(int) {
+}
+
 // OFFSET: 0x00DA4960
 // FUNCTION: fn_22417
 void CSoundMaker::Draw(int) {
@@ -137,6 +156,8 @@ void CBlowEffect::SendObjectMessage(
   this->render.unknown_008C = timeGetTime();
 }
 
+// OFFSET: 0x00DA4A00
+
 // OFFSET: 0x00DA4AD0
 // FUNCTION: fn_22420
 void CCorpse::SendObjectMessage(
@@ -144,6 +165,14 @@ void CCorpse::SendObjectMessage(
 ) {
   CRenderObject::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
+
+// OFFSET: 0x00DA4BF0
+
+// OFFSET: 0x00DA4CC0
+
+// OFFSET: 0x00DA4D90
+
+// OFFSET: 0x00DA4E60
 
 // OFFSET: 0x00DA5610
 // FUNCTION: fn_22427
