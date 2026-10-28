@@ -89,6 +89,11 @@ void GroundGeometry::DrawCellDecal(
   DrawDecal(*this, terrain, matrix, column, row, color, texture, uv, 0.10003052f, context);
 }
 
+// OFFSET: 0x00AC1710
+// FUNCTION: fn_17588
+void GroundGeometry::Slot14(int, int, int, int) {
+}
+
 // OFFSET: 0x00AC1720
 // FUNCTION: fn_17589
 void GroundGeometry::DrawGridDecal(
@@ -106,6 +111,11 @@ void GroundGeometry::DrawGrid(
   // STATIC: 0x01347EB0
   constexpr float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
   this->DrawGridDecal(terrain, matrix, column, row, color, *texture, uv, context);
+}
+
+// OFFSET: 0x00AC3600
+// FUNCTION: fn_17603
+void GroundGeometry::Slot16(int, int, int, int, int, int) {
 }
 
 // OFFSET: 0x00AC3610
