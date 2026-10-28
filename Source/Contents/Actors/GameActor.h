@@ -7,7 +7,9 @@
 
 class CGameActor : public CRenderObject {
 public:
-  /* 0138 */ unsigned char unknown_0138[0x128];
+  /* 0138 */ unsigned char unknown_0138[0x100];
+  /* 0238 */ unsigned char unknown_0238;
+  /* 0239 */ unsigned char unknown_0239[0x27];
   /* 0260 */ int unknown_0260;
   /* 0264 */ unsigned char unknown_0264[0x64];
   /* 02C8 */ int unknown_02C8;
@@ -17,8 +19,14 @@ public:
   /* 0305 */ unsigned char unknown_0305;
   /* 0306 */ unsigned char unknown_0306[2];
   /* 0308 */ int unknown_0308;
-  /* 030C */ unsigned char unknown_030C[0xBC];
+  /* 030C */ unsigned char unknown_030C[8];
+  /* 0314 */ unsigned char unknown_0314;
+  /* 0315 */ unsigned char unknown_0315[0x63];
+  /* 0378 */ float unknown_0378;
+  /* 037C */ unsigned char unknown_037C[0x4C];
   /* 03C8 */ int unknown_03C8;
+
+  void SetAnimation(unsigned animation, int motion, int repeat) override;
 
   void SetUnknown0305(unsigned char value, int extra);
   void RaiseUnknown03C8(int value);
@@ -28,11 +36,14 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(CGameActor, unknown_0238) == 0x238);
 static_assert(offsetof(CGameActor, unknown_0260) == 0x260);
 static_assert(offsetof(CGameActor, unknown_02C8) == 0x2C8);
 static_assert(offsetof(CGameActor, unknown_02E4) == 0x2E4);
 static_assert(offsetof(CGameActor, unknown_0305) == 0x305);
 static_assert(offsetof(CGameActor, unknown_0308) == 0x308);
+static_assert(offsetof(CGameActor, unknown_0314) == 0x314);
+static_assert(offsetof(CGameActor, unknown_0378) == 0x378);
 static_assert(offsetof(CGameActor, unknown_03C8) == 0x3C8);
 #endif
 

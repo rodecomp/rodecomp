@@ -32,6 +32,10 @@ public:
     unsigned char animation2, unsigned char frame2, unsigned char animation3, unsigned char frame3,
     unsigned char animation4, unsigned char frame4, int timed, std::uint32_t duration, int loop
   );
+  int HoverHeight();
+  void ScaleByPulse(float& scale) const;
+  void ApplySwing(int mode, int& x, int& y, int& outX, int& outY) const;
+  void SetInstantValue(int key, std::int64_t value);
   void SetFrameSequence(
     unsigned char animation, unsigned char firstFrame, unsigned char lastFrame, unsigned char finishAnimation,
     unsigned char finishFrame, int timed, std::uint32_t duration, int loop

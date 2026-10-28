@@ -78,13 +78,16 @@ struct RenderObjectState {
   /* 00E4 */ std::uint32_t sequenceDeadline;
   /* 00E8 */ std::uint32_t flags;
   /* 00EC */ std::uint32_t unknown_00EC;
-  /* 00F0 */ std::uint16_t unknown_00F0;
+  union {
+    /* 00F0 */ std::uint16_t unknown_00F0;
+    /* 00F0 */ unsigned char pulsePhases[2];
+  };
   /* 00F2 */ unsigned char unknown_00F2;
   /* 00F3 */ unsigned char unknown_00F3;
-  /* 00F4 */ std::uint16_t unknown_00F4;
+  /* 00F4 */ short unknown_00F4;
   /* 00F6 */ unsigned char unknown_00F6;
   /* 00F7 */ unsigned char unknown_00F7;
-  /* 00F8 */ std::uint16_t unknown_00F8;
+  /* 00F8 */ short unknown_00F8;
   /* 00FA */ unsigned char unknown_00FA;
   /* 00FB */ unsigned char unknown_00FB;
   /* 00FC */ std::uint32_t unknown_00FC;
