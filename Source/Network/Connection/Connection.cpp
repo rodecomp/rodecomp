@@ -19,8 +19,8 @@ CConnection::CConnection(ConnectionContext& context) : m_socket(INVALID_SOCKET),
 }
 
 // OFFSET: 0x00C7C280
-// OFFSET: 0x00C7C2F0
 // FUNCTION: fn_20384
+// OFFSET: 0x00C7C2F0
 CConnection::~CConnection() = default;
 
 // OFFSET: 0x00C7C1C0
@@ -29,7 +29,6 @@ CRagConnection::CRagConnection(ConnectionContext& context) : CConnection(context
 }
 
 // OFFSET: 0x00C7C370
-CRagConnection::~CRagConnection() = default;
 
 // OFFSET: 0x00C7C4D0
 // FUNCTION: fn_20389
@@ -198,6 +197,16 @@ void CConnection::UpdateStatus() {
 // FUNCTION: fn_20394
 int CConnection::Status() const {
   return this->m_status;
+}
+
+// OFFSET: 0x00C7CA20
+// FUNCTION: fn_20395
+void __stdcall Nullsub435() {
+}
+
+// OFFSET: 0x00C7CA30
+// FUNCTION: fn_20396
+void __stdcall Nullsub436() {
 }
 
 // OFFSET: 0x00C7CE30
