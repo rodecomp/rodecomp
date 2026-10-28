@@ -10,6 +10,7 @@
 class RenderVertexPool {
 public:
   RenderVertexPool();
+  ~RenderVertexPool();
   RenderVertex* Acquire(unsigned count);
   void Rewind();
 
@@ -23,6 +24,7 @@ private:
   /* 00B8 */ std::forward_list<std::unique_ptr<Block>> m_active;
   /* 00BC */ std::forward_list<std::unique_ptr<Block>> m_unused;
   Block& Activate(unsigned capacity);
+  void Release();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

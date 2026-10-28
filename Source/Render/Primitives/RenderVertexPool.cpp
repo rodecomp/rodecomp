@@ -19,6 +19,26 @@ RenderVertexPool::RenderVertexPool() : m_minimum(10240), m_used(0) {
   this->Activate(this->m_minimum);
 }
 
+// OFFSET: 0x00561690
+// FUNCTION: fn_02162
+RenderVertexPool::~RenderVertexPool() {
+  this->Release();
+}
+
+// OFFSET: 0x00562290
+// FUNCTION: fn_02177
+void RenderVertexPool::Release() {
+  for (auto& block : this->m_active) {
+    block.reset();
+  }
+  this->m_active.clear();
+
+  for (auto& block : this->m_unused) {
+    block.reset();
+  }
+  this->m_unused.clear();
+}
+
 // OFFSET: 0x00559AA0
 // FUNCTION: fn_02070
 RenderVertexPool::Block& RenderVertexPool::Activate(unsigned capacity) {
