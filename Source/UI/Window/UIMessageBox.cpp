@@ -2,7 +2,11 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Window/UILoginWnd.h"
 #include "UI/Window/UIMessageBox.h"
+#include "UI/Window/UINoticeWnd.h"
+#include "UI/Window/UISelectReplayDataWnd.h"
+#include "UI/Window/UISelectServerWnd.h"
 #include "UI/UIStaticBitmap.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Text/UITextViewer.h"
@@ -87,6 +91,27 @@ void UIMessageBox::Paint() {
 // OFFSET: 0x008B7A90
 // FUNCTION: fn_11756
 void UIMessageBox::Slot18() {
+}
+
+// OFFSET: 0x008B7AA0
+// FUNCTION: fn_11757
+void UINoticeWnd::Slot18() {
+}
+
+// OFFSET: 0x008B7AB0
+// FUNCTION: fn_11758
+void UISelectReplayDataWnd::Slot18() {
+}
+
+// OFFSET: 0x008B7AC0
+// FUNCTION: fn_11759
+void UISelectServerWnd::Slot18() {
+}
+
+// OFFSET: 0x008B8610
+// FUNCTION: fn_11765
+void UILoginWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
 }
 
 // INLINED
