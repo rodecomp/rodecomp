@@ -87,6 +87,16 @@ public:
   virtual const char* GetTitle() const;
   virtual NaviCell* GetCell(NaviCell* out) const;
   virtual CNaviInfo* GetInfo() const;
+  virtual bool SetId(int id);
+  virtual void SetType(int type);
+  virtual std::vector<NaviLink>::iterator LinksBegin();
+  virtual std::vector<NaviLink>::iterator LinksEnd();
+  virtual int LinkCount() const;
+  virtual void AddLink(const NaviLink& link);
+  virtual void EraseLink(std::vector<NaviLink>::iterator& it);
+  virtual void ClearLinks();
+  virtual CNavi_Link* FindLinkAt(int x, int y);
+  virtual CNavi_Link* FindLinkTo(int x, int y);
 
   bool HasId(const unsigned int& id) const;
   bool IsNamed(const char* name) const;
@@ -102,9 +112,13 @@ public:
   /* 008C */ std::vector<NaviLink> linkedLinks;
 
   CNaviInfo* GetLinkedInfo() const;
+  const char* GetLinkedName() const;
+  NaviCell GetLinkedCell() const;
   void SetDepth(int depth);
   std::vector<NaviLink>::iterator LinkedBegin();
   std::vector<NaviLink>::iterator LinkedEnd();
+  void AddLinkedLink(const NaviLink& link);
+  void ClearLinkedLinks();
 
   ~CNavi_Link() override;
   int GetId() const override;
@@ -114,6 +128,16 @@ public:
   const char* GetTitle() const override;
   NaviCell* GetCell(NaviCell* out) const override;
   CNaviInfo* GetInfo() const override;
+  bool SetId(int id) override;
+  void SetType(int type) override;
+  std::vector<NaviLink>::iterator LinksBegin() override;
+  std::vector<NaviLink>::iterator LinksEnd() override;
+  int LinkCount() const override;
+  void AddLink(const NaviLink& link) override;
+  void EraseLink(std::vector<NaviLink>::iterator& it) override;
+  void ClearLinks() override;
+  CNavi_Link* FindLinkAt(int x, int y) override;
+  CNavi_Link* FindLinkTo(int x, int y) override;
 };
 
 #pragma pack(push, 1)
@@ -132,6 +156,9 @@ public:
   ~CNaviInfo();
 
   bool HasName(const char* name) const;
+  bool AddNpc(CNavi_Object* npc);
+  bool AddMob(CNavi_Object* mob);
+  bool AddLink(CNavi_Link* link);
   const char* GetName() const;
   const char* GetTitle() const;
   bool IsVisited() const;
