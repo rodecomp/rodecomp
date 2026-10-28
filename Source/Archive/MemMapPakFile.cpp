@@ -1,6 +1,7 @@
 #include "Archive/MemMapPakFile.h"
 
-// INLINED
+// OFFSET: 0x00AECAA0
+// FUNCTION: fn_18140
 CMemMapPakFile::CMemMapPakFile() : m_handle(nullptr), m_mapping(nullptr), m_viewSize(0), m_windowSize(0x20000000), m_size(0), m_viewOffset(0), m_view(nullptr) {
   SYSTEM_INFO information;
   GetSystemInfo(&information);
@@ -8,8 +9,8 @@ CMemMapPakFile::CMemMapPakFile() : m_handle(nullptr), m_mapping(nullptr), m_view
 }
 
 // OFFSET: 0x00AE9850
-// OFFSET: 0x00AE9950
 // FUNCTION: fn_18108
+// OFFSET: 0x00AE9950
 CMemMapPakFile::~CMemMapPakFile() {
   this->Close();
 }
