@@ -358,3 +358,15 @@ void CPlayerSkillBundle::ForEachGrouped(std::function<bool(CSkillInfo*)> callbac
     }
   }
 }
+
+// OFFSET: 0x007719B0
+// FUNCTION: fn_08285
+bool IsIndexedSkill(int id) {
+  switch (id) {
+  case 6579:
+  case 6580:
+    return true;
+  default:
+    return false;
+  }
+}
