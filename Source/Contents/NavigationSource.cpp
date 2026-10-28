@@ -274,16 +274,188 @@ void CNavigationManager::Reset(bool clearAll) {
 }
 
 // OFFSET: 0x00B93110
+// FUNCTION: fn_19562
+bool CNavigationManager::AddState(const std::vector<std::string>& tokens) {
+  if (tokens.size() < 2) {
+    return false;
+  }
+
+  CNaviInfo* info = this->FindObject(tokens[0].c_str());
+  if (info == nullptr) {
+    return false;
+  }
+
+  const NaviCell cell = this->ParseCell(tokens[1].c_str());
+  if (cell.x == -1 || cell.y == -1) {
+    return false;
+  }
+
+  std::string name;
+  for (std::size_t i = 2; i < tokens.size(); ++i) {
+    name.append(" ", 1);
+    name.append(tokens[i]);
+  }
+
+  NavigationTarget target(0, info, cell.x, cell.y, name);
+  this->states.push_back(target);
+  return true;
+}
 
 // OFFSET: 0x00B93670
+// FUNCTION: fn_19563
+bool CNavigationManager::ParseFlags(const char* text, bool* first, bool* second, bool* third) {
+  const char* firstSlash = std::strstr(text, "/");
+  if (firstSlash == nullptr) {
+    return false;
+  }
+
+  const char* rest = firstSlash + 1;
+  const char* secondSlash = std::strstr(rest, "/");
+  if (secondSlash == nullptr) {
+    return false;
+  }
+
+  std::string firstText(text, firstSlash);
+  if (firstText.empty()) {
+    return false;
+  }
+
+  std::string secondText(rest, secondSlash);
+  if (secondText.empty()) {
+    return false;
+  }
+
+  std::string thirdText(secondSlash + 1, text + std::strlen(text));
+  if (thirdText.empty()) {
+    return false;
+  }
+
+  const int firstValue = std::atoi(firstText.c_str());
+  const int secondValue = std::atoi(secondText.c_str());
+  const int thirdValue = std::atoi(thirdText.c_str());
+  if ((firstValue != 0 && firstValue != 1) || (secondValue != 0 && secondValue != 1) || (thirdValue != 0 && thirdValue != 1)) {
+    return false;
+  }
+
+  *first = firstValue == 1;
+  *second = secondValue == 1;
+  *third = thirdValue == 1;
+  return true;
+}
 
 // OFFSET: 0x00B938F0
+// FUNCTION: fn_19564
+NaviCell CNavigationManager::ParseCell(const char* text) {
+  NaviCell cell;
+  const char* slash;
+  if (text == nullptr || (slash = std::strstr(text, "/")) == nullptr) {
+    cell.x = -1;
+    cell.y = -1;
+    return cell;
+  }
+
+  std::string xText(text, slash);
+  if (xText.empty()) {
+    cell.x = -1;
+    cell.y = -1;
+    return cell;
+  }
+
+  std::string yText(slash + 1, text + std::strlen(text));
+  if (yText.empty()) {
+    cell.x = -1;
+    cell.y = -1;
+    return cell;
+  }
+
+  const int x = std::atoi(xText.c_str());
+  const int y = std::atoi(yText.c_str());
+  if (x >= 0 && x <= 500 && y >= 0 && y <= 500) {
+    cell.x = x;
+    cell.y = y;
+  } else {
+    cell.x = -1;
+    cell.y = -1;
+  }
+  return cell;
+}
 
 // OFFSET: 0x00B94890
+// FUNCTION: fn_19568
+std::vector<char> CNavigationManager::WriteTarget(NavigationTarget target) {
+  std::vector<char> buffer;
+  if (target.object == nullptr) {
+    return buffer;
+  }
+
+  buffer.resize(sizeof(int), '\0');
+  *reinterpret_cast<int*>(buffer.data()) = target.type;
+
+  if (target.type == 1 || target.type == 0) {
+    std::string name = static_cast<CNaviInfo*>(target.object)->GetName();
+    buffer.insert(buffer.end(), name.begin(), name.end());
+  } else if (target.type == 3) {
+    std::vector<char> object = this->WriteObject(static_cast<CNavi_Object*>(target.object));
+    buffer.insert(buffer.end(), object.begin(), object.end());
+  } else if (target.type == 2) {
+    std::vector<char> object = this->WriteObject(static_cast<CNavi_Object*>(target.object));
+    buffer.insert(buffer.end(), object.begin(), object.end());
+  }
+
+  return buffer;
+}
 
 // OFFSET: 0x00B94B50
+// FUNCTION: fn_19569
+std::vector<char> CNavigationManager::WriteObject(CNavi_Object* object) {
+  std::vector<char> buffer;
+  if (object != nullptr) {
+    const int type = object->GetType();
+    const int index = object->GetIndex();
+    NaviCell cell;
+    object->GetCell(&cell);
+    std::string name = object->GetName();
+    std::string title = object->GetTitle();
+    std::string map = object->GetInfo()->GetName();
+
+    buffer.resize(map.size() + 0x16 + title.size() + name.size(), '\0');
+
+    NaviObjectRecord* record = reinterpret_cast<NaviObjectRecord*>(buffer.data());
+    record->type = type;
+    record->index = index;
+    record->cellX = cell.x;
+    record->cellY = cell.y;
+
+    const std::size_t nameLength = static_cast<std::int16_t>(name.size());
+    reinterpret_cast<NaviObjectRecord*>(buffer.data())->nameLength = static_cast<std::int16_t>(name.size());
+    std::memcpy(buffer.data() + 0x12, name.c_str(), nameLength);
+
+    const std::size_t titleLength = static_cast<std::int16_t>(title.size());
+    *reinterpret_cast<std::int16_t*>(buffer.data() + nameLength + 0x12) = static_cast<std::int16_t>(title.size());
+    std::memcpy(buffer.data() + nameLength + 0x14, title.c_str(), titleLength);
+
+    const std::size_t offset = nameLength + 0x14 + titleLength;
+    *reinterpret_cast<std::int16_t*>(buffer.data() + offset) = static_cast<std::int16_t>(map.size());
+    std::memcpy(buffer.data() + offset + 2, map.c_str(), static_cast<std::int16_t>(map.size()));
+  }
+
+  return buffer;
+}
 
 // OFFSET: 0x00B950B0
+// FUNCTION: fn_19571
+void CNavigationManager::ClearSavedTarget() {
+  this->savedTarget = NavigationTarget();
+  this->unknown_115C = false;
+  this->routeResult = 0;
+  this->nodes.clear();
+  this->selectedNode = -1;
+  this->movementRoute.segment = 0;
+  this->unknown_117C = false;
+  this->ground = nullptr;
+  this->cells.clear();
+  this->unknown_1258 = 1;
+}
 
 // OFFSET: 0x00B95260
 // FUNCTION: fn_19572
@@ -293,6 +465,10 @@ void CNavigationManager::ClearCurrentObject() {
 }
 
 // OFFSET: 0x00B95AD0
+// FUNCTION: fn_19576
+void CNavigationManager::ClearStates() {
+  this->states.clear();
+}
 
 // OFFSET: 0x00B95AF0
 // FUNCTION: fn_19577
@@ -301,5 +477,77 @@ void CNavigationManager::ClearNodes() {
 }
 
 // OFFSET: 0x00B95DC0
+// FUNCTION: fn_19579
+int CNavigationManager::FindNodePath(unsigned int index) {
+  if (this->states[index].type == 1 || this->states[index].type == 0) {
+    return -1;
+  }
+
+  for (unsigned int i = 0; i < this->nodePaths.size(); ++i) {
+    if (this->nodePaths[i].empty()) {
+      return -1;
+    }
+
+    const unsigned int first = this->nodePaths[i][0];
+    if (first >= this->states.size()) {
+      return -1;
+    }
+
+    NavigationTarget& target = this->states[index];
+    if (target.type == 3 && target.x == -1000 && target.y == -1000) {
+      if (this->states[first].type != 1) {
+        continue;
+      }
+
+      CNaviInfo* info = static_cast<CNaviInfo*>(this->states[first].object);
+      if (info == nullptr) {
+        return -1;
+      }
+
+      CNavi_Object* object = static_cast<CNavi_Object*>(target.object);
+      if (object == nullptr || object->GetInfo() == nullptr) {
+        return -1;
+      }
+
+      if (std::strcmp(info->GetName(), object->GetInfo()->GetName()) == 0) {
+        return i;
+      }
+    }
+
+    NavigationTarget& other = this->states[first];
+    if (other.type == this->states[index].type) {
+      CNavi_Object* otherObject = static_cast<CNavi_Object*>(other.object);
+      if (otherObject == nullptr) {
+        return -1;
+      }
+
+      CNavi_Object* object = static_cast<CNavi_Object*>(this->states[index].object);
+      if (object == nullptr) {
+        return -1;
+      }
+
+      if (std::strcmp(otherObject->GetName(), object->GetName()) == 0) {
+        return i;
+      }
+    }
+  }
+
+  return -1;
+}
 
 // OFFSET: 0x00B95FB0
+// FUNCTION: fn_19580
+void CNavigationManager::SelectNodePath(std::string name) {
+  if (name.empty() || this->nodePaths.size() < 2) {
+    return;
+  }
+
+  std::vector<int> first = this->nodePaths[0];
+  for (unsigned int i = 0; i < this->nodePaths.size(); ++i) {
+    if (this->states[this->nodePaths[i][0]].name == name) {
+      this->nodePaths[0] = this->nodePaths[i];
+      this->nodePaths[i] = first;
+      break;
+    }
+  }
+}

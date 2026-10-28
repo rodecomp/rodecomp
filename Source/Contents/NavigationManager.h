@@ -37,6 +37,10 @@ struct NaviDataEntry {
 
 struct NaviRouteLine {
   // OFFSET: 0x00B92F10
+  // FUNCTION: fn_19558
+  ~NaviRouteLine() {
+    this->text.clear();
+  }
 
   /* 0000 */ int kind;
   /* 0004 */ int x;
