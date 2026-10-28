@@ -1,9 +1,19 @@
 #include "Client/Application/ErrorDialog.h"
+#include "File/File.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/Models/AnimatedModelResource.h"
+#include "Resource/Models/GrannyModelResource.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceByteReader.h"
+
+#include <cstdlib>
+#include <cstring>
+#include <string>
+
+// GLOBAL: gl_24742
+GrannyAnimationLibrary g_grannyAnimationLibrary;
 
 // INLINED
 AnimatedModelFrame::AnimatedModelFrame() : vertices(nullptr), textureVertices(nullptr) {
@@ -212,4 +222,149 @@ bool C3dAnimModelRes::Load(const char* name) {
   this->rootNames.push_back(rootName);
   file.Close();
   return true;
+}
+
+// INLINED
+GrannyAnimationLibrary::~GrannyAnimationLibrary() {
+  if (this->instance) {
+    this->FreeInstance();
+
+    for (auto& job : this->animations) {
+      for (granny_animation*& animation : job) {
+        if (animation) {
+          animation = nullptr;
+        }
+      }
+    }
+
+    GrannyFreeLocalPose(this->localPose);
+    GrannyFreeFile(this->file);
+  }
+}
+
+// INLINED
+C3dGrannyModelRes::C3dGrannyModelRes(ModelResourceContext& context) : m_context(&context) {
+  this->position[0] = 0.0f;
+  this->position[1] = 0.0f;
+  this->position[2] = 0.0f;
+  this->instance = nullptr;
+  this->model = nullptr;
+  this->job = 0;
+  this->unknown_03B0 = 0;
+}
+
+// OFFSET: 0x00753540
+// FUNCTION: fn_07961
+C3dGrannyModelRes* C3dGrannyModelRes::Create() {
+  return new C3dGrannyModelRes(*this->m_context);
+}
+
+// OFFSET: 0x00753620
+// FUNCTION: fn_07963
+bool C3dGrannyModelRes::Load(const char* name) {
+  bool result = false;
+
+  if (!GrannyVersionsMatch_(2, 1, 0, 5)) {
+    ShowErrorDialog(GetRenderSystemHolder()->system, "doesn't match the .h file used during compilation", 0);
+    return false;
+  }
+
+  this->animations = &g_grannyAnimationLibrary;
+  this->modelCount = 0;
+  this->maxBoneCount = 0;
+  this->textureCount = 0;
+  this->unknown_0280 = 0;
+  const char* cursor = std::strchr(name, '_');
+
+  if (!cursor) {
+    return false;
+  }
+
+  ++cursor;
+  char number[10];
+  int length = 0;
+
+  for (; *cursor != '.'; ++cursor) {
+    if (length >= 4) {
+      break;
+    }
+
+    number[length++] = *cursor;
+  }
+
+  number[length] = 0;
+  this->job = std::atoi(number);
+  CFile file;
+
+  if (!file.Open(name, 0, true, false)) {
+    const std::string path(name);
+    const std::string message = std::string("Cannot find File : ") + path;
+    ShowErrorDialog(GetRenderSystemHolder()->system, message.c_str(), 0);
+    return false;
+  }
+
+  this->file = GrannyReadEntireFileFromMemory(file.GetSize(), file.GetData());
+  file.Close();
+
+  if (!this->file) {
+    ShowErrorDialog(GetRenderSystemHolder()->system, "Unable to load file .gr2 (C3dGrannyModelRes :: Load)", 0);
+  } else {
+    granny_file_info* info = GrannyGetFileInfo(this->file);
+    std::strcpy(this->fileName, name);
+
+    if (!info) {
+      ShowErrorDialog(GetRenderSystemHolder()->system, "Unable to access file data .gr2", 0);
+    } else {
+      this->textureCount = info->textureCount;
+      this->textures = new GrannyTextureEntry[this->textureCount];
+
+      for (int index = 0; index < this->textureCount; ++index) {
+        this->textures[index].texture = nullptr;
+        const granny_texture* texture = info->textures[index];
+        GrannyTextureEntry& entry = this->textures[index];
+        entry.name = texture->fromFileName;
+
+        if (texture->textureType == 0 && texture->imageCount == 1) {
+          entry.texture = this->CreateTexture(texture, 0);
+        } else {
+          ShowErrorDialog(GetRenderSystemHolder()->system, "This sample only works with single-image : ColorMapTextureType textures", 0);
+        }
+      }
+
+      this->modelCount = info->modelCount;
+      this->instance = new GrannyModelInstance;
+      const granny_model* model = info->models[0];
+      this->InstantiateModel(this->instance, model);
+      this->skeleton = info->skeletons[0];
+      this->model = model;
+      this->localPose = GrannyNewLocalPose(this->maxBoneCount);
+
+      if (this->deformBufferSize) {
+        this->unknown_0280 = 4;
+      }
+
+      result = true;
+    }
+
+    GrannyFreeFileSection(this->file, 1);
+    GrannyFreeFileSection(this->file, 2);
+    GrannyFreeFileSection(this->file, 4);
+    GrannyFreeFileSection(this->file, 5);
+  }
+
+  this->unknown_0110 = 1920.0f;
+
+  for (int index = 0; index < this->instance->meshCount; ++index) {
+    if (GrannyGetMeshIndexCount(this->instance->meshes[index].mesh) / 3 > 10000) {
+      ShowErrorDialog(GetRenderSystemHolder()->system, "too many vertex granny model!", 0);
+    }
+  }
+
+  this->position[0] = 0.0f;
+  this->position[1] = 0.0f;
+  this->position[2] = 0.0f;
+  this->unknown_03A0 = 10.0f;
+  this->unknown_03A4 = 10.0f;
+  file.Close();
+  return result;
 }

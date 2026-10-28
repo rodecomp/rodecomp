@@ -40,6 +40,10 @@ struct granny_texture {
   /* 0004 */ std::int32_t textureType;
   /* 0008 */ std::int32_t width;
   /* 000C */ std::int32_t height;
+  /* 0010 */ std::int32_t encoding;
+  /* 0014 */ std::int32_t subFormat;
+  /* 0018 */ granny_pixel_layout layout;
+  /* 003C */ std::int32_t imageCount;
 };
 
 struct granny_skeleton {
@@ -72,7 +76,11 @@ struct granny_model {
 struct granny_file_info {
   /* 0000 */ unsigned char unknown_0000[0x10];
   /* 0010 */ std::int32_t textureCount;
-  /* 0014 */ unsigned char unknown_0014[0x2C];
+  /* 0014 */ granny_texture** textures;
+  /* 0018 */ unsigned char unknown_0018[8];
+  /* 0020 */ std::int32_t skeletonCount;
+  /* 0024 */ granny_skeleton** skeletons;
+  /* 0028 */ unsigned char unknown_0028[0x18];
   /* 0040 */ std::int32_t modelCount;
   /* 0044 */ granny_model** models;
   /* 0048 */ unsigned char unknown_0048[8];
@@ -116,6 +124,8 @@ __declspec(dllimport) void WINAPI GrannyFreeModelInstance(granny_model_instance*
 __declspec(dllimport) void WINAPI GrannyFreeWorldPose(granny_world_pose* pose);
 __declspec(dllimport) granny_control* WINAPI GrannyPlayControlledAnimation(float startTime, const granny_animation* animation, granny_model_instance* instance);
 __declspec(dllimport) void WINAPI GrannySetControlLoopCount(granny_control* control, std::int32_t loopCount);
+__declspec(dllimport) void WINAPI GrannyFreeLocalPose(granny_local_pose* pose);
+__declspec(dllimport) void WINAPI GrannyFreeFile(granny_file* file);
 }
 
 struct GrannyTextureEntry {
@@ -142,6 +152,7 @@ struct GrannyModelInstance {
 
 class GrannyAnimationLibrary {
 public:
+  ~GrannyAnimationLibrary();
   bool Load(const char* name, int job, int action);
   void Initialize();
   void FreeInstance();
@@ -165,6 +176,9 @@ public:
 
 class C3dGrannyModelRes : public CRes {
 public:
+  explicit C3dGrannyModelRes(ModelResourceContext& context);
+  C3dGrannyModelRes* Create() override;
+  bool Load(const char* name) override;
   void RebindMeshes(const C3dGrannyModelRes& target);
   void InstantiateModel(GrannyModelInstance* target, const granny_model* model);
   CTexture* CreateTexture(const granny_texture* texture, int option);
@@ -174,8 +188,9 @@ public:
   int GetTriangleCount(int mesh) const;
   unsigned char* GetRigidVertices(int mesh) const;
 
-  /* 0110 */ unsigned char unknown_0110[0x150];
-  /* 0260 */ void* file;
+  /* 0110 */ float unknown_0110;
+  /* 0114 */ unsigned char unknown_0114[0x14C];
+  /* 0260 */ granny_file* file;
   /* 0264 */ int textureCount;
   /* 0268 */ GrannyTextureEntry* textures;
   /* 026C */ int modelCount;
@@ -199,7 +214,11 @@ private:
   ModelResourceContext* m_context;
 };
 
+extern GrannyAnimationLibrary g_grannyAnimationLibrary;
+
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(granny_texture, imageCount) == 0x3C);
+static_assert(offsetof(granny_file_info, skeletons) == 0x24);
 static_assert(offsetof(granny_texture, width) == 0x08);
 static_assert(offsetof(granny_mesh, materialBindings) == 0x18);
 static_assert(offsetof(granny_model, meshBindingCount) == 0x4C);
