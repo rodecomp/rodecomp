@@ -16,7 +16,9 @@
 #include <utility>
 #include <vector>
 
+class CActRes;
 class LuaScript;
+struct ActionFrame;
 
 struct SessionRecord6144 {
   /* 0000 */ std::uint16_t unknown_0000 = 0;
@@ -103,7 +105,9 @@ public:
   /* 3500 */ ItemInfo unknown_3500[10];
   /* 3EB0 */ unsigned char unknown_3EB0[0x9B0];
   /* 4860 */ ItemInfo m_itemSlots[10];
-  /* 5210 */ unsigned char unknown_5210[0xA8];
+  /* 5210 */ unsigned char unknown_5210[0x44];
+  /* 5254 */ std::map<int, float> m_npcLocationRadius;
+  /* 525C */ unsigned char unknown_525C[0x5C];
   /* 52B8 */ std::vector<const char*> m_accessoryNames;
   /* 52C4 */ unsigned char unknown_52C4[0x294];
   /* 5558 */ int unknown_5558;
@@ -227,6 +231,10 @@ public:
   bool IsTopLayerRobe(int robe);
   int IsSkillIdInRange6018(unsigned id) const;
   int IsSkillIdInRange6001(unsigned id) const;
+  const ActionFrame* GetSyncedFrame(CActRes* baseAct, CActRes* act, unsigned action, int baseFrame, std::uint32_t startTime, int* frame);
+  float GetNpcLocationRadius(int job, bool riding);
+  int GetRidingJob(int job);
+  int GetSpriteJob(int job, int costumeJob, bool spriteIndex);
 };
 
 extern CSession g_session;
