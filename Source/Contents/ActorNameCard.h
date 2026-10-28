@@ -53,6 +53,7 @@ public:
   virtual ~CActorNameCardHolder();
   std::string Name(std::uint32_t id);
   void SetName(std::uint32_t id, std::string name);
+  const CActorNameCard& Lookup(std::uint32_t id);
   void Set(std::uint32_t id, std::string name, std::string value1, std::string value2, std::string value3, std::string value4, std::string value5,
            std::uint32_t value);
   std::uint32_t FindId(std::string name);
