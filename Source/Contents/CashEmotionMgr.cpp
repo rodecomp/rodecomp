@@ -3,13 +3,16 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICashEmotionSprBtn.h"
 #include "UI/CashEmotion/UICashEmotionPack.h"
 #include "UI/CashEmotion/UICashEmotionPiece.h"
 #include "UI/Chat/ChatSuggestions.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/WindowBorder.h"
 
 #include <algorithm>
+#include <array>
 #include <climits>
 #include <cstring>
 #include <iterator>
@@ -23,22 +26,34 @@ CCashEmotionMgr* g_cashEmotionMgr = nullptr;
 // GLOBAL: gl_24484
 ChatSuggestions* g_chatSuggestions = nullptr;
 
+class ICashEmotionAction {
+public:
+  virtual ~ICashEmotionAction();
+  virtual void Execute(int packId, int argument) = 0;
+};
+
 class UICashEmotionMiniWnd : public UIWindow {
 public:
-  // OFFSET: 0x007C9200
+  void Slot15(int width, int height) override;
+  void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
   unsigned int Select(int actionId);
+  void Select(CashEmotionCommand* command);
+  void Previous();
   void Refresh(int first);
+  void Next();
+  void SetIndex(int index);
 
 protected:
   /* 007C */ CashEmotionCommand* m_selected;
-  /* 0080 */ UICashEmotionPiece* m_first;
-  /* 0084 */ UICashEmotionPiece* m_second;
-  /* 0088 */ UICashEmotionPiece* m_third;
-  /* 008C */ UIButton* m_previous;
-  /* 0090 */ UIButton* m_next;
-  /* 0094 */ void* unknown_0094;
+  /* 0080 */ std::array<UICashEmotionPiece*, 3> m_pieces;
+  /* 008C */ UIBitmapButton* m_previous;
+  /* 0090 */ UIBitmapButton* m_next;
+  /* 0094 */ ICashEmotionAction* m_action;
   /* 0098 */ int m_page;
   /* 009C */ int m_selectedIndex;
+  UICashEmotionPieceContext* m_controls;
 };
 
 // OFFSET: 0x00592290
@@ -648,41 +663,55 @@ bool CCashEmotionMgr::IsOwnedPack(int packId) {
   return std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId) != this->m_ownedPacks.end();
 }
 
+// OFFSET: 0x007C9200
+
+// OFFSET: 0x007C9290
+
 // OFFSET: 0x007C92B0
 // FUNCTION: fn_09430
 void UICashEmotionMiniWnd::Refresh(int first) {
-  if (this->m_first) {
+  if (this->m_pieces[0]) {
     if (this->m_selected) {
       std::pair<int, int> entry = this->m_selected->Get(first);
       bool owned = entry.first == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(entry.first);
-      this->m_first->Set(entry.first, entry.second, false, false, !owned);
+      this->m_pieces[0]->Set(entry.first, entry.second, false, false, !owned);
     } else {
-      this->m_first->Set(-1, -1, false, false, false);
+      this->m_pieces[0]->Set(-1, -1, false, false, false);
     }
   }
 
-  if (this->m_second) {
+  if (this->m_pieces[1]) {
     if (this->m_selected) {
       std::pair<int, int> entry = this->m_selected->Get(first + 1);
       bool owned = entry.first == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(entry.first);
-      this->m_second->Set(entry.first, entry.second, false, false, !owned);
+      this->m_pieces[1]->Set(entry.first, entry.second, false, false, !owned);
     } else {
-      this->m_second->Set(-1, -1, false, false, false);
+      this->m_pieces[1]->Set(-1, -1, false, false, false);
     }
   }
 
-  if (this->m_third) {
+  if (this->m_pieces[2]) {
     if (this->m_selected) {
       std::pair<int, int> entry = this->m_selected->Get(first + 2);
       bool owned = entry.first == g_cashEmotionMgr->BasePackId() || g_cashEmotionMgr->IsOwnedPack(entry.first);
-      this->m_third->Set(entry.first, entry.second, false, false, !owned);
+      this->m_pieces[2]->Set(entry.first, entry.second, false, false, !owned);
     } else {
-      this->m_third->Set(-1, -1, false, false, false);
+      this->m_pieces[2]->Set(-1, -1, false, false, false);
     }
   }
 
   this->Invalidate();
 }
+
+// OFFSET: 0x007C94A0
+
+// OFFSET: 0x007C96E0
+
+// OFFSET: 0x007C9790
+
+// OFFSET: 0x007C97C0
+
+// OFFSET: 0x007C98A0
 
 // OFFSET: 0x007C9D60
 // FUNCTION: fn_09439
