@@ -14,11 +14,13 @@
 #include "UI/Shortcuts/ShortcutUse.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
+#include "UI/Chat/UINewChatWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Layout/WindowSnapping.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <stdio.h>
 #include <cstdlib>
@@ -411,5 +413,20 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
   default:
     return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
+// OFFSET: 0x0091E9C0
+// FUNCTION: fn_12631
+void UINewChatWnd::Move(int x, int y) {
+  this->UIFrameWnd::Move(x, y);
+  int screenX = 0;
+  int screenY = 0;
+  this->ToScreen(screenX, screenY);
+  this->m_inputX = screenX + 3;
+  this->m_inputY = this->m_inputOffsetY + screenY;
+
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_03F0)) {
+    window->SendMsg(this, 6, 197, this->geometry.x + x, this->geometry.y + y, 0);
   }
 }
