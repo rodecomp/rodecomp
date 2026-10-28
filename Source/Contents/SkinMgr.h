@@ -21,10 +21,12 @@ public:
   CSkinMgr();
 
   bool Selected() const;
+  void Select(int index);
   const char* Prefix() const;
   const char* Name() const;
   const char* Name(int index) const;
   void Prepare();
+  void Refresh();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

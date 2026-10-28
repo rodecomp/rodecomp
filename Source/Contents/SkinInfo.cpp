@@ -1,4 +1,5 @@
 #include "Contents/SkinMgr.h"
+#include "Resource/ResourceMgr.h"
 
 #include <cstdio>
 #include <direct.h>
@@ -9,6 +10,16 @@
 // FUNCTION: fn_09690
 bool CSkinMgr::Selected() const {
   return this->selected > -1;
+}
+
+// OFFSET: 0x007E2140
+// FUNCTION: fn_09691
+void CSkinMgr::Select(int index) {
+  const int previous = this->selected;
+  this->selected = index;
+  if (previous != index) {
+    ResourceMgr::Instance().ClearUnused("bmp");
+  }
 }
 
 // OFFSET: 0x007E1020
