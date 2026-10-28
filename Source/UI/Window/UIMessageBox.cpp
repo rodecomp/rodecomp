@@ -124,6 +124,21 @@ void UILoginWnd::Paint() {
 }
 
 // OFFSET: 0x008A6C20
+// FUNCTION: fn_11710
+long long UIBank_NewWnd::AdjustAmount(int amount) {
+  std::string text = this->m_amountEdit->Text();
+  this->m_amountEdit->SetText("");
+  long long result = amount;
+  if (!text.empty() && this->IsNumeric(text)) {
+    result += _atoi64(text.c_str());
+  }
+  if (result > 0x7FFFFFFF) {
+    result = 0x7FFFFFFF;
+  } else if (result < 0) {
+    result = 0;
+  }
+  return result;
+}
 
 // OFFSET: 0x008C4B00
 // FUNCTION: fn_11888
@@ -137,8 +152,44 @@ bool UIBank_NewWnd::IsNumeric(std::string text) {
 }
 
 // OFFSET: 0x008B7AD0
+// FUNCTION: fn_11760
+void UIBank_NewWnd::Paint() {
+  auto& controls = *this->m_controls;
+  auto& names = *this->m_textureNames;
+  const auto* background = static_cast<CBitmapRes*>(names.resources.Load(names.Resolve("유저인터페이스\\bank\\bg_bank.bmp")));
+  const int titleHeight = this->DrawTitleBar(names, controls.fonts, controls.locale, true, controls.services.MessageText(2771), 0);
+  this->DrawBitmap(0, titleHeight, &background->image, false);
+  char number[260] = {};
+  char text[260] = {};
+  this->DrawTextAt(controls.fonts, controls.locale, 30, 29, controls.services.MessageText(2772), 0, 0, 12, 0, 0, 0);
+  const int x = this->TextWidth(controls.fonts, controls.locale, controls.services.MessageText(2772), 0, 0, 12, 0, 0) + 43;
+  FormatGroupedInteger(g_session.m_bankBalance, number, 260);
+  std::sprintf(text, "%s z", number);
+  this->DrawTextAt(controls.fonts, controls.locale, x, 29, text, 0, 0, 11, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 30, 46, controls.services.MessageText(2773), 0, 0, 12, 0, 0, 0);
+  FormatGroupedInteger(g_session.m_zeny, number, 260);
+  std::sprintf(text, "%s z", number);
+  this->DrawTextAt(controls.fonts, controls.locale, x, 46, text, 0, 0, 11, 0, 0, 0);
+  if (!this->m_status.empty()) {
+    const int textWidth = this->TextWidth(controls.fonts, controls.locale, this->m_status.c_str(), 0, 0, 12, 0, 0);
+    const int statusX = static_cast<int>(this->geometry.width * 0.5f - textWidth * 0.5f);
+    this->DrawTextAt(controls.fonts, controls.locale, statusX, 112, this->m_status.c_str(), 0, 0, 11, 255, 0, 0);
+  }
+}
 
 // OFFSET: 0x008B7CF0
+// FUNCTION: fn_11761
+void UIChatRoomWnd::Paint() {
+  auto& controls = *this->m_controls;
+  auto& names = *this->m_textureNames;
+  const int titleHeight = this->DrawTitleBar(names, controls.fonts, controls.locale, false, "", 0);
+  this->DrawPanelBackground(names, titleHeight, 0, "");
+  unsigned red, green, blue;
+  SkinPaletteChannels(names.resources, names, 20, 6, red, green, blue);
+  const int width = this->geometry.width;
+  this->FillRegion(width - width * 56 / 280 - 2, 17, 1, this->geometry.height - 38, RGB(red, green, blue));
+  this->DrawButtonBar(names, 0, 0, 1);
+}
 
 // OFFSET: 0x008B7DA0
 // FUNCTION: fn_11762
