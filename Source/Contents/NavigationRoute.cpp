@@ -194,19 +194,19 @@ CNaviInfo* CNaviData::GetInfo() {
 // OFFSET: 0x00B88A00
 // FUNCTION: fn_45449
 void CNaviData::Clear() {
-  this->unknown_0034.clear();
+  this->startLinks.clear();
   this->info = nullptr;
   this->cellX = 0;
   this->cellY = 0;
   this->range = 50000;
-  this->unknown_0040.clear();
+  this->endLinks.clear();
 
-  for (NaviDataEntry& entry : this->unknown_0028) {
-    entry.unknown_0000 = -1;
-    entry.unknown_0004 = 0;
-    entry.unknown_0008 = 0;
+  for (NaviDataEntry& entry : this->entries) {
+    entry.previous = -1;
+    entry.link = nullptr;
+    entry.cost = 0;
   }
-  this->unknown_0028.clear();
+  this->entries.clear();
 }
 
 // OFFSET: 0x00B8CD60

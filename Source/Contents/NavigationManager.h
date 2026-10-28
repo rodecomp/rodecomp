@@ -23,14 +23,14 @@ struct NaviCell {
 };
 
 struct NaviLink {
-  /* 0000 */ CNavi_Object* object;
-  /* 0004 */ int value;
+  /* 0000 */ CNavi_Link* link;
+  /* 0004 */ int cost;
 };
 
 struct NaviDataEntry {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
+  /* 0000 */ int previous;
+  /* 0004 */ CNavi_Link* link;
+  /* 0008 */ int cost;
 };
 
 struct NaviRouteLine {
@@ -87,8 +87,13 @@ public:
   /* 007C */ CNaviInfo* linkedInfo;
   /* 0080 */ int unknown_0080;
   /* 0084 */ int unknown_0084;
-  /* 0088 */ int unknown_0088;
+  /* 0088 */ int depth;
   /* 008C */ std::vector<NaviLink> linkedLinks;
+
+  CNaviInfo* GetLinkedInfo() const;
+  void SetDepth(int depth);
+  std::vector<NaviLink>::iterator LinkedBegin();
+  std::vector<NaviLink>::iterator LinkedEnd();
 
   ~CNavi_Link() override;
   int GetId() const override;
@@ -107,6 +112,10 @@ public:
   bool HasName(const char* name) const;
   const char* GetName() const;
   const char* GetTitle() const;
+  bool IsVisited() const;
+  void SetVisited(bool visited);
+  std::vector<CNavi_Link*>::iterator LinksBegin();
+  std::vector<CNavi_Link*>::iterator LinksEnd();
 
   /* 0000 */ int index;
   /* 0004 */ int type;
@@ -114,7 +123,7 @@ public:
   /* 0020 */ std::string title;
   /* 0038 */ int cellX;
   /* 003C */ int cellY;
-  /* 0040 */ bool unknown_0040;
+  /* 0040 */ bool visited;
   /* 0044 */ std::vector<CNavi_Object*> npcs;
   /* 0050 */ std::vector<CNavi_Object*> mobs;
   /* 005C */ std::vector<CNavi_Link*> links;
@@ -140,16 +149,18 @@ public:
   CNaviInfo* GetInfo();
   NaviCell* GetCell(NaviCell* out);
   void Clear();
+  int FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allowGates, bool includeObjects, bool allowWarps, int side);
+  void ResetLinkDepths();
 
   /* 0000 */ std::vector<CNaviInfo*> destinations;
-  /* 000C */ std::vector<CNavi_Object*> objects;
+  /* 000C */ std::vector<CNavi_Link*> objects;
   /* 0018 */ CNaviInfo* info;
   /* 001C */ int cellX;
   /* 0020 */ int cellY;
   /* 0024 */ int range;
-  /* 0028 */ std::vector<NaviDataEntry> unknown_0028;
-  /* 0034 */ std::vector<NaviCell> unknown_0034;
-  /* 0040 */ std::vector<NaviCell> unknown_0040;
+  /* 0028 */ std::vector<NaviDataEntry> entries;
+  /* 0034 */ std::vector<NaviLink> startLinks;
+  /* 0040 */ std::vector<NaviLink> endLinks;
 };
 
 class CNavigationManager {
@@ -178,6 +189,8 @@ public:
   void ClearNodePaths();
   CNaviInfo* GetLinkedPlayerInfo();
   bool UpdateGround();
+  bool PlayerCell(int* column, int* row);
+  bool LoadStates(std::vector<char> packet);
 
   /* 0000 */ CNaviData data;
   /* 004C */ CPathFinder pathFinder;
@@ -230,6 +243,9 @@ extern CNavigationManager g_navigationManager;
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CNavi_Link) == 0x98);
 static_assert(offsetof(CNavi_Link, linkedInfo) == 0x7C);
+static_assert(offsetof(CNavi_Link, depth) == 0x88);
+static_assert(offsetof(CNaviInfo, visited) == 0x40);
+static_assert(offsetof(NaviDataEntry, cost) == 0x08);
 static_assert(offsetof(CNavi_Link, linkedLinks) == 0x8C);
 static_assert(sizeof(NaviCell) == 0x08);
 static_assert(sizeof(NaviDataEntry) == 0x0C);
@@ -255,9 +271,9 @@ static_assert(sizeof(CNaviData) == 0x4C);
 static_assert(offsetof(CNaviData, info) == 0x18);
 static_assert(offsetof(CNaviData, cellX) == 0x1C);
 static_assert(offsetof(CNaviData, range) == 0x24);
-static_assert(offsetof(CNaviData, unknown_0028) == 0x28);
-static_assert(offsetof(CNaviData, unknown_0034) == 0x34);
-static_assert(offsetof(CNaviData, unknown_0040) == 0x40);
+static_assert(offsetof(CNaviData, entries) == 0x28);
+static_assert(offsetof(CNaviData, startLinks) == 0x34);
+static_assert(offsetof(CNaviData, endLinks) == 0x40);
 static_assert(offsetof(CNavigationManager, pathFinder) == 0x004C);
 static_assert(offsetof(CNavigationManager, states) == 0x10F0);
 static_assert(offsetof(CNavigationManager, currentTarget) == 0x10FC);

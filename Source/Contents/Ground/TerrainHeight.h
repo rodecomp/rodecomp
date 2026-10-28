@@ -21,7 +21,6 @@ struct TerrainHeight {
   bool Walkable(int column, int row) const;
   void CellOrigin(int column, int row, float& x, float& z) const;
   void CellCenter(int column, int row, float& x, float& z) const;
-  void WorldCell(float x, float z, int& column, int& row) const;
 
   void WorldSubcell(float x, float z, int& column, int& row, int& subColumn, int& subRow) const;
   void SpatialCell(float x, float z, int& column, int& row) const;

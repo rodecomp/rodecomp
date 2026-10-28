@@ -1,4 +1,7 @@
+#include "Client/Mode/CGameMode.h"
 #include "Contents/Ground/TerrainHeight.h"
+#include "Contents/World/WorldScene.h"
+#include "Resource/World/TerrainResource.h"
 #include "Utility/Math/ScalarConversion.h"
 
 #include <cmath>
@@ -21,12 +24,12 @@ void TerrainHeight::CellCenter(int column, int row, float& x, float& z) const {
 
 // OFFSET: 0x00CD5230
 // FUNCTION: fn_21278
-void TerrainHeight::WorldCell(float x, float z, int& column, int& row) const {
-  const float size = static_cast<float>(this->cellSize);
-  const float first = static_cast<float>(this->width / 2) + x / size;
+void CGameMode::WorldCell(float x, float z, int& column, int& row) const {
+  const float size = static_cast<float>(this->scene->terrain->cellSize);
+  const float first = static_cast<float>(this->scene->terrain->width / 2) + x / size;
   const float flooredX = static_cast<float>(std::floor(static_cast<double>(first)));
   column = TruncateToInt(flooredX);
-  const float second = static_cast<float>(this->height / 2) + z / size;
+  const float second = static_cast<float>(this->scene->terrain->height / 2) + z / size;
   const float flooredZ = static_cast<float>(std::floor(static_cast<double>(second)));
   row = TruncateToInt(flooredZ);
 }

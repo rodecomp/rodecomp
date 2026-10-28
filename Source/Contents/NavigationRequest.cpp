@@ -91,3 +91,26 @@ bool CNavigationManager::UpdateGround() {
   this->pathFinder.attr = mode->scene->terrain;
   return true;
 }
+
+// OFFSET: 0x00B8E350
+std::vector<CNavi_Link*>::iterator CNaviInfo::LinksBegin() {
+  return this->links.begin();
+}
+
+// OFFSET: 0x00B8E360
+std::vector<CNavi_Link*>::iterator CNaviInfo::LinksEnd() {
+  return this->links.end();
+}
+
+// OFFSET: 0x00B8E760
+// FUNCTION: fn_19481
+bool CNaviInfo::IsVisited() const {
+  return this->visited;
+}
+
+// OFFSET: 0x00B90410
+void CNaviInfo::SetVisited(bool visited) {
+  if (this->type == 5001) {
+    this->visited = visited;
+  }
+}

@@ -25,6 +25,8 @@ public:
   /* 03C8 */ unsigned char unknown_03C8[0x2A8];
 
   std::string MapName();
+  void WorldCell(float x, float z, int& column, int& row) const;
+  void PlayerCell(int* column, int* row) const;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -118,7 +118,7 @@ CNaviData::CNaviData() : info(nullptr), cellX(0), cellY(0), range(50000) {
 CNaviData::~CNaviData() {
   this->Clear();
 
-  for (CNavi_Object*& object : this->objects) {
+  for (CNavi_Link*& object : this->objects) {
     if (object != nullptr) {
       delete object;
     }
