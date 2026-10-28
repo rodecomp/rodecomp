@@ -29,6 +29,17 @@ struct TipBoxEntry {
   /* 004C */ std::vector<TipBoxImage> images;
 };
 
+struct TipBoxLayout {
+  /* 0000 */ int kind;
+  /* 0004 */ float x;
+  /* 0008 */ float y;
+  /* 000C */ float width;
+  /* 0010 */ float height;
+  /* 0014 */ int clipX;
+  /* 0018 */ int clipY;
+  /* 001C */ float scale;
+};
+
 struct TipBoxTitles {
   const std::map<int, TipBoxEntry>& entries;
   const TipBoxEntry& missing;
@@ -62,8 +73,8 @@ public:
   std::map<int, TipBoxEntry> m_entries;
   std::vector<int> m_randomList;
   TipBoxEntry m_currentEntry;
-  std::uint32_t unknown_007C[8];
-  std::string unknown_009C;
+  TipBoxLayout m_image;
+  std::string m_imagePath;
   int unknown_00B4;
   bool m_initialized;
   TipBoxEntry m_missing;
@@ -82,6 +93,8 @@ static_assert(sizeof(CTipBoxMgr) == 284);
 static_assert(offsetof(CTipBoxMgr, m_randomList) == 0x18);
 static_assert(offsetof(CTipBoxMgr, m_currentEntry) == 0x24);
 static_assert(offsetof(CTipBoxMgr, unknown_00B4) == 0xB4);
+static_assert(offsetof(CTipBoxMgr, m_image) == 0x7C);
+static_assert(offsetof(CTipBoxMgr, m_imagePath) == 0x9C);
 static_assert(offsetof(CTipBoxMgr, unknown_0114) == 0x114);
 #endif
 

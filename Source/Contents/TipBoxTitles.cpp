@@ -1,4 +1,8 @@
 #include "Contents/TipBoxTitles.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "Resource/TextureNames.h"
 
 #include <algorithm>
 #include <cctype>
@@ -44,8 +48,8 @@ CTipBoxMgr::CTipBoxMgr()
       m_entries{},
       m_randomList{},
       m_currentEntry{},
-      unknown_007C{},
-      unknown_009C{},
+      m_image{},
+      m_imagePath{},
       unknown_00B4(0),
       m_initialized(true),
       m_missing{},
@@ -159,8 +163,88 @@ std::string TipBoxTitles::Title(int id, std::string* abbreviated, int width) con
 }
 
 // OFFSET: 0x007ACF50
+// FUNCTION: fn_09128
+void CTipBoxMgr::Sub7ACF50() {
+  const TipBoxEntry& entry = this->m_currentEntry;
 
-// OFFSET: 0x007AD480
+  if (entry.unknown_001C.size() == 0) {
+    this->m_image.kind = 2;
+    return;
+  }
+
+  const int cell = entry.unknown_0044 - 1;
+  const float cellWidth = static_cast<float>(this->m_width) / 3.0f;
+  const float cellHeight = static_cast<float>(this->m_height) / 3.0f;
+  const std::size_t found = entry.unknown_001C.find("유저인터페이스\\");
+
+  this->m_image.x = static_cast<float>(cell % 3) * cellWidth + cellWidth * 0.5f;
+  this->m_image.y = static_cast<float>(this->m_maximumId) + cellHeight * 0.5f + static_cast<float>(cell / 3) * cellHeight;
+
+  if (found != std::string::npos) {
+    this->m_imagePath = entry.unknown_001C + ".bmp";
+
+    const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_imagePath.c_str())));
+    if (!bitmap) {
+      return;
+    }
+
+    const float scale = static_cast<float>(entry.unknown_0048) * 0.01f;
+    this->m_image.x -= static_cast<float>(bitmap->image.width) * 0.5f * scale;
+    this->m_image.y -= static_cast<float>(bitmap->image.height) * 0.5f * scale;
+
+    if (1.0f > this->m_image.x) {
+      const float clip = 1.0f - this->m_image.x;
+      this->m_image.x = 1.0f;
+      this->m_image.clipX = static_cast<int>(clip);
+    } else {
+      this->m_image.clipX = 0;
+    }
+
+    if (17.0f > this->m_image.y) {
+      this->m_image.clipY = static_cast<int>(17.0f - this->m_image.y);
+      this->m_image.y = static_cast<float>(this->m_maximumId);
+    } else {
+      this->m_image.clipY = 0;
+    }
+
+    this->m_image.width = static_cast<float>(bitmap->image.width) * scale;
+    this->m_image.kind = 0;
+    this->m_image.scale = scale;
+    this->m_image.height = static_cast<float>(bitmap->image.height) * scale;
+  } else {
+    this->m_imagePath = "sprite\\" + entry.unknown_001C;
+
+    const auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_imagePath + ".spr"));
+    if (!sprite) {
+      return;
+    }
+
+    const SpriteRleImage* image = sprite->images[0][0];
+    if (!image) {
+      return;
+    }
+
+    const float scale = static_cast<float>(entry.unknown_0048) * 0.01f;
+    const float ratio = static_cast<float>(entry.unknown_0048) / 100.0f;
+    this->m_image.x -= static_cast<float>(image->width) * 0.5f * scale;
+    this->m_image.y -= static_cast<float>(image->height) * 0.5f * scale;
+
+    const float right = static_cast<float>(image->width) * ratio + this->m_image.x;
+    if (right > static_cast<float>(this->m_width)) {
+      this->m_image.x -= right - static_cast<float>(this->m_width);
+    }
+
+    const float bottom = static_cast<float>(image->height) * ratio + this->m_image.y;
+    if (bottom > static_cast<float>(this->m_height)) {
+      this->m_image.y -= bottom - static_cast<float>(this->m_height);
+    }
+
+    this->m_image.width = static_cast<float>(image->width) * scale;
+    this->m_image.scale = scale;
+    this->m_image.kind = 1;
+    this->m_image.height = static_cast<float>(image->height) * scale;
+  }
+}
 
 // OFFSET: 0x007AD890
 // FUNCTION: fn_09130
