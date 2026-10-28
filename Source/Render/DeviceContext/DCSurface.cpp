@@ -1,6 +1,8 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/RenderSystemBase.h"
 #include "Render/Textures/Surface.h"
+#include "Render/DX7/RenderSystemDX7.h"
+#include "Render/DX9/RenderSystemDX9.h"
 
 #include <utility>
 
@@ -9,6 +11,8 @@
 std::shared_ptr<CSurface> AcquireBackBufferSurface(CRenderSystemBase* system) {
   return system ? system->BackBufferSurface() : std::shared_ptr<CSurface>{};
 }
+
+// OFFSET: 0x0055FAD0
 
 // OFFSET: 0x00569F10
 // FUNCTION: fn_02274
@@ -104,6 +108,8 @@ std::uint32_t RenderSystemHolder::Width() const {
   return this->system ? this->system->Width() : 0;
 }
 
+// OFFSET: 0x0056A6A0
+
 // OFFSET: 0x0056A790
 // FUNCTION: fn_02294
 bool RenderSystemHolder::IsWindowed() const {
@@ -131,6 +137,11 @@ CDCSurface::CDCSurface(std::shared_ptr<CSurface> surface) : m_surface(std::move(
 // OFFSET: 0x00549180
 // FUNCTION: fn_01865
 CDCSurface::~CDCSurface() = default;
+
+// OFFSET: 0x00549150
+// FUNCTION: fn_01866
+void CDCSurface::Reset() {
+}
 
 // OFFSET: 0x005492C0
 // FUNCTION: fn_01879

@@ -36,7 +36,10 @@ struct RenderSystemHolder {
   bool IsWindowed() const;
   HRESULT TestDevice() const;
   HRESULT Present(bool option) const;
+  HRESULT Initialize(int backend, HWND window);
 };
+
+int DrawBackBufferText(int x, int y, const char* text, COLORREF color);
 
 // OFFSET: 0x0055D340
 // FUNCTION: fn_02102
@@ -50,6 +53,7 @@ class CDCSurface : public CDC {
 public:
   explicit CDCSurface(std::shared_ptr<CSurface> surface);
   ~CDCSurface() override;
+  void Reset();
   void Grow(std::uint32_t width, std::uint32_t height) override;
   bool GetDC(HDC* output) override;
   void ReleaseDC(HDC dc) override;
