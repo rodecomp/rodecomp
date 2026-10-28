@@ -3,7 +3,16 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <map>
 #include <vector>
+
+struct RankingBoardStyle {
+  /* 0000 */ const char* title;
+  /* 0004 */ std::uint32_t color;
+  /* 0008 */ std::uint32_t background;
+};
+
+std::map<int, RankingBoardStyle> RankingBoardStyles();
 
 class CShowRankingScheduler {
 public:
@@ -19,6 +28,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(RankingBoardStyle) == 12);
 static_assert(offsetof(CShowRankingScheduler, rankingData) == 0x30);
 static_assert(offsetof(CShowRankingScheduler, rankingList) == 0x90);
 #endif
