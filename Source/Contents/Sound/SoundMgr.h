@@ -40,6 +40,7 @@ public:
 
   bool IsComplete() const;
   bool IsStopped() const;
+  void Unused(int, int);
   bool PlayData3D(const void* data, const float& x, const float& y, const float& z, int maximumDistance, int minimumDistance, float scale);
   void SetDefaultName(std::string name);
   bool PlayData2D(const void* data, const float& x, const float& y, const float& z, int maximumDistance, int minimumDistance, float scale);

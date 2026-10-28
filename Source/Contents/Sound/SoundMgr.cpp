@@ -383,6 +383,11 @@ bool CSoundMgr::IsStopped() const {
   return this->stream && MilesRuntime::Get().streamStatus(this->stream) == 8;
 }
 
+// OFFSET: 0x00639AE0
+// FUNCTION: fn_04759
+void CSoundMgr::Unused(int, int) {
+}
+
 // OFFSET: 0x00639AF0
 // FUNCTION: fn_04760
 void CSoundMgr::Pause(CSoundMgr* sound, int paused) {
