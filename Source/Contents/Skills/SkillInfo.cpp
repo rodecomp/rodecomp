@@ -108,6 +108,74 @@ void __stdcall Sub7739F0() {
 }
 
 // OFFSET: 0x00773A00
+// FUNCTION: fn_08320
+bool Sub773A00(int skillId) {
+  switch (skillId) {
+  case 28:
+  case 29:
+  case 30:
+  case 34:
+  case 35:
+  case 53:
+  case 54:
+  case 66:
+  case 67:
+  case 68:
+  case 71:
+  case 72:
+  case 73:
+  case 77:
+  case 78:
+  case 138:
+  case 139:
+  case 231:
+  case 234:
+  case 235:
+  case 236:
+  case 237:
+  case 255:
+  case 280:
+  case 281:
+  case 282:
+  case 283:
+  case 286:
+  case 289:
+  case 374:
+  case 402:
+  case 463:
+  case 464:
+  case 465:
+  case 466:
+  case 467:
+  case 468:
+  case 469:
+  case 470:
+  case 471:
+  case 472:
+  case 479:
+  case 1015:
+  case 2001:
+  case 2020:
+  case 2026:
+  case 2027:
+  case 2050:
+  case 2051:
+  case 2052:
+  case 2053:
+  case 2341:
+  case 2344:
+  case 2345:
+  case 2346:
+  case 2347:
+  case 2348:
+  case 2451:
+  case 2515:
+  case 8221:
+      return true;
+  default:
+    return false;
+  }
+}
 
 // OFFSET: 0x00773CB0
 // FUNCTION: fn_08321
@@ -138,3 +206,37 @@ bool CSkillInfo::UsesLevel(LuaScript& script, int skillId) {
 }
 
 // OFFSET: 0x007745B0
+// FUNCTION: fn_08324
+bool Sub7745B0(int skillId) {
+  switch (skillId) {
+  case 11:
+  case 12:
+  case 13:
+  case 14:
+  case 15:
+  case 16:
+  case 17:
+  case 18:
+  case 19:
+  case 20:
+  case 21:
+  case 27:
+  case 29:
+  case 30:
+  case 32:
+  case 33:
+  case 77:
+  case 86:
+  case 340:
+  case 690:
+  case 731:
+  case 2008:
+  case 2533:
+  case 2534:
+  case 2536:
+  case 5004:
+      return false;
+  default:
+    return true;
+  }
+}
