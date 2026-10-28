@@ -9,6 +9,15 @@
 CSession g_session;
 
 // OFFSET: 0x00DDE860
+// FUNCTION: fn_23401
+int CSession::MercSkillLevel(int skillId) const {
+  const int index = skillId - 8200;
+  if (index > -1) {
+    return this->m_mercSkillLevels[index];
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00E13B00
 // FUNCTION: fn_23826
