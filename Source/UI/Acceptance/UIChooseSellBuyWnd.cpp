@@ -1,6 +1,7 @@
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/MessageTable.h"
 #include "Client/Mode/ActiveGameMode.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeEvents.h"
@@ -620,6 +621,61 @@ void UIItemCollectionWnd::Slot31(int x, int y) {
 // OFFSET: 0x008F3C50
 // FUNCTION: fn_12284
 void UIItemCollection_ComparisonWnd::Slot31(int, int) {
+}
+
+// OFFSET: 0x008F46C0
+// FUNCTION: fn_12290
+void UIStatusWnd::Slot28(int x, int y) {
+  if (this->geometry.unknown_0030 != 0) {
+    return;
+  }
+
+  struct Point {
+    int x;
+    int y;
+  };
+  const Point stats[16] = {
+    {6, 25}, {6, 41}, {6, 57}, {6, 73}, {6, 89}, {6, 105}, {108, 24}, {108, 40}, {108, 56}, {108, 72}, {108, 88}, {108, 104}, {194, 24}, {194, 40}, {194, 56}, {194, 72},
+  };
+  const char* statTexts[16] = {
+    LookupMessage(3112), LookupMessage(3113), LookupMessage(3114), LookupMessage(3115), LookupMessage(3116), LookupMessage(3117),
+    LookupMessage(3118), LookupMessage(3124), LookupMessage(3120), LookupMessage(3121), LookupMessage(3123), LookupMessage(3122),
+    LookupMessage(3119), LookupMessage(3125), LookupMessage(3126), LookupMessage(3127),
+  };
+
+  for (int index = 0; index < 16; ++index) {
+    const Point& point = stats[index];
+    if (point.x <= x && x <= point.x + 80 && point.y <= y && y <= point.y + 12) {
+      int tipX = point.x - this->m_offsetX;
+      int tipY = this->m_titleHeight - this->m_offsetY - 19 + point.y;
+      this->ToScreen(tipX, tipY);
+      this->m_controls->services.Tooltip(statTexts[index], tipX, tipY, -1, true, true);
+      break;
+    }
+  }
+
+  if (this->m_extended != 1) {
+    return;
+  }
+
+  const Point traits[13] = {
+    {6, 146}, {6, 162}, {6, 178}, {6, 194}, {6, 210}, {6, 226}, {108, 145}, {108, 161}, {108, 177}, {108, 193}, {108, 209}, {194, 145}, {194, 161},
+  };
+  const char* traitTexts[13] = {
+    LookupMessage(3614), LookupMessage(3615), LookupMessage(3616), LookupMessage(3617), LookupMessage(3618), LookupMessage(3619), LookupMessage(3620),
+    LookupMessage(3621), LookupMessage(3624), LookupMessage(3625), LookupMessage(3626), LookupMessage(3622), LookupMessage(3623),
+  };
+
+  for (int index = 0; index < 13; ++index) {
+    const Point& point = traits[index];
+    if (point.x <= x && x <= point.x + 80 && point.y <= y && y <= point.y + 12) {
+      int tipX = point.x - 16;
+      int tipY = point.y - 13;
+      this->ToScreen(tipX, tipY);
+      this->m_controls->services.Tooltip(traitTexts[index], tipX, tipY, -1, true, true);
+      return;
+    }
+  }
 }
 
 // OFFSET: 0x008F4A80
