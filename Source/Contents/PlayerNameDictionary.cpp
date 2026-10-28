@@ -99,6 +99,19 @@ void CPlayerNameDictionary::Update() {
 CPlayerNameDictionary* g_playerNameDictionary = nullptr;
 
 // OFFSET: 0x0060AE30
+// FUNCTION: fn_04259
+bool CreatePlayerNameDictionary() {
+  if (g_playerNameDictionary) {
+    return false;
+  }
+
+  g_playerNameDictionary = new (std::nothrow) CPlayerNameDictionary();
+  if (!g_playerNameDictionary) {
+    return false;
+  }
+
+  return true;
+}
 
 // OFFSET: 0x0060AF90
 // FUNCTION: fn_04260
