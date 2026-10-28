@@ -8,6 +8,8 @@
 
 struct WorldScene;
 
+extern float g_cameraDistance;
+
 class CView {
 public:
   /* 0000 */ void* vtable;
