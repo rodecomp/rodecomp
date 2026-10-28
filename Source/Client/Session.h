@@ -164,6 +164,8 @@ public:
   }
   void ResetItems2B50();
   int GetPetFood(int job);
+  std::string GetMonsterActName(int job);
+  std::string GetMonsterSprName(int job);
   void GetPetIllustName(int job, int, char* buffer);
   int GetPetJobByEggItem(int eggItemId);
   const char* GetPetString(int id);
