@@ -82,3 +82,31 @@ void CAdventureGuideMgr::GetContentsList(std::list<std::pair<int, AdventureGuide
     return lhs.second.unknown_0004 < rhs.second.unknown_0004;
   });
 }
+
+// OFFSET: 0x006636A0
+// FUNCTION: fn_05236
+void CAdventureGuideMgr::GetEntryList(std::list<std::pair<int, AdventureGuideEntry>>& out, int type, int id) {
+  out.clear();
+
+  std::map<int, std::map<int, AdventureGuideEntry>>* table;
+  switch (type) {
+  case 5:
+    table = &unknown_0054;
+    break;
+  case 6:
+    table = &unknown_005C;
+    break;
+  default:
+    return;
+  }
+
+  std::optional<std::map<int, AdventureGuideEntry>*> entries = FindMapped(*table, id);
+  if (!entries) {
+    return;
+  }
+
+  std::copy((*entries)->begin(), (*entries)->end(), std::back_inserter(out));
+  out.sort([](const std::pair<int, AdventureGuideEntry>& lhs, const std::pair<int, AdventureGuideEntry>& rhs) {
+    return lhs.second.unknown_0004 < rhs.second.unknown_0004;
+  });
+}

@@ -79,6 +79,7 @@ public:
 
   void GetEpisodeList(std::list<AdventureGuideEpisode>& out);
   void GetContentsList(std::list<std::pair<int, AdventureGuideContents>>& out, int type, int id);
+  void GetEntryList(std::list<std::pair<int, AdventureGuideEntry>>& out, int type, int id);
 };
 
 extern CAdventureGuideMgr* g_adventureGuideMgr;
