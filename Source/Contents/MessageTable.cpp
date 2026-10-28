@@ -6,7 +6,6 @@
 #include "Network/TextEncoding.h"
 #include "Utility/Text/Base64.h"
 #include "Utility/Text/FormatString.h"
-#include "Utility/Text/LanguageCharset.h"
 #include "Utility/Text/TextTokens.h"
 
 #include <cstdio>

@@ -3,7 +3,6 @@
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Script/LuaScript.h"
 
-#include <cstring>
 #include <memory>
 
 // GLOBAL: gl_24640
