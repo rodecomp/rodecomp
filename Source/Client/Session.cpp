@@ -17,3 +17,11 @@ int CSession::SyncUnknown0E98() {
 }
 
 // OFFSET: 0x00DFFCF0
+// FUNCTION: fn_23633
+void CSession::ClearItemSelection() {
+  for (ItemInfo& item : this->m_inventoryItems) {
+    if (item.unknown_0074[1] == 1) {
+      item.unknown_0074[1] = 0;
+    }
+  }
+}

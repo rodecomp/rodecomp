@@ -630,3 +630,9 @@ void UIWindowMgr::RegisterNamedWindow(std::string name, UIWindow* window) {
 }
 
 // OFFSET: 0x00AA9B00
+// FUNCTION: fn_17254
+void UIWindowMgr::NotifyMode() {
+  if (CMode* mode = g_world.ActiveGameMode()) {
+    mode->SendMsg(292, 0, 0, 0, 0);
+  }
+}
