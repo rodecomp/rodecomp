@@ -5,7 +5,10 @@
 #include <cstdint>
 #include <string>
 
+class CTexture;
 class UIWindow;
+struct TextureRegion;
+struct tagRECT;
 
 class CMode {
 public:
@@ -36,6 +39,7 @@ public:
   virtual void Slot7(int value);
 
   CMode();
+  void DrawTexture(const tagRECT& rect, int angle, float rhw, std::uint32_t color, CTexture* texture, TextureRegion region);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -42,6 +42,14 @@ public:
     return this->m_textureHeight;
   }
   // INLINED
+  std::uint32_t ImageWidth() const {
+    return this->m_width;
+  }
+  // INLINED
+  std::uint32_t ImageHeight() const {
+    return this->m_height;
+  }
+  // INLINED
   std::int32_t Format() const {
     return this->m_format;
   }
