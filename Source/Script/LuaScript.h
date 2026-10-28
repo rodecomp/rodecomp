@@ -18,6 +18,7 @@ public:
   bool Call(std::string function, const char* signature, ...);
   bool CallTable(std::string table, std::string function, const char* signature, ...);
   bool Execute(const void* bytes, std::size_t size);
+  bool Load(const char* name, bool resourcePath, bool looseOnly);
   int GlobalInteger(const char* name);
   std::string GlobalString(const char* name);
   bool HasTable(const char* name);

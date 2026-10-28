@@ -1,4 +1,7 @@
 #include "Script/LuaScript.h"
+#include "Archive/PakRegistry.h"
+#include "File/File.h"
+#include "File/ResourcePath.h"
 
 extern "C" {
 #include <lauxlib.h>
@@ -32,6 +35,60 @@ void LuaScript::Close() {
 // FUNCTION: fn_18335
 bool LuaScript::Execute(const void* bytes, std::size_t size) {
   return this->m_state && luaL_loadbuffer(this->m_state, static_cast<const char*>(bytes), size, "buf") == 0 && lua_pcall(this->m_state, 0, 0, 0) == 0;
+}
+
+// OFFSET: 0x00AFDE60
+// FUNCTION: fn_18338
+bool LuaScript::Load(const char* name, bool resourcePath, bool looseOnly) {
+  if (!this->m_state) {
+    return false;
+  }
+
+  std::string prefix;
+  if (!looseOnly) {
+    prefix = "LuaFiles514\\";
+  }
+
+  std::string path = prefix + name;
+  path += ".lub";
+
+  if (resourcePath) {
+    if (!ResourceExists(path.c_str(), looseOnly)) {
+      path = prefix + name + ".lua";
+      if (!ResourceExists(path.c_str(), looseOnly)) {
+        return false;
+      }
+    }
+  } else {
+    if (!g_pakRegistry.Exists(path.c_str(), looseOnly)) {
+      path = prefix + name + ".lua";
+      if (!g_pakRegistry.Exists(path.c_str(), looseOnly)) {
+        return false;
+      }
+    }
+  }
+
+  CFile file;
+  if (!file.Open(path.c_str(), 0, resourcePath, looseOnly)) {
+    return false;
+  }
+
+  const std::uint32_t size = file.GetSize();
+  char* buffer = new char[size + 1];
+  file.Read(buffer, size);
+  buffer[size] = '\0';
+  file.Close();
+
+  if (luaL_loadbuffer(this->m_state, buffer, size, "buf") != 0 || lua_pcall(this->m_state, 0, 0, 0) != 0) {
+    std::string error = lua_tostring(this->m_state, -1);
+    this->Error(name, "%s\n", error.c_str());
+    lua_settop(this->m_state, -2);
+    delete[] buffer;
+    return false;
+  }
+
+  delete[] buffer;
+  return true;
 }
 
 // OFFSET: 0x00AFD1D0
