@@ -19,6 +19,7 @@ struct PlayerNameContext {
 
 class CPlayerNameDictionary {
 public:
+  CPlayerNameDictionary();
   explicit CPlayerNameDictionary(PlayerNameContext& context);
   virtual ~CPlayerNameDictionary();
   std::string Lookup(std::uint32_t id);
@@ -52,5 +53,11 @@ private:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CPlayerNameDictionary) == 60);
 #endif
+
+extern CPlayerNameDictionary* g_playerNameDictionary;
+
+bool CreatePlayerNameDictionary();
+void DestroyPlayerNameDictionary();
+std::string LookupPlayerName(std::uint32_t id);
 
 #endif

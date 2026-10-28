@@ -11,6 +11,10 @@
 CPlayerNameDictionary::CPlayerNameDictionary(PlayerNameContext& context) : m_enabled(true), m_context(&context) {
 }
 
+// INLINED
+CPlayerNameDictionary::CPlayerNameDictionary() : m_enabled(true), m_context(nullptr) {
+}
+
 // OFFSET: 0x0060A9D0
 // OFFSET: 0x0060AAE0
 // FUNCTION: fn_04256
@@ -89,4 +93,24 @@ void CPlayerNameDictionary::Update() {
 
     return;
   }
+}
+
+// GLOBAL: gl_24677
+CPlayerNameDictionary* g_playerNameDictionary = nullptr;
+
+// OFFSET: 0x0060AE30
+
+// OFFSET: 0x0060AF90
+// FUNCTION: fn_04260
+void DestroyPlayerNameDictionary() {
+  if (g_playerNameDictionary) {
+    delete g_playerNameDictionary;
+    g_playerNameDictionary = nullptr;
+  }
+}
+
+// OFFSET: 0x0060AFB0
+// FUNCTION: fn_04261
+std::string LookupPlayerName(std::uint32_t id) {
+  return g_playerNameDictionary->Lookup(id);
 }
