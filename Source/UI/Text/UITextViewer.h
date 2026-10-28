@@ -59,6 +59,10 @@ private:
   std::string ConvertChat(std::string text);
   std::pair<int, int> LinkPosition(unsigned position, unsigned addedLines);
   void AddLinks(const char* text, unsigned addedLines, int kind);
+  bool AddItemLinks(std::string text, unsigned addedLines);
+  bool AddUrlLinks(std::string text, unsigned addedLines);
+  bool AddNaviLinks(std::string text, unsigned addedLines);
+  bool AddQuestLinks(std::string text, unsigned addedLines);
   void AppendText(char* text, int width, bool carriageReturns, bool pixels);
   void Activate(UITextButton* button, int id);
 };
