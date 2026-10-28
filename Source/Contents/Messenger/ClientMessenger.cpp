@@ -204,6 +204,12 @@ void EquipmentProperties::CEquipmentPropertiesMgr::Clear() {
 }
 
 // OFFSET: 0x006A56C0
+// FUNCTION: fn_06044
+EquipmentProperties::CEquipmentPropertiesMgr::~CEquipmentPropertiesMgr() {
+  this->Clear();
+  this->store->Clear();
+  delete this->store;
+}
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EquipmentPropertyDefinition) == 0x80);
