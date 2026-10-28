@@ -562,6 +562,7 @@
   "Source/Resource/Bitmap/BitmapImagePng.cpp": 3,
   "Source/Resource/Bitmap/BitmapResource.cpp": 3,
   "Source/Resource/EZeffectResource.cpp": 3,
+  "Source/Resource/EmblemResource.cpp": 3,
   "Source/Resource/GifLzw.cpp": 3,
   "Source/Resource/GifResource.cpp": 3,
   "Source/Resource/ImfLayerIndex.cpp": 3,

@@ -33,6 +33,10 @@ public:
   bool Load(const char* name) override;
   void Unload() override;
   virtual bool Decode(const char* name, const void* data, int bytes, bool iconOnly);
+  // INLINED
+  BitmapResourceContext& Context() const {
+    return *this->m_context;
+  }
 
   /* 0110 */ BitmapImage image;
 
