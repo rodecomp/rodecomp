@@ -18,6 +18,7 @@ struct PacketLengthResult {
 class PacketLengths {
 public:
   PacketLengths();
+  ~PacketLengths();
   PacketLengthResult Lookup(int id) const;
   int FixedLength(int id) const;
   int IsRecorded(int id) const;
@@ -25,6 +26,7 @@ public:
 private:
   /* 0000 */ std::map<int, PacketLengthValue> m_values;
   void Initialize();
+  void Register(int id, int length, int variable, int record);
 };
 
 extern PacketLengths g_packetLengths;

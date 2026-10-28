@@ -66,6 +66,17 @@ PacketLengths::PacketLengths() {
   this->Initialize();
 }
 
+// OFFSET: 0x00B01F40
+// FUNCTION: fn_18384
+PacketLengths::~PacketLengths() {
+}
+
+// OFFSET: 0x00B02100
+// FUNCTION: fn_18385
+void PacketLengths::Register(int id, int length, int variable, int record) {
+  this->m_values.try_emplace(id, PacketLengthValue{length, variable, record});
+}
+
 // OFFSET: 0x00B02210
 // FUNCTION: fn_18386
 int PacketLengths::IsRecorded(int id) const {
