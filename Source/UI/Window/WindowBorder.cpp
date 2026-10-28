@@ -44,3 +44,29 @@ void DrawRectangleBorder(UIWindow& window, int x, int y, int width, int height, 
   rectangle = {left, std::max((bottom - 1), 0), std::min(window.geometry.width, right), std::min(window.geometry.height, bottom)};
   window.geometry.surface->Fill(&rectangle, color);
 }
+
+// OFFSET: 0x00A7C3E0
+// FUNCTION: fn_16943
+void DrawFilledRoundedBorder(UIWindow& window, int x, int y, int width, int height, std::uint32_t color) {
+  const RECT rectangle{
+    std::max((x + 1), 0), std::max((y + 1), 0), std::min(window.geometry.width, ((x + 1) + (width - 2))),
+    std::min(window.geometry.height, ((y + 1) + (height - 2)))
+  };
+  window.geometry.surface->Fill(&rectangle, color);
+  DrawRoundedBorder(window, x, y, width, height, color);
+}
+
+// OFFSET: 0x00A7C4E0
+// FUNCTION: fn_16946
+void FillTriangle(UIWindow& window, int x0, int y0, int x1, int y1, int x2, int y2, std::uint32_t color) {
+  HDC dc;
+  POINT points[3] = {{x0, y0}, {x1, y1}, {x2, y2}};
+  if (window.geometry.surface->GetDC(&dc)) {
+    HRGN region = CreatePolygonRgn(points, 3, WINDING);
+    HBRUSH brush = CreateSolidBrush(color);
+    FillRgn(dc, region, brush);
+    DeleteObject(region);
+    DeleteObject(brush);
+    window.geometry.surface->ReleaseDC(dc);
+  }
+}
