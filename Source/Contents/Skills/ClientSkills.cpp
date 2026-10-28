@@ -1,5 +1,6 @@
 #include "Contents/Skills/ClientSkills.h"
 #include "Client/Session.h"
+#include "Contents/ClientState.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -592,4 +593,35 @@ void CSession::NotifyMercSkillWindows() {
   if (g_windowMgr.window_01E8) {
     g_windowMgr.window_01E8->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x00E08260
+// FUNCTION: fn_23753
+void CSession::ResetItems2B50() {
+  for (int index = 0; index < 10; ++index) {
+    this->unknown_2B50[index].Reset();
+  }
+
+  RequestBasicInfoRefresh();
+}
+
+// OFFSET: 0x00E08B40
+// FUNCTION: fn_23770
+float GetSkillFactor(int skillId) {
+  if ((skillId < 4023 || skillId > 4029) && skillId != 4045 && skillId != 4191 && static_cast<unsigned>(skillId - 4030) > 0xE &&
+      static_cast<unsigned>(skillId - 4096) > 0x10 && static_cast<unsigned>(skillId - 4158) > 0x18 && (skillId < 4194 || skillId > 4196) &&
+      skillId != 4193 && static_cast<unsigned>(skillId - 4205) > 5 && skillId != 4220 && static_cast<unsigned>(skillId - 4222) > 0x10 &&
+      skillId != 4241 && skillId != 4242 && skillId != 4244 && skillId != 4247 && skillId != 4248 && skillId != 4352 && skillId != 4354) {
+    return 1.0f;
+  }
+
+  if (g_session.IsReducedSkill(skillId)) {
+    return 0.8f;
+  }
+
+  if ((skillId >= 4023 && skillId <= 4029) || skillId == 4045 || skillId == 4191) {
+    return 0.75f;
+  }
+
+  return 0.82f;
 }

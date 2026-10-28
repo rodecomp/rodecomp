@@ -134,6 +134,7 @@ public:
   NormalItemSlot& SkillHotkey(int index) {
     return reinterpret_cast<NormalItemSlot*>(reinterpret_cast<unsigned char*>(this) + offsetof(CSession, unknown_06EB))[index];
   }
+  void ResetItems2B50();
   int GetPetFood(int job);
   void GetPetIllustName(int job, int, char* buffer);
   int GetPetJobByEggItem(int eggItemId);

@@ -66,6 +66,10 @@ struct ClientSkills {
 static_assert(sizeof(ActiveSkillEffect) == 28);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(ActiveSkillEffect, unknown_0018) == 0x18);
+float GetSkillFactor(int skillId);
+
 #endif
+
+float GetSkillFactor(int skillId);
 
 #endif
