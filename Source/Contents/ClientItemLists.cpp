@@ -102,6 +102,26 @@ EquipSlots EquipSlotDecoder::Decode(int mask) const {
 }
 
 // OFFSET: 0x00DD7030
+// FUNCTION: fn_23282
+bool ClientItemLists::AddItem1710(const ItemInfo& item, unsigned char refresh) {
+  for (ItemInfo& value : this->inventory) {
+    if (value.unknown_0000[1] == item.unknown_0000[1]) {
+      value.quantity += item.quantity;
+      value.unknown_0074[1] = item.unknown_0074[1];
+      value.unknown_0074[0] = item.unknown_0074[0];
+      if (refresh) {
+        RefreshItemWindows(&g_windowMgr);
+      }
+      return false;
+    }
+  }
+
+  this->inventory.push_back(item);
+  if (refresh) {
+    RefreshItemWindows(&g_windowMgr);
+  }
+  return true;
+}
 
 // OFFSET: 0x00DD7210
 // FUNCTION: fn_23284
