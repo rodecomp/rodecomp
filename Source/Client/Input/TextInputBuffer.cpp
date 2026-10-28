@@ -209,8 +209,27 @@ void TextInputBuffer::MoveForward(unsigned codePage) {
     this->cursor = static_cast<int>(CharNextExA(static_cast<WORD>(codePage), begin + position, 0) - begin);
   }
 }
-
 // OFFSET: 0x00ACE5E0
+// FUNCTION: fn_17789
+void TextInputBuffer::AdvanceCursor(int delta) {
+  const unsigned length = static_cast<unsigned>(this->text.size());
+  unsigned cursor = static_cast<unsigned>(this->cursor);
+  if (cursor == length) {
+    return;
+  }
+  if (cursor > length) {
+    this->cursor = static_cast<int>(length);
+  } else {
+    unsigned next = cursor + static_cast<unsigned>(delta);
+    if (next <= length) {
+      this->cursor = static_cast<int>(next);
+    }
+  }
+  if ((static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8) == 0) {
+    this->anchor = this->cursor;
+  }
+}
+
 // OFFSET: 0x00ACE620
 // FUNCTION: fn_17790
 void TextInputBuffer::RetreatCursor(int delta) {
