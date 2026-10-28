@@ -123,6 +123,7 @@ bool CRenderSystemDX7::IsWindowed() {
 }
 
 // OFFSET: 0x0056C4C0
+// FUNCTION: fn_02337
 HRESULT CRenderSystemDX7::Present(bool option) {
   return this->m_device->Present(option);
 }
