@@ -14,139 +14,138 @@ const char* g_equipmentResourceExtensions[2] = {"act", "spr"};
 // FUNCTION: fn_23393
 int CSession::GetDisplayJob() {
   const int job = this->m_job;
-  const std::uint32_t flags = this->m_jobFlags;
 
   if (job == 7) {
-    if (flags >> 5 & 1) {
-      return 13;
+    if (g_session.m_jobFlags >> 5 & 1) {
+      return job + 6;
     }
   } else if (job == 14) {
-    if (flags >> 5 & 1) {
-      return 21;
+    if (g_session.m_jobFlags >> 5 & 1) {
+      return job + 7;
     }
   } else if (job == 4008) {
-    if (flags >> 5 & 1) {
-      return 4014;
+    if (g_session.m_jobFlags >> 5 & 1) {
+      return job + 6;
     }
   } else if (job == 4030) {
-    if (flags >> 5 & 1) {
-      return 4036;
+    if (g_session.m_jobFlags >> 5 & 1) {
+      return job + 6;
     }
   } else if (job == 4015) {
-    if (flags >> 5 & 1) {
-      return 4022;
+    if (g_session.m_jobFlags >> 5 & 1) {
+      return job + 7;
     }
   } else if (job == 4037) {
-    if (flags >> 5 & 1) {
-      return 4044;
+    if (g_session.m_jobFlags >> 5 & 1) {
+      return job + 7;
     }
   } else if (job == 4066) {
-    if (flags >> 5 & 1) {
-      return 4082;
+    if (g_session.m_jobFlags >> 5 & 1) {
+      return job + 16;
     }
   } else if (job == 4073) {
-    if (flags >> 5 & 1) {
-      return 4083;
+    if (g_session.m_jobFlags >> 5 & 1) {
+      return job + 10;
     }
   } else if (job == 4102) {
-    if (flags >> 5 & 1) {
-      return 4110;
+    if (g_session.m_jobFlags >> 5 & 1) {
+      return job + 8;
     }
   } else if (job == 4054) {
-    if (flags >> 19 & 1) {
+    if (g_session.m_jobFlags >> 19 & 1) {
       return 4080;
     }
-    if (flags >> 23 & 1) {
+    if (g_session.m_jobFlags >> 23 & 1) {
       return 4088;
     }
-    if (flags & 0x1000000) {
+    if (g_session.m_jobFlags & 0x1000000) {
       return 4090;
     }
-    if (flags >> 25 & 1) {
+    if (g_session.m_jobFlags >> 25 & 1) {
       return 4092;
     }
-    if (flags >> 26 & 1) {
+    if (g_session.m_jobFlags >> 26 & 1) {
       return 4094;
     }
   } else if (job == 4060) {
-    if (flags >> 19 & 1) {
+    if (g_session.m_jobFlags >> 19 & 1) {
       return 4081;
     }
-    if (flags >> 23 & 1) {
+    if (g_session.m_jobFlags >> 23 & 1) {
       return 4089;
     }
-    if (flags & 0x1000000) {
+    if (g_session.m_jobFlags & 0x1000000) {
       return 4091;
     }
-    if (flags >> 25 & 1) {
+    if (g_session.m_jobFlags >> 25 & 1) {
       return 4093;
     }
-    if (flags >> 26 & 1) {
+    if (g_session.m_jobFlags >> 26 & 1) {
       return 4095;
     }
   } else if (job == 4096) {
-    if (flags >> 19 & 1) {
-      return 4109;
+    if (g_session.m_jobFlags >> 19 & 1) {
+      return job + 13;
     }
   } else if (job == 4047) {
-    if (flags >> 15 & 1) {
-      return 4048;
+    if (g_session.m_jobFlags >> 15 & 1) {
+      return job + 1;
     }
   } else if (job == 4056) {
-    if (flags >> 21 & 1) {
-      return 4084;
+    if (g_session.m_jobFlags >> 21 & 1) {
+      return job + 28;
     }
   } else if (job == 4062) {
-    if (flags >> 21 & 1) {
-      return 4085;
+    if (g_session.m_jobFlags >> 21 & 1) {
+      return job + 23;
     }
   } else if (job == 4098) {
-    if (flags >> 21 & 1) {
-      return 4111;
+    if (g_session.m_jobFlags >> 21 & 1) {
+      return job + 13;
     }
   } else if (job == 4058) {
-    if (this->unknown_8074 != 0) {
-      return 4086;
+    if (g_session.unknown_8074 != 0) {
+      return job + 28;
     }
   } else if (job == 4064) {
-    if (this->unknown_8074 != 0) {
-      return 4087;
+    if (g_session.unknown_8074 != 0) {
+      return job + 23;
     }
   } else if (job == 4100) {
-    if (this->unknown_8074 != 0) {
-      return 4112;
+    if (g_session.unknown_8074 != 0) {
+      return job + 12;
     }
   } else if (job == 4253) {
-    if (this->unknown_8074 != 0) {
-      return 4279;
+    if (g_session.unknown_8074 != 0) {
+      return job + 26;
     }
   } else if (job == 4226) {
-    if (flags >> 15 & 1) {
-      return 4238;
+    if (g_session.m_jobFlags >> 15 & 1) {
+      return job + 12;
     }
   } else if (job == 4239) {
-    if (flags >> 15 & 1) {
-      return 4243;
+    if (g_session.m_jobFlags >> 15 & 1) {
+      return job + 4;
     }
   } else if (job == 4241) {
-    if (flags >> 15 & 1) {
-      return 4244;
+    if (g_session.m_jobFlags >> 15 & 1) {
+      return job + 3;
     }
   } else if (job == 4257) {
-    if (flags >> 21 & 1) {
-      return 4278;
+    if (g_session.m_jobFlags >> 21 & 1) {
+      return job + 21;
     }
   } else if (job == 4252) {
-    if (flags >> 19 & 1) {
-      return 4280;
+    if (g_session.m_jobFlags >> 19 & 1) {
+      return job + 28;
     }
   } else if (job == 4258) {
-    if (flags >> 5 & 1) {
-      return 4281;
+    if (g_session.m_jobFlags >> 5 & 1) {
+      return job + 23;
     }
   } else if (job == 4302) {
-    if (flags >> 15 & 1) {
-      return 4316;
+    if (g_session.m_jobFlags >> 15 & 1) {
+      return job + 14;
     }
   }
 
@@ -206,29 +205,29 @@ void CSession::NormalizeHead(int* head, int job) {
     return;
   }
 
-  switch (job) {
-  case 1:
-    *head = 2;
-    break;
-  case 2:
-    *head = 3;
-    break;
-  case 3:
-    *head = 4;
-    break;
-  case 4:
-    *head = 5;
-    break;
-  case 5:
-    *head = 6;
-    break;
-  case 6:
-    *head = 7;
-    break;
-  default:
-    *head = 1;
-    break;
+  if (job < 23) {
+    switch (job) {
+    case 1:
+      *head = 2;
+      return;
+    case 2:
+      *head = 3;
+      return;
+    case 3:
+      *head = 4;
+      return;
+    case 4:
+      *head = 5;
+      return;
+    case 5:
+      *head = 6;
+      return;
+    case 6:
+      *head = 7;
+      return;
+    }
   }
+  *head = 1;
 }
 
 // OFFSET: 0x00BAAB10
