@@ -637,8 +637,38 @@ bool CCashEmotionMgr::IsOwnedPack(int packId) {
 }
 
 // OFFSET: 0x007C9D60
+// FUNCTION: fn_09439
+UICashEmotionPack::~UICashEmotionPack() {
+  this->m_pieces.clear();
+}
 
 // OFFSET: 0x007CA690
+// FUNCTION: fn_09446
+void UICashEmotionPack::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  if (!this->m_background.empty()) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_background.c_str()));
+    if (bitmap) {
+      this->DrawBitmapScaled(0, 0, this->geometry.width, this->geometry.height, &bitmap->image, 0);
+    }
+  }
+
+  if (!this->m_saleBadge.empty()) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_saleBadge.c_str()));
+    if (bitmap) {
+      this->DrawBitmap(171, 12, &bitmap->image, true);
+    }
+  }
+
+  if (this->m_limited) {
+    auto* bitmap =
+      static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_controls->textureNames.Resolve("유저인터페이스\\cashemotion\\icon_limitemotion.bmp")));
+    if (bitmap) {
+      this->DrawBitmap(0, 0, &bitmap->image, true);
+    }
+  }
+}
 
 // OFFSET: 0x007CA760
 // FUNCTION: fn_09447
@@ -656,14 +686,70 @@ void UICashEmotionPack::Slot27(int, int) {
 }
 
 // OFFSET: 0x007CA790
+// FUNCTION: fn_09450
+void UICashEmotionPack::Slot19() {
+  for (UICashEmotionPiece* piece : this->m_pieces) {
+    if (piece) {
+      piece->Slot19();
+    }
+  }
+}
 
 // OFFSET: 0x007CA7C0
+// FUNCTION: fn_09451
+void UICashEmotionPack::Slot35(int argument) {
+  if (this->parent) {
+    this->parent->Slot35(argument);
+  }
+}
 
 // OFFSET: 0x007CA7E0
+// FUNCTION: fn_09452
+int UICashEmotionPack::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  switch (message) {
+  case 60:
+    this->Invalidate();
+    if (this->parent) {
+      this->parent->SendMsg(sender, 60, 0, 0, 0, 0);
+    }
+    return 0;
+  case 174:
+    if (this->parent) {
+      this->parent->SendMsg(sender, 174, argument1, argument2, argument3, argument4);
+    }
+    return 0;
+  default:
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+}
 
 // OFFSET: 0x007CA870
+// FUNCTION: fn_09453
+void UICashEmotionPack::SetSaleBadge(char type) {
+  if (type == 1) {
+    this->m_saleBadge = this->m_controls->textureNames.Resolve("유저인터페이스\\cashemotion\\sale_account.bmp");
+  } else if (type == 2) {
+    this->m_saleBadge = this->m_controls->textureNames.Resolve("유저인터페이스\\cashemotion\\sale_char.bmp");
+  } else {
+    this->m_saleBadge = "";
+  }
+}
 
 // OFFSET: 0x007CA8F0
+// FUNCTION: fn_09454
+void UICashEmotionPack::SetTitle(const char* title) {
+  if (title) {
+    this->m_title = title;
+  } else {
+    this->m_title.clear();
+  }
+
+  if (this->m_titleText) {
+    this->m_titleText->Show(!this->m_title.empty());
+  }
+}
 
 // OFFSET: 0x007CB9F0
 // FUNCTION: fn_09479
