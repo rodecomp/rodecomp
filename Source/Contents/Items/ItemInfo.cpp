@@ -231,6 +231,16 @@ bool ItemInfo::IsForgeMaterial() const {
 }
 
 // OFFSET: 0x006D8980
+// FUNCTION: fn_06602
+bool IsNumericText(const char* text) {
+  for (unsigned index = 0; index < std::strlen(text); ++index) {
+    if (!g_digitCharacters[static_cast<unsigned char>(text[index])]) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 // OFFSET: 0x006D8A10
 // FUNCTION: fn_06604
