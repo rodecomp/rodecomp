@@ -193,7 +193,10 @@ void TextInputBuffer::SelectionRange(int& begin, int& end) const {
 }
 
 // OFFSET: 0x00ACE4B0
-
+// FUNCTION: fn_17786
+void TextInputBuffer::SetFlag8C(unsigned char value) {
+  reinterpret_cast<unsigned char*>(this)[0x8C] = value;
+}
 // OFFSET: 0x00ACE4C0
 // FUNCTION: fn_17787
 void TextInputBuffer::MoveForward(unsigned codePage) {
@@ -208,7 +211,6 @@ void TextInputBuffer::MoveForward(unsigned codePage) {
 }
 
 // OFFSET: 0x00ACE5E0
-
 // OFFSET: 0x00ACE620
 // FUNCTION: fn_17790
 void TextInputBuffer::RetreatCursor(int delta) {
