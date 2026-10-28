@@ -210,6 +210,23 @@ void TextInputBuffer::MoveForward(unsigned codePage) {
 // OFFSET: 0x00ACE5E0
 
 // OFFSET: 0x00ACE620
+// FUNCTION: fn_17790
+void TextInputBuffer::RetreatCursor(int delta) {
+  if (this->cursor == 0) {
+    return;
+  }
+  if (this->cursor < 0) {
+    this->cursor = 0;
+  } else {
+    int prev = this->cursor - delta;
+    if (prev >= 0) {
+      this->cursor = prev;
+    }
+  }
+  if ((static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8) == 0) {
+    this->anchor = this->cursor;
+  }
+}
 
 // OFFSET: 0x00ACE660
 // FUNCTION: fn_17791
