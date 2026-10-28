@@ -1,6 +1,9 @@
 #include "Contents/TipBoxTitles.h"
 
+#include <algorithm>
+#include <cctype>
 #include <cstdlib>
+#include <mbstring.h>
 #include <new>
 #include <windows.h>
 
@@ -30,10 +33,7 @@ namespace {
 
 // OFFSET: 0x007ABEC0
 // FUNCTION: fn_09118
-TipBoxEntry::TipBoxEntry() : unknown_0018(0), unknown_0044(0), unknown_0048(0) {
-  this->unknown_004C[0] = 0;
-  this->unknown_004C[1] = 0;
-  this->unknown_004C[2] = 0;
+TipBoxEntry::TipBoxEntry() {
 }
 
 // INLINED
@@ -169,9 +169,47 @@ bool CTipBoxMgr::IsLastTip() const {
 }
 
 // OFFSET: 0x007AD8C0
+// FUNCTION: fn_09131
+bool CTipBoxMgr::HasImages() const {
+  return !this->m_currentEntry.images.empty();
+}
 
 // OFFSET: 0x007AD8D0
+// FUNCTION: fn_09132
+bool CTipBoxMgr::HasSearchResults() const {
+  return !this->m_randomList.empty();
+}
 
 // OFFSET: 0x007AD940
+std::vector<int>& CTipBoxMgr::Search(std::string& keyword) {
+  this->m_randomList.clear();
+
+  for (const auto& item : this->m_entries) {
+    const TipBoxEntry entry = item.second;
+
+    if (entry.searchable) {
+      std::string title = entry.title;
+      std::transform(title.begin(), title.end(), title.begin(), toupper);
+      std::transform(keyword.begin(), keyword.end(), keyword.begin(), toupper);
+
+      if (_mbsstr(reinterpret_cast<const unsigned char*>(title.c_str()), reinterpret_cast<const unsigned char*>(keyword.c_str()))) {
+        this->m_randomList.push_back(item.first);
+      }
+    }
+  }
+
+  return this->m_randomList;
+}
 
 // OFFSET: 0x007AE050
+void CTipBoxMgr::SelectTip(int id) {
+  this->unknown_00B4 = 0;
+
+  const auto it = this->m_entries.find(id);
+  if (it != this->m_entries.end()) {
+    this->unknown_0114 = id;
+    this->m_currentEntry = it->second;
+  }
+
+  this->Sub7ACF50();
+}

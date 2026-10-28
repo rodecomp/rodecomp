@@ -5,6 +5,9 @@
 #include "Contents/Actors/Npc.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Sound/SoundMgr.h"
+#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/CGameMode.h"
+#include "Contents/World/WorldScene.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Resource/World/WorldResource.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -16,8 +19,7 @@
 
 // OFFSET: 0x00DA1E30
 // FUNCTION: fn_22363
-CSoundMaker::CSoundMaker(ResourceMgr& resources, JobNames& names, SoundMakerContext& context)
-    : CRenderObject(resources, names), m_context(&context) {
+CSoundMaker::CSoundMaker(ResourceMgr& resources, JobNames& names) : CRenderObject(resources, names) {
   this->file.clear();
   this->volume = 100.0f;
   this->range = 1.0f;
@@ -41,20 +43,24 @@ CNpc::~CNpc() {
   }
 }
 
-// OFFSET: 0x00DA2370
-// FUNCTION: fn_22365
 CBlowEffect::~CBlowEffect() = default;
 
-// OFFSET: 0x00DA2450
-// FUNCTION: fn_22367
+CBlurPC::~CBlurPC() = default;
+
+CHalluNPC::~CHalluNPC() = default;
+
+CHalluPC2::~CHalluPC2() = default;
+
+CHalluPC::~CHalluPC() = default;
+
+CHalluPlant::~CHalluPlant() = default;
+
+CSoundMaker::~CSoundMaker() = default;
+
 CCorpse::~CCorpse() = default;
 
-// OFFSET: 0x00DA2720
-// FUNCTION: fn_22373
 CMasterChaser::~CMasterChaser() = default;
 
-// OFFSET: 0x00DA27C0
-// FUNCTION: fn_22375
 CNumEffect::~CNumEffect() = default;
 
 // OFFSET: 0x00DA3340
@@ -87,7 +93,7 @@ bool CSoundMaker::Update() {
     return true;
   }
 
-  const CRenderObject* player = this->m_context->localPlayer;
+  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->player);
   if (!player) {
     return true;
   }
