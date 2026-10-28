@@ -1,10 +1,16 @@
 #include "Contents/Messenger/MessengerMember.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/MessageTable.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <algorithm>
+#include <string>
 #include <vector>
 
 namespace {
@@ -50,6 +56,7 @@ public:
   ~UIFriendOptionWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
+  void Paint() override;
 
   /* 00B4 */ FriendOptionPlacement* saved;
   /* 00B8 */ UICheckBox* option1Box;
@@ -64,6 +71,7 @@ private:
 class UIJobIconButton : public UIBitmapButton {
 public:
   ~UIJobIconButton() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot33(int x, int y) override;
@@ -178,6 +186,17 @@ void UIFriendOptionWnd::Slot15(int, int) {
   this->closeButton = this->AddCloseButton(controls, "Alt+I", 0);
 }
 
+// OFFSET: 0x007391C0
+// FUNCTION: fn_07682
+void UIFriendOptionWnd::Paint() {
+  auto& controls = this->m_options->buttons;
+
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(355), 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  const int barHeight = this->DrawButtonBar(0, 0, 1);
+  this->FillRegion(0, this->geometry.height - barHeight, this->geometry.width, 1, 0xC0C0C0);
+}
+
 // OFFSET: 0x007392F0
 // FUNCTION: fn_07684
 void UIFriendOptionWnd::Slot11() {
@@ -192,6 +211,42 @@ void UIFriendOptionWnd::Slot11() {
 // OFFSET: 0x007393E0
 // FUNCTION: fn_07686
 UIJobIconButton::~UIJobIconButton() = default;
+
+// OFFSET: 0x00739450
+// FUNCTION: fn_07687
+void UIJobIconButton::Paint() {
+  std::string name;
+  if (this->m_disabled == 1) {
+    name = this->m_names[3];
+  } else {
+    switch (this->geometry.unknown_0030) {
+    case 0:
+      name = this->m_names[0];
+      break;
+    case 1:
+      name = this->m_names[1];
+      break;
+    case 2:
+      name = this->m_names[2];
+      break;
+    }
+  }
+
+  if (!name.empty()) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
+    if (bitmap) {
+      if (this->unknown_0120 == 1) {
+        this->DrawAuxiliary(1, 0, 0, &bitmap->image, true, false);
+      } else {
+        this->DrawBitmap(0, 0, &bitmap->image, true);
+      }
+    }
+  }
+
+  if (this->parent) {
+    this->parent->Invalidate();
+  }
+}
 
 // OFFSET: 0x007395E0
 // FUNCTION: fn_07688
