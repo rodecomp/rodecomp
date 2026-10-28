@@ -1033,8 +1033,8 @@ void UICashEmotionPiece::Set(int packId, int emotionId, bool showTooltip, bool h
   }
 
   if (this->m_button) {
-    this->m_button->SetSprite(g_cashEmotionMgr->GetSprFileName(data->sprId));
-    this->m_button->SetActName(g_cashEmotionMgr->GetPackName(data->actId));
+    this->m_button->SetSprite(g_cashEmotionMgr->GetSprFileName(data->actId));
+    this->m_button->SetActName(g_cashEmotionMgr->GetPackName(data->sprId));
     this->m_button->unknown_00C0 = std::max(data->unknown_0024, 0);
     this->m_button->unknown_00BC = std::max(data->unknown_0020, 0);
     if (showTooltip) {
