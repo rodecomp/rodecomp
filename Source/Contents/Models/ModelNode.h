@@ -23,7 +23,7 @@ public:
 
   virtual void Initialize(const ModelNode& resource);
   virtual void Animate(double frame);
-  virtual void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context) = 0;
+  virtual void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context);
   C3dNode* Find(const char* name);
   void OverrideColors();
   void Prepare(const float* matrix, ModelLightingContext& context);

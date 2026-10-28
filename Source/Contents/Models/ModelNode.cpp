@@ -40,6 +40,11 @@ void C3dNode::Initialize(const ModelNode&) {
 void C3dNode::Animate(double) {
 }
 
+// OFFSET: 0x00AB7D30
+// FUNCTION: fn_17498
+void C3dNode::Draw(const float*, unsigned char, bool, unsigned char, ModelRenderContext&) {
+}
+
 // OFFSET: 0x00AB7050
 // FUNCTION: fn_17482
 void C3dNodeV1::Initialize(const ModelNode& base) {
