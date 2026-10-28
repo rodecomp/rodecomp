@@ -15,17 +15,28 @@
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Chat/UINewChatWnd.h"
+#include "UI/Chat/UISubChatMiniWnd.h"
+#include "UI/Dialogs/UIMemorialDunWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Layout/WindowSnapping.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIWindowCallBtnWnd.h"
+#include "UI/Window/WindowManagerWindows.h"
+#include "Render/Renderer.h"
 
 #include <stdio.h>
 #include <cstdlib>
 
 namespace {}
+
+// GLOBAL: gl_24737
+int g_memorialDunWndX;
+
+// GLOBAL: gl_24738
+int g_memorialDunWndY;
 
 // OFFSET: 0x009122B0
 // FUNCTION: fn_12528
@@ -428,4 +439,43 @@ void UINewChatWnd::Move(int x, int y) {
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_03F0)) {
     window->SendMsg(this, 6, 197, this->geometry.x + x, this->geometry.y + y, 0);
   }
+}
+
+// OFFSET: 0x0091E960
+// FUNCTION: fn_12630
+void UIMemorialDunWnd::Move(int x, int y) {
+  const int left = x <= g_renderer->viewport.width - this->geometry.width ? x : 0;
+  const int top = y <= g_renderer->viewport.height - this->geometry.height ? y : 310;
+  this->UIFrameWnd::Move(left, top);
+
+  if (g_memorialDunWndX != left) {
+    g_memorialDunWndX = left;
+  }
+  if (g_memorialDunWndY != top) {
+    g_memorialDunWndY = top;
+  }
+}
+
+// OFFSET: 0x0093CA50
+// FUNCTION: fn_12762
+int UISubChatMiniWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message != 6) {
+    return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  if (a == 197) {
+    this->Move(b, c - this->m_offsetY);
+  } else if (a == 202) {
+    this->Slot25(this->m_rowHeight * b + 1, 0);
+  }
+  return 0;
+}
+
+// OFFSET: 0x0093CAB0
+// FUNCTION: fn_12763
+int UIWindowCallBtnWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
+  if (message == 6) {
+    this->m_frameContext->windows.EnsureWindow(a);
+  }
+  return 0;
 }
