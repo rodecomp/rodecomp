@@ -347,8 +347,24 @@ void CGameActor::Slot30() {
 }
 
 // OFFSET: 0x00CC27C0
+// FUNCTION: fn_21141
+void CGameActor::SetUnknown0318(const float* value, int index) {
+  if (index == 0) {
+    std::memcpy(this->unknown_0318, value, sizeof(this->unknown_0318));
+  } else if (index == 1) {
+    std::memcpy(this->unknown_0348, value, sizeof(this->unknown_0348));
+  }
+}
 
 // OFFSET: 0x00CC2D50
+// FUNCTION: fn_21145
+void CGameActor::SetUnknown0330(const float* value, int index) {
+  if (index == 0) {
+    std::memcpy(this->unknown_0330, value, sizeof(this->unknown_0330));
+  } else if (index == 1) {
+    std::memcpy(this->unknown_0360, value, sizeof(this->unknown_0360));
+  }
+}
 
 // OFFSET: 0x00CC2DC0
 // FUNCTION: fn_21147
