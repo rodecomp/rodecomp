@@ -254,6 +254,7 @@ public:
   float FitToSquare(int* offsetX, int* offsetY, int width, int height, float size) const;
   void LoadSettings();
   bool BuildRoute(int startX, int startY, int destX, int destY, bool collectCells);
+  int RequestRoute(int cellX, int cellY);
   NaviCell* MapCellToView(NaviCell* out, const char* mapName, int cellX, int cellY, float size);
   std::string RouteText();
   void Reset(bool clearAll);

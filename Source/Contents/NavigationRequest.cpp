@@ -2,6 +2,8 @@
 #include "Client/Mode/ActiveGameMode.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/World/WorldScene.h"
+#include "Client/Session.h"
+#include "Resource/ResourceMgr.h"
 
 #include <cstring>
 
@@ -92,6 +94,71 @@ bool CNavigationManager::UpdateGround() {
   this->ground = mode->scene->ground;
   this->pathFinder.attr = mode->scene->terrain;
   return true;
+}
+
+// OFFSET: 0x00B97200
+// FUNCTION: fn_19598
+int CNavigationManager::RequestRoute(int cellX, int cellY) {
+  this->selectedNode = -1;
+  CNaviInfo* info = this->FindObject(g_session.m_navigationPlayerMap);
+  if (info == nullptr) {
+    const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(g_session.m_navigationPlayerMap);
+    info = this->FindObject(resolved.c_str());
+    if (info == nullptr) {
+      return -93;
+    }
+  }
+
+  CNaviInfo* target = nullptr;
+  int destX = cellX;
+  int destY = cellY;
+  const int type = this->savedTarget.type;
+  if (type == 3) {
+    if (info == static_cast<CNavi_Object*>(this->savedTarget.object)->GetInfo()) {
+      return 2;
+    }
+    return -99;
+  }
+  if (type == 1) {
+    if (info == this->savedTarget.object) {
+      return 3;
+    }
+    return -99;
+  }
+  if (type == 0) {
+    if (cellX < 0 || cellY < 0) {
+      return -97;
+    }
+    target = static_cast<CNaviInfo*>(this->savedTarget.object);
+  } else if (type == 2) {
+    CNavi_Object* object = static_cast<CNavi_Object*>(this->savedTarget.object);
+    target = object->GetInfo();
+    NaviCell cell;
+    const NaviCell* result = object->GetCell(&cell);
+    destX = result->x;
+    destY = result->y;
+  }
+  if (info != target) {
+    return -99;
+  }
+
+  int startX = 0;
+  int startY = 0;
+  CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  if (mode == nullptr) {
+    return -95;
+  }
+  mode->PlayerCell(&startX, &startY);
+  this->UpdateGround();
+  if (!this->BuildRoute(startX, startY, destX, destY, false)) {
+    return -99;
+  }
+  this->data.SetDestination(target, destX, destY);
+  this->unknown_117C = true;
+  this->unknown_115C = true;
+  this->unknown_12B4 = true;
+  this->unknown_1258 = 2;
+  return 9;
 }
 
 // OFFSET: 0x00B8E350
