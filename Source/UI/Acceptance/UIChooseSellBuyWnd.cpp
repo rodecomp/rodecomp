@@ -1,13 +1,42 @@
+#include "Client/Mode/ActiveGameMode.h"
 #include "Client/Mode/ModeEvents.h"
+#include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "UI/Buttons/UIBitmapButton.h"
+#include "Resource/TextureNames.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Chat/UIWhisperWnd.h"
+#include "UI/Dialogs/UIBookWnd.h"
+#include "UI/Dialogs/UIDisconnectedServerMsgWnd.h"
+#include "UI/Dialogs/UILoadingWnd.h"
+#include "UI/Dialogs/UIMenuWnd.h"
+#include "UI/Dialogs/UIMinimapZoomWnd.h"
+#include "UI/Dialogs/UINoticeConfirmWnd.h"
+#include "UI/Dialogs/UINotifyLevelUpWnd.h"
+#include "UI/Dialogs/UINotifyQuestWnd.h"
+#include "UI/Dialogs/UIPetTamingDeceiveWnd.h"
+#include "UI/Dialogs/UIQuitWnd.h"
+#include "UI/Dialogs/UIRestartWnd.h"
+#include "UI/Dialogs/UISayDialogWnd.h"
+#include "UI/Dialogs/UISelectCartWnd.h"
+#include "UI/Dialogs/UIWaitWnd.h"
+#include "UI/Items/UIEquipWnd.h"
+#include "UI/Items/UIExchangeWnd.h"
+#include "UI/Items/UIItemCollectionWnd.h"
+#include "UI/Items/UIItemIdentifyWnd.h"
+#include "UI/Lists/UIComboBoxWnd.h"
+#include "UI/Lists/UIListBox.h"
+#include "UI/Party/UIPartySettingWnd.h"
+#include "UI/Shop/UInCash_CallWnd.h"
+#include "UI/Status/UIStatusWnd.h"
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/WindowManagerWindows.h"
 
 #include <cstring>
+#include <windows.h>
+#include <timeapi.h>
 
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
@@ -70,6 +99,129 @@ void UIChooseSellBuyWnd::Paint() {
   const auto* bitmap = static_cast<CBitmapRes*>(this->m_acceptance->text.buttons.resources.Load(path.c_str()));
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
 }
+
+// OFFSET: 0x008ED190
+// FUNCTION: fn_12217
+void UIComboBoxIDWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x008ED1A0
+// FUNCTION: fn_12218
+void UIComboBoxWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x008ED1B0
+
+// OFFSET: 0x008EECD0
+// FUNCTION: fn_12228
+void UILoadingWnd::Paint() {
+}
+
+// OFFSET: 0x008EF590
+
+// OFFSET: 0x008EF7F0
+// FUNCTION: fn_12235
+void UINotifyLevelUpWnd::Paint() {
+}
+
+// OFFSET: 0x008EF800
+// FUNCTION: fn_12236
+void UINotifyQuestWnd::Paint() {
+}
+
+// OFFSET: 0x008EFF60
+
+// OFFSET: 0x008EFFA0
+
+// OFFSET: 0x008F2A90
+
+// OFFSET: 0x008F2DE0
+// FUNCTION: fn_12261
+void UInCash_CallWnd::Paint() {
+}
+
+// OFFSET: 0x008F32D0
+
+// OFFSET: 0x008F3300
+
+// OFFSET: 0x008F3630
+
+// OFFSET: 0x008F3650
+// FUNCTION: fn_12269
+void UICombinedCardItemCollection_ComparisonWnd::Slot25(int, int) {
+}
+
+// OFFSET: 0x008F38D0
+// FUNCTION: fn_12272
+void UIItemCollection_ComparisonWnd::Slot25(int, int) {
+}
+
+// OFFSET: 0x008F38E0
+
+// OFFSET: 0x008F39B0
+// FUNCTION: fn_12274
+void UIMinimapZoomWnd::Slot25(int, int) {
+}
+
+// OFFSET: 0x008F39C0
+
+// OFFSET: 0x008F39E0
+
+// OFFSET: 0x008F3A40
+
+// OFFSET: 0x008F3A60
+
+// OFFSET: 0x008F3BA0
+// FUNCTION: fn_12281
+void UICombinedCardItemCollection_ComparisonWnd::Slot31(int, int) {
+}
+
+// OFFSET: 0x008F3BB0
+
+// OFFSET: 0x008F3C50
+// FUNCTION: fn_12284
+void UIItemCollection_ComparisonWnd::Slot31(int, int) {
+}
+
+// OFFSET: 0x008F4A80
+
+// OFFSET: 0x008F4AB0
+
+// OFFSET: 0x008F4D40
+// FUNCTION: fn_12294
+void UIEquipWnd::Slot19() {
+}
+
+// OFFSET: 0x008F4F80
+
+// OFFSET: 0x008F50B0
+// FUNCTION: fn_12300
+void UISayDialogWnd::Slot19() {
+  for (UIWindow* child : this->m_children) {
+    child->Slot19();
+  }
+}
+
+// OFFSET: 0x008F5990
+// FUNCTION: fn_12307
+void UIItemIdentifyWnd::Slot33(int, int) {
+}
+
+// OFFSET: 0x008F59A0
+// FUNCTION: fn_12308
+void UIWhisperWnd::Slot33(int, int) {
+  this->SendMsg(nullptr, 49, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x008F5A10
+
+// OFFSET: 0x008F5A50
+
+// OFFSET: 0x008F66B0
+
+// OFFSET: 0x008F6700
 
 // OFFSET: 0x008F8860
 // FUNCTION: fn_12332
