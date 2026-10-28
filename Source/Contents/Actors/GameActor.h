@@ -39,12 +39,35 @@ public:
 
   void SetAnimation(unsigned animation, int motion, int repeat) override;
 
+  virtual void Slot08() = 0;
+  virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth) = 0;
+  virtual void Slot10(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth) = 0;
+  virtual void Slot11(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth) = 0;
+  virtual void Slot12(int first, int second, int third, int fourth, int fifth) = 0;
+  virtual void Slot13() = 0;
+  virtual void Slot14() = 0;
+  virtual void Slot15(int first, int second) = 0;
+  virtual void Slot16() = 0;
+  virtual void Slot17() = 0;
   virtual void Slot18(int first, int second, int third);
+  virtual void Slot19(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) = 0;
+  virtual void Slot20(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) = 0;
   virtual void Slot21(int value);
   virtual void Slot22(int value);
   virtual void Slot23(int first, int second);
+  virtual void Slot24(int first, int second) = 0;
   virtual void Slot25(int value);
+  virtual void Slot26(int value) = 0;
+  virtual void Slot27(int value) = 0;
+  virtual void Slot28(int value) = 0;
+  virtual void Slot29(int value) = 0;
   virtual void Slot30();
+  virtual void Slot31() = 0;
+  virtual void Slot32() = 0;
+  virtual void Slot33(int value) = 0;
+  virtual void Slot34(int value) = 0;
+  virtual void Slot35() = 0;
+  virtual void Slot36() = 0;
 
   void SetUnknown0305(unsigned char value, int extra);
   void SetUnknown0318(const float* value, int index);
