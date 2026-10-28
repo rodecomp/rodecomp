@@ -342,6 +342,10 @@ HRESULT DeviceOwnerDX7::Close() {
 }
 
 // OFFSET: 0x0054A8B0
+// FUNCTION: fn_01898
+void DeviceOwnerDX7::DestroySurface(CSurface* surface) {
+  delete surface;
+}
 
 // OFFSET: 0x0054AAD0
 // FUNCTION: fn_01901
