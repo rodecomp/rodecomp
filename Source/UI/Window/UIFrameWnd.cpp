@@ -1,6 +1,8 @@
 #include "UI/Window/FrameFocus.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Lists/UIReplayListBox.h"
+#include "UI/Window/UINoticeWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Layout/WindowSnapping.h"
@@ -198,4 +200,11 @@ UIBitmapButton* UIFrameWnd::AddCloseButton(UIButtonContext& controls, const char
   this->AddChild(button);
 
   return button;
+}
+
+// OFFSET: 0x008BA280
+
+// OFFSET: 0x008BA500
+// FUNCTION: fn_11785
+void UINoticeWnd::Slot28(int, int) {
 }
