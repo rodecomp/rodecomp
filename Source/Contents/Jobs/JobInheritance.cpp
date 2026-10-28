@@ -3,13 +3,15 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Client/Session.h"
+#include "Contents/EquipmentResourceMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
 #include "Script/LuaScript.h"
+#include "Utility/Text/FormatString.h"
 
-#include <string>
 #include <cstring>
+#include <string>
 
 // GLOBAL: gl_24496
 int g_screenShakeDuration;
@@ -411,6 +413,105 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
   default:
     return false;
   }
+}
+
+
+// OFFSET: 0x00E0AB60
+// FUNCTION: fn_23803
+std::string CSession::GetWeaponName(int weapon) {
+  const unsigned index = GetRealWeaponId(weapon);
+  if (index < static_cast<unsigned>(this->m_weaponNamesEnd - this->m_weaponNamesBegin)) {
+    return this->m_weaponNamesBegin[index];
+  }
+
+  return this->m_weaponNamesBegin[0];
+}
+
+// OFFSET: 0x00DE3800
+// FUNCTION: fn_23482
+const char* CSession::GetWeaponClassName(int item) {
+  const char* name = nullptr;
+  if (g_session.m_hotkeyScript->Call("ReqWeaponNameByClassNum", "d>s", FindItemDescription(item).unknown_0040, &name)) {
+    return name;
+  }
+
+  return "";
+}
+
+// OFFSET: 0x00BAD420
+// FUNCTION: fn_19759
+std::string EquipmentResourceMgr::GetWeaponResourceName(int type, int job, int sex, int weapon, int weaponItem, int costume) {
+  std::string result;
+  std::string jobName;
+  std::string sexName;
+  std::string weaponName;
+
+  const int spriteJob = g_session.GetSpriteJob(job <= 31 ? job : job + 3950, costume, true);
+  jobName = g_session.m_jobSpriteNames[spriteJob];
+  sexName = g_session.GetSexName(sex);
+
+  if (weaponItem == -1) {
+    weaponName = g_session.GetWeaponName(weapon);
+    result = this->GetBodyRacePrefix(spriteJob) +
+      FormatOwnedString("\\%s_%s%s.%s", jobName.c_str(), sexName.c_str(), weaponName.c_str(), g_equipmentResourceExtensions[type]);
+  } else {
+    result = this->GetBodyRacePrefix(spriteJob + 3950) +
+      FormatOwnedString("\\%s_%s%s.%s", jobName.c_str(), sexName.c_str(), g_session.GetWeaponClassName(weaponItem), g_equipmentResourceExtensions[type]);
+  }
+
+  return result;
+}
+
+// OFFSET: 0x00BACEE0
+// FUNCTION: fn_19758
+std::string EquipmentResourceMgr::GetWeaponEffectResourceName(int type, int job, int sex, int weapon, int weaponItem, int effect, int costume) {
+  std::string result;
+  std::string jobName;
+  std::string sexName;
+  std::string weaponName;
+  const char* const effects[] = {"_검광", "_발광"};
+
+  const int spriteJob = g_session.GetSpriteJob(job <= 31 ? job : job + 3950, costume, true);
+  jobName = g_session.m_jobSpriteNames[spriteJob];
+  sexName = g_session.GetSexName(sex);
+  weaponName = g_session.GetWeaponName(weapon);
+
+  const char* const suffix = effects[effect];
+  if (weaponItem == -1) {
+    result = this->GetBodyRacePrefix(spriteJob) +
+      FormatOwnedString("\\%s_%s%s%s.%s", jobName.c_str(), sexName.c_str(), weaponName.c_str(), suffix, g_equipmentResourceExtensions[type]);
+  } else {
+    result = this->GetBodyRacePrefix(spriteJob) +
+      FormatOwnedString("\\%s_%s%s%s.%s", jobName.c_str(), sexName.c_str(), g_session.GetWeaponClassName(weaponItem), suffix, g_equipmentResourceExtensions[type]);
+  }
+
+  return result;
+}
+
+// OFFSET: 0x00E19370
+// FUNCTION: fn_23837
+std::string CSession::GetWeaponActName(int job, int sex, int weapon, int weaponItem, int costume) {
+  return g_equipmentResourceMgr->GetWeaponResourceName(0, job, sex, weapon, weaponItem, costume);
+}
+
+// OFFSET: 0x00E193E0
+// FUNCTION: fn_23838
+std::string CSession::GetWeaponEffectActName(int job, int sex, int weapon, int weaponItem, int effect, int costume) {
+  return std::string(g_equipmentResourceMgr->GetWeaponEffectResourceName(0, job, sex, weapon, weaponItem, effect, costume));
+}
+
+// OFFSET: 0x00E19450
+// FUNCTION: fn_23839
+std::string CSession::GetWeaponEffectSprName(int job, int sex, int weapon, int weaponItem, int effect, int costume) {
+  std::string name = g_equipmentResourceMgr->GetWeaponEffectResourceName(1, job, sex, weapon, weaponItem, effect, costume);
+  return name;
+}
+
+// OFFSET: 0x00E194C0
+// FUNCTION: fn_23840
+std::string CSession::GetWeaponSprName(int job, int sex, int weapon, int weaponItem, int costume) {
+  std::string name = g_equipmentResourceMgr->GetWeaponResourceName(1, job, sex, weapon, weaponItem, costume);
+  return name;
 }
 
 // OFFSET: 0x00DFBE10

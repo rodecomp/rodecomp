@@ -139,7 +139,10 @@ public:
   /* 5254 */ std::map<int, float> m_npcLocationRadius;
   /* 525C */ unsigned char unknown_525C[0x44];
   /* 52A0 */ const char* const* m_sexNames;
-  /* 52A4 */ unsigned char unknown_52A4[0x14];
+  /* 52A4 */ unsigned char unknown_52A4[0x08];
+  /* 52AC */ const char* const* m_weaponNamesBegin;
+  /* 52B0 */ const char* const* m_weaponNamesEnd;
+  /* 52B4 */ unsigned char unknown_52B4[0x04];
   /* 52B8 */ std::vector<const char*> m_accessoryNames;
   /* 52C4 */ unsigned char unknown_52C4[0x294];
   /* 5558 */ int unknown_5558;
@@ -184,7 +187,8 @@ public:
   /* 7FA8 */ CInstantVar m_options;
   /* 7FB4 */ unsigned char unknown_7FB4[0xC0];
   /* 8074 */ int unknown_8074;
-  /* 8078 */ unsigned char unknown_8078[0x3C];
+  /* 8078 */ const char* const* m_jobSpriteNames;
+  /* 807C */ unsigned char unknown_807C[0x38];
   /* 80B4 */ std::map<std::string, int> m_nameToId;
   /* 80BC */ std::map<int, SessionShop> m_shops;
   /* 80C4 */ unsigned char unknown_80C4[0x58];
@@ -272,6 +276,12 @@ public:
   int SyncUnknown0E98();
   void LoadXmlTables();
   std::string GetAccessoryName(int id);
+  std::string GetWeaponName(int weapon);
+  const char* GetWeaponClassName(int item);
+  std::string GetWeaponActName(int job, int sex, int weapon, int weaponItem, int costume);
+  std::string GetWeaponSprName(int job, int sex, int weapon, int weaponItem, int costume);
+  std::string GetWeaponEffectActName(int job, int sex, int weapon, int weaponItem, int effect, int costume);
+  std::string GetWeaponEffectSprName(int job, int sex, int weapon, int weaponItem, int effect, int costume);
   void CollectCardItems();
   void SetHomunculusAutoFeed(bool enabled);
   void SetPetAutoFeed(bool enabled);
