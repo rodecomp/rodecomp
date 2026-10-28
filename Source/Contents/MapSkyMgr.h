@@ -15,6 +15,7 @@ public:
   }
 
   bool LoadData();
+  void Unused();
 
 private:
   /* 0004 */ LuaScript* m_script;
