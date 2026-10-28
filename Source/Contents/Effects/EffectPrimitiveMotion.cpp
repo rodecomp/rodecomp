@@ -1073,6 +1073,41 @@ bool EffectParticle::UpdateExit() {
 }
 
 // OFFSET: 0x00BB8180
+// FUNCTION: fn_19783
+bool EffectParticle::UpdateWarp() {
+  const RagEffectState* parent = this->state.parent;
+  this->state.origin = {
+    std::bit_cast<float>(parent->unknown_013C[3]) + this->state.velocity.x, std::bit_cast<float>(parent->unknown_013C[4]) + this->state.velocity.y,
+    std::bit_cast<float>(parent->unknown_013C[5]) + this->state.velocity.z
+  };
+
+  const int angle = static_cast<int>(this->state.unknown_0314);
+  const float lateral = this->state.unknown_0334;
+  this->state.unknown_0334 = lateral + this->state.unknown_0340;
+  this->state.unknown_0310 = lateral + this->state.unknown_0310;
+  this->state.unknown_02BC = this->state.unknown_02C0 + this->state.unknown_02BC;
+  this->state.unknown_02EC = this->state.unknown_02F0 + this->state.unknown_02EC;
+
+  const float distance = this->state.unknown_02BC - this->state.unknown_02EC;
+  this->state.unknown_0370 = Forward(distance, this->state.matrix1);
+  reinterpret_cast<AffineMatrix*>(this->state.matrix2)->SetAxisRotation(this->state.unknown_0290, ClientRadians(angle));
+
+  const float move = this->state.unknown_0310;
+  this->state.unknown_03A0 = Lift(move, this->state.matrix2);
+  this->state.scale = this->state.unknown_031C + this->state.scale;
+
+  this->state.offset.x = this->state.offset.x - this->state.unknown_0370.x;
+  this->state.offset.y = this->state.offset.y - this->state.unknown_0370.y;
+  this->state.offset.z = this->state.offset.z - this->state.unknown_0370.z;
+
+  this->render.position[0] = this->state.offset.x + this->state.origin.x + this->state.unknown_03A0.x;
+  this->render.position[1] = this->state.offset.y + this->state.origin.y + this->state.unknown_03A0.y;
+  this->render.position[2] = this->state.offset.z + this->state.origin.z + this->state.unknown_03A0.z;
+
+  this->state.UpdateColor();
+  this->UpdateRecords();
+  return this->AdvanceFrame();
+}
 
 // OFFSET: 0x00BE6FE0
 // FUNCTION: fn_19931
