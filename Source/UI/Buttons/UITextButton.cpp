@@ -5,6 +5,8 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Buttons/UITextButton.h"
+#include "UI/Lists/UIImgMenu.h"
+#include "UI/Lists/UITabControl.h"
 #include "UI/Lists/UITreeView.h"
 #include "UI/UIStaticItem.h"
 
@@ -276,3 +278,36 @@ void UIINT64BarGraph::Slot28(int, int) {
   this->m_controls->services.Tooltip(text, screenX, screenY, -1, false, true);
 }
 
+
+// OFFSET: 0x00891A10
+
+// OFFSET: 0x00891F20
+// FUNCTION: fn_11460
+void UITabControl::Slot28(int x, int y) {
+  int index = this->TabAt(x, y);
+
+  if (index == -1) {
+    return;
+  }
+
+  const std::string& tooltip = this->tooltips[index];
+
+  if (tooltip.empty() || this->labels[index] == tooltip) {
+    return;
+  }
+
+  int screenX = 0;
+
+  for (int i = 0; i < index; ++i) {
+    screenX = (screenX - 1 + this->widths[i]);
+  }
+
+  int screenY = -20;
+
+  for (const UIWindow* window = this; window; window = window->parent) {
+    screenX = (screenX + window->geometry.x);
+    screenY = (screenY + window->geometry.y);
+  }
+
+  this->m_controls->services.Tooltip(this->tooltips[index].c_str(), screenX, screenY, -1, false, true);
+}
