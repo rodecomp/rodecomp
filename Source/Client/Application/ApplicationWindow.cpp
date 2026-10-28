@@ -1,5 +1,8 @@
 #include "Client/Application/ApplicationWindow.h"
 
+// GLOBAL: gl_24399
+HWND hWnd;
+
 // OFFSET: 0x03DE9F37
 // FUNCTION: fn_45411
 HWND CreateApplicationWindow(
