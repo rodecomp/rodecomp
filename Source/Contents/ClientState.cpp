@@ -16,3 +16,9 @@ void CSession::CollectCardItems() {
 }
 
 // OFFSET: 0x00E48B70
+// FUNCTION: fn_24226
+void RequestBasicInfoRefresh() {
+  if (g_windowMgr.unknown_01E0 != nullptr) {
+    g_windowMgr.unknown_01E0->SendMsg(nullptr, 106, 575, 0, 0, 0);
+  }
+}
