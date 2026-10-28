@@ -1,8 +1,39 @@
 #include "Contents/ClientState.h"
 
 #include "Client/Session.h"
+#include "Contents/MessageTable.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+
+#include <cstdint>
+
+// GLOBAL: gl_24492
+bool g_homunculusAutoFeed;
+
+// GLOBAL: gl_24493
+bool g_petAutoFeed;
+
+// OFFSET: 0x00E48930
+// FUNCTION: fn_24222
+void CSession::SetHomunculusAutoFeed(bool enabled) {
+  int message;
+  if (enabled == true) {
+    this->m_homunculusAutoFeed = true;
+    message = 3282;
+  } else {
+    g_homunculusAutoFeed = false;
+    message = 3283;
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0x64FFFF, 0, 0, 0);
+}
+
+// OFFSET: 0x00E48980
+// FUNCTION: fn_24223
+void CSession::SetPetAutoFeed(bool enabled) {
+  g_petAutoFeed = enabled == true;
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? 2579 : 2580)), 0x64FFFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00E48B00
 // FUNCTION: fn_24225

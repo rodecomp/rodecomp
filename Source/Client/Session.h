@@ -178,7 +178,9 @@ public:
   /* 6198 */ const char* const* m_doramFemaleHeadNames;
   /* 619C */ unsigned char unknown_619C[0x1D44];
   /* 7EE0 */ std::map<int, RobeAlpha> m_robeAlpha;
-  /* 7EE8 */ unsigned char unknown_7EE8[0xC0];
+  /* 7EE8 */ unsigned char unknown_7EE8[0x94];
+  /* 7F7C */ bool m_homunculusAutoFeed;
+  /* 7F7D */ unsigned char unknown_7F7D[0x2B];
   /* 7FA8 */ CInstantVar m_options;
   /* 7FB4 */ unsigned char unknown_7FB4[0xC0];
   /* 8074 */ int unknown_8074;
@@ -271,6 +273,8 @@ public:
   void LoadXmlTables();
   std::string GetAccessoryName(int id);
   void CollectCardItems();
+  void SetHomunculusAutoFeed(bool enabled);
+  void SetPetAutoFeed(bool enabled);
   int GetRobeAlpha(int robeId);
   bool IsTopLayerRobe(int robe);
   int IsSkillIdInRange6018(unsigned id) const;
@@ -303,6 +307,7 @@ static_assert(offsetof(CSession, m_prohibitionLog) == 0x754);
 static_assert(offsetof(SessionRecord6144, unknown_002C) == 0x2C);
 static_assert(offsetof(SessionRecord6144, unknown_0030) == 0x30);
 static_assert(offsetof(CSession, m_additionalSkills) == 0x4);
+static_assert(offsetof(CSession, m_homunculusAutoFeed) == 0x7F7C);
 static_assert(offsetof(CSession, m_options) == 0x7FA8);
 static_assert(offsetof(CSession, m_nameToId) == 0x80B4);
 static_assert(offsetof(CSession, m_level) == 0x1650);
