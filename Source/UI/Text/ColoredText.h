@@ -7,6 +7,10 @@ class UIWindow;
 class FontCache;
 struct TextLocale;
 
+extern unsigned char g_hexDigits[256];
+
+const char* ParseColorCode(const char* text, std::uint32_t& color);
+
 void DrawColoredText(
   UIWindow& window, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
   int family, int height, bool shadow

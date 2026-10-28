@@ -7,6 +7,18 @@
 #include <string>
 #include <windows.h>
 
+// GLOBAL: gl_24512
+unsigned char g_hexDigits[256] = {
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0,
+  0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
 namespace {
   // INLINED
   bool Hex(unsigned char value) {
@@ -56,6 +68,24 @@ namespace {
 
     return current;
   }
+}
+
+// OFFSET: 0x00A81BA0
+// FUNCTION: fn_16982
+const char* ParseColorCode(const char* text, std::uint32_t& color) {
+  if (text == nullptr) {
+    return nullptr;
+  }
+
+  if (*text != '^') {
+    return text;
+  }
+
+  const unsigned char red = static_cast<unsigned char>(g_hexDigits[text[1]] * 16 + g_hexDigits[text[2]]);
+  const unsigned char green = static_cast<unsigned char>(g_hexDigits[text[3]] * 16 + g_hexDigits[text[4]]);
+  const unsigned char blue = static_cast<unsigned char>(g_hexDigits[text[5]] * 16 + g_hexDigits[text[6]]);
+  color = red | (green << 8) | (blue << 16);
+  return text + 7;
 }
 
 // OFFSET: 0x00A84E30

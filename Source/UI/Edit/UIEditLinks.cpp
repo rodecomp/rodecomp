@@ -70,6 +70,14 @@ bool UIEditCtrl::RemoveInvalidLink(std::list<UIWindow*>::iterator& entry) {
   return true;
 }
 
+// OFFSET: 0x008550B0
+// FUNCTION: fn_10749
+void UIEditCtrl::SetCursor(std::size_t position) {
+  position = std::min(position, this->text.size());
+  this->anchor = this->cursor = static_cast<int>(position);
+  this->m_edit->input.Select(this->cursor, this->cursor);
+}
+
 // OFFSET: 0x008550E0
 // FUNCTION: fn_10750
 void UIEditCtrl::SnapLinkSelection(std::size_t prefix, std::size_t bytes) {
