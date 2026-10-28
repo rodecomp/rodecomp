@@ -364,6 +364,7 @@
   "Source/Contents/MovementRouteInterpolation.cpp": 4,
   "Source/Contents/Movies/BinkMovie.cpp": 3,
   "Source/Contents/Movies/BinkMovies.cpp": 3,
+  "Source/Contents/NavigationSource.cpp": 4,
   "Source/Contents/Party/AdvenPartyInfo.cpp": 4,
   "Source/Contents/Party/AdventurerAgencyMgr.cpp": 4,
   "Source/Contents/Party/AgencyRequests.cpp": 4,
