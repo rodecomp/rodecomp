@@ -30,7 +30,7 @@ public:
   void UnloadAll();
   void ClearUnused(const char* extension);
   void ClearUnused();
-  void ClearExpired(const unsigned& reuseDelay);
+  void ClearExpired();
   void UpdateTransient();
   ResourceAliases aliases;
 
@@ -47,5 +47,7 @@ private:
   ResourceMgr(const ResourceMgr&) = delete;
   ResourceMgr& operator=(const ResourceMgr&) = delete;
 };
+
+extern unsigned g_resourceReuseDelay;
 
 #endif
