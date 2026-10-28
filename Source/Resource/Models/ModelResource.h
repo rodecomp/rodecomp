@@ -4,6 +4,7 @@
 #include "Resource/Models/ModelMesh.h"
 #include "Resource/Resource.h"
 
+#include <functional>
 #include <list>
 #include <map>
 #include <memory>
@@ -103,8 +104,10 @@ class C3dModelRes : public CRes {
 public:
   explicit C3dModelRes(ModelResourceContext& context);
   ~C3dModelRes() override;
+  bool Load(const char* name) override;
   void Unload() override;
   ModelNode* FindNode(const char* name) const;
+  void ForEachRootName(std::function<void(const std::string&)> callback) const;
   void RegisterMovies(class BinkMovies& movies, const float* position) const;
 
   /* 0110 */ int major;

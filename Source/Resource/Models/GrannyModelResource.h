@@ -143,6 +143,7 @@ struct GrannyModelInstance {
 class GrannyAnimationLibrary {
 public:
   bool Load(const char* name, int job, int action);
+  void Initialize();
   void FreeInstance();
   granny_file* ReadAnimationFile(const char* name, const char* suffix);
 
@@ -170,6 +171,8 @@ public:
   void FreeControl(granny_control* control);
   granny_control* PlayAnimation(unsigned action, granny_model_instance* instance, granny_control* control, int loopCount);
   bool ProjectBounds(float* rect, const AffineMatrix& view, const AffineMatrix& world, const float* eye) const;
+  int GetTriangleCount(int mesh) const;
+  unsigned char* GetRigidVertices(int mesh) const;
 
   /* 0110 */ unsigned char unknown_0110[0x150];
   /* 0260 */ void* file;

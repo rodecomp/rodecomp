@@ -501,6 +501,41 @@ void GrannyAnimationLibrary::FreeInstance() {
   this->instance = nullptr;
 }
 
+// OFFSET: 0x00759550
+// FUNCTION: fn_08014
+void C3dModelRes::ForEachRootName(std::function<void(const std::string&)> callback) const {
+  std::for_each(this->rootNames.begin(), this->rootNames.end(), callback);
+}
+
+// OFFSET: 0x007597A0
+// FUNCTION: fn_08015
+int C3dGrannyModelRes::GetTriangleCount(int mesh) const {
+  return GrannyGetMeshIndexCount(this->instance->meshes[mesh].mesh) / 3;
+}
+
+// OFFSET: 0x007597E0
+// FUNCTION: fn_08016
+unsigned char* C3dGrannyModelRes::GetRigidVertices(int mesh) const {
+  const GrannyMeshEntry& entry = this->instance->meshes[mesh];
+
+  if (!GrannyMeshIsRigid(entry.mesh)) {
+    return nullptr;
+  }
+
+  return entry.vertices;
+}
+
+// OFFSET: 0x00759820
+// FUNCTION: fn_08017
+void GrannyAnimationLibrary::Initialize() {
+}
+
+// OFFSET: 0x00759830
+// FUNCTION: fn_08018
+bool C3dModelRes::Load(const char*) {
+  return false;
+}
+
 // OFFSET: 0x00757390
 // FUNCTION: fn_08005
 bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
