@@ -38,7 +38,8 @@ public:
   /* 06A8 */ unsigned char unknown_06A8[0x43];
   /* 06EB */ NormalItemSlot unknown_06EB;
   /* 06F2 */ NormalItemSlot unknown_06F2;
-  /* 06F9 */ unsigned char unknown_06F9[0x2F];
+  /* 06F9 */ unsigned char unknown_06F9[0x23];
+  /* 071C */ std::vector<int> m_homunSkillLevels;
   /* 0728 */ std::vector<int> m_mercSkillLevels;
   /* 0734 */ unsigned char unknown_0734[0x44];
   /* 0778 */ std::vector<std::pair<int, int>> unknown_0778;
@@ -124,6 +125,7 @@ public:
   bool IsReducedSkill(int skillId) const;
   char* ConvertTooltipText(const char* source, char* output) const;
   int MercSkillLevel(int skillId) const;
+  int HomunSkillLevel(int skillId) const;
   int SyncUnknown0E98();
   std::string GetAccessoryName(int id);
   void CollectCardItems();
@@ -145,6 +147,7 @@ static_assert(offsetof(CSession, m_shortcutSlots) == 0x4B0);
 static_assert(offsetof(CSession, m_secondaryShortcutSlots) == 0x5AC);
 static_assert(offsetof(CSession, unknown_06EB) == 0x6EB);
 static_assert(offsetof(CSession, unknown_06F2) == 0x6F2);
+static_assert(offsetof(CSession, m_homunSkillLevels) == 0x71C);
 static_assert(offsetof(CSession, m_mercSkillLevels) == 0x728);
 static_assert(offsetof(CSession, unknown_0778) == 0x778);
 static_assert(offsetof(CSession, unknown_0784) == 0x784);

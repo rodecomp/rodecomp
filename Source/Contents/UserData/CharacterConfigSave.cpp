@@ -1,3 +1,4 @@
+#include "Client/Session.h"
 #include "Client/ClientOptions.h"
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/UserData/CharacterConfigSave.h"
@@ -91,4 +92,15 @@ void CCharacterLinkedUserDataMgr::Save(CharacterConfigSave& context, const char*
 
     ++this->m_pendingSaves;
   }
+}
+
+// OFFSET: 0x00DDD0D0
+// FUNCTION: fn_23379
+int CSession::HomunSkillLevel(int skillId) const {
+  const int index = skillId - 8000;
+  if (index > -1) {
+    return this->m_homunSkillLevels[index];
+  }
+
+  return 0;
 }
