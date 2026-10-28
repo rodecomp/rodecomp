@@ -250,6 +250,10 @@ EquipmentProperties::CEquipmentPropertiesMgr::~CEquipmentPropertiesMgr() {
 }
 
 // OFFSET: 0x0068B6C0
+// FUNCTION: fn_05612
+EquipmentProperties::CEquipment::~CEquipment() {
+  this->m_properties.Clear();
+}
 
 // OFFSET: 0x0068CE10
 // FUNCTION: fn_05638
@@ -258,6 +262,18 @@ void EquipmentProperties::CEquipment::Clear() {
 }
 
 // OFFSET: 0x0068C020
+// FUNCTION: fn_05624
+int EquipmentProperties::CEquipment::GetValue(const int& key) {
+  if (this->m_info == nullptr) {
+    return -1;
+  }
+
+  auto found = this->m_info->values.find(key);
+  if (found == this->m_info->values.end()) {
+    return 0;
+  }
+  return found->second;
+}
 
 // OFFSET: 0x0068C0F0
 // FUNCTION: fn_05628
