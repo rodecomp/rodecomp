@@ -2,6 +2,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Window/UIWindow.h"
 
@@ -17,6 +18,25 @@ void DrawItemIcon(UIWindow& window, ResourceMgr& resources, ItemDescriptions& de
   if (bitmap) {
     window.DrawBitmap(x, y, &bitmap->image, true);
   }
+}
+
+// OFFSET: 0x008A8F80
+// FUNCTION: fn_11718
+void DrawItemIconById(UIWindow& window, TextureNames& names, ItemDescriptions& descriptions, int x, int y, const char* id, unsigned char identified) {
+  char path[128];
+  descriptions.IconPath(path, id, identified);
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(names.Resolve(path)));
+
+  if (bitmap) {
+    window.DrawBitmap(x, y, &bitmap->image, true);
+  }
+}
+
+// OFFSET: 0x008A9000
+// FUNCTION: fn_11719
+void DrawItemSlotBackground(UIWindow& window, TextureNames& names, int x, int y) {
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(names.Resolve("유저인터페이스\\basic_interface\\itemwin_mid.bmp")));
+  window.DrawBitmap(x, y, bitmap ? &bitmap->image : nullptr, false);
 }
 
 // OFFSET: 0x008A9040
