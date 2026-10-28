@@ -181,6 +181,7 @@ bool CTipBoxMgr::HasSearchResults() const {
 }
 
 // OFFSET: 0x007AD940
+// FUNCTION: fn_09133
 std::vector<int>& CTipBoxMgr::Search(std::string& keyword) {
   this->m_randomList.clear();
 
@@ -202,6 +203,7 @@ std::vector<int>& CTipBoxMgr::Search(std::string& keyword) {
 }
 
 // OFFSET: 0x007AE050
+// FUNCTION: fn_09134
 void CTipBoxMgr::SelectTip(int id) {
   this->unknown_00B4 = 0;
 
