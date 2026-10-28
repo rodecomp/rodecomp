@@ -6,7 +6,7 @@
 // OFFSET: 0x00BABEF0
 // FUNCTION: fn_19754
 std::string EquipmentResourceMgr::GetBodyRacePrefix(int job) {
-  if (g_session.IsReducedSkill(job) == true) {
+  if (g_session.IsDoramJob(job) == true) {
     return "도람족";
   }
   return "인간족";

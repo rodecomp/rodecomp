@@ -1,6 +1,7 @@
 #include "Contents/Skills/ClientSkills.h"
 #include "Client/Session.h"
 #include "Contents/ClientState.h"
+#include "Contents/Jobs/JobId.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -607,19 +608,21 @@ void CSession::ResetItems2B50() {
 
 // OFFSET: 0x00E08B40
 // FUNCTION: fn_23770
-float GetSkillFactor(int skillId) {
-  if ((skillId < 4023 || skillId > 4029) && skillId != 4045 && skillId != 4191 && static_cast<unsigned>(skillId - 4030) > 0xE &&
-      static_cast<unsigned>(skillId - 4096) > 0x10 && static_cast<unsigned>(skillId - 4158) > 0x18 && (skillId < 4194 || skillId > 4196) &&
-      skillId != 4193 && static_cast<unsigned>(skillId - 4205) > 5 && skillId != 4220 && static_cast<unsigned>(skillId - 4222) > 0x10 &&
-      skillId != 4241 && skillId != 4242 && skillId != 4244 && skillId != 4247 && skillId != 4248 && skillId != 4352 && skillId != 4354) {
+float GetSkillFactor(int job) {
+  if ((job < JT_NOVICE_B || job > JT_THIEF_B) && job != JT_SUPERNOVICE_B && job != JT_SUPERNOVICE2_B &&
+      static_cast<unsigned>(job - JT_KNIGHT_B) > JT_CHICKEN2_B - JT_KNIGHT_B && static_cast<unsigned>(job - JT_RUNE_KNIGHT_B) > JT_MADOGEAR_B - JT_RUNE_KNIGHT_B &&
+      static_cast<unsigned>(job - JT_PORING_NOVICE_B) > JT_DOG_CHASER_B - JT_PORING_NOVICE_B && (job < JT_SHEEP_PRIEST_B || job > JT_PIG_BLACKSMITH_B) &&
+      job != JT_PORING_SNOVICE2_B && static_cast<unsigned>(job - JT_PIG_MECHANIC_B) > JT_LION_CRUSADER_B - JT_PIG_MECHANIC_B && job != JT_DO_SUMMONER_B &&
+      static_cast<unsigned>(job - JT_NINJA_B) > JT_STAR2_B - JT_NINJA_B && job != JT_STAR_EMPEROR_B && job != JT_SOUL_REAPER_B && job != JT_STAR2_EMPEROR_B &&
+      job != JT_HAETAE_STAR_EMPEROR_B && job != JT_HAETAE_SOUL_REAPER_B && job != JT_DRUID_B && job != JT_KARNOS_B) {
     return 1.0f;
   }
 
-  if (g_session.IsReducedSkill(skillId)) {
+  if (g_session.IsDoramJob(job)) {
     return 0.8f;
   }
 
-  if ((skillId >= 4023 && skillId <= 4029) || skillId == 4045 || skillId == 4191) {
+  if ((job >= JT_NOVICE_B && job <= JT_THIEF_B) || job == JT_SUPERNOVICE_B || job == JT_SUPERNOVICE2_B) {
     return 0.75f;
   }
 

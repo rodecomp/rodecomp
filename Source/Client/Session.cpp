@@ -1,4 +1,5 @@
 #include "Client/Session.h"
+#include "Contents/Jobs/JobId.h"
 #include "Network/TextEncoding.h"
 
 #include <cstring>
@@ -41,15 +42,15 @@ void CSession::ClearItemSelection() {
 
 // OFFSET: 0x00E3CFF0
 // FUNCTION: fn_24179
-bool CSession::IsReducedSkill(int skillId) const {
-  switch (skillId) {
-  case 4217:
-  case 4218:
-  case 4219:
-  case 4220:
-  case 4221:
-  case 4308:
-  case 4315:
+bool CSession::IsDoramJob(int job) const {
+  switch (job) {
+  case JT_TRIBE_DORAM:
+  case JT_DO_SUMMONER:
+  case JT_DO_CART_SUMMONER:
+  case JT_DO_SUMMONER_B:
+  case JT_DO_CART_SUMMONER_B:
+  case JT_SPIRIT_HANDLER:
+  case JT_SPIRIT_HANDLER_RIDING:
     return true;
   default:
     return false;

@@ -219,7 +219,7 @@ public:
   void GetPetHungryStateString(int hunger, char* buffer);
   int GetPetEmotionNumber(int job, int action, int hungerLevel);
   void ClearItemSelection();
-  bool IsReducedSkill(int skillId) const;
+  bool IsDoramJob(int job) const;
   char* ConvertTooltipText(const char* source, char* output) const;
   int MercSkillLevel(int skillId) const;
   int HomunSkillLevel(int skillId) const;
