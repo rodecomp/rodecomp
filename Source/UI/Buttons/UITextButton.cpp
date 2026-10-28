@@ -4,6 +4,7 @@
 #include "Render/Text/TextContext.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Buttons/UIItemTagButton.h"
+#include "UI/Buttons/UIItemMoveInfo.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Lists/UIImgMenu.h"
 #include "UI/Lists/UITabControl.h"
@@ -286,6 +287,11 @@ void UIINT64BarGraph::Slot28(int, int) {
   this->m_controls->services.Tooltip(text, screenX, screenY, -1, false, true);
 }
 
+// OFFSET: 0x00891A40
+// FUNCTION: fn_11454
+void UIItemMoveInfo::Slot28(int, int) {
+  this->m_windows->EnsureWindow(276)->SendMsg(nullptr, 147, this->m_moveIndex, 0, 0, 0);
+}
 
 // OFFSET: 0x00891A10
 
