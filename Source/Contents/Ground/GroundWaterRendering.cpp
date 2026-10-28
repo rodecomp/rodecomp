@@ -7,7 +7,6 @@
 #include "Utility/Math/ScalarConversion.h"
 
 #include <algorithm>
-#include <bit>
 #include <cstring>
 
 // OFFSET: 0x00AC2B80

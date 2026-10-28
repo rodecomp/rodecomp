@@ -8,8 +8,6 @@
 #include "Resource/World/TerrainResource.h"
 #include "Utility/Math/ScalarConversion.h"
 
-#include <bit>
-
 // OFFSET: 0x00AC0A90
 // FUNCTION: fn_17569
 bool GroundGeometry::CellRectangle(const C3dAttr& terrain, int column, int row, float* vertices) const {

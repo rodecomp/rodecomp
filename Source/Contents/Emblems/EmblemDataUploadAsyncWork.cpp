@@ -4,7 +4,6 @@
 #include "Network/TextEncoding.h"
 
 #include <cctype>
-#include <cstdio>
 #include <windows.h>
 #include <timeapi.h>
 

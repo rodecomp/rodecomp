@@ -2,7 +2,6 @@
 #define RAGNAROK_SOURCE_CONTENTS_GROUND_GROUNDWATERSTATE_H
 
 #include <cstddef>
-#include <cstdint>
 #include <vector>
 
 class CGndRes;
