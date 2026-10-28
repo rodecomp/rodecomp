@@ -34,6 +34,9 @@ struct ClientItemLists {
   /* 1770 */ unsigned char unknown_1770[0xA30];
   /* 21A0 */ ItemInfo equipped[10];
 
+  bool AddItem1710(const ItemInfo& item, unsigned char refresh);
+  void AddItem1718(const ItemInfo& item, int quantity, std::uint16_t unknown_006C);
+  void AddItem1718(const ItemInfo& item, int mode);
   bool AddItem1768(const ItemInfo& item, unsigned char alternate, unsigned char refresh);
   bool AddItem1740(const ItemInfo& item);
   bool AddItem1750(const ItemInfo& item, int type, unsigned char refresh);
@@ -56,6 +59,23 @@ static_assert(offsetof(ClientItemLists, inventory) == 0x1710);
 static_assert(offsetof(ClientItemLists, items_1768) == 0x1768);
 static_assert(offsetof(ClientItemLists, equipped) == 0x21A0);
 #endif
+
+// OFFSET: 0x00AA6440
+// FUNCTION: fn_17229
+void __fastcall RefreshItemWindows(UIWindowMgr* mgr) {
+  if (mgr->unknown_01D4) {
+    reinterpret_cast<UIWindow*>(mgr->unknown_01D4)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+  if (mgr->window_01E8) {
+    mgr->window_01E8->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+  if (UIWindow* window = mgr->LookupWindow(159)) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+  if (mgr->window_4F260) {
+    mgr->window_4F260->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00DD43A0
 // FUNCTION: fn_23232
@@ -80,6 +100,8 @@ EquipSlots EquipSlotDecoder::Decode(int mask) const {
   }
   return {slots[2], slots[1], slots[0]};
 }
+
+// OFFSET: 0x00DD7030
 
 // OFFSET: 0x00DD7210
 // FUNCTION: fn_23284
@@ -224,6 +246,8 @@ bool ClientItemLists::Equip(const ItemInfo& item) {
   return true;
 }
 
+// OFFSET: 0x00DD75C0
+
 // OFFSET: 0x00DD76C0
 // FUNCTION: fn_23292
 void ClientItemLists::AppendItem1718(const ItemInfo& item) {
@@ -290,6 +314,8 @@ void ClientItemLists::AddItem1730(const ItemInfo& item) {
     }
   }
 }
+
+// OFFSET: 0x00DD7970
 
 // OFFSET: 0x00DD7B30
 // FUNCTION: fn_23298
