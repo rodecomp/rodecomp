@@ -3,7 +3,9 @@
 #include "Render/Textures/Surface.h"
 #include "Render/DX7/RenderSystemDX7.h"
 #include "Render/DX9/RenderSystemDX9.h"
+#include "Render/Text/TextContext.h"
 
+#include <cstring>
 #include <utility>
 
 // OFFSET: 0x0056A500
@@ -13,6 +15,15 @@ std::shared_ptr<CSurface> AcquireBackBufferSurface(CRenderSystemBase* system) {
 }
 
 // OFFSET: 0x0055FAD0
+// FUNCTION: fn_02121
+int DrawBackBufferText(int x, int y, const char* text, COLORREF color) {
+  CDCSurface surface(AcquireBackBufferSurface(GetRenderSystemHolder()->system));
+  TextContext context(surface);
+  context.SetFont(0, 12, 0, 0);
+  SetTextColor(context.Dc(), color);
+  TextOutA(context.Dc(), x, y, text, static_cast<int>(std::strlen(text)));
+  return 0;
+}
 
 // OFFSET: 0x00569F10
 // FUNCTION: fn_02274

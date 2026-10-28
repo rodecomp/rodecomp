@@ -25,6 +25,7 @@ public:
   void Draw(int x, int y, const char* text, int bytes);
   static unsigned CodePage(unsigned charset);
   static unsigned Marker(const char* text, unsigned bytes);
+  HDC Dc() const { return this->m_dc; }
 
 private:
   /* 0000 */ HDC m_dc;
