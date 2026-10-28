@@ -97,6 +97,12 @@ public:
   /* 0248 */ bool surfacesLost;
 };
 
+struct DeviceOwnerDX7Handle {
+  /* 0000 */ DeviceOwnerDX7* owner;
+
+  std::uint16_t PackColor(int red, int green, int blue) const;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(DeviceOwnerDX7) == 588);
 static_assert(offsetof(DeviceOwnerDX7, caps) == 72);

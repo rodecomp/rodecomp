@@ -85,3 +85,18 @@ void RendererDX7Operations::DrawLightmappedPrimitive(LightmappedPrimitive* primi
     this->device->DrawPrimitive(type, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, primitive->vertices, primitive->vertexCount, 0);
   }
 }
+
+// OFFSET: 0x0055AFA0
+// FUNCTION: fn_02086
+std::uint16_t DeviceOwnerDX7Handle::PackColor(int red, int green, int blue) const {
+  const DeviceOwnerDX7* owner = this->owner;
+  if (!owner) {
+    return 0;
+  }
+
+  return static_cast<std::uint16_t>(
+    (static_cast<std::uint16_t>(blue >> owner->blue.expansion) << owner->blue.shift) +
+    (static_cast<std::uint16_t>(green >> owner->green.expansion) << owner->green.shift) +
+    (static_cast<std::uint16_t>(red >> owner->red.expansion) << owner->red.shift)
+  );
+}
