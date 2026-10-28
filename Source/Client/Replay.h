@@ -118,7 +118,7 @@ public:
   bool SetBaseFrame(std::uint32_t baseFrame);
   void UpdateDuration();
   bool WriteFinalSection();
-  bool SubB86660(void* packet, int a, int b);
+  bool RecordPacket(const std::vector<unsigned char>& packet, int event, std::uint32_t delay);
 };
 
 extern int g_replayAnimationScaling;
