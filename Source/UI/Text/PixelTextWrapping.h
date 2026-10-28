@@ -9,7 +9,7 @@ class FontCache;
 struct TextLocale;
 
 void WrapPixelText(
-  CDC& surface, FontCache& fonts, const TextLocale& locale, unsigned short codePage, const char* text, std::vector<std::string>& lines, int width
+  CDC& surface, unsigned short codePage, const char* text, std::vector<std::string>& lines, int width
 );
 
 #endif

@@ -113,7 +113,7 @@ std::string ItemLinkDisplay::Convert(const std::string& text) {
 
     if (this->Name(encoded, name)) {
       result += '<';
-      result += FitText(this->surface, this->fonts, this->locale, name, this->width / 2);
+      result += FitText(this->surface, name, this->width / 2);
       result += '>';
       position += static_cast<unsigned>(15 + encoded.size());
     }

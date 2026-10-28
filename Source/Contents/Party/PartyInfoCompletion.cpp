@@ -32,7 +32,7 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
     return;
   }
 
-  const auto notify = [&](int id) { context.messages.Message(LookupMessage(id, context.languagePrefix, context.service, context.language), 0xFF); };
+  const auto notify = [&](int id) { context.messages.Message(LookupMessage(id), 0xFF); };
   auto entry = root["data"].begin();
 
   if (entry == root["data"].end()) {

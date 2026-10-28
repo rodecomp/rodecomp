@@ -15,7 +15,7 @@ void ReceivePartyJoinResult(const void* packet, PartyJoinResultContext& context)
   context.notifications.Notify(3, nullptr, 0);
   std::uint32_t status;
   std::memcpy(&status, bytes + 54, sizeof(status));
-  const auto message = [&](int id) { return LookupMessage(id, context.stop.languagePrefix, context.stop.service, context.stop.language); };
+  const auto message = [&](int id) { return LookupMessage(id); };
   const auto notify = [&](int id) { context.notifications.Notify(1, message(id), 0xFF); };
   const auto format = [&](int id, unsigned offset, unsigned color) {
     char text[500] = {};

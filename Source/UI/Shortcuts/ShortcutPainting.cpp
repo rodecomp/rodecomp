@@ -24,11 +24,11 @@ namespace {
   }
 
   // OFFSET: 0x00A86200
-  void Count(UIWindow& window, FontCache& fonts, const TextLocale& locale, int right, int y, int value) {
+  void Count(UIWindow& window, int right, int y, int value) {
     char text[16];
     std::sprintf(text, "%d", value);
     const int bytes = static_cast<int>(std::strlen(text));
-    TextContext context(*window.geometry.surface, fonts, locale);
+    TextContext context(*window.geometry.surface);
     context.SetFont(0, 11, 0, 0);
     const int left = (right - context.Measure(text, bytes).cx);
     context.SetColor(0xFFFFFF);
@@ -104,7 +104,7 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
           level = skill.level;
         }
 
-        Count(window, this->fonts, this->locale, x + 27, (y + 17), level);
+        Count(window, x + 27, (y + 17), level);
       } else {
         ItemInfo item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
         if (item.unknown_0000[1] == 0) {
@@ -113,7 +113,7 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
 
         DrawItemIcon(window, this->resources, this->descriptions, x, y, item, static_cast<unsigned char>(item.unknown_0060));
         if (item.quantity != 0) {
-          Count(window, this->fonts, this->locale, x + 27, (y + 17), item.quantity);
+          Count(window, x + 27, (y + 17), item.quantity);
         }
 
         if (item.unknown_0088 > 0) {
@@ -142,7 +142,7 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
       const int x = 16 + 29 * column;
       DrawItemIcon(window, this->resources, this->descriptions, x, y, item, static_cast<unsigned char>(item.unknown_0060));
       if (item.quantity != 0) {
-        Count(window, this->fonts, this->locale, x + 27, (y + 17), item.quantity);
+        Count(window, x + 27, (y + 17), item.quantity);
       }
     }
   }

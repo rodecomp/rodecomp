@@ -14,7 +14,7 @@
 void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, std::string response, StopRecruitingContext& context) {
   --this->pending;
   const auto notify = [&](int id, unsigned color) {
-    context.messages.Message(LookupMessage(id, context.languagePrefix, context.service, context.language), color);
+    context.messages.Message(LookupMessage(id), color);
   };
 
   if (!diagnostic.success) {

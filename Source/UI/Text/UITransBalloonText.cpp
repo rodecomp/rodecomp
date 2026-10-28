@@ -106,10 +106,10 @@ void UITransBalloonText::Paint() {
 
     if (this->m_richText != 0) {
       DrawColoredText(
-        *this, this->m_textContext->fonts, this->m_textContext->locale, this->m_textContext->codePage, 6, y, line.c_str(), 0, color, family, height, true
+        *this, this->m_textContext->codePage, 6, y, line.c_str(), 0, color, family, height, true
       );
     } else {
-      TextContext context(*this->geometry.surface, this->m_textContext->fonts, this->m_textContext->locale);
+      TextContext context(*this->geometry.surface);
       context.SetFont(family, height, 0, 0);
       context.SetColor(this->m_outlineColor);
       context.Draw(7, (y + 1), line.c_str(), static_cast<int>(line.size()));
@@ -120,7 +120,7 @@ void UITransBalloonText::Paint() {
     int lineHeight = 0;
 
     if (!line.empty()) {
-      TextContext context(*this->geometry.surface, this->m_textContext->fonts, this->m_textContext->locale);
+      TextContext context(*this->geometry.surface);
       context.SetFont(0, this->m_fontHeight, 0, 0);
       lineHeight = context.Measure(line.c_str(), static_cast<int>(line.size())).cy;
     }

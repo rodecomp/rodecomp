@@ -2,6 +2,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Text/TextWrapping.h"
+#include "Utility/Text/TextTokens.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -13,7 +14,7 @@
 
 // OFFSET: 0x009B4220
 // FUNCTION: fn_13829
-void WrapPlainText(const char* text, std::vector<std::string>& lines, int width, unsigned short codePage, bool inlineCharset) {
+void WrapPlainText(const char* text, std::vector<std::string>& lines, int width, unsigned short codePage) {
   const char* begin = text;
   const char* chunk = text;
   const char* current = text;
@@ -21,7 +22,7 @@ void WrapPlainText(const char* text, std::vector<std::string>& lines, int width,
   const unsigned bytes = static_cast<unsigned>(std::strlen(text));
   const char* end = text + bytes;
   const char* limit = text + width;
-  const char* marker = text + TextContext::Marker(text, bytes, inlineCharset);
+  const char* marker = text + TextContext::Marker(text, bytes);
 
   while (current < end) {
     current = CharNextExA(codePage, current, 0);
@@ -47,7 +48,7 @@ void WrapPlainText(const char* text, std::vector<std::string>& lines, int width,
     lines.emplace_back(chunk, current);
   }
 
-  if (inlineCharset && *marker != '\0' && marker < end) {
+  if (g_inlineCharset && *marker != '\0' && marker < end) {
     for (std::size_t index = 1; index < lines.size(); ++index) {
       lines[index].insert(0, marker, 3);
     }
@@ -79,7 +80,7 @@ namespace {
 // OFFSET: 0x009B4730
 // FUNCTION: fn_13833
 void WrapRichText(
-  const char* text, std::vector<std::string>& lines, int width, bool carriageReturns, unsigned short codePage, bool inlineCharset, ItemDescriptions& items
+  const char* text, std::vector<std::string>& lines, int width, bool carriageReturns, unsigned short codePage, ItemDescriptions& items
 ) {
   const char* begin = text;
   const char* current = text;
@@ -87,7 +88,7 @@ void WrapRichText(
   const unsigned bytes = static_cast<unsigned>(std::strlen(text));
   const char* end = text + bytes;
   const char* limit = text + width;
-  const char* marker = text + TextContext::Marker(text, bytes, inlineCharset);
+  const char* marker = text + TextContext::Marker(text, bytes);
 
   while (current < end) {
     if (carriageReturns && *current == '\r') {
@@ -194,7 +195,7 @@ void WrapRichText(
     lines.emplace_back(begin, current);
   }
 
-  if (inlineCharset && *marker != '\0' && marker < end) {
+  if (g_inlineCharset && *marker != '\0' && marker < end) {
     for (std::size_t index = 1; index < lines.size(); ++index) {
       const unsigned position = Color(lines[index].data(), lines[index].size()) ? 7 : 0;
       lines[index].insert(position, marker, 3);

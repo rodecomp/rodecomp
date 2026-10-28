@@ -38,7 +38,7 @@ namespace {
       return {0, 0};
     }
 
-    TextContext context(*window.geometry.surface, owner.fonts, owner.locale);
+    TextContext context(*window.geometry.surface);
     context.SetFont(family, height, 0, 0);
     return context.Measure(text.c_str(), static_cast<int>(text.size()));
   }
@@ -76,9 +76,9 @@ void UIBalloonText::SetText(const char* text, int width) {
   this->m_lines.clear();
 
   if (this->m_richText != 0) {
-    WrapRichText(text, this->m_lines, width, false, this->m_textContext->codePage, this->m_textContext->locale.inlineCharset, this->m_textContext->items);
+    WrapRichText(text, this->m_lines, width, false, this->m_textContext->codePage, this->m_textContext->items);
   } else {
-    WrapPlainText(text, this->m_lines, width, this->m_textContext->codePage, this->m_textContext->locale.inlineCharset);
+    WrapPlainText(text, this->m_lines, width, this->m_textContext->codePage);
   }
 
   if (!this->m_lines.empty()) {

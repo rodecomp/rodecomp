@@ -21,7 +21,7 @@ bool UIEditCtrl::RemoveInvalidLink(std::list<UIWindow*>::iterator& entry) {
     return true;
   }
 
-  const std::string fitted = FitText(*this->geometry.surface, this->m_edit->buttons.fonts, this->m_edit->buttons.locale, name, this->geometry.width / 2);
+  const std::string fitted = FitText(*this->geometry.surface, name, this->geometry.width / 2);
   std::size_t found = remaining.find(fitted);
 
   if (found == std::string::npos) {
@@ -105,7 +105,7 @@ void UIEditCtrl::UpdateLinks() {
 
     auto* button = static_cast<UINaviLinkButton*>(*entry);
     const std::string name = FormatNavigationLink(button->link, false);
-    const std::string fitted = FitText(*this->geometry.surface, this->m_edit->buttons.fonts, this->m_edit->buttons.locale, name, this->geometry.width / 2);
+    const std::string fitted = FitText(*this->geometry.surface, name, this->geometry.width / 2);
     const std::string display = "<" + fitted + ">";
     const auto found = remaining.find(display);
 
@@ -144,7 +144,7 @@ void UIEditCtrl::UpdateLinks() {
 void UIEditCtrl::InsertLink(const char* value) {
   const std::string name = FormatNavigationLink(value, false);
 
-  FitText(*this->geometry.surface, this->m_edit->buttons.fonts, this->m_edit->buttons.locale, name, this->geometry.width / 2);
+  FitText(*this->geometry.surface, name, this->geometry.width / 2);
   const std::string display = "<" + name + ">";
   std::string before;
   bool removed = false;
@@ -158,7 +158,7 @@ void UIEditCtrl::InsertLink(const char* value) {
       removed = true;
       const auto* button = static_cast<const UINaviLinkButton*>(window);
       const std::string fitted = FitText(
-        *this->geometry.surface, this->m_edit->buttons.fonts, this->m_edit->buttons.locale, FormatNavigationLink(button->link, false), this->geometry.width / 2
+        *this->geometry.surface, FormatNavigationLink(button->link, false), this->geometry.width / 2
       );
       const std::string old = "<" + fitted + ">";
 

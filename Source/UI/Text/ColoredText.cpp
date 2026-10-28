@@ -61,7 +61,7 @@ namespace {
 // OFFSET: 0x00A84E30
 // FUNCTION: fn_17015
 void DrawColoredText(
-  UIWindow& window, FontCache& fonts, const TextLocale& locale, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
+  UIWindow& window, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
   int family, int height, bool shadow
 ) {
   if (bytes == 0) {
@@ -70,8 +70,8 @@ void DrawColoredText(
 
   const char* current = text;
   const char* end = text + bytes;
-  const char* marker = text + TextContext::Marker(text, bytes, locale.inlineCharset);
-  TextContext context(*window.geometry.surface, fonts, locale);
+  const char* marker = text + TextContext::Marker(text, bytes);
+  TextContext context(*window.geometry.surface);
   context.SetFont(family, height, 0, 0);
 
   if (window.HasTextBackground()) {
@@ -114,7 +114,7 @@ void DrawColoredText(
 // OFFSET: 0x00A84B80
 // FUNCTION: fn_17014
 void DrawStyledColoredText(
-  UIWindow& window, FontCache& fonts, const TextLocale& locale, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
+  UIWindow& window, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
   int family, int height, unsigned char bold, unsigned char italic, bool shadow
 ) {
   if (bytes == 0) {
@@ -123,8 +123,8 @@ void DrawStyledColoredText(
 
   const char* current = text;
   const char* end = text + bytes;
-  const char* marker = text + TextContext::Marker(text, bytes, locale.inlineCharset);
-  TextContext context(*window.geometry.surface, fonts, locale);
+  const char* marker = text + TextContext::Marker(text, bytes);
+  TextContext context(*window.geometry.surface);
   context.SetFont(family, height, bold, italic);
 
   if (window.HasTextBackground()) {
@@ -167,14 +167,14 @@ void DrawStyledColoredText(
 // OFFSET: 0x00A85720
 // FUNCTION: fn_17016
 void DrawOutlinedText(
-  UIWindow& window, FontCache& fonts, const TextLocale& locale, int x, int y, const char* text, unsigned bytes, std::uint32_t color, std::uint32_t outline,
+  UIWindow& window, int x, int y, const char* text, unsigned bytes, std::uint32_t color, std::uint32_t outline,
   int family, int height, unsigned char bold, unsigned char italic
 ) {
   if (bytes == 0) {
     bytes = static_cast<unsigned>(std::strlen(text));
   }
 
-  TextContext context(*window.geometry.surface, fonts, locale);
+  TextContext context(*window.geometry.surface);
   context.SetFont(family, height, bold, italic);
 
   if (window.HasTextBackground()) {
@@ -197,7 +197,7 @@ void DrawOutlinedText(
 // OFFSET: 0x00A848B0
 // FUNCTION: fn_17013
 void DrawOutlinedColoredText(
-  UIWindow& window, FontCache& fonts, const TextLocale& locale, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
+  UIWindow& window, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
   std::uint32_t outline, int family, int height, unsigned char bold
 ) {
   if (bytes == 0) {
@@ -206,8 +206,8 @@ void DrawOutlinedColoredText(
 
   const char* current = text;
   const char* end = text + bytes;
-  const char* marker = text + TextContext::Marker(text, bytes, locale.inlineCharset);
-  TextContext context(*window.geometry.surface, fonts, locale);
+  const char* marker = text + TextContext::Marker(text, bytes);
+  TextContext context(*window.geometry.surface);
   context.SetFont(family, height, bold, 0);
 
   while (current < end) {

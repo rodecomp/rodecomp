@@ -7,8 +7,8 @@
 
 // OFFSET: 0x00A837D0
 // FUNCTION: fn_17007
-std::string FitText(CDC& surface, FontCache& fonts, const TextLocale& locale, std::string text, int width) {
-  TextContext context(surface, fonts, locale);
+std::string FitText(CDC& surface, std::string text, int width) {
+  TextContext context(surface);
   context.SetFont(0, 12, 0, 0);
   int extent = text.empty() ? 0 : context.Measure(text.c_str(), static_cast<int>(text.size())).cx;
   context.Measure("...", 3);

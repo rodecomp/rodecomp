@@ -83,7 +83,7 @@ void UIRequestJoinPartyWnd::Slot15(int, int) {
   this->block->SetId(213);
   this->AddChild(this->block);
   std::vector<std::string> unused;
-  WrapPlainText(controls.services.MessageText(3518), unused, 30, text.list.codePage, controls.locale.inlineCharset);
+  WrapPlainText(controls.services.MessageText(3518), unused, 30, text.list.codePage);
 
   this->blockText = new UITextViewer(*this->m_context, text);
   this->blockText->Configure(31, 81, 182, 47, 0);

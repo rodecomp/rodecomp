@@ -200,7 +200,7 @@ void UIListBox::Paint() {
       int height = 0;
 
       if (!line.empty()) {
-        TextContext context(*this->geometry.surface, owner.fonts, owner.locale);
+        TextContext context(*this->geometry.surface);
         context.SetFont(0, 12, 0, 0);
         height = context.Measure(line.c_str(), static_cast<int>(std::strlen(line.c_str()))).cy;
       }
@@ -208,7 +208,7 @@ void UIListBox::Paint() {
       y = static_cast<int>(static_cast<float>((this->lineHeight - height)) * 0.5f + static_cast<float>(y));
     }
 
-    DrawColoredText(*this, owner.fonts, owner.locale, owner.codePage, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
+    DrawColoredText(*this, owner.codePage, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
   }
 }
 

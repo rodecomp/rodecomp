@@ -89,7 +89,7 @@ struct EditPainting {
 };
 // INLINED
 void EditPainting::Draw() {
-  TextContext context(this->surface, this->fonts, this->locale);
+  TextContext context(this->surface);
   context.SetFont(0, 12, 0, 0);
   const auto measure = [&](const char* text, int bytes) { return context.Measure(text, bytes ? bytes : static_cast<int>(std::strlen(text))).cx; };
   int x = 3;

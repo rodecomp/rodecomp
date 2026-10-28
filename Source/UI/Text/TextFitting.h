@@ -7,6 +7,6 @@ class CDC;
 class FontCache;
 struct TextLocale;
 
-std::string FitText(CDC& surface, FontCache& fonts, const TextLocale& locale, std::string text, int width);
+std::string FitText(CDC& surface, std::string text, int width);
 
 #endif

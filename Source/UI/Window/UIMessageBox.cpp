@@ -48,7 +48,7 @@ namespace {
     if (!bytes) {
       bytes = static_cast<int>(std::strlen(text));
     }
-    TextContext context(*window.geometry.surface, fonts, locale);
+    TextContext context(*window.geometry.surface);
     context.SetFont(family, height, bold, 0);
     const int width = context.Measure(text, static_cast<int>(std::strlen(text))).cx;
     context.SetColor(color);

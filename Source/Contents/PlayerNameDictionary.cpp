@@ -33,7 +33,7 @@ std::string CPlayerNameDictionary::Lookup(std::uint32_t id) {
     this->m_pending.push_back(id);
   }
 
-  return LookupMessage(581, this->m_context->languagePrefix, this->m_context->service, this->m_context->language);
+  return LookupMessage(581);
 }
 
 // OFFSET: 0x0060ABB0

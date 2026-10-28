@@ -42,7 +42,7 @@ namespace {
 
 // INLINED
 const char* ItemNaming::Message(int id) const {
-  return LookupMessage(id, this->languagePrefix, this->service, this->language);
+  return LookupMessage(id);
 }
 
 // OFFSET: 0x006D77E0

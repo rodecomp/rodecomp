@@ -6,10 +6,10 @@
 
 struct ItemDescriptions;
 
-void WrapPlainText(const char* text, std::vector<std::string>& lines, int width, unsigned short codePage, bool inlineCharset);
+void WrapPlainText(const char* text, std::vector<std::string>& lines, int width, unsigned short codePage);
 
 void WrapRichText(
-  const char* text, std::vector<std::string>& lines, int width, bool carriageReturns, unsigned short codePage, bool inlineCharset, ItemDescriptions& items
+  const char* text, std::vector<std::string>& lines, int width, bool carriageReturns, unsigned short codePage, ItemDescriptions& items
 );
 
 #endif

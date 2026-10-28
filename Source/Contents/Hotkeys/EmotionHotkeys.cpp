@@ -73,7 +73,7 @@ bool EmotionHotkeys::LoadDefaults(std::uint32_t accountId, bool languagePrefix, 
   this->current.clear();
 
   for (int id : {544, 545, 546, 547, 549, 550, 551, 552, 553, 554}) {
-    this->current.emplace_back(LookupMessage(id, languagePrefix, serviceType, language));
+    this->current.emplace_back(LookupMessage(id));
   }
 
   CLuaInstance script;

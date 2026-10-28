@@ -1,8 +1,9 @@
+#include "Client/Input/InputCharset.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Text/Base64.h"
-#include "Utility/Text/LanguageCharset.h"
+#include "Utility/Text/TextTokens.h"
 
 #include <cstdio>
 #include <cstring>
@@ -104,7 +105,7 @@ void InsertMessage(int id, const char* text) {
 
 // OFFSET: 0x00B00F00
 // FUNCTION: fn_18376
-const char* LookupMessage(int id, bool languagePrefix, int serviceType, WORD language) {
+const char* LookupMessage(int id) {
   // STATIC: 0x016D57A0
   static char missing[20];
   if (id >= 4698) {
@@ -118,7 +119,7 @@ const char* LookupMessage(int id, bool languagePrefix, int serviceType, WORD lan
   }
 
   const std::string& text = found->second;
-  if (!languagePrefix || text[0] == '/' || text == "NO MSG") {
+  if (!g_inlineCharset || text[0] == '/' || text == "NO MSG") {
     return text.c_str();
   }
 
@@ -126,13 +127,11 @@ const char* LookupMessage(int id, bool languagePrefix, int serviceType, WORD lan
   // GLOBAL: gl_24383
   static std::vector<std::string> cached(4698);
   std::string& result = cached[id];
-  if (result.empty() || serviceType == 19) {
+  if (result.empty() || g_serviceType == 19) {
     // STATIC: 0x016D57C8
     // GLOBAL: gl_24384
     static char buffer[260];
-    char prefix[8];
-    std::sprintf(prefix, "|%02x", LanguageCharset(language));
-    _snprintf_s(buffer, sizeof(buffer), _TRUNCATE, "%s%s", prefix, text.c_str());
+    _snprintf_s(buffer, sizeof(buffer), _TRUNCATE, "%s%s", g_serverLanguage->Prefix(true), text.c_str());
     result = buffer;
   }
 

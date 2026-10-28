@@ -46,7 +46,7 @@ void UITextButton::Paint() {
     this->parent->Invalidate();
   }
 
-  TextContext context(*this->geometry.surface, this->m_buttonContext->fonts, this->m_buttonContext->locale);
+  TextContext context(*this->geometry.surface);
   context.SetFont(this->m_family, this->m_height, this->m_outline != 0, 0);
   const int bytes = static_cast<int>(std::strlen(this->m_text.c_str()));
 

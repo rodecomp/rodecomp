@@ -179,7 +179,7 @@ void UIListBoxEx::Paint() {
     auto& line = this->lines[index];
     auto color = line.color;
     DrawColoredText(
-      *this, owner.fonts, owner.locale, owner.codePage, (3 - this->horizontalOffset), y, line.text.c_str(), static_cast<unsigned>(line.text.size()), color, 0,
+      *this, owner.codePage, (3 - this->horizontalOffset), y, line.text.c_str(), static_cast<unsigned>(line.text.size()), color, 0,
       12, false
     );
   }

@@ -57,7 +57,7 @@ void UIBasicButton::Paint() {
     int height;
 
     {
-      TextContext context(*this->geometry.surface, this->m_buttonContext->fonts, this->m_buttonContext->locale);
+      TextContext context(*this->geometry.surface);
       context.SetFont(0, 12, 0, 0);
       height = context.Measure(this->text.c_str(), static_cast<int>(std::strlen(this->text.c_str()))).cy;
     }

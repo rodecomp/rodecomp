@@ -28,12 +28,12 @@ void CAdventurerAgencyMgr::CompleteRegistration(AsyncDiagnostic diagnostic, std:
   const int type = root["Type"].asInt();
 
   if (type == 2 || type == 3) {
-    context.messages.Message(LookupMessage(3417, context.languagePrefix, context.service, context.language), 0xFF);
+    context.messages.Message(LookupMessage(3417), 0xFF);
     return;
   }
 
   this->registered = true;
-  context.messages.Message(LookupMessage(3418, context.languagePrefix, context.service, context.language), 0xFFFF64);
+  context.messages.Message(LookupMessage(3418), 0xFFFF64);
   UIWindow* board = context.windows.LookupWindow(324);
 
   if (board) {

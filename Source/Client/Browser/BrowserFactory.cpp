@@ -13,7 +13,7 @@ namespace {
 CWebBrowser* BrowserFactory::Create(int width, int height) {
   if (this->registry.browsers.size() >= maximumBrowserCount) {
     this->notifications.Refresh();
-    const char* message = LookupMessage(MessageId::MSI_FAILED_ADD_TAB, this->languagePrefix, this->serviceType, this->language);
+    const char* message = LookupMessage(MessageId::MSI_FAILED_ADD_TAB);
     this->notifications.Text(message, RGB(255, 0, 0), nullptr, 0, false);
 
     return nullptr;

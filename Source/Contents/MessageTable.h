@@ -11,7 +11,7 @@ enum MessageId : int {
 };
 
 extern std::unordered_map<int, std::string> g_messageStrings;
-const char* LookupMessage(int id, bool languagePrefix, int serviceType, WORD language);
+const char* LookupMessage(int id);
 void InsertMessage(int id, const char* text);
 int FindMessageId(const char* name);
 char* DecodeMessageRot(char* str);

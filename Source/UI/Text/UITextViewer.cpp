@@ -149,11 +149,11 @@ void UITextViewer::Paint() {
     const auto bytes = static_cast<unsigned>(line.size());
 
     if ((this->unknown_00BC & 255) != 0) {
-      DrawOutlinedText(*this, owner.fonts, owner.locale, 3, y, line.c_str(), bytes, 0, 0xFFFFFF, 0, 12, 0, 0);
+      DrawOutlinedText(*this, 3, y, line.c_str(), bytes, 0, 0xFFFFFF, 0, 12, 0, 0);
     } else if (this->outline != 0) {
-      DrawOutlinedColoredText(*this, owner.fonts, owner.locale, owner.codePage, 3, y, line.c_str(), bytes, color, this->backgroundColor, 0, 12, this->bold);
+      DrawOutlinedColoredText(*this, owner.codePage, 3, y, line.c_str(), bytes, color, this->backgroundColor, 0, 12, this->bold);
     } else {
-      DrawColoredText(*this, owner.fonts, owner.locale, owner.codePage, 3, y, line.c_str(), bytes, color, 0, 12, false);
+      DrawColoredText(*this, owner.codePage, 3, y, line.c_str(), bytes, color, 0, 12, false);
     }
   }
 }

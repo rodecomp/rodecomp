@@ -36,7 +36,7 @@ void EditViewport::Synchronize() {
     this->firstVisible = 0;
   }
 
-  TextContext context(this->surface, this->fonts, this->locale);
+  TextContext context(this->surface);
   context.SetFont(0, 12, 0, 0);
   const auto measure = [&](const char* text, unsigned bytes) { return context.Measure(text, static_cast<int>(bytes ? bytes : std::strlen(text))).cx; };
   const int available = this->width - 7;

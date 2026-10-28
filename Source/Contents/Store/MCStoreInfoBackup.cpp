@@ -168,7 +168,7 @@ void CMCStoreInfoBackup::CompleteSave(AsyncDiagnostic diagnostic, std::string re
   context.ui.Notify(3, nullptr, 0);
 
   if (this->type == 0 || this->type == 1) {
-    const char* message = LookupMessage(this->type == 0 ? 3685 : 3686, context.languagePrefix, context.serviceType, context.language);
+    const char* message = LookupMessage(this->type == 0 ? 3685 : 3686);
     context.ui.Notify(1, message, 0xFFFF);
   }
 }

@@ -58,7 +58,7 @@ void UIApplyForPartyWnd::Slot15(int, int) {
   }
 
   std::vector<std::string> lines;
-  WrapPlainText(controls.services.MessageText(3370), lines, 40, this->m_application->codePage, controls.locale.inlineCharset);
+  WrapPlainText(controls.services.MessageText(3370), lines, 40, this->m_application->codePage);
   int y = 136;
 
   for (const auto& line : lines) {
@@ -134,7 +134,7 @@ void UIApplyForPartyWnd::Paint() {
   this->DrawBitmap(3, 3, base ? &base->image : nullptr, true);
   const auto text = [&](int x, int y, const char* value) { this->DrawTextAt(controls.fonts, controls.locale, x, y, value, 0, 0, 12, 0, 0, 0); };
   text(10, 25, controls.services.MessageText(3415));
-  const std::string fitted = FitText(*this->geometry.surface, controls.fonts, controls.locale, this->info.characterName, 119);
+  const std::string fitted = FitText(*this->geometry.surface, this->info.characterName, 119);
   text(60, 25, fitted.c_str());
   text(10, 49, controls.services.MessageText(408));
   char levels[10] = {};

@@ -85,7 +85,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   };
   label(controls.services.MessageText(3415), 10, 23, 40);
   this->character = label(owner.characterName.c_str(), 60, 23, 119);
-  this->character->text = FitText(*this->character->geometry.surface, controls.fonts, controls.locale, owner.characterName, 119);
+  this->character->text = FitText(*this->character->geometry.surface, owner.characterName, 119);
   this->character->tooltipEnabled = this->character->text != owner.characterName;
   label(controls.services.MessageText(408), 10, 49, 40);
   const int level = owner.playerLevel;
@@ -149,7 +149,7 @@ void UIRegisterPartyWnd::Slot15(int, int) {
   this->m_message0 = registered ? 564 : 565;
   this->AddChild(submit);
   std::vector<std::string> lines;
-  WrapPlainText(controls.services.MessageText(3370), lines, 40, owner.codePage, controls.locale.inlineCharset);
+  WrapPlainText(controls.services.MessageText(3370), lines, 40, owner.codePage);
   int y = 136;
 
   for (const auto& line : lines) {

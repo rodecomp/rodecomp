@@ -705,7 +705,7 @@ int UIWindow::TextWidth(
     }
   }
 
-  TextContext context(*this->geometry.surface, fonts, locale);
+  TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, italic);
   return context.Measure(text, bytes).cx;
 }
@@ -720,7 +720,7 @@ void UIWindow::DrawTextAt(
     bytes = static_cast<int>(std::strlen(text));
   }
 
-  TextContext context(*this->geometry.surface, fonts, locale);
+  TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, italic);
   context.SetColor(color);
   context.Draw(x, y, text, bytes);
@@ -841,7 +841,7 @@ void UIWindow::DrawAmount(FontCache& fonts, const TextLocale& locale, int amount
 
   const char* characters = text.c_str();
   const int bytes = static_cast<int>(std::strlen(characters));
-  TextContext context(*this->geometry.surface, fonts, locale);
+  TextContext context(*this->geometry.surface);
   context.SetFont(0, 12, 0, 0);
   context.SetColor(color);
   if (outlined) {
@@ -869,7 +869,7 @@ int UIWindow::TextHeight(
     }
   }
 
-  TextContext context(*this->geometry.surface, fonts, locale);
+  TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, italic);
   return context.Measure(text, bytes).cy;
 }
@@ -890,8 +890,8 @@ int UIWindow::VerticalTextHeight(FontCache& fonts, const TextLocale& locale, con
 
   const char* end = text + bytes;
   int total = 0;
-  const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text), locale.inlineCharset);
-  TextContext context(*this->geometry.surface, fonts, locale);
+  const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
+  TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, 0);
   if (marker && *marker) {
     text = marker + 3;
@@ -923,7 +923,7 @@ SIZE UIWindow::TextSize(
     }
   }
 
-  TextContext context(*this->geometry.surface, fonts, locale);
+  TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, italic);
   size = context.Measure(text, bytes);
   return size;
@@ -946,10 +946,10 @@ SIZE UIWindow::VerticalTextSize(
     }
   }
 
-  TextContext context(*this->geometry.surface, fonts, locale);
+  TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, italic);
   const char* end = text + bytes;
-  const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text), locale.inlineCharset);
+  const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
   if (marker && *marker) {
     text = marker + 3;
   }

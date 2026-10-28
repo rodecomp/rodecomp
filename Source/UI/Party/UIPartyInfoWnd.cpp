@@ -95,7 +95,7 @@ void UIPartyInfoWnd::Paint() {
     this->DrawBitmap(109 + index * 18, 3, resource ? &resource->image : nullptr, false);
   }
 
-  const std::string fitted = FitText(*this->geometry.surface, controls.fonts, controls.locale, this->name, 119);
+  const std::string fitted = FitText(*this->geometry.surface, this->name, 119);
   text(192, fitted.c_str(), static_cast<int>(fitted.size()));
   text(315, this->memo.c_str(), static_cast<int>(this->memo.size()));
 

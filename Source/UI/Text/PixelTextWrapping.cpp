@@ -26,7 +26,7 @@ namespace {
 // OFFSET: 0x00A82310
 // FUNCTION: fn_16993
 void WrapPixelText(
-  CDC& surface, FontCache& fonts, const TextLocale& locale, unsigned short codePage, const char* text, std::vector<std::string>& lines, int width
+  CDC& surface, unsigned short codePage, const char* text, std::vector<std::string>& lines, int width
 ) {
   if (!text || *text == '\0') {
     return;
@@ -41,7 +41,7 @@ void WrapPixelText(
       return 0;
     }
 
-    TextContext context(surface, fonts, locale);
+    TextContext context(surface);
     context.SetFont(0, 12, 0, 0);
     return static_cast<int>(context.Measure(part, bytes).cx);
   };

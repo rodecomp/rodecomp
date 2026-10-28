@@ -44,7 +44,7 @@ void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string resp
   case 2:
   case 3:
   case 4: {
-    const char* message = LookupMessage(3586, context.languagePrefix, context.serviceType, context.language);
+    const char* message = LookupMessage(3586);
     context.dialogs.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
     break;
   }
