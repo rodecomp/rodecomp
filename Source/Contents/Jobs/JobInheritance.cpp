@@ -1,8 +1,14 @@
+#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/CMode.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Skills/SkillInfo.h"
 #include "Client/Session.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
 #include "Script/LuaScript.h"
+
+#include <string>
 
 namespace {
   // OFFSET: 0x00DFBC00
@@ -125,3 +131,61 @@ int __stdcall GetRealWeaponId(int weapon) {
   }
   return weapon;
 }
+
+// OFFSET: 0x00DFB4B0
+
+// OFFSET: 0x00DFBE10
+// FUNCTION: fn_23590
+bool __stdcall IsVisibleJob(int job) {
+  return job != JT_WARPNPC && job != JT_EFFECTLAUNCHER && job != JT_HIDDEN_NPC;
+}
+
+// OFFSET: 0x00E19230
+
+// OFFSET: 0x00E19530
+// FUNCTION: fn_23841
+int __stdcall GetWeaponViewValue(int weapon) {
+  const int value = FindItemDescription(weapon).unknown_0040;
+
+  if (weapon > 2100 && weapon < 2200 || static_cast<unsigned>(weapon - 28901) <= 0x61 || static_cast<unsigned>(weapon - 460000) <= 0x270F) {
+    return -1;
+  }
+
+  return value;
+}
+
+// OFFSET: 0x00E248F0
+
+// OFFSET: 0x00E25970
+// FUNCTION: fn_23906
+bool ResetHotkeySlots() {
+  g_session.m_hotkeyScript->Call("ResetTheHotKey", "dddd", 1, 132, 192, 18);
+  return g_session.m_hotkeyScript->Call("ResetTheHotKey", "dddd", 1, 135, 36, 18);
+}
+
+// OFFSET: 0x00E25E60
+
+// OFFSET: 0x00E25EE0
+// FUNCTION: fn_23910
+int CSession::SetPairValue(int value, int slot) {
+  if (slot == 0) {
+    this->m_pairValues[0] = value;
+    return value;
+  }
+
+  if (slot == 1) {
+    this->m_pairValues[1] = value;
+    return value;
+  }
+
+  if (slot == 2) {
+    this->m_pairValues[2] = value;
+    return value;
+  }
+
+  return slot;
+}
+
+// OFFSET: 0x00E25F20
+
+// OFFSET: 0x00E26030

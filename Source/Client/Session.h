@@ -93,7 +93,9 @@ public:
   /* 5558 */ int unknown_5558;
   /* 555C */ unsigned char unknown_555C[0x47C];
   /* 59D8 */ LuaScript* m_hotkeyScript;
-  /* 59DC */ unsigned char unknown_59DC[0x28C];
+  /* 59DC */ unsigned char unknown_59DC[0x218];
+  /* 5BF4 */ int m_pairValues[3];
+  /* 5C00 */ unsigned char unknown_5C00[0x68];
   /* 5C68 */ ItemInfo unknown_5C68[5];
   /* 6140 */ std::uint16_t unknown_6140;
   /* 6144 */ std::map<int, SessionRecord6144> unknown_6144;
@@ -124,6 +126,14 @@ public:
   void ClearUnknown1740(int id);
   void ClearUnknown1738(int id);
   std::uint32_t SyncServerTime(std::uint32_t serverTime);
+  std::pair<int, int>* InsertPair(int key, int value);
+  int SetPairValue(int value, int slot);
+  int SetHotkeyEntry(char enabled, int id, int value, int slot);
+  int SetFlag(char value);
+  // INLINED
+  NormalItemSlot& SkillHotkey(int index) {
+    return reinterpret_cast<NormalItemSlot*>(reinterpret_cast<unsigned char*>(this) + offsetof(CSession, unknown_06EB))[index];
+  }
   int GetPetFood(int job);
   void GetPetIllustName(int job, int, char* buffer);
   int GetPetJobByEggItem(int eggItemId);
@@ -178,6 +188,7 @@ static_assert(offsetof(SessionRecord6144, unknown_0030) == 0x30);
 static_assert(offsetof(CSession, m_additionalSkills) == 0x4);
 static_assert(offsetof(CSession, m_level) == 0x1650);
 static_assert(offsetof(CSession, m_hotkeyPage) == 0xBC);
+static_assert(offsetof(CSession, m_pairValues) == 0x5BF4);
 static_assert(offsetof(CSession, m_hotkeyDescriptions) == 0xC0);
 static_assert(offsetof(CSession, m_serverTimeOffset) == 0x794);
 static_assert(offsetof(CSession, m_serverTimeAdjustCount) == 0x798);
