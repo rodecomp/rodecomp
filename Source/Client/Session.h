@@ -19,6 +19,7 @@
 class CActRes;
 class LuaScript;
 struct ActionFrame;
+struct WindowDialogs;
 
 struct SessionRecord6144 {
   /* 0000 */ std::uint16_t unknown_0000 = 0;
@@ -32,6 +33,16 @@ struct RobeAlpha {
   /* 0000 */ int from;
   /* 0004 */ int to;
   /* 0008 */ int period;
+};
+
+struct ProhibitionLogEntry {
+  /* 0000 */ std::uint32_t aid;
+  /* 0004 */ std::uint32_t accountId;
+  /* 0008 */ std::uint32_t minutes;
+  /* 000C */ std::uint32_t date;
+  /* 0010 */ std::uint32_t time;
+  /* 0014 */ char name[32];
+  /* 0034 */ char ownerName[32];
 };
 
 struct SessionShop {
@@ -59,7 +70,9 @@ public:
   /* 06F9 */ unsigned char unknown_06F9[0x23];
   /* 071C */ std::vector<int> m_homunSkillLevels;
   /* 0728 */ std::vector<int> m_mercSkillLevels;
-  /* 0734 */ unsigned char unknown_0734[0x44];
+  /* 0734 */ unsigned char unknown_0734[0x20];
+  /* 0754 */ std::vector<ProhibitionLogEntry> m_prohibitionLog;
+  /* 0760 */ unsigned char unknown_0760[0x18];
   /* 0778 */ std::vector<std::pair<int, int>> unknown_0778;
   /* 0784 */ std::map<std::int64_t, std::int64_t> unknown_0784;
   /* 078C */ std::map<std::int64_t, std::int64_t> unknown_078C;
@@ -239,6 +252,8 @@ public:
   int FindUnknown0778(int key) const;
   CSkillInfo AdditionalSkillAt(int index) const;
   CSkillInfo HomunSkillAt(int index) const;
+  void DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes, WindowDialogs& dialogs);
+  const char* DecodePlayerName() const;
   void NotifyHomunSkillWindows();
   void NotifyMercSkillWindows();
   int GetPetActionNumber(int hungerLevel, int friendlyLevel, int action);
@@ -283,6 +298,8 @@ extern CSession g_session;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(SessionRecord6144) == 0x38);
+static_assert(sizeof(ProhibitionLogEntry) == 0x54);
+static_assert(offsetof(CSession, m_prohibitionLog) == 0x754);
 static_assert(offsetof(SessionRecord6144, unknown_002C) == 0x2C);
 static_assert(offsetof(SessionRecord6144, unknown_0030) == 0x30);
 static_assert(offsetof(CSession, m_additionalSkills) == 0x4);

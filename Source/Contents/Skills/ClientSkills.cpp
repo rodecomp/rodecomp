@@ -2,13 +2,18 @@
 #include "Client/Session.h"
 #include "Contents/ClientState.h"
 #include "Contents/Jobs/JobId.h"
+#include "Contents/Jobs/JobInheritance.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
 
 #include <algorithm>
 #include <cstring>
+
+// GLOBAL: gl_24650
+char g_decodedPlayerName[64];
 
 namespace {
   // INLINED
@@ -429,6 +434,29 @@ void CSession::EraseUnknownKey(std::int64_t key) {
   }
 }
 
+// OFFSET: 0x00E085A0
+// FUNCTION: fn_23763
+void CSession::DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes, WindowDialogs& dialogs) {
+  const char* message;
+  auto found = this->m_prohibitionLog.end();
+  for (auto entry = this->m_prohibitionLog.begin(); entry != this->m_prohibitionLog.end(); ++entry) {
+    if (entry->aid == aid) {
+      found = entry;
+    }
+  }
+
+  if (found == this->m_prohibitionLog.end()) {
+    message = "채팅 로그 삭제 실패 : 채팅 금지를 준 기록이 없습니다.";
+  } else if (found->minutes > minutes) {
+    message = "채팅 로그 삭제 안함 : 마이너스 된 시간이 기존의 채팅 금지 시간보다 짧습니다.";
+  } else {
+    this->m_prohibitionLog.erase(found);
+    message = "채팅 로그 삭제 성공";
+  }
+
+  dialogs.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
+}
+
 // OFFSET: 0x00E08690
 // FUNCTION: fn_23764
 std::int64_t CSession::FindUnknown0784(std::int64_t key) const {
@@ -472,6 +500,17 @@ int CSession::GetBeginEffectId(int skillId) const {
   }
 
   return effectId;
+}
+
+// OFFSET: 0x00E08C70
+// FUNCTION: fn_23771
+const char* CSession::DecodePlayerName() const {
+  std::memcpy(g_decodedPlayerName, this->m_playerNameKey, sizeof(g_decodedPlayerName));
+  for (unsigned int index = 0; index < sizeof(g_decodedPlayerName); ++index) {
+    g_decodedPlayerName[index] ^= g_playerNameKey[index];
+  }
+
+  return g_decodedPlayerName;
 }
 
 // OFFSET: 0x00E08EE0
