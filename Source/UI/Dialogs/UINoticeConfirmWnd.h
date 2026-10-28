@@ -3,14 +3,9 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct TextureNames;
-
 class UINoticeConfirmWnd : public UIFrameWnd {
 public:
   void Paint() override;
-
-protected:
-  TextureNames* m_textureNames;
 };
 
 #endif

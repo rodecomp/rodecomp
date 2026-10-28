@@ -6,8 +6,6 @@
 
 #include <cstdint>
 
-struct TextureNames;
-
 class CUIFrameWnd : public UIFrameWnd {
 public:
   void Paint() override;
@@ -23,7 +21,6 @@ protected:
   /* 00C8 */ SkinPaletteCell m_borderCell;
   /* 00D0 */ int m_buttonBarStyle;
   /* 00D4 */ bool m_resolveSkin;
-  TextureNames* m_textureNames;
 };
 
 #endif

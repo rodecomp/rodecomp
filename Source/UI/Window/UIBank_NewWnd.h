@@ -5,7 +5,6 @@
 
 class UIEditCtrl;
 struct UIButtonContext;
-struct TextureNames;
 
 class UIBank_NewWnd : public UIFrameWnd {
 public:
@@ -18,7 +17,6 @@ protected:
   /* 00B4 */ UIEditCtrl* m_amountEdit;
   /* 00B8 */ std::string m_status;
   UIButtonContext* m_controls;
-  TextureNames* m_textureNames;
 };
 
 #endif

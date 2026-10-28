@@ -10,7 +10,6 @@ struct TextInputBuffer;
 struct InputCharset;
 struct UIButtonContext;
 struct BitmapImage;
-struct TextureNames;
 class WindowManagerWindows;
 class NavigationDestination;
 class UINaviLinkButton;
@@ -32,7 +31,6 @@ struct UIEditContext {
   UIWindow* const& permittedLinkInput;
   const int& screenWidth;
   const int& screenHeight;
-  TextureNames& textureNames;
 };
 
 class UIEditCtrl : public UIWindow {

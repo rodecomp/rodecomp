@@ -406,6 +406,7 @@
   "Source/Contents/Skills/SkillLevelRegistry.cpp": 4,
   "Source/Contents/Skills/SkillTreeScript.cpp": 4,
   "Source/Contents/SkinInfo.cpp": 3,
+  "Source/Contents/SkinMgr.cpp": 4,
   "Source/Contents/Sound/SoundConfiguration.cpp": 4,
   "Source/Contents/Sound/SoundMaker.cpp": 4,
   "Source/Contents/Sound/SoundMgr.cpp": 4,

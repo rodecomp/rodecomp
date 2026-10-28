@@ -153,7 +153,7 @@ void EditPainting::Draw() {
     if (this->mask != 0) {
       display.assign(this->text.size(), static_cast<char>(this->mask));
     } else {
-      const char* prefix = this->alternate ? this->input.candidate.c_str() : this->charset.Prefix(false);
+      const char* prefix = this->alternate ? this->input.candidate.c_str() : g_serverLanguage->Prefix(false);
       display = prefix;
       display += this->text;
       const auto prefixBytes = static_cast<unsigned>(std::strlen(prefix));
@@ -507,7 +507,7 @@ void UIEditCtrl::DrawSelectionAt(int x, int y, int width) {
 
   if (left < right && extent > 0) {
     unsigned red, green, blue;
-    SkinPaletteChannels(this->m_edit->buttons.resources, this->m_edit->textureNames, 6, 2, red, green, blue);
+    SkinPaletteChannels(this->m_edit->buttons.resources, 6, 2, red, green, blue);
     this->FillRegion(left, y, left + extent > right ? right - left : extent, 14, RGB(red, green, blue));
   }
 }
@@ -521,7 +521,7 @@ void UIEditCtrl::DrawSelection(int x, int width) {
 
   if (left < right && extent > 0) {
     unsigned red, green, blue;
-    SkinPaletteChannels(this->m_edit->buttons.resources, this->m_edit->textureNames, 6, 2, red, green, blue);
+    SkinPaletteChannels(this->m_edit->buttons.resources, 6, 2, red, green, blue);
     this->FillRegion(left, 0, left + extent > right ? right - left : extent, this->geometry.height, RGB(red, green, blue));
   }
 }

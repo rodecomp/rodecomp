@@ -77,7 +77,7 @@ void FillTriangle(UIWindow& window, int x0, int y0, int x1, int y1, int x2, int 
 
 // OFFSET: 0x008D0920
 // FUNCTION: fn_12088
-int UIWindow::DrawButtonBar(TextureNames& names, int style, int width, int rows) {
+int UIWindow::DrawButtonBar(int style, int width, int rows) {
   if (width == 0) {
     width = this->geometry.width;
   }
@@ -95,7 +95,7 @@ int UIWindow::DrawButtonBar(TextureNames& names, int style, int width, int rows)
     name = "유저인터페이스\\basic_interface\\btnbar_left.bmp";
   }
 
-  auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(names.Resolve(name)));
+  auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   if (left) {
     leftWidth = left->image.width;
     barHeight = left->image.height;
@@ -112,7 +112,7 @@ int UIWindow::DrawButtonBar(TextureNames& names, int style, int width, int rows)
     name = "유저인터페이스\\basic_interface\\btnbar_right.bmp";
   }
 
-  auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(names.Resolve(name)));
+  auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   if (right) {
     rightWidth = right->image.width;
 
@@ -128,7 +128,7 @@ int UIWindow::DrawButtonBar(TextureNames& names, int style, int width, int rows)
     name = "유저인터페이스\\basic_interface\\btnbar_mid.bmp";
   }
 
-  auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(names.Resolve(name)));
+  auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   if (!middle) {
     return 0;
   }

@@ -1,4 +1,4 @@
-#include "Contents/SkinInfo.h"
+#include "Contents/SkinMgr.h"
 
 #include <cstdio>
 #include <direct.h>
@@ -7,15 +7,15 @@
 
 // OFFSET: 0x007E2130
 // FUNCTION: fn_09690
-bool SkinInfo::Selected() const {
+bool CSkinMgr::Selected() const {
   return this->selected > -1;
 }
 
 // OFFSET: 0x007E1020
 // FUNCTION: fn_09686
-const char* SkinInfo::Name() const {
+const char* CSkinMgr::Name() const {
   if (this->selected == -1) {
-    return "";
+    return g_defaultSkinPrefix.c_str();
   }
 
   return this->names[this->selected].c_str();
@@ -23,9 +23,9 @@ const char* SkinInfo::Name() const {
 
 // OFFSET: 0x007E1060
 // FUNCTION: fn_09687
-const char* SkinInfo::Prefix() const {
+const char* CSkinMgr::Prefix() const {
   if (this->selected == -1) {
-    return "";
+    return g_defaultSkinPrefix.c_str();
   }
 
   return this->prefixes[this->selected].c_str();
@@ -33,9 +33,9 @@ const char* SkinInfo::Prefix() const {
 
 // OFFSET: 0x007E10E0
 // FUNCTION: fn_09688
-const char* SkinInfo::Name(int index) const {
+const char* CSkinMgr::Name(int index) const {
   if (index == -1) {
-    return "";
+    return g_defaultSkinPrefix.c_str();
   }
 
   return this->names[index].c_str();
@@ -43,13 +43,13 @@ const char* SkinInfo::Name(int index) const {
 
 // OFFSET: 0x007E0C40
 // FUNCTION: fn_09683
-void SkinInfo::Prepare() {
+void CSkinMgr::Prepare() {
   if (this->selected == -1 || this->archives[this->selected] == 0 || this->prepared[this->selected] != 0) {
     return;
   }
 
   char directory[2048];
-  std::sprintf(directory, "%s\\_tmpskin_", this->applicationDirectory);
+  std::sprintf(directory, "%s\\_tmpskin_", g_applicationDirectory);
   const std::string target = std::string(directory) + "\\" + this->names[this->selected];
 
   if (_access(target.c_str(), 0) == 0) {

@@ -176,8 +176,8 @@ bool RendererDX7Operations::SaveJpeg(
 
 // OFFSET: 0x0055E340
 // FUNCTION: fn_02111
-bool RendererDX7Operations::SaveLogo(std::string filename, ResourceMgr& resources, TextureNames& names, IJL15Runtime& runtime) {
-  auto* logo = static_cast<CBitmapRes*>(resources.Load(names.Resolve("scr_logo.bmp")));
+bool RendererDX7Operations::SaveLogo(std::string filename, ResourceMgr& resources, IJL15Runtime& runtime) {
+  auto* logo = static_cast<CBitmapRes*>(resources.Load(Resolve("scr_logo.bmp")));
 
   if (!logo) {
     return false;

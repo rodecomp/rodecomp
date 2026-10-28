@@ -6,12 +6,10 @@
 #include <cstdint>
 
 struct UIButtonContext;
-struct TextureNames;
 class UICashEmotionSprBtn;
 
 struct UICashEmotionPieceContext {
   UIButtonContext& buttons;
-  TextureNames& textureNames;
 };
 
 class UICashEmotionPiece : public UIWindow {

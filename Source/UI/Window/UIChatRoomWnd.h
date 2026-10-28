@@ -4,7 +4,6 @@
 #include "UI/Window/UIFrameWnd.h"
 
 struct UIButtonContext;
-struct TextureNames;
 
 class UIChatRoomWnd : public UIFrameWnd {
 public:
@@ -12,7 +11,6 @@ public:
 
 protected:
   UIButtonContext* m_controls;
-  TextureNames* m_textureNames;
 };
 
 #endif

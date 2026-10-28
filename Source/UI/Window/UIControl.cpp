@@ -1,6 +1,25 @@
 #include "UI/Window/UIControl.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 
 #include <windows.h>
+
+// OFFSET: 0x009EF520
+// FUNCTION: fn_14635
+CBitmapRes* CUIControl::LoadBitmapResource(const std::string& name, bool resolveSkin) {
+  if (name.size() == 0) {
+    return nullptr;
+  }
+
+  ResourceMgr& resources = ResourceMgr::Instance();
+
+  if (resolveSkin) {
+    return static_cast<CBitmapRes*>(resources.Load(Resolve(name.c_str())));
+  }
+
+  return static_cast<CBitmapRes*>(resources.Load(name));
+}
 
 // INLINED
 CUIControl::CUIControl(UIWindowContext& context) : UIWindow(context, 0), hitEnabled(1) {

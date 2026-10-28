@@ -663,7 +663,7 @@ void UICashEmotionPack::Paint() {
 
   if (this->m_limited) {
     auto* bitmap =
-      static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_controls->textureNames.Resolve("유저인터페이스\\cashemotion\\icon_limitemotion.bmp")));
+      static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\icon_limitemotion.bmp")));
     if (bitmap) {
       this->DrawBitmap(0, 0, &bitmap->image, true);
     }
@@ -729,9 +729,9 @@ int UICashEmotionPack::SendMsg(
 // FUNCTION: fn_09453
 void UICashEmotionPack::SetSaleBadge(char type) {
   if (type == 1) {
-    this->m_saleBadge = this->m_controls->textureNames.Resolve("유저인터페이스\\cashemotion\\sale_account.bmp");
+    this->m_saleBadge = Resolve("유저인터페이스\\cashemotion\\sale_account.bmp");
   } else if (type == 2) {
-    this->m_saleBadge = this->m_controls->textureNames.Resolve("유저인터페이스\\cashemotion\\sale_char.bmp");
+    this->m_saleBadge = Resolve("유저인터페이스\\cashemotion\\sale_char.bmp");
   } else {
     this->m_saleBadge = "";
   }
@@ -811,7 +811,7 @@ void UICashEmotionPiece::Paint() {
     unsigned red;
     unsigned green;
     unsigned blue;
-    SkinPaletteChannels(ResourceMgr::Instance(), this->m_controls->textureNames, 14, 6, red, green, blue);
+    SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
     DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, RGB(red, green, blue));
   }
 }

@@ -17,7 +17,6 @@ struct RendererBackBuffer;
 struct BitmapImage;
 class IJL15Runtime;
 class ResourceMgr;
-struct TextureNames;
 
 struct RendererDX7Operations {
   DeviceOwnerDX7& owner;
@@ -34,7 +33,7 @@ struct RendererDX7Operations {
   );
   bool SaveBitmap(const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer);
   bool SaveJpeg(const char* filename, const BitmapImage& overlay, int width, int height, RendererBackBuffer& backBuffer, IJL15Runtime& runtime);
-  bool SaveLogo(std::string filename, ResourceMgr& resources, TextureNames& names, IJL15Runtime& runtime);
+  bool SaveLogo(std::string filename, ResourceMgr& resources, IJL15Runtime& runtime);
 };
 
 #endif

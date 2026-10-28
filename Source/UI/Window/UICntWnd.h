@@ -3,7 +3,6 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct TextureNames;
 
 class UICntWnd : public UIFrameWnd {
 public:
@@ -11,7 +10,6 @@ public:
   void DrawBorder(int x, int y, int width, int height);
 
 protected:
-  TextureNames* m_textureNames;
 };
 
 #endif

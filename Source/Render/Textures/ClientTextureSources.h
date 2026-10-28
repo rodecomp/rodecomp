@@ -8,18 +8,16 @@
 
 #include <ddraw.h>
 
-struct TextureNames;
 class BinkMovies;
 
 class ClientTextureSources : public TextureSources {
 public:
-  ClientTextureSources(TextureNames& names, const int& modeType, BinkMovies* const& movies, CRenderSystemBase*& system, IDirectDraw7* const& directDraw);
+  ClientTextureSources(const int& modeType, BinkMovies* const& movies, CRenderSystemBase*& system, IDirectDraw7* const& directDraw);
   const char* Resolve(const char* name) override;
   bool MovieSize(const char* name, int& width, int& height) override;
   void CleanupTextures() override;
 
 private:
-  TextureNames& m_names;
   const int& m_modeType;
   BinkMovies* const& m_movies;
   CRenderSystemBase*& m_system;
@@ -28,14 +26,14 @@ private:
 
 // INLINED
 inline ClientTextureSources::ClientTextureSources(
-  TextureNames& names, const int& modeType, BinkMovies* const& movies, CRenderSystemBase*& system, IDirectDraw7* const& directDraw
+  const int& modeType, BinkMovies* const& movies, CRenderSystemBase*& system, IDirectDraw7* const& directDraw
 )
-    : m_names(names), m_modeType(modeType), m_movies(movies), m_system(system), m_directDraw(directDraw) {
+    : m_modeType(modeType), m_movies(movies), m_system(system), m_directDraw(directDraw) {
 }
 
 // INLINED
 inline const char* ClientTextureSources::Resolve(const char* name) {
-  return this->m_names.Resolve(name);
+  return ::Resolve(name);
 }
 
 // INLINED

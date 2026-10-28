@@ -3,8 +3,14 @@
 
 #include "UI/Window/UIWindow.h"
 
+#include <string>
+
+class CBitmapRes;
+
 class CUIControl : public UIWindow {
 public:
+  CBitmapRes* LoadBitmapResource(const std::string& name, bool resolveSkin);
+
   explicit CUIControl(UIWindowContext& context);
   ~CUIControl() override;
   bool CanHitTest() override;

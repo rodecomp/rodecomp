@@ -115,7 +115,7 @@ void UIComboBoxWnd::Paint() {
 // OFFSET: 0x008ED1B0
 // FUNCTION: fn_12219
 void UIDisconnectedServerMsgWnd::Paint() {
-  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_textureNames->Resolve("유저인터페이스\\win_msgbox.bmp")));
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
 }
 
@@ -127,7 +127,7 @@ void UILoadingWnd::Paint() {
 // OFFSET: 0x008EF590
 // FUNCTION: fn_12233
 void UINoticeConfirmWnd::Paint() {
-  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_textureNames->Resolve("유저인터페이스\\win_msgbox.bmp")));
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
 }
 
@@ -144,21 +144,21 @@ void UINotifyQuestWnd::Paint() {
 // OFFSET: 0x008EFF60
 // FUNCTION: fn_12245
 void UIQuitWnd::Paint() {
-  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_textureNames->Resolve("유저인터페이스\\win_msgbox.bmp")));
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
 }
 
 // OFFSET: 0x008EFFA0
 // FUNCTION: fn_12246
 void UIRestartWnd::Paint() {
-  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_textureNames->Resolve("유저인터페이스\\win_msgbox.bmp")));
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
 }
 
 // OFFSET: 0x008F2A90
 // FUNCTION: fn_12258
 void UIWaitWnd::Paint() {
-  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(this->m_textureNames->Resolve("유저인터페이스\\win_msgbox.bmp")));
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
 }
 

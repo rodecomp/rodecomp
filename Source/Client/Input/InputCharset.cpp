@@ -1,5 +1,6 @@
 #include "Client/Input/InputCharset.h"
 #include "Utility/Text/LanguageCharset.h"
+#include "Utility/Text/TextTokens.h"
 
 #include <cstdio>
 
@@ -10,7 +11,7 @@ const char* InputCharset::Prefix(bool alternate) const {
   // GLOBAL: gl_24373
   static char prefix[8];
 
-  if (this->enabled) {
+  if (g_inlineCharset) {
     std::sprintf(prefix, "|%02x", LanguageCharset(alternate ? this->alternateLanguage : this->language));
   } else {
     prefix[0] = '\0';
@@ -21,5 +22,5 @@ const char* InputCharset::Prefix(bool alternate) const {
 
 // INLINED
 unsigned InputCharset::CodePage(unsigned fallback) const {
-  return this->enabled ? LanguageCodePage(this->language) : fallback;
+  return g_inlineCharset ? LanguageCodePage(this->language) : fallback;
 }

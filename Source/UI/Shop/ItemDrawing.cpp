@@ -22,10 +22,10 @@ void DrawItemIcon(UIWindow& window, ResourceMgr& resources, ItemDescriptions& de
 
 // OFFSET: 0x008A8F80
 // FUNCTION: fn_11718
-void DrawItemIconById(UIWindow& window, TextureNames& names, ItemDescriptions& descriptions, int x, int y, const char* id, unsigned char identified) {
+void DrawItemIconById(UIWindow& window, ItemDescriptions& descriptions, int x, int y, const char* id, unsigned char identified) {
   char path[128];
   descriptions.IconPath(path, id, identified);
-  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(names.Resolve(path)));
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
 
   if (bitmap) {
     window.DrawBitmap(x, y, &bitmap->image, true);
@@ -34,8 +34,8 @@ void DrawItemIconById(UIWindow& window, TextureNames& names, ItemDescriptions& d
 
 // OFFSET: 0x008A9000
 // FUNCTION: fn_11719
-void DrawItemSlotBackground(UIWindow& window, TextureNames& names, int x, int y) {
-  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(names.Resolve("유저인터페이스\\basic_interface\\itemwin_mid.bmp")));
+void DrawItemSlotBackground(UIWindow& window, int x, int y) {
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_mid.bmp")));
   window.DrawBitmap(x, y, bitmap ? &bitmap->image : nullptr, false);
 }
 

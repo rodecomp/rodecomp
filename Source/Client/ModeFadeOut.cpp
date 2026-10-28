@@ -12,7 +12,7 @@
 
 // OFFSET: 0x00AD6960
 // FUNCTION: fn_17847
-std::uint32_t FadeOutMode(CRenderer& renderer, CRenderSystemBase& system, TextureCache& textures, ResourceMgr& resources, TextureNames& names,
+std::uint32_t FadeOutMode(CRenderer& renderer, CRenderSystemBase& system, TextureCache& textures, ResourceMgr& resources,
   int showLogo, bool depthAlpha, float depthStart, float depthEnd) {
   g_soundMgr->FadeOut();
   g_modeFadeTick = timeGetTime();
@@ -22,7 +22,7 @@ std::uint32_t FadeOutMode(CRenderer& renderer, CRenderSystemBase& system, Textur
     DrawAlphaRectangle(renderer.primitives, textures, renderer.queues, 0, 0, renderer.viewport.width, renderer.viewport.height, elapsed << 24,
       depthAlpha, depthStart, depthEnd);
     if (showLogo != 0) {
-      auto* logo = static_cast<CBitmapRes*>(resources.Load(names.Resolve("rag_logo.bmp")));
+      auto* logo = static_cast<CBitmapRes*>(resources.Load(Resolve("rag_logo.bmp")));
       DrawBitmapResource(system, renderer.viewport.width - 192, renderer.viewport.height - 122, logo);
     }
     if (renderer.Draw()) {

@@ -1,14 +1,18 @@
-#include "Contents/SkinInfo.h"
-#include "File/ResourcePath.h"
+#include "Client/Input/InputCharset.h"
+#include "Client/Mode/ActiveGameMode.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/SkinMgr.h"
 #include "Resource/ResourceMgr.h"
+#include "File/ResourcePath.h"
 #include "Resource/TextureNames.h"
 
 #include <cstring>
+#include <string>
 
 // OFFSET: 0x00ACE510
 // FUNCTION: fn_17788
-const char* TextureNames::ServiceName(const char* name) {
-  if (this->service == 0 || this->service == 2 || this->service == 20) {
+const char* InputCharset::ServiceName(const char* name) {
+  if (g_serviceType == 0 || g_serviceType == 2 || g_serviceType == 20) {
     return name;
   }
 
@@ -17,14 +21,14 @@ const char* TextureNames::ServiceName(const char* name) {
   static char path[260];
   std::strcpy(path, this->servicePrefix.c_str());
   std::strcat(path, name);
-  const bool exists = std::strstr(name, ".txt") || std::strstr(name, ".xml") ? ResourceExists(path, 0) : this->resources.Exists(path);
+  const bool exists = std::strstr(name, ".txt") || std::strstr(name, ".xml") ? ResourceExists(path, 0) : ResourceMgr::Instance().Exists(path);
 
   return exists ? path : name;
 }
 
 // OFFSET: 0x00B01200
 // FUNCTION: fn_18378
-const char* TextureNames::Resolve(const char* name) {
+const char* Resolve(const char* name) {
   if (*name == '\0') {
     return name;
   }
@@ -36,8 +40,8 @@ const char* TextureNames::Resolve(const char* name) {
     return name;
   }
 
-  if (this->activeMode && this->skin.Selected()) {
-    const std::string prefix(this->skin.Prefix());
+  if (g_world.gameMode && g_skinInfo.Selected()) {
+    const std::string prefix(g_skinInfo.Prefix());
     // STATIC: 0x016D58CC
     // GLOBAL: gl_24385
     static std::string selectedPath;
@@ -47,18 +51,16 @@ const char* TextureNames::Resolve(const char* name) {
       selectedPath.append(original.data() + 15, original.size() - 15);
     }
 
-    this->skin.Prepare();
+    g_skinInfo.Prepare();
 
-    if (this->resources.Exists(selectedPath.c_str())) {
+    if (ResourceMgr::Instance().Exists(selectedPath.c_str())) {
       return selectedPath.c_str();
     }
   }
 
-  if (this->service != 0) {
-    const char* serviceName = this->ServiceName(name);
-
-    if (this->resources.Exists(serviceName)) {
-      return this->ServiceName(name);
+  if (g_serviceType != 0) {
+    if (ResourceMgr::Instance().Exists(g_serverLanguage->ServiceName(name))) {
+      return g_serverLanguage->ServiceName(name);
     }
 
     // STATIC: 0x016D58E8
@@ -69,7 +71,7 @@ const char* TextureNames::Resolve(const char* name) {
       uiPath.append(original.data() + 15, original.size() - 15);
     }
 
-    if (this->resources.Exists(uiPath.c_str())) {
+    if (ResourceMgr::Instance().Exists(uiPath.c_str())) {
       return uiPath.c_str();
     }
   }

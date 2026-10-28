@@ -143,8 +143,7 @@ void UILoginWnd::Paint() {
 // FUNCTION: fn_11767
 void UIMerInfoWnd::Paint() {
   auto& controls = *this->m_controls;
-  auto& names = *this->m_textureNames;
-  const auto* background = static_cast<CBitmapRes*>(names.resources.Load(names.Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
+  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
   this->DrawBitmap(0, 0, &background->image, false);
   char title[50] = {};
   const unsigned kind = g_session.m_mercenaryClass;
@@ -267,9 +266,8 @@ bool UIBank_NewWnd::IsNumeric(std::string text) {
 // FUNCTION: fn_11760
 void UIBank_NewWnd::Paint() {
   auto& controls = *this->m_controls;
-  auto& names = *this->m_textureNames;
-  const auto* background = static_cast<CBitmapRes*>(names.resources.Load(names.Resolve("유저인터페이스\\bank\\bg_bank.bmp")));
-  const int titleHeight = this->DrawTitleBar(names, controls.fonts, controls.locale, true, controls.services.MessageText(2771), 0);
+  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\bank\\bg_bank.bmp")));
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(2771), 0);
   this->DrawBitmap(0, titleHeight, &background->image, false);
   char number[260] = {};
   char text[260] = {};
@@ -293,14 +291,13 @@ void UIBank_NewWnd::Paint() {
 // FUNCTION: fn_11761
 void UIChatRoomWnd::Paint() {
   auto& controls = *this->m_controls;
-  auto& names = *this->m_textureNames;
-  const int titleHeight = this->DrawTitleBar(names, controls.fonts, controls.locale, false, "", 0);
-  this->DrawPanelBackground(names, titleHeight, 0, "");
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
   unsigned red, green, blue;
-  SkinPaletteChannels(names.resources, names, 20, 6, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 20, 6, red, green, blue);
   const int width = this->geometry.width;
   this->FillRegion(width - width * 56 / 280 - 2, 17, 1, this->geometry.height - 38, RGB(red, green, blue));
-  this->DrawButtonBar(names, 0, 0, 1);
+  this->DrawButtonBar(0, 0, 1);
 }
 
 // OFFSET: 0x008B7DA0
@@ -318,9 +315,8 @@ void UICntWnd::DrawBorder(int x, int y, int width, int height) {
   if (height == 0) {
     height = this->geometry.height;
   }
-  auto& names = *this->m_textureNames;
   const auto load = [&](const char* name) {
-    return static_cast<CBitmapRes*>(names.resources.Load(names.Resolve(name)));
+    return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   };
   const int innerWidth = width - 28;
   const int columns = innerWidth / 14 + (innerWidth % 14 != 0);
@@ -351,7 +347,7 @@ void UICntWnd::DrawBorder(int x, int y, int width, int height) {
   bitmap = load("유저인터페이스\\sysbox_rd.bmp");
   this->DrawBitmap(x + width - bitmap->image.width, y + height - bitmap->image.height, &bitmap->image, false);
   unsigned red, green, blue;
-  SkinPaletteChannels(names.resources, names, 2, 2, red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(x + 14, y + 14, innerWidth, innerHeight, RGB(red, green, blue));
 }
 

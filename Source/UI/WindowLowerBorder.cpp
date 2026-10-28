@@ -9,7 +9,7 @@
 
 // OFFSET: 0x008D0BE0
 // FUNCTION: fn_12089
-int UIWindow::DrawButtonBarAt(TextureNames& names, int style, int x, int width, int rows) {
+int UIWindow::DrawButtonBarAt(int style, int x, int width, int rows) {
   if (width == 0) {
     width = this->geometry.width - x;
   }
@@ -20,7 +20,7 @@ int UIWindow::DrawButtonBarAt(TextureNames& names, int style, int x, int width, 
   int barHeight = 0;
 
   CBitmapRes* left =
-    this->LoadStyledBitmap(names, style, "유저인터페이스\\basic_interface\\btnbar_left%d.bmp", "유저인터페이스\\basic_interface\\btnbar_left.bmp");
+    this->LoadStyledBitmap(style, "유저인터페이스\\basic_interface\\btnbar_left%d.bmp", "유저인터페이스\\basic_interface\\btnbar_left.bmp");
   if (left) {
     leftWidth = left->image.width;
     barHeight = left->image.height;
@@ -31,7 +31,7 @@ int UIWindow::DrawButtonBarAt(TextureNames& names, int style, int x, int width, 
   }
 
   CBitmapRes* right =
-    this->LoadStyledBitmap(names, style, "유저인터페이스\\basic_interface\\btnbar_right%d.bmp", "유저인터페이스\\basic_interface\\btnbar_right.bmp");
+    this->LoadStyledBitmap(style, "유저인터페이스\\basic_interface\\btnbar_right%d.bmp", "유저인터페이스\\basic_interface\\btnbar_right.bmp");
   if (right) {
     rightWidth = right->image.width;
 
@@ -41,7 +41,7 @@ int UIWindow::DrawButtonBarAt(TextureNames& names, int style, int x, int width, 
   }
 
   CBitmapRes* middle =
-    this->LoadStyledBitmap(names, style, "유저인터페이스\\basic_interface\\btnbar_mid%d.bmp", "유저인터페이스\\basic_interface\\btnbar_mid.bmp");
+    this->LoadStyledBitmap(style, "유저인터페이스\\basic_interface\\btnbar_mid%d.bmp", "유저인터페이스\\basic_interface\\btnbar_mid.bmp");
   if (!middle) {
     return 0;
   }
@@ -64,14 +64,14 @@ int UIWindow::DrawButtonBarAt(TextureNames& names, int style, int x, int width, 
 
 // OFFSET: 0x008D7570
 // FUNCTION: fn_12120
-CBitmapRes* UIWindow::LoadStyledBitmap(TextureNames& names, int style, const char* format, const char* name) {
+CBitmapRes* UIWindow::LoadStyledBitmap(int style, const char* format, const char* name) {
   if (style > 0) {
     if (format && std::strlen(format) != 0) {
       std::string filename = FormatOwnedString(format, style);
-      return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(names.Resolve(filename.c_str())));
+      return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(filename.c_str())));
     }
   } else if (name && std::strlen(name) != 0) {
-    return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(names.Resolve(name)));
+    return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
   }
   return nullptr;
 }
