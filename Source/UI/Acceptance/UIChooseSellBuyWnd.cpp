@@ -153,6 +153,12 @@ void UIDisconnectedServerMsgWnd::Paint() {
 }
 
 // OFFSET: 0x008ED1F0
+// FUNCTION: fn_12220
+void UIEmailAddressWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->DrawBorder(0, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 15, 6, controls.services.MessageText(g_serviceType == 0 ? 1815 : 299), 0, 0, 12, 0, 0, 0);
+}
 
 // OFFSET: 0x008EE230
 // FUNCTION: fn_12223
@@ -166,6 +172,38 @@ void UIGraffiStrboxWnd::Paint() {
 }
 
 // OFFSET: 0x008EE9D0
+// FUNCTION: fn_12227
+void UIItemParamChangeDisplayWnd::Paint() {
+  auto& controls = *this->m_controls;
+  char text[128];
+  const auto drawArrow = [this](int x, int before, int after) {
+    if (before < after) {
+      FillTriangle(*this, x + 4, 11, x, 19, x + 8, 19, 0xFF);
+    } else if (before == after) {
+      FillTriangle(*this, x, 13, x + 8, 13, x, 17, 0x505050);
+      FillTriangle(*this, x + 8, 13, x, 17, x + 8, 17, 0x505050);
+    } else {
+      FillTriangle(*this, x, 11, x + 8, 11, x + 4, 19, 0xFF0000);
+    }
+  };
+
+  this->DrawBorder(0, 0, 0, 0);
+  std::sprintf(text, controls.services.MessageText(269));
+  this->DrawTextAt(controls.fonts, controls.locale, 20, 10, text, 0, 0, 12, 0, 0, 0);
+  std::sprintf(text, "%d", this->m_before);
+  this->DrawTextAt(controls.fonts, controls.locale, 70, 10, text, 0, 0, 12, 0, 0, 0);
+  drawArrow(90, this->m_before, this->m_after);
+  std::sprintf(text, "%d", this->m_after);
+  this->DrawTextAt(controls.fonts, controls.locale, 110, 10, text, 0, 0, 12, 0, 0, 0);
+
+  std::sprintf(text, controls.services.MessageText(270));
+  this->DrawTextAt(controls.fonts, controls.locale, 152, 10, text, 0, 0, 12, 0, 0, 0);
+  std::sprintf(text, "%d", this->m_beforeSecond);
+  this->DrawTextAt(controls.fonts, controls.locale, 202, 10, text, 0, 0, 12, 0, 0, 0);
+  drawArrow(222, this->m_beforeSecond, this->m_afterSecond);
+  std::sprintf(text, "%d", this->m_afterSecond);
+  this->DrawTextAt(controls.fonts, controls.locale, 242, 10, text, 0, 0, 12, 0, 0, 0);
+}
 
 // OFFSET: 0x008EECD0
 // FUNCTION: fn_12228
@@ -203,6 +241,12 @@ void UINotifyQuestWnd::Paint() {
 }
 
 // OFFSET: 0x008EF810
+// FUNCTION: fn_12237
+void UINpcEditDialogWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->DrawBorder(0, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 15, 6, g_serviceType == 12 ? "Insira o Numero" : "Input number ", 0, 0, 12, 0, 0, 0);
+}
 
 // OFFSET: 0x008EF9A0
 // FUNCTION: fn_12239
@@ -286,6 +330,12 @@ void UISkillDescribeWnd::Paint() {
 }
 
 // OFFSET: 0x008F04B0
+// FUNCTION: fn_12251
+void UISkillNameChangeWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->DrawBorder(0, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 15, 6, this->m_name.c_str(), 0, 0, 12, 0, 0, 0);
+}
 
 // OFFSET: 0x008F2460
 // FUNCTION: fn_12255
