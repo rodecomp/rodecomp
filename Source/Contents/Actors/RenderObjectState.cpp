@@ -46,13 +46,13 @@ void RenderObjectState::Reset(ResourceMgr& resources, JobNames& names) {
   this->color = 0xFFFFFFFFu;
   this->unknown_00A2 = 0;
   this->unknown_00A4 = 0;
-  this->unknown_009C[1] = 0;
-  this->unknown_009C[2] = 0;
+  this->isMotionFinished = 0;
+  this->isMotionFreezed = 0;
   this->unknown_0078 = 0;
   this->unknown_007C = 0;
   this->started = timeGetTime();
-  this->unknown_009C[3] = 0;
-  this->unknown_009C[0] = 0;
+  this->isSingleColor = 0;
+  this->isLieOnGround = 0;
   this->unknown_00A3 = 0;
   this->overrideColor = 0xFFFF0000u;
   this->unknown_0080 = 0;

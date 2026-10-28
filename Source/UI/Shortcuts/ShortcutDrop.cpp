@@ -127,7 +127,7 @@ void ShortcutDrop::Drop(UIWindow& window, ShortcutGrid& grid, int x, int y, cons
     const int column = grid.HitTest(x, y, this->itemSlotActive, this->currentRow);
     if (column != -1 && 9 * grid.rows <= 9 * this->currentRow + column) {
       if (this->itemSlotActive) {
-        this->bindings.AssignItem(static_cast<std::uint32_t>(std::atoi(item.itemId.c_str())), column);
+        this->bindings.AssignItem(static_cast<std::uint32_t>(item.GetItemId()), column);
         Refresh(window);
       }
 
@@ -145,7 +145,7 @@ void ShortcutDrop::Drop(UIWindow& window, ShortcutGrid& grid, int x, int y, cons
       const int column = grid.HitTest(x, y, this->itemSlotActive, this->currentRow);
       if (column != -1 && grid.rows > this->currentRow) {
         const int index = 9 * this->currentRow + column;
-        this->bindings.Assign(0, static_cast<std::uint32_t>(std::atoi(item.itemId.c_str())), 0, index, bank, this->currentRow, this->script, *this->mode);
+        this->bindings.Assign(0, static_cast<std::uint32_t>(item.GetItemId()), 0, index, bank, this->currentRow, this->script, *this->mode);
         if (value.slot != index) {
           RemoveFirst(this->bindings.cooldowns, index);
         }

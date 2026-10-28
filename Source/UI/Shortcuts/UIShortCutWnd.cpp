@@ -318,7 +318,7 @@ inline void ShortcutUse::Use(const NormalItemSlot& slot) {
   case 0:
   case 1:
   case 2:
-    if (std::atoi(item.itemId.c_str()) != 12802 || this->dialogs.Confirm(this->naming.Message(2373), 2, 0, 0, "Message", 280, 120) != 188) {
+    if (item.GetItemId() != 12802 || this->dialogs.Confirm(this->naming.Message(2373), 2, 0, 0, "Message", 280, 120) != 188) {
       use();
     }
 

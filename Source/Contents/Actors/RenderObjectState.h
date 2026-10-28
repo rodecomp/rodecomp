@@ -47,7 +47,10 @@ struct RenderObjectState {
   /* 0090 */ std::uint32_t unknown_0090;
   /* 0094 */ std::uint32_t unknown_0094;
   /* 0098 */ std::uint32_t color;
-  /* 009C */ unsigned char unknown_009C[4];
+  /* 009C */ bool isLieOnGround;
+  /* 009D */ bool isMotionFinished;
+  /* 009E */ bool isMotionFreezed;
+  /* 009F */ bool isSingleColor;
   /* 00A0 */ unsigned char visible;
   /* 00A1 */ unsigned char enabled;
   /* 00A2 */ unsigned char unknown_00A2;

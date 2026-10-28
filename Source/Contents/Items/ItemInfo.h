@@ -65,6 +65,7 @@ struct alignas(8) ItemInfo {
   bool operator<(const ItemInfo& other) const;
   bool SetName(const char* name);
   void SetItemId(int value);
+  int GetItemId() const;
   bool HasSpecialCard() const;
   bool IsApprenticeItem() const;
   bool IsForgeMaterial() const;

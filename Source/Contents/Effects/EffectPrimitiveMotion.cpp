@@ -1488,6 +1488,7 @@ void EffectParticle::PrimSMA() {
 }
 
 // OFFSET: 0x00BC2A60
+// FUNCTION: fn_19835
 void EffectParticle::PrimShieldBoomerang3() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
@@ -1552,6 +1553,7 @@ void EffectParticle::PrimShieldBoomerang3() {
 }
 
 // OFFSET: 0x00BC3C70
+// FUNCTION: fn_19840
 bool EffectParticle::PrimSuperAngel() {
   const AttachedEffect* master = this->state.master;
   this->render.position[0] = master->render.position[0];
@@ -1697,6 +1699,182 @@ bool EffectParticle::PrimSuperAngel() {
   this->render.position[2] = this->state.offset.z;
   this->UpdateRecords();
   return true;
+}
+
+// OFFSET: 0x00BC4730
+void EffectParticle::PrimThrowItem() {
+  EffectPrimitiveSlot* slots = this->state.slots;
+  FaceCamera(slots);
+
+  const AttachedEffect* master = this->state.master;
+  this->render.position[0] = master->render.position[0];
+  this->render.position[1] = master->render.position[1];
+  this->render.position[2] = master->render.position[2];
+
+  EffectPrimitiveSlot& slot = slots[0];
+
+  if (slot.life != 1) {
+    return;
+  }
+
+  ++slot.process;
+
+  if (slot.process % 2 == 1) {
+    if (slot.process > 3) {
+      FollowTrail(slots[3], slots[2], 25);
+    }
+
+    if (slot.process > 2) {
+      FollowTrail(slots[2], slots[1], 25);
+    }
+
+    if (slot.process > 1) {
+      FollowTrail(slots[1], slot, 150);
+    }
+  }
+
+  if (slot.flag1[2] == 15) {
+    slot.fullDisplayAngle += 45;
+  } else {
+    slot.fullDisplayAngle += 10;
+  }
+
+  if (slot.fullDisplayAngle >= 360) {
+    slot.fullDisplayAngle -= 360;
+  }
+
+  if (slot.process == 1) {
+    const float x = this->state.offset.x - slot.vecBNow.x;
+    const float z = this->state.offset.z - slot.vecBNow.z;
+    CalculateVectorAngle(x, z, &slot.rotStart);
+  }
+
+  float progress = static_cast<float>(slot.process);
+  progress /= static_cast<float>(slot.flag1[1]);
+
+  if (progress > 1.05f) {
+    slot.alphaB -= 20;
+
+    if (slot.alphaB < 0) {
+      slot.alphaB = 0;
+    }
+
+    return;
+  }
+
+  if (progress > 1.0f) {
+    progress = 1.0f;
+  }
+
+  const int arc = static_cast<int>(180.0f * progress);
+  slot.vecBPre.y += slot.height[2];
+
+  if (slot.flag1[2] == 0) {
+    slot.vecBNow.y = slot.vecBPre.y - g_sinTable[arc] * 10.0f;
+  } else if (slot.flag1[2] == 15) {
+    slot.vecBNow.y = slot.vecBPre.y - g_sinTable[arc];
+  } else {
+    slot.vecBNow.y = slot.vecBPre.y - g_sinTable[arc] * 30.0f;
+  }
+
+  slot.vecBNow.x += slot.height[1] * g_cosTable[slot.rotStart];
+  slot.vecBNow.z += slot.height[1] * g_sinTable[slot.rotStart];
+}
+
+// OFFSET: 0x00BC06B0
+bool EffectParticle::PrimPeong() {
+  FaceCamera(this->state.slots);
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process <= 0) {
+      continue;
+    }
+
+    if (slot.process <= 90) {
+      const float cosine = g_cosTable[slot.riseAngle];
+      float sine = g_sinTable[slot.riseAngle];
+      slot.vecBPre.x += cosine * slot.maxHeight;
+      slot.vecBPre.z += sine * slot.maxHeight;
+
+      int angle = slot.process * 2;
+
+      if (angle >= 360) {
+        angle -= 360;
+      }
+
+      sine = g_sinTable[angle];
+      slot.vecBPre.y = slot.vecBNow.y - sine * slot.maxHeight * 50.0f;
+    }
+
+    if (slot.process <= 25) {
+      slot.alphaB += 2;
+    }
+
+    if (slot.process > 70) {
+      --slot.alphaB;
+    }
+
+    if (slot.alphaB < 0) {
+      slot.alphaB = 0;
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00BBDE10
+void EffectParticle::PrimGI3() {
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    slot.process += 1;
+    slot.distance -= 0.01f;
+
+    if (slot.process >= 10) {
+      slot.alphaB -= 1;
+
+      if (slot.alphaB <= 0) {
+        slot.alphaB = 0;
+
+        if (slot.process > 30) {
+          slot.life = 0;
+        }
+
+        slot.distance = 20.0f;
+        slot.riseAngle = 81 + 9;
+      }
+    } else {
+      slot.alphaB += 10;
+    }
+
+    for (int sample = 0; sample < 21; ++sample) {
+      slot.height[sample] = slot.maxHeight * g_sinTable[slot.process];
+    }
+  }
+}
+
+// OFFSET: 0x00BEBC40
+// FUNCTION: fn_19971
+void EffectParticle::PrimWaterFall() {
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life > 0) {
+      ++slot.process;
+    }
+  }
 }
 
 // OFFSET: 0x00BB6F30

@@ -203,7 +203,7 @@ void CBlurPC::SendObjectMessage(
       this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
       break;
     case 3:
-      this->render.unknown_009C[2] = 1;
+      this->render.isMotionFreezed = 1;
       break;
     default:
       CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
@@ -242,7 +242,7 @@ void CHalluNPC::SendObjectMessage(
       this->unknown_0440 = *reinterpret_cast<const float*>(&b);
       break;
     case 3:
-      this->render.unknown_009C[2] = 1;
+      this->render.isMotionFreezed = 1;
       break;
     default:
       CNpc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
@@ -273,7 +273,7 @@ void CHalluPC2::SendObjectMessage(
       this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
       break;
     case 3:
-      this->render.unknown_009C[2] = 1;
+      this->render.isMotionFreezed = 1;
       break;
     default:
       CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
@@ -304,7 +304,7 @@ void CHalluPC::SendObjectMessage(
       this->unknown_04F8 = *reinterpret_cast<const float*>(&b);
       break;
     case 3:
-      this->render.unknown_009C[2] = 1;
+      this->render.isMotionFreezed = 1;
       break;
     default:
       CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
@@ -330,7 +330,7 @@ void CHalluPlant::SendObjectMessage(
       this->render.color &= (b << 24) + 0xFFFFFF;
       break;
     case 3:
-      this->render.unknown_009C[2] = 1;
+      this->render.isMotionFreezed = 1;
       break;
     default:
       CNpc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);

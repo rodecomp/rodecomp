@@ -115,7 +115,7 @@ void CRenderObject::SetAnimation(unsigned animation, int, int repeat) {
   this->render.previousAnimation = animation;
   this->render.curMotion = 0;
   this->render.unknown_006C = repeat;
-  this->render.unknown_009C[1] = 0;
+  this->render.isMotionFinished = 0;
   this->render.unknown_0060 = 1.0f;
   this->render.unknown_0064 = 1.0f;
   this->render.unknown_00C8 = 0;
@@ -423,9 +423,9 @@ void CRenderObject::JitterBounds(float* output, const int* input, float offset, 
 // FUNCTION: fn_21090
 void CGameActor::ProcessBodyState() {
   switch (this->bodyState) {
-  case 1:
-  case 2:
-    this->render.unknown_009C[2] = 1;
+  case BODYSTATE_FREEZING:
+  case BODYSTATE_STONECURSE:
+    this->render.isMotionFreezed = true;
     break;
   }
 }

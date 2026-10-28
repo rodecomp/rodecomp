@@ -6,6 +6,16 @@
 
 #include <cstddef>
 
+enum {
+  BODYSTATE_NORMAL,
+  BODYSTATE_STONECURSE,
+  BODYSTATE_FREEZING,
+  BODYSTATE_STUN,
+  BODYSTATE_SLEEP,
+  BODYSTATE_UNDEAD,
+  BODYSTATE_STONECURSE_ING,
+};
+
 class CGameActor : public CRenderObject {
 public:
   ~CGameActor() override;

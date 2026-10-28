@@ -387,3 +387,8 @@ bool ItemInfo::IsElementalStone() const {
 bool ItemInfo::IsAboveItemId600() const {
   return std::atoi(this->itemId.c_str()) > 500 && std::atoi(this->itemId.c_str()) > 600;
 }
+
+// OFFSET: 0x005FCCF0
+int ItemInfo::GetItemId() const {
+  return std::atoi(this->itemId.c_str());
+}
