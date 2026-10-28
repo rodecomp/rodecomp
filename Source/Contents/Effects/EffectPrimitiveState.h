@@ -37,7 +37,7 @@ struct EffectPrimitiveSlot {
   /* 0001 */ unsigned char unknown_0001;
   /* 0002 */ std::int16_t unknown_0002;
   /* 0004 */ std::int16_t unknown_0004;
-  /* 0006 */ unsigned char unknown_0006[2];
+  /* 0006 */ std::int16_t displayAngle;
   /* 0008 */ float unknown_0008;
   /* 000C */ int frame;
   /* 0010 */ std::int16_t angle;

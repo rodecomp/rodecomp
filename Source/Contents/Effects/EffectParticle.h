@@ -21,6 +21,7 @@ struct EffectParticle : CRenderObject {
   bool UpdateDetoxication();
   bool UpdateExit();
   bool UpdateWarp();
+  void PrimBottom2();
 
   bool AdvanceFrame();
   void UpdateRecords();

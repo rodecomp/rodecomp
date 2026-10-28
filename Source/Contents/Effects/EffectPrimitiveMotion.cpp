@@ -812,6 +812,37 @@ void EffectParticle::UpdateBeginSpell() {
   this->UpdateRecords();
 }
 
+// OFFSET: 0x00BBAB10
+// FUNCTION: fn_19790
+void EffectParticle::PrimBottom2() {
+  const RagEffectState* parent = this->state.parent;
+  this->render.position[0] = std::bit_cast<float>(parent->unknown_013C[3]);
+  this->render.position[1] = std::bit_cast<float>(parent->unknown_013C[4]);
+  this->render.position[2] = std::bit_cast<float>(parent->unknown_013C[5]);
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.active != 1) {
+      continue;
+    }
+
+    ++slot.frame;
+
+    if (slot.values[0] == 1.0f) {
+      slot.displayAngle += 4;
+    } else {
+      slot.displayAngle += 2;
+    }
+
+    if (slot.displayAngle >= 360) {
+      slot.displayAngle -= 360;
+    }
+
+    slot.unknown_0008 = 20.0f + 10.0f * ClientSine(slot.displayAngle);
+  }
+}
+
 // OFFSET: 0x00BB6F30
 // FUNCTION: fn_19779
 bool EffectParticle::UpdateHit6() {
