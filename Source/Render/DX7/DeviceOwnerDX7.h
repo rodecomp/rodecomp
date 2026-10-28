@@ -20,14 +20,13 @@ class CRenderSystemBase;
 class DeviceOwnerDX7 {
 public:
   DeviceOwnerDX7();
-  HRESULT
-  Initialize(HWND window, GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags, HWND applicationWindow, const RECT& monitor);
-  HRESULT CreateDevice(GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags, const RECT& monitor);
-  HRESULT CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags, const RECT& monitor);
+  HRESULT Initialize(HWND window, GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags);
+  HRESULT CreateDevice(GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags);
+  HRESULT CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags);
   HRESULT Close();
   HRESULT Clear(DWORD color);
   HRESULT ClearDepth();
-  HRESULT Present(bool wait, const RECT& monitor);
+  HRESULT Present(bool wait);
   bool RestoreLostSurfaces();
   void MarkSurfacesLost();
   void AdjustTextureDimensions(std::uint32_t& width, std::uint32_t& height) const;

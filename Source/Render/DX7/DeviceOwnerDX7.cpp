@@ -1,4 +1,6 @@
 #include "Render/DX7/DeviceOwnerDX7.h"
+#include "Client/Application/ApplicationWindow.h"
+#include "Render/DX7/DirectDrawEnumeration.h"
 
 #include <cstring>
 
@@ -22,17 +24,17 @@ namespace {
 
   // OFFSET: 0x0054AA50
   // FUNCTION: fn_01900
-  RECT ClientRectangle(HWND window, const RECT& monitor) {
+  RECT ClientRectangle(HWND window) {
     RECT result;
     GetClientRect(window, &result);
     POINT point{result.left, result.top};
     ClientToScreen(window, &point);
-    result.left = point.x - monitor.left;
-    result.top = point.y - monitor.top;
+    result.left = point.x - g_monitorRectangleDX7.left;
+    result.top = point.y - g_monitorRectangleDX7.top;
     point = {result.right, result.bottom};
     ClientToScreen(window, &point);
-    result.right = point.x - monitor.left;
-    result.bottom = point.y - monitor.top;
+    result.right = point.x - g_monitorRectangleDX7.left;
+    result.bottom = point.y - g_monitorRectangleDX7.top;
 
     return result;
   }
@@ -89,7 +91,7 @@ DeviceOwnerDX7::DeviceOwnerDX7()
 
 // OFFSET: 0x005498A0
 // FUNCTION: fn_01894
-HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags, const RECT& monitor) {
+HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) {
   const bool buffered = (flags & 2) != 0;
   DDSURFACEDESC2 description = SurfaceDescription(DDSD_CAPS, 0);
   HRESULT status;
@@ -131,7 +133,7 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags, 
     GetClientRect(this->window, &this->source);
     this->width = this->source.right;
     this->height = this->source.bottom;
-    this->destination = ClientRectangle(this->window, monitor);
+    this->destination = ClientRectangle(this->window);
     description.ddsCaps.dwCaps = buffered ? DDSCAPS_PRIMARYSURFACE : DDSCAPS_PRIMARYSURFACE | DDSCAPS_3DDEVICE;
     status = this->draw->CreateSurface(&description, &this->primary, nullptr);
 
@@ -201,7 +203,7 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags, 
 
 // OFFSET: 0x0054A000
 // FUNCTION: fn_01895
-HRESULT DeviceOwnerDX7::CreateDevice(GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags, const RECT& monitor) {
+HRESULT DeviceOwnerDX7::CreateDevice(GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags) {
   this->depthMemory =
     std::memcmp(renderIdentity, &IID_IDirect3DHALDevice, sizeof(GUID)) == 0 || std::memcmp(renderIdentity, &IID_IDirect3DTnLHalDevice, sizeof(GUID)) == 0
       ? DDSCAPS_VIDEOMEMORY
@@ -224,7 +226,7 @@ HRESULT DeviceOwnerDX7::CreateDevice(GUID* drawIdentity, const GUID* renderIdent
     return DeviceError(2);
   }
 
-  const HRESULT status = this->CreateSurfaces(mode, flags, monitor);
+  const HRESULT status = this->CreateSurfaces(mode, flags);
 
   if (FAILED(status)) {
     return status;
@@ -335,9 +337,7 @@ HRESULT DeviceOwnerDX7::Close() {
 
 // OFFSET: 0x0054AAD0
 // FUNCTION: fn_01901
-HRESULT DeviceOwnerDX7::Initialize(
-  HWND value, GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags, HWND applicationWindow, const RECT& monitor
-) {
+HRESULT DeviceOwnerDX7::Initialize(HWND value, GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags) {
   this->window = value;
 
   if (!value || !renderIdentity || (!mode && (flags & 1))) {
@@ -347,11 +347,11 @@ HRESULT DeviceOwnerDX7::Initialize(
   this->fullscreen = flags & 1;
 
   if (this->fullscreen) {
-    SetWindowLongA(applicationWindow, GWL_STYLE, static_cast<LONG>(WS_POPUP));
-    ShowWindow(applicationWindow, SW_MAXIMIZE);
+    SetWindowLongA(hWnd, GWL_STYLE, static_cast<LONG>(WS_POPUP));
+    ShowWindow(hWnd, SW_MAXIMIZE);
   }
 
-  const HRESULT status = this->CreateDevice(drawIdentity, renderIdentity, mode, flags, monitor);
+  const HRESULT status = this->CreateDevice(drawIdentity, renderIdentity, mode, flags);
 
   if (FAILED(status)) {
     this->Close();
@@ -450,7 +450,7 @@ bool DeviceOwnerDX7::RestoreLostSurfaces() {
 
 // OFFSET: 0x0054AF20
 // FUNCTION: fn_01904
-HRESULT DeviceOwnerDX7::Present(bool wait, const RECT& monitor) {
+HRESULT DeviceOwnerDX7::Present(bool wait) {
   if (!this->primary) {
     return DeviceError(14);
   }
@@ -460,7 +460,7 @@ HRESULT DeviceOwnerDX7::Present(bool wait, const RECT& monitor) {
   }
 
   if (wait && (!this->fullscreen || this->presentationOption)) {
-    this->destination = ClientRectangle(this->window, monitor);
+    this->destination = ClientRectangle(this->window);
     this->draw->WaitForVerticalBlank(DDWAITVB_BLOCKBEGIN, nullptr);
     return this->primary->Blt(&this->destination, this->backBuffer, &this->source, DDBLT_WAIT, nullptr);
   }

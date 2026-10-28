@@ -43,6 +43,8 @@ private:
   /* 000C */ std::shared_ptr<CSurface> m_backBuffer;
 };
 
+void ClearDirectDrawModes();
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CRenderSystemDX7) == 20);
 #endif

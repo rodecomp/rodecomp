@@ -1,5 +1,6 @@
 #include "Render/DX7/RenderSystemDX7.h"
 #include "Render/DX7/DeviceOwnerDX7.h"
+#include "Render/DX7/DirectDrawEnumeration.h"
 #include "Render/DX7/SurfaceDX7.h"
 #include "Render/DX7/TextureDX7.h"
 
@@ -22,6 +23,12 @@ CRenderSystemDX7::~CRenderSystemDX7() {
   this->m_device = nullptr;
   this->m_backBuffer.reset();
   delete this->m_defaultTexture;
+}
+
+// OFFSET: 0x0056B5D0
+// FUNCTION: fn_02316
+void ClearDirectDrawModes() {
+  DirectDrawEnumeration::ClearModes();
 }
 
 // OFFSET: 0x0056B5F0
@@ -113,4 +120,9 @@ std::uint32_t CRenderSystemDX7::Width() {
 // FUNCTION: fn_02335
 bool CRenderSystemDX7::IsWindowed() {
   return this->m_device->fullscreen != 0;
+}
+
+// OFFSET: 0x0056C4C0
+HRESULT CRenderSystemDX7::Present(bool option) {
+  return this->m_device->Present(option);
 }

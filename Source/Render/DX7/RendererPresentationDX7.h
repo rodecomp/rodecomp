@@ -16,7 +16,7 @@ struct RendererPresentationDX7 {
   unsigned& rate;
   RendererBackBuffer& backBuffer;
 
-  void Present(DeviceOwnerDX7& owner, bool wait, const RECT& monitor);
+  void Present(DeviceOwnerDX7& owner, bool wait);
   float FPS() const;
   void DrawFPS(CRenderSystemBase* system, int width, int height);
 };

@@ -11,7 +11,7 @@
 
 // OFFSET: 0x0055B000
 // FUNCTION: fn_02087
-void RendererPresentationDX7::Present(DeviceOwnerDX7& owner, bool wait, const RECT& monitor) {
+void RendererPresentationDX7::Present(DeviceOwnerDX7& owner, bool wait) {
   ++this->frame;
   const unsigned elapsed = GetTickCount() - this->lastTick;
 
@@ -31,7 +31,7 @@ void RendererPresentationDX7::Present(DeviceOwnerDX7& owner, bool wait, const RE
     this->backBuffer.Unlock(owner);
   }
 
-  if (owner.Present(wait, monitor) == DDERR_SURFACELOST) {
+  if (owner.Present(wait) == DDERR_SURFACELOST) {
     owner.MarkSurfacesLost();
   }
 }
