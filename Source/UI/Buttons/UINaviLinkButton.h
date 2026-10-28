@@ -16,6 +16,7 @@ public:
   UINaviLinkButton(UIWindowContext& windows, UIButtonContext& buttons, NavigationDestination& navigation);
   ~UINaviLinkButton() override;
   void Slot25(int x, int y) override;
+  std::string Link();
   std::string link;
 
 private:

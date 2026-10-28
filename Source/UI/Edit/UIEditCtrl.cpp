@@ -14,6 +14,19 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Render/Renderer.h"
+#include "Render/Textures/SpritePixels.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "UI/Buttons/UINaviLinkButton.h"
+#include "UI/Buttons/UISpriteButton.h"
+#include "UI/Item/UIItemStoreFindWnd.h"
+#include "UI/Item/UIItemStoreSubWnd.h"
+#include "UI/Item/UIItemWnd.h"
+#include "UI/Shop/UIMerchantItemMyShopWnd.h"
+#include "UI/Shop/UIMerchantItemShopWnd.h"
+#include "UI/Shop/UINoticeMessageBox_LockSellItem.h"
+#include "UI/Skill/UISkillListWnd.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -581,4 +594,51 @@ void UIEditCtrl::MoveReadingWindow(int x) {
   }
 
   window->Move(left, top);
+}
+
+// OFFSET: 0x00858B80
+
+// OFFSET: 0x00858BE0
+
+// OFFSET: 0x00858C50
+
+// OFFSET: 0x0097E3E0
+// FUNCTION: fn_13327
+void UIItemWnd::Slot18() {
+}
+
+// OFFSET: 0x00984130
+// FUNCTION: fn_13351
+void UIItemStoreFindWnd::Slot26(int, int) {
+  this->SendMsg(nullptr, 6, 232, 0, 0, 0);
+}
+
+// OFFSET: 0x00984150
+// FUNCTION: fn_13352
+void UIItemStoreSubWnd::Slot26(int, int) {
+  this->SendMsg(nullptr, 6, 232, 0, 0, 0);
+}
+
+// OFFSET: 0x00985380
+
+// OFFSET: 0x009886C0
+
+// OFFSET: 0x009886D0
+// FUNCTION: fn_13387
+void UIMerchantItemMyShopWnd::Slot19() {
+  this->Invalidate();
+}
+
+// OFFSET: 0x009886E0
+// FUNCTION: fn_13388
+void UIMerchantItemShopWnd::Slot19() {
+  this->Invalidate();
+}
+
+// OFFSET: 0x00988C20
+
+// OFFSET: 0x0098A220
+// FUNCTION: fn_13407
+void UISkillListWnd::Slot33(int, int) {
+  this->SendMsg(nullptr, 49, 0, 0, 0, 0);
 }
