@@ -4,7 +4,11 @@
 #include "Resource/Models/ModelResource.h"
 
 struct AnimatedModelFace {
-  /* 0000 */ std::uint32_t values[6];
+  /* 0000 */ std::uint16_t vertices[3];
+  /* 0006 */ std::uint16_t textureVertices[3];
+  /* 000C */ std::uint32_t unknown_000C;
+  /* 0010 */ std::uint32_t unknown_0010;
+  /* 0014 */ int smoothGroup;
 };
 
 struct AnimatedModelFrame {
@@ -31,6 +35,7 @@ struct AnimatedModelNode {
   ~AnimatedModelNode();
   AnimatedModelNode(const AnimatedModelNode&) = delete;
   AnimatedModelNode& operator=(const AnimatedModelNode&) = delete;
+  void Shade(const float* matrix, int frame, const float* light, const float* diffuse, const float* ambient, int shadeType, int alpha);
 
   /* 0000 */ std::string name;
   /* 0018 */ std::string parentName;

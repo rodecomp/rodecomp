@@ -8,8 +8,12 @@
 #include <windows.h>
 
 class CTexture;
+struct AffineMatrix;
 
+struct granny_animation;
 struct granny_control;
+struct granny_file;
+struct granny_local_pose;
 struct granny_material;
 struct granny_mesh_binding;
 struct granny_mesh_deformer;
@@ -65,6 +69,17 @@ struct granny_model {
   /* 0050 */ granny_model_mesh_binding* meshBindings;
 };
 
+struct granny_file_info {
+  /* 0000 */ unsigned char unknown_0000[0x10];
+  /* 0010 */ std::int32_t textureCount;
+  /* 0014 */ unsigned char unknown_0014[0x2C];
+  /* 0040 */ std::int32_t modelCount;
+  /* 0044 */ granny_model** models;
+  /* 0048 */ unsigned char unknown_0048[8];
+  /* 0050 */ std::int32_t animationCount;
+  /* 0054 */ granny_animation** animations;
+};
+
 extern "C" {
 __declspec(dllimport) extern const granny_pixel_layout GrannyRGBA8888PixelFormat;
 __declspec(dllimport) extern granny_data_type_definition GrannyPNT332VertexType[];
@@ -91,6 +106,16 @@ __declspec(dllimport) granny_mesh_deformer* WINAPI GrannyNewMeshDeformer(
 );
 __declspec(dllimport) void WINAPI GrannyCopyMeshVertices(const granny_mesh* mesh, const granny_data_type_definition* vertexType, void* vertices);
 __declspec(dllimport) granny_texture* WINAPI GrannyGetMaterialTextureByType(const granny_material* material, std::int32_t type);
+__declspec(dllimport) bool WINAPI GrannyVersionsMatch_(std::int32_t major, std::int32_t minor, std::int32_t customization, std::int32_t build);
+__declspec(dllimport) granny_file* WINAPI GrannyReadEntireFileFromMemory(std::int32_t size, void* memory);
+__declspec(dllimport) granny_file_info* WINAPI GrannyGetFileInfo(granny_file* file);
+__declspec(dllimport) void WINAPI GrannyFreeFileSection(granny_file* file, std::int32_t section);
+__declspec(dllimport) granny_local_pose* WINAPI GrannyNewLocalPose(std::int32_t boneCount);
+__declspec(dllimport) void WINAPI GrannyFreeMeshDeformer(granny_mesh_deformer* deformer);
+__declspec(dllimport) void WINAPI GrannyFreeModelInstance(granny_model_instance* instance);
+__declspec(dllimport) void WINAPI GrannyFreeWorldPose(granny_world_pose* pose);
+__declspec(dllimport) granny_control* WINAPI GrannyPlayControlledAnimation(float startTime, const granny_animation* animation, granny_model_instance* instance);
+__declspec(dllimport) void WINAPI GrannySetControlLoopCount(granny_control* control, std::int32_t loopCount);
 }
 
 struct GrannyTextureEntry {
@@ -115,12 +140,36 @@ struct GrannyModelInstance {
   /* 000C */ GrannyMeshEntry* meshes;
 };
 
+class GrannyAnimationLibrary {
+public:
+  bool Load(const char* name, int job, int action);
+  void FreeInstance();
+  granny_file* ReadAnimationFile(const char* name, const char* suffix);
+
+  /* 0000 */ float unknown_0000;
+  /* 0004 */ unsigned char unknown_0004[0x14C];
+  /* 0150 */ granny_file* file;
+  /* 0154 */ int textureCount;
+  /* 0158 */ GrannyTextureEntry* textures;
+  /* 015C */ int modelCount;
+  /* 0160 */ GrannyModelInstance* instance;
+  /* 0164 */ int maxBoneCount;
+  /* 0168 */ granny_local_pose* localPose;
+  /* 016C */ int deformBufferSize;
+  /* 0170 */ int unknown_0170;
+  /* 0174 */ unsigned char unknown_0174[8];
+  /* 017C */ char fileName[MAX_PATH];
+  /* 0280 */ granny_animation* animations[100][20];
+};
+
 class C3dGrannyModelRes : public CRes {
 public:
   void RebindMeshes(const C3dGrannyModelRes& target);
   void InstantiateModel(GrannyModelInstance* target, const granny_model* model);
   CTexture* CreateTexture(const granny_texture* texture, int option);
   void FreeControl(granny_control* control);
+  granny_control* PlayAnimation(unsigned action, granny_model_instance* instance, granny_control* control, int loopCount);
+  bool ProjectBounds(float* rect, const AffineMatrix& view, const AffineMatrix& world, const float* eye) const;
 
   /* 0110 */ unsigned char unknown_0110[0x150];
   /* 0260 */ void* file;
@@ -135,13 +184,11 @@ public:
   /* 0284 */ unsigned char unknown_0284[8];
   /* 028C */ char fileName[MAX_PATH];
   /* 0390 */ const granny_model* model;
-  /* 0394 */ int unknown_0394;
-  /* 0398 */ int unknown_0398;
-  /* 039C */ int unknown_039C;
+  /* 0394 */ float position[3];
   /* 03A0 */ float unknown_03A0;
   /* 03A4 */ float unknown_03A4;
-  /* 03A8 */ void* animations;
-  /* 03AC */ int job;
+  /* 03A8 */ GrannyAnimationLibrary* animations;
+  /* 03AC */ unsigned job;
   /* 03B0 */ int unknown_03B0;
   /* 03B4 */ granny_skeleton* skeleton;
 
@@ -159,6 +206,11 @@ static_assert(offsetof(C3dGrannyModelRes, file) == 0x260);
 static_assert(offsetof(C3dGrannyModelRes, fileName) == 0x28C);
 static_assert(offsetof(C3dGrannyModelRes, model) == 0x390);
 static_assert(offsetof(C3dGrannyModelRes, skeleton) == 0x3B4);
+static_assert(offsetof(granny_file_info, models) == 0x44);
+static_assert(offsetof(granny_file_info, animations) == 0x54);
+static_assert(offsetof(GrannyAnimationLibrary, file) == 0x150);
+static_assert(offsetof(GrannyAnimationLibrary, fileName) == 0x17C);
+static_assert(offsetof(GrannyAnimationLibrary, animations) == 0x280);
 #endif
 
 #endif

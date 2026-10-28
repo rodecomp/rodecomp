@@ -11,6 +11,7 @@
 
 class ResourceBytes;
 class TextureCache;
+struct JobNames;
 struct ResourceByteReader;
 class C3dModelRes;
 
@@ -94,6 +95,7 @@ struct ModelResourceContext {
   ResourceBytes& file;
   TextureCache& textures;
   CRenderSystemBase*& renderSystem;
+  JobNames& jobNames;
 };
 
 class C3dModelRes : public CRes {
