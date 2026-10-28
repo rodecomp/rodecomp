@@ -1,8 +1,6 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_RAGEFFECTSTATE_H
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_RAGEFFECTSTATE_H
 
-#include "Contents/Actors/RenderObjectState.h"
-
 #include <list>
 
 class CRes;
