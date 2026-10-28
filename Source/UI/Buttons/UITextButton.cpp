@@ -1,9 +1,13 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Window/FrameFocus.h"
+#include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Buttons/UITextButton.h"
+#include "UI/Lists/UITreeView.h"
+#include "UI/UIStaticItem.h"
 
 #include <cstring>
+#include <string>
 
 // OFFSET: 0x0086EEB0
 // FUNCTION: fn_11085
@@ -163,4 +167,38 @@ void UITextButton::Slot35(int value) {
   if (this->parent) {
     this->parent->Slot35(value);
   }
+}
+
+// OFFSET: 0x008911D0
+// FUNCTION: fn_11446
+void UITreeView::Slot31(int x, int y) {
+  if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
+    this->unknown_0088 = 0;
+  }
+
+  this->unknown_008C = 0;
+  this->unknown_0090 = 0;
+  this->unknown_00AC = 0;
+  this->Invalidate();
+
+  if (this->parent) {
+    this->parent->Slot31(x + this->geometry.x, y + this->geometry.y);
+  }
+}
+
+// OFFSET: 0x00891A80
+// FUNCTION: fn_11455
+void UIItemTagButton::Slot28(int x, int y) {
+  std::string tag = "<";
+  tag += this->m_tooltip;
+  tag += ">";
+
+  if (this->label != tag) {
+    UIButton::Slot28(x, y);
+  }
+}
+
+// OFFSET: 0x00891F10
+// FUNCTION: fn_11459
+void UIStaticItem_Illust::Slot28(int, int) {
 }
