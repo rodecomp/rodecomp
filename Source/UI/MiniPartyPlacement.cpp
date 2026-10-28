@@ -21,6 +21,11 @@ CMiniPartyWndSortArea::CMiniPartyWndSortArea(const RECT& bounds) {
   }
 }
 
+// OFFSET: 0x00737830
+// FUNCTION: fn_07651
+void __stdcall Nullsub228() {
+}
+
 // OFFSET: 0x00737D40
 // FUNCTION: fn_07658
 std::list<int> CMiniPartyWndSortArea::GetCells() const {
