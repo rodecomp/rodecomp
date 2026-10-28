@@ -283,6 +283,7 @@
   "Source/Contents/Camera/CameraSmoothing.cpp": 3,
   "Source/Contents/CashEmotionMgr.cpp": 4,
   "Source/Contents/ClientItemLists.cpp": 4,
+  "Source/Contents/ClientState.cpp": 4,
   "Source/Contents/Configuration/OptionWriter.cpp": 4,
   "Source/Contents/Configuration/ScriptOptions.cpp": 4,
   "Source/Contents/Configuration/ServiceConfiguration.cpp": 4,

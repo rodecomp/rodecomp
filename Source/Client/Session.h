@@ -73,7 +73,9 @@ public:
   /* 6144 */ std::map<int, SessionRecord6144> unknown_6144;
   /* 614C */ unsigned char unknown_614C[0x20];
   /* 616C */ std::vector<int> unknown_616C;
-  /* 6178 */ unsigned char unknown_6178[0x1FC0];
+  /* 6178 */ unsigned char unknown_6178[0x1FA4];
+  /* 811C */ std::vector<ItemInfo> m_cardItems;
+  /* 8128 */ unsigned char unknown_8128[0x10];
   /* 8138 */ std::int64_t m_startTimeTicks;
   /* 8140 */ std::int64_t m_loginTimeTicks;
   /* 8148 */ int unknown_8148;
@@ -118,6 +120,7 @@ public:
   char* ConvertTooltipText(const char* source, char* output) const;
   int MercSkillLevel(int skillId) const;
   int SyncUnknown0E98();
+  void CollectCardItems();
 };
 
 extern CSession g_session;
@@ -157,6 +160,7 @@ static_assert(offsetof(CSession, unknown_5C68) == 0x5C68);
 static_assert(offsetof(CSession, unknown_6140) == 0x6140);
 static_assert(offsetof(CSession, unknown_6144) == 0x6144);
 static_assert(offsetof(CSession, unknown_616C) == 0x616C);
+static_assert(offsetof(CSession, m_cardItems) == 0x811C);
 static_assert(offsetof(CSession, m_startTimeTicks) == 0x8138);
 static_assert(offsetof(CSession, m_loginTimeTicks) == 0x8140);
 #endif

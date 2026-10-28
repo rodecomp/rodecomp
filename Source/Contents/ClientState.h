@@ -1,0 +1,6 @@
+#ifndef RAGNAROK_SOURCE_CONTENTS_CLIENTSTATE_H
+#define RAGNAROK_SOURCE_CONTENTS_CLIENTSTATE_H
+
+void RequestBasicInfoRefresh();
+
+#endif

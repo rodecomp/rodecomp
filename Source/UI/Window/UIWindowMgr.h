@@ -152,7 +152,7 @@ public:
   /* 01D4 */ std::uint32_t unknown_01D4;
   /* 01D8 */ std::uint32_t unknown_01D8;
   /* 01DC */ std::uint32_t unknown_01DC;
-  /* 01E0 */ std::uint32_t unknown_01E0;
+  /* 01E0 */ UIWindow* unknown_01E0;
   /* 01E4 */ std::uint32_t unknown_01E4;
   /* 01E8 */ UIWindow* window_01E8;
   /* 01EC */ UIWindow* window_01EC;
