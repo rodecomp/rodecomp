@@ -10,6 +10,12 @@ CMode* CWorld::ActiveGameMode() {
   return this->state == 1 ? this->gameMode : nullptr;
 }
 
+// OFFSET: 0x00AD6460
+// FUNCTION: fn_17832
+CMode* CWorld::ActiveLoginMode() {
+  return this->state == 0 ? this->gameMode : nullptr;
+}
+
 // OFFSET: 0x00AD66D0
 // FUNCTION: fn_17835
 void CMode::Slot7(int) {

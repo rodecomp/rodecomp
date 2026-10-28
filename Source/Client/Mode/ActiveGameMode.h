@@ -12,6 +12,7 @@ struct CWorld {
   /* 005C */ int nextState;
 
   CMode* ActiveGameMode();
+  CMode* ActiveLoginMode();
   void Quit();
   void Switch(int mode, const char* name);
 };
