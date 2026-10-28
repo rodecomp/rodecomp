@@ -82,6 +82,30 @@ void ChatHeaderLayout::Apply() {
   }
 }
 
+// OFFSET: 0x009338F0
+// FUNCTION: fn_12731
+void ChatButtonLayout::Apply() {
+  if (this->expanded == 0) {
+    (*this->buttons[0])->Move(-100, -100);
+    (*this->buttons[1])->Move(-100, -100);
+    UIWindow* button = *this->buttons[2];
+    button->Move(this->width - button->geometry.width - 2, 4);
+    return;
+  }
+
+  UIWindow* button = *this->buttons[0];
+  int x = this->width - button->geometry.width - 2;
+  button->Move(x, 4);
+
+  button = *this->buttons[1];
+  x -= (button->geometry.width + 2);
+  button->Move(x, 4);
+
+  button = *this->buttons[2];
+  x -= (button->geometry.width + 2);
+  button->Move(x, 4);
+}
+
 // OFFSET: 0x0093D2C0
 // FUNCTION: fn_12768
 void ChatRowLayout::Resize(int count) {

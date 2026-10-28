@@ -38,6 +38,14 @@ struct ChatHeaderLayout {
   void Apply();
 };
 
+struct ChatButtonLayout {
+  const std::uint8_t& expanded;
+  const int& width;
+  std::array<UIWindow**, 3> buttons;
+
+  void Apply();
+};
+
 struct ChatRowLayout {
   ChatInputLayout& input;
   ChatHeaderLayout& header;
