@@ -3,6 +3,18 @@
 #include <cstdlib>
 #include <cstring>
 
+// GLOBAL: gl_24720
+unsigned char g_digitCharacters[256] = {
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
 // OFFSET: 0x006D47E0
 // FUNCTION: fn_06562
 ItemInfo::ItemInfo() {
@@ -210,4 +222,32 @@ bool ItemInfo::HasSpecialCard() const {
 bool ItemInfo::IsApprenticeItem() const {
   const unsigned id = static_cast<unsigned>(std::atoi(this->itemId.c_str()));
   return id - 9001u <= 498u || id - 10000u <= 999u;
+}
+
+// OFFSET: 0x006D8920
+// FUNCTION: fn_06601
+bool ItemInfo::IsForgeMaterial() const {
+  return std::atoi(this->itemId.c_str()) == 1000 || this->IsElementalStone();
+}
+
+// OFFSET: 0x006D8980
+
+// OFFSET: 0x006D8A10
+// FUNCTION: fn_06604
+bool ItemInfo::IsElementalStone() const {
+  switch (std::atoi(this->itemId.c_str())) {
+  case 994:
+  case 995:
+  case 996:
+  case 997:
+    return true;
+  default:
+    return false;
+  }
+}
+
+// OFFSET: 0x006D8A50
+// FUNCTION: fn_06605
+bool ItemInfo::IsAboveItemId600() const {
+  return std::atoi(this->itemId.c_str()) > 500 && std::atoi(this->itemId.c_str()) > 600;
 }

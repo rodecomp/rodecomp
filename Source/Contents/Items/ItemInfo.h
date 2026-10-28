@@ -48,6 +48,9 @@ struct alignas(8) ItemInfo {
   void SetItemId(int value);
   bool HasSpecialCard() const;
   bool IsApprenticeItem() const;
+  bool IsForgeMaterial() const;
+  bool IsElementalStone() const;
+  bool IsAboveItemId600() const;
   /* 0000 */ std::uint32_t unknown_0000[4];
   /* 0010 */ std::int32_t quantity;
   /* 0014 */ std::uint32_t unknown_0014[2];
@@ -76,6 +79,7 @@ struct alignas(8) ItemInfo {
 
 ItemInfo LookupClientItem(const std::list<ItemInfo>& values, int id, unsigned char requireIdentified);
 ItemInfo LookupClientItemByIdentity(const std::list<ItemInfo>& values, std::uint32_t id);
+bool IsNumericText(const char* text);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ItemInfo) == 248);
