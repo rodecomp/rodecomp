@@ -18,6 +18,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "UI/Buttons/UIBmpTextButton2.h"
 #include "UI/Buttons/UINaviLinkButton.h"
 #include "UI/Buttons/UISpriteButton.h"
 #include "UI/Item/UIItemStoreFindWnd.h"
@@ -594,6 +595,68 @@ void UIEditCtrl::MoveReadingWindow(int x) {
   }
 
   window->Move(left, top);
+}
+
+// OFFSET: 0x008570D0
+// FUNCTION: fn_10760
+void UIBmpTextButton2::DrawLabels() {
+  for (unsigned index = 0; index < this->labels.size(); ++index) {
+    const BmpTextButtonLabel& label = this->labels[index];
+
+    if (label.text.size() == 0) {
+      continue;
+    }
+
+    int x = label.x;
+    int y = label.y;
+    int shadowX = 0;
+    int shadowY = 0;
+
+    if (x == -1000) {
+      const int width = this->TextWidth(this->m_buttonContext->fonts, this->m_buttonContext->locale, label.text.c_str(), label.text.size(), 0, label.height, label.bold, 0);
+      x = static_cast<int>((this->geometry.width - width) * 0.5);
+    }
+
+    if (y == -1000) {
+      const int height = this->TextHeight(this->m_buttonContext->fonts, this->m_buttonContext->locale, label.text.c_str(), label.text.size(), 0, label.height, label.bold, 0);
+      y = static_cast<int>((this->geometry.height - height) * 0.5);
+    }
+
+    std::uint32_t color = label.color;
+    std::uint32_t shadowColor = 0xE6E6E6;
+
+    switch (this->geometry.unknown_0030) {
+    case 0:
+      shadowX = x + 1;
+      shadowY = y + 1;
+      shadowColor = 0xD7D7D7;
+      break;
+    case 1:
+      shadowX = x + 1;
+      shadowY = y + 1;
+      shadowColor = 0xC7A796;
+      break;
+    case 2:
+      shadowX = x;
+      shadowY = y;
+      shadowColor = 0xFFFFFF;
+      ++x;
+      ++y;
+      break;
+    case 3:
+      color = 0xADADAD;
+      shadowX = x + 1;
+      shadowY = y + 1;
+      shadowColor = 0xD7D7D7;
+      break;
+    }
+
+    if (label.shadow == 1) {
+      this->DrawTextAt(this->m_buttonContext->fonts, this->m_buttonContext->locale, shadowX, shadowY, label.text.c_str(), 0, 0, label.height, shadowColor, label.bold, 0);
+    }
+
+    this->DrawTextAt(this->m_buttonContext->fonts, this->m_buttonContext->locale, x, y, label.text.c_str(), 0, 0, label.height, color, label.bold, 0);
+  }
 }
 
 // OFFSET: 0x00858B80
