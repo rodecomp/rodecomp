@@ -1,5 +1,7 @@
 #include "Contents/NavigationManager.h"
 
+#include "Contents/MessageTable.h"
+#include "Utility/Text/FormatString.h"
 #include "Client/Registry.h"
 #include "Client/Session.h"
 #include "Resource/ResourceMgr.h"
@@ -139,6 +141,52 @@ bool CNavigationManager::BuildRoute(int startX, int startY, int destX, int destY
   return found;
 }
 
+// OFFSET: 0x00B97E90
+// FUNCTION: fn_19603
+NaviCell* CNavigationManager::MapCellToView(NaviCell* out, const char* mapName, int cellX, int cellY, float size) {
+  CNaviInfo* info = this->FindObject(mapName);
+  if (info == nullptr) {
+    const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(mapName);
+    info = this->FindObject(resolved.c_str());
+  }
+
+  out->x = -1;
+  out->y = -1;
+  if (info != nullptr) {
+    const int height = info->GetCellY();
+    const int width = info->GetCellX();
+    int offsetX;
+    int offsetY;
+    const float scale = this->FitToSquare(&offsetX, &offsetY, width, height, size);
+    out->x = static_cast<int>(cellX * scale + offsetX);
+    out->y = static_cast<int>(static_cast<int>(size) - (cellY * scale + offsetY));
+  }
+  return out;
+}
+
+// OFFSET: 0x00B98630
+// FUNCTION: fn_19608
+std::string CNavigationManager::RouteText() {
+  char buffer[0x32];
+  std::memset(buffer, 0, sizeof(buffer));
+
+  CNaviInfo* info = this->data.GetInfo();
+  if (info != nullptr) {
+    NaviCell cell;
+    if (this->data.GetCell(&cell)->x > 0) {
+      NaviCell cellY;
+      NaviCell cellX;
+      const int y = this->data.GetCell(&cellY)->y;
+      const int x = this->data.GetCell(&cellX)->x;
+      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] -> %s %d %d", LookupMessage(3585), info->GetName(), x, y);
+    } else {
+      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] %s", LookupMessage(3585), info->GetName());
+    }
+  }
+
+  this->routeText.assign(buffer, std::strlen(buffer));
+  return this->routeText;
+}
 // OFFSET: 0x00B8D270
 // FUNCTION: fn_19434
 bool CNaviInfo::HasName(const char* name) const {
