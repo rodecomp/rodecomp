@@ -1,6 +1,7 @@
 #include "Render/Renderer.h"
 
 // OFFSET: 0x0055D150
+// FUNCTION: fn_02097
 float CRenderer::ScaleDistance(float distance) const {
   return (this->viewport.scaleX * distance) / 7.0f;
 }
