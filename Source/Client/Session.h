@@ -233,6 +233,7 @@ public:
   const char* GetPetString(int id);
   const char* GetPetTalkName(int job);
   const char* GetPetTalkActionName(int action);
+  void GetPetTalkText(int job, int hungerState, int action, char* text);
   const char* GetMonsterTalkEventName(int event);
   bool UpdateHomunSkill(const CSkillInfo& value, unsigned char notify);
   bool UpdateMercSkill(const CSkillInfo& value, unsigned char notify);
