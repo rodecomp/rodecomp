@@ -22,7 +22,8 @@ namespace {
     float cosine[361];
     float negativeCosine[361];
 
-    // INLINED
+// OFFSET: 0x00554280
+// FUNCTION: fn_02021
     AngleTables() {
       for (int index = 0; index <= 360; ++index) {
         const float angle = (static_cast<float>(index) / 180.0f) * 3.141592f;
