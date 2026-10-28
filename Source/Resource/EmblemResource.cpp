@@ -24,8 +24,36 @@ CEmblemRes::CEmblemRes(BitmapResourceContext& context) : gif(context) {
 CEmblemRes::~CEmblemRes() = default;
 
 // OFFSET: 0x0074C9F0
+// FUNCTION: fn_07880
+CEmblemRes* CEmblemRes::Create() {
+  return new CEmblemRes(this->gif.Context());
+}
 
 // OFFSET: 0x0074CA90
+// FUNCTION: fn_07881
+bool CEmblemRes::Load(const char* name) {
+  if (GuildEmblemCache().IsInvalid(name) == true) {
+    this->gif.CreateBlank(24, 24);
+    return true;
+  }
+
+  CFile file;
+  if (!file.Open(name, 0, true, false)) {
+    return false;
+  }
+
+  uLongf size = static_cast<uLongf>(static_cast<std::uint32_t>(g_guildMgr->m_timeout) * 1.2);
+  Bytef* buffer = static_cast<Bytef*>(std::malloc(size));
+  if (uncompress(buffer, &size, static_cast<const Bytef*>(file.GetData()), file.GetSize()) != Z_OK
+      || this->gif.Decode("_emblem.bmp", buffer, size, true) != true) {
+    GuildEmblemCache().MarkInvalid(name);
+    this->gif.CreateBlank(24, 24);
+  }
+
+  file.Close();
+  std::free(buffer);
+  return true;
+}
 
 // OFFSET: 0x0074CD00
 // FUNCTION: fn_07882
@@ -46,3 +74,6 @@ bool CEmblemRes::IsTransient() {
 }
 
 // OFFSET: 0x0074CD40
+// FUNCTION: fn_07885
+void CEmblemRes::MissingFile(CRenderSystemBase*, const char*) {
+}
