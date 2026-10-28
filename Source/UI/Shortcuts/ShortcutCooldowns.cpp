@@ -3,12 +3,20 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
+#include "Contents/Items/ItemInfo.h"
+#include "Contents/Skills/ClientSkills.h"
+#include "Contents/SkinMgr.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Shop/ItemDrawing.h"
+#include "UI/Shortcuts/UIQuickSlotWnd.h"
 #include "UI/Window/UIRebirthWnd.h"
 #include "UI/Window/UISeekPartyMBWnd.h"
+#include "UI/Window/UISeekPartyWnd.h"
+#include "Utility/Text/FormatString.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
 
 #include <algorithm>
+#include <cstdio>
 #include <cstring>
 #include <windows.h>
 #include <timeapi.h>
@@ -239,4 +247,92 @@ void UISeekPartyMBWnd::Paint() {
   this->FillSurface(0, &outer);
   this->FillSurface(0xF0F0F0, &inner);
   this->DrawButtonBar(2, 0, 1);
+}
+
+// OFFSET: 0x0092E300
+// FUNCTION: fn_12677
+void UISeekPartyWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, true, "", 0);
+
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+
+  if (!this->m_minimized) {
+    std::string name;
+    const char* names[] = {"bibibic", "bibibic", "달기린", "달기린", "boya", "boya"};
+    name = FormatOwnedString(
+      "유저인터페이스\\basic_interface\\seekparty\\type_0%d\\seekparty_%s_0%d_%d.bmp", this->m_type, names[this->m_type], this->m_type, this->m_level
+    );
+    if (ResourceMgr::Instance().Exists(name.c_str())) {
+      auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
+      this->DrawBitmap(1, 18, &bitmap->image, false);
+    }
+  }
+
+  this->DrawButtonBar(2, 0, 1);
+
+  char text[10] = {};
+  const unsigned seconds = this->m_elapsed / 1000;
+  std::sprintf(text, "%02d:%02d:%02d", seconds / 60 / 60 % 60, seconds / 60 % 60, seconds % 60);
+  this->DrawTextAt(controls.fonts, controls.locale, 10, this->geometry.height - 20, text, 0, 0, 12, 0, 0, 0);
+}
+
+// OFFSET: 0x0092D660
+// FUNCTION: fn_12671
+void UIQuickSlotWnd::Paint() {
+  QuickSlotPainting& painting = *this->m_painting;
+  this->DrawPanelBackground(0, 0, "유저인터페이스\\basic_interface\\quickslot.bmp");
+  if (this->m_selected != -1) {
+    const SkinPaletteCell cell = {2, 2};
+    this->FillRegion(this->m_selected * 29 + 5, 5, 24, 24, SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected()));
+  }
+
+  painting.icons.clear();
+
+  for (int index = 0; index < 2; ++index) {
+    const QuickSlotEntry& entry = this->m_entries[index];
+    if (entry.id == 0) {
+      continue;
+    }
+
+    const int x = index * 29 + 5;
+    if (entry.skill) {
+      CSkillInfo skill = painting.skills.Lookup(entry.id);
+      if (!skill.available) {
+        continue;
+      }
+
+      char text[1024];
+      std::sprintf(text, "유저인터페이스\\item\\%s.bmp", skill.name);
+      auto* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
+      painting.icons.push_back({skill.id, index, x, 5});
+      this->DrawBitmap(x, 5, &image->image, true);
+      if (entry.count != 0) {
+        std::sprintf(text, "%d", entry.count);
+        this->DrawTextAt(painting.fonts, painting.locale, x + 15, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(painting.fonts, painting.locale, x + 13, 20, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(painting.fonts, painting.locale, x + 14, 21, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(painting.fonts, painting.locale, x + 14, 19, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(painting.fonts, painting.locale, x + 14, 20, text, 0, 0, 11, 0, 0, 0);
+      }
+    } else {
+      ItemInfo item = LookupClientItem(painting.inventory, static_cast<int>(entry.id), 1);
+      if (item.unknown_0000[1] == 0) {
+        continue;
+      }
+
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), painting.descriptions, painting.fonts, painting.locale, x, 5, item, item.identified, 1);
+      if (item.unknown_0088 > 0) {
+        const std::string name = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.unknown_0088);
+        auto* grade = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
+        this->DrawBitmap(x, 17, &grade->image, true);
+      }
+    }
+  }
+
+  painting.cooldowns.PaintAlternate(painting.icons, this->geometry.x, this->geometry.y, painting.drawing, painting.clock, painting.commands, painting.system);
 }
