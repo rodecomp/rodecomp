@@ -37,7 +37,9 @@ public:
   /* 06A8 */ unsigned char unknown_06A8[0x43];
   /* 06EB */ NormalItemSlot unknown_06EB;
   /* 06F2 */ NormalItemSlot unknown_06F2;
-  /* 06F9 */ unsigned char unknown_06F9[0x7F];
+  /* 06F9 */ unsigned char unknown_06F9[0x2F];
+  /* 0728 */ std::vector<int> m_mercSkillLevels;
+  /* 0734 */ unsigned char unknown_0734[0x44];
   /* 0778 */ std::vector<std::pair<int, int>> unknown_0778;
   /* 0784 */ std::map<std::int64_t, std::int64_t> unknown_0784;
   /* 078C */ std::map<std::int64_t, std::int64_t> unknown_078C;
@@ -109,6 +111,8 @@ public:
   void GetPetFriendlyStateString(int friendly, char* buffer);
   int GetPetHungryState(int hunger);
   int GetPetEmotionNumber(int job, int action, int hungerLevel);
+  int MercSkillLevel(int skillId) const;
+  int SyncUnknown0E98();
 };
 
 extern CSession g_session;
@@ -126,6 +130,7 @@ static_assert(offsetof(CSession, m_shortcutSlots) == 0x4B0);
 static_assert(offsetof(CSession, m_secondaryShortcutSlots) == 0x5AC);
 static_assert(offsetof(CSession, unknown_06EB) == 0x6EB);
 static_assert(offsetof(CSession, unknown_06F2) == 0x6F2);
+static_assert(offsetof(CSession, m_mercSkillLevels) == 0x728);
 static_assert(offsetof(CSession, unknown_0778) == 0x778);
 static_assert(offsetof(CSession, unknown_0784) == 0x784);
 static_assert(offsetof(CSession, unknown_078C) == 0x78C);
