@@ -34,6 +34,18 @@ void UpdateWorldProximityNotification(
 }
 
 // OFFSET: 0x00AC8A40
+// FUNCTION: fn_17678
+bool WorldScene::FindActorInCell(const float* position, std::function<bool(std::uint32_t)> predicate) const {
+  const float key = static_cast<float>(this->terrain->width) * position[1] + position[0];
+  const auto found = this->actorCells.find(key);
+
+  if (found == this->actorCells.end()) {
+    return false;
+  }
+
+  const std::list<std::uint32_t>& ids = found->second;
+  return std::find_if(ids.begin(), ids.end(), predicate) != ids.end();
+}
 
 // OFFSET: 0x00ACA180
 // FUNCTION: fn_17689
