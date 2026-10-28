@@ -6,6 +6,7 @@
 class EquipmentResourceMgr {
 public:
   std::string GetBodyRacePrefix(int job);
+  std::string GetBodyResourceName(int type, int job, int sex, int costumeJob, int costume);
   std::string GetRobeSprName(int robe, int);
   std::string GetHeadName(int type, int job, int sex, int* head);
   std::string GetHeadPalName(int head, int job, int sex, int palette);

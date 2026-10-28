@@ -140,7 +140,9 @@ public:
   /* 4860 */ ItemInfo m_itemSlots[10];
   /* 5210 */ unsigned char unknown_5210[0x44];
   /* 5254 */ std::map<int, float> m_npcLocationRadius;
-  /* 525C */ unsigned char unknown_525C[0x44];
+  /* 525C */ unsigned char unknown_525C[0x38];
+  /* 5294 */ const char* const* m_bodyJobNames;
+  /* 5298 */ unsigned char unknown_5298[0x08];
   /* 52A0 */ const char* const* m_sexNames;
   /* 52A4 */ unsigned char unknown_52A4[0x08];
   /* 52AC */ const char* const* m_weaponNamesBegin;
@@ -278,6 +280,8 @@ public:
   int GetPetEmotionNumber(int job, int action, int hungerLevel);
   void ClearItemSelection();
   bool IsDoramJob(int job) const;
+  bool IsSecondJob(int job);
+  std::string GetBodyJobName(int job);
   char* ConvertTooltipText(const char* source, char* output) const;
   int MercSkillLevel(int skillId) const;
   int HomunSkillLevel(int skillId) const;
