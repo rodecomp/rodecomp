@@ -66,7 +66,8 @@ CSurfaceDX9::CSurfaceDX9(SurfaceDX9Context& context, IDirect3DSurface9* surface)
   }
 }
 
-// INLINED
+// OFFSET: 0x005708F0
+// FUNCTION: fn_02429
 CSurfaceDX9::~CSurfaceDX9() {
   if (this->m_surface) {
     this->m_surface->Release();
