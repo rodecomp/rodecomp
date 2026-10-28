@@ -25,6 +25,7 @@
 #include "UI/Dialogs/UIRestartWnd.h"
 #include "UI/Dialogs/UISayDialogWnd.h"
 #include "UI/Dialogs/UISelectCartWnd.h"
+#include "UI/Dialogs/UITipOfTheDayWnd.h"
 #include "UI/Dialogs/UIWaitWnd.h"
 #include "UI/Items/UIEquipWnd.h"
 #include "UI/Items/UIExchangeWnd.h"
@@ -34,6 +35,7 @@
 #include "UI/Lists/UIComboBoxWnd.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Party/UIPartySettingWnd.h"
+#include "UI/Shop/ItemDrawing.h"
 #include "UI/Shop/UInCash_CallWnd.h"
 #include "UI/Skill/UISkillDescribeWnd.h"
 #include "UI/Status/UIStatusWnd.h"
@@ -242,6 +244,44 @@ void UISkillDescribeWnd::Paint() {
   );
   DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xC3C3C3);
   DrawRoundedBorder(*this, 2, 2, this->geometry.width - 4, this->geometry.height - 4, 0xFFFFFF);
+}
+
+// OFFSET: 0x008F2460
+// FUNCTION: fn_12255
+void UITipOfTheDayWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(174), 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &left->image, false);
+  }
+
+  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
+  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  this->DrawButtonBar(2, 0, 1);
+
+  const int columns = (this->geometry.width - 40) / 32;
+  const int slots = (this->geometry.height - 38) / 32;
+  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
+    DrawItemSlotBackground(*this, 40, y);
+  }
+
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(72, 17, columns * 32 - 32, slots * 32, RGB(red, green, blue));
 }
 
 // OFFSET: 0x008F2A90
@@ -472,6 +512,21 @@ void UINotifyItemObtainWnd::Slot19() {
   }
 }
 
+// OFFSET: 0x008F4FF0
+// FUNCTION: fn_12298
+void UIPetTamingDeceiveWnd::Slot19() {
+  this->Invalidate();
+  const int frame = this->m_tick / this->m_delay;
+
+  if (this->m_finishTime == 0xFFFFFFFF) {
+    if (this->m_frame == frame && this->m_delay <= this->m_maxDelay) {
+      this->m_finishTime = timeGetTime();
+    }
+  } else if (this->m_frame == frame && this->m_delay <= this->m_maxDelay && timeGetTime() - this->m_finishTime >= 2000) {
+    this->m_frameContext->windows.CloseWindow(91);
+  }
+}
+
 // OFFSET: 0x008F50B0
 // FUNCTION: fn_12300
 void UISayDialogWnd::Slot19() {
@@ -527,6 +582,28 @@ void UIComboBoxWnd::Resize(int width, int height) {
   this->m_list->Resize(width, height);
   this->m_list->Refresh();
   this->m_list->Invalidate();
+}
+
+// OFFSET: 0x008F6750
+// FUNCTION: fn_12322
+void UISayDialogWnd::Resize(int width, int height) {
+  this->UIFrameWnd::Resize(width, height);
+  this->m_viewer->Resize(width - 20, height - 40);
+
+  for (UIWindow* button : this->m_buttons) {
+    if (button == nullptr) {
+      continue;
+    }
+
+    int x = this->geometry.width - 4;
+    const int y = this->geometry.height - 24;
+    for (UIWindow* other : this->m_buttons) {
+      if (button != other) {
+        x += -4 - other->geometry.width;
+      }
+    }
+    button->Move(x - button->geometry.width, y);
+  }
 }
 
 // OFFSET: 0x008F8860
