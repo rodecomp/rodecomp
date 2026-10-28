@@ -1,3 +1,4 @@
+#include "Client/Replay.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Utility/Text/FormatString.h"
@@ -6,6 +7,13 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <vector>
+
+// GLOBAL: gl_24726
+std::map<int, std::vector<const char*>> g_metalProcessItems;
+
+// GLOBAL: gl_24675
+std::map<int, ItemCardName> g_itemCardNames;
 
 namespace {
   // OFFSET: 0x006D8810
@@ -356,7 +364,6 @@ std::string ItemNaming::DisplayName(const ItemInfo& item, unsigned char detailed
   return result;
 }
 
-
 // OFFSET: 0x005E11E0
 
 // OFFSET: 0x006D69C0
@@ -388,6 +395,8 @@ int ItemUnidentifiedName(const ItemInfo& item, char* output, int& capacity, unsi
   }
   return written;
 }
+
+// OFFSET: 0x006D3770
 
 // OFFSET: 0x006D78C0
 

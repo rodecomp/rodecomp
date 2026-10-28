@@ -9,6 +9,19 @@
 #include "Script/LuaScript.h"
 
 #include <string>
+#include <cstring>
+
+// GLOBAL: gl_24496
+int g_screenShakeDuration;
+
+// GLOBAL: gl_24497
+char g_screenShakeMode;
+
+// GLOBAL: gl_24702
+const char g_playerNameKeyData[] = "가나다라마바사아자차카타파하가나다라마바사아자차카타파하";
+
+// GLOBAL: gl_24649
+const char* g_playerNameKey = g_playerNameKeyData;
 
 namespace {
   // OFFSET: 0x00DFBC00
@@ -581,3 +594,7 @@ int CSession::SetFlag(char value) {
   this->unknown_5558 = result;
   return result;
 }
+
+// OFFSET: 0x00DFB490
+
+// OFFSET: 0x00E25DD0

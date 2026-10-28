@@ -1,9 +1,11 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_ITEMS_ITEMINFO_H
 #define RAGNAROK_SOURCE_CONTENTS_ITEMS_ITEMINFO_H
 
+#include <cstddef>
 #include <cstdint>
 #include <list>
 #include <string>
+#include <vector>
 
 struct RawItemData {
   /* 0000 */ std::uint32_t unknown_0000;
@@ -35,6 +37,23 @@ struct RawItemData {
 static_assert(sizeof(RawItemData) == 188);
 #endif
 
+struct RawItemBasic {
+  /* 0000 */ std::int32_t id;
+  /* 0004 */ std::uint32_t unknown_0004;
+  /* 0008 */ std::uint32_t unknown_0008;
+  /* 000C */ std::uint32_t unknown_000C;
+  /* 0010 */ unsigned char identified;
+  /* 0011 */ char itemId[33];
+  /* 0034 */ std::uint32_t unknown_0034;
+  /* 0038 */ std::int32_t unknown_0038;
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(RawItemBasic, itemId) == 0x11);
+static_assert(offsetof(RawItemBasic, unknown_0034) == 0x34);
+static_assert(offsetof(RawItemBasic, unknown_0038) == 0x38);
+#endif
+
 struct alignas(8) ItemInfo {
   ItemInfo();
   explicit ItemInfo(int unused);
@@ -42,7 +61,7 @@ struct alignas(8) ItemInfo {
   ItemInfo& operator=(const ItemInfo& other);
   void Reset();
   std::uint32_t Assign(const RawItemData& item);
-  ItemInfo& AssignBasic(const RawItemData& item);
+  ItemInfo& AssignBasic(const RawItemBasic& item);
   bool operator<(const ItemInfo& other) const;
   bool SetName(const char* name);
   void SetItemId(int value);
@@ -52,6 +71,7 @@ struct alignas(8) ItemInfo {
   bool IsElementalStone() const;
   bool IsAboveItemId600() const;
   int Refine(char* output, int& capacity, unsigned char consume) const;
+  std::vector<unsigned char> Serialize() const;
   /* 0000 */ std::uint32_t unknown_0000[4];
   /* 0010 */ std::int32_t quantity;
   /* 0014 */ std::uint32_t unknown_0014[2];
@@ -81,6 +101,9 @@ struct alignas(8) ItemInfo {
 ItemInfo LookupClientItem(const std::list<ItemInfo>& values, int id, unsigned char requireIdentified);
 ItemInfo LookupClientItemByIdentity(const std::list<ItemInfo>& values, std::uint32_t id);
 bool IsNumericText(const char* text);
+bool MatchItemName(std::string name, std::string query, unsigned char partial, std::list<int>* result, int id);
+std::list<int> SearchItemIds(std::string query, unsigned char cardsOnly, unsigned char partial);
+
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ItemInfo) == 248);

@@ -34,6 +34,10 @@ struct ItemNaming {
   const char* Message(int id) const;
 };
 
+extern std::map<int, ItemCardName> g_itemCardNames;
+
+ItemCardName& FindItemCardName(int id, std::map<int, ItemCardName>& values);
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ItemCardName) == 12);
 static_assert(offsetof(ItemCardName, name) == 0x0000);

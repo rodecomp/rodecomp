@@ -22,5 +22,11 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon);
 int __stdcall GetRealWeaponId(int weapon);
 std::string GetJobTitleString(int job);
 bool ResetHotkeySlots();
+bool IsScreenShakeActive();
+
+extern int g_screenShakeDuration;
+extern char g_screenShakeMode;
+extern const char g_playerNameKeyData[];
+extern const char* g_playerNameKey;
 
 #endif

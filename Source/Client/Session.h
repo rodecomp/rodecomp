@@ -67,7 +67,9 @@ public:
   /* 0798 */ int m_serverTimeAdjustCount;
   /* 079C */ unsigned char unknown_079C[0x04];
   /* 07A0 */ std::uint32_t m_averagePing;
-  /* 07A4 */ unsigned char unknown_07A4[0x6F4];
+  /* 07A4 */ unsigned char unknown_07A4[0x10];
+  /* 07B4 */ unsigned char m_playerNameKey[0x40];
+  /* 07F4 */ unsigned char unknown_07F4[0x6A4];
   /* 0E98 */ int unknown_0E98;
   /* 0E9C */ unsigned char unknown_0E9C[0x64];
   /* 0F00 */ int m_robe;
@@ -95,14 +97,18 @@ public:
   /* 1628 */ int m_job;
   /* 162C */ unsigned char unknown_162C[0x24];
   /* 1650 */ int m_level;
-  /* 1654 */ unsigned char unknown_1654[0x9C];
+  /* 1654 */ unsigned char unknown_1654[0x98];
+  /* 16EC */ std::uint32_t unknown_16EC;
   /* 16F0 */ int m_zeny;
   /* 16F4 */ unsigned char unknown_16F4[0x1C];
   /* 1710 */ std::list<ItemInfo> m_inventoryItems;
-  /* 1718 */ unsigned char unknown_1718[0x20];
+  /* 1718 */ unsigned char unknown_1718[0x18];
+  /* 1730 */ std::list<ItemInfo> unknown_1730;
   /* 1738 */ std::list<ItemInfo> unknown_1738;
   /* 1740 */ std::list<ItemInfo> unknown_1740;
-  /* 1748 */ unsigned char unknown_1748[0x1408];
+  /* 1748 */ unsigned char unknown_1748[0xA8];
+  /* 17F0 */ ItemInfo unknown_17F0[10];
+  /* 21A0 */ unsigned char unknown_21A0[0x9B0];
   /* 2B50 */ ItemInfo unknown_2B50[10];
   /* 3500 */ ItemInfo unknown_3500[10];
   /* 3EB0 */ unsigned char unknown_3EB0[0x9B0];
@@ -177,6 +183,7 @@ public:
   int SetPairValue(int value, int slot);
   int SetHotkeyEntry(char enabled, int id, int value, int slot);
   int SetFlag(char value);
+  void SetPlayerNameKey(const unsigned char* key);
   // INLINED
   NormalItemSlot& SkillHotkey(int index) {
     return reinterpret_cast<NormalItemSlot*>(reinterpret_cast<unsigned char*>(this) + offsetof(CSession, unknown_06EB))[index];
@@ -240,6 +247,11 @@ public:
   float GetNpcLocationRadius(int job, bool riding);
   int GetRidingJob(int job);
   int GetSpriteJob(int job, int costumeJob, bool spriteIndex);
+  bool HasRequiredItems() const;
+  bool IsSlotItemIdentity(std::uint32_t id) const;
+  bool HasInventoryItem(std::uint32_t id) const;
+  bool HasItemId(int itemId) const;
+  bool HasItemCount(int itemId, int count) const;
 };
 
 extern CSession g_session;
@@ -295,6 +307,9 @@ static_assert(offsetof(CSession, unknown_0E98) == 0xE98);
 static_assert(offsetof(CSession, m_petActionTable) == 0x1058);
 static_assert(offsetof(CSession, m_job) == 0x1628);
 static_assert(offsetof(CSession, m_inventoryItems) == 0x1710);
+static_assert(offsetof(CSession, unknown_16EC) == 0x16EC);
+static_assert(offsetof(CSession, unknown_1730) == 0x1730);
+static_assert(offsetof(CSession, unknown_17F0) == 0x17F0);
 static_assert(offsetof(CSession, unknown_2B50) == 0x2B50);
 static_assert(offsetof(CSession, unknown_3500) == 0x3500);
 static_assert(offsetof(CSession, m_accessoryNames) == 0x52B8);

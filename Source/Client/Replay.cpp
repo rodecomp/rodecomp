@@ -26,7 +26,7 @@ static_assert(sizeof(ReplayTaggedRecordHeader) == 6);
 
 // OFFSET: 0x006DA340
 // FUNCTION: fn_06623
-static std::vector<unsigned char> BuildReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
+std::vector<unsigned char> BuildReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
   std::vector<unsigned char> record(bytes + 6u, 0);
   const ReplayTaggedRecordHeader header{id, bytes};
   std::memcpy(record.data(), &header, sizeof(header));

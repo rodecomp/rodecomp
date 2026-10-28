@@ -4,6 +4,7 @@
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstddef>
+#include <cstdlib>
 #include <list>
 #include <vector>
 
@@ -35,8 +36,8 @@ struct ClientItemLists {
   /* 21A0 */ ItemInfo equipped[10];
 
   bool AddItem1710(const ItemInfo& item, unsigned char refresh);
-  void AddItem1718(const ItemInfo& item, int quantity, std::uint16_t unknown_006C);
-  void AddItem1718(const ItemInfo& item, int mode);
+  void AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C);
+  void AddItem1718(const RawItemBasic& item, int mode);
   bool AddItem1768(const ItemInfo& item, unsigned char alternate, unsigned char refresh);
   bool AddItem1740(const ItemInfo& item);
   bool AddItem1750(const ItemInfo& item, int type, unsigned char refresh);

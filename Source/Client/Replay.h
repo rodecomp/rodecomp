@@ -121,6 +121,8 @@ public:
   bool RecordPacket(const std::vector<unsigned char>& packet, int event, std::uint32_t delay);
 };
 
+std::vector<unsigned char> BuildReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes);
+
 extern int g_replayAnimationScaling;
 
 static_assert(sizeof(ReplayCachedPacket) == 0x10);
