@@ -22,6 +22,21 @@ CNaviInfo* CNavigationManager::FindObject(const char* name) const {
 }
 
 // OFFSET: 0x00B88840
+// FUNCTION: fn_19377
+CNavi_Link* CNaviData::FindLink(unsigned int key, bool byId) {
+  if (byId) {
+    for (CNavi_Link* object : this->objects) {
+      if (object->HasId(key)) {
+        return object;
+      }
+    }
+    return nullptr;
+  }
+  if (this->objects.empty() || key >= this->objects.size()) {
+    return nullptr;
+  }
+  return this->objects[key];
+}
 
 // OFFSET: 0x00B88910
 // FUNCTION: fn_19379
@@ -30,10 +45,41 @@ int NaviCell::GetY() const {
 }
 
 // OFFSET: 0x00B88930
+// FUNCTION: fn_19381
+void CNaviData::ClearAll() {
+  this->Clear();
+
+  for (CNavi_Link*& object : this->objects) {
+    if (object != nullptr) {
+      delete object;
+    }
+    object = nullptr;
+  }
+  this->objects.clear();
+
+  for (CNaviInfo*& info : this->destinations) {
+    if (info != nullptr) {
+      delete info;
+    }
+    info = nullptr;
+  }
+  this->destinations.clear();
+}
 
 // OFFSET: 0x00B8CF70
+// FUNCTION: fn_19432
+bool CNavi_Object::HasId(const unsigned int& id) const {
+  return static_cast<unsigned int>(this->id) == id;
+}
 
 // OFFSET: 0x00B8D0D0
+// FUNCTION: fn_19433
+bool CNavi_Object::IsNamed(const char* name) const {
+  if (name == nullptr) {
+    return false;
+  }
+  return this->name == std::string(name);
+}
 
 // OFFSET: 0x00B8E8E0
 // FUNCTION: fn_19496
@@ -42,6 +88,56 @@ int CNaviInfo::GetCellX() const {
 }
 
 // OFFSET: 0x00B97750
+// FUNCTION: fn_19600
+bool CNavigationManager::BuildRoute(int startX, int startY, int destX, int destY, bool collectCells) {
+  this->movementRoute.points.clear();
+  const bool found = this->pathFinder.FindPath(0, startX, startY, 8, 8, destX, destY, 1, this->movementRoute, 15);
+  this->pathFinder.Reset();
+  if (!collectCells) {
+    return found;
+  }
+
+  this->cells.clear();
+  if (!found) {
+    return found;
+  }
+
+  CNaviInfo* info = this->FindObject(g_session.m_navigationPlayerMap);
+  if (info == nullptr) {
+    const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(g_session.m_navigationPlayerMap);
+    info = this->FindObject(resolved.c_str());
+    if (info == nullptr) {
+      return found;
+    }
+  }
+
+  const int height = info->GetCellY();
+  const int width = info->GetCellX();
+  int offsetX;
+  int offsetY;
+  const float scale = this->FitToSquare(&offsetX, &offsetY, width, height, 126.0f);
+  for (const MovementRoutePoint& point : this->movementRoute.points) {
+    NaviCell cell;
+    cell.x = static_cast<int>(point.x * scale + offsetX);
+    cell.y = static_cast<int>(126.0f - (point.y * scale + offsetY));
+
+    bool exists = false;
+    for (const NaviCell& other : this->cells) {
+      if (other.x == cell.x && other.y == cell.y) {
+        exists = true;
+        break;
+      }
+    }
+    if (!exists) {
+      this->cells.push_back(cell);
+    }
+  }
+
+  if (g_windowMgr.window_4F174 != nullptr) {
+    g_windowMgr.window_4F174->Invalidate();
+  }
+  return found;
+}
 
 // OFFSET: 0x00B8D270
 // FUNCTION: fn_19434
