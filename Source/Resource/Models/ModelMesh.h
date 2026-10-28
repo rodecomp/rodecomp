@@ -8,6 +8,7 @@
 
 struct ModelFace {
   ModelFace();
+  ~ModelFace();
 
   /* 0000 */ std::uint16_t vertices[3];
   /* 0006 */ std::uint16_t textureVertices[3];

@@ -45,6 +45,10 @@ ModelMesh::~ModelMesh() {
   this->vertexNormals = nullptr;
 }
 
+// OFFSET: 0x00551F80
+// FUNCTION: fn_02010
+ModelFace::~ModelFace() = default;
+
 // OFFSET: 0x00551FD0
 // FUNCTION: fn_02011
 void ModelMesh::CalculateNormals() {
