@@ -1,5 +1,34 @@
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Effects/PartyMemberEffects.h"
+#include "Contents/Items/ItemInfo.h"
+#include "UI/Window/UIWindowMgr.h"
+
+#include <cstddef>
+#include <list>
+
+void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
+
+struct SessionItemLists {
+  /* 0000 */ unsigned char unknown_0000[0x1710];
+  /* 1710 */ std::list<ItemInfo> inventory;
+  /* 1718 */ std::list<ItemInfo> items_1718;
+  /* 1720 */ std::list<ItemInfo> items_1720;
+  /* 1728 */ std::list<ItemInfo> items_1728;
+  /* 1730 */ std::list<ItemInfo> items_1730;
+  /* 1738 */ unsigned char unknown_1738[0x48];
+  /* 1780 */ std::list<ItemInfo> items_1780[11];
+
+  void ClearItems1780();
+  void KeepEquipment();
+  void RemoveEquipment();
+  void ClearTradeItems();
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(SessionItemLists, inventory) == 0x1710);
+static_assert(offsetof(SessionItemLists, items_1730) == 0x1730);
+static_assert(offsetof(SessionItemLists, items_1780) == 0x1780);
+#endif
 
 // OFFSET: 0x00DDFFE0
 // FUNCTION: fn_23451
@@ -375,4 +404,70 @@ int SessionMessengerContext::GetList1Size() const {
 // FUNCTION: fn_23440
 int SessionMessengerContext::GetList5Size() const {
   return static_cast<int>(this->lists[5].size());
+}
+
+// OFFSET: 0x00DD8380
+// FUNCTION: fn_23305
+void SessionItemLists::ClearItems1780() {
+  for (std::list<ItemInfo>& items : this->items_1780) {
+    items.clear();
+  }
+}
+
+// OFFSET: 0x00DD8450
+// FUNCTION: fn_23306
+void SessionItemLists::KeepEquipment() {
+  for (auto entry = this->inventory.begin(); entry != this->inventory.end();) {
+    switch (entry->unknown_0000[0]) {
+    case 4:
+    case 5:
+    case 8:
+    case 9:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+      ++entry;
+      break;
+    default:
+      entry = this->inventory.erase(entry);
+      break;
+    }
+  }
+
+  RefreshItemWindows(&g_windowMgr);
+}
+
+// OFFSET: 0x00DD8540
+// FUNCTION: fn_23307
+void SessionItemLists::ClearTradeItems() {
+  this->items_1720.erase(this->items_1720.begin(), this->items_1720.end());
+  this->items_1730.erase(this->items_1730.begin(), this->items_1730.end());
+  this->items_1718.erase(this->items_1718.begin(), this->items_1718.end());
+}
+
+// OFFSET: 0x00DD8660
+// FUNCTION: fn_23310
+void SessionItemLists::RemoveEquipment() {
+  for (auto entry = this->inventory.begin(); entry != this->inventory.end();) {
+    switch (entry->unknown_0000[0]) {
+    case 4:
+    case 5:
+    case 8:
+    case 9:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+      entry = this->inventory.erase(entry);
+      break;
+    default:
+      ++entry;
+      break;
+    }
+  }
+
+  RefreshItemWindows(&g_windowMgr);
 }
