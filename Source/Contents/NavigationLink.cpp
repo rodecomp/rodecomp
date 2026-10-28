@@ -80,28 +80,121 @@ void CNavi_Link::SetDepth(int depth) {
 }
 
 // OFFSET: 0x00B8D9A0
+// FUNCTION: fn_19438
+bool CNaviInfo::AddNpc(CNavi_Object* npc) {
+  if (npc == nullptr) {
+    return false;
+  }
+
+  this->npcs.push_back(npc);
+  return true;
+}
 
 // OFFSET: 0x00B8D9E0
+// FUNCTION: fn_19439
+bool CNaviInfo::AddLink(CNavi_Link* link) {
+  if (link == nullptr) {
+    return false;
+  }
+
+  this->links.push_back(link);
+  return true;
+}
 
 // OFFSET: 0x00B8DA20
+// FUNCTION: fn_19440
+bool CNaviInfo::AddMob(CNavi_Object* mob) {
+  if (mob == nullptr) {
+    return false;
+  }
+
+  this->mobs.push_back(mob);
+  return true;
+}
 
 // OFFSET: 0x00B8DA60
+// FUNCTION: fn_19441
+void CNavi_Link::AddLinkedLink(const NaviLink& link) {
+  this->linkedLinks.push_back(link);
+}
 
 // OFFSET: 0x00B8DAA0
+// FUNCTION: fn_19442
+void CNavi_Link::AddLink(const NaviLink& link) {
+  this->links.push_back(link);
+}
 
 // OFFSET: 0x00B8DAE0
+// FUNCTION: fn_19443
+void CNavi_Object::AddLink(const NaviLink& link) {
+  this->links.push_back(link);
+}
 
 // OFFSET: 0x00B8DB40
+// FUNCTION: fn_19445
+std::vector<NaviLink>::iterator CNavi_Link::LinksBegin() {
+  return this->links.begin();
+}
 
 // OFFSET: 0x00B8DB50
+// FUNCTION: fn_19446
+std::vector<NaviLink>::iterator CNavi_Object::LinksBegin() {
+  return this->links.begin();
+}
 
 // OFFSET: 0x00B8DBB0
+// FUNCTION: fn_19447
+CNavi_Link* CNavi_Link::FindLinkAt(int x, int y) {
+  for (std::vector<NaviLink>::iterator it = this->links.begin(); it != this->links.end(); ++it) {
+    NaviCell cell;
+    NaviCell* found = it->link->GetCell(&cell);
+    if (found->x == x && found->y == y) {
+      return it->link;
+    }
+  }
+
+  return nullptr;
+}
 
 // OFFSET: 0x00B8DC00
+// FUNCTION: fn_19448
+CNavi_Link* CNavi_Object::FindLinkAt(int x, int y) {
+  for (std::vector<NaviLink>::iterator it = this->links.begin(); it != this->links.end(); ++it) {
+    NaviCell cell;
+    NaviCell* found = it->link->GetCell(&cell);
+    if (found->x == x && found->y == y) {
+      return it->link;
+    }
+  }
+
+  return nullptr;
+}
 
 // OFFSET: 0x00B8DC50
+// FUNCTION: fn_19449
+CNavi_Link* CNavi_Link::FindLinkTo(int x, int y) {
+  for (std::vector<NaviLink>::iterator it = this->links.begin(); it != this->links.end(); ++it) {
+    CNavi_Link* link = it->link;
+    if (link->unknown_0080 == x && link->unknown_0084 == y) {
+      return link;
+    }
+  }
+
+  return nullptr;
+}
 
 // OFFSET: 0x00B8DC90
+// FUNCTION: fn_19450
+CNavi_Link* CNavi_Object::FindLinkTo(int x, int y) {
+  for (std::vector<NaviLink>::iterator it = this->links.begin(); it != this->links.end(); ++it) {
+    CNavi_Link* link = it->link;
+    if (link->unknown_0080 == x && link->unknown_0084 == y) {
+      return link;
+    }
+  }
+
+  return nullptr;
+}
 
 // OFFSET: 0x00B8DCD0
 // FUNCTION: fn_19451
@@ -122,8 +215,16 @@ void CNavi_Object::ClearLinks() {
 }
 
 // OFFSET: 0x00B8DDE0
+// FUNCTION: fn_19454
+void CNavi_Link::EraseLink(std::vector<NaviLink>::iterator& it) {
+  it = this->links.erase(it);
+}
 
 // OFFSET: 0x00B8DE20
+// FUNCTION: fn_19455
+void CNavi_Object::EraseLink(std::vector<NaviLink>::iterator& it) {
+  it = this->links.erase(it);
+}
 
 // OFFSET: 0x00B8DE80
 // FUNCTION: fn_19457
@@ -144,6 +245,13 @@ const char* CNavi_Link::GetLinkedName() const {
 }
 
 // OFFSET: 0x00B8E880
+// FUNCTION: fn_19491
+NaviCell CNavi_Link::GetLinkedCell() const {
+  NaviCell cell;
+  cell.x = this->unknown_0080;
+  cell.y = this->unknown_0084;
+  return cell;
+}
 
 // OFFSET: 0x00B90470
 // FUNCTION: fn_19510
