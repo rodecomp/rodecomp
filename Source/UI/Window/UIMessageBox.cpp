@@ -559,26 +559,147 @@ int UIMessageBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 }
 
 // OFFSET: 0x008BFB70
+// FUNCTION: fn_11809
+int UIMessageBoxAutoreturn::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    g_windowMgr.unknown_0474 = static_cast<int>(a);
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+}
 
 // OFFSET: 0x008BFBA0
+// FUNCTION: fn_11810
+int UIMonsterInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    if (a == 184) {
+      g_windowMgr.Schedule(this);
+    }
+
+    return 0;
+  case 79:
+    if (a) {
+      this->info = *reinterpret_cast<const MonsterInfo*>(a);
+    }
+
+    this->Invalidate();
+    return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
 
 // OFFSET: 0x008C1DB0
+// FUNCTION: fn_11817
+int UITalkboxTrapInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    if (a == 184) {
+      TalkboxTrapRequest request;
+      request.target = this->target;
+      request.text = this->edit->Text();
+      g_world.ActiveGameMode()->SendMsg(131, reinterpret_cast<int>(&request), 0, 0, 0);
+    } else if (a != 185) {
+      return 0;
+    }
+
+    g_windowMgr.Schedule(this);
+    return 0;
+  }
+
+  if (message == 68) {
+    this->target = *reinterpret_cast<const TalkboxTrapTarget*>(a);
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+}
 
 // OFFSET: 0x008C1ED0
+// FUNCTION: fn_11818
+void UIWindowMgr::SetUnknown04DC(const char* text) {
+  this->unknown_04DC = text;
+}
 
 // OFFSET: 0x008C35A0
+// FUNCTION: fn_11824
+void UIChatRoomWnd::Slot11() {
+  if (this->saved) {
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+  }
+}
 
 // OFFSET: 0x008C35E0
+// FUNCTION: fn_11825
+void UIHomunInfoWnd::Slot11() {
+  if (this->saved) {
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+  }
+}
 
 // OFFSET: 0x008C3630
+// FUNCTION: fn_11827
+void UIMerInfoWnd::Slot11() {
+  if (this->saved) {
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+  }
+}
 
 // OFFSET: 0x008C3670
+// FUNCTION: fn_11828
+void UIPetInfoWnd::Slot11() {
+  if (this->saved) {
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+  }
+}
 
 // OFFSET: 0x008C36B0
+// FUNCTION: fn_11829
+void UIReplayRECControlWnd::Slot11() {
+  if (this->saved) {
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+  }
+}
 
 // OFFSET: 0x008A6DC0
+// FUNCTION: fn_11711
+void UIBank_NewWnd::AnimateLoading() {
+  for (int index = 0; index < 4; ++index) {
+    this->m_loading[index]->Move(-100, -100);
+  }
+
+  this->m_loading[static_cast<int>(timeGetTime() % 1000) / 250]->Move(6, 5);
+}
 
 // OFFSET: 0x008B84B0
+// FUNCTION: fn_11764
+void UILoginOTPWnd::Paint() {
+  auto& controls = *this->m_controls;
+  auto& resources = ResourceMgr::Instance();
+  const std::uint8_t source[] = {0x11, 0xF4, 0x57, 0x1F, 0xF9, 0x49, 0x2E, 0xE2, 0x17, 0xBF, 0x57, 0x29, 0x84, 0x3D, 0xB7, 0x43,
+                                 0xBE, 0x3C, 0xFE, 0x8B, 0x66, 0xEE, 0x85, 0x5B, 0xB4, 0x29, 0xF1, 0x84, 0x5A, 0xE2, 0xB7, 0x4D,
+                                 0xB6, 0x04, 0xF9, 0x80, 0x4E, 0xE8, 0x9F, 0x5F, 0xE0, 0x75, 0xF5, 0x88, 0x49, 0x87};
+  thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
+  const auto* background = static_cast<CBitmapRes*>(resources.Load(Resolve(name.Text())));
+  this->DrawBitmap(0, 0, &background->image, false);
+  this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(3254), 280);
+}
 
 // OFFSET: 0x008C3620
 // FUNCTION: fn_11826
@@ -587,5 +708,157 @@ void UILoginWnd::Slot11() {
 }
 
 // OFFSET: 0x008C39E0
+// FUNCTION: fn_11831
+void UILoginWnd::SaveLogin() {
+  HKEY key;
+  DWORD disposition = 0;
+
+  if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) != ERROR_SUCCESS) {
+    return;
+  }
+
+  char id[52];
+  int saveId;
+
+  if (this->saveId != 0) {
+    std::strcpy(id, this->idEdit->Text());
+    saveId = this->saveId != 0;
+    id[50] = 0;
+  } else {
+    std::memset(id, 0, sizeof(id));
+    saveId = 0;
+  }
+
+  const std::uint8_t idSource[] = {0x24, 0xFF, 0x95};
+  thread_local EncryptedName<sizeof(idSource), 0xC517FB932D95BB6DULL> idName(idSource);
+  RegSetValueExA(key, idName.Text(), 0, REG_SZ, reinterpret_cast<const BYTE*>(id), 51);
+
+  const std::uint8_t checkSource[] = {0xE6, 0xD5, 0x28, 0xBA, 0x28, 0x74, 0x36, 0x55, 0xE0, 0x9D};
+  thread_local EncryptedName<sizeof(checkSource), 0x03772763F96D9DA5ULL> checkName(checkSource);
+  RegSetValueExA(key, checkName.Text(), 0, REG_DWORD, reinterpret_cast<const BYTE*>(&saveId), 4);
+
+  int bitwise = 1;
+  const std::uint8_t bitwiseSource[] = {0xC5, 0x5A, 0x3F, 0x28, 0x70, 0x5A, 0x34, 0x0B};
+  thread_local EncryptedName<sizeof(bitwiseSource), 0x0B7109397F6B1387ULL> bitwiseName(bitwiseSource);
+  RegSetValueExA(key, bitwiseName.Text(), 0, REG_DWORD, reinterpret_cast<const BYTE*>(&bitwise), 4);
+  RegCloseKey(key);
+}
 
 // OFFSET: 0x008C1F00
+// FUNCTION: fn_11819
+void UIReplayRECControlWnd::ApplyMode() {
+  this->Resize(194, 34);
+
+  if (this->mode == 0) {
+    this->window_00C0->Move(-100, -100);
+
+    for (int index = 0; index < 5; ++index) {
+      this->tabs[index]->Move(-100, -100);
+    }
+
+    this->window_00C4->Move(-100, -100);
+    this->window_0134->Move(-100, -100);
+    this->button_00D0->Move(-100, -100);
+    this->window_00EC->Move(-100, -100);
+
+    for (int index = 0; index < 10; ++index) {
+      this->options[index]->Move(-100, -100);
+    }
+
+    this->window_0128->Move(-100, -100);
+    this->window_012C->Move(-100, -100);
+    this->window_0134->Move(-100, -100);
+    this->window_00BC->Move(110, 5);
+    this->button_00C8->Move(136, 5);
+    this->button_00C8->SetDisabled(0);
+    this->button_00C8->Invalidate();
+    this->button_00D0->Move(162, 5);
+    this->button_00D0->SetDisabled(0);
+    this->button_00D0->Invalidate();
+    this->window_00E8->Move(32, 12);
+    this->tabs[0]->Move(6, 5);
+  } else if (this->mode == 1) {
+    this->recordStart = timeGetTime();
+    this->window_00BC->Move(-100, -100);
+
+    for (int index = 0; index < 4; ++index) {
+      this->tabs[index]->Move(-100, -100);
+    }
+
+    this->tabs[4]->Move(-100, -100);
+    this->window_00CC->Move(-100, -100);
+    this->options[7]->Move(-100, -100);
+
+    for (int index = 0; index < 10; ++index) {
+      this->options[index]->Move(-100, -100);
+    }
+
+    this->window_0128->Move(-100, -100);
+    this->window_012C->Move(-100, -100);
+    this->window_00C4->Move(-100, -100);
+    this->window_0134->Move(-100, -100);
+    this->window_00C0->Move(110, 5);
+    this->button_00C8->Move(136, 5);
+    this->button_00C8->SetDisabled(1);
+    this->button_00C8->Invalidate();
+    this->button_00D0->Move(162, 5);
+    this->button_00D0->SetDisabled(1);
+    this->button_00D0->Invalidate();
+    this->window_00E8->Move(32, 12);
+    this->tabs[0]->Move(6, 5);
+  } else if (this->mode == 2) {
+    this->Resize(194, 200);
+    this->window_00BC->Move(-100, -100);
+    this->window_00C0->Move(-100, -100);
+    this->button_00C8->Move(-100, -100);
+    this->button_00D0->Move(-100, -100);
+    this->window_00E8->Move(-100, -100);
+
+    for (int index = 0; index < 4; ++index) {
+      this->tabs[index]->Move(-100, -100);
+    }
+
+    this->window_00C4->Move(-100, -100);
+    this->window_0134->Move(-100, -100);
+    this->tabs[4]->Move(6, 5);
+    this->window_00CC->Move(162, 5);
+    this->window_00EC->Move(42, 12);
+    this->options[0]->Move(17, 63);
+    this->options[1]->Move(17, 81);
+    this->options[2]->Move(17, 99);
+    this->options[3]->Move(17, 117);
+    this->options[4]->Move(-100, -100);
+    this->options[5]->Move(104, 81);
+    this->options[6]->Move(104, 99);
+    this->options[7]->Move(104, 117);
+    this->options[9]->Move(104, 63);
+    this->window_0128->Move(17, 160);
+    this->window_012C->Move(17, 178);
+  } else if (this->mode == 3) {
+    this->window_00BC->Move(-100, -100);
+    this->window_00C0->Move(-100, -100);
+    this->button_00C8->Move(-100, -100);
+    this->button_00D0->Move(-100, -100);
+    this->window_00E8->Move(-100, -100);
+
+    for (int index = 0; index < 4; ++index) {
+      this->tabs[index]->Move(-100, -100);
+    }
+
+    this->tabs[4]->Move(-100, -100);
+    this->window_00CC->Move(-100, -100);
+    this->options[7]->Move(-100, -100);
+
+    for (int index = 0; index < 10; ++index) {
+      this->options[index]->Move(-100, -100);
+    }
+
+    this->window_0128->Move(-100, -100);
+    this->window_012C->Move(-100, -100);
+    this->window_00C4->Move(162, 5);
+    this->window_0134->Move(7, 8);
+    this->m_focus->Set(this->window_0134);
+  }
+
+  this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+}
