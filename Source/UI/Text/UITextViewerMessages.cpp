@@ -3,7 +3,15 @@
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Contents/Items/ItemNaming.h"
+#include "UI/Text/ItemLinkDisplay.h"
+#include "UI/Text/NavigationLink.h"
+#include "UI/Text/PixelTextWrapping.h"
+#include "UI/Text/TextMarkup.h"
+#include "UI/Text/TextWrapping.h"
+#include "Render/Text/TextContext.h"
 
+#include <cstring>
 #include <bit>
 #include <cstdlib>
 #include <shellapi.h>
@@ -99,6 +107,69 @@ void UITextViewer::Activate(UITextButton* button, int id) {
   default:
     break;
   }
+}
+
+// INLINED
+void UITextViewer::AppendText(char* text, int width, bool carriageReturns, bool pixels) {
+  auto& owner = this->m_text->list;
+  std::vector<std::string> wrapped;
+
+  if (width == 138) {
+    WrapPlainText(text, wrapped, 38, owner.codePage, owner.locale.inlineCharset);
+
+    for (const auto& line : wrapped) {
+      this->AddLine(line.c_str());
+    }
+
+    this->unknown_00BC = (this->unknown_00BC & ~255) | 1;
+    this->Invalidate();
+    return;
+  }
+
+  const bool linked = HasTextLinks(text);
+  std::string display;
+
+  if (linked) {
+    const std::string expanded = ExpandTextEscapes(text);
+    std::strcpy(text, expanded.c_str());
+    display = DisplayTextTag(expanded, "<URL>", "</URL>");
+    display = DisplayTextTag(std::move(display), "<NAVI>", "</NAVI>");
+    display = DisplayTextTag(std::move(display), "<TIPBOX>", "</TIPBOX>");
+    display = DisplayTextTag(std::move(display), "<ITEM>", "</ITEM>");
+    display = RemoveTextLinkInfo(std::move(display));
+
+    if (this->m_text->chatConversions) {
+      display = this->ConvertChat(std::move(display));
+    }
+
+    std::string navigation;
+    DisplayNavigationLink(navigation, display);
+    display = DisplayTextTag(std::move(navigation), "<QUEST>", "</QUEST>");
+  } else {
+    display = text;
+  }
+
+  if (pixels) {
+    const int scrollWidth = carriageReturns ? this->verticalBar->geometry.width + 2 : 0;
+    WrapPixelText(*this->geometry.surface, owner.fonts, owner.locale, owner.codePage, display.c_str(), wrapped, this->geometry.width - scrollWidth - 4);
+  } else {
+    WrapRichText(
+      display.c_str(), wrapped, width == 0 ? 35 : width, carriageReturns, owner.codePage, owner.locale.inlineCharset, this->m_text->items.descriptions
+    );
+  }
+
+  for (const auto& line : wrapped) {
+    this->AddLine(line.c_str());
+  }
+
+  if (linked) {
+    for (int kind = 0; kind < 5; ++kind) {
+      this->AddLinks(text, static_cast<unsigned>(wrapped.size()), kind);
+    }
+  }
+
+  this->unknown_00BC &= ~255;
+  this->Invalidate();
 }
 
 // OFFSET: 0x00899E90
