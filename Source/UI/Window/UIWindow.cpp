@@ -575,6 +575,56 @@ UIWindow* UIWindow::Root() {
   return root;
 }
 
+// OFFSET: 0x00A7ED50
+// FUNCTION: fn_16960
+UIWindow* UIWindow::NextFocusable(UIWindow* child) {
+  auto it = this->m_children.begin();
+
+  for (; it != this->m_children.end(); ++it) {
+    if (*it == child && child->Slot05()) {
+      break;
+    }
+  }
+
+  if (it == this->m_children.end()) {
+    return nullptr;
+  }
+
+  for (++it; it != this->m_children.end(); ++it) {
+    if ((*it)->Slot05()) {
+      return *it;
+    }
+  }
+
+  return nullptr;
+}
+
+// OFFSET: 0x00A7FF30
+// FUNCTION: fn_16969
+UIWindow* UIWindow::PreviousFocusable(UIWindow* child) {
+  auto it = this->m_children.end();
+
+  for (; it != this->m_children.begin(); --it) {
+    UIWindow* window = *std::prev(it);
+    if (window == child && window->Slot05()) {
+      break;
+    }
+  }
+
+  if (it == this->m_children.begin()) {
+    return nullptr;
+  }
+
+  for (--it; it != this->m_children.begin(); --it) {
+    UIWindow* window = *std::prev(it);
+    if (window->Slot05()) {
+      return window;
+    }
+  }
+
+  return nullptr;
+}
+
 // OFFSET: 0x00A82DD0
 // FUNCTION: fn_16995
 void UIWindow::DeleteChildren() {

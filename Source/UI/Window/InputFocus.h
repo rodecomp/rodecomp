@@ -9,7 +9,8 @@ struct InputFocus {
   void First();
   void Last();
   void Next();
-  void Advance();
+  bool IsLast(UIWindow* value);
+  void Previous();
 
   void Refresh(UIWindow* const& excludedRoot);
 };

@@ -100,28 +100,28 @@ void InputFocus::Next() {
   this->window = nullptr;
 }
 
-// INLINED
-void InputFocus::Advance() {
+// OFFSET: 0x00A96F60
+// FUNCTION: fn_17197
+bool InputFocus::IsLast(UIWindow* value) {
+  return value && value->parent->NextFocusable(value) == nullptr;
+}
+
+// OFFSET: 0x00AA9DC0
+// FUNCTION: fn_17260
+void InputFocus::Previous() {
   if (!this->window) {
-    this->Next();
     return;
   }
 
-  UIWindow* parent = this->window->parent;
-  bool found = false;
-
-  for (UIWindow* child : parent->m_children) {
-    if (found && child->Slot05()) {
-      this->Next();
-      return;
-    }
-
-    if (child == this->window && child->Slot05()) {
-      found = true;
-    }
+  UIWindow* previous = this->window->parent->PreviousFocusable(this->window);
+  if (!previous) {
+    this->Set(nullptr);
+    return;
   }
 
-  this->First();
+  if (previous->Slot05()) {
+    this->Set(previous);
+  }
 }
 
 // INLINED

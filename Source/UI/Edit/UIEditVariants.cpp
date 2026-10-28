@@ -16,7 +16,13 @@ int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   if (message != 0) {
     this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
   } else {
-    this->m_edit->focus.Advance();
+    InputFocus& focus = this->m_edit->focus;
+    if (focus.IsLast(focus.window)) {
+      focus.First();
+    } else {
+      focus.Next();
+    }
+
     this->UIWindow::SendMsg(sender, message, a, b, c, d);
   }
 
@@ -62,7 +68,13 @@ int UIEditCtrl5::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   if (message != 0) {
     this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
   } else {
-    this->m_edit->focus.Advance();
+    InputFocus& focus = this->m_edit->focus;
+    if (focus.IsLast(focus.window)) {
+      focus.First();
+    } else {
+      focus.Next();
+    }
+
     this->UIWindow::SendMsg(sender, message, a, b, c, d);
   }
 
