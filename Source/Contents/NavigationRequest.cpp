@@ -117,3 +117,27 @@ void CNaviInfo::SetVisited(bool visited) {
     this->visited = visited;
   }
 }
+
+// OFFSET: 0x00B8DF20
+// FUNCTION: fn_19462
+int CNaviInfo::GetCellY() const {
+  return this->cellY;
+}
+
+// OFFSET: 0x00B8DF30
+// FUNCTION: fn_19463
+int CNaviInfo::GetIndex() const {
+  return this->index;
+}
+
+// OFFSET: 0x00B8DF40
+
+// OFFSET: 0x00B8E640
+
+// OFFSET: 0x00B8E6F0
+
+// OFFSET: 0x00B8E750
+// FUNCTION: fn_19480
+std::vector<CNavi_Object*>* CNaviInfo::Npcs() {
+  return &this->npcs;
+}

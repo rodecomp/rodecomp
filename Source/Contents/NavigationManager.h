@@ -116,6 +116,12 @@ public:
   void SetVisited(bool visited);
   std::vector<CNavi_Link*>::iterator LinksBegin();
   std::vector<CNavi_Link*>::iterator LinksEnd();
+  int GetCellY() const;
+  int GetIndex() const;
+  CNavi_Link* FindLink(unsigned int key, bool byId);
+  CNavi_Object* FindNpc(unsigned int key, bool byId);
+  CNavi_Object* FindNpcAt(int cellX, int cellY);
+  std::vector<CNavi_Object*>* Npcs();
 
   /* 0000 */ int index;
   /* 0004 */ int type;
