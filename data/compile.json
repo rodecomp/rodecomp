@@ -532,6 +532,7 @@
   "Source/Resource/EZeffectResource.cpp": 3,
   "Source/Resource/GifLzw.cpp": 3,
   "Source/Resource/GifResource.cpp": 3,
+  "Source/Resource/ImfLayerIndex.cpp": 3,
   "Source/Resource/ImfResource.cpp": 3,
   "Source/Resource/Models/AnimatedModelResource.cpp": 3,
   "Source/Resource/Models/ModelMesh.cpp": 3,

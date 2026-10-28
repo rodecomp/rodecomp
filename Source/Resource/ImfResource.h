@@ -15,6 +15,8 @@ class CImfRes : public CRes {
 public:
   bool Load(const char* name) override;
 
+  int GetLayer(int priority, int action, int motion);
+
 private:
   /* 0110 */ std::vector<std::vector<ImfData>> m_imfData;
   /* 011C */ int m_maxAction[15];
