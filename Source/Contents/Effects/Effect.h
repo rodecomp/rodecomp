@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+struct EffectVector3;
+
 struct EffectEvent {
   /* 0000 */ int kind;
   /* 0004 */ int frame;
@@ -19,6 +21,30 @@ public:
   explicit CEffect(int id);
   virtual ~CEffect();
   virtual void Close();
+  virtual void Slot00(int argument);
+  virtual void Slot01();
+  virtual void Slot04();
+  virtual void Slot07();
+  virtual void Slot08(int argument1, int argument2, int argument3);
+  virtual void Slot10(int argument);
+  virtual void Slot11(std::string name);
+  virtual void Slot12();
+  virtual void Slot13(int argument);
+  virtual void Slot14(int argument);
+  virtual void Slot15(int argument);
+  virtual void Slot17(int argument);
+  virtual void Slot18(int argument);
+  virtual void Slot19(int argument);
+  virtual void Slot20(int argument);
+  virtual void Slot21(int argument);
+  virtual void Slot22(int argument);
+  virtual void Slot23(int argument);
+  virtual void Slot24(int argument1, int argument2, int argument3, int argument4, int argument5);
+  virtual EffectVector3 Slot25();
+  virtual void Slot26(int argument);
+  virtual void Slot27(int argument);
+  virtual int Slot28();
+  virtual void Slot32();
   void AddEvent(int kind, const char* text, int frame, int argument);
   void SetEventFrame(int kind, int frame);
 
