@@ -349,7 +349,7 @@ void UICntWnd::Paint() {
 
 // OFFSET: 0x008A91E0
 // FUNCTION: fn_11721
-void UICntWnd::DrawBorder(int x, int y, int width, int height) {
+void UIFrameWnd::DrawBorder(int x, int y, int width, int height) {
   if (width == 0) {
     width = this->geometry.width;
   }

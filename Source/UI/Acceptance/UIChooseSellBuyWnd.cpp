@@ -1,4 +1,5 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Client/Mode/ActiveGameMode.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeEvents.h"
@@ -12,12 +13,17 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Chat/UIWhisperWnd.h"
 #include "UI/Dialogs/UIBookWnd.h"
+#include "UI/Dialogs/UIChooseWarpWnd.h"
+#include "UI/Dialogs/UIChooseWnd.h"
 #include "UI/Dialogs/UIDisconnectedServerMsgWnd.h"
+#include "UI/Dialogs/UIEmailAddressWnd.h"
 #include "UI/Dialogs/UIGraffiStrboxWnd.h"
 #include "UI/Dialogs/UILoadingWnd.h"
 #include "UI/Dialogs/UIMenuWnd.h"
 #include "UI/Dialogs/UIMinimapZoomWnd.h"
 #include "UI/Dialogs/UINoticeConfirmWnd.h"
+#include "UI/Dialogs/UINpcEditDialogWnd.h"
+#include "UI/Dialogs/UIPasswordWnd.h"
 #include "UI/Dialogs/UINotifyLevelUpWnd.h"
 #include "UI/Dialogs/UINotifyQuestWnd.h"
 #include "UI/Dialogs/UIPetTamingDeceiveWnd.h"
@@ -26,11 +32,13 @@
 #include "UI/Dialogs/UISayDialogWnd.h"
 #include "UI/Dialogs/UISelectCartWnd.h"
 #include "UI/Dialogs/UITipOfTheDayWnd.h"
+#include "UI/Dialogs/UIToolTipWnd.h"
 #include "UI/Dialogs/UIWaitWnd.h"
 #include "UI/Items/UIEquipWnd.h"
 #include "UI/Items/UIExchangeWnd.h"
 #include "UI/Items/UIItemCollectionWnd.h"
 #include "UI/Items/UIItemIdentifyWnd.h"
+#include "UI/Items/UIItemParamChangeDisplayWnd.h"
 #include "UI/Items/UINotifyItemObtainWnd.h"
 #include "UI/Lists/UIComboBoxWnd.h"
 #include "UI/Lists/UIListBox.h"
@@ -38,6 +46,7 @@
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Shop/UInCash_CallWnd.h"
 #include "UI/Skill/UISkillDescribeWnd.h"
+#include "UI/Skill/UISkillNameChangeWnd.h"
 #include "UI/Status/UIStatusWnd.h"
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -112,6 +121,18 @@ void UIChooseSellBuyWnd::Paint() {
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
 }
 
+// OFFSET: 0x008ED170
+// FUNCTION: fn_12215
+void UIChooseWarpWnd::Paint() {
+  this->DrawBorder(0, 0, 0, 0);
+}
+
+// OFFSET: 0x008ED180
+// FUNCTION: fn_12216
+void UIChooseWnd::Paint() {
+  this->DrawBorder(0, 0, 0, 0);
+}
+
 // OFFSET: 0x008ED190
 // FUNCTION: fn_12217
 void UIComboBoxIDWnd::Paint() {
@@ -131,6 +152,8 @@ void UIDisconnectedServerMsgWnd::Paint() {
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
 }
 
+// OFFSET: 0x008ED1F0
+
 // OFFSET: 0x008EE230
 // FUNCTION: fn_12223
 void UIGraffiStrboxWnd::Paint() {
@@ -141,6 +164,8 @@ void UIGraffiStrboxWnd::Paint() {
   this->DrawTextAt(controls.fonts, controls.locale, 17, 23, controls.services.MessageText(436), 0, 0, 12, 0xFFFFFF, 0, 0);
   this->DrawTextAt(controls.fonts, controls.locale, 16, 22, controls.services.MessageText(436), 0, 0, 12, 0, 0, 0);
 }
+
+// OFFSET: 0x008EE9D0
 
 // OFFSET: 0x008EECD0
 // FUNCTION: fn_12228
@@ -177,6 +202,8 @@ void UINotifyLevelUpWnd::Paint() {
 void UINotifyQuestWnd::Paint() {
 }
 
+// OFFSET: 0x008EF810
+
 // OFFSET: 0x008EF9A0
 // FUNCTION: fn_12239
 void UIPartyInvitationToWnd::Paint() {
@@ -205,6 +232,12 @@ void UIPartySettingWnd::Paint() {
   this->DrawTextAt(controls.fonts, controls.locale, 10, this->m_mode + 17, controls.services.MessageText(293), 0, 0, 12, 0, 0, 0);
 }
 
+// OFFSET: 0x008EFAF0
+// FUNCTION: fn_12241
+void UIPasswordWnd::Paint() {
+  this->DrawBorder(0, 0, 0, 0);
+}
+
 // OFFSET: 0x008EFF60
 // FUNCTION: fn_12245
 void UIQuitWnd::Paint() {
@@ -217,6 +250,12 @@ void UIQuitWnd::Paint() {
 void UIRestartWnd::Paint() {
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
   this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+}
+
+// OFFSET: 0x008EFFE0
+// FUNCTION: fn_12247
+void UISayDialogWnd::Paint() {
+  this->DrawBorder(0, 0, 0, 0);
 }
 
 // OFFSET: 0x008F0350
@@ -245,6 +284,8 @@ void UISkillDescribeWnd::Paint() {
   DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xC3C3C3);
   DrawRoundedBorder(*this, 2, 2, this->geometry.width - 4, this->geometry.height - 4, 0xFFFFFF);
 }
+
+// OFFSET: 0x008F04B0
 
 // OFFSET: 0x008F2460
 // FUNCTION: fn_12255
@@ -282,6 +323,12 @@ void UITipOfTheDayWnd::Paint() {
 
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
   this->FillRegion(72, 17, columns * 32 - 32, slots * 32, RGB(red, green, blue));
+}
+
+// OFFSET: 0x008F2A80
+// FUNCTION: fn_12257
+void UIToolTipWnd::Paint() {
+  this->DrawBorder(0, 0, 0, 0);
 }
 
 // OFFSET: 0x008F2A90

@@ -12,6 +12,7 @@ public:
 
   void Resize(int width, int height) override;
   void Slot19() override;
+  void Paint() override;
 };
 
 #endif

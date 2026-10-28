@@ -7,7 +7,6 @@
 class UICntWnd : public UIFrameWnd {
 public:
   void Paint() override;
-  void DrawBorder(int x, int y, int width, int height);
 
 protected:
 };

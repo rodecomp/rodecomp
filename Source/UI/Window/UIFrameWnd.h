@@ -33,6 +33,7 @@ public:
   std::vector<std::uint32_t> Slot44() override;
   int Slot46() override;
   UIBitmapButton* AddCloseButton(UIButtonContext& controls, const char* tooltip, int width);
+  void DrawBorder(int x, int y, int width, int height);
 
 protected:
   /* 007C */ int m_dragX;
