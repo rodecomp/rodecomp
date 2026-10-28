@@ -6,13 +6,16 @@
 #include "Contents/ActorNameCard.h"
 
 #include <cstddef>
+#include <string>
 
 class CView;
 struct WorldScene;
 
 class CGameMode : public CMode {
 public:
-  /* 0058 */ unsigned char unknown_0058[0x74];
+  /* 0058 */ unsigned char unknown_0058[0x10];
+  /* 0068 */ char mapName[16];
+  /* 0078 */ unsigned char unknown_0078[0x54];
   /* 00CC */ WorldScene* scene;
   /* 00D0 */ CView* camera;
   /* 00D4 */ unsigned char unknown_00D4[0x8C];
@@ -20,9 +23,12 @@ public:
   /* 0194 */ unsigned char unknown_0194[0x174];
   /* 0308 */ ModeDragState drag;
   /* 03C8 */ unsigned char unknown_03C8[0x2A8];
+
+  std::string MapName();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(CGameMode, mapName) == 0x68);
 static_assert(offsetof(CGameMode, scene) == 0xCC);
 static_assert(offsetof(CGameMode, camera) == 0xD0);
 static_assert(offsetof(CGameMode, nameCard) == 0x160);

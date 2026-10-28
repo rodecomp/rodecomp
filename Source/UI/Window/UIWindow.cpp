@@ -1,3 +1,4 @@
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Network/TextEncoding.h"
@@ -424,7 +425,8 @@ void UIWindow::Slot43() {
 // OFFSET: 0x005C4480
 // FUNCTION: fn_03560
 std::vector<std::uint32_t> UIWindow::Slot44() {
-  return {};
+  std::vector<std::uint32_t> result;
+  return result;
 }
 
 // OFFSET: 0x005C8F60
@@ -1179,6 +1181,18 @@ bool UINavigationV4Wnd::ClearRouteTexts() {
 
   this->unknown_0104.clear();
   return true;
+}
+
+// OFFSET: 0x005C4520
+// FUNCTION: fn_03565
+std::string CGameMode::MapName() {
+  return this->mapName;
+}
+
+// OFFSET: 0x005C45D0
+// FUNCTION: fn_03568
+bool UINavigationV4Wnd::IsListShown() const {
+  return this->unknown_00D4->geometry.unknown_0030 != 0;
 }
 
 // OFFSET: 0x005C4690

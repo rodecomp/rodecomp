@@ -21,6 +21,7 @@ public:
   bool ClearRouteTexts();
   void LayoutWithoutDetails();
   void LayoutWithDetails();
+  bool IsListShown() const;
 
   /* 00B4 */ UIWindow* unknown_00B4;
   /* 00B8 */ UIWindow* unknown_00B8;
