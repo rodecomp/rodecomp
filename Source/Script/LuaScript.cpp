@@ -5,11 +5,32 @@
 
 extern "C" {
 #include <lauxlib.h>
+#include <lualib.h>
 }
 
 #include <cstdio>
 #include <cstring>
+#include <vector>
 #include <windows.h>
+
+struct LuaScriptPair {
+  std::string left;
+  std::string right;
+};
+
+class LuaScriptBag {
+public:
+  void Add(std::string left, std::string right);
+
+  /* 0000 */ unsigned char unknown_0000[0x7C];
+  /* 007C */ std::vector<LuaScriptPair> pairs;
+};
+
+// OFFSET: 0x00AFC8B0
+// FUNCTION: fn_18325
+void LuaScriptBag::Add(std::string left, std::string right) {
+  this->pairs.push_back(LuaScriptPair{left, right});
+}
 
 // OFFSET: 0x00AFC830
 // FUNCTION: fn_18323
@@ -30,6 +51,8 @@ void LuaScript::Close() {
     this->m_state = nullptr;
   }
 }
+
+// OFFSET: 0x00AFDDD0
 
 // OFFSET: 0x00AFDD60
 // FUNCTION: fn_18335

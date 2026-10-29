@@ -13,6 +13,7 @@ class LuaScript {
 public:
   LuaScript();
   ~LuaScript();
+  void Open();
   bool Call(std::string function, const char* signature, ...);
   bool CallTable(std::string table, std::string function, const char* signature, ...);
   bool Execute(const void* bytes, std::size_t size);
