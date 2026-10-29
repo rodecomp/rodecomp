@@ -206,9 +206,9 @@ void EffectPrimitiveState::Initialize(
   this->offset.x = first;
   this->offset.y = y + this->offset.y;
   this->offset.z = z + this->offset.z;
-  this->origin = {masterRender.position[0], masterRender.position[1], masterRender.position[2]};
-  render.position[0] = this->origin.x;
-  render.position[1] = this->origin.y;
-  render.position[2] = this->origin.z;
+  this->origin = {masterRender.position.x, masterRender.position.y, masterRender.position.z};
+  render.position.x = this->origin.x;
+  render.position.y = this->origin.y;
+  render.position.z = this->origin.z;
   this->unknown_013C = 0;
 }

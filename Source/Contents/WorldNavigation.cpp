@@ -19,5 +19,5 @@ bool CNavigationManager::PlayerCell(int* column, int* row) {
 // FUNCTION: fn_21282
 void CGameMode::PlayerCell(int* column, int* row) const {
   const auto* player = reinterpret_cast<const CRenderObject*>(this->scene->player);
-  this->WorldCell(player->render.position[0], player->render.position[2], *column, *row);
+  this->WorldCell(player->render.position.x, player->render.position.z, *column, *row);
 }

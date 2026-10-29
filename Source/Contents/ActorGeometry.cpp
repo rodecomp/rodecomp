@@ -27,8 +27,8 @@ float __stdcall CRenderObject::Heading(float x, float z, float targetX, float ta
 // OFFSET: 0x00CA9610
 // FUNCTION: fn_21008
 void CRenderObject::Face(float x, float z) {
-  const float deltaX = x - this->render.position[0];
-  const float deltaZ = z - this->render.position[2];
+  const float deltaX = x - this->render.position.x;
+  const float deltaZ = z - this->render.position.z;
   if (deltaX != 0.0f || deltaZ != 0.0f) {
     float angle = (static_cast<float>(std::atan2(static_cast<double>(deltaX), static_cast<double>(-deltaZ))) / 3.141592f) * 180.0f;
     this->render.angle = angle;
@@ -46,17 +46,17 @@ void CRenderObject::Face(float x, float z) {
 // OFFSET: 0x00CA96C0
 // FUNCTION: fn_21009
 float CRenderObject::HorizontalDistance(float x, float z) const {
-  const float deltaX = x - this->render.position[0];
-  const float deltaZ = z - this->render.position[2];
+  const float deltaX = x - this->render.position.x;
+  const float deltaZ = z - this->render.position.z;
   return SquareRoot(deltaZ * deltaZ + deltaX * deltaX);
 }
 
 // OFFSET: 0x00CA9700
 // FUNCTION: fn_21010
 float CRenderObject::Distance(float x, float y, float z) const {
-  const float deltaX = x - this->render.position[0];
-  const float deltaZ = z - this->render.position[2];
-  const float deltaY = y - this->render.position[1];
+  const float deltaX = x - this->render.position.x;
+  const float deltaZ = z - this->render.position.z;
+  const float deltaY = y - this->render.position.y;
   const float horizontal = SquareRoot(deltaZ * deltaZ + deltaX * deltaX);
   return SquareRoot(horizontal * horizontal + deltaY * deltaY);
 }
@@ -68,19 +68,19 @@ bool CRenderObject::GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) c
   const CRenderObject* player = reinterpret_cast<const CRenderObject*>(world->player);
 
   if (targetAid == g_session.m_aid) {
-    targetPos = {player->render.position[0], player->render.position[1], player->render.position[2]};
+    targetPos = {player->render.position.x, player->render.position.y, player->render.position.z};
     return true;
   }
 
   if (const CRenderObject* actor = world->GetGameActorByAID(targetAid)) {
-    targetPos = {actor->render.position[0], actor->render.position[1], actor->render.position[2]};
+    targetPos = {actor->render.position.x, actor->render.position.y, actor->render.position.z};
     return true;
   }
 
-  const float* position = this->render.position;
+  const vector3d& position = this->render.position;
   targetPos = {
-    position[0] - (player->render.position[0] - position[0]), position[1] - (player->render.position[1] - position[1]),
-    position[2] - (player->render.position[2] - position[2])
+    position.x - (player->render.position.x - position.x), position.y - (player->render.position.y - position.y),
+    position.z - (player->render.position.z - position.z)
   };
   return false;
 }

@@ -74,7 +74,7 @@ bool CHalluPlant::Update() {
 bool CNumEffect::Update() {
   const float elapsed = static_cast<float>((timeGetTime() - this->render.unknown_008C) / 24.0);
   this->render.previousAnimation = this->render.animation;
-  this->render.position[1] = this->baseHeight - elapsed * 0.18f;
+  this->render.position.y = this->baseHeight - elapsed * 0.18f;
   this->SetColor(static_cast<int>(255.0f - (elapsed + elapsed)), -1, -1, -1);
 
   if (this->render.scale > 1.0f) {
@@ -98,13 +98,13 @@ bool CSoundMaker::Update() {
     return true;
   }
 
-  const float distance = this->HorizontalDistance(player->render.position[0], player->render.position[2]);
+  const float distance = this->HorizontalDistance(player->render.position.x, player->render.position.z);
   if (distance - (this->radius + this->range) > 130.0f) {
     return true;
   }
 
-  const float deltaX = player->render.position[0] - this->render.position[0];
-  const float deltaZ = player->render.position[2] - this->render.position[2];
+  const float deltaX = player->render.position.x - this->render.position.x;
+  const float deltaZ = player->render.position.z - this->render.position.z;
   float signX = 1.0f;
   float signZ = 1.0f;
   if (deltaX < 0.0f && deltaZ >= 0.0f) {
@@ -127,8 +127,8 @@ bool CSoundMaker::Update() {
     offsetZ = slope * offsetX;
   }
 
-  const float x = this->render.position[0] + offsetX;
-  const float z = this->render.position[2] + offsetZ;
+  const float x = this->render.position.x + offsetX;
+  const float z = this->render.position.z + offsetZ;
   if (player->HorizontalDistance(x, z) - this->range > 75.0f || this->file.empty()) {
     return true;
   }
@@ -136,7 +136,7 @@ bool CSoundMaker::Update() {
   if (timeGetTime() > this->lastTick + this->cycle) {
     this->lastTick = timeGetTime();
     g_soundMgr->PlayWave(
-      this->file.c_str(), x - player->render.position[0], 0.0f, z - player->render.position[2], TruncateToInt(this->range),
+      this->file.c_str(), x - player->render.position.x, 0.0f, z - player->render.position.z, TruncateToInt(this->range),
       TruncateToInt(this->range / 6.0f), this->volume, 0
     );
   }
@@ -172,9 +172,9 @@ void CBlowEffect::SendObjectMessage(
   }
 
   const float* position = reinterpret_cast<const float*>(b);
-  this->render.position[0] = position[0];
-  this->render.position[1] = position[1];
-  this->render.position[2] = position[2];
+  this->render.position.x = position[0];
+  this->render.position.y = position[1];
+  this->render.position.z = position[2];
   this->render.visible = 1;
   this->render.color = (d | e) ? 0xFFFF0000u : 0xFFFFFFFFu;
   this->render.unknown_008C = timeGetTime();
@@ -345,12 +345,12 @@ void CNumEffect::SendObjectMessage(
 ) {
   if (message == 14 && a == 0) {
     const float* position = reinterpret_cast<const float*>(b);
-    this->render.position[0] = position[0];
-    this->render.position[1] = position[1];
-    this->render.position[2] = position[2];
+    this->render.position.x = position[0];
+    this->render.position.y = position[1];
+    this->render.position.z = position[2];
     this->render.visible = 1;
-    this->render.position[1] -= 12.0f;
-    this->baseHeight = this->render.position[1];
+    this->render.position.y -= 12.0f;
+    this->baseHeight = this->render.position.y;
 
     this->render.curMotion = d;
     if (d > 9 || d < 0) {
@@ -387,9 +387,9 @@ void CSoundMaker::SendObjectMessage(
   this->width = sound.width;
   this->height = sound.height;
   this->range = sound.range;
-  this->render.position[0] = sound.position[0];
-  this->render.position[1] = sound.position[1];
-  this->render.position[2] = sound.position[2];
+  this->render.position.x = sound.position[0];
+  this->render.position.y = sound.position[1];
+  this->render.position.z = sound.position[2];
   this->radius = SquareRoot(static_cast<float>(this->width * this->width + this->height * this->height));
   this->cycle = static_cast<std::int64_t>(sound.cycle * 1000.0f);
   this->lastTick = timeGetTime() - this->cycle;

@@ -58,7 +58,7 @@ void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectSta
 
     for (unsigned vertexIndex = 0; vertexIndex < 3; ++vertexIndex) {
       const vector3d& corner = corners[indices[triangleIndex][vertexIndex]];
-      const float position[3] = {corner.x + render.position[0], corner.y + render.position[1], corner.z + render.position[2]};
+      const float position[3] = {corner.x + render.position.x, corner.y + render.position.y, corner.z + render.position.z};
       RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       context.projection.Project(position, context.cameraMatrix, projected);
       RenderVertex& vertex = triangle.vertices[vertexIndex];

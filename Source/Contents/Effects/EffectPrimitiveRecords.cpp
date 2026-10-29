@@ -9,7 +9,7 @@
 void EffectPrimitiveState::InitializeRecords(const RenderObjectState& render) {
   for (int index = 0; index < this->unknown_01F4; ++index) {
     EffectPrimitiveRecord& record = this->records[index];
-    record.position = {render.position[0], render.position[1], render.position[2]};
+    record.position = {render.position.x, render.position.y, render.position.z};
     std::memcpy(record.corners, this->corners, sizeof(record.corners));
     record.unknown_003C = this->unknown_0348;
     record.scale = this->scale;

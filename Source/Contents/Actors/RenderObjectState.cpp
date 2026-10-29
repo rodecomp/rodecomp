@@ -27,9 +27,9 @@ RenderObjectState::~RenderObjectState() {
 // OFFSET: 0x00CAF990
 // FUNCTION: fn_21086
 void RenderObjectState::Reset(ResourceMgr& resources, JobNames& names) {
-  this->position[0] = 0;
-  this->position[1] = 0;
-  this->position[2] = 0;
+  this->position.x = 0;
+  this->position.y = 0;
+  this->position.z = 0;
   this->animation = 0;
   this->previousAnimation = 0;
   this->unknown_0040 = 0;

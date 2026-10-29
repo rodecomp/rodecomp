@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_ACTORS_RENDEROBJECTSTATE_H
 
 #include "Contents/InstantVar.h"
+#include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -19,7 +20,7 @@ struct RenderObjectState {
   RenderObjectState(const RenderObjectState&) = delete;
   RenderObjectState& operator=(const RenderObjectState&) = delete;
 
-  /* 0010 */ float position[3];
+  /* 0010 */ vector3d position;
   /* 001C */ std::string name;
   /* 0034 */ int animation;
   /* 0038 */ int previousAnimation;

@@ -85,8 +85,8 @@ namespace {
 // FUNCTION: fn_19785
 bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
   particle.origin = {
-    context.parentRender.position[0] + particle.velocity.x, context.parentRender.position[1] + particle.velocity.y,
-    context.parentRender.position[2] + particle.velocity.z
+    context.parentRender.position.x + particle.velocity.x, context.parentRender.position.y + particle.velocity.y,
+    context.parentRender.position.z + particle.velocity.z
   };
 
   if (particle.unknown_0200 == particle.unknown_01E0) {
@@ -166,8 +166,8 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   }
 
   if ((particle.flags & 0x400u) != 0) {
-    const float x = particle.master->state.offset[0] - render.position[0];
-    const float z = particle.master->state.offset[2] - render.position[2];
+    const float x = particle.master->state.offset[0] - render.position.x;
+    const float z = particle.master->state.offset[2] - render.position.z;
     const float distance = std::sqrt(z * z + x * x);
 
     if (3.0f >= distance) {
@@ -178,9 +178,9 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
     particle.unknown_030C = render.angle;
   }
 
-  render.position[0] = particle.origin.x + particle.offset.x;
-  render.position[1] = particle.offset.y + particle.origin.y;
-  render.position[2] = particle.offset.z + particle.origin.z;
+  render.position.x = particle.origin.x + particle.offset.x;
+  render.position.y = particle.offset.y + particle.origin.y;
+  render.position.z = particle.offset.z + particle.origin.z;
   particle.unknown_0354 = particle.unknown_0358 + particle.unknown_0354;
   particle.unknown_0360 = particle.unknown_0364 + particle.unknown_0360;
   particle.unknown_030C = particle.unknown_030C + particle.unknown_0330;
@@ -223,7 +223,7 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
     particle.master->state.offset[2] = particle.offset.z + particle.velocity.z;
   }
 
-  if ((particle.flags & 4u) != 0 && render.position[1] > context.ground.Height(render.position[0], render.position[2])) {
+  if ((particle.flags & 4u) != 0 && render.position.y > context.ground.Height(render.position.x, render.position.z)) {
     particle.flags &= ~4u;
     particle.unknown_01E0 = particle.lifetime - 25;
     particle.unknown_02BC = 0;
@@ -303,9 +303,10 @@ bool UpdateEffectPrimitive15(EffectPrimitiveState& particle, RenderObjectState& 
 // OFFSET: 0x00BB6180
 // FUNCTION: fn_19773
 bool ShrinkEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
-  render.position[0] = context.parentRender.position[0];
-  render.position[1] = context.parentRender.position[1];
-  render.position[2] = context.parentRender.position[2];
+  const vector3d& parent = context.parentRender.position;
+  render.position.x = parent.x;
+  render.position.y = parent.y;
+  render.position.z = parent.z;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = particle.slots[index];
@@ -354,9 +355,10 @@ bool ShrinkEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectStat
 // OFFSET: 0x00BB62A0
 // FUNCTION: fn_19774
 bool PulseEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
-  render.position[0] = context.parentRender.position[0];
-  render.position[1] = context.parentRender.position[1];
-  render.position[2] = context.parentRender.position[2];
+  const vector3d& parent = context.parentRender.position;
+  render.position.x = parent.x;
+  render.position.y = parent.y;
+  render.position.z = parent.z;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = particle.slots[index];
@@ -414,8 +416,8 @@ bool PulseEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectState
 // FUNCTION: fn_19777
 bool SpinEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
   particle.origin = {
-    context.parentRender.position[0] + particle.velocity.x, context.parentRender.position[1] + particle.velocity.y,
-    context.parentRender.position[2] + particle.velocity.z
+    context.parentRender.position.x + particle.velocity.x, context.parentRender.position.y + particle.velocity.y,
+    context.parentRender.position.z + particle.velocity.z
   };
 
   particle.unknown_02BC = particle.unknown_02C0 + particle.unknown_02BC;
@@ -437,9 +439,9 @@ bool SpinEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   particle.offset.z = particle.unknown_0370.z + particle.offset.z;
   particle.unknown_030C = particle.unknown_0330 + particle.unknown_030C;
   particle.unknown_02F4 += particle.unknown_02FC;
-  render.position[0] = particle.offset.x + particle.origin.x;
-  render.position[1] = particle.offset.y + particle.origin.y;
-  render.position[2] = particle.offset.z + particle.origin.z;
+  render.position.x = particle.offset.x + particle.origin.x;
+  render.position.y = particle.offset.y + particle.origin.y;
+  render.position.z = particle.offset.z + particle.origin.z;
   particle.unknown_02F8 += particle.unknown_0300;
   particle.unknown_0360 = particle.unknown_0364 + particle.unknown_0360;
 
@@ -471,8 +473,8 @@ bool SpinEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
 // FUNCTION: fn_19778
 bool RollEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
   particle.origin = {
-    context.parentRender.position[0] + particle.velocity.x, context.parentRender.position[1] + particle.velocity.y,
-    context.parentRender.position[2] + particle.velocity.z
+    context.parentRender.position.x + particle.velocity.x, context.parentRender.position.y + particle.velocity.y,
+    context.parentRender.position.z + particle.velocity.z
   };
 
   particle.unknown_02BC = particle.unknown_02C0 + particle.unknown_02BC;
@@ -488,9 +490,9 @@ bool RollEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   particle.offset.x = particle.unknown_0370.x + particle.offset.x;
   particle.offset.y = particle.unknown_0370.y + particle.offset.y;
   particle.offset.z = particle.unknown_0370.z + particle.offset.z;
-  render.position[0] = particle.offset.x + particle.origin.x;
-  render.position[1] = particle.offset.y + particle.origin.y;
-  render.position[2] = particle.offset.z + particle.origin.z;
+  render.position.x = particle.offset.x + particle.origin.x;
+  render.position.y = particle.offset.y + particle.origin.y;
+  render.position.z = particle.offset.z + particle.origin.z;
   particle.unknown_030C = particle.unknown_0330 + particle.unknown_030C;
   particle.unknown_02F8 = particle.unknown_0300 + particle.unknown_02F8;
   particle.unknown_02F4 = particle.unknown_02FC + particle.unknown_02F4;
@@ -524,8 +526,8 @@ bool RollEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
 // FUNCTION: fn_19784
 void AdvanceEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
   particle.origin = {
-    context.parentRender.position[0] + particle.velocity.x, context.parentRender.position[1] + particle.velocity.y,
-    context.parentRender.position[2] + particle.velocity.z
+    context.parentRender.position.x + particle.velocity.x, context.parentRender.position.y + particle.velocity.y,
+    context.parentRender.position.z + particle.velocity.z
   };
 
   if (particle.unknown_01E0 == particle.unknown_0200) {
@@ -538,9 +540,9 @@ void AdvanceEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& r
   particle.offset.x = particle.unknown_0370.x + particle.offset.x;
   particle.offset.y = particle.unknown_0370.y + particle.offset.y;
   particle.offset.z = particle.unknown_0370.z + particle.offset.z;
-  render.position[0] = particle.offset.x + particle.origin.x;
-  render.position[1] = particle.offset.y + particle.origin.y;
-  render.position[2] = particle.offset.z + particle.origin.z;
+  render.position.x = particle.offset.x + particle.origin.x;
+  render.position.y = particle.offset.y + particle.origin.y;
+  render.position.z = particle.offset.z + particle.origin.z;
 
   if ((particle.flags & 1u) != 0 && particle.unknown_01E0 == static_cast<int>(particle.unknown_01D4)) {
     particle.unknown_02C0 = 0;
@@ -590,9 +592,9 @@ bool EffectParticle::AdvanceFrame() {
 // FUNCTION: fn_19772
 bool EffectParticle::UpdateFireWall() {
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   for (int index = 0; index < 4; ++index) {
     if (this->state.scale == 3.0f && index < 3) {
@@ -713,9 +715,9 @@ bool EffectParticle::UpdateFireWall() {
 // FUNCTION: fn_19775
 bool EffectParticle::UpdateStoneCurse() {
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   for (int index = 0; index < 4; ++index) {
     if (this->state.scale == 3.0f && index < 3) {
@@ -789,9 +791,9 @@ bool EffectParticle::UpdateStoneCurse() {
 // FUNCTION: fn_19776
 void EffectParticle::UpdateBeginSpell() {
   const AttachedEffect* master = this->state.master;
-  this->state.origin.x = master->render.position[0] + this->state.velocity.x;
-  this->state.origin.y = master->render.position[1] + this->state.velocity.y;
-  this->state.origin.z = master->render.position[2] + this->state.velocity.z;
+  this->state.origin.x = master->render.position.x + this->state.velocity.x;
+  this->state.origin.y = master->render.position.y + this->state.velocity.y;
+  this->state.origin.z = master->render.position.z + this->state.velocity.z;
 
   float base;
 
@@ -827,9 +829,9 @@ void EffectParticle::UpdateBeginSpell() {
   this->state.offset.x = offsetX;
   this->state.offset.y = offsetY;
   this->state.offset.z = offsetZ;
-  this->render.position[0] = offsetX + this->state.origin.x;
-  this->render.position[1] = offsetY + this->state.origin.y;
-  this->render.position[2] = offsetZ + this->state.origin.z;
+  this->render.position.x = offsetX + this->state.origin.x;
+  this->render.position.y = offsetY + this->state.origin.y;
+  this->render.position.z = offsetZ + this->state.origin.z;
 
   float scale = this->state.unknown_02F4;
 
@@ -846,9 +848,9 @@ void EffectParticle::UpdateBeginSpell() {
 // FUNCTION: fn_19790
 void EffectParticle::PrimBottom2() {
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -880,9 +882,9 @@ void EffectParticle::PrimBottom() {
   FaceCamera(slots);
 
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -928,9 +930,9 @@ void EffectParticle::PrimBottom() {
     slot.rotStart -= 360;
   }
 
-  slot.vecBNow.x = this->render.position[0];
-  slot.vecBNow.z = this->render.position[2];
-  slot.vecBPre.y = this->render.position[1] - 6.0f;
+  slot.vecBNow.x = this->render.position.x;
+  slot.vecBNow.z = this->render.position.z;
+  slot.vecBPre.y = this->render.position.y - 6.0f;
   slot.vecBNow.y = slot.vecBPre.y + 3.0f * g_sinTable[slot.rotStart];
 
   if (slot.flag1[2] == 7) {
@@ -948,9 +950,9 @@ void EffectParticle::PrimBottomOut() {
   FaceCamera(this->state.slots);
 
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -969,7 +971,7 @@ void EffectParticle::PrimBottomOut() {
       if (slot.alphaB <= 0) {
         slot.alphaB = 0;
         slot.process = 0;
-        slot.vecBNow.y = slot.flag1[1] == 0 ? this->render.position[1] : this->render.position[1] - 5.0f;
+        slot.vecBNow.y = slot.flag1[1] == 0 ? this->render.position.y : this->render.position.y - 5.0f;
       }
 
       slot.vecBNow.y -= 0.2f;
@@ -998,9 +1000,9 @@ void EffectParticle::PrimBubbleDrop() {
   FaceCamera(slots);
 
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -1039,7 +1041,7 @@ void EffectParticle::PrimBubbleDrop() {
 
     slot.vecBPre.y += slot.height[1];
     slot.vecBNow = {
-      this->render.position[0] + slot.vecBPre.x, this->render.position[1] + slot.vecBPre.y, this->render.position[2] + slot.vecBPre.z
+      this->render.position.x + slot.vecBPre.x, this->render.position.y + slot.vecBPre.y, this->render.position.z + slot.vecBPre.z
     };
   } else {
     slot.alphaB -= 10;
@@ -1056,9 +1058,9 @@ void EffectParticle::PrimChemical2() {
   FaceCamera(this->state.slots);
 
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -1193,9 +1195,9 @@ void EffectParticle::PrimEffectTexture_Ani() {
   FaceCamera(this->state.slots);
 
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
@@ -1224,8 +1226,8 @@ void EffectParticle::PrimEffectTexture_Ani() {
   }
 
   slot.vecBNow.y = slot.vecBPre.y;
-  slot.vecBNow.x = this->render.position[0];
-  slot.vecBNow.z = this->render.position[2];
+  slot.vecBNow.x = this->render.position.x;
+  slot.vecBNow.z = this->render.position.z;
 }
 
 // OFFSET: 0x00BBD480
@@ -1234,9 +1236,9 @@ void EffectParticle::PrimFirstAid() {
   FaceCamera(this->state.slots);
 
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
@@ -1322,9 +1324,9 @@ void EffectParticle::PrimPoison() {
   FaceCamera(this->state.slots);
 
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -1359,9 +1361,9 @@ void EffectParticle::PrimPoison() {
 // FUNCTION: fn_19813
 void EffectParticle::PrimGuard() {
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -1407,14 +1409,14 @@ bool EffectParticle::PrimLineLink() {
   const CRenderObject* target = nullptr;
 
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
   ++slot.process;
 
-  slot.vecTNow = {this->render.position[0], this->render.position[1], this->render.position[2]};
+  slot.vecTNow = {this->render.position.x, this->render.position.y, this->render.position.z};
   slot.vecTNow.y -= 8.0f;
 
   if (slot.height[4] == 2.0f) {
@@ -1453,7 +1455,7 @@ bool EffectParticle::PrimLineLink() {
     slot.life = 0;
     slot.alphaB = 0;
   } else {
-    slot.vecTPre = {target->render.position[0], target->render.position[1], target->render.position[2]};
+    slot.vecTPre = {target->render.position.x, target->render.position.y, target->render.position.z};
     slot.vecTPre.y -= 8.0f;
   }
 
@@ -1477,8 +1479,8 @@ void EffectParticle::PrimSMA() {
     }
 
     if (slot.process == 1) {
-      const float x = this->state.offset.x - this->render.position[0];
-      const float z = this->state.offset.z - this->render.position[2];
+      const float x = this->state.offset.x - this->render.position.x;
+      const float z = this->state.offset.z - this->render.position.z;
       CalculateVectorAngle(x, z, &slot.rotStart);
     }
 
@@ -1494,9 +1496,9 @@ void EffectParticle::PrimShieldBoomerang3() {
   FaceCamera(slots);
 
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -1556,9 +1558,9 @@ void EffectParticle::PrimShieldBoomerang3() {
 // FUNCTION: fn_19840
 bool EffectParticle::PrimSuperAngel() {
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
@@ -1694,9 +1696,9 @@ bool EffectParticle::PrimSuperAngel() {
     }
   }
 
-  this->render.position[0] = this->state.offset.x;
-  this->render.position[1] = this->state.offset.y;
-  this->render.position[2] = this->state.offset.z;
+  this->render.position.x = this->state.offset.x;
+  this->render.position.y = this->state.offset.y;
+  this->render.position.z = this->state.offset.z;
   this->UpdateRecords();
   return true;
 }
@@ -1708,9 +1710,9 @@ void EffectParticle::PrimThrowItem() {
   FaceCamera(slots);
 
   const AttachedEffect* master = this->state.master;
-  this->render.position[0] = master->render.position[0];
-  this->render.position[1] = master->render.position[1];
-  this->render.position[2] = master->render.position[2];
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -1884,9 +1886,9 @@ void EffectParticle::PrimWaterFall() {
 // FUNCTION: fn_19779
 bool EffectParticle::UpdateHit6() {
   const AttachedEffect* master = this->state.master;
-  this->state.origin.x = master->render.position[0] + this->state.velocity.x;
-  this->state.origin.y = master->render.position[1] + this->state.velocity.y;
-  this->state.origin.z = master->render.position[2] + this->state.velocity.z;
+  this->state.origin.x = master->render.position.x + this->state.velocity.x;
+  this->state.origin.y = master->render.position.y + this->state.velocity.y;
+  this->state.origin.z = master->render.position.z + this->state.velocity.z;
 
   const int frame = this->state.unknown_01E0;
 
@@ -1962,9 +1964,10 @@ bool EffectParticle::UpdateHit6() {
     this->state.unknown_01D4 = rand() % 15 + 5;
   }
 
-  this->render.position[0] = this->state.offset.x + this->state.origin.x;
-  this->render.position[1] = this->state.offset.y + this->state.origin.y;
-  this->render.position[2] = this->state.offset.z + this->state.origin.z;
+  this->render.position = {
+    this->state.offset.x + this->state.origin.x, this->state.offset.y + this->state.origin.y,
+    this->state.offset.z + this->state.origin.z
+  };
 
   if ((this->state.flags & 0x100u) != 0) {
     if (3.0f >= this->HorizontalDistance(this->state.master->state.offset[0], this->state.master->state.offset[2])) {
@@ -1986,9 +1989,9 @@ bool EffectParticle::UpdateHit6() {
 bool EffectParticle::UpdateCoin() {
   CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
   const AttachedEffect* master = this->state.master;
-  this->state.origin.z = master->render.position[2] + this->state.velocity.z;
-  this->state.origin.y = master->render.position[1] + this->state.velocity.y;
-  this->state.origin.x = master->render.position[0] + this->state.velocity.x;
+  this->state.origin.z = master->render.position.z + this->state.velocity.z;
+  this->state.origin.y = master->render.position.y + this->state.velocity.y;
+  this->state.origin.x = master->render.position.x + this->state.velocity.x;
   this->state.unknown_02EC = this->state.unknown_02F0 + this->state.unknown_02EC;
 
   const float speed = this->state.unknown_02C0 + this->state.unknown_02BC;
@@ -1999,12 +2002,12 @@ bool EffectParticle::UpdateCoin() {
   this->state.offset.y = this->state.offset.y + this->state.unknown_02EC;
   this->state.offset.z = this->state.unknown_0370.z + this->state.offset.z;
 
-  this->render.position[0] = this->state.offset.x + this->state.origin.x;
-  this->render.position[1] = this->state.offset.y + this->state.origin.y;
-  this->render.position[2] = this->state.offset.z + this->state.origin.z;
+  this->render.position.x = this->state.offset.x + this->state.origin.x;
+  this->render.position.y = this->state.offset.y + this->state.origin.y;
+  this->render.position.z = this->state.offset.z + this->state.origin.z;
   this->state.scale = this->state.unknown_031C + this->state.scale;
 
-  if (this->state.unknown_02EC > 0.0f && this->render.position[1] > mode->scene->terrain->Grid().Height(this->render.position[0], this->render.position[2])) {
+  if (this->state.unknown_02EC > 0.0f && this->render.position.y > mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z)) {
     this->state.unknown_02EC = this->state.unknown_02EC / -1.5f;
 
     if (this->state.unknown_0208 == 1) {
@@ -2012,7 +2015,7 @@ bool EffectParticle::UpdateCoin() {
       std::sprintf(name, "effect\\EF_Coin%d.wav", rand() % 3 + 1);
       const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->player);
       g_soundMgr->PlayWave(
-        name, this->render.position[0] - player->render.position[0], 0.0f, this->render.position[2] - player->render.position[2], 250, 40, 1.0f, 0
+        name, this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
       );
     }
   }
@@ -2103,9 +2106,9 @@ bool EffectParticle::UpdateDetoxication() {
     flags = this->state.flags;
   }
 
-  this->render.position[0] = positionX + this->state.offset.x;
-  this->render.position[1] = positionY + this->state.offset.y;
-  this->render.position[2] = positionZ + this->state.offset.z;
+  this->render.position.x = positionX + this->state.offset.x;
+  this->render.position.y = positionY + this->state.offset.y;
+  this->render.position.z = positionZ + this->state.offset.z;
 
   if ((flags & 0x20u) != 0) {
     this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.ActiveGameMode())->camera->camera.yaw;
@@ -2120,7 +2123,7 @@ bool EffectParticle::UpdateDetoxication() {
 // FUNCTION: fn_19782
 bool EffectParticle::UpdateExit() {
   const AttachedEffect* master = this->state.master;
-  this->state.origin = {master->render.position[0], master->render.position[1], master->render.position[2]};
+  this->state.origin = {master->render.position.x, master->render.position.y, master->render.position.z};
 
   const float lateral = this->state.unknown_033C + this->state.unknown_0330;
   float vertical = this->state.unknown_02EC + this->state.unknown_02F0;
@@ -2166,9 +2169,9 @@ bool EffectParticle::UpdateExit() {
 
   const float distance = this->state.unknown_0348;
   this->state.offset = Forward(distance, this->state.matrix1);
-  this->render.position[0] = this->state.offset.x + this->state.origin.x;
-  this->render.position[1] = this->state.offset.y + this->state.origin.y;
-  this->render.position[2] = this->state.offset.z + this->state.origin.z;
+  this->render.position.x = this->state.offset.x + this->state.origin.x;
+  this->render.position.y = this->state.offset.y + this->state.origin.y;
+  this->render.position.z = this->state.offset.z + this->state.origin.z;
 
   this->state.scale = this->state.unknown_031C + this->state.scale;
   const float rotation = this->state.unknown_0334 + this->state.unknown_0310;
@@ -2185,8 +2188,8 @@ bool EffectParticle::UpdateExit() {
 bool EffectParticle::UpdateWarp() {
   const AttachedEffect* master = this->state.master;
   this->state.origin = {
-    master->render.position[0] + this->state.velocity.x, master->render.position[1] + this->state.velocity.y,
-    master->render.position[2] + this->state.velocity.z
+    master->render.position.x + this->state.velocity.x, master->render.position.y + this->state.velocity.y,
+    master->render.position.z + this->state.velocity.z
   };
 
   const int angle = static_cast<int>(this->state.unknown_0314);
@@ -2208,9 +2211,9 @@ bool EffectParticle::UpdateWarp() {
   this->state.offset.y = this->state.offset.y - this->state.unknown_0370.y;
   this->state.offset.z = this->state.offset.z - this->state.unknown_0370.z;
 
-  this->render.position[0] = this->state.offset.x + this->state.origin.x + this->state.unknown_03A0.x;
-  this->render.position[1] = this->state.offset.y + this->state.origin.y + this->state.unknown_03A0.y;
-  this->render.position[2] = this->state.offset.z + this->state.origin.z + this->state.unknown_03A0.z;
+  this->render.position.x = this->state.offset.x + this->state.origin.x + this->state.unknown_03A0.x;
+  this->render.position.y = this->state.offset.y + this->state.origin.y + this->state.unknown_03A0.y;
+  this->render.position.z = this->state.offset.z + this->state.origin.z + this->state.unknown_03A0.z;
 
   this->state.UpdateColor();
   this->UpdateRecords();
@@ -2244,9 +2247,9 @@ void EffectParticle::UpdateRecords() {
   }
 
   EffectPrimitiveRecord& first = this->state.records[0];
-  first.position.x = this->render.position[0];
-  first.position.y = this->render.position[1];
-  first.position.z = this->render.position[2];
+  first.position.x = this->render.position.x;
+  first.position.y = this->render.position.y;
+  first.position.z = this->render.position.z;
 
   for (int corner = 0; corner < 4; ++corner) {
     first.corners[corner] = this->state.corners[corner];

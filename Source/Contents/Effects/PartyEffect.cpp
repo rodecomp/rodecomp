@@ -30,9 +30,9 @@ bool UpdatePartyEffect(
   }
 
   const RenderObjectState& actor = effect.parent->render;
-  render.position[0] = actor.position[0];
-  render.position[1] = actor.position[1];
-  render.position[2] = actor.position[2];
+  render.position.x = actor.position.x;
+  render.position.y = actor.position.y;
+  render.position.z = actor.position.z;
 
   if (effect.unknown_0178 == 9998) {
     effect.unknown_0178 = 0;
@@ -56,7 +56,7 @@ bool UpdatePartyEffect(
     state.textures[0] = textures.Load("effect\\party.tga", 0, false, true, false);
   }
 
-  render.position[1] = ground.Height(render.position[0], render.position[2]) - 2.0f;
+  render.position.y = ground.Height(render.position.x, render.position.z) - 2.0f;
   ++effect.unknown_0178;
   return effect.unknown_0178 < effect.lifetime;
 }

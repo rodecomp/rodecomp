@@ -688,9 +688,9 @@ void InitializeRagEffect(
 ) {
   effect.id = id;
   effect.parent = parent;
-  render.position[0] = parentState.position[0];
-  render.position[1] = parentState.position[1];
-  render.position[2] = parentState.position[2];
+  render.position.x = parentState.position.x;
+  render.position.y = parentState.position.y;
+  render.position.z = parentState.position.z;
   effect.unknown_013C[4] = std::bit_cast<std::uint32_t>(parentState.angle);
   effect.lifetime = EffectLifetime(effect.id);
   effect.offset[0] = x;
