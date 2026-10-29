@@ -141,6 +141,14 @@ int sub_654450() {
   return 8;
 }
 
+// OFFSET: 0x00654B70
+// FUNCTION: fn_05028
+int sub_654B70() {
+  return 12;
+}
+
+// OFFSET: 0x00654BB0
+
 // OFFSET: 0x00654BF0
 // FUNCTION: fn_05033
 bool sub_654BF0() {
