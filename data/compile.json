@@ -675,6 +675,7 @@
   "Source/UI/Enchant/UIEnchantUI.cpp": 2,
   "Source/UI/FrameSkin.cpp": 2,
   "Source/UI/GameSettings/GameSettingsUI.cpp": 2,
+  "Source/UI/Item/UIEquipmentPropertiesWnd.cpp": 2,
   "Source/UI/Items/UIItemRepairWnd.cpp": 2,
   "Source/UI/Items/UIMakeTargetListWnd.cpp": 2,
   "Source/UI/Items/UIWeaponRefineWnd.cpp": 2,

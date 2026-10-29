@@ -73,14 +73,17 @@ template <class T, class D> class CUIListBoxEx : public CUIControl {
 public:
   // OFFSET: 0x00A01E70
   // OFFSET: 0x00A01E80
+  // OFFSET: 0x00A0CE60
   // FUNCTION: fn_14832
   // FUNCTION: fn_14833
+  // FUNCTION: fn_15037
   void Paint() override {
     this->ClearSurface(0xFFFF00FF);
   }
 
   // OFFSET: 0x00A01E90
   // OFFSET: 0x00A01ED0
+  // OFFSET: 0x00A0CE70
   void Slot35(int value) override {
     if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
       this->scrollBar->Slot35(value);
