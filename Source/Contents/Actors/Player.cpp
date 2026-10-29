@@ -101,23 +101,11 @@ void __stdcall fn_22664() {
 void CPc::Slot44(int first, int second) {
   this->unknown_04D0 = first;
   if (static_cast<unsigned char>(second) != 0) {
-    int job = this->GetEffectiveJob(-1);
-    switch (job) {
-      case JT_MARRIED:
-      case JT_SANTA:
-      case JT_SUMMER:
-      case JT_HANBOK:
-      case JT_OKTOBERFEST:
-      case JT_SUMMER2:
-        job = this->GetEffectiveJob(-1);
-        break;
-      default:
-        if (this->unknown_0404 != 0) {
-          job = this->GetUnknown0404Job();
-        } else {
-          job = this->GetEffectiveJob(-1);
-        }
-        break;
+    int job;
+    if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) != 1 && this->unknown_0404 != 0) {
+      job = this->GetUnknown0404Job();
+    } else {
+      job = this->GetEffectiveJob(-1);
     }
     this->Slot21(job);
     this->Slot24(this->weapon, this->unknown_044C);
