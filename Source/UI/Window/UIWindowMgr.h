@@ -425,6 +425,7 @@ public:
   void GetMiniPartyUsableArea(RECT* area);
   UIWindow* FindSnapExcludedWindow(int cell);
   void Schedule(UIWindow* window);
+  void AddRendered(UIWindow* window);
   void SetUnknown04DC(const char* text);
   void Destroy(UIWindow* window);
   void ForgetWindowReferences(UIWindow* removed);

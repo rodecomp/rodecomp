@@ -26,9 +26,11 @@
 #include "UI/Lists/UIComboBox.h"
 #include "UI/Lists/UIComboBoxV2Wnd.h"
 #include "UI/Lists/UIItemStoreComboBox.h"
+#include "UI/Lists/UIListBox.h"
 #include "UI/Lists/UIListBoxEx.h"
 #include "UI/Lists/UIListBoxID.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Text/UITransBalloonText.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Text/UIString.h"
 #include "UI/Edit/UIEditCtrl_Currency.h"
@@ -39,6 +41,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
+
+// GLOBAL: gl_24606
+int g_screenHeight;
 
 // OFFSET: 0x0086EEB0
 // FUNCTION: fn_11085
@@ -426,6 +431,47 @@ void UIBasicSkillCtrl::Slot28(int, int) {
 
   if (!text.empty()) {
     this->m_controls->services.Tooltip(text.c_str(), screenX, screenY, -1, false, true);
+  }
+}
+
+// OFFSET: 0x00A8B9D0
+// FUNCTION: fn_17125
+void UIWindowMgr::AddRendered(UIWindow* window) {
+  this->rendered.push_back(window);
+}
+
+// OFFSET: 0x00891CC0
+// FUNCTION: fn_11457
+void UIListBox::Slot28(int x, int y) {
+  UIColorTransBalloonText*& hover = *reinterpret_cast<UIColorTransBalloonText**>(reinterpret_cast<char*>(this) + 0xE0);
+  const int index = this->LineAt(x, y);
+  const int height = g_screenHeight;
+  if (this->lines.begin() != this->lines.end()) {
+    if (index != -1 && this->lines[index].size() != 0) {
+      int screenY = 0;
+      int screenX = 0;
+      if (hover != nullptr) {
+        g_windowMgr.Schedule(hover);
+        hover = nullptr;
+      }
+
+      UIColorTransBalloonText* balloon = new UIColorTransBalloonText(*this->m_context, *reinterpret_cast<BalloonTextContext*>(this->m_listContext));
+      hover = balloon;
+      balloon->SetSize(8, 8);
+
+      for (const UIWindow* window = this; window != nullptr; window = window->parent) {
+        screenX += window->geometry.x;
+        screenY += window->geometry.y;
+      }
+
+      balloon->Move(screenX + 0x50, height - 6);
+      g_windowMgr.AddRendered(balloon);
+      balloon->SetText(this->lines[index].c_str(), 50);
+      return;
+    }
+
+    g_windowMgr.Schedule(hover);
+    hover = nullptr;
   }
 }
 

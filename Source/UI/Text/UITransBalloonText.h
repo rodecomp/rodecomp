@@ -39,6 +39,13 @@ private:
   /* 00C8 */ std::uint32_t m_borderColor;
 };
 
+// VTABLE: vt_00945
+class UIColorTransBalloonText : public UITransBalloonText {
+public:
+  // INLINED
+  UIColorTransBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UITransBalloonText(windows, text) {}
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(BalloonRectangle) == 0x1C);
 static_assert(offsetof(BalloonRectangle, x) + 0xA0 == 0xA0);

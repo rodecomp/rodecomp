@@ -29,6 +29,7 @@ public:
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
+  void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot35(int value) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
