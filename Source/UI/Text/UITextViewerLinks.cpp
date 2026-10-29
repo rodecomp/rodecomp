@@ -197,6 +197,103 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
 }
 
 // OFFSET: 0x00877B00
+// FUNCTION: fn_11211
+void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
+  auto& owner = this->m_text->list;
+  std::string parsed = RemoveTextColors(text.c_str(), owner.codePage);
+  parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
+  parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
+  parsed = DisplayTextTag(std::move(parsed), "<ITEM>", "</ITEM>");
+  parsed = DisplayTextTag(std::move(parsed), "<QUEST>", "</QUEST>");
+
+  if (this->m_text->chatConversions) {
+    parsed = this->ConvertChat(std::move(parsed));
+  }
+
+  std::string navigation;
+  DisplayNavigationLink(navigation, parsed);
+  parsed = std::move(navigation);
+
+  std::vector<TextLink> extracted;
+  ExtractTextLinks(parsed, "<TIPBOX>", "</TIPBOX>", extracted);
+
+  if (extracted.empty()) {
+    return;
+  }
+
+  for (unsigned index = 0; index < extracted.size(); ++index) {
+    const TextLink& link = extracted[index];
+
+    if (this->splitTipLinks == 1) {
+      std::vector<std::string> labels;
+      const char* begin = link.display.c_str();
+      const char* const end = begin + std::strlen(begin);
+      std::uintptr_t limit = reinterpret_cast<std::uintptr_t>(begin) + 32u - link.position;
+      const char* current = begin;
+      const char* breakAt = begin;
+
+      while (current < end) {
+        current = CharNextExA(owner.codePage, current, 0);
+
+        while (*current == ' ') {
+          breakAt = ++current;
+        }
+
+        if (reinterpret_cast<std::uintptr_t>(current) >= limit || *current == '\n') {
+          if (*current == '\n') {
+            breakAt = current++;
+          }
+
+          if (breakAt > begin) {
+            labels.push_back(std::string(begin, breakAt));
+            begin = breakAt;
+          } else {
+            labels.push_back(std::string(begin, current));
+            begin = current;
+          }
+
+          limit = reinterpret_cast<std::uintptr_t>(begin) + 32u;
+        }
+      }
+
+      if (begin < current) {
+        labels.push_back(std::string(begin, current));
+      }
+
+      for (unsigned fragment = 0; fragment < labels.size(); ++fragment) {
+        auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
+        button->Configure(labels[fragment].c_str(), 0x00F4934A, 0, 12, 0, 1);
+        const int height = button->geometry.height;
+        const int width = this->TextWidth(owner.fonts, owner.locale, labels[fragment].c_str(), 0, 0, 12, 0, 0);
+        button->Resize(width + 1, height);
+        button->m_hoverColor = 0x00FF7864;
+        button->SetId(517);
+        SplitTextLinkArguments(link.metadata, button->m_lines);
+        const auto position = this->LinkPosition(fragment == 0 ? link.position : 0, addedLines - fragment);
+        button->m_value = position.first;
+        button->Move(position.second, -100);
+        this->AddChild(button);
+        this->links.push_back(button);
+      }
+    } else {
+      auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
+      button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
+      const int height = button->geometry.height;
+      const int width = this->TextWidth(owner.fonts, owner.locale, link.display.c_str(), 0, 0, 12, 0, 0);
+      button->Resize(width + 1, height);
+      button->m_hoverColor = 0x00FF7864;
+      button->SetId(517);
+      SplitTextLinkArguments(link.metadata, button->m_lines);
+      const auto position = this->LinkPosition(link.position, addedLines);
+      button->m_value = position.first;
+      button->Move(position.second, -100);
+      this->AddChild(button);
+      this->links.push_back(button);
+    }
+  }
+
+  this->SendMsg(nullptr, 7, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x00878750
 // OFFSET: 0x00878750
