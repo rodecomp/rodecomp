@@ -1,10 +1,11 @@
 #include "Contents/Actors/GameActor.h"
 
 #include "Client/Session.h"
+#include "Resource/Sprites/ActionResource.h"
 
 #include <cstring>
 #include <windows.h>
-#include <mmsystem.h>
+#include <timeapi.h>
 
 // OFFSET: 0x00CA83A0
 // FUNCTION: fn_20988
@@ -121,4 +122,11 @@ void CGameActor::ResetState() {
   this->unknown_03D8 = 0;
   this->unknown_03E8 = 0;
   this->unknown_03EC = 0;
+}
+
+// OFFSET: 0x00CB0A90
+// FUNCTION: fn_21095
+void CGameActor::UpdateMotionFrame() {
+  const int frames = static_cast<int>(this->render.action->FrameCount(this->render.previousAnimation));
+  this->render.curMotion = static_cast<int>(this->unknown_0240 * 0.37f * 4.0f / this->render.speed) % frames;
 }

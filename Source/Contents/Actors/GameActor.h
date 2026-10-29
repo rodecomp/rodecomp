@@ -73,7 +73,7 @@ public:
   /* 0238 */ unsigned char unknown_0238;
   /* 0239 */ unsigned char unknown_0239[0x03];
   /* 023C */ int unknown_023C;
-  /* 0240 */ int unknown_0240;
+  /* 0240 */ float unknown_0240;
   /* 0244 */ std::uint32_t unknown_0244;
   /* 0248 */ unsigned char unknown_0248[0x04];
   /* 024C */ std::uint32_t hitTargetAid;
@@ -233,6 +233,7 @@ public:
   int GetUnknown0404();
   int MountHeightOffset();
   void ResetState();
+  void UpdateMotionFrame();
   void ProcessHitMessage(CGameObject* sender, const ActorHitInfo* info, int unused1, int unused2);
 };
 
