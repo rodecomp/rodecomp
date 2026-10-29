@@ -6,6 +6,8 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <list>
+#include <set>
 #include <string>
 
 enum {
@@ -52,34 +54,72 @@ struct ActorDamageMessage {
 
 class CGameActor : public EffectActor {
 public:
+  CGameActor();
   ~CGameActor() override;
 
-  /* 0158 */ unsigned char unknown_0158[0x20];
+  /* 0158 */ int unknown_0158[6];
+  /* 0170 */ unsigned char unknown_0170[0x08];
   /* 0178 */ int unknown_0178;
-  /* 017C */ unsigned char unknown_017C[0xA4];
+  /* 017C */ int unknown_017C;
+  /* 0180 */ int unknown_0180;
+  /* 0184 */ int unknown_0184;
+  /* 0188 */ int unknown_0188;
+  /* 018C */ int unknown_018C;
+  /* 0190 */ unsigned char unknown_0190[0x80];
+  /* 0210 */ std::uint16_t unknown_0210;
+  /* 0212 */ unsigned char unknown_0212[0x02];
+  /* 0214 */ vector3d unknown_0214;
   /* 0220 */ MovementRouteInterpolation route;
   /* 0238 */ unsigned char unknown_0238;
-  /* 0239 */ unsigned char unknown_0239[0x13];
+  /* 0239 */ unsigned char unknown_0239[0x03];
+  /* 023C */ int unknown_023C;
+  /* 0240 */ int unknown_0240;
+  /* 0244 */ std::uint32_t unknown_0244;
+  /* 0248 */ unsigned char unknown_0248[0x04];
   /* 024C */ std::uint32_t hitTargetAid;
-  /* 0250 */ unsigned char unknown_0250[0x04];
+  /* 0250 */ int unknown_0250;
   /* 0254 */ std::uint32_t routeStartTick;
-  /* 0258 */ unsigned char unknown_0258[0x04];
+  /* 0258 */ std::uint32_t unknown_0258;
   /* 025C */ int unknown_025C;
   /* 0260 */ int unknown_0260;
-  /* 0264 */ unsigned char unknown_0264[0x58];
+  /* 0264 */ int unknown_0264[5];
+  /* 0278 */ int unknown_0278;
+  /* 027C */ int unknown_027C;
+  /* 0280 */ std::uint32_t unknown_0280;
+  /* 0284 */ std::uint32_t unknown_0284;
+  /* 0288 */ int unknown_0288;
+  /* 028C */ unsigned char unknown_028C[0x04];
+  /* 0290 */ int unknown_0290;
+  /* 0294 */ unsigned char unknown_0294[0x0C];
+  /* 02A0 */ std::list<ActorDamageMessage> unknown_02A0;
+  /* 02A8 */ std::list<ActorDamageMessage> unknown_02A8;
+  /* 02B0 */ int unknown_02B0;
+  /* 02B4 */ int unknown_02B4;
+  /* 02B8 */ unsigned char unknown_02B8;
+  /* 02B9 */ unsigned char unknown_02B9[0x03];
   /* 02BC */ int bodyState;
   /* 02C0 */ std::uint32_t stateFlags;
-  /* 02C4 */ unsigned char unknown_02C4[0x04];
+  /* 02C4 */ int unknown_02C4;
   /* 02C8 */ int unknown_02C8;
   /* 02CC */ unsigned char unknown_02CC;
-  /* 02CD */ unsigned char unknown_02CD[0x17];
+  /* 02CD */ unsigned char unknown_02CD[0x0B];
+  /* 02D8 */ int unknown_02D8;
+  /* 02DC */ int unknown_02DC;
+  /* 02E0 */ int unknown_02E0;
   /* 02E4 */ int unknown_02E4;
   /* 02E8 */ int guildId;
-  /* 02EC */ unsigned char unknown_02EC[0x19];
+  /* 02EC */ int unknown_02EC;
+  /* 02F0 */ int unknown_02F0;
+  /* 02F4 */ int unknown_02F4;
+  /* 02F8 */ int unknown_02F8;
+  /* 02FC */ int unknown_02FC;
+  /* 0300 */ int unknown_0300;
+  /* 0304 */ unsigned char unknown_0304;
   /* 0305 */ unsigned char unknown_0305;
   /* 0306 */ unsigned char unknown_0306[2];
   /* 0308 */ int unknown_0308;
-  /* 030C */ unsigned char unknown_030C[8];
+  /* 030C */ int unknown_030C;
+  /* 0310 */ int unknown_0310;
   /* 0314 */ unsigned char unknown_0314;
   /* 0315 */ unsigned char unknown_0315[3];
   /* 0318 */ float unknown_0318[6];
@@ -87,14 +127,22 @@ public:
   /* 0348 */ float unknown_0348[6];
   /* 0360 */ float unknown_0360[6];
   /* 0378 */ float unknown_0378;
-  /* 037C */ int unknown_037C[15];
+  /* 037C */ int unknown_037C[13];
+  /* 03B0 */ std::list<CGameObject*> unknown_03B0;
   /* 03B8 */ int unknown_03B8[3];
   /* 03C4 */ int unknown_03C4;
   /* 03C8 */ int unknown_03C8;
   /* 03CC */ int charmType;
-  /* 03D0 */ unsigned char unknown_03D0[0x0C];
+  /* 03D0 */ int unknown_03D0;
+  /* 03D4 */ int unknown_03D4;
+  /* 03D8 */ int unknown_03D8;
   /* 03DC */ int unknown_03DC;
-  /* 03E0 */ unsigned char unknown_03E0[0x24];
+  /* 03E0 */ std::uint16_t unknown_03E0;
+  /* 03E2 */ unsigned char unknown_03E2[0x06];
+  /* 03E8 */ int unknown_03E8;
+  /* 03EC */ int unknown_03EC;
+  /* 03F0 */ vector3d unknown_03F0;
+  /* 03FC */ std::set<int> unknown_03FC;
   /* 0404 */ int unknown_0404;
   /* 0408 */ int unknown_0408;
   /* 040C */ unsigned char unknown_040C[0x04];
@@ -182,6 +230,7 @@ public:
   int WeaponActionBase(int weaponType);
   int GetUnknown0404();
   int MountHeightOffset();
+  void ResetState();
   void ProcessHitMessage(CGameObject* sender, const ActorHitInfo* info, int unused1, int unused2);
 };
 
@@ -214,6 +263,30 @@ static_assert(offsetof(CGameActor, unknown_03C8) == 0x3C8);
 static_assert(offsetof(CGameActor, charmType) == 0x3CC);
 static_assert(offsetof(CGameActor, unknown_025C) == 0x25C);
 static_assert(offsetof(CGameActor, unknown_0408) == 0x408);
+static_assert(offsetof(CGameActor, unknown_0158) == 0x158);
+static_assert(offsetof(CGameActor, unknown_0190) == 0x190);
+static_assert(offsetof(CGameActor, unknown_0210) == 0x210);
+static_assert(offsetof(CGameActor, unknown_0214) == 0x214);
+static_assert(offsetof(CGameActor, unknown_023C) == 0x23C);
+static_assert(offsetof(CGameActor, unknown_0258) == 0x258);
+static_assert(offsetof(CGameActor, unknown_0264) == 0x264);
+static_assert(offsetof(CGameActor, unknown_0290) == 0x290);
+static_assert(offsetof(CGameActor, unknown_02A0) == 0x2A0);
+static_assert(offsetof(CGameActor, unknown_02A8) == 0x2A8);
+static_assert(offsetof(CGameActor, unknown_02B8) == 0x2B8);
+static_assert(offsetof(CGameActor, unknown_02D8) == 0x2D8);
+static_assert(offsetof(CGameActor, unknown_02EC) == 0x2EC);
+static_assert(offsetof(CGameActor, unknown_0304) == 0x304);
+static_assert(offsetof(CGameActor, unknown_030C) == 0x30C);
+static_assert(offsetof(CGameActor, unknown_037C) == 0x37C);
+static_assert(offsetof(CGameActor, unknown_03B0) == 0x3B0);
+static_assert(offsetof(CGameActor, unknown_03B8) == 0x3B8);
+static_assert(offsetof(CGameActor, unknown_03D0) == 0x3D0);
+static_assert(offsetof(CGameActor, unknown_03E0) == 0x3E0);
+static_assert(offsetof(CGameActor, unknown_03E8) == 0x3E8);
+static_assert(offsetof(CGameActor, unknown_03F0) == 0x3F0);
+static_assert(offsetof(CGameActor, unknown_03FC) == 0x3FC);
+static_assert(offsetof(CGameActor, unknown_0404) == 0x404);
 #endif
 
 #endif
