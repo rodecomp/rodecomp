@@ -96,6 +96,16 @@ bool __stdcall ValidateCharacterName(const char* name) {
 }
 
 // OFFSET: 0x00DFA670
+// FUNCTION: fn_23578
+bool CSession::IsNavigationAllowed() const {
+  const std::string name = ScriptMapName(this->m_navigationPlayerMap);
+  for (const auto& forbidden : this->m_navigationForbiddenMaps) {
+    if (forbidden == name) {
+      return false;
+    }
+  }
+  return true;
+}
 
 // OFFSET: 0x00DFA810
 // FUNCTION: fn_23579
