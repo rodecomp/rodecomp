@@ -7,10 +7,17 @@
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
+#include "Render/DeviceContext/DeviceContext.h"
+#include "Render/Renderer.h"
+#include "Render/Textures/SpriteAtlas.h"
+#include "Render/Textures/SpritePixels.h"
+#include "Render/Textures/Texture.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Chat/UIWhisperWnd.h"
@@ -615,6 +622,43 @@ void UIPetTamingDeceiveWnd::Slot25(int, int) {
   this->m_frame = 7;
   this->m_started = 1;
   g_world.ActiveGameMode()->SendMsg(149, this->m_target, 0, 0, 0);
+}
+
+// OFFSET: 0x008EFB40
+// FUNCTION: fn_12243
+void UIPetTamingDeceiveWnd::Paint() {
+  const auto* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("slotmachine.act"));
+  const auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("slotmachine.spr"));
+  const int frame = this->m_tick / this->m_delay;
+  const ActionFrame& current = action->Frame(this->m_state, frame);
+  SpriteAtlasRecord record{};
+
+  for (int index = 0; index < current.cellCount; ++index) {
+    const SpriteFrameCell& cell = current.Cell(index);
+    if (cell.image == -1) {
+      continue;
+    }
+
+    const SpriteRleImage* image = sprite->images[0][cell.image];
+    CTexture* texture = g_renderer->atlas.Find(image, sprite->palette, record);
+    if (!texture) {
+      texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
+    }
+    this->geometry.surface->DrawSurface(
+      this->geometry.width / 2 + cell.x, this->geometry.height / 2 + cell.y, texture, static_cast<int>(record.u0 * 256.0f),
+      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+    );
+  }
+
+  if (this->m_frame != frame || this->m_delay > this->m_maxDelay) {
+    ++this->m_tick;
+  }
+  if (frame >= static_cast<int>(action->FrameCount(this->m_state))) {
+    this->m_tick = 0;
+    if (this->m_frame != -1) {
+      ++this->m_delay;
+    }
+  }
 }
 
 // OFFSET: 0x008F3A40

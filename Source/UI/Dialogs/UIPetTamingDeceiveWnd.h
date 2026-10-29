@@ -15,6 +15,7 @@ public:
   /* 00D0 */ int m_started;
 
   void Slot19() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
 };
 
