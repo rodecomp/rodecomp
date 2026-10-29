@@ -656,6 +656,7 @@
   "Source/UI/Acceptance/UIChooseSellBuyWnd.cpp": 2,
   "Source/UI/Acceptance/UIExchangeAcceptWnd.cpp": 2,
   "Source/UI/Acceptance/UIJoinPartyAcceptWnd.cpp": 2,
+  "Source/UI/AdventureGuide/UIAdventureGuide.cpp": 2,
   "Source/UI/Buttons/UIBasicButton.cpp": 2,
   "Source/UI/Buttons/UIBitmapButton.cpp": 2,
   "Source/UI/Buttons/UIBmpTextButton.cpp": 2,
