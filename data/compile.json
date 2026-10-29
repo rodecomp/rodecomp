@@ -267,6 +267,7 @@
   "Source/Client/ReplayControl.cpp": 0,
   "Source/Client/ReplayPacketRecorder.cpp": 2,
   "Source/Client/Session.cpp": 0,
+  "Source/Client/Timer.cpp": 0,
   "Source/Contents/ActorGeometry.cpp": 4,
   "Source/Contents/ActorMovementRoute.cpp": 4,
   "Source/Contents/ActorNameCache.cpp": 4,
