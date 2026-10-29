@@ -10,7 +10,7 @@ void EffectPrimitiveState::ProcessAlpha() {
 
   if (valuesAndLimit || this->unknown_014C.y != 0) {
     auto index = this->unknown_01D8;
-    const auto count = static_cast<std::uint32_t>(this->unknown_0258[0].size());
+    const auto count = static_cast<std::uint32_t>(this->chPoint.size());
     const bool outside = valuesAndLimit ? static_cast<unsigned>(index) > count - 1u : static_cast<unsigned>(index) >= count;
 
     if (index < 0 || outside) {
@@ -18,14 +18,14 @@ void EffectPrimitiveState::ProcessAlpha() {
       this->unknown_01D8 = 0;
     }
 
-    const float key = this->unknown_0258[0][index];
+    const float key = this->chPoint[index];
 
     if (static_cast<float>(current) == key) {
-      const float value = this->unknown_0258[1][index];
+      const float value = this->chVal1[index];
 
       if (valuesAndLimit) {
         this->alpha = value;
-        this->maxAlpha = this->unknown_0258[2][index];
+        this->maxAlpha = this->chVal2[index];
       } else {
         this->alphaSpeed = value;
       }

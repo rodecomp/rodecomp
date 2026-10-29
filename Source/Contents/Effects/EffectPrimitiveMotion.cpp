@@ -2842,16 +2842,16 @@ bool CEffectPrim::Prim3DParticleOrbit() {
 
   if (this->state.chRadiSpeed != 0) {
     int index = this->state.unknown_01D8;
-    const std::uint32_t count = static_cast<std::uint32_t>(this->state.unknown_0258[0].size());
+    const std::uint32_t count = static_cast<std::uint32_t>(this->state.chPoint.size());
 
     if (index < 0 || static_cast<std::uint32_t>(index) >= count) {
       index = 0;
       this->state.unknown_01D8 = 0;
     }
 
-    if (static_cast<float>(frame) == this->state.unknown_0258[0][index]) {
-      this->state.radiusSpeed = this->state.unknown_0258[1][index];
-      this->state.radiusAccel = this->state.unknown_0258[2][index];
+    if (static_cast<float>(frame) == this->state.chPoint[index]) {
+      this->state.radiusSpeed = this->state.chVal1[index];
+      this->state.radiusAccel = this->state.chVal2[index];
       this->state.unknown_01D8 = index + 1;
     }
   }

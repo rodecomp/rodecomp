@@ -100,7 +100,10 @@ struct EffectPrimitiveState {
   /* 0250 */ int blueSpeed;
   /* 0254 */ unsigned char repeatAnim;
   /* 0255 */ unsigned char unknown_0255[3];
-  /* 0258 */ std::vector<float> unknown_0258[4];
+  /* 0258 */ std::vector<float> chPoint;
+  /* 0264 */ std::vector<float> chVal1;
+  /* 0270 */ std::vector<float> chVal2;
+  /* 027C */ std::vector<float> chVal3;
   /* 0288 */ float arcAngle;
   /* 028C */ std::uint32_t minRadius;
   /* 0290 */ float rotAxis[3];
