@@ -16,9 +16,12 @@ std::map<int, RankingBoardStyle> RankingBoardStyles();
 
 class CShowRankingScheduler {
 public:
+  CShowRankingScheduler(const std::uint64_t& start, const std::uint64_t& end, int extra);
   virtual ~CShowRankingScheduler() = default;
 
   const void* SetData(const void* data);
+  void Process(const std::uint64_t& now);
+  void Show();
 
   /* 0004 */ std::uint8_t schedule[44];
   /* 0030 */ std::uint8_t rankingData[88];
