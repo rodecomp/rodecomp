@@ -37,16 +37,97 @@ int UIGuildTotalInfoWnd::Tab() {
 }
 
 // OFFSET: 0x0095F860
+// FUNCTION: fn_13080
+void UIGuildWnd::Paint() {
+  const int tab = this->Tab();
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 10, 2, red, green, blue);
+  this->FillRegion(0, 17, this->geometry.width, 24, RGB(red, green, blue));
+
+  for (int x = 1, index = 0; x < 397; x += 66, ++index) {
+    if (tab == index) {
+      SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    } else {
+      SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+    }
+    this->FillRegion(x, 18, 64, 23, RGB(red, green, blue));
+  }
+
+  auto& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  unsigned borderRed, borderGreen, borderBlue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, borderRed, borderGreen, borderBlue);
+  this->FillRegion(0, 41, this->geometry.width, this->geometry.height - 41, RGB(borderRed, borderGreen, borderBlue));
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, borderRed, borderGreen, borderBlue);
+  this->FillRegion(1, 41, this->geometry.width - 2, this->geometry.height - 41, RGB(borderRed, borderGreen, borderBlue));
+  this->DrawButtonBar(2, 0, 1);
+}
 
 // OFFSET: 0x00960020
+// FUNCTION: fn_13091
+void UIGuildWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+    return;
+  }
+
+  if (y <= 41) {
+    const int current = this->Tab();
+    this->Tab();
+    const int tab = x / 66;
+    if (tab < 6 && current != tab) {
+      this->SendMsg(nullptr, 69, tab, 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x0095FE10
+// FUNCTION: fn_13087
+void UIGuildNoticeWnd::Slot25(int x, int y) {
+  UIGuildWnd::Slot25(x, y);
+}
 
 // OFFSET: 0x009602E0
+// FUNCTION: fn_13100
+void UIGuildMemberManageWnd::Slot19() {
+  if (this->m_buttonTime != 0 && timeGetTime() > this->m_buttonTime + 400) {
+    UIButton* button = this->m_button;
+    this->m_buttonTime = 0;
+    button->SetDisabled(0);
+    button->Invalidate();
+  }
+}
 
 // OFFSET: 0x00960330
+// FUNCTION: fn_13101
+void UIGuildPositionManageWnd::Slot19() {
+  if (this->m_buttonTime != 0 && timeGetTime() > this->m_buttonTime + 400) {
+    UIButton* button = this->m_button;
+    this->m_buttonTime = 0;
+    button->SetDisabled(0);
+    button->Invalidate();
+  }
+}
 
 // OFFSET: 0x009603C0
+// FUNCTION: fn_13103
+void UIGuildMemberManageWnd::Slot32(int x, int y) {
+  const int previous = this->m_hoverRow;
+  int row;
+  if (static_cast<unsigned>(x - 5) <= 377 && static_cast<unsigned>(y - 66) <= 217) {
+    row = (y - 66) / (this->m_rowSpacing + 36) + this->m_columns * this->m_scrollTop;
+    if (static_cast<unsigned>(row) >= this->m_rowCount) {
+      row = -1;
+    }
+  } else {
+    row = -1;
+  }
+
+  this->m_hoverRow = row;
+  if (previous != row) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00960620
 // FUNCTION: fn_13108
@@ -61,11 +142,76 @@ void UIGuildSkillWnd::Slot33(int, int) {
 }
 
 // OFFSET: 0x00960960
+// FUNCTION: fn_13111
+void UIGuildBanishedMemberWnd::Slot35(int delta) {
+  if (this->m_scrollable != 0) {
+    int step = this->m_visibleRows - 1;
+    if (step > 3) {
+      step = 3;
+    }
+    if (delta >= 0) {
+      step = -step;
+    }
+    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x009609B0
+// FUNCTION: fn_13112
+void UIGuildMemberManageWnd::Slot35(int delta) {
+  if (this->m_scrollable != 0) {
+    int step = this->m_visibleRows - 1;
+    if (step > 3) {
+      step = 3;
+    }
+    if (delta >= 0) {
+      step = -step;
+    }
+    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00960A00
+// FUNCTION: fn_13113
+void UIGuildPositionManageWnd::Slot35(int delta) {
+  if (this->m_scrollable != 0) {
+    int step = this->m_visibleRows - 1;
+    if (step > 3) {
+      step = 3;
+    }
+    if (delta >= 0) {
+      step = -step;
+    }
+    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00960A50
+// FUNCTION: fn_13114
+void UIGuildSkillWnd::Slot35(int delta) {
+  if (this->m_scrollable != 0) {
+    int step = this->m_visibleRows - 1;
+    if (step > 3) {
+      step = 3;
+    }
+    if (delta >= 0) {
+      step = -step;
+    }
+    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00960AA0
+// FUNCTION: fn_13115
+void UIGuildTotalInfoWnd::Slot35(int delta) {
+  if (this->m_scrollable != 0) {
+    int step = this->m_visibleRows - 1;
+    if (step > 3) {
+      step = 3;
+    }
+    if (delta >= 0) {
+      step = -step;
+    }
+    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+  }
+}
