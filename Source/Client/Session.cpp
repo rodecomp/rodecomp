@@ -460,8 +460,8 @@ const char* CSession::GetBgmFileName(const char* rswName) {
 // OFFSET: 0x00DF9CD0
 // FUNCTION: fn_23565
 bool CSession::HasItem17D4(int itemId) const {
-  if (!this->unknown_17D4.empty()) {
-    for (const ITEM_INFO& item : this->unknown_17D4) {
+  if (!this->unknown_1784[10].empty()) {
+    for (const ITEM_INFO& item : this->unknown_1784[10]) {
       if (std::atoi(item.itemId.c_str()) == itemId) {
         return true;
       }
@@ -516,3 +516,59 @@ int CSession::GetSceneUnknown004C() const {
 // OFFSET: 0x00DDD7B0
 
 // OFFSET: 0x00DDD9A0
+
+// OFFSET: 0x00DDF5B0
+
+// OFFSET: 0x00DDF7B0
+
+// OFFSET: 0x00DDF890
+// FUNCTION: fn_23426
+int CSession::GetItem1728Count() const {
+  return static_cast<int>(this->unknown_1728.size());
+}
+
+// OFFSET: 0x00DDFA50
+
+// OFFSET: 0x00DDFAC0
+
+// OFFSET: 0x00DDFD30
+
+// OFFSET: 0x00DDFDB0
+
+// OFFSET: 0x00DDFDE0
+
+// OFFSET: 0x00DDFE60
+
+// OFFSET: 0x00DDFE90
+
+// OFFSET: 0x00DDFF60
+
+// OFFSET: 0x00DE0620
+
+// OFFSET: 0x00DE06E0
+
+// OFFSET: 0x00DE0770
+
+// OFFSET: 0x00DE07D0
+
+// OFFSET: 0x00DE0800
+
+// OFFSET: 0x00DE08E0
+
+// OFFSET: 0x00DE08F0
+
+// OFFSET: 0x00DE0980
+
+// OFFSET: 0x00DE0A20
+
+// OFFSET: 0x00DE0D30
+
+// OFFSET: 0x00DE0DD0
+
+// OFFSET: 0x00DE0E00
+
+// OFFSET: 0x00DE0EB0
+
+// OFFSET: 0x00DE0F40
+
+// OFFSET: 0x00DE0FE0
