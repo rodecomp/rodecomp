@@ -8,6 +8,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -30,7 +31,18 @@ struct AdventureGuideText {
   /* 0018 */ std::string second;
 };
 
+struct AdventureGuideEpisodeSource {
+  /* 0000 */ const char* name;
+  /* 0004 */ int order;
+  /* 0008 */ int unknown_0008;
+  /* 000C */ std::vector<std::string> values;
+};
+
 struct AdventureGuideEpisode {
+  AdventureGuideEpisode(AdventureGuideEpisodeSource&& source)
+      : name(source.name), order(source.order), unknown_001C(source.unknown_0008), values(std::move(source.values)) {
+  }
+
   /* 0000 */ std::string name;
   /* 0018 */ int order;
   /* 001C */ int unknown_001C;
@@ -55,6 +67,17 @@ struct AdventureGuideEntry {
   /* 0008 */ int unknown_0008;
   /* 000C */ std::string text;
   /* 0024 */ std::vector<std::string> values;
+};
+
+struct AdventureGuideResult {
+  AdventureGuideResult(bool ok, const char* message) : ok(ok), message(message) {
+  }
+
+  AdventureGuideResult(bool ok, const std::string& message) : ok(ok), message(message) {
+  }
+
+  /* 0000 */ bool ok;
+  /* 0004 */ std::string message;
 };
 
 // VTABLE: vt_00350
@@ -83,6 +106,28 @@ public:
   void GetEpisodeList(std::list<AdventureGuideEpisode>& out);
   void GetContentsList(std::list<std::pair<int, AdventureGuideContents>>& out, int type, int id);
   void GetEntryList(std::list<std::pair<int, AdventureGuideEntry>>& out, int type, int id);
+
+  AdventureGuideResult SetIntroTitle(std::string_view title) {
+    unknown_0014 = title;
+    return AdventureGuideResult(true, "good");
+  }
+
+  __declspec(noinline) AdventureGuideResult InsertGuideMenu(int type, int id, std::string_view name, std::string_view text);
+  __declspec(noinline) AdventureGuideResult InsertIntroContents(int id, std::string_view title, std::string_view text);
+  __declspec(noinline) AdventureGuideResult InsertEpisodeSubMenu(int id, int minLevel, int maxLevel, int unknown, std::string_view text);
+  __declspec(noinline) AdventureGuideResult InsertEpisodeContents(int id, int menu, int minLevel, int maxLevel, int unknown, bool flag, std::string_view first, std::string_view second);
+  __declspec(noinline) AdventureGuideResult InsertEpisodeReward(int id, std::string_view text);
+  __declspec(noinline) AdventureGuideResult InsertQuestSubMenu(int id, int minLevel, int maxLevel, std::string_view text);
+  __declspec(noinline) AdventureGuideResult InsertQuestContents(int id, int menu, int minLevel, int maxLevel, bool flag, std::string_view first, std::string_view second);
+  __declspec(noinline) AdventureGuideResult InsertQuestReward(int id, std::string_view text);
+  __declspec(noinline) AdventureGuideResult InsertDungeonSubMenu(int id, int minLevel, int maxLevel, std::string_view text);
+  __declspec(noinline) AdventureGuideResult InsertDungeonContents(int id, int menu, int minLevel, int maxLevel, bool flag, std::string_view first, std::string_view second);
+  __declspec(noinline) AdventureGuideResult InsertDungeonReward(int id, std::string_view text);
+  __declspec(noinline) AdventureGuideResult InsertEntrySubMenu(int type, int id, int minLevel, int maxLevel, std::string_view text);
+  __declspec(noinline) AdventureGuideResult InsertEntryContents(int type, int id, int menu, int minLevel, int maxLevel, bool flag0, bool flag1, bool flag2, std::string_view text);
+  __declspec(noinline) AdventureGuideResult InsertObtainGuide(int type, int id, std::string_view text);
+  __declspec(noinline) AdventureGuideResult InsertMonsterContents(std::string_view name, int minLevel, int maxLevel);
+  __declspec(noinline) AdventureGuideResult InsertMonsterReward(std::string_view name, std::string_view text);
 };
 
 extern CAdventureGuideMgr* g_adventureGuideMgr;
@@ -92,7 +137,9 @@ static_assert(sizeof(AdventureGuideDetail) == 0x24);
 static_assert(sizeof(AdventureGuideIntro) == 0x3C);
 static_assert(offsetof(AdventureGuideIntro, details) == 0x34);
 static_assert(sizeof(AdventureGuideText) == 0x30);
+static_assert(sizeof(AdventureGuideEpisodeSource) == 0x18);
 static_assert(sizeof(AdventureGuideEpisode) == 0x2C);
+static_assert(sizeof(AdventureGuideResult) == 0x1C);
 static_assert(offsetof(AdventureGuideEpisode, order) == 0x18);
 static_assert(offsetof(AdventureGuideEpisode, values) == 0x20);
 static_assert(sizeof(AdventureGuideContents) == 0x4C);
