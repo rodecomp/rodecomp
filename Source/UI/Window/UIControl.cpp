@@ -301,10 +301,49 @@ void CUIVScrollBar::Slot54() {
 // OFFSET: 0x009F26B0
 
 // OFFSET: 0x009EF860
+// FUNCTION: fn_14649
+void CUIImageButton::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  CBitmapRes* image;
+  if (!this->disabled) {
+    const auto found = this->images.find(this->state);
+    if (found == this->images.end()) {
+      return;
+    }
+    image = found->second;
+  } else {
+    image = this->disabledImage;
+  }
+
+  if (image) {
+    if (this->transparent) {
+      this->DrawAuxiliary(1, 0, 0, &image->image, true, false);
+      return;
+    }
+    this->DrawBitmap(0, 0, &image->image, false);
+  }
+}
 
 // OFFSET: 0x009EF900
+// FUNCTION: fn_14650
+void CUIImageButton::Slot53(int resolveSkin) {
+  this->images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  this->images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->disabledImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+}
 
 // OFFSET: 0x009EFB00
+// FUNCTION: fn_14651
+void CUIImageButton::SetImages(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& inactive) {
+  this->imageNames[0] = normal;
+  this->imageNames[1] = hover;
+  this->imageNames[2] = pressed;
+  this->disabledName = inactive;
+  this->Slot53(0);
+  this->Invalidate();
+}
 
 // OFFSET: 0x009F01B0
 // FUNCTION: fn_14656
