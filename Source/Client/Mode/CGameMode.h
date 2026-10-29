@@ -39,6 +39,14 @@ public:
   void PlayerCell(int* column, int* row) const;
   bool CanFindPath(int sx, int sy, int cellX, int cellY, int dx, int dy);
   void ReceiveActorNameAll(const ActorNameAllPacket* packet);
+  void ReceiveColoredNotice(const unsigned char* packet);
+  void ReceiveActorText(const unsigned char* packet);
+  void ReceiveRentalItemTime(const unsigned char* packet);
+  void ReceiveActorSequenceDeadline(const unsigned char* packet);
+  void ReceiveActorSignal(const unsigned char* packet);
+  void IgnorePacket(const unsigned char* packet);
+  void ReceiveHuntingList(const unsigned char* packet);
+  bool NotifyItemResult(int result);
   void NotifyItemBounds();
   CCorpse* SpawnCorpse(float x, float y, float z, const char* action, const char* sprite, int animation, int motion, float angle);
   std::uint32_t FindUnknown01AC(std::uint32_t key);

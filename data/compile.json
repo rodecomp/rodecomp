@@ -255,6 +255,7 @@
   "Source/Client/Input/LanguageTC.cpp": 0,
   "Source/Client/Input/Mouse.cpp": 0,
   "Source/Client/Mode/GameModeNames.cpp": 0,
+  "Source/Client/Mode/GameModePackets.cpp": 0,
   "Source/Client/Mode/ModeCursor.cpp": 0,
   "Source/Client/Mode/ModeDragState.cpp": 2,
   "Source/Client/Mode/ModeLifetime.cpp": 0,
