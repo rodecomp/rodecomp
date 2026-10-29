@@ -2,6 +2,7 @@
 #include "Client/Mode/ActiveGameMode.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
+#include "Contents/Actors/RenderObject.h"
 #include "Contents/ClientState.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
@@ -437,6 +438,28 @@ void CSession::EraseUnknownKey(std::int64_t key) {
   if (second != this->unknown_078C.end()) {
     this->unknown_078C.erase(second);
   }
+}
+
+// OFFSET: 0x00E08D50
+// FUNCTION: fn_23772
+int CSession::CountProhibitionLog(std::uint32_t aid) {
+  const int count = static_cast<int>(this->m_prohibitionLog.size());
+  const CRenderObject* actor = static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->GetGameActorByAID(aid);
+  if (!actor) {
+    return -1;
+  }
+
+  const std::uint32_t accountId = actor->render.accountId;
+  this->m_prohibitionTarget = accountId;
+  int matches = 0;
+  for (int index = 0; index < count; ++index) {
+    const ProhibitionLogEntry& entry = this->m_prohibitionLog[index];
+    if (std::strcmp(entry.ownerName, this->m_serverName.c_str()) == 0 && entry.accountId == accountId) {
+      ++matches;
+    }
+  }
+
+  return matches;
 }
 
 // OFFSET: 0x00E085A0

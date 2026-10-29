@@ -72,7 +72,8 @@ public:
   /* 06F9 */ unsigned char unknown_06F9[0x23];
   /* 071C */ std::vector<int> m_homunSkillLevels;
   /* 0728 */ std::vector<int> m_mercSkillLevels;
-  /* 0734 */ unsigned char unknown_0734[0x20];
+  /* 0734 */ unsigned char unknown_0734[0x1C];
+  /* 0750 */ std::uint32_t m_prohibitionTarget;
   /* 0754 */ std::vector<ProhibitionLogEntry> m_prohibitionLog;
   /* 0760 */ std::string m_accountName;
   /* 0778 */ std::vector<std::pair<int, int>> unknown_0778;
@@ -277,6 +278,7 @@ public:
   int FindUnknown0778(int key) const;
   CSkillInfo AdditionalSkillAt(int index) const;
   CSkillInfo HomunSkillAt(int index) const;
+  int CountProhibitionLog(std::uint32_t aid);
   void DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes, WindowDialogs& dialogs);
   int IsAdminSubMode(int subMode);
   void GetMonsterSkillInfo(const char* monster, int skill, int* action, int* loopType, WindowDialogs& dialogs);
