@@ -4,6 +4,9 @@
 #include "Contents/Ground/TerrainHeight.h"
 
 struct EffectPrimitiveState;
+struct RenderVertex;
+struct matrix;
+struct vector3d;
 struct RenderObjectState;
 
 struct EffectMotionContext {
@@ -20,5 +23,7 @@ bool Prim3DCylinder(EffectPrimitiveState& particle, RenderObjectState& render, E
 bool Prim3DCylinderHalf(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context);
 void AdvanceEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context);
 bool UpdateEffectPrimitive15(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context, int updateTick);
+
+RenderVertex TransformVert(const matrix& view, const vector3d& position);
 
 #endif

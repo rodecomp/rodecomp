@@ -16,6 +16,9 @@
 #include "Contents/Actors/RenderObjectState.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
+#include "Render/Renderer.h"
+#include "Render/Primitives/RenderPrimitive.h"
+#include "Render/Projection/RenderProjection.h"
 
 #include <bit>
 #include <cmath>
@@ -4400,4 +4403,20 @@ void CEffectPrim::Tei_TowardScreen(vector3d& vec1, vector3d& vec2, vector3d& vec
   RotatePairY(vec2, rot0);
   RotatePairY(vec3, rot0);
   RotatePairY(vec4, rot0);
+}
+
+// OFFSET: 0x00BE7570
+// FUNCTION: fn_19933
+RenderVertex TransformVert(const matrix& view, const vector3d& position) {
+  RenderVertex vertex;
+  vertex.x = 0.0f;
+  vertex.y = 0.0f;
+  vertex.z = 0.0f;
+  vertex.rhw = 0.0f;
+  vertex.diffuse = 0;
+  vertex.specular = 0xFF000000;
+  vertex.u = 0.0f;
+  vertex.v = 0.0f;
+  g_renderer->viewport.Projection().Project(&position.x, view.values, vertex);
+  return vertex;
 }
