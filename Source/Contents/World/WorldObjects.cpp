@@ -103,5 +103,33 @@ CCorpse* CGameMode::SpawnCorpse(float x, float y, float z, const char* action, c
 }
 
 // OFFSET: 0x00AC8440
+// FUNCTION: fn_17671
+CRenderObject* WorldScene::GetSkillByAID(std::uint32_t aid) const {
+  for (CRenderObject* object : this->unknown_0020) {
+    CSkill* skill = static_cast<CSkill*>(object);
+
+    if (skill->skillAid == aid) {
+      return skill;
+    }
+  }
+
+  return nullptr;
+}
 
 // OFFSET: 0x00B3C350
+// FUNCTION: fn_18807
+CRenderObject* FindRenderObject(std::uint32_t aid) {
+  WorldScene* scene = static_cast<CGameMode*>(g_world.ActiveGameMode())->scene;
+
+  if (g_session.m_aid == aid) {
+    return reinterpret_cast<CRenderObject*>(scene->player);
+  }
+
+  CRenderObject* actor = scene->GetGameActorByAID(aid);
+
+  if (!actor) {
+    actor = scene->GetSkillByAID(aid);
+  }
+
+  return actor;
+}
