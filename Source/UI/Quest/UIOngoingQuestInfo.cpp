@@ -47,7 +47,21 @@ void CUIRewardItem::Slot16() {
 }
 
 // OFFSET: 0x00A55B50
+// FUNCTION: fn_16312
+void CUIScrollWindow::Slot35(int value) {
+  this->scrollBar->Slot35(value);
+}
 
 // OFFSET: 0x00A55F20
+// FUNCTION: fn_16316
+void CUIScrollWindow::OnScroll(int position) {
+  int y = -position;
+  for (UIWindow* child : this->m_children) {
+    if (child != this->scrollBar) {
+      child->Move(child->geometry.x, y);
+      y = child->geometry.y + child->geometry.height;
+    }
+  }
+}
 
 }
