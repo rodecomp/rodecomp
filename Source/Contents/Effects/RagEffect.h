@@ -56,6 +56,17 @@ struct CRagEffect : CRenderObject {
   void Yufitel(char F1);
   void AirTexture(const char* name);
   void EnergyDrain2();
+  void GROUNDSAMPLE(TextureCache& textures);
+  void PotionPillar(TextureCache& textures, float heightSpeed, int duration);
+  void CALLZONE(TextureCache& textures, const char* name);
+  bool JobLvUp50_2(TextureCache& textures, short angle);
+  bool RunStop(TextureCache& textures, short angle);
+  void SMA(char flag);
+  bool JobLvUp50(TextureCache& textures, int angle);
+  void Map_Pika(TextureCache& textures, const char* name);
+  void POISON(TextureCache& textures, char flag);
+  void Rainbow(TextureCache& textures, const char* name);
+  void BLIND(TextureCache& textures, char flag);
 
   virtual void Slot08();
   virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);

@@ -1785,3 +1785,41 @@ bool CRagEffect::Potion_Berserk() {
   this->state.parent->SendMsg(nullptr, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   return false;
 }
+
+// OFFSET: 0x00C52370
+
+// OFFSET: 0x00C36530
+// FUNCTION: fn_20092
+void CRagEffect::PotionPillar(TextureCache& textures, float heightSpeed, int duration) {
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = duration;
+  this->state.unknown_11C84->outerSize = 4.5f;
+  this->state.unknown_11C84->innerSize = 4.5f;
+  this->state.unknown_11C84->heightSize = 10.0f;
+  this->state.unknown_11C84->heightSpeed = heightSpeed;
+  this->state.unknown_11C84->heightAccel = 0.01f;
+  this->state.unknown_11C84->alpha = 0.0f;
+  this->state.unknown_11C84->maxAlpha = 90.0f;
+  this->state.unknown_11C84->alphaSpeed = this->state.unknown_11C84->maxAlpha / 20.0f;
+  this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 10;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = textures.Load("effect\\alpha_down.tga", 0, false, true, false);
+}
+
+// OFFSET: 0x00C475C0
+
+// OFFSET: 0x00C59490
+
+// OFFSET: 0x00C629D0
+
+// OFFSET: 0x00C63860
+
+// OFFSET: 0x00C592E0
+
+// OFFSET: 0x00C5CA50
+
+// OFFSET: 0x00C5D390
+
+// OFFSET: 0x00C61A80
+
+// OFFSET: 0x00C423D0
