@@ -11,6 +11,8 @@
 
 class CCrimsonArrowEffect : public CEffect {
 public:
+  void Slot03() override;
+  void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
@@ -57,6 +59,7 @@ public:
 
 class CCurseOfCubeEffect : public CEffect {
 public:
+  void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -65,6 +68,7 @@ public:
 class CWarningPlaneEffect : public CEffect {
 public:
   void Slot01() override;
+  void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -94,6 +98,8 @@ public:
 class CEternalSlashAttackEffect : public CEffect {
 public:
   CEternalSlashAttackEffect();
+  void Slot03() override;
+  void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -102,6 +108,8 @@ public:
 class CEternalSlashCountEffect : public CEffect {
 public:
   CEternalSlashCountEffect();
+  void Slot03() override;
+  void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
@@ -110,6 +118,7 @@ public:
 class CFallenAngelEffect : public CEffect {
 public:
   CFallenAngelEffect();
+  void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
@@ -121,15 +130,17 @@ public:
 class CFloralFlareRoad : public CEffect {
 public:
   CFloralFlareRoad();
+  void Slot04() override;
   bool Slot06() override;
 
-  /* 00CC */ int unknown_00CC;
+  /* 00CC */ EZ2STREmitter* unknown_00CC;
   /* 00D0 */ std::vector<EZ2STREmitter*> emitters;
 };
 
 class CFootprintEffect : public CEffect {
 public:
   CFootprintEffect();
+  void Slot04() override;
   bool Slot06() override;
   bool Slot33() override;
 
@@ -172,6 +183,8 @@ public:
 class CPetitioEffect : public CEffect {
 public:
   CPetitioEffect();
+  void Slot03() override;
+  void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -180,6 +193,7 @@ public:
 class CPneumaticusProcellaEffect : public CEffect {
 public:
   CPneumaticusProcellaEffect();
+  void Slot04() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
   /* 00D0 */ std::vector<EZ2STREmitter*> emitters;
@@ -188,6 +202,7 @@ public:
 class CRandomHitEffect : public CEffect {
 public:
   CRandomHitEffect();
+  void Slot04() override;
 
   /* 00CC */ bool active;
   /* 00CD */ unsigned char unknown_00CD[3];
@@ -217,6 +232,8 @@ public:
 class CSavageImpactEffect : public CEffect {
 public:
   CSavageImpactEffect();
+  void Slot03() override;
+  void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ EZ2STREmitter* emitter;

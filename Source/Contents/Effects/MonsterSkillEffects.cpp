@@ -28,7 +28,34 @@ static void SetScreenVertex(RenderVertex& vertex, float x, float y, std::uint32_
   vertex.v = v;
 }
 
+// INLINED
+static CEZ2STRParticle* AsParticle(EZ2STREmitter* emitter) {
+  return reinterpret_cast<CEZ2STRParticle*>(emitter);
+}
+
 // OFFSET: 0x0070C070
+
+// OFFSET: 0x0070C0B0
+// FUNCTION: fn_07124
+void CCrimsonArrowEffect::Slot03() {
+  if (!this->emitter) {
+    return;
+  }
+
+  CEZ2STRParticle* particle = AsParticle(this->emitter);
+  particle->position.x = this->position[0] + this->emitter->offset.x;
+  particle->position.y = this->position[1] + this->emitter->offset.y;
+  particle->position.z = this->position[2] + this->emitter->offset.z;
+  particle->Process(0.0f, 0.0f, 0.0f);
+}
+
+// OFFSET: 0x0070C120
+// FUNCTION: fn_07125
+void CCrimsonArrowEffect::Slot04() {
+  if (this->emitter) {
+    AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
+}
 
 // OFFSET: 0x0070C3B0
 
@@ -86,6 +113,14 @@ bool CCurseOfCubeEffect::Slot06() {
   return true;
 }
 
+// OFFSET: 0x0070F080
+// FUNCTION: fn_07180
+void CCurseOfCubeEffect::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
+}
+
 // OFFSET: 0x0070F350
 // FUNCTION: fn_07185
 void CWarningPlaneEffect::Slot01() {
@@ -94,6 +129,16 @@ void CWarningPlaneEffect::Slot01() {
 // OFFSET: 0x0070F360
 
 // OFFSET: 0x0070FC60
+
+// OFFSET: 0x0070F670
+// FUNCTION: fn_07188
+void CWarningPlaneEffect::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    if (this->expireTime != 0 && *it) {
+      AsParticle(*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    }
+  }
+}
 
 // OFFSET: 0x007100D0
 // FUNCTION: fn_07197
@@ -124,6 +169,33 @@ bool CEternalSlashAttackEffect::Slot06() {
   return false;
 }
 
+// OFFSET: 0x00710FB0
+// FUNCTION: fn_07211
+void CEternalSlashAttackEffect::Slot03() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    if (!emitter) {
+      continue;
+    }
+
+    CEZ2STRParticle* particle = AsParticle(emitter);
+    particle->position.x = this->position[0] + emitter->offset.x;
+    particle->position.y = this->position[1] + emitter->offset.y;
+    particle->position.z = this->position[2] + emitter->offset.z;
+    particle->Process(0.0f, 0.0f, 0.0f);
+  }
+}
+
+// OFFSET: 0x007110A0
+// FUNCTION: fn_07212
+void CEternalSlashAttackEffect::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    if (*it) {
+      AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
+}
+
 // OFFSET: 0x00711120
 // FUNCTION: fn_07213
 CEternalSlashCountEffect::CEternalSlashCountEffect() : CEffect(1913), emitter(nullptr) {
@@ -144,6 +216,28 @@ bool CEternalSlashCountEffect::Slot06() {
   return static_cast<float>(emitter->elapsed) < emitter->lifetime * 60.0f;
 }
 
+// OFFSET: 0x00711380
+// FUNCTION: fn_07218
+void CEternalSlashCountEffect::Slot03() {
+  if (!this->emitter) {
+    return;
+  }
+
+  CEZ2STRParticle* particle = AsParticle(this->emitter);
+  particle->position.x = this->position[0] + this->emitter->offset.x;
+  particle->position.y = this->position[1] + this->emitter->offset.y;
+  particle->position.z = this->position[2] + this->emitter->offset.z;
+  particle->Process(0.0f, 0.0f, 0.0f);
+}
+
+// OFFSET: 0x007113F0
+// FUNCTION: fn_07219
+void CEternalSlashCountEffect::Slot04() {
+  if (this->emitter) {
+    AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
+}
+
 // OFFSET: 0x00711420
 // FUNCTION: fn_07220
 CFallenAngelEffect::CFallenAngelEffect() : CEffect(1140), emitter(nullptr), unknown_00D0(0), unknown_00D4(0), unknown_00D8(0) {
@@ -159,6 +253,14 @@ bool CFallenAngelEffect::Slot06() {
   return static_cast<float>(this->emitter->elapsed) < this->emitter->lifetime * 60.0f;
 }
 
+// OFFSET: 0x007117F0
+// FUNCTION: fn_07226
+void CFallenAngelEffect::Slot04() {
+  if (this->emitter) {
+    AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
+}
+
 // OFFSET: 0x007118C0
 // FUNCTION: fn_07228
 CFloralFlareRoad::CFloralFlareRoad() : CEffect(1804) {
@@ -168,6 +270,21 @@ CFloralFlareRoad::CFloralFlareRoad() : CEffect(1804) {
 // FUNCTION: fn_07232
 bool CFloralFlareRoad::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x00711ED0
+// FUNCTION: fn_07234
+void CFloralFlareRoad::Slot04() {
+  if (this->unknown_00CC) {
+    AsParticle(this->unknown_00CC)
+      ->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
+
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    if (*it) {
+      AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
 }
 
 // OFFSET: 0x00711F80
@@ -196,6 +313,14 @@ bool CFootprintEffect::Slot33() {
 // FUNCTION: fn_07240
 bool CFootprintEffect::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x00712C50
+// FUNCTION: fn_07244
+void CFootprintEffect::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    AsParticle(*it)->Render(true, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  }
 }
 
 // OFFSET: 0x00713370
@@ -310,14 +435,63 @@ bool CPetitioEffect::Slot06() {
   return false;
 }
 
+// OFFSET: 0x0071FA90
+// FUNCTION: fn_07349
+void CPetitioEffect::Slot03() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    if (!emitter) {
+      continue;
+    }
+
+    CEZ2STRParticle* particle = AsParticle(emitter);
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1] - 12.0f;
+    particle->position.z = this->position[2];
+    particle->Process(0.0f, 0.0f, 0.0f);
+  }
+}
+
+// OFFSET: 0x0071FB70
+// FUNCTION: fn_07350
+void CPetitioEffect::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    if (*it) {
+      AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
+}
+
 // OFFSET: 0x0071FBF0
 // FUNCTION: fn_07351
 CPneumaticusProcellaEffect::CPneumaticusProcellaEffect() : CEffect(1957) {
 }
 
+// OFFSET: 0x00720410
+// FUNCTION: fn_07356
+void CPneumaticusProcellaEffect::Slot04() {
+  if (this->emitter) {
+    AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
+
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    if (*it) {
+      AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
+}
+
 // OFFSET: 0x00720480
 // FUNCTION: fn_07357
 CRandomHitEffect::CRandomHitEffect() : CEffect(-1), active(true) {
+}
+
+// OFFSET: 0x00720940
+// FUNCTION: fn_07363
+void CRandomHitEffect::Slot04() {
+  if (this->emitter) {
+    AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
 }
 
 // OFFSET: 0x00720970
@@ -365,6 +539,22 @@ bool CSavageImpactEffect::Slot06() {
   }
 
   return static_cast<float>(this->emitter->elapsed) < this->emitter->lifetime * 60.0f;
+}
+
+// OFFSET: 0x007224A0
+// FUNCTION: fn_07386
+void CSavageImpactEffect::Slot03() {
+  CEZ2STRParticle* particle = AsParticle(this->emitter);
+  particle->position.x = this->position[0];
+  particle->position.y = this->position[1] - 12.0f;
+  particle->position.z = this->position[2];
+  particle->Process(0.0f, 0.0f, 0.0f);
+}
+
+// OFFSET: 0x00722560
+// FUNCTION: fn_07387
+void CSavageImpactEffect::Slot04() {
+  AsParticle(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
 }
 
 // OFFSET: 0x007226A0

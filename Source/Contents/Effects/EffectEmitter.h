@@ -16,7 +16,8 @@ struct EZ2STREmitter {
   /* 00C4 */ float angle;
   /* 00C8 */ unsigned char unknown_00C8[0x4];
   /* 00CC */ float lifetime;
-  /* 00D0 */ unsigned char unknown_00D0[0x18];
+  /* 00D0 */ vector3d offset;
+  /* 00DC */ unsigned char unknown_00DC[0xC];
   /* 00E8 */ int elapsed;
   /* 00EC */ unsigned char unknown_00EC[0x1DC];
   /* 02C8 */ vector3d velocity;
