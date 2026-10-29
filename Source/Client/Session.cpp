@@ -2,6 +2,7 @@
 #include "Contents/Jobs/JobId.h"
 #include "Network/TextEncoding.h"
 
+#include <cstdlib>
 #include <cstring>
 #include <windows.h>
 
@@ -77,4 +78,251 @@ char* CSession::ConvertTooltipText(const char* source, char* output) const {
   }
 
   return output;
+}
+
+// OFFSET: 0x00DDE890
+// FUNCTION: fn_23402
+ITEM_INFO CSession::FindItem1768(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1768) {
+    if (item.unknown_0000[1] == id) {
+      return item;
+    }
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00DDE920
+// FUNCTION: fn_23403
+ITEM_INFO CSession::GetItem1768At(int index) const {
+  if (this->unknown_1768.empty()) {
+    return ITEM_INFO(0);
+  }
+
+  int position = 0;
+  for (const ITEM_INFO& item : this->unknown_1768) {
+    if (position == index) {
+      return item;
+    }
+    ++position;
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00DDE9C0
+// FUNCTION: fn_23404
+int CSession::GetItem1768Quantity(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1768) {
+    if (item.unknown_0000[1] == id) {
+      return item.quantity;
+    }
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00DDE9F0
+// FUNCTION: fn_23405
+ITEM_INFO CSession::FindItem1740(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1740) {
+    if (item.unknown_0000[1] == id) {
+      return item;
+    }
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00DDEA80
+// FUNCTION: fn_23406
+ITEM_INFO CSession::GetItem1740At(int index) const {
+  if (this->unknown_1740.empty()) {
+    return ITEM_INFO(0);
+  }
+
+  int position = 0;
+  for (const ITEM_INFO& item : this->unknown_1740) {
+    if (position == index) {
+      return item;
+    }
+    ++position;
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00DDEB20
+// FUNCTION: fn_23407
+int CSession::GetItem1740Quantity(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1740) {
+    if (item.unknown_0000[1] == id) {
+      return item.quantity;
+    }
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00DDEB50
+// FUNCTION: fn_23408
+ITEM_INFO CSession::FindItem1750(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1750) {
+    if (item.unknown_0000[1] == id) {
+      return item;
+    }
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00DDEBE0
+// FUNCTION: fn_23409
+ITEM_INFO CSession::GetItem1750At(int index) const {
+  if (this->unknown_1750.empty()) {
+    return ITEM_INFO(0);
+  }
+
+  int position = 0;
+  for (const ITEM_INFO& item : this->unknown_1750) {
+    if (position == index) {
+      return item;
+    }
+    ++position;
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00DDEC80
+// FUNCTION: fn_23410
+int CSession::GetItem1750Quantity(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1750) {
+    if (item.unknown_0000[1] == id) {
+      return item.quantity;
+    }
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00DDECB0
+// FUNCTION: fn_23411
+ITEM_INFO CSession::FindItem1758(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1758) {
+    if (item.unknown_0000[1] == id) {
+      return item;
+    }
+  }
+
+  return ITEM_INFO();
+}
+
+// OFFSET: 0x00DDED40
+// FUNCTION: fn_23412
+ITEM_INFO CSession::FindItem1758ByItemId(int itemId) const {
+  for (const ITEM_INFO& item : this->unknown_1758) {
+    if (std::atoi(item.itemId.c_str()) == itemId) {
+      return item;
+    }
+  }
+
+  return ITEM_INFO();
+}
+
+// OFFSET: 0x00DDEDE0
+// FUNCTION: fn_23413
+ITEM_INFO CSession::GetItem1758At(int index) const {
+  if (this->unknown_1758.empty()) {
+    return ITEM_INFO(0);
+  }
+
+  int position = 0;
+  for (const ITEM_INFO& item : this->unknown_1758) {
+    if (position == index) {
+      return item;
+    }
+    ++position;
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00DDEEB0
+// FUNCTION: fn_23414
+ITEM_INFO CSession::FindItem1760(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1760) {
+    if (item.unknown_0000[1] == id) {
+      return item;
+    }
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00DDF000
+// FUNCTION: fn_23416
+ITEM_INFO CSession::GetItem1760At(int index) const {
+  int position = 0;
+  for (const ITEM_INFO& item : this->unknown_1760) {
+    if (position == index) {
+      return item;
+    }
+    ++position;
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00DDF0F0
+// FUNCTION: fn_23418
+int CSession::GetItem1760Quantity(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1760) {
+    if (item.unknown_0000[1] == id) {
+      return item.quantity;
+    }
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00DDF120
+// FUNCTION: fn_23419
+ITEM_INFO CSession::FindItem1770(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1770) {
+    if (item.unknown_0000[1] == id) {
+      return item;
+    }
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00DDF1B0
+// FUNCTION: fn_23420
+long long CSession::GetItem1760Total() const {
+  long long total = 0;
+  for (const ITEM_INFO& item : this->unknown_1760) {
+    total += static_cast<long long>(item.quantity) * static_cast<int>(item.unknown_0014[1]);
+  }
+
+  return total;
+}
+
+// OFFSET: 0x00DDF200
+// FUNCTION: fn_23421
+ITEM_INFO CSession::GetItem1748At(int index) const {
+  if (this->unknown_1748.empty()) {
+    return ITEM_INFO(0);
+  }
+
+  int position = 0;
+  for (const ITEM_INFO& item : this->unknown_1748) {
+    if (position == index) {
+      return item;
+    }
+    ++position;
+  }
+
+  return ITEM_INFO(0);
 }
