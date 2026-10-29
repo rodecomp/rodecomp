@@ -8,6 +8,8 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Text/UITextViewer.h"
+#include "UI/Text/UIAchWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <algorithm>
 
@@ -110,6 +112,18 @@ void UITextViewer::Slot25(int, int) {
 // OFFSET: 0x007B78C0
 // FUNCTION: fn_09227
 void UITextViewer::Slot26(int, int) {
+}
+
+// OFFSET: 0x007B79F0
+// FUNCTION: fn_09231
+void UIAchListWnd::Slot31(int, int) {
+  g_windowMgr.ReleaseCapture();
+}
+
+// OFFSET: 0x007B7A00
+// FUNCTION: fn_09232
+void UIAchTab::Slot31(int, int) {
+  g_windowMgr.ReleaseCapture();
 }
 
 // OFFSET: 0x007B7A10
