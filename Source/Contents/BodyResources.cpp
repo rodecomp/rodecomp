@@ -901,6 +901,570 @@ const char* EncryptedName<18, 0xA1ED494BF319772DULL>::Text() {
   return reinterpret_cast<const char*>(this->m_text);
 }
 
+// OFFSET: 0x00DC81C0
+// FUNCTION: fn_22866
+template <>
+const char* EncryptedName<18, 0x9BE3EF737387AD79ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x9BE3EF737387AD79ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC81F0
+// FUNCTION: fn_22867
+template <>
+const char* EncryptedName<18, 0x9B5B959B954D9333ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x9B5B959B954D9333ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8220
+// FUNCTION: fn_22868
+template <>
+const char* EncryptedName<18, 0x99157F159BB99BD9ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x99157F159BB99BD9ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8250
+// FUNCTION: fn_22869
+template <>
+const char* EncryptedName<18, 0x91651D81F559F971ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x91651D81F559F971ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8280
+// FUNCTION: fn_22870
+template <>
+const char* EncryptedName<18, 0x8F4B518D839D1581ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x8F4B518D839D1581ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC82B0
+// FUNCTION: fn_22871
+template <>
+const char* EncryptedName<18, 0x8F3F2FA959977F9FULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x8F3F2FA959977F9FULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC82E0
+// FUNCTION: fn_22872
+template <>
+const char* EncryptedName<18, 0x8F1B5BFD5F6175B5ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x8F1B5BFD5F6175B5ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8310
+// FUNCTION: fn_22873
+template <>
+const char* EncryptedName<18, 0x8DC5D10DAB1585BDULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x8DC5D10DAB1585BDULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8340
+// FUNCTION: fn_22874
+template <>
+const char* EncryptedName<18, 0x17FFC98B398FAF61ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x17FFC98B398FAF61ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8370
+// FUNCTION: fn_22875
+template <>
+const char* EncryptedName<18, 0x1D6D75EDE7CD311FULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x1D6D75EDE7CD311FULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC83A0
+// FUNCTION: fn_22876
+template <>
+const char* EncryptedName<18, 0x1F01A13D8D915327ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x1F01A13D8D915327ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC83D0
+// FUNCTION: fn_22877
+template <>
+const char* EncryptedName<18, 0x1F79132B518FD389ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x1F79132B518FD389ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8400
+// FUNCTION: fn_22878
+template <>
+const char* EncryptedName<18, 0x21156F4141E35DD9ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x21156F4141E35DD9ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8430
+// FUNCTION: fn_22879
+template <>
+const char* EncryptedName<18, 0x251761D7370BA5C3ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x251761D7370BA5C3ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8460
+// FUNCTION: fn_22880
+template <>
+const char* EncryptedName<18, 0x2F1337956DC3CFD5ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x2F1337956DC3CFD5ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8490
+// FUNCTION: fn_22881
+template <>
+const char* EncryptedName<18, 0x038535BB092533B7ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x038535BB092533B7ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC84C0
+// FUNCTION: fn_22882
+template <>
+const char* EncryptedName<18, 0x393D916561BDC391ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x393D916561BDC391ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC84F0
+// FUNCTION: fn_22883
+template <>
+const char* EncryptedName<18, 0x3B6D9BFD27A7C7F7ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x3B6D9BFD27A7C7F7ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8520
+// FUNCTION: fn_22884
+template <>
+const char* EncryptedName<18, 0x410DD52D6731BFFDULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x410DD52D6731BFFDULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8550
+// FUNCTION: fn_22885
+template <>
+const char* EncryptedName<18, 0x45E3F103CBB5F157ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x45E3F103CBB5F157ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8580
+// FUNCTION: fn_22886
+template <>
+const char* EncryptedName<18, 0x050DF16FC75B25B9ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x050DF16FC75B25B9ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC85B0
+// FUNCTION: fn_22887
+template <>
+const char* EncryptedName<18, 0x51372B6F4BA14B23ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x51372B6F4BA14B23ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC85E0
+// FUNCTION: fn_22888
+template <>
+const char* EncryptedName<18, 0x51EB99CBCB075F35ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x51EB99CBCB075F35ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8610
+// FUNCTION: fn_22889
+template <>
+const char* EncryptedName<18, 0x5B8F49AF09390D1BULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x5B8F49AF09390D1BULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8640
+// FUNCTION: fn_22890
+template <>
+const char* EncryptedName<18, 0x73D1674B61DF7B0BULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x73D1674B61DF7B0BULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8670
+// FUNCTION: fn_22891
+template <>
+const char* EncryptedName<18, 0x078333BB9725B7C9ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x078333BB9725B7C9ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC86A0
+// FUNCTION: fn_22892
+template <>
+const char* EncryptedName<18, 0x798B394FF5FF434DULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x798B394FF5FF434DULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC86D0
+// FUNCTION: fn_22893
+template <>
+const char* EncryptedName<18, 0x07B733370F612D0FULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x07B733370F612D0FULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8700
+// FUNCTION: fn_22894
+template <>
+const char* EncryptedName<18, 0x7FCD77F9C7CBD14DULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x7FCD77F9C7CBD14DULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8730
+// FUNCTION: fn_22895
+template <>
+const char* EncryptedName<18, 0x0BEB63A5C905B3A7ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 18, 0x0BEB63A5C905B3A7ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8760
+// FUNCTION: fn_22896
+template <>
+const char* EncryptedName<20, 0x33CD2BDD5B3927EDULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 20, 0x33CD2BDD5B3927EDULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8790
+// FUNCTION: fn_22897
+template <>
+const char* EncryptedName<20, 0x656FAB972B3D21BBULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 20, 0x656FAB972B3D21BBULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC87C0
+// FUNCTION: fn_22898
+template <>
+const char* EncryptedName<20, 0x7BAD7791F50F5D8DULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 20, 0x7BAD7791F50F5D8DULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC87F0
+// FUNCTION: fn_22899
+template <>
+const char* EncryptedName<22, 0xD9FF511B2BB921E7ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0xD9FF511B2BB921E7ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8820
+// FUNCTION: fn_22900
+template <>
+const char* EncryptedName<22, 0xCF391B0F8B9D95DBULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0xCF391B0F8B9D95DBULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8850
+// FUNCTION: fn_22901
+template <>
+const char* EncryptedName<22, 0xC7912587FFF31B71ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0xC7912587FFF31B71ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8880
+// FUNCTION: fn_22902
+template <>
+const char* EncryptedName<22, 0xABED6971354375C3ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0xABED6971354375C3ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC88B0
+// FUNCTION: fn_22903
+template <>
+const char* EncryptedName<22, 0x8B65CD61012B5931ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0x8B65CD61012B5931ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC88E0
+// FUNCTION: fn_22904
+template <>
+const char* EncryptedName<22, 0x85D9CFCF0FBB71ABULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0x85D9CFCF0FBB71ABULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8910
+// FUNCTION: fn_22905
+template <>
+const char* EncryptedName<22, 0xF7530137154D8FE5ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0xF7530137154D8FE5ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8940
+// FUNCTION: fn_22906
+template <>
+const char* EncryptedName<22, 0x151F77EBEBBB2147ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0x151F77EBEBBB2147ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8970
+// FUNCTION: fn_22907
+template <>
+const char* EncryptedName<22, 0x01E7898D9D235DDFULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0x01E7898D9D235DDFULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC89A0
+// FUNCTION: fn_22908
+template <>
+const char* EncryptedName<22, 0x3939079FF3395587ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0x3939079FF3395587ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC89D0
+// FUNCTION: fn_22909
+template <>
+const char* EncryptedName<22, 0x3D8387EF97A37DCFULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0x3D8387EF97A37DCFULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8A00
+// FUNCTION: fn_22910
+template <>
+const char* EncryptedName<22, 0x4917EB6D71B701ABULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0x4917EB6D71B701ABULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8A30
+// FUNCTION: fn_22911
+template <>
+const char* EncryptedName<22, 0x61FF87ED7BF39BE1ULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0x61FF87ED7BF39BE1ULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
+// OFFSET: 0x00DC8A60
+// FUNCTION: fn_22912
+template <>
+const char* EncryptedName<22, 0x71B7691737C5A1AFULL>::Text() {
+  if (this->m_encrypted) {
+    utility::XorBytes(this->m_text, 22, 0x71B7691737C5A1AFULL);
+    this->m_encrypted = false;
+  }
+
+  return reinterpret_cast<const char*>(this->m_text);
+}
+
 // OFFSET: 0x00E3D300
 // FUNCTION: fn_24186
 bool CSession::IsSecondJob(int job) {
