@@ -200,3 +200,13 @@ std::wstring LowercaseWide(const std::string& text) {
   std::transform(result.begin(), result.end(), result.begin(), towlower);
   return result;
 }
+
+// OFFSET: 0x0058D6B0
+// FUNCTION: fn_02795
+int FindSubstring(const char* text, int codePage, const char* pattern) {
+  std::wstring wideText = LowercaseWide(text);
+  std::wstring widePattern = LowercaseWide(pattern);
+  size_t pos = wideText.find(widePattern);
+  return (pos == std::wstring::npos) ? -1 : static_cast<int>(pos);
+}
+
