@@ -23,3 +23,9 @@ std::vector<RenderAdapter> EnumerateAdaptersDX7() {
 
   return result;
 }
+
+// OFFSET: 0x00DD9420
+// FUNCTION: fn_23334
+HRESULT __cdecl AcceptAnyDirectDrawDevice(const DDCAPS*, const D3DDEVICEDESC7*) {
+  return S_OK;
+}

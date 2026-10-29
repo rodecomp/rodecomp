@@ -47,6 +47,8 @@ extern unsigned g_directDrawModesSeen;
 extern unsigned g_directDrawModeCount;
 extern DirectDrawEnumeration::Filter g_directDrawFilter;
 
+HRESULT __cdecl AcceptAnyDirectDrawDevice(const DDCAPS* driverCaps, const D3DDEVICEDESC7* device);
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(DDCAPS) == 380);
 static_assert(sizeof(D3DDEVICEDESC7) == 236);
