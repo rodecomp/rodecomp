@@ -294,6 +294,14 @@ void UIItemMoveInfo::Slot28(int, int) {
 }
 
 // OFFSET: 0x00891A10
+// FUNCTION: fn_11453
+void UIImgMenu::Slot28(int x, int y) {
+  const int previous = this->hovered;
+  this->hovered = this->ItemAt(x, y);
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00891F20
 // FUNCTION: fn_11460
