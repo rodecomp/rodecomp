@@ -1966,6 +1966,143 @@ void CEffectPrim::RenderTube(matrix& wtm) {
   }
 }
 
+// OFFSET: 0x00BD4360
+// FUNCTION: fn_19880
+void CEffectPrim::RenderFieldPanel(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  vector3d vec4{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    const bool field = std::string(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName) == "ecl_fild01.rsw";
+    if (field && slot.alphaB > 100) {
+      slot.alphaB = 100;
+    }
+
+    if (slot.height[8] >= 360.0f || slot.height[8] < 0.0f) {
+      slot.height[8] = 0.0f;
+    }
+
+    const float rx = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + slot.distance;
+    const int angle1 = slot.fullDisplayAngle;
+    const int angle2 = angle1 + (angle1 < 270 ? 90 : -270);
+    const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
+    const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
+    vec1 = {rx * g_cosTable[angle1], 0.0f, rx * g_sinTable[angle1]};
+    vec2 = {rx * g_cosTable[angle2], 0.0f, rx * g_sinTable[angle2]};
+    vec3 = {rx * g_cosTable[angle3], 0.0f, rx * g_sinTable[angle3]};
+    vec4 = {rx * g_cosTable[angle4], 0.0f, rx * g_sinTable[angle4]};
+    if (slot.height[9] == 10.0f) {
+      vec1.x += 4.0f;
+      vec2.x += 4.0f;
+      vec3.x += 4.0f;
+      vec4.x += 4.0f;
+    }
+    this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+    vec1 = {slot.vecBNow.x + vec1.x, slot.vecBNow.y + vec1.y, slot.vecBNow.z + vec1.z};
+    vec2 = {slot.vecBNow.x + vec2.x, slot.vecBNow.y + vec2.y, slot.vecBNow.z + vec2.z};
+    vec3 = {slot.vecBNow.x + vec3.x, slot.vecBNow.y + vec3.y, slot.vecBNow.z + vec3.z};
+    vec4 = {slot.vecBNow.x + vec4.x, slot.vecBNow.y + vec4.y, slot.vecBNow.z + vec4.z};
+
+    const unsigned char texture = static_cast<unsigned char>(slot.flag1[0]);
+    switch (this->state.slots[0].flag1[2]) {
+      case 0:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 1:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 150, 150, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 2:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 130, 130, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 3:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 200, 200, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 4:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 7:
+      case 23:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 8:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 135, 255, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 10:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 250, 250, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 11:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 220, 250, 220, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 12:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 252, 171, 143, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 13:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 250, 100, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 14:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 94, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 15:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 200, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 16:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 0, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 17:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 180, 180, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 18:
+        this->RenderTeiRect(&rpCnt, static_cast<short>(slot.alphaB / 2), vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 24:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 63, 72, 204, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 9:
+        switch (this->state.slots[0].flag1[3]) {
+        case 1:
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 135, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          break;
+        case 2:
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 205, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          break;
+        case 3:
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 255, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          break;
+        case 4:
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          break;
+        case 5:
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 135, 135, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          break;
+        case 6:
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          break;
+        default:
+          break;
+        }
+        break;
+      case 25:
+        vec1.y -= 110.0f;
+        vec2.y -= 110.0f;
+        vec3.y -= 110.0f;
+        vec4.y -= 110.0f;
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 // OFFSET: 0x00BDF0A0
 // FUNCTION: fn_19908
 void CEffectPrim::RenderRainbow(matrix& wtm) {
