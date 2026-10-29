@@ -4420,3 +4420,134 @@ RenderVertex TransformVert(const matrix& view, const vector3d& position) {
   g_renderer->viewport.Projection().Project(&position.x, view.values, vertex);
   return vertex;
 }
+
+// OFFSET: 0x00BE8680
+// FUNCTION: fn_19943
+bool CEffectPrim::PrimTextureSpin() {
+  this->render.position = this->state.master->render.position;
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const int process = ++slot.process;
+
+    if (slot.height[2] == 0.0f) {
+      slot.rotStart = static_cast<std::int16_t>(slot.rotStart + 6);
+      if (slot.rotStart >= 360) {
+        slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
+      }
+      slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle + 3);
+      if (slot.riseAngle >= 360) {
+        slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle - 360);
+      }
+    }
+
+    if (process % 4 == 0) {
+      slot.height[1] += 1.0f;
+    }
+
+    const float frames = static_cast<float>(this->state.totalTexture);
+    if (slot.height[1] >= frames) {
+      slot.height[1] -= frames;
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00BE9490
+// FUNCTION: fn_19951
+void CEffectPrim::PrimScrollTexture() {
+  this->render.position = this->state.master->render.position;
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1 || ++slot.process <= 0) {
+      continue;
+    }
+
+    slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 2);
+    if (slot.alphaB > 255) {
+      slot.alphaB = 255;
+    }
+
+    slot.height[1] += 1.0f;
+    if (slot.height[1] >= static_cast<float>(this->state.totalTexture)) {
+      slot.height[1] = 0.0f;
+    }
+
+    slot.distance -= 0.66f;
+    slot.height[10] -= 1.0f;
+    if (slot.distance < 0.0f) {
+      slot.distance += slot.maxHeight;
+    }
+    if (slot.height[10] < 0.0f) {
+      slot.height[10] += slot.maxHeight;
+    }
+  }
+}
+
+// OFFSET: 0x00BE95C0
+// FUNCTION: fn_19953
+void CEffectPrim::PrimFrameFade() {
+  FaceCamera(this->state.slots);
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    if (++slot.process % 3 == 0) {
+      ++slot.flag1[0];
+      const int frames = static_cast<int>(this->state.totalTexture);
+      if (slot.flag1[0] >= frames) {
+        slot.flag1[0] = static_cast<char>(frames - 1);
+        slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 15);
+      }
+    }
+
+    if (slot.alphaB >= 255) {
+      slot.alphaB = 255;
+    } else if (slot.alphaB < 0) {
+      slot.alphaB = 0;
+    }
+  }
+}
+
+// OFFSET: 0x00BEB3E0
+// FUNCTION: fn_19969
+void CEffectPrim::PrimRiseFollow() {
+  FaceCamera(this->state.slots);
+  this->render.position = this->state.master->render.position;
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1 || ++slot.process <= 0) {
+      continue;
+    }
+
+    slot.rotStart = static_cast<std::int16_t>(slot.rotStart + 5);
+    if (slot.rotStart > 100) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 2);
+      slot.rotStart = 100;
+    }
+
+    if (slot.alphaB >= 255) {
+      slot.alphaB = 255;
+    } else if (slot.alphaB < 0) {
+      slot.alphaB = 0;
+    }
+
+    slot.vecBNow.y = slot.vecBPre.y;
+    slot.vecBNow.x = this->render.position.x;
+    slot.vecBNow.z = this->render.position.z;
+  }
+}
