@@ -13,6 +13,18 @@ bool g_homunculusAutoFeed;
 // GLOBAL: gl_24493
 bool g_petAutoFeed;
 
+// OFFSET: 0x00E488C0
+// FUNCTION: fn_24221
+void CSession::UpdateBodyStyle(int job, int style, int renderJob) {
+  if (style >= 2 || this->IsSecondJob(renderJob)) {
+    this->m_bodyStyle = style;
+  } else if (static_cast<unsigned>(job - 4001) <= 21) {
+    this->m_bodyStyle = job <= 4007;
+  } else {
+    this->m_bodyStyle = static_cast<unsigned>(job - 4001) <= 6;
+  }
+}
+
 // OFFSET: 0x00E48930
 // FUNCTION: fn_24222
 void CSession::SetHomunculusAutoFeed(bool enabled) {

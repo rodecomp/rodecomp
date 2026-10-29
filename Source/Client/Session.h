@@ -88,7 +88,8 @@ public:
   /* 0E98 */ int unknown_0E98;
   /* 0E9C */ unsigned char unknown_0E9C[0x3C];
   /* 0ED8 */ int m_head;
-  /* 0EDC */ unsigned char unknown_0EDC[0x14];
+  /* 0EDC */ unsigned char unknown_0EDC[0x10];
+  /* 0EEC */ int m_bodyStyle;
   /* 0EF0 */ int m_headPalette;
   /* 0EF4 */ unsigned char unknown_0EF4[0x0C];
   /* 0F00 */ int m_robe;
@@ -291,6 +292,7 @@ public:
   void ClearItemSelection();
   bool IsDoramJob(int job) const;
   bool IsSecondJob(int job);
+  void UpdateBodyStyle(int job, int style, int renderJob);
   std::string GetBodyJobName(int job);
   char* ConvertTooltipText(const char* source, char* output) const;
   void StoreEmblem(const void* data, std::size_t size, std::uint32_t guildId, int version);
