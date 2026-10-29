@@ -6,6 +6,8 @@
 #include "Resource/ResourceMgr.h"
 
 #include <cstring>
+#include <windows.h>
+#include <shlwapi.h>
 
 // OFFSET: 0x00B8DF10
 // FUNCTION: fn_19461
@@ -406,3 +408,21 @@ void CNaviInfo::CollectMobsByTitle(std::string title, std::vector<NavigationTarg
     }
   }
 }
+
+// OFFSET: 0x00B8E920
+// FUNCTION: fn_19499
+void CNaviInfo::Search(int type, const std::vector<std::string>& keywords, std::vector<NavigationTarget>& out) {
+  this->SearchMap(keywords, out);
+  if (type == 2 || type == 0) {
+    this->SearchMobs(keywords, out);
+  }
+  if (type == 3 || type == 0) {
+    this->SearchNpcs(keywords, out);
+  }
+}
+
+// OFFSET: 0x00B8EE50
+
+// OFFSET: 0x00B8F560
+
+// OFFSET: 0x00B8FE40

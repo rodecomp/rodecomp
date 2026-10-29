@@ -198,6 +198,10 @@ public:
   void CollectTargets(int type, std::vector<NavigationTarget>& out);
   void CollectMobsInRange(int minimum, int maximum, std::vector<NavigationTarget>& out);
   void CollectMobsByTitle(std::string title, std::vector<NavigationTarget>& out);
+  void Search(int type, const std::vector<std::string>& keywords, std::vector<NavigationTarget>& out);
+  void SearchMap(const std::vector<std::string>& keywords, std::vector<NavigationTarget>& out);
+  void SearchMobs(const std::vector<std::string>& keywords, std::vector<NavigationTarget>& out);
+  void SearchNpcs(const std::vector<std::string>& keywords, std::vector<NavigationTarget>& out);
 
   /* 0000 */ int index;
   /* 0004 */ int type;
