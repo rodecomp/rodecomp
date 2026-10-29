@@ -2103,6 +2103,590 @@ void CEffectPrim::RenderFieldPanel(matrix& wtm) {
   }
 }
 
+// OFFSET: 0x00BD4E40
+// FUNCTION: fn_19881
+void CEffectPrim::RenderBladeTrail(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  vector3d vec4{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    const float rx = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + slot.distance;
+    const float shape = slot.height[10];
+    int angle = slot.fullDisplayAngle;
+    vec1 = {rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]};
+
+    if (shape == 0.0f) {
+      angle += angle < 90 ? 270 : -90;
+    } else if (shape == 1.0f) {
+      angle += angle < 60 ? 300 : -60;
+    } else if (shape == 2.0f) {
+      angle -= 130;
+      if (angle < 0) {
+        angle += 360;
+      }
+    }
+    vec2 = {rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]};
+
+    if (shape == 0.0f) {
+      angle -= 90;
+      if (angle < 0) {
+        angle += 360;
+      }
+    } else if (shape == 1.0f) {
+      angle -= 120;
+      if (angle < 0) {
+        angle += 360;
+      }
+    } else if (shape == 2.0f) {
+      angle -= 50;
+      if (angle < 0) {
+        angle += 360;
+      }
+    }
+    vec3 = {rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]};
+
+    if (shape == 0.0f) {
+      angle -= 90;
+      if (angle < 0) {
+        angle += 360;
+      }
+    } else if (shape == 1.0f) {
+      angle -= 60;
+      if (angle < 0) {
+        angle += 360;
+      }
+    } else if (shape == 2.0f) {
+      angle -= 130;
+      if (angle < 0) {
+        angle += 360;
+      }
+    }
+    vec4 = {rx * g_cosTable[angle], 0.0f, rx * g_sinTable[angle]};
+
+    this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+
+    int trail = 0;
+    for (int i = 0; i < 10; i += 2) {
+      const vector3d& position = this->render.position;
+      const float deltaX = slot.vecBNow.x - position.x;
+      const float deltaZ = slot.vecBNow.z - position.z;
+      const float length = SquareRoot(deltaZ * deltaZ + deltaX * deltaX);
+      short alpha = slot.alphaB;
+      const float along = std::max(0.0f, length / static_cast<float>(this->state.slots[0].flag1[5]) * static_cast<float>(slot.process) - static_cast<float>(i));
+      const float z = along * g_sinTable[slot.riseAngle] + position.z;
+      const float x = along * g_cosTable[slot.riseAngle] + position.x;
+      const float y = position.y - 12.0f + 0.0f;
+      const vector3d p2{x + vec2.x, y + vec2.y, z + vec2.z};
+      const vector3d p1{x + vec1.x, y + vec1.y, z + vec1.z};
+      const vector3d p4{x + vec4.x, y + vec4.y, z + vec4.z};
+      const vector3d p3{x + vec3.x, y + vec3.y, z + vec3.z};
+
+      if (trail > 0) {
+        alpha = static_cast<short>(alpha + 20 * (-5 - trail));
+        if (alpha < 0) {
+          alpha = 0;
+        }
+      }
+
+      unsigned char tint;
+      switch (this->state.slots[0].flag1[2]) {
+      case 0:
+        tint = 55;
+        break;
+      case 1:
+        tint = 105;
+        break;
+      case 2:
+        tint = 75;
+        break;
+      case 3:
+        tint = 85;
+        break;
+      default:
+        ++trail;
+        continue;
+      }
+
+      this->RenderTeiRect(&rpCnt, alpha, p2, p1, p4, p3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 1, tint, tint, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      ++trail;
+    }
+  }
+}
+
+// OFFSET: 0x00BD0CC0
+// FUNCTION: fn_19871
+void CEffectPrim::RenderFanBeam(matrix& wtm) {
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    const float mode = slot.height[4];
+    const float length = slot.distance;
+    const float lift = slot.height[0];
+    const float rotCos = g_cosTable[slot.rotStart];
+    const float rotSin = g_sinTable[slot.rotStart];
+    const vector3d center{0.0f, lift, 0.0f};
+
+    int spread = mode == 2.0f ? 1 : 2;
+    int left = slot.riseAngle - spread;
+    if (left < 0) {
+      left += 360;
+    }
+    int right = slot.riseAngle + spread;
+    if (right >= 360) {
+      right -= 360;
+    }
+    vector3d vec1{rotCos * (length * g_cosTable[left]), rotSin * (length * g_cosTable[left]) + lift, length * g_sinTable[left]};
+    vector3d vec2{length * g_cosTable[right] * rotCos, length * g_cosTable[right] * rotSin + lift, length * g_sinTable[right]};
+
+    if (mode == 2.0f || mode == 4.0f) {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, center, center, wtm, 0, 0, 0, 0, 0, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (mode == 3.0f) {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, center, center, wtm, 0, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (mode == 5.0f) {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, center, center, wtm, 0, 0, 0, 50, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (mode == 6.0f) {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, center, center, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+    } else {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, center, center, wtm, 0, 0, 0, 0, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    }
+
+    spread = mode == 2.0f ? 2 : 5;
+    left = slot.riseAngle - spread;
+    if (left < 0) {
+      left += 360;
+    }
+    right = slot.riseAngle + spread;
+    if (right >= 360) {
+      right -= 360;
+    }
+    vec1 = {rotCos * (length * g_cosTable[left]), rotSin * (length * g_cosTable[left]) + lift, length * g_sinTable[left]};
+    vec2 = {length * g_cosTable[right] * rotCos, length * g_cosTable[right] * rotSin + lift, length * g_sinTable[right]};
+
+    if (mode == 2.0f) {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, center, center, wtm, 0, 0, 0, 250, 250, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (mode == 3.0f || mode == 5.0f) {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, center, center, wtm, 1, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (mode == 4.0f) {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, center, center, wtm, 1, 0, 0, 250, 250, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (mode == 6.0f) {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, center, center, wtm, 0, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+    } else {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, center, center, wtm, 0, 0, 0, 250, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00BE2DB0
+// FUNCTION: fn_19921
+void CEffectPrim::RenderStackedRings(matrix& wtm) {
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    float y = -slot.height[0];
+    float radius = slot.maxHeight;
+
+    for (int i = 0; i < slot.flag1[0]; ++i) {
+      if (i > 0) {
+        y += slot.height[1];
+        radius -= (2.2f - static_cast<float>(i) * 0.2f) * slot.distance;
+      }
+
+      short angle1 = static_cast<short>(slot.rotStart + 45 * i);
+      if (angle1 >= 360) {
+        angle1 = static_cast<short>(static_cast<unsigned short>(angle1) % 360u);
+      }
+      short angle2 = static_cast<short>(angle1 + 90);
+      if (angle2 >= 360) {
+        angle2 = static_cast<short>(angle2 - 360);
+      }
+      const short angle3 = static_cast<short>(angle2 + 90 < 360 ? angle2 + 90 : angle2 - 270);
+      const short angle4 = static_cast<short>(angle3 + 90 < 360 ? angle3 + 90 : angle3 - 270);
+      const vector3d vec1{radius * g_cosTable[angle1], y - 1.0f, radius * g_sinTable[angle1]};
+      const vector3d vec2{radius * g_cosTable[angle2], y - 1.0f, radius * g_sinTable[angle2]};
+      const vector3d vec3{radius * g_cosTable[angle3], y, radius * g_sinTable[angle3]};
+      const vector3d vec4{radius * g_cosTable[angle4], y, radius * g_sinTable[angle4]};
+
+      switch (slot.flag1[4]) {
+      case 0:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 1:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 164, 136, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 2:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 3:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 130, 130, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 4:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 5:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 5, 5, 5, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 6:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 7:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 125, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 8:
+        this->RenderTeiRect(&rpCnt, static_cast<short>(slot.alphaB / 10), vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 225, 225, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 10:
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 125, 125, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 11:
+        this->RenderTeiRect(&rpCnt, static_cast<short>(slot.alphaB / 3), vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 55, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      default:
+        break;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00BD71B0
+// FUNCTION: fn_19885
+void CEffectPrim::RenderLightningTube(matrix& wtm) {
+  vector3d prevStart{};
+  vector3d prevEnd{};
+  int rpCnt = 0;
+  float jitterZ[21];
+  float jitterX[21];
+  float jitterY[21];
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+    const float count = slot.vecTNow.y;
+
+    if (count > 0.0f) {
+      int i = 0;
+      do {
+        const int y = std::rand() % 11;
+        jitterY[i] = static_cast<float>(y >= 0 ? y : 0) * 0.1f - 0.5f;
+        const int x = std::rand() % 11;
+        jitterX[i] = static_cast<float>(x >= 0 ? x : 0) * 0.1f - 0.5f;
+        const int z = std::rand() % 11;
+        jitterZ[i] = static_cast<float>(z >= 0 ? z : 0) * 0.1f - 0.5f;
+        ++i;
+      } while (slot.vecTNow.y > static_cast<float>(i));
+    }
+
+    if (slot.life != 1 || slot.alphaB <= 0 || slot.process <= 0 || slot.vecTNow.y <= 0.0f) {
+      continue;
+    }
+
+    int fade = 150;
+    int rise = 0;
+    int segment = 0;
+    do {
+      const int next = segment + 1;
+      const float sn = g_sinTable[slot.riseAngle];
+      const float cs = g_cosTable[slot.riseAngle];
+      const float t0 = segment > 0 ? static_cast<float>(segment) / 5.0f * slot.distance + 0.0f : 0.0f;
+      const float s0 = sn * t0 + jitterZ[segment];
+      const float y0 = jitterY[segment] - 8.0f - g_sinTable[static_cast<short>(static_cast<int>(slot.height[segment]))] * 15.0f * slot.vecTNow.x;
+      const float c0 = cs * t0 + jitterX[segment];
+      const float t1 = static_cast<float>(next) / 5.0f * slot.distance + 0.0f;
+      const float s1 = sn * t1 + jitterZ[next];
+      const float c1 = cs * t1 + jitterX[next];
+      const float y1 = jitterY[next] - 8.0f - g_sinTable[static_cast<short>(static_cast<int>(slot.height[next]))] * 15.0f * slot.vecTNow.x;
+      const float deltaC = c0 - c1;
+      const float deltaS = s0 - s1;
+      const float length = SquareRoot(deltaC * deltaC + deltaS * deltaS);
+      short heading = 0;
+      while (deltaC / length < g_cosTable[heading]) {
+        if (++heading > 180) {
+          break;
+        }
+      }
+      if (heading > 180) {
+        heading = 180;
+      } else if (deltaS / length < 0.0f) {
+        heading = static_cast<short>(360 - heading);
+      }
+      short side = static_cast<short>(heading + 90);
+      if (side >= 360) {
+        side = static_cast<short>(side - 360);
+      }
+
+      const vector3d start{slot.vecBNow.x + c0, slot.vecBNow.y + y0, slot.vecBNow.z + s0};
+      const vector3d end{slot.vecBNow.x + c1, slot.vecBNow.y + y1, slot.vecBNow.z + s1};
+
+      if (static_cast<unsigned>(next - 2) <= 17) {
+        int ring = 0;
+        for (int angle = 0; angle <= 360; angle += 120) {
+          const float across = slot.maxHeight * g_cosTable[angle];
+          const float up = slot.maxHeight * g_sinTable[angle];
+          const float offsetZ = across * g_sinTable[side];
+          const float offsetX = across * g_cosTable[side];
+          const vector3d ringEnd{offsetX + end.x, end.y + up, offsetZ + end.z};
+          const vector3d ringStart{offsetX + start.x, up + start.y, offsetZ + start.z};
+
+          if (ring > 0) {
+            const int alpha = (fade > 0 ? rise - 135 : fade) + slot.alphaB;
+            if (alpha > 0) {
+              const int green = std::rand() % 121;
+              const int red = std::rand() % 121;
+              this->RenderTeiRect(
+                &rpCnt, static_cast<short>(alpha), ringStart, ringEnd, prevEnd, prevStart, wtm, 0, 0, 1, static_cast<unsigned char>(red >= 0 ? red : 0),
+                static_cast<unsigned char>(green >= 0 ? green : 0), 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+              );
+            }
+          }
+
+          ++ring;
+          prevStart = ringStart;
+          prevEnd = ringEnd;
+        }
+      }
+
+      segment = next;
+      fade -= 15;
+      rise += 15;
+    } while (slot.vecTNow.y > static_cast<float>(segment));
+  }
+}
+
+// OFFSET: 0x00BDC3E0
+// FUNCTION: fn_19898
+void CEffectPrim::RenderOrbitSquare(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  vector3d vec4{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    const float distance = slot.distance;
+    const float baseX = g_cosTable[slot.fullDisplayAngle] * distance - g_sinTable[slot.fullDisplayAngle] * 0.0f;
+    const float offsetY = g_sinTable[slot.fullDisplayAngle] * distance + g_cosTable[slot.fullDisplayAngle] * 0.0f;
+    const float offsetX = baseX * g_cosTable[slot.riseAngle] - g_sinTable[slot.riseAngle] * 0.0f;
+    const float offsetZ = baseX * g_sinTable[slot.riseAngle] + g_cosTable[slot.riseAngle] * 0.0f;
+
+    const float radius = slot.height[1];
+    const int angle1 = slot.rotStart;
+    const int tilt = static_cast<int>(slot.height[2]);
+    const float sn = g_sinTable[tilt];
+    const float cs = g_cosTable[tilt];
+    const int angle2 = angle1 + 90 < 360 ? angle1 + 90 : angle1 - 270;
+    const int angle3 = angle2 + 90 < 360 ? angle2 + 90 : angle2 - 270;
+    const int angle4 = angle3 + 90 < 360 ? angle3 + 90 : angle3 - 270;
+    const char kind = slot.flag1[0];
+
+    if (kind == 2 || kind == 8 || kind == 9) {
+      const int face1 = angle1 + 90 < 360 ? angle1 + 90 : angle1 - 270;
+      const int face2 = face1 + 90 < 360 ? face1 + 90 : face1 - 270;
+      const int face3 = face2 + 90 < 360 ? face2 + 90 : face2 - 270;
+      vec1 = {radius * g_cosTable[angle1], 0.0f, radius * g_sinTable[angle1]};
+      vec2 = {radius * g_cosTable[face1], 0.0f, radius * g_sinTable[face1]};
+      vec3 = {radius * g_cosTable[face2], 0.0f, radius * g_sinTable[face2]};
+      vec4 = {radius * g_cosTable[face3], 0.0f, radius * g_sinTable[face3]};
+      this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+    } else {
+      vec1 = {cs * (radius * g_cosTable[angle1]) - sn * 0.0f, radius * g_sinTable[angle1], sn * (radius * g_cosTable[angle1]) + cs * 0.0f};
+      vec2 = {cs * (radius * g_cosTable[angle2]) - sn * 0.0f, radius * g_sinTable[angle2], sn * (radius * g_cosTable[angle2]) + cs * 0.0f};
+      vec3 = {cs * (radius * g_cosTable[angle3]) - sn * 0.0f, radius * g_sinTable[angle3], sn * (radius * g_cosTable[angle3]) + cs * 0.0f};
+      vec4 = {cs * (radius * g_cosTable[angle4]) - sn * 0.0f, radius * g_sinTable[angle4], sn * (radius * g_cosTable[angle4]) + cs * 0.0f};
+    }
+
+    const vector3d& position = slot.vecBNow;
+    vec1 = {offsetX + vec1.x + position.x, offsetY + vec1.y + position.y, offsetZ + vec1.z + position.z};
+    vec2 = {offsetX + vec2.x + position.x, offsetY + vec2.y + position.y, offsetZ + vec2.z + position.z};
+    vec3 = {offsetX + vec3.x + position.x, offsetY + vec3.y + position.y, offsetZ + vec3.z + position.z};
+    vec4 = {offsetX + vec4.x + position.x, offsetY + vec4.y + position.y, offsetZ + vec4.z + position.z};
+
+    switch (kind) {
+    case 0:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 100, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 1:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 250, 250, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 2:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 250, 100, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 3:
+    case 8:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 4:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 5:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 50, 255, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 6:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 250, 100, 100, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      break;
+    case 7:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      break;
+    case 9:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 70, 70, 70, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    default:
+      break;
+    }
+  }
+}
+
+// OFFSET: 0x00BD2FC0
+// FUNCTION: fn_19877
+void CEffectPrim::RenderGroundBar(matrix& wtm) {
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    const int angle = slot.riseAngle;
+    const float width = slot.maxHeight;
+    const int back = angle + (angle >= 90 ? -90 : 270);
+    const float baseX = slot.height[0] * g_cosTable[back];
+    const float baseZ = slot.height[0] * g_sinTable[back];
+    const float farX = width * g_cosTable[back] + baseX;
+    const float farZ = width * g_sinTable[back] + baseZ;
+
+    const float start = slot.height[1];
+    float startX;
+    float startZ;
+    if (100.0f <= start) {
+      const float reach = start - slot.distance;
+      startX = reach * g_cosTable[angle];
+      startZ = reach * g_sinTable[angle];
+    } else {
+      const int opposite = angle < 180 ? angle + 180 : angle - 180;
+      const float reach = slot.distance - start;
+      startX = reach * g_cosTable[opposite];
+      startZ = reach * g_sinTable[opposite];
+    }
+
+    const float end = start + slot.height[2];
+    float endX;
+    float endZ;
+    if (100.0f <= end) {
+      const float reach = end - slot.distance;
+      endX = reach * g_cosTable[angle];
+      endZ = reach * g_sinTable[angle];
+    } else {
+      const int opposite = angle + (angle >= 180 ? -180 : 180);
+      const float reach = slot.distance - end;
+      endX = reach * g_cosTable[opposite];
+      endZ = reach * g_sinTable[opposite];
+    }
+
+    const int front = angle + (angle < 270 ? 90 : -270);
+    const float nearX = width * g_cosTable[front] + baseX;
+    const float nearZ = width * g_sinTable[front] + baseZ;
+    const vector3d vec1{nearX + endX, -6.0f, nearZ + endZ};
+    const vector3d vec2{nearX + startX, -6.0f, nearZ + startZ};
+    const vector3d vec3{startX + farX, -6.0f, startZ + farZ};
+    const vector3d vec4{endX + farX, -6.0f, endZ + farZ};
+
+    switch (slot.flag1[0]) {
+    case 0:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 225, 225, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 1:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 205, 205, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 2:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 185, 185, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 10:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 225, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 11:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 205, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 12:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 185, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 20:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 225, 255, 225, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 21:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 205, 255, 205, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 22:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 185, 255, 185, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 30:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 105, 105, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      break;
+    case 31:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 65, 65, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      break;
+    case 32:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 25, 25, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      break;
+    case 33:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 103, 33, 177, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      break;
+    case 34:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 66, 1, 104, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      break;
+    case 35:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 178, 136, 236, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      break;
+    case 36:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 241, 225, 178, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      break;
+    case 37:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 202, 77, 65, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      break;
+    case 38:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 148, 79, 73, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      break;
+    case 125:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 126:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 215, 215, 215, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 127:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 185, 185, 185, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    default:
+      break;
+    }
+  }
+}
+
 // OFFSET: 0x00BDF0A0
 // FUNCTION: fn_19908
 void CEffectPrim::RenderRainbow(matrix& wtm) {
