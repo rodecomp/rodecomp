@@ -60,6 +60,7 @@ public:
   bool RetireIfInactive();
   bool ActorExists() const;
   void UpdateVisibility();
+  bool InRange();
 
   /* 0004 */ int id;
   /* 0008 */ float position[3];

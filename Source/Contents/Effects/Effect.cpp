@@ -6,6 +6,13 @@
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/World/World.h"
+#include "Client/Mode/CGameMode.h"
+#include "Contents/Actors/Pc.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Ground/TerrainHeight.h"
+#include "Resource/World/TerrainResource.h"
+#include "Utility/Math/AffineMatrix.h"
+#include "Utility/Math/Vector3d.h"
 
 // OFFSET: 0x00B4DAE0
 // FUNCTION: fn_18979
@@ -107,6 +114,46 @@ void CEffect::SetSourceActor(std::uint32_t aid) {
     this->sourcePosition[1] = source->render.position.y;
     this->sourcePosition[2] = source->render.position.z;
   }
+}
+
+// OFFSET: 0x00B3C390
+// FUNCTION: fn_18808
+vector3d PlayerPosition() {
+  vector3d position;
+  position.z = 0.0f;
+  position.x = 0.0f;
+  position.y = 0.0f;
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (CPlayer* player = mode->scene->player) {
+    position = player->render.position;
+    return position;
+  }
+
+  mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  mode->scene->terrain->Grid().CellCenter(g_session.m_playerX, g_session.m_playerY, position.x, position.z);
+  mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  position.y = mode->scene->terrain->Grid().Height(position.x, position.z);
+  return position;
+}
+
+// OFFSET: 0x00B4E510
+// FUNCTION: fn_18994
+void CEffect::Slot02() {
+  const vector3d player = PlayerPosition();
+  const float y = player.y - this->position[1];
+  const float x = player.x - this->position[0];
+  const float z = player.z - this->position[2];
+  this->outsideRange = static_cast<float>(this->range) <= SquareRoot(y * y + x * x + z * z);
+}
+
+// OFFSET: 0x00B4E630
+// FUNCTION: fn_18998
+bool CEffect::InRange() {
+  const vector3d player = PlayerPosition();
+  const float y = player.y - this->position[1];
+  const float x = player.x - this->position[0];
+  const float z = player.z - this->position[2];
+  return SquareRoot(y * y + x * x + z * z) < static_cast<float>(this->range);
 }
 
 // OFFSET: 0x00B4E6A0
