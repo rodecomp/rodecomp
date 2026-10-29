@@ -83,3 +83,135 @@ bool StateFlag18(std::uint32_t flags) {
 bool StateFlag21(std::uint32_t flags) {
   return (flags >> 21) & 1;
 }
+
+// OFFSET: 0x00DF9720
+// FUNCTION: fn_23525
+bool StateFlag01Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 1) ^ (current >> 1)) & 1;
+}
+
+// OFFSET: 0x00DF9750
+// FUNCTION: fn_23527
+bool StateFlag05Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 5) ^ (current >> 5)) & 1;
+}
+
+// OFFSET: 0x00DF9780
+// FUNCTION: fn_23529
+bool StateFlag23Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 23) ^ (current >> 23)) & 1;
+}
+
+// OFFSET: 0x00DF97B0
+// FUNCTION: fn_23531
+bool StateFlag24Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 24) ^ (current >> 24)) & 1;
+}
+
+// OFFSET: 0x00DF97E0
+// FUNCTION: fn_23533
+bool StateFlag25Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 25) ^ (current >> 25)) & 1;
+}
+
+// OFFSET: 0x00DF9810
+// FUNCTION: fn_23535
+bool StateFlag26Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 26) ^ (current >> 26)) & 1;
+}
+
+// OFFSET: 0x00DF9840
+// FUNCTION: fn_23537
+bool StateFlag19Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 19) ^ (current >> 19)) & 1;
+}
+
+// OFFSET: 0x00DF9860
+// FUNCTION: fn_23538
+bool StateFlag14(std::uint32_t flags) {
+  return (flags >> 14) & 1;
+}
+
+// OFFSET: 0x00DF9880
+// FUNCTION: fn_23540
+bool StateFlag02(std::uint32_t flags) {
+  return (flags >> 2) & 1;
+}
+
+// OFFSET: 0x00DF9890
+// FUNCTION: fn_23541
+bool StateFlag02Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 2) ^ (current >> 2)) & 1;
+}
+
+// OFFSET: 0x00DF98B0
+// FUNCTION: fn_23542
+bool StateFlag22(std::uint32_t flags) {
+  return (flags >> 22) & 1;
+}
+
+// OFFSET: 0x00DF98F0
+// FUNCTION: fn_23544
+bool StateFlagsClear(std::uint32_t flags) {
+  return flags == 0;
+}
+
+// OFFSET: 0x00DF9910
+// FUNCTION: fn_23546
+bool StateFlag11(std::uint32_t flags) {
+  return (flags >> 11) & 1;
+}
+
+// OFFSET: 0x00DF9940
+// FUNCTION: fn_23547
+bool StateFlag20(std::uint32_t flags) {
+  return (flags >> 20) & 1;
+}
+
+// OFFSET: 0x00DF9950
+// FUNCTION: fn_23548
+bool StateFlag20Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 20) ^ (current >> 20)) & 1;
+}
+
+// OFFSET: 0x00DF9970
+// FUNCTION: fn_23549
+bool StateFlag13(std::uint32_t flags) {
+  return (flags >> 13) & 1;
+}
+
+// OFFSET: 0x00DF9980
+// FUNCTION: fn_23550
+bool StateFlag13Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 13) ^ (current >> 13)) & 1;
+}
+
+// OFFSET: 0x00DF99B0
+// FUNCTION: fn_23552
+bool StateFlag00(std::uint32_t flags) {
+  return flags & 1;
+}
+
+// OFFSET: 0x00DF99C0
+// FUNCTION: fn_23553
+bool StateFlag00Changed(std::uint32_t previous, std::uint32_t current) {
+  return (previous ^ current) & 1;
+}
+
+// OFFSET: 0x00DF99D0
+// FUNCTION: fn_23554
+bool StateFlag06(std::uint32_t flags) {
+  return (flags >> 6) & 1;
+}
+
+// OFFSET: 0x00DF99E0
+// FUNCTION: fn_23555
+bool StateFlag06Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 6) ^ (current >> 6)) & 1;
+}
+
+// OFFSET: 0x00DF9A10
+// FUNCTION: fn_23557
+bool StateFlag15Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 15) ^ (current >> 15)) & 1;
+}
