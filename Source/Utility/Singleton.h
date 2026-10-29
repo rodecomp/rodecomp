@@ -8,7 +8,7 @@ public:
 
   static T* GetInstance();
 
-  virtual ~Singleton() {}
+  virtual ~Singleton() = default;
 };
 
 #endif

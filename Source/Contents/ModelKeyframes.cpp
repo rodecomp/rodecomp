@@ -3,6 +3,22 @@
 
 #include <vector>
 
+struct ModelQuaternionKey {
+  /* 0000 */ int frame;
+  /* 0004 */ float rotation[4];
+
+  ModelQuaternionKey();
+};
+
+static_assert(sizeof(ModelQuaternionKey) == 20);
+
+struct ModelVectorKey {
+  /* 0000 */ int frame;
+  /* 0004 */ float value[4];
+};
+
+static_assert(sizeof(ModelVectorKey) == 20);
+
 struct ModelRotationKeys : std::vector<ModelRotationKey> {
   void Add(int frame, float x, float y, float z, float angle);
 };
@@ -10,6 +26,23 @@ struct ModelRotationKeys : std::vector<ModelRotationKey> {
 struct ModelScaleKeys : std::vector<ModelScaleKey> {
   void Add(int frame, float scaleX, float scaleY, float scaleZ, float x, float y, float z, float angle);
 };
+
+struct ModelPositionKeysV2 : std::vector<ModelVectorKey> {
+  ModelPositionKeysV2& operator=(const ModelPositionKeysV2& other);
+};
+
+struct ModelQuaternionKeys : std::vector<ModelQuaternionKey> {
+  void operator=(const ModelQuaternionKeys& other);
+};
+
+struct ModelScaleKeysV2 : std::vector<ModelVectorKey> {
+  ModelScaleKeysV2& operator=(const ModelScaleKeysV2& other);
+};
+
+// OFFSET: 0x0053FB40
+// FUNCTION: fn_01711
+ModelQuaternionKey::ModelQuaternionKey() : frame(0), rotation{0.0f, 0.0f, 0.0f, 1.0f} {
+}
 
 // OFFSET: 0x0053FFE0
 // FUNCTION: fn_01716
@@ -41,3 +74,9 @@ void ModelScaleKeys::Add(int frame, float scaleX, float scaleY, float scaleZ, fl
   key.rotation[3] = ClientCos(angle);
   this->push_back(key);
 }
+
+// OFFSET: 0x005402D0
+
+// OFFSET: 0x005402E0
+
+// OFFSET: 0x00540360
