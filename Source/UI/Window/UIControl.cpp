@@ -753,6 +753,29 @@ void CUIEditBox::SetBorderWidth(int width) {
   this->Invalidate();
 }
 
+// OFFSET: 0x009ED840
+// FUNCTION: fn_14589
+void CUIEditBox::SetMaximum(int value) {
+  this->edit->maximum = value;
+  this->edit->SetText(this->edit->Text());
+}
+
+// OFFSET: 0x009ED880
+// FUNCTION: fn_14590
+void CUIEditBox::SetEditBounds(int left, int top, int right, int bottom) {
+  this->editLeft = left;
+  this->editTop = top;
+  this->editRight = right;
+  this->editBottom = bottom;
+  this->Resize(this->geometry.width, this->geometry.height);
+}
+
+// OFFSET: 0x009ED8E0
+// FUNCTION: fn_14591
+void CUIEditBox::SetText(const std::string& text) {
+  this->edit->SetText(text.c_str());
+}
+
 // OFFSET: 0x009EF860
 // FUNCTION: fn_14649
 void CUIImageButton::Paint() {

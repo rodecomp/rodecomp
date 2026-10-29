@@ -166,6 +166,9 @@ public:
   void SetBackgroundColor(std::uint32_t color);
   void SetBorderColor(std::uint32_t color);
   void SetBorderWidth(int width);
+  void SetMaximum(int value);
+  void SetEditBounds(int left, int top, int right, int bottom);
+  void SetText(const std::string& text);
 
   /* 0080 */ std::uint32_t backgroundColor;
   /* 0084 */ std::uint32_t borderColor;
