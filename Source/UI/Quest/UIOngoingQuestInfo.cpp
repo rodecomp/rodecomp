@@ -1,5 +1,19 @@
 #include "UI/Quest/UIOngoingQuestInfo.h"
 
+// OFFSET: 0x00A4FDE0
+// FUNCTION: fn_16223
+template <>
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::ClearItems() {
+  for (OngoingQuestInfo::CUIRewardItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x00A4FE70
+
 // OFFSET: 0x00A55650
 // FUNCTION: fn_16300
 void CUIOngoingQuestInfo::OnFirstAction() {

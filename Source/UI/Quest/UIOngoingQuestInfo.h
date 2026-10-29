@@ -8,6 +8,7 @@
 class CUIOngoingQuestInfo : public CUIFrameWnd {
 public:
   void OnFirstAction();
+  virtual void Slot53();
 };
 
 namespace OngoingQuestInfo {
