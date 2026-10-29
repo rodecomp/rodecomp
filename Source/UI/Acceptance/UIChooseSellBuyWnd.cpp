@@ -848,6 +848,56 @@ void UISayDialogWnd::Resize(int width, int height) {
   }
 }
 
+// OFFSET: 0x008F6AC0
+// FUNCTION: fn_12325
+int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    if (a == 184) {
+      this->m_frameContext->windows.CloseWindow(110);
+      this->m_context->mode->SendModeMessage(173, this->identity, 1, 0, 0);
+    } else if (a == 185) {
+      this->m_frameContext->windows.CloseWindow(110);
+      this->m_context->mode->SendModeMessage(173, this->identity, 0, 0, 0);
+    }
+    return 0;
+  }
+
+  if (message == 91) {
+    this->identity = static_cast<std::uint32_t>(a);
+    const std::string text = this->m_acceptance->text.buttons.services.MessageText(2965);
+    this->viewer->Clear();
+    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    return 0;
+  }
+
+  if (message != 123) {
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  const auto* packet = reinterpret_cast<const unsigned char*>(a);
+  const unsigned length = static_cast<unsigned>(b);
+  std::int16_t tag;
+  std::memcpy(&tag, packet, sizeof(tag));
+  if (tag == 0x542E) {
+    unsigned offset = 6;
+    bool scanning = true;
+    while (scanning && offset < length) {
+      std::int32_t size;
+      std::memcpy(&tag, packet + offset, sizeof(tag));
+      std::memcpy(&size, packet + offset + 2, sizeof(size));
+      offset += 6;
+      if (tag != 0x542F) {
+        offset += size;
+      }
+      if (tag == 0x542F) {
+        scanning = false;
+      }
+    }
+  }
+  return 0;
+}
+
 // OFFSET: 0x008F8860
 // FUNCTION: fn_12332
 int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
