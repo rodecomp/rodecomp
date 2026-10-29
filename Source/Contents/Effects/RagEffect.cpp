@@ -91,7 +91,9 @@ static void AllocateTextures(EffectPrimitiveState& particle) {
 // INLINED
 static void PlayEffectWave(const CRagEffect& effect, const char* name) {
   const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
-  g_soundMgr->PlayWave(name, effect.render.position.x - player->render.position.x, 0.0f, effect.render.position.z - player->render.position.z, 250, 40, 1.0f, 0);
+  g_soundMgr->PlayWave(
+    name, effect.render.position.x - player->render.position.x, 0.0f, effect.render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+  );
 }
 
 // INLINED
@@ -734,7 +736,9 @@ void CRagEffect::AirTexture(const char* name) {
   slot.vecBNow.y = this->state.deltaPos[1];
   slot.vecBNow.z = this->state.deltaPos[2];
   this->state.unknown_11C84->slots[0].fullDisplayAngle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-  Get_Angle(this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[0].riseAngle);
+  Get_Angle(
+    this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[0].riseAngle
+  );
   this->state.unknown_11C84->slots[0].riseAngle += 90;
   EffectPrimitiveSlot& rise = this->state.unknown_11C84->slots[0];
 
@@ -770,7 +774,8 @@ void CRagEffect::EnergyDrain2() {
       this->state.deltaPos[2] - (this->state.deltaPos[2] - this->render.position.z) * 0.5f
     );
     Owner(this->state.unknown_11C84).Face(
-      (this->render.position.x + this->render.position.x) - this->state.deltaPos[0], (this->render.position.z + this->render.position.z) - this->state.deltaPos[2]
+      (this->render.position.x + this->render.position.x) - this->state.deltaPos[0],
+      (this->render.position.z + this->render.position.z) - this->state.deltaPos[2]
     );
     this->state.unknown_11C84->longitude = -Owner(this->state.unknown_11C84).render.angle;
     const float speed = this->state.unknown_11C84->radius / this->state.unknown_11C84->duration;
@@ -1127,11 +1132,15 @@ void CRagEffect::Bottom() {
   for (int side = 1; side > -2; side -= 2) {
     const float distance = static_cast<float>(side) * 5.0f;
     SpawnBottomQuad(
-      *this, {m[3] * 0.0f + m[0] * 0.0f + distance * m[6] + m[9], m[4] * 0.0f + m[1] * 0.0f + distance * m[7] + m[10], m[5] * 0.0f + m[2] * 0.0f + distance * m[8] + m[11]},
+      *this,
+      {m[3] * 0.0f + m[0] * 0.0f + distance * m[6] + m[9], m[4] * 0.0f + m[1] * 0.0f + distance * m[7] + m[10],
+       m[5] * 0.0f + m[2] * 0.0f + distance * m[8] + m[11]},
       angle + 90
     );
     SpawnBottomQuad(
-      *this, {distance * m[0] + m[3] * 0.0f + m[6] * 0.0f + m[9], distance * m[1] + m[4] * 0.0f + m[7] * 0.0f + m[10], distance * m[2] + m[5] * 0.0f + m[8] * 0.0f + m[11]},
+      *this,
+      {distance * m[0] + m[3] * 0.0f + m[6] * 0.0f + m[9], distance * m[1] + m[4] * 0.0f + m[7] * 0.0f + m[10],
+       distance * m[2] + m[5] * 0.0f + m[8] * 0.0f + m[11]},
       angle
     );
   }
@@ -1397,8 +1406,6 @@ int CRagEffect::GetDuration() {
 }
 
 // OFFSET: 0x00C3A920
-
-// OFFSET: 0x00C12B90
 // FUNCTION: fn_20104
 void CRagEffect::Snow() {
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
@@ -2332,7 +2339,9 @@ void CRagEffect::TexturedBeam(char flag, const char* name) {
   this->state.unknown_11C84->slots[0].height[0] = 50.0f;
   this->state.unknown_11C84->slots[0].maxHeight = 5.0f;
   this->state.unknown_11C84->slots[0].height[2] = 80.0f;
-  Get_Angle(this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[0].riseAngle);
+  Get_Angle(
+    this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[0].riseAngle
+  );
   this->state.unknown_11C84->slots[0].alphaB = 0;
   this->state.unknown_11C84->slots[0].flag1[0] = flag;
 }
@@ -3171,7 +3180,9 @@ void CRagEffect::SlashFan(std::int16_t reverse) {
     this->state.unknown_11C84->slots[index].distance = 100.0f;
     this->state.unknown_11C84->slots[index].maxHeight = 1.0f;
     this->state.unknown_11C84->slots[index].height[0] = reverse == 0 ? -15.0f - static_cast<float>(index) * 2.5f : static_cast<float>(index) * 2.5f + 15.0f;
-    Get_Angle(this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[index].riseAngle);
+    Get_Angle(
+      this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[index].riseAngle
+    );
 
     if (this->state.unknown_11C84->slots[index].riseAngle > 359) {
       this->state.unknown_11C84->slots[index].riseAngle -= 360;
@@ -3866,12 +3877,6 @@ void CRagEffect::TexturedCross(const char* name, char kind) {
   }
 }
 
-// OFFSET: 0x00C69350
-
-// OFFSET: 0x00C51AA0
-
-// OFFSET: 0x00C5D540
-
 // OFFSET: 0x00C63D60
 // FUNCTION: fn_20258
 void CRagEffect::TexturedSlashLevel(const char* name, char kind) {
@@ -3934,7 +3939,6 @@ void CRagEffect::TexturedSlashLevel(const char* name, char kind) {
   }
 }
 
-
 // OFFSET: 0x00C44940
 // FUNCTION: fn_20144
 void CRagEffect::SaintWing(const char* name) {
@@ -3975,7 +3979,9 @@ void CRagEffect::FirstAid() {
   }
 
   const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
-  g_soundMgr->PlayWave("_heal_effect.wav", this->render.position.x - player->render.position.x, 150.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0);
+  g_soundMgr->PlayWave(
+    "_heal_effect.wav", this->render.position.x - player->render.position.x, 150.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+  );
 
   this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 58, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
   this->state.unknown_11C84->renderFlag = 5;
@@ -4076,8 +4082,6 @@ void CRagEffect::Magnum2(const char* name) {
     }
   }
 }
-
-// OFFSET: 0x00C5C450
 
 // OFFSET: 0x00C69350
 // FUNCTION: fn_20288
@@ -4489,7 +4493,9 @@ void CRagEffect::LineStreak(std::int16_t kind) {
     this->state.unknown_11C84->slots[index].height[2] = static_cast<float>(std::max(rand() % 31, 0)) + 20.0f;
     this->state.unknown_11C84->slots[index].flag1[0] = static_cast<char>(std::max(rand() % 3, 0) + 0);
     this->state.unknown_11C84->slots[index].height[3] = static_cast<float>(std::max(rand() % 21, 0)) * 0.1f + 1.5f;
-    Get_Angle(this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[index].riseAngle);
+    Get_Angle(
+      this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[index].riseAngle
+    );
     this->state.unknown_11C84->slots[index].alphaB = 0;
   }
 }
@@ -4534,7 +4540,9 @@ void CRagEffect::LineStreakKind(std::int16_t kind) {
       this->state.unknown_11C84->slots[index].flag1[0] = static_cast<char>(std::max(rand() % 3, 0) + 30);
       this->state.unknown_11C84->slots[index].height[3] = static_cast<float>(std::max(rand() % 21, 0)) * 0.1f + 1.5f;
 }
-    Get_Angle(this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[index].riseAngle);
+    Get_Angle(
+      this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[index].riseAngle
+    );
     this->state.unknown_11C84->slots[index].alphaB = 0;
   }
 }
@@ -4572,7 +4580,8 @@ void CRagEffect::TexturedShieldThrow(const char* name) {
   this->state.unknown_11C84->slots[0].vecBNow.y = this->render.position.y - 8.0f;
   this->state.unknown_11C84->slots[0].rotStart = 0;
   this->state.unknown_11C84->slots[0].height[1] = 2.0f;
-  this->state.unknown_11C84->slots[0].height[2] = (this->state.unknown_11C84->slots[0].height[1] / this->state.unknown_11C84->slots[0].maxHeight) * (this->state.deltaPos[1] - this->render.position.y);
+  this->state.unknown_11C84->slots[0].height[2] =
+    (this->state.unknown_11C84->slots[0].height[1] / this->state.unknown_11C84->slots[0].maxHeight) * (this->state.deltaPos[1] - this->render.position.y);
   this->state.unknown_11C84->slots[0].fullDisplayAngle = 0;
   this->state.unknown_11C84->slots[0].flag1[0] = 0;
   this->state.unknown_11C84->slots[0].flag1[1] = 0;
@@ -4667,7 +4676,9 @@ void CRagEffect::ElectricArc(char kind) {
     this->state.unknown_11C84->slots[index].process = 0;
     this->state.unknown_11C84->slots[index].maxHeight = 0.1f;
     this->state.unknown_11C84->slots[index].alphaB = 0;
-    Get_Angle(this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[index].riseAngle);
+    Get_Angle(
+      this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[index].riseAngle
+    );
     this->state.unknown_11C84->slots[index].distance = 0.0f;
     this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(index < 2 ? index * 180 : index * 180 - 360);
     this->state.unknown_11C84->slots[index].vecTNow.x = static_cast<float>(std::max(rand() % 6, 0)) * 0.01f + 0.2f;
@@ -4967,7 +4978,9 @@ void CRagEffect::LineStreakTextured(std::int16_t kind, const char* name) {
       this->state.unknown_11C84->slots[index].flag1[0] = static_cast<char>(std::max(rand() % 3, 0) + 36);
     }
 
-    Get_Angle(this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[index].riseAngle);
+    Get_Angle(
+      this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[index].riseAngle
+    );
     this->state.unknown_11C84->slots[index].alphaB = 0;
   }
 }
