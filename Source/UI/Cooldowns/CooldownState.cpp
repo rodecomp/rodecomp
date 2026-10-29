@@ -21,6 +21,12 @@ CooldownState::CooldownState(
   std::memset(this->vertices, 0, sizeof(this->vertices));
 }
 
+// OFFSET: 0x00CA5120
+// FUNCTION: fn_20947
+CooldownState::~CooldownState() {
+  this->ClearEdges();
+}
+
 // OFFSET: 0x00CA59C0
 // FUNCTION: fn_20951
 void CooldownState::ClearEdges() {

@@ -110,16 +110,16 @@ void ShortcutCooldowns::ApplyStart(
 
     const auto entry = find();
     if (entry == this->records.end()) {
-      value.main.emplace_back(icon.slot, icon.x, icon.y, duration, now, 0, 0);
+      value.main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, now, 0, 0));
       this->records.push_back(value);
     } else {
       const auto slot = std::find_if(entry->main.begin(), entry->main.end(), [&](const CooldownState& state) { return state.slot == icon.slot; });
       if (slot == entry->main.end()) {
-        entry->main.emplace_back(icon.slot, icon.x, icon.y, duration, now, 0, 0);
+        entry->main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, now, 0, 0));
       } else {
         this->records.erase(entry);
 
-        value.main.emplace_back(icon.slot, icon.x, icon.y, duration, now, 0, 0);
+        value.main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, now, 0, 0));
         this->records.push_back(value);
       }
     }
@@ -127,7 +127,7 @@ void ShortcutCooldowns::ApplyStart(
 
   for (const ShortcutCooldownIcon& icon : alternateIcons) {
     if (icon.id == id && find() == this->records.end()) {
-      value.alternate.emplace_back(icon.slot, icon.x, icon.y, duration, now, 0, 0);
+      value.alternate.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, now, 0, 0));
       this->records.push_back(value);
     }
   }
