@@ -102,7 +102,25 @@ public:
   }
 
   // OFFSET: 0x0057A6F0
+  // OFFSET: 0x0057A780
+  // OFFSET: 0x0057A810
+  // OFFSET: 0x0057A8A0
+  // OFFSET: 0x0057A930
+  // OFFSET: 0x0057A9C0
+  // OFFSET: 0x0057AA50
+  // OFFSET: 0x0057AAE0
+  // OFFSET: 0x0057AB70
+  // OFFSET: 0x0057AC00
+  // OFFSET: 0x0057AC90
+  // OFFSET: 0x0057AD20
+  // OFFSET: 0x0057ADB0
+  // OFFSET: 0x0057AE40
   // FUNCTION: fn_02567
+  // FUNCTION: fn_02568
+  // FUNCTION: fn_02569
+  // FUNCTION: fn_02570
+  // FUNCTION: fn_02571
+  // FUNCTION: fn_02572
   void Release(NRecycleObject* object) override {
     NSyncObject held(&this->m_criticalSection);
     if (object) {
