@@ -73,7 +73,9 @@ public:
   /* 0044 */ int alpha;
   /* 0048 */ unsigned char unknown_0048[4];
   /* 004C */ int unknown_004C;
-  /* 0050 */ unsigned char unknown_0050[0x58];
+  /* 0050 */ unsigned char unknown_0050[4];
+  /* 0054 */ float unknown_0054;
+  /* 0058 */ unsigned char unknown_0058[0x50];
   /* 00A8 */ unsigned char unknown_00A8;
   /* 00A9 */ unsigned char unknown_00A9[0x17];
   /* 00C0 */ float unknown_00C0;
