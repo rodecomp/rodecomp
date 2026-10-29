@@ -268,8 +268,8 @@ void UIEditCtrl::Paint() {
 // OFFSET: 0x0085AAB0
 // FUNCTION: fn_10783
 void UIEditCtrl::Slot23() {
-  this->m_edit->input.CancelComposition();
-  this->m_edit->input.CancelComposition();
+  this->m_edit->input.ResetInput();
+  this->m_edit->input.ResetInput();
   this->m_edit->input.Insert(this->text.c_str());
   this->m_edit->password = this->mask != 0;
   this->SelectAll();
@@ -327,7 +327,7 @@ int UIEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   UIWindow::SendMsg(sender, message, a, b, c, d);
 
   if (message == 0 && this->preserveInput == 0) {
-    this->m_edit->input.CancelComposition();
+    this->m_edit->input.ResetInput();
   }
 
   return 0;
@@ -346,8 +346,8 @@ void UIEditCtrl::SetText(const char* value) {
   this->Trim();
 
   if (this->m_edit->focus.window == this) {
-    this->m_edit->input.CancelComposition();
-    this->m_edit->input.CancelComposition();
+    this->m_edit->input.ResetInput();
+    this->m_edit->input.ResetInput();
     this->m_edit->input.Insert(this->text.c_str());
   }
 

@@ -14,12 +14,12 @@ struct EffectParticle : CRenderObject {
 
   bool UpdateFireWall();
   bool UpdateStoneCurse();
-  void UpdateBeginSpell();
+  void Prim3DCircle();
   bool UpdateHit6();
   bool UpdateCoin();
   bool UpdateDetoxication();
   bool UpdateExit();
-  bool UpdateWarp();
+  bool Prim3DParticleSpline();
   void PrimBottom2();
   void PrimBottom();
   void PrimBottomOut();
@@ -47,12 +47,12 @@ struct EffectParticle : CRenderObject {
   void PrimGI3();
   void PrimWaterFall();
 
-  bool AdvanceFrame();
+  bool AnimMotion();
   bool FollowMasterAndAdvance();
   void FollowMasterAndTickSlots();
   void FollowMasterAndTickSlots2();
-  void UpdateRecords();
-  void InitializeRecords();
+  void ShiftSegment();
+  void InitSegment();
 
   /* 0138 */ EffectPrimitiveState state;
 };

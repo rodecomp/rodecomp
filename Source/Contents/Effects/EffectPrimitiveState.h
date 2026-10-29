@@ -57,7 +57,7 @@ struct EffectPrimitiveState {
   explicit EffectPrimitiveState(RenderObjectState& render);
   ~EffectPrimitiveState();
   void Initialize(RenderObjectState& render, AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z);
-  void UpdateColor();
+  void ProcessAlpha();
   void GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue);
 
   /* 0138 */ std::uint32_t unknown_0138;
@@ -177,7 +177,7 @@ struct EffectPrimitiveObject {
   bool AdvanceFrame();
 };
 
-void __stdcall CalculateVectorAngle(float x, float y, std::int16_t* angle);
+void __stdcall Get_Angle(float x, float y, std::int16_t* angle);
 
 static_assert(sizeof(EffectPrimitiveRecord) == 140);
 static_assert(sizeof(EffectPrimitiveSlot) == 0xB4);

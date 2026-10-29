@@ -36,9 +36,9 @@ void C3dActorV1::UpdateBounds() {
   this->offset[0] = -(bounds[3] + bounds[0]) * 0.5f;
   this->offset[1] = -bounds[4];
   this->offset[2] = -(bounds[5] + bounds[2]) * 0.5f;
-  this->transform.SetTranslation(this->offset[0], this->offset[1], this->offset[2]);
+  this->transform.MakeTranslate(this->offset[0], this->offset[1], this->offset[2]);
   this->transform.Scale(this->scale[0], this->scale[1], this->scale[2]);
-  this->transform.RotateY(Radians(this->rotation[1]));
+  this->transform.AppendYRotation(Radians(this->rotation[1]));
   this->transform.RotateX(Radians(this->rotation[0]));
   this->transform.RotateZ(Radians(this->rotation[2]));
   this->transform.Translate(this->position);
@@ -56,7 +56,7 @@ void C3dActorV2::UpdateBounds() {
     root->AccumulateBounds(bounds, identity.values);
   }
 
-  this->UpdateTransform();
+  this->UpdateMatrix();
   this->FinishBounds(bounds, true);
 }
 
@@ -95,7 +95,7 @@ void C3dActor::FinishBounds(const float* bounds, bool modern) {
 
   AffineMatrix axes;
   axes.SetScale(this->scale[0], this->scale[1], this->scale[2]);
-  axes.RotateY(Radians(this->rotation[1]));
+  axes.AppendYRotation(Radians(this->rotation[1]));
   axes.RotateX(Radians(this->rotation[0]));
   axes.RotateZ(Radians(this->rotation[2]));
 
@@ -112,13 +112,13 @@ void C3dActor::FinishBounds(const float* bounds, bool modern) {
 
   for (ModelVolume* volume : this->volumes) {
     AffineMatrix rotation;
-    rotation.SetXRotation(Radians(volume->rotation[0]));
-    rotation.RotateY(Radians(volume->rotation[1]));
+    rotation.MakeXRotation(Radians(volume->rotation[0]));
+    rotation.AppendYRotation(Radians(volume->rotation[1]));
     rotation.RotateZ(Radians(volume->rotation[2]));
     rotation.Translate(volume->position);
     std::memcpy(volume->unknown_0084, rotation.values, sizeof(rotation.values));
     AffineMatrix inverse;
-    inverse.Inverse(rotation);
+    inverse.MakeInverse(rotation);
     std::memcpy(volume->unknown_0084 + 48, inverse.values, sizeof(inverse.values));
     AffineMatrix combined;
     combined.Compose(rotation, this->transform);

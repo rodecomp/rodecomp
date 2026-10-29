@@ -96,7 +96,7 @@ void C3dNodeV2::Initialize(const ModelNode& base) {
     const AffineMatrix world = this->resourceTransform;
     const AffineMatrix parentWorld = static_cast<C3dNodeV2*>(this->parent)->resourceTransform;
     AffineMatrix inverse;
-    inverse.Inverse(parentWorld);
+    inverse.MakeInverse(parentWorld);
     this->localTransform.Compose(world, inverse);
   } else {
     this->localTransform = this->resourceTransform;

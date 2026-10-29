@@ -26,7 +26,7 @@ void SampleLegacyPosition(std::span<const ModelPositionKey> keys, int frame, Aff
   if (keys.empty()) {
     output.Identity();
   } else if (keys.size() == 1) {
-    output.SetTranslation(keys[0].position[0], keys[0].position[1], keys[0].position[2]);
+    output.MakeTranslate(keys[0].position[0], keys[0].position[1], keys[0].position[2]);
   } else {
     unsigned next = 1;
 
@@ -40,7 +40,7 @@ void SampleLegacyPosition(std::span<const ModelPositionKey> keys, int frame, Aff
     const auto& b = keys[next];
     const float amount = static_cast<float>((frame - a.frame)) / static_cast<float>((b.frame - a.frame));
     const float previous = static_cast<float>(1.0 - static_cast<double>(amount));
-    output.SetTranslation(
+    output.MakeTranslate(
       previous * a.position[0] + amount * b.position[0], previous * a.position[1] + amount * b.position[1], previous * a.position[2] + amount * b.position[2]
     );
   }

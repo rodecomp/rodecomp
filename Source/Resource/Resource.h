@@ -27,8 +27,8 @@ public:
   virtual bool Load(const char* name) = 0;
   virtual void Unload();
   virtual void MissingFile(CRenderSystemBase* system, const char* name);
-  std::uint32_t AddRef();
-  void Release();
+  std::uint32_t Lock();
+  void Unlock();
 
   /* 0004 */ std::uint32_t references;
   /* 0008 */ std::uint32_t lastUse;

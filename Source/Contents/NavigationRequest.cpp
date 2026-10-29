@@ -87,7 +87,7 @@ bool CNaviData::SetDestination(CNaviInfo* info, int cellX, int cellY) {
 // OFFSET: 0x00BA1260
 // FUNCTION: fn_19638
 bool CNavigationManager::UpdateGround() {
-  CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
   if (mode == nullptr || mode->scene == nullptr || mode->scene->terrain == nullptr) {
     return false;
   }
@@ -144,7 +144,7 @@ int CNavigationManager::RequestRoute(int cellX, int cellY) {
 
   int startX = 0;
   int startY = 0;
-  CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
   if (mode == nullptr) {
     return -95;
   }

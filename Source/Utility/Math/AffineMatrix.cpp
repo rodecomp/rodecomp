@@ -33,7 +33,7 @@ void AffineMatrix::Identity() {
 
 // OFFSET: 0x00555360
 // FUNCTION: fn_02034
-void AffineMatrix::SetXRotation(float radians) {
+void AffineMatrix::MakeXRotation(float radians) {
   this->Identity();
 
   const float sine = ClientSin(radians);
@@ -74,13 +74,13 @@ void AffineMatrix::SetZRotation(float radians) {
 // FUNCTION: fn_02016
 void AffineMatrix::RotateX(float radians) {
   AffineMatrix rotation;
-  rotation.SetXRotation(radians);
+  rotation.MakeXRotation(radians);
   Rotate(this->values, rotation.values);
 }
 
 // OFFSET: 0x00553270
 // FUNCTION: fn_02017
-void AffineMatrix::RotateY(float radians) {
+void AffineMatrix::AppendYRotation(float radians) {
   AffineMatrix rotation;
   rotation.SetYRotation(radians);
   Rotate(this->values, rotation.values);
@@ -96,7 +96,7 @@ void AffineMatrix::RotateZ(float radians) {
 
 // OFFSET: 0x005550C0
 // FUNCTION: fn_02032
-void AffineMatrix::SetTranslation(float x, float y, float z) {
+void AffineMatrix::MakeTranslate(float x, float y, float z) {
   std::memcpy(this->values, g_identityMatrix, sizeof(g_identityMatrix));
   this->values[9] = x;
   this->values[10] = y;
@@ -124,7 +124,7 @@ void AffineMatrix::Scale(float x, float y, float z) {
 // FUNCTION: fn_02015
 void AffineMatrix::Translate(const float* position) {
   AffineMatrix translation;
-  translation.SetTranslation(position[0], position[1], position[2]);
+  translation.MakeTranslate(position[0], position[1], position[2]);
   Rotate(this->values, translation.values);
 }
 
@@ -153,7 +153,7 @@ void AffineMatrix::Compose(const AffineMatrix& first, const AffineMatrix& second
 
 // OFFSET: 0x00554920
 // FUNCTION: fn_02027
-void AffineMatrix::Inverse(const AffineMatrix& source) {
+void AffineMatrix::MakeInverse(const AffineMatrix& source) {
   const float* a = source.values;
   float* output = this->values;
   const float minor = a[4] * a[8] - a[5] * a[7];

@@ -29,7 +29,7 @@ public:
   bool ReadPacket(void* output, unsigned short* bytes, const PacketLengths& lengths);
   void Prepend(int bytes, const void* data);
   void ResetDeferred();
-  void ResetBuffers();
+  void ResetQueue();
   void SetDeferred(unsigned char value);
 
   // INLINED

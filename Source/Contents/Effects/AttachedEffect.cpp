@@ -37,7 +37,7 @@ inline RagEffectState::~RagEffectState() {
   }
 
   if (this->resource) {
-    this->resource->Release();
+    this->resource->Unlock();
   }
 }
 

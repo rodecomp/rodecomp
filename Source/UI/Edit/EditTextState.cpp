@@ -9,8 +9,8 @@ void EditTextState::SetText(const char* value) {
   this->Trim();
 
   if (this->focused) {
-    this->input.CancelComposition();
-    this->input.CancelComposition();
+    this->input.ResetInput();
+    this->input.ResetInput();
     this->input.Insert(this->text.c_str());
   }
 

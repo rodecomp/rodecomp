@@ -273,7 +273,7 @@ void CConnection::ResetDeferred() {
 
 // OFFSET: 0x00C7CDC0
 // FUNCTION: fn_20404
-void CConnection::ResetBuffers() {
+void CConnection::ResetQueue() {
   this->m_input.Reset(0xA000);
   this->m_output.Reset(0xA000);
   this->m_pending.Reset(0xA000);

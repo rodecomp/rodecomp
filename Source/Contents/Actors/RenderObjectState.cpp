@@ -16,11 +16,11 @@ RenderObjectState::RenderObjectState() : sprite(nullptr), action(nullptr) {
 // INLINED
 RenderObjectState::~RenderObjectState() {
   if (this->sprite) {
-    this->sprite->Release();
+    this->sprite->Unlock();
   }
 
   if (this->action) {
-    this->action->Release();
+    this->action->Unlock();
   }
 }
 
@@ -68,7 +68,7 @@ void RenderObjectState::Reset() {
   std::sprintf(actionName, "NPC\\%s.act", g_session.GetJobName(46, -1));
 
   if (this->sprite) {
-    this->sprite->Release();
+    this->sprite->Unlock();
   }
 
   this->sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(spriteName));
@@ -78,7 +78,7 @@ void RenderObjectState::Reset() {
   }
 
   if (this->action) {
-    this->action->Release();
+    this->action->Unlock();
   }
 
   this->action = static_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));

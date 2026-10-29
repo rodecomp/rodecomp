@@ -33,8 +33,8 @@ void CameraFrame::Forward(const CameraState& camera, float* output) const {
 void CameraFrame::AlternateView(const CameraState& camera, float yaw, const TerrainHeight& terrain, AffineMatrix& output) const {
   constexpr float pi = 3.141592f;
   AffineMatrix orbit;
-  orbit.SetXRotation((camera.pitch / 180.0f) * pi);
-  orbit.RotateY((yaw / 180.0f) * pi);
+  orbit.MakeXRotation((camera.pitch / 180.0f) * pi);
+  orbit.AppendYRotation((yaw / 180.0f) * pi);
   const float distance = -camera.distance;
   float eye[3];
   eye[0] = (((orbit.values[3] * 0.0f + orbit.values[0] * 0.0f) + distance * orbit.values[6]) + orbit.values[9]) + camera.target[0];

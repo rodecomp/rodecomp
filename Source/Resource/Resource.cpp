@@ -56,13 +56,13 @@ void CRes::MissingFile(CRenderSystemBase* system, const char* name) {
 
 // OFFSET: 0x00AEFAD0
 // FUNCTION: fn_18183
-std::uint32_t CRes::AddRef() {
+std::uint32_t CRes::Lock() {
   return ++this->references;
 }
 
 // OFFSET: 0x00AF0BE0
 // FUNCTION: fn_18194
-void CRes::Release() {
+void CRes::Unlock() {
   this->lastUse = timeGetTime();
   --this->references;
 }

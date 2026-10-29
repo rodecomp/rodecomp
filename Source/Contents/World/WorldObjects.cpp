@@ -119,7 +119,7 @@ CRenderObject* WorldScene::GetSkillByAID(std::uint32_t aid) const {
 // OFFSET: 0x00B3C350
 // FUNCTION: fn_18807
 CRenderObject* FindRenderObject(std::uint32_t aid) {
-  WorldScene* scene = static_cast<CGameMode*>(g_world.ActiveGameMode())->scene;
+  WorldScene* scene = static_cast<CGameMode*>(g_world.GetGameMode())->scene;
 
   if (g_session.m_aid == aid) {
     return reinterpret_cast<CRenderObject*>(scene->player);

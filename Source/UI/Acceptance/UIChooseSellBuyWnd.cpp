@@ -276,7 +276,7 @@ void UIMinimapZoomWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   int column = 0;
   int row = 0;
-  static_cast<CGameMode*>(g_world.ActiveGameMode())->PlayerCell(&column, &row);
+  static_cast<CGameMode*>(g_world.GetGameMode())->PlayerCell(&column, &row);
   const std::string text = FormatOwnedString(" %d  %d", column, row);
   this->DrawTextAt(controls.fonts, controls.locale, 19, 128, text.c_str(), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(controls.fonts, controls.locale, 20, 128, text.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
@@ -667,7 +667,7 @@ void UIPetTamingDeceiveWnd::Slot25(int, int) {
   this->m_state = 1;
   this->m_frame = 7;
   this->m_started = 1;
-  g_world.ActiveGameMode()->SendMsg(149, this->m_target, 0, 0, 0);
+  g_world.GetGameMode()->SendMsg(149, this->m_target, 0, 0, 0);
 }
 
 // OFFSET: 0x008EFB40

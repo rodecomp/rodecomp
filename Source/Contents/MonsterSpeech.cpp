@@ -100,7 +100,7 @@ void CSession::FormatMonsterSpeech(char* text, char* output, std::uint32_t aid, 
     }
   }
 
-  const std::string name = static_cast<CGameMode*>(g_world.ActiveGameMode())->nameCard.Name(aid);
+  const std::string name = static_cast<CGameMode*>(g_world.GetGameMode())->nameCard.Name(aid);
   const char* speaker;
   if (!name.empty()) {
     speaker = name.c_str();

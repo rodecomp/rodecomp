@@ -49,7 +49,7 @@ bool UIEditCtrl::RemoveInvalidLink(std::list<UIWindow*>::iterator& entry) {
         const auto begin = left ? absolute - 1 : absolute;
         const auto end = absolute + bytes + (right ? 1 : 0);
         remaining = this->text.substr(0, begin) + this->text.substr(end);
-        this->m_edit->input.CancelComposition();
+        this->m_edit->input.ResetInput();
         this->m_edit->input.Insert(remaining.c_str());
         this->RemoveChild(button, 1);
         entry = this->links.erase(entry);

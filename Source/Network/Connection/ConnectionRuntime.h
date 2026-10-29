@@ -7,7 +7,7 @@ extern int(WSAAPI* g_connectionSend)(SOCKET socket, const char* data, int bytes,
 extern int(WSAAPI* g_connectionReceive)(SOCKET socket, char* data, int bytes, int flags);
 
 bool InitializeConnections();
-void ShutdownConnections();
+void Cleanup();
 bool CheckConnectionRuntime();
 
 #endif

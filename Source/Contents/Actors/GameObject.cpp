@@ -61,7 +61,7 @@ void CGameObject::Draw(int) {
 // OFFSET: 0x00CABF10
 // FUNCTION: fn_21041
 int CGameObject::GetDir(float rot) {
-  CGameMode* gameMode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  CGameMode* gameMode = static_cast<CGameMode*>(g_world.GetGameMode());
   int longitude = 0;
 
   if (gameMode) {
@@ -122,7 +122,7 @@ void CRenderObject::DrawShadow(int argument, float scale) {
 
   const float* matrix = reinterpret_cast<const float*>(argument);
   const float z = this->render.position.z;
-  CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
   float position[3];
   position[0] = this->render.position.x;
   position[1] = mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z);

@@ -45,7 +45,7 @@ void CreateTrigonometricTable() {
 
 // OFFSET: 0x00554420
 // FUNCTION: fn_02024
-float ClientRadians(int degrees) {
+float GetRadian(int degrees) {
   const int index = Wrapped(degrees);
   return g_radTable[index >= 0 ? index : 361 + index];
 }

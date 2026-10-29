@@ -153,8 +153,8 @@ inline void C3dWorldRes::ReadEnvironment(CFile& input, unsigned version) {
 
   constexpr float pi = 3.141592f;
   AffineMatrix matrix;
-  matrix.SetXRotation((static_cast<float>(this->latitude) / 180.0f) * pi);
-  matrix.RotateY((static_cast<float>(this->longitude) / 180.0f) * pi);
+  matrix.MakeXRotation((static_cast<float>(this->latitude) / 180.0f) * pi);
+  matrix.AppendYRotation((static_cast<float>(this->longitude) / 180.0f) * pi);
 
   for (unsigned component = 0; component < 3; ++component) {
     this->lightDirection[component] =

@@ -596,16 +596,16 @@ std::pair<bool, int> CSkillActionMgr::ActionSlot01(int skillId) {
 // OFFSET: 0x0077AD90
 // FUNCTION: fn_08405
 vector3d CellWorldPosition(int column, int row) {
-  if (!g_world.ActiveGameMode() || !static_cast<CGameMode*>(g_world.ActiveGameMode())->scene ||
-      !static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->terrain) {
+  if (!g_world.GetGameMode() || !static_cast<CGameMode*>(g_world.GetGameMode())->scene ||
+      !static_cast<CGameMode*>(g_world.GetGameMode())->scene->terrain) {
     return vector3d{0.0f, 0.0f, 0.0f};
   }
 
   float x = 0.0f;
   float y = 0.0f;
   float z = 0.0f;
-  static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->terrain->Grid().CellOrigin(column, row, x, z);
-  y = static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->terrain->Grid().Height(x, z);
+  static_cast<CGameMode*>(g_world.GetGameMode())->scene->terrain->Grid().CellOrigin(column, row, x, z);
+  y = static_cast<CGameMode*>(g_world.GetGameMode())->scene->terrain->Grid().Height(x, z);
   return vector3d{x + 2.5f, y + 0.0f, z + 2.5f};
 }
 

@@ -6,13 +6,13 @@ CWorld g_world = {1};
 
 // OFFSET: 0x00AD6450
 // FUNCTION: fn_17831
-CMode* CWorld::ActiveGameMode() {
+CMode* CWorld::GetGameMode() {
   return this->state == 1 ? this->gameMode : nullptr;
 }
 
 // OFFSET: 0x00AD6460
 // FUNCTION: fn_17832
-CMode* CWorld::ActiveLoginMode() {
+CMode* CWorld::GetLoginMode() {
   return this->state == 0 ? this->gameMode : nullptr;
 }
 

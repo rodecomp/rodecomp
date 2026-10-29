@@ -180,7 +180,7 @@ void EffectPrimitiveState::GetColorOverride(unsigned char* red, unsigned char* g
 
 // OFFSET: 0x00BAE4B0
 // FUNCTION: fn_19766
-void __stdcall CalculateVectorAngle(float x, float y, std::int16_t* angle) {
+void __stdcall Get_Angle(float x, float y, std::int16_t* angle) {
   const float length = SquareRoot(x * x + y * y);
   const float normalY = y / length;
   const float normalX = x / length;

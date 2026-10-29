@@ -4,7 +4,7 @@
 
 // OFFSET: 0x00BC5E00
 // FUNCTION: fn_19849
-void EffectPrimitiveState::UpdateColor() {
+void EffectPrimitiveState::ProcessAlpha() {
   const int current = this->unknown_01E0;
   const bool valuesAndLimit = this->unknown_0158 != 0;
 

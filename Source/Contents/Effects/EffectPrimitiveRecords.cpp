@@ -7,7 +7,7 @@
 
 // OFFSET: 0x00BAE670
 // FUNCTION: fn_19768
-void EffectParticle::InitializeRecords() {
+void EffectParticle::InitSegment() {
   for (int index = 0; index < this->state.unknown_01F4; ++index) {
     EffectPrimitiveRecord& record = this->state.records[index];
     record.position = this->render.position;

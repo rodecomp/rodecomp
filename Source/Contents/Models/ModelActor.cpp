@@ -94,28 +94,28 @@ void C3dActorV2::Assign(const C3dModelRes& resource) {
 
 // OFFSET: 0x00ABB890
 // FUNCTION: fn_17516
-void C3dActor::UpdateTransform() {
-  this->transform.SetTranslation(this->offset[0], this->offset[1], this->offset[2]);
+void C3dActor::UpdateMatrix() {
+  this->transform.MakeTranslate(this->offset[0], this->offset[1], this->offset[2]);
   this->transform.Scale(this->scale[0], this->scale[1], this->scale[2]);
-  this->transform.RotateY(Radians(this->rotation[1]));
+  this->transform.AppendYRotation(Radians(this->rotation[1]));
   this->transform.RotateX(Radians(this->rotation[0]));
   this->transform.RotateZ(Radians(this->rotation[2]));
   this->transform.Translate(this->position);
-  this->inverseTransform.Inverse(this->transform);
+  this->inverseTransform.MakeInverse(this->transform);
   this->dirty = 0;
 }
 
 // OFFSET: 0x00ABB970
 // FUNCTION: fn_17517
-void C3dActorV2::UpdateTransform() {
+void C3dActorV2::UpdateMatrix() {
   this->transform.Identity();
   this->transform.values[4] = -1.0f;
   this->transform.Scale(this->scale[0], this->scale[1], this->scale[2]);
-  this->transform.RotateY(Radians(this->rotation[1]));
+  this->transform.AppendYRotation(Radians(this->rotation[1]));
   this->transform.RotateX(Radians(this->rotation[0]));
   this->transform.RotateZ(Radians(this->rotation[2]));
   this->transform.Translate(this->position);
-  this->inverseTransform.Inverse(this->transform);
+  this->inverseTransform.MakeInverse(this->transform);
   this->dirty = 0;
 }
 
@@ -133,7 +133,7 @@ void C3dActor::Prepare(ModelLightingContext&) {
 // FUNCTION: fn_17519
 void C3dActorV1::Prepare(ModelLightingContext& context) {
   if (this->dirty == 1) {
-    this->UpdateTransform();
+    this->UpdateMatrix();
   }
 
   const float* previousPosition = context.position;
@@ -153,7 +153,7 @@ void C3dActorV1::Prepare(ModelLightingContext& context) {
 // FUNCTION: fn_17520
 void C3dActorV2::Prepare(ModelLightingContext& context) {
   if (this->dirty == 1) {
-    this->UpdateTransform();
+    this->UpdateMatrix();
   }
 
   const float* previousPosition = context.position;
@@ -283,7 +283,7 @@ void C3dActor::Draw(const float*, bool, ModelRenderContext&) {
 // FUNCTION: fn_17496
 void C3dActorV1::Draw(const float* matrix, bool clip, ModelRenderContext& context) {
   if (this->dirty == 1) {
-    this->UpdateTransform();
+    this->UpdateMatrix();
   }
 
   AffineMatrix camera;
@@ -301,7 +301,7 @@ void C3dActorV1::Draw(const float* matrix, bool clip, ModelRenderContext& contex
 // FUNCTION: fn_17497
 void C3dActorV2::Draw(const float* matrix, bool clip, ModelRenderContext& context) {
   if (this->dirty == 1) {
-    this->UpdateTransform();
+    this->UpdateMatrix();
   }
 
   AffineMatrix camera;

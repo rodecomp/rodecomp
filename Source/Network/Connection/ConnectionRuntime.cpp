@@ -51,7 +51,7 @@ bool InitializeConnections() {
 
 // OFFSET: 0x00C7C4B0
 // FUNCTION: fn_20388
-void ShutdownConnections() {
+void Cleanup() {
   WSACleanup();
   FreeLibrary(module);
 }

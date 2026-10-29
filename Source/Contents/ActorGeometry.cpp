@@ -64,7 +64,7 @@ float CRenderObject::Distance(float x, float y, float z) const {
 // OFFSET: 0x00CAD9E0
 // FUNCTION: fn_21057
 bool CRenderObject::GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) const {
-  const WorldScene* world = static_cast<CGameMode*>(g_world.ActiveGameMode())->scene;
+  const WorldScene* world = static_cast<CGameMode*>(g_world.GetGameMode())->scene;
   const CRenderObject* player = reinterpret_cast<const CRenderObject*>(world->player);
 
   if (targetAid == g_session.m_aid) {

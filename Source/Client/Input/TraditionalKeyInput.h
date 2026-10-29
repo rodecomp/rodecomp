@@ -25,7 +25,7 @@ struct TraditionalKeyInput {
   int DisplayLength() const;
   const char* NextChar(const char* current, int unused);
   const char* NextCharArabic(const char* current, int unused);
-  int Count() const;
+  int GetKeyStrokeSize() const;
   void ClearKeys();
   void ResetState();
   void ResetCandidate();

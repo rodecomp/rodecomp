@@ -12,7 +12,7 @@ public:
   C3dActor& operator=(const C3dActor&) = delete;
 
   virtual void Assign(const C3dModelRes& resource);
-  virtual void UpdateTransform();
+  virtual void UpdateMatrix();
   virtual void UpdateBounds();
   virtual void Prepare(ModelLightingContext& context);
   virtual void Animate(double frame);
@@ -77,7 +77,7 @@ public:
   C3dActorV2();
   ~C3dActorV2() override;
   void Assign(const C3dModelRes& resource) override;
-  void UpdateTransform() override;
+  void UpdateMatrix() override;
   void UpdateBounds() override;
   void Prepare(ModelLightingContext& context) override;
   void Animate(double frame) override;

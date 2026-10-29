@@ -96,7 +96,7 @@ int TraditionalKeyInput::DisplayLength() const {
 
 // OFFSET: 0x00ACE330
 // FUNCTION: fn_17780
-int TraditionalKeyInput::Count() const {
+int TraditionalKeyInput::GetKeyStrokeSize() const {
   if (this->keys.size() == 1 && this->mappings[this->keys.back()].category == 4) {
     return 0;
   }

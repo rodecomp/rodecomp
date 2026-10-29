@@ -11,8 +11,8 @@ struct CWorld {
   /* 0058 */ int state;
   /* 005C */ int nextState;
 
-  CMode* ActiveGameMode();
-  CMode* ActiveLoginMode();
+  CMode* GetGameMode();
+  CMode* GetLoginMode();
   void Quit();
   void Switch(int mode, const char* name);
 };

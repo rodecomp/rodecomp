@@ -62,8 +62,8 @@ UIEditCtrl4::~UIEditCtrl4() = default;
 // FUNCTION: fn_10782
 void UIEditCtrl4::Slot23() {
   this->text.clear();
-  this->m_edit->input.CancelComposition();
-  this->m_edit->input.CancelComposition();
+  this->m_edit->input.ResetInput();
+  this->m_edit->input.ResetInput();
   this->m_edit->input.Insert(this->text.c_str());
   this->m_edit->password = this->mask != 0;
   this->SelectAll();

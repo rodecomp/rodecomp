@@ -9,7 +9,7 @@
 
 // OFFSET: 0x00ACF2A0
 // FUNCTION: fn_17794
-void TextInputBuffer::CancelComposition() {
+void TextInputBuffer::ResetInput() {
   HIMC context = ImmGetContext(this->window);
 
   if (context) {
@@ -199,7 +199,7 @@ void TextInputBuffer::SetFlag8C(unsigned char value) {
 }
 // OFFSET: 0x00ACE4C0
 // FUNCTION: fn_17787
-void TextInputBuffer::MoveForward(unsigned codePage) {
+void TextInputBuffer::IncreaseSelection(unsigned codePage) {
   const auto length = static_cast<std::uint32_t>(this->text.size());
   const auto position = static_cast<std::uint32_t>(this->cursor);
   if (position > length) {
@@ -286,7 +286,7 @@ void TextInputBuffer::KeyDown(
       this->MoveBack(codePage);
       break;
     case VK_RIGHT:
-      this->MoveForward(codePage);
+      this->IncreaseSelection(codePage);
       break;
     case VK_HOME:
       this->cursor = 0;
@@ -328,7 +328,7 @@ void TextInputBuffer::KeyDown(
   switch (key) {
   case VK_DELETE:
     if (this->cursor == this->anchor) {
-      this->MoveForward(codePage);
+      this->IncreaseSelection(codePage);
     }
     this->DeleteSelection();
     break;
@@ -340,7 +340,7 @@ void TextInputBuffer::KeyDown(
       if (key == VK_LEFT) {
         this->MoveBack(codePage);
       } else {
-        this->MoveForward(codePage);
+        this->IncreaseSelection(codePage);
       }
 
       this->anchor = this->cursor;

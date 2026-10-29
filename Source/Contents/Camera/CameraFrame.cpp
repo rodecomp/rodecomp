@@ -15,8 +15,8 @@ void ResetCamera(CameraState& camera, CameraFrame& frame) {
 void CameraFrame::Build(const CameraState& camera, const TerrainHeight& terrain) {
   constexpr float pi = 3.141592f;
   AffineMatrix orbit;
-  orbit.SetXRotation((camera.pitch / 180.0f) * pi);
-  orbit.RotateY((camera.yaw / 180.0f) * pi);
+  orbit.MakeXRotation((camera.pitch / 180.0f) * pi);
+  orbit.AppendYRotation((camera.yaw / 180.0f) * pi);
   const float distance = -camera.distance;
   this->eye[1] = ((orbit.values[4] * 0.0f + orbit.values[1] * 0.0f) + distance * orbit.values[7]) + orbit.values[10];
   this->eye[2] = ((orbit.values[5] * 0.0f + orbit.values[2] * 0.0f) + distance * orbit.values[8]) + orbit.values[11];
@@ -30,7 +30,7 @@ void CameraFrame::Build(const CameraState& camera, const TerrainHeight& terrain)
   }
 
   this->view.LookAt(this->eye, camera.target, this->up);
-  this->inverse.Inverse(this->view);
+  this->inverse.MakeInverse(this->view);
 }
 
 // OFFSET: 0x00ADB560

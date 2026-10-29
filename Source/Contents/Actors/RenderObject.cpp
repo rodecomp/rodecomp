@@ -50,13 +50,13 @@ void CRenderObject::SendObjectMessage(CGameObject*, int, int, int, int, int, int
 // FUNCTION: fn_21116
 void CRenderObject::SetActionName(ResourceMgr& resources, const char* name) {
   if (this->render.action) {
-    this->render.action->Release();
+    this->render.action->Unlock();
   }
 
   this->render.action = static_cast<CActRes*>(resources.Load(name));
 
   if (this->render.action) {
-    this->render.action->AddRef();
+    this->render.action->Lock();
   }
 }
 
@@ -75,13 +75,13 @@ void CGameActor::SetUnknown0260(int value) {
 // FUNCTION: fn_21151
 void CRenderObject::SetSpriteName(ResourceMgr& resources, const char* name) {
   if (this->render.sprite) {
-    this->render.sprite->Release();
+    this->render.sprite->Unlock();
   }
 
   this->render.sprite = static_cast<CSprRes*>(resources.Load(name));
 
   if (this->render.sprite) {
-    this->render.sprite->AddRef();
+    this->render.sprite->Lock();
   }
 }
 
@@ -298,7 +298,7 @@ int CRenderObject::HoverHeight() {
   }
 
   const short height = static_cast<short>(ClientSine(angle) * 4.0f + this->render.unknown_00FA);
-  CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
   const short scaled = static_cast<short>(400.0f / mode->camera->camera.desiredDistance * height);
   return scaled < 0 ? 0 : scaled;
 }
@@ -489,7 +489,7 @@ void CRenderObject::JitterBounds(float* output, const int* input, float offset, 
       }
     }
 
-    CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+    CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
     jitter[index] = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(value - base);
   }
 
@@ -670,7 +670,7 @@ float* CGameActor::Slot53(int index) {
 // OFFSET: 0x00CAE500
 // FUNCTION: fn_21074
 void CGameActor::Slot38() {
-  CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
   const float angle = this->render.angle;
   const int motion = this->render.curMotion;
   const int animation = this->render.animation;

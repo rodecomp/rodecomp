@@ -29,7 +29,7 @@ struct TextInputBuffer {
   const bool& chatOpen;
   TextInputSuggestions& suggestions;
 
-  void CancelComposition();
+  void ResetInput();
   void DeleteSelection();
   void Insert(const char* value);
   void Select(int anchor, int cursor);
@@ -45,7 +45,7 @@ struct TextInputBuffer {
 
   void MoveBack(unsigned codePage);
 
-  void MoveForward(unsigned codePage);
+  void IncreaseSelection(unsigned codePage);
   void SetFlag8C(unsigned char value);
   void AdvanceCursor(int delta);
   void RetreatCursor(int delta);

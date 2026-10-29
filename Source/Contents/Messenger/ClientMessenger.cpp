@@ -766,7 +766,7 @@ void SessionMessengerContext::UpdateRandomStats() {
   }
 
   const auto notify = [this]() {
-    if (g_world.ActiveGameMode()) {
+    if (g_world.GetGameMode()) {
       if (g_windowMgr.unknown_01DC) {
         if (this->bound6C < this->bound68 || this->bound74 < this->bound70) {
           return;
@@ -774,7 +774,7 @@ void SessionMessengerContext::UpdateRandomStats() {
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC)->Invalidate();
         reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC)->InvalidateChildren();
       }
-      static_cast<CGameMode*>(g_world.ActiveGameMode())->NotifyItemBounds();
+      static_cast<CGameMode*>(g_world.GetGameMode())->NotifyItemBounds();
     }
   };
   if (this->bound68 != bound68) {

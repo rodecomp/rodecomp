@@ -604,7 +604,7 @@ int UITalkboxTrapInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       TalkboxTrapRequest request;
       request.target = this->target;
       request.text = this->edit->Text();
-      g_world.ActiveGameMode()->SendMsg(131, reinterpret_cast<int>(&request), 0, 0, 0);
+      g_world.GetGameMode()->SendMsg(131, reinterpret_cast<int>(&request), 0, 0, 0);
     } else if (a != 185) {
       return 0;
     }

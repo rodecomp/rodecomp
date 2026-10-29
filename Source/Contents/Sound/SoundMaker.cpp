@@ -102,7 +102,7 @@ bool CSoundMaker::Update() {
     return true;
   }
 
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->player);
+  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_world.GetGameMode())->scene->player);
   if (!player) {
     return true;
   }
@@ -169,7 +169,7 @@ float* CPc::GetExtent(float* extent) const {
 // OFFSET: 0x00DA2FA0
 // FUNCTION: fn_22397
 bool CBlurPC::Update() {
-  WorldScene* scene = static_cast<CGameMode*>(g_world.ActiveGameMode())->scene;
+  WorldScene* scene = static_cast<CGameMode*>(g_world.GetGameMode())->scene;
   if (scene) {
     const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
     if (owner && (owner->render.flags & 0x10) != 0) {
@@ -189,7 +189,7 @@ bool CBlurPC::Update() {
 // OFFSET: 0x00DA3240
 // FUNCTION: fn_22401
 bool CHalluPC2::Update() {
-  WorldScene* scene = static_cast<CGameMode*>(g_world.ActiveGameMode())->scene;
+  WorldScene* scene = static_cast<CGameMode*>(g_world.GetGameMode())->scene;
   if (scene) {
     const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
     if (owner && (owner->render.flags & 0x10) != 0) {

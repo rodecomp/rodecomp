@@ -444,7 +444,7 @@ void CSession::EraseUnknownKey(std::int64_t key) {
 // FUNCTION: fn_23772
 int CSession::CountProhibitionLog(std::uint32_t aid) {
   const int count = static_cast<int>(this->m_prohibitionLog.size());
-  const CRenderObject* actor = static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->GetGameActorByAID(aid);
+  const CRenderObject* actor = static_cast<CGameMode*>(g_world.GetGameMode())->scene->GetGameActorByAID(aid);
   if (!actor) {
     return -1;
   }
@@ -731,7 +731,7 @@ int CharacterConfigSave::SkillLevel(int id) const {
 // OFFSET: 0x00E094E0
 // FUNCTION: fn_23778
 CRenderObject* CSession::FindGameActor(std::uint32_t aid) const {
-  CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
   if (mode == nullptr) {
     return nullptr;
   }

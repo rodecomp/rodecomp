@@ -64,7 +64,7 @@ namespace {
 
   // INLINED
   void FaceCamera(EffectPrimitiveSlot* slots) {
-    const CView* view = static_cast<CGameMode*>(g_world.ActiveGameMode())->camera;
+    const CView* view = static_cast<CGameMode*>(g_world.GetGameMode())->camera;
     slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
     slots[1].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.pitch) + 90);
 
@@ -207,15 +207,15 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   } else if ((particle.flags & 0x40u) != 0) {
     particle.unknown_030C = context.cameraYaw + 90.0f;
     particle.unknown_0314 = context.cameraPitch;
-    matrix.SetXRotation(ClientRadians(TruncateToInt(particle.unknown_0310)));
-    matrix.RotateZ(ClientRadians(TruncateToInt(particle.unknown_0314)));
+    matrix.MakeXRotation(GetRadian(TruncateToInt(particle.unknown_0310)));
+    matrix.RotateZ(GetRadian(TruncateToInt(particle.unknown_0314)));
   } else {
-    matrix.SetZRotation(ClientRadians(TruncateToInt(particle.unknown_0314)));
-    matrix.RotateX(ClientRadians(TruncateToInt(particle.unknown_0310)));
+    matrix.SetZRotation(GetRadian(TruncateToInt(particle.unknown_0314)));
+    matrix.RotateX(GetRadian(TruncateToInt(particle.unknown_0310)));
   }
 
   const float angle = (particle.flags & 0x200u) != 0 ? render.angle : particle.unknown_030C;
-  matrix.RotateY(ClientRadians(TruncateToInt(angle)));
+  matrix.AppendYRotation(GetRadian(TruncateToInt(angle)));
   std::memcpy(particle.matrix2, matrix.values, sizeof(particle.matrix2));
 
   if ((particle.flags & 2u) != 0) {
@@ -277,7 +277,7 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
     particle.blue = particle.blue > 255 ? 255 : particle.blue < 0 ? 0 : particle.blue;
   }
 
-  particle.UpdateColor();
+  particle.ProcessAlpha();
 
   if (particle.unknown_01E0 % particle.unknown_01E8 == 0) {
     const auto next = render.curMotion + 1u;
@@ -311,7 +311,7 @@ bool UpdateEffectPrimitive15(EffectPrimitiveState& particle, RenderObjectState& 
 
 // OFFSET: 0x00BB6180
 // FUNCTION: fn_19773
-bool ShrinkEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
+bool Prim3DCasting4(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
   const vector3d& parent = context.parentRender.position;
   render.position.x = parent.x;
   render.position.y = parent.y;
@@ -363,7 +363,7 @@ bool ShrinkEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectStat
 
 // OFFSET: 0x00BB62A0
 // FUNCTION: fn_19774
-bool PulseEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
+bool Prim3DCasting5(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
   const vector3d& parent = context.parentRender.position;
   render.position.x = parent.x;
   render.position.y = parent.y;
@@ -423,7 +423,7 @@ bool PulseEffectPrimitiveSlots(EffectPrimitiveState& particle, RenderObjectState
 
 // OFFSET: 0x00BB6820
 // FUNCTION: fn_19777
-bool SpinEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
+bool Prim3DCylinder(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
   particle.origin = {
     context.parentRender.position.x + particle.velocity.x, context.parentRender.position.y + particle.velocity.y,
     context.parentRender.position.z + particle.velocity.z
@@ -439,8 +439,8 @@ bool SpinEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   particle.unknown_030C = particle.unknown_0330 + particle.unknown_030C;
 
   AffineMatrix& matrix = *reinterpret_cast<AffineMatrix*>(particle.matrix1);
-  matrix.SetXRotation(ClientRadians(static_cast<int>(particle.unknown_0310)));
-  matrix.RotateY(ClientRadians(static_cast<int>(particle.unknown_030C)));
+  matrix.MakeXRotation(GetRadian(static_cast<int>(particle.unknown_0310)));
+  matrix.AppendYRotation(GetRadian(static_cast<int>(particle.unknown_030C)));
 
   particle.unknown_0370 = Upward(particle.unknown_02BC, particle.matrix1);
   particle.offset.y = particle.unknown_0370.y + particle.offset.y;
@@ -462,7 +462,7 @@ bool SpinEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
     particle.unknown_0300 = -(particle.unknown_02F8 / static_cast<float>(particle.lifetime - particle.unknown_01E0 + 1));
   }
 
-  particle.UpdateColor();
+  particle.ProcessAlpha();
 
   if (particle.unknown_01E0 % particle.unknown_01E8 == 0) {
     const auto next = render.curMotion + 1u;
@@ -480,7 +480,7 @@ bool SpinEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
 
 // OFFSET: 0x00BB6B30
 // FUNCTION: fn_19778
-bool RollEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
+bool Prim3DCylinderHalf(EffectPrimitiveState& particle, RenderObjectState& render, EffectMotionContext& context) {
   particle.origin = {
     context.parentRender.position.x + particle.velocity.x, context.parentRender.position.y + particle.velocity.y,
     context.parentRender.position.z + particle.velocity.z
@@ -492,8 +492,8 @@ bool RollEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   particle.unknown_0364 = particle.unknown_0368 + particle.unknown_0364;
 
   AffineMatrix& matrix = *reinterpret_cast<AffineMatrix*>(particle.matrix1);
-  matrix.SetXRotation(ClientRadians(static_cast<int>(particle.unknown_0310)));
-  matrix.RotateY(ClientRadians(static_cast<int>(particle.unknown_030C)));
+  matrix.MakeXRotation(GetRadian(static_cast<int>(particle.unknown_0310)));
+  matrix.AppendYRotation(GetRadian(static_cast<int>(particle.unknown_030C)));
 
   particle.unknown_0370 = Upward(particle.unknown_02BC, particle.matrix1);
   particle.offset.x = particle.unknown_0370.x + particle.offset.x;
@@ -515,7 +515,7 @@ bool RollEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
     particle.unknown_0300 = -(particle.unknown_02F8 / static_cast<float>(particle.lifetime - particle.unknown_01E0 + 1));
   }
 
-  particle.UpdateColor();
+  particle.ProcessAlpha();
 
   if (particle.unknown_01E0 % particle.unknown_01E8 == 0) {
     const auto next = render.curMotion + 1u;
@@ -564,13 +564,13 @@ void AdvanceEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& r
       particle.unknown_02C0 = particle.unknown_02B0.y;
     }
   } else {
-    particle.UpdateColor();
+    particle.ProcessAlpha();
   }
 }
 
 // OFFSET: 0x00BAE3A0
 // FUNCTION: fn_19764
-bool EffectParticle::AdvanceFrame() {
+bool EffectParticle::AnimMotion() {
   CActRes* action = this->render.action;
 
   if (this->state.unknown_01E0 % this->state.unknown_01E8 != 0) {
@@ -798,7 +798,7 @@ bool EffectParticle::UpdateStoneCurse() {
 
 // OFFSET: 0x00BB65C0
 // FUNCTION: fn_19776
-void EffectParticle::UpdateBeginSpell() {
+void EffectParticle::Prim3DCircle() {
   const AttachedEffect* master = this->state.master;
   this->state.origin.x = master->render.position.x + this->state.velocity.x;
   this->state.origin.y = master->render.position.y + this->state.velocity.y;
@@ -827,8 +827,8 @@ void EffectParticle::UpdateBeginSpell() {
   this->state.unknown_0348 = side;
   this->state.unknown_02F4 = vertical;
 
-  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetXRotation(ClientRadians(static_cast<int>(this->state.unknown_0310)));
-  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateY(ClientRadians(static_cast<int>(this->state.unknown_030C)));
+  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->MakeXRotation(GetRadian(static_cast<int>(this->state.unknown_0310)));
+  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->AppendYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
 
   const float distance = this->state.unknown_02BC;
   this->state.unknown_0370 = Forward(distance, this->state.matrix1);
@@ -849,8 +849,8 @@ void EffectParticle::UpdateBeginSpell() {
   }
 
   this->state.scale = scale;
-  this->state.UpdateColor();
-  this->UpdateRecords();
+  this->state.ProcessAlpha();
+  this->ShiftSegment();
 }
 
 // OFFSET: 0x00BBAB10
@@ -1414,7 +1414,7 @@ void EffectParticle::PrimGuard() {
 // OFFSET: 0x00BBFAA0
 // FUNCTION: fn_19818
 bool EffectParticle::PrimLineLink() {
-  CGameMode* gameMode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  CGameMode* gameMode = static_cast<CGameMode*>(g_world.GetGameMode());
   const CRenderObject* target = nullptr;
 
   const AttachedEffect* master = this->state.master;
@@ -1490,7 +1490,7 @@ void EffectParticle::PrimSMA() {
     if (slot.process == 1) {
       const float x = this->state.offset.x - this->render.position.x;
       const float z = this->state.offset.z - this->render.position.z;
-      CalculateVectorAngle(x, z, &slot.rotStart);
+      Get_Angle(x, z, &slot.rotStart);
     }
 
     slot.vecBNow.x += slot.height[1] * g_cosTable[slot.rotStart];
@@ -1617,7 +1617,7 @@ void EffectParticle::PrimShieldBoomerang() {
   if (slot.process == 1) {
     const float rx = this->state.offset.x - slot.vecBNow.x;
     const float rz = this->state.offset.z - slot.vecBNow.z;
-    CalculateVectorAngle(rx, rz, &slot.rotStart);
+    Get_Angle(rx, rz, &slot.rotStart);
   }
 
   if (slot.flag1[1] == 0) {
@@ -1649,7 +1649,7 @@ void EffectParticle::PrimShieldBoomerang() {
     const float rx = this->render.position.x - slot.vecBNow.x;
     const float rz = this->render.position.z - slot.vecBNow.z;
     std::int16_t angle;
-    CalculateVectorAngle(rx, rz, &angle);
+    Get_Angle(rx, rz, &angle);
 
     if (slot.rotStart < angle - 4 || slot.rotStart > angle + 4) {
       slot.rotStart += 5;
@@ -1721,12 +1721,12 @@ bool EffectParticle::PrimKouenka() {
   this->render.position = this->state.offset;
 
   if ((this->state.flags & 0x20) != 0) {
-    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.ActiveGameMode())->camera->camera.yaw;
+    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.GetGameMode())->camera->camera.yaw;
   }
 
-  this->state.UpdateColor();
-  this->UpdateRecords();
-  return this->AdvanceFrame();
+  this->state.ProcessAlpha();
+  this->ShiftSegment();
+  return this->AnimMotion();
 }
 
 // OFFSET: 0x00BC27B0
@@ -1783,12 +1783,12 @@ bool EffectParticle::PrimSakura() {
   this->render.position = this->state.offset;
 
   if ((this->state.flags & 0x20) != 0) {
-    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.ActiveGameMode())->camera->camera.yaw;
+    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.GetGameMode())->camera->camera.yaw;
   }
 
-  this->state.UpdateColor();
-  this->UpdateRecords();
-  return this->AdvanceFrame();
+  this->state.ProcessAlpha();
+  this->ShiftSegment();
+  return this->AnimMotion();
 }
 
 // OFFSET: 0x00BC4410
@@ -1820,7 +1820,7 @@ void EffectParticle::PrimTeiHit2() {
     if (slot.process == 1) {
       const float rx = this->state.offset.x - this->render.position.x;
       const float rz = this->state.offset.z - this->render.position.z;
-      CalculateVectorAngle(rx, rz, &slot.rotStart);
+      Get_Angle(rx, rz, &slot.rotStart);
       slot.rotStart += Random(60) - 30;
 
       if (slot.rotStart >= 360) {
@@ -1992,7 +1992,7 @@ bool EffectParticle::PrimSuperAngel() {
   this->render.position.x = this->state.offset.x;
   this->render.position.y = this->state.offset.y;
   this->render.position.z = this->state.offset.z;
-  this->UpdateRecords();
+  this->ShiftSegment();
   return true;
 }
 
@@ -2068,7 +2068,7 @@ bool EffectParticle::PrimGhost() {
     slot.vecBPre.y += slot.maxHeight * g_sinTable[slot.riseAngle];
     this->state.offset = slot.vecBPre;
 
-    const CView* view = static_cast<CGameMode*>(g_world.ActiveGameMode())->camera;
+    const CView* view = static_cast<CGameMode*>(g_world.GetGameMode())->camera;
     int angle = slot.rotStart + static_cast<int>(view->camera.yaw);
 
     if (angle < 0) {
@@ -2101,9 +2101,9 @@ bool EffectParticle::PrimGhost() {
   }
 
   this->render.position = this->state.offset;
-  this->state.UpdateColor();
-  this->UpdateRecords();
-  return this->AdvanceFrame();
+  this->state.ProcessAlpha();
+  this->ShiftSegment();
+  return this->AnimMotion();
 }
 
 // OFFSET: 0x00BC4730
@@ -2152,7 +2152,7 @@ void EffectParticle::PrimThrowItem() {
   if (slot.process == 1) {
     const float x = this->state.offset.x - slot.vecBNow.x;
     const float z = this->state.offset.z - slot.vecBNow.z;
-    CalculateVectorAngle(x, z, &slot.rotStart);
+    Get_Angle(x, z, &slot.rotStart);
   }
 
   float progress = static_cast<float>(slot.process);
@@ -2353,8 +2353,8 @@ bool EffectParticle::UpdateHit6() {
     this->state.unknown_02BC = static_cast<float>(rand() % 35 + 15) / 100.0f;
     this->state.unknown_030C = static_cast<float>(rand() % 80) + (this->state.unknown_030C - 40.0f);
     this->state.unknown_0310 = static_cast<float>(rand() % 80) + (this->state.unknown_0310 - 40.0f);
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetYRotation(ClientRadians(static_cast<int>(this->state.unknown_030C)));
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateX(ClientRadians(static_cast<int>(this->state.unknown_0310)));
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateX(GetRadian(static_cast<int>(this->state.unknown_0310)));
     flags = this->state.flags;
     this->state.unknown_01D4 = rand() % 10 + 5;
   }
@@ -2362,8 +2362,8 @@ bool EffectParticle::UpdateHit6() {
   if ((flags & 8u) != 0 && this->state.unknown_01E0 % this->state.unknown_01D4 == 0) {
     this->state.unknown_030C = static_cast<float>(rand() % 10) + (this->state.unknown_030C - 5.0f);
     this->state.unknown_0310 = static_cast<float>(rand() % 10) + (this->state.unknown_0310 - 5.0f);
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetXRotation(ClientRadians(static_cast<int>(this->state.unknown_0310)));
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateY(ClientRadians(static_cast<int>(this->state.unknown_030C)));
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->MakeXRotation(GetRadian(static_cast<int>(this->state.unknown_0310)));
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->AppendYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
     this->state.unknown_01D4 = rand() % 15 + 5;
   }
 
@@ -2379,18 +2379,18 @@ bool EffectParticle::UpdateHit6() {
   }
 
   if ((this->state.flags & 0x20u) != 0) {
-    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.ActiveGameMode())->camera->camera.yaw;
+    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.GetGameMode())->camera->camera.yaw;
   }
 
-  this->state.UpdateColor();
-  this->UpdateRecords();
-  return this->AdvanceFrame();
+  this->state.ProcessAlpha();
+  this->ShiftSegment();
+  return this->AnimMotion();
 }
 
 // OFFSET: 0x00BB75B0
 // FUNCTION: fn_19780
 bool EffectParticle::UpdateCoin() {
-  CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
   const AttachedEffect* master = this->state.master;
   this->state.origin.z = master->render.position.z + this->state.velocity.z;
   this->state.origin.y = master->render.position.y + this->state.velocity.y;
@@ -2416,16 +2416,16 @@ bool EffectParticle::UpdateCoin() {
     if (this->state.unknown_0208 == 1) {
       char name[52];
       std::sprintf(name, "effect\\EF_Coin%d.wav", rand() % 3 + 1);
-      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_world.ActiveGameMode())->scene->player);
+      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_world.GetGameMode())->scene->player);
       g_soundMgr->PlayWave(
         name, this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
       );
     }
   }
 
-  this->state.UpdateColor();
-  this->UpdateRecords();
-  return this->AdvanceFrame();
+  this->state.ProcessAlpha();
+  this->ShiftSegment();
+  return this->AnimMotion();
 }
 
 // OFFSET: 0x00BB78A0
@@ -2494,8 +2494,8 @@ bool EffectParticle::UpdateDetoxication() {
     this->state.unknown_02BC = static_cast<float>(rand() % 35 + 15) / 100.0f;
     this->state.unknown_030C = static_cast<float>(rand() % 80) + (this->state.unknown_030C - 40.0f);
     this->state.unknown_0310 = static_cast<float>(rand() % 80) + (this->state.unknown_0310 - 40.0f);
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetYRotation(ClientRadians(static_cast<int>(this->state.unknown_030C)));
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateX(ClientRadians(static_cast<int>(this->state.unknown_0310)));
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateX(GetRadian(static_cast<int>(this->state.unknown_0310)));
     this->state.unknown_01D4 = rand() % 10 + 5;
     flags = this->state.flags;
   }
@@ -2503,8 +2503,8 @@ bool EffectParticle::UpdateDetoxication() {
   if ((flags & 8u) != 0 && this->state.unknown_01E0 % this->state.unknown_01D4 == 0) {
     this->state.unknown_030C = static_cast<float>(rand() % 10) + (this->state.unknown_030C - 5.0f);
     this->state.unknown_0310 = static_cast<float>(rand() % 10) + (this->state.unknown_0310 - 5.0f);
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetXRotation(ClientRadians(static_cast<int>(this->state.unknown_0310)));
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateY(ClientRadians(static_cast<int>(this->state.unknown_030C)));
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->MakeXRotation(GetRadian(static_cast<int>(this->state.unknown_0310)));
+    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->AppendYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
     this->state.unknown_01D4 = rand() % 15 + 5;
     flags = this->state.flags;
   }
@@ -2514,12 +2514,12 @@ bool EffectParticle::UpdateDetoxication() {
   this->render.position.z = positionZ + this->state.offset.z;
 
   if ((flags & 0x20u) != 0) {
-    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.ActiveGameMode())->camera->camera.yaw;
+    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.GetGameMode())->camera->camera.yaw;
   }
 
-  this->state.UpdateColor();
-  this->UpdateRecords();
-  return this->AdvanceFrame();
+  this->state.ProcessAlpha();
+  this->ShiftSegment();
+  return this->AnimMotion();
 }
 
 // OFFSET: 0x00BB7EC0
@@ -2568,7 +2568,7 @@ bool EffectParticle::UpdateExit() {
     }
   }
 
-  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetYRotation(ClientRadians(static_cast<int>(this->state.unknown_030C)));
+  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
 
   const float distance = this->state.unknown_0348;
   this->state.offset = Forward(distance, this->state.matrix1);
@@ -2581,14 +2581,14 @@ bool EffectParticle::UpdateExit() {
   this->state.unknown_0310 = rotation;
   reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateZ(rotation);
 
-  this->state.UpdateColor();
-  this->UpdateRecords();
-  return this->AdvanceFrame();
+  this->state.ProcessAlpha();
+  this->ShiftSegment();
+  return this->AnimMotion();
 }
 
 // OFFSET: 0x00BB8180
 // FUNCTION: fn_19783
-bool EffectParticle::UpdateWarp() {
+bool EffectParticle::Prim3DParticleSpline() {
   const AttachedEffect* master = this->state.master;
   this->state.origin = {
     master->render.position.x + this->state.velocity.x, master->render.position.y + this->state.velocity.y,
@@ -2604,7 +2604,7 @@ bool EffectParticle::UpdateWarp() {
 
   const float distance = this->state.unknown_02BC - this->state.unknown_02EC;
   this->state.unknown_0370 = Forward(distance, this->state.matrix1);
-  reinterpret_cast<AffineMatrix*>(this->state.matrix2)->MakeTransform(this->state.unknown_0290, ClientRadians(angle));
+  reinterpret_cast<AffineMatrix*>(this->state.matrix2)->MakeTransform(this->state.unknown_0290, GetRadian(angle));
 
   const float move = this->state.unknown_0310;
   this->state.unknown_03A0 = Lift(move, this->state.matrix2);
@@ -2618,14 +2618,14 @@ bool EffectParticle::UpdateWarp() {
   this->render.position.y = this->state.offset.y + this->state.origin.y + this->state.unknown_03A0.y;
   this->render.position.z = this->state.offset.z + this->state.origin.z + this->state.unknown_03A0.z;
 
-  this->state.UpdateColor();
-  this->UpdateRecords();
-  return this->AdvanceFrame();
+  this->state.ProcessAlpha();
+  this->ShiftSegment();
+  return this->AnimMotion();
 }
 
 // OFFSET: 0x00BE6FE0
 // FUNCTION: fn_19931
-void EffectParticle::UpdateRecords() {
+void EffectParticle::ShiftSegment() {
   const int count = this->state.unknown_01F4;
 
   for (int index = count - 1; index > 0; --index) {
@@ -2691,7 +2691,7 @@ static void TickLiveSlots(EffectPrimitiveSlot* slots) {
 // FUNCTION: fn_19966
 bool EffectParticle::FollowMasterAndAdvance() {
   FollowMaster(*this);
-  return this->AdvanceFrame();
+  return this->AnimMotion();
 }
 
 // OFFSET: 0x00BE9560
