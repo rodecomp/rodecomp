@@ -1036,6 +1036,48 @@ void UINoticeMessageBox_LockSellItem::Slot19() {
   }
 }
 
+// OFFSET: 0x00988D50
+// FUNCTION: fn_13392
+void UIItemSellWnd2::Slot32(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00988E10
+// FUNCTION: fn_13393
+void UIItemSellWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00988ED0
+// FUNCTION: fn_13394
+void UIItemShopWnd2::Slot32(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    g_modeMgr.GetGameMode();
+    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x009898A0
+// FUNCTION: fn_13400
+void UIMerchantItemMyShopWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    g_modeMgr.GetGameMode();
+    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x0098A220
 // FUNCTION: fn_13407
 void UISkillListWnd::Slot33(int, int) {

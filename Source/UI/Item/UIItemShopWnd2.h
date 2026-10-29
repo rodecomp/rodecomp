@@ -9,6 +9,7 @@
 class UIItemShopWnd2 : public UIItemBaseWnd {
 public:
   void Slot11() override;
+  void Slot32(int x, int y) override;
 
   /* 00F0 */ unsigned char unknown_00F0[0xC];
   /* 00FC */ WindowPlacement* saved;

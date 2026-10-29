@@ -18,6 +18,7 @@ public:
   void Slot19() override;
   void Paint() override;
   void Slot25(int x, int y) override;
+  void Slot32(int x, int y) override;
 
   void OpenShop();
   void SetDuration(std::uint32_t value);
