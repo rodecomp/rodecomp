@@ -150,6 +150,7 @@ public:
   // OFFSET: 0x00A0CE70
   // OFFSET: 0x00A638A0
   // FUNCTION: fn_15038
+  // FUNCTION: fn_16438
   void Slot35(int value) override {
     if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
       this->scrollBar->Slot35(value);
