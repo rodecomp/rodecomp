@@ -20,6 +20,8 @@ public:
   void Shutdown();
 };
 
+int ClampTargetAttackRange(std::uint32_t aid, int distance);
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CMercenaryAI) == 0x18);
 static_assert(offsetof(CMercenaryAI, state) == 0x4);
