@@ -181,6 +181,10 @@ int CSkillAction_AT_PULSE_OF_MADNESS::Slot02() {
 }
 
 // OFFSET: 0x005A6C00
+// FUNCTION: fn_03193
+EfstActionMessage CEfstAction_PULSE_OF_MADNESS::Slot03() {
+  return {LookupMessage(4668), 0xFFFF00};
+}
 
 // OFFSET: 0x005A6C30
 
