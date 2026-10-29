@@ -957,6 +957,22 @@ void UITabControl::FillTab(int index, int x, int y, int width, int height, std::
 }
 
 // OFFSET: 0x0088F100
+// FUNCTION: fn_11386
+void UIStaticItem::Paint() {
+  char path[260];
+  std::memset(path, 0, sizeof(path));
+  this->m_descriptions->IconPath(path, this->m_item.itemId.c_str(), this->m_item.identified);
+
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+  if (!bitmap) {
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
+    if (!bitmap) {
+      return;
+    }
+  }
+
+  this->DrawBitmap(0, 0, &bitmap->image, true);
+}
 
 // OFFSET: 0x0088F5C0
 
