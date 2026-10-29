@@ -9,6 +9,7 @@ public:
   /* 0108 */ UIWindow* m_text;
 
   void Paint() override;
+  bool Slot42(void* output) override;
 };
 
 #endif

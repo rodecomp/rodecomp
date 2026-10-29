@@ -891,6 +891,18 @@ int UIMenuWnd::ItemAt(int x, int y) {
   return index <= last ? index : last;
 }
 
+// OFFSET: 0x008D9F00
+// FUNCTION: fn_12137
+bool UISkillDescribeWnd::Slot42(void*) {
+  return true;
+}
+
+// OFFSET: 0x008D9F10
+// FUNCTION: fn_12138
+bool UIWhisperWnd::Slot42(void*) {
+  return true;
+}
+
 // OFFSET: 0x008F4D40
 // FUNCTION: fn_12294
 void UIEquipWnd::Slot19() {
