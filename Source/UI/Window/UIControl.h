@@ -4,6 +4,7 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Window/UIWindow.h"
 
+#include <functional>
 #include <map>
 #include <string>
 #include <string_view>
@@ -121,6 +122,55 @@ public:
   /* 00FC */ unsigned char transparent;
   /* 0100 */ std::map<int, std::string> imageNames;
   /* 0108 */ std::string disabledName;
+};
+
+class CUIStaticImage : public CUIControl {
+public:
+  void Paint() override;
+  void Slot53(int resolveSkin) override;
+
+  /* 0080 */ CResPtr<CBitmapRes> image;
+  /* 0084 */ std::string tooltip;
+  /* 009C */ unsigned char transparent;
+  /* 009E */ unsigned short scale;
+  /* 00A0 */ std::string imageName;
+};
+
+class CUITitleBar : public CUIControl {
+public:
+  void Resize(int width, int height) override;
+  void Paint() override;
+  void Slot53(int resolveSkin) override;
+
+  /* 0080 */ unsigned char resizable;
+  /* 0084 */ CResPtr<CBitmapRes> left;
+  /* 0088 */ CResPtr<CBitmapRes> middle;
+  /* 008C */ CResPtr<CBitmapRes> right;
+  /* 0090 */ std::string leftName;
+  /* 00A8 */ std::string middleName;
+  /* 00C0 */ std::string rightName;
+  /* 00D8 */ unsigned char unknown_00D8[0x08];
+  /* 00E0 */ UIWindow* firstButton;
+  /* 00E4 */ UIWindow* secondButton;
+};
+
+class CUIEditCtrl;
+
+class CUIEditBox : public CUIControl {
+public:
+  void Resize(int width, int height) override;
+  void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+
+  /* 0080 */ std::uint32_t backgroundColor;
+  /* 0084 */ std::uint32_t borderColor;
+  /* 0088 */ int borderWidth;
+  /* 008C */ int editLeft;
+  /* 0090 */ int editTop;
+  /* 0094 */ int editRight;
+  /* 0098 */ int editBottom;
+  /* 009C */ CUIEditCtrl* edit;
+  /* 00A0 */ std::function<void()> onSubmit;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

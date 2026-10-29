@@ -467,6 +467,124 @@ void CUIEditCtrl::Paint() {
 }
 
 // OFFSET: 0x009ED5A0
+// FUNCTION: fn_14579
+void CUIEditCtrl::Invalidate() {
+  this->Root()->InvalidateChildren();
+}
+
+// OFFSET: 0x009F0780
+// FUNCTION: fn_14665
+void CUIStaticImage::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  CBitmapRes* res = this->image;
+  if (!res) {
+    return;
+  }
+
+  const bool transparent = this->transparent != 0;
+  if (this->scale != 100) {
+    const float factor = static_cast<float>(this->scale) / 100.0f;
+    const int height = static_cast<int>(static_cast<float>(res->image.height) * factor);
+    const int width = static_cast<int>(static_cast<float>(res->image.width) * factor);
+    if (transparent) {
+      this->DrawAuxiliaryScaled(1, 0, 0, width, height, &res->image, 1, false);
+    } else {
+      this->DrawBitmapScaled(0, 0, width, height, &res->image, 0);
+    }
+  } else if (transparent) {
+    this->DrawAuxiliary(1, 0, 0, &res->image, true, false);
+  } else {
+    this->DrawBitmap(0, 0, &res->image, false);
+  }
+}
+
+// OFFSET: 0x009F08A0
+// FUNCTION: fn_14667
+void CUIStaticImage::Slot53(int resolveSkin) {
+  this->image = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageName, resolveSkin));
+}
+
+// OFFSET: 0x009F1BF0
+// FUNCTION: fn_14700
+void CUITitleBar::Resize(int width, int height) {
+  const int delta = width - this->geometry.width;
+  UIWindow::Resize(width, height);
+  if (this->firstButton) {
+    this->firstButton->Move(this->firstButton->geometry.x + delta, this->firstButton->geometry.y);
+  }
+  if (this->secondButton) {
+    this->secondButton->Move(this->secondButton->geometry.x + delta, this->secondButton->geometry.y);
+  }
+}
+
+// OFFSET: 0x009F19E0
+// FUNCTION: fn_14698
+void CUITitleBar::Paint() {
+  if (!this->resizable) {
+    if (this->middle) {
+      this->DrawBitmap(0, 0, &this->middle->image, false);
+    }
+    return;
+  }
+
+  const int end = this->geometry.width - (this->right ? this->right->image.width : 0);
+  int x = 0;
+  if (this->left) {
+    this->DrawBitmap(0, 0, &this->left->image, false);
+    x = this->left->image.width;
+  }
+
+  if (this->middle) {
+    while (x < end) {
+      this->DrawBitmap(x, 0, &this->middle->image, false);
+      x += this->middle->image.width;
+    }
+  }
+
+  if (this->right) {
+    this->DrawBitmap(this->geometry.width - this->right->image.width, 0, &this->right->image, false);
+  }
+}
+
+// OFFSET: 0x009F1AA0
+// FUNCTION: fn_14699
+void CUITitleBar::Slot53(int resolveSkin) {
+  this->middle = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->middleName, resolveSkin));
+  if (this->resizable) {
+    this->left = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->leftName, resolveSkin));
+    this->right = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->rightName, resolveSkin));
+  }
+}
+
+// OFFSET: 0x009ED680
+// FUNCTION: fn_14581
+void CUIEditBox::Paint() {
+  if (this->borderWidth > 0) {
+    this->ClearSurface(this->borderColor);
+    const int border = this->borderWidth;
+    this->FillRegion(border, border, this->geometry.width - border * 2, this->geometry.height - border * 2, this->backgroundColor);
+  } else {
+    this->ClearSurface(this->backgroundColor);
+  }
+}
+
+// OFFSET: 0x009ED6F0
+// FUNCTION: fn_14583
+void CUIEditBox::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->edit->Resize(width + this->editRight - this->editLeft, height + this->editBottom - this->editTop);
+  this->edit->Move(this->editLeft, this->editTop);
+}
+
+// OFFSET: 0x009ED750
+// FUNCTION: fn_14584
+int CUIEditBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 0 && this->onSubmit) {
+    this->onSubmit();
+  }
+  return UIWindow::SendMsg(sender, message, a, b, c, d);
+}
 
 // OFFSET: 0x009EF860
 // FUNCTION: fn_14649
