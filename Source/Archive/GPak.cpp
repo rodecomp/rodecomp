@@ -959,3 +959,23 @@ void CGPak::ApplyAuxiliary(const void* data, std::uint32_t size, const void* aux
 // FUNCTION: fn_24306
 myGPack::CGPakUpdate::CGPakUpdate() {
 }
+
+struct PakLinkNode {
+  /* 0000 */ PakLinkNode* m_next;
+  /* 0004 */ PakLinkNode* m_prev;
+};
+
+struct PakIntrusiveLink {
+  /* 0000 */ unsigned int unknown_0000;
+  /* 0004 */ PakLinkNode* m_prev;
+  /* 0008 */ PakLinkNode* m_next;
+
+  void Unlink657820();
+};
+
+// OFFSET: 0x00657820
+// FUNCTION: fn_05092
+void PakIntrusiveLink::Unlink657820() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}

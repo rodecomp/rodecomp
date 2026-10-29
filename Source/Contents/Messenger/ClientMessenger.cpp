@@ -1255,3 +1255,95 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
   }
   return this;
 }
+
+struct MessengerLinkNode {
+  /* 0000 */ MessengerLinkNode* m_next;
+  /* 0004 */ MessengerLinkNode* m_prev;
+};
+
+struct MessengerIntrusiveLink {
+  /* 0000 */ unsigned int unknown_0000;
+  /* 0004 */ MessengerLinkNode* m_prev;
+  /* 0008 */ MessengerLinkNode* m_next;
+
+  void Unlink68B6A0();
+  void Unlink6A6100();
+  void Unlink6A6120();
+  void Unlink6A6140();
+  void Unlink6A6160();
+  void Unlink6A6180();
+  void Unlink6A61A0();
+  void Unlink6A61C0();
+  void Unlink6A61E0();
+  void Unlink6A6200();
+};
+
+// OFFSET: 0x0068B6A0
+// FUNCTION: fn_05611
+void MessengerIntrusiveLink::Unlink68B6A0() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
+
+// OFFSET: 0x006A6100
+// FUNCTION: fn_06045
+void MessengerIntrusiveLink::Unlink6A6100() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
+
+// OFFSET: 0x006A6120
+// FUNCTION: fn_06046
+void MessengerIntrusiveLink::Unlink6A6120() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
+
+// OFFSET: 0x006A6140
+// FUNCTION: fn_06047
+void MessengerIntrusiveLink::Unlink6A6140() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
+
+// OFFSET: 0x006A6160
+// FUNCTION: fn_06048
+void MessengerIntrusiveLink::Unlink6A6160() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
+
+// OFFSET: 0x006A6180
+// FUNCTION: fn_06049
+void MessengerIntrusiveLink::Unlink6A6180() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
+
+// OFFSET: 0x006A61A0
+// FUNCTION: fn_06050
+void MessengerIntrusiveLink::Unlink6A61A0() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
+
+// OFFSET: 0x006A61C0
+// FUNCTION: fn_06051
+void MessengerIntrusiveLink::Unlink6A61C0() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
+
+// OFFSET: 0x006A61E0
+// FUNCTION: fn_06052
+void MessengerIntrusiveLink::Unlink6A61E0() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
+
+// OFFSET: 0x006A6200
+// FUNCTION: fn_06053
+void MessengerIntrusiveLink::Unlink6A6200() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
