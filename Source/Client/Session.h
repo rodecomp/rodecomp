@@ -32,6 +32,10 @@ struct SessionRecord6144 {
   /* 0031 */ std::uint8_t unknown_0031[7];
 };
 
+struct SessionRecord6178 {
+  /* 0000 */ unsigned char unknown_0000[0x2C];
+};
+
 struct RobeAlpha {
   /* 0000 */ int from;
   /* 0004 */ int to;
@@ -246,7 +250,8 @@ public:
   /* 6144 */ std::map<int, SessionRecord6144> unknown_6144;
   /* 614C */ unsigned char unknown_614C[0x20];
   /* 616C */ std::vector<int> unknown_616C;
-  /* 6178 */ unsigned char unknown_6178[0x10];
+  /* 6178 */ std::vector<SessionRecord6178> unknown_6178;
+  /* 6184 */ unsigned char unknown_6184[0x04];
   /* 6188 */ int m_lastIntervalTime;
   /* 618C */ const char* const* m_doramMaleHeadNames;
   /* 6190 */ unsigned char unknown_6190[0x08];
@@ -321,6 +326,15 @@ public:
   bool IsShadowItemType(int type) const;
   bool IsConsumableItemType(int type) const;
   bool IsCostumeLocation(int location) const;
+  int GetMapProperty07() const;
+  int GetMapProperty08() const;
+  int GetMapProperty09() const;
+  int GetMapProperty0F() const;
+  int GetMapProperty10() const;
+  int GetMapProperty11() const;
+  int GetMapProperty12() const;
+  int GetMapProperty13() const;
+  bool HasUnknown6178Records() const;
   bool IsEquipItemType(int type) const;
   bool IsMiscItemType(int type) const;
   bool IsSuperNoviceJob(int job) const;
@@ -548,6 +562,7 @@ int MonsterJobColor(int job);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(SessionRecord6144) == 0x38);
+static_assert(sizeof(SessionRecord6178) == 0x2C);
 static_assert(sizeof(ProhibitionLogEntry) == 0x54);
 static_assert(offsetof(CSession, m_prohibitionLog) == 0x754);
 static_assert(offsetof(SessionRecord6144, unknown_002C) == 0x2C);

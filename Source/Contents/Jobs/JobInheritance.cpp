@@ -7,6 +7,7 @@
 #include "Contents/EquipmentResourceMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Jobs/JobId.h"
+#include "Contents/MapPropertyMgr.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
 #include "Contents/World/World.h"
 #include "File/MapName.h"
@@ -734,6 +735,54 @@ bool CSession::IsCostumeLocation(int location) const {
   return false;
 }
 
+// OFFSET: 0x00E1DAA0
+// FUNCTION: fn_23860
+int CSession::GetMapProperty08() const {
+  return g_mapPropertyMgr->GetValue(this->unknown_0000, 8);
+}
+
+// OFFSET: 0x00E1DAB0
+// FUNCTION: fn_23861
+int CSession::GetMapProperty07() const {
+  return g_mapPropertyMgr->GetValue(this->unknown_0000, 7);
+}
+
+// OFFSET: 0x00E1DAC0
+// FUNCTION: fn_23862
+int CSession::GetMapProperty13() const {
+  return g_mapPropertyMgr->GetValue(this->unknown_0000, 0x13);
+}
+
+// OFFSET: 0x00E1DAD0
+// FUNCTION: fn_23863
+int CSession::GetMapProperty11() const {
+  return g_mapPropertyMgr->GetValue(this->unknown_0000, 0x11);
+}
+
+// OFFSET: 0x00E1DAE0
+// FUNCTION: fn_23864
+int CSession::GetMapProperty10() const {
+  return g_mapPropertyMgr->GetValue(this->unknown_0000, 0x10);
+}
+
+// OFFSET: 0x00E1DAF0
+// FUNCTION: fn_23865
+int CSession::GetMapProperty12() const {
+  return g_mapPropertyMgr->GetValue(this->unknown_0000, 0x12);
+}
+
+// OFFSET: 0x00E1DB00
+// FUNCTION: fn_23866
+int CSession::GetMapProperty09() const {
+  return g_mapPropertyMgr->GetValue(this->unknown_0000, 9);
+}
+
+// OFFSET: 0x00E1DB10
+// FUNCTION: fn_23867
+int CSession::GetMapProperty0F() const {
+  return g_mapPropertyMgr->GetValue(this->unknown_0000, 0xF);
+}
+
 // OFFSET: 0x00E1DB20
 // FUNCTION: fn_23868
 bool CSession::IsEquipItemType(int type) const {
@@ -750,6 +799,12 @@ bool CSession::IsMiscItemType(int type) const {
     return true;
   }
   return false;
+}
+
+// OFFSET: 0x00E1DBA0
+// FUNCTION: fn_23870
+bool CSession::HasUnknown6178Records() const {
+  return this->unknown_6178.size() != 0;
 }
 
 // OFFSET: 0x00E1DC00
