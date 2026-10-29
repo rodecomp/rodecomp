@@ -4,16 +4,19 @@
 #include "Contents/Effects/Particle.h"
 
 // OFFSET: 0x00701BB0
+// FUNCTION: fn_06999
 CFriggSongEffect::CFriggSongEffect() : CEffect(0x423), lastInner{} {
   this->unknown_002C = EffectLifetime(0x423);
 }
 
 // OFFSET: 0x007021A0
+// FUNCTION: fn_07003
 void CFriggSongEffect::Slot12() {
   this->AddEvent(0, "effect\\wm_frigg_song.wav", 0, 0);
 }
 
 // OFFSET: 0x007027A0
+// FUNCTION: fn_07006
 void CFriggSongEffect::Slot04() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
