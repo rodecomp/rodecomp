@@ -8,6 +8,9 @@ void ServerTimeManager::Initialize() {
 }
 
 // OFFSET: 0x0053E500
+// FUNCTION: fn_01686
+ServerTimeManager::~ServerTimeManager() {
+}
 
 // OFFSET: 0x0053E6A0
 // FUNCTION: fn_01689
@@ -46,5 +49,26 @@ int ServerTimeManager::GetYear() const {
 }
 
 // OFFSET: 0x0053E910
+// FUNCTION: fn_01695
+void ServerTimeManager::Reset() {
+  this->offset = std::chrono::seconds::zero();
+  this->Update();
+}
 
 // OFFSET: 0x0053E930
+// FUNCTION: fn_01696
+void ServerTimeManager::Update() {
+  this->now = std::chrono::system_clock::now();
+  this->now += this->offset;
+
+  const std::time_t seconds = std::chrono::system_clock::to_time_t(this->now);
+  std::tm local;
+  if (localtime_s(&local, &seconds) == 0) {
+    this->year = local.tm_year + 1900;
+    this->month = local.tm_mon + 1;
+    this->day = local.tm_mday;
+    this->hour = local.tm_hour;
+    this->minute = local.tm_min;
+    this->second = local.tm_sec;
+  }
+}

@@ -76,7 +76,20 @@ void ModelScaleKeys::Add(int frame, float scaleX, float scaleY, float scaleZ, fl
 }
 
 // OFFSET: 0x005402D0
+// FUNCTION: fn_01718
+ModelPositionKeysV2& ModelPositionKeysV2::operator=(const ModelPositionKeysV2& other) {
+  return static_cast<ModelPositionKeysV2&>(std::vector<ModelVectorKey>::operator=(other));
+}
 
 // OFFSET: 0x005402E0
+// FUNCTION: fn_01719
+void ModelQuaternionKeys::operator=(const ModelQuaternionKeys& other) {
+  this->clear();
+  std::vector<ModelQuaternionKey>::operator=(other);
+}
 
 // OFFSET: 0x00540360
+// FUNCTION: fn_01720
+ModelScaleKeysV2& ModelScaleKeysV2::operator=(const ModelScaleKeysV2& other) {
+  return static_cast<ModelScaleKeysV2&>(std::vector<ModelVectorKey>::operator=(other));
+}
