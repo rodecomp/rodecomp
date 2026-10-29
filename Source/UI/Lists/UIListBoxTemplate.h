@@ -12,7 +12,11 @@
 
 class CUIListItem : public CUIControl {
 public:
+  void Slot27(int x, int y) override;
+  void Slot31(int x, int y) override;
   virtual void SetSelected(bool selected);
+  virtual void SetHighlighted(bool highlighted);
+  virtual void SetFrozen(bool frozen);
 
   /* 0084 */ unsigned char unknown_0084[0x04];
   /* 0088 */ int selected;

@@ -3,6 +3,7 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <windows.h>
 
@@ -211,6 +212,18 @@ void CUIVScrollBar::Slot54() {
   this->thumb->Move(0, static_cast<int>(offset + static_cast<float>(this->upButton->geometry.height)));
 }
 
+// OFFSET: 0x009F01F0
+
+// OFFSET: 0x009F0230
+// FUNCTION: fn_14659
+void CUIListItem::Slot27(int, int) {
+  if (this->selected != 2) {
+    this->Slot47();
+  }
+}
+
+// OFFSET: 0x009F0250
+
 // OFFSET: 0x009F0290
 // FUNCTION: fn_14661
 void CUIListItem::SetSelected(bool selected) {
@@ -221,6 +234,8 @@ void CUIListItem::SetSelected(bool selected) {
     }
   }
 }
+
+// OFFSET: 0x009F02C0
 
 template void CUIListBox<AdventureGuide::CUITab>::Resize(int, int);
 template void CUIListBox<AdventureGuide::CUISubTab>::Resize(int, int);
