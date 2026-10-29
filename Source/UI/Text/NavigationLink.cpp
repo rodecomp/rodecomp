@@ -5,14 +5,25 @@
 #include <cstdlib>
 #include <cstring>
 #include <mbstring.h>
+#include <new>
 #include <vector>
+#include <windows.h>
+#include <timeapi.h>
 
+#include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/TextureNames.h"
+#include "UI/Buttons/UIButton.h"
+#include "UI/Text/ColoredText.h"
 #include "UI/Window/UIWindow.h"
 
 namespace LineCutter {
   class UIText : public UIWindow {
   public:
+    void Paint() override;
     void Slot25(int x, int y) override;
     void Slot26(int x, int y) override;
     void Slot27(int x, int y) override;
@@ -22,14 +33,79 @@ namespace LineCutter {
     void Slot33(int x, int y) override;
     void Slot35(int value) override;
 
-    /* 0080 */ unsigned char unknown_0080[0x18];
+    /* 007C */ std::uint32_t m_color;
+    /* 0080 */ int m_fontHeight;
+    /* 0084 */ unsigned char m_bold;
+    /* 0085 */ unsigned char m_italic;
+    /* 0088 */ unsigned char m_outlined;
+    /* 008C */ std::uint32_t m_outlineColor;
+    /* 0090 */ unsigned char m_shadowed;
+    /* 0094 */ std::uint32_t m_shadowColor;
     /* 0098 */ std::string m_text;
+    UIButtonContext* m_controls;
   };
 }
 
+class UIEmotion : public UIWindow {
+public:
+  void Slot19() override;
+
+protected:
+  /* 007C */ unsigned m_animation;
+  /* 0080 */ unsigned m_frame;
+  /* 0084 */ unsigned m_maxLoops;
+  /* 0088 */ std::uint32_t unknown_0088;
+  /* 008C */ CActRes* m_action;
+  /* 0090 */ std::uint32_t m_startTime;
+  /* 0094 */ unsigned m_loops;
+};
+
+class UIItemImage : public UIWindow {
+public:
+  void Paint() override;
+
+protected:
+  /* 007C */ std::string m_itemId;
+  ItemDescriptions* m_descriptions;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(LineCutter::UIText) == 0xB0);
+static_assert(sizeof(LineCutter::UIText) == 0xB4);
 #endif
+
+// GLOBAL: gl_24668
+NavigationLinkParser* g_navigationLinkParser;
+
+// OFFSET: 0x00833960
+// FUNCTION: fn_10412
+bool CreateNavigationLinkParser() {
+  if (g_navigationLinkParser) {
+    return false;
+  }
+
+  g_navigationLinkParser = new (std::nothrow) NavigationLinkParser;
+
+  if (!g_navigationLinkParser) {
+    return false;
+  }
+
+  if (!g_navigationLinkParser->m_ready) {
+    delete g_navigationLinkParser;
+    g_navigationLinkParser = nullptr;
+    return false;
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00833A00
+// FUNCTION: fn_10413
+void DestroyNavigationLinkParser() {
+  if (g_navigationLinkParser) {
+    delete g_navigationLinkParser;
+    g_navigationLinkParser = nullptr;
+  }
+}
 
 // OFFSET: 0x00833160
 // FUNCTION: fn_10409
@@ -294,3 +370,31 @@ void LineCutter::UIText::Slot35(int value) {
     this->parent->Slot35(value);
   }
 }
+
+// OFFSET: 0x0083B150
+
+// OFFSET: 0x0083B460
+// FUNCTION: fn_10478
+void UIEmotion::Slot19() {
+  if (!this->m_action || this->m_action->Speed(this->m_animation) == 0.0f) {
+    return;
+  }
+
+  const float elapsed = static_cast<float>(timeGetTime() - this->m_startTime);
+  const unsigned frames = static_cast<unsigned>(elapsed / (this->m_action->Speed(this->m_animation) * 24.0f));
+
+  if (this->m_maxLoops != 0) {
+    if (this->m_loops > this->m_maxLoops) {
+      return;
+    }
+
+    if (frames >= this->m_action->FrameCount(this->m_animation) * this->m_loops) {
+      this->m_loops = this->m_loops + 1;
+    }
+  }
+
+  this->m_frame = frames % this->m_action->FrameCount(this->m_animation);
+  this->Invalidate();
+}
+
+// OFFSET: 0x0083B0A0

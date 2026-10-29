@@ -3,6 +3,16 @@
 
 #include <string>
 
+struct NavigationLinkParser {
+  NavigationLinkParser() : m_ready(true) {}
+
+  /* 0000 */ bool m_ready;
+};
+
+extern NavigationLinkParser* g_navigationLinkParser;
+
+bool CreateNavigationLinkParser();
+void DestroyNavigationLinkParser();
 std::string FormatMessageArguments(std::string value, int messageId);
 int DecodeNavigationNumber(std::string value);
 std::string EncodeNavigationNumber(int value);
