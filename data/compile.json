@@ -354,6 +354,7 @@
   "Source/Contents/Ground/TerrainPlane.cpp": 4,
   "Source/Contents/GuildEmblemLookup.cpp": 4,
   "Source/Contents/GuildEmblemState.cpp": 4,
+  "Source/Contents/GuildInfo.cpp": 4,
   "Source/Contents/GuildMgr.cpp": 4,
   "Source/Contents/HeadResources.cpp": 4,
   "Source/Contents/Hotkeys/EmotionHotkeys.cpp": 4,
