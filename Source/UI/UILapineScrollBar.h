@@ -3,6 +3,7 @@
 
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/UIScrollWnd.h"
 
 #include <cstddef>
 #include <vector>
@@ -12,19 +13,6 @@ class UILapineUpgradeBox_IngredientInfoWnd;
 class UILapineScrollBar : public UIScrollBar {
 public:
   void Paint() override;
-};
-
-class UIScrollWnd : public UIWindow {
-public:
-  /* 0080 */ unsigned char unknown_0080[0x10];
-  /* 0090 */ UIScrollBar* scrollBar;
-  /* 0094 */ int scrollBarWidth;
-  /* 0098 */ int scrollBarHeight;
-  /* 009C */ int unknown_009C;
-  /* 00A0 */ int scrollPosition;
-  /* 00A4 */ unsigned char unknown_00A4;
-  /* 00A5 */ unsigned char wheelScroll;
-  /* 00A8 */ unsigned char unknown_00A8[8];
 };
 
 class UILapineUpgradeBox_IngredientListWnd : public UIScrollWnd {

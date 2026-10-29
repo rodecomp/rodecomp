@@ -771,6 +771,7 @@
   "Source/UI/UILapineUpgradeBoxWnd.cpp": 2,
   "Source/UI/UIMacroBlackListCheckWnd.cpp": 2,
   "Source/UI/UIRoundBoxTooltipWnd.cpp": 2,
+  "Source/UI/UIScrollWnd.cpp": 2,
   "Source/UI/UIStaticBitmap.cpp": 2,
   "Source/UI/Window/FrameFocus.cpp": 2,
   "Source/UI/Window/FrameTextCache.cpp": 2,
