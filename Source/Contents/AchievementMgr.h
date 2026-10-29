@@ -28,18 +28,23 @@ static_assert(sizeof(AchievementInfo) == 0x80);
 
 class CAchievementMgr {
 public:
-  static void DestroyInstance();
-
-  /* 0004 */ bool unknown_0004;
-  /* 0008 */ int groupWidth;
-  /* 000C */ std::map<int, AchievementInfo> achievements;
-  /* 0014 */ std::map<int, std::vector<int>> groups;
-
+  // INLINED
+  CAchievementMgr() : unknown_0004(true), groupWidth(10) {
+  }
   // INLINED
   virtual ~CAchievementMgr() {
     this->achievements.clear();
     this->groups.clear();
   }
+
+  static bool CreateInstance();
+  static void DestroyInstance();
+  bool sub_66EAA0();
+
+  /* 0004 */ bool unknown_0004;
+  /* 0008 */ int groupWidth;
+  /* 000C */ std::map<int, AchievementInfo> achievements;
+  /* 0014 */ std::map<int, std::vector<int>> groups;
 
   bool GetAchievement(AchievementInfo& out, int id);
   std::string GetUnknown0068(int id);

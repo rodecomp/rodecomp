@@ -1,9 +1,39 @@
 #include "Contents/AchievementMgr.h"
 
+#include <new>
 #include <utility>
 
 // GLOBAL: gl_24856
 CAchievementMgr* g_achievementMgr;
+
+// OFFSET: 0x0066D3A0
+// FUNCTION: fn_05311
+bool CAchievementMgr::CreateInstance() {
+  if (g_achievementMgr != nullptr) {
+    return false;
+  }
+
+  g_achievementMgr = new (std::nothrow) CAchievementMgr();
+  if (g_achievementMgr == nullptr) {
+    return false;
+  }
+
+  if (!g_achievementMgr->unknown_0004) {
+    delete g_achievementMgr;
+    g_achievementMgr = nullptr;
+    return false;
+  }
+
+  if (!g_achievementMgr->sub_66EAA0()) {
+    if (g_achievementMgr != nullptr) {
+      delete g_achievementMgr;
+    }
+    g_achievementMgr = nullptr;
+    return false;
+  }
+
+  return true;
+}
 
 // OFFSET: 0x0066D500
 // FUNCTION: fn_05312
