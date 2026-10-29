@@ -3,9 +3,19 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "Resource/TextureNames.h"
+#include "Script/NLuaState.h"
+#include "Utility/Cipher/XorBytes.h"
+
+extern "C" {
+#include <lauxlib.h>
+#include <lua.h>
+#include <lualib.h>
+}
 
 #include <algorithm>
 #include <cctype>
+#include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 #include <mbstring.h>
 #include <new>
@@ -15,6 +25,35 @@
 CTipBoxMgr* g_itemTagOwner = nullptr;
 
 namespace {
+  template <std::size_t Length, std::uint64_t Key>
+  class EncryptedName {
+  public:
+    explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = source[index];
+      }
+    }
+
+    ~EncryptedName() {
+      for (std::uint64_t index = 0; index < Length; ++index) {
+        this->m_text[index] = 0;
+      }
+    }
+
+    const char* Text() {
+      if (this->m_encrypted) {
+        utility::XorBytes(this->m_text, Length, Key);
+        this->m_encrypted = false;
+      }
+
+      return reinterpret_cast<const char*>(this->m_text);
+    }
+
+  private:
+    std::uint8_t m_text[Length];
+    bool m_encrypted;
+  };
+
   // OFFSET: 0x009B45D0
   // FUNCTION: fn_13832
   void SplitTitle(const char* text, std::vector<std::string>& lines, int width, unsigned short codePage) {
@@ -244,6 +283,72 @@ void CTipBoxMgr::Sub7ACF50() {
     this->m_image.kind = 1;
     this->m_image.height = static_cast<float>(image->height) * scale;
   }
+}
+
+int sub_7AEC00(lua_State* state);
+int sub_7AE900(lua_State* state);
+int sub_7AE600(lua_State* state);
+int sub_7AEAF0(lua_State* state);
+int sub_7AEA20(lua_State* state);
+
+// OFFSET: 0x007AD480
+// FUNCTION: fn_09129
+bool CTipBoxMgr::RegisterLuaFunctions() {
+  NLuaState state;
+  if (!state.IsValid()) {
+    return false;
+  }
+
+  luaL_openlibs(state.GetState());
+  lua_register(state.GetState(), "AddTip", sub_7AEC00);
+  lua_register(state.GetState(), "AddImgcoord", sub_7AE900);
+  lua_register(state.GetState(), "AddPageEx", sub_7AE600);
+  lua_register(state.GetState(), "AddPage", sub_7AEAF0);
+  lua_register(state.GetState(), "AddIsTag", sub_7AEA20);
+
+  const std::uint8_t source[] = {
+    0xF4, 0xCA, 0x76, 0xBD, 0xC0, 0x0E, 0xB7, 0x7F,
+    0xCE, 0xC3, 0x67, 0xA6, 0xDD, 0x4D, 0x87, 0x7E,
+    0xC6, 0xB3
+  };
+  thread_local EncryptedName<sizeof(source), 0x0BEB63A5C905B3A7ULL> name(source);
+
+  if (luaL_loadfile(state.GetState(), name.Text()) != 0) {
+    const std::uint8_t secondSource[] = {
+      0x9A, 0xCE, 0x56, 0xE3, 0xDE, 0x5E, 0xDF, 0x73,
+      0xA0, 0xC7, 0x47, 0xF8, 0xC3, 0x1D, 0xEF, 0x72,
+      0xAB, 0xB7
+    };
+    thread_local EncryptedName<sizeof(secondSource), 0x078333BB9725B7C9ULL> secondName(secondSource);
+
+    if (luaL_loadfile(state.GetState(), secondName.Text()) != 0) {
+      MessageBoxA(nullptr, lua_tostring(state.GetState(), -1), "TipBox", MB_OK);
+      return false;
+    }
+  }
+
+  if (lua_pcall(state.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state.GetState(), -1), "TipBox", MB_OK);
+    return false;
+  }
+
+  lua_getglobal(state.GetState(), "main");
+  if (lua_pcall(state.GetState(), 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state.GetState(), -1), "TipBox", MB_OK);
+    return false;
+  }
+
+  if (!lua_isstring(state.GetState(), -1)) {
+    MessageBoxA(nullptr, "second return value is not string...", "TipBox", MB_OK);
+    return false;
+  }
+
+  if (lua_toboolean(state.GetState(), -2)) {
+    return true;
+  }
+
+  MessageBoxA(nullptr, (std::string("error found :") + lua_tostring(state.GetState(), -1)).c_str(), "TipBox", MB_OK);
+  return false;
 }
 
 // OFFSET: 0x007AD890

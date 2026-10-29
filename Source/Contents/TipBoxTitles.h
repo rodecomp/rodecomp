@@ -58,7 +58,7 @@ public:
   TipBoxEntry& SelectRandomTip();
   const TipBoxEntry& GetTip(int id) const;
   void Sub7ACF50();
-  void RegisterLuaFunctions();
+  bool RegisterLuaFunctions();
   bool IsLastTip() const;
   bool HasImages() const;
   bool HasSearchResults() const;
