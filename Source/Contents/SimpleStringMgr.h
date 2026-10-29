@@ -1,9 +1,12 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_SIMPLESTRINGMGR_H
 #define RAGNAROK_SOURCE_CONTENTS_SIMPLESTRINGMGR_H
 
+#include <any>
 #include <cstddef>
+#include <functional>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 // VTABLE: vt_00755
 class CSimpleStringMgr {
@@ -22,6 +25,11 @@ public:
   }
 
   static void Destroy();
+  void Init();
+  void LoadCsv(const char* name, std::function<std::vector<std::string>(std::vector<std::string>&)> transform,
+               std::function<void(std::vector<const char*>&, std::any)> insert, std::any context);
+  std::vector<std::string> TransformFields(const std::vector<std::string>& fields);
+  void AddString(STR_TYPE type, const char* key, const char* value);
   const char* GetString(const char* key);
 
   /* 0004 */ bool m_initialized;
