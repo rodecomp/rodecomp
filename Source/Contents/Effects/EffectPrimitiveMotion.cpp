@@ -2299,3 +2299,8 @@ void EffectParticle::FollowMasterAndTickSlots() {
 }
 
 // OFFSET: 0x00BE8770
+// FUNCTION: fn_19944
+void EffectParticle::FollowMasterAndTickSlots2() {
+  FollowMaster(*this);
+  TickLiveSlots(this->state.slots);
+}
