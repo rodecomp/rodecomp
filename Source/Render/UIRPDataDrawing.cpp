@@ -44,8 +44,8 @@ void UIRPData::DrawStretched(RenderPrimitivePool& pool, int x, int y, CTexture* 
 
 // OFFSET: 0x008134B0
 // FUNCTION: fn_10122
-void UIRPData::DrawNamed(RenderPrimitivePool& pool, TextureCache& textures, int x, int y, std::string name, std::uint32_t color, int width, int height) {
-  CTexture* texture = textures.Load(name.c_str(), 0, true, true, false);
+void UIRPData::DrawNamed(RenderPrimitivePool& pool, int x, int y, std::string name, std::uint32_t color, int width, int height) {
+  CTexture* texture = g_texMgr.Load(name.c_str(), 0, true, true, false);
   if (!texture) {
     return;
   }

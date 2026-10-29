@@ -3,6 +3,7 @@
 #include "Render/DX9/RendererFrameDX9.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/TextureNames.h"
 
 #include <memory>
 
@@ -119,7 +120,7 @@ bool CRendererDX9::SaveBitmapResource(const char* filename, int format, CBitmapR
 
   if (bitmap) {
     const auto& image = bitmap->image;
-    overlay.reset(this->m_context->textures.Upload(image.width, image.height, image.pixels, image.alpha != 0, 0, false, false, false));
+    overlay.reset(g_texMgr.Upload(image.width, image.height, image.pixels, image.alpha != 0, 0, false, false, false));
   }
 
   auto& context = this->TextureContext();
@@ -146,8 +147,8 @@ void CRendererDX9::CleanupTextures() {
 // OFFSET: 0x005682D0
 // FUNCTION: fn_02237
 bool CRendererDX9::SaveLogo(std::string filename) {
-  const char* name = this->m_context->sources.Resolve("scr_logo.bmp");
-  CTexture* overlay = this->m_context->textures.Load(name, 0, false, true, false);
+  const char* name = Resolve("scr_logo.bmp");
+  CTexture* overlay = g_texMgr.Load(name, 0, false, true, false);
   auto& context = this->TextureContext();
 
   return this->Operations(context).SaveScreenshot(*this->device, &this->m_context->system, filename.c_str(), 1, overlay, nullptr);

@@ -148,7 +148,7 @@ void C3dModelResV2::ReadVersion1(ResourceByteReader& input) {
     for (int texture = 0; texture < nodeTextureCount; ++texture) {
       int textureIndex = 0;
       input.Read(&textureIndex, 4);
-      CTexture* loaded = this->m_context->textures.Load(textureNames[textureIndex].c_str(), 0, false, true, false);
+      CTexture* loaded = g_texMgr.Load(textureNames[textureIndex].c_str(), 0, false, true, false);
       node->textures.push_back(loaded);
 
       if (loaded) {
@@ -277,7 +277,7 @@ void C3dModelResV2::ReadVersion2(ResourceByteReader& input) {
     for (int texture = 0; texture < nodeTextureCount; ++texture) {
       int textureIndex = 0;
       input.Read(&textureIndex, 4);
-      CTexture* loaded = this->m_context->textures.Load(textureNames[textureIndex].c_str(), 0, false, true, false);
+      CTexture* loaded = g_texMgr.Load(textureNames[textureIndex].c_str(), 0, false, true, false);
       node->textures.push_back(loaded);
 
       if (loaded) {
@@ -386,7 +386,7 @@ void C3dModelResV2::ReadVersion3(ResourceByteReader& input) {
       input.Read(&textureBytes, 4);
       char textureName[40]{};
       input.Read(textureName, textureBytes);
-      CTexture* loaded = this->m_context->textures.Load(textureName, 0, false, true, false);
+      CTexture* loaded = g_texMgr.Load(textureName, 0, false, true, false);
       node->textures.push_back(loaded);
 
       if (loaded) {

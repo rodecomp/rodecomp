@@ -31,7 +31,7 @@ public:
   ~BinkMovies();
   NamedBinkMovie* Get(std::string name, int loop);
   void AddPosition(NamedBinkMovie& movie, float x, float y, float z);
-  void Update(TextureCache& textures, const float* playerPosition, int volume);
+  void Update(const float* playerPosition, int volume);
 
 private:
   /* 0000 */ std::list<std::unique_ptr<NamedBinkMovie>> m_movies;

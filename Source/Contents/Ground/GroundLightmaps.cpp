@@ -19,7 +19,7 @@ void GroundGeometry::ClearLightmaps() {
 
 // OFFSET: 0x00AC0360
 // FUNCTION: fn_17565
-void GroundGeometry::BuildLightmaps(CGndRes& resource, TextureCache& textures) {
+void GroundGeometry::BuildLightmaps(CGndRes& resource) {
   this->ClearLightmaps();
   this->lightmaps.resize(static_cast<unsigned>(resource.lightmapCount));
   const unsigned atlasCount = (static_cast<unsigned>(resource.lightmapCount) + 1023u) / 1024u;
@@ -68,7 +68,7 @@ void GroundGeometry::BuildLightmaps(CGndRes& resource, TextureCache& textures) {
       }
     }
 
-    this->lightmapTextures.push_back(textures.Upload(256, 256, pixels.data(), 4, 0, false, false, false));
+    this->lightmapTextures.push_back(g_texMgr.Upload(256, 256, pixels.data(), 4, 0, false, false, false));
   }
 
   for (unsigned index = 0; index < this->lightmaps.size(); ++index) {

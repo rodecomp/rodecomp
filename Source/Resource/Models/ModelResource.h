@@ -93,7 +93,6 @@ public:
 
 struct ModelResourceContext {
   ResourceBytes& file;
-  TextureCache& textures;
   CRenderSystemBase*& renderSystem;
 };
 

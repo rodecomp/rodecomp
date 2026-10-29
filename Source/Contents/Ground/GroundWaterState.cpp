@@ -23,7 +23,7 @@ void GroundWaterState::Set(float newLevel, int newType, int newAnimation, int ne
 
 // OFFSET: 0x00AC30D0
 // FUNCTION: fn_17599
-bool GroundWaterState::Import(const CGndRes& resource, TextureCache& textures) {
+bool GroundWaterState::Import(const CGndRes& resource) {
   if (resource.major == 1 && resource.minor >= 8) {
     this->columns = resource.waterWidth;
     this->rows = resource.waterHeight;
@@ -48,7 +48,7 @@ bool GroundWaterState::Import(const CGndRes& resource, TextureCache& textures) {
     this->levels.push_back(this->level);
   }
 
-  this->Update(textures);
+  this->Update();
   this->partitioned = this->levels.size() > 1;
   return this->partitioned;
 }
@@ -67,7 +67,7 @@ float GroundWaterState::Level(int width, int height, int column, int row) const 
 
 // OFFSET: 0x00AC1430
 // FUNCTION: fn_17581
-void GroundWaterState::Update(TextureCache& textures) {
+void GroundWaterState::Update() {
   // STATIC: 0x01159248
   constexpr char format[] = "워터\\water%d%02d.jpg";
   char name[32]{};
@@ -82,7 +82,7 @@ void GroundWaterState::Update(TextureCache& textures) {
 
     const int image = (surface.frame / surface.animation) % 32;
     _snprintf_s(name, sizeof(name), _TRUNCATE, format, surface.type, image);
-    surface.texture = textures.Load(name, 0, false, true, false);
+    surface.texture = g_texMgr.Load(name, 0, false, true, false);
     const float phase = surface.speed + surface.phase;
     surface.phase = phase;
 

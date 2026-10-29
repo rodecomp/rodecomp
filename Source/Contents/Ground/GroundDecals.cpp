@@ -105,9 +105,9 @@ void GroundGeometry::DrawGridDecal(
 // OFFSET: 0x00AC16D0
 // FUNCTION: fn_17587
 void GroundGeometry::DrawGrid(
-  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, TextureCache& textures, GroundRenderContext& context
+  const C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, GroundRenderContext& context
 ) const {
-  CTexture* texture = textures.Load("grid.tga", 0, false, true, false);
+  CTexture* texture = g_texMgr.Load("grid.tga", 0, false, true, false);
   // STATIC: 0x01347EB0
   constexpr float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
   this->DrawGridDecal(terrain, matrix, column, row, color, *texture, uv, context);

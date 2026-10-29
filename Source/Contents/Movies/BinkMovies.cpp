@@ -57,14 +57,14 @@ void BinkMovies::AddPosition(NamedBinkMovie& movie, float x, float y, float z) {
 
 // OFFSET: 0x007B04F0
 // FUNCTION: fn_09166
-void BinkMovies::Update(TextureCache& textures, const float* playerPosition, int volume) {
+void BinkMovies::Update(const float* playerPosition, int volume) {
   for (const auto& movie : this->m_movies) {
     if (!movie || !movie->decoder || movie->name.empty()) {
       continue;
     }
 
     if (movie->decoder->Update()) {
-      CTexture* texture = textures.Load(movie->name.c_str(), 0, false, true, false);
+      CTexture* texture = g_texMgr.Load(movie->name.c_str(), 0, false, true, false);
 
       if (texture) {
         movie->decoder->CopyTo(texture);

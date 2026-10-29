@@ -6,7 +6,7 @@
 // OFFSET: 0x0054E460
 // FUNCTION: fn_01952
 void DrawAlphaRectangle(
-  RenderPrimitivePool& primitives, TextureCache& textures, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha,
+  RenderPrimitivePool& primitives, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha,
   float depthStart, float depthEnd
 ) {
   if ((color & 0xFF000000u) == 0) {
@@ -14,7 +14,7 @@ void DrawAlphaRectangle(
   }
 
   RenderPrimitive* primitive = primitives.Acquire();
-  primitive->texture = textures.Default();
+  primitive->texture = g_texMgr.Default();
   const float left = static_cast<float>(x);
   const float top = static_cast<float>(y);
   const float right = static_cast<float>(x + width);

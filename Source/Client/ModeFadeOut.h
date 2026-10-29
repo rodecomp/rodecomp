@@ -8,7 +8,7 @@ class CRenderSystemBase;
 class TextureCache;
 class ResourceMgr;
 
-std::uint32_t FadeOutMode(CRenderer& renderer, CRenderSystemBase& system, TextureCache& textures, ResourceMgr& resources,
+std::uint32_t FadeOutMode(CRenderer& renderer, CRenderSystemBase& system, ResourceMgr& resources,
   int showLogo, bool depthAlpha, float depthStart, float depthEnd);
 
 #endif

@@ -10,12 +10,12 @@
 
 class BinkMovies;
 
-class ClientTextureSources : public TextureSources {
+class ClientTextureSources {
 public:
   ClientTextureSources(const int& modeType, BinkMovies* const& movies, CRenderSystemBase*& system, IDirectDraw7* const& directDraw);
-  const char* Resolve(const char* name) override;
-  bool MovieSize(const char* name, int& width, int& height) override;
-  void CleanupTextures() override;
+  const char* Resolve(const char* name);
+  bool MovieSize(const char* name, int& width, int& height);
+  void CleanupTextures();
 
 private:
   const int& m_modeType;

@@ -2,6 +2,7 @@
 #include "Render/Textures/Texture.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Resource/EZeffectResource.h"
+#include "Render/Textures/TextureCache.h"
 
 #include <string>
 
@@ -94,9 +95,9 @@ void CEZeffectRes::Unload() {
 
 // OFFSET: 0x0074D850
 // FUNCTION: fn_07897
-CTexture* EZeffectClip::Texture(int index, EffectTextures& owner) {
+CTexture* EZeffectClip::Texture(int index) {
   if (index >= this->textureCount) {
-    return owner.Default();
+    return g_texMgr.Default();
   }
 
   if (!this->textures[index]) {
@@ -106,7 +107,7 @@ CTexture* EZeffectClip::Texture(int index, EffectTextures& owner) {
       path.append(".bmp", 4);
     }
 
-    this->textures[index] = owner.Load(path.c_str(), 1, false, true, false);
+    this->textures[index] = g_texMgr.Load(path.c_str(), 1, false, true, false);
 
     if (this->textures[index]) {
       this->textures[index]->Retain();
@@ -118,9 +119,9 @@ CTexture* EZeffectClip::Texture(int index, EffectTextures& owner) {
 
 // OFFSET: 0x0074D9A0
 // FUNCTION: fn_07898
-CTexture* EZeffectClip::Texture(int index, const char* prefix, EffectTextures& owner) {
+CTexture* EZeffectClip::Texture(int index, const char* prefix) {
   if (index >= this->textureCount) {
-    return owner.Default();
+    return g_texMgr.Default();
   }
 
   if (!this->textures[index]) {
@@ -130,7 +131,7 @@ CTexture* EZeffectClip::Texture(int index, const char* prefix, EffectTextures& o
       path.append(".bmp", 4);
     }
 
-    this->textures[index] = owner.Load(path.c_str(), 1, false, true, false);
+    this->textures[index] = g_texMgr.Load(path.c_str(), 1, false, true, false);
 
     if (this->textures[index]) {
       this->textures[index]->Retain();

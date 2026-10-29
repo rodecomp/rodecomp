@@ -11,7 +11,7 @@
 
 // INLINED
 inline bool ImportWorldGround(
-  const C3dWorldRes& world, ResourceMgr& resources, TextureCache& textures, CRenderSystemBase* renderSystem, C3dAttr*& terrain, GroundGeometry*& ground,
+  const C3dWorldRes& world, ResourceMgr& resources, CRenderSystemBase* renderSystem, C3dAttr*& terrain, GroundGeometry*& ground,
   int& nearbyRange, const float* lightDirection, const float* diffuse, const float* ambient
 ) {
   if (world.terrainName.empty()) {
@@ -47,11 +47,11 @@ inline bool ImportWorldGround(
   }
 
   ground = new GroundGeometry;
-  ground->Build(*resource, textures, lightDirection, diffuse, ambient);
+  ground->Build(*resource, lightDirection, diffuse, ambient);
   const int pitch = TruncateToInt(world.waveSpeed);
   const int phase = TruncateToInt(world.wavePitch);
   ground->water.Set(world.waterLevel, world.waterType, world.waterAnimation, pitch, phase, world.waveHeight);
-  ground->water.Import(*resource, textures);
+  ground->water.Import(*resource);
   resources.Remove(resource);
 
   return true;

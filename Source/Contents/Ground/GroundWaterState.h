@@ -23,8 +23,8 @@ struct GroundWaterSurface {
 struct GroundWaterState {
   GroundWaterState();
   void Set(float level, int type, int animation, int pitch, int phase, float height);
-  bool Import(const CGndRes& resource, TextureCache& textures);
-  void Update(TextureCache& textures);
+  bool Import(const CGndRes& resource);
+  void Update();
   float Level(int width, int height, int column, int row) const;
 
   float level;

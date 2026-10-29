@@ -1,13 +1,25 @@
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Movies/BinkMovies.h"
+#include "Contents/World/World.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/RenderSystemBase.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 
 #include <cstring>
+#include <string>
 #include <windows.h>
 #include <timeapi.h>
+
+// GLOBAL: gl_24639
+int g_textureReduction = 1;
+
+// GLOBAL: gl_24638
+TextureCache g_texMgr;
 
 // INLINED
 bool TextureNameLess::operator()(const char* left, const char* right) const {
@@ -16,8 +28,7 @@ bool TextureNameLess::operator()(const char* left, const char* right) const {
 
 // OFFSET: 0x004074F5
 // FUNCTION: fn_00152
-TextureCache::TextureCache(ResourceMgr& resources, CRenderSystemBase*& system, TextureSources& sources, const int& reduction, const unsigned& reuseDelay)
-    : m_resources(resources), m_system(system), m_sources(sources), m_reduction(reduction), m_reuseDelay(reuseDelay) {
+TextureCache::TextureCache() {
 }
 
 // OFFSET: 0x005713C0
@@ -29,15 +40,15 @@ TextureCache::~TextureCache() {
 // OFFSET: 0x00571790
 // FUNCTION: fn_02453
 CTexture* TextureCache::Default() {
-  return this->m_system ? this->m_system->BackBufferTexture() : nullptr;
+  return GetRenderSystemHolder()->BackBufferTexture();
 }
 
 // OFFSET: 0x005715E0
 // FUNCTION: fn_02449
 CTexture* TextureCache::Upload(int width, int height, const std::uint32_t* pixels, int format, int option, bool fullSize, bool dynamic, bool renderTarget) {
-  const int outputWidth = fullSize ? width : width / this->m_reduction;
-  const int outputHeight = fullSize ? height : height / this->m_reduction;
-  CTexture* texture = this->m_system ? this->m_system->CreateTexture(outputWidth, outputHeight, format, dynamic, renderTarget) : nullptr;
+  const int outputWidth = fullSize ? width : width / g_textureReduction;
+  const int outputHeight = fullSize ? height : height / g_textureReduction;
+  CTexture* texture = GetRenderSystemHolder()->CreateTexture(outputWidth, outputHeight, format, dynamic, renderTarget);
 
   if (texture) {
     texture->Upload(0, 0, width, height, pixels, option, 0);
@@ -57,32 +68,38 @@ CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t 
 // FUNCTION: fn_02455
 CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool dynamic, bool renderTarget) {
   if (std::strstr(name, ".bik")) {
-    int width;
-    int height;
+    if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
+      BinkMovies* movies = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->movies;
 
-    if (this->m_sources.MovieSize(name, width, height)) {
-      CTexture* texture = this->m_system ? this->m_system->CreateTexture(width, height, TextureFormat::A8R8G8B8, false, false) : nullptr;
+      if (movies) {
+        NamedBinkMovie* movie = movies->Get(std::string(name), 1);
 
-      if (texture) {
-        return texture;
+        if (movie) {
+          const auto* handle = movie->decoder->Handle();
+          CTexture* texture = GetRenderSystemHolder()->CreateTexture(handle->width, handle->height, TextureFormat::A8R8G8B8, false, false);
+
+          if (texture) {
+            return texture;
+          }
+        }
       }
     }
   } else {
-    auto* bitmap = static_cast<CBitmapRes*>(this->m_resources.Load(this->m_sources.Resolve(name)));
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
 
     if (bitmap) {
       const auto& image = bitmap->image;
       CTexture* texture = this->Upload(
         image.width, image.height, image.pixels, image.alpha != 0 ? TextureFormat::A4R4G4B4 : TextureFormat::A1R5G5B5, option, fullSize, dynamic, renderTarget
       );
-      this->m_resources.Remove(bitmap);
+      ResourceMgr::Instance().Remove(bitmap);
 
       return texture;
     }
   }
 
-  const int extent = 1 / this->m_reduction;
-  CTexture* texture = this->m_system ? this->m_system->CreateTexture(extent, extent, TextureFormat::A1R5G5B5, false, false) : nullptr;
+  const int extent = 1 / g_textureReduction;
+  CTexture* texture = GetRenderSystemHolder()->CreateTexture(extent, extent, TextureFormat::A1R5G5B5, false, false);
 
   if (texture) {
     const std::uint32_t transparent = 0;
@@ -143,7 +160,7 @@ void TextureCache::Clear() {
 // FUNCTION: fn_02456
 void TextureCache::Reload() {
   for (auto& [name, texture] : this->m_textures) {
-    auto* bitmap = static_cast<CBitmapRes*>(this->m_resources.Load(this->m_sources.Resolve(name)));
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
 
     if (!bitmap) {
       continue;
@@ -155,20 +172,20 @@ void TextureCache::Reload() {
       if ((texture->unknown_0008 & 0xFF) == 1) {
         texture->Create(image.width, image.height, texture->m_format);
       } else {
-        texture->Create(image.width / this->m_reduction, image.height / this->m_reduction, texture->m_format);
+        texture->Create(image.width / g_textureReduction, image.height / g_textureReduction, texture->m_format);
       }
 
       texture->Upload(0, 0, image.width, image.height, image.pixels, 0, 0);
     }
 
-    this->m_resources.Remove(bitmap);
+    ResourceMgr::Instance().Remove(bitmap);
   }
 }
 
 // OFFSET: 0x00571C50
 // FUNCTION: fn_02457
 void TextureCache::ClearUnused() {
-  const unsigned threshold = timeGetTime() - this->m_reuseDelay;
+  const unsigned threshold = timeGetTime() - g_resourceReuseDelay;
 
   for (auto entry = this->m_textures.begin(); entry != this->m_textures.end();) {
     CTexture* texture = entry->second;
@@ -183,5 +200,5 @@ void TextureCache::ClearUnused() {
 
   HeapCompact(GetProcessHeap(), 0);
 
-  this->m_sources.CleanupTextures();
+  GetRenderSystemHolder()->RestoreDisplayMode();
 }

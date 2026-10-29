@@ -24,7 +24,7 @@ public:
   ~GroundGeometry();
   GroundGeometry(const GroundGeometry&) = delete;
   GroundGeometry& operator=(const GroundGeometry&) = delete;
-  void Build(CGndRes& resource, TextureCache& textures, const float* lightDirection, const float* diffuse, const float* ambient);
+  void Build(CGndRes& resource, const float* lightDirection, const float* diffuse, const float* ambient);
   void ClearGeometry();
   void Reset(int columns, int rows);
   GroundSpatial Spatial() const;
@@ -43,7 +43,7 @@ public:
     GroundRenderContext& context
   ) const;
   void DrawGrid(
-    const class C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, TextureCache& textures, GroundRenderContext& context
+    const class C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, GroundRenderContext& context
   ) const;
   void DrawTerrainOverlay(
     const class C3dAttr& terrain, const float* matrix, int column, int row, std::uint32_t color, CTexture* texture, GroundRenderContext& context
@@ -73,7 +73,7 @@ public:
   GroundWaterState water;
 
 private:
-  void BuildLightmaps(CGndRes& resource, TextureCache& textures);
+  void BuildLightmaps(CGndRes& resource);
   void ClearLightmaps();
 };
 

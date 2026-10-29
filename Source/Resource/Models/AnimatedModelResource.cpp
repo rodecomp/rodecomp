@@ -32,9 +32,8 @@ AnimatedModelFrame::~AnimatedModelFrame() {
 }
 
 // INLINED
-AnimatedModelNode::AnimatedModelNode(TextureCache& textures)
-    : model(nullptr), parent(nullptr), vertexCount(0), faceCount(0), faceNormals(nullptr), frames(nullptr), faces(nullptr), textures(nullptr),
-      m_textures(textures) {
+AnimatedModelNode::AnimatedModelNode()
+    : model(nullptr), parent(nullptr), vertexCount(0), faceCount(0), faceNormals(nullptr), frames(nullptr), faces(nullptr), textures(nullptr) {
 }
 
 // INLINED
@@ -46,7 +45,7 @@ AnimatedModelNode::~AnimatedModelNode() {
   if (this->textures) {
     for (int index = 0; index < this->textureCount; ++index) {
       this->textures[index]->Release();
-      this->m_textures.Remove(this->textures[index]);
+      g_texMgr.Remove(this->textures[index]);
     }
 
     delete[] this->textures;
@@ -138,7 +137,7 @@ bool C3dAnimModelRes::Load(const char* name) {
   input.Read(&nodeCount, 4);
 
   for (int index = 0; index < nodeCount; ++index) {
-    auto node = std::make_unique<AnimatedModelNode>(this->m_context->textures);
+    auto node = std::make_unique<AnimatedModelNode>();
     node->model = this;
     node->frames = new AnimatedModelFrame[this->frameCount];
     std::uint32_t marker;
@@ -160,7 +159,7 @@ bool C3dAnimModelRes::Load(const char* name) {
     for (int texture = 0; texture < node->textureCount; ++texture) {
       int id;
       input.Read(&id, 4);
-      CTexture* value = this->m_context->textures.Load(names[id].c_str(), 0, false, true, false);
+      CTexture* value = g_texMgr.Load(names[id].c_str(), 0, false, true, false);
       value->Retain();
       node->textures[texture] = value;
     }

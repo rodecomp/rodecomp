@@ -8,16 +8,12 @@
 
 class DeviceOwnerDX9;
 class D3DX9Runtime;
-class TextureCache;
-class TextureSources;
 struct EffectRetirement;
 struct ServiceOptions;
 
 struct RendererDX9Context {
   CRenderSystemBase& system;
   D3DX9Runtime& d3dx;
-  TextureCache& textures;
-  TextureSources& sources;
   EffectRetirement& retirement;
   const ServiceOptions& options;
   const unsigned char& multitexture;

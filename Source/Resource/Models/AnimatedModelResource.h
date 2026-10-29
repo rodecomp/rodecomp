@@ -31,7 +31,7 @@ struct AnimatedModelRecord {
 class C3dAnimModelRes;
 
 struct AnimatedModelNode {
-  explicit AnimatedModelNode(TextureCache& textures);
+  AnimatedModelNode();
   ~AnimatedModelNode();
   AnimatedModelNode(const AnimatedModelNode&) = delete;
   AnimatedModelNode& operator=(const AnimatedModelNode&) = delete;
@@ -53,7 +53,6 @@ struct AnimatedModelNode {
   /* 0060 */ int sharedTextureVertices;
 
 private:
-  TextureCache& m_textures;
 };
 
 class C3dAnimModelRes : public CRes {

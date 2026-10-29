@@ -10,7 +10,7 @@
 // OFFSET: 0x00C2CF20
 // FUNCTION: fn_20088
 bool UpdatePartyEffect(
-  CRagEffect& self, ResourceMgr& resources, std::list<CRenderObject*>& worldObjects, TextureCache& textures, const TerrainHeight& ground,
+  CRagEffect& self, ResourceMgr& resources, std::list<CRenderObject*>& worldObjects, const TerrainHeight& ground,
   int updateTick
 ) {
   RagEffectState& effect = self.state;
@@ -53,7 +53,7 @@ bool UpdatePartyEffect(
     const auto bytes = state.totalTexture >> 30 != 0 ? std::numeric_limits<std::size_t>::max() : static_cast<std::size_t>(4u * state.totalTexture);
 
     state.textures = static_cast<CTexture**>(::operator new(bytes));
-    state.textures[0] = textures.Load("effect\\party.tga", 0, false, true, false);
+    state.textures[0] = g_texMgr.Load("effect\\party.tga", 0, false, true, false);
   }
 
   render.position.y = ground.Height(render.position.x, render.position.z) - 2.0f;

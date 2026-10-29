@@ -11,7 +11,7 @@ class TextureCache;
 class CRenderObject;
 
 bool UpdatePartyEffect(
-  CRagEffect& self, ResourceMgr& resources, std::list<CRenderObject*>& worldObjects, TextureCache& textures, const TerrainHeight& ground,
+  CRagEffect& self, ResourceMgr& resources, std::list<CRenderObject*>& worldObjects, const TerrainHeight& ground,
   int updateTick
 );
 

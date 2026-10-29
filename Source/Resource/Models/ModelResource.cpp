@@ -57,7 +57,7 @@ ModelNode::~ModelNode() {
   for (CTexture* texture : this->textures) {
     if (texture) {
       texture->Release();
-      this->model->m_context->textures.Remove(texture);
+      g_texMgr.Remove(texture);
     }
   }
 
@@ -148,7 +148,7 @@ inline void C3dModelResV1::ReadNode(ResourceByteReader& input, unsigned minor, c
   for (int index = 0; index < textureCount; ++index) {
     int textureIndex = 0;
     input.Read(&textureIndex, 4);
-    CTexture* texture = this->m_context->textures.Load(textureNames[textureIndex].c_str(), 0, false, true, false);
+    CTexture* texture = g_texMgr.Load(textureNames[textureIndex].c_str(), 0, false, true, false);
     node->textures.push_back(texture);
 
     if (texture) {
@@ -448,7 +448,7 @@ CTexture* C3dGrannyModelRes::CreateTexture(const granny_texture* texture, int) {
     format = 1;
   }
 
-  CTexture* result = this->m_context->textures.Upload(width, height, reinterpret_cast<const std::uint32_t*>(pixels), format, 0, false, false, false);
+  CTexture* result = g_texMgr.Upload(width, height, reinterpret_cast<const std::uint32_t*>(pixels), format, 0, false, false, false);
   delete[] pixels;
   delete[] source;
   return result;

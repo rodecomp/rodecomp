@@ -11,8 +11,6 @@ struct RenderSystemDX9Context {
   const AdapterConfiguration& adapter;
   const bool& serviceUsesDX7;
   D3DX9Runtime& d3dx;
-  TextureCache& textures;
-  TextureSources& sources;
   EffectRetirement& retirement;
   const ServiceOptions& options;
   const unsigned char& multitexture;

@@ -100,12 +100,12 @@ GroundSpatial GroundGeometry::Spatial() const {
 
 // OFFSET: 0x00ABDEF0
 // FUNCTION: fn_17556
-void GroundGeometry::Build(CGndRes& resource, TextureCache& textures, const float* lightDirection, const float* diffuse, const float* ambient) {
+void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const float* diffuse, const float* ambient) {
   this->loaded = resource.loaded;
   this->Reset(resource.width, resource.height);
   std::vector<CellNormals> normals(this->cells.size());
   this->cellSize = resource.cellSize;
-  this->BuildLightmaps(resource, textures);
+  this->BuildLightmaps(resource);
   this->tiles.resize(static_cast<unsigned>(resource.tileCount));
 
   for (int row = 0; row < this->height; ++row) {
@@ -141,7 +141,7 @@ void GroundGeometry::Build(CGndRes& resource, TextureCache& textures, const floa
         std::uint16_t lightmapIndex;
         std::memcpy(&textureIndex, tileBytes + 32, sizeof(textureIndex));
         std::memcpy(&lightmapIndex, tileBytes + 34, sizeof(lightmapIndex));
-        tile.texture = textures.Load(resource.textureNames[textureIndex], 0, false, true, false);
+        tile.texture = g_texMgr.Load(resource.textureNames[textureIndex], 0, false, true, false);
         float positions[4][3];
 
         if (face == 0) {

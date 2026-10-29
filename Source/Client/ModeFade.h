@@ -12,7 +12,6 @@ extern std::uint32_t g_modeFadeTick;
 struct ModeFade {
   int& requested;
   RenderPrimitivePool& primitives;
-  TextureCache& textures;
   RenderQueues& queues;
   const int& screenWidth;
   const int& screenHeight;

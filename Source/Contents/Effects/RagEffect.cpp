@@ -187,7 +187,7 @@ void CRagEffect::FireBall() {
 
 // OFFSET: 0x00C15E40
 // FUNCTION: fn_20054
-void CRagEffect::FrostDiver(TextureCache& textures, char type) {
+void CRagEffect::FrostDiver(char type) {
   if (g_serviceOptions.Get(229) != 0) {
     return;
   }
@@ -252,7 +252,7 @@ void CRagEffect::FrostDiver(TextureCache& textures, char type) {
   this->state.unknown_11C84->chCnt = 20;
   this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 10;
   AllocateTextures(*this->state.unknown_11C84);
-  CTexture* texture = textures.Load("effect\\ice.tga", 0, false, true, false);
+  CTexture* texture = g_texMgr.Load("effect\\ice.tga", 0, false, true, false);
   this->state.unknown_11C84->textures[0] = texture;
   this->state.deltaPos3[0] = this->state.deltaPos3[0] - this->state.deltaPos2[0];
   this->state.deltaPos3[1] = this->state.deltaPos3[1] - this->state.deltaPos2[1];
@@ -261,7 +261,7 @@ void CRagEffect::FrostDiver(TextureCache& textures, char type) {
 
 // OFFSET: 0x00C16C70
 // FUNCTION: fn_20058
-void CRagEffect::GrimTooth(TextureCache& textures) {
+void CRagEffect::GrimTooth() {
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_FrostDiver.wav");
     this->Face(this->state.deltaPos[0], this->state.deltaPos[2]);
@@ -323,7 +323,7 @@ void CRagEffect::GrimTooth(TextureCache& textures) {
   this->state.unknown_11C84->chCnt = 6;
   this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 10;
   AllocateTextures(*this->state.unknown_11C84);
-  CTexture* texture = textures.Load("effect\\stone.bmp", 0, false, true, false);
+  CTexture* texture = g_texMgr.Load("effect\\stone.bmp", 0, false, true, false);
   this->state.deltaPos3[0] = this->state.deltaPos3[0] - this->state.deltaPos2[0];
   this->state.deltaPos3[1] = this->state.deltaPos3[1] - this->state.deltaPos2[1];
   this->state.unknown_11C84->textures[0] = texture;
@@ -332,7 +332,7 @@ void CRagEffect::GrimTooth(TextureCache& textures) {
 
 // OFFSET: 0x00C19980
 // FUNCTION: fn_20066
-void CRagEffect::Hit4(const RenderProjection& projection, TextureCache& textures) {
+void CRagEffect::Hit4(const RenderProjection& projection) {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   projection.Project(&this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex);
   this->state.tlvertX = vertex.x;
@@ -364,7 +364,7 @@ void CRagEffect::Hit4(const RenderProjection& projection, TextureCache& textures
   const int lifetime = this->state.unknown_11C84->duration;
   this->state.unknown_11C84->fadeOutCnt = lifetime - lifetime / 3;
   AllocateTextures(*this->state.unknown_11C84);
-  CTexture* texture = textures.Load("effect\\lens2.tga", 0, false, true, false);
+  CTexture* texture = g_texMgr.Load("effect\\lens2.tga", 0, false, true, false);
   this->state.unknown_11C84->textures[0] = texture;
 
   for (int count = 5; count != 0; --count) {
@@ -526,7 +526,7 @@ void CRagEffect::SpearBmr() {
 
 // OFFSET: 0x00C3BD40
 // FUNCTION: fn_20109
-void CRagEffect::SprayPond(TextureCache& textures) {
+void CRagEffect::SprayPond() {
   if (this->state.stateCnt == 0) {
     for (int angle = 0; angle < 360; angle += 45) {
       this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
@@ -545,7 +545,7 @@ void CRagEffect::SprayPond(TextureCache& textures) {
       this->state.unknown_11C84->widthSize = 5.0f;
       this->state.unknown_11C84->heightSize = 2.7f;
       AllocateTextures(*this->state.unknown_11C84);
-      this->state.unknown_11C84->textures[0] = textures.Load("effect\\pond_water.bmp", 0, false, true, false);
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\pond_water.bmp", 0, false, true, false);
     }
   }
 
@@ -569,7 +569,7 @@ void CRagEffect::SprayPond(TextureCache& textures) {
       this->state.unknown_11C84->widthSize = 5.5f;
       this->state.unknown_11C84->heightSize = 1.0f;
       AllocateTextures(*this->state.unknown_11C84);
-      this->state.unknown_11C84->textures[0] = textures.Load("effect\\alpha_down.tga", 0, false, true, false);
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
     }
   }
 
@@ -589,7 +589,7 @@ void CRagEffect::SprayPond(TextureCache& textures) {
     this->state.unknown_11C84->fadeOutCnt = 0;
     Owner(this->state.unknown_11C84).InitSegment();
     AllocateTextures(*this->state.unknown_11C84);
-    this->state.unknown_11C84->textures[0] = textures.Load("effect\\alpha_center.tga", 0, false, true, false);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\alpha_center.tga", 0, false, true, false);
   }
 }
 
@@ -630,7 +630,7 @@ void CRagEffect::WaterBall2() {
 
 // OFFSET: 0x00C3FE30
 // FUNCTION: fn_20124
-void CRagEffect::Yufitel(TextureCache& textures, char F1) {
+void CRagEffect::Yufitel(char F1) {
   if (this->state.stateCnt != 0) {
     return;
   }
@@ -663,7 +663,7 @@ void CRagEffect::Yufitel(TextureCache& textures, char F1) {
   this->state.unknown_11C84->alpha = 170.0f;
   AllocateTextures(*this->state.unknown_11C84);
   this->state.unknown_11C84->textures[0] =
-    F1 != 0 ? textures.Load("effect\\twirl_soft.bmp", 0, false, true, false) : textures.Load("effect\\thunder_center.bmp", 0, false, true, false);
+    F1 != 0 ? g_texMgr.Load("effect\\twirl_soft.bmp", 0, false, true, false) : g_texMgr.Load("effect\\thunder_center.bmp", 0, false, true, false);
   this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
   this->state.unknown_11C84->duration = 20;
   this->state.unknown_11C84->pattern = 0x40u;
@@ -689,25 +689,25 @@ void CRagEffect::Yufitel(TextureCache& textures, char F1) {
   AllocateTextures(*this->state.unknown_11C84);
 
   if (F1 != 0) {
-    this->state.unknown_11C84->textures[0] = textures.Load("effect\\twirl_soft.bmp", 0, false, true, false);
-    this->state.unknown_11C84->textures[1] = textures.Load("effect\\thunder_ball_b.bmp", 0, false, true, false);
-    this->state.unknown_11C84->textures[2] = textures.Load("effect\\twirl_soft.bmp", 0, false, true, false);
-    this->state.unknown_11C84->textures[3] = textures.Load("effect\\thunder_ball_d.bmp", 0, false, true, false);
-    this->state.unknown_11C84->textures[4] = textures.Load("effect\\twirl_soft.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\twirl_soft.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\thunder_ball_b.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\twirl_soft.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[3] = g_texMgr.Load("effect\\thunder_ball_d.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[4] = g_texMgr.Load("effect\\twirl_soft.bmp", 0, false, true, false);
   } else {
-    this->state.unknown_11C84->textures[0] = textures.Load("effect\\thunder_ball_a.bmp", 0, false, true, false);
-    this->state.unknown_11C84->textures[1] = textures.Load("effect\\thunder_ball_b.bmp", 0, false, true, false);
-    this->state.unknown_11C84->textures[2] = textures.Load("effect\\thunder_ball_c.bmp", 0, false, true, false);
-    this->state.unknown_11C84->textures[3] = textures.Load("effect\\thunder_ball_d.bmp", 0, false, true, false);
-    this->state.unknown_11C84->textures[4] = textures.Load("effect\\thunder_ball_e.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\thunder_ball_a.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\thunder_ball_b.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\thunder_ball_c.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[3] = g_texMgr.Load("effect\\thunder_ball_d.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[4] = g_texMgr.Load("effect\\thunder_ball_e.bmp", 0, false, true, false);
   }
 
-  this->state.unknown_11C84->textures[5] = textures.Load("effect\\thunder_ball_f.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[5] = g_texMgr.Load("effect\\thunder_ball_f.bmp", 0, false, true, false);
 }
 
 // OFFSET: 0x00C40E70
 // FUNCTION: fn_20132
-void CRagEffect::AirTexture(TextureCache& textures, const char* name) {
+void CRagEffect::AirTexture(const char* name) {
   const int frame = this->state.stateCnt;
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
@@ -722,7 +722,7 @@ void CRagEffect::AirTexture(TextureCache& textures, const char* name) {
   this->state.unknown_11C84->renderFlag = 5;
   this->state.unknown_11C84->duration = this->state.duration;
   AllocateTextures(*this->state.unknown_11C84);
-  this->state.unknown_11C84->textures[0] = textures.Load(name, 0, false, true, false);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.unknown_11C84->size = 0.0f;
   this->state.unknown_11C84->slots[0].life = 1;
   this->state.unknown_11C84->slots[0].process = 0;
@@ -1019,7 +1019,7 @@ bool CRagEffect::Aspersio() {
 
 // OFFSET: 0x00C0C550
 // FUNCTION: fn_20019
-void CRagEffect::Blessing(TextureCache& textures) {
+void CRagEffect::Blessing() {
   const EffectActor& parent = *this->state.parent;
   this->render.position.x = parent.render.position.x;
   this->render.position.y = parent.render.position.y;
@@ -1043,7 +1043,7 @@ void CRagEffect::Blessing(TextureCache& textures) {
     ring.fadeOutCnt = ring.duration - 30;
     Owner(&ring).InitSegment();
     AllocateTextures(ring);
-    ring.textures[0] = textures.Load("effect\\alpha_down.tga", 0, false, true, false);
+    ring.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
   }
 
   if (this->state.stateCnt % 3 == 0 && this->state.stateCnt < 10) {
@@ -1085,7 +1085,7 @@ void CRagEffect::Blessing(TextureCache& textures) {
 }
 
 // INLINED
-static __forceinline void SpawnBottomQuad(CRagEffect& effect, TextureCache& textures, const vector3d& velocity, int angle) {
+static __forceinline void SpawnBottomQuad(CRagEffect& effect, const vector3d& velocity, int angle) {
   effect.state.unknown_11C84 = &CreateEffectParticle(effect, effect.render, 15, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
   EffectPrimitiveState& quad = *effect.state.unknown_11C84;
   quad.duration = 9999;
@@ -1102,12 +1102,12 @@ static __forceinline void SpawnBottomQuad(CRagEffect& effect, TextureCache& text
   quad.alphaSpeed = quad.maxAlpha / 6.0f;
   quad.fadeOutCnt = quad.duration - 35;
   AllocateTextures(quad);
-  quad.textures[0] = textures.Load("effect\\magic_violet.tga", 0, false, true, false);
+  quad.textures[0] = g_texMgr.Load("effect\\magic_violet.tga", 0, false, true, false);
 }
 
 // OFFSET: 0x00C0DA60
 // FUNCTION: fn_20023
-void CRagEffect::Bottom(TextureCache& textures) {
+void CRagEffect::Bottom() {
   if (this->state.stateCnt != 0) {
     return;
   }
@@ -1126,11 +1126,11 @@ void CRagEffect::Bottom(TextureCache& textures) {
   for (int side = 1; side > -2; side -= 2) {
     const float distance = static_cast<float>(side) * 5.0f;
     SpawnBottomQuad(
-      *this, textures, {m[3] * 0.0f + m[0] * 0.0f + distance * m[6] + m[9], m[4] * 0.0f + m[1] * 0.0f + distance * m[7] + m[10], m[5] * 0.0f + m[2] * 0.0f + distance * m[8] + m[11]},
+      *this, {m[3] * 0.0f + m[0] * 0.0f + distance * m[6] + m[9], m[4] * 0.0f + m[1] * 0.0f + distance * m[7] + m[10], m[5] * 0.0f + m[2] * 0.0f + distance * m[8] + m[11]},
       angle + 90
     );
     SpawnBottomQuad(
-      *this, textures, {distance * m[0] + m[3] * 0.0f + m[6] * 0.0f + m[9], distance * m[1] + m[4] * 0.0f + m[7] * 0.0f + m[10], distance * m[2] + m[5] * 0.0f + m[8] * 0.0f + m[11]},
+      *this, {distance * m[0] + m[3] * 0.0f + m[6] * 0.0f + m[9], distance * m[1] + m[4] * 0.0f + m[7] * 0.0f + m[10], distance * m[2] + m[5] * 0.0f + m[8] * 0.0f + m[11]},
       angle
     );
   }
@@ -1202,7 +1202,7 @@ void CRagEffect::Fireworks() {
 
 // OFFSET: 0x00C410A0
 // FUNCTION: fn_20133
-void CRagEffect::AttackEnergy2(TextureCache& textures, const char* name) {
+void CRagEffect::AttackEnergy2(const char* name) {
   const EffectActor& parent = *this->state.parent;
   this->render.position.x = parent.render.position.x;
   this->render.position.y = parent.render.position.y;
@@ -1218,7 +1218,7 @@ void CRagEffect::AttackEnergy2(TextureCache& textures, const char* name) {
   prim.duration = this->state.duration;
   prim.totalTexture = 1;
   AllocateTextures(prim);
-  prim.textures[0] = textures.Load(name, 0, false, true, false);
+  prim.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   prim.size = 4.0f;
 
   for (EffectPrimitiveSlot& slot : prim.slots) {
@@ -1344,7 +1344,7 @@ void CRagEffect::Sphere() {
 
 // OFFSET: 0x00C17220
 // FUNCTION: fn_20059
-void CRagEffect::GrimToothAtk(TextureCache& textures) {
+void CRagEffect::GrimToothAtk() {
   if (this->state.stateCnt != 0) {
     return;
   }
@@ -1381,7 +1381,7 @@ void CRagEffect::GrimToothAtk(TextureCache& textures) {
     this->state.unknown_11C84->chCnt = 10;
     this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 10;
     AllocateTextures(*this->state.unknown_11C84);
-    CTexture* texture = textures.Load("effect\\stone.bmp", 0, false, true, false);
+    CTexture* texture = g_texMgr.Load("effect\\stone.bmp", 0, false, true, false);
     this->state.deltaPos3[0] = this->state.deltaPos3[0] - this->state.deltaPos2[0];
     this->state.unknown_11C84->textures[0] = texture;
     this->state.deltaPos3[1] = this->state.deltaPos3[1] - this->state.deltaPos2[1];
@@ -1441,7 +1441,7 @@ void CRagEffect::Snow() {
 
 // OFFSET: 0x00C12B90
 // FUNCTION: fn_20042
-void CRagEffect::Entry(TextureCache& textures) {
+void CRagEffect::Entry() {
   if (this->state.stateCnt != 0) {
     return;
   }
@@ -1465,7 +1465,7 @@ void CRagEffect::Entry(TextureCache& textures) {
   int duration = this->state.unknown_11C84->duration;
   this->state.unknown_11C84->fadeOutCnt = duration - duration / 5;
   AllocateTextures(*this->state.unknown_11C84);
-  this->state.unknown_11C84->textures[0] = textures.Load("effect\\ring_blue.tga", 0, false, true, false);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
 
   if (this->state.stateCnt == 0) {
     this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
@@ -1482,13 +1482,13 @@ void CRagEffect::Entry(TextureCache& textures) {
     duration = this->state.unknown_11C84->duration;
     this->state.unknown_11C84->fadeOutCnt = duration - duration / 3;
     AllocateTextures(*this->state.unknown_11C84);
-    this->state.unknown_11C84->textures[0] = textures.Load("effect\\ring_blue.tga", 0, false, true, false);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
   }
 }
 
 // OFFSET: 0x00C0E280
 // FUNCTION: fn_20025
-bool CRagEffect::CartRevolution(TextureCache& textures) {
+bool CRagEffect::CartRevolution() {
   if (this->state.stateCnt == 7 || this->state.stateCnt == 20) {
     PlayEffectWave(*this, "effect\\EF_MagnumBreak.wav");
     this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
@@ -1505,7 +1505,7 @@ bool CRagEffect::CartRevolution(TextureCache& textures) {
     this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 15;
     Owner(this->state.unknown_11C84).InitSegment();
     AllocateTextures(*this->state.unknown_11C84);
-    this->state.unknown_11C84->textures[0] = textures.Load("effect\\ring_yellow.tga", 0, false, true, false);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
 
     this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 14, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
     this->state.unknown_11C84->duration = 20;
@@ -1518,7 +1518,7 @@ bool CRagEffect::CartRevolution(TextureCache& textures) {
     this->state.unknown_11C84->alphaSpeed = this->state.unknown_11C84->maxAlpha / 7.0f;
     this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 15;
     AllocateTextures(*this->state.unknown_11C84);
-    this->state.unknown_11C84->textures[0] = textures.Load("effect\\대폭발.tga", 0, false, true, false);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\대폭발.tga", 0, false, true, false);
   }
 
   if (this->state.stateCnt < 300) {
@@ -1531,7 +1531,7 @@ bool CRagEffect::CartRevolution(TextureCache& textures) {
 
 // OFFSET: 0x00C0DEF0
 // FUNCTION: fn_20024
-void CRagEffect::BowlingBash(TextureCache& textures) {
+void CRagEffect::BowlingBash() {
   if (this->state.stateCnt != 0 && this->state.stateCnt != 5) {
     return;
   }
@@ -1556,7 +1556,7 @@ void CRagEffect::BowlingBash(TextureCache& textures) {
   const int duration = this->state.unknown_11C84->duration;
   this->state.unknown_11C84->fadeOutCnt = duration - duration / 2;
   AllocateTextures(*this->state.unknown_11C84);
-  this->state.unknown_11C84->textures[0] = textures.Load("effect\\ring_blue.tga", 0, false, true, false);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
 
   if (this->state.stateCnt == 0) {
     this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
@@ -1574,13 +1574,13 @@ void CRagEffect::BowlingBash(TextureCache& textures) {
     this->state.unknown_11C84->fadeOutCnt = 35;
     Owner(this->state.unknown_11C84).InitSegment();
     AllocateTextures(*this->state.unknown_11C84);
-    this->state.unknown_11C84->textures[0] = textures.Load("effect\\ring_yellow.tga", 0, false, true, false);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
   }
 }
 
 // OFFSET: 0x00C3AF00
 // FUNCTION: fn_20105
-void CRagEffect::SonicBlowHit(TextureCache& textures) {
+void CRagEffect::SonicBlowHit() {
   if (this->state.stateCnt != 0) {
     return;
   }
@@ -1625,5 +1625,5 @@ void CRagEffect::SonicBlowHit(TextureCache& textures) {
   const int duration = this->state.unknown_11C84->duration;
   this->state.unknown_11C84->fadeOutCnt = duration - duration / 2;
   AllocateTextures(*this->state.unknown_11C84);
-  this->state.unknown_11C84->textures[0] = textures.Load("effect\\magic_red.tga", 0, false, true, false);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\magic_red.tga", 0, false, true, false);
 }

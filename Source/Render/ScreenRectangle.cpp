@@ -7,7 +7,7 @@
 // OFFSET: 0x0054E590
 // FUNCTION: fn_01953
 void DrawBlendedRectangle(
-  RenderPrimitivePool& primitives, TextureCache& textures, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha,
+  RenderPrimitivePool& primitives, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha,
   float depthStart, float depthEnd
 ) {
   if ((color & 0xFF000000u) == 0) {
@@ -15,7 +15,7 @@ void DrawBlendedRectangle(
   }
 
   RenderPrimitive* primitive = primitives.Acquire();
-  primitive->texture = textures.Default();
+  primitive->texture = g_texMgr.Default();
   const float left = static_cast<float>(x);
   const float top = static_cast<float>(y);
   const float right = static_cast<float>(x + width);
@@ -43,7 +43,7 @@ void DrawBlendedRectangle(
 // OFFSET: 0x0054ED40
 // FUNCTION: fn_01954
 void DrawTexturedRectangle(
-  RenderPrimitivePool& primitives, TextureCache& textures, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, CTexture* texture,
+  RenderPrimitivePool& primitives, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, CTexture* texture,
   bool depthAlpha, float depthStart, float depthEnd
 ) {
   if ((color & 0xFF000000u) == 0) {
@@ -51,7 +51,7 @@ void DrawTexturedRectangle(
   }
 
   RenderPrimitive* primitive = primitives.Acquire();
-  primitive->texture = texture ? texture : textures.Default();
+  primitive->texture = texture ? texture : g_texMgr.Default();
   const float left = static_cast<float>(x);
   const float top = static_cast<float>(y);
   const float right = static_cast<float>(x + width);
@@ -83,7 +83,7 @@ void DrawTexturedRectangle(
 // OFFSET: 0x0054EFD0
 // FUNCTION: fn_01955
 void DrawTextureRegion(
-  RenderPrimitivePool& primitives, TextureCache& textures, RenderQueues& queues, float x, float y, float width, float height, std::uint32_t color,
+  RenderPrimitivePool& primitives, RenderQueues& queues, float x, float y, float width, float height, std::uint32_t color,
   CTexture* texture, bool depthAlpha, float depthStart, float depthEnd
 ) {
   if ((color & 0xFF000000u) == 0) {
@@ -91,7 +91,7 @@ void DrawTextureRegion(
   }
 
   RenderPrimitive* primitive = primitives.Acquire();
-  primitive->texture = texture ? texture : textures.Default();
+  primitive->texture = texture ? texture : g_texMgr.Default();
   primitive->quad[0].x = x;
   primitive->quad[0].y = y;
   primitive->quad[0].u = g_textureOffsetX / static_cast<float>(texture->TextureWidth());

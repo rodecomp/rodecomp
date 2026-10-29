@@ -19,7 +19,7 @@ void ModeFade::Draw() {
   const std::uint32_t elapsed = timeGetTime() - g_modeFadeTick;
   if (elapsed < 255) {
     DrawAlphaRectangle(
-      this->primitives, this->textures, this->queues, 0, 0, this->screenWidth, this->screenHeight, (255 - elapsed) << 24, this->depthAlpha, this->depthStart,
+      this->primitives, this->queues, 0, 0, this->screenWidth, this->screenHeight, (255 - elapsed) << 24, this->depthAlpha, this->depthStart,
       this->depthEnd
     );
   }

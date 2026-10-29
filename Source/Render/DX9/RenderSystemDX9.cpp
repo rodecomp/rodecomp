@@ -7,7 +7,7 @@
 // FUNCTION: fn_02353
 CRenderSystemDX9::CRenderSystemDX9(RenderSystemDX9Context& context)
     : m_device(new DeviceOwnerDX9), m_defaultTexture(nullptr), m_context(&context),
-      m_rendererContext{*this,       context.d3dx,      context.textures,     context.sources,   context.retirement, context.options, context.multitexture,
+      m_rendererContext{*this,       context.d3dx, context.retirement, context.options, context.multitexture,
                         context.fog, context.worldFlag, context.overlayColor, context.diagnostic},
       m_textureContext{}, m_surfaceContext{} {
   this->RefreshContexts();

@@ -42,7 +42,6 @@ struct UIWindowContext {
   WindowRegistration& registration;
   UIWindowMgr& windowMgr;
   std::unordered_set<UIWindow*>& deferredDeletion;
-  TextureCache& textures;
 
   void DestroyDeferredChildren();
 };

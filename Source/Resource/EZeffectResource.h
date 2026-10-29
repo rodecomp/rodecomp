@@ -9,15 +9,6 @@
 
 class CTexture;
 
-class EffectTextures {
-public:
-  virtual CTexture* Load(const char* name, int format, bool option1, bool option2, bool option3) = 0;
-  virtual CTexture* Default() = 0;
-
-protected:
-  ~EffectTextures() = default;
-};
-
 struct EZeffectTransform {
   /* 0000 */ float x;
   /* 0004 */ float y;
@@ -53,8 +44,8 @@ struct EZeffectKeyFrame {
 struct EZeffectClip {
   EZeffectClip();
   ~EZeffectClip();
-  CTexture* Texture(int index, EffectTextures& textures);
-  CTexture* Texture(int index, const char* prefix, EffectTextures& textures);
+  CTexture* Texture(int index);
+  CTexture* Texture(int index, const char* prefix);
 
   /* 0000 */ int textureCount;
   /* 0004 */ int unknown_0004;
