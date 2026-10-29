@@ -56,84 +56,303 @@ void ExportNormalItemSlots(Json::Value& data, const NormalItemSlot* slots, const
 }
 
 // OFFSET: 0x009A50E0
+// FUNCTION: fn_13620
+int AchTracingWndInfo::IsValid() const {
+  return this->x > 0 && this->x <= g_renderer->viewport.width - 300 && this->y > 0 && this->y <= g_renderer->viewport.height - 150;
+}
 
 // OFFSET: 0x009A5120
+// FUNCTION: fn_13621
+int BasicInfoWndInfo::IsValid() {
+  if (this->width != 220) {
+    return 0;
+  }
+
+  if (this->height == 55 || this->height == 71) {
+    this->unknown_0012 = 0;
+  } else if (this->height == 134 || this->height == 149) {
+    this->unknown_0012 = 1;
+  } else {
+    return 0;
+  }
+
+  if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) == true) {
+    if (this->height != 71 && this->height != 149) {
+      return 0;
+    }
+  } else if (this->height != 55 && this->height != 134) {
+    return 0;
+  }
+
+  return this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A51D0
+// FUNCTION: fn_13622
+int CashEmotionListWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5210
+// FUNCTION: fn_13623
+int ChatRoomWndInfo::IsValid() const {
+  return this->width >= 280 && this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5260
+// FUNCTION: fn_13624
+int ChooseWndInfo::IsValid() const {
+  return this->width == 280 && this->height == 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 && this->y <= g_renderer->viewport.height - 120;
+}
 
 // OFFSET: 0x009A52B0
+// FUNCTION: fn_13625
+int ClanWndInfo::IsValid() const {
+  return this->width == 400 && this->height == 317 && this->x >= 0 && this->x <= g_renderer->viewport.width - 400 && this->y >= 0 && this->y <= g_renderer->viewport.height - 317;
+}
 
 // OFFSET: 0x009A5300
+// FUNCTION: fn_13626
+int CombinedCardItemCollectionWndInfo::IsValid() const {
+  return this->width == 280 && this->height >= 120 && this->height <= 450 && this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A53A0
+// FUNCTION: fn_13627
+int EmotionWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5460
+// FUNCTION: fn_13629
+int ExchangeAcceptWndInfo::IsValid() const {
+  return this->width == 280 && this->height == 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 && this->y <= g_renderer->viewport.height - 120;
+}
 
 // OFFSET: 0x009A5500
+// FUNCTION: fn_13631
+int GuildHelperWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5540
+// FUNCTION: fn_13632
+int GuildWndInfo::IsValid() const {
+  return this->width == g_defaultPlacementWidth && this->height == g_defaultPlacementHeight && this->x >= 0 &&
+         this->x <= g_renderer->viewport.width - this->width && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height && this->unknown_0010 >= 0 &&
+         this->unknown_0010 <= 6;
+}
 
 // OFFSET: 0x009A5590
+// FUNCTION: fn_13633
+int HomunInfoWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A55D0
+// FUNCTION: fn_13634
+int ItemCollectionWndInfo::IsValid() const {
+  return this->width == 280 && this->height >= 120 && this->height <= 450 && this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5620
+// FUNCTION: fn_13635
+int ItemCompositionWndInfo::IsValid() const {
+  return this->width == 200 && this->height == 200 && this->x >= 0 && this->x <= g_renderer->viewport.width - 200 && this->y >= 0 && this->y <= g_renderer->viewport.height - 200;
+}
 
 // OFFSET: 0x009A5670
+// FUNCTION: fn_13636
+int ItemStoreFindWndInfo::IsValid() const {
+  return this->width >= 140 && this->height >= 145 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A56C0
+// FUNCTION: fn_13637
+int ItemIdentifyWndInfo::IsValid() const {
+  return this->width == 200 && this->height == 200 && this->x >= 0 && this->x <= g_renderer->viewport.width - 200 && this->y >= 0 && this->y <= g_renderer->viewport.height - 200;
+}
 
 // OFFSET: 0x009A5710
+// FUNCTION: fn_13638
+int ItemParamChangeDisplayWndInfo::IsValid() const {
+  return this->width == 280 && this->height == 34 && this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 && this->y <= g_renderer->viewport.height - 34;
+}
 
 // OFFSET: 0x009A5760
+// FUNCTION: fn_13639
+int ItemPurchaseWndInfo::IsValid() const {
+  return this->width >= 280 && this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A57B0
+// FUNCTION: fn_13640
+int ItemSellWndInfo::IsValid() const {
+  return this->width >= 280 && this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5800
+// FUNCTION: fn_13641
+int ItemShopWndInfo::IsValid() const {
+  return this->width >= 280 && this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5850
+// FUNCTION: fn_13642
+int ItemStoreFindListInfo::IsValid() const {
+  return this->width >= 280 && this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A58A0
+// FUNCTION: fn_13643
+int ItemStoreFindSlotInfo::IsValid() const {
+  return this->width >= 140 && this->height >= 145 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A58F0
+// FUNCTION: fn_13644
+int ItemWndInfo::IsValid() const {
+  return this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height &&
+         this->unknown_0014 >= 0 && this->unknown_0014 <= 3 && this->unknown_0018 >= 0 && this->unknown_0018 <= 3 &&
+         this->unknown_001C >= 0 && this->unknown_001C <= 3 && this->unknown_0020 >= 0 && this->unknown_0020 <= 4;
+}
 
 // OFFSET: 0x009A5940
+// FUNCTION: fn_13645
+int EntryQueueWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5980
+// FUNCTION: fn_13646
+int MiniMapWndInfo::IsValid() const {
+  return this->unknown_0010 > 0 && this->unknown_0014 > 0 && this->width >= 0 && this->width <= g_renderer->viewport.width - this->unknown_0010 &&
+         this->height >= 0 && this->height <= g_renderer->viewport.height - this->unknown_0014;
+}
 
 // OFFSET: 0x009A59C0
+// FUNCTION: fn_13647
+int MerInfoWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5A00
+// FUNCTION: fn_13648
+int MerchantItemMyShopWndInfo::IsValid() const {
+  return this->width >= 280 && this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5A50
+// FUNCTION: fn_13649
+int MerchantItemPurchaseWndInfo::IsValid() const {
+  return this->width >= 280 && this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5AA0
+// FUNCTION: fn_13650
+int MerchantItemShopWndInfo::IsValid(bool wide) const {
+  if (wide) {
+    if (this->width < 350) {
+      return 0;
+    }
+  } else if (this->width < 280) {
+    return 0;
+  }
+
+  return this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5B00
+// FUNCTION: fn_13651
+int MerchantItemWndInfo::IsValid() const {
+  return this->width >= 280 && this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5B50
+// FUNCTION: fn_13652
+int MerchantMirrorItemWndInfo::IsValid() const {
+  return this->width >= 280 && this->height >= 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5BA0
+// FUNCTION: fn_13653
+int MerchantShopMakeWndInfo::IsValid() const {
+  return this->width == 280 && this->height == 220 && this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 && this->y <= g_renderer->viewport.height - 220;
+}
 
 // OFFSET: 0x009A5BF0
+// FUNCTION: fn_13654
+int MessengerGroupWndInfo::IsValid() const {
+  return this->unknown_0018 <= 2 && this->width >= 243 && this->height >= 166 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width &&
+         this->y >= 0 && this->y <= g_renderer->viewport.height - this->height && (this->unknown_0014 == 0 || this->unknown_0014 == 1);
+}
 
 // OFFSET: 0x009A5C50
+// FUNCTION: fn_13655
+int NCashWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5D10
+// FUNCTION: fn_13657
+int SeekPartyWndInfo::IsValid() const {
+  return this->width >= 152 && this->height >= 199 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5D60
+// FUNCTION: fn_13658
+int SeekPartyListWndInfo::IsValid() const {
+  return this->width >= 550 && this->height >= 350 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5DB0
+// FUNCTION: fn_13659
+int SeekPartyMBWndInfo::IsValid() const {
+  return this->width >= 360 && this->height >= 350 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5E00
+// FUNCTION: fn_13660
+int JobListWndInfo::IsValid() const {
+  return this->width >= 152 && this->height >= 199 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5E50
+// FUNCTION: fn_13661
+int PartySettingWndInfo::IsValid() const {
+  return this->width == 280 && this->height == 180 && this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 && this->y <= g_renderer->viewport.height - 180;
+}
 
 // OFFSET: 0x009A5EA0
+// FUNCTION: fn_13662
+int PetInfoWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5EE0
 // FUNCTION: fn_13663
@@ -142,6 +361,11 @@ int QuestDisplayInfo::IsValid() const {
 }
 
 // OFFSET: 0x009A5F30
+// FUNCTION: fn_13664
+int QuickSlotWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A6110
 // FUNCTION: fn_13668
