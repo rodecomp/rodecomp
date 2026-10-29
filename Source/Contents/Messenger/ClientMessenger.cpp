@@ -17,6 +17,8 @@
 #include <map>
 #include <new>
 #include <set>
+#include <string>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -92,6 +94,8 @@ struct EquipmentPropertyGroup {
   /* 0000 */ std::string unknown_0000;
   /* 0018 */ std::map<std::int64_t, EquipmentPropertyDefinition*> definitions;
   ~EquipmentPropertyGroup();
+  std::string& GetName();
+  std::map<std::int64_t, EquipmentPropertyDefinition*>& GetDefinitions();
 };
 
 struct EquipmentPropertyStore {
@@ -101,6 +105,9 @@ struct EquipmentPropertyStore {
   EquipmentPropertyStore();
   ~EquipmentPropertyStore();
   void Clear();
+  std::map<int, std::map<int, EquipmentProperty*>>& GetProperties();
+  int GetCount();
+  std::unordered_map<std::string, std::string>& GetNames();
 };
 
 struct EquipmentPropertyMaps {
@@ -124,6 +131,7 @@ namespace EquipmentProperties {
   public:
     explicit CEquipmentProperties1Dim(EquipmentPropertyDefinition* definition);
     CEquipmentProperties* Accumulate(CEquipmentProperties* other) override;
+    void SetValue(const int& value, const int& key);
 
     /* 0010 */ int m_value;
   };
@@ -163,6 +171,8 @@ EquipmentProperties::CEquipmentProperties2Dim::CEquipmentProperties2Dim(Equipmen
 EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProperties::Accumulate(CEquipmentProperties*) {
   return this;
 }
+
+// OFFSET: 0x00699070
 
 namespace EquipmentProperties {
   class CEquipmentPropertiesMgr {
@@ -239,19 +249,31 @@ namespace EquipmentProperties {
     /* 003C */ CEquipment* m_owner;
 
     int GetType() override;
+
+    CEquipment* GetOwner();
   };
 
   class CEquipmentWearable : public CEquipment {
   public:
-    /* 0038 */ int unknown_0038;
+    /* 0038 */ bool m_active;
     /* 003C */ int m_type;
+    /* 0040 */ int unknown_0040;
+    /* 0044 */ std::vector<CEquipmentAttachable> m_attachables;
+    /* 0050 */ std::list<CEquipment*> m_children;
 
     int GetType() override;
+
+    std::vector<CEquipmentAttachable>& GetAttachables();
+    bool IsActive();
   };
 
   class CEquipmentExpansion : public CEquipment {
   public:
+    /* 0038 */ int m_kind;
+
     int GetType() override;
+
+    std::string_view GetSuffix();
   };
 
   class CEquipmentCombiitem : public CEquipment {
@@ -265,6 +287,10 @@ static_assert(sizeof(EquipmentProperties::CEquipmentInfo) == 0x24);
 static_assert(offsetof(EquipmentProperties::CEquipment, m_properties) == 0xC);
 static_assert(offsetof(EquipmentProperties::CEquipment, m_pretend) == 0x34);
 static_assert(sizeof(EquipmentProperties::CEquipment) == 0x38);
+static_assert(sizeof(EquipmentProperties::CEquipmentAttachable) == 0x40);
+static_assert(offsetof(EquipmentProperties::CEquipmentWearable, m_attachables) == 0x44);
+static_assert(sizeof(EquipmentProperties::CEquipmentWearable) == 0x58);
+static_assert(sizeof(EquipmentProperties::CEquipmentExpansion) == 0x3C);
 #endif
 
 // GLOBAL: gl_24723
@@ -295,12 +321,42 @@ EquipmentPropertyStore::~EquipmentPropertyStore() {
   this->Clear();
 }
 
+// OFFSET: 0x00699040
+// FUNCTION: fn_05775
+std::map<int, std::map<int, EquipmentProperty*>>& EquipmentPropertyStore::GetProperties() {
+  return this->properties;
+}
+
+// OFFSET: 0x00699050
+// FUNCTION: fn_05776
+int EquipmentPropertyStore::GetCount() {
+  return this->properties.size();
+}
+
+// OFFSET: 0x00699060
+// FUNCTION: fn_05777
+std::unordered_map<std::string, std::string>& EquipmentPropertyStore::GetNames() {
+  return this->names;
+}
+
 // OFFSET: 0x0069BB80
 // FUNCTION: fn_05807
 EquipmentPropertyGroup::~EquipmentPropertyGroup() {
   for (auto& definition : this->definitions) {
     delete definition.second;
   }
+}
+
+// OFFSET: 0x0069BCF0
+// FUNCTION: fn_05808
+std::string& EquipmentPropertyGroup::GetName() {
+  return this->unknown_0000;
+}
+
+// OFFSET: 0x0069BD00
+// FUNCTION: fn_05809
+std::map<std::int64_t, EquipmentPropertyDefinition*>& EquipmentPropertyGroup::GetDefinitions() {
+  return this->definitions;
 }
 
 // OFFSET: 0x006A1AA0
@@ -401,6 +457,26 @@ int EquipmentProperties::CEquipmentExpansion::GetType() {
 int EquipmentProperties::CEquipmentWearable::GetType() {
   return this->m_type;
 }
+
+// OFFSET: 0x0068C010
+// FUNCTION: fn_05623
+std::vector<EquipmentProperties::CEquipmentAttachable>& EquipmentProperties::CEquipmentWearable::GetAttachables() {
+  return this->m_attachables;
+}
+
+// OFFSET: 0x0068C080
+// FUNCTION: fn_05625
+EquipmentProperties::CEquipment* EquipmentProperties::CEquipmentAttachable::GetOwner() {
+  return this->m_owner;
+}
+
+// OFFSET: 0x0068C0E0
+// FUNCTION: fn_05627
+bool EquipmentProperties::CEquipmentWearable::IsActive() {
+  return this->m_active;
+}
+
+// OFFSET: 0x0068C090
 
 // OFFSET: 0x0068CEF0
 // FUNCTION: fn_05642
