@@ -66,7 +66,7 @@ public:
   /* 00F4 */ int unknown_00F4;
   /* 00F8 */ int unknown_00F8;
   /* 00FC */ unsigned char unknown_00FC;
-  /* 00FD */ unsigned char unknown_00FD;
+  /* 00FD */ bool unknown_00FD;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

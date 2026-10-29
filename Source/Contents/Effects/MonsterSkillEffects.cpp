@@ -5,6 +5,7 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
+#include "Contents/Effects/GravityControlEffect.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/Effects/SkillEffects.h"
 #include "Contents/Effects/SpriteParticle.h"
@@ -69,6 +70,12 @@ void CCrimsonArrowEffect::Slot04() {
 }
 
 // OFFSET: 0x0070C3B0
+// FUNCTION: fn_07130
+void CRootTwistEffect::Slot12() {
+  if (this->id == 1110) {
+    this->AddEvent(0, "effect\\su_roottwist.wav", 0, 0);
+  }
+}
 
 // OFFSET: 0x0070C3D0
 // FUNCTION: fn_07131
@@ -87,6 +94,10 @@ void CRootTwistEffect::Slot04() {
 }
 
 // OFFSET: 0x0070C7F0
+// FUNCTION: fn_07137
+bool CSprArrowEffect::Slot06() {
+  return this->unknown_00FD;
+}
 
 // OFFSET: 0x0070CB80
 // FUNCTION: fn_07139
@@ -107,6 +118,8 @@ bool CSpriteMableEffect::Slot06() {
   return this->ActorExists();
 }
 
+// OFFSET: 0x0070D2C0
+
 // OFFSET: 0x0070D300
 // FUNCTION: fn_07148
 CStemSpearEffect::CStemSpearEffect() : CEffect(1100) {
@@ -126,7 +139,7 @@ bool CStemSpearEffect::Slot06() {
 
 // OFFSET: 0x0070D850
 // FUNCTION: fn_07156
-CSvgSpiritEffect::CSvgSpiritEffect() : CEffect(1128) {
+CSvgSpiritEffect::CSvgSpiritEffect() : CEffect(1128), emitter(nullptr) {
 }
 
 // OFFSET: 0x0070D690
@@ -240,8 +253,8 @@ void CCylinderEffect::Slot04() {
     }
 
     const int texPart = particle->unknown_000C;
-    const ParticleQuad quad = {false, 0.0f, static_cast<float>(texPart + 1) / 21.0, 1.0f,
-                               static_cast<float>(texPart) / 21.0, false, true};
+    const ParticleQuad quad = {false, 0.0f, 1.0f, static_cast<float>(texPart / 21.0),
+                               static_cast<float>((texPart + 1) / 21.0), false, true};
     particle->Render(quad);
   }
 }
@@ -384,11 +397,11 @@ void CFallenAngelEffect::Slot03() {
   const float dz = this->unknown_00D8 - this->position[2];
   const float speed = 1.0f / SquareRoot(dx * dx + dz * dz);
 
-  AsParticle(emitter)->Process(0.0f, -80.0f, 0.0f);
-
-  emitter->position.x = start.x + dx * speed * 0.9f;
+  emitter->position.x = start.x + dx * speed * 0.09f;
   emitter->position.y = start.y;
-  emitter->position.z = start.z + dz * speed * 0.9f;
+  emitter->position.z = start.z + dz * speed * 0.09f;
+
+  AsParticle(emitter)->Process(0.0f, -80.0f, 0.0f);
   emitter->elapsed++;
 }
 
@@ -598,6 +611,8 @@ void CGaleStorm::Slot04() {
   }
 }
 
+// OFFSET: 0x007183F0
+
 // OFFSET: 0x007184D0
 CHawkVumerangEffect::CHawkVumerangEffect()
     : CEffect(1968),
@@ -696,7 +711,7 @@ void CJupitelThunderHit::Slot04() {
 
 // OFFSET: 0x0071CCB0
 // FUNCTION: fn_07327
-CNewCloudKillEffect::CNewCloudKillEffect() : CEffect(1196) {
+CNewCloudKillEffect::CNewCloudKillEffect() : CEffect(1196), unknown_00F4(0), unknown_00F8(0) {
 }
 
 // OFFSET: 0x0071DEC0
@@ -832,8 +847,8 @@ void CRandomOptEffect::Slot04() {
       continue;
     }
 
-    const ParticleQuad quad = {false, 0.0f, static_cast<float>(texPart) / 21.0f, 1.0f,
-                               static_cast<float>(texPart - 1) / 21.0f, false, true};
+    const ParticleQuad quad = {false, 0.0f, 1.0f, static_cast<float>(texPart - 1) / 21.0f,
+                               static_cast<float>(texPart) / 21.0f, false, true};
     particle->Render(quad);
   }
 }

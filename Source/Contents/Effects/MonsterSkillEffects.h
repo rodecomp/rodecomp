@@ -32,6 +32,7 @@ public:
 class CSpriteMableEffect : public CEffect {
 public:
   CSpriteMableEffect();
+  void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
