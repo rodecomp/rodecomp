@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <functional>
 #include <list>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -184,6 +185,29 @@ public:
     this->UpdateScrollBar();
   }
 
+  // OFFSET: 0x00A15450
+  // FUNCTION: fn_15196
+  void SetOnSelect(std::function<void(T*, const D&)> handler) {
+    this->onSelect = handler;
+  }
+
+  // OFFSET: 0x00A154C0
+  // FUNCTION: fn_15197
+  void SetBinder(std::function<void(T*, const D&)> handler) {
+    this->binder = handler;
+  }
+
+  // OFFSET: 0x00A15AA0
+  // FUNCTION: fn_15201
+  void SetImages(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& disabled) {
+    this->imageNames[0] = normal;
+    this->imageNames[1] = hover;
+    this->imageNames[2] = pressed;
+    this->disabledName = disabled;
+    this->Slot53(0);
+    this->Invalidate();
+  }
+
   // OFFSET: 0x009DD950
   // OFFSET: 0x00A06300
   // FUNCTION: fn_14344
@@ -259,7 +283,9 @@ public:
     }
   }
 
-  /* 0084 */ unsigned char unknown_0084[0x2C];
+  /* 0084 */ unsigned char unknown_0084[0x0C];
+  /* 0090 */ std::map<int, std::string> imageNames;
+  /* 0098 */ std::string disabledName;
   /* 00B0 */ CUIVScrollBar* scrollBar;
   /* 00B4 */ int itemWidth;
   /* 00B8 */ int rowHeight;
@@ -271,7 +297,8 @@ public:
   /* 00DC */ unsigned int selected;
   /* 00E0 */ unsigned char unknown_00E0;
   /* 00E1 */ unsigned char rebind;
-  /* 00E2 */ unsigned char unknown_00E2[0x2E];
+  /* 00E2 */ unsigned char unknown_00E2[0x06];
+  /* 00E8 */ std::function<void(T*, const D&)> onSelect;
   /* 0110 */ std::function<void(T*, const D&)> binder;
 };
 

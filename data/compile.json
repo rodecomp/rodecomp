@@ -728,6 +728,7 @@
   "Source/UI/Edit/UIEditLinks.cpp": 2,
   "Source/UI/Edit/UIEditVariants.cpp": 2,
   "Source/UI/Enchant/UIEnchantUI.cpp": 2,
+  "Source/UI/Exchange/UIExchangeUI.cpp": 2,
   "Source/UI/FrameSkin.cpp": 2,
   "Source/UI/GameSettings/GameSettingsUI.cpp": 2,
   "Source/UI/Gauges/UIPetInfoBarGraph.cpp": 2,
