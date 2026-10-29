@@ -129,6 +129,8 @@ public:
   void Paint() override;
   void Slot53(int resolveSkin) override;
 
+  void SetImage(const std::string& name);
+
   /* 0080 */ CResPtr<CBitmapRes> image;
   /* 0084 */ std::string tooltip;
   /* 009C */ unsigned char transparent;

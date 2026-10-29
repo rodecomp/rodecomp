@@ -505,6 +505,14 @@ void CUIStaticImage::Slot53(int resolveSkin) {
   this->image = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageName, resolveSkin));
 }
 
+// OFFSET: 0x009F0940
+// FUNCTION: fn_14668
+void CUIStaticImage::SetImage(const std::string& name) {
+  this->imageName = name;
+  this->Slot53(0);
+  this->Invalidate();
+}
+
 // OFFSET: 0x009F1BF0
 // FUNCTION: fn_14700
 void CUITitleBar::Resize(int width, int height) {
