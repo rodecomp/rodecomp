@@ -7,6 +7,8 @@
 #include <new>
 #include <vector>
 
+#include <windows.h>
+
 namespace {
 
 class IEffectMemoryPool {
@@ -59,6 +61,7 @@ CParticle* CEffectMemoryPool<CEZ2STRParticle>::Alloc() {
 }
 
 // OFFSET: 0x00B81DF0
+// FUNCTION: fn_19268
 template <>
 CParticle* CEffectMemoryPool<CMultiTexParticle>::Alloc() {
   if (!this->m_free.empty()) {
@@ -102,23 +105,28 @@ CParticle* CEffectMemoryPool<CSpriteParticle>::Alloc() {
 }
 
 // OFFSET: 0x00B820E0
+// FUNCTION: fn_19272
 bool CEffectMemoryMgr::Init() {
   if (this->m_pools.size() != 0) {
+    MessageBoxA(NULL, "Input sequence is incorrect.", "CEffectMemoryMgr error", 0);
     return false;
   }
 
   this->m_pools.push_back(new CEffectMemoryPool<CParticle>());
   if (this->m_pools.size() != 1) {
+    MessageBoxA(NULL, "Input sequence is incorrect.", "CEffectMemoryMgr error", 0);
     return false;
   }
 
   this->m_pools.push_back(new CEffectMemoryPool<CSpriteParticle>());
   if (this->m_pools.size() != 2) {
+    MessageBoxA(NULL, "Input sequence is incorrect.", "CEffectMemoryMgr error", 0);
     return false;
   }
 
   this->m_pools.push_back(new CEffectMemoryPool<CEZ2STRParticle>());
   if (this->m_pools.size() != 3) {
+    MessageBoxA(NULL, "Input sequence is incorrect.", "CEffectMemoryMgr error", 0);
     return false;
   }
 
