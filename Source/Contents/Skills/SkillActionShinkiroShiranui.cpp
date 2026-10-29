@@ -198,6 +198,15 @@ int CSkillAction_SS_KAGEAKUMU::Slot02() {
 }
 
 // OFFSET: 0x00795F00
+// FUNCTION: fn_08802
+void CSkillAction_SS_KAGEAKUMU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(812, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(source)->LaunchEffect(1656, level / 16);
+  }
+}
+
+// OFFSET: 0x00795F00
 
 // OFFSET: 0x00795F60
 // FUNCTION: fn_08803
@@ -217,6 +226,15 @@ int CSkillAction_SS_HITOUAKUMU::Slot01() {
 // FUNCTION: fn_08805
 int CSkillAction_SS_HITOUAKUMU::Slot02() {
   return 57;
+}
+
+// OFFSET: 0x007960E0
+// FUNCTION: fn_08806
+void CSkillAction_SS_HITOUAKUMU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(812, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(source)->LaunchEffect(1656, level / 16);
+  }
 }
 
 // OFFSET: 0x007960E0
@@ -258,6 +276,15 @@ int CSkillAction_SS_ANKOKURYUUAKUMU::Slot01() {
 // FUNCTION: fn_08809
 int CSkillAction_SS_ANKOKURYUUAKUMU::Slot02() {
   return 57;
+}
+
+// OFFSET: 0x007964B0
+// FUNCTION: fn_08810
+void CSkillAction_SS_ANKOKURYUUAKUMU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(812, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(source)->LaunchEffect(1656, level / 16);
+  }
 }
 
 // OFFSET: 0x007964B0
