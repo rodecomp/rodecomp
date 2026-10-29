@@ -586,6 +586,49 @@ void CEffectPrim::RenderTeiRect(
   }
 }
 
+// OFFSET: 0x00BD2AB0
+// FUNCTION: fn_19875
+void CEffectPrim::RenderHalfSphere2(matrix& wtm) {
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const int step = slot.fullDisplayAngle / 10;
+    int level = 0;
+
+    for (int ring = 10; ring != 0; --ring) {
+      for (int count = 0; count <= slot.fullDisplayAngle; count += step) {
+        const int angle = (slot.rotStart + count) % 360;
+        const float cs = g_cosTable[angle];
+        const float sn = g_sinTable[angle];
+        const float dist = slot.distance;
+        slot.vecBNow = {dist * cs, 0.0f, dist * sn};
+
+        const float radius = slot.height[level];
+        const float spread = radius * g_cosTable[slot.riseAngle];
+        slot.vecTNow = {spread * cs + slot.vecBNow.x, -(radius * g_sinTable[slot.riseAngle]), spread * sn + slot.vecBNow.z};
+
+        if (level > 0) {
+          this->RenderTeiRect(&rpCnt, level - 1, slot.alphaB, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0);
+        }
+
+        ++level;
+        if (level >= 21) {
+          level = 20;
+        }
+
+        slot.vecBPre = slot.vecBNow;
+        slot.vecTPre = slot.vecTNow;
+      }
+    }
+  }
+}
+
 // OFFSET: 0x00BDAC40
 // FUNCTION: fn_19894
 void CEffectPrim::RenderHalfSphere(matrix& wtm) {

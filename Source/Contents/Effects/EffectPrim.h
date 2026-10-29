@@ -80,6 +80,7 @@ struct CEffectPrim : CRenderObject {
   void RenderTeiRect(int* rpCnt, int texPart, short alphaB, short alphaT, vector3d vec1, vector3d vec2, vector3d vec3, vector3d vec4, matrix& wtm, char pw);
   void RenderTeiRect(int* rpCnt, int texPart, short alphaB, short alphaT, vector3d vec1, vector3d vec2, vector3d vec3, vector3d vec4, matrix& wtm, char pw, unsigned char r, unsigned char g, unsigned char b);
   void RenderHalfSphere(matrix& wtm);
+  void RenderHalfSphere2(matrix& wtm);
   void RenderHermode(matrix& wtm);
   void RenderHitLine3(matrix& wtm);
   void RenderHitLine(matrix& wtm);
