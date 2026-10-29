@@ -94,14 +94,14 @@ void ItemDescriptions::IconPath(char* output, const char* id, int identified) {
 
 // OFFSET: 0x006D5730
 // FUNCTION: fn_06576
-const std::vector<const char*>& ItemDescriptions::Description(const ItemInfo& item) {
+const std::vector<const char*>& ItemDescriptions::Description(const ITEM_INFO& item) {
   const ITEM_DESC& value = this->Find(std::atoi(item.itemId.c_str()));
   return item.identified == 1 ? value.identifiedDescription : value.unidentifiedDescription;
 }
 
 // OFFSET: 0x006D5810
 // FUNCTION: fn_06578
-int ItemDescriptions::Name(const ItemInfo& item, char* output, int& capacity, unsigned char consume) {
+int ItemDescriptions::Name(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
   const char* name = this->Find(std::atoi(item.itemId.c_str())).identifiedName;
   const int error = strncpy_s(output, capacity, name ? name : " ", _TRUNCATE);
 

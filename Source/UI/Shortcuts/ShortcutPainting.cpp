@@ -118,7 +118,7 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
 
         Count(window, x + 27, (y + 17), level);
       } else {
-        ItemInfo item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
+        ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
         if (item.unknown_0000[1] == 0) {
           continue;
         }
@@ -146,7 +146,7 @@ void ShortcutPainting::Paint(UIWindow& window, const ShortcutGrid& grid, const N
         continue;
       }
 
-      ItemInfo item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
+      ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
       if (item.unknown_0000[1] == 0) {
         continue;
       }

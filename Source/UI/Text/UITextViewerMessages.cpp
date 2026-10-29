@@ -81,7 +81,7 @@ void UITextViewer::Activate(UITextButton* button, int id) {
     }
 
     const int idValue = !arguments.at(1).empty() ? number(1) : 0;
-    ItemInfo item;
+    ITEM_INFO item;
     item.identified = 1;
     item.unknown_0000[0] = static_cast<unsigned>(idValue);
     item.unknown_0070 = 0;

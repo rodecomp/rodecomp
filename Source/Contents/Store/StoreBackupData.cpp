@@ -20,7 +20,7 @@ void StoreBackupData::Import(Json::Value& data) {
       continue;
     }
 
-    ItemInfo item;
+    ITEM_INFO item;
     item.itemId = std::to_string(value.get("ID", 0).asInt());
     item.quantity = value.get("Count", 0).asInt();
     item.identified = value.get("Identified", 0).asBool();
@@ -42,7 +42,7 @@ void StoreBackupData::Import(Json::Value& data) {
       const auto id = static_cast<std::uint16_t>((*option).get("OptIndex", 0).asInt());
       const auto amount = static_cast<std::uint16_t>((*option).get("Value", 0).asInt());
       const auto parameter = static_cast<unsigned char>((*option).get("Parm1", 0).asInt());
-      auto* record = reinterpret_cast<unsigned char*>(&item) + offsetof(ItemInfo, unknown_009C) + index * 5;
+      auto* record = reinterpret_cast<unsigned char*>(&item) + offsetof(ITEM_INFO, unknown_009C) + index * 5;
 
       std::memcpy(record, &id, sizeof(id));
       std::memcpy(record + 2, &amount, sizeof(amount));
@@ -56,11 +56,11 @@ void StoreBackupData::Import(Json::Value& data) {
 
 // OFFSET: 0x00607240
 // FUNCTION: fn_04238
-void StoreBackupData::Export(Json::Value& data, const std::list<ItemInfo>& storeItems) const {
+void StoreBackupData::Export(Json::Value& data, const std::list<ITEM_INFO>& storeItems) const {
   data["Title"] = ToUtf8(this->title, g_textCodePage);
   Json::Value values;
 
-  for (const ItemInfo& item : storeItems) {
+  for (const ITEM_INFO& item : storeItems) {
     Json::Value value;
     value["ID"] = std::atoi(item.itemId.c_str());
     value["Count"] = item.quantity;
@@ -80,7 +80,7 @@ void StoreBackupData::Export(Json::Value& data, const std::list<ItemInfo>& store
     Json::Value options;
 
     for (int index = 0; index < count; ++index) {
-      const auto* record = reinterpret_cast<const unsigned char*>(&item) + offsetof(ItemInfo, unknown_009C) + index * 5;
+      const auto* record = reinterpret_cast<const unsigned char*>(&item) + offsetof(ITEM_INFO, unknown_009C) + index * 5;
       std::int16_t id, amount;
       std::memcpy(&id, record, sizeof(id));
       std::memcpy(&amount, record + 2, sizeof(amount));

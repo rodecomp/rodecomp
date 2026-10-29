@@ -15,9 +15,9 @@ struct UIAcceptanceContext {
   const int& screenWidth;
   const int& screenHeight;
   const int& service;
-  std::list<ItemInfo>& firstShopItems;
-  std::list<ItemInfo>& secondShopItems;
-  std::list<ItemInfo>& thirdShopItems;
+  std::list<ITEM_INFO>& firstShopItems;
+  std::list<ITEM_INFO>& secondShopItems;
+  std::list<ITEM_INFO>& thirdShopItems;
   int& replayShopState;
   std::string& replayExchangeName;
 };

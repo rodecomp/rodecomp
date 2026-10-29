@@ -46,7 +46,7 @@ void ShortcutTooltip::Hover(UIWindow& window, ShortcutGrid& grid, int x, int y, 
       return;
     }
 
-    ItemInfo item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
+    ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
     if (item.unknown_0000[1] == 0) {
       return;
     }
@@ -97,7 +97,7 @@ void ShortcutTooltip::Hover(UIWindow& window, ShortcutGrid& grid, int x, int y, 
       text = SkillTooltip(shortcut.c_str(), skill.DisplayName(this->script), level, sp, ap, SkillUsesPercentSp(static_cast<int>(skill.id)));
     }
   } else {
-    ItemInfo item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
+    ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
     if (item.unknown_0000[1] == 0) {
       text = shortcut;
     } else {

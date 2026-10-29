@@ -29,12 +29,12 @@ void CMCStoreInfoBackup::Clear() {
 
 // OFFSET: 0x00606BB0
 // FUNCTION: fn_04234
-int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum, std::list<ItemInfo>& inventory, std::list<ItemInfo>& storeItems) {
+int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum, std::list<ITEM_INFO>& inventory, std::list<ITEM_INFO>& storeItems) {
   auto saved = this->items.begin();
   int examined = 0;
 
   while (saved != this->items.end() && examined < maximum) {
-    const auto found = std::find_if(inventory.begin(), inventory.end(), [&](const ItemInfo& item) {
+    const auto found = std::find_if(inventory.begin(), inventory.end(), [&](const ITEM_INFO& item) {
       if (item.itemId != saved->itemId || std::memcmp(item.unknown_001C, saved->unknown_001C, sizeof(item.unknown_001C)) != 0 ||
           item.identified != saved->identified || item.unknown_0060 != saved->unknown_0060 || item.unknown_0088 != saved->unknown_0088 ||
           item.unknown_0098 != saved->unknown_0098) {
@@ -53,7 +53,7 @@ int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum, std::list<
     if (found == inventory.end()) {
       saved = this->items.erase(saved);
     } else {
-      ItemInfo item(*found);
+      ITEM_INFO item(*found);
 
       if (wholeItem == 0) {
         item.quantity = std::min(item.quantity, saved->quantity);
@@ -61,7 +61,7 @@ int CMCStoreInfoBackup::Restore(unsigned char wholeItem, int maximum, std::list<
 
       if (item.unknown_0000[0] != 0) {
         const auto offered =
-          std::find_if(storeItems.begin(), storeItems.end(), [&](const ItemInfo& value) { return value.unknown_0000[1] == item.unknown_0000[1]; });
+          std::find_if(storeItems.begin(), storeItems.end(), [&](const ITEM_INFO& value) { return value.unknown_0000[1] == item.unknown_0000[1]; });
 
         if (offered == storeItems.end()) {
           storeItems.push_back(item);
@@ -191,7 +191,7 @@ void CMCStoreInfoBackup::Load(
 // OFFSET: 0x00606EB0
 // FUNCTION: fn_04236
 void CMCStoreInfoBackup::Save(
-  int type, std::uint32_t accountId, std::uint32_t characterId, const char* accountName, const char* token16, const std::list<ItemInfo>& storeItems,
+  int type, std::uint32_t accountId, std::uint32_t characterId, const char* accountName, const char* token16, const std::list<ITEM_INFO>& storeItems,
   CAsyncWorkMgr& workManager, StoreBackupContext& context
 ) {
   this->type = type;

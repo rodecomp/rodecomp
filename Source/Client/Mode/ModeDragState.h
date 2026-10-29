@@ -7,7 +7,7 @@
 class WindowManagerWindows;
 class ResourceMgr;
 struct ItemDescriptions;
-struct ItemInfo;
+struct ITEM_INFO;
 
 struct ModeDragState {
   /* 0308 */ int source;
@@ -35,7 +35,7 @@ struct ModeDragState {
   /* 03C0 */ std::int64_t unknown_03C0;
 
   void Clear();
-  void BeginItem(WindowManagerWindows& windows, ItemDescriptions& descriptions, int source, const ItemInfo& item, int quantity, int slot);
+  void BeginItem(WindowManagerWindows& windows, ItemDescriptions& descriptions, int source, const ITEM_INFO& item, int quantity, int slot);
   void BeginSkill(WindowManagerWindows& windows, ResourceMgr& resources, int source, std::uint32_t id, const char* name, int level, int slot);
 };
 

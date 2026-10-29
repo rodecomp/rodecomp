@@ -12,8 +12,8 @@ class UIEditCtrl;
 
 struct MerchantShopRefresh {
   CMCStoreInfoBackup& backup;
-  std::list<ItemInfo>& inventory;
-  std::list<ItemInfo>& offered;
+  std::list<ITEM_INFO>& inventory;
+  std::list<ITEM_INFO>& offered;
   UIEditCtrl& titleEdit;
   std::span<UIEditCtrl*> priceEdits;
   std::span<UIEditCtrl*> countEdits;

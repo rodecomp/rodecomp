@@ -20,38 +20,38 @@ namespace {
 
 struct ClientItemLists {
   /* 0000 */ unsigned char unknown_0000[0x1710];
-  /* 1710 */ std::list<ItemInfo> inventory;
-  /* 1718 */ std::list<ItemInfo> items_1718;
-  /* 1720 */ std::list<ItemInfo> items_1720;
-  /* 1728 */ std::list<ItemInfo> items_1728;
-  /* 1730 */ std::list<ItemInfo> items_1730;
-  /* 1738 */ std::list<ItemInfo> items_1738;
-  /* 1740 */ std::list<ItemInfo> items_1740;
-  /* 1748 */ std::list<ItemInfo> items_1748;
-  /* 1750 */ std::list<ItemInfo> items_1750;
-  /* 1758 */ std::list<ItemInfo> items_1758;
-  /* 1760 */ std::list<ItemInfo> items_1760;
-  /* 1768 */ std::list<ItemInfo> items_1768;
+  /* 1710 */ std::list<ITEM_INFO> inventory;
+  /* 1718 */ std::list<ITEM_INFO> items_1718;
+  /* 1720 */ std::list<ITEM_INFO> items_1720;
+  /* 1728 */ std::list<ITEM_INFO> items_1728;
+  /* 1730 */ std::list<ITEM_INFO> items_1730;
+  /* 1738 */ std::list<ITEM_INFO> items_1738;
+  /* 1740 */ std::list<ITEM_INFO> items_1740;
+  /* 1748 */ std::list<ITEM_INFO> items_1748;
+  /* 1750 */ std::list<ITEM_INFO> items_1750;
+  /* 1758 */ std::list<ITEM_INFO> items_1758;
+  /* 1760 */ std::list<ITEM_INFO> items_1760;
+  /* 1768 */ std::list<ITEM_INFO> items_1768;
   /* 1770 */ unsigned char unknown_1770[0xA30];
-  /* 21A0 */ ItemInfo equipped[10];
+  /* 21A0 */ ITEM_INFO equipped[10];
 
-  bool AddItem1710(const ItemInfo& item, unsigned char refresh);
+  bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
   void AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C);
   void AddItem1718(const RawItemBasic& item, int mode);
-  bool AddItem1768(const ItemInfo& item, unsigned char alternate, unsigned char refresh);
-  bool AddItem1740(const ItemInfo& item);
-  bool AddItem1750(const ItemInfo& item, int type, unsigned char refresh);
-  void AddItem1758(const ItemInfo& item);
-  void AddItem1760(const ItemInfo& item);
-  void AddItem1748(const ItemInfo& item);
-  bool Equip(const ItemInfo& item);
-  void AppendItem1718(const ItemInfo& item);
-  void MergeItem1718ByName(const ItemInfo& item);
-  void MergeItem1720ByName(const ItemInfo& item);
-  void MergeItem1720(const ItemInfo& item);
-  void AddItem1730(const ItemInfo& item);
-  void MergeItem1718(const ItemInfo& item);
-  bool AddItem1738(const ItemInfo& item, unsigned char refresh);
+  bool AddItem1768(const ITEM_INFO& item, unsigned char alternate, unsigned char refresh);
+  bool AddItem1740(const ITEM_INFO& item);
+  bool AddItem1750(const ITEM_INFO& item, int type, unsigned char refresh);
+  void AddItem1758(const ITEM_INFO& item);
+  void AddItem1760(const ITEM_INFO& item);
+  void AddItem1748(const ITEM_INFO& item);
+  bool Equip(const ITEM_INFO& item);
+  void AppendItem1718(const ITEM_INFO& item);
+  void MergeItem1718ByName(const ITEM_INFO& item);
+  void MergeItem1720ByName(const ITEM_INFO& item);
+  void MergeItem1720(const ITEM_INFO& item);
+  void AddItem1730(const ITEM_INFO& item);
+  void MergeItem1718(const ITEM_INFO& item);
+  bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
   EquipSlots GetEquipSlots(int location);
 };
 
@@ -104,8 +104,8 @@ EquipSlots EquipSlotDecoder::Decode(int mask) const {
 
 // OFFSET: 0x00DD7030
 // FUNCTION: fn_23282
-bool ClientItemLists::AddItem1710(const ItemInfo& item, unsigned char refresh) {
-  for (ItemInfo& value : this->inventory) {
+bool ClientItemLists::AddItem1710(const ITEM_INFO& item, unsigned char refresh) {
+  for (ITEM_INFO& value : this->inventory) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       value.unknown_0074[1] = item.unknown_0074[1];
@@ -126,8 +126,8 @@ bool ClientItemLists::AddItem1710(const ItemInfo& item, unsigned char refresh) {
 
 // OFFSET: 0x00DD7210
 // FUNCTION: fn_23284
-bool ClientItemLists::AddItem1768(const ItemInfo& item, unsigned char alternate, unsigned char refresh) {
-  for (ItemInfo& value : this->items_1768) {
+bool ClientItemLists::AddItem1768(const ITEM_INFO& item, unsigned char alternate, unsigned char refresh) {
+  for (ITEM_INFO& value : this->items_1768) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       if (!alternate) {
         value.quantity += item.quantity;
@@ -153,8 +153,8 @@ bool ClientItemLists::AddItem1768(const ItemInfo& item, unsigned char alternate,
 
 // OFFSET: 0x00DD72C0
 // FUNCTION: fn_23285
-bool ClientItemLists::AddItem1740(const ItemInfo& item) {
-  for (ItemInfo& value : this->items_1740) {
+bool ClientItemLists::AddItem1740(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->items_1740) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
@@ -173,8 +173,8 @@ bool ClientItemLists::AddItem1740(const ItemInfo& item) {
 
 // OFFSET: 0x00DD7350
 // FUNCTION: fn_23286
-bool ClientItemLists::AddItem1750(const ItemInfo& item, int type, unsigned char refresh) {
-  for (ItemInfo& value : this->items_1750) {
+bool ClientItemLists::AddItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
+  for (ITEM_INFO& value : this->items_1750) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       if (refresh == 1) {
@@ -209,8 +209,8 @@ bool ClientItemLists::AddItem1750(const ItemInfo& item, int type, unsigned char 
 
 // OFFSET: 0x00DD7420
 // FUNCTION: fn_23287
-void ClientItemLists::AddItem1758(const ItemInfo& item) {
-  for (ItemInfo& value : this->items_1758) {
+void ClientItemLists::AddItem1758(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->items_1758) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       return;
@@ -222,8 +222,8 @@ void ClientItemLists::AddItem1758(const ItemInfo& item) {
 
 // OFFSET: 0x00DD7470
 // FUNCTION: fn_23288
-void ClientItemLists::AddItem1760(const ItemInfo& item) {
-  for (ItemInfo& value : this->items_1760) {
+void ClientItemLists::AddItem1760(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->items_1760) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       return;
@@ -235,8 +235,8 @@ void ClientItemLists::AddItem1760(const ItemInfo& item) {
 
 // OFFSET: 0x00DD74C0
 // FUNCTION: fn_23289
-void ClientItemLists::AddItem1748(const ItemInfo& item) {
-  for (ItemInfo& value : this->items_1748) {
+void ClientItemLists::AddItem1748(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->items_1748) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       return;
@@ -248,14 +248,14 @@ void ClientItemLists::AddItem1748(const ItemInfo& item) {
 
 // OFFSET: 0x00DD7510
 // FUNCTION: fn_23290
-bool ClientItemLists::Equip(const ItemInfo& item) {
+bool ClientItemLists::Equip(const ITEM_INFO& item) {
   const EquipSlots slots = this->GetEquipSlots(item.unknown_0000[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
     if (slot != -1) {
-      ItemInfo& equipped = this->equipped[slot];
+      ITEM_INFO& equipped = this->equipped[slot];
       equipped = item;
       equipped.quantity = 1;
       equipped.unknown_0068 = item.unknown_0068;
@@ -270,7 +270,7 @@ bool ClientItemLists::Equip(const ItemInfo& item) {
 // OFFSET: 0x00DD75C0
 // FUNCTION: fn_23291
 void ClientItemLists::AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C) {
-  ItemInfo value;
+  ITEM_INFO value;
   value.AssignBasic(item);
   value.quantity = quantity;
   value.unknown_006C = unknown_006C;
@@ -282,14 +282,14 @@ void ClientItemLists::AddItem1718(const RawItemBasic& item, int quantity, std::u
 
 // OFFSET: 0x00DD76C0
 // FUNCTION: fn_23292
-void ClientItemLists::AppendItem1718(const ItemInfo& item) {
+void ClientItemLists::AppendItem1718(const ITEM_INFO& item) {
   this->items_1718.push_back(item);
 }
 
 // OFFSET: 0x00DD76D0
 // FUNCTION: fn_23293
-void ClientItemLists::MergeItem1718ByName(const ItemInfo& item) {
-  for (ItemInfo& value : this->items_1718) {
+void ClientItemLists::MergeItem1718ByName(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->items_1718) {
     if (value.itemId == item.itemId) {
       value.quantity = value.quantity == -1 ? -1 : value.quantity + item.quantity;
       return;
@@ -301,8 +301,8 @@ void ClientItemLists::MergeItem1718ByName(const ItemInfo& item) {
 
 // OFFSET: 0x00DD7770
 // FUNCTION: fn_23294
-void ClientItemLists::MergeItem1720ByName(const ItemInfo& item) {
-  for (ItemInfo& value : this->items_1720) {
+void ClientItemLists::MergeItem1720ByName(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->items_1720) {
     if (value.itemId == item.itemId) {
       value.quantity += item.quantity;
       return;
@@ -314,8 +314,8 @@ void ClientItemLists::MergeItem1720ByName(const ItemInfo& item) {
 
 // OFFSET: 0x00DD77F0
 // FUNCTION: fn_23295
-void ClientItemLists::MergeItem1720(const ItemInfo& item) {
-  for (ItemInfo& value : this->items_1720) {
+void ClientItemLists::MergeItem1720(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->items_1720) {
     const bool same = item.unknown_0074[3] ? value.unknown_0000[1] == item.unknown_0000[1] : value.itemId == item.itemId;
     if (same) {
       value.quantity += item.quantity;
@@ -328,10 +328,10 @@ void ClientItemLists::MergeItem1720(const ItemInfo& item) {
 
 // OFFSET: 0x00DD7890
 // FUNCTION: fn_23296
-void ClientItemLists::AddItem1730(const ItemInfo& item) {
-  const ItemInfo owned = LookupClientItemByIdentity(this->inventory, item.unknown_0000[1]);
+void ClientItemLists::AddItem1730(const ITEM_INFO& item) {
+  const ITEM_INFO owned = LookupClientItemByIdentity(this->inventory, item.unknown_0000[1]);
   if (owned.unknown_0000[1] > 0) {
-    for (ItemInfo& value : this->items_1730) {
+    for (ITEM_INFO& value : this->items_1730) {
       if (value.unknown_0000[1] == item.unknown_0000[1]) {
         const int quantity = value.quantity + item.quantity;
         if (owned.quantity >= quantity) {
@@ -351,15 +351,15 @@ void ClientItemLists::AddItem1730(const ItemInfo& item) {
 // FUNCTION: fn_23297
 void ClientItemLists::AddItem1718(const RawItemBasic& item, int mode) {
   if (mode != 0) {
-    const ItemInfo owned = LookupClientItemByIdentity(this->inventory, item.id);
+    const ITEM_INFO owned = LookupClientItemByIdentity(this->inventory, item.id);
     if (owned.unknown_0000[1] != 0) {
-      ItemInfo value(owned);
+      ITEM_INFO value(owned);
       value.AssignBasic(item);
       value.SetItemId(std::atoi(value.itemId.c_str()));
       this->items_1718.push_back(value);
     }
   } else {
-    ItemInfo value;
+    ITEM_INFO value;
     value.AssignBasic(item);
     value.unknown_0060 = 0;
     value.unknown_005D = 0;
@@ -372,8 +372,8 @@ void ClientItemLists::AddItem1718(const RawItemBasic& item, int mode) {
 
 // OFFSET: 0x00DD7B30
 // FUNCTION: fn_23298
-void ClientItemLists::MergeItem1718(const ItemInfo& item) {
-  for (ItemInfo& value : this->items_1718) {
+void ClientItemLists::MergeItem1718(const ITEM_INFO& item) {
+  for (ITEM_INFO& value : this->items_1718) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       if (value.quantity != -1) {
         value.quantity += item.quantity;
@@ -387,12 +387,12 @@ void ClientItemLists::MergeItem1718(const ItemInfo& item) {
 
 // OFFSET: 0x00DD7B80
 // FUNCTION: fn_23299
-bool ClientItemLists::AddItem1738(const ItemInfo& item, unsigned char refresh) {
+bool ClientItemLists::AddItem1738(const ITEM_INFO& item, unsigned char refresh) {
   if (g_replayAnimationScaling && !Replay::Instance().header.options.Get(ReplayRecordOption::Item)) {
     return true;
   }
 
-  for (ItemInfo& value : this->items_1738) {
+  for (ITEM_INFO& value : this->items_1738) {
     if (value.unknown_0000[1] == item.unknown_0000[1]) {
       value.quantity += item.quantity;
       if (refresh && g_windowMgr.window_0288) {

@@ -12,10 +12,10 @@ namespace Json {
 
 struct StoreBackupData {
   std::string& title;
-  std::vector<ItemInfo>& items;
+  std::vector<ITEM_INFO>& items;
 
   void Import(Json::Value& data);
-  void Export(Json::Value& data, const std::list<ItemInfo>& storeItems) const;
+  void Export(Json::Value& data, const std::list<ITEM_INFO>& storeItems) const;
 };
 
 #endif

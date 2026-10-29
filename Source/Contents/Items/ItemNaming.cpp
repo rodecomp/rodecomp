@@ -18,7 +18,7 @@ std::map<int, ItemCardName> g_itemCardNames;
 namespace {
   // OFFSET: 0x006D8810
   // FUNCTION: fn_06597
-  bool Equipment(const ItemInfo& item) {
+  bool Equipment(const ITEM_INFO& item) {
     switch (item.unknown_0000[0]) {
     case 4:
     case 5:
@@ -37,7 +37,7 @@ namespace {
   }
 
   // INLINED
-  void CardIds(const ItemInfo& item, int (&ids)[4]) {
+  void CardIds(const ITEM_INFO& item, int (&ids)[4]) {
     std::memcpy(ids, item.unknown_001C, sizeof(ids));
   }
 
@@ -55,7 +55,7 @@ const char* ItemNaming::Message(int id) const {
 
 // OFFSET: 0x006D77E0
 // FUNCTION: fn_06595
-bool ItemNaming::HasCards(const ItemInfo& item) const {
+bool ItemNaming::HasCards(const ITEM_INFO& item) const {
   int ids[4];
   CardIds(item, ids);
   const bool first = this->cards.contains(ids[0]);
@@ -70,7 +70,7 @@ bool ItemNaming::HasCards(const ItemInfo& item) const {
 
 // OFFSET: 0x006D5780
 // FUNCTION: fn_06577
-int ItemNaming::Grade(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const {
+int ItemNaming::Grade(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const {
   const char grade[2] = {item.unknown_0088 >= 1 && item.unknown_0088 <= 4 ? "DCBA"[item.unknown_0088 - 1] : '\0', '\0'};
   const int bytes = _snprintf_s(output, capacity, _TRUNCATE, "[%s] ", grade);
   if (bytes <= 0) {
@@ -86,7 +86,7 @@ int ItemNaming::Grade(const ItemInfo& item, char* output, int& capacity, unsigne
 
 // OFFSET: 0x006D6C10
 // FUNCTION: fn_06585
-int ItemNaming::Creator(const ItemInfo& item, char* output, int& capacity, unsigned char consume) {
+int ItemNaming::Creator(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
   int ids[4];
   CardIds(item, ids);
   std::string name = this->players.Lookup(static_cast<unsigned>(ids[2]) + (static_cast<unsigned>(ids[3]) << 16));
@@ -105,7 +105,7 @@ int ItemNaming::Creator(const ItemInfo& item, char* output, int& capacity, unsig
 
 // OFFSET: 0x006D6F50
 // FUNCTION: fn_06588
-int ItemNaming::Prefixes(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const {
+int ItemNaming::Prefixes(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const {
   int ids[4];
   CardIds(item, ids);
   int remaining = capacity;
@@ -155,7 +155,7 @@ int ItemNaming::Prefixes(const ItemInfo& item, char* output, int& capacity, unsi
 
 // OFFSET: 0x006D6DB0
 // FUNCTION: fn_06587
-int ItemNaming::Suffixes(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const {
+int ItemNaming::Suffixes(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const {
   int ids[4];
   CardIds(item, ids);
   int remaining = capacity;
@@ -205,7 +205,7 @@ int ItemNaming::Suffixes(const ItemInfo& item, char* output, int& capacity, unsi
 
 // OFFSET: 0x006D76E0
 // FUNCTION: fn_06593
-int ItemNaming::Slots(const ItemInfo& item, char* output, int& capacity, unsigned char consume) {
+int ItemNaming::Slots(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
   const int slots = this->descriptions.Find(std::atoi(item.itemId.c_str())).slots;
   if (slots == 0) {
     return 0;
@@ -225,7 +225,7 @@ int ItemNaming::Slots(const ItemInfo& item, char* output, int& capacity, unsigne
 
 // OFFSET: 0x006D59A0
 // FUNCTION: fn_06581
-std::string ItemNaming::DisplayName(const ItemInfo& item, unsigned char detailed) {
+std::string ItemNaming::DisplayName(const ITEM_INFO& item, unsigned char detailed) {
   char text[128] = {};
   int capacity = 128;
   std::string result;
@@ -377,7 +377,7 @@ const std::vector<const char*>& FindMetalProcessItems(int id) {
 
 // OFFSET: 0x006D70E0
 // FUNCTION: fn_06590
-std::vector<unsigned char> ItemInfo::Serialize() const {
+std::vector<unsigned char> ITEM_INFO::Serialize() const {
   std::vector<unsigned char> result;
   const auto append = [&result](std::uint16_t id, const void* data, std::uint32_t bytes) {
     const auto record = BuildReplayTaggedRecord(id, data, bytes);
@@ -411,7 +411,7 @@ std::vector<unsigned char> ItemInfo::Serialize() const {
 
 // OFFSET: 0x006D7660
 // FUNCTION: fn_06591
-const char* ItemResourcePath(const ItemInfo& item) {
+const char* ItemResourcePath(const ITEM_INFO& item) {
   int id = std::atoi(item.itemId.c_str());
   ITEM_DESC& desc = FindItemDescription(id);
   return item.identified == 1 ? desc.identifiedResource : desc.unidentifiedResource;
@@ -419,14 +419,14 @@ const char* ItemResourcePath(const ItemInfo& item) {
 
 // OFFSET: 0x006D76B0
 // FUNCTION: fn_06592
-int ItemSlotsCount(const ItemInfo& item) {
+int ItemSlotsCount(const ITEM_INFO& item) {
   int id = std::atoi(item.itemId.c_str());
   return FindItemDescription(id).slots;
 }
 
 // OFFSET: 0x006D7760
 // FUNCTION: fn_06594
-int ItemUnidentifiedName(const ItemInfo& item, char* output, int& capacity, unsigned char consume) {
+int ItemUnidentifiedName(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
   int id = std::atoi(item.itemId.c_str());
   int written = Copy(output, capacity, FindItemDescription(id).unidentifiedName);
   if (written > 0 && consume) {
@@ -447,17 +447,17 @@ ItemCardName& FindItemCardName(int id, std::map<int, ItemCardName>& values) {
 // OFFSET: 0x006D78C0
 
 struct ItemNamingContext : public ItemNaming {
-  int Element(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
-  int Star(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
-  int Apprentice(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
-  std::uint32_t CardColor(const ItemInfo& item, int slot) const;
+  int Element(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
+  int Star(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
+  int Apprentice(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
+  std::uint32_t CardColor(const ITEM_INFO& item, int slot) const;
 };
 
 // OFFSET: 0x006D5650
 
 // OFFSET: 0x006D6AA0
 // FUNCTION: fn_06583
-int ItemNamingContext::Element(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const {
+int ItemNamingContext::Element(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const {
   const unsigned value = item.unknown_001C[4];
   int message = 0;
   int id = std::atoi(item.itemId.c_str());
@@ -494,7 +494,7 @@ int ItemNamingContext::Element(const ItemInfo& item, char* output, int& capacity
 
 // OFFSET: 0x006D6B90
 // FUNCTION: fn_06584
-int ItemNamingContext::Star(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const {
+int ItemNamingContext::Star(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const {
   int message = 0;
   switch (item.unknown_001C[5]) {
   case 5:
@@ -522,7 +522,7 @@ int ItemNamingContext::Star(const ItemInfo& item, char* output, int& capacity, u
 
 // OFFSET: 0x006D6D50
 // FUNCTION: fn_06586
-int ItemNamingContext::Apprentice(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const {
+int ItemNamingContext::Apprentice(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const {
   const char* text = this->Message(756);
   const int error = strncpy_s(output, capacity, text ? text : " ", _TRUNCATE);
   int written = (error == 0 || error == 80) && output ? static_cast<int>(strnlen(output, capacity)) : 0;
@@ -536,7 +536,7 @@ int ItemNamingContext::Apprentice(const ItemInfo& item, char* output, int& capac
 
 // OFFSET: 0x006D70A0
 // FUNCTION: fn_06589
-int ItemInfo::Refine(char* output, int& capacity, unsigned char consume) const {
+int ITEM_INFO::Refine(char* output, int& capacity, unsigned char consume) const {
   const int bytes = StringFormat(output, capacity, static_cast<std::size_t>(-1), "+%d ", this->unknown_0060);
 
   if (bytes <= 0) {

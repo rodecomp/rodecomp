@@ -328,7 +328,7 @@ void CSession::AddUnknownId(int id) {
 
 // OFFSET: 0x00E07930
 // FUNCTION: fn_23747
-void CSession::AddStackedItem(ItemInfo item) {
+void CSession::AddStackedItem(ITEM_INFO item) {
   int index;
   for (index = 0; index < 5; ++index) {
     if (this->unknown_5C68[index].quantity != 0 && this->unknown_5C68[index].unknown_0000[1] == item.unknown_0000[1]) {
@@ -354,7 +354,7 @@ void CSession::AddStackedItem(ItemInfo item) {
 
 // OFFSET: 0x00E07A10
 // FUNCTION: fn_23748
-void CSession::AddItemToFreeSlot(ItemInfo item) {
+void CSession::AddItemToFreeSlot(ITEM_INFO item) {
   for (int index = 0; index < 5; ++index) {
     if (this->unknown_5C68[index].quantity == 0) {
       this->unknown_5C68[index] = item;
@@ -543,16 +543,16 @@ const char* CSession::DecodePlayerName() const {
 
 // OFFSET: 0x00E08EE0
 // FUNCTION: fn_23773
-ItemInfo CSession::GetItem2B50(int index) const {
+ITEM_INFO CSession::GetItem2B50(int index) const {
   if (index == 15) {
-    return ItemInfo(0);
+    return ITEM_INFO(0);
   }
 
   if (index >= 0 && index < 10) {
     return this->unknown_2B50[index];
   }
 
-  return ItemInfo(0);
+  return ITEM_INFO(0);
 }
 
 // OFFSET: 0x00E08F70

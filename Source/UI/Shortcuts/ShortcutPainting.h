@@ -18,7 +18,7 @@ struct ShortcutPainting {
   FontCache& fonts;
   const TextLocale& locale;
   ClientSkills& skills;
-  const std::list<ItemInfo>& inventory;
+  const std::list<ITEM_INFO>& inventory;
   ItemDescriptions& descriptions;
   std::list<ShortcutCooldownIcon>& icons;
   ShortcutCooldowns& cooldowns;

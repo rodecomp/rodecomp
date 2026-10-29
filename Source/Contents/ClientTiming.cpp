@@ -457,7 +457,7 @@ void CSession::SetHotkeyDescription(const char* description, int index) {
 
 // OFFSET: 0x00E00320
 // FUNCTION: fn_23639
-void CSession::AddItemSlot(ItemInfo item) {
+void CSession::AddItemSlot(ITEM_INFO item) {
   for (int slot = 0; slot < 10; ++slot) {
     if (this->m_itemSlots[slot].quantity == 0) {
       this->m_itemSlots[slot] = item;
@@ -623,7 +623,7 @@ int CSession::SetUnknown8134(int value) {
 // OFFSET: 0x00E01670
 // FUNCTION: fn_23647
 void CSession::ClearUnknown1710(int id) {
-  for (ItemInfo& entry : this->m_inventoryItems) {
+  for (ITEM_INFO& entry : this->m_inventoryItems) {
     if (entry.unknown_0000[1] == static_cast<std::uint32_t>(id)) {
       entry.unknown_0074[2] = 0;
       break;
@@ -634,7 +634,7 @@ void CSession::ClearUnknown1710(int id) {
 // OFFSET: 0x00E016A0
 // FUNCTION: fn_23648
 void CSession::ClearUnknown1740(int id) {
-  for (ItemInfo& entry : this->unknown_1740) {
+  for (ITEM_INFO& entry : this->unknown_1740) {
     if (entry.unknown_0000[1] == static_cast<std::uint32_t>(id)) {
       entry.unknown_0074[2] = 0;
       break;
@@ -645,7 +645,7 @@ void CSession::ClearUnknown1740(int id) {
 // OFFSET: 0x00E016D0
 // FUNCTION: fn_23649
 void CSession::ClearUnknown1738(int id) {
-  for (ItemInfo& entry : this->unknown_1738) {
+  for (ITEM_INFO& entry : this->unknown_1738) {
     if (entry.unknown_0000[1] == static_cast<std::uint32_t>(id)) {
       entry.unknown_0074[2] = 0;
       break;

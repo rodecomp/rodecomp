@@ -5,7 +5,7 @@
 #include <vector>
 
 struct ItemCardName;
-struct ItemInfo;
+struct ITEM_INFO;
 
 class ITEM_DESC {
 public:
@@ -30,8 +30,8 @@ struct ItemDescriptions {
   ITEM_DESC& Find(int id);
   ITEM_DESC& Ensure(int id);
   void IconPath(char* output, const char* id, int identified);
-  const std::vector<const char*>& Description(const ItemInfo& item);
-  int Name(const ItemInfo& item, char* output, int& capacity, unsigned char consume);
+  const std::vector<const char*>& Description(const ITEM_INFO& item);
+  int Name(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume);
 };
 
 extern std::map<int, ITEM_DESC> g_itemDescriptions;

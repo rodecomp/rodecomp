@@ -12,7 +12,7 @@ public:
   void Slot28(int x, int y) override;
 
 protected:
-  /* 0080 */ ItemInfo m_item;
+  /* 0080 */ ITEM_INFO m_item;
   ItemDescriptions* m_descriptions;
   UIButtonContext* m_controls;
 };

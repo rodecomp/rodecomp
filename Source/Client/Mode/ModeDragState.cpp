@@ -27,7 +27,7 @@ void ModeDragState::Clear() {
 // OFFSET: 0x00CFE140
 // FUNCTION: fn_21429
 void ModeDragState::BeginItem(
-  WindowManagerWindows& windows, ItemDescriptions& descriptions, int sourceValue, const ItemInfo& item, int quantityValue, int slotValue
+  WindowManagerWindows& windows, ItemDescriptions& descriptions, int sourceValue, const ITEM_INFO& item, int quantityValue, int slotValue
 ) {
   UIWindow* window = windows.EnsureWindow(15);
   if (window->geometry.visible != 0) {

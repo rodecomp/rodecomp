@@ -305,7 +305,7 @@ inline void ShortcutUse::Use(const NormalItemSlot& slot) {
     return;
   }
 
-  ItemInfo item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
+  ITEM_INFO item = LookupClientItem(this->inventory, static_cast<int>(slot.itemId), 1);
   if (item.unknown_0000[1] == 0) {
     return;
   }

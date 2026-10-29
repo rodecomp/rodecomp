@@ -320,7 +320,7 @@ void UIQuickSlotWnd::Paint() {
         this->DrawTextAt(painting.fonts, painting.locale, x + 14, 20, text, 0, 0, 11, 0, 0, 0);
       }
     } else {
-      ItemInfo item = LookupClientItem(painting.inventory, static_cast<int>(entry.id), 1);
+      ITEM_INFO item = LookupClientItem(painting.inventory, static_cast<int>(entry.id), 1);
       if (item.unknown_0000[1] == 0) {
         continue;
       }

@@ -12,7 +12,7 @@ struct ShortcutDrop {
   ShortcutBindings& bindings;
   LuaScript& script;
   ModeEvents*& mode;
-  const std::list<ItemInfo>& inventory;
+  const std::list<ITEM_INFO>& inventory;
   const bool& itemSlotActive;
   unsigned char& currentRow;
 

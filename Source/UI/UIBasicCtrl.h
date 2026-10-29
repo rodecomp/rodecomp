@@ -17,7 +17,7 @@ public:
 protected:
   /* 007C */ unsigned char unknown_007C[0xC];
   /* 0088 */ std::string m_tooltip;
-  /* 00A0 */ ItemInfo m_item;
+  /* 00A0 */ ITEM_INFO m_item;
   ItemNaming* m_naming;
   UIButtonContext* m_controls;
 };

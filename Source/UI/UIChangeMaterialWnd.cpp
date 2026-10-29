@@ -2,7 +2,7 @@
 
 // OFFSET: 0x005E1120
 // FUNCTION: fn_03872
-ItemInfo* UIChangeMaterialWnd::GetItemAt(int x, int y) {
+ITEM_INFO* UIChangeMaterialWnd::GetItemAt(int x, int y) {
   if (this->m_resultX <= x && x <= this->m_resultX + 24 && this->m_resultY <= y && y <= this->m_resultY + 24) {
     return &this->m_resultItem;
   }

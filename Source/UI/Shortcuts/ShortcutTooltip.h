@@ -13,7 +13,7 @@ class ButtonServices;
 
 struct ShortcutTooltip {
   ClientSkills& skills;
-  const std::list<ItemInfo>& inventory;
+  const std::list<ITEM_INFO>& inventory;
   ItemNaming& naming;
   LuaScript& script;
   ButtonServices* services;

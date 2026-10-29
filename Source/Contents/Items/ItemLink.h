@@ -6,10 +6,10 @@
 #include <vector>
 
 struct ItemDescriptions;
-struct ItemInfo;
+struct ITEM_INFO;
 
 void DecodeItemLinkFields(const std::string& text, std::vector<std::int32_t>& fields);
-bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ItemInfo& item, ItemDescriptions& descriptions);
+bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item, ItemDescriptions& descriptions);
 int ItemLinkMessageId(const std::string& text);
 
 #endif

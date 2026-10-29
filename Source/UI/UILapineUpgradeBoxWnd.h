@@ -21,7 +21,7 @@ public:
   void Slot32(int x, int y) override;
   void Slot35(int argument) override;
 
-  /* 00B8 */ ItemInfo item;
+  /* 00B8 */ ITEM_INFO item;
   /* 01B0 */ unsigned char selected;
   /* 01B4 */ std::string tooltip;
   /* 01CC */ int quantity;
@@ -47,7 +47,7 @@ public:
   /* 00C0 */ UILapineUpgradeBox_IngredientListWnd* ingredientList;
   /* 00C4 */ int ingredientId;
   /* 00C8 */ std::string title;
-  /* 00E0 */ ItemInfo item;
+  /* 00E0 */ ITEM_INFO item;
   /* 01DC */ std::string description;
   /* 01F4 */ std::string notice;
   /* 020C */ std::uint32_t noticeTick;

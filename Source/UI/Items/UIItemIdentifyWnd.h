@@ -12,7 +12,7 @@ public:
   /* 00C0 */ int m_columns;
   /* 00C4 */ int m_rows;
   /* 00C8 */ int m_scrollable;
-  /* 00CC */ std::list<ItemInfo> m_items;
+  /* 00CC */ std::list<ITEM_INFO> m_items;
 
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;

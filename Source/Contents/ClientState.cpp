@@ -51,7 +51,7 @@ void CSession::SetPetAutoFeed(bool enabled) {
 // FUNCTION: fn_24225
 void CSession::CollectCardItems() {
   this->m_cardItems.clear();
-  for (const ItemInfo& item : this->m_inventoryItems) {
+  for (const ITEM_INFO& item : this->m_inventoryItems) {
     if (item.unknown_0000[0] == 6) {
       this->m_cardItems.push_back(item);
     }

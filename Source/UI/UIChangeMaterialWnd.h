@@ -15,15 +15,15 @@ struct MaterialSlotPos {
 class UIChangeMaterialWnd : public UIFrameWnd {
 public:
   bool Slot02() override;
-  ItemInfo* GetItemAt(int x, int y);
+  ITEM_INFO* GetItemAt(int x, int y);
 
   /* 00BC */ std::uint32_t unknown_00BC;
   /* 00C0 */ std::uint32_t unknown_00C0;
   /* 00C4 */ int m_resultX;
   /* 00C8 */ int m_resultY;
-  /* 00D0 */ ItemInfo m_resultItem;
+  /* 00D0 */ ITEM_INFO m_resultItem;
   /* 01C8 */ MaterialSlotPos m_materialPos[6];
-  /* 01F8 */ std::vector<ItemInfo> m_materials;
+  /* 01F8 */ std::vector<ITEM_INFO> m_materials;
 };
 
 class UIChangeMaterialWnd_List : public UIFrameWnd {

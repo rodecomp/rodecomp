@@ -8,7 +8,7 @@
 #include <windows.h>
 
 class CPlayerNameDictionary;
-struct ItemInfo;
+struct ITEM_INFO;
 
 struct ItemCardName {
   /* 0000 */ const char* name;
@@ -24,13 +24,13 @@ struct ItemNaming {
   const int& service;
   const WORD& language;
 
-  std::string DisplayName(const ItemInfo& item, unsigned char detailed);
-  bool HasCards(const ItemInfo& item) const;
-  int Grade(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
-  int Creator(const ItemInfo& item, char* output, int& capacity, unsigned char consume);
-  int Prefixes(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
-  int Suffixes(const ItemInfo& item, char* output, int& capacity, unsigned char consume) const;
-  int Slots(const ItemInfo& item, char* output, int& capacity, unsigned char consume);
+  std::string DisplayName(const ITEM_INFO& item, unsigned char detailed);
+  bool HasCards(const ITEM_INFO& item) const;
+  int Grade(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
+  int Creator(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume);
+  int Prefixes(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
+  int Suffixes(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) const;
+  int Slots(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume);
   const char* Message(int id) const;
 };
 

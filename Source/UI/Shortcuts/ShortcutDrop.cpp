@@ -114,7 +114,7 @@ void ShortcutDrop::Drop(UIWindow& window, ShortcutGrid& grid, int x, int y, cons
     return;
   }
 
-  ItemInfo item = LookupClientItemByIdentity(this->inventory, value.id);
+  ITEM_INFO item = LookupClientItemByIdentity(this->inventory, value.id);
   if (item.unknown_0000[1] == 0 || item.identified == 0) {
     this->mode->SendModeMessage(18, 0, 0, 0, 0);
     return;

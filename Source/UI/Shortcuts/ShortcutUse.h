@@ -11,7 +11,7 @@ class ButtonServices;
 
 struct ShortcutUse {
   ClientSkills& skills;
-  const std::list<ItemInfo>& inventory;
+  const std::list<ITEM_INFO>& inventory;
   ItemNaming& naming;
   ModeEvents*& mode;
   ButtonServices& dialogs;

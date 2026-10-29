@@ -146,7 +146,7 @@ void DecodeItemLinkFields(const std::string& text, std::vector<std::int32_t>& fi
 
 // OFFSET: 0x008933E0
 // FUNCTION: fn_11505
-bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ItemInfo& item, ItemDescriptions& descriptions) {
+bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item, ItemDescriptions& descriptions) {
   if (fields.empty()) {
     return false;
   }

@@ -133,7 +133,7 @@ void WrapRichText(
         begin = current;
 
         if (id != 0) {
-          ItemInfo item;
+          ITEM_INFO item;
           char itemId[16];
           std::sprintf(itemId, "%d", id);
           item.itemId = itemId;

@@ -33,9 +33,9 @@ void MerchantShopRefresh::Refresh() {
     edit.Background(background, background, background);
   }
 
-  for (const ItemInfo& item : this->offered) {
+  for (const ITEM_INFO& item : this->offered) {
     const auto found =
-      std::find_if(this->inventory.begin(), this->inventory.end(), [&](const ItemInfo& value) { return value.unknown_0000[1] == item.unknown_0000[1]; });
+      std::find_if(this->inventory.begin(), this->inventory.end(), [&](const ITEM_INFO& value) { return value.unknown_0000[1] == item.unknown_0000[1]; });
 
     if (found == this->inventory.end()) {
       this->inventory.push_back(item);
@@ -47,10 +47,10 @@ void MerchantShopRefresh::Refresh() {
   this->offered.clear();
   this->backup.Restore(this->mode != 0, this->maximum, this->inventory, this->offered);
 
-  const std::vector<ItemInfo> displayed(this->backup.items);
+  const std::vector<ITEM_INFO> displayed(this->backup.items);
   int index = 0;
 
-  for (const ItemInfo& item : displayed) {
+  for (const ITEM_INFO& item : displayed) {
     if (index >= this->maximum) {
       break;
     }

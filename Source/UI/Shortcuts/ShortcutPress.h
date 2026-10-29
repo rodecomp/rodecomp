@@ -14,7 +14,7 @@ struct ModeDragState;
 
 struct ShortcutPress {
   ClientSkills& skills;
-  const std::list<ItemInfo>& inventory;
+  const std::list<ITEM_INFO>& inventory;
   ItemDescriptions& descriptions;
   ResourceMgr& resources;
   WindowManagerWindows& windows;

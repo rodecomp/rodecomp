@@ -24,13 +24,13 @@ void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
 
 struct SessionItemLists {
   /* 0000 */ unsigned char unknown_0000[0x1710];
-  /* 1710 */ std::list<ItemInfo> inventory;
-  /* 1718 */ std::list<ItemInfo> items_1718;
-  /* 1720 */ std::list<ItemInfo> items_1720;
-  /* 1728 */ std::list<ItemInfo> items_1728;
-  /* 1730 */ std::list<ItemInfo> items_1730;
+  /* 1710 */ std::list<ITEM_INFO> inventory;
+  /* 1718 */ std::list<ITEM_INFO> items_1718;
+  /* 1720 */ std::list<ITEM_INFO> items_1720;
+  /* 1728 */ std::list<ITEM_INFO> items_1728;
+  /* 1730 */ std::list<ITEM_INFO> items_1730;
   /* 1738 */ unsigned char unknown_1738[0x48];
-  /* 1780 */ std::list<ItemInfo> items_1780[11];
+  /* 1780 */ std::list<ITEM_INFO> items_1780[11];
 
   void ClearItems1780();
   void KeepEquipment();
@@ -908,7 +908,7 @@ int SessionMessengerContext::GetList5Size() const {
 // OFFSET: 0x00DD8380
 // FUNCTION: fn_23305
 void SessionItemLists::ClearItems1780() {
-  for (std::list<ItemInfo>& items : this->items_1780) {
+  for (std::list<ITEM_INFO>& items : this->items_1780) {
     items.clear();
   }
 }

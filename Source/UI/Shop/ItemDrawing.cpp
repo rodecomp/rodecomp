@@ -10,7 +10,7 @@
 
 // OFFSET: 0x008A8EE0
 // FUNCTION: fn_11717
-void DrawItemIcon(UIWindow& window, ResourceMgr& resources, ItemDescriptions& descriptions, int x, int y, const ItemInfo& item, unsigned char identified) {
+void DrawItemIcon(UIWindow& window, ResourceMgr& resources, ItemDescriptions& descriptions, int x, int y, const ITEM_INFO& item, unsigned char identified) {
   char path[128];
   descriptions.IconPath(path, item.itemId.c_str(), item.identified != 0 || identified != 0);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(resources.Load(path));
@@ -42,7 +42,7 @@ void DrawItemSlotBackground(UIWindow& window, int x, int y) {
 // OFFSET: 0x008A9040
 // FUNCTION: fn_11720
 void DrawItemWithQuantity(
-  UIWindow& window, ResourceMgr& resources, ItemDescriptions& descriptions, FontCache& fonts, const TextLocale& locale, int x, int y, const ItemInfo& item,
+  UIWindow& window, ResourceMgr& resources, ItemDescriptions& descriptions, FontCache& fonts, const TextLocale& locale, int x, int y, const ITEM_INFO& item,
   unsigned char identified, unsigned char plain
 ) {
   DrawItemIcon(window, resources, descriptions, x, y, item, identified);

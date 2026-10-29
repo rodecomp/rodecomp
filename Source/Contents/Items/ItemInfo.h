@@ -54,15 +54,15 @@ static_assert(offsetof(RawItemBasic, unknown_0034) == 0x34);
 static_assert(offsetof(RawItemBasic, unknown_0038) == 0x38);
 #endif
 
-struct alignas(8) ItemInfo {
-  ItemInfo();
-  explicit ItemInfo(int unused);
-  ItemInfo(const ItemInfo& other);
-  ItemInfo& operator=(const ItemInfo& other);
+struct alignas(8) ITEM_INFO {
+  ITEM_INFO();
+  explicit ITEM_INFO(int unused);
+  ITEM_INFO(const ITEM_INFO& other);
+  ITEM_INFO& operator=(const ITEM_INFO& other);
   void Reset();
   std::uint32_t Assign(const RawItemData& item);
-  ItemInfo& AssignBasic(const RawItemBasic& item);
-  bool operator<(const ItemInfo& other) const;
+  ITEM_INFO& AssignBasic(const RawItemBasic& item);
+  bool operator<(const ITEM_INFO& other) const;
   bool SetName(const char* name);
   void SetItemId(int value);
   int GetItemId() const;
@@ -99,15 +99,15 @@ struct alignas(8) ItemInfo {
   /* 00D9 */ unsigned char unknown_00D9[24];
 };
 
-ItemInfo LookupClientItem(const std::list<ItemInfo>& values, int id, unsigned char requireIdentified);
-ItemInfo LookupClientItemByIdentity(const std::list<ItemInfo>& values, std::uint32_t id);
+ITEM_INFO LookupClientItem(const std::list<ITEM_INFO>& values, int id, unsigned char requireIdentified);
+ITEM_INFO LookupClientItemByIdentity(const std::list<ITEM_INFO>& values, std::uint32_t id);
 bool IsNumericText(const char* text);
 bool MatchItemName(std::string name, std::string query, unsigned char partial, std::list<int>* result, int id);
 std::list<int> SearchItemIds(std::string query, unsigned char cardsOnly, unsigned char partial);
 
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(ItemInfo) == 248);
+static_assert(sizeof(ITEM_INFO) == 248);
 #endif
 
 #endif

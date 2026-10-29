@@ -30,7 +30,7 @@ public:
   CMCStoreInfoBackup();
   virtual ~CMCStoreInfoBackup();
   void Clear();
-  int Restore(unsigned char wholeItem, int maximum, std::list<ItemInfo>& inventory, std::list<ItemInfo>& storeItems);
+  int Restore(unsigned char wholeItem, int maximum, std::list<ITEM_INFO>& inventory, std::list<ITEM_INFO>& storeItems);
   std::string LoadUrl() const;
   std::string SaveUrl() const;
   void Reset(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey);
@@ -43,7 +43,7 @@ public:
     StoreBackupContext& context
   );
   void Save(
-    int type, std::uint32_t accountId, std::uint32_t characterId, const char* accountName, const char* token16, const std::list<ItemInfo>& storeItems,
+    int type, std::uint32_t accountId, std::uint32_t characterId, const char* accountName, const char* token16, const std::list<ITEM_INFO>& storeItems,
     CAsyncWorkMgr& workManager, StoreBackupContext& context
   );
 
@@ -54,7 +54,7 @@ public:
   /* 0024 */ std::string loadUrl;
   /* 003C */ std::string title;
   /* 0054 */ int type;
-  /* 0058 */ std::vector<ItemInfo> items;
+  /* 0058 */ std::vector<ITEM_INFO> items;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
