@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <list>
 #include <map>
 #include <string>
 #include <vector>
@@ -25,7 +26,9 @@ public:
   /* 00D0 */ CView* camera;
   /* 00D4 */ unsigned char unknown_00D4[0x8C];
   /* 0160 */ CActorNameCardHolder nameCard;
-  /* 0194 */ unsigned char unknown_0194[0x18];
+  /* 0194 */ std::map<std::uint32_t, int> unknown_0194;
+  /* 019C */ unsigned char unknown_019C[0x8];
+  /* 01A4 */ std::list<int> unknown_01A4;
   /* 01AC */ std::map<std::uint32_t, std::uint32_t> unknown_01AC;
   /* 01B4 */ unsigned char unknown_01B4[0x100];
   /* 02B4 */ UIWindow* itemWindow;
@@ -54,6 +57,9 @@ public:
   std::uint32_t ActorNameColor(int job, std::uint32_t aid);
   const CActorNameCard& LookupNameCard(std::uint32_t id);
   const char* DragItemName();
+  void PushUnknown01A4(int value);
+  bool IsOverWeight(bool notify);
+  void CompleteUnknown0194(std::uint32_t id, const std::string& text);
   bool AppendGuildEmblem(std::vector<char>& output, std::vector<std::string>& names, int guildId, int unused);
   void ReceiveResultNotice(int result);
   void RefreshWindow16(const unsigned char* packet);
@@ -65,6 +71,8 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CGameMode, mapName) == 0x68);
+static_assert(offsetof(CGameMode, unknown_0194) == 0x194);
+static_assert(offsetof(CGameMode, unknown_01A4) == 0x1A4);
 static_assert(offsetof(CGameMode, unknown_01AC) == 0x1AC);
 static_assert(offsetof(CGameMode, scene) == 0xCC);
 static_assert(offsetof(CGameMode, camera) == 0xD0);
