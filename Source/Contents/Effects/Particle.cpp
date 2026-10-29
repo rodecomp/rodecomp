@@ -929,6 +929,12 @@ void CParticle::SetTexture(std::string name) {
   this->texture = g_texMgr.Load(name.c_str(), 0, false, true, false);
 }
 
+// OFFSET: 0x00B40200
+// FUNCTION: fn_18845
+void CParticle::SetRenderFlag(unsigned char value) {
+  this->primitive.unknown_0014 = (this->primitive.unknown_0014 & 0xFF00u) | value;
+}
+
 // OFFSET: 0x00B40210
 // FUNCTION: fn_18846
 void SubmitParticlePrimitive(RenderCommand* primitive, int flags) {

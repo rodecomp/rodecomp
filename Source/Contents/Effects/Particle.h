@@ -54,6 +54,7 @@ public:
   void SetColor(short redValue, short greenValue, short blueValue);
   void SetTexture(const char* name);
   void SetTexture(std::string name);
+  void SetRenderFlag(unsigned char value);
 
   /* 0004 */ int unknown_0004;
   /* 0008 */ int unknown_0008;
