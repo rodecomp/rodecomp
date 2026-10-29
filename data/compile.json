@@ -473,6 +473,7 @@
   "Source/Contents/RobeTopLayer.cpp": 4,
   "Source/Contents/ServerTimeManager.cpp": 4,
   "Source/Contents/ShowRankingScheduler.cpp": 4,
+  "Source/Contents/SignBoard/SignBoard.cpp": 4,
   "Source/Contents/SimpleStringMgr.cpp": 4,
   "Source/Contents/Skills/AutomaticSkills.cpp": 4,
   "Source/Contents/Skills/ClientSkills.cpp": 4,
