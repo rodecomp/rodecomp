@@ -4858,3 +4858,67 @@ void CEffectPrim::PrimFramePhase() {
     }
   }
 }
+
+// OFFSET: 0x00BE9CE0
+// FUNCTION: fn_19958
+void CEffectPrim::PrimTrailShift() {
+  this->render.position = this->state.master->render.position;
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const int process = ++slot.process;
+    slot.vecBNow = this->render.position;
+    slot.vecBNow.y = this->render.position.y - 10.0f;
+
+    if (process <= 0) {
+      continue;
+    }
+
+    const int delay = index * 10;
+    if (slot.alphaT == 1) {
+      if (process > delay) {
+        slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle + 2);
+      }
+      if (slot.riseAngle >= 360) {
+        slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle - 360);
+      }
+    } else {
+      if (process > delay) {
+        slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle - 2);
+      }
+      if (slot.riseAngle < 0) {
+        slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle + 360);
+      }
+    }
+
+    if (process > 60) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 6);
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
+      }
+    }
+    if (slot.alphaB < 0) {
+      slot.alphaB = 0;
+    }
+
+    if (process == 1) {
+      for (int step = 0; step < 21; ++step) {
+        slot.height[0] += 9.0f;
+        if (slot.height[0] > 180.0f) {
+          slot.height[0] = 180.0f;
+          continue;
+        }
+
+        for (int point = static_cast<int>(slot.vecTNow.y); point >= 1; --point) {
+          slot.height[point] = slot.height[point - 1];
+          slot.flag1[point] = slot.flag1[point - 1];
+        }
+      }
+    }
+  }
+}
