@@ -121,6 +121,14 @@ public:
   // FUNCTION: fn_02570
   // FUNCTION: fn_02571
   // FUNCTION: fn_02572
+  // FUNCTION: fn_02573
+  // FUNCTION: fn_02574
+  // FUNCTION: fn_02575
+  // FUNCTION: fn_02576
+  // FUNCTION: fn_02577
+  // FUNCTION: fn_02578
+  // FUNCTION: fn_02579
+  // FUNCTION: fn_02580
   void Release(NRecycleObject* object) override {
     NSyncObject held(&this->m_criticalSection);
     if (object) {
