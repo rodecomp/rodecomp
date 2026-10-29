@@ -150,6 +150,31 @@ CAdventureGuideMgr::~CAdventureGuideMgr() {
 }
 
 // OFFSET: 0x006635C0
+// FUNCTION: fn_05234
+bool CAdventureGuideMgr::Create() {
+  if (g_adventureGuideMgr) {
+    return false;
+  }
+
+  g_adventureGuideMgr = new (std::nothrow) CAdventureGuideMgr();
+  if (!g_adventureGuideMgr) {
+    return false;
+  }
+
+  if (g_adventureGuideMgr->m_initialized) {
+    if (g_adventureGuideMgr->Load()) {
+      return true;
+    }
+    if (g_adventureGuideMgr) {
+      delete g_adventureGuideMgr;
+    }
+  } else {
+    delete g_adventureGuideMgr;
+  }
+
+  g_adventureGuideMgr = nullptr;
+  return false;
+}
 
 // OFFSET: 0x00663680
 // FUNCTION: fn_05235
