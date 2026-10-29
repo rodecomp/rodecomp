@@ -295,11 +295,16 @@ long long UIBank_NewWnd::AdjustAmount(int amount) {
 // OFFSET: 0x008C4B00
 // FUNCTION: fn_11888
 bool UIBank_NewWnd::IsNumeric(std::string text) {
-  for (unsigned char character : text) {
-    if (static_cast<unsigned char>(character - '0') > 9) {
+  if (text.size() == 0) {
+    return false;
+  }
+
+  for (auto it = text.begin(); it != text.end(); ++it) {
+    if (static_cast<unsigned char>(*it - '0') > 9) {
       return false;
     }
   }
+
   return true;
 }
 
