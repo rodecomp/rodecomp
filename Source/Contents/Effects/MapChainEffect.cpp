@@ -11,3 +11,24 @@ bool CMapChainEffect::Slot06() {
 }
 
 // OFFSET: 0x00B4B740
+// FUNCTION: fn_18953
+void CMapChainEffect::Slot04() {
+  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
+    if (particle && particle->unknown_000C > 0) {
+      if (particle->unknown_0010 < 6) {
+        particle->destinationBlend = 6;
+      }
+
+      ParticleQuad quad;
+      quad.billboard = false;
+      quad.top = 0.0f;
+      quad.bottom = 1.0f;
+      quad.left = static_cast<float>(particle->unknown_000C - 1) / 21.0f;
+      quad.right = static_cast<float>(particle->unknown_000C) / 21.0f;
+      quad.unused = true;
+      quad.depth = true;
+      particle->Render(quad);
+    }
+  }
+}
