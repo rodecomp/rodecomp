@@ -1,6 +1,24 @@
 #include "Contents/Ground/TerrainHeight.h"
 
+#include "Client/Application/ErrorDialog.h"
 #include "Utility/Math/ScalarConversion.h"
+
+// OFFSET: 0x00748C80
+// FUNCTION: fn_07836
+std::uint32_t TerrainHeight::CellType(float x, float z) const {
+  const float size = static_cast<float>(this->cellSize);
+  const int column = static_cast<int>(((static_cast<float>(this->width) * size) * 0.5f + x) / size);
+  if (column >= 0) {
+    const int row = static_cast<int>(((static_cast<float>(this->height) * size) * 0.5f + z) / size);
+    if (row >= 0 && column < this->width && row < this->height) {
+      return this->CellAt(column, row)->type;
+    }
+  }
+
+  ShowErrorDialog(static_cast<int>(x));
+  ShowErrorDialog(static_cast<int>(z));
+  return 1;
+}
 
 // OFFSET: 0x00748D80
 // FUNCTION: fn_07838

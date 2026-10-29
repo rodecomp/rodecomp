@@ -19,6 +19,7 @@ struct TerrainHeight {
   float PlaneHeight(float x, float z) const;
   const TerrainHeightCell* CellAt(int column, int row) const;
   bool Walkable(int column, int row) const;
+  std::uint32_t CellType(float x, float z) const;
   void CellOrigin(int column, int row, float& x, float& z) const;
   void CellCenter(int column, int row, float& x, float& z) const;
 
