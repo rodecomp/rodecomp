@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_SKILLS_SKILLINFO_H
 #define RAGNAROK_SOURCE_CONTENTS_SKILLS_SKILLINFO_H
 
+#include "Utility/Math/Vector3d.h"
+
 #include <cstddef>
 #include <cstdint>
 #include <functional>
@@ -11,9 +13,7 @@
 
 class CGameActor;
 class CRenderObject;
-class CSkillObjectAction;
 class LuaScript;
-struct vector3d;
 struct NormalItemSlot;
 
 struct EfstActionMessage {
@@ -51,11 +51,11 @@ public:
   }
   virtual void Slot09(int argument1, int argument2, int argument3) {
   }
-  virtual void Slot10(int argument1, int argument2, int argument3, int argument4, int argument5) {
+  virtual void Slot10(int level, CGameActor* source, int argument3, int argument4, int argument5) {
   }
   virtual void Slot11(int level, CGameActor* source, CGameActor* target) {
   }
-  virtual void Slot12(int argument1, int argument2, int argument3, int argument4, int argument5) {
+  virtual void Slot12(vector3d position, int argument2, int argument3) {
   }
   virtual bool Slot13() {
     return false;
@@ -82,6 +82,13 @@ public:
   }
   virtual EfstActionMessage Slot04() {
     return {nullptr, 0xFF};
+  }
+};
+
+class CSkillObjectAction {
+public:
+  virtual void Slot00(int argument, CRenderObject* object, CGameActor* source) = 0;
+  virtual void Slot01(CRenderObject* object) {
   }
 };
 
@@ -170,6 +177,7 @@ static_assert(offsetof(CSkillActionMgr, m_skillObjectActions) == 0x14);
 static_assert(sizeof(CSkillActionMgr) == 0x1C);
 static_assert(sizeof(CSkillAction) == 4);
 static_assert(sizeof(CEfstAction) == 4);
+static_assert(sizeof(CSkillObjectAction) == 4);
 static_assert(sizeof(EfstActionMessage) == 8);
 #endif
 
