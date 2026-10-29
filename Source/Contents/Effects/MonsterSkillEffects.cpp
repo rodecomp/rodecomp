@@ -96,6 +96,7 @@ void CWarningPlaneEffect::Slot01() {
 // OFFSET: 0x0070FC60
 
 // OFFSET: 0x007100D0
+// FUNCTION: fn_07197
 CDancingKnifeEffect::CDancingKnifeEffect() : CEffect(1829) {
 }
 
@@ -106,10 +107,12 @@ bool CDancingKnifeEffect::Slot06() {
 }
 
 // OFFSET: 0x00710AE0
+// FUNCTION: fn_07206
 CEternalSlashAttackEffect::CEternalSlashAttackEffect() : CEffect(-1) {
 }
 
 // OFFSET: 0x00710F50
+// FUNCTION: fn_07210
 bool CEternalSlashAttackEffect::Slot06() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
@@ -122,10 +125,12 @@ bool CEternalSlashAttackEffect::Slot06() {
 }
 
 // OFFSET: 0x00711120
+// FUNCTION: fn_07213
 CEternalSlashCountEffect::CEternalSlashCountEffect() : CEffect(1913), emitter(nullptr) {
 }
 
 // OFFSET: 0x00711340
+// FUNCTION: fn_07217
 bool CEternalSlashCountEffect::Slot06() {
   EZ2STREmitter* emitter = this->emitter;
   if (!emitter) {
@@ -140,10 +145,12 @@ bool CEternalSlashCountEffect::Slot06() {
 }
 
 // OFFSET: 0x00711420
+// FUNCTION: fn_07220
 CFallenAngelEffect::CFallenAngelEffect() : CEffect(1140), emitter(nullptr), unknown_00D0(0), unknown_00D4(0), unknown_00D8(0) {
 }
 
 // OFFSET: 0x00711690
+// FUNCTION: fn_07224
 bool CFallenAngelEffect::Slot06() {
   if (this->emitter->lifetime == 0.0f) {
     return true;
@@ -153,6 +160,7 @@ bool CFallenAngelEffect::Slot06() {
 }
 
 // OFFSET: 0x007118C0
+// FUNCTION: fn_07228
 CFloralFlareRoad::CFloralFlareRoad() : CEffect(1804) {
 }
 
@@ -170,6 +178,7 @@ CFootprintEffect::CFootprintEffect() : CEffect(2411), stepDistance(0.0), unknown
 }
 
 // OFFSET: 0x007123C0
+// FUNCTION: fn_07238
 bool CFootprintEffect::Slot33() {
   EffectActor* actor = static_cast<EffectActor*>(FindRenderObject(this->actor));
   if (!actor || actor->render.unknown_00A8 == 0) {
@@ -190,6 +199,7 @@ bool CFootprintEffect::Slot06() {
 }
 
 // OFFSET: 0x00713370
+// FUNCTION: fn_07248
 bool CFootprintStrEffect::Slot33() {
   EffectActor* actor = static_cast<EffectActor*>(FindRenderObject(this->actor));
   if (!actor || actor->render.unknown_00A8 == 0) {
