@@ -602,6 +602,50 @@ bool sub_654D00() {
   return true;
 }
 
+// OFFSET: 0x00654EF0
+
+struct Span8_654FB0 { const void* ptr; unsigned int len; };
+struct Span4_654FB0 { const void* ptr; };
+
+struct FuncImpl_654FB0 {
+  void* vtable;
+  bool (*target)(Span8_654FB0, Span4_654FB0, Span4_654FB0, Span8_654FB0, Span8_654FB0);
+
+  bool sub_654FB0(const Span8_654FB0* a1, const Span4_654FB0* a2, const Span4_654FB0* a3, const Span8_654FB0* a4, const Span8_654FB0* a5) const;
+};
+
+// OFFSET: 0x00654FB0
+
+struct HashNode_655340 {
+  HashNode_655340* prev;
+  HashNode_655340* next;
+};
+
+struct HashBucket_655340 {
+  HashNode_655340* first;
+  HashNode_655340* last;
+};
+
+struct HashTable_655340 {
+  void* unknown_00;
+  HashNode_655340* head;
+  unsigned int size;
+  HashBucket_655340* buckets;
+  unsigned int unknown_10;
+  unsigned int unknown_14;
+  unsigned int mask;
+
+  HashNode_655340* sub_655340(unsigned int hash, HashNode_655340* prev, HashNode_655340* node);
+};
+
+// OFFSET: 0x00655340
+
+// OFFSET: 0x00655330
+// FUNCTION: fn_05059
+int* __fastcall sub_655330(int* a) {
+  return a + 1;
+}
+
 // INLINED
 CGPak::CGPak() : m_file(nullptr), m_version(0), m_entryCount(0), m_tableOffset(0), m_tableSize(0) {
   this->Reset();
