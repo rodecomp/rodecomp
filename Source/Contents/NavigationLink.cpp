@@ -291,6 +291,30 @@ bool CNavi_Object::SetId(int id) {
   return true;
 }
 
+// OFFSET: 0x00B904E0
+// FUNCTION: fn_19514
+int CNaviInfo::LinkCount() const {
+  return static_cast<int>(this->links.size());
+}
+
+// OFFSET: 0x00B904F0
+// FUNCTION: fn_19515
+int CNaviInfo::MobCount() const {
+  return static_cast<int>(this->mobs.size());
+}
+
+// OFFSET: 0x00B90500
+// FUNCTION: fn_19516
+int CNaviInfo::NpcCount() const {
+  return static_cast<int>(this->npcs.size());
+}
+
+// OFFSET: 0x00B90510
+// FUNCTION: fn_19517
+int CNavi_Link::LinkedLinkCount() const {
+  return static_cast<int>(this->linkedLinks.size());
+}
+
 // OFFSET: 0x00B90520
 // FUNCTION: fn_19518
 int CNavi_Link::LinkCount() const {

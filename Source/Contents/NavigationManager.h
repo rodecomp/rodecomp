@@ -124,6 +124,7 @@ public:
   std::vector<NaviLink>::iterator LinkedEnd();
   void AddLinkedLink(const NaviLink& link);
   void ClearLinkedLinks();
+  int LinkedLinkCount() const;
   CNavi_Link(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info, CNaviInfo* linkedInfo, int unknown80, int unknown84);
 
   ~CNavi_Link() override;
@@ -179,6 +180,9 @@ public:
   CNavi_Object* FindNpc(unsigned int key, bool byId);
   CNavi_Object* FindNpcAt(int cellX, int cellY);
   std::vector<CNavi_Object*>* Npcs();
+  int LinkCount() const;
+  int MobCount() const;
+  int NpcCount() const;
   CNavi_Link* FindMatchingLink(CNavi_Link link);
 
   /* 0000 */ int index;
