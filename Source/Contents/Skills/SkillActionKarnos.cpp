@@ -93,6 +93,7 @@ class CSkillAction_KR_CLAW_WAVE : public CSkillAction_DamageWereWolfForm {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot12(vector3d position, int argument2, int argument3) override;
 };
 
@@ -148,6 +149,12 @@ public:
   int Slot14() override;
 };
 
+class CSkillObjectAction_KR_ICE_PILLAR : public CSkillObjectAction {
+public:
+  void Slot00(int argument, CRenderObject* object, CGameActor* source) override;
+  void Slot01(CRenderObject* object) override;
+};
+
 class CSkillAction_KR_FEATHER_SPRINKLE : public CSkillAction_DamageWereRaptorForm {
 public:
   int Slot02() override;
@@ -157,12 +164,14 @@ class CSkillAction_KR_SHARPEN_GUST : public CSkillAction_DamageWereRaptorForm {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
 };
 
 class CSkillAction_KR_SHARPEN_HAIL : public CSkillAction_DamageWereRaptorForm {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -170,6 +179,7 @@ class CSkillAction_KR_IRON_HOWLING : public CSkillAction_DamageWereWolfForm {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
 };
 
 class CEfstAction_IRON_HOWLING : public CEfstAction {
@@ -182,6 +192,7 @@ class CSkillAction_KR_TYPHOON_WING : public CSkillAction_DamageWereRaptorForm {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot12(vector3d position, int level, int argument5) override;
 };
 
@@ -189,6 +200,7 @@ class CSkillAction_KR_WIND_VEIL : public CSkillAction_DamageWereRaptorForm {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
 };
 
 class CEfstAction_WIND_VEIL : public CEfstAction {
@@ -244,6 +256,14 @@ int CSkillAction_KR_CLAW_WAVE::Slot01() {
 // FUNCTION: fn_03345
 int CSkillAction_KR_CLAW_WAVE::Slot02() {
   return 71;
+}
+
+// OFFSET: 0x005B0CA0
+// FUNCTION: fn_03346
+void CSkillAction_KR_CLAW_WAVE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(54, level / 16);
+  }
 }
 
 // OFFSET: 0x005B0CD0
@@ -459,6 +479,68 @@ int CSkillAction_KR_ICE_PILLAR::Slot02() {
   return 65;
 }
 
+// OFFSET: 0x005B3490
+// FUNCTION: fn_03366
+void CSkillObjectAction_KR_ICE_PILLAR::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+  if (!object) {
+    return;
+  }
+
+  g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0x8C, 0xEC, 0x28, 0x4A, 0x47, 0x68, 0x3F, 0x9B, 0x84, 0xFD, 0x12, 0x66, 0x43, 0x60, 0x21, 0x83, 0xE5};
+    thread_local EncryptedName<sizeof(bytes), 0xF7530137154D8FE5ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0xAA, 0xA0, 0xB0, 0xD4, 0x2B, 0x82, 0x53, 0xE7, 0xA2, 0xB1, 0x8A, 0xF8, 0x2F, 0x8A, 0x4D, 0xFF,
+                                  0x9C, 0xA1, 0xBA, 0xFF, 0x2F, 0x84, 0x52, 0x8B};
+    thread_local EncryptedName<sizeof(bytes), 0x8B3FEB5B8BD5C3C3ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+
+  if (CEffect* effect = g_effectMgr->Spawn(object->render.accountId, 2472, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    static_cast<EffectResourceSwitcher*>(effect)->SetNames([] {
+      const std::uint8_t bytes[] = {0xCE, 0xD0, 0x60, 0x96, 0xD5, 0x0A, 0x87, 0x67, 0xC6, 0xC1, 0x5A, 0xA5, 0xCA, 0x0C, 0x9B, 0x0B};
+      thread_local EncryptedName<sizeof(bytes), 0x0BEB63A5C905B3A7ULL> name(bytes);
+      return name.Text();
+    }(), [] {
+      const std::uint8_t bytes[] = {0xA0, 0xD4, 0x40, 0xC8, 0xCB, 0x5A, 0xEF, 0x6B, 0xA8, 0xC5, 0x7A, 0xF2, 0xD5, 0x57, 0x83};
+      thread_local EncryptedName<sizeof(bytes), 0x078333BB9725B7C9ULL> name(bytes);
+      return name.Text();
+    }());
+    effect->Slot16(990);
+  }
+  if (CEffect* effect = g_effectMgr->Spawn(object->render.accountId, 2473, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    static_cast<EffectResourceSwitcher*>(effect)->SetNames([] {
+      const std::uint8_t bytes[] = {0xDC, 0x16, 0x04, 0x00, 0x8D, 0x32, 0x77, 0xE3, 0xD4, 0x07, 0x3E, 0x33, 0x92, 0x34, 0x6B, 0xD0,
+                                    0xD7, 0x1A, 0x15, 0x2B, 0x92, 0x36, 0x1B};
+      thread_local EncryptedName<sizeof(bytes), 0x8F1B5BFD5F6175B5ULL> name(bytes);
+      return name.Text();
+    }(), [] {
+      const std::uint8_t bytes[] = {0x72, 0x6E, 0x5C, 0x56, 0xDF, 0x20, 0xE3, 0x37, 0x7A, 0x7F, 0x66, 0x6C, 0xC1, 0x2D, 0xD0, 0x39,
+                                    0x74, 0x79, 0x4D, 0x66, 0xC2, 0x49};
+      thread_local EncryptedName<sizeof(bytes), 0x5B8F49AF09390D1BULL> name(bytes);
+      return name.Text();
+    }());
+    effect->Slot16(990);
+  }
+}
+
+// OFFSET: 0x005B3E30
+// FUNCTION: fn_03367
+void CSkillObjectAction_KR_ICE_PILLAR::Slot01(CRenderObject* object) {
+  if (!object) {
+    return;
+  }
+
+  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, 2472)) {
+    static_cast<EffectResourceSwitcher*>(effect)->Start();
+  }
+  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, 2473)) {
+    static_cast<EffectResourceSwitcher*>(effect)->Start();
+  }
+}
+
 // OFFSET: 0x005B3E90
 // FUNCTION: fn_03368
 int CSkillAction_KR_FEATHER_SPRINKLE::Slot02() {
@@ -477,6 +559,14 @@ int CSkillAction_KR_SHARPEN_GUST::Slot02() {
   return 78;
 }
 
+// OFFSET: 0x005B4280
+// FUNCTION: fn_03373
+void CSkillAction_KR_SHARPEN_GUST::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(56, level / 16);
+  }
+}
+
 // OFFSET: 0x005B4700
 // FUNCTION: fn_03376
 int CSkillAction_KR_SHARPEN_HAIL::Slot01() {
@@ -487,6 +577,32 @@ int CSkillAction_KR_SHARPEN_HAIL::Slot01() {
 // FUNCTION: fn_03377
 int CSkillAction_KR_SHARPEN_HAIL::Slot02() {
   return 79;
+}
+
+// OFFSET: 0x005B4720
+// FUNCTION: fn_03378
+void CSkillAction_KR_SHARPEN_HAIL::Slot08(int level, CGameActor* source) {
+  if (!source) {
+    return;
+  }
+
+  static_cast<EffectActor*>(source)->LaunchEffect(56, level / 16);
+
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+        const std::uint8_t bytes[] = {0x6A, 0x05, 0xAE, 0x8D, 0x2D, 0x64, 0xAF, 0x20, 0x71, 0x0C, 0xA6, 0x93, 0x5D};
+        thread_local EncryptedName<sizeof(bytes), 0x7FC1015DFFCF6D19ULL> name(bytes);
+        return name.Text();
+      }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot14(level);
+  }
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+        const std::uint8_t bytes[] = {0x50, 0xEB, 0xBA, 0xF1, 0x31, 0xD8, 0x51, 0x94, 0x4B, 0xE2, 0xB2, 0xEF, 0x1E, 0xDF, 0x50, 0xBF,
+                                      0x57, 0xEC, 0xB6, 0x83};
+        thread_local EncryptedName<sizeof(bytes), 0xCB3FBD4183DB8323ULL> name(bytes);
+        return name.Text();
+      }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot14(level);
+  }
 }
 
 // OFFSET: 0x005B4AF0
@@ -567,6 +683,14 @@ int CSkillAction_KR_IRON_HOWLING::Slot02() {
   return 68;
 }
 
+// OFFSET: 0x005B4FB0
+// FUNCTION: fn_03383
+void CSkillAction_KR_IRON_HOWLING::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(54, level / 16);
+  }
+}
+
 // OFFSET: 0x005B51F0
 // FUNCTION: fn_03385
 EfstActionMessage CEfstAction_IRON_HOWLING::Slot03() {
@@ -589,6 +713,14 @@ int CSkillAction_KR_TYPHOON_WING::Slot01() {
 // FUNCTION: fn_03388
 int CSkillAction_KR_TYPHOON_WING::Slot02() {
   return 67;
+}
+
+// OFFSET: 0x005B5270
+// FUNCTION: fn_03389
+void CSkillAction_KR_TYPHOON_WING::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(56, level / 16);
+  }
 }
 
 // OFFSET: 0x005B52A0
@@ -635,6 +767,14 @@ int CSkillAction_KR_WIND_VEIL::Slot01() {
 // FUNCTION: fn_03392
 int CSkillAction_KR_WIND_VEIL::Slot02() {
   return 68;
+}
+
+// OFFSET: 0x005B58C0
+// FUNCTION: fn_03393
+void CSkillAction_KR_WIND_VEIL::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(56, level / 16);
+  }
 }
 
 // OFFSET: 0x005B58F0
