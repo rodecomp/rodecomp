@@ -246,6 +246,11 @@ HRESULT DeviceOwnerDX9::Close() {
   return references != 0 ? static_cast<HRESULT>(0x8200000Bu) : D3D_OK;
 }
 
+// OFFSET: 0x0054C070
+// FUNCTION: fn_01917
+void DeviceOwnerDX9::RestoreDisplayMode() {
+}
+
 // OFFSET: 0x0054C490
 // FUNCTION: fn_01920
 HRESULT DeviceOwnerDX9::ClipFullscreenCursor() {
