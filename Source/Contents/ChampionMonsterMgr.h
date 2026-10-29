@@ -5,6 +5,7 @@
 #include <vector>
 
 struct lua_State;
+class CGameActor;
 
 // VTABLE: vt_01613
 class CChampionMonsterMgr {
@@ -35,6 +36,8 @@ public:
   static int LuaAddItem(lua_State* state);
   static int LuaAddEffect(lua_State* state);
 
+  bool Load();
+  int ApplyEffects(int id, CGameActor* actor, int aid);
   void AddItem(int id, float value);
   // INLINED
   void AddEffect(int id, int effect) {

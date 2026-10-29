@@ -1,8 +1,14 @@
 #include "Contents/ChampionMonsterMgr.h"
+#include "Contents/Actors/ActorStateFlags.h"
+#include "Contents/Actors/GameActor.h"
+#include "Contents/Effects/EffectActor.h"
+#include "Contents/Effects/EffectLists.h"
+#include "Script/NLuaState.h"
 
 extern "C" {
 #include <lauxlib.h>
 #include <lua.h>
+#include <lualib.h>
 }
 #include <cstdarg>
 #include <cstdio>
@@ -10,6 +16,7 @@ extern "C" {
 #include <new>
 #include <string>
 #include <utility>
+#include <windows.h>
 
 // GLOBAL: gl_24813
 CChampionMonsterMgr* g_championMonsterMgr;
@@ -43,6 +50,68 @@ void CChampionMonsterMgr::Destroy() {
     delete g_championMonsterMgr;
     g_championMonsterMgr = nullptr;
   }
+}
+
+// OFFSET: 0x00ADE2C0
+// FUNCTION: fn_17954
+bool CChampionMonsterMgr::Load() {
+  NLuaState lua;
+  if (lua.IsValid()) {
+    luaL_openlibs(lua.GetState());
+    lua_register(lua.GetState(), "AddItem", CChampionMonsterMgr::LuaAddItem);
+    lua_register(lua.GetState(), "AddEffect", CChampionMonsterMgr::LuaAddEffect);
+    if (luaL_loadfile(lua.GetState(), "System\\monster_size_effect_new.lub") != 0 || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+      MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "ChampionMonsterMgr", 0);
+    } else {
+      lua_getglobal(lua.GetState(), "main");
+      if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+        MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "ChampionMonsterMgr", 0);
+      } else if (!lua_isstring(lua.GetState(), -1)) {
+        MessageBoxA(nullptr, "second return value is not string...", "ChampionMonsterMgr", 0);
+      } else {
+        if (lua_toboolean(lua.GetState(), -2)) {
+          return true;
+        }
+        std::string message = std::string("error found :") + lua_tostring(lua.GetState(), -1);
+        MessageBoxA(nullptr, message.c_str(), "ChampionMonsterMgr", 0);
+      }
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00ADE510
+// FUNCTION: fn_17955
+int CChampionMonsterMgr::ApplyEffects(int id, CGameActor* actor, int aid) {
+  if (this->m_items.empty()) {
+    return -1;
+  }
+
+  std::map<int, lcData>::iterator it = this->m_items.find(id);
+  if (it == this->m_items.end() || actor == nullptr) {
+    return -1;
+  }
+
+  std::vector<int>& effects = it->second.m_effects;
+  if (actor->render.visible && actor->render.enabled && !StateFlag02(actor->Slot13())) {
+    for (unsigned int i = 0; i < effects.size(); ++i) {
+      if (g_effectMgr->Find(aid, effects[i]) == nullptr) {
+        const vector3d& position = actor->render.position;
+        if (g_effectMgr->Spawn(aid, effects[i], position.x, position.y, position.z, 0, -1, 0, 0) == nullptr &&
+            !actor->state.Attachments().HasId(effects[i])) {
+          actor->LaunchEffect(effects[i], actor->render.position, 0.0f);
+        }
+      }
+    }
+  } else {
+    for (unsigned int i = 0; i < effects.size(); ++i) {
+      const int effect = effects[i];
+      actor->SendMsg(actor, 109, 0, effect, effect >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  return -1;
 }
 
 // OFFSET: 0x00ADE6D0
