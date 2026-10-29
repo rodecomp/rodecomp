@@ -12,8 +12,13 @@
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
+#include "Render/Text/TextContext.h"
 
 #include <algorithm>
+#include <cstdio>
+#include <cstring>
 #include <string>
 #include <vector>
 
@@ -35,6 +40,9 @@ namespace {
 class UIDragMiniPartyWnd : public UIFrameWnd {
 public:
   ~UIDragMiniPartyWnd() override;
+  void Slot15(int width, int height) override;
+  void Paint() override;
+  void Slot31(int argument1, int argument2) override;
   void MoveGauge(int x, int y);
   void RemoveGauge();
   void SetUnknown010C(int first, int second);
@@ -125,11 +133,34 @@ MessengerMember::~MessengerMember() = default;
 // FUNCTION: fn_07667
 UIDragMiniPartyWnd::~UIDragMiniPartyWnd() = default;
 
+// OFFSET: 0x00738640
+// FUNCTION: fn_07669
+void UIDragMiniPartyWnd::Slot15(int, int) {
+  this->iconPositions.resize(2);
+  this->iconPositions[0].x = 5;
+  this->iconPositions[0].y = 5;
+  this->iconPositions[0].size = 34;
+  this->iconPositions[1].x = 4;
+  this->iconPositions[1].y = 1;
+  this->iconPositions[1].size = 27;
+
+  if (!this->gauge) {
+    this->gauge = new UIPcGage();
+    this->gauge->SetSize(60, 5);
+    this->gauge->Move(54, 25);
+    this->AddChild(this->gauge);
+  }
+}
+
+// OFFSET: 0x007387A0
+
 // OFFSET: 0x00738630
 // FUNCTION: fn_07668
 void UIDragMiniPartyWnd::MoveGauge(int x, int y) {
   this->gauge->Move(x, y);
 }
+
+// OFFSET: 0x00738CE0
 
 // OFFSET: 0x00738D20
 // FUNCTION: fn_07672

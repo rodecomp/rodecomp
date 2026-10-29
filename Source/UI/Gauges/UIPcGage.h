@@ -8,11 +8,14 @@
 
 class UIGage : public UIWindow {
 public:
+  UIGage();
+
   /* 0080 */ std::uint32_t colors[7];
 };
 
 class UIPcGage : public UIGage {
 public:
+  UIPcGage();
   __declspec(noinline) void SetValues(int current, int maximum);
 
   /* 009C */ int unknown_009C;
