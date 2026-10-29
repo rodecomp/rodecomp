@@ -422,25 +422,87 @@ void CUITextViewer::Slot19() {
 }
 
 // OFFSET: 0x009EA280
+// FUNCTION: fn_14517
+void CUITextViewer::Slot35(int value) {
+  CUIVScrollBar* bar = this->scrollBar;
+
+  if (!bar->dragging && bar->total > bar->visible) {
+    bar->Slot35(value);
+  } else if (this->parent) {
+    this->parent->Slot35(value);
+  }
+}
 
 // OFFSET: 0x009EA7A0
+// FUNCTION: fn_14521
+void CUITextViewer::SetTextOffset(int x, int y) {
+  this->textX = x;
+  this->textY = y;
+}
 
 // OFFSET: 0x009EA7E0
+// FUNCTION: fn_14522
+void CUITextViewer::SetBackgroundColor(std::uint32_t value) {
+  this->backgroundColor = value;
+  this->padding->color = value;
+  this->padding->Invalidate();
+}
 
 // OFFSET: 0x009EA810
+// FUNCTION: fn_14523
+void CUITextViewer::SetBold(bool value) {
+  this->bold = value;
+}
 
 // OFFSET: 0x009EA820
+// FUNCTION: fn_14524
+void CUITextViewer::SetTextColor(std::uint32_t value) {
+  this->textColor = value;
+}
 
 // OFFSET: 0x009EA830
+// FUNCTION: fn_14525
+void CUITextViewer::SetFontHeight(int value) {
+  this->fontHeight = value;
+}
 
 // OFFSET: 0x009EA840
+// FUNCTION: fn_14526
+void CUITextViewer::SetFont(const std::string& name) {
+  this->font = FallbackFontIndex(name);
+}
 
 // OFFSET: 0x009EA860
+// FUNCTION: fn_14527
+void CUITextViewer::SetLineSpacing(int value) {
+  this->lineSpacing = value;
+}
 
 // OFFSET: 0x009EA870
+// FUNCTION: fn_14528
+void CUITextViewer::SetOutline(bool enabled, std::uint32_t value) {
+  this->outline = enabled;
+  this->outlineColor = value;
+}
 
 // OFFSET: 0x009EA8D0
+// FUNCTION: fn_14529
+void CUITextViewer::SetPadding(int left, int top, int right, int bottom) {
+  this->paddingLeft = left;
+  this->paddingTop = top;
+  this->paddingRight = right;
+  this->paddingBottom = bottom;
+}
 
 // OFFSET: 0x009EA910
+// FUNCTION: fn_14531
+void CUITextViewer::SetScrollStep(int value) {
+  this->scrollBar->step = value;
+  this->Invalidate();
+}
 
 // OFFSET: 0x009EA930
+// FUNCTION: fn_14532
+void CUITextViewer::SetScrollBarSize(int width, int height) {
+  this->scrollBar->SetSize(width, height);
+}
