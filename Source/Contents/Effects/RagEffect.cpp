@@ -16,6 +16,7 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Contents/Effects/EffectPrimitiveMotion.h"
 #include "Resource/EZeffectResource.h"
+#include "Resource/World/TerrainResource.h"
 
 #include <algorithm>
 #include <bit>
@@ -1340,3 +1341,15 @@ void CRagEffect::Sphere() {
   Owner(&particle).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
   Owner(&particle).InitSegment();
 }
+
+// OFFSET: 0x00C17220
+
+// OFFSET: 0x00C16430
+// FUNCTION: fn_20055
+int CRagEffect::GetDuration() {
+  return this->state.duration;
+}
+
+// OFFSET: 0x00C3A920
+
+// OFFSET: 0x00C12B90

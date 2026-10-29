@@ -27,6 +27,9 @@ struct CRagEffect : CRenderObject {
   bool ProcessEZ2STRC15990();
   bool ProcessEZ2STRC159D0();
   bool ShieldCharge();
+  void GrimToothAtk(TextureCache& textures);
+  void Snow();
+  void Entry(TextureCache& textures);
   void AttackEnergy2(TextureCache& textures, const char* name);
   bool LexDivina();
   void RemoveTrap();
@@ -57,7 +60,7 @@ struct CRagEffect : CRenderObject {
   virtual void Slot15();
   virtual void SendMsg(CGameObject* sender, int message, int first, std::int64_t second, int third, int fourth, int fifth, int sixth);
   virtual void Init(EffectActor* parent, int id, vector3d deltaPos);
-  virtual void Slot18();
+  virtual int GetDuration();
 
   /* 0138 */ RagEffectState state;
 };
