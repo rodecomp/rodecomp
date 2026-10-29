@@ -548,12 +548,76 @@ int CPc::MapMotion(int motion) {
 }
 
 // OFFSET: 0x00DAA2E0
+// FUNCTION: fn_22570
+void CGrannyPc::ReleaseMeshes() {
+  for (int i = 0; i < 20; ++i) {
+    if (this->controls[i]) {
+      this->controls[i] = nullptr;
+    }
+  }
+
+  for (int mesh = 0; mesh < 30; ++mesh) {
+    RenderCommand* command = this->commands[mesh];
+    if (command) {
+      command->FreeVertices();
+      delete command;
+      this->commands[mesh] = nullptr;
+      delete this->vertices[mesh];
+      this->vertices[mesh] = nullptr;
+    }
+  }
+
+  for (int layer = 0; layer < 10; ++layer) {
+    for (int mesh = 0; mesh < 30; ++mesh) {
+      RenderCommand* command = this->layerCommands[layer][mesh];
+      if (command) {
+        command->FreeVertices();
+        delete command;
+        this->layerCommands[layer][mesh] = nullptr;
+        delete this->layerVertices[layer][mesh];
+        this->layerVertices[layer][mesh] = nullptr;
+      }
+    }
+  }
+
+  this->unknown_2550 = 0;
+}
 
 // OFFSET: 0x00DAA3F0
+// FUNCTION: fn_22571
+std::vector<std::string> CPc::GetEquipActionNames() const {
+  std::vector<std::string> names(9);
+  for (int slot = 0; slot < 9; ++slot) {
+    if (this->equipActions[slot]) {
+      names[slot] = this->equipActions[slot]->name.text;
+    } else {
+      names[slot] = "";
+    }
+  }
+
+  return names;
+}
 
 // OFFSET: 0x00DAA520
+// FUNCTION: fn_22572
+CRes* CPc::GetEquipAction(unsigned slot) const {
+  if (slot < this->equipActions.size()) {
+    return this->equipActions[slot];
+  }
+
+  return nullptr;
+}
 
 // OFFSET: 0x00DAA5F0
+// FUNCTION: fn_22573
+int GetSlotLayer(int slot) {
+  switch (slot) {
+    case 1:
+      return 1;
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00DAA610
 // FUNCTION: fn_22574
@@ -562,12 +626,110 @@ int CPc::Slot55() {
 }
 
 // OFFSET: 0x00DAAD80
+// FUNCTION: fn_22577
+int CPc::JobActionBase(int state) {
+  int base = 0;
+  switch (state) {
+    case 0:
+      base = 32;
+      break;
+    case 6:
+      base = 16;
+      break;
+    case 7:
+      switch (this->GetEffectiveJob(-1)) {
+        case JT_CRUSADER:
+        case JT_BARD:
+        case JT_DANCER:
+        case JT_GUNSLINGER:
+        case JT_CRUSADER_B:
+        case JT_BARD_B:
+        case JT_DANCER_B:
+        case JT_TAEKWON:
+        case JT_STAR:
+        case JT_STAR2:
+        case JT_TAEKWON_B:
+        case JT_STAR_B:
+        case JT_GUNSLINGER_B:
+        case JT_STAR2_B:
+        case JT_STAR_EMPEROR:
+        case JT_STAR_EMPEROR_B:
+        case JT_STAR2_EMPEROR:
+        case JT_STAR2_EMPEROR_B:
+        case JT_SKY_EMPEROR:
+        case JT_SKY_EMPEROR2:
+          return 32;
+        case JT_DO_SUMMONER:
+        case JT_DO_CART_SUMMONER:
+        case JT_DO_SUMMONER_B:
+        case JT_DO_CART_SUMMONER_B:
+        case JT_SPIRIT_HANDLER:
+        case JT_SPIRIT_HANDLER_RIDING:
+        case JT_DRUID:
+        case JT_DRUID_B:
+        case JT_KARNOS:
+        case JT_KARNOS_B:
+        case JT_ALITEA:
+          return 80;
+        case JT_MONK:
+        case JT_NINJA:
+        case JT_CRUSADER_H:
+        case JT_MONK_H:
+        case JT_BARD_H:
+        case JT_DANCER_H:
+        case JT_MONK_B:
+        case JT_ROYAL_GUARD:
+        case JT_SURA:
+        case JT_ROYAL_GUARD_H:
+        case JT_SURA_H:
+        case JT_SURA_B:
+        case JT_NINJA_B:
+        case JT_INQUISITOR:
+          return 96;
+        default:
+          return 96;
+      }
+    case 8:
+      base = 96;
+      switch (this->GetEffectiveJob(-1)) {
+        case JT_DO_SUMMONER:
+        case JT_DO_SUMMONER_B:
+        case JT_SPIRIT_HANDLER:
+          base = 40;
+          break;
+      }
+      break;
+  }
+
+  return base;
+}
 
 // OFFSET: 0x00DAB010
+// FUNCTION: fn_22578
+std::vector<std::string> CPc::GetEquipSpriteNames() const {
+  std::vector<std::string> names(9);
+  for (int slot = 0; slot < 9; ++slot) {
+    if (this->equipSprites[slot]) {
+      names[slot] = this->equipSprites[slot]->name.text;
+    } else {
+      names[slot] = "";
+    }
+  }
+
+  return names;
+}
 
 // OFFSET: 0x00DAB140
+// FUNCTION: fn_22579
+CRes* CPc::GetEquipSprite(int slot) const {
+  return this->equipSprites[slot];
+}
 
 // OFFSET: 0x00DAB160
+// FUNCTION: fn_22580
+std::int64_t CGrannyPc::Slot35() {
+  return (static_cast<std::int64_t>(this->unknown_0444) << 32) | static_cast<std::uint32_t>(this->unknown_0440);
+}
 
 // OFFSET: 0x00DAB250
 // FUNCTION: fn_22582
@@ -577,7 +739,69 @@ bool CPc::IsCostumeOutfit() const {
 }
 
 // OFFSET: 0x00DAB460
+// FUNCTION: fn_22584
+int CPc::GetDualWieldWeaponType(int first, int second) {
+  int result = W_FIST;
+  int main = first;
+  int sub = second;
+
+  if (!first) {
+    if (!second) {
+      return result;
+    }
+
+    main = second;
+    sub = 0;
+  }
+
+  if (main >= 1100 && main < 1150 || main >= 13400 && main < 13500 || main >= 500000 && main < 510000) {
+    result = W_1HSWORD;
+    if (sub >= 1100 && sub < 1150 || sub >= 13400 && sub < 13500 || sub >= 500000 && sub < 510000) {
+      return W_DOUBLE_SS;
+    }
+    if (sub >= 1200 && sub < 1250 || sub >= 13000 && sub < 13100 || sub >= 28700 && sub < 28900 || sub >= 510000 && sub < 520000) {
+      return W_DOUBLE_DS;
+    }
+    if (sub >= 1300 && sub < 1350 || sub >= 520000 && sub < 530000) {
+      return W_DOUBLE_SA;
+    }
+  } else if (main >= 1200 && main < 1250 || main >= 13000 && main < 13100 || main >= 28700 && main < 28900 || main >= 510000 && main < 520000) {
+    result = W_DAGGER;
+    if (sub >= 1100 && sub < 1150 || sub >= 13400 && sub < 13500 || sub >= 500000 && sub < 510000) {
+      return W_DOUBLE_DS;
+    }
+    if (sub >= 1200 && sub < 1250 || sub >= 13000 && sub < 13100 || sub >= 28700 && sub < 28900 || sub >= 510000 && sub < 520000) {
+      return W_DOUBLE_DD;
+    }
+    if (sub >= 1300 && sub < 1350 || sub >= 520000 && sub < 530000) {
+      return W_DOUBLE_DA;
+    }
+  } else if (main >= 1300 && main < 1350 || main >= 520000 && main < 530000) {
+    result = W_1HAXE;
+    if (sub >= 1300 && sub < 1350 || sub >= 520000 && sub < 530000) {
+      return W_DOUBLE_AA;
+    }
+  }
+
+  return result;
+}
 
 // OFFSET: 0x00DAB6A0
+// FUNCTION: fn_22585
+bool IsReadyOrAttackAction(int action) {
+  if (action < 32 || action >= 40 && action < 80 || action >= 96) {
+    return false;
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00DAC030
+// FUNCTION: fn_22591
+void CGrannyPc::Slot08() {
+  if (this->render.unknown_0070 == 2) {
+    this->render.isMotionFinished = GrannyGetControlDurationLeft(this->controls[2]) < 0.1f;
+  } else {
+    this->render.isMotionFinished = true;
+  }
+}
