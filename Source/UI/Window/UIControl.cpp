@@ -572,6 +572,14 @@ void CUIButton::ResetCursor(int, int) {
 }
 
 // OFFSET: 0x009F26B0
+// FUNCTION: fn_14718
+void CUIThumb::Slot53(int resolveSkin) {
+  this->middle = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->middleName, resolveSkin));
+  if (this->resizable) {
+    this->top = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->topName, resolveSkin));
+    this->bottom = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->bottomName, resolveSkin));
+  }
+}
 
 // OFFSET: 0x009F1630
 // FUNCTION: fn_14691
