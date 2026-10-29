@@ -281,6 +281,10 @@ void CUIVScrollBar::Slot54() {
 // OFFSET: 0x009F2180
 
 // OFFSET: 0x009F2800
+// FUNCTION: fn_14719
+void CUIVScrollBar::Slot53(int resolveSkin) {
+  this->background = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->backgroundName, resolveSkin));
+}
 
 // OFFSET: 0x009F28A0
 
@@ -293,8 +297,18 @@ void CUIVScrollBar::Slot54() {
 // OFFSET: 0x009F2D00
 
 // OFFSET: 0x009F2E10
+// FUNCTION: fn_14730
+void CUIVScrollBar::SetThumbTooltip(const std::string& text) {
+  this->thumb->tooltip = text;
+}
 
 // OFFSET: 0x009F2E40
+// FUNCTION: fn_14731
+void CUIVScrollBar::SetBackground(const std::string& name) {
+  this->backgroundName = name;
+  this->Slot53(0);
+  this->Invalidate();
+}
 
 // OFFSET: 0x009F2280
 
