@@ -6,6 +6,7 @@
 #include "Contents/Effects/Particle.h"
 
 // OFFSET: 0x0072EA90
+// FUNCTION: fn_07514
 unsigned char CTetraBallEffect::ActiveCount() {
   unsigned char count = 0;
   for (int index = 0; index < 5; ++index) {
@@ -24,6 +25,7 @@ bool CTetraBallEffect::Slot06() {
 }
 
 // OFFSET: 0x0072EB10
+// FUNCTION: fn_07517
 void CTetraBallEffect::Slot03() {
   for (int index = 0; index < 5; ++index) {
     CEZ2STRParticle* ball = this->balls[index];
@@ -38,6 +40,7 @@ void CTetraBallEffect::Slot03() {
 }
 
 // OFFSET: 0x0072EBD0
+// FUNCTION: fn_07518
 void CTetraBallEffect::Slot04() {
   for (int index = 0; index < 5; ++index) {
     if (this->balls[index]) {
@@ -47,6 +50,7 @@ void CTetraBallEffect::Slot04() {
 }
 
 // OFFSET: 0x0072EC40
+// FUNCTION: fn_07519
 void CTetraBallEffect::Spread() {
   const unsigned char count = this->ActiveCount();
   if (count > 1) {
@@ -60,6 +64,7 @@ void CTetraBallEffect::Spread() {
 }
 
 // OFFSET: 0x0072ECD0
+// FUNCTION: fn_07520
 void CTetraBallEffect::MoveFirstTo(int index) {
   if (index != 0) {
     this->balls[index] = this->balls[0];

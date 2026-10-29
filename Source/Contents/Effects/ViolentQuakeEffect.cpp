@@ -7,6 +7,7 @@
 #include "Utility/Math/AffineMatrix.h"
 
 // OFFSET: 0x0072F4E0
+// FUNCTION: fn_07529
 CViolentQuakeEffect::CViolentQuakeEffect() : CEffect(-1) {
 }
 

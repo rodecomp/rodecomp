@@ -6,11 +6,13 @@
 #include "Contents/Effects/Particle.h"
 
 // OFFSET: 0x0072ED00
+// FUNCTION: fn_07521
 CTriangleShotArrow::CTriangleShotArrow() : CEffect(-1), current{}, direction{}, origin{} {
   this->unknown_0050 = 0;
 }
 
 // OFFSET: 0x0072F2B0
+// FUNCTION: fn_07525
 bool CTriangleShotArrow::Slot06() {
   return static_cast<float>(this->step) <= 8.0f / this->speed;
 }
@@ -42,6 +44,7 @@ void CTriangleShotArrow::Slot03() {
 }
 
 // OFFSET: 0x0072F470
+// FUNCTION: fn_07527
 void CTriangleShotArrow::Slot04() {
   if (this->arrow) {
     this->arrow->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
@@ -49,6 +52,7 @@ void CTriangleShotArrow::Slot04() {
 }
 
 // OFFSET: 0x0072F4D0
+// FUNCTION: fn_07528
 void CTriangleShotArrow::Slot16(int delay) {
   this->delay = delay;
 }
