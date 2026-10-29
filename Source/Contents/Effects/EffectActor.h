@@ -25,6 +25,7 @@ struct EffectActorState {
 struct EffectActor : CRenderObject {
   EffectActor();
   bool EffectVisible() const;
+  void ResetEffectState();
   CRagEffect* LaunchEffect(int effectId, vector3d deltaPos, float rotation);
 
   /* 0138 */ EffectActorState state;
