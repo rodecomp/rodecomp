@@ -104,6 +104,32 @@ public:
     this->selected = static_cast<unsigned int>(-1);
   }
 
+  // OFFSET: 0x00A04B30
+  int AddData(const D& value, bool refresh) {
+    this->data.push_back(value);
+    if (refresh) {
+      this->UpdateScrollBar();
+    }
+    return this->data.size() - 1;
+  }
+
+  // OFFSET: 0x00A051E0
+  // FUNCTION: fn_14971
+  void ClearData() {
+    this->data.clear();
+    this->selected = static_cast<unsigned int>(-1);
+    this->UpdateScrollBar();
+  }
+
+  // OFFSET: 0x00A06300
+  // FUNCTION: fn_15001
+  void UpdateScrollBar() {
+    this->scrollBar->SetTotal(this->data.size() * this->rowHeight + this->itemY);
+    this->scrollBar->SetVisible(this->geometry.height);
+    this->scrollBar->SetPosition(this->scrollBar->position);
+    this->rebind = 1;
+  }
+
   // OFFSET: 0x009D43D0
   // OFFSET: 0x009D45D0
   // OFFSET: 0x009D47D0
