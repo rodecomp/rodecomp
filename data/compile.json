@@ -361,6 +361,7 @@
   "Source/Contents/Hotkeys/UserHotkeyScript.cpp": 4,
   "Source/Contents/InstantVar.cpp": 0,
   "Source/Contents/ItemDBToIDMgr.cpp": 4,
+  "Source/Contents/Items/BarterMarketItemMgr.cpp": 4,
   "Source/Contents/Items/ItemDescription.cpp": 4,
   "Source/Contents/Items/ItemInfo.cpp": 4,
   "Source/Contents/Items/ItemLink.cpp": 4,
