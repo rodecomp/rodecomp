@@ -361,9 +361,18 @@ void CUIVScrollBar::PageDown() {
 }
 
 // OFFSET: 0x009F1D80
+// FUNCTION: fn_14705
+int CUIVScrollBar::PositionFromOffset(int offset) {
+  if (this->trackLength == 0) {
+    return static_cast<int>(0.0f);
+  }
+
+  return static_cast<int>(std::ceil(static_cast<float>(this->total) * static_cast<float>(offset) / static_cast<float>(this->trackLength)));
+}
 
 // OFFSET: 0x009F2A30
-
-// OFFSET: 0x009F2A90
-
-// OFFSET: 0x009F2B20
+// FUNCTION: fn_14722
+void CUIVScrollBar::SetHidden(int) {
+  this->unknown_00A9[0] = 1;
+  this->Show(0);
+}
