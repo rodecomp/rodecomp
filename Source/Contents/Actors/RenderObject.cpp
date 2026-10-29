@@ -577,6 +577,57 @@ void CRenderObject::JitterBounds(float* output, const int* input, float offset, 
 }
 
 // OFFSET: 0x00CAA2E0
+// FUNCTION: fn_21016
+void CRenderObject::DrawJitterTrail(
+  SpriteQuad& quad, const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw,
+  const std::uint32_t* palette, const SpriteRleImage* image, int blend, short shift
+) {
+  if ((this->render.flags & 0x200) == 0) {
+    return;
+  }
+
+  unsigned char& phaseTick = this->render.unknown_00ECBytes[3];
+  ++phaseTick;
+  if (phaseTick >= 200) {
+    phaseTick -= 200;
+  }
+
+  for (int step = 5; step < 25; step += 5) {
+    float phase = static_cast<float>(phaseTick) * 0.1f + static_cast<float>(step);
+    if (phase >= 20.0f) {
+      phase -= 20.0f;
+    }
+
+    const std::uint16_t alpha = static_cast<std::uint16_t>(100.0f - phase * 5.0f);
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    const float spread = 400.0f / mode->camera->camera.desiredDistance * phase;
+
+    SpriteQuad trail;
+    trail.top = static_cast<float>(box[1]) - spread - static_cast<float>(shift);
+    trail.bottom = static_cast<float>(box[3]) + spread - static_cast<float>(shift);
+    float left = static_cast<float>(box[0]) + offset;
+    float right = static_cast<float>(box[2]) + offset;
+    if (left > right) {
+      left += spread;
+      right -= spread;
+    } else {
+      left -= spread;
+      right += spread;
+    }
+    trail.left = left;
+    trail.right = right;
+    trail.image = image;
+    trail.color = (static_cast<short>(alpha) << 24) + 0xFFFFFF;
+    trail.bottomRhw = bottomRhw - spread * 0.000005f - 0.00001f;
+    trail.topRhw = topRhw - spread * 0.000005f - 0.00001f;
+    trail.angle = static_cast<float>(static_cast<int>(this->render.unknown_007C) + cell.unknown_001C);
+    if (blend != 5) {
+      this->DrawQuad(trail, palette, blend, 0.0f, 0.0f, 0);
+    }
+  }
+
+  quad.color = 0x96FFFFFF;
+}
 
 // OFFSET: 0x00CAFEE0
 // FUNCTION: fn_21090
@@ -1449,6 +1500,23 @@ int CGameActor::WeaponActionBase(int weaponType) {
 }
 
 // OFFSET: 0x00CABC80
+// FUNCTION: fn_21035
+int CGameActor::MountHeightOffset() {
+  if (!g_session.IsPlayerJobId(this->GetEffectiveJob(-1)) && !g_session.IsNpcJob(this->GetEffectiveJob(-1)) &&
+      this->render.accountId != g_session.m_aid) {
+    return 0;
+  }
+
+  if (g_session.IsBabyJob(this->GetEffectiveJob(-1))) {
+    return this->unknown_02CC ? 10 : -20;
+  }
+
+  if (g_session.IsDoramJob(this->GetEffectiveJob(-1))) {
+    return this->unknown_02CC ? -40 : -30;
+  }
+
+  return this->unknown_02CC ? 30 : 0;
+}
 
 // OFFSET: 0x00CABD30
 // FUNCTION: fn_21036
@@ -1468,5 +1536,54 @@ void C3dGrannyGameActor::Slot36() {
 }
 
 // OFFSET: 0x00CC5B00
+// FUNCTION: fn_21179
+bool CGrannyCorpse3d::OnProcess() {
+  const int tick = this->tick;
+  if (tick > 355) {
+    this->alpha = static_cast<unsigned char>(600 - tick);
+  }
+
+  this->tick = tick + 1;
+  return tick <= 600;
+}
 
 // OFFSET: 0x00CC7D50
+// FUNCTION: fn_21188
+void C3dGrannyGameActor::SetAction(unsigned animation, int, int repeat) {
+  this->render.unknown_0070 = 0;
+  switch (animation) {
+    case 0:
+      break;
+    case 8:
+      this->render.unknown_0070 = 1;
+      break;
+    case 24:
+      this->render.unknown_0070 = 5;
+      break;
+    case 32:
+      this->render.unknown_0070 = 11;
+      break;
+    case 40:
+      this->render.unknown_0070 = 12;
+      break;
+    case 48:
+      this->render.unknown_0070 = 4;
+      break;
+    case 64:
+      this->render.unknown_0070 = 3;
+      break;
+    case 80:
+    case 88:
+      this->render.unknown_0070 = 2;
+      break;
+  }
+
+  this->motion = this->render.unknown_0070;
+  for (int i = 0; i < 20; ++i) {
+    this->model->FreeControl(this->controls[i]);
+    this->controls[i] = nullptr;
+  }
+
+  this->unknown_052C = 0;
+  this->controls[this->motion] = this->model->PlayAnimation(this->motion, this->instance, this->controls[this->motion], repeat == 1);
+}
