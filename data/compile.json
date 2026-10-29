@@ -431,6 +431,7 @@
   "Source/Contents/Party/LoadPartyInfoAsyncWork.cpp": 4,
   "Source/Contents/Party/LoadPartyListAsyncWork.cpp": 4,
   "Source/Contents/Party/MyPartyCompletion.cpp": 2,
+  "Source/Contents/Party/PartyBookingMgr.cpp": 4,
   "Source/Contents/Party/PartyInfoCompletion.cpp": 2,
   "Source/Contents/Party/PartyJoinResult.cpp": 2,
   "Source/Contents/Party/PartyListCompletion.cpp": 2,

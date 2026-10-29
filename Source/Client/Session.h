@@ -229,7 +229,9 @@ public:
   /* 6198 */ const char* const* m_doramFemaleHeadNames;
   /* 619C */ unsigned char unknown_619C[0x1D44];
   /* 7EE0 */ std::map<int, RobeAlpha> m_robeAlpha;
-  /* 7EE8 */ unsigned char unknown_7EE8[0x94];
+  /* 7EE8 */ unsigned char unknown_7EE8[4];
+  /* 7EEC */ int m_maxLevel;
+  /* 7EF0 */ unsigned char unknown_7EF0[0x8C];
   /* 7F7C */ bool m_homunculusAutoFeed;
   /* 7F7D */ unsigned char unknown_7F7D[0x2B];
   /* 7FA8 */ CInstantVar m_options;
@@ -560,6 +562,7 @@ static_assert(offsetof(CSession, unknown_6140) == 0x6140);
 static_assert(offsetof(CSession, unknown_6144) == 0x6144);
 static_assert(offsetof(CSession, unknown_616C) == 0x616C);
 static_assert(offsetof(CSession, m_robeAlpha) == 0x7EE0);
+static_assert(offsetof(CSession, m_maxLevel) == 0x7EEC);
 static_assert(offsetof(CSession, m_cardItems) == 0x811C);
 static_assert(offsetof(CSession, m_startTimeTicks) == 0x8138);
 static_assert(offsetof(CSession, m_loginTimeTicks) == 0x8140);
