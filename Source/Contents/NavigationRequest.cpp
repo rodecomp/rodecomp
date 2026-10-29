@@ -9,6 +9,17 @@
 #include <windows.h>
 #include <shlwapi.h>
 
+// OFFSET: 0x00B8C0B0
+// FUNCTION: fn_19420
+__declspec(noinline) CNavi_Object* FindNaviObjectByName(const char* name, const std::vector<CNavi_Object*>& objects) {
+  for (CNavi_Object* object : objects) {
+    if (name && std::string(name) == object->name) {
+      return object;
+    }
+  }
+  return nullptr;
+}
+
 // OFFSET: 0x00B8DF10
 // FUNCTION: fn_19461
 std::uint16_t CNavi_Object::GetFlag() const {
@@ -539,4 +550,10 @@ void CNaviInfo::SearchNpcs(const std::vector<std::string>& keywords, std::vector
     target.object = npc;
     out.push_back(target);
   }
+}
+
+// OFFSET: 0x00B8E410
+// FUNCTION: fn_19470
+CNavi_Object* CNaviInfo::FindMobByName(const char* name) {
+  return FindNaviObjectByName(name, this->mobs);
 }

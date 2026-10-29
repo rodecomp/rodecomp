@@ -163,6 +163,8 @@ struct NaviObjectRecord {
 };
 #pragma pack(pop)
 
+CNavi_Object* FindNaviObjectByName(const char* name, const std::vector<CNavi_Object*>& objects);
+
 class CNaviInfo {
 public:
   CNaviInfo(int index, const char* name, const char* title, int cellX, int cellY, int type);
@@ -184,6 +186,7 @@ public:
   CNavi_Link* FindLink(unsigned int key, bool byId);
   CNavi_Object* FindNpc(unsigned int key, bool byId);
   CNavi_Object* FindNpcAt(int cellX, int cellY);
+  CNavi_Object* FindMobByName(const char* name);
   std::vector<CNavi_Object*>* Npcs();
   int LinkCount() const;
   int MobCount() const;
