@@ -8,14 +8,14 @@
 // OFFSET: 0x00BAE670
 // FUNCTION: fn_19768
 void CEffectPrim::InitSegment() {
-  for (int index = 0; index < this->state.unknown_01F4; ++index) {
+  for (int index = 0; index < this->state.numSegment; ++index) {
     EffectPrimitiveRecord& record = this->state.records[index];
     record.position = this->render.position;
-    std::memcpy(record.corners, this->state.corners, sizeof(record.corners));
-    record.unknown_003C = this->state.unknown_0348;
-    record.scale = this->state.scale;
-    record.angle = this->state.unknown_030C;
-    std::memcpy(record.matrix, this->state.matrix1, sizeof(record.matrix));
+    std::memcpy(record.corners, this->state.segPos, sizeof(record.corners));
+    record.unknown_003C = this->state.radius;
+    record.scale = this->state.size;
+    record.angle = this->state.longitude;
+    std::memcpy(record.matrix, this->state.transform, sizeof(record.matrix));
     record.alpha = this->state.alpha;
     record.red = this->state.red;
     record.green = this->state.green;

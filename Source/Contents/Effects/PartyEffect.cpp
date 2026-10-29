@@ -42,15 +42,15 @@ bool UpdatePartyEffect(
     CEffectPrim* particle = CreateEffectParticle(self, render, 15, 0, 0, 0, worldObjects);
     effect.unknown_11C84 = &particle->state;
     EffectPrimitiveState& state = *effect.unknown_11C84;
-    state.lifetime = 9999;
-    state.unknown_030C = 0;
-    state.unknown_0314 = 90.0f;
-    state.unknown_0354 = 4.0f;
-    state.unknown_0360 = 4.0f;
+    state.duration = 9999;
+    state.longitude = 0;
+    state.roll = 90.0f;
+    state.widthSize = 4.0f;
+    state.heightSize = 4.0f;
     state.red = 50;
     state.blue = 253;
     state.green = 50;
-    const auto bytes = state.textureCount >> 30 != 0 ? std::numeric_limits<std::size_t>::max() : static_cast<std::size_t>(4u * state.textureCount);
+    const auto bytes = state.totalTexture >> 30 != 0 ? std::numeric_limits<std::size_t>::max() : static_cast<std::size_t>(4u * state.totalTexture);
 
     state.textures = static_cast<CTexture**>(::operator new(bytes));
     state.textures[0] = textures.Load("effect\\party.tga", 0, false, true, false);

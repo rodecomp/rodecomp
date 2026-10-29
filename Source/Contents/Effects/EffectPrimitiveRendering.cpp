@@ -21,21 +21,21 @@
 // OFFSET: 0x00BCD960
 // FUNCTION: fn_19865
 void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectState& render, EffectPrimitiveRenderContext& context) {
-  const float width = particle.unknown_0354;
+  const float width = particle.widthSize;
   const float left = -width;
-  float top = -particle.unknown_0360;
-  float bottom = particle.unknown_0360;
+  float top = -particle.heightSize;
+  float bottom = particle.heightSize;
 
-  if ((particle.flags & 0x80u) != 0) {
+  if ((particle.pattern & 0x80u) != 0) {
     top = top + top;
     bottom = 0.0f;
   }
 
-  if ((particle.flags & 8u) != 0) {
+  if ((particle.pattern & 8u) != 0) {
     bottom = 0.0f;
   }
 
-  const float* matrix = particle.matrix2;
+  const float* matrix = particle.rotTransform;
   const float zeroX = matrix[0] * 0.0f;
   const float zeroY = matrix[1] * 0.0f;
   const float zeroZ = matrix[2] * 0.0f;
@@ -61,8 +61,8 @@ void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectSta
 
   constexpr unsigned indices[2][3] = {{0, 1, 2}, {3, 2, 1}};
   constexpr float u[2][3] = {{0, 1, 0}, {1, 0, 1}};
-  const float vTop = particle.unknown_02E4;
-  const float vBottom = particle.unknown_02E8;
+  const float vTop = particle.v1;
+  const float vBottom = particle.v2;
   const float v[2][3] = {{vTop, vTop, vBottom}, {vBottom, vBottom, vTop}};
 
   for (unsigned triangleIndex = 0; triangleIndex < 2; ++triangleIndex) {
@@ -75,7 +75,7 @@ void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectSta
       context.projection.Project(position, context.cameraMatrix, projected);
       RenderVertex& vertex = triangle.vertices[vertexIndex];
       vertex = projected;
-      vertex.diffuse = particle.unknown_01C0;
+      vertex.diffuse = particle.argb;
       vertex.u = u[triangleIndex][vertexIndex];
       vertex.v = v[triangleIndex][vertexIndex];
     }
@@ -88,7 +88,7 @@ void DrawEffectPrimitive15(EffectPrimitiveState& particle, const RenderObjectSta
 
     if (triangle.Visible()) {
       context.queues.SubmitTriangle(
-        triangle, static_cast<std::uint16_t>(particle.unknown_01C4), context.commands, context.depthAlpha, context.depthStart, context.depthEnd
+        triangle, static_cast<std::uint16_t>(particle.renderFlag), context.commands, context.depthAlpha, context.depthStart, context.depthEnd
       );
     }
   }
@@ -204,7 +204,7 @@ void CEffectPrim::RenderTeiRect(
 
     if (triangle.Visible()) {
       g_renderer->queues.SubmitTriangle(
-        triangle, static_cast<std::uint16_t>(this->state.unknown_01C4), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+        triangle, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
       );
       ++*rpCnt;
     }
@@ -227,7 +227,7 @@ void CEffectPrim::RenderTeiRect(
   int blue = 255;
   float textureV = 1.0f;
 
-  switch (static_cast<int>(this->state.scale)) {
+  switch (static_cast<int>(this->state.size)) {
   case 0:
     blend = 6;
     break;
@@ -500,7 +500,7 @@ void CEffectPrim::RenderTeiRect(
 
     if (triangle.Visible()) {
       g_renderer->queues.SubmitTriangle(
-        triangle, static_cast<std::uint16_t>(this->state.unknown_01C4), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+        triangle, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
       );
       ++*rpCnt;
     }
@@ -579,7 +579,7 @@ void CEffectPrim::RenderTeiRect(
 
     if (triangle.Visible()) {
       g_renderer->queues.SubmitTriangle(
-        triangle, static_cast<std::uint16_t>(this->state.unknown_01C4), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+        triangle, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
       );
       ++*rpCnt;
     }
@@ -1306,7 +1306,7 @@ void CEffectPrim::RenderSMA2(matrix& wtm) {
       const float sn1 = g_sinTable[angle];
       const float rx = g_cosTable[slot.riseAngle] * slot.height[order];
       const float ry = g_sinTable[slot.riseAngle] * slot.height[order];
-      const vector3d& delta = this->state.offset;
+      const vector3d& delta = this->state.deltaPos;
       const vector3d vec2{cs1 * slot.distance + delta.x, delta.y + 0.0f, sn1 * slot.distance + delta.z};
       const vector3d vec4{cs1 * rx + cs1 * slot.distance + delta.x, delta.y - ry, sn1 * rx + sn1 * slot.distance + delta.z};
 
