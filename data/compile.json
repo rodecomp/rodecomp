@@ -389,6 +389,7 @@
   "Source/Contents/Items/ItemLink.cpp": 4,
   "Source/Contents/Items/ItemNaming.cpp": 4,
   "Source/Contents/Items/ItemResources.cpp": 4,
+  "Source/Contents/Items/RuneSystem.cpp": 4,
   "Source/Contents/Jobs/JobInheritance.cpp": 4,
   "Source/Contents/Jobs/JobNameInitialization.cpp": 4,
   "Source/Contents/Jobs/JobNames.cpp": 4,
