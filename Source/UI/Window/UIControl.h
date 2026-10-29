@@ -54,7 +54,7 @@ private:
 
 class CUIControl : public UIWindow {
 public:
-  CBitmapRes* LoadBitmapResource(const std::string& name, bool resolveSkin);
+  __declspec(noinline) CBitmapRes* LoadBitmapResource(const std::string& name, bool resolveSkin);
 
   explicit CUIControl(UIWindowContext& context);
   ~CUIControl() override;

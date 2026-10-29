@@ -339,9 +339,9 @@ void CUIVScrollBar::Show(int visible) {
 // OFFSET: 0x009F25C0
 // FUNCTION: fn_14717
 void CUIVScrollBar::Slot54() {
-  CUIControl* bar = this->thumb;
+  CUIThumb* bar = this->thumb;
   float offset;
-  if (bar->hitEnabled) {
+  if (bar->resizable) {
     const int length = static_cast<int>((static_cast<float>(this->visible) / static_cast<float>(this->total)) * static_cast<float>(this->trackLength));
     bar->Resize(this->geometry.width, length > 1 ? length : 1);
     offset = (static_cast<float>(this->trackLength) / static_cast<float>(this->total)) * static_cast<float>(this->position);
@@ -356,6 +356,29 @@ void CUIVScrollBar::Slot54() {
 }
 
 // OFFSET: 0x009F2180
+// FUNCTION: fn_14707
+void CUIVScrollBar::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  if (!this->background) {
+    return;
+  }
+
+  if (this->transparent) {
+    for (int y = 0; y < this->trackLength - this->background->image.height; y += this->background->image.height) {
+      this->DrawAuxiliary(1, 0, this->upButton->geometry.height + y, &this->background->image, true, false);
+    }
+    this->DrawAuxiliary(
+      1, 0, this->geometry.height - this->downButton->geometry.height - this->background->image.height, &this->background->image, true, false
+    );
+    return;
+  }
+
+  for (int y = 0; y < this->trackLength - this->background->image.height; y += this->background->image.height) {
+    this->DrawBitmap(0, this->upButton->geometry.height + y, &this->background->image, false);
+  }
+  this->DrawBitmap(0, this->geometry.height - this->downButton->geometry.height - this->background->image.height, &this->background->image, false);
+}
 
 // OFFSET: 0x009F2800
 // FUNCTION: fn_14719
@@ -364,14 +387,83 @@ void CUIVScrollBar::Slot53(int resolveSkin) {
 }
 
 // OFFSET: 0x009F28A0
+// FUNCTION: fn_14720
+void CUIVScrollBar::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->downButton->Move(0, this->geometry.height - this->downButton->geometry.height);
+  this->trackLength = this->geometry.height - this->upButton->geometry.height - this->downButton->geometry.height;
+}
 
 // OFFSET: 0x009F28F0
+// FUNCTION: fn_14721
+void CUIVScrollBar::SetButtonImages(const std::string& up, const std::string& down) {
+  CBitmapRes* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(up));
+  if (image) {
+    this->upButton->Resize(image->image.width, image->image.height);
+    this->upButton->Move(0, 0);
+    this->upButton->SetImages(up, up, up, up);
+    this->upButton->Show(1);
+  }
+
+  image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(down));
+  if (image) {
+    this->downButton->Resize(image->image.width, image->image.height);
+    this->downButton->Move(0, this->geometry.height - image->image.height);
+    this->downButton->SetImages(down, down, down, down);
+    this->downButton->Show(1);
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x009F2A50
+// FUNCTION: fn_14723
+void CUIVScrollBar::SetTransparent(bool transparent) {
+  this->transparent = transparent;
+  this->upButton->transparent = transparent;
+  this->downButton->transparent = transparent;
+  this->thumb->transparent = transparent;
+}
 
 // OFFSET: 0x009F2BE0
+// FUNCTION: fn_14728
+void CUIVScrollBar::SetThumbImages(const std::string& top, const std::string& middle, const std::string& bottom) {
+  this->trackLength = this->geometry.height - this->downButton->geometry.height - this->upButton->geometry.height;
+  const int length = static_cast<int>((static_cast<float>(this->visible) / static_cast<float>(this->total)) * static_cast<float>(this->trackLength));
+  this->thumb->Resize(this->geometry.width, length > 1 ? length : 1);
+  this->thumb->Move(0, this->upButton->geometry.height);
+  this->thumb->Show(1);
+
+  CUIThumb* bar = this->thumb;
+  bar->resizable = 1;
+  bar->topName = top;
+  bar->middleName = middle;
+  bar->bottomName = bottom;
+  bar->Slot53(0);
+  bar->Invalidate();
+  this->Invalidate();
+}
 
 // OFFSET: 0x009F2D00
+// FUNCTION: fn_14729
+void CUIVScrollBar::SetThumbImage(const std::string& name) {
+  this->trackLength = this->geometry.height - this->downButton->geometry.height - this->upButton->geometry.height;
+
+  CBitmapRes* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(name));
+  if (image) {
+    this->thumb->Resize(image->image.width, image->image.height);
+    this->thumb->Move(0, this->upButton->geometry.height);
+    this->thumb->Show(1);
+
+    CUIThumb* bar = this->thumb;
+    bar->resizable = 0;
+    bar->middleName = name;
+    bar->Slot53(0);
+    bar->Invalidate();
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x009F2E10
 // FUNCTION: fn_14730
@@ -388,6 +480,52 @@ void CUIVScrollBar::SetBackground(const std::string& name) {
 }
 
 // OFFSET: 0x009F2280
+// FUNCTION: fn_14708
+void CUIVThumb::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  if (!this->resizable) {
+    if (this->middle) {
+      if (this->transparent) {
+        this->DrawAuxiliary(1, 0, 0, &this->middle->image, true, false);
+      } else {
+        this->DrawBitmap(0, 0, &this->middle->image, false);
+      }
+    }
+    return;
+  }
+
+  int y = 0;
+  const int end = this->geometry.height - (this->bottom ? this->bottom->image.height : 0);
+  if (this->top) {
+    if (this->transparent) {
+      this->DrawAuxiliary(1, 0, 0, &this->top->image, true, false);
+    } else {
+      this->DrawBitmap(0, 0, &this->top->image, false);
+    }
+    y = this->top->image.height;
+  }
+
+  if (this->middle) {
+    while (y < end) {
+      if (this->transparent) {
+        this->DrawAuxiliary(1, 0, y, &this->middle->image, true, false);
+      } else {
+        this->DrawBitmap(0, y, &this->middle->image, false);
+      }
+      y += this->middle->image.height;
+    }
+  }
+
+  if (this->bottom) {
+    const int bottomY = this->geometry.height - this->bottom->image.height;
+    if (this->transparent) {
+      this->DrawAuxiliary(1, 0, bottomY, &this->bottom->image, true, false);
+    } else {
+      this->DrawBitmap(0, bottomY, &this->bottom->image, false);
+    }
+  }
+}
 
 // OFFSET: 0x009EE8F0
 // FUNCTION: fn_14626
