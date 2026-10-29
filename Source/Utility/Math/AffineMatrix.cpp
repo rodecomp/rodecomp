@@ -27,13 +27,13 @@ namespace {
 }
 
 // INLINED
-void AffineMatrix::Identity() {
+void matrix::Identity() {
   std::memcpy(this->values, g_identityMatrix, sizeof(g_identityMatrix));
 }
 
 // OFFSET: 0x00555360
 // FUNCTION: fn_02034
-void AffineMatrix::MakeXRotation(float radians) {
+void matrix::MakeXRotation(float radians) {
   this->Identity();
 
   const float sine = ClientSin(radians);
@@ -46,7 +46,7 @@ void AffineMatrix::MakeXRotation(float radians) {
 
 // OFFSET: 0x005553D0
 // FUNCTION: fn_02035
-void AffineMatrix::SetYRotation(float radians) {
+void matrix::SetYRotation(float radians) {
   this->Identity();
 
   const float sine = ClientSin(radians);
@@ -59,7 +59,7 @@ void AffineMatrix::SetYRotation(float radians) {
 
 // OFFSET: 0x00555440
 // FUNCTION: fn_02036
-void AffineMatrix::SetZRotation(float radians) {
+void matrix::SetZRotation(float radians) {
   this->Identity();
 
   const float sine = ClientSin(radians);
@@ -72,31 +72,31 @@ void AffineMatrix::SetZRotation(float radians) {
 
 // OFFSET: 0x00552F70
 // FUNCTION: fn_02016
-void AffineMatrix::RotateX(float radians) {
-  AffineMatrix rotation;
+void matrix::RotateX(float radians) {
+  matrix rotation;
   rotation.MakeXRotation(radians);
   Rotate(this->values, rotation.values);
 }
 
 // OFFSET: 0x00553270
 // FUNCTION: fn_02017
-void AffineMatrix::AppendYRotation(float radians) {
-  AffineMatrix rotation;
+void matrix::AppendYRotation(float radians) {
+  matrix rotation;
   rotation.SetYRotation(radians);
   Rotate(this->values, rotation.values);
 }
 
 // OFFSET: 0x00553570
 // FUNCTION: fn_02018
-void AffineMatrix::RotateZ(float radians) {
-  AffineMatrix rotation;
+void matrix::RotateZ(float radians) {
+  matrix rotation;
   rotation.SetZRotation(radians);
   Rotate(this->values, rotation.values);
 }
 
 // OFFSET: 0x005550C0
 // FUNCTION: fn_02032
-void AffineMatrix::MakeTranslate(float x, float y, float z) {
+void matrix::MakeTranslate(float x, float y, float z) {
   std::memcpy(this->values, g_identityMatrix, sizeof(g_identityMatrix));
   this->values[9] = x;
   this->values[10] = y;
@@ -105,7 +105,7 @@ void AffineMatrix::MakeTranslate(float x, float y, float z) {
 
 // OFFSET: 0x00554B40
 // FUNCTION: fn_02028
-void AffineMatrix::SetScale(float x, float y, float z) {
+void matrix::SetScale(float x, float y, float z) {
   std::memcpy(this->values, g_identityMatrix, sizeof(g_identityMatrix));
   this->values[0] = x;
   this->values[4] = y;
@@ -114,23 +114,23 @@ void AffineMatrix::SetScale(float x, float y, float z) {
 
 // OFFSET: 0x005529C0
 // FUNCTION: fn_02014
-void AffineMatrix::Scale(float x, float y, float z) {
-  AffineMatrix scale;
+void matrix::Scale(float x, float y, float z) {
+  matrix scale;
   scale.SetScale(x, y, z);
   Rotate(this->values, scale.values);
 }
 
 // OFFSET: 0x00552CA0
 // FUNCTION: fn_02015
-void AffineMatrix::Translate(const float* position) {
-  AffineMatrix translation;
+void matrix::Translate(const float* position) {
+  matrix translation;
   translation.MakeTranslate(position[0], position[1], position[2]);
   Rotate(this->values, translation.values);
 }
 
 // OFFSET: 0x005554B0
 // FUNCTION: fn_02037
-void AffineMatrix::Compose(const AffineMatrix& first, const AffineMatrix& second) {
+void matrix::Compose(const matrix& first, const matrix& second) {
   const float* a = first.values;
   const float* b = second.values;
   float* output = this->values;
@@ -153,7 +153,7 @@ void AffineMatrix::Compose(const AffineMatrix& first, const AffineMatrix& second
 
 // OFFSET: 0x00554920
 // FUNCTION: fn_02027
-void AffineMatrix::MakeInverse(const AffineMatrix& source) {
+void matrix::MakeInverse(const matrix& source) {
   const float* a = source.values;
   float* output = this->values;
   const float minor = a[4] * a[8] - a[5] * a[7];
@@ -183,7 +183,7 @@ void AffineMatrix::MakeInverse(const AffineMatrix& source) {
 }
 
 // FUNCTION: fn_02026
-int AffineMatrix::IsIdentity() const {
+int matrix::IsIdentity() const {
   const auto absolute = [](float value) {
     return std::bit_cast<float>(std::bit_cast<unsigned>(value) & 0x7FFFFFFFu);
   };
@@ -201,7 +201,7 @@ int AffineMatrix::IsIdentity() const {
 
 // OFFSET: 0x00554F70
 // FUNCTION: fn_02031
-void AffineMatrix::MakeTransform(const float* rotaxis, float rotangle) {
+void matrix::MakeTransform(const float* rotaxis, float rotangle) {
   const float omega = rotangle / 2.0f;
   const float s = static_cast<float>(sin(static_cast<double>(omega)));
   const float qx = rotaxis[0] * s;

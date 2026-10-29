@@ -102,9 +102,9 @@ void C3dNode::SampleGroundColors(const float* matrix, const float* position, con
 // OFFSET: 0x00ABBB00
 // FUNCTION: fn_17521
 void C3dNode::Prepare(const float* matrix, ModelLightingContext& context) {
-  AffineMatrix parentMatrix;
+  struct matrix parentMatrix;
   std::memcpy(parentMatrix.values, matrix, sizeof(parentMatrix.values));
-  AffineMatrix combined;
+  struct matrix combined;
   combined.Compose(this->transform, parentMatrix);
 
   for (int index = 0; index < this->mesh->faceCount; ++index) {

@@ -30,7 +30,7 @@ namespace {
 // FUNCTION: fn_17512
 void C3dActorV1::UpdateBounds() {
   float bounds[6] = {100000, 100000, 100000, -100000, -100000, -100000};
-  AffineMatrix identity;
+  matrix identity;
   identity.Identity();
   this->root->AccumulateBounds(bounds, identity.values);
   this->offset[0] = -(bounds[3] + bounds[0]) * 0.5f;
@@ -49,7 +49,7 @@ void C3dActorV1::UpdateBounds() {
 // FUNCTION: fn_17513
 void C3dActorV2::UpdateBounds() {
   float bounds[6] = {100000, 100000, 100000, -100000, -100000, -100000};
-  AffineMatrix identity;
+  matrix identity;
   identity.Identity();
 
   for (C3dNodeV2* root : this->roots) {
@@ -93,7 +93,7 @@ void C3dActor::FinishBounds(const float* bounds, bool modern) {
     this->oriented.halfSize[axis] = Absolute((bounds[axis + 3] - bounds[axis]) * this->scale[axis]) * 0.5f;
   }
 
-  AffineMatrix axes;
+  matrix axes;
   axes.SetScale(this->scale[0], this->scale[1], this->scale[2]);
   axes.AppendYRotation(Radians(this->rotation[1]));
   axes.RotateX(Radians(this->rotation[0]));
@@ -111,16 +111,16 @@ void C3dActor::FinishBounds(const float* bounds, bool modern) {
   }
 
   for (ModelVolume* volume : this->volumes) {
-    AffineMatrix rotation;
+    matrix rotation;
     rotation.MakeXRotation(Radians(volume->rotation[0]));
     rotation.AppendYRotation(Radians(volume->rotation[1]));
     rotation.RotateZ(Radians(volume->rotation[2]));
     rotation.Translate(volume->position);
     std::memcpy(volume->unknown_0084, rotation.values, sizeof(rotation.values));
-    AffineMatrix inverse;
+    matrix inverse;
     inverse.MakeInverse(rotation);
     std::memcpy(volume->unknown_0084 + 48, inverse.values, sizeof(inverse.values));
-    AffineMatrix combined;
+    matrix combined;
     combined.Compose(rotation, this->transform);
 
     for (unsigned corner = 0; corner < 8; ++corner) {

@@ -286,9 +286,9 @@ void C3dActorV1::Draw(const float* matrix, bool clip, ModelRenderContext& contex
     this->UpdateMatrix();
   }
 
-  AffineMatrix camera;
+  struct matrix camera;
   std::memcpy(camera.values, matrix, sizeof(camera.values));
-  AffineMatrix combined;
+  struct matrix combined;
   combined.Compose(this->transform, camera);
   this->root->Draw(combined.values, this->Reversed(), clip, this->commandMode, context);
 
@@ -304,9 +304,9 @@ void C3dActorV2::Draw(const float* matrix, bool clip, ModelRenderContext& contex
     this->UpdateMatrix();
   }
 
-  AffineMatrix camera;
+  struct matrix camera;
   std::memcpy(camera.values, matrix, sizeof(camera.values));
-  AffineMatrix combined;
+  struct matrix combined;
   combined.Compose(this->transform, camera);
   const bool reversed = this->Reversed();
 

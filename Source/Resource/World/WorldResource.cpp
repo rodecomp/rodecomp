@@ -152,7 +152,7 @@ inline void C3dWorldRes::ReadEnvironment(CFile& input, unsigned version) {
   }
 
   constexpr float pi = 3.141592f;
-  AffineMatrix matrix;
+  matrix matrix;
   matrix.MakeXRotation((static_cast<float>(this->latitude) / 180.0f) * pi);
   matrix.AppendYRotation((static_cast<float>(this->longitude) / 180.0f) * pi);
 

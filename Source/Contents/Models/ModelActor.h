@@ -27,8 +27,8 @@ public:
   /* 0010 */ float rotation[3];
   /* 001C */ float scale[3];
   /* 0028 */ float offset[3];
-  /* 0034 */ AffineMatrix transform;
-  /* 0064 */ AffineMatrix inverseTransform;
+  /* 0034 */ matrix transform;
+  /* 0064 */ matrix inverseTransform;
   /* 0094 */ unsigned char dirty;
   /* 0095 */ unsigned char unknown_0095[3];
   /* 0098 */ OrientedBounds oriented;

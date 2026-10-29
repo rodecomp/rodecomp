@@ -8,7 +8,7 @@
 #include <windows.h>
 
 class CTexture;
-struct AffineMatrix;
+struct matrix;
 
 struct granny_animation;
 struct granny_control;
@@ -184,7 +184,7 @@ public:
   CTexture* CreateTexture(const granny_texture* texture, int option);
   void FreeControl(granny_control* control);
   granny_control* PlayAnimation(unsigned action, granny_model_instance* instance, granny_control* control, int loopCount);
-  bool ProjectBounds(float* rect, const AffineMatrix& view, const AffineMatrix& world, const float* eye) const;
+  bool ProjectBounds(float* rect, const matrix& view, const matrix& world, const float* eye) const;
   int GetTriangleCount(int mesh) const;
   unsigned char* GetRigidVertices(int mesh) const;
 

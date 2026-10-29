@@ -35,7 +35,7 @@ public:
   /* 0020 */ C3dNode* parent;
   /* 0024 */ std::list<C3dNode*> children;
   /* 002C */ ModelMesh* mesh;
-  /* 0030 */ AffineMatrix transform;
+  /* 0030 */ matrix transform;
   /* 0060 */ std::vector<CTexture*> textures;
   /* 006C */ float alpha;
   /* 0070 */ std::vector<ModelFaceState> faceState;
@@ -64,8 +64,8 @@ public:
   void Animate(double frame) override;
   void Draw(const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context) override;
 
-  /* 008C */ AffineMatrix resourceTransform;
-  /* 00BC */ AffineMatrix localTransform;
+  /* 008C */ matrix resourceTransform;
+  /* 00BC */ matrix localTransform;
   /* 00EC */ std::vector<ModelRotationKey> scaleKeys;
   /* 00F8 */ std::vector<ModelRotationKey> rotationKeys;
   /* 0104 */ std::vector<ModelRotationKey> positionKeys;

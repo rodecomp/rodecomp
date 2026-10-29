@@ -98,9 +98,9 @@ inline void TransformModelUV(float& u, float& v, const ModelTextureTransform& tr
 
 // INLINED
 void DrawModelNode(C3dNode& node, const float* matrix, unsigned char reversed, bool clip, unsigned char commandMode, ModelRenderContext& context, bool modern) {
-  AffineMatrix camera;
+  struct matrix camera;
   std::memcpy(camera.values, matrix, sizeof(camera.values));
-  AffineMatrix combined;
+  struct matrix combined;
   combined.Compose(node.transform, camera);
   const float overrideScale[3] = {context.overrideScale[0], context.overrideScale[1], context.overrideScale[2]};
   const float colorScale[3] = {context.colorScale[0], context.colorScale[1], context.colorScale[2]};

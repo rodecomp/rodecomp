@@ -710,8 +710,8 @@ granny_control* C3dGrannyModelRes::PlayAnimation(unsigned action, granny_model_i
 
 // OFFSET: 0x00758710
 // FUNCTION: fn_08008
-bool C3dGrannyModelRes::ProjectBounds(float* rect, const AffineMatrix& view, const AffineMatrix& world, const float* eye) const {
-  AffineMatrix matrix;
+bool C3dGrannyModelRes::ProjectBounds(float* rect, const matrix& view, const matrix& world, const float* eye) const {
+  matrix matrix;
   matrix.SetZRotation(3.141592f);
   const float* m = matrix.values;
   const float x = this->position[1] * m[3] + this->position[0] * m[0] + this->position[2] * m[6] + m[9];

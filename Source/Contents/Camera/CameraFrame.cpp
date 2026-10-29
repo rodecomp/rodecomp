@@ -14,7 +14,7 @@ void ResetCamera(CameraState& camera, CameraFrame& frame) {
 // INLINED
 void CameraFrame::Build(const CameraState& camera, const TerrainHeight& terrain) {
   constexpr float pi = 3.141592f;
-  AffineMatrix orbit;
+  matrix orbit;
   orbit.MakeXRotation((camera.pitch / 180.0f) * pi);
   orbit.AppendYRotation((camera.yaw / 180.0f) * pi);
   const float distance = -camera.distance;

@@ -5,9 +5,9 @@
 // OFFSET: 0x00ABB300
 // FUNCTION: fn_17514
 void C3dNode::AccumulateBounds(float* bounds, const float* matrix) {
-  AffineMatrix parentMatrix;
+  struct matrix parentMatrix;
   std::memcpy(parentMatrix.values, matrix, sizeof(parentMatrix.values));
-  AffineMatrix combined;
+  struct matrix combined;
   combined.Compose(this->transform, parentMatrix);
 
   for (int index = 0; index < this->mesh->vertexCount; ++index) {

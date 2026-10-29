@@ -5,7 +5,7 @@
 namespace {
   // OFFSET: 0x00554340
   // FUNCTION: fn_02022
-  ModelRotationKey MatrixQuaternion(const AffineMatrix& matrix) {
+  ModelRotationKey MatrixQuaternion(const matrix& matrix) {
     ModelRotationKey result{0, {0, 0, 0, 1}};
     const float trace = ((matrix.values[0] + 1.0f) + matrix.values[4]) + matrix.values[8];
     const float root = std::sqrt(trace);
@@ -22,7 +22,7 @@ namespace {
 
 // OFFSET: 0x00540370
 // FUNCTION: fn_01721
-void SampleLegacyPosition(std::span<const ModelPositionKey> keys, int frame, AffineMatrix& output) {
+void SampleLegacyPosition(std::span<const ModelPositionKey> keys, int frame, matrix& output) {
   if (keys.empty()) {
     output.Identity();
   } else if (keys.size() == 1) {
@@ -48,7 +48,7 @@ void SampleLegacyPosition(std::span<const ModelPositionKey> keys, int frame, Aff
 
 // OFFSET: 0x00540670
 // FUNCTION: fn_01723
-void SampleLegacyRotation(std::span<const ModelRotationKey> keys, int frame, AffineMatrix& output) {
+void SampleLegacyRotation(std::span<const ModelRotationKey> keys, int frame, matrix& output) {
   if (keys.empty()) {
     output.Identity();
     return;
@@ -83,7 +83,7 @@ void SampleLegacyRotation(std::span<const ModelRotationKey> keys, int frame, Aff
 
 // OFFSET: 0x00540BF0
 // FUNCTION: fn_01725
-void SampleLegacyScale(std::span<const ModelScaleKey> keys, int, AffineMatrix& output) {
+void SampleLegacyScale(std::span<const ModelScaleKey> keys, int, matrix& output) {
   if (keys.empty()) {
     output.Identity();
   } else if (keys.size() == 1) {
@@ -93,7 +93,7 @@ void SampleLegacyScale(std::span<const ModelScaleKey> keys, int, AffineMatrix& o
 
 // OFFSET: 0x00540C60
 // FUNCTION: fn_01726
-void SampleModelScale(std::span<const ModelRotationKey> keys, float frame, AffineMatrix& output) {
+void SampleModelScale(std::span<const ModelRotationKey> keys, float frame, matrix& output) {
   if (keys.empty()) {
     output.Identity();
     return;
@@ -125,7 +125,7 @@ void SampleModelScale(std::span<const ModelRotationKey> keys, float frame, Affin
 
 // OFFSET: 0x005404A0
 // FUNCTION: fn_01722
-void SampleModelPosition(std::span<const ModelRotationKey> keys, float frame, const AffineMatrix& base, AffineMatrix& output) {
+void SampleModelPosition(std::span<const ModelRotationKey> keys, float frame, const matrix& base, matrix& output) {
   if (keys.empty()) {
     output.values[9] = base.values[9];
     output.values[10] = base.values[10];
@@ -161,8 +161,8 @@ void SampleModelPosition(std::span<const ModelRotationKey> keys, float frame, co
 
 // OFFSET: 0x005407A0
 // FUNCTION: fn_01724
-void SampleModelRotation(std::span<const ModelRotationKey> keys, float frame, const AffineMatrix& base, AffineMatrix& output) {
-  AffineMatrix rotation;
+void SampleModelRotation(std::span<const ModelRotationKey> keys, float frame, const matrix& base, matrix& output) {
+  matrix rotation;
 
   if (keys.empty()) {
     rotation = base;
@@ -218,6 +218,6 @@ void SampleModelRotation(std::span<const ModelRotationKey> keys, float frame, co
     QuaternionMatrix(result, rotation);
   }
 
-  AffineMatrix previous = output;
+  matrix previous = output;
   output.Compose(previous, rotation);
 }

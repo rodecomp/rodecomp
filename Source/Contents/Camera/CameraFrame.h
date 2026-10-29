@@ -12,13 +12,13 @@ class CRenderer;
 struct CameraFrame {
   /* 0080 */ float eye[3];
   /* 008C */ float up[3];
-  /* 0098 */ AffineMatrix view;
-  /* 00C8 */ AffineMatrix inverse;
+  /* 0098 */ matrix view;
+  /* 00C8 */ matrix inverse;
 
   void Build(const CameraState& camera, const TerrainHeight& terrain);
   void Refresh(const CameraState& camera, const TerrainHeight& terrain, CRenderer& renderer);
   void Forward(const CameraState& camera, float* output) const;
-  void AlternateView(const CameraState& camera, float yaw, const TerrainHeight& terrain, AffineMatrix& output) const;
+  void AlternateView(const CameraState& camera, float yaw, const TerrainHeight& terrain, matrix& output) const;
 };
 
 void ResetCamera(CameraState& camera, CameraFrame& frame);

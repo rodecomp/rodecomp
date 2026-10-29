@@ -200,7 +200,7 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
     particle.unknown_0364 = 0;
   }
 
-  AffineMatrix matrix;
+  struct matrix matrix;
 
   if ((particle.flags & 0x200u) != 0) {
     matrix.SetZRotation(context.cameraPitch);
@@ -438,7 +438,7 @@ bool Prim3DCylinder(EffectPrimitiveState& particle, RenderObjectState& render, E
   particle.unknown_0330 = particle.unknown_033C + particle.unknown_0330;
   particle.unknown_030C = particle.unknown_0330 + particle.unknown_030C;
 
-  AffineMatrix& matrix = *reinterpret_cast<AffineMatrix*>(particle.matrix1);
+  struct matrix& matrix = *reinterpret_cast<struct matrix*>(particle.matrix1);
   matrix.MakeXRotation(GetRadian(static_cast<int>(particle.unknown_0310)));
   matrix.AppendYRotation(GetRadian(static_cast<int>(particle.unknown_030C)));
 
@@ -491,7 +491,7 @@ bool Prim3DCylinderHalf(EffectPrimitiveState& particle, RenderObjectState& rende
   particle.unknown_02FC = particle.unknown_0304 + particle.unknown_02FC;
   particle.unknown_0364 = particle.unknown_0368 + particle.unknown_0364;
 
-  AffineMatrix& matrix = *reinterpret_cast<AffineMatrix*>(particle.matrix1);
+  struct matrix& matrix = *reinterpret_cast<struct matrix*>(particle.matrix1);
   matrix.MakeXRotation(GetRadian(static_cast<int>(particle.unknown_0310)));
   matrix.AppendYRotation(GetRadian(static_cast<int>(particle.unknown_030C)));
 
@@ -827,8 +827,8 @@ void CEffectPrim::Prim3DCircle() {
   this->state.unknown_0348 = side;
   this->state.unknown_02F4 = vertical;
 
-  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->MakeXRotation(GetRadian(static_cast<int>(this->state.unknown_0310)));
-  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->AppendYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
+  reinterpret_cast<struct matrix*>(this->state.matrix1)->MakeXRotation(GetRadian(static_cast<int>(this->state.unknown_0310)));
+  reinterpret_cast<struct matrix*>(this->state.matrix1)->AppendYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
 
   const float distance = this->state.unknown_02BC;
   this->state.unknown_0370 = Forward(distance, this->state.matrix1);
@@ -2353,8 +2353,8 @@ bool CEffectPrim::UpdateHit6() {
     this->state.unknown_02BC = static_cast<float>(rand() % 35 + 15) / 100.0f;
     this->state.unknown_030C = static_cast<float>(rand() % 80) + (this->state.unknown_030C - 40.0f);
     this->state.unknown_0310 = static_cast<float>(rand() % 80) + (this->state.unknown_0310 - 40.0f);
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateX(GetRadian(static_cast<int>(this->state.unknown_0310)));
+    reinterpret_cast<struct matrix*>(this->state.matrix1)->SetYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
+    reinterpret_cast<struct matrix*>(this->state.matrix1)->RotateX(GetRadian(static_cast<int>(this->state.unknown_0310)));
     flags = this->state.flags;
     this->state.unknown_01D4 = rand() % 10 + 5;
   }
@@ -2362,8 +2362,8 @@ bool CEffectPrim::UpdateHit6() {
   if ((flags & 8u) != 0 && this->state.unknown_01E0 % this->state.unknown_01D4 == 0) {
     this->state.unknown_030C = static_cast<float>(rand() % 10) + (this->state.unknown_030C - 5.0f);
     this->state.unknown_0310 = static_cast<float>(rand() % 10) + (this->state.unknown_0310 - 5.0f);
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->MakeXRotation(GetRadian(static_cast<int>(this->state.unknown_0310)));
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->AppendYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
+    reinterpret_cast<struct matrix*>(this->state.matrix1)->MakeXRotation(GetRadian(static_cast<int>(this->state.unknown_0310)));
+    reinterpret_cast<struct matrix*>(this->state.matrix1)->AppendYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
     this->state.unknown_01D4 = rand() % 15 + 5;
   }
 
@@ -2494,8 +2494,8 @@ bool CEffectPrim::UpdateDetoxication() {
     this->state.unknown_02BC = static_cast<float>(rand() % 35 + 15) / 100.0f;
     this->state.unknown_030C = static_cast<float>(rand() % 80) + (this->state.unknown_030C - 40.0f);
     this->state.unknown_0310 = static_cast<float>(rand() % 80) + (this->state.unknown_0310 - 40.0f);
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateX(GetRadian(static_cast<int>(this->state.unknown_0310)));
+    reinterpret_cast<struct matrix*>(this->state.matrix1)->SetYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
+    reinterpret_cast<struct matrix*>(this->state.matrix1)->RotateX(GetRadian(static_cast<int>(this->state.unknown_0310)));
     this->state.unknown_01D4 = rand() % 10 + 5;
     flags = this->state.flags;
   }
@@ -2503,8 +2503,8 @@ bool CEffectPrim::UpdateDetoxication() {
   if ((flags & 8u) != 0 && this->state.unknown_01E0 % this->state.unknown_01D4 == 0) {
     this->state.unknown_030C = static_cast<float>(rand() % 10) + (this->state.unknown_030C - 5.0f);
     this->state.unknown_0310 = static_cast<float>(rand() % 10) + (this->state.unknown_0310 - 5.0f);
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->MakeXRotation(GetRadian(static_cast<int>(this->state.unknown_0310)));
-    reinterpret_cast<AffineMatrix*>(this->state.matrix1)->AppendYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
+    reinterpret_cast<struct matrix*>(this->state.matrix1)->MakeXRotation(GetRadian(static_cast<int>(this->state.unknown_0310)));
+    reinterpret_cast<struct matrix*>(this->state.matrix1)->AppendYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
     this->state.unknown_01D4 = rand() % 15 + 5;
     flags = this->state.flags;
   }
@@ -2568,7 +2568,7 @@ bool CEffectPrim::UpdateExit() {
     }
   }
 
-  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->SetYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
+  reinterpret_cast<struct matrix*>(this->state.matrix1)->SetYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
 
   const float distance = this->state.unknown_0348;
   this->state.offset = Forward(distance, this->state.matrix1);
@@ -2579,7 +2579,7 @@ bool CEffectPrim::UpdateExit() {
   this->state.scale = this->state.unknown_031C + this->state.scale;
   const float rotation = this->state.unknown_0334 + this->state.unknown_0310;
   this->state.unknown_0310 = rotation;
-  reinterpret_cast<AffineMatrix*>(this->state.matrix1)->RotateZ(rotation);
+  reinterpret_cast<struct matrix*>(this->state.matrix1)->RotateZ(rotation);
 
   this->state.ProcessAlpha();
   this->ShiftSegment();
@@ -2604,7 +2604,7 @@ bool CEffectPrim::Prim3DParticleSpline() {
 
   const float distance = this->state.unknown_02BC - this->state.unknown_02EC;
   this->state.unknown_0370 = Forward(distance, this->state.matrix1);
-  reinterpret_cast<AffineMatrix*>(this->state.matrix2)->MakeTransform(this->state.unknown_0290, GetRadian(angle));
+  reinterpret_cast<struct matrix*>(this->state.matrix2)->MakeTransform(this->state.unknown_0290, GetRadian(angle));
 
   const float move = this->state.unknown_0310;
   this->state.unknown_03A0 = Lift(move, this->state.matrix2);

@@ -7,7 +7,7 @@
 // OFFSET: 0x00554B90
 // FUNCTION: fn_02030
 // FUNCTION: fn_02029
-void QuaternionMatrix(const ModelRotationKey& key, AffineMatrix& output) {
+void QuaternionMatrix(const ModelRotationKey& key, matrix& output) {
   const float x = key.rotation[0];
   const float y = key.rotation[1];
   const float z = key.rotation[2];

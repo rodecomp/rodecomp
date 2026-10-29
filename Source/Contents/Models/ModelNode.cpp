@@ -93,9 +93,9 @@ void C3dNodeV2::Initialize(const ModelNode& base) {
   std::memcpy(this->resourceTransform.values, resource.transform, sizeof(resource.transform));
 
   if (this->parent) {
-    const AffineMatrix world = this->resourceTransform;
-    const AffineMatrix parentWorld = static_cast<C3dNodeV2*>(this->parent)->resourceTransform;
-    AffineMatrix inverse;
+    const matrix world = this->resourceTransform;
+    const matrix parentWorld = static_cast<C3dNodeV2*>(this->parent)->resourceTransform;
+    matrix inverse;
     inverse.MakeInverse(parentWorld);
     this->localTransform.Compose(world, inverse);
   } else {
@@ -126,16 +126,16 @@ void C3dNodeV2::Initialize(const ModelNode& base) {
 // FUNCTION: fn_17507
 void C3dNodeV1::Animate(double frame) {
   const int selected = TruncateToInt(frame);
-  AffineMatrix position;
-  AffineMatrix scale;
-  AffineMatrix rotation;
+  matrix position;
+  matrix scale;
+  matrix rotation;
   position.Identity();
   scale.Identity();
   rotation.Identity();
   SampleLegacyPosition(this->positionKeys, selected, position);
   SampleLegacyRotation(this->rotationKeys, selected, rotation);
   SampleLegacyScale(this->scaleKeys, selected, scale);
-  AffineMatrix combined;
+  matrix combined;
   combined.Compose(scale, rotation);
   this->transform.Compose(combined, position);
 

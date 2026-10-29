@@ -6,13 +6,13 @@
 
 #include <span>
 
-void SampleLegacyPosition(std::span<const ModelPositionKey> keys, int frame, AffineMatrix& output);
-void SampleLegacyRotation(std::span<const ModelRotationKey> keys, int frame, AffineMatrix& output);
-void SampleLegacyScale(std::span<const ModelScaleKey> keys, int frame, AffineMatrix& output);
-void SampleModelScale(std::span<const ModelRotationKey> keys, float frame, AffineMatrix& output);
-void SampleModelPosition(std::span<const ModelRotationKey> keys, float frame, const AffineMatrix& base, AffineMatrix& output);
-void SampleModelRotation(std::span<const ModelRotationKey> keys, float frame, const AffineMatrix& base, AffineMatrix& output);
-void QuaternionMatrix(const ModelRotationKey& key, AffineMatrix& output);
+void SampleLegacyPosition(std::span<const ModelPositionKey> keys, int frame, matrix& output);
+void SampleLegacyRotation(std::span<const ModelRotationKey> keys, int frame, matrix& output);
+void SampleLegacyScale(std::span<const ModelScaleKey> keys, int frame, matrix& output);
+void SampleModelScale(std::span<const ModelRotationKey> keys, float frame, matrix& output);
+void SampleModelPosition(std::span<const ModelRotationKey> keys, float frame, const matrix& base, matrix& output);
+void SampleModelRotation(std::span<const ModelRotationKey> keys, float frame, const matrix& base, matrix& output);
+void QuaternionMatrix(const ModelRotationKey& key, matrix& output);
 void InterpolateModelRotation(float amount, const ModelRotationKey& first, const ModelRotationKey& second, int spins, ModelRotationKey& output);
 
 #endif

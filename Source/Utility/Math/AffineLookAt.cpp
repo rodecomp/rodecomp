@@ -12,7 +12,7 @@ namespace {
 
 // OFFSET: 0x00555110
 // FUNCTION: fn_02033
-void AffineMatrix::LookAt(const float* origin, const float* target, const float* up) {
+void matrix::LookAt(const float* origin, const float* target, const float* up) {
   this->Identity();
   const float dx = target[0] - origin[0];
   const float dy = target[1] - origin[1];

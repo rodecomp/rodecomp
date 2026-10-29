@@ -30,9 +30,9 @@ void CameraFrame::Forward(const CameraState& camera, float* output) const {
 
 // OFFSET: 0x00ADBB60
 // FUNCTION: fn_17925
-void CameraFrame::AlternateView(const CameraState& camera, float yaw, const TerrainHeight& terrain, AffineMatrix& output) const {
+void CameraFrame::AlternateView(const CameraState& camera, float yaw, const TerrainHeight& terrain, matrix& output) const {
   constexpr float pi = 3.141592f;
-  AffineMatrix orbit;
+  matrix orbit;
   orbit.MakeXRotation((camera.pitch / 180.0f) * pi);
   orbit.AppendYRotation((yaw / 180.0f) * pi);
   const float distance = -camera.distance;
