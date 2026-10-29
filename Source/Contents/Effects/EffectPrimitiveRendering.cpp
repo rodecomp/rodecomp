@@ -2365,6 +2365,74 @@ void CEffectPrim::Render2DCircle() {
   }
 }
 
+// OFFSET: 0x00BC65D0
+// FUNCTION: fn_19851
+void CEffectPrim::Render2DDiamond() {
+  const float sn = ClientSine(static_cast<int>(this->state.roll));
+  const float cs = ClientCosine(static_cast<int>(this->state.roll));
+  const float halfHeight = this->state.heightSize * 0.5f;
+  const float halfWidth = this->state.widthSize * 0.5f;
+  const float notch = halfHeight / 1.2f;
+  const float leftX = -halfWidth;
+  const float leftY = notch - halfHeight;
+  const float bottom = -halfHeight;
+  const float topX = cs * 0.0f - halfHeight * sn;
+  const float topY = halfHeight * cs + sn * 0.0f;
+  const float bottomX = cs * 0.0f - bottom * sn;
+  const float bottomY = bottom * cs + sn * 0.0f;
+
+  RenderTriangle& first = this->state.triangles[0];
+  first.vertices[0].z = 0.000001f;
+  first.vertices[0].rhw = 0.999999f;
+  first.vertices[0].diffuse = this->state.argb;
+  first.vertices[0].u = 0.0f;
+  first.vertices[0].v = 0.5f;
+  first.vertices[1].z = 0.000001f;
+  first.vertices[1].rhw = 0.999999f;
+  first.vertices[1].diffuse = 0xFFFFFFFFu;
+  first.vertices[1].u = 0.5f;
+  first.vertices[1].v = 1.0f;
+  first.vertices[2].z = 0.000001f;
+  first.vertices[2].rhw = 0.999999f;
+  first.vertices[2].diffuse = this->state.argb;
+  first.vertices[2].u = 0.5f;
+  first.vertices[2].v = 0.0f;
+  first.texture = this->state.textures[this->render.curMotion];
+  first.vertices[0].x = leftX * cs - leftY * sn + this->render.position.x;
+  first.vertices[0].y = leftY * cs + leftX * sn + this->render.position.y;
+  first.vertices[1].x = this->render.position.x + topX;
+  first.vertices[1].y = this->render.position.y + topY;
+  first.vertices[2].x = this->render.position.x + bottomX;
+  first.vertices[2].y = this->render.position.y + bottomY;
+  g_renderer->queues.SubmitTriangle(first, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+
+  RenderTriangle& second = this->state.triangles[1];
+  const float rightY = halfHeight - notch;
+  second.vertices[0].z = 0.000001f;
+  second.vertices[0].rhw = 0.999999f;
+  second.vertices[0].diffuse = this->state.argb;
+  second.vertices[0].u = 1.0f;
+  second.vertices[0].v = 0.5f;
+  second.vertices[1].z = 0.000001f;
+  second.vertices[1].rhw = 0.999999f;
+  second.vertices[1].diffuse = 0xFFFFFFFFu;
+  second.vertices[1].u = 0.5f;
+  second.vertices[1].v = 1.0f;
+  second.vertices[2].z = 0.000001f;
+  second.vertices[2].rhw = 0.999999f;
+  second.vertices[2].diffuse = this->state.argb;
+  second.vertices[2].u = 0.5f;
+  second.vertices[2].v = 0.0f;
+  second.texture = this->state.textures[this->render.curMotion];
+  second.vertices[0].x = halfWidth * cs - rightY * sn + this->render.position.x;
+  second.vertices[0].y = rightY * cs + halfWidth * sn + this->render.position.y;
+  second.vertices[1].x = this->render.position.x + topX;
+  second.vertices[1].y = this->render.position.y + topY;
+  second.vertices[2].x = this->render.position.x + bottomX;
+  second.vertices[2].y = this->render.position.y + bottomY;
+  g_renderer->queues.SubmitTriangle(second, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+}
+
 // OFFSET: 0x00BC8E00
 // FUNCTION: fn_19855
 void CEffectPrim::Render3DCasting2(matrix& wtm) {
