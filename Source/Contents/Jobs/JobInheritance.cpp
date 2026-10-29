@@ -700,6 +700,16 @@ int CSession::GetPairValue() const {
   return third == -1 ? second : third;
 }
 
+// OFFSET: 0x00E1D970
+
+// OFFSET: 0x00E1D980
+
+// OFFSET: 0x00E1D9B0
+
+// OFFSET: 0x00E1DB20
+
+// OFFSET: 0x00E1DB60
+
 // OFFSET: 0x00E1DC00
 // FUNCTION: fn_23872
 int CSession::IsGuardianJob(int job) const {
@@ -710,6 +720,15 @@ int CSession::IsGuardianJob(int job) const {
 // FUNCTION: fn_23887
 int CSession::IsPlayerJobId(int job) const {
   return IsPlayerJob(job);
+}
+
+// OFFSET: 0x00E1E050
+
+// OFFSET: 0x00E1E080
+
+// OFFSET: 0x00E248E0
+// FUNCTION: fn_23897
+void CSession::ApplySaveDataOptions() {
 }
 
 // OFFSET: 0x00E25EE0

@@ -272,6 +272,14 @@ public:
   bool IsCostumeJob(int job) const;
   int GetSceneUnknown004C() const;
   int IsPlayerJobId(int job) const;
+  bool IsShadowItemType(int type) const;
+  bool IsConsumableItemType(int type) const;
+  bool IsCostumeLocation(int location) const;
+  bool IsEquipItemType(int type) const;
+  bool IsMiscItemType(int type) const;
+  bool IsSuperNoviceJob(int job) const;
+  bool IsSuperNoviceClass(int job) const;
+  void ApplySaveDataOptions();
   int SetHotkeyEntry(char enabled, int id, int value, int slot);
   int SetFlag(char value);
   void SetPlayerNameKey(const unsigned char* key);
