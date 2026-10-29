@@ -674,6 +674,48 @@ void CRenderObject::DrawJitterTrail(
   quad.color = 0x96FFFFFF;
 }
 
+// OFFSET: 0x00CAA0A0
+// FUNCTION: fn_21014
+void CRenderObject::DrawPulseOutline(
+  const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw,
+  const std::uint32_t* palette, const SpriteRleImage* image, std::uint32_t color
+) {
+  if ((this->render.flags & 8) == 0) {
+    return;
+  }
+
+  unsigned char& phase = this->render.unknown_00ECBytes[2];
+  ++phase;
+  if (phase > 180) {
+    phase = 0;
+  }
+
+  const float pulse = g_sinTable[phase] * 1.5f + 5.0f;
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  const float spread = 400.0f / mode->camera->camera.desiredDistance * pulse;
+
+  SpriteQuad outline;
+  outline.top = static_cast<float>(box[1]) - spread;
+  outline.bottom = static_cast<float>(box[3]) + spread;
+  float left = static_cast<float>(box[0]) + offset;
+  float right = static_cast<float>(box[2]) + offset;
+  if (left > right) {
+    left += spread;
+    right -= spread;
+  } else {
+    left -= spread;
+    right += spread;
+  }
+  outline.left = left;
+  outline.right = right;
+  outline.bottomRhw = bottomRhw - 0.00005f;
+  outline.topRhw = topRhw - 0.00005f;
+  outline.image = image;
+  outline.color = color;
+  outline.angle = static_cast<float>(cell.unknown_001C + static_cast<int>(this->render.unknown_007C));
+  this->DrawQuad(outline, palette, 5, 0.0f, 0.0f, 0);
+}
+
 // OFFSET: 0x00CAFEE0
 // FUNCTION: fn_21090
 void CGameActor::ProcessBodyState() {
