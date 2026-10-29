@@ -17,6 +17,7 @@ class CSprRes;
 class CTexture;
 class GroundGeometry;
 class LuaScript;
+struct NavigationTarget;
 struct WindowDialogs;
 
 struct NaviCell {
@@ -108,6 +109,7 @@ public:
 
   bool HasId(const unsigned int& id) const;
   bool IsNamed(const char* name) const;
+  std::vector<NaviLink> CopyLinks() const;
 };
 
 // VTABLE: vt_01778
@@ -187,6 +189,15 @@ public:
   int MobCount() const;
   int NpcCount() const;
   CNavi_Link* FindMatchingLink(CNavi_Link link);
+  int GetType() const;
+  std::vector<CNavi_Link*>* Links();
+  CNavi_Object* FindMob(unsigned int key, bool byId);
+  std::vector<CNavi_Object*>* Mobs();
+  CNavi_Object* FindMobByIndex(int index);
+  bool IsSearchable(const char* name) const;
+  void CollectTargets(int type, std::vector<NavigationTarget>& out);
+  void CollectMobsInRange(int minimum, int maximum, std::vector<NavigationTarget>& out);
+  void CollectMobsByTitle(std::string title, std::vector<NavigationTarget>& out);
 
   /* 0000 */ int index;
   /* 0004 */ int type;
@@ -214,6 +225,8 @@ struct NavigationTarget {
   }
 
   ~NavigationTarget();
+
+  bool operator>(const NavigationTarget& other) const;
 
   /* 0000 */ int type;
   /* 0004 */ void* object;

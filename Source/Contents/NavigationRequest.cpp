@@ -264,3 +264,145 @@ CNavi_Link* CNaviInfo::FindMatchingLink(CNavi_Link link) {
   }
   return nullptr;
 }
+
+// OFFSET: 0x00B8D6F0
+// FUNCTION: fn_19435
+bool NavigationTarget::operator>(const NavigationTarget& other) const {
+  return std::strcmp(this->name.c_str(), other.name.c_str()) > 0;
+}
+
+// OFFSET: 0x00B8DEA0
+// FUNCTION: fn_19459
+int CNaviInfo::GetType() const {
+  return this->type;
+}
+
+// OFFSET: 0x00B8E370
+// FUNCTION: fn_19468
+std::vector<CNavi_Link*>* CNaviInfo::Links() {
+  return &this->links;
+}
+
+// OFFSET: 0x00B8E380
+// FUNCTION: fn_19469
+CNavi_Object* CNaviInfo::FindMob(unsigned int key, bool byId) {
+  if (byId) {
+    for (CNavi_Object* mob : this->mobs) {
+      if (static_cast<unsigned int>(mob->id) == key) {
+        return mob;
+      }
+    }
+    return nullptr;
+  }
+  if (this->mobs.empty() || key >= this->mobs.size()) {
+    return nullptr;
+  }
+  return this->mobs[key];
+}
+
+// OFFSET: 0x00B8E450
+// FUNCTION: fn_19471
+std::vector<CNavi_Object*>* CNaviInfo::Mobs() {
+  return &this->mobs;
+}
+
+// OFFSET: 0x00B8E460
+// FUNCTION: fn_19472
+CNavi_Object* CNaviInfo::FindMobByIndex(int index) {
+  for (CNavi_Object* mob : this->mobs) {
+    if (index == mob->GetIndex()) {
+      return mob;
+    }
+  }
+  return nullptr;
+}
+
+// OFFSET: 0x00B8E770
+// FUNCTION: fn_19482
+std::vector<NaviLink> CNavi_Object::CopyLinks() const {
+  return this->links;
+}
+
+// OFFSET: 0x00B8F500
+// FUNCTION: fn_19503
+bool CNaviInfo::IsSearchable(const char* name) const {
+  if (std::strcmp(name, "gl_in01") != 0 && std::strstr(name, "_in") != nullptr) {
+    return false;
+  }
+  return true;
+}
+
+// OFFSET: 0x00B8E970
+// FUNCTION: fn_19500
+void CNaviInfo::CollectTargets(int type, std::vector<NavigationTarget>& out) {
+  NavigationTarget target(type, nullptr);
+
+  if (std::strstr(this->name.c_str(), "_in") == nullptr && (type == 1 || type == 0)) {
+    target.name = this->name.c_str();
+    target.object = this;
+    target.type = 1;
+    out.push_back(target);
+  }
+
+  if (type == 2 || type == 0) {
+    target.type = 2;
+    for (CNavi_Object* npc : this->npcs) {
+      NaviCell cell;
+      const NaviCell* position = npc->GetCell(&cell);
+      target.x = position->x;
+      target.y = position->y;
+      target.name = npc->GetName();
+      target.object = npc;
+      out.push_back(target);
+    }
+  }
+
+  if (type == 3 || type == 0) {
+    target.type = 3;
+    for (CNavi_Object* mob : this->mobs) {
+      NaviCell cell;
+      const NaviCell* position = mob->GetCell(&cell);
+      target.x = position->x;
+      target.y = position->y;
+      target.name = mob->GetName();
+      target.object = mob;
+      out.push_back(target);
+    }
+  }
+}
+
+// OFFSET: 0x00B8EC70
+// FUNCTION: fn_19501
+void CNaviInfo::CollectMobsInRange(int minimum, int maximum, std::vector<NavigationTarget>& out) {
+  NavigationTarget target(3, nullptr);
+  for (CNavi_Object* mob : this->mobs) {
+    NaviCell lower;
+    NaviCell upper;
+    if (minimum <= mob->GetCell(&lower)->x && mob->GetCell(&upper)->x <= maximum) {
+      NaviCell cell;
+      const NaviCell* position = mob->GetCell(&cell);
+      target.x = position->x;
+      target.y = position->y;
+      target.name = mob->GetName();
+      target.object = mob;
+      out.push_back(target);
+    }
+  }
+}
+
+// OFFSET: 0x00B8FC40
+// FUNCTION: fn_19505
+void CNaviInfo::CollectMobsByTitle(std::string title, std::vector<NavigationTarget>& out) {
+  NavigationTarget target(3, nullptr);
+  for (CNavi_Object* mob : this->mobs) {
+    if (std::strcmp(mob->GetTitle(), title.c_str()) == 0) {
+      NaviCell cell;
+      const NaviCell* position = mob->GetCell(&cell);
+      target.x = position->x;
+      target.y = position->y;
+      target.name = mob->GetName();
+      target.object = mob;
+      out.push_back(target);
+    }
+  }
+}
