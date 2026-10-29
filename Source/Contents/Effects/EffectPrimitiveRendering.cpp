@@ -1076,6 +1076,76 @@ void CEffectPrim::RenderGrid(matrix& wtm) {
   }
 }
 
+// OFFSET: 0x00BCFC00
+// FUNCTION: fn_19867
+void CEffectPrim::RenderRing(matrix& wtm) {
+  vector3d corners[4]{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    const float dist = slot.distance;
+    const float cs = g_cosTable[slot.riseAngle];
+    const float sn = g_sinTable[slot.riseAngle];
+    const vector3d& center = slot.vecBNow;
+    const int angles[4] = {90, 180, 270, 0};
+
+    for (int index = 0; index < 4; ++index) {
+      const float radial = dist * g_cosTable[angles[index]];
+      corners[index] = {cs * radial + center.x, dist * g_sinTable[angles[index]] + center.y, sn * radial + center.z};
+    }
+
+    this->RenderTeiRect(&rpCnt, slot.alphaB, corners[0], corners[1], corners[2], corners[3], wtm, 0, 0, 1, 60, 60, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+  }
+}
+
+// OFFSET: 0x00BD85F0
+// FUNCTION: fn_19888
+void CEffectPrim::RenderPentagon(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec4{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    const vector3d& top = slot.vecTPre;
+    const float radius = slot.maxHeight;
+
+    for (int point = 0; point <= 5; ++point) {
+      int angle = slot.rotStart + point * 72;
+      if (angle >= 360) {
+        angle -= 360;
+      }
+
+      const float dx = radius * g_cosTable[angle];
+      const float dz = radius * g_sinTable[angle];
+      const vector3d vec2{dx + slot.vecTNow.x, slot.vecTNow.y, dz + slot.vecTNow.z};
+      const vector3d vec3{top.x + dx, top.y, top.z + dz};
+
+      if (point != 0) {
+        if (slot.flag1[0] == 13) {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 230, 255, 230, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
+      }
+
+      vec1 = vec2;
+      vec4 = vec3;
+    }
+  }
+}
+
 // OFFSET: 0x00BDF0A0
 // FUNCTION: fn_19908
 void CEffectPrim::RenderRainbow(matrix& wtm) {
