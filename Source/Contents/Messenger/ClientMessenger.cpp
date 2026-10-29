@@ -5,6 +5,7 @@
 #include "Client/Session.h"
 #include "Contents/ClientState.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Jobs/JobId.h"
 #include "Script/LuaInstance.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -13,6 +14,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdlib>
+#include <format>
 #include <list>
 #include <map>
 #include <new>
@@ -49,12 +51,6 @@ static_assert(offsetof(SessionItemLists, items_1780) == 0x1780);
 struct EquipmentProperty {
   virtual ~EquipmentProperty() = default;
 };
-
-struct EquipmentProperty1 : EquipmentProperty {};
-
-struct EquipmentProperty2 : EquipmentProperty {};
-
-struct EquipmentProperty3 : EquipmentProperty {};
 
 struct EquipmentValueA {
   /* 0000 */ int value;
@@ -270,6 +266,10 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
 }
 
 namespace EquipmentProperties {
+  class CEquipmentWearable;
+  class CEquipmentExpansion;
+  class CEquipmentCombiitem;
+
   class CEquipmentPropertiesMgr {
   public:
     /* 0004 */ CLuaInstance script;
@@ -278,10 +278,10 @@ namespace EquipmentProperties {
     /* 0014 */ int unknown_0014;
     /* 0018 */ EquipmentPropertyStore* store;
     /* 001C */ int unknown_001C;
-    /* 0020 */ int unknown_0020;
-    /* 0024 */ std::unordered_map<int, EquipmentProperty1*> properties1;
-    /* 0044 */ std::unordered_map<int, EquipmentProperty2*> properties2;
-    /* 0064 */ std::unordered_map<int, EquipmentProperty3*> properties3;
+    /* 0020 */ UIWindow* unknown_0020;
+    /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
+    /* 0044 */ std::unordered_map<int, CEquipmentExpansion*> properties2;
+    /* 0064 */ std::unordered_map<int, CEquipmentCombiitem*> properties3;
     /* 0084 */ std::set<int> unknown_0084;
     /* 008C */ std::map<int, EquipmentPropertyGroup> unknown_008C;
     /* 0094 */ std::unordered_map<int, EquipmentPropertyMaps> unknown_0094;
@@ -302,6 +302,15 @@ namespace EquipmentProperties {
     CEquipmentPropertiesMgr();
     virtual ~CEquipmentPropertiesMgr();
     void Clear();
+    void SetWindow(UIWindow* window);
+    const int& GetUnknown0134(const int& key);
+    int GetUnknown001C();
+    CEquipmentWearable* FindProperty1(const int& key);
+    EquipmentPropertyMaps* FindUnknown0094(const int& key);
+    CLuaInstance& GetScript();
+    int GetUnknown0174(const int& key);
+    std::pair<int, int>* FindUnknown0114(const int& key);
+    std::unordered_map<int, EquipmentValueC>& GetUnknown019C();
   };
 }
 
@@ -617,6 +626,56 @@ void EquipmentProperties::CEquipment::CallOnStartEquip(lua_State* state) {
     lua_settop(state, -2);
   }
 }
+
+// OFFSET: 0x006AC2A0
+
+// OFFSET: 0x006AC3B0
+// FUNCTION: fn_06174
+int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown001C() {
+  return this->unknown_001C;
+}
+
+// OFFSET: 0x006AC3C0
+
+// OFFSET: 0x006AC440
+
+// OFFSET: 0x006AC4C0
+
+// OFFSET: 0x006AC610
+// FUNCTION: fn_06178
+CLuaInstance& EquipmentProperties::CEquipmentPropertiesMgr::GetScript() {
+  return this->script;
+}
+
+// OFFSET: 0x006AC620
+
+// OFFSET: 0x006AC890
+
+// OFFSET: 0x006ACCB0
+
+// OFFSET: 0x006AD500
+
+// OFFSET: 0x006AD690
+
+// OFFSET: 0x006AD880
+
+// OFFSET: 0x006AD900
+// FUNCTION: fn_06188
+std::unordered_map<int, EquipmentValueC>& EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown019C() {
+  return this->unknown_019C;
+}
+
+// OFFSET: 0x006B7760
+
+// OFFSET: 0x006BCB90
+
+// OFFSET: 0x006BCE30
+
+// OFFSET: 0x006BD3C0
+
+// OFFSET: 0x006BD9D0
+
+// OFFSET: 0x006BDCE0
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EquipmentPropertyDefinition) == 0x80);
