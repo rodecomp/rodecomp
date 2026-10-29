@@ -1,8 +1,82 @@
 #include "Contents/Effects/Particle.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/Camera/Camera.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Ground/TerrainHeight.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "Contents/World/World.h"
 #include "Render/Primitives/RenderPrimitive.h"
+#include "Render/Projection/RenderProjection.h"
+#include "Render/Projection/RendererViewport.h"
+#include "Render/Renderer.h"
+#include "Render/TextureQuad.h"
+#include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/World/TerrainResource.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstdlib>
+#include <cstring>
+#include <regex>
+
+// INLINED
+static __forceinline float ToRadians(float degrees) {
+  return (degrees / 180.0f) * 3.141592f;
+}
+
+// INLINED
+static __forceinline void SetClipCorners(RenderVertex* vertices, const EZeffectTransform& transform) {
+  if (transform.ax[1] > transform.ax[0]) {
+    vertices[0].x = transform.ax[3];
+    vertices[1].x = transform.ax[0];
+    vertices[2].x = transform.ax[2];
+    vertices[3].x = transform.ax[1];
+    vertices[1].u = vertices[0].u = transform.u;
+    vertices[3].u = vertices[2].u = transform.us + transform.u;
+  } else {
+    vertices[0].x = transform.ax[2];
+    vertices[1].x = transform.ax[1];
+    vertices[2].x = transform.ax[3];
+    vertices[3].x = transform.ax[0];
+    vertices[1].u = vertices[0].u = transform.us + transform.u;
+    vertices[3].u = vertices[2].u = transform.u;
+  }
+
+  if (transform.ay[2] > transform.ay[1]) {
+    vertices[0].y = transform.ay[3];
+    vertices[1].y = transform.ay[0];
+    vertices[2].y = transform.ay[2];
+    vertices[3].y = transform.ay[1];
+    vertices[3].v = vertices[1].v = transform.v;
+    vertices[2].v = vertices[0].v = transform.vs + transform.v;
+  } else {
+    vertices[0].y = transform.ay[0];
+    vertices[1].y = transform.ay[3];
+    vertices[2].y = transform.ay[1];
+    vertices[3].y = transform.ay[2];
+    vertices[2].v = vertices[0].v = transform.v;
+    vertices[3].v = vertices[1].v = transform.vs + transform.v;
+  }
+}
+
+// INLINED
+static __forceinline std::uint32_t ClipColor(const EZeffectTransform& transform, float alpha) {
+  return ((((static_cast<int>(transform.crA * alpha) << 8) + static_cast<unsigned char>(transform.crR)) << 8) + static_cast<unsigned char>(transform.crG)) << 8 |
+         static_cast<unsigned char>(transform.crB);
+}
+
+// INLINED
+static __forceinline CTexture* ClipTexture(EZeffectClip* clip, const EZeffectTransform& transform, const std::string& prefix) {
+  const int frame = static_cast<int>(transform.aniframe);
+  if (prefix.size() == 0) {
+    return clip->Texture(frame < 0 ? 0 : frame);
+  }
+
+  return clip->Texture(frame < 0 ? 0 : frame, prefix.c_str());
+}
 
 // OFFSET: 0x00B3C440
 // FUNCTION: fn_18809
@@ -17,9 +91,63 @@ float RandomRange(float minimum, float maximum) {
   return static_cast<float>(value % span + low) * 0.1f;
 }
 
+// OFFSET: 0x00B3C4B0
+
+// OFFSET: 0x00B3C6F0
+
+// OFFSET: 0x00B3C880
+
+// OFFSET: 0x00B3CBA0
+
+// OFFSET: 0x00B3CF20
+
+// OFFSET: 0x00B3CFC0
+
+// OFFSET: 0x00B3D030
+
+// OFFSET: 0x00B3D540
+
+// OFFSET: 0x00B3D6F0
+
+// OFFSET: 0x00B3D7A0
+
+// OFFSET: 0x00B3D9D0
+
+// OFFSET: 0x00B3DA60
+
+// OFFSET: 0x00B3E010
+
+// OFFSET: 0x00B3E170
+
+// OFFSET: 0x00B3E1F0
+
+// OFFSET: 0x00B3E270
+
+// OFFSET: 0x00B3E6E0
+
+// OFFSET: 0x00B3F050
+
+// OFFSET: 0x00B3F550
+
+// OFFSET: 0x00B3F5D0
+
+// OFFSET: 0x00B3F630
+
 // OFFSET: 0x00B3F950
 // FUNCTION: fn_18831
 CParticle::~CParticle() {
+}
+
+// OFFSET: 0x00B3F990
+
+// OFFSET: 0x00B3FBF0
+// FUNCTION: fn_18834
+void ParticleUnused420() {
+}
+
+// OFFSET: 0x00B3FC00
+// FUNCTION: fn_18835
+void ParticleUnused421() {
 }
 
 // OFFSET: 0x00B3FC10
@@ -58,6 +186,20 @@ void InitParticleQuad(RenderVertex* vertices) {
   vertices[3].z = 1.0f;
 }
 
+// OFFSET: 0x00B3FCE0
+
+// OFFSET: 0x00B3FD10
+
+// OFFSET: 0x00B40100
+// FUNCTION: fn_18840
+void ParticleUnused422() {
+}
+
+// OFFSET: 0x00B40110
+// FUNCTION: fn_18841
+void ParticleUnused423() {
+}
+
 // OFFSET: 0x00B40120
 // FUNCTION: fn_18842
 void CParticle::SetColor(short redValue, short greenValue, short blueValue) {
@@ -83,3 +225,5 @@ void CParticle::SetTexture(const char* name) {
 void CParticle::SetTexture(std::string name) {
   this->texture = g_texMgr.Load(name.c_str(), 0, false, true, false);
 }
+
+// OFFSET: 0x00B40210
