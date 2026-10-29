@@ -55,7 +55,10 @@ public:
   void SetTexture(const char* name);
   void SetTexture(std::string name);
 
-  /* 0004 */ unsigned char unknown_0004[0x10];
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ int unknown_0008;
+  /* 000C */ int unknown_000C;
+  /* 0010 */ int unknown_0010;
   /* 0014 */ int unknown_0014;
   /* 0018 */ CTexture* texture;
   /* 001C */ int flags;

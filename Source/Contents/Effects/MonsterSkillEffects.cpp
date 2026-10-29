@@ -8,10 +8,25 @@
 #include "Contents/Effects/Particle.h"
 #include "Contents/Effects/SkillEffects.h"
 #include "Contents/World/World.h"
+#include "Render/Renderer.h"
+#include "Render/TextureQuad.h"
+#include "Render/Textures/Texture.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <windows.h>
 #include <timeapi.h>
+
+// INLINED
+static void SetScreenVertex(RenderVertex& vertex, float x, float y, std::uint32_t color, float u, float v) {
+  vertex.x = x;
+  vertex.y = y;
+  vertex.z = 0.000001f;
+  vertex.rhw = 0.999999f;
+  vertex.diffuse = color;
+  vertex.specular = 0xFF000000;
+  vertex.u = u;
+  vertex.v = v;
+}
 
 // OFFSET: 0x0070C070
 
@@ -205,6 +220,18 @@ void CFromTheAbyssEffect::Slot01() {
 bool CFromTheAbyssEffect::Slot06() {
   return this->ActorExists();
 }
+
+// OFFSET: 0x00716BD0
+// FUNCTION: fn_07278
+bool CFullScreenEffect::Slot06() {
+  if (this->loaded == 1 && this->ActorExists()) {
+    return true;
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00716BF0
 
 // OFFSET: 0x0071F5F0
 // FUNCTION: fn_07344

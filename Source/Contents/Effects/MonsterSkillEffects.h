@@ -159,6 +159,16 @@ public:
 
 class CParticle;
 
+class CFullScreenEffect : public CEffect {
+public:
+  void Slot04() override;
+  bool Slot06() override;
+
+  /* 00CC */ std::vector<CParticle*> particles;
+  /* 00D8 */ unsigned char loaded;
+  /* 00D9 */ unsigned char unknown_00D9[3];
+};
+
 class CPetitioEffect : public CEffect {
 public:
   CPetitioEffect();
@@ -254,6 +264,8 @@ static_assert(sizeof(CFloralFlareRoad) == 0xDC);
 static_assert(offsetof(CFootprintEffect, stepDistance) == 0x108);
 static_assert(offsetof(CFootprintEffect, lastPosition) == 0x114);
 static_assert(sizeof(CFootprintEffect) == 0x128);
+static_assert(offsetof(CFullScreenEffect, loaded) == 0xD8);
+static_assert(sizeof(CFullScreenEffect) == 0xDC);
 static_assert(sizeof(CPetitioEffect) == 0xD8);
 static_assert(sizeof(CPneumaticusProcellaEffect) == 0xDC);
 static_assert(sizeof(CRandomHitEffect) == 0xD4);
