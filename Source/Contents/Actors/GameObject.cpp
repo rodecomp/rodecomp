@@ -2,6 +2,7 @@
 #include "Contents/Actors/GameActor.h"
 #include "Client/Mode/ActiveGameMode.h"
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Camera/Camera.h"
 #include "Client/Replay.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/World/WorldScene.h"
@@ -55,6 +56,27 @@ void CGameObject::SendObjectMessage(CGameObject*, int, int, int, int, int, int, 
 // OFFSET: 0x00CB20A0
 // FUNCTION: fn_21101
 void CGameObject::Draw(int) {
+}
+
+// OFFSET: 0x00CABF10
+// FUNCTION: fn_21041
+int CGameObject::GetDir(float rot) {
+  CGameMode* gameMode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  int longitude = 0;
+
+  if (gameMode) {
+    longitude = static_cast<int>(-gameMode->camera->camera.yaw - rot);
+
+    while (longitude < 0) {
+      longitude += 360;
+    }
+
+    while (longitude >= 360) {
+      longitude -= 360;
+    }
+  }
+
+  return longitude;
 }
 
 // OFFSET: 0x00CAB920

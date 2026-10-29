@@ -16,6 +16,7 @@ public:
   virtual void SendObjectMessage(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m);
   virtual void Draw(int argument);
   virtual int Direction(float angle, const CameraDirectionContext& camera);
+  int GetDir(float rot);
 
   /* 0008 */ std::uint64_t identity;
 };
