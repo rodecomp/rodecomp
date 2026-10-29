@@ -408,6 +408,12 @@ const char* EncryptedName<52, 0xBFF5C517A1A77F59ULL>::Text() {
 // OFFSET: 0x00A5AFF0
 
 // OFFSET: 0x00A66BE0
+// FUNCTION: fn_16618
+void RenewQuestUI::CUIQuestItem::Move(int x, int y) {
+  UIWindow::Move(x, y);
+  this->baseY = y;
+  this->baseX = x;
+}
 
 // OFFSET: 0x00A66C50
 // FUNCTION: fn_16620
@@ -422,8 +428,22 @@ void CUIRenewQuestUI::Paint() {
 }
 
 // OFFSET: 0x00A66F40
+// FUNCTION: fn_16625
+void RenewQuestUI::CUIQuestItem::Slot25(int x, int y) {
+  CUIListItem::Slot25(x, y);
+  this->pressed = 1;
+  UIWindow::Move(this->baseX, this->baseY + 1);
+  this->Invalidate();
+}
 
 // OFFSET: 0x00A66F80
+// FUNCTION: fn_16626
+void RenewQuestUI::CUIQuestItem::Slot31(int x, int y) {
+  CUIListItem::Slot31(x, y);
+  this->pressed = 0;
+  UIWindow::Move(this->baseX, this->baseY);
+  this->Invalidate();
+}
 
 // OFFSET: 0x00A66FC0
 // FUNCTION: fn_16627
