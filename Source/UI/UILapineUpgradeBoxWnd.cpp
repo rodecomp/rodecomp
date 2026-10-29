@@ -47,6 +47,30 @@ UILapineUpgradeBoxWnd::~UILapineUpgradeBoxWnd() {
 void UILapineUpgradeBoxWndNoop() {}
 
 // OFFSET: 0x00603B60
+// FUNCTION: fn_04200
+void UILapineUpgradeBoxWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\bg_lapineUpgrade.bmp")));
+  this->DrawBitmap(0, 0, &background->image, true);
+
+  if (this->title.size() != 0) {
+    this->DrawTitleBar(controls.fonts, controls.locale, false, this->title.c_str(), 0);
+  }
+
+  this->DrawCenteredText(35, 47, LookupMessage(2896), 156, 0, 11, 0xCD7A51, 0);
+  this->DrawCenteredText(35, 63, this->description.c_str(), 156, 0, 11, 0x844A42, 0);
+
+  if (this->item.unknown_0000[1] != 0) {
+    ItemDescriptions descriptions{g_itemDescriptions};
+    DrawItemIcon(*this, controls.resources, descriptions, 101, 165, this->item, 0);
+  }
+
+  if (timeGetTime() < this->noticeTick + this->noticeDuration) {
+    CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\icon_notify.bmp")));
+    this->DrawBitmap(6, 229, &icon->image, true);
+    this->DrawTextAt(controls.fonts, controls.locale, 25, 230, this->notice.c_str(), 0, 0, 12, 0xFF0000, 0, 0);
+  }
+}
 
 // OFFSET: 0x006035E0
 // FUNCTION: fn_04194
@@ -267,3 +291,14 @@ void UILapineUpgradeBoxWnd::Slot28(int x, int y) {
 }
 
 // OFFSET: 0x00604FA0
+// FUNCTION: fn_04219
+void UILapineUpgradeBoxWnd::AddMaterial(int id) {
+  std::vector<ITEM_INFO>& materials = this->ingredientList->materials;
+  const auto found = std::find_if(materials.begin(), materials.end(), [id](ITEM_INFO material) { return id == std::atoi(material.itemId.c_str()); });
+
+  if (found == materials.end()) {
+    ITEM_INFO material;
+    material.SetItemId(id);
+    materials.push_back(material);
+  }
+}
