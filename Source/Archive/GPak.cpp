@@ -141,6 +141,339 @@ int sub_654450() {
   return 8;
 }
 
+// OFFSET: 0x00654460
+// FUNCTION: fn_04989
+int sub_654460() {
+  volatile int v = 0xf093c3a0;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x00654490
+// FUNCTION: fn_04990
+int sub_654490() {
+  volatile int v = 0xf093c3a3;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x006544C0
+// FUNCTION: fn_04991
+int sub_6544C0() {
+  volatile int v = 0xf093c3a2;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x006544F0
+// FUNCTION: fn_04992
+int sub_6544F0() {
+  volatile int v = 0xf093c3ad;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x00654520
+// FUNCTION: fn_04993
+int sub_654520() {
+  volatile int v = 0xf093c3ac;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x00654550
+// FUNCTION: fn_04994
+int sub_654550() {
+  volatile int v = 0xf093c3af;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x00654580
+// FUNCTION: fn_04995
+int sub_654580() {
+  volatile int v = 0xf093c1a4;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x006545B0
+// FUNCTION: fn_04996
+int sub_6545B0() {
+  volatile int v = 0xf093c325;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x006545E0
+// FUNCTION: fn_04997
+int sub_6545E0() {
+  volatile int v = 0xf093c3ae;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x00654610
+// FUNCTION: fn_04998
+int sub_654610() {
+  volatile int v = 0xf093c3a9;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x00654640
+// FUNCTION: fn_04999
+int sub_654640() {
+  volatile int v = 0xf093c3a8;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x00654670
+// FUNCTION: fn_05000
+int sub_654670() {
+  volatile int v = 0xf093c3ab;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x006546A0
+// FUNCTION: fn_05001
+int sub_6546A0() {
+  volatile int v = 0xf093c3aa;
+  v ^= 0x3821881d;
+  v ^= 0xc8b24bb8;
+  return v;
+}
+
+// OFFSET: 0x006546D0
+// FUNCTION: fn_05002
+int sub_6546D0() {
+  volatile int v = 0xfd8bf70b;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654700
+// FUNCTION: fn_05003
+int sub_654700() {
+  volatile int v = 0xfd8bf70a;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654730
+// FUNCTION: fn_05004
+int sub_654730() {
+  volatile int v = 0xfd8bf709;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654760
+// FUNCTION: fn_05005
+int sub_654760() {
+  volatile int v = 0xfd8bf708;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654790
+// FUNCTION: fn_05006
+int sub_654790() {
+  volatile int v = 0xfd8bf70f;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x006547C0
+// FUNCTION: fn_05007
+int sub_6547C0() {
+  volatile int v = 0xfd8bf70e;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x006547F0
+// FUNCTION: fn_05008
+int sub_6547F0() {
+  volatile int v = 0xfd8bf70d;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654820
+// FUNCTION: fn_05009
+int sub_654820() {
+  volatile int v = 0xfd8bf70c;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654850
+// FUNCTION: fn_05010
+int sub_654850() {
+  volatile int v = 0xfd8bf703;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654880
+// FUNCTION: fn_05011
+int sub_654880() {
+  volatile int v = 0xfd8bf702;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x006548B0
+// FUNCTION: fn_05012
+int sub_6548B0() {
+  volatile int v = 0xfd8bf701;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x006548E0
+// FUNCTION: fn_05013
+int sub_6548E0() {
+  volatile int v = 0xfd8bf700;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654910
+// FUNCTION: fn_05014
+int sub_654910() {
+  volatile int v = 0xfd8bf707;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654940
+// FUNCTION: fn_05015
+int sub_654940() {
+  volatile int v = 0xfd8bf706;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654970
+// FUNCTION: fn_05016
+int sub_654970() {
+  volatile int v = 0xfd8bf705;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x006549A0
+// FUNCTION: fn_05017
+int sub_6549A0() {
+  volatile int v = 0xfd8bf704;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x006549D0
+// FUNCTION: fn_05018
+int sub_6549D0() {
+  volatile int v = 0xfd8bf71b;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654A00
+// FUNCTION: fn_05019
+int sub_654A00() {
+  volatile int v = 0xfd8bf71a;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654A30
+// FUNCTION: fn_05020
+int sub_654A30() {
+  volatile int v = 0xfd8bf719;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654A60
+// FUNCTION: fn_05021
+int sub_654A60() {
+  volatile int v = 0xfd8bf718;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654A90
+// FUNCTION: fn_05022
+int sub_654A90() {
+  volatile int v = 0xfd8bf409;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654AC0
+// FUNCTION: fn_05023
+int sub_654AC0() {
+  volatile int v = 0xfd8bf408;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654AF0
+// FUNCTION: fn_05024
+int sub_654AF0() {
+  volatile int v = 0xfd8bf68a;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
+// OFFSET: 0x00654B20
+// FUNCTION: fn_05025
+int sub_654B20() {
+  volatile int v = 0xfd8bf689;
+  v ^= 0x2b225215;
+  v ^= 0xd6a9a41e;
+  return v;
+}
+
 // OFFSET: 0x00654B70
 // FUNCTION: fn_05028
 int sub_654B70() {
