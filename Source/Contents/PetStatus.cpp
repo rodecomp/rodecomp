@@ -126,3 +126,12 @@ int CSession::IsPetEgg(int itemId) const {
 }
 
 // OFFSET: 0x00E27780
+// FUNCTION: fn_23940
+bool CSession::IsPetAccessory(int itemId) {
+  bool isAccessory = false;
+  if (this->m_hotkeyScript->Call("IsPetAccessory", "d>b", itemId, &isAccessory)) {
+    return isAccessory;
+  }
+
+  return false;
+}

@@ -2930,6 +2930,13 @@ const char* EncryptedName<14, 0x0D7FA94DD32361A9ULL>::Text() {
 }
 
 // OFFSET: 0x00E281B0
+// FUNCTION: fn_23949
+template <>
+EncryptedName<14, 0xB5F3F779237315F3ULL>::EncryptedName(const std::uint8_t (&source)[14]) : m_encrypted(true) {
+  for (std::uint64_t index = 0; index < 14; ++index) {
+    this->m_text[index] = source[index];
+  }
+}
 
 // OFFSET: 0x00E28390
 // FUNCTION: fn_23950

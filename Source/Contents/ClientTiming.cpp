@@ -475,6 +475,10 @@ void CSession::SetHotkeyDescription(const char* description, std::uint32_t skill
 }
 
 // OFFSET: 0x00E26540
+// FUNCTION: fn_23915
+void CSession::SetHotkeySkillLevel(std::uint32_t skillLevel, int index) {
+  this->unknown_0420[index] = skillLevel;
+}
 
 // OFFSET: 0x00E00320
 // FUNCTION: fn_23639
