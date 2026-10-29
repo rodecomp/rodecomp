@@ -138,6 +138,39 @@ std::uint32_t CRenderSystemDX7::Width() {
 }
 
 // OFFSET: 0x0056C2B0
+// FUNCTION: fn_02334
+HRESULT CRenderSystemDX7::Initialize(HWND window) {
+  const std::vector<RenderAdapter> adapters = EnumerateAdaptersDX7();
+
+  if (adapters.empty()) {
+    MessageBoxA(nullptr, "No compatible devices", "Error", 0);
+    return static_cast<HRESULT>(0x81000004);
+  }
+
+  GUID drawIdentity{};
+  GUID renderIdentity{};
+  const int backend = 1;
+  const GUID savedDraw = *reinterpret_cast<const GUID*>(g_guidDriver);
+  const GUID savedRender = *reinterpret_cast<const GUID*>(g_guidDevice);
+  const GUID savedDevice = *reinterpret_cast<const GUID*>(g_guidDevice);
+  const AdapterConfiguration configuration{backend, savedDraw, savedRender, savedDevice, g_deviceName};
+  const RenderAdapter selected = SelectedRenderAdapter(configuration, true);
+
+  for (const RenderAdapter& adapter : adapters) {
+    if (adapter.Matches(selected)) {
+      drawIdentity = adapter.drawGuid;
+      renderIdentity = adapter.renderGuid;
+      break;
+    }
+  }
+
+  DDSURFACEDESC2 mode{};
+  mode.dwWidth = static_cast<DWORD>(g_configuredScreenWidth);
+  mode.dwHeight = static_cast<DWORD>(g_configuredScreenHeight);
+  mode.ddpfPixelFormat.dwRGBBitCount = static_cast<DWORD>(g_configuredBitsPerPixel);
+  const DWORD flags = g_configuredFullscreen != 0 ? 7 : 6;
+  return this->m_device->Initialize(window, &drawIdentity, &renderIdentity, &mode, flags);
+}
 
 // OFFSET: 0x0056C4A0
 // FUNCTION: fn_02335
