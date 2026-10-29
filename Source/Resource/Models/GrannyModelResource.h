@@ -88,6 +88,10 @@ struct granny_file_info {
   /* 0054 */ granny_animation** animations;
 };
 
+struct granny_system_clock {
+  /* 0000 */ std::uint32_t data[4];
+};
+
 extern "C" {
 __declspec(dllimport) extern const granny_pixel_layout GrannyRGBA8888PixelFormat;
 __declspec(dllimport) extern granny_data_type_definition GrannyPNT332VertexType[];
@@ -121,6 +125,7 @@ __declspec(dllimport) void WINAPI GrannyFreeFileSection(granny_file* file, std::
 __declspec(dllimport) granny_local_pose* WINAPI GrannyNewLocalPose(std::int32_t boneCount);
 __declspec(dllimport) void WINAPI GrannyFreeMeshDeformer(granny_mesh_deformer* deformer);
 __declspec(dllimport) void WINAPI GrannyFreeModelInstance(granny_model_instance* instance);
+__declspec(dllimport) granny_system_clock WINAPI GrannyGetSystemSeconds();
 __declspec(dllimport) void WINAPI GrannyFreeWorldPose(granny_world_pose* pose);
 __declspec(dllimport) granny_control* WINAPI GrannyPlayControlledAnimation(float startTime, const granny_animation* animation, granny_model_instance* instance);
 __declspec(dllimport) void WINAPI GrannySetControlLoopCount(granny_control* control, std::int32_t loopCount);

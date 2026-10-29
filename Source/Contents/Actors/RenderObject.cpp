@@ -15,6 +15,7 @@
 #include "Contents/GuildMgr.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
+#include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
 #include "Render/SpriteQuad.h"
 #include "Resource/Models/GrannyModelResource.h"
@@ -86,12 +87,26 @@ public:
 
 class CGrannyCorpse3d : public CGameObject {
 public:
+  explicit CGrannyCorpse3d(const char* name);
+  ~CGrannyCorpse3d() override;
   bool OnProcess() override;
 
-  /* 0010 */ unsigned char unknown_0010[0x130];
+  /* 0010 */ vector3d position;
+  /* 001C */ C3dGrannyModelRes* model;
+  /* 0020 */ granny_model_instance* instance;
+  /* 0024 */ granny_control* control;
+  /* 0028 */ RenderCommand* commands[30];
+  /* 00A0 */ RenderVertex* vertices[30];
+  /* 0118 */ granny_system_clock clock;
+  /* 0128 */ granny_system_clock startClock;
+  /* 0138 */ float unknown_0138;
+  /* 013C */ unsigned char unknown_013C[4];
   /* 0140 */ int tick;
-  /* 0144 */ unsigned char unknown_0144[4];
+  /* 0144 */ float angle;
   /* 0148 */ unsigned char alpha;
+  /* 0149 */ unsigned char unknown_0149[3];
+  /* 014C */ unsigned brightness;
+  /* 0150 */ char name[0x108];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -101,6 +116,8 @@ static_assert(offsetof(C3dGrannyGameActor, motion) == 0x544);
 static_assert(offsetof(C3dGrannyGameActor, controls) == 0x658);
 static_assert(offsetof(CGrannyCorpse3d, tick) == 0x140);
 static_assert(offsetof(CGrannyCorpse3d, alpha) == 0x148);
+static_assert(offsetof(CGrannyCorpse3d, startClock) == 0x128);
+static_assert(sizeof(CGrannyCorpse3d) == 0x258);
 #endif
 
 // OFFSET: 0x00CA8730
@@ -1589,3 +1606,49 @@ void C3dGrannyGameActor::SetAction(unsigned animation, int, int repeat) {
   this->unknown_052C = 0;
   this->controls[this->motion] = this->model->PlayAnimation(this->motion, this->instance, this->controls[this->motion], repeat == 1);
 }
+
+// OFFSET: 0x00CC5080
+// FUNCTION: fn_21173
+CGrannyCorpse3d::CGrannyCorpse3d(const char* name) {
+  this->position.x = 0.0f;
+  this->position.y = 0.0f;
+  this->position.z = 0.0f;
+  this->alpha = 0xFF;
+  this->instance = nullptr;
+  this->control = nullptr;
+  std::strcpy(this->name, name);
+  this->model = nullptr;
+  for (int mesh = 0; mesh < 30; ++mesh) {
+    this->commands[mesh] = nullptr;
+  }
+
+  this->model = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(this->name));
+  this->instance = GrannyInstantiateModel(this->model->model);
+  for (int mesh = 0; mesh < this->model->instance->meshCount; ++mesh) {
+    this->commands[mesh] = reinterpret_cast<RenderCommand*>(new ModelRenderCommand());
+    this->commands[mesh]->AllocateTriangles(this->model->GetTriangleCount(mesh));
+    this->vertices[mesh] = new RenderVertex[this->model->GetTriangleCount(mesh) * 3];
+    std::memset(this->vertices[mesh], 0, this->model->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
+  }
+
+  this->startClock = GrannyGetSystemSeconds();
+  this->unknown_0138 = 0;
+  this->tick = 0;
+  this->control = this->model->PlayAnimation(3, this->instance, this->control, 1);
+}
+
+CGrannyCorpse3d::~CGrannyCorpse3d() {
+  this->model->FreeControl(this->control);
+  for (int mesh = 0; mesh < 30; ++mesh) {
+    if (this->commands[mesh] != nullptr) {
+      this->commands[mesh]->FreeVertices();
+      delete this->commands[mesh];
+      this->commands[mesh] = nullptr;
+      delete this->vertices[mesh];
+      this->vertices[mesh] = nullptr;
+    }
+  }
+
+  GrannyFreeModelInstance(this->instance);
+}
+
