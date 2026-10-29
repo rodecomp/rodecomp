@@ -622,14 +622,95 @@ void UITVTextButton::ResetCursor(int x, int y) {
 }
 
 // OFFSET: 0x00892600
+// FUNCTION: fn_11477
+void UIEditCtrl_Currency::Slot19() {
+  if (this->formattedLength == this->text.size()) {
+    return;
+  }
+
+  CLanguage& input = this->m_edit->input;
+  int anchor;
+  int cursor;
+  input.Selection(anchor, cursor);
+
+  std::string digits = this->text;
+  int separators = 0;
+  int index = 0;
+
+  for (std::string::iterator it = digits.begin(); it != digits.end(); ++it, ++index) {
+    if (this->text[index] == ',' && index < anchor) {
+      ++separators;
+    }
+
+    if (*it < '0' || *it > '9') {
+      it = digits.erase(it);
+
+      if (it == digits.end()) {
+        break;
+      }
+    }
+  }
+
+  char formatted[260];
+  std::memset(formatted, 0, sizeof(formatted));
+  FormatGroupedInteger(_atoi64(digits.c_str()), formatted, sizeof(formatted));
+  this->text = formatted;
+  this->Trim();
+
+  input.ResetInput();
+  input.ResetInput();
+  input.Insert(this->text.c_str());
+
+  const int length = static_cast<int>(this->text.size());
+  anchor += length / 4 - (length - anchor) / 4 - separators;
+  cursor += length / 4 - (length - cursor) / 4 - separators;
+
+  if (digits.empty()) {
+    anchor = 1;
+    cursor = 1;
+  }
+
+  input.Select(anchor, cursor);
+  this->formattedLength = this->text.size();
+  this->Invalidate();
+}
 
 // OFFSET: 0x00892910
+// FUNCTION: fn_11478
+void UISlotBmpButton::Slot19() {
+  ++this->unknown_0134;
+
+  if (this->unknown_0134 / this->unknown_0136 > 7) {
+    this->unknown_0134 = 0;
+  }
+}
 
 // OFFSET: 0x00892940
+// FUNCTION: fn_11479
+void UIBasicItemCtrl::Slot32(int, int) {
+  if (std::atoi(this->m_item.itemId.c_str()) > 0) {
+    this->m_windows->EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00892A10
+// FUNCTION: fn_11481
+void UIBitmapButton2::Slot32(int, int) {
+  if (this->m_disabled == 0) {
+    if (this->parent) {
+      this->parent->SendMsg(this, 101, this->geometry.id, 0, 0, 0);
+    }
+
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00892A50
+// FUNCTION: fn_11482
+void UIMemberListBox::Slot32(int x, int y) {
+  this->selected = this->LineAt(x, y);
+  this->Invalidate();
+}
 
 // OFFSET: 0x00892A80
 // FUNCTION: fn_11483
@@ -640,12 +721,55 @@ void UISlotBmpButton::Slot32(int, int) {
 }
 
 // OFFSET: 0x00892AB0
+// FUNCTION: fn_11484
+void UIStaticItem::Slot32(int, int) {
+  this->m_windows->EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+}
 
 // OFFSET: 0x00892AE0
+// FUNCTION: fn_11485
+void UITVBitmapButton::Slot32(int, int) {
+  if (this->m_disabled == 0) {
+    if (this->parent) {
+      this->parent->SendMsg(this, 101, this->m_value, 0, 0, 0);
+    }
+
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00892B20
+// FUNCTION: fn_11486
+void UITVTextButton::Slot32(int x, int y) {
+  if (this->m_disabled == 0) {
+    if (this->parent) {
+      this->parent->SendMsg(this, 99, this->m_value, x, y, 0);
+    }
+
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00892BA0
+// FUNCTION: fn_11488
+void UIBitmapButton2::Slot33(int x, int y) {
+  if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
+    return;
+  }
+
+  if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
+    this->geometry.unknown_0030 = 0;
+  } else {
+    this->geometry.unknown_0030 = 1;
+
+    if (this->parent) {
+      this->parent->SendMsg(this, 101, this->geometry.id, 0, 0, 0);
+    }
+  }
+
+  this->Invalidate();
+  g_windowMgr.ReleaseCapture();
+}
 
 // OFFSET: 0x00892C20
 // FUNCTION: fn_11489
@@ -662,14 +786,82 @@ void UIMemberListBox::Slot33(int, int) {
 }
 
 // OFFSET: 0x00892CA0
+// FUNCTION: fn_11492
+void UITVBitmapButton::Slot33(int x, int y) {
+  if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
+    return;
+  }
+
+  if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
+    this->geometry.unknown_0030 = 0;
+  } else {
+    this->geometry.unknown_0030 = 1;
+
+    if (this->parent) {
+      this->parent->SendMsg(this, 101, this->m_value, 0, 0, 0);
+    }
+  }
+
+  this->Invalidate();
+  g_windowMgr.ReleaseCapture();
+}
 
 // OFFSET: 0x00892D20
+// FUNCTION: fn_11493
+void UITVTextButton::Slot33(int x, int y) {
+  if (this->m_disabled == 0) {
+    if (this->parent) {
+      this->parent->SendMsg(this, 99, this->m_value, x, y, 0);
+    }
+
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00892DE0
+// FUNCTION: fn_11495
+void UIComboBoxV2Wnd::Slot35(int value) {
+  this->selected += value < 0 ? 1 : -1;
+  const int count = static_cast<int>(this->list->lines.size());
+
+  if (this->selected >= count) {
+    this->selected = count - 1;
+  }
+
+  if (this->selected < 0) {
+    this->selected = 0;
+  }
+
+  if (this->parent) {
+    this->parent->SendMsg(this, 39, this->selected, 0, 0, 0);
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x00892EE0
+// FUNCTION: fn_11498
+void UIListBoxID::Slot35(int value) {
+  if (this->verticalOverflow != 0) {
+    if (value < 0) {
+      this->SendMsg(this->verticalBar, 7, 3, 0, 0, 0);
+    } else {
+      this->SendMsg(this->verticalBar, 7, -3, 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00892F50
+// FUNCTION: fn_11501
+void UITreeView::Slot35(int value) {
+  if (this->verticalOverflow != 0) {
+    if (value < 0) {
+      this->SendMsg(this->verticalBar, 7, 3, 0, 0, 0);
+    } else {
+      this->SendMsg(this->verticalBar, 7, -3, 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00892F90
 // FUNCTION: fn_11502
