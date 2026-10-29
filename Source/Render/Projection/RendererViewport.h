@@ -23,6 +23,8 @@ struct RendererViewport {
   RenderProjection Projection() const;
 };
 
+extern float g_cotangent;
+
 static_assert(sizeof(RendererViewport) == 52);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(RendererViewport, width) == 0x24);

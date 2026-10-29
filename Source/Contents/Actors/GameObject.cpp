@@ -1,9 +1,14 @@
 #include "Contents/Actors/GameObject.h"
 #include "Contents/Actors/GameActor.h"
+#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Replay.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "Contents/World/WorldScene.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Render/DeviceContext/DCSurface.h"
+#include "Render/Projection/RendererViewport.h"
 #include "Render/Renderer.h"
 #include "Render/SpriteQuad.h"
 #include "Render/TextureQuad.h"
@@ -11,6 +16,9 @@
 #include "Render/Textures/Texture.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "Resource/World/TerrainResource.h"
+#include "Render/Textures/SpritePixels.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 
@@ -19,6 +27,9 @@ namespace {
   // GLOBAL: gl_21923
   std::uint64_t nextIdentity = 0;
 }
+
+// GLOBAL: gl_24538
+float g_cotangent = 0.16f;
 
 // OFFSET: 0x00CA8600
 // FUNCTION: fn_20989
@@ -81,6 +92,66 @@ void CRenderObject::Draw(int argument) {
 // OFFSET: 0x00CB2830
 
 // OFFSET: 0x00CB35F0
+// FUNCTION: fn_21105
+void CRenderObject::DrawShadow(int argument, float scale) {
+  if (this->render.unknown_010C == 565 || this->render.unknown_00A4Bytes[0] == 0 || this->render.unknown_0054 == 0.0f || scale == 0.0f) {
+    return;
+  }
+
+  const float* matrix = reinterpret_cast<const float*>(argument);
+  const float z = this->render.position.z;
+  CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  float position[3];
+  position[0] = this->render.position.x;
+  position[1] = mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z);
+  position[2] = z;
+  const float depth = position[1] * matrix[5] + position[0] * matrix[2] + z * matrix[8] + matrix[11];
+
+  float screenX;
+  float screenY;
+  float reciprocalDepth;
+  g_renderer->ProjectViewport(position, matrix, &screenX, &screenY, &reciprocalDepth);
+  const float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
+
+  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("shadow.spr"));
+  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("shadow.act"));
+  const SpriteFrameCell& cell = action->Frame(0, 0).Cell(0);
+  if (cell.image == -1) {
+    return;
+  }
+
+  float pulse = 1.0f;
+  const SpriteRleImage* image = sprite->images[cell.imageType][0];
+  this->ScaleByPulse(pulse);
+  const double size = pulse * scale * this->render.unknown_0054;
+  const double factor = distanceScale;
+
+  SpriteQuad quad;
+  quad.top = static_cast<float>(cell.y * factor * cell.scaleY * size + screenY);
+  quad.bottom = static_cast<float>(((image->unknown_0006 + 1) * image->height + cell.y) * factor * cell.scaleY * size + screenY + 1.0);
+  float left = static_cast<float>(cell.x * factor * cell.scaleX * size + screenX);
+  quad.right = static_cast<float>(((image->unknown_0004 + 1) * image->width + cell.x) * factor * cell.scaleX * size + screenX + 1.0);
+  if (quad.top >= static_cast<float>(g_renderer->viewport.height) || quad.bottom <= 0.0f || left >= static_cast<float>(g_renderer->viewport.width) ||
+      quad.right <= 0.0f) {
+    return;
+  }
+
+  quad.left = static_cast<float>(static_cast<int>(this->render.unknown_0078)) + left;
+  quad.right = static_cast<float>(static_cast<int>(this->render.unknown_0078)) + quad.right;
+  quad.color = static_cast<std::uint32_t>(((static_cast<std::uint32_t>(cell.color >> 24) << 8 | (cell.color & 0xFF)) << 8 | (cell.color >> 8 & 0xFF)) << 8) |
+               (cell.color >> 16 & 0xFF);
+  quad.bottomRhw = 1.0f / (depth - (quad.bottom - screenY) * g_cotangent) + 0.00001f;
+  quad.topRhw = 1.0f / (depth - (quad.top - screenY) * g_cotangent) + 0.00001f;
+  quad.angle = static_cast<float>(cell.unknown_001C);
+  quad.image = image;
+
+  if (IsScreenShakeActive()) {
+    this->DrawFlippedQuad(quad, sprite->palette, 257, screenX, screenY, 0);
+    return;
+  }
+
+  this->DrawQuad(quad, sprite->palette, 257, 0.0f, 0.0f, 0);
+}
 
 // OFFSET: 0x00CB39A0
 // FUNCTION: fn_21106
