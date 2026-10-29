@@ -32,6 +32,8 @@ public:
   /* 003D */ std::uint8_t unknown_003D[3] = {};
 };
 
+extern CMouse g_mouse;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CMouse) == 64);
 #endif

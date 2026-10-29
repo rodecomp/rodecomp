@@ -23,11 +23,11 @@ public:
   /* 0024 */ std::uint32_t cursorTick;
   /* 0028 */ int unknown_0028;
   /* 002C */ int screenshotRequested;
-  /* 0030 */ int unknown_0030;
-  /* 0034 */ int unknown_0034;
+  /* 0030 */ float cursorOffsetX;
+  /* 0034 */ float cursorOffsetY;
   /* 0038 */ std::string screenshotName;
-  /* 0050 */ int unknown_0050;
-  /* 0054 */ int unknown_0054;
+  /* 0050 */ int cursorAction;
+  /* 0054 */ unsigned cursorActionFrame;
 
   virtual ~CMode();
   virtual int Run();
@@ -40,6 +40,7 @@ public:
 
   CMode();
   void TakeScreenshot();
+  void DrawCursor();
   void DrawTexture(const tagRECT& rect, int angle, float rhw, std::uint32_t color, CTexture* texture, TextureRegion region);
 };
 
