@@ -115,6 +115,14 @@ int CNavigationManager::SaveCurrentTarget() {
 CNaviData::CNaviData() : info(nullptr), cellX(0), cellY(0), range(50000) {
 }
 
+// OFFSET: 0x00B88510
+// FUNCTION: fn_19370
+void NaviDataEntry::Reset() {
+  this->previous = -1;
+  this->link = nullptr;
+  this->cost = 0;
+}
+
 // OFFSET: 0x00B88530
 // FUNCTION: fn_19371
 CNaviData::~CNaviData() {

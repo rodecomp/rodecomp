@@ -31,6 +31,8 @@ struct NaviLink {
 };
 
 struct NaviDataEntry {
+  void Reset();
+
   /* 0000 */ int previous;
   /* 0004 */ CNavi_Link* link;
   /* 0008 */ int cost;
