@@ -44,6 +44,9 @@ struct EffectParticle : CRenderObject {
   void PrimWaterFall();
 
   bool AdvanceFrame();
+  bool FollowMasterAndAdvance();
+  void FollowMasterAndTickSlots();
+  void FollowMasterAndTickSlots2();
   void UpdateRecords();
 
   /* 0138 */ EffectPrimitiveState state;

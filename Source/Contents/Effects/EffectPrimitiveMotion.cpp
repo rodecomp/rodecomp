@@ -2266,3 +2266,36 @@ void EffectParticle::UpdateRecords() {
   const std::uint32_t blue = static_cast<unsigned char>(this->state.blue);
   first.color = (static_cast<std::uint32_t>(static_cast<int>(this->state.alpha)) << 24) | (red << 16) | (green << 8) | blue;
 }
+
+// INLINED
+static void FollowMaster(EffectParticle& particle) {
+  const AttachedEffect* master = particle.state.master;
+  particle.render.position.x = master->render.position.x;
+  particle.render.position.y = master->render.position.y;
+  particle.render.position.z = master->render.position.z;
+}
+
+// INLINED
+static void TickLiveSlots(EffectPrimitiveSlot* slots) {
+  for (int index = 0; index < 4; ++index) {
+    if (slots[index].life == 1) {
+      ++slots[index].process;
+    }
+  }
+}
+
+// OFFSET: 0x00BEB020
+// FUNCTION: fn_19966
+bool EffectParticle::FollowMasterAndAdvance() {
+  FollowMaster(*this);
+  return this->AdvanceFrame();
+}
+
+// OFFSET: 0x00BE9560
+// FUNCTION: fn_19952
+void EffectParticle::FollowMasterAndTickSlots() {
+  FollowMaster(*this);
+  TickLiveSlots(this->state.slots);
+}
+
+// OFFSET: 0x00BE8770
