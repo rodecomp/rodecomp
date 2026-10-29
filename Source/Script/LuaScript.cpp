@@ -308,6 +308,37 @@ void LuaScript::Close() {
 }
 
 // OFFSET: 0x00AFE4B0
+// FUNCTION: fn_45455
+void LuaScript::Register() {
+  lua_State* state = this->m_state;
+  lua_register(this->m_state, "TraceValue", TraceValue);
+  lua_register(this->m_state, "SetSubChatWndList", SetSubChatWndList);
+  lua_register(this->m_state, "SetSubChatWndOption", SetSubChatWndOption);
+  lua_register(this->m_state, "c_SetCmdOnOffList", SetCmdOnOffList);
+  lua_register(this->m_state, "c_GetCmdOnOffValue", GetCmdOnOffValue);
+  lua_register(this->m_state, "c_AddSkillList", AddSkill);
+  lua_register(this->m_state, "c_AddNeedSkillList", AddNeededSkill);
+  lua_register(this->m_state, "RGB", LuaRGB);
+  lua_register(this->m_state, "c_ChangeDirectoryOfDatas", LuaChangeDirectoryOfDatas);
+  lua_register(this->m_state, "SetEmitterInfo", SetEmitterInfo);
+  lua_register(this->m_state, "SetMagicFloorInfo", SetMagicFloorInfo);
+  lua_register(this->m_state, "SetEvilsPawInfo", SetEvilsPawInfo);
+  lua_register(this->m_state, "SetOtherEffectInfo", SetOtherEffectInfo);
+  lua_register(this->m_state, "SetAnimatedEmitterInfo", SetAnimatedEmitterInfo);
+  lua_register(this->m_state, "SetEZ2STRInfo", SetEZ2STRInfo);
+  lua_register(this->m_state, "SetWindEffectInfo", SetWindEffectInfo);
+  RegisterLuaKafraServiceMaps(this->m_state);
+  lua_register(this->m_state, "AddEntryQueue", AddEntryQueue);
+  lua_register(this->m_state, "add_ingredient", AddIngredient);
+  lua_register(this->m_state, "add_ingredient_lapine_upgrade_box", AddIngredientLapineUpgradeBox);
+  lua_register(this->m_state, "add_cashshop_banner", AddCashshopBanner);
+  lua_register(this->m_state, "add_cashshop_banner2", AddCashshopBanner2);
+  lua_register(this->m_state, "add_checkAttendance_banner", AddCheckAttendanceBanner);
+  lua_pushnumber(state, 4.0);
+  lua_setglobal(state, "SKFLAG_NOREDUCT");
+  lua_pushnumber(state, 4096.0);
+  lua_setglobal(state, "SKFLAG_DISABLE_FIXEDCASTING_REDUCTION");
+}
 
 // OFFSET: 0x00AFDDD0
 // FUNCTION: fn_18337
