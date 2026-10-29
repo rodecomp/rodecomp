@@ -48,6 +48,7 @@ public:
   DWORD BlueExpansion();
   DWORD BlueShift();
   IDirectDraw7* DirectDraw();
+  IDirect3D7* Direct3D();
   DWORD GreenMask();
   DWORD GreenExpansion();
   DWORD GreenShift();

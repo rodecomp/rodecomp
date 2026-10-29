@@ -572,6 +572,12 @@ void DeviceOwnerDX7::RestoreDisplayMode() {
   }
 }
 
+// OFFSET: 0x0056BB90
+// FUNCTION: fn_02327
+IDirect3D7* DeviceOwnerDX7::Direct3D() {
+  return this->direct3D;
+}
+
 // OFFSET: 0x0056C4B0
 // FUNCTION: fn_02336
 HRESULT DeviceOwnerDX7::RestoreAllSurfaces() {
