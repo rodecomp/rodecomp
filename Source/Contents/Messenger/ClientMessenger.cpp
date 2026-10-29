@@ -78,7 +78,8 @@ struct EquipmentPropertyDefinition {
   /* 0000 */ unsigned char unknown_0000[8];
   /* 0008 */ std::string unknown_0008;
   /* 0020 */ std::vector<std::string> unknown_0020;
-  /* 002C */ unsigned char unknown_002C[8];
+  /* 002C */ int unknown_002C;
+  /* 0030 */ int mode;
   /* 0034 */ std::vector<std::string> unknown_0034;
   /* 0040 */ int unknown_0040;
   /* 0044 */ std::string unknown_0044;
@@ -122,6 +123,7 @@ namespace EquipmentProperties {
   class CEquipmentProperties1Dim : public CEquipmentProperties {
   public:
     explicit CEquipmentProperties1Dim(EquipmentPropertyDefinition* definition);
+    CEquipmentProperties* Accumulate(CEquipmentProperties* other) override;
 
     /* 0010 */ int m_value;
   };
@@ -967,4 +969,48 @@ void SessionItemLists::RemoveEquipment() {
   }
 
   RefreshItemWindows(&g_windowMgr);
+}
+
+// OFFSET: 0x00698230
+// FUNCTION: fn_05766
+EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProperties1Dim::Accumulate(CEquipmentProperties* other) {
+  if (this->m_definition == nullptr) {
+    return this;
+  }
+
+  auto* source = dynamic_cast<CEquipmentProperties1Dim*>(other);
+  if (source == nullptr) {
+    return this;
+  }
+
+  if (this->m_definition->unknown_007C != 0) {
+    if (source->m_keys.size() != 1) {
+      return this;
+    }
+    const int& key = *source->m_keys.begin();
+    if (this->m_keys.contains(key)) {
+      return this;
+    }
+    this->m_keys.insert(key);
+  }
+
+  switch (this->m_definition->mode) {
+  case 0:
+    this->m_value += source->m_value;
+    break;
+  case 1:
+    ++this->m_value;
+    break;
+  case 2:
+    this->m_value = std::max(this->m_value, source->m_value);
+    break;
+  case 4:
+    if (source->m_value < 0) {
+      this->m_value = 0;
+    } else {
+      this->m_value = std::max(this->m_value, source->m_value);
+    }
+    break;
+  }
+  return this;
 }
