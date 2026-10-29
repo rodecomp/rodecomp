@@ -311,6 +311,23 @@ void CMasterChaser::ClearUnknown0138() {
 }
 
 // OFFSET: 0x00DA3F50
+// FUNCTION: fn_22408
+void CNpc::Slot16() {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  int column;
+  int row;
+  mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
+
+  switch (this->GetEffectiveJob(-1)) {
+    case 45:
+    case 111:
+    case 139:
+      break;
+    default:
+      mode->SendMsg(12, this->render.accountId, column, row, 0);
+      break;
+  }
+}
 
 // OFFSET: 0x00DA5800
 // FUNCTION: fn_22429
@@ -569,6 +586,36 @@ void CSoundMaker::SendMsg(
 }
 
 // OFFSET: 0x00DA58A0
+// FUNCTION: fn_22432
+void CNpc::Slot21(int job) {
+  char spriteName[128];
+  char actionName[128];
+  const char* spriteFormat;
+  const char* actionFormat;
+
+  this->render.unknown_010C = 0;
+  this->render.unknown_0054 = g_session.GetNpcLocationRadius(job, false);
+  if (g_session.IsNpcJob(job) == true) {
+    this->render.unknown_010C = job;
+    actionFormat = "NPC\\%s.act";
+    spriteFormat = "NPC\\%s.spr";
+  } else if (job >= 6017 && job <= 6046) {
+    actionFormat = "인간족\\몸통\\%s.act";
+    spriteFormat = "인간족\\몸통\\%s.spr";
+  } else if (job >= 6001 && job <= 6052) {
+    actionFormat = "homun\\%s.act";
+    spriteFormat = "homun\\%s.spr";
+  } else {
+    this->render.unknown_010C = job;
+    actionFormat = "몬스터\\%s.act";
+    spriteFormat = "몬스터\\%s.spr";
+  }
+
+  std::sprintf(spriteName, spriteFormat, g_session.GetJobName(job, -1));
+  std::sprintf(actionName, actionFormat, g_session.GetJobName(job, -1));
+  this->SetSpriteName(ResourceMgr::Instance(), spriteName);
+  this->SetActionName(ResourceMgr::Instance(), actionName);
+}
 
 // OFFSET: 0x00DA31B0
 // FUNCTION: fn_22400
