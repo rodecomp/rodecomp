@@ -5399,3 +5399,124 @@ void CEffectPrim::PrimBreathingWave() {
     }
   }
 }
+
+// OFFSET: 0x00BE9AA0
+// FUNCTION: fn_19957
+bool CEffectPrim::PrimDriftingRings() {
+  const float profile[6] = {0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f};
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const int process = ++slot.process;
+    if (process <= 0) {
+      continue;
+    }
+
+    const std::int16_t angle = slot.rotStart;
+    const std::int16_t heading = static_cast<std::int16_t>(angle + 345 < 360 ? angle + 345 : angle - 15);
+    slot.vecTNow.x += g_cosTable[heading];
+    slot.vecTNow.z += g_sinTable[heading];
+    if (angle >= 360) {
+      slot.rotStart = static_cast<std::int16_t>(angle - 360);
+    }
+
+    if (process < 10) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 25);
+      const int limit = g_serviceOptions.Get(229) != 0 ? 125 : 250;
+      if (slot.alphaB > limit) {
+        slot.alphaB = static_cast<std::int16_t>(limit);
+      }
+    } else {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 10);
+      if (slot.alphaB < 0) {
+        slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle - 20);
+        slot.alphaB = 0;
+        slot.process = 0;
+        slot.distance -= 0.4f;
+        if (slot.riseAngle <= 40) {
+          slot.life = 0;
+          slot.riseAngle = 40;
+        }
+      }
+    }
+
+    for (int point = 0; point < 21; ++point) {
+      float scale = 1.0f;
+      for (int step = 0; step < 6; ++step) {
+        if (point == step || point == 20 - step) {
+          scale = profile[step];
+        }
+      }
+
+      float value = scale * slot.maxHeight;
+      slot.height[point] = value;
+      if (slot.process <= 15) {
+        value *= g_sinTable[6 * slot.process];
+        slot.height[point] = value;
+      }
+      if (value < 0.0f) {
+        slot.height[point] = 0.0f;
+      }
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00BEAE20
+// FUNCTION: fn_19965
+bool CEffectPrim::PrimSpiralFade() {
+  FaceCamera(this->state.slots);
+  this->render.position = this->state.master->render.position;
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const int process = ++slot.process;
+    if (process <= 0) {
+      continue;
+    }
+
+    const char mode = slot.flag1[0];
+    int phase;
+    if (process <= 10) {
+      slot.height[13] += 20.0f;
+    } else if (mode >= 1) {
+      if (process > 90) {
+        slot.height[13] -= 5.0f;
+        if (slot.height[13] < 0.0f) {
+          slot.height[13] = 0.0f;
+        }
+      }
+    } else if (process > 270) {
+      slot.height[13] -= 5.0f;
+      if (slot.height[13] < 0.0f) {
+        slot.height[13] = 0.0f;
+        slot.vecTNow.x += 0.05f;
+        const int radius = static_cast<int>(slot.vecTNow.x);
+        phase = process % 60;
+        slot.vecBPre = {static_cast<float>(radius) * g_sinTable[6 * phase], -25.0f, static_cast<float>(radius) * g_cosTable[6 * phase]};
+        continue;
+      }
+    }
+
+    slot.vecTNow.x += 0.05f;
+    phase = process % 60;
+    if (mode == 1) {
+      phase = 60 * (process / 60) - process + 60;
+    }
+    const int radius = static_cast<int>(slot.vecTNow.x);
+    slot.vecBPre = {static_cast<float>(radius) * g_sinTable[6 * phase], -25.0f, static_cast<float>(radius) * g_cosTable[6 * phase]};
+  }
+
+  return true;
+}

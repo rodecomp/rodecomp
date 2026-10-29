@@ -67,6 +67,8 @@ struct CEffectPrim : CRenderObject {
   void PrimTextureFrames();
   void PrimWaveSpin();
   void PrimBreathingWave();
+  bool PrimDriftingRings();
+  bool PrimSpiralFade();
   void Render2DCircle();
   void RenderGroundFog(matrix& wtm);
   void RenderCrossPlanes(matrix& wtm);
