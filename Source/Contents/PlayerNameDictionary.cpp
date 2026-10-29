@@ -16,9 +16,9 @@ CPlayerNameDictionary::CPlayerNameDictionary() : m_enabled(true), m_context(null
 }
 
 // OFFSET: 0x0060A9D0
-// OFFSET: 0x0060AAE0
 // FUNCTION: fn_04256
-CPlayerNameDictionary::~CPlayerNameDictionary() = default;
+CPlayerNameDictionary::~CPlayerNameDictionary() {
+}
 
 // OFFSET: 0x0060AFB0
 // OFFSET: 0x0060B010
