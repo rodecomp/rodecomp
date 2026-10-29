@@ -8,6 +8,7 @@
 #include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
+#include "UI/Gauges/UIPcGage.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -37,9 +38,10 @@ public:
   void MoveGauge(int x, int y);
   void RemoveGauge();
   void SetUnknown010C(int first, int second);
+  void SetGaugeValues(int current, int maximum);
 
   /* 00B4 */ MessengerMember member;
-  /* 0104 */ UIWindow* gauge;
+  /* 0104 */ UIPcGage* gauge;
   /* 0108 */ int unknown_0108;
   /* 010C */ int unknown_010C;
   /* 0110 */ int unknown_0110;
@@ -141,6 +143,20 @@ void UIDragMiniPartyWnd::RemoveGauge() {
 void UIDragMiniPartyWnd::SetUnknown010C(int first, int second) {
   this->unknown_010C = first;
   this->unknown_0110 = second;
+}
+
+// OFFSET: 0x00738D40
+// FUNCTION: fn_07673
+void UIDragMiniPartyWnd::SetGaugeValues(int current, int maximum) {
+  this->gauge->SetValues(current, maximum);
+}
+
+// OFFSET: 0x0089BCC0
+// FUNCTION: fn_11577
+void UIPcGage::SetValues(int current, int maximum) {
+  this->current = current;
+  this->maximum = maximum;
+  this->Invalidate();
 }
 
 // OFFSET: 0x00738EC0
