@@ -149,7 +149,9 @@ public:
   /* 52B0 */ const char* const* m_weaponNamesEnd;
   /* 52B4 */ unsigned char unknown_52B4[0x04];
   /* 52B8 */ std::vector<const char*> m_accessoryNames;
-  /* 52C4 */ unsigned char unknown_52C4[0x294];
+  /* 52C4 */ unsigned char unknown_52C4[0x278];
+  /* 553C */ std::string m_serverName;
+  /* 5554 */ unsigned char unknown_5554[4];
   /* 5558 */ int unknown_5558;
   /* 555C */ unsigned char unknown_555C[0xC];
   /* 5568 */ int unknown_5568;

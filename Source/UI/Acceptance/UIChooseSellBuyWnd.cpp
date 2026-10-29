@@ -66,6 +66,12 @@ namespace {
   constexpr char prefix[] = "유저인터페이스\\";
 }
 
+// STRING: st_16833
+static const char menuSeparatorText[] = "-";
+
+// GLOBAL: gl_24749
+const char* g_menuSeparator = menuSeparatorText;
+
 // OFFSET: 0x008C73C0
 // FUNCTION: fn_11930
 UIChooseSellBuyWnd::UIChooseSellBuyWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
@@ -213,6 +219,47 @@ void UIItemParamChangeDisplayWnd::Paint() {
 void UILoadingWnd::Paint() {
 }
 
+// OFFSET: 0x008EED00
+// FUNCTION: fn_12230
+void UIMenuWnd::Paint() {
+  auto& controls = *this->m_controls;
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 6, 6, red, green, blue);
+  this->ClearSurface(RGB(red, green, blue));
+  unsigned fillRed, fillGreen, fillBlue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
+  this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(fillRed, fillGreen, fillBlue));
+
+  const auto* leftUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")));
+  this->DrawBitmap(0, 0, &leftUp->image, false);
+  const auto* leftDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, this->geometry.height - leftDown->image.height, &leftDown->image, false);
+  const auto* rightUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ru.bmp")));
+  this->DrawBitmap(this->geometry.width - rightUp->image.width, 0, &rightUp->image, false);
+  const auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
+  this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, &rightDown->image, false);
+
+  SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+  const int count = static_cast<int>(this->m_items.size());
+  for (int index = 0; index < count; ++index) {
+    const std::string& item = this->m_items[index];
+    const bool separator = item == g_menuSeparator;
+    const bool afterSeparator = index != 0 && this->m_items[index - 1] == item;
+    if (separator) {
+      unsigned lineRed, lineGreen, lineBlue;
+      SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, lineRed, lineGreen, lineBlue);
+      this->FillRegion(0, this->m_itemHeight * index / 2 + 2, this->geometry.width, 1, RGB(lineRed, lineGreen, lineBlue));
+      continue;
+    }
+
+    const int row = afterSeparator ? index - 1 : index;
+    if (index == this->m_selected) {
+      this->FillRegion(3, this->m_itemHeight / 2 * row + 1, this->geometry.width - 6, this->m_itemHeight - 2, RGB(red, green, blue));
+    }
+    this->DrawTextAt(controls.fonts, controls.locale, 3, this->m_itemHeight * row / 2 + 1, item.c_str(), 0, 0, 12, this->m_colors[index], 0, 0);
+  }
+}
+
 // OFFSET: 0x008EF0A0
 // FUNCTION: fn_12231
 void UIMinimapZoomWnd::Paint() {
@@ -283,6 +330,46 @@ void UIPartySettingWnd::Paint() {
 // FUNCTION: fn_12241
 void UIPasswordWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
+}
+
+// OFFSET: 0x008EFCF0
+// FUNCTION: fn_12244
+void UIProhibitListWnd::Paint() {
+  auto& controls = *this->m_controls;
+  char text[256];
+
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(714), 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, this->geometry.height - left->image.height, &left->image, false);
+  const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_rd.bmp")));
+  this->DrawBitmap(this->geometry.width - right->image.width, this->geometry.height - right->image.height, &right->image, false);
+
+  int y = 0;
+  const int count = static_cast<int>(g_session.m_prohibitionLog.size());
+  for (int index = 0; index < count; ++index) {
+    const ProhibitionLogEntry& entry = g_session.m_prohibitionLog[index];
+    if (std::strcmp(entry.ownerName, g_session.m_serverName.c_str()) != 0 || entry.aid != this->m_aid) {
+      continue;
+    }
+
+    if (y == 0) {
+      std::sprintf(text, "AID : %d        CharacterName : %s", entry.aid, entry.name);
+      this->DrawTextAt(controls.fonts, controls.locale, 10, 25, text, 0, 0, 12, 0, 0, 0);
+      std::sprintf(text, "ServerName : %s", g_session.m_prohibitionLog[index].ownerName);
+      this->DrawTextAt(controls.fonts, controls.locale, 10, 41, text, 0, 0, 12, 0, 0, 0);
+    }
+
+    const ProhibitionLogEntry& record = g_session.m_prohibitionLog[index];
+    const int date = static_cast<int>(record.date);
+    const int time = static_cast<int>(record.time);
+    std::sprintf(
+      text, "ProhibitTime : %d분   LogTime : %d년 %d월 %d일   %d시 %d분 %d초", record.minutes, date >> 16 & 0xFFFF, date >> 8 & 0xFF, date & 0xFF, time >> 16 & 0xFF,
+      time >> 8 & 0xFF, time & 0xFF
+    );
+    this->DrawTextAt(controls.fonts, controls.locale, 10, y + 65, text, 0, 0, 12, 0, 0, 0);
+    y += 18;
+  }
 }
 
 // OFFSET: 0x008EFF60
