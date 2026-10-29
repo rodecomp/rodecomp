@@ -4,7 +4,7 @@
 #include <list>
 
 struct AttachedEffect;
-struct EffectParticle;
+struct CEffectPrim;
 struct TerrainHeight;
 class ResourceMgr;
 class TextureCache;

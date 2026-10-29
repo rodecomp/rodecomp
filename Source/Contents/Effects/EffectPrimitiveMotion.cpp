@@ -5,7 +5,7 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/World/WorldScene.h"
 #include "Resource/Sprites/ActionResource.h"
-#include "Contents/Effects/EffectParticle.h"
+#include "Contents/Effects/EffectPrim.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/AttachedEffect.h"
 #include "Contents/Effects/EffectActor.h"
@@ -570,7 +570,7 @@ void AdvanceEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& r
 
 // OFFSET: 0x00BAE3A0
 // FUNCTION: fn_19764
-bool EffectParticle::AnimMotion() {
+bool CEffectPrim::AnimMotion() {
   CActRes* action = this->render.action;
 
   if (this->state.unknown_01E0 % this->state.unknown_01E8 != 0) {
@@ -599,7 +599,7 @@ bool EffectParticle::AnimMotion() {
 
 // OFFSET: 0x00BB5E80
 // FUNCTION: fn_19772
-bool EffectParticle::UpdateFireWall() {
+bool CEffectPrim::UpdateFireWall() {
   const AttachedEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
@@ -722,7 +722,7 @@ bool EffectParticle::UpdateFireWall() {
 
 // OFFSET: 0x00BB63C0
 // FUNCTION: fn_19775
-bool EffectParticle::UpdateStoneCurse() {
+bool CEffectPrim::UpdateStoneCurse() {
   const AttachedEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
@@ -798,7 +798,7 @@ bool EffectParticle::UpdateStoneCurse() {
 
 // OFFSET: 0x00BB65C0
 // FUNCTION: fn_19776
-void EffectParticle::Prim3DCircle() {
+void CEffectPrim::Prim3DCircle() {
   const AttachedEffect* master = this->state.master;
   this->state.origin.x = master->render.position.x + this->state.velocity.x;
   this->state.origin.y = master->render.position.y + this->state.velocity.y;
@@ -855,7 +855,7 @@ void EffectParticle::Prim3DCircle() {
 
 // OFFSET: 0x00BBAB10
 // FUNCTION: fn_19790
-void EffectParticle::PrimBottom2() {
+void CEffectPrim::PrimBottom2() {
   const AttachedEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
@@ -886,7 +886,7 @@ void EffectParticle::PrimBottom2() {
 
 // OFFSET: 0x00BBABC0
 // FUNCTION: fn_19791
-void EffectParticle::PrimBottom() {
+void CEffectPrim::PrimBottom() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
 
@@ -955,7 +955,7 @@ void EffectParticle::PrimBottom() {
 
 // OFFSET: 0x00BBAF30
 // FUNCTION: fn_19792
-void EffectParticle::PrimBottomOut() {
+void CEffectPrim::PrimBottomOut() {
   FaceCamera(this->state.slots);
 
   const AttachedEffect* master = this->state.master;
@@ -1004,7 +1004,7 @@ void EffectParticle::PrimBottomOut() {
 
 // OFFSET: 0x00BBB120
 // FUNCTION: fn_19793
-void EffectParticle::PrimBubbleDrop() {
+void CEffectPrim::PrimBubbleDrop() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
 
@@ -1063,7 +1063,7 @@ void EffectParticle::PrimBubbleDrop() {
 
 // OFFSET: 0x00BBB9D0
 // FUNCTION: fn_19795
-void EffectParticle::PrimChemical2() {
+void CEffectPrim::PrimChemical2() {
   FaceCamera(this->state.slots);
 
   const AttachedEffect* master = this->state.master;
@@ -1094,7 +1094,7 @@ void EffectParticle::PrimChemical2() {
 
 // OFFSET: 0x00BBBB40
 // FUNCTION: fn_19796
-void EffectParticle::PrimChemical3() {
+void CEffectPrim::PrimChemical3() {
   FaceCamera(this->state.slots);
 
   for (int index = 0; index < 4; ++index) {
@@ -1140,7 +1140,7 @@ void EffectParticle::PrimChemical3() {
 
 // OFFSET: 0x00BBBC40
 // FUNCTION: fn_19797
-void EffectParticle::PrimChemical() {
+void CEffectPrim::PrimChemical() {
   FaceCamera(this->state.slots);
 
   for (int index = 0; index < 4; ++index) {
@@ -1166,7 +1166,7 @@ void EffectParticle::PrimChemical() {
 
 // OFFSET: 0x00BBCB30
 // FUNCTION: fn_19800
-void EffectParticle::PrimEffectTexture2() {
+void CEffectPrim::PrimEffectTexture2() {
   FaceCamera(this->state.slots);
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
@@ -1200,7 +1200,7 @@ void EffectParticle::PrimEffectTexture2() {
 
 // OFFSET: 0x00BBCF10
 // FUNCTION: fn_19802
-void EffectParticle::PrimEffectTexture_Ani() {
+void CEffectPrim::PrimEffectTexture_Ani() {
   FaceCamera(this->state.slots);
 
   const AttachedEffect* master = this->state.master;
@@ -1241,7 +1241,7 @@ void EffectParticle::PrimEffectTexture_Ani() {
 
 // OFFSET: 0x00BBD480
 // FUNCTION: fn_19805
-void EffectParticle::PrimFirstAid() {
+void CEffectPrim::PrimFirstAid() {
   FaceCamera(this->state.slots);
 
   const AttachedEffect* master = this->state.master;
@@ -1277,7 +1277,7 @@ void EffectParticle::PrimFirstAid() {
 
 // OFFSET: 0x00BBF3F0
 // FUNCTION: fn_19816
-void EffectParticle::PrimIntimidate() {
+void CEffectPrim::PrimIntimidate() {
   FaceCamera(this->state.slots);
 
   for (int index = 0; index < 4; ++index) {
@@ -1329,7 +1329,7 @@ void EffectParticle::PrimIntimidate() {
 
 // OFFSET: 0x00BC09F0
 // FUNCTION: fn_19824
-void EffectParticle::PrimPoison() {
+void CEffectPrim::PrimPoison() {
   FaceCamera(this->state.slots);
 
   const AttachedEffect* master = this->state.master;
@@ -1368,7 +1368,7 @@ void EffectParticle::PrimPoison() {
 
 // OFFSET: 0x00BBEA00
 // FUNCTION: fn_19813
-void EffectParticle::PrimGuard() {
+void CEffectPrim::PrimGuard() {
   const AttachedEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
@@ -1413,7 +1413,7 @@ void EffectParticle::PrimGuard() {
 
 // OFFSET: 0x00BBFAA0
 // FUNCTION: fn_19818
-bool EffectParticle::PrimLineLink() {
+bool CEffectPrim::PrimLineLink() {
   CGameMode* gameMode = static_cast<CGameMode*>(g_world.GetGameMode());
   const CRenderObject* target = nullptr;
 
@@ -1473,7 +1473,7 @@ bool EffectParticle::PrimLineLink() {
 
 // OFFSET: 0x00BC1AA0
 // FUNCTION: fn_19830
-void EffectParticle::PrimSMA() {
+void CEffectPrim::PrimSMA() {
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -1500,7 +1500,7 @@ void EffectParticle::PrimSMA() {
 
 // OFFSET: 0x00BC2A60
 // FUNCTION: fn_19835
-void EffectParticle::PrimShieldBoomerang3() {
+void CEffectPrim::PrimShieldBoomerang3() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
 
@@ -1565,7 +1565,7 @@ void EffectParticle::PrimShieldBoomerang3() {
 
 // OFFSET: 0x00BC2D60
 // FUNCTION: fn_19836
-void EffectParticle::PrimShieldBoomerang() {
+void CEffectPrim::PrimShieldBoomerang() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
   this->render.position = this->state.master->render.position;
@@ -1676,7 +1676,7 @@ void EffectParticle::PrimShieldBoomerang() {
 
 // OFFSET: 0x00BBF520
 // FUNCTION: fn_19817
-bool EffectParticle::PrimKouenka() {
+bool CEffectPrim::PrimKouenka() {
   this->render.position = this->state.master->render.position;
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
@@ -1731,7 +1731,7 @@ bool EffectParticle::PrimKouenka() {
 
 // OFFSET: 0x00BC27B0
 // FUNCTION: fn_19834
-bool EffectParticle::PrimSakura() {
+bool CEffectPrim::PrimSakura() {
   this->render.position = this->state.master->render.position;
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
@@ -1793,7 +1793,7 @@ bool EffectParticle::PrimSakura() {
 
 // OFFSET: 0x00BC4410
 // FUNCTION: fn_19843
-void EffectParticle::PrimTeiHit2() {
+void CEffectPrim::PrimTeiHit2() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
   this->render.position = this->state.master->render.position;
@@ -1849,7 +1849,7 @@ void EffectParticle::PrimTeiHit2() {
 
 // OFFSET: 0x00BC3C70
 // FUNCTION: fn_19840
-bool EffectParticle::PrimSuperAngel() {
+bool CEffectPrim::PrimSuperAngel() {
   const AttachedEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
@@ -1998,7 +1998,7 @@ bool EffectParticle::PrimSuperAngel() {
 
 // OFFSET: 0x00BBE350
 // FUNCTION: fn_19811
-bool EffectParticle::PrimGhost() {
+bool CEffectPrim::PrimGhost() {
   this->render.position = this->state.master->render.position;
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
@@ -2108,7 +2108,7 @@ bool EffectParticle::PrimGhost() {
 
 // OFFSET: 0x00BC4730
 // FUNCTION: fn_19844
-void EffectParticle::PrimThrowItem() {
+void CEffectPrim::PrimThrowItem() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
 
@@ -2189,7 +2189,7 @@ void EffectParticle::PrimThrowItem() {
 
 // OFFSET: 0x00BC06B0
 // FUNCTION: fn_19822
-bool EffectParticle::PrimPeong() {
+bool CEffectPrim::PrimPeong() {
   FaceCamera(this->state.slots);
 
   for (int index = 0; index < 4; ++index) {
@@ -2239,7 +2239,7 @@ bool EffectParticle::PrimPeong() {
 
 // OFFSET: 0x00BBDE10
 // FUNCTION: fn_19810
-void EffectParticle::PrimGI3() {
+void CEffectPrim::PrimGI3() {
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -2275,7 +2275,7 @@ void EffectParticle::PrimGI3() {
 
 // OFFSET: 0x00BEBC40
 // FUNCTION: fn_19971
-void EffectParticle::PrimWaterFall() {
+void CEffectPrim::PrimWaterFall() {
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -2287,7 +2287,7 @@ void EffectParticle::PrimWaterFall() {
 
 // OFFSET: 0x00BB6F30
 // FUNCTION: fn_19779
-bool EffectParticle::UpdateHit6() {
+bool CEffectPrim::UpdateHit6() {
   const AttachedEffect* master = this->state.master;
   this->state.origin.x = master->render.position.x + this->state.velocity.x;
   this->state.origin.y = master->render.position.y + this->state.velocity.y;
@@ -2389,7 +2389,7 @@ bool EffectParticle::UpdateHit6() {
 
 // OFFSET: 0x00BB75B0
 // FUNCTION: fn_19780
-bool EffectParticle::UpdateCoin() {
+bool CEffectPrim::UpdateCoin() {
   CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
   const AttachedEffect* master = this->state.master;
   this->state.origin.z = master->render.position.z + this->state.velocity.z;
@@ -2430,7 +2430,7 @@ bool EffectParticle::UpdateCoin() {
 
 // OFFSET: 0x00BB78A0
 // FUNCTION: fn_19781
-bool EffectParticle::UpdateDetoxication() {
+bool CEffectPrim::UpdateDetoxication() {
   float positionX = this->state.origin.x + this->state.velocity.x;
   const float positionY = this->state.origin.y + this->state.velocity.y;
   const float positionZ = this->state.origin.z + this->state.velocity.z;
@@ -2524,7 +2524,7 @@ bool EffectParticle::UpdateDetoxication() {
 
 // OFFSET: 0x00BB7EC0
 // FUNCTION: fn_19782
-bool EffectParticle::UpdateExit() {
+bool CEffectPrim::UpdateExit() {
   const AttachedEffect* master = this->state.master;
   this->state.origin = {master->render.position.x, master->render.position.y, master->render.position.z};
 
@@ -2588,7 +2588,7 @@ bool EffectParticle::UpdateExit() {
 
 // OFFSET: 0x00BB8180
 // FUNCTION: fn_19783
-bool EffectParticle::Prim3DParticleSpline() {
+bool CEffectPrim::Prim3DParticleSpline() {
   const AttachedEffect* master = this->state.master;
   this->state.origin = {
     master->render.position.x + this->state.velocity.x, master->render.position.y + this->state.velocity.y,
@@ -2625,7 +2625,7 @@ bool EffectParticle::Prim3DParticleSpline() {
 
 // OFFSET: 0x00BE6FE0
 // FUNCTION: fn_19931
-void EffectParticle::ShiftSegment() {
+void CEffectPrim::ShiftSegment() {
   const int count = this->state.unknown_01F4;
 
   for (int index = count - 1; index > 0; --index) {
@@ -2671,7 +2671,7 @@ void EffectParticle::ShiftSegment() {
 }
 
 // INLINED
-static void FollowMaster(EffectParticle& particle) {
+static void FollowMaster(CEffectPrim& particle) {
   const AttachedEffect* master = particle.state.master;
   particle.render.position.x = master->render.position.x;
   particle.render.position.y = master->render.position.y;
@@ -2689,21 +2689,21 @@ static void TickLiveSlots(EffectPrimitiveSlot* slots) {
 
 // OFFSET: 0x00BEB020
 // FUNCTION: fn_19966
-bool EffectParticle::FollowMasterAndAdvance() {
+bool CEffectPrim::FollowMasterAndAdvance() {
   FollowMaster(*this);
   return this->AnimMotion();
 }
 
 // OFFSET: 0x00BE9560
 // FUNCTION: fn_19952
-void EffectParticle::FollowMasterAndTickSlots() {
+void CEffectPrim::FollowMasterAndTickSlots() {
   FollowMaster(*this);
   TickLiveSlots(this->state.slots);
 }
 
 // OFFSET: 0x00BE8770
 // FUNCTION: fn_19944
-void EffectParticle::FollowMasterAndTickSlots2() {
+void CEffectPrim::FollowMasterAndTickSlots2() {
   FollowMaster(*this);
   TickLiveSlots(this->state.slots);
 }

@@ -1,4 +1,4 @@
-#include "Contents/Effects/EffectParticle.h"
+#include "Contents/Effects/EffectPrim.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Actors/RenderObjectState.h"
 
@@ -7,7 +7,7 @@
 
 // OFFSET: 0x00BAE670
 // FUNCTION: fn_19768
-void EffectParticle::InitSegment() {
+void CEffectPrim::InitSegment() {
   for (int index = 0; index < this->state.unknown_01F4; ++index) {
     EffectPrimitiveRecord& record = this->state.records[index];
     record.position = this->render.position;

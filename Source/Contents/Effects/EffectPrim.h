@@ -1,5 +1,5 @@
-#ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_EFFECTPARTICLE_H
-#define RAGNAROK_SOURCE_CONTENTS_EFFECTS_EFFECTPARTICLE_H
+#ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_EFFECTPRIM_H
+#define RAGNAROK_SOURCE_CONTENTS_EFFECTS_EFFECTPRIM_H
 
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Actors/RenderObject.h"
@@ -9,8 +9,8 @@
 class ResourceMgr;
 struct AttachedEffect;
 
-struct EffectParticle : CRenderObject {
-  EffectParticle();
+struct CEffectPrim : CRenderObject {
+  CEffectPrim();
 
   bool UpdateFireWall();
   bool UpdateStoneCurse();
@@ -57,14 +57,14 @@ struct EffectParticle : CRenderObject {
   /* 0138 */ EffectPrimitiveState state;
 };
 
-EffectParticle* CreateEffectParticle(
+CEffectPrim* CreateEffectParticle(
   AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z,
   std::list<CRenderObject*>& worldObjects
 );
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(EffectParticle) == 0xFA18);
-static_assert(offsetof(EffectParticle, state) == 0x138);
+static_assert(sizeof(CEffectPrim) == 0xFA18);
+static_assert(offsetof(CEffectPrim, state) == 0x138);
 #endif
 
 #endif

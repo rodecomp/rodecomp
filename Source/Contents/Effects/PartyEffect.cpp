@@ -1,6 +1,6 @@
 #include "Contents/Effects/AttachedEffect.h"
 #include "Contents/Effects/EffectActor.h"
-#include "Contents/Effects/EffectParticle.h"
+#include "Contents/Effects/EffectPrim.h"
 #include "Contents/Effects/PartyEffect.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Render/Textures/TextureCache.h"
@@ -39,7 +39,7 @@ bool UpdatePartyEffect(
   }
 
   if (effect.unknown_0178 == 0) {
-    EffectParticle* particle = CreateEffectParticle(self, render, 15, 0, 0, 0, worldObjects);
+    CEffectPrim* particle = CreateEffectParticle(self, render, 15, 0, 0, 0, worldObjects);
     effect.unknown_11C84 = &particle->state;
     EffectPrimitiveState& state = *effect.unknown_11C84;
     state.lifetime = 9999;
