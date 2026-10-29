@@ -4379,6 +4379,117 @@ void CEffectPrim::RenderCrossPlanes(matrix& wtm) {
   }
 }
 
+// OFFSET: 0x00BC7580
+// FUNCTION: fn_19854
+void CEffectPrim::RenderGroundFog(matrix& wtm) {
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const float rx = slot.distance;
+    vector3d corners[4] = {
+      {rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]},
+      {rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]},
+      {rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]},
+      {rx * g_cosTable[315], 0.0f, rx * g_sinTable[315]},
+    };
+    this->Tei_TowardScreen(corners[0], corners[1], corners[2], corners[3], this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+
+    const vector3d* const points[4] = {&slot.vecBPre, &slot.vecBNow, &slot.vecTPre, &slot.vecTNow};
+    for (int copy = 0; copy < 4; ++copy) {
+      const vector3d& point = *points[copy];
+      const vector3d vec1{point.x + corners[0].x, point.y + corners[0].y, point.z + corners[0].z};
+      const vector3d vec2{point.x + corners[1].x, point.y + corners[1].y, point.z + corners[1].z};
+      const vector3d vec3{point.x + corners[2].x, point.y + corners[2].y, point.z + corners[2].z};
+      const vector3d vec4{point.x + corners[3].x, point.y + corners[3].y, point.z + corners[3].z};
+      const float y = vec1.y;
+      const char kind = slot.flag1[0];
+      int alpha;
+
+      if (kind == 15) {
+        alpha = 255 - 2 * slot.flag1[1 + copy];
+        if (alpha < 0) {
+          alpha = 0;
+        }
+        if (slot.flag1[5] == 7) {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (slot.flag1[5] == 8) {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
+        continue;
+      }
+
+      if (copy == 0 && kind == 11) {
+        alpha = 250;
+        if (-40.0f > y) {
+          alpha = static_cast<int>((y + 40.0f) * 25.0f + 250.0f);
+        }
+      } else if (kind <= 1 || kind == 11) {
+        alpha = 250;
+        if (-20.0f > y) {
+          alpha = static_cast<int>((y + 20.0f) * 25.0f + 250.0f);
+        }
+      } else if (kind == 14 || kind == 16) {
+        alpha = 100;
+        if (y > -10.0f) {
+          alpha = static_cast<int>(150.0f - (y + 10.0f) * 15.0f);
+        } else if (-40.0f > y) {
+          alpha = 0;
+        }
+      } else {
+        alpha = 50;
+        if (-4.0f > y) {
+          alpha = static_cast<int>((y + 4.0f) * 15.0f + 50.0f);
+        }
+        if (y > -0.5f) {
+          alpha = static_cast<int>(y * -100.0f);
+        }
+      }
+      if (alpha < 0) {
+        alpha = 0;
+      }
+
+      if (y > 0.0f) {
+        continue;
+      }
+
+      const short shade = static_cast<short>(alpha);
+      switch (kind) {
+      case 0:
+        this->RenderTeiRect(&rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 1:
+        this->RenderTeiRect(&rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 3:
+        this->RenderTeiRect(&rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 10:
+      case 14:
+        this->RenderTeiRect(&rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      case 11:
+        if (copy == 0) {
+          this->RenderTeiRect(&rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 155, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
+        break;
+      default:
+        this->RenderTeiRect(&rpCnt, shade, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        break;
+      }
+    }
+  }
+}
+
 // OFFSET: 0x00BC8E00
 // FUNCTION: fn_19855
 void CEffectPrim::Render3DCasting2(matrix& wtm) {
