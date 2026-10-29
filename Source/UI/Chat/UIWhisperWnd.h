@@ -17,6 +17,7 @@ public:
   void Paint() override;
   void Slot26(int x, int y) override;
   void Slot33(int x, int y) override;
+  void Slot43() override;
 
 protected:
   UIButtonContext* m_controls;

@@ -700,6 +700,7 @@
   "Source/UI/Window/WindowRetirement.cpp": 2,
   "Source/UI/WindowBackground.cpp": 2,
   "Source/UI/WindowLowerBorder.cpp": 2,
+  "Source/UI/WindowOverlay.cpp": 2,
   "Source/UI/WindowSprite.cpp": 2,
   "Source/UI/WindowTitlebar.cpp": 2,
   "Source/Utility/AES.cpp": 0,

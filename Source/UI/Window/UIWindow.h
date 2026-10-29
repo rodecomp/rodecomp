@@ -29,6 +29,7 @@ struct SpriteRleImage;
 struct SpriteFrameCell;
 class CBitmapRes;
 class CActRes;
+class TextureCache;
 struct WindowReplayRecorder;
 
 struct UIWindowContext {
@@ -41,6 +42,7 @@ struct UIWindowContext {
   WindowRegistration& registration;
   UIWindowMgr& windowMgr;
   std::unordered_set<UIWindow*>& deferredDeletion;
+  TextureCache& textures;
 
   void DestroyDeferredChildren();
 };
