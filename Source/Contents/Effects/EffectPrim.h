@@ -58,6 +58,15 @@ struct CEffectPrim : CRenderObject {
   void PrimSpinFade();
   void PrimExpandPulse();
   void ScaleByMaster(float& scale) const;
+  void PrimPulseRing();
+  void PrimHoverFollow();
+  void PrimGlowFollow();
+  bool PrimOrbitFade();
+  void PrimWaveHeights();
+  void PrimWaveHeightsSlow();
+  void PrimTextureFrames();
+  void PrimWaveSpin();
+  void PrimBreathingWave();
   void Render2DCircle();
   void RenderCrossPlanes(matrix& wtm);
   void RenderPyramid(matrix& wtm);
