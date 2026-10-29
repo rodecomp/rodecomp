@@ -252,6 +252,8 @@ std::string EquipmentResourceMgr::GetHeadPalName(int head, int job, int sex, int
       sexName = g_session.GetSexName(sex);
       result = FormatOwnedString("%s\\머리\\머리%s_%s_%d.pal", this->GetBodyRacePrefix(job).c_str(), headName.c_str(), sexName.c_str(), palette);
     }
+
+    return result;
   } else {
     g_session.NormalizeHead(&head, job);
 
@@ -263,9 +265,8 @@ std::string EquipmentResourceMgr::GetHeadPalName(int head, int job, int sex, int
 
     sexName = g_session.GetSexName(sex);
     result = FormatOwnedString("머리\\머리%s_%s_%d.pal", headName.c_str(), sexName.c_str(), palette);
+    return result;
   }
-
-  return result;
 }
 
 // OFFSET: 0x00DDCD50
