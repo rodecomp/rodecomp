@@ -1258,6 +1258,7 @@ PakKeyBlock48 PakMaskedKey48::Unmask() const {
 }
 
 // OFFSET: 0x00658FA0
+// FUNCTION: fn_05114
 int sub_658FA0() {
   return 8;
 }
