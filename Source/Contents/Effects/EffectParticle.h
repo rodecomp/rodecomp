@@ -37,6 +37,7 @@ struct EffectParticle : CRenderObject {
   void PrimSMA();
   void PrimShieldBoomerang3();
   bool PrimSuperAngel();
+  bool PrimGhost();
   void PrimThrowItem();
   bool PrimPeong();
   void PrimGI3();

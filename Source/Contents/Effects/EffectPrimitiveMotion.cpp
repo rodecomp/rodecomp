@@ -24,6 +24,15 @@
 
 namespace {
   // INLINED
+  __forceinline int Random(int range) {
+    if (range == 0) {
+      return 0;
+    }
+
+    return std::abs(rand() % range);
+  }
+
+  // INLINED
   vector3d Forward(float distance, const float* matrix) {
     const vector3d point{0.0f, 0.0f, distance};
     return {
@@ -1701,6 +1710,116 @@ bool EffectParticle::PrimSuperAngel() {
   this->render.position.z = this->state.offset.z;
   this->UpdateRecords();
   return true;
+}
+
+// OFFSET: 0x00BBE350
+// FUNCTION: fn_19811
+bool EffectParticle::PrimGhost() {
+  this->render.position = this->state.master->render.position;
+
+  EffectPrimitiveSlot& slot = this->state.slots[0];
+
+  if (slot.life == 1) {
+    ++slot.process;
+
+    if (slot.process <= 250) {
+      if (slot.height[1] > this->state.alpha) {
+        this->state.alpha += 1.0f;
+      }
+    }
+
+    if (slot.process >= 2600) {
+      int a = 360;
+      a /= slot.flag1[0];
+
+      if (slot.flag1[2] <= 1) {
+        if (slot.process % a == 0) {
+          ++slot.flag1[0];
+        }
+
+        slot.distance *= 1.002f;
+      }
+
+      if (slot.process % 15 == 0) {
+        if (slot.flag1[2] == 2) {
+          this->state.alpha -= 5.0f;
+        } else {
+          this->state.alpha -= 1.0f;
+        }
+
+        if (this->state.alpha < 0.0f) {
+          this->state.alpha = 0.0f;
+        }
+      }
+    }
+
+    slot.riseAngle += 3;
+
+    if (slot.riseAngle >= 360) {
+      slot.riseAngle -= 360;
+    }
+
+    slot.rotStart += slot.flag1[0];
+
+    if (slot.rotStart >= 360) {
+      slot.rotStart -= 360;
+    }
+
+    slot.vecBPre = slot.vecBNow;
+
+    if (slot.flag1[2] == 2) {
+      int angle = slot.rotStart * 2;
+
+      if (angle >= 360) {
+        angle -= 360;
+      }
+
+      slot.vecBPre.x += slot.distance * g_cosTable[slot.rotStart];
+      slot.vecBPre.z += slot.distance * g_sinTable[angle];
+    } else {
+      slot.vecBPre.x += slot.distance * g_cosTable[slot.rotStart];
+      slot.vecBPre.z += slot.distance * g_sinTable[slot.rotStart];
+    }
+
+    slot.vecBPre.y += slot.maxHeight * g_sinTable[slot.riseAngle];
+    this->state.offset = slot.vecBPre;
+
+    const CView* view = static_cast<CGameMode*>(g_world.ActiveGameMode())->camera;
+    int angle = slot.rotStart + static_cast<int>(view->camera.yaw);
+
+    if (angle < 0) {
+      angle += 360;
+    }
+
+    if (angle >= 360) {
+      angle -= 360;
+    }
+
+    if (slot.flag1[2] == 0) {
+      if (angle >= 180 && angle < 270) {
+        this->render.previousAnimation = 6;
+      } else if (angle >= 90 && angle < 180) {
+        this->render.previousAnimation = 0;
+      } else if (angle >= 0 && angle < 90) {
+        this->render.previousAnimation = 0;
+      } else {
+        this->render.previousAnimation = 6;
+      }
+    } else {
+      if (Random(999) == 1) {
+        this->render.previousAnimation = 1;
+      }
+
+      if (Random(1001) == 0) {
+        this->render.previousAnimation = 0;
+      }
+    }
+  }
+
+  this->render.position = this->state.offset;
+  this->state.UpdateColor();
+  this->UpdateRecords();
+  return this->AdvanceFrame();
 }
 
 // OFFSET: 0x00BC4730
