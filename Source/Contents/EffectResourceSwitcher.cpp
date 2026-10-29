@@ -57,10 +57,14 @@ int CEffect::Slot28() {
   return 0;
 }
 
+// OFFSET: 0x005A21A0
+
 // OFFSET: 0x005A21C0
 // FUNCTION: fn_03092
 void CEffect::Slot01() {
 }
+
+// OFFSET: 0x005A21D0
 
 // OFFSET: 0x005A22E0
 // FUNCTION: fn_03094
@@ -71,6 +75,10 @@ void CEffect::Slot12() {
 // FUNCTION: fn_03095
 void CEffect::Slot07() {
 }
+
+// OFFSET: 0x005A2300
+
+// OFFSET: 0x005A2330
 
 // OFFSET: 0x005A2430
 // FUNCTION: fn_03098
@@ -84,7 +92,7 @@ void CEffect::Slot00(int) {
 
 // OFFSET: 0x005A2450
 // FUNCTION: fn_03100
-void CEffect::Slot23(int) {
+void CEffect::Slot23(float) {
 }
 
 // OFFSET: 0x005A2460
@@ -129,12 +137,12 @@ void CEffect::Slot17(float) {
 
 // OFFSET: 0x005A24E0
 // FUNCTION: fn_03109
-void CEffect::Slot18(int) {
+void CEffect::Slot18(float) {
 }
 
 // OFFSET: 0x005A24F0
 // FUNCTION: fn_03110
-void CEffect::Slot19(int) {
+void CEffect::Slot19(float) {
 }
 
 // OFFSET: 0x005A2500
@@ -170,6 +178,46 @@ CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::GetInstance() {
 
   return s_instance;
 }
+
+// OFFSET: 0x006FFA00
+// FUNCTION: fn_06967
+bool CEZ2STREffect::IsFinished() {
+  if (!this->emitter) {
+    return false;
+  }
+
+  return this->emitter->currentFrame >= this->emitter->frameCount;
+}
+
+// OFFSET: 0x006FFBF0
+
+// OFFSET: 0x006FFEF0
+
+// OFFSET: 0x006FFF10
+
+// OFFSET: 0x006FFF30
+
+// OFFSET: 0x006FFF50
+
+// OFFSET: 0x006FFF80
+// FUNCTION: fn_06976
+void CEZ2STREffect::Slot32() {
+  this->alternateRender = 1;
+}
+
+// OFFSET: 0x006FFF90
+
+// OFFSET: 0x006FFFB0
+
+// OFFSET: 0x006FFFD0
+
+// OFFSET: 0x006FFFF0
+
+// OFFSET: 0x00700010
+
+// OFFSET: 0x00700030
+
+// OFFSET: 0x00700A10
 
 // OFFSET: 0x00700A90
 // FUNCTION: fn_06989
