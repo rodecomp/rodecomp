@@ -60,6 +60,7 @@ struct AdventureGuideEntry {
 // VTABLE: vt_00350
 class CAdventureGuideMgr {
 public:
+  static bool Create();
   static void Destroy();
 
   /* 0004 */ CLuaInstance m_lua;
@@ -77,6 +78,8 @@ public:
   CAdventureGuideMgr();
   virtual ~CAdventureGuideMgr();
 
+  void Init();
+  bool Load();
   void GetEpisodeList(std::list<AdventureGuideEpisode>& out);
   void GetContentsList(std::list<std::pair<int, AdventureGuideContents>>& out, int type, int id);
   void GetEntryList(std::list<std::pair<int, AdventureGuideEntry>>& out, int type, int id);

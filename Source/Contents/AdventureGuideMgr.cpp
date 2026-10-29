@@ -4,7 +4,109 @@
 
 #include <algorithm>
 #include <iterator>
+#include <new>
 #include <optional>
+#include <windows.h>
+
+int InsertIntro(lua_State*) {
+  return 2;
+}
+
+int InsertIntroContents(lua_State*) {
+  return 2;
+}
+
+int InsertEpisode(lua_State*) {
+  return 2;
+}
+
+int InsertEpisodeSubMenu(lua_State*) {
+  return 2;
+}
+
+int InsertEpisodeContents(lua_State*) {
+  return 2;
+}
+
+int InsertEpisodeReward(lua_State*) {
+  return 2;
+}
+
+int InsertMonster(lua_State*) {
+  return 2;
+}
+
+int InsertMonsterContents(lua_State*) {
+  return 2;
+}
+
+int InsertMonsterReward(lua_State*) {
+  return 2;
+}
+
+int InsertQuest(lua_State*) {
+  return 2;
+}
+
+int InsertQuestSubMenu(lua_State*) {
+  return 2;
+}
+
+int InsertQuestContents(lua_State*) {
+  return 2;
+}
+
+int InsertQuestReward(lua_State*) {
+  return 2;
+}
+
+int InsertDungeon(lua_State*) {
+  return 2;
+}
+
+int InsertDungeonSubMenu(lua_State*) {
+  return 2;
+}
+
+int InsertDungeonContents(lua_State*) {
+  return 2;
+}
+
+int InsertDungeonReward(lua_State*) {
+  return 2;
+}
+
+int InsertWeapon(lua_State*) {
+  return 2;
+}
+
+int InsertWeaponSubMenu(lua_State*) {
+  return 2;
+}
+
+int InsertWeaponContents(lua_State*) {
+  return 2;
+}
+
+int InsertWeaponObtainGuide(lua_State*) {
+  return 2;
+}
+
+int InsertArmor(lua_State*) {
+  return 2;
+}
+
+int InsertArmorSubMenu(lua_State*) {
+  return 2;
+}
+
+int InsertArmorContents(lua_State*) {
+  return 2;
+}
+
+int InsertArmorObtainGuide(lua_State*) {
+  return 2;
+}
 
 // GLOBAL: gl_24502
 CAdventureGuideMgr* g_adventureGuideMgr;
@@ -37,10 +139,17 @@ static std::optional<AdventureGuideContentsTable::mapped_type*> FindMapped(Adven
 CAdventureGuideMgr::CAdventureGuideMgr() : m_initialized(true) {
 }
 
+// OFFSET: 0x006611F0
+// FUNCTION: fn_05224
+void CAdventureGuideMgr::Init() {
+}
+
 // OFFSET: 0x006629D0
 // FUNCTION: fn_05227
 CAdventureGuideMgr::~CAdventureGuideMgr() {
 }
+
+// OFFSET: 0x006635C0
 
 // OFFSET: 0x00663680
 // FUNCTION: fn_05235
@@ -124,3 +233,5 @@ void CAdventureGuideMgr::GetEntryList(std::list<std::pair<int, AdventureGuideEnt
     return lhs.second.unknown_0004 < rhs.second.unknown_0004;
   });
 }
+
+// OFFSET: 0x00663BD0
