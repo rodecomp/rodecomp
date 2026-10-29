@@ -173,8 +173,12 @@ public:
 
 class CFootprintStrEffect : public CEffect {
 public:
+  void Slot04() override;
   bool Slot06() override;
   bool Slot33() override;
+
+  /* 00CC */ std::list<EZ2STREmitter*> emitters;
+  /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;
 };
 
 class CFromTheAbyssEffect : public CEffect {
@@ -218,6 +222,7 @@ public:
 class CRandomHitEffect : public CEffect {
 public:
   CRandomHitEffect();
+  void Slot03() override;
   void Slot04() override;
 
   /* 00CC */ bool active;
@@ -239,6 +244,7 @@ public:
 class CRichsCoinEffect : public CEffect {
 public:
   CRichsCoinEffect();
+  void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ std::vector<CParticle*> particles;
@@ -271,6 +277,7 @@ public:
   CServantWeaponNewEffect();
   bool Slot06() override;
   void Slot01() override;
+  void Slot04() override;
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::list<EZ2STREmitter*> trails;
@@ -282,6 +289,42 @@ public:
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ int unknown_00D4;
+};
+
+class CGaleStorm : public CEffect {
+public:
+  CGaleStorm();
+  void Slot04() override;
+  bool Slot06() override;
+
+  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00D8 */ int unknown_00D8;
+  /* 00DC */ int unknown_00DC;
+};
+
+class CJupitelThunderHit : public CEffect {
+public:
+  CJupitelThunderHit();
+  void Slot04() override;
+  bool Slot06() override;
+
+  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00D8 */ std::vector<EZ2STREmitter*> unknown_00D8;
+  /* 00E4 */ std::vector<EZ2STREmitter*> unknown_00E4;
+};
+
+class CNewCloudKillEffect : public CEffect {
+public:
+  CNewCloudKillEffect();
+  bool Slot06() override;
+
+  /* 00CC */ std::list<EZ2STREmitter*> unknown_00CC;
+  /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;
+  /* 00DC */ std::list<EZ2STREmitter*> unknown_00DC;
+  /* 00E4 */ std::list<EZ2STREmitter*> unknown_00E4;
+  /* 00EC */ std::list<EZ2STREmitter*> unknown_00EC;
+  /* 00F4 */ int unknown_00F4;
+  /* 00F8 */ int unknown_00F8;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -298,6 +341,7 @@ static_assert(sizeof(CFloralFlareRoad) == 0xDC);
 static_assert(offsetof(CFootprintEffect, stepDistance) == 0x108);
 static_assert(offsetof(CFootprintEffect, lastPosition) == 0x114);
 static_assert(sizeof(CFootprintEffect) == 0x128);
+static_assert(sizeof(CFootprintStrEffect) == 0xDC);
 static_assert(offsetof(CFullScreenEffect, loaded) == 0xD8);
 static_assert(sizeof(CFullScreenEffect) == 0xDC);
 static_assert(sizeof(CPetitioEffect) == 0xD8);
@@ -309,6 +353,12 @@ static_assert(sizeof(CSavageImpactEffect) == 0xDC);
 static_assert(sizeof(CServantWeaponEffect) == 0x144);
 static_assert(sizeof(CServantWeaponNewEffect) == 0xDC);
 static_assert(sizeof(CSevereRainStorm) == 0xD8);
+static_assert(sizeof(CGaleStorm) == 0xE0);
+static_assert(offsetof(CGaleStorm, unknown_00D8) == 0xD8);
+static_assert(sizeof(CJupitelThunderHit) == 0xF0);
+static_assert(offsetof(CJupitelThunderHit, unknown_00E4) == 0xE4);
+static_assert(sizeof(CNewCloudKillEffect) == 0xFC);
+static_assert(offsetof(CNewCloudKillEffect, unknown_00F4) == 0xF4);
 #endif
 
 #endif

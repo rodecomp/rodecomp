@@ -434,6 +434,18 @@ bool CFootprintStrEffect::Slot06() {
   return this->ActorExists();
 }
 
+// OFFSET: 0x00713F70
+// FUNCTION: fn_07253
+void CFootprintStrEffect::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    AsParticle(*it)->DrawGround(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
+
+  for (auto it = this->unknown_00D4.begin(); it != this->unknown_00D4.end(); ++it) {
+    AsParticle(*it)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
+}
+
 // OFFSET: 0x00715400
 // FUNCTION: fn_07266
 void CFromTheAbyssEffect::Slot01() {
@@ -512,6 +524,80 @@ void CFullScreenEffect::Slot04() {
   }
 }
 
+// OFFSET: 0x007176E0
+// FUNCTION: fn_07280
+CGaleStorm::CGaleStorm() : CEffect(1973), unknown_00D8(5), unknown_00DC(0) {
+}
+
+// OFFSET: 0x00717EB0
+// FUNCTION: fn_07286
+bool CGaleStorm::Slot06() {
+  if (this->frame > this->unknown_002C && this->emitters.empty()) {
+    return false;
+  }
+
+  return this->ActorExists();
+}
+
+// OFFSET: 0x00718040
+// FUNCTION: fn_07288
+void CGaleStorm::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    if (*it) {
+      AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
+}
+
+// OFFSET: 0x0071B8C0
+// FUNCTION: fn_07318
+CJupitelThunderHit::CJupitelThunderHit() : CEffect(-1) {
+  this->unknown_002C = 250;
+}
+
+// OFFSET: 0x0071C540
+// FUNCTION: fn_07324
+bool CJupitelThunderHit::Slot06() {
+  if (this->id == 1200) {
+    return this->ActorExists();
+  }
+
+  if (this->actor == 0) {
+    return true;
+  }
+
+  return this->frame < this->unknown_002C;
+}
+
+// OFFSET: 0x0071CB70
+// FUNCTION: fn_07326
+void CJupitelThunderHit::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    if (emitter && emitter->elapsed >= 0) {
+      AsParticle(emitter)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    }
+  }
+
+  for (auto it = this->unknown_00D8.begin(); it != this->unknown_00D8.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    if (emitter && emitter->elapsed >= 0) {
+      AsParticle(emitter)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    }
+  }
+}
+
+// OFFSET: 0x0071CCB0
+// FUNCTION: fn_07327
+CNewCloudKillEffect::CNewCloudKillEffect() : CEffect(1196) {
+}
+
+// OFFSET: 0x0071DEC0
+// FUNCTION: fn_07340
+bool CNewCloudKillEffect::Slot06() {
+  return this->ActorExists();
+}
+
 // OFFSET: 0x0071F5F0
 // FUNCTION: fn_07344
 CPetitioEffect::CPetitioEffect() : CEffect(1911) {
@@ -581,6 +667,21 @@ void CPneumaticusProcellaEffect::Slot04() {
 CRandomHitEffect::CRandomHitEffect() : CEffect(-1), active(true) {
 }
 
+// OFFSET: 0x007208A0
+// FUNCTION: fn_07362
+void CRandomHitEffect::Slot03() {
+  if (!this->emitter) {
+    return;
+  }
+
+  CEZ2STRParticle* particle = AsParticle(this->emitter);
+  particle->position.x = this->position[0] + this->emitter->offset.x;
+  particle->position.y = this->position[1] + this->emitter->offset.y;
+  particle->position.z = this->position[2] + this->emitter->offset.z;
+  particle->Process(0.0f, 0.0f, 0.0f);
+  this->active = particle->Process(0.0f, 0.0f, 0.0f);
+}
+
 // OFFSET: 0x00720940
 // FUNCTION: fn_07363
 void CRandomHitEffect::Slot04() {
@@ -641,6 +742,22 @@ bool CRichsCoinEffect::Slot06() {
   return this->ActorExists();
 }
 
+// OFFSET: 0x00721F80
+// FUNCTION: fn_07380
+void CRichsCoinEffect::Slot04() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    if (*it) {
+      (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    }
+  }
+
+  for (auto it = this->coins.begin(); it != this->coins.end(); ++it) {
+    if (*it) {
+      (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    }
+  }
+}
+
 // OFFSET: 0x00722070
 // FUNCTION: fn_07381
 CSavageImpactEffect::CSavageImpactEffect() : CEffect(1837), offset{} {
@@ -698,6 +815,18 @@ bool CServantWeaponEffect::Slot06() {
 // FUNCTION: fn_07403
 bool CServantWeaponNewEffect::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x00724F40
+// FUNCTION: fn_07408
+void CServantWeaponNewEffect::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    AsParticle(*it)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
+
+  for (auto it = this->trails.begin(); it != this->trails.end(); ++it) {
+    AsParticle(*it)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
 }
 
 // OFFSET: 0x00725130
