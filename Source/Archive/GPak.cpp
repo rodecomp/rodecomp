@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <random>
 #include <zlib.h>
 
 namespace {
@@ -869,6 +870,14 @@ HashSearchResult_655D70 HashTable_655340::sub_655D70(const short* key, unsigned 
   return result;
 }
 
+// OFFSET: 0x00656C70
+PakAuxiliary::PakAuxiliary() {
+}
+
+// OFFSET: 0x00657640
+PakAuxiliary::~PakAuxiliary() {
+}
+
 // INLINED
 CGPak::CGPak() : m_file(nullptr), m_version(0), m_entryCount(0), m_tableOffset(0), m_tableSize(0) {
   this->Reset();
@@ -1207,4 +1216,50 @@ struct PakIntrusiveLink {
 void PakIntrusiveLink::Unlink657820() {
   this->m_prev->m_next = this->m_next;
   this->m_next->m_prev = this->m_prev;
+}
+
+struct PakUniformRandom {
+  /* 0000 */ std::mt19937 m_engine;
+  /* 1388 */ std::uniform_int_distribution<int> m_distribution;
+
+  PakUniformRandom(int minimum, int maximum, unsigned int seed);
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(PakUniformRandom, m_distribution) == 0x1388);
+#endif
+
+// OFFSET: 0x00656B60
+PakUniformRandom::PakUniformRandom(int minimum, int maximum, unsigned int seed) : m_engine(seed), m_distribution(minimum, maximum) {
+}
+
+struct PakKeyBlock48 {
+  /* 0000 */ std::uint8_t bytes[48];
+};
+
+struct PakMaskedKey48 {
+  /* 0000 */ std::uint8_t mask[5];
+  /* 0005 */ std::uint8_t data[48];
+
+  PakKeyBlock48 Unmask() const;
+};
+
+// OFFSET: 0x00658E90
+PakKeyBlock48 PakMaskedKey48::Unmask() const {
+  PakKeyBlock48 result;
+  for (std::size_t i = 0; i < sizeof(result.bytes); ++i) {
+    result.bytes[i] = this->data[i] ^ this->mask[i & 3] ^ this->mask[(i & 3) + 1];
+  }
+  return result;
+}
+
+// OFFSET: 0x00658FA0
+int sub_658FA0() {
+  return 8;
+}
+
+// OFFSET: 0x00658FB0
+// FUNCTION: fn_05115
+int sub_658FB0() {
+  return 32;
 }

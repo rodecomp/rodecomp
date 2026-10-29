@@ -29,6 +29,9 @@ namespace myGPack {
 }
 
 struct PakAuxiliary {
+  PakAuxiliary();
+  ~PakAuxiliary();
+
   void Apply(const void* data, std::uint32_t size, const void* auxData, std::uint32_t auxSize);
 
   /* 0000 */ std::uint8_t unknown_0000[244];
