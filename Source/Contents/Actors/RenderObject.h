@@ -7,7 +7,9 @@
 
 #include <cstddef>
 
+struct SpriteFrameCell;
 struct SpriteQuad;
+struct SpriteRleImage;
 
 struct RenderBounds {
   /* 0000 */ float left;
@@ -61,6 +63,10 @@ public:
   void ScaleByPulse(float& scale) const;
   void ScaleByFadePulse(float& scale) const;
   void JitterBounds(float* output, const int* input, float offset, int spread, int base);
+  void DrawJitterTrail(
+    SpriteQuad& quad, const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw,
+    const std::uint32_t* palette, const SpriteRleImage* image, int blend, short shift
+  );
   void ApplySwing(int mode, int& x, int& y, int& outX, int& outY) const;
   void SetInstantValue(int key, std::int64_t value);
   std::int64_t GetInstant(int key) const;

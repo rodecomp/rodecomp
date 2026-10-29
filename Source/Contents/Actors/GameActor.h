@@ -144,6 +144,7 @@ public:
   void ClearUnknown037C(int value);
   int WeaponActionBase(int weaponType);
   int GetUnknown0404();
+  int MountHeightOffset();
 };
 
 int ShapeShiftJob(int form, int job);

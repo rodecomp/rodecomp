@@ -17,6 +17,7 @@
 #include "Contents/Jobs/JobInheritance.h"
 #include "Render/Renderer.h"
 #include "Render/SpriteQuad.h"
+#include "Resource/Models/GrannyModelResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
@@ -65,6 +66,42 @@ private:
 };
 
 }
+
+class C3dGrannyGameActor : public CGameActor {
+public:
+  void SetAction(unsigned animation, int motion, int repeat) override;
+  void Slot36() override;
+  int Slot37() override;
+
+  /* 0410 */ unsigned char unknown_0410[4];
+  /* 0414 */ C3dGrannyModelRes* model;
+  /* 0418 */ granny_model_instance* instance;
+  /* 041C */ unsigned char unknown_041C[0x110];
+  /* 052C */ int unknown_052C;
+  /* 0530 */ unsigned char unknown_0530[0x14];
+  /* 0544 */ int motion;
+  /* 0548 */ unsigned char unknown_0548[0x110];
+  /* 0658 */ granny_control* controls[20];
+};
+
+class CGrannyCorpse3d : public CGameObject {
+public:
+  bool OnProcess() override;
+
+  /* 0010 */ unsigned char unknown_0010[0x130];
+  /* 0140 */ int tick;
+  /* 0144 */ unsigned char unknown_0144[4];
+  /* 0148 */ unsigned char alpha;
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(C3dGrannyGameActor, model) == 0x414);
+static_assert(offsetof(C3dGrannyGameActor, unknown_052C) == 0x52C);
+static_assert(offsetof(C3dGrannyGameActor, motion) == 0x544);
+static_assert(offsetof(C3dGrannyGameActor, controls) == 0x658);
+static_assert(offsetof(CGrannyCorpse3d, tick) == 0x140);
+static_assert(offsetof(CGrannyCorpse3d, alpha) == 0x148);
+#endif
 
 // OFFSET: 0x00CA8730
 // FUNCTION: fn_20991
@@ -538,6 +575,8 @@ void CRenderObject::JitterBounds(float* output, const int* input, float offset, 
   output[1] = static_cast<float>(input[0]) + offset + jitter[2];
   output[3] = static_cast<float>(input[2]) + offset + jitter[3];
 }
+
+// OFFSET: 0x00CAA2E0
 
 // OFFSET: 0x00CAFEE0
 // FUNCTION: fn_21090
@@ -1409,8 +1448,25 @@ int CGameActor::WeaponActionBase(int weaponType) {
   return base;
 }
 
+// OFFSET: 0x00CABC80
+
 // OFFSET: 0x00CABD30
 // FUNCTION: fn_21036
 int CGameActor::GetUnknown0404() {
   return this->unknown_0404;
 }
+
+// OFFSET: 0x00CC5650
+// FUNCTION: fn_21176
+int C3dGrannyGameActor::Slot37() {
+  return 0;
+}
+
+// OFFSET: 0x00CC5D70
+// FUNCTION: fn_21181
+void C3dGrannyGameActor::Slot36() {
+}
+
+// OFFSET: 0x00CC5B00
+
+// OFFSET: 0x00CC7D50
