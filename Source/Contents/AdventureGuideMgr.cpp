@@ -9,8 +9,22 @@
 // GLOBAL: gl_24502
 CAdventureGuideMgr* g_adventureGuideMgr;
 
-template <class Map>
-static std::optional<typename Map::mapped_type*> FindMapped(Map& map, const typename Map::key_type& key) {
+using AdventureGuideEntryTable = std::map<int, std::map<int, AdventureGuideEntry>>;
+using AdventureGuideContentsTable = std::map<int, std::map<int, AdventureGuideContents>>;
+
+// OFFSET: 0x0065F680
+// FUNCTION: fn_05189
+static std::optional<AdventureGuideEntryTable::mapped_type*> FindMapped(AdventureGuideEntryTable& map, const int& key) {
+  auto it = map.find(key);
+  if (it == map.end()) {
+    return std::nullopt;
+  }
+  return &it->second;
+}
+
+// OFFSET: 0x0065F6D0
+// FUNCTION: fn_05190
+static std::optional<AdventureGuideContentsTable::mapped_type*> FindMapped(AdventureGuideContentsTable& map, const int& key) {
   auto it = map.find(key);
   if (it == map.end()) {
     return std::nullopt;
