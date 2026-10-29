@@ -84,7 +84,7 @@ public:
   /* 0074 */ int unknown_0074;
   /* 0078 */ int unknown_0078;
 
-  CNavi_Object();
+  __declspec(noinline) CNavi_Object();
   CNavi_Object(int type, int index, const char* name, const char* title, int cellX, int cellY, CNaviInfo* info);
   virtual ~CNavi_Object();
   virtual int GetId() const;
