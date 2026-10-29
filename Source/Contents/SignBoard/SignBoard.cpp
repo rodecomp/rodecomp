@@ -7,12 +7,20 @@
 #include "Resource/TextureNames.h"
 
 // OFFSET: 0x008213D0
+// FUNCTION: fn_10258
+C3DCooRendering::~C3DCooRendering() = default;
 
 // OFFSET: 0x00821440
+// FUNCTION: fn_10259
+CBmpObjWnd::~CBmpObjWnd() = default;
 
 // OFFSET: 0x008214C0
+// FUNCTION: fn_10260
+CIcon::~CIcon() = default;
 
 // OFFSET: 0x00821530
+// FUNCTION: fn_10261
+CSignBoardWnd::~CSignBoardWnd() = default;
 
 // OFFSET: 0x00821B40
 // FUNCTION: fn_10263
