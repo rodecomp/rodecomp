@@ -13,6 +13,15 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
 }
 
 // OFFSET: 0x00A4FE70
+// FUNCTION: fn_16224
+void CUIOngoingQuestInfo::Slot53() {
+  this->unknown_00B4 = 0;
+  this->m_resolveSkin = true;
+  this->Resize(342, 412);
+  this->Move(0, 0);
+  this->Slot15(this->geometry.width, this->geometry.height);
+  this->Slot16();
+}
 
 // OFFSET: 0x00A55650
 // FUNCTION: fn_16300

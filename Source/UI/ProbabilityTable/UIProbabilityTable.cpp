@@ -10,8 +10,72 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Paint
 }
 
 // OFFSET: 0x00A4C000
+// FUNCTION: fn_16121
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Slot35(int value) {
+  if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
+    this->scrollBar->Slot35(value);
+  } else if (this->parent) {
+    this->parent->Slot35(value);
+  }
+}
 
 // OFFSET: 0x00A4C580
+// FUNCTION: fn_16125
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnScroll(int position) {
+  auto it = this->items.begin();
+  if (it == this->items.end()) {
+    return;
+  }
+  if (this->data.size() == 0) {
+    for (; it != this->items.end(); ++it) {
+      (*it)->index = -1;
+      (*it)->Show(0);
+    }
+    return;
+  }
+
+  const int first = (*it)->index;
+  unsigned int row = position / this->rowHeight;
+  if (first != -1) {
+    if (first < static_cast<int>(row)) {
+      if (row - first < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
+      }
+    } else if (first > static_cast<int>(row)) {
+      if (first - row < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      }
+    }
+  }
+
+  it = this->items.begin();
+  for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
+    if (it == this->items.end() || row >= this->data.size()) {
+      break;
+    }
+    ProbabilityTable::CUIItem* item = *it;
+    if (item) {
+      if (this->rebind || row != static_cast<unsigned int>(item->index)) {
+        item->index = row;
+        if (this->binder) {
+          auto node = this->data.begin();
+          std::advance(node, static_cast<int>(row));
+          this->binder(item, *node);
+        }
+      }
+      item->SetSelected(row == this->selected);
+      item->Move(this->itemX, y);
+      item->Show(1);
+    }
+  }
+
+  for (; it != this->items.end(); ++it) {
+    (*it)->index = -1;
+    (*it)->Show(0);
+  }
+}
 
 // OFFSET: 0x00A4DC90
 // FUNCTION: fn_16195
@@ -38,6 +102,19 @@ void CUIItem::Paint() {
 }
 
 // OFFSET: 0x00A4E180
+// FUNCTION: fn_16201
+void CUIProbabilityTable::Paint() {
+  DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xFFFFFFFF);
+  DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xFF808080);
+  this->FillRegion(10, 60, 312, 25, 0xFF99E5FF);
+  this->FillRegion(10, 60, 312, 1, 0xFFCEADA5);
+  for (int y = 84; y <= 444; y += 30) {
+    this->FillRegion(10, y, 312, 1, 0xFFCEADA5);
+  }
+  this->FillRegion(10, 60, 1, 385, 0xFFCEADA5);
+  this->FillRegion(242, 60, 1, 385, 0xFFCEADA5);
+  this->FillRegion(321, 60, 1, 385, 0xFFCEADA5);
+}
 
 namespace ProbabilityTable {
 
