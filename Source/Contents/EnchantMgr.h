@@ -21,8 +21,14 @@ struct EnchantKey {
   }
 };
 
+struct EnchantOptionInfo {
+  /* 0000 */ int64_t unknown_0000;
+  /* 0008 */ uint8_t unknown_0008[0x28];
+};
+
 struct EnchantInfo {
-  /* 0000 */ uint8_t unknown_0000[0x68];
+  /* 0000 */ uint8_t unknown_0000[0x60];
+  /* 0060 */ std::map<uint32_t, EnchantOptionInfo> options;
 };
 
 class CEnchantMgr : public Singleton<CEnchantMgr> {
@@ -48,6 +54,7 @@ public:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EnchantKey) == 8);
 static_assert(sizeof(EnchantInfo) == 0x68);
+static_assert(offsetof(EnchantInfo, options) == 0x60);
 static_assert(sizeof(CEnchantMgr) == 0x38);
 static_assert(offsetof(CEnchantMgr, m_enchants) == 0x04);
 static_assert(offsetof(CEnchantMgr, m_lua) == 0x0C);

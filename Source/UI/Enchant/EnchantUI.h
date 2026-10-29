@@ -5,7 +5,11 @@
 #include "UI/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 
+#include <optional>
+
 class CUITextViewer;
+struct EnchantInfo;
+struct EnchantOptionInfo;
 
 class CUIEnchantUI : public CUIFrameWnd {
 public:
@@ -51,7 +55,9 @@ public:
 
 class CUIEnchantPage : public CUIControl {
 public:
-  /* 0080 */ unsigned char unknown_0080[0x30];
+  /* 0080 */ unsigned char unknown_0080[0x24];
+  /* 00A4 */ EnchantInfo* enchantInfo;
+  /* 00A8 */ unsigned char unknown_00A8[0x8];
   /* 00B0 */ int unknown_00B0;
 
   virtual void Slot54(int argument1, int argument2);
@@ -63,6 +69,7 @@ public:
   virtual void Slot59(int value);
 
   CUIIngredient* CreateIngredient();
+  std::optional<EnchantOptionInfo*> FindOption(uint32_t key);
 };
 
 class CUIUpgradeEnchantPage : public CUIEnchantPage {

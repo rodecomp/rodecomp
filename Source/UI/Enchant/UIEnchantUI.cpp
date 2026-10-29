@@ -1,4 +1,5 @@
 #include "UI/Enchant/EnchantUI.h"
+#include "Contents/EnchantMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Text/UITextViewerControl.h"
@@ -44,6 +45,20 @@ void CUIUpgradeEnchantPage::Slot58(int value) {
     mainPage->firstPage->Slot59(value);
     mainPage->secondPage->Slot59(value);
   }
+}
+
+// OFFSET: 0x00A053E0
+// FUNCTION: fn_14974
+std::optional<EnchantOptionInfo*> CUIEnchantPage::FindOption(uint32_t key) {
+  if (this->enchantInfo == nullptr) {
+    return std::nullopt;
+  }
+
+  auto it = this->enchantInfo->options.find(key);
+  if (it != this->enchantInfo->options.end()) {
+    return &it->second;
+  }
+  return std::nullopt;
 }
 
 // OFFSET: 0x00A05CE0
