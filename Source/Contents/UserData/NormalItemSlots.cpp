@@ -1,4 +1,5 @@
 #include "Contents/UserData/NormalItemSlots.h"
+#include "Client/Session.h"
 #include "Render/Renderer.h"
 
 #include <json/value.h>
@@ -120,6 +121,26 @@ bool PreviewEquipWndInfo::IsValid() const {
 void AchTracingWndInfo::Reset() {
   this->x = g_renderer->viewport.width - 350;
   this->y = (g_renderer->viewport.height - 150) / 2;
+}
+
+// OFFSET: 0x009A63C0
+// FUNCTION: fn_13678
+void BasicInfoWndInfo::Reset() {
+  this->x = 0;
+  this->y = 0;
+  this->width = 220;
+  this->height = 134;
+  if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) == true) {
+    if (this->unknown_0012 == 1) {
+      this->height = 149;
+    } else {
+      this->height = 71;
+    }
+    this->unknown_0010 = 0;
+  } else {
+    this->height = this->unknown_0012 == 1 ? 134 : 55;
+    this->unknown_0010 = 0;
+  }
 }
 
 // OFFSET: 0x009A6430

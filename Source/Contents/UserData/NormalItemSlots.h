@@ -84,6 +84,15 @@ struct AchTracingWndInfo : WindowPlacement {
   void Reset();
 };
 
+struct BasicInfoWndInfo : WindowPlacement {
+  /* 0010 */ unsigned char unknown_0010;
+  /* 0011 */ unsigned char unknown_0011;
+  /* 0012 */ unsigned char unknown_0012;
+  /* 0013 */ unsigned char unknown_0013;
+
+  void Reset();
+};
+
 struct CashEmotionListWndInfo : WindowPlacement {
   void Reset();
 };
@@ -306,6 +315,7 @@ struct SayDialogWndInfo : WindowPlacement {
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(WindowPlacement, height) == 0x000C);
 static_assert(sizeof(WindowPlacement) == 0x10);
+static_assert(sizeof(BasicInfoWndInfo) == 0x14);
 static_assert(sizeof(EquipWndInfo) == 0x18);
 static_assert(sizeof(ItemStoreFindListInfo) == 0x14);
 static_assert(sizeof(ItemWndInfo) == 0x28);
