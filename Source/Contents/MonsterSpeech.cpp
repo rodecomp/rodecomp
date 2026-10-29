@@ -73,7 +73,7 @@ const char* monsterSpeechReplacements[26] = {
 
 // OFFSET: 0x00E12870
 // FUNCTION: fn_23818
-void FormatMonsterSpeech(char* text, char* output, std::uint32_t aid, int feminine) {
+void CSession::FormatMonsterSpeech(char* text, char* output, std::uint32_t aid, int feminine) {
   char* source = *text == '\t' ? text + 1 : text;
   std::sprintf(output, source);
 
