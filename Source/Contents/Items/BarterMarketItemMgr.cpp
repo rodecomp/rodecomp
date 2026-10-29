@@ -1,6 +1,7 @@
 #include <cstddef>
 #include <list>
 #include <map>
+#include <vector>
 
 struct BarterTreeNode {
   /* 0000 */ BarterTreeNode* left;
@@ -162,3 +163,52 @@ float CBarterMarketItemMgr::GetTotalAmount()
   }
   return total;
 }
+
+struct BarterMarketEntry {
+  /* 0000 */ int field_0;
+  /* 0004 */ int value;
+  /* 0008 */ int field_8[9];
+  /* 002C */ float factor;
+  /* 0030 */ int field_30;
+  /* 0034 */ int id;
+  /* 0038 */ int field_38[5];
+};
+
+class CExpandedBarterMarketItemMgr {
+public:
+  std::vector<BarterMarketEntry>* GetItems();
+  int GetEntryCount();
+  int GetValueById(int id);
+  int* GetField24();
+  float GetWeightedTotal();
+
+  /* 0000 */ int field_0[3];
+  /* 000C */ std::vector<BarterMarketEntry> items;
+  /* 0018 */ std::vector<BarterMarketEntry> entries;
+  /* 0024 */ int field_24;
+};
+
+// OFFSET: 0x005DA3A0
+// FUNCTION: fn_03764
+std::vector<BarterMarketEntry>* CExpandedBarterMarketItemMgr::GetItems()
+{
+  return &this->items;
+}
+
+// OFFSET: 0x005DA620
+// FUNCTION: fn_03770
+int CExpandedBarterMarketItemMgr::GetEntryCount()
+{
+  return (int)this->entries.size();
+}
+
+// OFFSET: 0x005DA640
+
+// OFFSET: 0x005DA670
+// FUNCTION: fn_03772
+int* CExpandedBarterMarketItemMgr::GetField24()
+{
+  return &this->field_24;
+}
+
+// OFFSET: 0x005DA680
