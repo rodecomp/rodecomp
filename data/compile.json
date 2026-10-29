@@ -285,6 +285,7 @@
   "Source/Contents/Actors/AttackMotion.cpp": 4,
   "Source/Contents/Actors/GameObject.cpp": 4,
   "Source/Contents/Actors/GroundScope.cpp": 4,
+  "Source/Contents/Actors/Item.cpp": 4,
   "Source/Contents/Actors/MercenaryAI.cpp": 4,
   "Source/Contents/Actors/MousePointer.cpp": 4,
   "Source/Contents/Actors/Player.cpp": 4,
