@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_QUEST_UIRENEWQUESTUI_H
 #define RAGNAROK_SOURCE_UI_QUEST_UIRENEWQUESTUI_H
 
+#include "UI/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UIFrameWnd.h"
@@ -27,9 +28,10 @@ public:
 };
 }
 
-class CUIRenewQuestUI : public UIFrameWnd {
+class CUIRenewQuestUI : public CUIFrameWnd {
 public:
   void Paint() override;
+  virtual void Slot53(int value);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -1,4 +1,5 @@
 #include "UI/Quest/UIRenewQuestUI.h"
+#include "Render/Renderer.h"
 #include "Utility/Cipher/XorBytes.h"
 
 #include <cstddef>
@@ -579,4 +580,29 @@ void RenewQuestUI::CUIQuestItem::Slot48() {
   this->pressed = 0;
   UIWindow::Move(this->baseX, this->baseY);
   this->Invalidate();
+}
+
+// OFFSET: 0x00A5C170
+// FUNCTION: fn_16431
+template <>
+void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::ClearItems() {
+  for (RenewQuestUI::CUIQuestItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x00A5C200
+// FUNCTION: fn_16432
+void CUIRenewQuestUI::Slot53(int value) {
+  this->unknown_00B4 = 1;
+  this->m_resolveSkin = true;
+  this->Resize(381, 466);
+  this->Move(
+    g_renderer->viewport.centerX - this->geometry.width / 2, g_renderer->viewport.centerY - this->geometry.height / 2
+  );
+  this->Slot15(this->geometry.width, this->geometry.height);
+  this->Slot16();
 }
