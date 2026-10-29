@@ -72,6 +72,12 @@ struct ReplaySection {
 };
 #pragma pack(pop)
 
+struct ReplayTime {
+  /* 0000 */ std::uint16_t hours;
+  /* 0002 */ char minutes;
+  /* 0003 */ char seconds;
+};
+
 class Replay {
 public:
   static Replay& Instance();
@@ -119,6 +125,37 @@ public:
   void UpdateDuration();
   bool WriteFinalSection();
   bool RecordPacket(const std::vector<unsigned char>& packet, int event, std::uint32_t delay);
+  bool MatchesService(int mode) const;
+  int AdvanceFrame();
+  void ResetPlayback();
+  bool Cipher(std::uint32_t bytes, void* data);
+  void CloseFile();
+  ReplayTime Duration() const;
+  int FindSection(int id) const;
+  int SpeedLevel() const;
+  void ResetFile();
+  std::vector<unsigned char> ReadSection(int id);
+  bool ReadRecord(unsigned char* buffer, std::uint16_t& id, bool force);
+  bool AllowsEvent(int event) const;
+  void Rewind();
+};
+
+struct ReplayFileEntry {
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ char name[0x104];
+};
+
+class ReplayFileList {
+public:
+  /* 0000 */ int selected;
+  /* 0004 */ std::vector<ReplayFileEntry> files;
+  /* 0010 */ Replay* replay;
+  /* 0014 */ char path[0x104];
+  /* 0118 */ bool pathEnabled;
+
+  const char* FileName(int index) const;
+  char* SetPath(const char* value);
+  bool Select(int index);
 };
 
 std::vector<unsigned char> BuildReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes);
@@ -132,6 +169,10 @@ static_assert(sizeof(ReplayHeader) == 0xAA);
 static_assert(offsetof(ReplayHeader, options) == 0x88);
 static_assert(offsetof(ReplayHeader, closingSignature) == 0xA6);
 static_assert(sizeof(ReplaySection) == 0xA);
+static_assert(sizeof(ReplayTime) == 0x4);
+static_assert(sizeof(ReplayFileEntry) == 0x108);
+static_assert(offsetof(ReplayFileList, path) == 0x14);
+static_assert(offsetof(ReplayFileList, pathEnabled) == 0x118);
 static_assert(offsetof(ReplaySection, bytes) == 0x2);
 static_assert(offsetof(ReplaySection, fileOffset) == 0x6);
 static_assert(sizeof(Replay) == 0x1FC);
