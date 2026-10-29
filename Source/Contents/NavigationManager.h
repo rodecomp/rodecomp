@@ -202,6 +202,7 @@ public:
 
 struct NavigationTarget {
   NavigationTarget() : type(-1), object(nullptr), x(-1), y(-1) {}
+  NavigationTarget(int type, void* object);
 
   // INLINED
   NavigationTarget(int type, void* object, int x, int y, std::string name) {
@@ -288,6 +289,7 @@ public:
   NaviCell ParseCell(const char* text);
   std::vector<char> WriteTarget(NavigationTarget target);
   std::vector<char> WriteObject(CNavi_Object* object);
+  CNavi_Link* ReadObject(const char* record);
   void ClearSavedTarget();
   void ClearCurrentObject();
   void ClearStates();

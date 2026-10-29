@@ -461,6 +461,62 @@ std::vector<char> CNavigationManager::WriteObject(CNavi_Object* object) {
   return buffer;
 }
 
+// OFFSET: 0x00B92A70
+// FUNCTION: fn_19554
+NavigationTarget::NavigationTarget(int type, void* object) {
+  this->type = type;
+  this->object = object;
+  this->x = -1;
+  this->y = -1;
+}
+
+// OFFSET: 0x00B93DE0
+// FUNCTION: fn_19566
+CNavi_Link* CNavigationManager::ReadObject(const char* record) {
+  const NaviObjectRecord* header = reinterpret_cast<const NaviObjectRecord*>(record);
+  const int type = header->type;
+  if (static_cast<unsigned int>(type - 199) > 100) {
+    return nullptr;
+  }
+
+  const int index = header->index;
+  const int cellX = header->cellX;
+  const int cellY = header->cellY;
+
+  std::size_t offset = 0x12;
+  int length = header->nameLength;
+  std::string name(record + offset, record + offset + length);
+  offset += length;
+
+  length = *reinterpret_cast<const std::int16_t*>(record + offset);
+  offset += 2;
+  std::string title(record + offset, record + offset + length);
+  offset += length;
+
+  length = *reinterpret_cast<const std::int16_t*>(record + offset);
+  offset += 2;
+  std::string map(record + offset, record + offset + length);
+  offset += length;
+
+  const int unknown80 = *reinterpret_cast<const int*>(record + offset);
+  const int unknown84 = *reinterpret_cast<const int*>(record + offset + 4);
+  length = *reinterpret_cast<const std::int16_t*>(record + offset + 8);
+  offset += 10;
+  std::string linkedMap(record + offset, record + offset + length);
+
+  CNaviInfo* info = this->FindObject(map.c_str());
+  if (info == nullptr) {
+    return nullptr;
+  }
+  CNaviInfo* linkedInfo = this->FindObject(linkedMap.c_str());
+  if (linkedInfo == nullptr) {
+    return nullptr;
+  }
+  return info->FindMatchingLink(
+    CNavi_Link(type, index, name.c_str(), title.c_str(), cellX, cellY, info, linkedInfo, unknown80, unknown84)
+  );
+}
+
 // OFFSET: 0x00B950B0
 // FUNCTION: fn_19571
 void CNavigationManager::ClearSavedTarget() {
