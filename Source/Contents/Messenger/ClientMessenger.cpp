@@ -1347,3 +1347,44 @@ void MessengerIntrusiveLink::Unlink6A6200() {
   this->m_prev->m_next = this->m_next;
   this->m_next->m_prev = this->m_prev;
 }
+
+struct ClientMessengerSelf {
+  ClientMessengerSelf* Self68D5B0();
+  ClientMessengerSelf* Self68D5C0();
+  ClientMessengerSelf* Self69ACB0();
+  ClientMessengerSelf* Self69ACC0();
+};
+
+// OFFSET: 0x0068D5B0
+// FUNCTION: fn_05647
+ClientMessengerSelf* ClientMessengerSelf::Self68D5B0() {
+  return this;
+}
+
+// OFFSET: 0x0068D5C0
+// FUNCTION: fn_05648
+ClientMessengerSelf* ClientMessengerSelf::Self68D5C0() {
+  return this;
+}
+
+// OFFSET: 0x0069ACB0
+// FUNCTION: fn_05786
+ClientMessengerSelf* ClientMessengerSelf::Self69ACB0() {
+  return this;
+}
+
+// OFFSET: 0x0069ACC0
+// FUNCTION: fn_05787
+ClientMessengerSelf* ClientMessengerSelf::Self69ACC0() {
+  return this;
+}
+
+// OFFSET: 0x0068DAF0
+// FUNCTION: fn_05656
+void sub_68DAF0() {
+}
+
+// OFFSET: 0x006A2170
+// FUNCTION: fn_06015
+void sub_6A2170() {
+}
