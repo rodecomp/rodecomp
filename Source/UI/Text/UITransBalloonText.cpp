@@ -128,3 +128,5 @@ void UITransBalloonText::Paint() {
     y = (y + (lineHeight + 4));
   }
 }
+
+// OFFSET: 0x0085CBA0

@@ -1,4 +1,9 @@
 #include "Client/Input/Language.h"
+#include "Contents/SkinMgr.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
+#include "Resource/TextureNames.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Edit/UIEditCtrl.h"
 
@@ -101,3 +106,25 @@ int UIEditCtrl5::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
   return 0;
 }
+
+// OFFSET: 0x0085CBF0
+
+// OFFSET: 0x0085FF60
+
+// OFFSET: 0x0085BB60
+
+// OFFSET: 0x0085EB50
+
+// OFFSET: 0x0085CDE0
+
+// OFFSET: 0x0085FFC0
+
+// OFFSET: 0x0085E3D0
+// FUNCTION: fn_10827
+void UIEditCtrlVarId::Slot24(int) {
+  this->Synchronize();
+  this->Invalidate();
+  this->SendMsg(this, 0, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x0085FFA0

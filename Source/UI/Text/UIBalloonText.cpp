@@ -1,7 +1,10 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
+#include "Resource/EmblemResource.h"
+#include "Resource/ResourceMgr.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Text/UIBalloonText.h"
+#include "UI/Text/UINameBalloonText.h"
 
 #include <cstring>
 
@@ -124,3 +127,5 @@ void UIBalloonText::Paint() {
     y = (y + (height + 4));
   }
 }
+
+// OFFSET: 0x0085FC90

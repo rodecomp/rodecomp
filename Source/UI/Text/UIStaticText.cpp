@@ -113,3 +113,5 @@ void UIStaticText::Slot33(int x, int y) {
 void UIStaticText::Slot35(int value) {
   this->parent->Slot35(value);
 }
+
+// OFFSET: 0x0085DCA0

@@ -1,0 +1,19 @@
+#ifndef RAGNAROK_SOURCE_UI_WINDOW_UIEMBLEMWND_H
+#define RAGNAROK_SOURCE_UI_WINDOW_UIEMBLEMWND_H
+
+#include "UI/Window/UIWindow.h"
+
+#include <cstdint>
+
+class UIEmblemWnd : public UIWindow {
+public:
+  void Slot19() override;
+  void Paint() override;
+
+  /* 007C */ int screenX;
+  /* 0080 */ int screenY;
+  /* 0084 */ std::uint32_t aid;
+  /* 0088 */ std::uint32_t guildId;
+};
+
+#endif

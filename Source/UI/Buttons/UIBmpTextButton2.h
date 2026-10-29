@@ -20,6 +20,7 @@ struct BmpTextButtonLabel {
 
 class UIBmpTextButton2 : public UIBitmapButton {
 public:
+  void Paint() override;
   void DrawLabels();
 
   /* 0120 */ std::vector<BmpTextButtonLabel> labels;

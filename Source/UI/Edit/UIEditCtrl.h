@@ -122,12 +122,14 @@ struct UIEditCtrl3Table {
 class UIEditCtrl3 : public UIEditCtrl2 {
 public:
   UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
+  void Paint() override;
+  void Slot35(int value) override;
 
   void PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int& unused);
 
   /* 011C */ std::list<std::vector<UIItemTagButton*>> entries;
   /* 0124 */ std::vector<int> unknown_0124;
-  /* 0130 */ int unknown_0130;
+  /* 0130 */ UIWindow* unknown_0130;
   /* 0134 */ unsigned char unknown_0134;
   /* 0138 */ int unknown_0138;
   /* 013C */ int unknown_013C;
@@ -170,6 +172,34 @@ public:
   UIEditCtrl5(UIWindowContext& windows, UIEditContext& edit);
   ~UIEditCtrl5() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+};
+
+class UIBitmapEditCtrl : public UIEditCtrl {
+public:
+  void Paint() override;
+
+  /* 011C */ std::string bitmapName;
+};
+
+class UIChatEditCtrl : public UIEditCtrl {
+public:
+  void Slot25(int x, int y) override;
+};
+
+class UIEditCtrl_OldList : public UIEditCtrl {
+public:
+  void Paint() override;
+  void Slot35(int value) override;
+
+  /* 011C */ std::string bitmapName;
+  /* 0134 */ std::vector<std::string> history;
+  /* 0140 */ int historyIndex;
+};
+
+class UIEditCtrlVarId : public UIEditCtrl {
+public:
+  void Slot24(int retained) override;
+  void Slot35(int value) override;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

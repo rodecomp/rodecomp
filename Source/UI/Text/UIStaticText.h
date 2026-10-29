@@ -38,8 +38,15 @@ public:
   /* 00A8 */ std::string text;
   /* 00C0 */ std::string tooltip;
 
-private:
+protected:
   UIButtonContext* m_controls;
+};
+
+class UIStaticText3 : public UIStaticText {
+public:
+  void Paint() override;
+
+  /* 00D8 */ int textX;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

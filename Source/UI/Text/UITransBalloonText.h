@@ -44,6 +44,7 @@ class UIColorTransBalloonText : public UITransBalloonText {
 public:
   // INLINED
   UIColorTransBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UITransBalloonText(windows, text) {}
+  void Paint() override;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
