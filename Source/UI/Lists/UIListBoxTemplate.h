@@ -136,9 +136,11 @@ public:
   // OFFSET: 0x00A01E70
   // OFFSET: 0x00A01E80
   // OFFSET: 0x00A0CE60
+  // OFFSET: 0x00A63890
   // FUNCTION: fn_14832
   // FUNCTION: fn_14833
   // FUNCTION: fn_15037
+  // FUNCTION: fn_16437
   void Paint() override {
     this->ClearSurface(0xFFFF00FF);
   }
@@ -146,6 +148,7 @@ public:
   // OFFSET: 0x00A01E90
   // OFFSET: 0x00A01ED0
   // OFFSET: 0x00A0CE70
+  // OFFSET: 0x00A638A0
   // FUNCTION: fn_15038
   void Slot35(int value) override {
     if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
