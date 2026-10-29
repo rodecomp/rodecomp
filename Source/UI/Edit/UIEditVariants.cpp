@@ -80,6 +80,12 @@ void UIEditCtrl4::PaintText() {
   this->PaintTextWithPolicy(true, &this->placeholder, this->placeholderColor, this->placeholderEnabled == 1);
 }
 
+// OFFSET: 0x00869800
+// FUNCTION: fn_10972
+void UIEditCtrl4::SetPlaceholderEnabled(bool enabled) {
+  this->placeholderEnabled = enabled;
+}
+
 // OFFSET: 0x0084F7B0
 // FUNCTION: fn_10661
 UIEditCtrl5::UIEditCtrl5(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl4(windows, edit) {

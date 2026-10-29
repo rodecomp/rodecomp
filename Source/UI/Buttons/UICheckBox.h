@@ -16,6 +16,7 @@ public:
   void SetChecked(int value);
   void SetImages(const char* checked, const char* unchecked, const char* text);
   void SetTooltip(const char* text);
+  void SetHidden(bool hidden);
 
 protected:
   /* 007C */ int m_disabled;

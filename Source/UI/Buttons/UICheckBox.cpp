@@ -75,6 +75,8 @@ void UICheckBox::SetChecked(int value) {
   this->Notify();
 }
 
+// OFFSET: 0x0086AF70
+
 // OFFSET: 0x0085EB90
 // FUNCTION: fn_10841
 void UICheckBox::Slot25(int, int) {

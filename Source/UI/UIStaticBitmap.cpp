@@ -22,6 +22,8 @@ void UIStaticBitmap::SetBitmap(const char* name) {
   this->geometry.height = resource->image.height;
 }
 
+// OFFSET: 0x00869790
+
 // OFFSET: 0x0085DA90
 // FUNCTION: fn_10817
 void UIStaticBitmap::Paint() {

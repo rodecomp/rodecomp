@@ -22,6 +22,7 @@ public:
   void Slot33(int x, int y) override;
   void Slot35(int value) override;
   void SetBitmap(const char* name);
+  void SetTooltip(const char* text);
 
   /* 007C */ std::string bitmap;
   /* 0094 */ std::string tooltip;

@@ -161,6 +161,7 @@ public:
   ~UIEditCtrl4() override;
   void Slot23() override;
   void PaintText() override;
+  void SetPlaceholderEnabled(bool enabled);
 
   /* 011C */ std::uint32_t placeholderColor;
   /* 0120 */ std::string placeholder;
