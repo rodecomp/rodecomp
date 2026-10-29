@@ -326,3 +326,27 @@ ITEM_INFO CSession::GetItem1748At(int index) const {
 
   return ITEM_INFO(0);
 }
+
+// OFFSET: 0x00DF9C50
+// FUNCTION: fn_23563
+bool CSession::HasItem1718(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1718) {
+    if (item.unknown_0000[1] == id) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00DF9C80
+// FUNCTION: fn_23564
+bool CSession::HasExchangeItem(std::uint32_t id) const {
+  for (int index = 0; index < 10; ++index) {
+    if (this->m_exchangeItems[index].quantity != 0 && this->m_exchangeItems[index].unknown_0000[1] == id) {
+      return true;
+    }
+  }
+
+  return false;
+}

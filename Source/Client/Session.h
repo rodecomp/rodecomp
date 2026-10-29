@@ -133,7 +133,8 @@ public:
   /* 16F0 */ int m_zeny;
   /* 16F4 */ unsigned char unknown_16F4[0x1C];
   /* 1710 */ std::list<ITEM_INFO> m_inventoryItems;
-  /* 1718 */ unsigned char unknown_1718[0x18];
+  /* 1718 */ std::list<ITEM_INFO> unknown_1718;
+  /* 1720 */ unsigned char unknown_1720[0x10];
   /* 1730 */ std::list<ITEM_INFO> unknown_1730;
   /* 1738 */ std::list<ITEM_INFO> unknown_1738;
   /* 1740 */ std::list<ITEM_INFO> unknown_1740;
@@ -312,6 +313,8 @@ public:
   ITEM_INFO FindItem1770(std::uint32_t id) const;
   long long GetItem1760Total() const;
   ITEM_INFO GetItem1748At(int index) const;
+  bool HasItem1718(std::uint32_t id) const;
+  bool HasExchangeItem(std::uint32_t id) const;
   int CountItems5C68() const;
   void SplitDate(__time32_t time, std::uint16_t& year, std::uint16_t& month, std::uint16_t& day) const;
   int GetDefaultOptionValue(const char* name, int fallback) const;
