@@ -75,7 +75,7 @@ void WorldObjects::SendObjectMessage(CGameObject* sender, std::uint64_t identity
 
   for (CRenderObject* object : this->objects) {
     if (object->identity == identity) {
-      object->SendObjectMessage(sender, message, message >> 31, a, a >> 31, b, b >> 31, c, c >> 31, d, d >> 31, 0, 0, 0, 0);
+      object->SendMsg(sender, message, message >> 31, a, a >> 31, b, b >> 31, c, c >> 31, d, d >> 31, 0, 0, 0, 0);
       return;
     }
   }

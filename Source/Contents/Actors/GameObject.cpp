@@ -44,18 +44,18 @@ CGameObject::~CGameObject() = default;
 
 // OFFSET: 0x00CAFD20
 // FUNCTION: fn_21087
-bool CGameObject::Update() {
+bool CGameObject::OnProcess() {
   return true;
 }
 
 // OFFSET: 0x00CBF850
 // FUNCTION: fn_21113
-void CGameObject::SendObjectMessage(CGameObject*, int, int, int, int, int, int, int, int, int, int, int, int, int, int) {
+void CGameObject::SendMsg(CGameObject*, int, int, int, int, int, int, int, int, int, int, int, int, int, int) {
 }
 
 // OFFSET: 0x00CB20A0
 // FUNCTION: fn_21101
-void CGameObject::Draw(int) {
+void CGameObject::Render(int) {
 }
 
 // OFFSET: 0x00CABF10
@@ -81,7 +81,7 @@ int CGameObject::GetDir(float rot) {
 
 // OFFSET: 0x00CAB920
 // FUNCTION: fn_21031
-int CGameObject::Direction(float angle, const CameraDirectionContext& camera) {
+int CGameObject::Get8Dir(float angle, const CameraDirectionContext& camera) {
   if (camera.modeType != 1) {
     return 0;
   }
@@ -102,7 +102,7 @@ int CGameObject::Direction(float angle, const CameraDirectionContext& camera) {
 
 // OFFSET: 0x00CB20B0
 // FUNCTION: fn_21102
-void CRenderObject::Draw(int argument) {
+void CRenderObject::Render(int argument) {
   if (this->render.visible != 0) {
     this->DrawShadow(argument, this->render.scale);
     this->DrawSprite(argument, false, 0.0f);
@@ -291,7 +291,7 @@ void CRenderObject::SetActionSpeed(float speed) {
 void CRenderObject::SendValueMessage(int value, CGameObject* target) {
   if (target) {
     const std::int64_t wide = value;
-    target->SendObjectMessage(
+    target->SendMsg(
       nullptr, 29, 0, static_cast<int>(wide), static_cast<int>(wide >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     );
   }

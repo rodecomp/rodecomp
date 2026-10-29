@@ -11,11 +11,11 @@ class UIWindow;
 class CNpc : public CGameActor {
 public:
   ~CNpc() override;
-  bool Update() override;
-  void SendObjectMessage(
+  bool OnProcess() override;
+  void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
-  void Draw(int argument) override;
+  void Render(int argument) override;
 
   /* 0410 */ unsigned char unknown_0410[0x1C];
   /* 042C */ UIWindow* unknown_042C;
@@ -29,10 +29,10 @@ public:
 class CCharacterNpc : public CNpc {
 public:
   ~CCharacterNpc() override;
-  void SendObjectMessage(
+  void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
-  void Draw(int argument) override;
+  void Render(int argument) override;
 
   /* 0440 */ CGameObject* unknown_0440;
 };
@@ -40,11 +40,11 @@ public:
 class CHalluNPC : public CNpc {
 public:
   ~CHalluNPC() override;
-  bool Update() override;
-  void SendObjectMessage(
+  bool OnProcess() override;
+  void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
-  void Draw(int argument) override;
+  void Render(int argument) override;
 
   /* 0440 */ float unknown_0440;
   /* 0444 */ int unknown_0444;
@@ -57,11 +57,11 @@ public:
 class CHalluPlant : public CNpc {
 public:
   ~CHalluPlant() override;
-  bool Update() override;
-  void SendObjectMessage(
+  bool OnProcess() override;
+  void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
-  void Draw(int argument) override;
+  void Render(int argument) override;
 
   /* 0440 */ std::uint32_t unknown_0440;
   /* 0444 */ int unknown_0444;

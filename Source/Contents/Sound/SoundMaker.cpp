@@ -74,13 +74,13 @@ CNumEffect::~CNumEffect() = default;
 
 // OFFSET: 0x00DA3340
 // FUNCTION: fn_22403
-bool CHalluPlant::Update() {
+bool CHalluPlant::OnProcess() {
   return ++this->unknown_0440 <= 60;
 }
 
 // OFFSET: 0x00DA3980
 // FUNCTION: fn_22405
-bool CNumEffect::Update() {
+bool CNumEffect::OnProcess() {
   const float elapsed = static_cast<float>((timeGetTime() - this->render.unknown_008C) / 24.0);
   this->render.previousAnimation = this->render.animation;
   this->render.position.y = this->baseHeight - elapsed * 0.18f;
@@ -97,7 +97,7 @@ bool CNumEffect::Update() {
 
 // OFFSET: 0x00DA3A60
 // FUNCTION: fn_22406
-bool CSoundMaker::Update() {
+bool CSoundMaker::OnProcess() {
   if (this->width == 0) {
     return true;
   }
@@ -168,7 +168,7 @@ float* CPc::GetExtent(float* extent) const {
 
 // OFFSET: 0x00DA2FA0
 // FUNCTION: fn_22397
-bool CBlurPC::Update() {
+bool CBlurPC::OnProcess() {
   CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   if (scene) {
     const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
@@ -188,7 +188,7 @@ bool CBlurPC::Update() {
 
 // OFFSET: 0x00DA3240
 // FUNCTION: fn_22401
-bool CHalluPC2::Update() {
+bool CHalluPC2::OnProcess() {
   CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   if (scene) {
     const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
@@ -209,7 +209,7 @@ bool CHalluPC2::Update() {
 
 // OFFSET: 0x00DA4100
 // FUNCTION: fn_22410
-void CCorpse::Draw(int argument) {
+void CCorpse::Render(int argument) {
   if (this->render.visible) {
     this->DrawShadow(argument, this->render.scale);
     this->DrawSprite(argument, false, this->spriteOffset);
@@ -218,7 +218,7 @@ void CCorpse::Draw(int argument) {
 
 // OFFSET: 0x00DA44B0
 // FUNCTION: fn_22415
-void CHalluPlant::Draw(int argument) {
+void CHalluPlant::Render(int argument) {
   this->DrawSprite(argument, true, 0.0f);
 }
 
@@ -248,21 +248,21 @@ std::int64_t CPc::Slot35() {
 
 // OFFSET: 0x00DA4150
 // FUNCTION: fn_22411
-void CGndRiser::Draw(int) {
+void CGndRiser::Render(int) {
 }
 
 // OFFSET: 0x00DA4960
 // FUNCTION: fn_22417
-void CSoundMaker::Draw(int) {
+void CSoundMaker::Render(int) {
 }
 
 // OFFSET: 0x00DA4970
 // FUNCTION: fn_22418
-void CBlowEffect::SendObjectMessage(
+void CBlowEffect::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
   if (message != 14 || a != 0) {
-    CRenderObject::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     return;
   }
 
@@ -277,11 +277,11 @@ void CBlowEffect::SendObjectMessage(
 
 // OFFSET: 0x00DA4A00
 // FUNCTION: fn_22419
-void CBlurPC::SendObjectMessage(
+void CBlurPC::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
   if (a != 0) {
-    CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     return;
   }
 
@@ -301,26 +301,26 @@ void CBlurPC::SendObjectMessage(
       this->render.isMotionFreezed = 1;
       break;
     default:
-      CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+      CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
       break;
   }
 }
 
 // OFFSET: 0x00DA4AD0
 // FUNCTION: fn_22420
-void CCorpse::SendObjectMessage(
+void CCorpse::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
-  CRenderObject::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00DA4BF0
 // FUNCTION: fn_22422
-void CHalluNPC::SendObjectMessage(
+void CHalluNPC::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
   if (a != 0) {
-    CNpc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     return;
   }
 
@@ -340,18 +340,18 @@ void CHalluNPC::SendObjectMessage(
       this->render.isMotionFreezed = 1;
       break;
     default:
-      CNpc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+      CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
       break;
   }
 }
 
 // OFFSET: 0x00DA4CC0
 // FUNCTION: fn_22423
-void CHalluPC2::SendObjectMessage(
+void CHalluPC2::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
   if (a != 0) {
-    CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     return;
   }
 
@@ -371,18 +371,18 @@ void CHalluPC2::SendObjectMessage(
       this->render.isMotionFreezed = 1;
       break;
     default:
-      CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+      CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
       break;
   }
 }
 
 // OFFSET: 0x00DA4D90
 // FUNCTION: fn_22424
-void CHalluPC::SendObjectMessage(
+void CHalluPC::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
   if (a != 0) {
-    CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     return;
   }
 
@@ -402,18 +402,18 @@ void CHalluPC::SendObjectMessage(
       this->render.isMotionFreezed = 1;
       break;
     default:
-      CPc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+      CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
       break;
   }
 }
 
 // OFFSET: 0x00DA4E60
 // FUNCTION: fn_22425
-void CHalluPlant::SendObjectMessage(
+void CHalluPlant::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
   if (a != 0) {
-    CNpc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     return;
   }
 
@@ -428,14 +428,14 @@ void CHalluPlant::SendObjectMessage(
       this->render.isMotionFreezed = 1;
       break;
     default:
-      CNpc::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+      CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
       break;
   }
 }
 
 // OFFSET: 0x00DA5610
 // FUNCTION: fn_22427
-void CNumEffect::SendObjectMessage(
+void CNumEffect::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
   if (message == 14 && a == 0) {
@@ -463,16 +463,16 @@ void CNumEffect::SendObjectMessage(
     return;
   }
 
-  CRenderObject::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+  CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00DA56E0
 // FUNCTION: fn_22428
-void CSoundMaker::SendObjectMessage(
+void CSoundMaker::SendMsg(
   CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
 ) {
   if (message != 14 || a != 0) {
-    CRenderObject::SendObjectMessage(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
     return;
   }
 

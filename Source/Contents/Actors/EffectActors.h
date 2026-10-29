@@ -9,7 +9,7 @@
 class CBlowEffect : public CRenderObject {
 public:
   ~CBlowEffect() override;
-  void SendObjectMessage(
+  void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
 };
@@ -18,10 +18,10 @@ class CCorpse : public CRenderObject {
 public:
   CCorpse();
   ~CCorpse() override;
-  void SendObjectMessage(
+  void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
-  void Draw(int argument) override;
+  void Render(int argument) override;
 
   /* 0138 */ float spriteOffset;
   /* 013C */ std::uint32_t unknown_013C;
@@ -38,8 +38,8 @@ public:
 class CNumEffect : public CRenderObject {
 public:
   ~CNumEffect() override;
-  bool Update() override;
-  void SendObjectMessage(
+  bool OnProcess() override;
+  void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
 

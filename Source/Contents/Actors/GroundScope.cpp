@@ -5,7 +5,7 @@
 
 // OFFSET: 0x00E4C2F0
 // FUNCTION: fn_24284
-bool CGroundScope::Update() {
+bool CGroundScope::OnProcess() {
   if (this->m_lastingTime < timeGetTime()) {
     return false;
   }

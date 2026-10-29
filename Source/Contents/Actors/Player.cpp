@@ -10,7 +10,7 @@ extern const int g_maxMoveSpeed = 432;
 
 // OFFSET: 0x00DAFE50
 // FUNCTION: fn_22606
-void CGrannyPc::SetAnimation(unsigned animation, int, int repeat) {
+void CGrannyPc::SetAction(unsigned animation, int, int repeat) {
   if (!this->model) {
     return;
   }
@@ -72,9 +72,9 @@ void CPc::Slot34(int value) {
 void CGrannyPc::Slot40(int value) {
   if (value < 0) {
     const std::int64_t emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::ChatProhibit);
-    this->SendObjectMessage(nullptr, 160, 0, 0, 0, static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 160, 0, 0, 0, static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
-    this->SendObjectMessage(nullptr, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   this->unknown_0428 = value;
 }
@@ -84,9 +84,9 @@ void CGrannyPc::Slot40(int value) {
 void CPc::Slot40(int value) {
   if (value < 0) {
     const std::int64_t emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::ChatProhibit);
-    this->SendObjectMessage(nullptr, 160, 0, 0, 0, static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 160, 0, 0, 0, static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
   } else {
-    this->SendObjectMessage(nullptr, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   this->unknown_0430 = value;
 }

@@ -14,7 +14,7 @@ struct granny_model_instance;
 class CPc : public CGameActor {
 public:
   ~CPc() override;
-  void SendObjectMessage(
+  void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
 
@@ -64,21 +64,21 @@ public:
 class CBlurPC : public CPc {
 public:
   ~CBlurPC() override;
-  bool Update() override;
-  void SendObjectMessage(
+  bool OnProcess() override;
+  void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
-  void Draw(int argument) override;
+  void Render(int argument) override;
 };
 
 class CHalluPC : public CPc {
 public:
   ~CHalluPC() override;
-  bool Update() override;
-  void SendObjectMessage(
+  bool OnProcess() override;
+  void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
-  void Draw(int argument) override;
+  void Render(int argument) override;
 
   /* 0510 */ int unknown_0510;
   /* 0514 */ int unknown_0514;
@@ -87,11 +87,11 @@ public:
 class CHalluPC2 : public CPc {
 public:
   ~CHalluPC2() override;
-  bool Update() override;
-  void SendObjectMessage(
+  bool OnProcess() override;
+  void SendMsg(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
-  void Draw(int argument) override;
+  void Render(int argument) override;
 
   /* 0510 */ int unknown_0510;
   /* 0514 */ int unknown_0514;
@@ -106,7 +106,7 @@ public:
 
 class CGrannyPc : public CGameActor {
 public:
-  void SetAnimation(unsigned animation, int motion, int repeat) override;
+  void SetAction(unsigned animation, int motion, int repeat) override;
   void Slot20(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
   void Slot21(int value) override;
   void Slot22(int value) override;

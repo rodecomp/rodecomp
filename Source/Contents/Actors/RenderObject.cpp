@@ -37,13 +37,13 @@ CRenderObject::~CRenderObject() = default;
 
 // OFFSET: 0x00CAFDC0
 // FUNCTION: fn_21089
-bool CRenderObject::Update() {
+bool CRenderObject::OnProcess() {
   return false;
 }
 
 // OFFSET: 0x00CBF920
 // FUNCTION: fn_21115
-void CRenderObject::SendObjectMessage(CGameObject*, int, int, int, int, int, int, int, int, int, int, int, int, int, int) {
+void CRenderObject::SendMsg(CGameObject*, int, int, int, int, int, int, int, int, int, int, int, int, int, int) {
 }
 
 // OFFSET: 0x00CBF930
@@ -62,7 +62,7 @@ void CRenderObject::SetActionName(ResourceMgr& resources, const char* name) {
 
 // OFFSET: 0x00CC2D40
 // FUNCTION: fn_21144
-void CRenderObject::SetScreenBounds(const float*, float, float) {
+void CRenderObject::SetRenderInfo(const float*, float, float) {
 }
 
 // OFFSET: 0x00CC2DA0
@@ -87,14 +87,14 @@ void CRenderObject::SetSpriteName(ResourceMgr& resources, const char* name) {
 
 // OFFSET: 0x00CC3DC0
 // FUNCTION: fn_21154
-void CRenderObject::SetScreenPosition(float x, float y) {
+void CRenderObject::SetTlvert(float x, float y) {
   this->render.screenX = TruncateToInt(x);
   this->render.screenY = TruncateToInt(y);
 }
 
 // OFFSET: 0x00CBFAE0
 // FUNCTION: fn_21118
-void CRenderObject::SetAnimation(unsigned animation, int, int repeat) {
+void CRenderObject::SetAction(unsigned animation, int, int repeat) {
   float speed = this->render.action->Speed(animation);
   if (g_replayAnimationScaling != 0) {
     speed *= Replay::Instance().AnimationScale();
@@ -255,14 +255,14 @@ void CGameActor::SetUnknown02C8(int value) {
 
 // OFFSET: 0x00CBF970
 // FUNCTION: fn_21117
-void CGameActor::SetAnimation(unsigned animation, int motion, int repeat) {
+void CGameActor::SetAction(unsigned animation, int motion, int repeat) {
   if (this->unknown_0314 == 7) {
     if (!this->render.action || static_cast<int>(this->render.action->animations.size()) <= static_cast<int>(animation)) {
       return;
     }
   }
 
-  CRenderObject::SetAnimation(animation, motion, repeat);
+  CRenderObject::SetAction(animation, motion, repeat);
   this->unknown_0238 = 0;
   this->unknown_0378 = -1.0f;
 }

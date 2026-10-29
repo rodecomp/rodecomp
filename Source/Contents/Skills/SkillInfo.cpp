@@ -574,7 +574,7 @@ void CEfstAction_SHADOW_EXCEED::Slot01(int efstId, int argument2, int argument3,
 
   auto* effectActor = static_cast<EffectActor*>(actor);
   while (effectActor->state.Attachments().HasId(1004)) {
-    actor->SendObjectMessage(nullptr, 109, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, 109, 0, 1004, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 

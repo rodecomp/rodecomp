@@ -7,7 +7,7 @@
 
 class CGroundScope : public EffectActor {
 public:
-  bool Update() override;
+  bool OnProcess() override;
 
   /* 0158 */ unsigned char unknown_0158[0xC];
   /* 0164 */ unsigned long m_lastingTime;
