@@ -119,7 +119,7 @@ void CEffect::Slot19(int) {
 
 // OFFSET: 0x005A2500
 // FUNCTION: fn_03111
-void CEffect::Slot22(int) {
+void CEffect::Slot22(float) {
 }
 
 // OFFSET: 0x005A2510

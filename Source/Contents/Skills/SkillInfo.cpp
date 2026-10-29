@@ -33,6 +33,8 @@ public:
 
 class CEfstAction_GenderChange : public CEfstAction {
 public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
 
@@ -1045,3 +1047,7 @@ void CSkillAction_IQ_BLAZING_FLAME_BLAST::Slot16(int level, CGameActor* source, 
 // OFFSET: 0x007754D0
 
 // OFFSET: 0x00777520
+
+// OFFSET: 0x00774840
+
+// OFFSET: 0x00774AF0

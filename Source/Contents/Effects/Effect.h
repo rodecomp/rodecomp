@@ -41,7 +41,7 @@ public:
   virtual void Slot19(int argument);
   virtual void Slot20(int argument);
   virtual void Slot21(int argument);
-  virtual void Slot22(int argument);
+  virtual void Slot22(float argument);
   virtual void Slot23(int argument);
   virtual void Slot24(int argument1, int argument2, int argument3, int argument4, int argument5);
   virtual vector3d Slot25();
