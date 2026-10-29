@@ -2,6 +2,7 @@
 #include "Contents/MessageTable.h"
 #include "UI/Window/WindowDialogs.h"
 
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -12,14 +13,8 @@ std::vector<int> g_adminAccountIds;
 
 // OFFSET: 0x00AD1BE0
 // FUNCTION: fn_17812
-bool IsAdminAccount(int aid) {
-  for (int value : g_adminAccountIds) {
-    if (value == aid) {
-      return true;
-    }
-  }
-
-  return false;
+__declspec(noinline) bool IsAdminAccount(int aid) {
+  return std::find(g_adminAccountIds.begin(), g_adminAccountIds.end(), aid) != g_adminAccountIds.end();
 }
 
 // OFFSET: 0x00DFA390
