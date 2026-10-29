@@ -1022,6 +1022,60 @@ void CEffectPrim::RenderPeongUp(matrix& wtm) {
   }
 }
 
+// OFFSET: 0x00BDEA00
+// FUNCTION: fn_19906
+void CEffectPrim::RenderGrid(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  vector3d vec4{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    for (int x = -150; x < 150; x += 30) {
+      for (int z = -90; z < 90; z += 30) {
+        const float size = slot.distance;
+        const float base = slot.maxHeight;
+        vec1 = {base + static_cast<float>(x), -10.0f, base + static_cast<float>(z)};
+        vec2 = {size + static_cast<float>(x) + base, -10.0f, vec1.z};
+        vec3 = {vec2.x, -10.0f, size + static_cast<float>(z) + base};
+        vec4 = {vec1.x, -10.0f, vec3.z};
+        this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+
+        unsigned char red;
+        unsigned char green;
+        unsigned char blue;
+        const char color = slot.flag1[10];
+        if (color == 0) {
+          red = 255;
+          green = 255;
+          blue = 255;
+        } else if (color == 1) {
+          red = 255;
+          green = 0;
+          blue = 0;
+        } else if (color == 3) {
+          red = 255;
+          green = 255;
+          blue = 255;
+        } else {
+          red = 0;
+          green = 0;
+          blue = 255;
+        }
+
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+    }
+  }
+}
+
 // OFFSET: 0x00BDF0A0
 // FUNCTION: fn_19908
 void CEffectPrim::RenderRainbow(matrix& wtm) {
