@@ -19,6 +19,9 @@ struct CRagEffect : CRenderObject {
   void InitEZ2STRFrame();
   bool ProcessEZ2STR(float x, float y, float z);
   bool ShieldCharge();
+  bool Aspersio();
+  void Blessing(TextureCache& textures);
+  void Bottom(TextureCache& textures);
   void BloodDrain();
   void FireBall();
   void FrostDiver(TextureCache& textures, char type);

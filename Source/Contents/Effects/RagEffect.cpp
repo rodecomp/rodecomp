@@ -974,3 +974,163 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
 bool CRagEffect::ShieldCharge() {
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
 }
+
+// OFFSET: 0x00C0B360
+// FUNCTION: fn_20016
+bool CRagEffect::Aspersio() {
+  if (this->state.unknown_0178 == 70) {
+    PlayEffectWave(*this, "effect\\priest_aspersio.wav");
+  }
+
+  const int frame = this->state.unknown_0178;
+
+  if (frame % 5 == 0 && frame > 60 && frame < 140) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.lifetime = 400;
+    EffectPrimitiveState& particle = *this->state.unknown_11C84;
+    particle.lifetime = 40;
+    particle.unknown_0348 = 1.5f;
+    particle.unknown_02EC = 0.19f;
+    particle.unknown_02F0 = 0.01f;
+    particle.unknown_030C = static_cast<float>(std::max(rand() % 360, 0));
+    particle.scale = 1.2f;
+    reinterpret_cast<matrix*>(particle.matrix1)->MakeYRotation(GetRadian(static_cast<int>(particle.unknown_030C)));
+    const float* m = particle.matrix1;
+    const float distance = particle.unknown_0348;
+    particle.velocity = {
+      (m[0] * 0.0f - m[3] * 30.0f) + distance * m[6] + m[9],
+      (m[1] * 0.0f - m[4] * 30.0f) + distance * m[7] + m[10],
+      (m[2] * 0.0f - m[5] * 30.0f) + distance * m[8] + m[11]
+    };
+    particle.unknown_01F0 = 30;
+    Owner(&particle).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+    Owner(&particle).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    Owner(&particle).InitSegment();
+  }
+
+  if (this->state.unknown_0178 == this->state.lifetime) {
+    return false;
+  }
+
+  this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+  return true;
+}
+
+// OFFSET: 0x00C0C550
+// FUNCTION: fn_20019
+void CRagEffect::Blessing(TextureCache& textures) {
+  const EffectActor& parent = *this->state.parent;
+  this->render.position.x = parent.render.position.x;
+  this->render.position.y = parent.render.position.y;
+  this->render.position.z = parent.render.position.z;
+
+  if (this->state.unknown_0178 == 0) {
+    PlayEffectWave(*this, "effect\\EF_Blessing.wav");
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    EffectPrimitiveState& ring = *this->state.unknown_11C84;
+    ring.lifetime = this->state.lifetime;
+    ring.flags |= 1u;
+    ring.unknown_01C4 |= 0x200u;
+    ring.unknown_0348 = 10.0f;
+    ring.unknown_0310 = 90.0f;
+    ring.red = 32;
+    ring.green = 176;
+    ring.blue = 232;
+    ring.alpha = 0.0f;
+    ring.unknown_02D4 = 100.0f;
+    ring.alphaSpeed = ring.unknown_02D4 / 30.0f;
+    ring.unknown_01F0 = ring.lifetime - 30;
+    Owner(&ring).InitSegment();
+    AllocateTextures(ring);
+    ring.textures[0] = textures.Load("effect\\alpha_down.tga", 0, false, true, false);
+  }
+
+  if (this->state.unknown_0178 % 3 == 0 && this->state.unknown_0178 < 10) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    EffectPrimitiveState& wing = *this->state.unknown_11C84;
+    wing.lifetime = this->state.lifetime;
+    wing.unknown_01E8 = 2;
+    wing.alpha = static_cast<float>(this->state.unknown_0178 * -6 + 200);
+    wing.velocity = {0.0f, -25.0f, 0.0f};
+    Owner(&wing).SetSpriteName(ResourceMgr::Instance(), "이팩트\\축복.spr");
+    Owner(&wing).SetActionName(ResourceMgr::Instance(), "이팩트\\축복.act");
+    Owner(&wing).InitSegment();
+  }
+
+  if (this->state.unknown_0178 % 4 == 0) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    EffectPrimitiveState& spark = *this->state.unknown_11C84;
+    spark.lifetime = 80;
+    spark.flags |= 0x80u;
+    reinterpret_cast<matrix*>(spark.matrix1)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+    const float* m = spark.matrix1;
+    const float distance = static_cast<float>(std::max(rand() % 7, 0) + 2);
+    spark.velocity = {
+      (m[0] * 0.0f - m[3] * 25.0f) + distance * m[6] + m[9],
+      (m[1] * 0.0f - m[4] * 25.0f) + distance * m[7] + m[10],
+      (m[2] * 0.0f - m[5] * 25.0f) + distance * m[8] + m[11]
+    };
+    reinterpret_cast<matrix*>(spark.matrix1)->MakeXRotation(GetRadian(-90));
+    spark.unknown_02BC = static_cast<float>(std::max(rand() % 20, 0) + 20) / 100.0f;
+    spark.unknown_02C0 = -(spark.unknown_02BC / static_cast<float>(spark.lifetime)) * 0.5f;
+    spark.alpha = 0.0f;
+    spark.scale = 0.5f;
+    spark.unknown_01F0 = spark.lifetime - spark.lifetime / 5;
+    spark.alphaSpeed = spark.unknown_02D4 / 10.0f;
+    Owner(&spark).SetActionName(ResourceMgr::Instance(), "이팩트\\particle6.act");
+    Owner(&spark).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle6.spr");
+    Owner(&spark).InitSegment();
+  }
+}
+
+// INLINED
+static __forceinline void SpawnBottomQuad(CRagEffect& effect, TextureCache& textures, const vector3d& velocity, int angle) {
+  effect.state.unknown_11C84 = &CreateEffectParticle(effect, effect.render, 15, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  EffectPrimitiveState& quad = *effect.state.unknown_11C84;
+  quad.lifetime = 9999;
+  quad.unknown_0238 = 1;
+  quad.flags = 0x28;
+  quad.unknown_01CC = 0x32;
+  quad.velocity = velocity;
+  quad.unknown_030C = static_cast<float>(angle);
+  quad.unknown_0354 = 5.0f;
+  quad.unknown_0360 = 15.0f;
+  quad.unknown_0364 = 0.25f;
+  quad.alpha = 0.0f;
+  quad.unknown_02D4 = 180.0f;
+  quad.alphaSpeed = quad.unknown_02D4 / 6.0f;
+  quad.unknown_01F0 = quad.lifetime - 35;
+  AllocateTextures(quad);
+  quad.textures[0] = textures.Load("effect\\magic_violet.tga", 0, false, true, false);
+}
+
+// OFFSET: 0x00C0DA60
+// FUNCTION: fn_20023
+void CRagEffect::Bottom(TextureCache& textures) {
+  if (this->state.unknown_0178 != 0) {
+    return;
+  }
+
+  int angle = static_cast<int>(180.0f - this->state.parent->render.angle);
+
+  if (angle < 0) {
+    angle += 360;
+  }
+
+  matrix rotation;
+  rotation.MakeYRotation(GetRadian(angle));
+  const float* m = rotation.values;
+  this->state.lifetime = 9999;
+
+  for (int side = 1; side > -2; side -= 2) {
+    const float distance = static_cast<float>(side) * 5.0f;
+    SpawnBottomQuad(
+      *this, textures, {m[3] * 0.0f + m[0] * 0.0f + distance * m[6] + m[9], m[4] * 0.0f + m[1] * 0.0f + distance * m[7] + m[10], m[5] * 0.0f + m[2] * 0.0f + distance * m[8] + m[11]},
+      angle + 90
+    );
+    SpawnBottomQuad(
+      *this, textures, {distance * m[0] + m[3] * 0.0f + m[6] * 0.0f + m[9], distance * m[1] + m[4] * 0.0f + m[7] * 0.0f + m[10], distance * m[2] + m[5] * 0.0f + m[8] * 0.0f + m[11]},
+      angle
+    );
+  }
+}
