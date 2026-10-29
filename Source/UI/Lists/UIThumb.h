@@ -13,6 +13,9 @@ class CUIThumb : public CUIControl {
 public:
   void ResetCursor(int x, int y) override;
 
+  void SetBitmaps(const std::string& normal, const std::string& hover, const std::string& pressed);
+  void SetPressedBitmap(const std::string& name);
+
   /* 0084 */ unsigned char unknown_0084[0x08];
   /* 008C */ CBitmapRes* bitmap;
   /* 0090 */ int dragOrigin;

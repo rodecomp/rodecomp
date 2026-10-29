@@ -7,6 +7,7 @@
 #include "Resource/TextureNames.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include <cmath>
 #include <windows.h>
 
 // OFFSET: 0x009EF520
@@ -346,3 +347,23 @@ template void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::O
 template void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::OnScroll(int);
 template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::OnScroll(int);
 template void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::OnScroll(int);
+
+// OFFSET: 0x009F1D40
+// FUNCTION: fn_14703
+void CUIVScrollBar::PageUp() {
+  this->SetPosition(this->position - this->step);
+}
+
+// OFFSET: 0x009F1D60
+// FUNCTION: fn_14704
+void CUIVScrollBar::PageDown() {
+  this->SetPosition(this->position + this->step);
+}
+
+// OFFSET: 0x009F1D80
+
+// OFFSET: 0x009F2A30
+
+// OFFSET: 0x009F2A90
+
+// OFFSET: 0x009F2B20

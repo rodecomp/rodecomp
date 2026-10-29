@@ -16,6 +16,10 @@ public:
   void SetTotal(int value);
   void SetVisible(int value);
   void SetPosition(int value);
+  void PageUp();
+  void PageDown();
+  int PositionFromOffset(int offset);
+  void SetHidden(int unused);
 
   /* 0084 */ UIWindow* upButton;
   /* 0088 */ CUIControl* thumb;
