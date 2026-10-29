@@ -18,6 +18,7 @@ struct CRagEffect : CRenderObject {
 
   void InitEZ2STRFrame();
   bool ProcessEZ2STR(float x, float y, float z);
+  void Fireworks();
   bool ProcessEZ2STRC10830();
   bool ProcessEZ2STRC153A0();
   bool ProcessEZ2STRC3CC40();

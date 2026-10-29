@@ -1186,3 +1186,15 @@ bool CRagEffect::ProcessEZ2STRC159D0() {
 
   return true;
 }
+
+// OFFSET: 0x00C5EFA0
+// FUNCTION: fn_20241
+void CRagEffect::Fireworks() {
+  if (this->state.stateCnt == 300) {
+    g_soundMgr->PlayWave("effect\\폭죽.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+  }
+
+  if (this->state.stateCnt > 2300) {
+    this->state.stateCnt = 299;
+  }
+}
