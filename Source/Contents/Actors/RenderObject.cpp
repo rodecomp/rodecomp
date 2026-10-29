@@ -12,16 +12,21 @@
 #include "Contents/Actors/EffectActors.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
+#include "Contents/World/World.h"
+#include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
 #include "Render/SpriteQuad.h"
+#include "Render/TextureQuad.h"
 #include "Resource/Models/GrannyModelResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "Resource/World/TerrainResource.h"
 #include "Script/LuaScript.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -34,6 +39,9 @@
 #include <string>
 #include <windows.h>
 #include <timeapi.h>
+
+// GLOBAL: gl_24798
+int g_multiHitInterval = 200;
 
 namespace {
 
@@ -71,14 +79,17 @@ private:
 class C3dGrannyGameActor : public CGameActor {
 public:
   void SetAction(unsigned animation, int motion, int repeat) override;
+  void Slot08() override;
   void Slot36() override;
   int Slot37() override;
 
   /* 0410 */ unsigned char unknown_0410[4];
   /* 0414 */ C3dGrannyModelRes* model;
   /* 0418 */ granny_model_instance* instance;
-  /* 041C */ unsigned char unknown_041C[0x110];
-  /* 052C */ int unknown_052C;
+  /* 041C */ unsigned char unknown_041C[0xF0];
+  /* 050C */ granny_system_clock clock;
+  /* 051C */ granny_system_clock lastClock;
+  /* 052C */ float unknown_052C;
   /* 0530 */ unsigned char unknown_0530[0x14];
   /* 0544 */ int motion;
   /* 0548 */ unsigned char unknown_0548[0x110];
@@ -90,6 +101,7 @@ public:
   explicit CGrannyCorpse3d(const char* name);
   ~CGrannyCorpse3d() override;
   bool OnProcess() override;
+  void Render(int argument) override;
 
   /* 0010 */ vector3d position;
   /* 001C */ C3dGrannyModelRes* model;
@@ -244,6 +256,20 @@ void CRenderObject::SetColor(int alpha, int red, int green, int blue) {
 }
 
 // OFFSET: 0x00CAF050
+// FUNCTION: fn_21078
+void CRenderObject::ModifyArgb(int alpha, int red, int green, int blue) {
+  if (this->render.unknown_00A3 == 0) {
+    unsigned char* argb = reinterpret_cast<unsigned char*>(&this->render.color);
+    int newAlpha = argb[3] + alpha;
+    int newRed = argb[2] + red;
+    int newGreen = argb[1] + green;
+    int newBlue = argb[0] + blue;
+    argb[3] = static_cast<unsigned char>(std::min(std::max(newAlpha, 0), 255));
+    argb[2] = static_cast<unsigned char>(std::min(std::max(newRed, 0), 255));
+    argb[1] = static_cast<unsigned char>(std::min(std::max(newGreen, 0), 255));
+    argb[0] = static_cast<unsigned char>(std::min(std::max(newBlue, 0), 255));
+  }
+}
 
 // OFFSET: 0x00CC1C20
 // FUNCTION: fn_21125
@@ -1652,3 +1678,329 @@ CGrannyCorpse3d::~CGrannyCorpse3d() {
   GrannyFreeModelInstance(this->instance);
 }
 
+// OFFSET: 0x00CC8230
+// FUNCTION: fn_21193
+void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, int) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  int type = info->type;
+  this->hitTargetAid = info->targetAid;
+  int damage = info->damage;
+  int hitCount = info->hitCount;
+  const int extraDamage = info->extraDamage;
+  const int unknown_001C = info->unknown_001C;
+  const int unknown_0020 = info->unknown_0020;
+  const int attackSpeed = info->attackSpeed;
+  const int motionSpeed = info->motionSpeed;
+
+  CGameActor* target;
+  if (g_session.m_aid == info->targetAid) {
+    target = reinterpret_cast<CGameActor*>(mode->scene->player);
+  } else {
+    target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(info->targetAid));
+    if (target == nullptr) {
+      target = static_cast<CGameActor*>(mode->scene->GetSkillByAID(this->hitTargetAid));
+    }
+  }
+
+  float x;
+  float z;
+  if (target == nullptr) {
+    const CRenderObject* player = reinterpret_cast<const CRenderObject*>(mode->scene->player);
+    x = this->render.position.x - (player->render.position.x - this->render.position.x);
+    z = this->render.position.z - (player->render.position.z - this->render.position.z);
+  } else {
+    x = target->render.position.x;
+    z = target->render.position.z;
+    target->GetEffectiveJob(-1);
+  }
+
+  if (hitCount <= 0) {
+    hitCount = 1;
+  } else if (hitCount > 36) {
+    hitCount = 1;
+  }
+
+  if (type != 8 && type != 9 && type != 13) {
+    hitCount = 1;
+  }
+
+  damage /= hitCount;
+  switch (type) {
+    case 0:
+    case 4:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+    case 13: {
+      if (this->unknown_0178 != 0) {
+        CRagEffect* effect = this->LaunchEffect(0x83, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        if (effect != nullptr) {
+          effect->SendMsg(this, 50, 0, 0, 0, 0, 0, 0);
+        }
+        this->unknown_0178 = 0;
+      }
+
+      this->Slot39(attackSpeed);
+      if (info->targetAid != this->render.accountId) {
+        this->Slot15(2, 1);
+      }
+
+      this->Face(x, z);
+      unsigned delay = static_cast<unsigned>(this->unknown_0378 * this->render.speed * 24.0f);
+      if (this->GetEffectiveJob(-1) == 0x3F8 || this->GetEffectiveJob(-1) == 0x58C) {
+        delay += 0xC0;
+      } else if (this->GetEffectiveJob(-1) == 0x505 || this->GetEffectiveJob(-1) == 0x726) {
+        delay += 0x390;
+      } else if (this->GetEffectiveJob(-1) == 0x506 || this->GetEffectiveJob(-1) == 0x725 || this->GetEffectiveJob(-1) == 0x507) {
+        delay += 0x198;
+      }
+
+      int flag = -1;
+      int action;
+      switch (type) {
+        case 4:
+        case 9:
+          action = 0x27;
+          break;
+        case 10:
+          action = 0x5D;
+          flag = 1;
+          break;
+        case 11:
+          action = this->unknown_0178 != 0 ? 0x1A : 0x5E;
+          break;
+        case 13:
+          action = 0x94;
+          flag = 1;
+          break;
+        default:
+          action = 0x1A;
+          break;
+      }
+
+      if (target == nullptr) {
+        return;
+      }
+
+      int effectId = 0;
+      switch (this->GetEffectiveJob(-1)) {
+        case 0xFCE:
+        case 0xFCF:
+        case 0xFD0:
+        case 0x1081:
+        case 0x1082:
+        case 0x108E:
+        case 0x108F:
+        case 0x1090:
+        case 0x1091:
+        case 0x1092:
+        case 0x1093:
+        case 0x10CE:
+        case 0x10CF:
+        case 0x10DC:
+          effectId = 0x1B2;
+          break;
+        case 0x576F:
+        case 0x5770:
+          effectId = 0x974;
+          break;
+      }
+
+      const CRenderObject* player = reinterpret_cast<const CRenderObject*>(mode->scene->player);
+      int column;
+      int row;
+      mode->WorldCell(player->render.position.x, player->render.position.y, column, row);
+      if (info->targetAid == this->render.accountId) {
+        effectId = -2;
+      }
+
+      ActorDamageMessage message;
+      message.motionSpeed = static_cast<float>(motionSpeed) / 288.0f;
+      message.targetAid = this->hitTargetAid;
+      message.time = timeGetTime() + delay;
+      message.attackerAid = this->render.accountId;
+      message.unknown_0014 = unknown_001C;
+      message.unknown_0018 = unknown_0020;
+      message.unknown_001C = flag;
+      message.effectId = effectId;
+      message.unknown_002C = info->unknown_002C;
+      message.action = action;
+      message.damage = damage;
+      message.unknown_0024 = 1;
+      message.unknown_0034 = 0;
+
+      const std::int64_t address = reinterpret_cast<int>(&message);
+      if (hitCount == 1) {
+        target->SendMsg(this, 0x1B, 0, static_cast<int>(address), static_cast<int>(address >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      } else {
+        const std::int64_t value = damage;
+        target->SendMsg(
+          this, 0x1B, 0, static_cast<int>(address), static_cast<int>(address >> 32), static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0,
+          0, 0, 0, 0, 0
+        );
+      }
+
+      const int job = this->GetEffectiveJob(-1);
+      if (extraDamage != 0 && (g_session.IsNpcJob(job) || job > 4000 || job == 12)) {
+        int total = damage;
+        if (hitCount > 1) {
+          for (int hit = hitCount - 1; hit != 0; --hit) {
+            message.time += g_multiHitInterval / 2;
+            total += damage;
+            message.damage = damage;
+            const std::int64_t value = total;
+            target->SendMsg(
+              this, 0x1B, 0, static_cast<int>(address), static_cast<int>(address >> 32), static_cast<int>(value), static_cast<int>(value >> 32), 0, 0,
+              0, 0, 0, 0, 0, 0
+            );
+            message.time -= g_multiHitInterval / 2;
+          }
+        }
+
+        message.action = action;
+        message.time += g_multiHitInterval / 2 + (g_multiHitInterval / 4 + g_multiHitInterval);
+        message.damage = extraDamage;
+        if (hitCount == 1) {
+          target->SendMsg(this, 0x1B, 0, static_cast<int>(address), static_cast<int>(address >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        } else {
+          const std::int64_t value = total + extraDamage;
+          target->SendMsg(
+            this, 0x1B, 0, static_cast<int>(address), static_cast<int>(address >> 32), static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0,
+            0, 0, 0, 0, 0
+          );
+        }
+        return;
+      }
+
+      if (hitCount > 1) {
+        int total = damage;
+        for (int hit = hitCount - 1; hit != 0; --hit) {
+          message.time += g_multiHitInterval;
+          total += damage;
+          message.damage = damage;
+          const std::int64_t value = total;
+          target->SendMsg(
+            this, 0x1B, 0, static_cast<int>(address), static_cast<int>(address >> 32), static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0,
+            0, 0, 0, 0, 0
+          );
+        }
+      }
+      break;
+    }
+    case 1:
+      this->Slot15(5, 1);
+      return;
+    case 2:
+      this->Slot15(6, 1);
+      return;
+    case 3:
+      this->Slot15(0, 1);
+      return;
+  }
+}
+
+// OFFSET: 0x00CC5C70
+// FUNCTION: fn_21180
+void C3dGrannyGameActor::Slot08() {
+  this->render.isMotionFinished = this->render.unknown_0070 != 2;
+  if (this->render.unknown_0070 != 2 || !(this->render.motionSpeed < 1.0f)) {
+    return;
+  }
+
+  this->clock = GrannyGetSystemSeconds();
+  const float elapsed = GrannyGetSecondsElapsed(&this->lastClock, &this->clock) * 2.0f;
+  this->unknown_052C += elapsed / this->render.motionSpeed;
+  this->model->Animate(this->unknown_052C, this->instance);
+  this->lastClock = this->clock;
+
+  if (this->motion == 2 && this->controls[2] != nullptr && GrannyGetControlDurationLeft(this->controls[2]) <= 0.0f) {
+    this->motion = 0;
+    this->controls[this->motion] = this->model->PlayAnimation(0, this->instance, this->controls[0], 0);
+    this->render.motionSpeed = 1.0f;
+  }
+}
+
+// OFFSET: 0x00CC5EE0
+// FUNCTION: fn_21183
+void CGrannyCorpse3d::Render(int argument) {
+  const matrix& view = *reinterpret_cast<const matrix*>(argument);
+  CTexture* texture = nullptr;
+  std::uint16_t* indices = nullptr;
+
+  this->clock = GrannyGetSystemSeconds();
+  const float elapsed = GrannyGetSecondsElapsed(&this->startClock, &this->clock) * 2.0f;
+  this->unknown_0138 += elapsed;
+  this->model->Animate(this->unknown_0138, this->instance);
+  this->startClock = this->clock;
+
+  CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  const float sine = ClientSine(static_cast<int>(this->angle));
+  const float cosine = ClientCosine(static_cast<int>(this->angle));
+  scene->terrain->Grid().Height(cosine * 0.0f - sine * -40.0f + this->position.x, sine * 0.0f - cosine * 40.0f + this->position.z);
+  scene->terrain->Grid().Height(cosine * 0.0f - sine * 40.0f + this->position.x, cosine * 40.0f + sine * 0.0f + this->position.z);
+
+  matrix transform;
+  std::memcpy(transform.values, g_identityMatrix, sizeof(g_identityMatrix));
+  matrix rotation;
+  rotation.MakeXRotation(std::strstr(this->name, "90") != nullptr ? 1.570796f : 3.141592f);
+  rotation.AppendYRotation((this->angle + 180.0f) / 180.0f * 3.141592f);
+  rotation.AppendTranslate(&this->position.x);
+
+  vector3d position{0.0f, 0.0f, 0.0f};
+  g_modeMgr.GetGameMode();
+  matrix inverse;
+  inverse.MakeInverse(view);
+  float lightX = inverse.values[0] * 0.0f - inverse.values[3] * 300.0f + inverse.values[6] * 0.0f + inverse.values[9];
+  float lightY = inverse.values[1] * 0.0f - inverse.values[4] * 300.0f + inverse.values[7] * 0.0f + inverse.values[10];
+  float lightZ = inverse.values[2] * 0.0f - inverse.values[5] * 300.0f + inverse.values[8] * 0.0f + inverse.values[11];
+  const float scale = 1.0f / SquareRoot(lightY * lightY + lightX * lightX + lightZ * lightZ);
+  lightX *= scale;
+  lightY *= scale;
+  lightZ *= scale;
+
+  float screenX;
+  float screenY;
+  float reciprocalDepth;
+  g_renderer->ProjectViewport(&this->position.x, view.values, &screenX, &screenY, &reciprocalDepth);
+
+  for (int mesh = 0; mesh < this->model->instance->meshCount; ++mesh) {
+    this->model->deformBuffer = this->vertices[mesh];
+    int triangleCount;
+    const GrannyPNT332Vertex* source = static_cast<const GrannyPNT332Vertex*>(
+      this->model->GetMeshRenderData(mesh, &texture, &indices, &triangleCount, &transform, nullptr)
+    );
+    if (source == nullptr || texture == nullptr) {
+      continue;
+    }
+
+    matrix local;
+    local.Compose(transform, rotation);
+    matrix world;
+    world.Compose(local, view);
+
+    RenderCommand* command = this->commands[mesh];
+    int vertexCount = 0;
+    for (int triangle = 0; triangle < triangleCount; ++triangle) {
+      command = this->commands[mesh];
+      for (int corner = 0; corner < 3; ++corner) {
+        const GrannyPNT332Vertex& vertex = source[indices[vertexCount]];
+        RenderVertex& output = command->vertices[vertexCount];
+        ++vertexCount;
+        position.x = vertex.position[0];
+        position.y = vertex.position[1];
+        position.z = vertex.position[2];
+        g_renderer->viewport.Projection().Project(&position.x, world.values, output);
+        output.u = vertex.uv[0];
+        output.v = vertex.uv[1];
+        const float shade = lightX * vertex.normal[0] + lightY * vertex.normal[1] + lightZ * vertex.normal[2];
+        this->brightness = static_cast<unsigned>(std::max(0.0f, std::min(1.0f, shade)) * 100.0f + 155.0f);
+        output.diffuse = (this->alpha << 24) + static_cast<unsigned char>(this->brightness) * 0x10101;
+      }
+    }
+
+    command->texture = texture;
+    command->vertexCount = vertexCount;
+    g_renderer->queues.Submit(command, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  }
+}

@@ -18,14 +18,50 @@ enum {
   BODYSTATE_STONECURSE_ING,
 };
 
+struct ActorHitInfo {
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ int damage;
+  /* 0008 */ int extraDamage;
+  /* 000C */ int type;
+  /* 0010 */ std::uint32_t targetAid;
+  /* 0014 */ int unknown_0014;
+  /* 0018 */ int hitCount;
+  /* 001C */ int unknown_001C;
+  /* 0020 */ int unknown_0020;
+  /* 0024 */ int attackSpeed;
+  /* 0028 */ int motionSpeed;
+  /* 002C */ unsigned char unknown_002C;
+};
+
+struct ActorDamageMessage {
+  /* 0000 */ std::uint32_t targetAid;
+  /* 0004 */ int action;
+  /* 0008 */ int damage;
+  /* 000C */ std::uint32_t time;
+  /* 0010 */ std::uint32_t attackerAid;
+  /* 0014 */ int unknown_0014;
+  /* 0018 */ int unknown_0018;
+  /* 001C */ int unknown_001C;
+  /* 0020 */ int effectId;
+  /* 0024 */ int unknown_0024;
+  /* 0028 */ float motionSpeed;
+  /* 002C */ unsigned char unknown_002C;
+  /* 0030 */ int unknown_0030;
+  /* 0034 */ int unknown_0034;
+};
+
 class CGameActor : public EffectActor {
 public:
   ~CGameActor() override;
 
-  /* 0158 */ unsigned char unknown_0158[0xC8];
+  /* 0158 */ unsigned char unknown_0158[0x20];
+  /* 0178 */ int unknown_0178;
+  /* 017C */ unsigned char unknown_017C[0xA4];
   /* 0220 */ MovementRouteInterpolation route;
   /* 0238 */ unsigned char unknown_0238;
-  /* 0239 */ unsigned char unknown_0239[0x1B];
+  /* 0239 */ unsigned char unknown_0239[0x13];
+  /* 024C */ std::uint32_t hitTargetAid;
+  /* 0250 */ unsigned char unknown_0250[0x04];
   /* 0254 */ std::uint32_t routeStartTick;
   /* 0258 */ unsigned char unknown_0258[0x04];
   /* 025C */ int unknown_025C;
@@ -146,15 +182,20 @@ public:
   int WeaponActionBase(int weaponType);
   int GetUnknown0404();
   int MountHeightOffset();
+  void ProcessHitMessage(CGameObject* sender, const ActorHitInfo* info, int unused1, int unused2);
 };
 
 int ShapeShiftJob(int form, int job);
 
 extern const int g_maxMoveSpeed;
+extern int g_multiHitInterval;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CGameActor) == 0x410);
 static_assert(offsetof(CGameActor, route) == 0x220);
+static_assert(offsetof(CGameActor, unknown_0178) == 0x178);
+static_assert(offsetof(CGameActor, hitTargetAid) == 0x24C);
+static_assert(sizeof(ActorDamageMessage) == 0x38);
 static_assert(offsetof(CGameActor, unknown_0238) == 0x238);
 static_assert(offsetof(CGameActor, routeStartTick) == 0x254);
 static_assert(offsetof(CGameActor, unknown_0260) == 0x260);

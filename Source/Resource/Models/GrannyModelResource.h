@@ -2,13 +2,13 @@
 #define RAGNAROK_SOURCE_RESOURCE_MODELS_GRANNYMODELRESOURCE_H
 
 #include "Resource/Models/ModelResource.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include <cstddef>
 #include <cstdint>
 #include <windows.h>
 
 class CTexture;
-struct matrix;
 
 struct granny_animation;
 struct granny_control;
@@ -56,7 +56,8 @@ struct granny_material_binding {
 };
 
 struct granny_mesh {
-  /* 0000 */ unsigned char unknown_0000[0x14];
+  /* 0000 */ const char* name;
+  /* 0004 */ unsigned char unknown_0004[0x10];
   /* 0014 */ std::int32_t materialBindingCount;
   /* 0018 */ granny_material_binding* materialBindings;
 };
@@ -86,6 +87,18 @@ struct granny_file_info {
   /* 0048 */ unsigned char unknown_0048[8];
   /* 0050 */ std::int32_t animationCount;
   /* 0054 */ granny_animation** animations;
+};
+
+struct granny_tri_material_group {
+  /* 0000 */ std::int32_t materialIndex;
+  /* 0004 */ std::int32_t triFirst;
+  /* 0008 */ std::int32_t triCount;
+};
+
+struct GrannyPNT332Vertex {
+  /* 0000 */ float position[3];
+  /* 000C */ float normal[3];
+  /* 0018 */ float uv[2];
 };
 
 struct granny_system_clock {
@@ -126,7 +139,27 @@ __declspec(dllimport) granny_local_pose* WINAPI GrannyNewLocalPose(std::int32_t 
 __declspec(dllimport) void WINAPI GrannyFreeMeshDeformer(granny_mesh_deformer* deformer);
 __declspec(dllimport) void WINAPI GrannyFreeModelInstance(granny_model_instance* instance);
 __declspec(dllimport) granny_system_clock WINAPI GrannyGetSystemSeconds();
+__declspec(dllimport) float WINAPI GrannyGetSecondsElapsed(const granny_system_clock* start, const granny_system_clock* end);
+__declspec(dllimport) float WINAPI GrannyGetControlDurationLeft(granny_control* control);
 __declspec(dllimport) void WINAPI GrannyFreeWorldPose(granny_world_pose* pose);
+__declspec(dllimport) const float* WINAPI GrannyControlModelsNext(const granny_world_pose* pose);
+__declspec(dllimport) const std::int32_t* WINAPI GrannyGetMeshBindingToBoneIndices(const granny_mesh_binding* binding);
+__declspec(dllimport) const granny_tri_material_group* WINAPI GrannyGetMeshTriangleGroups(const granny_mesh* mesh);
+__declspec(dllimport) const float* WINAPI GrannyGetWorldPoseComposite4x4(const granny_world_pose* pose, std::int32_t bone);
+__declspec(dllimport) const void* WINAPI GrannyGetMeshVertices(const granny_mesh* mesh);
+__declspec(dllimport) void WINAPI GrannyDeformVertices(
+  const granny_mesh_deformer* deformer, const std::int32_t* boneIndices, const float* matrices, std::int32_t vertexCount, const void* source,
+  void* destination
+);
+__declspec(dllimport) std::int32_t WINAPI GrannyGetMeshBytesPerIndex(const granny_mesh* mesh);
+__declspec(dllimport) const void* WINAPI GrannyGetMeshIndices(const granny_mesh* mesh);
+__declspec(dllimport) void WINAPI GrannySetModelClock(granny_model_instance* instance, float seconds);
+__declspec(dllimport) void WINAPI GrannySampleModelAnimations(granny_model_instance* instance, std::int32_t firstBone, std::int32_t boneCount, granny_local_pose* pose);
+__declspec(dllimport) void WINAPI GrannyBuildWorldPose(
+  const granny_skeleton* skeleton, std::int32_t firstBone, std::int32_t boneCount, const granny_local_pose* localPose, const float* offset,
+  granny_world_pose* worldPose
+);
+__declspec(dllimport) void WINAPI GrannyFreeCompletedModelControls(granny_model_instance* instance);
 __declspec(dllimport) granny_control* WINAPI GrannyPlayControlledAnimation(float startTime, const granny_animation* animation, granny_model_instance* instance);
 __declspec(dllimport) void WINAPI GrannySetControlLoopCount(granny_control* control, std::int32_t loopCount);
 __declspec(dllimport) void WINAPI GrannyFreeLocalPose(granny_local_pose* pose);
@@ -179,6 +212,12 @@ public:
   /* 0280 */ granny_animation* animations[100][20];
 };
 
+struct GrannyHairPivot {
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ int mesh;
+  /* 0008 */ matrix transform;
+};
+
 class C3dGrannyModelRes : public CRes {
 public:
   explicit C3dGrannyModelRes(ModelResourceContext& context);
@@ -192,6 +231,16 @@ public:
   bool ProjectBounds(float* rect, const matrix& view, const matrix& world, const float* eye) const;
   int GetTriangleCount(int mesh) const;
   unsigned char* GetRigidVertices(int mesh) const;
+  const void* GetMeshRenderData(
+    int mesh, CTexture** texture, std::uint16_t** indices, int* triangleCount, matrix* transform, granny_world_pose* pose
+  );
+  const void* GetMeshRenderData(
+    GrannyModelInstance* model, int mesh, CTexture** texture, std::uint16_t** indices, int* triangleCount, matrix* transform,
+    granny_world_pose* pose
+  );
+  bool FindHairPivot();
+  void Release();
+  granny_world_pose* Animate(float seconds, granny_model_instance* instance);
 
   /* 0110 */ float unknown_0110;
   /* 0114 */ unsigned char unknown_0114[0x14C];
@@ -204,7 +253,8 @@ public:
   /* 0278 */ void* localPose;
   /* 027C */ int deformBufferSize;
   /* 0280 */ int unknown_0280;
-  /* 0284 */ unsigned char unknown_0284[8];
+  /* 0284 */ int unknown_0284;
+  /* 0288 */ void* deformBuffer;
   /* 028C */ char fileName[MAX_PATH];
   /* 0390 */ const granny_model* model;
   /* 0394 */ float position[3];
@@ -212,7 +262,7 @@ public:
   /* 03A4 */ float unknown_03A4;
   /* 03A8 */ GrannyAnimationLibrary* animations;
   /* 03AC */ unsigned job;
-  /* 03B0 */ int unknown_03B0;
+  /* 03B0 */ GrannyHairPivot* unknown_03B0;
   /* 03B4 */ granny_skeleton* skeleton;
 
 private:
@@ -233,6 +283,8 @@ static_assert(offsetof(C3dGrannyModelRes, file) == 0x260);
 static_assert(offsetof(C3dGrannyModelRes, fileName) == 0x28C);
 static_assert(offsetof(C3dGrannyModelRes, model) == 0x390);
 static_assert(offsetof(C3dGrannyModelRes, skeleton) == 0x3B4);
+static_assert(offsetof(C3dGrannyModelRes, deformBuffer) == 0x288);
+static_assert(offsetof(C3dGrannyModelRes, unknown_03B0) == 0x3B0);
 static_assert(offsetof(granny_file_info, models) == 0x44);
 static_assert(offsetof(granny_file_info, animations) == 0x54);
 static_assert(offsetof(GrannyAnimationLibrary, file) == 0x150);

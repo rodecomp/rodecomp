@@ -34,7 +34,7 @@ struct RenderObjectState {
   /* 005C */ float unknown_005C;
   /* 0060 */ float unknown_0060;
   /* 0064 */ float unknown_0064;
-  /* 0068 */ std::uint32_t unknown_0068;
+  /* 0068 */ float motionSpeed;
   /* 006C */ std::uint32_t unknown_006C;
   /* 0070 */ std::uint32_t unknown_0070;
   /* 0074 */ std::uint32_t unknown_0074;

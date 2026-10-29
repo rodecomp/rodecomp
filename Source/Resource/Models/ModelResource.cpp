@@ -877,3 +877,134 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
     child->Shade(matrix, frame, light, diffuse, ambient, shadeType, alpha);
   }
 }
+
+// OFFSET: 0x0075CB30
+// FUNCTION: fn_08025
+const void* C3dGrannyModelRes::GetMeshRenderData(
+  int mesh, CTexture** texture, std::uint16_t** indices, int* triangleCount, matrix* transform, granny_world_pose* pose
+) {
+  return this->GetMeshRenderData(this->instance, mesh, texture, indices, triangleCount, transform, pose);
+}
+
+// OFFSET: 0x0075CB60
+// FUNCTION: fn_08026
+const void* C3dGrannyModelRes::GetMeshRenderData(
+  GrannyModelInstance* model, int mesh, CTexture** texture, std::uint16_t** indices, int* triangleCount, matrix* transform,
+  granny_world_pose* pose
+) {
+  if (pose == nullptr) {
+    pose = model->worldPose;
+  }
+
+  const float* matrices = GrannyControlModelsNext(pose);
+  GrannyMeshEntry* meshes = model->meshes;
+  const std::int32_t* boneIndices = GrannyGetMeshBindingToBoneIndices(meshes[mesh].binding);
+  const std::int32_t vertexCount = GrannyGetMeshVertexCount(meshes[mesh].mesh);
+  const granny_tri_material_group* groups = GrannyGetMeshTriangleGroups(meshes[mesh].mesh);
+  GrannyTextureEntry* entry = meshes[mesh].textures[groups->materialIndex];
+  *texture = entry != nullptr && groups->materialIndex < meshes[mesh].materialCount ? entry->texture : nullptr;
+
+  if (GrannyMeshIsRigid(meshes[mesh].mesh)) {
+    const float* composite = GrannyGetWorldPoseComposite4x4(model->worldPose, boneIndices[0]);
+    transform->values[0] = composite[0];
+    transform->values[1] = composite[1];
+    transform->values[2] = composite[2];
+    transform->values[3] = composite[4];
+    transform->values[4] = composite[5];
+    transform->values[5] = composite[6];
+    transform->values[6] = composite[8];
+    transform->values[7] = composite[9];
+    transform->values[8] = composite[10];
+    transform->values[9] = composite[12];
+    transform->values[10] = composite[13];
+    transform->values[11] = composite[14];
+
+    const void* vertices = meshes[mesh].vertices;
+    *indices = meshes[mesh].indices;
+    *triangleCount = GrannyGetMeshIndexCount(meshes[mesh].mesh) / 3;
+    if (std::strstr(meshes[mesh].mesh->name, "hair_pivot") != nullptr && this->unknown_03B0 != nullptr) {
+      this->unknown_03B0->transform = *transform;
+    }
+
+    return vertices;
+  }
+
+  if (meshes[mesh].deformer == nullptr) {
+    return nullptr;
+  }
+
+  GrannyDeformVertices(meshes[mesh].deformer, boneIndices, matrices, vertexCount, GrannyGetMeshVertices(meshes[mesh].mesh), this->deformBuffer);
+  GrannyGetMeshBytesPerIndex(meshes[mesh].mesh);
+  GrannyGetMeshIndices(meshes[mesh].mesh);
+  *indices = meshes[mesh].indices;
+  *triangleCount = GrannyGetMeshIndexCount(meshes[mesh].mesh) / 3;
+  std::memcpy(transform->values, g_identityMatrix, sizeof(g_identityMatrix));
+  return this->deformBuffer;
+}
+
+// OFFSET: 0x0075CD90
+// FUNCTION: fn_08027
+bool C3dGrannyModelRes::FindHairPivot() {
+  if (this->unknown_03B0 == nullptr) {
+    return false;
+  }
+
+  for (int mesh = 0; mesh < this->instance->meshCount; ++mesh) {
+    if (std::strstr(this->instance->meshes[mesh].mesh->name, "hair_pivot") != nullptr) {
+      this->unknown_03B0->mesh = mesh;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x0075CFC0
+// FUNCTION: fn_08029
+granny_world_pose* C3dGrannyModelRes::Animate(float seconds, granny_model_instance* instance) {
+  GrannyModelInstance* model = this->instance;
+  if (model == nullptr) {
+    return nullptr;
+  }
+
+  granny_skeleton* skeleton = GrannyGetSourceSkeleton(instance);
+  const std::int32_t boneCount = skeleton->boneCount;
+  GrannySetModelClock(instance, seconds);
+  GrannySampleModelAnimations(instance, 0, boneCount, static_cast<granny_local_pose*>(this->localPose));
+  GrannyBuildWorldPose(skeleton, 0, boneCount, static_cast<granny_local_pose*>(this->localPose), nullptr, model->worldPose);
+  GrannyFreeCompletedModelControls(instance);
+  return model->worldPose;
+}
+
+// OFFSET: 0x0075CA20
+// FUNCTION: fn_08024
+void C3dGrannyModelRes::Release() {
+  if (GrannyModelInstance* instance = this->instance) {
+    for (int index = 0; index < instance->meshCount; ++index) {
+      GrannyMeshEntry& entry = instance->meshes[index];
+      GrannyFreeMeshBinding(entry.binding);
+      GrannyFreeMeshDeformer(entry.deformer);
+      delete[] entry.textures;
+      delete entry.indices;
+      if (entry.vertices != nullptr) {
+        delete entry.vertices;
+      }
+    }
+
+    GrannyFreeModelInstance(instance->instance);
+    GrannyFreeWorldPose(instance->worldPose);
+    delete[] instance->meshes;
+  }
+
+  for (int index = 0; index < this->textureCount; ++index) {
+    if (this->textures[index].texture != nullptr) {
+      delete this->textures[index].texture;
+    }
+  }
+
+  delete[] this->textures;
+  GrannyFreeLocalPose(static_cast<granny_local_pose*>(this->localPose));
+  GrannyFreeFile(this->file);
+  delete this->instance;
+  this->instance = nullptr;
+}
