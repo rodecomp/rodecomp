@@ -14,3 +14,21 @@ bool CSession::IsTopLayerRobe(int robe) {
 }
 
 // OFFSET: 0x00DDB920
+// FUNCTION: fn_23356
+bool CSession::IsRobeDrawOnTop(int action, int frame, bool riding) {
+  bool drawOnTop = true;
+  int job = this->m_job;
+
+  if (this->m_newRobeDrawOnTop) {
+    if (riding) {
+      job = this->GetRidingJob(job);
+    }
+
+    int layer = 1;
+    this->m_hotkeyScript->Call("_New_DrawOnTop", "ddddd>bd", this->m_robe, this->unknown_0E98, job, action, frame, &drawOnTop, &layer);
+  } else {
+    this->m_hotkeyScript->Call("DrawOnTop", "ddddd>b", this->m_robe, this->unknown_0E98, job, action, frame, &drawOnTop);
+  }
+
+  return drawOnTop;
+}
