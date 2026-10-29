@@ -374,8 +374,18 @@ int QuickSlotWndInfo::IsValid() const {
 }
 
 // OFFSET: 0x009A5F70
+// FUNCTION: fn_13665
+int ReplayRECControlWndInfo::IsValid() const {
+  return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - this->height;
+}
 
 // OFFSET: 0x009A5FB0
+// FUNCTION: fn_13666
+int SayDialogWndInfo::IsValid() const {
+  return this->width == 280 && this->height == 180 && this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - 180;
+}
 
 // OFFSET: 0x009A6110
 // FUNCTION: fn_13668
