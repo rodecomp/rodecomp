@@ -148,6 +148,18 @@ int sub_654B70() {
 }
 
 // OFFSET: 0x00654BB0
+// FUNCTION: fn_05032
+unsigned int sub_654BB0(unsigned int value) {
+  value++;
+  value ^= value >> 17;
+  value *= 0xed5ad4bb;
+  value ^= value >> 11;
+  value *= 0xac4c1b51;
+  value ^= value >> 15;
+  value *= 0x31848bab;
+  value ^= value >> 14;
+  return value;
+}
 
 // OFFSET: 0x00654BF0
 // FUNCTION: fn_05033
