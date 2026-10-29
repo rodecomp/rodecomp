@@ -950,6 +950,17 @@ void CGameActor::SetUnknown03C4(int value) {
 }
 
 // OFFSET: 0x00CABDE0
+// FUNCTION: fn_21038
+void CRenderObject::ScaleByFadePulse(float& scale) const {
+  if ((this->render.flags & 0x10) != 0) {
+    const unsigned index = std::max(this->render.pulsePhases[0] * 4u + 90u, 90u);
+    if (index <= 270) {
+      scale = ((ClientSine(index) + 1.0f) * 0.25f + 0.5f) * scale;
+    } else {
+      scale = scale * 0.5f;
+    }
+  }
+}
 
 // OFFSET: 0x00CC4270
 // FUNCTION: fn_21161
