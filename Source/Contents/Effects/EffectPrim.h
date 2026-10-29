@@ -40,6 +40,7 @@ struct CEffectPrim : CRenderObject {
   void PrimShieldBoomerang3();
   bool PrimSuperAngel();
   void Render2DCircle();
+  void RenderRecordRings(matrix& wtm);
   void Render2DDiamond();
   void Render3DCasting2(matrix& wtm);
   void Render3DCasting(matrix& wtm);
