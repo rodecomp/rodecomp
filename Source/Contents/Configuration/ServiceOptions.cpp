@@ -1,13 +1,20 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Configuration/ScriptOptions.h"
 #include "Contents/MessageTable.h"
+#include "Contents/Messenger/WhisperBlockMgr.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 
 extern "C" {
 #include <lua.h>
 }
 
 #include <cstddef>
+#include <cstdint>
 #include <format>
 #include <functional>
 #include <string>
@@ -148,4 +155,156 @@ void GameSettings::ApplyScriptOption(int id, const char* key, ScriptOptions& scr
     g_serviceOptions.Set(id, script.Integer(key, option.defaultValue) != 0);
     return;
   }
+}
+
+namespace {
+#pragma pack(push, 1)
+struct ServiceOptionPacket {
+  std::int16_t id;
+};
+
+struct WhisperBlockPacket {
+  std::int16_t id;
+  unsigned char enabled;
+};
+#pragma pack(pop)
+}
+
+// OFFSET: 0x006C5DB0
+// FUNCTION: fn_06368
+void SendServiceOptionPacket() {
+  ServiceOptionPacket packet;
+  packet.id = 0xAE8;
+  CRagConnection& connection = GetRagConnection();
+  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x006C5E70
+// FUNCTION: fn_06370
+void NotifyServiceOption(unsigned char enabled, int enabledMessage, int disabledMessage, int color) {
+  std::string text;
+  if (enabled != 0) {
+    if (enabledMessage != 0x125A) {
+      text = LookupMessage(enabledMessage);
+    }
+  } else if (disabledMessage != 0x125A) {
+    text = LookupMessage(disabledMessage);
+  }
+
+  if (!text.empty()) {
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), color, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006C6050
+// FUNCTION: fn_06372
+void NotifyGameModeOption() {
+  if (CMode* mode = g_modeMgr.GetGameMode()) {
+    mode->SendMsg(0x11F, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006C6080
+// FUNCTION: fn_06373
+void NotifyGameModeOptionAlt() {
+  if (CMode* mode = g_modeMgr.GetGameMode()) {
+    mode->SendMsg(0x11F, 2, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006C60B0
+// FUNCTION: fn_06374
+void NotifyGameModeMenu() {
+  if (CMode* mode = g_modeMgr.GetGameMode()) {
+    mode->SendMsg(0x4B, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006C60F0
+// FUNCTION: fn_06375
+void ApplyServiceOptionWindow190(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  if (UIWindow* window = g_windowMgr.LookupWindow(0xBE)) {
+    window->Show(value);
+  }
+}
+
+// OFFSET: 0x006C6150
+// FUNCTION: fn_06376
+void ApplyServiceOptionWindow267(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  if (UIWindow* window = g_windowMgr.LookupWindow(0x10B)) {
+    window->Show(value);
+  }
+}
+
+// OFFSET: 0x006C6260
+// FUNCTION: fn_06379
+void ApplyServiceOptionWindow268(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  if (UIWindow* window = g_windowMgr.LookupWindow(0x10C)) {
+    window->Show(value);
+  }
+}
+
+// OFFSET: 0x006C6380
+// FUNCTION: fn_06381
+void EnableWhisperBlock() {
+  g_whisperBlockMgr->Clear();
+  WhisperBlockPacket packet;
+  packet.id = 0xD0;
+  packet.enabled = 1;
+  CRagConnection& connection = GetRagConnection();
+  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x006C63D0
+// FUNCTION: fn_06382
+void DisableWhisperBlock() {
+  WhisperBlockPacket packet;
+  packet.id = 0xD0;
+  packet.enabled = 0;
+  CRagConnection& connection = GetRagConnection();
+  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x006C6410
+// FUNCTION: fn_06383
+void SendWhisperBlockPacket() {
+  ServiceOptionPacket packet;
+  packet.id = 0xD3;
+  CRagConnection& connection = GetRagConnection();
+  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x006C6450
+// FUNCTION: fn_06384
+void ApplyServiceOptionAndSnap(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  g_windowMgr.UpdateSnapRectangles();
 }
