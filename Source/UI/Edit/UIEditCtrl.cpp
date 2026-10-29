@@ -59,6 +59,8 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeDragState.h"
+#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shop/UIMerchantItemPurchaseMSGWnd.h"
 
 #include <algorithm>
@@ -1714,4 +1716,51 @@ void UIMerchantItemShopWnd::StartTimer(std::uint32_t value) {
 // FUNCTION: fn_13483
 void UIItemStoreFindWnd::SetSearchText(std::string text) {
   this->searchText = text;
+}
+
+// OFFSET: 0x009722A0
+// FUNCTION: fn_13269
+void UIItemSellWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source != 3) {
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+
+  if (drag->quantity == 1 || g_windowMgr.unknown_0064 != 0) {
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  }
+
+  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.window_01EC->SendMsg(nullptr, 13, 2, 0, 0, 0);
+}
+
+// OFFSET: 0x00972B50
+// FUNCTION: fn_13277
+void UIMerchantItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source != 13) {
+    g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+
+  if (drag->quantity == 1) {
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  }
+
+  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.window_01EC->SendMsg(nullptr, 13, 11, 0, 0, 0);
 }
