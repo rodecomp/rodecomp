@@ -18,6 +18,7 @@
 
 class CEfstAction_ChangeSize : public CEfstAction {
 public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
   void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
@@ -51,6 +52,11 @@ public:
 class CEfstAction_DANCING_KNIFE : public CEfstAction {
 public:
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_SHC_SHADOW_EXCEED : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_SHADOW_EXCEED : public CEfstAction {
@@ -476,6 +482,25 @@ bool ShowsCastEffect(int skillId) {
   }
 }
 
+// OFFSET: 0x00774730
+// FUNCTION: fn_08326
+void CEfstAction_ChangeSize::Slot00(int, int value, int, int, CRenderObject* actor, bool) {
+  if (!actor) {
+    return;
+  }
+
+  const std::uint32_t aid = actor->render.accountId;
+  CEffect* effect = g_effectMgr->Find(static_cast<int>(aid), 2374);
+  if (!effect) {
+    effect = g_effectMgr->Spawn(static_cast<int>(aid), 2374, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    if (!effect) {
+      return;
+    }
+  }
+
+  *reinterpret_cast<float*>(&effect->unknown_0048) = static_cast<float>(value) * 0.01f;
+}
+
 // OFFSET: 0x007747B0
 // FUNCTION: fn_08327
 void CEfstAction_ChangeSize::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
@@ -530,6 +555,14 @@ EfstActionMessage CEfstAction_SHADOW_WEAPON::Slot04() {
 // FUNCTION: fn_08359
 void CEfstAction_DANCING_KNIFE::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x00777DD0
+// FUNCTION: fn_08364
+void CSkillAction_SHC_SHADOW_EXCEED::Slot11(int, CGameActor* source, CGameActor*) {
+  if (source) {
+    g_effectMgr->Spawn(static_cast<int>(source->render.accountId), 2467, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
 }
 
 // OFFSET: 0x00777E80
