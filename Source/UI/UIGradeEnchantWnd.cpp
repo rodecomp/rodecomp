@@ -44,6 +44,34 @@ void UIGradeEnchantWnd::Slot25(int x, int y) {
 }
 
 // OFFSET: 0x007E8A30
+// FUNCTION: fn_09760
+void UIGradeEnchantWnd::Slot31(int x, int y) {
+  if (y < 80 && x > 141) {
+    UIFrameWnd::Slot31(x, y);
+    return;
+  }
+
+  if (x < 158 || x > 393 || y < 102 || y > 219) {
+    return;
+  }
+
+  const int row = (y - 102) / 40;
+  if (y > row * 40 + 139 || row >= 3 || row < 0 || static_cast<unsigned>(row) >= this->materials.size()) {
+    return;
+  }
+
+  if (this->selectedMaterial != row) {
+    if (this->unknown_0114 > 0) {
+      this->m_controls->services.Confirm(LookupMessage(3831), 0, 1, 0, "Message", 280, 120);
+    }
+
+    this->selectedMaterial = row;
+    this->unknown_0114 = 0;
+    this->unknown_0110 = 0;
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x007E8B30
 // FUNCTION: fn_09761
