@@ -2082,6 +2082,12 @@ void CSkillAction_NPC_BLOCK_EXPLOSION::Slot11(int level, CGameActor* source, CGa
 }
 
 // OFFSET: 0x00781C30
+// FUNCTION: fn_08499
+void CSkillAction_NPC_FROST_FIELD::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+  }
+}
 
 // OFFSET: 0x00781C60
 // FUNCTION: fn_08500
