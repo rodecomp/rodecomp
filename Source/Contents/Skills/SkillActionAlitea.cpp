@@ -131,6 +131,7 @@ class CSkillAction_AT_PULSE_OF_MADNESS : public CSkillAction_DamageWereWolfForm 
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
 };
 
 class CEfstAction_PULSE_OF_MADNESS : public CEfstAction {
@@ -148,18 +149,21 @@ class CSkillAction_AT_PINION_SHOT : public CSkillAction_DamageWereRaptorForm {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
 };
 
 class CSkillAction_AT_QUILL_SPEAR : public CSkillAction_DamageWereRaptorForm {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
 };
 
 class CSkillAction_AT_NATURE_HARMONY : public CSkillAction {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -173,6 +177,7 @@ class CSkillAction_AT_GRAVITY_HOLE : public CSkillAction {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -494,6 +499,14 @@ int CSkillAction_AT_PULSE_OF_MADNESS::Slot02() {
   return 68;
 }
 
+// OFFSET: 0x005A69D0
+// FUNCTION: fn_03191
+void CSkillAction_AT_PULSE_OF_MADNESS::Slot08(int level, CGameActor* source) {
+  if (source) {
+    source->LaunchEffect(54, level / 16);
+  }
+}
+
 // OFFSET: 0x005A6C00
 // FUNCTION: fn_03193
 EfstActionMessage CEfstAction_PULSE_OF_MADNESS::Slot03() {
@@ -524,6 +537,14 @@ int CSkillAction_AT_PINION_SHOT::Slot02() {
   return 78;
 }
 
+// OFFSET: 0x005A6F00
+// FUNCTION: fn_03199
+void CSkillAction_AT_PINION_SHOT::Slot08(int level, CGameActor* source) {
+  if (source) {
+    source->LaunchEffect(56, level / 16);
+  }
+}
+
 // OFFSET: 0x005A71A0
 // FUNCTION: fn_03202
 int CSkillAction_AT_QUILL_SPEAR::Slot01() {
@@ -536,6 +557,14 @@ int CSkillAction_AT_QUILL_SPEAR::Slot02() {
   return 79;
 }
 
+// OFFSET: 0x005A71C0
+// FUNCTION: fn_03204
+void CSkillAction_AT_QUILL_SPEAR::Slot08(int level, CGameActor* source) {
+  if (source) {
+    source->LaunchEffect(56, level / 16);
+  }
+}
+
 // OFFSET: 0x005A7750
 // FUNCTION: fn_03207
 int CSkillAction_AT_NATURE_HARMONY::Slot01() {
@@ -546,6 +575,14 @@ int CSkillAction_AT_NATURE_HARMONY::Slot01() {
 // FUNCTION: fn_03208
 int CSkillAction_AT_NATURE_HARMONY::Slot02() {
   return 64;
+}
+
+// OFFSET: 0x005A7770
+// FUNCTION: fn_03209
+void CSkillAction_AT_NATURE_HARMONY::Slot08(int level, CGameActor* source) {
+  if (source) {
+    source->LaunchEffect(12, level / 16);
+  }
 }
 
 // OFFSET: 0x005A77A0
@@ -582,6 +619,14 @@ int CSkillAction_AT_GRAVITY_HOLE::Slot01() {
 // FUNCTION: fn_03214
 int CSkillAction_AT_GRAVITY_HOLE::Slot02() {
   return 64;
+}
+
+// OFFSET: 0x005A7A30
+// FUNCTION: fn_03215
+void CSkillAction_AT_GRAVITY_HOLE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    source->LaunchEffect(12, level / 16);
+  }
 }
 
 // OFFSET: 0x005A7A60
