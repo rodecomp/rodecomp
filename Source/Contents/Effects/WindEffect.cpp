@@ -9,6 +9,7 @@ bool CWindEffect::Slot06() {
 }
 
 // OFFSET: 0x00731030
+// FUNCTION: fn_07545
 void CWindEffect::Slot04() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
