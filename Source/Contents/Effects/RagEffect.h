@@ -27,6 +27,10 @@ struct CRagEffect : CRenderObject {
   bool ProcessEZ2STRC15990();
   bool ProcessEZ2STRC159D0();
   bool ShieldCharge();
+  void AttackEnergy2(TextureCache& textures, const char* name);
+  bool LexDivina();
+  void RemoveTrap();
+  void Sphere();
   bool Aspersio();
   void Blessing(TextureCache& textures);
   void Bottom(TextureCache& textures);

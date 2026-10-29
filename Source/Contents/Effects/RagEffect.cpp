@@ -1198,3 +1198,145 @@ void CRagEffect::Fireworks() {
     this->state.stateCnt = 299;
   }
 }
+
+// OFFSET: 0x00C410A0
+// FUNCTION: fn_20133
+void CRagEffect::AttackEnergy2(TextureCache& textures, const char* name) {
+  const EffectActor& parent = *this->state.parent;
+  this->render.position.x = parent.render.position.x;
+  this->render.position.y = parent.render.position.y;
+  this->render.position.z = parent.render.position.z;
+
+  if (this->state.stateCnt != 0 && this->state.stateCnt != 4) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 106, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  EffectPrimitiveState& prim = *this->state.unknown_11C84;
+  prim.renderFlag = 5;
+  prim.duration = this->state.duration;
+  prim.totalTexture = 1;
+  AllocateTextures(prim);
+  prim.textures[0] = textures.Load(name, 0, false, true, false);
+  prim.size = 4.0f;
+
+  for (EffectPrimitiveSlot& slot : prim.slots) {
+    slot.life = 0;
+  }
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.unknown_11C84->slots[index];
+    slot.life = 1;
+    slot.process = 0;
+    slot.maxHeight = 8.0f;
+    slot.alphaB = 0;
+    slot.distance = 8.0f;
+    slot.fullDisplayAngle = 360;
+    slot.height[0] = 10.0f;
+    slot.riseAngle = static_cast<std::int16_t>(index * 45);
+    slot.height[1] = static_cast<float>(index * 22);
+  }
+}
+
+// OFFSET: 0x00C1E050
+// FUNCTION: fn_20077
+bool CRagEffect::LexDivina() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWave(*this, "effect\\priest_lexdivina.wav");
+  }
+
+  if (this->state.stateCnt == 20) {
+    PlayEffectWave(*this, "effect\\priest_lexdivina.wav");
+  }
+
+  if (this->state.stateCnt == 35) {
+    PlayEffectWave(*this, "effect\\priest_lexdivina.wav");
+  }
+
+  if (this->state.stateCnt == 60) {
+    PlayEffectWave(*this, "effect\\priest_lexdivina.wav");
+  }
+
+  if (this->state.stateCnt == 70) {
+    PlayEffectWave(*this, "effect\\priest_lexdivina.wav");
+  }
+
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+}
+
+// OFFSET: 0x00C37A60
+// FUNCTION: fn_20096
+void CRagEffect::RemoveTrap() {
+  if (this->state.stateCnt == 0) {
+    PlayEffectWave(*this, "effect\\hunter_removetrap.wav");
+  }
+
+  if (this->state.stateCnt != 0 && this->state.stateCnt != 7) {
+    return;
+  }
+
+  for (int count = 12; count != 0; --count) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    EffectPrimitiveState& particle = *this->state.unknown_11C84;
+    particle.duration = 50;
+    particle.radiusSpeed = 0.2f;
+    rand();
+    particle.gravSpeed = -2.0f;
+    particle.gravAccel = static_cast<float>(std::max(rand() % 10, 0)) / 1000.0f + 0.08f;
+    particle.longitude = static_cast<float>(std::max(rand() % 360, 0));
+    particle.size = 0.8f;
+    reinterpret_cast<matrix*>(particle.transform)->MakeYRotation(GetRadian(static_cast<int>(particle.longitude)));
+    const float* m = particle.transform;
+    const float distance = particle.radius;
+    particle.deltaPos2 = {
+      m[3] * 0.0f + m[0] * 0.0f + distance * m[6] + m[9],
+      m[4] * 0.0f + m[1] * 0.0f + distance * m[7] + m[10],
+      m[5] * 0.0f + m[2] * 0.0f + distance * m[8] + m[11]
+    };
+    particle.fadeOutCnt = 35;
+    Owner(&particle).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+    Owner(&particle).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    Owner(&particle).InitSegment();
+  }
+}
+
+// OFFSET: 0x00C3B9E0
+// FUNCTION: fn_20108
+void CRagEffect::Sphere() {
+  const EffectActor& parent = *this->state.parent;
+  this->render.position.x = parent.render.position.x;
+  this->render.position.y = parent.render.position.y;
+  this->render.position.z = parent.render.position.z;
+
+  if (this->state.stateCnt % 10 != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.duration = 500 - this->state.stateCnt;
+  EffectPrimitiveState& particle = *this->state.unknown_11C84;
+  particle.duration = 300;
+  particle.radius = 0.1f;
+  particle.radiusSpeed = 0.15f;
+  particle.gravSpeed = 0.15f;
+  particle.longitude = 2.0f;
+  particle.longSpeed = 8.0f;
+  particle.longAccel = -0.01f;
+  particle.size = 1.2f;
+  reinterpret_cast<matrix*>(particle.transform)->MakeYRotation(GetRadian(static_cast<int>(particle.longitude)));
+  const float* m = particle.transform;
+  const float distance = particle.radius;
+  particle.deltaPos2 = {
+    (m[0] * 0.0f - m[3] * 30.0f) + distance * m[6] + m[9],
+    (m[1] * 0.0f - m[4] * 30.0f) + distance * m[7] + m[10],
+    (m[2] * 0.0f - m[5] * 30.0f) + distance * m[8] + m[11]
+  };
+  particle.chRadiSpeed = 1;
+  particle.unknown_01D8 = 0;
+  particle.chPoint.push_back(95.0f);
+  particle.chVal1.push_back(-0.15f);
+  particle.chVal2.push_back(particle.radiusAccel);
+  Owner(&particle).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+  Owner(&particle).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+  Owner(&particle).InitSegment();
+}
