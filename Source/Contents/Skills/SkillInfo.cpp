@@ -19,6 +19,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <format>
 #include <memory>
 
 class CEfstAction_ChangeSize : public CEfstAction {
@@ -68,8 +69,14 @@ public:
 
 class CEfstAction_DANCING_KNIFE : public CEfstAction {
 public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
   void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_SHC_SHADOW_STAB : public CSkillAction {
+public:
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_SHC_SHADOW_EXCEED : public CSkillAction {
@@ -80,6 +87,7 @@ public:
 
 class CEfstAction_SHADOW_EXCEED : public CEfstAction {
 public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
   void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
   EfstActionMessage Slot03() override;
@@ -112,6 +120,7 @@ public:
 class CSkillAction_AG_ENERGY_CONVERSION : public CSkillAction {
 public:
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_SHC_ENCHANTING_SHADOW : public CSkillAction {
@@ -159,6 +168,7 @@ public:
 class CSkillAction_IQ_BLAZING_FLAME_BLAST : public CSkillAction {
 public:
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -1108,8 +1118,28 @@ void CSkillAction_IQ_BLAZING_FLAME_BLAST::Slot16(int level, CGameActor* source, 
 }
 
 // OFFSET: 0x007754D0
+// FUNCTION: fn_08338
+void CEfstAction_UNLIMIT::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (!actor) {
+    return;
+  }
+
+  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("unlimit_loop_bottom"));
+  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("unlimit_loop"));
+}
 
 // OFFSET: 0x00777520
+// FUNCTION: fn_08358
+void CEfstAction_DANCING_KNIFE::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (!actor) {
+    return;
+  }
+
+  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_bottom_begin"));
+  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_bottom_loop"));
+  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_begin"));
+  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_loop"));
+}
 
 // OFFSET: 0x00774840
 // FUNCTION: fn_08329
@@ -1137,5 +1167,46 @@ void CEfstAction_GenderChange::Slot01(int efstId, int argument2, int argument3, 
   g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gender_change_cast"));
   if (CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gender_change"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->Slot22(1.5f);
+  }
+}
+
+// OFFSET: 0x00777070
+
+// OFFSET: 0x007759F0
+// FUNCTION: fn_08341
+void CSkillAction_AG_ENERGY_CONVERSION::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  source->LaunchEffect(2427, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_conversion"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x00777B00
+
+// OFFSET: 0x00777E20
+// FUNCTION: fn_08365
+void CEfstAction_SHADOW_EXCEED::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (!actor || !argument6) {
+    return;
+  }
+
+  auto* effectActor = static_cast<EffectActor*>(actor);
+  if (!effectActor->state.Attachments().HasId(1004)) {
+    effectActor->LaunchEffect(1004, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  }
+}
+
+// OFFSET: 0x0077A0F0
+// FUNCTION: fn_08393
+void CSkillAction_IQ_BLAZING_FLAME_BLAST::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  const float scale = source->unknown_0378 * source->render.speed * 16.0f;
+  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("blazing_flame_blast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot16(static_cast<int>(scale));
   }
 }
