@@ -1281,6 +1281,10 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 }
 
 // OFFSET: 0x008D9AD0
+// FUNCTION: fn_12135
+int UIListBox::LineCount() const {
+  return static_cast<int>(this->lines.size());
+}
 
 // OFFSET: 0x008DA450
 // FUNCTION: fn_12146
@@ -1289,3 +1293,9 @@ bool UInCashWnd::Slot03() {
 }
 
 // OFFSET: 0x008DBD00
+// FUNCTION: fn_12160
+void UICardItemIllustWnd::Slot15(int, int) {
+  this->unknown_00E4 = 0;
+  this->m_name = LookupMessage(527);
+  this->AddCloseButton(*this->m_controls, "", 0);
+}
