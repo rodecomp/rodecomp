@@ -744,6 +744,7 @@
   "Source/UI/Shortcuts/ShortcutTooltip.cpp": 2,
   "Source/UI/Shortcuts/ShortcutVisibility.cpp": 2,
   "Source/UI/Shortcuts/UIShortCutWnd.cpp": 2,
+  "Source/UI/SkillDelayInfo/UISkillDelayInfo.cpp": 2,
   "Source/UI/Text/ColoredText.cpp": 2,
   "Source/UI/Text/ItemLinkDisplay.cpp": 2,
   "Source/UI/Text/NavigationLink.cpp": 2,
