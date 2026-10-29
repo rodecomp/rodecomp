@@ -19,3 +19,10 @@ void UIMacroDetectorWnd::Slot27(int, int) {
 }
 
 // OFFSET: 0x007EDC30
+// FUNCTION: fn_09817
+void UIMacroDetectorWnd::Slot19() {
+  if (this->messageTick + this->messageDuration < timeGetTime()) {
+    this->message = "";
+  }
+  this->Invalidate();
+}

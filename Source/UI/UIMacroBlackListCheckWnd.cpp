@@ -175,3 +175,10 @@ int UIMacroBlackListCheckWnd::SendMsg(
 }
 
 // OFFSET: 0x007ECE80
+// FUNCTION: fn_09803
+void UIMacroBlackListCheckWnd::Activate(unsigned char state, int duration) {
+  this->startTick = timeGetTime();
+  this->duration = duration;
+  this->unknown_00E4 = state;
+  this->Invalidate();
+}
