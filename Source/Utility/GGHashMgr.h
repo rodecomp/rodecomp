@@ -8,9 +8,16 @@
 // VTABLE: vt_00504
 class CGGHashMgr {
 public:
+  CGGHashMgr();
   virtual ~CGGHashMgr();
 
+  static int Create();
   static void Destroy();
+
+  int IsValid();
+  void VerifyFile(const char* filename);
+  void VerifyBuffer(const char* name, const unsigned char* buf, unsigned int size);
+  void VerifyPendingFiles();
 
   /* 0004 */ bool m_initialized;
   /* 0008 */ CGGHash* m_hash;
