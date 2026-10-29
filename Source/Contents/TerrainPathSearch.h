@@ -21,6 +21,7 @@ public:
   std::vector<MovementPathNode*>& Nodes() {
     return this->nodes;
   }
+  void Push(MovementPathNode* node);
 
   /* 0000 */ std::vector<MovementPathNode*> nodes;
 };

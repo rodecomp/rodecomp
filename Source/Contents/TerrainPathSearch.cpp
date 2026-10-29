@@ -168,9 +168,7 @@ bool CPathFinder::AddNeighbor(MovementPathNode* current, int cost, int nextX, in
     next->cost = totalCost;
     next->estimatedCost = totalCost + 10 * (std::abs(nextX - this->destinationX) + std::abs(nextY - this->destinationY));
     next->metadata = metadata;
-    std::vector<MovementPathNode*>& open = this->openList.Nodes();
-    open.push_back(next);
-    std::push_heap(open.begin(), open.end(), MovementPathNodeCompare());
+    this->openList.Push(next);
     return true;
   }
 
@@ -194,6 +192,13 @@ bool CPathFinder::AddNeighbor(MovementPathNode* current, int cost, int nextX, in
   }
 
   return true;
+}
+
+// OFFSET: 0x00AD9760
+// FUNCTION: fn_17883
+void MovementOpenList::Push(MovementPathNode* node) {
+  this->nodes.push_back(node);
+  std::push_heap(this->nodes.begin(), this->nodes.end(), MovementPathNodeCompare());
 }
 
 // OFFSET: 0x00AD97C0
