@@ -13,3 +13,9 @@ void UICaptchaRegisterWnd::Paint() {
 }
 
 // OFFSET: 0x007EAD90
+// FUNCTION: fn_09791
+void UICaptchaRegisterWnd::SetRegisterDisabled(unsigned char disabled) {
+  this->registerButton->SetDisabled(disabled);
+  this->registerButton->Invalidate();
+  this->Invalidate();
+}
