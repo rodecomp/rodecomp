@@ -130,8 +130,20 @@ void CPc::Slot33(int value) {
 }
 
 // OFFSET: 0x00DB02A0
+// FUNCTION: fn_22613
+void CGrannyPc::Slot31() {
+  if (this->unknown_0438 != 0) {
+    this->unknown_0460 = g_session.GetHeadPalName(this->unknown_0434, this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0438);
+  }
+}
 
 // OFFSET: 0x00DB0350
+// FUNCTION: fn_22614
+void CPc::Slot31() {
+  if (this->unknown_0444 != 0) {
+    this->unknown_0478 = g_session.GetHeadPalName(this->unknown_0440, this->unknown_04D4, this->unknown_0260, this->unknown_0444);
+  }
+}
 
 // OFFSET: 0x00DB0280
 // FUNCTION: fn_22612
