@@ -31,14 +31,75 @@ CEffect* EffectLists::Find(int actor, int id) const {
 }
 
 // OFFSET: 0x00B3B040
+// FUNCTION: fn_18794
+void EffectLists::Render() {
+  if (!g_session.IsEffectRenderEnabled()) {
+    return;
+  }
+
+  for (auto& entry : this->active) {
+    for (CEffect* effect : entry.second) {
+      effect->UpdateVisibility();
+    }
+  }
+}
 
 // OFFSET: 0x00B3BE50
+// FUNCTION: fn_18803
+float DirectionAngle(float x, float z) {
+  const float length = SquareRoot(x * x + z * z);
+  const float angle = static_cast<float>(std::acos(static_cast<double>(1.0f / length * x))) / 3.141592f * 180.0f;
+  if (z < 0.0f) {
+    return 360.0f - angle;
+  }
+
+  return angle;
+}
 
 // OFFSET: 0x00B3BED0
+// FUNCTION: fn_18804
+double ScreenAngle(vector3d from, vector3d to) {
+  float fromReciprocalDepth = 0.0f;
+  float toReciprocalDepth = 0.0f;
+  float fromX;
+  float fromY;
+  float toX;
+  float toY;
+  g_renderer->ProjectViewport(&from.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+  g_renderer->ProjectViewport(&to.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+  const float dx = toX - fromX;
+  const float dy = toY - fromY;
+  double angle = static_cast<float>(std::acos(static_cast<double>(dx / SquareRoot(dy * dy + dx * dx)))) / 3.141592f * 180.0f;
+  if (fromY > toY) {
+    angle = 360.0 - angle;
+  }
+
+  return angle;
+}
 
 // OFFSET: 0x00B3BFD0
+// FUNCTION: fn_18805
+std::string CurrentMapScriptName() {
+  std::string name = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(9, 0, 0, 0, 0));
+  const std::size_t at = name.rfind('@');
+  if (at != std::string::npos && at > 3) {
+    name.erase(at - 4, 3);
+  }
+
+  return name.substr(0, name.find("."));
+}
 
 // OFFSET: 0x00B3C1C0
+// FUNCTION: fn_18806
+std::string EffectFunctionName(std::string name) {
+  std::string result = "_" + name + "_Effect";
+  const std::size_t at = result.find("@");
+  if (at != std::string::npos) {
+    result.erase(at, 1);
+  }
+
+  return result;
+}
 
 // OFFSET: 0x00B257C0
 // FUNCTION: fn_18784
