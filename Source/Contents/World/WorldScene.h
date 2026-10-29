@@ -26,6 +26,7 @@ public:
   bool FindActorInCell(const float* position, std::function<bool(std::uint32_t)> predicate) const;
   CRenderObject* GetGameActorByAID(std::uint32_t aid) const;
   CRenderObject* GetGameActorByAidIncludeMe(std::uint32_t aid) const;
+  __declspec(noinline) CRenderObject* GetSkillByAID(std::uint32_t aid) const;
   void ClearActorCells();
 
   /* 0004 */ CGameMode* gameMode;
@@ -54,6 +55,8 @@ public:
   /* 00FC */ bool unknown_00FC;
   /* 00FD */ bool unknown_00FD;
 };
+
+CRenderObject* FindRenderObject(std::uint32_t aid);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(WorldScene, gameMode) == 0x04);

@@ -25,7 +25,7 @@ public:
   virtual void Slot03() {}
   virtual void Slot04();
   virtual void Close();
-  virtual bool Slot06() = 0;
+  virtual bool Slot06();
   virtual void Slot07();
   virtual void Slot08(int argument1, int argument2, int argument3);
   virtual void Slot09(int) {}

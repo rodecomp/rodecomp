@@ -3,6 +3,8 @@
 #include "Contents/Actors/EffectActors.h"
 #include "Resource/ResourceMgr.h"
 #include "Contents/Actors/RenderObject.h"
+#include "Contents/Actors/Skill.h"
+#include "Client/Mode/ActiveGameMode.h"
 #include "Contents/World/WorldObjects.h"
 #include "Contents/World/WorldScene.h"
 #include "Contents/Effects/EffectLists.h"
@@ -99,3 +101,7 @@ CCorpse* CGameMode::SpawnCorpse(float x, float y, float z, const char* action, c
 
   return corpse;
 }
+
+// OFFSET: 0x00AC8440
+
+// OFFSET: 0x00B3C350

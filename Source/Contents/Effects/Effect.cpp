@@ -1,6 +1,7 @@
 #include "Contents/Effects/Effect.h"
 
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/World/WorldScene.h"
 
 // OFFSET: 0x00B4DAE0
 // FUNCTION: fn_18979
@@ -35,6 +36,16 @@ bool CEffect::RetireIfInactive() {
   }
 
   return false;
+}
+
+// OFFSET: 0x00B4E150
+// FUNCTION: fn_18987
+bool CEffect::Slot06() {
+  if (this->actor != 0 && !FindRenderObject(this->actor)) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00B4E170
