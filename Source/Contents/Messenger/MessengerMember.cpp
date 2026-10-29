@@ -35,6 +35,15 @@ namespace {
     int& option1;
     int& option2;
   };
+
+  struct SessionHelper {
+    const char* sub_DDE770(const char* mapName);
+  };
+
+  class UIMiniPartyWnd : public UIWindow {
+  public:
+    void sub_73A1C0(int x, int y, int unknown);
+  };
 }
 
 class UIDragMiniPartyWnd : public UIFrameWnd {
@@ -47,6 +56,8 @@ public:
   void RemoveGauge();
   void SetUnknown010C(int first, int second);
   void SetGaugeValues(int current, int maximum);
+  std::string sub_A80880(int width, const char* text, int font, int height, int bold);
+  void sub_A84360(int x, int y, const char* text, int length, int font, int height, unsigned int color, int bold, int shadow);
 
   /* 00B4 */ MessengerMember member;
   /* 0104 */ UIPcGage* gauge;
@@ -153,6 +164,96 @@ void UIDragMiniPartyWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x007387A0
+// FUNCTION: fn_07670
+void UIDragMiniPartyWnd::Paint() {
+  this->ClearSurface(0xFFFFFFFF);
+  std::string prefix = "유저인터페이스\\renewalparty\\";
+  if (this->member.valid) {
+    bool dead = false;
+    if (this->member.dead == 1) {
+      dead = true;
+    } else if (this->member.accountId == g_session.m_aid) {
+      dead = (*reinterpret_cast<const int*>(reinterpret_cast<const char*>(g_modeMgr.GetGameMode()) + 0x250) == 1);
+    }
+
+    int yOffset = this->member.leader ? 0 : 2;
+    const char* jobFmt = dead ? "%sicon_jobs_%d_die.bmp" : "%sicon_jobs_%d.bmp";
+    char path[256];
+    sprintf(path, jobFmt, prefix.c_str(), this->member.job);
+    this->DrawBitmap(
+      this->iconPositions[this->iconIndex].x,
+      this->iconPositions[this->iconIndex].y + yOffset,
+      reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(path))),
+      true
+    );
+
+    if (this->member.leader == 0) {
+      sprintf(path, "%sico_partyCrown.bmp", prefix.c_str());
+      this->DrawBitmap(
+        this->iconPositions[this->iconIndex].x + 2,
+        0,
+        reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(path))),
+        true
+      );
+    }
+
+    const char* mapName = reinterpret_cast<SessionHelper&>(g_session).sub_DDE770(this->member.map.c_str());
+    char text[256];
+    sprintf(text, "%d %s(%s)", this->member.level, this->member.name.c_str(), mapName);
+    std::string clipped = this->sub_A80880(this->geometry.width - 0x43, text, 0, 12, 1);
+    this->sub_A84360(
+      this->iconPositions[this->iconIndex].x + 0x1C,
+      this->iconPositions[this->iconIndex].y + 3,
+      clipped.c_str(),
+      0,
+      0,
+      12,
+      0x00B07F72,
+      1,
+      0
+    );
+
+    if (this->gauge) {
+      char hpText[128];
+      sprintf(hpText, "%d/%d", this->gauge->current, this->gauge->maximum);
+      int len = static_cast<int>(strlen(hpText));
+      this->sub_A84360(
+        this->gauge->geometry.x + 0x42,
+        this->gauge->geometry.y - 4,
+        hpText,
+        len,
+        0,
+        10,
+        0,
+        0,
+        0
+      );
+    }
+
+    memset(path, 0, 0x100);
+    const char* statusIcon;
+    if (this->member.offline == 0) {
+      if (this->member.accountId == g_session.m_aid) {
+        statusIcon = "%sicon_party_me.bmp";
+      } else {
+        statusIcon = "%sicon_party_on.bmp";
+      }
+    } else {
+      statusIcon = "%sicon_party_off.bmp";
+    }
+
+    sprintf(path, statusIcon, prefix.c_str());
+    const BitmapImage* statusBmp = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(path)));
+    if (this->gauge) {
+      this->DrawBitmap(
+        static_cast<int>(this->geometry.width * 0.8f),
+        this->gauge->geometry.y - 5,
+        statusBmp,
+        true
+      );
+    }
+  }
+}
 
 // OFFSET: 0x00738630
 // FUNCTION: fn_07668
@@ -161,6 +262,13 @@ void UIDragMiniPartyWnd::MoveGauge(int x, int y) {
 }
 
 // OFFSET: 0x00738CE0
+// FUNCTION: fn_07671
+void UIDragMiniPartyWnd::Slot31(int argument1, int argument2) {
+  auto* window = static_cast<UIMiniPartyWnd*>(g_windowMgr.LookupWindow(34));
+  if (window) {
+    window->sub_73A1C0(argument1 + this->geometry.x, argument2 + this->geometry.y, this->unknown_0108);
+  }
+}
 
 // OFFSET: 0x00738D20
 // FUNCTION: fn_07672
