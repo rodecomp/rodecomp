@@ -176,6 +176,14 @@ int CSkillAction_SS_ANTENPOU::Slot02() {
 }
 
 // OFFSET: 0x00795D60
+// FUNCTION: fn_08798
+void CSkillAction_SS_ANTENPOU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(59, level / 16);
+  }
+}
+
+// OFFSET: 0x00795D60
 
 // OFFSET: 0x00795EE0
 // FUNCTION: fn_08800

@@ -1,6 +1,7 @@
 #include "Contents/Actors/GameActor.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/Effect.h"
+#include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Utility/Math/Vector3d.h"
@@ -16,6 +17,13 @@ public:
 class CSkillAction_SKE_ALL_IN_THE_SKY : public CSkillAction {
 public:
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot09(int argument1, int argument2, int argument3) override;
+};
+
+class CSkillAction_SKE_ENCHANTING_SKY : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
 };
 
 class CEfstAction_SKY_ENCHANT : public CEfstAction {
@@ -111,6 +119,7 @@ public:
 class CSkillAction_SKE_MIDNIGHT_KICK : public CSkillAction {
 public:
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -131,6 +140,30 @@ void CSkillObjectAction_SKE_STAR_CANNON::Slot00(int argument, CRenderObject* obj
 // FUNCTION: fn_08816
 int CSkillAction_SKE_ALL_IN_THE_SKY::Slot02() {
   return 53;
+}
+
+// OFFSET: 0x00797600
+// FUNCTION: fn_08817
+void CSkillAction_SKE_ALL_IN_THE_SKY::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(845, level / 16);
+  }
+}
+
+// OFFSET: 0x00797630
+// FUNCTION: fn_08818
+void CSkillAction_SKE_ALL_IN_THE_SKY::Slot09(int argument1, int argument2, int argument3) {
+  if (CGameActor* source = reinterpret_cast<CGameActor*>(argument2)) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_all_in_the_sky"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x007977B0
+// FUNCTION: fn_08819
+void CSkillAction_SKE_ENCHANTING_SKY::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(831, level / 16);
+  }
 }
 
 // OFFSET: 0x007977E0
@@ -462,6 +495,14 @@ void CEfstAction_DAWN_MOON::Slot02(int efstId, int value, int argument3, int arg
 // FUNCTION: fn_08856
 int CSkillAction_SKE_MIDNIGHT_KICK::Slot02() {
   return 53;
+}
+
+// OFFSET: 0x0079B170
+// FUNCTION: fn_08857
+void CSkillAction_SKE_MIDNIGHT_KICK::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+  }
 }
 
 // OFFSET: 0x0079B1A0
