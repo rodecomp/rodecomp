@@ -58,6 +58,13 @@ int CEffect::Slot28() {
 }
 
 // OFFSET: 0x005A21A0
+// FUNCTION: fn_03091
+void EffectResourceSwitcher::Start() {
+  if (this->effect) {
+    this->active = 1;
+    this->effect->EndLoop(1);
+  }
+}
 
 // OFFSET: 0x005A21C0
 // FUNCTION: fn_03092
@@ -65,6 +72,24 @@ void CEffect::Slot01() {
 }
 
 // OFFSET: 0x005A21D0
+// FUNCTION: fn_03093
+void EffectResourceSwitcher::SetNames(const std::string& source, const std::string& target) {
+  if (source.empty() || target.empty()) {
+    return;
+  }
+
+  this->sourceName = source;
+  this->targetName = target;
+
+  CRenderObject* actor = FindRenderObject(this->actor);
+  if (!actor) {
+    return;
+  }
+
+  this->effect = static_cast<CEZ2STREffect*>(
+      g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+  this->spawnPosition = actor->render.position;
+}
 
 // OFFSET: 0x005A22E0
 // FUNCTION: fn_03094
@@ -77,8 +102,36 @@ void CEffect::Slot07() {
 }
 
 // OFFSET: 0x005A2300
+// FUNCTION: fn_03096
+bool EffectResourceSwitcher::Slot06() {
+  if (!this->effect) {
+    return false;
+  }
+
+  if (!this->effect->retained) {
+    return !this->effect->IsFinished();
+  }
+
+  return true;
+}
 
 // OFFSET: 0x005A2330
+// FUNCTION: fn_03097
+void EffectResourceSwitcher::Slot03() {
+  if (!this->effect || !this->active || !this->effect->IsFinished()) {
+    return;
+  }
+
+  CEZ2STREffect* previous = this->effect;
+  this->sourceName = this->targetName;
+  this->targetName = "";
+  this->effect = static_cast<CEZ2STREffect*>(g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName), this->spawnPosition.x,
+                                                                this->spawnPosition.y, this->spawnPosition.z, 0, -1, 0, 0));
+  this->active = 0;
+  if (previous) {
+    previous->EndLoop(0);
+  }
+}
 
 // OFFSET: 0x005A2430
 // FUNCTION: fn_03098
@@ -190,10 +243,43 @@ bool CEZ2STREffect::IsFinished() {
 }
 
 // OFFSET: 0x006FFBF0
+// FUNCTION: fn_06969
+bool CEZ2STREffect::Slot06() {
+  EZ2STREmitter* emitter = this->emitter;
+  if (!emitter) {
+    return false;
+  }
+
+  if (this->timed == 1) {
+    return emitter->remainingTime > 0.0f;
+  }
+
+  if (emitter->looping == 1) {
+    return CEffect::Slot06();
+  }
+
+  if (emitter->lifetime == 0.0f) {
+    return true;
+  }
+
+  return static_cast<float>(emitter->elapsed) < emitter->lifetime * 60.0f;
+}
 
 // OFFSET: 0x006FFEF0
+// FUNCTION: fn_06972
+void CEZ2STREffect::Slot23(float argument) {
+  if (this->emitter) {
+    this->emitter->remainingTime = argument;
+  }
+}
 
 // OFFSET: 0x006FFF10
+// FUNCTION: fn_06973
+void CEZ2STREffect::Slot26(int argument) {
+  if (this->emitter) {
+    this->emitter->unknown_3FE8 = static_cast<unsigned char>(argument);
+  }
+}
 
 // OFFSET: 0x006FFF30
 
