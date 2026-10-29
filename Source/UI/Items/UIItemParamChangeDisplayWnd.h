@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_ITEMS_UIITEMPARAMCHANGEDISPLAYWND_H
 #define RAGNAROK_SOURCE_UI_ITEMS_UIITEMPARAMCHANGEDISPLAYWND_H
 
+#include "Contents/Items/ItemInfo.h"
 #include "UI/Window/UIFrameWnd.h"
 
 struct UIButtonContext;
@@ -13,6 +14,9 @@ public:
   /* 00C0 */ int m_afterSecond;
 
   void Paint() override;
+
+  ITEM_INFO FindEquippedItem(int location);
+  void SumEquippedStats();
 
 protected:
   UIButtonContext* m_controls;

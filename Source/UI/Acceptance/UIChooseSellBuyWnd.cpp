@@ -1,8 +1,12 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Input/InputCharset.h"
 #include "Contents/Skills/SkillInfo.h"
+#include "File/File.h"
 #include "UI/Items/UISpellListWnd.h"
+#include "Client/Registry.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
@@ -22,6 +26,7 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UISpriteButton.h"
 #include "UI/Chat/UIWhisperWnd.h"
 #include "UI/Dialogs/UIBookWnd.h"
 #include "UI/Dialogs/UIChooseWarpWnd.h"
@@ -61,13 +66,20 @@
 #include "UI/Skill/UISkillDescribeWnd.h"
 #include "UI/Skill/UISkillNameChangeWnd.h"
 #include "UI/Status/UIStatusWnd.h"
+#include "UI/Text/ColoredText.h"
+#include "UI/Text/PixelTextWrapping.h"
 #include "UI/Text/UITextViewer.h"
+#include "UI/Window/InputFocus.h"
+#include "UI/Window/UIMonsterDisplayWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/Text/TextTokens.h"
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <windows.h>
 #include <timeapi.h>
@@ -81,6 +93,12 @@ static const char menuSeparatorText[] = "-";
 
 // GLOBAL: gl_24749
 const char* g_menuSeparator = menuSeparatorText;
+
+// STRING: st_03412
+static const char bookmarkKeySuffixText[] = "\\BookMark";
+
+// GLOBAL: gl_24751
+const char* g_bookmarkKeySuffix = bookmarkKeySuffixText;
 
 // OFFSET: 0x008C73C0
 // FUNCTION: fn_11930
@@ -282,6 +300,8 @@ void UIMinimapZoomWnd::Paint() {
   this->DrawTextAt(controls.fonts, controls.locale, 19, 128, text.c_str(), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(controls.fonts, controls.locale, 20, 128, text.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
 }
+
+// OFFSET: 0x008EF1A0
 
 // OFFSET: 0x008EF590
 // FUNCTION: fn_12233
@@ -801,6 +821,8 @@ void UIItemCollectionWnd::Slot31(int x, int y) {
 void UIItemCollection_ComparisonWnd::Slot31(int, int) {
 }
 
+// OFFSET: 0x008F3C60
+
 // OFFSET: 0x008F46C0
 // FUNCTION: fn_12290
 void UIStatusWnd::Slot28(int x, int y) {
@@ -892,6 +914,8 @@ int UIMenuWnd::ItemAt(int x, int y) {
   return index <= last ? index : last;
 }
 
+// OFFSET: 0x008D9D00
+
 // OFFSET: 0x008D9F00
 // FUNCTION: fn_12137
 bool UISkillDescribeWnd::Slot42(void*) {
@@ -902,6 +926,16 @@ bool UISkillDescribeWnd::Slot42(void*) {
 // FUNCTION: fn_12138
 bool UIWhisperWnd::Slot42(void*) {
   return true;
+}
+
+// OFFSET: 0x008DA220
+
+// OFFSET: 0x008DA2E0
+// FUNCTION: fn_12142
+void UIEquipWnd::NotifyEquipmentChanged() {
+  if (this->unknown_0124) {
+    this->unknown_0124->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x008DA420
@@ -1067,6 +1101,12 @@ void UIItemIdentifyWnd::Slot35(int delta) {
   this->SendMsg(this->m_scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
 }
 
+// OFFSET: 0x008F6370
+
+// OFFSET: 0x008F6180
+
+// OFFSET: 0x008F6640
+
 // OFFSET: 0x008F66B0
 // FUNCTION: fn_12320
 void UIComboBoxIDWnd::Resize(int width, int height) {
@@ -1215,6 +1255,8 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   return 0;
 }
 
+// OFFSET: 0x008F7050
+
 // OFFSET: 0x008F8860
 // FUNCTION: fn_12332
 int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -1291,6 +1333,8 @@ int UIListBox::LineCount() const {
 bool UInCashWnd::Slot03() {
   return true;
 }
+
+// OFFSET: 0x008DB750
 
 // OFFSET: 0x008DBD00
 // FUNCTION: fn_12160
