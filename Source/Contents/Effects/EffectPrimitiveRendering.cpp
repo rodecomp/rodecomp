@@ -1567,6 +1567,87 @@ void CEffectPrim::RenderRotatedPlate(matrix& wtm) {
   }
 }
 
+// OFFSET: 0x00BDEC50
+// FUNCTION: fn_19907
+void CEffectPrim::RenderTrailSquares(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  vector3d vec4{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+    float shrink = 0.0f;
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+
+    switch (slot.flag1[0]) {
+    case 0:
+      red = 70;
+      green = 70;
+      blue = 255;
+      break;
+    case 1:
+      red = 255;
+      green = 70;
+      blue = 70;
+      break;
+    case 2:
+      red = 70;
+      green = 255;
+      blue = 70;
+      break;
+    case 3:
+      red = 255;
+      green = 255;
+      blue = 90;
+      break;
+    default:
+      red = 255;
+      green = 70;
+      blue = 255;
+      break;
+    }
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    int index = 0;
+    do {
+      const int angle1 = slot.rotStart;
+      const float radius = slot.maxHeight - shrink;
+      const int angle2 = angle1 < 270 ? angle1 + 90 : angle1 - 270;
+      const int angle3 = angle2 + 90 < 360 ? angle2 + 90 : angle2 - 270;
+      const int angle4 = angle3 + 90 < 360 ? angle3 + 90 : angle3 - 270;
+      vec1 = {radius * g_cosTable[angle1], 0.0f, radius * g_sinTable[angle1]};
+      vec2 = {radius * g_cosTable[angle2], 0.0f, radius * g_sinTable[angle2]};
+      vec3 = {radius * g_cosTable[angle3], 0.0f, radius * g_sinTable[angle3]};
+      vec4 = {radius * g_cosTable[angle4], 0.0f, radius * g_sinTable[angle4]};
+      this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+
+      const int step = index;
+      const vector3d& offset = index == 0 ? slot.vecBNow : index == 1 ? slot.vecBPre : slot.vecTPre;
+      ++index;
+      const int alpha = slot.alphaB / index;
+      vec1 = {offset.x + vec1.x, offset.y + vec1.y, offset.z + vec1.z};
+      vec2 = {offset.x + vec2.x, offset.y + vec2.y, offset.z + vec2.z};
+      vec3 = {offset.x + vec3.x, offset.y + vec3.y, offset.z + vec3.z};
+      vec4 = {offset.x + vec4.x, offset.y + vec4.y, offset.z + vec4.z};
+
+      if (slot.flag1[3] != 0) {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha / 4), vec1, vec2, vec3, vec4, wtm, 0, slot.flag1[3], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 1, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
+
+      shrink += step != 0 ? 0.25f : 0.5f;
+    } while (index < 2);
+  }
+}
+
 // OFFSET: 0x00BDF0A0
 // FUNCTION: fn_19908
 void CEffectPrim::RenderRainbow(matrix& wtm) {
