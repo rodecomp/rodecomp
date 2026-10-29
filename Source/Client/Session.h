@@ -205,7 +205,9 @@ public:
   /* 80BC */ std::map<int, SessionShop> m_shops;
   /* 80C4 */ unsigned char unknown_80C4[4];
   /* 80C8 */ int unknown_80C8;
-  /* 80CC */ unsigned char unknown_80CC[0x50];
+  /* 80CC */ unsigned char unknown_80CC[0x20];
+  /* 80EC */ std::string unknown_80EC;
+  /* 8104 */ std::string unknown_8104;
   /* 811C */ std::vector<ITEM_INFO> m_cardItems;
   /* 8128 */ unsigned char unknown_8128[0x0C];
   /* 8134 */ int unknown_8134;
@@ -276,6 +278,10 @@ public:
   SessionRecord6144 FindRecord6144(int key) const;
   int GetBeginEffectId(int skillId) const;
   ITEM_INFO GetItem2B50(int index) const;
+  ITEM_INFO GetItem17F0(int index) const;
+  unsigned char IsAllyActor(std::uint32_t aid, int job);
+  const char* Text8104() const;
+  const char* Text80EC() const;
   int CountItems5C68() const;
   void SplitDate(__time32_t time, std::uint16_t& year, std::uint16_t& month, std::uint16_t& day) const;
   int GetDefaultOptionValue(const char* name, int fallback) const;
@@ -359,8 +365,11 @@ public:
 
 extern CSession g_session;
 extern std::vector<int> g_adminAccountIds;
+extern std::vector<int> g_monsterJobs;
 
 bool IsAdminAccount(int aid);
+bool IsMonsterJob(int job);
+int MonsterJobColor(int job);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(SessionRecord6144) == 0x38);
