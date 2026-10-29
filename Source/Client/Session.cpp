@@ -1,5 +1,8 @@
 #include "Client/Session.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Jobs/JobId.h"
+#include "Contents/World/World.h"
 #include "Network/TextEncoding.h"
 
 #include <algorithm>
@@ -446,4 +449,10 @@ bool CSession::IsFriendName(const char* name) const {
   }
 
   return false;
+}
+
+// OFFSET: 0x00E1DFB0
+// FUNCTION: fn_23889
+int CSession::GetSceneUnknown004C() const {
+  return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_004C;
 }

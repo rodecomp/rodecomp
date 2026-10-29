@@ -785,3 +785,99 @@ void CSession::SetPlayerNameKey(const unsigned char* key) {
     this->m_playerNameKey[index] ^= g_playerNameKey[index];
   }
 }
+
+// OFFSET: 0x00E1D870
+// FUNCTION: fn_23853
+bool CSession::IsBabyJob(int job) const {
+  return (job >= JT_NOVICE_B && job <= JT_THIEF_B) || job == JT_SUPERNOVICE_B || job == JT_SUPERNOVICE2_B ||
+         (job >= JT_KNIGHT_B && job <= JT_CHICKEN2_B) || (job >= JT_RUNE_KNIGHT_B && job <= JT_MADOGEAR_B) ||
+         (job >= JT_PORING_NOVICE_B && job <= JT_DOG_CHASER_B) || (job >= JT_SHEEP_PRIEST_B && job <= JT_PIG_BLACKSMITH_B) ||
+         job == JT_PORING_SNOVICE2_B || (job >= JT_PIG_MECHANIC_B && job <= JT_LION_CRUSADER_B) || job == JT_DO_SUMMONER_B ||
+         (job >= JT_NINJA_B && job <= JT_STAR2_B) || job == JT_STAR_EMPEROR_B || job == JT_SOUL_REAPER_B ||
+         job == JT_STAR2_EMPEROR_B || job == JT_HAETAE_STAR_EMPEROR_B || job == JT_HAETAE_SOUL_REAPER_B || job == JT_DRUID_B ||
+         job == JT_KARNOS_B;
+}
+
+// OFFSET: 0x00E1DC50
+// FUNCTION: fn_23873
+int CSession::IsMercenaryJob(int job) const {
+  return (job >= JT_MER_LIF && job <= JT_MER_VANILMIRTH_H2) || (job >= JT_MER_EIRA && job <= JT_MER_ELEANOR) ? 1 : 0;
+}
+
+// OFFSET: 0x00E1DC80
+// FUNCTION: fn_23874
+int CSession::IsNewMercenaryJob(int job) const {
+  return job >= JT_MER_EIRA && job <= JT_MER_ELEANOR;
+}
+
+// OFFSET: 0x00E1E020
+// FUNCTION: fn_23891
+bool CSession::IsSuperNovice2Job(int job) const {
+  return job == JT_SUPERNOVICE2 || job == JT_SUPERNOVICE2_B || job == JT_PORING_SNOVICE2 || job == JT_PORING_SNOVICE2_B;
+}
+
+// OFFSET: 0x00E1E0E0
+// FUNCTION: fn_23894
+bool CSession::IsExpandedJob(int job) const {
+  switch (job) {
+  case JT_KAGEROU:
+  case JT_OBORO:
+  case JT_FROG_KAGEROU:
+  case JT_FROG_OBORO:
+  case JT_REBELLION:
+  case JT_PECO_REBELLION:
+  case JT_KAGEROU_B:
+  case JT_OBORO_B:
+  case JT_REBELLION_B:
+  case JT_FROG_KAGEROU_B:
+  case JT_FROG_OBORO_B:
+  case JT_PECO_REBELLION_B:
+  case JT_STAR_EMPEROR:
+  case JT_SOUL_REAPER:
+  case JT_STAR_EMPEROR_B:
+  case JT_SOUL_REAPER_B:
+  case JT_STAR2_EMPEROR:
+  case JT_STAR2_EMPEROR_B:
+  case JT_HAETAE_STAR_EMPEROR:
+  case JT_HAETAE_SOUL_REAPER:
+  case JT_HAETAE_STAR_EMPEROR_B:
+  case JT_HAETAE_SOUL_REAPER_B:
+  case JT_SKY_EMPEROR:
+  case JT_SOUL_ASCETIC:
+  case JT_SHINKIRO:
+  case JT_SHIRANUI:
+  case JT_NIGHT_WATCH:
+  case JT_HYPER_NOVICE:
+  case JT_SPIRIT_HANDLER:
+  case JT_SKY_EMPEROR_RIDING:
+  case JT_SOUL_ASCETIC_RIDING:
+  case JT_SHINKIRO_RIDING:
+  case JT_SHIRANUI_RIDING:
+  case JT_NIGHT_WATCH_RIDING:
+  case JT_HYPER_NOVICE_RIDING:
+  case JT_SPIRIT_HANDLER_RIDING:
+  case JT_SKY_EMPEROR2:
+  case JT_KARNOS:
+  case JT_KARNOS_B:
+  case JT_KARNOS_RIDING:
+    return true;
+  default:
+    return false;
+  }
+}
+
+// OFFSET: 0x00E3D350
+// FUNCTION: fn_24188
+bool CSession::IsCostumeJob(int job) const {
+  switch (job) {
+  case JT_MARRIED:
+  case JT_SANTA:
+  case JT_SUMMER:
+  case JT_HANBOK:
+  case JT_OKTOBERFEST:
+  case JT_SUMMER2:
+    return true;
+  default:
+    return false;
+  }
+}

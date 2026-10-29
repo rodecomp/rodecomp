@@ -264,6 +264,13 @@ public:
   int GetPairValue() const;
   bool IsNpcJob(int job) const;
   int IsGuardianJob(int job) const;
+  bool IsBabyJob(int job) const;
+  int IsMercenaryJob(int job) const;
+  int IsNewMercenaryJob(int job) const;
+  bool IsSuperNovice2Job(int job) const;
+  bool IsExpandedJob(int job) const;
+  bool IsCostumeJob(int job) const;
+  int GetSceneUnknown004C() const;
   int IsPlayerJobId(int job) const;
   int SetHotkeyEntry(char enabled, int id, int value, int slot);
   int SetFlag(char value);
