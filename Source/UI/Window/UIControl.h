@@ -85,6 +85,14 @@ public:
 
 class CUIButton : public CUIControl {
 public:
+  void Slot25(int x, int y) override;
+  void Slot26(int x, int y) override;
+  void ResetCursor(int x, int y) override;
+  void Slot47() override;
+  void Slot48() override;
+
+  void SetState(int value);
+
   /* 0080 */ int state;
   /* 0084 */ unsigned char disabled;
   /* 0085 */ unsigned char unknown_0085[0x6B];

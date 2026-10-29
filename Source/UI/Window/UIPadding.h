@@ -7,6 +7,7 @@
 
 class CUIPadding : public CUIControl {
 public:
+  bool CanHitTest() override;
   void Paint() override;
 
   /* 0080 */ std::uint32_t color;

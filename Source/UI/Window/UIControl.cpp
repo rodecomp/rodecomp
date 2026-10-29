@@ -312,6 +312,18 @@ void CUIVScrollBar::SetBackground(const std::string& name) {
 
 // OFFSET: 0x009F2280
 
+// OFFSET: 0x009EE8F0
+
+// OFFSET: 0x009EE920
+
+// OFFSET: 0x009EE930
+
+// OFFSET: 0x009EE9D0
+
+// OFFSET: 0x009EEA70
+
+// OFFSET: 0x009EEAA0
+
 // OFFSET: 0x009F26B0
 
 // OFFSET: 0x009EF860
@@ -460,6 +472,12 @@ int CUIVScrollBar::PositionFromOffset(int offset) {
 void CUIVScrollBar::SetHidden(int) {
   this->hidden = 1;
   this->Show(0);
+}
+
+// OFFSET: 0x009EA990
+// FUNCTION: fn_14536
+bool CUIPadding::CanHitTest() {
+  return false;
 }
 
 // OFFSET: 0x009EA1B0
