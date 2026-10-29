@@ -285,6 +285,70 @@ int CSkillAction_KR_SHARPEN_HAIL::Slot02() {
 }
 
 // OFFSET: 0x005B4AF0
+// FUNCTION: fn_03379
+void CSkillAction_KR_SHARPEN_HAIL::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  const int shotEffect = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t encrypted[] = {0x3E, 0xB9, 0xAA, 0xB5, 0x89, 0x12, 0xA3, 0x20, 0x25, 0xB0, 0xA2, 0xAB, 0xA6, 0x04, 0xA5, 0x10, 0x39, 0xD1};
+    thread_local EncryptedName<sizeof(encrypted), 0x7FCD77F9C7CBD14DULL> name(encrypted);
+    return name.Text();
+  }());
+  const int bottomEffect = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t encrypted[] = {0x72, 0x3F, 0xF6, 0xAD, 0x63, 0xE0, 0x3D, 0x8E, 0x69, 0x36, 0xFE, 0xB3, 0x4C,
+                                      0xF6, 0x3B, 0xBE, 0x75, 0x08, 0xF5, 0xB0, 0x67, 0xF1, 0x3C, 0xBC, 0x01};
+    thread_local EncryptedName<sizeof(encrypted), 0xD1538513DF975701ULL> name(encrypted);
+    return name.Text();
+  }());
+
+  for (int delay = 0; delay < 1000; delay += 200) {
+    int count = rand() % 8;
+    if (count < 5) {
+      count = 5;
+    }
+
+    for (int index = 0; index < count; ++index) {
+      const int startTime = MulDiv(index, 200, count) + delay;
+      int flip = rand() % 2;
+      if (flip < 0) {
+        flip = 0;
+      }
+
+      int offsetY = rand() % 6;
+      if (offsetY < 0) {
+        offsetY = 0;
+      }
+
+      int offsetX = rand() % 6;
+      if (offsetX < 0) {
+        offsetX = 0;
+      }
+
+      if (flip) {
+        offsetX = -offsetX;
+        offsetY = -offsetY;
+      }
+
+      const vector3d position{
+        target->render.position.x + static_cast<float>(offsetX * 4),
+        target->render.position.y + static_cast<float>(offsetY * 4),
+        target->render.position.z + 0.0f,
+      };
+
+      CEffect* shot = g_effectMgr->Spawn(0, shotEffect, position.x, position.y, position.z, 0, -1, 0, 0);
+      if (shot) {
+        shot->Slot16(startTime);
+      }
+
+      CEffect* bottom = g_effectMgr->Spawn(0, bottomEffect, position.x, position.y, position.z, 0, -1, 0, 0);
+      if (bottom) {
+        bottom->Slot16(startTime);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x005B4F90
 // FUNCTION: fn_03381
