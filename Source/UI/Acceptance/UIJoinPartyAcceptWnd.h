@@ -66,6 +66,11 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
 
+class UIBabyAcceptWnd : public UIExchangeAcceptWnd {
+public:
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UIChooseSellBuyWnd) == 200);
 static_assert(sizeof(UIExchangeAcceptWnd) == 204);

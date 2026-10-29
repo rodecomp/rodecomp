@@ -985,6 +985,64 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   return 0;
 }
 
+// OFFSET: 0x008F6D00
+// FUNCTION: fn_12326
+int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    this->m_acceptance->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    if (a == 184) {
+      this->m_frameContext->windows.CloseWindow(105);
+      this->m_frameContext->windows.EnsureWindow(110)->SendMsg(nullptr, 91, 184, b, 0, 0);
+    } else if (a == 185) {
+      this->m_frameContext->windows.CloseWindow(105);
+      this->m_context->mode->SendModeMessage(173, this->identity, 0, 0, 0);
+    }
+    return 0;
+  }
+
+  if (message == 91) {
+    this->identity = static_cast<std::uint32_t>(a);
+    std::string text = "(";
+    text += reinterpret_cast<const char*>(b);
+    text += ")";
+    text += this->m_acceptance->text.buttons.services.MessageText(794);
+    this->viewer->Clear();
+    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+    return 0;
+  }
+
+  if (message != 123) {
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  const auto* packet = reinterpret_cast<const unsigned char*>(a);
+  const unsigned length = static_cast<unsigned>(b);
+  std::int16_t tag;
+  std::memcpy(&tag, packet, sizeof(tag));
+  if (tag == 0x53FC) {
+    unsigned offset = 6;
+    while (offset < length) {
+      std::uint32_t size;
+      std::memcpy(&tag, packet + offset, sizeof(tag));
+      std::memcpy(&size, packet + offset + 2, sizeof(size));
+      offset += 6;
+      if (tag == 0x53FD) {
+        break;
+      }
+      if (tag == 0x53FE) {
+        char name[260];
+        std::memset(name, 0, sizeof(name));
+        std::memcpy(name, packet + offset, size);
+        offset += size;
+        this->SendMsg(nullptr, 91, 0, reinterpret_cast<std::intptr_t>(name), 0, 0);
+      } else {
+        offset += size;
+      }
+    }
+  }
+  return 0;
+}
+
 // OFFSET: 0x008F8860
 // FUNCTION: fn_12332
 int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
