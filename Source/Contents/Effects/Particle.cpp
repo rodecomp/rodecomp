@@ -92,6 +92,16 @@ float RandomRange(float minimum, float maximum) {
 }
 
 // OFFSET: 0x00B3C4B0
+// FUNCTION: fn_18810
+std::string EmitterKey(std::string effect, std::string emitter) {
+  std::string key = "_" + effect + "_" + emitter;
+  const std::size_t marker = key.find("@");
+  if (marker != std::string::npos) {
+    key.erase(marker, 1);
+  }
+
+  return key;
+}
 
 // OFFSET: 0x00B3C6F0
 
@@ -110,6 +120,17 @@ float RandomRange(float minimum, float maximum) {
 // OFFSET: 0x00B3D6F0
 
 // OFFSET: 0x00B3D7A0
+// FUNCTION: fn_18819
+void CEZ2STRParticle::Open(std::string name) {
+  this->m_res = CResPtr<CEZeffectRes>(static_cast<CEZeffectRes*>(ResourceMgr::Instance().Load(name)));
+  this->m_name = name;
+
+  char directory[256];
+  std::memset(directory, 0, sizeof(directory) - 1);
+  _splitpath(name.c_str(), nullptr, directory, nullptr, nullptr);
+  this->m_texturePrefix = std::string(directory);
+  this->Restart();
+}
 
 // OFFSET: 0x00B3D9D0
 
