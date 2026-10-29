@@ -92,7 +92,7 @@ void BarterTree::EraseSubtree(BarterTree* owner, BarterTreeNode* root)
   while (node->isnil == 0) {
     EraseSubtree(owner, node->right);
     BarterTreeNode* next = node->left;
-    ::operator delete(node);
+    delete node;
     node = next;
   }
 }
@@ -132,10 +132,10 @@ BarterTree::~BarterTree()
   while (node->isnil == 0) {
     EraseSubtree(this, node->right);
     BarterTreeNode* next = node->left;
-    ::operator delete(node);
+    delete node;
     node = next;
   }
-  ::operator delete(head);
+  delete head;
 }
 
 // OFFSET: 0x005D84F0
@@ -147,7 +147,7 @@ void BarterTree::Clear()
   while (node->isnil == 0) {
     EraseSubtree(this, node->right);
     BarterTreeNode* next = node->left;
-    ::operator delete(node);
+    delete node;
     node = next;
   }
   head->parent = head;
