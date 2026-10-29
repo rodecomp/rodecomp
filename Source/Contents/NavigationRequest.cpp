@@ -109,6 +109,18 @@ bool CNavigationManager::UpdateGround() {
   return true;
 }
 
+// OFFSET: 0x00BA12A0
+// FUNCTION: fn_19639
+int CNavigationManager::StateCount() const {
+  return static_cast<int>(this->states.size());
+}
+
+// OFFSET: 0x00BA12C0
+// FUNCTION: fn_19640
+int CNavigationManager::NodeCount() const {
+  return static_cast<int>(this->nodes.size());
+}
+
 // OFFSET: 0x00B97200
 // FUNCTION: fn_19598
 int CNavigationManager::RequestRoute(int cellX, int cellY) {

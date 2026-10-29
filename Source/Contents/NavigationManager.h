@@ -290,6 +290,9 @@ public:
   std::string DestinationTitle();
   float FitToSquare(int* offsetX, int* offsetY, int width, int height, float size) const;
   void LoadSettings();
+  void SaveSettings();
+  int StateCount() const;
+  int NodeCount() const;
   bool LoadScript(LuaScript* script);
   bool BuildRoute(int startX, int startY, int destX, int destY, bool collectCells);
   bool SavedTargetText(char* out, int size);

@@ -450,6 +450,8 @@ void CNavigationManager::LoadSettings() {
   }
 }
 
+// OFFSET: 0x00BA1330
+
 // OFFSET: 0x00B99CE0
 // FUNCTION: fn_19615
 std::vector<unsigned char> CNavigationManager::WriteReplayState() {

@@ -387,6 +387,7 @@
   "Source/Contents/Emblems/GuildEmblemReqBundle.cpp": 4,
   "Source/Contents/EnchantMgr.cpp": 4,
   "Source/Contents/EnemyMonsterTalk.cpp": 4,
+  "Source/Contents/EntryQueueMgr.cpp": 4,
   "Source/Contents/EquipmentResources.cpp": 4,
   "Source/Contents/ForbiddenWords.cpp": 4,
   "Source/Contents/Ground/GroundDecals.cpp": 3,
