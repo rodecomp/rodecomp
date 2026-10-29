@@ -409,6 +409,32 @@ void CCorpse::SendMsg(
   CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
 }
 
+// OFFSET: 0x00DA4B10
+// FUNCTION: fn_22421
+void CGndRiser::SendMsg(
+  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int, int, int, int
+) {
+  if (message == 14 && a == 0) {
+    const float* position = reinterpret_cast<const float*>(b);
+    this->render.position.x = position[0];
+    this->render.position.y = position[1];
+    this->render.position.z = position[2];
+    this->render.visible = 0;
+    this->render.unknown_008C = timeGetTime();
+    this->lifetime = 30;
+
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode) {
+      mode->WorldCell(this->render.position.x, this->render.position.z, this->screenX, this->screenY);
+      this->screenX /= 2;
+      this->screenY /= 2;
+    }
+    return;
+  }
+
+  CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+}
+
 // OFFSET: 0x00DA4BF0
 // FUNCTION: fn_22422
 void CHalluNPC::SendMsg(
