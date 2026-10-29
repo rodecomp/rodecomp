@@ -333,6 +333,16 @@ CSkillActionMgr* g_skillActionMgr;
 // INLINED
 CSkillActionMgr::~CSkillActionMgr() = default;
 
+// OFFSET: 0x005B06F0
+// FUNCTION: fn_03339
+CSkillActionMgr* CSkillActionMgr::GetInstance() {
+  if (!g_skillActionMgr) {
+    g_skillActionMgr = new (std::nothrow) CSkillActionMgr;
+  }
+
+  return g_skillActionMgr;
+}
+
 // OFFSET: 0x00773480
 // FUNCTION: fn_08311
 CSkillInfo::CSkillInfo() : available(1), id(0), level(0), name(nullptr), unknown_0028(0), unknown_0030(0), unknown_0034(0) {

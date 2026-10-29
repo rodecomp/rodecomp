@@ -174,8 +174,6 @@ public:
 
 extern CSkillActionMgr* g_skillActionMgr;
 
-// OFFSET: 0x005B06F0
-
 void __stdcall Sub7739F0();
 bool IsOptionalSelfTargetSkill(int skillId);
 bool HidesUseFailureMessage(int skillId);
