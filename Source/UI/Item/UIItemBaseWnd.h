@@ -3,6 +3,9 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-class UIItemBaseWnd : public UIFrameWnd {};
+class UIItemBaseWnd : public UIFrameWnd {
+public:
+  void Slot15(int width, int height) override;
+};
 
 #endif

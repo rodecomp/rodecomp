@@ -8,6 +8,7 @@
 
 class UISkillListWnd : public UIFrameWnd {
 public:
+  bool Slot03() override;
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
 

@@ -804,3 +804,14 @@ void UISkillListWnd::Slot32(int x, int y) {
     this->Invalidate();
   }
 }
+
+// OFFSET: 0x00974560
+// FUNCTION: fn_13302
+bool UISkillListWnd::Slot03() {
+  return true;
+}
+
+// OFFSET: 0x00974900
+// FUNCTION: fn_13307
+void UIItemBaseWnd::Slot15(int, int) {
+}
