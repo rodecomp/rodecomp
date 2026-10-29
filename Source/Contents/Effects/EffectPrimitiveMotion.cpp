@@ -10,6 +10,7 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/Effects/EffectActor.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/RagEffectState.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Resource/World/TerrainResource.h"
@@ -4920,5 +4921,106 @@ void CEffectPrim::PrimTrailShift() {
         }
       }
     }
+  }
+}
+
+// OFFSET: 0x00BBE960
+// FUNCTION: fn_19812
+void CEffectPrim::PrimGrowFollow() {
+  this->render.position = this->state.master->render.position;
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life <= 0) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process <= 0) {
+      continue;
+    }
+
+    if (slot.process <= 10) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + (this->state.size != 113.0f ? 2 : 6));
+    }
+
+    slot.distance *= 1.07f;
+
+    if (slot.process > 10 && --slot.alphaB < 0) {
+      slot.alphaB = 0;
+    }
+  }
+}
+
+// OFFSET: 0x00BC3BD0
+// FUNCTION: fn_19839
+void CEffectPrim::PrimSpinFade() {
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1 || ++slot.process <= 0) {
+      continue;
+    }
+
+    const int turn = std::rand() % 3;
+    slot.rotStart = static_cast<std::int16_t>(slot.rotStart + (turn >= 0 ? turn : 0) + 3);
+    if (slot.rotStart >= 360) {
+      slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
+    }
+
+    if (slot.flag1[5] == 1) {
+      if (slot.process > 120) {
+        --slot.alphaB;
+      }
+    } else if (slot.flag1[5] != 10 && slot.process > 60) {
+      --slot.alphaB;
+    }
+
+    if (slot.process <= 40) {
+      ++slot.alphaB;
+    }
+
+    if (slot.alphaB < 0) {
+      slot.alphaB = 0;
+    }
+  }
+}
+
+// OFFSET: 0x00BC4380
+// FUNCTION: fn_19842
+void CEffectPrim::PrimExpandPulse() {
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process > 0) {
+      slot.distance += slot.height[0];
+    }
+
+    if (static_cast<unsigned>(slot.process - 11) > 9) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 5);
+      if (slot.alphaB <= 0) {
+        slot.alphaB = 0;
+      }
+    } else if (slot.flag1[1] != 24) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
+    } else {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + (g_serviceOptions.Get(229) != 0 ? 8 : 15));
+    }
+  }
+}
+
+// OFFSET: 0x00BE75D0
+// FUNCTION: fn_19934
+void CEffectPrim::ScaleByMaster(float& scale) const {
+  if (this->state.master && this->state.master->state.parent && this->state.count == 5) {
+    this->state.master->state.parent->ScaleByFadePulse(scale);
   }
 }
