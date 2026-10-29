@@ -7,6 +7,7 @@
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/Effects/SkillEffects.h"
+#include "Contents/Effects/SpriteParticle.h"
 #include "Contents/World/World.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
@@ -31,6 +32,11 @@ static void SetScreenVertex(RenderVertex& vertex, float x, float y, std::uint32_
 // INLINED
 static CEZ2STRParticle* AsParticle(EZ2STREmitter* emitter) {
   return reinterpret_cast<CEZ2STRParticle*>(emitter);
+}
+
+// INLINED
+static CSpriteParticle* AsSprite(EZ2STREmitter* emitter) {
+  return reinterpret_cast<CSpriteParticle*>(emitter);
 }
 
 // OFFSET: 0x0070C070
@@ -72,7 +78,23 @@ bool CRootTwistEffect::Slot06() {
 
 // OFFSET: 0x0070C3E0
 
+// OFFSET: 0x0070C440
+// FUNCTION: fn_07133
+void CRootTwistEffect::Slot04() {
+  for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
+    AsSprite(*emitter)->sub_B40F30(1);
+  }
+}
+
 // OFFSET: 0x0070C7F0
+
+// OFFSET: 0x0070CB80
+// FUNCTION: fn_07139
+void CSprArrowEffect::Slot04() {
+  if (this->unknown_00CC != 0 && this->unknown_00FC) {
+    AsSprite(reinterpret_cast<EZ2STREmitter*>(this->unknown_00CC))->sub_B40F30(1);
+  }
+}
 
 // OFFSET: 0x0070CEA0
 // FUNCTION: fn_07141
@@ -109,6 +131,16 @@ CSvgSpiritEffect::CSvgSpiritEffect() : CEffect(1128) {
 
 // OFFSET: 0x0070D690
 
+// OFFSET: 0x0070D810
+// FUNCTION: fn_07155
+void CStemSpearEffect::Slot04() {
+  for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
+    if ((*emitter)->elapsed > 0 && (*emitter)->elapsed < this->unknown_002C) {
+      AsSprite(*emitter)->sub_B40F30(1);
+    }
+  }
+}
+
 // OFFSET: 0x0070DB30
 // FUNCTION: fn_07160
 bool CSvgSpiritEffect::Slot06() {
@@ -116,6 +148,15 @@ bool CSvgSpiritEffect::Slot06() {
 }
 
 // OFFSET: 0x0070DB50
+
+// OFFSET: 0x0070DCD0
+// FUNCTION: fn_07162
+void CSvgSpiritEffect::Slot04() {
+  EZ2STREmitter* emitter = this->emitter;
+  if (emitter->elapsed > 0 && emitter->elapsed < this->unknown_002C) {
+    AsSprite(emitter)->sub_B40F30(1);
+  }
+}
 
 // OFFSET: 0x0070DCF0
 // FUNCTION: fn_07163
@@ -126,6 +167,14 @@ CTunaPartyEffect::CTunaPartyEffect() : CEffect(1097) {
 // FUNCTION: fn_07167
 bool CTunaPartyEffect::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x0070E090
+// FUNCTION: fn_07169
+void CTunaPartyEffect::Slot04() {
+  for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
+    AsSprite(*emitter)->sub_B40F30(1);
+  }
 }
 
 // OFFSET: 0x0070E0C0
