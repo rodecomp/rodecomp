@@ -8,6 +8,28 @@
 #include <vector>
 
 #include "Contents/MessageTable.h"
+#include "UI/Window/UIWindow.h"
+
+namespace LineCutter {
+  class UIText : public UIWindow {
+  public:
+    void Slot25(int x, int y) override;
+    void Slot26(int x, int y) override;
+    void Slot27(int x, int y) override;
+    void ResetCursor(int x, int y) override;
+    void Slot31(int x, int y) override;
+    void Slot32(int x, int y) override;
+    void Slot33(int x, int y) override;
+    void Slot35(int value) override;
+
+    /* 0080 */ unsigned char unknown_0080[0x18];
+    /* 0098 */ std::string m_text;
+  };
+}
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(LineCutter::UIText) == 0xB0);
+#endif
 
 // OFFSET: 0x00833160
 // FUNCTION: fn_10409
@@ -207,4 +229,68 @@ std::string FormatMessageArguments(std::string value, int messageId) {
   }
 
   return result;
+}
+
+// OFFSET: 0x0083B250
+// FUNCTION: fn_10473
+void LineCutter::UIText::Slot25(int x, int y) {
+  if (this->parent) {
+    this->parent->Slot25(x + this->geometry.x, y + this->geometry.y);
+  }
+}
+
+// OFFSET: 0x0083B220
+// FUNCTION: fn_10472
+void LineCutter::UIText::Slot26(int x, int y) {
+  if (this->parent) {
+    this->parent->Slot26(x + this->geometry.x, y + this->geometry.y);
+  }
+}
+
+// OFFSET: 0x0083B400
+// FUNCTION: fn_10476
+void LineCutter::UIText::Slot27(int x, int y) {
+  if (this->parent) {
+    this->parent->Slot27(x + this->geometry.x, y + this->geometry.y);
+  }
+}
+
+// OFFSET: 0x0083B430
+// FUNCTION: fn_10477
+void LineCutter::UIText::ResetCursor(int x, int y) {
+  if (this->parent) {
+    this->parent->ResetCursor(x + this->geometry.x, y + this->geometry.y);
+  }
+}
+
+// OFFSET: 0x0083B280
+// FUNCTION: fn_10474
+void LineCutter::UIText::Slot31(int x, int y) {
+  if (this->parent) {
+    this->parent->Slot31(x + this->geometry.x, y + this->geometry.y);
+  }
+}
+
+// OFFSET: 0x0083B630
+// FUNCTION: fn_10480
+void LineCutter::UIText::Slot32(int x, int y) {
+  if (this->parent) {
+    this->parent->Slot32(x + this->geometry.x, y + this->geometry.y);
+  }
+}
+
+// OFFSET: 0x0083B660
+// FUNCTION: fn_10481
+void LineCutter::UIText::Slot33(int x, int y) {
+  if (this->parent) {
+    this->parent->Slot33(x + this->geometry.x, y + this->geometry.y);
+  }
+}
+
+// OFFSET: 0x0083B690
+// FUNCTION: fn_10482
+void LineCutter::UIText::Slot35(int value) {
+  if (this->parent) {
+    this->parent->Slot35(value);
+  }
 }
