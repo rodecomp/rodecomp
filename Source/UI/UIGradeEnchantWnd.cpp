@@ -45,9 +45,39 @@ void UIGradeEnchantWnd::Slot32(int x, int y) {
 // OFFSET: 0x007E9650
 
 // OFFSET: 0x007E9910
+// FUNCTION: fn_09768
+void UIGradeEnchant_BtnEnhancedDown::Enable(unsigned char value) {
+  if (value == 0) {
+    g_windowMgr.ReleaseCapture();
+  }
+
+  this->m_disabled = value ^ 1;
+  this->Invalidate();
+  this->geometry.visible = value;
+}
 
 // OFFSET: 0x007E9950
+// FUNCTION: fn_09769
+void UIGradeEnchant_BtnEnhancedUp::Enable(unsigned char value) {
+  if (value == 0) {
+    g_windowMgr.ReleaseCapture();
+  }
+
+  this->m_disabled = value ^ 1;
+  this->Invalidate();
+  this->geometry.visible = value;
+}
 
 // OFFSET: 0x007E9990
+// FUNCTION: fn_09770
+void UIGradeEnchant_BtnStart::Enable(unsigned char value) {
+  if (value == 0) {
+    g_windowMgr.ReleaseCapture();
+  }
+
+  this->m_disabled = value ^ 1;
+  this->Invalidate();
+  this->geometry.visible = value;
+}
 
 // OFFSET: 0x007E99D0
