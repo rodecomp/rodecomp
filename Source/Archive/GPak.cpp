@@ -3,6 +3,7 @@
 #include "Archive/PakCipher.h"
 
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
 #include <cstring>
 #include <zlib.h>
@@ -602,6 +603,126 @@ bool sub_654D00() {
   return true;
 }
 
+void sub_6468C0(void* first, void* last, const void* val);
+void sub_646930(void* first, void* last, const void* val);
+[[noreturn]] void sub_4F9440();
+
+struct VectorUint32_654D10 {
+  unsigned int* first;
+  unsigned int* last;
+  unsigned int* end;
+
+  void sub_654D10(unsigned int count, unsigned int val);
+};
+
+// OFFSET: 0x00654D10
+// FUNCTION: fn_05051
+void VectorUint32_654D10::sub_654D10(unsigned int count, unsigned int val) {
+  unsigned int old_size = static_cast<unsigned int>(this->last - this->first);
+  if (count <= old_size) {
+    sub_6468C0(this->first, this->last, &val);
+    return;
+  }
+  if (count > 0x3fffffff) {
+    sub_4F9440();
+  }
+  unsigned int bytes = count * sizeof(unsigned int);
+  unsigned int* new_ptr;
+  if (bytes < 0x1000) {
+    if (bytes == 0) {
+      new_ptr = nullptr;
+    } else {
+      new_ptr = static_cast<unsigned int*>(::operator new(bytes));
+    }
+  } else {
+    if (bytes + 0x23 <= bytes) {
+      sub_4F9440();
+    }
+    void* raw = ::operator new(bytes + 0x23);
+    if (!raw) {
+      _invalid_parameter_noinfo_noreturn();
+    }
+    new_ptr = reinterpret_cast<unsigned int*>((reinterpret_cast<uintptr_t>(raw) + 0x23) & ~static_cast<uintptr_t>(0x1f));
+    reinterpret_cast<void**>(new_ptr)[-1] = raw;
+  }
+  if (old_size != 0) {
+    unsigned int old_bytes = old_size * sizeof(unsigned int);
+    void* old_raw = this->first;
+    if (old_bytes >= 0x1000) {
+      old_raw = reinterpret_cast<void**>(this->first)[-1];
+      if ((reinterpret_cast<uintptr_t>(this->first) - reinterpret_cast<uintptr_t>(old_raw) - 4) > 0x1f) {
+        _invalid_parameter_noinfo_noreturn();
+      }
+      old_bytes += 0x23;
+    }
+    ::operator delete(old_raw, old_bytes);
+  }
+  this->first = new_ptr;
+  this->last = new_ptr + count;
+  this->end = new_ptr + count;
+  for (unsigned int* p = new_ptr; p != this->last; ++p) {
+    *p = val;
+  }
+}
+
+struct VectorInt32_654E00 {
+  int* first;
+  int* last;
+  int* end;
+
+  void sub_654E00(unsigned int count, int val);
+};
+
+// OFFSET: 0x00654E00
+// FUNCTION: fn_05052
+void VectorInt32_654E00::sub_654E00(unsigned int count, int val) {
+  unsigned int old_size = static_cast<unsigned int>(this->last - this->first);
+  if (count <= old_size) {
+    sub_646930(this->first, this->last, &val);
+    return;
+  }
+  if (count > 0x3fffffff) {
+    sub_4F9440();
+  }
+  unsigned int bytes = count * sizeof(int);
+  int* new_ptr;
+  if (bytes < 0x1000) {
+    if (bytes == 0) {
+      new_ptr = nullptr;
+    } else {
+      new_ptr = static_cast<int*>(::operator new(bytes));
+    }
+  } else {
+    if (bytes + 0x23 <= bytes) {
+      sub_4F9440();
+    }
+    void* raw = ::operator new(bytes + 0x23);
+    if (!raw) {
+      _invalid_parameter_noinfo_noreturn();
+    }
+    new_ptr = reinterpret_cast<int*>((reinterpret_cast<uintptr_t>(raw) + 0x23) & ~static_cast<uintptr_t>(0x1f));
+    reinterpret_cast<void**>(new_ptr)[-1] = raw;
+  }
+  if (old_size != 0) {
+    unsigned int old_bytes = old_size * sizeof(int);
+    void* old_raw = this->first;
+    if (old_bytes >= 0x1000) {
+      old_raw = reinterpret_cast<void**>(this->first)[-1];
+      if ((reinterpret_cast<uintptr_t>(this->first) - reinterpret_cast<uintptr_t>(old_raw) - 4) > 0x1f) {
+        _invalid_parameter_noinfo_noreturn();
+      }
+      old_bytes += 0x23;
+    }
+    ::operator delete(old_raw, old_bytes);
+  }
+  this->first = new_ptr;
+  this->last = new_ptr + count;
+  this->end = new_ptr + count;
+  for (int* p = new_ptr; p != this->last; ++p) {
+    *p = val;
+  }
+}
+
 // OFFSET: 0x00654EF0
 // FUNCTION: fn_05053
 bool __fastcall sub_654EF0(const void* self) {
@@ -630,6 +751,7 @@ bool FuncImpl_654FB0::sub_654FB0(const Span8_654FB0* a1, const Span4_654FB0* a2,
 struct HashNode_655340 {
   HashNode_655340* prev;
   HashNode_655340* next;
+  short key;
 };
 
 struct HashBucket_655340 {
@@ -637,16 +759,28 @@ struct HashBucket_655340 {
   HashNode_655340* last;
 };
 
+struct HashSearchResult_655D70 {
+  HashNode_655340* first;
+  HashNode_655340* second;
+
+  HashSearchResult_655D70() {}
+  HashSearchResult_655D70(HashNode_655340* f, HashNode_655340* s) : first(f), second(s) {}
+};
+
 struct HashTable_655340 {
-  void* unknown_00;
+  float max_load_factor;
   HashNode_655340* head;
-  unsigned int size;
+  int size;
   HashBucket_655340* buckets;
   unsigned int unknown_10;
   unsigned int unknown_14;
   unsigned int mask;
+  unsigned int bucket_count;
 
+  void sub_654FF0(unsigned int buckets);
   HashNode_655340* sub_655340(unsigned int hash, HashNode_655340* prev, HashNode_655340* node);
+  void sub_6553C0();
+  HashSearchResult_655D70 sub_655D70(const short* key, unsigned int hash);
 };
 
 // OFFSET: 0x00655340
@@ -682,6 +816,57 @@ HashNode_655340* HashTable_655340::sub_655340(unsigned int hash, HashNode_655340
 // FUNCTION: fn_05059
 int* __fastcall sub_655330(int* a) {
   return a + 1;
+}
+
+// OFFSET: 0x006553C0
+// FUNCTION: fn_05062
+void HashTable_655340::sub_6553C0() {
+  unsigned int bucket_count = static_cast<unsigned int>(std::ceil(static_cast<float>(this->size + 1) / this->max_load_factor));
+  if (bucket_count < 8) {
+    bucket_count = 8;
+  }
+  unsigned int buckets = this->bucket_count;
+  if (buckets < bucket_count) {
+    if (buckets < 512) {
+      buckets *= 8;
+      if (buckets < bucket_count) {
+        buckets = bucket_count;
+      }
+    } else {
+      buckets = bucket_count;
+    }
+  }
+  this->sub_654FF0(buckets);
+}
+
+// OFFSET: 0x00655D70
+// FUNCTION: fn_05069
+HashSearchResult_655D70 HashTable_655340::sub_655D70(const short* key, unsigned int hash) {
+  HashSearchResult_655D70 result;
+  HashBucket_655340* bucket = &this->buckets[this->mask & hash];
+  HashNode_655340* node = bucket->last;
+  if (node == this->head) {
+    result.first = this->head;
+    result.second = nullptr;
+    return result;
+  }
+  short target = *key;
+  if (target == node->key) {
+    result.first = node->prev;
+    result.second = node;
+    return result;
+  }
+  while (node != bucket->first) {
+    node = node->next;
+    if (target == node->key) {
+      result.first = node->prev;
+      result.second = node;
+      return result;
+    }
+  }
+  result.first = node;
+  result.second = nullptr;
+  return result;
 }
 
 // INLINED
