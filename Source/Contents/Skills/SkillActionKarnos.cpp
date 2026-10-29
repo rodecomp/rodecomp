@@ -217,6 +217,16 @@ int CSkillAction_KR_DOUBLE_SLASH::Slot02() {
 }
 
 // OFFSET: 0x005B0810
+// FUNCTION: fn_03341
+void CSkillAction_KR_DOUBLE_SLASH::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x7B, 0x5E, 0xB8, 0x85, 0x81, 0x10, 0x32, 0x6E, 0x73, 0x50, 0xBE, 0x8F, 0xED};
+  thread_local EncryptedName<sizeof(effectSource), 0x1D6D75EDE7CD311FULL> effectName(effectSource);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B0A10
 // FUNCTION: fn_03342
