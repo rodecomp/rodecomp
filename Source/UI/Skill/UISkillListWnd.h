@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_SKILL_UISKILLLISTWND_H
 #define RAGNAROK_SOURCE_UI_SKILL_UISKILLLISTWND_H
 
+#include "Contents/Skills/SkillInfo.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstddef>
@@ -13,6 +14,9 @@ public:
   void Slot33(int x, int y) override;
 
   __declspec(noinline) int SkillAt(int x, int y);
+  CSkillInfo GetSkillByIndex(int index);
+  CSkillInfo GetSkillAt(int x, int y);
+  CSkillInfo GetVisibleSkill(int row);
 
   /* 00BC */ unsigned char unknown_00BC[0x5C];
   /* 0118 */ int hovered;
@@ -20,7 +24,7 @@ public:
   /* 0120 */ int columns;
   /* 0124 */ int visibleRows;
   /* 0128 */ int unknown_0128;
-  /* 012C */ std::list<int> skills;
+  /* 012C */ std::list<CSkillInfo> skills;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -26,14 +26,19 @@
 #include "UI/Item/UIItemWnd.h"
 #include "UI/Shop/UIMerchantItemMyShopWnd.h"
 #include "UI/Shop/UIMerchantItemShopWnd.h"
+#include "UI/Shop/UIMerchantShopMakeWnd.h"
 #include "UI/Shop/UINoticeMessageBox_LockSellItem.h"
 #include "UI/Skill/UISkillListWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
+#include "Client/Session.h"
+#include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "UI/Shop/UIMerchantItemPurchaseMSGWnd.h"
 
 #include <algorithm>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <list>
 #include <string>
@@ -815,3 +820,43 @@ bool UISkillListWnd::Slot03() {
 // FUNCTION: fn_13307
 void UIItemBaseWnd::Slot15(int, int) {
 }
+
+// OFFSET: 0x00974130
+// FUNCTION: fn_13298
+ITEM_INFO UIMerchantShopMakeWnd::GetItemAt(int x, int y) {
+  if (x < 1 || x >= this->geometry.width - 20 || y < 27 || y >= this->visibleRows * 42 + 44) {
+    return ITEM_INFO(0);
+  }
+
+  const int offset = y - 44;
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index >= this->scroll * this->columns) {
+      if (!g_session.IsPetEgg(std::atoi(it->itemId.c_str())) || !it->unknown_005D) {
+        if (visible == this->columns * (offset / 42)) {
+          if (x < 35) {
+            return *it;
+          }
+
+          return ITEM_INFO(0);
+        }
+
+        ++visible;
+      }
+    }
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00974290
+
+// OFFSET: 0x00974320
+
+// OFFSET: 0x00974410
+
+// OFFSET: 0x00974570
+
+// OFFSET: 0x00974590

@@ -1,0 +1,51 @@
+#ifndef RAGNAROK_SOURCE_UI_SHOP_UIMERCHANTSHOPMAKEWND_H
+#define RAGNAROK_SOURCE_UI_SHOP_UIMERCHANTSHOPMAKEWND_H
+
+#include "Contents/Items/ItemInfo.h"
+#include "UI/Window/UIFrameWnd.h"
+
+#include <cstddef>
+#include <list>
+#include <string>
+
+class UIEditCtrl;
+
+class UIMerchantShopMakeWnd : public UIFrameWnd {
+public:
+  ITEM_INFO GetItemAt(int x, int y);
+  bool HasSelection() const;
+  void SendShopRequest();
+
+  /* 00BC */ unsigned char unknown_00BC[0x10];
+  /* 00CC */ UIEditCtrl* unknown_00CC;
+  /* 00D0 */ unsigned char unknown_00D0[0x58];
+  /* 0128 */ UIEditCtrl* unknown_0128;
+  /* 012C */ int unknown_012C;
+  /* 0130 */ int mode;
+  /* 0134 */ int unknown_0134;
+  /* 0138 */ int scroll;
+  /* 013C */ int columns;
+  /* 0140 */ int unknown_0140;
+  /* 0144 */ int unknown_0144;
+  /* 0148 */ std::list<ITEM_INFO> items;
+  /* 0150 */ int unknown_0150;
+  /* 0154 */ int unknown_0154;
+  /* 0158 */ int unknown_0158;
+  /* 015C */ int visibleRows;
+  /* 0160 */ int unknown_0160;
+  /* 0164 */ int unknown_0164;
+  /* 0168 */ UIWindow* unknown_0168;
+  /* 016C */ int unknown_016C;
+  /* 0170 */ std::string unknown_0170;
+  /* 0188 */ short unknown_0188;
+  /* 018A */ short unknown_018A;
+  /* 018C */ short unknown_018C;
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(UIMerchantShopMakeWnd, unknown_00CC) == 0xCC);
+static_assert(offsetof(UIMerchantShopMakeWnd, items) == 0x148);
+static_assert(offsetof(UIMerchantShopMakeWnd, unknown_018C) == 0x18C);
+#endif
+
+#endif

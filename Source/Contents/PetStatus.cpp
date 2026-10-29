@@ -117,3 +117,9 @@ int CSession::GetPetEmotionNumber(int job, int action, int hungerLevel) {
 
   return g_session.unknown_0E98 + ((job * 10 + action) * 10 + hungerLevel) * 10;
 }
+
+// OFFSET: 0x00E1DF60
+// FUNCTION: fn_23888
+int CSession::IsPetEgg(int itemId) const {
+  return static_cast<unsigned>(itemId - 9001) <= 498;
+}
