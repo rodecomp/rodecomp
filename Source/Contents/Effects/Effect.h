@@ -21,7 +21,7 @@ public:
   explicit CEffect(int id);
   virtual void Slot00(int argument);
   virtual void Slot01();
-  virtual void Slot02() = 0;
+  virtual void Slot02();
   virtual void Slot03() {}
   virtual void Slot04();
   virtual void Close();
@@ -48,11 +48,11 @@ public:
   virtual void Slot26(int argument);
   virtual void Slot27(int argument);
   virtual int Slot28();
-  virtual void Slot29(int id) = 0;
+  virtual void Slot29(int id);
   virtual ~CEffect();
   virtual void Slot31() {}
   virtual void Slot32();
-  virtual bool Slot33() = 0;
+  virtual bool Slot33();
   void AddEvent(int kind, const char* text, int frame, int argument);
   void SetEventFrame(int kind, int frame);
   bool RetireIfInactive();

@@ -1,5 +1,9 @@
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectTypes.h"
+#include "Contents/Effects/GravityControlEffect.h"
+#include "Contents/Effects/SkillEffects.h"
+
+#include <new>
 
 // OFFSET: 0x00B25750
 // FUNCTION: fn_18783
@@ -159,4 +163,58 @@ void DestroyEffectMgr() {
     delete g_effectMgr;
     g_effectMgr = nullptr;
   }
+}
+
+namespace {
+
+template <class T>
+struct CEffectAllocator : CAllocator {
+  CEffect* Create() override;
+};
+
+// OFFSET: 0x00B1F010
+// FUNCTION: fn_18604
+template <>
+CEffect* CEffectAllocator<CGravityControlEffect>::Create() {
+  return new (std::nothrow) CGravityControlEffect();
+}
+
+// OFFSET: 0x00B1F740
+// FUNCTION: fn_18618
+template <>
+CEffect* CEffectAllocator<CMeteorEffect>::Create() {
+  return new (std::nothrow) CMeteorEffect();
+}
+
+// OFFSET: 0x00B20110
+// FUNCTION: fn_18637
+template <>
+CEffect* CEffectAllocator<CShadowExceedNew>::Create() {
+  return new (std::nothrow) CShadowExceedNew();
+}
+
+// OFFSET: 0x00B20400
+// FUNCTION: fn_18642
+template <>
+CEffect* CEffectAllocator<CSprArrowEffect>::Create() {
+  return new (std::nothrow) CSprArrowEffect();
+}
+
+template struct CEffectAllocator<CGravityControlEffect>;
+template struct CEffectAllocator<CMeteorEffect>;
+template struct CEffectAllocator<CShadowExceedNew>;
+template struct CEffectAllocator<CSprArrowEffect>;
+
+}
+
+CGravityControlEffect::~CGravityControlEffect() {
+}
+
+CMeteorEffect::~CMeteorEffect() {
+}
+
+CShadowExceedNew::~CShadowExceedNew() {
+}
+
+CSprArrowEffect::~CSprArrowEffect() {
 }
