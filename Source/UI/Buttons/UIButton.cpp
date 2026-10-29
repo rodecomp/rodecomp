@@ -203,3 +203,10 @@ void UIButton::SetTooltip(const char* text) {
     this->m_tooltip = text;
   }
 }
+
+// OFFSET: 0x00867BB0
+// FUNCTION: fn_10947
+void UIButton::SetState(int state) {
+  this->geometry.unknown_0030 = state;
+  this->Invalidate();
+}

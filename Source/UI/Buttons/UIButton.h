@@ -50,6 +50,7 @@ public:
   virtual void Enable(unsigned char value);
 
   void SetTooltip(const char* text);
+  void SetState(int state);
 
   // INLINED
   void SetDisabled(unsigned char value) {
