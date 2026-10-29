@@ -141,6 +141,114 @@ int sub_654450() {
   return 8;
 }
 
+// OFFSET: 0x00654BF0
+// FUNCTION: fn_05033
+bool sub_654BF0() {
+  return false;
+}
+
+// OFFSET: 0x00654C00
+// FUNCTION: fn_05034
+bool sub_654C00() {
+  return true;
+}
+
+// OFFSET: 0x00654C10
+// FUNCTION: fn_05035
+bool sub_654C10() {
+  return true;
+}
+
+// OFFSET: 0x00654C20
+// FUNCTION: fn_05036
+bool sub_654C20() {
+  return true;
+}
+
+// OFFSET: 0x00654C30
+// FUNCTION: fn_05037
+bool sub_654C30() {
+  return true;
+}
+
+// OFFSET: 0x00654C40
+// FUNCTION: fn_05038
+bool sub_654C40() {
+  return true;
+}
+
+// OFFSET: 0x00654C50
+// FUNCTION: fn_05039
+bool sub_654C50() {
+  return true;
+}
+
+// OFFSET: 0x00654C60
+// FUNCTION: fn_05040
+bool sub_654C60() {
+  return false;
+}
+
+// OFFSET: 0x00654C70
+// FUNCTION: fn_05041
+bool sub_654C70() {
+  return false;
+}
+
+// OFFSET: 0x00654C80
+// FUNCTION: fn_05042
+bool sub_654C80() {
+  return false;
+}
+
+// OFFSET: 0x00654C90
+// FUNCTION: fn_05043
+bool sub_654C90() {
+  return false;
+}
+
+// OFFSET: 0x00654CA0
+// FUNCTION: fn_05044
+bool sub_654CA0() {
+  return false;
+}
+
+// OFFSET: 0x00654CB0
+// FUNCTION: fn_05045
+bool sub_654CB0() {
+  return false;
+}
+
+// OFFSET: 0x00654CC0
+// FUNCTION: fn_05046
+bool sub_654CC0() {
+  return false;
+}
+
+// OFFSET: 0x00654CD0
+// FUNCTION: fn_05047
+bool sub_654CD0() {
+  return false;
+}
+
+// OFFSET: 0x00654CE0
+// FUNCTION: fn_05048
+bool sub_654CE0() {
+  return false;
+}
+
+// OFFSET: 0x00654CF0
+// FUNCTION: fn_05049
+bool sub_654CF0() {
+  return false;
+}
+
+// OFFSET: 0x00654D00
+// FUNCTION: fn_05050
+bool sub_654D00() {
+  return true;
+}
+
 // INLINED
 CGPak::CGPak() : m_file(nullptr), m_version(0), m_entryCount(0), m_tableOffset(0), m_tableSize(0) {
   this->Reset();
