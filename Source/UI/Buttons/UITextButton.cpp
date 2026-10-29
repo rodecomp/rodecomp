@@ -492,6 +492,10 @@ void UIStaticItem::Slot28(int, int) {
 // OFFSET: 0x00892100
 
 // OFFSET: 0x00892160
+// FUNCTION: fn_11466
+void UIImgMenu::Slot27(int x, int y) {
+  this->Slot28(x, y);
+}
 
 // OFFSET: 0x00892170
 
@@ -549,6 +553,10 @@ void UISlotBmpButton::Slot32(int, int) {
 // OFFSET: 0x00892BA0
 
 // OFFSET: 0x00892C20
+// FUNCTION: fn_11489
+void UIChatHisBox2::Slot33(int x, int y) {
+  this->parent->Slot33(x + this->geometry.x, y + this->geometry.y);
+}
 
 // OFFSET: 0x00892C50
 // FUNCTION: fn_11490
@@ -569,3 +577,25 @@ void UIMemberListBox::Slot33(int, int) {
 // OFFSET: 0x00892F50
 
 // OFFSET: 0x00892F90
+// FUNCTION: fn_11502
+void UITabControl::FillTab(int index, int x, int y, int width, int height, std::uint32_t color) {
+  if (this->unknown_00A9 != 0) {
+    return;
+  }
+
+  const std::uint32_t tabColor = this->colors[index];
+
+  if (tabColor != 0xFFFFFFFFu) {
+    color = tabColor;
+  }
+
+  if (this->layout == 1) {
+    this->FillRegion(x + 1, y + 1, width - 2, height - 1, color);
+  } else if (this->layout == 3) {
+    this->FillRegion(x + 1, y, width - 2, height - 1, color);
+  } else if (this->layout == 0) {
+    this->FillRegion(x + 1, y + 1, width - 1, height - 2, color);
+  } else if (this->layout == 2) {
+    this->FillRegion(x, y + 1, width - 1, height - 2, color);
+  }
+}
