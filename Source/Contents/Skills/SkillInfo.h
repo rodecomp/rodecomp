@@ -150,6 +150,25 @@ public:
   EfstActionMessage EfstSlot03(int efstId);
   EfstActionMessage EfstSlot04(int efstId);
   bool HasEfstAction(int efstId);
+  bool ActionSlot07(int skillId);
+  bool ActionSlot06(int skillId);
+  bool ActionSlot13(int skillId);
+  bool ActionSlot05(int skillId);
+  bool ActionSlot16(int skillId, int level, CGameActor* source, CGameActor* target);
+  bool EfstSlot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6);
+  bool ActionSlot08(int skillId, int level, CGameActor* source);
+  bool ActionSlot09(int skillId, int argument1, int argument2, int argument3);
+  bool ActionSlot10(int skillId, int level, CGameActor* source, short column, short row);
+  bool EfstSlot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor);
+  bool ActionSlot12(int skillId, int column, int row, int argument2, int argument3);
+  bool ActionSlot15(int skillId, int level, CGameActor* source, CGameActor* target);
+  bool EfstSlot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor);
+  bool ObjectSlot01(int skillId, CRenderObject* object);
+  bool ObjectSlot00(int skillId, int argument, CRenderObject* object, CGameActor* source);
+  bool ActionSlot11(int skillId, int level, CGameActor* source, CGameActor* target);
+  void RegisterEfstAction(int efstId, std::function<CEfstAction*()> factory);
+  void RegisterSkillObjectAction(int skillId, std::function<CSkillObjectAction*()> factory);
+  void RegisterSkillAction(int skillId, std::function<CSkillAction*()> factory);
 };
 
 extern CSkillActionMgr* g_skillActionMgr;

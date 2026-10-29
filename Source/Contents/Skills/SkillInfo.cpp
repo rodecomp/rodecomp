@@ -1,6 +1,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/EffectActor.h"
@@ -15,9 +16,11 @@
 #include "Contents/World/World.h"
 #include "Resource/World/TerrainResource.h"
 #include "Script/LuaScript.h"
+#include "Utility/Math/AffineMatrix.h"
 
 
 #include <algorithm>
+#include <bit>
 #include <cstdlib>
 #include <format>
 #include <memory>
@@ -171,6 +174,152 @@ public:
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
+
+class CSkillAction_BO_MAYHEMIC_THORNS : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_BO_EXPLOSIVE_POWDER : public CSkillAction {
+public:
+  bool Slot05() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_BO_MYSTERY_POWDER : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_MYSTERY_POWDER : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_BO_DUST_EXPLOSION : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DK_VIGOR : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_VIGOR : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_DK_SERVANTWEAPON_ATK : public CSkillAction {
+public:
+  void Slot15(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_SERVANTWEAPON : public CEfstAction {
+public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  EfstActionMessage Slot04() override;
+};
+
+class CEfstAction_SERVANT_SIGN : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_DK_SERVANT_W_PHANTOM : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot15(int caster, CGameActor* target, CGameActor* argument3) override;
+};
+
+class CSkillAction_DK_SERVANT_W_DEMOL : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot15(int caster, CGameActor* target, CGameActor* argument3) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DK_STORMSLASH : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DK_MADNESS_CRUSHER : public CSkillAction {
+public:
+  bool Slot04() override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DK_DRAGONIC_PIERCE : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DK_DRAGONIC_BREATH : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot15(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DK_CHARGINGPIERCE : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_CHARGINGPIERCE : public CEfstAction {
+public:
+  EfstActionMessage Slot04() override;
+};
+
+class CEfstAction_CHARGINGPIERCE_COUNT : public CEfstAction {
+public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_DK_HACKANDSLASHER : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DK_HACKANDSLASHER_ATK : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_NPC_BLOCK_EXPLOSION : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_NPC_FROST_FIELD : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_FROST_STORM : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+__declspec(noinline) CEffect* SpawnDustExplosion(int quadrant, const vector3d& position);
 
 // GLOBAL: gl_24640
 CSkillActionMgr* g_skillActionMgr;
@@ -1234,3 +1383,151 @@ void CSkillAction_IQ_BLAZING_FLAME_BLAST::Slot11(int level, CGameActor* source, 
     effect->Slot16(static_cast<int>(scale));
   }
 }
+
+// OFFSET: 0x0077B560
+
+// OFFSET: 0x0077B620
+
+// OFFSET: 0x0077B6E0
+
+// OFFSET: 0x0077B7A0
+
+// OFFSET: 0x0077B860
+
+// OFFSET: 0x0077B920
+
+// OFFSET: 0x0077B9F0
+
+// OFFSET: 0x0077BAB0
+
+// OFFSET: 0x0077BB70
+
+// OFFSET: 0x0077BC60
+
+// OFFSET: 0x0077BD20
+
+// OFFSET: 0x0077BE10
+
+// OFFSET: 0x0077BED0
+
+// OFFSET: 0x0077BF90
+
+// OFFSET: 0x0077C050
+
+// OFFSET: 0x0077C110
+
+// OFFSET: 0x0077C1D0
+
+// OFFSET: 0x0077C360
+
+// OFFSET: 0x0077C4F0
+
+// OFFSET: 0x0077CCC0
+
+// OFFSET: 0x0077CD90
+
+// OFFSET: 0x0077D020
+
+// OFFSET: 0x0077D190
+// FUNCTION: fn_08441
+bool CSkillAction_BO_EXPLOSIVE_POWDER::Slot05() {
+  return true;
+}
+
+// OFFSET: 0x0077D1A0
+
+// OFFSET: 0x0077D310
+
+// OFFSET: 0x0077D490
+
+// OFFSET: 0x0077D720
+
+// OFFSET: 0x0077D940
+
+// OFFSET: 0x0077D960
+
+// OFFSET: 0x0077D9E0
+
+// OFFSET: 0x0077DC70
+
+// OFFSET: 0x0077DF70
+
+// OFFSET: 0x0077E0D0
+
+// OFFSET: 0x0077E230
+
+// OFFSET: 0x0077E350
+
+// OFFSET: 0x0077E370
+
+// OFFSET: 0x0077E3B0
+
+// OFFSET: 0x0077E530
+
+// OFFSET: 0x0077E7B0
+
+// OFFSET: 0x0077E7E0
+
+// OFFSET: 0x0077EAD0
+
+// OFFSET: 0x0077ED40
+
+// OFFSET: 0x0077EF40
+
+// OFFSET: 0x0077EFA0
+
+// OFFSET: 0x0077EFD0
+
+// OFFSET: 0x0077F600
+
+// OFFSET: 0x0077F630
+
+// OFFSET: 0x0077F9B0
+
+// OFFSET: 0x0077FB40
+
+// OFFSET: 0x0077FD50
+// FUNCTION: fn_08475
+bool CSkillAction_DK_MADNESS_CRUSHER::Slot04() {
+  return true;
+}
+
+// OFFSET: 0x0077FD90
+
+// OFFSET: 0x00780020
+
+// OFFSET: 0x007805A0
+
+// OFFSET: 0x00780870
+
+// OFFSET: 0x00780AF0
+
+// OFFSET: 0x00780DE0
+
+// OFFSET: 0x00781070
+
+// OFFSET: 0x007812F0
+
+// OFFSET: 0x00781330
+
+// OFFSET: 0x007815A0
+
+// OFFSET: 0x00781710
+// FUNCTION: fn_08495
+int CSkillAction_DK_HACKANDSLASHER_ATK::Slot02() {
+  return 0;
+}
+
+// OFFSET: 0x00781720
+
+// OFFSET: 0x00781B80
+
+// OFFSET: 0x00781C60
+
+// OFFSET: 0x00781DB0
+
+// OFFSET: 0x00781E00
+
+// OFFSET: 0x00781E50
+
+// OFFSET: 0x00781E80
