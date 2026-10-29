@@ -6,6 +6,12 @@
 #include <string>
 
 // OFFSET: 0x00E26B10
+// FUNCTION: fn_23917
+void OptionWriter::Float(const char* key, float value) {
+  char line[200];
+  std::sprintf(line, "OptionInfoList[\"%s\"] = %f\r\n", key, value);
+  this->file.Write(line, static_cast<unsigned>(std::strlen(line)));
+}
 
 // OFFSET: 0x00E26C00
 // FUNCTION: fn_23919
