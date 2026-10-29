@@ -33,6 +33,7 @@ public:
   static bool Create();
   static void Destroy();
   PopupData* GetPopup(int id);
+  static bool Init();
   static int LuaAddDesc(lua_State* state);
   static int LuaAddMsg(lua_State* state);
 

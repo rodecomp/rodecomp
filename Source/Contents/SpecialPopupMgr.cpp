@@ -1,13 +1,18 @@
 #include "Contents/SpecialPopupMgr.h"
+#include "Script/NLuaState.h"
 
 extern "C" {
 #include <lua.h>
+#include <lualib.h>
 }
 
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
 #include <new>
+#include <windows.h>
+
+bool sub_AF6580(lua_State* state, const std::string& path, bool flag);
 
 // GLOBAL: gl_24839
 CSpecialPopupMgr* g_specialPopupMgr = nullptr;
@@ -51,6 +56,49 @@ PopupData* CSpecialPopupMgr::GetPopup(int id) {
   }
 
   return &it->second;
+}
+
+// OFFSET: 0x007A7A90
+// FUNCTION: fn_09055
+bool CSpecialPopupMgr::Init() {
+  NLuaState luaState;
+  if (!luaState.IsValid()) {
+    return false;
+  }
+
+  luaL_openlibs(luaState.GetState());
+  lua_pushcclosure(luaState.GetState(), CSpecialPopupMgr::LuaAddMsg, 0);
+  lua_setfield(luaState.GetState(), LUA_GLOBALSINDEX, "AddMsg");
+  lua_pushcclosure(luaState.GetState(), CSpecialPopupMgr::LuaAddDesc, 0);
+  lua_setfield(luaState.GetState(), LUA_GLOBALSINDEX, "AddDesc");
+
+  if (!sub_AF6580(luaState.GetState(), "System\\spopup.lub", false)) {
+    MessageBoxA(NULL, lua_tostring(luaState.GetState(), -1), "CSpecialPopupMgr LuaLoadFile X", 0);
+    return false;
+  }
+
+  if (lua_pcall(luaState.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(NULL, lua_tostring(luaState.GetState(), -1), "CSpecialPopupMgr lua_pcall X", 0);
+    return false;
+  }
+
+  lua_getfield(luaState.GetState(), LUA_GLOBALSINDEX, "main");
+  if (lua_pcall(luaState.GetState(), 0, 2, 0) != 0) {
+    MessageBoxA(NULL, lua_tostring(luaState.GetState(), -1), "CSpecialPopupMgr main X", 0);
+    return false;
+  }
+
+  if (!lua_isstring(luaState.GetState(), -1)) {
+    MessageBoxA(NULL, "second return value is not string...", "CSpecialPopupMgr", 0);
+    return false;
+  }
+
+  if (lua_toboolean(luaState.GetState(), -2)) {
+    return true;
+  }
+
+  MessageBoxA(NULL, (std::string("error found :") + lua_tostring(luaState.GetState(), -1)).c_str(), "CSpecialPopupMgr", 0);
+  return false;
 }
 
 // OFFSET: 0x007A7DB0
