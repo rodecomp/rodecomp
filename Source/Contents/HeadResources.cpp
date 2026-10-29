@@ -306,3 +306,10 @@ std::string CSession::GetHeadSprName(int job, int sex, int* head) {
 }
 
 // OFFSET: 0x00DDD050
+// FUNCTION: fn_23378
+std::string CSession::GetPlayerHeadSprName() {
+  EquipmentResourceMgr* resources = g_equipmentResourceMgr;
+  const int sex = this->SyncUnknown0E98();
+  const int job = this->GetDisplayJob();
+  return resources->GetHeadName(1, job, sex, &this->m_head);
+}
