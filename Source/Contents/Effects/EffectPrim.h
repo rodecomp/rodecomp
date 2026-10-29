@@ -15,10 +15,10 @@ struct CEffectPrim : CRenderObject {
   bool UpdateFireWall();
   bool UpdateStoneCurse();
   void Prim3DCircle();
-  bool UpdateHit6();
+  bool Prim3DParticle();
   bool UpdateCoin();
-  bool UpdateDetoxication();
-  bool UpdateExit();
+  bool Prim3DParticleNoMaster();
+  bool Prim3DParticleOrbit();
   bool Prim3DParticleSpline();
   void PrimBottom2();
   void PrimBottom();

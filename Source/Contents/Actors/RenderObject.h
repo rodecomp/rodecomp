@@ -23,8 +23,8 @@ public:
   virtual void SetAnimation(unsigned animation, int motion, int repeat);
   static float __stdcall Heading(float x, float z, float targetX, float targetZ);
   void Face(float x, float z);
-  float HorizontalDistance(float x, float z) const;
-  float Distance(float x, float y, float z) const;
+  float CalcDist(float x, float z) const;
+  float CalcDist(float x, float y, float z) const;
   bool GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) const;
   void SetAnimationSpeed(float speed);
   void SetActionSpeed(float speed);

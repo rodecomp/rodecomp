@@ -203,15 +203,15 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   struct matrix matrix;
 
   if ((particle.flags & 0x200u) != 0) {
-    matrix.SetZRotation(context.cameraPitch);
+    matrix.MakeZRotation(context.cameraPitch);
   } else if ((particle.flags & 0x40u) != 0) {
     particle.unknown_030C = context.cameraYaw + 90.0f;
     particle.unknown_0314 = context.cameraPitch;
     matrix.MakeXRotation(GetRadian(TruncateToInt(particle.unknown_0310)));
-    matrix.RotateZ(GetRadian(TruncateToInt(particle.unknown_0314)));
+    matrix.AppendZRotation(GetRadian(TruncateToInt(particle.unknown_0314)));
   } else {
-    matrix.SetZRotation(GetRadian(TruncateToInt(particle.unknown_0314)));
-    matrix.RotateX(GetRadian(TruncateToInt(particle.unknown_0310)));
+    matrix.MakeZRotation(GetRadian(TruncateToInt(particle.unknown_0314)));
+    matrix.AppendXRotation(GetRadian(TruncateToInt(particle.unknown_0310)));
   }
 
   const float angle = (particle.flags & 0x200u) != 0 ? render.angle : particle.unknown_030C;
@@ -2287,7 +2287,7 @@ void CEffectPrim::PrimWaterFall() {
 
 // OFFSET: 0x00BB6F30
 // FUNCTION: fn_19779
-bool CEffectPrim::UpdateHit6() {
+bool CEffectPrim::Prim3DParticle() {
   const CRagEffect* master = this->state.master;
   this->state.origin.x = master->render.position.x + this->state.velocity.x;
   this->state.origin.y = master->render.position.y + this->state.velocity.y;
@@ -2353,8 +2353,8 @@ bool CEffectPrim::UpdateHit6() {
     this->state.unknown_02BC = static_cast<float>(rand() % 35 + 15) / 100.0f;
     this->state.unknown_030C = static_cast<float>(rand() % 80) + (this->state.unknown_030C - 40.0f);
     this->state.unknown_0310 = static_cast<float>(rand() % 80) + (this->state.unknown_0310 - 40.0f);
-    reinterpret_cast<struct matrix*>(this->state.matrix1)->SetYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
-    reinterpret_cast<struct matrix*>(this->state.matrix1)->RotateX(GetRadian(static_cast<int>(this->state.unknown_0310)));
+    reinterpret_cast<struct matrix*>(this->state.matrix1)->MakeYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
+    reinterpret_cast<struct matrix*>(this->state.matrix1)->AppendXRotation(GetRadian(static_cast<int>(this->state.unknown_0310)));
     flags = this->state.flags;
     this->state.unknown_01D4 = rand() % 10 + 5;
   }
@@ -2373,7 +2373,7 @@ bool CEffectPrim::UpdateHit6() {
   };
 
   if ((this->state.flags & 0x100u) != 0) {
-    if (3.0f >= this->HorizontalDistance(this->state.master->state.offset[0], this->state.master->state.offset[2])) {
+    if (3.0f >= this->CalcDist(this->state.master->state.offset[0], this->state.master->state.offset[2])) {
       return false;
     }
   }
@@ -2430,7 +2430,7 @@ bool CEffectPrim::UpdateCoin() {
 
 // OFFSET: 0x00BB78A0
 // FUNCTION: fn_19781
-bool CEffectPrim::UpdateDetoxication() {
+bool CEffectPrim::Prim3DParticleNoMaster() {
   float positionX = this->state.origin.x + this->state.velocity.x;
   const float positionY = this->state.origin.y + this->state.velocity.y;
   const float positionZ = this->state.origin.z + this->state.velocity.z;
@@ -2494,8 +2494,8 @@ bool CEffectPrim::UpdateDetoxication() {
     this->state.unknown_02BC = static_cast<float>(rand() % 35 + 15) / 100.0f;
     this->state.unknown_030C = static_cast<float>(rand() % 80) + (this->state.unknown_030C - 40.0f);
     this->state.unknown_0310 = static_cast<float>(rand() % 80) + (this->state.unknown_0310 - 40.0f);
-    reinterpret_cast<struct matrix*>(this->state.matrix1)->SetYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
-    reinterpret_cast<struct matrix*>(this->state.matrix1)->RotateX(GetRadian(static_cast<int>(this->state.unknown_0310)));
+    reinterpret_cast<struct matrix*>(this->state.matrix1)->MakeYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
+    reinterpret_cast<struct matrix*>(this->state.matrix1)->AppendXRotation(GetRadian(static_cast<int>(this->state.unknown_0310)));
     this->state.unknown_01D4 = rand() % 10 + 5;
     flags = this->state.flags;
   }
@@ -2524,7 +2524,7 @@ bool CEffectPrim::UpdateDetoxication() {
 
 // OFFSET: 0x00BB7EC0
 // FUNCTION: fn_19782
-bool CEffectPrim::UpdateExit() {
+bool CEffectPrim::Prim3DParticleOrbit() {
   const CRagEffect* master = this->state.master;
   this->state.origin = {master->render.position.x, master->render.position.y, master->render.position.z};
 
@@ -2568,7 +2568,7 @@ bool CEffectPrim::UpdateExit() {
     }
   }
 
-  reinterpret_cast<struct matrix*>(this->state.matrix1)->SetYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
+  reinterpret_cast<struct matrix*>(this->state.matrix1)->MakeYRotation(GetRadian(static_cast<int>(this->state.unknown_030C)));
 
   const float distance = this->state.unknown_0348;
   this->state.offset = Forward(distance, this->state.matrix1);
@@ -2579,7 +2579,7 @@ bool CEffectPrim::UpdateExit() {
   this->state.scale = this->state.unknown_031C + this->state.scale;
   const float rotation = this->state.unknown_0334 + this->state.unknown_0310;
   this->state.unknown_0310 = rotation;
-  reinterpret_cast<struct matrix*>(this->state.matrix1)->RotateZ(rotation);
+  reinterpret_cast<struct matrix*>(this->state.matrix1)->AppendZRotation(rotation);
 
   this->state.ProcessAlpha();
   this->ShiftSegment();

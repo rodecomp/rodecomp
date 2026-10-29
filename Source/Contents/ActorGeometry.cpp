@@ -45,7 +45,7 @@ void CRenderObject::Face(float x, float z) {
 
 // OFFSET: 0x00CA96C0
 // FUNCTION: fn_21009
-float CRenderObject::HorizontalDistance(float x, float z) const {
+float CRenderObject::CalcDist(float x, float z) const {
   const float deltaX = x - this->render.position.x;
   const float deltaZ = z - this->render.position.z;
   return SquareRoot(deltaZ * deltaZ + deltaX * deltaX);
@@ -53,7 +53,7 @@ float CRenderObject::HorizontalDistance(float x, float z) const {
 
 // OFFSET: 0x00CA9700
 // FUNCTION: fn_21010
-float CRenderObject::Distance(float x, float y, float z) const {
+float CRenderObject::CalcDist(float x, float y, float z) const {
   const float deltaX = x - this->render.position.x;
   const float deltaZ = z - this->render.position.z;
   const float deltaY = y - this->render.position.y;

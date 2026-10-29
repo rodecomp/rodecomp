@@ -712,7 +712,7 @@ granny_control* C3dGrannyModelRes::PlayAnimation(unsigned action, granny_model_i
 // FUNCTION: fn_08008
 bool C3dGrannyModelRes::ProjectBounds(float* rect, const matrix& view, const matrix& world, const float* eye) const {
   matrix matrix;
-  matrix.SetZRotation(3.141592f);
+  matrix.MakeZRotation(3.141592f);
   const float* m = matrix.values;
   const float x = this->position[1] * m[3] + this->position[0] * m[0] + this->position[2] * m[6] + m[9];
   const float y = this->position[0] * m[1] + this->position[1] * m[4] + this->position[2] * m[7] + m[10];

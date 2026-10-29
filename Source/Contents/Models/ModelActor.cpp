@@ -96,11 +96,11 @@ void C3dActorV2::Assign(const C3dModelRes& resource) {
 // FUNCTION: fn_17516
 void C3dActor::UpdateMatrix() {
   this->transform.MakeTranslate(this->offset[0], this->offset[1], this->offset[2]);
-  this->transform.Scale(this->scale[0], this->scale[1], this->scale[2]);
+  this->transform.AppendScale(this->scale[0], this->scale[1], this->scale[2]);
   this->transform.AppendYRotation(Radians(this->rotation[1]));
-  this->transform.RotateX(Radians(this->rotation[0]));
-  this->transform.RotateZ(Radians(this->rotation[2]));
-  this->transform.Translate(this->position);
+  this->transform.AppendXRotation(Radians(this->rotation[0]));
+  this->transform.AppendZRotation(Radians(this->rotation[2]));
+  this->transform.AppendTranslate(this->position);
   this->inverseTransform.MakeInverse(this->transform);
   this->dirty = 0;
 }
@@ -110,11 +110,11 @@ void C3dActor::UpdateMatrix() {
 void C3dActorV2::UpdateMatrix() {
   this->transform.Identity();
   this->transform.values[4] = -1.0f;
-  this->transform.Scale(this->scale[0], this->scale[1], this->scale[2]);
+  this->transform.AppendScale(this->scale[0], this->scale[1], this->scale[2]);
   this->transform.AppendYRotation(Radians(this->rotation[1]));
-  this->transform.RotateX(Radians(this->rotation[0]));
-  this->transform.RotateZ(Radians(this->rotation[2]));
-  this->transform.Translate(this->position);
+  this->transform.AppendXRotation(Radians(this->rotation[0]));
+  this->transform.AppendZRotation(Radians(this->rotation[2]));
+  this->transform.AppendTranslate(this->position);
   this->inverseTransform.MakeInverse(this->transform);
   this->dirty = 0;
 }

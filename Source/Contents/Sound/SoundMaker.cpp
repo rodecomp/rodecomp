@@ -107,7 +107,7 @@ bool CSoundMaker::Update() {
     return true;
   }
 
-  const float distance = this->HorizontalDistance(player->render.position.x, player->render.position.z);
+  const float distance = this->CalcDist(player->render.position.x, player->render.position.z);
   if (distance - (this->radius + this->range) > 130.0f) {
     return true;
   }
@@ -138,7 +138,7 @@ bool CSoundMaker::Update() {
 
   const float x = this->render.position.x + offsetX;
   const float z = this->render.position.z + offsetZ;
-  if (player->HorizontalDistance(x, z) - this->range > 75.0f || this->file.empty()) {
+  if (player->CalcDist(x, z) - this->range > 75.0f || this->file.empty()) {
     return true;
   }
 

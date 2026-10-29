@@ -46,7 +46,7 @@ void matrix::MakeXRotation(float radians) {
 
 // OFFSET: 0x005553D0
 // FUNCTION: fn_02035
-void matrix::SetYRotation(float radians) {
+void matrix::MakeYRotation(float radians) {
   this->Identity();
 
   const float sine = ClientSin(radians);
@@ -59,7 +59,7 @@ void matrix::SetYRotation(float radians) {
 
 // OFFSET: 0x00555440
 // FUNCTION: fn_02036
-void matrix::SetZRotation(float radians) {
+void matrix::MakeZRotation(float radians) {
   this->Identity();
 
   const float sine = ClientSin(radians);
@@ -72,7 +72,7 @@ void matrix::SetZRotation(float radians) {
 
 // OFFSET: 0x00552F70
 // FUNCTION: fn_02016
-void matrix::RotateX(float radians) {
+void matrix::AppendXRotation(float radians) {
   matrix rotation;
   rotation.MakeXRotation(radians);
   Rotate(this->values, rotation.values);
@@ -82,15 +82,15 @@ void matrix::RotateX(float radians) {
 // FUNCTION: fn_02017
 void matrix::AppendYRotation(float radians) {
   matrix rotation;
-  rotation.SetYRotation(radians);
+  rotation.MakeYRotation(radians);
   Rotate(this->values, rotation.values);
 }
 
 // OFFSET: 0x00553570
 // FUNCTION: fn_02018
-void matrix::RotateZ(float radians) {
+void matrix::AppendZRotation(float radians) {
   matrix rotation;
-  rotation.SetZRotation(radians);
+  rotation.MakeZRotation(radians);
   Rotate(this->values, rotation.values);
 }
 
@@ -114,7 +114,7 @@ void matrix::SetScale(float x, float y, float z) {
 
 // OFFSET: 0x005529C0
 // FUNCTION: fn_02014
-void matrix::Scale(float x, float y, float z) {
+void matrix::AppendScale(float x, float y, float z) {
   matrix scale;
   scale.SetScale(x, y, z);
   Rotate(this->values, scale.values);
@@ -122,7 +122,7 @@ void matrix::Scale(float x, float y, float z) {
 
 // OFFSET: 0x00552CA0
 // FUNCTION: fn_02015
-void matrix::Translate(const float* position) {
+void matrix::AppendTranslate(const float* position) {
   matrix translation;
   translation.MakeTranslate(position[0], position[1], position[2]);
   Rotate(this->values, translation.values);

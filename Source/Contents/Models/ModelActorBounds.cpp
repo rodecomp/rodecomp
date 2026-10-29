@@ -37,11 +37,11 @@ void C3dActorV1::UpdateBounds() {
   this->offset[1] = -bounds[4];
   this->offset[2] = -(bounds[5] + bounds[2]) * 0.5f;
   this->transform.MakeTranslate(this->offset[0], this->offset[1], this->offset[2]);
-  this->transform.Scale(this->scale[0], this->scale[1], this->scale[2]);
+  this->transform.AppendScale(this->scale[0], this->scale[1], this->scale[2]);
   this->transform.AppendYRotation(Radians(this->rotation[1]));
-  this->transform.RotateX(Radians(this->rotation[0]));
-  this->transform.RotateZ(Radians(this->rotation[2]));
-  this->transform.Translate(this->position);
+  this->transform.AppendXRotation(Radians(this->rotation[0]));
+  this->transform.AppendZRotation(Radians(this->rotation[2]));
+  this->transform.AppendTranslate(this->position);
   this->FinishBounds(bounds, false);
 }
 
@@ -96,8 +96,8 @@ void C3dActor::FinishBounds(const float* bounds, bool modern) {
   matrix axes;
   axes.SetScale(this->scale[0], this->scale[1], this->scale[2]);
   axes.AppendYRotation(Radians(this->rotation[1]));
-  axes.RotateX(Radians(this->rotation[0]));
-  axes.RotateZ(Radians(this->rotation[2]));
+  axes.AppendXRotation(Radians(this->rotation[0]));
+  axes.AppendZRotation(Radians(this->rotation[2]));
 
   for (unsigned axis = 0; axis < 3; ++axis) {
     float* direction = this->oriented.axes[axis];
@@ -114,8 +114,8 @@ void C3dActor::FinishBounds(const float* bounds, bool modern) {
     matrix rotation;
     rotation.MakeXRotation(Radians(volume->rotation[0]));
     rotation.AppendYRotation(Radians(volume->rotation[1]));
-    rotation.RotateZ(Radians(volume->rotation[2]));
-    rotation.Translate(volume->position);
+    rotation.AppendZRotation(Radians(volume->rotation[2]));
+    rotation.AppendTranslate(volume->position);
     std::memcpy(volume->unknown_0084, rotation.values, sizeof(rotation.values));
     matrix inverse;
     inverse.MakeInverse(rotation);
