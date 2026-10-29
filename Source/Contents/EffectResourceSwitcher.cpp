@@ -1,7 +1,13 @@
+#include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 
+#include <new>
 #include <string>
+
+// GLOBAL: gl_24485
+template <>
+CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::s_instance = nullptr;
 
 // OFFSET: 0x005A2110
 // FUNCTION: fn_03083
@@ -120,7 +126,26 @@ void CEffect::Slot22(int) {
 void CEffect::Slot13(int) {
 }
 
+// OFFSET: 0x005A2520
+// FUNCTION: fn_03113
+void EffectResourceSwitcher::Slot16(int argument) {
+  if (this->effect) {
+    this->effect->Slot16(argument);
+  }
+}
+
 // OFFSET: 0x005A2540
 // FUNCTION: fn_03114
 void CEffect::Slot20(int) {
+}
+
+// OFFSET: 0x005A2630
+// FUNCTION: fn_03115
+template <>
+CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::GetInstance() {
+  if (!s_instance) {
+    s_instance = new (std::nothrow) CEZ2STREffectMgr;
+  }
+
+  return s_instance;
 }
