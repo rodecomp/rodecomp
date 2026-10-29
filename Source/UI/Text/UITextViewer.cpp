@@ -114,6 +114,19 @@ void UITextViewer::Slot25(int, int) {
 void UITextViewer::Slot26(int, int) {
 }
 
+// OFFSET: 0x007B7920
+// FUNCTION: fn_09229
+void UIAchTV::Slot25(int, int) {
+  if (this->unknown_00EC == 1) {
+    return;
+  }
+
+  const int id = this->geometry.id;
+  if (id != -1 && this->parent) {
+    this->parent->SendMsg(nullptr, 145, id, 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x007B79F0
 // FUNCTION: fn_09231
 void UIAchListWnd::Slot31(int, int) {
