@@ -1,6 +1,6 @@
 #include "Client/Application/ApplicationMessages.h"
 #include "Client/Application/ApplicationWindow.h"
-#include "Client/Input/TraditionalKeyInput.h"
+#include "Client/Input/LanguageTC.h"
 #include "Contents/Configuration/ServiceOptions.h"
 
 #include <cstdint>

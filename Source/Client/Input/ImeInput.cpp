@@ -1,5 +1,5 @@
 #include "Client/Input/ImeInput.h"
-#include "Client/Input/TraditionalKeyInput.h"
+#include "Client/Input/LanguageTC.h"
 #include "Utility/Text/LanguageCharset.h"
 
 #include <algorithm>

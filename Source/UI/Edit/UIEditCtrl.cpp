@@ -1,5 +1,5 @@
 #include "Client/Input/InputCharset.h"
-#include "Client/Input/TextInputBuffer.h"
+#include "Client/Input/Language.h"
 #include "Network/TextEncoding.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
@@ -68,7 +68,7 @@ struct EditPainting {
   const int& height;
   const int& screenWidth;
   const int& screenHeight;
-  TextInputBuffer& input;
+  CLanguage& input;
   const InputCharset& charset;
   EditViewport& viewport;
   CDC& surface;

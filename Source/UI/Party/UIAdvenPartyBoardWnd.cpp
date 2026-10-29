@@ -1,4 +1,4 @@
-#include "Client/Input/TextInputBuffer.h"
+#include "Client/Input/Language.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Party/AgencyRequestContext.h"
 #include "Render/DeviceContext/DeviceContext.h"

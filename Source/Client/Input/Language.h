@@ -1,5 +1,5 @@
-#ifndef RAGNAROK_SOURCE_CLIENT_INPUT_TEXTINPUTBUFFER_H
-#define RAGNAROK_SOURCE_CLIENT_INPUT_TEXTINPUTBUFFER_H
+#ifndef RAGNAROK_SOURCE_CLIENT_INPUT_LANGUAGE_H
+#define RAGNAROK_SOURCE_CLIENT_INPUT_LANGUAGE_H
 
 #include <string>
 #include <windows.h>
@@ -15,7 +15,7 @@ protected:
   ~TextInputSuggestions() = default;
 };
 
-struct TextInputBuffer {
+struct CLanguage {
   std::string& text;
   int& cursor;
   int& anchor;

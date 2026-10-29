@@ -4,7 +4,7 @@
 #include <string>
 #include <windows.h>
 
-struct TextInputBuffer;
+struct CLanguage;
 
 struct EditTextState {
   std::string& text;
@@ -12,7 +12,7 @@ struct EditTextState {
   int& cursor;
   const int& maximum;
   const bool& focused;
-  TextInputBuffer& input;
+  CLanguage& input;
   const UINT& codePage;
 
   void SetText(const char* value);

@@ -8,7 +8,7 @@
 #include <vector>
 
 struct InputFocus;
-struct TextInputBuffer;
+struct CLanguage;
 struct InputCharset;
 struct UIButtonContext;
 struct BitmapImage;
@@ -18,7 +18,7 @@ class UINaviLinkButton;
 
 struct UIEditContext {
   InputFocus& focus;
-  TextInputBuffer& input;
+  CLanguage& input;
   unsigned char& password;
   const InputCharset& charset;
   UIButtonContext& buttons;

@@ -7,7 +7,7 @@
 #include <imm.h>
 #include <vector>
 
-struct TraditionalKeyInput;
+struct CLanguageTC;
 
 struct ImeInput {
   TextInputBuffer& input;
@@ -20,7 +20,7 @@ struct ImeInput {
   unsigned& selection;
   unsigned& pageSize;
   int& compositionCursor;
-  TraditionalKeyInput* traditional;
+  CLanguageTC* traditional;
 
   LRESULT Message(HWND unused, UINT message, WPARAM value, LPARAM flags, std::uint8_t& handled);
 

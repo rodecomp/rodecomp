@@ -1,4 +1,4 @@
-#include "Client/Input/TextInputBuffer.h"
+#include "Client/Input/Language.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
 
@@ -9,7 +9,7 @@
 
 // OFFSET: 0x00ACF2A0
 // FUNCTION: fn_17794
-void TextInputBuffer::ResetInput() {
+void CLanguage::ResetInput() {
   HIMC context = ImmGetContext(this->window);
 
   if (context) {
@@ -27,7 +27,7 @@ void TextInputBuffer::ResetInput() {
 
 // OFFSET: 0x00ACD700
 // FUNCTION: fn_17767
-void TextInputBuffer::DeleteSelection() {
+void CLanguage::DeleteSelection() {
   if (this->cursor == this->anchor) {
     return;
   }
@@ -45,7 +45,7 @@ void TextInputBuffer::DeleteSelection() {
 
 // OFFSET: 0x00ACD360
 // FUNCTION: fn_17760
-void TextInputBuffer::Insert(const char* value) {
+void CLanguage::Insert(const char* value) {
   this->DeleteSelection();
   this->text.insert(static_cast<std::size_t>(this->cursor), value, std::strlen(value));
   this->anchor = this->cursor + static_cast<int>(std::strlen(value));
@@ -58,7 +58,7 @@ void TextInputBuffer::Insert(const char* value) {
 
 // OFFSET: 0x00ACF590
 // FUNCTION: fn_17797
-void TextInputBuffer::Select(int anchor, int cursor) {
+void CLanguage::Select(int anchor, int cursor) {
   this->anchor = anchor;
   this->cursor = cursor;
   this->anchor = std::clamp(this->anchor, 0, static_cast<int>(this->text.size()));
@@ -67,7 +67,7 @@ void TextInputBuffer::Select(int anchor, int cursor) {
 
 // OFFSET: 0x00ACE3C0
 // FUNCTION: fn_17782
-void TextInputBuffer::CopyDisplayText(std::string& output) const {
+void CLanguage::CopyDisplayText(std::string& output) const {
   if (&output != &this->text) {
     output = this->text;
   }
@@ -79,7 +79,7 @@ void TextInputBuffer::CopyDisplayText(std::string& output) const {
 
 // OFFSET: 0x00ACE420
 // FUNCTION: fn_17783
-void TextInputBuffer::Selection(int& anchor, int& cursor) const {
+void CLanguage::Selection(int& anchor, int& cursor) const {
   anchor = this->anchor;
   cursor = this->cursor;
 }
@@ -91,7 +91,7 @@ void __stdcall SubACDD10() {
 
 // OFFSET: 0x00ACDD20
 // FUNCTION: fn_17775
-void TextInputBuffer::RefreshComposition(unsigned codePage) {
+void CLanguage::RefreshComposition(unsigned codePage) {
   HIMC context = ImmGetContext(this->window);
   if (!context) {
     this->candidate.clear();
@@ -119,7 +119,7 @@ void TextInputBuffer::RefreshComposition(unsigned codePage) {
 
 // OFFSET: 0x00ACD5C0
 // FUNCTION: fn_17765
-void TextInputBuffer::CopySelection(bool password) {
+void CLanguage::CopySelection(bool password) {
   const int length = std::max(this->cursor, this->anchor) - std::min(this->cursor, this->anchor);
   if (!length || !OpenClipboard(this->window)) {
     return;
@@ -148,7 +148,7 @@ void TextInputBuffer::CopySelection(bool password) {
 
 // OFFSET: 0x00ACD540
 // FUNCTION: fn_17764
-void TextInputBuffer::Paste(UIWindow* blockedFocus, WindowManagerWindows& windows) {
+void CLanguage::Paste(UIWindow* blockedFocus, WindowManagerWindows& windows) {
   if (this->focused == blockedFocus || windows.LookupWindow(278) || windows.LookupWindow(128)) {
     return;
   }
@@ -171,7 +171,7 @@ void TextInputBuffer::Paste(UIWindow* blockedFocus, WindowManagerWindows& window
 
 // OFFSET: 0x00ACD6B0
 // FUNCTION: fn_17766
-void TextInputBuffer::MoveBack(unsigned codePage) {
+void CLanguage::MoveBack(unsigned codePage) {
   if (this->cursor < 0) {
     this->cursor = 0;
   } else if (this->cursor != 0) {
@@ -182,7 +182,7 @@ void TextInputBuffer::MoveBack(unsigned codePage) {
 
 // OFFSET: 0x00ACE440
 // FUNCTION: fn_45441
-void TextInputBuffer::SelectionRange(int& begin, int& end) const {
+void CLanguage::SelectionRange(int& begin, int& end) const {
   if (this->anchor < this->cursor) {
     begin = this->anchor;
     end = this->cursor;
@@ -194,12 +194,12 @@ void TextInputBuffer::SelectionRange(int& begin, int& end) const {
 
 // OFFSET: 0x00ACE4B0
 // FUNCTION: fn_17786
-void TextInputBuffer::SetFlag8C(unsigned char value) {
+void CLanguage::SetFlag8C(unsigned char value) {
   reinterpret_cast<unsigned char*>(this)[0x8C] = value;
 }
 // OFFSET: 0x00ACE4C0
 // FUNCTION: fn_17787
-void TextInputBuffer::IncreaseSelection(unsigned codePage) {
+void CLanguage::IncreaseSelection(unsigned codePage) {
   const auto length = static_cast<std::uint32_t>(this->text.size());
   const auto position = static_cast<std::uint32_t>(this->cursor);
   if (position > length) {
@@ -211,7 +211,7 @@ void TextInputBuffer::IncreaseSelection(unsigned codePage) {
 }
 // OFFSET: 0x00ACE5E0
 // FUNCTION: fn_17789
-void TextInputBuffer::AdvanceCursor(int delta) {
+void CLanguage::AdvanceCursor(int delta) {
   const unsigned length = static_cast<unsigned>(this->text.size());
   unsigned cursor = static_cast<unsigned>(this->cursor);
   if (cursor == length) {
@@ -232,7 +232,7 @@ void TextInputBuffer::AdvanceCursor(int delta) {
 
 // OFFSET: 0x00ACE620
 // FUNCTION: fn_17790
-void TextInputBuffer::RetreatCursor(int delta) {
+void CLanguage::RetreatCursor(int delta) {
   if (this->cursor == 0) {
     return;
   }
@@ -251,7 +251,7 @@ void TextInputBuffer::RetreatCursor(int delta) {
 
 // OFFSET: 0x00ACE660
 // FUNCTION: fn_17791
-void TextInputBuffer::Character(unsigned value, LPARAM, unsigned codePage) {
+void CLanguage::Character(unsigned value, LPARAM, unsigned codePage) {
   if (value == 8) {
     if (this->cursor == this->anchor) {
       this->MoveBack(codePage);
@@ -272,7 +272,7 @@ void TextInputBuffer::Character(unsigned value, LPARAM, unsigned codePage) {
 
 // OFFSET: 0x00ACE880
 // FUNCTION: fn_17792
-void TextInputBuffer::KeyDown(
+void CLanguage::KeyDown(
   unsigned key, LPARAM, unsigned codePage, bool password, UIWindow* blockedPasteFocus, WindowManagerWindows& windows, UIWindow* const& chatArrows
 ) {
   const auto cut = [&]() {

@@ -1,4 +1,4 @@
-#include "Client/Input/TextInputBuffer.h"
+#include "Client/Input/Language.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Text/NavigationLink.h"
 #include "UI/Text/TextFitting.h"

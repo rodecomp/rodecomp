@@ -1,4 +1,4 @@
-#include "Client/Input/TextInputBuffer.h"
+#include "Client/Input/Language.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Edit/EditTextState.h"
 #include "UI/Edit/EditViewport.h"

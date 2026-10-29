@@ -1,10 +1,10 @@
-#include "Client/Input/TraditionalKeyInput.h"
+#include "Client/Input/LanguageTC.h"
 #include "Network/TextEncoding.h"
 #include <windows.h>
 
 // OFFSET: 0x00ACCD30
 // FUNCTION: fn_17752
-void TraditionalKeyInput::InitializeMappings() {
+void CLanguageTC::InitializeMappings() {
   // STATIC: 0x011594E0
   // GLOBAL: gl_13427
   static constexpr std::uint8_t zhuyinBig5[] = {0xA3, 0x74, 0xA3, 0x78, 0xA3, 0xBE, 0xA3, 0xBF, 0xA3, 0xA4, 0xA3, 0xBD, 0xA3, 0xBB, 0xA3, 0xAB, 0xA3,
@@ -40,12 +40,12 @@ void TraditionalKeyInput::InitializeMappings() {
 
 // OFFSET: 0x00ACF330
 // FUNCTION: fn_17795
-void TraditionalKeyInput::DefaultKey(int) {
+void CLanguageTC::DefaultKey(int) {
 }
 
 // OFFSET: 0x00ACF340
 // FUNCTION: fn_17796
-void TraditionalKeyInput::Key(int virtualKey) {
+void CLanguageTC::Key(int virtualKey) {
   const auto key = static_cast<std::uint8_t>(virtualKey);
   if (key == 8) {
     if (!this->keys.empty()) {
@@ -67,13 +67,13 @@ void TraditionalKeyInput::Key(int virtualKey) {
 
 // OFFSET: 0x00ACE270
 // FUNCTION: fn_17777
-const char* TraditionalKeyInput::DisplayText() const {
+const char* CLanguageTC::DisplayText() const {
   return this->display.c_str();
 }
 
 // OFFSET: 0x00ACE280
 // FUNCTION: fn_17778
-const char* TraditionalKeyInput::Display() {
+const char* CLanguageTC::Display() {
   char bytes[8] = {};
 
   for (std::uint8_t key : this->keys) {
@@ -90,13 +90,13 @@ const char* TraditionalKeyInput::Display() {
 
 // OFFSET: 0x00ACE320
 // FUNCTION: fn_17779
-int TraditionalKeyInput::DisplayLength() const {
+int CLanguageTC::DisplayLength() const {
   return static_cast<int>(this->display.size());
 }
 
 // OFFSET: 0x00ACE330
 // FUNCTION: fn_17780
-int TraditionalKeyInput::GetKeyStrokeSize() const {
+int CLanguageTC::GetKeyStrokeSize() const {
   if (this->keys.size() == 1 && this->mappings[this->keys.back()].category == 4) {
     return 0;
   }
@@ -106,13 +106,13 @@ int TraditionalKeyInput::GetKeyStrokeSize() const {
 
 // OFFSET: 0x00ACE470
 // FUNCTION: fn_17784
-const char* TraditionalKeyInput::NextChar(const char* current, int) {
+const char* CLanguageTC::NextChar(const char* current, int) {
   return CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
 }
 
 // OFFSET: 0x00ACE490
 // FUNCTION: fn_17785
-const char* TraditionalKeyInput::NextCharArabic(const char* current, int) {
+const char* CLanguageTC::NextCharArabic(const char* current, int) {
   return CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
 }
 
@@ -122,23 +122,23 @@ void TraditionalKeyInputNoop() {}
 
 // OFFSET: 0x00ACD7E0
 // FUNCTION: fn_17769
-void TraditionalKeyInput::ClearKeys() {
+void CLanguageTC::ClearKeys() {
   this->keys.clear();
 }
 
 // OFFSET: 0x00ACD4A0
 // FUNCTION: fn_17761
-void TraditionalKeyInput::ResetState() {
+void CLanguageTC::ResetState() {
 }
 
 // OFFSET: 0x00ACD4E0
 // FUNCTION: fn_17762
-void TraditionalKeyInput::ResetCandidate() {
+void CLanguageTC::ResetCandidate() {
 }
 
 // OFFSET: 0x00ACD4F0
 // FUNCTION: fn_17763
-void TraditionalKeyInput::RetainSingleKey() {
+void CLanguageTC::RetainSingleKey() {
   if (!this->keys.empty()) {
     const auto key = this->keys.back();
     this->keys.clear();
@@ -150,7 +150,7 @@ void TraditionalKeyInput::RetainSingleKey() {
 
 // OFFSET: 0x00ACE000
 // FUNCTION: fn_17776
-void TraditionalKeyInput::FilterCandidate(std::string& candidate) {
+void CLanguageTC::FilterCandidate(std::string& candidate) {
   if (candidate.size() > 2 && std::strcmp(candidate.c_str() + candidate.size() - 2, "?") == 0) {
     candidate.resize(candidate.size() - 2);
   }

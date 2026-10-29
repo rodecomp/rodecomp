@@ -3,7 +3,7 @@
 
 #include <windows.h>
 
-struct TraditionalKeyInput;
+struct CLanguageTC;
 struct ServiceOptions;
 
 struct ApplicationMessages {
@@ -11,7 +11,7 @@ struct ApplicationMessages {
   unsigned char& dragging;
   POINT& dragStart;
   RECT& dragRectangle;
-  TraditionalKeyInput* const& traditional;
+  CLanguageTC* const& traditional;
   ServiceOptions& service;
 
   void Pump();

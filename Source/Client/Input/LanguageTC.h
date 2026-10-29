@@ -1,5 +1,5 @@
-#ifndef RAGNAROK_SOURCE_CLIENT_INPUT_TRADITIONALKEYINPUT_H
-#define RAGNAROK_SOURCE_CLIENT_INPUT_TRADITIONALKEYINPUT_H
+#ifndef RAGNAROK_SOURCE_CLIENT_INPUT_LANGUAGETC_H
+#define RAGNAROK_SOURCE_CLIENT_INPUT_LANGUAGETC_H
 
 #include <array>
 #include <cstdint>
@@ -11,7 +11,7 @@ struct TraditionalKeyMapping {
   /* 0001 */ std::uint8_t bytes[3];
 };
 
-struct TraditionalKeyInput {
+struct CLanguageTC {
   std::list<std::uint8_t>& keys;
   std::array<TraditionalKeyMapping, 256>& mappings;
   std::string& display;
