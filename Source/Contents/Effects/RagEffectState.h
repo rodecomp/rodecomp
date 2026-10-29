@@ -22,7 +22,7 @@ struct RagEffectState {
   /* 00040 */ std::int32_t unknown_0178;
   /* 00044 */ int lifetime;
   /* 00048 */ float offset[3];
-  /* 00054 */ std::uint32_t unknown_018C[6];
+  /* 00054 */ float unknown_018C[6];
   /* 0006C */ std::list<EffectPrimitiveState*> related;
   /* 00074 */ unsigned char unknown_01AC[1600];
   /* 006B4 */ CRes* resource;

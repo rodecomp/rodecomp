@@ -79,6 +79,36 @@ int CGameObject::GetDir(float rot) {
   return longitude;
 }
 
+// OFFSET: 0x00CAB740
+// FUNCTION: fn_21029
+int CGameObject::Get8Dir2(float rot, int flag) {
+  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+  if (!gameMode) {
+    return 0;
+  }
+
+  float relative = -gameMode->camera->camera.yaw - rot;
+
+  while (relative < 0.0f) {
+    relative += 360.0f;
+  }
+
+  while (relative >= 360.0f) {
+    relative -= 360.0f;
+  }
+
+  if (flag != 0) {
+    if (relative < 22.5f || relative > 337.5f) {
+      return 0;
+    }
+
+    return static_cast<int>((static_cast<double>(relative) + 22.5) / 45.0);
+  }
+
+  return static_cast<int>(relative / 45.0f);
+}
+
 // OFFSET: 0x00CAB920
 // FUNCTION: fn_21031
 int CGameObject::Get8Dir(float angle, const CameraDirectionContext& camera) {

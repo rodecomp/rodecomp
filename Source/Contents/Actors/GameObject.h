@@ -16,6 +16,7 @@ public:
   virtual void SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m);
   virtual void Render(int argument);
   virtual int Get8Dir(float angle, const CameraDirectionContext& camera);
+  int Get8Dir2(float rot, int flag);
   int GetDir(float rot);
 
   /* 0008 */ std::uint64_t identity;

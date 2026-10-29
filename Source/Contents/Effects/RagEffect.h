@@ -9,10 +9,24 @@
 #include <cstdint>
 
 struct EffectActor;
+class TextureCache;
+struct RenderProjection;
 
 struct CRagEffect : CRenderObject {
   CRagEffect();
   ~CRagEffect() override;
+  void BloodDrain();
+  void FireBall();
+  void FrostDiver(TextureCache& textures, char type);
+  void GrimTooth(TextureCache& textures);
+  void Hit4(const RenderProjection& projection, TextureCache& textures);
+  void SoulStrike(char F1);
+  void SpearBmr();
+  void SprayPond(TextureCache& textures);
+  void WaterBall2();
+  void Yufitel(TextureCache& textures, char F1);
+  void AirTexture(TextureCache& textures, const char* name);
+  void EnergyDrain2();
 
   virtual void Slot08();
   virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);
