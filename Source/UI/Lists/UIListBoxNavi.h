@@ -1,0 +1,18 @@
+#ifndef RAGNAROK_SOURCE_UI_LISTS_UILISTBOXNAVI_H
+#define RAGNAROK_SOURCE_UI_LISTS_UILISTBOXNAVI_H
+
+#include "UI/Lists/UIListBox.h"
+
+#include <cstdint>
+#include <vector>
+
+class UIListBoxNavi : public UIListBox {
+public:
+  /* 00D4 */ std::uint32_t defaultLineColor;
+  /* 00D8 */ std::vector<std::uint32_t> lineColors;
+  /* 00E4 */ int lineOffset;
+
+  void SetLineColor(int line, std::uint32_t color);
+};
+
+#endif

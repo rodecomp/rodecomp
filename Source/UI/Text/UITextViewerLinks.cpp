@@ -5,10 +5,12 @@
 #include "UI/Text/PixelTextWrapping.h"
 #include "UI/Text/TextMarkup.h"
 #include "UI/Text/TextWrapping.h"
+#include "UI/Lists/UIListBoxNavi.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Text/UITextViewer.h"
 
+#include <cstdint>
 #include <cstring>
 
 // INLINED
@@ -137,6 +139,19 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   return true;
 }
 
+// OFFSET: 0x00876FD0
+// FUNCTION: fn_11208
+void UIListBoxNavi::SetLineColor(int line, std::uint32_t color) {
+  const int index = this->lineOffset + line;
+
+  if (index < 0 || this->lines.size() < static_cast<unsigned>(index)) {
+    return;
+  }
+
+  this->lineColors[index] = color;
+  this->Invalidate();
+}
+
 // OFFSET: 0x00877020
 // FUNCTION: fn_11209
 bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
@@ -180,6 +195,8 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
   this->SendMsg(nullptr, 7, 0, 0, 0, 0);
   return true;
 }
+
+// OFFSET: 0x00877B00
 
 // OFFSET: 0x00878750
 // OFFSET: 0x00878750
@@ -233,122 +250,20 @@ void UITextViewer::AddLinks(const char* text, unsigned addedLines, int kind) {
   switch (kind) {
   case 0:
     this->AddItemLinks(text, addedLines);
-    return;
+    break;
   case 1:
     this->AddUrlLinks(text, addedLines);
-    return;
+    break;
   case 2:
     this->AddNaviLinks(text, addedLines);
-    return;
+    break;
+  case 3:
+    this->AddTipLinks(text, addedLines);
+    break;
   case 4:
     this->AddQuestLinks(text, addedLines);
-    return;
+    break;
   default:
     break;
-  }
-  auto& owner = this->m_text->list;
-  std::string parsed = RemoveTextColors(text, owner.codePage);
-
-  if (kind != 1) {
-    parsed = DisplayTextTag(std::move(parsed), "<URL>", "</URL>");
-  }
-
-  if (kind != 2) {
-    parsed = DisplayTextTag(std::move(parsed), "<NAVI>", "</NAVI>");
-  }
-
-  if (kind == 1 || kind == 2 || kind == 3) {
-    parsed = DisplayTextTag(std::move(parsed), "<ITEM>", "</ITEM>");
-  }
-
-  if (kind == 3) {
-    parsed = DisplayTextTag(std::move(parsed), "<QUEST>", "</QUEST>");
-  }
-
-  if (this->m_text->chatConversions) {
-    parsed = this->ConvertChat(std::move(parsed));
-  }
-
-  if (kind == 1 || kind == 2) {
-    parsed = DisplayTextTag(std::move(parsed), "<TIPBOX>", "</TIPBOX>");
-  }
-
-  std::string navigation;
-  DisplayNavigationLink(navigation, parsed);
-  parsed = std::move(navigation);
-
-  if (kind == 0 || kind == 4) {
-    parsed = DisplayTextTag(std::move(parsed), "<TIPBOX>", "</TIPBOX>");
-  }
-
-  if (kind == 1 || kind == 2) {
-    parsed = DisplayTextTag(std::move(parsed), "<QUEST>", "</QUEST>");
-  }
-
-  const char* begins[] = {"<ITEM>", "<URL>", "<NAVI>", "<TIPBOX>", "<QUEST>"};
-  const char* ends[] = {"</ITEM>", "</URL>", "</NAVI>", "</TIPBOX>", "</QUEST>"};
-  const int ids[] = {464, 437, 438, 517, 539};
-  std::vector<TextLink> extracted;
-  ExtractTextLinks(std::move(parsed), begins[kind], ends[kind], extracted);
-
-  for (const auto& link : extracted) {
-    std::vector<std::string> labels;
-
-    if (kind == 3 && this->splitTipLinks == 1) {
-      const char* begin = link.display.c_str();
-      const char* current = begin;
-      const char* end = begin + link.display.size();
-      const char* breakAt = begin;
-      auto limit = reinterpret_cast<std::uintptr_t>(begin) + 32u - link.position;
-
-      while (current < end) {
-        current = CharNextExA(owner.codePage, current, 0);
-
-        while (*current == ' ') {
-          breakAt = ++current;
-        }
-
-        if (reinterpret_cast<std::uintptr_t>(current) >= limit || *current == '\n') {
-          if (*current == '\n') {
-            breakAt = current++;
-          }
-
-          const char* split = breakAt <= begin ? current : breakAt;
-          labels.emplace_back(begin, split);
-          begin = split;
-          limit = reinterpret_cast<std::uintptr_t>(begin) + 32u;
-        }
-      }
-
-      if (begin < current) {
-        labels.emplace_back(begin, current);
-      }
-    } else {
-      labels.push_back(link.display);
-    }
-
-    for (unsigned fragment = 0; fragment < labels.size(); ++fragment) {
-      if (kind == 1) {
-        labels[fragment] = RemoveTextLinkInfo(std::move(labels[fragment]));
-      }
-
-      auto* button = new UITextButton(*this->m_context, this->m_text->buttons);
-      button->Configure(labels[fragment].c_str(), kind == 1 ? 0x00E6A300 : 0x00F4934A, 0, 12, 0, 1);
-      const int height = button->geometry.height;
-      const int width = this->TextWidth(owner.fonts, owner.locale, labels[fragment].c_str(), 0, 0, 12, 0, 0);
-      button->Resize(width + 1, height);
-      button->m_hoverColor = kind == 1 ? 0x00E6A300 : 0x00FF7864;
-      button->SetId(ids[kind]);
-      SplitTextLinkArguments(link.metadata, button->m_lines);
-      const auto position = this->LinkPosition(fragment == 0 ? link.position : 0, addedLines - fragment);
-      button->m_value = position.first;
-      button->Move(position.second, -100);
-      this->AddChild(button);
-      this->links.push_back(button);
-    }
-  }
-
-  if (!extracted.empty()) {
-    this->SendMsg(nullptr, 7, 0, 0, 0, 0);
   }
 }

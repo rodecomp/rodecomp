@@ -63,6 +63,7 @@ private:
   bool AddUrlLinks(std::string text, unsigned addedLines);
   bool AddNaviLinks(std::string text, unsigned addedLines);
   bool AddQuestLinks(std::string text, unsigned addedLines);
+  void AddTipLinks(std::string text, unsigned addedLines);
   void AppendText(char* text, int width, bool carriageReturns, bool pixels);
   void Activate(UITextButton* button, int id);
 };
