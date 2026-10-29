@@ -101,6 +101,16 @@ void BarterTree::Clear()
 }
 
 // OFFSET: 0x005D7F10
+// FUNCTION: fn_03730
+int CBarterMarketItemMgr::GetValueById(int id)
+{
+  for (std::list<BarterMarketItem>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
+    if (it->id == id) {
+      return it->value;
+    }
+  }
+  return 0;
+}
 
 // OFFSET: 0x005D7F40
 // FUNCTION: fn_03731
@@ -124,6 +134,16 @@ int CBarterMarketItemMgr::GetAllItemCount()
 }
 
 // OFFSET: 0x005D8250
+// FUNCTION: fn_03738
+int CBarterMarketItemMgr::GetAmountById(int id)
+{
+  for (std::list<BarterMarketItem>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
+    if (it->id == id) {
+      return it->amount;
+    }
+  }
+  return -1;
+}
 
 // OFFSET: 0x005D8280
 // FUNCTION: fn_03739
@@ -133,3 +153,12 @@ std::map<int, int>* CBarterMarketItemMgr::GetTotals()
 }
 
 // OFFSET: 0x005D8290
+// FUNCTION: fn_03740
+float CBarterMarketItemMgr::GetTotalAmount()
+{
+  float total = 0.0f;
+  for (std::list<BarterMarketItem>::iterator it = this->allItems.begin(); it != this->allItems.end(); ++it) {
+    total += (float)(it->amount * it->value);
+  }
+  return total;
+}
