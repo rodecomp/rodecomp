@@ -76,12 +76,71 @@ bool CSession::IsEffectRenderEnabled() const {
 }
 
 // OFFSET: 0x00E3D0A0
+// FUNCTION: fn_24181
+bool CSession::CheckInterval(long long interval) {
+  const int now = static_cast<int>(timeGetTime());
+  if (now < this->m_lastIntervalTime + interval) {
+    return false;
+  }
+
+  this->m_lastIntervalTime = now;
+  return true;
+}
 
 // OFFSET: 0x00E3D0F0
+// FUNCTION: fn_24182
+bool CSession::IsPlayerPerformerJob(int) const {
+  switch (g_session.m_job) {
+  case JT_BARD:
+  case JT_DANCER:
+  case JT_BARD_H:
+  case JT_DANCER_H:
+  case JT_BARD_B:
+  case JT_DANCER_B:
+  case JT_MINSTREL:
+  case JT_MINSTREL_H:
+  case JT_MINSTREL_B:
+  case JT_KAGEROU:
+  case JT_OBORO:
+  case JT_KAGEROU_B:
+  case JT_OBORO_B:
+  case JT_TROUBADOUR:
+  case JT_TROUVERE:
+  case JT_SHINKIRO:
+  case JT_SHIRANUI:
+    return true;
+  default:
+    return false;
+  }
+}
 
 // OFFSET: 0x00E3D240
+// FUNCTION: fn_24183
+bool CSession::IsSpecialMonsterJob(int job) const {
+  switch (job) {
+  case 331:
+  case JT_WISH_MAIDEN:
+  case JT_I_G_RAKE_SCARABA:
+  case JT_GM_HINALLE:
+  case JT_G_OBSIDIAN:
+  case JT_C4_ZOMBIE:
+  case JT_C5_ZAKUDAM:
+  case JT_C3_HARPY:
+    return true;
+  default:
+    return false;
+  }
+}
 
 // OFFSET: 0x00E3D320
+// FUNCTION: fn_24187
+bool CSession::IsWithinUnknown59C0(int value) const {
+  if (value == -1) {
+    return false;
+  }
+
+  return this->unknown_59C0 - this->unknown_8130 <= value;
+}
 
 // OFFSET: 0x00E3DB20
 // FUNCTION: fn_24194
