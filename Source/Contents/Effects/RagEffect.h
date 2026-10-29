@@ -30,6 +30,9 @@ struct CRagEffect : CRenderObject {
   void GrimToothAtk(TextureCache& textures);
   void Snow();
   void Entry(TextureCache& textures);
+  bool CartRevolution(TextureCache& textures);
+  void BowlingBash(TextureCache& textures);
+  void SonicBlowHit(TextureCache& textures);
   void AttackEnergy2(TextureCache& textures, const char* name);
   bool LexDivina();
   void RemoveTrap();
