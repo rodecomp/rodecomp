@@ -25,11 +25,11 @@ public:
     this->unknown_0034 = value;
   }
   // INLINED
-  void SetValue3(std::string value) {
+  __forceinline void SetValue3(std::string value) {
     this->unknown_004C = value;
   }
   // INLINED
-  void SetValue4(std::string value) {
+  __forceinline void SetValue4(std::string value) {
     this->unknown_0064 = value;
   }
   // INLINED
@@ -54,6 +54,8 @@ public:
   virtual ~CActorNameCardHolder();
   std::string Name(std::uint32_t id);
   void SetName(std::uint32_t id, std::string name);
+  void SetValue3(std::uint32_t id, std::string value);
+  void SetValue4(std::uint32_t id, std::string value);
   const CActorNameCard& Lookup(std::uint32_t id);
   std::size_t Save(std::vector<char>& output);
   std::size_t Load(const std::vector<char>& input);

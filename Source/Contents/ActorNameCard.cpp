@@ -60,3 +60,15 @@ void CActorNameCardHolder::Set(std::uint32_t id, std::string name, std::string v
 void CActorNameCardHolder::SetName(std::uint32_t id, std::string name) {
   this->cards[id].SetName(name);
 }
+
+// OFFSET: 0x005C0F00
+// FUNCTION: fn_03508
+void CActorNameCardHolder::SetValue3(std::uint32_t id, std::string value) {
+  this->cards[id].SetValue3(value);
+}
+
+// OFFSET: 0x005C0FA0
+// FUNCTION: fn_03509
+void CActorNameCardHolder::SetValue4(std::uint32_t id, std::string value) {
+  this->cards[id].SetValue4(value);
+}

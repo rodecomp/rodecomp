@@ -7,6 +7,7 @@
 #include <vector>
 
 class CNavi_Object;
+class CTexture;
 struct UIButtonContext;
 
 struct NavigationWindowInfo {
@@ -25,6 +26,7 @@ public:
   void LayoutWithoutDetails();
   void LayoutWithDetails();
   bool IsListShown() const;
+  void DrawMapTexture(int x, int y, int size);
   std::string ObjectName(int type, void* object);
   std::string ObjectLabel(int type, void* object);
   std::string MobName(CNavi_Object* mob);
@@ -77,5 +79,6 @@ protected:
 };
 
 extern int g_navigationTab;
+extern CTexture* g_navigationMapTexture;
 
 #endif

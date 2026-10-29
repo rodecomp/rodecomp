@@ -89,6 +89,9 @@ std::uint32_t g_windowUid = 0xFFFFFFFFu;
 // GLOBAL: gl_24611
 int g_navigationTab;
 
+// GLOBAL: gl_24632
+CTexture* g_navigationMapTexture;
+
 // INLINED
 void UIWindowContext::DestroyDeferredChildren() {
   for (UIWindow* window : this->deferredDeletion) {
@@ -1313,6 +1316,19 @@ bool UINavigationV4Wnd::ClearRouteTexts() {
 
   this->unknown_0104.clear();
   return true;
+}
+
+// OFFSET: 0x005C33E0
+// FUNCTION: fn_03557
+void UINavigationV4Wnd::DrawMapTexture(int x, int y, int size) {
+  if (g_navigationMapTexture) {
+    this->FillRegion(x, y, size, size, 0);
+    const float scale = static_cast<float>(size) / static_cast<float>(g_navigationMapTexture->Width());
+    this->geometry.surface->DrawScaledSurface(
+      x, y, size, size, g_navigationMapTexture, g_navigationMapTexture->Width(), g_navigationMapTexture->Height(), scale, scale, 0xFFFFFFFFu, false, 0, 0, 0,
+      0, 0
+    );
+  }
 }
 
 // OFFSET: 0x005C4520
