@@ -48,4 +48,21 @@ inline bool ShortcutVisibility::Show(int value) {
   return true;
 }
 
+struct WindowVisibility {
+  WindowManagerWindows& windows;
+  WindowOrdering& ordering;
+  ShortcutVisibility& shortcut;
+  int& basicInfoVisible;
+  UIWindow*& basicInfo;
+  UIWindow*& window15;
+  int& window46Visible;
+  UIWindow*& window46;
+  int& window276Visible;
+  UIWindow*& window276;
+  const bool& restricted;
+  const bool& replayAllowsBasicInfo;
+
+  bool Show(int id, int visible);
+};
+
 #endif
