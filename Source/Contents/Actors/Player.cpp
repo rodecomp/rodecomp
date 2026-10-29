@@ -1,12 +1,15 @@
 #include "Contents/Actors/Pc.h"
 
 #include "Client/Session.h"
+#include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/EquipmentResourceMgr.h"
+#include "Contents/Items/WeaponType.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Jobs/JobNames.h"
 #include "Contents/MessageTable.h"
+#include "Render/Primitives/RenderPrimitive.h"
 #include "Resource/Models/GrannyModelResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -555,3 +558,38 @@ int CPc::MapMotion(int motion) {
       return motion;
   }
 }
+
+// OFFSET: 0x00DAA2E0
+
+// OFFSET: 0x00DAA3F0
+
+// OFFSET: 0x00DAA520
+
+// OFFSET: 0x00DAA5F0
+
+// OFFSET: 0x00DAA610
+// FUNCTION: fn_22574
+int CPc::Slot55() {
+  return CGameActor::Slot55();
+}
+
+// OFFSET: 0x00DAAD80
+
+// OFFSET: 0x00DAB010
+
+// OFFSET: 0x00DAB140
+
+// OFFSET: 0x00DAB160
+
+// OFFSET: 0x00DAB250
+// FUNCTION: fn_22582
+bool CPc::IsCostumeOutfit() const {
+  return StateFlag12(this->stateFlags) || StateFlag16(this->stateFlags) || StateFlag18(this->stateFlags) ||
+    StateFlag27(this->stateFlags) || StateFlag28(this->stateFlags) || this->unknown_03DC == 1;
+}
+
+// OFFSET: 0x00DAB460
+
+// OFFSET: 0x00DAB6A0
+
+// OFFSET: 0x00DAC030
