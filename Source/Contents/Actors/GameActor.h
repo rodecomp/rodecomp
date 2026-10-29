@@ -222,10 +222,12 @@ public:
   bool FindRoute(int startX, int startY, int fractionX, int fractionY, int destX, int destY, int speed);
   std::string GetShapeShiftName();
   int MountType();
+  bool IsShapeShifted();
   bool ApplyEffectState(int effectId, bool on);
   void SetHatEffect(int effectId, bool on);
   void SetEffectState(int effectId, bool on);
   void SetEffectInstance(int effectId, int instance, bool on);
+  void ResetJobEffects();
   void ClearUnknown037C(int value);
   int WeaponActionBase(int weaponType);
   int GetUnknown0404();

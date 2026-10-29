@@ -1345,6 +1345,15 @@ void RenderBounds::Include(const float* box) {
   }
 }
 
+// OFFSET: 0x00CA9E20
+// FUNCTION: fn_21012
+bool CGameActor::IsShapeShifted() {
+  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true) {
+    return false;
+  }
+  return this->unknown_0404 != 0;
+}
+
 // OFFSET: 0x00CAA870
 // FUNCTION: fn_21018
 bool CGameActor::ApplyEffectState(int effectId, bool on) {
@@ -1427,6 +1436,36 @@ void CGameActor::SetEffectInstance(int effectId, int instance, bool on) {
   } else {
     g_effectMgr->Retire(this->render.accountId, instance, effectId);
   }
+}
+
+// OFFSET: 0x00CAAC80
+// FUNCTION: fn_21022
+void CGameActor::ResetJobEffects() {
+  this->unknown_02B8 = 0;
+  this->SendMsg(this, 109, 0, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 109, 0, 976, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 109, 0, 977, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 109, 0, 978, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 109, 0, 979, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 109, 0, 1022, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 109, 0, 1023, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 109, 0, 1226, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 109, 0, 1227, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 109, 0, 757, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 109, 0, 880, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 109, 0, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 109, 0, 397, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 109, 0, 398, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 109, 0, 362, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 109, 0, 362, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 109, 0, 201, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 109, 0, 202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 109, 0, 202, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+  const std::int64_t first = g_session.m_maxLevelEffect4th;
+  this->SendMsg(this, 109, 0, static_cast<int>(first), static_cast<int>(first >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  const std::int64_t second = g_session.m_maxLevelEffect4thSub;
+  this->SendMsg(this, 109, 0, static_cast<int>(second), static_cast<int>(second >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00CAB020
