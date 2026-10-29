@@ -1,3 +1,4 @@
+#include "Contents/AdventureGuideMgr.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Lists/UIVScrollBar.h"
@@ -49,6 +50,20 @@ void CUIItemInfo::Slot16() {
   this->unknown_00F0->scrollBar->SetHidden(1);
   this->unknown_00F4->scrollBar->SetHidden(1);
   this->unknown_00F8->scrollBar->SetHidden(1);
+}
+
+// OFFSET: 0x009DD210
+// FUNCTION: fn_14335
+void CUIMonster::Slot16() {
+  std::list<AdventureGuideEpisode> episodes;
+  g_adventureGuideMgr->GetEpisodeList(episodes);
+  for (const AdventureGuideEpisode& episode : episodes) {
+    CMonsterData data;
+    data.name = episode.name;
+    data.values = episode.values;
+    this->monsterList->data.push_back(data);
+  }
+  this->monsterList->UpdateScrollBar();
 }
 
 // OFFSET: 0x009DD680

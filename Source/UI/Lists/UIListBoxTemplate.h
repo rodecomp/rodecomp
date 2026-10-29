@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <functional>
 #include <list>
+#include <string>
 #include <vector>
 
 class CUIListItem : public CUIControl {
@@ -79,7 +80,11 @@ public:
   void Slot16() override;
 };
 class CItemData {};
-class CMonsterData {};
+class CMonsterData {
+public:
+  /* 0000 */ std::string name;
+  /* 0018 */ std::vector<std::string> values;
+};
 class CQuestInfo {};
 }
 
