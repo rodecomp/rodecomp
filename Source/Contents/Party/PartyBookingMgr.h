@@ -1,27 +1,14 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_PARTY_PARTYBOOKINGMGR_H
 #define RAGNAROK_SOURCE_CONTENTS_PARTY_PARTYBOOKINGMGR_H
 
+#include "Contents/Party/PartyBookingInfo.h"
+
 #include <cstddef>
 #include <ctime>
 #include <map>
 #include <string>
 #include <utility>
 #include <vector>
-
-struct PARTY_BOOKING_DETAIL {
-  /* 0000 */ short level;
-  /* 0002 */ short mapId;
-  /* 0004 */ short job[6];
-};
-
-struct PARTY_BOOKING_AD_INFO {
-  /* 0000 */ int index;
-  /* 0004 */ char charName[24];
-  /* 001C */ __time32_t expireTime;
-  /* 0020 */ PARTY_BOOKING_DETAIL detail;
-};
-
-static_assert(sizeof(PARTY_BOOKING_AD_INFO) == 0x30);
 
 struct PartyBookingMapInfo {
   /* 0000 */ std::string name;
@@ -54,6 +41,7 @@ public:
   void SetJobs(int index, const short* jobs);
   bool FlushPending();
   void AddEntries(const PARTY_BOOKING_AD_INFO* infos, int count, bool more);
+  void OnAdvertisement(PARTY_BOOKING_AD_INFO info);
   std::pair<bool, PartyBookingEntry> MakeEntry(PARTY_BOOKING_AD_INFO info);
 
   /* 0000 */ int unknown_0000;

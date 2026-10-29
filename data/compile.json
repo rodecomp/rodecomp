@@ -757,6 +757,7 @@
   "Source/UI/Window/UIControl.cpp": 2,
   "Source/UI/Window/UIFrameWnd.cpp": 2,
   "Source/UI/Window/UIMessageBox.cpp": 2,
+  "Source/UI/Window/UISeekPartyListWnd.cpp": 2,
   "Source/UI/Window/UIWindow.cpp": 2,
   "Source/UI/Window/UIWindowMgr.cpp": 2,
   "Source/UI/Window/WindowAncestry.cpp": 2,
