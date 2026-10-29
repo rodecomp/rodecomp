@@ -232,6 +232,55 @@ bool CFullScreenEffect::Slot06() {
 }
 
 // OFFSET: 0x00716BF0
+// FUNCTION: fn_07279
+void CFullScreenEffect::Slot04() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
+    if (!particle) {
+      continue;
+    }
+
+    RenderPrimitive& primitive = particle->primitive;
+    primitive.texture = particle->texture;
+    const float left = g_textureOffsetX / primitive.texture->TextureWidth();
+    const float right = (primitive.texture->Width() + g_textureOffsetX) / primitive.texture->TextureWidth();
+    const float top = g_textureOffsetY / primitive.texture->TextureHeight();
+    const float bottom = (primitive.texture->Height() + g_textureOffsetY) / primitive.texture->TextureHeight();
+    const std::uint32_t color = ((particle->alpha << 8 | particle->red) << 8 | particle->green) << 8 | particle->blue;
+
+    RenderVertex* vertices = primitive.quad;
+    switch (particle->unknown_000C) {
+    case 0:
+      SetScreenVertex(vertices[0], 0.0f, 0.0f, color, right, top);
+      SetScreenVertex(vertices[1], static_cast<float>(g_renderer->viewport.centerX), 0.0f, color, left, top);
+      SetScreenVertex(vertices[2], 0.0f, static_cast<float>(g_renderer->viewport.centerY), color, right, bottom);
+      SetScreenVertex(vertices[3], static_cast<float>(g_renderer->viewport.centerX), static_cast<float>(g_renderer->viewport.centerY), color, left, bottom);
+      break;
+    case 1:
+      SetScreenVertex(vertices[0], static_cast<float>(g_renderer->viewport.centerX), 0.0f, color, left, top);
+      SetScreenVertex(vertices[1], static_cast<float>(g_renderer->viewport.width), 0.0f, color, right, top);
+      SetScreenVertex(vertices[2], static_cast<float>(g_renderer->viewport.centerX), static_cast<float>(g_renderer->viewport.centerY), color, left, bottom);
+      SetScreenVertex(vertices[3], static_cast<float>(g_renderer->viewport.width), static_cast<float>(g_renderer->viewport.centerY), color, right, bottom);
+      break;
+    case 2:
+      SetScreenVertex(vertices[0], 0.0f, static_cast<float>(g_renderer->viewport.centerY), color, right, bottom);
+      SetScreenVertex(vertices[1], static_cast<float>(g_renderer->viewport.centerX), static_cast<float>(g_renderer->viewport.centerY), color, left, bottom);
+      SetScreenVertex(vertices[2], 0.0f, static_cast<float>(g_renderer->viewport.height), color, right, top);
+      SetScreenVertex(vertices[3], static_cast<float>(g_renderer->viewport.centerX), static_cast<float>(g_renderer->viewport.height), color, left, top);
+      break;
+    case 3:
+      SetScreenVertex(vertices[0], static_cast<float>(g_renderer->viewport.centerX), static_cast<float>(g_renderer->viewport.centerY), color, left, bottom);
+      SetScreenVertex(vertices[1], static_cast<float>(g_renderer->viewport.width), static_cast<float>(g_renderer->viewport.centerY), color, right, bottom);
+      SetScreenVertex(vertices[2], static_cast<float>(g_renderer->viewport.centerX), static_cast<float>(g_renderer->viewport.height), color, left, top);
+      SetScreenVertex(vertices[3], static_cast<float>(g_renderer->viewport.width), static_cast<float>(g_renderer->viewport.height), color, right, top);
+      break;
+    }
+
+    primitive.unknown_0018 = particle->sourceBlend;
+    primitive.unknown_001C = particle->destinationBlend;
+    g_renderer->queues.Submit(&primitive, static_cast<std::uint16_t>(particle->flags), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  }
+}
 
 // OFFSET: 0x0071F5F0
 // FUNCTION: fn_07344
