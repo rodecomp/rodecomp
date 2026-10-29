@@ -226,6 +226,8 @@ void CRenderObject::SetColor(int alpha, int red, int green, int blue) {
   }
 }
 
+// OFFSET: 0x00CAF050
+
 // OFFSET: 0x00CC1C20
 // FUNCTION: fn_21125
 void CGameActor::SetUnknown0305(unsigned char value, int extra) {

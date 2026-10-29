@@ -52,6 +52,7 @@ public:
   void SetActionName(ResourceMgr& resources, const char* name);
   void SetSpriteName(ResourceMgr& resources, const char* name);
   void SetColor(int alpha, int red, int green, int blue);
+  void ModifyArgb(int alpha, int red, int green, int blue);
   void SetSequenceDeadline(std::uint32_t duration);
   void SetSequenceInterval(unsigned char interval);
   void SetAnimationSequence(

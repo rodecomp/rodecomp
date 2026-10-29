@@ -378,6 +378,7 @@
   "Source/Contents/Jobs/JobInheritance.cpp": 4,
   "Source/Contents/Jobs/JobNameInitialization.cpp": 4,
   "Source/Contents/Jobs/JobNames.cpp": 4,
+  "Source/Contents/MapPropertyMgr.cpp": 4,
   "Source/Contents/MapSkyMgr.cpp": 4,
   "Source/Contents/MessageTable.cpp": 4,
   "Source/Contents/Messenger/ClientMessenger.cpp": 4,
