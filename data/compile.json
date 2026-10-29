@@ -365,6 +365,7 @@
   "Source/Contents/Effects/RagEffectInitialization.cpp": 4,
   "Source/Contents/Effects/RectUpEffect.cpp": 4,
   "Source/Contents/Effects/SpriteParticle.cpp": 4,
+  "Source/Contents/Effects/TalismanMarkEffect.cpp": 4,
   "Source/Contents/Effects/TetraBallEffect.cpp": 4,
   "Source/Contents/Effects/ThrowEffects.cpp": 4,
   "Source/Contents/Effects/TriangleShotArrow.cpp": 4,

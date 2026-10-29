@@ -5,6 +5,8 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/Particle.h"
 
+// OFFSET: 0x0072E680
+
 // OFFSET: 0x0072EA90
 // FUNCTION: fn_07514
 unsigned char CTetraBallEffect::ActiveCount() {

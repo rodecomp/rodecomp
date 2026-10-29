@@ -71,7 +71,11 @@ public:
   /* 0040 */ short blue;
   /* 0042 */ unsigned char unknown_0042[2];
   /* 0044 */ int alpha;
-  /* 0048 */ unsigned char unknown_0048[0x78];
+  /* 0048 */ unsigned char unknown_0048[4];
+  /* 004C */ int unknown_004C;
+  /* 0050 */ unsigned char unknown_0050[0x58];
+  /* 00A8 */ unsigned char unknown_00A8;
+  /* 00A9 */ unsigned char unknown_00A9[0x17];
   /* 00C0 */ float unknown_00C0;
   /* 00C4 */ int unknown_00C4;
   /* 00C8 */ int unknown_00C8;
