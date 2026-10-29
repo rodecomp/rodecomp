@@ -130,6 +130,14 @@ void UIEditCtrl3::Slot35(int value) {
 }
 
 // OFFSET: 0x0085BB60
+// FUNCTION: fn_10796
+void UIBitmapEditCtrl::Paint() {
+  this->ClearSurface(0xFFFFFFFF);
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())));
+  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  this->textY = 3;
+  this->PaintText();
+}
 
 // OFFSET: 0x0085EB50
 
