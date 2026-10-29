@@ -399,6 +399,7 @@
   "Source/Contents/Items/ChangeMaterialMgr.cpp": 4,
   "Source/Contents/Items/ItemDescription.cpp": 4,
   "Source/Contents/Items/ItemInfo.cpp": 4,
+  "Source/Contents/Items/ItemInfoMgr.cpp": 4,
   "Source/Contents/Items/ItemLink.cpp": 4,
   "Source/Contents/Items/ItemNaming.cpp": 4,
   "Source/Contents/Items/ItemResources.cpp": 4,
