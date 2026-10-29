@@ -32,6 +32,53 @@ public:
   virtual void Execute(int packId, int argument) = 0;
 };
 
+class UICashEmotionPack_Purchase : public UICashEmotionPack {
+public:
+  ~UICashEmotionPack_Purchase() override;
+  void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+protected:
+  /* 00E0 */ ICashEmotionAction* m_selectAction;
+  /* 00E4 */ ICashEmotionAction* m_purchaseAction;
+};
+
+class UICashEmotionPack_Search : public UICashEmotionPack {
+public:
+  void Paint() override;
+};
+
+class UICashEmotionPack_Search_Normal : public UICashEmotionPack_Search {
+public:
+  ~UICashEmotionPack_Search_Normal() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+protected:
+  /* 00E0 */ ICashEmotionAction* m_action;
+};
+
+class UICashEmotionPack_Search_UnPurchased : public UICashEmotionPack_Search {
+public:
+  ~UICashEmotionPack_Search_UnPurchased() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+protected:
+  /* 00E0 */ ICashEmotionAction* m_action;
+};
+
+class UICashEmotionPack_Unpurchase : public UICashEmotionPack {
+public:
+  void Slot25(int x, int y) override;
+  void Slot26(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+  void SetPressed(bool pressed, bool force);
+
+protected:
+  /* 00E0 */ bool m_pressed;
+  /* 00E4 */ std::string unknown_00E4;
+};
+
 class UICashEmotionMiniWnd : public UIWindow {
 public:
   void Slot15(int width, int height) override;
@@ -1008,6 +1055,155 @@ void UICashEmotionPack::SetTitle(const char* title) {
   if (this->m_titleText) {
     this->m_titleText->Show(!this->m_title.empty());
   }
+}
+
+// OFFSET: 0x007CAC40
+// FUNCTION: fn_09458
+UICashEmotionPack_Purchase::~UICashEmotionPack_Purchase() {
+  delete this->m_selectAction;
+  this->m_selectAction = nullptr;
+  delete this->m_purchaseAction;
+  this->m_purchaseAction = nullptr;
+}
+
+// OFFSET: 0x007CAEB0
+// FUNCTION: fn_09462
+void UICashEmotionPack_Purchase::Paint() {
+  UICashEmotionPack::Paint();
+}
+
+// OFFSET: 0x007CAEC0
+// FUNCTION: fn_09463
+int UICashEmotionPack_Purchase::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  switch (message) {
+  case 60:
+    this->Invalidate();
+    if (this->parent) {
+      this->parent->SendMsg(sender, 60, 0, 0, 0, 0);
+    }
+    return 0;
+  case 174:
+    this->m_purchaseAction->Execute(static_cast<int>(argument1), static_cast<int>(argument2));
+    return 0;
+  case 175:
+    this->m_selectAction->Execute(static_cast<int>(argument1), static_cast<int>(argument2));
+    return 0;
+  default:
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+}
+
+// OFFSET: 0x007CB160
+// FUNCTION: fn_09465
+void UICashEmotionPack_Search::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\bg_list_search.bmp")));
+  if (bitmap) {
+    this->DrawBitmap(0, 0, &bitmap->image, false);
+  }
+}
+
+// OFFSET: 0x007CB2C0
+// FUNCTION: fn_09466
+UICashEmotionPack_Search_Normal::~UICashEmotionPack_Search_Normal() {
+  delete this->m_action;
+  this->m_action = nullptr;
+}
+
+// OFFSET: 0x007CB360
+// FUNCTION: fn_09467
+int UICashEmotionPack_Search_Normal::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  if (message != 175) {
+    return UICashEmotionPack::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  if (this->m_action) {
+    this->m_action->Execute(static_cast<int>(argument1), static_cast<int>(argument2));
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x007CB4C0
+// FUNCTION: fn_09469
+UICashEmotionPack_Search_UnPurchased::~UICashEmotionPack_Search_UnPurchased() {
+  delete this->m_action;
+  this->m_action = nullptr;
+}
+
+// OFFSET: 0x007CB560
+// FUNCTION: fn_09470
+int UICashEmotionPack_Search_UnPurchased::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  switch (message) {
+  case 60:
+    this->Invalidate();
+    if (this->parent) {
+      this->parent->SendMsg(this, 60, 0, 0, 0, 0);
+    }
+    return 0;
+  case 174:
+    if (this->m_action) {
+      this->m_action->Execute(static_cast<int>(argument1), static_cast<int>(argument2));
+      return 0;
+    }
+    return 0;
+  default:
+    return UICashEmotionPack::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+}
+
+// OFFSET: 0x007CB890
+// FUNCTION: fn_09475
+void UICashEmotionPack_Unpurchase::Slot26(int, int) {
+  if (!this->m_pressed && this->parent) {
+    this->parent->SendMsg(this, 171, this->unknown_00A8, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x007CB8C0
+// FUNCTION: fn_09476
+void UICashEmotionPack_Unpurchase::Slot25(int, int) {
+  if (!this->m_pressed && this->parent) {
+    this->parent->SendMsg(this, 171, this->unknown_00A8, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x007CB8F0
+// FUNCTION: fn_09477
+void UICashEmotionPack_Unpurchase::SetPressed(bool pressed, bool force) {
+  if (force || pressed != this->m_pressed) {
+    if (!pressed) {
+      this->m_background = Resolve("유저인터페이스\\cashemotion\\bg_list_normal.bmp");
+    } else {
+      this->m_background = Resolve("유저인터페이스\\cashemotion\\bg_list_press.bmp");
+    }
+
+    this->m_pressed = pressed;
+    this->Invalidate();
+  }
+}
+
+// OFFSET: 0x007CB970
+// FUNCTION: fn_09478
+int UICashEmotionPack_Unpurchase::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  if (message != 174) {
+    return UICashEmotionPack::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  if (!this->m_pressed && this->parent) {
+    this->parent->SendMsg(this, 171, this->unknown_00A8, 0, 0, 0);
+  }
+
+  return 0;
 }
 
 // OFFSET: 0x007CB9F0

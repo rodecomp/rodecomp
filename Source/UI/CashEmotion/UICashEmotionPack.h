@@ -31,7 +31,6 @@ protected:
   /* 00AC */ std::string m_title;
   /* 00C4 */ std::string m_saleBadge;
   /* 00DC */ bool m_limited;
-  UICashEmotionPieceContext* m_controls;
 };
 
 #endif
