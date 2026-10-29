@@ -2,6 +2,7 @@
 
 #include "Client/Session.h"
 #include "Contents/CashEmotionMgr.h"
+#include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Resource/Models/GrannyModelResource.h"
 
@@ -59,6 +60,78 @@ void CGrannyPc::PlayMotion(int repeat) {
   const int loopCount = (repeat == 1 && this->render.unknown_0070 != 6) ? 1 : 0;
   this->controls[this->motion] = this->model->PlayAnimation(this->motion, this->instance, this->controls[this->motion], loopCount);
 }
+
+// OFFSET: 0x00DAFE00
+// FUNCTION: fn_22604
+void __stdcall fn_22604(int) {
+}
+
+// OFFSET: 0x00DB01E0
+// FUNCTION: fn_22610
+void __stdcall fn_22610(int) {
+}
+
+// OFFSET: 0x00DB07A0
+// FUNCTION: fn_22623
+void __stdcall fn_22623(int, int) {
+}
+
+// OFFSET: 0x00DB07B0
+// FUNCTION: fn_22624
+void __stdcall fn_22624(int, int) {
+}
+
+// OFFSET: 0x00DB5330
+// FUNCTION: fn_22664
+void __stdcall fn_22664() {
+}
+
+// OFFSET: 0x00DAFFA0
+// FUNCTION: fn_22607
+void CPc::Slot44(int first, int second) {
+  this->unknown_04D0 = first;
+  if (static_cast<unsigned char>(second) != 0) {
+    int job = this->GetEffectiveJob(-1);
+    switch (job) {
+      case JT_MARRIED:
+      case JT_SANTA:
+      case JT_SUMMER:
+      case JT_HANBOK:
+      case JT_OKTOBERFEST:
+      case JT_SUMMER2:
+        job = this->GetEffectiveJob(-1);
+        break;
+      default:
+        if (this->unknown_0404 != 0) {
+          job = this->GetUnknown0404Job();
+        } else {
+          job = this->GetEffectiveJob(-1);
+        }
+        break;
+    }
+    this->Slot21(job);
+    this->Slot24(this->weapon, this->unknown_044C);
+    this->Slot32();
+  }
+}
+
+// OFFSET: 0x00DB0000
+// FUNCTION: fn_22608
+void CPc::Slot33(int value) {
+  this->render.previousAnimation = value;
+  if (value < 2 && static_cast<unsigned>(this->unknown_04D0 - 0x10ec) > 0x11) {
+    if (static_cast<unsigned>(this->unknown_025C - JT_NOVICE_H) <= 0x15) {
+      this->render.previousAnimation = this->unknown_025C <= 0xfa7;
+    } else {
+      this->render.previousAnimation = static_cast<unsigned>(this->unknown_025C - JT_NOVICE_H) <= 6;
+    }
+  }
+  this->Slot32();
+}
+
+// OFFSET: 0x00DB02A0
+
+// OFFSET: 0x00DB0350
 
 // OFFSET: 0x00DB0280
 // FUNCTION: fn_22612

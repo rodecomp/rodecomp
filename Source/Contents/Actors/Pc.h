@@ -18,12 +18,15 @@ public:
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
 
+  void Slot31() override;
+  void Slot33(int value) override;
   void Slot34(int value) override;
   std::int64_t Slot35() override;
   void Slot39(int value) override;
   void Slot40(int value) override;
   void Slot41(int first, int second) override;
   int Slot42() override;
+  void Slot44(int first, int second) override;
   int Slot46() override;
   void Slot47(unsigned char value) override;
   int Slot56() override;
@@ -38,17 +41,22 @@ public:
   /* 0418 */ std::string unknown_0418;
   /* 0430 */ int unknown_0430;
   /* 0434 */ int unknown_0434;
-  /* 0438 */ unsigned char unknown_0438[0x0C];
+  /* 0438 */ unsigned char unknown_0438[8];
+  /* 0440 */ int unknown_0440;
   /* 0444 */ int unknown_0444;
   /* 0448 */ int weapon;
   /* 044C */ int unknown_044C;
-  /* 0450 */ unsigned char unknown_0450[0x08];
+  /* 0450 */ int unknown_0450;
+  /* 0454 */ int unknown_0454;
   /* 0458 */ int unknown_0458;
   /* 045C */ int unknown_045C;
-  /* 0460 */ unsigned char unknown_0460[0x6C];
+  /* 0460 */ unsigned char unknown_0460[0x18];
+  /* 0478 */ std::string unknown_0478;
+  /* 0490 */ unsigned char unknown_0490[0x3C];
   /* 04CC */ int unknown_04CC;
   /* 04D0 */ int unknown_04D0;
-  /* 04D4 */ unsigned char unknown_04D4[0x08];
+  /* 04D4 */ int unknown_04D4;
+  /* 04D8 */ unsigned char unknown_04D8[4];
   /* 04DC */ int unknown_04DC;
   /* 04E0 */ bool unknown_04E0;
   /* 04E1 */ unsigned char unknown_04E1[0x03];
@@ -118,6 +126,7 @@ public:
   void Slot26(int value) override;
   void Slot27(int value) override;
   void Slot28(int value) override;
+  void Slot31() override;
   void Slot39(int value) override;
   void Slot40(int value) override;
   void Slot41(int first, int second) override;
@@ -129,7 +138,8 @@ public:
   /* 042C */ int unknown_042C;
   /* 0430 */ unsigned char unknown_0430[4];
   /* 0434 */ int unknown_0434;
-  /* 0438 */ unsigned char unknown_0438[8];
+  /* 0438 */ int unknown_0438;
+  /* 043C */ unsigned char unknown_043C[4];
   /* 0440 */ int unknown_0440;
   /* 0444 */ int unknown_0444;
   /* 0448 */ int unknown_0448;
