@@ -52,6 +52,10 @@ void CUIGroupRodexSpam::Apply() {
 }
 
 // OFFSET: 0x00A40550
+// FUNCTION: fn_15975
+void CUIGroupSkin::Apply() {
+  g_skinInfo.Select(-1);
+}
 
 // OFFSET: 0x00A408D0
 // FUNCTION: fn_15977
@@ -80,6 +84,11 @@ void CUIGroupTextureDetailLevel::Paint() {
 }
 
 // OFFSET: 0x00A40BC0
+// FUNCTION: fn_15982
+void CUIListPage::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xCECECE);
+}
 
 // OFFSET: 0x00A40BF0
 // FUNCTION: fn_15983
@@ -88,6 +97,11 @@ void CUIOptionItem::Paint() {
 }
 
 // OFFSET: 0x00A40C00
+// FUNCTION: fn_15984
+void CUIPage::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xCECECE);
+}
 
 // OFFSET: 0x00A40C30
 // FUNCTION: fn_15985
