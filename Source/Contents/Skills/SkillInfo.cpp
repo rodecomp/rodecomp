@@ -240,6 +240,7 @@ public:
 
 class CSkillAction_DK_SERVANT_W_PHANTOM : public CSkillAction {
 public:
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot15(int caster, CGameActor* target, CGameActor* argument3) override;
 };
@@ -258,6 +259,7 @@ public:
 
 class CSkillAction_DK_MADNESS_CRUSHER : public CSkillAction {
 public:
+  void Slot08(int level, CGameActor* source) override;
   bool Slot04() override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -270,12 +272,14 @@ public:
 
 class CSkillAction_DK_DRAGONIC_BREATH : public CSkillAction {
 public:
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot15(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_DK_CHARGINGPIERCE : public CSkillAction {
 public:
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -303,11 +307,13 @@ public:
 
 class CSkillAction_NPC_BLOCK_EXPLOSION : public CSkillAction {
 public:
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NPC_FROST_FIELD : public CSkillAction {
 public:
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -1385,48 +1391,229 @@ void CSkillAction_IQ_BLAZING_FLAME_BLAST::Slot11(int level, CGameActor* source, 
 }
 
 // OFFSET: 0x0077B560
+// FUNCTION: fn_08414
+bool CSkillActionMgr::ActionSlot07(int skillId) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  return action ? action->Slot07() : false;
+}
 
 // OFFSET: 0x0077B620
+// FUNCTION: fn_08415
+bool CSkillActionMgr::ActionSlot06(int skillId) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  return action ? action->Slot06() : false;
+}
 
 // OFFSET: 0x0077B6E0
+// FUNCTION: fn_08416
+bool CSkillActionMgr::ActionSlot13(int skillId) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  return action ? action->Slot13() : false;
+}
 
 // OFFSET: 0x0077B7A0
+// FUNCTION: fn_08417
+bool CSkillActionMgr::ActionSlot05(int skillId) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  return action ? action->Slot05() : false;
+}
 
 // OFFSET: 0x0077B860
+// FUNCTION: fn_08418
+bool CSkillActionMgr::ActionSlot16(int skillId, int level, CGameActor* source, CGameActor* target) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  if (action) {
+    action->Slot16(level, source, target);
+  }
+
+  return action != nullptr;
+}
 
 // OFFSET: 0x0077B920
+// FUNCTION: fn_08419
+bool CSkillActionMgr::EfstSlot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  const auto found = this->m_efstActions.find(efstId);
+  std::unique_ptr<CEfstAction> action(found != this->m_efstActions.end() ? found->second() : nullptr);
+  if (action) {
+    action->Slot00(efstId, value, argument3, argument4, actor, argument6);
+  }
+
+  return action != nullptr;
+}
 
 // OFFSET: 0x0077B9F0
+// FUNCTION: fn_08420
+bool CSkillActionMgr::ActionSlot08(int skillId, int level, CGameActor* source) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  if (action) {
+    action->Slot08(level, source);
+  }
+
+  return action != nullptr;
+}
 
 // OFFSET: 0x0077BAB0
+// FUNCTION: fn_08421
+bool CSkillActionMgr::ActionSlot09(int skillId, int argument1, int argument2, int argument3) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  if (action) {
+    action->Slot09(argument1, argument2, argument3);
+  }
+
+  return action != nullptr;
+}
 
 // OFFSET: 0x0077BB70
+// FUNCTION: fn_08422
+bool CSkillActionMgr::ActionSlot10(int skillId, int level, CGameActor* source, short column, short row) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  if (action) {
+    const vector3d position = CellWorldPosition(column, row);
+    action->Slot10(level, source, std::bit_cast<int>(position.x), std::bit_cast<int>(position.y), std::bit_cast<int>(position.z));
+  }
+
+  return action != nullptr;
+}
 
 // OFFSET: 0x0077BC60
+// FUNCTION: fn_08423
+bool CSkillActionMgr::EfstSlot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  const auto found = this->m_efstActions.find(efstId);
+  std::unique_ptr<CEfstAction> action(found != this->m_efstActions.end() ? found->second() : nullptr);
+  if (action) {
+    action->Slot01(efstId, argument2, argument3, argument4, actor);
+  }
+
+  return action != nullptr;
+}
 
 // OFFSET: 0x0077BD20
+// FUNCTION: fn_08424
+bool CSkillActionMgr::ActionSlot12(int skillId, int column, int row, int argument2, int argument3) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  if (action) {
+    action->Slot12(CellWorldPosition(column, row), argument2, argument3);
+  }
+
+  return action != nullptr;
+}
 
 // OFFSET: 0x0077BE10
+// FUNCTION: fn_08425
+bool CSkillActionMgr::ActionSlot15(int skillId, int level, CGameActor* source, CGameActor* target) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  if (action) {
+    action->Slot15(level, source, target);
+  }
+
+  return action != nullptr;
+}
 
 // OFFSET: 0x0077BED0
+// FUNCTION: fn_08426
+bool CSkillActionMgr::EfstSlot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  const auto found = this->m_efstActions.find(efstId);
+  std::unique_ptr<CEfstAction> action(found != this->m_efstActions.end() ? found->second() : nullptr);
+  if (action) {
+    action->Slot02(efstId, value, argument3, argument4, actor);
+  }
+
+  return action != nullptr;
+}
 
 // OFFSET: 0x0077BF90
+// FUNCTION: fn_08427
+bool CSkillActionMgr::ObjectSlot01(int skillId, CRenderObject* object) {
+  const auto found = this->m_skillObjectActions.find(skillId);
+  std::unique_ptr<CSkillObjectAction> action(found != this->m_skillObjectActions.end() ? found->second() : nullptr);
+  if (action) {
+    action->Slot01(object);
+  }
+
+  return action != nullptr;
+}
 
 // OFFSET: 0x0077C050
+// FUNCTION: fn_08428
+bool CSkillActionMgr::ObjectSlot00(int skillId, int argument, CRenderObject* object, CGameActor* source) {
+  const auto found = this->m_skillObjectActions.find(skillId);
+  std::unique_ptr<CSkillObjectAction> action(found != this->m_skillObjectActions.end() ? found->second() : nullptr);
+  if (action) {
+    action->Slot00(argument, object, source);
+  }
+
+  return action != nullptr;
+}
 
 // OFFSET: 0x0077C110
+// FUNCTION: fn_08429
+bool CSkillActionMgr::ActionSlot11(int skillId, int level, CGameActor* source, CGameActor* target) {
+  const auto found = this->m_skillActions.find(skillId);
+  std::unique_ptr<CSkillAction> action(found != this->m_skillActions.end() ? found->second() : nullptr);
+  if (action) {
+    action->Slot11(level, source, target);
+  }
+
+  return action != nullptr;
+}
 
 // OFFSET: 0x0077C1D0
+// FUNCTION: fn_08430
+void CSkillActionMgr::RegisterEfstAction(int efstId, std::function<CEfstAction*()> factory) {
+  this->m_efstActions.insert({efstId, factory});
+}
 
 // OFFSET: 0x0077C360
+// FUNCTION: fn_08431
+void CSkillActionMgr::RegisterSkillObjectAction(int skillId, std::function<CSkillObjectAction*()> factory) {
+  this->m_skillObjectActions.insert({skillId, factory});
+}
 
 // OFFSET: 0x0077C4F0
+// FUNCTION: fn_08432
+void CSkillActionMgr::RegisterSkillAction(int skillId, std::function<CSkillAction*()> factory) {
+  this->m_skillActions.insert({skillId, factory});
+}
 
 // OFFSET: 0x0077CCC0
+// FUNCTION: fn_08437
+void CSkillAction_BO_MAYHEMIC_THORNS::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 2228, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 2229, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
 
 // OFFSET: 0x0077CD90
+// FUNCTION: fn_08438
+void CSkillAction_BO_MAYHEMIC_THORNS::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mayhemic_thorns"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mayhemic_thorns_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077D020
+// FUNCTION: fn_08440
+void CSkillAction_BO_EXPLOSIVE_POWDER::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("explosive_powder"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077D190
 // FUNCTION: fn_08441
@@ -1435,56 +1622,300 @@ bool CSkillAction_BO_EXPLOSIVE_POWDER::Slot05() {
 }
 
 // OFFSET: 0x0077D1A0
+// FUNCTION: fn_08442
+void CSkillAction_BO_MYSTERY_POWDER::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mistery_powder"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077D310
+// FUNCTION: fn_08443
+void CSkillAction_BO_MYSTERY_POWDER::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mistery_powder_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077D490
+// FUNCTION: fn_08444
+void CEfstAction_MYSTERY_POWDER::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mistery_powder_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mistery_powder_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077D720
+// FUNCTION: fn_08445
+void CEfstAction_MYSTERY_POWDER::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mistery_powder_loop_bottom"));
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mistery_powder_loop"));
+  }
+}
 
 // OFFSET: 0x0077D940
+// FUNCTION: fn_08446
+void CEfstAction_MYSTERY_POWDER::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
 
 // OFFSET: 0x0077D960
+// FUNCTION: fn_08447
+void CSkillAction_BO_DUST_EXPLOSION::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  for (int delay = 0; delay < 600; delay += 200) {
+    const int quadrant = std::max(std::rand() % 4, 0);
+    if (CEffect* effect = SpawnDustExplosion(quadrant, target->render.position)) {
+      effect->Slot16(delay);
+    }
+    if (CEffect* effect = SpawnDustExplosion((quadrant + 2) % 4, target->render.position)) {
+      effect->Slot16(delay);
+    }
+  }
+}
 
 // OFFSET: 0x0077D9E0
+// FUNCTION: fn_08448
+void CSkillAction_BO_DUST_EXPLOSION::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dust_explosion_hit_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dust_explosion_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077DC70
+// FUNCTION: fn_08449
+CEffect* SpawnDustExplosion(int quadrant, const vector3d& position) {
+  int distance = std::rand() % 20;
+  if (distance < 10) {
+    distance = 10;
+  }
+
+  const int start = quadrant * 90;
+  const int end = start + 90;
+  int angle = 0;
+  if (end != 0) {
+    angle = std::max(std::rand() % end, start);
+  }
+  const float offsetX = ClientSin((static_cast<float>(angle) / 180.0f) * 3.141592f) * static_cast<float>(distance);
+
+  distance = std::rand() % 20;
+  if (distance < 10) {
+    distance = 10;
+  }
+
+  angle = 0;
+  if (end != 0) {
+    angle = std::max(std::rand() % end, start);
+  }
+  const float offsetZ = ClientCos((static_cast<float>(angle) / 180.0f) * 3.141592f) * static_cast<float>(distance);
+
+  const float x = offsetX + position.x;
+  const float y = position.y + 0.0f;
+  const float z = offsetZ + position.z;
+  return g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("dust_explosion"), x, y, z, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x0077DF70
+// FUNCTION: fn_08450
+void CSkillAction_DK_VIGOR::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("vigor_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077E0D0
+// FUNCTION: fn_08451
+void CEfstAction_VIGOR::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("vigor_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077E230
+// FUNCTION: fn_08452
+void CEfstAction_VIGOR::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("vigor_buff"));
+  }
+}
 
 // OFFSET: 0x0077E350
+// FUNCTION: fn_08453
+void CEfstAction_VIGOR::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
 
 // OFFSET: 0x0077E370
+// FUNCTION: fn_08454
+EfstActionMessage CEfstAction_VIGOR::Slot04() {
+  return {LookupMessage(3747), 0xFF};
+}
 
 // OFFSET: 0x0077E3B0
+// FUNCTION: fn_08456
+void CSkillAction_DK_SERVANTWEAPON_ATK::Slot15(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_down"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077E530
+// FUNCTION: fn_08457
+void CSkillAction_DK_SERVANTWEAPON_ATK::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077E7B0
+// FUNCTION: fn_08458
+void CEfstAction_SERVANTWEAPON::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, 2460);
+  }
+}
 
 // OFFSET: 0x0077E7E0
+// FUNCTION: fn_08459
+EfstActionMessage CEfstAction_SERVANTWEAPON::Slot04() {
+  return {LookupMessage(3745), 0xFF};
+}
 
 // OFFSET: 0x0077EAD0
+// FUNCTION: fn_08462
+void CEfstAction_SERVANT_SIGN::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077ED40
+// FUNCTION: fn_08463
+void CEfstAction_SERVANT_SIGN::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign_bottom"));
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign"));
+  }
+}
 
 // OFFSET: 0x0077EF40
+// FUNCTION: fn_08464
+void CEfstAction_SERVANT_SIGN::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x0077EF70
+// FUNCTION: fn_08466
+void CSkillAction_DK_SERVANT_W_PHANTOM::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+  }
+}
 
 // OFFSET: 0x0077EFA0
+// FUNCTION: fn_08467
+void CSkillAction_DK_SERVANT_W_PHANTOM::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Find(source->render.accountId, 2460);
+  }
+}
 
 // OFFSET: 0x0077EFD0
+// FUNCTION: fn_08468
+void CSkillAction_DK_SERVANT_W_PHANTOM::Slot15(int caster, CGameActor* target, CGameActor* argument3) {
+  if (!target) {
+    return;
+  }
+
+  CGameActor* source = reinterpret_cast<CGameActor*>(caster);
+  const int duration = static_cast<int>(source ? source->render.speed * 100.0f + 100.0f : 500.0f);
+  CEffect* sign = g_effectMgr->Find(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign"));
+  const vector3d offset = {0.0f, 0.0f, 0.0f};
+  CEffect* effect;
+  if (sign) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_down"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit_bottom"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot16(duration);
+    }
+    effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
+  } else {
+    effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_sub_bottom"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot16(duration);
+    }
+    effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_sub"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
+  }
+
+  if (effect) {
+    effect->Slot16(duration);
+  }
+}
 
 // OFFSET: 0x0077F600
+// FUNCTION: fn_08469
+void CSkillAction_DK_SERVANT_W_DEMOL::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Find(source->render.accountId, 2460);
+  }
+}
 
 // OFFSET: 0x0077F630
+// FUNCTION: fn_08470
+void CSkillAction_DK_SERVANT_W_DEMOL::Slot15(int caster, CGameActor* target, CGameActor* argument3) {
+  CGameActor* source = reinterpret_cast<CGameActor*>(caster);
+  if (source) {
+    const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_collect"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot16(duration);
+    }
+  }
+
+  if (target) {
+    const int side = std::max(std::rand() % 2, 0);
+    if (side == 0) {
+      g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_leftdown"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    } else {
+      g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_rightdown"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x0077F9B0
+// FUNCTION: fn_08471
+void CSkillAction_DK_SERVANT_W_DEMOL::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0077FB40
+// FUNCTION: fn_08473
+void CSkillAction_DK_STORMSLASH::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  const float scale = source->render.speed * 50.0f + 30.0f;
+  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("stormslash_{}", level)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  if (!effect) {
+    return;
+  }
+
+  effect->Slot16(static_cast<int>(scale));
+  for (int frame = 0; level > 0; --level, frame += 15) {
+    const int variant = std::rand() % 4 + 1;
+    effect->AddEvent(0, std::format("effect\\DK_STORMSLASH{}.wav", variant).c_str(), frame, 0);
+  }
+}
 
 // OFFSET: 0x0077FD50
 // FUNCTION: fn_08475
@@ -1492,25 +1923,130 @@ bool CSkillAction_DK_MADNESS_CRUSHER::Slot04() {
   return true;
 }
 
+// OFFSET: 0x0077FD60
+// FUNCTION: fn_08476
+void CSkillAction_DK_MADNESS_CRUSHER::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+  }
+}
+
 // OFFSET: 0x0077FD90
+// FUNCTION: fn_08477
+void CSkillAction_DK_MADNESS_CRUSHER::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("madness_crusher_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("madness_crusher"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x00780020
+// FUNCTION: fn_08479
+void CSkillAction_DK_DRAGONIC_PIERCE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
 
 // OFFSET: 0x007805A0
+// FUNCTION: fn_08481
+void CSkillAction_DK_DRAGONIC_PIERCE::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_hit_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00780840
+// FUNCTION: fn_08483
+void CSkillAction_DK_DRAGONIC_BREATH::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+  }
+}
 
 // OFFSET: 0x00780870
+// FUNCTION: fn_08484
+void CSkillAction_DK_DRAGONIC_BREATH::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_breath_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_breath"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x00780AF0
+// FUNCTION: fn_08485
+void CSkillAction_DK_DRAGONIC_BREATH::Slot15(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  for (int i = 0; i < 4; ++i) {
+    const vector3d position = source->render.position;
+    CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_breath_hit"), position.x, position.y, position.z, 0, -1, 0, 0);
+    if (!effect) {
+      break;
+    }
+
+    const int first = std::rand();
+    const int second = std::rand();
+    const int jitterX = std::max(second % 10, 0);
+    const int jitterY = std::max(first % 10, 0);
+    effect->position[0] = static_cast<float>((i % 2) * 10 - jitterX) + source->render.position.x;
+    effect->position[2] = source->render.position.z + 0.0f;
+    effect->position[1] = static_cast<float>((i % 4) / 2 * 10 - jitterY) + source->render.position.y;
+  }
+}
+
+// OFFSET: 0x00780DB0
+// FUNCTION: fn_08487
+void CSkillAction_DK_CHARGINGPIERCE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+  }
+}
 
 // OFFSET: 0x00780DE0
+// FUNCTION: fn_08488
+void CSkillAction_DK_CHARGINGPIERCE::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chargingpierce_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chargingpierce_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x00781070
+// FUNCTION: fn_08489
+EfstActionMessage CEfstAction_CHARGINGPIERCE::Slot04() {
+  return {LookupMessage(3746), 0xFF};
+}
 
 // OFFSET: 0x007812F0
+// FUNCTION: fn_08491
+void CEfstAction_CHARGINGPIERCE_COUNT::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, 2461);
+  }
+}
 
 // OFFSET: 0x00781330
+// FUNCTION: fn_08493
+void CSkillAction_DK_HACKANDSLASHER::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x007815A0
+// FUNCTION: fn_08494
+void CSkillAction_DK_HACKANDSLASHER::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x00781710
 // FUNCTION: fn_08495
@@ -1519,15 +2055,76 @@ int CSkillAction_DK_HACKANDSLASHER_ATK::Slot02() {
 }
 
 // OFFSET: 0x00781720
+// FUNCTION: fn_08496
+void CSkillAction_DK_HACKANDSLASHER_ATK::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00781B50
+// FUNCTION: fn_08497
+void CSkillAction_NPC_BLOCK_EXPLOSION::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+  }
+}
 
 // OFFSET: 0x00781B80
+// FUNCTION: fn_08498
+void CSkillAction_NPC_BLOCK_EXPLOSION::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, 2406, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, 2407, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00781C30
 
 // OFFSET: 0x00781C60
+// FUNCTION: fn_08500
+void CSkillAction_NPC_FROST_FIELD::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, 2408, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, 2409, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    g_soundMgr->PlayWave(
+      "effect\\NPC_FROST_FIELD.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+    );
+  }
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, 1283, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x00781DB0
+// FUNCTION: fn_08501
+void CSkillAction_NPC_FROST_FIELD::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, 1310, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x00781E00
+// FUNCTION: fn_08502
+void CEfstAction_FROST_STORM::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, 2403, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x00781E50
+// FUNCTION: fn_08503
+void CEfstAction_FROST_STORM::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, 2403);
+  }
+}
 
 // OFFSET: 0x00781E80
+// FUNCTION: fn_08504
+void CEfstAction_FROST_STORM::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
