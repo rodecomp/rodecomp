@@ -32,6 +32,7 @@ public:
   void WorldCell(float x, float z, int& column, int& row) const;
   void SubcellPosition(int column, int row, int subColumn, int subRow, float& x, float& z) const;
   void PlayerCell(int* column, int* row) const;
+  bool CanFindPath(int sx, int sy, int cellX, int cellY, int dx, int dy);
   void ReceiveActorNameAll(const ActorNameAllPacket* packet);
   void NotifyItemBounds();
   CCorpse* SpawnCorpse(float x, float y, float z, const char* action, const char* sprite, int animation, int motion, float angle);
