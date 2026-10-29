@@ -14,6 +14,7 @@ public:
   ~CMultiTexParticle() override;
   void Slot01() override;
 
+  void Reset();
   void Render(int column, int row);
 
   /* 02BC */ LightmappedCommand command;

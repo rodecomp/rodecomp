@@ -10,6 +10,8 @@ class CSprRes;
 
 class CSpriteParticle : public CParticle {
 public:
+  CSpriteParticle(vector3d position, int flags);
+  void Reset();
   void UpdateFrame();
   void SetAction(const char* name);
   void SetSprite(const char* name);
