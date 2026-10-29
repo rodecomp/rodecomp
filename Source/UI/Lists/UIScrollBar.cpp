@@ -390,3 +390,12 @@ const char* UIChatHisBox::HistoryText(unsigned int index) {
   }
   return nullptr;
 }
+
+// OFFSET: 0x008900D0
+
+// OFFSET: 0x00890430
+
+// OFFSET: 0x00890AB0
+// FUNCTION: fn_11432
+void UIChatHisBox::Slot31(int, int) {
+}

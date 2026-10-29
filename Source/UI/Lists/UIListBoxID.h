@@ -15,6 +15,7 @@ struct IdListLine {
 
 class UIListBoxID : public UIWindow {
 public:
+  void Slot25(int x, int y) override;
   void Slot35(int value) override;
 
   /* 007C */ unsigned char unknown_007C[0xC];
@@ -31,6 +32,8 @@ public:
 
 class UIComboBoxID : public UIListBoxID {
 public:
+  void Slot25(int x, int y) override;
+  void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
 };
 

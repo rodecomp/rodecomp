@@ -8,6 +8,9 @@
 
 class UIChatHisBox : public UIListBox {
 public:
+  void Slot25(int x, int y) override;
+  void Slot26(int x, int y) override;
+  void Slot31(int x, int y) override;
   const char* HistoryText(unsigned int index);
 
   /* 00DC */ unsigned char unknown_00DC[0x18];

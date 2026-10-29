@@ -6,6 +6,7 @@
 class UIItemStoreComboBox : public UIComboBoxEx {
 public:
   void Slot27(int x, int y) override;
+  void Slot31(int x, int y) override;
 };
 
 #endif

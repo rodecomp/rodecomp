@@ -5,6 +5,7 @@
 
 class UITVBitmapButton : public UIBitmapButton {
 public:
+  void Slot31(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
 

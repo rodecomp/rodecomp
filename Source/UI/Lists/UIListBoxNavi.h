@@ -8,6 +8,7 @@
 
 class UIListBoxNavi : public UIListBox {
 public:
+  void Slot25(int x, int y) override;
   /* 00D4 */ std::uint32_t defaultLineColor;
   /* 00D8 */ std::vector<std::uint32_t> lineColors;
   /* 00E4 */ int lineOffset;

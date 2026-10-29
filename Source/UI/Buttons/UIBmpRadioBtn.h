@@ -9,6 +9,7 @@ struct UIButtonContext;
 
 class UIBmpRadioBtn : public UIWindow {
 public:
+  void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
 
 protected:
@@ -17,6 +18,7 @@ protected:
   /* 00DD */ unsigned char unknown_00DD[3];
   /* 00E0 */ std::string m_tooltip;
   UIButtonContext* m_controls;
+  /* 00FC */ int m_value;
 };
 
 class UIBmpRadioBtn2 : public UIBmpRadioBtn {

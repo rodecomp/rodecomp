@@ -36,6 +36,15 @@
 #include "UI/Edit/UIEditCtrl_Currency.h"
 #include "Client/Input/Language.h"
 #include "Utility/Text/GroupedInteger.h"
+#include "Client/Replay.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Lists/UIListBoxNavi.h"
+#include "UI/Text/ColoredText.h"
+#include "UI/Window/WindowBorder.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -946,3 +955,81 @@ void UITabControl::FillTab(int index, int x, int y, int width, int height, std::
     this->FillRegion(x, y + 1, width - 1, height - 2, color);
   }
 }
+
+// OFFSET: 0x0088F100
+
+// OFFSET: 0x0088F5C0
+
+// OFFSET: 0x0088FFB0
+
+// OFFSET: 0x00890080
+
+// OFFSET: 0x00890150
+// FUNCTION: fn_11400
+void UIComboBox::Slot26(int, int) {
+}
+
+// OFFSET: 0x00890170
+// FUNCTION: fn_11402
+void UIComboBoxID::Slot26(int, int) {
+}
+
+// OFFSET: 0x008902A0
+
+// OFFSET: 0x008902E0
+
+// OFFSET: 0x00890400
+
+// OFFSET: 0x00890450
+// FUNCTION: fn_11413
+void UIComboBox::Slot25(int, int) {
+}
+
+// OFFSET: 0x00890470
+// FUNCTION: fn_11415
+void UIComboBoxID::Slot25(int, int) {
+}
+
+// OFFSET: 0x008905F0
+
+// OFFSET: 0x00890640
+
+// OFFSET: 0x00890690
+
+// OFFSET: 0x008908A0
+
+// OFFSET: 0x008908F0
+// FUNCTION: fn_11427
+void UITVTextButton::Slot25(int, int) {
+  if (this->m_disabled != 0) {
+    return;
+  }
+
+  this->geometry.unknown_0030 = 2;
+  this->Invalidate();
+
+  if (this->parent) {
+    this->parent->SendMsg(this, 107, this->m_value, 0, 0, 0);
+    this->unknown_00B6 = 1;
+  }
+}
+
+// OFFSET: 0x00890940
+
+// OFFSET: 0x00890A00
+
+// OFFSET: 0x00890A30
+
+// OFFSET: 0x00890DA0
+// FUNCTION: fn_11437
+void UIComboBoxV2Wnd::Slot31(int, int) {
+  this->SendMsg(nullptr, 6, 273, 0, 0, 0);
+}
+
+// OFFSET: 0x00890E30
+
+// OFFSET: 0x00891050
+
+// OFFSET: 0x008910D0
+
+// OFFSET: 0x00891130
