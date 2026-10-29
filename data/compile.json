@@ -798,6 +798,7 @@
   "Source/Utility/Cipher/XorBytes.cpp": 0,
   "Source/Utility/FileSignatureVerifier.cpp": 0,
   "Source/Utility/GGHash.cpp": 0,
+  "Source/Utility/GGHashMgr.cpp": 0,
   "Source/Utility/GuidParse.cpp": 0,
   "Source/Utility/Hash/MD5.cpp": 0,
   "Source/Utility/Hash/XxHash32.cpp": 0,
