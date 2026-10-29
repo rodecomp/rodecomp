@@ -501,3 +501,37 @@ void CSoundMaker::SendMsg(
   this->cycle = static_cast<std::int64_t>(sound.cycle * 1000.0f);
   this->lastTick = timeGetTime() - this->cycle;
 }
+
+// OFFSET: 0x00DA31B0
+// FUNCTION: fn_22400
+bool CHalluNPC::OnProcess() {
+  const unsigned count = ++this->unknown_0454;
+  if (this->render.color < static_cast<std::uint32_t>(this->unknown_0444)) {
+    return false;
+  }
+
+  if (count == 110) {
+    static_cast<EffectActor*>(static_cast<CRenderObject*>(this))->LaunchEffect(793, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  }
+  if (count > 105 && (count & 3) == 0) {
+    this->render.color -= this->unknown_0444;
+  }
+  return true;
+}
+
+// OFFSET: 0x00DA32B0
+// FUNCTION: fn_22402
+bool CHalluPC::OnProcess() {
+  const unsigned count = ++this->unknown_050C;
+  if (this->render.color < static_cast<std::uint32_t>(this->unknown_04FC)) {
+    return false;
+  }
+
+  if (count == 110) {
+    static_cast<EffectActor*>(static_cast<CRenderObject*>(this))->LaunchEffect(793, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  }
+  if (count > 105 && (count & 3) == 0) {
+    this->render.color -= this->unknown_04FC;
+  }
+  return true;
+}
