@@ -498,6 +498,21 @@ void UIStaticItem::Slot28(int, int) {
 // OFFSET: 0x00892340
 
 // OFFSET: 0x008923D0
+// FUNCTION: fn_11470
+void UITabControl::Slot27(int x, int y) {
+  if (g_windowMgr.Capture() != this) {
+    return;
+  }
+
+  if ((this->dragX == 0 && this->dragY == 0) || this->dragX - x > 5 || this->dragY - y > 5) {
+    if (this->parent) {
+      this->parent->SendMsg(this, 117, this->unknown_007C, 0, 0, 0);
+    }
+
+    this->dragX = x;
+    this->dragY = y;
+  }
+}
 
 // OFFSET: 0x00892520
 
