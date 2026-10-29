@@ -302,6 +302,86 @@ void UIMinimapZoomWnd::Paint() {
 }
 
 // OFFSET: 0x008EF1A0
+// FUNCTION: fn_12232
+void UIMonsterDisplayWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, true, "", 0);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+
+  char spriteName[128];
+  char actionName[128];
+  std::sprintf(spriteName, "npc\\%s.spr", this->m_name.c_str());
+  std::sprintf(actionName, "npc\\%s.act", this->m_name.c_str());
+  if (!ResourceMgr::Instance().Exists(actionName) || !ResourceMgr::Instance().Exists(spriteName)) {
+    return;
+  }
+
+  const auto* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));
+  const auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(spriteName));
+  if (!action || !sprite) {
+    return;
+  }
+
+  const ActionFrame& frame = action->Frame(0, 0);
+  SpriteAtlasRecord record{};
+  int left = 0;
+  int top = 0;
+  int offsetX = 0;
+  int offsetY = 0;
+  for (int index = 0; index < frame.cellCount; ++index) {
+    const SpriteFrameCell& cell = frame.Cell(index);
+    if (cell.image == -1) {
+      continue;
+    }
+
+    const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    if (left < -cell.x) {
+      left = -cell.x;
+      offsetX = (75 - image->width) / 2;
+    }
+    if (top < -cell.y) {
+      top = -cell.y;
+      offsetY = (125 - image->height) / 2;
+    }
+  }
+
+  for (int index = 0; index < frame.cellCount; ++index) {
+    const SpriteFrameCell& cell = frame.Cell(index);
+    if (cell.image == -1) {
+      continue;
+    }
+
+    record.u0 = 0.0f;
+    record.v0 = 0.0f;
+    const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    CTexture* texture;
+    if (cell.imageType == 0) {
+      texture = g_renderer->atlas.Find(image, sprite->palette, record);
+      if (!texture) {
+        texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
+      }
+    } else {
+      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+    }
+
+    int x = cell.x + offsetX + left;
+    if (x < 0) {
+      x = 0;
+    }
+    int y = cell.y + offsetY + top;
+    if (y < 0) {
+      y = 0;
+    }
+    const int width = x + image->width > 75 ? 75 - x : image->width;
+    const int height = y + image->height > 125 ? 125 - y : image->height;
+    this->geometry.surface->DrawSurface(
+      x, y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f), width, height, cell.mirrored != 0, image->unknown_0004 + 1,
+      image->unknown_0006 + 1, 0, 0
+    );
+  }
+}
 
 // OFFSET: 0x008EF590
 // FUNCTION: fn_12233
@@ -822,6 +902,35 @@ void UIItemCollection_ComparisonWnd::Slot31(int, int) {
 }
 
 // OFFSET: 0x008F3C60
+// FUNCTION: fn_12285
+void UIMenuWnd::Slot31(int x, int y) {
+  const int index = this->ItemAt(x, y);
+  this->m_selected = index;
+  if (index == -1 || this->m_items[index] == g_menuSeparator) {
+    return;
+  }
+
+  int separators = 0;
+  const int count = static_cast<int>(this->m_items.size());
+  if (count != 0) {
+    const int last = index < count ? index : count - 1;
+    for (int i = 0; i < last; ++i) {
+      if (this->m_items[i] == g_menuSeparator) {
+        ++separators;
+      }
+    }
+  }
+
+  const int choice = (index - separators) / 2;
+  UIWindow* target = this->m_menuId == 301 ? g_windowMgr.FindSnapExcludedWindow(static_cast<int>(this->unknown_00CC))
+                                           : this->m_frameContext->windows.LookupWindow(this->m_menuId);
+  if (target) {
+    target->SendMsg(nullptr, 48, choice, 0, 0, 0);
+  } else if (this->m_menuId == 10041) {
+    this->m_context->mode->SendModeMessage(24, choice, 0, 0, 0);
+  }
+  this->m_frameContext->windows.CloseWindow(18);
+}
 
 // OFFSET: 0x008F46C0
 // FUNCTION: fn_12290
@@ -915,6 +1024,20 @@ int UIMenuWnd::ItemAt(int x, int y) {
 }
 
 // OFFSET: 0x008D9D00
+// FUNCTION: fn_12136
+ITEM_INFO UIItemParamChangeDisplayWnd::FindEquippedItem(int location) {
+  if (location == -1) {
+    return ITEM_INFO(0);
+  }
+
+  for (int index = 0; index < 8; ++index) {
+    ITEM_INFO item = g_session.GetItem17F0(index);
+    if (item.unknown_0000[1] > 0 && item.quantity == 1 && (item.unknown_0000[2] & location) != 0) {
+      return item;
+    }
+  }
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x008D9F00
 // FUNCTION: fn_12137
@@ -929,6 +1052,16 @@ bool UIWhisperWnd::Slot42(void*) {
 }
 
 // OFFSET: 0x008DA220
+// FUNCTION: fn_12141
+void UIExchangeWnd::LayoutButtons() {
+  const int x[3] = {3, 260, 510};
+  const int y[3] = {this->unknown_00CC * 120, this->unknown_00CC != 0 && this->unknown_00D0 != 0 && this->unknown_00D8 == 0 ? 0 : 120, 0};
+
+  for (int index = 0; index < 3; ++index) {
+    this->m_buttons[index]->Move(x[index], this->geometry.height - 23 + y[index]);
+  }
+  this->Invalidate();
+}
 
 // OFFSET: 0x008DA2E0
 // FUNCTION: fn_12142
@@ -1102,8 +1235,60 @@ void UIItemIdentifyWnd::Slot35(int delta) {
 }
 
 // OFFSET: 0x008F6370
+// FUNCTION: fn_12315
+void UIItemParamChangeDisplayWnd::SumEquippedStats() {
+  this->m_before = 0;
+  this->m_beforeSecond = 0;
+
+  int locations = 0;
+  for (int index = 0; index < 8; ++index) {
+    ITEM_INFO item = g_session.GetItem17F0(index);
+    if (item.unknown_0000[1] > 0 && item.quantity == 1) {
+      const ITEM_DESC& description = FindItemDescription(std::atoi(item.itemId.c_str()));
+      const bool duplicate = (description.unknown_002C & locations) != 0;
+      locations |= description.unknown_002C;
+      if (duplicate) {
+        continue;
+      }
+
+      if (description.unknown_0034.size() == 2) {
+        this->m_before += description.unknown_0034[0];
+        this->m_beforeSecond += description.unknown_0034[1];
+      }
+    }
+  }
+}
 
 // OFFSET: 0x008F6180
+// FUNCTION: fn_12314
+int UIBookWnd::LoadBookmark(const char* name) {
+  char path[512];
+  std::strcpy(path, g_subKey);
+  std::strcat(path, g_bookmarkKeySuffix);
+  std::strcat(path, "\\");
+  std::strcat(path, g_session.m_serverName.c_str());
+  std::strcat(path, "\\");
+  std::strcat(path, g_session.DecodePlayerName());
+
+  HKEY key;
+  const LSTATUS status = RegOpenKeyExA(HKEY_LOCAL_MACHINE, path, 0, KEY_QUERY_VALUE, &key);
+  DWORD page = 1;
+  if (status != ERROR_SUCCESS) {
+    return 1;
+  }
+  RegCloseKey(key);
+
+  HKEY values;
+  if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, path, 0, KEY_QUERY_VALUE, &values) == ERROR_SUCCESS) {
+    DWORD type = REG_DWORD;
+    DWORD size = sizeof(page);
+    if (RegQueryValueExA(values, name, nullptr, &type, reinterpret_cast<BYTE*>(&page), &size) != ERROR_SUCCESS) {
+      page = 1;
+    }
+    RegCloseKey(values);
+  }
+  return page;
+}
 
 // OFFSET: 0x008F6640
 
@@ -1256,6 +1441,179 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 }
 
 // OFFSET: 0x008F7050
+// FUNCTION: fn_12327
+int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 201:
+      this->SendMsg(this, 6, 356, 0, 0, 0);
+      this->m_frameContext->windows.CloseWindow(106);
+      break;
+    case 354:
+      if (this->m_autoRead == 0) {
+        this->SendMsg(this, 92, this->m_page == 1 ? 1 : this->m_page - 1, 0, 0, 0);
+      }
+      break;
+    case 355:
+      if (this->m_autoRead == 0) {
+        this->SendMsg(this, 92, this->m_page == this->m_pageCount ? this->m_page : this->m_page + 1, 0, 0, 0);
+      }
+      break;
+    case 356: {
+      DWORD page = this->m_page;
+      char path[512];
+      std::strcpy(path, g_subKey);
+      std::strcat(path, g_bookmarkKeySuffix);
+      std::strcat(path, "\\");
+      std::strcat(path, g_session.m_serverName.c_str());
+      std::strcat(path, "\\");
+      std::strcat(path, g_session.DecodePlayerName());
+
+      HKEY key;
+      DWORD disposition = 0;
+      if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, path, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
+        RegSetValueExA(key, this->m_bookName, 0, REG_DWORD, reinterpret_cast<const BYTE*>(&page), sizeof(page));
+        RegCloseKey(key);
+      }
+      break;
+    }
+    }
+    break;
+
+  case 20:
+    this->SendMsg(this, 6, 354, 0, 0, 0);
+    break;
+
+  case 21:
+    this->SendMsg(this, 6, 355, 0, 0, 0);
+    break;
+
+  case 92: {
+    this->m_autoRead = 0;
+    this->Show(1);
+    if (this->unknown_00B8) {
+      g_windowMgr.Schedule(this->unknown_00B8);
+      this->unknown_00B8 = nullptr;
+    }
+
+    int page = static_cast<int>(a);
+    if (page == 0) {
+      page = this->LoadBookmark(this->m_bookName);
+    }
+    this->m_page = page;
+    if (page > this->m_pageCount) {
+      this->m_page = 0;
+    }
+
+    this->m_viewer->Clear();
+    for (int index = 0; index < 19; ++index) {
+      const int line = this->m_page * 19 - 19 + index;
+      if (line >= this->m_lineCount) {
+        break;
+      }
+
+      if (g_inlineCharset) {
+        char* text = new char[this->m_lines[line].size() + 17];
+        std::sprintf(text, "%s%s", g_serverLanguage->Prefix(true), this->m_lines[line].c_str());
+        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), 100, 0, 0);
+      } else {
+        this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->m_lines[line].c_str()), 100, 0, 0);
+      }
+    }
+    this->Invalidate();
+    this->m_book->ordering.Promote(this);
+    break;
+  }
+
+  case 93:
+    this->m_autoRead = this->m_autoRead == 0;
+    this->Show(0);
+    if (this->m_autoRead) {
+      this->m_autoTick = timeGetTime() - 4000;
+      int page = static_cast<int>(a);
+      if (page == 0) {
+        page = this->LoadBookmark(this->m_bookName);
+      }
+      this->m_page = page;
+      if (page > this->m_pageCount) {
+        this->m_page = 0;
+        page = 0;
+      }
+      this->m_autoLine = page * 19 - 19;
+      if (this->m_autoLine > this->m_lineCount) {
+        this->m_autoLine = 0;
+      }
+      break;
+    }
+
+  case 114:
+    if (this->unknown_00B8) {
+      g_windowMgr.Schedule(this->unknown_00B8);
+      this->unknown_00B8 = nullptr;
+    }
+    this->m_frameContext->windows.CloseWindow(106);
+    break;
+
+  case 94: {
+    const char* name = reinterpret_cast<const char*>(a);
+    const char* title = FindItemDescription(std::atoi(name)).identifiedName;
+    std::intptr_t page;
+    if (std::strcmp(this->m_bookName, title) == 0) {
+      if (this->m_autoRead == 0 && b == 287) {
+        break;
+      }
+      page = this->m_page;
+    } else {
+      page = c;
+    }
+    std::strcpy(this->m_bookName, title);
+
+    char path[260];
+    if (g_serviceType == 10) {
+      std::sprintf(path, "%sbook\\%s.txt", g_serverLanguage->servicePrefix.c_str(), name);
+    } else {
+      std::sprintf(path, "book\\%s.txt", name);
+    }
+
+    CFile file;
+    const char* fileName = path;
+    if (g_serverLanguage) {
+      fileName = g_serverLanguage->ServiceName(fileName);
+    }
+    if (file.Open(fileName, 0, true, false)) {
+      const std::uint32_t size = file.GetSize();
+      char* text = new char[size + 1];
+      file.Read(text, size);
+      text[size] = '\0';
+      file.Close();
+
+      this->m_lines.clear();
+      WrapPixelText(*this->geometry.surface, this->m_book->text.list.codePage, text, this->m_lines, this->m_viewer->geometry.width - 10);
+      this->m_lineCount = static_cast<int>(this->m_lines.size());
+      if (text[0] == '%') {
+        this->m_red = g_hexDigits[text[1]] * 16 + g_hexDigits[text[2]];
+        this->m_green = g_hexDigits[text[3]] * 16 + g_hexDigits[text[4]];
+        this->m_blue = g_hexDigits[text[5]] * 16 + g_hexDigits[text[6]];
+        if (this->m_lineCount > 0) {
+          --this->m_lineCount;
+          this->m_lines.erase(this->m_lines.begin());
+        }
+      } else {
+        SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, this->m_red, this->m_green, this->m_blue);
+      }
+
+      this->m_pageCount = this->m_lineCount / 19;
+      if (this->m_lineCount % 19 > 0) {
+        ++this->m_pageCount;
+      }
+      this->SendMsg(this, b == 287 ? 92 : 93, page, 0, 0, 0);
+    }
+    break;
+  }
+  }
+  return 0;
+}
 
 // OFFSET: 0x008F8860
 // FUNCTION: fn_12332
@@ -1335,6 +1693,32 @@ bool UInCashWnd::Slot03() {
 }
 
 // OFFSET: 0x008DB750
+// FUNCTION: fn_12159
+void UIBookWnd::Slot15(int width, int height) {
+  this->m_viewer = new UITextViewer(*this->m_context, this->m_book->text);
+  this->m_viewer->Configure(30, 45, width - 60, height - 60, 0);
+  this->AddChild(this->m_viewer);
+
+  const std::string prefix = "book\\";
+  const char* names[4] = {"책갈피", "책왼쪽", "책오른쪽", "책닫기"};
+  const int ids[4] = {356, 354, 355, 201};
+  const struct {
+    int x;
+    int y;
+  } positions[4] = {{10, 25}, {width - 57, 25}, {width - 35, 25}, {width - 25, height - 25}};
+  const char* tooltips[4] = {LookupMessage(1296), LookupMessage(1297), LookupMessage(1298), LookupMessage(1299)};
+
+  for (int index = 0; index < 4; ++index) {
+    this->m_buttons[index] = new UISpriteButton(*this->m_context, this->m_book->text.buttons);
+    this->m_buttons[index]->SetSprite((prefix + names[index] + ".spr").c_str());
+    this->m_buttons[index]->SetActName((prefix + names[index] + ".act").c_str());
+    this->m_buttons[index]->SetSize(this->m_buttons[index]->FrameWidth(0, 0), this->m_buttons[index]->FrameHeight(0, 0));
+    this->m_buttons[index]->Move(positions[index].x, positions[index].y);
+    this->m_buttons[index]->SetId(ids[index]);
+    this->m_buttons[index]->SetTooltip(tooltips[index]);
+    this->AddChild(this->m_buttons[index]);
+  }
+}
 
 // OFFSET: 0x008DBD00
 // FUNCTION: fn_12160
