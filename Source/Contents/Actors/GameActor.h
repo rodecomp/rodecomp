@@ -55,7 +55,8 @@ public:
   /* 03B8 */ int unknown_03B8[3];
   /* 03C4 */ int unknown_03C4;
   /* 03C8 */ int unknown_03C8;
-  /* 03CC */ unsigned char unknown_03CC[0x10];
+  /* 03CC */ int charmType;
+  /* 03D0 */ unsigned char unknown_03D0[0x0C];
   /* 03DC */ int unknown_03DC;
   /* 03E0 */ unsigned char unknown_03E0[0x24];
   /* 0404 */ int unknown_0404;
@@ -169,6 +170,7 @@ static_assert(offsetof(CGameActor, unknown_0348) == 0x348);
 static_assert(offsetof(CGameActor, unknown_0360) == 0x360);
 static_assert(offsetof(CGameActor, unknown_0378) == 0x378);
 static_assert(offsetof(CGameActor, unknown_03C8) == 0x3C8);
+static_assert(offsetof(CGameActor, charmType) == 0x3CC);
 static_assert(offsetof(CGameActor, unknown_025C) == 0x25C);
 static_assert(offsetof(CGameActor, unknown_0408) == 0x408);
 #endif
