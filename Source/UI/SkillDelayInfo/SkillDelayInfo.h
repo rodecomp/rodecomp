@@ -39,6 +39,7 @@ public:
 class CUISkillDelayInfo : public CUIFrameWnd {
 public:
   void Paint() override;
+  virtual void Slot53();
 
   /* 00D8 */ unsigned char unknown_00D8[0x2C];
   /* 0104 */ std::uint32_t backgroundColor;

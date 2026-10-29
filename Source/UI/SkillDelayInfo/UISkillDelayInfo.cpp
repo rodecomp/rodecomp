@@ -3,6 +3,20 @@
 #include "Resource/SkinPalette.h"
 #include "UI/Window/WindowBorder.h"
 
+// OFFSET: 0x00A71950
+// FUNCTION: fn_16806
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::ClearItems() {
+  for (SkillDelayInfo::CUIDelayItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x00A719E0
+
 namespace SkillDelayInfo {
 // OFFSET: 0x00A778C0
 // FUNCTION: fn_16877
