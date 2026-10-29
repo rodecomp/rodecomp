@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_SHOP_UIMERCHANTITEMMYSHOPWND_H
 #define RAGNAROK_SOURCE_UI_SHOP_UIMERCHANTITEMMYSHOPWND_H
 
+#include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Item/UIItemBaseWnd.h"
 
 #include <cstddef>
@@ -8,11 +9,14 @@
 
 class UIMerchantItemMyShopWnd : public UIItemBaseWnd {
 public:
+  void Slot11() override;
   void Slot19() override;
   void Paint() override;
   void Slot25(int x, int y) override;
 
-  /* 00F0 */ unsigned char unknown_00F0[0x10];
+  /* 00F0 */ unsigned char unknown_00F0[0x8];
+  /* 00F8 */ MerchantItemMyShopWndInfo* saved;
+  /* 00FC */ unsigned char unknown_00FC[0x4];
   /* 0100 */ int unknown_0100;
   /* 0104 */ unsigned char unknown_0104[0x0C];
   /* 0110 */ std::uint32_t startTick;
@@ -22,6 +26,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(UIMerchantItemMyShopWnd, saved) == 0xF8);
 static_assert(offsetof(UIMerchantItemMyShopWnd, unknown_0100) == 0x100);
 static_assert(offsetof(UIMerchantItemMyShopWnd, startTick) == 0x110);
 static_assert(offsetof(UIMerchantItemMyShopWnd, unknown_011C) == 0x11C);

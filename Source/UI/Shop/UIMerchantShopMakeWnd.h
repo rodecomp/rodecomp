@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_SHOP_UIMERCHANTSHOPMAKEWND_H
 
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstddef>
@@ -14,7 +15,10 @@ struct UIButtonContext;
 
 class UIMerchantShopMakeWnd : public UIFrameWnd {
 public:
+  void Slot11() override;
+
   ITEM_INFO GetItemAt(int x, int y);
+  void SetSelection(short row, short column);
   bool HasSelection() const;
   void SendShopRequest();
   void AddActionButton();
@@ -31,7 +35,7 @@ public:
   /* 0140 */ int unknown_0140;
   /* 0144 */ int unknown_0144;
   /* 0148 */ std::list<ITEM_INFO> items;
-  /* 0150 */ int unknown_0150;
+  /* 0150 */ MerchantShopMakeWndInfo* saved;
   /* 0154 */ int unknown_0154;
   /* 0158 */ int unknown_0158;
   /* 015C */ int visibleRows;
@@ -51,6 +55,7 @@ protected:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(UIMerchantShopMakeWnd, unknown_00CC) == 0xCC);
 static_assert(offsetof(UIMerchantShopMakeWnd, items) == 0x148);
+static_assert(offsetof(UIMerchantShopMakeWnd, saved) == 0x150);
 static_assert(offsetof(UIMerchantShopMakeWnd, unknown_018C) == 0x18C);
 #endif
 

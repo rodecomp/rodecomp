@@ -34,15 +34,20 @@
 #include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Buttons/UISpriteButton.h"
 #include "UI/Buttons/UITextureButton.h"
+#include "UI/Item/UIItemPurchaseWnd.h"
 #include "UI/Item/UIItemSellWnd.h"
 #include "UI/Item/UIItemSellWnd2.h"
+#include "UI/Item/UIItemShopWnd.h"
+#include "UI/Item/UIItemShopWnd2.h"
 #include "UI/Item/UIItemStoreFindWnd.h"
 #include "UI/Item/UIItemStoreSubWnd.h"
 #include "UI/Item/UIItemStoreWnd.h"
 #include "UI/Item/UIItemWnd.h"
 #include "UI/Shop/UIMerchantItemMyShopWnd.h"
+#include "UI/Shop/UIMerchantItemPurchaseWnd.h"
 #include "UI/Shop/UIMerchantItemShopWnd.h"
 #include "UI/Shop/UIMerchantItemWnd.h"
+#include "UI/Shop/UIMerchantMirrorItemWnd.h"
 #include "UI/Shop/UIMerchantShopMakeWnd.h"
 #include "UI/Shop/UINoticeMessageBox_LockSellItem.h"
 #include "UI/Skill/UISkillListWnd.h"
@@ -1335,4 +1340,197 @@ void UIMerchantShopMakeWnd::AddActionButton() {
   this->unknown_0168->SetTooltip(LookupMessage(3638));
   this->unknown_0168->SetId(560);
   this->AddChild(this->unknown_0168);
+}
+
+// OFFSET: 0x00994800
+// FUNCTION: fn_13436
+void UIMerchantShopMakeWnd::SetSelection(short row, short column) {
+  this->unknown_018A = row;
+  this->unknown_018C = column;
+}
+
+// OFFSET: 0x00995320
+// FUNCTION: fn_13444
+void UIItemBaseWnd::Slot11() {
+}
+
+// OFFSET: 0x00995330
+// FUNCTION: fn_13445
+void UIItemPurchaseWnd::Slot11() {
+  if (this->saved) {
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x00995370
+// FUNCTION: fn_13446
+void UIItemSellWnd2::Slot11() {
+  if (this->saved) {
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x009953B0
+// FUNCTION: fn_13447
+void UIItemSellWnd::Slot11() {
+  if (this->saved) {
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x009953F0
+// FUNCTION: fn_13448
+void UIItemShopWnd2::Slot11() {
+  if (this->saved) {
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x00995430
+// FUNCTION: fn_13449
+void UIItemShopWnd::Slot11() {
+  if (this->saved) {
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x00995470
+// FUNCTION: fn_13450
+void UIItemStoreFindWnd::Slot11() {
+  if (this->saved) {
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x009954B0
+// FUNCTION: fn_13451
+void UIItemStoreSubWnd::Slot11() {
+  if (this->saved) {
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x009954F0
+// FUNCTION: fn_13452
+void UIItemStoreWnd::Slot11() {
+  if (this->saved) {
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x00995530
+// FUNCTION: fn_13453
+void UIItemWnd::Slot11() {
+  if (this->saved) {
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->unknown_0010 = this->unknown_0110;
+    this->saved->unknown_0014 = this->unknown_010C;
+    this->saved->unknown_0018 = this->unknown_0100;
+    this->saved->unknown_001C = this->unknown_0104;
+    this->saved->unknown_0020 = this->unknown_0108;
+  }
+}
+
+// OFFSET: 0x009955C0
+// FUNCTION: fn_13454
+void UIMerchantItemMyShopWnd::Slot11() {
+  if (this->saved) {
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+  }
+}
+
+// OFFSET: 0x00995600
+// FUNCTION: fn_13455
+void UIMerchantItemPurchaseWnd::Slot11() {
+  if (this->saved) {
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+  }
+}
+
+// OFFSET: 0x00995640
+// FUNCTION: fn_13456
+void UIMerchantItemShopWnd::Slot11() {
+  if (this->saved) {
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+  }
+}
+
+// OFFSET: 0x00995680
+// FUNCTION: fn_13457
+void UIMerchantItemWnd::Slot11() {
+  if (this->saved) {
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+  }
+}
+
+// OFFSET: 0x009956C0
+// FUNCTION: fn_13458
+void UIMerchantMirrorItemWnd::Slot11() {
+  if (this->saved) {
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+  }
+}
+
+// OFFSET: 0x00995700
+// FUNCTION: fn_13459
+void UIMerchantShopMakeWnd::Slot11() {
+  if (this->saved) {
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+  }
+}
+
+// OFFSET: 0x00995740
+// FUNCTION: fn_13460
+void UISkillListWnd::Slot11() {
+  if (this->saved) {
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+  }
 }
