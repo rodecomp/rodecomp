@@ -327,6 +327,46 @@ public:
   /* 00F8 */ int unknown_00F8;
 };
 
+// VTABLE: vt_01909
+class CDropItemEffect : public CEffect {
+public:
+  CDropItemEffect();
+  void Slot03() override;
+  void Slot04() override;
+
+  /* 00CC */ int unknown_00CC;
+  /* 00D0 */ int emitterCount;
+  /* 00D4 */ std::vector<EZ2STREmitter*> emitters;
+  /* 00E0 */ std::string soundPath;
+  /* 00F8 */ std::string soundName;
+  /* 0110 */ vector3d position;
+};
+
+// VTABLE: vt_01908
+class CHawkVumerangEffect : public CEffect {
+public:
+  CHawkVumerangEffect();
+  void Slot04() override;
+  bool Slot06() override;
+
+  /* 00CC */ std::list<EZ2STREmitter*> emitters;
+  /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;
+  /* 00DC */ int unknown_00DC;
+  /* 00E0 */ int unknown_00E0;
+  /* 00E4 */ int unknown_00E4;
+  /* 00E8 */ double unknown_00E8;
+  /* 00F0 */ int unknown_00F0;
+  /* 00F4 */ float unknown_00F4;
+  /* 00F8 */ int unknown_00F8;
+  /* 00FC */ unsigned int unknown_00FC;
+  /* 0100 */ vector3d unknown_0100;
+  /* 010C */ vector3d unknown_010C;
+  /* 0118 */ vector3d unknown_0118;
+  /* 0124 */ int unknown_0124;
+  /* 0128 */ double unknown_0128;
+  /* 0130 */ double unknown_0130;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CCrimsonArrowEffect, emitter) == 0xCC);
 static_assert(sizeof(CRootTwistEffect) == 0xD8);
@@ -359,6 +399,13 @@ static_assert(sizeof(CJupitelThunderHit) == 0xF0);
 static_assert(offsetof(CJupitelThunderHit, unknown_00E4) == 0xE4);
 static_assert(sizeof(CNewCloudKillEffect) == 0xFC);
 static_assert(offsetof(CNewCloudKillEffect, unknown_00F4) == 0xF4);
+static_assert(offsetof(CDropItemEffect, emitters) == 0xD4);
+static_assert(offsetof(CDropItemEffect, position) == 0x110);
+static_assert(sizeof(CDropItemEffect) == 0x11C);
+static_assert(offsetof(CHawkVumerangEffect, unknown_00D4) == 0xD4);
+static_assert(offsetof(CHawkVumerangEffect, unknown_0100) == 0x100);
+static_assert(offsetof(CHawkVumerangEffect, unknown_0130) == 0x130);
+static_assert(sizeof(CHawkVumerangEffect) == 0x138);
 #endif
 
 #endif

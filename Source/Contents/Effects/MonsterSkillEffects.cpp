@@ -549,6 +549,62 @@ void CGaleStorm::Slot04() {
   }
 }
 
+// OFFSET: 0x007184D0
+CHawkVumerangEffect::CHawkVumerangEffect()
+    : CEffect(1968),
+      unknown_00E0(10),
+      unknown_00E4(0),
+      unknown_00E8(6.283185307179586),
+      unknown_00F0(0),
+      unknown_00F4(-17.0f),
+      unknown_00F8(0),
+      unknown_0100{},
+      unknown_010C{},
+      unknown_0118{} {
+}
+
+// OFFSET: 0x00718B90
+// FUNCTION: fn_07299
+bool CHawkVumerangEffect::Slot06() {
+  return this->emitters.size() != 0;
+}
+
+// OFFSET: 0x00718E70
+void CHawkVumerangEffect::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    if (emitter) {
+      AsParticle(emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
+}
+
+// OFFSET: 0x00719030
+CDropItemEffect::CDropItemEffect()
+    : CEffect(-1), emitterCount(2), soundPath("wav\\effect\\"), position{} {
+  this->emitters.resize(this->emitterCount);
+}
+
+// OFFSET: 0x00719C30
+// FUNCTION: fn_07311
+void CDropItemEffect::Slot03() {
+  for (std::size_t i = 0; i < this->emitters.size(); ++i) {
+    if (this->emitters[i]) {
+      AsParticle(this->emitters[i])->Process(0.0f, 0.0f, 0.0f);
+      this->emitters[i]->elapsed++;
+    }
+  }
+}
+
+// OFFSET: 0x00719CA0
+void CDropItemEffect::Slot04() {
+  for (std::size_t i = 0; i < this->emitters.size(); ++i) {
+    if (this->emitters[i]) {
+      AsParticle(this->emitters[i])->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
+}
+
 // OFFSET: 0x0071B8C0
 // FUNCTION: fn_07318
 CJupitelThunderHit::CJupitelThunderHit() : CEffect(-1) {
