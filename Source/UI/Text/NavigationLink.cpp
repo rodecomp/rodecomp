@@ -2,8 +2,12 @@
 
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
+#include <mbstring.h>
 #include <vector>
+
+#include "Contents/MessageTable.h"
 
 // OFFSET: 0x00833160
 // FUNCTION: fn_10409
@@ -127,4 +131,80 @@ void ExtractNavigationLink(std::string& output, std::string value) {
       output.resize(end + 8);
     }
   }
+}
+
+// OFFSET: 0x00834160
+// FUNCTION: fn_10415
+static void SplitMessageArguments(const char* text, std::vector<std::string>& arguments) {
+  std::string remaining = text;
+  std::size_t separator = remaining.find(',');
+
+  while (separator != std::string::npos) {
+    std::string argument = remaining.substr(0, separator);
+    arguments.emplace_back(argument.data(), argument.size());
+    remaining = remaining.substr(separator + 1);
+    separator = remaining.find(',');
+  }
+
+  if (!remaining.empty()) {
+    arguments.emplace_back(remaining.data(), remaining.size());
+  }
+}
+
+// OFFSET: 0x00834C30
+// FUNCTION: fn_10418
+std::string FormatMessageArguments(std::string value, int messageId) {
+  const std::string text(value.data(), value.size());
+  std::string result = LookupMessage(messageId);
+  const std::size_t separator = text.find(',');
+
+  if (separator != std::string::npos) {
+    const std::string tail = text.substr(separator + 1);
+    std::vector<std::string> arguments;
+    arguments.reserve(8);
+    SplitMessageArguments(tail.c_str(), arguments);
+
+    for (std::size_t index = 0; index < arguments.size(); ++index) {
+      const std::size_t percent = result.find('%');
+      if (percent != std::string::npos) {
+        unsigned length = 1;
+        char conversion[8] = {};
+        std::size_t position = percent + 1;
+
+        for (;;) {
+          strcpy_s(conversion, sizeof(conversion), result.substr(position, 1).c_str());
+          if (conversion[0] >= 'A') {
+            break;
+          }
+          ++length;
+          ++position;
+        }
+
+        const std::size_t end = percent + length + 1;
+        const std::string format = result.substr(0, end);
+        const std::string remainder = result.substr(end);
+        char buffer[164] = {};
+        std::string& argument = arguments[index];
+
+        if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("s"))) {
+          if (argument.find("MsgStr(") != std::string::npos) {
+            argument = argument.substr(7);
+            argument = argument.substr(0, argument.size() - 1);
+            const std::string nested = LookupMessage(std::atoi(argument.c_str()));
+            std::sprintf(buffer, format.c_str(), nested.c_str());
+          } else {
+            std::sprintf(buffer, format.c_str(), argument.c_str());
+          }
+        } else if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("d"))) {
+          std::sprintf(buffer, format.c_str(), std::atoi(argument.c_str()));
+        } else if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("f"))) {
+          std::sprintf(buffer, format.c_str(), std::atof(argument.c_str()));
+        }
+
+        result = buffer + remainder;
+      }
+    }
+  }
+
+  return result;
 }

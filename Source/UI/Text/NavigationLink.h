@@ -3,6 +3,7 @@
 
 #include <string>
 
+std::string FormatMessageArguments(std::string value, int messageId);
 int DecodeNavigationNumber(std::string value);
 std::string EncodeNavigationNumber(int value);
 bool ParseNavigationLink(std::string value, std::string& name, int& x, int& y);
