@@ -15,6 +15,7 @@
 class CView;
 class CCorpse;
 struct ActorNameAllPacket;
+struct GameOptionEntry;
 struct CWorld;
 
 class CGameMode : public CMode {
@@ -74,6 +75,15 @@ public:
   void ReceiveUnknown0294Text(const unsigned char* packet);
   void PlaceWindow16(unsigned int xPercent, unsigned int yPercent);
   void ReceiveUnknown7FBC(const unsigned char* packet);
+  void ReceiveClanLeave(const unsigned char* packet);
+  void ReceiveClanInfo(const unsigned char* packet);
+  void ReceiveGameOptions(int count, const GameOptionEntry* entries);
+  void ReceiveActorClanName(const unsigned char* packet);
+  void ReceiveClanMemberCount(const unsigned char* packet);
+  void ReceiveRuneActivation(const unsigned char* packet);
+  void ReceiveRuneSetGrades(const unsigned char* packet);
+  void ReceiveRuneRewardResult(int result, int tagId, std::int64_t id, int step);
+  void ReceiveRuneRewardSteps(const unsigned char* packet);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
