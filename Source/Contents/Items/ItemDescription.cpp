@@ -16,6 +16,8 @@ ITEM_DESC::ITEM_DESC()
       unknown_0040(0) {
 }
 
+// OFFSET: 0x006D46A0
+
 // OFFSET: 0x006D3610
 // FUNCTION: fn_06541
 ITEM_DESC::~ITEM_DESC() = default;

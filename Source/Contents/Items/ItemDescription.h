@@ -10,6 +10,7 @@ struct ITEM_INFO;
 class ITEM_DESC {
 public:
   ITEM_DESC();
+  ITEM_DESC(const ITEM_DESC& other);
   virtual ~ITEM_DESC();
   ITEM_DESC& operator=(const ITEM_DESC& other);
 

@@ -9,6 +9,9 @@
 #include <cstring>
 #include <vector>
 
+// GLOBAL: gl_24725
+std::map<int, ItemMoveInfo> g_itemMoveInfo;
+
 // GLOBAL: gl_24726
 std::map<int, std::vector<const char*>> g_metalProcessItems;
 
@@ -442,6 +445,21 @@ ItemCardName& FindItemCardName(int id, std::map<int, ItemCardName>& values) {
   static ItemCardName missing{};
   const auto entry = values.find(id);
   return entry == values.end() ? missing : entry->second;
+}
+
+// OFFSET: 0x006D5630
+// FUNCTION: fn_06574
+ItemCardName& FindItemCardName(int id) {
+  return FindItemCardName(id, g_itemCardNames);
+}
+
+// OFFSET: 0x006D58B0
+// FUNCTION: fn_06580
+ItemMoveInfo& FindItemMoveInfo(int id) {
+  // GLOBAL: gl_24789
+  static ItemMoveInfo missingMoveInfo{};
+  const auto entry = g_itemMoveInfo.find(id);
+  return entry == g_itemMoveInfo.end() ? missingMoveInfo : entry->second;
 }
 
 // OFFSET: 0x006D78C0
