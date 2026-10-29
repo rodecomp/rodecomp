@@ -55,6 +55,12 @@ public:
   const CActorNameCard& LookupNameCard(std::uint32_t id);
   const char* DragItemName();
   bool AppendGuildEmblem(std::vector<char>& output, std::vector<std::string>& names, int guildId, int unused);
+  void ReceiveResultNotice(int result);
+  void RefreshWindow16(const unsigned char* packet);
+  void ReceiveWindow154Close(std::int16_t value);
+  void MoveWindow16(int x, int y);
+  void ResizeWindow16(int width, int height);
+  void ReceiveNotice1950(const unsigned char* packet);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
