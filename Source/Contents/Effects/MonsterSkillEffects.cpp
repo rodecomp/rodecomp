@@ -207,10 +207,12 @@ bool CFromTheAbyssEffect::Slot06() {
 }
 
 // OFFSET: 0x0071F5F0
+// FUNCTION: fn_07344
 CPetitioEffect::CPetitioEffect() : CEffect(1911) {
 }
 
 // OFFSET: 0x0071FA30
+// FUNCTION: fn_07348
 bool CPetitioEffect::Slot06() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
@@ -223,18 +225,22 @@ bool CPetitioEffect::Slot06() {
 }
 
 // OFFSET: 0x0071FBF0
+// FUNCTION: fn_07351
 CPneumaticusProcellaEffect::CPneumaticusProcellaEffect() : CEffect(1957) {
 }
 
 // OFFSET: 0x00720480
+// FUNCTION: fn_07357
 CRandomHitEffect::CRandomHitEffect() : CEffect(-1), active(true) {
 }
 
 // OFFSET: 0x00720970
+// FUNCTION: fn_07364
 CRandomOptEffect::CRandomOptEffect() : CEffect(-1), offsets{} {
 }
 
 // OFFSET: 0x00720AF0
+// FUNCTION: fn_07366
 void CRandomOptEffect::Slot08(int red, int green, int blue) {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->SetColor(red, green, blue);
@@ -242,6 +248,7 @@ void CRandomOptEffect::Slot08(int red, int green, int blue) {
 }
 
 // OFFSET: 0x00720B30
+// FUNCTION: fn_07367
 void CRandomOptEffect::Slot11(std::string name) {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->SetTexture(name);
@@ -249,6 +256,7 @@ void CRandomOptEffect::Slot11(std::string name) {
 }
 
 // OFFSET: 0x00721560
+// FUNCTION: fn_07374
 CRichsCoinEffect::CRichsCoinEffect() : CEffect(1135), unknown_00E4(0) {
 }
 
@@ -259,10 +267,12 @@ bool CRichsCoinEffect::Slot06() {
 }
 
 // OFFSET: 0x00722070
+// FUNCTION: fn_07381
 CSavageImpactEffect::CSavageImpactEffect() : CEffect(1837), offset{} {
 }
 
 // OFFSET: 0x00722460
+// FUNCTION: fn_07385
 bool CSavageImpactEffect::Slot06() {
   if (this->emitter->lifetime == 0.0f) {
     return true;
@@ -272,10 +282,12 @@ bool CSavageImpactEffect::Slot06() {
 }
 
 // OFFSET: 0x007226A0
+// FUNCTION: fn_07389
 CServantWeaponEffect::CServantWeaponEffect() : CEffect(-1), offsets{} {
 }
 
 // OFFSET: 0x00722730
+// FUNCTION: fn_07390
 CServantWeaponNewEffect::CServantWeaponNewEffect() : CEffect(2460) {
 }
 
@@ -298,6 +310,7 @@ bool CServantWeaponNewEffect::Slot06() {
 }
 
 // OFFSET: 0x00725130
+// FUNCTION: fn_07410
 CSevereRainStorm::CSevereRainStorm() : CEffect(-1) {
   this->unknown_0050 = 0;
 }
