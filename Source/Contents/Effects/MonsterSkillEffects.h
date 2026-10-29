@@ -157,6 +157,89 @@ public:
   bool Slot06() override;
 };
 
+class CParticle;
+
+class CPetitioEffect : public CEffect {
+public:
+  CPetitioEffect();
+  bool Slot06() override;
+
+  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+};
+
+class CPneumaticusProcellaEffect : public CEffect {
+public:
+  CPneumaticusProcellaEffect();
+
+  /* 00CC */ EZ2STREmitter* emitter;
+  /* 00D0 */ std::vector<EZ2STREmitter*> emitters;
+};
+
+class CRandomHitEffect : public CEffect {
+public:
+  CRandomHitEffect();
+
+  /* 00CC */ bool active;
+  /* 00CD */ unsigned char unknown_00CD[3];
+  /* 00D0 */ EZ2STREmitter* emitter;
+};
+
+class CRandomOptEffect : public CEffect {
+public:
+  CRandomOptEffect();
+  void Slot08(int red, int green, int blue) override;
+  void Slot11(std::string name) override;
+
+  /* 00CC */ vector3d offsets[2];
+  /* 00E4 */ std::vector<CParticle*> particles;
+};
+
+class CRichsCoinEffect : public CEffect {
+public:
+  CRichsCoinEffect();
+  bool Slot06() override;
+
+  /* 00CC */ std::vector<CParticle*> particles;
+  /* 00D8 */ std::vector<CParticle*> coins;
+  /* 00E4 */ int unknown_00E4;
+};
+
+class CSavageImpactEffect : public CEffect {
+public:
+  CSavageImpactEffect();
+  bool Slot06() override;
+
+  /* 00CC */ EZ2STREmitter* emitter;
+  /* 00D0 */ vector3d offset;
+};
+
+class CServantWeaponEffect : public CEffect {
+public:
+  CServantWeaponEffect();
+  bool Slot06() override;
+
+  /* 00CC */ vector3d offsets[5];
+  /* 0108 */ EZ2STREmitter* emitters[3][5];
+};
+
+class CServantWeaponNewEffect : public CEffect {
+public:
+  CServantWeaponNewEffect();
+  bool Slot06() override;
+  void Slot01() override;
+
+  /* 00CC */ std::list<EZ2STREmitter*> emitters;
+  /* 00D4 */ std::list<EZ2STREmitter*> trails;
+};
+
+class CSevereRainStorm : public CEffect {
+public:
+  CSevereRainStorm();
+
+  /* 00CC */ std::list<EZ2STREmitter*> emitters;
+  /* 00D4 */ int unknown_00D4;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CCrimsonArrowEffect, emitter) == 0xCC);
 static_assert(sizeof(CRootTwistEffect) == 0xD8);
@@ -171,6 +254,15 @@ static_assert(sizeof(CFloralFlareRoad) == 0xDC);
 static_assert(offsetof(CFootprintEffect, stepDistance) == 0x108);
 static_assert(offsetof(CFootprintEffect, lastPosition) == 0x114);
 static_assert(sizeof(CFootprintEffect) == 0x128);
+static_assert(sizeof(CPetitioEffect) == 0xD8);
+static_assert(sizeof(CPneumaticusProcellaEffect) == 0xDC);
+static_assert(sizeof(CRandomHitEffect) == 0xD4);
+static_assert(sizeof(CRandomOptEffect) == 0xF0);
+static_assert(sizeof(CRichsCoinEffect) == 0xE8);
+static_assert(sizeof(CSavageImpactEffect) == 0xDC);
+static_assert(sizeof(CServantWeaponEffect) == 0x144);
+static_assert(sizeof(CServantWeaponNewEffect) == 0xDC);
+static_assert(sizeof(CSevereRainStorm) == 0xD8);
 #endif
 
 #endif

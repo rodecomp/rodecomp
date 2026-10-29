@@ -5,6 +5,7 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
+#include "Contents/Effects/Particle.h"
 #include "Contents/Effects/SkillEffects.h"
 #include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -203,4 +204,100 @@ void CFromTheAbyssEffect::Slot01() {
 // FUNCTION: fn_07267
 bool CFromTheAbyssEffect::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x0071F5F0
+CPetitioEffect::CPetitioEffect() : CEffect(1911) {
+}
+
+// OFFSET: 0x0071FA30
+bool CPetitioEffect::Slot06() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    if (emitter->lifetime == 0.0f || static_cast<float>(emitter->elapsed) < emitter->lifetime * 60.0f) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x0071FBF0
+CPneumaticusProcellaEffect::CPneumaticusProcellaEffect() : CEffect(1957) {
+}
+
+// OFFSET: 0x00720480
+CRandomHitEffect::CRandomHitEffect() : CEffect(-1), active(true) {
+}
+
+// OFFSET: 0x00720970
+CRandomOptEffect::CRandomOptEffect() : CEffect(-1), offsets{} {
+}
+
+// OFFSET: 0x00720AF0
+void CRandomOptEffect::Slot08(int red, int green, int blue) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    (*it)->SetColor(red, green, blue);
+  }
+}
+
+// OFFSET: 0x00720B30
+void CRandomOptEffect::Slot11(std::string name) {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    (*it)->SetTexture(name);
+  }
+}
+
+// OFFSET: 0x00721560
+CRichsCoinEffect::CRichsCoinEffect() : CEffect(1135), unknown_00E4(0) {
+}
+
+// OFFSET: 0x00721AE0
+// FUNCTION: fn_07378
+bool CRichsCoinEffect::Slot06() {
+  return this->ActorExists();
+}
+
+// OFFSET: 0x00722070
+CSavageImpactEffect::CSavageImpactEffect() : CEffect(1837), offset{} {
+}
+
+// OFFSET: 0x00722460
+bool CSavageImpactEffect::Slot06() {
+  if (this->emitter->lifetime == 0.0f) {
+    return true;
+  }
+
+  return static_cast<float>(this->emitter->elapsed) < this->emitter->lifetime * 60.0f;
+}
+
+// OFFSET: 0x007226A0
+CServantWeaponEffect::CServantWeaponEffect() : CEffect(-1), offsets{} {
+}
+
+// OFFSET: 0x00722730
+CServantWeaponNewEffect::CServantWeaponNewEffect() : CEffect(2460) {
+}
+
+// OFFSET: 0x00723A90
+// FUNCTION: fn_07401
+void CServantWeaponNewEffect::Slot01() {
+  this->retained = 1;
+}
+
+// OFFSET: 0x00723AA0
+// FUNCTION: fn_07402
+bool CServantWeaponEffect::Slot06() {
+  return this->ActorExists();
+}
+
+// OFFSET: 0x00723AB0
+// FUNCTION: fn_07403
+bool CServantWeaponNewEffect::Slot06() {
+  return this->ActorExists();
+}
+
+// OFFSET: 0x00725130
+CSevereRainStorm::CSevereRainStorm() : CEffect(-1) {
+  this->unknown_0050 = 0;
 }
