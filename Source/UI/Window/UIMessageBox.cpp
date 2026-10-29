@@ -27,7 +27,7 @@
 #include "UI/Window/UIHomunInfoWnd.h"
 #include "UI/Window/UIPetInfoWnd.h"
 #include "UI/Window/UIReplayRECControlWnd.h"
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Registry.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "UI/Window/UILoginOTPWnd.h"
@@ -604,7 +604,7 @@ int UITalkboxTrapInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       TalkboxTrapRequest request;
       request.target = this->target;
       request.text = this->edit->Text();
-      g_world.GetGameMode()->SendMsg(131, reinterpret_cast<int>(&request), 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(131, reinterpret_cast<int>(&request), 0, 0, 0);
     } else if (a != 185) {
       return 0;
     }

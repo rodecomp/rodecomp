@@ -2,7 +2,7 @@
 
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Effects/EffectLists.h"
-#include "Contents/World/WorldScene.h"
+#include "Contents/World/World.h"
 
 // OFFSET: 0x00B4DAE0
 // FUNCTION: fn_18979

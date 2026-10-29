@@ -1,5 +1,5 @@
 #include "Client/Input/InputCharset.h"
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/SkinMgr.h"
 #include "Resource/ResourceMgr.h"
@@ -40,7 +40,7 @@ const char* Resolve(const char* name) {
     return name;
   }
 
-  if (g_world.gameMode && g_skinInfo.Selected()) {
+  if (g_modeMgr.gameMode && g_skinInfo.Selected()) {
     const std::string prefix(g_skinInfo.Prefix());
     // STATIC: 0x016D58CC
     // GLOBAL: gl_24385

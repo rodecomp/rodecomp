@@ -1,5 +1,5 @@
 #include "Client/Application/ApplicationWindow.h"
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 
 #include <cstring>
@@ -7,7 +7,7 @@
 
 // OFFSET: 0x00AD67E0
 // FUNCTION: fn_17845
-void CWorld::Quit() {
+void CModeMgr::Quit() {
   if (this->gameMode) {
     this->gameMode->running = 0;
   }
@@ -20,7 +20,7 @@ void CWorld::Quit() {
 
 // OFFSET: 0x00AD7620
 // FUNCTION: fn_17851
-void CWorld::Switch(int mode, const char* name) {
+void CModeMgr::Switch(int mode, const char* name) {
   this->gameMode->running = 0;
   std::strcpy(this->nextModeName, name);
   this->nextState = mode;

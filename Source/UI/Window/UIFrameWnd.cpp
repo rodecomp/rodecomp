@@ -8,7 +8,7 @@
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/UICntWnd.h"
 #include "UI/Window/UIMonsterInfoWnd.h"
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeEvents.h"
 #include "UI/Lists/UIReplayListBox.h"
@@ -262,7 +262,7 @@ void UIMonsterInfoWnd::Slot28(int x, int y) {
   int screenX = 0;
   int screenY = 0;
   this->ToScreen(screenX, screenY);
-  std::string name = static_cast<CGameMode*>(g_world.GetGameMode())->nameCard.Name(g_monsterInfoActorId);
+  std::string name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->nameCard.Name(g_monsterInfoActorId);
   const std::size_t mark = name.find("#", 0);
   if (mark != std::string::npos) {
     name.erase(mark, name.size());

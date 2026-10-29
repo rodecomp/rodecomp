@@ -1,18 +1,18 @@
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 
 // STATIC: 0x013495b8
 // GLOBAL: gl_24475
-CWorld g_world = {1};
+CModeMgr g_modeMgr = {1};
 
 // OFFSET: 0x00AD6450
 // FUNCTION: fn_17831
-CMode* CWorld::GetGameMode() {
+CMode* CModeMgr::GetGameMode() {
   return this->state == 1 ? this->gameMode : nullptr;
 }
 
 // OFFSET: 0x00AD6460
 // FUNCTION: fn_17832
-CMode* CWorld::GetLoginMode() {
+CMode* CModeMgr::GetLoginMode() {
   return this->state == 0 ? this->gameMode : nullptr;
 }
 

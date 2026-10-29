@@ -1,5 +1,5 @@
-#ifndef RAGNAROK_SOURCE_CONTENTS_WORLD_WORLDSCENE_H
-#define RAGNAROK_SOURCE_CONTENTS_WORLD_WORLDSCENE_H
+#ifndef RAGNAROK_SOURCE_CONTENTS_WORLD_WORLD_H
+#define RAGNAROK_SOURCE_CONTENTS_WORLD_WORLD_H
 
 #include "Contents/World/WorldSpatialTree.h"
 
@@ -16,12 +16,12 @@ class CPlayer;
 class CRenderObject;
 class GroundGeometry;
 
-class WorldScene {
+class CWorld {
 public:
-  WorldScene();
-  virtual ~WorldScene();
-  WorldScene(const WorldScene&) = delete;
-  WorldScene& operator=(const WorldScene&) = delete;
+  CWorld();
+  virtual ~CWorld();
+  CWorld(const CWorld&) = delete;
+  CWorld& operator=(const CWorld&) = delete;
   void Clear();
   bool FindActorInCell(const float* position, std::function<bool(std::uint32_t)> predicate) const;
   CRenderObject* GetGameActorByAID(std::uint32_t aid) const;
@@ -59,28 +59,28 @@ public:
 CRenderObject* FindRenderObject(std::uint32_t aid);
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(WorldScene, gameMode) == 0x04);
-static_assert(offsetof(WorldScene, objects) == 0x08);
-static_assert(offsetof(WorldScene, actors) == 0x10);
-static_assert(offsetof(WorldScene, unknown_0018) == 0x18);
-static_assert(offsetof(WorldScene, unknown_0020) == 0x20);
-static_assert(offsetof(WorldScene, ground) == 0x28);
-static_assert(offsetof(WorldScene, player) == 0x2C);
-static_assert(offsetof(WorldScene, terrain) == 0x30);
-static_assert(offsetof(WorldScene, models) == 0x34);
-static_assert(offsetof(WorldScene, published) == 0x40);
-static_assert(offsetof(WorldScene, pending) == 0x44);
-static_assert(offsetof(WorldScene, spatial) == 0x58);
-static_assert(offsetof(WorldScene, serializedSpatial) == 0xD4);
-static_assert(offsetof(WorldScene, pendingActorIds) == 0xD8);
-static_assert(offsetof(WorldScene, movies) == 0xE0);
-static_assert(offsetof(WorldScene, actorCells) == 0xE4);
-static_assert(offsetof(WorldScene, unindexedActorIds) == 0xEC);
-static_assert(offsetof(WorldScene, unknown_00F4) == 0xF4);
-static_assert(offsetof(WorldScene, nearbyRange) == 0xF8);
-static_assert(offsetof(WorldScene, unknown_00FC) == 0xFC);
-static_assert(offsetof(WorldScene, unknown_00FD) == 0xFD);
-static_assert(sizeof(WorldScene) == 0x100);
+static_assert(offsetof(CWorld, gameMode) == 0x04);
+static_assert(offsetof(CWorld, objects) == 0x08);
+static_assert(offsetof(CWorld, actors) == 0x10);
+static_assert(offsetof(CWorld, unknown_0018) == 0x18);
+static_assert(offsetof(CWorld, unknown_0020) == 0x20);
+static_assert(offsetof(CWorld, ground) == 0x28);
+static_assert(offsetof(CWorld, player) == 0x2C);
+static_assert(offsetof(CWorld, terrain) == 0x30);
+static_assert(offsetof(CWorld, models) == 0x34);
+static_assert(offsetof(CWorld, published) == 0x40);
+static_assert(offsetof(CWorld, pending) == 0x44);
+static_assert(offsetof(CWorld, spatial) == 0x58);
+static_assert(offsetof(CWorld, serializedSpatial) == 0xD4);
+static_assert(offsetof(CWorld, pendingActorIds) == 0xD8);
+static_assert(offsetof(CWorld, movies) == 0xE0);
+static_assert(offsetof(CWorld, actorCells) == 0xE4);
+static_assert(offsetof(CWorld, unindexedActorIds) == 0xEC);
+static_assert(offsetof(CWorld, unknown_00F4) == 0xF4);
+static_assert(offsetof(CWorld, nearbyRange) == 0xF8);
+static_assert(offsetof(CWorld, unknown_00FC) == 0xFC);
+static_assert(offsetof(CWorld, unknown_00FD) == 0xFD);
+static_assert(sizeof(CWorld) == 0x100);
 #endif
 
 #endif

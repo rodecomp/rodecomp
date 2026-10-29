@@ -1,11 +1,11 @@
 #include "Contents/Actors/GameObject.h"
 #include "Contents/Actors/GameActor.h"
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Camera/Camera.h"
 #include "Client/Replay.h"
 #include "Contents/Jobs/JobInheritance.h"
-#include "Contents/World/WorldScene.h"
+#include "Contents/World/World.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -61,7 +61,7 @@ void CGameObject::Draw(int) {
 // OFFSET: 0x00CABF10
 // FUNCTION: fn_21041
 int CGameObject::GetDir(float rot) {
-  CGameMode* gameMode = static_cast<CGameMode*>(g_world.GetGameMode());
+  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   int longitude = 0;
 
   if (gameMode) {
@@ -122,7 +122,7 @@ void CRenderObject::DrawShadow(int argument, float scale) {
 
   const float* matrix = reinterpret_cast<const float*>(argument);
   const float z = this->render.position.z;
-  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   float position[3];
   position[0] = this->render.position.x;
   position[1] = mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z);

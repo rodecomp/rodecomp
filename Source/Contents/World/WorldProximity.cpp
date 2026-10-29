@@ -1,5 +1,5 @@
 #include "Contents/World/WorldProximity.h"
-#include "Contents/World/WorldScene.h"
+#include "Contents/World/World.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Resource/World/TerrainResource.h"
@@ -35,7 +35,7 @@ void UpdateWorldProximityNotification(
 
 // OFFSET: 0x00AC8A40
 // FUNCTION: fn_17678
-bool WorldScene::FindActorInCell(const float* position, std::function<bool(std::uint32_t)> predicate) const {
+bool CWorld::FindActorInCell(const float* position, std::function<bool(std::uint32_t)> predicate) const {
   const float key = static_cast<float>(this->terrain->width) * position[1] + position[0];
   const auto found = this->actorCells.find(key);
 
@@ -49,7 +49,7 @@ bool WorldScene::FindActorInCell(const float* position, std::function<bool(std::
 
 // OFFSET: 0x00ACA180
 // FUNCTION: fn_17689
-void WorldScene::ClearActorCells() {
+void CWorld::ClearActorCells() {
   this->actorCells.clear();
   this->unindexedActorIds.clear();
 }

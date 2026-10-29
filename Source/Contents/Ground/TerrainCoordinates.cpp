@@ -1,6 +1,6 @@
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Ground/TerrainHeight.h"
-#include "Contents/World/WorldScene.h"
+#include "Contents/World/World.h"
 #include "Resource/World/TerrainResource.h"
 #include "Utility/Math/ScalarConversion.h"
 

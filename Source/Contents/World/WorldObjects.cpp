@@ -4,16 +4,16 @@
 #include "Resource/ResourceMgr.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Actors/Skill.h"
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/World/WorldObjects.h"
-#include "Contents/World/WorldScene.h"
+#include "Contents/World/World.h"
 #include "Contents/Effects/EffectLists.h"
 
 #include <new>
 
 // OFFSET: 0x00AC8220
 // FUNCTION: fn_17667
-CRenderObject* WorldScene::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
+CRenderObject* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
   if (aid == g_session.m_aid) {
     return reinterpret_cast<CRenderObject*>(this->player);
   }
@@ -44,7 +44,7 @@ EffectLists* g_effectMgr;
 
 // OFFSET: 0x00ACA320
 // FUNCTION: fn_17691
-void WorldScene::Clear() {
+void CWorld::Clear() {
   auto entry = this->objects.begin();
 
   while (entry != this->objects.end()) {
@@ -104,7 +104,7 @@ CCorpse* CGameMode::SpawnCorpse(float x, float y, float z, const char* action, c
 
 // OFFSET: 0x00AC8440
 // FUNCTION: fn_17671
-CRenderObject* WorldScene::GetSkillByAID(std::uint32_t aid) const {
+CRenderObject* CWorld::GetSkillByAID(std::uint32_t aid) const {
   for (CRenderObject* object : this->unknown_0020) {
     CSkill* skill = static_cast<CSkill*>(object);
 
@@ -119,7 +119,7 @@ CRenderObject* WorldScene::GetSkillByAID(std::uint32_t aid) const {
 // OFFSET: 0x00B3C350
 // FUNCTION: fn_18807
 CRenderObject* FindRenderObject(std::uint32_t aid) {
-  WorldScene* scene = static_cast<CGameMode*>(g_world.GetGameMode())->scene;
+  CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
 
   if (g_session.m_aid == aid) {
     return reinterpret_cast<CRenderObject*>(scene->player);

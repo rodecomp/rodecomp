@@ -11,14 +11,14 @@
 class CView;
 class CCorpse;
 struct ActorNameAllPacket;
-struct WorldScene;
+struct CWorld;
 
 class CGameMode : public CMode {
 public:
   /* 0058 */ unsigned char unknown_0058[0x10];
   /* 0068 */ char mapName[16];
   /* 0078 */ unsigned char unknown_0078[0x54];
-  /* 00CC */ WorldScene* scene;
+  /* 00CC */ CWorld* scene;
   /* 00D0 */ CView* camera;
   /* 00D4 */ unsigned char unknown_00D4[0x8C];
   /* 0160 */ CActorNameCardHolder nameCard;

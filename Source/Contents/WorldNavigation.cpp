@@ -1,9 +1,9 @@
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/NavigationManager.h"
 #include "Contents/TerrainPathSearch.h"
-#include "Contents/World/WorldScene.h"
+#include "Contents/World/World.h"
 
 #include <windows.h>
 #include <mmsystem.h>
@@ -11,7 +11,7 @@
 // OFFSET: 0x00B961E0
 // FUNCTION: fn_19581
 bool CNavigationManager::PlayerCell(int* column, int* row) {
-  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (mode == nullptr) {
     return false;
   }

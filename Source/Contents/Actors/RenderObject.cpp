@@ -1,6 +1,6 @@
 #include "Contents/Actors/RenderObject.h"
 
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
 #include "Client/Replay.h"
@@ -298,7 +298,7 @@ int CRenderObject::HoverHeight() {
   }
 
   const short height = static_cast<short>(ClientSine(angle) * 4.0f + this->render.unknown_00FA);
-  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const short scaled = static_cast<short>(400.0f / mode->camera->camera.desiredDistance * height);
   return scaled < 0 ? 0 : scaled;
 }
@@ -489,7 +489,7 @@ void CRenderObject::JitterBounds(float* output, const int* input, float offset, 
       }
     }
 
-    CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     jitter[index] = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(value - base);
   }
 
@@ -670,7 +670,7 @@ float* CGameActor::Slot53(int index) {
 // OFFSET: 0x00CAE500
 // FUNCTION: fn_21074
 void CGameActor::Slot38() {
-  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const float angle = this->render.angle;
   const int motion = this->render.curMotion;
   const int animation = this->render.animation;

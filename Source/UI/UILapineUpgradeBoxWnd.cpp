@@ -1,6 +1,6 @@
 #include "UI/UILapineUpgradeBoxWnd.h"
 
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeEvents.h"
@@ -65,7 +65,7 @@ void UILapineUpgradeBoxWnd::Slot25(int x, int y) {
   }
   if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.unknown_0000[1] != 0) {
     ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_world.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 26, this->item, 1, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 26, this->item, 1, -1);
   }
 }
 
@@ -74,7 +74,7 @@ void UILapineUpgradeBoxWnd::Slot25(int x, int y) {
 void UILapineUpgradeBox_IngredientInfoWnd::Slot25(int x, int y) {
   if (this->item.unknown_0000[1] != 0) {
     ItemDescriptions descriptions{g_itemDescriptions};
-    static_cast<CGameMode*>(g_world.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 27, this->item, this->quantity, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 27, this->item, this->quantity, -1);
   }
 }
 
@@ -126,7 +126,7 @@ void UILapineUpgradeBoxWnd::SetWaiting(unsigned char value) {
 // OFFSET: 0x00603680
 // FUNCTION: fn_04196
 void UILapineUpgradeBox_IngredientListWnd::Slot10(int x, int y, std::intptr_t value) {
-  CMode* mode = g_world.GetGameMode();
+  CMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 26) {
     this->SendMsg(this, 31, drag->id, 0, 0, 0);

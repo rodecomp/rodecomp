@@ -1,5 +1,5 @@
 #include "Contents/Skills/ClientSkills.h"
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
 #include "Contents/Actors/RenderObject.h"
@@ -7,7 +7,7 @@
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/UserData/CharacterConfigSave.h"
-#include "Contents/World/WorldScene.h"
+#include "Contents/World/World.h"
 #include "Script/LuaScript.h"
 #include "UI/Shortcuts/ShortcutBindings.h"
 #include "UI/Window/UIWindow.h"
@@ -444,7 +444,7 @@ void CSession::EraseUnknownKey(std::int64_t key) {
 // FUNCTION: fn_23772
 int CSession::CountProhibitionLog(std::uint32_t aid) {
   const int count = static_cast<int>(this->m_prohibitionLog.size());
-  const CRenderObject* actor = static_cast<CGameMode*>(g_world.GetGameMode())->scene->GetGameActorByAID(aid);
+  const CRenderObject* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid);
   if (!actor) {
     return -1;
   }
@@ -731,7 +731,7 @@ int CharacterConfigSave::SkillLevel(int id) const {
 // OFFSET: 0x00E094E0
 // FUNCTION: fn_23778
 CRenderObject* CSession::FindGameActor(std::uint32_t aid) const {
-  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (mode == nullptr) {
     return nullptr;
   }

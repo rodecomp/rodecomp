@@ -1,4 +1,4 @@
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CMode.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Skills/SkillInfo.h"
@@ -697,7 +697,7 @@ int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
       entry.unknown_0000 = 0;
       entry.itemId = 0;
       entry.unknown_0005 = 0;
-      g_world.GetGameMode()->SendMsg(313, index + 36, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(313, index + 36, 0, 0, 0);
     }
   }
 
@@ -711,7 +711,7 @@ int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
   target.itemId = static_cast<std::uint32_t>(id);
   target.unknown_0005 = static_cast<std::int16_t>(value);
 
-  return g_world.GetGameMode()->SendMsg(313, slot + 36, 0, 0, 0);
+  return g_modeMgr.GetGameMode()->SendMsg(313, slot + 36, 0, 0, 0);
 }
 
 // OFFSET: 0x00E26030

@@ -6,7 +6,7 @@
 
 #include <cstddef>
 
-struct WorldScene;
+struct CWorld;
 
 extern float g_cameraDistance;
 
@@ -18,7 +18,7 @@ public:
   /* 0050 */ unsigned char unknown_0050[0x30];
   /* 0080 */ CameraFrame frame;
   /* 00F8 */ unsigned char unknown_00F8[0xB8];
-  /* 01B0 */ WorldScene* scene;
+  /* 01B0 */ CWorld* scene;
   /* 01B4 */ unsigned char unknown_01B4[4];
 };
 

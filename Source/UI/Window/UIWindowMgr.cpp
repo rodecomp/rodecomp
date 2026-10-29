@@ -1,5 +1,5 @@
 #include "Client/Browser/WebBrowser.h"
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -465,7 +465,7 @@ void UIWindowMgr::ResetWindows() {
   this->window_01D0 = nullptr;
   this->unknown_0224 = 0;
   if (hadWindow0270) {
-    if (CMode* mode = g_world.GetGameMode()) {
+    if (CMode* mode = g_modeMgr.GetGameMode()) {
       mode->SendMsg(292, 0, 0, 0, 0);
     }
   }
@@ -632,7 +632,7 @@ void UIWindowMgr::RegisterNamedWindow(std::string name, UIWindow* window) {
 // OFFSET: 0x00AA9B00
 // FUNCTION: fn_17254
 void UIWindowMgr::NotifyMode() {
-  if (CMode* mode = g_world.GetGameMode()) {
+  if (CMode* mode = g_modeMgr.GetGameMode()) {
     mode->SendMsg(292, 0, 0, 0, 0);
   }
 }

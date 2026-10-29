@@ -1,8 +1,8 @@
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
 #include "Contents/Actors/RenderObject.h"
-#include "Contents/World/WorldScene.h"
+#include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cmath>
@@ -64,7 +64,7 @@ float CRenderObject::Distance(float x, float y, float z) const {
 // OFFSET: 0x00CAD9E0
 // FUNCTION: fn_21057
 bool CRenderObject::GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) const {
-  const WorldScene* world = static_cast<CGameMode*>(g_world.GetGameMode())->scene;
+  const CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   const CRenderObject* player = reinterpret_cast<const CRenderObject*>(world->player);
 
   if (targetAid == g_session.m_aid) {

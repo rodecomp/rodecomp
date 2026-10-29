@@ -1,6 +1,6 @@
 #include "Client/Application/LaunchInfo.h"
 #include "Client/Application/Launcher.h"
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Application/UnhandledExceptionHandler.h"
 #include "Client/Session.h"
 
@@ -57,8 +57,8 @@ namespace {
 
   // INLINED
   const char* ReadCurrentMapName() {
-    if (g_world.state == 1 && g_world.gameMode != nullptr) {
-      return reinterpret_cast<const char*>(g_world.gameMode) + 0x68;
+    if (g_modeMgr.state == 1 && g_modeMgr.gameMode != nullptr) {
+      return reinterpret_cast<const char*>(g_modeMgr.gameMode) + 0x68;
     }
 
     return nullptr;

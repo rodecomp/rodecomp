@@ -1,9 +1,9 @@
 #include "Contents/Effects/EffectPrimitiveMotion.h"
 #include "Client/Mode/CGameMode.h"
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Camera/Camera.h"
-#include "Contents/World/WorldScene.h"
+#include "Contents/World/World.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Contents/Effects/EffectPrim.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
@@ -64,7 +64,7 @@ namespace {
 
   // INLINED
   void FaceCamera(EffectPrimitiveSlot* slots) {
-    const CView* view = static_cast<CGameMode*>(g_world.GetGameMode())->camera;
+    const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
     slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
     slots[1].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.pitch) + 90);
 
@@ -1414,7 +1414,7 @@ void CEffectPrim::PrimGuard() {
 // OFFSET: 0x00BBFAA0
 // FUNCTION: fn_19818
 bool CEffectPrim::PrimLineLink() {
-  CGameMode* gameMode = static_cast<CGameMode*>(g_world.GetGameMode());
+  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const CRenderObject* target = nullptr;
 
   const CRagEffect* master = this->state.master;
@@ -1721,7 +1721,7 @@ bool CEffectPrim::PrimKouenka() {
   this->render.position = this->state.offset;
 
   if ((this->state.flags & 0x20) != 0) {
-    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.GetGameMode())->camera->camera.yaw;
+    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
   }
 
   this->state.ProcessAlpha();
@@ -1783,7 +1783,7 @@ bool CEffectPrim::PrimSakura() {
   this->render.position = this->state.offset;
 
   if ((this->state.flags & 0x20) != 0) {
-    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.GetGameMode())->camera->camera.yaw;
+    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
   }
 
   this->state.ProcessAlpha();
@@ -2068,7 +2068,7 @@ bool CEffectPrim::PrimGhost() {
     slot.vecBPre.y += slot.maxHeight * g_sinTable[slot.riseAngle];
     this->state.offset = slot.vecBPre;
 
-    const CView* view = static_cast<CGameMode*>(g_world.GetGameMode())->camera;
+    const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
     int angle = slot.rotStart + static_cast<int>(view->camera.yaw);
 
     if (angle < 0) {
@@ -2379,7 +2379,7 @@ bool CEffectPrim::UpdateHit6() {
   }
 
   if ((this->state.flags & 0x20u) != 0) {
-    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.GetGameMode())->camera->camera.yaw;
+    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
   }
 
   this->state.ProcessAlpha();
@@ -2390,7 +2390,7 @@ bool CEffectPrim::UpdateHit6() {
 // OFFSET: 0x00BB75B0
 // FUNCTION: fn_19780
 bool CEffectPrim::UpdateCoin() {
-  CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const CRagEffect* master = this->state.master;
   this->state.origin.z = master->render.position.z + this->state.velocity.z;
   this->state.origin.y = master->render.position.y + this->state.velocity.y;
@@ -2416,7 +2416,7 @@ bool CEffectPrim::UpdateCoin() {
     if (this->state.unknown_0208 == 1) {
       char name[52];
       std::sprintf(name, "effect\\EF_Coin%d.wav", rand() % 3 + 1);
-      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_world.GetGameMode())->scene->player);
+      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
       g_soundMgr->PlayWave(
         name, this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
       );
@@ -2514,7 +2514,7 @@ bool CEffectPrim::UpdateDetoxication() {
   this->render.position.z = positionZ + this->state.offset.z;
 
   if ((flags & 0x20u) != 0) {
-    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_world.GetGameMode())->camera->camera.yaw;
+    this->state.unknown_0314 = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
   }
 
   this->state.ProcessAlpha();

@@ -253,7 +253,7 @@
   "Source/Client/Input/Mouse.cpp": 0,
   "Source/Client/Input/Language.cpp": 0,
   "Source/Client/Input/LanguageTC.cpp": 0,
-  "Source/Client/Mode/ActiveGameMode.cpp": 0,
+  "Source/Client/Mode/ModeMgr.cpp": 0,
   "Source/Client/Mode/ModeCursor.cpp": 0,
   "Source/Client/Mode/ModeDragState.cpp": 2,
   "Source/Client/Mode/ModeTooltip.cpp": 2,

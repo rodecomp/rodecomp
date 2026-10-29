@@ -3,14 +3,14 @@
 #include "Contents/Ground/GroundSpatial.h"
 #include "Contents/Models/ModelActor.h"
 #include "Contents/Movies/BinkMovies.h"
-#include "Contents/World/WorldScene.h"
+#include "Contents/World/World.h"
 #include "Contents/World/WorldSpatialTree.h"
 #include "File/File.h"
 #include "Resource/World/TerrainResource.h"
 
 // OFFSET: 0x00AC64F0
 // FUNCTION: fn_17651
-WorldScene::WorldScene() {
+CWorld::CWorld() {
   this->unknown_00FD = false;
   this->serializedSpatial = nullptr;
   this->pending = 0;
@@ -29,7 +29,7 @@ WorldScene::WorldScene() {
 
 // OFFSET: 0x00AC6FB0
 // FUNCTION: fn_17654
-WorldScene::~WorldScene() {
+CWorld::~CWorld() {
   delete this->ground;
 
   if (this->movies) {

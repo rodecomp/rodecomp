@@ -5,9 +5,9 @@
 #include "Contents/Actors/Npc.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Sound/SoundMgr.h"
-#include "Client/Mode/ActiveGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
-#include "Contents/World/WorldScene.h"
+#include "Contents/World/World.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Resource/World/WorldResource.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -102,7 +102,7 @@ bool CSoundMaker::Update() {
     return true;
   }
 
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_world.GetGameMode())->scene->player);
+  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   if (!player) {
     return true;
   }
@@ -169,7 +169,7 @@ float* CPc::GetExtent(float* extent) const {
 // OFFSET: 0x00DA2FA0
 // FUNCTION: fn_22397
 bool CBlurPC::Update() {
-  WorldScene* scene = static_cast<CGameMode*>(g_world.GetGameMode())->scene;
+  CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   if (scene) {
     const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
     if (owner && (owner->render.flags & 0x10) != 0) {
@@ -189,7 +189,7 @@ bool CBlurPC::Update() {
 // OFFSET: 0x00DA3240
 // FUNCTION: fn_22401
 bool CHalluPC2::Update() {
-  WorldScene* scene = static_cast<CGameMode*>(g_world.GetGameMode())->scene;
+  CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
   if (scene) {
     const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
     if (owner && (owner->render.flags & 0x10) != 0) {
