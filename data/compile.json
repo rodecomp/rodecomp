@@ -391,6 +391,7 @@
   "Source/Contents/MonsterXmlActions.cpp": 4,
   "Source/Contents/MovementRoute.cpp": 4,
   "Source/Contents/MovementRouteInterpolation.cpp": 4,
+  "Source/Contents/MovementTraversal.cpp": 4,
   "Source/Contents/Movies/BinkMovie.cpp": 3,
   "Source/Contents/Movies/BinkMovies.cpp": 3,
   "Source/Contents/NavigationDestinations.cpp": 4,
