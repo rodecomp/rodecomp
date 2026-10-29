@@ -222,3 +222,45 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
 }
 
 // OFFSET: 0x005B95F0
+// FUNCTION: fn_03437
+void CMapSkyMgr::Apply(const std::string& mapName) {
+  std::string sky = ScriptMapName(mapName);
+  unsigned char exists = 0;
+  this->m_script->Call("IsExistMapSkyData", "s>b", sky.c_str(), &exists);
+  if (exists == 0) {
+    g_renderer->SetClearColor(0xFF000000u);
+    return;
+  }
+
+  int red = 0;
+  int green = 0;
+  int blue = 0;
+  this->m_script->Call("GetBackgroundColor", "s>ddd", sky.c_str(), &red, &green, &blue);
+  g_renderer->SetClearColor(
+    0xFF000000u | ((static_cast<unsigned>(red) & 255u) << 16) | ((static_cast<unsigned>(green) & 255u) << 8) | (static_cast<unsigned>(blue) & 255u)
+  );
+
+  unsigned char drawStar = 0;
+  this->m_script->Call("IsDrawStar", "s>b", sky.c_str(), &drawStar);
+  if (drawStar == 1) {
+    g_weatherEffect.Play(9);
+  }
+
+  this->CreateClouds(sky);
+
+  int oldCount = 0;
+  this->m_script->Call("GetOldCloudTypeNum", "s>d", sky.c_str(), &oldCount);
+  for (int index = 1; index <= oldCount; ++index) {
+    int info = -1;
+    this->m_script->Call("GetOldCloudInfo", "sd>d", sky.c_str(), index, &info);
+    if (info != -1) {
+      g_weatherEffect.Play(static_cast<char>(info));
+    }
+  }
+
+  unsigned char fog = 0;
+  this->m_script->Call("IsBackGroundFog", "s>b", sky.c_str(), &fog);
+  if (fog == 1) {
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_00FC = true;
+  }
+}
