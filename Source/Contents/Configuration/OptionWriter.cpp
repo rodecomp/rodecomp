@@ -5,6 +5,8 @@
 #include <cstring>
 #include <string>
 
+// OFFSET: 0x00E26B10
+
 // OFFSET: 0x00E26C00
 // FUNCTION: fn_23919
 void OptionWriter::Integer(const char* key, int value) {

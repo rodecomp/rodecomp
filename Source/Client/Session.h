@@ -261,6 +261,9 @@ public:
   std::uint32_t AddPingSample(std::uint32_t sample);
   std::uint32_t SetServerTime(std::uint32_t serverTime);
   void SetHotkeyDescription(const char* description, int index);
+  void SetHotkeyDescription(const char* description, std::uint32_t skillLevel, int index);
+  void SetHotkeySkillLevel(std::uint32_t skillLevel, int index);
+  bool IsPetAccessory(int itemId);
   void AddItemSlot(ITEM_INFO item);
   SessionShop* GetShop(int shopId);
   void SetShopFlag(int shopId, char flag);

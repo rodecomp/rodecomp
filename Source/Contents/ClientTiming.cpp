@@ -455,6 +455,10 @@ void CSession::SetHotkeyDescription(const char* description, int index) {
   }
 }
 
+// OFFSET: 0x00E26430
+
+// OFFSET: 0x00E26540
+
 // OFFSET: 0x00E00320
 // FUNCTION: fn_23639
 void CSession::AddItemSlot(ITEM_INFO item) {

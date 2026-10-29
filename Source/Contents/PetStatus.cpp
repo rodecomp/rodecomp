@@ -1,4 +1,5 @@
 #include "Client/Session.h"
+#include "Script/LuaScript.h"
 
 #include <cstring>
 
@@ -123,3 +124,5 @@ int CSession::GetPetEmotionNumber(int job, int action, int hungerLevel) {
 int CSession::IsPetEgg(int itemId) const {
   return static_cast<unsigned>(itemId - 9001) <= 498;
 }
+
+// OFFSET: 0x00E27780

@@ -8,6 +8,7 @@ class CFile;
 struct OptionWriter {
   CFile& file;
 
+  void Float(const char* key, float value);
   void Integer(const char* key, int value);
   void String(const char* key, const char* value);
   void Guid(const char* key, const GUID& value);
