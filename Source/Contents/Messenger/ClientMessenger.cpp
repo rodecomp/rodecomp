@@ -1104,6 +1104,190 @@ int GetNormalJob(int job) {
 }
 
 // OFFSET: 0x006ACCB0
+// FUNCTION: fn_06181
+int GetNormalThirdJob(int job) {
+  switch (job) {
+  case JT_NOVICE:
+  case JT_NOVICE_H:
+  case JT_NOVICE_B:
+    return JT_NOVICE;
+  case JT_SWORDMAN:
+  case JT_SWORDMAN_H:
+  case JT_SWORDMAN_B:
+    return JT_SWORDMAN;
+  case JT_MAGICIAN:
+  case JT_MAGICIAN_H:
+  case JT_MAGICIAN_B:
+    return JT_MAGICIAN;
+  case JT_ARCHER:
+  case JT_ARCHER_H:
+  case JT_ARCHER_B:
+    return JT_ARCHER;
+  case JT_ACOLYTE:
+  case JT_ACOLYTE_H:
+  case JT_ACOLYTE_B:
+    return JT_ACOLYTE;
+  case JT_MERCHANT:
+  case JT_MERCHANT_H:
+  case JT_MERCHANT_B:
+    return JT_MERCHANT;
+  case JT_THIEF:
+  case JT_THIEF_H:
+  case JT_THIEF_B:
+    return JT_THIEF;
+  case JT_KNIGHT:
+  case JT_KNIGHT_H:
+  case JT_KNIGHT_B:
+    return JT_KNIGHT;
+  case JT_PRIEST:
+  case JT_PRIEST_H:
+  case JT_PRIEST_B:
+    return JT_PRIEST;
+  case JT_WIZARD:
+  case JT_WIZARD_H:
+  case JT_WIZARD_B:
+    return JT_WIZARD;
+  case JT_BLACKSMITH:
+  case JT_BLACKSMITH_H:
+  case JT_BLACKSMITH_B:
+    return JT_BLACKSMITH;
+  case JT_HUNTER:
+  case JT_HUNTER_H:
+  case JT_HUNTER_B:
+    return JT_HUNTER;
+  case JT_ASSASSIN:
+  case JT_ASSASSIN_H:
+  case JT_ASSASSIN_B:
+    return JT_ASSASSIN;
+  case JT_CRUSADER:
+  case JT_CRUSADER_H:
+  case JT_CRUSADER_B:
+    return JT_CRUSADER;
+  case JT_MONK:
+  case JT_MONK_H:
+  case JT_MONK_B:
+    return JT_MONK;
+  case JT_SAGE:
+  case JT_SAGE_H:
+  case JT_SAGE_B:
+    return JT_SAGE;
+  case JT_ROGUE:
+  case JT_ROGUE_H:
+  case JT_ROGUE_B:
+    return JT_ROGUE;
+  case JT_ALCHEMIST:
+  case JT_ALCHEMIST_H:
+  case JT_ALCHEMIST_B:
+    return JT_ALCHEMIST;
+  case JT_BARD:
+  case JT_BARD_H:
+  case JT_BARD_B:
+    return JT_BARD;
+  case JT_DANCER:
+  case JT_DANCER_H:
+  case JT_DANCER_B:
+    return JT_DANCER;
+  case JT_SUPERNOVICE:
+  case JT_SUPERNOVICE_B:
+    return JT_SUPERNOVICE;
+  case JT_GUNSLINGER:
+  case JT_GUNSLINGER_B:
+    return JT_GUNSLINGER;
+  case JT_NINJA:
+  case JT_NINJA_B:
+    return JT_NINJA;
+  case JT_TAEKWON:
+  case JT_TAEKWON_B:
+    return JT_TAEKWON;
+  case JT_STAR:
+  case JT_STAR_B:
+    return JT_STAR;
+  case JT_LINKER:
+  case JT_LINKER_B:
+    return JT_LINKER;
+  case JT_RUNE_KNIGHT:
+  case JT_RUNE_KNIGHT_H:
+  case JT_RUNE_KNIGHT_B:
+    return JT_RUNE_KNIGHT;
+  case JT_WARLOCK:
+  case JT_WARLOCK_H:
+  case JT_WARLOCK_B:
+    return JT_WARLOCK;
+  case JT_RANGER:
+  case JT_RANGER_H:
+  case JT_RANGER_B:
+    return JT_RANGER;
+  case JT_ARCHBISHOP:
+  case JT_ARCHBISHOP_H:
+  case JT_ARCHBISHOP_B:
+    return JT_ARCHBISHOP;
+  case JT_MECHANIC:
+  case JT_MECHANIC_H:
+  case JT_MECHANIC_B:
+    return JT_MECHANIC;
+  case JT_GUILLOTINE_CROSS:
+  case JT_GUILLOTINE_CROSS_H:
+  case JT_GUILLOTINE_CROSS_B:
+    return JT_GUILLOTINE_CROSS;
+  case JT_ROYAL_GUARD:
+  case JT_ROYAL_GUARD_H:
+  case JT_ROYAL_GUARD_B:
+    return JT_ROYAL_GUARD;
+  case JT_SORCERER:
+  case JT_SORCERER_H:
+  case JT_SORCERER_B:
+    return JT_SORCERER;
+  case JT_MINSTREL:
+  case JT_MINSTREL_H:
+  case JT_MINSTREL_B:
+    return JT_MINSTREL;
+  case JT_WANDERER:
+  case JT_WANDERER_H:
+  case JT_WANDERER_B:
+    return JT_WANDERER;
+  case JT_SURA:
+  case JT_SURA_H:
+  case JT_SURA_B:
+    return JT_SURA;
+  case JT_GENETIC:
+  case JT_GENETIC_H:
+  case JT_GENETIC_B:
+    return JT_GENETIC;
+  case JT_SHADOW_CHASER:
+  case JT_SHADOW_CHASER_H:
+  case JT_SHADOW_CHASER_B:
+    return JT_SHADOW_CHASER;
+  case JT_SUPERNOVICE2:
+  case JT_SUPERNOVICE2_B:
+    return JT_SUPERNOVICE2;
+  case JT_KAGEROU:
+  case JT_KAGEROU_B:
+    return JT_KAGEROU;
+  case JT_OBORO:
+  case JT_OBORO_B:
+    return JT_OBORO;
+  case JT_REBELLION:
+  case JT_REBELLION_B:
+    return JT_REBELLION;
+  case JT_DO_SUMMONER:
+  case JT_DO_SUMMONER_B:
+    return JT_DO_SUMMONER;
+  case JT_STAR_EMPEROR:
+  case JT_STAR_EMPEROR_B:
+    return JT_STAR_EMPEROR;
+  case JT_SOUL_REAPER:
+  case JT_SOUL_REAPER_B:
+    return JT_SOUL_REAPER;
+  case JT_DRUID:
+  case JT_DRUID_B:
+    return JT_DRUID;
+  case JT_KARNOS:
+  case JT_KARNOS_B:
+    return JT_KARNOS;
+  default:
+    return job;
+  }
+}
 
 // OFFSET: 0x006AD500
 // FUNCTION: fn_06184
@@ -1116,6 +1300,68 @@ int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown0174(const int& key)
 }
 
 // OFFSET: 0x006AD690
+// FUNCTION: fn_06186
+int GetEquipLocationIndex(const int& mask) {
+  switch (mask) {
+  case 0x1:
+    return 1;
+  case 0x2:
+  case 0x22:
+    return 4;
+  case 0x4:
+    return 5;
+  case 0x8:
+    return 7;
+  case 0x10:
+    return 2;
+  case 0x20:
+    return 3;
+  case 0x40:
+    return 6;
+  case 0x80:
+    return 8;
+  case 0x100:
+    return 10;
+  case 0x101:
+    return 1;
+  case 0x200:
+    return 11;
+  case 0x201:
+    return 1;
+  case 0x300:
+    return 10;
+  case 0x301:
+    return 1;
+  case 0x400:
+  case 0xC00:
+  case 0x1400:
+  case 0x1C00:
+    return 20;
+  case 0x800:
+  case 0x1800:
+    return 21;
+  case 0x1000:
+    return 22;
+  case 0x2000:
+    return 23;
+  case 0x8000:
+    return 0;
+  case 0x10000:
+    return 30;
+  case 0x20000:
+    return 31;
+  case 0x40000:
+    return 32;
+  case 0x80000:
+    return 33;
+  case 0x100000:
+    return 34;
+  case 0x200000:
+    return 35;
+  default:
+    return 0;
+  }
+}
 
 // OFFSET: 0x006AD880
 // FUNCTION: fn_06187
@@ -1140,8 +1386,414 @@ void EquipmentProperties::CEquipmentPropertiesMgr::SetWindow(UIWindow* window) {
 }
 
 // OFFSET: 0x006BCB90
+// FUNCTION: fn_06275
+int CheckJobGroup2(lua_State* state) {
+  int group;
+  switch (g_session.m_job) {
+  case JT_NOVICE:
+  case JT_NOVICE_B:
+    group = 0;
+    break;
+  case JT_SWORDMAN:
+  case JT_MAGICIAN:
+  case JT_ARCHER:
+  case JT_ACOLYTE:
+  case JT_MERCHANT:
+  case JT_THIEF:
+  case JT_SWORDMAN_B:
+  case JT_MAGICIAN_B:
+  case JT_ARCHER_B:
+  case JT_ACOLYTE_B:
+  case JT_MERCHANT_B:
+  case JT_THIEF_B:
+    group = 1;
+    break;
+  case JT_KNIGHT:
+  case JT_PRIEST:
+  case JT_WIZARD:
+  case JT_BLACKSMITH:
+  case JT_HUNTER:
+  case JT_ASSASSIN:
+  case JT_CRUSADER:
+  case JT_MONK:
+  case JT_SAGE:
+  case JT_ROGUE:
+  case JT_ALCHEMIST:
+  case JT_BARD:
+  case JT_DANCER:
+  case JT_KNIGHT_B:
+  case JT_PRIEST_B:
+  case JT_WIZARD_B:
+  case JT_BLACKSMITH_B:
+  case JT_HUNTER_B:
+  case JT_ASSASSIN_B:
+  case JT_CRUSADER_B:
+  case JT_MONK_B:
+  case JT_SAGE_B:
+  case JT_ROGUE_B:
+  case JT_ALCHEMIST_B:
+  case JT_BARD_B:
+  case JT_DANCER_B:
+    group = 2;
+    break;
+  case JT_SUPERNOVICE:
+  case JT_GUNSLINGER:
+  case JT_NINJA:
+  case JT_SUPERNOVICE_B:
+  case JT_TAEKWON:
+  case JT_NINJA_B:
+  case JT_TAEKWON_B:
+  case JT_GUNSLINGER_B:
+  case JT_DRUID:
+  case JT_DRUID_B:
+    group = 9;
+    break;
+  case JT_NOVICE_H:
+    group = 10;
+    break;
+  case JT_SWORDMAN_H:
+  case JT_MAGICIAN_H:
+  case JT_ARCHER_H:
+  case JT_ACOLYTE_H:
+  case JT_MERCHANT_H:
+  case JT_THIEF_H:
+    group = 11;
+    break;
+  case JT_KNIGHT_H:
+  case JT_PRIEST_H:
+  case JT_WIZARD_H:
+  case JT_BLACKSMITH_H:
+  case JT_HUNTER_H:
+  case JT_ASSASSIN_H:
+  case JT_CRUSADER_H:
+  case JT_MONK_H:
+  case JT_SAGE_H:
+  case JT_ROGUE_H:
+  case JT_ALCHEMIST_H:
+  case JT_BARD_H:
+  case JT_DANCER_H:
+    group = 12;
+    break;
+  case JT_STAR:
+  case JT_STAR2:
+  case JT_LINKER:
+  case JT_STAR_B:
+  case JT_LINKER_B:
+    group = 19;
+    break;
+  case JT_RUNE_KNIGHT:
+  case JT_WARLOCK:
+  case JT_RANGER:
+  case JT_ARCHBISHOP:
+  case JT_MECHANIC:
+  case JT_GUILLOTINE_CROSS:
+  case JT_ROYAL_GUARD:
+  case JT_SORCERER:
+  case JT_MINSTREL:
+  case JT_WANDERER:
+  case JT_SURA:
+  case JT_GENETIC:
+  case JT_SHADOW_CHASER:
+  case JT_RUNE_KNIGHT_B:
+  case JT_WARLOCK_B:
+  case JT_RANGER_B:
+  case JT_ARCHBISHOP_B:
+  case JT_MECHANIC_B:
+  case JT_GUILLOTINE_CROSS_B:
+  case JT_ROYAL_GUARD_B:
+  case JT_SORCERER_B:
+  case JT_MINSTREL_B:
+  case JT_WANDERER_B:
+  case JT_SURA_B:
+  case JT_GENETIC_B:
+  case JT_SHADOW_CHASER_B:
+    group = 3;
+    break;
+  case JT_RUNE_KNIGHT_H:
+  case JT_WARLOCK_H:
+  case JT_RANGER_H:
+  case JT_ARCHBISHOP_H:
+  case JT_MECHANIC_H:
+  case JT_GUILLOTINE_CROSS_H:
+  case JT_ROYAL_GUARD_H:
+  case JT_SORCERER_H:
+  case JT_MINSTREL_H:
+  case JT_WANDERER_H:
+  case JT_SURA_H:
+  case JT_GENETIC_H:
+  case JT_SHADOW_CHASER_H:
+    group = 13;
+    break;
+  case JT_SUPERNOVICE2:
+  case JT_SUPERNOVICE2_B:
+  case JT_KAGEROU:
+  case JT_OBORO:
+  case JT_REBELLION:
+  case JT_KAGEROU_B:
+  case JT_OBORO_B:
+  case JT_REBELLION_B:
+  case JT_STAR_EMPEROR:
+  case JT_SOUL_REAPER:
+  case JT_STAR_EMPEROR_B:
+  case JT_SOUL_REAPER_B:
+  case JT_KARNOS:
+  case JT_KARNOS_B:
+    group = 29;
+    break;
+  case JT_DO_SUMMONER:
+  case JT_DO_SUMMONER_B:
+    group = 30;
+    break;
+  case JT_DRAGON_KNIGHT:
+  case JT_MEISTER:
+  case JT_SHADOW_CROSS:
+  case JT_ARCH_MAGE:
+  case JT_CARDINAL:
+  case JT_WINDHAWK:
+  case JT_IMPERIAL_GUARD:
+  case JT_BIOLO:
+  case JT_ABYSS_CHASER:
+  case JT_ELEMENTAL_MASTER:
+  case JT_INQUISITOR:
+  case JT_TROUBADOUR:
+  case JT_TROUVERE:
+    group = 14;
+    break;
+  case JT_SKY_EMPEROR:
+  case JT_SOUL_ASCETIC:
+  case JT_SHINKIRO:
+  case JT_SHIRANUI:
+  case JT_NIGHT_WATCH:
+  case JT_HYPER_NOVICE:
+  case JT_SPIRIT_HANDLER:
+  case JT_ALITEA:
+    group = 39;
+    break;
+  default:
+    group = 99;
+    break;
+  }
+
+  lua_pushnumber(state, group);
+  return 1;
+}
 
 // OFFSET: 0x006BCE30
+// FUNCTION: fn_06276
+int GetCategoryJob(lua_State* state) {
+  std::vector<int> args;
+  int count = 0;
+  for (int index = -1; index < 0; ++index) {
+    if (!lua_isnumber(state, index)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, std::format("arg{0} is must number", count + 1).c_str());
+      return 2;
+    }
+    args.push_back(static_cast<int>(lua_tonumber(state, index)));
+    ++count;
+  }
+
+  int job = 0;
+  switch (args[0]) {
+  case 1:
+    job = GetFirstJob(g_session.m_job);
+    break;
+  case 2:
+    switch (g_session.m_job) {
+    case JT_NOVICE_H:
+    case JT_NOVICE_B:
+      job = 0;
+      break;
+    case JT_SWORDMAN_H:
+    case JT_SWORDMAN_B:
+      job = 1;
+      break;
+    case JT_MAGICIAN_H:
+    case JT_MAGICIAN_B:
+      job = 2;
+      break;
+    case JT_ARCHER_H:
+    case JT_ARCHER_B:
+      job = 3;
+      break;
+    case JT_ACOLYTE_H:
+    case JT_ACOLYTE_B:
+      job = 4;
+      break;
+    case JT_MERCHANT_H:
+    case JT_MERCHANT_B:
+      job = 5;
+      break;
+    case JT_THIEF_H:
+    case JT_THIEF_B:
+      job = 6;
+      break;
+    case JT_KNIGHT_H:
+    case JT_KNIGHT_B:
+    case JT_RUNE_KNIGHT:
+    case JT_RUNE_KNIGHT_H:
+    case JT_RUNE_KNIGHT_B:
+    case JT_DRAGON_KNIGHT:
+      job = 7;
+      break;
+    case JT_PRIEST_H:
+    case JT_PRIEST_B:
+    case JT_ARCHBISHOP:
+    case JT_ARCHBISHOP_H:
+    case JT_ARCHBISHOP_B:
+    case JT_CARDINAL:
+      job = 8;
+      break;
+    case JT_WIZARD_H:
+    case JT_WIZARD_B:
+    case JT_WARLOCK:
+    case JT_WARLOCK_H:
+    case JT_WARLOCK_B:
+    case JT_ARCH_MAGE:
+      job = 9;
+      break;
+    case JT_BLACKSMITH_H:
+    case JT_BLACKSMITH_B:
+    case JT_MECHANIC:
+    case JT_MECHANIC_H:
+    case JT_MECHANIC_B:
+    case JT_MEISTER:
+      job = 10;
+      break;
+    case JT_HUNTER_H:
+    case JT_HUNTER_B:
+    case JT_RANGER:
+    case JT_RANGER_H:
+    case JT_RANGER_B:
+    case JT_WINDHAWK:
+      job = 11;
+      break;
+    case JT_ASSASSIN_H:
+    case JT_ASSASSIN_B:
+    case JT_GUILLOTINE_CROSS:
+    case JT_GUILLOTINE_CROSS_H:
+    case JT_GUILLOTINE_CROSS_B:
+    case JT_SHADOW_CROSS:
+      job = 12;
+      break;
+    case JT_CRUSADER_H:
+    case JT_CRUSADER_B:
+    case JT_ROYAL_GUARD:
+    case JT_ROYAL_GUARD_H:
+    case JT_ROYAL_GUARD_B:
+    case JT_IMPERIAL_GUARD:
+      job = 14;
+      break;
+    case JT_MONK_H:
+    case JT_MONK_B:
+    case JT_SURA:
+    case JT_SURA_H:
+    case JT_SURA_B:
+    case JT_INQUISITOR:
+      job = 15;
+      break;
+    case JT_SAGE_H:
+    case JT_SAGE_B:
+    case JT_SORCERER:
+    case JT_SORCERER_H:
+    case JT_SORCERER_B:
+    case JT_ELEMENTAL_MASTER:
+      job = 16;
+      break;
+    case JT_ROGUE_H:
+    case JT_ROGUE_B:
+    case JT_SHADOW_CHASER:
+    case JT_SHADOW_CHASER_H:
+    case JT_SHADOW_CHASER_B:
+    case JT_ABYSS_CHASER:
+      job = 17;
+      break;
+    case JT_ALCHEMIST_H:
+    case JT_ALCHEMIST_B:
+    case JT_GENETIC:
+    case JT_GENETIC_H:
+    case JT_GENETIC_B:
+    case JT_BIOLO:
+      job = 18;
+      break;
+    case JT_BARD_H:
+    case JT_BARD_B:
+    case JT_MINSTREL:
+    case JT_MINSTREL_H:
+    case JT_MINSTREL_B:
+    case JT_TROUBADOUR:
+      job = 19;
+      break;
+    case JT_DANCER_H:
+    case JT_DANCER_B:
+    case JT_WANDERER:
+    case JT_WANDERER_H:
+    case JT_WANDERER_B:
+    case JT_TROUVERE:
+      job = 20;
+      break;
+    case JT_SUPERNOVICE_B:
+    case JT_SUPERNOVICE2:
+    case JT_SUPERNOVICE2_B:
+    case JT_HYPER_NOVICE:
+      job = 23;
+      break;
+    case JT_KAGEROU:
+    case JT_OBORO:
+    case JT_NINJA_B:
+    case JT_KAGEROU_B:
+    case JT_OBORO_B:
+    case JT_SHINKIRO:
+    case JT_SHIRANUI:
+      job = 25;
+      break;
+    case JT_REBELLION:
+    case JT_GUNSLINGER_B:
+    case JT_REBELLION_B:
+    case JT_NIGHT_WATCH:
+      job = 24;
+      break;
+    case JT_DO_SUMMONER_B:
+    case JT_SPIRIT_HANDLER:
+      job = 4218;
+      break;
+    case JT_TAEKWON_B:
+      job = 4046;
+      break;
+    case JT_STAR_B:
+    case JT_STAR_EMPEROR:
+    case JT_STAR_EMPEROR_B:
+    case JT_SKY_EMPEROR:
+      job = 4047;
+      break;
+    case JT_LINKER_B:
+    case JT_SOUL_REAPER:
+    case JT_SOUL_REAPER_B:
+    case JT_SOUL_ASCETIC:
+      job = 4049;
+      break;
+    case JT_DRUID_B:
+    case JT_KARNOS:
+    case JT_KARNOS_B:
+    case JT_ALITEA:
+      job = 4351;
+      break;
+    default:
+      job = g_session.m_job;
+      break;
+    }
+    break;
+  case 3:
+    job = GetNormalJob(g_session.m_job);
+    break;
+  case 4:
+    job = GetNormalThirdJob(g_session.m_job);
+    break;
+  }
+
+  lua_pushnumber(state, job);
+  return 1;
+}
 
 // OFFSET: 0x006BD3C0
 
