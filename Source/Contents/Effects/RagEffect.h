@@ -33,6 +33,10 @@ struct CRagEffect : CRenderObject {
   bool CartRevolution();
   void BowlingBash();
   void SonicBlowHit();
+  void Exit();
+  void Warp();
+  __declspec(noinline) void PotionPillar(float heightSpeed, int duration);
+  bool Potion_Berserk();
   void AttackEnergy2(const char* name);
   bool LexDivina();
   void RemoveTrap();
