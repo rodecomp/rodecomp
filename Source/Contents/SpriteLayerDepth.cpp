@@ -1,11 +1,21 @@
 #include "Contents/Actors/SpriteDrawingPolicy.h"
+#include "Client/Session.h"
 #include "Contents/Camera/Camera.h"
 #include "Render/SpriteGeometry.h"
+#include "Script/LuaScript.h"
 
 constexpr float robeTopLayerThreshold = 320.0f;
 
 // GLOBAL: gl_24739
 float g_cameraDistance = 300.0f;
+
+struct AccessoryLayerDepth {
+  const int& bottomAccessory;
+  const int& topAccessory;
+  const int& middleAccessory;
+
+  void OffsetLayerDepth(int layer, SpriteCellQuad& quad, float bottomDepth, float topDepth) const;
+};
 
 // OFFSET: 0x0080DAA0
 // FUNCTION: fn_10103
@@ -39,3 +49,5 @@ void SpriteDrawingPolicy::OffsetLayerDepth(int layer, SpriteCellQuad& quad, floa
     break;
   }
 }
+
+// OFFSET: 0x0080E4D0
