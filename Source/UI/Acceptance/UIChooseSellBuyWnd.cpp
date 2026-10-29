@@ -916,10 +916,32 @@ bool UIStatusWnd::Slot03() {
 }
 
 // OFFSET: 0x008DAF40
+// FUNCTION: fn_12150
+void UICombinedCardItemCollectionWnd::Move(int x, int y) {
+  UIFrameWnd::Move(x, y);
+  if (UIWindow* comparison = g_windowMgr.unknown_0224) {
+    if (UIWindow* window = g_windowMgr.LookupWindow(82)) {
+      comparison->Move(window->geometry.x - window->geometry.width, window->geometry.y);
+    }
+  }
+}
 
 // OFFSET: 0x008DAF80
+// FUNCTION: fn_12151
+void UIEquipWnd::Move(int x, int y) {
+  UIFrameWnd::Move(x, y);
+}
 
 // OFFSET: 0x008DAF90
+// FUNCTION: fn_12152
+void UIItemCollectionWnd::Move(int x, int y) {
+  UIFrameWnd::Move(x, y);
+  if (UIWindow* comparison = g_windowMgr.unknown_0220) {
+    if (UIWindow* window = g_windowMgr.LookupWindow(12)) {
+      comparison->Move(window->geometry.x - window->geometry.width, window->geometry.y);
+    }
+  }
+}
 
 // OFFSET: 0x008DAFD0
 // FUNCTION: fn_12153
@@ -927,8 +949,22 @@ void UIItemCollection_ComparisonWnd::Move(int, int) {
 }
 
 // OFFSET: 0x008DAFE0
+// FUNCTION: fn_12154
+void UIMenuWnd::Move(int x, int y) {
+  if (y > g_renderer->viewport.height - this->geometry.height) {
+    y += -2 - this->geometry.height;
+  }
+  if (x > g_renderer->viewport.width - this->geometry.width) {
+    x += -2 - this->geometry.width;
+  }
+  this->geometry.Move(x, y);
+}
 
 // OFFSET: 0x008DB030
+// FUNCTION: fn_12155
+void UIWhisperWnd::Move(int x, int y) {
+  UIFrameWnd::Move(x, y);
+}
 
 // OFFSET: 0x008F4D40
 // FUNCTION: fn_12294
