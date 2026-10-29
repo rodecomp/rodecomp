@@ -82,6 +82,7 @@ struct PreviewEquipWndInfo : WindowPlacement {
 
 struct AchTracingWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct BasicInfoWndInfo : WindowPlacement {
@@ -91,26 +92,32 @@ struct BasicInfoWndInfo : WindowPlacement {
   /* 0013 */ unsigned char unknown_0013;
 
   void Reset();
+  int IsValid();
 };
 
 struct CashEmotionListWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ChatRoomWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ChooseWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ClanWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct CombinedCardItemCollectionWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct UnusedWndInfoA : WindowPlacement {
@@ -119,6 +126,7 @@ struct UnusedWndInfoA : WindowPlacement {
 
 struct EmotionWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct EquipWndInfo : WindowPlacement {
@@ -130,6 +138,7 @@ struct EquipWndInfo : WindowPlacement {
 
 struct ExchangeAcceptWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct FriendOptionWndInfo : WindowPlacement {
@@ -139,54 +148,66 @@ struct FriendOptionWndInfo : WindowPlacement {
 
 struct GuildHelperWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct GuildWndInfo : WindowPlacement {
   /* 0010 */ int unknown_0010;
 
   void Reset();
+  int IsValid() const;
 };
 
 struct HomunInfoWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ItemCollectionWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ItemCompositionWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ItemStoreFindWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ItemIdentifyWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ItemParamChangeDisplayWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ItemPurchaseWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ItemSellWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ItemShopWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ItemStoreFindListInfo : WindowPlacement {
   /* 0010 */ int unknown_0010;
 
   void Reset();
+  int IsValid() const;
 };
 
 struct ItemStoreFindSlotInfo : WindowPlacement {
@@ -196,6 +217,7 @@ struct ItemStoreFindSlotInfo : WindowPlacement {
   };
 
   void Reset(int index);
+  int IsValid() const;
 };
 
 struct ItemWndInfo : WindowPlacement {
@@ -207,10 +229,12 @@ struct ItemWndInfo : WindowPlacement {
   /* 0024 */ int unknown_0024;
 
   void Reset();
+  int IsValid() const;
 };
 
 struct EntryQueueWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct MiniMapWndInfo : WindowPlacement {
@@ -221,34 +245,42 @@ struct MiniMapWndInfo : WindowPlacement {
   /* 0020 */ int unknown_0020;
 
   void Reset();
+  int IsValid() const;
 };
 
 struct MerInfoWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct MerchantItemMyShopWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct MerchantItemPurchaseWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct MerchantItemShopWndInfo : WindowPlacement {
   void Reset(bool wide);
+  int IsValid(bool wide) const;
 };
 
 struct MerchantItemWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct MerchantMirrorItemWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct MerchantShopMakeWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct MessengerGroupWndInfo : WindowPlacement {
@@ -257,10 +289,12 @@ struct MessengerGroupWndInfo : WindowPlacement {
   /* 0018 */ int unknown_0018;
 
   void Reset();
+  int IsValid() const;
 };
 
 struct NCashWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct UnusedWndInfoB : WindowPlacement {
@@ -272,36 +306,44 @@ struct UnusedWndInfoB : WindowPlacement {
 
 struct SeekPartyWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct SeekPartyListWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct SeekPartyMBWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct JobListWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct PartySettingWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct PetInfoWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct QuestDisplayInfo {
   /* 0000 */ int unknown_0000;
 
   void Reset();
+  int IsValid() const;
 };
 
 struct QuickSlotWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct ReplayRECControlWndInfo : WindowPlacement {
