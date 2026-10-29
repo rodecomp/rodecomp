@@ -79,6 +79,21 @@ struct CEffectPrim : CRenderObject {
   void RenderTeiRect(int* rpCnt, short alpha, vector3d vec1, vector3d vec2, vector3d vec3, vector3d vec4, matrix& wtm, short pw, char tn, char f1, unsigned char r, unsigned char g, unsigned char b, float ty1, float ty2, float tx, float tx2, char extra);
   void RenderTeiRect(int* rpCnt, int texPart, short alphaB, short alphaT, vector3d vec1, vector3d vec2, vector3d vec3, vector3d vec4, matrix& wtm, char pw);
   void RenderTeiRect(int* rpCnt, int texPart, short alphaB, short alphaT, vector3d vec1, vector3d vec2, vector3d vec3, vector3d vec4, matrix& wtm, char pw, unsigned char r, unsigned char g, unsigned char b);
+  void RenderHalfSphere(matrix& wtm);
+  void RenderHermode(matrix& wtm);
+  void RenderHitLine3(matrix& wtm);
+  void RenderHitLine(matrix& wtm);
+  void RenderMagnum2(matrix& wtm);
+  void RenderPeongUp(matrix& wtm);
+  void RenderRainbow(matrix& wtm);
+  void RenderRectUp2(matrix& wtm);
+  void RenderRectUp(matrix& wtm);
+  void RenderSMA2(matrix& wtm);
+  void RenderSaintWing(matrix& wtm);
+  void RenderSlash1(matrix& wtm);
+  void RenderSoulLink(matrix& wtm);
+  void RenderSoulParticle(matrix& wtm);
+  void RenderSphereWind(matrix& wtm);
 
   /* 0138 */ EffectPrimitiveState state;
 };
