@@ -43,6 +43,14 @@ struct CEffectPrim : CRenderObject {
   void PrimScrollTexture();
   void PrimFrameFade();
   void PrimRiseFollow();
+  void PrimFadeInFollow();
+  void PrimAnimatedFlash();
+  void PrimRandomSpin();
+  void PrimHeightRamp();
+  void PrimBobbing();
+  bool PrimTwinSpin();
+  void PrimFlashFade();
+  bool PrimFadeAlpha();
   void Render2DCircle();
   void RenderCrossPlanes(matrix& wtm);
   void RenderPyramid(matrix& wtm);

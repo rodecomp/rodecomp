@@ -4551,3 +4551,262 @@ void CEffectPrim::PrimRiseFollow() {
     slot.vecBNow.z = this->render.position.z;
   }
 }
+
+// OFFSET: 0x00BBAA10
+// FUNCTION: fn_19789
+void CEffectPrim::PrimFadeInFollow() {
+  FaceCamera(this->state.slots);
+  this->render.position = this->state.master->render.position;
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life == 1) {
+      ++slot.process;
+      if (slot.alphaB < 255) {
+        ++slot.alphaB;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00BBD390
+// FUNCTION: fn_19804
+void CEffectPrim::PrimAnimatedFlash() {
+  FaceCamera(this->state.slots);
+
+  EffectPrimitiveSlot& slot = this->state.slots[0];
+  if (slot.life != 1) {
+    return;
+  }
+
+  const int process = ++slot.process;
+  if (process % 4 == 0) {
+    char frame = static_cast<char>(slot.flag1[0] + 1);
+    if (frame >= static_cast<int>(this->state.totalTexture)) {
+      frame = 0;
+    }
+    slot.flag1[0] = frame;
+  }
+
+  if (process < 30) {
+    slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 10);
+  } else if (process > 80) {
+    slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 3);
+  }
+
+  if (slot.alphaB >= 255) {
+    slot.alphaB = 255;
+  } else if (slot.alphaB < 0) {
+    slot.alphaB = 0;
+  }
+}
+
+// OFFSET: 0x00BE99A0
+// FUNCTION: fn_19956
+void CEffectPrim::PrimRandomSpin() {
+  FaceCamera(this->state.slots);
+  this->render.position = this->state.master->render.position;
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const int process = ++slot.process;
+    if (process <= 0) {
+      continue;
+    }
+
+    slot.fullDisplayAngle = static_cast<std::int16_t>(slot.fullDisplayAngle - 10);
+    if (slot.fullDisplayAngle < 0) {
+      slot.fullDisplayAngle = static_cast<std::int16_t>(slot.fullDisplayAngle + 360);
+    }
+
+    if (process == 1) {
+      const int angle = std::rand() % 360;
+      slot.rotStart = static_cast<std::int16_t>(angle >= 0 ? angle : 0);
+    } else if (process <= 10) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 10);
+    } else if (process > 100 && --slot.alphaB < 0) {
+      slot.alphaB = 0;
+      slot.life = 0;
+    }
+  }
+}
+
+// OFFSET: 0x00BEA220
+// FUNCTION: fn_19961
+void CEffectPrim::PrimHeightRamp() {
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const int process = ++slot.process;
+    slot.rotStart = static_cast<std::int16_t>(slot.rotStart + 1);
+    if (slot.rotStart >= 360) {
+      slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
+    }
+
+    if (process >= 125) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 15);
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
+      }
+      slot.maxHeight -= 5.0f;
+      if (slot.maxHeight < 0.0f) {
+        slot.maxHeight = 0.0f;
+      }
+    }
+
+    for (float& height : slot.height) {
+      float value;
+      if (slot.process < 100) {
+        value = 0.0f;
+      } else if (slot.process > 115) {
+        value = slot.maxHeight;
+      } else {
+        value = g_sinTable[6 * slot.process - 600] * slot.maxHeight;
+      }
+
+      height = value;
+      if (value < 0.0f) {
+        height = 0.0f;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00BBBE40
+// FUNCTION: fn_19798
+void CEffectPrim::PrimBobbing() {
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life <= 0) {
+      continue;
+    }
+
+    const int process = ++slot.process;
+
+    if (slot.riseAngle >= 360) {
+      slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle - 360);
+    }
+
+    if (slot.flag1[0] == 11) {
+      if (process <= 40) {
+        ++slot.alphaB;
+      } else if (process > 140) {
+        --slot.alphaB;
+      }
+
+      if (slot.alphaB <= 0) {
+        slot.alphaB = 0;
+      }
+    }
+
+    slot.height[0] = slot.height[2];
+    slot.height[0] = g_sinTable[process % 360] * 0.1f + slot.height[2];
+  }
+}
+
+// OFFSET: 0x00BE7620
+// FUNCTION: fn_19936
+bool CEffectPrim::PrimTwinSpin() {
+  this->render.position = this->state.master->render.position;
+
+  EffectPrimitiveSlot& first = this->state.slots[0];
+  first.riseAngle = static_cast<std::int16_t>(first.riseAngle + 3);
+  const int firstProcess = ++first.process;
+  if (first.riseAngle >= 360) {
+    first.riseAngle = static_cast<std::int16_t>(first.riseAngle - 360);
+  }
+
+  const int fadeStart = this->state.duration - 25;
+  if (firstProcess > fadeStart) {
+    first.alphaB = static_cast<std::int16_t>(first.alphaB - 8);
+    if (first.alphaB < 0) {
+      first.alphaB = 0;
+    }
+  }
+
+  EffectPrimitiveSlot& second = this->state.slots[1];
+  second.riseAngle = static_cast<std::int16_t>(second.riseAngle + 3);
+  const int secondProcess = ++second.process;
+  if (second.riseAngle >= 360) {
+    second.riseAngle = static_cast<std::int16_t>(second.riseAngle - 360);
+  }
+
+  if (secondProcess > fadeStart) {
+    second.alphaB = static_cast<std::int16_t>(second.alphaB - 8);
+    if (second.alphaB < 0) {
+      second.alphaB = 0;
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00BE90C0
+// FUNCTION: fn_19948
+void CEffectPrim::PrimFlashFade() {
+  FaceCamera(this->state.slots);
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process <= 15) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 13);
+      if (slot.alphaB > 255) {
+        slot.alphaB = 255;
+      }
+    } else if (slot.process > 20) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 3);
+      if (slot.alphaB < 0) {
+        slot.life = 0;
+        slot.alphaB = 0;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00BEB330
+// FUNCTION: fn_19968
+bool CEffectPrim::PrimFadeAlpha() {
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process < 50) {
+      this->state.alpha += 5.0f;
+      if (this->state.alpha > 150.0f) {
+        this->state.alpha = 150.0f;
+      }
+    } else if (slot.process > this->state.duration - 50) {
+      this->state.alpha -= 5.0f;
+      if (this->state.alpha < 0.0f) {
+        this->state.alpha = 0.0f;
+      }
+    }
+  }
+
+  this->state.ProcessAlpha();
+  this->ShiftSegment();
+  return this->AnimMotion();
+}
