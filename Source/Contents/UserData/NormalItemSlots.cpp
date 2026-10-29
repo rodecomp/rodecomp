@@ -313,6 +313,12 @@ int NCashWndInfo::IsValid() const {
          this->y <= g_renderer->viewport.height - this->height;
 }
 
+// OFFSET: 0x009A5D00
+// FUNCTION: fn_13656
+int UnusedWndInfoB::IsValid() const {
+  return 0;
+}
+
 // OFFSET: 0x009A5D10
 // FUNCTION: fn_13657
 int SeekPartyWndInfo::IsValid() const {
@@ -366,6 +372,10 @@ int QuickSlotWndInfo::IsValid() const {
   return this->width > 0 && this->height > 0 && this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 &&
          this->y <= g_renderer->viewport.height - this->height;
 }
+
+// OFFSET: 0x009A5F70
+
+// OFFSET: 0x009A5FB0
 
 // OFFSET: 0x009A6110
 // FUNCTION: fn_13668

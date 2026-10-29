@@ -302,6 +302,7 @@ struct UnusedWndInfoB : WindowPlacement {
   /* 0014 */ int unknown_0014;
 
   void Reset();
+  int IsValid() const;
 };
 
 struct SeekPartyWndInfo : WindowPlacement {
@@ -348,10 +349,12 @@ struct QuickSlotWndInfo : WindowPlacement {
 
 struct ReplayRECControlWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 struct SayDialogWndInfo : WindowPlacement {
   void Reset();
+  int IsValid() const;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
