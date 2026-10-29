@@ -36,6 +36,46 @@ public:
   void SetSelected(bool selected) override;
 };
 
+class CUIIngredient : public CUIControl {
+public:
+  explicit CUIIngredient(UIWindowContext& context)
+      : CUIControl(context), unknown_0080(nullptr), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(nullptr), unknown_0090(nullptr) {
+  }
+
+  /* 0080 */ CUIControl* unknown_0080;
+  /* 0084 */ CUIControl* unknown_0084;
+  /* 0088 */ CUIControl* unknown_0088;
+  /* 008C */ CUIControl* unknown_008C;
+  /* 0090 */ CUIControl* unknown_0090;
+};
+
+class CUIEnchantPage : public CUIControl {
+public:
+  /* 0080 */ unsigned char unknown_0080[0x30];
+  /* 00B0 */ int unknown_00B0;
+
+  virtual void Slot54(int argument1, int argument2);
+  virtual void Slot55() = 0;
+  virtual void Slot56() = 0;
+  virtual void Slot57() = 0;
+  virtual void Slot58(int value) {
+  }
+  virtual void Slot59(int value);
+
+  CUIIngredient* CreateIngredient();
+};
+
+class CUIUpgradeEnchantPage : public CUIEnchantPage {
+public:
+  void Slot58(int value) override;
+};
+
+class CUIMainPage : public CUIControl {
+public:
+  /* 0080 */ CUIEnchantPage* firstPage;
+  /* 0084 */ CUIEnchantPage* secondPage;
+};
+
 class CEnchantItemData {
 public:
   /* 0000 */ int itemId;
@@ -51,6 +91,8 @@ public:
   void Slot16() override;
   void Paint() override;
   void Slot32(int x, int y) override;
+
+  void SelectSlot(UIWindow* button);
 };
 
 class CUISlot0 : public CUISlot {

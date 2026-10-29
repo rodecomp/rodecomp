@@ -16,6 +16,36 @@ template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemDat
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::UpdateScrollBar();
 
 namespace EnchantUI {
+// OFFSET: 0x009F99B0
+// FUNCTION: fn_14812
+CUIIngredient* CUIEnchantPage::CreateIngredient() {
+  CUIIngredient* ingredient = new CUIIngredient(*this->m_context);
+  ingredient->SetSize(70, 50);
+  ingredient->Move(4, 200);
+  this->AddChild(ingredient);
+  return ingredient;
+}
+
+// OFFSET: 0x009F9B30
+// FUNCTION: fn_14813
+void CUIEnchantPage::Slot54(int argument1, int argument2) {
+}
+
+// OFFSET: 0x00A02D80
+// FUNCTION: fn_14845
+void CUIEnchantPage::Slot59(int value) {
+  this->unknown_00B0 = value;
+}
+
+// OFFSET: 0x00A05190
+// FUNCTION: fn_14970
+void CUIUpgradeEnchantPage::Slot58(int value) {
+  if (CUIMainPage* mainPage = dynamic_cast<CUIMainPage*>(this->parent)) {
+    mainPage->firstPage->Slot59(value);
+    mainPage->secondPage->Slot59(value);
+  }
+}
+
 // OFFSET: 0x00A05CE0
 // FUNCTION: fn_14980
 void CUISlot::Paint() {
@@ -105,6 +135,14 @@ void CUISlot::Slot32(int x, int y) {
 // FUNCTION: fn_14999
 void CUITargetItem::Slot32(int x, int y) {
   this->itemIcon->Slot32(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
+}
+
+// OFFSET: 0x00A062C0
+// FUNCTION: fn_15000
+void CUISlot::SelectSlot(UIWindow* button) {
+  if (CUIEnchantPage* page = dynamic_cast<CUIEnchantPage*>(this->parent)) {
+    page->Slot58(button->geometry.id);
+  }
 }
 
 // OFFSET: 0x00A06A50
