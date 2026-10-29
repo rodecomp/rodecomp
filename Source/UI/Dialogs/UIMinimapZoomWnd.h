@@ -7,6 +7,7 @@ struct UIButtonContext;
 
 class UIMinimapZoomWnd : public UIFrameWnd {
 public:
+  bool Slot08() override;
   void Paint() override;
   void Slot25(int x, int y) override;
 

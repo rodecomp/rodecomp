@@ -903,6 +903,12 @@ bool UIWhisperWnd::Slot42(void*) {
   return true;
 }
 
+// OFFSET: 0x008DA420
+// FUNCTION: fn_12143
+bool UIMinimapZoomWnd::Slot08() {
+  return true;
+}
+
 // OFFSET: 0x008DA430
 // FUNCTION: fn_12144
 bool UIEquipWnd::Slot03() {
