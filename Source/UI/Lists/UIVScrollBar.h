@@ -8,6 +8,9 @@
 
 class CUIVScrollBar : public CUIControl {
 public:
+  void Show(int visible) override;
+  void Slot25(int x, int y) override;
+  void Slot35(int value) override;
   virtual void Slot54();
 
   void SetTotal(int value);
@@ -19,7 +22,7 @@ public:
   /* 008C */ int unknown_008C;
   /* 0090 */ int total;
   /* 0094 */ int visible;
-  /* 0098 */ int unknown_0098;
+  /* 0098 */ int step;
   /* 009C */ int position;
   /* 00A0 */ int maximum;
   /* 00A4 */ int trackLength;

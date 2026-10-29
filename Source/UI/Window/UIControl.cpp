@@ -1,5 +1,7 @@
 #include "UI/Window/UIControl.h"
 #include "UI/Lists/UIListBoxTemplate.h"
+#include "UI/Lists/UIThumb.h"
+#include "Client/Mode/ModeCursor.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -193,6 +195,65 @@ void CUIVScrollBar::SetPosition(int value) {
   this->Invalidate();
 }
 
+// OFFSET: 0x009F23B0
+// FUNCTION: fn_14709
+void CUIVScrollBar::Slot25(int, int y) {
+  const int top = this->thumb->geometry.y;
+  if (y < top) {
+    this->SetPosition(this->position - this->step);
+  } else if (y > this->thumb->geometry.height + top) {
+    this->SetPosition(this->position + this->step);
+  }
+}
+
+// OFFSET: 0x009F0F00
+// FUNCTION: fn_14684
+void CUITab::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x009F2400
+// FUNCTION: fn_14710
+void CUIVThumb::Slot25(int, int y) {
+  g_windowMgr.SetCapture(this);
+  this->dragOrigin = y;
+}
+
+// OFFSET: 0x009F2420
+// FUNCTION: fn_14711
+void CUIVThumb::Slot31(int, int y) {
+  if (this == g_windowMgr.Capture()) {
+    g_windowMgr.ReleaseCapture();
+  }
+  this->dragOrigin = y;
+}
+
+// OFFSET: 0x009F24B0
+// FUNCTION: fn_14713
+void CUIVThumb::Slot27(int, int y) {
+  if (this == g_windowMgr.Capture() && y != this->dragOrigin && this->onDrag) {
+    this->onDrag(y - this->dragOrigin);
+  }
+}
+
+// OFFSET: 0x009F24F0
+// FUNCTION: fn_14714
+void CUIThumb::ResetCursor(int, int) {
+  this->m_context->cursor.Set(2, this->m_context->cursorTick);
+}
+
+// OFFSET: 0x009F2500
+// FUNCTION: fn_14715
+void CUIVScrollBar::Slot35(int value) {
+  this->SetPosition(value > 0 ? this->position - this->step : this->step + this->position);
+}
+
+// OFFSET: 0x009F2BC0
+// FUNCTION: fn_14727
+void CUIVScrollBar::Show(int visible) {
+  this->geometry.visible = this->unknown_00A9[0] ? 0 : visible;
+}
+
 // OFFSET: 0x009F25C0
 // FUNCTION: fn_14717
 void CUIVScrollBar::Slot54() {
@@ -213,6 +274,12 @@ void CUIVScrollBar::Slot54() {
 }
 
 // OFFSET: 0x009F01F0
+// FUNCTION: fn_14657
+void CUIListItem::Slot31(int, int) {
+  if (this == g_windowMgr.Capture()) {
+    g_windowMgr.ReleaseCapture();
+  }
+}
 
 // OFFSET: 0x009F0230
 // FUNCTION: fn_14659
@@ -223,6 +290,18 @@ void CUIListItem::Slot27(int, int) {
 }
 
 // OFFSET: 0x009F0250
+// FUNCTION: fn_14660
+void CUIListItem::SetHighlighted(bool highlighted) {
+  if (this->selected != 1) {
+    const int state = highlighted * 2;
+    if (this->selected != state) {
+      this->selected = state;
+      if (!this->frozen) {
+        this->Invalidate();
+      }
+    }
+  }
+}
 
 // OFFSET: 0x009F0290
 // FUNCTION: fn_14661
@@ -236,6 +315,11 @@ void CUIListItem::SetSelected(bool selected) {
 }
 
 // OFFSET: 0x009F02C0
+// FUNCTION: fn_14662
+void CUIListItem::SetFrozen(bool frozen) {
+  this->frozen = frozen;
+  this->Invalidate();
+}
 
 template void CUIListBox<AdventureGuide::CUITab>::Resize(int, int);
 template void CUIListBox<AdventureGuide::CUISubTab>::Resize(int, int);

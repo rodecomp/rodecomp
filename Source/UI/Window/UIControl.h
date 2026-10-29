@@ -34,6 +34,11 @@ public:
   /* 007C */ unsigned char hitEnabled;
 };
 
+class CUITab : public CUIControl {
+public:
+  void Paint() override;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CUIControl) == 132);
 #endif
