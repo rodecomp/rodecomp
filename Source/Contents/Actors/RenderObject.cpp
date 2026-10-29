@@ -1169,14 +1169,120 @@ void RenderBounds::Include(const float* box) {
 }
 
 // OFFSET: 0x00CAA870
+// FUNCTION: fn_21018
+bool CGameActor::ApplyEffectState(int effectId, bool on) {
+  if (effectId < 2485) {
+    this->SetEffectState(effectId, on);
+    return false;
+  }
+
+  int type = 0;
+  g_session.m_hotkeyScript->Call("GetEffectType", "d>d", effectId - 2485, &type);
+  switch (type) {
+  case 0:
+    this->SetEffectState(effectId, on);
+    break;
+  case 1:
+    this->SetHatEffect(effectId, on);
+    break;
+  case 2:
+    this->SetEffectState(effectId, on);
+    this->SetHatEffect(effectId, on);
+    break;
+  case 3:
+    this->SetEffectInstance(2411, effectId - 2485, on);
+    break;
+  case 4:
+    this->SetEffectInstance(2412, effectId - 2485, on);
+    break;
+  }
+  return false;
+}
 
 // OFFSET: 0x00CAA9B0
+// FUNCTION: fn_21019
+void CGameActor::SetHatEffect(int effectId, bool on) {
+  int hatEffect = 0;
+  g_session.m_hotkeyScript->Call("GetHatEffectID", "d>d", effectId - 2485, &hatEffect);
+  if (hatEffect < 1) {
+    return;
+  }
+
+  const std::int64_t value = hatEffect;
+  this->SendMsg(this, 109, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+  bool show = on;
+  CPc* pc;
+  if (hatEffect == 254 && IsPlayerJob(this->GetEffectiveJob(-1)) && (pc = dynamic_cast<CPc*>(this)) != nullptr) {
+    pc->unknown_0438 = on ? pc->unknown_0438 | 0x10 : pc->unknown_0438 ^ 0x10;
+    show = (pc->unknown_0434 & 0x10) != 0 || (pc->unknown_0438 & 0x10) != 0;
+  }
+  if (!show) {
+    return;
+  }
+
+  CEffect* effect = g_effectMgr->Spawn(this->render.accountId, hatEffect, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  if (effect) {
+    effect->unknown_00C8 = 1;
+  } else {
+    this->LaunchEffect(hatEffect, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  }
+}
 
 // OFFSET: 0x00CAABA0
+// FUNCTION: fn_21020
+void CGameActor::SetEffectState(int effectId, bool on) {
+  if (on) {
+    CEffect* effect = g_effectMgr->Spawn(this->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    if (effect) {
+      effect->unknown_00C8 = 1;
+    }
+  } else {
+    g_effectMgr->Retire(this->render.accountId, effectId);
+  }
+}
 
 // OFFSET: 0x00CAAC10
+// FUNCTION: fn_21021
+void CGameActor::SetEffectInstance(int effectId, int instance, bool on) {
+  if (on) {
+    g_effectMgr->Spawn(this->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, instance);
+  } else {
+    g_effectMgr->Retire(this->render.accountId, instance, effectId);
+  }
+}
 
 // OFFSET: 0x00CAB020
+// FUNCTION: fn_21024
+void CGameActor::ClearUnknown037C(int value) {
+  if (this->unknown_037C[1] == value) {
+    this->unknown_037C[1] = 0;
+  } else if (this->unknown_037C[0] == value) {
+    this->unknown_037C[0] = 0;
+  } else if (this->unknown_037C[2] == value) {
+    this->unknown_037C[2] = 0;
+  } else if (this->unknown_037C[3] == value) {
+    this->unknown_037C[3] = 0;
+  } else if (this->unknown_037C[4] == value) {
+    this->unknown_037C[4] = 0;
+  } else if (this->unknown_037C[5] == value) {
+    this->unknown_037C[5] = 0;
+  } else if (this->unknown_037C[6] == value) {
+    this->unknown_037C[6] = 0;
+  } else if (this->unknown_037C[8] == value) {
+    this->unknown_037C[8] = 0;
+  } else if (this->unknown_037C[9] == value) {
+    this->unknown_037C[9] = 0;
+  } else if (this->unknown_037C[7] == value) {
+    this->unknown_037C[7] = 0;
+  } else if (this->unknown_037C[10] == value) {
+    this->unknown_037C[10] = 0;
+  } else if (this->unknown_037C[11] == value) {
+    this->unknown_037C[11] = 0;
+  } else if (this->unknown_037C[12] == value) {
+    this->unknown_037C[12] = 0;
+  }
+}
 
 // OFFSET: 0x00CAB9B0
 // FUNCTION: fn_21033
@@ -1185,6 +1291,123 @@ CActRes* CRenderObject::GetActRes() {
 }
 
 // OFFSET: 0x00CAB9C0
+// FUNCTION: fn_21034
+int CGameActor::WeaponActionBase(int weaponType) {
+  int base = 0;
+  switch (weaponType) {
+  case 0:
+    base = 0;
+    break;
+  case 1:
+    base = 8;
+    break;
+  case 2:
+  case 43:
+  case 44:
+  case 52:
+  case 60:
+  case 62:
+  case 63:
+  case 69:
+  case 71:
+  case 72:
+  case 78:
+  case 79:
+    base = 80;
+    break;
+  case 3:
+    base = 64;
+    break;
+  case 4:
+    base = 48;
+    break;
+  case 5:
+  case 20:
+  case 25:
+    base = 24;
+    break;
+  case 9:
+  case 18:
+  case 32:
+  case 49:
+  case 53:
+  case 54:
+  case 59:
+  case 70:
+  case 73:
+  case 76:
+  case 77:
+    base = 88;
+    break;
+  case 11:
+    base = 32;
+    break;
+  case 12:
+  case 19:
+  case 28:
+  case 40:
+  case 42:
+  case 50:
+  case 51:
+  case 58:
+    base = 40;
+    break;
+  case 13:
+    base = IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, this->Slot35()) ? 88 : 80;
+    break;
+  case 16:
+  case 17:
+  case 21:
+  case 22:
+  case 23:
+  case 24:
+  case 27:
+  case 30:
+  case 33:
+  case 34:
+  case 35:
+  case 36:
+  case 37:
+  case 38:
+  case 39:
+  case 41:
+  case 45:
+  case 47:
+  case 48:
+  case 55:
+  case 56:
+  case 57:
+  case 61:
+  case 64:
+  case 65:
+  case 66:
+  case 67:
+  case 68:
+  case 80:
+  case 81:
+    base = 96;
+    break;
+  case 26:
+    switch (this->GetEffectiveJob(-1)) {
+    case JT_LINKER:
+    case JT_LINKER_B:
+    case JT_SOUL_REAPER:
+    case JT_SOUL_REAPER_B:
+    case JT_SOUL_ASCETIC:
+      base = 88;
+      break;
+    default:
+      base = 40;
+      break;
+    }
+    break;
+  case 74:
+  case 75:
+    base = 104;
+    break;
+  }
+  return base;
+}
 
 // OFFSET: 0x00CABD30
 // FUNCTION: fn_21036
