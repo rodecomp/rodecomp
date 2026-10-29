@@ -4,6 +4,8 @@
 #include "UI/Buttons/UIButton.h"
 
 class UICheckBox : public UIWindow {
+  friend class CMergeItemWnd;
+
 public:
   UICheckBox(UIWindowContext& windowContext, UIButtonContext& controls);
   ~UICheckBox() override;
