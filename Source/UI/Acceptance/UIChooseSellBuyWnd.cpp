@@ -1,4 +1,6 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "Contents/Skills/SkillInfo.h"
+#include "UI/Items/UISpellListWnd.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
@@ -432,6 +434,50 @@ void UISkillNameChangeWnd::Paint() {
   auto& controls = *this->m_controls;
   this->DrawBorder(0, 0, 0, 0);
   this->DrawTextAt(controls.fonts, controls.locale, 15, 6, this->m_name.c_str(), 0, 0, 12, 0, 0, 0);
+}
+
+// OFFSET: 0x008F04F0
+// FUNCTION: fn_12252
+void UISpellListWnd::Paint() {
+  auto& controls = *this->m_controls;
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, true, controls.services.MessageText(697), 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+
+  int row = 0;
+  int index = 0;
+  CSkillInfo skill;
+  for (unsigned position = 0; position < this->m_skills.size(); ++position, ++index) {
+    char name[64];
+    std::strcpy(name, CSkillInfo::DisplayName(*g_session.m_hotkeyScript, static_cast<int>(this->m_skills[position])));
+    if (index < this->m_scroll * this->m_columns) {
+      continue;
+    }
+
+    const int y = row / this->m_columns * 32 + 34;
+    if (this->m_selected == index) {
+      unsigned red, green, blue;
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      this->FillRegion(5, y - 3, this->geometry.width - 24, 30, RGB(red, green, blue));
+    }
+
+    skill.id = this->m_skills[position];
+    char path[256];
+    g_session.ItemBitmapPath(skill.IdName(*g_session.m_hotkeyScript), path);
+    this->DrawBitmap(8, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)))->image, true);
+    this->DrawTextAt(controls.fonts, controls.locale, 40, y + 4, name, 0, 0, 12, 0, 0, 0);
+
+    ++row;
+    if (row == this->m_rows * this->m_columns) {
+      break;
+    }
+  }
+}
+
+// OFFSET: 0x00DE0E20
+// FUNCTION: fn_23473
+void CSession::ItemBitmapPath(const char* name, char* output) {
+  std::sprintf(output, "유저인터페이스\\item\\%s.bmp", name);
 }
 
 // OFFSET: 0x008F2460

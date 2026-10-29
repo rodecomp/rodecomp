@@ -209,6 +209,7 @@ public:
   /* 8140 */ std::int64_t m_loginTimeTicks;
   /* 8148 */ int unknown_8148;
 
+  void ItemBitmapPath(const char* name, char* output);
   int GetOption(int id) const;
   void SetOption(int id, int value, int extra);
   std::uint32_t GetServerTime();
