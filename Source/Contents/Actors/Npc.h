@@ -16,6 +16,8 @@ public:
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
   void Render(int argument) override;
+  void Slot16() override;
+  void Slot21(int value) override;
   void Slot22(int value) override;
   void Slot25(int value) override;
   void Slot30() override;

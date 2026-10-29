@@ -7,13 +7,16 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
+#include "Client/Session.h"
 #include "Contents/World/World.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Resource/ResourceMgr.h"
 #include "Resource/World/WorldResource.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 
 #include <cmath>
+#include <cstdio>
 #include <windows.h>
 #include <timeapi.h>
 
@@ -245,6 +248,69 @@ int CPc::Slot42() {
 std::int64_t CPc::Slot35() {
   return (static_cast<std::int64_t>(this->unknown_044C) << 32) | static_cast<std::uint32_t>(this->weapon);
 }
+
+// OFFSET: 0x00DA2BC0
+// FUNCTION: fn_22384
+void Nullsub492() {
+}
+
+// OFFSET: 0x00DA2BD0
+// FUNCTION: fn_22385
+void Nullsub493() {
+}
+
+// OFFSET: 0x00DA2BE0
+// FUNCTION: fn_22386
+void Nullsub494() {
+}
+
+// OFFSET: 0x00DA2C30
+// FUNCTION: fn_22387
+void Nullsub495() {
+}
+
+// OFFSET: 0x00DA2C40
+// FUNCTION: fn_22388
+void Nullsub496() {
+}
+
+// OFFSET: 0x00DA2C50
+// FUNCTION: fn_22389
+void Nullsub497() {
+}
+
+// OFFSET: 0x00DA2C60
+// FUNCTION: fn_22390
+void Nullsub498() {
+}
+
+// OFFSET: 0x00DA2C70
+// FUNCTION: fn_22391
+void Nullsub499() {
+}
+
+// OFFSET: 0x00DA2CD0
+// FUNCTION: fn_22392
+void Nullsub500() {
+}
+
+// OFFSET: 0x00DA2CE0
+// FUNCTION: fn_22393
+void Nullsub501() {
+}
+
+// OFFSET: 0x00DA2D70
+// FUNCTION: fn_22394
+void Nullsub502() {
+}
+
+// OFFSET: 0x00DA2E00
+// FUNCTION: fn_22395
+void CMasterChaser::ClearUnknown0138() {
+  this->unknown_0138 = 0;
+}
+
+// OFFSET: 0x00DA3F50
 
 // OFFSET: 0x00DA5800
 // FUNCTION: fn_22429
@@ -501,6 +567,8 @@ void CSoundMaker::SendMsg(
   this->cycle = static_cast<std::int64_t>(sound.cycle * 1000.0f);
   this->lastTick = timeGetTime() - this->cycle;
 }
+
+// OFFSET: 0x00DA58A0
 
 // OFFSET: 0x00DA31B0
 // FUNCTION: fn_22400
