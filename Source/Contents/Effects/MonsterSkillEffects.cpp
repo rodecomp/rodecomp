@@ -619,6 +619,7 @@ bool CHawkVumerangEffect::Slot06() {
 }
 
 // OFFSET: 0x00718E70
+// FUNCTION: fn_07301
 void CHawkVumerangEffect::Slot04() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
@@ -646,6 +647,7 @@ void CDropItemEffect::Slot03() {
 }
 
 // OFFSET: 0x00719CA0
+// FUNCTION: fn_07312
 void CDropItemEffect::Slot04() {
   for (std::size_t i = 0; i < this->emitters.size(); ++i) {
     if (this->emitters[i]) {
