@@ -972,7 +972,7 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
 // OFFSET: 0x00C73480
 // FUNCTION: fn_20326
 bool CRagEffect::ShieldCharge() {
-  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
 
 // OFFSET: 0x00C0B360
@@ -1133,4 +1133,56 @@ void CRagEffect::Bottom(TextureCache& textures) {
       angle
     );
   }
+}
+
+// OFFSET: 0x00C10830
+// FUNCTION: fn_20034
+bool CRagEffect::ProcessEZ2STRC10830() {
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C153A0
+// FUNCTION: fn_20049
+bool CRagEffect::ProcessEZ2STRC153A0() {
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C3CC40
+// FUNCTION: fn_20112
+bool CRagEffect::ProcessEZ2STRC3CC40() {
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C3FE00
+// FUNCTION: fn_20123
+bool CRagEffect::ProcessEZ2STRC3FE00() {
+  return this->ProcessEZ2STR(0.0f, 0.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C65300
+// FUNCTION: fn_20267
+bool CRagEffect::ProcessEZ2STRC65300() {
+  return this->ProcessEZ2STR(0.0f, 0.0f, 0.0f) ? true : false;
+}
+
+// OFFSET: 0x00C15990
+// FUNCTION: fn_20051
+bool CRagEffect::ProcessEZ2STRC15990() {
+  if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+    this->state.stateCnt = 9999;
+    return false;
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00C159D0
+// FUNCTION: fn_20052
+bool CRagEffect::ProcessEZ2STRC159D0() {
+  if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+    this->state.stateCnt = 9999;
+    return false;
+  }
+
+  return true;
 }

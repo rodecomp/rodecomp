@@ -18,6 +18,13 @@ struct CRagEffect : CRenderObject {
 
   void InitEZ2STRFrame();
   bool ProcessEZ2STR(float x, float y, float z);
+  bool ProcessEZ2STRC10830();
+  bool ProcessEZ2STRC153A0();
+  bool ProcessEZ2STRC3CC40();
+  bool ProcessEZ2STRC3FE00();
+  bool ProcessEZ2STRC65300();
+  bool ProcessEZ2STRC15990();
+  bool ProcessEZ2STRC159D0();
   bool ShieldCharge();
   bool Aspersio();
   void Blessing(TextureCache& textures);
