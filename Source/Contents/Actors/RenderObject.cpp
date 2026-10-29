@@ -905,3 +905,22 @@ void CNpc::Slot30() {
 // FUNCTION: fn_03070
 void CCharacterNpc::Slot21(int) {
 }
+
+// OFFSET: 0x00CAC760
+// FUNCTION: fn_21044
+int CGameActor::GetUnknown0404Job() const {
+  switch (this->unknown_0404) {
+  case 1:
+    return 0x1104;
+  case 2:
+    return 0x1105;
+  default:
+    return this->unknown_025C;
+  }
+}
+
+// OFFSET: 0x00CC40C0
+
+// OFFSET: 0x00CC3DE0
+
+// OFFSET: 0x00CC41E0

@@ -72,7 +72,7 @@ public:
   virtual void Slot14() = 0;
   virtual void Slot15(int first, int second) = 0;
   virtual void Slot16() = 0;
-  virtual void Slot17() = 0;
+  virtual void Slot17();
   virtual void Slot18(int first, int second, int third);
   virtual void Slot19(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh);
   virtual void Slot20(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh);
@@ -128,6 +128,9 @@ public:
   void ProcessBodyState();
   int GetShield();
   int GetEffectiveJob(int job);
+  int GetUnknown0404Job() const;
+  void SetUnknown0404(int value);
+  void SetUnknown008C(const std::uint32_t* value);
   bool FindRoute(int startX, int startY, int fractionX, int fractionY, int destX, int destY, int speed);
 };
 
