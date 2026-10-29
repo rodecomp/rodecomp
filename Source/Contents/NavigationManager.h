@@ -289,6 +289,7 @@ public:
   NaviCell ParseCell(const char* text);
   std::vector<char> WriteTarget(NavigationTarget target);
   std::vector<char> WriteObject(CNavi_Object* object);
+  std::vector<unsigned char> WriteReplayState();
   CNavi_Link* ReadObject(const char* record);
   void ClearSavedTarget();
   void ClearCurrentObject();
@@ -303,7 +304,7 @@ public:
   /* 10FC */ NavigationTarget currentTarget;
   /* 1124 */ NavigationTarget savedTarget;
   /* 114C */ int routeResult;
-  /* 1150 */ std::vector<CNavi_Object*> nodes;
+  /* 1150 */ std::vector<CNavi_Link*> nodes;
   /* 115C */ bool unknown_115C;
   /* 1160 */ int selectedNode;
   /* 1164 */ MovementRouteInterpolation movementRoute;
