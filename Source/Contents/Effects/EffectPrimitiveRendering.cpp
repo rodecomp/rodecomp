@@ -1648,6 +1648,95 @@ void CEffectPrim::RenderTrailSquares(matrix& wtm) {
   }
 }
 
+// OFFSET: 0x00BD3D90
+// FUNCTION: fn_19879
+void CEffectPrim::RenderColorPanel(matrix& wtm) {
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0 || slot.process <= 0) {
+      continue;
+    }
+
+    const int angle = slot.rotStart;
+    const float size = slot.height[2];
+    const float half = size * 0.5f;
+    const int opposite = angle < 180 ? angle + 180 : angle - 180;
+    const float top = half - slot.height[4];
+    slot.vecBPre = {half * g_cosTable[angle] - g_sinTable[angle] * 0.0f, top, half * g_sinTable[angle] + g_cosTable[angle] * 0.0f};
+    slot.vecBNow = {half * g_cosTable[opposite] - g_sinTable[opposite] * 0.0f, top, half * g_sinTable[opposite] + g_cosTable[opposite] * 0.0f};
+
+    const float mode = slot.height[5];
+    const float level = slot.height[3];
+    bool matched = true;
+    unsigned char value = 0;
+    if (level == 0.0f) {
+      value = 105;
+    } else if (level == 1.0f) {
+      value = 5;
+    } else if (level == 2.0f) {
+      value = 55;
+    } else if (level == 3.0f) {
+      value = 155;
+    } else {
+      matched = false;
+    }
+
+    unsigned char red = 255;
+    unsigned char green = 255;
+    unsigned char blue = 255;
+    char extra = 1;
+    if (mode == 2.0f) {
+      if (matched) {
+        red = value;
+        blue = value;
+      }
+    } else if (mode == 3.0f) {
+      if (matched) {
+        red = value;
+        green = value;
+      }
+    } else if (mode == 4.0f) {
+      if (matched) {
+        blue = value;
+      }
+    } else if (mode == 5.0f) {
+      if (matched) {
+        green = value;
+        blue = value;
+      }
+    } else if (mode == 6.0f) {
+      if (matched) {
+        green = value;
+      }
+    } else if (mode == 7.0f) {
+      if (matched) {
+        red = value;
+      }
+    } else if (mode == 8.0f) {
+      if (matched && level != 3.0f) {
+        red = value;
+        green = value;
+        blue = value;
+      }
+    } else {
+      extra = 0;
+      if (matched) {
+        red = value;
+        green = value;
+      }
+    }
+
+    if (size > 0.0f) {
+      const vector3d vec3{slot.vecBNow.x, top - size, slot.vecBNow.z};
+      const vector3d vec4{slot.vecBPre.x, top - size, slot.vecBPre.z};
+      this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, extra);
+    }
+  }
+}
+
 // OFFSET: 0x00BDF0A0
 // FUNCTION: fn_19908
 void CEffectPrim::RenderRainbow(matrix& wtm) {
