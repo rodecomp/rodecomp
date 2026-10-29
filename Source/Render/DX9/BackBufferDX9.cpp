@@ -26,6 +26,12 @@ bool DeviceOwnerDX9::CaptureBackBuffer() {
   return true;
 }
 
+// OFFSET: 0x005650F0
+// FUNCTION: fn_02213
+ScopedDeviceStateDX9 DeviceOwnerDX9::SaveState() {
+  return ScopedDeviceStateDX9(this->state);
+}
+
 // OFFSET: 0x00567FB0
 // FUNCTION: fn_02233
 bool DeviceOwnerDX9::RestoreBackBuffer() {
