@@ -48,31 +48,88 @@ private:
 }
 
 class CSkillAction_AnimalForm : public CSkillAction {
+public:
+  virtual bool Slot17(CGameActor* actor) = 0;
+  virtual void Slot18(CGameActor* actor) = 0;
 };
 
 class CSkillAction_Direction {
+public:
+  int GetDirection(float angle);
+  bool IsValidDirection(unsigned int direction);
 };
 
 class CSkillAction_DamageWereRaptorForm : public CSkillAction_AnimalForm, public CSkillAction_Direction {
+public:
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+  bool Slot17(CGameActor* actor) override;
+  void Slot18(CGameActor* actor) override;
 };
 
 class CSkillAction_DamageWereWolfForm : public CSkillAction_AnimalForm {
+public:
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+  bool Slot17(CGameActor* actor) override;
+  void Slot18(CGameActor* actor) override;
+};
+
+class CSkillAction_Earthing : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_Icing : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+  void SpawnIcing(CGameActor* target);
 };
 
 class CSkillAction_Thundering : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+  virtual void Slot17(CGameActor* source) = 0;
 };
 
 class CSkillAction_ThunderingBasic : public CSkillAction_Thundering {
+public:
+  void Slot17(CGameActor* source) override;
 };
 
 class CSkillAction_ThunderingExpand : public CSkillAction_Thundering {
+public:
+  void Slot17(CGameActor* source) override;
+};
+
+class CEfstAction_BasicAction : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+  virtual int Slot05(int efstId, int argument4) = 0;
+};
+
+class CEfstAction_AnimalForm : public CEfstAction {
+public:
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_AT_ALPHA_CLAW : public CSkillAction_DamageWereWolfForm {
+public:
+  int Slot02() override;
 };
 
 class CSkillAction_AT_PULSE_OF_MADNESS : public CSkillAction_DamageWereWolfForm {
 public:
+  int Slot01() override;
   int Slot02() override;
 };
 
@@ -173,6 +230,263 @@ public:
   int Slot02() override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
+
+// OFFSET: 0x005A50B0
+// FUNCTION: fn_03155
+void CSkillAction_DamageWereRaptorForm::Slot18(CGameActor* actor) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0x7B, 0x43, 0x92, 0x8F, 0x84, 0x01, 0x32, 0x6A, 0x7A, 0x43, 0xA8, 0x95, 0x8C, 0x05, 0x19, 0x72,
+                                    0x6D, 0x31};
+      thread_local EncryptedName<sizeof(bytes), 0x1D6D75EDE7CD311FULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x005A52B0
+// FUNCTION: fn_03156
+void CSkillAction_DamageWereWolfForm::Slot18(CGameActor* actor) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0x31, 0x8F, 0xEA, 0xB3, 0xAE, 0xC5, 0x2A, 0x44, 0x30, 0x8F, 0xD0, 0xAC, 0xA8, 0xDD, 0x13, 0x33};
+      thread_local EncryptedName<sizeof(bytes), 0x3375B1C7DBB5FD55ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x005A54B0
+// FUNCTION: fn_03157
+void CSkillAction_Icing::SpawnIcing(CGameActor* target) {
+  if (target) {
+    if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+          const std::uint8_t bytes[] = {0x18, 0x9A, 0x3C, 0xAA, 0xE9, 0x74, 0x11, 0x91};
+          thread_local EncryptedName<sizeof(bytes), 0x91651D81F559F971ULL> name(bytes);
+          return name.Text();
+        }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot22(0.9f);
+    }
+  }
+}
+
+// OFFSET: 0x005A56C0
+// FUNCTION: fn_03158
+void CSkillAction_ThunderingBasic::Slot17(CGameActor* source) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xA3, 0x27, 0x76, 0xFB, 0xBD, 0xE0, 0xDD, 0x56, 0xB9, 0x28, 0x5C, 0xF4, 0xAD, 0xF1, 0xCE, 0x5C,
+                                    0xBC, 0x10, 0x64, 0x95};
+      thread_local EncryptedName<sizeof(bytes), 0x3FAF85D995034FD7ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x005A58C0
+// FUNCTION: fn_03159
+void CSkillAction_ThunderingExpand::Slot17(CGameActor* source) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xCD, 0x65, 0x5A, 0xCF, 0x27, 0x9E, 0x7D, 0x20, 0xD7, 0x6A, 0x70, 0xC0, 0x37, 0x8F, 0x6E, 0x2A,
+                                    0xD2, 0x52, 0x56, 0xA1};
+      thread_local EncryptedName<sizeof(bytes), 0x490FFB43A12F0DB9ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x005A5D20
+// FUNCTION: fn_03161
+int CSkillAction_Earthing::Slot01() {
+  return 60;
+}
+
+// OFFSET: 0x005A5D30
+// FUNCTION: fn_03162
+int CSkillAction_Icing::Slot01() {
+  return 61;
+}
+
+// OFFSET: 0x005A5D40
+// FUNCTION: fn_03163
+int CSkillAction_Thundering::Slot01() {
+  return 61;
+}
+
+// OFFSET: 0x005A5D50
+// FUNCTION: fn_03164
+int CSkillAction_Direction::GetDirection(float angle) {
+  if (angle > 60.0f && angle <= 120.0f) {
+    return 0;
+  }
+  if (angle > 120.0f && angle <= 240.0f) {
+    return 1;
+  }
+  if (angle > 240.0f && angle <= 300.0f) {
+    return 2;
+  }
+  if ((angle > 300.0f && angle <= 360.0f) || (angle >= 0.0f && angle <= 60.0f)) {
+    return 3;
+  }
+  return -1;
+}
+
+// OFFSET: 0x005A5DE0
+// FUNCTION: fn_03165
+int CSkillAction_Earthing::Slot02() {
+  return 62;
+}
+
+// OFFSET: 0x005A5DF0
+// FUNCTION: fn_03166
+int CSkillAction_Icing::Slot02() {
+  return 64;
+}
+
+// OFFSET: 0x005A5E00
+// FUNCTION: fn_03167
+int CSkillAction_Thundering::Slot02() {
+  return 64;
+}
+
+// OFFSET: 0x005A5E10
+// FUNCTION: fn_03168
+bool CSkillAction_DamageWereRaptorForm::Slot17(CGameActor* actor) {
+  return actor->GetUnknown0404() == 2;
+}
+
+// OFFSET: 0x005A5E30
+// FUNCTION: fn_03169
+bool CSkillAction_DamageWereWolfForm::Slot17(CGameActor* actor) {
+  return actor->GetUnknown0404() == 1;
+}
+
+// OFFSET: 0x005A5E90
+// FUNCTION: fn_03171
+bool CSkillAction_Direction::IsValidDirection(unsigned int direction) {
+  return direction <= 3;
+}
+
+// OFFSET: 0x005A5EA0
+// FUNCTION: fn_03172
+void CSkillAction_DamageWereRaptorForm::Slot16(int level, CGameActor* source, CGameActor* target) {
+  this->Slot18(source);
+}
+
+// OFFSET: 0x005A5EB0
+// FUNCTION: fn_03173
+void CSkillAction_DamageWereWolfForm::Slot16(int level, CGameActor* source, CGameActor* target) {
+  this->Slot18(source);
+}
+
+// OFFSET: 0x005A5EC0
+// FUNCTION: fn_03174
+void CSkillAction_Earthing::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  if (CRagEffect* effect = source->LaunchEffect(0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&source->render.position), 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x005A5F30
+// FUNCTION: fn_03175
+void CSkillAction_Icing::Slot16(int level, CGameActor* source, CGameActor* target) {
+  this->SpawnIcing(source);
+}
+
+// OFFSET: 0x005A5F40
+// FUNCTION: fn_03176
+void CSkillAction_Thundering::Slot16(int level, CGameActor* source, CGameActor* target) {
+  this->Slot17(source);
+}
+
+// OFFSET: 0x005A5F50
+// FUNCTION: fn_03177
+void CEfstAction_BasicAction::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    const int id = this->Slot05(efstId, argument4);
+    if (id >= 0) {
+      g_effectMgr->Spawn(actor->render.accountId, id, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x005A5FB0
+// FUNCTION: fn_03178
+void CSkillAction_Earthing::Slot08(int level, CGameActor* source) {
+  if (source) {
+    source->LaunchEffect(57, level / 16);
+  }
+}
+
+// OFFSET: 0x005A5FE0
+// FUNCTION: fn_03179
+void CSkillAction_Icing::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ice_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+    if (CEffect* effect =
+            g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ice_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x005A6260
+// FUNCTION: fn_03180
+void CSkillAction_Thundering::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+          const std::uint8_t bytes[] = {0xB1, 0xA5, 0xF2, 0x9B, 0xC5, 0xC6, 0x95, 0xFA, 0xAB, 0xAA, 0xD8, 0x96, 0xC0, 0xD0, 0x93, 0x93};
+          thread_local EncryptedName<sizeof(bytes), 0x93E7A3A1F587CDC5ULL> name(bytes);
+          return name.Text();
+        }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x005A6480
+// FUNCTION: fn_03182
+void CEfstAction_BasicAction::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    const int id = this->Slot05(efstId, argument4);
+    if (id >= 0) {
+      g_effectMgr->Retire(actor->render.accountId, id);
+    }
+  }
+}
+
+// OFFSET: 0x005A64C0
+// FUNCTION: fn_03183
+void CEfstAction_AnimalForm::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x005A64E0
+// FUNCTION: fn_03184
+void CEfstAction_BasicAction::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    this->Slot00(efstId, value, argument3, argument4, actor, false);
+  }
+}
+
+// OFFSET: 0x005A6790
+// FUNCTION: fn_03187
+int CSkillAction_AT_ALPHA_CLAW::Slot02() {
+  return 76;
+}
+
+// OFFSET: 0x005A69B0
+// FUNCTION: fn_03189
+int CSkillAction_AT_PULSE_OF_MADNESS::Slot01() {
+  return 66;
+}
 
 // OFFSET: 0x005A69C0
 // FUNCTION: fn_03190
