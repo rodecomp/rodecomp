@@ -259,7 +259,9 @@ public:
   /* 7F7C */ bool m_homunculusAutoFeed;
   /* 7F7D */ unsigned char unknown_7F7D[0x2B];
   /* 7FA8 */ CInstantVar m_options;
-  /* 7FB4 */ unsigned char unknown_7FB4[0xC0];
+  /* 7FB4 */ unsigned char unknown_7FB4[0x8];
+  /* 7FBC */ int unknown_7FBC;
+  /* 7FC0 */ unsigned char unknown_7FC0[0xB4];
   /* 8074 */ int unknown_8074;
   /* 8078 */ const char* const* m_jobSpriteNames;
   /* 807C */ unsigned char unknown_807C[0x38];

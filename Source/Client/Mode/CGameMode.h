@@ -30,7 +30,8 @@ public:
   /* 019C */ unsigned char unknown_019C[0x8];
   /* 01A4 */ std::list<int> unknown_01A4;
   /* 01AC */ std::map<std::uint32_t, std::uint32_t> unknown_01AC;
-  /* 01B4 */ unsigned char unknown_01B4[0x100];
+  /* 01B4 */ unsigned char unknown_01B4[0xE0];
+  /* 0294 */ char unknown_0294[0x20];
   /* 02B4 */ UIWindow* itemWindow;
   /* 02B8 */ unsigned char unknown_02B8[0x50];
   /* 0308 */ ModeDragState drag;
@@ -67,6 +68,12 @@ public:
   void MoveWindow16(int x, int y);
   void ResizeWindow16(int width, int height);
   void ReceiveNotice1950(const unsigned char* packet);
+  void ReceiveActorPairFreeze(const unsigned char* packet);
+  void ReceiveEffectRemove(const unsigned char* packet);
+  void ReceiveActorEffect347(const unsigned char* packet);
+  void ReceiveUnknown0294Text(const unsigned char* packet);
+  void PlaceWindow16(unsigned int xPercent, unsigned int yPercent);
+  void ReceiveUnknown7FBC(const unsigned char* packet);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -77,6 +84,7 @@ static_assert(offsetof(CGameMode, unknown_01AC) == 0x1AC);
 static_assert(offsetof(CGameMode, scene) == 0xCC);
 static_assert(offsetof(CGameMode, camera) == 0xD0);
 static_assert(offsetof(CGameMode, nameCard) == 0x160);
+static_assert(offsetof(CGameMode, unknown_0294) == 0x294);
 static_assert(offsetof(CGameMode, drag) == 0x308);
 static_assert(sizeof(CGameMode) == 0x670);
 #endif
