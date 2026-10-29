@@ -17,6 +17,7 @@ public:
   /* 00CC */ std::uint32_t unknown_00CC;
   /* 00D0 */ std::uint32_t* m_colors;
 
+  void Move(int x, int y) override;
   void Paint() override;
   void Slot27(int x, int y) override;
   void Slot28(int x, int y) override;

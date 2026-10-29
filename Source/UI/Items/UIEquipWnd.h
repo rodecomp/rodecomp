@@ -5,6 +5,8 @@
 
 class UIEquipWnd : public UIFrameWnd {
 public:
+  bool Slot03() override;
+  void Move(int x, int y) override;
   /* 00B4 */ unsigned char unknown_00B4[0x3C];
   /* 00F0 */ int m_page;
   /* 00F4 */ unsigned char unknown_00F4[0x40];

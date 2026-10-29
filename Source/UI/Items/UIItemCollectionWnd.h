@@ -11,6 +11,7 @@ public:
   /* 01C4 */ unsigned char unknown_01C4[0x34];
   /* 01F8 */ int m_kind;
 
+  void Move(int x, int y) override;
   void Slot19() override;
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
@@ -18,11 +19,13 @@ public:
 
 class UICombinedCardItemCollectionWnd : public UIItemCollectionWnd {
 public:
+  void Move(int x, int y) override;
   void Slot31(int x, int y) override;
 };
 
 class UIItemCollection_ComparisonWnd : public UIItemCollectionWnd {
 public:
+  void Move(int x, int y) override;
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
 };

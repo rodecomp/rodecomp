@@ -903,6 +903,33 @@ bool UIWhisperWnd::Slot42(void*) {
   return true;
 }
 
+// OFFSET: 0x008DA430
+// FUNCTION: fn_12144
+bool UIEquipWnd::Slot03() {
+  return true;
+}
+
+// OFFSET: 0x008DA440
+// FUNCTION: fn_12145
+bool UIStatusWnd::Slot03() {
+  return true;
+}
+
+// OFFSET: 0x008DAF40
+
+// OFFSET: 0x008DAF80
+
+// OFFSET: 0x008DAF90
+
+// OFFSET: 0x008DAFD0
+// FUNCTION: fn_12153
+void UIItemCollection_ComparisonWnd::Move(int, int) {
+}
+
+// OFFSET: 0x008DAFE0
+
+// OFFSET: 0x008DB030
+
 // OFFSET: 0x008F4D40
 // FUNCTION: fn_12294
 void UIEquipWnd::Slot19() {

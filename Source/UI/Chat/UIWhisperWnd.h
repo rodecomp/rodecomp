@@ -14,6 +14,7 @@ public:
   /* 00E4 */ unsigned char unknown_00E4[0x20];
   /* 0104 */ std::string m_code;
 
+  void Move(int x, int y) override;
   void Paint() override;
   void Slot26(int x, int y) override;
   void Slot33(int x, int y) override;
