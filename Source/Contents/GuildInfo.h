@@ -22,6 +22,12 @@ public:
     /* 0068 */ unsigned char unknown_0068[0x10];
   };
 
+  struct RelatedGuild {
+    /* 0000 */ int unknown_0000;
+    /* 0004 */ int unknown_0004;
+    /* 0008 */ std::string unknown_0008;
+  };
+
   /* 0000 */ std::string unknown_0000;
   /* 0018 */ std::string unknown_0018;
   /* 0030 */ std::string unknown_0030;
@@ -52,7 +58,7 @@ public:
   /* 00D0 */ int unknown_00D0;
   /* 00D4 */ std::list<int> unknown_00D4;
   /* 00DC */ std::list<Member> m_members;
-  /* 00E4 */ std::list<int> unknown_00E4;
+  /* 00E4 */ std::list<RelatedGuild> unknown_00E4;
   /* 00EC */ std::list<int> unknown_00EC;
   /* 00F4 */ std::list<int> unknown_00F4;
   /* 00FC */ std::map<int, std::string> m_positions;
@@ -61,6 +67,14 @@ public:
   /* 0114 */ std::vector<int> unknown_0114;
 
   void ChangeMemberPosition(int aid, int cid, int position);
+  void ClearUnknown0114();
+  void ClearMembers();
+  void RemoveUnknown0114(int value);
+  void RemoveRelatedGuild(int unknown_0000, int unknown_0004);
+  int GetMemberAccountId(const char* name);
+  int GetUnknown0114(int index);
+  int CountRelatedGuilds(int unknown_0004);
+  int GetUnknown0114Count();
   void Init();
 };
 
@@ -70,6 +84,8 @@ static_assert(offsetof(GuildInfo::Member, accountId) == 0x00);
 static_assert(offsetof(GuildInfo::Member, characterId) == 0x04);
 static_assert(offsetof(GuildInfo::Member, positionId) == 0x30);
 static_assert(offsetof(GuildInfo::Member, positionName) == 0x34);
+
+static_assert(sizeof(GuildInfo::RelatedGuild) == 0x20);
 
 static_assert(sizeof(GuildInfo) == 0x120);
 static_assert(offsetof(GuildInfo, m_guildId) == 0xA8);

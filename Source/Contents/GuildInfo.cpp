@@ -4,6 +4,7 @@
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/World/World.h"
+#include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x00AE41C0
 // FUNCTION: fn_18030
@@ -15,6 +16,76 @@ void GuildInfo::ChangeMemberPosition(int aid, int cid, int position) {
       return;
     }
   }
+}
+
+// OFFSET: 0x00AE4230
+// FUNCTION: fn_18031
+void GuildInfo::ClearUnknown0114() {
+  this->unknown_0114.clear();
+}
+
+// OFFSET: 0x00AE4240
+// FUNCTION: fn_18032
+void GuildInfo::ClearMembers() {
+  this->m_members.clear();
+}
+
+// OFFSET: 0x00AE4270
+// FUNCTION: fn_18033
+void GuildInfo::RemoveUnknown0114(int value) {
+  for (auto it = this->unknown_0114.begin(); it != this->unknown_0114.end(); ++it) {
+    if (*it == value) {
+      this->unknown_0114.erase(it);
+      return;
+    }
+  }
+}
+
+// OFFSET: 0x00AE42C0
+// FUNCTION: fn_18034
+void GuildInfo::RemoveRelatedGuild(int unknown_0000, int unknown_0004) {
+  for (auto it = this->unknown_00E4.begin(); it != this->unknown_00E4.end(); ++it) {
+    if (it->unknown_0000 == unknown_0000 && it->unknown_0004 == unknown_0004) {
+      this->unknown_00E4.erase(it);
+      g_windowMgr.RefreshGuildWindows();
+      return;
+    }
+  }
+}
+
+// OFFSET: 0x00AE4380
+// FUNCTION: fn_18035
+int GuildInfo::GetMemberAccountId(const char* name) {
+  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
+    if (it->name == name) {
+      return it->accountId;
+    }
+  }
+  return -1;
+}
+
+// OFFSET: 0x00AE43E0
+// FUNCTION: fn_18036
+int GuildInfo::GetUnknown0114(int index) {
+  return this->unknown_0114[index];
+}
+
+// OFFSET: 0x00AE4690
+// FUNCTION: fn_18037
+int GuildInfo::CountRelatedGuilds(int unknown_0004) {
+  int count = 0;
+  for (auto it = this->unknown_00E4.begin(); it != this->unknown_00E4.end(); ++it) {
+    if (it->unknown_0004 == unknown_0004) {
+      ++count;
+    }
+  }
+  return count;
+}
+
+// OFFSET: 0x00AE46C0
+// FUNCTION: fn_18038
+int GuildInfo::GetUnknown0114Count() {
+  return static_cast<int>(this->unknown_0114.size());
 }
 
 // OFFSET: 0x00AE4740
