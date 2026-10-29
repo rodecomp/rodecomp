@@ -4,6 +4,14 @@
 #include "Contents/Effects/GravityControlEffect.h"
 #include "Contents/Effects/SkillEffects.h"
 
+#include "Client/Mode/CGameMode.h"
+#include "Client/Session.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Camera/Camera.h"
+#include "Render/Renderer.h"
+#include "Utility/Math/AffineMatrix.h"
+
+#include <cmath>
 #include <new>
 
 // OFFSET: 0x00B25750
@@ -21,6 +29,16 @@ CEffect* EffectLists::Find(int actor, int id) const {
 
   return nullptr;
 }
+
+// OFFSET: 0x00B3B040
+
+// OFFSET: 0x00B3BE50
+
+// OFFSET: 0x00B3BED0
+
+// OFFSET: 0x00B3BFD0
+
+// OFFSET: 0x00B3C1C0
 
 // OFFSET: 0x00B257C0
 // FUNCTION: fn_18784

@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <windows.h>
+#include <timeapi.h>
 
 // STATIC: 0x01732638
 // GLOBAL: gl_24474
@@ -66,6 +67,37 @@ bool CSession::IsDoramJob(int job) const {
   default:
     return false;
   }
+}
+
+// OFFSET: 0x00E3D090
+// FUNCTION: fn_24180
+bool CSession::IsEffectRenderEnabled() const {
+  return true;
+}
+
+// OFFSET: 0x00E3D0A0
+
+// OFFSET: 0x00E3D0F0
+
+// OFFSET: 0x00E3D240
+
+// OFFSET: 0x00E3D320
+
+// OFFSET: 0x00E3DB20
+// FUNCTION: fn_24194
+bool CSession::ResetUnknownState() {
+  this->unknown_59C0 = 1;
+  this->unknown_59C4 = 1;
+  this->unknown_59C8 = 1;
+  this->unknown_59CC = 1;
+  this->unknown_59D4 = 1;
+  this->unknown_59BC = 1;
+  this->unknown_0E94 = 1;
+  this->unknown_103C = -1;
+  this->unknown_5450 = 0;
+  this->m_serverTimeOffset = 0;
+  this->m_serverTimeAdjustCount = 0;
+  return true;
 }
 
 // OFFSET: 0x00DFF1F0

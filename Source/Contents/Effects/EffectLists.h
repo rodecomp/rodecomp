@@ -7,7 +7,10 @@
 #include <cstdint>
 #include <list>
 #include <map>
+#include <string>
 #include <vector>
+
+#include "Utility/Math/Vector3d.h"
 
 struct CAllocator {
   virtual ~CAllocator() = default;
@@ -33,6 +36,7 @@ public:
   void Retire(int actor, int id);
   void Retire(int actor, int instance, int id);
   void RetireActor(int actor);
+  void Render();
   void Clear();
   void Release();
 };
@@ -46,6 +50,10 @@ static_assert(offsetof(EffectLists, indexed) == 0x20);
 #endif
 
 void DestroyEffectMgr();
+float DirectionAngle(float x, float z);
+double ScreenAngle(vector3d from, vector3d to);
+std::string CurrentMapScriptName();
+std::string EffectFunctionName(std::string name);
 
 extern EffectLists* g_effectMgr;
 
