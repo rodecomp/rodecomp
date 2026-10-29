@@ -46,6 +46,7 @@
 #include "UI/Dialogs/UITipOfTheDayWnd.h"
 #include "UI/Dialogs/UIToolTipWnd.h"
 #include "UI/Dialogs/UIWaitWnd.h"
+#include "UI/Items/UICardItemIllustWnd.h"
 #include "UI/Items/UIEquipWnd.h"
 #include "UI/Items/UIExchangeWnd.h"
 #include "UI/Items/UIItemCollectionWnd.h"
@@ -1278,3 +1279,13 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
   return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
+
+// OFFSET: 0x008D9AD0
+
+// OFFSET: 0x008DA450
+// FUNCTION: fn_12146
+bool UInCashWnd::Slot03() {
+  return true;
+}
+
+// OFFSET: 0x008DBD00

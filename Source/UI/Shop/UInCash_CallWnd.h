@@ -3,6 +3,11 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+class UInCashWnd : public UIFrameWnd {
+public:
+  bool Slot03() override;
+};
+
 class UInCash_CallWnd : public UIFrameWnd {
 public:
   void Paint() override;

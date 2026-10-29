@@ -38,6 +38,7 @@ public:
   virtual void Clear();
   virtual void Refresh();
   int LineAt(int x, int y) const;
+  int LineCount() const;
 
   /* 007C */ int backgroundRed;
   /* 0080 */ int backgroundGreen;
