@@ -98,6 +98,17 @@ public:
   /* 0085 */ unsigned char unknown_0085[0x6B];
 };
 
+class CUITextButton : public CUIButton {};
+
+class CUIImageTextButton : public CUITextButton {};
+
+class CUITabButton : public CUIImageTextButton {
+public:
+  void Slot31(int x, int y) override;
+  void Slot47() override;
+  void Slot48() override;
+};
+
 class CUIImageButton : public CUIButton {
 public:
   void Paint() override;

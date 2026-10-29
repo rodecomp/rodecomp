@@ -150,6 +150,12 @@ public:
   /* 0184 */ short unknown_0184;
 };
 
+class CUIEditCtrl : public UIEditCtrl3 {
+public:
+  void Paint() override;
+  void Invalidate() override;
+};
+
 class UIEditCtrl4 : public UIEditCtrl {
 public:
   UIEditCtrl4(UIWindowContext& windows, UIEditContext& edit);

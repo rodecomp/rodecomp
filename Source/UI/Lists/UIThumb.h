@@ -9,6 +9,7 @@
 
 class CUIThumb : public CUIControl {
 public:
+  ~CUIThumb() override;
   void ResetCursor(int x, int y) override;
   void Slot53(int resolveSkin) override;
 
@@ -26,6 +27,14 @@ public:
 };
 
 class CUIVThumb : public CUIThumb {
+public:
+  void Paint() override;
+  void Slot25(int x, int y) override;
+  void Slot27(int x, int y) override;
+  void Slot31(int x, int y) override;
+};
+
+class CUIHThumb : public CUIVThumb {
 public:
   void Paint() override;
   void Slot25(int x, int y) override;

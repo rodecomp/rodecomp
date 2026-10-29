@@ -1,6 +1,7 @@
 #include "UI/Window/UIControl.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Lists/UIThumb.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "Client/Mode/ModeCursor.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -241,6 +242,16 @@ void CUIVThumb::Slot27(int, int y) {
   }
 }
 
+// OFFSET: 0x009ED970
+
+// OFFSET: 0x009EE080
+
+// OFFSET: 0x009EE1E0
+
+// OFFSET: 0x009EE200
+
+// OFFSET: 0x009EE230
+
 // OFFSET: 0x009F24F0
 // FUNCTION: fn_14714
 void CUIThumb::ResetCursor(int, int) {
@@ -313,18 +324,65 @@ void CUIVScrollBar::SetBackground(const std::string& name) {
 // OFFSET: 0x009F2280
 
 // OFFSET: 0x009EE8F0
+// FUNCTION: fn_14626
+void CUIButton::SetState(int value) {
+  if (this->state != value) {
+    this->state = value;
+    if (!this->disabled) {
+      this->Invalidate();
+    }
+  }
+}
 
 // OFFSET: 0x009EE920
+// FUNCTION: fn_14627
+void CUIButton::Slot26(int x, int y) {
+  this->Slot25(x, y);
+}
 
 // OFFSET: 0x009EE930
+// FUNCTION: fn_14628
+void CUIButton::Slot25(int, int) {
+  this->SetState(1);
+  if (!this->disabled) {
+    g_windowMgr.SetCapture(this);
+  }
+}
 
 // OFFSET: 0x009EE9D0
+// FUNCTION: fn_14630
+void CUIButton::Slot47() {
+  this->SetState(2);
+}
 
 // OFFSET: 0x009EEA70
+// FUNCTION: fn_14632
+void CUIButton::Slot48() {
+  this->SetState(0);
+}
 
 // OFFSET: 0x009EEAA0
+// FUNCTION: fn_14633
+void CUIButton::ResetCursor(int, int) {
+  this->m_context->cursor.Set(this->disabled ? 0 : 2, this->m_context->cursorTick);
+}
 
 // OFFSET: 0x009F26B0
+
+// OFFSET: 0x009F1630
+
+// OFFSET: 0x009F1650
+
+// OFFSET: 0x009F1670
+
+// OFFSET: 0x009ED6D0
+// FUNCTION: fn_14582
+void CUIEditCtrl::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  this->PaintText();
+}
+
+// OFFSET: 0x009ED5A0
 
 // OFFSET: 0x009EF860
 // FUNCTION: fn_14649
