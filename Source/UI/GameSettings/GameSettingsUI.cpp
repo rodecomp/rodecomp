@@ -25,10 +25,31 @@ void CUIGroup::Apply() {
 }
 
 // OFFSET: 0x00A40430
+// FUNCTION: fn_15971
+void CUIGroupEmblem::Apply() {
+  g_serviceOptions.Set(0xF3, 0);
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xDC8)), 0x64FFFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00A40480
+// FUNCTION: fn_15972
+void CUIGroupLogInOut::Apply() {
+  g_serviceOptions.Set(0xA5, 1);
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x414)), 0x64FFFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00A404F0
+// FUNCTION: fn_15974
+void CUIGroupRodexSpam::Apply() {
+  RodexSpamOptionPacket packet;
+  packet.id = 0x0B93;
+  packet.option = 1;
+  packet.value = 1;
+  CRagConnection& connection = GetRagConnection();
+  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
 
 // OFFSET: 0x00A40550
 
