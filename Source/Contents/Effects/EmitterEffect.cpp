@@ -7,6 +7,9 @@
 
 #include <cstring>
 
+CParticle* sub_B82F50(const vector3d* position, int flags);
+void sub_B82FD0(CParticle* particle);
+
 // OFFSET: 0x00B4FAF0
 // FUNCTION: fn_19008
 CEmitterEffect::CEmitterEffect()
@@ -20,6 +23,19 @@ CEmitterEffect::CEmitterEffect()
 // FUNCTION: fn_19009
 CEmitterEffect::~CEmitterEffect() {
 }
+
+// OFFSET: 0x00B50010
+// FUNCTION: fn_19011
+void CEmitterEffect::Close() {
+  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    sub_B82FD0(*it);
+  }
+
+  this->particles.clear();
+  this->pool.Clear();
+}
+
+// OFFSET: 0x00B50050
 
 // OFFSET: 0x00B500E0
 // FUNCTION: fn_19013
