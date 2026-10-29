@@ -8,6 +8,10 @@
 #include <timeapi.h>
 
 // OFFSET: 0x006F86B0
+// FUNCTION: fn_06869
+CCaneOfEvilEyeEffect::CCaneOfEvilEyeEffect() : CEffect(-1) {
+  this->startTime = timeGetTime();
+}
 
 // OFFSET: 0x006F8E70
 // FUNCTION: fn_06876
