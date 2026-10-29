@@ -48,6 +48,26 @@ struct CEffectPrim : CRenderObject {
   bool PrimPeong();
   void PrimGI3();
   void PrimWaterFall();
+  bool PrimAcidDemon();
+  bool PrimAsuraCasting();
+  void PrimElectric2();
+  bool PrimFlowerCast();
+  void PrimForest();
+  bool PrimMapParticle();
+  void PrimParticleSpread();
+  void PrimParticleUp();
+  bool PrimPeongUp();
+  void PrimPokJuk();
+  void PrimSTIN4();
+  void PrimSaintWing();
+  bool PrimSoulParticle();
+  void PrimSphereWind2();
+  void PrimGI4();
+  void PrimGI1();
+  bool PrimCHOOKGI();
+  bool PrimTwilight();
+  bool PrimWind();
+  void Tei_TowardScreen(vector3d& vec1, vector3d& vec2, vector3d& vec3, vector3d& vec4, short rot0, short rot1);
 
   bool AnimMotion();
   bool FollowMasterAndAdvance();
