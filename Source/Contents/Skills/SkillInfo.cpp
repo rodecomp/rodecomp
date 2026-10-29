@@ -1049,5 +1049,30 @@ void CSkillAction_IQ_BLAZING_FLAME_BLAST::Slot16(int level, CGameActor* source, 
 // OFFSET: 0x00777520
 
 // OFFSET: 0x00774840
+// FUNCTION: fn_08329
+void CEfstAction_GenderChange::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (!actor) {
+    return;
+  }
+
+  if (CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gender_change_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot22(1.5f);
+  }
+  if (CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gender_change_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot22(1.5f);
+  }
+}
 
 // OFFSET: 0x00774AF0
+// FUNCTION: fn_08330
+void CEfstAction_GenderChange::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (!actor) {
+    return;
+  }
+
+  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gender_change_loop"));
+  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gender_change_cast"));
+  if (CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("gender_change"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot22(1.5f);
+  }
+}
