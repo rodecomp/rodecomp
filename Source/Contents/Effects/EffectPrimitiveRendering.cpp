@@ -1447,6 +1447,39 @@ void CEffectPrim::RenderFloorSquare2(matrix& wtm) {
   }
 }
 
+// OFFSET: 0x00BD1CB0
+// FUNCTION: fn_19873
+void CEffectPrim::RenderColorPlane(matrix& wtm) {
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    const float height = -slot.maxHeight;
+    const vector3d vec1{slot.vecBNow.x, 0.0f, slot.vecBNow.z};
+    const vector3d vec2{slot.vecBPre.x, 0.0f, slot.vecBPre.z};
+    const vector3d vec3{slot.vecBPre.x, height, slot.vecBPre.z};
+    const vector3d vec4{slot.vecBNow.x, height, slot.vecBNow.z};
+    const float kind = slot.height[0];
+
+    if (kind == 1.0f) {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 155, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (kind == 2.0f) {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (kind == 3.0f) {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else if (kind == 4.0f) {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 150, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    } else {
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    }
+  }
+}
+
 // OFFSET: 0x00BDF0A0
 // FUNCTION: fn_19908
 void CEffectPrim::RenderRainbow(matrix& wtm) {
