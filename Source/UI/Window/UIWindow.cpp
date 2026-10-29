@@ -807,6 +807,42 @@ void UIWindow::DrawTextAt(
   context.Draw(x, y, text, bytes);
 }
 
+// OFFSET: 0x00A84590
+// FUNCTION: fn_17011
+void UIWindow::DrawVerticalText(int x, int y, const char* text, unsigned bytes, int family, int height, std::uint32_t color, unsigned char bold) {
+  if (!bytes) {
+    bytes = static_cast<unsigned>(std::strlen(text));
+  }
+
+  const char* const end = text + bytes;
+  const char* const marker = text + TextContext::Marker(text, bytes);
+  int widest = 0;
+  TextContext context(*this->geometry.surface);
+  context.SetFont(family, height, bold, 0);
+  context.SetColor(color);
+  for (const char* current = text; current < end;) {
+    const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
+    const SIZE size = context.Measure(current, static_cast<int>(next - current));
+    current = next;
+    if (widest < size.cx) {
+      widest = size.cx;
+    }
+  }
+
+  if (marker && *marker) {
+    text = marker + 3;
+  }
+
+  for (const char* current = text; current < end;) {
+    const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
+    const SIZE size = context.Measure(text, static_cast<int>(next - text));
+    context.Draw(x + (widest - size.cx) / 2, y, text, static_cast<int>(next - text));
+    current = next;
+    text = next;
+    y += size.cy;
+  }
+}
+
 // OFFSET: 0x00A847C0
 // FUNCTION: fn_17012
 void UIWindow::DrawCenteredText(int x, int y, const char* text, int width, int family, int height, std::uint32_t color, unsigned char bold) {
