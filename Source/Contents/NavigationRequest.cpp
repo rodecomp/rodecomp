@@ -466,5 +466,43 @@ void CNaviInfo::SearchMap(const std::vector<std::string>& keywords, std::vector<
 }
 
 // OFFSET: 0x00B8F560
+// FUNCTION: fn_19504
+void CNaviInfo::SearchMobs(const std::vector<std::string>& keywords, std::vector<NavigationTarget>& out) {
+  NavigationTarget target(3, nullptr);
+  wchar_t buffer[100];
+  std::memset(buffer, 0, sizeof(buffer));
+
+  std::vector<std::wstring> wideKeywords;
+  for (const std::string& keyword : keywords) {
+    MultiByteToWideChar(CP_ACP, 0, keyword.c_str(), -1, buffer, 100);
+    wideKeywords.push_back(std::wstring(buffer));
+  }
+
+  std::wstring entryText;
+  const std::string text = this->name + ' ' + this->title + ' ';
+  MultiByteToWideChar(CP_ACP, 0, text.c_str(), -1, buffer, 100);
+  const std::wstring wideText(buffer);
+
+  for (CNavi_Object* mob : this->mobs) {
+    MultiByteToWideChar(CP_ACP, 0, mob->GetName(), -1, buffer, 100);
+    entryText = buffer;
+
+    bool matched = true;
+    for (const std::wstring& keyword : wideKeywords) {
+      matched &= StrStrIW(entryText.c_str(), keyword.c_str()) != nullptr;
+    }
+    if (!matched) {
+      continue;
+    }
+
+    NaviCell cell;
+    const NaviCell* position = mob->GetCell(&cell);
+    target.x = position->x;
+    target.y = position->y;
+    target.name = mob->GetName();
+    target.object = mob;
+    out.push_back(target);
+  }
+}
 
 // OFFSET: 0x00B8FE40
