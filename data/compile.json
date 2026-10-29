@@ -365,6 +365,7 @@
   "Source/Contents/Emblems/EmblemDownload.cpp": 4,
   "Source/Contents/Emblems/EmblemUpload.cpp": 2,
   "Source/Contents/Emblems/GuildEmblemReqBundle.cpp": 4,
+  "Source/Contents/EnchantMgr.cpp": 4,
   "Source/Contents/EnemyMonsterTalk.cpp": 4,
   "Source/Contents/EquipmentResources.cpp": 4,
   "Source/Contents/ForbiddenWords.cpp": 4,
