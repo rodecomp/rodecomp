@@ -4114,3 +4114,403 @@ std::string EquipmentResourceMgr::GetBodyRacePrefix(int job) {
   }
   return "인간족";
 }
+
+// OFFSET: 0x00DCA170
+// FUNCTION: fn_23035
+EncryptedName<14, 0x072D2D872D259D5BULL>& WizardBodyPath1() {
+  const std::uint8_t source[] = {0x9B, 0x3A, 0xE5, 0xD7, 0x32, 0xC8, 0x71, 0xC7, 0xFC, 0x5D, 0xDF, 0x98, 0x62, 0x2D};
+  thread_local EncryptedName<sizeof(source), 0x072D2D872D259D5BULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCA240
+// FUNCTION: fn_23036
+EncryptedName<18, 0x9BE3EF737387AD79ULL>& PriestBodyPath1() {
+  const std::uint8_t source[] = {0xBE, 0x6C, 0x3F, 0xDD, 0xCE, 0x55, 0x25, 0x35, 0x25, 0x6A, 0x46, 0xCB, 0xDD, 0x52, 0x59, 0x5D, 0xD7, 0xAD};
+  thread_local EncryptedName<sizeof(source), 0x9BE3EF737387AD79ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCA310
+// FUNCTION: fn_23037
+EncryptedName<14, 0xB96B77B7255F8569ULL>& AssassinBodyPath1() {
+  const std::uint8_t source[] = {0xD7, 0x6B, 0xE3, 0x99, 0x0A, 0xB2, 0x37, 0x07, 0x87, 0x39, 0xE3, 0x98, 0x72, 0x77};
+  thread_local EncryptedName<sizeof(source), 0xB96B77B7255F8569ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCA3E0
+// FUNCTION: fn_23038
+EncryptedName<14, 0x11CB35636377DD07ULL>& SageBodyPath1() {
+  const std::uint8_t source[] = {0xBB, 0x61, 0xB7, 0xAF, 0xA2, 0xC3, 0x97, 0xAD, 0xBB, 0x1D, 0xBB, 0xA2, 0x95, 0x35};
+  thread_local EncryptedName<sizeof(source), 0x11CB35636377DD07ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCA4B0
+// FUNCTION: fn_23039
+EncryptedName<10, 0x4755C1355575FD37ULL>& BardBodyPath1() {
+  const std::uint8_t source[] = {0x8E, 0x24, 0xC0, 0xB0, 0x69, 0x78, 0x8C, 0xF2, 0xD2, 0xFD};
+  thread_local EncryptedName<sizeof(source), 0x4755C1355575FD37ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCA580
+// FUNCTION: fn_23040
+EncryptedName<10, 0x9D8F2D37BFFD61B7ULL>& DancerBodyPath1() {
+  const std::uint8_t source[] = {0x0E, 0xCA, 0x35, 0x4E, 0x6B, 0x94, 0x24, 0x55, 0x46, 0x61};
+  thread_local EncryptedName<sizeof(source), 0x9D8F2D37BFFD61B7ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCA650
+// FUNCTION: fn_23041
+EncryptedName<10, 0x79DF094DD9616575ULL>& MonkBodyPath1() {
+  const std::uint8_t source[] = {0xCD, 0x9C, 0xA4, 0x70, 0x11, 0xB1, 0x26, 0xBC, 0xDC, 0x65};
+  thread_local EncryptedName<sizeof(source), 0x79DF094DD9616575ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCA720
+// FUNCTION: fn_23042
+EncryptedName<18, 0x038535BB092533B7ULL>& AlchemistBodyPath1() {
+  const std::uint8_t source[] = {0x08, 0x9F, 0x94, 0xD4, 0x07, 0xCF, 0x3E, 0xE4, 0xEB, 0x8C, 0x89, 0xB8, 0x66, 0x89, 0x7F, 0xB8, 0x50, 0x33};
+  thread_local EncryptedName<sizeof(source), 0x038535BB092533B7ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCA7F0
+// FUNCTION: fn_23043
+EncryptedName<10, 0xFB2BC75769E777D3ULL>& RogueBodyPath1() {
+  const std::uint8_t source[] = {0x64, 0xB9, 0x56, 0xBE, 0x0B, 0x70, 0xE5, 0x4A, 0x04, 0x77};
+  thread_local EncryptedName<sizeof(source), 0xFB2BC75769E777D3ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCA8C0
+// FUNCTION: fn_23044
+EncryptedName<14, 0xB5D7B5AF4FEDFF57ULL>& NoviceBodyPath1() {
+  const std::uint8_t source[] = {0x94, 0x35, 0x57, 0xF7, 0x6F, 0x6F, 0x8B, 0x76, 0x9D, 0x45, 0x55, 0x8F, 0x75, 0xB5};
+  thread_local EncryptedName<sizeof(source), 0xB5D7B5AF4FEDFF57ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCA990
+// FUNCTION: fn_23045
+EncryptedName<10, 0x9B9D51AD3515F779ULL>& SwordmanBodyPath1() {
+  const std::uint8_t source[] = {0xC9, 0x3C, 0xAE, 0xD2, 0xF1, 0xE1, 0x56, 0x20, 0x9E, 0xF7};
+  thread_local EncryptedName<sizeof(source), 0x9B9D51AD3515F779ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCAA60
+// FUNCTION: fn_23046
+EncryptedName<14, 0xB5F3F779237315F3ULL>& MagicianBodyPath1() {
+  const std::uint8_t source[] = {0x4B, 0xA3, 0xCA, 0xDE, 0xC2, 0x10, 0xAF, 0x0D, 0x45, 0xAC, 0x8E, 0x98, 0x9E, 0xF7};
+  thread_local EncryptedName<sizeof(source), 0xB5F3F779237315F3ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCAB30
+// FUNCTION: fn_23047
+EncryptedName<10, 0x67DD5BAB1919D9D1ULL>& ArcherBodyPath1() {
+  const std::uint8_t source[] = {0x60, 0x1A, 0xA5, 0xEF, 0xF7, 0xEA, 0x1E, 0xDB, 0x27, 0xD9};
+  thread_local EncryptedName<sizeof(source), 0x67DD5BAB1919D9D1ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCAC00
+// FUNCTION: fn_23048
+EncryptedName<14, 0x91493751EF33B5FDULL>& AcolyteBodyPath1() {
+  const std::uint8_t source[] = {0x41, 0x0F, 0xF2, 0x18, 0x91, 0xED, 0x15, 0x2D, 0x47, 0x74, 0xC4, 0x2F, 0x8B, 0x37};
+  thread_local EncryptedName<sizeof(source), 0x91493751EF33B5FDULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCACD0
+// FUNCTION: fn_23049
+EncryptedName<10, 0x6BC977B3B5993503ULL>& MerchantBodyPath1() {
+  const std::uint8_t source[] = {0xB8, 0xC6, 0x59, 0x7B, 0xEF, 0xCC, 0x3A, 0xAB, 0xCD, 0x35};
+  thread_local EncryptedName<sizeof(source), 0x6BC977B3B5993503ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCADA0
+// FUNCTION: fn_23050
+EncryptedName<10, 0xB7A76BF9CD41F99FULL>& ThiefBodyPath1() {
+  const std::uint8_t source[] = {0x2A, 0x4C, 0xF4, 0x02, 0xA5, 0xDE, 0x12, 0x02, 0x50, 0xF9};
+  thread_local EncryptedName<sizeof(source), 0xB7A76BF9CD41F99FULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCAE70
+// FUNCTION: fn_23051
+EncryptedName<10, 0x732B390D63FD47D7ULL>& ThiefBodyPath2() {
+  const std::uint8_t source[] = {0x62, 0xF2, 0x48, 0xAC, 0x51, 0x8C, 0x9E, 0xC6, 0x18, 0x47};
+  thread_local EncryptedName<sizeof(source), 0x732B390D63FD47D7ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCAF40
+// FUNCTION: fn_23052
+EncryptedName<14, 0x1FDB81175D1557E3ULL>& NoviceBodyPath2() {
+  const std::uint8_t source[] = {0x20, 0x9D, 0xAF, 0xE5, 0xD7, 0x5B, 0x87, 0xDC, 0x29, 0xED, 0xAD, 0x9D, 0xCD, 0x81};
+  thread_local EncryptedName<sizeof(source), 0x1FDB81175D1557E3ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB010
+// FUNCTION: fn_23053
+EncryptedName<10, 0xE3FB23537D2785BFULL>& SwordmanBodyPath2() {
+  const std::uint8_t source[] = {0x0F, 0x4E, 0x9C, 0x9A, 0x0F, 0x93, 0x30, 0x58, 0x58, 0x85};
+  thread_local EncryptedName<sizeof(source), 0xE3FB23537D2785BFULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB0E0
+// FUNCTION: fn_23054
+EncryptedName<14, 0x8BBF792B47E72173ULL>& MagicianBodyPath2() {
+  const std::uint8_t source[] = {0xCB, 0x97, 0x5E, 0xBA, 0x90, 0x9E, 0xE3, 0x33, 0xC5, 0x98, 0x1A, 0xFC, 0xCC, 0x79};
+  thread_local EncryptedName<sizeof(source), 0x8BBF792B47E72173ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB1B0
+// FUNCTION: fn_23055
+EncryptedName<10, 0xB3CF9BEB7963DB89ULL>& ArcherBodyPath2() {
+  const std::uint8_t source[] = {0x38, 0x18, 0xDF, 0x8F, 0xB7, 0x2A, 0x0C, 0x0F, 0x7F, 0xDB};
+  thread_local EncryptedName<sizeof(source), 0xB3CF9BEB7963DB89ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB280
+// FUNCTION: fn_23056
+EncryptedName<14, 0x71A509DB43792991ULL>& AcolyteBodyPath2() {
+  const std::uint8_t source[] = {0x2D, 0x93, 0xB8, 0xB4, 0x1B, 0xD3, 0xF9, 0xCD, 0x2B, 0xE8, 0x8E, 0x83, 0x01, 0x09};
+  thread_local EncryptedName<sizeof(source), 0x71A509DB43792991ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB350
+// FUNCTION: fn_23057
+EncryptedName<10, 0xDD69EDFFA18F537DULL>& MerchantBodyPath2() {
+  const std::uint8_t source[] = {0xC6, 0xA0, 0x4F, 0x6F, 0xA3, 0x56, 0x9A, 0x1D, 0xB3, 0x53};
+  thread_local EncryptedName<sizeof(source), 0xDD69EDFFA18F537DULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB420
+// FUNCTION: fn_23058
+EncryptedName<10, 0xFFBF43D1FFD5FF49ULL>& ThiefBodyPath3() {
+  const std::uint8_t source[] = {0xFC, 0x4A, 0x60, 0x30, 0x8D, 0xF6, 0x0A, 0x4A, 0x86, 0xFF};
+  thread_local EncryptedName<sizeof(source), 0xFFBF43D1FFD5FF49ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB4F0
+// FUNCTION: fn_23059
+EncryptedName<10, 0xEB3D4FAB0FC183DBULL>& KnightBodyPath1() {
+  const std::uint8_t source[] = {0x6A, 0x61, 0x7A, 0xE8, 0xF7, 0xFE, 0xDF, 0x50, 0x3C, 0x83};
+  thread_local EncryptedName<sizeof(source), 0xEB3D4FAB0FC183DBULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB5C0
+// FUNCTION: fn_23060
+EncryptedName<18, 0x8F3F2FA959977F9FULL>& PriestBodyPath2() {
+  const std::uint8_t source[] = {0x58, 0xBE, 0x2F, 0xF7, 0x14, 0x95, 0xF9, 0x21, 0xC3, 0xB8, 0x56, 0xE1, 0x07, 0x92, 0x85, 0x49, 0x31, 0x7F};
+  thread_local EncryptedName<sizeof(source), 0x8F3F2FA959977F9FULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB690
+// FUNCTION: fn_23061
+EncryptedName<14, 0xE51B29334D353B81ULL>& WizardBodyPath2() {
+  const std::uint8_t source[] = {0x41, 0x9C, 0xF5, 0xB7, 0x86, 0xCC, 0x47, 0x25, 0x26, 0xFB, 0xCF, 0xF8, 0xD6, 0x29};
+  thread_local EncryptedName<sizeof(source), 0xE51B29334D353B81ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB760
+// FUNCTION: fn_23062
+EncryptedName<14, 0x8B3FA35B5BDDDF89ULL>& BlacksmithBodyPath1() {
+  const std::uint8_t source[] = {0x48, 0x79, 0x1E, 0xED, 0xEB, 0x5B, 0x63, 0x4A, 0x2F, 0x1C, 0x6B, 0xEB, 0xA3, 0xA3};
+  thread_local EncryptedName<sizeof(source), 0x8B3FA35B5BDDDF89ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB830
+// FUNCTION: fn_23063
+EncryptedName<10, 0x7FE563BD3FB7F925ULL>& HunterBodyPath1() {
+  const std::uint8_t source[] = {0xE2, 0x1C, 0x72, 0xF2, 0xE1, 0xA4, 0x00, 0xBA, 0xE8, 0xF9};
+  thread_local EncryptedName<sizeof(source), 0x7FE563BD3FB7F925ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB900
+// FUNCTION: fn_23064
+EncryptedName<14, 0x5D6B3B1DEB2397B1ULL>& AssassinBodyPath2() {
+  const std::uint8_t source[] = {0x0F, 0x79, 0x9F, 0x57, 0xA0, 0xFE, 0x37, 0xE3, 0x5F, 0x2B, 0x9F, 0x56, 0xD8, 0x3B};
+  thread_local EncryptedName<sizeof(source), 0x5D6B3B1DEB2397B1ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCB9D0
+// FUNCTION: fn_23065
+EncryptedName<28, 0x7DB1050779034DE7ULL>& PecoKnightBodyPath1() {
+  const std::uint8_t source[] = {0x21, 0xA9, 0xC7, 0xA3, 0xC1, 0xE1, 0x75, 0xA7, 0xB8, 0xFC, 0xE1, 0xC2, 0xE0, 0x59, 0x77, 0x99, 0x23, 0x97, 0xC5, 0x9D, 0xC3, 0xDF, 0xEE, 0xCC, 0x05, 0xF6, 0xE4, 0x79};
+  thread_local EncryptedName<sizeof(source), 0x7DB1050779034DE7ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCBAB0
+// FUNCTION: fn_23066
+EncryptedName<22, 0x01E7898D9D235DDFULL>& CrusaderBodyPath1() {
+  const std::uint8_t source[] = {0x1A, 0xF4, 0x94, 0x7A, 0x31, 0x35, 0x27, 0xCD, 0x6B, 0xA8, 0x7F, 0x58, 0x24, 0x3E, 0x00, 0xBD, 0x63, 0x9D, 0xEF, 0x29, 0x78, 0x89};
+  thread_local EncryptedName<sizeof(source), 0x01E7898D9D235DDFULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCBB80
+// FUNCTION: fn_23067
+EncryptedName<10, 0x0DF5B33D9F21EB79ULL>& MonkBodyPath2() {
+  const std::uint8_t source[] = {0xC1, 0x12, 0xE4, 0x36, 0x61, 0x0B, 0x0C, 0xC8, 0xD0, 0xEB};
+  thread_local EncryptedName<sizeof(source), 0x0DF5B33D9F21EB79ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCBC50
+// FUNCTION: fn_23068
+EncryptedName<14, 0x9DEFC105A1EB2F71ULL>& SageBodyPath2() {
+  const std::uint8_t source[] = {0xCD, 0x93, 0x2B, 0x6D, 0xC4, 0x37, 0xB3, 0x21, 0xCD, 0xEF, 0x27, 0x60, 0xF3, 0xC1};
+  thread_local EncryptedName<sizeof(source), 0x9DEFC105A1EB2F71ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCBD20
+// FUNCTION: fn_23069
+EncryptedName<10, 0x6961FF056999A303ULL>& RogueBodyPath2() {
+  const std::uint8_t source[] = {0xB4, 0x6D, 0x28, 0xBE, 0x59, 0x48, 0xAF, 0xD8, 0xD4, 0xA3};
+  thread_local EncryptedName<sizeof(source), 0x6961FF056999A303ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCBDF0
+// FUNCTION: fn_23070
+EncryptedName<18, 0xBD3F430159B551FDULL>& AlchemistBodyPath2() {
+  const std::uint8_t source[] = {0x42, 0xFD, 0x04, 0x84, 0xBD, 0xB9, 0x84, 0x5A, 0xA1, 0xEE, 0x19, 0xE8, 0xDC, 0xFF, 0xC5, 0x06, 0x1A, 0x51};
+  thread_local EncryptedName<sizeof(source), 0xBD3F430159B551FDULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCBEC0
+// FUNCTION: fn_23071
+EncryptedName<10, 0xC7FB6DF18577D34BULL>& BardBodyPath2() {
+  const std::uint8_t source[] = {0xF2, 0x0A, 0xC2, 0x60, 0xAD, 0xD4, 0x22, 0x72, 0xAE, 0xD3};
+  thread_local EncryptedName<sizeof(source), 0xC7FB6DF18577D34BULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCBF90
+// FUNCTION: fn_23072
+EncryptedName<10, 0x5B832361BDA77197ULL>& DancerBodyPath2() {
+  const std::uint8_t source[] = {0x2E, 0xDA, 0x6F, 0x4C, 0x3D, 0x9A, 0x28, 0x93, 0x66, 0x71};
+  thread_local EncryptedName<sizeof(source), 0x5B832361BDA77197ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCC060
+// FUNCTION: fn_23073
+EncryptedName<34, 0x2B477F9B5B39B301ULL>& NewPecoCrusaderBodyPath1() {
+  const std::uint8_t source[] = {0xBC, 0x76, 0xFF, 0xBF, 0x5F, 0xA5, 0x82, 0x82, 0xB6, 0x54, 0x85, 0xE7, 0x5B, 0xB3, 0xF3, 0xDE, 0x5D, 0x0E, 0xFC, 0x9D, 0x7F, 0xBB, 0x9D, 0xEE, 0xA8, 0x04, 0xDE, 0xE7, 0x27, 0xBF, 0x8B, 0x9F, 0xF4, 0xB3};
+  thread_local EncryptedName<sizeof(source), 0x2B477F9B5B39B301ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCC140
+// FUNCTION: fn_23074
+EncryptedName<14, 0x2B8725D7E95325F5ULL>& NoviceBodyPath3() {
+  const std::uint8_t source[] = {0x36, 0xEF, 0xE9, 0x51, 0x17, 0xFF, 0xDB, 0xE8, 0x3F, 0x9F, 0xEB, 0x29, 0x0D, 0x25};
+  thread_local EncryptedName<sizeof(source), 0x2B8725D7E95325F5ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DCC210
+
+// OFFSET: 0x00DCC2E0
+
+// OFFSET: 0x00DCC3B0
+
+// OFFSET: 0x00DCC550
+
+// OFFSET: 0x00DCC620
+
+// OFFSET: 0x00DCC6F0
+
+// OFFSET: 0x00DCC7C0
+
+// OFFSET: 0x00DCC890
+
+// OFFSET: 0x00DCC960
+
+// OFFSET: 0x00DCCA30
+
+// OFFSET: 0x00DCCB00
+
+// OFFSET: 0x00DCCBD0
+
+// OFFSET: 0x00DCCCB0
+
+// OFFSET: 0x00DCCD80
+
+// OFFSET: 0x00DCCE50
+
+// OFFSET: 0x00DCCF20
+
+// OFFSET: 0x00DCCFF0
+
+// OFFSET: 0x00DCD0C0
+
+// OFFSET: 0x00DCD190
+
+// OFFSET: 0x00DCD260
+
+// OFFSET: 0x00DCD340
+
+// OFFSET: 0x00DCD410
+
+// OFFSET: 0x00DCD4E0
+
+// OFFSET: 0x00DCD5B0
+
+// OFFSET: 0x00DCD680
+
+// OFFSET: 0x00DCD750
+
+// OFFSET: 0x00DCD820
+
+// OFFSET: 0x00DCD8F0
+
+// OFFSET: 0x00DCD9C0
+
+// OFFSET: 0x00DCDA90
+
+// OFFSET: 0x00DCDB60
+
+// OFFSET: 0x00DCDC40
+
+// OFFSET: 0x00DCDD20
+
+// OFFSET: 0x00DCDE00
+
+// OFFSET: 0x00DCDEE0
+
+// OFFSET: 0x00DCDFC0
+
+// OFFSET: 0x00DCE0A0
+
+// OFFSET: 0x00DCE180
+
+// OFFSET: 0x00DCE260
+
+// OFFSET: 0x00DCE340
