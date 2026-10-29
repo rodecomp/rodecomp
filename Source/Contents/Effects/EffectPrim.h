@@ -7,7 +7,7 @@
 #include <list>
 
 class ResourceMgr;
-struct AttachedEffect;
+struct CRagEffect;
 
 struct CEffectPrim : CRenderObject {
   CEffectPrim();
@@ -58,7 +58,7 @@ struct CEffectPrim : CRenderObject {
 };
 
 CEffectPrim* CreateEffectParticle(
-  AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z,
+  CRagEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z,
   std::list<CRenderObject*>& worldObjects
 );
 

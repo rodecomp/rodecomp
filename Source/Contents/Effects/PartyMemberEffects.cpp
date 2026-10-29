@@ -1,4 +1,4 @@
-#include "Contents/Effects/AttachedEffect.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/PartyMemberEffects.h"
 #include "Contents/Effects/RagEffectInitialization.h"
@@ -8,9 +8,9 @@
 namespace {
   // OFFSET: 0x00CADD60
   // FUNCTION: fn_21069
-  AttachedEffect* CreatePartyEffect(EffectActor& actor, PartyEffectMode& mode) {
+  CRagEffect* CreatePartyEffect(EffectActor& actor, PartyEffectMode& mode) {
     mode.lastEffectId = 160;
-    auto* effect = new AttachedEffect();
+    auto* effect = new CRagEffect();
     bool force = false;
     mode.effectScript.Call("IsForceRenderEffect", "d>b", 160, &force);
     effect->state.forceRender = force;

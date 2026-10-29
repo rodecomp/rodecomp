@@ -7,7 +7,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Contents/Effects/EffectPrim.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
-#include "Contents/Effects/AttachedEffect.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/RagEffectState.h"
 #include "Contents/Sound/SoundMgr.h"
@@ -600,7 +600,7 @@ bool CEffectPrim::AnimMotion() {
 // OFFSET: 0x00BB5E80
 // FUNCTION: fn_19772
 bool CEffectPrim::UpdateFireWall() {
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -723,7 +723,7 @@ bool CEffectPrim::UpdateFireWall() {
 // OFFSET: 0x00BB63C0
 // FUNCTION: fn_19775
 bool CEffectPrim::UpdateStoneCurse() {
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -799,7 +799,7 @@ bool CEffectPrim::UpdateStoneCurse() {
 // OFFSET: 0x00BB65C0
 // FUNCTION: fn_19776
 void CEffectPrim::Prim3DCircle() {
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->state.origin.x = master->render.position.x + this->state.velocity.x;
   this->state.origin.y = master->render.position.y + this->state.velocity.y;
   this->state.origin.z = master->render.position.z + this->state.velocity.z;
@@ -856,7 +856,7 @@ void CEffectPrim::Prim3DCircle() {
 // OFFSET: 0x00BBAB10
 // FUNCTION: fn_19790
 void CEffectPrim::PrimBottom2() {
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -890,7 +890,7 @@ void CEffectPrim::PrimBottom() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
 
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -958,7 +958,7 @@ void CEffectPrim::PrimBottom() {
 void CEffectPrim::PrimBottomOut() {
   FaceCamera(this->state.slots);
 
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -1008,7 +1008,7 @@ void CEffectPrim::PrimBubbleDrop() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
 
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -1066,7 +1066,7 @@ void CEffectPrim::PrimBubbleDrop() {
 void CEffectPrim::PrimChemical2() {
   FaceCamera(this->state.slots);
 
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -1203,7 +1203,7 @@ void CEffectPrim::PrimEffectTexture2() {
 void CEffectPrim::PrimEffectTexture_Ani() {
   FaceCamera(this->state.slots);
 
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -1244,7 +1244,7 @@ void CEffectPrim::PrimEffectTexture_Ani() {
 void CEffectPrim::PrimFirstAid() {
   FaceCamera(this->state.slots);
 
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -1332,7 +1332,7 @@ void CEffectPrim::PrimIntimidate() {
 void CEffectPrim::PrimPoison() {
   FaceCamera(this->state.slots);
 
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -1369,7 +1369,7 @@ void CEffectPrim::PrimPoison() {
 // OFFSET: 0x00BBEA00
 // FUNCTION: fn_19813
 void CEffectPrim::PrimGuard() {
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -1417,7 +1417,7 @@ bool CEffectPrim::PrimLineLink() {
   CGameMode* gameMode = static_cast<CGameMode*>(g_world.GetGameMode());
   const CRenderObject* target = nullptr;
 
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -1504,7 +1504,7 @@ void CEffectPrim::PrimShieldBoomerang3() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
 
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -1850,7 +1850,7 @@ void CEffectPrim::PrimTeiHit2() {
 // OFFSET: 0x00BC3C70
 // FUNCTION: fn_19840
 bool CEffectPrim::PrimSuperAngel() {
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -2112,7 +2112,7 @@ void CEffectPrim::PrimThrowItem() {
   EffectPrimitiveSlot* slots = this->state.slots;
   FaceCamera(slots);
 
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->render.position.x = master->render.position.x;
   this->render.position.y = master->render.position.y;
   this->render.position.z = master->render.position.z;
@@ -2288,7 +2288,7 @@ void CEffectPrim::PrimWaterFall() {
 // OFFSET: 0x00BB6F30
 // FUNCTION: fn_19779
 bool CEffectPrim::UpdateHit6() {
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->state.origin.x = master->render.position.x + this->state.velocity.x;
   this->state.origin.y = master->render.position.y + this->state.velocity.y;
   this->state.origin.z = master->render.position.z + this->state.velocity.z;
@@ -2391,7 +2391,7 @@ bool CEffectPrim::UpdateHit6() {
 // FUNCTION: fn_19780
 bool CEffectPrim::UpdateCoin() {
   CGameMode* mode = static_cast<CGameMode*>(g_world.GetGameMode());
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->state.origin.z = master->render.position.z + this->state.velocity.z;
   this->state.origin.y = master->render.position.y + this->state.velocity.y;
   this->state.origin.x = master->render.position.x + this->state.velocity.x;
@@ -2525,7 +2525,7 @@ bool CEffectPrim::UpdateDetoxication() {
 // OFFSET: 0x00BB7EC0
 // FUNCTION: fn_19782
 bool CEffectPrim::UpdateExit() {
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->state.origin = {master->render.position.x, master->render.position.y, master->render.position.z};
 
   const float lateral = this->state.unknown_033C + this->state.unknown_0330;
@@ -2589,7 +2589,7 @@ bool CEffectPrim::UpdateExit() {
 // OFFSET: 0x00BB8180
 // FUNCTION: fn_19783
 bool CEffectPrim::Prim3DParticleSpline() {
-  const AttachedEffect* master = this->state.master;
+  const CRagEffect* master = this->state.master;
   this->state.origin = {
     master->render.position.x + this->state.velocity.x, master->render.position.y + this->state.velocity.y,
     master->render.position.z + this->state.velocity.z
@@ -2672,7 +2672,7 @@ void CEffectPrim::ShiftSegment() {
 
 // INLINED
 static void FollowMaster(CEffectPrim& particle) {
-  const AttachedEffect* master = particle.state.master;
+  const CRagEffect* master = particle.state.master;
   particle.render.position.x = master->render.position.x;
   particle.render.position.y = master->render.position.y;
   particle.render.position.z = master->render.position.z;

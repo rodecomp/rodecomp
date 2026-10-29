@@ -1,4 +1,4 @@
-#include "Contents/Effects/AttachedEffect.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectPrim.h"
 #include "Contents/Effects/PartyEffect.h"
@@ -10,7 +10,7 @@
 // OFFSET: 0x00C2CF20
 // FUNCTION: fn_20088
 bool UpdatePartyEffect(
-  AttachedEffect& self, ResourceMgr& resources, std::list<CRenderObject*>& worldObjects, TextureCache& textures, const TerrainHeight& ground,
+  CRagEffect& self, ResourceMgr& resources, std::list<CRenderObject*>& worldObjects, TextureCache& textures, const TerrainHeight& ground,
   int updateTick
 ) {
   RagEffectState& effect = self.state;

@@ -1,5 +1,5 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
-#include "Contents/Effects/AttachedEffect.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/Actors/RenderObjectState.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -198,7 +198,7 @@ void __stdcall Get_Angle(float x, float y, std::int16_t* angle) {
 // OFFSET: 0x00BAE5D0
 // FUNCTION: fn_19767
 void EffectPrimitiveState::Initialize(
-  RenderObjectState& render, AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z
+  RenderObjectState& render, CRagEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z
 ) {
   const float first = x + this->offset.x;
   this->master = &master;

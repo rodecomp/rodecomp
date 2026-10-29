@@ -1,4 +1,4 @@
-#include "Contents/Effects/AttachedEffect.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Resource/Resource.h"
@@ -43,7 +43,7 @@ inline RagEffectState::~RagEffectState() {
 
 // OFFSET: 0x00BF84B0
 // FUNCTION: fn_20007
-AttachedEffect::AttachedEffect() {
+CRagEffect::CRagEffect() {
 }
 
-AttachedEffect::~AttachedEffect() = default;
+CRagEffect::~CRagEffect() = default;

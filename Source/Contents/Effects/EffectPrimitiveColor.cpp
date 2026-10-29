@@ -1,5 +1,5 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
-#include "Contents/Effects/AttachedEffect.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Utility/Math/ScalarConversion.h"
 
 // OFFSET: 0x00BC5E00

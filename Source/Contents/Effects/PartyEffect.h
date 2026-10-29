@@ -3,7 +3,7 @@
 
 #include <list>
 
-struct AttachedEffect;
+struct CRagEffect;
 struct CEffectPrim;
 struct TerrainHeight;
 class ResourceMgr;
@@ -11,7 +11,7 @@ class TextureCache;
 class CRenderObject;
 
 bool UpdatePartyEffect(
-  AttachedEffect& self, ResourceMgr& resources, std::list<CRenderObject*>& worldObjects, TextureCache& textures, const TerrainHeight& ground,
+  CRagEffect& self, ResourceMgr& resources, std::list<CRenderObject*>& worldObjects, TextureCache& textures, const TerrainHeight& ground,
   int updateTick
 );
 

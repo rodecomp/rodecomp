@@ -1,5 +1,5 @@
 #include "Contents/Effects/EffectPrimitiveRendering.h"
-#include "Contents/Effects/AttachedEffect.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/EffectVisibility.h"
 #include "Contents/Actors/RenderObjectState.h"

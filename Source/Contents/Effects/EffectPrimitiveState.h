@@ -9,7 +9,7 @@
 
 #include "Contents/Actors/RenderObjectState.h"
 #include "Utility/Math/Vector3d.h"
-struct AttachedEffect;
+struct CRagEffect;
 class CTexture;
 
 struct EffectPrimitiveRecord {
@@ -56,13 +56,13 @@ struct EffectPrimitiveSlot {
 struct EffectPrimitiveState {
   explicit EffectPrimitiveState(RenderObjectState& render);
   ~EffectPrimitiveState();
-  void Initialize(RenderObjectState& render, AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z);
+  void Initialize(RenderObjectState& render, CRagEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z);
   void ProcessAlpha();
   void GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue);
 
   /* 0138 */ std::uint32_t unknown_0138;
   /* 013C */ std::uint32_t unknown_013C;
-  /* 0140 */ AttachedEffect* master;
+  /* 0140 */ CRagEffect* master;
   /* 0144 */ CTexture** textures;
   /* 0148 */ std::uint32_t unknown_0148;
   /* 014C */ vector3d unknown_014C;

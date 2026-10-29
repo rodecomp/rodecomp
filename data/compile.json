@@ -302,7 +302,7 @@
   "Source/Contents/Configuration/ServiceConfiguration.cpp": 4,
   "Source/Contents/Configuration/ServiceOptions.cpp": 4,
   "Source/Contents/EffectResourceSwitcher.cpp": 4,
-  "Source/Contents/Effects/AttachedEffect.cpp": 4,
+  "Source/Contents/Effects/RagEffect.cpp": 4,
   "Source/Contents/Effects/Effect.cpp": 0,
   "Source/Contents/Effects/EffectActor.cpp": 4,
   "Source/Contents/Effects/EffectAttachments.cpp": 4,
