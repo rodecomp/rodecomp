@@ -71,13 +71,13 @@ public:
   /* 0042 */ unsigned char unknown_0042[2];
   /* 0044 */ int alpha;
   /* 0048 */ unsigned char unknown_0048[0x78];
-  /* 00C0 */ int unknown_00C0;
+  /* 00C0 */ float unknown_00C0;
   /* 00C4 */ int unknown_00C4;
   /* 00C8 */ int unknown_00C8;
   /* 00CC */ float life;
-  /* 00D0 */ int unknown_00D0 = 0;
-  /* 00D4 */ int unknown_00D4 = 0;
-  /* 00D8 */ int unknown_00D8 = 0;
+  /* 00D0 */ float unknown_00D0 = 0;
+  /* 00D4 */ float unknown_00D4 = 0;
+  /* 00D8 */ float unknown_00D8 = 0;
   /* 00DC */ int unknown_00DC = 0;
   /* 00E0 */ int unknown_00E0 = 0;
   /* 00E4 */ int unknown_00E4 = 0;
