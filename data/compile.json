@@ -500,6 +500,7 @@
   "Source/Render/AlphaQueuesDX7.cpp": 0,
   "Source/Render/AlphaRectangle.cpp": 0,
   "Source/Render/AuxiliaryQueuesDX7.cpp": 0,
+  "Source/Render/AuxiliarySubmission.cpp": 0,
   "Source/Render/BitmapDrawing.cpp": 0,
   "Source/Render/BlendColor.cpp": 0,
   "Source/Render/DX7/BackBufferDX7.cpp": 0,
