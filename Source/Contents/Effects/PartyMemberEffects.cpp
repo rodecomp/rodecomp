@@ -16,6 +16,8 @@ namespace {
     CRollingCutterRagEffect() : duration(60), elapsed(0) {
     }
 
+    int GetDuration() override;
+
     /* 11CA8 */ int duration;
     /* 11CAC */ int elapsed;
   };
@@ -36,6 +38,12 @@ namespace {
     std::memcpy(recent + 1, g_launchInfo, sizeof(recent) - sizeof(recent[0]));
     std::memcpy(g_launchInfo, recent, sizeof(recent));
   }
+}
+
+// OFFSET: 0x00612000
+// FUNCTION: fn_04338
+int CRollingCutterRagEffect::GetDuration() {
+  return this->duration;
 }
 
 // OFFSET: 0x00CADD60

@@ -1405,6 +1405,8 @@ int CRagEffect::GetDuration() {
   return this->state.duration;
 }
 
+// OFFSET: 0x00612780
+
 // OFFSET: 0x00C3A920
 // FUNCTION: fn_20104
 void CRagEffect::Snow() {
