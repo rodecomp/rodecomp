@@ -54,6 +54,8 @@ public:
   virtual void Slot32();
   virtual bool Slot33();
   void AddEvent(int kind, const char* text, int frame, int argument);
+  void SetActor(std::uint32_t aid);
+  void SetSourceActor(std::uint32_t aid);
   void SetEventFrame(int kind, int frame);
   bool RetireIfInactive();
 

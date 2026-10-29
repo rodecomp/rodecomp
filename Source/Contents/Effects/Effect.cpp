@@ -1,5 +1,6 @@
 #include "Contents/Effects/Effect.h"
 
+#include "Contents/Actors/RenderObject.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/World/WorldScene.h"
 
@@ -56,6 +57,23 @@ void CEffect::SetEventFrame(int kind, int frame) {
       event.frame = frame;
       return;
     }
+  }
+}
+
+// OFFSET: 0x00B4E390
+// FUNCTION: fn_18991
+void CEffect::SetActor(std::uint32_t aid) {
+  this->actor = aid;
+}
+
+// OFFSET: 0x00B4E3A0
+// FUNCTION: fn_18992
+void CEffect::SetSourceActor(std::uint32_t aid) {
+  if (CRenderObject* source = FindRenderObject(aid)) {
+    this->sourceActor = aid;
+    this->sourcePosition[0] = source->render.position.x;
+    this->sourcePosition[1] = source->render.position.y;
+    this->sourcePosition[2] = source->render.position.z;
   }
 }
 

@@ -121,6 +121,106 @@ void EffectLists::Add(int actor, CEffect* effect) {
   }
 }
 
+// OFFSET: 0x00B24A50
+// FUNCTION: fn_18774
+CEffect* EffectLists::Spawn(int actor, int id, float x, float y, float z, std::uint32_t sourceActor, int frame, unsigned char reuse, int instance) {
+  CEffect* effect = nullptr;
+
+  if (id < 0 || id > 60000) {
+    switch (id) {
+    case EF_READYPORTAL:
+    case EF_PORTAL:
+    case EF_LOCKON:
+    case EF_BOTTOM:
+    case EF_BOTTOM2:
+    case EF_FIREPILLARON:
+    case EF_REFINEOK:
+    case EF_REFINEFAIL:
+    case EF_TOPRANK:
+    case EF_PARTY:
+    case EF_STATUS_STATE:
+    case EF_TALK_FROSTJOKE:
+    case EF_TALK_SCREAM:
+    case EF_BLIND:
+    case EF_ANGEL2:
+    case EF_MINI_TETRIS:
+    case EF_ANGEL:
+    case EF_REFLECTBODY:
+    case EF_ASURABODY:
+    case EF_QUAKEBODY:
+    case EF_JUMPBODY:
+    case EF_LANDBODY:
+    case EF_TAE_READY:
+    case EF_DEVIL1:
+    case EF_DEVIL2:
+    case EF_DEVIL3:
+    case EF_DEVIL4:
+    case EF_DEVIL5:
+    case EF_DEVIL6:
+    case EF_DEVIL7:
+    case EF_DEVIL8:
+    case EF_DEVIL9:
+    case EF_DEVIL10:
+    case EF_BLUEBODY:
+    case EF_REDLIGHTBODY:
+    case EF_RED_HIT:
+    case EF_BLUE_HIT:
+    case EF_ANGEL3:
+    case EF_UNDEADBODY:
+    case EF_UNDEADBODY_DEL:
+    case EF_FIREPILLARON2:
+    case EF_JUMPBODY1:
+    case EF_UNK_1398:
+      break;
+    default:
+      return nullptr;
+    }
+  } else if (id == EF_LEVEL150 || id == EF_LEVEL150_SUB) {
+    if (this->Find(actor, EF_LEVEL99)) {
+      return nullptr;
+    }
+  }
+
+  if (actor) {
+    effect = this->Find(actor, instance, id);
+    if (effect) {
+      if (instance > 0) {
+        return nullptr;
+      }
+      if (effect->retained || reuse) {
+        return effect;
+      }
+    }
+  }
+
+  const auto allocator = this->allocators.find(id);
+  if (allocator == this->allocators.end()) {
+    return nullptr;
+  }
+
+  effect = allocator->second->Create();
+  if (effect) {
+    effect->SetActor(actor);
+    effect->SetSourceActor(sourceActor);
+    effect->position[0] = x;
+    effect->position[1] = y;
+    effect->position[2] = z;
+    effect->Slot29(id);
+    if (frame != -1) {
+      effect->unknown_00B0 = frame;
+    }
+    if (instance > 0) {
+      effect->unknown_00C4 = instance;
+      effect->retained = 1;
+    }
+    effect->Slot01();
+    effect->Slot12();
+    this->Add(actor, effect);
+  }
+
+  return effect;
+}
+
 // OFFSET: 0x00B254C0
 // FUNCTION: fn_18780
 void EffectLists::Clear() {
