@@ -36,6 +36,18 @@ void CEmitterEffect::Close() {
 }
 
 // OFFSET: 0x00B50050
+// FUNCTION: fn_19012
+void CEmitterEffect::Slot01() {
+  for (int i = 0; i < this->count; ++i) {
+    CParticle* particle = sub_B82F50(reinterpret_cast<const vector3d*>(this->position), 5);
+    if (particle) {
+      particle->unknown_00C0 = this->particleSpeed;
+      this->InitParticle(particle);
+      this->pool.Add(particle);
+      this->particles.push_back(particle);
+    }
+  }
+}
 
 // OFFSET: 0x00B500E0
 // FUNCTION: fn_19013
