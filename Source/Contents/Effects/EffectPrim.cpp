@@ -15,7 +15,7 @@ CEffectPrim* CreateEffectParticle(
   auto* particle = new CEffectPrim();
 
   particle->state.Initialize(particle->render, master, masterRender, type, x, y, z);
-  master.state.related.push_back(&particle->state);
+  master.state.primList.push_back(&particle->state);
   worldObjects.push_back(particle);
 
   return particle;

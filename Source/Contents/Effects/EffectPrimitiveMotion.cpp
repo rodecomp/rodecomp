@@ -179,8 +179,8 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   }
 
   if ((particle.pattern & 0x400u) != 0) {
-    const float x = particle.master->state.offset[0] - render.position.x;
-    const float z = particle.master->state.offset[2] - render.position.z;
+    const float x = particle.master->state.deltaPos[0] - render.position.x;
+    const float z = particle.master->state.deltaPos[2] - render.position.z;
     const float distance = std::sqrt(z * z + x * x);
 
     if (3.0f >= distance) {
@@ -231,16 +231,16 @@ bool MoveEffectPrimitive(EffectPrimitiveState& particle, RenderObjectState& rend
   }
 
   if ((particle.pattern & 0x10u) != 0) {
-    particle.master->state.offset[0] = particle.deltaPos2.x + particle.deltaPos.x;
-    particle.master->state.offset[1] = particle.deltaPos.y + particle.deltaPos2.y;
-    particle.master->state.offset[2] = particle.deltaPos.z + particle.deltaPos2.z;
+    particle.master->state.deltaPos[0] = particle.deltaPos2.x + particle.deltaPos.x;
+    particle.master->state.deltaPos[1] = particle.deltaPos.y + particle.deltaPos2.y;
+    particle.master->state.deltaPos[2] = particle.deltaPos.z + particle.deltaPos2.z;
   }
 
   if ((particle.pattern & 4u) != 0 && render.position.y > context.ground.Height(render.position.x, render.position.z)) {
     particle.pattern &= ~4u;
     particle.stateCnt = particle.duration - 25;
     particle.speed = 0;
-    particle.master->state.unknown_0170 = 1;
+    particle.master->state.flag = 1;
   }
 
   const int frame = particle.stateCnt;
@@ -2452,7 +2452,7 @@ bool CEffectPrim::Prim3DParticle() {
   };
 
   if ((this->state.pattern & 0x100u) != 0) {
-    if (3.0f >= this->CalcDist(this->state.master->state.offset[0], this->state.master->state.offset[2])) {
+    if (3.0f >= this->CalcDist(this->state.master->state.deltaPos[0], this->state.master->state.deltaPos[2])) {
       return false;
     }
   }
@@ -2594,7 +2594,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   }
 
   if ((particle.pattern & 0x400u) != 0) {
-    if (3.0f >= this->CalcDist(particle.master->state.offset[0], particle.master->state.offset[2])) {
+    if (3.0f >= this->CalcDist(particle.master->state.deltaPos[0], particle.master->state.deltaPos[2])) {
       particle.unknown_014C.x = std::bit_cast<float>(1u);
       return false;
     }
@@ -2648,9 +2648,9 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   }
 
   if ((particle.pattern & 0x10u) != 0) {
-    particle.master->state.offset[0] = particle.deltaPos2.x + particle.deltaPos.x;
-    particle.master->state.offset[1] = particle.deltaPos.y + particle.deltaPos2.y;
-    particle.master->state.offset[2] = particle.deltaPos.z + particle.deltaPos2.z;
+    particle.master->state.deltaPos[0] = particle.deltaPos2.x + particle.deltaPos.x;
+    particle.master->state.deltaPos[1] = particle.deltaPos.y + particle.deltaPos2.y;
+    particle.master->state.deltaPos[2] = particle.deltaPos.z + particle.deltaPos2.z;
   }
 
   if ((particle.pattern & 4u) != 0) {
@@ -2660,7 +2660,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
       particle.pattern &= ~4u;
       particle.stateCnt = particle.duration - 25;
       particle.speed = 0;
-      particle.master->state.unknown_0170 = 1;
+      particle.master->state.flag = 1;
     }
   }
 

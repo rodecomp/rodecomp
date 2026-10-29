@@ -45,7 +45,7 @@ void EffectPrimitiveState::ProcessAlpha() {
   }
 
   if (this->isDisappear == 0) {
-    const int parentRemaining = this->master->state.lifetime - this->master->state.unknown_0178;
+    const int parentRemaining = this->master->state.duration - this->master->state.stateCnt;
     const int remaining = this->duration - current;
 
     if (remaining > parentRemaining + 1) {

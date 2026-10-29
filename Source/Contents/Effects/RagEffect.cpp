@@ -25,11 +25,11 @@
 
 // INLINED
 inline RagEffectState::RagEffectState()
-    : parent(nullptr), unknown_0160(0), unknown_0164(0), id(0), unknown_016C(1), unknown_0170(0), unknown_0174(0), unknown_0178(0), offset{}, unknown_018C{},
+    : parent(nullptr), defZ(0), isDirection(0), type(0), level(1), flag(0), count(0), stateCnt(0), deltaPos{}, deltaPos2{}, deltaPos3{},
       resource(nullptr), resourceData(nullptr), currentLayer(0), loopCount(0), loopLimit(0), unknown_11C84(nullptr), unknown_11C88{-1, -1, -1, -1},
       forceRender(0), tag(0), unknown_11CA0(0) {
   for (unsigned index = 0; index < 20; ++index) {
-    auto* record = this->unknown_01AC + index * 80;
+    auto* record = this->objSeg + index * 80;
     const std::uint32_t zero = 0;
 
     for (unsigned field = 0; field < 6; ++field) {
@@ -44,11 +44,11 @@ inline RagEffectState::RagEffectState()
 
 // INLINED
 inline RagEffectState::~RagEffectState() {
-  for (EffectPrimitiveState* particle : this->related) {
+  for (EffectPrimitiveState* particle : this->primList) {
     particle->master = nullptr;
   }
 
-  this->related.clear();
+  this->primList.clear();
 
   if (this->parent) {
     this->parent->state.Attachments().Unlink(this);
@@ -100,7 +100,7 @@ static std::list<CRenderObject*>& WorldObjects() {
 // OFFSET: 0x00C121A0
 // FUNCTION: fn_20040
 void CRagEffect::BloodDrain() {
-  if (this->state.unknown_0178 != 0) {
+  if (this->state.stateCnt != 0) {
     return;
   }
 
@@ -108,8 +108,8 @@ void CRagEffect::BloodDrain() {
     this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 8, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
     this->state.unknown_11C84->duration = 60;
     this->state.unknown_11C84->deltaPos2 = {0.0f, -10.0f, 0.0f};
-    this->state.unknown_11C84->radius = Owner(this->state.unknown_11C84).CalcDist(this->state.offset[0], this->state.offset[2]);
-    Owner(this->state.unknown_11C84).Face(this->state.offset[0], this->state.offset[2]);
+    this->state.unknown_11C84->radius = Owner(this->state.unknown_11C84).CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]);
+    Owner(this->state.unknown_11C84).Face(this->state.deltaPos[0], this->state.deltaPos[2]);
     this->state.unknown_11C84->longitude = -Owner(this->state.unknown_11C84).render.angle;
     const float speed = this->state.unknown_11C84->radius / this->state.unknown_11C84->duration;
     this->state.unknown_11C84->speed = speed + speed;
@@ -140,7 +140,7 @@ void CRagEffect::BloodDrain() {
 // OFFSET: 0x00C14510
 // FUNCTION: fn_20046
 void CRagEffect::FireBall() {
-  const int frame = this->state.unknown_0178;
+  const int frame = this->state.stateCnt;
 
   if (frame != 20 && frame != 24 && frame != 28 && frame != 32) {
     return;
@@ -151,7 +151,7 @@ void CRagEffect::FireBall() {
   this->state.unknown_11C84->duration = 20;
   this->state.unknown_11C84->pattern |= 0x120u;
   this->state.unknown_11C84->deltaPos2 = {0.0f, -15.0f, 0.0f};
-  Owner(this->state.unknown_11C84).Face(this->state.offset[0], this->state.offset[2]);
+  Owner(this->state.unknown_11C84).Face(this->state.deltaPos[0], this->state.deltaPos[2]);
   this->state.unknown_11C84->longitude = -Owner(this->state.unknown_11C84).render.angle;
   Owner(this->state.unknown_11C84).render.angle = 180.0f - Owner(this->state.unknown_11C84).render.angle;
 
@@ -160,19 +160,19 @@ void CRagEffect::FireBall() {
   }
 
   CEffectPrim& particle = Owner(this->state.unknown_11C84);
-  particle.state.speed = -(particle.CalcDist(this->state.offset[0], this->state.offset[2]) / particle.state.duration);
+  particle.state.speed = -(particle.CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]) / particle.state.duration);
   reinterpret_cast<matrix*>(this->state.unknown_11C84->transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.unknown_11C84->longitude)));
   this->state.unknown_11C84->size = 1.3f;
   this->state.unknown_11C84->animSpeed = 1;
 
-  if (this->state.unknown_0178 != 20) {
+  if (this->state.stateCnt != 20) {
     this->state.unknown_11C84->red = 246;
     this->state.unknown_11C84->green = 199;
     this->state.unknown_11C84->blue = 76;
 
-    if (this->state.unknown_0178 == 24) {
+    if (this->state.stateCnt == 24) {
       this->state.unknown_11C84->alpha = 180.0f;
-    } else if (this->state.unknown_0178 == 28) {
+    } else if (this->state.stateCnt == 28) {
       this->state.unknown_11C84->alpha = 130.0f;
     } else {
       this->state.unknown_11C84->alpha = 80.0f;
@@ -191,31 +191,31 @@ void CRagEffect::FrostDiver(TextureCache& textures, char type) {
     return;
   }
 
-  if (this->state.unknown_0178 == 0) {
-    this->Face(this->state.offset[0], this->state.offset[2]);
+  if (this->state.stateCnt == 0) {
+    this->Face(this->state.deltaPos[0], this->state.deltaPos[2]);
     matrix rotation;
     rotation.MakeYRotation(GetRadian(static_cast<int>(-this->render.angle)));
     const vector3d reach = RotatedForward(rotation.values, 5.0f);
-    this->state.unknown_018C[3] = this->state.unknown_018C[3] - reach.x;
-    this->state.unknown_018C[4] = this->state.unknown_018C[4] - reach.y;
-    this->state.unknown_018C[5] = this->state.unknown_018C[5] - reach.z;
+    this->state.deltaPos3[0] = this->state.deltaPos3[0] - reach.x;
+    this->state.deltaPos3[1] = this->state.deltaPos3[1] - reach.y;
+    this->state.deltaPos3[2] = this->state.deltaPos3[2] - reach.z;
     const vector3d step = RotatedForward(rotation.values, 2.0f);
-    this->state.unknown_018C[0] = step.x;
-    this->state.unknown_018C[1] = step.y;
-    this->state.unknown_018C[2] = step.z;
+    this->state.deltaPos2[0] = step.x;
+    this->state.deltaPos2[1] = step.y;
+    this->state.deltaPos2[2] = step.z;
   }
 
-  if (this->state.unknown_0170 != 0) {
+  if (this->state.flag != 0) {
     return;
   }
 
   const vector3d saved = this->render.position;
-  this->render.position.x = this->state.unknown_018C[3] + this->render.position.x;
-  this->render.position.y = this->state.unknown_018C[4] + this->render.position.y;
-  this->render.position.z = this->state.unknown_018C[5] + this->render.position.z;
+  this->render.position.x = this->state.deltaPos3[0] + this->render.position.x;
+  this->render.position.y = this->state.deltaPos3[1] + this->render.position.y;
+  this->render.position.z = this->state.deltaPos3[2] + this->render.position.z;
 
-  if (this->CalcDist(this->state.offset[0], this->state.offset[2]) <= 2.5f) {
-    this->state.unknown_0170 = 1;
+  if (this->CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]) <= 2.5f) {
+    this->state.flag = 1;
   }
 
   this->render.position = saved;
@@ -231,9 +231,9 @@ void CRagEffect::FrostDiver(TextureCache& textures, char type) {
   this->state.unknown_11C84->deltaPos2.x = sine * distance;
   this->state.unknown_11C84->deltaPos2.z = -distance * cosine;
   vector3d& velocity = this->state.unknown_11C84->deltaPos2;
-  velocity.x = this->state.unknown_018C[3] + velocity.x;
-  velocity.y = this->state.unknown_018C[4] + velocity.y;
-  velocity.z = this->state.unknown_018C[5] + velocity.z;
+  velocity.x = this->state.deltaPos3[0] + velocity.x;
+  velocity.y = this->state.deltaPos3[1] + velocity.y;
+  velocity.z = this->state.deltaPos3[2] + velocity.z;
   this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 40, 0) + 60) / 100.0f;
   this->state.unknown_11C84->heightSize = static_cast<float>(std::max(rand() % 30, 0) + 150) / 10.0f;
   this->state.unknown_11C84->longitude = static_cast<float>(std::max(rand() % 360, 0));
@@ -253,43 +253,43 @@ void CRagEffect::FrostDiver(TextureCache& textures, char type) {
   AllocateTextures(*this->state.unknown_11C84);
   CTexture* texture = textures.Load("effect\\ice.tga", 0, false, true, false);
   this->state.unknown_11C84->textures[0] = texture;
-  this->state.unknown_018C[3] = this->state.unknown_018C[3] - this->state.unknown_018C[0];
-  this->state.unknown_018C[4] = this->state.unknown_018C[4] - this->state.unknown_018C[1];
-  this->state.unknown_018C[5] = this->state.unknown_018C[5] - this->state.unknown_018C[2];
+  this->state.deltaPos3[0] = this->state.deltaPos3[0] - this->state.deltaPos2[0];
+  this->state.deltaPos3[1] = this->state.deltaPos3[1] - this->state.deltaPos2[1];
+  this->state.deltaPos3[2] = this->state.deltaPos3[2] - this->state.deltaPos2[2];
 }
 
 // OFFSET: 0x00C16C70
 // FUNCTION: fn_20058
 void CRagEffect::GrimTooth(TextureCache& textures) {
-  if (this->state.unknown_0178 == 0) {
+  if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_FrostDiver.wav");
-    this->Face(this->state.offset[0], this->state.offset[2]);
+    this->Face(this->state.deltaPos[0], this->state.deltaPos[2]);
     matrix rotation;
     rotation.MakeYRotation(GetRadian(static_cast<int>(-this->render.angle)));
     const vector3d step = RotatedForward(rotation.values, 2.0f);
-    this->state.unknown_018C[0] = step.x;
-    this->state.unknown_018C[1] = step.y;
-    this->state.unknown_018C[2] = step.z;
-    this->state.unknown_018C[3] = this->state.unknown_018C[3] - step.x;
-    this->state.unknown_018C[4] = this->state.unknown_018C[4] - step.y;
-    this->state.unknown_018C[5] = this->state.unknown_018C[5] - step.z;
+    this->state.deltaPos2[0] = step.x;
+    this->state.deltaPos2[1] = step.y;
+    this->state.deltaPos2[2] = step.z;
+    this->state.deltaPos3[0] = this->state.deltaPos3[0] - step.x;
+    this->state.deltaPos3[1] = this->state.deltaPos3[1] - step.y;
+    this->state.deltaPos3[2] = this->state.deltaPos3[2] - step.z;
   }
 
-  if (this->state.unknown_0170 != 0) {
+  if (this->state.flag != 0) {
     return;
   }
 
-  if (this->state.unknown_0178 % 3 != 0) {
-    this->state.unknown_018C[3] = this->state.unknown_018C[3] - this->state.unknown_018C[0];
-    this->state.unknown_018C[4] = this->state.unknown_018C[4] - this->state.unknown_018C[1];
-    this->state.unknown_018C[5] = this->state.unknown_018C[5] - this->state.unknown_018C[2];
+  if (this->state.stateCnt % 3 != 0) {
+    this->state.deltaPos3[0] = this->state.deltaPos3[0] - this->state.deltaPos2[0];
+    this->state.deltaPos3[1] = this->state.deltaPos3[1] - this->state.deltaPos2[1];
+    this->state.deltaPos3[2] = this->state.deltaPos3[2] - this->state.deltaPos2[2];
     return;
   }
 
   const vector3d saved = this->render.position;
 
-  if (this->CalcDist(this->state.offset[0], this->state.offset[2]) <= 2.5f) {
-    this->state.unknown_0170 = 1;
+  if (this->CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]) <= 2.5f) {
+    this->state.flag = 1;
   }
 
   this->render.position = saved;
@@ -302,9 +302,9 @@ void CRagEffect::GrimTooth(TextureCache& textures) {
   ClientCosine(angle);
   this->state.unknown_11C84->deltaPos2 = {0.0f, 20.0f, 0.0f};
   vector3d& velocity = this->state.unknown_11C84->deltaPos2;
-  velocity.x = this->state.unknown_018C[3] + velocity.x;
-  velocity.y = this->state.unknown_018C[4] + velocity.y;
-  velocity.z = this->state.unknown_018C[5] + velocity.z;
+  velocity.x = this->state.deltaPos3[0] + velocity.x;
+  velocity.y = this->state.deltaPos3[1] + velocity.y;
+  velocity.z = this->state.deltaPos3[2] + velocity.z;
   this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 40, 0) + 60) / 100.0f;
   this->state.unknown_11C84->heightSize = 10.0f;
   this->state.unknown_11C84->longitude = static_cast<float>(std::max(rand() % 360, 0));
@@ -323,10 +323,10 @@ void CRagEffect::GrimTooth(TextureCache& textures) {
   this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 10;
   AllocateTextures(*this->state.unknown_11C84);
   CTexture* texture = textures.Load("effect\\stone.bmp", 0, false, true, false);
-  this->state.unknown_018C[3] = this->state.unknown_018C[3] - this->state.unknown_018C[0];
-  this->state.unknown_018C[4] = this->state.unknown_018C[4] - this->state.unknown_018C[1];
+  this->state.deltaPos3[0] = this->state.deltaPos3[0] - this->state.deltaPos2[0];
+  this->state.deltaPos3[1] = this->state.deltaPos3[1] - this->state.deltaPos2[1];
   this->state.unknown_11C84->textures[0] = texture;
-  this->state.unknown_018C[5] = this->state.unknown_018C[5] - this->state.unknown_018C[2];
+  this->state.deltaPos3[2] = this->state.deltaPos3[2] - this->state.deltaPos2[2];
 }
 
 // OFFSET: 0x00C19980
@@ -334,10 +334,10 @@ void CRagEffect::GrimTooth(TextureCache& textures) {
 void CRagEffect::Hit4(const RenderProjection& projection, TextureCache& textures) {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   projection.Project(&this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex);
-  this->state.unknown_013C[6] = std::bit_cast<std::uint32_t>(vertex.x);
-  this->state.unknown_013C[7] = std::bit_cast<std::uint32_t>(vertex.y);
+  this->state.tlvertX = vertex.x;
+  this->state.tlvertY = vertex.y;
 
-  if (this->state.unknown_0178 != 0) {
+  if (this->state.stateCnt != 0) {
     return;
   }
 
@@ -402,7 +402,7 @@ void CRagEffect::SoulStrike(char F1) {
   int step = 0;
   int total = 0;
 
-  switch (this->state.unknown_0174) {
+  switch (this->state.count) {
   case 1:
     total = 1;
     base = 0;
@@ -442,7 +442,7 @@ void CRagEffect::SoulStrike(char F1) {
     break;
   }
 
-  const int frame = this->state.unknown_0178 + 5;
+  const int frame = this->state.stateCnt + 5;
 
   if (frame % 11 != 0 || frame / 11 > total) {
     return;
@@ -453,8 +453,8 @@ void CRagEffect::SoulStrike(char F1) {
   this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 8, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
   this->state.unknown_11C84->duration = 40;
   this->state.unknown_11C84->deltaPos2 = {0.0f, -10.0f, 0.0f};
-  this->state.unknown_11C84->radius = Owner(this->state.unknown_11C84).CalcDist(this->state.offset[0], this->state.offset[2]);
-  Owner(this->state.unknown_11C84).Face(this->state.offset[0], this->state.offset[2]);
+  this->state.unknown_11C84->radius = Owner(this->state.unknown_11C84).CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]);
+  Owner(this->state.unknown_11C84).Face(this->state.deltaPos[0], this->state.deltaPos[2]);
   this->state.unknown_11C84->longitude = -Owner(this->state.unknown_11C84).render.angle;
   this->state.unknown_11C84->speed = this->state.unknown_11C84->radius / this->state.unknown_11C84->duration;
   this->state.unknown_11C84->gravSpeed = 3.5f;
@@ -482,7 +482,7 @@ void CRagEffect::SoulStrike(char F1) {
 // OFFSET: 0x00C3B730
 // FUNCTION: fn_20107
 void CRagEffect::SpearBmr() {
-  const int frame = this->state.unknown_0178;
+  const int frame = this->state.stateCnt;
 
   if (frame != 0 && frame != 4 && frame != 8 && frame != 12) {
     return;
@@ -493,7 +493,7 @@ void CRagEffect::SpearBmr() {
   this->state.unknown_11C84->duration = 15;
   this->state.unknown_11C84->pattern |= 0x120u;
   this->state.unknown_11C84->deltaPos2 = {0.0f, -15.0f, 0.0f};
-  Owner(this->state.unknown_11C84).Face(this->state.offset[0], this->state.offset[2]);
+  Owner(this->state.unknown_11C84).Face(this->state.deltaPos[0], this->state.deltaPos[2]);
   this->state.unknown_11C84->longitude = -Owner(this->state.unknown_11C84).render.angle;
   Owner(this->state.unknown_11C84).render.angle = 180.0f - Owner(this->state.unknown_11C84).render.angle;
 
@@ -502,15 +502,15 @@ void CRagEffect::SpearBmr() {
   }
 
   CEffectPrim& particle = Owner(this->state.unknown_11C84);
-  particle.state.speed = -(particle.CalcDist(this->state.offset[0], this->state.offset[2]) / particle.state.duration);
+  particle.state.speed = -(particle.CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]) / particle.state.duration);
   reinterpret_cast<matrix*>(this->state.unknown_11C84->transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.unknown_11C84->longitude)));
   this->state.unknown_11C84->size = 1.0f;
   this->state.unknown_11C84->animSpeed = 1;
 
-  if (this->state.unknown_0178 != 0) {
-    if (this->state.unknown_0178 == 4) {
+  if (this->state.stateCnt != 0) {
+    if (this->state.stateCnt == 4) {
       this->state.unknown_11C84->alpha = 180.0f;
-    } else if (this->state.unknown_0178 == 8) {
+    } else if (this->state.stateCnt == 8) {
       this->state.unknown_11C84->alpha = 130.0f;
     } else {
       this->state.unknown_11C84->alpha = 80.0f;
@@ -526,7 +526,7 @@ void CRagEffect::SpearBmr() {
 // OFFSET: 0x00C3BD40
 // FUNCTION: fn_20109
 void CRagEffect::SprayPond(TextureCache& textures) {
-  if (this->state.unknown_0178 == 0) {
+  if (this->state.stateCnt == 0) {
     for (int angle = 0; angle < 360; angle += 45) {
       this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
       this->state.unknown_11C84->pattern = 2;
@@ -548,7 +548,7 @@ void CRagEffect::SprayPond(TextureCache& textures) {
     }
   }
 
-  if (this->state.unknown_0178 % 10 == 0) {
+  if (this->state.stateCnt % 10 == 0) {
     for (int angle = 0; angle < 360; angle += 45) {
       this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
       this->state.unknown_11C84->duration = 30;
@@ -572,7 +572,7 @@ void CRagEffect::SprayPond(TextureCache& textures) {
     }
   }
 
-  if (this->state.unknown_0178 % 20 == 0) {
+  if (this->state.stateCnt % 20 == 0) {
     this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
     this->state.unknown_11C84->duration = 25;
     this->state.unknown_11C84->radius = 13.0f;
@@ -595,7 +595,7 @@ void CRagEffect::SprayPond(TextureCache& textures) {
 // OFFSET: 0x00C3F440
 // FUNCTION: fn_20120
 void CRagEffect::WaterBall2() {
-  if (this->state.unknown_0178 != 0) {
+  if (this->state.stateCnt != 0) {
     return;
   }
 
@@ -605,8 +605,8 @@ void CRagEffect::WaterBall2() {
   Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Waterball.act");
   this->state.unknown_11C84->duration = 40;
   this->state.unknown_11C84->deltaPos2 = {0.0f, -10.0f, 0.0f};
-  this->state.unknown_11C84->radius = Owner(this->state.unknown_11C84).CalcDist(this->state.offset[0], this->state.offset[2]);
-  Owner(this->state.unknown_11C84).Face(this->state.offset[0], this->state.offset[2]);
+  this->state.unknown_11C84->radius = Owner(this->state.unknown_11C84).CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]);
+  Owner(this->state.unknown_11C84).Face(this->state.deltaPos[0], this->state.deltaPos[2]);
   this->state.unknown_11C84->longitude = -Owner(this->state.unknown_11C84).render.angle;
   this->state.unknown_11C84->speed = this->state.unknown_11C84->radius / this->state.unknown_11C84->duration;
   this->state.unknown_11C84->gravSpeed = 3.5f;
@@ -630,13 +630,13 @@ void CRagEffect::WaterBall2() {
 // OFFSET: 0x00C3FE30
 // FUNCTION: fn_20124
 void CRagEffect::Yufitel(TextureCache& textures, char F1) {
-  if (this->state.unknown_0178 != 0) {
+  if (this->state.stateCnt != 0) {
     return;
   }
 
   PlayEffectWave(*this, "effect\\hunter_shockwavetrap.wav");
 
-  if (this->state.unknown_0178 != 0) {
+  if (this->state.stateCnt != 0) {
     return;
   }
 
@@ -647,7 +647,7 @@ void CRagEffect::Yufitel(TextureCache& textures, char F1) {
   this->state.unknown_11C84->renderFlag |= 2u;
   this->state.unknown_11C84->widthSize = 3.5f;
   this->state.unknown_11C84->heightSize = 3.5f;
-  Owner(this->state.unknown_11C84).Face(this->state.offset[0], this->state.offset[2]);
+  Owner(this->state.unknown_11C84).Face(this->state.deltaPos[0], this->state.deltaPos[2]);
   this->state.unknown_11C84->longitude = -Owner(this->state.unknown_11C84).render.angle;
   Owner(this->state.unknown_11C84).render.angle = 180.0f - Owner(this->state.unknown_11C84).render.angle;
 
@@ -656,7 +656,7 @@ void CRagEffect::Yufitel(TextureCache& textures, char F1) {
   }
 
   CEffectPrim& center = Owner(this->state.unknown_11C84);
-  center.state.speed = -(center.CalcDist(this->state.offset[0], this->state.offset[2]) / center.state.duration);
+  center.state.speed = -(center.CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]) / center.state.duration);
   reinterpret_cast<matrix*>(this->state.unknown_11C84->transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.unknown_11C84->longitude)));
   this->state.unknown_11C84->deltaPos2.y = -5.0f;
   this->state.unknown_11C84->alpha = 170.0f;
@@ -671,7 +671,7 @@ void CRagEffect::Yufitel(TextureCache& textures, char F1) {
   this->state.unknown_11C84->repeatAnim = 1;
   this->state.unknown_11C84->widthSize = 4.5f;
   this->state.unknown_11C84->heightSize = 4.5f;
-  Owner(this->state.unknown_11C84).Face(this->state.offset[0], this->state.offset[2]);
+  Owner(this->state.unknown_11C84).Face(this->state.deltaPos[0], this->state.deltaPos[2]);
   this->state.unknown_11C84->longitude = -Owner(this->state.unknown_11C84).render.angle;
   Owner(this->state.unknown_11C84).render.angle = 180.0f - Owner(this->state.unknown_11C84).render.angle;
 
@@ -680,7 +680,7 @@ void CRagEffect::Yufitel(TextureCache& textures, char F1) {
   }
 
   CEffectPrim& ball = Owner(this->state.unknown_11C84);
-  ball.state.speed = -(ball.CalcDist(this->state.offset[0], this->state.offset[2]) / ball.state.duration);
+  ball.state.speed = -(ball.CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]) / ball.state.duration);
   reinterpret_cast<matrix*>(this->state.unknown_11C84->transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.unknown_11C84->longitude)));
   this->state.unknown_11C84->deltaPos2.y = -5.0f;
   this->state.unknown_11C84->animSpeed = 1;
@@ -707,7 +707,7 @@ void CRagEffect::Yufitel(TextureCache& textures, char F1) {
 // OFFSET: 0x00C40E70
 // FUNCTION: fn_20132
 void CRagEffect::AirTexture(TextureCache& textures, const char* name) {
-  const int frame = this->state.unknown_0178;
+  const int frame = this->state.stateCnt;
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
@@ -719,7 +719,7 @@ void CRagEffect::AirTexture(TextureCache& textures, const char* name) {
 
   this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 98, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
   this->state.unknown_11C84->renderFlag = 5;
-  this->state.unknown_11C84->duration = this->state.lifetime;
+  this->state.unknown_11C84->duration = this->state.duration;
   AllocateTextures(*this->state.unknown_11C84);
   this->state.unknown_11C84->textures[0] = textures.Load(name, 0, false, true, false);
   this->state.unknown_11C84->size = 0.0f;
@@ -728,11 +728,11 @@ void CRagEffect::AirTexture(TextureCache& textures, const char* name) {
   this->state.unknown_11C84->slots[0].distance = 5.0f;
   this->state.unknown_11C84->slots[0].alphaB = 0;
   EffectPrimitiveSlot& slot = this->state.unknown_11C84->slots[0];
-  slot.vecBNow.x = this->state.offset[0];
-  slot.vecBNow.y = this->state.offset[1];
-  slot.vecBNow.z = this->state.offset[2];
+  slot.vecBNow.x = this->state.deltaPos[0];
+  slot.vecBNow.y = this->state.deltaPos[1];
+  slot.vecBNow.z = this->state.deltaPos[2];
   this->state.unknown_11C84->slots[0].fullDisplayAngle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-  Get_Angle(this->state.offset[0] - this->render.position.x, this->state.offset[2] - this->render.position.z, &this->state.unknown_11C84->slots[0].riseAngle);
+  Get_Angle(this->state.deltaPos[0] - this->render.position.x, this->state.deltaPos[2] - this->render.position.z, &this->state.unknown_11C84->slots[0].riseAngle);
   this->state.unknown_11C84->slots[0].riseAngle += 90;
   EffectPrimitiveSlot& rise = this->state.unknown_11C84->slots[0];
 
@@ -751,24 +751,24 @@ void CRagEffect::AirTexture(TextureCache& textures, const char* name) {
 // OFFSET: 0x00C4F250
 // FUNCTION: fn_20181
 void CRagEffect::EnergyDrain2() {
-  if (this->state.unknown_0178 != 0) {
+  if (this->state.stateCnt != 0) {
     return;
   }
 
   for (int angle = -90; angle < 180; angle += 90) {
     this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 8, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
     this->state.unknown_11C84->duration = 60;
-    const float deltaZ = this->state.offset[2] - this->render.position.z;
+    const float deltaZ = this->state.deltaPos[2] - this->render.position.z;
     EffectPrimitiveState& launched = *this->state.unknown_11C84;
-    launched.deltaPos2.x = this->state.offset[0] - this->render.position.x;
+    launched.deltaPos2.x = this->state.deltaPos[0] - this->render.position.x;
     launched.deltaPos2.z = deltaZ;
     launched.deltaPos2.y = -10.0f;
     this->state.unknown_11C84->radius = Owner(this->state.unknown_11C84).CalcDist(
-      this->state.offset[0] - (this->state.offset[0] - this->render.position.x) * 0.5f,
-      this->state.offset[2] - (this->state.offset[2] - this->render.position.z) * 0.5f
+      this->state.deltaPos[0] - (this->state.deltaPos[0] - this->render.position.x) * 0.5f,
+      this->state.deltaPos[2] - (this->state.deltaPos[2] - this->render.position.z) * 0.5f
     );
     Owner(this->state.unknown_11C84).Face(
-      (this->render.position.x + this->render.position.x) - this->state.offset[0], (this->render.position.z + this->render.position.z) - this->state.offset[2]
+      (this->render.position.x + this->render.position.x) - this->state.deltaPos[0], (this->render.position.z + this->render.position.z) - this->state.deltaPos[2]
     );
     this->state.unknown_11C84->longitude = -Owner(this->state.unknown_11C84).render.angle;
     const float speed = this->state.unknown_11C84->radius / this->state.unknown_11C84->duration;
@@ -802,7 +802,7 @@ void CRagEffect::EnergyDrain2() {
 void CRagEffect::InitEZ2STRFrame() {
   const CEZeffectRes& clips = *static_cast<const CEZeffectRes*>(this->state.resource);
   this->state.currentLayer = 0;
-  this->state.unknown_0178 = 0;
+  this->state.stateCnt = 0;
   this->state.endLayer = clips.clipCount;
 
   if (clips.clips[0].frameCount == 0) {
@@ -834,10 +834,10 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
   }
 
   const RenderVertex vertex = TransformVert(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view, state.parent->render.position);
-  state.unknown_013C[6] = std::bit_cast<std::uint32_t>(vertex.x + x);
-  state.unknown_013C[7] = std::bit_cast<std::uint32_t>(vertex.y + y);
-  state.unknown_013C[8] = std::bit_cast<std::uint32_t>(vertex.z + z);
-  state.unknown_0160 = x == 0.0f && y == -80.0f && z == 0.0f ? 0 : 1;
+  state.tlvertX = vertex.x + x;
+  state.tlvertY = vertex.y + y;
+  state.tlvertZ = vertex.z + z;
+  state.defZ = x == 0.0f && y == -80.0f && z == 0.0f ? 0 : 1;
 
   float ratio;
   const CEZeffectRes& clips = *static_cast<const CEZeffectRes*>(state.resource);
@@ -851,13 +851,13 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
     }
 
     const EZeffectKeyFrame* key = &clip.frames[state.currentKey[layer]];
-    const int elapsed = state.unknown_0178 - key->frame;
+    const int elapsed = state.stateCnt - key->frame;
 
     if (elapsed < 0) {
       continue;
     }
 
-    if (elapsed != 0 && key[1].frame == state.unknown_0178) {
+    if (elapsed != 0 && key[1].frame == state.stateCnt) {
       if (++state.currentKey[layer] >= clip.frameCount - 1) {
         state.currentKey[layer] = -1;
         ++state.currentLayer;
@@ -978,15 +978,15 @@ bool CRagEffect::ShieldCharge() {
 // OFFSET: 0x00C0B360
 // FUNCTION: fn_20016
 bool CRagEffect::Aspersio() {
-  if (this->state.unknown_0178 == 70) {
+  if (this->state.stateCnt == 70) {
     PlayEffectWave(*this, "effect\\priest_aspersio.wav");
   }
 
-  const int frame = this->state.unknown_0178;
+  const int frame = this->state.stateCnt;
 
   if (frame % 5 == 0 && frame > 60 && frame < 140) {
     this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.lifetime = 400;
+    this->state.duration = 400;
     EffectPrimitiveState& particle = *this->state.unknown_11C84;
     particle.duration = 40;
     particle.radius = 1.5f;
@@ -1008,7 +1008,7 @@ bool CRagEffect::Aspersio() {
     Owner(&particle).InitSegment();
   }
 
-  if (this->state.unknown_0178 == this->state.lifetime) {
+  if (this->state.stateCnt == this->state.duration) {
     return false;
   }
 
@@ -1024,11 +1024,11 @@ void CRagEffect::Blessing(TextureCache& textures) {
   this->render.position.y = parent.render.position.y;
   this->render.position.z = parent.render.position.z;
 
-  if (this->state.unknown_0178 == 0) {
+  if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_Blessing.wav");
     this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
     EffectPrimitiveState& ring = *this->state.unknown_11C84;
-    ring.duration = this->state.lifetime;
+    ring.duration = this->state.duration;
     ring.pattern |= 1u;
     ring.renderFlag |= 0x200u;
     ring.radius = 10.0f;
@@ -1045,19 +1045,19 @@ void CRagEffect::Blessing(TextureCache& textures) {
     ring.textures[0] = textures.Load("effect\\alpha_down.tga", 0, false, true, false);
   }
 
-  if (this->state.unknown_0178 % 3 == 0 && this->state.unknown_0178 < 10) {
+  if (this->state.stateCnt % 3 == 0 && this->state.stateCnt < 10) {
     this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
     EffectPrimitiveState& wing = *this->state.unknown_11C84;
-    wing.duration = this->state.lifetime;
+    wing.duration = this->state.duration;
     wing.animSpeed = 2;
-    wing.alpha = static_cast<float>(this->state.unknown_0178 * -6 + 200);
+    wing.alpha = static_cast<float>(this->state.stateCnt * -6 + 200);
     wing.deltaPos2 = {0.0f, -25.0f, 0.0f};
     Owner(&wing).SetSpriteName(ResourceMgr::Instance(), "이팩트\\축복.spr");
     Owner(&wing).SetActionName(ResourceMgr::Instance(), "이팩트\\축복.act");
     Owner(&wing).InitSegment();
   }
 
-  if (this->state.unknown_0178 % 4 == 0) {
+  if (this->state.stateCnt % 4 == 0) {
     this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
     EffectPrimitiveState& spark = *this->state.unknown_11C84;
     spark.duration = 80;
@@ -1107,7 +1107,7 @@ static __forceinline void SpawnBottomQuad(CRagEffect& effect, TextureCache& text
 // OFFSET: 0x00C0DA60
 // FUNCTION: fn_20023
 void CRagEffect::Bottom(TextureCache& textures) {
-  if (this->state.unknown_0178 != 0) {
+  if (this->state.stateCnt != 0) {
     return;
   }
 
@@ -1120,7 +1120,7 @@ void CRagEffect::Bottom(TextureCache& textures) {
   matrix rotation;
   rotation.MakeYRotation(GetRadian(angle));
   const float* m = rotation.values;
-  this->state.lifetime = 9999;
+  this->state.duration = 9999;
 
   for (int side = 1; side > -2; side -= 2) {
     const float distance = static_cast<float>(side) * 5.0f;

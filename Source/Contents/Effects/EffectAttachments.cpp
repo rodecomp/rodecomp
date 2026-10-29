@@ -6,7 +6,7 @@
 // FUNCTION: fn_21062
 bool EffectAttachments::HasId(int id) const {
   for (const RagEffectState* effect : this->effects) {
-    if (effect && effect->id == id) {
+    if (effect && effect->type == id) {
       return true;
     }
   }

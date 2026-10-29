@@ -34,11 +34,11 @@ bool UpdatePartyEffect(
   render.position.y = actor.position.y;
   render.position.z = actor.position.z;
 
-  if (effect.unknown_0178 == 9998) {
-    effect.unknown_0178 = 0;
+  if (effect.stateCnt == 9998) {
+    effect.stateCnt = 0;
   }
 
-  if (effect.unknown_0178 == 0) {
+  if (effect.stateCnt == 0) {
     CEffectPrim* particle = CreateEffectParticle(self, render, 15, 0, 0, 0, worldObjects);
     effect.unknown_11C84 = &particle->state;
     EffectPrimitiveState& state = *effect.unknown_11C84;
@@ -57,6 +57,6 @@ bool UpdatePartyEffect(
   }
 
   render.position.y = ground.Height(render.position.x, render.position.z) - 2.0f;
-  ++effect.unknown_0178;
-  return effect.unknown_0178 < effect.lifetime;
+  ++effect.stateCnt;
+  return effect.stateCnt < effect.duration;
 }

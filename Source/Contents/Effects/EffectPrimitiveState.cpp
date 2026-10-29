@@ -147,7 +147,7 @@ EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& render) {
 // INLINED
 EffectPrimitiveState::~EffectPrimitiveState() {
   if (this->master) {
-    auto& related = this->master->state.related;
+    auto& related = this->master->state.primList;
 
     for (auto entry = related.begin(); entry != related.end(); ++entry) {
       if (*entry == this) {

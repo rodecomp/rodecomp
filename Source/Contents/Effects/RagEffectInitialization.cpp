@@ -14,7 +14,7 @@
 static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& options, char* name) {
   name[0] = '\0';
 
-  switch (effect.id) {
+  switch (effect.type) {
   case EF_COIN:
     std::sprintf(name, options.Get(229) != 0 ? "memor_min.str" : "Maemor.str");
     break;
@@ -686,16 +686,16 @@ void InitializeRagEffect(
   RagEffectState& effect, RenderObjectState& render, EffectActor* parent, const RenderObjectState& parentState, int id, float x, float y, float z,
   ServiceOptions& options, ResourceMgr& resources
 ) {
-  effect.id = id;
+  effect.type = id;
   effect.parent = parent;
   render.position.x = parentState.position.x;
   render.position.y = parentState.position.y;
   render.position.z = parentState.position.z;
-  effect.unknown_013C[4] = std::bit_cast<std::uint32_t>(parentState.angle);
-  effect.lifetime = EffectLifetime(effect.id);
-  effect.offset[0] = x;
-  effect.offset[1] = y;
-  effect.offset[2] = z;
+  effect.longitude = parentState.angle;
+  effect.duration = EffectLifetime(effect.type);
+  effect.deltaPos[0] = x;
+  effect.deltaPos[1] = y;
+  effect.deltaPos[2] = z;
   char name[64];
   SelectRagEffectResource(effect, options, name);
 
