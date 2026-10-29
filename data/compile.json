@@ -835,6 +835,7 @@
   "Source/Utility/Text/FormatString.cpp": 0,
   "Source/Utility/Text/GroupedInteger.cpp": 0,
   "Source/Utility/Text/LanguageCharset.cpp": 0,
+  "Source/Utility/Text/StringUtil.cpp": 0,
   "Source/Utility/Text/TextEscapes.cpp": 0,
   "Source/Utility/Text/TextTokens.cpp": 0,
   "Source/Utility/Threading/NSyncObject.cpp": 0,
