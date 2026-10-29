@@ -3,6 +3,7 @@
 
 #include "Contents/InstantVar.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Messenger/MessengerMember.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Resource/XmlNode.h"
@@ -136,7 +137,9 @@ public:
   /* 1730 */ std::list<ITEM_INFO> unknown_1730;
   /* 1738 */ std::list<ITEM_INFO> unknown_1738;
   /* 1740 */ std::list<ITEM_INFO> unknown_1740;
-  /* 1748 */ unsigned char unknown_1748[0xA8];
+  /* 1748 */ unsigned char unknown_1748[0x90];
+  /* 17D8 */ std::list<MessengerMember> m_partyMembers;
+  /* 17E0 */ unsigned char unknown_17E0[0x10];
   /* 17F0 */ ITEM_INFO unknown_17F0[10];
   /* 21A0 */ unsigned char unknown_21A0[0x9B0];
   /* 2B50 */ ITEM_INFO unknown_2B50[10];
@@ -278,6 +281,8 @@ public:
   std::int64_t FindUnknown078C(std::int64_t key) const;
   SessionRecord6144 FindRecord6144(int key) const;
   int GetBeginEffectId(int skillId) const;
+  bool IsPartyMember(std::uint32_t aid, bool onlineOnly);
+  bool IsPvpMap();
   ITEM_INFO GetItem2B50(int index) const;
   ITEM_INFO GetItem17F0(int index) const;
   unsigned char IsAllyActor(std::uint32_t aid, int job);
@@ -442,6 +447,7 @@ static_assert(offsetof(CSession, m_job) == 0x1628);
 static_assert(offsetof(CSession, m_inventoryItems) == 0x1710);
 static_assert(offsetof(CSession, unknown_16EC) == 0x16EC);
 static_assert(offsetof(CSession, unknown_1730) == 0x1730);
+static_assert(offsetof(CSession, m_partyMembers) == 0x17D8);
 static_assert(offsetof(CSession, unknown_17F0) == 0x17F0);
 static_assert(offsetof(CSession, unknown_2B50) == 0x2B50);
 static_assert(offsetof(CSession, unknown_3500) == 0x3500);

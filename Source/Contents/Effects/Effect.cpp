@@ -1,6 +1,9 @@
 #include "Contents/Effects/Effect.h"
 
+#include "Client/Session.h"
 #include "Contents/Actors/RenderObject.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/World/World.h"
 
@@ -39,6 +42,27 @@ bool CEffect::RetireIfInactive() {
   return false;
 }
 
+// OFFSET: 0x00B4E0E0
+// FUNCTION: fn_18986
+bool CEffect::Slot33() {
+  EffectActor* actor = static_cast<EffectActor*>(FindRenderObject(this->actor));
+  if (!actor || actor->render.unknown_00A8 == 0) {
+    return true;
+  }
+
+  if (this->unknown_00C8 == 0) {
+    if (this->actor == g_session.m_aid) {
+      return true;
+    }
+
+    if (g_session.IsPvpMap() && g_session.IsPartyMember(actor->render.accountId, true)) {
+      return true;
+    }
+  }
+
+  return actor->EffectVisible();
+}
+
 // OFFSET: 0x00B4E150
 // FUNCTION: fn_18987
 bool CEffect::Slot06() {
@@ -57,6 +81,14 @@ void CEffect::SetEventFrame(int kind, int frame) {
       event.frame = frame;
       return;
     }
+  }
+}
+
+// OFFSET: 0x00B4E290
+// FUNCTION: fn_18989
+void CEffect::UpdateVisibility() {
+  if ((g_serviceOptions.Get(8) || this->forceRender) && this->Slot06() && !this->outsideRange) {
+    this->Slot04();
   }
 }
 
