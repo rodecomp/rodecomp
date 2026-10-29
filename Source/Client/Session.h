@@ -17,6 +17,7 @@
 #include <vector>
 
 class CActRes;
+class CRenderObject;
 class LuaScript;
 struct ActionFrame;
 struct WindowDialogs;
@@ -291,6 +292,7 @@ public:
   char* ConvertTooltipText(const char* source, char* output) const;
   int MercSkillLevel(int skillId) const;
   int HomunSkillLevel(int skillId) const;
+  CRenderObject* FindGameActor(std::uint32_t aid) const;
   int SyncUnknown0E98();
   void LoadXmlTables();
   std::string GetAccessoryName(int id);

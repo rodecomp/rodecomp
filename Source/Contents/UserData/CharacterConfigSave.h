@@ -23,6 +23,7 @@ struct CharacterConfigSave {
   const bool& itemSlotActive;
 
   int UseLevel(int id) const;
+  int SkillLevel(int id) const;
 };
 
 #endif

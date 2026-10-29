@@ -23,6 +23,7 @@ struct ShortcutBindings {
   void Refresh(NormalItemSlot** slots, NormalItemSlot** itemSlots);
   void Assign(unsigned char type, std::uint32_t id, int level, int slot, int bank, const unsigned char& currentRow, LuaScript& script, ModeEvents& modeEvents);
   void AssignItem(std::uint32_t id, int slot);
+  void ClearAdditionalSkills(const unsigned char& currentRow, LuaScript& script, ModeEvents& modeEvents);
 };
 
 #endif
