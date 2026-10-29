@@ -1480,6 +1480,56 @@ void CEffectPrim::RenderColorPlane(matrix& wtm) {
   }
 }
 
+// OFFSET: 0x00BE37A0
+// FUNCTION: fn_19922
+void CEffectPrim::RenderRotatedPlate(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  vector3d vec4{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    const int angle = slot.fullDisplayAngle;
+    const int rise = slot.riseAngle;
+    const float size = slot.height[1];
+    const float shift = static_cast<float>(slot.flag1[1]) * size;
+    const float outer = shift + slot.distance;
+    const float inner = slot.distance - shift;
+    const float back = size * -1.0f;
+
+    float across = g_cosTable[angle] * outer - g_sinTable[angle] * size;
+    vec2 = {across * g_cosTable[rise] - g_sinTable[rise] * 0.0f, g_sinTable[angle] * outer + g_cosTable[angle] * size, across * g_sinTable[rise] + g_cosTable[rise] * 0.0f};
+    across = g_cosTable[angle] * inner - g_sinTable[angle] * size;
+    vec3 = {across * g_cosTable[rise] - g_sinTable[rise] * 0.0f, g_sinTable[angle] * inner + g_cosTable[angle] * size, across * g_sinTable[rise] + g_cosTable[rise] * 0.0f};
+    across = g_cosTable[angle] * inner - g_sinTable[angle] * back;
+    vec4 = {across * g_cosTable[rise] - g_sinTable[rise] * 0.0f, g_cosTable[angle] * back + g_sinTable[angle] * inner, across * g_sinTable[rise] + g_cosTable[rise] * 0.0f};
+    across = g_cosTable[angle] * outer - g_sinTable[angle] * back;
+    vec1 = {across * g_cosTable[rise] - g_sinTable[rise] * 0.0f, g_cosTable[angle] * back + g_sinTable[angle] * outer, across * g_sinTable[rise] + g_cosTable[rise] * 0.0f};
+
+    switch (slot.flag1[0]) {
+    case 0:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 225, 225, 80, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 1:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    case 2:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 65, 184, 240, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+      break;
+    default:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 200, 200, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      break;
+    }
+  }
+}
+
 // OFFSET: 0x00BDF0A0
 // FUNCTION: fn_19908
 void CEffectPrim::RenderRainbow(matrix& wtm) {
