@@ -15,3 +15,15 @@ void UIResizer::Slot28(int, int) {
 // OFFSET: 0x0085FA20
 
 // OFFSET: 0x0085EFD0
+// FUNCTION: fn_10853
+void UIResizer::Slot31(int, int) {
+  if (g_windowMgr.Capture() != this) {
+    return;
+  }
+
+  if (this->parent) {
+    this->parent->Slot36();
+  }
+
+  g_windowMgr.ReleaseCapture();
+}

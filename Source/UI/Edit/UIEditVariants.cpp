@@ -110,6 +110,18 @@ int UIEditCtrl5::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // OFFSET: 0x0085CBF0
 
 // OFFSET: 0x0085FF60
+// FUNCTION: fn_10892
+void UIEditCtrl3::Slot35(int value) {
+  if (this->unknown_0134 == 0) {
+    return;
+  }
+
+  if (value < 0) {
+    this->SendMsg(this->unknown_0130, 7, 3, 0, 0, 0);
+  } else {
+    this->SendMsg(this->unknown_0130, 7, -3, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x0085BB60
 
@@ -118,6 +130,14 @@ int UIEditCtrl5::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // OFFSET: 0x0085CDE0
 
 // OFFSET: 0x0085FFC0
+// FUNCTION: fn_10894
+void UIEditCtrl_OldList::Slot35(int value) {
+  if (value < 0) {
+    this->SendMsg(nullptr, 19, 0, 0, 0, 0);
+  } else {
+    this->SendMsg(nullptr, 18, 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x0085E3D0
 // FUNCTION: fn_10827
@@ -128,3 +148,9 @@ void UIEditCtrlVarId::Slot24(int) {
 }
 
 // OFFSET: 0x0085FFA0
+// FUNCTION: fn_10893
+void UIEditCtrlVarId::Slot35(int value) {
+  if (this->parent) {
+    this->parent->Slot35(value);
+  }
+}
