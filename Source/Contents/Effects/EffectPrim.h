@@ -39,6 +39,16 @@ struct CEffectPrim : CRenderObject {
   void PrimSMA();
   void PrimShieldBoomerang3();
   bool PrimSuperAngel();
+  void Render2DCircle();
+  void Render3DCasting2(matrix& wtm);
+  void Render3DCasting(matrix& wtm);
+  void Render3DCasting_LowPolygon(matrix& wtm);
+  void RenderAttackEnergy2(matrix& wtm);
+  void RenderBlind(matrix& wtm);
+  void RenderChemical(matrix& wtm);
+  void RenderColorPaper(matrix& wtm);
+  void RenderDoubleGumGang(matrix& wtm);
+  void RenderGrandCross2(matrix& wtm);
   void PrimTanji2();
   void PrimTeiHit2();
   bool PrimSakura();
