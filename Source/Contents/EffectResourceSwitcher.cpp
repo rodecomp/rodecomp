@@ -292,18 +292,66 @@ void CEZ2STREffect::Slot32() {
 }
 
 // OFFSET: 0x006FFF90
+// FUNCTION: fn_06977
+void CEZ2STREffect::Slot14(int argument) {
+  if (this->emitter) {
+    this->emitter->unknown_3F98 = argument;
+  }
+}
 
 // OFFSET: 0x006FFFB0
+// FUNCTION: fn_06978
+void CEZ2STREffect::Slot17(float argument) {
+  if (this->emitter) {
+    this->emitter->unknown_3FA4 = argument;
+  }
+}
 
 // OFFSET: 0x006FFFD0
+// FUNCTION: fn_06979
+void CEZ2STREffect::Slot18(float argument) {
+  if (this->emitter) {
+    this->emitter->unknown_3FA8 = argument;
+  }
+}
 
 // OFFSET: 0x006FFFF0
+// FUNCTION: fn_06980
+void CEZ2STREffect::Slot19(float argument) {
+  if (this->emitter) {
+    this->emitter->unknown_3FAC = argument;
+  }
+}
 
 // OFFSET: 0x00700010
+// FUNCTION: fn_06981
+void CEZ2STREffect::Slot22(float argument) {
+  if (this->emitter) {
+    this->emitter->unknown_3FB0 = argument;
+  }
+}
 
 // OFFSET: 0x00700030
+// FUNCTION: fn_06982
+void CEZ2STREffect::Slot16(int argument) {
+  if (this->emitter) {
+    this->emitter->duration = argument;
+  }
+
+  this->frameStep = argument / 16;
+  this->SetEventFrame(0, this->frameStep + 1);
+}
 
 // OFFSET: 0x00700A10
+// FUNCTION: fn_06988
+EZ2STREffectInfo* CEZ2STREffectMgr::FindById(int id) {
+  auto it = this->effects.begin();
+  while (it != this->effects.end() && id != it->second.id + 10000) {
+    ++it;
+  }
+
+  return it != this->effects.end() ? &it->second : nullptr;
+}
 
 // OFFSET: 0x00700A90
 // FUNCTION: fn_06989
