@@ -1,5 +1,6 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Configuration/ScriptOptions.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
 #include "Client/Mode/ModeMgr.h"
@@ -84,7 +85,6 @@ bool IsServiceOption(int id) {
 
 // OFFSET: 0x006C19D0
 
-void sub_6C4270(int id, unsigned char value, bool notify, int unknown_005c, int unknown_0060);
 void sub_AAB070(int id);
 
 // OFFSET: 0x006C2610
@@ -221,6 +221,32 @@ void NotifyGameModeMenu() {
   }
 }
 
+// OFFSET: 0x006C4220
+// FUNCTION: fn_06352
+void ApplyServiceOptionFlags(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  SetServiceFlags(value, value);
+}
+
+// OFFSET: 0x006C4270
+// FUNCTION: fn_06353
+void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+}
+
+// OFFSET: 0x006C5FC0
+
 // OFFSET: 0x006C60F0
 // FUNCTION: fn_06375
 void ApplyServiceOptionWindow190(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -248,6 +274,21 @@ void ApplyServiceOptionWindow267(int id, unsigned char value, bool notify, int e
 
   if (UIWindow* window = g_windowMgr.LookupWindow(0x10B)) {
     window->Show(value);
+  }
+}
+
+// OFFSET: 0x006C6200
+// FUNCTION: fn_06378
+void ApplyServiceOptionNotifyWindow(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C0)) {
+    window->SendMsg(nullptr, 6, 0x1F6, 0, 0, 0);
   }
 }
 
