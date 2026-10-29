@@ -22,6 +22,7 @@ public:
   bool HasSelection() const;
   void SendShopRequest();
   void AddActionButton();
+  void SetSuspended(unsigned char suspend);
 
   /* 00BC */ unsigned char unknown_00BC[0x10];
   /* 00CC */ UIEditCtrl* unknown_00CC;
@@ -44,7 +45,8 @@ public:
   /* 0168 */ UIBasicButton* unknown_0168;
   /* 016C */ int unknown_016C;
   /* 0170 */ std::string unknown_0170;
-  /* 0188 */ short unknown_0188;
+  /* 0188 */ unsigned char unknown_0188;
+  /* 0189 */ unsigned char suspended;
   /* 018A */ short unknown_018A;
   /* 018C */ short unknown_018C;
 

@@ -53,6 +53,7 @@
 #include "UI/Skill/UISkillListWnd.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UICheckBox.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
 #include "Client/Session.h"
 #include "Client/Mode/CGameMode.h"
@@ -68,6 +69,9 @@
 #include <string>
 #include <windows.h>
 #include <timeapi.h>
+
+// GLOBAL: gl_24862
+bool g_vendingSaleAlarm;
 
 namespace {
 class EditLinkLayout {
@@ -1533,4 +1537,139 @@ void UISkillListWnd::Slot11() {
     this->saved->width = this->geometry.width;
     this->saved->height = this->geometry.height;
   }
+}
+
+// OFFSET: 0x00994840
+// FUNCTION: fn_13437
+void UIMerchantShopMakeWnd::SetSuspended(unsigned char suspend) {
+  UIWindow* window = reinterpret_cast<UIWindow*>(this->mode == 1 ? g_windowMgr.unknown_0410 : g_windowMgr.unknown_02F8);
+  if (!window) {
+    return;
+  }
+
+  if (suspend == 1) {
+    this->suspended = 1;
+    this->Show(0);
+    window->Show(0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2930)), 0xFFFF, 0, 0, 0);
+    return;
+  }
+
+  this->suspended = 0;
+  this->Show(1);
+  window->Show(1);
+  this->unknown_018A = -1;
+  this->unknown_018C = -1;
+}
+
+// OFFSET: 0x00994B90
+// FUNCTION: fn_13439
+void UIMerchantItemMyShopWnd::OpenShop() {
+  this->shopOpen = 1;
+  if (!this->actionButton) {
+    this->actionButton = new UIBasicButton(*this->m_context, *this->m_controls);
+    this->actionButton->Configure(42, LookupMessage(2925));
+    this->actionButton->Move(this->geometry.width - this->actionButton->geometry.width - 66, this->geometry.height - 24);
+    this->actionButton->SetId(506);
+    this->AddChild(this->actionButton);
+  }
+
+  g_vendingSaleAlarm = false;
+  this->saleAlarm->Show(0);
+
+  const int previousHeight = this->unknown_011C;
+  this->unknown_011C = 57;
+  this->Resize(this->geometry.width, this->geometry.height - previousHeight + 57);
+  this->SendMsg(nullptr, 14, 7, this->geometry.width, this->geometry.height, 0);
+  this->Invalidate();
+}
+
+// OFFSET: 0x00994D10
+// FUNCTION: fn_13441
+void UIItemWnd::ReleaseSelection(unsigned char keep) {
+  if (keep) {
+    return;
+  }
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it) {
+    g_session.ClearItemSelection();
+    it->unknown_0074[1] = 0;
+  }
+
+  if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
+    window->SendMsg(nullptr, 6, 286, 194, 0, 0);
+  }
+}
+
+// OFFSET: 0x009967F0
+// FUNCTION: fn_13469
+int ItemTypeSortRank(int type) {
+  switch (type) {
+  case 0:
+  case 1:
+  case 2:
+    return 0;
+  case 18:
+    return 1;
+  case 4:
+  case 11:
+  case 12:
+  case 13:
+  case 14:
+    return 2;
+  case 5:
+  case 8:
+  case 9:
+  case 15:
+    return 3;
+  case 10:
+  case 16:
+  case 17:
+  case 19:
+    return 4;
+  case 6:
+    return 5;
+  case 3:
+  case 7:
+    return 6;
+  default:
+    return 10;
+  }
+}
+
+// OFFSET: 0x00996940
+// FUNCTION: fn_13473
+void UIItemStoreSubWnd::SetTabIndex(int index) {
+  this->tabIndex = index;
+}
+
+// OFFSET: 0x00997080
+// FUNCTION: fn_13478
+void UIItemStoreWnd::SetTabChecked(int index, bool checked) {
+  this->tabs[index]->SetChecked(checked);
+}
+
+// OFFSET: 0x00997160
+// FUNCTION: fn_13481
+void UIMerchantItemMyShopWnd::SetDuration(std::uint32_t value) {
+  this->startTick = timeGetTime();
+  this->duration = value;
+}
+
+// OFFSET: 0x00997180
+// FUNCTION: fn_13482
+void UIMerchantItemShopWnd::StartTimer(std::uint32_t value) {
+  this->startTick = timeGetTime();
+  this->duration = value;
+
+  const int previousHeight = this->unknown_0118;
+  this->unknown_0118 = 57;
+  this->Resize(this->geometry.width, this->geometry.height - previousHeight + 57);
+  this->SendMsg(nullptr, 14, 3, this->geometry.width, this->geometry.height, 0);
+}
+
+// OFFSET: 0x009971E0
+// FUNCTION: fn_13483
+void UIItemStoreFindWnd::SetSearchText(std::string text) {
+  this->searchText = text;
 }
