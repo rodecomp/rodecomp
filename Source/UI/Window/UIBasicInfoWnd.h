@@ -6,6 +6,7 @@
 
 class UIBasicInfoWnd : public UIFrameWnd {
 public:
+  bool Slot03() override;
   void Slot11() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;

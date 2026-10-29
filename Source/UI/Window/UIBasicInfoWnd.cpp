@@ -2,6 +2,12 @@
 
 #include "UI/Window/UIWindowMgr.h"
 
+// OFFSET: 0x00998190
+// FUNCTION: fn_13489
+bool UIBasicInfoWnd::Slot03() {
+  return true;
+}
+
 // OFFSET: 0x00999BC0
 // FUNCTION: fn_13499
 void UIBasicInfoWnd::Slot11() {
