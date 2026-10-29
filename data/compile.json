@@ -723,6 +723,7 @@
   "Source/UI/Enchant/UIEnchantUI.cpp": 2,
   "Source/UI/FrameSkin.cpp": 2,
   "Source/UI/GameSettings/GameSettingsUI.cpp": 2,
+  "Source/UI/Gauges/UIPetInfoBarGraph.cpp": 2,
   "Source/UI/Guild/UIAgitWnd.cpp": 2,
   "Source/UI/Guild/UIGuildHelperWnd.cpp": 2,
   "Source/UI/Guild/UIGuildWnd.cpp": 2,

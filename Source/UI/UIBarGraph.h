@@ -31,4 +31,11 @@ protected:
   UIButtonContext* m_controls;
 };
 
+class UIPetInfoBarGraph : public UIWindow {
+public:
+  void SetValue(int value);
+
+  /* 007C */ int unknown_007C;
+};
+
 #endif

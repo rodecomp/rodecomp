@@ -10,6 +10,7 @@
 #include "UI/Lists/UITabControl.h"
 
 #include <algorithm>
+#include <cstdio>
 
 // OFFSET: 0x0086E550
 // FUNCTION: fn_11073
@@ -412,4 +413,25 @@ void UIChatHisBox::Slot25(int x, int y) {
 // OFFSET: 0x00890AB0
 // FUNCTION: fn_11432
 void UIChatHisBox::Slot31(int, int) {
+}
+
+// OFFSET: 0x0089EAD0
+// FUNCTION: fn_11604
+bool UIChatHisBox::SaveChatLog(const char* path) {
+  std::FILE* file = std::fopen(path, "w");
+  if (!file) {
+    return false;
+  }
+
+  const char newline = '\n';
+  const int count = static_cast<int>(this->lines.size());
+
+  for (int index = 0; index < count; ++index) {
+    const std::string& line = this->lines[index];
+    std::fwrite(line.data(), line.size(), 1, file);
+    std::fwrite(&newline, 1, 1, file);
+  }
+
+  std::fclose(file);
+  return true;
 }
