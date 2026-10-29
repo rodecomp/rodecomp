@@ -6,6 +6,7 @@
 #include <map>
 #include <utility>
 
+class CTexture;
 class UIScrollBar;
 
 class UIScrollWnd : public UIWindow {
@@ -13,7 +14,9 @@ public:
   ~UIScrollWnd() override;
   void Slot15(int width, int height) override;
   void Slot35(int delta) override;
+  RenderPrimitive* DrawPrimitive() override;
 
+  RenderPrimitive* BuildPrimitive(int x, int y, int sourceX, int sourceY, int width, int height, CTexture* texture, std::uint32_t color);
   void Clear();
   void RemoveChild(UIWindow* child, unsigned char destroy);
 
