@@ -1198,7 +1198,44 @@ void CEffectPrim::RenderPentagon(matrix& wtm) {
 }
 
 // OFFSET: 0x00BE0990
+// FUNCTION: fn_19912
+void CEffectPrim::RenderSMA3(matrix&) {
+  const EffectPrimitiveSlot& slot = this->state.slots[0];
+  if (slot.life != 1) {
+    return;
+  }
 
+  int effectId;
+  if (slot.flag1[0] == 0) {
+    if (slot.process % 8 != 0) {
+      return;
+    }
+    effectId = 552;
+  } else if (slot.flag1[0] == 1) {
+    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CRagEffect* effect = gameMode->scene->player->LaunchEffect(556, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (effect) {
+      vector3d position = slot.vecBNow;
+      effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+    }
+    return;
+  } else if (slot.flag1[0] == 99) {
+    if (slot.process % 8 != 0) {
+      return;
+    }
+    effectId = 1205;
+  } else {
+    return;
+  }
+
+  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CRagEffect* effect = gameMode->scene->player->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  if (effect) {
+    vector3d position = slot.vecBNow;
+    float extra[3] = {static_cast<float>(slot.process), slot.process % 16 != 0 ? 1.0f : 0.0f, 0.0f};
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), reinterpret_cast<int>(extra), reinterpret_cast<int>(extra) >> 31, 0, 0);
+  }
+}
 // OFFSET: 0x00BDD0D0
 // FUNCTION: fn_19900
 void CEffectPrim::RenderBeam(matrix& wtm) {
