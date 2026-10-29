@@ -597,20 +597,54 @@ EquipSlots ClientItemLists::GetEquipSlots(int location) {
 }
 
 // OFFSET: 0x00DD8890
+// FUNCTION: fn_23313
+void ClientItemLists::ClearInventory() {
+  this->inventory.erase(this->inventory.begin(), this->inventory.end());
+  RefreshItemWindows(&g_windowMgr);
+}
 
 // OFFSET: 0x00DD88C0
+// FUNCTION: fn_23314
+void ClientItemLists::ClearItems1760And1748() {
+  this->items_1760.erase(this->items_1760.begin(), this->items_1760.end());
+  this->items_1748.erase(this->items_1748.begin(), this->items_1748.end());
+}
 
 // OFFSET: 0x00DD8900
+// FUNCTION: fn_23315
+void ClientItemLists::ClearItems1768() {
+  this->items_1768.erase(this->items_1768.begin(), this->items_1768.end());
+}
 
 // OFFSET: 0x00DD8920
+// FUNCTION: fn_23316
+void ClientItemLists::ClearItems1740() {
+  this->items_1740.erase(this->items_1740.begin(), this->items_1740.end());
+}
 
 // OFFSET: 0x00DD8940
+// FUNCTION: fn_23317
+void ClientItemLists::ClearItems1750() {
+  this->items_1750.erase(this->items_1750.begin(), this->items_1750.end());
+}
 
 // OFFSET: 0x00DD8960
+// FUNCTION: fn_23318
+void ClientItemLists::ClearItems1758() {
+  this->items_1758.erase(this->items_1758.begin(), this->items_1758.end());
+}
 
 // OFFSET: 0x00DD8980
+// FUNCTION: fn_23319
+void ClientItemLists::ClearItems1760() {
+  this->items_1760.erase(this->items_1760.begin(), this->items_1760.end());
+}
 
 // OFFSET: 0x00DD89A0
+// FUNCTION: fn_23320
+void ClientItemLists::ClearItems1748() {
+  this->items_1748.erase(this->items_1748.begin(), this->items_1748.end());
+}
 
 // OFFSET: 0x00DD89C0
 // FUNCTION: fn_23321
@@ -619,6 +653,12 @@ void ClientItemLists::ClearRecords0734() {
 }
 
 // OFFSET: 0x00DD8A20
+// FUNCTION: fn_23322
+void ClientItemLists::ClearItems1784(int index) {
+  if (index >= 0 && static_cast<unsigned>(index) < 11) {
+    this->items_1784[index].erase(this->items_1784[index].begin(), this->items_1784[index].end());
+  }
+}
 
 // OFFSET: 0x00DD8A50
 // FUNCTION: fn_23323
@@ -639,6 +679,23 @@ void ClientItemLists::ResetEquipped() {
 }
 
 // OFFSET: 0x00DD8AF0
+// FUNCTION: fn_23325
+void ClientItemLists::ClearPartyMembers() {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+  if (mode) {
+    for (auto member = this->partyMembers.begin(); member != this->partyMembers.end(); ++member) {
+      CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(member->accountId);
+      if (actor && static_cast<EffectActor*>(actor)->state.Attachments().HasId(160) == true) {
+        actor->SendMsg(nullptr, 109, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+    }
+  }
+
+  this->partyMembers.clear();
+  this->unknown_5464 = 0;
+  this->unknown_54C4 = "";
+}
 
 // OFFSET: 0x00DD8BD0
 // FUNCTION: fn_23326
@@ -652,18 +709,132 @@ void ClientItemLists::ResetUnknown166C() {
 }
 
 // OFFSET: 0x00DD8C10
+// FUNCTION: fn_23327
+void ClientItemLists::ClearItems1720() {
+  this->items_1720.erase(this->items_1720.begin(), this->items_1720.end());
+}
 
 // OFFSET: 0x00DD8C70
+// FUNCTION: fn_23328
+void ClientItemLists::ResetHotkeyDescriptions() {
+  for (int index = 0; index < 9; ++index) {
+    this->hotkeyDescriptions[index] = "nothing";
+  }
+}
 
 // OFFSET: 0x00DD8CA0
+// FUNCTION: fn_23329
+void ClientItemLists::ClearItems1738() {
+  this->items_1738.erase(this->items_1738.begin(), this->items_1738.end());
+}
 
 // OFFSET: 0x00DD8CC0
+// FUNCTION: fn_23330
+void ClientItemLists::CopyItems1740To1750() {
+  this->items_1750.erase(this->items_1750.begin(), this->items_1750.end());
+
+  for (auto item = this->items_1740.begin(); item != this->items_1740.end(); ++item) {
+    this->items_1750.push_back(*item);
+  }
+}
 
 // OFFSET: 0x00DD8DB0
+// FUNCTION: fn_23331
+void ClientItemLists::CopyItems1760To1770() {
+  this->items_1770.erase(this->items_1770.begin(), this->items_1770.end());
+
+  for (auto item = this->items_1760.begin(); item != this->items_1760.end(); ++item) {
+    this->items_1770.push_back(*item);
+  }
+}
 
 // OFFSET: 0x00DD8EA0
+// FUNCTION: fn_23332
+std::pair<bool, ITEM_INFO> ClientItemLists::FindItem1750(const ITEM_INFO& item, unsigned char) {
+  auto found = this->items_1750.begin();
+
+  for (; found != this->items_1750.end(); ++found) {
+    if (IsSameItem(*found, item)) {
+      break;
+    }
+  }
+
+  return found != this->items_1750.end() ? std::make_pair(true, *found) : std::make_pair(false, ITEM_INFO());
+}
 
 // OFFSET: 0x00DD91C0
+// FUNCTION: fn_23333
+int ClientItemLists::IsDifferentName(const char* name, const char* other) {
+  if (std::strlen(other) == 0) {
+    return 1;
+  }
+
+  char first[24];
+  std::sprintf(first, "%s", name);
+  const short firstLength = static_cast<short>(std::strlen(first));
+
+  char second[24];
+  std::sprintf(second, "%s", other);
+  const short secondLength = static_cast<short>(std::strlen(second));
+
+  const short difference = firstLength >= secondLength ? firstLength - secondLength : secondLength - firstLength;
+  const short length = firstLength >= secondLength ? secondLength : firstLength;
+
+  if (firstLength >= secondLength + 2 && firstLength <= secondLength + 4) {
+    short matched = 0;
+    for (short index = 0; index < length; ++index) {
+      CountSameNameChar(first[index + 2], second[index], matched);
+    }
+
+    if (matched == length) {
+      return 0;
+    }
+  }
+
+  if (firstLength >= secondLength + 1 && firstLength <= secondLength + 4) {
+    short matched = 0;
+    for (short index = 0; index < length; ++index) {
+      CountSameNameChar(first[index + 1], second[index], matched);
+    }
+
+    if (matched == length) {
+      return 0;
+    }
+  }
+
+  if (difference > 2) {
+    return 1;
+  }
+
+  short matched = 0;
+  for (int index = 0; index < length; ++index) {
+    CountSameNameChar(first[index], second[index], matched);
+  }
+
+  if (matched >= length - 2) {
+    return 0;
+  }
+
+  matched = 0;
+  char skip = 1;
+  short position = 0;
+  for (short index = 0; index < length; ++index) {
+    CountSameNameChar(first[index], second[position], matched);
+
+    if (matched != index + 1 && skip == 1) {
+      skip = 2;
+      --position;
+    }
+
+    ++position;
+  }
+
+  if (matched != length - 1) {
+    return 1;
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00DDA470
 
