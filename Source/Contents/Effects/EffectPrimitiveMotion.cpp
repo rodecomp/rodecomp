@@ -2201,7 +2201,7 @@ bool EffectParticle::UpdateWarp() {
 
   const float distance = this->state.unknown_02BC - this->state.unknown_02EC;
   this->state.unknown_0370 = Forward(distance, this->state.matrix1);
-  reinterpret_cast<AffineMatrix*>(this->state.matrix2)->SetAxisRotation(this->state.unknown_0290, ClientRadians(angle));
+  reinterpret_cast<AffineMatrix*>(this->state.matrix2)->MakeTransform(this->state.unknown_0290, ClientRadians(angle));
 
   const float move = this->state.unknown_0310;
   this->state.unknown_03A0 = Lift(move, this->state.matrix2);

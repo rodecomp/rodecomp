@@ -1,6 +1,7 @@
 #include "Utility/Math/AffineMatrix.h"
 
 #include <bit>
+#include <cmath>
 #include <cstring>
 
 // STATIC: 0x01312438
@@ -198,37 +199,39 @@ int AffineMatrix::IsIdentity() const {
   return 1;
 }
 
+// OFFSET: 0x00554F70
 // FUNCTION: fn_02031
-const float* AffineMatrix::SetAxisRotation(const float* axis, float radians) {
-  const float halfAngle = radians * 0.5f;
-  const float sine = ClientSin(halfAngle);
-  const float x = sine * axis[0];
-  const float y = sine * axis[1];
-  const float z = sine * axis[2];
-  const float cosine = ClientCos(halfAngle);
+void AffineMatrix::MakeTransform(const float* rotaxis, float rotangle) {
+  const float omega = rotangle / 2.0f;
+  const float s = static_cast<float>(sin(static_cast<double>(omega)));
+  const float qx = rotaxis[0] * s;
+  const float qy = rotaxis[1] * s;
+  const float qz = rotaxis[2] * s;
+  const float qw = static_cast<float>(cos(static_cast<double>(omega)));
+
+  const float x2 = qx + qx;
+  const float y2 = qy + qy;
+  const float z2 = qz + qz;
+  const float wx = qw * x2;
+  const float wy = qw * y2;
+  const float wz = qw * z2;
+  const float xx = qx * x2;
+  const float xy = qx * y2;
+  const float xz = qx * z2;
+  const float yy = qy * y2;
+  const float yz = qy * z2;
+  const float zz = qz * z2;
+
+  this->values[0] = 1.0f - (yy + zz);
+  this->values[1] = xy + wz;
+  this->values[2] = xz - wy;
+  this->values[3] = xy - wz;
+  this->values[4] = 1.0f - (xx + zz);
+  this->values[5] = yz + wx;
+  this->values[6] = xz + wy;
+  this->values[7] = yz - wx;
+  this->values[8] = 1.0f - (xx + yy);
   this->values[9] = 0.0f;
   this->values[10] = 0.0f;
   this->values[11] = 0.0f;
-  const float twiceX = x + x;
-  const float twiceY = y + y;
-  const float twiceZ = z + z;
-  const float wz = cosine * twiceZ;
-  const float wx = cosine * twiceX;
-  const float wy = cosine * twiceY;
-  const float xx = twiceX * x;
-  const float xy = twiceY * x;
-  const float yy = twiceY * y;
-  const float xz = twiceZ * x;
-  const float zz = twiceZ * z;
-  const float yz = twiceZ * y;
-  this->values[0] = 1.0f - (zz + yy);
-  this->values[1] = xy + wz;
-  this->values[3] = xy - wz;
-  this->values[2] = xz - wy;
-  this->values[6] = xz + wy;
-  this->values[4] = 1.0f - (zz + xx);
-  this->values[5] = yz + wx;
-  this->values[7] = yz - wx;
-  this->values[8] = 1.0f - (yy + xx);
-  return axis;
 }

@@ -22,7 +22,7 @@ struct AffineMatrix {
 
   void Identity();
   int IsIdentity() const;
-  const float* SetAxisRotation(const float* axis, float radians);
+  void MakeTransform(const float* rotaxis, float rotangle);
   void SetXRotation(float radians);
   void SetYRotation(float radians);
   void SetZRotation(float radians);
