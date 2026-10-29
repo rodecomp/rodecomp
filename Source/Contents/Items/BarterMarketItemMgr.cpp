@@ -42,6 +42,7 @@ class CBarterMarketItemMgr {
 public:
   int GetValueById(int id);
   int GetAmountById(int id);
+  int GetAllItemValueById(int id);
   float GetTotalAmount();
   std::list<BarterMarketItem>* GetItems();
   std::list<BarterMarketItem>* GetAllItems();
@@ -134,6 +135,8 @@ int CBarterMarketItemMgr::GetAllItemCount()
   return (int)this->allItems.size();
 }
 
+// OFFSET: 0x005D8170
+
 // OFFSET: 0x005D8250
 // FUNCTION: fn_03738
 int CBarterMarketItemMgr::GetAmountById(int id)
@@ -177,6 +180,9 @@ struct BarterMarketEntry {
 class CExpandedBarterMarketItemMgr {
 public:
   std::vector<BarterMarketEntry>* GetItems();
+  int GetItemValueById(int id);
+  float GetItemFactorById(int id);
+  std::vector<BarterMarketEntry>* GetEntries();
   int GetEntryCount();
   int GetValueById(int id);
   int* GetField24();
@@ -195,6 +201,17 @@ std::vector<BarterMarketEntry>* CExpandedBarterMarketItemMgr::GetItems()
   return &this->items;
 }
 
+// OFFSET: 0x005DA3B0
+
+// OFFSET: 0x005DA5E0
+
+// OFFSET: 0x005DA610
+// FUNCTION: fn_03769
+std::vector<BarterMarketEntry>* CExpandedBarterMarketItemMgr::GetEntries()
+{
+  return &this->entries;
+}
+
 // OFFSET: 0x005DA620
 // FUNCTION: fn_03770
 int CExpandedBarterMarketItemMgr::GetEntryCount()
@@ -203,6 +220,16 @@ int CExpandedBarterMarketItemMgr::GetEntryCount()
 }
 
 // OFFSET: 0x005DA640
+// FUNCTION: fn_03771
+int CExpandedBarterMarketItemMgr::GetValueById(int id)
+{
+  for (std::vector<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it) {
+    if (it->id == id) {
+      return it->value;
+    }
+  }
+  return 0;
+}
 
 // OFFSET: 0x005DA670
 // FUNCTION: fn_03772
@@ -212,3 +239,12 @@ int* CExpandedBarterMarketItemMgr::GetField24()
 }
 
 // OFFSET: 0x005DA680
+// FUNCTION: fn_03773
+float CExpandedBarterMarketItemMgr::GetWeightedTotal()
+{
+  float total = 0.0f;
+  for (std::vector<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it) {
+    total += (float)it->value * it->factor;
+  }
+  return total;
+}
