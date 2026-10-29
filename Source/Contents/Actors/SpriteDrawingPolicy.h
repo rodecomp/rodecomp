@@ -8,6 +8,14 @@ struct SpriteFrameCell;
 struct SpriteRleImage;
 struct tagRECT;
 
+struct AccessoryLayerDepth {
+  const int& bottomAccessory;
+  const int& topAccessory;
+  const int& middleAccessory;
+
+  void OffsetLayerDepth(int layer, SpriteCellQuad& quad, float bottomDepth, float topDepth) const;
+};
+
 struct SpriteDrawingPolicy {
   LuaScript& script;
   const unsigned char& newDrawOnTop;
