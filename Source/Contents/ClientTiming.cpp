@@ -456,6 +456,23 @@ void CSession::SetHotkeyDescription(const char* description, int index) {
 }
 
 // OFFSET: 0x00E26430
+// FUNCTION: fn_23914
+void CSession::SetHotkeyDescription(const char* description, std::uint32_t skillLevel, int index) {
+  for (int slot = 9 * this->m_hotkeyPage; slot < 9 * (this->m_hotkeyPage + 1); ++slot) {
+    if (this->m_hotkeyDescriptions[slot] == description && this->unknown_0420[slot] == skillLevel) {
+      this->m_hotkeyDescriptions[slot] = "nothing";
+      this->unknown_0420[slot] = 0;
+    }
+  }
+
+  if (std::strlen(description) == 0) {
+    this->m_hotkeyDescriptions[index] = "nothing";
+    this->unknown_0420[index] = 0;
+  } else {
+    this->m_hotkeyDescriptions[index] = description;
+    this->unknown_0420[index] = skillLevel;
+  }
+}
 
 // OFFSET: 0x00E26540
 
