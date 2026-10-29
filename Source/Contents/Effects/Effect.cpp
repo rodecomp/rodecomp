@@ -109,6 +109,16 @@ void CEffect::SetSourceActor(std::uint32_t aid) {
   }
 }
 
+// OFFSET: 0x00B4E6A0
+// FUNCTION: fn_18999
+bool CEffect::ActorExists() const {
+  if (this->actor != 0 && !FindRenderObject(this->actor)) {
+    return false;
+  }
+
+  return true;
+}
+
 // OFFSET: 0x00B249A0
 // FUNCTION: fn_18773
 void EffectRetirement::Clear() {

@@ -58,6 +58,7 @@ public:
   void SetSourceActor(std::uint32_t aid);
   void SetEventFrame(int kind, int frame);
   bool RetireIfInactive();
+  bool ActorExists() const;
   void UpdateVisibility();
 
   /* 0004 */ int id;
