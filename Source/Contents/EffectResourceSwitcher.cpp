@@ -1,6 +1,9 @@
 #include "Contents/EffectResourceSwitcher.h"
+#include "Contents/Actors/RenderObject.h"
 #include "Contents/Effects/Effect.h"
+#include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
+#include "Contents/World/World.h"
 
 #include <cctype>
 #include <new>
@@ -9,6 +12,23 @@
 // GLOBAL: gl_24485
 template <>
 CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::s_instance = nullptr;
+
+// OFFSET: 0x005A2090
+// FUNCTION: fn_03082
+void EffectResourceSwitcher::RetireEffects() {
+  CRenderObject* actor = FindRenderObject(this->actor);
+  if (!actor) {
+    return;
+  }
+
+  if (!this->sourceName.empty()) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(this->sourceName));
+  }
+
+  if (!this->targetName.empty()) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(this->targetName));
+  }
+}
 
 // OFFSET: 0x005A2110
 // FUNCTION: fn_03083
@@ -104,7 +124,7 @@ void CEffect::Slot14(int) {
 
 // OFFSET: 0x005A24D0
 // FUNCTION: fn_03108
-void CEffect::Slot17(int) {
+void CEffect::Slot17(float) {
 }
 
 // OFFSET: 0x005A24E0

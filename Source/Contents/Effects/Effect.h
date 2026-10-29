@@ -36,7 +36,7 @@ public:
   virtual void Slot14(int argument);
   virtual void Slot15(int argument);
   virtual void Slot16(int) {}
-  virtual void Slot17(int argument);
+  virtual void Slot17(float argument);
   virtual void Slot18(int argument);
   virtual void Slot19(int argument);
   virtual void Slot20(int argument);

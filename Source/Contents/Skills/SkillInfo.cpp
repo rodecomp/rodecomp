@@ -1,10 +1,12 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillInfo.h"
@@ -15,6 +17,8 @@
 #include "Script/LuaScript.h"
 
 
+#include <algorithm>
+#include <cstdlib>
 #include <memory>
 
 class CEfstAction_ChangeSize : public CEfstAction {
@@ -51,6 +55,7 @@ public:
 
 class CEfstAction_UNLIMIT : public CEfstAction {
 public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool flag) override;
   void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
@@ -84,6 +89,7 @@ public:
 class CSkillAction_ABC_CHASING_BREAK : public CSkillAction {
 public:
   bool Slot07() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -91,6 +97,7 @@ class CSkillAction_ABC_CHASING_SHOT : public CSkillAction {
 public:
   bool Slot07() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot15(int level, CGameActor* source, CGameActor* target) override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -614,6 +621,19 @@ void CSkillAction_RA_UNLIMIT::Slot08(int level, CGameActor* source) {
   g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
 }
 
+// OFFSET: 0x00775250
+// FUNCTION: fn_08337
+void CEfstAction_UNLIMIT::Slot00(int, int, int, int, CRenderObject* actor, bool) {
+  if (!actor) {
+    return;
+  }
+
+  g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("unlimit_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  if (!g_serviceOptions.Get(229)) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("unlimit_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
 // OFFSET: 0x007756D0
 // FUNCTION: fn_08339
 void CEfstAction_UNLIMIT::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
@@ -914,6 +934,28 @@ void CSkillAction_ABC_CHASING_BREAK::Slot16(int level, CGameActor* source, CGame
   }
 }
 
+// OFFSET: 0x00778150
+// FUNCTION: fn_08372
+void CSkillAction_ABC_CHASING_BREAK::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source || !target) {
+    return;
+  }
+
+  if (CRagEffect* effect = static_cast<EffectActor*>(source)->LaunchEffect(2416, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
+  }
+
+  for (int angle = 0; angle < 360; angle += 45) {
+    CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_break"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot17(static_cast<float>(angle));
+      effect->Slot16(std::max(0, std::rand() % 150));
+      effect->Slot22(0.15f);
+      effect->Slot32();
+    }
+  }
+}
+
 // OFFSET: 0x00778590
 // FUNCTION: fn_08376
 void CSkillAction_ABC_CHASING_SHOT::Slot08(int level, CGameActor* source) {
@@ -923,6 +965,27 @@ void CSkillAction_ABC_CHASING_SHOT::Slot08(int level, CGameActor* source) {
     }
     if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_shot_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
       effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x00778830
+// FUNCTION: fn_08377
+void CSkillAction_ABC_CHASING_SHOT::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source || !target) {
+    return;
+  }
+
+  if (CRagEffect* effect = static_cast<EffectActor*>(source)->LaunchEffect(2416, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
+  }
+
+  for (int angle = 0; angle < 360; angle += 45) {
+    CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_shot_single"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot17(static_cast<float>(angle));
+      effect->Slot22(0.15f);
+      effect->Slot32();
     }
   }
 }

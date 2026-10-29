@@ -33,6 +33,8 @@ public:
   /* 00F8 */ std::string targetName;
 
   void Slot16(int argument) override;
+
+  void RetireEffects();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
