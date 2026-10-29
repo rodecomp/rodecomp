@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+struct lua_State;
+
 struct TownInfo {
   TownInfo();
   TownInfo(int type, std::string name, int x, int y, std::string image);
@@ -28,10 +30,15 @@ public:
 
   static bool Create();
   static void Destroy();
+  static int L_AddTownInfo(lua_State* state);
 
   /* 0004 */ bool m_isValid;
   /* 0008 */ std::map<std::string, std::vector<TownInfo>> m_towns;
   /* 0010 */ std::vector<TownInfo> m_current;
+
+  void AddTownInfo(std::string mapName, std::string name, int x, int y, int type);
+  bool LoadScript();
+  TownInfo GetTownInfo(std::string mapName, unsigned int index);
 };
 
 extern CTownInfoMgr* g_townInfoMgr;
