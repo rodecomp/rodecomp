@@ -9,6 +9,7 @@
 #include "UI/CashEmotion/UICashEmotionPiece.h"
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/WindowBorder.h"
 
 #include <algorithm>
@@ -77,6 +78,16 @@ public:
 protected:
   /* 00E0 */ bool m_pressed;
   /* 00E4 */ std::string unknown_00E4;
+};
+
+class UICashEmotionScrollBar : public UIScrollBar {
+public:
+  void Paint() override;
+
+  void SetDisabled(bool disabled);
+
+protected:
+  /* 00B4 */ bool m_disabled;
 };
 
 class UICashEmotionMiniWnd : public UIWindow {
@@ -1332,6 +1343,85 @@ int UICashEmotionPiece::SendMsg(
     return 0;
   default:
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+}
+
+// OFFSET: 0x007CC060
+// FUNCTION: fn_09492
+void UICashEmotionScrollBar::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  const int height = this->geometry.height;
+  DrawRectangleBorder(*this, 0, 0, this->geometry.width, height, 0xDECEBD);
+
+  bool disabled;
+  const char* name;
+  if (!this->m_disabled && this->maximum != 0) {
+    disabled = false;
+    if (this->state == 1) {
+      name = "유저인터페이스\\cashemotion\\scroll_btn_up_over.bmp";
+    } else {
+      name = this->state != 4 ? "유저인터페이스\\cashemotion\\scroll_btn_up_normal.bmp" : "유저인터페이스\\cashemotion\\scroll_btn_up_press.bmp";
+    }
+  } else {
+    disabled = true;
+    name = "유저인터페이스\\cashemotion\\scroll_btn_up_diasble.bmp";
+  }
+
+  auto* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+  if (up) {
+    this->DrawBitmap(0, -1, &up->image, false);
+  }
+
+  if (disabled) {
+    name = "유저인터페이스\\cashemotion\\scroll_btn_down_disable.bmp";
+  } else if (this->state == 2) {
+    name = "유저인터페이스\\cashemotion\\scroll_btn_down_over.bmp";
+  } else {
+    name = this->state != 5 ? "유저인터페이스\\cashemotion\\scroll_btn_down_normal.bmp" : "유저인터페이스\\cashemotion\\scroll_btn_down_press.bmp";
+  }
+
+  auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+  if (down) {
+    this->DrawBitmap(0, height - this->arrowLength + 1, &down->image, false);
+  }
+
+  if (disabled) {
+    return;
+  }
+
+  const int top = this->ThumbOffset() + this->arrowLength - 2;
+  const int length = this->ThumbLength();
+  int topHeight = 0;
+  auto* topBar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\scrollbar_top.bmp")));
+  if (topBar) {
+    topHeight = topBar->image.height;
+    this->DrawBitmap(0, top, &topBar->image, true);
+  }
+
+  auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\scrollbar_mid.bmp")));
+  auto* bottom = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashemotion\\scrollbar_bottom.bmp")));
+  const int bottomHeight = bottom ? bottom->image.height : 0;
+
+  int end = top + (length + 4);
+  if (middle) {
+    const int step = middle->image.height;
+    end = (length + 4) + (top - bottomHeight);
+    for (int y = top + topHeight; y < end; y += step) {
+      this->DrawBitmap(0, y, &middle->image, true);
+    }
+  }
+
+  if (bottom) {
+    this->DrawBitmap(0, end, &bottom->image, true);
+  }
+}
+
+// OFFSET: 0x007CC290
+// FUNCTION: fn_09493
+void UICashEmotionScrollBar::SetDisabled(bool disabled) {
+  if (disabled != this->m_disabled) {
+    this->m_disabled = disabled;
+    this->Invalidate();
   }
 }
 
