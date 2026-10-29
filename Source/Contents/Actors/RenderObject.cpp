@@ -971,3 +971,25 @@ void CRenderObject::UpdateTlvertex(const float* matrix) {
   g_renderer->ProjectViewport(&this->render.position.x, matrix, &x, &y, &reciprocalDepth);
   this->SetTlvert(x, y);
 }
+
+// OFFSET: 0x00CABE60
+// FUNCTION: fn_21039
+int CGameActor::ActionBase(int state) {
+  int base = 16;
+  switch (state) {
+  case 0:
+    base = 0;
+    break;
+  case 1:
+    base = 8;
+    break;
+  case 3:
+    base = 32;
+    break;
+  case 4:
+    base = 24;
+    break;
+  }
+
+  return base;
+}

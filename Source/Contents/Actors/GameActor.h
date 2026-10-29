@@ -129,6 +129,7 @@ public:
   int GetShield();
   int GetEffectiveJob(int job);
   int GetUnknown0404Job() const;
+  int ActionBase(int state);
   void SetUnknown03C4(int value);
   void SetUnknown0404(int value);
   void SetUnknown008C(const std::uint32_t* value);
