@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <random>
+#include <xhash>
 #include <zlib.h>
 
 namespace {
@@ -613,12 +614,12 @@ struct VectorUint32_654D10 {
   unsigned int* last;
   unsigned int* end;
 
-  void sub_654D10(unsigned int count, unsigned int val);
+  __declspec(noinline) void sub_654D10(unsigned int count, unsigned int val);
 };
 
 // OFFSET: 0x00654D10
 // FUNCTION: fn_05051
-void VectorUint32_654D10::sub_654D10(unsigned int count, unsigned int val) {
+__declspec(noinline) void VectorUint32_654D10::sub_654D10(unsigned int count, unsigned int val) {
   unsigned int old_size = static_cast<unsigned int>(this->last - this->first);
   if (count <= old_size) {
     sub_6468C0(this->first, this->last, &val);
@@ -671,12 +672,12 @@ struct VectorInt32_654E00 {
   int* last;
   int* end;
 
-  void sub_654E00(unsigned int count, int val);
+  __declspec(noinline) void sub_654E00(unsigned int count, int val);
 };
 
 // OFFSET: 0x00654E00
 // FUNCTION: fn_05052
-void VectorInt32_654E00::sub_654E00(unsigned int count, int val) {
+__declspec(noinline) void VectorInt32_654E00::sub_654E00(unsigned int count, int val) {
   unsigned int old_size = static_cast<unsigned int>(this->last - this->first);
   if (count <= old_size) {
     sub_646930(this->first, this->last, &val);
@@ -779,11 +780,152 @@ struct HashTable_655340 {
   unsigned int bucket_count;
 
   void sub_654FF0(unsigned int buckets);
+  void sub_655190(unsigned int buckets);
   HashNode_655340* sub_655470(HashNode_655340* first, HashNode_655340* last);
   HashNode_655340* sub_655340(unsigned int hash, HashNode_655340* prev, HashNode_655340* node);
   void sub_6553C0();
   HashSearchResult_655D70 sub_655D70(const short* key, unsigned int hash);
 };
+
+// OFFSET: 0x00654FF0
+// FUNCTION: fn_05057
+void HashTable_655340::sub_654FF0(unsigned int bucket_count) {
+  const unsigned long max_buckets_log2 = std::_Floor_of_log_2(0x1fffffff);
+  const unsigned int max_buckets = 1u << max_buckets_log2;
+  if (bucket_count > max_buckets) {
+    std::_Xlength_error("invalid hash bucket count");
+  }
+  unsigned int new_bucket_count = 1u << std::_Ceiling_of_log_2(bucket_count);
+  reinterpret_cast<VectorUint32_654D10*>(&this->buckets)->sub_654D10(new_bucket_count * 2, reinterpret_cast<uintptr_t>(this->head));
+  this->bucket_count = new_bucket_count;
+  this->mask = new_bucket_count - 1;
+
+  HashNode_655340* head = this->head;
+  HashNode_655340* node = head->prev;
+  while (node != head) {
+    HashNode_655340* next_node = node->prev;
+    const unsigned char* key_bytes = reinterpret_cast<const unsigned char*>(&node->key);
+    unsigned int hash = (key_bytes[0] ^ 0x811c9dc5) * 0x1000193;
+    hash = (hash ^ key_bytes[1]) * 0x1000193;
+    unsigned int bucket_idx = hash & this->mask;
+    HashBucket_655340* bucket = &this->buckets[bucket_idx];
+    if (bucket->first == head) {
+      bucket->first = node;
+      bucket->last = node;
+    } else {
+      HashNode_655340* last = bucket->last;
+      if (node->key == last->key) {
+        if (last->prev != node) {
+          node->next->prev = next_node;
+          next_node->next = node->next;
+          node->prev = last->prev;
+          last->prev->next = node;
+          last->prev = node;
+          node->next = last;
+        }
+        bucket->last = node;
+      } else {
+        HashNode_655340* first = bucket->first;
+        HashNode_655340* match = nullptr;
+        HashNode_655340* it = last;
+        while (it != first) {
+          it = it->next;
+          if (it->key == node->key) {
+            match = it;
+            break;
+          }
+        }
+        if (match) {
+          node->next->prev = next_node;
+          next_node->next = node->next;
+          node->prev = match->prev;
+          match->prev->next = node;
+          match->prev = node;
+          node->next = match;
+        } else {
+          node->next->prev = next_node;
+          next_node->next = node->next;
+          node->prev = first;
+          first->next->prev = node;
+          node->next = first->next;
+          first->next = node;
+          bucket->first = node;
+        }
+      }
+    }
+    node = next_node;
+  }
+}
+
+// OFFSET: 0x00655190
+// FUNCTION: fn_05058
+void HashTable_655340::sub_655190(unsigned int bucket_count) {
+  const unsigned long max_buckets_log2 = std::_Floor_of_log_2(0x1fffffff);
+  const unsigned int max_buckets = 1u << max_buckets_log2;
+  if (bucket_count > max_buckets) {
+    std::_Xlength_error("invalid hash bucket count");
+  }
+  unsigned int new_bucket_count = 1u << std::_Ceiling_of_log_2(bucket_count);
+  reinterpret_cast<VectorInt32_654E00*>(&this->buckets)->sub_654E00(new_bucket_count * 2, reinterpret_cast<uintptr_t>(this->head));
+  this->bucket_count = new_bucket_count;
+  this->mask = new_bucket_count - 1;
+
+  HashNode_655340* head = this->head;
+  HashNode_655340* node = head->prev;
+  while (node != head) {
+    HashNode_655340* next_node = node->prev;
+    const unsigned char* key_bytes = reinterpret_cast<const unsigned char*>(&node->key);
+    unsigned int hash = (key_bytes[0] ^ 0x811c9dc5) * 0x1000193;
+    hash = (hash ^ key_bytes[1]) * 0x1000193;
+    unsigned int bucket_idx = hash & this->mask;
+    HashBucket_655340* bucket = &this->buckets[bucket_idx];
+    if (bucket->first == head) {
+      bucket->first = node;
+      bucket->last = node;
+    } else {
+      HashNode_655340* last = bucket->last;
+      if (node->key == last->key) {
+        if (last->prev != node) {
+          node->next->prev = next_node;
+          next_node->next = node->next;
+          node->prev = last->prev;
+          last->prev->next = node;
+          last->prev = node;
+          node->next = last;
+        }
+        bucket->last = node;
+      } else {
+        HashNode_655340* first = bucket->first;
+        HashNode_655340* match = nullptr;
+        HashNode_655340* it = last;
+        while (it != first) {
+          it = it->next;
+          if (it->key == node->key) {
+            match = it;
+            break;
+          }
+        }
+        if (match) {
+          node->next->prev = next_node;
+          next_node->next = node->next;
+          node->prev = match->prev;
+          match->prev->next = node;
+          match->prev = node;
+          node->next = match;
+        } else {
+          node->next->prev = next_node;
+          next_node->next = node->next;
+          node->prev = first;
+          first->next->prev = node;
+          node->next = first->next;
+          first->next = node;
+          bucket->first = node;
+        }
+      }
+    }
+    node = next_node;
+  }
+}
 
 // OFFSET: 0x00655340
 // FUNCTION: fn_05060
@@ -943,6 +1085,128 @@ HashNode_655340* HashTable_655340::sub_655470(HashNode_655340* first, HashNode_6
   return last;
 }
 
+void sub_6563E0(void*, void*, void*);
+void* sub_4D3760(void* out, const void* data, unsigned int len);
+
+struct PakUniformRandom {
+  /* 0000 */ std::mt19937 m_engine;
+  /* 1388 */ std::uniform_int_distribution<int> m_distribution;
+
+  PakUniformRandom(int minimum, int maximum, unsigned int seed);
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(PakUniformRandom, m_distribution) == 0x1388);
+#endif
+
+struct PakKeyBlock48 {
+  /* 0000 */ std::uint8_t bytes[48];
+};
+
+struct PakMaskedKey48 {
+  /* 0000 */ std::uint8_t mask[5];
+  /* 0005 */ std::uint8_t data[48];
+
+  __declspec(noinline) PakKeyBlock48 Unmask() const;
+};
+
+struct PakCipherBlock_655900 {
+  short* sub_655900(const short* in, const int* src);
+};
+
+// OFFSET: 0x00655900
+// FUNCTION: fn_05067
+short* PakCipherBlock_655900::sub_655900(const short* in, const int* src) {
+  short* out = reinterpret_cast<short*>(this);
+  *out = *in;
+  int* key_ptr = reinterpret_cast<int*>(out + 1);
+  *key_ptr = 0;
+  reinterpret_cast<char*>(out)[6] = 0;
+  char* payload = reinterpret_cast<char*>(out) + 7;
+  std::memset(payload, 0, 0x40);
+
+  unsigned int seed = std::_Random_device();
+  PakUniformRandom rng(1, 0xfe, seed);
+
+  sub_6563E0(key_ptr, payload, &rng);
+
+  const unsigned char* in_bytes = reinterpret_cast<const unsigned char*>(src);
+  unsigned char* out_bytes = reinterpret_cast<unsigned char*>(out);
+  const unsigned char* key_bytes = reinterpret_cast<const unsigned char*>(key_ptr);
+  for (int i = 0; i < 0x40; i += 4) {
+    int k = i & 3;
+    out_bytes[i + 7] = in_bytes[i] ^ key_bytes[k + 1] ^ key_bytes[k];
+    out_bytes[i + 8] = in_bytes[i + 1] ^ key_bytes[k + 2] ^ key_bytes[k + 1];
+    out_bytes[i + 9] = in_bytes[i + 2] ^ key_bytes[k + 3] ^ key_bytes[k + 2];
+    out_bytes[i + 10] = in_bytes[i + 3] ^ key_bytes[k + 4] ^ key_bytes[k + 3];
+  }
+  return out;
+}
+
+struct SpanKey16_61B410 {
+  const void* ptr;
+  unsigned int len;
+};
+
+struct CipherObj_61B410 {
+  void sub_61B410(SpanKey16_61B410 span);
+  void sub_61B440(int param);
+  int sub_61AF30(void* a1_ptr, unsigned int a1_sz, void* a2_ptr, unsigned int a2_sz, int a5);
+};
+
+struct PakSpan_655A30 {
+  void* data;
+  unsigned int size;
+};
+
+struct PakVerifier_655A30 {
+  PakSpan_655A30** span_objs;
+  PakSpan_655A30* span_a;
+  PakSpan_655A30* span_b;
+
+  bool sub_655A30(CipherObj_61B410** cipher_ptr, const PakMaskedKey48* masked_key, int a4, int mode);
+};
+
+// OFFSET: 0x00655A30
+// FUNCTION: fn_05068
+bool PakVerifier_655A30::sub_655A30(CipherObj_61B410** cipher_ptr, const PakMaskedKey48* masked_key, int a4, int mode) {
+  unsigned char key[16];
+  std::memset(key, 0, sizeof(key));
+
+  if (mode == 0) {
+    PakKeyBlock48 block = masked_key->Unmask();
+    std::memcpy(key, block.bytes + 16, 16);
+    std::memset(&block, 0, sizeof(block));
+  } else if (mode == 1) {
+    unsigned char hash_out[20];
+    PakSpan_655A30* obj = *this->span_objs;
+    void* res = sub_4D3760(hash_out, obj->data, obj->size);
+    std::memcpy(key, res, 16);
+    std::memset(hash_out, 0, sizeof(hash_out));
+  } else if (mode == 2) {
+    unsigned char hash_out[20];
+    void* ptr = reinterpret_cast<char*>(reinterpret_cast<void**>(this->span_objs)[1]) + 4;
+    void* res = sub_4D3760(hash_out, ptr, 4);
+    std::memcpy(key, res, 16);
+    std::memset(hash_out, 0, sizeof(hash_out));
+  }
+
+  CipherObj_61B410* cipher = *cipher_ptr;
+  SpanKey16_61B410 span;
+  span.ptr = key;
+  span.len = 16;
+  cipher->sub_61B410(span);
+  cipher->sub_61B440(a4);
+
+  int res = cipher->sub_61AF30(this->span_a->data, this->span_a->size,
+                               this->span_b->data, this->span_b->size, 0);
+
+  volatile int check = 0xe5c3c820;
+  check ^= 0xf63071d0;
+  check ^= 0x13f3b990;
+  return res == check;
+}
+
 // OFFSET: 0x00655D70
 // FUNCTION: fn_05069
 HashSearchResult_655D70 HashTable_655340::sub_655D70(const short* key, unsigned int hash) {
@@ -972,6 +1236,59 @@ HashSearchResult_655D70 HashTable_655340::sub_655D70(const short* key, unsigned 
   result.second = nullptr;
   return result;
 }
+
+struct SeedGen_657C30 {
+  unsigned int seed;
+  unsigned int sub_657C30();
+};
+
+struct RanluxEngine_655F00 {
+  void sub_655F00(const unsigned int* seed_ptr, char flag, int unused);
+};
+
+// OFFSET: 0x00655F00
+// FUNCTION: fn_05070
+void RanluxEngine_655F00::sub_655F00(const unsigned int* seed_ptr, char flag, int unused) {
+  unsigned int* state = reinterpret_cast<unsigned int*>(this);
+  unsigned int seed = *seed_ptr;
+  if (seed == 0) {
+    seed = 0x12dd397;
+  } else {
+    seed %= 0x7fffffab;
+    if (seed == 0) {
+      seed = 1;
+    }
+  }
+
+  for (int i = 1; i <= 24; ++i) {
+    unsigned __int64 product = static_cast<unsigned __int64>(seed) * 40014u;
+    seed = static_cast<unsigned int>(product % 0x7fffffabu);
+    state[i] = seed;
+  }
+
+  for (int i = 1; i <= 16; ++i) {
+    state[i] &= 0x00ffffffu;
+  }
+
+  unsigned char* p = reinterpret_cast<unsigned char*>(this) + 0x47;
+  for (int i = 0; i < 8; ++i) {
+    *p = 0;
+    p += 4;
+  }
+
+  unsigned int carry;
+  if (flag == 0) {
+    carry = (state[24] == 0) ? 1 : 0;
+  } else {
+    SeedGen_657C30 gen{seed};
+    carry = gen.sub_657C30();
+  }
+
+  state[0] = 24;
+  state[49] = carry;
+}
+
+// OFFSET: 0x00656370
 
 // OFFSET: 0x00656C70
 // FUNCTION: fn_05080
@@ -1323,36 +1640,14 @@ void PakIntrusiveLink::Unlink657820() {
   this->m_next->m_prev = this->m_prev;
 }
 
-struct PakUniformRandom {
-  /* 0000 */ std::mt19937 m_engine;
-  /* 1388 */ std::uniform_int_distribution<int> m_distribution;
-
-  PakUniformRandom(int minimum, int maximum, unsigned int seed);
-};
-
-#if defined(_WIN32) && !defined(_WIN64)
-static_assert(offsetof(PakUniformRandom, m_distribution) == 0x1388);
-#endif
-
 // OFFSET: 0x00656B60
 // FUNCTION: fn_05078
 PakUniformRandom::PakUniformRandom(int minimum, int maximum, unsigned int seed) : m_engine(seed), m_distribution(minimum, maximum) {
 }
 
-struct PakKeyBlock48 {
-  /* 0000 */ std::uint8_t bytes[48];
-};
-
-struct PakMaskedKey48 {
-  /* 0000 */ std::uint8_t mask[5];
-  /* 0005 */ std::uint8_t data[48];
-
-  PakKeyBlock48 Unmask() const;
-};
-
 // OFFSET: 0x00658E90
 // FUNCTION: fn_05113
-PakKeyBlock48 PakMaskedKey48::Unmask() const {
+__declspec(noinline) PakKeyBlock48 PakMaskedKey48::Unmask() const {
   PakKeyBlock48 result;
   for (std::size_t i = 0; i < sizeof(result.bytes); ++i) {
     result.bytes[i] = this->data[i] ^ this->mask[i & 3] ^ this->mask[(i & 3) + 1];
