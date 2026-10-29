@@ -17,6 +17,15 @@
 #include <windows.h>
 #include <timeapi.h>
 
+// OFFSET: 0x00DA1190
+// FUNCTION: fn_22354
+CCorpse::CCorpse() {
+  this->render.visible = 1;
+  this->render.isLieOnGround = true;
+  this->spriteOffset = 0.0f;
+  this->render.unknown_008C = timeGetTime();
+}
+
 // OFFSET: 0x00DA1E30
 // FUNCTION: fn_22363
 CSoundMaker::CSoundMaker() {

@@ -19,6 +19,7 @@ public:
   ) override;
 
   void Slot34(int value) override;
+  void Slot39(int value) override;
 
   float* GetExtent(float* extent) const;
 
@@ -28,7 +29,8 @@ public:
   /* 0434 */ int unknown_0434;
   /* 0438 */ unsigned char unknown_0438[0x0C];
   /* 0444 */ int unknown_0444;
-  /* 0448 */ unsigned char unknown_0448[0x10];
+  /* 0448 */ int weapon;
+  /* 044C */ unsigned char unknown_044C[0x0C];
   /* 0458 */ int unknown_0458;
   /* 045C */ int unknown_045C;
   /* 0460 */ unsigned char unknown_0460[0x84];
@@ -97,6 +99,7 @@ public:
   void Slot25(int value) override;
   void Slot26(int value) override;
   void Slot27(int value) override;
+  void Slot39(int value) override;
 
   void PlayMotion(int repeat);
 

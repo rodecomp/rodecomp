@@ -5,6 +5,9 @@
 #include "Client/Replay.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/EffectActors.h"
+#include "Contents/Effects/Effect.h"
+#include "Contents/Effects/EffectLists.h"
 #include "Render/SpriteQuad.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -484,4 +487,53 @@ void CGameActor::ProcessBodyState() {
 // FUNCTION: fn_08455
 int CGameActor::GetShield() {
   return -1;
+}
+
+// OFFSET: 0x00CABD40
+// FUNCTION: fn_21037
+int CGameActor::Slot37() {
+  const CActRes* action = this->render.action;
+  const int count = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+
+  for (int frame = 0; frame < count; ++frame) {
+    const int sound = action->Frame(this->render.previousAnimation, frame).sound;
+
+    if (sound != -1 && std::strcmp(action->Sound(sound), "atk") == 0) {
+      return frame;
+    }
+  }
+
+  return count - (count != 1 ? 2 : 1);
+}
+
+// OFFSET: 0x00CAE500
+// FUNCTION: fn_21074
+void CGameActor::Slot38() {
+  CGameMode* mode = static_cast<CGameMode*>(g_world.ActiveGameMode());
+  const float angle = this->render.angle;
+  const int motion = this->render.curMotion;
+  const int animation = this->render.animation;
+  const char* sprite = this->render.sprite ? this->render.sprite->name.text : nullptr;
+  const char* action = this->render.action ? this->render.action->name.text : nullptr;
+  CCorpse* corpse = mode->SpawnCorpse(
+    this->render.position.x, this->render.position.y, this->render.position.z, action, sprite, animation, motion, angle
+  );
+
+  if (corpse) {
+    if (this->render.unknown_010C > 0) {
+      corpse->render.unknown_010C = this->render.unknown_010C;
+    }
+
+    if (CEffect* effect = g_effectMgr->Find(static_cast<int>(this->render.accountId), 2374)) {
+      corpse->spriteOffset = *reinterpret_cast<const float*>(&effect->unknown_0048);
+    }
+  }
+}
+
+// OFFSET: 0x00CCCAF0
+// FUNCTION: fn_21199
+void CGameActor::Slot39(int value) {
+  const float speed = static_cast<float>(std::min(value, g_maxMoveSpeed)) / 432.0f;
+  this->render.unknown_0054 = speed;
+  this->render.speed = speed;
 }

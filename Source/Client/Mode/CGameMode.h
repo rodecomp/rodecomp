@@ -9,6 +9,7 @@
 #include <string>
 
 class CView;
+class CCorpse;
 struct ActorNameAllPacket;
 struct WorldScene;
 
@@ -33,6 +34,7 @@ public:
   void PlayerCell(int* column, int* row) const;
   void ReceiveActorNameAll(const ActorNameAllPacket* packet);
   void NotifyItemBounds();
+  CCorpse* SpawnCorpse(float x, float y, float z, const char* action, const char* sprite, int animation, int motion, float angle);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

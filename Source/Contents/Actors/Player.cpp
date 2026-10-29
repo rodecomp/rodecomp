@@ -1,7 +1,11 @@
 #include "Contents/Actors/Pc.h"
 
 #include "Client/Session.h"
+#include "Contents/Jobs/JobInheritance.h"
 #include "Resource/Models/GrannyModelResource.h"
+
+// GLOBAL: gl_24753
+extern const int g_maxMoveSpeed = 432;
 
 // OFFSET: 0x00DAFE50
 // FUNCTION: fn_22606
@@ -145,4 +149,30 @@ bool CPlayer::IsSpecialState(int state) const {
     default:
       return false;
   }
+}
+
+// OFFSET: 0x00DB06C0
+// FUNCTION: fn_22619
+void CGrannyPc::Slot39(int value) {
+  if (this->unknown_0440 != 11 || this->unknown_0444 != 0) {
+    value = std::min(value, g_maxMoveSpeed);
+  }
+
+  this->render.unknown_0054 = static_cast<float>(value) / 432.0f;
+}
+
+// OFFSET: 0x00DB0710
+// FUNCTION: fn_22620
+void CPc::Slot39(int value) {
+  const int weapon = this->weapon;
+
+  if (weapon > 105) {
+    GetWeaponViewValue(weapon);
+  }
+
+  if (weapon != 11) {
+    value = std::min(value, g_maxMoveSpeed);
+  }
+
+  this->render.unknown_0054 = static_cast<float>(value) / 432.0f;
 }

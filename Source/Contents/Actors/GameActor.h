@@ -84,6 +84,9 @@ public:
   virtual void Slot34(int value) = 0;
   virtual void Slot35() = 0;
   virtual void Slot36() = 0;
+  virtual int Slot37();
+  virtual void Slot38();
+  virtual void Slot39(int value);
 
   void SetUnknown0305(unsigned char value, int extra);
   void SetUnknown0318(const float* value, int index);
@@ -97,6 +100,8 @@ public:
   int GetShield();
   bool FindRoute(int startX, int startY, int fractionX, int fractionY, int destX, int destY, int speed);
 };
+
+extern const int g_maxMoveSpeed;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CGameActor) == 0x410);

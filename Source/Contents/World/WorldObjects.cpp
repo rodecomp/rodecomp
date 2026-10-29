@@ -1,8 +1,13 @@
+#include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
+#include "Contents/Actors/EffectActors.h"
+#include "Resource/ResourceMgr.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/World/WorldObjects.h"
 #include "Contents/World/WorldScene.h"
 #include "Contents/Effects/EffectLists.h"
+
+#include <new>
 
 // OFFSET: 0x00AC8220
 // FUNCTION: fn_17667
@@ -72,4 +77,25 @@ void WorldObjects::SendObjectMessage(CGameObject* sender, std::uint64_t identity
       return;
     }
   }
+}
+
+// OFFSET: 0x00CD8740
+// FUNCTION: fn_21301
+CCorpse* CGameMode::SpawnCorpse(float x, float y, float z, const char* action, const char* sprite, int animation, int motion, float angle) {
+  auto* corpse = new (std::nothrow) CCorpse;
+
+  if (corpse) {
+    this->scene->objects.push_back(corpse);
+    corpse->render.position.x = x;
+    corpse->render.position.y = y;
+    corpse->render.position.z = z;
+    corpse->SetActionName(ResourceMgr::Instance(), action);
+    corpse->SetSpriteName(ResourceMgr::Instance(), sprite);
+    corpse->render.previousAnimation = animation;
+    corpse->render.animation = animation;
+    corpse->render.curMotion = motion;
+    corpse->render.angle = angle;
+  }
+
+  return corpse;
 }

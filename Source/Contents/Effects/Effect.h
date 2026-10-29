@@ -68,7 +68,9 @@ public:
   /* 0034 */ unsigned char outsideRange;
   /* 0035 */ unsigned char unknown_0035[3];
   /* 0038 */ int range;
-  /* 003C */ unsigned char unknown_003C[116];
+  /* 003C */ unsigned char unknown_003C[12];
+  /* 0048 */ int unknown_0048;
+  /* 004C */ unsigned char unknown_004C[100];
   /* 00B0 */ int unknown_00B0;
   /* 00B4 */ std::vector<EffectEvent> events;
   /* 00C0 */ unsigned char retained;
