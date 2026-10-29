@@ -89,6 +89,18 @@ public:
     }
   }
 
+  // OFFSET: 0x009F9890
+  // OFFSET: 0x009F98F0
+  // FUNCTION: fn_14810
+  // FUNCTION: fn_14811
+  void ClearItems() {
+    for (T* item : this->items) {
+      this->RemoveChild(item, 1);
+    }
+    this->items.clear();
+    this->selected = static_cast<unsigned int>(-1);
+  }
+
   // OFFSET: 0x009D43D0
   // OFFSET: 0x009D45D0
   // OFFSET: 0x009D47D0
