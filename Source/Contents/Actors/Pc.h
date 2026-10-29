@@ -20,6 +20,7 @@ public:
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
 
+  void Slot15(int first, int second) override;
   void Slot30() override;
   void Slot31() override;
   void Slot33(int value) override;
@@ -62,13 +63,17 @@ public:
   /* 045C */ int unknown_045C;
   /* 0460 */ unsigned char unknown_0460[0x18];
   /* 0478 */ std::string unknown_0478;
-  /* 0490 */ unsigned char unknown_0490[0x24];
+  /* 0490 */ unsigned char unknown_0490[0x0C];
+  /* 049C */ int unknown_049C;
+  /* 04A0 */ unsigned char unknown_04A0[0x14];
   /* 04B4 */ std::vector<CRes*> equipSprites;
   /* 04C0 */ std::vector<CRes*> equipActions;
   /* 04CC */ int unknown_04CC;
   /* 04D0 */ int unknown_04D0;
   /* 04D4 */ int unknown_04D4;
-  /* 04D8 */ unsigned char unknown_04D8[4];
+  /* 04D8 */ unsigned char unknown_04D8[1];
+  /* 04D9 */ bool unknown_04D9;
+  /* 04DA */ unsigned char unknown_04DA[2];
   /* 04DC */ int unknown_04DC;
   /* 04E0 */ bool unknown_04E0;
   /* 04E1 */ unsigned char unknown_04E1[0x03];

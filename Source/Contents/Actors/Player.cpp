@@ -10,6 +10,7 @@
 #include "Resource/Models/GrannyModelResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
+#include "Script/LuaScript.h"
 #include "Utility/Text/FormatString.h"
 
 // GLOBAL: gl_24753
@@ -470,6 +471,41 @@ void CPc::LoadEquipSprite(int slot, const char* name) {
 void CPc::LoadEquipSprites(const std::vector<std::string>& names) {
   for (int slot = 0; slot < 9; ++slot) {
     this->LoadEquipSprite(slot, names[slot].c_str());
+  }
+}
+
+// OFFSET: 0x00DB23A0
+// FUNCTION: fn_22643
+void CPc::Slot15(int first, int second) {
+  if (this->unknown_049C == first) {
+    return;
+  }
+
+  if (static_cast<unsigned char>(second) != 0) {
+    return;
+  }
+
+  this->unknown_049C = first;
+
+  g_session.m_hotkeyScript->CallTable("TB_Layer_Priority", "IsHelmRobe", "d>b", first, &this->unknown_04D9);
+
+  if (this->unknown_04D9) {
+    const int accessory = this->unknown_049C;
+    this->LoadEquipAction(
+      8,
+      g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, accessory).c_str()
+    );
+    this->LoadEquipSprite(
+      8,
+      g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, accessory).c_str()
+    );
+  } else {
+    this->LoadEquipAction(
+      8, g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, 0).c_str()
+    );
+    this->LoadEquipSprite(
+      8, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, 0).c_str()
+    );
   }
 }
 
