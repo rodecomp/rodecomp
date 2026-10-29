@@ -779,6 +779,7 @@ struct HashTable_655340 {
   unsigned int bucket_count;
 
   void sub_654FF0(unsigned int buckets);
+  HashNode_655340* sub_655470(HashNode_655340* first, HashNode_655340* last);
   HashNode_655340* sub_655340(unsigned int hash, HashNode_655340* prev, HashNode_655340* node);
   void sub_6553C0();
   HashSearchResult_655D70 sub_655D70(const short* key, unsigned int hash);
@@ -838,6 +839,108 @@ void HashTable_655340::sub_6553C0() {
     }
   }
   this->sub_654FF0(buckets);
+}
+
+// OFFSET: 0x00655470
+// FUNCTION: fn_05065
+HashNode_655340* HashTable_655340::sub_655470(HashNode_655340* first, HashNode_655340* last) {
+  if (first == last) {
+    return last;
+  }
+  HashNode_655340* head = this->head;
+  HashBucket_655340* bucket_base = this->buckets;
+  HashNode_655340* prev_node = first->next;
+  HashNode_655340* cur = first;
+
+  const unsigned char* key_bytes = reinterpret_cast<const unsigned char*>(&cur->key);
+  unsigned int hash = (key_bytes[0] ^ 0x811c9dc5) * 0x1000193;
+  hash = (hash ^ key_bytes[1]) * 0x1000193;
+  HashBucket_655340* cur_bucket = &bucket_base[hash & this->mask];
+
+  HashNode_655340* bucket_first = cur_bucket->first;
+  HashNode_655340* bucket_last = cur_bucket->last;
+
+  while (true) {
+    HashNode_655340* next_node = cur->prev;
+    bool is_bucket_last = (cur == bucket_last);
+
+    char* cur_bytes = reinterpret_cast<char*>(cur);
+    void** p_impl = reinterpret_cast<void**>(cur_bytes + 0x34);
+    if (*p_impl != nullptr) {
+      void* impl = *p_impl;
+      void** vtbl = *reinterpret_cast<void***>(impl);
+      typedef void (__thiscall *DeleteThisFn)(void*, bool);
+      DeleteThisFn delete_this = reinterpret_cast<DeleteThisFn>(vtbl[4]);
+      bool not_local = (impl != cur_bytes + 0x10);
+      delete_this(impl, not_local);
+      *p_impl = nullptr;
+    }
+    ::operator delete(cur, 0x38);
+    --this->size;
+
+    if (is_bucket_last) {
+      if (cur_bucket->first == first) {
+        cur_bucket->first = head;
+        cur_bucket->last = head;
+      } else {
+        cur_bucket->last = prev_node;
+      }
+
+      if (next_node != last) {
+        cur = next_node;
+        while (true) {
+          const unsigned char* k = reinterpret_cast<const unsigned char*>(&cur->key);
+          unsigned int h = (k[0] ^ 0x811c9dc5) * 0x1000193;
+          h = (h ^ k[1]) * 0x1000193;
+          cur_bucket = &bucket_base[h & this->mask];
+          bucket_last = cur_bucket->last;
+          HashNode_655340* nxt = cur->prev;
+          bool is_last = (cur == bucket_last);
+
+          char* cur_b = reinterpret_cast<char*>(cur);
+          void** pi = reinterpret_cast<void**>(cur_b + 0x34);
+          if (*pi != nullptr) {
+            void* imp = *pi;
+            void** vt = *reinterpret_cast<void***>(imp);
+            typedef void (__thiscall *DeleteThisFn)(void*, bool);
+            DeleteThisFn delete_this = reinterpret_cast<DeleteThisFn>(vt[4]);
+            bool not_local = (imp != cur_b + 0x10);
+            delete_this(imp, not_local);
+            *pi = nullptr;
+          }
+          ::operator delete(cur, 0x38);
+          --this->size;
+
+          if (is_last) {
+            cur_bucket->first = head;
+            cur_bucket->last = head;
+            if (nxt == last) {
+              break;
+            }
+          } else {
+            if (nxt == last) {
+              cur_bucket->first = nxt;
+              break;
+            }
+          }
+          cur = nxt;
+        }
+      }
+      break;
+    } else {
+      if (next_node == last) {
+        if (cur_bucket->first == first) {
+          cur_bucket->first = next_node;
+        }
+        break;
+      }
+      cur = next_node;
+    }
+  }
+
+  prev_node->prev = last;
+  last->next = prev_node;
+  return last;
 }
 
 // OFFSET: 0x00655D70
