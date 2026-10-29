@@ -4,7 +4,10 @@
 #include "Render/DX7/RenderSystemDX7.h"
 #include "Render/DX9/RenderSystemDX9.h"
 #include "Render/Text/TextContext.h"
+#include "Client/Session.h"
+#include "Script/LuaScript.h"
 
+#include <algorithm>
 #include <cstring>
 #include <utility>
 
@@ -117,6 +120,12 @@ std::uint32_t RenderSystemHolder::Height() const {
 // FUNCTION: fn_02292
 std::uint32_t RenderSystemHolder::Width() const {
   return this->system ? this->system->Width() : 0;
+}
+
+// OFFSET: 0x00E30A50
+// FUNCTION: fn_24169
+int CSession::DefaultRenderBackend() {
+  return std::max(this->m_hotkeyScript->GlobalInteger("RenderSystemDefault"), 0);
 }
 
 // OFFSET: 0x0056A6A0

@@ -7,6 +7,7 @@
 #include <memory>
 
 class CTexture;
+struct RenderSystemDX9Context;
 
 std::shared_ptr<CSurface> AcquireBackBufferSurface(CRenderSystemBase* system);
 
@@ -36,7 +37,7 @@ struct RenderSystemHolder {
   bool IsWindowed() const;
   HRESULT TestDevice() const;
   HRESULT Present(bool option) const;
-  HRESULT Initialize(int backend, HWND window);
+  HRESULT Initialize(int backend, HWND window, RenderSystemDX9Context& context);
 };
 
 int DrawBackBufferText(int x, int y, const char* text, COLORREF color);

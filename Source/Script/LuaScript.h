@@ -1,15 +1,13 @@
 #ifndef RAGNAROK_SOURCE_SCRIPT_LUASCRIPT_H
 #define RAGNAROK_SOURCE_SCRIPT_LUASCRIPT_H
 
-extern "C" {
-#include <lua.h>
-}
-
 #include <cstdarg>
 #include <cstddef>
 #include <cstdint>
 #include <list>
 #include <string>
+
+struct lua_State;
 
 class LuaScript {
 public:
