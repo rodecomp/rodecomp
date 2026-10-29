@@ -10,6 +10,9 @@
 #include <random>
 #include <string>
 
+#include <windows.h>
+#include <timeapi.h>
+
 namespace {
   struct MacroBlackListCheckPacket {
     /* 0000 */ std::int16_t id;
@@ -170,3 +173,5 @@ int UIMacroBlackListCheckWnd::SendMsg(
 
   return 0;
 }
+
+// OFFSET: 0x007ECE80
