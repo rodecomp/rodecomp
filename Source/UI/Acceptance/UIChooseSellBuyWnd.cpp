@@ -1291,6 +1291,23 @@ int UIBookWnd::LoadBookmark(const char* name) {
 }
 
 // OFFSET: 0x008F6640
+// FUNCTION: fn_12319
+void UIExchangeWnd::CancelInput() {
+  if (this->unknown_00CC == 0) {
+    return;
+  }
+
+  if (this->unknown_00C0) {
+    InputFocus focus{g_windowMgr.hoverWindow};
+    focus.Set(nullptr);
+    this->unknown_00C0->Move(129, 500);
+    this->unknown_00C0 = nullptr;
+    if (g_windowMgr.window_01C8) {
+      g_windowMgr.window_01C8->SendMsg(nullptr, 54, 0, 0, 0, 0);
+    }
+  }
+  this->Invalidate();
+}
 
 // OFFSET: 0x008F66B0
 // FUNCTION: fn_12320
