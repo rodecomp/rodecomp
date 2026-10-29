@@ -818,6 +818,8 @@
   "Source/UI/UIMacroDetectorWnd.cpp": 2,
   "Source/UI/UIMacroReport.cpp": 2,
   "Source/UI/UIMacroUserInfoWnd.cpp": 2,
+  "Source/UI/UIPreviewEquipWnd.cpp": 2,
+  "Source/UI/UIRefiningWnd.cpp": 2,
   "Source/UI/UIRoundBoxTooltipWnd.cpp": 2,
   "Source/UI/UIScrollWnd.cpp": 2,
   "Source/UI/UISlotBitmap.cpp": 2,
