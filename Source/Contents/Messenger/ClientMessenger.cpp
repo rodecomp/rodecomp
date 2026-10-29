@@ -175,6 +175,34 @@ namespace EquipmentProperties {
   };
 }
 
+namespace EquipmentProperties {
+  class CEquipmentAttachable : public CEquipment {
+  public:
+    /* 0038 */ int unknown_0038;
+    /* 003C */ CEquipment* m_owner;
+
+    int GetType() override;
+  };
+
+  class CEquipmentWearable : public CEquipment {
+  public:
+    /* 0038 */ int unknown_0038;
+    /* 003C */ int m_type;
+
+    int GetType() override;
+  };
+
+  class CEquipmentExpansion : public CEquipment {
+  public:
+    int GetType() override;
+  };
+
+  class CEquipmentCombiitem : public CEquipment {
+  public:
+    int GetType() override;
+  };
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EquipmentProperties::CEquipmentInfo) == 0x24);
 static_assert(offsetof(EquipmentProperties::CEquipment, m_properties) == 0xC);
@@ -288,6 +316,33 @@ int& EquipmentProperties::CEquipment::GetId() {
 // FUNCTION: fn_05633
 EquipmentPropertyStore& EquipmentProperties::CEquipment::GetProperties() {
   return this->m_properties;
+}
+
+// OFFSET: 0x0068C100
+// FUNCTION: fn_05629
+int EquipmentProperties::CEquipmentAttachable::GetType() {
+  if (this->m_owner == nullptr) {
+    return 0;
+  }
+  return this->m_owner->GetType();
+}
+
+// OFFSET: 0x0068C110
+// FUNCTION: fn_05630
+int EquipmentProperties::CEquipmentCombiitem::GetType() {
+  return 0;
+}
+
+// OFFSET: 0x0068C120
+// FUNCTION: fn_05631
+int EquipmentProperties::CEquipmentExpansion::GetType() {
+  return 0;
+}
+
+// OFFSET: 0x0068C130
+// FUNCTION: fn_05632
+int EquipmentProperties::CEquipmentWearable::GetType() {
+  return this->m_type;
 }
 
 // OFFSET: 0x0068CEF0
