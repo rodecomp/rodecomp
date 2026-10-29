@@ -975,10 +975,64 @@ void UIStaticItem::Paint() {
 }
 
 // OFFSET: 0x0088F5C0
+// FUNCTION: fn_11389
+void UITVTextButton::Paint() {
+  this->ClearSurface(0xFFFF00FFu);
+
+  if (this->parent) {
+    this->parent->Invalidate();
+  }
+
+  const int inset = this->m_border != 0;
+
+  if (this->unknown_00B4 != 0) {
+    if (this->m_border != 0) {
+      DrawRoundedBorder(*this, inset - 1, 0, this->geometry.width, this->geometry.height, this->m_borderColor);
+    }
+
+    if (this->m_fill != 0) {
+      this->FillRegion(inset, 1, this->geometry.width - inset * 2, this->geometry.height - 2, this->m_fillColor);
+    }
+  }
+
+  std::uint32_t color = this->m_textColor;
+
+  if (this->unknown_00B5 != 0) {
+    color = this->m_highlightColor;
+  }
+
+  if (this->m_outlined != 0) {
+    DrawOutlinedText(*this, inset + 1, 2, this->unknown_00DC.c_str(), 0, color, this->m_outlineColor, this->m_fontFamily, this->m_fontHeight, 1, 0);
+  } else {
+    this->DrawTextAt(this->m_buttonContext->fonts, this->m_buttonContext->locale, inset + 1, 2, this->unknown_00DC.c_str(), 0, this->m_fontFamily, this->m_fontHeight, color, 0, 0);
+  }
+}
 
 // OFFSET: 0x0088FFB0
+// FUNCTION: fn_11397
+void UIBasicItemCtrl::Slot26(int, int) {
+  this->m_item = ITEM_INFO(0);
+
+  if (this->Root()) {
+    this->Root()->Invalidate();
+    this->Root()->InvalidateChildren();
+  } else {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00890080
+// FUNCTION: fn_11398
+void UIBasicSkillCtrl::Slot26(int, int) {
+  this->m_skillId = -1;
+
+  if (this->Root()) {
+    this->Root()->Invalidate();
+    this->Root()->InvalidateChildren();
+  } else {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00890150
 // FUNCTION: fn_11400
@@ -991,8 +1045,30 @@ void UIComboBoxID::Slot26(int, int) {
 }
 
 // OFFSET: 0x008902A0
+// FUNCTION: fn_11408
+void UISlotBmpButton::Slot26(int x, int y) {
+  UIBitmapButton::Slot26(x, y);
+
+  if (this->parent) {
+    this->parent->SendMsg(this, 6, 184, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x008902E0
+// FUNCTION: fn_11409
+void UITVTextButton::Slot26(int x, int y) {
+  if (this->m_disabled != 0) {
+    return;
+  }
+
+  this->geometry.unknown_0030 = 1;
+
+  if (this->parent) {
+    this->parent->SendMsg(this, 97, this->m_value, x, y, 0);
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x00890400
 
@@ -1007,12 +1083,55 @@ void UIComboBoxID::Slot25(int, int) {
 }
 
 // OFFSET: 0x008905F0
+// FUNCTION: fn_11420
+void UIListBoxID::Slot25(int x, int y) {
+  int line = -1;
+
+  if (x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
+    const int index = y / this->lineHeight + this->topLine;
+
+    if (index >= 0 && static_cast<unsigned>(index) < this->lines.size()) {
+      line = index;
+    }
+  }
+
+  this->selected = line;
+  this->Invalidate();
+}
 
 // OFFSET: 0x00890640
+// FUNCTION: fn_11421
+void UIListBoxNavi::Slot25(int x, int y) {
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  this->selected = this->LineAt(x, y);
+
+  if (this->selected != -1) {
+    this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x00890690
+// FUNCTION: fn_11422
+void UIMemberListBox::Slot25(int x, int y) {
+  this->selected = this->LineAt(x, y);
+  this->Invalidate();
+}
 
 // OFFSET: 0x008908A0
+// FUNCTION: fn_11426
+void UISlotBmpButton::Slot25(int x, int y) {
+  UIBitmapButton::Slot25(x, y);
+
+  if (this->parent) {
+    this->parent->SendMsg(this, 13, 0, 0, 0, 0);
+    this->parent->SendMsg(this, 6, this->geometry.id, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x008908F0
 // FUNCTION: fn_11427
@@ -1031,10 +1150,58 @@ void UITVTextButton::Slot25(int, int) {
 }
 
 // OFFSET: 0x00890940
+// FUNCTION: fn_11428
+void UITabControl::Slot25(int x, int y) {
+  const int index = this->TabAt(x, y);
+
+  if (index == -1) {
+    return;
+  }
+
+  if (index < static_cast<int>(this->labels.size()) && this->unknown_007C != index) {
+    this->unknown_007C = index;
+  }
+
+  this->edit->SetText("");
+  this->edit->Move(-100, -100);
+
+  if (this->parent) {
+    this->parent->SendMsg(this, 22, this->unknown_007C, 0, 0, 0);
+    this->parent->Invalidate();
+  }
+
+  this->Invalidate();
+  g_windowMgr.SetCapture(this);
+}
 
 // OFFSET: 0x00890A00
+// FUNCTION: fn_11430
+void UITreeView::Slot25(int x, int y) {
+  if (this->parent) {
+    this->parent->Slot25(x + this->geometry.x, y + this->geometry.y);
+  }
+}
 
 // OFFSET: 0x00890A30
+// FUNCTION: fn_11431
+void UIBitmapButton2::Slot31(int x, int y) {
+  if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
+    return;
+  }
+
+  if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
+    this->geometry.unknown_0030 = 0;
+  } else {
+    this->geometry.unknown_0030 = 1;
+
+    if (this->parent) {
+      this->parent->SendMsg(this, 100, this->geometry.id, 0, 0, 0);
+    }
+  }
+
+  this->Invalidate();
+  g_windowMgr.ReleaseCapture();
+}
 
 // OFFSET: 0x00890DA0
 // FUNCTION: fn_11437
@@ -1043,9 +1210,68 @@ void UIComboBoxV2Wnd::Slot31(int, int) {
 }
 
 // OFFSET: 0x00890E30
+// FUNCTION: fn_11439
+void UIItemStoreComboBox::Slot31(int x, int y) {
+  int line = -1;
+
+  if (x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
+    const int index = y / this->lineHeight + this->topLine;
+
+    if (index >= 0 && static_cast<unsigned>(index) < this->lines.size()) {
+      line = index;
+    }
+  }
+
+  this->selected = line;
+
+  if (this->parent) {
+    this->parent->SendMsg(nullptr, 39, line, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00891050
+// FUNCTION: fn_11442
+void UITVBitmapButton::Slot31(int x, int y) {
+  if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
+    return;
+  }
+
+  if (x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
+    this->geometry.unknown_0030 = 0;
+  } else {
+    this->geometry.unknown_0030 = 1;
+
+    if (this->parent) {
+      this->parent->SendMsg(this, 100, this->m_value, 0, 0, 0);
+    }
+  }
+
+  this->Invalidate();
+  g_windowMgr.ReleaseCapture();
+}
 
 // OFFSET: 0x008910D0
+// FUNCTION: fn_11443
+void UITVTextButton::Slot31(int x, int y) {
+  if (this->m_disabled != 0) {
+    return;
+  }
+
+  if (this->parent) {
+    if (this->unknown_00B6 != 0) {
+      this->parent->SendMsg(this, 98, this->m_value, x, y, 0);
+    } else {
+      this->parent->SendMsg(this, 109, this->m_value, 0, 0, 0);
+    }
+
+    this->unknown_00B6 = 0;
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x00891130
+// FUNCTION: fn_11444
+void UITabControl::Slot31(int, int) {
+  g_windowMgr.ReleaseCapture();
+}

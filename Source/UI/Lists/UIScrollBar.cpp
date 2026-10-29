@@ -392,8 +392,22 @@ const char* UIChatHisBox::HistoryText(unsigned int index) {
 }
 
 // OFFSET: 0x008900D0
+// FUNCTION: fn_11399
+void UIChatHisBox::Slot26(int, int) {
+  const unsigned int index = static_cast<unsigned int>(this->selected);
+
+  if (index == static_cast<unsigned int>(-1) || index >= this->history.size() || this->history[index].size() == 0 || this->history[index].c_str() == nullptr) {
+    return;
+  }
+
+  this->parent->SendMsg(this, 6, 347, reinterpret_cast<std::intptr_t>(this->HistoryText(index)), 0, 0);
+}
 
 // OFFSET: 0x00890430
+// FUNCTION: fn_11412
+void UIChatHisBox::Slot25(int x, int y) {
+  this->selected = this->LineAt(x, y);
+}
 
 // OFFSET: 0x00890AB0
 // FUNCTION: fn_11432
