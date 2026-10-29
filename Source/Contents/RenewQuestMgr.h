@@ -6,14 +6,32 @@
 #include <set>
 #include <string>
 #include <string_view>
+#include <utility>
+#include <vector>
 
 struct lua_State;
 
-struct RenewQuestOngoingInfo {
-  /* 0000 */ unsigned char m_state;
-  /* 0001 */ unsigned char unknown_0001[0xB3];
+struct RenewQuestInfo {
+  union {
+    /* 0000 */ unsigned char m_state;
+    /* 0000 */ bool m_active;
+  };
+  /* 0004 */ std::string m_title;
+  /* 001C */ std::string m_icon;
+  /* 0034 */ std::string m_iconTooltip;
+  /* 004C */ std::string unknown_004C;
+  /* 0064 */ std::string unknown_0064;
+  /* 007C */ std::string unknown_007C;
+  /* 0094 */ std::string unknown_0094;
+  /* 00AC */ int unknown_00AC;
+  /* 00B0 */ int unknown_00B0;
+
+  RenewQuestInfo();
+};
+
+struct RenewQuestOngoingInfo : RenewQuestInfo {
   /* 00B4 */ bool m_simpleView;
-  /* 00B5 */ unsigned char unknown_00B5[0xF];
+  /* 00B8 */ std::vector<std::string> m_descriptions;
   /* 00C4 */ short m_year;
   /* 00C6 */ short m_month;
   /* 00C8 */ short m_day;
@@ -30,14 +48,20 @@ struct RenewQuestOngoingInfo {
   /* 01A0 */ int m_huntUnknown01A0[3];
   /* 01AC */ short m_huntUnknown01AC[3];
   /* 01B2 */ short m_huntUnknown01B2[3];
-  /* 01B8 */ unsigned char unknown_01B8[0x48];
+  /* 01B8 */ std::string unknown_01B8;
+  /* 01D0 */ std::string unknown_01D0;
+  /* 01E8 */ std::vector<std::pair<unsigned int, unsigned int>> m_rewards;
+  /* 01F8 */ __int64 unknown_01F8;
 
+  RenewQuestOngoingInfo();
   std::string GetDateString() const;
 };
 
-struct RenewQuestRecommendedInfo {
-  /* 0000 */ bool m_active;
-  /* 0001 */ unsigned char unknown_0001[0xEF];
+struct RenewQuestRecommendedInfo : RenewQuestInfo {
+  /* 00B4 */ std::string unknown_00B4;
+  /* 00CC */ std::vector<std::string> m_descriptions[3];
+
+  RenewQuestRecommendedInfo();
 };
 
 struct RenewQuestFilter {
@@ -52,6 +76,10 @@ public:
   static int L_AddQuestFilterInfo(lua_State* state);
   static int L_AddQuestIconTooltip(lua_State* state);
   static int L_SetRecommendedQuestActive(lua_State* state);
+  static int L_AddOngoingDescription(lua_State* state);
+  static int L_AddOngoingRewardInfo(lua_State* state);
+  static int L_AddRecommendedQuestInfo(lua_State* state);
+  static int L_InsertRecommendedQuestInfo(lua_State* state);
 
   /* 0004 */ std::map<unsigned int, RenewQuestOngoingInfo> m_ongoingQuests;
   /* 000C */ std::map<unsigned int, RenewQuestRecommendedInfo> m_recommendedQuests;
@@ -70,11 +98,14 @@ public:
   void AddIconTooltip(std::string_view icon, std::string_view tooltip);
   std::string GetFilterName(int filter);
   std::string GetIconTooltip(std::string_view icon);
+  const RenewQuestOngoingInfo& GetOngoingQuest(unsigned int id);
   RenewQuestOngoingInfo* FindOngoingQuest(unsigned int id);
+  const RenewQuestRecommendedInfo& GetRecommendedQuest(unsigned int id);
   RenewQuestRecommendedInfo* FindRecommendedQuest(unsigned int id);
   void WriteOngoingQuests(char* buffer);
   int GetOngoingQuestsSize();
   void AddNewQuest(unsigned int id);
+  void AddRecommendedQuest(unsigned int id, const RenewQuestRecommendedInfo& info);
   bool IsNewQuest(unsigned int id);
   bool IsInFilter(int filter, std::string_view icon);
   void SendQuestStatusRequest();
@@ -85,6 +116,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(RenewQuestInfo) == 0xB4);
 static_assert(sizeof(RenewQuestOngoingInfo) == 0x200);
 static_assert(sizeof(RenewQuestRecommendedInfo) == 0xF0);
 static_assert(sizeof(RenewQuestFilter) == 0x20);

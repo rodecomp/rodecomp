@@ -2,6 +2,7 @@
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
+#include "Utility/Text/TextEscapes.h"
 
 extern "C" {
 #include <lua.h>
@@ -57,6 +58,38 @@ static_assert(sizeof(PACKET_CZ_QUEST_STATUS_REQ_BUFFER) == 0x800);
 
 // GLOBAL: gl_24837
 CRenewQuestMgr* g_renewQuestMgr;
+
+// OFFSET: 0x00676110
+// FUNCTION: fn_05417
+RenewQuestOngoingInfo::RenewQuestOngoingInfo() : m_simpleView(true), unknown_01B8(""), unknown_01D0("") {
+  this->m_descriptions.clear();
+  this->m_rewards.clear();
+  for (int index = 0; index < 3; ++index) {
+    this->m_huntUnknown00D4[index] = 31999;
+    this->m_huntUnknown01AC[index] = -1;
+    this->m_huntUnknown01B2[index] = -1;
+  }
+
+  for (int index = 0; index < 3; ++index) {
+    for (int offset = 0; offset < 0x33; ++offset) {
+      this->m_huntName[index][offset] = 0;
+    }
+  }
+}
+
+// OFFSET: 0x006765C0
+// FUNCTION: fn_05420
+RenewQuestInfo::RenewQuestInfo()
+    : m_state(1), m_title(""), m_icon(""), m_iconTooltip(""), unknown_004C(""), unknown_0064(""), unknown_007C(""), unknown_0094(""),
+      unknown_00AC(0), unknown_00B0(0) {}
+
+// OFFSET: 0x00676770
+// FUNCTION: fn_05421
+RenewQuestRecommendedInfo::RenewQuestRecommendedInfo() : unknown_00B4("") {
+  for (int index = 0; index < 3; ++index) {
+    this->m_descriptions[index].clear();
+  }
+}
 
 // OFFSET: 0x00675990
 // FUNCTION: fn_05414
@@ -141,6 +174,19 @@ std::string CRenewQuestMgr::GetIconTooltip(std::string_view icon) {
   return found == this->m_iconTooltips.end() ? std::string("QUEST") : found->second;
 }
 
+// OFFSET: 0x00679920
+// FUNCTION: fn_05443
+const RenewQuestOngoingInfo& CRenewQuestMgr::GetOngoingQuest(unsigned int id) {
+  const auto found = this->m_ongoingQuests.find(id);
+  if (found != this->m_ongoingQuests.end()) {
+    return found->second;
+  }
+
+  // GLOBAL: gl_24857
+  static RenewQuestOngoingInfo empty;
+  return empty;
+}
+
 // OFFSET: 0x00679A00
 // FUNCTION: fn_05444
 RenewQuestOngoingInfo* CRenewQuestMgr::FindOngoingQuest(unsigned int id) {
@@ -150,6 +196,19 @@ RenewQuestOngoingInfo* CRenewQuestMgr::FindOngoingQuest(unsigned int id) {
   }
 
   return nullptr;
+}
+
+// OFFSET: 0x00679AF0
+// FUNCTION: fn_05445
+const RenewQuestRecommendedInfo& CRenewQuestMgr::GetRecommendedQuest(unsigned int id) {
+  const auto found = this->m_recommendedQuests.find(id);
+  if (found != this->m_recommendedQuests.end()) {
+    return found->second;
+  }
+
+  // GLOBAL: gl_24858
+  static RenewQuestRecommendedInfo empty;
+  return empty;
 }
 
 // OFFSET: 0x00679BD0
@@ -219,6 +278,13 @@ void CRenewQuestMgr::AddNewQuest(unsigned int id) {
   if (found != this->m_statusRequests.end()) {
     this->m_statusRequests.erase(found);
   }
+}
+
+// OFFSET: 0x0067ACE0
+// FUNCTION: fn_05452
+void CRenewQuestMgr::AddRecommendedQuest(unsigned int id, const RenewQuestRecommendedInfo& info) {
+  this->m_recommendedQuests.erase(id);
+  this->m_recommendedQuests.insert(std::make_pair(id, info));
 }
 
 // OFFSET: 0x0067AEB0
@@ -346,6 +412,56 @@ void CRenewQuestMgr::SetParameter(int key, int value) {
   if (key == 3502) {
     this->m_parameter = value;
   }
+}
+
+// OFFSET: 0x0067E370
+// FUNCTION: fn_05493
+int CRenewQuestMgr::L_AddOngoingDescription(lua_State* state) {
+  const unsigned int id = static_cast<unsigned int>(luaL_checknumber(state, 1));
+  std::string description = luaL_checkstring(state, 2);
+  DecodeTextEscapes(description);
+  g_renewQuestMgr->m_ongoingQuests[id].m_descriptions.push_back(description);
+  return 0;
+}
+
+// OFFSET: 0x0067E4C0
+// FUNCTION: fn_05494
+int CRenewQuestMgr::L_AddOngoingRewardInfo(lua_State* state) {
+  const unsigned int id = static_cast<unsigned int>(luaL_checknumber(state, 1));
+  const unsigned int item = static_cast<unsigned int>(luaL_checknumber(state, 2));
+  const unsigned int count = static_cast<unsigned int>(luaL_checknumber(state, 3));
+  g_renewQuestMgr->m_ongoingQuests[id].m_rewards.push_back(std::make_pair(item, count));
+  return 0;
+}
+
+// OFFSET: 0x0067E570
+// FUNCTION: fn_05495
+int CRenewQuestMgr::L_AddRecommendedQuestInfo(lua_State* state) {
+  const unsigned int id = static_cast<unsigned int>(luaL_checknumber(state, 1));
+  const int index = static_cast<int>(luaL_checknumber(state, 2));
+  std::string description = luaL_checkstring(state, 3);
+  DecodeTextEscapes(description);
+  g_renewQuestMgr->m_recommendedQuests[id].m_descriptions[index].push_back(description);
+  return 0;
+}
+
+// OFFSET: 0x0067E770
+// FUNCTION: fn_05496
+int CRenewQuestMgr::L_InsertRecommendedQuestInfo(lua_State* state) {
+  RenewQuestRecommendedInfo info;
+  const unsigned int id = static_cast<unsigned int>(luaL_checknumber(state, 1));
+  info.m_active = true;
+  info.m_title = luaL_checkstring(state, 2);
+  info.m_icon = luaL_checkstring(state, 3);
+  info.unknown_004C = luaL_checkstring(state, 4);
+  info.unknown_00B4 = luaL_checkstring(state, 5);
+  info.unknown_007C = luaL_checkstring(state, 6);
+  info.unknown_0094 = luaL_checkstring(state, 7);
+  info.unknown_00AC = static_cast<int>(luaL_checknumber(state, 8));
+  info.unknown_00B0 = static_cast<int>(luaL_checknumber(state, 9));
+  info.m_iconTooltip = g_renewQuestMgr->GetIconTooltip(info.m_icon);
+  g_renewQuestMgr->AddRecommendedQuest(id, info);
+  return 0;
 }
 
 // OFFSET: 0x0067E9F0
