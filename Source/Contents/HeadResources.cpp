@@ -159,6 +159,10 @@ std::string CSession::GetSexName(int sex) {
 }
 
 // OFFSET: 0x00DDD100
+// FUNCTION: fn_23380
+std::string CSession::GetImfName(int job) {
+  return this->m_imfNames[job];
+}
 
 // OFFSET: 0x00BAB110
 // FUNCTION: fn_19751
