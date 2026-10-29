@@ -488,6 +488,7 @@
   "Source/Network/Connection/Connection.cpp": 0,
   "Source/Network/Connection/ConnectionRuntime.cpp": 0,
   "Source/Network/Connection/PacketQueue.cpp": 0,
+  "Source/Network/ExecutableDigestPacket.cpp": 0,
   "Source/Network/GameTickPacket.cpp": 0,
   "Source/Network/Http/CURLMgr.cpp": 0,
   "Source/Network/Http/CURLPostHander.cpp": 0,
