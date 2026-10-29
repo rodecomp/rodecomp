@@ -99,6 +99,10 @@ struct CEffectPrim : CRenderObject {
   void RenderPeongUp(matrix& wtm);
   void RenderRipple(matrix& wtm);
   void RenderRainbow(matrix& wtm);
+  void RenderTube(matrix& wtm);
+  void RenderRecordQuads(matrix& wtm);
+  void RenderSpiralBlades(matrix& wtm);
+  void RenderGlowDisc(matrix& wtm);
   void RenderColorPanel(matrix& wtm);
   void RenderTrailSquares(matrix& wtm);
   void RenderRotatedPlate(matrix& wtm);
