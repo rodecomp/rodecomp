@@ -59,6 +59,7 @@ void CUISlot3::Slot16() {
 }
 
 // OFFSET: 0x00A06150
+// FUNCTION: fn_14992
 void CUISlot::Slot16() {
   this->itemIcon->hitEnabled = 0;
   this->description->scrollBar->SetHidden(1);
@@ -66,6 +67,7 @@ void CUISlot::Slot16() {
 }
 
 // OFFSET: 0x00A06190
+// FUNCTION: fn_14994
 void CUIEnchantUI::Slot25(int x, int y) {
   if (this->titleBar->IsPointInside(x, y)) {
     CUIFrameWnd::Slot25(x, y);
@@ -74,21 +76,25 @@ void CUIEnchantUI::Slot25(int x, int y) {
 
 namespace EnchantUI {
 // OFFSET: 0x00A061C0
+// FUNCTION: fn_14995
 void CUIEnchantItem::Slot28(int x, int y) {
   this->itemIcon->Slot28(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
 }
 
 // OFFSET: 0x00A061F0
+// FUNCTION: fn_14996
 void CUITargetItem::Slot28(int x, int y) {
   this->itemIcon->Slot28(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
 }
 
 // OFFSET: 0x00A06220
+// FUNCTION: fn_14997
 void CUIEnchantItem::Slot32(int x, int y) {
   this->itemIcon->Slot32(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
 }
 
 // OFFSET: 0x00A06250
+// FUNCTION: fn_14998
 void CUISlot::Slot32(int x, int y) {
   if (this->itemIcon->IsPointInside(x, y)) {
     this->itemIcon->Slot32(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
@@ -96,11 +102,13 @@ void CUISlot::Slot32(int x, int y) {
 }
 
 // OFFSET: 0x00A06290
+// FUNCTION: fn_14999
 void CUITargetItem::Slot32(int x, int y) {
   this->itemIcon->Slot32(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
 }
 
 // OFFSET: 0x00A06A50
+// FUNCTION: fn_15005
 void CUITargetItem::SetSelected(bool selected) {
   if (selected) {
     if (this->selected != 1) {
