@@ -2,9 +2,15 @@
 
 #include "Client/Session.h"
 #include "Contents/CashEmotionMgr.h"
+#include "Contents/EquipmentResourceMgr.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
+#include "Contents/Jobs/JobNames.h"
+#include "Contents/MessageTable.h"
 #include "Resource/Models/GrannyModelResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Utility/Text/FormatString.h"
 
 // GLOBAL: gl_24753
 extern const int g_maxMoveSpeed = 432;
@@ -320,4 +326,70 @@ void CPc::Slot39(int value) {
   }
 
   this->render.unknown_0054 = static_cast<float>(value) / 432.0f;
+}
+
+// OFFSET: 0x00DDD190
+// FUNCTION: fn_23381
+static std::string GetBodyImfName(int job, int sex, int, int costumeJob) {
+  const int spriteJob = g_session.GetSpriteJob(job, costumeJob, true);
+  return FormatOwnedString("%s_%s.imf", g_session.GetBodyJobName(spriteJob).c_str(), g_session.GetSexName(sex).c_str());
+}
+
+// OFFSET: 0x00DB0500
+
+// OFFSET: 0x00DB05E0
+
+// OFFSET: 0x00DAFB60
+
+// OFFSET: 0x00DAFE10
+
+// OFFSET: 0x00DB2230
+
+// OFFSET: 0x00DB2360
+
+// OFFSET: 0x00DB4C70
+// FUNCTION: fn_22652
+int CPc::MapMotion(int motion) {
+  switch (this->GetEffectiveJob(-1)) {
+    case 2:
+    case 9:
+    case 0x10:
+    case 0xFA3:
+    case 0xFAA:
+    case 0xFB1:
+    case 0xFB9:
+    case 0xFC0:
+    case 0xFC7:
+      return motion == 5 ? 10 : motion;
+    case 6:
+    case 0xFA7:
+    case 0xFBD:
+      return (motion == 8 || motion == 6 || motion == 7) ? 2 : motion;
+    case 0xC:
+    case 0x11:
+    case 0xFAD:
+    case 0xFB2:
+    case 0xFC3:
+    case 0xFC8:
+    case 0xFDB:
+    case 0xFE1:
+    case 0xFE8:
+    case 0xFEF:
+    case 0x1005:
+    case 0x100C:
+    case 0x109E:
+      if (motion == 8 || motion == 7) {
+        return 2;
+      }
+
+      if (motion == 6 && (
+        this->GetEffectiveJob(-1) == 0x11 || this->GetEffectiveJob(-1) == 0xFB2 || this->GetEffectiveJob(-1) == 0xFC8
+      )) {
+        return 1;
+      }
+
+      return motion;
+    default:
+      return motion;
+  }
 }

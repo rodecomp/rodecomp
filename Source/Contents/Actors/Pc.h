@@ -6,8 +6,10 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <vector>
 
 class C3dGrannyModelRes;
+class CRes;
 struct granny_control;
 struct granny_model_instance;
 
@@ -18,6 +20,7 @@ public:
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
 
+  void Slot30() override;
   void Slot31() override;
   void Slot33(int value) override;
   void Slot34(int value) override;
@@ -34,6 +37,12 @@ public:
   bool Slot58() override;
   void Slot59(bool value) override;
   void Slot60() override;
+
+  void LoadEquipAction(int slot, const char* name);
+  void LoadEquipSprite(int slot, const char* name);
+  void LoadEquipActions(const std::vector<std::string>& names);
+  void LoadEquipSprites(const std::vector<std::string>& names);
+  int MapMotion(int motion);
 
   float* GetExtent(float* extent) const override;
 
@@ -53,7 +62,9 @@ public:
   /* 045C */ int unknown_045C;
   /* 0460 */ unsigned char unknown_0460[0x18];
   /* 0478 */ std::string unknown_0478;
-  /* 0490 */ unsigned char unknown_0490[0x3C];
+  /* 0490 */ unsigned char unknown_0490[0x24];
+  /* 04B4 */ std::vector<CRes*> equipSprites;
+  /* 04C0 */ std::vector<CRes*> equipActions;
   /* 04CC */ int unknown_04CC;
   /* 04D0 */ int unknown_04D0;
   /* 04D4 */ int unknown_04D4;
@@ -127,6 +138,7 @@ public:
   void Slot26(int value) override;
   void Slot27(int value) override;
   void Slot28(int value) override;
+  void Slot30() override;
   void Slot31() override;
   void Slot39(int value) override;
   void Slot40(int value) override;
