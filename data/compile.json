@@ -380,6 +380,7 @@
   "Source/Contents/Models/ModelTextureAnimation.cpp": 3,
   "Source/Contents/MonsterResources.cpp": 4,
   "Source/Contents/MonsterSpeech.cpp": 4,
+  "Source/Contents/MonsterXmlActions.cpp": 4,
   "Source/Contents/MovementRoute.cpp": 4,
   "Source/Contents/MovementRouteInterpolation.cpp": 4,
   "Source/Contents/Movies/BinkMovie.cpp": 3,

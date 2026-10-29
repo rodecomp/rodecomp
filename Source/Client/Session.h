@@ -269,6 +269,8 @@ public:
   CSkillInfo AdditionalSkillAt(int index) const;
   CSkillInfo HomunSkillAt(int index) const;
   void DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes, WindowDialogs& dialogs);
+  int IsAdminSubMode(int subMode);
+  void GetMonsterSkillInfo(const char* monster, int skill, int* action, int* loopType, WindowDialogs& dialogs);
   const char* DecodePlayerName() const;
   void NotifyHomunSkillWindows();
   void NotifyMercSkillWindows();
@@ -336,6 +338,9 @@ public:
 };
 
 extern CSession g_session;
+extern std::vector<int> g_adminAccountIds;
+
+bool IsAdminAccount(int aid);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(SessionRecord6144) == 0x38);
