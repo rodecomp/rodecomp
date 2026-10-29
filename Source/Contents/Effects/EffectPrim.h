@@ -137,6 +137,7 @@ struct CEffectPrim : CRenderObject {
   void RenderPeongUp(matrix& wtm);
   void RenderRipple(matrix& wtm);
   void RenderRainbow(matrix& wtm);
+  void RenderOrbitIcons(matrix& wtm, float scale, unsigned char red, unsigned char green, unsigned char blue);
   void RenderLayeredGlow(matrix& wtm);
   void RenderSphereCage(matrix& wtm);
   void RenderGroundBubbles(matrix& wtm);
