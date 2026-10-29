@@ -2,6 +2,7 @@
 #include "Contents/Jobs/JobId.h"
 #include "Network/TextEncoding.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <windows.h>
@@ -350,3 +351,49 @@ bool CSession::HasExchangeItem(std::uint32_t id) const {
 
   return false;
 }
+
+// OFFSET: 0x00DDB7E0
+// FUNCTION: fn_23355
+const char* CSession::GatName2RswName(const char* gatName) {
+  // GLOBAL: gl_24763
+  static std::string rswName;
+  rswName = gatName;
+  if (rswName.size() > 4) {
+    rswName.resize(rswName.size() - 3);
+    rswName += "rsw";
+  }
+
+  return rswName.c_str();
+}
+
+// OFFSET: 0x00DDEF40
+// FUNCTION: fn_23415
+ITEM_INFO CSession::FindItem1760ByItemId(const char* itemId) const {
+  for (const ITEM_INFO& item : this->unknown_1760) {
+    if (item.itemId == itemId) {
+      return item;
+    }
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00DDF090
+// FUNCTION: fn_23417
+int CSession::GetItem1760QuantityByItemId(const char* itemId) const {
+  for (const ITEM_INFO& item : this->unknown_1760) {
+    if (item.itemId == itemId) {
+      return item.quantity;
+    }
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00DDF2D0
+
+// OFFSET: 0x00DDF320
+
+// OFFSET: 0x00DF9CD0
+
+// OFFSET: 0x00DF9D30

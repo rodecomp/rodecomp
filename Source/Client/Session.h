@@ -48,6 +48,12 @@ struct ProhibitionLogEntry {
   /* 0034 */ char ownerName[32];
 };
 
+struct SessionRecord0734 {
+  /* 0000 */ std::uint32_t unknown_0000 = 0;
+  /* 0004 */ int id;
+  /* 0008 */ std::uint32_t unknown_0008;
+};
+
 struct SessionShop {
   /* 0000 */ unsigned char unknown_0000;
   /* 0004 */ std::vector<std::map<int, std::pair<int, int>>> unknown_0004;
@@ -73,7 +79,8 @@ public:
   /* 06F9 */ unsigned char unknown_06F9[0x23];
   /* 071C */ std::vector<int> m_homunSkillLevels;
   /* 0728 */ std::vector<int> m_mercSkillLevels;
-  /* 0734 */ unsigned char unknown_0734[0x1C];
+  /* 0734 */ std::list<SessionRecord0734> unknown_0734;
+  /* 073C */ unsigned char unknown_073C[0x14];
   /* 0750 */ std::uint32_t m_prohibitionTarget;
   /* 0754 */ std::vector<ProhibitionLogEntry> m_prohibitionLog;
   /* 0760 */ std::string m_accountName;
@@ -144,16 +151,20 @@ public:
   /* 1760 */ std::list<ITEM_INFO> unknown_1760;
   /* 1768 */ std::list<ITEM_INFO> unknown_1768;
   /* 1770 */ std::list<ITEM_INFO> unknown_1770;
-  /* 1778 */ unsigned char unknown_1778[0x60];
-  /* 17D8 */ std::list<MessengerMember> m_partyMembers;
-  /* 17E0 */ unsigned char unknown_17E0[0x10];
+  /* 1778 */ unsigned char unknown_1778[0x5C];
+  /* 17D4 */ std::list<ITEM_INFO> unknown_17D4;
+  /* 17DC */ std::list<MessengerMember> m_partyMembers;
+  /* 17E4 */ std::list<MessengerMember> m_friends;
+  /* 17EC */ unsigned char unknown_17EC[0x04];
   /* 17F0 */ ITEM_INFO unknown_17F0[10];
   /* 21A0 */ unsigned char unknown_21A0[0x9B0];
   /* 2B50 */ ITEM_INFO unknown_2B50[10];
   /* 3500 */ ITEM_INFO unknown_3500[10];
   /* 3EB0 */ ITEM_INFO m_exchangeItems[10];
   /* 4860 */ ITEM_INFO m_itemSlots[10];
-  /* 5210 */ unsigned char unknown_5210[0x44];
+  /* 5210 */ unsigned char unknown_5210[0x14];
+  /* 5224 */ std::vector<std::pair<const char*, const char*>> m_bgmFileNames;
+  /* 5230 */ unsigned char unknown_5230[0x24];
   /* 5254 */ std::map<int, float> m_npcLocationRadius;
   /* 525C */ unsigned char unknown_525C[0x38];
   /* 5294 */ const char* const* m_bodyJobNames;
@@ -311,6 +322,13 @@ public:
   ITEM_INFO GetItem1760At(int index) const;
   int GetItem1760Quantity(std::uint32_t id) const;
   ITEM_INFO FindItem1770(std::uint32_t id) const;
+  ITEM_INFO FindItem1760ByItemId(const char* itemId) const;
+  int GetItem1760QuantityByItemId(const char* itemId) const;
+  SessionRecord0734 FindRecord0734(int id) const;
+  const char* GatName2RswName(const char* gatName);
+  const char* GetBgmFileName(const char* rswName);
+  bool HasItem17D4(int itemId) const;
+  bool IsFriendName(const char* name) const;
   long long GetItem1760Total() const;
   ITEM_INFO GetItem1748At(int index) const;
   bool HasItem1718(std::uint32_t id) const;
@@ -476,7 +494,11 @@ static_assert(offsetof(CSession, m_job) == 0x1628);
 static_assert(offsetof(CSession, m_inventoryItems) == 0x1710);
 static_assert(offsetof(CSession, unknown_16EC) == 0x16EC);
 static_assert(offsetof(CSession, unknown_1730) == 0x1730);
-static_assert(offsetof(CSession, m_partyMembers) == 0x17D8);
+static_assert(offsetof(CSession, unknown_0734) == 0x734);
+static_assert(offsetof(CSession, unknown_17D4) == 0x17D4);
+static_assert(offsetof(CSession, m_partyMembers) == 0x17DC);
+static_assert(offsetof(CSession, m_friends) == 0x17E4);
+static_assert(offsetof(CSession, m_bgmFileNames) == 0x5224);
 static_assert(offsetof(CSession, unknown_17F0) == 0x17F0);
 static_assert(offsetof(CSession, unknown_2B50) == 0x2B50);
 static_assert(offsetof(CSession, unknown_3500) == 0x3500);
