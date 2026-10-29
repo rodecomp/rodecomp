@@ -32,6 +32,8 @@ public:
   void DrawShadow(int argument, float scale);
   void DrawQuad(const SpriteQuad& quad, const std::uint32_t* palette, int blend, float offsetX, float offsetY, int depthOffset);
   void DrawFlippedQuad(SpriteQuad& quad, const std::uint32_t* palette, int blend, float x, float y, int depthOffset);
+  void DrawStatusOverlays(SpriteQuad quad, const std::uint32_t* palette);
+  void DrawTintedQuad(SpriteQuad& quad, short red, short green, short blue, const std::uint32_t* palette);
   void SendValueMessage(int value, CGameObject* target);
   void SetActionName(ResourceMgr& resources, const char* name);
   void SetSpriteName(ResourceMgr& resources, const char* name);

@@ -5,6 +5,7 @@
 #include "Client/Replay.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Actors/GameActor.h"
+#include "Render/SpriteQuad.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
@@ -294,6 +295,36 @@ int CRenderObject::HoverHeight() {
   return scaled < 0 ? 0 : scaled;
 }
 
+// OFFSET: 0x00CC1740
+// FUNCTION: fn_21122
+void CRenderObject::DrawStatusOverlays(SpriteQuad quad, const std::uint32_t* palette) {
+  if ((this->render.flags & 0x100) != 0) {
+    const short level = this->render.unknown_00F4;
+    bool draw = true;
+    if (level <= 5) {
+      quad.color = (static_cast<short>(level * 50) << 24) + 0xFFFFFF;
+    } else if (level <= 8) {
+      quad.color = 0xFFFFFFFF;
+    } else if (level <= 11) {
+      quad.color = (static_cast<short>(895 - level * 80) << 24) + 0xFFFFFF;
+    } else {
+      draw = false;
+    }
+
+    if (draw) {
+      this->DrawQuad(quad, palette, 5, 0.0f, 0.0f, 0);
+    }
+  }
+
+  if ((this->render.flags & 0x4000) != 0) {
+    this->DrawTintedQuad(quad, 5, 5, 255, palette);
+  }
+
+  if ((this->render.flags & 0x40000) != 0) {
+    this->DrawTintedQuad(quad, 255, 5, 5, palette);
+  }
+}
+
 // OFFSET: 0x00CC1810
 // FUNCTION: fn_21123
 void CRenderObject::ScaleByPulse(float& scale) const {
@@ -333,6 +364,25 @@ void CRenderObject::ApplySwing(int mode, int& x, int& y, int& outX, int& outY) c
   } else if (mode >= 2) {
     x = static_cast<int>(ClientSine(angle) * 10.0f + x);
     y = static_cast<int>(y - (ClientCosine(angle) * 10.0f - 10.0f));
+  }
+}
+
+// OFFSET: 0x00CC1C40
+// FUNCTION: fn_21126
+void CRenderObject::DrawTintedQuad(SpriteQuad& quad, short red, short green, short blue, const std::uint32_t* palette) {
+  const unsigned char phase = this->render.unknown_00F6;
+  if (phase <= 10) {
+    quad.color = (((((phase * 15) << 8) + red) << 8) + green << 8) + blue;
+  } else if (phase <= 20) {
+    quad.color = ((((0xA0 << 8) + red) << 8) + green << 8) + blue;
+  } else if (phase <= 50) {
+    const short alpha = static_cast<short>((51 - phase) * 5);
+    quad.color = ((((alpha << 8) + red) << 8) + green << 8) + blue;
+  }
+
+  if (this->render.unknown_00F6 <= 50) {
+    this->DrawQuad(quad, palette, 5, 0.0f, 0.0f, 0);
+    this->DrawQuad(quad, palette, 5, 0.0f, 0.0f, 0);
   }
 }
 
