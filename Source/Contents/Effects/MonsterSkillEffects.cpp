@@ -119,6 +119,16 @@ bool CSpriteMableEffect::Slot06() {
 }
 
 // OFFSET: 0x0070D2C0
+// FUNCTION: fn_07147
+void CSpriteMableEffect::Slot04() {
+  if (!g_serviceOptions.Get(240)) {
+    return;
+  }
+
+  for (auto emitter = this->emitters.begin(); emitter != this->emitters.end(); ++emitter) {
+    AsSprite(*emitter)->sub_B40F30(1);
+  }
+}
 
 // OFFSET: 0x0070D300
 // FUNCTION: fn_07148
@@ -227,6 +237,10 @@ void CWarningPlaneEffect::Slot01() {
 // OFFSET: 0x0070F360
 
 // OFFSET: 0x0070FC60
+// FUNCTION: fn_07194
+bool CCylinderEffect::Slot06() {
+  return this->startTime + this->unknown_002C >= timeGetTime();
+}
 
 // OFFSET: 0x0070F720
 // FUNCTION: fn_07189
@@ -612,6 +626,15 @@ void CGaleStorm::Slot04() {
 }
 
 // OFFSET: 0x007183F0
+// FUNCTION: fn_07292
+void CGravityControlEffect::Slot04() {
+  if (!this->target) {
+    return;
+  }
+
+  AsParticle(reinterpret_cast<EZ2STREmitter*>(this->target))
+      ->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+}
 
 // OFFSET: 0x007184D0
 CHawkVumerangEffect::CHawkVumerangEffect()
