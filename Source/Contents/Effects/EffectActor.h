@@ -3,8 +3,11 @@
 
 #include "Contents/Effects/EffectAttachments.h"
 #include "Contents/Actors/RenderObject.h"
+#include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
+
+struct CRagEffect;
 
 struct EffectActorState {
   EffectActorState();
@@ -22,6 +25,7 @@ struct EffectActorState {
 struct EffectActor : CRenderObject {
   EffectActor();
   bool EffectVisible() const;
+  CRagEffect* LaunchEffect(int effectId, vector3d deltaPos, float rotation);
 
   /* 0138 */ EffectActorState state;
 };

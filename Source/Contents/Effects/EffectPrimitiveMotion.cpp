@@ -3,6 +3,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/World/World.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Contents/Effects/EffectPrim.h"
@@ -1996,6 +1997,81 @@ bool CEffectPrim::PrimSuperAngel() {
   return true;
 }
 
+// OFFSET: 0x00BC3FA0
+// FUNCTION: fn_19841
+void CEffectPrim::PrimTanji2() {
+  EffectPrimitiveSlot* slots = this->state.slots;
+  FaceCamera(slots);
+
+  const CRagEffect* master = this->state.master;
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
+
+  EffectPrimitiveSlot& slot = slots[0];
+
+  if (slot.life != 1) {
+    return;
+  }
+
+  ++slot.process;
+
+  if (slot.process <= 0) {
+    return;
+  }
+
+  if (slot.flag1[2] == 1) {
+    if (slot.process <= 10) {
+      slot.alphaB += 25;
+    }
+
+    if (slot.alphaB >= 255) {
+      slot.alphaB = 255;
+    }
+  }
+
+  const int rate = slot.flag1[2] == 1 ? 1 : 3;
+
+  if (slot.process % rate == 0) {
+    if (slot.process > 3) {
+      FollowTrail(slots[3], slots[2], 25);
+    }
+
+    if (slot.process > 2) {
+      FollowTrail(slots[2], slots[1], 25);
+    }
+
+    if (slot.process > 1) {
+      FollowTrail(slots[1], slot, 150);
+    }
+  }
+
+  slot.fullDisplayAngle -= 15;
+
+  if (slot.fullDisplayAngle < 0) {
+    slot.fullDisplayAngle += 360;
+  }
+
+  if (slot.process == 1) {
+    const float rx = this->state.offset.x - slot.vecBNow.x;
+    const float rz = this->state.offset.z - slot.vecBNow.z;
+    Get_Angle(rx, rz, &slot.rotStart);
+  }
+
+  slot.vecBNow.x += slot.height[1] * g_cosTable[slot.rotStart];
+  slot.vecBNow.z += slot.height[1] * g_sinTable[slot.rotStart];
+
+  if (slot.process % 4 == 0) {
+    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CRagEffect* effect = gameMode->scene->player->LaunchEffect(416, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+
+    if (effect) {
+      vector3d position = slot.vecBNow;
+      effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+    }
+  }
+}
+
 // OFFSET: 0x00BBE350
 // FUNCTION: fn_19811
 bool CEffectPrim::PrimGhost() {
@@ -2426,6 +2502,215 @@ bool CEffectPrim::Prim3DParticleGravity() {
   this->state.ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
+}
+
+// OFFSET: 0x00BB9610
+// FUNCTION: fn_19786
+bool CEffectPrim::Prim3DTextureNoMaster() {
+  EffectPrimitiveState& particle = this->state;
+  const vector3d origin{
+    particle.origin.x + particle.velocity.x, particle.origin.y + particle.velocity.y, particle.origin.z + particle.velocity.z
+  };
+
+  if (particle.unknown_0200 == particle.unknown_01E0) {
+    constexpr float sentinel = 0.0001f;
+
+    if (particle.unknown_02C8 != sentinel) {
+      particle.unknown_0358 = particle.unknown_02C8;
+    }
+
+    if (particle.unknown_02CC != sentinel) {
+      particle.unknown_0364 = particle.unknown_02CC;
+    }
+
+    if (particle.unknown_029C != sentinel) {
+      particle.unknown_02BC = particle.unknown_029C;
+    }
+
+    if (particle.unknown_02C4 != sentinel) {
+      particle.unknown_035C = particle.unknown_02C4;
+    }
+
+    if (particle.unknown_02D0 != sentinel) {
+      particle.unknown_0368 = particle.unknown_02D0;
+    }
+
+    if (particle.unknown_02A0 != sentinel) {
+      particle.unknown_02C0 = particle.unknown_02A0;
+    }
+
+    if (particle.unknown_02A4.x != sentinel) {
+      particle.unknown_0370.x = particle.unknown_02A4.x;
+    }
+
+    if (particle.unknown_02A4.y != sentinel) {
+      particle.unknown_0370.y = particle.unknown_02A4.y;
+    }
+
+    if (particle.unknown_02A4.z != sentinel) {
+      particle.unknown_0370.z = particle.unknown_02A4.z;
+    }
+
+    if (particle.unknown_02B0.x != sentinel) {
+      particle.unknown_03AC.x = particle.unknown_02B0.x;
+    }
+
+    if (particle.unknown_02B0.y != sentinel) {
+      particle.unknown_03AC.y = particle.unknown_02B0.y;
+    }
+
+    if (particle.unknown_02B0.z != sentinel) {
+      particle.unknown_03AC.z = particle.unknown_02B0.z;
+    }
+  }
+
+  particle.unknown_0370.x = particle.unknown_03AC.x + particle.unknown_0370.x;
+  particle.unknown_0370.y = particle.unknown_03AC.y + particle.unknown_0370.y;
+  particle.unknown_0370.z = particle.unknown_03AC.z + particle.unknown_0370.z;
+  particle.unknown_02BC = particle.unknown_02C0 + particle.unknown_02BC;
+  particle.unknown_0358 = particle.unknown_035C + particle.unknown_0358;
+  particle.unknown_0364 = particle.unknown_0364 + particle.unknown_0368;
+  particle.unknown_0330 = particle.unknown_033C + particle.unknown_0330;
+  particle.unknown_0334 = particle.unknown_0340 + particle.unknown_0334;
+
+  if ((particle.flags & 0x400u) != 0) {
+    particle.unknown_0370 = {};
+    particle.unknown_0370 = Forward(particle.unknown_02BC, particle.matrix1);
+    particle.offset.x = particle.unknown_0370.x + particle.offset.x;
+    particle.offset.y = particle.unknown_0370.y + particle.offset.y;
+    particle.offset.z = particle.unknown_0370.z + particle.offset.z;
+  } else if ((particle.flags & 0x100u) != 0) {
+    particle.offset.x = particle.unknown_0370.x + particle.offset.x;
+    particle.offset.y = particle.unknown_0370.y + particle.offset.y;
+    particle.offset.z = particle.unknown_0370.z + particle.offset.z;
+  } else {
+    particle.unknown_0370 = Forward(particle.unknown_02BC, particle.matrix1);
+    particle.offset.x = particle.unknown_0370.x + particle.offset.x;
+    particle.offset.y = particle.unknown_0370.y + particle.offset.y;
+    particle.offset.z = particle.unknown_0370.z + particle.offset.z;
+  }
+
+  if ((particle.flags & 0x400u) != 0) {
+    if (3.0f >= this->CalcDist(particle.master->state.offset[0], particle.master->state.offset[2])) {
+      particle.unknown_014C.x = std::bit_cast<float>(1u);
+      return false;
+    }
+
+    particle.unknown_030C = this->render.angle;
+  }
+
+  this->render.position.x = origin.x + particle.offset.x;
+  this->render.position.y = origin.y + particle.offset.y;
+  this->render.position.z = origin.z + particle.offset.z;
+  particle.unknown_0354 = particle.unknown_0354 + particle.unknown_0358;
+  particle.unknown_0360 = particle.unknown_0360 + particle.unknown_0364;
+  particle.unknown_030C = particle.unknown_0330 + particle.unknown_030C;
+  particle.unknown_0310 = particle.unknown_0334 + particle.unknown_0310;
+
+  if (!(particle.unknown_0360 <= particle.unknown_036C)) {
+    particle.unknown_0368 = 0;
+    particle.unknown_0364 = 0;
+  }
+
+  auto& rotation = *reinterpret_cast<struct matrix*>(particle.matrix2);
+  float angle;
+
+  if ((particle.flags & 0x200u) != 0) {
+    const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+    rotation.MakeZRotation(view->camera.pitch);
+    angle = this->render.angle;
+  } else {
+    if ((particle.flags & 0x40u) != 0) {
+      const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+      particle.unknown_030C = view->camera.yaw + 90.0f;
+      particle.unknown_0314 = view->camera.pitch;
+      rotation.MakeXRotation(GetRadian(static_cast<int>(particle.unknown_0310)));
+      rotation.AppendZRotation(GetRadian(static_cast<int>(particle.unknown_0314)));
+    } else {
+      rotation.MakeZRotation(GetRadian(static_cast<int>(particle.unknown_0314)));
+      rotation.AppendXRotation(GetRadian(static_cast<int>(particle.unknown_0310)));
+    }
+
+    angle = particle.unknown_030C;
+  }
+
+  rotation.AppendYRotation(GetRadian(static_cast<int>(angle)));
+
+  if ((particle.flags & 2u) != 0) {
+    const auto index = particle.unknown_01D4;
+    particle.unknown_01D4 = index + 1u == 10u ? 0u : index + 1u;
+    const float offset = static_cast<float>(static_cast<int>(index)) / 10.0f;
+    particle.unknown_02E4 = offset;
+    particle.unknown_02E8 = offset + 1.0f;
+  }
+
+  if ((particle.flags & 0x10u) != 0) {
+    particle.master->state.offset[0] = particle.velocity.x + particle.offset.x;
+    particle.master->state.offset[1] = particle.offset.y + particle.velocity.y;
+    particle.master->state.offset[2] = particle.offset.z + particle.velocity.z;
+  }
+
+  if ((particle.flags & 4u) != 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+    if (this->render.position.y > mode->scene->terrain->Grid().Height(this->render.position.x, this->render.position.z)) {
+      particle.flags &= ~4u;
+      particle.unknown_01E0 = particle.lifetime - 25;
+      particle.unknown_02BC = 0;
+      particle.master->state.unknown_0170 = 1;
+    }
+  }
+
+  if ((particle.flags & 0x20u) != 0 && particle.unknown_01E0 % static_cast<int>(particle.unknown_01CC) == 0) {
+    particle.unknown_0364 *= -1.0f;
+  }
+
+  const bool wrap254 = (particle.flags & 0x800u) != 0;
+  const bool gated = wrap254 && (particle.red == 254 || particle.blue == 254 || particle.green == 254);
+  bool advance = true;
+
+  if (gated) {
+    if (particle.unknown_0234 != 0) {
+      ++particle.unknown_01FC;
+    }
+
+    advance = particle.unknown_0234 == particle.unknown_01FC;
+  }
+
+  if (advance) {
+    particle.red += particle.unknown_0248;
+    particle.green += particle.unknown_024C;
+    particle.blue += particle.unknown_0250;
+
+    if (gated) {
+      particle.unknown_01FC = 0;
+    }
+  }
+
+  if (wrap254) {
+    particle.red = particle.red > 254 ? 0 : particle.red < 0 ? 254 : particle.red;
+    particle.green = particle.green > 254 ? 0 : particle.green < 0 ? 254 : particle.green;
+    particle.blue = particle.blue > 254 ? 0 : particle.blue < 0 ? 254 : particle.blue;
+  } else {
+    particle.red = particle.red > 255 ? 0 : particle.red < 0 ? 255 : particle.red;
+    particle.green = particle.green > 255 ? 255 : particle.green < 0 ? 0 : particle.green;
+    particle.blue = particle.blue > 255 ? 255 : particle.blue < 0 ? 0 : particle.blue;
+  }
+
+  particle.ProcessAlpha();
+
+  if (particle.unknown_01E0 % particle.unknown_01E8 == 0) {
+    const auto next = this->render.curMotion + 1u;
+    this->render.curMotion = next;
+
+    if (particle.unknown_0254 != 0) {
+      this->render.curMotion = static_cast<int>(next) % static_cast<int>(particle.textureCount);
+    } else if (next == particle.textureCount) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00BB78A0

@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_ACTORS_GAMEACTOR_H
 #define RAGNAROK_SOURCE_CONTENTS_ACTORS_GAMEACTOR_H
 
-#include "Contents/Actors/RenderObject.h"
+#include "Contents/Effects/EffectActor.h"
 #include "Contents/MovementRouteInterpolation.h"
 
 #include <cstddef>
@@ -17,11 +17,11 @@ enum {
   BODYSTATE_STONECURSE_ING,
 };
 
-class CGameActor : public CRenderObject {
+class CGameActor : public EffectActor {
 public:
   ~CGameActor() override;
 
-  /* 0138 */ unsigned char unknown_0138[0xE8];
+  /* 0158 */ unsigned char unknown_0158[0xC8];
   /* 0220 */ MovementRouteInterpolation route;
   /* 0238 */ unsigned char unknown_0238;
   /* 0239 */ unsigned char unknown_0239[0x1B];

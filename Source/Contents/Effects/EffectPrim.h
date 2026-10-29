@@ -20,6 +20,7 @@ struct CEffectPrim : CRenderObject {
   bool Prim3DParticleNoMaster();
   bool Prim3DParticleOrbit();
   bool Prim3DParticleSpline();
+  bool Prim3DTextureNoMaster();
   void PrimBottom2();
   void PrimBottom();
   void PrimBottomOut();
@@ -37,6 +38,7 @@ struct CEffectPrim : CRenderObject {
   void PrimSMA();
   void PrimShieldBoomerang3();
   bool PrimSuperAngel();
+  void PrimTanji2();
   void PrimTeiHit2();
   bool PrimSakura();
   bool PrimKouenka();
