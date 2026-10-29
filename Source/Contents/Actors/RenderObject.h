@@ -26,6 +26,7 @@ public:
   float CalcDist(float x, float z) const;
   float CalcDist(float x, float y, float z) const;
   bool GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) const;
+  void UpdateTlvertex(const float* matrix);
   void SetAnimationSpeed(float speed);
   void SetActionSpeed(float speed);
   void DrawSprite(int argument, bool seasonal, float offset);
@@ -47,6 +48,7 @@ public:
   );
   int HoverHeight();
   void ScaleByPulse(float& scale) const;
+  void ScaleByFadePulse(float& scale) const;
   void JitterBounds(float* output, const int* input, float offset, int spread, int base);
   void ApplySwing(int mode, int& x, int& y, int& outX, int& outY) const;
   void SetInstantValue(int key, std::int64_t value);

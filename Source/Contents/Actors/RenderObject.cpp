@@ -13,6 +13,7 @@
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/Jobs/JobId.h"
+#include "Render/Renderer.h"
 #include "Render/SpriteQuad.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -946,4 +947,16 @@ void CGameActor::SetUnknown03C4(int value) {
   this->unknown_03C4 = value;
   this->Slot21(value > 0 ? value : this->GetEffectiveJob(-1));
   this->Slot15(this->render.unknown_0070, 1);
+}
+
+// OFFSET: 0x00CABDE0
+
+// OFFSET: 0x00CC4270
+// FUNCTION: fn_21161
+void CRenderObject::UpdateTlvertex(const float* matrix) {
+  float x;
+  float y;
+  float reciprocalDepth;
+  g_renderer->ProjectViewport(&this->render.position.x, matrix, &x, &y, &reciprocalDepth);
+  this->SetTlvert(x, y);
 }
