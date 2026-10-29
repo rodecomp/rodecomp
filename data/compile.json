@@ -760,6 +760,7 @@
   "Source/UI/Text/UITransBalloonText.cpp": 2,
   "Source/UI/TextTagExtraction.cpp": 2,
   "Source/UI/TextTagRegistry.cpp": 2,
+  "Source/UI/UIBroadcastBalloon.cpp": 2,
   "Source/UI/UICaptchaRegisterWnd.cpp": 2,
   "Source/UI/UIChangeMaterialWnd.cpp": 2,
   "Source/UI/UIGradeEnchantWnd.cpp": 2,

@@ -252,6 +252,20 @@ void UIBmpRadioBtn::Slot28(int, int) {
   }
 }
 
+// OFFSET: 0x007C7CA0
+// FUNCTION: fn_09408
+void UIBmpRadioBtn2::Slot47() {
+  this->m_hovered = true;
+  this->Invalidate();
+}
+
+// OFFSET: 0x007C7CB0
+// FUNCTION: fn_09409
+void UIBmpRadioBtn2::Slot48() {
+  this->m_hovered = false;
+  this->Invalidate();
+}
+
 // OFFSET: 0x00891870
 // FUNCTION: fn_11451
 void UICaptchaImage::Slot28(int, int) {

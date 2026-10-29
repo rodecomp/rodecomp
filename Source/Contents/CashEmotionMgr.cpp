@@ -9,7 +9,11 @@
 #include "UI/CashEmotion/UICashEmotionPiece.h"
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "Contents/MessageTable.h"
+#include "UI/Buttons/UIButton.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/UILapineScrollBar.h"
+#include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/WindowBorder.h"
 
 #include <algorithm>
@@ -17,6 +21,7 @@
 #include <climits>
 #include <cstring>
 #include <iterator>
+#include <map>
 #include <new>
 
 // STATIC: 0x013896C4
@@ -90,8 +95,75 @@ protected:
   /* 00B4 */ bool m_disabled;
 };
 
+class UICashEmotionScrollWnd : public UIScrollWnd {
+};
+
+class UICashEmotionListChildWnd_Abstract : public UICashEmotionScrollWnd {
+public:
+  void Slot35(int delta) override;
+};
+
+class UICashEmotionListChildWnd_Basic : public UICashEmotionListChildWnd_Abstract {
+public:
+  void Slot19() override;
+  void Paint() override;
+
+protected:
+  /* 00B0 */ std::vector<UIWindow*> m_items;
+  /* 00BC */ ICashEmotionAction* m_selectAction;
+  /* 00C0 */ ICashEmotionAction* m_playAction;
+};
+
+class UICashEmotionListChildWnd_Purchase : public UICashEmotionListChildWnd_Abstract {
+public:
+  void Paint() override;
+};
+
+class UICashEmotionListChildWnd_Search : public UICashEmotionListChildWnd_Abstract {
+public:
+  void Paint() override;
+};
+
+class UICashEmotionListChildWnd_UnPurchased : public UICashEmotionListChildWnd_Abstract {
+public:
+  void Paint() override;
+};
+
+struct CashEmotionListPlacement {
+  /* 0000 */ int x;
+  /* 0004 */ int y;
+  /* 0008 */ int width;
+  /* 000C */ int height;
+};
+
+class UICashEmotionListWnd : public UIFrameWnd {
+public:
+  UICashEmotionListWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls);
+  void Slot11() override;
+  void Slot19() override;
+  void Paint() override;
+
+protected:
+  /* 00B4 */ CashEmotionListPlacement* m_placement;
+  /* 00B8 */ UICashEmotionListChildWnd_Abstract* m_basicList;
+  /* 00BC */ UICashEmotionListChildWnd_Abstract* m_purchaseList;
+  /* 00C0 */ UICashEmotionListChildWnd_Abstract* m_searchList;
+  /* 00C4 */ UICashEmotionListChildWnd_Abstract* m_unpurchasedList;
+  /* 00C8 */ std::map<char, UIWindow*> m_tabs;
+  /* 00D0 */ char m_tab;
+  /* 00D4 */ UIWindow* unknown_00D4;
+  /* 00D8 */ UIEditCtrl* m_searchEdit;
+  /* 00DC */ UIWindow* unknown_00DC;
+  /* 00E0 */ UIWindow* unknown_00E0;
+  /* 00E4 */ UIWindow* unknown_00E4;
+  /* 00E8 */ UICashEmotionListChildWnd_Abstract* m_currentList;
+  /* 00EC */ UIWindow* unknown_00EC;
+  UIButtonContext* m_controls;
+};
+
 class UICashEmotionMiniWnd : public UIWindow {
 public:
+  ~UICashEmotionMiniWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -113,6 +185,11 @@ protected:
   /* 009C */ int m_selectedIndex;
   UICashEmotionPieceContext* m_controls;
 };
+
+// OFFSET: 0x00591D80
+// FUNCTION: fn_02841
+ICashEmotionAction::~ICashEmotionAction() {
+}
 
 // OFFSET: 0x00592290
 // FUNCTION: fn_02849
@@ -733,6 +810,98 @@ bool CCashEmotionMgr::IsPackAvailable(unsigned int now, int packId) {
 // FUNCTION: fn_02975
 bool CCashEmotionMgr::IsOwnedPack(int packId) {
   return std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId) != this->m_ownedPacks.end();
+}
+
+// OFFSET: 0x007C3AD0
+// FUNCTION: fn_09344
+void UICashEmotionListChildWnd_Abstract::Slot35(int delta) {
+  if (this->wheelScroll == 1) {
+    if (delta < 0) {
+      this->SendMsg(this->scrollBar, 7, 15, 0, 0, 0);
+      return;
+    }
+    this->SendMsg(this->scrollBar, 7, -15, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x007C4450
+// FUNCTION: fn_09354
+void UICashEmotionListChildWnd_Basic::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x007C4460
+// FUNCTION: fn_09355
+void UICashEmotionListChildWnd_Basic::Slot19() {
+  for (UIWindow* item : this->m_items) {
+    if (item->geometry.visible) {
+      item->Slot19();
+    }
+  }
+}
+
+// OFFSET: 0x007C52A0
+// FUNCTION: fn_09369
+void UICashEmotionListChildWnd_Purchase::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x007C5D90
+// FUNCTION: fn_09384
+void UICashEmotionListChildWnd_Search::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x007C6AB0
+// FUNCTION: fn_09395
+void UICashEmotionListChildWnd_UnPurchased::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x007C6CB0
+// FUNCTION: fn_09401
+UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls)
+    : UIFrameWnd(windows, frame, 0), m_placement(nullptr), m_basicList(nullptr), m_purchaseList(nullptr), m_searchList(nullptr), m_unpurchasedList(nullptr),
+      m_tab(0), unknown_00D4(nullptr), m_searchEdit(nullptr), unknown_00DC(nullptr), unknown_00E0(nullptr), unknown_00E4(nullptr), m_currentList(nullptr),
+      unknown_00EC(nullptr), m_controls(&controls) {
+}
+
+// OFFSET: 0x007C7C20
+// FUNCTION: fn_09407
+void UICashEmotionListWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  const int width = this->geometry.width - 30;
+  const int top = this->DrawTitleBarAt(this->m_controls->fonts, this->m_controls->locale, 29, width, false, LookupMessage(542));
+  this->DrawPanelBackgroundAt(29, top, width, nullptr);
+  DrawRectangleBorder(*this, 60, 22, 161, 18, 0xB5B5B5);
+  this->FillRegion(29, 46, width, 1, 0xCECECE);
+  this->DrawButtonBarAt(2, 29, width, 1);
+}
+
+// OFFSET: 0x007C7CC0
+// FUNCTION: fn_09410
+void UICashEmotionListWnd::Slot19() {
+  if (this->m_currentList) {
+    this->m_currentList->Slot19();
+  }
+}
+
+// OFFSET: 0x007C8AF0
+// FUNCTION: fn_09420
+void UICashEmotionListWnd::Slot11() {
+  if (this->m_placement) {
+    this->m_placement->x = this->geometry.x;
+    this->m_placement->y = this->geometry.y;
+    this->m_placement->width = this->geometry.width;
+    this->m_placement->height = this->geometry.height;
+  }
+}
+
+// OFFSET: 0x007C90B0
+// FUNCTION: fn_09427
+UICashEmotionMiniWnd::~UICashEmotionMiniWnd() {
+  delete this->m_action;
+  this->m_action = nullptr;
 }
 
 // OFFSET: 0x007C9200
