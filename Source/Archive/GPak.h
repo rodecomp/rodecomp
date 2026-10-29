@@ -28,6 +28,14 @@ namespace myGPack {
 
 }
 
+struct PakAuxiliary {
+  void Apply(const void* data, std::uint32_t size, const void* auxData, std::uint32_t auxSize);
+
+  /* 0000 */ std::uint8_t unknown_0000[244];
+};
+
+static_assert(sizeof(PakAuxiliary) == 244);
+
 class CGPak {
 public:
   CGPak();
@@ -38,6 +46,7 @@ public:
   bool Find(const myGPack::PakName& name, myGPack::PakEntry* entry) const;
   bool Extract(const myGPack::PakEntry* entry, void* buffer);
   void ReadAuxiliary(std::vector<std::uint8_t>& output, std::uint64_t* identifier = nullptr);
+  void ApplyAuxiliary(const void* data, std::uint32_t size, const void* auxData, std::uint32_t auxSize);
 
 protected:
   bool ReadTableV1();
@@ -53,7 +62,7 @@ protected:
   /* 0024 */ std::vector<myGPack::PakEntry> m_entries;
   /* 0030 */ std::vector<std::uint8_t> m_scratch;
   /* 003C */ CRITICAL_SECTION m_criticalSection;
-  /* 0054 */ std::uint8_t unknown_0054[244];
+  /* 0054 */ PakAuxiliary m_auxiliary;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

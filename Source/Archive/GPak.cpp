@@ -414,6 +414,12 @@ void CGPak::ReadAuxiliary(std::vector<std::uint8_t>& output, std::uint64_t* iden
   }
 }
 
+// OFFSET: 0x00AEC9F0
+// FUNCTION: fn_18137
+void CGPak::ApplyAuxiliary(const void* data, std::uint32_t size, const void* auxData, std::uint32_t auxSize) {
+  this->m_auxiliary.Apply(data, size, auxData, auxSize);
+}
+
 // OFFSET: 0x00E555A0
 // FUNCTION: fn_24306
 myGPack::CGPakUpdate::CGPakUpdate() {
