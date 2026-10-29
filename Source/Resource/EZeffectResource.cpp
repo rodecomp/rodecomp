@@ -79,7 +79,7 @@ bool CEZeffectRes::Load(const char* name) {
     file.Read(&clip.frameCount, sizeof(clip.frameCount));
 
     if (clip.frameCount > 0) {
-      clip.frames = static_cast<const unsigned char*>(file.ReadPtr(124u * static_cast<unsigned>(clip.frameCount)));
+      clip.frames = static_cast<const EZeffectKeyFrame*>(file.ReadPtr(124u * static_cast<unsigned>(clip.frameCount)));
     }
   }
 

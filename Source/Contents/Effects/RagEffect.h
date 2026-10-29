@@ -15,6 +15,10 @@ struct RenderProjection;
 struct CRagEffect : CRenderObject {
   CRagEffect();
   ~CRagEffect() override;
+
+  void InitEZ2STRFrame();
+  bool ProcessEZ2STR(float x, float y, float z);
+  bool ShieldCharge();
   void BloodDrain();
   void FireBall();
   void FrostDiver(TextureCache& textures, char type);

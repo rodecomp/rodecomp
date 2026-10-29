@@ -629,7 +629,7 @@ static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& opti
     break;
   case EF_DUSTSTORM:
     std::sprintf(name, "dust.str");
-    effect.unknown_11C80 = 10;
+    effect.loopLimit = 10;
     break;
   case EF_DANCE_BLADE_ATK:
     std::sprintf(name, "dancingblade.str");
@@ -639,7 +639,7 @@ static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& opti
     break;
   case EF_GC_DARKCROW:
     std::sprintf(name, "gc_darkcrow.str");
-    effect.unknown_11C80 = 9999;
+    effect.loopLimit = 9999;
     break;
   case EF_ALL_FULL_THROTTLE:
     std::sprintf(name, "all_full_throttle.str");
@@ -658,22 +658,22 @@ static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& opti
     break;
   case EF_WL_TELEKINESIS_INTENSE:
     std::sprintf(name, "WL_TELEKINESIS_INTENSE.str");
-    effect.unknown_11C80 = 9999;
+    effect.loopLimit = 9999;
     break;
   case EF_GN_ILLUSIONDOPING:
     std::sprintf(name, "GN_ILLUSIONDOPING.str");
     break;
   case EF_NC_MAGMA_ERUPTION:
     std::sprintf(name, "NC_MAGMA_ERUPTION.str");
-    effect.unknown_11C80 = 9999;
+    effect.loopLimit = 9999;
     break;
   case EF_NPC_CHILL:
     std::sprintf(name, "chill.str");
-    effect.unknown_11C80 = 9999;
+    effect.loopLimit = 9999;
     break;
   case EF_AB_OFFERTORIUM_RING:
     std::sprintf(name, "AB_OFFERTORIUM_ring.str");
-    effect.unknown_11C80 = 9999;
+    effect.loopLimit = 9999;
     break;
   default:
     break;
@@ -713,8 +713,7 @@ void InitializeRagEffect(
         --count;
       }
 
-      const auto bits = static_cast<std::uint32_t>(count);
-      std::memcpy(effect.unknown_119F8, &bits, sizeof(bits));
+      effect.endLayer = count;
     }
   }
 }

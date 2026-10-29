@@ -1,6 +1,9 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_RAGEFFECTSTATE_H
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_RAGEFFECTSTATE_H
 
+#include "Resource/EZeffectResource.h"
+
+#include <cstddef>
 #include <list>
 
 class CRes;
@@ -27,13 +30,14 @@ struct RagEffectState {
   /* 00074 */ unsigned char unknown_01AC[1600];
   /* 006B4 */ CRes* resource;
   /* 006B8 */ void* resourceData;
-  /* 006BC */ unsigned char unknown_07F4[14848];
+  /* 006BC */ EZeffectTransform transforms[128];
   /* 040BC */ unsigned char vertices[55296];
-  /* 118BC */ std::uint32_t unknown_119F4;
-  /* 118C0 */ unsigned char unknown_119F8[132];
-  /* 11944 */ unsigned char unknown_11A7C[512];
-  /* 11B44 */ std::uint32_t unknown_11C7C;
-  /* 11B48 */ std::uint32_t unknown_11C80;
+  /* 118BC */ int currentLayer;
+  /* 118C0 */ int endLayer;
+  /* 118C4 */ bool layerDrawn[128];
+  /* 11944 */ int currentKey[128];
+  /* 11B44 */ int loopCount;
+  /* 11B48 */ int loopLimit;
   /* 11B4C */ EffectPrimitiveState* unknown_11C84;
   /* 11B50 */ std::int32_t unknown_11C88[4];
   /* 11B60 */ unsigned char forceRender;
@@ -45,6 +49,10 @@ struct RagEffectState {
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RagEffectState) == 0x11B70);
+static_assert(offsetof(RagEffectState, transforms) == 0x6BC);
+static_assert(offsetof(RagEffectState, currentLayer) == 0x118BC);
+static_assert(offsetof(RagEffectState, currentKey) == 0x11944);
+static_assert(offsetof(RagEffectState, loopLimit) == 0x11B48);
 #endif
 
 #endif

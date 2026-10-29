@@ -14,6 +14,8 @@
 #include "Render/Textures/TextureCache.h"
 #include "Resource/ResourceMgr.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Contents/Effects/EffectPrimitiveMotion.h"
+#include "Resource/EZeffectResource.h"
 
 #include <algorithm>
 #include <bit>
@@ -24,7 +26,7 @@
 // INLINED
 inline RagEffectState::RagEffectState()
     : parent(nullptr), unknown_0160(0), unknown_0164(0), id(0), unknown_016C(1), unknown_0170(0), unknown_0174(0), unknown_0178(0), offset{}, unknown_018C{},
-      resource(nullptr), resourceData(nullptr), unknown_119F4(0), unknown_11C7C(0), unknown_11C80(0), unknown_11C84(nullptr), unknown_11C88{-1, -1, -1, -1},
+      resource(nullptr), resourceData(nullptr), currentLayer(0), loopCount(0), loopLimit(0), unknown_11C84(nullptr), unknown_11C88{-1, -1, -1, -1},
       forceRender(0), tag(0), unknown_11CA0(0) {
   for (unsigned index = 0; index < 20; ++index) {
     auto* record = this->unknown_01AC + index * 80;
@@ -35,7 +37,7 @@ inline RagEffectState::RagEffectState()
     }
   }
 
-  std::memset(this->unknown_11A7C, 0, sizeof(this->unknown_11A7C));
+  std::memset(this->currentKey, 0, sizeof(this->currentKey));
 
   std::memset(this->vertices, 0, sizeof(this->vertices));
 }
@@ -793,4 +795,182 @@ void CRagEffect::EnergyDrain2() {
     this->state.unknown_11C84->unknown_01F4 = 7;
     Owner(this->state.unknown_11C84).InitSegment();
   }
+}
+
+// OFFSET: 0x00C1DC70
+// FUNCTION: fn_20075
+void CRagEffect::InitEZ2STRFrame() {
+  const CEZeffectRes& clips = *static_cast<const CEZeffectRes*>(this->state.resource);
+  this->state.currentLayer = 0;
+  this->state.unknown_0178 = 0;
+  this->state.endLayer = clips.clipCount;
+
+  if (clips.clips[0].frameCount == 0) {
+    --this->state.endLayer;
+  }
+
+  for (int layer = 0; layer < clips.clipCount; ++layer) {
+    this->state.currentKey[layer] = 0;
+  }
+}
+
+// OFFSET: 0x00C36FC0
+// FUNCTION: fn_20095
+bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
+  RagEffectState& state = this->state;
+
+  if (state.resource == nullptr) {
+    return false;
+  }
+
+  if (state.currentLayer >= state.endLayer) {
+    ++state.loopCount;
+
+    if (state.loopCount > state.loopLimit) {
+      return false;
+    }
+
+    this->InitEZ2STRFrame();
+  }
+
+  const RenderVertex vertex = TransformVert(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view, state.parent->render.position);
+  state.unknown_013C[6] = std::bit_cast<std::uint32_t>(vertex.x + x);
+  state.unknown_013C[7] = std::bit_cast<std::uint32_t>(vertex.y + y);
+  state.unknown_013C[8] = std::bit_cast<std::uint32_t>(vertex.z + z);
+  state.unknown_0160 = x == 0.0f && y == -80.0f && z == 0.0f ? 0 : 1;
+
+  float ratio;
+  const CEZeffectRes& clips = *static_cast<const CEZeffectRes*>(state.resource);
+
+  for (int layer = 0; layer < clips.clipCount; ++layer) {
+    state.layerDrawn[layer] = false;
+    const EZeffectClip& clip = clips.clips[layer];
+
+    if (clip.frameCount == 0 || state.currentKey[layer] == -1) {
+      continue;
+    }
+
+    const EZeffectKeyFrame* key = &clip.frames[state.currentKey[layer]];
+    const int elapsed = state.unknown_0178 - key->frame;
+
+    if (elapsed < 0) {
+      continue;
+    }
+
+    if (elapsed != 0 && key[1].frame == state.unknown_0178) {
+      if (++state.currentKey[layer] >= clip.frameCount - 1) {
+        state.currentKey[layer] = -1;
+        ++state.currentLayer;
+      }
+
+      ++key;
+    }
+
+    EZeffectTransform& current = state.transforms[layer];
+    const EZeffectTransform& delta = key->transform;
+
+    if (key->type == 0) {
+      std::memcpy(&current, &delta, sizeof(current));
+
+      if (state.currentKey[layer] != -1 && key[1].frame == key->frame) {
+        ++state.currentKey[layer];
+      }
+
+      state.layerDrawn[layer] = true;
+      continue;
+    }
+
+    current.x += delta.x;
+    current.y += delta.y;
+    current.u += delta.u;
+    current.v += delta.v;
+    current.us += delta.us;
+    current.vs += delta.vs;
+    current.u2 += delta.u2;
+    current.v2 += delta.v2;
+    current.us2 += delta.us2;
+    current.vs2 += delta.vs2;
+    current.ax[0] += delta.ax[0];
+    current.ax[1] += delta.ax[1];
+    current.ax[2] += delta.ax[2];
+    current.ax[3] += delta.ax[3];
+    current.ay[0] += delta.ay[0];
+    current.ay[1] += delta.ay[1];
+    current.ay[2] += delta.ay[2];
+    current.ay[3] += delta.ay[3];
+    current.crR += delta.crR;
+    current.crG += delta.crG;
+    current.crB += delta.crB;
+    current.crA += delta.crA;
+    current.rz += delta.rz;
+
+    switch (delta.anitype) {
+    case 1:
+      current.aniframe += delta.aniframe;
+      break;
+
+    case 2:
+      current.aniframe += delta.anidelta;
+
+      if (current.aniframe >= static_cast<float>(clip.textureCount)) {
+        current.aniframe = static_cast<float>(clip.textureCount) - 1.0f;
+      }
+
+      break;
+
+    case 3: {
+      const float frame = current.aniframe += delta.anidelta;
+      const float count = static_cast<float>(clip.textureCount);
+
+      if (frame >= count) {
+        ratio = static_cast<float>(static_cast<int>(frame / count));
+        current.aniframe = frame - ratio * count;
+      }
+
+      break;
+    }
+
+    case 4: {
+      float frame = current.aniframe -= delta.anidelta;
+
+      if (frame < 0.0f) {
+        const float count = static_cast<float>(clip.textureCount);
+        frame -= ratio * count;
+        ratio = static_cast<float>(static_cast<int>(frame / count));
+
+        if (frame < 0.0f) {
+          frame += count;
+        }
+
+        current.aniframe = frame;
+      }
+
+      break;
+    }
+
+    case 5: {
+      const int frame = static_cast<int>(static_cast<float>(elapsed) * delta.anidelta + current.aniframe);
+      const int count = clip.textureCount - 1;
+      const int turns = frame / count;
+
+      if ((turns & 1) != 0) {
+        current.aniframe = static_cast<float>(count - (frame - turns * count));
+      } else {
+        current.aniframe = static_cast<float>(frame - turns * count);
+      }
+
+      break;
+    }
+    }
+
+    state.layerDrawn[layer] = true;
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00C73480
+// FUNCTION: fn_20326
+bool CRagEffect::ShieldCharge() {
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
 }
