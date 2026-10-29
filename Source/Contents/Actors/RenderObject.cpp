@@ -920,7 +920,21 @@ int CGameActor::GetUnknown0404Job() const {
 }
 
 // OFFSET: 0x00CC40C0
+// FUNCTION: fn_21157
+void CGameActor::SetUnknown0404(int value) {
+  this->unknown_0404 = value;
+}
 
 // OFFSET: 0x00CC3DE0
+// FUNCTION: fn_21155
+void CGameActor::SetUnknown008C(const std::uint32_t* value) {
+  this->render.unknown_008C = value[0];
+  this->render.unknown_0090 = value[1];
+  this->render.unknown_0094 = value[2];
+}
 
 // OFFSET: 0x00CC41E0
+// FUNCTION: fn_21159
+void CGameActor::Slot17() {
+  g_modeMgr.GetGameMode()->SendMsg(13, this->render.accountId, 0, 0, 0);
+}
