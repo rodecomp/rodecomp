@@ -443,8 +443,20 @@ void CEfstAction_DAWN_MOON::Slot00(int efstId, int value, int argument3, int arg
 }
 
 // OFFSET: 0x0079AEB0
+// FUNCTION: fn_08854
+void CEfstAction_DAWN_MOON::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_05"));
+  }
+}
 
 // OFFSET: 0x0079AFE0
+// FUNCTION: fn_08855
+void CEfstAction_DAWN_MOON::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_rising_moon_05"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0079B160
 // FUNCTION: fn_08856
@@ -453,6 +465,12 @@ int CSkillAction_SKE_MIDNIGHT_KICK::Slot02() {
 }
 
 // OFFSET: 0x0079B1A0
+// FUNCTION: fn_08858
+void CSkillAction_SKE_MIDNIGHT_KICK::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_midnight_kick"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0079B320
 // FUNCTION: fn_08859
