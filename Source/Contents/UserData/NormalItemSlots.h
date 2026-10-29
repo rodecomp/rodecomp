@@ -125,6 +125,7 @@ struct ExchangeAcceptWndInfo : WindowPlacement {
 
 struct FriendOptionWndInfo : WindowPlacement {
   void Reset();
+  bool IsValid() const;
 };
 
 struct GuildHelperWndInfo : WindowPlacement {

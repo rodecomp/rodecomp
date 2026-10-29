@@ -3,11 +3,14 @@
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Render/Renderer.h"
 #include "Resource/TextureNames.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowManagerWindows.h"
 
 #include <algorithm>
 #include <string>
@@ -18,13 +21,6 @@ namespace {
     /* 0000 */ int x;
     /* 0004 */ int y;
     /* 0008 */ int size;
-  };
-
-  struct FriendOptionPlacement {
-    /* 0000 */ int x;
-    /* 0004 */ int y;
-    /* 0008 */ int width;
-    /* 000C */ int height;
   };
 
   struct UIFriendOptionContext {
@@ -57,8 +53,9 @@ public:
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
-  /* 00B4 */ FriendOptionPlacement* saved;
+  /* 00B4 */ FriendOptionWndInfo* saved;
   /* 00B8 */ UICheckBox* option1Box;
   /* 00BC */ UICheckBox* option2Box;
   /* 00C0 */ UICheckBox* option0Box;
@@ -81,7 +78,6 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(MiniPartyIconPosition) == 12);
-static_assert(sizeof(FriendOptionPlacement) == 16);
 #endif
 
 // OFFSET: 0x00D03DC0
@@ -195,6 +191,43 @@ void UIFriendOptionWnd::Paint() {
   this->DrawPanelBackground(titleHeight, 0, "");
   const int barHeight = this->DrawButtonBar(0, 0, 1);
   this->FillRegion(0, this->geometry.height - barHeight, this->geometry.width, 1, 0xC0C0C0);
+}
+
+// OFFSET: 0x00739220
+// FUNCTION: fn_07683
+int UIFriendOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    if (a == 201) {
+      this->m_frameContext->windows.CloseWindow(68);
+    } else if (a == 213) {
+      if (sender == this->option0Box) {
+        this->m_options->option0 = static_cast<int>(b);
+      } else if (sender == this->option2Box) {
+        this->m_options->option2 = static_cast<int>(b);
+      } else if (sender == this->option1Box) {
+        this->m_options->option1 = static_cast<int>(b);
+      }
+    }
+    return 0;
+  }
+
+  if (message == 34) {
+    this->saved = reinterpret_cast<FriendOptionWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  }
+
+  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+}
+
+// OFFSET: 0x009A54B0
+// FUNCTION: fn_13630
+bool FriendOptionWndInfo::IsValid() const {
+  return this->width == 280 && this->height == 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 &&
+         this->y <= g_renderer->viewport.height - 120;
 }
 
 // OFFSET: 0x007392F0
