@@ -161,6 +161,9 @@ public:
   void Resize(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  void SetBackgroundColor(std::uint32_t color);
+  void SetBorderColor(std::uint32_t color);
+  void SetBorderWidth(int width);
 
   /* 0080 */ std::uint32_t backgroundColor;
   /* 0084 */ std::uint32_t borderColor;

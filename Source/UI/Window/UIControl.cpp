@@ -586,6 +586,27 @@ int CUIEditBox::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   return UIWindow::SendMsg(sender, message, a, b, c, d);
 }
 
+// OFFSET: 0x009ED790
+// FUNCTION: fn_14585
+void CUIEditBox::SetBackgroundColor(std::uint32_t color) {
+  this->backgroundColor = color;
+  this->Invalidate();
+}
+
+// OFFSET: 0x009ED800
+// FUNCTION: fn_14587
+void CUIEditBox::SetBorderColor(std::uint32_t color) {
+  this->borderColor = color;
+  this->Invalidate();
+}
+
+// OFFSET: 0x009ED820
+// FUNCTION: fn_14588
+void CUIEditBox::SetBorderWidth(int width) {
+  this->borderWidth = width;
+  this->Invalidate();
+}
+
 // OFFSET: 0x009EF860
 // FUNCTION: fn_14649
 void CUIImageButton::Paint() {
