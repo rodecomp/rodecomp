@@ -4,6 +4,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Camera/Camera.h"
 #include "Client/Replay.h"
+#include "Client/Session.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/World/World.h"
 #include "Contents/Actors/RenderObject.h"
@@ -109,17 +110,18 @@ int CGameObject::Get8Dir2(float rot, int flag) {
   return static_cast<int>(relative / 45.0f);
 }
 
-// OFFSET: 0x00CAB920
-// FUNCTION: fn_21031
-int CGameObject::Get8Dir(float angle, const CameraDirectionContext& camera) {
-  if (camera.modeType != 1) {
+// OFFSET: 0x00CAB7F0
+// FUNCTION: fn_21030
+int CGameActor::Get8Dir(float angle) {
+  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+  if (!gameMode) {
     return 0;
   }
 
-  const float negative = -(*camera.cameraAngle);
-  float relative = negative - angle;
+  float relative = -gameMode->camera->camera.yaw - angle;
 
-  while (relative < 0) {
+  while (relative < 0.0f) {
     relative += 360.0f;
   }
 
@@ -127,7 +129,40 @@ int CGameObject::Get8Dir(float angle, const CameraDirectionContext& camera) {
     relative -= 360.0f;
   }
 
-  return TruncateToInt(relative / 45.0f);
+  if ((IsPlayerJob(this->GetEffectiveJob(-1)) && (this->render.animation == 0 || this->render.animation == 8 || this->render.animation == 16)) ||
+      (this->GetEffectiveJob(-1) > 45 && this->GetEffectiveJob(-1) < 1000 && this->render.animation == 0) ||
+      (g_session.IsSkillIdInRange6018(this->GetEffectiveJob(-1)) &&
+       (this->render.animation == 0 || this->render.animation == 8 || this->render.animation == 16))) {
+    if (relative < 22.5f || relative > 337.5f) {
+      return 0;
+    }
+
+    return static_cast<int>((static_cast<double>(relative) + 22.5) / 45.0);
+  }
+
+  return static_cast<int>(relative / 45.0f);
+}
+
+// OFFSET: 0x00CAB920
+// FUNCTION: fn_21031
+int CGameObject::Get8Dir(float angle) {
+  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+  if (!gameMode) {
+    return 0;
+  }
+
+  float relative = -gameMode->camera->camera.yaw - angle;
+
+  while (relative < 0.0f) {
+    relative += 360.0f;
+  }
+
+  while (relative >= 360.0f) {
+    relative -= 360.0f;
+  }
+
+  return static_cast<int>(relative / 45.0f);
 }
 
 // OFFSET: 0x00CB20B0

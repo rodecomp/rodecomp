@@ -147,6 +147,7 @@ public:
   /* 0408 */ int unknown_0408;
   /* 040C */ unsigned char unknown_040C[0x04];
 
+  int Get8Dir(float angle) override;
   void SetAction(unsigned animation, int motion, int repeat) override;
 
   virtual void Slot08() = 0;
