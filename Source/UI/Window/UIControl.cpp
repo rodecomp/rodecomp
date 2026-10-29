@@ -6,6 +6,10 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIPadding.h"
+#include "UI/Text/UITextViewerControl.h"
+#include "UI/Lists/UIVScrollBar.h"
+#include "Render/Text/FontCache.h"
 
 #include <cmath>
 #include <windows.h>
@@ -404,3 +408,39 @@ void CUIVScrollBar::SetHidden(int) {
   this->hidden = 1;
   this->Show(0);
 }
+
+// OFFSET: 0x009EA1B0
+
+// OFFSET: 0x009EA240
+
+// OFFSET: 0x009EA250
+// FUNCTION: fn_14516
+void CUITextViewer::Slot19() {
+  for (UIWindow* child : this->m_children) {
+    child->Slot19();
+  }
+}
+
+// OFFSET: 0x009EA280
+
+// OFFSET: 0x009EA7A0
+
+// OFFSET: 0x009EA7E0
+
+// OFFSET: 0x009EA810
+
+// OFFSET: 0x009EA820
+
+// OFFSET: 0x009EA830
+
+// OFFSET: 0x009EA840
+
+// OFFSET: 0x009EA860
+
+// OFFSET: 0x009EA870
+
+// OFFSET: 0x009EA8D0
+
+// OFFSET: 0x009EA910
+
+// OFFSET: 0x009EA930
