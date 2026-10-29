@@ -5,6 +5,7 @@
 #include "Contents/MovementRouteInterpolation.h"
 
 #include <cstddef>
+#include <cstdint>
 
 enum {
   BODYSTATE_NORMAL,
@@ -30,11 +31,14 @@ public:
   /* 0260 */ int unknown_0260;
   /* 0264 */ unsigned char unknown_0264[0x58];
   /* 02BC */ int bodyState;
-  /* 02C0 */ unsigned char unknown_02C0[0x08];
+  /* 02C0 */ std::uint32_t stateFlags;
+  /* 02C4 */ unsigned char unknown_02C4[0x04];
   /* 02C8 */ int unknown_02C8;
-  /* 02CC */ unsigned char unknown_02CC[0x18];
+  /* 02CC */ unsigned char unknown_02CC;
+  /* 02CD */ unsigned char unknown_02CD[0x17];
   /* 02E4 */ int unknown_02E4;
-  /* 02E8 */ unsigned char unknown_02E8[0x1D];
+  /* 02E8 */ int guildId;
+  /* 02EC */ unsigned char unknown_02EC[0x19];
   /* 0305 */ unsigned char unknown_0305;
   /* 0306 */ unsigned char unknown_0306[2];
   /* 0308 */ int unknown_0308;
@@ -46,9 +50,13 @@ public:
   /* 0348 */ float unknown_0348[6];
   /* 0360 */ float unknown_0360[6];
   /* 0378 */ float unknown_0378;
-  /* 037C */ unsigned char unknown_037C[0x4C];
+  /* 037C */ unsigned char unknown_037C[0x3C];
+  /* 03B8 */ int unknown_03B8[3];
+  /* 03C4 */ int unknown_03C4;
   /* 03C8 */ int unknown_03C8;
-  /* 03CC */ unsigned char unknown_03CC[0x38];
+  /* 03CC */ unsigned char unknown_03CC[0x10];
+  /* 03DC */ int unknown_03DC;
+  /* 03E0 */ unsigned char unknown_03E0[0x24];
   /* 0404 */ int unknown_0404;
   /* 0408 */ int unknown_0408;
   /* 040C */ unsigned char unknown_040C[0x04];
@@ -60,7 +68,7 @@ public:
   virtual void Slot10(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth) = 0;
   virtual void Slot11(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth) = 0;
   virtual void Slot12(int first, int second, int third, int fourth, int fifth) = 0;
-  virtual void Slot13() = 0;
+  virtual std::uint32_t Slot13();
   virtual void Slot14() = 0;
   virtual void Slot15(int first, int second) = 0;
   virtual void Slot16() = 0;
@@ -82,15 +90,36 @@ public:
   virtual void Slot32() = 0;
   virtual void Slot33(int value) = 0;
   virtual void Slot34(int value) = 0;
-  virtual void Slot35() = 0;
+  virtual std::int64_t Slot35();
   virtual void Slot36() = 0;
   virtual int Slot37();
   virtual void Slot38();
   virtual void Slot39(int value);
+  virtual void Slot40(int value);
+  virtual void Slot41(int first, int second);
+  virtual int Slot42();
+  virtual void Slot43(int first, int second);
+  virtual void Slot44(int first, int second);
+  virtual void Slot45();
+  virtual int Slot46();
+  virtual void Slot47(unsigned char value);
+  virtual void Slot48(int value);
+  virtual void Slot49(int guildId, int version);
+  virtual int Slot50();
+  virtual float* Slot51(int index);
+  virtual void SetUnknown0318(const float* value, int index);
+  virtual float* Slot53(int index);
+  virtual void SetUnknown0330(const float* value, int index);
+  virtual int Slot55();
+  virtual int Slot56();
+  virtual void Slot57(int value);
+  virtual bool Slot58();
+  virtual void Slot59(bool value);
+  virtual void Slot60();
+  virtual float* GetExtent(float* extent) const;
+  virtual void Slot62(int value);
 
   void SetUnknown0305(unsigned char value, int extra);
-  void SetUnknown0318(const float* value, int index);
-  void SetUnknown0330(const float* value, int index);
   void RaiseUnknown03C8(int value);
   void SetUnknown02E4(int value);
   void SetUnknown02C8(int value);
@@ -98,6 +127,7 @@ public:
   void ApplyPendingUnknown0408();
   void ProcessBodyState();
   int GetShield();
+  int GetEffectiveJob(int job);
   bool FindRoute(int startX, int startY, int fractionX, int fractionY, int destX, int destY, int speed);
 };
 

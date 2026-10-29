@@ -152,6 +152,12 @@ bool CSoundMaker::Update() {
   return true;
 }
 
+// OFFSET: 0x00DA2AF0
+// FUNCTION: fn_22378
+int CPc::Slot46() {
+  return this->unknown_04D0;
+}
+
 // OFFSET: 0x00DA2B00
 // FUNCTION: fn_22379
 float* CPc::GetExtent(float* extent) const {
@@ -215,6 +221,26 @@ void CCorpse::Draw(int argument) {
 void CHalluPlant::Draw(int argument) {
   this->DrawSprite(argument, true, 0.0f);
 }
+
+// OFFSET: 0x00DA2B40
+// FUNCTION: fn_22380
+bool CPc::Slot58() {
+  return this->unknown_04E0;
+}
+
+// OFFSET: 0x00DA2B50
+// FUNCTION: fn_22381
+int CPc::Slot56() {
+  return this->unknown_04DC;
+}
+
+// OFFSET: 0x00DA2B60
+// FUNCTION: fn_22382
+int CPc::Slot42() {
+  return this->unknown_04CC;
+}
+
+// OFFSET: 0x00DA2B70
 
 // OFFSET: 0x00DA4150
 // FUNCTION: fn_22411

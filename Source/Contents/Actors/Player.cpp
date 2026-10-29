@@ -1,6 +1,7 @@
 #include "Contents/Actors/Pc.h"
 
 #include "Client/Session.h"
+#include "Contents/CashEmotionMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Resource/Models/GrannyModelResource.h"
 
@@ -66,6 +67,16 @@ void CPc::Slot34(int value) {
   this->Slot31();
 }
 
+// OFFSET: 0x00DB0400
+
+// OFFSET: 0x00DB0480
+
+// OFFSET: 0x00DB0760
+
+// OFFSET: 0x00DB0780
+
+// OFFSET: 0x00DB07C0
+
 // OFFSET: 0x00DB07E0
 // FUNCTION: fn_22626
 void CGrannyPc::Slot26(int value) {
@@ -88,6 +99,14 @@ void CGrannyPc::Slot25(int value) {
 // FUNCTION: fn_22632
 void CGrannyPc::Slot20(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int) {
   this->Slot19(first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, this->unknown_0454, tenth);
+}
+
+// OFFSET: 0x00DB1960
+// FUNCTION: fn_22636
+void CPc::Slot60() {
+  if (this->unknown_0458 == 185) {
+    this->Slot27(185);
+  }
 }
 
 // OFFSET: 0x00DB1980

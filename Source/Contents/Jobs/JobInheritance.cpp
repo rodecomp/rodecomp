@@ -75,6 +75,8 @@ namespace {
   }
 }
 
+// OFFSET: 0x00DFA600
+
 // OFFSET: 0x00DFBCE0
 // FUNCTION: fn_23587
 bool __stdcall IsPlayerJob(int job) {
@@ -637,6 +639,12 @@ std::pair<int, int>* CSession::InsertPair(int key, int value) {
   this->unknown_0778.push_back(std::make_pair(key, value));
   return &this->unknown_0778.back();
 }
+
+// OFFSET: 0x00E0A1F0
+
+// OFFSET: 0x00E1DC00
+
+// OFFSET: 0x00E1DF50
 
 // OFFSET: 0x00E25EE0
 // FUNCTION: fn_23910

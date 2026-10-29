@@ -15,6 +15,7 @@ struct JobInheritance {
 #include <cstdint>
 #include <string>
 
+bool __stdcall IsPlayerJob(int job);
 bool __stdcall IsVisibleJob(int job);
 int __stdcall GetWeaponViewValue(int weapon);
 int __stdcall GetDualWieldWeaponType(int first, int second);

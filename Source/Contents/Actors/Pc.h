@@ -19,9 +19,18 @@ public:
   ) override;
 
   void Slot34(int value) override;
+  std::int64_t Slot35() override;
   void Slot39(int value) override;
+  void Slot40(int value) override;
+  void Slot41(int first, int second) override;
+  int Slot42() override;
+  int Slot46() override;
+  void Slot47(unsigned char value) override;
+  int Slot56() override;
+  bool Slot58() override;
+  void Slot60() override;
 
-  float* GetExtent(float* extent) const;
+  float* GetExtent(float* extent) const override;
 
   /* 0410 */ unsigned char unknown_0410[8];
   /* 0418 */ std::string unknown_0418;
@@ -30,10 +39,17 @@ public:
   /* 0438 */ unsigned char unknown_0438[0x0C];
   /* 0444 */ int unknown_0444;
   /* 0448 */ int weapon;
-  /* 044C */ unsigned char unknown_044C[0x0C];
+  /* 044C */ int unknown_044C;
+  /* 0450 */ unsigned char unknown_0450[0x08];
   /* 0458 */ int unknown_0458;
   /* 045C */ int unknown_045C;
-  /* 0460 */ unsigned char unknown_0460[0x84];
+  /* 0460 */ unsigned char unknown_0460[0x6C];
+  /* 04CC */ int unknown_04CC;
+  /* 04D0 */ int unknown_04D0;
+  /* 04D4 */ unsigned char unknown_04D4[0x08];
+  /* 04DC */ int unknown_04DC;
+  /* 04E0 */ bool unknown_04E0;
+  /* 04E1 */ unsigned char unknown_04E1[0x03];
   /* 04E4 */ float unknown_04E4;
   /* 04E8 */ float unknown_04E8;
   /* 04EC */ float unknown_04EC;
@@ -100,6 +116,8 @@ public:
   void Slot26(int value) override;
   void Slot27(int value) override;
   void Slot39(int value) override;
+  void Slot40(int value) override;
+  void Slot41(int first, int second) override;
 
   void PlayMotion(int repeat);
 
@@ -152,6 +170,11 @@ static_assert(offsetof(CPc, unknown_04FC) == 0x4FC);
 static_assert(offsetof(CPc, unknown_050C) == 0x50C);
 static_assert(offsetof(CHalluPC, unknown_0510) == 0x510);
 static_assert(offsetof(CHalluPC2, unknown_0510) == 0x510);
+static_assert(offsetof(CPc, weapon) == 0x448);
+static_assert(offsetof(CPc, unknown_044C) == 0x44C);
+static_assert(offsetof(CPc, unknown_04CC) == 0x4CC);
+static_assert(offsetof(CPc, unknown_04DC) == 0x4DC);
+static_assert(offsetof(CPc, unknown_04E0) == 0x4E0);
 #endif
 
 #endif

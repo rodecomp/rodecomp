@@ -2,16 +2,21 @@
 
 #include "Client/Mode/ActiveGameMode.h"
 #include "Client/Mode/CGameMode.h"
+#include "Client/Session.h"
 #include "Client/Replay.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/EffectActors.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/GuildMgr.h"
+#include "Contents/Jobs/JobId.h"
 #include "Render/SpriteQuad.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "Script/LuaScript.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 
@@ -395,6 +400,8 @@ void CRenderObject::SetInstantValue(int key, std::int64_t value) {
   this->render.instant.Set(key, value);
 }
 
+// OFFSET: 0x00CC2060
+
 // OFFSET: 0x00CC21F0
 // FUNCTION: fn_21136
 void CGameActor::Slot30() {
@@ -489,6 +496,93 @@ int CGameActor::GetShield() {
   return -1;
 }
 
+// OFFSET: 0x005A1280
+
+// OFFSET: 0x005A1290
+// FUNCTION: fn_03043
+int CGameActor::Slot46() {
+  return 0;
+}
+
+// OFFSET: 0x005A12A0
+// FUNCTION: fn_03044
+std::uint32_t CGameActor::Slot13() {
+  return this->stateFlags;
+}
+
+// OFFSET: 0x005A12B0
+// FUNCTION: fn_03045
+int CGameActor::Slot50() {
+  return this->guildId;
+}
+
+// OFFSET: 0x005A12C0
+
+// OFFSET: 0x005A12E0
+// FUNCTION: fn_03047
+bool CGameActor::Slot58() {
+  return false;
+}
+
+// OFFSET: 0x005A12F0
+
+// OFFSET: 0x005A13B0
+// FUNCTION: fn_03049
+int CGameActor::Slot56() {
+  return 0;
+}
+
+// OFFSET: 0x005A13C0
+// FUNCTION: fn_03050
+int CGameActor::Slot42() {
+  return 0;
+}
+
+// OFFSET: 0x005A13D0
+// FUNCTION: fn_03051
+std::int64_t CGameActor::Slot35() {
+  return -1;
+}
+
+// OFFSET: 0x005A1930
+// FUNCTION: fn_45454
+void CGameActor::Slot44(int, int) {
+}
+
+// OFFSET: 0x005A1960
+
+// OFFSET: 0x005A1990
+// FUNCTION: fn_03057
+void CGameActor::Slot40(int) {
+}
+
+// OFFSET: 0x005A19B0
+// FUNCTION: fn_03059
+void CGameActor::Slot59(bool) {
+}
+
+// OFFSET: 0x005A19C0
+// FUNCTION: fn_03060
+void CGameActor::Slot57(int) {
+}
+
+// OFFSET: 0x005A19D0
+// FUNCTION: fn_03061
+void CGameActor::Slot41(int, int) {
+}
+
+// OFFSET: 0x005A19E0
+
+// OFFSET: 0x005A1A40
+// FUNCTION: fn_03068
+void CGameActor::Slot60() {
+}
+
+// OFFSET: 0x005A1A70
+// FUNCTION: fn_03071
+void CGameActor::Slot43(int, int) {
+}
+
 // OFFSET: 0x00CABD40
 // FUNCTION: fn_21037
 int CGameActor::Slot37() {
@@ -505,6 +599,10 @@ int CGameActor::Slot37() {
 
   return count - (count != 1 ? 2 : 1);
 }
+
+// OFFSET: 0x00CACEF0
+
+// OFFSET: 0x00CAD480
 
 // OFFSET: 0x00CAE500
 // FUNCTION: fn_21074
@@ -529,6 +627,10 @@ void CGameActor::Slot38() {
     }
   }
 }
+
+// OFFSET: 0x00CABEB0
+
+// OFFSET: 0x00CABFA0
 
 // OFFSET: 0x00CCCAF0
 // FUNCTION: fn_21199

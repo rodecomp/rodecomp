@@ -234,6 +234,10 @@ public:
   void LoadRobeAlpha();
   std::pair<int, int>* InsertPair(int key, int value);
   int SetPairValue(int value, int slot);
+  int GetPairValue() const;
+  bool IsNpcJob(int job) const;
+  int IsGuardianJob(int job) const;
+  int IsPlayerJobId(int job) const;
   int SetHotkeyEntry(char enabled, int id, int value, int slot);
   int SetFlag(char value);
   void SetPlayerNameKey(const unsigned char* key);
