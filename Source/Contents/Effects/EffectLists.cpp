@@ -7,12 +7,47 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
 #include "Render/Renderer.h"
+#include "Utility/Cipher/XorBytes.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cmath>
+#include <cstdint>
 #include <new>
+#include <string>
+
+// GLOBAL: gl_24787
+int g_levelEffectId1;
+
+// GLOBAL: gl_24788
+int g_levelEffectId2;
+
+void CRenderObject::ClearLevelEffects() {
+  reinterpret_cast<unsigned char*>(this)[0x2B8] = 0;
+  this->SendMsg(this, 0x6D, 0, 0xC8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, 0x3D0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, 0x3D1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, 0x3D2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, 0x3D3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, 0x3FE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, 0x3FF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, 0x4CA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, 0x4CB, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 0x6D, 0, 0x2F5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 0x6D, 0, 0x370, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 0x6D, 0, 0xC8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 0x6D, 0, 0x18D, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 0x6D, 0, 0x18E, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 0x6D, 0, 0x16A, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 0x6D, 0, 0x16A, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 0x6D, 0, 0xC9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 0x6D, 0, 0xCA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, 0x6D, 0, 0xCA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, g_levelEffectId1, g_levelEffectId1 >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, g_levelEffectId2, g_levelEffectId2 >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x00B25750
 // FUNCTION: fn_18783
@@ -347,10 +382,192 @@ void DestroyEffectMgr() {
 
 namespace {
 
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+
+class CBezierArcThrowEffect : public CEffect {
+public:
+  // INLINED
+  explicit CBezierArcThrowEffect(const std::string& name)
+      : CEffect(-1), name(name), unknown_00F0(0), unknown_00F4(0), unknown_00F8(0) {}
+
+  /* 00CC */ int unknown_00CC;
+  /* 00D0 */ int unknown_00D0;
+  /* 00D4 */ int unknown_00D4;
+  /* 00D8 */ std::string name;
+  /* 00F0 */ int unknown_00F0;
+  /* 00F4 */ int unknown_00F4;
+  /* 00F8 */ int unknown_00F8;
+};
+
+class CThunderingOrb : public CBezierArcThrowEffect {
+public:
+  // INLINED
+  explicit CThunderingOrb(const std::string& name) : CBezierArcThrowEffect(name) {}
+};
+
+class CWindBomb : public CBezierArcThrowEffect {
+public:
+  // INLINED
+  explicit CWindBomb(const std::string& name) : CBezierArcThrowEffect(name) {}
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(CBezierArcThrowEffect) == 0xFC);
+static_assert(sizeof(CThunderingOrb) == 0xFC);
+static_assert(sizeof(CWindBomb) == 0xFC);
+#endif
+
 template <class T>
 struct CEffectAllocator : CAllocator {
   CEffect* Create() override;
 };
+
+}
+
+// OFFSET: 0x00B1D9E0
+// FUNCTION: fn_18561
+const char* ThunderingOrbName() {
+  const std::uint8_t source[] = {
+      0x3B, 0x47, 0xD8, 0x58, 0x73, 0x53, 0xC0, 0x7D, 0x20, 0x41, 0xC5, 0x44, 0x79, 0x4B, 0xCE, 0x7D,
+      0x36, 0x5B, 0xCA, 0x4E, 0x78, 0x5D, 0xC9, 0x73, 0x0B, 0x7D, 0xF8, 0x7F, 0x53, 0x6A, 0xF9, 0x46,
+      0x11, 0x72, 0xD2, 0x7E, 0x45, 0x6D, 0xD4, 0x40, 0x0D, 0x77, 0xD1, 0x65, 0x5F, 0x7A, 0xE5, 0x4B,
+      0x1A, 0x67, 0xE4, 0x7F, 0x50, 0x50, 0xE4, 0x5D, 0x1D, 0x4A, 0xFE, 0x7C, 0x56, 0x63, 0xE7, 0x01,
+      0x0C, 0x61, 0xFF, 0x11};
+  thread_local EncryptedName<sizeof(source), 0x2F8B0F37118D157FULL> name(source);
+  return name.Text();
+}
+
+// OFFSET: 0x00B24FA0
+// FUNCTION: fn_18776
+bool CreateEffectMgr() {
+  if (g_effectMgr) {
+    return false;
+  }
+
+  EffectLists* mgr = new (std::nothrow) EffectLists();
+  if (mgr) {
+    mgr->initialized = false;
+    mgr->initialized = true;
+  }
+
+  g_effectMgr = mgr;
+  if (!g_effectMgr) {
+    return false;
+  }
+
+  if (!g_effectMgr->initialized) {
+    delete g_effectMgr;
+    g_effectMgr = nullptr;
+    return false;
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00B24DE0
+// FUNCTION: fn_18775
+void EffectLists::SpawnLevel99(CRenderObject* actor, unsigned char flag, int extra) {
+  if (!actor || extra != 0) {
+    return;
+  }
+
+  actor->ClearLevelEffects();
+
+  if (!flag) {
+    return;
+  }
+
+  const int aid = static_cast<int>(actor->render.accountId);
+  const float x = actor->render.position.x;
+  const float y = actor->render.position.y;
+  const float z = actor->render.position.z;
+  CEffect* effect = nullptr;
+
+  if (aid) {
+    effect = this->Find(aid, 0, EF_LEVEL99);
+    if (effect && effect->retained) {
+      goto applyLevel99;
+    }
+  }
+
+  {
+    const auto allocator = this->allocators.find(EF_LEVEL99);
+    if (allocator == this->allocators.end()) {
+      return;
+    }
+
+    effect = allocator->second->Create();
+    if (!effect) {
+      return;
+    }
+
+    effect->SetActor(static_cast<std::uint32_t>(aid));
+    effect->SetSourceActor(0);
+    effect->position[0] = x;
+    effect->position[1] = y;
+    effect->position[2] = z;
+    effect->Slot29(EF_LEVEL99);
+    effect->Slot01();
+    effect->Slot12();
+    this->Add(aid, effect);
+  }
+
+applyLevel99:
+  {
+    const char path[] = {'e', 'f', 'f', 'e', 'c', 't', '\\', '\xb9', '\xf8', '\xb0', '\xb3', '3', '.', 'b', 'm', 'p'};
+    effect->Slot11(std::string(path, sizeof(path)));
+    effect->Slot08(0x50, 0x50, 0xFF);
+  }
+}
+
+namespace {
+
+// OFFSET: 0x00B20B20
+// FUNCTION: fn_18655
+template <>
+CEffect* CEffectAllocator<CThunderingOrb>::Create() {
+  return new (std::nothrow) CThunderingOrb(ThunderingOrbName());
+}
+
+// OFFSET: 0x00B20E70
+// FUNCTION: fn_18660
+template <>
+CEffect* CEffectAllocator<CWindBomb>::Create() {
+  const std::uint8_t source[] = {
+      0xCB, 0xCB, 0xBE, 0x44, 0xF1, 0x23, 0xBB, 0x6B, 0xD0, 0xCE, 0xA2, 0x43, 0xF1, 0x20, 0xBD, 0x76,
+      0xC2, 0xDB, 0xB7, 0x7A, 0xDC, 0x11, 0x9B, 0x66, 0xED, 0xF6, 0x86, 0x6F, 0xEA, 0x0B, 0x90, 0x4B,
+      0xE1, 0xF8, 0x8F, 0x62, 0xE9, 0x08, 0x96, 0x57, 0xEB, 0xC6, 0x89, 0x62, 0xD8, 0x1D, 0xA0, 0x4D,
+      0xE0, 0xEB, 0x85, 0x6C, 0xD1, 0x10, 0xD1, 0x4A, 0xFB, 0xEB, 0xEB};
+  thread_local EncryptedName<sizeof(source), 0x39FF7FB50DEB998FULL> name(source);
+  return new (std::nothrow) CWindBomb(name.Text());
+}
 
 // OFFSET: 0x00B1F010
 // FUNCTION: fn_18604
@@ -392,6 +609,8 @@ template struct CEffectAllocator<CGravityControlEffect>;
 template struct CEffectAllocator<CMeteorEffect>;
 template struct CEffectAllocator<CShadowExceedNew>;
 template struct CEffectAllocator<CSprArrowEffect>;
+template struct CEffectAllocator<CThunderingOrb>;
+template struct CEffectAllocator<CWindBomb>;
 
 }
 

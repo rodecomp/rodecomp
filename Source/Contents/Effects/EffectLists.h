@@ -12,6 +12,8 @@
 
 #include "Utility/Math/Vector3d.h"
 
+class CRenderObject;
+
 struct CAllocator {
   virtual ~CAllocator() = default;
   virtual CEffect* Create() = 0;
@@ -39,6 +41,7 @@ public:
   void Render();
   void Clear();
   void Release();
+  void SpawnLevel99(CRenderObject* actor, unsigned char flag, int extra);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -49,6 +52,7 @@ static_assert(offsetof(EffectLists, retired) == 0x18);
 static_assert(offsetof(EffectLists, indexed) == 0x20);
 #endif
 
+bool CreateEffectMgr();
 void DestroyEffectMgr();
 float DirectionAngle(float x, float z);
 double ScreenAngle(vector3d from, vector3d to);
