@@ -16,6 +16,7 @@
 #include <list>
 #include <map>
 #include <new>
+#include <set>
 #include <unordered_map>
 #include <vector>
 
@@ -106,6 +107,50 @@ struct EquipmentPropertyMaps {
   /* 0004 */ std::unordered_map<int, int> first;
   /* 0024 */ std::unordered_map<int, int> second;
 };
+
+namespace EquipmentProperties {
+  class CEquipmentProperties {
+  public:
+    explicit CEquipmentProperties(EquipmentPropertyDefinition* definition);
+    virtual ~CEquipmentProperties();
+    virtual CEquipmentProperties* Accumulate(CEquipmentProperties* other);
+
+    /* 0004 */ EquipmentPropertyDefinition* m_definition;
+    /* 0008 */ std::set<int> m_keys;
+  };
+
+  class CEquipmentProperties1Dim : public CEquipmentProperties {
+  public:
+    explicit CEquipmentProperties1Dim(EquipmentPropertyDefinition* definition);
+
+    /* 0010 */ int m_value;
+  };
+
+  class CEquipmentProperties2Dim : public CEquipmentProperties {
+  public:
+    explicit CEquipmentProperties2Dim(EquipmentPropertyDefinition* definition);
+
+    /* 0010 */ std::map<int, int> m_values;
+  };
+}
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(EquipmentProperties::CEquipmentProperties) == 0x10);
+static_assert(sizeof(EquipmentProperties::CEquipmentProperties1Dim) == 0x14);
+static_assert(sizeof(EquipmentProperties::CEquipmentProperties2Dim) == 0x18);
+#endif
+
+// OFFSET: 0x00696120
+
+// OFFSET: 0x00695EC0
+
+// OFFSET: 0x00695F60
+
+// OFFSET: 0x00698550
+// FUNCTION: fn_05768
+EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProperties::Accumulate(CEquipmentProperties*) {
+  return this;
+}
 
 namespace EquipmentProperties {
   class CEquipmentPropertiesMgr {
