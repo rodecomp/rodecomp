@@ -1,6 +1,7 @@
 #include "Contents/Actors/GameActor.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/Effect.h"
+#include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Skills/SkillInfo.h"
 
@@ -13,18 +14,26 @@ public:
 
 class CSkillAction_SH_KI_SUL_RAMPAGE : public CSkillAction {
 public:
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_SH_COLORS_OF_HYUN_ROK : public CSkillAction {
 public:
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_SH_HYUN_ROKS_BREEZE : public CSkillAction {
 public:
   bool Slot03(int argument) override;
+  void Slot08(int level, CGameActor* source) override;
   int Slot14() override;
+};
+
+class CSkillAction_SH_HYUN_ROK_CANNON : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
 };
 
 class CSkillObjectAction_SH_HYUN_ROKS_BREEZE : public CSkillObjectAction {
@@ -34,6 +43,7 @@ public:
 
 class CSkillAction_SH_TEMPORARY_COMMUNION : public CSkillAction {
 public:
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -47,6 +57,7 @@ public:
 class CSkillAction_SH_BLESSING_OF_MYSTICAL_CREATURES : public CSkillAction {
 public:
   bool Slot00() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -67,7 +78,23 @@ public:
 
 // OFFSET: 0x0079FB10
 
+// OFFSET: 0x0079FC90
+// FUNCTION: fn_08950
+void CSkillAction_SH_KI_SUL_RAMPAGE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(831, level / 16);
+  }
+}
+
 // OFFSET: 0x0079FCC0
+
+// OFFSET: 0x0079FF40
+// FUNCTION: fn_08952
+void CSkillAction_SH_COLORS_OF_HYUN_ROK::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+  }
+}
 
 // OFFSET: 0x0079FF70
 
@@ -77,6 +104,14 @@ bool CSkillAction_SH_HYUN_ROKS_BREEZE::Slot03(int argument) {
   return true;
 }
 
+// OFFSET: 0x007A04B0
+// FUNCTION: fn_08955
+void CSkillAction_SH_HYUN_ROKS_BREEZE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(841, level / 16);
+  }
+}
+
 // OFFSET: 0x007A04E0
 // FUNCTION: fn_08956
 int CSkillAction_SH_HYUN_ROKS_BREEZE::Slot14() {
@@ -84,6 +119,22 @@ int CSkillAction_SH_HYUN_ROKS_BREEZE::Slot14() {
 }
 
 // OFFSET: 0x007A04F0
+
+// OFFSET: 0x007A0770
+// FUNCTION: fn_08958
+void CSkillAction_SH_HYUN_ROK_CANNON::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(841, level / 16);
+  }
+}
+
+// OFFSET: 0x007A0950
+// FUNCTION: fn_08960
+void CSkillAction_SH_TEMPORARY_COMMUNION::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
+  }
+}
 
 // OFFSET: 0x007A0980
 
@@ -97,6 +148,14 @@ int CSkillAction_SH_HYUN_ROKS_BREEZE::Slot14() {
 // FUNCTION: fn_08965
 bool CSkillAction_SH_BLESSING_OF_MYSTICAL_CREATURES::Slot00() {
   return true;
+}
+
+// OFFSET: 0x007A1000
+// FUNCTION: fn_08966
+void CSkillAction_SH_BLESSING_OF_MYSTICAL_CREATURES::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
+  }
 }
 
 // OFFSET: 0x007A1030
