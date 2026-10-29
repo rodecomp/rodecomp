@@ -12,6 +12,8 @@ class CBlastForge : public CEffect {
 public:
   CBlastForge();
 
+  bool Slot06() override;
+
   /* 00CC */ EZ2STREmitter* unknown_00CC;
   /* 00D0 */ EZ2STREmitter* unknown_00D0;
   /* 00D4 */ EZ2STREmitter* unknown_00D4;

@@ -12,6 +12,8 @@ class CAstralStrikeEffect : public CEffect {
 public:
   CAstralStrikeEffect();
 
+  bool Slot06() override;
+
   /* 00CC */ std::vector<EZ2STREmitter*> unknown_00CC;
   /* 00D8 */ std::vector<EZ2STREmitter*> unknown_00D8;
 };

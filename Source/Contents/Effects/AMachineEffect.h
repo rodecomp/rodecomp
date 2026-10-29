@@ -12,6 +12,8 @@ class CAMachineEffect : public CEffect {
 public:
   CAMachineEffect();
 
+  bool Slot06() override;
+
   /* 00CC */ std::map<int, EZ2STREmitter*> unknown_00CC;
   /* 00D4 */ int unknown_00D4;
 };
