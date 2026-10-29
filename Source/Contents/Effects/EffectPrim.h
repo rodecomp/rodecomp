@@ -40,6 +40,10 @@ struct CEffectPrim : CRenderObject {
   void PrimShieldBoomerang3();
   bool PrimSuperAngel();
   void Render2DCircle();
+  void RenderCrossPlanes(matrix& wtm);
+  void RenderPyramid(matrix& wtm);
+  void RenderArcBand(matrix& wtm);
+  void RenderSizedSquare(matrix& wtm);
   void RenderRecordRings(matrix& wtm);
   void Render2DDiamond();
   void Render3DCasting2(matrix& wtm);
@@ -100,6 +104,11 @@ struct CEffectPrim : CRenderObject {
   void RenderPeongUp(matrix& wtm);
   void RenderRipple(matrix& wtm);
   void RenderRainbow(matrix& wtm);
+  void RenderLayeredGlow(matrix& wtm);
+  void RenderSphereCage(matrix& wtm);
+  void RenderGroundBubbles(matrix& wtm);
+  void RenderHaloLayers(matrix& wtm);
+  void RenderLightningArc(matrix& wtm);
   void RenderGroundBar(matrix& wtm);
   void RenderOrbitSquare(matrix& wtm);
   void RenderLightningTube(matrix& wtm);
