@@ -1,5 +1,6 @@
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectTypes.h"
+#include "Contents/Effects/CharacterParticleBundle.h"
 #include "Contents/Effects/GravityControlEffect.h"
 #include "Contents/Effects/SkillEffects.h"
 
@@ -200,6 +201,14 @@ CEffect* CEffectAllocator<CSprArrowEffect>::Create() {
   return new (std::nothrow) CSprArrowEffect();
 }
 
+// OFFSET: 0x00B1E1D0
+// FUNCTION: fn_18576
+template <>
+CEffect* CEffectAllocator<CChopChopClawMarks>::Create() {
+  return new (std::nothrow) CChopChopClawMarks();
+}
+
+template struct CEffectAllocator<CChopChopClawMarks>;
 template struct CEffectAllocator<CGravityControlEffect>;
 template struct CEffectAllocator<CMeteorEffect>;
 template struct CEffectAllocator<CShadowExceedNew>;
@@ -217,4 +226,7 @@ CShadowExceedNew::~CShadowExceedNew() {
 }
 
 CSprArrowEffect::~CSprArrowEffect() {
+}
+
+CChopChopClawMarks::~CChopChopClawMarks() {
 }
