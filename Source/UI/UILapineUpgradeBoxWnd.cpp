@@ -5,12 +5,48 @@
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Contents/Items/ItemDescription.h"
+#include "Contents/MessageTable.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Shop/ItemDrawing.h"
 #include "UI/UILapineScrollBar.h"
 #include "UI/Window/WindowManagerWindows.h"
 
+#include <algorithm>
+#include <cstdint>
+#include <cstdlib>
+#include <vector>
 #include <windows.h>
 #include <timeapi.h>
+
+namespace {
+#pragma pack(push, 1)
+  struct LapineUpgradeClosePacket {
+    /* 0000 */ std::int16_t id;
+  };
+#pragma pack(pop)
+  static_assert(sizeof(LapineUpgradeClosePacket) == 2);
+}
+
+// INLINED
+UILapineUpgradeBoxWnd::~UILapineUpgradeBoxWnd() {
+  this->item = ITEM_INFO();
+
+  LapineUpgradeClosePacket packet;
+  packet.id = 0x0AB5;
+  CRagConnection& connection = GetRagConnection();
+  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x006035D0
+// FUNCTION: fn_04193
+void UILapineUpgradeBoxWndNoop() {}
+
+// OFFSET: 0x00603B60
 
 // OFFSET: 0x006035E0
 // FUNCTION: fn_04194
@@ -229,3 +265,5 @@ void UILapineUpgradeBoxWnd::Slot28(int x, int y) {
     this->m_controls->services.Tooltip(this->item.unknown_0044.c_str(), tipX, tipY, -1, false, true);
   }
 }
+
+// OFFSET: 0x00604FA0

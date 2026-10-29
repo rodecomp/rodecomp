@@ -32,14 +32,17 @@ protected:
 
 class UILapineUpgradeBoxWnd : public UIFrameWnd {
 public:
+  ~UILapineUpgradeBoxWnd() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot19() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void SetWaiting(unsigned char value);
   UILapineUpgradeBox_IngredientInfoWnd* FindSelected();
+  void AddMaterial(int id);
 
   /* 00B4 */ UIBitmapButton* closeButton;
   /* 00B8 */ UIBitmapButton* upgradeButton;
@@ -48,6 +51,7 @@ public:
   /* 00C4 */ int ingredientId;
   /* 00C8 */ std::string title;
   /* 00E0 */ ITEM_INFO item;
+  /* 01D8 */ int minOptionCount;
   /* 01DC */ std::string description;
   /* 01F4 */ std::string notice;
   /* 020C */ std::uint32_t noticeTick;
