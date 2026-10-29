@@ -93,6 +93,11 @@ void GroundGeometry::Reset(int columns, int rows) {
   this->unknown_0058 = 0;
 }
 
+// OFFSET: 0x00AC0350
+// FUNCTION: fn_17564
+void GroundGeometry::Slot01(int, int) {
+}
+
 // INLINED
 GroundSpatial GroundGeometry::Spatial() const {
   return {this->width, this->height, this->cellSize, this->cells};
@@ -327,4 +332,36 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
       }
     }
   }
+}
+
+// OFFSET: 0x00ABFB00
+// FUNCTION: fn_17557
+void GroundGeometry::Slot02(int, int, int, int) {
+}
+
+// OFFSET: 0x00AC0990
+// FUNCTION: fn_17566
+void GroundGeometry::Ground15Slot04(int) {
+}
+
+// OFFSET: 0x00AC09A0
+// FUNCTION: fn_17567
+void GroundGeometry::Slot04(int) {
+}
+
+// OFFSET: 0x00AC1510
+// FUNCTION: fn_17582
+void GroundGeometry::Slot19() {
+}
+
+// OFFSET: 0x00AC1520
+// FUNCTION: fn_17583
+bool GroundGeometry::Ground15Slot10() {
+  return true;
+}
+
+// OFFSET: 0x00AC1530
+// FUNCTION: fn_17584
+bool GroundGeometry::Slot10() {
+  return false;
 }

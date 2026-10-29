@@ -61,3 +61,8 @@ void GroundGeometry::InitializeLighting(const C3dAttr& terrain) {
     }
   }
 }
+
+// OFFSET: 0x00ABFD50
+// FUNCTION: fn_17559
+void GroundGeometry::Slot11() {
+}

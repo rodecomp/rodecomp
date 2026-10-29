@@ -120,3 +120,8 @@ void GroundGeometry::DrawLit(const float* matrix, const int* rectangle, bool cli
     ++row;
   }
 }
+
+// OFFSET: 0x00AC16C0
+// FUNCTION: fn_17586
+void GroundGeometry::Slot06(int, int, int) {
+}

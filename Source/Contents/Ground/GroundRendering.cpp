@@ -125,3 +125,8 @@ void GroundGeometry::Draw(const float* matrix, const int* rectangle, bool clip, 
     row = row + 1;
   }
 }
+
+// OFFSET: 0x00AC1D20
+// FUNCTION: fn_17591
+void GroundGeometry::Slot05(int, int, int) {
+}
