@@ -107,4 +107,40 @@ void CUIPage::Paint() {
 // FUNCTION: fn_15985
 void CUIComboItem::Slot16() {
 }
+
+// OFFSET: 0x00A41D80
+// FUNCTION: fn_15999
+void CUIListPage::Slot16() {
+}
+
+// OFFSET: 0x00A41D90
+// FUNCTION: fn_16000
+void CUIOptionItem::Slot16() {
+}
+
+// OFFSET: 0x00A41DA0
+// FUNCTION: fn_16001
+void CUIPage::Slot16() {
+  int y = 0;
+  for (UIWindow* child : this->m_children) {
+    child->Move(child->geometry.x, y);
+    y += child->geometry.height;
+  }
+}
+
+// OFFSET: 0x00A43B70
+// FUNCTION: fn_16045
+void CUIPage::Refresh() {
+  for (UIWindow* child : this->m_children) {
+    static_cast<CUIGroup*>(child)->Refresh();
+  }
+}
+}
+
+// OFFSET: 0x00A41DE0
+// FUNCTION: fn_16002
+void CUIGameSettingsUI::Slot25(int x, int y) {
+  if (this->m_titleBar->IsPointInside(x, y)) {
+    this->UIFrameWnd::Slot25(x, y);
+  }
 }

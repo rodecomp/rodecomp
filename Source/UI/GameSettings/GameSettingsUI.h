@@ -3,11 +3,13 @@
 
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Window/UIControl.h"
+#include "UI/Window/UIFrameWnd.h"
 
 namespace GameSettingsUI {
 class CUIGroup : public CUIControl {
 public:
   virtual void Apply();
+  virtual void Refresh() = 0;
 };
 
 class CUIGroupEmblem : public CUIGroup {
@@ -47,12 +49,15 @@ public:
 
 class CUIPage : public CUIControl {
 public:
+  void Slot16() override;
   void Paint() override;
   virtual void Apply();
+  virtual void Refresh();
 };
 
 class CUIListPage : public CUIControl {
 public:
+  void Slot16() override;
   void Paint() override;
 };
 
@@ -63,8 +68,17 @@ public:
 
 class CUIOptionItem : public CUIListItem {
 public:
+  void Slot16() override;
   void Paint() override;
 };
 }
+
+class CUIGameSettingsUI : public UIFrameWnd {
+public:
+  void Slot25(int x, int y) override;
+
+  /* 00B8 */ unsigned char unknown_00B8[0x1C];
+  /* 00D8 */ CUIControl* m_titleBar;
+};
 
 #endif
