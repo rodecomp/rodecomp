@@ -141,10 +141,20 @@ static_assert(sizeof(EquipmentProperties::CEquipmentProperties2Dim) == 0x18);
 #endif
 
 // OFFSET: 0x00696120
+// FUNCTION: fn_05739
+EquipmentProperties::CEquipmentProperties::CEquipmentProperties(EquipmentPropertyDefinition* definition) : m_definition(definition) {
+}
 
 // OFFSET: 0x00695EC0
+// FUNCTION: fn_05736
+EquipmentProperties::CEquipmentProperties1Dim::CEquipmentProperties1Dim(EquipmentPropertyDefinition* definition)
+    : CEquipmentProperties(definition), m_value(0) {
+}
 
 // OFFSET: 0x00695F60
+// FUNCTION: fn_05737
+EquipmentProperties::CEquipmentProperties2Dim::CEquipmentProperties2Dim(EquipmentPropertyDefinition* definition) : CEquipmentProperties(definition) {
+}
 
 // OFFSET: 0x00698550
 // FUNCTION: fn_05768
