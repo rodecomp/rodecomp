@@ -265,6 +265,11 @@ void CGrannyPc::Slot23(int first, int second) {
   this->unknown_0444 = second;
 }
 
+// OFFSET: 0x00DBA6C0
+// FUNCTION: fn_22674
+void CPlayer::Slot17() {
+}
+
 // OFFSET: 0x00DB51E0
 // FUNCTION: fn_22662
 int CPlayer::AngleToDirection(float angle) {

@@ -124,6 +124,7 @@ public:
   static int AngleToDirection(float angle);
 
   bool IsSpecialState(int state) const;
+  void Slot17() override;
 };
 
 class CGrannyPc : public CGameActor {
