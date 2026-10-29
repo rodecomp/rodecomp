@@ -20,6 +20,7 @@ public:
 
 class CRootTwistEffect : public CEffect {
 public:
+  CRootTwistEffect();
   void Slot03() override;
   bool Slot06() override;
   void Slot12() override;
@@ -29,6 +30,7 @@ public:
 
 class CSpriteMableEffect : public CEffect {
 public:
+  CSpriteMableEffect();
   bool Slot06() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -79,6 +81,7 @@ public:
 
 class CCylinderEffect : public CEffect {
 public:
+  CCylinderEffect();
   bool Slot06() override;
 
   /* 00CC */ unsigned int startTime;
@@ -172,6 +175,7 @@ class CParticle;
 
 class CFullScreenEffect : public CEffect {
 public:
+  CFullScreenEffect();
   void Slot04() override;
   bool Slot06() override;
 

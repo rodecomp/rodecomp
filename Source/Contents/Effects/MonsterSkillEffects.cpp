@@ -35,6 +35,11 @@ static CEZ2STRParticle* AsParticle(EZ2STREmitter* emitter) {
 
 // OFFSET: 0x0070C070
 
+// OFFSET: 0x0070C150
+// FUNCTION: fn_07126
+CRootTwistEffect::CRootTwistEffect() : CEffect(1110) {
+}
+
 // OFFSET: 0x0070C0B0
 // FUNCTION: fn_07124
 void CCrimsonArrowEffect::Slot03() {
@@ -68,6 +73,11 @@ bool CRootTwistEffect::Slot06() {
 // OFFSET: 0x0070C3E0
 
 // OFFSET: 0x0070C7F0
+
+// OFFSET: 0x0070CEA0
+// FUNCTION: fn_07141
+CSpriteMableEffect::CSpriteMableEffect() : CEffect(1096) {
+}
 
 // OFFSET: 0x0070D150
 // FUNCTION: fn_07145
@@ -129,6 +139,11 @@ void CWarningPlaneEffect::Slot01() {
 // OFFSET: 0x0070F360
 
 // OFFSET: 0x0070FC60
+
+// OFFSET: 0x0070F720
+// FUNCTION: fn_07189
+CCylinderEffect::CCylinderEffect() : CEffect(-1) {
+}
 
 // OFFSET: 0x0070F670
 // FUNCTION: fn_07188
@@ -354,6 +369,11 @@ void CFromTheAbyssEffect::Slot01() {
 // FUNCTION: fn_07267
 bool CFromTheAbyssEffect::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x00716800
+// FUNCTION: fn_07274
+CFullScreenEffect::CFullScreenEffect() : CEffect(-1), loaded(1) {
 }
 
 // OFFSET: 0x00716BD0
