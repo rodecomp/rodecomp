@@ -5,17 +5,17 @@
 #include <cstdint>
 #include <vector>
 
-struct MovementPathNode {
+struct PathNode {
   /* 0000 */ std::int32_t x;
   /* 0004 */ std::int32_t y;
-  /* 0008 */ MovementPathNode* parent;
+  /* 0008 */ PathNode* parent;
   /* 000C */ int cost;
   /* 0010 */ int estimatedCost;
   /* 0014 */ int state;
   /* 0018 */ int metadata;
 };
 
-struct MovementRoutePoint {
+struct PathCell {
   /* 0000 */ std::int32_t x;
   /* 0004 */ std::int32_t y;
   /* 0008 */ int metadata;
@@ -25,7 +25,7 @@ struct MovementRoutePoint {
 struct MovementRouteInterpolation {
   MovementRouteInterpolation();
 
-  /* 0000 */ std::vector<MovementRoutePoint> points;
+  /* 0000 */ std::vector<PathCell> points;
   /* 000C */ std::uint32_t segment;
   /* 0010 */ float startX;
   /* 0014 */ float startY;
@@ -38,12 +38,12 @@ struct MovementRouteInterpolation {
   std::uint32_t Segment() const;
 };
 
-void BuildMovementRoute(std::uint32_t tick, const MovementPathNode* last, int stepDuration, MovementRouteInterpolation& route);
+void BuildMovementRoute(std::uint32_t tick, const PathNode* last, int stepDuration, MovementRouteInterpolation& route);
 
-static_assert(sizeof(MovementRoutePoint) == 16);
+static_assert(sizeof(PathCell) == 16);
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(MovementPathNode) == 28);
-static_assert(offsetof(MovementPathNode, metadata) == 0x18);
+static_assert(sizeof(PathNode) == 28);
+static_assert(offsetof(PathNode, metadata) == 0x18);
 static_assert(sizeof(MovementRouteInterpolation) == 24);
 static_assert(offsetof(MovementRouteInterpolation, segment) == 0xC);
 static_assert(offsetof(MovementRouteInterpolation, startX) == 0x10);

@@ -26,19 +26,19 @@ bool CPathFinder::FindPath(
   this->Reset();
   this->nodeCount = 0;
 
-  MovementPathNode* start = this->FindOrCreateNode(startX, startY);
+  PathNode* start = this->FindOrCreateNode(startX, startY);
   start->state = 1;
   start->parent = nullptr;
   start->cost = 0;
   start->estimatedCost = 10 * (std::abs(startX - this->destinationX) + std::abs(startY - this->destinationY));
 
-  std::vector<MovementPathNode*>& open = this->openList.Nodes();
+  std::vector<PathNode*>& open = this->openList.Nodes();
   open.push_back(start);
-  std::push_heap(open.begin(), open.end(), MovementPathNodeCompare());
+  std::push_heap(open.begin(), open.end(), NodeTotalGreater());
 
   while (!open.empty()) {
-    MovementPathNode* current = open.front();
-    std::pop_heap(open.begin(), open.end(), MovementPathNodeCompare());
+    PathNode* current = open.front();
+    std::pop_heap(open.begin(), open.end(), NodeTotalGreater());
     open.pop_back();
 
     if (current->x == destX && current->y == destY) {
@@ -91,7 +91,7 @@ bool CPathFinder::FindPath(
 
 // OFFSET: 0x00AD9030
 // FUNCTION: fn_17875
-MovementPathNode* CPathFinder::FindOrCreateNode(int x, int y) {
+PathNode* CPathFinder::FindOrCreateNode(int x, int y) {
   const int width = this->attr->width;
   const int key = y * width + x;
   auto found = this->nodeMap.find(key);
@@ -99,7 +99,7 @@ MovementPathNode* CPathFinder::FindOrCreateNode(int x, int y) {
     return found->second;
   }
 
-  MovementPathNode* node;
+  PathNode* node;
   if (this->useNodePool) {
     const int count = static_cast<int>(this->nodePool.size());
     if (this->nodeCount >= count - 1) {
@@ -155,9 +155,9 @@ bool CPathFinder::CanMove(int startX, int startY, int targetX, int targetY, char
 
 // OFFSET: 0x00AD9610
 // FUNCTION: fn_17882
-bool CPathFinder::AddNeighbor(MovementPathNode* current, int cost, int nextX, int nextY, int metadata) {
+bool CPathFinder::AddNeighbor(PathNode* current, int cost, int nextX, int nextY, int metadata) {
   const int totalCost = current->cost + cost;
-  MovementPathNode* next = this->FindOrCreateNode(nextX, nextY);
+  PathNode* next = this->FindOrCreateNode(nextX, nextY);
   if (!next) {
     return false;
   }
@@ -179,10 +179,10 @@ bool CPathFinder::AddNeighbor(MovementPathNode* current, int cost, int nextX, in
     next->metadata = metadata;
 
     if (next->state == 1) {
-      std::vector<MovementPathNode*>& open = this->openList.Nodes();
+      std::vector<PathNode*>& open = this->openList.Nodes();
       for (auto it = open.begin(); it != open.end(); ++it) {
         if ((*it)->x == next->x && (*it)->y == next->y) {
-          std::push_heap(open.begin(), it + 1, MovementPathNodeCompare());
+          std::push_heap(open.begin(), it + 1, NodeTotalGreater());
           return true;
         }
       }
@@ -196,9 +196,9 @@ bool CPathFinder::AddNeighbor(MovementPathNode* current, int cost, int nextX, in
 
 // OFFSET: 0x00AD9760
 // FUNCTION: fn_17883
-void MovementOpenList::Push(MovementPathNode* node) {
+void CPriorityQueue::Push(PathNode* node) {
   this->nodes.push_back(node);
-  std::push_heap(this->nodes.begin(), this->nodes.end(), MovementPathNodeCompare());
+  std::push_heap(this->nodes.begin(), this->nodes.end(), NodeTotalGreater());
 }
 
 // OFFSET: 0x00AD97C0
@@ -216,6 +216,6 @@ void CPathFinder::Clear() {
 void CPathFinder::Reset() {
   this->nodePool.erase(this->nodePool.begin(), this->nodePool.end());
   this->nodeMap.erase(this->nodeMap.begin(), this->nodeMap.end());
-  std::vector<MovementPathNode*>& open = this->openList.Nodes();
+  std::vector<PathNode*>& open = this->openList.Nodes();
   open.erase(open.begin(), open.end());
 }

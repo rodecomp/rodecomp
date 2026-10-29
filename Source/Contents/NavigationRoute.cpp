@@ -120,7 +120,7 @@ bool CNavigationManager::BuildRoute(int startX, int startY, int destX, int destY
   int offsetX;
   int offsetY;
   const float scale = this->FitToSquare(&offsetX, &offsetY, width, height, 126.0f);
-  for (const MovementRoutePoint& point : this->movementRoute.points) {
+  for (const PathCell& point : this->movementRoute.points) {
     NaviCell cell;
     cell.x = static_cast<int>(point.x * scale + offsetX);
     cell.y = static_cast<int>(126.0f - (point.y * scale + offsetY));

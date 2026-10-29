@@ -8,15 +8,15 @@ MovementRouteInterpolation::MovementRouteInterpolation() : segment(0), startX(0)
 
 // OFFSET: 0x00AD87A0
 // FUNCTION: fn_17867
-void BuildMovementRoute(std::uint32_t tick, const MovementPathNode* last, int stepDuration, MovementRouteInterpolation& route) {
+void BuildMovementRoute(std::uint32_t tick, const PathNode* last, int stepDuration, MovementRouteInterpolation& route) {
   std::uint32_t count = 0;
-  for (const MovementPathNode* node = last; node; node = node->parent) {
+  for (const PathNode* node = last; node; node = node->parent) {
     ++count;
   }
 
   route.points.resize(count);
   if (static_cast<int>(count) > 1) {
-    const MovementPathNode* node = last;
+    const PathNode* node = last;
     for (std::uint32_t index = count; index != 0;) {
       --index;
       route.points[index].x = node->x;
