@@ -516,3 +516,21 @@ bool ITEM_INFO::IsAboveItemId600() const {
 int ITEM_INFO::GetItemId() const {
   return std::atoi(this->itemId.c_str());
 }
+
+// OFFSET: 0x006D9070
+// FUNCTION: fn_06611
+void ITEM_INFO::SetOption(ItemOption option, const int& index) {
+  if (index < 5) {
+    std::memcpy(this->unknown_009C + index * 5, &option.id, sizeof(option.id));
+    this->unknown_009C[index * 5 + 4] = option.parameter;
+    std::memcpy(this->unknown_009C + index * 5 + 2, &option.value, sizeof(option.value));
+  }
+}
+
+// OFFSET: 0x006D9590
+// FUNCTION: fn_06613
+void ITEM_INFO::SetCard(const int& card, const int& index) {
+  if (index < 4) {
+    std::memcpy(this->unknown_001C + index * 4, &card, sizeof(card));
+  }
+}

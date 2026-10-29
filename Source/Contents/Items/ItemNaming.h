@@ -52,6 +52,7 @@ extern std::map<int, ItemMoveInfo> g_itemMoveInfo;
 ItemCardName& FindItemCardName(int id, std::map<int, ItemCardName>& values);
 ItemCardName& FindItemCardName(int id);
 ItemMoveInfo& FindItemMoveInfo(int id);
+bool IsItemCard(int id);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ItemCardName) == 12);

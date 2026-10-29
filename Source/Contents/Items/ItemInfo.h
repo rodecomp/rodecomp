@@ -54,6 +54,12 @@ static_assert(offsetof(RawItemBasic, unknown_0034) == 0x34);
 static_assert(offsetof(RawItemBasic, unknown_0038) == 0x38);
 #endif
 
+struct ItemOption {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t value;
+  /* 0004 */ unsigned char parameter;
+};
+
 struct alignas(8) ITEM_INFO {
   ITEM_INFO();
   explicit ITEM_INFO(int unused);
@@ -65,6 +71,8 @@ struct alignas(8) ITEM_INFO {
   bool operator<(const ITEM_INFO& other) const;
   bool SetName(const char* name);
   void SetItemId(int value);
+  void SetOption(ItemOption option, const int& index);
+  void SetCard(const int& card, const int& index);
   int GetItemId() const;
   bool HasSpecialCard() const;
   bool IsApprenticeItem() const;
@@ -109,6 +117,7 @@ std::list<int> SearchItemIds(std::string query, unsigned char cardsOnly, unsigne
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ITEM_INFO) == 248);
+static_assert(sizeof(ItemOption) == 6);
 #endif
 
 #endif

@@ -421,6 +421,12 @@ bool IsBookItem(int id) {
   return g_bookItemNames.find(id) != g_bookItemNames.end();
 }
 
+// OFFSET: 0x006D8890
+// FUNCTION: fn_06599
+bool IsItemCard(int id) {
+  return g_itemCardNames.find(id) != g_itemCardNames.end();
+}
+
 // OFFSET: 0x006D7660
 // FUNCTION: fn_06591
 const char* ItemResourcePath(const ITEM_INFO& item) {
