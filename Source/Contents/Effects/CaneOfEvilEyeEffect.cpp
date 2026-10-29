@@ -1,5 +1,9 @@
 #include "Contents/Effects/CaneOfEvilEyeEffect.h"
 
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Camera/Camera.h"
+
 #include <windows.h>
 #include <timeapi.h>
 
@@ -21,6 +25,32 @@ void CCaneOfEvilEyeEffect::RemoveNullEmitters() {
       it = this->unknown_00DC.erase(it);
     } else {
       ++it;
+    }
+  }
+}
+
+// OFFSET: 0x006F9340
+// FUNCTION: fn_06879
+bool CCaneOfEvilEyeEffect::Slot06() {
+  if (this->ActorExists() && (!this->unknown_00D0.empty() || !this->unknown_00DC.empty())) {
+    return true;
+  }
+
+  return false;
+}
+
+// OFFSET: 0x006F9D40
+// FUNCTION: fn_06882
+void CCaneOfEvilEyeEffect::Slot04() {
+  for (auto it = this->unknown_00D0.begin(); it != this->unknown_00D0.end(); ++it) {
+    if (*it) {
+      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
+
+  for (auto it = this->unknown_00DC.begin(); it != this->unknown_00DC.end(); ++it) {
+    if (*it) {
+      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
   }
 }
