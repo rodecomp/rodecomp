@@ -141,8 +141,33 @@ void UILapineUpgradeBox_IngredientListWnd::Paint() {
 }
 
 // OFFSET: 0x006041A0
+// FUNCTION: fn_04214
+void UILapineUpgradeBox_IngredientListWnd::Slot35(int argument) {
+  if (this->wheelScroll == 1) {
+    if (argument < 0) {
+      this->SendMsg(this->scrollBar, 7, 15, 0, 0, 0);
+    } else {
+      this->SendMsg(this->scrollBar, 7, -15, 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00605980
+// FUNCTION: fn_04223
+UILapineUpgradeBox_IngredientInfoWnd* UILapineUpgradeBox_IngredientListWnd::FindSelected() {
+  for (UILapineUpgradeBox_IngredientInfoWnd* entry : this->items) {
+    if (entry->selected == 1) {
+      return entry;
+    }
+  }
+
+  return nullptr;
+}
+
+// INLINED
+inline UILapineUpgradeBox_IngredientInfoWnd* UILapineUpgradeBoxWnd::FindSelected() {
+  return this->ingredientList->FindSelected();
+}
 
 // OFFSET: 0x00603FE0
 // FUNCTION: fn_04210

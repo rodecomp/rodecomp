@@ -30,6 +30,7 @@ public:
   void Slot10(int x, int y, std::intptr_t value) override;
   void Paint() override;
   void Slot35(int argument) override;
+  UILapineUpgradeBox_IngredientInfoWnd* FindSelected();
 
   /* 00A8 */ unsigned char unknown_00A8[0x14];
   /* 00BC */ std::vector<UILapineUpgradeBox_IngredientInfoWnd*> items;
