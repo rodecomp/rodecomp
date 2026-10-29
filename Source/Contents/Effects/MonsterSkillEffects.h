@@ -5,6 +5,8 @@
 #include "Contents/Effects/EffectEmitter.h"
 
 #include <cstddef>
+#include <list>
+#include <string>
 #include <vector>
 
 class CCrimsonArrowEffect : public CEffect {
@@ -79,12 +81,96 @@ public:
   /* 00D0 */ std::vector<EZ2STREmitter*> emitters;
 };
 
+class CDancingKnifeEffect : public CEffect {
+public:
+  CDancingKnifeEffect();
+  bool Slot06() override;
+
+  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00D8 */ std::vector<EZ2STREmitter*> unknown_00D8;
+  /* 00E4 */ int unknown_00E4;
+};
+
+class CEternalSlashAttackEffect : public CEffect {
+public:
+  CEternalSlashAttackEffect();
+  bool Slot06() override;
+
+  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+};
+
+class CEternalSlashCountEffect : public CEffect {
+public:
+  CEternalSlashCountEffect();
+  bool Slot06() override;
+
+  /* 00CC */ EZ2STREmitter* emitter;
+};
+
+class CFallenAngelEffect : public CEffect {
+public:
+  CFallenAngelEffect();
+  bool Slot06() override;
+
+  /* 00CC */ EZ2STREmitter* emitter;
+  /* 00D0 */ int unknown_00D0;
+  /* 00D4 */ int unknown_00D4;
+  /* 00D8 */ int unknown_00D8;
+};
+
+class CFloralFlareRoad : public CEffect {
+public:
+  CFloralFlareRoad();
+  bool Slot06() override;
+
+  /* 00CC */ int unknown_00CC;
+  /* 00D0 */ std::vector<EZ2STREmitter*> emitters;
+};
+
+class CFootprintEffect : public CEffect {
+public:
+  CFootprintEffect();
+  bool Slot06() override;
+  bool Slot33() override;
+
+  /* 00CC */ std::list<EZ2STREmitter*> emitters;
+  /* 00D4 */ std::string unknown_00D4;
+  /* 00EC */ std::string unknown_00EC;
+  /* 0104 */ int unknown_0104;
+  /* 0108 */ double stepDistance;
+  /* 0110 */ unsigned char unknown_0110;
+  /* 0111 */ unsigned char unknown_0111[3];
+  /* 0114 */ vector3d lastPosition;
+  /* 0120 */ float unknown_0120;
+  /* 0124 */ int unknown_0124;
+};
+
+class CFootprintStrEffect : public CEffect {
+public:
+  bool Slot06() override;
+  bool Slot33() override;
+};
+
+class CFromTheAbyssEffect : public CEffect {
+public:
+  void Slot01() override;
+  bool Slot06() override;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CCrimsonArrowEffect, emitter) == 0xCC);
 static_assert(sizeof(CRootTwistEffect) == 0xD8);
 static_assert(sizeof(CSvgSpiritEffect) == 0xD0);
 static_assert(offsetof(CWarningPlaneEffect, expireTime) == 0xDC);
 static_assert(offsetof(CCylinderEffect, emitters) == 0xD0);
+static_assert(sizeof(CDancingKnifeEffect) == 0xE8);
+static_assert(sizeof(CEternalSlashAttackEffect) == 0xD8);
+static_assert(sizeof(CEternalSlashCountEffect) == 0xD0);
+static_assert(sizeof(CFallenAngelEffect) == 0xDC);
+static_assert(sizeof(CFloralFlareRoad) == 0xDC);
+static_assert(offsetof(CFootprintEffect, stepDistance) == 0x108);
+static_assert(offsetof(CFootprintEffect, lastPosition) == 0x114);
+static_assert(sizeof(CFootprintEffect) == 0x128);
 #endif
 
 #endif
