@@ -120,18 +120,21 @@ namespace EquipmentProperties {
   class CEquipmentProperties {
   public:
     explicit CEquipmentProperties(EquipmentPropertyDefinition* definition);
+    CEquipmentProperties(const CEquipmentProperties& other);
     virtual ~CEquipmentProperties();
     virtual CEquipmentProperties* Accumulate(CEquipmentProperties* other);
+    virtual CEquipmentProperties* Clone();
 
     /* 0004 */ EquipmentPropertyDefinition* m_definition;
-    /* 0008 */ std::set<int> m_keys;
+    /* 0008 */ std::set<unsigned int> m_keys;
   };
 
   class CEquipmentProperties1Dim : public CEquipmentProperties {
   public:
     explicit CEquipmentProperties1Dim(EquipmentPropertyDefinition* definition);
     CEquipmentProperties* Accumulate(CEquipmentProperties* other) override;
-    void SetValue(const int& value, const int& key);
+    CEquipmentProperties* Clone() override;
+    void SetValue(const int& value, const unsigned int& key);
 
     /* 0010 */ int m_value;
   };
@@ -139,6 +142,9 @@ namespace EquipmentProperties {
   class CEquipmentProperties2Dim : public CEquipmentProperties {
   public:
     explicit CEquipmentProperties2Dim(EquipmentPropertyDefinition* definition);
+    CEquipmentProperties* Accumulate(CEquipmentProperties* other) override;
+    CEquipmentProperties* Clone() override;
+    void SetValue(const int& index, const int& value, const unsigned int& key);
 
     /* 0010 */ std::map<int, int> m_values;
   };
@@ -172,13 +178,95 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
   return this;
 }
 
+// OFFSET: 0x00696020
+// FUNCTION: fn_05738
+EquipmentProperties::CEquipmentProperties::CEquipmentProperties(const CEquipmentProperties& other) = default;
+
+// OFFSET: 0x00698FC0
+// FUNCTION: fn_05774
+EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProperties::Clone() {
+  return new CEquipmentProperties(*this);
+}
+
+// OFFSET: 0x00698DE0
+// FUNCTION: fn_05772
+EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProperties1Dim::Clone() {
+  return new CEquipmentProperties1Dim(*this);
+}
+
+// OFFSET: 0x00698E80
+// FUNCTION: fn_05773
+EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProperties2Dim::Clone() {
+  return new CEquipmentProperties2Dim(*this);
+}
+
 // OFFSET: 0x00699070
 // FUNCTION: fn_05778
-void EquipmentProperties::CEquipmentProperties1Dim::SetValue(const int& value, const int& key) {
+void EquipmentProperties::CEquipmentProperties1Dim::SetValue(const int& value, const unsigned int& key) {
   this->m_value = value;
   if (key != -1) {
     this->m_keys.insert(key);
   }
+}
+
+// OFFSET: 0x006990A0
+// FUNCTION: fn_05779
+void EquipmentProperties::CEquipmentProperties2Dim::SetValue(const int& index, const int& value, const unsigned int& key) {
+  this->m_values[index] = value;
+  if (key != -1) {
+    this->m_keys.insert(key);
+  }
+}
+
+// OFFSET: 0x00698330
+// FUNCTION: fn_05767
+EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProperties2Dim::Accumulate(CEquipmentProperties* other) {
+  if (this->m_definition == nullptr) {
+    return this;
+  }
+
+  auto* source = dynamic_cast<CEquipmentProperties2Dim*>(other);
+  if (source == nullptr) {
+    return this;
+  }
+
+  if (this->m_definition->unknown_007C != 0) {
+    if (source->m_keys.size() != 1) {
+      return this;
+    }
+    const unsigned int& key = *source->m_keys.begin();
+    if (this->m_keys.contains(key)) {
+      return this;
+    }
+    this->m_keys.insert(key);
+  }
+
+  for (auto& entry : source->m_values) {
+    switch (this->m_definition->mode) {
+    case 0:
+      this->m_values[entry.first] += entry.second;
+      break;
+    case 1:
+      ++this->m_values[entry.first];
+      break;
+    case 2:
+      this->m_values[entry.first] = std::max(this->m_values[entry.first], entry.second);
+      break;
+    case 3:
+      if (this->m_values.size() == 1) {
+        int index = this->m_values.begin()->first;
+        auto node = this->m_values.extract(index);
+        node.key() = entry.first + index;
+        this->m_values.insert(std::move(node));
+        this->m_values.begin()->second += entry.second;
+      }
+      break;
+    case 4:
+      this->m_values[entry.first] = entry.second < 0 ? 0 : std::max(this->m_values[entry.first], entry.second);
+      break;
+    }
+  }
+  return this;
 }
 
 namespace EquipmentProperties {
@@ -204,7 +292,7 @@ namespace EquipmentProperties {
     /* 0134 */ std::unordered_map<int, EquipmentValueA> unknown_0134;
     /* 0154 */ std::unordered_map<int, std::array<int, 3>> unknown_0154;
     /* 0174 */ std::unordered_map<int, EquipmentValueB> unknown_0174;
-    /* 0194 */ std::map<int, int> unknown_0194;
+    /* 0194 */ std::map<int, unsigned int> unknown_0194;
     /* 019C */ std::unordered_map<int, EquipmentValueC> unknown_019C;
     /* 01BC */ std::unordered_map<int, std::unordered_map<int, EquipmentEntryA>> unknown_01BC;
     /* 01DC */ std::unordered_map<int, std::unordered_map<int, EquipmentEntryB>> unknown_01DC;
@@ -1081,7 +1169,7 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
     if (source->m_keys.size() != 1) {
       return this;
     }
-    const int& key = *source->m_keys.begin();
+    const unsigned int& key = *source->m_keys.begin();
     if (this->m_keys.contains(key)) {
       return this;
     }
