@@ -173,6 +173,13 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
 }
 
 // OFFSET: 0x00699070
+// FUNCTION: fn_05778
+void EquipmentProperties::CEquipmentProperties1Dim::SetValue(const int& value, const int& key) {
+  this->m_value = value;
+  if (key != -1) {
+    this->m_keys.insert(key);
+  }
+}
 
 namespace EquipmentProperties {
   class CEquipmentPropertiesMgr {
@@ -477,6 +484,17 @@ bool EquipmentProperties::CEquipmentWearable::IsActive() {
 }
 
 // OFFSET: 0x0068C090
+// FUNCTION: fn_05626
+std::string_view EquipmentProperties::CEquipmentExpansion::GetSuffix() {
+  switch (this->m_kind) {
+  case 0:
+    return "(P)";
+  case 1:
+    return "(R)";
+  default:
+    return "";
+  }
+}
 
 // OFFSET: 0x0068CEF0
 // FUNCTION: fn_05642
