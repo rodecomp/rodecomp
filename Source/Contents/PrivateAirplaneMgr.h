@@ -8,7 +8,9 @@ struct lua_State;
 
 class CPrivateAirplaneMgr {
 public:
+  static bool Create();
   static void Destroy();
+  static bool Init();
   static int L_InsertNeedItem(lua_State* state);
   static int L_InsertEndableMap(lua_State* state);
   static int L_InsertStartableMap(lua_State* state);
@@ -18,6 +20,7 @@ public:
   /* 0010 */ std::set<std::string> m_endableMaps;
   /* 0018 */ std::set<int> m_needItems;
 
+  CPrivateAirplaneMgr() : m_initialized(true) {}
   virtual ~CPrivateAirplaneMgr() = default;
 
   int GetNeedItem(int index);

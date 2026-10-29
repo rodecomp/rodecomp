@@ -1,11 +1,41 @@
 #include "Contents/PrivateAirplaneMgr.h"
+#include "Script/NLuaState.h"
+#include "Utility/Text/FormatString.h"
+
+#include <new>
+
+#include <Windows.h>
 
 extern "C" {
+#include <lauxlib.h>
 #include <lua.h>
+#include <lualib.h>
 }
 
 // GLOBAL: gl_24636
 CPrivateAirplaneMgr* g_privateAirplaneItems;
+
+// OFFSET: 0x006D04C0
+// FUNCTION: fn_06504
+bool CPrivateAirplaneMgr::Create() {
+  if (g_privateAirplaneItems != nullptr) {
+    return false;
+  }
+
+  g_privateAirplaneItems = new (std::nothrow) CPrivateAirplaneMgr();
+  if (g_privateAirplaneItems != nullptr) {
+    if (g_privateAirplaneItems->m_initialized) {
+      if (CPrivateAirplaneMgr::Init()) {
+        return true;
+      }
+    }
+
+    delete g_privateAirplaneItems;
+    g_privateAirplaneItems = nullptr;
+  }
+
+  return false;
+}
 
 // OFFSET: 0x006D0620
 // FUNCTION: fn_06505
@@ -40,6 +70,50 @@ bool CPrivateAirplaneMgr::IsEndableMap(std::string map) {
 // FUNCTION: fn_06508
 bool CPrivateAirplaneMgr::IsStartableMap(std::string map) {
   return this->m_startableMaps.find(map) != this->m_startableMaps.end();
+}
+
+// OFFSET: 0x006D0A00
+// FUNCTION: fn_06509
+bool CPrivateAirplaneMgr::Init() {
+  NLuaState lua;
+  if (!lua.IsValid()) {
+    return false;
+  }
+
+  luaL_openlibs(lua.GetState());
+  lua_register(lua.GetState(), "InsertStartableMap", CPrivateAirplaneMgr::L_InsertStartableMap);
+  lua_register(lua.GetState(), "InsertEndableMap", CPrivateAirplaneMgr::L_InsertEndableMap);
+  lua_register(lua.GetState(), "InsertNeedItem", CPrivateAirplaneMgr::L_InsertNeedItem);
+
+  std::string filename = "System\\PrivateAirplane_True.lub";
+  if (luaL_loadfile(lua.GetState(), filename.c_str()) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CPrivateAirplaneMgr", 0);
+    return false;
+  }
+
+  if (lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CPrivateAirplaneMgr", 0);
+    return false;
+  }
+
+  lua_getfield(lua.GetState(), LUA_GLOBALSINDEX, "main");
+  if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CPrivateAirplaneMgr", 0);
+    return false;
+  }
+
+  if (lua_isstring(lua.GetState(), -1) == 0) {
+    MessageBoxA(nullptr, "second return value is not string...", "CPrivateAirplaneMgr", 0);
+    return false;
+  }
+
+  if (lua_toboolean(lua.GetState(), -2) == 0) {
+    std::string msg = FormatOwnedString("error : %s", lua_tostring(lua.GetState(), -1));
+    MessageBoxA(nullptr, msg.c_str(), "CPrivateAirplaneMgr", 0);
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x006D0EF0
