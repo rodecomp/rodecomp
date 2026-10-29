@@ -151,6 +151,62 @@ float* CPc::GetExtent(float* extent) const {
   return extent;
 }
 
+// OFFSET: 0x00DA2FA0
+// FUNCTION: fn_22397
+bool CBlurPC::Update() {
+  WorldScene* scene = static_cast<CGameMode*>(g_world.ActiveGameMode())->scene;
+  if (scene) {
+    const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
+    if (owner && (owner->render.flags & 0x10) != 0) {
+      this->render.flags = 0x10;
+      this->render.pulsePhases[0] = 45;
+    }
+  }
+
+  if (this->render.color < static_cast<std::uint32_t>(this->unknown_04FC)) {
+    return false;
+  }
+
+  this->render.color -= this->unknown_04FC;
+  return true;
+}
+
+// OFFSET: 0x00DA3240
+// FUNCTION: fn_22401
+bool CHalluPC2::Update() {
+  WorldScene* scene = static_cast<CGameMode*>(g_world.ActiveGameMode())->scene;
+  if (scene) {
+    const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
+    if (owner && (owner->render.flags & 0x10) != 0) {
+      this->render.flags = 0x10;
+      this->render.pulsePhases[0] = 45;
+    }
+  }
+
+  ++this->unknown_050C;
+  if (this->render.color < static_cast<std::uint32_t>(this->unknown_04FC)) {
+    return false;
+  }
+
+  this->render.color -= this->unknown_04FC;
+  return true;
+}
+
+// OFFSET: 0x00DA4100
+// FUNCTION: fn_22410
+void CCorpse::Draw(int argument) {
+  if (this->render.visible) {
+    this->DrawShadow(argument, this->render.scale);
+    this->DrawSprite(argument, false, this->spriteOffset);
+  }
+}
+
+// OFFSET: 0x00DA44B0
+// FUNCTION: fn_22415
+void CHalluPlant::Draw(int argument) {
+  this->DrawSprite(argument, true, 0.0f);
+}
+
 // OFFSET: 0x00DA4150
 // FUNCTION: fn_22411
 void CGndRiser::Draw(int) {

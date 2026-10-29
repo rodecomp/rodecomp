@@ -20,8 +20,9 @@ public:
   void SendObjectMessage(
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
+  void Draw(int argument) override;
 
-  /* 0138 */ std::uint32_t unknown_0138;
+  /* 0138 */ float spriteOffset;
   /* 013C */ std::uint32_t unknown_013C;
 };
 
