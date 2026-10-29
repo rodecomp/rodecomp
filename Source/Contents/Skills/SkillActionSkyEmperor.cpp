@@ -120,6 +120,12 @@ public:
 };
 
 // OFFSET: 0x007975A0
+// FUNCTION: fn_08815
+void CSkillObjectAction_SKE_STAR_CANNON::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+  if (object) {
+    g_effectMgr->Spawn(object->render.accountId, 2350, object->render.position.x, object->render.position.y, object->render.position.z, 0, argument, 0, 0);
+  }
+}
 
 // OFFSET: 0x007975F0
 // FUNCTION: fn_08816
@@ -128,6 +134,13 @@ int CSkillAction_SKE_ALL_IN_THE_SKY::Slot02() {
 }
 
 // OFFSET: 0x007977E0
+// FUNCTION: fn_08820
+void CEfstAction_SKY_ENCHANT::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_enchanting_sky_00"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_enchanting_sky_01"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x00797A70
 
