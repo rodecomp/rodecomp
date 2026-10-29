@@ -2,7 +2,9 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
+#include <string>
 #include <windows.h>
 #include <timeapi.h>
 
@@ -440,6 +442,118 @@ std::vector<unsigned char> Replay::ReadSection(int id) {
   return data;
 }
 
+// OFFSET: 0x00B84E40
+// FUNCTION: fn_19322
+std::uint32_t Replay::ParseMetadata(const std::vector<unsigned char>& data) {
+  if (data.empty()) {
+    return 0xFFFFFFFF;
+  }
+
+  const unsigned char* buffer = data.data();
+  const std::uint32_t size = static_cast<std::uint32_t>(data.size());
+  std::uint32_t offset = 6;
+
+  std::uint16_t signature = 0;
+  std::memcpy(&signature, buffer, sizeof(signature));
+
+  if (signature != 0x3B6) {
+    return 0xFFFFFFFF;
+  }
+
+  if (size > 6) {
+    do {
+      std::uint16_t id = 0;
+      std::uint32_t bytes = 0;
+      std::memcpy(&id, buffer + offset, sizeof(id));
+      std::memcpy(&bytes, buffer + offset + 2, sizeof(bytes));
+      offset += 6;
+
+      switch (id) {
+      case 0x3B7:
+        return offset;
+      case 0x3C0:
+        std::memcpy(&this->header.closingSignature, buffer + offset, bytes);
+        offset += bytes;
+
+        if (this->header.signature != this->header.closingSignature) {
+          std::uint32_t fileOffset = this->fileOffset;
+          ReplayRecordHeader record{};
+          int count = static_cast<int>(this->header.records) - 1;
+
+          if (count > 0) {
+            do {
+              std::fseek(this->file, static_cast<long>(fileOffset), SEEK_SET);
+              std::fread(&record, sizeof(record), 1, this->file);
+              fileOffset += record.bytes + sizeof(record);
+              --count;
+            } while (count != 0);
+          }
+
+          this->header.duration = record.tick;
+        }
+        break;
+      case 0x3C1:
+        std::memcpy(&this->header.service, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      case 0x3C2:
+        std::memcpy(&this->header.serviceType, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      case 0x3C3:
+        std::memcpy(&this->header.unknown_0014, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      case 0x3C4:
+        std::memcpy(this->header.characterName, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      case 0x3C5:
+        std::memcpy(this->header.mapName, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      case 0x3C6:
+        std::memcpy(&this->header.accountId, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      case 0x3C7:
+        std::memcpy(&this->header.cellX, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      case 0x3C8:
+        std::memcpy(&this->header.cellY, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      case 0x3C9:
+        std::memcpy(&this->header.unknown_0078, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      case 0x3CA:
+        std::memcpy(&this->header.duration, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      case 0x3CB:
+        std::memcpy(&this->header.records, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      case 0x3CC:
+        std::memcpy(&this->header.fileOffset, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      case 0x3CD:
+        std::memcpy(&this->header.options, buffer + offset, bytes);
+        offset += bytes;
+        break;
+      default:
+        offset += bytes;
+        break;
+      }
+    } while (offset < size);
+  }
+
+  return offset;
+}
+
 // OFFSET: 0x00B85350
 // FUNCTION: fn_19323
 bool Replay::ReadRecord(unsigned char* buffer, std::uint16_t& id, bool force) {
@@ -499,6 +613,58 @@ bool Replay::AllowsEvent(int event) const {
 void Replay::Rewind() {
   this->records = 0;
   this->fileOffset = this->sections[this->FindSection(1)].fileOffset;
+}
+
+// OFFSET: 0x00B83EC0
+// FUNCTION: fn_19311
+void ReplayFileList::Clear() {
+  this->selected = -1;
+  this->files.erase(this->files.begin(), this->files.end());
+}
+
+// OFFSET: 0x00B84B60
+// FUNCTION: fn_19321
+void ReplayFileList::Refresh() {
+  this->Clear();
+
+  char directory[260] = {};
+  GetCurrentDirectoryA(sizeof(directory), directory);
+
+  std::string pattern(directory, std::strlen(directory));
+  pattern.append("\\Replay\\*.rrf", 13);
+
+  WIN32_FIND_DATAA found;
+  HANDLE search = FindFirstFileA(pattern.c_str(), &found);
+
+  if (search != INVALID_HANDLE_VALUE) {
+    BOOL more = TRUE;
+
+    while (more) {
+      if ((found.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+        const std::size_t length = std::strlen(found.cFileName);
+        const char* extension = found.cFileName + length - 4;
+
+        if (extension[0] == '.' && extension[1] == 'r' && extension[2] == 'r' && extension[3] == 'f') {
+          ReplayFileEntry entry = {};
+          std::memcpy(entry.name, found.cFileName, length);
+          entry.name[length] = '\0';
+          entry.unknown_0000 = 0;
+
+          if (length == 23) {
+            char number[6] = {};
+            std::memcpy(number, entry.name + 15, 4);
+            entry.unknown_0000 = std::atoi(number);
+          }
+
+          this->files.push_back(entry);
+        }
+      }
+
+      more = FindNextFileA(search, &found);
+    }
+  }
+
+  FindClose(search);
 }
 
 // OFFSET: 0x00B84300

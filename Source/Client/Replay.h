@@ -118,6 +118,7 @@ public:
   bool WriteSection(int id, std::vector<unsigned char>& bytes, int event);
   int WriteHeader(int event);
   std::vector<unsigned char> BuildMetadata();
+  std::uint32_t ParseMetadata(const std::vector<unsigned char>& data);
   float AnimationScale() const;
   float DelayScale() const;
   bool SetState(int state);
@@ -153,6 +154,8 @@ public:
   /* 0014 */ char path[0x104];
   /* 0118 */ bool pathEnabled;
 
+  void Clear();
+  void Refresh();
   const char* FileName(int index) const;
   char* SetPath(const char* value);
   bool Select(int index);
