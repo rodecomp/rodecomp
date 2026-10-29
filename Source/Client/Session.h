@@ -73,7 +73,7 @@ public:
   /* 0728 */ std::vector<int> m_mercSkillLevels;
   /* 0734 */ unsigned char unknown_0734[0x20];
   /* 0754 */ std::vector<ProhibitionLogEntry> m_prohibitionLog;
-  /* 0760 */ unsigned char unknown_0760[0x18];
+  /* 0760 */ std::string m_accountName;
   /* 0778 */ std::vector<std::pair<int, int>> unknown_0778;
   /* 0784 */ std::map<std::int64_t, std::int64_t> unknown_0784;
   /* 078C */ std::map<std::int64_t, std::int64_t> unknown_078C;
@@ -291,6 +291,7 @@ public:
   bool IsSecondJob(int job);
   std::string GetBodyJobName(int job);
   char* ConvertTooltipText(const char* source, char* output) const;
+  void StoreEmblem(const void* data, std::size_t size, std::uint32_t guildId, int version);
   int MercSkillLevel(int skillId) const;
   int HomunSkillLevel(int skillId) const;
   CRenderObject* FindGameActor(std::uint32_t aid) const;

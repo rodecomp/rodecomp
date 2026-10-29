@@ -317,6 +317,7 @@
   "Source/Contents/Effects/PartyEffect.cpp": 4,
   "Source/Contents/Effects/PartyMemberEffects.cpp": 4,
   "Source/Contents/Effects/RagEffectInitialization.cpp": 4,
+  "Source/Contents/EmblemCacheRaw.cpp": 4,
   "Source/Contents/Emblems/EmblemCache.cpp": 2,
   "Source/Contents/Emblems/EmblemDataDownloadAsyncWork.cpp": 4,
   "Source/Contents/Emblems/EmblemDataMgr.cpp": 4,

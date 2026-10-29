@@ -48,6 +48,7 @@ public:
 };
 
 extern CGuildMgr* g_guildMgr;
+extern std::uint32_t g_guildId;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CGuild) == 8);
