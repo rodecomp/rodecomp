@@ -807,6 +807,21 @@ void UIWindow::DrawTextAt(
   context.Draw(x, y, text, bytes);
 }
 
+// OFFSET: 0x00A847C0
+// FUNCTION: fn_17012
+void UIWindow::DrawCenteredText(int x, int y, const char* text, int width, int family, int height, std::uint32_t color, unsigned char bold) {
+  TextContext context(*this->geometry.surface);
+  context.SetFont(family, height, bold, 0);
+  context.SetColor(color);
+  const int bytes = static_cast<int>(std::strlen(text));
+  if (width) {
+    const int extent = context.Measure(text, bytes).cx;
+    context.Draw(static_cast<int>((width - extent) * 0.5 + x), y, text, static_cast<int>(std::strlen(text)));
+  } else {
+    context.Draw(x, y, text, bytes);
+  }
+}
+
 // OFFSET: 0x00A7C470
 // FUNCTION: fn_16944
 void UIWindow::FlushPrimitives(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd) {

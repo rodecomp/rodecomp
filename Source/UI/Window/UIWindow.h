@@ -134,6 +134,7 @@ public:
     FontCache& fonts, const TextLocale& locale, int x, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold,
     unsigned char italic
   );
+  void DrawCenteredText(int x, int y, const char* text, int width, int family, int height, std::uint32_t color, unsigned char bold);
   void DrawRightOutlinedText(
     int right, int y, const char* text, int bytes, std::uint32_t color, std::uint32_t outline, int family,
     int height, unsigned char bold
