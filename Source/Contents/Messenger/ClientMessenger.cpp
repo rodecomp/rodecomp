@@ -292,7 +292,7 @@ namespace EquipmentProperties {
     /* 0134 */ std::unordered_map<int, EquipmentValueA> unknown_0134;
     /* 0154 */ std::unordered_map<int, std::array<int, 3>> unknown_0154;
     /* 0174 */ std::unordered_map<int, EquipmentValueB> unknown_0174;
-    /* 0194 */ std::map<int, unsigned int> unknown_0194;
+    /* 0194 */ std::set<std::uint64_t> unknown_0194;
     /* 019C */ std::unordered_map<int, EquipmentValueC> unknown_019C;
     /* 01BC */ std::unordered_map<int, std::unordered_map<int, EquipmentEntryA>> unknown_01BC;
     /* 01DC */ std::unordered_map<int, std::unordered_map<int, EquipmentEntryB>> unknown_01DC;
@@ -311,6 +311,7 @@ namespace EquipmentProperties {
     int GetUnknown0174(const int& key);
     std::pair<int, int>* FindUnknown0114(const int& key);
     std::unordered_map<int, EquipmentValueC>& GetUnknown019C();
+    bool HasUnknown0194(const std::uint64_t& key);
   };
 }
 
@@ -1377,6 +1378,12 @@ std::pair<int, int>* EquipmentProperties::CEquipmentPropertiesMgr::FindUnknown01
 // FUNCTION: fn_06188
 std::unordered_map<int, EquipmentValueC>& EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown019C() {
   return this->unknown_019C;
+}
+
+// OFFSET: 0x006B0120
+// FUNCTION: fn_06190
+bool EquipmentProperties::CEquipmentPropertiesMgr::HasUnknown0194(const std::uint64_t& key) {
+  return this->unknown_0194.find(key) != this->unknown_0194.end();
 }
 
 // OFFSET: 0x006B7760
