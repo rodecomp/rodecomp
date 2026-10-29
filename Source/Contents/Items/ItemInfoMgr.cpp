@@ -1,16 +1,19 @@
 #include "Contents/Items/ItemInfoMgr.h"
 
 #include "Contents/Items/ItemDescription.h"
+#include "Script/NLuaState.h"
 
 extern "C" {
 #include <lauxlib.h>
 #include <lua.h>
+#include <lualib.h>
 }
 #include <algorithm>
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
 #include <new>
+#include <windows.h>
 
 // GLOBAL: gl_24729
 CItemInfoMgr* g_itemInfoMgr;
@@ -70,6 +73,39 @@ int CItemInfoMgr::GetPackageId(int id) {
     return it->second.packageId;
   }
   return 0;
+}
+
+// OFFSET: 0x00ADFF90
+// FUNCTION: fn_17982
+bool CItemInfoMgr::Load() {
+  NLuaState lua;
+  if (lua.IsValid()) {
+    luaL_openlibs(lua.GetState());
+    lua_register(lua.GetState(), "AddItem", CItemInfoMgr::LuaAddItem);
+    lua_register(lua.GetState(), "AddItemUnidentifiedDesc", CItemInfoMgr::LuaAddItemUnidentifiedDesc);
+    lua_register(lua.GetState(), "AddItemIdentifiedDesc", CItemInfoMgr::LuaAddItemIdentifiedDesc);
+    lua_register(lua.GetState(), "AddItemEffectInfo", CItemInfoMgr::LuaAddItemEffectInfo);
+    lua_register(lua.GetState(), "AddItemIsCostume", CItemInfoMgr::LuaAddItemIsCostume);
+    lua_register(lua.GetState(), "AddItemPackageID", CItemInfoMgr::LuaAddItemPackageID);
+    if (luaL_loadfile(lua.GetState(), "SystemEN\\iteminfo.lua") != 0 || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+      MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CItemInfoMgr", 0);
+    } else {
+      lua_getglobal(lua.GetState(), "main");
+      if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+        MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CItemInfoMgr", 0);
+      } else if (!lua_isstring(lua.GetState(), -1)) {
+        MessageBoxA(nullptr, "second return value is not string...", "CItemInfoMgr", 0);
+      } else {
+        if (lua_toboolean(lua.GetState(), -2)) {
+          return true;
+        }
+        std::string message = std::string("error found :") + lua_tostring(lua.GetState(), -1);
+        MessageBoxA(nullptr, message.c_str(), "CItemInfoMgr", 0);
+      }
+    }
+  }
+
+  return false;
 }
 
 // OFFSET: 0x00AE0270

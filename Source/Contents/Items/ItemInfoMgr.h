@@ -62,6 +62,7 @@ public:
     this->m_items[id].identifiedResourceName = resourceName;
   }
 
+  bool Load();
   int IsCostume(int id);
   int GetEffectId(int id);
   int GetPackageId(int id);
