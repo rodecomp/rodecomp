@@ -86,6 +86,7 @@ struct CEffectPrim : CRenderObject {
   void RenderHitLine(matrix& wtm);
   void RenderMagnum2(matrix& wtm);
   void RenderPeongUp(matrix& wtm);
+  void RenderRipple(matrix& wtm);
   void RenderRainbow(matrix& wtm);
   void RenderRing(matrix& wtm);
   void RenderPentagon(matrix& wtm);
