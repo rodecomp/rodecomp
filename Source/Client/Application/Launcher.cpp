@@ -369,6 +369,7 @@ const char* EncryptedName<15, 0x0F0F8B6B8F9D19D1ULL>::Text() {
 }
 
 // OFFSET: 0x00E55EC0
+// FUNCTION: fn_24331
 EncryptedName<14, 0xD98F03A52D35636DULL>& AdtestexeProcessName::operator()() const {
   const std::uint8_t source[] = {0x2C, 0x27, 0x61, 0x68, 0xF6, 0x57, 0xCA, 0x81, 0x28, 0x4D, 0x70, 0x75, 0xE0, 0x03};
   thread_local EncryptedName<sizeof(source), 0xD98F03A52D35636DULL> name(source);
@@ -376,6 +377,7 @@ EncryptedName<14, 0xD98F03A52D35636DULL>& AdtestexeProcessName::operator()() con
 }
 
 // OFFSET: 0x00E55F90
+// FUNCTION: fn_24332
 EncryptedName<13, 0x73D1674B61DF7B0BULL>& RagexeMProcessName::operator()() const {
   const std::uint8_t source[] = {0x59, 0x3A, 0x98, 0x24, 0x13, 0x22, 0x8E, 0x3E, 0x25, 0x3E, 0x87, 0x24, 0x4B};
   thread_local EncryptedName<sizeof(source), 0x73D1674B61DF7B0BULL> name(source);
@@ -383,6 +385,7 @@ EncryptedName<13, 0x73D1674B61DF7B0BULL>& RagexeMProcessName::operator()() const
 }
 
 // OFFSET: 0x00E56060
+// FUNCTION: fn_24333
 EncryptedName<13, 0x91651D81F559F971ULL>& SakexeMProcessName::operator()() const {
   const std::uint8_t source[] = {0x22, 0xB8, 0x12, 0xB0, 0xD9, 0x58, 0x3A, 0xDC, 0x5F, 0xBC, 0x01, 0xB0, 0x81};
   thread_local EncryptedName<sizeof(source), 0x91651D81F559F971ULL> name(source);
@@ -390,6 +393,7 @@ EncryptedName<13, 0x91651D81F559F971ULL>& SakexeMProcessName::operator()() const
 }
 
 // OFFSET: 0x00E56130
+// FUNCTION: fn_24334
 EncryptedName<13, 0x17359BF953C367B3ULL>& Kernel32LibraryName::operator()() const {
   const std::uint8_t source[] = {0xD8, 0x02, 0xB1, 0x3D, 0x9C, 0xF7, 0x06, 0x25, 0x9D, 0x03, 0xAF, 0x3F, 0xF9};
   thread_local EncryptedName<sizeof(source), 0x17359BF953C367B3ULL> name(source);
@@ -397,6 +401,7 @@ EncryptedName<13, 0x17359BF953C367B3ULL>& Kernel32LibraryName::operator()() cons
 }
 
 // OFFSET: 0x00E56200
+// FUNCTION: fn_24335
 EncryptedName<10, 0x490FFB43A12F0DB9ULL>& PsapiLibraryName::operator()() const {
   const std::uint8_t source[] = {0xC9, 0x7E, 0x4E, 0xD1, 0x2A, 0xD5, 0x6B, 0x25, 0xD5, 0x0D};
   thread_local EncryptedName<sizeof(source), 0x490FFB43A12F0DB9ULL> name(source);
@@ -404,6 +409,7 @@ EncryptedName<10, 0x490FFB43A12F0DB9ULL>& PsapiLibraryName::operator()() const {
 }
 
 // OFFSET: 0x00E562D0
+// FUNCTION: fn_24336
 EncryptedName<25, 0x2FF3C5036D070127ULL>& CreateToolhelp32SnapshotName::operator()() const {
   const std::uint8_t source[] = {0x64, 0x73, 0x62, 0x0C, 0x77, 0xA0, 0xA7, 0x40, 0x48, 0x6D, 0x6F, 0x08, 0x6F, 0xB5, 0xC0, 0x1D,
                                  0x74, 0x6F, 0x66, 0x1D, 0x70, 0xAD, 0x9C, 0x5B, 0x27};
@@ -412,6 +418,7 @@ EncryptedName<25, 0x2FF3C5036D070127ULL>& CreateToolhelp32SnapshotName::operator
 }
 
 // OFFSET: 0x00E563B0
+// FUNCTION: fn_24337
 EncryptedName<14, 0x3FAF85D995034FD7ULL>& EnumProcessesName::operator()() const {
   const std::uint8_t source[] = {0x92, 0x21, 0x76, 0xF8, 0x89, 0xF7, 0xC0, 0x5C, 0xB2, 0x3C, 0x70, 0xF0, 0xAA, 0x85};
   thread_local EncryptedName<sizeof(source), 0x3FAF85D995034FD7ULL> name(source);
@@ -419,6 +426,7 @@ EncryptedName<14, 0x3FAF85D995034FD7ULL>& EnumProcessesName::operator()() const 
 }
 
 // OFFSET: 0x00E56480
+// FUNCTION: fn_24338
 EncryptedName<39, 0x6961FF056999A303ULL>& AdventurerAgencyCreateInstanceName::operator()() const {
   const std::uint8_t source[] = {0x40, 0xE2, 0xFD, 0x1F, 0x60, 0x91, 0x15, 0x1C, 0x71, 0xC6, 0xEB, 0x28, 0x62, 0x9A, 0x0F, 0x0A,
                                  0x7A, 0xEE, 0xFE, 0x1B, 0x3F, 0xC5, 0x22, 0x1B, 0x66, 0xC2, 0xED, 0x0C, 0x4C, 0x91, 0x12, 0x1D,
@@ -428,6 +436,7 @@ EncryptedName<39, 0x6961FF056999A303ULL>& AdventurerAgencyCreateInstanceName::op
 }
 
 // OFFSET: 0x00E56560
+// FUNCTION: fn_24339
 EncryptedName<40, 0x9DEFC105A1EB2F71ULL>& RequestJoinPartyCreateInstanceName::operator()() const {
   const std::uint8_t source[] = {0x24, 0x66, 0xB9, 0xC4, 0x74, 0xB4, 0x8A, 0xEE, 0x05, 0x65, 0x84, 0xC8, 0x6B, 0x91, 0x8E, 0xEF,
                                  0x05, 0x56, 0xA6, 0xC6, 0x77, 0xFB, 0xD5, 0xDE, 0x03, 0x4A, 0x8A, 0xD5, 0x60, 0x88, 0x81, 0xEE,
@@ -437,6 +446,7 @@ EncryptedName<40, 0x9DEFC105A1EB2F71ULL>& RequestJoinPartyCreateInstanceName::op
 }
 
 // OFFSET: 0x00E56640
+// FUNCTION: fn_24340
 EncryptedName<37, 0x0DF5B33D9F21EB79ULL>& AdventureGuideCreateInstanceName::operator()() const {
   const std::uint8_t source[] = {0x3A, 0xAA, 0x45, 0xE9, 0x58, 0xDD, 0x81, 0x78, 0x0B, 0x8E, 0x66, 0xEA, 0x54, 0xD7, 0x90, 0x40,
                                  0x1E, 0x99, 0x1B, 0xA5, 0x7E, 0xC1, 0x90, 0x6C, 0x0D, 0x8E, 0x68, 0xF1, 0x4E, 0xC7, 0x94, 0x63,
@@ -446,6 +456,7 @@ EncryptedName<37, 0x0DF5B33D9F21EB79ULL>& AdventureGuideCreateInstanceName::oper
 }
 
 // OFFSET: 0x00E56720
+// FUNCTION: fn_24341
 EncryptedName<5, 0x01E7898D9D235DDFULL>& GoodResultName::operator()() const {
   const std::uint8_t source[] = {0xB8, 0x32, 0x4C, 0xF9, 0x8D};
   thread_local EncryptedName<sizeof(source), 0x01E7898D9D235DDFULL> name(source);
@@ -453,6 +464,7 @@ EncryptedName<5, 0x01E7898D9D235DDFULL>& GoodResultName::operator()() const {
 }
 
 // OFFSET: 0x00E567E0
+// FUNCTION: fn_24342
 EncryptedName<15, 0x1D6D75EDE7CD311FULL>& Process32FirstName::operator()() const {
   const std::uint8_t source[] = {0x4F, 0x43, 0xA2, 0x84, 0x88, 0x06, 0x1E, 0x2E, 0x2D, 0x77, 0xA4, 0x95, 0x9E, 0x01, 0x6D};
   thread_local EncryptedName<sizeof(source), 0x1D6D75EDE7CD311FULL> name(source);
@@ -460,6 +472,7 @@ EncryptedName<15, 0x1D6D75EDE7CD311FULL>& Process32FirstName::operator()() const
 }
 
 // OFFSET: 0x00E568C0
+// FUNCTION: fn_24343
 EncryptedName<19, 0x151F77EBEBBB2147ULL>& EnumProcessModulesName::operator()() const {
   const std::uint8_t source[] = {0x02, 0x4F, 0xCE, 0x86, 0xBB, 0x05, 0x70, 0x76, 0x22, 0x52, 0xC8, 0xA6, 0x84, 0x13, 0x6A, 0x79, 0x22, 0x52, 0xBB};
   thread_local EncryptedName<sizeof(source), 0x151F77EBEBBB2147ULL> name(source);
@@ -467,6 +480,7 @@ EncryptedName<19, 0x151F77EBEBBB2147ULL>& EnumProcessModulesName::operator()() c
 }
 
 // OFFSET: 0x00E56990
+// FUNCTION: fn_24344
 EncryptedName<14, 0x3375B1C7DBB5FD55ULL>& Process32NextName::operator()() const {
   const std::uint8_t source[] = {0x05, 0x8F, 0xDA, 0xB8, 0xA2, 0xC2, 0x06, 0x00, 0x67, 0xB3, 0xD0, 0xA3, 0xB3, 0xB1};
   thread_local EncryptedName<sizeof(source), 0x3375B1C7DBB5FD55ULL> name(source);
@@ -474,6 +488,7 @@ EncryptedName<14, 0x3375B1C7DBB5FD55ULL>& Process32NextName::operator()() const 
 }
 
 // OFFSET: 0x00E56A60
+// FUNCTION: fn_24345
 EncryptedName<19, 0x2D394DBD0F332733ULL>& GetModuleBaseNameAName::operator()() const {
   const std::uint8_t source[] = {0x74, 0x42, 0x47, 0x42, 0xD2, 0x29, 0x4C, 0x41, 0x56, 0x65, 0x52, 0x7C, 0xD8, 0x03, 0x58, 0x40, 0x56, 0x66, 0x33};
   thread_local EncryptedName<sizeof(source), 0x2D394DBD0F332733ULL> name(source);
@@ -481,6 +496,7 @@ EncryptedName<19, 0x2D394DBD0F332733ULL>& GetModuleBaseNameAName::operator()() c
 }
 
 // OFFSET: 0x00E56B30
+// FUNCTION: fn_24346
 EncryptedName<11, 0x7D993F650D2785FFULL>& RagexeModuleName::operator()() const {
   const std::uint8_t source[] = {0xAD, 0xC4, 0x60, 0x48, 0x3D, 0x7A, 0xB7, 0x38, 0xA7, 0xC0, 0x27};
   thread_local EncryptedName<sizeof(source), 0x7D993F650D2785FFULL> name(source);
@@ -488,6 +504,7 @@ EncryptedName<11, 0x7D993F650D2785FFULL>& RagexeModuleName::operator()() const {
 }
 
 // OFFSET: 0x00E56C00
+// FUNCTION: fn_24347
 EncryptedName<11, 0x812BE72BCD5707B7ULL>& RagexeProcessName::operator()() const {
   const std::uint8_t source[] = {0xE5, 0x46, 0x10, 0x88, 0x73, 0xA2, 0x05, 0xC4, 0xEF, 0x42, 0x57};
   thread_local EncryptedName<sizeof(source), 0x812BE72BCD5707B7ULL> name(source);
@@ -495,6 +512,7 @@ EncryptedName<11, 0x812BE72BCD5707B7ULL>& RagexeProcessName::operator()() const 
 }
 
 // OFFSET: 0x00E56CD0
+// FUNCTION: fn_24348
 EncryptedName<11, 0x61FF87ED7BF39BE1ULL>& SakexeModuleName::operator()() const {
   const std::uint8_t source[] = {0xB2, 0xDA, 0xB8, 0x3E, 0xB5, 0xC2, 0xD1, 0x24, 0xB9, 0xDE, 0xF3};
   thread_local EncryptedName<sizeof(source), 0x61FF87ED7BF39BE1ULL> name(source);
@@ -502,6 +520,7 @@ EncryptedName<11, 0x61FF87ED7BF39BE1ULL>& SakexeModuleName::operator()() const {
 }
 
 // OFFSET: 0x00E56DA0
+// FUNCTION: fn_24349
 EncryptedName<11, 0x59278F63D79F3DA1ULL>& SakexeProcessName::operator()() const {
   const std::uint8_t source[] = {0xF2, 0x7C, 0xD4, 0x92, 0x3B, 0xCA, 0x09, 0x1C, 0xF9, 0x78, 0x9F};
   thread_local EncryptedName<sizeof(source), 0x59278F63D79F3DA1ULL> name(source);
@@ -509,6 +528,7 @@ EncryptedName<11, 0x59278F63D79F3DA1ULL>& SakexeProcessName::operator()() const 
 }
 
 // OFFSET: 0x00E56E70
+// FUNCTION: fn_24350
 EncryptedName<13, 0x2D3B15774149D5DDULL>& RagexereModuleName::operator()() const {
   const std::uint8_t source[] = {0x8F, 0x94, 0x0E, 0x04, 0x2F, 0x50, 0x69, 0x68, 0xF3, 0x90, 0x11, 0x04, 0x77};
   thread_local EncryptedName<sizeof(source), 0x2D3B15774149D5DDULL> name(source);
@@ -516,6 +536,7 @@ EncryptedName<13, 0x2D3B15774149D5DDULL>& RagexereModuleName::operator()() const
 }
 
 // OFFSET: 0x00E56F40
+// FUNCTION: fn_24351
 EncryptedName<13, 0x31D7C1EDA345E36DULL>& RagexereProcessName::operator()() const {
   const std::uint8_t source[] = {0x3F, 0xA2, 0x02, 0xE6, 0xB5, 0x84, 0x85, 0x74, 0x43, 0xA6, 0x1D, 0xE6, 0xED};
   thread_local EncryptedName<sizeof(source), 0x31D7C1EDA345E36DULL> name(source);
@@ -523,6 +544,7 @@ EncryptedName<13, 0x31D7C1EDA345E36DULL>& RagexereProcessName::operator()() cons
 }
 
 // OFFSET: 0x00E57010
+// FUNCTION: fn_24352
 EncryptedName<15, 0xD3755DD95F47A909ULL>& RagtestexeProcessName::operator()() const {
   const std::uint8_t source[] = {0x5B, 0xE8, 0x00, 0x0B, 0x9C, 0x0E, 0x21, 0x96, 0x51, 0xEC, 0x69, 0x1A, 0x81, 0x18, 0x75};
   thread_local EncryptedName<sizeof(source), 0xD3755DD95F47A909ULL> name(source);
@@ -530,6 +552,7 @@ EncryptedName<15, 0xD3755DD95F47A909ULL>& RagtestexeProcessName::operator()() co
 }
 
 // OFFSET: 0x00E570F0
+// FUNCTION: fn_24353
 EncryptedName<15, 0x0F0F8B6B8F9D19D1ULL>& SaktestexeProcessName::operator()() const {
   const std::uint8_t source[] = {0x82, 0x58, 0xD6, 0xDB, 0x2E, 0xD8, 0x5B, 0x4A, 0x89, 0x5C, 0xB3, 0xCA, 0x33, 0xCE, 0x0F};
   thread_local EncryptedName<sizeof(source), 0x0F0F8B6B8F9D19D1ULL> name(source);
@@ -537,6 +560,7 @@ EncryptedName<15, 0x0F0F8B6B8F9D19D1ULL>& SaktestexeProcessName::operator()() co
 }
 
 // OFFSET: 0x00E57B50
+// FUNCTION: fn_24359
 int RemovePath(std::string path, int depth, bool file) {
   std::string pattern = path;
 

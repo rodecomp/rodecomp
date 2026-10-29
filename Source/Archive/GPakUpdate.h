@@ -18,6 +18,7 @@ namespace myGPack {
   class CNotifier {
   public:
     // OFFSET: 0x00E55AC0
+    // FUNCTION: fn_24309
     virtual ~CNotifier() {
     }
 
