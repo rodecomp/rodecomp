@@ -40,6 +40,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <functional>
 #include <span>
 #include <string>
 #include <windows.h>
@@ -112,6 +113,17 @@ UIWindow::~UIWindow() {
   this->DeleteChildren();
   this->m_context->registration.Remove(this);
   this->m_context->windowMgr.ForgetWindowReferences(this);
+}
+
+// OFFSET: 0x00A79F80
+// FUNCTION: fn_16918
+bool RunWindowAction(bool primary, bool secondary, int value, int limit, std::function<void()> primaryAction, std::function<void()> secondaryAction) {
+  if (!primary && !secondary) {
+    return false;
+  }
+
+  (primary && (!secondary || value <= limit) ? primaryAction : secondaryAction)();
+  return true;
 }
 
 // INLINED
