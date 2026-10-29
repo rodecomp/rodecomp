@@ -1,4 +1,5 @@
 #include "Script/LuaFileOperations.h"
+#include "File/File.h"
 #include "File/FileCreation.h"
 
 extern "C" {
@@ -7,6 +8,7 @@ extern "C" {
 
 #include <cstdio>
 #include <io.h>
+#include <regex>
 #include <string>
 
 // OFFSET: 0x00AFE7D0
@@ -25,4 +27,25 @@ int LuaChangeDirectoryOfDatas(lua_State* state) {
   }
 
   return 0;
+}
+
+// OFFSET: 0x00AF6580
+// FUNCTION: fn_18254
+bool LoadLuaResource(lua_State* state, const std::string& name, unsigned char allowLuaFallback) {
+  std::string resolved = name;
+  CFile file;
+  if (!file.Open(name.c_str(), 0, false, false)) {
+    if (allowLuaFallback != 1) {
+      return false;
+    }
+
+    resolved = std::regex_replace(name, std::regex("\\.lub$"), ".lua");
+    if (!file.Open(resolved.c_str(), 0, false, false)) {
+      return false;
+    }
+  }
+
+  const bool loaded = luaL_loadbuffer(state, static_cast<const char*>(file.GetData()), file.GetSize(), resolved.c_str()) == 0;
+  file.Close();
+  return loaded;
 }
