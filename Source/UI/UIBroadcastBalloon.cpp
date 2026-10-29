@@ -3,6 +3,7 @@
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Window/WindowBorder.h"
 
 #include <windows.h>
 
@@ -80,6 +81,29 @@ void UIBroadcastBalloon::Slot43() {
 // FUNCTION: fn_09335
 bool UIBroadcastBalloon::Slot42(void*) {
   return true;
+}
+
+// OFFSET: 0x007C32D0
+// FUNCTION: fn_09336
+void UIBroadcastBalloon::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  int y = 0;
+  for (const auto& entry : this->m_messages) {
+    for (const BroadcastBalloonMessage& message : entry.second) {
+      if (message.lines.size() != 0) {
+        int x = (this->geometry.width - message.width) / 2;
+        DrawRoundedBorder(*this, x, y, message.width, message.height, 0xFF5C5C5C);
+        y += 4;
+        for (const BroadcastBalloonLine& line : message.lines) {
+          this->sub_A86510(x + 6, y, line.text.c_str(), 0, line.color, line.outlineColor, 0, message.fontHeight, 0);
+          int lineHeight = this->TextHeight(this->m_controls->fonts, this->m_controls->locale, line.text.c_str(), 0, 0, message.fontHeight, 0, 0);
+          y += 4 + lineHeight;
+        }
+        y += 10;
+      }
+    }
+    y += 7;
+  }
 }
 
 // OFFSET: 0x007C3430
