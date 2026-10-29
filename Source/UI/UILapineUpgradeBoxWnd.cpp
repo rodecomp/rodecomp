@@ -203,3 +203,29 @@ void UILapineUpgradeBoxWnd::Slot19() {
     this->notice = "";
   }
 }
+
+// OFFSET: 0x00603F70
+// FUNCTION: fn_04209
+void UILapineUpgradeBox_IngredientInfoWnd::Slot28(int x, int y) {
+  this->Slot27(x, y);
+
+  if (!this->tooltip.empty()) {
+    int tipX = 0;
+    int tipY = -20;
+    this->ToScreen(tipX, tipY);
+    this->m_controls->services.Tooltip(this->tooltip.c_str(), tipX, tipY, -1, false, true);
+  }
+}
+
+// OFFSET: 0x00603EF0
+// FUNCTION: fn_04208
+void UILapineUpgradeBoxWnd::Slot28(int x, int y) {
+  this->Slot27(x, y);
+
+  if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && !this->item.unknown_0044.empty()) {
+    int tipX = 101;
+    int tipY = 145;
+    this->ToScreen(tipX, tipY);
+    this->m_controls->services.Tooltip(this->item.unknown_0044.c_str(), tipX, tipY, -1, false, true);
+  }
+}
