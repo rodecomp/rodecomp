@@ -471,8 +471,8 @@ granny_file* GrannyAnimationLibrary::ReadAnimationFile(const char* name, const c
 
   if (!file.Open(g_animationPath, 0, true, false)) {
     const std::string path(g_animationPath);
-    const std::string message = std::string("Cannot find File : ") + path;
-    ShowErrorDialog(GetRenderSystemHolder()->system, message.c_str(), 0);
+    const std::string prefix("Cannot find File : ");
+    ShowErrorDialog(GetRenderSystemHolder()->system, (prefix + path).c_str(), 0);
     return nullptr;
   }
 
