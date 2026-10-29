@@ -1,10 +1,13 @@
 #include "Network/TextEncoding.h"
 #include "Utility/StackAlloc.h"
 
+#include <algorithm>
+#include <atlconv.h>
 #include <cctype>
 
 #include <cstdlib>
 #include <cstring>
+#include <cwctype>
 #include <malloc.h>
 #include <oleauto.h>
 
@@ -187,5 +190,13 @@ std::string EncodeText(UINT codePage, const std::wstring& text) {
   }
   std::string result(converted, std::strlen(converted));
   std::free(converted);
+  return result;
+}
+
+// OFFSET: 0x00590EB0
+// FUNCTION: fn_02832
+std::wstring LowercaseWide(const std::string& text) {
+  std::wstring result(ATL::CA2WEX<128>(text.c_str(), CP_THREAD_ACP));
+  std::transform(result.begin(), result.end(), result.begin(), towlower);
   return result;
 }
