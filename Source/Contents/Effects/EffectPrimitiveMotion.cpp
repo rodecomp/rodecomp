@@ -4810,3 +4810,51 @@ bool CEffectPrim::PrimFadeAlpha() {
   this->ShiftSegment();
   return this->AnimMotion();
 }
+
+// OFFSET: 0x00BE92B0
+// FUNCTION: fn_19950
+void CEffectPrim::PrimFrameScroll() {
+  this->render.position = this->state.master->render.position;
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1 || ++slot.process <= 0) {
+      continue;
+    }
+
+    slot.height[1] += 1.0f;
+    if (slot.height[1] >= static_cast<float>(this->state.totalTexture)) {
+      slot.height[1] = 0.0f;
+    }
+
+    slot.distance -= 1.0f;
+    if (slot.distance < 0.0f) {
+      slot.distance += slot.maxHeight;
+    }
+  }
+}
+
+// OFFSET: 0x00BEA310
+// FUNCTION: fn_19962
+void CEffectPrim::PrimFramePhase() {
+  this->render.position = this->state.master->render.position;
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1 || ++slot.process <= 0) {
+      continue;
+    }
+
+    slot.height[1] += 1.0f;
+    if (slot.height[1] >= static_cast<float>(this->state.totalTexture)) {
+      slot.height[1] = 0.0f;
+    }
+
+    slot.height[9] = slot.height[2] + slot.height[9];
+    if (slot.height[9] >= 1.0f) {
+      slot.height[9] -= 1.0f;
+    }
+  }
+}
