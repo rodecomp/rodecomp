@@ -5078,8 +5078,71 @@ void CEffectPrim::PrimPulseRing() {
 }
 
 // OFFSET: 0x00BE87D0
+// FUNCTION: fn_19945
+void CEffectPrim::PrimHoverFollow() {
+  FaceCamera(this->state.slots);
+  this->render.position = this->state.master->render.position;
+
+  EffectPrimitiveSlot& slot = this->state.slots[0];
+  if (slot.life != 1) {
+    return;
+  }
+
+  ++slot.process;
+  slot.height[8] += 5.0f;
+  if (slot.height[8] >= 360.0f) {
+    slot.height[8] -= 360.0f;
+  }
+
+  slot.rotStart = static_cast<std::int16_t>(slot.rotStart + 1);
+  if (slot.rotStart >= 360) {
+    slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
+  }
+
+  slot.vecBNow.x = this->render.position.x;
+  slot.vecBNow.z = this->render.position.z;
+  const float base = this->render.position.y - 6.0f;
+  slot.vecBPre.y = base;
+  slot.vecBNow.y = g_sinTable[slot.rotStart] * 3.0f + base;
+}
 
 // OFFSET: 0x00BE9690
+// FUNCTION: fn_19954
+void CEffectPrim::PrimGlowFollow() {
+  FaceCamera(this->state.slots);
+  this->render.position = this->state.master->render.position;
+
+  EffectPrimitiveSlot& slot = this->state.slots[0];
+  if (slot.life != 1) {
+    return;
+  }
+
+  if (++slot.process < 30) {
+    if (slot.flag1[4] == 31) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 8);
+    } else {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 3);
+      if (slot.alphaB >= 60) {
+        slot.alphaB = 60;
+      }
+    }
+  }
+
+  if (slot.alphaB >= 255) {
+    slot.alphaB = 255;
+  } else if (slot.alphaB < 0) {
+    slot.alphaB = 0;
+  }
+
+  slot.height[8] += 1.0f;
+  if (slot.height[8] >= 360.0f) {
+    slot.height[8] -= 360.0f;
+  }
+
+  slot.vecBNow.y = slot.vecBPre.y;
+  slot.vecBNow.x = this->render.position.x;
+  slot.vecBNow.z = this->render.position.z;
+}
 
 // OFFSET: 0x00BEA100
 // FUNCTION: fn_19960
@@ -5124,8 +5187,87 @@ bool CEffectPrim::PrimOrbitFade() {
 }
 
 // OFFSET: 0x00BE76E0
+// FUNCTION: fn_19937
+void CEffectPrim::PrimWaveHeights() {
+  this->render.position = this->state.master->render.position;
+
+  int phase = 0;
+  for (int index = 0; index < 4; ++index, phase += 90) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1 || ++slot.process <= 0) {
+      continue;
+    }
+
+    slot.rotStart = static_cast<std::int16_t>(slot.rotStart + 3);
+    if (slot.rotStart >= 360) {
+      slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
+    }
+
+    if (slot.process < 30) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 3);
+      if (slot.alphaB > 100) {
+        slot.alphaB = 100;
+      }
+    }
+
+    if (slot.process > this->state.duration - 46) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 2);
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
+      }
+    }
+
+    const int offset = index * 45;
+    for (int point = 0; point < 21; ++point) {
+      const int angle = offset >= 90 ? 2 * (offset + slot.process) : phase + slot.process;
+      slot.height[point] = slot.maxHeight;
+      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.3f * g_sinTable[angle % 360] + slot.maxHeight;
+    }
+  }
+}
 
 // OFFSET: 0x00BE7970
+// FUNCTION: fn_19939
+void CEffectPrim::PrimWaveHeightsSlow() {
+  this->render.position = this->state.master->render.position;
+
+  int phase = 0;
+  for (int index = 0; index < 4; ++index, phase += 90) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1 || ++slot.process <= 0) {
+      continue;
+    }
+
+    slot.rotStart = static_cast<std::int16_t>(slot.rotStart + 1);
+    if (slot.rotStart >= 360) {
+      slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
+    }
+
+    if (slot.process < 30) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 5);
+      const int limit = g_serviceOptions.Get(229) != 0 ? 80 : 150;
+      if (slot.alphaB > limit) {
+        slot.alphaB = static_cast<std::int16_t>(limit);
+      }
+    }
+
+    if (slot.process > this->state.duration - 46) {
+      slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 4);
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
+      }
+    }
+
+    const int offset = index * 45;
+    for (int point = 0; point < 21; ++point) {
+      const int angle = offset >= 90 ? 2 * (offset + slot.process) : phase + slot.process;
+      slot.height[point] = slot.maxHeight;
+      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.3f * g_sinTable[angle % 360] + slot.maxHeight;
+    }
+  }
+}
 
 // OFFSET: 0x00BE9170
 // FUNCTION: fn_19949
