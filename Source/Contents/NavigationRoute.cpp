@@ -7,8 +7,10 @@
 #include "Resource/ResourceMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Utility/RegistryKey.h"
 
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 
@@ -187,6 +189,126 @@ std::string CNavigationManager::RouteText() {
   this->routeText.assign(buffer, std::strlen(buffer));
   return this->routeText;
 }
+
+// OFFSET: 0x00B98780
+// FUNCTION: fn_19609
+void CNavigationManager::ShowRouteResult(int result, int mode, WindowDialogs& dialogs) {
+  std::string message;
+  switch (result) {
+  case -100:
+    message = LookupMessage(2294);
+    break;
+  case -99:
+    message = LookupMessage(2295);
+    break;
+  case -98:
+    message = LookupMessage(2296);
+    break;
+  case -97:
+    message = LookupMessage(2297);
+    break;
+  case -96:
+    message = LookupMessage(2298);
+    break;
+  case -95:
+    message = LookupMessage(2299);
+    break;
+  case -94:
+    message = LookupMessage(2300);
+    break;
+  case -93:
+    message = LookupMessage(2301);
+    break;
+  case -92:
+    message = LookupMessage(2302);
+    break;
+  case -90:
+    message = LookupMessage(4692);
+    break;
+  case 0:
+    message = LookupMessage(2303);
+    break;
+  case 1:
+    message = LookupMessage(2304);
+    break;
+  case 2:
+    message = LookupMessage(2305);
+    break;
+  case 3:
+    message = LookupMessage(2306);
+    break;
+  case 4:
+    message = LookupMessage(2307);
+    break;
+  case 5:
+    message = LookupMessage(2308);
+    break;
+  case 6:
+    message = LookupMessage(2309);
+    break;
+  case 7:
+    message = LookupMessage(2310);
+    break;
+  case 8:
+    message = LookupMessage(2311);
+    break;
+  case 9:
+    message = LookupMessage(2313);
+    break;
+  case 10:
+    message = LookupMessage(2312);
+    break;
+  case 11:
+    message = LookupMessage(2314);
+    break;
+  default:
+    message = "NoMsg.";
+    break;
+  }
+
+  if (mode == 0 || mode == 1) {
+    char buffer[250];
+    std::memset(buffer, 0, sizeof(buffer));
+    std::sprintf(buffer, LookupMessage(2315), message.c_str());
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
+
+    if (result == 5 && this->selectedNode != -1 && static_cast<unsigned>(this->selectedNode) < this->nodes.size()) {
+      const int type = this->nodes[this->selectedNode]->GetType();
+      if (type == 201 || type == 202 || type == 203 || type == 204) {
+        std::sprintf(buffer, LookupMessage(2316), this->nodes[this->selectedNode]->GetName());
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
+
+        CNaviInfo* info = static_cast<CNavi_Link*>(this->nodes[this->selectedNode])->GetLinkedInfo();
+        if (info != nullptr) {
+          char text[0x104];
+          std::memset(text, 0, sizeof(text));
+          std::sprintf(text, " %s[ %s ] ", info->GetTitle(), info->GetName());
+          std::sprintf(buffer, LookupMessage(2317), text);
+        }
+      } else if (type == 205) {
+        std::sprintf(buffer, LookupMessage(2316), this->nodes[this->selectedNode]->GetName());
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
+        std::sprintf(buffer, LookupMessage(2319));
+      } else {
+        std::sprintf(buffer, LookupMessage(2320));
+      }
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
+    }
+  }
+
+  if (mode == 0 || mode == 2) {
+    dialogs.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    if (mode == 4) {
+      CNavi_Object* node = g_navigationManager.nodes.size() == 0 ? nullptr : g_navigationManager.nodes[0];
+      std::string text(LookupMessage(2321));
+      text += node->GetName();
+      text += " ";
+      text += static_cast<CNavi_Link*>(node)->GetLinkedName();
+      dialogs.Confirm(text.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    }
+  }
+}
+
 // OFFSET: 0x00B8D270
 // FUNCTION: fn_19434
 bool CNaviInfo::HasName(const char* name) const {

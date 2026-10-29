@@ -17,6 +17,7 @@ class CSprRes;
 class CTexture;
 class GroundGeometry;
 class LuaScript;
+struct WindowDialogs;
 
 struct NaviCell {
   /* 0000 */ int x;
@@ -274,6 +275,7 @@ public:
   int RequestRoute(int cellX, int cellY);
   NaviCell* MapCellToView(NaviCell* out, const char* mapName, int cellX, int cellY, float size);
   std::string RouteText();
+  void ShowRouteResult(int result, int mode, WindowDialogs& dialogs);
   void Reset(bool clearAll);
   void ClearRouteNodes();
   void ClearNodePaths();
