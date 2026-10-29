@@ -18,6 +18,9 @@ std::map<int, std::vector<const char*>> g_metalProcessItems;
 // GLOBAL: gl_24675
 std::map<int, ItemCardName> g_itemCardNames;
 
+// GLOBAL: gl_24727
+std::map<int, std::vector<const char*>> g_bookItemNames;
+
 namespace {
   // OFFSET: 0x006D8810
   // FUNCTION: fn_06597
@@ -410,6 +413,12 @@ std::vector<unsigned char> ITEM_INFO::Serialize() const {
   append(301, this->unknown_009C, 25);
   append(282, nullptr, 0);
   return result;
+}
+
+// OFFSET: 0x006D8850
+// FUNCTION: fn_06598
+bool IsBookItem(int id) {
+  return g_bookItemNames.find(id) != g_bookItemNames.end();
 }
 
 // OFFSET: 0x006D7660

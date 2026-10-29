@@ -37,11 +37,13 @@ struct ItemDescriptions {
 
 extern std::map<int, ITEM_DESC> g_itemDescriptions;
 extern std::map<int, std::vector<const char*>> g_metalProcessItems;
+extern std::map<int, std::vector<const char*>> g_bookItemNames;
 
 ITEM_DESC& FindItemDescription(int id);
 ItemCardName& EnsureItemCardName(int id, std::map<int, ItemCardName>& values);
 std::vector<const char*>& EnsureItemDescriptionLines(int id, std::map<int, std::vector<const char*>>& values);
 const std::vector<const char*>& FindMetalProcessItems(int id);
+bool IsBookItem(int id);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ITEM_DESC) == 68);
