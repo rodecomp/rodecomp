@@ -112,6 +112,11 @@ struct CRagEffect : CRenderObject {
   void SMA(char flag);
   bool JobLvUp50(int angle);
   void Map_Pika(const char* name);
+  void SaintWing(const char* name);
+  void FirstAid();
+  void GRANDCROSS2(char flag);
+  void Magnum2(const char* name);
+  void Map_MagicZone(const char* name, char type);
   void POISON(char flag);
   void Rainbow(const char* name, int unused);
   void BLIND(char flag);

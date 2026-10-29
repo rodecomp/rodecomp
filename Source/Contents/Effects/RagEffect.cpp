@@ -3933,3 +3933,43 @@ void CRagEffect::TexturedSlashLevel(const char* name, char kind) {
     }
   }
 }
+
+
+// OFFSET: 0x00C44940
+// FUNCTION: fn_20144
+void CRagEffect::SaintWing(const char* name) {
+  this->render.position = this->state.parent->render.position;
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 131, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->totalTexture = 1;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.unknown_11C84->size = 0.0f;
+  this->state.unknown_11C84->slots[0].life = 0;
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].distance = 24.0f;
+  this->state.unknown_11C84->slots[0].alphaB = 0;
+  this->state.unknown_11C84->slots[0].height[0] = 0.0f;
+  this->state.unknown_11C84->slots[0].flag1[0] = 0;
+  this->state.unknown_11C84->slots[0].flag1[4] = 1;
+  for (int i = 1; i < 21; ++i) {
+    this->state.unknown_11C84->slots[0].height[i] = 0.0f;
+  }
+}
+
+// OFFSET: 0x00C50E30
+
+// OFFSET: 0x00C51D80
+
+// OFFSET: 0x00C5B940
+
+// OFFSET: 0x00C5C450
