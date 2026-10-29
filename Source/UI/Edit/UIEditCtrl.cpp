@@ -526,6 +526,20 @@ void UIEditCtrl::TextColor(std::uint32_t primary, std::uint32_t secondary) {
 }
 
 // OFFSET: 0x00856F10
+// FUNCTION: fn_10757
+void UIEditCtrl3::PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int&) {
+  for (auto it = this->entries.begin(); it != this->entries.end(); ++it) {
+    for (unsigned index = 0; index < it->size(); ++index) {
+      UIItemTagButton* tag = (*it)[index];
+
+      if (tag->line < firstLine || tag->line > endLine - 1) {
+        tag->Move(-100, -100);
+      } else if (line == tag->line) {
+        tag->Move(x - 1 + tag->column, y);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00856FB0
 // FUNCTION: fn_10758
@@ -689,6 +703,34 @@ void UIBmpTextButton2::DrawLabels() {
 }
 
 // OFFSET: 0x008572F0
+// FUNCTION: fn_10761
+void UITextureButton::VisitChildren() {
+  CTexture* texture = nullptr;
+
+  switch (this->geometry.unknown_0030) {
+  case 0:
+    texture = g_texMgr.Load(
+      (this->unknown_011C == 1 && this->unknown_011D == 1 ? this->pressedTexture : this->normalTexture).c_str(), 0, false, true, false
+    );
+    break;
+  case 1:
+    texture = g_texMgr.Load(this->hoverTexture.c_str(), 0, false, true, false);
+    break;
+  case 2:
+    texture = g_texMgr.Load(this->pressedTexture.c_str(), 0, false, true, false);
+    break;
+  }
+
+  if (this->m_disabled == 1 && this->disabledTexture.size() > 0) {
+    texture = g_texMgr.Load(this->disabledTexture.c_str(), 0, false, true, false);
+  }
+
+  DrawTextureRegion(
+    g_renderer->primitives, g_renderer->queues, static_cast<float>(this->geometry.x), static_cast<float>(this->geometry.y),
+    static_cast<float>(texture->Width()), static_cast<float>(texture->Height()), 0xFFFFFFFF, texture, g_renderer->fog.supported != 0, g_depthStart,
+    g_depthEnd
+  );
+}
 
 // OFFSET: 0x00858B80
 // FUNCTION: fn_10764
@@ -737,8 +779,124 @@ void UIItemDropCntWnd::Paint() {
 }
 
 // OFFSET: 0x0097E3F0
+// FUNCTION: fn_13328
+void UIItemBaseWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &left->image, false);
+  }
+
+  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
+  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
+
+  const int columns = (this->geometry.width - 40) / 32;
+  int slots = (this->geometry.height - 38) / 32;
+  for (int y = 17; slots > 0; --slots, y += 32) {
+    for (int column = 0, x = 40; column < columns; ++column, x += 32) {
+      DrawItemSlotBackground(*this, x, y);
+    }
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int top = visible / this->columns * 32;
+    const int x = visible % this->columns * 32 + 44;
+
+    if (this->showQuantity != 0) {
+      DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    } else {
+      DrawItemIcon(*this, controls.resources, descriptions, x, top + 21, *it, 0);
+    }
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+}
 
 // OFFSET: 0x00981770
+// FUNCTION: fn_13339
+void UIMerchantItemMyShopWnd::Paint() {
+  UIItemBaseWnd::Paint();
+
+  if (this->unknown_011C == 57) {
+    this->DrawButtonBar(3, 0, 1);
+  }
+
+  if (this->duration > 0) {
+    const int remaining = this->duration - (timeGetTime() - this->startTick);
+
+    if (remaining > 0) {
+      UIButtonContext& controls = *this->m_controls;
+      const int days = remaining / 86400000;
+      const int hours = remaining / 3600000 % 24;
+      const int minutes = remaining / 60000 % 60;
+      const int seconds = remaining / 1000 % 60;
+
+      if (this->unknown_0100 == 1) {
+        if (remaining <= 60000) {
+          this->DrawTextAt(
+            controls.fonts, controls.locale, 12, this->geometry.height - 42, FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0,
+            0, 11, 0xFF, 1, 0
+          );
+        } else {
+          this->DrawTextAt(
+            controls.fonts, controls.locale, 12, this->geometry.height - 42, FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0,
+            0, 11, 0, 1, 0
+          );
+        }
+      } else if (remaining <= 60000) {
+        this->DrawTextAt(
+          controls.fonts, controls.locale, 20, this->geometry.height - 50, FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0, 0,
+          12, 0xFF, 1, 0
+        );
+      } else {
+        this->DrawTextAt(
+          controls.fonts, controls.locale, 20, this->geometry.height - 50, FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0, 0,
+          12, 0, 1, 0
+        );
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00981990
 // FUNCTION: fn_13340
@@ -749,12 +907,77 @@ void UIMerchantItemPurchaseMSGWnd::Paint() {
 }
 
 // OFFSET: 0x009827C0
+// FUNCTION: fn_13343
+void UIMerchantItemWnd::Paint() {
+  UIItemBaseWnd::Paint();
+
+  UIButtonContext& controls = *this->m_controls;
+  const auto* count = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp")));
+  this->DrawBitmap(10, this->geometry.height - 22, &count->image, true);
+
+  const std::uint32_t countColor = g_session.cartCount >= g_session.cartMaxCount ? 0xFF : 0x232323;
+  this->DrawTextAt(
+    controls.fonts, controls.locale, 23, this->geometry.height - 19, FormatOwnedString("%d", g_session.cartCount).c_str(), 0, 0, 11, countColor, 0, 0
+  );
+  const int countWidth = this->TextWidth(controls.fonts, controls.locale, FormatOwnedString("%d", g_session.cartCount).c_str(), 0, 0, 11, 0, 0);
+  this->DrawTextAt(
+    controls.fonts, controls.locale, countWidth + 24, this->geometry.height - 19, FormatOwnedString("/%d", g_session.cartMaxCount).c_str(), 0, 0, 11, 0, 0, 0
+  );
+
+  const auto* weight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_weight.bmp")));
+  this->DrawBitmap(75, this->geometry.height - 20, &weight->image, true);
+
+  const std::uint32_t weightColor = g_session.cartWeight >= g_session.cartMaxWeight ? 0xFF : 0x232323;
+  this->DrawTextAt(
+    controls.fonts, controls.locale, 90, this->geometry.height - 19, FormatOwnedString("%d", g_session.cartWeight).c_str(), 0, 0, 11, weightColor, 0, 0
+  );
+  const int weightWidth = this->TextWidth(controls.fonts, controls.locale, FormatOwnedString("%d", g_session.cartWeight).c_str(), 0, 0, 11, 0, 0);
+  this->DrawTextAt(
+    controls.fonts, controls.locale, weightWidth + 91, this->geometry.height - 19, FormatOwnedString("/%d", g_session.cartMaxWeight).c_str(), 0, 0, 11, 0, 0, 0
+  );
+}
 
 // OFFSET: 0x009834F0
+// FUNCTION: fn_13345
+void UINoticeMessageBox_LockSellItem::Paint() {
+  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\popup_itemDeal_lock.bmp")));
+  this->DrawBitmap(0, 0, &background->image, false);
+  this->DrawCenteredText(0, 5, LookupMessage(2951), this->geometry.width, 0, 12, 0xFFFFFF, 0);
+}
 
 // OFFSET: 0x00983F80
+// FUNCTION: fn_13347
+void UIItemSellWnd2::Slot26(int x, int y) {
+  if (g_windowMgr.unknown_0064 == 0) {
+    return;
+  }
+
+  UIWindow* target = g_windowMgr.unknown_0254;
+
+  if (target) {
+    this->Slot25(x, y);
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    this->m_recorder->RecordDrop(x, y, mode->drag, 160);
+    target->Slot10(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
+  }
+}
 
 // OFFSET: 0x00983FF0
+// FUNCTION: fn_13348
+void UIItemSellWnd::Slot26(int x, int y) {
+  if (g_windowMgr.unknown_0064 == 0) {
+    return;
+  }
+
+  UIWindow* target = g_windowMgr.unknown_0250;
+
+  if (target) {
+    this->Slot25(x, y);
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    this->m_recorder->RecordDrop(x, y, mode->drag, 22);
+    target->Slot10(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
+  }
+}
 
 // OFFSET: 0x00984130
 // FUNCTION: fn_13351
@@ -857,16 +1080,151 @@ void UIItemBaseWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x00973A20
+// FUNCTION: fn_13292
+ITEM_INFO UIItemBaseWnd::GetItemByIndex(int index) {
+  int position = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++position) {
+    if (position == index) {
+      return *it;
+    }
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00973AB0
+// FUNCTION: fn_13293
+ITEM_INFO UIItemBaseWnd::GetItemAt(int x, int y) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
+    return ITEM_INFO(0);
+  }
+
+  const int column = (x - 40) / 32;
+  const int row = (y - 17) / 32;
+
+  if (column > this->columns - 1) {
+    return ITEM_INFO(0);
+  }
+
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index >= this->columns * this->scroll) {
+      if (!g_session.IsPetEgg(std::atoi(it->itemId.c_str())) || !it->unknown_005D) {
+        if (visible == this->columns * row + column) {
+          return *it;
+        }
+
+        ++visible;
+      }
+    }
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00973C20
+// FUNCTION: fn_13294
+ITEM_INFO UIItemStoreFindWnd::GetItemAt(int x, int y) {
+  if (x >= 20 && x < 52 && y > 16 && y < this->visibleRows * 32 + 17) {
+    int visible = 0;
+    int index = 0;
+
+    for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+      if (index >= this->columns * this->scroll) {
+        if (!g_session.IsPetEgg(std::atoi(it->itemId.c_str())) || !it->unknown_005D) {
+          if (visible == this->columns * ((y - 17) / 32) + (x - 20) / 32) {
+            return *it;
+          }
+
+          ++visible;
+        }
+      }
+    }
+
+    return ITEM_INFO(0);
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00973D60
+// FUNCTION: fn_13295
+ITEM_INFO UIItemStoreSubWnd::GetItemAt(int x, int y) {
+  if (x >= 20 && x < 52 && y > 16 && y < this->visibleRows * 32 + 17) {
+    int visible = 0;
+    int index = 0;
+
+    for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+      if (index >= this->columns * this->scroll) {
+        if (!g_session.IsPetEgg(std::atoi(it->itemId.c_str())) || !it->unknown_005D) {
+          if (visible == this->columns * ((y - 17) / 32) + (x - 20) / 32) {
+            return *it;
+          }
+
+          ++visible;
+        }
+      }
+    }
+
+    return ITEM_INFO(0);
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00973EA0
+// FUNCTION: fn_13296
+ITEM_INFO UIItemStoreWnd::GetItemAt(int x, int y) {
+  if (x >= 40 && x < 72 && y > 16 && y < this->visibleRows * 32 + 17) {
+    int visible = 0;
+    int index = 0;
+
+    for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+      if (index >= this->columns * this->scroll) {
+        if (!g_session.IsPetEgg(std::atoi(it->itemId.c_str())) || !it->unknown_005D) {
+          if (visible == this->columns * ((y - 17) / 32) + (x - 40) / 32) {
+            return *it;
+          }
+
+          ++visible;
+        }
+      }
+    }
+
+    return ITEM_INFO(0);
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00973FE0
+// FUNCTION: fn_13297
+ITEM_INFO UIItemWnd::GetItemAt(int x, int y) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
+    return ITEM_INFO(0);
+  }
+
+  const int offset = x - 40;
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index >= this->columns * this->scroll) {
+      if (!g_session.IsPetEgg(std::atoi(it->itemId.c_str())) || !it->unknown_005D) {
+        if (visible == this->columns * ((y - 17) / 32) + offset / 32) {
+          return *it;
+        }
+
+        ++visible;
+      }
+    }
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00974130
 // FUNCTION: fn_13298
@@ -969,3 +1327,12 @@ void UIMerchantShopMakeWnd::SendShopRequest() {
 }
 
 // OFFSET: 0x00974820
+// FUNCTION: fn_13306
+void UIMerchantShopMakeWnd::AddActionButton() {
+  this->unknown_0168 = new UIBasicButton(*this->m_context, *this->m_controls);
+  this->unknown_0168->Configure(60, LookupMessage(3637));
+  this->unknown_0168->Move(this->geometry.width - 156, this->geometry.height - 24);
+  this->unknown_0168->SetTooltip(LookupMessage(3638));
+  this->unknown_0168->SetId(560);
+  this->AddChild(this->unknown_0168);
+}
