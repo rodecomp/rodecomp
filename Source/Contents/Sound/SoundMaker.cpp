@@ -246,6 +246,18 @@ std::int64_t CPc::Slot35() {
   return (static_cast<std::int64_t>(this->unknown_044C) << 32) | static_cast<std::uint32_t>(this->weapon);
 }
 
+// OFFSET: 0x00DA5800
+// FUNCTION: fn_22429
+void CPc::Slot59(bool value) {
+  this->unknown_04E0 = value;
+}
+
+// OFFSET: 0x00DA5810
+// FUNCTION: fn_22430
+void CPc::Slot57(int value) {
+  this->unknown_04DC = value;
+}
+
 // OFFSET: 0x00DA4150
 // FUNCTION: fn_22411
 void CGndRiser::Render(int) {

@@ -27,7 +27,9 @@ public:
   int Slot46() override;
   void Slot47(unsigned char value) override;
   int Slot56() override;
+  void Slot57(int value) override;
   bool Slot58() override;
+  void Slot59(bool value) override;
   void Slot60() override;
 
   float* GetExtent(float* extent) const override;
