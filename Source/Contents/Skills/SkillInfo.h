@@ -87,7 +87,8 @@ public:
 
 class CSkillObjectAction {
 public:
-  virtual void Slot00(int argument, CRenderObject* object, CGameActor* source) = 0;
+  virtual void Slot00(int argument, CRenderObject* object, CGameActor* source) {
+  }
   virtual void Slot01(CRenderObject* object) {
   }
 };
