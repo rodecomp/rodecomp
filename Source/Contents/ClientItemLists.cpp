@@ -1,11 +1,22 @@
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
+#include "Client/Session.h"
+#include "Contents/Effects/EffectActor.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Messenger/MessengerMember.h"
+#include "Contents/World/World.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstddef>
+#include <cstdint>
+#include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <list>
+#include <string>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -16,10 +27,69 @@ namespace {
   struct EquipSlotDecoder {
     EquipSlots Decode(int mask) const;
   };
+
+#pragma pack(push, 1)
+  struct ItemRandomOption {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ std::int16_t value;
+    /* 0004 */ unsigned char param;
+  };
+#pragma pack(pop)
+
+  bool IsSameItem(const ITEM_INFO& value, const ITEM_INFO& item) {
+    if (value.itemId != item.itemId || std::memcmp(value.unknown_001C, item.unknown_001C, sizeof(value.unknown_001C)) != 0 ||
+        value.identified != item.identified || value.unknown_0060 != item.unknown_0060 || value.unknown_0088 != item.unknown_0088) {
+      return false;
+    }
+
+    const int count = item.unknown_0098;
+
+    if (value.unknown_0098 != count || value.unknown_0098 >= 5) {
+      return false;
+    }
+
+    if (value.unknown_0098 != 0) {
+      const auto* left = reinterpret_cast<const ItemRandomOption*>(value.unknown_009C);
+      const auto* right = reinterpret_cast<const ItemRandomOption*>(item.unknown_009C);
+
+      for (int index = 0; index < count; ++index) {
+        if (left[index].id != right[index].id || left[index].value != right[index].value || left[index].param != right[index].param) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  void CountSameNameChar(char left, char right, short& matched) {
+    if (left == 'I' || left == 'l') {
+      if (right == 'I' || right == 'l') {
+        ++matched;
+      }
+    } else if (left == right) {
+      ++matched;
+    }
+  }
 }
 
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(ItemRandomOption) == 5);
+#endif
+
 struct ClientItemLists {
-  /* 0000 */ unsigned char unknown_0000[0x1710];
+  /* 0000 */ unsigned char unknown_0000[0xC0];
+  /* 00C0 */ std::string hotkeyDescriptions[36];
+  /* 0420 */ unsigned char unknown_0420[0x314];
+  /* 0734 */ std::list<SessionRecord0734> records0734;
+  /* 073C */ unsigned char unknown_073C[0xF30];
+  /* 166C */ int unknown_166C;
+  /* 1670 */ int unknown_1670;
+  /* 1674 */ int unknown_1674;
+  /* 1678 */ int unknown_1678;
+  /* 167C */ int unknown_167C;
+  /* 1680 */ int unknown_1680;
+  /* 1684 */ unsigned char unknown_1684[0x8C];
   /* 1710 */ std::list<ITEM_INFO> inventory;
   /* 1718 */ std::list<ITEM_INFO> items_1718;
   /* 1720 */ std::list<ITEM_INFO> items_1720;
@@ -32,8 +102,20 @@ struct ClientItemLists {
   /* 1758 */ std::list<ITEM_INFO> items_1758;
   /* 1760 */ std::list<ITEM_INFO> items_1760;
   /* 1768 */ std::list<ITEM_INFO> items_1768;
-  /* 1770 */ unsigned char unknown_1770[0xA30];
+  /* 1770 */ std::list<ITEM_INFO> items_1770;
+  /* 1778 */ unsigned char unknown_1778[0xC];
+  /* 1784 */ std::list<ITEM_INFO> items_1784[11];
+  /* 17DC */ std::list<MessengerMember> partyMembers;
+  /* 17E4 */ unsigned char unknown_17E4[0x9BC];
   /* 21A0 */ ITEM_INFO equipped[10];
+  /* 2B50 */ unsigned char unknown_2B50[0x1D10];
+  /* 4860 */ ITEM_INFO itemSlots[10];
+  /* 5210 */ int unknown_5210;
+  /* 5214 */ int unknown_5214;
+  /* 5218 */ unsigned char unknown_5218[0x24C];
+  /* 5464 */ int unknown_5464;
+  /* 5468 */ unsigned char unknown_5468[0x5C];
+  /* 54C4 */ std::string unknown_54C4;
 
   bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
   void AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C);
@@ -67,12 +149,42 @@ struct ClientItemLists {
   void RemoveItem1730(const ITEM_INFO& item);
   void ReduceItem1718(const ITEM_INFO& item);
   bool RemoveItem1738(const ITEM_INFO& item);
+  void ClearInventory();
+  void ClearItems1760And1748();
+  void ClearItems1768();
+  void ClearItems1740();
+  void ClearItems1750();
+  void ClearItems1758();
+  void ClearItems1760();
+  void ClearItems1748();
+  void ClearItems1784(int index);
+  void ClearItemSlotQuantities();
+  void ResetEquipped();
+  void ClearItems1720();
+  void ClearItems1738();
+  void CopyItems1740To1750();
+  void CopyItems1760To1770();
+  std::pair<bool, ITEM_INFO> FindItem1750(const ITEM_INFO& item, unsigned char unknown);
+  void ClearRecords0734();
+  void ClearPartyMembers();
+  void ResetUnknown166C();
+  void ResetHotkeyDescriptions();
+  int IsDifferentName(const char* name, const char* other);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(ClientItemLists, inventory) == 0x1710);
 static_assert(offsetof(ClientItemLists, items_1768) == 0x1768);
+static_assert(offsetof(ClientItemLists, items_1784) == 0x1784);
 static_assert(offsetof(ClientItemLists, equipped) == 0x21A0);
+static_assert(offsetof(ClientItemLists, itemSlots) == 0x4860);
+static_assert(offsetof(ClientItemLists, unknown_5214) == 0x5214);
+static_assert(offsetof(ClientItemLists, hotkeyDescriptions) == 0xC0);
+static_assert(offsetof(ClientItemLists, records0734) == 0x734);
+static_assert(offsetof(ClientItemLists, unknown_166C) == 0x166C);
+static_assert(offsetof(ClientItemLists, partyMembers) == 0x17DC);
+static_assert(offsetof(ClientItemLists, unknown_5464) == 0x5464);
+static_assert(offsetof(ClientItemLists, unknown_54C4) == 0x54C4);
 #endif
 
 // OFFSET: 0x00AA6440
@@ -483,6 +595,75 @@ EquipSlots ClientItemLists::GetEquipSlots(int location) {
   const EquipSlots slots = EquipSlotDecoder().Decode(mask);
   return slots;
 }
+
+// OFFSET: 0x00DD8890
+
+// OFFSET: 0x00DD88C0
+
+// OFFSET: 0x00DD8900
+
+// OFFSET: 0x00DD8920
+
+// OFFSET: 0x00DD8940
+
+// OFFSET: 0x00DD8960
+
+// OFFSET: 0x00DD8980
+
+// OFFSET: 0x00DD89A0
+
+// OFFSET: 0x00DD89C0
+// FUNCTION: fn_23321
+void ClientItemLists::ClearRecords0734() {
+  this->records0734.clear();
+}
+
+// OFFSET: 0x00DD8A20
+
+// OFFSET: 0x00DD8A50
+// FUNCTION: fn_23323
+void ClientItemLists::ClearItemSlotQuantities() {
+  this->unknown_5214 = 0;
+
+  for (int index = 0; index < 10; ++index) {
+    this->itemSlots[index].quantity = 0;
+  }
+}
+
+// OFFSET: 0x00DD8AC0
+// FUNCTION: fn_23324
+void ClientItemLists::ResetEquipped() {
+  for (int index = 0; index < 10; ++index) {
+    this->equipped[index].Reset();
+  }
+}
+
+// OFFSET: 0x00DD8AF0
+
+// OFFSET: 0x00DD8BD0
+// FUNCTION: fn_23326
+void ClientItemLists::ResetUnknown166C() {
+  this->unknown_166C = 0;
+  this->unknown_167C = 0;
+  this->unknown_1680 = 0;
+  this->unknown_1670 = 0;
+  this->unknown_1674 = 0;
+  this->unknown_1678 = 0;
+}
+
+// OFFSET: 0x00DD8C10
+
+// OFFSET: 0x00DD8C70
+
+// OFFSET: 0x00DD8CA0
+
+// OFFSET: 0x00DD8CC0
+
+// OFFSET: 0x00DD8DB0
+
+// OFFSET: 0x00DD8EA0
+
+// OFFSET: 0x00DD91C0
 
 // OFFSET: 0x00DDA470
 
