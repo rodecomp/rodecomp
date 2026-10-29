@@ -247,6 +247,12 @@ int CSkillAction_KR_CLAW_WAVE::Slot02() {
 }
 
 // OFFSET: 0x005B0CD0
+// FUNCTION: fn_03347
+void CSkillAction_KR_CLAW_WAVE::Slot12(vector3d position, int argument2, int argument3) {
+  const std::uint8_t effectSource[] = {0xD0, 0x0B, 0xA2, 0x24, 0xA6, 0xEC, 0x54, 0x61, 0xD6, 0x67};
+  thread_local EncryptedName<sizeof(effectSource), 0x17359BF953C367B3ULL> effectName(effectSource);
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position.x, position.y, position.z, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B0EA0
 // FUNCTION: fn_03348
@@ -255,6 +261,20 @@ int CSkillAction_KR_EARTH_DRILL::Slot02() {
 }
 
 // OFFSET: 0x005B0EB0
+// FUNCTION: fn_03349
+void CSkillAction_KR_EARTH_DRILL::Slot15(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x72, 0x98, 0x3D, 0xCD, 0x93, 0xEA, 0x4B, 0xB7, 0x7E, 0x95, 0x23, 0xB9};
+  thread_local EncryptedName<sizeof(effectSource), 0xC52FB5FBB94FF917ULL> effectName(effectSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+
+  const std::uint8_t bottomSource[] = {0xA0, 0xAC, 0xF5, 0x81, 0xC9, 0xFC, 0x83, 0xE1, 0xAC, 0xA1, 0xEB, 0xAA, 0xC3, 0xCC, 0x93, 0xE7, 0xAA, 0xA0, 0x87};
+  thread_local EncryptedName<sizeof(bottomSource), 0x93E7A3A1F587CDC5ULL> bottomName(bottomSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B1240
 // FUNCTION: fn_03350
@@ -263,6 +283,16 @@ int CSkillAction_KR_EARTH_STAMP::Slot02() {
 }
 
 // OFFSET: 0x005B1250
+// FUNCTION: fn_03351
+void CSkillAction_KR_EARTH_STAMP::Slot12(vector3d position, int argument2, int argument3) {
+  const std::uint8_t effectSource[] = {0xB2, 0x2E, 0x71, 0xE1, 0xB1, 0xDA, 0xDC, 0x4B, 0xB6, 0x22, 0x73, 0x95};
+  thread_local EncryptedName<sizeof(effectSource), 0x3FAF85D995034FD7ULL> effectName(effectSource);
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position.x, position.y, position.z, 0, -1, 0, 0);
+
+  const std::uint8_t bottomSource[] = {0xDC, 0x6C, 0x5D, 0xD5, 0x2B, 0xA4, 0x7C, 0x3D, 0xD8, 0x60, 0x5F, 0xFE, 0x21, 0x94, 0x7B, 0x3D, 0xD6, 0x60, 0x2F};
+  thread_local EncryptedName<sizeof(bottomSource), 0x490FFB43A12F0DB9ULL> bottomName(bottomSource);
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), position.x, position.y, position.z, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B1590
 // FUNCTION: fn_03352
@@ -271,12 +301,103 @@ int CSkillAction_KR_GROUND_BLOOM::Slot02() {
 }
 
 // OFFSET: 0x005B15A0
+// FUNCTION: fn_03353
+void CSkillAction_KR_GROUND_BLOOM::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  if (CRagEffect* effect = source->LaunchEffect(0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&source->render.position), 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x005B1610
+// FUNCTION: fn_03354
+void CSkillAction_KR_GROUND_BLOOM::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x16, 0x8B, 0x36, 0x80, 0xEF, 0x79, 0x3A, 0xF3, 0x1D, 0x96, 0x36, 0x98, 0x81};
+  thread_local EncryptedName<sizeof(effectSource), 0x91651D81F559F971ULL> effectName(effectSource);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+
+  const std::uint8_t bottomSource[] = {0x6C, 0x09, 0xB0, 0x14, 0x25, 0x03, 0x8E, 0x11, 0x67, 0x14, 0xB0, 0x0C, 0x14, 0x05, 0xBE, 0x07,
+                                       0x7F, 0x14, 0xB2, 0x61};
+  thread_local EncryptedName<sizeof(bottomSource), 0x73D1674B61DF7B0BULL> bottomName(bottomSource);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B19B0
+// FUNCTION: fn_03355
+void CSkillAction_KR_THUNDERING_CALL::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  int effectId;
+  int bottomEffectId;
+  if (level < 7) {
+    const std::uint8_t effectSource[] = {0x19, 0x0B, 0x40, 0x43, 0xC1, 0x66, 0xFD, 0xB0, 0x03, 0x04, 0x6A, 0x4E, 0xC4, 0x6F, 0xE3, 0x86,
+                                         0x0A, 0x3C, 0x06, 0x55, 0x96, 0x03};
+    thread_local EncryptedName<sizeof(effectSource), 0xD98F03A52D35636DULL> effectName(effectSource);
+    effectId = CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+
+    const std::uint8_t bottomSource[] = {0xA5, 0x71, 0xE8, 0xE1, 0x0F, 0xEE, 0x7D, 0x66, 0xBF, 0x7E, 0xC2, 0xEC, 0x0A, 0xE7, 0x63, 0x50,
+                                         0xB6, 0x46, 0xAE, 0xF7, 0x58, 0xD4, 0x6D, 0x60, 0xA5, 0x6D, 0xF2, 0xE2, 0x6B};
+    thread_local EncryptedName<sizeof(bottomSource), 0x0F0F8B6B8F9D19D1ULL> bottomName(bottomSource);
+    bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text());
+  } else {
+    const std::uint8_t effectSource[] = {0x7D, 0xC1, 0x32, 0x31, 0xBD, 0x38, 0x07, 0xBA, 0x67, 0xCE, 0x18, 0x3C, 0xB8, 0x31, 0x19, 0x8C,
+                                         0x6E, 0xF6, 0x72, 0x27, 0xEC, 0x5D};
+    thread_local EncryptedName<sizeof(effectSource), 0xD3755DD95F47A909ULL> effectName(effectSource);
+    effectId = CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+
+    const std::uint8_t bottomSource[] = {0x19, 0x8B, 0x30, 0xCD, 0x89, 0xA4, 0xA5, 0x58, 0x03, 0x84, 0x1A, 0xC0, 0x8C, 0xAD, 0xBB, 0x6E,
+                                         0x0A, 0xBC, 0x70, 0xDB, 0xD8, 0x9E, 0xB5, 0x5E, 0x19, 0x97, 0x2A, 0xCE, 0xED};
+    thread_local EncryptedName<sizeof(bottomSource), 0x31D7C1EDA345E36DULL> bottomName(bottomSource);
+    bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text());
+  }
+
+  g_effectMgr->Spawn(target->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(target->render.accountId, bottomEffectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B2010
+// FUNCTION: fn_03356
+void CSkillAction_KR_THUNDERING_CALL_S::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  int effectId;
+  int bottomEffectId;
+  if (level < 7) {
+    const std::uint8_t effectSource[] = {0x05, 0x73, 0x86, 0x91, 0xE3, 0x40, 0xE3, 0xAE, 0x1F, 0x7C, 0xAC, 0x9C, 0xE6, 0x49, 0xFD, 0x98,
+                                         0x08, 0x44, 0xC0, 0x87, 0xB4, 0x25};
+    thread_local EncryptedName<sizeof(effectSource), 0xC7912587FFF31B71ULL> effectName(effectSource);
+    effectId = CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+
+    const std::uint8_t bottomSource[] = {0x19, 0x5B, 0x7A, 0xFB, 0xBF, 0x20, 0xA1, 0x00, 0x03, 0x54, 0x50, 0xF6, 0xBA, 0x29, 0xBF, 0x36,
+                                         0x14, 0x6C, 0x3C, 0xED, 0xE8, 0x1A, 0xB1, 0x06, 0x19, 0x47, 0x60, 0xF8, 0xDB};
+    thread_local EncryptedName<sizeof(bottomSource), 0x69D345DB950F336DULL> bottomName(bottomSource);
+    bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text());
+  } else {
+    const std::uint8_t effectSource[] = {0x5B, 0xF7, 0xC6, 0xB5, 0x8B, 0xAC, 0x65, 0xF2, 0x41, 0xF8, 0xEC, 0xB8, 0x8E, 0xA5, 0x7B, 0xC4,
+                                         0x56, 0xC0, 0x86, 0xA3, 0xDA, 0xC9};
+    thread_local EncryptedName<sizeof(effectSource), 0x9B17C9EFDBB39F2FULL> effectName(effectSource);
+    effectId = CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+
+    const std::uint8_t bottomSource[] = {0xA9, 0xBD, 0x3C, 0x2F, 0x13, 0x70, 0x49, 0x44, 0xB3, 0xB2, 0x16, 0x22, 0x16, 0x79, 0x57, 0x72,
+                                         0xA4, 0x8A, 0x7C, 0x39, 0x42, 0x4A, 0x59, 0x42, 0xA9, 0xA1, 0x26, 0x2C, 0x77};
+    thread_local EncryptedName<sizeof(bottomSource), 0x2D3B15774149D5DDULL> bottomName(bottomSource);
+    bottomEffectId = CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text());
+  }
+
+  g_effectMgr->Spawn(target->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(target->render.accountId, bottomEffectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B2670
 // FUNCTION: fn_03357
@@ -285,6 +406,16 @@ int CSkillAction_KR_THUNDERING_FOCUS::Slot02() {
 }
 
 // OFFSET: 0x005B2680
+// FUNCTION: fn_03358
+void CSkillAction_KR_THUNDERING_FOCUS::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x95, 0xF3, 0x86, 0x15, 0x89, 0xE2, 0x8D, 0x08, 0x8F, 0xFC, 0xAC, 0x1D, 0x82, 0xE4, 0x8A, 0x12, 0xBE, 0xFC, 0xF3};
+  thread_local EncryptedName<sizeof(effectSource), 0x61FF87ED7BF39BE1ULL> effectName(effectSource);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B2880
 // FUNCTION: fn_03359
@@ -293,8 +424,28 @@ int CSkillAction_KR_THUNDERING_FOCUS_S::Slot02() {
 }
 
 // OFFSET: 0x005B2890
+// FUNCTION: fn_03360
+void CSkillAction_KR_THUNDERING_FOCUS_S::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x8B, 0xED, 0x52, 0x63, 0x01, 0x5A, 0xEB, 0x14, 0x91, 0xE2, 0x78, 0x6B, 0x0A, 0x5C, 0xEC, 0x0E, 0xA0, 0xFC, 0x27};
+  thread_local EncryptedName<sizeof(effectSource), 0x7D993F650D2785FFULL> effectName(effectSource);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B3270
+// FUNCTION: fn_03363
+void CSkillAction_KR_ICE_SPLASH::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x58, 0x3A, 0x4E, 0x5E, 0x12, 0xBD, 0x09, 0xEA, 0x42, 0x31, 0x2B};
+  thread_local EncryptedName<sizeof(effectSource), 0x8B65CD61012B5931ULL> effectName(effectSource);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B3470
 // FUNCTION: fn_03364
