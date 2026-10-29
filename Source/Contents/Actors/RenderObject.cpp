@@ -1,3 +1,4 @@
+#include "Contents/Actors/Npc.h"
 #include "Contents/Actors/RenderObject.h"
 
 #include "Client/Mode/ModeMgr.h"
@@ -853,4 +854,54 @@ void CGameActor::Slot39(int value) {
   const float speed = static_cast<float>(std::min(value, g_maxMoveSpeed)) / 432.0f;
   this->render.unknown_0054 = speed;
   this->render.speed = speed;
+}
+
+// OFFSET: 0x005A1A30
+// FUNCTION: fn_03067
+void CGameActor::Slot19(int, int, int, int, int, int, int, int, int, int, int) {
+}
+
+// OFFSET: 0x005A1A20
+// FUNCTION: fn_03066
+void CGameActor::Slot20(int, int, int, int, int, int, int, int, int, int, int) {
+}
+
+// OFFSET: 0x005A19F0
+// FUNCTION: fn_03063
+void CGameActor::Slot26(int) {
+}
+
+// OFFSET: 0x005A1A00
+// FUNCTION: fn_03064
+void CGameActor::Slot27(int) {
+}
+
+// OFFSET: 0x005A1980
+// FUNCTION: fn_03056
+void CGameActor::Slot31() {
+}
+
+// OFFSET: 0x005A1970
+// FUNCTION: fn_03055
+void CGameActor::Slot34(int) {
+}
+
+// OFFSET: 0x005A1A50
+// FUNCTION: fn_03069
+void CNpc::Slot22(int) {
+}
+
+// OFFSET: 0x005A1A10
+// FUNCTION: fn_03065
+void CNpc::Slot25(int) {
+}
+
+// OFFSET: 0x005A19A0
+// FUNCTION: fn_03058
+void CNpc::Slot30() {
+}
+
+// OFFSET: 0x005A1A60
+// FUNCTION: fn_03070
+void CCharacterNpc::Slot21(int) {
 }

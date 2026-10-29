@@ -16,6 +16,9 @@ public:
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
   void Render(int argument) override;
+  void Slot22(int value) override;
+  void Slot25(int value) override;
+  void Slot30() override;
 
   /* 0410 */ unsigned char unknown_0410[0x1C];
   /* 042C */ UIWindow* unknown_042C;
@@ -33,6 +36,7 @@ public:
     CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
   ) override;
   void Render(int argument) override;
+  void Slot21(int value) override;
 
   /* 0440 */ CGameObject* unknown_0440;
 };
