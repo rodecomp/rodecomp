@@ -3,17 +3,21 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
 #include "Contents/Actors/RenderObject.h"
+#include "Contents/CashEmotionMgr.h"
 #include "Contents/ClientState.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/UserData/CharacterConfigSave.h"
 #include "Contents/World/World.h"
+#include "File/File.h"
+#include "Network/TextEncoding.h"
 #include "Script/LuaScript.h"
 #include "UI/Shortcuts/ShortcutBindings.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Utility/Tokenizer.h"
 
 #include <algorithm>
 #include <cstring>
@@ -737,4 +741,89 @@ CRenderObject* CSession::FindGameActor(std::uint32_t aid) const {
   }
 
   return mode->scene->GetGameActorByAID(aid);
+}
+
+// OFFSET: 0x00E07AA0
+// FUNCTION: fn_23749
+void CSession::AddProhibitionLog(std::uint32_t aid, std::uint32_t minutes) {
+  const CRenderObject* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid);
+  if (!actor) {
+    return;
+  }
+
+  std::uint32_t accountId = actor->render.accountId;
+  const std::string actorName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(aid);
+
+  ProhibitionLogEntry entry;
+  std::strcpy(entry.name, actorName.c_str());
+  std::strcpy(entry.ownerName, this->m_serverName.c_str());
+  entry.minutes = minutes;
+  entry.aid = aid;
+  entry.accountId = accountId;
+
+  SYSTEMTIME localTime;
+  GetLocalTime(&localTime);
+  entry.date = ((localTime.wYear << 8 | localTime.wMonth) << 8) | localTime.wDay;
+  entry.time = ((localTime.wHour << 8 | localTime.wMinute) << 8) | localTime.wSecond;
+  this->m_prohibitionLog.push_back(entry);
+
+  CFile file;
+  char path[256];
+  GetCurrentDirectoryA(sizeof(path), path);
+  char* data = std::strstr(path, "\\data");
+  int count = 0;
+  int size = 0;
+  if (data) {
+    std::memcpy(path, path, data - path);
+  }
+  std::strcat(path, "\\ProhibitionLog.gd");
+
+  char* buffer;
+  if (file.Open(path, 0, true, false)) {
+    size = file.GetSize() - 4;
+    buffer = new char[size];
+    file.Read(&count, 4);
+    file.Read(buffer, size);
+    file.Close();
+  }
+
+  ++count;
+  file.Open(path, 0x1001, true, false);
+  file.Write(&count, 4);
+  if (size) {
+    file.Write(buffer, size);
+  }
+
+  int length = static_cast<int>(std::strlen(entry.name)) + 1;
+  file.Write(&length, 4);
+  file.Write(entry.name, length);
+  length = static_cast<int>(std::strlen(entry.ownerName)) + 1;
+  file.Write(&length, 4);
+  file.Write(entry.ownerName, length);
+  file.Write(&aid, 4);
+  file.Write(&accountId, 4);
+  file.Write(&entry.minutes, 4);
+  file.Write(&entry.date, 4);
+  file.Write(&entry.time, 4);
+  file.Close();
+  if (size) {
+    delete[] buffer;
+  }
+}
+
+// OFFSET: 0x00E07FB0
+// FUNCTION: fn_23750
+int CSession::ProcessEmotionShortcut(const char* text) {
+  if (!text) {
+    return 0;
+  }
+
+  CTokenizer tokenizer;
+  tokenizer.Parse(std::string(text));
+  if (tokenizer.tokens.size() == 0) {
+    return 0;
+  }
+
+  LowercaseText(tokenizer[0]);
+  return g_cashEmotionMgr->PlaySearchedEmotion(tokenizer[0]);
 }

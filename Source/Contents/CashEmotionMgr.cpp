@@ -30,7 +30,7 @@ ChatSuggestions* g_chatSuggestions = nullptr;
 class ICashEmotionAction {
 public:
   virtual ~ICashEmotionAction();
-  virtual void Execute(int packId, int argument) = 0;
+  virtual bool Execute(int packId, int argument) = 0;
 };
 
 class UICashEmotionPack_Purchase : public UICashEmotionPack {
@@ -660,6 +660,20 @@ void CCashEmotionMgr::AddShortcut(const std::string& name, int packId, int emoti
   if (shortcut) {
     this->m_shortcuts.try_emplace(name, shortcut);
   }
+}
+
+// OFFSET: 0x0059C4F0
+// FUNCTION: fn_02976
+bool CCashEmotionMgr::PlaySearchedEmotion(const std::string& name) {
+  if (this->m_action) {
+    auto found = this->m_searchIndex.find(name);
+    const std::pair<int, int>* emotion = found == this->m_searchIndex.end() ? nullptr : &found->second;
+    if (emotion) {
+      return this->m_action->Execute(emotion->first, emotion->second);
+    }
+  }
+
+  return false;
 }
 
 // OFFSET: 0x0059C0A0

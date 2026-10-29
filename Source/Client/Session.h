@@ -341,6 +341,8 @@ public:
   CSkillInfo HomunSkillAt(int index) const;
   int CountProhibitionLog(std::uint32_t aid);
   void DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes, WindowDialogs& dialogs);
+  void AddProhibitionLog(std::uint32_t aid, std::uint32_t minutes);
+  int ProcessEmotionShortcut(const char* text);
   int IsAdminSubMode(int subMode);
   void GetMonsterSkillInfo(const char* monster, int skill, int* action, int* loopType, WindowDialogs& dialogs);
   const char* DecodePlayerName() const;

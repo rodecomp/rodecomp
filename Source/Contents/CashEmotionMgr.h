@@ -12,6 +12,7 @@
 #include <vector>
 
 class CCashEmotionMgr;
+class ICashEmotionAction;
 
 struct CashEmotionKeyHash {
   // INLINED
@@ -139,6 +140,7 @@ public:
   int LookupSpecialEmotion(CashEmotionSpecial type);
   int LookupSpecialEmotion(CashEmotionSpecial type, const char* name);
   void AddShortcut(const std::string& name, int packId, int emotionId);
+  bool PlaySearchedEmotion(const std::string& name);
   bool IsChatProhibitEmotion(int emotionId);
   bool IsPackAvailable(unsigned int now, int packId);
   bool IsOwnedPack(int packId);
@@ -150,7 +152,7 @@ public:
 protected:
   /* 0004 */ bool m_enabled;
   /* 0005 */ std::uint8_t unknown_0005[3];
-  /* 0008 */ void* m_action;
+  /* 0008 */ ICashEmotionAction* m_action;
   /* 000C */ int unknown_000C;
   /* 0010 */ std::unordered_map<int, CashEmotionPack, CashEmotionKeyHash> unknown_0010;
   /* 0030 */ std::unordered_map<int, CashEmotionTable> m_emotionsByPack;
