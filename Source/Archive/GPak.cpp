@@ -871,10 +871,12 @@ HashSearchResult_655D70 HashTable_655340::sub_655D70(const short* key, unsigned 
 }
 
 // OFFSET: 0x00656C70
+// FUNCTION: fn_05080
 PakAuxiliary::PakAuxiliary() {
 }
 
 // OFFSET: 0x00657640
+// FUNCTION: fn_05091
 PakAuxiliary::~PakAuxiliary() {
 }
 
@@ -1230,6 +1232,7 @@ static_assert(offsetof(PakUniformRandom, m_distribution) == 0x1388);
 #endif
 
 // OFFSET: 0x00656B60
+// FUNCTION: fn_05078
 PakUniformRandom::PakUniformRandom(int minimum, int maximum, unsigned int seed) : m_engine(seed), m_distribution(minimum, maximum) {
 }
 
@@ -1245,6 +1248,7 @@ struct PakMaskedKey48 {
 };
 
 // OFFSET: 0x00658E90
+// FUNCTION: fn_05113
 PakKeyBlock48 PakMaskedKey48::Unmask() const {
   PakKeyBlock48 result;
   for (std::size_t i = 0; i < sizeof(result.bytes); ++i) {
