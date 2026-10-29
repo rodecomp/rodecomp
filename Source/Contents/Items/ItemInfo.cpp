@@ -6,6 +6,15 @@
 #include <cstdlib>
 #include <cstring>
 
+namespace {
+#pragma pack(push, 1)
+  struct ItemRecordHeader {
+    /* 0000 */ std::uint16_t id;
+    /* 0002 */ std::uint32_t bytes;
+  };
+#pragma pack(pop)
+}
+
 // GLOBAL: gl_24720
 unsigned char g_digitCharacters[256] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -255,6 +264,120 @@ void ITEM_INFO::SetItemId(int value) {
   char buffer[16];
   _itoa(value, buffer, 10);
   this->itemId = buffer;
+}
+
+// OFFSET: 0x006D90C0
+// FUNCTION: fn_06612
+std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
+  if (data.begin() == data.end()) {
+    return 0xFFFFFFFF;
+  }
+
+  std::uint32_t offset = 6;
+  ItemRecordHeader header{};
+  std::memcpy(&header, data.data(), sizeof(header));
+  if (header.id != 281) {
+    return 0xFFFFFFFF;
+  }
+
+  while (offset < data.size()) {
+    std::memcpy(&header, data.data() + offset, sizeof(header));
+    offset += 6;
+    const unsigned char* source = data.data() + offset;
+    switch (header.id) {
+    case 282:
+      return offset;
+    case 283:
+      std::memcpy(&this->unknown_0000[0], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 284:
+      std::memcpy(&this->unknown_0000[2], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 285:
+      std::memcpy(&this->unknown_0000[1], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 286:
+      std::memcpy(&this->unknown_0000[3], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 287:
+      std::memcpy(&this->quantity, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 288:
+      std::memcpy(&this->unknown_0014[0], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 289:
+      std::memcpy(&this->unknown_0014[1], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 290:
+      std::memcpy(this->unknown_001C, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 291: {
+      int id = 0;
+      std::memcpy(&id, source, header.bytes);
+      offset += header.bytes;
+      char buffer[16] = {};
+      this->itemId = _itoa(id, buffer, 10);
+      break;
+    }
+    case 292: {
+      char buffer[260];
+      std::memset(buffer, 0, sizeof(buffer));
+      std::memcpy(buffer, data.data() + offset, header.bytes);
+      offset += header.bytes;
+      this->unknown_0044 = buffer;
+      break;
+    }
+    case 293:
+      std::memcpy(&this->identified, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 294:
+      std::memcpy(&this->unknown_005D, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 295:
+      std::memcpy(&this->unknown_0060, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 296:
+      std::memcpy(&this->unknown_0064, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 297:
+      std::memcpy(&this->unknown_0068, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 298:
+      std::memcpy(&this->unknown_0070, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 299:
+      std::memcpy(&this->unknown_0088, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 300:
+      std::memcpy(&this->unknown_0098, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 301:
+      std::memcpy(this->unknown_009C, source, header.bytes);
+      offset += header.bytes;
+      break;
+    default:
+      offset += header.bytes;
+      break;
+    }
+  }
+
+  return offset;
 }
 
 // OFFSET: 0x00DFB9D0

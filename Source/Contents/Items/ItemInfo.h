@@ -73,6 +73,7 @@ struct alignas(8) ITEM_INFO {
   bool IsAboveItemId600() const;
   int Refine(char* output, int& capacity, unsigned char consume) const;
   std::vector<unsigned char> Serialize() const;
+  std::uint32_t Deserialize(const std::vector<unsigned char>& data);
   /* 0000 */ std::uint32_t unknown_0000[4];
   /* 0010 */ std::int32_t quantity;
   /* 0014 */ std::uint32_t unknown_0014[2];
