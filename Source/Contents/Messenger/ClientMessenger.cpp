@@ -333,6 +333,8 @@ namespace EquipmentProperties {
     /* 000C */ EquipmentPropertyStore m_properties;
     /* 0034 */ bool m_pretend;
 
+    explicit CEquipment(const int& id) : m_id(id), m_info(nullptr), m_pretend(false) {
+    }
     virtual ~CEquipment();
     virtual void Load(bool force) = 0;
     virtual void Clear();
@@ -375,6 +377,7 @@ namespace EquipmentProperties {
   public:
     /* 0038 */ int m_kind;
 
+    CEquipmentExpansion(const int& id, const int& kind);
     int GetType() override;
 
     std::string_view GetSuffix();
@@ -382,6 +385,7 @@ namespace EquipmentProperties {
 
   class CEquipmentCombiitem : public CEquipment {
   public:
+    explicit CEquipmentCombiitem(const int& id);
     int GetType() override;
   };
 }
@@ -495,6 +499,17 @@ EquipmentProperties::CEquipmentPropertiesMgr::~CEquipmentPropertiesMgr() {
   this->Clear();
   this->store->Clear();
   delete this->store;
+}
+
+// OFFSET: 0x0068A0C0
+// FUNCTION: fn_05600
+EquipmentProperties::CEquipmentCombiitem::CEquipmentCombiitem(const int& id) : CEquipment(id) {
+}
+
+// OFFSET: 0x0068A140
+// FUNCTION: fn_05601
+EquipmentProperties::CEquipmentExpansion::CEquipmentExpansion(const int& id, const int& kind) : CEquipment(id), m_kind(kind) {
+  this->m_pretend = true;
 }
 
 // OFFSET: 0x0068B6C0
