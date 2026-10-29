@@ -658,6 +658,7 @@
   "Source/Script/LuaFileOperations.cpp": 5,
   "Source/Script/LuaInstance.cpp": 5,
   "Source/Script/LuaScript.cpp": 5,
+  "Source/Script/NLuaState.cpp": 5,
   "Source/UI/Acceptance/UIChooseSellBuyWnd.cpp": 2,
   "Source/UI/Acceptance/UIExchangeAcceptWnd.cpp": 2,
   "Source/UI/Acceptance/UIJoinPartyAcceptWnd.cpp": 2,
