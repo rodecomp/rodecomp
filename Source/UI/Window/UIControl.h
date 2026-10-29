@@ -1,11 +1,55 @@
 #ifndef RAGNAROK_SOURCE_UI_WINDOW_UICONTROL_H
 #define RAGNAROK_SOURCE_UI_WINDOW_UICONTROL_H
 
+#include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Window/UIWindow.h"
 
+#include <map>
 #include <string>
+#include <string_view>
 
-class CBitmapRes;
+template <class T> class CResPtr {
+public:
+  CResPtr() : m_res(nullptr) {
+  }
+
+  CResPtr(T* res) : m_res(res) {
+    if (this->m_res) {
+      this->m_res->Lock();
+    }
+  }
+
+  ~CResPtr() {
+    if (this->m_res) {
+      this->m_res->Unlock();
+    }
+  }
+
+  CResPtr& operator=(CResPtr&& other) {
+    T* res = other.m_res;
+    other.m_res = nullptr;
+    T* old = this->m_res;
+    this->m_res = res;
+    if (old) {
+      old->Unlock();
+    }
+    return *this;
+  }
+
+  operator T*() const {
+    return this->m_res;
+  }
+
+  T* operator->() const {
+    return this->m_res;
+  }
+
+  /* 0000 */ T* m_res;
+
+private:
+  CResPtr(const CResPtr&) = delete;
+  CResPtr& operator=(const CResPtr&) = delete;
+};
 
 class CUIControl : public UIWindow {
 public:
@@ -37,6 +81,27 @@ public:
 class CUITab : public CUIControl {
 public:
   void Paint() override;
+};
+
+class CUIButton : public CUIControl {
+public:
+  /* 0080 */ int state;
+  /* 0084 */ unsigned char disabled;
+  /* 0085 */ unsigned char unknown_0085[0x6B];
+};
+
+class CUIImageButton : public CUIButton {
+public:
+  void Paint() override;
+  void Slot53(int resolveSkin) override;
+
+  void SetImages(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& inactive);
+
+  /* 00F0 */ std::map<int, CResPtr<CBitmapRes>> images;
+  /* 00F8 */ CResPtr<CBitmapRes> disabledImage;
+  /* 00FC */ unsigned char transparent;
+  /* 0100 */ std::map<int, std::string> imageNames;
+  /* 0108 */ std::string disabledName;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

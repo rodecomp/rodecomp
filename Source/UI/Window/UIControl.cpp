@@ -252,7 +252,7 @@ void CUIVScrollBar::Slot35(int value) {
 // OFFSET: 0x009F2BC0
 // FUNCTION: fn_14727
 void CUIVScrollBar::Show(int visible) {
-  this->geometry.visible = this->unknown_00A9[0] ? 0 : visible;
+  this->geometry.visible = this->hidden ? 0 : visible;
 }
 
 // OFFSET: 0x009F25C0
@@ -273,6 +273,34 @@ void CUIVScrollBar::Slot54() {
   }
   this->thumb->Move(0, static_cast<int>(offset + static_cast<float>(this->upButton->geometry.height)));
 }
+
+// OFFSET: 0x009F2180
+
+// OFFSET: 0x009F2800
+
+// OFFSET: 0x009F28A0
+
+// OFFSET: 0x009F28F0
+
+// OFFSET: 0x009F2A50
+
+// OFFSET: 0x009F2BE0
+
+// OFFSET: 0x009F2D00
+
+// OFFSET: 0x009F2E10
+
+// OFFSET: 0x009F2E40
+
+// OFFSET: 0x009F2280
+
+// OFFSET: 0x009F26B0
+
+// OFFSET: 0x009EF860
+
+// OFFSET: 0x009EF900
+
+// OFFSET: 0x009EFB00
 
 // OFFSET: 0x009F01B0
 // FUNCTION: fn_14656
@@ -373,6 +401,6 @@ int CUIVScrollBar::PositionFromOffset(int offset) {
 // OFFSET: 0x009F2A30
 // FUNCTION: fn_14722
 void CUIVScrollBar::SetHidden(int) {
-  this->unknown_00A9[0] = 1;
+  this->hidden = 1;
   this->Show(0);
 }
