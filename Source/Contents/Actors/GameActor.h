@@ -6,6 +6,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <string>
 
 enum {
   BODYSTATE_NORMAL,
@@ -134,7 +135,11 @@ public:
   void SetUnknown0404(int value);
   void SetUnknown008C(const std::uint32_t* value);
   bool FindRoute(int startX, int startY, int fractionX, int fractionY, int destX, int destY, int speed);
+  std::string GetShapeShiftName();
+  int MountType();
 };
+
+int ShapeShiftJob(int form, int job);
 
 extern const int g_maxMoveSpeed;
 

@@ -20,13 +20,49 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "Script/LuaScript.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Utility/Cipher/XorBytes.h"
 #include "Utility/Math/ScalarConversion.h"
 
 #include <algorithm>
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <string>
 #include <windows.h>
 #include <timeapi.h>
+
+namespace {
+
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+
+}
 
 // OFFSET: 0x00CA8730
 // FUNCTION: fn_20991
@@ -992,4 +1028,111 @@ int CGameActor::ActionBase(int state) {
   }
 
   return base;
+}
+
+// OFFSET: 0x00CAC730
+// FUNCTION: fn_21043
+int ShapeShiftJob(int form, int job) {
+  switch (form) {
+  case 1:
+    return JT_WEREWOLF;
+  case 2:
+    return JT_WERERAPTOR;
+  default:
+    return job;
+  }
+}
+
+// OFFSET: 0x00CAC790
+// FUNCTION: fn_21045
+static std::string ShapeShiftName(int form, int job) {
+  switch (form) {
+  case 1:
+    switch (job) {
+    case JT_KARNOS:
+    case JT_KARNOS_B: {
+      const std::uint8_t source[] = {0xC8, 0x80, 0x3F, 0xEE, 0x80, 0x66, 0xB1, 0xE3, 0xAD, 0xC5};
+      thread_local EncryptedName<sizeof(source), 0xA5FD29D7AB6DC59FULL> name(source);
+      return name.Text();
+    }
+    case JT_ALITEA: {
+      const std::uint8_t source[] = {0x5E, 0x62, 0x7D, 0xFE, 0xEA, 0x12, 0x31, 0x9F, 0x3A, 0x27};
+      thread_local EncryptedName<sizeof(source), 0xD97D5DBDBB2F2709ULL> name(source);
+      return name.Text();
+    }
+    default: {
+      const std::uint8_t source[] = {0x28, 0x56, 0x8D, 0x94, 0xD2, 0x28, 0x35, 0xAB, 0x7F};
+      thread_local EncryptedName<sizeof(source), 0xED796785D1DF137FULL> name(source);
+      return name.Text();
+    }
+    }
+  case 2:
+    switch (job) {
+    case JT_KARNOS:
+    case JT_KARNOS_B: {
+      const std::uint8_t source[] = {0xEA, 0xF8, 0xBF, 0x72, 0xE9, 0xFE, 0xBF, 0xD7, 0xF2, 0xEF, 0xDF, 0x37};
+      thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> name(source);
+      return name.Text();
+    }
+    case JT_ALITEA: {
+      const std::uint8_t source[] = {0xF0, 0xB0, 0x2D, 0x7C, 0x63, 0x0A, 0x7B, 0xEB, 0xE8, 0xA7, 0x4C, 0x39};
+      thread_local EncryptedName<sizeof(source), 0xBF2B4B31397FF5A7ULL> name(source);
+      return name.Text();
+    }
+    default: {
+      const std::uint8_t source[] = {0xB6, 0x3E, 0xAB, 0x92, 0x87, 0x52, 0x69, 0x89, 0xAE, 0x29, 0xF9};
+      thread_local EncryptedName<sizeof(source), 0xDD3913D5D7F97BE1ULL> name(source);
+      return name.Text();
+    }
+    }
+  default:
+    return "";
+  }
+}
+
+// OFFSET: 0x00CACD00
+// FUNCTION: fn_21046
+std::string CGameActor::GetShapeShiftName() {
+  return ShapeShiftName(this->unknown_0404, this->unknown_025C);
+}
+
+// OFFSET: 0x00CACD70
+// FUNCTION: fn_21047
+int CGameActor::MountType() {
+  switch (this->GetEffectiveJob(-1)) {
+  case JT_CHICKEN:
+  case JT_CHICKEN2:
+  case JT_CHICKEN_H:
+  case JT_CHICKEN2_H:
+  case JT_CHICKEN_B:
+  case JT_CHICKEN2_B:
+    return 3;
+  case JT_RUNE_CHICKEN:
+  case JT_RUNE_CHICKEN_H:
+  case JT_ROYAL_CHICKEN:
+  case JT_ROYAL_CHICKEN_H:
+  case JT_WOLF_RANGER:
+  case JT_WOLF_RANGER_H:
+  case JT_MADOGEAR:
+  case JT_MADOGEAR_H:
+  case JT_RUNE_CHICKEN2:
+  case JT_RUNE_CHICKEN2_H:
+  case JT_RUNE_CHICKEN3:
+  case JT_RUNE_CHICKEN3_H:
+  case JT_RUNE_CHICKEN4:
+  case JT_RUNE_CHICKEN4_H:
+  case JT_RUNE_CHICKEN5:
+  case JT_RUNE_CHICKEN5_H:
+  case JT_RUNE_CHICKEN_B:
+  case JT_ROYAL_CHICKEN_B:
+  case JT_WOLF_RANGER_B:
+  case JT_MADOGEAR_B:
+  case JT_WOLF_WINDHAWK:
+  case JT_MEISTER_MADOGEAR:
+  case JT_DRAGON_KNIGHT_CHICKEN:
+  case JT_IMPERIAL_GUARD_CHICKEN:
+    return 5;
+  default:
+    return 0;
+  }
 }
