@@ -248,6 +248,7 @@
   "Source/Client/Browser/WebBrowser.cpp": 4,
   "Source/Client/Browser/WebEventReceiver.cpp": 4,
   "Source/Client/ClientOptions.cpp": 0,
+  "Source/Client/CrashTestPureVirtualCall.cpp": 0,
   "Source/Client/Input/ImeInput.cpp": 0,
   "Source/Client/Input/InputCharset.cpp": 0,
   "Source/Client/Input/Language.cpp": 0,
