@@ -273,6 +273,25 @@ void CUIVScrollBar::Slot54() {
   this->thumb->Move(0, static_cast<int>(offset + static_cast<float>(this->upButton->geometry.height)));
 }
 
+// OFFSET: 0x009F01B0
+// FUNCTION: fn_14656
+void CUIListItem::Slot25(int, int) {
+  if (!this->frozen) {
+    g_windowMgr.SetCapture(this);
+    if (this->onPress) {
+      this->onPress(this);
+    }
+  }
+}
+
+// OFFSET: 0x009F0210
+// FUNCTION: fn_14658
+void CUIListItem::Slot47() {
+  if (this->onHover) {
+    this->onHover(this);
+  }
+}
+
 // OFFSET: 0x009F01F0
 // FUNCTION: fn_14657
 void CUIListItem::Slot31(int, int) {

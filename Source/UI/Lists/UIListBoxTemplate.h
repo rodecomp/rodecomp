@@ -12,8 +12,10 @@
 
 class CUIListItem : public CUIControl {
 public:
+  void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
+  void Slot47() override;
   virtual void SetSelected(bool selected);
   virtual void SetHighlighted(bool highlighted);
   virtual void SetFrozen(bool frozen);
@@ -23,6 +25,8 @@ public:
   /* 008C */ unsigned char unknown_008C[0x04];
   /* 0090 */ unsigned char frozen;
   /* 0094 */ int index;
+  /* 0098 */ std::function<void(CUIListItem*)> onHover;
+  /* 00C0 */ std::function<void(CUIListItem*)> onPress;
 };
 
 namespace AdventureGuide {
