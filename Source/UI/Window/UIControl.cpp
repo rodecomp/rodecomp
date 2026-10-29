@@ -243,14 +243,80 @@ void CUIVThumb::Slot27(int, int y) {
 }
 
 // OFFSET: 0x009ED970
+// FUNCTION: fn_14592
+CUIThumb::~CUIThumb() = default;
 
 // OFFSET: 0x009EE080
+// FUNCTION: fn_14598
+void CUIHThumb::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  if (!this->resizable) {
+    if (this->middle) {
+      if (this->transparent) {
+        this->DrawAuxiliary(1, 0, 0, &this->middle->image, true, false);
+      } else {
+        this->DrawBitmap(0, 0, &this->middle->image, false);
+      }
+    }
+    return;
+  }
+
+  const int end = this->geometry.width - (this->bottom ? this->bottom->image.width : 0);
+  int x = 0;
+  if (this->top) {
+    if (this->transparent) {
+      this->DrawAuxiliary(1, 0, 0, &this->top->image, true, false);
+    } else {
+      this->DrawBitmap(0, 0, &this->top->image, false);
+    }
+    x = this->top->image.width;
+  }
+
+  if (this->middle) {
+    while (x < end) {
+      if (this->transparent) {
+        this->DrawAuxiliary(1, x, 0, &this->middle->image, true, false);
+      } else {
+        this->DrawBitmap(x, 0, &this->middle->image, false);
+      }
+      x += this->middle->image.width;
+    }
+  }
+
+  if (this->bottom) {
+    const int bottomX = this->geometry.width - this->bottom->image.width;
+    if (this->transparent) {
+      this->DrawAuxiliary(1, bottomX, 0, &this->bottom->image, true, false);
+    } else {
+      this->DrawBitmap(bottomX, 0, &this->bottom->image, false);
+    }
+  }
+}
 
 // OFFSET: 0x009EE1E0
+// FUNCTION: fn_14600
+void CUIHThumb::Slot25(int x, int) {
+  g_windowMgr.SetCapture(this);
+  this->dragOrigin = x;
+}
 
 // OFFSET: 0x009EE200
+// FUNCTION: fn_14601
+void CUIHThumb::Slot31(int x, int) {
+  if (this == g_windowMgr.Capture()) {
+    g_windowMgr.ReleaseCapture();
+  }
+  this->dragOrigin = x;
+}
 
 // OFFSET: 0x009EE230
+// FUNCTION: fn_14602
+void CUIHThumb::Slot27(int x, int) {
+  if (this == g_windowMgr.Capture() && x != this->dragOrigin && this->onDrag) {
+    this->onDrag(x - this->dragOrigin);
+  }
+}
 
 // OFFSET: 0x009F24F0
 // FUNCTION: fn_14714
@@ -370,8 +436,20 @@ void CUIButton::ResetCursor(int, int) {
 // OFFSET: 0x009F26B0
 
 // OFFSET: 0x009F1630
+// FUNCTION: fn_14691
+void CUITabButton::Slot31(int, int) {
+  if (this == g_windowMgr.Capture()) {
+    g_windowMgr.ReleaseCapture();
+  }
+}
 
 // OFFSET: 0x009F1650
+// FUNCTION: fn_14692
+void CUITabButton::Slot47() {
+  if (this->state != 1) {
+    this->SetState(2);
+  }
+}
 
 // OFFSET: 0x009F1670
 
