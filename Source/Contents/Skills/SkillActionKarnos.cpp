@@ -1,15 +1,21 @@
 #include "Contents/Actors/GameActor.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/Effect.h"
+#include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/RagEffect.h"
+#include "Contents/Effects/WhirlwindEffect.h"
+#include "Contents/MessageTable.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Math/Vector3d.h"
 
+#include <algorithm>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <string>
 #include <windows.h>
 
 namespace {
@@ -164,6 +170,44 @@ class CSkillAction_KR_IRON_HOWLING : public CSkillAction_DamageWereWolfForm {
 public:
   int Slot01() override;
   int Slot02() override;
+};
+
+class CEfstAction_IRON_HOWLING : public CEfstAction {
+public:
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_KR_TYPHOON_WING : public CSkillAction_DamageWereRaptorForm {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot12(vector3d position, int level, int argument5) override;
+};
+
+class CSkillAction_KR_WIND_VEIL : public CSkillAction_DamageWereRaptorForm {
+public:
+  int Slot01() override;
+  int Slot02() override;
+};
+
+class CEfstAction_WIND_VEIL : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_SKID_KR_CHOP_CHOP : public CSkillAction_DamageWereWolfForm {
+public:
+  int Slot02() override;
+};
+
+class CEfstAction_CHOP_CHOP : public CEfstAction {
+public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
 };
 
 // OFFSET: 0x005B0800
@@ -361,3 +405,57 @@ int CSkillAction_KR_IRON_HOWLING::Slot01() {
 int CSkillAction_KR_IRON_HOWLING::Slot02() {
   return 68;
 }
+
+// OFFSET: 0x005B51F0
+
+// OFFSET: 0x005B5220
+
+// OFFSET: 0x005B5250
+// FUNCTION: fn_03387
+int CSkillAction_KR_TYPHOON_WING::Slot01() {
+  return 66;
+}
+
+// OFFSET: 0x005B5260
+// FUNCTION: fn_03388
+int CSkillAction_KR_TYPHOON_WING::Slot02() {
+  return 67;
+}
+
+// OFFSET: 0x005B52A0
+
+// OFFSET: 0x005B58A0
+// FUNCTION: fn_03391
+int CSkillAction_KR_WIND_VEIL::Slot01() {
+  return 66;
+}
+
+// OFFSET: 0x005B58B0
+// FUNCTION: fn_03392
+int CSkillAction_KR_WIND_VEIL::Slot02() {
+  return 68;
+}
+
+// OFFSET: 0x005B58F0
+
+// OFFSET: 0x005B5920
+
+// OFFSET: 0x005B5950
+
+// OFFSET: 0x005B5CE0
+
+// OFFSET: 0x005B6010
+
+// OFFSET: 0x005B6030
+// FUNCTION: fn_03399
+int CSkillAction_SKID_KR_CHOP_CHOP::Slot02() {
+  return 75;
+}
+
+// OFFSET: 0x005B6330
+
+// OFFSET: 0x005B6BD0
+
+// OFFSET: 0x005B6D00
+
+// OFFSET: 0x005B6D50
