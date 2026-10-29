@@ -117,6 +117,30 @@ int sub_654410() {
   return 8;
 }
 
+// OFFSET: 0x00654420
+// FUNCTION: fn_04985
+int sub_654420() {
+  return 12;
+}
+
+// OFFSET: 0x00654430
+// FUNCTION: fn_04986
+int sub_654430() {
+  return 8;
+}
+
+// OFFSET: 0x00654440
+// FUNCTION: fn_04987
+int sub_654440() {
+  return 8;
+}
+
+// OFFSET: 0x00654450
+// FUNCTION: fn_04988
+int sub_654450() {
+  return 8;
+}
+
 // INLINED
 CGPak::CGPak() : m_file(nullptr), m_version(0), m_entryCount(0), m_tableOffset(0), m_tableSize(0) {
   this->Reset();
