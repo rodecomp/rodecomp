@@ -341,16 +341,137 @@ static std::string GetBodyImfName(int job, int sex, int, int costumeJob) {
 }
 
 // OFFSET: 0x00DB0500
+// FUNCTION: fn_22617
+void CGrannyPc::Slot30() {
+  this->unknown_0410 = GetBodyImfName(
+    this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0434, this->GetEffectiveJob(-1)
+  );
+}
 
 // OFFSET: 0x00DB05E0
+// FUNCTION: fn_22618
+void CPc::Slot30() {
+  int job = this->GetEffectiveJob(-1);
+
+  if (static_cast<unsigned>(job - 0x10CE) < 0x1C && this->unknown_02CC != 0) {
+    job = g_session.GetRidingJob(job);
+  }
+
+  this->unknown_0418 = GetBodyImfName(job, this->unknown_0260, this->unknown_0440, this->unknown_04D0);
+}
 
 // OFFSET: 0x00DAFB60
+// FUNCTION: fn_22603
+void CPc::LoadEquipAction(int slot, const char* name) {
+  if (this->equipActions[slot]) {
+    this->equipActions[slot]->Unlock();
+  }
+
+  const int job = this->render.accountId;
+  const bool monster = IsMonsterJob(job);
+  const bool hidden = monster && IsObfuscatedMessage(job);
+  const bool male = this->unknown_0260 != 0;
+
+  if (monster && slot == 6) {
+    this->equipActions[slot] = nullptr;
+  } else {
+    if (monster && slot == 0) {
+      if (hidden) {
+        name = male ? "인간족\\몸통\\남\\운영자2_남.Act" : "인간족\\몸통\\여\\운영자2_여.Act";
+      } else {
+        name = male ? "인간족\\몸통\\남\\운영자_남.Act" : "인간족\\몸통\\여\\운영자_여.Act";
+      }
+    } else if (monster && slot == 5) {
+      if (hidden) {
+        name = male ? "인간족\\운영자\\운영자2_남_검.Act" : "인간족\\운영자\\운영자2_여_검.Act";
+      } else {
+        name = male ? "인간족\\운영자\\운영자_남_검.Act" : "인간족\\운영자\\운영자_여_검.Act";
+      }
+    }
+
+    this->equipActions[slot] = ResourceMgr::Instance().Load(name);
+
+    if (this->equipActions[slot]) {
+      this->equipActions[slot]->Lock();
+    }
+  }
+
+  if (this->equipActions.size() > 1) {
+    CActRes* baseAction = static_cast<CActRes*>(this->equipActions[1]);
+
+    if (baseAction) {
+      const ActionFrame& baseFrame = baseAction->Frame(0, 0);
+      const SpriteFrameCell& cell = baseFrame.Cell(1);
+      const int baseJob = JobNames::BaseJob(this->GetEffectiveJob(-1));
+      const int costumeJob = this->Slot46();
+      const std::string actionName =
+        g_equipmentResourceMgr->GetBodyResourceName(0, baseJob, this->unknown_0260, costumeJob, 0);
+      CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));
+
+      if (action) {
+        const ActionFrame& actionFrame = action->Frame(0, 0);
+
+        if (!actionFrame.anchors.empty() && !baseFrame.anchors.empty()) {
+          this->unknown_04E4 = static_cast<float>(actionFrame.anchors[0].x - baseFrame.anchors[0].x + cell.x);
+          this->unknown_04E8 = static_cast<float>(actionFrame.anchors[0].y - baseFrame.anchors[0].y + cell.y);
+        }
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00DAFE10
+// FUNCTION: fn_22605
+void CPc::LoadEquipActions(const std::vector<std::string>& names) {
+  for (int slot = 0; slot < 9; ++slot) {
+    this->LoadEquipAction(slot, names[slot].c_str());
+  }
+}
 
 // OFFSET: 0x00DB2230
+// FUNCTION: fn_22641
+void CPc::LoadEquipSprite(int slot, const char* name) {
+  if (this->equipSprites[slot]) {
+    this->equipSprites[slot]->Unlock();
+  }
+
+  const int job = this->render.accountId;
+  const bool monster = IsMonsterJob(job);
+  const bool hidden = monster && IsObfuscatedMessage(job);
+  const bool male = this->unknown_0260 != 0;
+
+  if (monster && slot == 6) {
+    this->equipSprites[slot] = nullptr;
+  } else {
+    if (monster && slot == 0) {
+      if (hidden) {
+        name = male ? "인간족\\몸통\\남\\운영자2_남.Spr" : "인간족\\몸통\\여\\운영자2_여.Spr";
+      } else {
+        name = male ? "인간족\\몸통\\남\\운영자_남.Spr" : "인간족\\몸통\\여\\운영자_여.Spr";
+      }
+    } else if (monster && slot == 5) {
+      if (hidden) {
+        name = male ? "인간족\\운영자\\운영자2_남_검.Spr" : "인간족\\운영자\\운영자2_여_검.Spr";
+      } else {
+        name = male ? "인간족\\운영자\\운영자_남_검.Spr" : "인간족\\운영자\\운영자_여_검.Spr";
+      }
+    }
+
+    this->equipSprites[slot] = ResourceMgr::Instance().Load(name);
+
+    if (this->equipSprites[slot]) {
+      this->equipSprites[slot]->Lock();
+    }
+  }
+}
 
 // OFFSET: 0x00DB2360
+// FUNCTION: fn_22642
+void CPc::LoadEquipSprites(const std::vector<std::string>& names) {
+  for (int slot = 0; slot < 9; ++slot) {
+    this->LoadEquipSprite(slot, names[slot].c_str());
+  }
+}
 
 // OFFSET: 0x00DB4C70
 // FUNCTION: fn_22652
