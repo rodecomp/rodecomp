@@ -9,6 +9,8 @@
 
 class CItem : public CRenderObject {
 public:
+  void SubD8B5A0();
+  void SubD8B5B0();
   bool OnProcess() override;
   void Render(int argument) override;
 

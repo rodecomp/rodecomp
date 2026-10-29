@@ -8,6 +8,20 @@
 #include <windows.h>
 #include <timeapi.h>
 
+// OFFSET: 0x00D8B5A0
+// FUNCTION: fn_22248
+void CItem::SubD8B5A0() {
+}
+
+// OFFSET: 0x00D8B5B0
+// FUNCTION: fn_22249
+void CItem::SubD8B5B0() {
+  this->render.unknown_00A4Bytes[0] = 1;
+  this->render.unknown_00A4Bytes[1] = 1;
+  this->render.scale = 1.0f;
+  this->render.overrideColor = 0xFFFFFF00;
+}
+
 // OFFSET: 0x00D8B5D0
 // FUNCTION: fn_22250
 bool CItem::OnProcess() {
