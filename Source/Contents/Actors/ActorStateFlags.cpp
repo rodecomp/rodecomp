@@ -1,5 +1,17 @@
 #include "Contents/Actors/ActorStateFlags.h"
 
+// OFFSET: 0x00DF96E0
+// FUNCTION: fn_23522
+bool StateFlag04(std::uint32_t flags) {
+  return (flags >> 4) & 1;
+}
+
+// OFFSET: 0x00DF96F0
+// FUNCTION: fn_23523
+bool StateFlag04Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 4) ^ (current >> 4)) & 1;
+}
+
 // OFFSET: 0x00DF9710
 // FUNCTION: fn_23524
 bool StateFlag01(std::uint32_t flags) {
@@ -214,4 +226,10 @@ bool StateFlag06Changed(std::uint32_t previous, std::uint32_t current) {
 // FUNCTION: fn_23557
 bool StateFlag15Changed(std::uint32_t previous, std::uint32_t current) {
   return ((previous >> 15) ^ (current >> 15)) & 1;
+}
+
+// OFFSET: 0x00DF9A80
+// FUNCTION: fn_23560
+bool StateFlag21Changed(std::uint32_t previous, std::uint32_t current) {
+  return ((previous >> 21) ^ (current >> 21)) & 1;
 }
