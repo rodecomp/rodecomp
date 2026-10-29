@@ -7,6 +7,7 @@
 #include <windows.h>
 
 class CDC;
+class CRenderSystemBase;
 class CTexture;
 struct lua_State;
 
@@ -29,6 +30,7 @@ struct MapNameDisplay {
   /* 000A */ unsigned short m_height;
   /* 000C */ DWORD m_startTime;
 
+  MapNameDisplay(std::string name, std::string subName, std::string bmp);
   // INLINED
   ~MapNameDisplay() {
     if (this->m_dc != nullptr) {
@@ -64,9 +66,12 @@ public:
   void AddMapBackgroundBmp(std::string map, std::string bmp) {
     this->m_maps[map].m_backgroundBmp = bmp;
   }
+  void ShowMapName(std::string map);
   MapInfo* FindMapInfo(std::string map);
   const char* GetDisplayName(std::string map);
   const char* GetSignSubName(std::string map);
+  bool LoadScript();
+  void DrawMapName(CRenderSystemBase& system);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
