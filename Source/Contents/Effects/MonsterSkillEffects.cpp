@@ -85,6 +85,11 @@ bool CSpriteMableEffect::Slot06() {
   return this->ActorExists();
 }
 
+// OFFSET: 0x0070D300
+// FUNCTION: fn_07148
+CStemSpearEffect::CStemSpearEffect() : CEffect(1100) {
+}
+
 // OFFSET: 0x0070D660
 // FUNCTION: fn_07153
 bool CStemSpearEffect::Slot06() {
@@ -97,6 +102,11 @@ bool CStemSpearEffect::Slot06() {
   return false;
 }
 
+// OFFSET: 0x0070D850
+// FUNCTION: fn_07156
+CSvgSpiritEffect::CSvgSpiritEffect() : CEffect(1128) {
+}
+
 // OFFSET: 0x0070D690
 
 // OFFSET: 0x0070DB30
@@ -107,10 +117,21 @@ bool CSvgSpiritEffect::Slot06() {
 
 // OFFSET: 0x0070DB50
 
+// OFFSET: 0x0070DCF0
+// FUNCTION: fn_07163
+CTunaPartyEffect::CTunaPartyEffect() : CEffect(1097) {
+}
+
 // OFFSET: 0x0070DF30
 // FUNCTION: fn_07167
 bool CTunaPartyEffect::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x0070E0C0
+// FUNCTION: fn_07170
+CCurseOfCubeEffect::CCurseOfCubeEffect()
+    : CEffect(-1), unknown_00D8(0), unknown_00DC(0), unknown_00E0(-10.0f), unknown_00E4(0) {
 }
 
 // OFFSET: 0x0070EB60
@@ -129,6 +150,11 @@ void CCurseOfCubeEffect::Slot04() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
+}
+
+// OFFSET: 0x0070F0D0
+// FUNCTION: fn_07181
+CWarningPlaneEffect::CWarningPlaneEffect() : CEffect(1114), fadingIn(0), expireTime(0) {
 }
 
 // OFFSET: 0x0070F350
@@ -155,6 +181,22 @@ void CWarningPlaneEffect::Slot04() {
   }
 }
 
+// OFFSET: 0x0070FFA0
+// FUNCTION: fn_07196
+void CCylinderEffect::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (!particle) {
+      continue;
+    }
+
+    const int texPart = particle->unknown_000C;
+    const ParticleQuad quad = {false, 0.0f, static_cast<float>(texPart + 1) / 21.0, 1.0f,
+                               static_cast<float>(texPart) / 21.0, false, true};
+    particle->Render(quad);
+  }
+}
+
 // OFFSET: 0x007100D0
 // FUNCTION: fn_07197
 CDancingKnifeEffect::CDancingKnifeEffect() : CEffect(1829) {
@@ -164,6 +206,22 @@ CDancingKnifeEffect::CDancingKnifeEffect() : CEffect(1829) {
 // FUNCTION: fn_07203
 bool CDancingKnifeEffect::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x00710A20
+// FUNCTION: fn_07205
+void CDancingKnifeEffect::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    if (*it) {
+      AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
+
+  for (auto it = this->unknown_00D8.begin(); it != this->unknown_00D8.end(); ++it) {
+    if (*it) {
+      AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
 }
 
 // OFFSET: 0x00710AE0
@@ -266,6 +324,23 @@ bool CFallenAngelEffect::Slot06() {
   }
 
   return static_cast<float>(this->emitter->elapsed) < this->emitter->lifetime * 60.0f;
+}
+
+// OFFSET: 0x007116D0
+// FUNCTION: fn_07225
+void CFallenAngelEffect::Slot03() {
+  EZ2STREmitter* emitter = this->emitter;
+  const vector3d start = emitter->position;
+  const float dx = this->unknown_00D0 - this->position[0];
+  const float dz = this->unknown_00D8 - this->position[2];
+  const float speed = 1.0f / SquareRoot(dx * dx + dz * dz);
+
+  AsParticle(emitter)->Process(0.0f, -80.0f, 0.0f);
+
+  emitter->position.x = start.x + dx * speed * 0.9f;
+  emitter->position.y = start.y;
+  emitter->position.z = start.z + dz * speed * 0.9f;
+  emitter->elapsed++;
 }
 
 // OFFSET: 0x007117F0
@@ -532,6 +607,26 @@ void CRandomOptEffect::Slot08(int red, int green, int blue) {
 void CRandomOptEffect::Slot11(std::string name) {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->SetTexture(name);
+  }
+}
+
+// OFFSET: 0x00721430
+// FUNCTION: fn_07373
+void CRandomOptEffect::Slot04() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
+    if (!particle) {
+      continue;
+    }
+
+    const int texPart = particle->unknown_000C;
+    if (texPart <= 0) {
+      continue;
+    }
+
+    const ParticleQuad quad = {false, 0.0f, static_cast<float>(texPart) / 21.0f, 1.0f,
+                               static_cast<float>(texPart - 1) / 21.0f, false, true};
+    particle->Render(quad);
   }
 }
 

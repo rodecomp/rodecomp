@@ -38,6 +38,7 @@ public:
 
 class CStemSpearEffect : public CEffect {
 public:
+  CStemSpearEffect();
   void Slot03() override;
   bool Slot06() override;
 
@@ -46,6 +47,7 @@ public:
 
 class CSvgSpiritEffect : public CEffect {
 public:
+  CSvgSpiritEffect();
   void Slot03() override;
   bool Slot06() override;
 
@@ -54,6 +56,7 @@ public:
 
 class CTunaPartyEffect : public CEffect {
 public:
+  CTunaPartyEffect();
   bool Slot06() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -61,14 +64,20 @@ public:
 
 class CCurseOfCubeEffect : public CEffect {
 public:
+  CCurseOfCubeEffect();
   void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00D8 */ int unknown_00D8;
+  /* 00DC */ int unknown_00DC;
+  /* 00E0 */ float unknown_00E0;
+  /* 00E4 */ int unknown_00E4;
 };
 
 class CWarningPlaneEffect : public CEffect {
 public:
+  CWarningPlaneEffect();
   void Slot01() override;
   void Slot04() override;
   bool Slot06() override;
@@ -82,6 +91,7 @@ public:
 class CCylinderEffect : public CEffect {
 public:
   CCylinderEffect();
+  void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ unsigned int startTime;
@@ -91,6 +101,7 @@ public:
 class CDancingKnifeEffect : public CEffect {
 public:
   CDancingKnifeEffect();
+  void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -121,13 +132,14 @@ public:
 class CFallenAngelEffect : public CEffect {
 public:
   CFallenAngelEffect();
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
-  /* 00D0 */ int unknown_00D0;
-  /* 00D4 */ int unknown_00D4;
-  /* 00D8 */ int unknown_00D8;
+  /* 00D0 */ float unknown_00D0;
+  /* 00D4 */ float unknown_00D4;
+  /* 00D8 */ float unknown_00D8;
 };
 
 class CFloralFlareRoad : public CEffect {
@@ -216,6 +228,7 @@ public:
 class CRandomOptEffect : public CEffect {
 public:
   CRandomOptEffect();
+  void Slot04() override;
   void Slot08(int red, int green, int blue) override;
   void Slot11(std::string name) override;
 
