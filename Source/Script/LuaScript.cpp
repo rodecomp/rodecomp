@@ -1,7 +1,12 @@
 #include "Script/LuaScript.h"
 #include "Archive/PakRegistry.h"
+#include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EffectTypes.h"
 #include "File/File.h"
 #include "File/ResourcePath.h"
+#include "Script/LuaFileOperations.h"
+#include "UI/UILapineUpgradeBoxWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 
 extern "C" {
 #include <lauxlib.h>
@@ -10,6 +15,7 @@ extern "C" {
 
 #include <cstdio>
 #include <cstring>
+#include <string>
 #include <vector>
 #include <windows.h>
 
@@ -32,6 +38,255 @@ void LuaScriptBag::Add(std::string left, std::string right) {
   this->pairs.push_back(LuaScriptPair{left, right});
 }
 
+int AddSkill(lua_State* state);
+int AddNeededSkill(lua_State* state);
+
+// OFFSET: 0x00AFF7E0
+// FUNCTION: fn_18354
+int TraceValue(lua_State* state) {
+  std::string text = luaL_checkstring(state, 1);
+  MessageBoxA(nullptr, text.c_str(), "Lua Error", 0);
+  return 1;
+}
+
+// OFFSET: 0x00AFF140
+// FUNCTION: fn_18352
+int SetSubChatWndList(lua_State* state) {
+  luaL_checkstring(state, 1);
+  luaL_checkstring(state, 2);
+  luaL_checknumber(state, 3);
+  luaL_checknumber(state, 4);
+  luaL_checknumber(state, 5);
+  luaL_checknumber(state, 6);
+  lua_pushnumber(state, 0.0);
+  return 1;
+}
+
+// OFFSET: 0x00AFF630
+// FUNCTION: fn_18353
+int SetSubChatWndOption(lua_State* state) {
+  luaL_checkstring(state, 1);
+  luaL_checknumber(state, 2);
+  luaL_checknumber(state, 3);
+  luaL_checknumber(state, 4);
+  return 1;
+}
+
+// OFFSET: 0x00AFF020
+// FUNCTION: fn_18351
+int SetCmdOnOffList(lua_State* state) {
+  luaL_checkstring(state, 1);
+  luaL_checknumber(state, 2);
+  return 0;
+}
+
+// OFFSET: 0x00AFEF50
+// FUNCTION: fn_18350
+int GetCmdOnOffValue(lua_State* state) {
+  luaL_checkstring(state, 1);
+  lua_pushnumber(state, 0.0);
+  return 1;
+}
+
+// OFFSET: 0x00AFEBD0
+// FUNCTION: fn_18341
+int LuaRGB(lua_State* state) {
+  const int red = static_cast<int>(luaL_checknumber(state, 1));
+  const int green = static_cast<int>(luaL_checknumber(state, 2));
+  const int blue = static_cast<int>(luaL_checknumber(state, 3));
+  lua_pushnumber(state, ((blue & 255) << 16) | ((green & 255) << 8) | (red & 255));
+  return 1;
+}
+
+// OFFSET: 0x00B7FFC0
+// FUNCTION: fn_19249
+int SetEmitterInfo(lua_State* state) {
+  const int index = static_cast<int>(luaL_checknumber(state, 1));
+  CEffect* effect = g_effectMgr->At(EF_EMITTER, static_cast<unsigned>(index));
+  if (effect) {
+    const int key = static_cast<int>(luaL_checknumber(state, 2));
+    if (key == 0) {
+      effect->Slot07();
+    }
+  }
+  return 0;
+}
+
+// OFFSET: 0x00B80640
+// FUNCTION: fn_19251
+int SetMagicFloorInfo(lua_State* state) {
+  const int index = static_cast<int>(luaL_checknumber(state, 1));
+  CEffect* effect = g_effectMgr->At(EF_MAGIC_FLOOR, static_cast<unsigned>(index));
+  if (effect) {
+    const int key = static_cast<int>(luaL_checknumber(state, 2));
+    if (key == 0) {
+      effect->Slot07();
+    }
+  }
+  return 0;
+}
+
+// OFFSET: 0x00B804E0
+// FUNCTION: fn_19250
+int SetEvilsPawInfo(lua_State* state) {
+  const int index = static_cast<int>(luaL_checknumber(state, 1));
+  CEffect* effect = g_effectMgr->At(EF_EVILS_PAW, static_cast<unsigned>(index));
+  if (effect) {
+    const int key = static_cast<int>(luaL_checknumber(state, 2));
+    if (key == 0) {
+      effect->Slot07();
+    }
+  }
+  return 0;
+}
+
+// OFFSET: 0x00B807E0
+// FUNCTION: fn_19252
+int SetOtherEffectInfo(lua_State* state) {
+  const int id = static_cast<int>(luaL_checknumber(state, 1));
+  const int index = static_cast<int>(luaL_checknumber(state, 2));
+  CEffect* effect = g_effectMgr->At(id, static_cast<unsigned>(index));
+  if (effect) {
+    const int key = static_cast<int>(luaL_checknumber(state, 3));
+    if (key == 0) {
+      effect->Slot07();
+    }
+  }
+  return 0;
+}
+
+// OFFSET: 0x00B7FA30
+// FUNCTION: fn_19247
+int SetAnimatedEmitterInfo(lua_State* state) {
+  const int index = static_cast<int>(luaL_checknumber(state, 1));
+  CEffect* effect = g_effectMgr->At(EF_ANIMATED_EMITTER, static_cast<unsigned>(index));
+  if (effect) {
+    const int key = static_cast<int>(luaL_checknumber(state, 2));
+    if (key == 0) {
+      effect->Slot07();
+    }
+  }
+  return 0;
+}
+
+// OFFSET: 0x00B7FE50
+// FUNCTION: fn_19248
+int SetEZ2STRInfo(lua_State* state) {
+  const int index = static_cast<int>(luaL_checknumber(state, 1));
+  luaL_checknumber(state, 2);
+  g_effectMgr->At(0x584, static_cast<unsigned>(index));
+  return 0;
+}
+
+// OFFSET: 0x00B80990
+// FUNCTION: fn_19253
+int SetWindEffectInfo(lua_State* state) {
+  const int index = static_cast<int>(luaL_checknumber(state, 1));
+  CEffect* effect = g_effectMgr->At(0x927, static_cast<unsigned>(index));
+  if (effect) {
+    const int key = static_cast<int>(luaL_checknumber(state, 2));
+    if (key == 0) {
+      effect->Slot07();
+    }
+  }
+  return 0;
+}
+
+// OFFSET: 0x00BA2F00
+// FUNCTION: fn_19675
+int AddEntryQueue(lua_State* state) {
+  luaL_checknumber(state, 1);
+  luaL_checkstring(state, 2);
+  luaL_checkstring(state, 3);
+  luaL_checknumber(state, 4);
+  luaL_checknumber(state, 5);
+  luaL_checknumber(state, 6);
+  luaL_checknumber(state, 7);
+  luaL_checknumber(state, 8);
+  luaL_checknumber(state, 9);
+  luaL_checknumber(state, 10);
+  luaL_checknumber(state, 11);
+  luaL_checknumber(state, 12);
+  luaL_checkstring(state, 13);
+  luaL_checkstring(state, 14);
+  luaL_checkstring(state, 15);
+  luaL_checkstring(state, 16);
+  luaL_checkstring(state, 17);
+  return 0;
+}
+
+// OFFSET: 0x00AFFF60
+// FUNCTION: fn_18358
+int AddIngredient(lua_State* state) {
+  luaL_checknumber(state, 1);
+  luaL_checknumber(state, 2);
+  g_windowMgr.LookupWindow(0x122);
+  return 0;
+}
+
+// OFFSET: 0x00AFFFC0
+// FUNCTION: fn_18359
+int AddIngredientLapineUpgradeBox(lua_State* state) {
+  const int id = static_cast<int>(luaL_checknumber(state, 1));
+  if (UIWindow* window = g_windowMgr.LookupWindow(0x12e)) {
+    static_cast<UILapineUpgradeBoxWnd*>(window)->AddMaterial(id);
+  }
+  return 0;
+}
+
+// OFFSET: 0x00AFFB10
+// FUNCTION: fn_18356
+int AddCashshopBanner(lua_State* state) {
+  luaL_checkstring(state, 1);
+  luaL_checkstring(state, 2);
+  g_windowMgr.LookupWindow(0x13e);
+  return 0;
+}
+
+// OFFSET: 0x00AFF8F0
+// FUNCTION: fn_18355
+int AddCashshopBanner2(lua_State* state) {
+  luaL_checkstring(state, 1);
+  luaL_checkstring(state, 2);
+  g_windowMgr.LookupWindow(0x13e);
+  return 0;
+}
+
+// OFFSET: 0x00AFFD30
+// FUNCTION: fn_18357
+int AddCheckAttendanceBanner(lua_State* state) {
+  luaL_checkstring(state, 1);
+  luaL_checkstring(state, 2);
+  lua_toboolean(state, 3);
+  lua_toboolean(state, 4);
+  g_windowMgr.LookupWindow(0x148);
+  return 0;
+}
+
+// OFFSET: 0x009419B0
+// FUNCTION: fn_12793
+int AddItmeTokafraServiceMapList(lua_State* state) {
+  luaL_checkstring(state, 1);
+  luaL_checkstring(state, 2);
+  return 0;
+}
+
+// OFFSET: 0x00941870
+// FUNCTION: fn_12792
+int AddItmeToExceptionMiniMapPosList(lua_State* state) {
+  luaL_checkstring(state, 1);
+  luaL_checknumber(state, 2);
+  luaL_checknumber(state, 3);
+  return 0;
+}
+
+// OFFSET: 0x00933CB0
+// FUNCTION: fn_12736
+__declspec(noinline) void RegisterLuaKafraServiceMaps(lua_State* state) {
+  lua_register(state, "AddItmeTokafraServiceMapList", AddItmeTokafraServiceMapList);
+  lua_register(state, "AddItmeToExceptionMiniMapPosList", AddItmeToExceptionMiniMapPosList);
+}
+
 // OFFSET: 0x00AFC830
 // FUNCTION: fn_18323
 LuaScript::LuaScript() : m_state(nullptr) {
@@ -52,7 +307,24 @@ void LuaScript::Close() {
   }
 }
 
+// OFFSET: 0x00AFE4B0
+
 // OFFSET: 0x00AFDDD0
+// FUNCTION: fn_18337
+void LuaScript::Open() {
+  if (this->m_state) {
+    lua_close(this->m_state);
+    this->m_state = nullptr;
+  }
+
+  this->m_state = luaL_newstate();
+  if (!this->m_state) {
+    return;
+  }
+
+  luaL_openlibs(this->m_state);
+  return this->Register();
+}
 
 // OFFSET: 0x00AFDD60
 // FUNCTION: fn_18335
