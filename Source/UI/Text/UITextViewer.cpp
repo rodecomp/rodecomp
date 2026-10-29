@@ -114,6 +114,22 @@ void UITextViewer::Slot25(int, int) {
 void UITextViewer::Slot26(int, int) {
 }
 
+// OFFSET: 0x007B78D0
+// FUNCTION: fn_09228
+void UIAchListWnd::Slot25(int x, int y) {
+  if (x < 0 || x > this->geometry.width - this->unknown_0094) {
+    return;
+  }
+
+  const int row = y / this->unknown_0084;
+  if (static_cast<unsigned>(row) >= static_cast<unsigned>(this->unknown_00AC->count)) {
+    return;
+  }
+
+  this->sub_7B37F0(this->unknown_008C + row);
+  g_windowMgr.SetCapture(this);
+}
+
 // OFFSET: 0x007B7920
 // FUNCTION: fn_09229
 void UIAchTV::Slot25(int, int) {
@@ -125,6 +141,27 @@ void UIAchTV::Slot25(int, int) {
   if (id != -1 && this->parent) {
     this->parent->SendMsg(nullptr, 145, id, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x007B7960
+// FUNCTION: fn_09230
+void UIAchTab::Slot25(int x, int y) {
+  int a = 0;
+  int b = 0;
+  if (!this->sub_7B4370(x, y, &a, &b)) {
+    return;
+  }
+
+  this->unknown_007C = a;
+  this->unknown_0080 = b;
+  if (this->parent) {
+    this->parent->SendMsg(this, 22, a, b, 0, 0);
+    this->parent->Invalidate();
+  }
+
+  this->sub_7B7F10();
+  this->Invalidate();
+  g_windowMgr.SetCapture(this);
 }
 
 // OFFSET: 0x007B79F0
