@@ -10,7 +10,7 @@ namespace {
   // FUNCTION: fn_21069
   AttachedEffect* CreatePartyEffect(EffectActor& actor, PartyEffectMode& mode) {
     mode.lastEffectId = 160;
-    auto* effect = new AttachedEffect(mode.resources, mode.names);
+    auto* effect = new AttachedEffect();
     bool force = false;
     mode.effectScript.Call("IsForceRenderEffect", "d>b", 160, &force);
     effect->state.forceRender = force;

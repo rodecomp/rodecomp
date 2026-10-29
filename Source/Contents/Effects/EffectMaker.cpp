@@ -2,7 +2,7 @@
 
 // OFFSET: 0x00E4A2B0
 // FUNCTION: fn_24251
-CEffectMaker::CEffectMaker(ResourceMgr& resources, JobNames& names) : EffectActor(resources, names) {
+CEffectMaker::CEffectMaker() {
   this->unknown_0160 = -1;
   this->unknown_015C = 360;
   this->unknown_0158 = 360;

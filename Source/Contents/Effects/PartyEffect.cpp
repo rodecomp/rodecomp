@@ -10,7 +10,7 @@
 // OFFSET: 0x00C2CF20
 // FUNCTION: fn_20088
 bool UpdatePartyEffect(
-  AttachedEffect& self, ResourceMgr& resources, JobNames& names, std::list<CRenderObject*>& worldObjects, TextureCache& textures, const TerrainHeight& ground,
+  AttachedEffect& self, ResourceMgr& resources, std::list<CRenderObject*>& worldObjects, TextureCache& textures, const TerrainHeight& ground,
   int updateTick
 ) {
   RagEffectState& effect = self.state;
@@ -39,7 +39,7 @@ bool UpdatePartyEffect(
   }
 
   if (effect.unknown_0178 == 0) {
-    EffectParticle* particle = CreateEffectParticle(self, render, 15, 0, 0, 0, resources, names, worldObjects);
+    EffectParticle* particle = CreateEffectParticle(self, render, 15, 0, 0, 0, worldObjects);
     effect.unknown_11C84 = &particle->state;
     EffectPrimitiveState& state = *effect.unknown_11C84;
     state.lifetime = 9999;

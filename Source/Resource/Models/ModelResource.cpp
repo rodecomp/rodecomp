@@ -1,5 +1,5 @@
 #include "Client/Application/ErrorDialog.h"
-#include "Contents/Jobs/JobNames.h"
+#include "Client/Session.h"
 #include "File/File.h"
 #include "File/ResourcePath.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -681,7 +681,7 @@ granny_control* C3dGrannyModelRes::PlayAnimation(unsigned action, granny_model_i
     }
 
     if (action == 0) {
-      std::sprintf(g_modelPath, "model\\3dmob\\%s", this->m_context->jobNames.Lookup(g_animationJobs[job], -1));
+      std::sprintf(g_modelPath, "model\\3dmob\\%s", g_session.GetJobName(g_animationJobs[job], -1));
     } else {
       std::sprintf(g_modelPath, "model\\3dmob_bone\\%d_%s.gr2", job, g_animationNames[action]);
     }

@@ -7,7 +7,7 @@
 
 class CSoundMaker : public CRenderObject {
 public:
-  CSoundMaker(ResourceMgr& resources, JobNames& names);
+  CSoundMaker();
   ~CSoundMaker() override;
   bool Update() override;
   void SendObjectMessage(

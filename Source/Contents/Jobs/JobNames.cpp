@@ -1,4 +1,5 @@
 #include "Contents/Jobs/JobNames.h"
+#include "Client/Session.h"
 #include "Contents/Jobs/JobId.h"
 
 // OFFSET: 0x00E2FE80
@@ -316,38 +317,34 @@ unsigned JobNames::BaseJob(unsigned job) {
 
 // OFFSET: 0x00DDE5C0
 // FUNCTION: fn_23396
-const char* JobNames::Lookup(unsigned job, int sex) {
-  if (this->names.size() <= job) {
+const char* CSession::GetJobName(unsigned job, int sex) {
+  if (this->m_jobNameTable.size() <= job) {
     return "";
   }
 
   if (job - JT_NOVICE_H > unsigned(JT_MER_BEGIN - 1 - JT_NOVICE_H) && job > unsigned(JT_SUMMER2)) {
-    return this->names[job];
+    return this->m_jobNameTable[job];
   }
 
-  const unsigned base = BaseJob(job);
+  const unsigned base = JobNames::BaseJob(job);
 
   if (sex == -1) {
-    if (this->cachedSex != this->currentSex) {
-      this->cachedSex = this->currentSex;
-    }
-
-    sex = this->currentSex;
+    sex = this->SyncUnknown0E98();
   }
 
   if (sex == 0) {
-    const auto found = this->female.find(base);
+    const auto found = this->m_jobNameTableWoman.find(base);
 
-    if (found != this->female.end()) {
+    if (found != this->m_jobNameTableWoman.end()) {
       return found->second;
     }
   } else if (sex == 1) {
-    const auto found = this->male.find(base);
+    const auto found = this->m_jobNameTableMan.find(base);
 
-    if (found != this->male.end()) {
+    if (found != this->m_jobNameTableMan.end()) {
       return found->second;
     }
   }
 
-  return this->names[base];
+  return this->m_jobNameTable[base];
 }

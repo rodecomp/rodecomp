@@ -19,6 +19,7 @@
 class CActRes;
 class CRenderObject;
 class LuaScript;
+struct JobNameInitialization;
 struct ActionFrame;
 struct WindowDialogs;
 
@@ -103,9 +104,10 @@ public:
   /* 0F70 */ unsigned char unknown_0F70[0x08];
   /* 0F78 */ const char* const* m_humanFemaleHeadNames;
   /* 0F7C */ unsigned char unknown_0F7C[0x2C];
-  /* 0FA8 */ const char* const* m_jobNamesBegin;
-  /* 0FAC */ const char* const* m_jobNamesEnd;
-  /* 0FB0 */ unsigned char unknown_0FB0[0x34];
+  /* 0FA8 */ std::vector<const char*> m_jobNameTable;
+  /* 0FB4 */ std::map<unsigned, const char*> m_jobNameTableWoman;
+  /* 0FBC */ std::map<unsigned, const char*> m_jobNameTableMan;
+  /* 0FC4 */ unsigned char unknown_0FC4[0x20];
   /* 0FE4 */ std::list<std::uint32_t> m_pingSamples;
   /* 0FEC */ unsigned char unknown_0FEC[0x24];
   /* 1010 */ std::uint32_t unknown_1010;
@@ -295,6 +297,8 @@ public:
   int MercSkillLevel(int skillId) const;
   int HomunSkillLevel(int skillId) const;
   CRenderObject* FindGameActor(std::uint32_t aid) const;
+  const char* GetJobName(unsigned job, int sex);
+  void InitJobNameTable(JobNameInitialization& context);
   int SyncUnknown0E98();
   void LoadXmlTables();
   std::string GetAccessoryName(int id);
@@ -398,8 +402,10 @@ static_assert(offsetof(CSession, m_playerX) == 0xF18);
 static_assert(offsetof(CSession, m_playerY) == 0xF1C);
 static_assert(offsetof(CSession, m_score1) == 0xF28);
 static_assert(offsetof(CSession, m_score2) == 0xF2C);
-static_assert(offsetof(CSession, m_jobNamesBegin) == 0xFA8);
-static_assert(offsetof(CSession, m_jobNamesEnd) == 0xFAC);
+static_assert(offsetof(CSession, m_jobNameTable) == 0xFA8);
+static_assert(offsetof(CSession, m_jobNameTableWoman) == 0xFB4);
+static_assert(offsetof(CSession, m_jobNameTableMan) == 0xFBC);
+static_assert(offsetof(CSession, m_pingSamples) == 0xFE4);
 static_assert(offsetof(CSession, m_head) == 0xED8);
 static_assert(offsetof(CSession, m_headPalette) == 0xEF0);
 static_assert(offsetof(CSession, m_humanMaleHeadNames) == 0xF6C);

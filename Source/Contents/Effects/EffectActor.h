@@ -20,7 +20,7 @@ struct EffectActorState {
 };
 
 struct EffectActor : CRenderObject {
-  EffectActor(ResourceMgr& resources, JobNames& names);
+  EffectActor();
   bool EffectVisible() const;
 
   /* 0138 */ EffectActorState state;

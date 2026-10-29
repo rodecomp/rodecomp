@@ -11,7 +11,7 @@ struct SpriteQuad;
 
 class CRenderObject : public CGameObject {
 public:
-  CRenderObject(ResourceMgr& resources, JobNames& names);
+  CRenderObject();
   ~CRenderObject() override;
   bool Update() override;
   void SendObjectMessage(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) override;

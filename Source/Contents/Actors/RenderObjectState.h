@@ -8,15 +8,14 @@
 #include <cstdint>
 #include <string>
 
-struct JobNames;
 class ResourceMgr;
 class CSprRes;
 class CActRes;
 
 struct RenderObjectState {
-  RenderObjectState(ResourceMgr& resources, JobNames& names);
+  RenderObjectState();
   ~RenderObjectState();
-  void Reset(ResourceMgr& resources, JobNames& names);
+  void Reset();
   RenderObjectState(const RenderObjectState&) = delete;
   RenderObjectState& operator=(const RenderObjectState&) = delete;
 

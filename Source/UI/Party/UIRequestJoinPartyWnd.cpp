@@ -1,5 +1,5 @@
 #include "Client/Mode/ModeEvents.h"
-#include "Contents/Jobs/JobNames.h"
+#include "Client/Session.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -187,7 +187,7 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->icon->SetBitmap(path, state, 0);
   }
 
-  this->icon->SetTooltip(this->m_request->jobs.Lookup(static_cast<unsigned>(static_cast<int>(this->job)), -1));
+  this->icon->SetTooltip(g_session.GetJobName(static_cast<unsigned>(static_cast<int>(this->job)), -1));
   char level[5] = {};
   _snprintf_s(level, sizeof(level), _TRUNCATE, "%d", this->level);
   this->levelText->SetText(level, 0);

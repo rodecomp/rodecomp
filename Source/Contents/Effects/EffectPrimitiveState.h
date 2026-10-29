@@ -58,7 +58,6 @@ struct EffectPrimitiveState {
   ~EffectPrimitiveState();
   void Initialize(RenderObjectState& render, AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z);
   void UpdateColor();
-  void InitializeRecords(const RenderObjectState& render);
   void GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue);
 
   /* 0138 */ std::uint32_t unknown_0138;

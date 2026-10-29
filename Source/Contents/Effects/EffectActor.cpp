@@ -16,6 +16,6 @@ EffectAttachments EffectActorState::Attachments() {
 
 // OFFSET: 0x00CA82E0
 // FUNCTION: fn_20987
-EffectActor::EffectActor(ResourceMgr& resources, JobNames& names) : CRenderObject(resources, names) {
+EffectActor::EffectActor() {
   this->render.unknown_0130[0] = 0;
 }

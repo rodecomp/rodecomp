@@ -10,13 +10,11 @@ class UICheckBox;
 class UIStaticText;
 class UIBitmapButton;
 struct UITextViewerContext;
-struct JobNames;
 struct PartyJoinRequest;
 class UIRequestJoinPartyMgr;
 
 struct UIRequestJoinPartyContext {
   UITextViewerContext& text;
-  JobNames& jobs;
   UIRequestJoinPartyMgr& requests;
 };
 

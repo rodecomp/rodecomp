@@ -20,7 +20,7 @@
 
 // OFFSET: 0x00CA8730
 // FUNCTION: fn_20991
-CRenderObject::CRenderObject(ResourceMgr& resources, JobNames& names) : render(resources, names) {
+CRenderObject::CRenderObject() {
 }
 
 // OFFSET: 0x00CA8F90

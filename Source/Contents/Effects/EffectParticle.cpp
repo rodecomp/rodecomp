@@ -3,16 +3,16 @@
 
 // OFFSET: 0x00BAD940
 // FUNCTION: fn_19761
-EffectParticle::EffectParticle(ResourceMgr& resources, JobNames& names) : CRenderObject(resources, names), state(this->render) {
+EffectParticle::EffectParticle() : state(this->render) {
 }
 
 // OFFSET: 0x00C1DE70
 // FUNCTION: fn_20076
 EffectParticle* CreateEffectParticle(
-  AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z, ResourceMgr& resources, JobNames& names,
+  AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z,
   std::list<CRenderObject*>& worldObjects
 ) {
-  auto* particle = new EffectParticle(resources, names);
+  auto* particle = new EffectParticle();
 
   particle->state.Initialize(particle->render, master, masterRender, type, x, y, z);
   master.state.related.push_back(&particle->state);

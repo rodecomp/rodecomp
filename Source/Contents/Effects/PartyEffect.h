@@ -5,14 +5,13 @@
 
 struct AttachedEffect;
 struct EffectParticle;
-struct JobNames;
 struct TerrainHeight;
 class ResourceMgr;
 class TextureCache;
 class CRenderObject;
 
 bool UpdatePartyEffect(
-  AttachedEffect& self, ResourceMgr& resources, JobNames& names, std::list<CRenderObject*>& worldObjects, TextureCache& textures, const TerrainHeight& ground,
+  AttachedEffect& self, ResourceMgr& resources, std::list<CRenderObject*>& worldObjects, TextureCache& textures, const TerrainHeight& ground,
   int updateTick
 );
 

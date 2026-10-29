@@ -40,8 +40,8 @@ namespace {
 
   // INLINED
   const char* ReadPlayerJobName(int jobId) {
-    const char* const* namesBegin = g_session.m_jobNamesBegin;
-    const char* const* namesEnd = g_session.m_jobNamesEnd;
+    const char* const* namesBegin = g_session.m_jobNameTable.data();
+    const char* const* namesEnd = namesBegin + g_session.m_jobNameTable.size();
 
     if (!namesBegin || !namesEnd || namesBegin >= namesEnd) {
       return "";

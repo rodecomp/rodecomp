@@ -1,4 +1,4 @@
-#include "Contents/Jobs/JobNames.h"
+#include "Client/Session.h"
 #include "Contents/Actors/RenderObjectState.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/ResourceMgr.h"
@@ -9,8 +9,8 @@
 #include <timeapi.h>
 
 // INLINED
-RenderObjectState::RenderObjectState(ResourceMgr& resources, JobNames& names) : sprite(nullptr), action(nullptr) {
-  this->Reset(resources, names);
+RenderObjectState::RenderObjectState() : sprite(nullptr), action(nullptr) {
+  this->Reset();
 }
 
 // INLINED
@@ -26,7 +26,7 @@ RenderObjectState::~RenderObjectState() {
 
 // OFFSET: 0x00CAF990
 // FUNCTION: fn_21086
-void RenderObjectState::Reset(ResourceMgr& resources, JobNames& names) {
+void RenderObjectState::Reset() {
   this->position.x = 0;
   this->position.y = 0;
   this->position.z = 0;
@@ -64,14 +64,14 @@ void RenderObjectState::Reset(ResourceMgr& resources, JobNames& names) {
 
   char spriteName[128];
   char actionName[128];
-  std::sprintf(spriteName, "NPC\\%s.spr", names.Lookup(46, -1));
-  std::sprintf(actionName, "NPC\\%s.act", names.Lookup(46, -1));
+  std::sprintf(spriteName, "NPC\\%s.spr", g_session.GetJobName(46, -1));
+  std::sprintf(actionName, "NPC\\%s.act", g_session.GetJobName(46, -1));
 
   if (this->sprite) {
     this->sprite->Release();
   }
 
-  this->sprite = static_cast<CSprRes*>(resources.Load(spriteName));
+  this->sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(spriteName));
 
   if (this->sprite) {
     ++this->sprite->references;
@@ -81,7 +81,7 @@ void RenderObjectState::Reset(ResourceMgr& resources, JobNames& names) {
     this->action->Release();
   }
 
-  this->action = static_cast<CActRes*>(resources.Load(actionName));
+  this->action = static_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));
 
   if (this->action) {
     ++this->action->references;

@@ -7,7 +7,7 @@
 #include <cstddef>
 
 struct AttachedEffect : CRenderObject {
-  AttachedEffect(ResourceMgr& resources, JobNames& names);
+  AttachedEffect();
   ~AttachedEffect() override;
 
   /* 0138 */ RagEffectState state;

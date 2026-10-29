@@ -6,7 +6,7 @@
 #include <cstddef>
 
 struct CEffectMaker : EffectActor {
-  CEffectMaker(ResourceMgr& resources, JobNames& names);
+  CEffectMaker();
 
   /* 0158 */ int unknown_0158;
   /* 015C */ int unknown_015C;

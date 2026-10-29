@@ -6,12 +6,11 @@
 
 #include <list>
 
-struct JobNames;
 class ResourceMgr;
 struct AttachedEffect;
 
 struct EffectParticle : CRenderObject {
-  EffectParticle(ResourceMgr& resources, JobNames& names);
+  EffectParticle();
 
   bool UpdateFireWall();
   bool UpdateStoneCurse();
@@ -48,12 +47,13 @@ struct EffectParticle : CRenderObject {
   void FollowMasterAndTickSlots();
   void FollowMasterAndTickSlots2();
   void UpdateRecords();
+  void InitializeRecords();
 
   /* 0138 */ EffectPrimitiveState state;
 };
 
 EffectParticle* CreateEffectParticle(
-  AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z, ResourceMgr& resources, JobNames& names,
+  AttachedEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z,
   std::list<CRenderObject*>& worldObjects
 );
 

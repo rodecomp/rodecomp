@@ -19,7 +19,7 @@
 
 // OFFSET: 0x00DA1E30
 // FUNCTION: fn_22363
-CSoundMaker::CSoundMaker(ResourceMgr& resources, JobNames& names) : CRenderObject(resources, names) {
+CSoundMaker::CSoundMaker() {
   this->file.clear();
   this->volume = 100.0f;
   this->range = 1.0f;

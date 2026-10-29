@@ -19,7 +19,7 @@ void CSession::GetMonsterTalkText(int job, int event, int skill, char* text, std
   }
 
   char monster[256];
-  std::strcpy(monster, g_session.m_jobNamesBegin[job]);
+  std::strcpy(monster, g_session.m_jobNameTable[job]);
   _strlwr(monster);
   node = node->FindChild(DecodeMessageRot(monster));
   if (node == nullptr) {

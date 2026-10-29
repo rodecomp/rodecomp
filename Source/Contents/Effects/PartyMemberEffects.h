@@ -6,7 +6,6 @@
 
 struct EffectActor;
 class CRenderObject;
-struct JobNames;
 struct ServiceOptions;
 class ResourceMgr;
 class LuaScript;
@@ -17,7 +16,6 @@ struct PartyEffectMode {
   std::list<EffectActor*>& actors;
   std::list<CRenderObject*>& objects;
   ResourceMgr& resources;
-  JobNames& names;
   ServiceOptions& options;
   LuaScript& effectScript;
   int& lastEffectId;

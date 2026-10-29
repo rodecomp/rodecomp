@@ -1,7 +1,6 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_JOBS_JOBNAMES_H
 #define RAGNAROK_SOURCE_CONTENTS_JOBS_JOBNAMES_H
 
-#include <map>
 #include <vector>
 
 class LuaScript;
@@ -17,15 +16,7 @@ struct JobNameInitialization {
 };
 
 struct JobNames {
-  std::vector<const char*>& names;
-  std::map<unsigned, const char*>& female;
-  std::map<unsigned, const char*>& male;
-  const int& currentSex;
-  int& cachedSex;
-
   static unsigned BaseJob(unsigned job);
-  const char* Lookup(unsigned job, int sex);
-  void Initialize(JobNameInitialization& context);
 };
 
 #endif
