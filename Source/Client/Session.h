@@ -407,6 +407,11 @@ public:
   const char* GetBgmFileName(const char* rswName);
   bool HasItem17D4(int itemId) const;
   bool IsFriendName(const char* name) const;
+  bool RemoveFriendByCharacterId(std::uint32_t characterId);
+  void RemovePartyMemberByName(const char* name);
+  bool IsGuildMemberAccount(std::uint32_t accountId) const;
+  bool IsGuildMemberCharacter(std::uint32_t characterId) const;
+  bool IsGuildMemberName(const char* name) const;
   long long GetItem1760Total() const;
   ITEM_INFO GetItem1748At(int index) const;
   bool HasItem1718(std::uint32_t id) const;

@@ -1,5 +1,8 @@
 #include "Client/Session.h"
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/Effects/EffectActor.h"
+#include "Contents/GuildInfo.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/World/World.h"
@@ -14,6 +17,12 @@
 // STATIC: 0x01732638
 // GLOBAL: gl_24474
 CSession g_session;
+
+// GLOBAL: gl_24673
+std::list<GuildInfo::Member> g_guildMembers;
+
+// GLOBAL: gl_24864
+std::string g_guildName;
 
 // OFFSET: 0x00DDE860
 // FUNCTION: fn_23401
@@ -889,4 +898,79 @@ int CSession::GetItem1738Quantity(std::uint32_t id) const {
   }
 
   return 0;
+}
+
+// OFFSET: 0x00DDB540
+// FUNCTION: fn_23353
+bool CSession::RemoveFriendByCharacterId(std::uint32_t characterId) {
+  for (std::list<MessengerMember>::iterator it = this->m_friends.begin(); it != this->m_friends.end(); ++it) {
+    if (it->characterId == characterId) {
+      this->m_friends.erase(it);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00DF9F10
+// FUNCTION: fn_23568
+bool CSession::IsGuildMemberAccount(std::uint32_t accountId) const {
+  std::list<GuildInfo::Member> members(g_guildMembers.begin(), g_guildMembers.end());
+  for (const GuildInfo::Member& member : members) {
+    if (static_cast<std::uint32_t>(member.accountId) == accountId) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00DFA030
+// FUNCTION: fn_23569
+bool CSession::IsGuildMemberCharacter(std::uint32_t characterId) const {
+  std::list<GuildInfo::Member> members(g_guildMembers.begin(), g_guildMembers.end());
+  for (const GuildInfo::Member& member : members) {
+    if (static_cast<std::uint32_t>(member.characterId) == characterId) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00DF9D90
+// FUNCTION: fn_23567
+bool CSession::IsGuildMemberName(const char* name) const {
+  std::list<GuildInfo::Member> members(g_guildMembers.begin(), g_guildMembers.end());
+  for (const GuildInfo::Member& member : members) {
+    if (member.name == name) {
+      return true;
+    }
+  }
+
+  return g_guildName == name;
+}
+
+// OFFSET: 0x00DDB580
+// FUNCTION: fn_23354
+void CSession::RemovePartyMemberByName(const char* name) {
+  for (std::list<MessengerMember>::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
+    if (it->name != name) {
+      continue;
+    }
+
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode == nullptr) {
+      return;
+    }
+
+    CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(it->accountId);
+    if (actor != nullptr && static_cast<EffectActor*>(actor)->state.Attachments().HasId(160)) {
+      actor->SendMsg(nullptr, 109, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+
+    this->m_partyMembers.erase(it);
+    return;
+  }
 }
