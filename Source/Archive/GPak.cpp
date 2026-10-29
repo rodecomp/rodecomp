@@ -603,6 +603,13 @@ bool sub_654D00() {
 }
 
 // OFFSET: 0x00654EF0
+// FUNCTION: fn_05053
+bool __fastcall sub_654EF0(const void* self) {
+  const float max_load_factor = *(const float*)self;
+  const unsigned int size = *(const unsigned int*)((const char*)self + 8);
+  const unsigned int bucket_count = *(const unsigned int*)((const char*)self + 0x1c);
+  return (float)(size + 1) / (float)bucket_count > max_load_factor;
+}
 
 struct Span8_654FB0 { const void* ptr; unsigned int len; };
 struct Span4_654FB0 { const void* ptr; };
@@ -615,6 +622,10 @@ struct FuncImpl_654FB0 {
 };
 
 // OFFSET: 0x00654FB0
+// FUNCTION: fn_05056
+bool FuncImpl_654FB0::sub_654FB0(const Span8_654FB0* a1, const Span4_654FB0* a2, const Span4_654FB0* a3, const Span8_654FB0* a4, const Span8_654FB0* a5) const {
+  return this->target(*a1, *a2, *a3, *a4, *a5);
+}
 
 struct HashNode_655340 {
   HashNode_655340* prev;
@@ -639,6 +650,33 @@ struct HashTable_655340 {
 };
 
 // OFFSET: 0x00655340
+// FUNCTION: fn_05060
+HashNode_655340* HashTable_655340::sub_655340(unsigned int hash, HashNode_655340* prev, HashNode_655340* node) {
+  HashNode_655340* next = prev->next;
+  this->size++;
+  node->prev = prev;
+  node->next = next;
+  next->prev = node;
+  prev->next = node;
+
+  HashBucket_655340* bucket = &this->buckets[hash & this->mask];
+  if (bucket->first == this->head) {
+    bucket->first = node;
+    bucket->last = node;
+    return node;
+  }
+
+  if (bucket->first == prev) {
+    bucket->first = node;
+    return node;
+  }
+
+  if (bucket->last == next) {
+    bucket->last = node;
+  }
+
+  return node;
+}
 
 // OFFSET: 0x00655330
 // FUNCTION: fn_05059
