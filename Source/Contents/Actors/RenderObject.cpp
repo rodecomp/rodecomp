@@ -938,3 +938,12 @@ void CGameActor::SetUnknown008C(const std::uint32_t* value) {
 void CGameActor::Slot17() {
   g_modeMgr.GetGameMode()->SendMsg(13, this->render.accountId, 0, 0, 0);
 }
+
+// OFFSET: 0x00CC1E30
+// FUNCTION: fn_21129
+void CGameActor::SetUnknown03C4(int value) {
+  this->unknown_03C8 = 0;
+  this->unknown_03C4 = value;
+  this->Slot21(value > 0 ? value : this->GetEffectiveJob(-1));
+  this->Slot15(this->render.unknown_0070, 1);
+}

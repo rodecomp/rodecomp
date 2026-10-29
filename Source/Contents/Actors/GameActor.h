@@ -129,6 +129,7 @@ public:
   int GetShield();
   int GetEffectiveJob(int job);
   int GetUnknown0404Job() const;
+  void SetUnknown03C4(int value);
   void SetUnknown0404(int value);
   void SetUnknown008C(const std::uint32_t* value);
   bool FindRoute(int startX, int startY, int fractionX, int fractionY, int destX, int destY, int speed);
