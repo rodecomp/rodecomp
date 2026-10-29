@@ -738,3 +738,9 @@ int LuaScript::TableInteger(std::string table, int keyType, std::intptr_t key) {
 
   return value;
 }
+
+// OFFSET: 0x0059CD60
+// FUNCTION: fn_02980
+void LuaScript::Register(std::string name, int (*function)(lua_State*)) {
+  lua_register(this->m_state, name.c_str(), function);
+}

@@ -24,6 +24,7 @@ public:
   std::list<int> TableKeys(const char* name, int unused);
   int TableInteger(std::string table, int keyType, std::intptr_t key);
   void Close();
+  void Register(std::string name, int (*function)(lua_State*));
 
 protected:
   /* 0000 */ lua_State* m_state;
