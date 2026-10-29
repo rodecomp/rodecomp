@@ -5,6 +5,8 @@
 
 #include <memory>
 
+struct TextureAllocationDX7;
+
 class DeviceOwnerDX7;
 class CTextureDX7;
 
@@ -31,6 +33,7 @@ public:
   void PrepareErrorDialog() override;
   HRESULT TestDevice() override;
   HRESULT Present(bool option) override;
+  int RefreshRendererCapabilities(int mipmaps, TextureAllocationDX7& allocation, bool& multitexture, CRenderSystemBase* renderSystem);
 
   // INLINED
   DeviceOwnerDX7* Device() const {

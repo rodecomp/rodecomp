@@ -2,12 +2,27 @@
 #include "Render/DX7/DeviceOwnerDX7.h"
 #include "Render/DX7/DirectDrawEnumeration.h"
 #include "Render/DX7/SurfaceDX7.h"
+#include "Render/DX7/TextureAllocationDX7.h"
 #include "Render/DX7/TextureDX7.h"
+#include "Render/DeviceSelection.h"
+#include "Render/RenderAdapter.h"
 
 #include <new>
 
 // GLOBAL: gl_24503
 DeviceOwnerDX7* g_deviceOwnerDX7;
+
+// GLOBAL: gl_24765
+int g_configuredFullscreen;
+
+// GLOBAL: gl_24716
+int g_configuredScreenWidth;
+
+// GLOBAL: gl_24717
+int g_configuredScreenHeight;
+
+// GLOBAL: gl_24764
+int g_configuredBitsPerPixel;
 
 // OFFSET: 0x0056AFE0
 // FUNCTION: fn_02307
@@ -29,6 +44,12 @@ CRenderSystemDX7::~CRenderSystemDX7() {
 // FUNCTION: fn_02316
 void ClearDirectDrawModes() {
   DirectDrawEnumeration::ClearModes();
+}
+
+// OFFSET: 0x0056B5E0
+// FUNCTION: fn_02317
+int CRenderSystemDX7::RefreshRendererCapabilities(int mipmaps, TextureAllocationDX7& allocation, bool& multitexture, CRenderSystemBase* renderSystem) {
+  return this->m_device->RefreshRendererCapabilities(mipmaps, allocation, multitexture, renderSystem);
 }
 
 // OFFSET: 0x0056B5F0
@@ -115,6 +136,8 @@ std::int32_t CRenderSystemDX7::Backend() {
 std::uint32_t CRenderSystemDX7::Width() {
   return this->m_device->width;
 }
+
+// OFFSET: 0x0056C2B0
 
 // OFFSET: 0x0056C4A0
 // FUNCTION: fn_02335
