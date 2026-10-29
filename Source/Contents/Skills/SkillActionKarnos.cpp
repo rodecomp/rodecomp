@@ -568,8 +568,16 @@ int CSkillAction_KR_IRON_HOWLING::Slot02() {
 }
 
 // OFFSET: 0x005B51F0
+// FUNCTION: fn_03385
+EfstActionMessage CEfstAction_IRON_HOWLING::Slot03() {
+  return {LookupMessage(4662), 0xFFFF00};
+}
 
 // OFFSET: 0x005B5220
+// FUNCTION: fn_03386
+EfstActionMessage CEfstAction_IRON_HOWLING::Slot04() {
+  return {LookupMessage(4663), 0xFF};
+}
 
 // OFFSET: 0x005B5250
 // FUNCTION: fn_03387
@@ -584,6 +592,38 @@ int CSkillAction_KR_TYPHOON_WING::Slot02() {
 }
 
 // OFFSET: 0x005B52A0
+// FUNCTION: fn_03390
+void CSkillAction_KR_TYPHOON_WING::Slot12(vector3d position, int level, int argument5) {
+  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(
+    level < 6 ? std::string([] {
+      const std::uint8_t source[] = {0x67, 0xBE, 0x73, 0x7D, 0x94, 0xFE, 0x79, 0x10, 0x64, 0xAE, 0x6D, 0x72, 0xA4, 0xA4, 0x6F, 0x7A, 0x13};
+      thread_local EncryptedName<sizeof(source), 0x4F1791FB1503C713ULL> name(source);
+      return name.Text();
+    }())
+              : std::string([] {
+      const std::uint8_t source[] = {0xA7, 0x94, 0xE7, 0x7D, 0x22, 0x34, 0xCB, 0xFE, 0xA4, 0x84, 0xF9, 0x72, 0x12, 0x6C, 0xDD, 0x96, 0xD3};
+      thread_local EncryptedName<sizeof(source), 0xA1A55B4D1597EDD3ULL> name(source);
+      return name.Text();
+    }())
+  );
+  const int bottomId = CEZ2STREffectMgr::GetInstance()->EffectId(
+    level < 6 ? std::string([] {
+      const std::uint8_t source[] = {0x89, 0x84, 0x0D, 0x9B, 0x8E, 0x7A, 0x97, 0x44, 0x8A, 0x94, 0x13, 0x94,
+                                     0xBE, 0x20, 0x81, 0x2E, 0xA2, 0x9F, 0x12, 0x87, 0x95, 0x7A, 0x94, 0x1B};
+      thread_local EncryptedName<sizeof(source), 0x1BF915E1F37DFDFDULL> name(source);
+      return name.Text();
+    }())
+              : std::string([] {
+      const std::uint8_t source[] = {0xAB, 0xA0, 0x2D, 0x01, 0x7C, 0xFC, 0x91, 0x5E, 0xA8, 0xB0, 0x33, 0x0E,
+                                     0x4C, 0xA4, 0x87, 0x36, 0x80, 0xBB, 0x32, 0x1D, 0x67, 0xFC, 0x92, 0x01};
+      thread_local EncryptedName<sizeof(source), 0x01FF9313695DD9DFULL> name(source);
+      return name.Text();
+    }())
+  );
+
+  g_effectMgr->Spawn(0, effectId, position.x, position.y, position.z, 0, -1, 0, 0);
+  g_effectMgr->Spawn(0, bottomId, position.x, position.y, position.z, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B58A0
 // FUNCTION: fn_03391
@@ -598,14 +638,62 @@ int CSkillAction_KR_WIND_VEIL::Slot02() {
 }
 
 // OFFSET: 0x005B58F0
+// FUNCTION: fn_03394
+EfstActionMessage CEfstAction_WIND_VEIL::Slot03() {
+  return {LookupMessage(4664), 0xFFFF00};
+}
 
 // OFFSET: 0x005B5920
+// FUNCTION: fn_03395
+EfstActionMessage CEfstAction_WIND_VEIL::Slot04() {
+  return {LookupMessage(4665), 0xFF};
+}
 
 // OFFSET: 0x005B5950
+// FUNCTION: fn_03396
+void CEfstAction_WIND_VEIL::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (!actor) {
+    return;
+  }
+
+  g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t source[] = {0xEC, 0xC4, 0x19, 0xAB, 0x8E, 0x4B, 0x88, 0x04, 0xF7, 0xAD};
+    thread_local EncryptedName<sizeof(source), 0x6DED3DD1CF75AD9BULL> name(source);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t source[] = {0xB6, 0xBA, 0xB7, 0x13, 0xC4, 0x03, 0xA6, 0x20, 0xAD, 0x8C, 0xB9, 0x18, 0xEF, 0x01, 0xAC, 0x24, 0xC1};
+    thread_local EncryptedName<sizeof(source), 0x49C3759B77DBD3C1ULL> name(source);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B5CE0
+// FUNCTION: fn_03397
+void CEfstAction_WIND_VEIL::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (!actor) {
+    return;
+  }
+
+  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t source[] = {0xD8, 0x26, 0x47, 0x87, 0x80, 0x63, 0x36, 0x56, 0xC3, 0x4F};
+    thread_local EncryptedName<sizeof(source), 0x3F5315DFE32B4FAFULL> name(source);
+    return name.Text();
+  }()));
+  g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t source[] = {0x9E, 0xBA, 0x51, 0x63, 0x6A, 0x5F, 0x6E, 0x8C, 0x85, 0x8C, 0x5F, 0x68, 0x41, 0x5D, 0x64, 0x88, 0xE9};
+    thread_local EncryptedName<sizeof(source), 0xE50B2935073DD3E9ULL> name(source);
+    return name.Text();
+  }()));
+}
 
 // OFFSET: 0x005B6010
+// FUNCTION: fn_03398
+void CEfstAction_WIND_VEIL::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    this->Slot00(efstId, value, 0, 0, actor, false);
+  }
+}
 
 // OFFSET: 0x005B6030
 // FUNCTION: fn_03399
@@ -614,9 +702,59 @@ int CSkillAction_SKID_KR_CHOP_CHOP::Slot02() {
 }
 
 // OFFSET: 0x005B6330
+// FUNCTION: fn_03401
+void CEfstAction_CHOP_CHOP::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (!actor) {
+    return;
+  }
+
+  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 2466)) {
+    g_effectMgr->Retire(effect, 1);
+  }
+  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 2444)) {
+    g_effectMgr->Retire(effect, 1);
+  }
+  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+           const std::uint8_t source[] = {0xDC, 0xD5, 0xB0, 0x4F, 0x12, 0x4E, 0xEB, 0x5C, 0xCF, 0xE2, 0xAC, 0x4A, 0x2F, 0x2D};
+           thread_local EncryptedName<sizeof(source), 0x33832D4D3FDFBDBFULL> name(source);
+           return name.Text();
+         }()))) {
+    g_effectMgr->Retire(effect, 1);
+  }
+}
 
 // OFFSET: 0x005B6BD0
+// FUNCTION: fn_03404
+bool CWhirlwindEffect::OnProcess() {
+  if (!this->state.parent) {
+    return false;
+  }
+
+  this->render.position.x = this->state.parent->render.position.x;
+  this->render.position.y = this->state.parent->render.position.y;
+  this->render.position.z = this->state.parent->render.position.z;
+
+  const std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+  const int remaining = std::max(static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(this->endTime - now).count()), 0);
+  this->state.parent->render.angle = static_cast<float>(MulDiv(remaining % this->duration, 360, this->duration));
+  if (now < this->endTime) {
+    return true;
+  }
+
+  EffectActor* parent = this->state.parent;
+  const int angle = static_cast<int>(parent->GetInstant(25));
+  parent->render.angle = static_cast<float>(angle) / 1000.0f;
+  return false;
+}
 
 // OFFSET: 0x005B6D00
+// FUNCTION: fn_03405
+void CWhirlwindEffect::SetLifetime(int milliseconds) {
+  this->endTime = std::chrono::steady_clock::now() + std::chrono::milliseconds(milliseconds);
+}
 
 // OFFSET: 0x005B6D50
+// FUNCTION: fn_03406
+void CWhirlwindEffect::SetDuration(int duration) {
+  this->duration = duration;
+}
