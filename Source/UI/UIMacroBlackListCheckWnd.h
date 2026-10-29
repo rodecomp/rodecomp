@@ -18,6 +18,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void ShuffleDigitButtons();
   void Activate(unsigned char state, int duration);
+  void SetCode(unsigned char state, const char* code);
 
   /* 00B4 */ UIBitmapButton* digitButtons[10];
   /* 00DC */ UIBitmapButton* resetButton;
@@ -26,7 +27,11 @@ public:
   /* 00E5 */ char digits[10];
   /* 00F0 */ int inputLength;
   /* 00F4 */ char input[9];
-  /* 00FD */ unsigned char unknown_00FD[0x57];
+  /* 00FD */ char code[9];
+  /* 0108 */ int charSizes[8];
+  /* 0128 */ bool charFlags[8];
+  /* 0130 */ int charColors[8];
+  /* 0150 */ int codeLength;
   /* 0154 */ int duration;
   /* 0158 */ std::uint32_t startTick;
 

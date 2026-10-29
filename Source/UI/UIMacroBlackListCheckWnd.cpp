@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <random>
 #include <string>
@@ -172,6 +173,20 @@ int UIMacroBlackListCheckWnd::SendMsg(
   }
 
   return 0;
+}
+
+// OFFSET: 0x007ECD00
+// FUNCTION: fn_09802
+void UIMacroBlackListCheckWnd::SetCode(unsigned char state, const char* code) {
+  strncpy_s(this->code, sizeof(this->code), code, _TRUNCATE);
+  this->unknown_00E4 = state;
+  std::string text(code);
+  this->codeLength = static_cast<int>(text.size());
+  for (int i = 0; i < this->codeLength; ++i) {
+    this->charSizes[i] = std::rand() % 11 + 14;
+    this->charFlags[i] = std::rand() % 2;
+    this->charColors[i] = std::rand() % 31 + 185;
+  }
 }
 
 // OFFSET: 0x007ECE80
