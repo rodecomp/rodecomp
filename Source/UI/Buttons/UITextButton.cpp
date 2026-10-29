@@ -486,10 +486,43 @@ void UIStaticItem::Slot28(int, int) {
 }
 
 // OFFSET: 0x00892040
+// FUNCTION: fn_11462
+void UIItemMoveInfo::Slot48() {
+  this->m_visibility->Show(276, 0);
+  this->Invalidate();
+}
 
 // OFFSET: 0x00892060
+// FUNCTION: fn_11463
+void UIComboBox::Slot27(int x, int y) {
+  const int previous = this->selected;
+  this->selected = this->LineAt(x, y);
+
+  if (previous != this->selected) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00892100
+// FUNCTION: fn_11465
+void UIComboBoxID::Slot27(int x, int y) {
+  const int previous = this->selected;
+  int line = -1;
+
+  if (x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
+    const int index = y / this->lineHeight + this->topLine;
+
+    if (index >= 0 && static_cast<unsigned>(index) < this->lines.size()) {
+      line = index;
+    }
+  }
+
+  this->selected = line;
+
+  if (previous != line) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00892160
 // FUNCTION: fn_11466
@@ -498,8 +531,48 @@ void UIImgMenu::Slot27(int x, int y) {
 }
 
 // OFFSET: 0x00892170
+// FUNCTION: fn_11467
+void UIItemStoreComboBox::Slot27(int x, int y) {
+  const int previous = this->selected;
+  int line = -1;
+
+  if (x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
+    const int index = y / this->lineHeight + this->topLine;
+
+    if (index >= 0 && static_cast<unsigned>(index) < this->lines.size()) {
+      line = index;
+    }
+  }
+
+  this->selected = line;
+
+  if (previous != line) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00892340
+// FUNCTION: fn_11469
+void UITVTextButton::Slot27(int x, int y) {
+  if (this->m_disabled != 0) {
+    return;
+  }
+
+  if (x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height) {
+    if (this->geometry.unknown_0030 != 1) {
+      this->geometry.unknown_0030 = 1;
+
+      if (this->parent && this->unknown_00B6 == 0) {
+        this->parent->SendMsg(this, 108, this->m_value, 0, 0, 0);
+      }
+    }
+  } else if (this->geometry.unknown_0030 != 0) {
+    this->geometry.unknown_0030 = 0;
+    this->Invalidate();
+    this->unknown_00B4 = 0;
+    this->unknown_00B5 = 0;
+  }
+}
 
 // OFFSET: 0x008923D0
 // FUNCTION: fn_11470
@@ -519,12 +592,34 @@ void UITabControl::Slot27(int x, int y) {
 }
 
 // OFFSET: 0x00892520
+// FUNCTION: fn_11472
+void UITreeView::Slot27(int x, int y) {
+  this->unknown_00AC = x >= 0 && x < this->geometry.width && y >= 0 && y < this->geometry.height;
+}
 
 // OFFSET: 0x00892560
+// FUNCTION: fn_11473
+void UIImgMenu::ResetCursor(int, int) {
+  this->m_context->cursor.Set(2, this->m_context->cursorTick);
+}
 
 // OFFSET: 0x008925A0
+// FUNCTION: fn_11475
+void UIString::ResetCursor(int, int) {
+  if (!this->unknown_0084.empty() || !this->unknown_00AC.empty()) {
+    this->m_context->cursor.Set(2, this->m_context->cursorTick);
+  }
+}
 
 // OFFSET: 0x008925D0
+// FUNCTION: fn_11476
+void UITVTextButton::ResetCursor(int x, int y) {
+  if (this->m_disabled != 0) {
+    UIWindow::ResetCursor(x, y);
+  } else {
+    this->m_context->cursor.Set(0, this->m_context->cursorTick);
+  }
+}
 
 // OFFSET: 0x00892600
 
