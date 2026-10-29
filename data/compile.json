@@ -427,6 +427,7 @@
   "Source/Contents/Skills/AutomaticSkills.cpp": 4,
   "Source/Contents/Skills/ClientSkills.cpp": 4,
   "Source/Contents/Skills/PlayerSkillBundle.cpp": 4,
+  "Source/Contents/Skills/SkillActionInfo.cpp": 4,
   "Source/Contents/Skills/SkillInfo.cpp": 4,
   "Source/Contents/Skills/SkillLevelConfig.cpp": 4,
   "Source/Contents/Skills/SkillLevelRegistry.cpp": 4,

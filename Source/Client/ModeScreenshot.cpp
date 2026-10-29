@@ -111,7 +111,7 @@ void CMode::TakeScreenshot() {
 
   std::string directory = FormatOwnedString("%s\\ScreenShot", g_applicationDirectory);
   if (_access(directory.c_str(), 0) == 0 || _mkdir(directory.c_str()) == 0) {
-    std::string characterName(*reinterpret_cast<const std::string*>(&g_session.unknown_52C4[0x278]));
+    std::string characterName(g_session.m_serverName);
     SanitizeScreenshotName(characterName);
     SanitizeScreenshotName(this->screenshotName);
 

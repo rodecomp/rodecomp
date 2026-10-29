@@ -154,7 +154,8 @@ public:
   /* 52B0 */ const char* const* m_weaponNamesEnd;
   /* 52B4 */ unsigned char unknown_52B4[0x04];
   /* 52B8 */ std::vector<const char*> m_accessoryNames;
-  /* 52C4 */ unsigned char unknown_52C4[0x278];
+  /* 52C4 */ std::vector<const char*> m_robeNames;
+  /* 52D0 */ unsigned char unknown_52D0[0x26C];
   /* 553C */ std::string m_serverName;
   /* 5554 */ unsigned char unknown_5554[4];
   /* 5558 */ int unknown_5558;
@@ -361,6 +362,12 @@ public:
   std::string GetHeadSprName(int job, int sex, int* head);
   std::string GetAccessoryActName(int job, int sex, int head, int accessory);
   std::string GetAccessorySprName(int job, int sex, int head, int accessory);
+  std::string GetRobeActName(int job, int sex, int robe, bool riding, int unused, int costumeJob);
+  std::string GetRobeSprName(int job, int sex, int robe, bool riding, int unused, int costumeJob);
+  std::string GetRobeName(unsigned int robe);
+  int GetItemDescription40(int id);
+  std::uint32_t GetUnknown0420(int index);
+  void GetSkillActionInfo(int skillId, int& effectId, int& motion, int variant, int level);
 };
 
 extern CSession g_session;
@@ -439,6 +446,7 @@ static_assert(offsetof(CSession, unknown_17F0) == 0x17F0);
 static_assert(offsetof(CSession, unknown_2B50) == 0x2B50);
 static_assert(offsetof(CSession, unknown_3500) == 0x3500);
 static_assert(offsetof(CSession, m_accessoryNames) == 0x52B8);
+static_assert(offsetof(CSession, m_robeNames) == 0x52C4);
 static_assert(offsetof(CSession, unknown_5558) == 0x5558);
 static_assert(offsetof(CSession, m_hotkeyScript) == 0x59D8);
 static_assert(offsetof(CSession, unknown_5C68) == 0x5C68);
