@@ -4246,8 +4246,132 @@ bool CEffectPrim::PrimCHOOKGI() {
 }
 
 // OFFSET: 0x00BC4BF0
+// FUNCTION: fn_19845
+bool CEffectPrim::PrimTwilight() {
+  EffectPrimitiveSlot* slots = this->state.slots;
+  FaceCamera(slots);
+  FollowMaster(*this);
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process < 50) {
+      slot.alphaB += 5;
+    }
+
+    if (slot.process > slot.rotStart) {
+      slot.alphaB -= 5;
+    }
+
+    for (int pair = 0; pair < 2; ++pair) {
+      WanderAngleSlow(slot.height[pair * 2], slot.height[pair * 2 + 1]);
+    }
+
+    slot.vecBNow.x += g_sinTable[static_cast<int>(slot.height[0])] * 0.1f;
+    slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.1f;
+    slot.height[8] += 1.0f;
+
+    if (slot.height[8] >= 360.0f) {
+      slot.height[8] -= 360.0f;
+    }
+
+    ++slot.fullDisplayAngle;
+
+    if (slot.fullDisplayAngle >= 360) {
+      slot.fullDisplayAngle -= 360;
+    }
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00BC5440
+// FUNCTION: fn_19847
+bool CEffectPrim::PrimWind() {
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    ++slot.process;
+
+    if (slot.process <= 0) {
+      continue;
+    }
+
+    slot.rotStart += 5;
+
+    if (slot.rotStart >= 360) {
+      slot.rotStart -= 360;
+    }
+
+    slot.fullDisplayAngle += 3;
+
+    if (slot.alphaT == 2) {
+      if (slot.fullDisplayAngle > 180) {
+        slot.fullDisplayAngle = 180;
+      }
+
+      if (slot.process > 50) {
+        --slot.alphaB;
+
+        if (slot.alphaB < 0) {
+          slot.alphaB = 0;
+        }
+      }
+
+      if (slot.process > 12) {
+        slot.distance += 0.1f;
+      }
+    } else {
+      if (slot.fullDisplayAngle > 120) {
+        slot.fullDisplayAngle = 120;
+      }
+
+      if (slot.alphaT == 1 && slot.process > 20) {
+        slot.alphaB -= 2;
+
+        if (slot.alphaB < 0) {
+          slot.alphaB = 0;
+        }
+
+        slot.distance += 0.1f;
+      }
+    }
+
+    if (slot.process > 1400) {
+      if (slot.alphaT != 3) {
+        slot.alphaB -= 3;
+      }
+
+      if (slot.alphaB < 0) {
+        slot.alphaB = 0;
+      }
+    }
+
+    if (slot.alphaT == 2) {
+      if (slot.process < 12) {
+        ++slot.alphaB;
+      }
+    } else if (slot.process < 12) {
+      slot.alphaB += 10;
+
+      if (slot.alphaB > 250) {
+        slot.alphaB = 250;
+      }
+    }
+  }
+
+  return true;
+}
 
 // INLINED
 static __forceinline void RotatePairX(vector3d& point, int angle) {
