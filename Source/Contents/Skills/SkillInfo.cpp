@@ -1171,6 +1171,17 @@ void CEfstAction_GenderChange::Slot01(int efstId, int argument2, int argument3, 
 }
 
 // OFFSET: 0x00777070
+// FUNCTION: fn_08357
+void CEfstAction_DANCING_KNIFE::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (!actor) {
+    return;
+  }
+
+  g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_bottom_begin"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_bottom_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_begin"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_skill_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x007759F0
 // FUNCTION: fn_08341
@@ -1184,6 +1195,19 @@ void CSkillAction_AG_ENERGY_CONVERSION::Slot11(int level, CGameActor* source, CG
 }
 
 // OFFSET: 0x00777B00
+// FUNCTION: fn_08362
+void CSkillAction_SHC_SHADOW_STAB::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  CEZ2STREffectMgr* effects = CEZ2STREffectMgr::GetInstance();
+  int variant = std::rand() % 2;
+  if (variant < 1) {
+    variant = 1;
+  }
+  g_effectMgr->Spawn(source->render.accountId, effects->EffectId(std::format("shadow_stab_hit{}", variant)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x00777E20
 // FUNCTION: fn_08365
