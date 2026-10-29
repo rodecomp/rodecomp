@@ -1788,42 +1788,284 @@ bool CRagEffect::Potion_Berserk() {
 }
 
 // OFFSET: 0x00C52370
+// FUNCTION: fn_20193
+void CRagEffect::GROUNDSAMPLE() {
+  this->render.position = this->state.parent->render.position;
 
-// OFFSET: 0x00C36530
-// FUNCTION: fn_20092
-void CRagEffect::PotionPillar(TextureCache& textures, float heightSpeed, int duration) {
-  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.unknown_11C84->duration = duration;
-  this->state.unknown_11C84->outerSize = 4.5f;
-  this->state.unknown_11C84->innerSize = 4.5f;
-  this->state.unknown_11C84->heightSize = 10.0f;
-  this->state.unknown_11C84->heightSpeed = heightSpeed;
-  this->state.unknown_11C84->heightAccel = 0.01f;
-  this->state.unknown_11C84->alpha = 0.0f;
-  this->state.unknown_11C84->maxAlpha = 90.0f;
-  this->state.unknown_11C84->alphaSpeed = this->state.unknown_11C84->maxAlpha / 20.0f;
-  this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 10;
-  AllocateTextures(*this->state.unknown_11C84);
-  this->state.unknown_11C84->textures[0] = textures.Load("effect\\alpha_down.tga", 0, false, true, false);
+  if (this->state.stateCnt == 0) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 112, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->duration = this->state.duration;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false);
+    this->state.unknown_11C84->slots[0].life = 0;
+    this->state.unknown_11C84->slots[1].life = 0;
+    this->state.unknown_11C84->slots[2].life = 0;
+    this->state.unknown_11C84->slots[3].life = 0;
+    this->state.unknown_11C84->slots[0].life = 1;
+    this->state.unknown_11C84->slots[0].rotStart = 0;
+  }
 }
 
 // OFFSET: 0x00C475C0
+// FUNCTION: fn_20157
+void CRagEffect::CALLZONE(const char* name) {
+  if (this->state.stateCnt == 100) {
+    this->render.position = this->state.parent->render.position;
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 74, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->duration = this->state.duration;
+    this->state.unknown_11C84->totalTexture = 1;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+    this->render.position.y -= 10.0f;
+    this->state.unknown_11C84->slots[0].life = 0;
+    this->state.unknown_11C84->slots[1].life = 0;
+    this->state.unknown_11C84->slots[2].life = 0;
+    this->state.unknown_11C84->slots[3].life = 0;
+    this->state.unknown_11C84->slots[0].life = 1;
+    this->state.unknown_11C84->slots[0].process = 0;
+    this->state.unknown_11C84->slots[0].distance = 8.0f;
+    this->state.unknown_11C84->slots[0].alphaB = 0;
+    this->state.unknown_11C84->slots[0].fullDisplayAngle = 360;
+  }
+}
 
 // OFFSET: 0x00C59490
+// FUNCTION: fn_20212
+bool CRagEffect::JobLvUp50_2(short angle) {
+  this->render.position = this->state.parent->render.position;
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 75, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\magic_blue.tga", 0, false, true, false);
+  this->state.unknown_11C84->size = 4.0f;
+
+  for (int i = 0; i < 4; ++i) {
+    this->state.unknown_11C84->slots[i].life = 1;
+    this->state.unknown_11C84->slots[i].process = 0;
+    this->state.unknown_11C84->slots[i].maxHeight = 1.5f;
+    this->state.unknown_11C84->slots[i].rotStart = static_cast<std::int16_t>(i * 90 + angle);
+    this->state.unknown_11C84->slots[i].alphaB = 0;
+    this->state.unknown_11C84->slots[i].distance = 2.0f;
+    this->state.unknown_11C84->slots[i].height[0] = 1.0f;
+    this->state.unknown_11C84->slots[i].flag1[0] = 0;
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00C629D0
+// FUNCTION: fn_20252
+bool CRagEffect::RunStop(short angle) {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt == 0) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 75, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->duration = this->state.duration;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\magic_blue.tga", 0, false, true, false);
+    this->state.unknown_11C84->size = 4.0f;
+
+    for (int i = 0; i < 4; ++i) {
+      this->state.unknown_11C84->slots[i].life = 1;
+      this->state.unknown_11C84->slots[i].process = 0;
+      this->state.unknown_11C84->slots[i].distance = 2.0f;
+      this->state.unknown_11C84->slots[i].height[0] = 1.0f;
+      this->state.unknown_11C84->slots[i].maxHeight = 0.0f;
+      this->state.unknown_11C84->slots[i].rotStart = static_cast<std::int16_t>(i * 90 + angle);
+      this->state.unknown_11C84->slots[i].alphaB = 0;
+      this->state.unknown_11C84->slots[i].flag1[0] = 1;
+    }
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00C63860
+// FUNCTION: fn_20256
+void CRagEffect::SMA(char flag) {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt == 0) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 120, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->duration = this->state.duration;
+    this->state.unknown_11C84->totalTexture = 0;
+    this->state.unknown_11C84->size = 0.0f;
+    this->state.unknown_11C84->deltaPos.x = this->state.deltaPos[0];
+    this->state.unknown_11C84->deltaPos.y = this->state.deltaPos[1];
+    this->state.unknown_11C84->deltaPos.z = this->state.deltaPos[2];
+    Owner(this->state.unknown_11C84).render.position = this->render.position;
+
+    for (int i = 0; i < 4; ++i) {
+      this->state.unknown_11C84->slots[i].life = 1;
+      this->state.unknown_11C84->slots[i].process = i - 3;
+      this->state.unknown_11C84->slots[i].alphaB = 0;
+      this->state.unknown_11C84->slots[i].vecBNow.x = this->render.position.x;
+      this->state.unknown_11C84->slots[i].vecBNow.z = this->render.position.z;
+      this->state.unknown_11C84->slots[i].vecBNow.y = (this->render.position.y - 10.0f) + static_cast<float>(std::max(rand() % 5, 0));
+      this->state.unknown_11C84->slots[i].rotStart = 0;
+      this->state.unknown_11C84->slots[i].height[1] = 0.8f;
+      this->state.unknown_11C84->slots[i].flag1[0] = flag;
+    }
+  }
+}
 
 // OFFSET: 0x00C592E0
+// FUNCTION: fn_20211
+bool CRagEffect::JobLvUp50(int angle) {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt == 5) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 75, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->duration = this->state.duration;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\magic_green.tga", 0, false, true, false);
+    this->state.unknown_11C84->size = 9.0f;
+
+    for (int i = 0; i < 4; ++i) {
+      this->state.unknown_11C84->slots[i].life = 1;
+      this->state.unknown_11C84->slots[i].process = 0;
+      this->state.unknown_11C84->slots[i].maxHeight = 2.0f;
+      this->state.unknown_11C84->slots[i].rotStart = static_cast<std::int16_t>(i * 90 + angle);
+      this->state.unknown_11C84->slots[i].alphaB = 0;
+      this->state.unknown_11C84->slots[i].distance = 2.0f;
+      this->state.unknown_11C84->slots[i].height[0] = 1.0f;
+      this->state.unknown_11C84->slots[i].flag1[0] = 0;
+    }
+  }
+
+  if (angle == 0) {
+    if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00C5CA50
+// FUNCTION: fn_20229
+void CRagEffect::Map_Pika(const char* name) {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt == 0) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 28, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->duration = this->state.duration;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+    this->state.unknown_11C84->size = 4.0f;
+    this->state.unknown_11C84->slots[0].life = 1;
+    this->state.unknown_11C84->slots[1].life = 1;
+    this->state.unknown_11C84->slots[2].life = 0;
+    this->state.unknown_11C84->slots[3].life = 0;
+    this->state.unknown_11C84->slots[0].distance = 46.0f;
+    this->state.unknown_11C84->slots[1].distance = 46.0f;
+    this->state.unknown_11C84->slots[0].riseAngle = 0;
+    this->state.unknown_11C84->slots[1].riseAngle = 180;
+    this->state.unknown_11C84->slots[0].alphaB = 25;
+    this->state.unknown_11C84->slots[1].alphaB = 25;
+    this->state.unknown_11C84->slots[0].height[0] = -1.0f;
+    this->state.unknown_11C84->slots[1].height[0] = -1.0f;
+  }
+}
 
 // OFFSET: 0x00C5D390
+// FUNCTION: fn_20233
+void CRagEffect::POISON(char flag) {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt == 99999998) {
+    this->state.stateCnt = 0;
+    this->state.duration = 99999999;
+  } else if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 72, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag |= 0x200u;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->totalTexture = 1;
+  AllocateTextures(*this->state.unknown_11C84);
+  const char* textureName = flag == 0 ? "effect\\poison_f.bmp" : "effect\\white02.bmp";
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(textureName, 0, false, true, false);
+  this->render.position.y -= 9.0f;
+  this->state.unknown_11C84->slots[0].life = 0;
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].distance = 30.0f;
+  this->state.unknown_11C84->slots[0].maxHeight = 0.0f;
+  this->state.unknown_11C84->slots[0].alphaB = 0;
+  this->state.unknown_11C84->slots[0].flag1[10] = flag;
+}
 
 // OFFSET: 0x00C61A80
+// FUNCTION: fn_20248
+void CRagEffect::Rainbow(const char* name, int unused) {
+  if (this->state.stateCnt == 0) {
+    const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+    this->render.position = this->state.parent->render.position;
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 93, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->renderFlag = 5;
+    this->state.unknown_11C84->duration = this->state.duration;
+    this->state.unknown_11C84->totalTexture = 1;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+    this->state.unknown_11C84->slots[0].alphaT = static_cast<std::int16_t>(camera->camera.yaw);
+    this->state.unknown_11C84->slots[0].alphaT = static_cast<std::int16_t>(360 - this->state.unknown_11C84->slots[0].alphaT);
+    this->state.unknown_11C84->slots[0].life = 0;
+    this->state.unknown_11C84->slots[1].life = 0;
+    this->state.unknown_11C84->slots[2].life = 0;
+    this->state.unknown_11C84->slots[3].life = 0;
+    this->state.unknown_11C84->slots[0].life = 1;
+    this->state.unknown_11C84->slots[0].process = 0;
+    this->state.unknown_11C84->slots[0].alphaB = 0;
+    this->state.unknown_11C84->slots[0].distance = 50.0f;
+    this->state.unknown_11C84->slots[0].fullDisplayAngle = 180;
+    this->state.unknown_11C84->slots[0].rotStart = 0;
+    this->state.unknown_11C84->slots[0].riseAngle = this->state.unknown_11C84->slots[0].alphaT;
+  }
+}
 
 // OFFSET: 0x00C423D0
+// FUNCTION: fn_20138
+void CRagEffect::BLIND(char flag) {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt == 0) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 71, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->renderFlag |= 0x200u;
+    this->state.unknown_11C84->duration = this->state.duration;
+    this->state.unknown_11C84->totalTexture = 2;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\fullb.tga", 0, false, true, false);
+    this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\white02.bmp", 0, false, true, false);
+    this->render.position.y -= 9.0f;
+    this->state.unknown_11C84->slots[0].life = 0;
+    this->state.unknown_11C84->slots[1].life = 0;
+    this->state.unknown_11C84->slots[2].life = 0;
+    this->state.unknown_11C84->slots[3].life = 0;
+    this->state.unknown_11C84->slots[0].life = 1;
+    this->state.unknown_11C84->slots[0].process = 0;
+
+    if (flag == 0) {
+      this->state.unknown_11C84->slots[0].distance = 65.0f;
+      this->state.unknown_11C84->slots[0].flag1[0] = 0;
+    } else {
+      this->state.unknown_11C84->slots[0].distance = 140.0f - static_cast<float>(flag * 10);
+      this->state.unknown_11C84->slots[0].flag1[0] = 1;
+    }
+
+    this->state.unknown_11C84->slots[0].alphaB = 0;
+  }
+}
 
 // OFFSET: 0x00C47E10
 // FUNCTION: fn_20160
