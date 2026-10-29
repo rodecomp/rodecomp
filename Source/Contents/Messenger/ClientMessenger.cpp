@@ -643,6 +643,14 @@ void EquipmentProperties::CEquipment::CallOnStartEquip(lua_State* state) {
 }
 
 // OFFSET: 0x006AC2A0
+// FUNCTION: fn_06172
+const int& EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown0134(const int& key) {
+  auto found = this->unknown_0134.find(key);
+  if (found == this->unknown_0134.end()) {
+    return key;
+  }
+  return found->second.value;
+}
 
 // OFFSET: 0x006AC3B0
 // FUNCTION: fn_06174
@@ -651,10 +659,73 @@ int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown001C() {
 }
 
 // OFFSET: 0x006AC3C0
+// FUNCTION: fn_06175
+EquipmentProperties::CEquipmentWearable* EquipmentProperties::CEquipmentPropertiesMgr::FindProperty1(const int& key) {
+  auto found = this->properties1.find(key);
+  if (found == this->properties1.end()) {
+    return nullptr;
+  }
+  return found->second;
+}
 
 // OFFSET: 0x006AC440
+// FUNCTION: fn_06176
+EquipmentPropertyMaps* EquipmentProperties::CEquipmentPropertiesMgr::FindUnknown0094(const int& key) {
+  auto found = this->unknown_0094.find(key);
+  if (found == this->unknown_0094.end()) {
+    return nullptr;
+  }
+  return &found->second;
+}
 
 // OFFSET: 0x006AC4C0
+// FUNCTION: fn_06177
+int GetEquipLocationMask(const int& location) {
+  switch (location) {
+  case 1:
+    return 0x1;
+  case 2:
+    return 0x10;
+  case 3:
+    return 0x20;
+  case 4:
+    return 0x2;
+  case 5:
+    return 0x4;
+  case 6:
+    return 0x40;
+  case 7:
+    return 0x8;
+  case 8:
+    return 0x80;
+  case 10:
+    return 0x100;
+  case 11:
+    return 0x200;
+  case 20:
+    return 0x400;
+  case 21:
+    return 0x800;
+  case 22:
+    return 0x1000;
+  case 23:
+    return 0x2000;
+  case 30:
+    return 0x10000;
+  case 31:
+    return 0x20000;
+  case 32:
+    return 0x40000;
+  case 33:
+    return 0x80000;
+  case 34:
+    return 0x100000;
+  case 35:
+    return 0x200000;
+  default:
+    return 0;
+  }
+}
 
 // OFFSET: 0x006AC610
 // FUNCTION: fn_06178
@@ -663,12 +734,181 @@ CLuaInstance& EquipmentProperties::CEquipmentPropertiesMgr::GetScript() {
 }
 
 // OFFSET: 0x006AC620
+// FUNCTION: fn_06179
+int GetFirstJob(int job) {
+  switch (job) {
+  case JT_SWORDMAN:
+  case JT_KNIGHT:
+  case JT_CRUSADER:
+  case JT_SWORDMAN_H:
+  case JT_KNIGHT_H:
+  case JT_CRUSADER_H:
+  case JT_SWORDMAN_B:
+  case JT_KNIGHT_B:
+  case JT_CRUSADER_B:
+  case JT_RUNE_KNIGHT:
+  case JT_RUNE_KNIGHT_H:
+  case JT_ROYAL_GUARD:
+  case JT_ROYAL_GUARD_H:
+  case JT_RUNE_KNIGHT_B:
+  case JT_ROYAL_GUARD_B:
+  case JT_DRAGON_KNIGHT:
+  case JT_IMPERIAL_GUARD:
+    return JT_SWORDMAN;
+  case JT_MAGICIAN:
+  case JT_WIZARD:
+  case JT_SAGE:
+  case JT_MAGICIAN_H:
+  case JT_WIZARD_H:
+  case JT_SAGE_H:
+  case JT_MAGICIAN_B:
+  case JT_WIZARD_B:
+  case JT_SAGE_B:
+  case JT_WARLOCK:
+  case JT_WARLOCK_H:
+  case JT_SORCERER:
+  case JT_SORCERER_H:
+  case JT_WARLOCK_B:
+  case JT_SORCERER_B:
+  case JT_ARCH_MAGE:
+  case JT_ELEMENTAL_MASTER:
+    return JT_MAGICIAN;
+  case JT_ARCHER:
+  case JT_HUNTER:
+  case JT_BARD:
+  case JT_DANCER:
+  case JT_ARCHER_H:
+  case JT_HUNTER_H:
+  case JT_BARD_H:
+  case JT_DANCER_H:
+  case JT_ARCHER_B:
+  case JT_HUNTER_B:
+  case JT_BARD_B:
+  case JT_DANCER_B:
+  case JT_RANGER:
+  case JT_RANGER_H:
+  case JT_MINSTREL:
+  case JT_WANDERER:
+  case JT_MINSTREL_H:
+  case JT_WANDERER_H:
+  case JT_RANGER_B:
+  case JT_MINSTREL_B:
+  case JT_WANDERER_B:
+  case JT_WINDHAWK:
+  case JT_TROUBADOUR:
+  case JT_TROUVERE:
+    return JT_ARCHER;
+  case JT_ACOLYTE:
+  case JT_PRIEST:
+  case JT_MONK:
+  case JT_ACOLYTE_H:
+  case JT_PRIEST_H:
+  case JT_MONK_H:
+  case JT_ACOLYTE_B:
+  case JT_PRIEST_B:
+  case JT_MONK_B:
+  case JT_ARCHBISHOP:
+  case JT_ARCHBISHOP_H:
+  case JT_SURA:
+  case JT_SURA_H:
+  case JT_ARCHBISHOP_B:
+  case JT_SURA_B:
+  case JT_CARDINAL:
+  case JT_INQUISITOR:
+    return JT_ACOLYTE;
+  case JT_MERCHANT:
+  case JT_BLACKSMITH:
+  case JT_ALCHEMIST:
+  case JT_MERCHANT_H:
+  case JT_BLACKSMITH_H:
+  case JT_ALCHEMIST_H:
+  case JT_MERCHANT_B:
+  case JT_BLACKSMITH_B:
+  case JT_ALCHEMIST_B:
+  case JT_MECHANIC:
+  case JT_MECHANIC_H:
+  case JT_GENETIC:
+  case JT_GENETIC_H:
+  case JT_MECHANIC_B:
+  case JT_GENETIC_B:
+  case JT_MEISTER:
+  case JT_BIOLO:
+    return JT_MERCHANT;
+  case JT_THIEF:
+  case JT_ASSASSIN:
+  case JT_ROGUE:
+  case JT_THIEF_H:
+  case JT_ASSASSIN_H:
+  case JT_ROGUE_H:
+  case JT_THIEF_B:
+  case JT_ASSASSIN_B:
+  case JT_ROGUE_B:
+  case JT_GUILLOTINE_CROSS:
+  case JT_GUILLOTINE_CROSS_H:
+  case JT_SHADOW_CHASER:
+  case JT_SHADOW_CHASER_H:
+  case JT_GUILLOTINE_CROSS_B:
+  case JT_SHADOW_CHASER_B:
+  case JT_SHADOW_CROSS:
+  case JT_ABYSS_CHASER:
+    return JT_THIEF;
+  case JT_GUNSLINGER:
+  case JT_REBELLION:
+  case JT_GUNSLINGER_B:
+  case JT_REBELLION_B:
+  case JT_NIGHT_WATCH:
+    return JT_GUNSLINGER;
+  case JT_NINJA:
+  case JT_KAGEROU:
+  case JT_OBORO:
+  case JT_NINJA_B:
+  case JT_KAGEROU_B:
+  case JT_OBORO_B:
+  case JT_SHINKIRO:
+  case JT_SHIRANUI:
+    return JT_NINJA;
+  case JT_TAEKWON:
+  case JT_STAR:
+  case JT_STAR2:
+  case JT_LINKER:
+  case JT_TAEKWON_B:
+  case JT_STAR_B:
+  case JT_LINKER_B:
+  case JT_STAR_EMPEROR:
+  case JT_SOUL_REAPER:
+  case JT_STAR_EMPEROR_B:
+  case JT_SOUL_REAPER_B:
+  case JT_SKY_EMPEROR:
+  case JT_SOUL_ASCETIC:
+    return JT_TAEKWON;
+  case JT_DO_SUMMONER:
+  case JT_DO_SUMMONER_B:
+  case JT_SPIRIT_HANDLER:
+    return JT_DO_SUMMONER;
+  case JT_DRUID:
+  case JT_DRUID_B:
+  case JT_KARNOS:
+  case JT_KARNOS_B:
+  case JT_ALITEA:
+    return JT_DRUID;
+  default:
+    return 0;
+  }
+}
 
 // OFFSET: 0x006AC890
 
 // OFFSET: 0x006ACCB0
 
 // OFFSET: 0x006AD500
+// FUNCTION: fn_06184
+int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown0174(const int& key) {
+  auto found = this->unknown_0174.find(key);
+  if (found == this->unknown_0174.end()) {
+    return 0;
+  }
+  return found->second.value;
+}
 
 // OFFSET: 0x006AD690
 
@@ -681,6 +921,10 @@ std::unordered_map<int, EquipmentValueC>& EquipmentProperties::CEquipmentPropert
 }
 
 // OFFSET: 0x006B7760
+// FUNCTION: fn_06210
+void EquipmentProperties::CEquipmentPropertiesMgr::SetWindow(UIWindow* window) {
+  this->unknown_0020 = window;
+}
 
 // OFFSET: 0x006BCB90
 
