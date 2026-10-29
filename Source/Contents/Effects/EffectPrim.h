@@ -16,7 +16,7 @@ struct CEffectPrim : CRenderObject {
   bool UpdateStoneCurse();
   void Prim3DCircle();
   bool Prim3DParticle();
-  bool UpdateCoin();
+  bool Prim3DParticleGravity();
   bool Prim3DParticleNoMaster();
   bool Prim3DParticleOrbit();
   bool Prim3DParticleSpline();

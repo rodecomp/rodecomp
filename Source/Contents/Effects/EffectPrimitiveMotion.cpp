@@ -2389,7 +2389,7 @@ bool CEffectPrim::Prim3DParticle() {
 
 // OFFSET: 0x00BB75B0
 // FUNCTION: fn_19780
-bool CEffectPrim::UpdateCoin() {
+bool CEffectPrim::Prim3DParticleGravity() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   const CRagEffect* master = this->state.master;
   this->state.origin.z = master->render.position.z + this->state.velocity.z;

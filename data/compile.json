@@ -482,7 +482,7 @@
   "Source/Network/ClientKeepalive.cpp": 0,
   "Source/Network/ClientOptionPacket.cpp": 0,
   "Source/Network/Connection/Connection.cpp": 0,
-  "Source/Network/Connection/ConnectionBuffer.cpp": 0,
+  "Source/Network/Connection/PacketQueue.cpp": 0,
   "Source/Network/Connection/ConnectionRuntime.cpp": 0,
   "Source/Network/Http/CURLMgr.cpp": 0,
   "Source/Network/Http/CURLPostHander.cpp": 0,

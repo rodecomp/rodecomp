@@ -15,9 +15,9 @@
 // OFFSET: 0x00C7C110
 // FUNCTION: fn_20382
 CConnection::CConnection() : m_socket(INVALID_SOCKET), m_deferred(0), m_sendDeadline(0) {
-  this->m_input.Reset(0xA000);
-  this->m_output.Reset(0xA000);
-  this->m_pending.Reset(0xA000);
+  this->m_input.Init(0xA000);
+  this->m_output.Init(0xA000);
+  this->m_pending.Init(0xA000);
 }
 
 // OFFSET: 0x00C7C280
@@ -37,16 +37,16 @@ CRagConnection::CRagConnection() : unknown_006C(0) {
 bool CConnection::Connect(const ConnectionEndpoint& endpoint) {
   this->m_deferred = 0;
 
-  while (this->m_pending.Available() != 0) {
-    const int bytes = this->m_pending.Available();
-    this->m_output.Append(bytes, this->m_pending.Data());
-    this->m_pending.Consume(bytes);
+  while (this->m_pending.GetSize() != 0) {
+    const int bytes = this->m_pending.GetSize();
+    this->m_output.InsertData(bytes, this->m_pending.Data());
+    this->m_pending.RemoveData(bytes);
     this->Flush();
   }
 
-  this->m_input.Reset(0xA000);
-  this->m_output.Reset(0xA000);
-  this->m_pending.Reset(0xA000);
+  this->m_input.Init(0xA000);
+  this->m_output.Init(0xA000);
+  this->m_pending.Init(0xA000);
   this->m_socket = socket(AF_INET, SOCK_STREAM, 0);
 
   if (this->m_socket == INVALID_SOCKET) {
@@ -101,8 +101,8 @@ void CConnection::Close() {
   if (this->m_socket != INVALID_SOCKET) {
     closesocket(this->m_socket);
     this->m_socket = INVALID_SOCKET;
-    this->m_output.Reset(0xA000);
-    this->m_pending.Reset(0xA000);
+    this->m_output.Init(0xA000);
+    this->m_pending.Init(0xA000);
   }
 
   this->m_status = 0;
@@ -130,7 +130,7 @@ bool CConnection::Receive() {
         continue;
       }
     } else if (bytes > 0) {
-      this->m_input.Append(bytes, data);
+      this->m_input.InsertData(bytes, data);
       continue;
     }
 
@@ -143,7 +143,7 @@ bool CConnection::Receive() {
 // FUNCTION: fn_20398
 bool CConnection::Flush() {
   while (this->m_sendDeadline < timeGetTime()) {
-    if (this->m_output.Available() == 0) {
+    if (this->m_output.GetSize() == 0) {
       return true;
     }
 
@@ -158,9 +158,9 @@ bool CConnection::Flush() {
         return true;
       }
 
-      const int sent = g_connectionSend(this->m_socket, this->m_output.Data(), this->m_output.Available(), 0);
+      const int sent = g_connectionSend(this->m_socket, this->m_output.Data(), this->m_output.GetSize(), 0);
       if (sent != SOCKET_ERROR) {
-        this->m_output.Consume(sent);
+        this->m_output.RemoveData(sent);
       } else {
         const int error = WSAGetLastError();
         if (error != WSAEWOULDBLOCK && error != WSAENOTCONN) {
@@ -212,7 +212,7 @@ void CConnection::Send(int bytes, const void* data) {
     return;
   }
 
-  this->m_output.Append(bytes, data);
+  this->m_output.InsertData(bytes, data);
   this->Flush();
 }
 
@@ -220,11 +220,11 @@ void CConnection::Send(int bytes, const void* data) {
 // FUNCTION: fn_20401
 int CConnection::Read(void* output, int bytes, unsigned char exact) {
   if (exact != 0) {
-    return this->m_input.Read(bytes, output) ? bytes : 0;
+    return this->m_input.GetData(bytes, output) ? bytes : 0;
   }
 
-  const int available = std::min(bytes, this->m_input.Available());
-  this->m_input.Read(available, output);
+  const int available = std::min(bytes, this->m_input.GetSize());
+  this->m_input.GetData(available, output);
   return available;
 }
 
@@ -232,7 +232,7 @@ int CConnection::Read(void* output, int bytes, unsigned char exact) {
 // FUNCTION: fn_20402
 bool CConnection::ReadPacket(void* output, unsigned short* bytes, const PacketLengths& lengths) {
   unsigned short id;
-  if (!this->m_input.Peek(2, &id)) {
+  if (!this->m_input.PeekData(2, &id)) {
     return false;
   }
 
@@ -241,14 +241,14 @@ bool CConnection::ReadPacket(void* output, unsigned short* bytes, const PacketLe
     size = static_cast<unsigned short>(lengths.FixedLength(id));
   } else {
     unsigned header;
-    if (!this->m_input.Peek(4, &header)) {
+    if (!this->m_input.PeekData(4, &header)) {
       return false;
     }
 
     size = static_cast<unsigned short>(header >> 16);
   }
 
-  if (!this->m_input.Read(size, output)) {
+  if (!this->m_input.GetData(size, output)) {
     return false;
   }
 
@@ -268,29 +268,29 @@ void CConnection::Prepend(int bytes, const void* data) {
 // OFFSET: 0x00C7CDB0
 // FUNCTION: fn_20403
 void CConnection::ResetDeferred() {
-  this->m_pending.Reset(0xA000);
+  this->m_pending.Init(0xA000);
 }
 
 // OFFSET: 0x00C7CDC0
 // FUNCTION: fn_20404
 void CConnection::ResetQueue() {
-  this->m_input.Reset(0xA000);
-  this->m_output.Reset(0xA000);
-  this->m_pending.Reset(0xA000);
+  this->m_input.Init(0xA000);
+  this->m_output.Init(0xA000);
+  this->m_pending.Init(0xA000);
 }
 
 // OFFSET: 0x00C7CED0
 // FUNCTION: fn_20407
-void CConnection::SetDeferred(unsigned char value) {
+void CConnection::SetBlock(unsigned char value) {
   this->m_deferred = value;
   if (value != 0) {
     return;
   }
 
-  while (this->m_pending.Available() != 0) {
-    const int bytes = this->m_pending.Available();
-    this->m_output.Append(bytes, this->m_pending.Data());
-    this->m_pending.Consume(bytes);
+  while (this->m_pending.GetSize() != 0) {
+    const int bytes = this->m_pending.GetSize();
+    this->m_output.InsertData(bytes, this->m_pending.Data());
+    this->m_pending.RemoveData(bytes);
     this->Flush();
   }
 }

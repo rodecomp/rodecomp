@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_NETWORK_CONNECTION_CONNECTION_H
 #define RAGNAROK_SOURCE_NETWORK_CONNECTION_CONNECTION_H
 
-#include "Network/Connection/ConnectionBuffer.h"
+#include "Network/Connection/PacketQueue.h"
 
 #include <winsock2.h>
 
@@ -30,14 +30,14 @@ public:
   void Prepend(int bytes, const void* data);
   void ResetDeferred();
   void ResetQueue();
-  void SetDeferred(unsigned char value);
+  void SetBlock(unsigned char value);
 
   // INLINED
   SOCKET NativeSocket() const {
     return this->m_socket;
   }
   // INLINED
-  ConnectionBuffer& Input() {
+  CPacketQueue& Input() {
     return this->m_input;
   }
   // INLINED
@@ -51,9 +51,9 @@ protected:
   /* 0018 */ unsigned char m_deferred;
   /* 001C */ unsigned m_sendDeadline;
   /* 0020 */ int m_status;
-  /* 0024 */ ConnectionBuffer m_output;
-  /* 003C */ ConnectionBuffer m_input;
-  /* 0054 */ ConnectionBuffer m_pending;
+  /* 0024 */ CPacketQueue m_output;
+  /* 003C */ CPacketQueue m_input;
+  /* 0054 */ CPacketQueue m_pending;
 };
 
 class CRagConnection : public CConnection {
