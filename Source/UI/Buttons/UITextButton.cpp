@@ -1071,6 +1071,12 @@ void UITVTextButton::Slot26(int x, int y) {
 }
 
 // OFFSET: 0x00890400
+// FUNCTION: fn_11411
+void UIBmpRadioBtn::Slot25(int, int) {
+  if (this->parent) {
+    this->parent->SendMsg(this, 6, this->geometry.id, this->m_value, 0, 0);
+  }
+}
 
 // OFFSET: 0x00890450
 // FUNCTION: fn_11413
