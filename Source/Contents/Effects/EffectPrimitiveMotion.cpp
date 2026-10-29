@@ -5520,3 +5520,107 @@ bool CEffectPrim::PrimSpiralFade() {
 
   return true;
 }
+
+// OFFSET: 0x00BE7C40
+// FUNCTION: fn_19941
+bool CEffectPrim::Prim3DSlotParticle() {
+  EffectPrimitiveState& particle = this->state;
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = particle.slots[index];
+    if (slot.life == 1) {
+      const float step = slot.height[0];
+      slot.vecBNow.x += step * g_cosTable[slot.rotStart];
+      slot.vecBNow.z += step * g_sinTable[slot.rotStart];
+    }
+  }
+
+  const vector3d& anchor = particle.master->render.position;
+  particle.orgPos = {particle.deltaPos2.x + anchor.x, anchor.y + particle.deltaPos2.y, anchor.z + particle.deltaPos2.z};
+
+  if (particle.stateCnt == particle.changePoint) {
+    particle.speed3d = particle.changeSpeed3d;
+    particle.deltaPosAccel = particle.changeAccel3d;
+  }
+
+  particle.speed = particle.accel + particle.speed;
+  particle.sizeSpeed = particle.sizeAccel + particle.sizeSpeed;
+
+  if ((particle.pattern & 0x400u) != 0) {
+    particle.speed3d.z = particle.deltaPosAccel.z + particle.speed3d.z;
+    particle.speed3d.x = particle.deltaPosAccel.x + particle.speed3d.x;
+    particle.speed3d.y = particle.deltaPosAccel.y + particle.speed3d.y;
+    particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
+    particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
+    particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
+    particle.roll = particle.rollSpeed + particle.roll;
+    particle.size = particle.size + particle.sizeSpeed;
+  } else if ((particle.pattern & 1u) != 0 || particle.stateCnt > particle.fadeInCnt) {
+    particle.speed3d = Forward(particle.speed, particle.transform);
+    particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
+    particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
+    particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
+    particle.size = particle.sizeSpeed + particle.size;
+    particle.roll = particle.rollSpeed + particle.roll;
+  }
+
+  auto& rotation = *reinterpret_cast<struct matrix*>(particle.transform);
+
+  if ((particle.pattern & 2u) != 0) {
+    if (particle.stateCnt % static_cast<int>(particle.chCnt) == 0) {
+      const int delay = std::rand() % 8;
+      particle.chCnt = static_cast<std::uint32_t>((delay >= 0 ? delay : 0) + 12);
+      const int driftX = std::rand() % 5;
+      particle.deltaPos3.x = static_cast<float>((driftX >= 0 ? driftX : 0) + 5) / 100.0f;
+      const int driftZ = std::rand() % 5;
+      particle.deltaPos3.z = static_cast<float>((driftZ >= 0 ? driftZ : 0) + 5) / 100.0f;
+      const int flipX = std::rand() % 2;
+      if ((flipX >= 0 ? flipX : 0) == 0) {
+        particle.deltaPos3.x *= -1.0f;
+      }
+      const int flipZ = std::rand() % 2;
+      if ((flipZ >= 0 ? flipZ : 0) == 0) {
+        particle.deltaPos3.z *= -1.0f;
+      }
+    }
+    particle.deltaPos.x = particle.deltaPos3.x + particle.deltaPos.x;
+  }
+
+  if ((particle.pattern & 4u) != 0 && particle.stateCnt % static_cast<int>(particle.chCnt) == 0) {
+    const int burst = std::rand() % 35;
+    particle.speed = static_cast<float>((burst >= 0 ? burst : 0) + 15) / 100.0f;
+    const int yaw = std::rand() % 80;
+    particle.longitude = static_cast<float>(yaw >= 0 ? yaw : 0) + (particle.longitude - 40.0f);
+    const int pitch = std::rand() % 80;
+    particle.latitude = static_cast<float>(pitch >= 0 ? pitch : 0) + (particle.latitude - 40.0f);
+    rotation.MakeYRotation(GetRadian(static_cast<int>(particle.longitude)));
+    rotation.AppendXRotation(GetRadian(static_cast<int>(particle.latitude)));
+    const int delay = std::rand() % 10;
+    particle.chCnt = static_cast<std::uint32_t>((delay >= 0 ? delay : 0) + 5);
+  }
+
+  if ((particle.pattern & 8u) != 0 && particle.stateCnt % static_cast<int>(particle.chCnt) == 0) {
+    const int yaw = std::rand() % 10;
+    particle.longitude = static_cast<float>(yaw >= 0 ? yaw : 0) + (particle.longitude - 5.0f);
+    const int pitch = std::rand() % 10;
+    particle.latitude = static_cast<float>(pitch >= 0 ? pitch : 0) + (particle.latitude - 5.0f);
+    rotation.MakeXRotation(GetRadian(static_cast<int>(particle.latitude)));
+    rotation.AppendYRotation(GetRadian(static_cast<int>(particle.longitude)));
+    const int delay = std::rand() % 15;
+    particle.chCnt = static_cast<std::uint32_t>((delay >= 0 ? delay : 0) + 5);
+  }
+
+  this->render.position = {particle.orgPos.x + particle.deltaPos.x, particle.orgPos.y + particle.deltaPos.y, particle.orgPos.z + particle.deltaPos.z};
+
+  if ((particle.pattern & 0x100u) != 0 && 3.0f >= this->CalcDist(particle.master->state.deltaPos[0], particle.master->state.deltaPos[2])) {
+    return false;
+  }
+
+  if ((particle.pattern & 0x20u) != 0) {
+    particle.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+  }
+
+  particle.ProcessAlpha();
+  this->ShiftSegment();
+  return this->AnimMotion();
+}
