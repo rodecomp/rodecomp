@@ -1,6 +1,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
@@ -23,6 +24,13 @@ public:
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
 
+class CSkillAction_CD_DIVINUS_FLOS : public CSkillAction {
+public:
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
 class CEfstAction_GenderChange : public CEfstAction {
 public:
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
@@ -36,10 +44,12 @@ public:
 class CSkillAction_RA_UNLIMIT : public CSkillAction {
 public:
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_UNLIMIT : public CEfstAction {
 public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
 
@@ -51,11 +61,13 @@ public:
 
 class CEfstAction_DANCING_KNIFE : public CEfstAction {
 public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
 
 class CSkillAction_SHC_SHADOW_EXCEED : public CSkillAction {
 public:
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -70,16 +82,75 @@ public:
 class CSkillAction_ABC_CHASING_BREAK : public CSkillAction {
 public:
   bool Slot07() override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_ABC_CHASING_SHOT : public CSkillAction {
 public:
   bool Slot07() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot15(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_ABC_ABYSS_FLAME_ATK : public CSkillAction {
 public:
   bool Slot03(int argument) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_AG_ENERGY_CONVERSION : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+};
+
+class CSkillAction_SHC_ENCHANTING_SHADOW : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+};
+
+class CSkillAction_SHC_IMPACT_CRATER : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_SHC_CROSS_SLASH : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_SHC_DANCING_KNIFE : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_ABC_HIT_AND_SLIDING : public CSkillAction {
+public:
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_ABC_ABYSS_FLAME : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_EM_PSYCHIC_STREAM : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_IQ_BLAZING_FLAME_BLAST : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
 // GLOBAL: gl_24640
@@ -501,6 +572,14 @@ void CEfstAction_ChangeSize::Slot00(int, int value, int, int, CRenderObject* act
   *reinterpret_cast<float*>(&effect->unknown_0048) = static_cast<float>(value) * 0.01f;
 }
 
+// OFFSET: 0x007760D0
+// FUNCTION: fn_08344
+void CSkillAction_CD_DIVINUS_FLOS::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("divinus_flos_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
 // OFFSET: 0x007747B0
 // FUNCTION: fn_08327
 void CEfstAction_ChangeSize::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
@@ -707,3 +786,262 @@ bool CSkillActionMgr::ActionSlot04(int skillId) {
 bool CSkillActionMgr::HasEfstAction(int efstId) {
   return this->m_efstActions.find(efstId) != this->m_efstActions.end();
 }
+
+// OFFSET: 0x00774FF0
+// FUNCTION: fn_08336
+void CSkillAction_RA_UNLIMIT::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("unlimit_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("unlimit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00775730
+// FUNCTION: fn_08340
+void CSkillAction_AG_ENERGY_CONVERSION::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_conversion_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_conversion_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x00775BC0
+// FUNCTION: fn_08342
+void CSkillAction_CD_DIVINUS_FLOS::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("divinus_flos_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("divinus_flos_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x00775E60
+// FUNCTION: fn_08343
+void CSkillAction_CD_DIVINUS_FLOS::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("divinus_flos"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("divinus_flos_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00776260
+// FUNCTION: fn_08345
+void CSkillAction_SHC_ENCHANTING_SHADOW::Slot08(int level, CGameActor* source) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("enchanting_shadow_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("enchanting_shadow"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00776550
+// FUNCTION: fn_08349
+void CSkillAction_SHC_IMPACT_CRATER::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("impact_crater"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("impact_crater_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x007767C0
+// FUNCTION: fn_08350
+void CSkillAction_SHC_IMPACT_CRATER::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("impact_crater_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00776950
+// FUNCTION: fn_08352
+void CSkillAction_SHC_CROSS_SLASH::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("cross_slash"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00776AC0
+// FUNCTION: fn_08353
+void CSkillAction_SHC_CROSS_SLASH::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("cross_slash_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00776C40
+// FUNCTION: fn_08355
+void CSkillAction_SHC_DANCING_KNIFE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x00776EF0
+// FUNCTION: fn_08356
+void CSkillAction_SHC_DANCING_KNIFE::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00777C40
+// FUNCTION: fn_08363
+void CSkillAction_SHC_SHADOW_EXCEED::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shadow_exceed_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x007783F0
+// FUNCTION: fn_08373
+void CSkillAction_ABC_CHASING_BREAK::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_break_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00778590
+// FUNCTION: fn_08376
+void CSkillAction_ABC_CHASING_SHOT::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_shot_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_shot_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x00778AD0
+// FUNCTION: fn_08378
+void CSkillAction_ABC_CHASING_SHOT::Slot15(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_shot_hitsub"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00778C50
+// FUNCTION: fn_08379
+void CSkillAction_ABC_CHASING_SHOT::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_shot_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00778DD0
+// FUNCTION: fn_08381
+void CSkillAction_ABC_HIT_AND_SLIDING::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hit_and_sliding_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00778F50
+// FUNCTION: fn_08382
+void CSkillAction_ABC_ABYSS_FLAME::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("abyss_flame_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("abyss_flame_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x007791F0
+// FUNCTION: fn_08383
+void CSkillAction_ABC_ABYSS_FLAME::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("abyss_flame"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00779360
+// FUNCTION: fn_08384
+void CSkillAction_ABC_ABYSS_FLAME::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("abyss_flame_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x007794E0
+// FUNCTION: fn_08386
+void CSkillAction_ABC_ABYSS_FLAME_ATK::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("abyss_flame_target"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00779660
+// FUNCTION: fn_08387
+void CSkillAction_ABC_ABYSS_FLAME_ATK::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("abyss_flame_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00779870
+// FUNCTION: fn_08388
+void CSkillAction_EM_PSYCHIC_STREAM::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("psychic_stream_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x00779A00
+// FUNCTION: fn_08389
+void CSkillAction_EM_PSYCHIC_STREAM::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("psychic_stream"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("psychic_stream_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00779C80
+// FUNCTION: fn_08390
+void CSkillAction_EM_PSYCHIC_STREAM::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("psychic_stream_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00779E30
+// FUNCTION: fn_08392
+void CSkillAction_IQ_BLAZING_FLAME_BLAST::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("blazing_flame_blast_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("blazing_flame_blast_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x0077A2A0
+// FUNCTION: fn_08394
+void CSkillAction_IQ_BLAZING_FLAME_BLAST::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("blazing_flame_blast_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x007754D0
+
+// OFFSET: 0x00777520

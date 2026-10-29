@@ -19,6 +19,8 @@ struct EZ2STREffectInfo {
 class CEZ2STREffectMgr : public Singleton<CEZ2STREffectMgr> {
 public:
   /* 0004 */ std::map<std::string, EZ2STREffectInfo> effects;
+
+  int EffectId(const std::string& name);
 };
 
 class EffectResourceSwitcher : public CEffect {

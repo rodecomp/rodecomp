@@ -2,6 +2,7 @@
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
 
+#include <cctype>
 #include <new>
 #include <string>
 
@@ -148,4 +149,20 @@ CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::GetInstance() {
   }
 
   return s_instance;
+}
+
+// OFFSET: 0x00700A90
+// FUNCTION: fn_06989
+int CEZ2STREffectMgr::EffectId(const std::string& name) {
+  std::string key = name;
+  for (char& c : key) {
+    c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+  }
+
+  const auto found = this->effects.lower_bound(key);
+  if (found != this->effects.end() && key.compare(found->first) >= 0) {
+    return found->second.id + 10000;
+  }
+
+  return -1;
 }
