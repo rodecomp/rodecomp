@@ -1,3 +1,4 @@
+#include "UI/Quest/UIRenewQuestUI.h"
 #include "Utility/Cipher/XorBytes.h"
 
 #include <cstddef>
@@ -405,3 +406,29 @@ const char* EncryptedName<52, 0xBFF5C517A1A77F59ULL>::Text() {
 // OFFSET: 0x00A5AF00
 
 // OFFSET: 0x00A5AFF0
+
+// OFFSET: 0x00A66BE0
+
+// OFFSET: 0x00A66C50
+// FUNCTION: fn_16620
+void RenewQuestUI::CUIQuestList::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x00A66C60
+// FUNCTION: fn_16621
+void CUIRenewQuestUI::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x00A66F40
+
+// OFFSET: 0x00A66F80
+
+// OFFSET: 0x00A66FC0
+// FUNCTION: fn_16627
+void RenewQuestUI::CUIQuestItem::Slot48() {
+  this->pressed = 0;
+  UIWindow::Move(this->baseX, this->baseY);
+  this->Invalidate();
+}
