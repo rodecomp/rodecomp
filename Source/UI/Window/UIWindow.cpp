@@ -1,6 +1,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Contents/NavigationManager.h"
 #include "Client/Mode/ModeCursor.h"
@@ -10,6 +11,7 @@
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
+#include "Render/Textures/SpritePixels.h"
 #include "Render/Text/TextContext.h"
 #include "Render/Textures/Texture.h"
 #include "Resource/Bitmap/BitmapImage.h"
@@ -38,6 +40,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <span>
 #include <string>
 #include <windows.h>
 #include <timeapi.h>
@@ -1615,4 +1618,94 @@ std::string UINavigationV4Wnd::MobName(CNavi_Object* mob) {
 
   name.append(grade);
   return name;
+}
+
+// OFFSET: 0x005C74B0
+// FUNCTION: fn_03617
+std::string UINavigationV4Wnd::ObjectLabel(int type, void* object) {
+  char suffix[50];
+  std::memset(suffix, 0, sizeof(suffix));
+  std::string label;
+
+  if (type == 2) {
+    label.assign(static_cast<CNavi_Object*>(object)->GetInfo()->GetName());
+    NaviCell first;
+    NaviCell second;
+    std::sprintf(suffix, " [%d,%d]", static_cast<CNavi_Object*>(object)->GetCell(&second)->x, static_cast<CNavi_Object*>(object)->GetCell(&first)->y);
+    label.append(suffix);
+  } else if (type == 3) {
+    label.assign(static_cast<CNavi_Object*>(object)->GetInfo()->GetName());
+    const int level = static_cast<CNavi_Object*>(object)->GetFlag();
+    if (level > 0) {
+      std::string text;
+      text.assign(LookupMessage(2453));
+      if (level > 99) {
+        text.assign(LookupMessage(2449));
+      } else if (level > 49) {
+        text = LookupMessage(2450);
+      } else if (level >= 20 && level <= 49) {
+        text = LookupMessage(2451);
+      } else if (level >= 5 && level <= 19) {
+        text = LookupMessage(2452);
+      }
+
+      std::sprintf(suffix, " (%s)", text.c_str());
+    }
+
+    label.append(suffix);
+  } else if (type == 1) {
+    label.assign(static_cast<CNaviInfo*>(object)->GetTitle());
+  } else if (type == 0) {
+    label.assign(static_cast<CNaviInfo*>(object)->GetTitle());
+  }
+
+  return label;
+}
+
+// OFFSET: 0x00A7C580
+// FUNCTION: fn_16947
+void UIWindow::DrawActionSprite(
+  const CSprRes* sprite, const CActRes* action, int x, int y, int width, int height, int interval, bool scaled, const CBitmapRes* background
+) {
+  if (!sprite || !action) {
+    return;
+  }
+
+  const std::vector<ActionFrame>& frames = action->Animation(0);
+  if (frames.empty()) {
+    return;
+  }
+
+  int offsetX;
+  int offsetY;
+  float scale;
+  if (!this->FitSprite(&frames[0], sprite, width, height, &offsetX, &offsetY, &scale)) {
+    return;
+  }
+
+  if (!scaled) {
+    scale = 1.0f;
+  }
+
+  if (background) {
+    const BitmapImage& image = background->image;
+    this->geometry.surface->Copy(offsetX - image.width / 2 + x, offsetY - image.height / 2 + y, image.width, image.height, image.pixels, true);
+  }
+
+  const int count = static_cast<int>(frames.size());
+  int index = 0;
+  if (interval > 0) {
+    const float elapsed = static_cast<float>(timeGetTime() % static_cast<unsigned>(interval));
+    const int frame = std::max(static_cast<int>(elapsed * (static_cast<float>(count) / static_cast<float>(interval))), 0);
+    index = count > frame ? frame : count - 1;
+  }
+
+  if (frames.size() > static_cast<unsigned>(index)) {
+    const ActionFrame& frame = frames[index];
+    const SpriteRleImage* const* images[2] = {sprite->images[0].data(), sprite->images[1].data()};
+    this->geometry.surface->DrawScaledSprite(
+      x, y, width, height, std::span<const SpriteFrameCell>(frame.cells), images, frame.cellCount, offsetX, offsetY, scale, nullptr,
+      this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
+    );
+  }
 }

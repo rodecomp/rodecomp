@@ -26,6 +26,7 @@ public:
   void LayoutWithDetails();
   bool IsListShown() const;
   std::string ObjectName(int type, void* object);
+  std::string ObjectLabel(int type, void* object);
   std::string MobName(CNavi_Object* mob);
 
   /* 00B4 */ UIWindow* unknown_00B4;
