@@ -301,6 +301,7 @@
   "Source/Contents/Camera/CameraShake.cpp": 3,
   "Source/Contents/Camera/CameraSmoothing.cpp": 3,
   "Source/Contents/CashEmotionMgr.cpp": 4,
+  "Source/Contents/ClanInfo.cpp": 4,
   "Source/Contents/ClientItemLists.cpp": 4,
   "Source/Contents/ClientState.cpp": 4,
   "Source/Contents/ClientTiming.cpp": 4,
