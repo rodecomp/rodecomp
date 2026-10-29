@@ -212,6 +212,16 @@ int CBarterMarketItemMgr::GetAllItemCount()
 }
 
 // OFFSET: 0x005D8170
+// FUNCTION: fn_03736
+int CBarterMarketItemMgr::GetAllItemValueById(int id)
+{
+  for (std::list<BarterMarketItem>::iterator it = this->allItems.begin(); it != this->allItems.end(); ++it) {
+    if (it->id == id) {
+      return it->value;
+    }
+  }
+  return 0;
+}
 
 // OFFSET: 0x005D8250
 // FUNCTION: fn_03738
@@ -295,8 +305,28 @@ std::vector<BarterMarketEntry>* CExpandedBarterMarketItemMgr::GetItems()
 }
 
 // OFFSET: 0x005DA3B0
+// FUNCTION: fn_03765
+int CExpandedBarterMarketItemMgr::GetItemValueById(int id)
+{
+  for (std::vector<BarterMarketEntry>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
+    if (it->id == id) {
+      return it->value;
+    }
+  }
+  return 0;
+}
 
 // OFFSET: 0x005DA5E0
+// FUNCTION: fn_03768
+float CExpandedBarterMarketItemMgr::GetItemFactorById(int id)
+{
+  for (std::vector<BarterMarketEntry>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
+    if (it->id == id) {
+      return it->factor;
+    }
+  }
+  return -1.0f;
+}
 
 // OFFSET: 0x005DA610
 // FUNCTION: fn_03769
