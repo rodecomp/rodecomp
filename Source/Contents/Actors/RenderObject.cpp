@@ -1136,3 +1136,32 @@ int CGameActor::MountType() {
     return 0;
   }
 }
+
+// OFFSET: 0x00CC2200
+// FUNCTION: fn_21137
+void RenderBounds::Set(float left, float top, float right, float bottom, float offset) {
+  this->left = left;
+  this->right = right;
+  this->top = top;
+  this->bottom = bottom;
+  this->offset = offset;
+}
+
+// OFFSET: 0x00CC4210
+// FUNCTION: fn_21160
+void RenderBounds::Include(const float* box) {
+  const float minX = box[1] < box[3] ? box[1] : box[3];
+  const float maxX = box[1] > box[3] ? box[1] : box[3];
+  if (this->left > minX) {
+    this->left = minX;
+  }
+  if (this->top > box[0]) {
+    this->top = box[0];
+  }
+  if (maxX > this->right) {
+    this->right = maxX;
+  }
+  if (box[2] > this->bottom) {
+    this->bottom = box[2];
+  }
+}

@@ -9,6 +9,17 @@
 
 struct SpriteQuad;
 
+struct RenderBounds {
+  /* 0000 */ float left;
+  /* 0004 */ float top;
+  /* 0008 */ float right;
+  /* 000C */ float bottom;
+  /* 0010 */ float offset;
+
+  void Set(float left, float top, float right, float bottom, float offset);
+  void Include(const float* box);
+};
+
 class CRenderObject : public CGameObject {
 public:
   CRenderObject();
@@ -62,6 +73,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(RenderBounds) == 0x14);
 static_assert(sizeof(CRenderObject) == 0x138);
 static_assert(offsetof(CRenderObject, render) == 0x0010);
 #endif
