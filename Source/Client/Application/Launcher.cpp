@@ -137,6 +137,7 @@ struct SaktestexeProcessName {
 };
 
 // OFFSET: 0x00E55AD0
+// FUNCTION: fn_24310
 template <>
 const char* EncryptedName<5, 0x01E7898D9D235DDFULL>::Text() {
   if (this->m_encrypted) {
@@ -148,6 +149,7 @@ const char* EncryptedName<5, 0x01E7898D9D235DDFULL>::Text() {
 }
 
 // OFFSET: 0x00E55B00
+// FUNCTION: fn_24311
 template <>
 const char* EncryptedName<19, 0x151F77EBEBBB2147ULL>::Text() {
   if (this->m_encrypted) {
@@ -159,6 +161,7 @@ const char* EncryptedName<19, 0x151F77EBEBBB2147ULL>::Text() {
 }
 
 // OFFSET: 0x00E55B30
+// FUNCTION: fn_24312
 template <>
 const char* EncryptedName<19, 0x2D394DBD0F332733ULL>::Text() {
   if (this->m_encrypted) {
@@ -170,6 +173,7 @@ const char* EncryptedName<19, 0x2D394DBD0F332733ULL>::Text() {
 }
 
 // OFFSET: 0x00E55B60
+// FUNCTION: fn_24313
 template <>
 const char* EncryptedName<25, 0x2FF3C5036D070127ULL>::Text() {
   if (this->m_encrypted) {
@@ -181,6 +185,7 @@ const char* EncryptedName<25, 0x2FF3C5036D070127ULL>::Text() {
 }
 
 // OFFSET: 0x00E55B90
+// FUNCTION: fn_24314
 template <>
 const char* EncryptedName<37, 0x0DF5B33D9F21EB79ULL>::Text() {
   if (this->m_encrypted) {
@@ -192,6 +197,7 @@ const char* EncryptedName<37, 0x0DF5B33D9F21EB79ULL>::Text() {
 }
 
 // OFFSET: 0x00E55BC0
+// FUNCTION: fn_24315
 template <>
 const char* EncryptedName<39, 0x6961FF056999A303ULL>::Text() {
   if (this->m_encrypted) {
@@ -203,6 +209,7 @@ const char* EncryptedName<39, 0x6961FF056999A303ULL>::Text() {
 }
 
 // OFFSET: 0x00E55BF0
+// FUNCTION: fn_24316
 template <>
 const char* EncryptedName<40, 0x9DEFC105A1EB2F71ULL>::Text() {
   if (this->m_encrypted) {
@@ -214,6 +221,7 @@ const char* EncryptedName<40, 0x9DEFC105A1EB2F71ULL>::Text() {
 }
 
 // OFFSET: 0x00E55C20
+// FUNCTION: fn_24317
 template <>
 const char* EncryptedName<11, 0x812BE72BCD5707B7ULL>::Text() {
   if (this->m_encrypted) {
@@ -225,6 +233,7 @@ const char* EncryptedName<11, 0x812BE72BCD5707B7ULL>::Text() {
 }
 
 // OFFSET: 0x00E55C50
+// FUNCTION: fn_24318
 template <>
 const char* EncryptedName<11, 0x59278F63D79F3DA1ULL>::Text() {
   if (this->m_encrypted) {
@@ -236,6 +245,7 @@ const char* EncryptedName<11, 0x59278F63D79F3DA1ULL>::Text() {
 }
 
 // OFFSET: 0x00E55C80
+// FUNCTION: fn_24319
 template <>
 const char* EncryptedName<11, 0x61FF87ED7BF39BE1ULL>::Text() {
   if (this->m_encrypted) {
@@ -247,6 +257,7 @@ const char* EncryptedName<11, 0x61FF87ED7BF39BE1ULL>::Text() {
 }
 
 // OFFSET: 0x00E55CB0
+// FUNCTION: fn_24320
 template <>
 const char* EncryptedName<11, 0x7D993F650D2785FFULL>::Text() {
   if (this->m_encrypted) {
@@ -258,6 +269,7 @@ const char* EncryptedName<11, 0x7D993F650D2785FFULL>::Text() {
 }
 
 // OFFSET: 0x00E55CE0
+// FUNCTION: fn_24321
 template <>
 const char* EncryptedName<13, 0x91651D81F559F971ULL>::Text() {
   if (this->m_encrypted) {
@@ -269,6 +281,7 @@ const char* EncryptedName<13, 0x91651D81F559F971ULL>::Text() {
 }
 
 // OFFSET: 0x00E55D10
+// FUNCTION: fn_24322
 template <>
 const char* EncryptedName<13, 0x2D3B15774149D5DDULL>::Text() {
   if (this->m_encrypted) {
@@ -280,6 +293,7 @@ const char* EncryptedName<13, 0x2D3B15774149D5DDULL>::Text() {
 }
 
 // OFFSET: 0x00E55D40
+// FUNCTION: fn_24323
 template <>
 const char* EncryptedName<13, 0x31D7C1EDA345E36DULL>::Text() {
   if (this->m_encrypted) {
@@ -291,6 +305,7 @@ const char* EncryptedName<13, 0x31D7C1EDA345E36DULL>::Text() {
 }
 
 // OFFSET: 0x00E55D70
+// FUNCTION: fn_24324
 template <>
 const char* EncryptedName<13, 0x73D1674B61DF7B0BULL>::Text() {
   if (this->m_encrypted) {
@@ -302,6 +317,7 @@ const char* EncryptedName<13, 0x73D1674B61DF7B0BULL>::Text() {
 }
 
 // OFFSET: 0x00E55DA0
+// FUNCTION: fn_24325
 template <>
 const char* EncryptedName<14, 0xD98F03A52D35636DULL>::Text() {
   if (this->m_encrypted) {
@@ -313,6 +329,7 @@ const char* EncryptedName<14, 0xD98F03A52D35636DULL>::Text() {
 }
 
 // OFFSET: 0x00E55DD0
+// FUNCTION: fn_24326
 template <>
 const char* EncryptedName<14, 0x3375B1C7DBB5FD55ULL>::Text() {
   if (this->m_encrypted) {
@@ -324,6 +341,7 @@ const char* EncryptedName<14, 0x3375B1C7DBB5FD55ULL>::Text() {
 }
 
 // OFFSET: 0x00E55E00
+// FUNCTION: fn_24327
 template <>
 const char* EncryptedName<14, 0x3FAF85D995034FD7ULL>::Text() {
   if (this->m_encrypted) {
@@ -335,6 +353,7 @@ const char* EncryptedName<14, 0x3FAF85D995034FD7ULL>::Text() {
 }
 
 // OFFSET: 0x00E55E30
+// FUNCTION: fn_24328
 template <>
 const char* EncryptedName<15, 0xD3755DD95F47A909ULL>::Text() {
   if (this->m_encrypted) {
@@ -346,6 +365,7 @@ const char* EncryptedName<15, 0xD3755DD95F47A909ULL>::Text() {
 }
 
 // OFFSET: 0x00E55E60
+// FUNCTION: fn_24329
 template <>
 const char* EncryptedName<15, 0x1D6D75EDE7CD311FULL>::Text() {
   if (this->m_encrypted) {
