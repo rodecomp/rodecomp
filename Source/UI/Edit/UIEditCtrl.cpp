@@ -852,11 +852,71 @@ ITEM_INFO UIMerchantShopMakeWnd::GetItemAt(int x, int y) {
 }
 
 // OFFSET: 0x00974290
+// FUNCTION: fn_13299
+CSkillInfo UISkillListWnd::GetSkillByIndex(int index) {
+  CSkillInfo result(0);
+  int position = 0;
+
+  for (auto it = this->skills.begin(); it != this->skills.end(); ++it, ++position) {
+    if (index == position) {
+      result = *it;
+      break;
+    }
+  }
+
+  return result;
+}
 
 // OFFSET: 0x00974320
+// FUNCTION: fn_13300
+CSkillInfo UISkillListWnd::GetSkillAt(int x, int y) {
+  if (x >= 40 && x < 72 && y > 16 && y < this->visibleRows * 32 + 17) {
+    int visible = 0;
+    int index = 0;
+
+    for (auto it = this->skills.begin(); it != this->skills.end(); ++it, ++index) {
+      if (index >= this->scroll * this->columns) {
+        if (visible == this->columns * ((y - 17) / 32)) {
+          return *it;
+        }
+
+        ++visible;
+      }
+    }
+
+    return CSkillInfo(0);
+  }
+
+  return CSkillInfo(0);
+}
 
 // OFFSET: 0x00974410
+// FUNCTION: fn_13301
+CSkillInfo UISkillListWnd::GetVisibleSkill(int row) {
+  int index = 0;
+
+  for (auto it = this->skills.begin(); it != this->skills.end(); ++it, ++index) {
+    if (row + this->scroll == index) {
+      return *it;
+    }
+  }
+
+  return CSkillInfo(0);
+}
 
 // OFFSET: 0x00974570
+// FUNCTION: fn_13303
+bool UIMerchantShopMakeWnd::HasSelection() const {
+  return this->unknown_018A >= 0 && this->unknown_018C >= 0;
+}
 
 // OFFSET: 0x00974590
+// FUNCTION: fn_13304
+void UIMerchantShopMakeWnd::SendShopRequest() {
+  if (this->mode == 1) {
+    g_modeMgr.GetGameMode()->SendMsg(298, reinterpret_cast<int>(this->unknown_00CC->Text()), std::atoi(this->unknown_0128->Text()), 0, 0);
+    return;
+  }
+
+  g_modeMgr.GetGameMode()->SendMsg(296, reinterpret_cast<int>(this->unknown_00CC->Text()), 0, 0, 0);
+}
