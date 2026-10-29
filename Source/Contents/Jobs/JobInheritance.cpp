@@ -1,5 +1,6 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/CGameMode.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Client/Session.h"
@@ -7,6 +8,7 @@
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
+#include "Contents/World/World.h"
 #include "File/MapName.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -698,6 +700,12 @@ int CSession::GetPairValue() const {
   const int second = this->m_pairValues[1] == -1 ? first : this->m_pairValues[1];
   const int third = this->m_pairValues[2];
   return third == -1 ? second : third;
+}
+
+// OFFSET: 0x00E1D950
+// FUNCTION: fn_23854
+int CSession::WorldUnknown0050() const {
+  return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_0050;
 }
 
 // OFFSET: 0x00E1D970

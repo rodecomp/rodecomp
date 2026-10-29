@@ -305,6 +305,7 @@ public:
   bool IsCostumeJob(int job) const;
   int GetSceneUnknown004C() const;
   int IsPlayerJobId(int job) const;
+  int WorldUnknown0050() const;
   bool IsShadowItemType(int type) const;
   bool IsConsumableItemType(int type) const;
   bool IsCostumeLocation(int location) const;
