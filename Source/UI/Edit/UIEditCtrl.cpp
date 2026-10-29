@@ -1,10 +1,17 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
+#include "Client/ReplayPacketRecorder.h"
 #include "Network/TextEncoding.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/SkinPalette.h"
+#include "Resource/TextureNames.h"
 #include "Resource/Bitmap/BitmapImage.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/MessageTable.h"
+#include "UI/Shop/ItemDrawing.h"
+#include "Utility/Text/FormatString.h"
 #include "UI/Edit/EditTextState.h"
 #include "UI/Edit/EditViewport.h"
 #include "UI/Window/InputFocus.h"
@@ -14,24 +21,36 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Render/Renderer.h"
+#include "Render/ScreenRectangle.h"
+#include "Render/TextureQuad.h"
+#include "Render/Textures/Texture.h"
+#include "Render/Textures/TextureCache.h"
 #include "Render/Textures/SpritePixels.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "UI/Buttons/UIBmpTextButton2.h"
 #include "UI/Buttons/UINaviLinkButton.h"
+#include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Buttons/UISpriteButton.h"
+#include "UI/Buttons/UITextureButton.h"
+#include "UI/Item/UIItemSellWnd.h"
+#include "UI/Item/UIItemSellWnd2.h"
 #include "UI/Item/UIItemStoreFindWnd.h"
 #include "UI/Item/UIItemStoreSubWnd.h"
+#include "UI/Item/UIItemStoreWnd.h"
 #include "UI/Item/UIItemWnd.h"
 #include "UI/Shop/UIMerchantItemMyShopWnd.h"
 #include "UI/Shop/UIMerchantItemShopWnd.h"
+#include "UI/Shop/UIMerchantItemWnd.h"
 #include "UI/Shop/UIMerchantShopMakeWnd.h"
 #include "UI/Shop/UINoticeMessageBox_LockSellItem.h"
 #include "UI/Skill/UISkillListWnd.h"
+#include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
 #include "Client/Session.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "UI/Shop/UIMerchantItemPurchaseMSGWnd.h"
@@ -506,6 +525,8 @@ void UIEditCtrl::TextColor(std::uint32_t primary, std::uint32_t secondary) {
   this->Invalidate();
 }
 
+// OFFSET: 0x00856F10
+
 // OFFSET: 0x00856FB0
 // FUNCTION: fn_10758
 void UIEditCtrl::DrawSelectionAt(int x, int y, int width) {
@@ -667,6 +688,8 @@ void UIBmpTextButton2::DrawLabels() {
   }
 }
 
+// OFFSET: 0x008572F0
+
 // OFFSET: 0x00858B80
 // FUNCTION: fn_10764
 std::string UINaviLinkButton::Link() {
@@ -713,6 +736,10 @@ void UIItemDropCntWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
 }
 
+// OFFSET: 0x0097E3F0
+
+// OFFSET: 0x00981770
+
 // OFFSET: 0x00981990
 // FUNCTION: fn_13340
 void UIMerchantItemPurchaseMSGWnd::Paint() {
@@ -720,6 +747,14 @@ void UIMerchantItemPurchaseMSGWnd::Paint() {
   this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, "", 0);
   this->DrawButtonBar(2, 0, 1);
 }
+
+// OFFSET: 0x009827C0
+
+// OFFSET: 0x009834F0
+
+// OFFSET: 0x00983F80
+
+// OFFSET: 0x00983FF0
 
 // OFFSET: 0x00984130
 // FUNCTION: fn_13351
@@ -821,6 +856,18 @@ bool UISkillListWnd::Slot03() {
 void UIItemBaseWnd::Slot15(int, int) {
 }
 
+// OFFSET: 0x00973A20
+
+// OFFSET: 0x00973AB0
+
+// OFFSET: 0x00973C20
+
+// OFFSET: 0x00973D60
+
+// OFFSET: 0x00973EA0
+
+// OFFSET: 0x00973FE0
+
 // OFFSET: 0x00974130
 // FUNCTION: fn_13298
 ITEM_INFO UIMerchantShopMakeWnd::GetItemAt(int x, int y) {
@@ -920,3 +967,5 @@ void UIMerchantShopMakeWnd::SendShopRequest() {
 
   g_modeMgr.GetGameMode()->SendMsg(296, reinterpret_cast<int>(this->unknown_00CC->Text()), 0, 0, 0);
 }
+
+// OFFSET: 0x00974820

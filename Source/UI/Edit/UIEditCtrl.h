@@ -15,6 +15,7 @@ struct BitmapImage;
 class WindowManagerWindows;
 class NavigationDestination;
 class UINaviLinkButton;
+class UIItemTagButton;
 
 struct UIEditContext {
   InputFocus& focus;
@@ -113,12 +114,6 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
 
-struct UIEditCtrl3Entry {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-};
-
 struct UIEditCtrl3Table {
   /* 0000 */ std::vector<int> items;
   /* 000C */ int count = 0;
@@ -128,7 +123,9 @@ class UIEditCtrl3 : public UIEditCtrl2 {
 public:
   UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
 
-  /* 011C */ std::list<UIEditCtrl3Entry> entries;
+  void PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int& unused);
+
+  /* 011C */ std::list<std::vector<UIItemTagButton*>> entries;
   /* 0124 */ std::vector<int> unknown_0124;
   /* 0130 */ int unknown_0130;
   /* 0134 */ unsigned char unknown_0134;

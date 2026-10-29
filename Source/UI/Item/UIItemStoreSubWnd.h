@@ -6,6 +6,8 @@
 class UIItemStoreSubWnd : public UIItemBaseWnd {
 public:
   void Slot26(int x, int y) override;
+
+  ITEM_INFO GetItemAt(int x, int y);
 };
 
 #endif

@@ -8,13 +8,16 @@
 #include <list>
 #include <string>
 
+class UIBasicButton;
 class UIEditCtrl;
+struct UIButtonContext;
 
 class UIMerchantShopMakeWnd : public UIFrameWnd {
 public:
   ITEM_INFO GetItemAt(int x, int y);
   bool HasSelection() const;
   void SendShopRequest();
+  void AddActionButton();
 
   /* 00BC */ unsigned char unknown_00BC[0x10];
   /* 00CC */ UIEditCtrl* unknown_00CC;
@@ -34,12 +37,15 @@ public:
   /* 015C */ int visibleRows;
   /* 0160 */ int unknown_0160;
   /* 0164 */ int unknown_0164;
-  /* 0168 */ UIWindow* unknown_0168;
+  /* 0168 */ UIBasicButton* unknown_0168;
   /* 016C */ int unknown_016C;
   /* 0170 */ std::string unknown_0170;
   /* 0188 */ short unknown_0188;
   /* 018A */ short unknown_018A;
   /* 018C */ short unknown_018C;
+
+protected:
+  UIButtonContext* m_controls;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

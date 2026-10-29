@@ -181,8 +181,8 @@ public:
   /* 0244 */ std::uint32_t unknown_0244;
   /* 0248 */ std::uint32_t unknown_0248;
   /* 024C */ std::uint32_t unknown_024C;
-  /* 0250 */ std::uint32_t unknown_0250;
-  /* 0254 */ std::uint32_t unknown_0254;
+  /* 0250 */ UIWindow* unknown_0250;
+  /* 0254 */ UIWindow* unknown_0254;
   /* 0258 */ std::uint32_t unknown_0258;
   /* 025C */ std::uint32_t unknown_025C;
   /* 0260 */ std::uint32_t unknown_0260;

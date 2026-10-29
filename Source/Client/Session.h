@@ -110,7 +110,12 @@ public:
   /* 0F20 */ unsigned char unknown_0F20[0x08];
   /* 0F28 */ int m_score1;
   /* 0F2C */ int m_score2;
-  /* 0F30 */ unsigned char unknown_0F30[0x3C];
+  /* 0F30 */ unsigned char unknown_0F30[0x04];
+  /* 0F34 */ int cartCount;
+  /* 0F38 */ int cartMaxCount;
+  /* 0F3C */ int cartWeight;
+  /* 0F40 */ int cartMaxWeight;
+  /* 0F44 */ unsigned char unknown_0F44[0x28];
   /* 0F6C */ const char* const* m_humanMaleHeadNames;
   /* 0F70 */ unsigned char unknown_0F70[0x08];
   /* 0F78 */ const char* const* m_humanFemaleHeadNames;

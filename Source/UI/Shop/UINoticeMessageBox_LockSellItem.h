@@ -11,6 +11,7 @@ class UINoticeMessageBox_LockSellItem : public UIFrameWnd {
 public:
   void Slot15(int width, int height) override;
   void Slot19() override;
+  void Paint() override;
 
   /* 00B4 */ std::uint32_t startTick;
   /* 00B8 */ std::uint32_t duration;
