@@ -577,8 +577,36 @@ int CSession::GetSceneUnknown004C() const {
 // OFFSET: 0x00DDD9A0
 
 // OFFSET: 0x00DDF5B0
+// FUNCTION: fn_23424
+ITEM_INFO CSession::GetItem1784At(int list, int index) const {
+  if (list < 0) {
+    return ITEM_INFO(0);
+  }
+
+  if (static_cast<unsigned int>(list) < 11 && !this->unknown_1784[list].empty()) {
+    int position = 0;
+    for (const ITEM_INFO& item : this->unknown_1784[list]) {
+      if (position == index) {
+        return item;
+      }
+      ++position;
+    }
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00DDF7B0
+// FUNCTION: fn_23425
+int CSession::GetCommandId(const char* name) const {
+  auto found = std::lower_bound(this->m_commandIds.begin(), this->m_commandIds.end(), name,
+                                [](const std::pair<const char*, int>& entry, const char* value) { return std::strcmp(entry.first, value) < 0; });
+  if (found != this->m_commandIds.end() && std::strcmp(found->first, name) == 0) {
+    return found->second;
+  }
+
+  return 3;
+}
 
 // OFFSET: 0x00DDF890
 // FUNCTION: fn_23426
@@ -587,47 +615,278 @@ int CSession::GetItem1728Count() const {
 }
 
 // OFFSET: 0x00DDFA50
+// FUNCTION: fn_23442
+ITEM_INFO CSession::GetItemSlot(int index) const {
+  return this->m_itemSlots[index];
+}
 
 // OFFSET: 0x00DDFAC0
+// FUNCTION: fn_23443
+ITEM_INFO CSession::GetItem21A0(int index) const {
+  if (index == 15) {
+    return ITEM_INFO(0);
+  }
+
+  if (index >= 0 && index < 10) {
+    return this->unknown_21A0[index];
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00DDFD30
+// FUNCTION: fn_23445
+int CSession::GetItem1718QuantityByItemId(const ITEM_INFO& item) const {
+  for (std::list<ITEM_INFO>::const_iterator it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
+    if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
+      return it->quantity;
+    }
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00DDFDB0
+// FUNCTION: fn_23446
+int CSession::GetItem1718QuantityOf(const ITEM_INFO& item) const {
+  for (const ITEM_INFO& value : this->unknown_1718) {
+    if (value.unknown_0000[1] == item.unknown_0000[1]) {
+      return value.quantity;
+    }
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00DDFDE0
+// FUNCTION: fn_23447
+std::uint16_t CSession::GetItem1718Unknown006CByItemId(const ITEM_INFO& item) const {
+  for (std::list<ITEM_INFO>::const_iterator it = this->unknown_1718.begin(); it != this->unknown_1718.end(); ++it) {
+    if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
+      return it->unknown_006C;
+    }
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00DDFE60
+// FUNCTION: fn_23448
+std::uint16_t CSession::GetItem1718Unknown006COf(const ITEM_INFO& item) const {
+  for (const ITEM_INFO& value : this->unknown_1718) {
+    if (value.unknown_0000[1] == item.unknown_0000[1]) {
+      return value.unknown_006C;
+    }
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00DDFE90
+// FUNCTION: fn_23449
+std::uint16_t CSession::SumItem1720Unknown006CByItemId() const {
+  std::uint16_t total = 0;
+  for (std::list<ITEM_INFO>::const_iterator it = this->unknown_1720.begin(); it != this->unknown_1720.end(); ++it) {
+    total += it->quantity * this->GetItem1718Unknown006CByItemId(*it);
+  }
+
+  return total;
+}
 
 // OFFSET: 0x00DDFF60
+// FUNCTION: fn_23450
+std::uint16_t CSession::SumItem1720Unknown006C() const {
+  std::uint16_t total = 0;
+  for (const ITEM_INFO& item : this->unknown_1720) {
+    total += item.quantity * this->GetItem1718Unknown006COf(item);
+  }
+
+  return total;
+}
 
 // OFFSET: 0x00DE0620
+// FUNCTION: fn_23456
+ITEM_INFO CSession::FindItem1720ByItemId(const char* itemId) const {
+  for (const ITEM_INFO& item : this->unknown_1720) {
+    if (item.itemId == itemId) {
+      return item;
+    }
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00DE06E0
+// FUNCTION: fn_23457
+ITEM_INFO CSession::GetItem1720At(int index) const {
+  int position = 0;
+  for (const ITEM_INFO& item : this->unknown_1720) {
+    if (position == index) {
+      return item;
+    }
+    ++position;
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00DE0770
+// FUNCTION: fn_23458
+int CSession::GetItem1720QuantityByItemId(const char* itemId) const {
+  for (const ITEM_INFO& item : this->unknown_1720) {
+    if (item.itemId == itemId) {
+      return item.quantity;
+    }
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00DE07D0
+// FUNCTION: fn_23459
+int CSession::GetItem1720Quantity(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1720) {
+    if (item.unknown_0000[1] == id) {
+      return item.quantity;
+    }
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00DE0800
+// FUNCTION: fn_23460
+int CSession::GetItem1720Total() const {
+  int total = 0;
+  for (const ITEM_INFO& item : this->unknown_1720) {
+    total += item.unknown_0014[1] * item.quantity;
+  }
+
+  return total;
+}
 
 // OFFSET: 0x00DE08E0
+// FUNCTION: fn_23462
+const char* CSession::GetMonsterRmaName(int job) const {
+  return "캐릭터\\칼질몬스터.rma";
+}
 
 // OFFSET: 0x00DE08F0
+// FUNCTION: fn_23463
+ITEM_INFO CSession::FindItem1730(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1730) {
+    if (item.unknown_0000[1] == id) {
+      return item;
+    }
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00DE0980
+// FUNCTION: fn_23464
+ITEM_INFO CSession::GetItem1730At(int index) const {
+  if (this->unknown_1730.empty()) {
+    return ITEM_INFO(0);
+  }
+
+  int position = 0;
+  for (const ITEM_INFO& item : this->unknown_1730) {
+    if (position == index) {
+      return item;
+    }
+    ++position;
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00DE0A20
+// FUNCTION: fn_23465
+int CSession::GetItem1730Quantity(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1730) {
+    if (item.unknown_0000[1] == id) {
+      return item.quantity;
+    }
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00DE0D30
+// FUNCTION: fn_23470
+ITEM_INFO CSession::GetItem1718At(int index) const {
+  if (this->unknown_1718.empty()) {
+    return ITEM_INFO(0);
+  }
+
+  int position = 0;
+  for (const ITEM_INFO& item : this->unknown_1718) {
+    if (position == index) {
+      return item;
+    }
+    ++position;
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00DE0DD0
+// FUNCTION: fn_23471
+int CSession::GetItem1718Quantity(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1718) {
+    if (item.unknown_0000[1] == id) {
+      return item.quantity;
+    }
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00DE0E00
+// FUNCTION: fn_23472
+const char* CSession::GetHotkeyDescription(int index) const {
+  return this->m_hotkeyDescriptions[index].c_str();
+}
 
 // OFFSET: 0x00DE0EB0
+// FUNCTION: fn_23475
+ITEM_INFO CSession::FindItem1738(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1738) {
+    if (item.unknown_0000[1] == id) {
+      return item;
+    }
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00DE0F40
+// FUNCTION: fn_23476
+ITEM_INFO CSession::GetItem1738At(int index) const {
+  if (this->unknown_1738.empty()) {
+    return ITEM_INFO(0);
+  }
+
+  int position = 0;
+  for (const ITEM_INFO& item : this->unknown_1738) {
+    if (position == index) {
+      return item;
+    }
+    ++position;
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00DE0FE0
+// FUNCTION: fn_23477
+int CSession::GetItem1738Quantity(std::uint32_t id) const {
+  for (const ITEM_INFO& item : this->unknown_1738) {
+    if (item.unknown_0000[1] == id) {
+      return item.quantity;
+    }
+  }
+
+  return 0;
+}
