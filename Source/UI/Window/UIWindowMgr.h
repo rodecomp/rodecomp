@@ -305,7 +305,7 @@ public:
   /* 042C */ std::uint32_t unknown_042C;
   /* 0430 */ std::uint32_t unknown_0430;
   /* 0434 */ std::uint32_t unknown_0434;
-  /* 0438 */ std::uint32_t unknown_0438;
+  /* 0438 */ UIWindow* unknown_0438;
   /* 043C */ std::uint32_t unknown_043C;
   /* 0440 */ std::uint32_t unknown_0440;
   /* 0444 */ UIWindow* window_0444;
