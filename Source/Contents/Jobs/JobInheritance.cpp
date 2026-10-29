@@ -7,7 +7,9 @@
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
+#include "File/MapName.h"
 #include "Script/LuaScript.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstring>
@@ -80,6 +82,41 @@ namespace {
 bool CSession::IsNpcJob(int job) const {
   return (job >= JT_WARPNPC && job < JT_MON_BEGIN) || static_cast<unsigned>(job - JT_4_TOWER_14) <= unsigned(JT_NPC_END - 1 - JT_4_TOWER_14);
 }
+
+// OFFSET: 0x00DFA630
+// FUNCTION: fn_23577
+bool __stdcall ValidateCharacterName(const char* name) {
+  const int length = static_cast<int>(std::strlen(name));
+  for (int index = 0; index < length; ++index) {
+    if (name[index] == 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// OFFSET: 0x00DFA670
+
+// OFFSET: 0x00DFA810
+// FUNCTION: fn_23579
+bool IsNavigationActive() {
+  if (g_windowMgr.unknown_0250 != 0) {
+    return false;
+  }
+  if (g_windowMgr.window_4F260 != nullptr || g_windowMgr.window_4F264 != nullptr ||
+      g_windowMgr.window_4F268 != nullptr || g_windowMgr.window_4F26C != nullptr) {
+    return false;
+  }
+  if (g_windowMgr.unknown_01E4 != 0) {
+    return false;
+  }
+  return true;
+}
+
+// OFFSET: 0x00DFA8D0
+
+// OFFSET: 0x00DFAC70
+
 
 // OFFSET: 0x00DFBCE0
 // FUNCTION: fn_23587

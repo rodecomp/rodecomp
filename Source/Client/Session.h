@@ -176,7 +176,8 @@ public:
   /* 52B4 */ unsigned char unknown_52B4[0x04];
   /* 52B8 */ std::vector<const char*> m_accessoryNames;
   /* 52C4 */ std::vector<const char*> m_robeNames;
-  /* 52D0 */ unsigned char unknown_52D0[0x26C];
+  /* 52D0 */ std::vector<std::string> m_navigationForbiddenMaps;
+  /* 52DC */ unsigned char unknown_52DC[0x260];
   /* 553C */ std::string m_serverName;
   /* 5554 */ unsigned char unknown_5554[4];
   /* 5558 */ int unknown_5558;
@@ -255,6 +256,7 @@ public:
   void ClearUnknown1738(int id);
   std::uint32_t SyncServerTime(std::uint32_t serverTime);
   void LoadNavigationScripts();
+  bool IsNavigationAllowed() const;
   void LoadRobeAlpha();
   std::pair<int, int>* InsertPair(int key, int value);
   int SetPairValue(int value, int slot);
@@ -506,6 +508,7 @@ static_assert(offsetof(CSession, unknown_2B50) == 0x2B50);
 static_assert(offsetof(CSession, unknown_3500) == 0x3500);
 static_assert(offsetof(CSession, m_accessoryNames) == 0x52B8);
 static_assert(offsetof(CSession, m_robeNames) == 0x52C4);
+static_assert(offsetof(CSession, m_navigationForbiddenMaps) == 0x52D0);
 static_assert(offsetof(CSession, unknown_5558) == 0x5558);
 static_assert(offsetof(CSession, m_hotkeyScript) == 0x59D8);
 static_assert(offsetof(CSession, unknown_5C68) == 0x5C68);
