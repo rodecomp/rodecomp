@@ -701,14 +701,48 @@ int CSession::GetPairValue() const {
 }
 
 // OFFSET: 0x00E1D970
+// FUNCTION: fn_23855
+bool CSession::IsShadowItemType(int type) const {
+  return type == 18;
+}
 
 // OFFSET: 0x00E1D980
+// FUNCTION: fn_23856
+bool CSession::IsConsumableItemType(int type) const {
+  if (type == 0 || type == 1 || type == 2 || type == 18) {
+    return true;
+  }
+  return false;
+}
 
 // OFFSET: 0x00E1D9B0
+// FUNCTION: fn_23857
+bool CSession::IsCostumeLocation(int location) const {
+  if (location == 0x400 || location == 0x800 || location == 0xC00 || location == 0x1000 || location == 0x1400 || location == 0x1800 ||
+      location == 0x1C00 || location == 0x2000 || location == 0x4000 || location == 0x10000 || location == 0x20000 || location == 0x40000 ||
+      location == 0x80000 || location == 0x100000 || location == 0x200000) {
+    return true;
+  }
+  return false;
+}
 
 // OFFSET: 0x00E1DB20
+// FUNCTION: fn_23868
+bool CSession::IsEquipItemType(int type) const {
+  if (type == 4 || type == 11 || type == 12 || type == 13 || type == 14 || type == 5 || type == 8 || type == 9 || type == 15) {
+    return true;
+  }
+  return false;
+}
 
 // OFFSET: 0x00E1DB60
+// FUNCTION: fn_23869
+bool CSession::IsMiscItemType(int type) const {
+  if (type == 6 || type == 3 || type == 7 || type == 10 || type == 16 || type == 17 || type == 19) {
+    return true;
+  }
+  return false;
+}
 
 // OFFSET: 0x00E1DC00
 // FUNCTION: fn_23872
@@ -723,8 +757,23 @@ int CSession::IsPlayerJobId(int job) const {
 }
 
 // OFFSET: 0x00E1E050
+// FUNCTION: fn_23892
+bool CSession::IsSuperNoviceJob(int job) const {
+  if (job == JT_SUPERNOVICE || job == JT_SUPERNOVICE_B || job == JT_PORING_SNOVICE || job == JT_PORING_SNOVICE_B) {
+    return true;
+  }
+  return false;
+}
 
 // OFFSET: 0x00E1E080
+// FUNCTION: fn_23893
+bool CSession::IsSuperNoviceClass(int job) const {
+  if (job == JT_SUPERNOVICE || job == JT_SUPERNOVICE_B || job == JT_PORING_SNOVICE || job == JT_PORING_SNOVICE_B || job == JT_SUPERNOVICE2 ||
+      job == JT_SUPERNOVICE2_B || job == JT_PORING_SNOVICE2 || job == JT_PORING_SNOVICE2_B || job == JT_HYPER_NOVICE || job == JT_HYPER_NOVICE_RIDING) {
+    return true;
+  }
+  return false;
+}
 
 // OFFSET: 0x00E248E0
 // FUNCTION: fn_23897
