@@ -271,6 +271,14 @@ int CSkillAction_AT_GRAVITY_HOLE::Slot02() {
 }
 
 // OFFSET: 0x005A7A60
+// FUNCTION: fn_03216
+void CSkillAction_AT_GRAVITY_HOLE::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    if (CRagEffect* effect = source->LaunchEffect(0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&source->render.position), 0, 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x005A7AD0
 // FUNCTION: fn_03217
