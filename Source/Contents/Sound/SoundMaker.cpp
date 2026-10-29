@@ -241,6 +241,10 @@ int CPc::Slot42() {
 }
 
 // OFFSET: 0x00DA2B70
+// FUNCTION: fn_22383
+std::int64_t CPc::Slot35() {
+  return (static_cast<std::int64_t>(this->unknown_044C) << 32) | static_cast<std::uint32_t>(this->weapon);
+}
 
 // OFFSET: 0x00DA4150
 // FUNCTION: fn_22411

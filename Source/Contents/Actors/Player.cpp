@@ -68,14 +68,49 @@ void CPc::Slot34(int value) {
 }
 
 // OFFSET: 0x00DB0400
+// FUNCTION: fn_22615
+void CGrannyPc::Slot40(int value) {
+  if (value < 0) {
+    const std::int64_t emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::ChatProhibit);
+    this->SendObjectMessage(nullptr, 160, 0, 0, 0, static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
+  } else {
+    this->SendObjectMessage(nullptr, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+  this->unknown_0428 = value;
+}
 
 // OFFSET: 0x00DB0480
+// FUNCTION: fn_22616
+void CPc::Slot40(int value) {
+  if (value < 0) {
+    const std::int64_t emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::ChatProhibit);
+    this->SendObjectMessage(nullptr, 160, 0, 0, 0, static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0, 0, 0, 0, 0, 0);
+  } else {
+    this->SendObjectMessage(nullptr, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+  this->unknown_0430 = value;
+}
 
 // OFFSET: 0x00DB0760
+// FUNCTION: fn_22621
+void CGrannyPc::Slot41(int first, int second) {
+  this->Slot40(first);
+  this->unknown_042C = second;
+}
 
 // OFFSET: 0x00DB0780
+// FUNCTION: fn_22622
+void CPc::Slot41(int first, int second) {
+  this->Slot40(first);
+  this->unknown_0434 = second;
+}
 
 // OFFSET: 0x00DB07C0
+// FUNCTION: fn_22625
+void CPc::Slot47(unsigned char value) {
+  this->unknown_02CC = value;
+  this->Slot28(this->unknown_045C);
+}
 
 // OFFSET: 0x00DB07E0
 // FUNCTION: fn_22626

@@ -76,6 +76,10 @@ namespace {
 }
 
 // OFFSET: 0x00DFA600
+// FUNCTION: fn_23576
+bool CSession::IsNpcJob(int job) const {
+  return (job >= JT_WARPNPC && job < JT_MON_BEGIN) || static_cast<unsigned>(job - JT_4_TOWER_14) <= unsigned(JT_NPC_END - 1 - JT_4_TOWER_14);
+}
 
 // OFFSET: 0x00DFBCE0
 // FUNCTION: fn_23587
@@ -641,10 +645,25 @@ std::pair<int, int>* CSession::InsertPair(int key, int value) {
 }
 
 // OFFSET: 0x00E0A1F0
+// FUNCTION: fn_23792
+int CSession::GetPairValue() const {
+  const int first = this->m_pairValues[0] != -1 ? this->m_pairValues[0] : -1;
+  const int second = this->m_pairValues[1] == -1 ? first : this->m_pairValues[1];
+  const int third = this->m_pairValues[2];
+  return third == -1 ? second : third;
+}
 
 // OFFSET: 0x00E1DC00
+// FUNCTION: fn_23872
+int CSession::IsGuardianJob(int job) const {
+  return job == JT_ARCHER_GUARDIAN || job == JT_KNIGHT_GUARDIAN || job == JT_SOLDIER_GUARDIAN ? 1 : 0;
+}
 
 // OFFSET: 0x00E1DF50
+// FUNCTION: fn_23887
+int CSession::IsPlayerJobId(int job) const {
+  return IsPlayerJob(job);
+}
 
 // OFFSET: 0x00E25EE0
 // FUNCTION: fn_23910

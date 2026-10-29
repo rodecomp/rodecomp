@@ -401,6 +401,26 @@ void CRenderObject::SetInstantValue(int key, std::int64_t value) {
 }
 
 // OFFSET: 0x00CC2060
+// FUNCTION: fn_21135
+void CGameActor::Slot49(int guildId, int version) {
+  if (guildId <= 0) {
+    return;
+  }
+
+  this->guildId = guildId;
+  if (this->GetEffectiveJob(-1) != 20269) {
+    if (this->GetEffectiveJob(-1) != JT_GUILD_FLAG && version <= 0) {
+      return;
+    }
+    if (!g_session.IsNpcJob(this->GetEffectiveJob(-1)) && !g_session.IsPlayerJobId(this->GetEffectiveJob(-1)) &&
+        !g_session.IsGuardianJob(this->GetEffectiveJob(-1)) && this->GetEffectiveJob(-1) != JT_GUILD_FLAG &&
+        this->GetEffectiveJob(-1) != JT_EMPELIUM) {
+      return;
+    }
+  }
+
+  g_guildMgr->SetEmblemVersion(guildId, version);
+}
 
 // OFFSET: 0x00CC21F0
 // FUNCTION: fn_21136
@@ -497,6 +517,10 @@ int CGameActor::GetShield() {
 }
 
 // OFFSET: 0x005A1280
+// FUNCTION: fn_03042
+void CGameActor::Slot62(int value) {
+  this->SetUnknown0260(value);
+}
 
 // OFFSET: 0x005A1290
 // FUNCTION: fn_03043
@@ -517,6 +541,12 @@ int CGameActor::Slot50() {
 }
 
 // OFFSET: 0x005A12C0
+// FUNCTION: fn_03046
+float* CGameActor::GetExtent(float* extent) const {
+  extent[0] = 0.0f;
+  extent[1] = 0.0f;
+  return extent;
+}
 
 // OFFSET: 0x005A12E0
 // FUNCTION: fn_03047
@@ -525,6 +555,11 @@ bool CGameActor::Slot58() {
 }
 
 // OFFSET: 0x005A12F0
+// FUNCTION: fn_03048
+void CGameActor::Slot45() {
+  int radius = 0;
+  g_session.m_hotkeyScript->Call("GetNpcLocationRadius", "d>d", this->GetEffectiveJob(-1), &radius);
+}
 
 // OFFSET: 0x005A13B0
 // FUNCTION: fn_03049
@@ -550,6 +585,10 @@ void CGameActor::Slot44(int, int) {
 }
 
 // OFFSET: 0x005A1960
+// FUNCTION: fn_03054
+void CGameActor::Slot48(int value) {
+  this->guildId = value;
+}
 
 // OFFSET: 0x005A1990
 // FUNCTION: fn_03057
@@ -572,6 +611,10 @@ void CGameActor::Slot41(int, int) {
 }
 
 // OFFSET: 0x005A19E0
+// FUNCTION: fn_03062
+void CGameActor::Slot47(unsigned char value) {
+  this->unknown_02CC = value;
+}
 
 // OFFSET: 0x005A1A40
 // FUNCTION: fn_03068
@@ -601,8 +644,28 @@ int CGameActor::Slot37() {
 }
 
 // OFFSET: 0x00CACEF0
+// FUNCTION: fn_21048
+float* CGameActor::Slot51(int index) {
+  if (index == 0) {
+    return this->unknown_0318;
+  }
+  if (index == 1) {
+    return this->unknown_0348;
+  }
+  return nullptr;
+}
 
 // OFFSET: 0x00CAD480
+// FUNCTION: fn_21052
+float* CGameActor::Slot53(int index) {
+  if (index == 0) {
+    return this->unknown_0330;
+  }
+  if (index == 1) {
+    return this->unknown_0360;
+  }
+  return nullptr;
+}
 
 // OFFSET: 0x00CAE500
 // FUNCTION: fn_21074
@@ -629,8 +692,160 @@ void CGameActor::Slot38() {
 }
 
 // OFFSET: 0x00CABEB0
+// FUNCTION: fn_21040
+int CGameActor::Slot55() {
+  if (this->unknown_03C4 != -1) {
+    return this->unknown_03C4;
+  }
+
+  if (this->render.accountId == g_session.m_aid) {
+    return g_session.GetPairValue();
+  }
+
+  const int first = this->unknown_03B8[0] != -1 ? this->unknown_03B8[0] : -1;
+  const int second = this->unknown_03B8[1] == -1 ? first : this->unknown_03B8[1];
+  const int third = this->unknown_03B8[2];
+  return third != -1 ? third : second;
+}
 
 // OFFSET: 0x00CABFA0
+// FUNCTION: fn_21042
+int CGameActor::GetEffectiveJob(int job) {
+  if (job == -1) {
+    job = this->unknown_025C;
+  }
+
+  if (StateFlag12(this->Slot13())) {
+    return JT_MARRIED;
+  }
+
+  if (!StateFlag15(this->Slot13())) {
+    if (StateFlag16(this->Slot13())) {
+      return JT_SANTA;
+    }
+    if (StateFlag18(this->Slot13())) {
+      return JT_SUMMER;
+    }
+    if (StateFlag27(this->Slot13())) {
+      return JT_HANBOK;
+    }
+    if (StateFlag28(this->Slot13())) {
+      return JT_OKTOBERFEST;
+    }
+    if (this->unknown_03DC == 1) {
+      return JT_SUMMER2;
+    }
+  }
+
+  if (StateFlag05(this->Slot13())) {
+    switch (job) {
+      case JT_KNIGHT:
+        return JT_CHICKEN;
+      case JT_CRUSADER:
+        return JT_CHICKEN2;
+      case JT_KNIGHT_H:
+        return JT_CHICKEN_H;
+      case JT_CRUSADER_H:
+        return JT_CHICKEN2_H;
+      case JT_KNIGHT_B:
+        return JT_CHICKEN_B;
+      case JT_CRUSADER_B:
+        return JT_CHICKEN2_B;
+      case JT_ROYAL_GUARD:
+        return JT_ROYAL_CHICKEN;
+      case JT_ROYAL_GUARD_H:
+        return JT_ROYAL_CHICKEN_H;
+      case JT_ROYAL_GUARD_B:
+        return JT_ROYAL_CHICKEN_B;
+      case JT_IMPERIAL_GUARD:
+        return JT_IMPERIAL_GUARD_CHICKEN;
+    }
+  }
+
+  if (StateFlag19(this->Slot13())) {
+    switch (job) {
+      case JT_RUNE_KNIGHT:
+        return JT_RUNE_CHICKEN;
+      case JT_RUNE_KNIGHT_H:
+        return JT_RUNE_CHICKEN_H;
+      case JT_RUNE_KNIGHT_B:
+        return JT_RUNE_CHICKEN_B;
+      case JT_DRAGON_KNIGHT:
+        return JT_DRAGON_KNIGHT_CHICKEN;
+    }
+  } else if (StateFlag23(this->Slot13())) {
+    if (job == JT_RUNE_KNIGHT) {
+      return JT_RUNE_CHICKEN2;
+    }
+    if (job == JT_RUNE_KNIGHT_H) {
+      return JT_RUNE_CHICKEN2_H;
+    }
+  } else if (StateFlag24(this->Slot13())) {
+    if (job == JT_RUNE_KNIGHT) {
+      return JT_RUNE_CHICKEN3;
+    }
+    if (job == JT_RUNE_KNIGHT_H) {
+      return JT_RUNE_CHICKEN3_H;
+    }
+  } else if (StateFlag25(this->Slot13())) {
+    if (job == JT_RUNE_KNIGHT) {
+      return JT_RUNE_CHICKEN4;
+    }
+    if (job == JT_RUNE_KNIGHT_H) {
+      return JT_RUNE_CHICKEN4_H;
+    }
+  } else if (StateFlag26(this->Slot13())) {
+    if (job == JT_RUNE_KNIGHT) {
+      return JT_RUNE_CHICKEN5;
+    }
+    if (job == JT_RUNE_KNIGHT_H) {
+      return JT_RUNE_CHICKEN5_H;
+    }
+  }
+
+  if (StateFlag21(this->Slot13())) {
+    switch (job) {
+      case JT_RANGER:
+        return JT_WOLF_RANGER;
+      case JT_RANGER_H:
+        return JT_WOLF_RANGER_H;
+      case JT_RANGER_B:
+        return JT_WOLF_RANGER_B;
+      case JT_WINDHAWK:
+        return JT_WOLF_WINDHAWK;
+    }
+  }
+
+  if (this->Slot56() != 0) {
+    switch (job) {
+      case JT_MECHANIC:
+        return JT_MADOGEAR;
+      case JT_MECHANIC_H:
+        return JT_MADOGEAR_H;
+      case JT_MECHANIC_B:
+        return JT_MADOGEAR_B;
+      case JT_MEISTER:
+        return JT_MEISTER_MADOGEAR;
+    }
+  }
+
+  if (StateFlag15(this->Slot13())) {
+    switch (job) {
+      case JT_STAR:
+        return JT_STAR2;
+      case JT_STAR_B:
+        return JT_STAR2_B;
+      case JT_STAR_EMPEROR:
+        return JT_STAR2_EMPEROR;
+      case JT_STAR_EMPEROR_B:
+        return JT_STAR2_EMPEROR_B;
+      case JT_SKY_EMPEROR:
+        return JT_SKY_EMPEROR2;
+    }
+  }
+
+  return job;
+}
 
 // OFFSET: 0x00CCCAF0
 // FUNCTION: fn_21199
