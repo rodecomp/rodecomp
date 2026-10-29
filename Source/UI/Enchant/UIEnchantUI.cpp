@@ -24,30 +24,35 @@ void CUISlot::Paint() {
 }
 
 // OFFSET: 0x00A05DF0
+// FUNCTION: fn_14983
 void CUIEnchantUI::Slot16() {
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
 }
 
 namespace EnchantUI {
 // OFFSET: 0x00A06050
+// FUNCTION: fn_14988
 void CUISlot0::Slot16() {
   CUISlot::Slot16();
   this->radioButton->SetId(0);
 }
 
 // OFFSET: 0x00A06090
+// FUNCTION: fn_14989
 void CUISlot1::Slot16() {
   CUISlot::Slot16();
   this->radioButton->SetId(1);
 }
 
 // OFFSET: 0x00A060D0
+// FUNCTION: fn_14990
 void CUISlot2::Slot16() {
   CUISlot::Slot16();
   this->radioButton->SetId(2);
 }
 
 // OFFSET: 0x00A06110
+// FUNCTION: fn_14991
 void CUISlot3::Slot16() {
   CUISlot::Slot16();
   this->radioButton->SetId(3);

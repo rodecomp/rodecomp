@@ -105,6 +105,7 @@ public:
   }
 
   // OFFSET: 0x00A04B30
+  // FUNCTION: fn_14963
   int AddData(const D& value, bool refresh) {
     this->data.push_back(value);
     if (refresh) {
