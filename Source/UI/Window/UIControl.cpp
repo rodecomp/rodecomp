@@ -410,8 +410,20 @@ void CUIVScrollBar::SetHidden(int) {
 }
 
 // OFFSET: 0x009EA1B0
+// FUNCTION: fn_14514
+void CUIPadding::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  this->FillRegion(0, 0, this->left, this->geometry.height, this->color);
+  this->FillRegion(0, 0, this->geometry.width, this->top, this->color);
+  this->FillRegion(this->geometry.width - this->right, 0, this->right, this->geometry.height, this->color);
+  this->FillRegion(0, this->geometry.height - this->bottom, this->geometry.width, this->bottom, this->color);
+}
 
 // OFFSET: 0x009EA240
+// FUNCTION: fn_14515
+void CUITextViewer::Paint() {
+  this->ClearSurface(this->backgroundColor);
+}
 
 // OFFSET: 0x009EA250
 // FUNCTION: fn_14516
