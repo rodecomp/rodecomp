@@ -8,11 +8,13 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/Actors/EffectActors.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/Jobs/JobId.h"
+#include "Contents/Jobs/JobInheritance.h"
 #include "Render/Renderer.h"
 #include "Render/SpriteQuad.h"
 #include "Resource/ResourceMgr.h"
@@ -1164,4 +1166,28 @@ void RenderBounds::Include(const float* box) {
   if (box[2] > this->bottom) {
     this->bottom = box[2];
   }
+}
+
+// OFFSET: 0x00CAA870
+
+// OFFSET: 0x00CAA9B0
+
+// OFFSET: 0x00CAABA0
+
+// OFFSET: 0x00CAAC10
+
+// OFFSET: 0x00CAB020
+
+// OFFSET: 0x00CAB9B0
+// FUNCTION: fn_21033
+CActRes* CRenderObject::GetActRes() {
+  return this->render.action;
+}
+
+// OFFSET: 0x00CAB9C0
+
+// OFFSET: 0x00CABD30
+// FUNCTION: fn_21036
+int CGameActor::GetUnknown0404() {
+  return this->unknown_0404;
 }

@@ -64,6 +64,7 @@ public:
   void ApplySwing(int mode, int& x, int& y, int& outX, int& outY) const;
   void SetInstantValue(int key, std::int64_t value);
   std::int64_t GetInstant(int key) const;
+  CActRes* GetActRes();
   void SetFrameSequence(
     unsigned char animation, unsigned char firstFrame, unsigned char lastFrame, unsigned char finishAnimation,
     unsigned char finishFrame, int timed, std::uint32_t duration, int loop

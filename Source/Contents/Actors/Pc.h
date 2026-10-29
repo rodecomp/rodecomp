@@ -41,7 +41,8 @@ public:
   /* 0418 */ std::string unknown_0418;
   /* 0430 */ int unknown_0430;
   /* 0434 */ int unknown_0434;
-  /* 0438 */ unsigned char unknown_0438[8];
+  /* 0438 */ int unknown_0438;
+  /* 043C */ unsigned char unknown_043C[4];
   /* 0440 */ int unknown_0440;
   /* 0444 */ int unknown_0444;
   /* 0448 */ int weapon;

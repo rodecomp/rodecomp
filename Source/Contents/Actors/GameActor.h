@@ -51,7 +51,7 @@ public:
   /* 0348 */ float unknown_0348[6];
   /* 0360 */ float unknown_0360[6];
   /* 0378 */ float unknown_0378;
-  /* 037C */ unsigned char unknown_037C[0x3C];
+  /* 037C */ int unknown_037C[15];
   /* 03B8 */ int unknown_03B8[3];
   /* 03C4 */ int unknown_03C4;
   /* 03C8 */ int unknown_03C8;
@@ -137,6 +137,13 @@ public:
   bool FindRoute(int startX, int startY, int fractionX, int fractionY, int destX, int destY, int speed);
   std::string GetShapeShiftName();
   int MountType();
+  bool ApplyEffectState(int effectId, bool on);
+  void SetHatEffect(int effectId, bool on);
+  void SetEffectState(int effectId, bool on);
+  void SetEffectInstance(int effectId, int instance, bool on);
+  void ClearUnknown037C(int value);
+  int WeaponActionBase(int weaponType);
+  int GetUnknown0404();
 };
 
 int ShapeShiftJob(int form, int job);
