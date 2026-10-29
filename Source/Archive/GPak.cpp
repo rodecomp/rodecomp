@@ -960,6 +960,11 @@ void CGPak::ApplyAuxiliary(const void* data, std::uint32_t size, const void* aux
 myGPack::CGPakUpdate::CGPakUpdate() {
 }
 
+// OFFSET: 0x00E55940
+myGPack::CGPakUpdate::~CGPakUpdate() {
+  this->Close();
+}
+
 struct PakLinkNode {
   /* 0000 */ PakLinkNode* m_next;
   /* 0004 */ PakLinkNode* m_prev;

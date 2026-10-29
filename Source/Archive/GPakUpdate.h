@@ -17,6 +17,7 @@ namespace myGPack {
 
   class CNotifier {
   public:
+    // OFFSET: 0x00E55AC0
     virtual ~CNotifier() {
     }
 
@@ -43,6 +44,7 @@ namespace myGPack {
   class CGPakUpdate : public CGPakRead {
   public:
     CGPakUpdate();
+    ~CGPakUpdate() override;
 
     bool Open(const char* filename);
     bool Commit(CNotifier* notifier);
