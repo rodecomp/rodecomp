@@ -282,8 +282,21 @@ void CEZ2STREffect::Slot26(int argument) {
 }
 
 // OFFSET: 0x006FFF30
+// FUNCTION: fn_06974
+void CEZ2STREffect::Slot27(int argument) {
+  if (this->emitter) {
+    this->emitter->unknown_3FE9 = static_cast<unsigned char>(argument);
+  }
+}
 
 // OFFSET: 0x006FFF50
+// FUNCTION: fn_06975
+__declspec(noinline) void CEZ2STREffect::EndLoop(unsigned char fadeOut) {
+  if (this->emitter) {
+    this->emitter->looping = 0;
+    this->emitter->fadeOut = fadeOut;
+  }
+}
 
 // OFFSET: 0x006FFF80
 // FUNCTION: fn_06976
