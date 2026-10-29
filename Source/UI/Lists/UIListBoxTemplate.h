@@ -29,13 +29,55 @@ public:
   /* 00C0 */ std::function<void(CUIListItem*)> onPress;
 };
 
+class CUIStaticText;
+
 namespace AdventureGuide {
-class CUISubTab : public CUIListItem {};
-class CUITab : public CUIListItem {};
-class CUIItemInfo : public CUIListItem {};
-class CUIMonsterInfo : public CUIListItem {};
-class CUIQuestInfo : public CUIListItem {};
-class CUITabInfo : public CUIListItem {};
+class CUISubTab : public CUIListItem {
+public:
+  void Slot16() override;
+
+  /* 00E8 */ unsigned char unknown_00E8[0x04];
+  /* 00EC */ UIWindow* unknown_00EC;
+};
+
+class CUITab : public CUIListItem {
+public:
+  void Slot16() override;
+};
+
+class CUIItemInfo : public CUIListItem {
+public:
+  void Slot16() override;
+
+  /* 00E8 */ unsigned char unknown_00E8[0x08];
+  /* 00F0 */ CUIStaticText* unknown_00F0;
+  /* 00F4 */ CUIStaticText* unknown_00F4;
+  /* 00F8 */ CUIStaticText* unknown_00F8;
+};
+
+class CUIMonsterInfo : public CUIListItem {
+public:
+  void Slot16() override;
+
+  /* 00E8 */ unsigned char unknown_00E8[0x04];
+  /* 00EC */ CUIStaticText* unknown_00EC;
+  /* 00F0 */ CUIStaticText* unknown_00F0;
+};
+
+class CUIQuestInfo : public CUIListItem {
+public:
+  void Slot16() override;
+
+  /* 00E8 */ unsigned char unknown_00E8[0x04];
+  /* 00EC */ CUIStaticText* unknown_00EC;
+  /* 00F0 */ CUIStaticText* unknown_00F0;
+  /* 00F4 */ CUIStaticText* unknown_00F4;
+};
+
+class CUITabInfo : public CUIListItem {
+public:
+  void Slot16() override;
+};
 class CItemData {};
 class CMonsterData {};
 class CQuestInfo {};
@@ -54,6 +96,20 @@ public:
   void Resize(int width, int height) override {
     UIWindow::Resize(width, height);
     this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+    int total = 0;
+    for (T* item : this->items) {
+      total += item->geometry.height;
+    }
+    this->scrollBar->SetTotal(total);
+    this->scrollBar->SetVisible(this->geometry.height);
+    this->scrollBar->SetPosition(this->scrollBar->position);
+  }
+
+  // OFFSET: 0x009DD9A0
+  // OFFSET: 0x009DD9F0
+  // FUNCTION: fn_14345
+  // FUNCTION: fn_14346
+  void UpdateScrollBar() {
     int total = 0;
     for (T* item : this->items) {
       total += item->geometry.height;
@@ -123,7 +179,9 @@ public:
     this->UpdateScrollBar();
   }
 
+  // OFFSET: 0x009DD950
   // OFFSET: 0x00A06300
+  // FUNCTION: fn_14344
   // FUNCTION: fn_15001
   void UpdateScrollBar() {
     this->scrollBar->SetTotal(this->data.size() * this->rowHeight + this->itemY);
