@@ -93,6 +93,28 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
   return effect;
 }
 
+// OFFSET: 0x00CAE0F0
+// FUNCTION: fn_21070
+CRagEffect* EffectActor::LaunchEffect(int effectId, int duration) {
+  CRagEffect* effect = this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  if (effect) {
+    effect->SendMsg(nullptr, 80, 0, duration, 0, 0, 0, 0);
+  }
+
+  return effect;
+}
+
+// OFFSET: 0x00CAE160
+// FUNCTION: fn_21071
+CRagEffect* EffectActor::LaunchTaggedEffect(int effectId, std::uint32_t tag) {
+  CRagEffect* effect = this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  if (effect) {
+    effect->state.tag = tag;
+  }
+
+  return effect;
+}
+
 // INLINED
 bool PartyMemberEffects::Enabled() const {
   const auto* mode = this->activeMode;

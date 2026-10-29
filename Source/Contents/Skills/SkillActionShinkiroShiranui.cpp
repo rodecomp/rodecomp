@@ -1,6 +1,7 @@
 #include "Contents/Actors/GameActor.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/Effect.h"
+#include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Utility/Math/Vector3d.h"
@@ -38,6 +39,7 @@ class CSkillAction_SS_KINRYUUHOU : public CSkillAction {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -45,12 +47,14 @@ class CSkillAction_SS_ANTENPOU : public CSkillAction {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
 };
 
 class CSkillAction_SS_KAGEAKUMU : public CSkillAction {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot15(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -58,6 +62,7 @@ class CSkillAction_SS_HITOUAKUMU : public CSkillAction {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -65,6 +70,7 @@ class CSkillAction_SS_ANKOKURYUUAKUMU : public CSkillAction {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot15(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -141,6 +147,14 @@ int CSkillAction_SS_KINRYUUHOU::Slot02() {
   return 57;
 }
 
+// OFFSET: 0x00795A00
+// FUNCTION: fn_08793
+void CSkillAction_SS_KINRYUUHOU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+  }
+}
+
 // OFFSET: 0x00795BD0
 // FUNCTION: fn_08795
 void CSkillAction_SS_KINRYUUHOU::Slot16(int level, CGameActor* source, CGameActor* target) {
@@ -161,6 +175,8 @@ int CSkillAction_SS_ANTENPOU::Slot02() {
   return 57;
 }
 
+// OFFSET: 0x00795D60
+
 // OFFSET: 0x00795EE0
 // FUNCTION: fn_08800
 int CSkillAction_SS_KAGEAKUMU::Slot01() {
@@ -172,6 +188,8 @@ int CSkillAction_SS_KAGEAKUMU::Slot01() {
 int CSkillAction_SS_KAGEAKUMU::Slot02() {
   return 57;
 }
+
+// OFFSET: 0x00795F00
 
 // OFFSET: 0x00795F60
 // FUNCTION: fn_08803
@@ -192,6 +210,8 @@ int CSkillAction_SS_HITOUAKUMU::Slot01() {
 int CSkillAction_SS_HITOUAKUMU::Slot02() {
   return 57;
 }
+
+// OFFSET: 0x007960E0
 
 // OFFSET: 0x00796140
 // FUNCTION: fn_08807
@@ -231,6 +251,8 @@ int CSkillAction_SS_ANKOKURYUUAKUMU::Slot01() {
 int CSkillAction_SS_ANKOKURYUUAKUMU::Slot02() {
   return 57;
 }
+
+// OFFSET: 0x007964B0
 
 // OFFSET: 0x00796510
 // FUNCTION: fn_08811
