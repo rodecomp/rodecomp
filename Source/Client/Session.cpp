@@ -391,9 +391,59 @@ int CSession::GetItem1760QuantityByItemId(const char* itemId) const {
 }
 
 // OFFSET: 0x00DDF2D0
+// FUNCTION: fn_23422
+SessionRecord0734 CSession::FindRecord0734(int id) const {
+  for (const SessionRecord0734& record : this->unknown_0734) {
+    if (record.id == id) {
+      return record;
+    }
+  }
+
+  SessionRecord0734 empty;
+  return empty;
+}
 
 // OFFSET: 0x00DDF320
+// FUNCTION: fn_23423
+const char* CSession::GetBgmFileName(const char* rswName) {
+  std::string name = rswName;
+  const std::size_t position = name.rfind("@");
+  if (position != std::string::npos && position >= 4) {
+    name.erase(position - 4, 3);
+  }
+
+  const char* key = name.c_str();
+  auto found = std::lower_bound(this->m_bgmFileNames.begin(), this->m_bgmFileNames.end(), key,
+                                [](const std::pair<const char*, const char*>& entry, const char* value) { return std::strcmp(entry.first, value) < 0; });
+  if (found != this->m_bgmFileNames.end() && std::strcmp(found->first, key) == 0) {
+    return found->second;
+  }
+
+  return "bgm\\01.mp3";
+}
 
 // OFFSET: 0x00DF9CD0
+// FUNCTION: fn_23565
+bool CSession::HasItem17D4(int itemId) const {
+  if (!this->unknown_17D4.empty()) {
+    for (const ITEM_INFO& item : this->unknown_17D4) {
+      if (std::atoi(item.itemId.c_str()) == itemId) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
 
 // OFFSET: 0x00DF9D30
+// FUNCTION: fn_23566
+bool CSession::IsFriendName(const char* name) const {
+  for (const MessengerMember& member : this->m_friends) {
+    if (member.name == name) {
+      return true;
+    }
+  }
+
+  return false;
+}
