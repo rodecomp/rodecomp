@@ -488,3 +488,31 @@ bool CSession::IsFriendName(const char* name) const {
 int CSession::GetSceneUnknown004C() const {
   return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_004C;
 }
+
+// OFFSET: 0x00DDB4D0
+
+// OFFSET: 0x00DDC050
+
+// OFFSET: 0x00DDC0A0
+
+// OFFSET: 0x00DDC0F0
+
+// OFFSET: 0x00DDC330
+
+// OFFSET: 0x00DDC580
+
+// OFFSET: 0x00DDC7A0
+
+// OFFSET: 0x00DDC830
+
+// OFFSET: 0x00DDC9D0
+
+// OFFSET: 0x00DDD300
+
+// OFFSET: 0x00DDD400
+
+// OFFSET: 0x00DDD710
+
+// OFFSET: 0x00DDD7B0
+
+// OFFSET: 0x00DDD9A0

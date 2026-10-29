@@ -76,7 +76,10 @@ public:
   /* 06A8 */ unsigned char unknown_06A8[0x43];
   /* 06EB */ NormalItemSlot unknown_06EB;
   /* 06F2 */ NormalItemSlot unknown_06F2;
-  /* 06F9 */ unsigned char unknown_06F9[0x23];
+  /* 06F9 */ unsigned char unknown_06F9[0x07];
+  /* 0700 */ std::map<int, int> unknown_0700;
+  /* 0708 */ std::map<int, int> unknown_0708;
+  /* 0710 */ unsigned char unknown_0710[0x0C];
   /* 071C */ std::vector<int> m_homunSkillLevels;
   /* 0728 */ std::vector<int> m_mercSkillLevels;
   /* 0734 */ std::list<SessionRecord0734> unknown_0734;
@@ -103,7 +106,8 @@ public:
   /* 0EF0 */ int m_headPalette;
   /* 0EF4 */ unsigned char unknown_0EF4[0x0C];
   /* 0F00 */ int m_robe;
-  /* 0F04 */ unsigned char unknown_0F04[0x10];
+  /* 0F04 */ bool m_newRobeDrawOnTop;
+  /* 0F05 */ unsigned char unknown_0F05[0x0F];
   /* 0F14 */ std::uint32_t m_jobFlags;
   /* 0F18 */ int m_playerX;
   /* 0F1C */ int m_playerY;
@@ -119,7 +123,9 @@ public:
   /* 0F6C */ const char* const* m_humanMaleHeadNames;
   /* 0F70 */ unsigned char unknown_0F70[0x08];
   /* 0F78 */ const char* const* m_humanFemaleHeadNames;
-  /* 0F7C */ unsigned char unknown_0F7C[0x2C];
+  /* 0F7C */ unsigned char unknown_0F7C[0x08];
+  /* 0F84 */ const char* const* m_imfNames;
+  /* 0F88 */ unsigned char unknown_0F88[0x20];
   /* 0FA8 */ std::vector<const char*> m_jobNameTable;
   /* 0FB4 */ std::map<unsigned, const char*> m_jobNameTableWoman;
   /* 0FBC */ std::map<unsigned, const char*> m_jobNameTableMan;
@@ -172,7 +178,8 @@ public:
   /* 4860 */ ITEM_INFO m_itemSlots[10];
   /* 5210 */ unsigned char unknown_5210[0x14];
   /* 5224 */ std::vector<std::pair<const char*, const char*>> m_bgmFileNames;
-  /* 5230 */ unsigned char unknown_5230[0x24];
+  /* 5230 */ std::vector<std::pair<std::string, std::vector<std::string>>> m_fogParameters;
+  /* 523C */ unsigned char unknown_523C[0x18];
   /* 5254 */ std::map<int, float> m_npcLocationRadius;
   /* 525C */ unsigned char unknown_525C[0x38];
   /* 5294 */ const char* const* m_bodyJobNames;
@@ -470,6 +477,24 @@ public:
   int GetItemDescription40(int id);
   std::uint32_t GetUnknown0420(int index);
   void GetSkillActionInfo(int skillId, int& effectId, int& motion, int variant, int level);
+  bool IsNumberWithCommas(char* text);
+  bool IsRobeDrawOnTop(int action, int frame, bool riding);
+  int GetUnknown8134() const;
+  int FindUnknown0708(int key) const;
+  int FindUnknown0700(int key) const;
+  const char* GetEnemyHitWaveName(int element);
+  ITEM_INFO* GetEquippedItem(const ITEM_INFO* item);
+  ITEM_INFO FindItem2B50(std::uint32_t id, int* index) const;
+  ITEM_INFO FindItem17F0(std::uint32_t id, int* index) const;
+  ITEM_INFO GetExchangeItem(int index) const;
+  const std::vector<std::string>* GetFogParameters(const char* rswName, int* found);
+  std::string GetPlayerHeadSprName();
+  std::string GetImfName(int job);
+  std::uint16_t FindInventoryIndexByItemId(int itemId);
+  std::vector<int> FindInventoryIndicesByItemId(int itemId, unsigned char identifiedOnly);
+  ITEM_INFO GetInventoryItemAt(int index) const;
+  ITEM_INFO* FindInventoryItemByItemId(int itemId, bool identifiedOnly);
+  int GetInventoryItemCount(int itemId) const;
 };
 
 extern CSession g_session;
@@ -574,6 +599,11 @@ static_assert(offsetof(CSession, m_maxLevel) == 0x7EEC);
 static_assert(offsetof(CSession, m_cardItems) == 0x811C);
 static_assert(offsetof(CSession, m_startTimeTicks) == 0x8138);
 static_assert(offsetof(CSession, m_loginTimeTicks) == 0x8140);
+static_assert(offsetof(CSession, unknown_0700) == 0x700);
+static_assert(offsetof(CSession, unknown_0708) == 0x708);
+static_assert(offsetof(CSession, m_newRobeDrawOnTop) == 0xF04);
+static_assert(offsetof(CSession, m_imfNames) == 0xF84);
+static_assert(offsetof(CSession, m_fogParameters) == 0x5230);
 #endif
 
 #endif

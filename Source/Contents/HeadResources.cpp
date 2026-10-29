@@ -158,6 +158,8 @@ std::string CSession::GetSexName(int sex) {
   return this->m_sexNames[sex];
 }
 
+// OFFSET: 0x00DDD100
+
 // OFFSET: 0x00BAB110
 // FUNCTION: fn_19751
 std::string EquipmentResourceMgr::GetHeadName(int type, int job, int sex, int* head) {
@@ -298,3 +300,5 @@ std::string CSession::GetPlayerHeadPalName() {
 std::string CSession::GetHeadSprName(int job, int sex, int* head) {
   return g_equipmentResourceMgr->GetHeadName(1, job, sex, head);
 }
+
+// OFFSET: 0x00DDD050

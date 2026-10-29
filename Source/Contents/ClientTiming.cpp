@@ -624,6 +624,12 @@ int CSession::SetUnknown8134(int value) {
   return value;
 }
 
+// OFFSET: 0x00DDBB50
+// FUNCTION: fn_23359
+int CSession::GetUnknown8134() const {
+  return this->unknown_8134;
+}
+
 // OFFSET: 0x00E01670
 // FUNCTION: fn_23647
 void CSession::ClearUnknown1710(int id) {

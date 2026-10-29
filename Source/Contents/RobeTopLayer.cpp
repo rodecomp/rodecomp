@@ -12,3 +12,5 @@ bool CSession::IsTopLayerRobe(int robe) {
   g_session.m_hotkeyScript->Call("IsTopLayer", "d>b", robe, &isTopLayer);
   return isTopLayer;
 }
+
+// OFFSET: 0x00DDB920

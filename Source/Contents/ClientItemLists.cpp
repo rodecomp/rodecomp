@@ -53,6 +53,20 @@ struct ClientItemLists {
   void MergeItem1718(const ITEM_INFO& item);
   bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
   EquipSlots GetEquipSlots(int location);
+  void RemoveItem1758ByItemId(ITEM_INFO& item);
+  void RemoveItem1710(std::uint32_t id, int quantity);
+  bool RemoveItem1768(const ITEM_INFO& item, unsigned char alternate);
+  bool RemoveItem1740(const ITEM_INFO& item);
+  bool RemoveItem1750(const ITEM_INFO& item, int type, unsigned char refresh);
+  void RemoveItem1758(ITEM_INFO& item);
+  void RemoveItem1760(const ITEM_INFO& item);
+  void RemoveItem1718ByItemId(const ITEM_INFO& item);
+  void RemoveItem1718(const ITEM_INFO& item);
+  void RemoveItem1720ByName(const ITEM_INFO& item);
+  void RemoveItem1720(const ITEM_INFO& item);
+  void RemoveItem1730(const ITEM_INFO& item);
+  void ReduceItem1718(const ITEM_INFO& item);
+  bool RemoveItem1738(const ITEM_INFO& item);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -469,3 +483,31 @@ EquipSlots ClientItemLists::GetEquipSlots(int location) {
   const EquipSlots slots = EquipSlotDecoder().Decode(mask);
   return slots;
 }
+
+// OFFSET: 0x00DDA470
+
+// OFFSET: 0x00DDA510
+
+// OFFSET: 0x00DDA5A0
+
+// OFFSET: 0x00DDA690
+
+// OFFSET: 0x00DDA740
+
+// OFFSET: 0x00DDA8B0
+
+// OFFSET: 0x00DDA920
+
+// OFFSET: 0x00DDA9C0
+
+// OFFSET: 0x00DDAA50
+
+// OFFSET: 0x00DDAAB0
+
+// OFFSET: 0x00DDAB30
+
+// OFFSET: 0x00DDAC40
+
+// OFFSET: 0x00DDAC90
+
+// OFFSET: 0x00DDACE0
