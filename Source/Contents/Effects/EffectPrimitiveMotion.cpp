@@ -26,6 +26,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <string>
 
 namespace {
   // INLINED
@@ -5623,4 +5624,159 @@ bool CEffectPrim::Prim3DSlotParticle() {
   particle.ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
+}
+
+// OFFSET: 0x00BBC080
+// FUNCTION: fn_19799
+bool CEffectPrim::PrimFieldFireflies() {
+  FaceCamera(this->state.slots);
+  this->render.position = this->state.master->render.position;
+
+  for (int index = 0; index < 4; ++index) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const float kind = slot.height[7];
+    if (kind < 99.0f) {
+      const int process = ++slot.process;
+
+      if (slot.flag1[2] == 23 && process % 14 == 0) {
+        char frame = ++slot.flag1[0];
+        if (frame > 5) {
+          frame = 0;
+        }
+        slot.flag1[0] = frame;
+      }
+
+      if (kind == 0.0f) {
+        if (process < 80 && slot.height[6] > this->render.position.y) {
+          slot.alphaB += 2;
+        }
+      } else if (kind == 2.0f) {
+        if (process < 80) {
+          slot.alphaB += 2;
+        }
+      } else if (kind == 3.0f) {
+        if (process < 170) {
+          ++slot.alphaB;
+        }
+      } else if (kind == 5.0f) {
+        if (process < 80) {
+          slot.alphaB += 2;
+        }
+      } else if (kind == 11.0f || kind == 12.0f || kind == 13.0f || kind == 14.0f) {
+        if (process < 70) {
+          ++slot.alphaB;
+        }
+      } else if (process < 80) {
+        slot.alphaB += 3;
+      }
+
+      if (process > slot.rotStart && --slot.alphaB <= 0) {
+        slot.process = 0;
+        slot.alphaB = 0;
+
+        const float respawn = slot.height[7];
+        if (respawn == 0.0f) {
+          if (this->render.position.y > slot.height[6]) {
+            slot.process = 300;
+          }
+          slot.vecBNow.x = static_cast<float>(Random(300) - 150);
+          slot.vecBNow.z = static_cast<float>(Random(300) - 150);
+        } else if (respawn == 2.0f || respawn == 5.0f) {
+          slot.vecBNow.x = static_cast<float>(Random(300) - 150);
+          slot.vecBNow.z = static_cast<float>(Random(300) - 150);
+        } else if (respawn == 3.0f) {
+          slot.vecBNow.x = static_cast<float>(Random(300) - 150);
+          slot.vecBNow.z = static_cast<float>(Random(300) - 150);
+          const auto& grid = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid();
+          const int sink = Random(5);
+          slot.vecBNow.y = grid.Height(this->render.position.x + slot.vecBNow.x, this->render.position.z + slot.vecBNow.z) - 20.0f - static_cast<float>(sink);
+        } else {
+          slot.vecBNow.x = static_cast<float>(Random(200) + 25);
+          slot.vecBNow.z = static_cast<float>(Random(200) + 25);
+          if (std::string(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName) == "ecl_fild01.rsw") {
+            slot.vecBNow.x = static_cast<float>(Random(400) + 25);
+            slot.vecBNow.z = static_cast<float>(Random(400) + 25);
+          }
+          if (Random(2) == 0) {
+            slot.vecBNow.x *= -1.0f;
+          }
+          if (Random(2) == 0) {
+            slot.vecBNow.z *= -1.0f;
+          }
+        }
+
+        slot.vecBNow.x = this->render.position.x + slot.vecBNow.x;
+        slot.vecBNow.z = this->render.position.z + slot.vecBNow.z;
+      }
+
+      for (int pair = 0; pair < 2; ++pair) {
+        float& current = slot.height[2 * pair];
+        float& target = slot.height[2 * pair + 1];
+        int next;
+        if (target <= current) {
+          current -= 1.0f;
+          if (current < 0.0f) {
+            current = 0.0f;
+          }
+          if (target < current) {
+            continue;
+          }
+          const int range = static_cast<int>(current);
+          int pick = 0;
+          if (range != 0) {
+            const int value = std::rand() % range;
+            pick = value >= 0 ? value : 0;
+          }
+          next = 359 - pick;
+        } else {
+          current += 1.0f;
+          if (current > 359.0f) {
+            current = 359.0f;
+          }
+          if (current <= target) {
+            continue;
+          }
+          const int range = static_cast<int>(current);
+          next = 0;
+          if (range != 0) {
+            const int value = std::rand() % range;
+            next = value >= 0 ? value : 0;
+          }
+        }
+        target = static_cast<float>(next);
+      }
+
+      const float motion = slot.height[7];
+      const float driftX = g_sinTable[static_cast<int>(slot.height[0])];
+      if (motion == 3.0f) {
+        slot.vecBNow.x += driftX * 0.015f;
+        slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.015f;
+      } else if (motion == 4.0f) {
+        if (driftX <= 0.0f) {
+          slot.vecBNow.x -= driftX * 0.2f;
+        } else {
+          slot.vecBNow.x += driftX * 0.2f;
+        }
+        slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.05f;
+      } else if (motion == 5.0f) {
+        slot.vecBNow.x += driftX * 0.035f;
+        slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.035f;
+      } else {
+        slot.vecBNow.x += driftX * 0.05f;
+        slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.05f;
+      }
+    }
+
+    slot.height[8] += 1.0f;
+    if (slot.height[8] >= 360.0f) {
+      slot.height[8] -= 360.0f;
+    }
+  }
+
+  return true;
 }
