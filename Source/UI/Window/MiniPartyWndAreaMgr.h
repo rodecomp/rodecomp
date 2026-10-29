@@ -19,6 +19,7 @@ public:
   virtual ~CMiniPartyWndAreaMgr() = default;
 
   CMiniPartyWndAreaMgr();
+  int FindFreeCell();
 };
 
 extern CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr;

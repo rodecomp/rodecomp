@@ -423,6 +423,7 @@ public:
   void SetScreenSize(int width, int height);
   UIWindow* LookupWindow(int id);
   void GetMiniPartyUsableArea(RECT* area);
+  UIWindow* FindSnapExcludedWindow(int cell);
   void Schedule(UIWindow* window);
   void SetUnknown04DC(const char* text);
   void Destroy(UIWindow* window);
