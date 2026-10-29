@@ -76,6 +76,12 @@ void UICheckBox::SetChecked(int value) {
 }
 
 // OFFSET: 0x0086AF70
+// FUNCTION: fn_10999
+void UICheckBox::SetHidden(bool hidden) {
+  this->m_hidden = hidden;
+  this->Show(!hidden);
+  this->Invalidate();
+}
 
 // OFFSET: 0x0085EB90
 // FUNCTION: fn_10841

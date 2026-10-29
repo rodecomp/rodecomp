@@ -23,6 +23,12 @@ void UIStaticBitmap::SetBitmap(const char* name) {
 }
 
 // OFFSET: 0x00869790
+// FUNCTION: fn_10969
+void UIStaticBitmap::SetTooltip(const char* text) {
+  if (text) {
+    this->tooltip = text;
+  }
+}
 
 // OFFSET: 0x0085DA90
 // FUNCTION: fn_10817
