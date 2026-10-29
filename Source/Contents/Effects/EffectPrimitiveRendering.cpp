@@ -2125,8 +2125,158 @@ void CEffectPrim::RenderSphereWind(matrix& wtm) {
 }
 
 // OFFSET: 0x00BC60E0
+// FUNCTION: fn_19850
+void CEffectPrim::Render2DCircle() {
+  float uInc = 0.0f;
+  int rpCnt = 0;
+  const float temp = 360.0f - this->state.arcAngle;
+  const float innerSize = this->state.radius - this->state.size;
+
+  for (float i = 0.0f; i <= temp; i += this->state.arcAngle) {
+    const float cs1 = g_cosTable[static_cast<int>(i)];
+    const float sn1 = g_sinTable[static_cast<int>(i)];
+    const float cs2 = g_cosTable[static_cast<int>(i + this->state.arcAngle)];
+    const float sn2 = g_sinTable[static_cast<int>(i + this->state.arcAngle)];
+
+    RenderTriangle& first = this->state.triangles[rpCnt];
+    first.vertices[0].x = this->render.position.x + innerSize * cs1;
+    first.vertices[0].y = this->render.position.y - innerSize * sn1;
+    first.vertices[0].z = 0.000001f;
+    first.vertices[0].rhw = 0.999999f;
+    first.vertices[0].diffuse = this->state.argb;
+    first.vertices[0].u = uInc;
+    first.vertices[0].v = 1.0f;
+    first.vertices[1].x = this->render.position.x + this->state.radius * cs2;
+    first.vertices[1].y = this->render.position.y - this->state.radius * sn2;
+    first.vertices[1].z = 0.000001f;
+    first.vertices[1].rhw = 0.999999f;
+    first.vertices[1].diffuse = this->state.argb;
+    first.vertices[1].u = uInc + 0.25f;
+    first.vertices[1].v = 0.0f;
+    first.vertices[2].x = this->render.position.x + this->state.radius * cs1;
+    first.vertices[2].y = this->render.position.y - this->state.radius * sn1;
+    first.vertices[2].z = 0.000001f;
+    first.vertices[2].rhw = 0.999999f;
+    first.vertices[2].diffuse = this->state.argb;
+    first.vertices[2].u = uInc;
+    first.vertices[2].v = 0.0f;
+    first.texture = this->state.textures[0];
+    g_renderer->queues.SubmitTriangle(first, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    ++rpCnt;
+
+    RenderTriangle& second = this->state.triangles[rpCnt];
+    second.vertices[0].x = this->render.position.x + innerSize * cs1;
+    second.vertices[0].y = this->render.position.y - innerSize * sn1;
+    second.vertices[0].z = 0.000001f;
+    second.vertices[0].rhw = 0.999999f;
+    second.vertices[0].diffuse = this->state.argb;
+    second.vertices[0].u = uInc;
+    second.vertices[0].v = 1.0f;
+    second.vertices[1].x = this->render.position.x + innerSize * cs2;
+    second.vertices[1].y = this->render.position.y - innerSize * sn2;
+    second.vertices[1].z = 0.000001f;
+    second.vertices[1].rhw = 0.999999f;
+    second.vertices[1].diffuse = this->state.argb;
+    second.vertices[1].u = uInc + 0.25f;
+    second.vertices[1].v = 1.0f;
+    second.vertices[2].x = this->render.position.x + this->state.radius * cs2;
+    second.vertices[2].y = this->render.position.y - this->state.radius * sn2;
+    second.vertices[2].z = 0.000001f;
+    second.vertices[2].rhw = 0.999999f;
+    second.vertices[2].diffuse = this->state.argb;
+    second.vertices[2].u = uInc + 0.25f;
+    second.vertices[2].v = 0.0f;
+    second.texture = this->state.textures[0];
+    g_renderer->queues.SubmitTriangle(second, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    ++rpCnt;
+
+    uInc += 0.25f;
+    if (uInc >= 1.0f) {
+      uInc = 0.0f;
+    }
+  }
+}
 
 // OFFSET: 0x00BC8E00
+// FUNCTION: fn_19855
+void CEffectPrim::Render3DCasting2(matrix& wtm) {
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    EffectPrimitiveSlot& slot = this->state.slots[ec];
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const int basicAngle = slot.fullDisplayAngle / 9;
+    int order = 0;
+
+    for (int count = 0; count < slot.fullDisplayAngle; count += basicAngle) {
+      int angle = (count + slot.rotStart) % 360;
+      if (slot.fullDisplayAngle == 360 && order == 20) {
+        angle = slot.rotStart;
+      }
+
+      float cs1 = g_cosTable[angle];
+      float sn1 = g_sinTable[angle];
+      slot.vecBNow.x = cs1 * slot.distance;
+      slot.vecBNow.z = sn1 * slot.distance;
+      slot.vecBNow.y = 0.0f;
+
+      float rx = g_cosTable[slot.riseAngle] * slot.height[order];
+      const float ry = g_sinTable[slot.riseAngle] * slot.height[order];
+
+      if (ec == 2) {
+        angle = 90 - angle;
+      } else if (ec == 1) {
+        angle = 270 - angle;
+      } else if (ec == 0) {
+        angle = 450 - angle;
+      } else {
+        angle = 630 - angle;
+      }
+      if (angle >= 360) {
+        angle -= 360;
+      }
+
+      sn1 = g_sinTable[angle];
+      cs1 = g_cosTable[angle];
+      const float rz = sn1 * rx;
+      rx = cs1 * rx;
+
+      slot.vecTNow.x = slot.vecBNow.x + rx;
+      slot.vecTNow.z = slot.vecBNow.z + rz;
+      slot.vecTNow.y = -ry;
+
+      const float offsetX = slot.flag1[0];
+      const float offsetZ = slot.flag1[1];
+      vector3d vec1 = slot.vecTNow;
+      vec1.x += offsetX;
+      vec1.z += offsetZ;
+      vector3d vec2 = slot.vecBNow;
+      vec2.x += offsetX;
+      vec2.z += offsetZ;
+      vector3d vec3 = slot.vecTPre;
+      vec3.x += offsetX;
+      vec3.z += offsetZ;
+      vector3d vec4 = slot.vecBPre;
+      vec4.x += offsetX;
+      vec4.z += offsetZ;
+
+      if (order > 0) {
+        this->RenderTeiRect(&rpCnt, order - 1, slot.alphaB, slot.alphaB, vec4, vec2, vec1, vec3, wtm, 0);
+      }
+
+      ++order;
+      if (order > 20) {
+        order = 20;
+      }
+
+      slot.vecTPre = slot.vecTNow;
+      slot.vecBPre = slot.vecBNow;
+    }
+  }
+}
 
 // OFFSET: 0x00BC91D0
 // FUNCTION: fn_19856
