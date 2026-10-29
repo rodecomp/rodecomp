@@ -6,7 +6,9 @@
 class UIImgMenu : public UIWindow {
 public:
   int ItemAt(int x, int y);
+  void Slot27(int x, int y) override;
   void Slot28(int x, int y) override;
+  void ResetCursor(int x, int y) override;
 
   /* 0080 */ int count;
   /* 0084 */ int itemWidth;

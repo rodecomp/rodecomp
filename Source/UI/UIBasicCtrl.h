@@ -9,10 +9,12 @@
 struct ItemNaming;
 struct ClientSkills;
 struct UIButtonContext;
+class WindowManagerWindows;
 
 class UIBasicItemCtrl : public UIWindow {
 public:
   void Slot28(int x, int y) override;
+  void Slot32(int x, int y) override;
 
 protected:
   /* 007C */ unsigned char unknown_007C[0xC];
@@ -20,6 +22,7 @@ protected:
   /* 00A0 */ ITEM_INFO m_item;
   ItemNaming* m_naming;
   UIButtonContext* m_controls;
+  WindowManagerWindows* m_windows;
 };
 
 class UIBasicSkillCtrl : public UIWindow {

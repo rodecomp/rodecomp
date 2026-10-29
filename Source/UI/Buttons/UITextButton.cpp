@@ -18,8 +18,25 @@
 #include "UI/UIBasicCtrl.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Lists/UIMemberListBox.h"
+#include "Client/Mode/ModeCursor.h"
+#include "UI/Buttons/UIBitmapButton2.h"
+#include "UI/Buttons/UISlotBmpButton.h"
+#include "UI/Buttons/UITVBitmapButton.h"
+#include "UI/Buttons/UITVTextButton.h"
+#include "UI/Lists/UIComboBox.h"
+#include "UI/Lists/UIComboBoxV2Wnd.h"
+#include "UI/Lists/UIItemStoreComboBox.h"
+#include "UI/Lists/UIListBoxEx.h"
+#include "UI/Lists/UIListBoxID.h"
+#include "UI/Lists/UIScrollBar.h"
+#include "UI/Shortcuts/ShortcutVisibility.h"
+#include "UI/Text/UIString.h"
+#include "UI/Edit/UIEditCtrl_Currency.h"
+#include "Client/Input/Language.h"
+#include "Utility/Text/GroupedInteger.h"
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <string>
 
@@ -467,3 +484,73 @@ void UIStaticItem::Slot28(int, int) {
 
   this->m_controls->services.Tooltip(text, screenX, screenY, -1, false, true);
 }
+
+// OFFSET: 0x00892040
+
+// OFFSET: 0x00892060
+
+// OFFSET: 0x00892100
+
+// OFFSET: 0x00892160
+
+// OFFSET: 0x00892170
+
+// OFFSET: 0x00892340
+
+// OFFSET: 0x008923D0
+
+// OFFSET: 0x00892520
+
+// OFFSET: 0x00892560
+
+// OFFSET: 0x008925A0
+
+// OFFSET: 0x008925D0
+
+// OFFSET: 0x00892600
+
+// OFFSET: 0x00892910
+
+// OFFSET: 0x00892940
+
+// OFFSET: 0x00892A10
+
+// OFFSET: 0x00892A50
+
+// OFFSET: 0x00892A80
+// FUNCTION: fn_11483
+void UISlotBmpButton::Slot32(int, int) {
+  if (this->parent) {
+    this->parent->SendMsg(this, 6, this->geometry.id, 226, 0, 0);
+  }
+}
+
+// OFFSET: 0x00892AB0
+
+// OFFSET: 0x00892AE0
+
+// OFFSET: 0x00892B20
+
+// OFFSET: 0x00892BA0
+
+// OFFSET: 0x00892C20
+
+// OFFSET: 0x00892C50
+// FUNCTION: fn_11490
+void UIMemberListBox::Slot33(int, int) {
+  if (this->parent) {
+    this->parent->SendMsg(nullptr, 49, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00892CA0
+
+// OFFSET: 0x00892D20
+
+// OFFSET: 0x00892DE0
+
+// OFFSET: 0x00892EE0
+
+// OFFSET: 0x00892F50
+
+// OFFSET: 0x00892F90
