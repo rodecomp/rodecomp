@@ -124,6 +124,12 @@ void CGrannyPc::Slot27(int value) {
   this->unknown_0450 = value;
 }
 
+// OFFSET: 0x00DB2660
+// FUNCTION: fn_22644
+void CGrannyPc::Slot28(int) {
+  this->GetEffectiveJob(-1);
+}
+
 // OFFSET: 0x00DB0B40
 // FUNCTION: fn_22630
 void CGrannyPc::Slot25(int value) {
