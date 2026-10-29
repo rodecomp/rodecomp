@@ -769,3 +769,38 @@ void UINoticeMessageBox_LockSellItem::Slot19() {
 void UISkillListWnd::Slot33(int, int) {
   this->SendMsg(nullptr, 49, 0, 0, 0, 0);
 }
+
+// OFFSET: 0x009739A0
+// FUNCTION: fn_13291
+int UISkillListWnd::SkillAt(int x, int y) {
+  if (x < 40 || y < 17 || y >= this->visibleRows * 32 + 17) {
+    return -1;
+  }
+
+  const int row = (y - 17) / 32;
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->skills.begin(); it != this->skills.end(); ++it, ++index) {
+    if (index >= this->scroll * this->columns) {
+      if (visible == this->columns * row) {
+        return index;
+      }
+
+      ++visible;
+    }
+  }
+
+  return -1;
+}
+
+// OFFSET: 0x0098A1E0
+// FUNCTION: fn_13406
+void UISkillListWnd::Slot32(int x, int y) {
+  const int previous = this->hovered;
+  this->hovered = this->SkillAt(x, y);
+
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+}
