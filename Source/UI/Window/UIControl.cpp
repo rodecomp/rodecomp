@@ -452,6 +452,12 @@ void CUITabButton::Slot47() {
 }
 
 // OFFSET: 0x009F1670
+// FUNCTION: fn_14693
+void CUITabButton::Slot48() {
+  if (this->state != 1) {
+    this->SetState(0);
+  }
+}
 
 // OFFSET: 0x009ED6D0
 // FUNCTION: fn_14582
