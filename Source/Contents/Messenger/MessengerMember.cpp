@@ -114,6 +114,7 @@ public:
 class UIMessengerGroupWnd : public UIFrameWnd {
 public:
   void Slot11() override;
+  void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
@@ -656,6 +657,36 @@ MessengerMember UIMessengerGroupWnd::MemberAtIndex(int index) {
 void UIMessengerGroupWnd::Slot26(int, int) {
   if (!g_messengerGroupCollapsed) {
     this->SendMsg(nullptr, 6, 232, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x0073D460
+// FUNCTION: fn_07713
+void UIMessengerGroupWnd::Slot25(int x, int y) {
+  if (g_messengerGroupCollapsed) {
+    return;
+  }
+
+  const int previous = this->selected;
+  this->selected = -1;
+
+  if (x >= 2 && x <= this->geometry.width - 2 && y > 16 && y < this->visibleRows * this->rowHeight + 17) {
+    const int index = (y - 17) / this->rowHeight + this->scrollTop;
+    int position = 0;
+    for (auto member = this->members.begin(); member != this->members.end(); ++member, ++position) {
+      if (position == index) {
+        this->selected = index;
+        break;
+      }
+    }
+  }
+
+  if (previous != this->selected) {
+    this->Invalidate();
+  }
+
+  if (this->selected != -1) {
+    this->SendMsg(nullptr, 49, 0, 0, 0, 0);
   }
 }
 
