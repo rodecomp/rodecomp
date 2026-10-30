@@ -5,6 +5,7 @@
 #include "Contents/Actors/GndRiser.h"
 #include "Contents/Actors/Npc.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/MapSkyMgr.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
@@ -351,6 +352,34 @@ void CPc::Slot57(int value) {
 // OFFSET: 0x00DA4150
 // FUNCTION: fn_22411
 void CGndRiser::Render(int) {
+}
+
+// OFFSET: 0x00DA30B0
+// FUNCTION: fn_22399
+bool CGndRiser::OnProcess() {
+  const float frame = static_cast<float>((timeGetTime() - this->render.unknown_008C) / 24.0);
+  if (frame > static_cast<float>(this->lifetime)) {
+    return false;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (mode) {
+    const float half = static_cast<float>(this->lifetime / 2);
+    float alpha;
+    if (frame > half) {
+      const float rise = frame - half;
+      const float span = static_cast<float>(this->lifetime) * g_depthAverageHalf;
+      alpha = (rise * rise - span * span) / 25.0f;
+    } else {
+      alpha = -(frame * frame) / 25.0f;
+    }
+
+    using GroundSlot15 = void(__thiscall*)(GroundGeometry*, float, int, int);
+    GroundGeometry* ground = mode->scene->ground;
+    reinterpret_cast<GroundSlot15>((*reinterpret_cast<void***>(ground))[15])(ground, alpha, this->screenX, this->screenY);
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00DA4960
