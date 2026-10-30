@@ -26,6 +26,8 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <shellapi.h>
+#include <iphlpapi.h>
+#include <new>
 #include <timeapi.h>
 
 #pragma pack(push, 1)
@@ -91,7 +93,22 @@ struct LoginErrorDetailPacket {
   /* 0008 */ char detail[20];
   /* 001C */ char text[1];
 };
+
+struct CharacterPagePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ CharacterInfo characters[1];
+};
+
+struct RefuseLoginPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char result;
+  /* 0003 */ char blockDate[20];
+};
 #pragma pack(pop)
+
+// GLOBAL: gl_25054
+int g_charServerAccountIdPending;
 
 static_assert(sizeof(CharacterSlotsPacket) == 0x1D);
 static_assert(offsetof(AcceptEnterPacket, characters) == 0x1B);
@@ -270,6 +287,33 @@ int GetClientType() {
   }
 }
 
+// OFFSET: 0x00D8E3A0
+// FUNCTION: fn_22271
+std::string GetMacAddress() {
+  ULONG size = 0;
+  if (GetAdaptersInfo(nullptr, &size) == ERROR_BUFFER_OVERFLOW) {
+    IP_ADAPTER_INFO* adapter = reinterpret_cast<IP_ADAPTER_INFO*>(new (std::nothrow) char[size]);
+    memset(adapter, 0, size);
+    GetAdaptersInfo(adapter, &size);
+    if (adapter != nullptr) {
+      char text[100];
+      memset(text, 0, sizeof(text));
+      const std::uint8_t source[] = {0x32, 0x2B, 0x1F, 0xFB, 0x90, 0xCE, 0x71, 0x3D, 0x4F, 0x36, 0x08, 0x93, 0x8F, 0xB3, 0x6C,
+                                     0x2A, 0x27, 0x29, 0x75, 0x8E, 0x98, 0xDB, 0x73, 0x57, 0x3A, 0x3E, 0x1D, 0x91, 0xE5, 0xEB};
+      thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> format(source);
+      _snprintf(text, sizeof(text), format.Text(), adapter->Address[0], adapter->Address[1], adapter->Address[2],
+        adapter->Address[3], adapter->Address[4], adapter->Address[5]);
+      delete[] reinterpret_cast<char*>(adapter);
+      return text;
+    }
+  }
+
+  const std::uint8_t source[] = {0xF0, 0x76, 0xE8, 0x25, 0xD3, 0xB4, 0xE6, 0xC8, 0xEC, 0x73, 0xF1, 0x3A, 0xD4, 0xAC, 0xF8, 0xCD,
+                                 0xF7, 0x47};
+  thread_local EncryptedName<sizeof(source), 0xFBD599E117C547C1ULL> fallback(source);
+  return fallback.Text();
+}
+
 // OFFSET: 0x00D8E700
 // FUNCTION: fn_22272
 int CLoginMode::GetMaxCharacterSlot() {
@@ -405,6 +449,66 @@ void CLoginMode::ReceiveCharacterResult(const CharacterResultPacket* packet, Win
 
   if (dialogs.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
     window->SendMsg(nullptr, 6, 185, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D8F040
+// FUNCTION: fn_22278
+void CLoginMode::ReceiveCharacterPage(const CharacterPagePacket* packet) {
+  const unsigned int count = (packet->length - 4) / sizeof(CharacterInfo);
+  if ((packet->length - 4) % sizeof(CharacterInfo) != 0) {
+    char text[256];
+    memset(text, 0, sizeof(text));
+    const std::uint8_t source[] = {0x4C, 0x07, 0x04, 0xFD, 0xDC, 0x06, 0xCD, 0x46, 0x5D, 0x10, 0x0C, 0xE1, 0xDB, 0x0A, 0xAB, 0x23,
+                                   0x7C, 0x26, 0x3F, 0xCA, 0xBD, 0x20, 0xEB, 0x71, 0x60, 0x3D, 0x64, 0x8E, 0xBD, 0x06, 0xD1, 0x42,
+                                   0x5D, 0x0E, 0x06, 0xFB, 0xD8, 0x17, 0xC6, 0x4A, 0x41, 0x09, 0x0A, 0x9D, 0xBD, 0x36, 0xF0, 0x79,
+                                   0x6A, 0x6F, 0x7F, 0x8F, 0xB8, 0x21, 0x99};
+    thread_local EncryptedName<sizeof(source), 0x0399459DAF454F0FULL> format(source);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), sizeof(CharacterInfo));
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
+    return;
+  }
+
+  const unsigned int total = this->unknown_01D8 + count;
+  if (total > 68) {
+    char text[256];
+    memset(text, 0, sizeof(text));
+    const std::uint8_t source[] = {0xE8, 0xE7, 0xCC, 0xDF, 0xF2, 0xCE, 0xF3, 0x90, 0xF9, 0xF0, 0xC4, 0xC3, 0xF5, 0xC2, 0x95, 0xF5,
+                                   0xE8, 0xC1, 0xF9, 0xAD, 0xFC, 0xFB, 0xC2, 0xA7, 0x8B, 0x8A, 0xE9, 0xAD, 0x9C, 0xAD, 0x82, 0xB1,
+                                   0xAB};
+    thread_local EncryptedName<sizeof(source), 0xD5A78DB38D8DAFABULL> format(source);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), total, 68);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
+    return;
+  }
+
+  memcpy_s(&this->characters[this->unknown_01D8], sizeof(this->characters) - this->unknown_01D8 * sizeof(CharacterInfo),
+    packet->characters, count * sizeof(CharacterInfo));
+  __time32_t now;
+  _time32(&now);
+  for (int i = 0; i < static_cast<int>(count); ++i) {
+    if (this->characters[this->unknown_01D8 + i].sex == 99) {
+      this->characters[this->unknown_01D8 + i].sex = g_session.unknown_0E9C[0];
+    }
+    if (this->characters[this->unknown_01D8 + i].deleteDate != 0) {
+      this->characters[this->unknown_01D8 + i].deleteDate += now;
+    }
+    CharacterInfo& character = this->characters[this->unknown_01D8 + i];
+    this->characters[this->unknown_01D8 + i].bodyStyle =
+      static_cast<std::int16_t>(g_session.GetBodyStyle(character.job, character.bodyStyle, character.unknown_0058));
+  }
+
+  this->unknown_01D8 += count;
+  if (count != 3) {
+    this->characterCount = this->unknown_01D8;
+    g_session.unknown_59BC = this->unknown_01D8;
+    this->unknown_01D8 = 0;
+    this->characterDeleted = false;
+    for (long long i = 0; i < this->characterCount; ++i) {
+      char* mapName = this->characters[i].mapName;
+      StringFormat(mapName, sizeof(this->characters[i].mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(mapName));
+    }
+    this->pendingCursorType = 7;
   }
 }
 
@@ -665,6 +769,103 @@ bool sub_D92B70() {
 // OFFSET: 0x00D92D90
 // FUNCTION: fn_22294
 void nullsub_486(int) {
+}
+
+// OFFSET: 0x00D92DA0
+// FUNCTION: fn_22295
+void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
+  char text[260];
+  memset(text, 0, sizeof(text));
+  {
+    const char* message = LookupMessage(3202);
+    const std::uint8_t source[] = {0x40, 0x6A, 0x45};
+    thread_local EncryptedName<sizeof(source), 0x891B232D09451965ULL> format(source);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), message);
+  }
+
+  switch (packet->result) {
+  case 1: {
+    const char* message = LookupMessage(3196);
+    const std::uint8_t source[] = {0x9C, 0x76, 0x77};
+    thread_local EncryptedName<sizeof(source), 0x758F1D0B4F7705B9ULL> format(source);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), message);
+    break;
+  }
+  case 2: {
+    const char* message = LookupMessage(3197);
+    const std::uint8_t source[] = {0x50, 0xBE, 0xED};
+    thread_local EncryptedName<sizeof(source), 0x35E5656B5DEDCD75ULL> format(source);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), message);
+    break;
+  }
+  case 3: {
+    const char* message = LookupMessage(3198);
+    const std::uint8_t source[] = {0xD8, 0xCA, 0xBB};
+    thread_local EncryptedName<sizeof(source), 0x4941FD9F21BBB9FDULL> format(source);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), message);
+    break;
+  }
+  case 4: {
+    const char* message = LookupMessage(3199);
+    const std::uint8_t source[] = {0xD8, 0xA4, 0x4D};
+    thread_local EncryptedName<sizeof(source), 0xE7978FB5A94DD7FDULL> format(source);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), message);
+    break;
+  }
+  case 5: {
+    const char* message = LookupMessage(3200);
+    const std::uint8_t source[] = {0x4E, 0xCA, 0xC7};
+    thread_local EncryptedName<sizeof(source), 0xB7FD8F670FC7B96BULL> format(source);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), message);
+    break;
+  }
+  case 6: {
+    const char* message = LookupMessage(3201);
+    const std::uint8_t source[] = {0xAA, 0xEA, 0xEB};
+    thread_local EncryptedName<sizeof(source), 0x39FF7FB50DEB998FULL> format(source);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), message);
+    break;
+  }
+  case 7: {
+    const char* message = LookupMessage(3214);
+    const std::uint8_t source[] = {0xB2, 0x82, 0xE1};
+    thread_local EncryptedName<sizeof(source), 0x2FE993D1DDE1F197ULL> format(source);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), message);
+    break;
+  }
+  case 8:
+  case 100:
+  case 102: {
+    const char* message = LookupMessage(3202);
+    const std::uint8_t source[] = {0xE8, 0x82, 0x99};
+    thread_local EncryptedName<sizeof(source), 0xAD075B8DB599F1CDULL> format(source);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), message);
+    break;
+  }
+  case 9: {
+    const char* message = LookupMessage(3911);
+    const std::uint8_t source[] = {0x5A, 0x66, 0x8D};
+    thread_local EncryptedName<sizeof(source), 0x2F8B0F37118D157FULL> format(source);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), format.Text(), message);
+    break;
+  }
+  case 101: {
+    char blockDate[21] = {};
+    memcpy_s(blockDate, 20, packet->blockDate, 20);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(449), blockDate);
+    break;
+  }
+  default:
+    break;
+  }
+
+  GetRagConnection().Close();
+  const int result = packet->result;
+  const std::uint8_t source[] = {0xBE, 0x24, 0x2B, 0xBC, 0x03, 0x2C, 0x05};
+  thread_local EncryptedName<sizeof(source), 0x050505679903579BULL> format(source);
+  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatString(format.Text(), text, result), 0, true, false, 0, "Message", 280, 120, 0);
+  g_charServerAccountIdPending = 0;
+  this->pendingCursorType = 3;
 }
 
 // OFFSET: 0x00D93B10

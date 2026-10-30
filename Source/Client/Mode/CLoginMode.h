@@ -17,16 +17,25 @@ struct MapStatePacket;
 struct WindowDialogs;
 struct LoginErrorPacket;
 struct LoginErrorDetailPacket;
+struct CharacterPagePacket;
+struct RefuseLoginPacket;
 
 #pragma pack(push, 1)
 struct CharacterInfo {
   /* 0000 */ std::uint32_t gid;
-  /* 0004 */ unsigned char unknown_0004[0x86];
+  /* 0004 */ unsigned char unknown_0004[0x50];
+  /* 0054 */ std::int16_t job;
+  /* 0056 */ unsigned char unknown_0056[0x2];
+  /* 0058 */ std::int16_t unknown_0058;
+  /* 005A */ unsigned char unknown_005A[0x10];
+  /* 006A */ std::int16_t bodyStyle;
+  /* 006C */ unsigned char unknown_006C[0x1E];
   /* 008A */ unsigned char slot;
   /* 008B */ unsigned char unknown_008B[0x3];
   /* 008E */ char mapName[16];
   /* 009E */ std::int32_t deleteDate;
-  /* 00A2 */ unsigned char unknown_00A2[0x0D];
+  /* 00A2 */ unsigned char unknown_00A2[0x0C];
+  /* 00AE */ unsigned char sex;
 };
 
 struct CharacterSlotExtension {
@@ -78,12 +87,14 @@ public:
   void SubD8EDC0(int);
   void ReceiveCharacterResult(const CharacterResultPacket* packet, WindowDialogs& dialogs);
   void SubD8F560(int);
+  void ReceiveCharacterPage(const CharacterPagePacket* packet);
   void ReceiveCharacterList(const CharacterListPacket* packet);
   void ReceiveDeleteCharacter(const CharacterDeletePacket* packet, WindowDialogs& dialogs);
   void ReceiveDeleteCancel(const CharacterDeletePacket* packet, WindowDialogs& dialogs);
   void ReceiveDeleteReservation(const CharacterDeletePacket* packet, WindowDialogs& dialogs);
   void ReceiveMapStates(const MapStatePacket* packet, WindowDialogs& dialogs);
   void SubD91780(int);
+  void ReceiveRefuseLogin(const RefuseLoginPacket* packet);
   void SubD97B20(int);
   void SubD97EF0(int);
   void SubD97F00(int);
@@ -93,6 +104,7 @@ public:
 };
 
 int GetClientType();
+std::string GetMacAddress();
 const char* GetUserCountText(unsigned short userCount);
 void OpenAccountRegistration();
 
@@ -100,6 +112,7 @@ void OpenAccountRegistration();
 static_assert(sizeof(CharacterInfo) == 0xAF);
 static_assert(offsetof(CharacterInfo, slot) == 0x8A);
 static_assert(offsetof(CharacterInfo, mapName) == 0x8E);
+static_assert(offsetof(CharacterInfo, sex) == 0xAE);
 static_assert(sizeof(MapStateEntry) == 0x14);
 static_assert(sizeof(CharacterSlotExtension) == 0x14);
 static_assert(offsetof(CLoginMode, characterCount) == 0x1CC);
