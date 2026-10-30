@@ -146,6 +146,8 @@ public:
   bool IsOwnedPack(int packId);
   void sub_59CDE0(int param);
   void SetServerTimeZone(short serverBias);
+  bool sub_59C5A0();
+  bool sub_59D2C0();
   int sub_59FC50();
   // INLINED
   int BasePackId() const {
@@ -183,6 +185,8 @@ protected:
 };
 
 extern CCashEmotionMgr* g_cashEmotionMgr;
+class UICashEmotionListWnd;
+extern UICashEmotionListWnd* g_cashEmotionListWnd;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CashEmotionData, name) == 0x08);
