@@ -12,6 +12,8 @@ class UITextButton : public UIButton {
   friend class UIMessageBox;
 
 public:
+  friend void OpenTextButtonLink(UITextButton* button);
+
   UITextButton(UIWindowContext& windows, UIButtonContext& buttons);
   ~UITextButton() override;
   void Paint() override;

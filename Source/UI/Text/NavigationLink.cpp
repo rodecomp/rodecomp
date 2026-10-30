@@ -11,8 +11,10 @@
 #include <regex>
 #include <vector>
 #include <windows.h>
+#include <shellapi.h>
 #include <timeapi.h>
 
+#include "Client/Application/ApplicationWindow.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
@@ -24,6 +26,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UITextButton.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/CreateLineInfo.h"
 #include "UI/Window/UIWindow.h"
@@ -790,6 +793,23 @@ void CCreateLineInfo::ParseText() {
       next = this->ParseChar(index);
     }
     index = next;
+  }
+}
+
+// OFFSET: 0x0083BBC0
+// FUNCTION: fn_10487
+void OpenTextButtonLink(UITextButton* button) {
+  if (!button) {
+    return;
+  }
+
+  if (button->m_lines.size() == 0) {
+    return;
+  }
+
+  const std::string line = button->GetLine(0);
+  if (!line.empty()) {
+    ShellExecuteA(hWnd, "open", line.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
   }
 }
 
