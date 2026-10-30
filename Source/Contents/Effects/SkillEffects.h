@@ -7,6 +7,8 @@
 #include <list>
 #include <vector>
 
+class CEZ2STRParticle;
+
 class CMeteorEffect : public CEffect {
 public:
   CMeteorEffect() : CEffect(-1), unknown_00D8(12), unknown_00DC(0) {}
@@ -35,8 +37,8 @@ public:
   ~CShadowExceedNew() override;
 
   /* 00CC */ unsigned char unknown_00CC;
-  /* 00D0 */ std::list<int> unknown_00D0;
-  /* 00D8 */ std::list<int> unknown_00D8;
+  /* 00D0 */ std::list<CEZ2STRParticle*> frontEmitters;
+  /* 00D8 */ std::list<CEZ2STRParticle*> backEmitters;
 };
 
 class CSprArrowEffect : public CEffect {
@@ -73,7 +75,7 @@ public:
 static_assert(sizeof(CMeteorEffect) == 0xE0);
 static_assert(offsetof(CMeteorEffect, unknown_00D8) == 0xD8);
 static_assert(sizeof(CShadowExceedNew) == 0xE0);
-static_assert(offsetof(CShadowExceedNew, unknown_00D8) == 0xD8);
+static_assert(offsetof(CShadowExceedNew, backEmitters) == 0xD8);
 static_assert(sizeof(CSprArrowEffect) == 0x100);
 static_assert(offsetof(CSprArrowEffect, unknown_00FD) == 0xFD);
 #endif
