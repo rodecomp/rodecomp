@@ -12,6 +12,7 @@
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstdlib>
+#include <new>
 
 struct MapSkyCloud : CEffect {
   /* 00CC */ unsigned char unknown_00CC[0x28];
@@ -449,4 +450,14 @@ void CMapSkyMgr::Apply(const std::string& mapName) {
   if (fog == 1) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->unknown_00FC = true;
   }
+}
+
+// GLOBAL: gl_24480
+CMapSkyMgr* g_mapSkyMgr;
+
+// OFFSET: 0x00E5CFB0
+
+// OFFSET: 0x00E5D100
+// FUNCTION: fn_24378
+void IgnoreNull() {
 }

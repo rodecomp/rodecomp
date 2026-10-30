@@ -1,6 +1,8 @@
 #include "Contents/JobCodeForItem.h"
 #include "Contents/Jobs/JobId.h"
 
+#include <new>
+
 // OFFSET: 0x006C7720
 // OFFSET: 0x006C7920
 // OFFSET: 0x006C7B30
@@ -123,3 +125,9 @@ template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId, Jo
 template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId, JobId, JobId);
 template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId, JobId);
 template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId);
+
+// GLOBAL: gl_24704
+template <>
+CJobCodeForItem* Singleton<CJobCodeForItem>::s_instance = nullptr;
+
+// OFFSET: 0x00E5CED0
