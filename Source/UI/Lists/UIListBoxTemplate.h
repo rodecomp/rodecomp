@@ -171,6 +171,8 @@ public:
     this->selected = static_cast<unsigned int>(-1);
   }
 
+  void SelectItem(CUIListItem* item);
+
   // OFFSET: 0x00A04B30
   // FUNCTION: fn_14963
   int AddData(const D& value, bool refresh) {
@@ -295,7 +297,8 @@ public:
   /* 00B8 */ int rowHeight;
   /* 00BC */ int itemX;
   /* 00C0 */ int itemY;
-  /* 00C4 */ int unknown_00C4;
+  /* 00C4 */ unsigned char unknown_00C4;
+  /* 00C5 */ unsigned char unknown_00C5[0x03];
   /* 00C8 */ std::vector<T*> items;
   /* 00D4 */ std::list<D> data;
   /* 00DC */ unsigned int selected;

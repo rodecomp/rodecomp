@@ -77,6 +77,34 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnScr
   }
 }
 
+// OFFSET: 0x00A4C780
+// FUNCTION: fn_16126
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::SelectItem(CUIListItem* item) {
+  if (this->unknown_00C4) {
+    return;
+  }
+  for (ProbabilityTable::CUIItem* other : this->items) {
+    if (other != item) {
+      other->SetSelected(0);
+    }
+  }
+  item->SetSelected(1);
+  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+    return;
+  }
+  ProbabilityTable::CUIItem* selectedItem = dynamic_cast<ProbabilityTable::CUIItem*>(item);
+  if (!selectedItem) {
+    return;
+  }
+  this->selected = selectedItem->index;
+  if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+    auto node = this->data.begin();
+    std::advance(node, static_cast<int>(this->selected));
+    this->onSelect(selectedItem, *node);
+  }
+}
+
 // OFFSET: 0x00A4DC90
 // FUNCTION: fn_16195
 void CUIProbabilityTable::OnButtonClick() {
