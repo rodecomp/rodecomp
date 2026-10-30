@@ -1,13 +1,65 @@
 #include "Contents/Effects/ScatterEffect.h"
 
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/SpriteParticle.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <algorithm>
+#include <cstdlib>
 #include <cstring>
 
 // OFFSET: 0x00B75D10
 // FUNCTION: fn_19167
 CScatterEffect::CScatterEffect() : CEffect(-1) {
+}
+
+// OFFSET: 0x00B75E70
+// FUNCTION: fn_19169
+void CScatterEffect::Close() {
+  for (CSpriteParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
+
+// OFFSET: 0x00B75EB0
+// FUNCTION: fn_19170
+void CScatterEffect::Slot01() {
+  for (int i = 0; i < 50; ++i) {
+    CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
+    if (!particle) {
+      continue;
+    }
+
+    particle->unknown_0004 = this->id;
+    particle->unknown_000C = i;
+    particle->unknown_0010 = 0;
+    particle->unknown_0008 = 1;
+    if (this->id == 1002) {
+      this->unknown_002C = 300;
+      particle->SetSprite("이팩트\\sakura01.spr");
+      particle->SetAction("이팩트\\sakura01.act");
+      particle->scale = static_cast<float>(std::max(rand() % 6, 0) + 22) / 70.0f;
+      particle->frameDelay = static_cast<float>(std::max(rand() % 3, 0) + 2) * 0.15f;
+      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(std::max(rand() % 360, 0));
+      const int angle = std::max(rand() % 360, 0);
+      particle->velocity.x = 0.0f;
+      particle->velocity.y = 0.0f;
+      particle->velocity.z = 0.0f;
+      particle->alpha = 250;
+      particle->unknown_004C = angle;
+      particle->destinationBlend = 6;
+    }
+
+    this->particles.push_back(particle);
+  }
+}
+
+// OFFSET: 0x00B76120
+// FUNCTION: fn_19171
+bool CScatterEffect::Slot06() {
+  return !this->IsFinished();
 }
 
 // OFFSET: 0x00B76130
