@@ -28,8 +28,19 @@ struct MacroReporterEntry {
   /* 001C */ short unknown_001C;
 };
 
+struct MacroReporterState {
+  /* 0000 */ int width;
+  /* 0004 */ int height;
+  /* 0008 */ int x;
+  /* 000C */ int y;
+  /* 0010 */ unsigned char unknown_0010;
+  /* 0011 */ bool unknown_0011;
+  /* 0014 */ std::vector<MacroReporterEntry> entries;
+};
+
 class UIMacroReporterWnd : public UIFrameWnd {
 public:
+  void Slot11() override;
   void Slot19() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -52,7 +63,7 @@ public:
   /* 00F0 */ UIWindow* m_edit;
   /* 00F4 */ int unknown_00F4;
   /* 00F8 */ int unknown_00F8;
-  /* 00FC */ void* unknown_00FC;
+  /* 00FC */ MacroReporterState* m_state;
   /* 0100 */ std::vector<MacroReporterEntry> m_entries;
   /* 010C */ bool unknown_010C;
   /* 0110 */ std::vector<UIButton*> m_removedRows;

@@ -202,3 +202,20 @@ bool UIMacroReporterWnd::ValidateTarget(unsigned char notify) {
 
   return true;
 }
+
+// OFFSET: 0x007F26C0
+// FUNCTION: fn_09858
+void UIMacroReporterWnd::Slot11() {
+  if (this->m_state) {
+    this->m_state->width = this->geometry.width;
+    this->m_state->height = this->geometry.height;
+    this->m_state->x = this->geometry.x;
+    this->m_state->y = this->geometry.y;
+    this->m_state->unknown_0011 = this->unknown_010C;
+    this->m_state->entries.clear();
+    this->m_state->entries.resize(this->m_entries.size());
+    for (unsigned int index = 0; index < this->m_entries.size(); ++index) {
+      this->m_state->entries[index] = this->m_entries[index];
+    }
+  }
+}
