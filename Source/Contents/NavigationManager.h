@@ -317,6 +317,7 @@ public:
   void ClearRouteNodes();
   void ClearNodePaths();
   CNaviInfo* GetLinkedPlayerInfo();
+  bool CollectStartLinks();
   bool UpdateGround();
   bool PlayerCell(int* column, int* row);
   bool LoadStates(std::vector<char> packet);

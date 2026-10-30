@@ -525,6 +525,7 @@
   "Source/Contents/MovementTraversal.cpp": 4,
   "Source/Contents/Movies/BinkMovie.cpp": 3,
   "Source/Contents/Movies/BinkMovies.cpp": 3,
+  "Source/Contents/NavigationCandidates.cpp": 4,
   "Source/Contents/NavigationDestinations.cpp": 4,
   "Source/Contents/NavigationGraph.cpp": 4,
   "Source/Contents/NavigationLink.cpp": 4,
