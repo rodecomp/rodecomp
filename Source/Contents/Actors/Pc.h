@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_ACTORS_PC_H
 
 #include "Contents/Actors/GameActor.h"
+#include "Resource/Models/GrannyModelResource.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -9,7 +10,9 @@
 #include <vector>
 
 class C3dGrannyModelRes;
+class CActRes;
 class CRes;
+struct ActionFrame;
 struct RenderCommand;
 struct RenderVertex;
 struct granny_control;
@@ -27,6 +30,7 @@ public:
 
   void Slot15(int first, int second) override;
   void Slot22(int value) override;
+  void Slot23(int first, int second) override;
   void Slot25(int value) override;
   void Slot26(int value) override;
   void Slot27(int value) override;
@@ -48,7 +52,12 @@ public:
   bool Slot58() override;
   void Slot59(bool value) override;
   void Slot60() override;
+  void Slot62(int value) override;
 
+  void AddMsgEffect(CGameObject* effect);
+  void RenderBodyOutline(int layer, const float* position, float x, float y, float distanceScale, float scale, float depth, std::uint32_t color);
+  bool IsDrawOnTop();
+  const ActionFrame& SelectStanceFrame(int layer, CActRes* actRes, int* animation, int* frame, bool* replaced);
   void LoadEquipAction(int slot, const char* name);
   void LoadEquipSprite(int slot, const char* name);
   void LoadEquipActions(const std::vector<std::string>& names);
@@ -146,6 +155,7 @@ public:
   static int AngleToDirection(float angle);
 
   bool IsSpecialState(int state) const;
+  void Slot16() override;
   void Slot17() override;
 };
 
@@ -171,6 +181,7 @@ public:
 
   void PlayMotion(int repeat);
   void ReleaseMeshes();
+  void UpdateAnimation(C3dGrannyModelRes* model);
 
   /* 0410 */ std::string unknown_0410;
   /* 0428 */ int unknown_0428;
@@ -195,8 +206,9 @@ public:
   /* 052C */ RenderCommand* layerCommands[10][30];
   /* 09DC */ RenderVertex* vertices[30];
   /* 0A54 */ RenderVertex* layerVertices[10][30];
-  /* 0F04 */ unsigned char unknown_0F04[0x20];
-  /* 0F24 */ int unknown_0F24;
+  /* 0F04 */ granny_system_clock clock;
+  /* 0F14 */ granny_system_clock lastClock;
+  /* 0F24 */ float unknown_0F24;
   /* 0F28 */ unsigned char unknown_0F28[0x14];
   /* 0F3C */ int motion;
   /* 0F40 */ unsigned char unknown_0F40[0x110];
@@ -214,6 +226,8 @@ static_assert(offsetof(CGrannyPc, unknown_0440) == 0x440);
 static_assert(offsetof(CGrannyPc, unknown_0460) == 0x460);
 static_assert(offsetof(CGrannyPc, model) == 0x484);
 static_assert(offsetof(CGrannyPc, instance) == 0x4B0);
+static_assert(offsetof(CGrannyPc, clock) == 0xF04);
+static_assert(offsetof(CGrannyPc, lastClock) == 0xF14);
 static_assert(offsetof(CGrannyPc, unknown_0F24) == 0xF24);
 static_assert(offsetof(CGrannyPc, motion) == 0xF3C);
 static_assert(offsetof(CGrannyPc, controls) == 0x1050);

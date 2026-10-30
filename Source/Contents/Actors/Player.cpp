@@ -2,17 +2,24 @@
 
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/EquipmentResourceMgr.h"
 #include "Contents/Items/WeaponType.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Jobs/JobNames.h"
+#include "Contents/MapSkyMgr.h"
 #include "Contents/MessageTable.h"
 #include "Render/Primitives/RenderPrimitive.h"
+#include "Render/Renderer.h"
+#include "Render/SpriteQuad.h"
+#include "Render/Textures/SpritePixels.h"
 #include "Resource/Models/GrannyModelResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 #include "Script/LuaScript.h"
 #include "Utility/Text/FormatString.h"
 
@@ -500,6 +507,162 @@ void CPc::Slot15(int first, int second) {
   }
 }
 
+// OFFSET: 0x00DA7F10
+// FUNCTION: fn_22563
+void CPc::AddMsgEffect(CGameObject* effect) {
+  this->unknown_03B0.push_back(effect);
+}
+
+// OFFSET: 0x00DA8180
+// FUNCTION: fn_22564
+void CPc::Slot62(int value) {
+  this->SetUnknown0260(value);
+  this->Slot19(
+    this->unknown_04D4, this->unknown_0260, this->unknown_0440, this->weapon, this->unknown_044C, this->unknown_0450, this->unknown_0454,
+    this->unknown_0458, this->unknown_045C, this->unknown_0444, this->render.unknown_0048
+  );
+}
+
+// OFFSET: 0x00DA8C80
+
+// OFFSET: 0x00DA8F70
+// FUNCTION: fn_22567
+bool CPc::IsDrawOnTop() {
+  bool drawOnTop = true;
+  if (g_session.m_newRobeDrawOnTop) {
+    int job = this->GetEffectiveJob(-1);
+    if (this->unknown_02CC) {
+      job = g_session.GetRidingJob(job);
+    }
+
+    int layer = 1;
+    g_session.m_hotkeyScript->Call(
+      "_New_DrawOnTop", "ddddd>bd", this->unknown_049C, this->unknown_0260, job, this->render.previousAnimation, this->render.curMotion,
+      &drawOnTop, &layer
+    );
+  } else {
+    g_session.m_hotkeyScript->Call(
+      "DrawOnTop", "ddddd>b", this->unknown_049C, this->unknown_0260, this->unknown_025C, this->render.previousAnimation,
+      this->render.curMotion, &drawOnTop
+    );
+  }
+
+  return drawOnTop;
+}
+
+// OFFSET: 0x00DA90E0
+// FUNCTION: fn_22568
+const ActionFrame& CPc::SelectStanceFrame(int layer, CActRes* actRes, int* animation, int* frame, bool* replaced) {
+  const ActionFrame& current = actRes->Frame(this->render.previousAnimation, this->render.curMotion);
+  if (this->unknown_02CC || layer < 1 || layer > 4 || this->render.previousAnimation < 88) {
+    return current;
+  }
+
+  switch (this->GetEffectiveJob(-1)) {
+    case JT_TAEKWON:
+    case JT_STAR:
+    case JT_STAR2:
+    case JT_TAEKWON_B:
+    case JT_STAR_B:
+    case JT_STAR2_B:
+    case JT_STAR_EMPEROR:
+    case JT_STAR_EMPEROR_B:
+    case JT_STAR2_EMPEROR:
+    case JT_STAR2_EMPEROR_B:
+    case JT_SKY_EMPEROR:
+    case JT_SKY_EMPEROR2:
+      break;
+    default:
+      return current;
+  }
+
+  if (this->render.previousAnimation >= 88 && this->render.previousAnimation <= 95 && this->render.curMotion >= 3 && this->render.curMotion <= 5) {
+    if (this->unknown_0260 == 0) {
+      if (this->render.curMotion != 3) {
+        *replaced = true;
+        if (this->render.previousAnimation <= 89) {
+          if (this->render.curMotion == 4) {
+            *animation = 6;
+          } else if (this->render.curMotion == 5) {
+            *animation = 5;
+          }
+        } else if (this->render.previousAnimation <= 91) {
+          if (this->render.curMotion == 4) {
+            *animation = 6;
+          } else if (this->render.curMotion == 5) {
+            *animation = 7;
+          }
+        } else if (this->render.previousAnimation <= 93) {
+          if (this->render.curMotion == 4) {
+            *animation = 2;
+          } else if (this->render.curMotion == 5) {
+            *animation = 1;
+          }
+        } else if (this->render.previousAnimation <= 95) {
+          if (this->render.curMotion == 4) {
+            *animation = 2;
+          } else if (this->render.curMotion == 5) {
+            *animation = 3;
+          }
+        }
+      }
+    } else if (this->unknown_0260 == 1) {
+      if (this->render.curMotion != 5) {
+        *replaced = true;
+        if (this->render.previousAnimation <= 89) {
+          if (this->render.curMotion == 3) {
+            *animation = 6;
+          } else if (this->render.curMotion == 4) {
+            *animation = 5;
+          }
+        } else if (this->render.previousAnimation <= 91) {
+          if (this->render.curMotion == 3) {
+            *animation = 6;
+          } else if (this->render.curMotion == 4) {
+            *animation = 7;
+          }
+        } else if (this->render.previousAnimation <= 93) {
+          if (this->render.curMotion == 3) {
+            *animation = 2;
+          } else if (this->render.curMotion == 4) {
+            *animation = 1;
+          }
+        } else if (this->render.previousAnimation <= 95) {
+          if (this->render.curMotion == 3) {
+            *animation = 2;
+          } else if (this->render.curMotion == 4) {
+            *animation = 3;
+          }
+        }
+      }
+    }
+  }
+
+  if (this->render.previousAnimation >= 96 && this->render.curMotion == 1) {
+    *replaced = true;
+    if (this->render.previousAnimation >= 96 && this->render.previousAnimation <= 97) {
+      *animation = 0;
+    } else if (this->render.previousAnimation >= 98 && this->render.previousAnimation <= 99) {
+      *animation = 6;
+    } else {
+      *animation = 2;
+    }
+  }
+
+  if (*replaced == true) {
+    return actRes->Frame(*animation, *frame);
+  }
+
+  return current;
+}
+
+// OFFSET: 0x00DB3740
+
+// OFFSET: 0x00DB99F0
+// FUNCTION: fn_22671
+void CPlayer::Slot16() {
+}
+
 // OFFSET: 0x00DB07F0
 // FUNCTION: fn_22627
 void CPc::Slot26(int value) {
@@ -839,6 +1002,8 @@ bool IsReadyOrAttackAction(int action) {
 
   return true;
 }
+
+// OFFSET: 0x00DABE20
 
 // OFFSET: 0x00DAC030
 // FUNCTION: fn_22591
