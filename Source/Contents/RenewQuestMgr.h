@@ -96,6 +96,8 @@ public:
   CRenewQuestMgr();
   bool Clear();
   void LoadQuestInfo();
+  void AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& info);
+  void ReadOngoingQuests(const char* buffer);
   void RemoveStatusRequest(unsigned int id);
   void AddStatusRequest(unsigned int id);
   void AddIconTooltip(std::string_view icon, std::string_view tooltip);

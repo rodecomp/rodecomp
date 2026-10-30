@@ -47,6 +47,17 @@ struct RenewQuestHuntRecord {
   /* 0014 */ char name[0x33];
 };
 
+struct RenewQuestShortHuntRecord {
+  /* 0000 */ int huntId;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ int unknown_0008;
+  /* 000C */ short unknown_000C;
+  /* 000E */ short unknown_000E;
+  /* 0010 */ short unknown_0010;
+  /* 0012 */ short unknown_0012;
+  /* 0014 */ char name[0x18];
+};
+
 struct PACKET_CZ_QUEST_STATUS_REQ {
   /* 0000 */ std::int16_t packetType;
   /* 0002 */ std::int16_t packetLength;
@@ -61,6 +72,7 @@ struct PACKET_CZ_QUEST_STATUS_REQ_BUFFER {
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenewQuestOngoingRecord) == 0x18);
 static_assert(sizeof(RenewQuestHuntRecord) == 0x47);
+static_assert(sizeof(RenewQuestShortHuntRecord) == 0x2C);
 static_assert(sizeof(PACKET_CZ_QUEST_STATUS_REQ_BUFFER) == 0x800);
 #endif
 
@@ -504,6 +516,51 @@ void CRenewQuestMgr::AddNewQuest(unsigned int id) {
   }
 }
 
+// OFFSET: 0x0067A630
+// FUNCTION: fn_05451
+void CRenewQuestMgr::AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& info) {
+  int type = 0;
+  int unknown2 = 0;
+  int unknown1 = 0;
+  const char* text7 = nullptr;
+  const char* text6 = nullptr;
+  const char* text5 = nullptr;
+  const char* text4 = nullptr;
+  const char* text3 = nullptr;
+  const char* icon = nullptr;
+  const char* title = nullptr;
+  bool simpleView = true;
+  if (g_luaScript->Call("GetOngoingQuestInfoByID", "d>bsssssssddd", id, &simpleView, &title, &icon, &text3, &text4, &text5, &text6,
+                        &text7, &unknown1, &unknown2, &type)) {
+    info.m_title = title ? title : "";
+    info.m_icon = icon ? icon : "";
+    info.unknown_004C = text3 ? text3 : "";
+    info.unknown_007C = text4 ? text4 : "";
+    info.unknown_0094 = text5 ? text5 : "";
+    info.unknown_01B8 = text6 ? text6 : "";
+    info.unknown_01D0 = text7 ? text7 : "";
+    info.unknown_00AC = unknown1;
+    info.unknown_00B0 = unknown2;
+    info.m_simpleView = simpleView;
+    info.unknown_01F8 = type;
+    if (type == 1) {
+      info.m_simpleView = false;
+    }
+
+    info.m_iconTooltip = this->GetIconTooltip(info.m_icon);
+  }
+
+  UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC);
+  if (window != nullptr) {
+    info.m_title = window->FitDisplayText(250, info.m_title.c_str(), 0, 12, 1);
+    info.unknown_004C = window->FitDisplayText(250, info.unknown_004C.c_str(), 0, 12, 0);
+  }
+
+  this->m_ongoingQuests[id] = info;
+  g_luaScript->Call("GetOngoingDescription", "d", id);
+  g_luaScript->Call("GetOngoingRewardInfo", "d", id);
+}
+
 // OFFSET: 0x0067ACE0
 // FUNCTION: fn_05452
 void CRenewQuestMgr::AddRecommendedQuest(unsigned int id, const RenewQuestRecommendedInfo& info) {
@@ -665,6 +722,66 @@ bool CRenewQuestMgr::SetOngoingSimpleView(unsigned int id, bool simpleView) {
   }
 
   return false;
+}
+
+// OFFSET: 0x0067B8F0
+// FUNCTION: fn_05465
+void CRenewQuestMgr::ReadOngoingQuests(const char* buffer) {
+  int offset = 4;
+  const unsigned int count = *reinterpret_cast<const unsigned int*>(buffer);
+  for (unsigned int index = 0; index < count; ++index) {
+    const RenewQuestOngoingRecord record = *reinterpret_cast<const RenewQuestOngoingRecord*>(buffer + offset);
+    offset += sizeof(RenewQuestOngoingRecord);
+    if (this->SetOngoingQuestState(record.questId, static_cast<unsigned char>(record.state))) {
+      continue;
+    }
+
+    RenewQuestOngoingInfo info;
+    info.m_state = static_cast<unsigned char>(record.state);
+    info.m_year = record.year;
+    info.m_month = record.month;
+    info.m_day = record.day;
+    info.m_hour = record.hour;
+    info.m_minute = static_cast<unsigned short>(record.minute);
+    info.m_huntCount = static_cast<char>(record.huntCount);
+    for (int hunt = 0; hunt < record.huntCount; ++hunt) {
+      if (this->m_parameter == 0x33) {
+        RenewQuestHuntRecord huntRecord;
+        memcpy_s(&huntRecord, sizeof(huntRecord), buffer + offset, sizeof(huntRecord));
+        info.m_huntId[hunt] = huntRecord.huntId;
+        info.m_huntUnknown01A0[hunt] = huntRecord.unknown_0004;
+        info.m_huntUnknown00D4[hunt] = huntRecord.unknown_0008;
+        info.m_huntUnknown00E0[hunt] = huntRecord.unknown_0010;
+        info.m_huntUnknown0180[hunt] = huntRecord.unknown_0012;
+        info.m_huntUnknown01AC[hunt] = huntRecord.unknown_000C;
+        info.m_huntUnknown01B2[hunt] = huntRecord.unknown_000E;
+        strncpy_s(info.m_huntName[hunt], sizeof(info.m_huntName[hunt]), huntRecord.name, _TRUNCATE);
+        offset += sizeof(RenewQuestHuntRecord);
+      } else {
+        RenewQuestShortHuntRecord huntRecord;
+        memcpy_s(&huntRecord, sizeof(huntRecord), buffer + offset, sizeof(huntRecord));
+        info.m_huntId[hunt] = huntRecord.huntId;
+        info.m_huntUnknown01A0[hunt] = huntRecord.unknown_0004;
+        info.m_huntUnknown00D4[hunt] = huntRecord.unknown_0008;
+        info.m_huntUnknown00E0[hunt] = huntRecord.unknown_0010;
+        info.m_huntUnknown0180[hunt] = huntRecord.unknown_0012;
+        info.m_huntUnknown01AC[hunt] = huntRecord.unknown_000C;
+        info.m_huntUnknown01B2[hunt] = huntRecord.unknown_000E;
+        strncpy_s(info.m_huntName[hunt], sizeof(info.m_huntName[hunt]), huntRecord.name, sizeof(huntRecord.name));
+        offset += sizeof(RenewQuestShortHuntRecord);
+      }
+    }
+
+    this->AddOngoingQuest(record.questId, info);
+  }
+
+  if (g_windowMgr.window_0428 != nullptr) {
+    g_windowMgr.window_0428->Invalidate();
+  }
+
+  if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(0x2718))) {
+    window->sub_A67290(0xD);
+  }
 }
 
 // OFFSET: 0x0067BF90
