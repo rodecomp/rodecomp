@@ -1762,6 +1762,10 @@ void UICardItemIllustWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x0090AED0
+// FUNCTION: fn_12418
+int ScaleByScreenHeight(int value) {
+  return g_renderer->viewport.height * value / 480;
+}
 
 // OFFSET: 0x0090B080
 // FUNCTION: fn_12419
