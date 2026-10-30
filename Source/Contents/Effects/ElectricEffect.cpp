@@ -1,5 +1,43 @@
 #include "Contents/Effects/ElectricEffect.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Contents/World/World.h"
+#include "Utility/Math/AffineMatrix.h"
+
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
+
+// OFFSET: 0x00B4E890
+
+// OFFSET: 0x00B4EDB0
+// FUNCTION: fn_19003
+void CElectricEffect::Close() {
+  for (auto it = this->bolts.begin(); it != this->bolts.end(); ++it) {
+    FreeParticle(*it);
+  }
+
+  this->bolts.clear();
+}
+
+// OFFSET: 0x00B4EE80
+// FUNCTION: fn_19004
+void CElectricEffect::Slot01() {
+  this->unknown_002C = 300;
+}
+
+// OFFSET: 0x00B4EF40
+// FUNCTION: fn_19005
+bool CElectricEffect::Slot06() {
+  return !this->IsFinished();
+}
+
+// OFFSET: 0x00B4EF50
 
 // OFFSET: 0x00B4F930
 // FUNCTION: fn_19007
