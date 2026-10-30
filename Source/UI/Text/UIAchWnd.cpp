@@ -228,6 +228,34 @@ void UIAchievementWnd::CreateTab() {
 }
 
 // OFFSET: 0x007B5B60
+// FUNCTION: fn_09216
+void UIAchievementWnd::Slot15(int, int) {
+  this->AddCloseButton(*this->m_controls, "", 0);
+
+  this->upper = new (std::nothrow) UIAchUpperWnd(*this->m_context, *this->m_controls);
+  this->upper->SetSize(this->geometry.width, 46);
+  this->upper->Move(0, 17);
+  this->AddChild(this->upper);
+
+  this->CreateTab();
+
+  this->list = new (std::nothrow) UIAchListWnd(*this->m_context, *this->m_controls);
+  this->list->Create(320, 405, 5);
+  this->list->Move(102, 63);
+  this->AddChild(this->list);
+
+  this->view = new UIAchViewWnd(*this->m_context, *this->m_controls);
+  this->view->SetSize(328, 405);
+  this->view->Move(422, 63);
+  this->AddChild(this->view);
+
+  this->summary = new UIAchSummaryWnd(*this->m_context, *this->m_controls);
+  this->summary->SetSize(648, 404);
+  this->summary->Move(102, 63);
+  this->AddChild(this->summary);
+
+  this->SelectTab(this->group, this->sub);
+}
 
 // OFFSET: 0x007B65F0
 // FUNCTION: fn_09218
