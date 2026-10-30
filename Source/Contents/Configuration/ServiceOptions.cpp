@@ -3,12 +3,14 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/MapSkyMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
 #include "Contents/World/World.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Application/ApplicationWindow.h"
 #include "Client/Session.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
@@ -91,6 +93,11 @@ void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMes
 // OFFSET: 0x006BFE60
 // FUNCTION: fn_06299
 CGameSettingsMgr::CGameSettingsMgr() {
+}
+
+// OFFSET: 0x006C01A0
+// FUNCTION: fn_06302
+void Noop() {
 }
 
 // OFFSET: 0x006C0B80
@@ -344,6 +351,10 @@ struct SessionCommandTarget {
   int sub_DE1010(const char* name, int* optionId, std::string* strings);
 };
 
+struct ServiceOptionActorRefresh {
+  void sub_CD6DD0(char all);
+};
+
 // OFFSET: 0x006C29A0
 // FUNCTION: fn_06324
 int SetOption(const char* name, unsigned char value) {
@@ -581,6 +592,12 @@ void ToggleSitStand() {
   }
 }
 
+// OFFSET: 0x006C44A0
+
+// OFFSET: 0x006C46C0
+
+// OFFSET: 0x006C48F0
+
 // OFFSET: 0x006C4750
 // FUNCTION: fn_06359
 void ShowHelpMessages() {
@@ -607,6 +624,8 @@ void ApplyServiceOptionSessionFlag(int id, unsigned char value, bool notify, int
 
   *reinterpret_cast<int*>(g_session.unknown_5454) = value;
 }
+
+// OFFSET: 0x006C5D60
 
 // OFFSET: 0x006C5FC0
 
@@ -639,6 +658,8 @@ void ApplyServiceOptionWindow267(int id, unsigned char value, bool notify, int e
     window->Show(value);
   }
 }
+
+// OFFSET: 0x006C61B0
 
 // OFFSET: 0x006C6200
 // FUNCTION: fn_06378
