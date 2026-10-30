@@ -54,3 +54,8 @@ void UINewSelectCharWnd::SaveCurrentSlot() {
     RegCloseKey(key);
   }
 }
+
+// OFFSET: 0x007D7740
+// FUNCTION: fn_09592
+void __stdcall Nullsub244(int, int) {
+}
