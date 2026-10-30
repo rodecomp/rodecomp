@@ -1,9 +1,11 @@
 #include "UI/UIBartermarketWnd.h"
 
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "UI/Layout/WindowSnapping.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -287,3 +289,5 @@ void UIExpandedBartermarketWnd::UpdateScrollBar() {
 
   this->scrollBar->Invalidate();
 }
+
+// OFFSET: 0x00849B30

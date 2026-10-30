@@ -34,6 +34,7 @@ class UIExpandedBartermarketWnd : public UIFrameWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void UpdateScrollBar();
   std::pair<bool, BarterMarketEntry> GetEntryAt(int x, int y);
   std::pair<bool, BarterMarketEntry> GetEntryOrChunkAt(int x, int y);
@@ -41,7 +42,7 @@ public:
 
   /* 00B4 */ int unknown_00B4;
   /* 00B8 */ int itemCount;
-  /* 00BC */ int unknown_00BC;
+  /* 00BC */ UIWindow* unknown_00BC;
   /* 00C0 */ UIScrollBar* scrollBar;
   /* 00C4 */ int unknown_00C4;
   /* 00C8 */ int rowCount;
