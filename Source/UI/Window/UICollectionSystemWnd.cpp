@@ -53,6 +53,13 @@ void CUICollectionSystemWnd::Paint() {
 }
 
 // OFFSET: 0x00930A40
+// FUNCTION: fn_12691
+void CUICollectionSystemWnd::Slot25(int, int) {
+  if (this->unknown_00BC == 0) {
+    this->unknown_00BC = 1;
+    g_modeMgr.GetGameMode()->SendMsg(282, this->unknown_00B8, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00934740
 // FUNCTION: fn_12741

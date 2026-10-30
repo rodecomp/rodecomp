@@ -85,6 +85,12 @@ int UIBattleMsgOptionWnd::RowAt(int x, int y) {
 }
 
 // OFFSET: 0x009305F0
+// FUNCTION: fn_12685
+void UIBattleMsgOptionWnd::Slot26(int x, int y) {
+  if (y < 17) {
+    this->UIFrameWnd::Slot25(x, y);
+  }
+}
 
 // OFFSET: 0x0092B9C0
 // FUNCTION: fn_12659

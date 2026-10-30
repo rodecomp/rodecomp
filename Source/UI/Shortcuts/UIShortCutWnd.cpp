@@ -46,6 +46,12 @@ int g_memorialDunWndX;
 // GLOBAL: gl_24738
 int g_memorialDunWndY;
 
+// GLOBAL: gl_24888
+static bool g_subChatMiniFirstCollapsed;
+
+// GLOBAL: gl_24889
+static bool g_subChatMiniSecondCollapsed;
+
 // OFFSET: 0x009122B0
 // FUNCTION: fn_12528
 UIShortCutWnd::UIShortCutWnd(UIWindowContext& windows, UIFrameContext& frames, ShortcutWindowContext& shortcuts)
@@ -534,6 +540,10 @@ void UINewChatWnd::Paint() {
 }
 
 // OFFSET: 0x009313E0
+// FUNCTION: fn_12703
+void UINewChatWnd::Slot31(int x, int y) {
+  this->UIFrameWnd::Slot31(x, y);
+}
 
 // OFFSET: 0x0091E960
 // FUNCTION: fn_12630
@@ -584,4 +594,18 @@ int UIWindowCallBtnWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::in
 // FUNCTION: fn_12684
 void UIWindowCallBtnWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x00930550
+
+// OFFSET: 0x00931330
+// FUNCTION: fn_12701
+void UISubChatMiniWnd::Slot25(int x, int) {
+  if (x > 0 && x <= this->m_rowHeight) {
+    g_subChatMiniFirstCollapsed = !g_subChatMiniFirstCollapsed;
+  } else {
+    g_subChatMiniSecondCollapsed = !g_subChatMiniSecondCollapsed;
+  }
+  this->SendMsg(this, 6, 271, 0, 0, 0);
+  this->Invalidate();
 }

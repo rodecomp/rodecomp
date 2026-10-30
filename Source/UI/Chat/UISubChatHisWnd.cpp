@@ -7,10 +7,46 @@
 #include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x009312E0
+// FUNCTION: fn_12700
+void UISubChatHisWnd::Slot25(int x, int y) {
+  if (g_chatInputFlag) {
+    if (UIWindow* window = g_windowMgr.LookupWindow(132)) {
+      window->SendMsg(this, 6, 193, this->m_index, 0, 2);
+    }
+    this->UIFrameWnd::Slot25(x, y);
+  }
+}
 
 // OFFSET: 0x009309B0
+// FUNCTION: fn_12690
+void UISubChatHisWnd::Slot26(int x, int y) {
+  if (g_chatInputFlag && x > 0 && x < this->m_inputWidth && y > 0 && y < this->m_inputHeight) {
+    this->m_edit->SetText("");
+    this->m_edit->Resize(this->m_inputWidth - 10, this->m_inputHeight - 2);
+    this->m_edit->Move(5, 2);
+    InputFocus focus{g_windowMgr.hoverWindow};
+    focus.Set(this->m_edit);
+  }
+}
 
 // OFFSET: 0x00931710
+// FUNCTION: fn_12706
+void UISubChatHisWnd::Slot31(int x, int y) {
+  this->UIFrameWnd::Slot31(x, y);
+  if (g_chatInputFlag) {
+    int screenX = 0;
+    int screenY = 0;
+    this->ToScreen(screenX, screenY);
+
+    UIWindow* window = g_windowMgr.LookupWindow(1);
+    if (window && window->geometry.x <= screenX && screenX <= window->geometry.width + window->geometry.x) {
+      const int bottom = this->geometry.height + screenY;
+      if (window->geometry.y <= bottom && bottom <= window->geometry.height + window->geometry.y) {
+        window->SendMsg(this, 118, 0, 0, 0, 0);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x0091C9E0
 // FUNCTION: fn_12619
