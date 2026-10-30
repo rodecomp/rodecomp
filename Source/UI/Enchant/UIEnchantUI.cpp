@@ -4,7 +4,7 @@
 #include "UI/Buttons/UIRadioButton.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Text/UITextViewerControl.h"
-
+#include "UI/Text/UIStaticTextControl.h"
 #include <algorithm>
 #include <cstring>
 #include <iterator>
@@ -314,4 +314,18 @@ void CUIUpgradeRandom::Slot55() {
 // FUNCTION: fn_15017
 bool CUIEnchantUI::CanHitTest() {
   return !CEnchantMgr::GetInstance()->m_unknown_0030;
+}
+
+// OFFSET: 0x009F6D40
+
+// OFFSET: 0x009F6F00
+
+namespace EnchantUI {
+// OFFSET: 0x00A06BE0
+// FUNCTION: fn_15007
+void CUIEnchantItem::SetFrozen(bool frozen) {
+  this->itemIcon->transparent = frozen;
+  this->itemIcon->Invalidate();
+  this->name->SetColor(frozen ? 0xAAAAAA : 0xC89682);
+}
 }

@@ -10,6 +10,7 @@
 #include <map>
 #include <optional>
 
+class CUIStaticText;
 class CUITextViewer;
 struct EnchantInfo;
 struct EnchantOptionInfo;
@@ -29,10 +30,12 @@ class CEnchantItemData;
 
 class CUIEnchantItem : public CUIListItem {
 public:
-  /* 00E8 */ CUIControl* itemIcon;
+  /* 00E8 */ CUIGameItem* itemIcon;
+  /* 00EC */ CUIStaticText* name;
 
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
+  void SetFrozen(bool frozen) override;
 };
 
 class CUITargetItem : public CUIListItem {
