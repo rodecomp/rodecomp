@@ -25,6 +25,7 @@ public:
   void AddOption(std::string text, std::uint32_t color);
   void Select(int index);
   void Clear();
+  std::string GetSelectedText();
 
   /* 007C */ UIBitmapButton* button;
   /* 0080 */ UIComboBoxEx* list;

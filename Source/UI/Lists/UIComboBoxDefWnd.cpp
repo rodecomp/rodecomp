@@ -112,6 +112,12 @@ void UIComboBoxDefWnd::Clear() {
   this->list->Clear();
 }
 
+// OFFSET: 0x008A15A0
+// FUNCTION: fn_11635
+std::string UIComboBoxDefWnd::GetSelectedText() {
+  return this->label->tooltip.c_str();
+}
+
 // OFFSET: 0x008A25F0
 // FUNCTION: fn_11641
 void UIComboBoxDefWnd::AddOption(std::string text, std::uint32_t color) {
