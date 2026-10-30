@@ -1023,6 +1023,27 @@ void CGameActor::Slot38() {
 }
 
 // OFFSET: 0x00CAE640
+// FUNCTION: fn_21076
+void CGameActor::ShowPartyMemberEffect(std::uint32_t accountId) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (mode->scene->unknown_0048 == 0 && mode->scene->unknown_0054 == 0) {
+    return;
+  }
+
+  for (int index = 0; index < ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount(); ++index) {
+    MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyAt(index);
+    if (member.accountId == accountId) {
+      for (RagEffectState* effect : this->state.effects) {
+        if (effect && effect->type == 160) {
+          return;
+        }
+      }
+
+      this->LaunchEffect(160, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00CABEB0
 // FUNCTION: fn_21040
