@@ -13,6 +13,7 @@ class RuneSetData;
 
 class UIRuneSetReWard : public UIBitmapButton {
 public:
+  void Paint() override;
   void Slot31(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -23,6 +24,7 @@ public:
 
 class UIRuneSystemTab : public UIWindow {
 public:
+  void Paint() override;
   void Slot25(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -45,6 +47,7 @@ class UIRuneSetList : public UIScrollBar {
 public:
   void Slot25(int x, int y) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void DrawScrollBar(bool drawLine);
 
   /* 00B4 */ int m_itemHeight;
@@ -71,6 +74,7 @@ class UIRuneSystem_ActiveWnd : public UIWindow {
 class UIRuneSet_Info : public UIWindow {
 public:
   void Slot19() override;
+  void UpdateActivation();
 
   /* 007C */ RuneSetData* m_runeSet;
   /* 0080 */ UIRuneSystem_ActiveWnd* m_activeWnd;

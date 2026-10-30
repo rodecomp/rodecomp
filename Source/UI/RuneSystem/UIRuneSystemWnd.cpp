@@ -5,6 +5,62 @@
 #include "Resource/TextureNames.h"
 #include "UI/RuneSystem/UIRuneSystemWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
+
+// OFFSET: 0x00819610
+// FUNCTION: fn_10181
+void UIRuneSetReWard::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  const std::string* name;
+  if (this->m_state == 3) {
+    name = &this->m_texts[1];
+  } else if (this->m_state == 0) {
+    name = &this->m_texts[0];
+  } else if (this->m_state == 1) {
+    switch (this->geometry.unknown_0030) {
+    case 0:
+      name = &this->m_names[3];
+      break;
+    case 1:
+    case 2:
+      name = &this->m_texts[2];
+      break;
+    default:
+      name = nullptr;
+      break;
+    }
+  } else {
+    switch (this->geometry.unknown_0030) {
+    case 0:
+      name = &this->m_names[0];
+      break;
+    case 1:
+      name = &this->m_names[1];
+      break;
+    case 2:
+      name = &this->m_names[2];
+      break;
+    default:
+      name = nullptr;
+      break;
+    }
+  }
+
+  if (name && !name->empty()) {
+    this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name->c_str())))->image, true);
+  }
+  if (this->parent) {
+    this->parent->Invalidate();
+  }
+}
+
+// OFFSET: 0x0081A1D0
+// FUNCTION: fn_10184
+void UIRuneSystemTab::Paint() {
+  ResourceMgr& resources = ResourceMgr::Instance();
+  const std::string name = FormatOwnedString(this->m_label.c_str(), this->geometry.unknown_0030);
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(resources.Load(Resolve(name.c_str())))->image, false);
+}
 
 // OFFSET: 0x0081BD10
 // FUNCTION: fn_10194
@@ -179,6 +235,42 @@ void UIRuneSetList::Slot35(int delta) {
   if (previous != next) {
     this->Invalidate();
   }
+}
+
+// OFFSET: 0x0081D460
+// FUNCTION: fn_10220
+void UIRuneSet_Info::UpdateActivation() {
+  this->m_activeWnd->Show(0);
+  this->unknown_0084->Enable(0);
+  if (this->m_runeSet && !this->m_runeSet->IsActive()) {
+    this->m_activeWnd->Show(1);
+    this->unknown_0084->Enable(1);
+    UIBitmapButton* button = this->unknown_0084;
+    button->SetDisabled(!g_runeSystemMgr->HasRequiredItems(this->m_runeSet->GetActiveType()));
+    button->Invalidate();
+  }
+  this->Invalidate();
+}
+
+// OFFSET: 0x0081D580
+// FUNCTION: fn_10221
+int UIRuneSetList::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
+  if (message == 0x3C) {
+    if (argument1 > 0 && this->total != argument1) {
+      int maximum = argument1 - this->visible;
+      if (maximum < 0) {
+        maximum = 0;
+      }
+      this->SetRange(maximum, this->visible, argument1);
+      this->SetPosition(0);
+    }
+    this->Invalidate();
+  } else if (message == 0xAB) {
+    this->m_selected = argument1;
+    this->Invalidate();
+    return 0;
+  }
+  return 0;
 }
 
 // OFFSET: 0x0081D5F0
