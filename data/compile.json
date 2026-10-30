@@ -220,6 +220,7 @@
   "Source/Archive/PakFile.cpp": 1,
   "Source/Archive/PakName.cpp": 1,
   "Source/Archive/PakRegistry.cpp": 1,
+  "Source/Archive/UnknownA68.cpp": 1,
   "Source/Client/Application/ApplicationActivation.cpp": 4,
   "Source/Client/Application/ApplicationMessages.cpp": 4,
   "Source/Client/Application/ApplicationWindow.cpp": 0,
