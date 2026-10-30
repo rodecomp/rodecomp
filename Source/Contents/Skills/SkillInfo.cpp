@@ -5,6 +5,7 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/ChargingPierceEffect.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
@@ -19,13 +20,15 @@
 #include "Resource/World/TerrainResource.h"
 #include "Script/LuaScript.h"
 #include "Utility/Math/AffineMatrix.h"
-
+#include "Utility/Text/FormatString.h"
 
 #include <algorithm>
 #include <bit>
 #include <cstdlib>
 #include <format>
 #include <memory>
+#include <random>
+#include <vector>
 
 class CEfstAction_ChangeSize : public CEfstAction {
 public:
@@ -81,6 +84,7 @@ public:
 
 class CSkillAction_SHC_SHADOW_STAB : public CSkillAction {
 public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -269,6 +273,7 @@ public:
 class CSkillAction_DK_DRAGONIC_PIERCE : public CSkillAction {
 public:
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -292,6 +297,7 @@ public:
 
 class CEfstAction_CHARGINGPIERCE_COUNT : public CEfstAction {
 public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
   void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
 };
 
@@ -1361,6 +1367,21 @@ void CSkillAction_AG_ENERGY_CONVERSION::Slot11(int level, CGameActor* source, CG
   g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_conversion"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
 }
 
+// OFFSET: 0x00777940
+// FUNCTION: fn_08361
+void CSkillAction_SHC_SHADOW_STAB::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source || !target) {
+    return;
+  }
+
+  const float angle = ScreenAngle(
+    &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+  );
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shadow_stab"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot17(angle);
+  }
+}
+
 // OFFSET: 0x00777B00
 // FUNCTION: fn_08362
 void CSkillAction_SHC_SHADOW_STAB::Slot16(int level, CGameActor* source, CGameActor* target) {
@@ -1962,6 +1983,51 @@ void CSkillAction_DK_DRAGONIC_PIERCE::Slot08(int level, CGameActor* source) {
   }
 }
 
+// OFFSET: 0x007801B0
+// FUNCTION: fn_08480
+void CSkillAction_DK_DRAGONIC_PIERCE::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source || !target) {
+    return;
+  }
+
+  const float angle = ScreenAngle(
+    &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+  );
+  int direction;
+  if (angle > 60.0f && angle <= 120.0f) {
+    direction = 0;
+  } else if (angle > 120.0f && angle <= 240.0f) {
+    direction = 1;
+  } else if (angle > 240.0f && angle <= 300.0f) {
+    direction = 2;
+  } else if ((angle > 300.0f && angle <= 360.0f) || (angle >= 0.0f && angle <= 60.0f)) {
+    direction = 3;
+  } else {
+    return;
+  }
+
+  const float scale = source->unknown_0378 * source->render.speed * 16.0f;
+  const bool flip = direction != 1 && direction != 2;
+  const bool horizontal = (direction & 1) != 0;
+  std::string name = horizontal ? "dragonic_pierce_horizon" : "dragonic_pierce_vertical";
+  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(name), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot16(static_cast<int>(scale));
+    float offset;
+    if (horizontal) {
+      effect->Slot26(flip);
+      offset = flip ? 0.0f : -180.0f;
+    } else {
+      effect->Slot27(flip);
+      offset = flip ? -90.0f : -270.0f;
+    }
+    effect->Slot17(static_cast<float>((static_cast<int>(angle + offset) + 360) % 360));
+  }
+
+  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot16(static_cast<int>(scale));
+  }
+}
+
 // OFFSET: 0x007805A0
 // FUNCTION: fn_08481
 void CSkillAction_DK_DRAGONIC_PIERCE::Slot16(int level, CGameActor* source, CGameActor* target) {
@@ -2033,6 +2099,26 @@ void CSkillAction_DK_CHARGINGPIERCE::Slot11(int level, CGameActor* source, CGame
 // FUNCTION: fn_08489
 EfstActionMessage CEfstAction_CHARGINGPIERCE::Slot04() {
   return {LookupMessage(3746), 0xFF};
+}
+
+// OFFSET: 0x007810A0
+// FUNCTION: fn_08490
+void CEfstAction_CHARGINGPIERCE_COUNT::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (argument3) {
+    this->Slot01(efstId, value, argument3, 0, actor);
+    if (CRenderObject* target = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAidIncludeMe(argument3)) {
+      g_effectMgr->Spawn(argument3, CEZ2STREffectMgr::GetInstance()->EffectId("chargingpierce_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      g_soundMgr->PlayWave(
+        "effect\\DK_CHARGINGPIERCE3.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f,
+        0
+      );
+    }
+  } else if (actor) {
+    if (CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, 2461, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      static_cast<CChargingPierceNewEffect*>(effect)->SetCount(value);
+    }
+  }
 }
 
 // OFFSET: 0x007812F0
@@ -2259,6 +2345,7 @@ class CSkillAction_HN_HELLS_DRIVE : public CSkillAction {
 public:
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_HN_GROUND_GRAVITATION : public CSkillAction {
@@ -2699,6 +2786,62 @@ void CSkillAction_HN_HELLS_DRIVE::Slot08(int level, CGameActor* source) {
   }
 }
 
+// OFFSET: 0x00784990
+// FUNCTION: fn_08554
+void CSkillAction_HN_HELLS_DRIVE::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  // OFFSET: 0x00786500
+  // FUNCTION: fn_08577
+  const auto shuffledIndices = [](int count) {
+    std::vector<int> indices;
+    for (int index = 0; index < count; ++index) {
+      indices.push_back(index);
+    }
+    std::mt19937 engine(std::random_device{}());
+    std::shuffle(indices.begin(), indices.end(), engine);
+    return indices;
+  };
+
+  const int count = (level - 1) / 3 * 2 + 3;
+  std::vector<int> columns = shuffledIndices(count);
+  std::vector<int> rows = shuffledIndices(count);
+  int frame = 0;
+  for (int index = 0; index < count; ++index, frame += 32) {
+    float offsetZ = 0.0f;
+    if (!rows.empty()) {
+      offsetZ = static_cast<float>((rows.front() - count / 2) * 5.0);
+      rows.erase(rows.begin());
+    }
+    float offsetX = 0.0f;
+    if (!columns.empty()) {
+      offsetX = static_cast<float>((columns.front() - count / 2) * 5.0);
+      columns.erase(columns.begin());
+    }
+
+    if (CEffect* effect = g_effectMgr->Spawn(
+          0, CEZ2STREffectMgr::GetInstance()->EffectId("hells_drive_bottom"), source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0
+        )) {
+      effect->position[0] = offsetX + source->render.position.x;
+      effect->position[2] = offsetZ + source->render.position.z;
+      effect->position[1] = source->render.position.y + 0.0f;
+      effect->Slot16(frame);
+    }
+
+    if (CEffect* effect = g_effectMgr->Spawn(
+          0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hells_drive_%02d", std::max(std::rand() % 3, 0))), source->render.position.x,
+          source->render.position.y, source->render.position.z, 0, -1, 0, 0
+        )) {
+      effect->position[0] = offsetX + source->render.position.x;
+      effect->position[2] = offsetZ + source->render.position.z;
+      effect->position[1] = source->render.position.y + 0.0f;
+      effect->Slot16(frame);
+    }
+  }
+}
+
 // OFFSET: 0x00784E40
 // FUNCTION: fn_08555
 int CSkillAction_HN_GROUND_GRAVITATION::Slot02() {
@@ -2858,3 +3001,4 @@ void CSkillAction_HN_OVERCOMING_CRISIS::Slot11(int level, CGameActor* source, CG
     g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("overcoming_crisis_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   }
 }
+
