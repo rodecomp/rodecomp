@@ -560,10 +560,10 @@ void CFallenAngelEffect::Slot03() {
   const vector3d start = emitter->position;
   const float dx = this->unknown_00D0 - this->position[0];
   const float dz = this->unknown_00D8 - this->position[2];
-  const float speed = 1.0f / SquareRoot(dx * dx + dz * dz);
+  const float speed = 1.0f / SquareRoot(dx * dx + 0.0f + dz * dz);
 
   emitter->position.x = start.x + dx * speed * 0.09f;
-  emitter->position.y = start.y;
+  emitter->position.y = start.y + speed * 0.0f;
   emitter->position.z = start.z + dz * speed * 0.09f;
 
   AsParticle(emitter)->Process(0.0f, -80.0f, 0.0f);
@@ -1152,7 +1152,7 @@ void CNewCloudKillEffect::Slot03() {
     );
 
     matrix transform;
-    transform.Compose(rotation, scale);
+    transform.Compose(scale, rotation);
     particle->transform = transform;
   }
 
@@ -1245,7 +1245,7 @@ void CNewCloudKillEffect::Slot03() {
     );
 
     matrix transform;
-    transform.Compose(rotation, scale);
+    transform.Compose(scale, rotation);
     particle->transform = transform;
   }
 }
@@ -1327,7 +1327,7 @@ void CPneumaticusProcellaEffect::Slot03() {
       continue;
     }
 
-    if (emitter->lifetime == 0.0f || emitter->lifetime * 60.0f <= static_cast<float>(emitter->elapsed)) {
+    if (emitter->lifetime != 0.0f && emitter->lifetime * 60.0f <= static_cast<float>(emitter->elapsed)) {
       FreeParticle(AsParticle(emitter));
       *it = nullptr;
       continue;
