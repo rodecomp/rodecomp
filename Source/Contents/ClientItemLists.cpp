@@ -347,6 +347,18 @@ void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
     /* 000E */ std::uint32_t cards[4];
   };
 
+  struct ItemAddSlotOptionsPacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ int itemId;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ int slot;
+    /* 000B */ unsigned char identified;
+    /* 000C */ unsigned char damaged;
+    /* 000D */ unsigned char refine;
+    /* 000E */ std::uint32_t cards[4];
+    /* 001E */ ItemRandomOption options[5];
+  };
+
 // OFFSET: 0x00D1F770
 // FUNCTION: fn_21641
 void sub_D1F770(const unsigned char* data) {
@@ -374,6 +386,56 @@ void sub_D1F770(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D1F970
+// FUNCTION: fn_21642
+void sub_D1F970(const unsigned char* data) {
+  const ItemAddSlotOptionsPacket* packet = reinterpret_cast<const ItemAddSlotOptionsPacket*>(data);
+  if (packet->slot < 0) {
+    (*reinterpret_cast<CMode**>(0x013495BC))->SendMsg(0x35, 0, 0, 0, 0);
+  }
+
+  if (packet->itemId == 0) {
+    g_session.SetUnknown5214(packet->slot);
+    return;
+  }
+
+  ITEM_INFO item;
+  item.unknown_0000[0] = packet->type;
+  item.SetItemId(packet->itemId);
+  item.unknown_0000[1] = 0xFFFFFFFF;
+  item.quantity = packet->slot;
+  std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
+  item.identified = packet->identified;
+  item.unknown_005D = packet->damaged;
+  item.unknown_0060 = packet->refine;
+
+  int count = 0;
+  if (packet->options[0].id != 0) {
+    ++count;
+  }
+
+  if (packet->options[1].id != 0) {
+    ++count;
+  }
+
+  if (packet->options[2].id != 0) {
+    ++count;
+  }
+
+  if (packet->options[3].id != 0) {
+    ++count;
+  }
+
+  if (packet->options[4].id != 0) {
+    ++count;
+  }
+
+  item.unknown_0098 = count;
+  for (int index = 0; index < count; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = packet->options[index];
+  }
+
+  g_session.AddItemSlot(item);
+}
 
 // OFFSET: 0x00D1FBA0
 // FUNCTION: fn_21643
