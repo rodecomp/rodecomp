@@ -1,5 +1,6 @@
 #include "UI/Edit/UICandidateWnd.h"
 
+#include "Client/Input/InputCharset.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
@@ -90,6 +91,32 @@ void UICandidateWnd::Paint() {
 void UICompositionWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
   this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 10, 12, this->m_text.c_str(), 0, 0, 12, 0, 0, 0);
+}
+
+// OFFSET: 0x0096DB60
+// FUNCTION: fn_13205
+void UIKeyStrokeWnd::Paint() {
+  if (g_language != 4) {
+    return;
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(red, green, blue));
+  SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
+  const std::uint32_t color = RGB(red, green, blue);
+  this->FillRegion(0, 0, this->geometry.width, 1, color);
+  this->FillRegion(0, 0, 1, this->geometry.height, color);
+  this->FillRegion(0, this->geometry.height - 1, this->geometry.width, 1, color);
+  this->FillRegion(this->geometry.width - 1, 0, 1, this->geometry.height, color);
+
+  using IndicatorText = const char* (__thiscall*)(InputCharset*);
+  for (int index = 0; index < 4; ++index) {
+    auto table = *reinterpret_cast<IndicatorText**>(g_serverLanguage);
+    const char* source = table[1](g_serverLanguage) + index * 2;
+    char text[3] = {source[0], source[1], 0};
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 2 + index * 14, 2, text, 2, 0, 12, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x0096DD40
