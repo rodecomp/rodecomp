@@ -2,8 +2,10 @@
 #include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
+#include "Contents/World/World.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
@@ -71,6 +73,21 @@ void CGameMode::CompleteUnknown0194(std::uint32_t id, const std::string& text) {
   }
 }
 
+// OFFSET: 0x00CECE00
+// FUNCTION: fn_21360
+void CGameMode::ClearUnknown0458() {
+  *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0x458) = 0;
+}
+
+// OFFSET: 0x00CECE10
+// FUNCTION: fn_21361
+void CGameMode::SetDragIds(int source, int id) {
+  if (id != -1) {
+    this->drag.source = source;
+    this->drag.id = static_cast<std::uint32_t>(id);
+  }
+}
+
 // OFFSET: 0x00CED190
 // FUNCTION: fn_21363
 void CGameMode::UpdateUnknown0628(int id, bool add) {
@@ -79,6 +96,40 @@ void CGameMode::UpdateUnknown0628(int id, bool add) {
   } else {
     this->unknown_0628.erase(id);
   }
+}
+
+// OFFSET: 0x00CF0070
+// FUNCTION: fn_21410
+const char* CGameMode::Unknown04DCText() {
+  return reinterpret_cast<std::string*>(reinterpret_cast<char*>(this) + 0x4DC)->c_str();
+}
+
+// OFFSET: 0x00CF0320
+// FUNCTION: fn_21412
+CPlayer* CGameMode::Player() {
+  if (!this->scene) {
+    return nullptr;
+  }
+  return this->scene->player;
+}
+
+// OFFSET: 0x00CF0330
+// FUNCTION: fn_21413
+MinimapMarker* CGameMode::FindMinimapMarker(std::uint32_t key) {
+  const auto it = this->minimapMarkers.find(key);
+  if (it == this->minimapMarkers.end()) {
+    return nullptr;
+  }
+  return &it->second;
+}
+
+// OFFSET: 0x00CF06B0
+// FUNCTION: fn_21416
+float CGameMode::CameraDesiredYaw() {
+  if (!this->camera) {
+    return 0.0f;
+  }
+  return this->camera->camera.desiredYaw;
 }
 
 // OFFSET: 0x00CF0380

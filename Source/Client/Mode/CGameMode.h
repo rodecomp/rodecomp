@@ -211,6 +211,12 @@ public:
   void ReceiveDeferredReset(const unsigned char* packet);
   void ReceiveGradeEnchantResult(const unsigned char* packet);
   void UpdateUnknown0628(int id, bool add);
+  void ClearUnknown0458();
+  void SetDragIds(int source, int id);
+  const char* Unknown04DCText();
+  CPlayer* Player();
+  MinimapMarker* FindMinimapMarker(std::uint32_t key);
+  float CameraDesiredYaw();
   void IgnoreRemovedPacket3(const unsigned char* packet);
   void IgnoreRemovedPacket4(const unsigned char* packet);
   void IgnoreRemovedPacket5(const unsigned char* packet);
