@@ -121,3 +121,11 @@ void CCommonFloorEffect::Slot03() {
 }
 
 // OFFSET: 0x006FE060
+// FUNCTION: fn_06942
+void CCommonFloorEffect::Slot04() {
+  for (CParticle* particle : this->particles) {
+    if (particle) {
+      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    }
+  }
+}
