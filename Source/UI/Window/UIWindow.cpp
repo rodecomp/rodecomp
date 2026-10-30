@@ -42,7 +42,7 @@
 #include "UI/Window/WindowPolicy.h"
 #include "UI/Window/WindowRegistration.h"
 #include "Utility/Text/StringUtil.h"
-
+#include "Contents/MapSkyMgr.h"
 #include <algorithm>
 #include <atlconv.h>
 #include <bit>
@@ -2548,4 +2548,104 @@ void UINavigationV4Wnd::SelectRouteNode(int node) {
     reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
   }
   this->Invalidate();
+}
+
+// OFFSET: 0x00A85850
+// FUNCTION: fn_17017
+void UIWindow::sub_A85850(
+  int x, int y, std::string text, int width, int align, std::uint32_t color, int outlineColor, int family, int height, int bold, unsigned char outlined
+) {
+  int textWidth = 0;
+  if (const char* const string = text.c_str()) {
+    unsigned bytes = static_cast<unsigned>(text.size());
+    if (!bytes) {
+      bytes = static_cast<unsigned>(std::strlen(string));
+    }
+
+    if (bytes) {
+      TextContext context(*this->geometry.surface);
+      context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
+      textWidth = context.Measure(string, bytes).cx;
+    }
+  }
+
+  if (align == 2) {
+    x -= textWidth;
+  } else if (align == 6) {
+    x = static_cast<int>((width - textWidth) * g_depthAverageHalf + x);
+  }
+
+  int offset = 0;
+  const char* current = text.c_str();
+  const char* const end = current + std::strlen(current);
+  while (current != end) {
+    const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
+    int glyphWidth = 0;
+    {
+      const std::string glyph(current, next);
+      if (const char* const string = glyph.c_str()) {
+        if (const unsigned bytes = static_cast<unsigned>(std::strlen(string))) {
+          TextContext context(*this->geometry.surface);
+          context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
+          glyphWidth = context.Measure(string, bytes).cx;
+        }
+      }
+    }
+
+    if (outlined == 1) {
+      {
+        const std::string glyph(current, next);
+        const char* const string = glyph.c_str();
+        const int bytes = static_cast<int>(std::strlen(string));
+        TextContext context(*this->geometry.surface);
+        context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
+        context.SetColor(outlineColor);
+        context.Draw(x + offset + 1, y, string, bytes);
+      }
+      {
+        const std::string glyph(current, next);
+        const char* const string = glyph.c_str();
+        const int bytes = static_cast<int>(std::strlen(string));
+        TextContext context(*this->geometry.surface);
+        context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
+        context.SetColor(outlineColor);
+        context.Draw(x + offset - 1, y, string, bytes);
+      }
+      {
+        const std::string glyph(current, next);
+        const char* const string = glyph.c_str();
+        const int bytes = static_cast<int>(std::strlen(string));
+        TextContext context(*this->geometry.surface);
+        context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
+        context.SetColor(outlineColor);
+        context.Draw(x + offset, y + 1, string, bytes);
+      }
+      {
+        const std::string glyph(current, next);
+        const char* const string = glyph.c_str();
+        const int bytes = static_cast<int>(std::strlen(string));
+        TextContext context(*this->geometry.surface);
+        context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
+        context.SetColor(outlineColor);
+        context.Draw(x + offset, y - 1, string, bytes);
+      }
+    }
+
+    {
+      const std::string glyph(current, next);
+      const char* const string = glyph.c_str();
+      const int bytes = static_cast<int>(std::strlen(string));
+      TextContext context(*this->geometry.surface);
+      context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
+      context.SetColor(color);
+      context.Draw(x + offset, y, string, bytes);
+    }
+
+    offset += glyphWidth;
+    if (offset > width) {
+      break;
+    }
+
+    current = next;
+  }
 }
