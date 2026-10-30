@@ -505,3 +505,62 @@ bool UIRoMapWnd::LocateRecord(WorldViewRecord& record) {
 
   return false;
 }
+
+// OFFSET: 0x00932920
+// FUNCTION: fn_12713
+void UIRoMapWnd::Slot27(int x, int y) {
+  if (this == g_windowMgr.Capture()) {
+    return;
+  }
+
+  if (this->m_mouseX == x && this->m_mouseY == y) {
+    return;
+  }
+
+  this->m_mouseX = x;
+  this->m_mouseY = y;
+  this->unknown_00BC = nullptr;
+  for (WorldViewRecord& record : this->m_records) {
+    if (g_worldViewMgr.currentWorld == record.worldIndex && record.left < x && x < record.right && record.top < y && y < record.bottom) {
+      this->unknown_00BC = &record;
+      break;
+    }
+  }
+
+  this->Invalidate();
+
+  if (this->unknown_00C0) {
+    delete this->unknown_00C0;
+    this->unknown_00C0 = nullptr;
+  }
+
+  unsigned int mapIndex = 0;
+  CWorldViewWorld* world = g_worldViewMgr.CurrentWorld();
+  if (!world) {
+    return;
+  }
+
+  CWorldViewField* field = world->FieldAt(mapIndex, x, y);
+  if (!field) {
+    return;
+  }
+
+  const int mapId = world->maps[mapIndex]->id;
+  this->unknown_00C0 = new WorldViewRecord();
+  this->unknown_00C0->worldIndex = g_worldViewMgr.currentWorld;
+  this->unknown_00C0->mapIndex = mapId;
+  this->unknown_00C0->name = field->name;
+  this->unknown_00C0->left = field->left;
+  this->unknown_00C0->top = field->top;
+  this->unknown_00C0->right = field->right;
+  this->unknown_00C0->bottom = field->bottom;
+  this->unknown_00C0->unknown_0048 = field->unknown_0010;
+
+  CWorldViewMap* map = world->maps[mapIndex];
+  this->unknown_00C0->unknown_000C = map->left;
+  this->unknown_00C0->unknown_0010 = map->top;
+  this->unknown_00C0->unknown_0014 = map->right;
+  this->unknown_00C0->unknown_0018 = map->bottom;
+  this->unknown_00C0->unknown_001C = map->unknown_0044;
+  this->Invalidate();
+}

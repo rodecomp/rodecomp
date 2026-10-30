@@ -31,6 +31,7 @@ extern CWorldViewMgr g_worldViewMgr;
 class UIRoMapWnd : public UIFrameWnd {
 public:
   void Slot25(int x, int y) override;
+  void Slot27(int x, int y) override;
   void Slot33(int x, int y) override;
   void ClearRecords();
   void ResetKafraBounds();
@@ -56,7 +57,10 @@ private:
   /* 00CC */ unsigned char unknown_00CC;
   /* 00D0 */ int unknown_00D0;
   /* 00D4 */ unsigned char m_showLabels;
-  /* 00D5 */ unsigned char unknown_00D5[0x133];
+  /* 00D5 */ unsigned char unknown_00D5[0x113];
+  /* 01E8 */ int m_mouseX;
+  /* 01EC */ int m_mouseY;
+  /* 01F0 */ unsigned char unknown_01F0[0x18];
   /* 0208 */ int unknown_0208;
   /* 020C */ unsigned char unknown_020C[0xC];
   /* 0218 */ int m_kafraLeft;
