@@ -450,6 +450,7 @@ public:
   static int CenterOnViewportY(int y);
   void ConfirmActiveDialog();
   void SaveVisibleWindowIds();
+  void UpdateNavigationList();
   void SaveShortcutItems();
   void SaveUIRectInfo();
   UIWindow* LookupWindow(int id);

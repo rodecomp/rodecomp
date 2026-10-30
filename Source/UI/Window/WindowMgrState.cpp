@@ -4,6 +4,8 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "UI/Dialogs/UIMemorialDunWnd.h"
 #include "UI/GameSettings/GameSettingsUI.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
+#include "UI/Window/UINavigationWnd.h"
 #include "UI/Window/UIRoulletteWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/MiniPartyWndAreaMgr.h"
@@ -203,6 +205,14 @@ void UIWindowMgr::SaveVisibleWindowIds() {
       }
       this->savedWindowIds.push_back(id);
     }
+  }
+}
+
+// OFFSET: 0x00AAB8A0
+// FUNCTION: fn_17282
+void UIWindowMgr::UpdateNavigationList() {
+  if (this->window_4F174 && !g_navigationMinimized && static_cast<UINavigationV4Wnd*>(this->window_4F174)->IsListShown()) {
+    this->window_4F174->SendMsg(nullptr, 6, 202, 0, 0, 0);
   }
 }
 
