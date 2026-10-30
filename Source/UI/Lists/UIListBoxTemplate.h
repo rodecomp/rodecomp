@@ -175,6 +175,8 @@ public:
   // OFFSET: 0x00A01ED0
   // OFFSET: 0x00A0CE70
   // OFFSET: 0x00A638A0
+  // FUNCTION: fn_14834
+  // FUNCTION: fn_14835
   // FUNCTION: fn_15038
   // FUNCTION: fn_16438
   void Slot35(int value) override {
@@ -263,6 +265,8 @@ public:
   // FUNCTION: fn_14044
   // FUNCTION: fn_14045
   // FUNCTION: fn_14046
+  // FUNCTION: fn_14843
+  // FUNCTION: fn_14844
   void OnScroll(int position) {
     auto it = this->items.begin();
     if (it == this->items.end()) {
