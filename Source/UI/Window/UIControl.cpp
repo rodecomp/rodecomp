@@ -45,7 +45,8 @@ CUIControl::CUIControl(UIWindowContext& context) : UIWindow(context, 0), hitEnab
 CUIButton::CUIButton(UIWindowContext& context) : CUIControl(context), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
 }
 
-// INLINED
+// OFFSET: 0x009BDF40
+// FUNCTION: fn_13944
 CUIImageButton::CUIImageButton(UIWindowContext& context) : CUIButton(context), images(), disabledImage(), transparent(0), imageNames(), disabledName() {
 }
 
@@ -1681,4 +1682,96 @@ UIWindow* CUIControl::FindChildById(int id) {
   }
 
   return nullptr;
+}
+
+// OFFSET: 0x009BE300
+// FUNCTION: fn_13947
+CUITextViewer::CUITextViewer(UIWindowContext& context)
+    : CUIControl(context), textX(0), textY(0), font(0), fontHeight(12), bold(false), textColor(0), unknown_0098(false), unknown_009C(0xFFFFFF), outline(false),
+      outlineColor(0xFFFFFF), lineSpacing(6), backgroundColor(0xFFFFFF), paddingLeft(3), paddingTop(3), paddingRight(3), paddingBottom(3), scrollBar(nullptr),
+      padding(nullptr), lines(), contentHeight(0), childPositions() {
+}
+
+// OFFSET: 0x009BD4F0
+// FUNCTION: fn_13921
+bool UnusedTrue9BD4F0() {
+  return true;
+}
+
+// OFFSET: 0x009BD500
+// FUNCTION: fn_13922
+bool UnusedTrue9BD500() {
+  return true;
+}
+
+// OFFSET: 0x009BD510
+// FUNCTION: fn_13923
+bool UnusedTrue9BD510() {
+  return true;
+}
+
+// OFFSET: 0x009BD520
+// FUNCTION: fn_13924
+bool UnusedTrue9BD520() {
+  return true;
+}
+
+// OFFSET: 0x009BD530
+// FUNCTION: fn_13925
+bool UnusedTrue9BD530() {
+  return true;
+}
+
+// OFFSET: 0x009BD540
+// FUNCTION: fn_13926
+bool UnusedTrue9BD540() {
+  return true;
+}
+
+// OFFSET: 0x009BD550
+// FUNCTION: fn_13927
+bool UnusedTrue9BD550() {
+  return true;
+}
+
+// OFFSET: 0x009BD560
+// FUNCTION: fn_13928
+bool UnusedTrue9BD560() {
+  return true;
+}
+
+// OFFSET: 0x009BD570
+// FUNCTION: fn_13929
+bool UnusedTrue9BD570() {
+  return true;
+}
+
+// OFFSET: 0x009BD580
+// FUNCTION: fn_13930
+bool UnusedTrue9BD580() {
+  return true;
+}
+
+// OFFSET: 0x009BD590
+// FUNCTION: fn_13931
+bool UnusedTrue9BD590() {
+  return true;
+}
+
+// OFFSET: 0x009BD5A0
+// FUNCTION: fn_13932
+bool UnusedTrue9BD5A0() {
+  return true;
+}
+
+// OFFSET: 0x009BD5B0
+// FUNCTION: fn_13933
+bool UnusedTrue9BD5B0() {
+  return true;
+}
+
+// OFFSET: 0x009BD5C0
+// FUNCTION: fn_13934
+bool UnusedTrue9BD5C0() {
+  return true;
 }
