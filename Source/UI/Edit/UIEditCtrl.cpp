@@ -1224,6 +1224,50 @@ void UIMerchantItemMyShopWnd::Paint() {
 }
 
 // OFFSET: 0x0097A670
+// FUNCTION: fn_13319
+void UIMerchantItemPurchaseMSGWnd::Slot15(int, int) {
+  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title->SetSize(100, 15);
+  this->title->SetTextFitted(LookupMessage(2326));
+  this->title->Move(16, 2);
+  this->title->shadow = 1;
+  this->AddChild(this->title);
+
+  this->buyButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->buyButton->SetBitmap("유저인터페이스\\btn_buy.bmp", 0, 0);
+  this->buyButton->SetBitmap("유저인터페이스\\btn_buy_a.bmp", 1, 0);
+  this->buyButton->SetBitmap("유저인터페이스\\btn_buy_b.bmp", 2, 0);
+  this->buyButton->SetSize(this->buyButton->BitmapWidth(), this->buyButton->BitmapHeight());
+  this->buyButton->Move(this->geometry.width - 106, this->geometry.height - 24);
+  this->buyButton->SetId(184);
+  this->AddChild(this->buyButton);
+
+  this->cancelButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel.bmp", 0, 0);
+  this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
+  this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
+  this->cancelButton->SetSize(this->cancelButton->BitmapWidth(), this->cancelButton->BitmapHeight());
+  this->cancelButton->Move(this->geometry.width - 61, this->geometry.height - 24);
+  this->cancelButton->SetId(185);
+  this->AddChild(this->cancelButton);
+
+  this->firstLine = new UIStaticText(*this->m_context, *this->m_controls);
+  this->firstLine->SetSize(200, 15);
+  this->firstLine->SetText(LookupMessage(2327), 0);
+  this->firstLine->Move(10, 20);
+  this->AddChild(this->firstLine);
+
+  this->secondLine = new UIStaticText(*this->m_context, *this->m_controls);
+  this->secondLine->SetSize(200, 15);
+  this->secondLine->Move(10, 40);
+  this->AddChild(this->secondLine);
+
+  this->thirdLine = new UIStaticText(*this->m_context, *this->m_controls);
+  this->thirdLine->SetSize(200, 15);
+  this->thirdLine->SetText(LookupMessage(2329), 0);
+  this->thirdLine->Move(10, 60);
+  this->AddChild(this->thirdLine);
+}
 
 // OFFSET: 0x00981990
 // FUNCTION: fn_13340
