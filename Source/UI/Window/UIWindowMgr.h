@@ -457,6 +457,10 @@ public:
   void ForgetWindowReferences(UIWindow* removed);
   void DismissTransient();
   void ClearWindow01B8();
+  void CloseWindow(int id);
+  void CloseWindowExcept251(int id);
+  void RecordWindowPacket(int argument);
+  void Nullsub370();
   void RegisterNamedWindow(std::string name, UIWindow* window);
   void UnregisterNamedWindow(std::string name);
   void ShowTransient(UIWindow* window);

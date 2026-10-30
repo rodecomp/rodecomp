@@ -1,3 +1,6 @@
+#include "Client/Replay.h"
+#include "Client/ReplayPacketRecorder.h"
+#include "Client/ReplayRecordOption.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -41,6 +44,41 @@ void UIWindowMgr::ForgetWindowReferences(UIWindow* removed) {
 // FUNCTION: fn_17250
 void UIWindowMgr::ClearWindow01B8() {
   this->window_01B8 = nullptr;
+}
+
+// OFFSET: 0x00AA8110
+// FUNCTION: fn_17241
+void UIWindowMgr::CloseWindowExcept251(int id) {
+  if (id != 251) {
+    this->CloseWindow(id);
+  }
+}
+
+// OFFSET: 0x00AA8A90
+// FUNCTION: fn_17246
+void UIWindowMgr::RecordWindowPacket(int argument) {
+  if (Replay::Instance().state == 2 &&
+      Replay::Instance().header.options.Get(ReplayRecordOption::Item) &&
+      Replay::Instance().header.options.Get(ReplayRecordOption::BasicInfo) &&
+      Replay::Instance().header.options.Get(ReplayRecordOption::Status)) {
+#pragma pack(push, 1)
+    struct {
+      std::uint32_t header;
+      std::uint16_t length;
+      std::uint32_t value;
+    } packet;
+#pragma pack(pop)
+    static_assert(sizeof(packet) == 10);
+    packet.header = 0x038D08AE;
+    packet.length = 10;
+    packet.value = static_cast<std::uint32_t>(argument);
+    reinterpret_cast<ReplayPacketRecorder*>(&Replay::Instance())->Record(10, &packet, 42, 0);
+  }
+}
+
+// OFFSET: 0x00AA8F40
+// FUNCTION: fn_17251
+void UIWindowMgr::Nullsub370() {
 }
 
 // OFFSET: 0x00A7AA30
