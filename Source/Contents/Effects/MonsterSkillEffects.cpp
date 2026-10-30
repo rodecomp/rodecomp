@@ -166,6 +166,11 @@ void CSpriteMableEffect::Slot04() {
 CStemSpearEffect::CStemSpearEffect() : CEffect(1100) {
 }
 
+// OFFSET: 0x0070D650
+// FUNCTION: fn_07152
+void __stdcall Nullsub226(int) {
+}
+
 // OFFSET: 0x0070D660
 // FUNCTION: fn_07153
 bool CStemSpearEffect::Slot06() {
