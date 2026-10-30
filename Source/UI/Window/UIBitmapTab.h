@@ -13,6 +13,7 @@ struct BitmapTabEntry {
 
 class UIBitmapTab : public UIWindow {
 public:
+  void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Paint() override;
   void Slot25(int x, int y) override;
 

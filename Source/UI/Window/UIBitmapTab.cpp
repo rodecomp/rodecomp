@@ -40,3 +40,11 @@ void UIBitmapTab::Slot25(int, int y) {
     }
   }
 }
+
+// OFFSET: 0x00855190
+// FUNCTION: fn_10752
+void UIBitmapTab::Slot10(int argument1, int argument2, std::intptr_t argument3) {
+  if (this->parent) {
+    this->parent->Slot10(argument1, argument2, argument3);
+  }
+}
