@@ -500,6 +500,50 @@ void CPc::Slot15(int first, int second) {
   }
 }
 
+// OFFSET: 0x00DB07F0
+// FUNCTION: fn_22627
+void CPc::Slot26(int value) {
+  this->unknown_0454 = value;
+  this->LoadEquipAction(3, g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, value).c_str());
+  this->LoadEquipSprite(
+    3, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, this->unknown_0454).c_str()
+  );
+
+  if (this->state.Attachments().HasId(678)) {
+    this->SendMsg(nullptr, 109, 0, 678, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 109, 0, 679, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, 109, 0, 680, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00DB09E0
+// FUNCTION: fn_22629
+void CPc::Slot27(int value) {
+  this->unknown_0458 = value;
+  this->LoadEquipAction(4, g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, value).c_str());
+  this->LoadEquipSprite(
+    4, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, this->unknown_0458).c_str()
+  );
+}
+
+// OFFSET: 0x00DB0B50
+// FUNCTION: fn_22631
+void CPc::Slot25(int value) {
+  this->unknown_0450 = value;
+  this->LoadEquipAction(2, g_session.GetAccessoryActName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, value).c_str());
+  this->LoadEquipSprite(
+    2, g_session.GetAccessorySprName(this->GetEffectiveJob(-1), this->unknown_0260, this->unknown_0440, this->unknown_0450).c_str()
+  );
+}
+
+// OFFSET: 0x00DB1990
+// FUNCTION: fn_22638
+void CPc::Slot22(int value) {
+  this->unknown_0440 = value;
+  this->LoadEquipAction(1, g_session.GetHeadActName(this->unknown_04D4, this->unknown_0260, &this->unknown_0440).c_str());
+  this->LoadEquipSprite(1, g_session.GetHeadSprName(this->unknown_04D4, this->unknown_0260, &this->unknown_0440).c_str());
+}
+
 // OFFSET: 0x00DB4C70
 // FUNCTION: fn_22652
 int CPc::MapMotion(int motion) {

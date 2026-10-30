@@ -26,6 +26,10 @@ public:
   ) override;
 
   void Slot15(int first, int second) override;
+  void Slot22(int value) override;
+  void Slot25(int value) override;
+  void Slot26(int value) override;
+  void Slot27(int value) override;
   void Slot30() override;
   void Slot31() override;
   void Slot33(int value) override;
