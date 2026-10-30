@@ -7,6 +7,57 @@
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIWindowMgr.h"
 
+// OFFSET: 0x00840B30
+// FUNCTION: fn_10545
+void UIBarterItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source == 31) {
+    if (g_session.IsEquipItemType(drag->type) == true || g_session.IsShadowItemType(drag->type) == true) {
+      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      return;
+    }
+
+    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    if (UIWindow* window = g_windowMgr.LookupWindow(15)) {
+      window->SendMsg(nullptr, 13, 24, 0, 0, 0);
+    }
+  } else {
+    g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00840C00
+// FUNCTION: fn_10546
+void UIBartermarketWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source != 4) {
+    if (CMode* mode = g_modeMgr.GetGameMode()) {
+      mode->SendMsg(18, 0, 0, 0, 0);
+    }
+    return;
+  }
+
+  if (drag->quantity == 1) {
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  }
+
+  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  if (UIWindow* window = g_windowMgr.LookupWindow(15)) {
+    window->SendMsg(nullptr, 13, 23, 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x00845940
 // FUNCTION: fn_10576
 void UIExpandedBarterItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {

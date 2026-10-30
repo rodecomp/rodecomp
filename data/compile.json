@@ -829,6 +829,7 @@
   "Source/UI/Text/UIAchWnd.cpp": 2,
   "Source/UI/Text/UIBalloonText.cpp": 2,
   "Source/UI/Text/UIStaticText.cpp": 2,
+  "Source/UI/Text/UITagTextViewer.cpp": 2,
   "Source/UI/Text/UITextViewer.cpp": 2,
   "Source/UI/Text/UITextViewerLinks.cpp": 2,
   "Source/UI/Text/UITextViewerMessages.cpp": 2,

@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_UI_UIBARTERMARKETWND_H
 #define RAGNAROK_SOURCE_UI_UIBARTERMARKETWND_H
 
+#include "UI/Item/UIItemPurchaseWnd.h"
+#include "UI/Item/UIItemShopWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstdint>
@@ -29,6 +31,16 @@ public:
   /* 00C8 */ int rowCount;
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ unsigned char scrollEnabled;
+};
+
+class UIBarterItemPurchaseWnd : public UIItemPurchaseWnd {
+public:
+  void Slot10(int x, int y, std::intptr_t value) override;
+};
+
+class UIBartermarketWnd : public UIItemShopWnd {
+public:
+  void Slot10(int x, int y, std::intptr_t value) override;
 };
 
 #endif
