@@ -132,8 +132,19 @@ void CNProtectGameGuardMgr::SetHwnd(HWND) {
 }
 
 // OFFSET: 0x0076DF40
+// FUNCTION: fn_08220
+void CNProtectGameGuardMgr::IncrementCounter() {
+}
 
 // OFFSET: 0x0076DFA0
+// FUNCTION: fn_08221
+void CNProtectGameGuardMgr::SetError(const char*, int, std::string message) {
+  NSyncObject lock(&this->m_lock);
+  if (!this->m_hasError) {
+    this->m_hasError = true;
+    this->m_errorMessage = message;
+  }
+}
 
 // OFFSET: 0x0076E040
 // FUNCTION: fn_08222
