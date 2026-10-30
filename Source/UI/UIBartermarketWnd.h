@@ -5,8 +5,6 @@
 
 #include <cstdint>
 
-struct WindowVisibility;
-
 class UIExpandedBarterItemPurchaseWnd : public UIFrameWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
@@ -18,9 +16,6 @@ public:
   /* 00C8 */ int rowCount;
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ unsigned char scrollEnabled;
-
-protected:
-  WindowVisibility* m_visibility;
 };
 
 class UIExpandedBartermarketWnd : public UIFrameWnd {
@@ -34,9 +29,6 @@ public:
   /* 00C8 */ int rowCount;
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ unsigned char scrollEnabled;
-
-protected:
-  WindowVisibility* m_visibility;
 };
 
 #endif
