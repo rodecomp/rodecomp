@@ -3,10 +3,113 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstring>
+
+// OFFSET: 0x00B6DCB0
+// FUNCTION: fn_19112
+void CMapMagicZoneEffect::AddSpinner(int kind) {
+  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  if (particle) {
+    particle->unknown_0004 = this->id;
+    particle->unknown_000C = 0;
+    particle->unknown_0010 = 0;
+    particle->unknown_0008 = 1;
+    if (kind == 0) {
+      particle->SetTexture("effect\\mjin2.tga");
+      *reinterpret_cast<float*>(&particle->unknown_00C4) = 0.0f;
+      particle->alpha = 200;
+      particle->unknown_0054 = -0.5f;
+    } else if (kind == 1) {
+      particle->SetTexture("effect\\mjin.tga");
+      *reinterpret_cast<float*>(&particle->unknown_00C4) = 45.0f;
+      particle->alpha = 50;
+      particle->unknown_0054 = -0.4f;
+    }
+
+    particle->scale = 30.0f;
+    particle->unknown_004C = 0;
+    InitParticleQuad(particle->vertices);
+    this->spinners.push_back(particle);
+  }
+}
+
+// OFFSET: 0x00B6E130
+// FUNCTION: fn_19113
+void CMapMagicZoneEffect::Close() {
+  for (std::vector<CParticle*>::iterator it = this->spinners.begin(); it != this->spinners.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->spinners.clear();
+
+  for (std::vector<CParticle*>::iterator it = this->petals.begin(); it != this->petals.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->petals.clear();
+
+  for (std::vector<CParticle*>::iterator it = this->ribbon.begin(); it != this->ribbon.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->ribbon.clear();
+}
+
+// OFFSET: 0x00B6E1D0
+// FUNCTION: fn_19114
+void CMapMagicZoneEffect::Slot01() {
+  this->AddSpinner(0);
+  this->AddSpinner(1);
+
+  int index = 0;
+  for (int angle = 0; angle < 360; angle += 180) {
+    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    if (particle) {
+      particle->unknown_0004 = this->id;
+      particle->unknown_000C = index;
+      particle->unknown_0010 = 0;
+      particle->unknown_0008 = 1;
+      particle->SetTexture("effect\\pikapika2.bmp");
+      particle->scale = 46.0f;
+      particle->unknown_004C = angle;
+      *reinterpret_cast<float*>(&particle->unknown_00C4) = 0.0f;
+      particle->alpha = 25;
+      particle->unknown_0054 = -1.0f;
+      InitParticleQuad(particle->vertices);
+      this->petals.push_back(particle);
+    }
+
+    ++index;
+  }
+
+  int row = 0;
+  int angle = 0;
+  for (int height = 55; height > 40; height -= 5) {
+    for (int segment = 0; segment <= 21; ++segment) {
+      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      if (particle) {
+        particle->SetTexture("effect\\ring_blue.tga");
+        particle->unknown_0010 = row;
+        particle->unknown_0004 = this->id;
+        particle->unknown_000C = segment;
+        particle->unknown_0008 = 3;
+        particle->alpha = 50;
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
+        particle->unknown_0050 = 315;
+        particle->unknown_00C0 = 15.0f - (static_cast<float>(row) + static_cast<float>(row));
+        particle->scale = static_cast<float>(row) * 0.2f + 12.9f;
+        particle->unknown_004C = height;
+        particle->unknown_0054 = 0.0f;
+        InitParticleQuad(particle->vertices);
+        this->ribbon.push_back(particle);
+      }
+    }
+
+    ++row;
+    angle += 90;
+  }
+}
 
 // OFFSET: 0x00B6E3B0
 // FUNCTION: fn_19115

@@ -11,9 +11,12 @@ class CParticle;
 
 class CMapMagicZoneEffect : public CEffect {
 public:
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
+  void AddSpinner(int kind);
   __declspec(noinline) void UpdateSpinner(CParticle* particle);
 
   /* 00CC */ vector3d previousInner;
