@@ -41,6 +41,9 @@ public:
   void Paint() override;
   virtual void Slot53();
 
+  void OnButtonClick();
+  void OnSelectItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data);
+
   /* 00D8 */ unsigned char unknown_00D8[0x2C];
   /* 0104 */ std::uint32_t backgroundColor;
   /* 0108 */ std::uint32_t borderColor;

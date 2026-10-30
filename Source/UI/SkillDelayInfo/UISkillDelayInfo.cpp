@@ -1,7 +1,22 @@
 #include "UI/SkillDelayInfo/SkillDelayInfo.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
+#include "UI/Lists/UIVScrollBar.h"
 #include "UI/Window/WindowBorder.h"
+
+#include <algorithm>
+#include <iterator>
+
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Paint();
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Slot35(int value);
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::OnScroll(int position);
+
+// OFFSET: 0x00A71140
+
+// OFFSET: 0x00A71300
 
 // OFFSET: 0x00A71950
 // FUNCTION: fn_16806
@@ -27,10 +42,36 @@ void CUISkillDelayInfo::Slot53() {
   this->SetSkinColors(0, 0, 0, 0);
 }
 
+// OFFSET: 0x00A71B50
+
+// OFFSET: 0x00A75C80
+// FUNCTION: fn_16812
+template <>
+void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x00A75C90
+
+// OFFSET: 0x00A76210
+
 namespace SkillDelayInfo {
 // OFFSET: 0x00A778C0
 // FUNCTION: fn_16877
 CUITime::~CUITime() = default;
+}
+
+// OFFSET: 0x00A77A70
+// FUNCTION: fn_16879
+void CUISkillDelayInfo::OnButtonClick() {
+}
+
+// OFFSET: 0x00A77B10
+// FUNCTION: fn_16880
+void CUISkillDelayInfo::OnSelectItem(SkillDelayInfo::CUIDelayItem*, const SkillDelayInfo::CDelayItemData&) {
+}
+
+namespace SkillDelayInfo {
 
 // OFFSET: 0x00A77CE0
 // FUNCTION: fn_16882

@@ -340,7 +340,9 @@ public:
     }
   }
 
-  /* 0084 */ unsigned char unknown_0084[0x0C];
+  /* 0084 */ CResPtr<CBitmapRes> unknown_0084;
+  /* 0088 */ CResPtr<CBitmapRes> unknown_0088;
+  /* 008C */ CResPtr<CBitmapRes> unknown_008C;
   /* 0090 */ std::map<int, std::string> imageNames;
   /* 0098 */ std::string disabledName;
   /* 00B0 */ CUIVScrollBar* scrollBar;
