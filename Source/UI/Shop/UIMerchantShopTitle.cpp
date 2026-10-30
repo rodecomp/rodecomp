@@ -60,3 +60,13 @@ void UIMerchantShopTitle::ResetCursor(int x, int y) {
     this->m_context->cursor.Set(0, this->m_context->cursorTick);
   }
 }
+
+// OFFSET: 0x0085FE20
+// FUNCTION: fn_10886
+void UIMerchantShopTitle::Slot32(int, int) {
+  if (g_serviceOptions.Get(167)) {
+    g_modeMgr.gameMode->SendMsg(245, 0, 0, 0, 0);
+    g_session.unknown_1760.clear();
+    g_session.unknown_1748.clear();
+  }
+}
