@@ -830,3 +830,56 @@ int UITabControl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   this->Invalidate();
   return 0;
 }
+
+// OFFSET: 0x0087CD70
+// FUNCTION: fn_11257
+void UIChatHisBox::DropOldestLines() {
+  unsigned int half = static_cast<unsigned int>(this->lines.size()) / 2;
+  for (unsigned int index = 0; index < half; ++index) {
+    this->lines[index] = this->lines[index + half];
+  }
+  this->lines.erase(this->lines.begin() + half, this->lines.end());
+
+  half = static_cast<unsigned int>(this->unknown_00E4.size()) / 2;
+  for (int index = 0; index < static_cast<int>(half); ++index) {
+    this->unknown_00E4[index] = this->unknown_00E4[index + half];
+  }
+  this->unknown_00E4.resize(half);
+
+  half = static_cast<unsigned int>(this->history.size()) / 2;
+  for (unsigned int index = 0; index < half; ++index) {
+    this->history[index] = this->history[index + half];
+  }
+  this->history.erase(this->history.begin() + half, this->history.end());
+
+  this->Refresh();
+}
+
+// OFFSET: 0x0087D080
+// FUNCTION: fn_11259
+void UIChatHisBox::ShiftNaviLinks() {
+  const unsigned int half = static_cast<unsigned int>(this->lines.size()) / 2;
+  std::list<std::vector<UINaviLinkButton*>>::iterator row = this->naviLinks.begin();
+  while (row != this->naviLinks.end()) {
+    bool removed = false;
+    for (unsigned int index = 0; index < row->size(); ++index) {
+      UINaviLinkButton* button = (*row)[index];
+      if (button->geometry.id == 438) {
+        button->line -= half;
+        if (button->line < 0) {
+          removed = true;
+          this->RemoveChild((*row)[index], 1);
+        }
+      }
+    }
+
+    if (!removed) {
+      ++row;
+      continue;
+    }
+
+    std::vector<UINaviLinkButton*> buttons;
+    buttons.swap(*row);
+    row = this->naviLinks.erase(row);
+  }
+}
