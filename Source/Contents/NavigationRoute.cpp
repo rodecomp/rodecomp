@@ -634,6 +634,11 @@ CNavi_Object::~CNavi_Object() {
   this->links.clear();
 }
 
+// OFFSET: 0x00B8CE30
+// FUNCTION: fn_19431
+void Nullsub36() {
+}
+
 // OFFSET: 0x00B98E40
 // FUNCTION: fn_19610
 bool CNavigationManager::SavedTargetText(char* out, int size) {
