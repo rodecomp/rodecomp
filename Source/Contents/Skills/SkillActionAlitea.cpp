@@ -68,6 +68,7 @@ public:
 
 class CSkillAction_DamageWereRaptorForm : public CSkillAction_AnimalForm, public CSkillAction_Direction {
 public:
+  void sub_5A4930(int level, CGameActor* source);
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
   bool Slot17(CGameActor* actor) override;
   void Slot18(CGameActor* actor) override;
@@ -160,6 +161,7 @@ public:
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot15(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_AT_QUILL_SPEAR : public CSkillAction_DamageWereRaptorForm {
@@ -753,6 +755,12 @@ void CSkillAction_AT_PINION_SHOT::Slot11(int level, CGameActor* source, CGameAct
     );
     effect->Slot17(angle);
   }
+}
+
+// OFFSET: 0x005A7180
+// FUNCTION: fn_03201
+void CSkillAction_AT_PINION_SHOT::Slot15(int level, CGameActor* source, CGameActor* target) {
+  this->sub_5A4930(level, source);
 }
 
 // OFFSET: 0x005A71A0
