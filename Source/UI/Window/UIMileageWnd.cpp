@@ -1,5 +1,6 @@
 #include "UI/Window/UIMileageWnd.h"
 #include "Client/Session.h"
+#include "Contents/MessageTable.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
@@ -89,6 +90,13 @@ void UIMileageWnd::Slot19() {
   this->m_startTime = seconds * 1000 - elapsed + now;
   this->Invalidate();
   g_mileageWndElapsed = 3600 - this->m_remaining;
+}
+
+// OFFSET: 0x0094C230
+// FUNCTION: fn_12894
+void UIMileageWnd::Slot15(int width, int height) {
+  const std::string title = FormatOwnedString(LookupMessage(2619), 300);
+  this->m_tooltip = title;
 }
 
 // OFFSET: 0x00950690

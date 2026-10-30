@@ -66,6 +66,18 @@ void UITransMenuWnd::Resize(int width, int height) {
   this->m_height = this->geometry.height;
 }
 
+// OFFSET: 0x0094CF00
+// FUNCTION: fn_12900
+void UITransMenuWnd::Slot15(int width, int height) {
+  this->unknown_00C0 = this->geometry.x;
+  this->unknown_00C4 = this->geometry.y;
+  this->m_width = this->geometry.width;
+  this->unknown_00D0 = 0;
+  this->m_height = this->geometry.height;
+  this->unknown_00D4 = 0x66000000;
+  this->unknown_00D8 = 0;
+}
+
 // OFFSET: 0x00949B70
 // FUNCTION: fn_12884
 bool UITransMenuWnd::Slot07(void* output) {

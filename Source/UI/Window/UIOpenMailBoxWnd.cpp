@@ -1,4 +1,5 @@
 #include "UI/Window/UIOpenMailBoxWnd.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "Contents/MessageTable.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -6,6 +7,23 @@
 // OFFSET: 0x0094F020
 // FUNCTION: fn_12927
 void UIOpenMailBoxWnd::Slot53() {
+}
+
+// OFFSET: 0x0094C410
+// FUNCTION: fn_12896
+void UIOpenMailBoxWnd::Slot15(int width, int height) {
+  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  button->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_noti_gotmail.bmp", 0, 0);
+  button->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_noti_gotmail.bmp", 1, 0);
+  button->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_noti_gotmail.bmp", 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->SetId(192);
+  this->AddChild(button);
+}
+
+// OFFSET: 0x0094D8F0
+// FUNCTION: fn_12909
+void UIOpenMailBoxWnd::Paint() {
 }
 
 // OFFSET: 0x00950A60
