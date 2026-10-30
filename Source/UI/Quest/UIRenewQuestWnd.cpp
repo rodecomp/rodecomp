@@ -314,6 +314,30 @@ void UIRenewDetailQuestInfoWnd::Slot25(int x, int y) {
 // OFFSET: 0x007FBFD0
 
 // OFFSET: 0x007FC870
+// FUNCTION: fn_09973
+void UIRenewQuestScrollBar::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->maximum == 0) {
+    return;
+  }
+
+  CBitmapRes* upper = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\renew_questui\\bt_scrollbar_arrow_upper.bmp")));
+  this->DrawBitmap(1, 0, upper ? &upper->image : nullptr, true);
+  CBitmapRes* lower = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\renew_questui\\bt_scrollbar_arrow_down.bmp")));
+  this->DrawBitmap(1, this->geometry.height - this->arrowLength - 1, lower ? &lower->image : nullptr, true);
+
+  const int top = this->ThumbOffset() + this->arrowLength;
+  CBitmapRes* thumbTop = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\renew_questui\\bt_scrollBar_up.bmp")));
+  this->DrawBitmap(0, top, thumbTop ? &thumbTop->image : nullptr, true);
+  const int bottom = this->ThumbLength() - 4 + top;
+  for (int y = top + 4; y < bottom; y += 4) {
+    CBitmapRes* thumbMiddle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\renew_questui\\bt_scrollBar_up.bmp")));
+    this->DrawBitmap(0, y, thumbMiddle ? &thumbMiddle->image : nullptr, true);
+  }
+  CBitmapRes* thumbBottom = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\renew_questui\\bt_scrollBar_down.bmp")));
+  this->DrawBitmap(0, bottom, thumbBottom ? &thumbBottom->image : nullptr, true);
+}
+
 
 // OFFSET: 0x007FC9B0
 
