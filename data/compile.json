@@ -967,6 +967,7 @@
   "Source/UI/Window/UIMiniBtnWnd.cpp": 2,
   "Source/UI/Window/UINavigationHelpWnd.cpp": 2,
   "Source/UI/Window/UINavigationWnd.cpp": 2,
+  "Source/UI/Window/UINewMakeCharWnd.cpp": 2,
   "Source/UI/Window/UINewSelectCharWnd.cpp": 2,
   "Source/UI/Window/UINewSkillListWnd.cpp": 2,
   "Source/UI/Window/UINormalMB.cpp": 2,
