@@ -456,6 +456,14 @@ void CMapSkyMgr::Apply(const std::string& mapName) {
 CMapSkyMgr* g_mapSkyMgr;
 
 // OFFSET: 0x00E5CFB0
+// FUNCTION: fn_24375
+CMapSkyMgr* GetMapSkyMgr() {
+  if (!g_mapSkyMgr) {
+    g_mapSkyMgr = new (std::nothrow) CMapSkyMgr;
+  }
+
+  return g_mapSkyMgr;
+}
 
 // OFFSET: 0x00E5D100
 // FUNCTION: fn_24378

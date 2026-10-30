@@ -131,3 +131,12 @@ template <>
 CJobCodeForItem* Singleton<CJobCodeForItem>::s_instance = nullptr;
 
 // OFFSET: 0x00E5CED0
+// FUNCTION: fn_24374
+template <>
+CJobCodeForItem* Singleton<CJobCodeForItem>::GetInstance() {
+  if (!s_instance) {
+    s_instance = new (std::nothrow) CJobCodeForItem;
+  }
+
+  return s_instance;
+}
