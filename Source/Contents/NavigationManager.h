@@ -324,6 +324,12 @@ public:
   void ClearNodes();
   int FindNodePath(unsigned int index);
   void SelectNodePath(std::string name);
+  int GetRouteResult() const;
+  NavigationTarget GetState(int index) const;
+  std::string StateMapName(int index, int* distance);
+  bool GetRouteFlag() const;
+  int GetSelectedNode() const;
+  CNavi_Link* GetNode(int index) const;
 
   /* 0000 */ CNaviData data;
   /* 004C */ CPathFinder pathFinder;

@@ -626,3 +626,66 @@ void CNavigationManager::SelectNodePath(std::string name) {
     }
   }
 }
+
+// OFFSET: 0x00B96210
+// FUNCTION: fn_19582
+int CNavigationManager::GetRouteResult() const {
+  return this->routeResult;
+}
+
+// OFFSET: 0x00B96220
+// FUNCTION: fn_19583
+NavigationTarget CNavigationManager::GetState(int index) const {
+  if (index >= 0 && this->states.size() > static_cast<unsigned int>(index)) {
+    return this->states[index];
+  }
+  return NavigationTarget();
+}
+
+// OFFSET: 0x00B96340
+// FUNCTION: fn_19584
+std::string CNavigationManager::StateMapName(int index, int* distance) {
+  std::string name;
+  if (index < 0 || this->states.size() <= static_cast<unsigned int>(index)) {
+    return name;
+  }
+  if (this->states[index].object != nullptr) {
+    CNaviInfo* info = nullptr;
+    int type = this->states[index].type;
+    if (type == 0 || type == 1) {
+      info = static_cast<CNaviInfo*>(this->states[index].object);
+    } else if (type == 2 || type == 3 || type == 6) {
+      info = static_cast<CNavi_Object*>(this->states[index].object)->GetInfo();
+    }
+    if (info != nullptr) {
+      name.assign(info->GetName());
+    }
+  }
+  if (this->states[index].type == 3) {
+    *distance = static_cast<CNavi_Object*>(this->states[index].object)->GetFlag();
+  } else {
+    *distance = this->states[index].type == 2 ? 10000 : 0;
+  }
+  return name;
+}
+
+// OFFSET: 0x00B96520
+// FUNCTION: fn_19585
+bool CNavigationManager::GetRouteFlag() const {
+  return this->unknown_115C;
+}
+
+// OFFSET: 0x00B96910
+// FUNCTION: fn_19586
+int CNavigationManager::GetSelectedNode() const {
+  return this->selectedNode;
+}
+
+// OFFSET: 0x00B96920
+// FUNCTION: fn_19587
+CNavi_Link* CNavigationManager::GetNode(int index) const {
+  if (index >= 0 && this->nodes.size() > static_cast<unsigned int>(index)) {
+    return this->nodes[index];
+  }
+  return nullptr;
+}
