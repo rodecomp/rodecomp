@@ -24,6 +24,12 @@ void UIINT64BarGraph::SetValues(std::int64_t current, std::int64_t maximum) {
   this->m_maximum = maximum;
 }
 
+// OFFSET: 0x0087A2E0
+// FUNCTION: fn_11230
+void UIINT64BarGraph::FillBackground(std::uint32_t color) {
+  this->ClearSurface(color);
+}
+
 // OFFSET: 0x0089B540
 // FUNCTION: fn_11567
 void UIPetInfoBarGraph::SetValue(int value) {
