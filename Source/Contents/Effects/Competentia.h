@@ -16,6 +16,7 @@ public:
   void Slot04() override;
   void Close() override;
   bool Slot06() override;
+  void Slot14(int argument) override;
 
   /* 00CC */ std::vector<CParticle*> particles;
 };

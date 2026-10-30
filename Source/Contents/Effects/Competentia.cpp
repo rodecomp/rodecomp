@@ -62,3 +62,13 @@ void CCompetentia::Slot01() {
 bool CCompetentia::Slot06() {
   return !this->particles.empty();
 }
+
+// OFFSET: 0x00708E30
+// FUNCTION: fn_07084
+void CCompetentia::Slot14(int argument) {
+  for (CParticle* particle : this->particles) {
+    if (particle) {
+      static_cast<CEZ2STRParticle*>(particle)->m_lifeTime = argument;
+    }
+  }
+}

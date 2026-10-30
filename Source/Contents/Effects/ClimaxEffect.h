@@ -11,6 +11,11 @@ class CClimaxEffect : public CEffect {
 public:
   CClimaxEffect();
 
+  void Slot03() override;
+  void Slot04() override;
+  void Close() override;
+  bool Slot06() override;
+
   /* 00CC */ CParticle* particles[2];
 };
 
