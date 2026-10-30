@@ -778,6 +778,7 @@
   "Source/Resource/ResourceAliases.cpp": 3,
   "Source/Resource/ResourceFailures.cpp": 3,
   "Source/Resource/ResourceMgr.cpp": 3,
+  "Source/Resource/ResourcePreload.cpp": 3,
   "Source/Resource/ResourcePresence.cpp": 3,
   "Source/Resource/ResourceTransient.cpp": 3,
   "Source/Resource/RmaResource.cpp": 3,
