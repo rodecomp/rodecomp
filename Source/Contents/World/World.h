@@ -38,6 +38,9 @@ public:
   void RemovePcPos(std::uint32_t aid, bool notify);
   void RemovePcPosForMove(std::uint32_t aid, bool notify);
   void ClearActorCells();
+  bool IsGuildMaster(std::uint32_t aid);
+  bool RemoveGroundItem(std::uint32_t aid);
+  bool RemoveSkill(std::uint32_t aid);
   void PlayerMove(const float& x, const float& z);
   void PcApproachToPlayer(std::uint32_t accountId, const CellFloatPos& pos);
 

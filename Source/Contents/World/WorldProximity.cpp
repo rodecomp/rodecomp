@@ -91,6 +91,23 @@ bool CWorld::FindActorInCell(const float* position, std::function<bool(std::uint
   return std::find_if(ids.begin(), ids.end(), predicate) != ids.end();
 }
 
+// OFFSET: 0x00AC8BA0
+// FUNCTION: fn_17679
+bool CWorld::IsGuildMaster(std::uint32_t aid) {
+  for (CRenderObject* actor : this->actors) {
+    if (actor->render.accountId == aid) {
+      CGameActor* gameActor = static_cast<CGameActor*>(actor);
+      if (!gameActor) {
+        return false;
+      }
+
+      return gameActor->Slot42() == static_cast<int>(g_proximityCompareId);
+    }
+  }
+
+  return false;
+}
+
 // OFFSET: 0x00ACA180
 // FUNCTION: fn_17689
 void CWorld::ClearActorCells() {

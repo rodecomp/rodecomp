@@ -307,3 +307,59 @@ void CGameMode::SpawnMandraAttack(std::uint32_t aid, int target, char flag) {
     effect->SendMsg(nullptr, 14, 0, aid, 0, reinterpret_cast<int>(&flag), reinterpret_cast<int>(&flag) >> 31, target, target >> 31, 0, 0, 0, 0, 0, 0);
   }
 }
+
+// OFFSET: 0x00ACA540
+// FUNCTION: fn_17693
+bool CWorld::RemoveGroundItem(std::uint32_t aid) {
+  for (auto item = this->unknown_0018.begin(); item != this->unknown_0018.end(); ++item) {
+    CRenderObject* object = *item;
+
+    if (static_cast<CItem*>(object)->itemAid == aid) {
+      for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
+        if (*entry == object) {
+          delete object;
+          this->objects.erase(entry);
+          break;
+        }
+      }
+
+      this->unknown_0018.erase(item);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00ACA8A0
+// FUNCTION: fn_17697
+bool CWorld::RemoveSkill(std::uint32_t aid) {
+  for (auto entry = this->unknown_0020.begin(); entry != this->unknown_0020.end(); ++entry) {
+    CSkill* skill = static_cast<CSkill*>(*entry);
+
+    if (skill->skillAid == aid) {
+      if (!skill) {
+        return false;
+      }
+
+      skill->SendMsg(nullptr, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+      if (skill->HasPendingDamage() == true) {
+        for (std::uint32_t pending : this->pendingActorIds) {
+          if (pending == aid) {
+            return false;
+          }
+        }
+
+        this->pendingActorIds.push_back(aid);
+        return false;
+      }
+
+      reinterpret_cast<WorldObjects*>(this)->Remove(skill);
+      this->unknown_0020.erase(entry);
+      return true;
+    }
+  }
+
+  return false;
+}
