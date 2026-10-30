@@ -1398,3 +1398,21 @@ int sub_8AB050() {
 int sub_8AB060() {
   return 6;
 }
+
+// OFFSET: 0x008A4220
+// FUNCTION: fn_11666
+UINoticeWnd::UINoticeWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->m_patchFile = "notice_patch.txt";
+  for (int i = 0; i < 19; ++i) {
+    this->m_texts[i] = new UIStaticText(*this->m_context, *this->m_controls);
+  }
+  this->unknown_0108 = 20;
+  this->unknown_010C = 0;
+  this->m_noticeCount = 0;
+  this->m_index = 0;
+  this->m_scrollPositions[0] = 0;
+  this->m_bottomPositions[0] = 0;
+  this->m_scroll = 0;
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this);
+}
