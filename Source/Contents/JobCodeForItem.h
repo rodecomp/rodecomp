@@ -17,6 +17,11 @@ public:
   void AddJobCode(unsigned long code, Jobs... jobs);
   template <typename... Jobs>
   void AddJobGroup(unsigned int group, Jobs... jobs);
+
+  void InitJobGroups();
+  void InitJobCodes();
+  void Init();
+  bool IsJobAllowed(int job, unsigned long code);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
