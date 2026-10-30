@@ -13,6 +13,11 @@ public:
   void Slot33(int x, int y) override;
 };
 
+class UIChatHisBox3 : public UIChatHisBox2 {
+public:
+  void Resize(int width, int height) override;
+};
+
 class UIMemberListBox : public UIChatHisBox2 {
 public:
   void Slot25(int x, int y) override;

@@ -1,6 +1,7 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Lists/UIComboBoxDefWnd.h"
+#include "UI/Lists/UIItemStoreComboBox.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/WindowPolicy.h"
@@ -135,6 +136,50 @@ int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       this->Invalidate();
     }
 
+    return 0;
+  default:
+    return this->UIWindow::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
+// OFFSET: 0x00898940
+// FUNCTION: fn_11551
+int UIItemStoreComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  const int value = static_cast<int>(a);
+
+  switch (message) {
+  case 6:
+    if (value == 273) {
+      this->expanded = this->expanded == 0;
+
+      if (this->expanded) {
+        this->list->Show(1);
+        this->Resize(this->geometry.width, this->list->geometry.height + this->geometry.height);
+        this->Move(214, this->geometry.y - this->list->geometry.height);
+        this->button->Move(this->geometry.width - this->button->BitmapWidth(), this->geometry.height - this->button->BitmapHeight());
+        this->label->Move(2, this->list->geometry.height + 3);
+      } else {
+        this->list->Show(0);
+        this->Resize(this->geometry.width, this->geometry.height - this->list->geometry.height);
+        this->Move(214, this->list->geometry.height + this->geometry.y);
+        this->button->Move(this->geometry.width - this->button->BitmapWidth(), 0);
+        this->label->Move(2, 3);
+      }
+
+      this->parent->Invalidate();
+      this->list->Invalidate();
+      this->Invalidate();
+    }
+
+    return 0;
+  case 39:
+    if (value < 0) {
+      return 0;
+    }
+
+    this->label->SetText(this->list->lines[value].text.c_str(), 0);
+    this->SendMsg(nullptr, 6, 273, 0, 0, 0);
+    this->parent->SendMsg(this, 39, value, 0, 0, 0);
     return 0;
   default:
     return this->UIWindow::SendMsg(sender, message, a, b, c, d);

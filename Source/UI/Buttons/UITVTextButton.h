@@ -16,6 +16,7 @@ public:
   void Slot31(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
+  void ResizeToText();
 
 protected:
   /* 00B4 */ unsigned char unknown_00B4;

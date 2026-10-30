@@ -20,6 +20,7 @@ public:
   void Slot33(int x, int y) override;
   void Slot35(int value) override;
   void Configure(const char* text, std::uint32_t color, int family, int height, unsigned char outline, unsigned char underline);
+  void ResizeToText();
 
 protected:
   /* 00B4 */ std::uint32_t m_color;

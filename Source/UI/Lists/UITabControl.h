@@ -18,6 +18,8 @@ public:
   void DrawVerticalTab(int index);
   void DrawHorizontalTab(int index);
   void DrawTabBorder(int x, int y, int width, int height, std::uint32_t color);
+  void RecalculateWidths();
+  void FitToTabs();
   void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
@@ -25,7 +27,10 @@ public:
   void Slot31(int x, int y) override;
 
   /* 0080 */ int layout;
-  /* 0084 */ unsigned char unknown_0084[0xC];
+  /* 0084 */ int tabHeight;
+  /* 0088 */ int tabPadding;
+  /* 008C */ unsigned char uniformWidths;
+  /* 008D */ unsigned char unknown_008D[0x3];
   /* 0090 */ std::uint32_t activeFillColor;
   /* 0094 */ std::uint32_t inactiveFillColor;
   /* 0098 */ std::uint32_t activeBorderColor;

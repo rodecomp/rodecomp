@@ -30,6 +30,8 @@
 #include "UI/Lists/UIListBoxEx.h"
 #include "UI/Lists/UIListBoxID.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Lists/TableBox.h"
+#include "UI/Window/WindowPolicy.h"
 #include "UI/Text/UITransBalloonText.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Text/UIString.h"
@@ -49,7 +51,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <string>
 
 // GLOBAL: gl_24606
 int g_screenHeight;
@@ -149,7 +150,6 @@ void UITextButton::Slot28(int x, int y) {
 // OFFSET: 0x00891140
 // FUNCTION: fn_11445
 void UITextButton::Slot31(int x, int y) {
-
   if (this->m_disabled != 0 || g_windowMgr.Capture() != this) {
     return;
   }
@@ -625,6 +625,114 @@ void UIComboBox::Refresh() {
 
   this->verticalBar->Invalidate();
 }
+
+// OFFSET: 0x00896FA0
+
+// OFFSET: 0x00897370
+// FUNCTION: fn_11526
+void UIChatHisBox3::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->verticalBar->Resize(9, height);
+  this->verticalBar->Move(width - 10, 0);
+  this->horizontalBar->Resize(width - 10, 9);
+  this->horizontalBar->Move(0, height - 10);
+  this->Refresh();
+}
+
+// OFFSET: 0x008978A0
+// FUNCTION: fn_11536
+void UITVTextButton::ResizeToText() {
+  if (std::strcmp(this->label.c_str(), "") == 0) {
+    return;
+  }
+
+  this->unknown_00DC = this->label;
+  const int width =
+    this->TextWidth(this->m_buttonContext->fonts, this->m_buttonContext->locale, this->label.c_str(), 0, this->m_fontFamily, this->m_fontHeight, this->m_outlined, 0);
+  const int border = this->m_border ? 2 : 0;
+  UIWindow::Resize(width + 2 + border, this->m_fontHeight + 2 + border);
+}
+
+// OFFSET: 0x00897960
+// FUNCTION: fn_11537
+void UITextButton::ResizeToText() {
+  if (std::strcmp(this->label.c_str(), "") == 0) {
+    return;
+  }
+
+  this->m_text = this->label;
+  const int width = this->TextWidth(this->m_buttonContext->fonts, this->m_buttonContext->locale, this->label.c_str(), 0, this->m_family, this->m_height, this->m_outline, 0);
+  UIWindow::Resize(width + 2, this->m_height + 2);
+}
+
+// OFFSET: 0x00897A50
+// FUNCTION: fn_11539
+void UITabControl::FitToTabs() {
+  int length = 0;
+
+  for (int index = 0; index < static_cast<int>(this->labels.size()); ++index) {
+    length += this->widths[index] - 1;
+  }
+
+  if (this->layout == 0 || this->layout == 2) {
+    this->Resize(this->tabHeight + 1, length + 1);
+  } else {
+    this->Resize(length + 1, this->tabHeight + 1);
+  }
+
+  this->Invalidate();
+}
+
+// OFFSET: 0x00897BE0
+// FUNCTION: fn_11540
+int TableBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x008984E0
+// FUNCTION: fn_11547
+int UIComboBoxV2Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    if (argument1 != 273) {
+      return 0;
+    }
+
+    int height = this->unknown_0098->geometry.height;
+
+    if (this->geometry.height <= height) {
+      height += this->list->geometry.height;
+    }
+
+    this->Resize(this->geometry.width, height);
+
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+
+    this->Invalidate();
+    return 0;
+  }
+
+  if (message != 39) {
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  if (WindowPolicy(g_windowMgr.policy[0].actions, g_replayAnimationScaling != 0, 3, this->parent->geometry.id) == 0) {
+    return 0;
+  }
+
+  this->SendMsg(nullptr, 6, 273, 0, 0, 0);
+  this->selected = argument1;
+
+  if (this->parent) {
+    this->parent->SendMsg(this, 39, argument1, 0, 0, 0);
+  }
+
+  this->Invalidate();
+  return 0;
+}
+
+// OFFSET: 0x00898730
 
 // OFFSET: 0x00897BF0
 // FUNCTION: fn_11541
