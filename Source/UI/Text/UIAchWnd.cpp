@@ -873,9 +873,120 @@ bool UIAchTracingWnd::Slot08() {
 }
 
 // OFFSET: 0x007BAA20
+// FUNCTION: fn_09271
+void UIAchTracingWnd::Slot11() {
+  if (this->info) {
+    this->info->x = this->geometry.x;
+    this->info->y = this->geometry.y;
+  }
+}
 
 // OFFSET: 0x007BA470
+// FUNCTION: fn_09268
+void UIAchTracingWnd::Slot15(int, int) {
+  for (int index = 0; index < 3; ++index) {
+    this->toggleButtons[index] = new UITextButton(*this->m_context, *this->m_controls);
+    this->toggleButtons[index]->Configure("", 0, 0, 12, 1, 0);
+    this->toggleButtons[index]->SetId(478);
+    this->AddChild(this->toggleButtons[index]);
+
+    this->openButtons[index] = new UITextButton(*this->m_context, *this->m_controls);
+    this->openButtons[index]->Configure("▶", 0, 0, 12, 1, 0);
+    this->openButtons[index]->SetId(479);
+    this->AddChild(this->openButtons[index]);
+  }
+}
 
 // OFFSET: 0x007BA590
+// FUNCTION: fn_09269
+void UIAchTracingWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->ClearSurface(0xFFFF00FF);
+
+  int y = 10;
+  for (int index = 0; index < 3; ++index) {
+    this->toggleButtons[index]->Enable(0);
+    this->openButtons[index]->Enable(0);
+  }
+
+  for (int pass = 0; pass < 2; ++pass) {
+    UITextButton** buttons = this->toggleButtons;
+    for (unsigned int index = 0; index < g_achievementTracking.size(); ++index, ++buttons) {
+      if (pass == 0 ? g_achievementTracking[index].pinned == 1 : g_achievementTracking[index].pinned != 1) {
+        continue;
+      }
+
+      buttons[0]->Enable(1);
+      buttons[3]->Enable(1);
+      UITextButton* toggle = buttons[0];
+      const std::string label = FormatOwnedString("● [%s]", g_achievementTracking[index].name.c_str());
+      toggle->label = label;
+      toggle->ResizeToText();
+      buttons[0]->Move(10, y);
+      buttons[0]->m_value = g_achievementTracking[index].id;
+      buttons[3]->Move(this->geometry.width - 20, y);
+      buttons[3]->m_value = g_achievementTracking[index].id;
+
+      if (!g_achievementTracking[index].expanded) {
+        this->DrawTextAt(
+          controls.fonts, controls.locale, buttons[0]->geometry.width + 16, y + 1,
+          FormatOwnedString("(+%d)", g_achievementTracking[index].conditions.size()).c_str(), 0, 0, 12, 0xFFFFFF, 1, 0
+        );
+        this->DrawTextAt(
+          controls.fonts, controls.locale, buttons[0]->geometry.width + 15, y,
+          FormatOwnedString("(+%d)", g_achievementTracking[index].conditions.size()).c_str(), 0, 0, 12, 0, 1, 0
+        );
+      }
+
+      AchTracingEntry& entry = g_achievementTracking[index];
+      y += 15;
+      if (entry.expanded == 1) {
+        for (const AchTracingCondition& condition : entry.conditions) {
+          this->DrawTextAt(controls.fonts, controls.locale, 21, y + 1, condition.text.c_str(), 0, 0, 12, 0, 0, 0);
+          std::uint32_t color = 0xFFFFFF;
+          if (condition.completed) {
+            color = 0xDFF6F;
+          }
+          this->DrawTextAt(controls.fonts, controls.locale, 20, y, condition.text.c_str(), 0, 0, 12, color, 0, 0);
+          y += 15;
+        }
+      }
+      y += 5;
+    }
+  }
+}
 
 // OFFSET: 0x007BA920
+// FUNCTION: fn_09270
+int UIAchTracingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 34) {
+    this->info = reinterpret_cast<AchTracingWndInfo*>(argument1);
+    if (!this->info->IsValid()) {
+      this->info->Reset();
+    }
+    this->Move(this->info->x, this->info->y);
+  } else if (message == 98) {
+    if (argument1 == 478) {
+      auto it = std::find_if(g_achievementTracking.begin(), g_achievementTracking.end(), [argument2](AchTracingEntry entry) {
+        return argument2 == entry.id;
+      });
+      if (it != g_achievementTracking.end()) {
+        it->expanded = !it->expanded;
+        this->Invalidate();
+        return 0;
+      }
+    } else if (argument1 == 479) {
+      UIWindow* window = this->m_frameContext->windows.EnsureWindow(270);
+      if (window) {
+        static_cast<UIAchievementWnd*>(window)->SelectAchievement(argument2);
+        this->Invalidate();
+        return 0;
+      }
+    }
+  } else {
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  this->Invalidate();
+  return 0;
+}
