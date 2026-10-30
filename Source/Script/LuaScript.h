@@ -35,4 +35,6 @@ private:
   void Register();
 };
 
+extern LuaScript* g_luaScript;
+
 #endif

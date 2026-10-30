@@ -2,9 +2,13 @@
 #include "Archive/PakRegistry.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectTypes.h"
+#include "Contents/Effects/EmitterEffect.h"
+#include "Contents/Effects/EvilsPawEffect.h"
+#include "Contents/Effects/WindEffect.h"
 #include "File/File.h"
 #include "File/ResourcePath.h"
 #include "Script/LuaFileOperations.h"
+#include "UI/UICheckAttendanceWnd.h"
 #include "UI/UILapineUpgradeBoxWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -13,11 +17,15 @@ extern "C" {
 #include <lualib.h>
 }
 
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <string>
 #include <vector>
 #include <windows.h>
+
+// GLOBAL: gl_24791
+LuaScript* g_luaScript;
 
 struct LuaScriptPair {
   std::string left;
@@ -36,6 +44,27 @@ public:
 // FUNCTION: fn_18325
 void LuaScriptBag::Add(std::string left, std::string right) {
   this->pairs.push_back(LuaScriptPair{left, right});
+}
+
+struct CashShopBannerWindow {
+  /* 0000 */ unsigned char unknown_0000[0xBC];
+  /* 00BC */ LuaScriptBag* banners;
+  /* 00C0 */ LuaScriptBag* banners2;
+};
+
+// INLINED
+static void AddCashShopBanner(CashShopBannerWindow* window, std::string image, std::string url) {
+  window->banners->Add(image, url);
+}
+
+// INLINED
+static void AddCashShopBanner2(CashShopBannerWindow* window, std::string image, std::string url) {
+  window->banners2->Add(image, url);
+}
+
+// INLINED
+static void AddAttendanceBanner(UICheckAttendanceWnd* window, std::string image, std::string url, int action, int argument) {
+  window->m_banner->AddBanner(image, url, action, argument);
 }
 
 int AddSkill(lua_State* state);
@@ -94,7 +123,7 @@ int LuaRGB(lua_State* state) {
   const int red = static_cast<int>(luaL_checknumber(state, 1));
   const int green = static_cast<int>(luaL_checknumber(state, 2));
   const int blue = static_cast<int>(luaL_checknumber(state, 3));
-  lua_pushnumber(state, ((blue & 255) << 16) | ((green & 255) << 8) | (red & 255));
+  lua_pushnumber(state, RGB(red, green, blue));
   return 1;
 }
 
@@ -172,9 +201,33 @@ int SetAnimatedEmitterInfo(lua_State* state) {
 // OFFSET: 0x00B7FE50
 // FUNCTION: fn_19248
 int SetEZ2STRInfo(lua_State* state) {
+  EffectLists* effects = g_effectMgr;
   const int index = static_cast<int>(luaL_checknumber(state, 1));
-  luaL_checknumber(state, 2);
-  g_effectMgr->At(0x584, static_cast<unsigned>(index));
+  const double key = luaL_checknumber(state, 2);
+  CEffect* effect = effects->At(1412, static_cast<unsigned>(index));
+  if (!effect) {
+    return 0;
+  }
+
+  switch (static_cast<int>(key)) {
+  case 47: {
+    std::string name = luaL_checkstring(state, 3);
+    effect->Slot20(reinterpret_cast<int>(name.c_str()));
+    break;
+  }
+  case 48:
+    effect->Slot21(static_cast<unsigned int>(luaL_checknumber(state, 3)));
+    break;
+  case 49:
+    effect->Slot22(static_cast<float>(luaL_checknumber(state, 3)));
+    break;
+  case 50: {
+    const float alpha = static_cast<float>(luaL_checknumber(state, 3));
+    effect->Slot23(alpha >= 1.0f ? 1.0f : (std::max)(0.0f, alpha));
+    break;
+  }
+  }
+
   return 0;
 }
 
@@ -237,29 +290,38 @@ int AddIngredientLapineUpgradeBox(lua_State* state) {
 // OFFSET: 0x00AFFB10
 // FUNCTION: fn_18356
 int AddCashshopBanner(lua_State* state) {
-  luaL_checkstring(state, 1);
-  luaL_checkstring(state, 2);
-  g_windowMgr.LookupWindow(0x13e);
+  std::string image = luaL_checkstring(state, 1);
+  std::string url = luaL_checkstring(state, 2);
+  if (UIWindow* window = g_windowMgr.LookupWindow(0x13e)) {
+    AddCashShopBanner(reinterpret_cast<CashShopBannerWindow*>(window), image, url);
+  }
+
   return 0;
 }
 
 // OFFSET: 0x00AFF8F0
 // FUNCTION: fn_18355
 int AddCashshopBanner2(lua_State* state) {
-  luaL_checkstring(state, 1);
-  luaL_checkstring(state, 2);
-  g_windowMgr.LookupWindow(0x13e);
+  std::string image = luaL_checkstring(state, 1);
+  std::string url = luaL_checkstring(state, 2);
+  if (UIWindow* window = g_windowMgr.LookupWindow(0x13e)) {
+    AddCashShopBanner2(reinterpret_cast<CashShopBannerWindow*>(window), image, url);
+  }
+
   return 0;
 }
 
 // OFFSET: 0x00AFFD30
 // FUNCTION: fn_18357
 int AddCheckAttendanceBanner(lua_State* state) {
-  luaL_checkstring(state, 1);
-  luaL_checkstring(state, 2);
-  lua_toboolean(state, 3);
-  lua_toboolean(state, 4);
-  g_windowMgr.LookupWindow(0x148);
+  std::string image = luaL_checkstring(state, 1);
+  std::string url = luaL_checkstring(state, 2);
+  const int action = lua_toboolean(state, 3);
+  const int argument = lua_toboolean(state, 4);
+  if (UIWindow* window = g_windowMgr.LookupWindow(0x148)) {
+    AddAttendanceBanner(static_cast<UICheckAttendanceWnd*>(window), image, url, action, argument);
+  }
+
   return 0;
 }
 

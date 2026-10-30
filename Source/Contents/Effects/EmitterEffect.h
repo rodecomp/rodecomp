@@ -27,6 +27,7 @@ public:
 
   void SetCount(int value);
   void SetParticleSpeed(float value);
+  void SetTexture(std::string name);
 
   /* 00CC */ vector3d velocityMin;
   /* 00D8 */ vector3d velocityMax;
