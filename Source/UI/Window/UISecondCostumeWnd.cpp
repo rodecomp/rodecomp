@@ -1,6 +1,21 @@
 #include "UI/Window/UISecondCostumeWnd.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Window/WindowManagerWindows.h"
+
+// OFFSET: 0x0094EC60
+// FUNCTION: fn_12913
+void UISecondCostumeWnd::Paint() {
+  int titleHeight = this->sub_8D2CE0(true, "Dress Room", 0);
+  this->DrawPanelBackground(17, 0, "");
+  int x = this->geometry.width - 204;
+  const BitmapImage* bitmap = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\dressroomback.bmp")));
+  if (bitmap != nullptr) {
+    this->DrawBitmap(x, titleHeight + 3, bitmap, false);
+  }
+  this->sub_948D20(x + 100, this->geometry.height - 35);
+}
 
 // OFFSET: 0x00951060
 // FUNCTION: fn_12948

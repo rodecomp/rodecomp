@@ -15,8 +15,11 @@ struct SecondCostumeEntry {
 
 class UISecondCostumeWnd : public UIFrameWnd {
 public:
+  void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   __declspec(noinline) void RefreshList(int tab);
+  int sub_8D2CE0(bool closeButton, const char* title, int width);
+  void sub_948D20(int x, int y);
 
 protected:
   /* 00B4 */ std::uint32_t unknown_00B4;
