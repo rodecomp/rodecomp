@@ -736,3 +736,26 @@ void UINewChatWnd::SaveChatLogs() {
     }
   }
 }
+
+// OFFSET: 0x009166A0
+// FUNCTION: fn_12584
+void UINewChatWnd::RefreshTabs(bool arrange) {
+  if (arrange && this->geometry.unknown_0030 != 0) {
+    int index = 0;
+    for (std::vector<UIWindow*>::iterator tab = this->m_tabs.begin(); tab != this->m_tabs.end(); ++tab, ++index) {
+      if (this->m_currentTab == index) {
+        (*tab)->Move(5, this->m_inputOffsetY + 2);
+        (*tab)->Invalidate();
+      } else {
+        (*tab)->Move(-100 - this->geometry.width, -100);
+      }
+    }
+  }
+
+  if (UIWindow* window = g_windowMgr.LookupWindow(132)) {
+    window->SendMsg(this, 6, 193, this->m_currentTab, 1, 2);
+  }
+
+  this->m_tabControl->Invalidate();
+  this->Invalidate();
+}

@@ -23,6 +23,7 @@ public:
   void Slot31(int x, int y) override;
   bool Slot42(void* output) override;
   void SaveChatLogs();
+  void RefreshTabs(bool arrange);
 
 private:
   /* 00BC */ int unknown_00BC;
@@ -36,7 +37,9 @@ private:
   /* 0100 */ unsigned char unknown_0100[0x8];
   /* 0108 */ int m_lockButtonX;
   /* 010C */ int m_chatModeX;
-  /* 0110 */ unsigned char unknown_0110[0xC];
+  /* 0110 */ unsigned char unknown_0110[0x4];
+  /* 0114 */ int m_currentTab;
+  /* 0118 */ unsigned char unknown_0118[0x4];
   /* 011C */ int m_inputOffsetY;
   /* 0120 */ int m_tabWidth;
   /* 0124 */ int m_inputAreaHeight;
