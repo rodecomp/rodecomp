@@ -236,8 +236,55 @@ private:
 }
 
 // OFFSET: 0x0066EAA0
+// FUNCTION: fn_05322
+bool CAchievementMgr::sub_66EAA0() {
+  NLuaState lua;
+  if (lua.IsValid()) {
+    luaL_openlibs(lua.GetState());
+    lua_register(lua.GetState(), "InsertAchieveInfo", CAchievementMgr::L_InsertAchieveInfo);
+    lua_register(lua.GetState(), "InsertAchieveResource", CAchievementMgr::L_InsertAchieveResource);
+    lua_register(lua.GetState(), "InsertAchieveRewardItem", CAchievementMgr::L_InsertAchieveRewardItem);
+    lua_register(lua.GetState(), "InsertAchieveRewardTitle", CAchievementMgr::L_InsertAchieveRewardTitle);
+    lua_register(lua.GetState(), "InsertAchieveRewardBuff", CAchievementMgr::L_InsertAchieveRewardBuff);
+    lua_register(lua.GetState(), "InsertAchieveUIType", CAchievementMgr::L_InsertAchieveUIType);
+    lua_register(lua.GetState(), "SetAchieveIDByTab", CAchievementMgr::L_SetAchieveIDByTab);
+    const std::uint8_t source[] = {0xCA, 0x74, 0x5C, 0xD5, 0x26, 0x96, 0x53, 0x08, 0xDA, 0x65, 0x46, 0xC4, 0x35, 0x9E,
+                                   0x62, 0x2C, 0xD7, 0x79, 0x70, 0xCD, 0x2A, 0x88, 0x7B, 0x67, 0xD5, 0x78, 0x4D, 0xA1};
+    thread_local EncryptedName<sizeof(source), 0x490FFB43A12F0DB9ULL> path(source);
+    if (luaL_loadfile(lua.GetState(), path.Text()) != 0 || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
+      MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
+    } else {
+      lua_getglobal(lua.GetState(), "main");
+      if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+        MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
+      } else if (!lua_isstring(lua.GetState(), -1)) {
+        MessageBoxA(nullptr, "second return value is not string...", "CAchievementMgr", 0);
+      } else {
+        if (lua_toboolean(lua.GetState(), -2)) {
+          return true;
+        }
+        MessageBoxA(nullptr, FormatString("error : %s", lua_tostring(lua.GetState(), -1)), "CAchievementMgr", 0);
+      }
+    }
+  }
+
+  return false;
+}
 
 // OFFSET: 0x0066ED90
+// FUNCTION: fn_05323
+std::pair<bool, std::string> CAchievementMgr::InsertAchieveInfo(int id, std::string title, std::string unknown0018, std::string unknown0030, int unknown0048) {
+  if (this->achievements.find(id) != this->achievements.end()) {
+    return std::pair<bool, std::string>(false, FormatOwnedString("duplicate achievement info [%d]", id));
+  }
+
+  AchievementInfo info{title, unknown0018, unknown0030, unknown0048, -1, -1, -1};
+  if (this->achievements.insert(std::make_pair(id, info)).second) {
+    return std::pair<bool, std::string>(true, "good");
+  }
+
+  return std::pair<bool, std::string>(false, FormatOwnedString("achievement info [%d] insert fail", id));
+}
 
 // OFFSET: 0x0066F170
 
