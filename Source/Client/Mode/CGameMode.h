@@ -68,6 +68,7 @@ public:
   void ReceiveActorSignal(const unsigned char* packet);
   void IgnorePacket(const unsigned char* packet);
   void ReceiveHuntingList(const unsigned char* packet);
+  void ReceiveEquipAck(const unsigned char* packet);
   void ReceivePetAct(unsigned char* packet);
   void PlayBgm(unsigned char type, std::string name);
   void ReceiveNpcBgm(const unsigned char* packet);

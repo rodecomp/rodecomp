@@ -253,6 +253,47 @@ bool CGameMode::NotifyItemResult(int result) {
   return true;
 }
 
+// OFFSET: 0x00D4B2C0
+// FUNCTION: fn_21864
+void CGameMode::ReceiveEquipAck(const unsigned char* packet) {
+  switch (*reinterpret_cast<const short*>(packet + 2)) {
+  case 0:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(242)), 0xFF, 0, 0, 0);
+    break;
+  case 1:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(243)), 0xFFFF64, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(244)), 0xFFFF64, 0, 0, 0);
+    break;
+  case 3:
+    switch (g_session.GetDisplayJob()) {
+    case 12:
+    case 4013:
+    case 4035:
+    case 4059:
+    case 4065:
+    case 4101:
+    case 4254:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1040)), 0xFFFF64, 0, 0, 0);
+      break;
+    case 24:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1175)), 0xFFFF64, 0, 0, 0);
+      break;
+    case 25:
+    case 4222:
+      break;
+    default:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(245)), 0xFFFF64, 0, 0, 0);
+      break;
+    }
+    break;
+  }
+}
+
 // OFFSET: 0x00D58970
 // FUNCTION: fn_21955
 std::string CGameMode::MakeSimulatorFolder(const std::string& folder) {
