@@ -229,6 +229,16 @@ void CUIEditBoxEx::SetBackgroundColor(std::uint32_t color) {
   this->Invalidate();
 }
 
+#include "UI/Window/InputFocus.h"
+#include "UI/Window/UIWindowMgr.h"
+
+// OFFSET: 0x009E6300
+// FUNCTION: fn_14453
+void CUIEditBoxEx::SetFocus() {
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->edit);
+}
+
 // OFFSET: 0x009E6320
 // FUNCTION: fn_14454
 void CUIEditBoxEx::SetTextColor(std::uint32_t color) {

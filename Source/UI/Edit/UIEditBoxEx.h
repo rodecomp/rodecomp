@@ -73,6 +73,7 @@ public:
   void SetEditBounds(int left, int top, int right, int bottom);
   void SetMask(char value);
   void SetText(const std::string& text);
+  void SetFocus();
 
   /* 0080 */ std::uint32_t backgroundColor;
   /* 0084 */ std::uint32_t borderColor;
