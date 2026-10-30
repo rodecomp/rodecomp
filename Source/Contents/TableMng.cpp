@@ -15,6 +15,10 @@ CTableMng::~CTableMng() {
 }
 
 // OFFSET: 0x00CA3630
+// FUNCTION: fn_20928
+void CTableMng::ResetTables() {
+  this->m_entryQueue.clear();
+}
 
 // OFFSET: 0x00CA3640
 // FUNCTION: fn_20929
