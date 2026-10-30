@@ -656,3 +656,11 @@ CSprArrowEffect::~CSprArrowEffect() {
 
 CChopChopClawMarks::~CChopChopClawMarks() {
 }
+
+// OFFSET: 0x00B3A430
+// FUNCTION: fn_18787
+bool EffectLists::RegisterAllocator(int id, CAllocator* allocator) {
+  return this->allocators.try_emplace(id, allocator).second;
+}
+
+// OFFSET: 0x00B3AF30

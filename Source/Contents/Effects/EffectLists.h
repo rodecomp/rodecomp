@@ -45,6 +45,8 @@ public:
   void Release();
   void SpawnLevel99(CRenderObject* actor, unsigned char flag, int extra);
   bool RegisterAllocators();
+  bool RegisterAllocator(int id, CAllocator* allocator);
+  void Update();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
