@@ -22,6 +22,8 @@ public:
   void Slot25(int value) override;
   void Slot30() override;
 
+  void UpdateBubblePositions();
+
   /* 0410 */ unsigned char unknown_0410[0x1C];
   /* 042C */ UIWindow* unknown_042C;
   /* 0430 */ UIWindow* unknown_0430;

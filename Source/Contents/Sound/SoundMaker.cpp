@@ -12,6 +12,7 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/World/World.h"
+#include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -20,7 +21,6 @@
 #include "Render/SpriteGeometry.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
-
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -836,4 +836,41 @@ void CNpc::Render(int argument) {
   } else {
     this->UpdateTlvertex(matrix);
   }
+}
+
+// OFFSET: 0x00DA2F00
+// FUNCTION: fn_22396
+bool CBlowEffect::OnProcess() {
+  const float frame = static_cast<float>((timeGetTime() - this->render.unknown_008C) / 24.0);
+  this->render.previousAnimation = this->render.animation;
+  const int frameCount = static_cast<int>(this->GetActRes()->FrameCount(this->render.previousAnimation));
+  this->render.curMotion = static_cast<int>(frame / this->render.speed) % frameCount;
+  this->PlayFrameSounds();
+  return frame / this->render.speed / static_cast<float>(frameCount) < 1.0f;
+}
+
+// OFFSET: 0x00DA3DF0
+// FUNCTION: fn_22407
+void CNpc::UpdateBubblePositions() {
+  if (this->unknown_042C) {
+    this->unknown_042C->Move(
+      this->render.screenX - 30,
+      static_cast<int>(
+        static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.unknown_005C + static_cast<float>(this->render.screenY)
+      )
+    );
+    this->unknown_042C->Invalidate();
+  }
+
+  if (this->unknown_0430) {
+    this->unknown_0430->Move(
+      this->render.screenX - 30,
+      static_cast<int>(
+        static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.unknown_005C + static_cast<float>(this->render.screenY)
+      )
+    );
+    this->unknown_0430->Invalidate();
+  }
+
+  this->UpdateHpGauge();
 }
