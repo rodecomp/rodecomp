@@ -49,6 +49,9 @@ struct CRagEffect : CRenderObject {
   void FrostDiver(char type);
   void GrimTooth();
   void Hit4(const RenderProjection& projection);
+  void IceWall();
+  void IncAgiDex();
+  void IncAgility();
   void SoulStrike(char F1);
   void SpearBmr();
   void SprayPond();

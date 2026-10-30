@@ -11,6 +11,7 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "Render/Primitives/RenderPrimitive.h"
+#include "Render/Renderer.h"
 #include "Render/Projection/RenderProjection.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/ResourceMgr.h"
@@ -331,6 +332,164 @@ void CRagEffect::GrimTooth() {
   this->state.deltaPos3[1] = this->state.deltaPos3[1] - this->state.deltaPos2[1];
   this->state.unknown_11C84->textures[0] = texture;
   this->state.deltaPos3[2] = this->state.deltaPos3[2] - this->state.deltaPos2[2];
+}
+
+// OFFSET: 0x00C1B490
+// FUNCTION: fn_20071
+void CRagEffect::IceWall() {
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  PlayEffectWave(*this, "effect\\wizard_icewall.wav");
+  this->state.duration = 9999;
+
+  for (int offset = -2; offset < 4; offset += 2) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 9, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->duration = this->state.duration;
+    this->state.unknown_11C84->pattern |= 1u;
+    const int angle = std::max(rand() % 360, 0);
+    const float sine = ClientSine(angle);
+    const float cosine = ClientCosine(angle);
+    this->state.unknown_11C84->deltaPos2.y = 30.0f;
+    this->state.unknown_11C84->deltaPos2.x = sine * 0.0f;
+    this->state.unknown_11C84->deltaPos2.z = -static_cast<float>(offset) * cosine;
+    this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 40, 0) / 100) + 2.5f;
+    this->state.unknown_11C84->heightSize = static_cast<float>(std::max(rand() % 100, 0) + 300) / 10.0f;
+    this->state.unknown_11C84->longitude = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->latitude = static_cast<float>(std::max(rand() % 6, 0) + 87);
+    this->state.unknown_11C84->chCnt = 20;
+    this->state.unknown_11C84->alpha = 200.0f;
+    EffectPrimitiveState& tilt = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(tilt.transform)->MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
+    EffectPrimitiveState& turn = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(turn.transform)->AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
+    EffectPrimitiveState& copy = *this->state.unknown_11C84;
+    std::memcpy(copy.rotTransform, copy.transform, sizeof(copy.rotTransform));
+    this->state.unknown_11C84->speed = 3.0f;
+    EffectPrimitiveState& slow = *this->state.unknown_11C84;
+    const float decay = -(slow.speed / 40.0f);
+    slow.accel = decay + decay;
+    this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 10;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ice.tga", 0, false, true, false);
+  }
+}
+
+// OFFSET: 0x00C1B8B0
+// FUNCTION: fn_20072
+void CRagEffect::IncAgiDex() {
+  RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
+  g_renderer->viewport.Projection().Project(
+    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex
+  );
+  this->state.tlvertX = vertex.x;
+  this->state.tlvertY = vertex.y;
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt == 0) {
+    PlayEffectWave(*this, "effect\\EF_IncAgiDex.wav");
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->duration = this->state.duration;
+    this->state.unknown_11C84->longitude = 0.0f;
+    this->state.unknown_11C84->speed = 1.5f;
+    EffectPrimitiveState& slow = *this->state.unknown_11C84;
+    slow.accel = -(slow.speed / static_cast<float>(slow.duration)) * 1.2f;
+    this->state.unknown_11C84->widthSize = 40.0f;
+    this->state.unknown_11C84->heightSize = 20.0f;
+    this->state.unknown_11C84->alpha = 0.0f;
+    this->state.unknown_11C84->maxAlpha = 200.0f;
+    this->state.unknown_11C84->alphaSpeed = this->state.unknown_11C84->maxAlpha / 15.0f;
+    this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 15;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\dex_agi_up.bmp", 0, false, true, false);
+    this->state.unknown_11C84->slots[0].flag1[0] = 0;
+  }
+
+  if ((this->state.stateCnt & 1) != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = 50;
+  EffectPrimitiveState& spin = *this->state.unknown_11C84;
+  reinterpret_cast<matrix*>(spin.transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+  EffectPrimitiveState& moving = *this->state.unknown_11C84;
+  const float distance = static_cast<float>(std::max(rand() % 7, 0) + 2);
+  const vector3d step = RotatedForward(moving.transform, distance);
+  moving.deltaPos2.x = step.x;
+  moving.deltaPos2.y = step.y;
+  moving.deltaPos2.z = step.z;
+  EffectPrimitiveState& tilt = *this->state.unknown_11C84;
+  reinterpret_cast<matrix*>(tilt.transform)->MakeXRotation(GetRadian(90));
+  this->state.unknown_11C84->speed = static_cast<float>(std::max(rand() % 50, 0) + 20) / 100.0f;
+  this->state.unknown_11C84->widthSize = static_cast<float>(std::max(rand() % 60, 0) + 30) / 10.0f;
+  this->state.unknown_11C84->heightSize = 0.18f;
+  this->state.unknown_11C84->alpha = 0.0f;
+  this->state.unknown_11C84->maxAlpha = 200.0f;
+  this->state.unknown_11C84->alphaSpeed = this->state.unknown_11C84->maxAlpha / 20.0f;
+  this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 20;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ac_center2.tga", 0, false, true, false);
+  this->state.unknown_11C84->slots[0].flag1[0] = 0;
+}
+
+// OFFSET: 0x00C1BDC0
+// FUNCTION: fn_20073
+void CRagEffect::IncAgility() {
+  RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
+  g_renderer->viewport.Projection().Project(
+    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex
+  );
+  this->state.tlvertX = vertex.x;
+  this->state.tlvertY = vertex.y;
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt == 0) {
+    PlayEffectWave(*this, "effect\\EF_IncAgility.wav");
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->duration = this->state.duration;
+    this->state.unknown_11C84->longitude = 0.0f;
+    this->state.unknown_11C84->speed = 1.5f;
+    EffectPrimitiveState& slow = *this->state.unknown_11C84;
+    slow.accel = -(slow.speed / static_cast<float>(slow.duration)) * 1.2f;
+    this->state.unknown_11C84->widthSize = 40.0f;
+    this->state.unknown_11C84->heightSize = 20.0f;
+    this->state.unknown_11C84->alpha = 0.0f;
+    this->state.unknown_11C84->maxAlpha = 200.0f;
+    this->state.unknown_11C84->alphaSpeed = this->state.unknown_11C84->maxAlpha / 15.0f;
+    this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 15;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\agi_up.bmp", 0, false, true, false);
+    this->state.unknown_11C84->slots[0].flag1[0] = 99;
+  }
+
+  if ((this->state.stateCnt & 1) != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = 50;
+  EffectPrimitiveState& spin = *this->state.unknown_11C84;
+  reinterpret_cast<matrix*>(spin.transform)->MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+  EffectPrimitiveState& moving = *this->state.unknown_11C84;
+  const float distance = static_cast<float>(std::max(rand() % 7, 0) + 2);
+  const vector3d step = RotatedForward(moving.transform, distance);
+  moving.deltaPos2.x = step.x;
+  moving.deltaPos2.y = step.y;
+  moving.deltaPos2.z = step.z;
+  EffectPrimitiveState& tilt = *this->state.unknown_11C84;
+  reinterpret_cast<matrix*>(tilt.transform)->MakeXRotation(GetRadian(90));
+  this->state.unknown_11C84->speed = static_cast<float>(std::max(rand() % 50, 0) + 20) / 100.0f;
+  this->state.unknown_11C84->widthSize = static_cast<float>(std::max(rand() % 60, 0) + 30) / 10.0f;
+  this->state.unknown_11C84->heightSize = 0.18f;
+  this->state.unknown_11C84->alpha = 0.0f;
+  this->state.unknown_11C84->maxAlpha = 200.0f;
+  this->state.unknown_11C84->alphaSpeed = this->state.unknown_11C84->maxAlpha / 20.0f;
+  this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 20;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ac_center2.tga", 0, false, true, false);
+  this->state.unknown_11C84->slots[0].flag1[0] = 99;
 }
 
 // OFFSET: 0x00C19980
