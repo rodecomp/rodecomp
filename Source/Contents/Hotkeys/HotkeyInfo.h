@@ -12,6 +12,7 @@ struct HotkeyInfo {
   /* 0008 */ std::string text;
   /* 0020 */ std::string description;
   HotkeyInfo();
+  HotkeyInfo(const HotkeyInfo& other);
   ~HotkeyInfo();
 };
 

@@ -10,6 +10,8 @@
 #include <cstring>
 #include <ctime>
 
+// OFFSET: 0x00910B20
+
 // OFFSET: 0x00B15C80
 // FUNCTION: fn_18432
 PartyBookingMgr::PartyBookingMgr() : unknown_0000(0) {

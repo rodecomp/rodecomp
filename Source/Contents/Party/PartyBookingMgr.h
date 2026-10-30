@@ -25,6 +25,12 @@ struct PartyBookingEntry {
   /* 0060 */ std::string jobs;
   /* 0078 */ std::string leaderName;
   /* 0090 */ bool isEnd;
+
+  PartyBookingEntry() = default;
+  PartyBookingEntry(const PartyBookingEntry& other);
+  PartyBookingEntry(PartyBookingEntry&& other) = default;
+  PartyBookingEntry& operator=(const PartyBookingEntry& other) = default;
+  PartyBookingEntry& operator=(PartyBookingEntry&& other) = default;
 };
 
 static_assert(sizeof(PartyBookingEntry) == 0x94);

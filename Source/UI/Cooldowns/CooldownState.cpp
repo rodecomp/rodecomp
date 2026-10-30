@@ -21,6 +21,10 @@ CooldownState::CooldownState(
   std::memset(this->vertices, 0, sizeof(this->vertices));
 }
 
+// OFFSET: 0x00910480
+// FUNCTION: fn_12502
+CooldownState::CooldownState(const CooldownState& other) = default;
+
 // OFFSET: 0x00CA5120
 // FUNCTION: fn_20947
 CooldownState::~CooldownState() {

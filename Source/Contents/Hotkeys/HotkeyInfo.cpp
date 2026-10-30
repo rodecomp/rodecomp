@@ -6,6 +6,8 @@
 HotkeyInfo::HotkeyInfo() : key1(0), key2(0) {
 }
 
+// OFFSET: 0x00910960
+
 // OFFSET: 0x005F7C30
 // FUNCTION: fn_04053
 HotkeyInfo::~HotkeyInfo() = default;
