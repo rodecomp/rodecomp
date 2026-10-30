@@ -8,6 +8,7 @@
 #include <vector>
 
 class CEZ2STRParticle;
+class CParticle;
 
 class CMeteorEffect : public CEffect {
 public:
@@ -20,7 +21,7 @@ public:
   bool Slot06() override;
   ~CMeteorEffect() override;
 
-  /* 00CC */ std::vector<int> unknown_00CC;
+  /* 00CC */ std::vector<CParticle*> unknown_00CC;
   /* 00D8 */ int unknown_00D8;
   /* 00DC */ int unknown_00DC;
 };
