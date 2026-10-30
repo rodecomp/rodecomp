@@ -380,6 +380,7 @@ public:
   bool IsListedId(int id, int variant) const;
   void ClearItemQuantities();
   void ResetItems3500();
+  void RestoreItems5C68();
   void ClearSlots06EB();
   void ClearShortcutSlots();
   void ClearSecondaryShortcutSlots();

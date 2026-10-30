@@ -22,6 +22,10 @@
 #include <algorithm>
 #include <cstring>
 
+struct ClientItemLists {
+  bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
+};
+
 // GLOBAL: gl_24650
 char g_decodedPlayerName[64];
 
@@ -826,4 +830,20 @@ int CSession::ProcessEmotionShortcut(const char* text) {
 
   LowercaseText(tokenizer[0]);
   return g_cashEmotionMgr->PlaySearchedEmotion(tokenizer[0]);
+}
+
+// OFFSET: 0x00E08190
+// FUNCTION: fn_23751
+void CSession::RestoreItems5C68() {
+  bool restored = false;
+  for (int index = 0; index < 5; ++index) {
+    if (this->unknown_5C68[index].quantity != 0) {
+      restored = true;
+      reinterpret_cast<ClientItemLists&>(g_session).AddItem1710(this->unknown_5C68[index], 0);
+    }
+  }
+
+  if (restored) {
+    RefreshItemWindows(&g_windowMgr);
+  }
 }
