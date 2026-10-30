@@ -7,6 +7,11 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+// GLOBAL: gl_24886
+extern const int g_runeSetSlotX[6] = {87, 201, 19, 269, 87, 201};
+// GLOBAL: gl_24887
+extern const int g_runeSetSlotY[6] = {70, 70, 207, 207, 344, 344};
+
 // OFFSET: 0x00819610
 // FUNCTION: fn_10181
 void UIRuneSetReWard::Paint() {
@@ -99,6 +104,31 @@ void UIRuneSetList::DrawScrollBar(bool drawLine) {
 // FUNCTION: fn_10195
 void UIEquipRuneSetWnd::Slot26(int, int) {
   this->parent->SendMsg(this, 0xAB, 0x158, 0, 0, 0);
+}
+
+// OFFSET: 0x0081BEC0
+// FUNCTION: fn_10196
+void UIRuneSet_Info::Slot26(int x, int y) {
+  RuneSetData* runeSet = this->m_runeSet;
+  if (!runeSet) {
+    return;
+  }
+
+  int slot = -1;
+  for (int index = x > 200; index < 6; index += 2) {
+    if (g_runeSetSlotX[index] < x && x < g_runeSetSlotX[index] + 90 && g_runeSetSlotY[index] < y && y < g_runeSetSlotY[index] + 120) {
+      slot = index;
+      break;
+    }
+  }
+
+  if (slot != -1 && static_cast<unsigned int>(slot) < runeSet->m_slots.size() && runeSet->m_slots[slot]) {
+    if (runeSet->GetTagId() != g_runeSystemMgr->GetSelectTag()) {
+      g_runeSystemMgr->SetSelectTag(this->m_runeSet->GetTagId());
+      g_runeSystemMgr->SendRequest(0xBCB, nullptr, -1);
+    }
+    this->parent->SendMsg(this, 0xA9, 1, static_cast<std::intptr_t>(this->m_runeSet->m_slots[slot]->GetId()), 0, 0);
+  }
 }
 
 // OFFSET: 0x0081BFD0

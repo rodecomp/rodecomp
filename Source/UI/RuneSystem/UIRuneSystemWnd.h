@@ -74,6 +74,7 @@ class UIRuneSystem_ActiveWnd : public UIWindow {
 class UIRuneSet_Info : public UIWindow {
 public:
   void Slot19() override;
+  void Slot26(int x, int y) override;
   void UpdateActivation();
 
   /* 007C */ RuneSetData* m_runeSet;
