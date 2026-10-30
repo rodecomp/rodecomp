@@ -313,10 +313,89 @@ void UIRuneList::Slot28(int, int) {
 }
 
 // OFFSET: 0x0081C3E0
+// FUNCTION: fn_10206
+void UIRuneSetList::Slot28(int x, int y) {
+  if (x < 19 || x > 256 || y < 25 || y > this->geometry.height - 10) {
+    return;
+  }
+
+  const int row = (y - 1) / this->m_itemHeight;
+  const int cellY = y - row * this->m_itemHeight;
+  if (cellY < 24 || cellY > 61) {
+    return;
+  }
+
+  const int column = (x - 19) / 40;
+  if (x - column * 40 - 19 > 37) {
+    return;
+  }
+
+  RuneSetData* runeSet = dynamic_cast<RuneSetData*>(g_runeSystemMgr->GetCurrentRune(0, this->position + row));
+  if (!runeSet) {
+    return;
+  }
+  if (static_cast<unsigned int>(column) >= runeSet->m_slots.size()) {
+    return;
+  }
+
+  int screenX = column * 40 + 17;
+  int screenY = row * this->m_itemHeight + 4;
+  this->ToScreen(screenX, screenY);
+  if (!g_modeMgr.gameMode) {
+    return;
+  }
+
+  RuneData* rune = runeSet->m_slots[column];
+  if (!rune) {
+    return;
+  }
+  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(rune->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
+}
 
 // OFFSET: 0x0081C6F0
+// FUNCTION: fn_10208
+void UIRuneSet_Info::Slot28(int x, int y) {
+  RuneSetData* runeSet = this->m_runeSet;
+  if (!runeSet || !runeSet->IsActive()) {
+    return;
+  }
+
+  for (unsigned int index = 0; index < runeSet->m_slots.size(); ++index) {
+    if (g_runeSetSlotX[index] < x && x < g_runeSetSlotX[index] + 90 && g_runeSetSlotY[index] < y && y < g_runeSetSlotY[index] + 120) {
+      if (!runeSet->m_slots[index]) {
+        break;
+      }
+
+      int screenX = g_runeSetSlotX[index] - 6;
+      int screenY = g_runeSetSlotY[index] - 24;
+      this->ToScreen(screenX, screenY);
+      if (g_modeMgr.gameMode) {
+        reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(runeSet->m_slots[index]->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x0081C960
+// FUNCTION: fn_10210
+void UIRuneSystem_tagListWnd::Slot28(int x, int) {
+  if (x < 20 || x > this->geometry.width - 23) {
+    return;
+  }
+
+  const int index = (x - 20) / 27;
+  if (index > -1 && index < g_runeSystemMgr->GetTagCount()) {
+    std::string name = g_runeSystemMgr->GetTagByIndex(index)->m_name;
+    if (!name.empty()) {
+      int screenX = index * 24 + 19;
+      int screenY = -18;
+      this->ToScreen(screenX, screenY);
+      if (g_modeMgr.gameMode) {
+        reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(name.c_str(), screenX, screenY, 0xFFFFFF, 0, 1);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x0081CBF0
 // FUNCTION: fn_10212
