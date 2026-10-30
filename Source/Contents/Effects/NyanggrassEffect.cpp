@@ -12,6 +12,10 @@
 #include <cstdlib>
 
 // OFFSET: 0x00707D70
+// FUNCTION: fn_07062
+CMultiTexParticle::CMultiTexParticle(vector3d position, int flags) : CParticle(position, flags) {
+  this->Reset();
+}
 
 // INLINED
 CMultiTexParticle::~CMultiTexParticle() {
@@ -96,6 +100,44 @@ void CNyanggrassEffect::Close() {
 }
 
 // OFFSET: 0x007085F0
+// FUNCTION: fn_07073
+void CNyanggrassEffect::Slot01() {
+  switch (this->unknown_00B0) {
+  case 1:
+  case 2:
+    this->unknown_00D8 = 5;
+    break;
+  case 3:
+  case 4:
+    this->unknown_00D8 = 7;
+    break;
+  case 5:
+    this->unknown_00D8 = 9;
+    break;
+  }
+
+  for (int row = 0; row < this->unknown_00D8; ++row) {
+    for (int column = 0; column < this->unknown_00D8; ++column) {
+      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+      if (particle) {
+        CEZ2STRParticle* effect = static_cast<CEZ2STRParticle*>(particle);
+        effect->unknown_0004 = this->id;
+        effect->unknown_000C = 0;
+        effect->unknown_0010 = 0;
+        effect->unknown_0008 = 1;
+        effect->m_loop = true;
+        const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
+        const int half = this->unknown_00D8 / 2;
+        effect->position.x = static_cast<float>((column - half) * 5) + origin.x;
+        effect->position.y = origin.y;
+        effect->position.z = static_cast<float>((row - half) * 5) + origin.z;
+        InitParticleQuad(effect->vertices);
+        effect->Open("su_nyanggrass\\su_nyanggrass.str");
+        this->particles.push_back(particle);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00708820
 // FUNCTION: fn_07074
