@@ -140,6 +140,11 @@ struct CRagEffect : CRenderObject {
   void GRANDCROSS2(char flag);
   void Magnum2(const char* name);
   void Map_MagicZone(const char* name, char type);
+  void Demonstration();
+  void NpcStop(char type);
+  void Bubble_Drop();
+  void Ghost(char type);
+  void Bottom_Out(const char* name, char kind);
   void POISON(char flag);
   void Rainbow(const char* name, int unused);
   void BLIND(char flag);

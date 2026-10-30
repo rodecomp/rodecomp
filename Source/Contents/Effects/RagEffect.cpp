@@ -9661,3 +9661,276 @@ void CRagEffect::BlitzBeat() {
   ++g_blitzBeatCount;
   this->state.unknown_11C84->textures[0] = texture;
 }
+
+// OFFSET: 0x00C5C450
+// FUNCTION: fn_20227
+void CRagEffect::Map_MagicZone(const char* name, char type) {
+  this->render.position = this->state.parent->render.position;
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 26, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+
+  if (type == 4 || type == 14) {
+    this->state.unknown_11C84->size = 111.0f;
+  } else if (type == 5) {
+    this->state.unknown_11C84->size = 112.0f;
+  } else {
+    this->state.unknown_11C84->size = 110.0f;
+  }
+
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+
+  if (type == 2 || type == 3) {
+    this->state.unknown_11C84->slots[0].distance = 40.0f;
+  } else if (type == 4 || type == 14) {
+    if (this->state.param[0] > 0.0f) {
+      this->state.unknown_11C84->slots[0].distance = this->state.param[0];
+    } else {
+      this->state.unknown_11C84->slots[0].distance = 40.0f;
+    }
+  } else {
+    this->state.unknown_11C84->slots[0].distance = 30.0f;
+  }
+
+  if (type == 4 || type == 5 || type == 14) {
+    this->state.unknown_11C84->slots[0].rotStart = 0;
+    this->state.unknown_11C84->slots[0].alphaB = 250;
+    this->state.unknown_11C84->slots[0].height[0] = -0.5f;
+  } else if (type == 0 || type == 2) {
+    this->state.unknown_11C84->slots[0].rotStart = 0;
+    this->state.unknown_11C84->slots[0].alphaB = 200;
+    this->state.unknown_11C84->slots[0].height[0] = -0.5f;
+  } else {
+    this->state.unknown_11C84->slots[0].rotStart = 358;
+    this->state.unknown_11C84->slots[0].alphaB = 50;
+    this->state.unknown_11C84->slots[0].height[0] = -0.4f;
+  }
+
+  this->state.unknown_11C84->slots[0].height[4] = static_cast<float>(type);
+}
+
+// OFFSET: 0x00C4AD80
+// FUNCTION: fn_20172
+void CRagEffect::Demonstration() {
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->render.position = this->state.parent->render.position;
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 51, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].maxHeight = 0.0f;
+  this->state.unknown_11C84->size = 1.2f;
+  this->state.unknown_11C84->slots[0].vecBPre = this->render.position;
+  this->state.unknown_11C84->slots[0].vecBPre.y -= 1.0f;
+  this->state.unknown_11C84->slots[0].flag1[4] = 0;
+  this->state.unknown_11C84->alpha = 200.0f;
+
+  Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\ub370\ubaac\uc2a4\ud2b8\ub808\uc774\uc158.spr");
+  Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\ub370\ubaac\uc2a4\ud2b8\ub808\uc774\uc158.act");
+
+  this->state.unknown_11C84->animSpeed = 4;
+  Owner(this->state.unknown_11C84).SetAction(0, 16, 0);
+  Owner(this->state.unknown_11C84).InitSegment();
+
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+}
+
+// OFFSET: 0x00C5CEA0
+// FUNCTION: fn_20231
+void CRagEffect::NpcStop(char type) {
+  this->render.position = this->state.parent->render.position;
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->render.position = this->state.parent->render.position;
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 51, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag |= 0x200;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].maxHeight = 0.0f;
+  this->state.unknown_11C84->size = 1.0f;
+  this->state.unknown_11C84->slots[0].vecBPre = this->render.position;
+
+  if (type == 2) {
+    this->state.unknown_11C84->slots[0].flag1[4] = 1;
+    this->state.unknown_11C84->alpha = 100.0f;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\cconfine.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\cconfine.act");
+    this->state.unknown_11C84->animSpeed = 12;
+    this->state.unknown_11C84->repeatAnim = 0;
+    this->state.unknown_11C84->pattern = 0x800;
+  } else {
+    this->state.unknown_11C84->slots[0].vecBPre.y -= 7.0f;
+    this->state.unknown_11C84->slots[0].flag1[4] = 1;
+    this->state.unknown_11C84->alpha = 200.0f;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uc2a4\ud1b1.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uc2a4\ud1b1.act");
+    this->state.unknown_11C84->animSpeed = 4;
+    Owner(this->state.unknown_11C84).SetAction(0, 16, 0);
+  }
+
+  Owner(this->state.unknown_11C84).InitSegment();
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+}
+
+// OFFSET: 0x00C47380
+// FUNCTION: fn_20156
+void CRagEffect::Bubble_Drop() {
+  this->render.position = this->state.parent->render.position;
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  float count = this->state.param[0];
+  if (count <= 1.0f) {
+    count = 50.0f;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 127, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\썬더스톰파티클.tga", 0, false, true, false);
+
+  this->state.unknown_11C84->size = 0.0f;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].distance = 1.0f;
+  this->state.unknown_11C84->slots[0].alphaB = 0;
+  this->state.unknown_11C84->slots[0].vecBPre.x = 0.0f;
+  this->state.unknown_11C84->slots[0].vecBPre.z = 0.0f;
+  this->state.unknown_11C84->slots[0].vecBPre.y = -count;
+  this->state.unknown_11C84->slots[0].rotStart = 0;
+  this->state.unknown_11C84->slots[0].height[1] = 1.0f;
+  this->state.unknown_11C84->slots[0].fullDisplayAngle = static_cast<short>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->slots[0].flag1[0] = 0;
+  this->state.unknown_11C84->slots[0].flag1[2] = 2;
+  this->state.unknown_11C84->slots[0].flag1[4] = static_cast<char>(static_cast<int>(count));
+
+  this->state.unknown_11C84->slots[1].life = 1;
+  this->state.unknown_11C84->slots[1].alphaB = 0;
+  this->state.unknown_11C84->slots[2].life = 1;
+  this->state.unknown_11C84->slots[2].alphaB = 0;
+  this->state.unknown_11C84->slots[3].life = 1;
+  this->state.unknown_11C84->slots[3].alphaB = 0;
+}
+
+// OFFSET: 0x00C52490
+// FUNCTION: fn_20194
+void CRagEffect::Ghost(char type) {
+  this->render.position = this->state.parent->render.position;
+  if (this->state.stateCnt > 9) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 84, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->size = 1.5f;
+  this->state.unknown_11C84->slots[0].vecBNow = this->render.position;
+  this->state.unknown_11C84->slots[0].rotStart = 0;
+  this->state.unknown_11C84->slots[0].riseAngle = 0;
+
+  if (type == 2) {
+    this->state.unknown_11C84->slots[0].flag1[0] = 2;
+    if (this->state.stateCnt == 0) {
+      this->state.unknown_11C84->slots[0].height[1] = 250.0f;
+    } else {
+      this->state.unknown_11C84->slots[0].height[1] = static_cast<float>((10 - this->state.stateCnt) * 3);
+    }
+  } else {
+    this->state.unknown_11C84->slots[0].flag1[0] = 1;
+    this->state.unknown_11C84->slots[0].height[1] = static_cast<float>((10 - this->state.stateCnt) * 3);
+  }
+
+  this->state.unknown_11C84->slots[0].flag1[2] = type;
+  this->state.unknown_11C84->slots[0].distance = 16.0f;
+  this->state.unknown_11C84->slots[0].maxHeight = 4.0f;
+  this->state.unknown_11C84->alpha = 0.0f;
+
+  if (type == 0) {
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uc720\ub839.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\uc720\ub839.act");
+  } else if (type > 0) {
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\ubc15\uc950.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\ubc15\uc950.act");
+  }
+
+  this->state.unknown_11C84->animSpeed = 2;
+  this->state.unknown_11C84->renderFlag |= 0x200;
+  Owner(this->state.unknown_11C84).SetAction(0, 16, 1);
+  Owner(this->state.unknown_11C84).InitSegment();
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+}
+
+// OFFSET: 0x00C45FE0
+// FUNCTION: fn_20152
+void CRagEffect::Bottom_Out(const char* name, char kind) {
+  this->render.position = this->state.parent->render.position;
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 49, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+
+  this->state.unknown_11C84->slots[0].life = 0;
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+
+  const int count = kind != 1 ? 2 : 1;
+  for (int i = 0; i < count; ++i) {
+    EffectPrimitiveSlot& slot = this->state.unknown_11C84->slots[i];
+    slot.life = 1;
+    slot.process = std::max(rand() % 11, 0);
+
+    if (kind == 0) {
+      slot.distance = static_cast<float>(std::max(rand() % 6, 0)) + 5.0f;
+    } else if (kind == 1) {
+      slot.distance = static_cast<float>(std::max(rand() % 20, 0)) * 0.1f + 3.0f;
+    }
+
+    slot.height[8] = 0.0f;
+    slot.alphaB = 0;
+    slot.vecBNow.x = this->render.position.x;
+    slot.vecBNow.z = this->render.position.z;
+
+    if (kind == 0) {
+      slot.vecBPre.y = this->render.position.y;
+    } else if (kind == 1) {
+      slot.vecBPre.y = this->render.position.y - 5.0f;
+    }
+
+    slot.fullDisplayAngle = 45;
+    slot.flag1[0] = 0;
+    slot.flag1[2] = 2;
+    slot.height[7] = 0.0f;
+    slot.flag1[1] = kind;
+  }
+}
+
