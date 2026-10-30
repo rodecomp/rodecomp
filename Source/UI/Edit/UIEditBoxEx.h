@@ -7,6 +7,7 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -25,6 +26,7 @@ public:
   virtual void UpdateScrollBar();
 
   void RefreshPlaceholder();
+  void ResetDragState();
   int LeadingBytesFitting(const std::string& text, int width);
   int TrailingOffsetFitting(const std::string& text, int width);
 
@@ -33,7 +35,7 @@ public:
   /* 0190 */ unsigned char unknown_0190;
   /* 0194 */ std::string placeholder;
   /* 01AC */ std::uint32_t placeholderColor;
-  /* 01B0 */ int unknown_01B0;
+  /* 01B0 */ int alignment;
   /* 01B4 */ int unknown_01B4;
   /* 01B8 */ int verticalPadding;
   /* 01BC */ std::vector<EditLine> lines;
@@ -53,18 +55,34 @@ public:
 
 class CUIEditBoxEx : public CUIControl {
 public:
+  void Resize(int width, int height) override;
   bool Slot05() override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   void ResetSelection();
   void SetCursor(std::size_t position);
   int Length();
+  void SetAlignment(int value);
+  void SetBackgroundColor(std::uint32_t color);
+  void SetTextColor(std::uint32_t color);
+  void SetHighlight(int value);
+  void SetBorderColor(std::uint32_t color);
+  void SetBorderWidth(int width);
+  void SetMaximum(int value);
+  void SetEditBounds(int left, int top, int right, int bottom);
+  void SetMask(char value);
+  void SetText(const std::string& text);
 
   /* 0080 */ std::uint32_t backgroundColor;
   /* 0084 */ std::uint32_t borderColor;
   /* 0088 */ int borderWidth;
-  /* 008C */ int unknown_008C[4];
+  /* 008C */ int editLeft;
+  /* 0090 */ int editTop;
+  /* 0094 */ int editRight;
+  /* 0098 */ int editBottom;
   /* 009C */ CUIEditCtrlEx* edit;
+  /* 00A0 */ std::function<void()> onSubmit;
 };
 
 #endif
