@@ -34,6 +34,24 @@ void CAxeBoomerang::Close() {
 }
 
 // OFFSET: 0x006F5A70
+// FUNCTION: fn_06840
+void CAxeBoomerang::Slot01() {
+  this->unknown_00CC = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->unknown_00DC, 5));
+  CEZ2STRParticle* particle = reinterpret_cast<CEZ2STRParticle*>(this->unknown_00CC);
+  if (this->id == 0x887) {
+    particle->Load(std::string("shield_shooting\\shield_shooting\\shield_shooting.str"));
+  } else if (g_serviceOptions.Get(229) == 0) {
+    particle->Open(std::string("new_axeboomerang\\new_axeboomerang\\new_axeboomerang.str"));
+  } else {
+    particle->Open(std::string("mineffect\\new_axeboomerang\\new_axeboomerang\\new_axeboomerang.str"));
+  }
+
+  particle->m_loop = true;
+  this->unknown_00D0 = 1;
+  this->unknown_00D1 = 0;
+  this->unknown_00D4 = 0;
+  this->unknown_00D8 = 1.0f;
+}
 
 // OFFSET: 0x006F5CD0
 // FUNCTION: fn_06841
