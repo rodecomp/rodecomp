@@ -33,6 +33,11 @@ struct NaviLink {
 };
 
 struct NaviDataEntry {
+  NaviDataEntry();
+
+  // INLINED
+  NaviDataEntry(int previous, CNavi_Link* link, int cost) : previous(previous), link(link), cost(cost) {}
+
   void Reset();
   void Init();
   int GetPrevious() const;

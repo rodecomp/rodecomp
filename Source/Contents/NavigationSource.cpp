@@ -110,6 +110,11 @@ int CNavigationManager::SaveCurrentTarget() {
   return 0;
 }
 
+// OFFSET: 0x00B880B0
+// FUNCTION: fn_19363
+NaviDataEntry::NaviDataEntry() : previous(-1), link(nullptr), cost(0) {
+}
+
 // OFFSET: 0x00B880D0
 // FUNCTION: fn_19364
 CNaviData::CNaviData() : info(nullptr), cellX(0), cellY(0), range(50000) {
