@@ -421,6 +421,10 @@ public:
   void ResetWindows();
   void Shutdown();
   void SetScreenSize(int width, int height);
+  static int ScaleToViewportWidth(int value);
+  static int CenterOnViewportX(int x);
+  static int CenterOnViewportY(int y);
+  void ConfirmActiveDialog();
   UIWindow* LookupWindow(int id);
   void GetMiniPartyUsableArea(RECT* area);
   UIWindow* FindSnapExcludedWindow(int cell);

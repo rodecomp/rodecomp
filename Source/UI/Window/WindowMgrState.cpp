@@ -1,7 +1,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/MiniPartyWndAreaMgr.h"
-
+#include "Render/Renderer.h"
 #include <cstdint>
 #include <new>
 
@@ -79,4 +79,40 @@ void UIWindowMgr::HideWindow01C8() {
 bool UIWindowMgr::HasUnknown030C() {
   const std::uint32_t* unknown = reinterpret_cast<const std::uint32_t*>(this->unknown_030C);
   return unknown != nullptr && unknown[1] != 0;
+}
+
+// OFFSET: 0x00AAADF0
+// FUNCTION: fn_17272
+int UIWindowMgr::ScaleToViewportWidth(int value) {
+  return g_renderer->viewport.width * value / 640;
+}
+
+// OFFSET: 0x00AAAE20
+// FUNCTION: fn_17273
+int UIWindowMgr::CenterOnViewportX(int x) {
+  return (g_renderer->viewport.width - 640) / 2 + x;
+}
+
+// OFFSET: 0x00AAAE40
+// FUNCTION: fn_17274
+int UIWindowMgr::CenterOnViewportY(int y) {
+  return (g_renderer->viewport.height - 480) / 2 + y;
+}
+
+// OFFSET: 0x00AAAE60
+// FUNCTION: fn_17275
+void UIWindowMgr::ConfirmActiveDialog() {
+  UIWindow* window = this->unknown_01F8;
+  if (window || (window = this->unknown_01F0) != nullptr || (window = this->unknown_01F4) != nullptr || (window = this->unknown_0214) != nullptr ||
+      (window = this->unknown_021C) != nullptr || (window = this->unknown_020C) != nullptr || (window = this->unknown_0374) != nullptr ||
+      (window = this->hoverWindow) != nullptr) {
+    window->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    return;
+  }
+
+  for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
+    if ((*entry)->Slot02()) {
+      (*entry)->SendMsg(nullptr, 18, 0, 0, 0, 0);
+    }
+  }
 }
