@@ -17,8 +17,10 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/UIBarGraph.h"
 #include "UI/Window/UIHomunInfoWnd.h"
+#include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/Text/StringUtil.h"
 
 #include <direct.h>
 #include <io.h>
@@ -854,4 +856,99 @@ void CGameMode::ClearItemLists(const unsigned char* packet) {
   g_session.RefreshItem1740Window();
   g_session.ClearUnknown1738(slot);
   g_session.RefreshItem1738Window();
+}
+
+// OFFSET: 0x00D31E50
+// FUNCTION: fn_21736
+void CGameMode::ReceiveMemorialDungeonInfo(const unsigned char* packet) {
+  g_session.unknown_5950 = reinterpret_cast<const char*>(packet + 2);
+  g_session.unknown_596C = *reinterpret_cast<const int*>(packet + 63);
+  g_session.unknown_5970 = *reinterpret_cast<const int*>(packet + 67);
+  const int previous = g_session.unknown_5948;
+  const int state = *reinterpret_cast<const int*>(packet + 67) != 0 ? 1 : 2;
+  g_session.unknown_5948 = state;
+  if (previous != state || state != 2 || g_session.unknown_593C != 0) {
+    if (UIWindow* window = g_windowMgr.EnsureWindow(137)) {
+      window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00D31EE0
+// FUNCTION: fn_21737
+void CGameMode::ReceiveMemorialDungeonNotify(const unsigned char* packet) {
+  const int previous = g_session.unknown_5948;
+  g_session.unknown_5970 = *reinterpret_cast<const int*>(packet + 6);
+  const int time = *reinterpret_cast<const int*>(packet + 6);
+  g_session.unknown_5948 = time != 0 ? 1 : 2;
+  if (*reinterpret_cast<const int*>(packet + 2) == 0) {
+    if (previous != (time != 0 ? 1 : 2) || time != 0 || g_session.unknown_593C != 0) {
+      if (UIWindow* window = g_windowMgr.EnsureWindow(137)) {
+        window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+      }
+    }
+    return;
+  }
+
+  g_windowMgr.CloseWindow(137);
+  const int type = *reinterpret_cast<const int*>(packet + 2);
+  if (type == 1) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1346)), 0x64FFFF, 0, 0, 0);
+  } else if (type == 2) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1347)), 0x64FFFF, 0, 0, 0);
+  } else if (type == 3) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1348)), 0x64FFFF, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D31FD0
+// FUNCTION: fn_21738
+void CGameMode::ReceiveMemorialDungeonSubscriptionInfo(const unsigned char* packet) {
+  g_session.unknown_5950 = reinterpret_cast<const char*>(packet + 2);
+  g_session.unknown_5968 = *reinterpret_cast<const short*>(packet + 63);
+  g_session.unknown_5948 = 0;
+  if (UIWindow* window = g_windowMgr.EnsureWindow(137)) {
+    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D32040
+// FUNCTION: fn_21739
+void CGameMode::ReceiveMemorialDungeonSubscriptionNotify(const unsigned char* packet) {
+  g_session.unknown_5968 = *reinterpret_cast<const short*>(packet + 2);
+  UIWindow* window = g_windowMgr.EnsureWindow(137);
+  if (!window) {
+    return;
+  }
+
+  if (*reinterpret_cast<const short*>(packet + 2) >= 0) {
+    g_session.unknown_5948 = 0;
+    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+    return;
+  }
+
+  g_windowMgr.CloseWindow(137);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1345)), 0x64FFFF, 0, 0, 0);
+}
+
+// OFFSET: 0x00D320D0
+// FUNCTION: fn_21740
+void CGameMode::ReceiveWindow17Entries(const unsigned char* packet) {
+  this->unknown_024C = 1;
+  g_windowMgr.CloseWindow(17);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(17)) {
+    std::string text;
+    text.assign(reinterpret_cast<const char*>(packet + 8), *reinterpret_cast<const unsigned short*>(packet + 2) - 9);
+    const std::vector<std::string> entries = Split(text, ":");
+    for (const std::string& entry : entries) {
+      if (!entry.empty()) {
+        window->SendMsg(nullptr, 27, reinterpret_cast<std::intptr_t>(entry.c_str()), 0, 0, 0);
+      }
+    }
+    window->SendMsg(nullptr, 28, *reinterpret_cast<const int*>(packet + 4), 0, 0, 0);
+  }
+
+  if (g_windowMgr.unknown_01F0) {
+    g_windowMgr.unknown_01F0->SendMsg(nullptr, 32, 0, 0, 0, 0);
+  }
 }

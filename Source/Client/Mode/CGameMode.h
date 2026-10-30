@@ -69,7 +69,8 @@ public:
   /* 01C4 */ std::map<std::uint32_t, MiniMapPing> unknown_01C4;
   /* 01CC */ unsigned char unknown_01CC[0x24];
   /* 01F0 */ std::map<std::uint32_t, MinimapMarker> minimapMarkers;
-  /* 01F8 */ unsigned char unknown_01F8[0x58];
+  /* 01F8 */ unsigned char unknown_01F8[0x54];
+  /* 024C */ int unknown_024C;
   /* 0250 */ int unknown_0250;
   /* 0254 */ unsigned char unknown_0254[0x40];
   /* 0294 */ char unknown_0294[0x20];
@@ -125,6 +126,11 @@ public:
   void ReceiveColoredNotice(const unsigned char* packet);
   void ReceiveActorText(const unsigned char* packet);
   void ReceiveRentalItemTime(const unsigned char* packet);
+  void ReceiveMemorialDungeonInfo(const unsigned char* packet);
+  void ReceiveMemorialDungeonNotify(const unsigned char* packet);
+  void ReceiveMemorialDungeonSubscriptionInfo(const unsigned char* packet);
+  void ReceiveMemorialDungeonSubscriptionNotify(const unsigned char* packet);
+  void ReceiveWindow17Entries(const unsigned char* packet);
   void ReceiveActorSequenceDeadline(const unsigned char* packet);
   void ReceiveActorSignal(const unsigned char* packet);
   void IgnorePacket(const unsigned char* packet);
