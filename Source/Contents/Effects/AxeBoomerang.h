@@ -12,6 +12,10 @@ class CAxeBoomerang : public CEffect {
 public:
   CAxeBoomerang();
 
+  void Slot01() override;
+  void Slot03() override;
+  void Slot04() override;
+  void Close() override;
   bool Slot06() override;
 
   /* 00CC */ EZ2STREmitter* unknown_00CC;
