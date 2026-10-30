@@ -71,6 +71,12 @@ void UIComboBoxDefWnd::Slot31(int, int) {
   this->SendMsg(nullptr, 6, 273, 0, 0, 0);
 }
 
+// OFFSET: 0x0089F5C0
+// FUNCTION: fn_11623
+void UIComboBoxDefWnd::Clear() {
+  this->list->Clear();
+}
+
 // OFFSET: 0x008A25F0
 // FUNCTION: fn_11641
 void UIComboBoxDefWnd::AddOption(std::string text, std::uint32_t color) {

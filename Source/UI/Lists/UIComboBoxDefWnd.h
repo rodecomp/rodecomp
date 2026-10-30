@@ -24,6 +24,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void AddOption(std::string text, std::uint32_t color);
   void Select(int index);
+  void Clear();
 
   /* 007C */ UIBitmapButton* button;
   /* 0080 */ UIComboBoxEx* list;
