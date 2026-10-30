@@ -17,6 +17,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <new>
 
 // OFFSET: 0x007DB320
 // FUNCTION: fn_09617
@@ -200,4 +201,13 @@ int UIHairStyleButton::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     break;
   }
   return 0;
+}
+
+// OFFSET: 0x007DA290
+// FUNCTION: fn_09613
+void UIHairStyleButton::Slot15(int width, int height) {
+  this->m_preview = new (std::nothrow) UIHairBitmap(*this->m_context, *this->m_buttonContext);
+  this->m_preview->SetSize(36, 37);
+  this->AddChild(this->m_preview);
+  this->SendMsg(nullptr, 40, 0, 0, 0, 0);
 }
