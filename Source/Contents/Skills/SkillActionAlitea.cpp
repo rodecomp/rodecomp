@@ -55,6 +55,7 @@ private:
 
 class CSkillAction_AnimalForm : public CSkillAction {
 public:
+  bool CanUse(CGameActor* actor);
   virtual bool Slot17(CGameActor* actor) = 0;
   virtual void Slot18(CGameActor* actor) = 0;
 };
@@ -322,12 +323,14 @@ public:
 class CSkillAction_AT_SAVAGE_LUNGE : public CSkillAction_DamageWereWolfForm {
 public:
   int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_AT_TEMPEST_FLAP : public CSkillAction_DamageWereRaptorForm {
 public:
   int Slot01() override;
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -1694,4 +1697,48 @@ void CEfstAction_INSANE3::Slot00(int efstId, int value, int argument3, int argum
 // FUNCTION: fn_03285
 bool __stdcall sub_5AF030(int) {
   return false;
+}
+
+// OFFSET: 0x005A5E50
+// FUNCTION: fn_03170
+bool CSkillAction_AnimalForm::CanUse(CGameActor* actor) {
+  return actor && actor->HasShapeShift() && this->Slot17(actor);
+}
+
+// OFFSET: 0x005AC580
+// FUNCTION: fn_03261
+void CSkillAction_AT_SAVAGE_LUNGE::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target || !this->CanUse(source)) {
+    return;
+  }
+
+  if (CRagEffect* effect = source->LaunchEffect(2439, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
+  }
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0x9A, 0xB2, 0x4B, 0x66, 0x52, 0x4C, 0x54, 0x89, 0x9C, 0xBD, 0x5A, 0x62, 0x35};
+    thread_local EncryptedName<sizeof(bytes), 0xE50B2935073DD3E9ULL> name(bytes);
+    return name.Text();
+  }()), target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0x82, 0xA2, 0x9F, 0xDC, 0xCA, 0x68, 0x2A, 0x11, 0x84, 0xAD, 0x8E, 0xD8, 0xF2, 0x6F, 0x1A, 0x09,
+                                  0x85, 0xAC, 0x84, 0xBD};
+    thread_local EncryptedName<sizeof(bytes), 0x7D750DADBDE9C3F1ULL> name(bytes);
+    return name.Text();
+  }()), target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x005AC990
+// FUNCTION: fn_03264
+void CSkillAction_AT_TEMPEST_FLAP::Slot08(int level, CGameActor* source) {
+  if (this->CanUse(source)) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xCB, 0xD8, 0xB2, 0x4F, 0x28, 0x5E, 0xF7, 0x6C, 0xD9, 0xD1, 0xBE, 0x4F, 0x12, 0x4E, 0xE2, 0x40,
+                                    0xCB, 0xBD};
+      thread_local EncryptedName<sizeof(bytes), 0x33832D4D3FDFBDBFULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
 }

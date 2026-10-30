@@ -55,6 +55,7 @@ private:
 
 class CSkillAction_AnimalForm : public CSkillAction {
 public:
+  bool CanUse(CGameActor* actor);
   virtual bool Slot17(CGameActor* actor) = 0;
   virtual void Slot18(CGameActor* actor) = 0;
 };
@@ -104,6 +105,7 @@ public:
   int Slot01() override;
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_ENRAGE_WOLF : public CEfstAction {
@@ -117,6 +119,7 @@ public:
   int Slot01() override;
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_BLOOD_HOWLING : public CEfstAction {
@@ -128,6 +131,7 @@ public:
 class CSkillAction_DR_NOMERCY_CLAW : public CSkillAction_DamageWereWolfForm {
 public:
   int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_DR_HUNGER : public CSkillAction_DamageWereWolfForm {
@@ -140,6 +144,7 @@ public:
 class CSkillAction_DR_CRUEL_BITE : public CSkillAction_DamageWereWolfForm {
 public:
   int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_DR_ENRAGE_RAPTOR : public CSkillAction_DamageWereRaptorForm {
@@ -147,6 +152,7 @@ public:
   int Slot01() override;
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_ENRAGE_RAPTOR : public CEfstAction {
@@ -160,6 +166,7 @@ public:
   int Slot01() override;
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_PREENING : public CEfstAction {
@@ -171,6 +178,7 @@ public:
 class CSkillAction_DR_SHOOTING_FEATHER : public CSkillAction_DamageWereRaptorForm {
 public:
   int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_DR_FLICKING_TONADO : public CSkillAction_DamageWereRaptorForm {
@@ -1039,3 +1047,17 @@ EfstActionMessage CEfstAction_WEREWOLF::Slot03() {
 EfstActionMessage CEfstAction_WEREWOLF::Slot04() {
   return {LookupMessage(4643), 0xFF};
 }
+
+// OFFSET: 0x00620270
+
+// OFFSET: 0x00620530
+
+// OFFSET: 0x006207B0
+
+// OFFSET: 0x006210B0
+
+// OFFSET: 0x00621370
+
+// OFFSET: 0x00620DF0
+
+// OFFSET: 0x006215E0

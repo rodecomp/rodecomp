@@ -242,6 +242,7 @@ public:
   std::string GetShapeShiftName();
   int MountType();
   bool IsShapeShifted();
+  bool HasShapeShift();
   bool ApplyEffectState(int effectId, bool on);
   void SetHatEffect(int effectId, bool on);
   void SetEffectState(int effectId, bool on);

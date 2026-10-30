@@ -1,6 +1,10 @@
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/BezierArcThrowEffect.h"
+#include "Contents/Effects/EZ2STREffectEx.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
@@ -53,6 +57,8 @@ private:
 }
 
 class CSkillAction_AnimalForm : public CSkillAction {
+public:
+  bool CanUse(CGameActor* actor);
 };
 
 class CSkillAction_Direction {
@@ -88,6 +94,7 @@ public:
 class CSkillAction_KR_NASTY_SLASH : public CSkillAction_DamageWereWolfForm {
 public:
   int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_CLAW_WAVE : public CSkillAction_DamageWereWolfForm {
@@ -169,6 +176,7 @@ public:
 class CSkillAction_KR_FEATHER_SPRINKLE : public CSkillAction_DamageWereRaptorForm {
 public:
   int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_SHARPEN_GUST : public CSkillAction_DamageWereRaptorForm {
@@ -176,6 +184,7 @@ public:
   int Slot01() override;
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_KR_SHARPEN_HAIL : public CSkillAction_DamageWereRaptorForm {
@@ -191,6 +200,7 @@ public:
   int Slot01() override;
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_IRON_HOWLING : public CEfstAction {
@@ -226,6 +236,7 @@ public:
 class CSkillAction_SKID_KR_CHOP_CHOP : public CSkillAction_DamageWereWolfForm {
 public:
   int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_CHOP_CHOP : public CEfstAction {
@@ -961,3 +972,13 @@ void CWhirlwindEffect::SetLifetime(int milliseconds) {
 void CWhirlwindEffect::SetDuration(int duration) {
   this->duration = duration;
 }
+
+// OFFSET: 0x005B0A20
+
+// OFFSET: 0x005B3EA0
+
+// OFFSET: 0x005B42B0
+
+// OFFSET: 0x005B4FE0
+
+// OFFSET: 0x005B6040

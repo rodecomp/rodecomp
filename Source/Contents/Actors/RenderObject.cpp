@@ -992,6 +992,12 @@ float* CGameActor::Slot53(int index) {
   return nullptr;
 }
 
+// OFFSET: 0x00CADB70
+// FUNCTION: fn_21061
+bool CGameActor::HasShapeShift() {
+  return this->unknown_0404 != 0;
+}
+
 // OFFSET: 0x00CAE500
 // FUNCTION: fn_21074
 void CGameActor::Slot38() {
