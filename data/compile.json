@@ -833,6 +833,7 @@
   "Source/UI/Cooldowns/CooldownState.cpp": 2,
   "Source/UI/Dialogs/UIChooseWnd.cpp": 2,
   "Source/UI/Dialogs/UIEditctrlWnd.cpp": 2,
+  "Source/UI/Dialogs/UIEmailAddressWnd.cpp": 2,
   "Source/UI/Dialogs/UIGraffiStrboxWnd.cpp": 2,
   "Source/UI/Dialogs/UIWaitDBSaveWnd.cpp": 2,
   "Source/UI/Edit/EditTextState.cpp": 2,
