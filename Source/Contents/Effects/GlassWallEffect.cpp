@@ -1,7 +1,10 @@
 #include "Contents/Effects/GlassWallEffect.h"
 
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/Effects/EZ2STREffect.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
+#include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
 
 CGlassWall::~CGlassWall() {
@@ -42,6 +45,36 @@ void CGlassWall::Close() {
   }
 
   this->particles.clear();
+}
+
+// OFFSET: 0x00B449B0
+// FUNCTION: fn_18892
+void CGlassWall::Slot01() {
+  int angle = 180;
+  CRenderObject* actor = FindRenderObject(this->actor);
+  if (actor) {
+    angle = static_cast<int>(180.0f - actor->render.angle);
+  }
+  if (angle < 0) {
+    angle += 360;
+  }
+
+  const float depth = 2.6f;
+  const float scale = 3.0f;
+
+  this->AddPanel(static_cast<float>(angle + 90), scale, 0.0f, 0.0f, depth);
+  this->AddPanel(static_cast<float>(angle + 90), scale, 0.0f, 0.0f, -depth);
+  this->AddPanel(static_cast<float>(angle), depth, scale, 0.0f, 0.0f);
+  this->AddPanel(static_cast<float>(angle), depth, -scale, 0.0f, 0.0f);
+
+  this->effect = new CEZ2STRScreenEffect();
+  this->effect->SetActor(this->actor);
+  this->effect->SetSourceActor(this->sourceActor);
+  this->effect->position[0] = this->position[0];
+  this->effect->position[1] = this->position[1];
+  this->effect->position[2] = this->position[2];
+  this->effect->Slot29(this->id);
+  this->effect->Slot01();
 }
 
 // OFFSET: 0x00B44BC0

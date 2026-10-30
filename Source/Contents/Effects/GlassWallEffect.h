@@ -11,6 +11,7 @@ class CParticle;
 class CGlassWall : public CEffect {
 public:
   ~CGlassWall() override;
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   void Close() override;
