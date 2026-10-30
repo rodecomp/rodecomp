@@ -294,6 +294,64 @@ void UINewSkillListWnd::Slot31(int x, int y) {
 // OFFSET: 0x009B2CD0
 
 // OFFSET: 0x009B3040
+// FUNCTION: fn_13823
+void UINewSkillListWnd::UpdateScrollBar() {
+  const int initialGate = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4);
+  if (initialGate == 0) {
+    this->m_columns = 7;
+    this->m_visibleRows = 6;
+  } else {
+    this->m_columns = 1;
+    this->m_visibleRows = (this->geometry.height - this->m_bottomMargin - 30) / 32;
+  }
+
+  if (!this->m_scrollBar) {
+    return;
+  }
+
+  this->m_scrollBar->Move(this->geometry.width - 15, 20);
+
+  const int gate = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4);
+  const std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
+  int total = 0;
+  if (gate == 0) {
+    int maxKey = 0;
+    for (const CSkillInfo& skill : list) {
+      const int key = static_cast<int>(skill.unknown_0024);
+      if (key > maxKey) {
+        maxKey = key;
+      }
+    }
+
+    const int count = maxKey + 1;
+    total = count / this->m_columns + (count % this->m_columns != 0);
+  } else {
+    const int count = static_cast<int>(list.size());
+    total = count / this->m_columns + (count % this->m_columns != 0);
+  }
+
+  int maxScroll = total - this->m_visibleRows;
+  if (maxScroll < 0) {
+    maxScroll = 0;
+  }
+  this->m_scrollable = maxScroll != 0;
+  if (maxScroll == 0) {
+    this->m_firstRow = 0;
+    this->m_scrollBar->SetRange(0, this->m_visibleRows, total);
+  } else {
+    this->m_scrollBar->SetRange(maxScroll, this->m_visibleRows, total);
+    if (this->m_firstRow < 0) {
+      this->m_firstRow = 0;
+    }
+    if (this->m_firstRow > total - this->m_visibleRows) {
+      this->m_firstRow = total - this->m_visibleRows;
+    }
+    this->m_scrollBar->SetPosition(this->m_firstRow);
+  }
+
+  this->m_scrollBar->Invalidate();
+  this->m_needsRedraw = 1;
+}
 
 // OFFSET: 0x009B31C0
 
