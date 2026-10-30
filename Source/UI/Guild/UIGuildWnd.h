@@ -11,6 +11,7 @@
 #include <string>
 
 class UIButton;
+class UIScrollBar;
 struct UIButtonContext;
 struct GuildWndInfo;
 
@@ -76,10 +77,11 @@ public:
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
   void Slot35(int delta) override;
+  void UpdateScroll();
 
 protected:
   /* 00D0 */ unsigned char unknown_00D0[0x78];
-  /* 0148 */ UIWindow* m_scrollBar;
+  /* 0148 */ UIScrollBar* m_scrollBar;
   /* 014C */ UIButton* m_button;
   /* 0150 */ unsigned char unknown_0150[0xC];
   /* 015C */ int m_scrollTop;
@@ -104,10 +106,16 @@ class UIGuildPositionManageWnd : public UIGuildWnd {
 public:
   UIGuildPositionManageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot19() override;
+  void Slot25(int x, int y) override;
+  void Slot32(int x, int y) override;
   void Invalidate() override;
   void Slot35(int delta) override;
+  void UpdateScroll();
 
 protected:
+  int PositionIndexAt(int x, int y);
+  const GuildPositionEntry& PositionAt(int index, int* found);
+
   /* 00D0 */ int unknown_00D0[11];
   /* 00FC */ int unknown_00FC[11];
   /* 0128 */ int unknown_0128[11];
@@ -115,9 +123,11 @@ protected:
   /* 0180 */ int unknown_0180[11];
   /* 01AC */ int unknown_01AC[11];
   /* 01D8 */ int unknown_01D8[11];
-  /* 0204 */ UIWindow* m_scrollBar;
+  /* 0204 */ UIScrollBar* m_scrollBar;
   /* 0208 */ UIButton* m_button;
-  /* 020C */ unsigned char unknown_020C[0xC];
+  /* 020C */ int m_scrollTop;
+  /* 0210 */ int m_hoverIndex;
+  /* 0214 */ int m_columns;
   /* 0218 */ int m_visibleRows;
   /* 021C */ int m_scrollable;
   /* 0220 */ std::list<GuildPositionEntry> m_positions;
@@ -131,6 +141,7 @@ public:
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
   void Slot35(int delta) override;
+  void UpdateScroll();
 
 protected:
   int SkillIndexAt(int x, int y);
@@ -138,7 +149,7 @@ protected:
   CSkillInfo VisibleSkillAt(int row);
 
   /* 00D0 */ unsigned char unknown_00D0[0x04];
-  /* 00D4 */ UIWindow* m_scrollBar;
+  /* 00D4 */ UIScrollBar* m_scrollBar;
   /* 00D8 */ unsigned char unknown_00D8[0x5C];
   /* 0134 */ int m_hoverIndex;
   /* 0138 */ int m_scrollTop;

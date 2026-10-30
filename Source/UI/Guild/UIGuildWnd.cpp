@@ -5,6 +5,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -14,6 +15,9 @@
 #include <cstring>
 #include <cwchar>
 #include <string>
+
+// GLOBAL: gl_24918
+int g_guildPositionRowHeight = 19;
 
 // OFFSET: 0x00957D30
 // FUNCTION: fn_13044
@@ -285,13 +289,59 @@ int UIGuildSkillWnd::SkillIndexAt(int x, int y) {
   return -1;
 }
 
+// OFFSET: 0x00957850
+
+// OFFSET: 0x00957A90
+
 // OFFSET: 0x00957BB0
+// FUNCTION: fn_13042
+CSkillInfo UIGuildSkillWnd::SkillAt(int index) {
+  CSkillInfo result(0);
+  int current = 0;
+  for (auto skill = this->m_skills.begin(); skill != this->m_skills.end(); ++skill, ++current) {
+    if (index == current) {
+      result = *skill;
+      break;
+    }
+  }
+
+  return result;
+}
 
 // OFFSET: 0x00957CA0
+// FUNCTION: fn_13043
+CSkillInfo UIGuildSkillWnd::VisibleSkillAt(int row) {
+  int index = 0;
+  for (auto skill = this->m_skills.begin(); skill != this->m_skills.end(); ++skill, ++index) {
+    if (row + this->m_scrollTop == index) {
+      return *skill;
+    }
+  }
 
-// OFFSET: 0x00960230
+  return CSkillInfo(0);
+}
+
+// OFFSET: 0x0095FE20
+
+// OFFSET: 0x00960430
 
 // OFFSET: 0x00960470
+// FUNCTION: fn_13105
+void UIGuildSkillWnd::Slot32(int x, int y) {
+  const int previous = this->m_hoverIndex;
+  this->m_hoverIndex = this->SkillIndexAt(x, y);
+  if (previous != this->m_hoverIndex) {
+    this->Invalidate();
+  }
+}
+
+// OFFSET: 0x00960BA0
+
+// OFFSET: 0x00960C80
+
+// OFFSET: 0x00960D30
+
+// OFFSET: 0x00960230
 
 // OFFSET: 0x009656A0
 // FUNCTION: fn_13140
