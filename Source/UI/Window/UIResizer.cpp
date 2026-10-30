@@ -6,6 +6,17 @@
 #include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x0085D650
+// FUNCTION: fn_10815
+void UIResizer::Paint() {
+  if (!this->bitmapName.empty()) {
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())));
+    this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+    return;
+  }
+
+  this->ClearSurface(this->backgroundColor);
+  this->FillRegion(0, 0, this->geometry.width, 2, this->lineColor);
+}
 
 // OFFSET: 0x0085F470
 // FUNCTION: fn_10862

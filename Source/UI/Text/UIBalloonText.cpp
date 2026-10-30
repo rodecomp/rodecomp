@@ -129,3 +129,19 @@ void UIBalloonText::Paint() {
 }
 
 // OFFSET: 0x0085FC90
+// FUNCTION: fn_10884
+void UINameBalloonText::Slot19() {
+  CEmblemRes* emblem = dynamic_cast<CEmblemRes*>(ResourceMgr::Instance().Load(this->iconName.c_str()));
+  if (emblem) {
+    if (emblem->gif.frameChanged == 1) {
+      this->Invalidate();
+    }
+
+    return;
+  }
+
+  CGifRes* gif = dynamic_cast<CGifRes*>(ResourceMgr::Instance().Load(this->iconName.c_str()));
+  if (gif && gif->frameChanged == 1) {
+    this->Invalidate();
+  }
+}

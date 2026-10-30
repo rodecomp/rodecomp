@@ -5,8 +5,34 @@
 #include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x0085EC40
+// FUNCTION: fn_10843
+void UIMerchantShopTitle::Slot25(int, int) {
+  if (!g_serviceOptions.Get(167)) {
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (this->buyingShop != 0) {
+    if (g_windowMgr.unknown_0308 == 0) {
+      mode->SendMsg(272, this->ownerAid, 0, 0, 0);
+    }
+  } else if (g_windowMgr.unknown_0418 == 0) {
+    mode->SendMsg(84, this->ownerAid, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x0085E920
+// FUNCTION: fn_10832
+void UIMerchantShopTitle::Slot26(int, int) {
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (this->buyingShop != 0) {
+    if (g_windowMgr.unknown_0308 == 0) {
+      mode->SendMsg(272, this->ownerAid, 0, 0, 0);
+    }
+  } else if (g_windowMgr.unknown_0418 == 0) {
+    mode->SendMsg(84, this->ownerAid, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x0085F9E0
 // FUNCTION: fn_10878

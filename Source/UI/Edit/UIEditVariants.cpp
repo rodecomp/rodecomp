@@ -135,6 +135,22 @@ int UIEditCtrl5::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 }
 
 // OFFSET: 0x0085CBF0
+// FUNCTION: fn_10806
+void UIEditCtrl3::Paint() {
+  const bool selected = g_skinInfo.Selected();
+  const SkinPaletteCell cell = {1, 2};
+  const std::uint32_t color = SkinPaletteColor(ResourceMgr::Instance(), cell, selected);
+  this->red = color & 0xFF;
+  this->blue = (color >> 16) & 0xFF;
+  this->green = (color & 0xFFFF) >> 8;
+
+  this->Invalidate();
+  this->ClearSurface(static_cast<unsigned char>(this->red) | (static_cast<unsigned char>(this->green) << 8) | (static_cast<unsigned char>(this->blue) << 16));
+  this->PaintText();
+  if (this->parent) {
+    this->parent->Invalidate();
+  }
+}
 
 // OFFSET: 0x0085FF60
 // FUNCTION: fn_10892
@@ -161,8 +177,26 @@ void UIBitmapEditCtrl::Paint() {
 }
 
 // OFFSET: 0x0085EB50
+// FUNCTION: fn_10840
+void UIChatEditCtrl::Slot25(int x, int y) {
+  if (this->disabled == 0) {
+    this->m_edit->focus.Set(this);
+  }
+
+  this->parent->Slot25(x + this->geometry.x, y + this->geometry.y);
+}
 
 // OFFSET: 0x0085CDE0
+// FUNCTION: fn_10808
+void UIEditCtrl_OldList::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (!this->bitmapName.empty()) {
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())));
+    this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+  }
+
+  this->PaintText();
+}
 
 // OFFSET: 0x0085FFC0
 // FUNCTION: fn_10894

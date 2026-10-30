@@ -10,5 +10,34 @@
 #include "UI/Window/UIWordDisplayWnd.h"
 
 // OFFSET: 0x0085E370
+// FUNCTION: fn_10825
+void UIWordDisplayWnd::Paint() {
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\전장적표시.bmp")));
+  this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, true);
+}
 
 // OFFSET: 0x0085FD30
+// FUNCTION: fn_10885
+void UIWordDisplayWnd::Slot19() {
+  CRenderObject* actor = g_session.FindGameActor(this->aid);
+  if (this->aid == g_session.m_aid) {
+    actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+  }
+
+  if (!actor) {
+    return;
+  }
+
+  const int screenX = actor->render.screenX;
+  const int screenY = actor->render.screenY;
+  if (this->screenX == screenX && this->screenX == screenY) {
+    return;
+  }
+
+  this->screenY = screenY;
+  this->screenX = screenX;
+  const float scale = actor->render.unknown_005C;
+  const int y = static_cast<int>(screenY - static_cast<float>(g_renderer->viewport.height * 100 / 480) * scale);
+  const int x = static_cast<int>(screenX - static_cast<float>(g_renderer->viewport.width * 5 / 640) * scale);
+  this->Move(x, y);
+}

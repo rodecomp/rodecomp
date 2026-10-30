@@ -115,3 +115,36 @@ void UIStaticText::Slot35(int value) {
 }
 
 // OFFSET: 0x0085DCA0
+// FUNCTION: fn_10819
+void UIStaticText3::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->ClearSurface(this->background);
+
+  if (this->shadow != 0) {
+    this->DrawTextAt(
+      controls.fonts, controls.locale, this->textX + 2, 2, this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0xFFFFFF, this->bold, this->italic
+    );
+  }
+
+  if (this->outline != 0) {
+    this->DrawTextAt(
+      controls.fonts, controls.locale, this->textX, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold, this->italic
+    );
+    this->DrawTextAt(
+      controls.fonts, controls.locale, this->textX + 1, 0, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold,
+      this->italic
+    );
+    this->DrawTextAt(
+      controls.fonts, controls.locale, this->textX + 2, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold,
+      this->italic
+    );
+    this->DrawTextAt(
+      controls.fonts, controls.locale, this->textX + 1, 2, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->outlineColor, this->bold,
+      this->italic
+    );
+  }
+
+  const std::uint32_t color =
+    static_cast<unsigned char>(this->red) | (static_cast<unsigned char>(this->green) << 8) | (static_cast<unsigned char>(this->blue) << 16);
+  this->DrawTextAt(controls.fonts, controls.locale, this->textX + 1, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, color, this->bold, this->italic);
+}
