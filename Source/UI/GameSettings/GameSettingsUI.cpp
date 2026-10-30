@@ -771,6 +771,10 @@ void CUIGroupSound::SetBgmEnabled(bool enabled) {
 // OFFSET: 0x00A3F5C0
 
 // OFFSET: 0x00A3F6B0
+// FUNCTION: fn_15948
+void CUIGroupSound::OnBgmMute(bool muted) {
+  this->SetBgmEnabled(!muted);
+}
 
 // OFFSET: 0x00A3F6D0
 
@@ -782,14 +786,26 @@ void CUIListPage::Slot54(CUIOptionItem* item, const TALKTYPE& type) {
 }
 
 // OFFSET: 0x00A41E30
+// FUNCTION: fn_16003
+void CUIGroupEmblem::OnSelect(CUIRadioButton* button) {
+  this->SetEnabled(button == this->m_onButton);
+}
 
 // OFFSET: 0x00A41E90
 
 // OFFSET: 0x00A41F30
 
 // OFFSET: 0x00A42FE0
+// FUNCTION: fn_16020
+void CUIGroupSound::OnBgmScroll(int position) {
+  this->SetBgmVolume(position);
+}
 
 // OFFSET: 0x00A42FF0
+// FUNCTION: fn_16021
+void CUIGroupSound::OnEffectScroll(int position) {
+  this->SetEffectVolume(position);
+}
 
 // OFFSET: 0x00A43650
 
