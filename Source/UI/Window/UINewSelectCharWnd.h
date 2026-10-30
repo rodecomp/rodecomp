@@ -31,11 +31,17 @@ static_assert(sizeof(CharSlotInfo) == 348);
 class UINewSelectCharWnd : public UIFrameWnd {
 public:
   void DisableButton(int id);
+  void SaveCurrentSlot();
 
 protected:
   /* 00B4 */ UIBmpTextButton* m_textButton;
   /* 00B8 */ UIBitmapButton* m_button416;
   /* 00BC */ UIBitmapButton* m_button417;
+  /* 00C0 */ unsigned char unknown_00C0[92];
+  /* 011C */ int m_page;
+  /* 0120 */ int m_pageSlot;
+  /* 0124 */ int m_pageCount;
+  /* 0128 */ int m_slotsPerPage;
 };
 
 #endif
