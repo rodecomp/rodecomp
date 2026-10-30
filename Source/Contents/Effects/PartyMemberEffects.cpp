@@ -5,6 +5,10 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/GroundScope.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "Script/LuaScript.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -16,6 +20,7 @@ namespace {
     CRollingCutterRagEffect() : duration(60), elapsed(0) {
     }
 
+    bool OnProcess() override;
     int GetDuration() override;
 
     /* 11CA8 */ int duration;
@@ -44,6 +49,46 @@ namespace {
 // FUNCTION: fn_04338
 int CRollingCutterRagEffect::GetDuration() {
   return this->duration;
+}
+
+// OFFSET: 0x00612500
+// FUNCTION: fn_04341
+bool CRollingCutterRagEffect::OnProcess() {
+  if (!this->state.parent) {
+    return false;
+  }
+
+  if (g_updateTick > 0 && this->state.parent->render.unknown_00ECBytes[0] == 1) {
+    this->state.parent->render.flags = 0;
+    this->state.parent->render.unknown_00ECBytes[0] = 0;
+  }
+
+  this->render.position = this->state.parent->render.position;
+
+  if (this->elapsed == 0) {
+    const vector3d& player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+    g_soundMgr->PlayWave("effect\\ef_beginspell.wav", this->render.position.x - player.x, -100.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
+  }
+
+  this->state.parent->render.angle += 12.0f;
+  if (this->state.parent->render.angle >= 360.0f) {
+    this->state.parent->render.angle -= 360.0f;
+  }
+
+  ++this->elapsed;
+  if (this->elapsed < this->GetDuration()) {
+    return true;
+  }
+
+  CGameActor* actor = dynamic_cast<CGameActor*>(static_cast<CRenderObject*>(this->state.parent));
+  if (actor) {
+    actor->render.instant.Set(1, static_cast<int>(actor->GetInstant(1)) - 1);
+    if (static_cast<int>(actor->GetInstant(1)) <= 0) {
+      actor->render.angle = static_cast<int>(actor->GetInstant(0)) / 1000.0f;
+    }
+  }
+
+  return false;
 }
 
 // OFFSET: 0x00CADD60
