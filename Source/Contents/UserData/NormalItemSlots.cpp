@@ -127,6 +127,24 @@ int EmotionWndInfo::IsValid() const {
          this->y <= g_renderer->viewport.height - this->height;
 }
 
+// OFFSET: 0x009A53E0
+// FUNCTION: fn_13628
+int EquipWndInfo::IsValid() const {
+  if (this->width != 280) {
+    return 0;
+  }
+
+  const int extraHeight = g_session.m_swapEquipmentMode == 1 ? 158 : 0;
+  if (this->height != 167 && this->height != 17 && this->height != 187 && this->height != 187 + extraHeight) {
+    return 0;
+  }
+  if (this->unknown_0010 != 167 && this->unknown_0010 != 187) {
+    return 0;
+  }
+
+  return this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height;
+}
+
 // OFFSET: 0x009A5460
 // FUNCTION: fn_13629
 int ExchangeAcceptWndInfo::IsValid() const {

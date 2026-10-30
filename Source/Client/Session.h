@@ -261,7 +261,9 @@ public:
   /* 619C */ unsigned char unknown_619C[0x1C];
   /* 61B8 */ ITEM_INFO unknown_61B8[10];
   /* 6B68 */ ITEM_INFO unknown_6B68[10];
-  /* 7518 */ unsigned char unknown_7518[0x9C8];
+  /* 7518 */ unsigned char unknown_7518[0x9C0];
+  /* 7ED8 */ int m_swapEquipmentMode = 0;
+  /* 7EDC */ unsigned char unknown_7EDC[4];
   /* 7EE0 */ std::map<int, RobeAlpha> m_robeAlpha;
   /* 7EE8 */ unsigned char unknown_7EE8[4];
   /* 7EEC */ int m_maxLevel;
@@ -676,6 +678,7 @@ static_assert(offsetof(CSession, unknown_5C68) == 0x5C68);
 static_assert(offsetof(CSession, unknown_6140) == 0x6140);
 static_assert(offsetof(CSession, unknown_6144) == 0x6144);
 static_assert(offsetof(CSession, unknown_616C) == 0x616C);
+static_assert(offsetof(CSession, m_swapEquipmentMode) == 0x7ED8);
 static_assert(offsetof(CSession, m_robeAlpha) == 0x7EE0);
 static_assert(offsetof(CSession, m_maxLevel) == 0x7EEC);
 static_assert(offsetof(CSession, m_cardItems) == 0x811C);

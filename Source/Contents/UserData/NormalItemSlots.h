@@ -134,6 +134,7 @@ struct EquipWndInfo : WindowPlacement {
   /* 0014 */ int unknown_0014;
 
   void Reset();
+  int IsValid() const;
 };
 
 struct ExchangeAcceptWndInfo : WindowPlacement {
