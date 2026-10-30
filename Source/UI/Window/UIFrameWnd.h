@@ -55,9 +55,6 @@ protected:
   /* 0090 */ int m_message1;
   /* 0094 */ FrameTextCache m_textCache;
   UIFrameContext* m_frameContext;
-
-protected:
-  void ToScreen(int& x, int& y) const;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

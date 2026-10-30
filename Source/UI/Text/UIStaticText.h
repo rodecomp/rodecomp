@@ -46,6 +46,11 @@ protected:
   UIButtonContext* m_controls;
 };
 
+class UIStaticText2 : public UIStaticText {
+public:
+  void Paint() override;
+};
+
 class UIStaticText3 : public UIStaticText {
 public:
   void Paint() override;

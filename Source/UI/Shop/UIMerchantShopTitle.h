@@ -7,6 +7,7 @@
 
 class UIMerchantShopTitle : public UIWindow {
 public:
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void ResetCursor(int x, int y) override;

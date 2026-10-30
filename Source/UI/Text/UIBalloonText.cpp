@@ -1,12 +1,19 @@
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/EmblemResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
+#include "UI/Text/ColoredText.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Text/UIBalloonText.h"
 #include "UI/Text/UINameBalloonText.h"
 
 #include <cstring>
+
+// GLOBAL: gl_24926
+int g_nameBalloonFontHeight = 12;
 
 namespace {
   // INLINED
@@ -131,6 +138,10 @@ void UIBalloonText::Paint() {
     y = (y + (height + 4));
   }
 }
+
+// OFFSET: 0x0085D1F0
+
+// OFFSET: 0x0085E280
 
 // OFFSET: 0x0085FC90
 // FUNCTION: fn_10884

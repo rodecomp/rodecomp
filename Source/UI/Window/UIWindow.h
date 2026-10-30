@@ -5,6 +5,7 @@
 #include "UI/Layout/WindowGeometry.h"
 
 #include <cstddef>
+#include <list>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -116,6 +117,7 @@ public:
   void InvalidateChildren();
   bool Contains(const UIWindow* window) const;
   bool IsDescendantOf(const UIWindow* ancestor) const;
+  void ToScreen(int& x, int& y) const;
   UIWindow* FindUid(std::uint32_t uid);
   // INLINED
   std::uint32_t Uid() const {
@@ -170,6 +172,7 @@ public:
     FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
   );
   int FormattedTextWidth(std::string text, int family, int height, unsigned char bold);
+  std::list<int> WrapFormattedText(std::string text, std::list<std::string>* lines, int maxWidth, int family, int height, unsigned char bold);
   int RecordEditTexts(WindowReplayRecorder& recorder);
   int RestoreEditTexts(const unsigned char* data);
   void DrawActionSprite(

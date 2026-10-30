@@ -52,6 +52,7 @@ public:
 class UIRefining_Notice : public UIStaticText {
 public:
   void Slot19() override;
+  void Paint() override;
   void SetNotice(const char* value, int duration, unsigned char highlight);
 
   /* 00D8 */ std::string savedText;

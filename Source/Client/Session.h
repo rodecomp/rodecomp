@@ -271,7 +271,8 @@ public:
   /* 59D8 */ LuaScript* m_hotkeyScript;
   /* 59DC */ unsigned char unknown_59DC[0x1E4];
   /* 5BC0 */ int unknown_5BC0;
-  /* 5BC4 */ unsigned char unknown_5BC4[0x30];
+  /* 5BC4 */ unsigned char unknown_5BC4[0x2C];
+  /* 5BF0 */ std::uint32_t unknown_5BF0;
   /* 5BF4 */ int m_pairValues[3];
   /* 5C00 */ unsigned char unknown_5C00[0x1C];
   /* 5C1C */ int unknown_5C1C;

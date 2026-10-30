@@ -1,8 +1,15 @@
 #include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Shop/UIMerchantShopTitle.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowBorder.h"
+
+// OFFSET: 0x0085D150
 
 // OFFSET: 0x0085EC40
 // FUNCTION: fn_10843

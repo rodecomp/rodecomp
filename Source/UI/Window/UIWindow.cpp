@@ -1340,6 +1340,8 @@ int UIWindow::FormattedTextWidth(std::string text, int family, int height, unsig
   return total;
 }
 
+// OFFSET: 0x00A7E120
+
 // OFFSET: 0x00A836C0
 // FUNCTION: fn_17006
 int UIWindow::RestoreEditTexts(const unsigned char* data) {

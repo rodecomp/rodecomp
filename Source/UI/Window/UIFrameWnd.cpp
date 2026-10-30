@@ -68,7 +68,7 @@ void UIFrameWnd::Slot13(int dx, int dy) {
 
 // OFFSET: 0x00A7D870
 // FUNCTION: fn_16956
-void UIFrameWnd::ToScreen(int& x, int& y) const {
+void UIWindow::ToScreen(int& x, int& y) const {
   x += this->geometry.x;
   y += this->geometry.y;
 

@@ -42,6 +42,8 @@ protected:
   BalloonTextContext* m_textContext;
 };
 
+extern int g_nameBalloonFontHeight;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UIBalloonText) == 168);
 #endif

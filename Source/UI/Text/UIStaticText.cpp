@@ -167,6 +167,8 @@ void UIStaticText::Slot35(int value) {
   this->parent->Slot35(value);
 }
 
+// OFFSET: 0x0085DAF0
+
 // OFFSET: 0x0085DCA0
 // FUNCTION: fn_10819
 void UIStaticText3::Paint() {

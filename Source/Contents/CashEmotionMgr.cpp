@@ -1,4 +1,13 @@
 #include "Contents/CashEmotionMgr.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Render/DeviceContext/DeviceContext.h"
+#include "Render/Renderer.h"
+#include "Render/Textures/SpriteAtlas.h"
+#include "Render/Textures/Texture.h"
+#include "Resource/PaletteResource.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "UI/Buttons/UISpriteButton.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
@@ -1746,6 +1755,10 @@ UISpriteButton2::~UISpriteButton2() {
 // OFFSET: 0x00851C70
 // FUNCTION: fn_10698
 UISpriteButton::~UISpriteButton() = default;
+
+// OFFSET: 0x0085CF90
+
+// OFFSET: 0x0085D6C0
 
 // OFFSET: 0x0085E9B0
 // FUNCTION: fn_10834

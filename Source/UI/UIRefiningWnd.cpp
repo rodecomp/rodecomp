@@ -11,6 +11,9 @@
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
@@ -21,6 +24,8 @@
 
 #include <cstddef>
 #include <cstring>
+#include <list>
+#include <string>
 
 #pragma pack(push, 1)
 struct RefiningSelectPacket {
@@ -314,6 +319,8 @@ void UIRefining_BtnReturn::Paint() {
     (this->geometry.unknown_0030 == 2) + 14, LookupMessage(2973), 0, 0, 12, color, 1, 0
   );
 }
+
+// OFFSET: 0x007F70C0
 
 // OFFSET: 0x007F72A0
 // FUNCTION: fn_09913

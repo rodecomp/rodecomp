@@ -1,3 +1,5 @@
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -54,6 +56,8 @@ void UIRadioBtn::Slot25(int, int) {
     this->parent->SendMsg(this, 6, this->geometry.id, this->value, 0, 0);
   }
 }
+
+// OFFSET: 0x0085F400
 
 // OFFSET: 0x00865180
 // FUNCTION: fn_10919

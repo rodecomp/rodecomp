@@ -9,6 +9,7 @@ class UISpriteButton : public UIButton {
 public:
   UISpriteButton(UIWindowContext& windowContext, UIButtonContext& buttonContext);
   ~UISpriteButton() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
@@ -33,6 +34,11 @@ public:
 
 protected:
   /* 00FC */ std::string unknown_00FC;
+};
+
+class UIHeadsprButton : public UISpriteButton {
+public:
+  void Paint() override;
 };
 
 class UISpriteButton2 : public UISpriteButton {

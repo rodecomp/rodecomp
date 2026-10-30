@@ -18,10 +18,14 @@ void UIResizer::Paint() {
   this->FillRegion(0, 0, this->geometry.width, 2, this->lineColor);
 }
 
+// OFFSET: 0x0085ECE0
+
 // OFFSET: 0x0085F470
 // FUNCTION: fn_10862
 void UIResizer::Slot28(int, int) {
 }
+
+// OFFSET: 0x0085F6D0
 
 // OFFSET: 0x0085FA20
 // FUNCTION: fn_10879
