@@ -142,6 +142,28 @@ CSkillInfo UINewSkillListWnd::VisibleSkill(int row) {
 }
 
 // OFFSET: 0x009B0750
+// FUNCTION: fn_13808
+std::pair<CSkillInfo*, bool> UINewSkillListWnd::SkillPtr(int index, bool live) {
+  std::list<CSkillInfo>& list = this->SkillList(this->m_tab, live);
+  if (*reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4) != 0) {
+    if (index >= 0 && static_cast<size_t>(index) < list.size()) {
+      auto it = list.begin();
+      for (int i = 0; i < index; ++i) {
+        ++it;
+      }
+      return {&*it, true};
+    }
+    return {nullptr, false};
+  }
+
+  for (CSkillInfo& skill : list) {
+    if (skill.unknown_0024 == index) {
+      return {&skill, true};
+    }
+  }
+
+  return {nullptr, false};
+}
 
 // OFFSET: 0x009B07C0
 // FUNCTION: fn_13809
@@ -160,6 +182,16 @@ std::list<CSkillInfo>& UINewSkillListWnd::SkillList(int tab, bool live) {
 // OFFSET: 0x009B0820
 
 // OFFSET: 0x009B0E40
+// FUNCTION: fn_13811
+void UINewSkillListWnd::ResetLists() {
+  this->m_locked = 0;
+  this->m_skillPoints = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0x165C);
+  for (int i = 0; i < 4; ++i) {
+    this->m_lists[i] = g_session.m_skillBundle.Group(i);
+  }
+  this->m_unknown_02A0.clear();
+  g_session.m_skillBundle.MarkLevelChanges();
+}
 
 // OFFSET: 0x009B0EE0
 // FUNCTION: fn_13812
@@ -168,6 +200,28 @@ bool UINewSkillListWnd::IsExtraTab(int tab) {
 }
 
 // OFFSET: 0x009B0FA0
+// FUNCTION: fn_13813
+bool UINewSkillListWnd::IsSkillArea(int x, int y) {
+  int minX = 76;
+  int rowHeight = 56;
+  int yOffset = 40;
+  const int gate = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4);
+  if (gate != 0) {
+    rowHeight = 32;
+    minX = 40;
+    yOffset = 30;
+  }
+  if (y < this->m_topMargin || y >= this->m_visibleRows * rowHeight + 4 + yOffset) {
+    return false;
+  }
+  if (x < minX) {
+    return false;
+  }
+  if (gate == 0 && x > 504) {
+    return false;
+  }
+  return true;
+}
 
 // OFFSET: 0x009B1050
 
