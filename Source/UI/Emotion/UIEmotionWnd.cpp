@@ -109,3 +109,23 @@ void UIEmotionWnd::SetMacroText(const char* text, int index) {
 }
 
 // OFFSET: 0x008A31E0
+// FUNCTION: fn_11649
+void UIEmotionWnd::Slot11() {
+  if (this->m_saved != nullptr) {
+    this->m_saved->x = this->geometry.x;
+    this->m_saved->y = this->geometry.y;
+    this->m_saved->width = this->geometry.width;
+    this->m_saved->height = this->geometry.height;
+  }
+
+  std::string* macros = reinterpret_cast<std::string*>(reinterpret_cast<char*>(&g_session) + 0xFF8);
+  for (int i = 0; i < 10; ++i) {
+    const char* text = this->m_edits[i]->Text();
+    std::string value(text, std::strlen(text));
+    if (!value.empty() && &macros[i] != &value) {
+      macros[i].assign(value.data(), value.size());
+    }
+  }
+
+  reinterpret_cast<void(__thiscall*)(CAccountLinkedUserDataMgr*)>(0x005BCE50)(g_accountLinkedUserDataMgr);
+}
