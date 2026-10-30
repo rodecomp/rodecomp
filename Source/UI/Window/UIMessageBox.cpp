@@ -1031,6 +1031,19 @@ void UIMakeCharWnd::Slot18() {
 // OFFSET: 0x008B8E90
 
 // OFFSET: 0x008BA670
+// FUNCTION: fn_11788
+void UILoginOTPWnd::Slot19() {
+  auto* login = static_cast<CLoginMode*>(g_modeMgr.GetLoginMode());
+  if (login == nullptr) {
+    return;
+  }
+
+  const unsigned remaining = static_cast<unsigned>(60.0 - (timeGetTime() - login->otpStarted) * 0.001);
+  const std::uint8_t source[] = {0x6A, 0x91, 0xFD, 0x51, 0x43, 0xED, 0x61, 0x5C, 0x7F, 0x93, 0xAB, 0x35};
+  thread_local EncryptedName<sizeof(source), 0x7941D76335CFA14FULL> format(source);
+  this->timerText->SetText(FormatOwnedString(format.Text(), remaining / 60, remaining % 60).c_str(), 0);
+  this->Invalidate();
+}
 
 // OFFSET: 0x008BAEF0
 // FUNCTION: fn_11792
