@@ -1,6 +1,7 @@
 #include "Contents/NavigationManager.h"
 #include "Client/Session.h"
 #include "Resource/ResourceMgr.h"
+#include "Utility/Text/FormatString.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -404,6 +405,27 @@ NaviCell CNavigationManager::ParseCell(const char* text) {
   return cell;
 }
 
+// OFFSET: 0x00B93BA0
+// FUNCTION: fn_19565
+NavigationTarget CNavigationManager::ReadTarget(const char* data, int size) {
+  NavigationTarget target;
+  target.type = *reinterpret_cast<const int*>(data);
+  std::vector<char> buffer(size - 3, '\0');
+  if (target.type == 1 || target.type == 0) {
+    std::memcpy(buffer.data(), data + 4, size - 4);
+    target.object = this->FindObject(buffer.data());
+    if (target.object == nullptr) {
+      return NavigationTarget(0, nullptr);
+    }
+  } else {
+    target.object = this->ReadTargetObject(data + 4);
+  }
+
+  return target;
+}
+
+// OFFSET: 0x00B94170
+
 // OFFSET: 0x00B94890
 // FUNCTION: fn_19568
 std::vector<char> CNavigationManager::WriteTarget(NavigationTarget target) {
@@ -555,6 +577,8 @@ void CNavigationManager::ClearStates() {
 void CNavigationManager::ClearNodes() {
   this->nodes.clear();
 }
+
+// OFFSET: 0x00B95B00
 
 // OFFSET: 0x00B95DC0
 // FUNCTION: fn_19579

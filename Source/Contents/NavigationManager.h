@@ -327,6 +327,11 @@ public:
   std::vector<char> WriteObject(CNavi_Object* object);
   std::vector<unsigned char> WriteReplayState();
   CNavi_Link* ReadObject(const char* record);
+  NavigationTarget ReadTarget(const char* data, int size);
+  CNavi_Object* ReadTargetObject(const char* record);
+  bool GetMobInfo(
+    std::string title, std::string* name, std::string* sprite, int* cellX, int* cellYByte1, int* element, int* elementLevel, int* cellYByte0, int* type
+  );
   void ClearSavedTarget();
   void ClearCurrentObject();
   void ClearStates();
