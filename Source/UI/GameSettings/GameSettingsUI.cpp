@@ -771,6 +771,12 @@ void CUIGroupSound::SetBgmVolume(int volume) {
 }
 
 // OFFSET: 0x00A3F4C0
+// FUNCTION: fn_15944
+void CUIGroupSound::SetEffectVolume(int volume) {
+  g_soundMgr->SetSampleVolume(volume);
+  g_soundMgr->Set3DVolume(volume);
+  this->m_effectSlider->SetThumbTooltip(std::to_string(g_soundMgr->sampleVolume));
+}
 
 // OFFSET: 0x00A3F560
 // FUNCTION: fn_15945
@@ -795,8 +801,29 @@ void CUIGroupSound::OnBgmMute(bool muted) {
 }
 
 // OFFSET: 0x00A3F6D0
+// FUNCTION: fn_15949
+void CUIGroupSound::OnEffectMute(bool muted) {
+  this->m_effectSlider->SetTransparent(muted);
+  this->m_effectSlider->dragging = muted;
+  this->m_effectSlider->Invalidate();
+  g_serviceOptions.Set(0xB, !muted);
+}
 
 // OFFSET: 0x00A401C0
+// FUNCTION: fn_15966
+bool CUIGraphicsPage::IsModified() {
+  if (this->m_graphicsApi->m_backend != this->m_graphicsApi->m_pendingBackend) {
+    return true;
+  }
+  CUIGroupGraphics* graphics = this->m_graphics;
+  if (!graphics->m_adapter.Matches(graphics->m_pendingAdapter)) {
+    return true;
+  }
+  if (!graphics->m_mode.Matches(graphics->m_pendingMode)) {
+    return true;
+  }
+  return this->m_fullscreen->m_onButton->checked != (g_configuredFullscreen != 0);
+}
 
 // OFFSET: 0x00A40270
 // FUNCTION: fn_15968
@@ -816,6 +843,15 @@ void CUIGroupLogInOut::OnSelect(CUIRadioButton* button) {
 }
 
 // OFFSET: 0x00A41F30
+// FUNCTION: fn_16007
+void CUIGroupRodexSpam::OnSelect(CUIRadioButton* button) {
+  RodexSpamOptionPacket packet;
+  packet.id = 0x0B93;
+  packet.option = 1;
+  packet.value = button != this->m_offButton;
+  CRagConnection& connection = GetRagConnection();
+  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
 
 // OFFSET: 0x00A42FE0
 // FUNCTION: fn_16020
@@ -830,16 +866,80 @@ void CUIGroupSound::OnEffectScroll(int position) {
 }
 
 // OFFSET: 0x00A43650
+// FUNCTION: fn_16032
+void CUIGroupEmblem::Refresh() {
+  const bool enabled = g_serviceOptions.Get(0xF3);
+  this->m_onButton->checked = enabled;
+  this->m_onButton->Invalidate();
+  this->m_offButton->checked = !enabled;
+  this->m_offButton->Invalidate();
+}
 
 // OFFSET: 0x00A436A0
+// FUNCTION: fn_16033
+void CUIGroupFullscreen::Refresh() {
+  this->m_onButton->checked = g_configuredFullscreen != 0;
+  this->m_onButton->Invalidate();
+  this->m_offButton->checked = g_configuredFullscreen == 0;
+  this->m_offButton->Invalidate();
+}
 
 // OFFSET: 0x00A43700
+// FUNCTION: fn_16036
+void CUIGroupLogInOut::Refresh() {
+  this->m_onButton->checked = g_serviceOptions.Get(0xA5);
+  this->m_onButton->Invalidate();
+  this->m_offButton->checked = !g_serviceOptions.Get(0xA5);
+  this->m_offButton->Invalidate();
+}
 
 // OFFSET: 0x00A43810
+// FUNCTION: fn_16039
+void CUIGroupSkin::Refresh() {
+  CUIListBoxEx<CUIComboItem, std::string>* list = this->m_combo->listBox;
+  const int index = g_skinInfo.selected + 1;
+  list->scrollBar->SetPosition(list->rowHeight * index);
+  for (CUIComboItem* item : list->items) {
+    if (item->index == index) {
+      list->SelectItem(item);
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00A43870
+// FUNCTION: fn_16040
+void CUIGroupSound::Refresh() {
+  this->m_bgmSlider->SetTotal(135);
+  this->m_bgmSlider->SetVisible(this->m_bgmSlider->PositionFromOffset(8));
+  this->m_bgmSlider->SetPosition(CSoundMgr::Volume(g_soundMgr));
+  this->m_bgmSlider->SetThumbTooltip(std::to_string(CSoundMgr::Volume(g_soundMgr)));
+  const bool bgmMuted = !g_serviceOptions.Get(7);
+  this->m_bgmSlider->SetTransparent(bgmMuted);
+  this->m_bgmSlider->dragging = bgmMuted;
+  this->m_bgmSlider->Invalidate();
+  this->m_bgmMute->checked = bgmMuted;
+  this->m_bgmMute->Invalidate();
+
+  this->m_effectSlider->SetTotal(135);
+  this->m_effectSlider->SetVisible(this->m_effectSlider->PositionFromOffset(8));
+  this->m_effectSlider->SetPosition(g_soundMgr->sampleVolume);
+  this->m_effectSlider->SetThumbTooltip(std::to_string(g_soundMgr->sampleVolume));
+  const bool effectMuted = !g_serviceOptions.Get(0xB);
+  this->m_effectSlider->SetTransparent(effectMuted);
+  this->m_effectSlider->dragging = effectMuted;
+  this->m_effectSlider->Invalidate();
+  this->m_effectMute->checked = effectMuted;
+  this->m_effectMute->Invalidate();
+}
 
 // OFFSET: 0x00A43A40
+// FUNCTION: fn_16041
+void CUIGroupSpriteDetailLevel::Refresh() {
+  this->m_slider->SetTotal(3);
+  this->m_slider->SetVisible(1);
+  this->m_slider->SetPosition(std::min(static_cast<unsigned int>(g_effectDetailLevel), 2u));
+}
 
 // OFFSET: 0x00A43B70
 // FUNCTION: fn_16045
