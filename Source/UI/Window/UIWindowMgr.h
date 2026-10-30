@@ -269,7 +269,7 @@ public:
   /* 03A4 */ UIWindow* window_03A4;
   /* 03A8 */ std::uint32_t unknown_03A8;
   /* 03AC */ UIWindow* window_03AC;
-  /* 03B0 */ std::uint32_t unknown_03B0;
+  /* 03B0 */ UIWindow* unknown_03B0;
   /* 03B4 */ std::uint32_t unknown_03B4;
   /* 03B8 */ std::uint32_t unknown_03B8;
   /* 03BC */ std::uint32_t unknown_03BC;
@@ -466,6 +466,13 @@ public:
   int GetRenderedWindowIds(int* ids);
   void HideWindow01C8();
   bool HasUnknown030C();
+  bool IsDropDownChild(const UIWindow* window);
+  bool IsHoverParentVisible();
+  bool IsFriend(const char* name);
+  bool IsSharedWindowId(int id);
+  bool HasNavigationBlocker();
+  bool HasPendingDialog();
+  void CancelActiveDialog();
 };
 
 extern UIWindowMgr g_windowMgr;
