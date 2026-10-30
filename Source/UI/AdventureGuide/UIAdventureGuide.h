@@ -10,6 +10,8 @@
 class CUIAdventureGuide : public CUIFrameWnd {
 public:
   virtual void Slot53();
+
+  void OnButtonClick();
 };
 
 namespace AdventureGuide {
@@ -25,6 +27,8 @@ public:
   void Paint() override;
   void Slot54(int first, int second) override;
 
+  void OnSelectContents(CUITabInfo* item, const Guide_Intro::Contents& contents);
+
   /* 0084 */ CUIStaticImage* image;
   /* 0088 */ CUIListBoxEx<CUITabInfo, Guide_Intro::Contents>* contents;
 };
@@ -34,7 +38,10 @@ public:
   void Slot16() override;
   void Paint() override;
 
-  /* 0084 */ unsigned char unknown_0084[0x08];
+  void OnSelectItem(CUIItemInfo* item, const CItemData& data);
+
+  /* 0084 */ UIWindow* unknown_0084;
+  /* 0088 */ UIWindow* unknown_0088;
   /* 008C */ std::string unknown_008C;
   /* 00A4 */ unsigned char unknown_00A4[0x04];
 };
@@ -55,7 +62,10 @@ public:
   void Slot16() override;
   void Paint() override;
 
-  /* 0084 */ unsigned char unknown_0084[0x08];
+  void OnSelectQuest(CUIQuestInfo* item, const CQuestInfo& data);
+
+  /* 0084 */ UIWindow* unknown_0084;
+  /* 0088 */ UIWindow* unknown_0088;
   /* 008C */ std::string unknown_008C;
 };
 

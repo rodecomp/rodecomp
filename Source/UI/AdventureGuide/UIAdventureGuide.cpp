@@ -1,4 +1,5 @@
 #include "Contents/AdventureGuideMgr.h"
+#include "Contents/RenewQuestMgr.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "Render/Renderer.h"
@@ -67,7 +68,25 @@ void CUIAdventureGuide::Slot53() {
   this->Slot16();
 }
 
+// OFFSET: 0x009DB710
+// FUNCTION: fn_14308
+void CUIAdventureGuide::OnButtonClick() {
+}
+
+// OFFSET: 0x009DBFD0
+
 namespace AdventureGuide {
+
+// OFFSET: 0x009DC0B0
+
+// OFFSET: 0x009DC0E0
+// FUNCTION: fn_14315
+void CUIIntro::OnSelectContents(CUITabInfo*, const Guide_Intro::Contents&) {
+}
+
+// OFFSET: 0x009DC210
+
+// OFFSET: 0x009DC2C0
 
 // OFFSET: 0x009DC8E0
 // FUNCTION: fn_14324

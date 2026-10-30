@@ -34,17 +34,28 @@ public:
 class CUIStaticText;
 
 namespace AdventureGuide {
+class CUIPage;
+
 class CUISubTab : public CUIListItem {
 public:
   void Slot16() override;
 
   /* 00E8 */ unsigned char unknown_00E8[0x04];
   /* 00EC */ UIWindow* unknown_00EC;
+  /* 00F0 */ int id;
+  /* 00F4 */ unsigned int unknown_00F4;
 };
 
 class CUITab : public CUIListItem {
 public:
   void Slot16() override;
+
+  void OnSelectSubTab(CUISubTab* subTab);
+
+  /* 00E8 */ unsigned char unknown_00E8[0x08];
+  /* 00F0 */ std::string unknown_00F0;
+  /* 0108 */ int type;
+  /* 010C */ CUIPage* page;
 };
 
 class CUIItemInfo : public CUIListItem {
@@ -55,6 +66,8 @@ public:
   /* 00F0 */ CUIStaticText* unknown_00F0;
   /* 00F4 */ CUIStaticText* unknown_00F4;
   /* 00F8 */ CUIStaticText* unknown_00F8;
+  /* 00FC */ unsigned char unknown_00FC[0x0C];
+  /* 0108 */ std::string unknown_0108;
 };
 
 class CUIMonsterInfo : public CUIListItem {
@@ -74,6 +87,7 @@ public:
   /* 00EC */ CUIStaticText* unknown_00EC;
   /* 00F0 */ CUIStaticText* unknown_00F0;
   /* 00F4 */ CUIStaticText* unknown_00F4;
+  /* 00F8 */ std::string unknown_00F8;
 };
 
 class CUITabInfo : public CUIListItem {

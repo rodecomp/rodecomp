@@ -96,6 +96,7 @@ public:
   CRenewQuestMgr();
   bool Clear();
   void RemoveStatusRequest(unsigned int id);
+  void AddStatusRequest(unsigned int id);
   void AddIconTooltip(std::string_view icon, std::string_view tooltip);
   std::string GetFilterName(int filter);
   std::string GetMonsterConditionText(unsigned int flags, int minLevel, int maxLevel);
