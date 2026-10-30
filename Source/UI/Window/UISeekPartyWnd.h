@@ -13,6 +13,7 @@ public:
   void Slot11() override;
   void Slot19() override;
   void Paint() override;
+  void SetJobs(const std::int16_t* jobs);
 
 protected:
   /* 00B4 */ unsigned char unknown_00B4[0x10];

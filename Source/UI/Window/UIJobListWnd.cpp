@@ -8,10 +8,13 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UICheckBox.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 
 #include <windows.h>
+
+#include <string>
 
 // GLOBAL: gl_25023
 std::map<int, bool> g_partyBookingJobs;
@@ -99,4 +102,42 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
   g_windowMgr.CloseWindow(170);
   return 0;
+}
+
+// OFFSET: 0x00944C90
+// FUNCTION: fn_12834
+void UIJobListWnd::RefreshJobs() {
+  const std::string path = "유저인터페이스\\";
+  for (int index = 0; index < 6; ++index) {
+    if (this->m_jobChecks[index]) {
+      this->RemoveChild(this->m_jobChecks[index], 1);
+      this->m_jobChecks[index] = nullptr;
+    }
+  }
+
+  int index = 0;
+  for (auto it = g_partyBookingJobs.begin(); it != g_partyBookingJobs.end(); ++it, ++index) {
+    this->m_jobChecks[index] = new UICheckBox(*this->m_context, *this->m_controls);
+    this->m_jobChecks[index]->SetSize(120, 15);
+    const int job = it->first;
+    if (job == -1) {
+      continue;
+    }
+
+    if (job - 1 < 4) {
+      this->m_jobChecks[index]->SetImages(
+        (path + "basic_interface\\" + "grp_online" + ".bmp").c_str(), (path + "basic_interface\\" + "grp_offline" + ".bmp").c_str(),
+        LookupMessage(job + 0x6AF)
+      );
+    } else {
+      const char* text = LookupMessage(job + 0x658);
+      const std::string unchecked = path + "basic_interface\\" + "grp_offline" + ".bmp";
+      const std::string checked = path + "basic_interface\\" + "grp_online" + ".bmp";
+      this->m_jobChecks[index]->SetImages(checked.c_str(), unchecked.c_str(), text);
+    }
+
+    this->m_jobChecks[index]->Move(10, (index + 1) * 25);
+    this->m_jobChecks[index]->SetChecked(it->second);
+    this->AddChild(this->m_jobChecks[index]);
+  }
 }

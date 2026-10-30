@@ -5,6 +5,7 @@
 
 #include <map>
 
+class UICheckBox;
 struct UIButtonContext;
 struct JobListWndInfo;
 
@@ -15,10 +16,11 @@ public:
   void Slot11() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  void RefreshJobs();
 
 protected:
   UIButtonContext* m_controls;
-  /* 00B8 */ UIWindow* m_jobChecks[13];
+  /* 00B8 */ UICheckBox* m_jobChecks[13];
   /* 00EC */ JobListWndInfo* m_saved;
 };
 
