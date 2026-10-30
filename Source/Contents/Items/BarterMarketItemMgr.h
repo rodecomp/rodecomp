@@ -115,6 +115,8 @@ public:
   int GetValueById(int id);
   std::vector<BarterChunk16>* GetChunks();
   float GetWeightedTotal();
+  void LoadInventoryItems();
+  bool HasRequiredItems();
   static void DestroyInstance();
 
   virtual ~CExpandedBarterMarketItemMgr();

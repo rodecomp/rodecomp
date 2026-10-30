@@ -1,11 +1,13 @@
 #include "Contents/Items/BarterMarketItemMgr.h"
 
+#include "Client/Session.h"
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <algorithm>
 #include <cstddef>
+#include <cstdlib>
 #include <list>
 #include <map>
 #include <new>
@@ -37,6 +39,10 @@ struct BarterTree {
   void EraseSubtree(BarterTree* owner, BarterTreeNode* node);
   void Clear();
   ~BarterTree();
+};
+
+struct SessionMessengerContext {
+  int GetList0Size() const;
 };
 
 struct BarterTreeIterator {
@@ -712,6 +718,10 @@ void BarterEntryAllocator::Deallocate(BarterMarketEntry* entries, std::size_t co
   ::operator delete(entries, bytes);
 }
 
+struct BarterChunkVector {
+  BarterChunk16* Umove(BarterChunk16* first, BarterChunk16* last, BarterChunk16* dest);
+};
+
 // OFFSET: 0x005DB160
 // FUNCTION: fn_03784
 BarterChunk16* CopyChunks16(BarterChunk16* first, BarterChunk16* last, BarterChunk16* dest)
@@ -863,3 +873,7 @@ BarterKeyLookup BarterKeyTree::FindLowerBound(const std::vector<int>& key)
   }
   return result;
 }
+
+// OFFSET: 0x005D98E0
+
+// OFFSET: 0x005DA6D0
