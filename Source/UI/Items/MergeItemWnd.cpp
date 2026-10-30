@@ -5,10 +5,10 @@
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "UI/Buttons/UICheckBox.h"
+#include "UI/Lists/UIScrollBar.h"
 #include "UI/Layout/WindowSnapping.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Math/AffineMatrix.h"
-
 #include <cstdlib>
 #include <windows.h>
 
@@ -110,6 +110,44 @@ int CMergeItemWnd::ItemAt(int x, int y) {
     }
   }
   return -1;
+}
+
+// OFFSET: 0x007DFF10
+// FUNCTION: fn_09672
+void CMergeItemWnd::UpdateScroll() {
+  if (this->m_scrollBar == nullptr) {
+    return;
+  }
+
+  const int columns = (this->geometry.width - this->m_marginRight - this->m_gridLeft) / this->m_cellSize;
+  const int rows = this->m_itemCount / columns;
+  const int total = rows > 0 ? rows + 1 : rows;
+  int maximum = total - this->m_rows;
+  if (maximum <= 0) {
+    maximum = 0;
+    this->m_scrollRow = 0;
+  } else if (this->m_scrollRow < 0) {
+    this->m_scrollRow = 0;
+  } else if (this->m_scrollRow > maximum) {
+    this->m_scrollRow = maximum;
+  }
+  this->m_scrollable = maximum;
+  this->m_scrollBar->SetRange(maximum, this->m_rows, total);
+  this->m_scrollBar->SetPosition(this->m_scrollRow);
+  this->m_scrollBar->Invalidate();
+}
+
+// OFFSET: 0x007DFFC0
+// FUNCTION: fn_09673
+void CMergeItemWnd::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->m_mergeButton->Move(width - 110, height - 25);
+  this->m_cancelButton->Move(width - 60, height - 25);
+  this->m_closeButton->Move(width - 14, 3);
+  this->unknown_00F8->Move(width - 15, height - 15);
+  this->m_scrollBar->Move(width - 15, 17);
+  this->m_scrollBar->Resize(this->m_scrollBar->geometry.width, this->geometry.height - 38);
+  this->UpdateScroll();
 }
 
 // OFFSET: 0x007E0060

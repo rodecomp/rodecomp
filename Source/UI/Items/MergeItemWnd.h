@@ -7,10 +7,12 @@
 #include <vector>
 
 class UICheckBox;
+class UIScrollBar;
 
 class CMergeItemWnd : public UIFrameWnd {
 public:
   ~CMergeItemWnd() override;
+  void Resize(int width, int height) override;
   void Slot19() override;
   void Slot25(int x, int y) override;
   void Slot35(int delta) override;
@@ -19,6 +21,7 @@ public:
   __declspec(noinline) int ItemAt(int x, int y);
   void FitToGrid(int width, int height);
   bool RequestMerge();
+  __declspec(noinline) void UpdateScroll();
 
   /* 00B4 */ int m_cellSize;
   /* 00B8 */ int m_gridTop;
@@ -31,12 +34,12 @@ public:
   /* 00D4 */ int unknown_00D4;
   /* 00D8 */ int m_slotRadius;
   /* 00DC */ unsigned int m_minSelection;
-  /* 00E0 */ int unknown_00E0;
-  /* 00E4 */ int unknown_00E4;
-  /* 00E8 */ int unknown_00E8;
+  /* 00E0 */ UIWindow* m_mergeButton;
+  /* 00E4 */ UIWindow* m_cancelButton;
+  /* 00E8 */ UIWindow* m_closeButton;
   /* 00EC */ std::vector<UICheckBox*> m_items;
   /* 00F8 */ UIWindow* unknown_00F8;
-  /* 00FC */ UIWindow* m_scrollBar;
+  /* 00FC */ UIScrollBar* m_scrollBar;
   /* 0100 */ int m_itemCount;
   /* 0104 */ int m_columns;
   /* 0108 */ int m_rows;
