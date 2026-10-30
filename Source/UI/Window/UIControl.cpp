@@ -163,6 +163,11 @@ void CUIControl::Slot52(int value) {
 void CUIControl::Slot53(int) {
 }
 
+// OFFSET: 0x009C0220
+// FUNCTION: fn_13965
+CUIVScrollBar::~CUIVScrollBar() {
+}
+
 // OFFSET: 0x009F2B70
 // FUNCTION: fn_14726
 void CUIVScrollBar::SetTotal(int value) {

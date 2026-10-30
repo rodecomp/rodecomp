@@ -1,12 +1,71 @@
 #include "Contents/AdventureGuideMgr.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/Lists/UIListBoxTemplate.h"
+#include "Render/Renderer.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Text/UIStaticTextControl.h"
 
 template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUITab>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
+
+// OFFSET: 0x009C12B0
+// FUNCTION: fn_13987
+template <>
+void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::ClearItems() {
+  for (AdventureGuide::CUIItemInfo* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x009C1310
+// FUNCTION: fn_13988
+template <>
+void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::ClearItems() {
+  for (AdventureGuide::CUIMonsterInfo* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x009C1370
+// FUNCTION: fn_13989
+template <>
+void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::ClearItems() {
+  for (AdventureGuide::CUIQuestInfo* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x009C13D0
+// FUNCTION: fn_13990
+template <>
+void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::ClearItems() {
+  for (AdventureGuide::CUITabInfo* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x009C14F0
+// FUNCTION: fn_13991
+void CUIAdventureGuide::Slot53() {
+  this->unknown_00B4 = 0;
+  this->Resize(750, 468);
+  this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
+  this->Slot15(this->geometry.width, this->geometry.height);
+  this->Slot16();
+}
 
 namespace AdventureGuide {
 

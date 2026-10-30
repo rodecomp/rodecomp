@@ -10,6 +10,7 @@
 
 class CUIVScrollBar : public CUIControl {
 public:
+  ~CUIVScrollBar() override;
   void Resize(int width, int height) override;
   void Show(int visible) override;
   void Paint() override;

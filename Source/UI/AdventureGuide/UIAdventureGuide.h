@@ -1,10 +1,16 @@
 #ifndef RAGNAROK_SOURCE_UI_ADVENTUREGUIDE_UIADVENTUREGUIDE_H
 #define RAGNAROK_SOURCE_UI_ADVENTUREGUIDE_UIADVENTUREGUIDE_H
 
+#include "UI/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Window/UIControl.h"
 
 #include <string>
+
+class CUIAdventureGuide : public CUIFrameWnd {
+public:
+  virtual void Slot53();
+};
 
 namespace AdventureGuide {
 
