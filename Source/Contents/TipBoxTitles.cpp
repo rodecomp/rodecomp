@@ -404,3 +404,24 @@ void CTipBoxMgr::SelectTip(int id) {
 
   this->Sub7ACF50();
 }
+
+// OFFSET: 0x007AEAF0
+// FUNCTION: fn_09145
+int sub_7AEAF0(lua_State* state) {
+  const char* message;
+  if (!lua_isnumber(state, -2)) {
+    lua_pushboolean(state, 0);
+    message = "2st argment is must number";
+  } else if (!lua_isstring(state, -1)) {
+    lua_pushboolean(state, 0);
+    message = "1th argment is must string";
+  } else {
+    const int id = static_cast<int>(lua_tonumber(state, -2));
+    g_itemTagOwner->AddParagraph(id, std::string(lua_tostring(state, -1)));
+    lua_pushboolean(state, 1);
+    message = "good";
+  }
+
+  lua_pushstring(state, message);
+  return 2;
+}
