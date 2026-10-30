@@ -10,6 +10,7 @@
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/EffectActors.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EnergyOrbEffect.h"
@@ -2732,3 +2733,245 @@ void CGameActor::SetCharm(int type, int count) {
     static_cast<CEnergyOrbEffect*>(effect)->SetCount(count);
   }
 }
+
+namespace {
+
+__declspec(noinline) bool __stdcall IsTreeGroupTwoLocal(int job) {
+  if (job >= JT_RUNE_KNIGHT && job <= JT_MADOGEAR_B) {
+    return true;
+  }
+
+  switch (job) {
+  case JT_PIG_GENETIC:
+  case JT_SHEEP_SURA:
+  case JT_SHEEP_ARCB:
+  case JT_FOX_SORCERER:
+  case JT_FOX_WARLOCK:
+  case JT_DOG_G_CROSS:
+  case JT_DOG_CHASER:
+  case JT_OSTRICH_MINSTREL:
+  case JT_OSTRICH_WANDER:
+  case JT_FOX_WARLOCK_B:
+  case JT_SHEEP_ARCB_B:
+  case JT_DOG_G_CROSS_B:
+  case JT_FOX_SORCERER_B:
+  case JT_OSTRICH_MINSTREL_B:
+  case JT_OSTRICH_WANDER_B:
+  case JT_SHEEP_SURA_B:
+  case JT_PIG_GENETIC_B:
+  case JT_DOG_CHASER_B:
+  case JT_PIG_MECHANIC:
+  case JT_OSTRICH_RANGER:
+  case JT_LION_ROYAL_GUARD:
+  case JT_LION_RUNE_KNIGHT:
+  case JT_PIG_MECHANIC_B:
+  case JT_OSTRICH_RANGER_B:
+  case JT_LION_ROYAL_GUARD_B:
+  case JT_LION_RUNE_KNIGHT_B:
+    return true;
+  default:
+    return false;
+  }
+}
+
+__declspec(noinline) bool __stdcall IsTreeGroupThreeLocal(int job) {
+  const auto value = static_cast<unsigned>(job);
+  return value - JT_DRAGON_KNIGHT <= unsigned(JT_FOURTH_JOB_END - JT_DRAGON_KNIGHT) ||
+    value - JT_SKY_EMPEROR <= unsigned(JT_UPPER_EXTENDED_JOB2_END - 1 - JT_SKY_EMPEROR) || job == JT_ALITEA ||
+    job == JT_ALITEA_RIDING;
+}
+
+}
+
+// OFFSET: 0x00CAA4D0
+// FUNCTION: fn_21017
+void CGameActor::sub_CAA4D0() {
+  if (g_serviceOptions.Get(0x6b) != 0) {
+    return;
+  }
+
+  if (IsTreeGroupTwoLocal(this->GetEffectiveJob(-1))) {
+    if (static_cast<std::int16_t>(this->unknown_0210) == g_session.m_maxLevel) {
+      this->SendMsg(nullptr, 0x96, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      return;
+    }
+    this->unknown_02B4 = 0;
+    return;
+  }
+
+  if (IsTreeGroupThreeLocal(this->GetEffectiveJob(-1)) == true) {
+    if (static_cast<std::int16_t>(this->unknown_0210) == *reinterpret_cast<int*>(&g_session.unknown_7EF0[0x74])) {
+      this->SendMsg(nullptr, 0x97, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      return;
+    }
+    this->unknown_02B4 = 0;
+    return;
+  }
+
+  if (g_session.IsSuperNovice2Job(this->GetEffectiveJob(-1))) {
+    if (static_cast<std::int16_t>(this->unknown_0210) == *reinterpret_cast<int*>(&g_session.unknown_7EF0[0])) {
+      this->SendMsg(nullptr, 0x92, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      return;
+    }
+    this->unknown_02B4 = 0;
+    return;
+  }
+
+  if (g_session.IsExpandedJob(this->GetEffectiveJob(-1))) {
+    if (static_cast<std::int16_t>(this->unknown_0210) == *reinterpret_cast<int*>(&g_session.unknown_7EF0[4])) {
+      this->SendMsg(nullptr, 0x92, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      return;
+    }
+    this->unknown_02B4 = 0;
+    return;
+  }
+
+  if (g_session.IsMercenaryJob(this->GetEffectiveJob(-1))) {
+    const int skill = static_cast<std::int16_t>(this->unknown_0210);
+    if (skill == *reinterpret_cast<int*>(&g_session.unknown_7EF0[8])) {
+      this->SendMsg(nullptr, 0x93, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      return;
+    }
+    if (skill != *reinterpret_cast<int*>(g_session.unknown_7EE8)) {
+      this->unknown_02B4 = 0;
+      return;
+    }
+    if (g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) != 0) {
+      this->unknown_02B4 = 0;
+      return;
+    }
+    this->SendMsg(nullptr, 0x7d, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+
+  if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
+    if (static_cast<std::int16_t>(this->unknown_0210) == *reinterpret_cast<int*>(&g_session.unknown_7EF0[0x28])) {
+      this->SendMsg(nullptr, 0x92, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      return;
+    }
+    this->unknown_02B4 = 0;
+    return;
+  }
+
+  if (static_cast<std::int16_t>(this->unknown_0210) == *reinterpret_cast<int*>(g_session.unknown_7EE8)) {
+    this->SendMsg(nullptr, 0x7d, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+
+  this->unknown_02B4 = 0;
+}
+
+// OFFSET: 0x00CC2340
+// FUNCTION: fn_21139
+void CGameActor::SetActorJob(int job) {
+  this->unknown_025C = job;
+  if (job < 0xfaf) {
+    if (job == 0xfae) {
+      this->unknown_025C = 0xfa8;
+    } else if (job == 0xd) {
+      this->unknown_025C = 7;
+    } else if (job == 0x15) {
+      this->unknown_025C = 0xe;
+    }
+  } else if (job < 0x10b7) {
+    if (job == 0x10b6) {
+      this->unknown_025C = 0x10a1;
+    } else {
+      switch (job) {
+      case 0xfb6:
+        this->unknown_025C = 0xfaf;
+        break;
+      case 0xfc4:
+        this->unknown_025C = 0xfbe;
+        break;
+      case 0xfcc:
+        this->unknown_025C = 0xfc5;
+        break;
+      case 0xfd0:
+        this->unknown_025C = 0xfcf;
+        break;
+      case 0xff0:
+      case 0xff8:
+      case 0xffa:
+      case 0xffc:
+      case 0xffe:
+        this->unknown_025C = 0xfd6;
+        break;
+      case 0xff1:
+      case 0xff9:
+      case 0xffb:
+      case 0xffd:
+      case 0xfff:
+        this->unknown_025C = 0xfdc;
+        break;
+      case 0xff2:
+        this->unknown_025C = 0xfe2;
+        break;
+      case 0xff3:
+        this->unknown_025C = 0xfe9;
+        break;
+      case 0xff4:
+        this->unknown_025C = 0xfd8;
+        break;
+      case 0xff5:
+        this->unknown_025C = 0xfde;
+        break;
+      case 0xff6:
+        this->unknown_025C = 0xfda;
+        break;
+      case 0xff7:
+        this->unknown_025C = 0xfe0;
+        break;
+      case 0x100d:
+        this->unknown_025C = 0x1000;
+        break;
+      case 0x100e:
+        this->unknown_025C = 0x1006;
+        break;
+      case 0x100f:
+        this->unknown_025C = 0x1002;
+        break;
+      case 0x1010:
+        this->unknown_025C = 0x1004;
+        break;
+      case 0x108e:
+        this->unknown_025C = 0x1082;
+        break;
+      case 0x1094:
+        this->unknown_025C = 0x1091;
+        break;
+      }
+    }
+  } else {
+    switch (job) {
+    case 0x10b7:
+      this->unknown_025C = 0x109d;
+      break;
+    case 0x10b8:
+      this->unknown_025C = 0x109c;
+      break;
+    case 0x10b9:
+      this->unknown_025C = 0x10a2;
+      break;
+    case 0x10dc:
+      this->unknown_025C = 0x10ce;
+      break;
+    }
+  }
+
+  int slotJob;
+  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true || this->unknown_0404 == 0) {
+    slotJob = this->GetEffectiveJob(-1);
+  } else if (this->unknown_0404 == 1) {
+    slotJob = 0x1104;
+  } else if (this->unknown_0404 == 2) {
+    slotJob = 0x1105;
+  } else {
+    slotJob = this->unknown_025C;
+  }
+
+  this->Slot21(slotJob);
+  this->ResetJobEffects();
+  this->sub_CAA4D0();
+}
+
