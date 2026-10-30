@@ -245,6 +245,24 @@ UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows, UIF
 // OFFSET: 0x00956050
 
 // OFFSET: 0x009578F0
+// FUNCTION: fn_13039
+int UIGuildSkillWnd::SkillIndexAt(int x, int y) {
+  if (x >= 40 && y >= 41 && y < this->m_visibleRows * 32 + 41) {
+    const int row = (y - 41) / 32;
+    int visible = 0;
+    int index = 0;
+    for (auto skill = this->m_skills.begin(); skill != this->m_skills.end(); ++skill, ++index) {
+      if (index >= this->m_scrollTop * this->m_columns) {
+        if (visible == this->m_columns * row) {
+          return index;
+        }
+        ++visible;
+      }
+    }
+  }
+
+  return -1;
+}
 
 // OFFSET: 0x00957BB0
 
