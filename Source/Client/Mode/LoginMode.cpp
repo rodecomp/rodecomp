@@ -641,3 +641,13 @@ void OpenAccountRegistration() {
 bool sub_D92B70() {
   return false;
 }
+
+// OFFSET: 0x00D92D90
+// FUNCTION: fn_22294
+void nullsub_486(int) {
+}
+
+// OFFSET: 0x00D93B10
+// FUNCTION: fn_22296
+void nullsub_487(int) {
+}
