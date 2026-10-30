@@ -125,3 +125,17 @@ const char* CNProtectGameGuardMgr::GameName() {
   }
   }
 }
+
+// OFFSET: 0x0076D8A0
+// FUNCTION: fn_08217
+void CNProtectGameGuardMgr::SetHwnd(HWND) {
+}
+
+// OFFSET: 0x0076DF40
+
+// OFFSET: 0x0076DFA0
+
+// OFFSET: 0x0076E040
+// FUNCTION: fn_08222
+void CNProtectGameGuardMgr::Send(const char*) {
+}

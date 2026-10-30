@@ -24,6 +24,10 @@ public:
   void Tick();
   int HasError();
   std::string ErrorMessage();
+  void SetHwnd(HWND window);
+  void IncrementCounter();
+  void SetError(const char* file, int line, std::string message);
+  void Send(const char* text);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
