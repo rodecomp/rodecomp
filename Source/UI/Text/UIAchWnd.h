@@ -46,6 +46,7 @@ public:
   /* 00A8 */ std::uint32_t innerBorderColor;
 
   void Paint() override;
+  void Slot28(int x, int y) override;
 };
 
 class UIAchListWnd : public UIWindow {
@@ -158,6 +159,7 @@ public:
   /* 00B8 */ int unknown_00B8;
 
   void Paint() override;
+  void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
 
   void Set(const char* name, const char* text, int item);

@@ -14,7 +14,8 @@
 #include "UI/Text/UIAchWnd.h"
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Text/FormatString.h"
-
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
 #include <algorithm>
 #include <cstring>
 #include <new>
@@ -989,4 +990,26 @@ int UIAchTracingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
   this->Invalidate();
   return 0;
+}
+
+// OFFSET: 0x007B7A20
+// FUNCTION: fn_09234
+void UICustomGageBar::Slot28(int x, int y) {
+  std::string label = FormatOwnedString("%s( %d / %d )", this->text.c_str(), this->value, this->maximum);
+  int tipX = 0;
+  int tipY = -20;
+  this->ToScreen(tipX, tipY);
+  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(label.c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
+}
+
+// OFFSET: 0x007B7AF0
+// FUNCTION: fn_09235
+void UIToolTipBitmapWnd::Slot28(int x, int y) {
+  this->Slot27(x, y);
+  if (this->tooltip.size() != 0) {
+    x = 0;
+    y = -20;
+    this->ToScreen(x, y);
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+  }
 }
