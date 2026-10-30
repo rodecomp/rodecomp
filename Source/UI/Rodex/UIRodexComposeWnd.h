@@ -8,6 +8,7 @@
 
 #include <cstdint>
 #include <list>
+#include <string>
 
 class UIEditCtrl_Custom;
 class UIEditCtrl_Currency;
@@ -32,10 +33,16 @@ public:
 
 class UIRodexComposeWnd : public UIFrameWnd {
 public:
+  UIRodexComposeWnd(UIWindowContext& windows, UIFrameContext& frames);
+  ~UIRodexComposeWnd() override;
+  void Slot10(int x, int y, std::intptr_t value) override;
   void Slot19() override;
   void Slot25(int x, int y) override;
   void Slot32(int x, int y) override;
   ITEM_INFO GetItemAtPoint(int x, int y);
+  int MeasureText(const std::string& text, const unsigned& bytes);
+  void SetRecipient(int id, unsigned short job, unsigned short level, const char* name);
+  std::int64_t GetZeny();
 
   /* 00B4 */ UIEditCtrl_Custom* unknown_00B4;
   /* 00B8 */ UIEditCtrl_Custom* unknown_00B8;

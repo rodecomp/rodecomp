@@ -3,6 +3,13 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
+#include "File/ShortcutFilename.h"
+#include "UI/Buttons/UIBmpTextButton.h"
+#include "UI/Edit/ItemTagRetirement.h"
+#include "UI/Shortcuts/ShortcutVisibility.h"
+#include "UI/Text/UIStaticText.h"
+#include "Utility/Text/FormatString.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -12,6 +19,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 
 #include <cstdlib>
+#include <cstring>
 
 // OFFSET: 0x007FF520
 // FUNCTION: fn_10002
@@ -106,3 +114,32 @@ void UIRodexComposeWnd::Slot32(int x, int y) {
     this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
+
+// OFFSET: 0x007FEDD0
+// FUNCTION: fn_09992
+UIRodexComposeWnd::UIRodexComposeWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), unknown_00B4(nullptr), unknown_00B8(nullptr), unknown_00BC(nullptr), unknown_00C0(nullptr), unknown_00C4(nullptr),
+      unknown_00C8(nullptr), unknown_00CC(0), unknown_00D0(nullptr), m_contents(nullptr), unknown_00D8(nullptr), m_zeny(nullptr), unknown_00E0(0),
+      unknown_00E4(0), m_itemIndex(0), unknown_00F8(0), unknown_0100(nullptr) {
+  this->m_items.clear();
+}
+
+// INLINED
+UIRodexComposeWnd::~UIRodexComposeWnd() {
+  if (this->unknown_0100) {
+    reinterpret_cast<ItemTagRetirement*>(this->unknown_0100)->Clear();
+    delete this->unknown_0100;
+  }
+}
+
+// OFFSET: 0x007FF260
+// FUNCTION: fn_09998
+int UIRodexComposeWnd::MeasureText(const std::string& text, const unsigned& bytes) {
+  return this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), bytes, 0, 12, 0, 0);
+}
+
+// OFFSET: 0x007FF290
+
+// OFFSET: 0x007FF400
+
+// OFFSET: 0x007FF4A0
