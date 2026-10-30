@@ -367,3 +367,14 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     break;
   }
 }
+
+// OFFSET: 0x00B79C40
+// FUNCTION: fn_19201
+void CSpriteEffect::Slot04() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CSpriteParticle* particle = *it;
+    if (particle->unknown_00E8 > 0) {
+      particle->sub_B40F30(1);
+    }
+  }
+}

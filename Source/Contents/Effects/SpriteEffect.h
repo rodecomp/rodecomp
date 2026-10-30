@@ -13,6 +13,7 @@ public:
   CSpriteEffect();
 
   void Slot01() override;
+  void Slot04() override;
   void Close() override;
 
   void SetupParticle(CSpriteParticle* particle);
