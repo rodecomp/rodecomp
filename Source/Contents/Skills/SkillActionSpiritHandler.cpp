@@ -186,6 +186,12 @@ int CSkillAction_SH_HOGOGONG_STRIKE::Slot02() {
 }
 
 // OFFSET: 0x0079FB10
+// FUNCTION: fn_08949
+void CEfstAction_SANDY_FESTIVAL::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sandy_festival_of_ki_sul"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0079FC90
 // FUNCTION: fn_08950
@@ -196,6 +202,13 @@ void CSkillAction_SH_KI_SUL_RAMPAGE::Slot08(int level, CGameActor* source) {
 }
 
 // OFFSET: 0x0079FCC0
+// FUNCTION: fn_08951
+void CSkillAction_SH_KI_SUL_RAMPAGE::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ki_sul_rampage_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ki_sul_rampage"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x0079FF40
 // FUNCTION: fn_08952
@@ -206,6 +219,36 @@ void CSkillAction_SH_COLORS_OF_HYUN_ROK::Slot08(int level, CGameActor* source) {
 }
 
 // OFFSET: 0x0079FF70
+// FUNCTION: fn_08953
+void CSkillAction_SH_COLORS_OF_HYUN_ROK::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  switch (level) {
+  case 1:
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_water"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    break;
+  case 2:
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_wind"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    break;
+  case 3:
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_earth"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    break;
+  case 4:
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_fire"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    break;
+  case 5:
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_darkness"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    break;
+  case 6:
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_saint"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    break;
+  case 7:
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("colors_of_hyun_rok_reset"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    break;
+  }
+}
 
 // OFFSET: 0x007A04A0
 // FUNCTION: fn_08954
@@ -228,6 +271,13 @@ int CSkillAction_SH_HYUN_ROKS_BREEZE::Slot14() {
 }
 
 // OFFSET: 0x007A04F0
+// FUNCTION: fn_08957
+void CSkillObjectAction_SH_HYUN_ROKS_BREEZE::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+  if (object) {
+    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_roks_breeze_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_roks_breeze"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x007A0770
 // FUNCTION: fn_08958
@@ -246,12 +296,36 @@ void CSkillAction_SH_TEMPORARY_COMMUNION::Slot08(int level, CGameActor* source) 
 }
 
 // OFFSET: 0x007A0980
+// FUNCTION: fn_08961
+void CSkillAction_SH_TEMPORARY_COMMUNION::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("temporary_communion"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x007A0B00
+// FUNCTION: fn_08962
+void CEfstAction_TEMPORARY_COMMUNION::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("temporary_communion_buff_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("temporary_communion_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x007A0DA0
+// FUNCTION: fn_08963
+void CEfstAction_TEMPORARY_COMMUNION::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("temporary_communion_buff_bottom"));
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("temporary_communion_buff"));
+  }
+}
 
 // OFFSET: 0x007A0FD0
+// FUNCTION: fn_08964
+void CEfstAction_TEMPORARY_COMMUNION::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
 
 // OFFSET: 0x007A0FF0
 // FUNCTION: fn_08965
@@ -268,6 +342,12 @@ void CSkillAction_SH_BLESSING_OF_MYSTICAL_CREATURES::Slot08(int level, CGameActo
 }
 
 // OFFSET: 0x007A1030
+// FUNCTION: fn_08967
+void CSkillAction_SH_BLESSING_OF_MYSTICAL_CREATURES::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("blessing_of_mystical_creatures"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x007A11C0
 // FUNCTION: fn_08968
@@ -276,13 +356,79 @@ int CSkillAction_SH_CHUL_HO_BATTERING::Slot02() {
 }
 
 // OFFSET: 0x007A11D0
+// FUNCTION: fn_08969
+void CSkillAction_SH_CHUL_HO_BATTERING::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chul_ho_battering_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+        )) {
+      effect->Slot14(level);
+    }
+  }
+}
 
 // OFFSET: 0x007A1360
+// FUNCTION: fn_08970
+void CSkillAction_SH_CHUL_HO_BATTERING::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target || !source) {
+    return;
+  }
+
+  const float scale = source->unknown_0378 * source->render.speed * 16.0f;
+  if (CEffect* effect = g_effectMgr->Spawn(
+        target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chul_ho_battering"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+      )) {
+    effect->Slot16(static_cast<int>(scale));
+  }
+  if (CEffect* effect = g_effectMgr->Spawn(
+        target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chul_ho_battering_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+      )) {
+    effect->Slot16(static_cast<int>(scale));
+  }
+}
 
 // OFFSET: 0x007A1630
+// FUNCTION: fn_08971
+void CSkillAction_SH_CHUL_HO_BATTERING::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chul_ho_battering_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+        )) {
+      effect->Slot26(static_cast<bool>(reinterpret_cast<std::uintptr_t>(target) & 1));
+    }
+  }
+}
 
 // OFFSET: 0x007A17D0
+// FUNCTION: fn_08972
+void CSkillAction_SH_HYUN_ROK_SPIRIT_POWER::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+        )) {
+      effect->Slot14(level);
+    }
+    if (CEffect* effect = g_effectMgr->Spawn(
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+        )) {
+      effect->Slot14(level);
+    }
+  }
+}
 
 // OFFSET: 0x007A1A80
+// FUNCTION: fn_08973
+void CSkillAction_SH_HYUN_ROK_SPIRIT_POWER::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x007A1D10
+// FUNCTION: fn_08974
+void CSkillAction_SH_HYUN_ROK_SPIRIT_POWER::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}

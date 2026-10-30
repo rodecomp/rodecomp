@@ -48,22 +48,78 @@ public:
 };
 
 // OFFSET: 0x007A5A80
+// FUNCTION: fn_09023
+void CSkillAction_WH_GALESTORM::Slot08(int level, CGameActor* source) {
+  if (CEffect* effect = g_effectMgr->Spawn(
+        source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("galestorm_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+      )) {
+    effect->Slot14(level);
+  }
+}
 
 // OFFSET: 0x007A5BF0
+// FUNCTION: fn_09024
+void CSkillAction_WH_GALESTORM::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source && target) {
+    g_effectMgr->Spawn(target->render.accountId, 1973, target->render.position.x, target->render.position.y, target->render.position.z, 0, level, 0, 0);
+  }
+}
 
 // OFFSET: 0x007A5C40
+// FUNCTION: fn_09025
+void CSkillAction_WH_GALESTORM::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("galestorm_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x007A5DB0
+// FUNCTION: fn_09026
+void CSkillAction_WH_CALAMITYGALE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    if (CEffect* effect = g_effectMgr->Spawn(
+          source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+        )) {
+      effect->Slot14(level);
+    }
+  }
+}
 
 // OFFSET: 0x007A5F40
+// FUNCTION: fn_09027
+void CSkillAction_WH_CALAMITYGALE::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x007A60A0
+// FUNCTION: fn_09028
+void CEfstAction_CALAMITYGALE::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x007A6220
+// FUNCTION: fn_09029
+void CEfstAction_CALAMITYGALE::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("calumitygale_loop"));
+  }
+}
 
 // OFFSET: 0x007A6350
+// FUNCTION: fn_09030
+void CEfstAction_CALAMITYGALE::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
 
 // OFFSET: 0x007A6370
+// FUNCTION: fn_09031
+EfstActionMessage CEfstAction_CALAMITYGALE::Slot03() {
+  return {LookupMessage(3805), 0xFFFF00};
+}
 
 // OFFSET: 0x007A63A0
 // FUNCTION: fn_09032
