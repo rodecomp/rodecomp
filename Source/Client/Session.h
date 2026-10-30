@@ -65,6 +65,15 @@ struct SessionShop {
   /* 0004 */ std::vector<std::map<int, std::pair<int, int>>> unknown_0004;
 };
 
+struct SubChatWndInfo {
+  /* 0000 */ std::string name;
+  /* 0018 */ bool options[25];
+  /* 0034 */ int x;
+  /* 0038 */ int y;
+  /* 003C */ int width;
+  /* 0040 */ int height;
+};
+
 class CSession {
 public:
   /* 0000 */ std::uint32_t unknown_0000;
@@ -90,7 +99,9 @@ public:
   /* 071C */ std::vector<int> m_homunSkillLevels;
   /* 0728 */ std::vector<int> m_mercSkillLevels;
   /* 0734 */ std::list<SessionRecord0734> unknown_0734;
-  /* 073C */ unsigned char unknown_073C[0x14];
+  /* 073C */ std::map<int, SubChatWndInfo> m_noSubChatWnds;
+  /* 0744 */ std::map<int, SubChatWndInfo> m_subChatWnds;
+  /* 074C */ unsigned char unknown_074C[0x04];
   /* 0750 */ std::uint32_t m_prohibitionTarget;
   /* 0754 */ std::vector<ProhibitionLogEntry> m_prohibitionLog;
   /* 0760 */ std::string m_accountName;
@@ -645,6 +656,10 @@ void SetMemberFlags(std::uint32_t* flags);
 static_assert(sizeof(SessionRecord6144) == 0x38);
 static_assert(sizeof(SessionRecord6178) == 0x2C);
 static_assert(sizeof(ProhibitionLogEntry) == 0x54);
+static_assert(sizeof(SubChatWndInfo) == 0x44);
+static_assert(offsetof(SubChatWndInfo, x) == 0x34);
+static_assert(offsetof(CSession, m_noSubChatWnds) == 0x73C);
+static_assert(offsetof(CSession, m_subChatWnds) == 0x744);
 static_assert(offsetof(CSession, m_prohibitionLog) == 0x754);
 static_assert(offsetof(SessionRecord6144, unknown_002C) == 0x2C);
 static_assert(offsetof(SessionRecord6144, unknown_0030) == 0x30);

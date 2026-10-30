@@ -1,5 +1,7 @@
 #include "Script/LuaScript.h"
 #include "Archive/PakRegistry.h"
+#include "Client/Session.h"
+#include "Contents/EntryQueueMgr.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectTypes.h"
 #include "Contents/Effects/EmitterEffect.h"
@@ -20,12 +22,28 @@ extern "C" {
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
+#include <map>
 #include <string>
+#include <utility>
 #include <vector>
 #include <windows.h>
 
+struct MiniMapPosition {
+  MiniMapPosition() {
+  }
+
+  /* 0000 */ float x;
+  /* 0004 */ float y;
+};
+
 // GLOBAL: gl_24791
 LuaScript* g_luaScript;
+
+// GLOBAL: gl_24913
+std::map<std::string, MiniMapPosition> g_exceptionMiniMapPosList;
+
+// GLOBAL: gl_24914
+std::map<std::string, std::vector<std::string>> g_kafraServiceMapList;
 
 struct LuaScriptPair {
   std::string left;
@@ -81,23 +99,58 @@ int TraceValue(lua_State* state) {
 // OFFSET: 0x00AFF140
 // FUNCTION: fn_18352
 int SetSubChatWndList(lua_State* state) {
-  luaL_checkstring(state, 1);
-  luaL_checkstring(state, 2);
-  luaL_checknumber(state, 3);
-  luaL_checknumber(state, 4);
-  luaL_checknumber(state, 5);
-  luaL_checknumber(state, 6);
-  lua_pushnumber(state, 0.0);
+  if (g_session.m_noSubChatWnds.size() + g_session.m_subChatWnds.size() >= 10) {
+    return 1;
+  }
+
+  std::string type = luaL_checkstring(state, 1);
+  std::string name = luaL_checkstring(state, 2);
+  const int x = static_cast<int>(luaL_checknumber(state, 3));
+  const int y = static_cast<int>(luaL_checknumber(state, 4));
+  const int width = static_cast<int>(luaL_checknumber(state, 5));
+  const int height = static_cast<int>(luaL_checknumber(state, 6));
+
+  SubChatWndInfo info;
+  std::memset(info.options, 0, sizeof(info.options));
+  info.name = name;
+  info.x = x;
+  info.y = y;
+  info.width = width;
+  info.height = height;
+
+  int index;
+  if (type == "No") {
+    index = static_cast<int>(g_session.m_noSubChatWnds.size());
+    g_session.m_noSubChatWnds[index] = info;
+  } else {
+    index = static_cast<int>(g_session.m_subChatWnds.size());
+    g_session.m_subChatWnds[index] = info;
+  }
+
+  lua_pushnumber(state, index);
   return 1;
 }
 
 // OFFSET: 0x00AFF630
 // FUNCTION: fn_18353
 int SetSubChatWndOption(lua_State* state) {
-  luaL_checkstring(state, 1);
-  luaL_checknumber(state, 2);
-  luaL_checknumber(state, 3);
-  luaL_checknumber(state, 4);
+  std::string type = luaL_checkstring(state, 1);
+  const int index = static_cast<int>(luaL_checknumber(state, 2));
+  const int option = static_cast<int>(luaL_checknumber(state, 3));
+  const int value = static_cast<int>(luaL_checknumber(state, 4));
+
+  if (type == "No") {
+    const auto window = g_session.m_noSubChatWnds.find(index);
+    if (window != g_session.m_noSubChatWnds.end()) {
+      window->second.options[option - 1] = value != 0;
+    }
+  } else {
+    const auto window = g_session.m_subChatWnds.find(index);
+    if (window != g_session.m_subChatWnds.end()) {
+      window->second.options[option - 1] = value != 0;
+    }
+  }
+
   return 1;
 }
 
@@ -582,23 +635,44 @@ int SetWindEffectInfo(lua_State* state) {
 // OFFSET: 0x00BA2F00
 // FUNCTION: fn_19675
 int AddEntryQueue(lua_State* state) {
-  luaL_checknumber(state, 1);
-  luaL_checkstring(state, 2);
-  luaL_checkstring(state, 3);
-  luaL_checknumber(state, 4);
-  luaL_checknumber(state, 5);
-  luaL_checknumber(state, 6);
-  luaL_checknumber(state, 7);
-  luaL_checknumber(state, 8);
-  luaL_checknumber(state, 9);
-  luaL_checknumber(state, 10);
-  luaL_checknumber(state, 11);
-  luaL_checknumber(state, 12);
-  luaL_checkstring(state, 13);
-  luaL_checkstring(state, 14);
-  luaL_checkstring(state, 15);
-  luaL_checkstring(state, 16);
-  luaL_checkstring(state, 17);
+  const int id = static_cast<int>(luaL_checknumber(state, 1));
+  std::string name = luaL_checkstring(state, 2);
+  std::string displayName = luaL_checkstring(state, 3);
+  const int value020C = static_cast<int>(luaL_checknumber(state, 4));
+  const int value0210 = static_cast<int>(luaL_checknumber(state, 5));
+  const int value0214 = static_cast<int>(luaL_checknumber(state, 6));
+  const int value0215 = static_cast<int>(luaL_checknumber(state, 7));
+  const int value0216 = static_cast<int>(luaL_checknumber(state, 8));
+  const int value0217 = static_cast<int>(luaL_checknumber(state, 9));
+  const int value0218 = static_cast<int>(luaL_checknumber(state, 10));
+  const int value021C = static_cast<int>(luaL_checknumber(state, 11));
+  const int value0220 = static_cast<int>(luaL_checknumber(state, 12));
+  std::string text0224 = luaL_checkstring(state, 13);
+  std::string text0328 = luaL_checkstring(state, 14);
+  std::string text042C = luaL_checkstring(state, 15);
+  std::string text0530 = luaL_checkstring(state, 16);
+  std::string text0634 = luaL_checkstring(state, 17);
+
+  EntryQueueInfo* info = new EntryQueueInfo;
+  info->id = id;
+  strcpy_s(info->name, sizeof(info->name), name.c_str());
+  strcpy_s(info->displayName, sizeof(info->displayName), displayName.c_str());
+  info->unknown_020C = value020C;
+  info->unknown_0210 = value0210;
+  info->unknown_0214 = static_cast<unsigned char>(value0214);
+  info->unknown_0215 = static_cast<unsigned char>(value0215);
+  info->unknown_0216 = static_cast<unsigned char>(value0216);
+  info->unknown_0217 = static_cast<unsigned char>(value0217);
+  info->unknown_0218 = static_cast<unsigned char>(value0218);
+  info->unknown_021C = value021C;
+  info->unknown_0220 = value0220;
+  strcpy_s(info->unknown_0224, sizeof(info->unknown_0224), text0224.c_str());
+  strcpy_s(info->unknown_0328, sizeof(info->unknown_0328), text0328.c_str());
+  strcpy_s(info->unknown_042C, sizeof(info->unknown_042C), text042C.c_str());
+  strcpy_s(info->unknown_0530, sizeof(info->unknown_0530), text0530.c_str());
+  strcpy_s(info->unknown_0634, sizeof(info->unknown_0634), text0634.c_str());
+
+  g_entryQueueList.insert(std::make_pair(id, info));
   return 0;
 }
 
@@ -662,17 +736,21 @@ int AddCheckAttendanceBanner(lua_State* state) {
 // OFFSET: 0x009419B0
 // FUNCTION: fn_12793
 int AddItmeTokafraServiceMapList(lua_State* state) {
-  luaL_checkstring(state, 1);
-  luaL_checkstring(state, 2);
+  std::string mapName = luaL_checkstring(state, 1);
+  std::string serviceMapName = luaL_checkstring(state, 2);
+  g_kafraServiceMapList[mapName].push_back(serviceMapName);
   return 0;
 }
 
 // OFFSET: 0x00941870
 // FUNCTION: fn_12792
 int AddItmeToExceptionMiniMapPosList(lua_State* state) {
-  luaL_checkstring(state, 1);
-  luaL_checknumber(state, 2);
-  luaL_checknumber(state, 3);
+  std::string mapName = luaL_checkstring(state, 1);
+  const int x = static_cast<int>(luaL_checknumber(state, 2));
+  const int y = static_cast<int>(luaL_checknumber(state, 3));
+  MiniMapPosition& position = g_exceptionMiniMapPosList[mapName];
+  position.x = static_cast<float>(x);
+  position.y = static_cast<float>(y);
   return 0;
 }
 
