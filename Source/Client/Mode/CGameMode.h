@@ -67,7 +67,9 @@ public:
   /* 01C4 */ std::map<std::uint32_t, MiniMapPing> unknown_01C4;
   /* 01CC */ unsigned char unknown_01CC[0x24];
   /* 01F0 */ std::map<std::uint32_t, MinimapMarker> minimapMarkers;
-  /* 01F8 */ unsigned char unknown_01F8[0x9C];
+  /* 01F8 */ unsigned char unknown_01F8[0x58];
+  /* 0250 */ int unknown_0250;
+  /* 0254 */ unsigned char unknown_0254[0x40];
   /* 0294 */ char unknown_0294[0x20];
   /* 02B4 */ UIWindow* itemWindow;
   /* 02B8 */ unsigned char unknown_02B8[0x28];

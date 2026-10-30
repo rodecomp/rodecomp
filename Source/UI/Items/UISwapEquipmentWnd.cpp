@@ -1,11 +1,14 @@
 #include "UI/Items/UISwapEquipmentWnd.h"
 
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
+#include "Contents/World/World.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -73,6 +76,48 @@ void UISwapEquipmentWnd::Slot32(int x, int y) {
   if (item.unknown_0000[1] > 0) {
     g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
+}
+
+// OFFSET: 0x008316A0
+// FUNCTION: fn_10401
+int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    switch (argument1) {
+    case 0xB9:
+      g_session.m_swapEquipmentMode = 0;
+      if (g_windowMgr.unknown_01E0) {
+        g_windowMgr.unknown_01E0->SendMsg(nullptr, 6, 0x1FC, 0, 0, 0);
+      }
+      break;
+    case 0xC9:
+      g_windowMgr.CloseWindow(0x128);
+      return 1;
+    case 0x1FC: {
+      int messageId;
+      if (g_windowMgr.LookupWindow(10011)) {
+        messageId = 0xBB9;
+      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0250) {
+        messageId = 0xBB7;
+      } else if (g_windowMgr.unknown_0304 || g_windowMgr.unknown_0308 || g_windowMgr.unknown_02FC) {
+        messageId = 0xBBA;
+      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->unknown_0264[3]) {
+        messageId = 0xBB8;
+      } else if (g_windowMgr.unknown_01F0 || g_windowMgr.unknown_01F8) {
+        messageId = 0xBBB;
+      } else {
+        g_modeMgr.GetGameMode()->SendMsg(0x130, 0, 0, 0, 0);
+        return 1;
+      }
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(messageId)), 0xFF, 0, 0, 0);
+      return 1;
+    }
+    }
+  } else if (message == 60) {
+    this->Invalidate();
+    this->InvalidateChildren();
+    return 1;
+  }
+  return 1;
 }
 
 // OFFSET: 0x00831860
