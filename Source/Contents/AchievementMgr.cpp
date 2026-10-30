@@ -313,6 +313,16 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardItem(int id, in
 }
 
 // OFFSET: 0x0066F690
+// FUNCTION: fn_05327
+std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardTitle(int id, int value) {
+  const auto found = this->achievements.find(id);
+  if (found == this->achievements.end()) {
+    return std::pair<bool, std::string>(false, FormatOwnedString("achievement info [%d] cannot be find", id));
+  }
+
+  found->second.unknown_0050 = value;
+  return std::pair<bool, std::string>(true, "good");
+}
 
 // OFFSET: 0x0066F7B0
 // FUNCTION: fn_05328
@@ -343,17 +353,206 @@ bool CAchievementMgr::HasReward(int id) {
 }
 
 // OFFSET: 0x0066F970
+// FUNCTION: fn_05330
+std::pair<bool, std::string> CAchievementMgr::SetAchieveTab(int id, int group, int index) {
+  const int key = this->groupWidth * group + index;
+  if (std::find(this->groups[key].begin(), this->groups[key].end(), id) == this->groups[key].end()) {
+    this->groups[key].push_back(id);
+    return std::pair<bool, std::string>(true, "good");
+  }
+
+  return std::pair<bool, std::string>(false, FormatOwnedString("duplicate achievement tab number info [%d]", id));
+}
 
 // OFFSET: 0x0066FED0
+// FUNCTION: fn_05337
+int CAchievementMgr::L_InsertAchieveInfo(lua_State* state) {
+  if (!lua_isnumber(state, -5)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 1nd is must number");
+  } else if (!lua_isstring(state, -4)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 2th is must string");
+  } else if (!lua_isstring(state, -3)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 3th is must string");
+  } else if (!lua_isstring(state, -2)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 4th is must string");
+  } else if (!lua_isnumber(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 5th is must number");
+  } else {
+    const int id = static_cast<int>(lua_tonumber(state, -5));
+    const std::string title = lua_tostring(state, -4);
+    const std::string unknown0018 = lua_tostring(state, -3);
+    const std::string unknown0030 = lua_tostring(state, -2);
+    const std::pair<bool, std::string> result =
+      g_achievementMgr->InsertAchieveInfo(id, title, unknown0018, unknown0030, static_cast<int>(lua_tonumber(state, -1)));
+    if (!result.first) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("InsertAchieveInfo : %s", result.second.c_str()));
+    } else {
+      lua_pushboolean(state, 1);
+      lua_pushstring(state, "good");
+    }
+  }
+  return 2;
+}
 
 // OFFSET: 0x00670140
+// FUNCTION: fn_05338
+int CAchievementMgr::L_InsertAchieveResource(lua_State* state) {
+  if (!lua_isnumber(state, -4)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 1th is must number");
+  } else if (!lua_isstring(state, -3)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 2th is must string");
+  } else if (!lua_isnumber(state, -2)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 3th is must number");
+  } else if (!lua_isnumber(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 4th is must number");
+  } else {
+    const int id = static_cast<int>(lua_tonumber(state, -4));
+    const std::string text = lua_tostring(state, -3);
+    const int unknown0018 = static_cast<int>(lua_tonumber(state, -2));
+    const std::pair<bool, std::string> result =
+      g_achievementMgr->InsertAchieveResource(id, text, unknown0018, static_cast<int>(lua_tonumber(state, -1)));
+    if (!result.first) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("InsertAchieveResource : %s", result.second.c_str()));
+    } else {
+      lua_pushboolean(state, 1);
+      lua_pushstring(state, "good");
+    }
+  }
+  return 2;
+}
 
 // OFFSET: 0x00670320
+// FUNCTION: fn_05339
+int CAchievementMgr::L_InsertAchieveRewardBuff(lua_State* state) {
+  if (!lua_isnumber(state, -2)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 1th is must number");
+  } else if (!lua_isnumber(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 2th is must number");
+  } else {
+    const int id = static_cast<int>(lua_tonumber(state, -2));
+    const std::pair<bool, std::string> result = g_achievementMgr->InsertAchieveRewardBuff(id, static_cast<int>(lua_tonumber(state, -1)));
+    if (!result.first) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("InsertAchieveRewardBuff : %s", result.second.c_str()));
+    } else {
+      lua_pushboolean(state, 1);
+      lua_pushstring(state, "good");
+    }
+  }
+  return 2;
+}
 
 // OFFSET: 0x00670490
+// FUNCTION: fn_05340
+int CAchievementMgr::L_InsertAchieveRewardItem(lua_State* state) {
+  if (!lua_isnumber(state, -2)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 1th is must number");
+  } else if (!lua_isnumber(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 2th is must number");
+  } else {
+    const int id = static_cast<int>(lua_tonumber(state, -2));
+    const std::pair<bool, std::string> result = g_achievementMgr->InsertAchieveRewardItem(id, static_cast<int>(lua_tonumber(state, -1)));
+    if (!result.first) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("InsertAchieveRewardItem : %s", result.second.c_str()));
+    } else {
+      lua_pushboolean(state, 1);
+      lua_pushstring(state, "good");
+    }
+  }
+  return 2;
+}
 
 // OFFSET: 0x00670600
+// FUNCTION: fn_05341
+int CAchievementMgr::L_InsertAchieveRewardTitle(lua_State* state) {
+  if (!lua_isnumber(state, -2)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 1th is must number");
+  } else if (!lua_isnumber(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 2th is must number");
+  } else {
+    const int id = static_cast<int>(lua_tonumber(state, -2));
+    const std::pair<bool, std::string> result = g_achievementMgr->InsertAchieveRewardTitle(id, static_cast<int>(lua_tonumber(state, -1)));
+    if (!result.first) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("InsertAchieveRewardTitle : %s", result.second.c_str()));
+    } else {
+      lua_pushboolean(state, 1);
+      lua_pushstring(state, "good");
+    }
+  }
+  return 2;
+}
 
 // OFFSET: 0x00670770
+// FUNCTION: fn_05342
+int CAchievementMgr::L_InsertAchieveUIType(lua_State* state) {
+  if (!lua_isnumber(state, -3)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 1th is must number");
+  } else if (!lua_isnumber(state, -2)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 2th is must number");
+  } else if (!lua_isstring(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 3th is must string");
+  } else {
+    const int id = static_cast<int>(lua_tonumber(state, -3));
+    const int type = static_cast<int>(lua_tonumber(state, -2));
+    std::string text;
+    text = lua_tostring(state, -1);
+    const std::pair<bool, std::string> result = g_achievementMgr->InsertAchieveUIType(id, type, text);
+    if (!result.first) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("InsertAchieveUIType : %s", result.second.c_str()));
+    } else {
+      lua_pushboolean(state, 1);
+      lua_pushstring(state, "good");
+    }
+  }
+  return 2;
+}
 
 // OFFSET: 0x006709C0
+// FUNCTION: fn_05343
+int CAchievementMgr::L_SetAchieveIDByTab(lua_State* state) {
+  if (!lua_isnumber(state, -3)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 1nd is must number");
+  } else if (!lua_isnumber(state, -2)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 2th is must number");
+  } else if (!lua_isnumber(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 3th is must number");
+  } else {
+    const int id = static_cast<int>(lua_tonumber(state, -3));
+    const int group = static_cast<int>(lua_tonumber(state, -2));
+    const std::pair<bool, std::string> result = g_achievementMgr->SetAchieveTab(id, group, static_cast<int>(lua_tonumber(state, -1)));
+    if (!result.first) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("SetAchieveTab : %s", result.second.c_str()));
+    } else {
+      lua_pushboolean(state, 1);
+      lua_pushstring(state, "good");
+    }
+  }
+  return 2;
+}
