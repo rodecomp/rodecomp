@@ -29,4 +29,32 @@ void CUIQuestInfo::Paint() {
 void CUIQuestInfo::Slot16() {
 }
 
+// OFFSET: 0x00A569F0
+// FUNCTION: fn_16322
+void CUIQuestInfo::Slot15(int width, int height) {
+  this->textViewer = new CUITextViewer(*this->m_context);
+  this->textViewer->SetSize(300, 150);
+  this->textViewer->Move(0, 0);
+  this->textViewer->SetTextOffset(0, 0);
+  this->textViewer->SetFont("Gulim");
+  this->textViewer->SetFontHeight(12);
+  this->textViewer->SetBold(0);
+  this->textViewer->SetTextColor(0);
+  this->textViewer->SetOutline(0, 0xFFFFFF);
+  this->textViewer->SetLineSpacing(6);
+  this->textViewer->SetBackgroundColor(0xFFFF00FF);
+  this->textViewer->SetPadding(0, 0, 0, 0);
+  this->textViewer->SetScrollBarSize(7, 150);
+  this->textViewer->SetScrollStep(15);
+  this->textViewer->SetScrollBarButtonImages(
+    "유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_upper.bmp", "유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_down.bmp"
+  );
+  this->textViewer->SetScrollBarBackground("");
+  this->textViewer->SetScrollBarThumbImages(
+    "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_up.bmp", "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_mid.bmp",
+    "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_down.bmp"
+  );
+  this->AddChild(this->textViewer);
+}
+
 }

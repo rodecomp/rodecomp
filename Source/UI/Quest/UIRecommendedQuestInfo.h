@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_QUEST_UIRECOMMENDEDQUESTINFO_H
 
 #include "UI/FrameSkin.h"
+#include "UI/Text/UITextViewerControl.h"
 #include "UI/Window/UIControl.h"
 
 class CUIRecommendedQuestInfo : public CUIFrameWnd {
@@ -14,8 +15,11 @@ namespace RecommendedQuestInfo {
 
 class CUIQuestInfo : public CUIControl {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
+
+  /* 0084 */ CUITextViewer* textViewer;
 };
 
 }
