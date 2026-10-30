@@ -316,3 +316,32 @@ void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
 }
 
 // OFFSET: 0x009DEBF0
+// FUNCTION: fn_14357
+void CUIAdventureGuide::MarkQuest(int questId) {
+  for (AdventureGuide::CUITab* tab : this->tabs->items) {
+    if (tab->type != 1) {
+      continue;
+    }
+
+    if (tab->subTabs) {
+      std::list<AdventureGuide::CUISubTab*> subTabs = tab->subTabs->items;
+      auto found = std::find_if(subTabs.begin(), subTabs.end(), [questId](AdventureGuide::CUISubTab* subTab) {
+        return subTab->unknown_00F4 == static_cast<unsigned int>(questId);
+      });
+      if (found != subTabs.end()) {
+        (*found)->unknown_00EC->Show(1);
+      }
+    }
+
+    AdventureGuide::CUIQuest* quest = dynamic_cast<AdventureGuide::CUIQuest*>(tab->page);
+    if (quest) {
+      std::vector<AdventureGuide::CUIQuestInfo*> items = quest->questList->items;
+      auto found = std::find_if(items.begin(), items.end(), [questId](AdventureGuide::CUIQuestInfo* item) {
+        return item->questId == questId;
+      });
+      if (found != items.end()) {
+        (*found)->unknown_00E8->Show(1);
+      }
+    }
+  }
+}
