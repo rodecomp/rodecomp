@@ -236,6 +236,9 @@ struct CEffectPrim : CRenderObject {
   void RenderFoldingRibbon(matrix& wtm);
   void RenderStandingPanels(matrix& wtm);
   void RenderHoverSquares(matrix& wtm);
+  void RenderLaunchEffects(matrix& wtm);
+  void RenderGroundSprite(matrix& wtm);
+  void RenderSegmentSpriteTrail(matrix& wtm);
 
   /* 0138 */ EffectPrimitiveState state;
 };

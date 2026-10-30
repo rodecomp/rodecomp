@@ -375,6 +375,7 @@
   "Source/Contents/Effects/EffectPrimitivePanels.cpp": 4,
   "Source/Contents/Effects/EffectPrimitiveRecords.cpp": 4,
   "Source/Contents/Effects/EffectPrimitiveRendering.cpp": 4,
+  "Source/Contents/Effects/EffectPrimitiveSprites.cpp": 4,
   "Source/Contents/Effects/EffectPrimitiveState.cpp": 4,
   "Source/Contents/Effects/EffectPrimitiveSweeps.cpp": 4,
   "Source/Contents/Effects/EffectTypes.cpp": 4,
