@@ -481,6 +481,8 @@ void UINewChatWnd::Slot27(int x, int y) {
   }
 }
 
+// OFFSET: 0x009313E0
+
 // OFFSET: 0x0091E960
 // FUNCTION: fn_12630
 void UIMemorialDunWnd::Move(int x, int y) {
@@ -518,4 +520,10 @@ int UIWindowCallBtnWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::in
     this->m_frameContext->windows.EnsureWindow(a);
   }
   return 0;
+}
+
+// OFFSET: 0x009305E0
+// FUNCTION: fn_12684
+void UIWindowCallBtnWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
 }

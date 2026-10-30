@@ -14,6 +14,7 @@ public:
   void Move(int x, int y) override;
   void Show(int visible) override;
   void Slot27(int x, int y) override;
+  void Slot31(int x, int y) override;
 
 private:
   /* 00BC */ int unknown_00BC;

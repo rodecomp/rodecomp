@@ -55,3 +55,5 @@ UIBattleMsgOptionWnd::UIBattleMsgOptionWnd(UIWindowContext& windows, UIFrameCont
 
   this->text = LookupMessage(0x509);
 }
+
+// OFFSET: 0x009305F0

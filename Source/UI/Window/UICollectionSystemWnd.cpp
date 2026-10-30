@@ -1,5 +1,9 @@
 #include "UI/Window/UICollectionSystemWnd.h"
 
+#include "Client/Mode/ModeMgr.h"
+
+// OFFSET: 0x00930A40
+
 // OFFSET: 0x00934740
 // FUNCTION: fn_12741
 int CUICollectionSystemWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t b, std::intptr_t, std::intptr_t) {

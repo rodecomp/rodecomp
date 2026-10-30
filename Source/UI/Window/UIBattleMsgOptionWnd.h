@@ -11,6 +11,7 @@ class UIScrollBar;
 class UIBattleMsgOptionWnd : public UIFrameWnd {
 public:
   UIBattleMsgOptionWnd(UIWindowContext& windows, UIFrameContext& frames);
+  void Slot26(int x, int y) override;
   void Slot35(int delta) override;
 
   /* 00B4 */ UIScrollBar* m_scrollBar;
