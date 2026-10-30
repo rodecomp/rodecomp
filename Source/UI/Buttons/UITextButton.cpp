@@ -21,6 +21,7 @@
 #include "Client/Mode/ModeCursor.h"
 #include "UI/Buttons/UIBitmapButton2.h"
 #include "UI/Buttons/UISlotBmpButton.h"
+#include "UI/UIStaticBitmap.h"
 #include "UI/Buttons/UITVBitmapButton.h"
 #include "UI/Buttons/UITVTextButton.h"
 #include "UI/Lists/UIComboBox.h"
@@ -51,7 +52,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
 // GLOBAL: gl_24606
 int g_screenHeight;
 
@@ -2195,4 +2195,82 @@ void UIPackageBoxNameList::Slot25(int x, int y) {
   }
 
   this->Invalidate();
+}
+
+// OFFSET: 0x00886AE0
+// FUNCTION: fn_11328
+void UIListBoxID::Slot15(int width, int height) {
+  auto* vertical = new UIScrollBar(*this->m_context);
+  this->verticalBar = vertical;
+  const int verticalWidth = vertical->thickness;
+  vertical->vertical = 1;
+  vertical->UIWindow::Resize(verticalWidth, height);
+  vertical->Move((width - 13), 0);
+  vertical->Slot15(verticalWidth, height);
+  vertical->Slot22(verticalWidth, height);
+  this->AddChild(this->verticalBar);
+
+  auto* horizontal = new UIScrollBar(*this->m_context);
+  this->horizontalBar = horizontal;
+  const int horizontalHeight = horizontal->thickness;
+  horizontal->vertical = 0;
+  horizontal->UIWindow::Resize((width - 13), horizontalHeight);
+  horizontal->Move(0, (height - 13));
+  horizontal->Slot15((width - 13), horizontalHeight);
+  horizontal->Slot22((width - 13), horizontalHeight);
+  this->AddChild(this->horizontalBar);
+}
+
+// OFFSET: 0x00887280
+// FUNCTION: fn_11332
+void UITableBox::Slot15(int, int) {
+}
+
+// OFFSET: 0x008872B0
+// FUNCTION: fn_11335
+void UITreeView::Slot15(int width, int height) {
+  auto* vertical = new UIScrollBar3(*this->m_context);
+  this->verticalBar = vertical;
+  const int verticalWidth = vertical->thickness;
+  vertical->vertical = 1;
+  vertical->UIWindow::Resize(verticalWidth, height);
+  vertical->Move((width - 10), 0);
+  vertical->Slot15(verticalWidth, height);
+  vertical->Slot22(verticalWidth, height);
+  this->AddChild(this->verticalBar);
+
+  this->edit = new UIEditCtrl2(*this->m_context, *this->m_edit);
+  this->edit->SetSize(100, 19);
+  this->edit->Move(-100, -100);
+  this->AddChild(this->edit);
+}
+
+// OFFSET: 0x008873F0
+// FUNCTION: fn_11336
+void TableBox::Paint() {
+  RECT rectangle;
+  rectangle.left = 1;
+  rectangle.top = 1;
+  rectangle.right = this->geometry.width - 1;
+  rectangle.bottom = this->geometry.height - 1;
+  this->FillSurface(this->borderColor, &rectangle);
+}
+
+// OFFSET: 0x008870B0
+// FUNCTION: fn_11331
+void UISlotBmpButton::Slot15(int, int) {
+  const std::string path = "유저인터페이스\\renewalparty\\";
+  char name[256];
+  std::sprintf(name, "%sicon_jobs_%d.bmp", path.c_str(), 0);
+  this->icon = new UIStaticBitmap(*this->m_context, *this->m_buttonContext);
+  this->icon->SetBitmap(name);
+  this->icon->SetSize(this->icon->geometry.width, this->icon->geometry.height);
+  this->icon->Move(118, 14);
+  this->AddChild(this->icon);
+}
+
+// OFFSET: 0x00899BE0
+// FUNCTION: fn_11560
+int UITableBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }

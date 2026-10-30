@@ -5,7 +5,8 @@
 #include "UI/Lists/UIListBox.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/WindowPolicy.h"
-
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Lists/UIComboBoxWnd.h"
 #include <cstdio>
 
 namespace {
@@ -307,4 +308,77 @@ void UIComboBoxDef2Wnd::Paint() {
     this->label->Move(x, (this->textOffset + 3));
     this->label->Invalidate();
   }
+}
+
+// OFFSET: 0x00886C30
+// FUNCTION: fn_11329
+void UINewComboBoxCtrl::Slot15(int, int) {
+  const std::string base = "유저인터페이스\\basic_interface\\txtbox_btn_";
+  this->button = new UIBitmapButton(*this->m_context, *this->m_buttons);
+  this->button->SetBitmap((base + "a.bmp").c_str(), 0, 0);
+  this->button->SetBitmap((base + "b.bmp").c_str(), 1, 0);
+  this->button->SetBitmap((base + "c.bmp").c_str(), 2, 0);
+  this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
+  this->button->Move((this->geometry.width - this->button->BitmapWidth()), 0);
+  this->button->SetId(273);
+  this->AddChild(this->button);
+
+  this->label = new UIStaticText(*this->m_context, *this->m_buttons);
+  this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), this->button->BitmapHeight());
+  this->label->SetText("(No Select)", 0);
+  this->label->Move(2, 3);
+  this->label->shadow = 1;
+  this->AddChild(this->label);
+}
+
+// OFFSET: 0x008994B0
+// FUNCTION: fn_11555
+int UINewComboBoxCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    if (argument1 == 273) {
+      this->dropped = !this->dropped;
+      if (g_windowMgr.unknown_0214) {
+        g_windowMgr.CloseWindow(26);
+      }
+
+      if (this->dropped) {
+        UIWindow* window = g_windowMgr.EnsureWindow(26);
+        const int count = static_cast<int>(this->items.size());
+        for (int index = 0; index < count; ++index) {
+          window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->items[index].c_str()), 0, 0, 0);
+        }
+        window->SendMsg(nullptr, 40, this->selected, 0, 0, 0);
+        window->Resize(this->geometry.width, count * 16);
+        static_cast<UIComboBoxWnd*>(window)->SetOwner(this);
+        int x = 0;
+        int y = this->geometry.height;
+        this->ToScreen(x, y);
+        window->Move(x, y);
+      }
+    }
+    return 0;
+  }
+
+  if (message != 39) {
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  this->dropped = false;
+  const int index = static_cast<int>(argument1);
+  if (index < 0) {
+    return 0;
+  }
+
+  if (static_cast<unsigned int>(index) <= this->items.size()) {
+    this->label->SetText(this->items[index].c_str(), 0);
+  }
+
+  this->selected = index;
+  this->parent->SendMsg(this, 39, index, 0, 0, 0);
+  this->Invalidate();
+  this->parent->Invalidate();
+  if (this->Root()) {
+    this->Root()->Invalidate();
+  }
+  return 0;
 }

@@ -61,6 +61,7 @@ public:
   const char* Text();
   std::string LinkedText();
   void Background(int red, int green, int blue);
+  void Border(int red, int green, int blue);
   void TextColor(std::uint32_t primary, std::uint32_t secondary);
   void UpdateLinks();
   void SetCursor(std::size_t position);
@@ -224,6 +225,8 @@ public:
 
 class UIEditCtrlVarId : public UIEditCtrl {
 public:
+  // INLINED
+  UIEditCtrlVarId(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit) {}
   void Slot24(int retained) override;
   void Slot35(int value) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -232,6 +235,17 @@ public:
 
 bool HasItemLinkTag(const std::string& text);
 bool HasNaviLinkTag(const std::string& text);
+
+class UIShowAndEditTimeCtrl : public UIWindow {
+public:
+  void Slot15(int width, int height) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+  /* 007C */ UIEditCtrlVarId* fields[2];
+
+protected:
+  UIEditContext* m_edit;
+};
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UIEditCtrl) == 292);

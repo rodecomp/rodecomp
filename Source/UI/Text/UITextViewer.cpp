@@ -244,3 +244,9 @@ void UITextViewer::Paint() {
     }
   }
 }
+
+// OFFSET: 0x00887290
+// FUNCTION: fn_11333
+void UITextViewEX::Slot15(int width, int height) {
+  UIListBox::Slot15(width, height);
+}

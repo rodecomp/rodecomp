@@ -7,7 +7,7 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "Network/TextEncoding.h"
-
+#include "Utility/Text/FormatString.h"
 #include <cstring>
 #include <windows.h>
 
@@ -334,4 +334,40 @@ int UIEditCtrl_OldList::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   default:
     return UIEditCtrl::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
+}
+
+// OFFSET: 0x00886F90
+// FUNCTION: fn_11330
+void UIShowAndEditTimeCtrl::Slot15(int, int) {
+  for (int i = 0; i < 2; ++i) {
+    UIEditCtrlVarId*& field = this->fields[i];
+    field = new UIEditCtrlVarId(*this->m_context, *this->m_edit);
+    field->SetSize(20, 18);
+    field->Background(232, 232, 232);
+    field->Border(192, 192, 192);
+    field->flat = 0;
+    field->maximum = 2;
+    field->Move(i * 38, 0);
+    field->SetText("0");
+    field->SetId(184);
+    this->AddChild(field);
+  }
+}
+
+// OFFSET: 0x008996B0
+// FUNCTION: fn_11556
+int UIShowAndEditTimeCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6 && argument1 == 184) {
+    for (UIEditCtrlVarId* field : this->fields) {
+      if (sender == field) {
+        int value = std::atoi(field->Text());
+        if (value > 60) {
+          value = 60;
+        }
+        const std::string text = FormatOwnedString("%d", value);
+        field->SetText(text.c_str());
+      }
+    }
+  }
+  return 0;
 }

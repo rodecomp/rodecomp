@@ -44,6 +44,25 @@ protected:
   UIComboBoxHeaderContext* m_controls;
 };
 
+class UINewComboBoxCtrl : public UIWindow {
+public:
+  void Slot15(int width, int height) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+  /* 007C */ UIBitmapButton* button;
+  /* 0080 */ UIStaticText* label;
+
+protected:
+  UIButtonContext* m_buttons;
+
+public:
+  /* 0084 */ unsigned char unknown_0084;
+  /* 0085 */ bool dropped;
+  /* 0088 */ unsigned char unknown_0088[0x18];
+  /* 00A0 */ int selected;
+  /* 00A4 */ std::vector<std::string> items;
+};
+
 class UIComboBoxDef2Wnd : public UIComboBoxDefWnd {
 public:
   UIComboBoxDef2Wnd(UIWindowContext& windows, UIComboBoxHeaderContext& controls);

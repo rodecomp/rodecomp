@@ -585,6 +585,14 @@ void UIEditCtrl::Background(int red, int green, int blue) {
   this->Invalidate();
 }
 
+// OFFSET: 0x00865E00
+// FUNCTION: fn_10938
+void UIEditCtrl::Border(int red, int green, int blue) {
+  this->borderRed = red;
+  this->borderGreen = green;
+  this->borderBlue = blue;
+}
+
 // OFFSET: 0x00868570
 // FUNCTION: fn_10960
 void UIEditCtrl::TextColor(std::uint32_t primary, std::uint32_t secondary) {
