@@ -15,6 +15,7 @@
 class UIDisplayCharacter : public UIWindow {
 public:
   void CopyStyle(const UIDisplayCharacter* other);
+  void LoadCostumes();
 
   /* 007C */ const char* unknown_007C;
   /* 0080 */ int unknown_0080;
@@ -35,7 +36,7 @@ public:
   /* 00BC */ int unknown_00BC;
   /* 00C0 */ int unknown_00C0;
   /* 00C4 */ int unknown_00C4;
-  /* 00C8 */ std::set<int> m_jobs;
+  /* 00C8 */ std::map<int, int> m_jobs;
 };
 
 class UIShowInfoWnd : public UIWindow {

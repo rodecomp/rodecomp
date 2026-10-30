@@ -336,7 +336,7 @@ int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case 584: {
     UIDisplayCharacter* display = this->m_display;
     if (display->m_jobs.size() >= 2) {
-      std::set<int>::iterator it = display->m_jobs.find(display->job);
+      std::map<int, int>::iterator it = display->m_jobs.find(display->job);
       if (it == display->m_jobs.end()) {
         --it;
       }
@@ -344,21 +344,21 @@ int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         it = display->m_jobs.end();
       }
       --it;
-      display->job = *it;
+      display->job = it->first;
     }
     break;
   }
   case 585: {
     UIDisplayCharacter* display = this->m_display;
     if (display->m_jobs.size() >= 2) {
-      std::set<int>::iterator it = display->m_jobs.find(display->job);
+      std::map<int, int>::iterator it = display->m_jobs.find(display->job);
       if (it != display->m_jobs.end()) {
         ++it;
       }
       if (it == display->m_jobs.end()) {
         it = display->m_jobs.begin();
       }
-      display->job = *it;
+      display->job = it->first;
     }
     break;
   }
@@ -655,5 +655,26 @@ void UIStylingShopWnd::Paint() {
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\bg_styling.bmp")));
   if (background) {
     this->DrawBitmap(0, 0, &background->image, false);
+  }
+}
+
+// OFFSET: 0x00826E50
+// FUNCTION: fn_10325
+void UIDisplayCharacter::LoadCostumes() {
+  const int job = g_session.m_job;
+  if (g_session.m_bodyCostume == 0 || g_session.m_bodyCostume == 1) {
+    g_session.m_bodyCostume = job;
+  }
+
+  this->job = g_session.m_bodyCostume;
+  int count = 0;
+  if (g_luaScript->Call("StylingShop_GetCostumeSize", "d>d", job, &count) == true) {
+    int value = 0;
+    int key = 0;
+    for (int i = 0; i < count; ++i) {
+      if (g_luaScript->Call("StylingShop_GetChangeCostume", "dd>dd", job, value, &key, &value) == true) {
+        this->m_jobs.emplace(key, value);
+      }
+    }
   }
 }

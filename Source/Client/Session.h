@@ -138,7 +138,9 @@ public:
   /* 0EF4 */ unsigned char unknown_0EF4[0x0C];
   /* 0F00 */ int m_robe;
   /* 0F04 */ bool m_newRobeDrawOnTop;
-  /* 0F05 */ unsigned char unknown_0F05[0x0F];
+  /* 0F05 */ unsigned char unknown_0F05[0x03];
+  /* 0F08 */ int m_bodyCostume;
+  /* 0F0C */ unsigned char unknown_0F0C[0x08];
   /* 0F14 */ std::uint32_t m_jobFlags;
   /* 0F18 */ int m_playerX;
   /* 0F1C */ int m_playerY;
