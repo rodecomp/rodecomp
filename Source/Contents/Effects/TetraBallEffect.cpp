@@ -6,6 +6,13 @@
 #include "Contents/Effects/Particle.h"
 
 // OFFSET: 0x0072E680
+// FUNCTION: fn_07509
+CTetraBallEffect::CTetraBallEffect() : CEffect(-1) {
+  this->unknown_0050 = 0;
+  for (int index = 0; index < 5; ++index) {
+    this->balls[index] = nullptr;
+  }
+}
 
 // OFFSET: 0x0072EA90
 // FUNCTION: fn_07514
