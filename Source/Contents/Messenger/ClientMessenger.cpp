@@ -680,6 +680,7 @@ EquipmentProperties::CEquipmentPropertiesMgr* EquipmentProperties::CEquipmentPro
 }
 
 // OFFSET: 0x0068BAD0
+// FUNCTION: fn_05620
 void EquipmentProperties::CEquipment::AddProperty(const std::string& name, const char* op, const int& index, const int& value, const int& key) {
   unsigned int hash = 5381;
   for (const char* character = name.c_str(); *character != '\0'; ++character) {
@@ -737,6 +738,7 @@ void EquipmentProperties::CEquipment::CallOnStartEquip(lua_State* state) {
 }
 
 // OFFSET: 0x0068C170
+// FUNCTION: fn_05634
 void EquipmentProperties::CEquipmentAttachable::Load(bool force) {
   CLuaInstance* script = &CEquipmentPropertiesMgr::GetInstance()->GetScript();
   if (script == nullptr) {
@@ -765,6 +767,7 @@ void EquipmentProperties::CEquipmentAttachable::Load(bool force) {
 }
 
 // OFFSET: 0x0068C2B0
+// FUNCTION: fn_05635
 void EquipmentProperties::CEquipmentCombiitem::Load(bool force) {
   CLuaInstance* script = &CEquipmentPropertiesMgr::GetInstance()->GetScript();
   if (script == nullptr) {
@@ -798,6 +801,7 @@ void EquipmentProperties::CEquipmentCombiitem::Load(bool force) {
 }
 
 // OFFSET: 0x0068C420
+// FUNCTION: fn_05636
 void EquipmentProperties::CEquipmentExpansion::Load(bool force) {
   CLuaInstance* script = &CEquipmentPropertiesMgr::GetInstance()->GetScript();
   if (script == nullptr) {
@@ -828,18 +832,21 @@ void EquipmentProperties::CEquipmentExpansion::Load(bool force) {
 }
 
 // OFFSET: 0x0068CE20
+// FUNCTION: fn_05639
 void EquipmentProperties::CEquipmentCombiitem::Clear() {
   this->NotifyProperties(g_equipmentClearColor, true, "(C)");
   this->m_properties.Clear();
 }
 
 // OFFSET: 0x0068CE50
+// FUNCTION: fn_05640
 void EquipmentProperties::CEquipmentExpansion::Clear() {
   this->NotifyProperties(g_equipmentClearColor, true, this->GetSuffix());
   this->m_properties.Clear();
 }
 
 // OFFSET: 0x0068CEA0
+// FUNCTION: fn_05641
 void EquipmentProperties::CEquipmentWearable::Clear() {
   if (this->m_active == true) {
     this->NotifyProperties(g_equipmentClearColor, true, "");
@@ -851,6 +858,7 @@ void EquipmentProperties::CEquipmentWearable::Clear() {
 }
 
 // OFFSET: 0x0068CF10
+// FUNCTION: fn_05643
 void EquipmentProperties::CEquipment::NotifyProperties(const COLORREF& color, bool negative, std::string_view suffix) {
   for (auto& group : this->m_properties.GetProperties()) {
     for (auto& entry : group.second) {
@@ -867,6 +875,7 @@ void EquipmentProperties::CEquipment::NotifyProperties(const COLORREF& color, bo
 }
 
 // OFFSET: 0x00698560
+// FUNCTION: fn_05769
 EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentPropertyStore& other) {
   for (auto& group : other.properties) {
     for (auto& entry : group.second) {
@@ -886,6 +895,7 @@ EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentPropertyStor
 }
 
 // OFFSET: 0x00698C30
+// FUNCTION: fn_05770
 EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentProperty* property) {
   EquipmentPropertyDefinition* definition = property->m_definition;
   if (definition == nullptr) {
@@ -901,6 +911,7 @@ EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentProperty* pr
 }
 
 // OFFSET: 0x0069A2A0
+// FUNCTION: fn_05782
 std::string EquipmentProperties::CEquipmentProperties::Describe(bool detailed, bool negative) {
   std::string text;
   if (this->m_definition == nullptr) {
@@ -920,6 +931,7 @@ std::string EquipmentProperties::CEquipmentProperties::Describe(bool detailed, b
 }
 
 // OFFSET: 0x0069A4F0
+// FUNCTION: fn_05783
 void EquipmentPropertyStore::RemoveDuplicateNames() {
   std::set<std::string> names;
   for (auto& group : this->properties) {
@@ -1809,6 +1821,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::GetDescriptions(const int& gr
 }
 
 // OFFSET: 0x006AD4A0
+// FUNCTION: fn_06183
 EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::FindDefinition(const std::uint64_t& key) {
   auto found = this->m_definitionsByName.find(key);
   if (found == this->m_definitionsByName.end()) {
@@ -1866,6 +1879,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::AddExpansion(const int& kind,
 }
 
 // OFFSET: 0x006B6E10
+// FUNCTION: fn_06202
 void EquipmentProperties::CEquipmentPropertiesMgr::RemoveExpansion(const int& kind, const int& itemId) {
   this->m_dirty = true;
 
@@ -1915,6 +1929,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshExpansion(const int& k
 }
 
 // OFFSET: 0x006B7530
+// FUNCTION: fn_06207
 void EquipmentProperties::CEquipmentPropertiesMgr::Rebuild() {
   this->store->Clear();
   for (auto& entry : this->properties1) {
@@ -1933,12 +1948,14 @@ void EquipmentProperties::CEquipmentPropertiesMgr::Rebuild() {
 }
 
 // OFFSET: 0x006B75C0
+// FUNCTION: fn_06208
 void EquipmentProperties::CEquipmentPropertiesMgr::SetCurrentEquipment(CEquipment* equipment) {
   this->unknown_019C.clear();
   this->unknown_001C = reinterpret_cast<int>(equipment);
 }
 
 // OFFSET: 0x006B7770
+// FUNCTION: fn_06211
 void EquipmentProperties::CEquipmentPropertiesMgr::RefreshPretend() {
   for (auto& entry : this->properties1) {
     this->m_dirty |= entry.second->IsPretend();
