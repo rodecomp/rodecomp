@@ -2,6 +2,7 @@
 #include "Client/Session.h"
 #include "Contents/MapSkyMgr.h"
 #include "Render/Renderer.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
 
 #include <json/value.h>
 
@@ -1036,4 +1037,34 @@ void MacroReporterWndInfo::Reset() {
 void PreviewEquipWndInfo::Reset() {
   this->x = static_cast<int>(static_cast<float>(g_renderer->viewport.width - 280) * g_depthAverageHalf);
   this->y = static_cast<int>(static_cast<float>(g_renderer->viewport.height - 260) * g_depthAverageHalf);
+}
+
+// OFFSET: 0x009A7CA0
+// FUNCTION: fn_13738
+void NavigationWindowInfo::Clamp() {
+  if (this->height < 338 || this->height > 338) {
+    this->height = 338;
+  }
+
+  if (this->expanded) {
+    if (this->width != 272) {
+      this->width = 272;
+    }
+  } else if (this->width != 228) {
+    this->width = 228;
+  }
+
+  if (this->x < 0) {
+    this->x = 0;
+  }
+  if (this->x > g_renderer->viewport.width - this->width) {
+    this->x = g_renderer->viewport.width - this->width;
+  }
+
+  if (this->y < 0) {
+    this->y = 0;
+  }
+  if (this->y > g_renderer->viewport.height - this->height) {
+    this->y = g_renderer->viewport.height - this->height;
+  }
 }

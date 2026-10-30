@@ -18,6 +18,8 @@ struct NavigationWindowInfo {
   /* 0008 */ int width;
   /* 000C */ int height;
   /* 0010 */ unsigned char expanded;
+
+  void Clamp();
 };
 
 class UINavigationV4Wnd : public UIFrameWnd {

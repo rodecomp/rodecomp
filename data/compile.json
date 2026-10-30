@@ -845,6 +845,7 @@
   "Source/UI/Guild/UIGuild_Storage_Log.cpp": 2,
   "Source/UI/Item/UIEquipmentPropertiesWnd.cpp": 2,
   "Source/UI/Item/UIMerchantItemLogWnd.cpp": 2,
+  "Source/UI/Item/UIParaItemShopWnd.cpp": 2,
   "Source/UI/Items/MergeItemWnd.cpp": 2,
   "Source/UI/Items/UIGameItem.cpp": 2,
   "Source/UI/Items/UIIllustWnd.cpp": 2,
