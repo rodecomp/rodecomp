@@ -11,7 +11,7 @@
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
-
+#include "UI/Window/WindowDialogs.h"
 #include <cstdio>
 #include <cstring>
 #include <utility>
@@ -50,6 +50,8 @@ int UIEntryQueueHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 UIEntryQueueListBox::UIEntryQueueListBox(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list) {
 }
 
+// OFFSET: 0x00BA43F0
+
 // OFFSET: 0x00BA4490
 // FUNCTION: fn_19686
 void UIEntryQueueListBox::AddEntry(const char* name, int value) {
@@ -77,6 +79,8 @@ void UIEntryQueueListBox::Slot31(int x, int y) {
     this->parent->SendMsg(this, 135, this->geometry.id, this->selected, 0, 0);
   }
 }
+
+// OFFSET: 0x00BA4870
 
 // OFFSET: 0x00BA48E0
 // FUNCTION: fn_19691
@@ -201,6 +205,8 @@ int UIEntryQueueRequestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   return 0;
 }
 
+// OFFSET: 0x00BA5680
+
 // OFFSET: 0x00BA5700
 // FUNCTION: fn_19698
 bool UIEntryQueueStandByWnd::Create() {
@@ -298,10 +304,26 @@ void UIEntryQueueStandByWnd::SetInfo(const char* queueName, int waiting, int ran
   }
 }
 
+// OFFSET: 0x00BA6110
+
 // OFFSET: 0x00BA6410
 // FUNCTION: fn_19706
 int UIEntryQueueWnd::SelectedIndex() {
   return this->m_list->selected;
+}
+
+// OFFSET: 0x00BA7AE0
+// FUNCTION: fn_19712
+bool UIEntryQueueWnd::ConfirmApply(const char* type) {
+  EntryQueueInfo* info = g_entryQueueMgr->current;
+  if (!info) {
+    return false;
+  }
+
+  char text[0x104];
+  std::memset(text, 0, sizeof(text));
+  sprintf_s(text, sizeof(text), "%s %s", info->displayName, type);
+  return reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187;
 }
 
 // OFFSET: 0x00BA7B90

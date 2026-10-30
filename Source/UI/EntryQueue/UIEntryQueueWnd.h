@@ -35,6 +35,7 @@ protected:
 class UIEntryQueueListBox : public UIListBox {
 public:
   UIEntryQueueListBox(UIWindowContext& windows, UIListBoxContext& list);
+  ~UIEntryQueueListBox() override;
   void Slot31(int x, int y) override;
   virtual void AddEntry(const char* name, int value);
   virtual int EntryValue(int index);
@@ -44,6 +45,7 @@ public:
 
 class UIEntryQueueRequestWnd : public UIFrameWnd {
 public:
+  ~UIEntryQueueRequestWnd() override;
   void Slot18() override;
   void Slot19() override;
   void Paint() override;
@@ -66,6 +68,7 @@ public:
 
 class UIEntryQueueStandByWnd : public UIFrameWnd {
 public:
+  ~UIEntryQueueStandByWnd() override;
   void Slot18() override;
   void Slot19() override;
   void Paint() override;
@@ -90,8 +93,10 @@ public:
 
 class UIEntryQueueWnd : public UIFrameWnd {
 public:
+  ~UIEntryQueueWnd() override;
   void Slot11() override;
   int SelectedIndex();
+  bool ConfirmApply(const char* type);
 
   /* 00B4 */ unsigned char unknown_00B4[0x40];
   /* 00FC */ UIEntryQueueListBox* m_list;
