@@ -268,6 +268,40 @@ void UIRenewDetailQuestInfoWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x007FB860
+// FUNCTION: fn_09960
+void UIRenewDetailQuestInfoWnd::Paint() {
+  this->ClearSurface(0xFFFFFFFF);
+  if (this->m_recommended) {
+    this->DrawPanelBackground(0, 0, "유저인터페이스\\renew_questui\\bg_questSub2.bmp");
+    this->DrawCenteredText(
+      this->geometry.width >> 1, 39, g_renewQuestMgr->GetRecommendedQuest(this->m_questId).m_title.c_str(),
+      static_cast<int>(g_renewQuestMgr->GetRecommendedQuest(this->m_questId).m_title.size()), 0, 12, 0x55321D, 1
+    );
+    if (!this->m_imageName.empty()) {
+      CBitmapRes* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_imageName.c_str())));
+      this->DrawBitmap(3, 64, image ? &image->image : nullptr, false);
+    }
+
+    CTexture* texture = g_texMgr.Load("유저인터페이스\\renew_questui\\bg_quest01.bmp", 0, false, true, false);
+    if (texture) {
+      this->geometry.surface->DrawScaledSurface(9, 70, 324, 138, texture, texture->Width(), texture->Height(), 1.0f, 1.0f, 0x80FFFFFF, false, 0, 0, 0, 0, 0);
+    }
+
+    texture = g_texMgr.Load("유저인터페이스\\renew_questui\\bg_quest02.bmp", 0, false, true, false);
+    if (texture) {
+      this->geometry.surface->DrawScaledSurface(9, 283, 208, 92, texture, texture->Width(), texture->Height(), 1.0f, 1.0f, 0x80FFFFFF, false, 0, 0, 0, 0, 0);
+    }
+  } else {
+    this->DrawPanelBackground(0, 0, "유저인터페이스\\renew_questui\\bg_questSub.bmp");
+    this->DrawCenteredText(
+      this->geometry.width >> 1, 39, g_renewQuestMgr->GetOngoingQuest(this->m_questId).m_title.c_str(),
+      static_cast<int>(g_renewQuestMgr->GetOngoingQuest(this->m_questId).m_title.size()), 0, 12, 0x55321D, 1
+    );
+    this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 12, 393, this->m_timeText.c_str(), 0, 0, 12, 0x161BD2, 0, 0);
+  }
+
+  this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 16, 2, LookupMessage(0xD48), 0, 0, 13, 0, 0, 0);
+}
 
 // OFFSET: 0x007FBAD0
 // FUNCTION: fn_09961
