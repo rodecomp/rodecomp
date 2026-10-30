@@ -919,6 +919,7 @@
   "Source/UI/Window/WindowBorder.cpp": 2,
   "Source/UI/Window/WindowDialogs.cpp": 2,
   "Source/UI/Window/WindowFrameUpdate.cpp": 2,
+  "Source/UI/Window/WindowMgrState.cpp": 2,
   "Source/UI/Window/WindowMouseHit.cpp": 2,
   "Source/UI/Window/WindowOrdering.cpp": 2,
   "Source/UI/Window/WindowPolicy.cpp": 2,

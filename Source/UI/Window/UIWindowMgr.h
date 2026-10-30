@@ -456,6 +456,13 @@ public:
   void SetCapture(UIWindow* window);
   void ReleaseCapture();
   UIWindow* Capture() const;
+  void NotifyHoverWindow();
+  UIWindow* GetGuildWindow();
+  int FindMiniPartyCell();
+  UIWindow* GetHoverWindow();
+  int GetRenderedWindowIds(int* ids);
+  void HideWindow01C8();
+  bool HasUnknown030C();
 };
 
 extern UIWindowMgr g_windowMgr;
