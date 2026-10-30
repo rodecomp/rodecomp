@@ -5,12 +5,15 @@
 #include "UI/Lists/UIScrollBar.h"
 
 // OFFSET: 0x0083E1B0
+// FUNCTION: fn_10515
 UITagTextViewer::UITagTextViewer(UIWindowContext& context)
     : UIScroll(context), m_backgroundColor(0xFFFFFF), m_textWidth(0), m_lineSpacing(6), m_margin(3), m_topMargin(4), m_font{0, 12, 0, 0}, m_outlined(0),
-      m_outlineColor(0xFFFFFF), m_horizontalAlign(0), m_verticalAlign(3), m_cursorY(0), m_offsetY(m_topMargin) {
+      m_outlineColor(0xFFFFFF), m_horizontalAlign(0), m_verticalAlign(3), m_cursorY(0) {
+  m_offsetY = m_topMargin;
 }
 
 // OFFSET: 0x0083E740
+// FUNCTION: fn_10520
 void TagTextViewer::UIScroll::StorePosition(UIWindow* child) {
   const float y = static_cast<float>(child->geometry.y);
   const float x = static_cast<float>(child->geometry.x);
@@ -20,6 +23,7 @@ void TagTextViewer::UIScroll::StorePosition(UIWindow* child) {
 }
 
 // OFFSET: 0x0083EDE0
+// FUNCTION: fn_10523
 int TagTextViewer::UIScroll::ContentHeight() {
   int height = 0;
 
@@ -59,6 +63,7 @@ void UITagTextViewer::Slot19() {
 }
 
 // OFFSET: 0x0083EF50
+// FUNCTION: fn_10527
 void TagTextViewer::UIScroll::Slot35(int delta) {
   if (delta < 0) {
     this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
@@ -94,6 +99,7 @@ void TagTextViewer::UIScroll::UpdateScroll() {
 }
 
 // OFFSET: 0x0083F140
+// FUNCTION: fn_10529
 void UITagTextViewer::Resize(int width, int height) {
   this->m_textWidth += width - this->geometry.width;
   this->m_textWidth = std::max(0, this->m_textWidth);
@@ -137,6 +143,7 @@ int TagTextViewer::UIScroll::SendMsg(
 }
 
 // OFFSET: 0x0083F590
+// FUNCTION: fn_10532
 void UITagTextViewer::SetAlign(unsigned char align) {
   switch (align) {
   case 0:
