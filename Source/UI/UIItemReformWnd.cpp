@@ -6,6 +6,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Window/WindowBorder.h"
+#include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
@@ -16,6 +17,17 @@
 // FUNCTION: fn_04107
 void UIItemReformWnd_List::Move(int x, int y) {
   UIWindow::Move(x, y);
+}
+
+// OFFSET: 0x005FD1B0
+// FUNCTION: fn_04109
+void UIItemReformWnd_List::Slot15(int width, int height) {
+  this->scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar->Configure(width - 13, 0, 1, height);
+  this->scrollBar->Show(0);
+  this->AddChild(this->scrollBar);
+  this->visibleCount = height / this->itemHeight;
+  this->UpdateScrollBar();
 }
 
 // OFFSET: 0x005FD600
@@ -91,6 +103,18 @@ void UIItemReformWnd_DetailBtn::Slot48() {
   }
 }
 
+// OFFSET: 0x005FDD10
+// FUNCTION: fn_04126
+void UIItemReformWnd_List::Slot33(int x, int y) {
+  const unsigned int count = this->items.size();
+  const unsigned int index = std::max(0u, std::min(y / this->itemHeight + this->scrollPosition, count - 1));
+  if (index < count) {
+    if (UIWindow* window = this->m_frameContext->windows.EnsureWindow(12)) {
+      window->SendMsg(this, 24, reinterpret_cast<std::intptr_t>(&this->items[index]), 0, 0, 0);
+    }
+  }
+}
+
 // OFFSET: 0x005FDDA0
 // FUNCTION: fn_04127
 void UIItemReformWnd_List::Slot35(int delta) {
@@ -98,5 +122,25 @@ void UIItemReformWnd_List::Slot35(int delta) {
     this->SendMsg(this->scrollBar, 10, 0, 0, 0, 0);
   } else {
     this->SendMsg(this->scrollBar, 9, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x005FDDE0
+// FUNCTION: fn_04128
+void UIItemReformWnd_List::UpdateScrollBar() {
+  const unsigned int count = this->items.size();
+  if (count > this->visibleCount) {
+    this->scrollBar->Show(1);
+    this->scrollBar->SetRange(count - this->visibleCount, this->visibleCount, count);
+    this->scrollPosition = std::min<unsigned int>(std::max<int>(this->scrollPosition, 0), count - this->visibleCount);
+    this->scrollBar->SetPosition(this->scrollPosition);
+  } else {
+    this->scrollPosition = 0;
+    this->scrollBar->Show(0);
+  }
+
+  this->Invalidate();
+  if (this->parent) {
+    this->parent->Invalidate();
   }
 }

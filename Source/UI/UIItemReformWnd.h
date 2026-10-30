@@ -11,8 +11,10 @@
 class UIItemReformWnd_List : public UIFrameWnd {
 public:
   void Move(int x, int y) override;
+  void Slot15(int width, int height) override;
   void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
+  void Slot33(int x, int y) override;
   void Slot35(int delta) override;
 
   /* 00B4 */ unsigned int itemHeight;
@@ -22,6 +24,8 @@ public:
   /* 00C4 */ unsigned int scrollPosition;
   /* 00C8 */ UIScrollBar* scrollBar;
   /* 00CC */ std::vector<ITEM_INFO> items;
+
+  void UpdateScrollBar();
 };
 
 class UIItemReformWnd_Item : public UIWindow {
