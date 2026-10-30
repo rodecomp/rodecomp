@@ -47,6 +47,33 @@ void UIRodexInboxWnd::Nullsub257() {}
 void UIRodexInboxWnd::Slot28(int, int) {}
 
 // OFFSET: 0x00805750
+// FUNCTION: fn_10045
+void UIRodexInboxWnd::DrawMailIcons(int row, unsigned char attachments, unsigned char read, unsigned char returned) {
+  const int y = row * 0x2C;
+  const char* status = returned == 1
+    ? "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_status_mail_returned.bmp"
+    : read == 0
+      ? "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_status_mail_received.bmp"
+      : "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_status_mail_read.bmp";
+  this->DrawBitmap(0x24, y + 0x7C, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(status))), true);
+
+  const char* attachmentIcon;
+  if ((attachments & 6) == 6) {
+    this->DrawBitmap(0xD8, y + 0x8B, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
+    attachmentIcon = "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny_n_item.bmp";
+  } else if ((attachments & 2) == 0) {
+    if ((attachments & 4) == 0) {
+      return;
+    }
+    this->DrawBitmap(0xD8, y + 0x8B, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
+    attachmentIcon = "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_item.bmp";
+  } else {
+    this->DrawBitmap(0xD8, y + 0x8B, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
+    attachmentIcon = "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp";
+  }
+
+  this->DrawBitmap(0xDB, y + 0x7F, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(attachmentIcon))), true);
+}
 
 // OFFSET: 0x008058B0
 // FUNCTION: fn_10046
@@ -293,4 +320,21 @@ bool RodexMailEntryLess::operator()(const RodexMailEntry& left, const RodexMailE
     return false;
   }
   return leftMail->second.unknown_001C > rightMail->second.unknown_001C;
+}
+
+// OFFSET: 0x008054D0
+// FUNCTION: fn_10043
+bool RequestRodexMailAction(int type, std::uint64_t mailId) {
+  std::map<std::int64_t, RodexMail>* mails = RodexMailsOfType(type);
+  if (mails == nullptr) {
+    return false;
+  }
+
+  std::map<std::int64_t, RodexMail>::iterator mail = mails->find(static_cast<std::int64_t>(mailId));
+  if (mail == mails->end() || (mail->second.unknown_0001 & 6) != 0) {
+    return false;
+  }
+
+  g_modeMgr.GetGameMode()->SendMsg(0xC4, static_cast<int>(mailId), type, 0, 0);
+  return true;
 }
