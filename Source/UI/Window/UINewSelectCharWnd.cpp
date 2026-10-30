@@ -18,10 +18,21 @@ void Nullsub243() {
 }
 
 // OFFSET: 0x007D5130
+// FUNCTION: fn_09588
+void UINewSelectCharWnd::DisableButtonById(int id) {
+  switch (id) {
+  case 416:
+    this->m_button416->Enable(0);
+    break;
+  case 417:
+    this->m_button417->Enable(0);
+    break;
+  }
+}
 
 // OFFSET: 0x007D9090
 // FUNCTION: fn_09595
-void UINewSelectCharWnd::DisableButton(int id) {
+void UINewSelectCharWnd::EnableButtonById(int id) {
   switch (id) {
   case 416:
     this->m_button416->Enable(1);

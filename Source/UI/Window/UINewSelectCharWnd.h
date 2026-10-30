@@ -30,7 +30,8 @@ static_assert(sizeof(CharSlotInfo) == 348);
 
 class UINewSelectCharWnd : public UIFrameWnd {
 public:
-  void DisableButton(int id);
+  void DisableButtonById(int id);
+  void EnableButtonById(int id);
   void SaveCurrentSlot();
 
 protected:
