@@ -6,6 +6,7 @@
 #include "UI/Lists/UIListBoxTemplate.h"
 
 #include <cstddef>
+#include <cstdint>
 
 namespace ExchangeUI {
 class CUIItem : public CUIListItem {
@@ -25,6 +26,13 @@ using CItemListBox = CUIListBoxEx<CUIItem, CItemData>;
 
 class CUIExchangeUI : public CUIFrameWnd {
 public:
+  /* 00D8 */ CUITitleBar* titleBar;
+  /* 00DC */ CUIStaticText* unknown_00DC;
+  /* 00E0 */ CUIStaticImage* unknown_00E0;
+  /* 00E4 */ ExchangeUI::CItemListBox* firstList;
+
+  void Slot10(int x, int y, std::intptr_t value) override;
+
   void OnCheckChanged(bool checked);
   void OnEditSubmit();
   void OnSelectFirstListItem(ExchangeUI::CUIItem* item, const ExchangeUI::CItemData& data);

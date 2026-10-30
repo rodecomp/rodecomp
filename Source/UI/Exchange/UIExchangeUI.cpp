@@ -1,7 +1,12 @@
 #include "UI/Exchange/UIExchangeUI.h"
 
+#include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeDragState.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
+#include "UI/Shortcuts/ShortcutVisibility.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <functional>
 #include <string>
@@ -110,6 +115,34 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::ClearData() {
   this->data.clear();
   this->selected = static_cast<unsigned int>(-1);
   this->UpdateScrollBar();
+}
+
+// OFFSET: 0x00A175C0
+// FUNCTION: fn_15291
+void CUIExchangeUI::Slot10(int x, int y, std::intptr_t value) {
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (mode == nullptr) {
+    return;
+  }
+
+  if (this->firstList->unknown_00C4) {
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source == 1) {
+    if (drag->quantity == 1) {
+      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    } else {
+      reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+      if (g_windowMgr.window_01EC != nullptr) {
+        g_windowMgr.window_01EC->SendMsg(nullptr, 13, 5, 0, 0, 0);
+      }
+    }
+  } else {
+    mode->SendMsg(18, 0, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x00A17670
