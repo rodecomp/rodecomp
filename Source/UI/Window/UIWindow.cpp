@@ -2063,6 +2063,8 @@ int UINavigationroadiconWnd::SendMsg(UIWindow*, int message, std::intptr_t a, st
   return 0;
 }
 
+// OFFSET: 0x005C4D70
+
 // OFFSET: 0x005C6290
 // FUNCTION: fn_03587
 void UINavigationRuideWnd::Paint() {
@@ -2071,6 +2073,74 @@ void UINavigationRuideWnd::Paint() {
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(0, 0, 1);
 }
+
+// OFFSET: 0x005C7A00
+// FUNCTION: fn_03619
+void UIListBox_NaviSearch::Refresh() {
+  const int visible = this->geometry.height / this->lineHeight;
+  const int count = static_cast<int>(this->lines.size());
+  const int overflow = std::max(count - visible, 0);
+  int maximum;
+  if (overflow != 0) {
+    this->verticalOverflow = 1;
+    maximum = this->bottomMargin + overflow;
+  } else {
+    this->verticalOverflow = 0;
+    maximum = 0;
+  }
+
+  this->verticalBar->SetRange(maximum, visible, static_cast<int>(this->lines.size()));
+  this->verticalBar->Invalidate();
+}
+
+// OFFSET: 0x005C7B50
+// FUNCTION: fn_03624
+int UIListBox_NaviSearch::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  if (message != 7 && message != 9 && message != 10) {
+    return this->UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  const int previous = this->topLine;
+  int lineHeight;
+  int top;
+  if (message == 9) {
+    lineHeight = this->lineHeight;
+    top = previous - this->geometry.height / lineHeight + 1;
+  } else if (message == 10) {
+    lineHeight = this->lineHeight;
+    top = previous - 1 + this->geometry.height / lineHeight;
+  } else {
+    top = static_cast<int>(argument1) + previous;
+    lineHeight = this->lineHeight;
+  }
+
+  this->topLine = top;
+  if (top < 0) {
+    this->topLine = 0;
+    top = 0;
+  }
+
+  const int maximum = this->bottomMargin + static_cast<int>(this->lines.size()) - this->geometry.height / lineHeight;
+  if (static_cast<unsigned int>(top) > static_cast<unsigned int>(maximum)) {
+    this->topLine = maximum;
+    top = maximum;
+  }
+
+  this->verticalBar->SetPosition(top);
+  this->verticalBar->Invalidate();
+  this->Invalidate();
+  if (this->transparent != 0 && this->parent) {
+    this->parent->Invalidate();
+  }
+
+  return this->topLine - previous;
+}
+
+// OFFSET: 0x005C7C70
+
+// OFFSET: 0x005C8F70
 
 // OFFSET: 0x005C73B0
 // FUNCTION: fn_03616

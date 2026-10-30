@@ -9,6 +9,7 @@
 class CNavi_Object;
 class CTexture;
 class UIListBox_NaviSearch;
+struct UIListBoxContext;
 class UIStaticText;
 struct UIButtonContext;
 
@@ -78,10 +79,19 @@ protected:
 
 class UINavigationRuideWnd : public UIFrameWnd {
 public:
+  void Slot15(int width, int height) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  void RefreshRoute();
 
 protected:
   UIButtonContext* m_controls;
+
+public:
+  /* 00B4 */ UIListBox_NaviSearch* routeList;
+
+protected:
+  UIListBoxContext* m_listContext;
 };
 
 extern int g_navigationTab;
