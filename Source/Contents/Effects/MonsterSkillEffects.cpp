@@ -1496,6 +1496,78 @@ void CRichsCoinEffect::Close() {
   this->coins.clear();
 }
 
+// OFFSET: 0x00725490
+// FUNCTION: fn_07413
+void CSevereRainStorm::SpawnParticles() {
+  switch (this->id) {
+  case 1752:
+    if (this->unknown_00D4 % (4 - (this->unknown_00B0 + 1) / 2) == 0) {
+      this->SpawnCrystalRain();
+    }
+    break;
+  case 1276:
+    if (this->unknown_00D4 % 3 == 0) {
+      this->SpawnSevereRain();
+    }
+    break;
+  case 2026:
+    if (this->unknown_00D4 % 5 == 0) {
+      vector3d position = {this->position[0], this->position[1], this->position[2]};
+      position.x = (static_cast<float>(std::max(0, rand() % 451)) - 225.0f) * 0.1f + position.x;
+      position.z = (static_cast<float>(std::max(0, rand() % 451)) - 225.0f) * 0.1f + position.z;
+
+      CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+      particle->Open(std::string("diamond_storm\\diamond_storm\\diamond_storm.str"));
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    }
+    break;
+  case 2165:
+    if (this->unknown_00D4 % (9 - this->unknown_00B0 / 3) == 0) {
+      const long long ranges[10] = {3, 3, 3, 5, 5, 5, 7, 7, 7, 9};
+      const long long spread = ranges[std::min(static_cast<unsigned int>(this->unknown_00B0), 10u) - 1] * 50;
+      vector3d position = {this->position[0], this->position[1], this->position[2]};
+      const float half = static_cast<float>(spread) * 0.5f;
+      position.x = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + position.x;
+      position.z = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + position.z;
+
+      CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+      particle->Load(std::string("crossrain\\cross_rain\\cross_rain.str"));
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    }
+    break;
+  case 2348:
+    if (this->ActorExists() && this->unknown_00D4 % 15 == 0) {
+      this->SpawnTwinklingGalaxy(this->unknown_00D4 / 15 % 4);
+    }
+    break;
+  case 2349:
+    if (this->ActorExists() && this->unknown_00D4 % 18 == 0) {
+      this->SpawnGalaxyStar();
+    }
+    break;
+  case 2350:
+    if (this->ActorExists() && this->unknown_00D4 % 18 == 0) {
+      this->SpawnStarCannon();
+    }
+    break;
+  case 2351:
+    if (this->ActorExists() && this->unknown_00D4 % 15 == 0) {
+      this->SpawnGrenades();
+    }
+    break;
+  case 2354:
+    if (this->ActorExists() && this->unknown_00D4 % 15 == 0) {
+      this->SpawnBombardHits();
+    }
+    break;
+  case 2462:
+    if (this->unknown_00D4 % (9 - this->unknown_00B0 / 3) == 0) {
+      this->SpawnCrossRain();
+    }
+    break;
+  }
+}
+
 // OFFSET: 0x00725D60
 // FUNCTION: fn_07414
 void CSevereRainStorm::SpawnCrossRain() {
@@ -1512,6 +1584,76 @@ void CSevereRainStorm::SpawnCrossRain() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
   particle->Load(std::string("IMPERIAL_GUARD\\IG_CROSS_RAIN\\new_crossrain\\new_cross_rain\\new_cross_rain.str"));
   this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+}
+
+// OFFSET: 0x00726110
+// FUNCTION: fn_07415
+void CSevereRainStorm::SpawnGrenades() {
+  const long long ranges[5] = {11, 11, 11, 9, 9};
+  const long long spread = ranges[std::min(static_cast<unsigned int>(this->unknown_00B0), 5u) - 1] * 50;
+  for (int count = 0; count < (this->unknown_00B0 + 1) / 2; ++count) {
+    const float half = static_cast<float>(spread) * 0.5f;
+    const vector3d base = {this->position[0] + 0.0f, this->position[1] - 15.0f, this->position[2] + 0.0f};
+    vector3d position = base;
+    position.x = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
+    position.z = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
+
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    if (particle) {
+      particle->Load(std::string("NIGHT_WATCH\\NW_GRENADES_DROPPING\\grenades_dropping_bottom\\grenades_dropping_bottom.str"));
+      particle->position = position;
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    }
+
+    particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    if (particle) {
+      particle->Load(std::string("NIGHT_WATCH\\NW_GRENADES_DROPPING\\grenades_dropping\\grenades_dropping.str"));
+      particle->position = position;
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    }
+  }
+}
+
+// OFFSET: 0x007265B0
+// FUNCTION: fn_07416
+void CSevereRainStorm::SpawnBombardHits() {
+  for (int count = 0; count < 3; ++count) {
+    const vector3d base = {this->position[0] + 0.0f, this->position[1] - 15.0f, this->position[2] + 0.0f};
+    vector3d position = base;
+    position.x = (static_cast<float>(std::max(0, rand() % 451)) - 225.0f) * 0.1f + base.x;
+    position.z = (static_cast<float>(std::max(0, rand() % 451)) - 225.0f) * 0.1f + base.z;
+
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    if (particle) {
+      particle->Load(std::string("NIGHT_WATCH\\NW_MISSION_BOMBARD\\mission_bombard\\mission_bombard_hit.str"));
+      particle->position = position;
+      particle->m_scale = static_cast<float>(std::max(0, rand() % 51) + 50) * 0.01f;
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    }
+  }
+}
+
+// OFFSET: 0x00726890
+// FUNCTION: fn_07417
+void CSevereRainStorm::SpawnCrystalRain() {
+  const long long ranges[5] = {11, 13, 15, 17, 19};
+  const long long spread = ranges[std::min(static_cast<unsigned int>(this->unknown_00B0), 5u) - 1] * 50;
+  vector3d position = {this->position[0], this->position[1], this->position[2]};
+  const float half = static_cast<float>(spread) * 0.5f;
+  position.x = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + position.x;
+  position.z = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + position.z;
+
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 13));
+  particle->Load(std::string("rain_of_crystal\\rain_of_crystal_attack_bottom\\rain_of_crystal_attack_bottom.str"));
+  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+
+  particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+  particle->Load(std::string("rain_of_crystal\\rain_of_crystal_attack\\rain_of_crystal_attack.str"));
+  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+
+  if (rand() % 7 == 0) {
+    this->AddEvent(0, "effect\\AG_RAIN_OF_CRYSTAL.wav", this->frame + 1, 0);
+  }
 }
 
 // OFFSET: 0x00726BE0
@@ -1564,6 +1706,62 @@ void CSevereRainStorm::SpawnTwinklingGalaxy(int index) {
   this->AddEvent(0, "effect\\SKY_EMPEROR\\ske_star_cannon.wav", this->frame + 1, 0);
 }
 
+// OFFSET: 0x00727050
+// FUNCTION: fn_07420
+void CSevereRainStorm::SpawnStarCannon() {
+  const long long ranges[5] = {13, 13, 11, 11, 9};
+  const long long spread = ranges[std::min(static_cast<unsigned int>(this->unknown_00B0), 5u) - 1] * 50;
+  const vector3d base = {this->position[0] + 0.0f, this->position[1] - 15.0f, this->position[2] + 0.0f};
+  vector3d position = base;
+  const float half = static_cast<float>(spread) * 0.5f;
+  position.x = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
+  position.z = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
+
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  if (particle) {
+    particle->Load(std::string("SKY_EMPEROR\\SKE_STAR_CANNON\\star_cannon_bottom\\ske_star_cannon_bottom.str"));
+    particle->position = position;
+    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  }
+
+  particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  if (particle) {
+    particle->Load(std::string("SKY_EMPEROR\\SKE_STAR_CANNON\\star_cannon\\ske_star_cannon.str"));
+    particle->position = position;
+    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  }
+
+  this->AddEvent(0, "effect\\SKY_EMPEROR\\ske_star_cannon.wav", this->frame + 1, 0);
+}
+
+// OFFSET: 0x00727450
+// FUNCTION: fn_07421
+void CSevereRainStorm::SpawnGalaxyStar() {
+  const long long ranges[5] = {13, 13, 11, 11, 9};
+  const long long spread = ranges[std::min(static_cast<unsigned int>(this->unknown_00B0), 5u) - 1] * 50;
+  const vector3d base = {this->position[0] + 0.0f, this->position[1] - 15.0f, this->position[2] + 0.0f};
+  vector3d position = base;
+  const float half = static_cast<float>(spread) * 0.5f;
+  position.x = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
+  position.z = (static_cast<float>(std::max(0, rand() % (static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
+
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  if (particle) {
+    particle->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy_bottom\\ske_twinkling_galaxy_bottom.str"));
+    particle->position = position;
+    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  }
+
+  particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  if (particle) {
+    particle->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy\\ske_twinkling_galaxy03.str"));
+    particle->position = position;
+    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  }
+
+  this->AddEvent(0, "effect\\SKY_EMPEROR\\ske_star_cannon.wav", this->frame + 1, 0);
+}
+
 // OFFSET: 0x00727850
 // FUNCTION: fn_07422
 void CSevereRainStorm::Close() {
@@ -1605,6 +1803,45 @@ bool CSevereRainStorm::Slot06() {
     break;
   }
   return true;
+}
+
+// OFFSET: 0x00727A10
+// FUNCTION: fn_07425
+void CSevereRainStorm::Slot03() {
+  this->SpawnParticles();
+  for (auto it = this->emitters.begin(); it != this->emitters.end();) {
+    EZ2STREmitter* emitter = *it;
+    if (emitter->lifetime < 0.0f) {
+      FreeParticle(AsParticle(emitter));
+      it = this->emitters.erase(it);
+      continue;
+    }
+
+    if (this->id == 2348 && emitter) {
+      const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+      const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+      const vector3d position = {this->position[0], this->position[1], this->position[2]};
+
+      const float vx = position.y * view.values[3] + position.x * view.values[0] + position.z * view.values[6] + view.values[9] +
+                       emitter->offset.x;
+      const float vy = position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10] +
+                       emitter->offset.y;
+      const float vz = position.x * view.values[2] + position.y * view.values[5] + position.z * view.values[8] + view.values[11] +
+                       emitter->offset.z;
+
+      emitter->position.x = vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9];
+      emitter->position.y = vx * inverse.values[1] + vy * inverse.values[4] + vz * inverse.values[7] + inverse.values[10];
+      emitter->position.z = vx * inverse.values[2] + vy * inverse.values[5] + vz * inverse.values[8] + inverse.values[11];
+      AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
+    }
+
+    emitter = *it;
+    if (emitter) {
+      AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
+    }
+    ++it;
+  }
+  ++this->unknown_00D4;
 }
 
 // OFFSET: 0x00727C70
