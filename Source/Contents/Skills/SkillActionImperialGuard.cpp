@@ -2,10 +2,12 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EZ2STREffectEx.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/Sound/SoundMgr.h"
@@ -14,6 +16,8 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <format>
+#include <string>
 
 class CSkillAction_IG_GUARDIAN_SHIELD : public CSkillAction {
 public:
@@ -93,6 +97,7 @@ public:
 class CSkillAction_IG_RADIANT_SPEAR : public CSkillAction {
 public:
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -423,6 +428,26 @@ void CSkillAction_IG_RADIANT_SPEAR::Slot08(int level, CGameActor* source) {
   if (effect) {
     effect->Slot14(level);
   }
+}
+
+// OFFSET: 0x0078A9C0
+// FUNCTION: fn_08626
+void CSkillAction_IG_RADIANT_SPEAR::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source || !target) {
+    return;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, mode->camera->frame.view.values);
+  std::string side = "left";
+  if (angle > 90.0f && angle < 270.0f) {
+    side = "right";
+  }
+
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("radiant_spear_{}down_bottom", side)), target->render.position.x,
+                     target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(std::format("radiant_spear_{}down", side)), target->render.position.x,
+                     target->render.position.y, target->render.position.z, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x0078AC80
