@@ -12,7 +12,12 @@ class CPowderingEffect : public CEffect {
 public:
   CPowderingEffect();
 
+  void Slot01() override;
+  void Close() override;
   void Slot12() override;
+
+  void sub_709570(CParticle* particle);
+  void sub_7096B0(CParticle* particle);
 
   /* 00CC */ std::vector<CParticle*> smokeParticles;
   /* 00D8 */ std::vector<CParticle*> spriteParticles;
