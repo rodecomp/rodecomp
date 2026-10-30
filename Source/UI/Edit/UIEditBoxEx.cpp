@@ -7,18 +7,119 @@
 #include <windows.h>
 
 // OFFSET: 0x009E4310
+// FUNCTION: fn_14429
+bool CUIEditBoxEx::Slot05() {
+  return this->edit->disabled == 0;
+}
 
 // OFFSET: 0x009E4330
+// FUNCTION: fn_14430
+void CUIEditCtrlEx::RefreshPlaceholder() {
+  if (this->placeholder.size() == 0) {
+    return;
+  }
+
+  if (this->text == this->placeholder) {
+    return;
+  }
+
+  std::uint32_t color;
+  if (this->text.size() == 0) {
+    this->SetText(this->placeholder.c_str());
+    color = this->placeholderColor;
+  } else {
+    color = this->normalColor;
+  }
+
+  this->TextColor(color & 0xFFFFFF, 0xFFFFFFFF);
+}
 
 // OFFSET: 0x009E43D0
+// FUNCTION: fn_14431
+void CUIEditBoxEx::ResetSelection() {
+  CUIEditCtrlEx* edit = this->edit;
+  edit->unknown_0190 = 0;
+  edit->unknown_018C = 0;
+  edit->Invalidate();
+}
 
 // OFFSET: 0x009E45E0
+// FUNCTION: fn_14433
+void CUIEditBoxEx::SetCursor(std::size_t position) {
+  this->edit->SetCursor(position);
+}
 
 // OFFSET: 0x009E4970
+// FUNCTION: fn_14437
+int CUIEditCtrlEx::LeadingBytesFitting(const std::string& text, int width) {
+  if (width == 0) {
+    return 0;
+  }
+
+  int bytes = 0;
+  int total = 0;
+  const char* current = text.c_str();
+  const char* end = current + text.size();
+
+  while (current < end) {
+    const char* start = current;
+    current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
+    const int count = static_cast<int>(current - start);
+    const int extent = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, start, count, 0, 12, 0, 0);
+
+    if (width <= total + extent) {
+      if (std::abs(total + extent - width) < std::abs(total - width)) {
+        bytes += count;
+      }
+      return bytes;
+    }
+
+    bytes += count;
+    total += extent;
+  }
+
+  return bytes;
+}
 
 // OFFSET: 0x009E4A30
+// FUNCTION: fn_14438
+int CUIEditCtrlEx::TrailingOffsetFitting(const std::string& text, int width) {
+  if (width == 0) {
+    return static_cast<int>(text.size());
+  }
+
+  this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, text.c_str(), 0, 0, 12, 0, 0);
+
+  int bytes = 0;
+  int total = 0;
+  const char* begin = text.c_str();
+  const char* current = begin + text.size();
+
+  while (current > begin) {
+    const char* next = current;
+    current = CharPrevExA(static_cast<WORD>(g_textCodePage), begin, current, 0);
+    const int count = static_cast<int>(next - current);
+    const int extent = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current, count, 0, 12, 0, 0);
+
+    if (width <= total + extent) {
+      if (std::abs(total + extent - width) < std::abs(total - width)) {
+        bytes += count;
+      }
+      return static_cast<int>(text.size()) - bytes;
+    }
+
+    bytes += count;
+    total += extent;
+  }
+
+  return static_cast<int>(text.size()) - bytes;
+}
 
 // OFFSET: 0x009E4B20
+// FUNCTION: fn_14439
+int CUIEditBoxEx::Length() {
+  return this->edit->Length();
+}
 
 // OFFSET: 0x009E4B50
 // FUNCTION: fn_14440
@@ -27,8 +128,23 @@ void CUIEditCtrlEx::Invalidate() {
 }
 
 // OFFSET: 0x009E4B60
+// FUNCTION: fn_14441
+void CUIEditCtrlEx::SelectAll() {
+  UIEditCtrl::SelectAll();
+  this->selectedAll = 1;
+}
 
 // OFFSET: 0x009E4B80
+// FUNCTION: fn_14442
+void CUIEditBoxEx::Paint() {
+  if (this->borderWidth > 0) {
+    this->ClearSurface(this->borderColor);
+    const int border = this->borderWidth;
+    this->FillRegion(border, border, this->geometry.width - border * 2, this->geometry.height - border * 2, this->backgroundColor);
+  } else {
+    this->ClearSurface(this->backgroundColor);
+  }
+}
 
 // OFFSET: 0x009E4BD0
 // FUNCTION: fn_14443
@@ -38,6 +154,40 @@ void CUIEditCtrlEx::Paint() {
 }
 
 // OFFSET: 0x009E4F90
+// FUNCTION: fn_14445
+void CUIEditCtrlEx::UpdateScrollBar() {
+  const int total = static_cast<int>(this->lines.size());
+  int visible = (this->geometry.height - this->verticalPadding) / this->unknown_0138;
+  if (visible < 1) {
+    visible = 1;
+  }
+  this->visibleLines = visible;
+
+  int maximum = total - visible;
+  if (maximum < 0) {
+    maximum = 0;
+  }
+  this->scrollMaximum = maximum;
+
+  int position = this->scrollPosition;
+  if (this->line < position) {
+    position = this->line;
+  }
+  if (this->line >= visible + position) {
+    position = this->line - visible + 1;
+  }
+  if (position > maximum) {
+    position = maximum;
+  } else if (position < 0) {
+    position = 0;
+  }
+  this->scrollPosition = position;
+
+  UIScrollBar* scrollBar = static_cast<UIScrollBar*>(this->unknown_0130);
+  scrollBar->SetRange(maximum, visible, total);
+  scrollBar->SetPosition(this->scrollPosition);
+  this->unknown_0134 = this->scrollMaximum > 0;
+}
 
 // OFFSET: 0x009E5A60
 // FUNCTION: fn_14447
