@@ -39,6 +39,7 @@ public:
   bool sub_60DBF0();
   bool sub_60DC70(std::map<std::uint64_t, ReputeGroup>& groups);
   bool sub_60E090(std::map<std::uint64_t, ReputeInfo>& infos);
+  void OpenRepute(std::uint64_t groupId, std::uint64_t reputeId);
   void SetPoint(std::uint64_t id, std::int64_t point);
   std::vector<const ReputeInfo*> FindReputes(const std::string& keyword) const;
   void SetPointsReceived(bool received);

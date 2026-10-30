@@ -1,4 +1,5 @@
 #include "Contents/ReputeMgr.h"
+#include "Contents/MessageTable.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -75,6 +76,30 @@ bool CReputeMgr::sub_60DBF0() {
 
   sub_AD6360("Failed : LoadReputeInfoData", 0);
   return false;
+}
+
+// OFFSET: 0x0060E4A0
+// FUNCTION: fn_04296
+void CReputeMgr::OpenRepute(std::uint64_t groupId, std::uint64_t reputeId) {
+  UIWindow* window = g_windowMgr.EnsureWindow(346);
+  if (!window) {
+    return;
+  }
+
+  if (groupId == 0) {
+    window->SendMsg(nullptr, 22, reinterpret_cast<std::intptr_t>(LookupMessage(3829)), 0, 0, 0);
+  } else {
+    auto group = this->m_groups.find(groupId);
+    if (group != this->m_groups.end()) {
+      window->SendMsg(nullptr, 22, reinterpret_cast<std::intptr_t>(group->second.name.c_str()), 0, 0, 0);
+    }
+  }
+
+  auto info = this->m_infos.find(reputeId);
+  if (info != this->m_infos.end()) {
+    info->second.updated = true;
+    window->Invalidate();
+  }
 }
 
 // OFFSET: 0x0060E5B0
