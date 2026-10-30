@@ -1672,3 +1672,28 @@ int sub_658FA0() {
 int sub_658FB0() {
   return 32;
 }
+
+// OFFSET: 0x0065AA00
+// FUNCTION: fn_05133
+std::uint32_t IdeaMulInv(std::uint32_t x) {
+  std::uint32_t y = x;
+  for (unsigned int i = 0; i < 15; i++) {
+    std::uint32_t low = y & 0xffff;
+    std::uint32_t p = low * low;
+    if (p) {
+      p = (p & 0xffff) - (p >> 16);
+      y = p - (p >> 16);
+    } else {
+      y = 1 - y - low;
+    }
+
+    p = (y & 0xffff) * x;
+    if (p) {
+      p = (p & 0xffff) - (p >> 16);
+      y = p - (p >> 16);
+    } else {
+      y = 1 - y - x;
+    }
+  }
+  return y & 0xffff;
+}
