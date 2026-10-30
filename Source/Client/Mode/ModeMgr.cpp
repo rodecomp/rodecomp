@@ -35,3 +35,9 @@ void CMode::Initialize(const char*) {
 // FUNCTION: fn_17838
 void CMode::Slot5(int) {
 }
+
+// OFFSET: 0x00AD6710
+// FUNCTION: fn_17839
+int CMode::Run() {
+  return 0;
+}
