@@ -55,6 +55,14 @@ CNyanggrassEffect::CNyanggrassEffect() : CEffect(-1), unknown_00D8(0) {
 }
 
 // OFFSET: 0x007085B0
+// FUNCTION: fn_07072
+void CNyanggrassEffect::Close() {
+  for (CParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
 
 // OFFSET: 0x00708820
 // FUNCTION: fn_07074
@@ -63,3 +71,13 @@ bool CNyanggrassEffect::Slot06() {
 }
 
 // OFFSET: 0x00708830
+// FUNCTION: fn_07075
+void CNyanggrassEffect::Slot03() {
+  for (CParticle* particle : this->particles) {
+    if (particle) {
+      static_cast<CEZ2STRParticle*>(particle)->Process(0.0f, 0.0f, 0.0f);
+    }
+
+    ++particle->unknown_00E8;
+  }
+}
