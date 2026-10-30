@@ -7,6 +7,7 @@
 
 class UINameBalloonText : public UIBalloonText {
 public:
+  ~UINameBalloonText() override;
   void Slot19() override;
 
   /* 00A0 */ std::string iconName;

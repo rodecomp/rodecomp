@@ -57,6 +57,10 @@ UIBalloonText::UIBalloonText(UIWindowContext& windows, BalloonTextContext& text)
 // OFFSET: 0x008520F0
 UIBalloonText::~UIBalloonText() = default;
 
+// OFFSET: 0x00851A00
+// FUNCTION: fn_10695
+UINameBalloonText::~UINameBalloonText() = default;
+
 // OFFSET: 0x00869E20
 // FUNCTION: fn_10974
 bool UIBalloonText::CanHitTest() {
