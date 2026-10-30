@@ -21,6 +21,7 @@ public:
   /* 0108 */ std::string unknown_0108;
 
   void Slot16() override;
+  virtual void Reset();
 
   void OnButtonClick();
   void OnEditSubmit();

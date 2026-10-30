@@ -77,3 +77,14 @@ void CUIMacroReport::OnReportTypeSelect(CUIRadioButton* button) {
     m_reportType = 1;
   }
 }
+
+// OFFSET: 0x00A441F0
+// FUNCTION: fn_16052
+void CUIMacroReport::Reset() {
+  this->unknown_00B4 = 0;
+  this->m_resolveSkin = false;
+  this->Resize(0xE7, 0xBD);
+  this->Move(0, 0);
+  this->Slot15(this->geometry.width, this->geometry.height);
+  this->Slot16();
+}
