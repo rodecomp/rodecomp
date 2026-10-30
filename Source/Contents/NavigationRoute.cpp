@@ -451,6 +451,16 @@ void CNavigationManager::LoadSettings() {
 }
 
 // OFFSET: 0x00BA1330
+// FUNCTION: fn_19642
+void CNavigationManager::SaveSettings() {
+  RegistryKey key;
+  std::string subKey(g_subKey);
+  subKey += "\\Navigation";
+  if (key.Create(HKEY_LOCAL_MACHINE, subKey.c_str())) {
+    DWORD viewIcon = this->viewIcon;
+    key.Set("ViewIcon", REG_DWORD, reinterpret_cast<const BYTE*>(&viewIcon), sizeof(viewIcon));
+  }
+}
 
 // OFFSET: 0x00B99CE0
 // FUNCTION: fn_19615
