@@ -66,3 +66,36 @@ void CPartialShutDownSchedule::SetPeriod(__time32_t endTime, __time32_t startTim
 }
 
 // OFFSET: 0x00BA8710
+// FUNCTION: fn_19723
+void CPartialShutDownSchedule::Process(const std::uint64_t& now) {
+  CSchedule::Process(now);
+  const __time32_t currentTime = static_cast<__time32_t>(static_cast<std::int64_t>(now) / 10000000);
+  this->seconds = static_cast<int>(_difftime32(this->endTime->seconds, currentTime));
+
+  if (this->seconds >= 3600) {
+    char text[256];
+    std::memset(text, 0, 255);
+    std::sprintf(text, LookupMessage(2349), this->seconds / 3600, (this->seconds % 3600) / 60);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+    return;
+  }
+
+  if (this->noticeIndex < 6) {
+    if (g_modeMgr.GetGameMode()) {
+      char text[256];
+      std::memset(text, 0, 255);
+      const int second = this->endTime->Second();
+      const int minute = this->endTime->Minute();
+      const int hour = this->endTime->Hour();
+      const int day = this->endTime->Day();
+      const int month = this->endTime->Month();
+      const int year = this->endTime->Year();
+      std::sprintf(text, LookupMessage(2348), year, month, day, hour, minute, second);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+      ++this->noticeIndex;
+      this->UpdateNotice();
+    }
+  } else {
+    this->active = false;
+  }
+}
