@@ -8,7 +8,7 @@
 #include "UI/Lists/UIImgMenu.h"
 #include "UI/Lists/UIListBoxEx.h"
 #include "UI/Lists/UITabControl.h"
-
+#include "UI/Buttons/UIBitmapButton2.h"
 #include <algorithm>
 #include <cstdio>
 
@@ -503,3 +503,55 @@ void UIScrollBar::SetRange(int maximum, int visible, int total) {
     this->position = this->maximum;
   }
 }
+
+// OFFSET: 0x0087E190
+// FUNCTION: fn_11263
+void UIBitmapButton2::Slot10(int argument1, int argument2, std::intptr_t argument3) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(argument1, argument2, argument3);
+  } else if (this->parent) {
+    this->parent->Slot10(argument1, argument2, argument3);
+  }
+}
+
+// OFFSET: 0x0087E1D0
+// FUNCTION: fn_11264
+void UITabControl::Slot10(int argument1, int argument2, std::intptr_t argument3) {
+  if (this->parent) {
+    this->parent->Slot10(argument1, argument2, argument3);
+  }
+}
+
+// OFFSET: 0x0087F010
+
+// OFFSET: 0x0087F1D0
+// FUNCTION: fn_11270
+void UITabControl::DrawTabBorder(int x, int y, int width, int height, std::uint32_t color) {
+  if (this->layout == 1) {
+    this->FillRegion(x + 2, y, width - 4, 1, color);
+    this->FillRegion(x + 1, y + 1, 1, 1, color);
+    this->FillRegion(x, y + 2, 1, height - 2, color);
+    this->FillRegion(width - 2 + x, y + 1, 1, 1, color);
+    this->FillRegion(width - 1 + x, y + 2, 1, height - 2, color);
+  } else if (this->layout == 3) {
+    this->FillRegion(x, y, 1, height - 2, color);
+    this->FillRegion(x + 1, y + height - 2, 1, 1, color);
+    this->FillRegion(width - 1 + x, y, 1, height - 2, color);
+    this->FillRegion(x + 2, y + height - 1, width - 4, 1, color);
+    this->FillRegion(width - 2 + x, y + height - 2, 1, 1, color);
+  } else if (this->layout == 0) {
+    this->FillRegion(x + 2, y, width - 2, 1, color);
+    this->FillRegion(x + 1, y + 1, 1, 1, color);
+    this->FillRegion(x, y + 2, 1, height - 4, color);
+    this->FillRegion(x + 1, height - 2 + y, 1, 1, color);
+    this->FillRegion(x + 2, height - 1 + y, width - 2, 1, color);
+  } else if (this->layout == 2) {
+    this->FillRegion(x, y, width - 2, 1, color);
+    this->FillRegion(x + width - 2, y + 1, 1, 1, color);
+    this->FillRegion(x + width - 1, y + 2, 1, height - 4, color);
+    this->FillRegion(x, height - 1 + y, width - 2, 1, color);
+    this->FillRegion(x + width - 2, height - 2 + y, 1, 1, color);
+  }
+}
+
+// OFFSET: 0x0087F610

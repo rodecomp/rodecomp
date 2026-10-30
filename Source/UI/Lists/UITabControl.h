@@ -15,13 +15,24 @@ public:
   int TabCount();
   int TabAt(int x, int y);
   void FillTab(int index, int x, int y, int width, int height, std::uint32_t color);
+  void DrawVerticalTab(int index);
+  void DrawHorizontalTab(int index);
+  void DrawTabBorder(int x, int y, int width, int height, std::uint32_t color);
+  void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
 
   /* 0080 */ int layout;
-  /* 0084 */ unsigned char unknown_0084[0x25];
+  /* 0084 */ unsigned char unknown_0084[0xC];
+  /* 0090 */ std::uint32_t activeFillColor;
+  /* 0094 */ std::uint32_t inactiveFillColor;
+  /* 0098 */ std::uint32_t activeBorderColor;
+  /* 009C */ std::uint32_t inactiveBorderColor;
+  /* 00A0 */ std::uint32_t activeTextColor;
+  /* 00A4 */ std::uint32_t inactiveTextColor;
+  /* 00A8 */ unsigned char unknown_00A8;
   /* 00A9 */ unsigned char unknown_00A9;
   /* 00AC */ int dragX;
   /* 00B0 */ int dragY;
