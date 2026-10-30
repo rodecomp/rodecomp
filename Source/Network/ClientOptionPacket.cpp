@@ -27,5 +27,23 @@ void SendClientOption(unsigned char value, CConnection& connection, const Packet
 }
 
 // OFFSET: 0x00E48BA0
+// FUNCTION: fn_24227
+void CSession::SendHomunculusAutoFeedOption(unsigned char enabled) {
+  ClientOptionPacket packet;
+  packet.id = 0x02D8;
+  packet.option = 3;
+  packet.value = enabled;
+  CRagConnection& connection = GetRagConnection();
+  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
 
 // OFFSET: 0x00E49380
+// FUNCTION: fn_24234
+void CSession::SendPetAutoFeedOption(unsigned char enabled) {
+  ClientOptionPacket packet;
+  packet.id = 0x02D8;
+  packet.option = 2;
+  packet.value = enabled;
+  CRagConnection& connection = GetRagConnection();
+  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
