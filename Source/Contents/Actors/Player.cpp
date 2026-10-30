@@ -524,6 +524,90 @@ void CPc::Slot62(int value) {
 }
 
 // OFFSET: 0x00DA8C80
+// FUNCTION: fn_22566
+void CPc::RenderBodyOutline(int layer, const float* position, float x, float y, float distanceScale, float scale, float depth, std::uint32_t color) {
+  if (!g_renderer) {
+    return;
+  }
+
+  RenderBounds bounds;
+  bounds.left = static_cast<float>(g_renderer->viewport.width);
+  bounds.top = static_cast<float>(g_renderer->viewport.height);
+  bounds.right = 0.0f;
+  bounds.bottom = 0.0f;
+  bounds.offset = depth;
+
+  CSprRes* sprite = static_cast<CSprRes*>(this->GetEquipSprite(0));
+  CActRes* action = static_cast<CActRes*>(this->GetEquipAction(0));
+  if (!sprite || !action) {
+    return;
+  }
+
+  int motion;
+  if (this->render.unknown_0070 == 3 || this->unknown_017C != 0) {
+    this->render.previousAnimation = this->ActionBase(this->render.unknown_0070);
+    motion = action->FrameCount(this->render.previousAnimation) - 1;
+    this->render.curMotion = motion;
+  } else {
+    motion = this->render.curMotion;
+  }
+
+  const ActionFrame* frame = &action->Frame(this->render.previousAnimation, motion);
+  if (!frame) {
+    return;
+  }
+
+  if (frame->cellCount < 1) {
+    frame = &action->Frame(0, this->render.curMotion);
+    if (!frame) {
+      return;
+    }
+  }
+
+  for (int index = 0; index < frame->cellCount; ++index) {
+    const SpriteFrameCell* cell = &frame->Cell(index);
+    if (!cell || cell->image == -1) {
+      continue;
+    }
+
+    SpriteRleImage* image = sprite->images[cell->imageType][cell->image];
+    float bottomRhw;
+    float topRhw;
+    SpriteQuad quad;
+    int box[4];
+    std::uint32_t quadColor;
+    if (this->Slot55() == JT_THANATOS) {
+      this->Slot09(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &quadColor, 0, 0, 0);
+      if (this->render.unknown_0070 == 0 && index == 1) {
+        quad.bottomRhw = bottomRhw + 0.000008f;
+        quad.topRhw = topRhw + 0.00008f;
+      }
+    } else {
+      this->Slot09(layer, layer, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &quadColor, 0, 0, 0);
+      if (g_cameraDistance >= 320.0f) {
+        quad.bottomRhw = bottomRhw - 0.0000025f;
+        quad.topRhw = topRhw - 0.0000025f;
+      }
+    }
+
+    this->RaiseUnknown03C8((box[3] - box[1]) / 4);
+    quad.image = image;
+    quad.color = color;
+    if (this->render.unknown_0130[0] == 1) {
+      quad.color = color & 0xFFFFFF | 0x46000000;
+    }
+
+    if (this->render.unknown_00A4Bytes[1] != 0) {
+      bounds.Include(&quad.top);
+    }
+
+    if (IsScreenShakeActive()) {
+      this->DrawFlippedQuad(quad, sprite->palette, 5, x, y, 0);
+    } else {
+      this->DrawQuad(quad, sprite->palette, 5, 0.0f, 0.0f, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00DA8F70
 // FUNCTION: fn_22567
@@ -657,6 +741,55 @@ const ActionFrame& CPc::SelectStanceFrame(int layer, CActRes* actRes, int* anima
 }
 
 // OFFSET: 0x00DB3740
+// FUNCTION: fn_22649
+void CPc::Slot23(int first, int second) {
+  this->weapon = first;
+  this->unknown_044C = second;
+
+  if (!g_session.IsJobWeaponTypeAllowed(this->GetEffectiveJob(-1), static_cast<std::int64_t>(second) << 32 | static_cast<std::uint32_t>(first))) {
+    this->LoadEquipAction(5, "");
+    this->LoadEquipSprite(5, "");
+    this->LoadEquipAction(6, "");
+    this->LoadEquipSprite(6, "");
+    return;
+  }
+
+  const std::string actName = g_session.GetWeaponActName(this->GetEffectiveJob(-1), this->unknown_0260, this->weapon, -1, this->unknown_04D0);
+  const std::string sprName = g_session.GetWeaponSprName(this->GetEffectiveJob(-1), this->unknown_0260, this->weapon, -1, this->unknown_04D0);
+  this->LoadEquipAction(5, actName.c_str());
+  this->LoadEquipSprite(5, sprName.c_str());
+
+  switch (static_cast<std::int64_t>(this->unknown_044C) << 32 | static_cast<std::uint32_t>(this->weapon)) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_2HSWORD:
+    case W_1HSPEAR:
+    case W_2HSPEAR:
+    case W_1HAXE:
+    case W_2HAXE:
+    case W_KATAR:
+    case W_REVOLVER:
+    case W_RIFLE:
+    case W_DOUBLE_DD:
+    case W_DOUBLE_SS:
+    case W_DOUBLE_AA:
+    case W_DOUBLE_DS:
+    case W_DOUBLE_DA:
+    case W_DOUBLE_SA: {
+      const std::string effectActName =
+        g_session.GetWeaponEffectActName(this->GetEffectiveJob(-1), this->unknown_0260, this->weapon, -1, 0, this->unknown_04D0);
+      const std::string effectSprName =
+        g_session.GetWeaponEffectSprName(this->GetEffectiveJob(-1), this->unknown_0260, this->weapon, -1, 0, this->unknown_04D0);
+      this->LoadEquipAction(6, effectActName.c_str());
+      this->LoadEquipSprite(6, effectSprName.c_str());
+      break;
+    }
+    default:
+      this->LoadEquipAction(6, "");
+      this->LoadEquipSprite(6, "");
+      break;
+  }
+}
 
 // OFFSET: 0x00DB99F0
 // FUNCTION: fn_22671
@@ -1004,6 +1137,29 @@ bool IsReadyOrAttackAction(int action) {
 }
 
 // OFFSET: 0x00DABE20
+// FUNCTION: fn_22588
+void CGrannyPc::UpdateAnimation(C3dGrannyModelRes* model) {
+  if (!model) {
+    model = this->model;
+  }
+
+  this->clock = GrannyGetSystemSeconds();
+  this->unknown_0F24 += GrannyGetSecondsElapsed(&this->lastClock, &this->clock) * 2.0f;
+  this->lastClock = this->clock;
+
+  if (model != this->model) {
+    model->PlayAnimation(this->motion, GrannyInstantiateModel(model->model), nullptr, 0);
+    model->Animate(this->unknown_0F24, GrannyInstantiateModel(model->model));
+    return;
+  }
+
+  if (this->motion == 2 && this->controls[2] && GrannyGetControlDurationLeft(this->controls[2]) <= 0.0f) {
+    this->motion = 0;
+    this->controls[this->motion] = model->PlayAnimation(this->motion, GrannyInstantiateModel(model->model), this->controls[this->motion], 0);
+  }
+
+  model->Animate(this->unknown_0F24 * g_depthAverageHalf, this->instance);
+}
 
 // OFFSET: 0x00DAC030
 // FUNCTION: fn_22591
