@@ -4,6 +4,9 @@
 #include "Contents/Actors/CharacterRender.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include "Render/Renderer.h"
+#include "UI/Window/FuncDrawWNDChar.h"
+#include "Utility/Math/AffineMatrix.h"
 
 // OFFSET: 0x007F2F90
 // FUNCTION: fn_09879
@@ -15,6 +18,17 @@ UIPreviewEquipWnd::UIPreviewEquipWnd(UIWindowContext& windows, UIFrameContext& f
 // FUNCTION: fn_09880
 UIPreviewEquipWnd::~UIPreviewEquipWnd() {
   delete this->m_render;
+}
+
+// OFFSET: 0x007F3590
+
+// OFFSET: 0x007F3CD0
+// FUNCTION: fn_09883
+void UIPreviewEquipWnd::Paint() {
+  this->SetSolid(this->m_context->primitives, this->geometry.width, this->geometry.height, 0);
+  this->DrawNamed(this->m_context->primitives, 0, 0, "유저인터페이스\\equip_preview\\bg_mounting2.bmp", 0xffffffff, 0, 0);
+  void (UIPreviewEquipWnd::*draw)() = &UIPreviewEquipWnd::DrawCharacter;
+  (this->*draw)();
 }
 
 // OFFSET: 0x007F43E0

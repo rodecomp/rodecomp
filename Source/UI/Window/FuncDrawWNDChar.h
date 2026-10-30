@@ -12,7 +12,12 @@ class UIWindow;
 // VTABLE: vt_00803
 class FuncDrawWNDChar {
 public:
+  FuncDrawWNDChar(
+    UIWindow* window, int x, int y, unsigned char sex, short job, int hairColor, short body, short head, short bottomAccessory, short topAccessory,
+    short midAccessory, int robe, unsigned char flags, int shield, int bodyStyle, int headPalette, int action, int motion, int time
+  );
   virtual ~FuncDrawWNDChar();
+  void Draw(int option);
   bool DrawOnTop();
 
   /* 0004 */ UIWindow* m_window;

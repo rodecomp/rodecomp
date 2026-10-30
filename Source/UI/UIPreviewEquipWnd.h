@@ -11,7 +11,9 @@ public:
   UIPreviewEquipWnd(UIWindowContext& windows, UIFrameContext& frames);
   ~UIPreviewEquipWnd() override;
   void Slot11() override;
+  void Paint() override;
   void Slot19() override;
+  void DrawCharacter();
   void RefreshHeadgearLocations();
 
   /* 00B4 */ PreviewEquipWndInfo* saved;
