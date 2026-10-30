@@ -93,6 +93,22 @@ void UIChangeMaterialWnd_List::sub_5E2A70() {
 }
 
 // OFFSET: 0x005E3B80
+// FUNCTION: fn_03894
+void UIChangeMaterialWnd_List::sub_5E3B80(int index) {
+  this->m_selectedIndex = index;
+  this->m_previousScrollOffset = this->m_scrollOffset;
+  this->Invalidate();
+
+  const MaterialListEntry* entry = nullptr;
+  if (static_cast<std::uint32_t>(index) < this->m_items.size()) {
+    const int entryIndex = this->m_items[index];
+    if (static_cast<std::uint32_t>(entryIndex) < this->m_entries.size()) {
+      entry = &this->m_entries[entryIndex];
+    }
+  }
+
+  this->parent->SendMsg(nullptr, 23, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
+}
 
 // OFFSET: 0x005E44C0
 // FUNCTION: fn_03898
