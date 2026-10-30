@@ -2,10 +2,15 @@
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
+#include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
+#include <ctime>
+#include <string>
 #include <winsock2.h>
 #include <windows.h>
 
@@ -19,6 +24,18 @@ struct CharacterSlotsPacket {
   /* 0007 */ unsigned char producibleSlots;
   /* 0008 */ unsigned char validSlots;
   /* 0009 */ CharacterSlotExtension extension;
+};
+
+struct CharacterResultPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t result;
+};
+
+struct CharacterDeletePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t gid;
+  /* 0006 */ int result;
+  /* 000A */ int remaining;
 };
 
 struct CharacterListPacket {
@@ -207,6 +224,52 @@ void CLoginMode::ReceiveCharacterSlots(const CharacterSlotsPacket* packet) {
 void CLoginMode::SubD8EDC0(int) {
 }
 
+// OFFSET: 0x00D8EDD0
+// FUNCTION: fn_22277
+void CLoginMode::ReceiveCharacterResult(const CharacterResultPacket* packet, WindowDialogs& dialogs) {
+  UIWindow* window = g_windowMgr.window_03D4;
+  int message;
+  switch (packet->result) {
+  case 0:
+    dialogs.Confirm(LookupMessage(1214), 0, true, false, 0, "Message", 280, 120, 0);
+    if (window) {
+      window->SendMsg(nullptr, 6, 352, 0, 0, 0);
+    }
+    return;
+  case 1:
+    message = 1218;
+    break;
+  case 2:
+    message = 1219;
+    break;
+  case 3:
+    if (dialogs.Confirm(LookupMessage(1215), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+      window->SendMsg(nullptr, 6, 351, 0, 0, 0);
+    }
+    return;
+  case 4:
+    if (dialogs.Confirm(LookupMessage(1220), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+      window->SendMsg(nullptr, 6, 351, 0, 0, 0);
+    }
+    return;
+  case 5:
+    message = 2022;
+    break;
+  case 6:
+    message = 2023;
+    break;
+  case 10:
+    message = 2024;
+    break;
+  default:
+    return;
+  }
+
+  if (dialogs.Confirm(LookupMessage(message), 0, true, true, 0, "Message", 280, 120, 0) == 184 && window) {
+    window->SendMsg(nullptr, 6, 185, 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x00D8F560
 // FUNCTION: fn_22279
 void CLoginMode::SubD8F560(int) {
@@ -219,6 +282,122 @@ void CLoginMode::ReceiveCharacterList(const CharacterListPacket* packet) {
   g_session.unknown_59BC = this->characterCount;
   memcpy_s(this->characters, sizeof(this->characters), packet->characters, this->characterCount * sizeof(CharacterInfo));
   this->pendingCursorType = 7;
+}
+
+// OFFSET: 0x00D8FA00
+// FUNCTION: fn_22281
+void CLoginMode::ReceiveDeleteCharacter(const CharacterDeletePacket* packet, WindowDialogs& dialogs) {
+  std::string message;
+  switch (packet->result) {
+  case 0:
+    message = LookupMessage(1816);
+    break;
+  case 1:
+    this->characterDeleted = true;
+    break;
+  case 2:
+    message = LookupMessage(1820);
+    break;
+  case 3:
+    message = LookupMessage(1817);
+    break;
+  case 4:
+    message = LookupMessage(1821);
+    break;
+  case 5:
+    message = LookupMessage(1822);
+    break;
+  case 6:
+    message = LookupMessage(2369);
+    break;
+  case 7:
+    message = LookupMessage(301);
+    break;
+  case 8:
+    message = LookupMessage(3044);
+    break;
+  default:
+    message = LookupMessage(1816);
+    break;
+  }
+
+  if (!message.empty()) {
+    dialogs.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+  }
+  if (this->characterDeleted != true) {
+    this->pendingCursorType = 7;
+  }
+}
+
+// OFFSET: 0x00D8FC80
+// FUNCTION: fn_22282
+void CLoginMode::ReceiveDeleteCancel(const CharacterDeletePacket* packet, WindowDialogs& dialogs) {
+  std::string message;
+  if (packet->result == 0) {
+    message = LookupMessage(1816);
+  } else if (packet->result == 1) {
+    for (int i = 0; i < this->characterCount; ++i) {
+      if (this->characters[i].gid == packet->gid) {
+        this->characters[i].deleteDate = 0;
+        break;
+      }
+    }
+    this->pendingCursorType = 7;
+  } else if (packet->result == 2) {
+    message = LookupMessage(1817);
+  } else {
+    message = LookupMessage(1816);
+  }
+
+  if (!message.empty()) {
+    dialogs.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+  }
+}
+
+// OFFSET: 0x00D8FE40
+// FUNCTION: fn_22283
+void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet, WindowDialogs& dialogs) {
+  std::string message;
+  switch (packet->result) {
+  case 0:
+    message = LookupMessage(1816);
+    break;
+  case 1:
+    for (int i = 0; i < this->characterCount; ++i) {
+      if (this->characters[i].gid == packet->gid) {
+        __time32_t now;
+        _time32(&now);
+        this->characters[i].deleteDate = packet->remaining + now;
+        break;
+      }
+    }
+    this->pendingCursorType = 7;
+    break;
+  case 2:
+    break;
+  case 3:
+    message = LookupMessage(1817);
+    break;
+  case 4:
+    message = LookupMessage(1818);
+    break;
+  case 5:
+    message = LookupMessage(1819);
+    break;
+  case 6:
+    message = LookupMessage(2981);
+    break;
+  case 7:
+    message = LookupMessage(3092);
+    break;
+  default:
+    message = LookupMessage(1816);
+    break;
+  }
+
+  if (!message.empty()) {
+    dialogs.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+  }
 }
 
 // OFFSET: 0x00D91780
