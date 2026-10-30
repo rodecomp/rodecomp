@@ -1033,6 +1033,34 @@ void UIMakeCharWnd::Slot18() {
 // OFFSET: 0x008BA670
 
 // OFFSET: 0x008BAEF0
+// FUNCTION: fn_11792
+void UIMessageBoxAutoreturn::Slot19() {
+  if (this->counting == 0) {
+    return;
+  }
+
+  if (timeGetTime() > this->deadline) {
+    g_windowMgr.unknown_0474 = 187;
+    this->counting = 0;
+    return;
+  }
+
+  const unsigned previous = this->remaining;
+  const bool fraction = (this->deadline - timeGetTime()) % 1000 != 0;
+  this->remaining = (this->deadline - timeGetTime()) / 1000 + fraction;
+
+  if (previous != this->remaining) {
+    char text[512];
+    std::sprintf(text, this->format.c_str(), this->remaining);
+    this->messageText = text;
+    this->viewer->Clear();
+    this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->messageText.data()), 38, 0, 0);
+  }
+
+  const unsigned duration = this->seconds * 1000;
+  const unsigned progress = (timeGetTime() + (duration - this->deadline)) * 100 / duration;
+  this->gauge->SetValue(static_cast<float>(progress));
+}
 
 // OFFSET: 0x008AAA10
 // FUNCTION: fn_11724
@@ -1053,6 +1081,33 @@ void UIMonsterInfoWnd::DrawResistance(int x, int y, const char* label, int value
 // OFFSET: 0x008B8ED0
 
 // OFFSET: 0x008C3440
+// FUNCTION: fn_11823
+void UIReplayRECControlWnd::UpdateRecordTime() {
+  for (int index = 0; index < 4; ++index) {
+    this->tabs[index]->Move(-100, -100);
+  }
+
+  this->tabs[timeGetTime() % 1000 / 250]->Move(6, 5);
+  if (timeGetTime() - this->recordStart <= 200) {
+    return;
+  }
+
+  const int seconds = static_cast<int>(timeGetTime() - Replay::Instance().started) / 1000;
+  const int minutes = seconds / 60;
+  const int hours = minutes / 60;
+  if (hours == 100) {
+    this->window_00E8->Move(124, 47);
+  } else if (hours == 1000) {
+    this->window_00E8->Move(116, 47);
+  }
+
+  char text[100] = {};
+  std::sprintf(text, "%03d:%02d:%02d", hours, minutes % 60, seconds % 60);
+  this->window_00E8->SetTextFitted(text);
+  this->Invalidate();
+  this->InvalidateChildren();
+  this->recordStart = timeGetTime();
+}
 
 // OFFSET: 0x008BA820
 
