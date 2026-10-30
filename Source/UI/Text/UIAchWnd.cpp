@@ -2,12 +2,14 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Buttons/UITextButton.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/UIAchWnd.h"
 #include "UI/Window/WindowBorder.h"
@@ -16,6 +18,9 @@
 #include <algorithm>
 #include <cstring>
 #include <new>
+
+// GLOBAL: gl_25003
+std::vector<AchTracingEntry> g_achievementTracking;
 
 #pragma pack(push, 1)
 struct PACKET_CZ_REQ_ACH_REWARD {
@@ -860,3 +865,17 @@ void UIAchTab::SetLabel(const char* text, int group, int sub) {
   this->unknown_0080 = -1;
   this->Refresh();
 }
+
+// OFFSET: 0x007BA460
+// FUNCTION: fn_09267
+bool UIAchTracingWnd::Slot08() {
+  return true;
+}
+
+// OFFSET: 0x007BAA20
+
+// OFFSET: 0x007BA470
+
+// OFFSET: 0x007BA590
+
+// OFFSET: 0x007BA920

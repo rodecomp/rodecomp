@@ -10,6 +10,7 @@
 class UITextButton : public UIButton {
   friend class UITextViewer;
   friend class UIMessageBox;
+  friend class UIAchTracingWnd;
 
 public:
   friend void OpenTextButtonLink(UITextButton* button);

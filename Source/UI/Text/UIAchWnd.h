@@ -17,6 +17,7 @@
 
 class CBitmapRes;
 class UIBitmapButton;
+class UITextButton;
 
 struct UIAchListInfo {
   /* 0000 */ int unknown_0000;
@@ -262,5 +263,39 @@ public:
 private:
   UIButtonContext* m_controls;
 };
+
+
+struct AchTracingCondition {
+  /* 0000 */ std::string text;
+  /* 0018 */ unsigned char completed;
+};
+
+struct AchTracingEntry {
+  /* 0000 */ unsigned char expanded;
+  /* 0001 */ unsigned char pinned;
+  /* 0004 */ int id;
+  /* 0008 */ std::string name;
+  /* 0020 */ std::vector<AchTracingCondition> conditions;
+};
+
+struct AchTracingWndInfo;
+
+class UIAchTracingWnd : public UIFrameWnd {
+public:
+  /* 00B4 */ AchTracingWndInfo* info;
+  /* 00B8 */ UITextButton* toggleButtons[3];
+  /* 00C4 */ UITextButton* openButtons[3];
+
+  bool Slot08() override;
+  void Slot11() override;
+  void Slot15(int width, int height) override;
+  void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+private:
+  UIButtonContext* m_controls;
+};
+
+extern std::vector<AchTracingEntry> g_achievementTracking;
 
 #endif
