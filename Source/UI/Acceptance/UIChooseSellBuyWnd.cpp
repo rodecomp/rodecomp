@@ -83,7 +83,7 @@
 #include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/TextTokens.h"
-
+#include "UI/Edit/UIEditCtrl.h"
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -2003,4 +2003,39 @@ void UInCashWnd::Slot11() {
     this->m_placement->x = this->geometry.x;
     this->m_placement->y = this->geometry.y;
   }
+}
+
+// OFFSET: 0x008FB850
+// FUNCTION: fn_12345
+int UIGraffiStrboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    if (a == 184) {
+      struct {
+        int area[4];
+        const char* text;
+      } request;
+      request.area[0] = this->area[0];
+      request.area[1] = this->area[1];
+      request.area[2] = this->area[2];
+      request.area[3] = this->area[3];
+      request.text = this->edit->Text();
+      g_modeMgr.GetGameMode()->SendMsg(131, reinterpret_cast<int>(&request), 0, 0, 0);
+    } else if (a != 185) {
+      return 0;
+    }
+
+    g_windowMgr.Schedule(this);
+    return 0;
+  }
+
+  if (message == 68) {
+    const int* area = reinterpret_cast<const int*>(a);
+    this->area[0] = area[0];
+    this->area[1] = area[1];
+    this->area[2] = area[2];
+    this->area[3] = area[3];
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
