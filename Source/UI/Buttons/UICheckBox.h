@@ -15,6 +15,7 @@ public:
   void ResetCursor(int x, int y) override;
   void SetChecked(int value);
   void SetImages(const char* checked, const char* unchecked, const char* text);
+  void FitToText();
   void SetTooltip(const char* text);
   void SetHidden(bool hidden);
 

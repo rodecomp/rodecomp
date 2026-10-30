@@ -2,6 +2,7 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Window/FrameFocus.h"
 #include "UI/Buttons/UICheckBox.h"
 
@@ -157,5 +158,29 @@ void UICheckBox::SetImages(const char* checked, const char* unchecked, const cha
 void UICheckBox::SetTooltip(const char* text) {
   if (text) {
     this->m_tooltip = text;
+  }
+}
+
+// OFFSET: 0x008653B0
+// FUNCTION: fn_10925
+void UICheckBox::FitToText() {
+  if (this->m_text.empty()) {
+    return;
+  }
+
+  const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->m_text.c_str(), 0, 0, 12, 0, 0);
+  CBitmapRes* bitmap = nullptr;
+  switch (this->geometry.unknown_0030) {
+  case 0:
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str())));
+    break;
+  case 1:
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
+    break;
+  }
+
+  const int desired = ((bitmap->image.width + width) + 3);
+  if (desired != this->geometry.width) {
+    this->Resize(desired, this->geometry.height);
   }
 }
