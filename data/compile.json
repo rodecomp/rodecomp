@@ -372,6 +372,7 @@
   "Source/Contents/Effects/FuumaShouakuEffect.cpp": 4,
   "Source/Contents/Effects/HealEffect.cpp": 4,
   "Source/Contents/Effects/HealSpEffect.cpp": 4,
+  "Source/Contents/Effects/HitLineEffect.cpp": 4,
   "Source/Contents/Effects/JupitelThunderStormEffect.cpp": 4,
   "Source/Contents/Effects/Level150Effect.cpp": 4,
   "Source/Contents/Effects/Level99Orb2Effect.cpp": 4,
