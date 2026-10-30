@@ -25,6 +25,7 @@ public:
 class CRootTwistEffect : public CEffect {
 public:
   CRootTwistEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
@@ -58,6 +59,7 @@ public:
 class CSvgSpiritEffect : public CEffect {
 public:
   CSvgSpiritEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
@@ -69,6 +71,8 @@ public:
 class CTunaPartyEffect : public CEffect {
 public:
   CTunaPartyEffect();
+  void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
@@ -82,6 +86,7 @@ public:
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
+  void SpawnShock();
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ int unknown_00D8;
@@ -402,6 +407,7 @@ class CNewCloudKillEffect : public CEffect {
 public:
   CNewCloudKillEffect();
   void Slot03() override;
+  void Slot04() override;
   bool Slot06() override;
   void Close() override;
 

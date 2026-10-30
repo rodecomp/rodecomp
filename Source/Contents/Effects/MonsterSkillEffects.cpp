@@ -2384,3 +2384,190 @@ void CCrimsonArrowEffect::Slot01() {
 
   this->emitter = emitter;
 }
+
+// OFFSET: 0x0070DE90
+// FUNCTION: fn_07166
+void CTunaPartyEffect::Slot01() {
+  CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+  if (!particle) {
+    return;
+  }
+
+  particle->unknown_0004 = this->id;
+  particle->unknown_000C = 1;
+  particle->unknown_0010 = 0;
+  particle->unknown_0008 = 1;
+  particle->SetSprite("이팩트\\su_tunaparty\\su_tunaparty.spr");
+  particle->SetAction("이팩트\\su_tunaparty\\su_tunaparty.act");
+  particle->unknown_0054 = 0.0f;
+  particle->loopMode = 3;
+  this->unknown_002C = 9999;
+  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+}
+
+// OFFSET: 0x0070DF40
+// FUNCTION: fn_07168
+void CTunaPartyEffect::Slot03() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    CSpriteParticle* particle = AsSprite(*it);
+    const float phase = particle->unknown_0054 + 0.05f;
+    particle->unknown_0054 = phase;
+    const float cosine = std::cos(phase) * 10.0f;
+    const float sine = std::sin(phase) * 10.0f;
+    particle->position.y = this->position[1] - 10.0f;
+    particle->position.x = this->position[0] + sine;
+    particle->position.z = this->position[2] + cosine;
+    float angle = phase / 3.141592f * 180.0f;
+    if (angle > 360.0f) {
+      angle = std::fmod(angle, 360.0f);
+    }
+    angle -= static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+    if (angle < 0.0f) {
+      angle += 360.0f;
+    }
+    int direction = static_cast<int>((angle - 157.5) / 45.0);
+    if (direction < 0) {
+      direction += 8;
+    }
+    ++particle->unknown_00E8;
+    particle->frame = direction;
+  }
+}
+
+// OFFSET: 0x0070C2F0
+// FUNCTION: fn_07129
+void CRootTwistEffect::Slot01() {
+  CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+  if (particle) {
+    particle->unknown_0004 = this->id;
+    particle->unknown_000C = 0;
+    particle->unknown_0010 = 0;
+    particle->unknown_0008 = 1;
+    particle->SetSprite("이팩트\\su_sv_roottwist\\su_sv_roottwist.spr");
+    particle->SetAction("이팩트\\su_sv_roottwist\\su_sv_roottwist.act");
+    particle->unknown_00EC |= 0x200;
+    particle->frameDelay = 8.0f;
+    particle->depthOffset = 0.00015f;
+    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  }
+  this->unknown_002C = 9999;
+}
+
+// OFFSET: 0x0070D9B0
+// FUNCTION: fn_07159
+void CSvgSpiritEffect::Slot01() {
+  this->emitter = reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+  if (!this->emitter) {
+    return;
+  }
+
+  CSpriteParticle* sprite = AsSprite(this->emitter);
+  sprite->unknown_0004 = this->id;
+  sprite->unknown_000C = 0;
+  sprite->unknown_0010 = 0;
+  sprite->unknown_0008 = 1;
+  sprite->SetSprite("몬스터\\svg_spirit.spr");
+  sprite->SetAction("몬스터\\svg_spirit.act");
+  this->emitter->velocity.x = 0.0f;
+  this->emitter->velocity.y = 0.0f;
+  this->emitter->velocity.z = 0.0f;
+  this->unknown_002C = 16;
+  const float deltaX = this->sourcePosition[0] - this->position[0];
+  const float deltaZ = this->sourcePosition[2] - this->position[2];
+  float angle = (static_cast<float>(std::atan2(static_cast<double>(deltaX), static_cast<double>(-deltaZ))) / 3.141592f) * 180.0f;
+  if (angle < 0.0f) {
+    angle += 360.0f;
+  }
+  angle = 180.0f - angle;
+  if (angle < 0.0f) {
+    angle += 360.0f;
+  }
+  this->emitter->baseAngle = static_cast<int>(angle);
+  this->emitter->speed = SquareRoot(deltaX * deltaX + deltaZ * deltaZ) / static_cast<float>(this->unknown_002C);
+  this->emitter->elapsed = 0;
+}
+
+// OFFSET: 0x0070E240
+// FUNCTION: fn_07172
+void CCurseOfCubeEffect::SpawnShock() {
+  CEZ2STRParticle* particle;
+  if (this->id == 0x901) {
+    particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    if (!particle) {
+      return;
+    }
+    particle->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_shock\\npc_cur_r_shock.str");
+  } else if (this->id == 0x902) {
+    particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    if (!particle) {
+      return;
+    }
+    particle->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_shock\\npc_cur_b_shock.str");
+  } else {
+    return;
+  }
+
+  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+}
+
+// OFFSET: 0x0071F0C0
+// FUNCTION: fn_07342
+void CNewCloudKillEffect::Slot04() {
+  for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ++it) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (particle->unknown_00A8 != 0 || !particle) {
+      continue;
+    }
+
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  }
+
+  for (auto it = this->unknown_00D4.begin(); it != this->unknown_00D4.end(); ++it) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (particle->unknown_00A8 != 0 || !particle) {
+      continue;
+    }
+
+    const int frame = static_cast<signed char>(particle->unknown_00A9[0]);
+    const ParticleQuad quad = {false, 0.5f, 0.75f, static_cast<float>(frame + 1) * 0.25f, static_cast<float>(frame + 2) * 0.25f, false, true};
+    particle->Render(quad);
+  }
+
+  for (auto it = this->unknown_00DC.begin(); it != this->unknown_00DC.end(); ++it) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (particle->unknown_00E8 <= 0 || !particle) {
+      continue;
+    }
+
+    const int frame = static_cast<signed char>(particle->unknown_00A9[0]);
+    const ParticleQuad quad = {false, 0.0f, 0.25f, static_cast<float>(frame) * 0.25f, static_cast<float>(frame + 1) * 0.25f, false, true};
+    particle->Render(quad);
+  }
+
+  for (auto it = this->unknown_00E4.begin(); it != this->unknown_00E4.end(); ++it) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (static_cast<signed char>(particle->unknown_00A8) <= 0 || !particle) {
+      continue;
+    }
+
+    const int frame = static_cast<signed char>(particle->unknown_00A9[0]);
+    const ParticleQuad quad = {false,
+                               static_cast<float>(frame / 2) * 0.5f,
+                               static_cast<float>(frame / 2 + 1) * 0.5f,
+                               static_cast<float>(frame % 2) * 0.5f,
+                               static_cast<float>(frame % 2 + 1) * 0.5f,
+                               false,
+                               true};
+    particle->Render(quad);
+  }
+
+  for (auto it = this->unknown_00EC.begin(); it != this->unknown_00EC.end(); ++it) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (particle->unknown_00E8 <= 0 || !particle) {
+      continue;
+    }
+
+    const ParticleQuad quad = {false, 0.5f, 0.75f, 0.0f, 0.25f, false, true};
+    particle->Render(quad);
+  }
+}
