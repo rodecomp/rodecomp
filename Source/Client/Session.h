@@ -421,7 +421,8 @@ public:
   /* 7F70 */ int m_maxLevelEffect4thSub;
   /* 7F74 */ unsigned char unknown_7F74[8];
   /* 7F7C */ bool m_homunculusAutoFeed;
-  /* 7F7D */ unsigned char unknown_7F7D[0x17];
+  /* 7F7D */ unsigned char unknown_7F7D[0x13];
+  /* 7F90 */ int m_showRankingSchedule;
   /* 7F94 */ std::set<std::uint32_t> unknown_7F94;
   /* 7F9C */ unsigned char unknown_7F9C[0x0C];
   /* 7FA8 */ CInstantVar m_options;
@@ -763,6 +764,7 @@ public:
   ITEM_INFO GetItem1738At(int index) const;
   int GetItem1738Quantity(std::uint32_t id) const;
   void AddUnknown7F94(std::uint32_t id);
+  void SetShowRankingSchedule(bool show, const void* data);
   void EndSkillOption();
   void ClearNormalItemSlots();
   void ResetItems6B68();
@@ -939,6 +941,7 @@ static_assert(offsetof(CSession, unknown_5468) == 0x5468);
 static_assert(offsetof(CSession, m_partyBooking) == 0x5B78);
 static_assert(offsetof(CSession, unknown_61A4) == 0x61A4);
 static_assert(offsetof(CSession, unknown_6B68) == 0x6B68);
+static_assert(offsetof(CSession, m_showRankingSchedule) == 0x7F90);
 static_assert(offsetof(CSession, unknown_7F94) == 0x7F94);
 static_assert(offsetof(CSession, unknown_8148) == 0x8148);
 #endif

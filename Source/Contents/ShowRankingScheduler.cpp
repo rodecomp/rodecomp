@@ -1,4 +1,7 @@
 #include "Contents/ShowRankingScheduler.h"
+#include "Client/Session.h"
+#include "Contents/Schedule/CheckGDISchedule.h"
+#include "Contents/Schedule/TimeScheduler.h"
 
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
@@ -9,6 +12,7 @@
 #include <cstring>
 #include <crtdbg.h>
 #include <string>
+#include <xtimec.h>
 
 // GLOBAL: gl_24719
 int g_schedulerSerial;
@@ -155,4 +159,31 @@ void CShowRankingScheduler::Show() {
   std::string mine = FormatOwnedString("MY POINT    :  %4d POINT ", *reinterpret_cast<const int*>(this->rankingData + 84));
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(mine.c_str()), background, 0, 0, 0);
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
+}
+
+// OFFSET: 0x00E493E0
+// FUNCTION: fn_24235
+void CSession::SetShowRankingSchedule(bool show, const void* data) {
+  CSchedule* existing = reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->FindSchedule(this->m_showRankingSchedule);
+  if (show == true) {
+    if (existing == nullptr) {
+      std::uint64_t now = _Xtime_get_ticks();
+      CShowRankingScheduler* ranking;
+      {
+        const std::uint64_t duration = 1000;
+        ranking = new CShowRankingScheduler(now, duration, 1);
+      }
+      if (ranking != nullptr) {
+        ranking->unknown_0088 = 3000;
+        ranking->unknown_008C = 0;
+        ranking->SetData(data);
+        CSchedule* schedule = reinterpret_cast<CSchedule*>(ranking);
+        schedule->Process(now);
+        this->m_showRankingSchedule = schedule->serial;
+        reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->AddSchedule(schedule);
+      }
+    }
+  } else if (existing != nullptr) {
+    existing->active = false;
+  }
 }
