@@ -22,6 +22,39 @@
 const char* g_miniMapMemoPath = "%s\\Memo\\$$%s.txt";
 
 // OFFSET: 0x0099B540
+// FUNCTION: fn_13554
+void UIMiniMapWnd::AddTownMarks() {
+  std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName;
+  this->warpMarks.clear();
+
+  for (int index = 0;; ++index) {
+    TownInfo info = g_townInfoMgr->GetTownInfo(mapName, index);
+    if (info.image.empty()) {
+      break;
+    }
+
+    if (info.type == 8) {
+      MiniMapMark mark;
+      mark.x = static_cast<int>(static_cast<float>(info.x) * this->scale - 6.0f + this->originX);
+      mark.y = static_cast<int>(this->originY - (static_cast<float>(info.y) * this->scale + 6.0f));
+      this->warpMarks.push_back(mark);
+    } else {
+      UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+      button->SetBitmap(info.image.c_str(), 0, 0);
+      button->SetBitmap(info.image.c_str(), 1, 0);
+      button->SetBitmap(info.image.c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->SetId(index + 1000);
+      button->SetTooltip(info.name.c_str());
+      button->Move(
+        static_cast<int>(static_cast<float>(info.x) * this->scale - 6.0f + this->originX),
+        static_cast<int>(this->originY - (static_cast<float>(info.y) * this->scale + 6.0f))
+      );
+      this->AddChild(button);
+      this->townButtons.emplace(index, button);
+    }
+  }
+}
 
 // OFFSET: 0x0099BA80
 // FUNCTION: fn_13555
@@ -90,3 +123,11 @@ void UIEditctrlWnd::Paint() {
 }
 
 // OFFSET: 0x0099C8A0
+// FUNCTION: fn_13561
+void UIMiniMapWnd::ResetCursor(int, int) {
+  if (this->dragging) {
+    this->m_context->cursor.Set(1, this->m_context->cursorTick);
+  } else {
+    this->m_context->cursor.Set(0, this->m_context->cursorTick);
+  }
+}

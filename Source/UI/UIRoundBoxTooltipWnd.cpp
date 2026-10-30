@@ -37,6 +37,35 @@ void UIRoundBoxTooltipWnd::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x0099A300
+// FUNCTION: fn_13541
+void UIColoringTextViewer::Paint() {
+  if (this->transparent) {
+    this->ClearSurface(0xFFFF00FF);
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+  } else {
+    this->ClearSurface(this->backgroundColor);
+  }
+
+  int spacing = this->lineHeight - this->bottomMargin;
+  if (spacing == 0) {
+    spacing = 1;
+  }
+
+  const int first = this->topLine;
+  const int limit = this->geometry.height / spacing + first;
+  int end = static_cast<int>(std::min<unsigned>(this->lines.size(), limit));
+  if (this->lineLimit) {
+    end = this->lineLimit;
+  }
+
+  auto& owner = *this->m_listContext;
+  for (int index = first; index < end; ++index) {
+    const auto& line = this->lines[index];
+    DrawColoredText(*this, owner.codePage, 3, this->lineHeight * (index - first) + 4, line.c_str(), static_cast<unsigned>(line.size()), this->color, 0, 12, false);
+  }
+}
 
 // OFFSET: 0x0099A3F0
 // FUNCTION: fn_13542
@@ -46,3 +75,19 @@ void UIRoundBoxTooltipWnd::Paint() {
 }
 
 // OFFSET: 0x0099A430
+// FUNCTION: fn_13543
+int UIColoringTextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 29) {
+    return UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  std::vector<std::string> wrapped;
+  ItemDescriptions descriptions{g_itemDescriptions};
+  WrapRichText(reinterpret_cast<const char*>(argument1), wrapped, 35, argument3 != 0, this->m_listContext->codePage, descriptions);
+  for (unsigned index = 0; index < wrapped.size(); ++index) {
+    this->AddLine(wrapped[index].c_str());
+  }
+
+  this->Invalidate();
+  return 0;
+}
