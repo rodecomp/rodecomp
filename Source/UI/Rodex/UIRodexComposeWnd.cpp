@@ -155,5 +155,27 @@ void UIRodexComposeWnd::SetRecipient(int id, unsigned short job, unsigned short 
 }
 
 // OFFSET: 0x007FF400
+// FUNCTION: fn_10000
+void UIRodexComposeWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (!g_windowMgr.unknown_0458) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source != 1) {
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+
+  if (drag->quantity == 1) {
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  }
+
+  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.window_01EC->SendMsg(nullptr, 13, 13, 0, 0, 0);
+}
 
 // OFFSET: 0x007FF4A0
