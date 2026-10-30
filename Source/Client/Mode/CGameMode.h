@@ -19,6 +19,28 @@ class CCorpse;
 struct ActorNameAllPacket;
 struct GameOptionEntry;
 struct CWorld;
+struct TextureRegion;
+
+struct MiniMapMember {
+  /* 0000 */ int x;
+  /* 0004 */ int y;
+  /* 0008 */ std::uint32_t color;
+};
+
+struct MiniMapPing {
+  /* 0000 */ int x;
+  /* 0004 */ int y;
+  /* 0008 */ int persistent;
+  /* 000C */ std::uint32_t color;
+  /* 0010 */ std::uint32_t tick;
+};
+
+struct MinimapMarker {
+  /* 0000 */ std::int16_t unknown_0000;
+  /* 0002 */ std::int16_t unknown_0002;
+  /* 0004 */ std::int16_t unknown_0004;
+  /* 0006 */ std::int16_t unknown_0006;
+};
 
 class CGameMode : public CMode {
 public:
@@ -33,7 +55,12 @@ public:
   /* 019C */ std::map<std::uint32_t, std::pair<int, int>> unknown_019C;
   /* 01A4 */ std::list<int> unknown_01A4;
   /* 01AC */ std::map<std::uint32_t, std::uint32_t> unknown_01AC;
-  /* 01B4 */ unsigned char unknown_01B4[0xE0];
+  /* 01B4 */ std::map<std::uint32_t, MiniMapMember> unknown_01B4;
+  /* 01BC */ std::map<std::uint32_t, MiniMapMember> unknown_01BC;
+  /* 01C4 */ std::map<std::uint32_t, MiniMapPing> unknown_01C4;
+  /* 01CC */ unsigned char unknown_01CC[0x24];
+  /* 01F0 */ std::map<std::uint32_t, MinimapMarker> minimapMarkers;
+  /* 01F8 */ unsigned char unknown_01F8[0x9C];
   /* 0294 */ char unknown_0294[0x20];
   /* 02B4 */ UIWindow* itemWindow;
   /* 02B8 */ unsigned char unknown_02B8[0x28];
@@ -140,6 +167,14 @@ public:
   void ReceiveItem1740AddOptions(const unsigned char* packet);
   void ReceiveItem1740AddGrade(const unsigned char* packet);
   void ReceiveUnknown05C4Result(const unsigned char* packet);
+  void StepTowardWalkableCell(const int& targetX, const int& targetY, int& x, int& y);
+  void FindWalkableCellToward(float x, float z, float originX, float originZ, int& column, int& row, int distance);
+  void RemoveMiniMapPing(std::uint32_t id);
+  void DrawMiniMapMembers(const TextureRegion& view);
+  void DrawMiniMapTriangle(float x, float y, float size, std::uint32_t color);
+  void DrawMiniMapMarker(
+    const TextureRegion& view, int x, int y, int size, std::string texture, int kind, std::uint32_t color, bool clamp
+  );
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -151,6 +186,9 @@ static_assert(offsetof(CGameMode, unknown_01AC) == 0x1AC);
 static_assert(offsetof(CGameMode, scene) == 0xCC);
 static_assert(offsetof(CGameMode, camera) == 0xD0);
 static_assert(offsetof(CGameMode, nameCard) == 0x160);
+static_assert(offsetof(CGameMode, unknown_01BC) == 0x1BC);
+static_assert(offsetof(CGameMode, unknown_01C4) == 0x1C4);
+static_assert(offsetof(CGameMode, minimapMarkers) == 0x1F0);
 static_assert(offsetof(CGameMode, unknown_0294) == 0x294);
 static_assert(offsetof(CGameMode, drag) == 0x308);
 static_assert(offsetof(CGameMode, unknown_05C4) == 0x5C4);
