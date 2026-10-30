@@ -223,6 +223,18 @@ struct CRagEffect : CRenderObject {
   void BlitzBeat();
   bool GlassWall();
   void Portal();
+  void TANJI2();
+  void TEIHIT2();
+  void ShieldBoomerang3(const char* name);
+  void ParticleTime(const char* name, char kind);
+  void ThrowItem(const char* name, char kind);
+  void Bottom_Music(const char* name, char kind);
+  void IceArrow();
+  void Flasher();
+  int SuperAngel(char type, int dummy = 0);
+  int WarpZone();
+  void Enhance();
+  void HealSP();
 
   virtual void Slot08();
   virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);
