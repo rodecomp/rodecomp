@@ -201,7 +201,9 @@ public:
   /* 52B8 */ std::vector<const char*> m_accessoryNames;
   /* 52C4 */ std::vector<const char*> m_robeNames;
   /* 52D0 */ std::vector<std::string> m_navigationForbiddenMaps;
-  /* 52DC */ unsigned char unknown_52DC[0x174];
+  /* 52DC */ unsigned char unknown_52DC[0x16C];
+  /* 5448 */ int unknown_5448;
+  /* 544C */ unsigned char unknown_544C[0x04];
   /* 5450 */ int unknown_5450;
   /* 5454 */ unsigned char unknown_5454[0xE8];
   /* 553C */ std::string m_serverName;

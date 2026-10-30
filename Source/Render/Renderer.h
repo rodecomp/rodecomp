@@ -48,6 +48,8 @@ public:
   float ScaleDistance(float distance) const;
   float UiScaleX() const;
   float UiScaleY() const;
+  void DrawBattleFieldIcon(CRenderSystemBase& system);
+  void DrawOverlays(CRenderSystemBase& system);
 
   /* 0004 */ RendererViewport viewport;
   /* 0038 */ unsigned frame;
