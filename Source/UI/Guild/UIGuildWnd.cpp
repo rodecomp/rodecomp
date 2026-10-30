@@ -540,6 +540,38 @@ void UIGuildWnd::Slot11() {
 }
 
 // OFFSET: 0x00957EF0
+// FUNCTION: fn_13053
+__declspec(noinline) void UIGuildWnd::CreateTabs() {
+  if (this->m_tabs[0]) {
+    return;
+  }
+
+  if (GuildData().unknown_00A4 == -1) {
+    g_modeMgr.gameMode->SendMsg(105, 0, 0, 0, 0);
+  }
+
+  const char* names[6];
+  names[0] = LookupMessage(340);
+  names[1] = LookupMessage(341);
+  names[2] = LookupMessage(342);
+  names[3] = LookupMessage(343);
+  names[4] = LookupMessage(344);
+  names[5] = LookupMessage(345);
+
+  const char** name = names;
+  UIStaticText** tab = this->m_tabs;
+  for (int x = 3; x < 399; x += 66) {
+    *tab = new UIStaticText(*this->m_context, *this->m_controls);
+    (*tab)->SetSize(62, 15);
+    (*tab)->SetTextFitted(*name);
+    (*tab)->Move(x, 22);
+    this->AddChild(*tab);
+    ++name;
+    ++tab;
+  }
+
+  this->AddCloseButton(*this->m_controls, "Alt+G", 0);
+}
 
 // OFFSET: 0x00964D50
 // FUNCTION: fn_13135
@@ -605,27 +637,327 @@ int UIGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::in
 }
 
 // OFFSET: 0x00960AF0
+// FUNCTION: fn_13116
+void UIGuildBanishedMemberWnd::UpdateScroll() {
+  if (!this->m_scrollBar) {
+    return;
+  }
+
+  const int rows = GuildData().unknown_00EC.size() / this->m_columns + (GuildData().unknown_00EC.size() % this->m_columns != 0);
+  const int visible = this->m_visibleRows;
+  int range = 0;
+  if (rows - visible >= 0) {
+    range = rows - visible;
+  }
+
+  this->m_scrollable = range != 0;
+  if (range == 0) {
+    this->m_scrollTop = 0;
+    this->m_scrollBar->SetRange(0, visible, rows);
+  } else {
+    this->m_scrollBar->SetRange(range, visible, rows);
+    int top = this->m_scrollTop;
+    if (top < 0) {
+      this->m_scrollTop = 0;
+      top = 0;
+    }
+    const int last = rows - this->m_visibleRows;
+    if (last < top) {
+      this->m_scrollTop = last;
+      top = last;
+    }
+    this->m_scrollBar->SetPosition(top);
+  }
+
+  this->m_scrollBar->Invalidate();
+}
 
 // OFFSET: 0x0095FBF0
+// FUNCTION: fn_13083
+void UIGuildBanishedMemberWnd::Slot25(int x, int y) {
+  UIGuildWnd::Slot25(x, y);
+  const int previous = this->m_hoverRow;
+  int hover = -1;
+  if (x <= this->geometry.width - 14 && x >= 4 && y >= g_guildBanishedRowHeight + 46 && y < (this->m_visibleRows + 1) * g_guildBanishedRowHeight + 46) {
+    const int row = (y - g_guildBanishedRowHeight - 46) / g_guildBanishedRowHeight;
+    int visible = 0;
+    int index = 0;
+    const auto& members = GuildData().unknown_00EC;
+    for (auto member = members.begin(); member != members.end(); ++member, ++index) {
+      if (index >= this->m_scrollTop * this->m_columns) {
+        if (visible == this->m_columns * row) {
+          hover = index;
+          break;
+        }
+        ++visible;
+      }
+    }
+  }
+
+  this->m_hoverRow = hover;
+  if (previous != hover) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00961600
+// FUNCTION: fn_13125
+int UIGuildBanishedMemberWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
+  switch (message) {
+  case 6:
+    if (a1 == 201) {
+      this->m_frameContext->windows.CloseWindow(59);
+      return 0;
+    }
+    break;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scrollTop;
+    int top;
+    if (message == 9) {
+      top = previous - this->m_visibleRows + 1;
+    } else {
+      top = a1;
+      if (message == 10) {
+        top = this->m_visibleRows - 1;
+      }
+      top += previous;
+    }
+    this->m_scrollTop = top;
+    if (previous != top) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return this->m_scrollTop - previous;
+  }
+  case 60:
+    this->InvalidateChildren();
+    this->UpdateScroll();
+    break;
+  default:
+    return UIGuildWnd::SendMsg(sender, message, a1, a2, a3, a4);
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00960DE0
+// FUNCTION: fn_13120
+void UIGuildTotalInfoWnd::UpdateScroll() {
+  if (!this->m_scrollBar) {
+    return;
+  }
+
+  const int rows = GuildData().unknown_00F4.size() / this->m_columns + (GuildData().unknown_00F4.size() % this->m_columns != 0);
+  const int visible = this->m_visibleRows;
+  int range = 0;
+  if (rows - visible >= 0) {
+    range = rows - visible;
+  }
+
+  this->m_scrollable = range != 0;
+  if (range == 0) {
+    this->m_scrollTop = 0;
+    this->m_scrollBar->SetRange(0, visible, rows);
+  } else {
+    this->m_scrollBar->SetRange(range, visible, rows);
+    int top = this->m_scrollTop;
+    if (top < 0) {
+      this->m_scrollTop = 0;
+      top = 0;
+    }
+    const int last = rows - this->m_visibleRows;
+    if (last < top) {
+      this->m_scrollTop = last;
+      top = last;
+    }
+    this->m_scrollBar->SetPosition(top);
+  }
+
+  this->m_scrollBar->Invalidate();
+}
 
 // OFFSET: 0x0095FF60
+// FUNCTION: fn_13090
+void UIGuildTotalInfoWnd::Slot25(int x, int y) {
+  UIGuildWnd::Slot25(x, y);
+  const int previous = this->m_hoverRow;
+  int hover = -1;
+  if (x <= this->geometry.width - 14 && x >= 4 && y >= g_guildTotalInfoRowHeight + 46 && y < (this->m_visibleRows + 1) * g_guildTotalInfoRowHeight + 46) {
+    const int row = (y - g_guildTotalInfoRowHeight - 46) / g_guildTotalInfoRowHeight;
+    int visible = 0;
+    int index = 0;
+    const auto& entries = GuildData().unknown_00F4;
+    for (auto entry = entries.begin(); entry != entries.end(); ++entry, ++index) {
+      if (index >= this->m_scrollTop * this->m_columns) {
+        if (visible == this->m_columns * row) {
+          hover = index;
+          break;
+        }
+        ++visible;
+      }
+    }
+  }
+
+  this->m_hoverRow = hover;
+  if (previous != hover) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00964C90
+// FUNCTION: fn_13134
+int UIGuildTotalInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
+  switch (message) {
+  case 6:
+    if (a1 == 201) {
+      this->m_frameContext->windows.CloseWindow(59);
+    }
+    return 0;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scrollTop;
+    int top;
+    if (message == 9) {
+      top = previous - this->m_visibleRows + 1;
+    } else {
+      top = a1;
+      if (message == 10) {
+        top = this->m_visibleRows - 1;
+      }
+      top += previous;
+    }
+    this->m_scrollTop = top;
+    if (previous != top) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return this->m_scrollTop - previous;
+  }
+  default:
+    return UIGuildWnd::SendMsg(sender, message, a1, a2, a3, a4);
+  }
+}
 
 // OFFSET: 0x0095D3A0
+// FUNCTION: fn_13066
+void UIGuildTotalInfoWnd::Slot15(int, int) {
+  this->CreateTabs();
+  if (std::strcmp(g_guildName.c_str(), "") == 0) {
+    g_modeMgr.gameMode->SendMsg(107, 0, 0, 0, 0);
+  }
+
+  GuildData().unknown_00D0 = 1;
+  g_modeMgr.gameMode->SendMsg(107, 5, 0, 0, 0);
+  this->m_scrollTop = 0;
+  this->m_hoverRow = 0;
+  this->m_columns = 1;
+  this->m_visibleRows = 12;
+  this->m_scrollable = 0;
+  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar->Configure(this->geometry.width - 15, 63, 1, this->geometry.height - 87);
+  this->AddChild(this->m_scrollBar);
+
+  for (int index = 0; index < 12; ++index) {
+    this->m_rows[index] = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_rows[index]->SetSize(g_guildBanishedColumnWidths[0] - 4, 15);
+    this->m_rows[index]->SetTextFitted("");
+    this->m_rows[index]->Move(8, index * g_guildTotalInfoRowHeight + 63);
+    this->AddChild(this->m_rows[index]);
+  }
+
+  this->UpdateScroll();
+}
 
 // OFFSET: 0x00957DA0
+// FUNCTION: fn_13051
+void UIGuildInfoManageWnd::HideAgitMenu() {
+  if (this->m_agitMenu && this->m_agitMenu->geometry.visible) {
+    this->m_agitMenu->Show(0);
+    this->m_agitMenu->m_agitIndex = -1;
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00960380
+// FUNCTION: fn_13102
+void UIGuildInfoManageWnd::Slot32(int, int) {
+  this->HideAgitMenu();
+}
 
 // OFFSET: 0x0095FCF0
+// FUNCTION: fn_13085
+void UIGuildInfoManageWnd::Slot25(int x, int y) {
+  UIGuildWnd::Slot25(x, y);
+  this->HideAgitMenu();
+}
 
 // OFFSET: 0x00960540
+// FUNCTION: fn_13107
+void UIGuildInfoManageWnd::Slot33(int x, int y) {
+  if (x < 201 || x > 287) {
+    return;
+  }
+
+  if (y > 157 && y < 205) {
+    const int count = GuildData().CountRelatedGuilds(0);
+    this->m_allyRow = -1;
+    this->m_hostileRow = -1;
+    if (count != 0) {
+      this->m_allyRow = (y - 157) / 16;
+      if (count > this->m_allyRow) {
+        this->SendMsg(nullptr, 49, 0, 0, 0, 0);
+      }
+    }
+  } else if (y > 231 && y < 279) {
+    const int count = GuildData().CountRelatedGuilds(1);
+    this->m_allyRow = -1;
+    this->m_hostileRow = -1;
+    if (count != 0) {
+      this->m_hostileRow = (y - 231) / 16;
+      if (count > this->m_hostileRow) {
+        this->SendMsg(nullptr, 49, 0, 0, 0, 0);
+      }
+    }
+  } else {
+    return;
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x00957DE0
+// FUNCTION: fn_13052
+void UIGuildInfoManageWnd::RefreshAgitList() {
+  this->m_agitList->Clear();
+  const int count = GuildData().GetUnknown0114Count();
+  if (count != 0) {
+    for (int index = 0; index < count; ++index) {
+      const int agitId = GuildData().GetUnknown0114(index);
+      char* agitName = nullptr;
+      g_luaScript->Call("get_agit_name", "d>s", agitId, &agitName);
+      if (strnlen(agitName, 256) != 0) {
+        this->m_agitList->AddLine(agitName);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00962310
+// FUNCTION: fn_13128
+int UIGuildLeaveReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
+  }
+
+  if (a1 == 184) {
+    g_modeMgr.gameMode->SendMsg(110, reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0, 0);
+    this->m_frameContext->windows.CloseWindow(75);
+  } else if (a1 == 185) {
+    this->m_frameContext->windows.CloseWindow(75);
+  }
+
+  return 0;
+}
