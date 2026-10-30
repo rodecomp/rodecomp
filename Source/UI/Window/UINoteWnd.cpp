@@ -3,6 +3,13 @@
 #include "UI/Window/WindowBorder.h"
 
 // OFFSET: 0x0094D870
+// FUNCTION: fn_12907
+void UINoteWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xFFFFFF);
+  DrawRoundedBorder(*this, 2, 2, this->geometry.width - 4, this->geometry.height - 4, 0xC8C8C8);
+  this->FillRegion(8, 8, this->geometry.width - 16, this->geometry.height - 38, 0xF7F7F7);
+}
 
 // OFFSET: 0x0094D8E0
 // FUNCTION: fn_12908
