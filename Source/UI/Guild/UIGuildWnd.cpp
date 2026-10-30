@@ -1,10 +1,15 @@
 #include "UI/Guild/UIGuildWnd.h"
+#include "Contents/GuildMgr.h"
+#include "Resource/EmblemResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "UI/Buttons/UIButton.h"
 
 #include <windows.h>
 #include <timeapi.h>
+
+#include <cwchar>
+#include <string>
 
 // OFFSET: 0x00957D30
 // FUNCTION: fn_13044
@@ -215,3 +220,35 @@ void UIGuildTotalInfoWnd::Slot35(int delta) {
     this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
   }
 }
+
+UIGuildWnd::UIGuildWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), unknown_00B4(0), unknown_00B8(0), unknown_00BC(0), unknown_00C0(0), unknown_00C4(0), unknown_00C8(0),
+      unknown_00CC(0), m_controls(&controls) {
+}
+
+// OFFSET: 0x00953D70
+// FUNCTION: fn_13001
+UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIGuildWnd(windows, frames, controls), m_buttonTime(0) {
+  for (int index = 0; index < 11; ++index) {
+    this->unknown_00D0[index] = 0;
+    this->unknown_00FC[index] = 0;
+    this->unknown_0128[index] = 0;
+    this->unknown_0180[index] = 0;
+    this->unknown_0154[index] = 0;
+    this->unknown_01D8[index] = 0;
+    this->unknown_01AC[index] = 0;
+  }
+}
+
+// OFFSET: 0x00956050
+
+// OFFSET: 0x009578F0
+
+// OFFSET: 0x00957BB0
+
+// OFFSET: 0x00957CA0
+
+// OFFSET: 0x00960230
+
+// OFFSET: 0x00960470
