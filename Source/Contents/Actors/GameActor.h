@@ -226,6 +226,7 @@ public:
   void ProcessBodyState();
   int GetShield();
   int GetEffectiveJob(int job);
+  void ShowPartyMemberEffect(std::uint32_t accountId);
   int GetUnknown0404Job() const;
   void SetUnknown03B8(int value, int slot);
   void SetTetraBall(int index, int on, int value);

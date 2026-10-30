@@ -19,6 +19,7 @@
 #include "Contents/MapSkyMgr.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
+#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/World/World.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
@@ -645,6 +646,62 @@ void CGameActor::Slot21(int) {
 void CGameActor::Slot23(int, int) {
 }
 
+// OFFSET: 0x00CA9E50
+// FUNCTION: fn_21013
+void CRenderObject::DrawBlurCopies(
+  const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw, const std::uint32_t* palette,
+  const SpriteRleImage* image, float scale, short shift
+) {
+  if ((this->render.flags & 0x1000) == 0) {
+    return;
+  }
+
+  bottomRhw += 0.1f;
+  topRhw += 0.1f;
+
+  SpriteQuad quad;
+  for (int direction = 1; direction < 5; ++direction) {
+    const float distance = static_cast<float>(this->render.unknown_00F4) * scale;
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    short alpha = static_cast<short>((30 - this->render.unknown_00F4) * 5);
+    if (alpha < 0) {
+      alpha = 0;
+    }
+
+    const float spread = 400.0f / mode->camera->camera.desiredDistance * distance;
+    if (direction == 1) {
+      quad.top = static_cast<float>(box[1]);
+      quad.left = static_cast<float>(box[0]) + offset + spread;
+      quad.bottom = static_cast<float>(box[3]);
+      quad.right = static_cast<float>(box[2]) + offset + spread;
+    } else if (direction == 2) {
+      quad.top = static_cast<float>(box[1]);
+      quad.left = static_cast<float>(box[0]) + offset - spread;
+      quad.bottom = static_cast<float>(box[3]);
+      quad.right = static_cast<float>(box[2]) + offset - spread;
+    } else if (direction == 3) {
+      quad.top = static_cast<float>(box[1]) + spread;
+      quad.bottom = static_cast<float>(box[3]) + spread;
+      quad.left = static_cast<float>(box[0]) + offset;
+      quad.right = static_cast<float>(box[2]) + offset;
+    } else if (direction == 4) {
+      quad.top = static_cast<float>(box[1]) - spread;
+      quad.bottom = static_cast<float>(box[3]) - spread;
+      quad.left = static_cast<float>(box[0]) + offset;
+      quad.right = static_cast<float>(box[2]) + offset;
+    }
+
+    quad.color = (alpha << 24) + 0xFFFFFF;
+    quad.image = image;
+    quad.top -= static_cast<float>(shift);
+    quad.bottom -= static_cast<float>(shift);
+    quad.bottomRhw = bottomRhw;
+    quad.topRhw = topRhw;
+    quad.angle = static_cast<float>(cell.unknown_001C + static_cast<int>(this->render.unknown_007C));
+    this->DrawQuad(quad, palette, 0x201, 0.0f, 0.0f, 0);
+  }
+}
+
 // OFFSET: 0x00CAA1F0
 // FUNCTION: fn_21015
 void CRenderObject::JitterBounds(float* output, const int* input, float offset, int spread, int base) {
@@ -958,6 +1015,8 @@ void CGameActor::Slot38() {
     }
   }
 }
+
+// OFFSET: 0x00CAE640
 
 // OFFSET: 0x00CABEB0
 // FUNCTION: fn_21040
@@ -2175,6 +2234,7 @@ void CGrannyCorpse3d::Render(int argument) {
   const matrix& view = *reinterpret_cast<const matrix*>(argument);
   CTexture* texture = nullptr;
   std::uint16_t* indices = nullptr;
+  RenderCommand* command;
 
   this->clock = GrannyGetSystemSeconds();
   const float elapsed = GrannyGetSecondsElapsed(&this->startClock, &this->clock) * 2.0f;
@@ -2227,7 +2287,6 @@ void CGrannyCorpse3d::Render(int argument) {
     matrix world;
     world.Compose(local, view);
 
-    RenderCommand* command = this->commands[mesh];
     int vertexCount = 0;
     for (int triangle = 0; triangle < triangleCount; ++triangle) {
       command = this->commands[mesh];

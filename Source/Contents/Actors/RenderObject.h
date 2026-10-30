@@ -63,6 +63,10 @@ public:
   int HoverHeight();
   void ScaleByPulse(float& scale) const;
   void ScaleByFadePulse(float& scale) const;
+  void DrawBlurCopies(
+    const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw, const std::uint32_t* palette,
+    const SpriteRleImage* image, float scale, short shift
+  );
   void JitterBounds(float* output, const int* input, float offset, int spread, int base);
   void DrawJitterTrail(
     SpriteQuad& quad, const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw,
