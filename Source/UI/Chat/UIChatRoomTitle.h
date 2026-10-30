@@ -12,6 +12,7 @@ class UIChatRoomTitle : public UIWindow {
 public:
   explicit UIChatRoomTitle(UIWindowContext& context);
   void Slot15(int width, int height) override;
+  void Slot26(int x, int y) override;
   void Paint() override;
   void ResetCursor(int x, int y) override;
 
@@ -22,6 +23,8 @@ public:
 
 protected:
   UIButtonContext* m_controls;
+  /* 00B8 */ unsigned char unknown_00B8[4];
+  /* 00BC */ int roomId;
 };
 
 #endif

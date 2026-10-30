@@ -1,9 +1,11 @@
 #include "Client/Mode/ModeCursor.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Chat/UIChatRoomTitle.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x0084EF70
 // FUNCTION: fn_10655
@@ -22,6 +24,17 @@ void UIChatRoomTitle::Slot15(int, int) {
   this->label->bold = 0;
   this->label->italic = 0;
   this->AddChild(this->label);
+}
+
+// OFFSET: 0x0085E8C0
+// FUNCTION: fn_10831
+void UIChatRoomTitle::Slot26(int, int) {
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (this->roomType == 0) {
+    g_windowMgr.EnsureWindow(29)->SendMsg(nullptr, 47, this->roomId, 0, 0, 0);
+  } else if (this->roomType != 3) {
+    mode->SendMsg(45, this->roomId, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x0085C690
