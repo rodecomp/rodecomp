@@ -156,6 +156,18 @@ public:
   EfstActionMessage Slot04() override;
 };
 
+class CSkillAction_AT_PRIMAL_CLAW : public CSkillAction_DamageWereWolfForm {
+public:
+  int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_AT_FERAL_CLAW : public CSkillAction_DamageWereWolfForm {
+public:
+  int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
 class CSkillAction_AT_FRENZY_FANG : public CSkillAction_DamageWereWolfForm {
 public:
   int Slot02() override;
@@ -1959,3 +1971,43 @@ void __stdcall sub_5AF180(int a, int b, int c) {
 void __stdcall sub_5AF190(int a) {
 }
 
+
+// OFFSET: 0x005AF4E0
+// FUNCTION: fn_03326
+int CSkillAction_AT_PRIMAL_CLAW::Slot02() {
+  return 72;
+}
+
+// OFFSET: 0x005AF4F0
+// FUNCTION: fn_03327
+void CSkillAction_AT_PRIMAL_CLAW::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!this->CanUse(source) || !target) {
+    return;
+  }
+
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0xC7, 0x75, 0x3E, 0xA0, 0x4A, 0x8B, 0x74, 0xE2, 0xDB, 0x66, 0x20, 0xCD};
+    thread_local EncryptedName<sizeof(bytes), 0x812BE72BCD5707B7ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x005AF700
+// FUNCTION: fn_03328
+int CSkillAction_AT_FERAL_CLAW::Slot02() {
+  return 71;
+}
+
+// OFFSET: 0x005AF710
+// FUNCTION: fn_03329
+void CSkillAction_AT_FERAL_CLAW::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!this->CanUse(source) || !target) {
+    return;
+  }
+
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0x33, 0x98, 0xC7, 0xBA, 0xAB, 0xEE, 0x16, 0x5F, 0x34, 0x8A, 0xB5};
+    thread_local EncryptedName<sizeof(bytes), 0x3375B1C7DBB5FD55ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
