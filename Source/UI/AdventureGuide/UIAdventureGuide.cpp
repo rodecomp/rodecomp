@@ -1,4 +1,6 @@
+#include "Client/Session.h"
 #include "Contents/AdventureGuideMgr.h"
+#include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
 #include "Contents/RenewQuestMgr.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
@@ -7,14 +9,18 @@
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Text/UITextViewerControl.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include <cstring>
+#include <format>
 #include <list>
 #include <utility>
 
 template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUITab>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
+template <> __declspec(noinline) void CUIListBox<AdventureGuide::CUISubTab>::SelectItem(CUIListItem* item);
 
 // OFFSET: 0x009C28B0
 // OFFSET: 0x009C2980
@@ -494,4 +500,108 @@ void CUIAdventureGuide::MarkQuest(int questId) {
       }
     }
   }
+}
+
+// OFFSET: 0x009DC140
+// FUNCTION: fn_14317
+void CUIAdventureGuide::OnSelectTab(AdventureGuide::CUITab* tab) {
+  this->titleText->SetText(tab->unknown_00F0.c_str(), tab->unknown_00F0.size());
+  AdventureGuide::CUIPage* page = tab->page;
+  if (!page) {
+    return;
+  }
+
+  const int type = tab->type;
+  CUIListBox<AdventureGuide::CUISubTab>* subTabs = tab->subTabs;
+  if (!subTabs) {
+    page->Slot54(type, 0);
+    return;
+  }
+
+  if (!subTabs->items.empty()) {
+    AdventureGuide::CUISubTab* first = subTabs->items.front();
+    if (first) {
+      subTabs->SelectItem(first);
+      if (first != subTabs->selected) {
+        return;
+      }
+    }
+  }
+
+  if (subTabs->selected) {
+    page->Slot54(type, subTabs->selected->id);
+  } else {
+    page->Slot54(type, 0);
+  }
+}
+
+namespace AdventureGuide {
+
+// OFFSET: 0x009DCE10
+// FUNCTION: fn_14330
+void CUICharacterInfo::Slot16() {
+  this->jobIcon->SetImage(std::format("유저인터페이스\\renewalparty\\icon_jobs_{}.bmp", g_session.m_job));
+  const std::string level = std::format("Lv. {}", g_session.m_level);
+  this->level->SetText(level.c_str(), level.size());
+  const std::string jobLevel = std::format("Jv. {}", g_session.m_jobLevel);
+  this->jobLevel->SetText(jobLevel.c_str(), jobLevel.size());
+  const char* name = g_session.DecodePlayerName();
+  this->name->SetText(name, std::strlen(name));
+}
+
+// OFFSET: 0x009DD750
+// FUNCTION: fn_14343
+void CUIItemInfo::Slot32(int, int) {
+  ITEM_INFO info;
+  info.SetItemId(this->itemId);
+  info.unknown_0000[0] = this->type;
+  info.identified = 1;
+  if (this->type == 5) {
+    info.unknown_0000[2] = this->location > 9 ? 0x22 : 2;
+  } else if (this->type == 4) {
+    switch (this->location) {
+    case 0:
+      info.unknown_0000[2] = 0x100;
+      break;
+    case 1:
+      info.unknown_0000[2] = 0x200;
+      break;
+    case 2:
+      info.unknown_0000[2] = 1;
+      break;
+    case 3:
+      info.unknown_0000[2] = 0x10;
+      break;
+    case 4:
+      info.unknown_0000[2] = 4;
+      break;
+    case 5:
+      info.unknown_0000[2] = 0x20;
+      break;
+    case 6:
+      info.unknown_0000[2] = 0x40;
+      break;
+    case 7:
+      info.unknown_0000[2] = 0x88;
+      break;
+    case 8:
+      info.unknown_0000[2] = 8;
+      break;
+    case 9:
+      info.unknown_0000[2] = 0x80;
+      break;
+    default:
+      info.unknown_0000[2] = 0;
+      break;
+    }
+  } else {
+    info.unknown_0000[2] = 0;
+  }
+
+  UIWindow* window = g_windowMgr.EnsureWindow(12);
+  if (window) {
+    window->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+  }
+}
+
 }

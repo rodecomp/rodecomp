@@ -67,12 +67,15 @@ public:
 class CUIItemInfo : public CUIListItem {
 public:
   void Slot16() override;
+  void Slot32(int x, int y) override;
 
   /* 00E8 */ unsigned char unknown_00E8[0x08];
   /* 00F0 */ CUIStaticText* unknown_00F0;
   /* 00F4 */ CUIStaticText* unknown_00F4;
   /* 00F8 */ CUIStaticText* unknown_00F8;
-  /* 00FC */ unsigned char unknown_00FC[0x0C];
+  /* 00FC */ int itemId;
+  /* 0100 */ int type;
+  /* 0104 */ int location;
   /* 0108 */ std::string unknown_0108;
 };
 

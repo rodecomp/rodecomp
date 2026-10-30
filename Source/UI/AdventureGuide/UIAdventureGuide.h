@@ -12,9 +12,12 @@ public:
   virtual void Slot53();
 
   void OnButtonClick();
+  void OnSelectTab(AdventureGuide::CUITab* tab);
   void MarkQuest(int questId);
 
-  /* 00D8 */ unsigned char unknown_00D8[0x20];
+  /* 00D8 */ unsigned char unknown_00D8[0x0C];
+  /* 00E4 */ CUIStaticText* titleText;
+  /* 00E8 */ unsigned char unknown_00E8[0x10];
   /* 00F8 */ CUIListBox<AdventureGuide::CUITab>* tabs;
 };
 
@@ -23,6 +26,16 @@ namespace AdventureGuide {
 class CUIPage : public CUIControl {
 public:
   virtual void Slot54(int first, int second) = 0;
+};
+
+class CUICharacterInfo : public CUIControl {
+public:
+  void Slot16() override;
+
+  /* 0084 */ CUIStaticText* level;
+  /* 0088 */ CUIStaticText* jobLevel;
+  /* 008C */ CUIStaticText* name;
+  /* 0080 */ CUIStaticImage* jobIcon;
 };
 
 class CUIIntro : public CUIPage {
