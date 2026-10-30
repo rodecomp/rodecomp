@@ -374,13 +374,199 @@ void AiSetTableNumber(lua_State* state, int key, int value) {
   lua_settable(state, -3);
 }
 
+namespace {
+
+struct AiMessage {
+  /* 0000 */ int type;
+  /* 0004 */ int x;
+  /* 0008 */ int y;
+  /* 000C */ int level;
+  /* 0010 */ int skill;
+  /* 0014 */ int target;
+};
+
+static_assert(sizeof(AiMessage) == 24);
+
+#pragma pack(push, 1)
+struct MoveToOwnerPacket {
+  /* 0000 */ std::int16_t opcode;
+  /* 0002 */ std::uint32_t aid;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(MoveToOwnerPacket) == 6);
+
+}
+
 // OFFSET: 0x00D9EEF0
+// FUNCTION: fn_22338
+int AiGetMsg(lua_State* state) {
+  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  int index;
+  if (g_session.IsHomunAid(aid)) {
+    index = 0;
+  } else if (g_session.IsMercenaryAid(aid)) {
+    index = 1;
+  } else {
+    return 0;
+  }
+
+  CGameActor* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid));
+  if (!actor) {
+    return 0;
+  }
+
+  AiMessage message = *reinterpret_cast<const AiMessage*>(actor->Slot51(index));
+  lua_newtable(state);
+  lua_pushnumber(state, 1);
+  lua_pushnumber(state, message.type);
+  lua_settable(state, -3);
+  switch (message.type) {
+  case 1:
+  case 4:
+  case 5:
+    AiSetTableNumber(state, 2, message.x);
+    AiSetTableNumber(state, 3, message.y);
+    break;
+  case 3:
+    AiSetTableNumber(state, 2, message.target);
+    break;
+  case 7:
+    AiSetTableNumber(state, 2, message.level);
+    AiSetTableNumber(state, 3, message.skill);
+    AiSetTableNumber(state, 4, message.target);
+    break;
+  case 8:
+    AiSetTableNumber(state, 2, message.level);
+    AiSetTableNumber(state, 3, message.skill);
+    AiSetTableNumber(state, 4, message.x);
+    AiSetTableNumber(state, 5, message.y);
+    break;
+  }
+
+  message.type = 0;
+  actor->SetUnknown0318(reinterpret_cast<const float*>(&message), index);
+  return 1;
+}
 
 // OFFSET: 0x00D9F0B0
+// FUNCTION: fn_22339
+int AiGetResMsg(lua_State* state) {
+  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  int index;
+  if (g_session.IsHomunAid(aid)) {
+    index = 0;
+  } else if (g_session.IsMercenaryAid(aid)) {
+    index = 1;
+  } else {
+    return 0;
+  }
+
+  CGameActor* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid));
+  if (!actor) {
+    return 0;
+  }
+
+  AiMessage message = *reinterpret_cast<const AiMessage*>(actor->Slot53(index));
+  lua_newtable(state);
+  lua_pushnumber(state, 1);
+  lua_pushnumber(state, message.type);
+  lua_settable(state, -3);
+  switch (message.type) {
+  case 1:
+  case 4:
+  case 5:
+    AiSetTableNumber(state, 2, message.x);
+    AiSetTableNumber(state, 3, message.y);
+    break;
+  case 3:
+    AiSetTableNumber(state, 2, message.target);
+    break;
+  case 7:
+    AiSetTableNumber(state, 2, message.level);
+    AiSetTableNumber(state, 3, message.skill);
+    AiSetTableNumber(state, 4, message.target);
+    break;
+  case 8:
+    AiSetTableNumber(state, 2, message.level);
+    AiSetTableNumber(state, 3, message.skill);
+    AiSetTableNumber(state, 4, message.x);
+    AiSetTableNumber(state, 5, message.y);
+    break;
+  }
+
+  message.type = 0;
+  actor->SetUnknown0330(reinterpret_cast<const float*>(&message), index);
+  return 1;
+}
 
 // OFFSET: 0x00D9FF50
+// FUNCTION: fn_22343
+int AiIsMonster(lua_State* state) {
+  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameActor* actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
+  double result = 0.0;
+  if (actor) {
+    int job = actor->GetEffectiveJob(-1);
+    if (((job > 1000 && job < 3999) || static_cast<unsigned>(job - 20021) <= 11978) && actor->unknown_0314 != 7) {
+      switch (actor->unknown_0314) {
+      case 9:
+      case 10:
+      case 13:
+      case 14:
+        result = 0.0;
+        break;
+      default:
+        if (StateFlag06(actor->Slot13()) || StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+          result = 0.0;
+        } else {
+          result = 1.0;
+        }
+        break;
+      }
+    } else if (g_session.IsPlayerJobId(job)) {
+      CWorld* world = mode->scene;
+      bool ally;
+      if (world->unknown_0048 || world->unknown_0054) {
+        ally = g_session.IsPartyMember(actor->render.accountId, true);
+      } else if (world->unknown_004C) {
+        ally = g_session.IsLocalPlayerAid(actor->Slot50()) != 0;
+      } else {
+        ally = true;
+      }
+      if (!ally) {
+        if (StateFlag06(actor->Slot13()) || StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+          result = 0.0;
+        } else {
+          result = 1.0;
+        }
+      }
+    }
+  }
+
+  lua_pushnumber(state, result);
+  return 1;
+}
 
 // OFFSET: 0x00DA0260
+// FUNCTION: fn_22345
+int AiMoveToOwner(lua_State* state) {
+  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  if (!g_session.IsHomunAid(aid) && !g_session.IsMercenaryAid(aid)) {
+    return 0;
+  }
+
+  if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid)) {
+    MoveToOwnerPacket packet;
+    packet.opcode = ID_CZ_REQUEST_MOVETOOWNER;
+    packet.aid = aid;
+    CRagConnection& connection = GetRagConnection();
+    connection.Send(g_packetLengths.FixedLength(packet.opcode), &packet);
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00DA0300
 // FUNCTION: fn_22346
