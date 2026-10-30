@@ -103,6 +103,23 @@ void UIParaItemPurchaseWnd::Slot25(int x, int y) {
   }
 }
 
+// OFFSET: 0x009A99C0
+// FUNCTION: fn_13756
+void UIParaItemShopWnd::Slot32(int x, int y) {
+  const int previousHovered = this->unknown_00F8;
+  this->unknown_00F8 = this->GetItemIndexAt(x, y);
+  if (previousHovered != this->unknown_00F8) {
+    this->Invalidate();
+  }
+
+  ITEM_INFO item = this->GetItemByIndex(this->unknown_00F8);
+  if (item.unknown_0000[1] != 0) {
+    g_modeMgr.GetGameMode();
+    UIWindow* window = g_windowMgr.EnsureWindow(0xC);
+    window->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x009A96B0
 // FUNCTION: fn_13753
 void __stdcall Nullsub344(int, int) {

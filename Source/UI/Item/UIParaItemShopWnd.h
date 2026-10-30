@@ -17,6 +17,7 @@ public:
 class UIParaItemShopWnd : public UIItemShopWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot32(int x, int y) override;
 };
 
 class UIParaResultWnd : public UIItemBaseWnd {
