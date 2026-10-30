@@ -32,6 +32,14 @@ void CUIOngoingQuestInfo::Slot53() {
 }
 
 // OFFSET: 0x00A4FF10
+// FUNCTION: fn_16225
+template <>
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Slot15(int width, int height) {
+  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar->Show(0);
+  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
+  this->AddChild(this->scrollBar);
+}
 
 // OFFSET: 0x00A539F0
 // FUNCTION: fn_16231
@@ -41,8 +49,72 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
 }
 
 // OFFSET: 0x00A53A00
+// FUNCTION: fn_16232
+template <>
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::Slot35(int value) {
+  if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
+    this->scrollBar->Slot35(value);
+  } else if (this->parent) {
+    this->parent->Slot35(value);
+  }
+}
 
 // OFFSET: 0x00A53F80
+// FUNCTION: fn_16236
+template <>
+void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnScroll(int position) {
+  auto it = this->items.begin();
+  if (it == this->items.end()) {
+    return;
+  }
+  if (this->data.size() == 0) {
+    for (; it != this->items.end(); ++it) {
+      (*it)->index = -1;
+      (*it)->Show(0);
+    }
+    return;
+  }
+
+  const int first = (*it)->index;
+  unsigned int row = position / this->rowHeight;
+  if (first != -1) {
+    if (first < static_cast<int>(row)) {
+      if (row - first < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
+      }
+    } else if (first > static_cast<int>(row)) {
+      if (first - row < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      }
+    }
+  }
+
+  it = this->items.begin();
+  for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
+    if (it == this->items.end() || row >= this->data.size()) {
+      break;
+    }
+    OngoingQuestInfo::CUIRewardItem* item = *it;
+    if (item) {
+      if (this->rebind || row != static_cast<unsigned int>(item->index)) {
+        item->index = row;
+        if (this->binder) {
+          auto node = this->data.begin();
+          std::advance(node, static_cast<int>(row));
+          this->binder(item, *node);
+        }
+      }
+      item->SetSelected(row == this->selected);
+      item->Move(this->itemX, y);
+      item->Show(1);
+    }
+  }
+
+  for (; it != this->items.end(); ++it) {
+    (*it)->index = -1;
+    (*it)->Show(0);
+  }
+}
 
 // OFFSET: 0x00A55650
 // FUNCTION: fn_16300
@@ -97,6 +169,22 @@ void CUIScrollWindow::Slot35(int value) {
 }
 
 // OFFSET: 0x00A55E10
+// FUNCTION: fn_16314
+void CUIContents::UpdateHeight() {
+  this->textViewer->Show(!this->textViewer->lines.empty());
+  if (!this->textViewer->lines.empty()) {
+    CUITextViewer* viewer = this->textViewer;
+    viewer->Resize(viewer->geometry.width, viewer->contentHeight + viewer->paddingBottom + viewer->paddingTop);
+  }
+
+  int bottom = 0;
+  for (UIWindow* child : this->m_children) {
+    if (child->geometry.visible) {
+      bottom = (std::max)(bottom, child->geometry.y + child->geometry.height);
+    }
+  }
+  UIWindow::Resize(this->geometry.width, bottom + 9);
+}
 
 // OFFSET: 0x00A55EA0
 // FUNCTION: fn_16315
