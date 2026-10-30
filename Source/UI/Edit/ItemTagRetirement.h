@@ -30,6 +30,22 @@ private:
   InputFocus& m_focus;
 };
 
+struct MailItemTagRemoval final : ItemTagRemoval {
+  explicit MailItemTagRemoval(UIWindow* const& owner);
+  void Remove(UIWindow* child) override;
+
+private:
+  UIWindow* const& m_owner;
+};
+
+struct MegaPhoneItemTagRemoval final : ItemTagRemoval {
+  explicit MegaPhoneItemTagRemoval(UIWindow* const& owner);
+  void Remove(UIWindow* child) override;
+
+private:
+  UIWindow* const& m_owner;
+};
+
 struct ItemTagRetirement {
   std::list<ItemTagRecord>& records;
   ItemTagRemoval& removal;

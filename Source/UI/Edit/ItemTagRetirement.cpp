@@ -41,6 +41,30 @@ bool UIItemTagOnMail::CanInsertTag(const std::string& name, int width) {
 
 // OFFSET: 0x0087ABB0
 
+// INLINED
+MailItemTagRemoval::MailItemTagRemoval(UIWindow* const& owner) : m_owner(owner) {
+}
+
+// OFFSET: 0x00896F60
+// FUNCTION: fn_11521
+void MailItemTagRemoval::Remove(UIWindow* child) {
+  if (this->m_owner) {
+    this->m_owner->RemoveChild(child, 1);
+  }
+}
+
+// INLINED
+MegaPhoneItemTagRemoval::MegaPhoneItemTagRemoval(UIWindow* const& owner) : m_owner(owner) {
+}
+
+// OFFSET: 0x00896F80
+// FUNCTION: fn_11522
+void MegaPhoneItemTagRemoval::Remove(UIWindow* child) {
+  if (this->m_owner) {
+    this->m_owner->RemoveChild(child, 1);
+  }
+}
+
 // OFFSET: 0x0087A2F0
 // FUNCTION: fn_11231
 void ItemTagRetirement::Clear() {
