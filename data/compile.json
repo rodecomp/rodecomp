@@ -607,6 +607,7 @@
   "Source/Contents/SpriteFrameSynchronization.cpp": 4,
   "Source/Contents/SpriteJob.cpp": 4,
   "Source/Contents/SpriteLayerDepth.cpp": 4,
+  "Source/Contents/SpriteLayerDrawing.cpp": 4,
   "Source/Contents/SpriteLayerOrder.cpp": 4,
   "Source/Contents/SpriteRidingOffset.cpp": 4,
   "Source/Contents/SpriteRidingPolicy.cpp": 4,
