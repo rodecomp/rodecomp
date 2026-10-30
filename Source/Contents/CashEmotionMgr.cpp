@@ -280,6 +280,9 @@ CCashEmotionAction_Play::CCashEmotionAction_Play() : m_diceEmotion(0), m_yutEmot
 }
 
 // OFFSET: 0x00591D30
+// FUNCTION: fn_02840
+CCashEmotionAction_Play::~CCashEmotionAction_Play() {
+}
 
 // OFFSET: 0x00591D80
 // FUNCTION: fn_02841
@@ -297,6 +300,26 @@ bool ICashEmotionAction::ExecuteNamed(const char* name) {
 }
 
 // OFFSET: 0x00591EB0
+// FUNCTION: fn_02845
+bool CCashEmotionAction_Play::Execute(int packId, int emotionId) {
+  if (packId < 0 || emotionId < 0) {
+    return false;
+  }
+
+  CMode* mode = g_modeMgr.gameMode;
+  if (!mode) {
+    return false;
+  }
+
+  if (emotionId == this->m_diceEmotion) {
+    emotionId = this->m_diceEmotion + std::max(rand() % 6, 0);
+  } else if (emotionId == this->m_yutEmotion) {
+    emotionId = this->m_yutEmotion + std::max(rand() % 7, 0);
+  }
+
+  mode->SendMsg(31, emotionId, packId, 0, 0);
+  return true;
+}
 
 // OFFSET: 0x00592290
 // FUNCTION: fn_02849
@@ -920,10 +943,125 @@ bool CCashEmotionMgr::IsOwnedPack(int packId) {
 }
 
 // OFFSET: 0x0059C5A0
+// FUNCTION: fn_02977
+bool CCashEmotionMgr::sub_59C5A0() {
+  auto* listWnd = g_cashEmotionListWnd;
+  bool expired = false;
+  const __time32_t now = _time32(nullptr) - this->unknown_01D0 - this->unknown_01CC;
+
+  for (auto it = this->m_expiry.begin(); it != this->m_expiry.end();) {
+    if (!it->second.IsBefore(now + 1)) {
+      if (listWnd) {
+        listWnd->UpdateExpiry(it->first, &it->second);
+      }
+      ++it;
+      continue;
+    }
+
+    int packId = it->first;
+    auto owned = std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId);
+    if (owned != this->m_ownedPacks.end()) {
+      this->m_ownedPacks.erase(owned);
+    }
+
+    if (std::find(this->m_unownedPacks.begin(), this->m_unownedPacks.end(), packId) == this->m_unownedPacks.end()) {
+      this->m_unownedPacks.push_back(packId);
+    }
+
+    it = this->m_expiry.erase(it);
+    expired = true;
+  }
+
+  return expired;
+}
 
 // OFFSET: 0x0059C730
+// FUNCTION: fn_02978
+void CCashEmotionMgr::RemoveOwnedPack(int packId, bool refresh, bool clearExpiry) {
+  auto owned = std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId);
+  if (owned != this->m_ownedPacks.end()) {
+    this->m_ownedPacks.erase(owned);
+  }
+
+  if (std::find(this->m_unownedPacks.begin(), this->m_unownedPacks.end(), packId) == this->m_unownedPacks.end()) {
+    this->m_unownedPacks.push_back(packId);
+  }
+
+  if (refresh) {
+    if (auto* listWnd = g_cashEmotionListWnd) {
+      listWnd->sub_7C7E50();
+    }
+  }
+
+  if (clearExpiry) {
+    for (auto it = this->m_expiry.begin(); it != this->m_expiry.end(); ++it) {
+      if (packId == it->first) {
+        this->m_expiry.erase(it);
+        break;
+      }
+    }
+  }
+}
 
 // OFFSET: 0x0059C860
+// FUNCTION: fn_02979
+CashEmotionPackRefresh CCashEmotionMgr::RefreshUnownedPacks() {
+  bool changed = false;
+  const unsigned int now = _time32(nullptr) - this->unknown_01D0 - this->unknown_01CC;
+
+  std::unordered_map<int, int> owned;
+  for (int packId : this->m_ownedPacks) {
+    owned.emplace(packId, 1);
+  }
+
+  std::unordered_map<int, int> unowned;
+  for (int packId : this->m_unownedPacks) {
+    unowned.emplace(packId, 1);
+  }
+
+  std::vector<int> packs;
+  const int total = static_cast<int>(this->unknown_0198.size());
+  const int ownedCount = static_cast<int>(this->m_ownedPacks.size());
+  packs.reserve(total > ownedCount ? total - ownedCount : 0);
+
+  int nextTime = INT_MAX;
+  for (int packId : this->unknown_0198) {
+    CashEmotionPack* pack = this->GetPack(packId);
+    if (!pack) {
+      continue;
+    }
+
+    const unsigned int startTime = pack->startTime;
+    const unsigned int endTime = pack->endTime;
+    if (pack->IsAvailable(now) && owned.find(packId) == owned.end()) {
+      packs.push_back(packId);
+    }
+
+    if (startTime > now && static_cast<int>(startTime) < nextTime) {
+      nextTime = startTime;
+    }
+    if (endTime > now && static_cast<int>(endTime) < nextTime) {
+      nextTime = endTime;
+    }
+  }
+
+  for (int packId : packs) {
+    if (unowned.find(packId) == unowned.end()) {
+      changed = true;
+    }
+  }
+
+  if (packs != this->m_unownedPacks) {
+    changed = true;
+  }
+  if (changed) {
+    this->m_unownedPacks.clear();
+    this->m_unownedPacks.reserve(packs.size());
+    this->m_unownedPacks = packs;
+  }
+
+  return {changed, nextTime};
+}
 
 // OFFSET: 0x0059CDE0
 // FUNCTION: fn_02981
@@ -955,6 +1093,16 @@ void CCashEmotionMgr::SetServerTimeZone(short serverBias) {
 }
 
 // OFFSET: 0x0059CEC0
+// FUNCTION: fn_02983
+void CCashEmotionMgr::ShowErrorMessage(const char* key, int value) {
+  const char* format = g_simpleStringMgr->GetString(key);
+  if (!format) {
+    return;
+  }
+
+  std::string text = std::vformat(format, std::make_format_args(value));
+  MessageBoxA(nullptr, text.c_str(), std::string().c_str(), MB_OK);
+}
 
 // OFFSET: 0x0059D040
 // FUNCTION: fn_02984
@@ -962,6 +1110,36 @@ void CCashEmotionMgr::Unknown59D040(int, int) {
 }
 
 // OFFSET: 0x0059D2C0
+// FUNCTION: fn_02986
+bool CCashEmotionMgr::sub_59D2C0() {
+  auto* listWnd = g_cashEmotionListWnd;
+  if (!listWnd) {
+    return false;
+  }
+
+  for (auto it = this->m_expiry.begin(); it != this->m_expiry.end();) {
+    int packId = it->first;
+    if (!it->second.IsBeforeNow()) {
+      listWnd->UpdateExpiry(packId, &it->second);
+      ++it;
+      continue;
+    }
+
+    auto owned = std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId);
+    if (owned != this->m_ownedPacks.end()) {
+      this->m_ownedPacks.erase(owned);
+    }
+
+    if (std::find(this->m_unownedPacks.begin(), this->m_unownedPacks.end(), packId) == this->m_unownedPacks.end()) {
+      this->m_unownedPacks.push_back(packId);
+    }
+
+    it = this->m_expiry.erase(it);
+  }
+
+  listWnd->sub_7C7E50();
+  return this->m_expiry.size() != 0;
+}
 
 // OFFSET: 0x0059FC50
 // FUNCTION: fn_03031
@@ -970,12 +1148,113 @@ int CCashEmotionMgr::sub_59FC50() {
 }
 
 // OFFSET: 0x0059FDC0
+// FUNCTION: fn_03033
+int CCashEmotionMgr::InsertEmotionGroup(lua_State* state) {
+  const int packId = luaL_checkinteger(state, 1);
+  const int emotionId = luaL_checkinteger(state, 2);
+
+  const char* title = g_cashEmotionMgr->GetPackTitle(packId);
+  if (title) {
+    g_cashEmotionMgr->AddShortcut(title, packId, emotionId);
+  }
+
+  return 1;
+}
 
 // OFFSET: 0x005A0290
+// FUNCTION: fn_03035
+int CCashEmotionMgr::InsertEmotionMsgListTable(lua_State* state) {
+  const int packId = luaL_checkinteger(state, 1);
+  const int emotionId = luaL_checkinteger(state, 2);
+  const bool raw = luaL_checkinteger(state, 3) != 0;
+  const int count = luaL_checkinteger(state, 4);
+
+  for (int index = 5; index < count + 5; ++index) {
+    std::string name = raw ? std::string(luaL_checkstring(state, index)) : FromUtf8(luaL_checkstring(state, index), g_textCodePage);
+
+    const char* key = name.c_str();
+    if (key && std::strlen(key) != 0) {
+      g_cashEmotionMgr->m_searchIndex.try_emplace(key, packId, emotionId);
+    }
+
+    if (name.find('/') == 0) {
+      name.erase(0, 1);
+    }
+
+    g_cashEmotionMgr->AddShortcut(name, packId, emotionId);
+  }
+
+  return 1;
+}
 
 // OFFSET: 0x005A07F0
+// FUNCTION: fn_03036
+int CCashEmotionMgr::InsertEmotionMsgListTableForCustom(lua_State* state) {
+  const int packId = luaL_checkinteger(state, 1);
+  const int emotionId = luaL_checkinteger(state, 2);
+  const int baseEmotionId = luaL_checkinteger(state, 3);
+
+  const char* name = g_cashEmotionMgr->GetEmotionName(g_cashEmotionMgr->unknown_000C, baseEmotionId);
+  if (name && std::strlen(name) > 1) {
+    g_cashEmotionMgr->AddShortcut(name + 1, packId, emotionId);
+  }
+
+  return 1;
+}
 
 // OFFSET: 0x005A0CE0
+// FUNCTION: fn_03039
+int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
+  const int packId = luaL_checkinteger(state, 1);
+  const std::string title = FromUtf8(luaL_checkstring(state, 2), g_textCodePage);
+  const char* name = g_simpleStringMgr->GetString(title.c_str());
+
+  const int saleType = luaL_checkinteger(state, 3);
+  const int unknown18 = luaL_checkinteger(state, 4);
+  if (!(saleType == 0 && unknown18 == 0) && !(saleType == 1 && unknown18 != 0)) {
+    g_cashEmotionMgr->ShowErrorMessage("EMSG_ERR_SALE_TYPE", packId);
+    return 1;
+  }
+
+  const int dateType = luaL_checkinteger(state, 5);
+  unsigned int startTime = static_cast<unsigned int>(luaL_checknumber(state, 6));
+  unsigned int endTime = static_cast<unsigned int>(luaL_checknumber(state, 7));
+  if (!(dateType == 0 && endTime == 0) && !(dateType == 1 && endTime != 0)) {
+    g_cashEmotionMgr->ShowErrorMessage("EMSG_ERR_DATE_TYPE", packId);
+    return 1;
+  }
+
+  std::tm date;
+  if (startTime != 0) {
+    date = {};
+    date.tm_mday = startTime % 100;
+    date.tm_year = startTime / 10000 - 1900;
+    date.tm_mon = startTime % 10000 / 100 - 1;
+    startTime = _mktime32(&date);
+  }
+
+  if (endTime != 0) {
+    date = {};
+    date.tm_mday = endTime % 100;
+    date.tm_year = endTime / 10000 - 1900;
+    date.tm_mon = endTime % 10000 / 100 - 1;
+    endTime = _mktime32(&date);
+  }
+
+  const int useType = luaL_checkinteger(state, 8);
+  const int unknown24 = luaL_checkinteger(state, 9);
+  if (!(useType == 0 && unknown24 == 0) && !(useType == 1 && unknown24 != 0)) {
+    g_cashEmotionMgr->ShowErrorMessage("EMSG_ERR_USE_TIME", packId);
+    return 1;
+  }
+
+  const char limited = static_cast<char>(luaL_checkinteger(state, 10));
+  if (g_cashEmotionMgr->unknown_0010.try_emplace(packId, name, unknown18, startTime, endTime, unknown24, limited).second == true) {
+    g_cashEmotionMgr->unknown_0198.push_back(packId);
+  }
+
+  return 1;
+}
 
 // OFFSET: 0x007C3AD0
 // FUNCTION: fn_09344
@@ -1176,12 +1455,130 @@ void UICashEmotionListWnd::ShowPack(int packId) {
 }
 
 // OFFSET: 0x007C7E50
+// FUNCTION: fn_09413
+void UICashEmotionListWnd::sub_7C7E50() {
+  if (this->m_purchaseList) {
+    this->m_purchaseList->Refresh(this->m_tab == 2 && this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
+  }
+
+  if (this->m_searchList) {
+    this->m_searchList->Refresh(this->m_tab == 3 && this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
+  }
+
+  if (this->m_unpurchasedList) {
+    this->m_unpurchasedList->Refresh(this->m_tab == 4 && this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
+  }
+}
 
 // OFFSET: 0x007C7F00
+// FUNCTION: fn_09414
+void UICashEmotionListWnd::ResetLists() {
+  if (this->m_searchEdit) {
+    this->m_searchEdit->SetText("");
+  }
+
+  if (this->m_purchaseList) {
+    this->m_purchaseList->Refresh(nullptr);
+  }
+
+  if (this->m_searchList) {
+    this->m_searchList->Refresh(nullptr);
+  }
+
+  if (this->m_unpurchasedList) {
+    this->m_unpurchasedList->Refresh(nullptr);
+  }
+}
 
 // OFFSET: 0x007C7F60
+// FUNCTION: fn_09415
+int UICashEmotionListWnd::SetPeriod(int packId) {
+  if (!this->m_period) {
+    return 0;
+  }
+
+  const int period = g_cashEmotionMgr->GetPackUnknown24(packId);
+  if (period < 1) {
+    this->m_period->Show(0);
+  } else {
+    const char* format = g_simpleStringMgr->GetString("EMSG_PERIOD_OF_USE");
+    std::string text = std::vformat(format, std::make_format_args(period / 24));
+    this->m_period->SetTextFitted(text.c_str());
+    this->m_period->Show(1);
+  }
+
+  return this->SendMsg(this, 60, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x007C8800
+// FUNCTION: fn_09418
+void UICashEmotionListWnd::SetTab(char tab) {
+  if (tab == this->m_tab || tab == 0) {
+    return;
+  }
+
+  UICashEmotionListChildWnd_Abstract* list;
+  if (tab == 1) {
+    list = this->m_basicList;
+  } else if (tab == 2) {
+    list = this->m_purchaseList;
+  } else if (tab == 3) {
+    list = this->m_searchList;
+  } else if (tab == 4) {
+    list = this->m_unpurchasedList;
+  } else {
+    list = nullptr;
+  }
+  this->m_currentList = list;
+
+  if (this->m_basicList) {
+    this->m_basicList->Show(tab == 1);
+  }
+  if (this->m_purchaseList) {
+    this->m_purchaseList->Show(tab == 2);
+  }
+  if (this->m_searchList) {
+    this->m_searchList->Show(tab == 3);
+  }
+  if (this->m_unpurchasedList) {
+    this->m_unpurchasedList->Show(tab == 4);
+  }
+
+  this->m_tab = tab;
+  this->RefreshSelection();
+
+  const bool basic = this->m_currentList == this->m_basicList;
+  if (this->m_searchEdit) {
+    if (g_windowMgr.GetHoverWindow() == this->m_searchEdit) {
+      InputFocus focus{g_windowMgr.hoverWindow};
+      focus.Set(nullptr);
+    }
+
+    this->m_searchEdit->Slot24(0);
+    this->m_searchEdit->disabled = basic;
+    this->m_searchEdit->Invalidate();
+    if (basic) {
+      this->m_searchEdit->SetText("");
+    }
+  }
+
+  if (this->unknown_00D4) {
+    this->unknown_00D4->SetDisabled(basic);
+    this->unknown_00D4->Invalidate();
+  }
+
+  if (this->unknown_00DC) {
+    this->unknown_00DC->SetDisabled(basic);
+    this->unknown_00DC->Invalidate();
+  }
+
+  if (this->m_currentList) {
+    const char* filter = this->m_currentList->Filter();
+    if (this->m_searchEdit) {
+      this->m_searchEdit->SetText(filter ? filter : "");
+    }
+  }
+}
 
 // OFFSET: 0x007C8AF0
 // FUNCTION: fn_09420
@@ -1203,6 +1600,21 @@ void UICashEmotionListWnd::UpdateExpiry(int packId, Timestamp* expiry) {
 }
 
 // OFFSET: 0x007C8B50
+// FUNCTION: fn_09422
+void UICashEmotionListWnd::RefreshSelection() {
+  if (this->m_tab == 3) {
+    const int packId = g_cashEmotionMgr->unknown_01C4;
+    if (this->unknown_00E4) {
+      this->unknown_00E4->Enable(packId > 0);
+    }
+    this->SetPeriod(packId);
+  } else {
+    if (this->unknown_00E4) {
+      this->unknown_00E4->Enable(0);
+    }
+    this->SetPeriod(0);
+  }
+}
 
 // OFFSET: 0x007C90B0
 // FUNCTION: fn_09427
@@ -1450,10 +1862,60 @@ UICashEmotionPack::~UICashEmotionPack() {
 }
 
 // OFFSET: 0x007C9EB0
+// FUNCTION: fn_09441
+void UICashEmotionPack::ShowExpiry(__time32_t value) {
+  if (!this->m_titleText || this->m_title.empty()) {
+    return;
+  }
+
+  Timestamp expiry(value);
+  int minute = expiry.Minute();
+  int hour = expiry.Hour();
+  int day = expiry.Day();
+  int month = expiry.Month();
+  int year = expiry.Year();
+  std::string text = std::vformat(this->m_title, std::make_format_args(year, month, day, hour, minute));
+  this->m_titleText->SetTextFitted(text.c_str());
+}
 
 // OFFSET: 0x007C9FE0
+// FUNCTION: fn_09442
+void UICashEmotionPack::UpdateExpiry(Timestamp* expiry) {
+  if (!expiry || !this->m_titleText || this->m_title.empty()) {
+    return;
+  }
+
+  int minute = expiry->Minute();
+  int hour = expiry->Hour();
+  int day = expiry->Day();
+  int month = expiry->Month();
+  int year = expiry->Year();
+  std::string text = std::vformat(this->m_title, std::make_format_args(year, month, day, hour, minute));
+  this->m_titleText->SetTextFitted(text.c_str());
+}
 
 // OFFSET: 0x007CA100
+// FUNCTION: fn_09443
+std::string UICashEmotionPack::GetPriceText(int packId) {
+  int price = g_cashEmotionMgr->GetPackUnknown18(packId);
+  if (price < 1) {
+    if (price == 0) {
+      const char* text = g_simpleStringMgr->GetString("EMSG_PURCHASE_FREE_PRICE");
+      if (text) {
+        return text;
+      }
+    }
+
+    return std::string();
+  }
+
+  const char* format = g_simpleStringMgr->GetString("EMSG_PURCHASE_PRICE");
+  if (!format) {
+    return std::to_string(price);
+  }
+
+  return std::vformat(format, std::make_format_args(price));
+}
 
 // OFFSET: 0x007CA690
 // FUNCTION: fn_09446
@@ -1574,6 +2036,25 @@ UICashEmotionPack_Purchase::~UICashEmotionPack_Purchase() {
 }
 
 // OFFSET: 0x007CACE0
+// FUNCTION: fn_09459
+void UICashEmotionPack_Purchase::ShowExpiry(__time32_t expiry) {
+  if (!this->m_titleText || this->m_title.empty()) {
+    return;
+  }
+
+  const unsigned int remaining = expiry - g_cashEmotionMgr->sub_59FC50();
+  if (remaining < 61) {
+    this->m_titleText->SetTextFitted(g_simpleStringMgr->GetString("EMSG_PERIOD_OF_LAST_TIME"));
+  } else {
+    unsigned int days = remaining / 86400;
+    unsigned int hours = remaining % 86400 / 3600;
+    unsigned int minutes = remaining % 86400 % 3600 / 60;
+    std::string text = std::vformat(this->m_title, std::make_format_args(days, hours, minutes));
+    this->m_titleText->SetTextFitted(text.c_str());
+  }
+
+  this->SendMsg(this, 60, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x007CAE70
 // FUNCTION: fn_09460
@@ -1941,8 +2422,29 @@ void UICashEmotionScrollBar::SetDisabled(bool disabled) {
 }
 
 // OFFSET: 0x007CC2B0
+// FUNCTION: fn_09494
+UICashEmotionScrollWnd::UICashEmotionScrollWnd(UIWindowContext& windows, int width, int height, unsigned char cached)
+    : UIScrollWnd(windows, width, height, cached) {
+  this->RemoveChild(this->horizontalBar, 1);
+  this->RemoveChild(this->scrollBar, 1);
+  this->horizontalBar = nullptr;
+  this->scrollBar = nullptr;
+  this->scrollBarWidth = 11;
+}
 
 // OFFSET: 0x007CC440
+// FUNCTION: fn_09495
+void UICashEmotionScrollWnd::AddChild(UIWindow* child) {
+  UIWindow::AddChild(child);
+
+  for (UIWindow* window : this->m_children) {
+    if (window == this->horizontalBar || window == this->scrollBar) {
+      continue;
+    }
+
+    this->childOrigins[window] = std::make_pair(window->geometry.x, window->geometry.y);
+  }
+}
 
 // OFFSET: 0x007CC5D0
 // FUNCTION: fn_09496
@@ -1970,6 +2472,20 @@ void UICashEmotionSprBtn::SetSelected(bool selected) {
 }
 
 // OFFSET: 0x007CCD90
+// FUNCTION: fn_09502
+void UICashEmotionSprBtn::Slot28(int x, int y) {
+  if (!this->m_tooltip.empty()) {
+    int screenX = 0;
+    int screenY = -20;
+    this->ToScreen(screenX, screenY);
+
+    this->m_buttonContext->services.Tooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, false);
+  }
+
+  if (!this->m_disabled) {
+    this->Slot27(x, y);
+  }
+}
 
 // OFFSET: 0x008502C0
 // FUNCTION: fn_10674
