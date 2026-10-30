@@ -1,11 +1,14 @@
 #include "UI/Guild/UIGuildWnd.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
+#include "Contents/UserData/CharacterConfigSave.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/EmblemResource.h"
@@ -51,6 +54,18 @@ int g_guildBanishedRowHeight = 19;
 
 // GLOBAL: gl_24921
 int g_guildTotalInfoRowHeight = 19;
+
+// GLOBAL: gl_24990
+int g_guildTotalInfoColumnWidths[4] = {151, 82, 70, 70};
+
+struct GuildTotalInfoEntry {
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ std::string name;
+  /* 001C */ int unknown_001C;
+  /* 0020 */ int unknown_0020;
+  /* 0024 */ int unknown_0024;
+  /* 0028 */ int unknown_0028;
+};
 
 // GLOBAL: gl_24994
 std::string g_guildNamelessTag = "<NAMELESS>";
@@ -368,7 +383,7 @@ const GuildPositionEntry& UIGuildPositionManageWnd::PositionAt(int index, int* f
 
 // OFFSET: 0x00957BB0
 // FUNCTION: fn_13042
-CSkillInfo UIGuildSkillWnd::SkillAt(int index) {
+__declspec(noinline) CSkillInfo UIGuildSkillWnd::SkillAt(int index) {
   CSkillInfo result(0);
   int current = 0;
   for (auto skill = this->m_skills.begin(); skill != this->m_skills.end(); ++skill, ++current) {
@@ -1553,3 +1568,33 @@ void UIGuildInfoManageWnd::Paint() {
     }
   }
 }
+
+// OFFSET: 0x0095FE70
+// FUNCTION: fn_13089
+void UIGuildSkillWnd::Slot25(int x, int y) {
+  const int previous = this->m_hoverIndex;
+  this->m_hoverIndex = this->SkillIndexAt(x, y);
+  if (previous != this->m_hoverIndex) {
+    this->Invalidate();
+  }
+
+  if (g_replayAnimationScaling == 0) {
+    CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
+    if (skill.available != 0 && skill.level != 0 && skill.unknown_000C != 0) {
+      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      if (gameMode) {
+        int level = reinterpret_cast<CharacterConfigSave*>(&g_session)->UseLevel(skill.id);
+        if (level == 0) {
+          level = skill.level;
+        }
+        gameMode->drag.BeginSkill(
+          reinterpret_cast<WindowManagerWindows&>(g_windowMgr), ResourceMgr::Instance(), 8, skill.id, skill.name, level, -1
+        );
+      }
+    }
+
+    UIGuildWnd::Slot25(x, y);
+  }
+}
+
+// OFFSET: 0x0095F460
