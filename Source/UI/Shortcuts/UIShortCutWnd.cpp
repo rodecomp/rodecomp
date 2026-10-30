@@ -597,6 +597,15 @@ void UIWindowCallBtnWnd::Paint() {
 }
 
 // OFFSET: 0x00930550
+// FUNCTION: fn_12683
+void UISubChatMiniWnd::Paint() {
+  const char* firstName = g_subChatMiniFirstCollapsed ? "유저인터페이스\\basic_interface\\st_a.tga" : "유저인터페이스\\basic_interface\\st_b.tga";
+  const auto* first = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(firstName)));
+  const char* secondName = g_subChatMiniSecondCollapsed ? "유저인터페이스\\basic_interface\\bt_a.tga" : "유저인터페이스\\basic_interface\\bt_b.tga";
+  const auto* second = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(secondName)));
+  this->DrawBitmap(0, 0, first ? &first->image : nullptr, false);
+  this->DrawBitmap(this->m_rowHeight, 0, second ? &second->image : nullptr, false);
+}
 
 // OFFSET: 0x00931330
 // FUNCTION: fn_12701
