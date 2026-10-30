@@ -134,3 +134,37 @@ void CPowderingEffect::Slot12() {
     this->AddEvent(0, "effect\\su_cn_powdering.wav", 0, 0);
   }
 }
+
+// OFFSET: 0x007097B0
+// FUNCTION: fn_07093
+bool CPowderingEffect::Slot06() {
+  for (CParticle* particle : this->smokeParticles) {
+    if (particle->unknown_00A8 != 2) {
+      return true;
+    }
+  }
+
+  for (CParticle* particle : this->spriteParticles) {
+    if (particle->unknown_00A8 != 2) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00709E40
+// FUNCTION: fn_07095
+void CPowderingEffect::Slot04() {
+  for (CParticle* particle : this->smokeParticles) {
+    if (particle && particle->unknown_00A8 != 2) {
+      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    }
+  }
+
+  for (CParticle* particle : this->spriteParticles) {
+    if (particle && particle->unknown_00A8 != 2) {
+      static_cast<CSpriteParticle*>(particle)->sub_B40F30(1);
+    }
+  }
+}
