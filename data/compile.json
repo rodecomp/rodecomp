@@ -1040,6 +1040,7 @@
   "Source/Utility/GuidParse.cpp": 0,
   "Source/Utility/Hash/MD5.cpp": 0,
   "Source/Utility/Hash/XxHash32.cpp": 0,
+  "Source/Utility/JsonCppLoader.cpp": 0,
   "Source/Utility/Lexicon/LexiconBoundary.cpp": 0,
   "Source/Utility/Lexicon/LexiconMatcher.cpp": 0,
   "Source/Utility/Lexicon/LexiconSerializer.cpp": 0,
