@@ -850,6 +850,19 @@ void ApplyServiceOptionAndSnap(int id, unsigned char value, bool notify, int ena
   g_windowMgr.UpdateSnapRectangles();
 }
 
+// OFFSET: 0x006C5A80
+// FUNCTION: fn_06363
+void ApplyServiceOptionWeatherFlag(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  g_weatherEffect.unknown_0001 = value ^ 1;
+}
+
 // GLOBAL: gl_24912
 template <>
 CGameSettingsMgr* Singleton<CGameSettingsMgr>::s_instance = nullptr;
