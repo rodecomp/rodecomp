@@ -92,6 +92,10 @@ struct CEffectPrim : CRenderObject {
   bool Move2DPrimitive();
   bool PrimFloatingMotes();
   void Render2DCircle();
+  void Render2DPrimitive();
+  void RenderSegmentSprites2(matrix& wtm);
+  void RenderPolygonFrameRing(matrix& wtm);
+  void RenderTeiFacingSlots(matrix& wtm);
   void RenderGroundFog(matrix& wtm);
   void RenderCrossPlanes(matrix& wtm);
   void RenderPyramid(matrix& wtm);
@@ -235,5 +239,7 @@ CEffectPrim* CreateEffectParticle(
 static_assert(sizeof(CEffectPrim) == 0xFA18);
 static_assert(offsetof(CEffectPrim, state) == 0x138);
 #endif
+
+extern int g_overrideColor;
 
 #endif

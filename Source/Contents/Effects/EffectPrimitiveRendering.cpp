@@ -21,6 +21,19 @@
 #include "Contents/Ground/GroundRendering.h"
 #include "Render/Textures/TextureCache.h"
 #include "Contents/MapSkyMgr.h"
+#include "Client/Replay.h"
+#include "Contents/Skills/ClientSkills.h"
+#include "UI/Cooldowns/CooldownOwner.h"
+#include "Render/SpriteGeometry.h"
+#include "Render/SpriteQuad.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+
+#include <windows.h>
+#include <timeapi.h>
+
+// GLOBAL: gl_24499
+int g_overrideColor = 0;
 
 // OFFSET: 0x00BCD960
 // FUNCTION: fn_19865
@@ -5597,3 +5610,83 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
     }
   }
 }
+
+// OFFSET: 0x00BC69A0
+
+// OFFSET: 0x00BCB660
+// FUNCTION: fn_19861
+void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
+  CSprRes* sprite = this->render.sprite;
+  CActRes* action = this->render.action;
+  if (this->state.numSegment <= 0) {
+    return;
+  }
+
+  for (int seg = 0; seg < this->state.numSegment; ++seg) {
+    EffectPrimitiveRecord& record = this->state.records[seg];
+    const float depth = record.position.y * wtm.values[5] + record.position.x * wtm.values[2] + record.position.z * wtm.values[8] + wtm.values[11];
+    float screenX;
+    float screenY;
+    float reciprocalDepth;
+    g_renderer->ProjectViewport(&record.position.x, wtm.values, &screenX, &screenY, &reciprocalDepth);
+    float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
+    this->ScaleByMaster(distanceScale);
+
+    const ActionFrame& frame = action->Frame(this->render.previousAnimation, this->render.curMotion);
+    for (int index = 0; index < frame.cellCount; ++index) {
+      const SpriteFrameCell& cell = frame.Cell(index);
+      if (cell.image == -1) {
+        continue;
+      }
+
+      const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+      const double scale = record.scale;
+      const float top = static_cast<float>(cell.y * scale * cell.scaleY * distanceScale + screenY);
+      const float bottom = static_cast<float>(((static_cast<short>(image->unknown_0006) + 1) * image->height + cell.y) * scale * cell.scaleY * distanceScale + screenY);
+      if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f) {
+        continue;
+      }
+
+      float left;
+      float right;
+      if ((cell.mirrored & 1) == 0) {
+        left = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
+        right = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+        if (left >= static_cast<float>(g_renderer->viewport.width)) {
+          continue;
+        }
+      } else {
+        left = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+        right = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
+        if (right >= static_cast<float>(g_renderer->viewport.width)) {
+          continue;
+        }
+      }
+
+      if ((cell.mirrored & 1) == 0 ? right <= 0.0f : left <= 0.0f) {
+        continue;
+      }
+
+      SpriteQuad quad;
+      quad.top = top;
+      quad.left = left;
+      quad.bottom = bottom;
+      quad.right = right;
+      quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + 0.0001f;
+      quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0001f;
+      if ((this->state.pattern & 0x200) == 0) {
+        quad.color = record.color;
+      } else {
+        quad.color = (cell.color & 0xFF00FF00) | ((cell.color & 0xFF) << 16) | ((cell.color >> 16) & 0xFF);
+      }
+      quad.angle = static_cast<float>(cell.unknown_001C) + this->state.roll;
+      quad.image = image;
+      this->DrawQuad(quad, sprite->palette, this->state.renderFlag, 0.0f, 0.0f, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00BCCD50
+
+// OFFSET: 0x00BD6510
+
