@@ -1,15 +1,27 @@
 #ifndef RAGNAROK_SOURCE_UI_ITEMS_UISWAPEQUIPMENTWND_H
 #define RAGNAROK_SOURCE_UI_ITEMS_UISWAPEQUIPMENTWND_H
 
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstdint>
 
-class UISwapBitmapButton;
+struct UIButtonContext;
+
+extern unsigned long g_swapEquipmentTick;
+
+class UISwapBitmapButton : public UIBitmapButton {
+public:
+  using UIBitmapButton::UIBitmapButton;
+  void Paint() override;
+
+  /* 0120 */ std::uint32_t m_textColor;
+};
 
 class UISwapEquipmentWnd : public UIFrameWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot15(int width, int height) override;
   void SetSlotValue(int index, int value);
 
 protected:
@@ -24,6 +36,7 @@ protected:
   /* 00D4 */ int unknown_00D4;
   /* 00D8 */ int unknown_00D8;
   /* 00DC */ int unknown_00DC;
+  UIButtonContext* m_controls;
 };
 
 #endif

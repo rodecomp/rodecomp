@@ -5,9 +5,19 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/MessageTable.h"
+#include "UI/Buttons/UIBasicButton.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include <windows.h>
+#include <timeapi.h>
+
 #include <cstdint>
+#include <new>
+#include <string>
+
+// GLOBAL: gl_24874
+unsigned long g_swapEquipmentTick;
 
 // OFFSET: 0x0082F990
 // FUNCTION: fn_10390
@@ -73,4 +83,18 @@ void UISwapEquipmentWnd::SetSlotValue(int index, int value) {
     this->unknown_00D0 = value;
     break;
   }
+}
+
+// OFFSET: 0x00830760
+
+// OFFSET: 0x00830970
+// FUNCTION: fn_10395
+void UISwapBitmapButton::Paint() {
+  UIBitmapButton::Paint();
+  const unsigned long elapsed = timeGetTime() - g_swapEquipmentTick;
+  this->SetBitmap(elapsed < 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_normal.bmp", 0, 0);
+  this->SetBitmap(elapsed < 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_over.bmp", 1, 0);
+  this->SetBitmap(elapsed < 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_press.bmp", 2, 0);
+  this->m_textColor = elapsed < 10000 ? 0x969696 : 0x172842;
+  this->DrawCenteredText(this->geometry.width / 2, this->geometry.height / 2 - 5, this->label.c_str(), this->label.size(), 0, 12, this->m_textColor, 0);
 }
