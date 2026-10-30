@@ -24,6 +24,57 @@ void UIStaticText::SetText(const char* value, int outlineValue) {
   this->Invalidate();
 }
 
+// OFFSET: 0x008685B0
+// FUNCTION: fn_10961
+void UIStaticText::SetColor(int redValue, int greenValue, int blueValue) {
+  this->red = redValue;
+  this->green = greenValue;
+  this->blue = blueValue;
+  this->Invalidate();
+}
+
+// OFFSET: 0x00868880
+// FUNCTION: fn_10965
+void UIStaticText::SetTextFitted(const char* value) {
+  this->tooltip = value;
+  this->tooltipEnabled = 0;
+
+  if (this->geometry.surface == nullptr) {
+    this->text = value;
+    this->Invalidate();
+    return;
+  }
+
+  int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, value, 0, this->fontFamily, this->fontHeight, this->bold, 0);
+  this->TextWidth(this->m_controls->fonts, this->m_controls->locale, "...", 0, this->fontFamily, this->fontHeight, this->bold, 0);
+
+  if (this->geometry.width >= width) {
+    this->text = value;
+    this->Invalidate();
+    return;
+  }
+
+  this->tooltipEnabled = 1;
+  this->text = value;
+  std::string truncated = value;
+  while (this->geometry.width < width) {
+    if (truncated.size() <= 1) {
+      this->text = truncated + "...";
+      break;
+    }
+
+    if (truncated.size() >= 2) {
+      const std::size_t size = truncated.size();
+      truncated.resize(truncated[size - 2] < 0 && truncated[size - 1] < 0 ? size - 2 : size - 1);
+    }
+
+    this->text = truncated + "...";
+    width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->text.c_str(), 0, this->fontFamily, this->fontHeight, this->bold, 0);
+  }
+
+  this->Invalidate();
+}
+
 // OFFSET: 0x0085DE70
 // FUNCTION: fn_10820
 void UIStaticText::Paint() {

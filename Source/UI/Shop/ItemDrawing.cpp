@@ -8,6 +8,8 @@
 
 #include <cstdio>
 
+// OFFSET: 0x008A8D30
+
 // OFFSET: 0x008A8EE0
 // FUNCTION: fn_11717
 void DrawItemIcon(UIWindow& window, ResourceMgr& resources, ItemDescriptions& descriptions, int x, int y, const ITEM_INFO& item, unsigned char identified) {

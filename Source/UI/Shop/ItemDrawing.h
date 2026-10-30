@@ -15,5 +15,9 @@ void DrawItemWithQuantity(
   UIWindow& window, ResourceMgr& resources, ItemDescriptions& descriptions, FontCache& fonts, const TextLocale& locale, int x, int y, const ITEM_INFO& item,
   unsigned char identified, unsigned char plain
 );
+void DrawItemWithQuantityAuxiliary(
+  UIWindow& window, ItemDescriptions& descriptions, FontCache& fonts, const TextLocale& locale, int mode, int x, int y, const ITEM_INFO& item,
+  unsigned char identified, unsigned char plain
+);
 
 #endif

@@ -22,6 +22,8 @@ public:
   void Slot33(int x, int y) override;
   void Slot35(int value) override;
   void SetText(const char* value, int outline);
+  void SetColor(int redValue, int greenValue, int blueValue);
+  void SetTextFitted(const char* value);
 
   /* 007C */ int red;
   /* 0080 */ int green;
