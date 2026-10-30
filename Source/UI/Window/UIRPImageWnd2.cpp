@@ -12,3 +12,11 @@ void UIRPImageWnd2::Paint() {
     this->DrawNamed(this->m_context->primitives, 0, 0, this->m_imageName, 0xFFFFFFFF, 0, 0);
   }
 }
+
+// OFFSET: 0x00951470
+// FUNCTION: fn_12951
+void UIRPImageWnd2::SetImage(std::string imageName, int imageCount) {
+  this->m_imageName = imageName;
+  this->m_imageCount = imageCount;
+  this->m_drawImage = 1;
+}

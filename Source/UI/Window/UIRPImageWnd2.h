@@ -8,6 +8,7 @@
 class UIRPImageWnd2 : public UIFrameWnd {
 public:
   void Paint() override;
+  void SetImage(std::string imageName, int imageCount);
 
 protected:
   /* 00B4 */ std::string m_imageName;
