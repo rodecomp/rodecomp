@@ -126,6 +126,40 @@ public:
 class CSkillAction_SKE_DAWN_BREAK : public CSkillAction {
 public:
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_SKE_TWINKLING_GALAXY : public CSkillAction {
+public:
+  bool Slot03(int argument) override;
+  bool Slot05() override;
+  void Slot08(int level, CGameActor* source) override;
+};
+
+class CSkillObjectAction_SKE_TWINKLING_GALAXY : public CSkillObjectAction {
+public:
+  void Slot00(int argument, CRenderObject* object, CGameActor* source) override;
+};
+
+class CSkillAction_SKE_STAR_BURST : public CSkillAction {
+public:
+  bool Slot03(int argument) override;
+  void Slot08(int level, CGameActor* source) override;
+};
+
+class CEfstAction_STAR_BURST : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_SKE_STAR_CANNON : public CSkillAction {
+public:
+  bool Slot03(int argument) override;
+  bool Slot05() override;
+  void Slot08(int level, CGameActor* source) override;
 };
 
 // OFFSET: 0x007975A0
@@ -517,4 +551,104 @@ void CSkillAction_SKE_MIDNIGHT_KICK::Slot11(int level, CGameActor* source, CGame
 // FUNCTION: fn_08859
 int CSkillAction_SKE_DAWN_BREAK::Slot02() {
   return 53;
+}
+
+// OFFSET: 0x0079B330
+// FUNCTION: fn_08860
+void CSkillAction_SKE_DAWN_BREAK::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+  }
+}
+
+// OFFSET: 0x0079B360
+// FUNCTION: fn_08861
+void CSkillAction_SKE_DAWN_BREAK::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ske_dawn_break"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x0079B4D0
+// FUNCTION: fn_08862
+bool CSkillAction_SKE_TWINKLING_GALAXY::Slot03(int argument) {
+  return true;
+}
+
+// OFFSET: 0x0079B4E0
+// FUNCTION: fn_08863
+bool CSkillAction_SKE_TWINKLING_GALAXY::Slot05() {
+  return true;
+}
+
+// OFFSET: 0x0079B4F0
+// FUNCTION: fn_08864
+void CSkillAction_SKE_TWINKLING_GALAXY::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+  }
+}
+
+// OFFSET: 0x0079B520
+// FUNCTION: fn_08865
+void CSkillObjectAction_SKE_TWINKLING_GALAXY::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+  if (object) {
+    g_effectMgr->Spawn(object->render.accountId, 2349, object->render.position.x, object->render.position.y, object->render.position.z, 0, argument, 0, 0);
+  }
+}
+
+// OFFSET: 0x0079B570
+// FUNCTION: fn_08866
+bool CSkillAction_SKE_STAR_BURST::Slot03(int argument) {
+  return true;
+}
+
+// OFFSET: 0x0079B580
+// FUNCTION: fn_08867
+void CSkillAction_SKE_STAR_BURST::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+  }
+}
+
+// OFFSET: 0x0079B5B0
+// FUNCTION: fn_08868
+void CEfstAction_STAR_BURST::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, 2348, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x0079B600
+// FUNCTION: fn_08869
+void CEfstAction_STAR_BURST::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, 2348);
+  }
+}
+
+// OFFSET: 0x0079B630
+// FUNCTION: fn_08870
+void CEfstAction_STAR_BURST::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x0079B650
+// FUNCTION: fn_08871
+bool CSkillAction_SKE_STAR_CANNON::Slot03(int argument) {
+  return true;
+}
+
+// OFFSET: 0x0079B660
+// FUNCTION: fn_08872
+bool CSkillAction_SKE_STAR_CANNON::Slot05() {
+  return true;
+}
+
+// OFFSET: 0x0079B670
+// FUNCTION: fn_08873
+void CSkillAction_SKE_STAR_CANNON::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+  }
 }
