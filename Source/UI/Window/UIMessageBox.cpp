@@ -1035,6 +1035,20 @@ void UIMakeCharWnd::Slot18() {
 // OFFSET: 0x008BAEF0
 
 // OFFSET: 0x008AAA10
+// FUNCTION: fn_11724
+void UIMonsterInfoWnd::DrawResistance(int x, int y, const char* label, int value, std::uint32_t border, std::uint32_t fill) {
+  auto& controls = *this->m_controls;
+  char text[64];
+  wsprintfA(text, "%s:%d", label, value);
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
+  this->FillRegion(x, y, 70, 16, border);
+  this->FillRegion(x + 1, y + 1, 68, 14, fill);
+  const int width = this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, (70 - width) / 2 + x, y + 2, text, 0, 0, 12, RGB(red, blue, green), 0, 0);
+}
 
 // OFFSET: 0x008B8ED0
 
