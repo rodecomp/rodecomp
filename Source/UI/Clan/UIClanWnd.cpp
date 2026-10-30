@@ -20,6 +20,26 @@ int UIClanInfoManageWnd::Slot53() {
 }
 
 // OFFSET: 0x0084CFD0
+// FUNCTION: fn_10629
+void UIClanInfoManageWnd::Slot15(int width, int height) {
+  if (!this->m_title) {
+    const char* title = LookupMessage(2355);
+    this->m_title = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_title->SetSize(62, 15);
+    this->m_title->SetTextFitted(title);
+    this->m_title->Move(3, 22);
+    this->AddChild(this->m_title);
+    this->AddCloseButton(*this->m_controls, "Ctrl+G", 0);
+  }
+
+  this->unknown_00BC = -1;
+  this->unknown_00C0 = -1;
+  if (g_clanInfo->m_hasClan) {
+    g_clanInfo->unknown_0034 = 1;
+  }
+
+  this->LoadEmblem();
+}
 
 // OFFSET: 0x0084D8F0
 
