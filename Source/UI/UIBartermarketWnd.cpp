@@ -114,3 +114,77 @@ void UIExpandedBartermarketWnd::Slot35(int delta) {
     this->SendMsg(this->scrollBar, 7, delta > 0 ? -step : step, 0, 0, 0);
   }
 }
+
+// OFFSET: 0x008490D0
+// FUNCTION: fn_10596
+void UIExpandedBarterItemPurchaseWnd::UpdateScrollBar() {
+  if (!this->scrollBar) {
+    return;
+  }
+
+  const int rows = this->rowCount;
+  const int count = this->itemCount;
+  const int overflow = std::max(count - rows, 0);
+
+  if (overflow != 0) {
+    this->scrollEnabled = 1;
+    this->scrollBar->SetRange(overflow, rows, count);
+
+    int position = this->unknown_00C4;
+    if (position < 0) {
+      this->unknown_00C4 = 0;
+      position = 0;
+    }
+
+    const int limit = count - this->rowCount;
+    if (limit < position) {
+      this->unknown_00C4 = limit;
+      position = limit;
+    }
+
+    this->scrollBar->SetPosition(position);
+  } else {
+    this->scrollEnabled = 0;
+    this->unknown_00C4 = 0;
+    this->scrollBar->SetRange(0, rows, count);
+  }
+
+  this->scrollBar->Invalidate();
+}
+
+// OFFSET: 0x00849170
+// FUNCTION: fn_10597
+void UIExpandedBartermarketWnd::UpdateScrollBar() {
+  if (!this->scrollBar) {
+    return;
+  }
+
+  const int rows = this->rowCount;
+  const int count = this->itemCount;
+  const int overflow = std::max(count - rows, 0);
+
+  if (overflow != 0) {
+    this->scrollEnabled = 1;
+    this->scrollBar->SetRange(overflow, rows, count);
+
+    int position = this->unknown_00C4;
+    if (position < 0) {
+      this->unknown_00C4 = 0;
+      position = 0;
+    }
+
+    const int limit = count - this->rowCount;
+    if (limit < position) {
+      this->unknown_00C4 = limit;
+      position = limit;
+    }
+
+    this->scrollBar->SetPosition(position);
+  } else {
+    this->scrollEnabled = 0;
+    this->unknown_00C4 = 0;
+    this->scrollBar->SetRange(0, rows, count);
+  }
+
+  this->scrollBar->Invalidate();
+}
