@@ -1849,10 +1849,76 @@ void TableBox::Slot15(int, int) {
 }
 
 // OFFSET: 0x00884DE0
+// FUNCTION: fn_11314
+void UIChatHisBox2::Slot15(int width, int height) {
+  auto* vertical = new UIScrollBar(*this->m_context);
+  this->verticalBar = vertical;
+  const int verticalWidth = vertical->thickness;
+  vertical->vertical = 1;
+  vertical->UIWindow::Resize(verticalWidth, height);
+  vertical->Move(width - 13, 0);
+  vertical->Slot15(verticalWidth, height);
+  vertical->Slot22(verticalWidth, height);
+  this->AddChild(this->verticalBar);
+
+  auto* horizontal = new UIScrollBar2(*this->m_context);
+  this->horizontalBar = horizontal;
+  const int horizontalHeight = horizontal->thickness;
+  horizontal->vertical = 0;
+  horizontal->UIWindow::Resize(width - 13, horizontalHeight);
+  horizontal->Move(0, height - 13);
+  horizontal->Slot15(width - 13, horizontalHeight);
+  horizontal->Slot22(width - 13, horizontalHeight);
+  this->AddChild(this->horizontalBar);
+}
 
 // OFFSET: 0x00884F40
+// FUNCTION: fn_11315
+void UIChatHisBox3::Slot15(int width, int height) {
+  auto* vertical = new UIScrollBar3(*this->m_context);
+  this->verticalBar = vertical;
+  const int verticalWidth = vertical->thickness;
+  vertical->vertical = 1;
+  vertical->UIWindow::Resize(verticalWidth, height);
+  vertical->Move(width - 10, 0);
+  vertical->Slot15(verticalWidth, height);
+  vertical->Slot22(verticalWidth, height);
+  this->AddChild(this->verticalBar);
+
+  auto* horizontal = new UIScrollBar3(*this->m_context);
+  this->horizontalBar = horizontal;
+  const int horizontalHeight = horizontal->thickness;
+  horizontal->vertical = 0;
+  horizontal->UIWindow::Resize(width - 10, horizontalHeight);
+  horizontal->Move(0, height - 10);
+  horizontal->Slot15(width - 10, horizontalHeight);
+  horizontal->Slot22(width - 10, horizontalHeight);
+  this->AddChild(this->horizontalBar);
+}
 
 // OFFSET: 0x008850C0
+// FUNCTION: fn_11316
+void UIChatHisBox::Slot15(int width, int height) {
+  auto* vertical = new UIScrollBar2(*this->m_context);
+  this->verticalBar = vertical;
+  const int verticalWidth = vertical->thickness;
+  vertical->vertical = 1;
+  vertical->UIWindow::Resize(verticalWidth, height);
+  vertical->Move(width - 13, 0);
+  vertical->Slot15(verticalWidth, height);
+  vertical->Slot22(verticalWidth, height);
+  this->AddChild(this->verticalBar);
+
+  auto* horizontal = new UIScrollBar2(*this->m_context);
+  this->horizontalBar = horizontal;
+  const int horizontalHeight = horizontal->thickness;
+  horizontal->vertical = 0;
+  horizontal->UIWindow::Resize(width - 13, horizontalHeight);
+  horizontal->Move(0, height - 13);
+  horizontal->Slot15(width - 13, horizontalHeight);
+  horizontal->Slot22(width - 13, horizontalHeight);
+  this->AddChild(this->horizontalBar);
+}
 
 // OFFSET: 0x0088C530
 
@@ -1867,3 +1933,12 @@ void UITableBox::Paint() {
 }
 
 // OFFSET: 0x008906D0
+// FUNCTION: fn_11424
+void UIPackageBoxNameList::Slot25(int x, int y) {
+  this->selected = this->LineAt(x, y);
+  if (this->selected != -1) {
+    this->parent->SendMsg(this, 6, this->geometry.id, this->selected, 0, 0);
+  }
+
+  this->Invalidate();
+}
