@@ -112,7 +112,9 @@ public:
   /* 05CE */ unsigned char unknown_05CE;
   /* 05CF */ unsigned char unknown_05CF;
   /* 05D0 */ UIWindow* unknown_05D0;
-  /* 05D4 */ unsigned char unknown_05D4[0x30];
+  /* 05D4 */ unsigned char unknown_05D4[0x14];
+  /* 05E8 */ std::uint32_t replayPauseTick;
+  /* 05EC */ unsigned char unknown_05EC[0x18];
   /* 0604 */ std::list<UIWindow*> unknown_0604;
   /* 060C */ unsigned char unknown_060C[0x1C];
   /* 0628 */ std::unordered_set<int> unknown_0628;
@@ -331,6 +333,7 @@ public:
   void sub_CEB8E0();
   void Slot7(int value) override;
   void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);
+  bool UpdateReplayPause(bool resume);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
