@@ -100,6 +100,8 @@ public:
   void ReceiveToggle128(int enabled);
   void PlaceWindow16(unsigned int xPercent, unsigned int yPercent);
   void ReceiveUnknown7FBC(const unsigned char* packet);
+  void ReceiveActorMessage144(const unsigned char* packet);
+  void NotifyResult4138(int result);
   void ReceiveClanLeave(const unsigned char* packet);
   void ReceiveClanInfo(const unsigned char* packet);
   void ReceiveGameOptions(int count, const GameOptionEntry* entries);

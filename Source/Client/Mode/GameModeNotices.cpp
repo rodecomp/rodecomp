@@ -42,6 +42,13 @@ struct ShortValuePacket {
   /* 0002 */ std::int16_t value;
 };
 
+struct ActorPointPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::int16_t x;
+  /* 0008 */ std::int16_t y;
+};
+
 struct ByteValuePacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ unsigned char value;
@@ -358,4 +365,49 @@ void CGameMode::ReceiveUnknown7FBC(const unsigned char* data) {
 // FUNCTION: fn_22118
 void CGameMode::ReceiveNotice1950(const unsigned char*) {
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1950)), 0xFF, 0, 0, 0);
+}
+
+// OFFSET: 0x00D6EC40
+// FUNCTION: fn_22119
+void CGameMode::ReceiveActorMessage144(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ActorPointPacket*>(data);
+  CRenderObject* actor;
+  if (packet->aid == g_session.m_aid) {
+    actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+  } else {
+    actor = g_session.FindGameActor(packet->aid);
+  }
+
+  if (actor) {
+    const int x = packet->x;
+    const int y = packet->y;
+    actor->SendMsg(nullptr, 144, 0, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D6EF60
+// FUNCTION: fn_22121
+void CGameMode::NotifyResult4138(int result) {
+  int message;
+  switch (result) {
+  case 0:
+    message = 4138;
+    break;
+  case 1:
+    message = 4139;
+    break;
+  case 2:
+    message = 4140;
+    break;
+  case 3:
+    message = 4187;
+    break;
+  case 4:
+    message = 4141;
+    break;
+  default:
+    return;
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0xFF, 0, 0, 0);
 }
