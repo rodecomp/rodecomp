@@ -799,6 +799,7 @@
   "Source/UI/Buttons/UIButton.cpp": 2,
   "Source/UI/Buttons/UICheckBox.cpp": 2,
   "Source/UI/Buttons/UIColorButton.cpp": 2,
+  "Source/UI/Buttons/UIDescriptRace.cpp": 2,
   "Source/UI/Buttons/UIJobSlotButton.cpp": 2,
   "Source/UI/Buttons/UINaviLinkButton.cpp": 2,
   "Source/UI/Buttons/UINoneVisibleButton.cpp": 2,
