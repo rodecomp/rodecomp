@@ -11,6 +11,8 @@ class CParticle;
 class CEvilLandEffect : public CEffect {
 public:
   CEvilLandEffect();
+  void Slot03() override;
+  void Slot04() override;
   void Close() override;
   bool Slot06() override;
 
