@@ -119,6 +119,7 @@ public:
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
   void Slot15(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_TR_ROKI_CAPRICCIO : public CSkillAction {
@@ -503,6 +504,12 @@ void CSkillAction_TR_RHYTHMSHOOTING::Slot15(int level, CGameActor* source, CGame
 }
 
 // OFFSET: 0x007A4E00
+// FUNCTION: fn_09017
+void CSkillAction_TR_RHYTHMSHOOTING::Slot16(int, CGameActor* source, CGameActor*) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x007A4F80
 // FUNCTION: fn_09018
