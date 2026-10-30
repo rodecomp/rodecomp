@@ -5,6 +5,9 @@
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Text/UITextViewerControl.h"
 
+#include <algorithm>
+#include <cstring>
+
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::Paint();
 template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Paint();
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::Slot35(int);
@@ -54,6 +57,30 @@ void CUIUpgradeEnchantPage::Slot58(int value) {
     mainPage->firstPage->Slot59(value);
     mainPage->secondPage->Slot59(value);
   }
+}
+
+// OFFSET: 0x00A05290
+// FUNCTION: fn_14972
+int CUIEnchantPage::FindEmptySlot() {
+  const std::vector<int>& slots = this->enchantInfo->slots;
+  auto it = std::find_if(slots.begin(), slots.end(), [item = *this->gameItem->GetItemInfo()](int slot) {
+    if (slot >= 4) {
+      return true;
+    }
+    int card;
+    std::memcpy(&card, item.unknown_001C + slot * 4, sizeof(card));
+    return card == 0;
+  });
+  if (it == slots.end()) {
+    return -1;
+  }
+  return *it;
+}
+
+// OFFSET: 0x00A053D0
+// FUNCTION: fn_14973
+ITEM_INFO* CUITargetItem::GetItemInfo() {
+  return this->itemIcon->GetItemInfo();
 }
 
 // OFFSET: 0x00A053E0

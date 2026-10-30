@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <map>
+#include <vector>
 
 struct EnchantKey {
   /* 0000 */ int32_t first;
@@ -27,7 +28,9 @@ struct EnchantOptionInfo {
 };
 
 struct EnchantInfo {
-  /* 0000 */ uint8_t unknown_0000[0x60];
+  /* 0000 */ uint8_t unknown_0000[0x18];
+  /* 0018 */ std::vector<int> slots;
+  /* 0024 */ uint8_t unknown_0024[0x3C];
   /* 0060 */ std::map<uint32_t, EnchantOptionInfo> options;
 };
 

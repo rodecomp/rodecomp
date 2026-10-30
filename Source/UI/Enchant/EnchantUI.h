@@ -3,6 +3,7 @@
 
 #include "Contents/Items/ItemInfo.h"
 #include "UI/FrameSkin.h"
+#include "UI/Items/UIGameItem.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 
 #include <optional>
@@ -31,13 +32,15 @@ public:
 
 class CUITargetItem : public CUIListItem {
 public:
-  /* 00E8 */ CUIControl* itemIcon;
+  /* 00E8 */ CUIGameItem* itemIcon;
   /* 00EC */ CUIControl* unknown_00EC;
   /* 00F0 */ CUIControl* unknown_00F0;
 
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void SetSelected(bool selected) override;
+
+  ITEM_INFO* GetItemInfo();
 };
 
 class CUIIngredient : public CUIControl {
@@ -55,7 +58,9 @@ public:
 
 class CUIEnchantPage : public CUIControl {
 public:
-  /* 0080 */ unsigned char unknown_0080[0x24];
+  /* 0080 */ unsigned char unknown_0080[0x4];
+  /* 0084 */ CUIGameItem* gameItem;
+  /* 0088 */ unsigned char unknown_0088[0x1C];
   /* 00A4 */ EnchantInfo* enchantInfo;
   /* 00A8 */ unsigned char unknown_00A8[0x8];
   /* 00B0 */ int unknown_00B0;
@@ -69,6 +74,7 @@ public:
   virtual void Slot59(int value);
 
   CUIIngredient* CreateIngredient();
+  int FindEmptySlot();
   std::optional<EnchantOptionInfo*> FindOption(uint32_t key);
 };
 
