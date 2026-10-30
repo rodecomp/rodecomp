@@ -2080,3 +2080,13 @@ int UIGraffiStrboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
   return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
+
+// OFFSET: 0x008E4380
+// FUNCTION: fn_12185
+void UINotifyItemObtainWnd::Slot15(int, int) {
+}
+
+// OFFSET: 0x008E7120
+// FUNCTION: fn_12193
+void UIPetTamingDeceiveWnd::Slot15(int, int) {
+}

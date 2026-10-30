@@ -974,3 +974,15 @@ void UILoginWnd::Slot27(int, int) {
 // FUNCTION: fn_11790
 void UIMakeCharWnd::Slot19() {
 }
+
+// OFFSET: 0x008AD130
+// FUNCTION: fn_11734
+void UIChatRoomWnd::Move(int x, int y) {
+  this->geometry.Move(x, y);
+  this->Slot36();
+}
+
+// OFFSET: 0x008B7A60
+// FUNCTION: fn_11753
+void UILoginOTPWnd::Slot18() {
+}

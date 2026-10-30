@@ -9,6 +9,7 @@ public:
   /* 00E4 */ std::uint32_t m_shownTick;
 
   bool CanHitTest() override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
 };
 

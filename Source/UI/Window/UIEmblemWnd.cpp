@@ -11,6 +11,11 @@
 
 #include <string>
 
+// OFFSET: 0x0085ACD0
+// FUNCTION: fn_10787
+void UIEmblemWnd::Slot15(int, int) {
+}
+
 // OFFSET: 0x0085CE40
 // FUNCTION: fn_10809
 void UIEmblemWnd::Paint() {

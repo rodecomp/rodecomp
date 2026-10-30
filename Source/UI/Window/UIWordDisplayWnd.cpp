@@ -9,6 +9,11 @@
 #include "Resource/TextureNames.h"
 #include "UI/Window/UIWordDisplayWnd.h"
 
+// OFFSET: 0x0085B000
+// FUNCTION: fn_10791
+void UIWordDisplayWnd::Slot15(int, int) {
+}
+
 // OFFSET: 0x0085E370
 // FUNCTION: fn_10825
 void UIWordDisplayWnd::Paint() {

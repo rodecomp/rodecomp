@@ -1520,3 +1520,15 @@ void UIItemStoreComboBoxWnd::Paint() {
   const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\bg_setting.bmp")));
   this->DrawBitmap(0, this->geometry.height - background->image.height, &background->image, false);
 }
+
+// OFFSET: 0x00884700
+// FUNCTION: fn_11308
+void UIImgMenu::Move(int x, int y) {
+  UIWindow::Move(x, y);
+}
+
+// OFFSET: 0x00899A20
+// FUNCTION: fn_11558
+int UIString::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}

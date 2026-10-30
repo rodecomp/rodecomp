@@ -7,6 +7,7 @@ struct UIButtonContext;
 
 class UILoginOTPWnd : public UIFrameWnd {
 public:
+  void Slot18() override;
   void Paint() override;
 
 protected:

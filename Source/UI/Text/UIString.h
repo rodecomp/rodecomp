@@ -9,6 +9,7 @@ class UIString : public UIWindow {
 public:
   explicit UIString(UIWindowContext& windows);
   void ResetCursor(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ int unknown_007C;
   /* 0080 */ int unknown_0080;
