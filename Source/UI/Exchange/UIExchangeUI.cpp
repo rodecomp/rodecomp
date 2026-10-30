@@ -52,8 +52,25 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::ClearItems() {
 }
 
 // OFFSET: 0x00A10140
+// FUNCTION: fn_15189
+void CUIExchangeUI::Slot53() {
+  this->unknown_00B4 = 0;
+  this->m_resolveSkin = true;
+  this->Resize(560, 377);
+  this->Move(0, 0);
+  this->Slot15(this->geometry.width, this->geometry.height);
+  this->Slot16();
+}
 
 // OFFSET: 0x00A101E0
+// FUNCTION: fn_15190
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot15(int width, int height) {
+  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar->Show(0);
+  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
+  this->AddChild(this->scrollBar);
+}
 
 // OFFSET: 0x00A15150
 // FUNCTION: fn_15193
