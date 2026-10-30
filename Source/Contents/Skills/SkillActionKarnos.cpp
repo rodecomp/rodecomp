@@ -467,6 +467,30 @@ void CSkillAction_KR_THUNDERING_FOCUS_S::Slot11(int level, CGameActor* source, C
 }
 
 // OFFSET: 0x005B2A90
+// FUNCTION: fn_03361
+void CSkillAction_KR_THUNDERING_ORB::Slot12(vector3d position, int argument2, int argument3) {
+  CGameActor* const target = reinterpret_cast<CGameActor*>(argument3);
+  if (!target) {
+    return;
+  }
+
+  if (CEffect* orb = g_effectMgr->Spawn(target->render.accountId, 2441, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
+  }
+
+  const std::uint8_t effectSource[] = {0x47, 0x4F, 0x46, 0x61, 0xD9, 0x28, 0x4B, 0x44, 0x5D, 0x40, 0x6C, 0x60, 0xCF, 0x2F, 0x66, 0x4A, 0x33};
+  thread_local EncryptedName<sizeof(effectSource), 0x2D394DBD0F332733ULL> effectName(effectSource);
+  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position.x, position.y, position.z, 0, -1, 0, 0)) {
+    effect->Slot16(300);
+  }
+
+  const std::uint8_t bottomSource[] = {0x33, 0x49, 0xCE, 0x85, 0x8F, 0x12, 0x6D, 0x7C, 0x29, 0x46, 0xE4, 0x84, 0x99, 0x15, 0x40, 0x72,
+                                       0x18, 0x43, 0xD4, 0x9F, 0x9F, 0x18, 0x72, 0x15};
+  thread_local EncryptedName<sizeof(bottomSource), 0x151F77EBEBBB2147ULL> bottomName(bottomSource);
+  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), position.x, position.y, position.z, 0, -1, 0, 0)) {
+    effect->Slot16(300);
+  }
+}
 
 // OFFSET: 0x005B2E80
 // FUNCTION: fn_03362
