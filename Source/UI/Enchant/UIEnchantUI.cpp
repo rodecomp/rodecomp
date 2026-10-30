@@ -7,6 +7,12 @@
 
 #include <algorithm>
 #include <cstring>
+#include <iterator>
+#include <new>
+
+// GLOBAL: gl_24882
+template <>
+CEnchantMgr* Singleton<CEnchantMgr>::s_instance = nullptr;
 
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::Paint();
 template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Paint();
@@ -19,6 +25,17 @@ template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::ClearItems();
 template int CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::AddData(const EnchantUI::CEnchantItemData&, bool);
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::ClearData();
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::UpdateScrollBar();
+
+// OFFSET: 0x006863F0
+// FUNCTION: fn_05565
+template <>
+CEnchantMgr* Singleton<CEnchantMgr>::GetInstance() {
+  if (!s_instance) {
+    s_instance = new (std::nothrow) CEnchantMgr;
+  }
+
+  return s_instance;
+}
 
 namespace EnchantUI {
 // OFFSET: 0x009F9880
@@ -217,4 +234,63 @@ void CUITargetItem::SetSelected(bool selected) {
   }
   CUIListItem::SetSelected(selected);
 }
+
+// OFFSET: 0x00A04D70
+// FUNCTION: fn_14965
+void CUINormalPerfect::Slot55() {
+  CUIListBoxEx<CUIEnchantItem, CEnchantItemData>* list = this->enchantList;
+  if (static_cast<int>(list->selected) >= 0 && list->selected < list->data.size()) {
+    auto it = std::next(list->data.begin(), list->selected);
+    CEnchantMgr::GetInstance()->RequestPerfectEnchant(
+      this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]), static_cast<int16_t>(this->unknown_00B0), it->itemId
+    );
+  }
+}
+
+// OFFSET: 0x00A04E60
+// FUNCTION: fn_14966
+void CUINormalRandom::Slot55() {
+  CEnchantMgr::GetInstance()->RequestRandomEnchant(
+    this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]), static_cast<int16_t>(this->unknown_00B0)
+  );
+}
+
+// OFFSET: 0x00A04F10
+// FUNCTION: fn_14967
+void CUIReset::Slot55() {
+  CEnchantMgr::GetInstance()->RequestResetEnchant(this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]));
+}
+
+// OFFSET: 0x00A04FB0
+// FUNCTION: fn_14968
+void CUIUpgradePerfect::Slot55() {
+  if (this->unknown_00B8) {
+    CEnchantMgr::GetInstance()->RequestUpgradeEnchant(
+      this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]), static_cast<int16_t>(this->unknown_00B0)
+    );
+    return;
+  }
+
+  CUIListBoxEx<CUIEnchantItem, CEnchantItemData>* list = this->enchantList;
+  if (static_cast<int>(list->selected) >= 0 && list->selected < list->data.size()) {
+    auto it = std::next(list->data.begin(), list->selected);
+    CEnchantMgr::GetInstance()->RequestUpgradePerfectEnchant(
+      this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]), static_cast<int16_t>(this->unknown_00B0), it->itemId
+    );
+  }
+}
+
+// OFFSET: 0x00A050E0
+// FUNCTION: fn_14969
+void CUIUpgradeRandom::Slot55() {
+  CEnchantMgr::GetInstance()->RequestUpgradeRandomEnchant(
+    this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->unknown_0000[1]), static_cast<int16_t>(this->unknown_00B0)
+  );
+}
+}
+
+// OFFSET: 0x00A08110
+// FUNCTION: fn_15017
+bool CUIEnchantUI::CanHitTest() {
+  return !CEnchantMgr::GetInstance()->m_unknown_0030;
 }

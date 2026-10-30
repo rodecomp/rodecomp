@@ -17,11 +17,14 @@ public:
   /* 00D8 */ CUIControl* background;
   /* 00DC */ CUIControl* titleBar;
 
+  bool CanHitTest() override;
   void Slot16() override;
   void Slot25(int x, int y) override;
 };
 
 namespace EnchantUI {
+class CEnchantItemData;
+
 class CUIEnchantItem : public CUIListItem {
 public:
   /* 00E8 */ CUIControl* itemIcon;
@@ -56,13 +59,16 @@ public:
   /* 0090 */ CUIControl* unknown_0090;
 };
 
+#pragma pack(push, 4)
 class CUIEnchantPage : public CUIControl {
 public:
   /* 0080 */ unsigned char unknown_0080[0x4];
   /* 0084 */ CUIGameItem* gameItem;
-  /* 0088 */ unsigned char unknown_0088[0x1C];
+  /* 0088 */ unsigned char unknown_0088[0x10];
+  /* 0098 */ CUIListBoxEx<CUIEnchantItem, CEnchantItemData>* enchantList;
+  /* 009C */ unsigned char unknown_009C[0x8];
   /* 00A4 */ EnchantInfo* enchantInfo;
-  /* 00A8 */ unsigned char unknown_00A8[0x8];
+  /* 00A8 */ uint64_t group;
   /* 00B0 */ int unknown_00B0;
 
   virtual void Slot54(int argument1, int argument2);
@@ -76,10 +82,38 @@ public:
   int FindEmptySlot();
   std::optional<EnchantOptionInfo*> FindOption(uint32_t key);
 };
+#pragma pack(pop)
+
+class CUINormalRandom : public CUIEnchantPage {
+public:
+  void Slot55() override;
+};
+
+class CUINormalPerfect : public CUIEnchantPage {
+public:
+  void Slot55() override;
+};
+
+class CUIReset : public CUIEnchantPage {
+public:
+  void Slot55() override;
+};
 
 class CUIUpgradeEnchantPage : public CUIEnchantPage {
 public:
   void Slot58(int value) override;
+};
+
+class CUIUpgradeRandom : public CUIUpgradeEnchantPage {
+public:
+  void Slot55() override;
+};
+
+class CUIUpgradePerfect : public CUIUpgradeEnchantPage {
+public:
+  /* 00B8 */ bool unknown_00B8;
+
+  void Slot55() override;
 };
 
 class CUIMainPage : public CUIControl {
