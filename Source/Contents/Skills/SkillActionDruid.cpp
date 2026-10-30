@@ -94,8 +94,17 @@ public:
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
-class CEfstAction_WERERAPTOR : public CEfstAction {
+class CEfstAction_AnimalForm : public CEfstAction {
 public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void ResetAnimalForm(CRenderObject* actor);
+  void ApplyAnimalForm(CRenderObject* actor, int form);
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_WERERAPTOR : public CEfstAction_AnimalForm {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
   EfstActionMessage Slot03() override;
   EfstActionMessage Slot04() override;
 };
@@ -338,8 +347,9 @@ public:
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
-class CEfstAction_WEREWOLF : public CEfstAction {
+class CEfstAction_WEREWOLF : public CEfstAction_AnimalForm {
 public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
   EfstActionMessage Slot03() override;
   EfstActionMessage Slot04() override;
 };
@@ -1156,3 +1166,20 @@ void CSkillAction_DR_SHOOTING_FEATHER::Slot15(int level, CGameActor* source, CGa
   this->sub_5A4760(level, source);
 }
 
+// OFFSET: 0x0061FF40
+// FUNCTION: fn_04457
+void CEfstAction_WEREWOLF::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    this->ApplyAnimalForm(actor, 1);
+    static_cast<CGameActor*>(actor)->Slot32();
+  }
+}
+
+// OFFSET: 0x006201F0
+// FUNCTION: fn_04462
+void CEfstAction_WERERAPTOR::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    this->ApplyAnimalForm(actor, 2);
+    static_cast<CGameActor*>(actor)->Slot32();
+  }
+}
