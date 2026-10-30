@@ -90,6 +90,18 @@ void UIParaResultWnd::Slot10(int x, int y, std::intptr_t value) {
 }
 
 // OFFSET: 0x009A96C0
+// FUNCTION: fn_13754
+void UIParaItemPurchaseWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  int previousHovered = this->hovered;
+  this->hovered = this->GetItemIndexAt(x, y);
+  if (previousHovered != this->hovered) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x009A96B0
 // FUNCTION: fn_13753
