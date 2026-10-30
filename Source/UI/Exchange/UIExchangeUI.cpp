@@ -3,10 +3,14 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/MessageTable.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
+#include "UI/Buttons/UIRadioButton.h"
+#include "UI/Lists/UIVScrollBar.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
 #include <functional>
 #include <string>
@@ -16,6 +20,8 @@ template void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::SetOnSel
 template void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::SetBinder(std::function<void(ExchangeUI::CUIItem*, const ExchangeUI::CItemData&)>);
 template void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::SetImages(const std::string&, const std::string&, const std::string&,
                                                                                     const std::string&);
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::UpdateScrollBar();
 
 // OFFSET: 0x00A15150
 // FUNCTION: fn_15193
@@ -103,6 +109,24 @@ int CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddData(const Exch
   return this->data.size() - 1;
 }
 
+// OFFSET: 0x00A17320
+// FUNCTION: fn_15287
+void CUIExchangeUI::Conclude() {
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (!mode) {
+    return;
+  }
+
+  if (this->logCheckBox->checked) {
+    std::string text = FormatOwnedString(LookupMessage(0x728), this->partnerName.c_str());
+    g_modeMgr.gameMode->SendMsg(0x44, reinterpret_cast<int>(text.c_str()), 0, 0, 0);
+  }
+
+  mode->SendMsg(0x36, 0, 0, 0, 0);
+  this->tradeButton->disabled = 1;
+  this->tradeButton->Invalidate();
+}
+
 // OFFSET: 0x00A17530
 // FUNCTION: fn_15289
 void CUIExchangeUI::OnCheckChanged(bool) {
@@ -172,4 +196,45 @@ void ExchangeUI::CUIItem::Paint() {
   } else {
     this->ClearSurface(0xFFFFFFFF);
   }
+}
+
+// OFFSET: 0x00A17BD0
+// FUNCTION: fn_15299
+void ExchangeUI::CUIItem::Slot16() {
+  this->itemIcon->showOverlay = 1;
+  this->itemIcon->Invalidate();
+}
+
+// OFFSET: 0x00A17BF0
+// FUNCTION: fn_15300
+void ExchangeUI::CUIItem::Slot28(int x, int y) {
+  this->itemIcon->Slot28(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
+}
+
+// OFFSET: 0x00A17F30
+// FUNCTION: fn_15302
+void ExchangeUI::CUIItem::Slot32(int x, int y) {
+  this->itemIcon->Slot32(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
+}
+
+// OFFSET: 0x00A17F60
+// FUNCTION: fn_15303
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::UpdateScrollBar() {
+  this->scrollBar->SetTotal(this->data.size() * this->rowHeight + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
+// OFFSET: 0x00A18AA0
+// FUNCTION: fn_15308
+void CUIExchangeUI::FreezeItems(bool mine) {
+  ExchangeUI::CItemListBox* list = mine ? this->firstList : this->secondList;
+  for (ExchangeUI::CItemData& data : list->data) {
+    data.frozen = true;
+  }
+  list->UpdateScrollBar();
+  list->unknown_00C4 = 1;
+  list->Invalidate();
 }
