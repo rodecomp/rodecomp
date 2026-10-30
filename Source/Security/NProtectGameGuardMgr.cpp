@@ -66,6 +66,17 @@ int CNProtectGameGuardMgr::Create() {
   return 1;
 }
 
+// OFFSET: 0x0076CEA0
+// FUNCTION: fn_08212
+void CNProtectGameGuardMgr::Destroy() {
+  typedef void(__thiscall * DeletingDestructor)(CNProtectGameGuardMgr*, unsigned char);
+
+  if (g_nProtectGameGuardMgr) {
+    (*reinterpret_cast<DeletingDestructor**>(g_nProtectGameGuardMgr))[0](g_nProtectGameGuardMgr, 1);
+    g_nProtectGameGuardMgr = nullptr;
+  }
+}
+
 // OFFSET: 0x0076CEC0
 // FUNCTION: fn_08213
 int CNProtectGameGuardMgr::HasError() {

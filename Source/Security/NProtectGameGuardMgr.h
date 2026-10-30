@@ -8,6 +8,7 @@
 class CNProtectGameGuardMgr {
 public:
   static int Create();
+  static void Destroy();
   static const char* GameName();
 
   /* 0000 */ void* vtable;
