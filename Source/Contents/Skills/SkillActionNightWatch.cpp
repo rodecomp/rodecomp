@@ -262,6 +262,32 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING::Slot11(int level, CGame
 }
 
 // OFFSET: 0x0078F540
+// FUNCTION: fn_08685
+void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("the_vigilante_at_night_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+
+  if (!target) {
+    return;
+  }
+
+  for (int index = 0; index < 4; ++index) {
+    const vector3d position = target->render.position;
+    CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("the_vigilante_at_night_crack"), position.x, position.y, position.z, 0, -1, 0, 0);
+    if (!effect) {
+      return;
+    }
+
+    const int first = rand() % 10;
+    const int second = rand() % 10;
+    effect->position[0] = static_cast<float>(index % 2 * 10 - std::max(second, 0)) + target->render.position.x;
+    effect->position[2] = target->render.position.z + 0.0f;
+    effect->position[1] = static_cast<float>(index % 4 / 2 * 10 - std::max(first, 0)) + target->render.position.y;
+    effect->Slot16(index * 32);
+    effect->Slot22(static_cast<float>(std::max(rand() % 31, 0) + 70) * 0.01f);
+  }
+}
 
 // OFFSET: 0x0078F960
 // FUNCTION: fn_08687
@@ -377,6 +403,24 @@ void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::Slot08(int level, CGameActor* sourc
 }
 
 // OFFSET: 0x00790550
+// FUNCTION: fn_08707
+void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::Slot12(vector3d position, int argument2, int argument3) {
+  for (int index = 0; index < 3; ++index) {
+    CEffect* effect = g_effectMgr->Spawn(
+      0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_%d", index).c_str()), position.x, position.y, position.z, 0, -1, 0, 0
+    );
+    if (effect) {
+      effect->Slot16(index * 288);
+    }
+
+    effect = g_effectMgr->Spawn(
+      0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_bottom_%d", index).c_str()), position.x, position.y, position.z, 0, -1, 0, 0
+    );
+    if (effect) {
+      effect->Slot16(index * 288);
+    }
+  }
+}
 
 // OFFSET: 0x007908E0
 // FUNCTION: fn_08710
@@ -506,6 +550,37 @@ void CSkillAction_NW_WILD_SHOT::Slot08(int level, CGameActor* source) {
 }
 
 // OFFSET: 0x00791670
+// FUNCTION: fn_08730
+void CSkillAction_NW_WILD_SHOT::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  int delay = 0;
+  for (int angle = 0; angle < 360; angle += 45) {
+    int first = rand() % 5;
+    if (first < 3) {
+      first = 3;
+    }
+    const float radians = static_cast<float>(angle) / 180.0f * 3.141592f;
+    const float offsetZ = ClientCos(radians) * static_cast<float>(first * 5);
+    int second = rand() % 5;
+    if (second < 3) {
+      second = 3;
+    }
+    const float offsetX = ClientSin(radians) * static_cast<float>(second * 5);
+    const float x = offsetX + target->render.position.x;
+    const float y = target->render.position.y + 0.0f;
+    const float z = offsetZ + target->render.position.z;
+    CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot"), x, y, z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot22(0.8f);
+      effect->Slot16(delay);
+      effect->Slot17(static_cast<float>(std::max(rand() % 360, 0)));
+    }
+    delay += 240;
+  }
+}
 
 // OFFSET: 0x00791950
 // FUNCTION: fn_08731
@@ -541,6 +616,23 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::Slot08(int level, CGameActor* source) {
 }
 
 // OFFSET: 0x00791D60
+// FUNCTION: fn_08735
+void CSkillAction_NW_MIDNIGHT_FALLEN::Slot12(vector3d position, int argument2, int argument3) {
+  int delay = 0;
+  for (int angle = 45; angle < 405; angle += 120) {
+    const float radians = static_cast<float>(angle) / 180.0f * 3.141592f;
+    const float offsetZ = ClientSin(radians) * 10.0f;
+    const float offsetX = ClientCos(radians) * 10.0f;
+    const float z = offsetZ + position.z;
+    const float y = position.y + 0.0f;
+    const float x = offsetX + position.x;
+    CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_bottom"), x, y, z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot16(delay);
+    }
+    delay += 96;
+  }
+}
 
 // OFFSET: 0x00791FD0
 // FUNCTION: fn_08736
