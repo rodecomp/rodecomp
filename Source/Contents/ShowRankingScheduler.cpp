@@ -3,7 +3,7 @@
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "UI/Window/UIWindowMgr.h"
-
+#include "Utility/Text/FormatString.h"
 #include <cerrno>
 #include <cstdint>
 #include <cstring>
@@ -103,4 +103,56 @@ const void* CShowRankingScheduler::SetData(const void* data) {
   _invalid_parameter_noinfo();
 
   return nullptr;
+}
+
+// OFFSET: 0x00638110
+// FUNCTION: fn_04741
+void CShowRankingScheduler::Show() {
+  // GLOBAL: gl_25055
+  static const std::map<int, RankingBoardStyle> styles = RankingBoardStyles();
+
+  const int kind = *reinterpret_cast<const std::int16_t*>(this->rankingData + 2);
+  const char* title;
+  std::uint32_t color;
+  std::uint32_t background;
+  auto style = styles.lower_bound(kind);
+  if (style != styles.end() && !(kind < style->first)) {
+    title = style->second.title;
+    color = style->second.color;
+    background = style->second.background;
+  } else {
+    title = "===========================================";
+    background = 0;
+    color = 0;
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(title), color, 0, 0, 0);
+
+  const auto* ids = reinterpret_cast<const std::uint32_t*>(this->rankingData + 4);
+  const auto* points = reinterpret_cast<const int*>(this->rankingData + 44);
+  for (int index = 0; index < 10; ++index) {
+    std::string name;
+    const std::uint32_t id = ids[index];
+    if (id != 0) {
+      for (std::uint32_t listed : this->rankingList) {
+        if (listed == id) {
+          name = g_namelessName;
+          break;
+        }
+      }
+      if (name.find(g_namelessName) == std::string::npos) {
+        name = LookupPlayerName(id);
+      }
+    }
+    if (name.empty() || name.find(g_namelessName) != std::string::npos) {
+      name = LookupMessage(581);
+    }
+
+    std::string line = FormatOwnedString("[ %2d ] %s  :  %4d POINT", index + 1, name.c_str(), points[index]);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line.c_str()), background, 0, 0, 0);
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
+  std::string mine = FormatOwnedString("MY POINT    :  %4d POINT ", *reinterpret_cast<const int*>(this->rankingData + 84));
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(mine.c_str()), background, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
 }
