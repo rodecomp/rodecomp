@@ -4,6 +4,7 @@
 #include "UI/Window/UIFrameWnd.h"
 
 class UIEditCtrl;
+struct SubChatHisWndInfo;
 
 struct SubChatHistoryState {
   /* 0000 */ int unknown_0000;
@@ -17,13 +18,16 @@ struct SubChatHistoryState {
 
 class UISubChatHisWnd : public UIFrameWnd {
 public:
+  void Slot11() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot31(int x, int y) override;
   bool Slot42(void* output) override;
 
 private:
-  /* 00B4 */ unsigned char unknown_00B4[0xC];
+  /* 00B4 */ unsigned char unknown_00B4[4];
+  /* 00B8 */ SubChatHisWndInfo* m_saved;
+  /* 00BC */ unsigned char unknown_00BC[4];
   /* 00C0 */ SubChatHistoryState m_state;
   /* 00DC */ unsigned char unknown_00DC[0xC];
   /* 00E8 */ int m_inputHeight;

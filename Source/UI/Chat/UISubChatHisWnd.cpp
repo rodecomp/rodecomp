@@ -1,4 +1,5 @@
 #include "UI/Chat/UISubChatHisWnd.h"
+#include "Contents/UserData/NormalItemSlots.h"
 
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
@@ -16,4 +17,15 @@
 bool UISubChatHisWnd::Slot42(void* output) {
   *static_cast<SubChatHistoryState*>(output) = this->m_state;
   return true;
+}
+
+// OFFSET: 0x00941020
+// FUNCTION: fn_12788
+void UISubChatHisWnd::Slot11() {
+  if (this->m_saved) {
+    this->m_saved->width = this->geometry.width;
+    this->m_saved->height = this->geometry.height;
+    this->m_saved->x = this->geometry.x;
+    this->m_saved->y = this->geometry.y;
+  }
 }
