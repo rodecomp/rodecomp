@@ -32,6 +32,10 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Text/FormatString.h"
+#include "Contents/Schedule/CheckGDISchedule.h"
+#include "Contents/Schedule/EmotionSchedule.h"
+#include "Contents/Schedule/TimeScheduler.h"
+#include "UI/Emotion/UIEmotionWnd.h"
 
 extern "C" {
 #include <lauxlib.h>
@@ -60,6 +64,8 @@ CCashEmotionMgr* g_cashEmotionMgr = nullptr;
 // GLOBAL: gl_24484
 ChatSuggestions* g_chatSuggestions = nullptr;
 
+extern "C" long long _Xtime_get_ticks();
+
 class ICashEmotionAction {
 public:
   virtual ~ICashEmotionAction();
@@ -77,6 +83,16 @@ public:
 protected:
   /* 0004 */ int m_diceEmotion;
   /* 0008 */ int m_yutEmotion;
+};
+
+class CCashEmotionAction_Register : public ICashEmotionAction {
+public:
+  bool Execute(int packId, int emotionId) override;
+};
+
+class CCashEmotionAction_SelectedUnPurchasedPack : public ICashEmotionAction {
+public:
+  bool Execute(int packId, int argument) override;
 };
 
 class UICashEmotionPack_Purchase : public UICashEmotionPack {
@@ -228,6 +244,7 @@ public:
   void SetTab(char tab);
   void UpdateExpiry(int packId, Timestamp* expiry);
   void RefreshSelection();
+  void RestartExpirySchedule();
 
 protected:
   /* 00B4 */ CashEmotionListPlacement* m_placement;
@@ -318,6 +335,44 @@ bool CCashEmotionAction_Play::Execute(int packId, int emotionId) {
   }
 
   mode->SendMsg(31, emotionId, packId, 0, 0);
+  return true;
+}
+
+// OFFSET: 0x00591F30
+
+// OFFSET: 0x00591FB0
+// FUNCTION: fn_02847
+bool CCashEmotionAction_SelectedUnPurchasedPack::Execute(int packId, int) {
+  if (g_windowMgr.unknown_0024 == 1 && g_chatSuggestions) {
+    ChatSuggestions* suggestions = g_chatSuggestions;
+    suggestions->Show(0);
+    if (suggestions->input) {
+      suggestions->input->SetText("");
+    }
+    reinterpret_cast<ChatInputFocus*>(suggestions)->Toggle();
+  }
+
+  UICashEmotionListWnd* listWnd = g_cashEmotionListWnd;
+  if (!listWnd) {
+    listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.EnsureWindow(87));
+  }
+
+  const unsigned int now = g_cashEmotionMgr->sub_59FC50();
+  if (g_cashEmotionMgr->IsPackAvailable(now, packId)) {
+    if (listWnd) {
+      listWnd->ShowPack(packId);
+    }
+    return true;
+  }
+
+  const unsigned int endTime = g_cashEmotionMgr->GetPackEndTime(packId);
+  if (endTime) {
+    const char* key = now < endTime ? "EMSG_NOT_YET_SALE_START_TIME" : "EMSG_EMOTION_EXPANTION_FAIL_DATE";
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString(key)), 255, 0, 0, 0);
+  } else if (g_cashEmotionMgr->GetPackStartTime(packId) > now) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_NOT_YET_SALE_START_TIME")), 255, 0, 0, 0);
+  }
+
   return true;
 }
 
@@ -1202,6 +1257,28 @@ int CCashEmotionMgr::InsertEmotionMsgListTableForCustom(lua_State* state) {
   return 1;
 }
 
+// OFFSET: 0x005A0B80
+// FUNCTION: fn_03038
+int CCashEmotionMgr::InsertOrderList(lua_State* state) {
+  const int packId = luaL_checkinteger(state, 1);
+  const int emotionId = luaL_checkinteger(state, 2);
+
+  CCashEmotionMgr* mgr = g_cashEmotionMgr;
+  auto it = mgr->unknown_0050.find(packId);
+  if (it == mgr->unknown_0050.end()) {
+    std::vector<int> order;
+    order.push_back(emotionId);
+    mgr->unknown_0050.emplace(packId, std::move(order));
+  } else {
+    std::vector<int>& order = it->second;
+    if (std::find(order.begin(), order.end(), emotionId) == order.end()) {
+      order.push_back(emotionId);
+    }
+  }
+
+  return 1;
+}
+
 // OFFSET: 0x005A0CE0
 // FUNCTION: fn_03039
 int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
@@ -1508,6 +1585,18 @@ int UICashEmotionListWnd::SetPeriod(int packId) {
   }
 
   return this->SendMsg(this, 60, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x007C80C0
+// FUNCTION: fn_09416
+void UICashEmotionListWnd::RestartExpirySchedule() {
+  CTimeScheduler* scheduler = reinterpret_cast<CTimeScheduler*>(g_timeScheduler);
+  scheduler->sub_BA95F0(7);
+  if (g_cashEmotionMgr->m_expiry.size() != 0) {
+    const std::uint64_t now = _Xtime_get_ticks();
+    const std::int64_t interval = 30000;
+    scheduler->AddSchedule(new CEmotionPurchaseUseableTimeUISchedule(now, interval, 1));
+  }
 }
 
 // OFFSET: 0x007C8800

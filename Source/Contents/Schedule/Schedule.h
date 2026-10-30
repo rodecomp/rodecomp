@@ -22,7 +22,6 @@ public:
 
   virtual void Process(const std::uint64_t& now);
   virtual ~CSchedule();
-  virtual void Slot02() = 0;
 
   bool CheckTime(const std::uint64_t& now);
 

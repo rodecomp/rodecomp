@@ -175,6 +175,7 @@ public:
   int BasePackId() const {
     return this->unknown_000C;
   }
+  static int InsertOrderList(lua_State* state);
 
 protected:
   /* 0004 */ bool m_enabled;
