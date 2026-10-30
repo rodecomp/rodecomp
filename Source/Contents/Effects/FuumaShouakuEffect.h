@@ -11,14 +11,17 @@ class CFuumaShouakuEffect : public CEffect {
 public:
   CFuumaShouakuEffect();
 
+  void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
 
   /* 00CC */ CEZ2STRParticle* first;
   /* 00D0 */ CEZ2STRParticle* second;
-  /* 00D4 */ int unknown_00D4;
-  /* 00D8 */ int unknown_00D8;
-  /* 00DC */ int unknown_00DC;
+  /* 00D4 */ float unknown_00D4;
+  /* 00D8 */ float unknown_00D8;
+  /* 00DC */ float unknown_00DC;
   /* 00E0 */ int unknown_00E0;
 };
 
