@@ -39,6 +39,14 @@ CBitmapRes* CUIControl::LoadBitmapResource(const std::string& name, bool resolve
 CUIControl::CUIControl(UIWindowContext& context) : UIWindow(context, 0), hitEnabled(1) {
 }
 
+// INLINED
+CUIButton::CUIButton(UIWindowContext& context) : CUIControl(context), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
+}
+
+// INLINED
+CUIImageButton::CUIImageButton(UIWindowContext& context) : CUIButton(context), images(), disabledImage(), transparent(0), imageNames(), disabledName() {
+}
+
 // OFFSET: 0x009C08C0
 CUIControl::~CUIControl() = default;
 
@@ -931,6 +939,37 @@ void CUICheckBox::Slot31(int, int) {
   if (this == g_windowMgr.Capture()) {
     g_windowMgr.ReleaseCapture();
   }
+}
+
+// OFFSET: 0x009E8430
+// FUNCTION: fn_14492
+CUICheckBox::CUICheckBox(UIWindowContext& context) : CUIImageButton(context), checked(false), onCheck() {
+}
+
+// OFFSET: 0x009E89B0
+// FUNCTION: fn_14495
+bool CUIRadioItem::IsChecked() {
+  return this->radioButton->checked;
+}
+
+// OFFSET: 0x009E8150
+// FUNCTION: fn_14490
+void CUIImageTextButton::Slot53(int resolveSkin) {
+  this->images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  this->images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->disabledImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+}
+
+// OFFSET: 0x009E8350
+// FUNCTION: fn_14491
+void CUIImageTextButton::SetImages(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& inactive) {
+  this->imageNames[0] = normal;
+  this->imageNames[1] = hover;
+  this->imageNames[2] = pressed;
+  this->disabledName = inactive;
+  this->Slot53(0);
+  this->Invalidate();
 }
 
 // OFFSET: 0x009F01B0

@@ -97,6 +97,7 @@ public:
 
 class CUIButton : public CUIControl {
 public:
+  explicit CUIButton(UIWindowContext& context);
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot26(int x, int y) override;
@@ -124,7 +125,19 @@ public:
   virtual void Slot55();
 };
 
-class CUIImageTextButton : public CUITextButton {};
+class CUIImageTextButton : public CUITextButton {
+public:
+  void Slot53(int resolveSkin) override;
+
+  void SetImages(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& inactive);
+
+  /* 00F0 */ unsigned char unknown_00F0[0xA0];
+  /* 0190 */ std::map<int, CResPtr<CBitmapRes>> images;
+  /* 0198 */ CResPtr<CBitmapRes> disabledImage;
+  /* 019C */ std::map<int, std::string> imageNames;
+  /* 01A4 */ std::string disabledName;
+  /* 01BC */ unsigned char unknown_01BC[0x04];
+};
 
 class CUIBasicButton : public CUITextButton {
 public:
@@ -140,7 +153,6 @@ public:
   __declspec(noinline) void SetSelected(bool selected);
   void SetSkinColors(int normalColumn, int normalRow, int selectedColumn, int selectedRow, int borderColumn, int borderRow);
 
-  /* 00F0 */ unsigned char unknown_00F0[0xD0];
   /* 01C0 */ UIWindow* page;
   /* 01C4 */ unsigned char useSkinColors;
   /* 01C8 */ std::uint32_t normalColor;
@@ -153,6 +165,7 @@ public:
 
 class CUIImageButton : public CUIButton {
 public:
+  explicit CUIImageButton(UIWindowContext& context);
   void Paint() override;
   void Slot53(int resolveSkin) override;
 

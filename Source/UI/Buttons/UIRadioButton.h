@@ -11,6 +11,8 @@ public:
   /* 0120 */ bool checked;
   /* 0128 */ std::function<void(bool)> onCheck;
 
+  explicit CUICheckBox(UIWindowContext& context);
+
   void SetOnCheck(std::function<void(bool)> callback);
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -22,6 +24,13 @@ public:
   /* 0150 */ std::function<void(CUIRadioButton*)> onSelect;
 
   void SetOnSelect(std::function<void(CUIRadioButton*)> callback);
+};
+
+class CUIRadioItem : public CUIControl {
+public:
+  /* 0080 */ CUIRadioButton* radioButton;
+
+  bool IsChecked();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
