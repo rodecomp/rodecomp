@@ -12,10 +12,12 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Session.h"
+#include "Network/ClientOptionPacket.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Script/LuaInstance.h"
 #include "Script/LuaScript.h"
 #include "Utility/Singleton.h"
@@ -324,7 +326,6 @@ bool GameSettings::ReadOptionTable() {
 void sub_AAB070(int id);
 
 // OFFSET: 0x006C2610
-
 // OFFSET: 0x006C27D0
 // FUNCTION: fn_06323
 void GameSettings::ToggleOption(int id) {
@@ -593,10 +594,60 @@ void ToggleSitStand() {
 }
 
 // OFFSET: 0x006C44A0
+// FUNCTION: fn_06355
+void ApplyServiceOptionXmasWeather(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (!mode) {
+    return;
+  }
+
+  const std::string mapName = mode->MapName();
+  if (mapName == "xmas_fild01.rsw" || mapName == "xmas.rsw") {
+    if (g_serviceOptions.Get(8)) {
+      g_weatherEffect.Snow();
+    } else {
+      g_weatherEffect.ExtendEffect();
+    }
+  }
+}
 
 // OFFSET: 0x006C46C0
+// FUNCTION: fn_06358
+void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (g_serviceOptions.Get(107)) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBB4)), 0x64FFFF, 0, 0, 0);
+      return;
+    }
+
+    reinterpret_cast<ServiceOptionActorRefresh*>(g_modeMgr.GetGameMode())->sub_CD6DD0(0);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+}
 
 // OFFSET: 0x006C48F0
+// FUNCTION: fn_06360
+void ApplyServiceOptionActorRefresh(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  reinterpret_cast<ServiceOptionActorRefresh*>(g_modeMgr.GetGameMode())->sub_CD6DD0(0);
+}
+
 
 // OFFSET: 0x006C4750
 // FUNCTION: fn_06359
@@ -626,6 +677,41 @@ void ApplyServiceOptionSessionFlag(int id, unsigned char value, bool notify, int
 }
 
 // OFFSET: 0x006C5D60
+
+
+// FUNCTION: fn_06367
+void ApplyServiceOptionCursorClip(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  if (value) {
+    ClipApplicationCursor(hWnd);
+  } else {
+    ClipCursor(nullptr);
+  }
+}
+
+// OFFSET: 0x006C5DF0
+// FUNCTION: fn_06369
+void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(0x128) == value) {
+    return;
+  }
+
+  if (!value &&
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x1104), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBC) {
+    g_serviceOptions.Set(0x128, 1);
+    sub_AAB070(0x128);
+    return;
+  }
+
+  SendClientOption(value, GetRagConnection(), g_packetLengths);
+}
+
 
 // OFFSET: 0x006C5FC0
 
@@ -660,6 +746,20 @@ void ApplyServiceOptionWindow267(int id, unsigned char value, bool notify, int e
 }
 
 // OFFSET: 0x006C61B0
+
+
+// FUNCTION: fn_06377
+void ApplyServiceOptionWindows189(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  g_windowMgr.SetWindows189Visible(value);
+}
+
 
 // OFFSET: 0x006C6200
 // FUNCTION: fn_06378
