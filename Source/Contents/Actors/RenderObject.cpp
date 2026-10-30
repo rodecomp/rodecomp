@@ -7,6 +7,9 @@
 #include "Client/Replay.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Actors/ActorStateFlags.h"
+#include "Contents/Actors/CharacterRender.h"
+#include "Contents/Actors/SpriteDrawingPolicy.h"
+#include "Render/DX9/RendererDX9.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/EffectActors.h"
@@ -46,10 +49,19 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <list>
 #include <string>
 #include <vector>
 #include <windows.h>
 #include <timeapi.h>
+
+
+struct CharacterRenderDrawItem {
+  int flags;
+  RenderCommand* command;
+};
+
+std::list<CharacterRenderDrawItem> sub_8105A0(unsigned char kind, char* useBounds);
 
 // GLOBAL: gl_24798
 int g_multiHitInterval = 200;
@@ -1522,6 +1534,95 @@ void CNpc::Slot30() {
 // FUNCTION: fn_03070
 void CCharacterNpc::Slot21(int) {
 }
+
+// OFFSET: 0x005A13E0
+// FUNCTION: fn_03052
+void CCharacterNpc::Render(int) {
+  if (this->render.visible == 0 || this->render.enabled == 0) {
+    return;
+  }
+
+  CCharacterRender* characterRender = reinterpret_cast<CCharacterRender*>(this->unknown_0440);
+  characterRender->unknown_0040 = this->render.previousAnimation;
+  characterRender->unknown_0044 = this->render.curMotion;
+
+  char useBounds = 0;
+  std::list<CharacterRenderDrawItem> drawList = sub_8105A0(this->render.unknown_00A4Bytes[1], &useBounds);
+
+  float bounds[5];
+  std::memcpy(bounds, characterRender->unknown_0094, sizeof(bounds));
+  const float tlvertX = *reinterpret_cast<float*>(&characterRender->unknown_00A8);
+  const float tlvertY = *reinterpret_cast<float*>(&characterRender->unknown_00AC);
+  if (useBounds == 1) {
+    this->SetRenderInfo(bounds, tlvertX, tlvertY);
+  } else {
+    this->SetTlvert(tlvertX, tlvertY);
+  }
+
+  for (std::list<CharacterRenderDrawItem>::iterator it = drawList.begin(); it != drawList.end(); ++it) {
+    static_cast<CRendererDX9*>(g_renderer)->Submit(it->command, static_cast<std::uint16_t>(it->flags));
+  }
+}
+
+struct CharacterNpcViewInfo {
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ int job;
+  /* 0008 */ int unknown_0008[10];
+  /* 0030 */ int unknown_0030;
+  /* 0034 */ int unknown_0034;
+  /* 0038 */ int unknown_0038;
+  /* 003C */ int unknown_003C[4];
+  /* 004C */ int unknown_004C;
+  /* 0050 */ int unknown_0050;
+  /* 0054 */ int unknown_0054;
+  /* 0058 */ int unknown_0058;
+  /* 005C */ int unknown_005C;
+  /* 0060 */ int unknown_0060;
+  /* 0064 */ int unknown_0064;
+  /* 0068 */ int unknown_0068[2];
+  /* 0070 */ int robe;
+  /* 0074 */ int robeAlt;
+  /* 0078 */ int unknown_0078;
+  /* 007C */ int unknown_007C;
+};
+
+__declspec(noinline) static void FillCharacterNpcRenderPrimary(
+  CCharacterNpc* self, CCharacterRender* characterRender, CharacterNpcViewInfo* info
+) {
+  characterRender->unknown_0004 = *reinterpret_cast<int*>(&self->render.position.x);
+  characterRender->unknown_0008 = *reinterpret_cast<int*>(&self->render.position.y);
+  characterRender->unknown_000C = *reinterpret_cast<int*>(&self->render.position.z);
+  characterRender->unknown_0010 = self->unknown_025C;
+  characterRender->unknown_0018[0] = self->unknown_0260;
+  characterRender->unknown_0018[1] = *reinterpret_cast<int*>(&self->unknown_029C);
+  characterRender->unknown_0018[2] = info->unknown_0058;
+  characterRender->unknown_0018[3] = info->unknown_0054;
+  characterRender->unknown_0028 = info->unknown_0030;
+  characterRender->unknown_002C = info->unknown_004C;
+  characterRender->unknown_0030 = info->unknown_0050;
+  reinterpret_cast<SpriteDrawingPolicy*>(characterRender)->SetRobe(info->robe);
+  characterRender->unknown_0050 = info->unknown_0078;
+}
+
+__declspec(noinline) static void FillCharacterNpcRenderSecondary(
+  CCharacterNpc* self, CCharacterRender* characterRender, CharacterNpcViewInfo* info
+) {
+  characterRender->unknown_0004 = *reinterpret_cast<int*>(&self->render.position.x);
+  characterRender->unknown_0008 = *reinterpret_cast<int*>(&self->render.position.y);
+  characterRender->unknown_000C = *reinterpret_cast<int*>(&self->render.position.z);
+  characterRender->unknown_0010 = self->unknown_025C;
+  characterRender->unknown_0018[0] = self->unknown_0260;
+  characterRender->unknown_0018[1] = *reinterpret_cast<int*>(&self->unknown_029C);
+  characterRender->unknown_0018[2] = info->unknown_005C;
+  characterRender->unknown_0018[3] = info->unknown_0058;
+  characterRender->unknown_0028 = info->unknown_0038;
+  characterRender->unknown_002C = info->unknown_0050;
+  characterRender->unknown_0030 = info->unknown_0054;
+  reinterpret_cast<SpriteDrawingPolicy*>(characterRender)->SetRobe(info->robeAlt);
+  characterRender->unknown_0050 = info->unknown_007C;
+}
+
+// OFFSET: 0x005A1530
 
 // OFFSET: 0x00CAC760
 // FUNCTION: fn_21044
