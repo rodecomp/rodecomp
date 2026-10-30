@@ -14,6 +14,13 @@ UIBasicButton::UIBasicButton(UIWindowContext& windows, UIButtonContext& controls
 // OFFSET: 0x00852170
 UIBasicButton::~UIBasicButton() = default;
 
+// OFFSET: 0x00809910
+// FUNCTION: fn_10060
+void UIBasicButton::SetText(std::string value) {
+  this->text = value;
+  this->Invalidate();
+}
+
 // OFFSET: 0x00854240
 // FUNCTION: fn_10747
 bool UIBasicButton::Configure(int width, const char* value) {

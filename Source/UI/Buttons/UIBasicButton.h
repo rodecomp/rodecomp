@@ -9,6 +9,7 @@ public:
   ~UIBasicButton() override;
   void Paint() override;
   bool Configure(int width, const char* value);
+  void SetText(std::string value);
 
   /* 00B4 */ std::string text;
   /* 00CC */ unsigned char invalidateParent;

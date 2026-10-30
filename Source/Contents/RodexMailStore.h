@@ -12,7 +12,8 @@ struct RodexMail {
   /* 0001 */ unsigned char unknown_0001;
   /* 0002 */ std::array<std::byte, 2> unknown_0002;
   /* 0004 */ std::string unknown_0004;
-  /* 001C */ std::array<std::byte, 8> unknown_001C;
+  /* 001C */ int unknown_001C;
+  /* 0020 */ int unknown_0020;
   /* 0024 */ std::string unknown_0024;
   /* 003C */ std::string unknown_003C;
   /* 0054 */ std::array<std::byte, 316> unknown_0054;
