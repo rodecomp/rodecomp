@@ -1723,6 +1723,100 @@ static_assert(offsetof(PakAuxiliaryState, m_cipher) == 0xC0);
 #endif
 
 // OFFSET: 0x00658B90
+// FUNCTION: fn_05112
+bool PakAuxiliaryState::DecodeHeader(PakSpan_655A30 name, std::uint8_t* data, std::uint32_t size, PakAuxiliaryHeader* header) {
+  if (size < sizeof(PakAuxiliaryHeader)) {
+    return false;
+  }
+
+  std::memcpy(header, data, sizeof(PakAuxiliaryHeader));
+  if (header->version > 1) {
+    return false;
+  }
+
+  volatile int sourceCount = 0x772354dd;
+  sourceCount ^= 0xeb082218;
+  sourceCount ^= 0x9c2b76a5;
+  const int encryptedCount = sourceCount;
+  volatile int sourceOffset = 0x772354b5;
+  sourceOffset ^= 0xeb082218;
+  sourceOffset ^= 0x9c2b76a5;
+  const std::span<std::uint8_t> encryptedSpan = std::span<std::uint8_t>(data, size).subspan(sourceOffset, encryptedCount);
+
+  volatile int targetCount = 0xcaac7501;
+  targetCount ^= 0xb575cb53;
+  targetCount ^= 0x7fd9be32;
+  const int decryptedCount = targetCount;
+  volatile int targetOffset = 0xcaac7569;
+  targetOffset ^= 0xb575cb53;
+  targetOffset ^= 0x7fd9be32;
+  const std::span<std::uint8_t> decryptedSpan =
+      std::span<std::uint8_t, sizeof(PakAuxiliaryHeader)>(reinterpret_cast<std::uint8_t*>(header), sizeof(PakAuxiliaryHeader)).subspan(targetOffset, decryptedCount);
+
+  PakSpan_655A30 encrypted;
+  encrypted.data = encryptedSpan.data();
+  encrypted.size = encryptedSpan.size();
+  PakSpan_655A30 decrypted;
+  decrypted.data = decryptedSpan.data();
+  decrypted.size = decryptedSpan.size();
+
+  PakAuxiliaryContext context;
+  context.name = &name;
+  context.header = header;
+
+  PakVerifier_655A30 verifier;
+  verifier.span_objs = &context.name;
+  verifier.span_a = &encrypted;
+  verifier.span_b = &decrypted;
+
+  switch (header->keySource) {
+  case 0:
+    break;
+  case 1:
+    if (!verifier.sub_655A30(reinterpret_cast<CipherObj_61B410**>(&this->m_cipher), &this->m_key, 1, 0)) {
+      return false;
+    }
+    break;
+  case 2: {
+    XXH128_hash_t hash = XXH3_128bits(name.data, name.size);
+    XXH128_hash_t key = hash;
+    for (std::size_t i = 0; i < sizeof(hash); ++i) {
+      reinterpret_cast<volatile std::uint8_t*>(&hash)[i] = 0;
+    }
+    this->m_cipher->SetIV(reinterpret_cast<const UCHAR*>(&key), sizeof(key));
+    this->m_cipher->SetMode(AES::CBC);
+    const ULONG written = this->m_cipher->Decrypt(static_cast<PUCHAR>(encrypted.data), encrypted.size, static_cast<PUCHAR>(decrypted.data), decrypted.size, 0);
+    volatile int expected = 0xe5c3c820;
+    expected ^= 0xf63071d0;
+    expected ^= 0x13f3b990;
+    if (written != expected) {
+      return false;
+    }
+    break;
+  }
+  case 15: {
+    XXH128_hash_t hash = XXH3_128bits(&header->checksum, sizeof(header->checksum));
+    XXH128_hash_t key = hash;
+    for (std::size_t i = 0; i < sizeof(hash); ++i) {
+      reinterpret_cast<volatile std::uint8_t*>(&hash)[i] = 0;
+    }
+    this->m_cipher->SetIV(reinterpret_cast<const UCHAR*>(&key), sizeof(key));
+    this->m_cipher->SetMode(AES::CBC);
+    const ULONG written = this->m_cipher->Decrypt(static_cast<PUCHAR>(encrypted.data), encrypted.size, static_cast<PUCHAR>(decrypted.data), decrypted.size, 0);
+    volatile int expected = 0xe5c3c820;
+    expected ^= 0xf63071d0;
+    expected ^= 0x13f3b990;
+    if (written != expected) {
+      return false;
+    }
+    break;
+  }
+  default:
+    return false;
+  }
+
+  return XxHash32(decrypted.data, decrypted.size, 0) == header->checksum;
+}
 
 // OFFSET: 0x00658E90
 // FUNCTION: fn_05113
