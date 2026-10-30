@@ -2139,6 +2139,46 @@ void UIItemShopWnd2::Slot10(int x, int y, std::intptr_t value) {
 }
 
 // OFFSET: 0x00972410
+// FUNCTION: fn_13271
+void UIItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  switch (drag->source) {
+  case 4:
+    if (this->unknown_00F8 != 0) {
+      return;
+    }
+
+    if (drag->quantity == 1) {
+      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      return;
+    }
+
+    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.window_01EC->SendMsg(nullptr, 13, 3, 0, 0, 0);
+    return;
+  case 5:
+    if (this->unknown_00F8 == 0) {
+      return;
+    }
+
+    if (drag->quantity == 1 || g_windowMgr.unknown_0064 != 0) {
+      this->SendMsg(nullptr, 38, 1, 0, 0, 0);
+      return;
+    }
+
+    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.window_01EC->SendMsg(nullptr, 13, 4, 0, 0, 0);
+    return;
+  default:
+    g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+}
 
 // OFFSET: 0x009729C0
 
