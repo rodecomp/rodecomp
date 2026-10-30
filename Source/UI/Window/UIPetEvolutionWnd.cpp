@@ -20,6 +20,28 @@ UIPetEvolutionWnd::~UIPetEvolutionWnd() {
 }
 
 // OFFSET: 0x009AB170
+// FUNCTION: fn_13763
+void UIPetEvolutionWnd::Slot15(int width, int height) {
+  this->AddCloseButton(*this->m_controls, "", 0);
+
+  UIBitmapButton* okButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  okButton->SetBitmap("유저인터페이스\\btn_big_ok.bmp", 0, 0);
+  okButton->SetBitmap("유저인터페이스\\btn_big_ok_a.bmp", 1, 0);
+  okButton->SetBitmap("유저인터페이스\\btn_big_ok_b.bmp", 2, 0);
+  okButton->SetSize(okButton->BitmapWidth(), okButton->BitmapHeight());
+  okButton->Move(this->geometry.width - (okButton->BitmapWidth() * 2 + 20), this->geometry.height - okButton->BitmapHeight() - 10);
+  okButton->SetId(184);
+  this->AddChild(okButton);
+
+  UIBitmapButton* cancelButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  cancelButton->SetBitmap("유저인터페이스\\btn_big_cancel.bmp", 0, 0);
+  cancelButton->SetBitmap("유저인터페이스\\btn_big_cancel_a.bmp", 1, 0);
+  cancelButton->SetBitmap("유저인터페이스\\btn_big_cancel_b.bmp", 2, 0);
+  cancelButton->SetSize(cancelButton->BitmapWidth(), cancelButton->BitmapHeight());
+  cancelButton->Move(this->geometry.width - cancelButton->BitmapWidth() - 10, this->geometry.height - cancelButton->BitmapHeight() - 10);
+  cancelButton->SetId(185);
+  this->AddChild(cancelButton);
+}
 
 // OFFSET: 0x009AB320
 // FUNCTION: fn_13764
