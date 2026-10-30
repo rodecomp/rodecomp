@@ -456,6 +456,9 @@ public:
   void SetCapture(UIWindow* window);
   void ReleaseCapture();
   UIWindow* Capture() const;
+  void SendMsgToNamedWindow(const char* name);
+  void SetWindows189Visible(unsigned char show);
+  void ShowWindowsWithId(int id, unsigned char show);
   void NotifyHoverWindow();
   UIWindow* GetGuildWindow();
   int FindMiniPartyCell();

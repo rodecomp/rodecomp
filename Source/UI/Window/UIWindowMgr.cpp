@@ -751,3 +751,31 @@ void UIWindowMgr::UnregisterNamedWindow(std::string name) {
     this->namedWindows.erase(entry);
   }
 }
+
+// OFFSET: 0x00AAD8E0
+// FUNCTION: fn_17285
+void UIWindowMgr::SendMsgToNamedWindow(const char* name) {
+  if (this->namedWindows.find(name) != this->namedWindows.end()) {
+    this->namedWindows[name]->SendMsg(nullptr, 48, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00AAA280
+// FUNCTION: fn_17267
+void UIWindowMgr::SetWindows189Visible(unsigned char show) {
+  for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+    if ((*it)->geometry.id == 189) {
+      (*it)->Show(show);
+    }
+  }
+}
+
+// OFFSET: 0x00AAA2D0
+// FUNCTION: fn_17268
+void UIWindowMgr::ShowWindowsWithId(int id, unsigned char show) {
+  for (UIWindow* window : this->rendered) {
+    if (id == window->geometry.id) {
+      window->Show(show);
+    }
+  }
+}
