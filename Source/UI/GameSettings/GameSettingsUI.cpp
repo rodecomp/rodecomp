@@ -692,6 +692,18 @@ void CUIPage::Slot16() {
 }
 
 // OFFSET: 0x00A3F360
+// FUNCTION: fn_15942
+void CUIGroupSound::SetBgmEnabled(bool enabled) {
+  const unsigned char previous = g_serviceOptions.Get(7);
+  const bool muted = !enabled;
+  this->m_bgmSlider->SetTransparent(muted);
+  this->m_bgmSlider->dragging = muted;
+  this->m_bgmSlider->Invalidate();
+  g_serviceOptions.Set(7, enabled);
+  if (previous != enabled) {
+    g_modeMgr.gameMode->SendMsg(0x5A, 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00A3F3D0
 
