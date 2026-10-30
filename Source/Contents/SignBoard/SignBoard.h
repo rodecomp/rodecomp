@@ -6,6 +6,7 @@
 
 #include <cstddef>
 #include <string>
+#include <vector>
 
 class UIStaticText;
 struct UIButtonContext;
@@ -65,8 +66,29 @@ public:
   /* 0144 */ int unknown_0144;
 };
 
+struct SignBoardInfo {
+  /* 0000 */ int column;
+  /* 0004 */ int row;
+  /* 0008 */ int offset;
+  /* 000C */ const char* map;
+  /* 0010 */ int type;
+  /* 0014 */ const char* unknown_0014;
+  /* 0018 */ const char* image;
+  /* 001C */ const char* unknown_001C;
+};
+
+class CSignBoardMgr {
+public:
+  void LoadList();
+
+  /* 0000 */ bool unknown_0000;
+  /* 0004 */ std::vector<SignBoardInfo> m_entries;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CIcon) == 0x138);
+static_assert(sizeof(SignBoardInfo) == 0x20);
+static_assert(sizeof(CSignBoardMgr) == 0x10);
 static_assert(offsetof(C3DCooRendering, window) == 0x140);
 static_assert(sizeof(C3DCooRendering) == 0x148);
 #endif

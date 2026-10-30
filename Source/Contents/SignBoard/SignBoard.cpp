@@ -6,6 +6,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/TextureNames.h"
+#include "Script/LuaScript.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -14,6 +15,50 @@
 #include <new>
 #include <windows.h>
 #include <timeapi.h>
+
+// OFFSET: 0x00820BD0
+// FUNCTION: fn_10248
+void CSignBoardMgr::LoadList() {
+  SignBoardInfo defaults;
+  g_luaScript->Call(
+    "GetSignBoardListTable", "d>sddddsss", 1, &defaults.map, &defaults.column, &defaults.row, &defaults.offset, &defaults.type, &defaults.image,
+    &defaults.unknown_0014, &defaults.unknown_001C
+  );
+
+  int count = 0;
+  g_luaScript->Call("GetTableSizeForC", "s>d", "SignBoardList", &count);
+  for (int index = 2; index < count + 1; ++index) {
+    SignBoardInfo info;
+    g_luaScript->Call(
+      "GetSignBoardListTable", "d>sddddsss", index, &info.map, &info.column, &info.row, &info.offset, &info.type, &info.image, &info.unknown_0014,
+      &info.unknown_001C
+    );
+
+    switch (info.type) {
+    case 2:
+      info.type = 2;
+      break;
+    case 3:
+      info.type = 3;
+      if (info.unknown_0014 == nullptr) {
+        info.unknown_0014 = defaults.unknown_0014;
+      }
+      if (info.unknown_001C == nullptr) {
+        info.unknown_001C = defaults.unknown_001C;
+      }
+      break;
+    default:
+      info.type = 1;
+      break;
+    }
+
+    if (info.image == nullptr) {
+      info.image = defaults.image;
+    }
+    info.offset -= 3;
+    this->m_entries.push_back(info);
+  }
+}
 
 // OFFSET: 0x008213D0
 // FUNCTION: fn_10258
@@ -202,4 +247,21 @@ void C3DCooRendering::SetBoard(const std::string& text, const std::string& color
   board->unknown_00B0 = color;
   board->ApplyColor();
   board->text->SetTextFitted(board->unknown_0080.c_str());
+}
+
+// OFFSET: 0x00822390
+// FUNCTION: fn_10277
+void C3DCooRendering::SetWindowImage(const std::string& name) {
+  if (this->window == nullptr) {
+    return;
+  }
+
+  if (this->type == 1) {
+    CBmpObjWnd* window = static_cast<CBmpObjWnd*>(this->window);
+    window->path = name;
+    const CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(window->path.c_str())));
+    window->Resize(bitmap->image.width, bitmap->image.height);
+  } else if (this->type == 3) {
+    static_cast<CSignBoardWnd*>(this->window)->iconPath = name;
+  }
 }
