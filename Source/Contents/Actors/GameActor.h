@@ -224,6 +224,7 @@ public:
   void SetUnknown02C8(int value);
   void SetUnknown0260(int value);
   void ApplyPendingUnknown0408();
+  void sub_CC40D0();
   void RenderMercenary(const float* matrix, int job);
   void ProcessBodyState();
   int GetShield();

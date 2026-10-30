@@ -179,6 +179,8 @@ class CSkillAction_DR_SHOOTING_FEATHER : public CSkillAction_DamageWereRaptorFor
 public:
   int Slot02() override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot15(int level, CGameActor* source, CGameActor* target) override;
+  void sub_5A4760(int level, CGameActor* source);
 };
 
 class CSkillAction_DR_FLICKING_TONADO : public CSkillAction_DamageWereRaptorForm {
@@ -230,6 +232,7 @@ public:
 
 class CEfstAction_NATURE_PROTECTION : public CEfstAction_BasicAction {
 public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
   void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
   EfstActionMessage Slot03() override;
   EfstActionMessage Slot04() override;
@@ -666,6 +669,15 @@ int CEfstAction_NATURE_PROTECTION::Slot05(int efstId, int argument4) {
   const std::uint8_t effectSource[] = {0xAD, 0xA2, 0xA1, 0xFE, 0x29, 0x8E, 0x60, 0xFB, 0xB1, 0xAC, 0xA1, 0xEE, 0x38, 0x9F, 0x56, 0xE4, 0xAD, 0xC3};
   thread_local EncryptedName<sizeof(effectSource), 0x8B3FEB5B8BD5C3C3ULL> effectName(effectSource);
   return CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+}
+
+// OFFSET: 0x00622B20
+// FUNCTION: fn_04512
+void CEfstAction_NATURE_PROTECTION::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    static_cast<CGameActor*>(actor)->sub_CC40D0();
+  }
+  CEfstAction_BasicAction::Slot00(efstId, value, argument3, argument4, actor, argument6);
 }
 
 // OFFSET: 0x00622B60
@@ -1137,3 +1149,10 @@ void CSkillAction_DR_SHOOTING_FEATHER::Slot11(int level, CGameActor* source, CGa
     effect->Slot17(ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values));
   }
 }
+
+// OFFSET: 0x00621830
+// FUNCTION: fn_04496
+void CSkillAction_DR_SHOOTING_FEATHER::Slot15(int level, CGameActor* source, CGameActor* target) {
+  this->sub_5A4760(level, source);
+}
+
