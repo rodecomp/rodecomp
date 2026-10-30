@@ -446,10 +446,63 @@ void CEnchantMgr::AddPerfectEnchant(uint64_t group, uint32_t optionKey, const st
 }
 
 // OFFSET: 0x00682310
+// FUNCTION: fn_05538
+void CEnchantMgr::AddPerfectUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName,
+                                           uint64_t cost, const std::map<std::string, int>& materials) {
+  int baseItemId = CItemDBToIDMgr::GetInstance()->GetItemID(baseItemName);
+  if (baseItemId != 0) {
+    int itemId = CItemDBToIDMgr::GetInstance()->GetItemID(itemName);
+    if (itemId != 0) {
+      m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].cost = cost;
+      m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].materials = ConvertMaterials(materials);
+    }
+  }
+}
 
 // OFFSET: 0x006827B0
+// FUNCTION: fn_05539
+bool CEnchantMgr::CallScript(const std::string& name) {
+  lua_State* L = m_lua.GetState();
+  if (L == nullptr) {
+    return false;
+  }
+
+  lua_getglobal(L, name.c_str());
+  if (lua_pcall(L, 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(L, -1), "CEnchantMgr", MB_OK);
+    return false;
+  }
+
+  if (lua_type(L, -2) != LUA_TBOOLEAN) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "1th argument must be boolean");
+    return false;
+  }
+
+  if (!lua_isstring(L, -1)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "2th argument must be string");
+    return false;
+  }
+
+  int success = lua_toboolean(L, -2);
+  std::string message(lua_tostring(L, -1));
+  if (!success) {
+    MessageBoxA(nullptr, lua_tostring(L, -1), "CEnchantMgr", MB_OK);
+    return false;
+  }
+  return true;
+}
 
 // OFFSET: 0x006829A0
+// FUNCTION: fn_05541
+EnchantInfo* CEnchantMgr::GetEnchantInfo(uint64_t group) {
+  auto it = m_enchants.find(group);
+  if (it == m_enchants.end()) {
+    return nullptr;
+  }
+  return &it->second;
+}
 
 // OFFSET: 0x00682A00
 
