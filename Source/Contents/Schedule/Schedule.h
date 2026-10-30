@@ -7,6 +7,8 @@
 #pragma pack(push, 4)
 class CSchedule {
 public:
+  CSchedule(const std::uint64_t& timestamp, const std::int64_t& interval, int scheduleType, int serial, int unknown);
+
   virtual void Process(const std::uint64_t& now);
   virtual ~CSchedule();
   virtual void Slot02() = 0;

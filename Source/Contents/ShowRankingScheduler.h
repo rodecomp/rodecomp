@@ -12,6 +12,8 @@ struct RankingBoardStyle {
   /* 0008 */ std::uint32_t background;
 };
 
+extern int g_schedulerSerial;
+
 std::map<int, RankingBoardStyle> RankingBoardStyles();
 
 class CShowRankingScheduler {
