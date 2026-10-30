@@ -4,6 +4,8 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
+#include "UI/Text/UIStaticTextControl.h"
+#include "Utility/Text/StringUtil.h"
 
 #include <list>
 #include <string>
@@ -178,6 +180,31 @@ void CUIEquipmentPropertiesWnd::OnClickButton9() {
 // OFFSET: 0x00A0EF20
 // FUNCTION: fn_15163
 void CUIEquipmentPropertiesWnd::OnSelectLine(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* line, const std::string& text) {
+}
+
+// OFFSET: 0x00A0EF30
+// FUNCTION: fn_15164
+void CUIEquipmentPropertiesWnd::BindLine(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* line, const std::string& text) {
+  if (text.size() == 0) {
+    return;
+  }
+
+  line->unknown_00E8->SetColor(0xFF2A00);
+  line->unknown_00EC->SetColor(0);
+  std::vector<std::string> parts = Split(text, "#");
+  if (parts.size() > 1) {
+    std::vector<std::string> title = Split(parts[0], "{~}");
+    if (title.size() > 1) {
+      line->unknown_00E8->SetColor(0x3C00FF);
+      line->unknown_00E8->SetText(title[1].c_str(), title[1].size());
+    } else {
+      line->unknown_00E8->SetText(parts[0].c_str(), parts[0].size());
+    }
+    line->unknown_00EC->SetText(parts[1].c_str(), parts[1].size());
+  } else {
+    line->unknown_00E8->SetText("", 0);
+    line->unknown_00EC->SetText(parts[0].c_str(), parts[0].size());
+  }
 }
 
 // OFFSET: 0x00A0F0F0
