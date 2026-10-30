@@ -196,6 +196,57 @@ void UIHotkeyGuideWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x0096B730
+// FUNCTION: fn_13165
+void UIHotkeyGuideWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bg_shortcuts.bmp")));
+  this->DrawBitmap(0, 0, &background->image, false);
+  this->DrawTitleBar(controls.fonts, controls.locale, false, LookupMessage(3128), 0);
+
+  for (auto key = this->m_keys.begin(); key != this->m_keys.end(); ++key) {
+    HotkeyGuideLabel& label = this->m_labels[*key];
+    if (label.key.valid == true) {
+      this->DrawKey(&label.key);
+    }
+    if (label.altKey.valid == true) {
+      this->DrawKey(&label.altKey);
+    }
+  }
+
+  for (auto label = this->m_labels.begin(); label != this->m_labels.end(); ++label) {
+    if (label->second.key.valid == true) {
+      this->DrawKeyLabel(label->second.text, &label->second.key);
+    }
+    if (label->second.altKey.valid == true) {
+      this->DrawKeyLabel(label->second.text, &label->second.altKey);
+    }
+  }
+
+  int index = 0;
+  for (auto entry = this->m_entries.begin(); entry != this->m_entries.end(); ++entry) {
+    std::string text;
+    if (entry->firstKey != 0) {
+      text = this->m_labels[entry->firstKey].text;
+      if (entry->secondKey != 0) {
+        std::string prefix = FormatOwnedString("%s + ", this->m_labels[entry->secondKey].text.c_str());
+        text = prefix + text;
+      }
+    } else {
+      text = "Non";
+    }
+    int width = this->TextWidth(controls.fonts, controls.locale, text.c_str(), 0, 0, 12, 1, 0);
+    int x = static_cast<int>((100 - width) * 0.5 + (index / 6 * 246 + 156));
+    this->DrawTextAt(controls.fonts, controls.locale, x, index % 6 * 30 + 315, text.c_str(), 0, 0, 12, 0xA55139, 1, 0);
+    ++index;
+  }
+
+  this->DrawCenteredText(4, 32, FormatOwnedString("%s / %s", LookupMessage(3129), LookupMessage(3045)).c_str(), 75, 0, 12, 0x2B2625, 0);
+  this->DrawCenteredText(207, 34, LookupMessage(3130), 159, 0, 11, 0x5B2C24, 0);
+  this->DrawCenteredText(604, 32, LookupMessage(3131), 75, 0, 12, 0x2B2625, 0);
+  this->DrawCenteredText(791, 313, FormatOwnedString("%s / %s", LookupMessage(3132), LookupMessage(3133)).c_str(), 102, 0, 12, 0x2B2625, 0);
+  this->DrawCenteredText(770, 346, LookupMessage(3139), 55, 0, 12, 0x2B2625, 0);
+  this->DrawCenteredText(859, 346, LookupMessage(3140), 55, 0, 12, 0x2B2625, 0);
+}
 
 // OFFSET: 0x0096C140
 // FUNCTION: fn_13166
