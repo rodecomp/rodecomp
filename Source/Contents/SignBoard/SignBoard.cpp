@@ -55,11 +55,33 @@ bool C3DCooRendering::OnProcess() {
 }
 
 // OFFSET: 0x00821FC0
+// FUNCTION: fn_10271
+void C3DCooRendering::Render(int argument) {
+  float x;
+  float y;
+  float reciprocalDepth;
+  g_renderer->ProjectViewport(&this->render.position.x, reinterpret_cast<const float*>(argument), &x, &y, &reciprocalDepth);
+  this->render.unknown_005C = g_renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
+  this->SetTlvert(x, y);
+}
 
 // OFFSET: 0x00822040
+// FUNCTION: fn_10272
+void CIcon::Render(int argument) {
+  this->DrawSprite(argument, false, 0.0f);
+}
 
 // OFFSET: 0x008220A0
+// FUNCTION: fn_10273
+void CIcon::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) {
+  g_modeMgr.GetGameMode();
+  this->CRenderObject::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x008220F0
+// FUNCTION: fn_10274
+void CIcon::SetRenderInfo(const float* bounds, float x, float y) {
+  this->SetTlvert(x, y);
+}
 
 // OFFSET: 0x00822390
