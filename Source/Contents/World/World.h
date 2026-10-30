@@ -17,6 +17,11 @@ class CPlayer;
 class CRenderObject;
 class GroundGeometry;
 
+struct CellFloatPos {
+  float x;
+  float z;
+};
+
 class CWorld {
 public:
   CWorld();
@@ -31,6 +36,8 @@ public:
   CItem* GetItemByAID(std::uint32_t aid) const;
   CRenderObject* GetActorByGID(int gid) const;
   void ClearActorCells();
+  void PlayerMove(const float& x, const float& z);
+  void PcApproachToPlayer(std::uint32_t accountId, const CellFloatPos& pos);
 
   /* 0004 */ CGameMode* gameMode;
   /* 0008 */ std::list<CRenderObject*> objects;

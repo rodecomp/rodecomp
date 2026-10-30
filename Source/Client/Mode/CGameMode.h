@@ -140,6 +140,7 @@ public:
   CCorpse* SpawnCorpse(float x, float y, float z, const char* action, const char* sprite, int animation, int motion, float angle);
   bool LaunchTargetEffect(int effectId, CGameActor* source, CGameActor* target, int argument);
   void ShowGuildEmblem(CGameActor* actor, int guildId, int unused);
+  void RemoveUnknown0604(int window);
   CMsgEffect* SpawnCashEmotion(int aid, int packId, int emotionId, std::uint32_t duration);
   void ApplyMapFog(int enabled);
   void SpawnGrannyCorpse(float x, float y, float z, float angle, const char* name);

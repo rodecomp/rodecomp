@@ -11,6 +11,7 @@
 #include "Contents/Actors/SpriteDrawingPolicy.h"
 #include "Render/DX9/RendererDX9.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/GroundScope.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/EffectActors.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -27,6 +28,12 @@
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
+#include "Contents/Effects/EffectTypes.h"
+#include "Contents/EquipmentResourceMgr.h"
+#include "Contents/World/WorldProximity.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
@@ -55,6 +62,9 @@
 #include <windows.h>
 #include <timeapi.h>
 
+
+// GLOBAL: gl_25002
+std::uint32_t g_proximityCompareId;
 
 struct CharacterRenderDrawItem {
   int flags;
@@ -120,6 +130,9 @@ public:
   void Render(int argument) override;
   void RenderLit(int argument, const GrannyActorLight& light);
   void RenderShadowed(int argument);
+  void SpawnCorpseActor();
+  bool OnProcess() override;
+
 
   /* 0410 */ CTexture* emblemTexture;
   /* 0414 */ C3dGrannyModelRes* model;
@@ -2416,7 +2429,7 @@ CGrannyCorpse3d::~CGrannyCorpse3d() {
 
 // OFFSET: 0x00CD8E00
 // FUNCTION: fn_21305
-void CGameMode::SpawnGrannyCorpse(float x, float y, float z, float angle, const char* name) {
+__declspec(noinline) void CGameMode::SpawnGrannyCorpse(float x, float y, float z, float angle, const char* name) {
   CGrannyCorpse3d* corpse = new CGrannyCorpse3d(name);
   corpse->position.x = x;
   corpse->position.y = y;
@@ -3376,3 +3389,256 @@ void CGameActor::SetActorJob(int job) {
   this->sub_CAA4D0();
 }
 
+__declspec(noinline) void CWorld::PlayerMove(const float& x, const float& z) {
+  const float position[2] = { x, z };
+  UpdateWorldProximityNotification(
+    reinterpret_cast<unsigned char&>(this->unknown_00F4),
+    [this, position]() {
+      return this->FindActorInCell(position, [](std::uint32_t id) {
+        return id == g_proximityCompareId;
+      });
+    },
+    GetRagConnection(),
+    g_packetLengths,
+    g_proximityCompareId
+  );
+}
+
+__declspec(noinline) void CWorld::PcApproachToPlayer(std::uint32_t accountId, const CellFloatPos& pos) {
+  if (this->player == nullptr) {
+    return;
+  }
+
+  if (this->player->Slot50() < 1) {
+    return;
+  }
+
+  bool found = false;
+  for (std::list<CRenderObject*>::iterator it = this->actors.begin(); it != this->actors.end(); ++it) {
+    CGameActor* actor = static_cast<CGameActor*>(*it);
+    if (actor == nullptr) {
+      continue;
+    }
+    if (actor->render.accountId != accountId) {
+      continue;
+    }
+    if (actor->Slot42() == static_cast<int>(g_proximityCompareId)) {
+      found = true;
+      break;
+    }
+  }
+  if (!found) {
+    return;
+  }
+
+  const float playerX = this->player->render.position.x;
+  const float playerZ = this->player->render.position.z;
+  const float cellX = pos.x;
+  const float cellZ = pos.z;
+  const int range = this->nearbyRange;
+  UpdateWorldProximityNotification(
+    reinterpret_cast<unsigned char&>(this->unknown_00F4),
+    [playerX, playerZ, cellX, cellZ, range]() {
+      const float dx = playerX - cellX;
+      const float dz = playerZ - cellZ;
+      return dx * dx + dz * dz <= static_cast<float>(range) * static_cast<float>(range);
+    },
+    GetRagConnection(),
+    g_packetLengths,
+    g_proximityCompareId
+  );
+}
+
+__declspec(noinline) void CGameMode::RemoveUnknown0604(int window) {
+  for (std::list<UIWindow*>::iterator it = this->unknown_0604.begin(); it != this->unknown_0604.end(); ++it) {
+    if (*it == reinterpret_cast<UIWindow*>(window)) {
+      this->unknown_0604.erase(it);
+      return;
+    }
+  }
+}
+
+// OFFSET: 0x00CAAFD0
+// FUNCTION: fn_21023
+void CGameActor::ClearUnknown0188() {
+  if (g_session.GetSceneUnknown004C() != 0 && this->unknown_0188 != 0) {
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveUnknown0604(this->unknown_0188);
+    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_0188));
+    this->unknown_0188 = 0;
+  }
+}
+
+// OFFSET: 0x00CAE5E0
+// FUNCTION: fn_21075
+void CGameActor::RefreshGuildEmblemWindow() {
+  if (g_session.GetSceneUnknown004C() == 0) {
+    return;
+  }
+  if (this->render.accountId == g_session.m_aid) {
+    return;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  const int emblemVersion = g_guildMgr->GetEmblemVersion(static_cast<std::uint32_t>(this->Slot50()));
+  mode->ShowGuildEmblem(this, this->Slot50(), emblemVersion);
+}
+
+// OFFSET: 0x00CC4640
+// FUNCTION: fn_21165
+void CGameActor::NotifyCellMove(const float* x, const float* z) {
+  if (this->Slot50() < 1) {
+    return;
+  }
+
+  if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1)) == 0) {
+    return;
+  }
+
+  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  if (this->render.accountId == g_session.m_aid) {
+    world->PlayerMove(*x, *z);
+  } else {
+    CellFloatPos pos;
+    pos.x = *x;
+    pos.z = *z;
+    world->PcApproachToPlayer(this->render.accountId, pos);
+  }
+}
+
+// OFFSET: 0x00CC5750
+// FUNCTION: fn_21177
+void C3dGrannyGameActor::SpawnCorpseActor() {
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->SpawnGrannyCorpse(
+    this->render.position.x, this->render.position.y, this->render.position.z, this->angle, this->name
+  );
+}
+
+// OFFSET: 0x00CC40D0
+// FUNCTION: fn_21158
+void CGameActor::sub_CC40D0() {
+  if (this->unknown_0404 == 3) {
+    return;
+  }
+
+  this->unknown_0408 = this->unknown_0404;
+  this->Slot15(0x51, 1);
+  this->render.isMotionFreezed = true;
+  this->render.unknown_0114 = 1;
+  this->unknown_0404 = 3;
+  this->Slot21(this->unknown_025C);
+  const int costume = this->Slot56();
+  const int costumeJob = this->Slot46();
+  this->render.name = g_equipmentResourceMgr->GetBodyPalName(
+    this->GetEffectiveJob(-1), this->unknown_0260, static_cast<int>(this->render.unknown_0048), costumeJob, costume, 0
+  );
+}
+
+__declspec(noinline) void CGameActor::ProcessViewCheck() {
+  if (g_updateTick > 0 && (this->render.unknown_00EC & 0xFFu) == 1) {
+    this->render.flags = 0;
+    this->render.unknown_00EC &= 0xFFFFFF00u;
+  }
+
+  if (StateFlagsClear(this->stateFlags)) {
+    this->unknown_02D8 = 0x8ca0;
+    return;
+  }
+
+  timeGetTime();
+  if (StateFlag00(this->stateFlags)) {
+    if (static_cast<unsigned int>(EffectLifetime(0x16)) <= static_cast<unsigned int>(this->unknown_02D8)) {
+      this->unknown_02D8 = 0;
+      vector3d zero;
+      zero.x = 0.0f;
+      zero.y = 0.0f;
+      zero.z = 0.0f;
+      this->LaunchEffect(0x16, zero, 0.0f);
+    }
+  }
+
+  if (StateFlag13(this->stateFlags)) {
+    if (static_cast<unsigned int>(EffectLifetime(0x21)) <= static_cast<unsigned int>(this->unknown_02D8)) {
+      this->unknown_02D8 = 0;
+      vector3d zero;
+      zero.x = 0.0f;
+      zero.y = 0.0f;
+      zero.z = 0.0f;
+      this->LaunchEffect(0x21, zero, 0.0f);
+    }
+  }
+
+  ++this->unknown_02D8;
+}
+
+__declspec(noinline) void CGameActor::ProcessActorEffects() {
+  for (auto it = this->unknown_02A8.begin(); it != this->unknown_02A8.end();) {
+    if (timeGetTime() < it->time) {
+      ++it;
+      continue;
+    }
+
+    ActorDamageMessage& message = *it;
+    this->SendMsg(
+      nullptr, message.action, message.action >> 31, reinterpret_cast<int>(&message.targetAid), 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0);
+    it = this->unknown_02A8.erase(it);
+  }
+}
+
+// OFFSET: 0x00CC59B0
+// FUNCTION: fn_21178
+bool C3dGrannyGameActor::OnProcess() {
+  this->Slot08();
+  this->ProcessViewCheck();
+  this->ProcessActorEffects();
+  this->UpdateHpGauge();
+
+  union {
+    void (CGameActor::*asVoid)();
+    bool (CGameActor::*asBool)();
+  } slot14;
+  slot14.asVoid = &CGameActor::Slot14;
+  const bool result = (this->*slot14.asBool)();
+
+  float facing = this->render.angle;
+  if (facing > 360.0f) {
+    facing = static_cast<float>(static_cast<int>(facing) % 360);
+    this->render.angle = facing;
+  }
+
+  if (this->unknown_06A8 == 1) {
+    this->angle = 180.0f - facing;
+    this->unknown_06A8 = 0;
+  } else {
+    float current = this->angle;
+    const float target = 180.0f - static_cast<float>(static_cast<int>(facing));
+    if (current > 360.0f) {
+      current = static_cast<float>(static_cast<int>(current) % 360);
+      this->angle = current;
+    }
+    if (current < 0.0f) {
+      current = current + 360.0f;
+      this->angle = current;
+    }
+
+    int delta = static_cast<int>(current - target);
+    if (delta > 360 || delta < -360) {
+      const int adjust = static_cast<int>((static_cast<long long>(delta) * 0x49f49f49LL) >> 32) - delta;
+      delta = delta + ((adjust >> 8) - (adjust >> 31)) * 360;
+    }
+
+    int absolute = delta + 360;
+    if (delta >= 0) {
+      absolute = delta;
+    }
+    if (absolute > 12) {
+      if (absolute < 180) {
+        this->angle = current - 6.0f;
+      } else {
+        this->angle = current + 6.0f;
+      }
+    }
+  }
+
+  return result;
+}

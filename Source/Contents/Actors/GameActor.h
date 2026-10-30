@@ -259,6 +259,11 @@ public:
   void ResetState();
   void UpdateGaugePositions();
   void UpdateHpGauge();
+  void ClearUnknown0188();
+  void RefreshGuildEmblemWindow();
+  void NotifyCellMove(const float* x, const float* z);
+  void ProcessViewCheck();
+  void ProcessActorEffects();
   void UpdateMotionFrame();
   void ProcessHitMessage(CGameObject* sender, const ActorHitInfo* info, int unused1, int unused2);
   int GetEffectCounter(int effectId);
