@@ -50,6 +50,7 @@ public:
   void Slot19() override;
   void Paint() override;
   void SetAlign(unsigned char align);
+  void Clear();
 
   /* 008C */ std::uint32_t m_backgroundColor;
   /* 0090 */ int m_textWidth;

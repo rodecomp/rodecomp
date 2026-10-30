@@ -22,6 +22,21 @@ void TagTextViewer::UIScroll::StorePosition(UIWindow* child) {
   position.y = y;
 }
 
+// OFFSET: 0x0083ECF0
+// FUNCTION: fn_10522
+void UITagTextViewer::Clear() {
+  for (std::map<UIWindow*, TagTextViewer::Position>::iterator it = this->m_positions.begin(); it != this->m_positions.end(); ++it) {
+    this->RemoveChild(it->first, 1);
+  }
+
+  this->m_positions.clear();
+  this->m_scrollPos = 0;
+  this->m_cursorY = 0;
+  this->m_offsetY = this->m_topMargin;
+  this->UpdateScroll();
+  this->m_texts.clear();
+}
+
 // OFFSET: 0x0083EDE0
 // FUNCTION: fn_10523
 int TagTextViewer::UIScroll::ContentHeight() {
