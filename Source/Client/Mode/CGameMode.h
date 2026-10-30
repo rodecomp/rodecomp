@@ -186,6 +186,7 @@ public:
   void IgnoreRemovedPacket3(const unsigned char* packet);
   void IgnoreRemovedPacket4(const unsigned char* packet);
   void IgnoreRemovedPacket5(const unsigned char* packet);
+  void IgnoreRemovedPacket7(const unsigned char* packet);
   void ReceiveItem1738Add(const unsigned char* packet);
   void ReceiveItem1738AddOptions(const unsigned char* packet);
   void ReceiveItem1738AddGrade(const unsigned char* packet);
@@ -194,6 +195,8 @@ public:
   void ReceiveItem1740AddGrade(const unsigned char* packet);
   void ReceiveUnknown05C4Result(const unsigned char* packet);
   void ReceiveHpSpRecovery(const unsigned char* packet, int variant);
+  void ReceiveUnknown173A5BC(const unsigned char* packet);
+  void ReceiveUnknown16FC588(const unsigned char* packet);
   void StepTowardWalkableCell(const int& targetX, const int& targetY, int& x, int& y);
   void FindWalkableCellToward(float x, float z, float originX, float originZ, int& column, int& row, int distance);
   void RemoveMiniMapPing(std::uint32_t id);

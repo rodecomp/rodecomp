@@ -535,3 +535,32 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
   }
   }
 }
+
+// GLOBAL: gl_24965
+int g_unknown173A5BC;
+
+// OFFSET: 0x00D50580
+// FUNCTION: fn_21884
+void CGameMode::IgnoreRemovedPacket7(const unsigned char*) {
+}
+
+// OFFSET: 0x00D79420
+// FUNCTION: fn_22167
+void CGameMode::ReceiveUnknown173A5BC(const unsigned char* packet) {
+  const int value = *reinterpret_cast<const int*>(packet + 2);
+  if (value > 0) {
+    g_unknown173A5BC = value;
+  }
+}
+
+// GLOBAL: gl_24967
+int g_unknown16FC588;
+
+// OFFSET: 0x00D7A0B0
+// FUNCTION: fn_22186
+void CGameMode::ReceiveUnknown16FC588(const unsigned char* packet) {
+  const signed char value = *reinterpret_cast<const signed char*>(packet + 2);
+  if (value != 1 && value != 2) {
+    g_unknown16FC588 = 0;
+  }
+}
