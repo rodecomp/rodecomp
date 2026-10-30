@@ -14,6 +14,11 @@ struct RouletteOpenPacket {
 #pragma pack(pop)
 }
 
+// OFFSET: 0x0094F1C0
+// FUNCTION: fn_12933
+void UIOpenRoulletteWnd::Slot19() {
+}
+
 // OFFSET: 0x00950B60
 // FUNCTION: fn_12946
 int UIOpenRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {

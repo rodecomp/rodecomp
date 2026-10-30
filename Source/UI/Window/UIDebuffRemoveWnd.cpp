@@ -12,6 +12,21 @@ struct DebuffRemovePacket {
 #pragma pack(pop)
 }
 
+// OFFSET: 0x0094EE60
+// FUNCTION: fn_12917
+void UIDebuffRemoveWnd::Slot25(int x, int y) {
+}
+
+// OFFSET: 0x0094EF00
+// FUNCTION: fn_12922
+void UIDebuffRemoveWnd::Slot31(int x, int y) {
+}
+
+// OFFSET: 0x0094F030
+// FUNCTION: fn_12928
+void UIDebuffRemoveWnd::Slot27(int x, int y) {
+}
+
 // OFFSET: 0x00950400
 // FUNCTION: fn_12940
 int UIDebuffRemoveWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {

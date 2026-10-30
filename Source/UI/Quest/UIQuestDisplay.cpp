@@ -19,6 +19,49 @@ struct PACKET_CZ_ACTIVE_QUEST {
 };
 #pragma pack(pop)
 
+// OFFSET: 0x0094F1D0
+// FUNCTION: fn_12934
+void UIQuestDisplay::Slot33(int x, int y) {
+  const int previous = this->m_selectedIndex;
+  int selected = -1;
+  int single = 0;
+  int none = 0;
+  int multiple = 0;
+  int index = 0;
+  const auto end = g_renewQuestMgr->m_ongoingQuests.end();
+  for (auto it = g_renewQuestMgr->m_ongoingQuests.begin(); it != end; ++it, ++index) {
+    if (single + multiple + none >= 5) {
+      break;
+    }
+
+    const int top = single * 50 + (none + multiple * 2) * 40;
+    const RenewQuestOngoingInfo& info = it->second;
+    if (info.m_active && info.m_simpleView) {
+      if (top <= y && y <= top + 10) {
+        selected = index;
+        break;
+      }
+
+      if (info.m_huntCount == 0) {
+        ++none;
+      } else if (info.m_huntCount > 1) {
+        ++multiple;
+      } else {
+        ++single;
+      }
+    }
+  }
+
+  this->m_selectedIndex = selected;
+  if (previous != this->m_selectedIndex) {
+    this->Invalidate();
+  }
+
+  if (this->m_selectedIndex != -1) {
+    this->SendMsg(nullptr, 49, 0, 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x009515D0
 // FUNCTION: fn_12953
 void UIQuestDisplay::Slot11() {

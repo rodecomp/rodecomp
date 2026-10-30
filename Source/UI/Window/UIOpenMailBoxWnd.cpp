@@ -3,6 +3,11 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 
+// OFFSET: 0x0094F020
+// FUNCTION: fn_12927
+void UIOpenMailBoxWnd::Slot53() {
+}
+
 // OFFSET: 0x00950A60
 // FUNCTION: fn_12945
 int UIOpenMailBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
