@@ -25,6 +25,12 @@ void UIQuestDisplay::Create(int width, int height) {
   this->SetSize(width, height);
 }
 
+// OFFSET: 0x0094A400
+// FUNCTION: fn_12887
+bool UIQuestDisplay::Slot08() {
+  return true;
+}
+
 // OFFSET: 0x0094F1D0
 // FUNCTION: fn_12934
 void UIQuestDisplay::Slot33(int x, int y) {
