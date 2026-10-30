@@ -1459,4 +1459,101 @@ AdventureGuideResult CAdventureGuideMgr::InsertQuestSubMenu(int id, int minLevel
   return AdventureGuideResult(true, "good");
 }
 
+// INLINED
+static bool CallGuideFunction(CLuaInstance& lua, const std::string& function) {
+  lua_State* state = lua.GetState();
+  if (!state) {
+    return false;
+  }
+
+  lua_getglobal(state, function.c_str());
+  if (lua_pcall(state, 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state, -1), "CAdventureGuideMgr", MB_OK);
+    return false;
+  }
+
+  if (lua_type(state, -2) != LUA_TBOOLEAN) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "1th argument must be boolean");
+    return false;
+  }
+
+  if (!lua_isstring(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "2th argument must be string");
+    return false;
+  }
+
+  const bool ok = lua_toboolean(state, -2) != 0;
+  const std::string message = lua_tostring(state, -1);
+  if (!ok) {
+    MessageBoxA(nullptr, message.c_str(), "CAdventureGuideMgr", MB_OK);
+    return false;
+  }
+
+  return true;
+}
+
 // OFFSET: 0x00663BD0
+// FUNCTION: fn_05239
+bool CAdventureGuideMgr::Load() {
+  m_lua.SetGlobal("InsertIntro", ::InsertIntro);
+  m_lua.SetGlobal("InsertIntroContents", ::InsertIntroContents);
+  m_lua.SetGlobal("InsertEpisode", ::InsertEpisode);
+  m_lua.SetGlobal("InsertEpisodeSubMenu", ::InsertEpisodeSubMenu);
+  m_lua.SetGlobal("InsertEpisodeContents", ::InsertEpisodeContents);
+  m_lua.SetGlobal("InsertEpisodeReward", ::InsertEpisodeReward);
+  m_lua.SetGlobal("InsertMonster", ::InsertMonster);
+  m_lua.SetGlobal("InsertMonsterContents", ::InsertMonsterContents);
+  m_lua.SetGlobal("InsertMonsterReward", ::InsertMonsterReward);
+  m_lua.SetGlobal("InsertQuest", ::InsertQuest);
+  m_lua.SetGlobal("InsertQuestSubMenu", ::InsertQuestSubMenu);
+  m_lua.SetGlobal("InsertQuestContents", ::InsertQuestContents);
+  m_lua.SetGlobal("InsertQuestReward", ::InsertQuestReward);
+  m_lua.SetGlobal("InsertDungeon", ::InsertDungeon);
+  m_lua.SetGlobal("InsertDungeonSubMenu", ::InsertDungeonSubMenu);
+  m_lua.SetGlobal("InsertDungeonContents", ::InsertDungeonContents);
+  m_lua.SetGlobal("InsertDungeonReward", ::InsertDungeonReward);
+  m_lua.SetGlobal("InsertWeapon", ::InsertWeapon);
+  m_lua.SetGlobal("InsertWeaponSubMenu", ::InsertWeaponSubMenu);
+  m_lua.SetGlobal("InsertWeaponContents", ::InsertWeaponContents);
+  m_lua.SetGlobal("InsertWeaponObtainGuide", ::InsertWeaponObtainGuide);
+  m_lua.SetGlobal("InsertArmor", ::InsertArmor);
+  m_lua.SetGlobal("InsertArmorSubMenu", ::InsertArmorSubMenu);
+  m_lua.SetGlobal("InsertArmorContents", ::InsertArmorContents);
+  m_lua.SetGlobal("InsertArmorObtainGuide", ::InsertArmorObtainGuide);
+
+  if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\AdventureGuide_F.lub")) {
+    return false;
+  }
+  if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Intro.lub")) {
+    return false;
+  }
+  if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Episode.lub")) {
+    return false;
+  }
+  if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Monster.lub")) {
+    return false;
+  }
+  if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Quest.lub")) {
+    return false;
+  }
+  if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Dungeon.lub")) {
+    return false;
+  }
+  if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Weapon.lub")) {
+    return false;
+  }
+  if (!m_lua.LoadFile("luafiles514\\Lua Files\\AdventureGuide\\Guide_Armor.lub")) {
+    return false;
+  }
+
+  if (!CallGuideFunction(m_lua, "main")) {
+    return false;
+  }
+
+  m_episodes.sort([](const AdventureGuideEpisode& lhs, const AdventureGuideEpisode& rhs) {
+    return lhs.order < rhs.order;
+  });
+  return true;
+}
