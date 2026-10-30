@@ -1,6 +1,10 @@
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/Effect.h"
+#include "Contents/Effects/EZ2STREffectEx.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/MessageTable.h"
@@ -206,6 +210,20 @@ int CSkillAction_TR_RHYTHMSHOOTING::Slot02() {
 }
 
 // OFFSET: 0x007A4970
+
+// OFFSET: 0x007A4C20
+// FUNCTION: fn_09016
+void CSkillAction_TR_RHYTHMSHOOTING::Slot15(int level, CGameActor* source, CGameActor* target) {
+  if (!source || !target) {
+    return;
+  }
+
+  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_shot"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  if (effect) {
+    const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+    effect->Slot17(angle + 180.0f);
+  }
+}
 
 // OFFSET: 0x007A4E00
 
