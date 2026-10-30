@@ -75,6 +75,10 @@ void UICheckAttendanceWnd::Slot31(int x, int y) {
 }
 
 // OFFSET: 0x007DDEF0
+// FUNCTION: fn_09646
+void UICheckAttendanceWnd_Banner::ResetCursor(int, int) {
+  this->m_context->cursor.Set(2, this->m_context->cursorTick);
+}
 
 // OFFSET: 0x007DDF00
 // FUNCTION: fn_09647
