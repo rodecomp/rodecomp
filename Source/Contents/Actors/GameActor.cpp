@@ -241,6 +241,21 @@ void CGameActor::UpdateMotionFrame() {
   this->render.curMotion = static_cast<int>(this->unknown_0240 * 0.37f * 4.0f / this->render.speed) % frames;
 }
 
+// OFFSET: 0x00CB18E0
+// FUNCTION: fn_21098
+bool CGameActor::UpdateFadeOut() {
+  if (static_cast<std::uint32_t>(this->unknown_02DC) > 0) {
+    if (timeGetTime() > static_cast<std::uint32_t>(this->unknown_02DC)) {
+      return false;
+    }
+
+    const std::uint32_t remaining = (static_cast<std::uint32_t>(this->unknown_02DC) - timeGetTime()) / 2;
+    reinterpret_cast<unsigned char*>(&this->render.color)[3] = static_cast<unsigned char>(remaining > 0xFF ? 0xFF : remaining);
+  }
+
+  return true;
+}
+
 // OFFSET: 0x00CACFE0
 // FUNCTION: fn_21050
 int __stdcall MountedJob(int job, std::uint32_t flags) {

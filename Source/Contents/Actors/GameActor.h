@@ -280,6 +280,7 @@ public:
   bool HasPendingDamage();
   bool UpdateUnknown03E8(std::int64_t value);
   int IsPlayerClass(int job);
+  bool UpdateFadeOut();
 };
 
 int ShapeShiftJob(int form, int job);
