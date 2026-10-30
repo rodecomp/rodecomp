@@ -255,3 +255,13 @@ UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows, UIF
 // OFFSET: 0x00960470
 
 // OFFSET: 0x009656A0
+// FUNCTION: fn_13140
+void UIGuildWnd::Slot11() {
+  if (this->m_saved) {
+    this->m_saved->x = this->geometry.x;
+    this->m_saved->y = this->geometry.y;
+    this->m_saved->width = this->geometry.width;
+    this->m_saved->height = this->geometry.height;
+    this->m_saved->unknown_0010 = this->Tab();
+  }
+}

@@ -7,10 +7,31 @@
 #include "UI/Buttons/UIButton.h"
 
 // OFFSET: 0x009663D0
+// FUNCTION: fn_13154
+UIHotkeyGuideWnd::UIHotkeyGuideWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+  this->m_current = 4698;
+}
 
 // OFFSET: 0x009664F0
+// FUNCTION: fn_13156
+HotkeyGuideLabel::HotkeyGuideLabel(std::string text, HotkeyGuideKey key, HotkeyGuideKey altKey) {
+  this->text = text;
+  this->key = key;
+  this->altKey = altKey;
+}
 
 // OFFSET: 0x00966600
+// FUNCTION: fn_13157
+HotkeyGuideKey::HotkeyGuideKey(int x, int y, unsigned char align, unsigned char width, unsigned char padding, unsigned char height) {
+  this->align = align;
+  this->width = width;
+  this->padding = padding;
+  this->height = height;
+  this->x = x;
+  this->y = y;
+  this->valid = true;
+}
 
 // OFFSET: 0x00966630
 // FUNCTION: fn_13158
@@ -18,6 +39,9 @@ HotkeyGuideKey::HotkeyGuideKey() : valid(false), x(0), y(0) {
 }
 
 // OFFSET: 0x009669D0
+// FUNCTION: fn_13160
+HotkeyGuideLabel::~HotkeyGuideLabel() {
+}
 
 // OFFSET: 0x0096C140
 // FUNCTION: fn_13166

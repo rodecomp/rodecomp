@@ -106,3 +106,12 @@ void UICreateGuildWnd::Slot11() {
 }
 
 // OFFSET: 0x00965660
+// FUNCTION: fn_13139
+void UIGuildHelperWnd::Slot11() {
+  if (this->m_saved) {
+    this->m_saved->x = this->geometry.x;
+    this->m_saved->y = this->geometry.y;
+    this->m_saved->width = this->geometry.width;
+    this->m_saved->height = this->geometry.height;
+  }
+}
