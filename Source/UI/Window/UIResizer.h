@@ -8,6 +8,7 @@
 
 class UIResizer : public UIWindow {
 public:
+  explicit UIResizer(UIWindowContext& windows);
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
