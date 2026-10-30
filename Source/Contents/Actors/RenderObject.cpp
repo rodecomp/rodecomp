@@ -1161,8 +1161,97 @@ int CGameActor::GetUnknown0404Job() const {
 }
 
 // OFFSET: 0x00CC1D40
+// FUNCTION: fn_21128
+void CGameActor::SetUnknown03B8(int value, int slot) {
+  this->unknown_03C8 = 0;
+  if (this->render.accountId == g_session.m_aid) {
+    g_session.SetPairValue(value, slot);
+  } else if (slot == 0) {
+    this->unknown_03B8[0] = value;
+  } else if (slot == 1) {
+    this->unknown_03B8[1] = value;
+  } else if (slot == 2) {
+    this->unknown_03B8[2] = value;
+  }
+
+  if (value > 0) {
+    this->Slot21(value);
+    this->Slot15(this->render.unknown_0070, 1);
+    return;
+  }
+
+  int job;
+  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true || this->unknown_0404 == 0) {
+    job = this->GetEffectiveJob(-1);
+  } else {
+    job = this->GetUnknown0404Job();
+  }
+
+  this->Slot32();
+  this->Slot21(job);
+  this->Slot15(this->render.unknown_0070, 1);
+}
 
 // OFFSET: 0x00CC46D0
+// FUNCTION: fn_21166
+void CGameActor::SetTetraBall(int index, int on, int value) {
+  CTetraBallEffect* ball = nullptr;
+  if (on == 1) {
+    if (value == 0 || this->unknown_0158[index] == value) {
+      return;
+    }
+
+    for (int id = 0x4EE; id <= 0x4F1; ++id) {
+      ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Find(this->render.accountId, id));
+      if (ball != nullptr) {
+        break;
+      }
+    }
+
+    const int type = value & 3;
+    int effectId;
+    if (type == 0) {
+      effectId = 0x4EE;
+    } else if (type == 1) {
+      effectId = 0x4F0;
+    } else if (type == 2) {
+      effectId = 0x4EF;
+    } else if (type == 3) {
+      effectId = 0x4F1;
+    } else {
+      this->unknown_0158[index] = value;
+      return;
+    }
+
+    if (ball != nullptr) {
+      ball->AddBall(effectId, index);
+    } else {
+      CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(
+        g_effectMgr->Spawn(this->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)
+      );
+      if (spawned != nullptr) {
+        spawned->MoveFirstTo(index);
+      }
+    }
+
+    this->unknown_0158[index] = value;
+    return;
+  }
+
+  for (int id = 0x4EE; id <= 0x4F1; ++id) {
+    ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Find(this->render.accountId, id));
+    if (ball != nullptr) {
+      if (ball->ActiveCount() > 1) {
+        ball->RemoveBall(index);
+      } else {
+        g_effectMgr->Retire(ball, 1);
+      }
+      break;
+    }
+  }
+
+  this->unknown_0158[index] = 0;
+}
 
 // OFFSET: 0x00CC40C0
 // FUNCTION: fn_21157
@@ -2149,6 +2238,44 @@ void C3dGrannyGameActor::Unused7950(int) {
 }
 
 // OFFSET: 0x00CCC890
+// FUNCTION: fn_21197
+bool CGameActor::IsSkillWithoutAction(int skillId) {
+  switch (skillId) {
+  case 0x00B:
+  case 0x02F:
+  case 0x111:
+  case 0x19D:
+  case 0x2DC:
+  case 0x8D2:
+  case 0x8EC:
+  case 0x903:
+  case 0x90D:
+  case 0x918:
+  case 0x919:
+  case 0x91C:
+  case 0x921:
+  case 0x9AC:
+  case 0x9D7:
+  case 0xA10:
+  case 0xBBE:
+  case 0xBBF:
+  case 0x13A2:
+  case 0x13B6:
+  case 0x146E:
+  case 0x1473:
+  case 0x147B:
+  case 0x147C:
+  case 0x147D:
+  case 0x1480:
+  case 0x1484:
+  case 0x14A3:
+  case 0x14A4:
+  case 0x14C4:
+    return true;
+  }
+
+  return CSkillActionMgr::GetInstance()->ActionSlot04(skillId);
+}
 
 // OFFSET: 0x00CCCAE0
 // FUNCTION: fn_21198
