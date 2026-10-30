@@ -3,15 +3,26 @@
 
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/UIIngredientInfoWnd.h"
 #include "UI/UIScrollWnd.h"
+#include "UI/Window/UIFrameWnd.h"
 
 #include <cstddef>
+#include <cstdint>
+#include <string>
 #include <vector>
 
+class UIBitmapButton;
+struct UIButtonContext;
 class UILapineUpgradeBox_IngredientInfoWnd;
+class UILapineBoxWnd;
 
 class UILapineScrollBar : public UIScrollBar {
 public:
+  // INLINED
+  explicit UILapineScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+    this->arrowLength = 0;
+  }
   void Paint() override;
 };
 
@@ -38,8 +49,56 @@ static_assert(offsetof(UILapineUpgradeBox_IngredientListWnd, maxRefine) == 0xD0)
 #endif
 
 class UILapineBox_IngredientListWnd : public UIScrollWnd {
+  friend class UILapineBoxWnd;
+
 public:
+  UILapineBox_IngredientListWnd(UIWindowContext& windows, int width, int height);
+  void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot15(int width, int height) override;
   void Paint() override;
+  unsigned char AddIngredient(std::uint32_t id);
+
+  /* 00B0 */ std::vector<ITEM_INFO> materials;
+  /* 00BC */ std::vector<UIIngredientInfoWnd*> items;
+  /* 00C8 */ int minRefine;
+  /* 00CC */ int maxRefine;
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(UILapineBox_IngredientListWnd, materials) == 0xB0);
+static_assert(offsetof(UILapineBox_IngredientListWnd, items) == 0xBC);
+static_assert(offsetof(UILapineBox_IngredientListWnd, minRefine) == 0xC8);
+static_assert(offsetof(UILapineBox_IngredientListWnd, maxRefine) == 0xCC);
+#endif
+
+class UILapineBoxWnd : public UIFrameWnd {
+  friend class UILapineBox_IngredientListWnd;
+
+public:
+  void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot15(int width, int height) override;
+  void Paint() override;
+  int AddIngredient(std::uint32_t id, int quantity);
+  // INLINED
+  UIFrameContext& FrameContext() {
+    return *this->m_frameContext;
+  }
+
+  /* 00B4 */ UIBitmapButton* cancelButton;
+  /* 00B8 */ UIBitmapButton* makeButton;
+  /* 00BC */ UIBitmapButton* moveButton;
+  /* 00C0 */ UILapineBox_IngredientListWnd* ingredientList;
+  /* 00C4 */ int unknown_00C4;
+  /* 00C8 */ std::string title;
+  /* 00E0 */ std::vector<ITEM_INFO> items;
+  /* 00EC */ int maxItems;
+  /* 00F0 */ std::string description;
+  /* 0108 */ std::string notice;
+  /* 0120 */ std::uint32_t noticeTick;
+  /* 0124 */ std::uint32_t noticeDuration;
+
+protected:
+  UIButtonContext* m_controls;
 };
 
 #endif
