@@ -68,3 +68,23 @@ void UIChangeMaterialWnd_List::Slot35(int argument) {
 }
 
 // OFFSET: 0x005E44C0
+// FUNCTION: fn_03898
+void UIChangeMaterialWnd_List::ShiftSelectedIndex(int value) {
+  int64_t target = this->m_selectedIndex - value;
+  if (target < 0) {
+    target = 0;
+  }
+
+  const int index = static_cast<int>(target);
+  if (index < this->m_scrollOffset || index >= this->m_scrollOffset + this->m_pageSize) {
+    int newOffset = this->m_previousScrollOffset;
+    if (index < newOffset || index >= newOffset + this->m_pageSize) {
+      newOffset = index > 0 ? index : 0;
+    }
+
+    this->m_scrollOffset = newOffset;
+    this->sub_5E2A70();
+  }
+
+  this->sub_5E3B80(index);
+}
