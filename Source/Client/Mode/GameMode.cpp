@@ -41,3 +41,13 @@ void CGameMode::CompleteUnknown0194(std::uint32_t id, const std::string& text) {
     this->unknown_0194.erase(it);
   }
 }
+
+// OFFSET: 0x00CED190
+// FUNCTION: fn_21363
+void CGameMode::UpdateUnknown0628(int id, bool add) {
+  if (add == true) {
+    this->unknown_0628.insert(id);
+  } else {
+    this->unknown_0628.erase(id);
+  }
+}

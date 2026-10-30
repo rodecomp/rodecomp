@@ -11,6 +11,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 class CView;
@@ -43,7 +44,9 @@ public:
   /* 0308 */ ModeDragState drag;
   /* 03C8 */ unsigned char unknown_03C8[0x208];
   /* 05D0 */ UIWindow* unknown_05D0;
-  /* 05D4 */ unsigned char unknown_05D4[0x9C];
+  /* 05D4 */ unsigned char unknown_05D4[0x54];
+  /* 0628 */ std::unordered_set<int> unknown_0628;
+  /* 0648 */ unsigned char unknown_0648[0x28];
 
   std::string MapName();
   void WorldCell(float x, float z, int& column, int& row) const;
@@ -113,6 +116,7 @@ public:
   void ReceiveEnchantSimulation(const unsigned char* packet);
   void ReceivePackageSimulation(const unsigned char* packet);
   void ReceiveWindow154Result(std::int16_t value);
+  void UpdateUnknown0628(int id, bool add);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -127,6 +131,7 @@ static_assert(offsetof(CGameMode, nameCard) == 0x160);
 static_assert(offsetof(CGameMode, unknown_0294) == 0x294);
 static_assert(offsetof(CGameMode, drag) == 0x308);
 static_assert(offsetof(CGameMode, unknown_05D0) == 0x5D0);
+static_assert(offsetof(CGameMode, unknown_0628) == 0x628);
 static_assert(sizeof(CGameMode) == 0x670);
 #endif
 
