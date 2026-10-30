@@ -14,6 +14,7 @@ template <>
 CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::s_instance = nullptr;
 
 // OFFSET: 0x005A1B70
+// FUNCTION: fn_03077
 EffectResourceSwitcher::EffectResourceSwitcher() : CEffect(-1), active(0), effect(nullptr), spawnPosition{0.0f, 0.0f, 0.0f} {
 }
 

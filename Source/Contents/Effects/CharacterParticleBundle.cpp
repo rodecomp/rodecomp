@@ -53,14 +53,17 @@ namespace {
 }
 
 // OFFSET: 0x005A2E50
+// FUNCTION: fn_03122
 CharacterParticleBundle::CharacterParticleBundle() : CEffect(-1), startTime(0), unknown_00D8(0), particles() {
 }
 
 // OFFSET: 0x005A31F0
+// FUNCTION: fn_03126
 CharacterParticleBundle::~CharacterParticleBundle() {
 }
 
 // OFFSET: 0x005A3360
+// FUNCTION: fn_03129
 void CChopChopClawMarks::Slot36(CEZ2STRParticle* particle) {
   if (particle) {
     const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
@@ -78,6 +81,7 @@ void CChopChopClawMarks::Slot36(CEZ2STRParticle* particle) {
 }
 
 // OFFSET: 0x005A3A10
+// FUNCTION: fn_03134
 const std::vector<RadialGridPoint>& CChopChopClawMarks::GetRing(int radius) {
   const auto found = g_clawMarkRings.find(radius);
   if (found != g_clawMarkRings.end()) {
@@ -101,6 +105,7 @@ const std::vector<RadialGridPoint>& CChopChopClawMarks::GetRing(int radius) {
 }
 
 // OFFSET: 0x005A3C70
+// FUNCTION: fn_03135
 void CChopChopClawMarks::Slot35() {
   const int id = CEZ2STREffectMgr::GetInstance()->EffectId([] {
     const std::uint8_t bytes[] = {0xC2, 0x55, 0xF0, 0xA7, 0x3C, 0xEC, 0x4F, 0x36, 0xD1, 0x3D};
@@ -114,6 +119,7 @@ void CChopChopClawMarks::Slot35() {
 }
 
 // OFFSET: 0x005A3E50
+// FUNCTION: fn_03137
 void CharacterParticleBundle::Slot01() {
   this->unknown_00D8 = 0;
   this->startTime = std::chrono::steady_clock::now().time_since_epoch().count();
@@ -121,6 +127,7 @@ void CharacterParticleBundle::Slot01() {
 }
 
 // OFFSET: 0x005A3E90
+// FUNCTION: fn_03138
 bool CChopChopClawMarks::Slot06() {
   if (!this->ActorExists()) {
     return false;
@@ -131,6 +138,7 @@ bool CChopChopClawMarks::Slot06() {
 }
 
 // OFFSET: 0x005A4000
+// FUNCTION: fn_03140
 void CharacterParticleBundle::Slot37(CEZ2STRParticle* particle) {
   if (particle) {
     particle->Process(0.0f, 0.0f, 0.0f);
@@ -146,6 +154,7 @@ void CharacterParticleBundle::Slot04() {
 }
 
 // OFFSET: 0x005A4060
+// FUNCTION: fn_03142
 void CharacterParticleBundle::Slot38(CEZ2STRParticle* particle) {
   if (particle) {
     particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
