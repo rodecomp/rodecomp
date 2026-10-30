@@ -664,6 +664,25 @@ void CEfstAction_BasicAction::Slot02(int efstId, int value, int argument3, int a
 }
 
 // OFFSET: 0x005A6510
+// FUNCTION: fn_03185
+void CEfstAction_AnimalForm::ResetAnimalForm(CRenderObject* actor) {
+  if (!actor) {
+    return;
+  }
+
+  CGameActor* gameActor = static_cast<CGameActor*>(actor);
+  if (g_session.m_aid == actor->render.accountId) {
+    g_session.SetUnknown8134(0);
+  }
+  gameActor->SetUnknown0404(0);
+  gameActor->Slot21(gameActor->GetUnknown0404Job());
+  g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0xC5, 0x62, 0x23, 0xB8, 0x59, 0x89, 0x2B};
+    thread_local EncryptedName<sizeof(bytes), 0x812BE72BCD5707B7ULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  gameActor->Slot32();
+}
 
 // OFFSET: 0x005A6790
 // FUNCTION: fn_03187
