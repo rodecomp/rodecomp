@@ -59,6 +59,7 @@ public:
 
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot19() override;
+  virtual void Slot53();
 
   void Conclude();
   void SubmitZeny();

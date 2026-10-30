@@ -28,6 +28,32 @@ template void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::SetImage
                                                                                     const std::string&);
 template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::UpdateScrollBar();
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Paint();
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot35(int value);
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int position);
+
+// OFFSET: 0x00A0F840
+
+// OFFSET: 0x00A0FA00
+
+// OFFSET: 0x00A100B0
+// FUNCTION: fn_15188
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::ClearItems() {
+  for (ExchangeUI::CUIItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x00A10140
+
+// OFFSET: 0x00A101E0
 
 // OFFSET: 0x00A15150
 // FUNCTION: fn_15193
