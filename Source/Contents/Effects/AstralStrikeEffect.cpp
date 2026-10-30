@@ -89,6 +89,12 @@ void CAstralStrikeEffect::Close() {
   this->strikes.clear();
 }
 
+// OFFSET: 0x006F54A0
+// FUNCTION: fn_06833
+void CAstralStrikeEffect::Slot01() {
+  this->Init();
+}
+
 // OFFSET: 0x006F54B0
 // FUNCTION: fn_06834
 bool CAstralStrikeEffect::Slot06() {

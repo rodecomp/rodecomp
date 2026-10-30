@@ -12,6 +12,7 @@ class CAstralStrikeEffect : public CEffect {
 public:
   CAstralStrikeEffect();
 
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   void Close() override;
