@@ -13,6 +13,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIMileageWnd.h"
 #include "Network/TextEncoding.h"
+#include "Utility/Text/StringUtil.h"
 #include "Contents/World/World.h"
 
 #include <algorithm>
@@ -53,9 +54,11 @@ static_assert(offsetof(SessionItemLists, items_1730) == 0x1730);
 static_assert(offsetof(SessionItemLists, items_1780) == 0x1780);
 #endif
 
-struct EquipmentProperty {
-  virtual ~EquipmentProperty() = default;
-};
+namespace EquipmentProperties {
+  class CEquipmentProperties;
+}
+
+using EquipmentProperty = EquipmentProperties::CEquipmentProperties;
 
 struct EquipmentValueA {
   /* 0000 */ int value;
@@ -78,7 +81,8 @@ struct EquipmentEntryB {
 };
 
 struct EquipmentPropertyDefinition {
-  /* 0000 */ unsigned char unknown_0000[8];
+  /* 0000 */ unsigned int group;
+  /* 0004 */ unsigned int id;
   /* 0008 */ std::string unknown_0008;
   /* 0020 */ std::vector<std::string> unknown_0020;
   /* 002C */ int unknown_002C;
@@ -100,15 +104,18 @@ struct EquipmentPropertyGroup {
 };
 
 struct EquipmentPropertyStore {
-  /* 0000 */ std::map<int, std::map<int, EquipmentProperty*>> properties;
+  /* 0000 */ std::map<unsigned int, std::map<unsigned int, EquipmentProperty*>> properties;
   /* 0008 */ std::unordered_map<std::string, std::string> names;
 
   EquipmentPropertyStore();
   ~EquipmentPropertyStore();
   void Clear();
-  std::map<int, std::map<int, EquipmentProperty*>>& GetProperties();
+  std::map<unsigned int, std::map<unsigned int, EquipmentProperty*>>& GetProperties();
   int GetCount();
   std::unordered_map<std::string, std::string>& GetNames();
+  EquipmentPropertyStore& operator+=(EquipmentPropertyStore& other);
+  EquipmentPropertyStore& operator+=(EquipmentProperty* property);
+  void RemoveDuplicateNames();
 };
 
 struct EquipmentPropertyMaps {
@@ -125,6 +132,7 @@ namespace EquipmentProperties {
     virtual ~CEquipmentProperties();
     virtual CEquipmentProperties* Accumulate(CEquipmentProperties* other);
     virtual CEquipmentProperties* Clone();
+    virtual std::string Describe(bool detailed, bool negative);
 
     /* 0004 */ EquipmentPropertyDefinition* m_definition;
     /* 0008 */ std::set<unsigned int> m_keys;
@@ -282,14 +290,22 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
 }
 
 namespace EquipmentProperties {
+  class CEquipment;
   class CEquipmentWearable;
   class CEquipmentExpansion;
   class CEquipmentCombiitem;
 
+  struct CEquipmentValueHash {
+    std::size_t operator()(int key) const {
+      return key;
+    }
+  };
+
   class CEquipmentPropertiesMgr {
   public:
     /* 0004 */ CLuaInstance script;
-    /* 000C */ std::uint16_t unknown_000C;
+    /* 000C */ bool unknown_000C;
+    /* 000D */ bool m_dirty = false;
     /* 0010 */ int unknown_0010;
     /* 0014 */ int unknown_0014;
     /* 0018 */ EquipmentPropertyStore* store;
@@ -297,20 +313,20 @@ namespace EquipmentProperties {
     /* 0020 */ UIWindow* unknown_0020;
     /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
     /* 0044 */ std::unordered_map<int, CEquipmentExpansion*> properties2;
-    /* 0064 */ std::unordered_map<int, CEquipmentCombiitem*> properties3;
-    /* 0084 */ std::set<int> unknown_0084;
+    /* 0064 */ std::unordered_map<unsigned int, CEquipmentCombiitem*> properties3;
+    /* 0084 */ std::multiset<unsigned long> unknown_0084;
     /* 008C */ std::map<int, EquipmentPropertyGroup> unknown_008C;
     /* 0094 */ std::unordered_map<int, EquipmentPropertyMaps> unknown_0094;
     /* 00B4 */ std::unordered_map<int, EquipmentValueA> unknown_00B4;
-    /* 00D4 */ std::unordered_map<int, std::pair<int, int>> unknown_00D4;
-    /* 00F4 */ std::unordered_map<int, std::pair<int, int>> unknown_00F4;
+    /* 00D4 */ std::unordered_map<unsigned int, std::list<unsigned int>> m_itemCombinations;
+    /* 00F4 */ std::unordered_map<unsigned int, std::list<unsigned int>> m_combinationItems;
     /* 0114 */ std::unordered_map<int, std::pair<int, int>> unknown_0114;
     /* 0134 */ std::unordered_map<int, EquipmentValueA> unknown_0134;
-    /* 0154 */ std::unordered_map<int, std::array<int, 3>> unknown_0154;
+    /* 0154 */ std::unordered_map<std::uint64_t, EquipmentPropertyDefinition*> m_definitionsByName;
     /* 0174 */ std::unordered_map<int, EquipmentValueB> unknown_0174;
     /* 0194 */ std::set<std::uint64_t> unknown_0194;
     /* 019C */ std::unordered_map<int, EquipmentValueC> unknown_019C;
-    /* 01BC */ std::unordered_map<int, std::unordered_map<int, EquipmentEntryA>> unknown_01BC;
+    /* 01BC */ std::unordered_map<int, std::unordered_map<int, std::unordered_map<unsigned int, float>>, CEquipmentValueHash> unknown_01BC;
     /* 01DC */ std::unordered_map<int, std::unordered_map<int, EquipmentEntryB>> unknown_01DC;
 
     static CEquipmentPropertiesMgr* GetInstance();
@@ -328,16 +344,22 @@ namespace EquipmentProperties {
     std::pair<int, int>* FindUnknown0114(const int& key);
     std::unordered_map<int, EquipmentValueC>& GetUnknown019C();
     bool HasUnknown0194(const std::uint64_t& key);
+    EquipmentPropertyDefinition* FindDefinition(const std::uint64_t& key);
+    int GetUnknown01BC(const int& first, const int& second, const unsigned int& third);
+    void SetCurrentEquipment(CEquipment* equipment);
+    void RefreshPretend();
+    void Rebuild();
+    void GetDescriptions(const int& group, std::list<std::string>& lines);
+    void ApplyProperty(const char* name, lua_State* state, const int& count, const int& valuePosition, const int& indexPosition, const int& keyPosition);
+    void EquipItem(const int& itemId, bool notify);
+    void UnequipItem(const int& itemId, bool notify);
+    void AddExpansion(const int& kind, const int& itemId, bool notify);
+    void RemoveExpansion(const int& kind, const int& itemId);
+    void RefreshExpansion(const int& kind, const int& itemId);
   };
 }
 
 namespace EquipmentProperties {
-  struct CEquipmentValueHash {
-    std::size_t operator()(int key) const {
-      return key;
-    }
-  };
-
   struct CEquipmentInfo {
     /* 0000 */ int unknown_0000;
     /* 0004 */ std::unordered_map<int, int, CEquipmentValueHash> values;
@@ -362,6 +384,8 @@ namespace EquipmentProperties {
     EquipmentPropertyStore& GetProperties();
     bool IsPretend();
     void CallOnStartEquip(lua_State* state);
+    void NotifyProperties(const COLORREF& color, bool negative, std::string_view suffix);
+    void AddProperty(const std::string& name, const char* op, const int& index, const int& value, const int& key);
   };
 }
 
@@ -371,6 +395,7 @@ namespace EquipmentProperties {
     /* 0038 */ int unknown_0038;
     /* 003C */ CEquipment* m_owner;
 
+    void Load(bool force) override;
     int GetType() override;
 
     CEquipment* GetOwner();
@@ -384,6 +409,7 @@ namespace EquipmentProperties {
     /* 0044 */ std::vector<CEquipmentAttachable> m_attachables;
     /* 0050 */ std::list<CEquipment*> m_children;
 
+    void Clear() override;
     int GetType() override;
 
     std::vector<CEquipmentAttachable>& GetAttachables();
@@ -395,6 +421,8 @@ namespace EquipmentProperties {
     /* 0038 */ int m_kind;
 
     CEquipmentExpansion(const int& id, const int& kind);
+    void Load(bool force) override;
+    void Clear() override;
     int GetType() override;
 
     std::string_view GetSuffix();
@@ -403,6 +431,8 @@ namespace EquipmentProperties {
   class CEquipmentCombiitem : public CEquipment {
   public:
     explicit CEquipmentCombiitem(const int& id);
+    void Load(bool force) override;
+    void Clear() override;
     int GetType() override;
   };
 }
@@ -424,6 +454,12 @@ int g_resetMessengerRandomStats = 1;
 // GLOBAL: gl_24724
 EquipmentProperties::CEquipmentPropertiesMgr* g_equipmentPropertiesMgr;
 
+// GLOBAL: gl_24770
+const COLORREF g_equipmentClearColor = RGB(255, 0, 0);
+
+// GLOBAL: gl_24925
+const COLORREF g_equipmentApplyColor = RGB(0, 255, 200);
+
 // OFFSET: 0x0068A340
 // FUNCTION: fn_05603
 EquipmentPropertyStore::EquipmentPropertyStore() = default;
@@ -432,7 +468,7 @@ EquipmentPropertyStore::EquipmentPropertyStore() = default;
 // FUNCTION: fn_05771
 void EquipmentPropertyStore::Clear() {
   for (auto& group : this->properties) {
-    for (auto& property : group.second) {
+    for (const auto& property : std::as_const(group.second)) {
       delete property.second;
     }
   }
@@ -448,7 +484,7 @@ EquipmentPropertyStore::~EquipmentPropertyStore() {
 
 // OFFSET: 0x00699040
 // FUNCTION: fn_05775
-std::map<int, std::map<int, EquipmentProperty*>>& EquipmentPropertyStore::GetProperties() {
+std::map<unsigned int, std::map<unsigned int, EquipmentProperty*>>& EquipmentPropertyStore::GetProperties() {
   return this->properties;
 }
 
@@ -643,6 +679,47 @@ EquipmentProperties::CEquipmentPropertiesMgr* EquipmentProperties::CEquipmentPro
   return g_equipmentPropertiesMgr;
 }
 
+// OFFSET: 0x0068BAD0
+void EquipmentProperties::CEquipment::AddProperty(const std::string& name, const char* op, const int& index, const int& value, const int& key) {
+  unsigned int hash = 5381;
+  for (const char* character = name.c_str(); *character != '\0'; ++character) {
+    hash = hash * 33 + *character;
+  }
+  const std::uint64_t nameKey = hash;
+
+  EquipmentPropertyDefinition* definition = CEquipmentPropertiesMgr::GetInstance()->FindDefinition(nameKey);
+  if (definition == nullptr) {
+    CEquipmentPropertiesMgr::GetInstance()->HasUnknown0194(nameKey);
+    return;
+  }
+
+  const int sign = (definition->unknown_0020[0] == op) * 2 - 1;
+  if (value == 0x7FFFFFFF) {
+    if (index == -1 && definition->mode == 1 && definition->unknown_002C == 0) {
+      CEquipmentProperties property(definition);
+      this->m_properties += &property;
+    }
+    return;
+  }
+
+  if (index == -1) {
+    if (definition->mode == 1) {
+      CEquipmentProperties property(definition);
+      this->m_properties += &property;
+      return;
+    }
+
+    CEquipmentProperties1Dim property(definition);
+    property.SetValue(value * sign, key);
+    this->m_properties += &property;
+    return;
+  }
+
+  CEquipmentProperties2Dim property(definition);
+  property.SetValue(index, value * sign, key);
+  this->m_properties += &property;
+}
+
 // OFFSET: 0x0068BEA0
 // FUNCTION: fn_05622
 void EquipmentProperties::CEquipment::CallOnStartEquip(lua_State* state) {
@@ -656,6 +733,209 @@ void EquipmentProperties::CEquipment::CallOnStartEquip(lua_State* state) {
     std::string message = lua_tolstring(state, -1, nullptr);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF, 0, 0, 0);
     lua_settop(state, -2);
+  }
+}
+
+// OFFSET: 0x0068C170
+void EquipmentProperties::CEquipmentAttachable::Load(bool force) {
+  CLuaInstance* script = &CEquipmentPropertiesMgr::GetInstance()->GetScript();
+  if (script == nullptr) {
+    return;
+  }
+  lua_State* state = script->GetState();
+  if (state == nullptr) {
+    return;
+  }
+
+  this->m_properties.Clear();
+  CEquipmentPropertiesMgr::GetInstance()->SetCurrentEquipment(this);
+  lua_getfield(state, LUA_GLOBALSINDEX, "Item");
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    lua_pushinteger(state, this->m_id);
+    lua_gettable(state, 1);
+    if (lua_type(state, -1) == LUA_TTABLE) {
+      this->CallOnStartEquip(state);
+      lua_getfield(state, -1, "OnStartPretendEquip");
+      this->m_owner->m_pretend |= lua_type(state, -1) == LUA_TBOOLEAN;
+      lua_settop(state, -2);
+    }
+    lua_settop(state, -2);
+  }
+  lua_settop(state, -2);
+}
+
+// OFFSET: 0x0068C2B0
+void EquipmentProperties::CEquipmentCombiitem::Load(bool force) {
+  CLuaInstance* script = &CEquipmentPropertiesMgr::GetInstance()->GetScript();
+  if (script == nullptr) {
+    return;
+  }
+  lua_State* state = script->GetState();
+  if (state == nullptr) {
+    return;
+  }
+
+  this->m_properties.Clear();
+  CEquipmentPropertiesMgr::GetInstance()->SetCurrentEquipment(this);
+  lua_getfield(state, LUA_GLOBALSINDEX, "Combiitem");
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    lua_pushinteger(state, this->m_id);
+    lua_gettable(state, 1);
+    if (lua_type(state, -1) == LUA_TTABLE) {
+      this->CallOnStartEquip(state);
+      lua_getfield(state, -1, "OnStartPretendEquip");
+      this->m_pretend = lua_type(state, -1) == LUA_TBOOLEAN;
+      lua_settop(state, -2);
+    }
+    lua_settop(state, -2);
+  }
+  lua_settop(state, -2);
+
+  this->m_properties.RemoveDuplicateNames();
+  if (force == true) {
+    this->NotifyProperties(g_equipmentApplyColor, false, "(C)");
+  }
+}
+
+// OFFSET: 0x0068C420
+void EquipmentProperties::CEquipmentExpansion::Load(bool force) {
+  CLuaInstance* script = &CEquipmentPropertiesMgr::GetInstance()->GetScript();
+  if (script == nullptr) {
+    return;
+  }
+  lua_State* state = script->GetState();
+  if (state == nullptr) {
+    return;
+  }
+
+  this->m_properties.Clear();
+  CEquipmentPropertiesMgr::GetInstance()->SetCurrentEquipment(this);
+  lua_getfield(state, LUA_GLOBALSINDEX, "Item");
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    lua_pushinteger(state, this->m_id);
+    lua_gettable(state, 1);
+    if (lua_type(state, -1) == LUA_TTABLE) {
+      this->CallOnStartEquip(state);
+    }
+    lua_settop(state, -2);
+  }
+  lua_settop(state, -2);
+
+  this->m_properties.RemoveDuplicateNames();
+  if (force == true) {
+    this->NotifyProperties(g_equipmentApplyColor, false, this->GetSuffix());
+  }
+}
+
+// OFFSET: 0x0068CE20
+void EquipmentProperties::CEquipmentCombiitem::Clear() {
+  this->NotifyProperties(g_equipmentClearColor, true, "(C)");
+  this->m_properties.Clear();
+}
+
+// OFFSET: 0x0068CE50
+void EquipmentProperties::CEquipmentExpansion::Clear() {
+  this->NotifyProperties(g_equipmentClearColor, true, this->GetSuffix());
+  this->m_properties.Clear();
+}
+
+// OFFSET: 0x0068CEA0
+void EquipmentProperties::CEquipmentWearable::Clear() {
+  if (this->m_active == true) {
+    this->NotifyProperties(g_equipmentClearColor, true, "");
+  }
+  for (CEquipmentAttachable& attachable : this->m_attachables) {
+    attachable.Clear();
+  }
+  this->m_properties.Clear();
+}
+
+// OFFSET: 0x0068CF10
+void EquipmentProperties::CEquipment::NotifyProperties(const COLORREF& color, bool negative, std::string_view suffix) {
+  for (auto& group : this->m_properties.GetProperties()) {
+    for (auto& entry : group.second) {
+      std::vector<std::string> lines = Split(entry.second->Describe(true, negative), "\n");
+      for (std::string& line : lines) {
+        ReplaceAll(line, "#", " ");
+        RemoveAll(line, "{~}");
+        if (line.size() > 0) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(std::format("{0}{1}", suffix, line).c_str()), color, 0x18, 0, 0);
+        }
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00698560
+EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentPropertyStore& other) {
+  for (auto& group : other.properties) {
+    for (auto& entry : group.second) {
+      EquipmentPropertyDefinition* definition = entry.second->m_definition;
+      if (definition == nullptr) {
+        continue;
+      }
+
+      if (this->properties[definition->group].find(definition->id) == this->properties[definition->group].end()) {
+        this->properties[definition->group][definition->id] = entry.second->Clone();
+      } else {
+        this->properties[definition->group][definition->id]->Accumulate(entry.second);
+      }
+    }
+  }
+  return *this;
+}
+
+// OFFSET: 0x00698C30
+EquipmentPropertyStore& EquipmentPropertyStore::operator+=(EquipmentProperty* property) {
+  EquipmentPropertyDefinition* definition = property->m_definition;
+  if (definition == nullptr) {
+    return *this;
+  }
+
+  if (this->properties[definition->group].find(definition->id) == this->properties[definition->group].end()) {
+    this->properties[definition->group][definition->id] = property->Clone();
+  } else {
+    this->properties[definition->group][definition->id]->Accumulate(property);
+  }
+  return *this;
+}
+
+// OFFSET: 0x0069A2A0
+std::string EquipmentProperties::CEquipmentProperties::Describe(bool detailed, bool negative) {
+  std::string text;
+  if (this->m_definition == nullptr) {
+    return text;
+  }
+
+  switch (this->m_definition->unknown_0034.size()) {
+  case 0:
+    text = this->m_definition->unknown_0008;
+    break;
+  case 2:
+    text += EncodeText(g_textCodePage, std::vformat(DecodeText(g_textCodePage, this->m_definition->unknown_0008),
+                                                    std::make_wformat_args(DecodeText(g_textCodePage, this->m_definition->unknown_0034[negative]))));
+    break;
+  }
+  return text;
+}
+
+// OFFSET: 0x0069A4F0
+void EquipmentPropertyStore::RemoveDuplicateNames() {
+  std::set<std::string> names;
+  for (auto& group : this->properties) {
+    for (auto it = group.second.begin(); it != group.second.end();) {
+      EquipmentProperty* property = it->second;
+      EquipmentPropertyDefinition* definition = property->m_definition;
+      if (definition == nullptr || definition->unknown_0064.size() == 0) {
+        ++it;
+      } else if (names.find(definition->unknown_0064) == names.end()) {
+        names.insert(definition->unknown_0064);
+        ++it;
+      } else {
+        delete property;
+        it = group.second.erase(it);
+      }
+    }
   }
 }
 
@@ -1408,6 +1688,273 @@ void EquipmentProperties::CEquipmentPropertiesMgr::SetWindow(UIWindow* window) {
   this->unknown_0020 = window;
 }
 
+// OFFSET: 0x006AB520
+void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* name, lua_State* state, const int& count, const int& valuePosition,
+                                                               const int& indexPosition, const int& keyPosition) {
+  int index = -1;
+  int value = 0x7FFFFFFF;
+  int key = -1;
+  std::string text = std::format("{0}", name);
+  for (int position = 1; position <= count; ++position) {
+    const int stackIndex = position - count - 1;
+    if (!lua_isnumber(state, stackIndex)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, std::format("arg{0} is must number", position).c_str());
+      return;
+    }
+
+    const int number = static_cast<int>(lua_tonumber(state, stackIndex));
+    if (valuePosition == position) {
+      value = number;
+    } else if (indexPosition == position) {
+      index = number;
+    } else if (keyPosition == position) {
+      key = number;
+    } else {
+      text = std::format("{0} arg{1}:{2}", text, position, number);
+    }
+  }
+
+  if (this->unknown_001C != 0) {
+    reinterpret_cast<CEquipment*>(this->unknown_001C)->AddProperty(text, name, index, value, key);
+  }
+}
+
+// OFFSET: 0x006AB810
+void EquipmentProperties::CEquipmentPropertiesMgr::EquipItem(const int& itemId, bool notify) {
+  this->unknown_0084.insert(itemId);
+
+  auto combinations = this->m_itemCombinations.find(itemId);
+  if (combinations == this->m_itemCombinations.end()) {
+    return;
+  }
+
+  for (const unsigned int& combinationId : combinations->second) {
+    auto items = this->m_combinationItems.find(combinationId);
+    if (items == this->m_combinationItems.end()) {
+      continue;
+    }
+
+    bool complete = true;
+    for (const unsigned int& item : items->second) {
+      if (this->unknown_0084.count(item) == 0) {
+        complete = false;
+        break;
+      }
+    }
+    if (!complete) {
+      continue;
+    }
+
+    if (this->properties3.find(combinationId) == this->properties3.end()) {
+      this->properties3.try_emplace(combinationId, new CEquipmentCombiitem(combinationId));
+      this->properties3[combinationId]->Load(notify);
+    }
+  }
+}
+
+// OFFSET: 0x006ABF80
+void EquipmentProperties::CEquipmentPropertiesMgr::UnequipItem(const int& itemId, bool notify) {
+  this->unknown_0084.extract(itemId);
+
+  auto combinations = this->m_itemCombinations.find(itemId);
+  if (combinations == this->m_itemCombinations.end()) {
+    return;
+  }
+
+  for (const unsigned int& combinationId : combinations->second) {
+    auto items = this->m_combinationItems.find(combinationId);
+    if (items == this->m_combinationItems.end()) {
+      continue;
+    }
+
+    for (const unsigned int& item : items->second) {
+      if (this->unknown_0084.count(item) != 0) {
+        continue;
+      }
+
+      auto combination = this->properties3.find(combinationId);
+      if (combination != this->properties3.end()) {
+        if (notify == true) {
+          combination->second->Clear();
+        } else {
+          combination->second->CEquipment::Clear();
+        }
+        delete combination->second;
+        this->properties3.erase(combination);
+      }
+      break;
+    }
+  }
+}
+
+// OFFSET: 0x006AD0E0
+void EquipmentProperties::CEquipmentPropertiesMgr::GetDescriptions(const int& group, std::list<std::string>& lines) {
+  if (this->m_dirty == true) {
+    this->Rebuild();
+  }
+
+  lines.clear();
+  for (auto& entry : this->store->GetProperties()) {
+    if (group != 0 && entry.first != group) {
+      continue;
+    }
+    for (auto& property : entry.second) {
+      std::vector<std::string> parts = Split(property.second->Describe(false, false), "\n");
+      for (const std::string& part : parts) {
+        lines.push_back(part);
+      }
+    }
+  }
+}
+
+// OFFSET: 0x006AD4A0
+EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::FindDefinition(const std::uint64_t& key) {
+  auto found = this->m_definitionsByName.find(key);
+  if (found == this->m_definitionsByName.end()) {
+    return nullptr;
+  }
+  return found->second;
+}
+
+// OFFSET: 0x006AD580
+int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown01BC(const int& first, const int& second, const unsigned int& third) {
+  auto outer = this->unknown_01BC.find(first);
+  if (outer == this->unknown_01BC.end()) {
+    return 0;
+  }
+  auto middle = outer->second.find(second);
+  if (middle == outer->second.end()) {
+    return 0;
+  }
+  if (third == 0 || third > middle->second.size()) {
+    return 0;
+  }
+  auto inner = middle->second.find(third);
+  if (inner == middle->second.end()) {
+    return 0;
+  }
+  return static_cast<int>(inner->second);
+}
+
+// OFFSET: 0x006B6AF0
+void EquipmentProperties::CEquipmentPropertiesMgr::AddExpansion(const int& kind, const int& itemId, bool notify) {
+  this->m_dirty = true;
+
+  int key = itemId;
+  if (kind == 0 || kind == 1) {
+    key = kind;
+  }
+
+  auto found = this->properties2.find(key);
+  if (found != this->properties2.end()) {
+    delete found->second;
+    this->properties2.erase(found);
+  }
+
+  CEquipmentExpansion* expansion = new CEquipmentExpansion(itemId, kind);
+  CEquipment* equipment = this->properties2.insert({key, expansion}).first->second;
+  if (kind == 1) {
+    notify = g_windowMgr.LookupWindow(0x169) != nullptr;
+  }
+  equipment->Load(notify);
+  this->EquipItem(equipment->GetId(), notify);
+
+  if (this->unknown_0020 != nullptr) {
+    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006B6E10
+void EquipmentProperties::CEquipmentPropertiesMgr::RemoveExpansion(const int& kind, const int& itemId) {
+  this->m_dirty = true;
+
+  int key = itemId;
+  if (kind == 0 || kind == 1) {
+    key = kind;
+  }
+
+  auto found = this->properties2.find(key);
+  if (found != this->properties2.end()) {
+    this->UnequipItem(found->second->GetId(), true);
+    found->second->Clear();
+    delete found->second;
+    this->properties2.erase(found);
+  }
+
+  if (this->unknown_0020 != nullptr) {
+    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006B7020
+void EquipmentProperties::CEquipmentPropertiesMgr::RefreshExpansion(const int& kind, const int& itemId) {
+  int key = itemId;
+  if (kind == 0 || kind == 1) {
+    key = kind;
+  }
+
+  auto found = this->properties2.find(key);
+  if (found == this->properties2.end()) {
+    return;
+  }
+
+  this->m_dirty |= found->second->IsPretend();
+  auto combinations = this->m_itemCombinations.find(found->second->GetId());
+  if (combinations != this->m_itemCombinations.end()) {
+    for (const unsigned int& combinationId : combinations->second) {
+      if (this->properties3.find(combinationId) != this->properties3.end()) {
+        this->properties3[combinationId]->IsPretend();
+      }
+    }
+  }
+
+  if (this->unknown_0020 != nullptr) {
+    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006B7530
+void EquipmentProperties::CEquipmentPropertiesMgr::Rebuild() {
+  this->store->Clear();
+  for (auto& entry : this->properties1) {
+    if (entry.second->IsActive() == true) {
+      *this->store += entry.second->GetProperties();
+    }
+  }
+  for (auto& entry : this->properties2) {
+    *this->store += entry.second->GetProperties();
+  }
+  for (auto& entry : this->properties3) {
+    *this->store += entry.second->GetProperties();
+  }
+  this->store->RemoveDuplicateNames();
+  this->m_dirty = false;
+}
+
+// OFFSET: 0x006B75C0
+void EquipmentProperties::CEquipmentPropertiesMgr::SetCurrentEquipment(CEquipment* equipment) {
+  this->unknown_019C.clear();
+  this->unknown_001C = reinterpret_cast<int>(equipment);
+}
+
+// OFFSET: 0x006B7770
+void EquipmentProperties::CEquipmentPropertiesMgr::RefreshPretend() {
+  for (auto& entry : this->properties1) {
+    this->m_dirty |= entry.second->IsPretend();
+  }
+  for (auto& entry : this->properties2) {
+    this->m_dirty |= entry.second->IsPretend();
+  }
+  for (auto& entry : this->properties3) {
+    this->m_dirty |= entry.second->IsPretend();
+  }
+
+  if (this->unknown_0020 != nullptr) {
+    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x006BCB90
 // FUNCTION: fn_06275
 int CheckJobGroup2(lua_State* state) {
@@ -1831,6 +2378,54 @@ struct EquipLocationSource {
   virtual int GetLocation();
 };
 
+// OFFSET: 0x006BD3C0
+int GetEquipArmorLv(lua_State* state) {
+  std::vector<int> args;
+  int number = 0;
+  for (int index = -1; index < 0; ++index) {
+    if (!lua_isnumber(state, index)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      return 2;
+    }
+    args.push_back(static_cast<int>(lua_tonumber(state, index)));
+    ++number;
+  }
+
+  EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
+  EquipmentProperties::CEquipmentWearable* wearable = mgr->FindProperty1(args[0]);
+  int value = 0;
+  if (wearable != nullptr) {
+    value = wearable->GetValue(2);
+  }
+  lua_pushnumber(state, value);
+  return 1;
+}
+
+// OFFSET: 0x006BDCE0
+int GetEquipWeaponLv(lua_State* state) {
+  std::vector<int> args;
+  int number = 0;
+  for (int index = -1; index < 0; ++index) {
+    if (!lua_isnumber(state, index)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      return 2;
+    }
+    args.push_back(static_cast<int>(lua_tonumber(state, index)));
+    ++number;
+  }
+
+  EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
+  EquipmentProperties::CEquipmentWearable* wearable = mgr->FindProperty1(args[0]);
+  int value = 0;
+  if (wearable != nullptr) {
+    value = wearable->GetValue(2);
+  }
+  lua_pushnumber(state, value);
+  return 1;
+}
+
 // OFFSET: 0x006BE2F0
 // FUNCTION: fn_06282
 int GetLocation(lua_State* state) {
@@ -1860,6 +2455,33 @@ int GetMapName(lua_State* state) {
 // FUNCTION: fn_06285
 int GetPureJob(lua_State* state) {
   lua_pushnumber(state, GetFirstJob(g_session.m_job));
+  return 1;
+}
+
+// OFFSET: 0x006BEFA0
+int GetWeaponClass(lua_State* state) {
+  std::vector<int> args;
+  int number = 0;
+  for (int index = -1; index < 0; ++index) {
+    if (!lua_isnumber(state, index)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      return 2;
+    }
+    args.push_back(static_cast<int>(lua_tonumber(state, index)));
+    ++number;
+  }
+
+  EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
+  EquipmentProperties::CEquipmentWearable* wearable = mgr->FindProperty1(args[0]);
+  int value = 0;
+  if (wearable != nullptr) {
+    const int result = wearable->GetValue(1);
+    if (result != -1) {
+      value = result;
+    }
+  }
+  lua_pushnumber(state, value);
   return 1;
 }
 
