@@ -370,7 +370,38 @@ std::string ItemNaming::DisplayName(const ITEM_INFO& item, unsigned char detaile
   return result;
 }
 
+#include "Client/Input/InputCharset.h"
+#include "Client/Session.h"
+#include "Client/Application/ErrorDialog.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "File/CommonObject.h"
+#include "File/File.h"
+#include "File/ResourcePath.h"
+#include "Resource/Bitmap/BitmapResource.h"
+
+class CItemInfoMgr {
+public:
+  void Apply(std::map<int, ITEM_DESC>& values);
+};
+
+// GLOBAL: gl_24730
+CCommonObject g_tableStorage;
+
+// GLOBAL: gl_24729
+CItemInfoMgr* g_itemInfoMgr;
+
 // OFFSET: 0x005E11E0
+// FUNCTION: fn_03873
+std::string ItemDisplayName(int id) {
+  ITEM_INFO item;
+  item.SetItemId(id);
+  item.identified = 1;
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  return naming.DisplayName(item, 0);
+}
 
 // OFFSET: 0x006D69C0
 // FUNCTION: fn_06582
@@ -475,6 +506,87 @@ ItemMoveInfo& FindItemMoveInfo(int id) {
   static ItemMoveInfo missingMoveInfo{};
   const auto entry = g_itemMoveInfo.find(id);
   return entry == g_itemMoveInfo.end() ? missingMoveInfo : entry->second;
+}
+
+__declspec(noinline) bool LoadItemMoveInfoTable(std::vector<int>& values, const char* name) {
+  values.clear();
+  CFile file;
+  if (g_serverLanguage != nullptr) {
+    name = g_serverLanguage->ServiceName(name);
+  }
+
+  if (!file.Open(name, 0, true, false)) {
+    MessageBoxA(nullptr, "Can't open file", "ErrorMessage", 0);
+    return false;
+  }
+
+  const int size = static_cast<int>(file.GetSize());
+  if (values.capacity() < static_cast<size_t>(size)) {
+    values.reserve(static_cast<size_t>(size));
+  }
+
+  char* buffer = new char[static_cast<size_t>(size) + 1];
+  file.Read(buffer, static_cast<std::uint32_t>(size));
+  buffer[size] = '\0';
+  file.Close();
+
+  char* token = buffer;
+  for (int index = 0; index < size; ++index) {
+    char value = buffer[index];
+    if (value == '/' && buffer[index + 1] == '/') {
+      do {
+        if (value == '\r' || index >= size) {
+          break;
+        }
+        value = buffer[index + 1];
+        ++index;
+      } while (value != '\n');
+      token = buffer + index + 1;
+    }
+
+    switch (value) {
+    case '\t':
+    case ' ':
+      buffer[index] = '\0';
+      values.push_back(std::atoi(token));
+      token = buffer + index + 1;
+      break;
+    case '\n':
+    case '\r':
+      token = buffer + index + 1;
+      break;
+    }
+  }
+
+  delete[] buffer;
+  return true;
+}
+
+namespace {
+  class TableBytes : public ResourceBytes {
+  public:
+    CFile file;
+
+    // INLINED
+    bool Open(const char* name) override {
+      return this->file.Open(name, 0, true, false);
+    }
+
+    // INLINED
+    const void* Data() const override {
+      return this->file.GetData();
+    }
+
+    // INLINED
+    int Size() const override {
+      return static_cast<int>(this->file.GetSize());
+    }
+
+    // INLINED
+    void Close() override {
+      this->file.Close();
+    }
+  };
 }
 
 // OFFSET: 0x006D78C0
