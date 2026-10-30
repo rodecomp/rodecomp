@@ -18,6 +18,72 @@ void CMappillarEffect::Close() {
 }
 
 // OFFSET: 0x00B4BBF0
+// FUNCTION: fn_18956
+void CMappillarEffect::Slot01() {
+  for (int ring = 0; ring < 4; ++ring) {
+    for (int segment = 0; segment <= 21; ++segment) {
+      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      if (!particle) {
+        continue;
+      }
+
+      particle->SetTexture("effect\\ring_blue.tga");
+      particle->unknown_0004 = this->id;
+      particle->unknown_000C = segment;
+      particle->unknown_0010 = ring;
+      particle->unknown_0008 = 1;
+      particle->alpha = 70;
+      particle->SetColor(100, 100, 255);
+
+      float& baseAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
+      particle->unknown_0050 = 360;
+      particle->unknown_00C0 = 120.0f;
+      particle->unknown_004C = 89;
+      baseAngle = static_cast<float>(particle->unknown_0010 * 90);
+      particle->scale = static_cast<float>(particle->unknown_0010) * 0.5f + 11.0f;
+      reinterpret_cast<int*>(&particle->unknown_0054)[particle->unknown_0010] = 0;
+      particle->unknown_00E8 = particle->unknown_0010 * 30;
+
+      int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f) * particle->unknown_000C) + baseAngle) % 360;
+      if (particle->unknown_000C == 20) {
+        angle = static_cast<int>(baseAngle);
+      }
+
+      const int tilt = particle->unknown_004C;
+      const float spread = particle->unknown_00C0 * g_cosTable[tilt];
+      const float height = particle->unknown_00C0 * g_sinTable[tilt];
+      const float cosine = g_cosTable[angle];
+      const float sine = g_sinTable[angle];
+
+      vector3d points[2] = {};
+      points[0].x = particle->scale * cosine;
+      points[0].y = 0.0f;
+      points[0].z = particle->scale * sine;
+      points[1].x = points[0].x + spread * cosine;
+      points[1].y = 0.0f - height;
+      points[1].z = points[0].z + spread * sine;
+
+      if (particle->unknown_000C >= 1 && particle->unknown_000C <= 20) {
+        particle->vertices[1].x = points[1].x;
+        particle->vertices[1].y = points[1].y;
+        particle->vertices[1].z = points[1].z;
+        particle->vertices[3].x = points[0].x;
+        particle->vertices[3].y = points[0].y;
+        particle->vertices[3].z = points[0].z;
+        particle->vertices[0].x = this->lastOuter.x;
+        particle->vertices[0].y = this->lastOuter.y;
+        particle->vertices[0].z = this->lastOuter.z;
+        particle->vertices[2].x = this->lastInner.x;
+        particle->vertices[2].y = this->lastInner.y;
+        particle->vertices[2].z = this->lastInner.z;
+      }
+
+      this->lastInner = points[0];
+      this->lastOuter = points[1];
+      this->particles.push_back(particle);
+    }
+  }
+}
 
 // OFFSET: 0x00B4C0B0
 // FUNCTION: fn_18957
