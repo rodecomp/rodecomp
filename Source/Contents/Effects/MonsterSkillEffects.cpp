@@ -16,7 +16,7 @@
 #include "Render/Textures/Texture.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
-
+#include "Contents/Effects/EffectTypes.h"
 #include <windows.h>
 #include <cstdlib>
 #include <timeapi.h>
@@ -1495,3 +1495,116 @@ void CRichsCoinEffect::Close() {
   }
   this->coins.clear();
 }
+
+// OFFSET: 0x00725D60
+// FUNCTION: fn_07414
+void CSevereRainStorm::SpawnCrossRain() {
+  const int ranges[10] = {3, 3, 3, 5, 5, 5, 7, 7, 7, 9};
+  const int index = std::max(0, std::min(this->unknown_00B0 - 1, 9));
+  vector3d position = {this->position[0], this->position[1], this->position[2]};
+  const int spread = ranges[index] * 50;
+
+  const float half = static_cast<float>(spread) * 0.5f;
+  position.x = (static_cast<float>(std::max(0, rand() % (spread + 1))) - half) * 0.1f + position.x;
+  position.z = (static_cast<float>(std::max(0, rand() % (spread + 1))) - half) * 0.1f + position.z;
+  position.y -= 10.0f;
+
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+  particle->Load(std::string("IMPERIAL_GUARD\\IG_CROSS_RAIN\\new_crossrain\\new_cross_rain\\new_cross_rain.str"));
+  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+}
+
+// OFFSET: 0x00726BE0
+// FUNCTION: fn_07418
+void CSevereRainStorm::SpawnSevereRain() {
+  vector3d position = {this->position[0], this->position[1], this->position[2]};
+  position.z += 10.0f;
+  if (std::max(0, rand() % 10) >= 5) {
+    position.x = static_cast<float>(std::max(0, rand() % 251)) * 0.1f + position.x;
+  } else {
+    position.x = position.x - static_cast<float>(std::max(0, rand() % 251)) * 0.1f;
+  }
+  if (std::max(0, rand() % 10) >= 5) {
+    position.z = static_cast<float>(std::max(0, rand() % 251)) * 0.1f + position.z;
+  } else {
+    position.z = position.z - static_cast<float>(std::max(0, rand() % 251)) * 0.1f;
+  }
+
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 1));
+  if (g_serviceOptions.Get(229)) {
+    particle->Open(std::string("mineffect\\new_severerainstorm\\new_severerainstorm\\new_severerainstorm.str"));
+  } else {
+    particle->Open(std::string("new_severerainstorm\\new_severerainstorm\\new_severerainstorm.str"));
+  }
+  particle->flags = 5;
+  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+}
+
+// OFFSET: 0x00726E30
+// FUNCTION: fn_07419
+void CSevereRainStorm::SpawnTwinklingGalaxy(int index) {
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  if (particle) {
+    particle->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy_bottom\\ske_twinkling_galaxy_bottom.str"));
+    particle->unknown_00D0 = 0.2f;
+    particle->unknown_00D4 = -13.5f;
+    particle->unknown_00D8 = 0.0f;
+    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  }
+
+  particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  if (particle) {
+    particle->Load(FormatOwnedString("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy\\ske_twinkling_galaxy%02d.str", index));
+    particle->unknown_00D0 = 0.2f;
+    particle->unknown_00D4 = -13.5f;
+    particle->unknown_00D8 = 0.0f;
+    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  }
+
+  this->AddEvent(0, "effect\\SKY_EMPEROR\\ske_star_cannon.wav", this->frame + 1, 0);
+}
+
+// OFFSET: 0x00727850
+// FUNCTION: fn_07422
+void CSevereRainStorm::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+}
+
+// OFFSET: 0x007278C0
+// FUNCTION: fn_07423
+void CSevereRainStorm::Slot01() {
+  this->unknown_00D4 = 0;
+  if (this->id == 2348) {
+    this->retained = 1;
+  }
+}
+
+// OFFSET: 0x007278E0
+// FUNCTION: fn_07424
+bool CSevereRainStorm::Slot06() {
+  switch (this->id) {
+  case 1276:
+    return this->unknown_00D4 <= 240;
+  case 2026:
+    return EffectLifetime(2026) >= this->unknown_00D4;
+  case 1752:
+  case 2165:
+  case 2462:
+    return this->ActorExists();
+  case 2348:
+  case 2349:
+  case 2350:
+  case 2351:
+  case 2354:
+    if (this->ActorExists() != true && this->emitters.size() == 0) {
+      return false;
+    }
+    break;
+  }
+  return true;
+}
+
+// OFFSET: 0x00727C70

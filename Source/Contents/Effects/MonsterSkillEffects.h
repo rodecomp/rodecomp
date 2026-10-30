@@ -333,6 +333,14 @@ public:
 class CSevereRainStorm : public CEffect {
 public:
   CSevereRainStorm();
+  void Slot01() override;
+  void Slot04() override;
+  void Close() override;
+  bool Slot06() override;
+
+  void SpawnCrossRain();
+  void SpawnSevereRain();
+  void SpawnTwinklingGalaxy(int index);
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ int unknown_00D4;
