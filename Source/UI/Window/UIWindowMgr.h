@@ -17,6 +17,7 @@
 class UIWindow;
 class CWebBrowser;
 struct MessengerMember;
+struct ReplayOptions;
 
 struct WindowTextEntry {
   /* 0000 */ std::string text;
@@ -350,7 +351,25 @@ public:
   /* 050C */ std::list<UIWindow*> hiddenWindows;
   /* 0514 */ unsigned char unknown_0514[0x12];
   /* 0526 */ bool unknown_0526;
-  /* 0527 */ unsigned char unknown_0527[0x49D];
+  /* 0527 */ unsigned char unknown_0527[0x25];
+  /* 054C */ int unknown_054C;
+  /* 0550 */ unsigned char unknown_0550[0x18];
+  /* 0568 */ int unknown_0568;
+  /* 056C */ unsigned char unknown_056C[0x1C];
+  /* 0588 */ int unknown_0588;
+  /* 058C */ unsigned char unknown_058C[0x18];
+  /* 05A4 */ int unknown_05A4;
+  /* 05A8 */ unsigned char unknown_05A8[0x14];
+  /* 05BC */ int unknown_05BC;
+  /* 05C0 */ unsigned char unknown_05C0[0x10];
+  /* 05D0 */ int unknown_05D0;
+  /* 05D4 */ unsigned char unknown_05D4[0x168];
+  /* 073C */ int unknown_073C;
+  /* 0740 */ unsigned char unknown_0740[0x18];
+  /* 0758 */ int unknown_0758;
+  /* 075C */ unsigned char unknown_075C[0x20];
+  /* 077C */ int unknown_077C;
+  /* 0780 */ unsigned char unknown_0780[0x244];
   /* 09C4 */ std::map<HWND, CWebBrowser*> browsers;
   /* 09CC */ int unknown_09CC;
   /* 09D0 */ CWebBrowser* browser_09D0;
@@ -484,6 +503,13 @@ public:
   bool HasNavigationBlocker();
   bool HasPendingDialog();
   void CancelActiveDialog();
+  void CenterSurface0478();
+  std::vector<unsigned char> SaveReplaySettings();
+  std::vector<unsigned char> SaveReplayReserved();
+  void ApplyReplayOptions(const ReplayOptions& options);
+  int LoadReplaySettings(const std::vector<unsigned char>& data);
+  int LoadReplayReserved(const std::vector<unsigned char>& data);
+  void BroadcastMessage21();
 };
 
 extern UIWindowMgr g_windowMgr;

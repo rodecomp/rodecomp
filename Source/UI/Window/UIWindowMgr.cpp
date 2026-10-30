@@ -11,14 +11,14 @@
 #include "UI/Window/MiniPartyWndAreaMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
-
+#include "Render/DeviceContext/DCSurface.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
 #include <new>
 #include <timeapi.h>
-
+#include "Render/Textures/Surface.h"
 namespace {
 #pragma pack(push, 1)
 struct AddFriendPacket {
@@ -776,6 +776,174 @@ void UIWindowMgr::ShowWindowsWithId(int id, unsigned char show) {
   for (UIWindow* window : this->rendered) {
     if (id == window->geometry.id) {
       window->Show(show);
+    }
+  }
+}
+
+namespace {
+
+#pragma pack(push, 1)
+struct ReplaySettingHeader {
+  /* 0000 */ std::int16_t tag;
+  /* 0002 */ int size;
+
+  ReplaySettingHeader() : tag(0), size(0) {
+  }
+
+  ~ReplaySettingHeader() {
+    this->tag = 0;
+    this->size = 0;
+  }
+
+  void Read(const unsigned char* source) {
+    this->size = 0;
+    this->tag = 0;
+    std::memcpy(this, source, sizeof(*this));
+  }
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ReplaySettingHeader) == 6);
+
+}
+
+// OFFSET: 0x00AA80A0
+// FUNCTION: fn_17240
+void UIWindowMgr::CenterSurface0478() {
+  this->unknown_04FC = 0;
+  if (this->unknown_0478) {
+    int x = static_cast<int>(GetRenderSystemHolder()->Width() - this->unknown_047C) / 2;
+    int height = this->unknown_0480;
+    int y = static_cast<int>(GetRenderSystemHolder()->Height() - height) / 2;
+    reinterpret_cast<CSurface*>(this->unknown_0478)->Stretch(x, y, this->unknown_047C, height);
+  }
+}
+
+// OFFSET: 0x00AA8130
+// FUNCTION: fn_17242
+std::vector<unsigned char> UIWindowMgr::SaveReplaySettings() {
+  std::vector<unsigned char> data;
+  {
+    std::vector<unsigned char> chunk(6);
+    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 25000;
+    *reinterpret_cast<int*>(&chunk[2]) = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+  {
+    std::vector<unsigned char> chunk(10);
+    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 25010;
+    *reinterpret_cast<int*>(&chunk[2]) = 4;
+    *reinterpret_cast<int*>(&chunk[6]) = this->unknown_0064;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+  {
+    std::vector<unsigned char> chunk(6);
+    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 25001;
+    *reinterpret_cast<int*>(&chunk[2]) = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+  return data;
+}
+
+// OFFSET: 0x00AA8440
+// FUNCTION: fn_17243
+std::vector<unsigned char> UIWindowMgr::SaveReplayReserved() {
+  std::vector<unsigned char> data;
+  {
+    std::vector<unsigned char> chunk(6);
+    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 26000;
+    *reinterpret_cast<int*>(&chunk[2]) = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+  {
+    std::vector<unsigned char> chunk(6);
+    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 26001;
+    *reinterpret_cast<int*>(&chunk[2]) = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+  return data;
+}
+
+// OFFSET: 0x00AA8980
+// FUNCTION: fn_17245
+void UIWindowMgr::ApplyReplayOptions(const ReplayOptions& options) {
+  this->unknown_05A4 = 0;
+  this->unknown_0588 = 0;
+  this->unknown_0568 = 0;
+  this->unknown_054C = 0;
+  this->unknown_073C = 0;
+  this->unknown_077C = 0;
+  this->unknown_05BC = 0;
+  this->unknown_05D0 = 0;
+  this->unknown_0758 = options.unknown_0007;
+  this->unknown_003C = options.recordRestricted;
+}
+
+// OFFSET: 0x00AA8B20
+// FUNCTION: fn_17247
+int UIWindowMgr::LoadReplaySettings(const std::vector<unsigned char>& data) {
+  if (data.empty()) {
+    return -1;
+  }
+
+  ReplaySettingHeader header;
+  unsigned offset = 6;
+  header.Read(data.data());
+  if (header.tag != 25000) {
+    offset = static_cast<unsigned>(-1);
+  } else {
+    while (offset < data.size()) {
+      header.Read(data.data() + offset);
+      offset += 6;
+      if (header.tag == 25001) {
+        break;
+      }
+      if (header.tag == 25010) {
+        std::memcpy(&this->unknown_0064, data.data() + offset, header.size);
+      }
+      offset += header.size;
+    }
+  }
+  return static_cast<int>(offset);
+}
+
+// OFFSET: 0x00AA8C30
+// FUNCTION: fn_17248
+int UIWindowMgr::LoadReplayReserved(const std::vector<unsigned char>& data) {
+  if (data.empty()) {
+    return -1;
+  }
+
+  ReplaySettingHeader header;
+  unsigned offset = 6;
+  header.Read(data.data());
+  if (header.tag != 26000) {
+    offset = static_cast<unsigned>(-1);
+  } else {
+    while (offset < data.size()) {
+      header.Read(data.data() + offset);
+      offset += 6;
+      if (header.tag == 26001) {
+        break;
+      }
+      offset += header.size;
+    }
+  }
+  return static_cast<int>(offset);
+}
+
+// OFFSET: 0x00AA8F50
+// FUNCTION: fn_17252
+void UIWindowMgr::BroadcastMessage21() {
+  UIWindow* window = this->window_03DC;
+  if (window || (window = this->unknown_03B0) != nullptr) {
+    window->SendMsg(nullptr, 21, 0, 0, 0, 0);
+    return;
+  }
+
+  for (UIWindow* rendered : this->rendered) {
+    if (rendered->Slot02()) {
+      rendered->SendMsg(nullptr, 21, 0, 0, 0, 0);
     }
   }
 }
