@@ -306,6 +306,9 @@ public:
   void SaveSettings();
   int StateCount() const;
   int NodeCount() const;
+  void SetViewIcon(int icon);
+  bool SetViewMode(int mode);
+  void BuildGridLabels();
   bool LoadScript(LuaScript* script);
   bool BuildRoute(int startX, int startY, int destX, int destY, bool collectCells);
   bool SavedTargetText(char* out, int size);

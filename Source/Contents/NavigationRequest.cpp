@@ -5,6 +5,7 @@
 #include "Client/Session.h"
 #include "Resource/ResourceMgr.h"
 
+#include <cstdio>
 #include <cstring>
 #include <windows.h>
 #include <shlwapi.h>
@@ -120,6 +121,16 @@ int CNavigationManager::StateCount() const {
 int CNavigationManager::NodeCount() const {
   return static_cast<int>(this->nodes.size());
 }
+
+// OFFSET: 0x00B9C730
+// FUNCTION: fn_19622
+void CNavigationManager::SetViewIcon(int icon) {
+  this->viewIcon = icon;
+}
+
+// OFFSET: 0x00B9F9B0
+
+// OFFSET: 0x00B9F9E0
 
 // OFFSET: 0x00B97200
 // FUNCTION: fn_19598
