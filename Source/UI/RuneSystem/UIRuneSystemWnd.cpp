@@ -95,6 +95,25 @@ int UIRune_Decom::HitTestItem(int x, int y) {
   return -1;
 }
 
+// OFFSET: 0x00818300
+// FUNCTION: fn_10174
+void UIRune_Info::Slot15(int, int) {
+  this->m_activeWnd = new (std::nothrow) UIRuneSystem_ActiveWnd(*this->m_context);
+  this->AddChild(this->m_activeWnd);
+  this->m_activeWnd->SetSize(0xEA, 0x78);
+  this->m_activeWnd->Move(0xC5, 0x159);
+
+  this->m_activateButton = new (std::nothrow) UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->AddChild(this->m_activateButton);
+  this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_nomal.bmp", 0, 0);
+  this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_mouseon.bmp", 1, 0);
+  this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_pressed.bmp", 2, 0);
+  this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_disabled.bmp", 3, 0);
+  this->m_activateButton->SetSize(this->m_activateButton->BitmapWidth(), this->m_activateButton->BitmapHeight());
+  this->m_activateButton->Move(0xEE, this->geometry.height - 30);
+  this->m_activateButton->SetId(0x23C);
+}
+
 // OFFSET: 0x00819610
 // FUNCTION: fn_10181
 void UIRuneSetReWard::Paint() {
@@ -306,6 +325,56 @@ void UIDecomlist::Slot28(int, int) {
 }
 
 // OFFSET: 0x0081C240
+// FUNCTION: fn_10204
+void UIEquipRuneSetWnd::Slot28(int x, int y) {
+  if (x >= 11 && x <= 36 && y >= 8 && y <= 27) {
+    RuneSetData* runeSet = g_runeSystemMgr->GetCurRuneSet();
+    if (!runeSet) {
+      return;
+    }
+
+    int screenX = -15;
+    int screenY = 6;
+    this->ToScreen(screenX, screenY);
+    if (!g_modeMgr.gameMode) {
+      return;
+    }
+
+    CTagData* tag = g_runeSystemMgr->GetTag(runeSet->GetTagId());
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(tag->m_name.c_str(), screenX, screenY, 0xFFFFFF, 0, 1);
+    return;
+  }
+
+  if (x < 22 || x > this->geometry.width - 24 || y < 34 || y > this->geometry.height - 11) {
+    return;
+  }
+
+  RuneSetData* runeSet = g_runeSystemMgr->GetCurRuneSet();
+  if (!runeSet) {
+    return;
+  }
+
+  const int column = (x - 22) / 40;
+  if (x - column * 40 - 22 > 37) {
+    return;
+  }
+  if (static_cast<unsigned int>(column) >= runeSet->m_slots.size()) {
+    return;
+  }
+
+  int screenX = column * 40 + 21;
+  int screenY = 12;
+  this->ToScreen(screenX, screenY);
+  if (!g_modeMgr.gameMode) {
+    return;
+  }
+
+  RuneData* rune = runeSet->m_slots[column];
+  if (!rune) {
+    return;
+  }
+  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(rune->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
+}
 
 // OFFSET: 0x0081C3D0
 // FUNCTION: fn_10205

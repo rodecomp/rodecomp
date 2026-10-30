@@ -142,6 +142,10 @@ public:
 
 class UIRuneSystem_ActiveWnd : public UIWindow {
 public:
+  // INLINED
+  explicit UIRuneSystem_ActiveWnd(UIWindowContext& windows) : UIWindow(windows, 0), m_columns(4), m_rows(2), m_listId(-1) {
+  }
+
   void Paint() override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -192,6 +196,7 @@ public:
 
 class UIRune_Info : public UIWindow {
 public:
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
