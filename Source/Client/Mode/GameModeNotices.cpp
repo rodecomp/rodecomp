@@ -2,6 +2,7 @@
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
+#include "Contents/ClientState.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
@@ -116,6 +117,12 @@ void CGameMode::ReceiveEffectRemove(const unsigned char* data) {
   while (g_effectMgr->Find(packet->aid, packet->effectId)) {
     g_effectMgr->Retire(packet->aid, packet->effectId);
   }
+}
+
+// OFFSET: 0x00D6E930
+// FUNCTION: fn_22107
+void CGameMode::ReceiveToggle128(int enabled) {
+  sub_E489C0(enabled != 0);
 }
 
 // OFFSET: 0x00D6E950

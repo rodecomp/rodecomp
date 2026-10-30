@@ -79,6 +79,7 @@ public:
   void ReceiveEffectRemove(const unsigned char* packet);
   void ReceiveActorEffect347(const unsigned char* packet);
   void ReceiveUnknown0294Text(const unsigned char* packet);
+  void ReceiveToggle128(int enabled);
   void PlaceWindow16(unsigned int xPercent, unsigned int yPercent);
   void ReceiveUnknown7FBC(const unsigned char* packet);
   void ReceiveClanLeave(const unsigned char* packet);
