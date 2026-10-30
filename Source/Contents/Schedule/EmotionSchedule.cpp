@@ -6,6 +6,7 @@
 class UICashEmotionListWnd {
 public:
   void sub_7C7E50();
+  void RefreshSelection();
 };
 
 // GLOBAL: gl_24915
@@ -58,4 +59,23 @@ void CEmotionPurchaseUseableTimeUISchedule::Process(const std::uint64_t& now) {
 // FUNCTION: fn_04721
 CEmotionSaleExpireSchedule::CEmotionSaleExpireSchedule(const std::uint64_t& timestamp, const std::int64_t& interval, int scheduleType)
     : CSchedule(timestamp, interval, scheduleType, ++g_schedulerSerial, 6) {
+}
+
+// OFFSET: 0x00636FB0
+// FUNCTION: fn_04723
+void CEmotionSaleExpireSchedule::Process(const std::uint64_t& now) {
+  CSchedule::Process(now);
+  CashEmotionPackRefresh refresh = g_cashEmotionMgr->RefreshUnownedPacks();
+  if (refresh.changed && g_cashEmotionListWnd) {
+    g_cashEmotionListWnd->sub_7C7E50();
+    g_cashEmotionListWnd->RefreshSelection();
+  }
+  if (refresh.nextTime != 0x7FFFFFFF) {
+    int current = g_cashEmotionMgr->sub_59FC50();
+    if (current < refresh.nextTime) {
+      this->interval = (static_cast<std::int64_t>(refresh.nextTime) * 10000000i64 - static_cast<std::int64_t>(current) * 10000000i64) / 10000i64;
+      return;
+    }
+  }
+  this->active = false;
 }
