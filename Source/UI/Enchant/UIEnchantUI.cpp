@@ -325,6 +325,12 @@ CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::CUIListBox
 }
 
 // OFFSET: 0x009F6F00
+// FUNCTION: fn_14767
+template <>
+CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
 
 namespace EnchantUI {
 // OFFSET: 0x00A06BE0
