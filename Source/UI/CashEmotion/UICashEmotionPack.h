@@ -17,6 +17,7 @@ class UICashEmotionPack : public UIWindow {
 
 public:
   ~UICashEmotionPack() override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
   void Slot25(int x, int y) override;

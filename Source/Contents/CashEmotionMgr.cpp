@@ -148,6 +148,13 @@ protected:
 
 class UICashEmotionScrollBar : public UIScrollBar {
 public:
+  UICashEmotionScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+    this->m_disabled = false;
+    this->horizontalStep = 135;
+    this->verticalStep = 135;
+    this->thickness = 11;
+  }
+
   void Paint() override;
 
   void SetDisabled(bool disabled);
@@ -163,6 +170,7 @@ public:
   virtual void Slot53() = 0;
 
   void AddChild(UIWindow* child);
+  void UpdateScrollBars();
 };
 
 class UICashEmotionListChildWnd_Abstract : public UICashEmotionScrollWnd {
@@ -1357,6 +1365,39 @@ int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
   return 1;
 }
 
+// OFFSET: 0x007C3990
+// FUNCTION: fn_09343
+void UICashEmotionScrollWnd::UpdateScrollBars() {
+  if (!this->horizontalBar) {
+    this->horizontalBar = new (std::nothrow) UICashEmotionScrollBar(*this->m_context);
+    if (this->horizontalBar) {
+      this->horizontalBar->Configure(0, this->geometry.height - this->scrollBarHeight - 2, 0, this->geometry.width);
+    }
+  } else {
+    this->RemoveChild(this->horizontalBar, 0);
+  }
+
+  if (this->horizontalBar) {
+    UIWindow::AddChild(this->horizontalBar);
+  }
+
+  if (!this->scrollBar) {
+    this->scrollBar = new (std::nothrow) UICashEmotionScrollBar(*this->m_context);
+    if (this->scrollBar) {
+      this->scrollBar->Configure(this->geometry.width - this->scrollBarWidth - 2, 0, 1, this->geometry.height);
+    }
+  } else {
+    this->RemoveChild(this->scrollBar, 0);
+  }
+
+  if (this->scrollBar) {
+    UIWindow::AddChild(this->scrollBar);
+  }
+
+  this->Slot53();
+  this->Invalidate();
+}
+
 // OFFSET: 0x007C3AD0
 // FUNCTION: fn_09344
 void UICashEmotionListChildWnd_Abstract::Slot35(int delta) {
@@ -2028,6 +2069,26 @@ std::string UICashEmotionPack::GetPriceText(int packId) {
   }
 
   return std::vformat(format, std::make_format_args(price));
+}
+
+// OFFSET: 0x007CA550
+// FUNCTION: fn_09445
+void UICashEmotionPack::Slot15(int, int) {
+  auto* priceText = new (std::nothrow) UIStaticText();
+  this->unknown_0088 = priceText;
+  if (priceText) {
+    priceText->SetSize(145, 14);
+    priceText->Move(33, 14);
+    priceText->shadow = 1;
+    this->AddChild(priceText);
+  }
+
+  this->m_titleText = new UIStaticText();
+  this->m_titleText->SetSize(145, 14);
+  this->m_titleText->Move(10, 42);
+  this->m_titleText->SetColor(214, 24, 16);
+  this->m_titleText->SetFont(0, 11, 0, 0);
+  this->AddChild(this->m_titleText);
 }
 
 // OFFSET: 0x007CA690
