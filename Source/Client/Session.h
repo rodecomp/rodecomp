@@ -139,7 +139,8 @@ public:
   /* 0FBC */ std::map<unsigned, const char*> m_jobNameTableMan;
   /* 0FC4 */ unsigned char unknown_0FC4[0x20];
   /* 0FE4 */ std::list<std::uint32_t> m_pingSamples;
-  /* 0FEC */ unsigned char unknown_0FEC[0x24];
+  /* 0FEC */ std::vector<const char*> m_palJobNames;
+  /* 0FF8 */ unsigned char unknown_0FF8[0x18];
   /* 1010 */ std::uint32_t unknown_1010;
   /* 1014 */ unsigned char unknown_1014[4];
   /* 1018 */ char unknown_1018[0x24];
