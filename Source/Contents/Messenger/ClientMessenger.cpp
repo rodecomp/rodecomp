@@ -3498,3 +3498,40 @@ void sub_68DAF0() {
 // FUNCTION: fn_06015
 void sub_6A2170() {
 }
+
+// OFFSET: 0x00A91730
+// FUNCTION: fn_17164
+UIWindow* UIWindowMgr::FindItemWindow(int accountId) {
+  for (UIWindow* window : this->snapExcluded) {
+    bool matches;
+    {
+      MessengerMember member = static_cast<ItemNotificationWindow*>(window)->member;
+      matches = member.accountId == accountId;
+    }
+    if (matches) {
+      return window;
+    }
+  }
+  return nullptr;
+}
+
+// OFFSET: 0x00AA64D0
+// FUNCTION: fn_17230
+void UIWindowMgr::NotifyMemberWindows(const MessengerMember* target) {
+  if (this->window_02C8) {
+    this->window_02C8->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+  for (UIWindow* window : this->snapExcluded) {
+    bool matches;
+    {
+      MessengerMember member = static_cast<ItemNotificationWindow*>(window)->member;
+      matches = target->accountId == member.accountId;
+    }
+    if (matches) {
+      if (window) {
+        window->SendMsg(nullptr, 23, reinterpret_cast<std::intptr_t>(target), 0, 0, 0);
+      }
+      break;
+    }
+  }
+}

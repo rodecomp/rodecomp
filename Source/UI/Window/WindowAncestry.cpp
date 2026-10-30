@@ -42,3 +42,35 @@ void UIWindowMgr::ForgetWindowReferences(UIWindow* removed) {
 void UIWindowMgr::ClearWindow01B8() {
   this->window_01B8 = nullptr;
 }
+
+// OFFSET: 0x00A7AA30
+// FUNCTION: fn_16924
+void UIWindow::PropagateMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (this != sender && !this->SendMsg(sender, message, argument1, argument2, argument3, argument4)) {
+    for (UIWindow* child : this->m_children) {
+      child->PropagateMsg(sender, message, argument1, argument2, argument3, argument4);
+    }
+  }
+}
+
+// OFFSET: 0x00A81D70
+// FUNCTION: fn_16989
+void UIWindow::BroadcastMsg4() {
+  this->SendMsg(nullptr, 4, 0, 0, 0, 0);
+  for (std::list<UIWindow*>::iterator it = this->m_children.begin(); it != this->m_children.end(); ++it) {
+    if (*it) {
+      (*it)->SendMsg(nullptr, 4, 0, 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00A81DC0
+// FUNCTION: fn_16990
+void UIWindow::BroadcastMsg3() {
+  this->SendMsg(nullptr, 3, 0, 0, 0, 0);
+  for (std::list<UIWindow*>::iterator it = this->m_children.begin(); it != this->m_children.end(); ++it) {
+    if (*it) {
+      (*it)->SendMsg(nullptr, 3, 0, 0, 0, 0);
+    }
+  }
+}

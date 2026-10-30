@@ -16,6 +16,7 @@
 
 class UIWindow;
 class CWebBrowser;
+struct MessengerMember;
 
 struct WindowTextEntry {
   /* 0000 */ std::string text;
@@ -421,6 +422,7 @@ public:
   void ResetWindows();
   void Shutdown();
   void SetScreenSize(int width, int height);
+  void ArrangeMiniPartyWindows();
   static int ScaleToViewportWidth(int value);
   static int CenterOnViewportX(int x);
   static int CenterOnViewportY(int y);
@@ -456,6 +458,8 @@ public:
   void SubmitActiveDialog();
   void NotifyMode();
   void NotifyItemWindows(int accountId, int lower, int upper);
+  UIWindow* FindItemWindow(int accountId);
+  void NotifyMemberWindows(const MessengerMember* target);
   int SendMsg(int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4, std::intptr_t argument5);
   bool IsOrderFixed(int id);
   void RemoveOrder(int id);

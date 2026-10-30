@@ -117,6 +117,9 @@ public:
   void InvalidateChildren();
   bool Contains(const UIWindow* window) const;
   bool IsDescendantOf(const UIWindow* ancestor) const;
+  void BroadcastMsg4();
+  void BroadcastMsg3();
+  void PropagateMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4);
   void ToScreen(int& x, int& y) const;
   UIWindow* FindUid(std::uint32_t uid);
   // INLINED
