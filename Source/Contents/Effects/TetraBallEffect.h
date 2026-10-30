@@ -11,10 +11,14 @@ class CTetraBallEffect : public CEffect {
 public:
   CTetraBallEffect();
 
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
 
+  void AddBall(int id, int index);
+  void RemoveBall(int index);
   unsigned char ActiveCount();
   void Spread();
   void MoveFirstTo(int index);
