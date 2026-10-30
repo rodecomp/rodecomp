@@ -339,6 +339,30 @@ bool CCashEmotionAction_Play::Execute(int packId, int emotionId) {
 }
 
 // OFFSET: 0x00591F30
+// FUNCTION: fn_02846
+bool CCashEmotionAction_Register::Execute(int packId, int emotionId) {
+  if (packId < 0 || emotionId < 0) {
+    return false;
+  }
+
+  const char* name = g_cashEmotionMgr->GetEmotionName(packId, emotionId);
+  if (!name) {
+    return false;
+  }
+
+  if (auto* emotionWnd = reinterpret_cast<UIEmotionWnd*>(g_windowMgr.unknown_0380)) {
+    emotionWnd->SetMacroText(name, -1);
+    return true;
+  }
+
+  ChatSuggestions* suggestions = g_chatSuggestions;
+  if (suggestions && suggestions->input) {
+    suggestions->input->SetText(name);
+    suggestions->input->Slot39();
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00591FB0
 // FUNCTION: fn_02847
