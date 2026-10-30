@@ -1123,6 +1123,69 @@ void UIReplayRECControlWnd::UpdateRecordTime() {
 }
 
 // OFFSET: 0x008BA820
+// FUNCTION: fn_11789
+void UILoginWnd::Slot19() {
+  if (g_windowMgr.GetHoverWindow() == this->idEdit) {
+    this->idEdit->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
+    if (this->idPlaceholder == true) {
+      const std::uint8_t source[] = {0xA4, 0x31, 0x61};
+      thread_local EncryptedName<sizeof(source), 0x2D51E3B7236175EDULL> placeholder(source);
+      if (std::strcmp(placeholder.Text(), this->idEdit->Text()) == 0) {
+        this->idEdit->SetText("");
+        goto password;
+      }
+    }
+    this->idPlaceholder = false;
+  } else {
+    if (std::strcmp("", this->idEdit->Text()) == 0) {
+      this->idEdit->TextColor(RGB(156, 156, 156), 0xFFFFFFFF);
+      this->idPlaceholder = true;
+      const std::uint8_t source[] = {0x5E, 0x5F, 0x2D};
+      thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> placeholder(source);
+      this->idEdit->SetText(placeholder.Text());
+    }
+    if (this->idPlaceholder == false) {
+      this->idEdit->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
+    }
+  }
+
+password:
+  if (g_windowMgr.GetHoverWindow() == this->passwordEdit) {
+    HIMC context = ImmGetContext(hWnd);
+    DWORD conversion;
+    DWORD sentence;
+    ImmGetConversionStatus(context, &conversion, &sentence);
+    conversion &= ~(IME_CMODE_NATIVE | IME_CMODE_KATAKANA);
+    ImmSetConversionStatus(context, IME_CMODE_ALPHANUMERIC, sentence);
+    ImmReleaseContext(hWnd, context);
+    this->passwordEdit->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
+    if (this->passwordPlaceholder == true) {
+      const std::uint8_t source[] = {0x99, 0x52, 0xAA, 0x20, 0xAE, 0x96, 0x47, 0x35, 0xC9};
+      thread_local EncryptedName<sizeof(source), 0x7115D9F973F913C9ULL> placeholder(source);
+      if (std::strcmp(placeholder.Text(), this->passwordEdit->Text()) == 0) {
+        this->passwordEdit->SetText("");
+        this->passwordEdit->mask = 0;
+        return;
+      }
+    }
+    this->passwordPlaceholder = false;
+  } else {
+    if (std::strcmp("", this->passwordEdit->Text()) == 0) {
+      this->passwordPlaceholder = true;
+      this->passwordEdit->TextColor(RGB(156, 156, 156), 0xFFFFFFFF);
+      const std::uint8_t source[] = {0x33, 0xB4, 0xB2, 0x2C, 0x6C, 0x6A, 0x4F, 0x8F, 0x63};
+      thread_local EncryptedName<sizeof(source), 0xCB1D253B7FE1F563ULL> placeholder(source);
+      this->passwordEdit->SetText(placeholder.Text());
+      this->passwordEdit->mask = 0;
+    }
+    if (this->passwordPlaceholder != false) {
+      return;
+    }
+    this->passwordEdit->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
+  }
+
+  this->passwordEdit->mask = '*';
+}
 
 // OFFSET: 0x008C36F0
 // FUNCTION: fn_11830
