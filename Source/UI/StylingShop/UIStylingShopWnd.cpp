@@ -2,10 +2,13 @@
 
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session.h"
+#include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "Script/LuaScript.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowPolicy.h"
 
 // OFFSET: 0x00829B50
@@ -247,6 +250,52 @@ int UIAccessoryCusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
   return 0;
 }
 
+// OFFSET: 0x0082D100
+// FUNCTION: fn_10369
+int UIBasicStylingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  if (argument1 == 495) {
+    int count = 0;
+    g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", "HeadPalette", &count);
+
+    bool unselected = true;
+    for (int i = 0; i < count; ++i) {
+      if (sender == this->m_paletteButtons[i]) {
+        unselected = false;
+        bool coloring = true;
+        if (g_session.IsDoramJob(g_session.GetDisplayJob()) == true) {
+          g_luaScript->Call("StylingShop_GetIsColoring_by_goods", "d>b", this->m_display->unknown_008C, &coloring);
+        }
+
+        if (coloring == true) {
+          this->m_display->unknown_0094 = i + 1;
+          this->m_display->Invalidate();
+        } else {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2834), 0, false, false, 0, "Message", 280, 120, 0);
+        }
+      } else {
+        this->m_paletteButtons[i]->SetState(0);
+      }
+    }
+
+    if (!unselected) {
+      this->m_defaultPaletteButton->SetState(0);
+    } else if (sender == this->m_defaultPaletteButton) {
+      this->m_display->unknown_0094 = 0;
+      this->m_display->Invalidate();
+    }
+
+    this->Invalidate();
+    this->m_showInfo->Invalidate();
+  }
+
+  this->Invalidate();
+  return 0;
+}
+
 // OFFSET: 0x0082D3A0
 // FUNCTION: fn_10370
 int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
@@ -292,6 +341,79 @@ int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     preview->InvalidateChildren();
   }
 
+  return 0;
+}
+
+// OFFSET: 0x0082D980
+// FUNCTION: fn_10372
+int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    if (message != 121) {
+      return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+    }
+
+    UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281));
+    if (this->m_slots[this->m_selectedSlot]) {
+      UIDisplayCharacter* display = this->m_slots[this->m_selectedSlot]->m_display;
+      for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
+        if (it->first->geometry.id == 496 && it->second->geometry.visible == 1) {
+          shop->m_preview->CopyStyle(display);
+          shop->SendMsg(nullptr, 6, 200, 0, 0, 0);
+        }
+      }
+      shop->Invalidate();
+    }
+  } else {
+    switch (argument1) {
+    case 201:
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2816), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+        for (int i = 0; i < 2; ++i) {
+          if (sender == this->unknown_0094[i]) {
+            this->RemoveChild(this->m_slots[i], 1);
+            this->m_slots[i] = nullptr;
+            this->unknown_0094[i]->Enable(0);
+            this->unknown_009C[i]->Enable(0);
+            this->unknown_00A4[i]->Enable(0);
+          }
+        }
+        this->Invalidate();
+      }
+      break;
+    case 204:
+      if (this->geometry.visible) {
+        this->m_selectedSlot = argument2 / (this->geometry.width / 2);
+      }
+
+      for (int i = 0; i < 2; ++i) {
+        UISlotOfMyStyleWnd* slot = this->m_slots[i];
+        if (slot) {
+          UIDisplayCharacter* display = slot->m_display;
+          if (i == this->m_selectedSlot) {
+            if (display) {
+              display->unknown_007C = "유저인터페이스\\styleshop\\shadow_chr_on.bmp";
+              display->Invalidate();
+            }
+          } else if (display) {
+            display->unknown_007C = "유저인터페이스\\styleshop\\shadow_chr_off.bmp";
+            display->Invalidate();
+          }
+          this->m_slots[i]->InvalidateChildren();
+        }
+      }
+      this->Invalidate();
+      break;
+    case 226:
+    case 227:
+      for (int i = 0; i < 2; ++i) {
+        if (sender == this->unknown_009C[i] || sender == this->unknown_00A4[i]) {
+          this->m_slots[i]->m_display->SendMsg(nullptr, 6, argument1, 0, 0, 0);
+        }
+      }
+      break;
+    }
+  }
+
+  this->Invalidate();
   return 0;
 }
 
@@ -465,3 +587,35 @@ bool UIStylingShopWnd::AddToMyStyle() {
 
   return false;
 }
+
+// OFFSET: 0x00825790
+// FUNCTION: fn_10319
+bool UIStylingshopTabParentWnd::IsBuyable() const {
+  return this->m_showInfo->m_buyable;
+}
+
+// OFFSET: 0x00827750
+// FUNCTION: fn_10329
+void UIStylingShopWnd::SetBuyEnabled(bool enabled) {
+  const char* normal;
+  const char* hover;
+  const char* pressed;
+  if (enabled) {
+    this->m_buyButton->SetArgument(0);
+    normal = "유저인터페이스\\styleshop\\btn_buy_out.bmp";
+    hover = "유저인터페이스\\styleshop\\btn_buy_over.bmp";
+    pressed = "유저인터페이스\\styleshop\\btn_buy_down.bmp";
+  } else {
+    this->m_buyButton->SetArgument(1);
+    pressed = "유저인터페이스\\styleshop\\btn_buy_disable.bmp";
+    hover = pressed;
+    normal = pressed;
+  }
+
+  this->m_buyButton->SetBitmap(normal, 0, 0);
+  this->m_buyButton->SetBitmap(hover, 1, 0);
+  this->m_buyButton->SetBitmap(pressed, 2, 0);
+  this->m_buyButton->Invalidate();
+}
+
+// OFFSET: 0x0082A030
