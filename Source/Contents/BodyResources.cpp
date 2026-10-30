@@ -4078,6 +4078,21 @@ std::string CSession::GetBodyJobName(int job) {
   return this->m_bodyJobNames[job];
 }
 
+// OFFSET: 0x00BAB5D0
+// FUNCTION: fn_19752
+std::string EquipmentResourceMgr::GetBodyImfName(int job, int sex, int, int costumeJob) {
+  const int spriteJob = g_session.GetSpriteJob(job, costumeJob, true);
+  std::string sexName;
+  std::string jobName;
+  std::string result;
+
+  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  jobName = static_cast<const std::string&>(g_session.GetImfName(spriteJob));
+  result = static_cast<const std::string&>(FormatOwnedString("%s_%s.imf", jobName.c_str(), sexName.c_str()));
+
+  return result;
+}
+
 // OFFSET: 0x00BAB850
 // FUNCTION: fn_19753
 std::string EquipmentResourceMgr::GetBodyResourceName(int type, int job, int sex, int costumeJob, int costume) {

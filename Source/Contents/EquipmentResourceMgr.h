@@ -29,6 +29,7 @@ public:
   void Clear();
   std::string GetBodyRacePrefix(int job);
   std::string GetBodyResourceName(int type, int job, int sex, int costumeJob, int costume);
+  std::string GetBodyImfName(int job, int sex, int, int costumeJob);
   std::string GetRaceBodyResourceName(int type, int raceJob, int job, int sex, int costumeJob);
   std::string GetBodyPalName(int job, int sex, int palette, int costumeJob, int costume, int);
   std::string GetRobeSprName(int robe, int);
