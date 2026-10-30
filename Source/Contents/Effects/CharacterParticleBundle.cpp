@@ -4,6 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/EffectResourceSwitcher.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -13,6 +14,7 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -80,6 +82,19 @@ void CChopChopClawMarks::Slot36(CEZ2STRParticle* particle) {
   }
 }
 
+// OFFSET: 0x005A34E0
+
+// OFFSET: 0x005A3820
+
+// OFFSET: 0x005A38A0
+// FUNCTION: fn_03133
+void CharacterParticleBundle::Close() {
+  for (CEZ2STRParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+  this->particles.clear();
+}
+
 // OFFSET: 0x005A3A10
 // FUNCTION: fn_03134
 const std::vector<RadialGridPoint>& CChopChopClawMarks::GetRing(int radius) {
@@ -118,6 +133,11 @@ void CChopChopClawMarks::Slot35() {
   }
 }
 
+// OFFSET: 0x005A3E40
+// FUNCTION: fn_03136
+void CharacterParticleBundle::Slot35() {
+}
+
 // OFFSET: 0x005A3E50
 // FUNCTION: fn_03137
 void CharacterParticleBundle::Slot01() {
@@ -136,6 +156,8 @@ bool CChopChopClawMarks::Slot06() {
   const std::chrono::nanoseconds elapsed = std::chrono::steady_clock::now().time_since_epoch() - std::chrono::nanoseconds(this->startTime);
   return std::chrono::seconds(this->unknown_002C) >= std::chrono::duration_cast<std::chrono::milliseconds>(elapsed);
 }
+
+// OFFSET: 0x005A3F10
 
 // OFFSET: 0x005A4000
 // FUNCTION: fn_03140

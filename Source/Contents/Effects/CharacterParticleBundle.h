@@ -41,9 +41,9 @@ public:
   void Slot36(CEZ2STRParticle* particle) override;
 
   const std::vector<RadialGridPoint>& GetRing(int radius);
+  void SpawnParticle();
 
-  /* 00E8 */ int unknown_00E8 = 0;
-  /* 00EC */ int unknown_00EC = 0;
+  /* 00E8 */ long long lastSpawnTime = 0;
   /* 00F0 */ float offsetX;
   /* 00F4 */ float offsetY;
 };
@@ -51,6 +51,7 @@ public:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CharacterParticleBundle, startTime) == 0xD0);
 static_assert(offsetof(CharacterParticleBundle, particles) == 0xDC);
+static_assert(offsetof(CChopChopClawMarks, lastSpawnTime) == 0xE8);
 static_assert(offsetof(CChopChopClawMarks, offsetY) == 0xF4);
 static_assert(sizeof(CChopChopClawMarks) == 0xF8);
 #endif
