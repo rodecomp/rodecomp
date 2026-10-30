@@ -177,6 +177,23 @@ bool WorldProximityRejectB() {
 }
 
 // OFFSET: 0x00ACBA30
+// FUNCTION: fn_17719
+bool WorldProximityGuildMasterCallback::Invoke(const std::uint32_t& aidRef) {
+  const std::uint32_t aid = aidRef;
+  for (CRenderObject* actor : this->world->actors) {
+    if (actor->render.accountId != aid) {
+      continue;
+    }
+
+    if (actor == nullptr) {
+      return false;
+    }
+
+    return static_cast<CGameActor*>(actor)->Slot42() == static_cast<int>(g_proximityCompareId);
+  }
+
+  return false;
+}
 
 struct WorldProximityRangeCallback {
   void* unknown_0000;
@@ -190,3 +207,8 @@ struct WorldProximityRangeCallback {
 };
 
 // OFFSET: 0x00ACBA80
+// FUNCTION: fn_17720
+bool WorldProximityRangeCallback::Invoke() {
+  return std::fabs(this->cellX - this->playerX) <= static_cast<float>(this->range) &&
+    std::fabs(this->cellZ - this->playerZ) <= static_cast<float>(this->range);
+}
