@@ -78,6 +78,7 @@ public:
 
 class CSkillAction_IG_ULTIMATE_SACRIFICE : public CSkillAction {
 public:
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -371,6 +372,15 @@ EfstActionMessage CEfstAction_REBOUND_S::Slot03() {
 // FUNCTION: fn_08615
 EfstActionMessage CEfstAction_REBOUND_S::Slot04() {
   return {LookupMessage(3755), 0xFF};
+}
+
+// OFFSET: 0x00789F40
+// FUNCTION: fn_08616
+void CSkillAction_IG_ULTIMATE_SACRIFICE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+  }
 }
 
 // OFFSET: 0x00789FA0
