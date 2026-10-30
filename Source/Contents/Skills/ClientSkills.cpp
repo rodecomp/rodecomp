@@ -868,3 +868,23 @@ void CSession::RestoreItems5C68() {
     RefreshItemWindows(&g_windowMgr);
   }
 }
+
+// OFFSET: 0x00E252B0
+// FUNCTION: fn_23905
+void CSession::ReturnStackedItem(int index, int count) {
+  for (int slot = 0; slot < 5; ++slot) {
+    ITEM_INFO& item = this->unknown_5C68[slot];
+    const int quantity = item.quantity;
+    if (quantity != 0 && item.unknown_0000[1] == index) {
+      item.quantity = count;
+      reinterpret_cast<ClientItemLists&>(g_session).AddItem1710(item, 0);
+      item.quantity = quantity - count;
+      RefreshItemWindows(&g_windowMgr);
+      break;
+    }
+  }
+
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0458)) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}

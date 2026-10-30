@@ -549,6 +549,7 @@ public:
   EquipSlots GetEquipSlots(int location);
   bool EquipItem3500(const ITEM_INFO& item);
   void AddStackedItem(ITEM_INFO item);
+  void ReturnStackedItem(int index, int count);
   void AddItemToFreeSlot(ITEM_INFO item);
   bool IsListedId(int id, int variant) const;
   void ClearItemQuantities();
