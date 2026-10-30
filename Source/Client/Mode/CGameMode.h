@@ -191,6 +191,10 @@ public:
   void DrawMiniMapMarker(
     const TextureRegion& view, int x, int y, int size, std::string texture, int kind, std::uint32_t color, bool clamp
   );
+  void ReceiveGradeEnchantInfo(const unsigned char* packet);
+  void ReceivePartyItemPickup(const unsigned char* packet);
+  void NotifyResult3995(unsigned char result);
+  void ReceiveActorEffect228(const unsigned char* packet);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

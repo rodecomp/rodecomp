@@ -1,19 +1,30 @@
+#include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Contents/Actors/ActorStateFlags.h"
+#include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/ClientState.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
+#include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/PlayerNameDictionary.h"
 #include "Contents/RodexMailStore.h"
 #include "Contents/RouletteMgr.h"
 #include "Contents/World/World.h"
 #include "Render/Renderer.h"
+#include "UI/UIGradeEnchantWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
@@ -584,6 +595,142 @@ void CGameMode::NotifyResult4138(int result) {
   }
 
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0xFF, 0, 0, 0);
+}
+
+#pragma pack(push, 1)
+struct GradeEnchantInfoPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::int16_t index;
+  /* 0006 */ int value;
+  /* 000A */ GradeEnchantInfo info;
+  /* 001A */ int value1A;
+  /* 001E */ int value1E;
+};
+
+struct PartyItemPickupPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ int itemId;
+  /* 000A */ unsigned char identified;
+  /* 000B */ unsigned char damaged;
+  /* 000C */ std::uint32_t cards[4];
+  /* 001C */ std::uint16_t location;
+  /* 001E */ unsigned char type;
+  /* 001F */ unsigned char refine;
+  /* 0020 */ unsigned char grade;
+};
+
+struct ActorEffect228Packet {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::int16_t value;
+  /* 0008 */ std::uint16_t state;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D6F870
+// FUNCTION: fn_22123
+void CGameMode::ReceiveGradeEnchantInfo(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const GradeEnchantInfoPacket*>(data);
+  const int count = static_cast<unsigned int>(packet->length - sizeof(GradeEnchantInfoPacket)) / sizeof(GradeEnchantMaterial);
+  if (packet->index == -1) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3720)), 0x62B0FF, 0, 0, 0);
+    return;
+  }
+
+  auto* window = static_cast<UIGradeEnchantWnd*>(g_windowMgr.LookupWindow(343));
+  if (window) {
+    window->SetEnchantInfo(packet->index, packet->value, count, packet->info, packet->value1A, packet->value1E,
+      reinterpret_cast<const GradeEnchantMaterial*>(data + sizeof(GradeEnchantInfoPacket)));
+  }
+}
+
+// OFFSET: 0x00D6FCD0
+// FUNCTION: fn_22127
+void CGameMode::ReceivePartyItemPickup(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const PartyItemPickupPacket*>(data);
+  MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByAccount(packet->aid);
+  if (packet->aid != g_session.m_aid && member.valid) {
+    ITEM_INFO item;
+    item.unknown_0000[0] = packet->type;
+    item.unknown_0000[2] = packet->location;
+    item.unknown_0000[1] = packet->itemId;
+    item.unknown_0000[3] = 0;
+    item.SetItemId(packet->itemId);
+    std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
+    item.identified = packet->identified;
+    item.unknown_005D = packet->damaged;
+    item.unknown_0060 = packet->refine;
+    item.unknown_0088 = packet->grade;
+
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    std::string name = naming.DisplayName(item, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1276), member.name.c_str(), name.c_str()).c_str()), 0xFFFF00, 9, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D71660
+// FUNCTION: fn_22135
+void CGameMode::NotifyResult3995(unsigned char result) {
+  switch (result) {
+  case 0:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3995)), 0xFFFF, 0, 0, 0);
+    break;
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3996)), 0xFFFF, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3997)), 0xFFFF, 0, 0, 0);
+    break;
+  case 3:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3998)), 0xFFFF, 0, 0, 0);
+    break;
+  case 4:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3999)), 0xFFFF, 0, 0, 0);
+    break;
+  case 5:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4000)), 0xFFFF, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D718D0
+// FUNCTION: fn_22138
+void CGameMode::ReceiveActorEffect228(const unsigned char* data) {
+  if (!g_serviceOptions.Get(8)) {
+    return;
+  }
+
+  const auto* packet = reinterpret_cast<const ActorEffect228Packet*>(data);
+  CRenderObject* actor = this->scene->GetGameActorByAID(packet->aid);
+  if (g_session.m_aid == packet->aid) {
+    actor = this->scene->player;
+  }
+
+  if (!actor) {
+    return;
+  }
+
+  auto* gameActor = static_cast<CGameActor*>(actor);
+  if (StateFlag01(gameActor->Slot13()) == true || StateFlag02(gameActor->Slot13()) == true) {
+    actor->SendMsg(nullptr, 109, 0, 228, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  if (packet->state == 0) {
+    actor->SendMsg(nullptr, 109, 0, 228, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  } else if (packet->state != 1 || static_cast<EffectActor*>(actor)->state.Attachments().HasId(228)) {
+    return;
+  }
+
+  CRagEffect* effect = static_cast<EffectActor*>(actor)->LaunchEffect(228, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  if (effect) {
+    vector3d position{static_cast<float>(packet->value), 0.0f, 0.0f};
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x00D6FAC0
