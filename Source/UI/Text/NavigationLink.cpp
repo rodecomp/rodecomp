@@ -27,9 +27,11 @@
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UITextButton.h"
+#include "UI/Dialogs/UITipboxWnd.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/CreateLineInfo.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/TextTokens.h"
 
 namespace LineCutter {
@@ -793,6 +795,47 @@ void CCreateLineInfo::ParseText() {
       next = this->ParseChar(index);
     }
     index = next;
+  }
+}
+
+// OFFSET: 0x0083B6B0
+// FUNCTION: fn_10483
+void ShowTextButtonItem(UITextButton* button) {
+  if (!button) {
+    return;
+  }
+
+  if (button->m_lines.size() == 0) {
+    return;
+  }
+
+  const std::string itemId = button->GetLine(0);
+  const int index = std::atoi(button->GetLine(1).c_str());
+  ITEM_INFO item;
+  item.unknown_0000[0] = static_cast<std::uint32_t>(index);
+  item.itemId = itemId;
+  item.identified = 1;
+  UIWindow* window = g_windowMgr.EnsureWindow(0xC);
+  if (window) {
+    window->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x0083BB50
+// FUNCTION: fn_10486
+void ShowTextButtonTip(UITextButton* button) {
+  if (!button) {
+    return;
+  }
+
+  if (button->m_lines.size() == 0) {
+    return;
+  }
+
+  const int tip = std::atoi(button->GetLine(0).c_str());
+  UITipboxWnd* window = static_cast<UITipboxWnd*>(g_windowMgr.EnsureWindow(0x13B));
+  if (window) {
+    window->ShowTip(tip);
   }
 }
 

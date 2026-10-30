@@ -13,6 +13,8 @@ class UITextButton : public UIButton {
 
 public:
   friend void OpenTextButtonLink(UITextButton* button);
+  friend void ShowTextButtonTip(UITextButton* button);
+  friend void ShowTextButtonItem(UITextButton* button);
 
   UITextButton(UIWindowContext& windows, UIButtonContext& buttons);
   ~UITextButton() override;
