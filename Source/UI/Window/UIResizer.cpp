@@ -46,3 +46,9 @@ void UIResizer::Slot31(int, int) {
 
   g_windowMgr.ReleaseCapture();
 }
+
+// OFFSET: 0x008697F0
+// FUNCTION: fn_10971
+void UIResizer::SetDirection(int value) {
+  this->direction = value;
+}
