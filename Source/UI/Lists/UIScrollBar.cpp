@@ -18,9 +18,10 @@
 #include "Render/Text/TextContext.h"
 #include "UI/Buttons/UIBitmapButton2.h"
 #include "UI/Buttons/UINaviLinkButton.h"
+#include "Contents/MessageTable.h"
+#include "UI/Window/WindowDialogs.h"
 #include <algorithm>
 #include <cstdio>
-
 // OFFSET: 0x0086E550
 // FUNCTION: fn_11073
 UIScrollBar::UIScrollBar(UIWindowContext& windows)
@@ -780,3 +781,16 @@ void UITabControl::DrawHorizontalTab(int index) {
     this->unknown_00E8, color, 0, 0
   );
 }
+
+// OFFSET: 0x008810C0
+// FUNCTION: fn_11295
+void UITabControl::HideEdit() {
+  this->edit->SetText("");
+  this->edit->Move(-100, -100);
+
+  if (g_windowMgr.GetHoverWindow() == this->edit) {
+    g_windowMgr.NotifyHoverWindow();
+  }
+}
+
+// OFFSET: 0x00899A30
