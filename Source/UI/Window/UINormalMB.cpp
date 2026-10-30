@@ -2,6 +2,12 @@
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/UIWindowMgr.h"
 
+// OFFSET: 0x00946C00
+// FUNCTION: fn_12851
+UINormalMB::UINormalMB(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), m_owner(nullptr), m_viewer(nullptr) {
+  this->m_keepOpen = 0;
+}
+
 // OFFSET: 0x00950740
 // FUNCTION: fn_12943
 int UINormalMB::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
