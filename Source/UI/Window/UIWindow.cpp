@@ -948,6 +948,85 @@ void UIWindow::DrawShadowedText(
 }
 
 // OFFSET: 0x00A865E0
+// FUNCTION: fn_17023
+void UIWindow::DrawFormattedText(int x, int y, const std::string& text, int width, int align, int family, int height, std::uint32_t color, unsigned char bold) {
+  const int textWidth = this->FormattedTextWidth(text, family, height, bold);
+  if (!width) {
+    width = textWidth;
+  }
+
+  switch (align) {
+  case 2:
+    x -= textWidth;
+    break;
+  case 6:
+    x = static_cast<int>((width - textWidth) * 0.5f + x);
+    break;
+  }
+
+  int offset = 0;
+  unsigned char currentBold = bold;
+  const char* current = text.c_str();
+  const char* const end = current + std::strlen(current);
+
+  while (current != end) {
+    if (*current == '^') {
+      if (current[1] == 'b') {
+        currentBold = 1;
+        current += 2;
+        continue;
+      }
+
+      if (current[1] == '/' && current[2] == 'b') {
+        currentBold = bold;
+        current += 3;
+        continue;
+      }
+
+      char code[7] = {};
+      strncpy_s(code, sizeof(code), current + 1, 6);
+      char* parsed = nullptr;
+      const DWORD value = std::strtol(code, &parsed, 16);
+      if (parsed - code == 6) {
+        color = RGB(GetBValue(value), GetGValue(value), GetRValue(value));
+        current += 7;
+        continue;
+      }
+    }
+
+    const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
+    int advance = 0;
+    {
+      const std::string character(current, next);
+      const char* const measured = character.c_str();
+      if (measured) {
+        const unsigned bytes = static_cast<unsigned>(std::strlen(measured));
+        if (bytes) {
+          TextContext context(*this->geometry.surface);
+          context.SetFont(family, height, currentBold, 0);
+          advance = context.Measure(measured, bytes).cx;
+        }
+      }
+    }
+
+    {
+      const std::string character(current, next);
+      const char* const drawn = character.c_str();
+      const int bytes = static_cast<int>(std::strlen(drawn));
+      TextContext context(*this->geometry.surface);
+      context.SetFont(family, height, currentBold, 0);
+      context.SetColor(color);
+      context.Draw(x + offset, y, drawn, bytes);
+    }
+
+    offset += advance;
+    if (offset > width) {
+      break;
+    }
+
+    current = next;
+  }
+}
 
 // OFFSET: 0x00A869C0
 // FUNCTION: fn_17024
@@ -1208,7 +1287,7 @@ SIZE UIWindow::VerticalTextSize(
 
 // OFFSET: 0x00A80640
 // FUNCTION: fn_16976
-int UIWindow::FormattedTextWidth(FontCache& fonts, const TextLocale& locale, std::string text, int family, int height, unsigned char bold) {
+int UIWindow::FormattedTextWidth(std::string text, int family, int height, unsigned char bold) {
   int total = 0;
   unsigned char currentBold = bold;
   const char* current = text.c_str();
@@ -1243,7 +1322,18 @@ int UIWindow::FormattedTextWidth(FontCache& fonts, const TextLocale& locale, std
 
     const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
     const std::string character(current, next);
-    total += this->TextWidth(fonts, locale, character.c_str(), 0, family, height, currentBold, 0);
+    const char* const measured = character.c_str();
+    int advance = 0;
+    if (measured) {
+      const unsigned bytes = static_cast<unsigned>(std::strlen(measured));
+      if (bytes) {
+        TextContext context(*this->geometry.surface);
+        context.SetFont(family, height, currentBold, 0);
+        advance = context.Measure(measured, bytes).cx;
+      }
+    }
+
+    total += advance;
     current = next;
   }
 

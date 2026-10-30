@@ -150,10 +150,7 @@ public:
   void DrawShadowedText(
     int x, int y, const char* text, int bytes, std::uint32_t color, std::uint32_t shadow, int family, int height, unsigned char bold
   );
-  void DrawFormattedText(
-    FontCache& fonts, const TextLocale& locale, int x, int y, const std::string& text, int width, int align, int family, int height,
-    std::uint32_t color, unsigned char bold
-  );
+  void DrawFormattedText(int x, int y, const std::string& text, int width, int align, int family, int height, std::uint32_t color, unsigned char bold);
   void DrawEmboldenedText(int x, int y, const char* text, std::uint32_t color, std::uint32_t secondColor, int bytes, int family, int height);
   void FlushPrimitives(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
   void FillSurface(std::uint32_t color, const tagRECT* rectangle);
@@ -168,7 +165,7 @@ public:
   tagSIZE VerticalTextSize(
     FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
   );
-  int FormattedTextWidth(FontCache& fonts, const TextLocale& locale, std::string text, int family, int height, unsigned char bold);
+  int FormattedTextWidth(std::string text, int family, int height, unsigned char bold);
   int RecordEditTexts(WindowReplayRecorder& recorder);
   int RestoreEditTexts(const unsigned char* data);
   void DrawActionSprite(
