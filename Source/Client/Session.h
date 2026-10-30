@@ -37,8 +37,17 @@ struct SessionRecord6144 {
   /* 0036 */ std::int16_t day;
 };
 
+struct SessionRecord6178Entry {
+  /* 0000 */ std::string unknown_0000;
+  /* 0018 */ int unknown_0018;
+};
+
 struct SessionRecord6178 {
-  /* 0000 */ unsigned char unknown_0000[0x2C];
+  /* 0000 */ unsigned char unknown_0000;
+  /* 0001 */ unsigned char unknown_0001;
+  /* 0004 */ int id;
+  /* 0008 */ std::string unknown_0008;
+  /* 0020 */ std::vector<SessionRecord6178Entry> unknown_0020;
 };
 
 struct RobeAlpha {
@@ -389,6 +398,7 @@ public:
   int GetMapProperty12() const;
   int GetMapProperty13() const;
   bool HasUnknown6178Records() const;
+  bool HasUnknown6178Record(int id) const;
   int IsState291To303(int state) const;
   int IsType0Or4(int type) const;
   int IsMonsterActor(CGameActor* actor) const;

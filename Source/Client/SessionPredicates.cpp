@@ -29,6 +29,19 @@ int CSession::IsState291To303(int state) const {
   }
 }
 
+// OFFSET: 0x00E1D700
+// FUNCTION: fn_23851
+bool CSession::HasUnknown6178Record(int id) const {
+  auto it = this->unknown_6178.begin();
+  for (; it != this->unknown_6178.end(); ++it) {
+    const SessionRecord6178 record = *it;
+    if (id == record.id) {
+      break;
+    }
+  }
+  return it != this->unknown_6178.end();
+}
+
 // OFFSET: 0x00E1D850
 // FUNCTION: fn_23852
 int CSession::IsType0Or4(int type) const {
