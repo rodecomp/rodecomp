@@ -1,5 +1,14 @@
 #include "UI/Window/UINoteWnd.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Window/WindowBorder.h"
+
+// OFFSET: 0x0094D870
+
+// OFFSET: 0x0094D8E0
+// FUNCTION: fn_12908
+void UINoteWnd_Scroll::Paint() {
+  this->ClearSurface(0xF7F7F7);
+}
 
 // OFFSET: 0x0094EE80
 // FUNCTION: fn_12919
