@@ -1653,6 +1653,10 @@ UISpriteButton::UISpriteButton(UIWindowContext& windowContext, UIButtonContext& 
   this->unknown_00C8 = 1;
 }
 
+// OFFSET: 0x00851C10
+
+// OFFSET: 0x00851C70
+
 // OFFSET: 0x0085E9B0
 // FUNCTION: fn_10834
 void UISpriteButton2::Slot26(int x, int y) {

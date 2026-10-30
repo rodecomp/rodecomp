@@ -42,6 +42,28 @@ UITransBalloonText::UITransBalloonText(UIWindowContext& windows, BalloonTextCont
 // OFFSET: 0x00853210
 UITransBalloonText::~UITransBalloonText() = default;
 
+// OFFSET: 0x008533B0
+
+// OFFSET: 0x008534F0
+
+// OFFSET: 0x00853EA0
+// FUNCTION: fn_10744
+void UITransBalloonText::ChangeText(const char* text, int line) {
+  if (this->m_lines.empty()) {
+    return;
+  }
+
+  if (line == -1) {
+    line = static_cast<int>(this->m_lines.size()) - 1;
+  }
+
+  std::string& target = this->m_lines[line];
+  if (!target.empty()) {
+    target = text;
+    this->Invalidate();
+  }
+}
+
 // OFFSET: 0x008632D0
 // FUNCTION: fn_10907
 void UITransBalloonText::Resize(int width, int height) {

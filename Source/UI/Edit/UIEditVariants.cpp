@@ -55,6 +55,27 @@ UIEditCtrl3::UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit) : UIEdit
   this->unknown_0164 = 0;
 }
 
+// OFFSET: 0x00853760
+// FUNCTION: fn_10741
+void UIEditCtrl_OldList::RecallHistory(int step) {
+  if (this->historyIndex == -1) {
+    return;
+  }
+
+  this->historyIndex += step;
+  if (this->historyIndex < 0) {
+    this->historyIndex = static_cast<int>(this->history.size()) - 1;
+  }
+
+  if (static_cast<std::size_t>(this->historyIndex) >= this->history.size()) {
+    this->historyIndex = 0;
+  }
+
+  this->SetText(this->history[this->historyIndex].c_str());
+  this->Slot23();
+  this->Invalidate();
+}
+
 // OFFSET: 0x0084F7B0
 // FUNCTION: fn_10660
 UIEditCtrl4::UIEditCtrl4(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit), placeholderColor(0xFFFFFFFFu), placeholderEnabled(0) {

@@ -8,6 +8,7 @@
 class UISpriteButton : public UIButton {
 public:
   UISpriteButton(UIWindowContext& windowContext, UIButtonContext& buttonContext);
+  ~UISpriteButton() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
@@ -37,6 +38,7 @@ protected:
 class UISpriteButton2 : public UISpriteButton {
 public:
   UISpriteButton2(UIWindowContext& windowContext, UIButtonContext& buttonContext, UIWindow* target);
+  ~UISpriteButton2() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;

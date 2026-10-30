@@ -191,6 +191,7 @@ class UIEditCtrl_OldList : public UIEditCtrl {
 public:
   void Paint() override;
   void Slot35(int value) override;
+  void RecallHistory(int step);
 
   /* 011C */ std::string bitmapName;
   /* 0134 */ std::vector<std::string> history;

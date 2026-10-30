@@ -32,6 +32,9 @@ public:
   }
   void SetColors(std::uint32_t text, std::uint32_t outline);
   void SetBackground(std::uint32_t color);
+  __declspec(noinline) void AddText(const char* text);
+  void AddLine(const char* text, std::uint32_t color);
+  void ChangeText(const char* text, int line);
 
 private:
   /* 00A0 */ BalloonRectangle m_rectangle;
