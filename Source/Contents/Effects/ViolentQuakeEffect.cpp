@@ -18,6 +18,31 @@ CViolentQuakeEffect::CViolentQuakeEffect() : CEffect(-1) {
 }
 
 // OFFSET: 0x0072F640
+// FUNCTION: fn_07531
+void CViolentQuakeEffect::InitAllBloom() {
+  switch (rand() % 2) {
+  case 0: {
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    bottom->Load(std::string("allbloom\\allbloom_bomb\\allbloom_bomb01_bottom.str"));
+    this->emitters.push_back(bottom);
+    CEZ2STRParticle* bomb = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    bomb->Load(std::string("allbloom\\allbloom_bomb\\allbloom_bomb01.str"));
+    this->emitters.push_back(bomb);
+    break;
+  }
+  case 1: {
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    bottom->Load(std::string("allbloom\\allbloom_bomb\\allbloom_bomb02_bottom.str"));
+    this->emitters.push_back(bottom);
+    CEZ2STRParticle* bomb = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    bomb->Load(std::string("allbloom\\allbloom_bomb\\allbloom_bomb02.str"));
+    this->emitters.push_back(bomb);
+    break;
+  }
+  }
+
+  this->AddEvent(0, "effect\\AG_ALL_BLOOM.wav", 0, 0);
+}
 
 // OFFSET: 0x0072FBA0
 // FUNCTION: fn_07532
@@ -30,6 +55,24 @@ void CViolentQuakeEffect::Close() {
 }
 
 // OFFSET: 0x0072FBE0
+// FUNCTION: fn_07533
+void CViolentQuakeEffect::Slot01() {
+  switch (this->id) {
+  case 1760: {
+    CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    emitter->Load(FormatOwnedString("violentquake\\violentquake\\violentquake_%02d.str", std::max(rand() % 3, 0) + 1));
+    emitter->unknown_00D0 = 0.0f;
+    emitter->unknown_00D4 = -8.0f;
+    emitter->unknown_00D8 = 0.0f;
+    this->emitters.push_back(emitter);
+    this->AddEvent(0, "effect\\AG_VIOLENT_QUAKE.wav", 0, 0);
+    break;
+  }
+  case 1798:
+    this->InitAllBloom();
+    break;
+  }
+}
 
 // OFFSET: 0x0072FD00
 // FUNCTION: fn_07534
