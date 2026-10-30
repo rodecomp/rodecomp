@@ -360,6 +360,15 @@ int UIImgMenu::ItemAt(int x, int y) {
   return std::min(offset / size, this->count - 1);
 }
 
+// OFFSET: 0x0086ECF0
+// FUNCTION: fn_11083
+UITabControl::UITabControl(UIWindowContext& windows, UIButtonContext& controls)
+    : UIWindow(windows, 0), unknown_00E8(12), unknown_00EC(0), unknown_00F0(0), unknown_00F4(0), unknown_00F8(0), m_controls(&controls) {
+  this->unknown_007C = -1;
+  this->dragX = 0;
+  this->dragY = 0;
+}
+
 // OFFSET: 0x00880B20
 // FUNCTION: fn_11283
 int UITabControl::TabCount() {

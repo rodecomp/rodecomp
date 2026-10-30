@@ -16,6 +16,8 @@ public:
 };
 
 class UIBarGraph3 : public UIWindow {
+public:
+  ~UIBarGraph3() override;
 };
 
 class UIBarGraph4 : public UIBarGraph3 {
@@ -62,6 +64,7 @@ protected:
 class UIBarGraphPlayer : public UIWindow {
 public:
   explicit UIBarGraphPlayer(UIWindowContext& context);
+  ~UIBarGraphPlayer() override;
 
 protected:
   /* 0080 */ std::function<std::int64_t()> m_current;

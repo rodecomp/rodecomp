@@ -11,6 +11,7 @@ class UIEditCtrl;
 
 class UITabControl : public UIWindow {
 public:
+  UITabControl(UIWindowContext& windows, UIButtonContext& controls);
   int TabCount();
   int TabAt(int x, int y);
   void FillTab(int index, int x, int y, int width, int height, std::uint32_t color);
@@ -30,6 +31,11 @@ public:
   /* 00D8 */ UIEditCtrl* edit;
   /* 00DC */ std::vector<std::string> tooltips;
   /* 007C */ int unknown_007C;
+  /* 00E8 */ int unknown_00E8;
+  /* 00EC */ int unknown_00EC;
+  /* 00F0 */ int unknown_00F0;
+  /* 00F4 */ int unknown_00F4;
+  /* 00F8 */ int unknown_00F8;
 
 private:
   UIButtonContext* m_controls;

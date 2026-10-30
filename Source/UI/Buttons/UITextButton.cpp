@@ -704,6 +704,15 @@ void UIString::ResetCursor(int, int) {
   }
 }
 
+// OFFSET: 0x0086EA50
+// FUNCTION: fn_11080
+UIString::UIString(UIWindowContext& windows) : UIWindow(windows, 0), unknown_0080(1), unknown_009C(0), unknown_00A0(0), unknown_00A4(0) {
+  this->unknown_0084.clear();
+  this->unknown_00AC.clear();
+  this->unknown_00C4.clear();
+  this->unknown_00DC.clear();
+}
+
 // OFFSET: 0x008925D0
 // FUNCTION: fn_11476
 void UITVTextButton::ResetCursor(int x, int y) {
