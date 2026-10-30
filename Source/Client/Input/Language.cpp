@@ -1,4 +1,7 @@
 #include "Client/Input/Language.h"
+#include "Contents/CashEmotionMgr.h"
+#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
 
@@ -355,4 +358,19 @@ void CLanguage::KeyDown(
     this->anchor = this->cursor;
     break;
   }
+}
+
+// OFFSET: 0x00ACEEB0
+// FUNCTION: fn_45450
+void SuggestChatCommand(const char* text) {
+  if (text && g_windowMgr.unknown_0024 && g_chatSuggestions && g_chatSuggestions->window &&
+      g_windowMgr.GetHoverWindow() == g_chatSuggestions->window) {
+    g_cashEmotionMgr->ProcessChatCommand(text);
+  }
+}
+
+// OFFSET: 0x00ACFCE0
+// FUNCTION: fn_17806
+int SubACFCE0() {
+  return 0;
 }

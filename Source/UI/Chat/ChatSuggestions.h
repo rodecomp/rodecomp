@@ -21,6 +21,8 @@ struct ChatSuggestions {
   void Show(std::uint8_t visible);
 };
 
+extern ChatSuggestions* g_chatSuggestions;
+
 struct ChatInputLayout {
   UIWindow& chat;
   const std::uint8_t& open;

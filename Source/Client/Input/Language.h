@@ -58,5 +58,7 @@ struct CLanguage {
 };
 
 void __stdcall SubACDD10();
+void SuggestChatCommand(const char* text);
+int SubACFCE0();
 
 #endif

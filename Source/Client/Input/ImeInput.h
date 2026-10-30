@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CLIENT_INPUT_IMEINPUT_H
 #define RAGNAROK_SOURCE_CLIENT_INPUT_IMEINPUT_H
 
-#include "Client/Input/TextInputBuffer.h"
+#include "Client/Input/Language.h"
 
 #include <cstdint>
 #include <imm.h>
@@ -10,7 +10,7 @@
 struct CLanguageTC;
 
 struct ImeInput {
-  TextInputBuffer& input;
+  CLanguage& input;
   std::uint16_t& language;
   unsigned& codePage;
   const bool& languageCodePage;
