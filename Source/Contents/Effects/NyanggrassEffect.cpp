@@ -45,19 +45,30 @@ void CMultiTexParticle::Reset() {
 }
 
 struct MultiTexVertex : LightmappedVertex {
-  MultiTexVertex() {
-    this->x = 0.0f;
-    this->y = 0.0f;
-    this->z = 0.0f;
-    this->rhw = 0.0f;
-    this->diffuse = 0xFFFFFFFFu;
-    this->specular = 0xFFFFFFFFu;
-    this->u = 0.0f;
-    this->v = 0.0f;
-    this->lightU = 0.0f;
-    this->lightV = 0.0f;
-  }
+  MultiTexVertex();
+  MultiTexVertex* Self();
 };
+
+// OFFSET: 0x00707E20
+// FUNCTION: fn_07063
+MultiTexVertex::MultiTexVertex() {
+  this->x = 0.0f;
+  this->y = 0.0f;
+  this->z = 0.0f;
+  this->rhw = 0.0f;
+  this->diffuse = 0xFFFFFFFFu;
+  this->specular = 0xFFFFFFFFu;
+  this->u = 0.0f;
+  this->v = 0.0f;
+  this->lightU = 0.0f;
+  this->lightV = 0.0f;
+}
+
+// OFFSET: 0x00707E70
+// FUNCTION: fn_07064
+MultiTexVertex* MultiTexVertex::Self() {
+  return this;
+}
 
 // OFFSET: 0x00707FB0
 // FUNCTION: fn_07068
