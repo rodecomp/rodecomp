@@ -3985,3 +3985,86 @@ void UIWindowMgr::NotifyMemberWindows(const MessengerMember* target) {
     }
   }
 }
+
+// OFFSET: 0x006BD660
+// FUNCTION: fn_06278
+int GetEquipGrade(lua_State* state) {
+  std::vector<int> args;
+  int number = 0;
+  for (int index = -1; index < 0; ++index) {
+    if (!lua_isnumber(state, index)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      return 2;
+    }
+    args.push_back(static_cast<int>(lua_tonumber(state, index)));
+    ++number;
+  }
+
+  int grade = 0;
+  if (args[0] != 0) {
+    const int mask = GetEquipLocationMask(args[0]);
+    const EquipSlots slots = g_session.GetEquipSlots(mask);
+    const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetItem2B50(slots.values[2]) : g_session.GetItem17F0(slots.values[2]);
+    if (item.unknown_0000[1] > 0) {
+      grade = item.unknown_0088;
+    }
+  }
+
+  lua_pushnumber(state, grade);
+  return 1;
+}
+
+// OFFSET: 0x006BDF80
+// FUNCTION: fn_06281
+int GetEquipItemId(lua_State* state) {
+  std::vector<int> args;
+  int number = 0;
+  for (int index = -1; index < 0; ++index) {
+    if (!lua_isnumber(state, index)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      return 2;
+    }
+    args.push_back(static_cast<int>(lua_tonumber(state, index)));
+    ++number;
+  }
+
+  const int mask = GetEquipLocationMask(args[0]);
+  const EquipSlots slots = g_session.GetEquipSlots(mask);
+  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetItem2B50(slots.values[2]) : g_session.GetItem17F0(slots.values[2]);
+  int itemId = 0;
+  if (item.unknown_0000[1] > 0) {
+    itemId = std::atoi(item.itemId.c_str());
+  }
+
+  lua_pushnumber(state, itemId);
+  return 1;
+}
+
+// OFFSET: 0x006BE6F0
+// FUNCTION: fn_06286
+int GetEquipRefine(lua_State* state) {
+  std::vector<int> args;
+  int number = 0;
+  for (int index = -1; index < 0; ++index) {
+    if (!lua_isnumber(state, index)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      return 2;
+    }
+    args.push_back(static_cast<int>(lua_tonumber(state, index)));
+    ++number;
+  }
+
+  const int mask = GetEquipLocationMask(args[0]);
+  const EquipSlots slots = g_session.GetEquipSlots(mask);
+  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetItem2B50(slots.values[2]) : g_session.GetItem17F0(slots.values[2]);
+  int refine = 0;
+  if (item.unknown_0000[1] > 0) {
+    refine = item.unknown_0060;
+  }
+
+  lua_pushnumber(state, refine);
+  return 1;
+}
