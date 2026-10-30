@@ -100,6 +100,14 @@ void CUIProbabilityTable::Slot53() {
 }
 
 // OFFSET: 0x00A48860
+// FUNCTION: fn_16117
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Slot15(int width, int height) {
+  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar->Show(0);
+  this->scrollBar->onChange = [this](int position) { this->OnScroll(position); };
+  this->AddChild(this->scrollBar);
+}
 
 namespace ProbabilityTable {
 
