@@ -2,2470 +2,2476 @@
 
 #include <unordered_map>
 
+// OFFSET: 0x00BF8E70
+// FUNCTION: fn_20014
+static std::unordered_map<int, int> BuildLifetimes() {
+  std::unordered_map<int, int> result;
+  result[EF_HIT1] = 50;
+  result[EF_HIT2] = 50;
+  result[EF_HIT3] = 50;
+  result[EF_HIT4] = 50;
+  result[EF_HIT5] = 50;
+  result[EF_HIT6] = 50;
+  result[EF_ENTRY] = 100;
+  result[EF_EXIT] = 50;
+  result[EF_WARP] = 80;
+  result[EF_ENHANCE] = 80;
+  result[EF_COIN] = 100;
+  result[EF_ENDURE] = 80;
+  result[EF_BEGINSPELL] = 40;
+  result[EF_GLASSWALL] = 9999;
+  result[EF_HEALSP] = 50;
+  result[EF_SOULSTRIKE] = 100;
+  result[EF_BASH] = 40;
+  result[EF_MAGNUMBREAK] = 30;
+  result[EF_STEAL] = 50;
+  result[EF_HIDING] = 50;
+  result[EF_PATTACK] = 100;
+  result[EF_DETOXICATION] = 100;
+  result[EF_SIGHT] = 270;
+  result[EF_STONECURSE] = 999;
+  result[EF_FIREBALL] = 100;
+  result[EF_FIREWALL] = 40;
+  result[EF_ICEARROW] = 160;
+  result[EF_FROSTDIVER] = 150;
+  result[EF_FROSTDIVER2] = 100;
+  result[EF_LIGHTBOLT] = 200;
+  result[EF_THUNDERSTORM] = 104;
+  result[EF_FIREARROW] = 160;
+  result[EF_NAPALMBEAT] = 100;
+  result[EF_RUWACH] = 200;
+  result[EF_TELEPORTATION] = 100;
+  result[EF_READYPORTAL] = 100;
+  result[EF_PORTAL] = 100;
+  result[EF_INCAGILITY] = 100;
+  result[EF_DECAGILITY] = 100;
+  result[EF_AQUA] = 100;
+  result[EF_SIGNUM] = 999;
+  result[EF_ANGELUS] = 999;
+  result[EF_BLESSING] = 150;
+  result[EF_INCAGIDEX] = 100;
+  result[EF_SMOKE] = 50;
+  result[EF_FIREFLY] = 100;
+  result[EF_SANDWIND] = 180;
+  result[EF_TORCH] = 250;
+  result[EF_SPRAYPOND] = 130;
+  result[EF_FIREHIT] = 50;
+  result[EF_FIRESPLASHHIT] = 50;
+  result[EF_COLDHIT] = 50;
+  result[EF_WINDHIT] = 40;
+  result[EF_POISONHIT] = 50;
+  result[EF_BEGINSPELL2] = 40;
+  result[EF_BEGINSPELL3] = 40;
+  result[EF_BEGINSPELL4] = 40;
+  result[EF_BEGINSPELL5] = 40;
+  result[EF_BEGINSPELL6] = 40;
+  result[EF_BEGINSPELL7] = 40;
+  result[EF_LOCKON] = 200;
+  result[EF_WARPZONE] = 250;
+  result[EF_SIGHTRASHER] = 250;
+  result[EF_BARRIER] = 250;
+  result[EF_ARROWSHOT] = 999;
+  result[EF_INVENOM] = 999;
+  result[EF_CURE] = 999;
+  result[EF_PROVOKE] = 999;
+  result[EF_MVP] = 999;
+  result[EF_SKIDTRAP] = 9999;
+  result[EF_BRANDISHSPEAR] = 999;
+  result[EF_CONE] = 250;
+  result[EF_SPHERE] = 500;
+  result[EF_BOWLINGBASH] = 250;
+  result[EF_ICEWALL] = 250;
+  result[EF_GLORIA] = 999;
+  result[EF_MAGNIFICAT] = 999;
+  result[EF_RESURRECTION] = 999;
+  result[EF_RECOVERY] = 999;
+  result[EF_EARTHSPIKE] = 250;
+  result[EF_SPEARBMR] = 250;
+  result[EF_PIERCE] = 250;
+  result[EF_TURNUNDEAD] = 250;
+  result[EF_SANCTUARY] = 999;
+  result[EF_IMPOSITIO] = 999;
+  result[EF_LEXAETERNA] = 999;
+  result[EF_ASPERSIO] = 999;
+  result[EF_LEXDIVINA] = 999;
+  result[EF_SUFFRAGIUM] = 999;
+  result[EF_STORMGUST] = 9999;
+  result[EF_LORD] = 9999;
+  result[EF_BENEDICTIO] = 9999;
+  result[EF_METEORSTORM] = 9999;
+  result[EF_YUFITEL] = 250;
+  result[EF_YUFITELHIT] = 250;
+  result[EF_QUAGMIRE] = 150;
+  result[EF_FIREPILLAR] = 9999;
+  result[EF_FIREPILLARBOMB] = 9999;
+  result[EF_HASTEUP] = 250;
+  result[EF_FLASHER] = 250;
+  result[EF_REMOVETRAP] = 70;
+  result[EF_REPAIRWEAPON] = 9999;
+  result[EF_CRASHEARTH] = 9999;
+  result[EF_PERFECTION] = 999;
+  result[EF_MAXPOWER] = 999;
+  result[EF_BLASTMINE] = 250;
+  result[EF_BLASTMINEBOMB] = 9999;
+  result[EF_CLAYMORE] = 9999;
+  result[EF_FREEZING] = 9999;
+  result[EF_SPRINGTRAP] = 9999;
+  result[EF_BUBBLE] = 9999;
+  result[EF_GASPUSH] = 9999;
+  result[EF_KYRIE] = 999;
+  result[EF_MAGNUS] = 9999;
+  result[EF_BOTTOM] = 350;
+  result[EF_BLITZBEAT] = 250;
+  result[EF_WATERBALL] = 250;
+  result[EF_WATERBALL2] = 100;
+  result[EF_FIREIVY] = 250;
+  result[EF_DETECTING] = 250;
+  result[EF_CLOAKING] = 250;
+  result[EF_SONICBLOW] = 40;
+  result[EF_SONICBLOWHIT] = 250;
+  result[EF_GRIMTOOTH] = 250;
+  result[EF_VENOMDUST] = 9999;
+  result[EF_ENCHANTPOISON] = 250;
+  result[EF_POISONREACT] = 9999;
+  result[EF_POISONREACT2] = 9999;
+  result[EF_OVERTHRUST] = 250;
+  result[EF_SPLASHER] = 9999;
+  result[EF_TWOHANDQUICKEN] = 9999;
+  result[EF_AUTOCOUNTER] = 9999;
+  result[EF_GRIMTOOTHATK] = 250;
+  result[EF_FREEZE] = 9999;
+  result[EF_FREEZED] = 9999;
+  result[EF_ICECRASH] = 9999;
+  result[EF_SLOWPOISON] = 80;
+  result[EF_BOTTOM2] = 350;
+  result[EF_FIREPILLARON] = 8000;
+  result[EF_SANDMAN] = 9999;
+  result[EF_REVIVE] = 250;
+  result[EF_PNEUMA] = 9999;
+  result[EF_HEAVENSDRIVE] = 250;
+  result[EF_SONICBLOW2] = 999;
+  result[EF_BRANDISH2] = 999;
+  result[EF_SHOCKWAVE] = 32797;
+  result[EF_SHOCKWAVEHIT] = 999;
+  result[EF_EARTHHIT] = 999;
+  result[EF_PIERCESELF] = 999;
+  result[EF_BOWLINGSELF] = 999;
+  result[EF_SPEARSTABSELF] = 999;
+  result[EF_SPEARBMRSELF] = 999;
+  result[EF_HOLYHIT] = 100;
+  result[EF_CONCENTRATION] = 999;
+  result[EF_REFINEOK] = 999;
+  result[EF_REFINEFAIL] = 999;
+  result[EF_JOBCHANGE] = 999;
+  result[EF_LVUP] = 999;
+  result[EF_JOBLVUP] = 999;
+  result[EF_TOPRANK] = 9999;
+  result[EF_PARTY] = 9999;
+  result[EF_RAIN] = 0;
+  result[EF_SNOW] = 99999999;
+  result[EF_SAKURA] = 99999999;
+  result[EF_STATUS_STATE] = 999999999;
+  result[EF_BANJJAKII] = 1000;
+  result[EF_MAKEBLUR] = 9999;
+  result[EF_TAMINGSUCCESS] = 999;
+  result[EF_TAMINGFAILED] = 999;
+  result[EF_ENERGYCOAT] = 9999;
+  result[EF_CARTREVOLUTION] = 999;
+  result[EF_VENOMDUST2] = 9999;
+  result[EF_CHANGEDARK] = 100;
+  result[EF_CHANGEFIRE] = 100;
+  result[EF_CHANGECOLD] = 100;
+  result[EF_CHANGEWIND] = 100;
+  result[EF_CHANGEFLAME] = 100;
+  result[EF_CHANGEEARTH] = 100;
+  result[EF_CHAINGEHOLY] = 100;
+  result[EF_CHANGEPOISON] = 100;
+  result[EF_HITDARK] = 50;
+  result[EF_MENTALBREAK] = 9999;
+  result[EF_MAGICALATTHIT] = 9999;
+  result[EF_SUI_EXPLOSION] = 9999;
+  result[EF_DARKATTACK] = 0;
+  result[EF_SUICIDE] = 9999;
+  result[EF_COMBOATTACK1] = 9999;
+  result[EF_COMBOATTACK2] = 9999;
+  result[EF_COMBOATTACK3] = 9999;
+  result[EF_COMBOATTACK4] = 9999;
+  result[EF_COMBOATTACK5] = 9999;
+  result[EF_GUIDEDATTACK] = 9999;
+  result[EF_POISONATTACK] = 9999;
+  result[EF_SILENCEATTACK] = 9999;
+  result[EF_STUNATTACK] = 9999;
+  result[EF_PETRIFYATTACK] = 9999;
+  result[EF_CURSEATTACK] = 150;
+  result[EF_SLEEPATTACK] = 9999;
+  result[EF_TELEKHIT] = 0;
+  result[EF_PONG] = 9999;
+  result[EF_LEVEL99] = 99999999;
+  result[EF_LEVEL99_2] = 99999999;
+  result[EF_LEVEL99_3] = 99999999;
+  result[EF_GUMGANG] = 99999;
+  result[EF_POTION1] = 100;
+  result[EF_POTION2] = 100;
+  result[EF_POTION3] = 100;
+  result[EF_POTION4] = 100;
+  result[EF_POTION5] = 100;
+  result[EF_POTION6] = 100;
+  result[EF_POTION7] = 100;
+  result[EF_POTION8] = 100;
+  result[EF_DARKBREATH] = 500;
+  result[EF_DEFFENDER] = 9999;
+  result[EF_KEEPING] = 9999;
+  result[EF_SUMMONSLAVE] = 500;
+  result[EF_BLOODDRAIN] = 200;
+  result[EF_ENERGYDRAIN] = 200;
+  result[EF_POTION_CON] = 199;
+  result[EF_POTION_] = 199;
+  result[EF_POTION_BERSERK] = 199;
+  result[EF_POTIONPILLAR] = 150;
+  result[EF_DEFENDER] = 200;
+  result[EF_GANBANTEIN] = 300;
+  result[EF_WIND] = 300;
+  result[EF_VOLCANO] = 300;
+  result[EF_GRANDCROSS] = 999;
+  result[EF_INTIMIDATE] = 999;
+  result[EF_CHOOKGI] = 999999;
+  result[EF_CLOUD] = 99999999;
+  result[EF_CLOUD2] = 99999999;
+  result[EF_MAPPILLAR] = 999;
+  result[EF_LINELINK] = 99999;
+  result[EF_CLOUD3] = 99999999;
+  result[EF_SPELLBREAKER] = 999;
+  result[EF_DISPELL] = 999;
+  result[EF_DELUGE] = 999;
+  result[EF_VIOLENTGALE] = 999;
+  result[EF_LANDPROTECTOR] = 999;
+  result[EF_BOTTOM_VO] = 29999;
+  result[EF_BOTTOM_DE] = 29999;
+  result[EF_BOTTOM_VI] = 29999;
+  result[EF_BOTTOM_LA] = 29999;
+  result[EF_FASTMOVE] = 9999;
+  result[EF_MAGICROD] = 499;
+  result[EF_HOLYCROSS] = 499;
+  result[EF_SHIELDCHARGE] = 499;
+  result[EF_MAPPILLAR2] = 999;
+  result[EF_PROVIDENCE] = 200;
+  result[EF_SHIELDBOOMERANG] = 499;
+  result[EF_SPEARQUICKEN] = 9999;
+  result[EF_DEVOTION] = 150;
+  result[EF_REFLECTSHIELD] = 200;
+  result[EF_ABSORBSPIRITS] = 100;
+  result[EF_STEELBODY] = 99999999;
+  result[EF_FLAMELAUNCHER] = 999;
+  result[EF_FROSTWEAPON] = 999;
+  result[EF_LIGHTNINGLOADER] = 999;
+  result[EF_SEISMICWEAPON] = 999;
+  result[EF_MAPPILLAR3] = 999;
+  result[EF_MAPPILLAR4] = 999;
+  result[EF_GUMGANG2] = 300;
+  result[EF_TEIHIT1] = 300;
+  result[EF_GUMGANG3] = 300;
+  result[EF_TEIHIT2] = 300;
+  result[EF_TANJI] = 300;
+  result[EF_TEIHIT1X] = 300;
+  result[EF_CHIMTO] = 16;
+  result[EF_STEALCOIN] = 300;
+  result[EF_STRIPWEAPON] = 300;
+  result[EF_STRIPSHIELD] = 300;
+  result[EF_STRIPARMOR] = 300;
+  result[EF_STRIPHELM] = 300;
+  result[EF_CHAINCOMBO] = 300;
+  result[EF_RG_COIN] = 300;
+  result[EF_BACKSTAP] = 300;
+  result[EF_TEIHIT3] = 300;
+  result[EF_BOTTOM_DISSONANCE] = 29999;
+  result[EF_BOTTOM_LULLABY] = 29999;
+  result[EF_BOTTOM_RICHMANKIM] = 29999;
+  result[EF_BOTTOM_ETERNALCHAOS] = 29999;
+  result[EF_BOTTOM_DRUMBATTLEFIELD] = 29999;
+  result[EF_BOTTOM_RINGNIBELUNGEN] = 29999;
+  result[EF_BOTTOM_ROKISWEIL] = 29999;
+  result[EF_BOTTOM_INTOABYSS] = 29999;
+  result[EF_BOTTOM_SIEGFRIED] = 29999;
+  result[EF_BOTTOM_WHISTLE] = 29999;
+  result[EF_BOTTOM_ASSASSINCROSS] = 29999;
+  result[EF_BOTTOM_POEMBRAGI] = 29999;
+  result[EF_BOTTOM_APPLEIDUN] = 29999;
+  result[EF_BOTTOM_UGLYDANCE] = 29999;
+  result[EF_BOTTOM_HUMMING] = 29999;
+  result[EF_BOTTOM_DONTFORGETME] = 29999;
+  result[EF_BOTTOM_FORTUNEKISS] = 29999;
+  result[EF_BOTTOM_SERVICEFORYOU] = 29999;
+  result[EF_TALK_FROSTJOKE] = 999;
+  result[EF_TALK_SCREAM] = 999;
+  result[EF_POKJUK] = 99999999;
+  result[EF_THROWITEM] = 300;
+  result[EF_THROWITEM2] = 300;
+  result[EF_CHEMICALPROTECTION] = 300;
+  result[EF_POKJUK_SOUND] = 99999999;
+  result[EF_DEMONSTRATION] = 99999;
+  result[EF_CHEMICAL2] = 300;
+  result[EF_TELEPORTATION2] = 200;
+  result[EF_PHARMACY_OK] = 90;
+  result[EF_PHARMACY_FAIL] = 90;
+  result[EF_FORESTLIGHT] = 36000;
+  result[EF_THROWITEM3] = 200;
+  result[EF_FIRSTAID] = 299;
+  result[EF_SPRINKLESAND] = 300;
+  result[EF_LOUD] = 300;
+  result[EF_HEAL] = 100;
+  result[EF_HEAL2] = 100;
+  result[EF_EXIT2] = 200;
+  result[EF_GLASSWALL2] = 9999;
+  result[EF_READYPORTAL2] = 200;
+  result[EF_PORTAL2] = 9999;
+  result[EF_BOTTOM_MAG] = 9999;
+  result[EF_BOTTOM_SANC] = 9999;
+  result[EF_HEAL3] = 100;
+  result[EF_WARPZONE2] = 99999999;
+  result[EF_FORESTLIGHT2] = 36000;
+  result[EF_FORESTLIGHT3] = 36000;
+  result[EF_FORESTLIGHT4] = 36000;
+  result[EF_HEAL4] = 100;
+  result[EF_FOOT] = 340;
+  result[EF_FOOT2] = 340;
+  result[EF_BEGINASURA] = 1000;
+  result[EF_TRIPLEATTACK] = 100;
+  result[EF_HITLINE] = 200;
+  result[EF_HPTIME] = 300;
+  result[EF_SPTIME] = 300;
+  result[EF_MAPLE] = 99999999;
+  result[EF_BLIND] = 99999999;
+  result[EF_POISON] = 99999999;
+  result[EF_GUARD] = 200;
+  result[EF_JOBLVUP50] = 200;
+  result[EF_ANGEL2] = 200;
+  result[EF_MAGNUM2] = 100;
+  result[EF_CALLZONE] = 3000;
+  result[EF_PORTAL3] = 9999;
+  result[EF_COUPLECASTING] = 1000;
+  result[EF_HEARTCASTING] = 1000;
+  result[EF_ENTRY2] = 100;
+  result[EF_SAINTWING] = 99999999;
+  result[EF_SPHEREWIND] = 99999999;
+  result[EF_COLORPAPER] = 9999;
+  result[EF_LIGHTSPHERE] = 1000;
+  result[EF_WATERFALL] = 99999999;
+  result[EF_WATERFALL_90] = 99999999;
+  result[EF_WATERFALL_SMALL] = 99999999;
+  result[EF_WATERFALL_SMALL_90] = 99999999;
+  result[EF_WATERFALL_T2] = 99999999;
+  result[EF_WATERFALL_T2_90] = 99999999;
+  result[EF_WATERFALL_SMALL_T2] = 99999999;
+  result[EF_WATERFALL_SMALL_T2_90] = 99999999;
+  result[EF_MINI_TETRIS] = 99999999;
+  result[EF_GHOST] = 4000;
+  result[EF_BAT] = 4000;
+  result[EF_BAT2] = 4000;
+  result[EF_SOULBREAKER] = 300;
+  result[EF_LEVEL99_4] = 99999999;
+  result[EF_VALLENTINE] = 100;
+  result[EF_VALLENTINE2] = 100;
+  result[EF_PRESSURE] = 300;
+  result[EF_BASH3D] = 200;
+  result[EF_AURABLADE] = 60;
+  result[EF_REDBODY] = 99999;
+  result[EF_LKCONCENTRATION] = 99999;
+  result[EF_BOTTOM_GOSPEL] = 19999;
+  result[EF_ANGEL] = 200;
+  result[EF_DEVIL] = 200;
+  result[EF_DRAGONSMOKE] = 50;
+  result[EF_BOTTOM_BASILICA] = 29999;
+  result[EF_ASSUMPTIO] = 99999;
+  result[EF_HITLINE2] = 200;
+  result[EF_BASH3D2] = 200;
+  result[EF_ENERGYDRAIN2] = 200;
+  result[EF_TRANSBLUEBODY] = 200;
+  result[EF_MAGICCRASHER] = 100;
+  result[EF_LIGHTSPHERE2] = 99999999;
+  result[EF_LIGHTBLADE] = 99999999;
+  result[EF_ENERGYDRAIN3] = 200;
+  result[EF_LINELINK2] = 200;
+  result[EF_LINKLIGHT] = 200;
+  result[EF_TRUESIGHT] = 250;
+  result[EF_FALCONASSAULT] = 200;
+  result[EF_TRIPLEATTACK2] = 200;
+  result[EF_PORTAL4] = 200;
+  result[EF_MELTDOWN] = 250;
+  result[EF_CARTBOOST] = 150;
+  result[EF_REJECTSWORD] = 200;
+  result[EF_TRIPLEATTACK3] = 200;
+  result[EF_SPHEREWIND2] = 99999;
+  result[EF_LINELINK3] = 99999999;
+  result[EF_PINKBODY] = 99999999;
+  result[EF_LEVEL99_5] = 99999999;
+  result[EF_LEVEL99_6] = 99999999;
+  result[EF_BASH3D3] = 200;
+  result[EF_BASH3D4] = 200;
+  result[EF_NAPALMVALCAN] = 200;
+  result[EF_PORTAL5] = 200;
+  result[EF_MAGICCRASHER2] = 100;
+  result[EF_BOTTOM_SPIDER] = 29999;
+  result[EF_BOTTOM_FOGWALL] = 29999;
+  result[EF_SOULBURN] = 200;
+  result[EF_SOULCHANGE] = 200;
+  result[EF_BABY] = 200;
+  result[EF_SOULBREAKER2] = 300;
+  result[EF_RAINBOW] = 300;
+  result[EF_PEONG] = 300;
+  result[EF_TANJI2] = 300;
+  result[EF_PRESSEDBODY] = 50;
+  result[EF_SPINEDBODY] = 50;
+  result[EF_KICKEDBODY] = 100;
+  result[EF_AIRTEXTURE] = 100;
+  result[EF_HITBODY] = 100;
+  result[EF_DOUBLEGUMGANG] = 99999999;
+  result[EF_REFLECTBODY] = 99999999;
+  result[EF_BABYBODY] = 99999;
+  result[EF_BABYBODY2] = 99999;
+  result[EF_GIANTBODY] = 99999;
+  result[EF_GIANTBODY2] = 99999;
+  result[EF_ASURABODY] = 99999999;
+  result[EF_4WAYBODY] = 100;
+  result[EF_QUAKEBODY] = 14;
+  result[EF_ASURABODY_MONSTER] = 99999999;
+  result[EF_HITLINE3] = 200;
+  result[EF_HITLINE4] = 200;
+  result[EF_HITLINE5] = 200;
+  result[EF_HITLINE6] = 200;
+  result[EF_ELECTRIC] = 300;
+  result[EF_ELECTRIC2] = 300;
+  result[EF_HITLINE7] = 50;
+  result[EF_STORMKICK] = 100;
+  result[EF_HALFSPHERE] = 200;
+  result[EF_ATTACKENERGY] = 3000;
+  result[EF_ATTACKENERGY2] = 100;
+  result[EF_CHEMICAL3] = 300;
+  result[EF_ASSUMPTIO2] = 300;
+  result[EF_BLUECASTING] = 60;
+  result[EF_RUN] = 9999;
+  result[EF_STOPRUN] = 30;
+  result[EF_STOPEFFECT] = 100;
+  result[EF_JUMPBODY] = 500;
+  result[EF_LANDBODY] = 35;
+  result[EF_FOOT3] = 340;
+  result[EF_FOOT4] = 340;
+  result[EF_TAE_READY] = 60;
+  result[EF_GRANDCROSS2] = 999;
+  result[EF_SOULSTRIKE2] = 100;
+  result[EF_YUFITEL2] = 250;
+  result[EF_NPC_STOP] = 99999;
+  result[EF_DARKCASTING] = 60;
+  result[EF_GUMGANGNPC] = 1500;
+  result[EF_AGIUP] = 100;
+  result[EF_JUMPKICK] = 100;
+  result[EF_QUAKEBODY2] = 35;
+  result[EF_STORMKICK1] = 100;
+  result[EF_STORMKICK2] = 100;
+  result[EF_STORMKICK3] = 100;
+  result[EF_STORMKICK4] = 200;
+  result[EF_STORMKICK5] = 300;
+  result[EF_STORMKICK6] = 100;
+  result[EF_STORMKICK7] = 1000;
+  result[EF_SPINEDBODY2] = 50;
+  result[EF_BEGINASURA1] = 300;
+  result[EF_BEGINASURA2] = 300;
+  result[EF_BEGINASURA3] = 300;
+  result[EF_BEGINASURA4] = 300;
+  result[EF_BEGINASURA5] = 300;
+  result[EF_BEGINASURA6] = 300;
+  result[EF_BEGINASURA7] = 300;
+  result[EF_AURABLADE2] = 99999999;
+  result[EF_DEVIL1] = 99999999;
+  result[EF_DEVIL2] = 99999999;
+  result[EF_DEVIL3] = 99999999;
+  result[EF_DEVIL4] = 99999999;
+  result[EF_DEVIL5] = 99999999;
+  result[EF_DEVIL6] = 99999999;
+  result[EF_DEVIL7] = 99999999;
+  result[EF_DEVIL8] = 99999999;
+  result[EF_DEVIL9] = 99999999;
+  result[EF_DEVIL10] = 99999999;
+  result[EF_DOUBLEGUMGANG2] = 99999;
+  result[EF_DOUBLEGUMGANG3] = 99999;
+  result[EF_BLACKDEVIL] = 200;
+  result[EF_FLOWERCAST] = 400;
+  result[EF_FLOWERCAST2] = 400;
+  result[EF_FLOWERCAST3] = 400;
+  result[EF_MOCHI] = 100;
+  result[EF_LAMADAN] = 100;
+  result[EF_EDP] = 120;
+  result[EF_SHIELDBOOMERANG2] = 499;
+  result[EF_RG_COIN2] = 300;
+  result[EF_GUARD2] = 200;
+  result[EF_SLIM] = 250;
+  result[EF_SLIM2] = 250;
+  result[EF_SLIM3] = 250;
+  result[EF_CHEMICALBODY] = 120;
+  result[EF_CASTSPIN] = 100;
+  result[EF_PIERCEBODY] = 200;
+  result[EF_SOULLINK] = 500;
+  result[EF_CHOOKGI2] = 999999;
+  result[EF_MEMORIZE] = 200;
+  result[EF_SOULLIGHT] = 100;
+  result[EF_MAPAE] = 100;
+  result[EF_ITEMPOKJUK] = 100;
+  result[EF_05VAL] = 100;
+  result[EF_BEGINASURA11] = 1000;
+  result[EF_NIGHT] = 10;
+  result[EF_CHEMICAL2DASH] = 300;
+  result[EF_GROUNDSAMPLE] = 3000;
+  result[EF_GI_EXPLOSION] = 300;
+  result[EF_CLOUD4] = 99999999;
+  result[EF_CLOUD5] = 99999999;
+  result[EF_BOTTOM_HERMODE] = 29999;
+  result[EF_CARTTER] = 200;
+  result[EF_ITEMFAST] = 100;
+  result[EF_SHIELDBOOMERANG3] = 499;
+  result[EF_DOUBLECASTBODY] = 120;
+  result[EF_GRAVITATION] = 2000;
+  result[EF_TAROTCARD1] = 300;
+  result[EF_TAROTCARD2] = 300;
+  result[EF_TAROTCARD3] = 300;
+  result[EF_TAROTCARD4] = 300;
+  result[EF_TAROTCARD5] = 300;
+  result[EF_TAROTCARD6] = 300;
+  result[EF_TAROTCARD7] = 300;
+  result[EF_TAROTCARD8] = 300;
+  result[EF_TAROTCARD9] = 300;
+  result[EF_TAROTCARD10] = 300;
+  result[EF_TAROTCARD11] = 300;
+  result[EF_TAROTCARD12] = 300;
+  result[EF_TAROTCARD13] = 300;
+  result[EF_TAROTCARD14] = 300;
+  result[EF_ACIDDEMON] = 200;
+  result[EF_GREENBODY] = 120;
+  result[EF_THROWITEM4] = 300;
+  result[EF_BABYBODY_BACK] = 50;
+  result[EF_THROWITEM5] = 300;
+  result[EF_BLUEBODY] = 200;
+  result[EF_HATED] = 500;
+  result[EF_REDLIGHTBODY] = 99999999;
+  result[EF_RO2YEAR] = 200;
+  result[EF_SMA_READY] = 200;
+  result[EF_STIN] = 200;
+  result[EF_RED_HIT] = 60;
+  result[EF_BLUE_HIT] = 60;
+  result[EF_QUAKEBODY3] = 60;
+  result[EF_SMA] = 100;
+  result[EF_SMA2] = 100;
+  result[EF_STIN2] = 200;
+  result[EF_HITTEXTURE] = 200;
+  result[EF_STIN3] = 200;
+  result[EF_SMA3] = 50;
+  result[EF_BLUEFALL] = 99999999;
+  result[EF_BLUEFALL_90] = 99999999;
+  result[EF_FASTBLUEFALL] = 99999999;
+  result[EF_FASTBLUEFALL_90] = 99999999;
+  result[EF_BIG_PORTAL] = 2000;
+  result[EF_BIG_PORTAL2] = 99999999;
+  result[EF_SCREEN_QUAKE] = 200;
+  result[EF_HOMUNCASTING] = 60;
+  result[EF_HFLIMOON1] = 100;
+  result[EF_HFLIMOON2] = 100;
+  result[EF_HFLIMOON3] = 100;
+  result[EF_HO_UP] = 100;
+  result[EF_HAMIDEFENCE] = 60;
+  result[EF_HAMICASTLE] = 100;
+  result[EF_HAMIBLOOD] = 100;
+  result[EF_HATED2] = 300;
+  result[EF_TWILIGHT1] = 300;
+  result[EF_TWILIGHT2] = 300;
+  result[EF_TWILIGHT3] = 300;
+  result[EF_ITEM_THUNDER] = 100;
+  result[EF_ITEM_CLOUD] = 100;
+  result[EF_ITEM_CURSE] = 100;
+  result[EF_ITEM_ZZZ] = 100;
+  result[EF_ITEM_RAIN] = 100;
+  result[EF_ITEM_LIGHT] = 180;
+  result[EF_ANGEL3] = 200;
+  result[EF_M01] = 50;
+  result[EF_M02] = 100;
+  result[EF_M03] = 100;
+  result[EF_M04] = 99999999;
+  result[EF_M05] = 100;
+  result[EF_M06] = 100;
+  result[EF_M07] = 100;
+  result[EF_KAIZEL] = 200;
+  result[EF_KAAHI] = 200;
+  result[EF_CLOUD6] = 99999999;
+  result[EF_FOOD01] = 100;
+  result[EF_FOOD02] = 100;
+  result[EF_FOOD03] = 100;
+  result[EF_FOOD04] = 100;
+  result[EF_FOOD05] = 100;
+  result[EF_FOOD06] = 100;
+  result[EF_SHRINK] = 200;
+  result[EF_THROWITEM6] = 200;
+  result[EF_SIGHT2] = 999999;
+  result[EF_QUAKEBODY4] = 60;
+  result[EF_FIREHIT2] = 50;
+  result[EF_NPC_STOP2] = 99999;
+  result[EF_NPC_STOP2_DEL] = 2;
+  result[EF_FVOICE] = 100;
+  result[EF_WINK] = 100;
+  result[EF_COOKING_OK] = 100;
+  result[EF_COOKING_FAIL] = 100;
+  result[EF_TEMP_OK] = 100;
+  result[EF_TEMP_FAIL] = 100;
+  result[EF_HAPGYEOK] = 100;
+  result[EF_THROWITEM7] = 200;
+  result[EF_THROWITEM8] = 200;
+  result[EF_THROWITEM9] = 200;
+  result[EF_THROWITEM10] = 200;
+  result[EF_BUNSINJYUTSU] = 9999;
+  result[EF_KOUENKA] = 300;
+  result[EF_HYOUSENSOU] = 250;
+  result[EF_BOTTOM_SUITON] = 29999;
+  result[EF_STIN4] = 200;
+  result[EF_THUNDERSTORM2] = 100;
+  result[EF_CHEMICAL4] = 300;
+  result[EF_STIN5] = 200;
+  result[EF_MADNESS_BLUE] = 60;
+  result[EF_MADNESS_RED] = 60;
+  result[EF_RG_COIN3] = 300;
+  result[EF_BASH3D5] = 200;
+  result[EF_CHOOKGI3] = 999999;
+  result[EF_KIRIKAGE] = 100;
+  result[EF_TATAMI] = 100;
+  result[EF_KASUMIKIRI] = 100;
+  result[EF_ISSEN] = 100;
+  result[EF_KAEN] = 23;
+  result[EF_BAKU] = 100;
+  result[EF_HYOUSYOURAKU] = 100;
+  result[EF_DESPERADO] = 200;
+  result[EF_LIGHTNING_S] = 23;
+  result[EF_BLIND_S] = 23;
+  result[EF_POISON_S] = 23;
+  result[EF_FREEZING_S] = 23;
+  result[EF_FLARE_S] = 23;
+  result[EF_RAPIDSHOWER] = 100;
+  result[EF_MAGICALBULLET] = 100;
+  result[EF_SPREADATTACK] = 100;
+  result[EF_TRACKCASTING] = 100;
+  result[EF_TRACKING] = 100;
+  result[EF_TRIPLEACTION] = 100;
+  result[EF_BULLSEYE] = 100;
+  result[EF_MAP_MAGICZONE] = 99999999;
+  result[EF_MAP_MAGICZONE2] = 99999999;
+  result[EF_DAMAGE1] = 50;
+  result[EF_DAMAGE1_2] = 50;
+  result[EF_DAMAGE1_3] = 50;
+  result[EF_UNDEADBODY] = 99999999;
+  result[EF_UNDEADBODY_DEL] = 40;
+  result[EF_GREEN_NUMBER] = 50;
+  result[EF_BLUE_NUMBER] = 50;
+  result[EF_RED_NUMBER] = 50;
+  result[EF_PURPLE_NUMBER] = 50;
+  result[EF_BLACK_NUMBER] = 50;
+  result[EF_WHITE_NUMBER] = 50;
+  result[EF_YELLOW_NUMBER] = 50;
+  result[EF_PINK_NUMBER] = 50;
+  result[EF_BUBBLE_DROP] = 200;
+  result[EF_NPC_EARTHQUAKE] = 100;
+  result[EF_DA_SPACE] = 99999999;
+  result[EF_DRAGONFEAR] = 28;
+  result[EF_BLEEDING] = 70;
+  result[EF_WIDECONFUSE] = 28;
+  result[EF_BOTTOM_RUNNER] = 29999;
+  result[EF_BOTTOM_TRANSFER] = 29999;
+  result[EF_CRYSTAL_BLUE] = 99999999;
+  result[EF_BOTTOM_EVILLAND] = 29999;
+  result[EF_GUARD3] = 200;
+  result[EF_NPC_SLOWCAST] = 300;
+  result[EF_CRITICALWOUND] = 50;
+  result[EF_GREEN99_3] = 99999999;
+  result[EF_GREEN99_5] = 99999999;
+  result[EF_GREEN99_6] = 99999999;
+  result[EF_MAPSPHERE] = 36000;
+  result[EF_POK_LOVE] = 100;
+  result[EF_POK_WHITE] = 100;
+  result[EF_POK_VALEN] = 100;
+  result[EF_POK_BIRTH] = 100;
+  result[EF_POK_CHRISTMAS] = 100;
+  result[EF_MAP_MAGICZONE3] = 99999999;
+  result[EF_MAP_MAGICZONE4] = 99999999;
+  result[EF_DUST] = 99999999;
+  result[EF_TORCH_RED] = 99999999;
+  result[EF_TORCH_GREEN] = 99999999;
+  result[EF_MAP_GHOST] = 99999999;
+  result[EF_GLOW1] = 99999999;
+  result[EF_GLOW2] = 99999999;
+  result[EF_GLOW4] = 99999999;
+  result[EF_TORCH_PURPLE] = 99999999;
+  result[EF_CLOUD7] = 99999999;
+  result[EF_CLOUD8] = 99999999;
+  result[EF_FLOWERLEAF] = 100;
+  result[EF_MAPSPHERE2] = 36000;
+  result[EF_GLOW11] = 99999999;
+  result[EF_GLOW12] = 99999999;
+  result[EF_CIRCLELIGHT] = 99999999;
+  result[EF_ITEM315] = 100;
+  result[EF_ITEM316] = 100;
+  result[EF_ITEM317] = 100;
+  result[EF_ITEM318] = 100;
+  result[EF_STORM_MIN] = 9999;
+  result[EF_POK_JAP] = 70;
+  result[EF_MAP_GREENLIGHT] = 99999999;
+  result[EF_MAP_MAGICWALL] = 99999999;
+  result[EF_MAP_GREENLIGHT2] = 99999999;
+  result[EF_YELLOWFLY1] = 99999999;
+  result[EF_YELLOWFLY2] = 99999999;
+  result[EF_BOTTOM_BLUE] = 99999999;
+  result[EF_BOTTOM_BLUE2] = 360;
+  result[EF_WEWISH] = 999;
+  result[EF_FIREPILLARON2] = 90;
+  result[EF_FORESTLIGHT5] = 999;
+  result[EF_SOULBREAKER3] = 300;
+  result[EF_ADO_STR] = 100;
+  result[EF_IGN_STR] = 100;
+  result[EF_CHIMTO2] = 100;
+  result[EF_WINDCUTTER] = 100;
+  result[EF_DETECT2] = 250;
+  result[EF_FROSTMYSTY] = 300;
+  result[EF_CRIMSON_STR] = 100;
+  result[EF_HELL_STR] = 100;
+  result[EF_SPR_MASH] = 100;
+  result[EF_SPR_SOULE] = 100;
+  result[EF_DHOWL_STR] = 24;
+  result[EF_EARTHWALL] = 100;
+  result[EF_SOULBREAKER4] = 300;
+  result[EF_CHAINL_STR] = 100;
+  result[EF_CHOOKGI_FIRE] = 999999;
+  result[EF_CHOOKGI_WIND] = 999999;
+  result[EF_CHOOKGI_WATER] = 999999;
+  result[EF_CHOOKGI_GROUND] = 999999;
+  result[EF_MAGENTA_TRAP] = 23;
+  result[EF_COBALT_TRAP] = 23;
+  result[EF_MAIZE_TRAP] = 23;
+  result[EF_VERDURE_TRAP] = 23;
+  result[EF_NORMAL_TRAP] = 23;
+  result[EF_CLOAKING2] = 99999999;
+  result[EF_AIMED_STR] = 100;
+  result[EF_ARROWSTORM_STR] = 100;
+  result[EF_LAULAMUS_STR] = 100;
+  result[EF_LAUAGNUS_STR] = 100;
+  result[EF_MILSHIELD_STR] = 100;
+  result[EF_CONCENTRATION2] = 999;
+  result[EF_FIREBALL2] = 100;
+  result[EF_BUNSINJYUTSU2] = 9999;
+  result[EF_CLEARTIME] = 300;
+  result[EF_GLASSWALL3] = 9999;
+  result[EF_ORATIO] = 99999999;
+  result[EF_POTION_BERSERK2] = 199;
+  result[EF_CIRCLEPOWER] = 99999999;
+  result[EF_ROLLING1] = 99999999;
+  result[EF_ROLLING2] = 99999999;
+  result[EF_ROLLING3] = 99999999;
+  result[EF_ROLLING4] = 99999999;
+  result[EF_ROLLING5] = 99999999;
+  result[EF_ROLLING6] = 99999999;
+  result[EF_ROLLING7] = 99999999;
+  result[EF_ROLLING8] = 99999999;
+  result[EF_ROLLING9] = 99999999;
+  result[EF_ROLLING10] = 99999999;
+  result[EF_PURPLEBODY] = 120;
+  result[EF_STIN6] = 200;
+  result[EF_RG_COIN4] = 300;
+  result[EF_POISONWAV] = 300;
+  result[EF_POISONSMOKE] = 100;
+  result[EF_GUMGANG4] = 300;
+  result[EF_SHIELDBOOMERANG4] = 499;
+  result[EF_CASTSPIN2] = 100;
+  result[EF_VULCANWAV] = 100;
+  result[EF_AGIUP2] = 100;
+  result[EF_DETECT3] = 250;
+  result[EF_AGIUP3] = 100;
+  result[EF_DETECT4] = 250;
+  result[EF_ELECTRIC3] = 300;
+  result[EF_GUARD4] = 200;
+  result[EF_BOTTOM_BARRIER] = 29999;
+  result[EF_BOTTOM_STEALTH] = 29999;
+  result[EF_REPAIRTIME] = 300;
+  result[EF_NC_ANAL] = 100;
+  result[EF_FIRETHROW] = 200;
+  result[EF_VENOMIMPRESS] = 99999999;
+  result[EF_FROSTMISTY] = 99999999;
+  result[EF_BURNING] = 99999999;
+  result[EF_COLDTHROW] = 200;
+  result[EF_MAKEHALLU] = 9999;
+  result[EF_HALLUTIME] = 100;
+  result[EF_INFRAREDSCAN] = 300;
+  result[EF_CRASHAXE] = 999;
+  result[EF_GTHUNDER] = 1999;
+  result[EF_STONERING] = 300;
+  result[EF_INTIMIDATE2] = 999;
+  result[EF_STASIS] = 300;
+  result[EF_REDLINE] = 75;
+  result[EF_FROSTDIVER3] = 150;
+  result[EF_BOTTOM_BASILICA2] = 2999;
+  result[EF_RECOGNIZED] = 500;
+  result[EF_TETRA] = 600;
+  result[EF_TETRACASTING] = 40;
+  result[EF_FIREBALL3] = 100;
+  result[EF_INTIMIDATE3] = 999;
+  result[EF_RECOGNIZED2] = 500;
+  result[EF_CLOAKING3] = 99999999;
+  result[EF_INTIMIDATE4] = 999;
+  result[EF_STRETCH] = 200;
+  result[EF_BLACKBODY] = 100;
+  result[EF_ENERVATION] = 100;
+  result[EF_ENERVATION2] = 100;
+  result[EF_ENERVATION3] = 100;
+  result[EF_ENERVATION4] = 100;
+  result[EF_ENERVATION5] = 100;
+  result[EF_ENERVATION6] = 100;
+  result[EF_LINELINK4] = 99999;
+  result[EF_RG_COIN5] = 300;
+  result[EF_WATERFALL_ANI] = 99999999;
+  result[EF_BOTTOM_MANHOLE] = 29999;
+  result[EF_MANHOLE] = 99999999;
+  result[EF_MAKEFEINT] = 9999;
+  result[EF_FORESTLIGHT6] = 29999;
+  result[EF_DARKCASTING2] = 60;
+  result[EF_BOTTOM_ANI] = 29999;
+  result[EF_BOTTOM_MAELSTROM] = 29999;
+  result[EF_BOTTOM_BLOODYLUST] = 29999;
+  result[EF_BEGINSPELL_N1] = 100;
+  result[EF_BEGINSPELL_N2] = 100;
+  result[EF_HEAL_N] = 2000;
+  result[EF_CHOOKGI_N] = 999999;
+  result[EF_JOBLVUP50_2] = 200;
+  result[EF_CHEMICAL2DASH2] = 300;
+  result[EF_CHEMICAL2DASH3] = 300;
+  result[EF_ROLLINGCAST] = 60;
+  result[EF_WATER_BELOW] = 99999999;
+  result[EF_WATER_FADE] = 99999999;
+  result[EF_BEGINSPELL_N3] = 100;
+  result[EF_BEGINSPELL_N4] = 100;
+  result[EF_BEGINSPELL_N5] = 100;
+  result[EF_BEGINSPELL_N6] = 100;
+  result[EF_BEGINSPELL_N7] = 100;
+  result[EF_BEGINSPELL_N8] = 100;
+  result[EF_WATER_SMOKE] = 99999999;
+  result[EF_DANCE1] = 100;
+  result[EF_DANCE2] = 100;
+  result[EF_LINKPARTICLE] = 500;
+  result[EF_SOULLIGHT2] = 100;
+  result[EF_SPR_PARTICLE] = 300;
+  result[EF_SPR_PARTICLE2] = 300;
+  result[EF_SPR_PLANT] = 400;
+  result[EF_CHEMICAL_V] = 300;
+  result[EF_SHOOTPARTICLE] = 300;
+  result[EF_BOT_REVERB] = 29999;
+  result[EF_RAIN_PARTICLE] = 1000;
+  result[EF_CHEMICAL_V2] = 300;
+  result[EF_SECRA] = 300;
+  result[EF_BOT_REVERB2] = 29999;
+  result[EF_CIRCLEPOWER2] = 400;
+  result[EF_SECRA2] = 300;
+  result[EF_CHEMICAL_V3] = 300;
+  result[EF_ENERVATION7] = 100;
+  result[EF_CIRCLEPOWER3] = 400;
+  result[EF_SPR_PLANT2] = 400;
+  result[EF_CIRCLEPOWER4] = 400;
+  result[EF_SPR_PLANT3] = 400;
+  result[EF_RG_COIN6] = 300;
+  result[EF_SPR_PLANT4] = 400;
+  result[EF_CIRCLEPOWER5] = 400;
+  result[EF_SPR_PLANT5] = 400;
+  result[EF_CIRCLEPOWER6] = 400;
+  result[EF_SPR_PLANT6] = 400;
+  result[EF_CIRCLEPOWER7] = 400;
+  result[EF_SPR_PLANT7] = 400;
+  result[EF_CIRCLEPOWER8] = 400;
+  result[EF_SPR_PLANT8] = 400;
+  result[EF_HEARTASURA] = 99999999;
+  result[EF_BEGINSPELL_150] = 99999999;
+  result[EF_LEVEL99_150] = 99999999;
+  result[EF_PRIMECHARGE] = 500;
+  result[EF_GLASSWALL4] = 9999;
+  result[EF_GRADIUS_LASER] = 500;
+  result[EF_BASH3D6] = 200;
+  result[EF_GUMGANG5] = 300;
+  result[EF_HITLINE8] = 200;
+  result[EF_ELECTRIC4] = 150;
+  result[EF_TEIHIT1T] = 300;
+  result[EF_SPINMOVE] = 100;
+  result[EF_FIREBALL4] = 100;
+  result[EF_TRIPLEATTACK4] = 100;
+  result[EF_CHEMICAL3S] = 300;
+  result[EF_GROUNDSHAKE] = 200;
+  result[EF_DQ9_CHARGE] = 500;
+  result[EF_DQ9_CHARGE2] = 500;
+  result[EF_DQ9_CHARGE3] = 500;
+  result[EF_DQ9_CHARGE4] = 5000;
+  result[EF_BLUELINE] = 999;
+  result[EF_SELFSCROLL] = 5000;
+  result[EF_SPR_LIGHTPRINT] = 500;
+  result[EF_PNG_TEST] = 1000;
+  result[EF_BEGINSPELL_YB] = 400;
+  result[EF_CHEMICAL2DASH4] = 300;
+  result[EF_GROUNDSHAKE2] = 200;
+  result[EF_PRESSURE2] = 300;
+  result[EF_RG_COIN7] = 300;
+  result[EF_PRIMECHARGE2] = 500;
+  result[EF_PRIMECHARGE3] = 500;
+  result[EF_PRIMECHARGE4] = 500;
+  result[EF_GREENCASTING] = 60;
+  result[EF_WALLOFTHORN] = 1000;
+  result[EF_FIREBALL5] = 100;
+  result[EF_THROWITEM11] = 300;
+  result[EF_SPR_PLANT9] = 200;
+  result[EF_DEMONICFIRE] = 2000;
+  result[EF_DEMONICFIRE2] = 2000;
+  result[EF_DEMONICFIRE3] = 2000;
+  result[EF_HELLSPLANT] = 1000;
+  result[EF_FIREWALL2] = 40;
+  result[EF_VACUUM] = 1000;
+  result[EF_SPR_PLANT10] = 140;
+  result[EF_SPR_LIGHTPRINT2] = 500;
+  result[EF_POISONSMOKE2] = 400;
+  result[EF_MAKEHALLU2] = 9999;
+  result[EF_SHOCKWAVE2] = 32797;
+  result[EF_SPR_PLANT11] = 140;
+  result[EF_COLDTHROW2] = 200;
+  result[EF_DEMONICFIRE4] = 9999;
+  result[EF_PRESSURE3] = 300;
+  result[EF_LINKPARTICLE2] = 500;
+  result[EF_SOULLIGHT3] = 100;
+  result[EF_CHAREFFECT] = 99999999;
+  result[EF_GUMGANG6] = 300;
+  result[EF_FIREBALL6] = 100;
+  result[EF_GUMGANG7] = 300;
+  result[EF_GUMGANG8] = 300;
+  result[EF_GUMGANG9] = 300;
+  result[EF_BOTTOM_DE2] = 29999;
+  result[EF_COLDSTATUS] = 99999999;
+  result[EF_SPR_LIGHTPRINT3] = 500;
+  result[EF_WATERBALL3] = 100;
+  result[EF_HEAL_N2] = 2000;
+  result[EF_RAIN_PARTICLE2] = 100;
+  result[EF_CLOUD9] = 99999999;
+  result[EF_YELLOWFLY3] = 99999999;
+  result[EF_EL_GUST] = 100;
+  result[EF_EL_BLAST] = 100;
+  result[EF_EL_AQUAPLAY] = 100;
+  result[EF_EL_UPHEAVAL] = 100;
+  result[EF_EL_WILD_STORM] = 100;
+  result[EF_EL_CHILLY_AIR] = 100;
+  result[EF_EL_CURSED_SOIL] = 100;
+  result[EF_EL_COOLER] = 100;
+  result[EF_EL_TROPIC] = 100;
+  result[EF_EL_PYROTECHNIC] = 100;
+  result[EF_EL_PETROLOGY] = 100;
+  result[EF_EL_HEATER] = 100;
+  result[EF_POISON_MIST] = 60;
+  result[EF_ERASER_CUTTER] = 100;
+  result[EF_SILENT_BREEZE] = 100;
+  result[EF_MAGMA_FLOW] = 100;
+  result[EF_GRAYBODY] = 99999;
+  result[EF_LAVA_SLIDE] = 40;
+  result[EF_SONIC_CLAW] = 100;
+  result[EF_TINDER_BREAKER] = 100;
+  result[EF_MIDNIGHT_FRENZY] = 100;
+  result[EF_MACRO] = 99999999;
+  result[EF_CHEMICAL_ALLRANGE] = 200;
+  result[EF_TETRA_FIRE] = 600;
+  result[EF_TETRA_WATER] = 600;
+  result[EF_TETRA_WIND] = 600;
+  result[EF_TETRA_GROUND] = 600;
+  result[EF_EMITTER] = 99999999;
+  result[EF_VOLCANIC_ASH] = 40;
+  result[EF_LEVEL99_ORB1] = 99999999;
+  result[EF_LEVEL99_ORB2] = 99999999;
+  result[EF_LEVEL150] = 99999999;
+  result[EF_LEVEL150_SUB] = 99999999;
+  result[EF_THROWITEM4_1] = 99999999;
+  result[EF_THROW_HAPPOKUNAI] = 99999999;
+  result[EF_THROW_MULTIPLE_COIN] = 99999999;
+  result[EF_THROW_BAKURETSU] = 99999999;
+  result[EF_ROTATE_HUUMARANKA] = 99999999;
+  result[EF_ROTATE_BG] = 99999999;
+  result[EF_ROTATE_LINE_GRAY] = 99999999;
+  result[EF_2011RWC] = 100;
+  result[EF_2011RWC2] = 100;
+  result[EF_KAIHOU] = 99999999;
+  result[EF_GROUND_EXPLOSION] = 99999999;
+  result[EF_KG_KAGEHUMI] = 99999999;
+  result[EF_KO_ZENKAI_WATER] = 99999999;
+  result[EF_KO_ZENKAI_LAND] = 99999999;
+  result[EF_KO_ZENKAI_FIRE] = 99999999;
+  result[EF_KO_ZENKAI_WIND] = 99999999;
+  result[EF_KO_JYUMONJIKIRI] = 99999999;
+  result[EF_KO_SETSUDAN] = 99999999;
+  result[EF_RED_CROSS] = 99999999;
+  result[EF_KO_IZAYOI] = 99999999;
+  result[EF_ROTATE_LINE_BLUE] = 99999999;
+  result[EF_KG_KYOMU] = 99999999;
+  result[EF_KO_HUUMARANKA] = 99999999;
+  result[EF_BLUELIGHTBODY] = 99999999;
+  result[EF_KAGEMUSYA] = 99999999;
+  result[EF_OB_GENSOU] = 99999999;
+  result[EF_NO100_FIRECRACKER] = 100;
+  result[EF_KO_MAKIBISHI] = 99999999;
+  result[EF_KAIHOU1] = 99999999;
+  result[EF_AKAITSUKI] = 99999999;
+  result[EF_ZANGETSU] = 99999999;
+  result[EF_GENSOU] = 99999999;
+  result[EF_HAT_EFFECT] = 99999999;
+  result[EF_CHERRYBLOSSOM] = 99999999;
+  result[EF_EVENT_CLOUD] = 99999999;
+  result[EF_RUN_MAKE_OK] = 100;
+  result[EF_RUN_MAKE_FAILURE] = 90;
+  result[EF_MIRESULT_MAKE_OK] = 100;
+  result[EF_MIRESULT_MAKE_FAIL] = 100;
+  result[EF_ALL_RAY_OF_PROTECTION] = 200;
+  result[EF_VENOMFOG] = 100;
+  result[EF_DUSTSTORM] = 20000;
+  result[EF_LEVEL160] = 999;
+  result[EF_LEVEL160_SUB] = 999;
+  result[EF_MAPCHAIN] = 999;
+  result[EF_MAGIC_FLOOR] = 999;
+  result[EF_ICEMINE] = 999;
+  result[EF_FLAMECORSS] = 999;
+  result[EF_ICEMINE_1] = 999;
+  result[EF_DANCE_BLADE_ATK] = 40;
+  result[EF_DARKPIERCING] = 5000;
+  result[EF_INVINCIBLEOFF2] = 999;
+  result[EF_MAXPAIN] = 999;
+  result[EF_DEATHSUMMON] = 999;
+  result[EF_MOONSTAR] = 999;
+  result[EF_STRANGELIGHTS] = 999;
+  result[EF_SUPER_STAR] = 999;
+  result[EF_YELLOBODY] = 99999;
+  result[EF_COLORPAPER2] = 9999;
+  result[EF_EVILS_PAW] = 999;
+  result[EF_GC_DARKCROW] = 9999;
+  result[EF_RK_DRAGONBREATH_WATER] = 999;
+  result[EF_ALL_FULL_THROTTLE] = 100;
+  result[EF_SR_FLASHCOMBO] = 999;
+  result[EF_RK_LUXANIMA] = 999;
+  result[EF_CLOUD10] = 99999999;
+  result[EF_SO_ELEMENTAL_SHIELD] = 999;
+  result[EF_AB_OFFERTORIUM] = 999;
+  result[EF_WL_TELEKINESIS_INTENSE] = 9999;
+  result[EF_GN_ILLUSIONDOPING] = 999;
+  result[EF_NC_MAGMA_ERUPTION] = 999;
+  result[EF_LG_KINGS_GRACE] = 999;
+  result[EF_BLOODDRAIN2] = 200;
+  result[EF_NPC_WIDEWEB] = 999;
+  result[EF_NPC_BURNT] = 9999;
+  result[EF_NPC_CHILL] = 9999;
+  result[EF_RA_UNLIMIT] = 9999;
+  result[EF_AB_OFFERTORIUM_RING] = 9999;
+  result[EF_SC_ESCAPE] = 9999;
+  result[EF_WM_FRIGG_SONG] = 350;
+  result[EF_FLICKER] = 9999;
+  result[EF_C_MAKER] = 9999;
+  result[EF_HAMMER_OF_GOD] = 9999;
+  result[EF_MASS_SPIRAL] = 9999;
+  result[EF_FIRE_RAIN] = 9;
+  result[EF_WHITEBODY] = 9999;
+  result[EF_BANISHING_BUSTER] = 9999;
+  result[EF_SLUGSHOT] = 9999;
+  result[EF_D_TAIL] = 9999;
+  result[EF_BIND_TRAP1] = 9999;
+  result[EF_BIND_TRAP2] = 9999;
+  result[EF_BIND_TRAP3] = 9999;
+  result[EF_JUMPBODY1] = 30;
+  result[EF_ANIMATED_EMITTER] = 9999;
+  result[EF_RL_EXPLOSION] = 9999;
+  result[EF_C_MAKER_1] = 9999;
+  result[EF_QD_SHOT] = 9999;
+  result[EF_P_ALTER] = 9999;
+  result[EF_S_STORM] = 9999;
+  result[EF_MUSIC_HAT] = 999;
+  result[EF_CLOUD_KILL] = 9999;
+  result[EF_ESCAPE] = 9999;
+  result[EF_XENO_SLASHER] = 300;
+  result[EF_FLOWERSMOKE] = 999;
+  result[EF_FSTONE] = 999;
+  result[EF_QSCARABA] = 999;
+  result[EF_LJOSALFAR] = 999;
+  result[EF_HAPPINESSSTAR] = 999;
+  result[EF_POWER_OF_GAIA] = 2000;
+  result[EF_MAPLE_FALLS] = 999;
+  result[EF_MARKING_USE_CHANGEMONSTER] = 9999;
+  result[EF_MAGICAL_FEATHER] = 999;
+  result[EF_MERMAID_LONGING] = 999;
+  result[EF_GIFT_OF_SNOW] = 999;
+  result[EF_ACH_COMPLETE] = 999;
+  result[EF_TIME_ACCESSORY] = 999;
+  result[EF_SPRITEMABLE] = 1096;
+  result[EF_TUNAPARTY] = 1097;
+  result[EF_FRESHSHRIMP] = 1098;
+  result[EF_UNK_1099] = 1099;
+  result[EF_UNK_1100] = 1100;
+  result[EF_SU_SV_STEMSPEAR] = 1101;
+  result[EF_SU_TUNABELLY] = 1102;
+  result[EF_SU_SCRATCH] = 1103;
+  result[EF_UNK_1104] = 1104;
+  result[EF_SU_BITE] = 1105;
+  result[EF_UNK_1106] = 1106;
+  result[EF_SU_SCAROFTAROU] = 1107;
+  result[EF_SU_ARCLOUSEDASH] = 1108;
+  result[EF_SU_PICKYPECK] = 1109;
+  result[EF_UNK_1110] = 9999;
+  result[EF_UNK_1111] = 1111;
+  result[EF_UNK_1112] = 1112;
+  result[EF_UNK_1113] = 100;
+  result[EF_UNK_1114] = 1114;
+  result[EF_SU_CN_METEOR] = 99999999;
+  result[EF_SU_BUNCHOFSHRIMP] = 1116;
+  result[EF_UNK_1117] = 1117;
+  result[EF_UNK_1118] = 1118;
+  result[EF_BITE_SCAR] = 1119;
+  result[EF_SU_LUNATIC_CARROT_BEAT] = 1120;
+  result[EF_WIDE_CRITICAL_WOUND] = 1121;
+  result[EF_SU_SOUL_ATTACK] = 99999999;
+  result[EF_SU_GROOMING] = 1123;
+  result[EF_SU_CHATTERING] = 1124;
+  result[EF_SU_LOPE] = 1125;
+  result[EF_SU_HISS] = 1126;
+  result[EF_SU_POWEROFFLOCK] = 1127;
+  result[EF_UNK_1128] = 1128;
+  result[EF_SU_SVG_SPIRIT] = 1129;
+  result[EF_UNK_1130] = 1130;
+  result[EF_SU_SPIRIT_OF_LIFE] = 99;
+  result[EF_SU_STOOP] = 99999999;
+  result[EF_FIREDANCE] = 1133;
+  result[EF_RICHS_COIN_A] = 1134;
+  result[EF_RL_B_TRAP] = 99999999;
+  result[EF_RL_ANTI_MATERIAL_BLAST] = 1136;
+  result[EF_E_CHAIN] = 1137;
+  result[EF_HEAT_BARREL] = 1138;
+  result[EF_H_MINE] = 1139;
+  result[EF_FALLEN_ANGEL] = 1140;
+  result[EF_WE_ONEFOREVER] = 1141;
+  result[EF_WE_CHEERUP] = 1142;
+  result[EF_UNK_1143] = 100;
+  result[EF_UNK_1144] = 100;
+  result[EF_RL_HAMMER_OF_GOD] = 99999999;
+  result[EF_UNK_1146] = 1146;
+  result[EF_UNK_1147] = 99999999;
+  result[EF_RL_R_TRIP] = 9999999;
+  result[EF_IMMUNE_PROPERTY] = 99999;
+  result[EF_MOVE_COORDINATE] = 300;
+  result[EF_UNK_1151] = 1151;
+  result[EF_UNK_1152] = 1152;
+  result[EF_UNK_1153] = 1153;
+  result[EF_UNK_1154] = 1154;
+  result[EF_UNK_1155] = 1155;
+  result[EF_UNK_1156] = 1156;
+  result[EF_UNK_1157] = 1157;
+  result[EF_UNK_1158] = 1158;
+  result[EF_UNK_1159] = 1159;
+  result[EF_UNK_1160] = 1160;
+  result[EF_QUAGMIRE_VISUAL] = 150;
+  result[EF_LORD_OF_VERMILLION_VISUAL] = 9999;
+  result[EF_METEOR_STORM_VISUAL] = 9999;
+  result[EF_UNK_1164] = 99999999;
+  result[EF_UNK_1165] = 99999999;
+  result[EF_UNK_1166] = 99999999;
+  result[EF_UNK_1167] = 99999999;
+  result[EF_UNK_1168] = 99999999;
+  result[EF_UNK_1169] = 99999999;
+  result[EF_UNK_1170] = 99999999;
+  result[EF_UNK_1171] = 99999999;
+  result[EF_UNK_1172] = 99999999;
+  result[EF_UNK_1173] = 99999999;
+  result[EF_UNK_1174] = 99999999;
+  result[EF_UNK_1175] = 99999999;
+  result[EF_UNK_1176] = 99999999;
+  result[EF_UNK_1177] = 99999999;
+  result[EF_UNK_1178] = 99999999;
+  result[EF_UNK_1179] = 99999999;
+  result[EF_UNK_1180] = 99999999;
+  result[EF_UNK_1181] = 99999999;
+  result[EF_UNK_1182] = 99999999;
+  result[EF_UNK_1183] = 99999999;
+  result[EF_UNK_1184] = 1184;
+  result[EF_WARPZONE3] = 99999999;
+  result[EF_UNK_1186] = 1186;
+  result[EF_UNK_1187] = 1187;
+  result[EF_UNK_1188] = 1188;
+  result[EF_UNK_1189] = 1189;
+  result[EF_UNK_1190] = 1190;
+  result[EF_UNK_1191] = 1191;
+  result[EF_UNK_1192] = 1192;
+  result[EF_UNK_1193] = 1193;
+  result[EF_UNK_1194] = 1194;
+  result[EF_AUTOSHADOWSPELL_ACTIVE] = 1195;
+  result[EF_UNK_1196] = 1196;
+  result[EF_LIGHTSPHERE_SUN] = 1197;
+  result[EF_LIGHTSPHERE_MOON] = 1198;
+  result[EF_LIGHTSPHERE_STAR] = 1199;
+  result[EF_UNK_1200] = 1200;
+  result[EF_UNK_1201] = 1201;
+  result[EF_NOVAEXPLOSING] = 1202;
+  result[EF_STAR_EMPEROR] = 1203;
+  result[EF_SMA_BLACK] = 100;
+  result[EF_SMA_BLACK2] = 100;
+  result[EF_STIN_BLACK] = 200;
+  result[EF_PEONG_BLACK] = 200;
+  result[EF_ENERGYDRAIN_BLACK] = 200;
+  result[EF_BLINK_BODY] = 100;
+  result[EF_LINELINK5] = 200;
+  result[EF_UNK_1211] = 1211;
+  result[EF_UNK_1212] = 1212;
+  result[EF_UNK_1213] = 1213;
+  result[EF_UNK_1214] = 1214;
+  result[EF_UNK_1215] = 1215;
+  result[EF_UNK_1216] = 1216;
+  result[EF_UNK_1217] = 1217;
+  result[EF_SOLARBURST] = 1218;
+  result[EF_SJ_DOCUMENT] = 1219;
+  result[EF_FALLING_STAR] = 1220;
+  result[EF_FLASH_KICK] = 1221;
+  result[EF_UNK_1222] = 1222;
+  result[EF_STORMKICK8] = 1223;
+  result[EF_SOLAR_EXPLOSION] = 50;
+  result[EF_UNK_1225] = 1225;
+  result[EF_UNK_1226] = 1226;
+  result[EF_UNK_1227] = 1227;
+  result[EF_SOUL_GOLEM] = 1228;
+  result[EF_NEWMOON_KICK] = 1229;
+  result[EF_FULLMOON_KICK] = 1230;
+  result[EF_BOOK_OF_DIMENSION] = 1231;
+  result[EF_UNK_1232] = 1232;
+  result[EF_CURSE_EXPLOSION] = 1233;
+  result[EF_SOUL_REAPER] = 1234;
+  result[EF_UNK_1235] = 1235;
+  result[EF_UNK_1236] = 1236;
+  result[EF_UNK_1237] = 1237;
+  result[EF_SOUL_CURSE] = 1238;
+  result[EF_PROMINENCE_KICK] = 1239;
+  result[EF_SOUL_REAPER_COLLECT] = 1240;
+  result[EF_UNK_1241] = 1241;
+  result[EF_SOUL_EXPLOSION] = 1242;
+  result[EF_SOUL_REVOLVE] = 1243;
+  result[EF_TEST_EFFECT_00] = 1244;
+  result[EF_TEST_EFFECT_01] = 1245;
+  result[EF_TEST_EFFECT_02] = 1246;
+  result[EF_TEST_EFFECT_03] = 1247;
+  result[EF_TEST_EFFECT_04] = 1248;
+  result[EF_TEST_EFFECT_05] = 1249;
+  result[EF_TEST_EFFECT_06] = 1250;
+  result[EF_TEST_EFFECT_07] = 1251;
+  result[EF_TEST_EFFECT_08] = 1252;
+  result[EF_TEST_EFFECT_09] = 1253;
+  result[EF_NEW_METEORSTORM] = 1254;
+  result[EF_NEW_METEORSTORM_BOTTOM] = 1255;
+  result[EF_UNK_1256] = 1256;
+  result[EF_UNK_1257] = 1257;
+  result[EF_NEW_ADORAMUS] = 1258;
+  result[EF_NEW_ADORAMUS_BOTTOM] = 1259;
+  result[EF_TETRA_VORTEX_CAST] = 1260;
+  result[EF_TETRA_VORTEX_CORE] = 1261;
+  result[EF_TETRA_VORTEX_BALL_1] = 1262;
+  result[EF_TETRA_VORTEX_BALL_2] = 1263;
+  result[EF_TETRA_VORTEX_BALL_3] = 1264;
+  result[EF_TETRA_VORTEX_BALL_4] = 1265;
+  result[EF_TETRA_VORTEX_FIRE_EXP] = 1266;
+  result[EF_TETRA_VORTEX_WATER_EXP] = 1267;
+  result[EF_TETRA_VORTEX_WIND_EXP] = 1268;
+  result[EF_TETRA_VORTEX_EARTH_EXP] = 1269;
+  result[EF_TETRA_VORTEX_FIRE_GROUND] = 1270;
+  result[EF_TETRA_VORTEX_WATER_GROUND] = 1271;
+  result[EF_TETRA_VORTEX_WIND_GROUND] = 1272;
+  result[EF_TETRA_VORTEX_EARTH_GROUND] = 1273;
+  result[EF_NEW_CRIMSONROCK] = 1274;
+  result[EF_NEW_CRIMSONROCK_BOTTOM] = 1275;
+  result[EF_UNK_1276] = 1276;
+  result[EF_TETRA_VORTEX_CORE_GROUND] = 1277;
+  result[EF_TETRA_VORTEX_FIRE_SUB] = 1278;
+  result[EF_TETRA_VORTEX_WATER_SUB] = 1279;
+  result[EF_TETRA_VORTEX_WIND_SUB] = 1280;
+  result[EF_TETRA_VORTEX_EARTH_SUB] = 1281;
+  result[EF_NEW_DIAMONDDUST] = 1282;
+  result[EF_NEW_DIAMONDDUST_BOTTOM] = 1283;
+  result[EF_NEW_DIAMONDDUST_CAST] = 1284;
+  result[EF_NEW_SEVERERAINSTORM_CAST] = 1285;
+  result[EF_NEW_SEVERERAINSTORM_HIT] = 1286;
+  result[EF_NEW_SECRAMENT] = 1287;
+  result[EF_NEW_PSYCHICWAVE] = 1288;
+  result[EF_NEW_PSYCHICWAVE_BOTTOM] = 1289;
+  result[EF_NEW_PSYCHICWAVE_CAST] = 1290;
+  result[EF_UNK_1291] = 99999999;
+  result[EF_UNK_1292] = 99999999;
+  result[EF_NEW_ARROWSTORM_00] = 1293;
+  result[EF_NEW_ARROWSTORM_01] = 1294;
+  result[EF_NEW_SECRAMENT_AURA] = 1295;
+  result[EF_NEW_TRIANGLESHOT] = 1296;
+  result[EF_NEW_TRIANGLESHOT_BOTTOM] = 1297;
+  result[EF_NEW_CRIMSONROCK_SUB] = 1298;
+  result[EF_NEW_ROLLINGCUTTER] = 1299;
+  result[EF_NEW_ROLLINGCUTTER_COUNT_01] = 1300;
+  result[EF_NEW_ROLLINGCUTTER_COUNT_02] = 1301;
+  result[EF_NEW_ROLLINGCUTTER_COUNT_03] = 1302;
+  result[EF_NEW_ROLLINGCUTTER_COUNT_04] = 1303;
+  result[EF_NEW_ROLLINGCUTTER_COUNT_05] = 1304;
+  result[EF_NEW_ROLLINGCUTTER_COUNT_06] = 1305;
+  result[EF_NEW_ROLLINGCUTTER_COUNT_07] = 1306;
+  result[EF_NEW_ROLLINGCUTTER_COUNT_08] = 1307;
+  result[EF_NEW_ROLLINGCUTTER_COUNT_09] = 1308;
+  result[EF_NEW_ROLLINGCUTTER_COUNT_10] = 1309;
+  result[EF_NEW_RAMPAGEBLASTER] = 1310;
+  result[EF_NEW_RAMPAGEBLASTER_BOTTOM] = 1311;
+  result[EF_NEW_FEINTBOMB] = 1312;
+  result[EF_NEW_FEINTBOMB_BOTTOM] = 1313;
+  result[EF_NEW_CROSSRIPPERSLASHER] = 1314;
+  result[EF_NEW_CROSSRIPPERSLASHER_00] = 1315;
+  result[EF_NEW_CROSSRIPPERSLASHER_01] = 1316;
+  result[EF_NEW_CROSSRIPPERSLASHER_03] = 1317;
+  result[EF_NEW_CROSSRIPPERSLASHER_05] = 1318;
+  result[EF_NEW_CROSSRIPPERSLASHER_06] = 1319;
+  result[EF_NEW_CROSSRIPPERSLASHER_07] = 1320;
+  result[EF_NEW_CROSSRIPPERSLASHER_09] = 1321;
+  result[EF_NEW_CROSSRIPPERSLASHER_11] = 1322;
+  result[EF_NEW_TIGERCANNON] = 1323;
+  result[EF_UNK_1324] = 1324;
+  result[EF_UNK_1325] = 99999999;
+  result[EF_UNK_1326] = 99999999;
+  result[EF_UNK_1327] = 99999999;
+  result[EF_UNK_1328] = 99999999;
+  result[EF_UNK_1329] = 99999999;
+  result[EF_UNK_1330] = 99999999;
+  result[EF_UNK_1331] = 99999999;
+  result[EF_UNK_1332] = 99999999;
+  result[EF_UNK_1333] = 99999999;
+  result[EF_UNK_1334] = 99999999;
+  result[EF_UNK_1335] = 99999999;
+  result[EF_UNK_1336] = 99999999;
+  result[EF_UNK_1337] = 99999999;
+  result[EF_UNK_1338] = 99999999;
+  result[EF_UNK_1339] = 99999999;
+  result[EF_UNK_1340] = 99999999;
+  result[EF_UNK_1341] = 99999999;
+  result[EF_UNK_1342] = 99999999;
+  result[EF_UNK_1343] = 99999999;
+  result[EF_UNK_1344] = 99999999;
+  result[EF_UNK_1345] = 99999999;
+  result[EF_UNK_1346] = 99999999;
+  result[EF_NEW_ARMSCANNON_01_UP] = 1347;
+  result[EF_NEW_ARMSCANNON_01_DOWN] = 1348;
+  result[EF_NEW_ARMSCANNON_05_UP] = 1349;
+  result[EF_NEW_ARMSCANNON_05_DOWN] = 1350;
+  result[EF_NEW_ARMSCANNON_07_UP] = 1351;
+  result[EF_NEW_ARMSCANNON_07_DOWN] = 1352;
+  result[EF_NEW_ARMSCANNON_11_UP] = 1353;
+  result[EF_NEW_ARMSCANNON_11_DOWN] = 1354;
+  result[EF_NEW_ARMSCANNON_EXPLOSION] = 1355;
+  result[EF_NEW_ARMSCANNON_EXPLOSION_BOTTOM] = 1356;
+  result[EF_UNK_1357] = 1357;
+  result[EF_NEW_CART_CANNON_EXPLOSION] = 1358;
+  result[EF_NEW_CART_CANNON_EXPLOSION_BOTTOM] = 1359;
+  result[EF_NEW_CART_CANNON_FIRE] = 1360;
+  result[EF_NEW_CART_CANNON_FIRE_BOTTOM] = 1361;
+  result[EF_QSCARABA_VISUAL] = 1362;
+  result[EF_NEW_AXETORNADO] = 1363;
+  result[EF_NEW_AXETORNADO_BOTTOM] = 1364;
+  result[EF_NEW_CART_TORNADO] = 50;
+  result[EF_NEW_CART_TORNADO_BOTTOM] = 1366;
+  result[EF_HELP_ANGEL] = 1367;
+  result[EF_HELP_ANGEL_BOTTOM] = 1368;
+  result[EF_NEW_BANISHINGPOINT_TARGET] = 1369;
+  result[EF_NEW_BANISHINGPOINT_TARGET_BOTTOM] = 1370;
+  result[EF_NEW_BANISHINGPOINT_CAST] = 1371;
+  result[EF_NEW_BANISHINGPOINT_CAST_BOTTOM] = 1372;
+  result[EF_NEW_BANISHINGPOINT_01] = 1373;
+  result[EF_NEW_BANISHINGPOINT_05] = 1374;
+  result[EF_NEW_BANISHINGPOINT_07] = 1375;
+  result[EF_NEW_BANISHINGPOINT_11] = 1376;
+  result[EF_UNK_1377] = 99999999;
+  result[EF_NEW_DRAGONBREATH_BOMB] = 1378;
+  result[EF_NEW_DRAGONBREATH_BOMB_BOTTOM] = 1379;
+  result[EF_NEW_DRAGONBREATH_01] = 1380;
+  result[EF_NEW_DRAGONBREATH_05] = 1381;
+  result[EF_NEW_DRAGONBREATH_07] = 1382;
+  result[EF_NEW_DRAGONBREATH_11] = 1383;
+  result[EF_NEW_ARMSCANNON_CAST] = 1384;
+  result[EF_NEW_ARMSCANNON_CAST_BOTTOM] = 1385;
+  result[EF_NEW_DRAGONBREATH_WATER_BOMB] = 1386;
+  result[EF_NEW_DRAGONBREATH_WATER_BOMB_BOTTOM] = 1387;
+  result[EF_NEW_DRAGONBREATH_WATER_01] = 1388;
+  result[EF_NEW_DRAGONBREATH_WATER_05] = 1389;
+  result[EF_NEW_DRAGONBREATH_WATER_07] = 1390;
+  result[EF_NEW_DRAGONBREATH_WATER_11] = 1391;
+  result[EF_NEW_COUNTER_SLASH] = 1392;
+  result[EF_NEW_COUNTER_SLASH_BOTTOM] = 1393;
+  result[EF_NEW_FATAL_MENACE] = 1394;
+  result[EF_NEW_FATAL_MENACE_BOTTOM] = 1395;
+  result[EF_NEW_FATAL_MENACE_CAST] = 1396;
+  result[EF_NEW_FATAL_MENACE_CAST_BOTTOM] = 1397;
+  result[EF_UNK_1398] = 99999999;
+  result[EF_NEW_HEAVENS_DRIVE] = 75;
+  result[EF_NEW_CANNON_SPEAR_12] = 1400;
+  result[EF_NEW_CANNON_SPEAR_01] = 1401;
+  result[EF_NEW_CANNON_SPEAR_03] = 1402;
+  result[EF_NEW_CANNON_SPEAR_05] = 1403;
+  result[EF_NEW_CANNON_SPEAR_06] = 1404;
+  result[EF_NEW_CANNON_SPEAR_07] = 1405;
+  result[EF_NEW_CANNON_SPEAR_09] = 1406;
+  result[EF_NEW_CANNON_SPEAR_11] = 1407;
+  result[EF_NEW_CANNON_SPEAR_BOTTOM] = 1408;
+  result[EF_NEW_TRIPLEATTACK] = 300;
+  result[EF_NEW_BASICATTACK] = 1410;
+  result[EF_NEW_CRITICALATTACK] = 1411;
+  result[EF_NEW_RANGEDATTACK] = 1412;
+  result[EF_NEW_COMET] = 1413;
+  result[EF_NEW_COMET_BOTTOM] = 1414;
+  result[EF_NEW_COMET_CAST_BOTTOM] = 1415;
+  result[EF_NEW_COMET_SUB_EXP] = 1416;
+  result[EF_NEW_COMET_SUB_EXP_BOTTOM] = 1417;
+  result[EF_NEW_MOON_SLASH] = 1418;
+  result[EF_UNK_1419] = 1419;
+  result[EF_NEW_GRANDCROSS] = 99999999;
+  result[EF_NEW_COMET_CAST] = 1421;
+  result[EF_NEW_CART_CANNON_CAST] = 1422;
+  result[EF_NEW_CART_CANNON_CAST_BOTTOM] = 1423;
+  result[EF_NEW_RAYOFGENESIS] = 1424;
+  result[EF_NEW_RAYOFGENESIS_CAST] = 1425;
+  result[EF_NEW_RAYOFGENESIS_CAST_BOTTOM] = 1426;
+  result[EF_NEW_RAYOFGENESIS_HIT] = 1427;
+  result[EF_MINEFFECT_ADORAMUS] = 1428;
+  result[EF_MINEFFECT_ADORAMUS_BOTTOM] = 1429;
+  result[EF_MINEFFECT_TETRA_CAST] = 1430;
+  result[EF_MINEFFECT_TETRA_CORE] = 1431;
+  result[EF_MINEFFECT_TETRA_FIRE] = 1432;
+  result[EF_MINEFFECT_TETRA_WATER] = 1433;
+  result[EF_MINEFFECT_TETRA_WIND] = 1434;
+  result[EF_MINEFFECT_TETRA_EARTH] = 1435;
+  result[EF_MINEFFECT_TETRA_FIRE_BOTTOM] = 1436;
+  result[EF_MINEFFECT_TETRA_WATER_BOTTOM] = 1437;
+  result[EF_MINEFFECT_TETRA_WIND_BOTTOM] = 1438;
+  result[EF_MINEFFECT_TETRA_EARTH_BOTTOM] = 1439;
+  result[EF_MINEFFECT_TETRA_CORE_BOTTOM] = 1440;
+  result[EF_MINEFFECT_CRIMSONROCK] = 1441;
+  result[EF_MINEFFECT_CRIMSONROCK_BOTTOM] = 1442;
+  result[EF_NEW_JACKFROST_00] = 1443;
+  result[EF_NEW_JACKFROST_01] = 1444;
+  result[EF_NEW_JACKFROST_02] = 1445;
+  result[EF_NEW_JACKFROST_CAST] = 1446;
+  result[EF_NEW_JACKFROST_RUNE] = 1447;
+  result[EF_NEW_JACKFROST_ART] = 1448;
+  result[EF_NEW_FROSTMISTY] = 1449;
+  result[EF_MINEFFECT_DIAMONDDUST] = 1450;
+  result[EF_MINEFFECT_DIAMONDDUST_BOTTOM] = 1451;
+  result[EF_MINEFFECT_DIAMONDDUST_CAST] = 1452;
+  result[EF_MINEFFECT_SECRAMENT] = 1453;
+  result[EF_MINEFFECT_PSYCHICWAVE] = 1454;
+  result[EF_MINEFFECT_PSYCHICWAVE_BOTTOM] = 1455;
+  result[EF_MINEFFECT_PSYCHICWAVE_CAST] = 1456;
+  result[EF_MINEFFECT_ARROWSTORM_00] = 1457;
+  result[EF_MINEFFECT_ARROWSTORM_01] = 1458;
+  result[EF_MINEFFECT_TRIANGLESHOT] = 1459;
+  result[EF_MINEFFECT_TRIANGLESHOT_BOTTOM] = 1460;
+  result[EF_MINEFFECT_RAMPAGEBLASTER] = 1461;
+  result[EF_MINEFFECT_RAMPAGEBLASTER_BOTTOM] = 1462;
+  result[EF_MINEFFECT_FEINTBOMB] = 1463;
+  result[EF_MINEFFECT_FEINTBOMB_BOTTOM] = 1464;
+  result[EF_NEW_EARTHGRAVE_VISUAL] = 1465;
+  result[EF_MINEFFECT_ROLLINGCUTTER_CAST] = 1466;
+  result[EF_MINEFFECT_ROLLINGCUTTER_01] = 1467;
+  result[EF_MINEFFECT_ROLLINGCUTTER_02] = 1468;
+  result[EF_MINEFFECT_ROLLINGCUTTER_03] = 1469;
+  result[EF_MINEFFECT_ROLLINGCUTTER_04] = 1470;
+  result[EF_MINEFFECT_ROLLINGCUTTER_05] = 1471;
+  result[EF_MINEFFECT_ROLLINGCUTTER_06] = 1472;
+  result[EF_MINEFFECT_ROLLINGCUTTER_07] = 1473;
+  result[EF_MINEFFECT_ROLLINGCUTTER_08] = 1474;
+  result[EF_MINEFFECT_ROLLINGCUTTER_09] = 1475;
+  result[EF_MINEFFECT_ROLLINGCUTTER_10] = 1476;
+  result[EF_MINEFFECT_CROSSRIPPERSLASHER] = 1477;
+  result[EF_MINEFFECT_CROSSRIPPERSLASHER_12] = 1478;
+  result[EF_MINEFFECT_CROSSRIPPERSLASHER_01] = 1479;
+  result[EF_MINEFFECT_CROSSRIPPERSLASHER_03] = 1480;
+  result[EF_MINEFFECT_CROSSRIPPERSLASHER_05] = 1481;
+  result[EF_MINEFFECT_CROSSRIPPERSLASHER_06] = 1482;
+  result[EF_MINEFFECT_CROSSRIPPERSLASHER_07] = 1483;
+  result[EF_MINEFFECT_CROSSRIPPERSLASHER_09] = 1484;
+  result[EF_MINEFFECT_CROSSRIPPERSLASHER_11] = 1485;
+  result[EF_MINEFFECT_ARMSCANNON_01] = 1486;
+  result[EF_MINEFFECT_ARMSCANNON_05] = 1487;
+  result[EF_MINEFFECT_ARMSCANNON_07] = 1488;
+  result[EF_MINEFFECT_ARMSCANNON_11] = 1489;
+  result[EF_MINEFFECT_ARMSCANNON_EXPLOSION] = 1490;
+  result[EF_MINEFFECT_ARMSCANNON_EXPLOSION_BOTTOM] = 1491;
+  result[EF_MINEFFECT_ARMSCANNON_CAST] = 1492;
+  result[EF_MINEFFECT_ARMSCANNON_CAST_BOTTOM] = 1493;
+  result[EF_MINEFFECT_AXETORNADO] = 1494;
+  result[EF_MINEFFECT_AXETORNADO_BOTTOM] = 1495;
+  result[EF_MINEFFECT_CART_CANNON_EXPLOSION] = 1496;
+  result[EF_MINEFFECT_CART_CANNON_EXPLOSION_BOTTOM] = 1497;
+  result[EF_MINEFFECT_CART_CANNON_FIRE_BOTTOM] = 1498;
+  result[EF_MINEFFECT_CART_CANNON_CAST] = 1499;
+  result[EF_MINEFFECT_CART_CANNON_CAST_BOTTOM] = 1500;
+  result[EF_MINEFFECT_CART_TORNADO] = 1501;
+  result[EF_MINEFFECT_CART_TORNADO_BOTTOM] = 1502;
+  result[EF_MINEFFECT_BANISHINGPOINT_TARGET] = 1503;
+  result[EF_MINEFFECT_BANISHINGPOINT_TARGET_BOTTOM] = 1504;
+  result[EF_MINEFFECT_BANISHINGPOINT_CAST] = 1505;
+  result[EF_MINEFFECT_BANISHINGPOINT_CAST_BOTTOM] = 1506;
+  result[EF_MINEFFECT_BANISHINGPOINT_01] = 1507;
+  result[EF_MINEFFECT_BANISHINGPOINT_05] = 1508;
+  result[EF_MINEFFECT_BANISHINGPOINT_07] = 1509;
+  result[EF_MINEFFECT_BANISHINGPOINT_11] = 1510;
+  result[EF_MINEFFECT_CANNON_SPEAR_12] = 1511;
+  result[EF_MINEFFECT_CANNON_SPEAR_01] = 1512;
+  result[EF_MINEFFECT_CANNON_SPEAR_03] = 1513;
+  result[EF_MINEFFECT_CANNON_SPEAR_05] = 1514;
+  result[EF_MINEFFECT_CANNON_SPEAR_06] = 1515;
+  result[EF_MINEFFECT_CANNON_SPEAR_07] = 1516;
+  result[EF_MINEFFECT_CANNON_SPEAR_09] = 1517;
+  result[EF_MINEFFECT_CANNON_SPEAR_11] = 1518;
+  result[EF_MINEFFECT_CANNON_SPEAR_BOTTOM] = 1519;
+  result[EF_MINEFFECT_DRAGONBREATH_BOMB] = 1520;
+  result[EF_MINEFFECT_DRAGONBREATH_01] = 1521;
+  result[EF_MINEFFECT_DRAGONBREATH_05] = 1522;
+  result[EF_MINEFFECT_DRAGONBREATH_07] = 1523;
+  result[EF_MINEFFECT_DRAGONBREATH_11] = 1524;
+  result[EF_WHITEIMPRISON_STATE] = 99999999;
+  result[EF_MINEFFECT_DRAGONBREATH_WATER_BOMB] = 1526;
+  result[EF_MINEFFECT_DRAGONBREATH_WATER_01] = 1527;
+  result[EF_MINEFFECT_DRAGONBREATH_WATER_05] = 1528;
+  result[EF_MINEFFECT_DRAGONBREATH_WATER_07] = 1529;
+  result[EF_MINEFFECT_DRAGONBREATH_WATER_11] = 1530;
+  result[EF_POK_THUNDER] = 99999999;
+  result[EF_MINEFFECT_TIGERCANNON] = 1532;
+  result[EF_MINEFFECT_SEVERERAINSTORM_CAST] = 1533;
+  result[EF_MINEFFECT_COMET] = 1534;
+  result[EF_MINEFFECT_COMET_BOTTOM] = 1535;
+  result[EF_MINEFFECT_COMET_CAST_BOTTOM] = 1536;
+  result[EF_MINEFFECT_COMET_SUB_EXP] = 1537;
+  result[EF_MINEFFECT_COMET_SUB_EXP_BOTTOM] = 1538;
+  result[EF_MINEFFECT_COMET_CAST] = 1539;
+  result[EF_MINEFFECT_JACKFROST_00] = 1540;
+  result[EF_MINEFFECT_JACKFROST_01] = 1541;
+  result[EF_MINEFFECT_JACKFROST_02] = 1542;
+  result[EF_MINEFFECT_JACKFROST_CAST] = 1543;
+  result[EF_MINEFFECT_JACKFROST_RUNE] = 1544;
+  result[EF_NEW_MAGNUM_BREAK] = 300;
+  result[EF_NEW_POISONSMOKE_1] = 1546;
+  result[EF_NEW_POISONSMOKE_2] = 1547;
+  result[EF_NEW_POISONSMOKE_CAST] = 1548;
+  result[EF_NEW_FEARBREEZE] = 1549;
+  result[EF_NEW_HELLINFERNO] = 1550;
+  result[EF_NEW_HELLINFERNO_BOTTOM] = 1551;
+  result[EF_NEW_HELLINFERNO_CAST_BOTTOM] = 1552;
+  result[EF_NEW_HELLINFERNO_SUB] = 1553;
+  result[EF_NEW_HELLINFERNO_SUB_BOTTOM] = 1554;
+  result[EF_UNK_1555] = 1555;
+  result[EF_NEW_HEAL_BLUE] = 60;
+  result[EF_NEW_CLEARANCE] = 1557;
+  result[EF_NEW_CLEARANCE_BOTTOM] = 1558;
+  result[EF_NEW_CLEARANCE_CAST] = 1559;
+  result[EF_NEW_HEAL_WHITE] = 40;
+  result[EF_NEW_VARETYRSPEAR] = 1561;
+  result[EF_NEW_VARETYRSPEAR_BOTTOM] = 1562;
+  result[EF_NEW_VARETYRSPEAR_CAST] = 1563;
+  result[EF_NEW_VARETYRSPEAR_CAST_BOTTOM] = 1564;
+  result[EF_NEW_HEAL_YELLOW] = 40;
+  result[EF_NEW_CROSSIMPACT] = 1566;
+  result[EF_NEW_CROSSIMPACT_TARGET] = 1567;
+  result[EF_NEW_CROSSIMPACT_HIT] = 300;
+  result[EF_NEW_REVERBERATION] = 150;
+  result[EF_NEW_FALLENEMPIRE] = 1570;
+  result[EF_NEW_FALLENEMPIRE_BOTTOM] = 1571;
+  result[EF_NEW_FALLENEMPIRE_HIT] = 1572;
+  result[EF_NEW_GATEOFHELL_CAST] = 1573;
+  result[EF_NEW_GATEOFHELL_TARGET] = 1574;
+  result[EF_NEW_GATEOFHELL] = 300;
+  result[EF_NEW_HOWLINGOFLION] = 1576;
+  result[EF_NEW_HOWLINGOFLION_BOTTOM] = 1577;
+  result[EF_NEW_HOWLINGOFLION_CAST] = 1578;
+  result[EF_NEW_HOWLINGOFLION_CAST_BOTTOM] = 1579;
+  result[EF_NEW_HOWLINGOFLION_HIT] = 1580;
+  result[EF_NEW_METALLICSOUND] = 1581;
+  result[EF_NEW_METALLICSOUND_BOTTOM] = 1582;
+  result[EF_NEW_METALLICSOUND_HIT] = 1583;
+  result[EF_NEW_METALLICSOUND_LINE] = 300;
+  result[EF_NEW_REPRODUCE] = 1585;
+  result[EF_NEW_REPRODUCE_BOTTOM] = 1586;
+  result[EF_NEW_SOULEXPANSION_CAST] = 1587;
+  result[EF_NEW_SOULEXPANSION_CAST_BOTTOM] = 1588;
+  result[EF_NEW_SOULEXPANSION_LOOP] = 1589;
+  result[EF_NEW_SOULEXPANSION_LOOP_BOTTOM] = 1590;
+  result[EF_NEW_SOULEXPANSION_HIT] = 1591;
+  result[EF_NEW_SOULEXPANSION_HIT_BOTTOM] = 1592;
+  result[EF_NEW_REVERBERATION_HIT] = 1593;
+  result[EF_NEW_REVERBERATION_NOTE] = 200;
+  result[EF_NEW_AROMAOIL] = 1595;
+  result[EF_NEW_AROMAOIL_BOTTOM] = 1596;
+  result[EF_NEW_BATHFOAM] = 1597;
+  result[EF_NEW_BATHFOAM_BOTTOM] = 1598;
+  result[EF_TETRA_VORTEX_CORE_REUSE] = 1599;
+  result[EF_GUARD5] = 200;
+  result[EF_MAGIC_CIRCLE_1] = 99999999;
+  result[EF_BIO5_PLANT_GREEN] = 9999;
+  result[EF_BIO5_PLANT_BLUE] = 9999;
+  result[EF_BIO5_PLANT_YELLOW] = 9999;
+  result[EF_BIO5_PLANT_WHITE] = 9999;
+  result[EF_BIO5_PLANT_RED] = 9999;
+  result[EF_GRADE_ENCHANT_INTRO] = 1607;
+  result[EF_GRADE_ENCHANT_SUCCESS] = 1608;
+  result[EF_GRADE_ENCHANT_FAILED] = 1609;
+  result[EF_POK_MAGIC] = 99999999;
+  result[EF_BLUE_WAVE_1] = 1611;
+  result[EF_BLUE_WAVE_2] = 1612;
+  result[EF_BLUE_WAVE_3] = 1613;
+  result[EF_RED_WAVE_1] = 1614;
+  result[EF_RED_WAVE_2] = 1615;
+  result[EF_RED_WAVE_3] = 1616;
+  result[EF_UNK_1617] = 1617;
+  result[EF_UNK_1618] = 1618;
+  result[EF_UNK_1619] = 1619;
+  result[EF_NEW_WALLOFTHORN_CAST] = 1620;
+  result[EF_NEW_WALLOFTHORN_CAST_BOTTOM] = 1621;
+  result[EF_NEW_EARTHGRAVE_BOTTOM] = 1622;
+  result[EF_NEW_EARTHGRAVE_HIT] = 1623;
+  result[EF_NEW_IGNITIONBREAK] = 1624;
+  result[EF_NEW_IGNITIONBREAK_BOTTOM] = 1625;
+  result[EF_NEW_IGNITIONBREAK_CAST] = 1626;
+  result[EF_NEW_JUDEX_CAST] = 1627;
+  result[EF_NEW_JUDEX_CAST_BOTTOM] = 1628;
+  result[EF_NEW_JUDEX_CAST_LOOP] = 1629;
+  result[EF_NEW_JUDEX_CAST_LOOP_BOTTOM] = 1630;
+  result[EF_NEW_JUDEX_TARGET] = 1631;
+  result[EF_NEW_JUDEX_TARGET_BOTTOM] = 1632;
+  result[EF_NEW_JUDEX_LIGHT] = 1633;
+  result[EF_NEW_JUDEX_LIGHT_BOTTOM] = 1634;
+  result[EF_NEW_CHAINLIGHTNING_CAST] = 1635;
+  result[EF_NEW_CHAINLIGHTNING_CAST_BOTTOM] = 1636;
+  result[EF_NEW_CHAINLIGHTNING_LOCKON] = 1637;
+  result[EF_NEW_CHAINLIGHTNING_TARGET] = 1638;
+  result[EF_NEW_MANDRAGORA] = 1639;
+  result[EF_NEW_MANDRAGORA_BOTTOM] = 1640;
+  result[EF_NEW_MANDRAGORA_CAST] = 1641;
+  result[EF_NEW_SOUNDOFDESTRUCTION_CAST] = 1642;
+  result[EF_NEW_SOUNDOFDESTRUCTION_CAST_BOTTOM] = 1643;
+  result[EF_NEW_SOUNDOFDESTRUCTION_TARGET] = 1644;
+  result[EF_NEW_AIMEDBOLT_01] = 1645;
+  result[EF_NEW_AIMEDBOLT_05] = 1646;
+  result[EF_NEW_AIMEDBOLT_07] = 1647;
+  result[EF_NEW_AIMEDBOLT_11] = 1648;
+  result[EF_NEW_AIMEDBOLT_CAST_BOTTOM] = 1649;
+  result[EF_NEW_AIMEDBOLT_END] = 1650;
+  result[EF_NEW_AIMEDBOLT_TARGET_LOOP] = 1651;
+  result[EF_NEW_UNLIMIT] = 1652;
+  result[EF_NEW_UNLIMIT_BOTTOM] = 1653;
+  result[EF_NEW_EPICLESIS] = 1654;
+  result[EF_NEW_EPICLESIS_AURA] = 99999999;
+  result[EF_NEW_EPICLESIS_CAST] = 100;
+  result[EF_UNK_1657] = 1657;
+  result[EF_NEW_AXEBOOMERANG_CAST] = 1658;
+  result[EF_NEW_AXEBOOMERANG_CAST_BOTTOM] = 1659;
+  result[EF_NEW_AXEBOOMERANG_HIT] = 1660;
+  result[EF_UNK_1661] = 1661;
+  result[EF_UNK_1662] = 1662;
+  result[EF_UNK_1663] = 1663;
+  result[EF_NEW_SANCTUARY] = 100;
+  result[EF_NEW_SPELLFIST_FIRE] = 1665;
+  result[EF_NEW_SPELLFIST_FIRE_BOTTOM] = 1666;
+  result[EF_NEW_SPELLFIST_WATER] = 1667;
+  result[EF_NEW_SPELLFIST_WATER_BOTTOM] = 1668;
+  result[EF_NEW_SPELLFIST_WIND] = 1669;
+  result[EF_UNK_1670] = 1670;
+  result[EF_UNK_1671] = 1671;
+  result[EF_UNK_1672] = 1672;
+  result[EF_UNK_1673] = 1673;
+  result[EF_UNK_1674] = 1674;
+  result[EF_NEW_CARTBOOST] = 1675;
+  result[EF_NEW_CARTBOOST_BOTTOM] = 1676;
+  result[EF_NEW_SAFETYWALL] = 60;
+  result[EF_NEW_SONICWAVE] = 1678;
+  result[EF_NEW_OVERBRAND_01] = 1679;
+  result[EF_NEW_OVERBRAND_03] = 1680;
+  result[EF_NEW_OVERBRAND_05] = 1681;
+  result[EF_NEW_OVERBRAND_06] = 1682;
+  result[EF_NEW_OVERBRAND_07] = 1683;
+  result[EF_NEW_OVERBRAND_09] = 1684;
+  result[EF_NEW_OVERBRAND_11] = 1685;
+  result[EF_NEW_OVERBRAND_12] = 1686;
+  result[EF_NEW_OVERBRAND_CAST] = 1687;
+  result[EF_NEW_OVERBRAND_CAST_BOTTOM] = 1688;
+  result[EF_NEW_OVERBRAND_HIT] = 1689;
+  result[EF_NEW_WINDCUTTER] = 1690;
+  result[EF_NEW_WINDCUTTER_BOTTOM_01] = 1691;
+  result[EF_NEW_WINDCUTTER_BOTTOM_05] = 1692;
+  result[EF_NEW_WINDCUTTER_TARGET] = 1693;
+  result[EF_UNK_1694] = 1694;
+  result[EF_UNK_1695] = 1695;
+  result[EF_UNK_1696] = 1696;
+  result[EF_UNK_1697] = 1697;
+  result[EF_NEW_POWERSWING_01] = 1698;
+  result[EF_NEW_POWERSWING_05] = 1699;
+  result[EF_NEW_POWERSWING_07] = 1700;
+  result[EF_NEW_POWERSWING_11] = 1701;
+  result[EF_NEW_POWERSWING_BOTTOM] = 1702;
+  result[EF_NEW_VULCANARM] = 1703;
+  result[EF_NEW_VULCANARM_BOTTOM] = 1704;
+  result[EF_NEW_VULCANARM_SHOTHOLE] = 1705;
+  result[EF_NEW_EARTHDRIVE] = 1706;
+  result[EF_NEW_EARTHDRIVE_BOTTOM] = 1707;
+  result[EF_NEW_EARTHDRIVE_TARGET] = 1708;
+  result[EF_NEW_EARTHDRIVE_CAST] = 40;
+  result[EF_UNK_1710] = 1710;
+  result[EF_UNK_1711] = 1711;
+  result[EF_UNK_1712] = 1712;
+  result[EF_UNK_1713] = 1713;
+  result[EF_UNK_1714] = 1714;
+  result[EF_UNK_1715] = 1715;
+  result[EF_UNK_1716] = 1716;
+  result[EF_UNK_1717] = 1717;
+  result[EF_UNK_1718] = 1718;
+  result[EF_UNK_1719] = 1719;
+  result[EF_UNK_1720] = 1720;
+  result[EF_UNK_1721] = 1721;
+  result[EF_DRAGONIC_AURA] = 1722;
+  result[EF_DRAGONIC_AURA_BOTTOM] = 1723;
+  result[EF_DRAGONIC_AURA_HIT] = 1724;
+  result[EF_DRAGONIC_AURA_HIT_BOTTOM] = 1725;
+  result[EF_DRAGONIC_AURA_BUFF] = 1726;
+  result[EF_DRAGONIC_AURA_BUFF_BOTTOM] = 1727;
+  result[EF_UNK_1728] = 1728;
+  result[EF_UNK_1729] = 1729;
+  result[EF_NEW_AUTOSHADOWSPELL] = 1730;
+  result[EF_NEW_AUTOSHADOWSPELL_BOTTOM] = 1731;
+  result[EF_DESTRUCTIVE_HURRICANE] = 1732;
+  result[EF_DESTRUCTIVE_HURRICANE_BOTTOM] = 1733;
+  result[EF_DESTRUCTIVE_HURRICANE_CAST] = 1734;
+  result[EF_DESTRUCTIVE_HURRICANE_CAST_BOTTOM] = 1735;
+  result[EF_DESTRUCTIVE_HURRICANE_CLIMAX] = 1736;
+  result[EF_DESTRUCTIVE_HURRICANE_HIT] = 1737;
+  result[EF_DEADLY_PROJECTION_CAST] = 1738;
+  result[EF_DEADLY_PROJECTION_CAST_BOTTOM] = 1739;
+  result[EF_DEADLY_PROJECTION_HIT] = 1740;
+  result[EF_DEADLY_PROJECTION] = 1741;
+  result[EF_SOUL_VC_STRIKE_CAST] = 1742;
+  result[EF_SOUL_VC_STRIKE_CAST_BOTTOM] = 1743;
+  result[EF_SOUL_VC_STRIKE_HIT] = 1744;
+  result[EF_ROCKDOWN] = 1745;
+  result[EF_ROCKDOWN_BOTTOM] = 1746;
+  result[EF_ROCKDOWN_CAST] = 1747;
+  result[EF_ROCKDOWN_CAST_BOTTOM] = 1748;
+  result[EF_ROCKDOWN_HIT] = 1749;
+  result[EF_UNK_1750] = 1750;
+  result[EF_UNK_1751] = 1751;
+  result[EF_UNK_1752] = 1752;
+  result[EF_RAIN_OF_CRYSTAL] = 1753;
+  result[EF_RAIN_OF_CRYSTAL_BOTTOM] = 1754;
+  result[EF_UNK_1755] = 1755;
+  result[EF_UNK_1756] = 1756;
+  result[EF_CRIMSON_ARROW_CAST] = 1757;
+  result[EF_CRIMSON_ARROW_CAST_BOTTOM] = 1758;
+  result[EF_CRIMSON_ARROW_HIT] = 1759;
+  result[EF_UNK_1760] = 1760;
+  result[EF_VIOLENT_QUAKE_CAST] = 1761;
+  result[EF_VIOLENT_QUAKE_CAST_BOTTOM] = 1762;
+  result[EF_VIOLENT_QUAKE_HIT] = 1763;
+  result[EF_UNK_1764] = 1764;
+  result[EF_UNK_1765] = 1765;
+  result[EF_UNK_1766] = 1766;
+  result[EF_UNK_1767] = 1767;
+  result[EF_UNK_1768] = 1768;
+  result[EF_ASTRAL_STRIKE_CAST] = 1769;
+  result[EF_ASTRAL_STRIKE_CAST_BOTTOM] = 1770;
+  result[EF_MYSTERY_ILLUSION] = 1771;
+  result[EF_MYSTERY_ILLUSION_BOTTOM] = 1772;
+  result[EF_MYSTERY_ILLUSION_CAST] = 1773;
+  result[EF_MYSTERY_ILLUSION_CAST_BOTTOM] = 1774;
+  result[EF_MYSTERY_ILLUSION_HIT] = 1775;
+  result[EF_TORNADO_STORM] = 1776;
+  result[EF_TORNADO_STORM_BOTTOM] = 1777;
+  result[EF_TORNADO_STORM_CAST] = 1778;
+  result[EF_TORNADO_STORM_CAST_BOTTOM] = 1779;
+  result[EF_TORNADO_STORM_HIT] = 1780;
+  result[EF_FROZEN_SLASH] = 1781;
+  result[EF_FROZEN_SLASH_CAST] = 1782;
+  result[EF_FROZEN_SLASH_CAST_BOTTOM] = 1783;
+  result[EF_FROZEN_SLASH_HIT] = 1784;
+  result[EF_FROZEN_SLASH_ICE_01] = 1785;
+  result[EF_FROZEN_SLASH_ICE_02] = 1786;
+  result[EF_FROZEN_SLASH_ICE_03] = 1787;
+  result[EF_FROZEN_SLASH_ICE_04] = 1788;
+  result[EF_FROZEN_SLASH_ICE_05] = 1789;
+  result[EF_FROZEN_SLASH_ICE_06] = 1790;
+  result[EF_FROZEN_SLASH_ICE_07] = 1791;
+  result[EF_FROZEN_SLASH_ICE_08] = 1792;
+  result[EF_VIOLENT_QUAKE_BOTTOM] = 1793;
+  result[EF_ALL_BLOOM] = 1794;
+  result[EF_ALL_BLOOM_BOTTOM] = 1795;
+  result[EF_ALL_BLOOM_CAST] = 1796;
+  result[EF_ALL_BLOOM_CAST_BOTTOM] = 1797;
+  result[EF_UNK_1798] = 1798;
+  result[EF_ALL_BLOOM_HIT] = 1799;
+  result[EF_UNK_1800] = 1800;
+  result[EF_CLIMAX_LIGHT] = 1801;
+  result[EF_CLIMAX_CAST] = 1802;
+  result[EF_CLIMAX_CAST_LOOP] = 1803;
+  result[EF_UNK_1804] = 1804;
+  result[EF_FLORAL_FLARE_ROAD_CAST] = 1805;
+  result[EF_FLORAL_FLARE_ROAD_CAST_BOTTOM] = 1806;
+  result[EF_FLORAL_FLARE_ROAD_HIT] = 1807;
+  result[EF_MEDIALE_VOTUM] = 1808;
+  result[EF_MEDIALE_VOTUM_CAST] = 1809;
+  result[EF_MEDIALE_VOTUM_LOOP] = 1810;
+  result[EF_ARGUTUS_VITA] = 1811;
+  result[EF_ARGUTUS_VITA_CAST] = 1812;
+  result[EF_ARGUTUS_TELUM] = 1813;
+  result[EF_ARGUTUS_TELUM_CAST] = 1814;
+  result[EF_PRESENS_ACIES] = 1815;
+  result[EF_PRESENS_ACIES_CAST] = 1816;
+  result[EF_NEW_D_MACHINE] = 1817;
+  result[EF_NEW_D_MACHINE_CAST] = 1818;
+  result[EF_NEW_D_MACHINE_CAST_BOTTOM] = 1819;
+  result[EF_NEW_D_MACHINE_START] = 1820;
+  result[EF_NEW_D_MACHINE_END] = 1821;
+  result[EF_ARBITRIUM_CAST] = 1822;
+  result[EF_ARBITRIUM_CAST_BOTTOM] = 1823;
+  result[EF_ARBITRIUM] = 1824;
+  result[EF_ARBITRIUM_BOTTOM] = 1825;
+  result[EF_ARBITRIUM_HIT] = 1826;
+  result[EF_UNK_1827] = 1827;
+  result[EF_UNK_1828] = 1828;
+  result[EF_UNK_1829] = 1829;
+  result[EF_UNK_1830] = 1830;
+  result[EF_NEW_REPARATIO_CAST] = 1831;
+  result[EF_NEW_REPARATIO_CAST_BOTTOM] = 1832;
+  result[EF_NEW_REPARATIO] = 1833;
+  result[EF_NEW_REPARATIO_BOTTOM] = 1834;
+  result[EF_NEW_REPARATIO_TARGET] = 1835;
+  result[EF_NEW_REPARATIO_TARGET_BOTTOM] = 1836;
+  result[EF_UNK_1837] = 1837;
+  result[EF_ETERNAL_SLASH_HIT_1] = 1838;
+  result[EF_UNK_1839] = 1839;
+  result[EF_A_MACHINE_CAST] = 1840;
+  result[EF_UNK_1841] = 1841;
+  result[EF_A_MACHINE_HIT] = 1842;
+  result[EF_UNK_1843] = 1843;
+  result[EF_UNK_1844] = 1844;
+  result[EF_UNK_1845] = 1845;
+  result[EF_EFFLIGO] = 1846;
+  result[EF_EFFLIGO_BOTTOM] = 1847;
+  result[EF_EFFLIGO_HIT] = 1848;
+  result[EF_COMPETENTIA] = 1849;
+  result[EF_COMPETENTIA_BOTTOM] = 1850;
+  result[EF_UNK_1851] = 1851;
+  result[EF_COMPETENTIA_LOOP] = 1852;
+  result[EF_COMPETENTIA_LOOP_BOTTOM] = 1853;
+  result[EF_CRYSTAL_IMPACT] = 1854;
+  result[EF_CRYSTAL_IMPACT_BOTTOM] = 1855;
+  result[EF_CRYSTAL_IMPACT_CAST] = 1856;
+  result[EF_CRYSTAL_IMPACT_CAST_BOTTOM] = 1857;
+  result[EF_CRYSTAL_IMPACT_HIT] = 1858;
+  result[EF_CRYSTAL_IMPACT_BUFF] = 1859;
+  result[EF_RELIGIO] = 1860;
+  result[EF_RELIGIO_CAST] = 1861;
+  result[EF_UNK_1862] = 1862;
+  result[EF_UNK_1863] = 1863;
+  result[EF_FATAL_SHADOW_CROW] = 1864;
+  result[EF_FATAL_SHADOW_CROW_BOTTOM] = 1865;
+  result[EF_FATAL_SHADOW_CROW_HIT] = 1866;
+  result[EF_UNK_1867] = 1867;
+  result[EF_UNK_1868] = 1868;
+  result[EF_UNK_1869] = 1869;
+  result[EF_UNK_1870] = 1870;
+  result[EF_UNK_1871] = 1871;
+  result[EF_NEW_PNEUMA] = 1872;
+  result[EF_DEEP_BLIND_TRAP_CAST] = 1873;
+  result[EF_DEEP_BLIND_TRAP] = 1874;
+  result[EF_DEEP_BLIND_TRAP_HIT] = 1875;
+  result[EF_NEW_SW_CAST] = 1876;
+  result[EF_SWIFT_TRAP_CAST] = 1877;
+  result[EF_SWIFT_TRAP] = 1878;
+  result[EF_SWIFT_TRAP_HIT] = 1879;
+  result[EF_SOLID_TRAP_CAST] = 1880;
+  result[EF_SOLID_TRAP_CAST_BOTTOM] = 1881;
+  result[EF_SOLID_TRAP] = 1882;
+  result[EF_SOLID_TRAP_HIT] = 1883;
+  result[EF_NEW_RUSH_QUAKE] = 1884;
+  result[EF_NEW_RUSH_QUAKE_BOTTOM] = 1885;
+  result[EF_NEW_RUSH_QUAKE_HIT] = 1886;
+  result[EF_BENEDICTUM] = 1887;
+  result[EF_BENEDICTUM_CAST] = 1888;
+  result[EF_BENEDICTUM_CAST_BOTTOM] = 1889;
+  result[EF_STRATUM_TREMOR_CAST] = 1890;
+  result[EF_STRATUM_TREMOR_CAST_BOTTOM] = 1891;
+  result[EF_STRATUM_TREMOR_HIT] = 1892;
+  result[EF_STRATUM_TREMOR] = 1893;
+  result[EF_STRATUM_TREMOR_BOTTOM] = 1894;
+  result[EF_UNK_1895] = 1895;
+  result[EF_UNK_1896] = 1896;
+  result[EF_UNK_1897] = 1897;
+  result[EF_UNK_1898] = 1898;
+  result[EF_WIND_SIGN] = 1899;
+  result[EF_WIND_SIGN_LOOP] = 1900;
+  result[EF_ABR_MOTHER_CAST] = 1901;
+  result[EF_ABR_MOTHER] = 1902;
+  result[EF_ABR_MOTHER_01] = 1903;
+  result[EF_ABR_MOTHER_02] = 1904;
+  result[EF_HAWK_RUSH] = 1905;
+  result[EF_ABR_INFINITY] = 1906;
+  result[EF_ABR_INFINITY_BOTTOM] = 1907;
+  result[EF_ABR_INFINITY_CAST] = 1908;
+  result[EF_ABR_INFINITY_HIT] = 1909;
+  result[EF_ABR_INFINITY_RING] = 1910;
+  result[EF_UNK_1911] = 1911;
+  result[EF_UNK_1912] = 1912;
+  result[EF_UNK_1913] = 1913;
+  result[EF_ETERNAL_SLASH_HIT_2] = 1914;
+  result[EF_NEW_D_CANNON] = 1915;
+  result[EF_NEW_D_CANNON_CAST] = 1916;
+  result[EF_NEW_D_CANNON_HIT] = 1917;
+  result[EF_NEW_D_CANNON_ENTITY] = 1918;
+  result[EF_FLAME_TRAP] = 1919;
+  result[EF_UNK_1920] = 1920;
+  result[EF_FLAME_TRAP_CAST] = 1921;
+  result[EF_FLAME_TRAP_HIT] = 1922;
+  result[EF_FLAME_TRAP_RING] = 1923;
+  result[EF_NEW_DILECTIO_HEAL] = 1924;
+  result[EF_NEW_DILECTIO_HEAL_CAST] = 1925;
+  result[EF_NEW_DILECTIO_HEAL_CAST_BOTTOM] = 1926;
+  result[EF_NEW_DILECTIO_HEAL_TARGET] = 1927;
+  result[EF_NEW_DILECTIO_HEAL_TARGET_BOTTOM] = 1928;
+  result[EF_NEW_PRAMEN_BOTTOM] = 1929;
+  result[EF_NEW_PRAMEN_CAST] = 1930;
+  result[EF_NEW_PRAMEN] = 1931;
+  result[EF_NEW_PRAMEN_RING] = 1932;
+  result[EF_NEW_POTENT_VENOM] = 1933;
+  result[EF_NEW_BATTLE_W] = 1934;
+  result[EF_NEW_BATTLE_W_CAST] = 1935;
+  result[EF_NEW_BATTLE_W_BOTTOM] = 1936;
+  result[EF_NEW_BATTLE_W_HIT] = 1937;
+  result[EF_NEW_BATTLE_W_ENTITY] = 1938;
+  result[EF_NEW_AXE_STOMP_HIT] = 1939;
+  result[EF_NEW_AXE_STOMP_BOTTOM] = 1940;
+  result[EF_NEW_AXE_STOMP] = 1941;
+  result[EF_NEW_AXE_STOMP_12] = 1942;
+  result[EF_NEW_AXE_STOMP_01] = 1943;
+  result[EF_NEW_AXE_STOMP_03] = 1944;
+  result[EF_NEW_AXE_STOMP_05] = 1945;
+  result[EF_NEW_AXE_STOMP_06] = 1946;
+  result[EF_NEW_AXE_STOMP_08] = 1947;
+  result[EF_NEW_AXE_STOMP_09] = 1948;
+  result[EF_NEW_AXE_STOMP_11] = 1949;
+  result[EF_UNK_1950] = 1950;
+  result[EF_UNK_1951] = 1951;
+  result[EF_UNK_1952] = 1952;
+  result[EF_UNK_1953] = 1953;
+  result[EF_UNK_1954] = 1954;
+  result[EF_UNK_1955] = 1955;
+  result[EF_UNK_1956] = 1956;
+  result[EF_UNK_1957] = 1957;
+  result[EF_PNEUMATICUS_PROCELLA_CAST] = 1958;
+  result[EF_PNEUMATICUS_PROCELLA_RING] = 1959;
+  result[EF_UNK_1960] = 1960;
+  result[EF_UNK_1961] = 1961;
+  result[EF_UNK_1962] = 1962;
+  result[EF_SINCERE_FAITH_RING] = 1963;
+  result[EF_SINCERE_FAITH] = 1964;
+  result[EF_SINCERE_FAITH_BOTTOM] = 1965;
+  result[EF_ABYSS_DAGGER] = 1966;
+  result[EF_ABYSS_DAGGER_HIT] = 1967;
+  result[EF_UNK_1968] = 1968;
+  result[EF_HAWK_BOOMERANG_CAST] = 1969;
+  result[EF_HAWK_BOOMERANG_HIT] = 1970;
+  result[EF_HAWK_BOOMERANG_START] = 1971;
+  result[EF_GALE_STORM_CAST] = 1972;
+  result[EF_UNK_1973] = 120;
+  result[EF_GALE_STORM_HIT] = 1974;
+  result[EF_FIRST_FAITH_POWER] = 1975;
+  result[EF_FIRST_FAITH_POWER_CAST] = 1976;
+  result[EF_FIRST_FAITH_POWER_START] = 1977;
+  result[EF_JUDGE] = 1978;
+  result[EF_JUDGE_CAST] = 1979;
+  result[EF_JUDGE_START] = 1980;
+  result[EF_JUDGE_AURA] = 1981;
+  result[EF_THIRD_EXOR_FLAME] = 1982;
+  result[EF_THIRD_EXOR_FLAME_CAST] = 1983;
+  result[EF_THIRD_EXOR_FLAME_START] = 1984;
+  result[EF_THIRD_EXOR_FLAME_AURA] = 1985;
+  result[EF_POWERFUL_FAITH_RING] = 1986;
+  result[EF_POWERFUL_FAITH] = 1987;
+  result[EF_OLEUM_SANCTUM] = 1988;
+  result[EF_OLEUM_SANCTUM_BOTTOM] = 1989;
+  result[EF_OLEUM_SANCTUM_HIT] = 1990;
+  result[EF_OLEUM_SANCTUM_LOOP] = 1991;
+  result[EF_INCREASING_ACTIVITY] = 1992;
+  result[EF_INCREASING_ACTIVITY_CAST] = 1993;
+  result[EF_INCREASING_ACTIVITY_CAST_BOTTOM] = 1994;
+  result[EF_EXPLOSION_BLASTER] = 1995;
+  result[EF_EXPLOSION_BLASTER_BOTTOM] = 1996;
+  result[EF_EXPLOSION_BLASTER_HIT] = 1997;
+  result[EF_FIRM_FAITH_RING] = 1998;
+  result[EF_FIRM_FAITH] = 1999;
+  result[EF_UNK_2000] = 2000;
+  result[EF_UNK_2001] = 2001;
+  result[EF_UNK_2002] = 2002;
+  result[EF_ACTIVITY_BURN] = 2003;
+  result[EF_ACTIVITY_BURN_CAST] = 2004;
+  result[EF_ACTIVITY_BURN_CAST_BOTTOM] = 2005;
+  result[EF_UNK_2006] = 2006;
+  result[EF_UNK_2007] = 2007;
+  result[EF_UNK_2008] = 2008;
+  result[EF_SERPENS_BOTTOM] = 2009;
+  result[EF_SERPENS_CAST] = 2010;
+  result[EF_SERPENS_CAST_BOTTOM] = 2011;
+  result[EF_SERPENS_HIT] = 2012;
+  result[EF_SERPENS_SHIELD] = 2013;
+  result[EF_CHAIN_REACTION_SHOT_CAST] = 2014;
+  result[EF_CHAIN_REACTION_SHOT_CAST_BOTTOM] = 2015;
+  result[EF_ETERNAL_SLASH_HIT_3] = 2016;
+  result[EF_CHAIN_REACTION_SHOT_HITSUB] = 2017;
+  result[EF_CHAIN_REACTION_SHOT] = 2018;
+  result[EF_DILUVIO_ICE] = 2019;
+  result[EF_DILUVIO_ICE_BOTTOM] = 2020;
+  result[EF_DILUVIO_CAST] = 2021;
+  result[EF_DILUVIO_CAST_BOTTOM] = 2022;
+  result[EF_DILUVIO_HIT] = 2023;
+  result[EF_DILUVIO_ARMOR] = 2024;
+  result[EF_SPELL_ENCHANTING] = 2025;
+  result[EF_UNK_2026] = 60;
+  result[EF_DIAMOND_STORM_BOTTOM] = 60;
+  result[EF_DIAMOND_STORM_CAST] = 2028;
+  result[EF_DIAMOND_STORM_CAST_BOTTOM] = 2029;
+  result[EF_DIAMOND_STORM_HIT] = 2030;
+  result[EF_VENOM_SWAMP_BOTTOM] = 2031;
+  result[EF_VENOM_SWAMP_CAST] = 2032;
+  result[EF_VENOM_SWAMP_CAST_BOTTOM] = 2033;
+  result[EF_VENOM_SWAMP_HIT] = 2034;
+  result[EF_ARDOR] = 2035;
+  result[EF_ARDOR_BOTTOM] = 2036;
+  result[EF_ARDOR_CAST] = 2037;
+  result[EF_ARDOR_CAST_BOTTOM] = 2038;
+  result[EF_ARDOR_HIT] = 2039;
+  result[EF_ARDOR_FLAMEARMOR] = 2040;
+  result[EF_LIGHTNING_LAND] = 2041;
+  result[EF_LIGHTNING_LAND_BOTTOM] = 2042;
+  result[EF_LIGHTNING_LAND_CAST] = 2043;
+  result[EF_LIGHTNING_LAND_CAST_BOTTOM] = 2044;
+  result[EF_LIGHTNING_LAND_HIT] = 2045;
+  result[EF_UNK_2046] = 2046;
+  result[EF_UNK_2047] = 2047;
+  result[EF_UNK_2048] = 2048;
+  result[EF_UNK_2049] = 2049;
+  result[EF_UNK_2050] = 2050;
+  result[EF_FIRST_BRAND] = 2051;
+  result[EF_FIRST_BRAND_AURA] = 2052;
+  result[EF_FIRST_BRAND_HIT] = 2053;
+  result[EF_FIRST_BRAND_START] = 2054;
+  result[EF_CONFLAGRATION] = 2055;
+  result[EF_CONFLAGRATION_BOTTOM] = 2056;
+  result[EF_CONFLAGRATION_CAST] = 2057;
+  result[EF_CONFLAGRATION_CAST_BOTTOM] = 2058;
+  result[EF_CONFLAGRATION_HIT] = 2059;
+  result[EF_SOUND_BLEND] = 2060;
+  result[EF_SOUND_BLEND_CAST] = 2061;
+  result[EF_SOUND_BLEND_CAST_BOTTOM] = 2062;
+  result[EF_SOUND_BLEND_RED] = 2063;
+  result[EF_METALLIC_FURY] = 2064;
+  result[EF_UNK_2065] = 2065;
+  result[EF_UNK_2066] = 2066;
+  result[EF_UNK_2067] = 2067;
+  result[EF_UNK_2068] = 2068;
+  result[EF_UNK_2069] = 2069;
+  result[EF_UNK_2070] = 2070;
+  result[EF_UNK_2071] = 2071;
+  result[EF_UNK_2072] = 2072;
+  result[EF_UNK_2073] = 2073;
+  result[EF_UNK_2074] = 2074;
+  result[EF_NIFLHEIM] = 2075;
+  result[EF_NIFLHEIM_CAST] = 2076;
+  result[EF_UNK_2077] = 2077;
+  result[EF_SECOND_FAITH] = 2078;
+  result[EF_SECOND_FAITH_AURA] = 2079;
+  result[EF_UNK_2080] = 2080;
+  result[EF_SECOND_FAITH_START] = 2081;
+  result[EF_UNK_2082] = 2082;
+  result[EF_SECOND_FLAME] = 2083;
+  result[EF_SECOND_FLAME_BOTTOM] = 2084;
+  result[EF_THIRD_FLAME_BOMB] = 2085;
+  result[EF_THIRD_FLAME_BOMB_BOTTOM] = 2086;
+  result[EF_ABYSS_STRIKE] = 2087;
+  result[EF_ABYSS_STRIKE_BOTTOM] = 2088;
+  result[EF_ABYSS_STRIKE_CAST] = 2089;
+  result[EF_ABYSS_STRIKE_CAST_BOTTOM] = 2090;
+  result[EF_ABYSS_STRIKE_GROUND] = 2091;
+  result[EF_ABYSS_STRIKE_GROUND_BOTTOM] = 2092;
+  result[EF_ABYSS_STRIKE_HIT] = 2093;
+  result[EF_MASSIVE_FLAME_BLASTER] = 2094;
+  result[EF_MASSIVE_FLAME_BLASTER_HIT] = 2095;
+  result[EF_MASSIVE_FLAME_BLASTER_HIT_BOTTOM] = 2096;
+  result[EF_THIRD_CONSECRATION] = 2094;
+  result[EF_PROCELLA] = 2098;
+  result[EF_PROCELLA_BOTTOM] = 2099;
+  result[EF_PROCELLA_CAST] = 2100;
+  result[EF_PROCELLA_CAST_BOTTOM] = 2101;
+  result[EF_PROCELLA_HIT] = 2102;
+  result[EF_PROCELLA_STORM] = 2103;
+  result[EF_TERREMOTUS] = 2104;
+  result[EF_TERREMOTUS_CAST] = 2105;
+  result[EF_TERREMOTUS_CAST_BOTTOM] = 2106;
+  result[EF_TERREMOTUS_HIT] = 2107;
+  result[EF_TERREMOTUS_PROTECT] = 2108;
+  result[EF_UNK_2109] = 2109;
+  result[EF_FROM_THE_ABYSS] = 2110;
+  result[EF_ABYSS_STRIKE_HIT_2] = 2111;
+  result[EF_THIRD_PUNISH] = 2095;
+  result[EF_THIRD_PUNISH_BOTTOM] = 2096;
+  result[EF_UNK_2114] = 2114;
+  result[EF_FRENZY_SHOT_HIT] = 2115;
+  result[EF_UNK_2116] = 2116;
+  result[EF_UNK_2117] = 2117;
+  result[EF_UNK_2118] = 2118;
+  result[EF_UNK_2119] = 2119;
+  result[EF_UNK_2120] = 2120;
+  result[EF_UNK_2121] = 2121;
+  result[EF_MUSICAL_INTERLUDE] = 2122;
+  result[EF_MUSICAL_INTERLUDE_CAST] = 2123;
+  result[EF_UNK_2124] = 2124;
+  result[EF_UNK_2125] = 2125;
+  result[EF_ABYSS_SLAYER] = 2126;
+  result[EF_ABYSS_SLAYER_CAST] = 2127;
+  result[EF_ABYSS_SLAYER_CAST_BOTTOM] = 2128;
+  result[EF_ABYSS_SQUARE] = 2129;
+  result[EF_ABYSS_SQUARE_BOTTOM] = 2130;
+  result[EF_ABYSS_DAGGER_HIT_2] = 2131;
+  result[EF_DEFT_STAB] = 2132;
+  result[EF_TERRA_DRIVE] = 2133;
+  result[EF_TERRA_DRIVE_BOTTOM] = 2134;
+  result[EF_TERRA_DRIVE_CAST] = 2135;
+  result[EF_TERRA_DRIVE_CAST_BOTTOM] = 2136;
+  result[EF_TERRA_DRIVE_HIT] = 2137;
+  result[EF_ELEMENTAL_BUSTER_CAST] = 2138;
+  result[EF_ELEMENTAL_BUSTER_FIRE] = 2139;
+  result[EF_ELEMENTAL_BUSTER_FIRE_BOTTOM] = 2140;
+  result[EF_ELEMENTAL_BUSTER_FIRE_HIT] = 2141;
+  result[EF_ELEMENTAL_BUSTER_LAND] = 2142;
+  result[EF_ELEMENTAL_BUSTER_LAND_BOTTOM] = 2143;
+  result[EF_ELEMENTAL_BUSTER_LAND_HIT] = 2144;
+  result[EF_ELEMENTAL_BUSTER_POISON] = 2145;
+  result[EF_ELEMENTAL_BUSTER_POISON_BOTTOM] = 2146;
+  result[EF_ELEMENTAL_BUSTER_POISON_HIT] = 2147;
+  result[EF_ELEMENTAL_BUSTER_WATER] = 2148;
+  result[EF_ELEMENTAL_BUSTER_WATER_BOTTOM] = 2149;
+  result[EF_ELEMENTAL_BUSTER_WATER_HIT] = 2150;
+  result[EF_ELEMENTAL_BUSTER_WIND] = 2151;
+  result[EF_ELEMENTAL_BUSTER_WIND_BOTTOM] = 2152;
+  result[EF_ELEMENTAL_BUSTER_WIND_HIT] = 2153;
+  result[EF_UNK_2154] = 2154;
+  result[EF_UNLUCKY_RUSH_CAST] = 2155;
+  result[EF_ABYSS_DAGGER_HIT_3] = 2156;
+  result[EF_UNK_2157] = 2157;
+  result[EF_UNK_2158] = 2158;
+  result[EF_UNK_2159] = 2159;
+  result[EF_UNK_2160] = 2160;
+  result[EF_ADVANCED_PROTECTION] = 2161;
+  result[EF_ADVANCED_PROTECTION_BOTTOM] = 2162;
+  result[EF_ADVANCED_PROTECTION_CAST] = 2163;
+  result[EF_ADVANCED_PROTECTION_CAST_BOTTOM] = 2164;
+  result[EF_UNK_2165] = 2165;
+  result[EF_UNK_2166] = 2166;
+  result[EF_UNK_2167] = 2167;
+  result[EF_UNK_2168] = 2168;
+  result[EF_UNK_2169] = 2169;
+  result[EF_UNK_2170] = 2170;
+  result[EF_UNK_2171] = 2171;
+  result[EF_UNK_2172] = 2172;
+  result[EF_UNK_2173] = 2173;
+  result[EF_UNK_2174] = 2174;
+  result[EF_UNK_2175] = 2175;
+  result[EF_UNK_2176] = 2176;
+  result[EF_UNK_2177] = 2177;
+  result[EF_UNK_2178] = 2178;
+  result[EF_UNK_2179] = 2179;
+  result[EF_UNK_2180] = 2180;
+  result[EF_UNK_2181] = 2181;
+  result[EF_UNK_2182] = 2182;
+  result[EF_UNK_2183] = 2183;
+  result[EF_SHIELD_SHOOTING_CAST] = 2184;
+  result[EF_SHIELD_SHOOTING_HIT] = 2185;
+  result[EF_THE_W_PROTECTION] = 2186;
+  result[EF_THE_W_PROTECTION_CAST] = 2187;
+  result[EF_UNK_2188] = 2188;
+  result[EF_UNK_2189] = 2189;
+  result[EF_UNK_2190] = 2190;
+  result[EF_UNK_2191] = 2191;
+  result[EF_UNK_2192] = 2192;
+  result[EF_UNK_2193] = 2193;
+  result[EF_UNK_2194] = 2194;
+  result[EF_UNK_2195] = 2195;
+  result[EF_UNK_2196] = 2196;
+  result[EF_UNK_2197] = 2197;
+  result[EF_UNK_2198] = 2198;
+  result[EF_UNK_2199] = 2199;
+  result[EF_UNK_2200] = 2200;
+  result[EF_UNK_2201] = 2201;
+  result[EF_UNK_2202] = 2202;
+  result[EF_UNK_2203] = 2203;
+  result[EF_ACIDIFIED_ZONE_FIRE_CAST] = 2204;
+  result[EF_ACIDIFIED_ZONE_FIRE_CAST_BOTTOM] = 2205;
+  result[EF_UNK_2206] = 2206;
+  result[EF_ACIDIFIED_ZONE_FIRE_HIT] = 2207;
+  result[EF_ACIDIFIED_ZONE_FIRE_START] = 2208;
+  result[EF_ACIDIFIED_ZONE_FIRE_START_BOTTOM] = 2209;
+  result[EF_ACIDIFIED_ZONE_FIRE_LOOP] = 2210;
+  result[EF_ACIDIFIED_ZONE_FIRE_LOOP_BOTTOM] = 2211;
+  result[EF_ACIDIFIED_ZONE_WATER_CAST] = 2212;
+  result[EF_ACIDIFIED_ZONE_WATER_CAST_BOTTOM] = 2213;
+  result[EF_UNK_2214] = 2214;
+  result[EF_ACIDIFIED_ZONE_WATER_HIT] = 2215;
+  result[EF_ACIDIFIED_ZONE_WATER_START] = 2216;
+  result[EF_ACIDIFIED_ZONE_WATER_START_BOTTOM] = 2217;
+  result[EF_ACIDIFIED_ZONE_WATER_LOOP] = 2218;
+  result[EF_ACIDIFIED_ZONE_WATER_LOOP_BOTTOM] = 2219;
+  result[EF_ACIDIFIED_ZONE_WIND_CAST] = 2220;
+  result[EF_ACIDIFIED_ZONE_WIND_CAST_BOTTOM] = 2221;
+  result[EF_UNK_2222] = 2222;
+  result[EF_ACIDIFIED_ZONE_WIND_HIT] = 2223;
+  result[EF_ACIDIFIED_ZONE_WIND_START] = 2224;
+  result[EF_ACIDIFIED_ZONE_WIND_START_BOTTOM] = 2225;
+  result[EF_ACIDIFIED_ZONE_WIND_LOOP] = 2226;
+  result[EF_ACIDIFIED_ZONE_WIND_LOOP_BOTTOM] = 2227;
+  result[EF_ACIDIFIED_ZONE_GROUND_CAST] = 2228;
+  result[EF_ACIDIFIED_ZONE_GROUND_CAST_BOTTOM] = 2229;
+  result[EF_UNK_2230] = 2230;
+  result[EF_ACIDIFIED_ZONE_GROUND_HIT] = 2231;
+  result[EF_ACIDIFIED_ZONE_GROUND_START] = 2232;
+  result[EF_ACIDIFIED_ZONE_GROUND_START_BOTTOM] = 2233;
+  result[EF_ACIDIFIED_ZONE_GROUND_LOOP] = 2234;
+  result[EF_ACIDIFIED_ZONE_GROUND_LOOP_BOTTOM] = 2235;
+  result[EF_HELLTREE_CAST] = 2236;
+  result[EF_HELLTREE_CAST_BOTTOM] = 2237;
+  result[EF_HELLTREE_DUSTY] = 2238;
+  result[EF_HELLTREE_HOWLING] = 2239;
+  result[EF_RESEARCH_REPORT_RING] = 2240;
+  result[EF_RESEARCH_REPORT] = 2241;
+  result[EF_RESEARCH_REPORT_CAST] = 2242;
+  result[EF_RESEARCH_REPORT_CAST_BOTTOM] = 2243;
+  result[EF_STATE_LASSITUDE] = 2244;
+  result[EF_STATE_SWOONING] = 2245;
+  result[EF_STATE_HOLYFLAME] = 2246;
+  result[EF_WOODEN_WARRIOR_CAST] = 2247;
+  result[EF_WOODEN_WARRIOR_CAST_BOTTOM] = 2248;
+  result[EF_WOODEN_WARRIOR_RING] = 2249;
+  result[EF_WOODEN_WARRIOR_ATTACK] = 2250;
+  result[EF_WOODEN_WARRIOR_ATTACK_HIT] = 2251;
+  result[EF_WOODEN_WARRIOR_THROWROCK] = 2252;
+  result[EF_WOODEN_WARRIOR_THROWROCK_HIT] = 2253;
+  result[EF_WOODEN_FAIRY_CAST] = 2254;
+  result[EF_WOODEN_FAIRY_RING] = 2255;
+  result[EF_WOODEN_FAIRY_CAST_BOTTOM] = 2256;
+  result[EF_WOODEN_FAIRY_DUSTY] = 2257;
+  result[EF_SERPENS_DEEP_POISONING] = 2258;
+  result[EF_SERPENS_DEEP_POISONING_BOTTOM] = 2259;
+  result[EF_DILUVIO_COLD_FORCE] = 2260;
+  result[EF_DILUVIO_COLD_FORCE_BOTTOM] = 2261;
+  result[EF_ARDOR_FLAMETECHNIC] = 2262;
+  result[EF_ARDOR_FLAMETECHNIC_BOTTOM] = 2263;
+  result[EF_PROCELLA_GRACE_BREEZE] = 2264;
+  result[EF_PROCELLA_GRACE_BREEZE_BOTTOM] = 2265;
+  result[EF_TERREMOTUS_EARTH_CARE] = 2266;
+  result[EF_TERREMOTUS_EARTH_CARE_BOTTOM] = 2267;
+  result[EF_STATE_LIGHTNINGSTRIKE] = 2268;
+  result[EF_STATE_CONFLAGRATION] = 2269;
+  result[EF_STATE_FROSTBITE] = 2270;
+  result[EF_STATE_FROSTBITE_FINISH] = 2271;
+  result[EF_UNK_2272] = 2272;
+  result[EF_STATE_CRYSTALLIZATION] = 2273;
+  result[EF_STATE_DEADLYPOISON] = 2274;
+  result[EF_UNK_2275] = 2275;
+  result[EF_UNK_2276] = 2276;
+  result[EF_UNK_2277] = 99999;
+  result[EF_UNK_2278] = 99999;
+  result[EF_THIRD_CONSECRATION_BOTTOM] = 2279;
+  result[EF_UNK_2280] = 2280;
+  result[EF_UNK_2281] = 2281;
+  result[EF_UNK_2282] = 2281;
+  result[EF_UNK_2283] = 2282;
+  result[EF_UNK_2284] = 2283;
+  result[EF_UNK_2285] = 2284;
+  result[EF_UNK_2286] = 2285;
+  result[EF_UNK_2287] = 2286;
+  result[EF_STATUS_CRATE_UP] = 100;
+  result[EF_STATUS_CRATE_DOWN] = 100;
+  result[EF_STATUS_HPLUS_UP] = 100;
+  result[EF_STATUS_HPLUS_DOWN] = 100;
+  result[EF_STATUS_MRES_UP] = 100;
+  result[EF_STATUS_MRES_DOWN] = 100;
+  result[EF_STATUS_PATK_UP] = 100;
+  result[EF_STATUS_PATK_DOWN] = 100;
+  result[EF_STATUS_RES_UP] = 100;
+  result[EF_STATUS_RES_DOWN] = 100;
+  result[EF_STATUS_SMATK_UP] = 100;
+  result[EF_STATUS_SMATK_DOWN] = 100;
+  result[EF_STATUS_PATK_SMATK_UP] = 100;
+  result[EF_UNK_2301] = 2301;
+  result[EF_NPC_KILLING_AURA] = 2302;
+  result[EF_NPC_KILLING_AURA_END] = 2303;
+  result[EF_NPC_KILLING_AURA_HIT] = 2304;
+  result[EF_UNK_2305] = 2305;
+  result[EF_UNK_2306] = 2306;
+  result[EF_UNK_2307] = 2307;
+  result[EF_NPC_CANE_OF_EVIL_EYE] = 2308;
+  result[EF_UNK_2309] = 99999999;
+  result[EF_UNK_2310] = 99999999;
+  result[EF_UI_ENCHANT_INTRO_YELLOW] = 2311;
+  result[EF_UI_ENCHANT_SUCCESS] = 2312;
+  result[EF_UI_ENCHANT_FAIL] = 2313;
+  result[EF_UI_ENCHANT_INTRO_BLUE] = 2314;
+  result[EF_UI_LEVELUP_SUCCESS] = 2315;
+  result[EF_UI_LEVELUP_FAIL] = 2316;
+  result[EF_UI_ENCHANT_INTRO_GREEN] = 2317;
+  result[EF_UI_RESET_SUCCESS] = 2318;
+  result[EF_UI_RESET_FAIL] = 2319;
+  result[EF_TOXIN_OF_MANDARA_BOMB] = 2320;
+  result[EF_TOXIN_OF_MANDARA_BOMB_BOTTOM] = 2321;
+  result[EF_TOXIN_OF_MANDARA_SHOCK] = 2322;
+  result[EF_NEEDLE_STINGER] = 2323;
+  result[EF_NEEDLE_STINGER_BOTTOM] = 2324;
+  result[EF_NEEDLE_STINGER_HIT] = 2325;
+  result[EF_ABSOLUTE_ZEPHYR] = 2326;
+  result[EF_ABSOLUTE_ZEPHYR_BOTTOM] = 2327;
+  result[EF_ABSOLUTE_ZEPHYR_HIT] = 2328;
+  result[EF_TWISTER_CUTTER] = 2329;
+  result[EF_TWISTER_CUTTER_HIT] = 2330;
+  result[EF_HEILIGE_PFERD] = 2331;
+  result[EF_HEILIGE_PFERD_BOTTOM] = 2332;
+  result[EF_HEILIGE_PFERD_CAST] = 2333;
+  result[EF_GOLDENE_TONE] = 2334;
+  result[EF_GLANZEN_SPIES] = 2335;
+  result[EF_GLANZEN_SPIES_HIT] = 2336;
+  result[EF_BLAZING_AND_FURIOUS] = 2337;
+  result[EF_THE_ONE_FIGHTER_RISES] = 70;
+  result[EF_THE_ONE_FIGHTER_RISES_BOTTOM] = 2339;
+  result[EF_TEMPERING] = 2340;
+  result[EF_UNK_2341] = 2341;
+  result[EF_BLAST_FORGE_HIT] = 2342;
+  result[EF_UNK_2343] = 2343;
+  result[EF_UNK_2344] = 2344;
+  result[EF_UNK_2345] = 2345;
+  result[EF_POK_94] = 99999999;
+  result[EF_POK_95] = 99999999;
+  result[EF_UNK_2348] = 2348;
+  result[EF_UNK_2349] = 2349;
+  result[EF_UNK_2350] = 2350;
+  result[EF_UNK_2351] = 2351;
+  result[EF_UNK_2352] = 2352;
+  result[EF_UNK_2353] = 2353;
+  result[EF_UNK_2354] = 2354;
+  result[EF_UNK_2355] = 2355;
+  result[EF_POK_96] = 99999999;
+  result[EF_POK_97] = 99999999;
+  result[EF_POK_98] = 99999999;
+  result[EF_POK_99] = 99999999;
+  result[EF_POK_100] = 99999999;
+  result[EF_POK_101] = 99999999;
+  result[EF_POK_102] = 99999999;
+  result[EF_POK_103] = 99999999;
+  result[EF_POK_104] = 99999999;
+  result[EF_POK_105] = 99999999;
+  result[EF_UNK_2366] = 2366;
+  result[EF_UNKNOWN_RING_YELLOW] = 40;
+  result[EF_UNKNOWN_SPELL] = 100;
+  result[EF_UNKNOWN_RING_WHITE] = 40;
+  result[EF_UNK_2370] = 2370;
+  result[EF_TETRA_VORTEX_WATER_SUB_2] = 2371;
+  result[EF_TETRA_VORTEX_EARTH_SUB_2] = 2372;
+  result[EF_VOLCANO_BLACK] = 300;
+  result[EF_CHANGE_SIZE] = 99999999;
+  result[EF_UNK_2375] = 99999999;
+  result[EF_NPC_20TH_CRYSTAL_S] = 2376;
+  result[EF_NPC_20TH_CRYSTAL_M] = 2377;
+  result[EF_NPC_20TH_CRYSTAL_L] = 2378;
+  result[EF_NPC_GATE_GREEN_1] = 2379;
+  result[EF_NPC_GATE_PURPLE_1] = 2380;
+  result[EF_NPC_GATE_RED_1] = 2381;
+  result[EF_20TH_FIREWORK] = 2382;
+  result[EF_NPC_GATE_GREEN_2] = 2383;
+  result[EF_NPC_GATE_PURPLE_2] = 2384;
+  result[EF_NPC_GATE_RED_2] = 2385;
+  result[EF_NPC_GATE_GREEN_3] = 2386;
+  result[EF_NPC_GATE_PURPLE_3] = 2387;
+  result[EF_NPC_GATE_RED_3] = 2388;
+  result[EF_NPC_GATE_SKYBLUE] = 2389;
+  result[EF_UNK_2390] = 999999;
+  result[EF_UNK_2391] = 999999;
+  result[EF_UNK_2392] = 999999;
+  result[EF_UNK_2393] = 999999;
+  result[EF_UNK_2394] = 2394;
+  result[EF_RUNE_ACTIVE_FINISH] = 2395;
+  result[EF_RUNESET_ACTIVE] = 2396;
+  result[EF_RUNESET_UPGRADE_SUCCESS] = 2397;
+  result[EF_RUNESET_UPGRADE_FAIL] = 2398;
+  result[EF_RUNE_BROKEN] = 2399;
+  result[EF_ALPHA_DOWN_ANIM] = 2415;
+  result[EF_GLOW_BLACK] = 99999999;
+  result[EF_UNK_2413] = 99999999;
+  result[EF_UNK_2414] = 99999999;
+  result[EF_UNK_2415] = 99999999;
+  result[EF_ABC_CHASING_LINE] = 300;
+  result[EF_ABC_CROSSIMPACT_LINE] = 300;
+  result[EF_UNK_2418] = 2418;
+  result[EF_UNK_2419] = 2419;
+  result[EF_RUNE_SLOT_SMALL] = 2421;
+  result[EF_RUNE_SLOT_BIG] = 2422;
+  result[EF_UNK_2423] = 2423;
+  result[EF_WH_WILD_WALK] = 250;
+  result[EF_FORCE_ANIM_27] = 100;
+  result[EF_HEAL_BLUE_2] = 100;
+  result[EF_UNK_2432] = 2432;
+  result[EF_UNK_2433] = 2433;
+  result[EF_UNK_2434] = 2434;
+  result[EF_UNK_2435] = 300;
+  result[EF_RG_COIN_BLUE] = 3000;
+  result[EF_RG_COIN_BLUE_2] = 3000;
+  result[EF_UNK_2438] = 2438;
+  result[EF_UNK_2439] = 300;
+  result[EF_UNK_2440] = 99999999;
+  result[EF_UNK_2441] = 300;
+  result[EF_UNK_2442] = 300;
+  result[EF_UNK_2443] = 99999999;
+  result[EF_UNK_2444] = 500;
+  result[EF_UNK_2445] = 2435;
+  result[EF_UNK_2446] = 2436;
+  result[EF_UNK_2447] = 40;
+  result[EF_UNK_2448] = 40;
+  result[EF_UNK_2449] = 2438;
+  result[EF_UNK_2450] = 40;
+  result[EF_UNK_2451] = 9999;
+  result[EF_UNK_2452] = 999;
+  result[EF_UNK_2453] = 2000;
+  result[EF_UNK_2454] = 40;
+  result[EF_UNK_2455] = 499;
+  result[EF_UNK_2456] = 9999;
+  result[EF_UNK_2457] = 40;
+  result[EF_UNK_2463] = 100;
+  result[EF_UNK_2464] = 100;
+  result[EF_UNK_2465] = 100;
+  result[EF_UNK_2466] = 1000;
+  result[EF_UNK_2468] = 300;
+  result[EF_UNK_2469] = 40;
+  result[EF_UNK_2470] = 250;
+  result[EF_UNK_2471] = 29999;
+  result[EF_UNK_2472] = 9999;
+  result[EF_UNK_2473] = 9999;
+  result[EF_UNK_2474] = 100;
+  result[EF_UNK_2477] = 250;
+  result[EF_UNK_2478] = 100;
+  result[EF_UNK_2479] = 999;
+  result[EF_UNK_2480] = 499;
+  result[EF_UNK_2481] = 200;
+  result[EF_UNK_2482] = 99999999;
+  result[EF_UNK_2483] = 99999999;
+  return result;
+}
+
 namespace {
   // STATIC: 0x016FDAC0
   // GLOBAL: gl_24388
-  const std::unordered_map<int, int> lifetimes = {
-    {EF_HIT1, 50},
-    {EF_HIT2, 50},
-    {EF_HIT3, 50},
-    {EF_HIT4, 50},
-    {EF_HIT5, 50},
-    {EF_HIT6, 50},
-    {EF_ENTRY, 100},
-    {EF_EXIT, 50},
-    {EF_WARP, 80},
-    {EF_ENHANCE, 80},
-    {EF_COIN, 100},
-    {EF_ENDURE, 80},
-    {EF_BEGINSPELL, 40},
-    {EF_GLASSWALL, 9999},
-    {EF_HEALSP, 50},
-    {EF_SOULSTRIKE, 100},
-    {EF_BASH, 40},
-    {EF_MAGNUMBREAK, 30},
-    {EF_STEAL, 50},
-    {EF_HIDING, 50},
-    {EF_PATTACK, 100},
-    {EF_DETOXICATION, 100},
-    {EF_SIGHT, 270},
-    {EF_STONECURSE, 999},
-    {EF_FIREBALL, 100},
-    {EF_FIREWALL, 40},
-    {EF_ICEARROW, 160},
-    {EF_FROSTDIVER, 150},
-    {EF_FROSTDIVER2, 100},
-    {EF_LIGHTBOLT, 200},
-    {EF_THUNDERSTORM, 104},
-    {EF_FIREARROW, 160},
-    {EF_NAPALMBEAT, 100},
-    {EF_RUWACH, 200},
-    {EF_TELEPORTATION, 100},
-    {EF_READYPORTAL, 100},
-    {EF_PORTAL, 100},
-    {EF_INCAGILITY, 100},
-    {EF_DECAGILITY, 100},
-    {EF_AQUA, 100},
-    {EF_SIGNUM, 999},
-    {EF_ANGELUS, 999},
-    {EF_BLESSING, 150},
-    {EF_INCAGIDEX, 100},
-    {EF_SMOKE, 50},
-    {EF_FIREFLY, 100},
-    {EF_SANDWIND, 180},
-    {EF_TORCH, 250},
-    {EF_SPRAYPOND, 130},
-    {EF_FIREHIT, 50},
-    {EF_FIRESPLASHHIT, 50},
-    {EF_COLDHIT, 50},
-    {EF_WINDHIT, 40},
-    {EF_POISONHIT, 50},
-    {EF_BEGINSPELL2, 40},
-    {EF_BEGINSPELL3, 40},
-    {EF_BEGINSPELL4, 40},
-    {EF_BEGINSPELL5, 40},
-    {EF_BEGINSPELL6, 40},
-    {EF_BEGINSPELL7, 40},
-    {EF_LOCKON, 200},
-    {EF_WARPZONE, 250},
-    {EF_SIGHTRASHER, 250},
-    {EF_BARRIER, 250},
-    {EF_ARROWSHOT, 999},
-    {EF_INVENOM, 999},
-    {EF_CURE, 999},
-    {EF_PROVOKE, 999},
-    {EF_MVP, 999},
-    {EF_SKIDTRAP, 9999},
-    {EF_BRANDISHSPEAR, 999},
-    {EF_CONE, 250},
-    {EF_SPHERE, 500},
-    {EF_BOWLINGBASH, 250},
-    {EF_ICEWALL, 250},
-    {EF_GLORIA, 999},
-    {EF_MAGNIFICAT, 999},
-    {EF_RESURRECTION, 999},
-    {EF_RECOVERY, 999},
-    {EF_EARTHSPIKE, 250},
-    {EF_SPEARBMR, 250},
-    {EF_PIERCE, 250},
-    {EF_TURNUNDEAD, 250},
-    {EF_SANCTUARY, 999},
-    {EF_IMPOSITIO, 999},
-    {EF_LEXAETERNA, 999},
-    {EF_ASPERSIO, 999},
-    {EF_LEXDIVINA, 999},
-    {EF_SUFFRAGIUM, 999},
-    {EF_STORMGUST, 9999},
-    {EF_LORD, 9999},
-    {EF_BENEDICTIO, 9999},
-    {EF_METEORSTORM, 9999},
-    {EF_YUFITEL, 250},
-    {EF_YUFITELHIT, 250},
-    {EF_QUAGMIRE, 150},
-    {EF_FIREPILLAR, 9999},
-    {EF_FIREPILLARBOMB, 9999},
-    {EF_HASTEUP, 250},
-    {EF_FLASHER, 250},
-    {EF_REMOVETRAP, 70},
-    {EF_REPAIRWEAPON, 9999},
-    {EF_CRASHEARTH, 9999},
-    {EF_PERFECTION, 999},
-    {EF_MAXPOWER, 999},
-    {EF_BLASTMINE, 250},
-    {EF_BLASTMINEBOMB, 9999},
-    {EF_CLAYMORE, 9999},
-    {EF_FREEZING, 9999},
-    {EF_SPRINGTRAP, 9999},
-    {EF_BUBBLE, 9999},
-    {EF_GASPUSH, 9999},
-    {EF_KYRIE, 999},
-    {EF_MAGNUS, 9999},
-    {EF_BOTTOM, 350},
-    {EF_BLITZBEAT, 250},
-    {EF_WATERBALL, 250},
-    {EF_WATERBALL2, 100},
-    {EF_FIREIVY, 250},
-    {EF_DETECTING, 250},
-    {EF_CLOAKING, 250},
-    {EF_SONICBLOW, 40},
-    {EF_SONICBLOWHIT, 250},
-    {EF_GRIMTOOTH, 250},
-    {EF_VENOMDUST, 9999},
-    {EF_ENCHANTPOISON, 250},
-    {EF_POISONREACT, 9999},
-    {EF_POISONREACT2, 9999},
-    {EF_OVERTHRUST, 250},
-    {EF_SPLASHER, 9999},
-    {EF_TWOHANDQUICKEN, 9999},
-    {EF_AUTOCOUNTER, 9999},
-    {EF_GRIMTOOTHATK, 250},
-    {EF_FREEZE, 9999},
-    {EF_FREEZED, 9999},
-    {EF_ICECRASH, 9999},
-    {EF_SLOWPOISON, 80},
-    {EF_BOTTOM2, 350},
-    {EF_FIREPILLARON, 8000},
-    {EF_SANDMAN, 9999},
-    {EF_REVIVE, 250},
-    {EF_PNEUMA, 9999},
-    {EF_HEAVENSDRIVE, 250},
-    {EF_SONICBLOW2, 999},
-    {EF_BRANDISH2, 999},
-    {EF_SHOCKWAVE, 32797},
-    {EF_SHOCKWAVEHIT, 999},
-    {EF_EARTHHIT, 999},
-    {EF_PIERCESELF, 999},
-    {EF_BOWLINGSELF, 999},
-    {EF_SPEARSTABSELF, 999},
-    {EF_SPEARBMRSELF, 999},
-    {EF_HOLYHIT, 100},
-    {EF_CONCENTRATION, 999},
-    {EF_REFINEOK, 999},
-    {EF_REFINEFAIL, 999},
-    {EF_JOBCHANGE, 999},
-    {EF_LVUP, 999},
-    {EF_JOBLVUP, 999},
-    {EF_TOPRANK, 9999},
-    {EF_PARTY, 9999},
-    {EF_RAIN, 0},
-    {EF_SNOW, 99999999},
-    {EF_SAKURA, 99999999},
-    {EF_STATUS_STATE, 999999999},
-    {EF_BANJJAKII, 1000},
-    {EF_MAKEBLUR, 9999},
-    {EF_TAMINGSUCCESS, 999},
-    {EF_TAMINGFAILED, 999},
-    {EF_ENERGYCOAT, 9999},
-    {EF_CARTREVOLUTION, 999},
-    {EF_VENOMDUST2, 9999},
-    {EF_CHANGEDARK, 100},
-    {EF_CHANGEFIRE, 100},
-    {EF_CHANGECOLD, 100},
-    {EF_CHANGEWIND, 100},
-    {EF_CHANGEFLAME, 100},
-    {EF_CHANGEEARTH, 100},
-    {EF_CHAINGEHOLY, 100},
-    {EF_CHANGEPOISON, 100},
-    {EF_HITDARK, 50},
-    {EF_MENTALBREAK, 9999},
-    {EF_MAGICALATTHIT, 9999},
-    {EF_SUI_EXPLOSION, 9999},
-    {EF_DARKATTACK, 0},
-    {EF_SUICIDE, 9999},
-    {EF_COMBOATTACK1, 9999},
-    {EF_COMBOATTACK2, 9999},
-    {EF_COMBOATTACK3, 9999},
-    {EF_COMBOATTACK4, 9999},
-    {EF_COMBOATTACK5, 9999},
-    {EF_GUIDEDATTACK, 9999},
-    {EF_POISONATTACK, 9999},
-    {EF_SILENCEATTACK, 9999},
-    {EF_STUNATTACK, 9999},
-    {EF_PETRIFYATTACK, 9999},
-    {EF_CURSEATTACK, 150},
-    {EF_SLEEPATTACK, 9999},
-    {EF_TELEKHIT, 0},
-    {EF_PONG, 9999},
-    {EF_LEVEL99, 99999999},
-    {EF_LEVEL99_2, 99999999},
-    {EF_LEVEL99_3, 99999999},
-    {EF_GUMGANG, 99999},
-    {EF_POTION1, 100},
-    {EF_POTION2, 100},
-    {EF_POTION3, 100},
-    {EF_POTION4, 100},
-    {EF_POTION5, 100},
-    {EF_POTION6, 100},
-    {EF_POTION7, 100},
-    {EF_POTION8, 100},
-    {EF_DARKBREATH, 500},
-    {EF_DEFFENDER, 9999},
-    {EF_KEEPING, 9999},
-    {EF_SUMMONSLAVE, 500},
-    {EF_BLOODDRAIN, 200},
-    {EF_ENERGYDRAIN, 200},
-    {EF_POTION_CON, 199},
-    {EF_POTION_, 199},
-    {EF_POTION_BERSERK, 199},
-    {EF_POTIONPILLAR, 150},
-    {EF_DEFENDER, 200},
-    {EF_GANBANTEIN, 300},
-    {EF_WIND, 300},
-    {EF_VOLCANO, 300},
-    {EF_GRANDCROSS, 999},
-    {EF_INTIMIDATE, 999},
-    {EF_CHOOKGI, 999999},
-    {EF_CLOUD, 99999999},
-    {EF_CLOUD2, 99999999},
-    {EF_MAPPILLAR, 999},
-    {EF_LINELINK, 99999},
-    {EF_CLOUD3, 99999999},
-    {EF_SPELLBREAKER, 999},
-    {EF_DISPELL, 999},
-    {EF_DELUGE, 999},
-    {EF_VIOLENTGALE, 999},
-    {EF_LANDPROTECTOR, 999},
-    {EF_BOTTOM_VO, 29999},
-    {EF_BOTTOM_DE, 29999},
-    {EF_BOTTOM_VI, 29999},
-    {EF_BOTTOM_LA, 29999},
-    {EF_FASTMOVE, 9999},
-    {EF_MAGICROD, 499},
-    {EF_HOLYCROSS, 499},
-    {EF_SHIELDCHARGE, 499},
-    {EF_MAPPILLAR2, 999},
-    {EF_PROVIDENCE, 200},
-    {EF_SHIELDBOOMERANG, 499},
-    {EF_SPEARQUICKEN, 9999},
-    {EF_DEVOTION, 150},
-    {EF_REFLECTSHIELD, 200},
-    {EF_ABSORBSPIRITS, 100},
-    {EF_STEELBODY, 99999999},
-    {EF_FLAMELAUNCHER, 999},
-    {EF_FROSTWEAPON, 999},
-    {EF_LIGHTNINGLOADER, 999},
-    {EF_SEISMICWEAPON, 999},
-    {EF_MAPPILLAR3, 999},
-    {EF_MAPPILLAR4, 999},
-    {EF_GUMGANG2, 300},
-    {EF_TEIHIT1, 300},
-    {EF_GUMGANG3, 300},
-    {EF_TEIHIT2, 300},
-    {EF_TANJI, 300},
-    {EF_TEIHIT1X, 300},
-    {EF_CHIMTO, 16},
-    {EF_STEALCOIN, 300},
-    {EF_STRIPWEAPON, 300},
-    {EF_STRIPSHIELD, 300},
-    {EF_STRIPARMOR, 300},
-    {EF_STRIPHELM, 300},
-    {EF_CHAINCOMBO, 300},
-    {EF_RG_COIN, 300},
-    {EF_BACKSTAP, 300},
-    {EF_TEIHIT3, 300},
-    {EF_BOTTOM_DISSONANCE, 29999},
-    {EF_BOTTOM_LULLABY, 29999},
-    {EF_BOTTOM_RICHMANKIM, 29999},
-    {EF_BOTTOM_ETERNALCHAOS, 29999},
-    {EF_BOTTOM_DRUMBATTLEFIELD, 29999},
-    {EF_BOTTOM_RINGNIBELUNGEN, 29999},
-    {EF_BOTTOM_ROKISWEIL, 29999},
-    {EF_BOTTOM_INTOABYSS, 29999},
-    {EF_BOTTOM_SIEGFRIED, 29999},
-    {EF_BOTTOM_WHISTLE, 29999},
-    {EF_BOTTOM_ASSASSINCROSS, 29999},
-    {EF_BOTTOM_POEMBRAGI, 29999},
-    {EF_BOTTOM_APPLEIDUN, 29999},
-    {EF_BOTTOM_UGLYDANCE, 29999},
-    {EF_BOTTOM_HUMMING, 29999},
-    {EF_BOTTOM_DONTFORGETME, 29999},
-    {EF_BOTTOM_FORTUNEKISS, 29999},
-    {EF_BOTTOM_SERVICEFORYOU, 29999},
-    {EF_TALK_FROSTJOKE, 999},
-    {EF_TALK_SCREAM, 999},
-    {EF_POKJUK, 99999999},
-    {EF_THROWITEM, 300},
-    {EF_THROWITEM2, 300},
-    {EF_CHEMICALPROTECTION, 300},
-    {EF_POKJUK_SOUND, 99999999},
-    {EF_DEMONSTRATION, 99999},
-    {EF_CHEMICAL2, 300},
-    {EF_TELEPORTATION2, 200},
-    {EF_PHARMACY_OK, 90},
-    {EF_PHARMACY_FAIL, 90},
-    {EF_FORESTLIGHT, 36000},
-    {EF_THROWITEM3, 200},
-    {EF_FIRSTAID, 299},
-    {EF_SPRINKLESAND, 300},
-    {EF_LOUD, 300},
-    {EF_HEAL, 100},
-    {EF_HEAL2, 100},
-    {EF_EXIT2, 200},
-    {EF_GLASSWALL2, 9999},
-    {EF_READYPORTAL2, 200},
-    {EF_PORTAL2, 9999},
-    {EF_BOTTOM_MAG, 9999},
-    {EF_BOTTOM_SANC, 9999},
-    {EF_HEAL3, 100},
-    {EF_WARPZONE2, 99999999},
-    {EF_FORESTLIGHT2, 36000},
-    {EF_FORESTLIGHT3, 36000},
-    {EF_FORESTLIGHT4, 36000},
-    {EF_HEAL4, 100},
-    {EF_FOOT, 340},
-    {EF_FOOT2, 340},
-    {EF_BEGINASURA, 1000},
-    {EF_TRIPLEATTACK, 100},
-    {EF_HITLINE, 200},
-    {EF_HPTIME, 300},
-    {EF_SPTIME, 300},
-    {EF_MAPLE, 99999999},
-    {EF_BLIND, 99999999},
-    {EF_POISON, 99999999},
-    {EF_GUARD, 200},
-    {EF_JOBLVUP50, 200},
-    {EF_ANGEL2, 200},
-    {EF_MAGNUM2, 100},
-    {EF_CALLZONE, 3000},
-    {EF_PORTAL3, 9999},
-    {EF_COUPLECASTING, 1000},
-    {EF_HEARTCASTING, 1000},
-    {EF_ENTRY2, 100},
-    {EF_SAINTWING, 99999999},
-    {EF_SPHEREWIND, 99999999},
-    {EF_COLORPAPER, 9999},
-    {EF_LIGHTSPHERE, 1000},
-    {EF_WATERFALL, 99999999},
-    {EF_WATERFALL_90, 99999999},
-    {EF_WATERFALL_SMALL, 99999999},
-    {EF_WATERFALL_SMALL_90, 99999999},
-    {EF_WATERFALL_T2, 99999999},
-    {EF_WATERFALL_T2_90, 99999999},
-    {EF_WATERFALL_SMALL_T2, 99999999},
-    {EF_WATERFALL_SMALL_T2_90, 99999999},
-    {EF_MINI_TETRIS, 99999999},
-    {EF_GHOST, 4000},
-    {EF_BAT, 4000},
-    {EF_BAT2, 4000},
-    {EF_SOULBREAKER, 300},
-    {EF_LEVEL99_4, 99999999},
-    {EF_VALLENTINE, 100},
-    {EF_VALLENTINE2, 100},
-    {EF_PRESSURE, 300},
-    {EF_BASH3D, 200},
-    {EF_AURABLADE, 60},
-    {EF_REDBODY, 99999},
-    {EF_LKCONCENTRATION, 99999},
-    {EF_BOTTOM_GOSPEL, 19999},
-    {EF_ANGEL, 200},
-    {EF_DEVIL, 200},
-    {EF_DRAGONSMOKE, 50},
-    {EF_BOTTOM_BASILICA, 29999},
-    {EF_ASSUMPTIO, 99999},
-    {EF_HITLINE2, 200},
-    {EF_BASH3D2, 200},
-    {EF_ENERGYDRAIN2, 200},
-    {EF_TRANSBLUEBODY, 200},
-    {EF_MAGICCRASHER, 100},
-    {EF_LIGHTSPHERE2, 99999999},
-    {EF_LIGHTBLADE, 99999999},
-    {EF_ENERGYDRAIN3, 200},
-    {EF_LINELINK2, 200},
-    {EF_LINKLIGHT, 200},
-    {EF_TRUESIGHT, 250},
-    {EF_FALCONASSAULT, 200},
-    {EF_TRIPLEATTACK2, 200},
-    {EF_PORTAL4, 200},
-    {EF_MELTDOWN, 250},
-    {EF_CARTBOOST, 150},
-    {EF_REJECTSWORD, 200},
-    {EF_TRIPLEATTACK3, 200},
-    {EF_SPHEREWIND2, 99999},
-    {EF_LINELINK3, 99999999},
-    {EF_PINKBODY, 99999999},
-    {EF_LEVEL99_5, 99999999},
-    {EF_LEVEL99_6, 99999999},
-    {EF_BASH3D3, 200},
-    {EF_BASH3D4, 200},
-    {EF_NAPALMVALCAN, 200},
-    {EF_PORTAL5, 200},
-    {EF_MAGICCRASHER2, 100},
-    {EF_BOTTOM_SPIDER, 29999},
-    {EF_BOTTOM_FOGWALL, 29999},
-    {EF_SOULBURN, 200},
-    {EF_SOULCHANGE, 200},
-    {EF_BABY, 200},
-    {EF_SOULBREAKER2, 300},
-    {EF_RAINBOW, 300},
-    {EF_PEONG, 300},
-    {EF_TANJI2, 300},
-    {EF_PRESSEDBODY, 50},
-    {EF_SPINEDBODY, 50},
-    {EF_KICKEDBODY, 100},
-    {EF_AIRTEXTURE, 100},
-    {EF_HITBODY, 100},
-    {EF_DOUBLEGUMGANG, 99999999},
-    {EF_REFLECTBODY, 99999999},
-    {EF_BABYBODY, 99999},
-    {EF_BABYBODY2, 99999},
-    {EF_GIANTBODY, 99999},
-    {EF_GIANTBODY2, 99999},
-    {EF_ASURABODY, 99999999},
-    {EF_4WAYBODY, 100},
-    {EF_QUAKEBODY, 14},
-    {EF_ASURABODY_MONSTER, 99999999},
-    {EF_HITLINE3, 200},
-    {EF_HITLINE4, 200},
-    {EF_HITLINE5, 200},
-    {EF_HITLINE6, 200},
-    {EF_ELECTRIC, 300},
-    {EF_ELECTRIC2, 300},
-    {EF_HITLINE7, 50},
-    {EF_STORMKICK, 100},
-    {EF_HALFSPHERE, 200},
-    {EF_ATTACKENERGY, 3000},
-    {EF_ATTACKENERGY2, 100},
-    {EF_CHEMICAL3, 300},
-    {EF_ASSUMPTIO2, 300},
-    {EF_BLUECASTING, 60},
-    {EF_RUN, 9999},
-    {EF_STOPRUN, 30},
-    {EF_STOPEFFECT, 100},
-    {EF_JUMPBODY, 500},
-    {EF_LANDBODY, 35},
-    {EF_FOOT3, 340},
-    {EF_FOOT4, 340},
-    {EF_TAE_READY, 60},
-    {EF_GRANDCROSS2, 999},
-    {EF_SOULSTRIKE2, 100},
-    {EF_YUFITEL2, 250},
-    {EF_NPC_STOP, 99999},
-    {EF_DARKCASTING, 60},
-    {EF_GUMGANGNPC, 1500},
-    {EF_AGIUP, 100},
-    {EF_JUMPKICK, 100},
-    {EF_QUAKEBODY2, 35},
-    {EF_STORMKICK1, 100},
-    {EF_STORMKICK2, 100},
-    {EF_STORMKICK3, 100},
-    {EF_STORMKICK4, 200},
-    {EF_STORMKICK5, 300},
-    {EF_STORMKICK6, 100},
-    {EF_STORMKICK7, 1000},
-    {EF_SPINEDBODY2, 50},
-    {EF_BEGINASURA1, 300},
-    {EF_BEGINASURA2, 300},
-    {EF_BEGINASURA3, 300},
-    {EF_BEGINASURA4, 300},
-    {EF_BEGINASURA5, 300},
-    {EF_BEGINASURA6, 300},
-    {EF_BEGINASURA7, 300},
-    {EF_AURABLADE2, 99999999},
-    {EF_DEVIL1, 99999999},
-    {EF_DEVIL2, 99999999},
-    {EF_DEVIL3, 99999999},
-    {EF_DEVIL4, 99999999},
-    {EF_DEVIL5, 99999999},
-    {EF_DEVIL6, 99999999},
-    {EF_DEVIL7, 99999999},
-    {EF_DEVIL8, 99999999},
-    {EF_DEVIL9, 99999999},
-    {EF_DEVIL10, 99999999},
-    {EF_DOUBLEGUMGANG2, 99999},
-    {EF_DOUBLEGUMGANG3, 99999},
-    {EF_BLACKDEVIL, 200},
-    {EF_FLOWERCAST, 400},
-    {EF_FLOWERCAST2, 400},
-    {EF_FLOWERCAST3, 400},
-    {EF_MOCHI, 100},
-    {EF_LAMADAN, 100},
-    {EF_EDP, 120},
-    {EF_SHIELDBOOMERANG2, 499},
-    {EF_RG_COIN2, 300},
-    {EF_GUARD2, 200},
-    {EF_SLIM, 250},
-    {EF_SLIM2, 250},
-    {EF_SLIM3, 250},
-    {EF_CHEMICALBODY, 120},
-    {EF_CASTSPIN, 100},
-    {EF_PIERCEBODY, 200},
-    {EF_SOULLINK, 500},
-    {EF_CHOOKGI2, 999999},
-    {EF_MEMORIZE, 200},
-    {EF_SOULLIGHT, 100},
-    {EF_MAPAE, 100},
-    {EF_ITEMPOKJUK, 100},
-    {EF_05VAL, 100},
-    {EF_BEGINASURA11, 1000},
-    {EF_NIGHT, 10},
-    {EF_CHEMICAL2DASH, 300},
-    {EF_GROUNDSAMPLE, 3000},
-    {EF_GI_EXPLOSION, 300},
-    {EF_CLOUD4, 99999999},
-    {EF_CLOUD5, 99999999},
-    {EF_BOTTOM_HERMODE, 29999},
-    {EF_CARTTER, 200},
-    {EF_ITEMFAST, 100},
-    {EF_SHIELDBOOMERANG3, 499},
-    {EF_DOUBLECASTBODY, 120},
-    {EF_GRAVITATION, 2000},
-    {EF_TAROTCARD1, 300},
-    {EF_TAROTCARD2, 300},
-    {EF_TAROTCARD3, 300},
-    {EF_TAROTCARD4, 300},
-    {EF_TAROTCARD5, 300},
-    {EF_TAROTCARD6, 300},
-    {EF_TAROTCARD7, 300},
-    {EF_TAROTCARD8, 300},
-    {EF_TAROTCARD9, 300},
-    {EF_TAROTCARD10, 300},
-    {EF_TAROTCARD11, 300},
-    {EF_TAROTCARD12, 300},
-    {EF_TAROTCARD13, 300},
-    {EF_TAROTCARD14, 300},
-    {EF_ACIDDEMON, 200},
-    {EF_GREENBODY, 120},
-    {EF_THROWITEM4, 300},
-    {EF_BABYBODY_BACK, 50},
-    {EF_THROWITEM5, 300},
-    {EF_BLUEBODY, 200},
-    {EF_HATED, 500},
-    {EF_REDLIGHTBODY, 99999999},
-    {EF_RO2YEAR, 200},
-    {EF_SMA_READY, 200},
-    {EF_STIN, 200},
-    {EF_RED_HIT, 60},
-    {EF_BLUE_HIT, 60},
-    {EF_QUAKEBODY3, 60},
-    {EF_SMA, 100},
-    {EF_SMA2, 100},
-    {EF_STIN2, 200},
-    {EF_HITTEXTURE, 200},
-    {EF_STIN3, 200},
-    {EF_SMA3, 50},
-    {EF_BLUEFALL, 99999999},
-    {EF_BLUEFALL_90, 99999999},
-    {EF_FASTBLUEFALL, 99999999},
-    {EF_FASTBLUEFALL_90, 99999999},
-    {EF_BIG_PORTAL, 2000},
-    {EF_BIG_PORTAL2, 99999999},
-    {EF_SCREEN_QUAKE, 200},
-    {EF_HOMUNCASTING, 60},
-    {EF_HFLIMOON1, 100},
-    {EF_HFLIMOON2, 100},
-    {EF_HFLIMOON3, 100},
-    {EF_HO_UP, 100},
-    {EF_HAMIDEFENCE, 60},
-    {EF_HAMICASTLE, 100},
-    {EF_HAMIBLOOD, 100},
-    {EF_HATED2, 300},
-    {EF_TWILIGHT1, 300},
-    {EF_TWILIGHT2, 300},
-    {EF_TWILIGHT3, 300},
-    {EF_ITEM_THUNDER, 100},
-    {EF_ITEM_CLOUD, 100},
-    {EF_ITEM_CURSE, 100},
-    {EF_ITEM_ZZZ, 100},
-    {EF_ITEM_RAIN, 100},
-    {EF_ITEM_LIGHT, 180},
-    {EF_ANGEL3, 200},
-    {EF_M01, 50},
-    {EF_M02, 100},
-    {EF_M03, 100},
-    {EF_M04, 99999999},
-    {EF_M05, 100},
-    {EF_M06, 100},
-    {EF_M07, 100},
-    {EF_KAIZEL, 200},
-    {EF_KAAHI, 200},
-    {EF_CLOUD6, 99999999},
-    {EF_FOOD01, 100},
-    {EF_FOOD02, 100},
-    {EF_FOOD03, 100},
-    {EF_FOOD04, 100},
-    {EF_FOOD05, 100},
-    {EF_FOOD06, 100},
-    {EF_SHRINK, 200},
-    {EF_THROWITEM6, 200},
-    {EF_SIGHT2, 999999},
-    {EF_QUAKEBODY4, 60},
-    {EF_FIREHIT2, 50},
-    {EF_NPC_STOP2, 99999},
-    {EF_NPC_STOP2_DEL, 2},
-    {EF_FVOICE, 100},
-    {EF_WINK, 100},
-    {EF_COOKING_OK, 100},
-    {EF_COOKING_FAIL, 100},
-    {EF_TEMP_OK, 100},
-    {EF_TEMP_FAIL, 100},
-    {EF_HAPGYEOK, 100},
-    {EF_THROWITEM7, 200},
-    {EF_THROWITEM8, 200},
-    {EF_THROWITEM9, 200},
-    {EF_THROWITEM10, 200},
-    {EF_BUNSINJYUTSU, 9999},
-    {EF_KOUENKA, 300},
-    {EF_HYOUSENSOU, 250},
-    {EF_BOTTOM_SUITON, 29999},
-    {EF_STIN4, 200},
-    {EF_THUNDERSTORM2, 100},
-    {EF_CHEMICAL4, 300},
-    {EF_STIN5, 200},
-    {EF_MADNESS_BLUE, 60},
-    {EF_MADNESS_RED, 60},
-    {EF_RG_COIN3, 300},
-    {EF_BASH3D5, 200},
-    {EF_CHOOKGI3, 999999},
-    {EF_KIRIKAGE, 100},
-    {EF_TATAMI, 100},
-    {EF_KASUMIKIRI, 100},
-    {EF_ISSEN, 100},
-    {EF_KAEN, 23},
-    {EF_BAKU, 100},
-    {EF_HYOUSYOURAKU, 100},
-    {EF_DESPERADO, 200},
-    {EF_LIGHTNING_S, 23},
-    {EF_BLIND_S, 23},
-    {EF_POISON_S, 23},
-    {EF_FREEZING_S, 23},
-    {EF_FLARE_S, 23},
-    {EF_RAPIDSHOWER, 100},
-    {EF_MAGICALBULLET, 100},
-    {EF_SPREADATTACK, 100},
-    {EF_TRACKCASTING, 100},
-    {EF_TRACKING, 100},
-    {EF_TRIPLEACTION, 100},
-    {EF_BULLSEYE, 100},
-    {EF_MAP_MAGICZONE, 99999999},
-    {EF_MAP_MAGICZONE2, 99999999},
-    {EF_DAMAGE1, 50},
-    {EF_DAMAGE1_2, 50},
-    {EF_DAMAGE1_3, 50},
-    {EF_UNDEADBODY, 99999999},
-    {EF_UNDEADBODY_DEL, 40},
-    {EF_GREEN_NUMBER, 50},
-    {EF_BLUE_NUMBER, 50},
-    {EF_RED_NUMBER, 50},
-    {EF_PURPLE_NUMBER, 50},
-    {EF_BLACK_NUMBER, 50},
-    {EF_WHITE_NUMBER, 50},
-    {EF_YELLOW_NUMBER, 50},
-    {EF_PINK_NUMBER, 50},
-    {EF_BUBBLE_DROP, 200},
-    {EF_NPC_EARTHQUAKE, 100},
-    {EF_DA_SPACE, 99999999},
-    {EF_DRAGONFEAR, 28},
-    {EF_BLEEDING, 70},
-    {EF_WIDECONFUSE, 28},
-    {EF_BOTTOM_RUNNER, 29999},
-    {EF_BOTTOM_TRANSFER, 29999},
-    {EF_CRYSTAL_BLUE, 99999999},
-    {EF_BOTTOM_EVILLAND, 29999},
-    {EF_GUARD3, 200},
-    {EF_NPC_SLOWCAST, 300},
-    {EF_CRITICALWOUND, 50},
-    {EF_GREEN99_3, 99999999},
-    {EF_GREEN99_5, 99999999},
-    {EF_GREEN99_6, 99999999},
-    {EF_MAPSPHERE, 36000},
-    {EF_POK_LOVE, 100},
-    {EF_POK_WHITE, 100},
-    {EF_POK_VALEN, 100},
-    {EF_POK_BIRTH, 100},
-    {EF_POK_CHRISTMAS, 100},
-    {EF_MAP_MAGICZONE3, 99999999},
-    {EF_MAP_MAGICZONE4, 99999999},
-    {EF_DUST, 99999999},
-    {EF_TORCH_RED, 99999999},
-    {EF_TORCH_GREEN, 99999999},
-    {EF_MAP_GHOST, 99999999},
-    {EF_GLOW1, 99999999},
-    {EF_GLOW2, 99999999},
-    {EF_GLOW4, 99999999},
-    {EF_TORCH_PURPLE, 99999999},
-    {EF_CLOUD7, 99999999},
-    {EF_CLOUD8, 99999999},
-    {EF_FLOWERLEAF, 100},
-    {EF_MAPSPHERE2, 36000},
-    {EF_GLOW11, 99999999},
-    {EF_GLOW12, 99999999},
-    {EF_CIRCLELIGHT, 99999999},
-    {EF_ITEM315, 100},
-    {EF_ITEM316, 100},
-    {EF_ITEM317, 100},
-    {EF_ITEM318, 100},
-    {EF_STORM_MIN, 9999},
-    {EF_POK_JAP, 70},
-    {EF_MAP_GREENLIGHT, 99999999},
-    {EF_MAP_MAGICWALL, 99999999},
-    {EF_MAP_GREENLIGHT2, 99999999},
-    {EF_YELLOWFLY1, 99999999},
-    {EF_YELLOWFLY2, 99999999},
-    {EF_BOTTOM_BLUE, 99999999},
-    {EF_BOTTOM_BLUE2, 360},
-    {EF_WEWISH, 999},
-    {EF_FIREPILLARON2, 90},
-    {EF_FORESTLIGHT5, 999},
-    {EF_SOULBREAKER3, 300},
-    {EF_ADO_STR, 100},
-    {EF_IGN_STR, 100},
-    {EF_CHIMTO2, 100},
-    {EF_WINDCUTTER, 100},
-    {EF_DETECT2, 250},
-    {EF_FROSTMYSTY, 300},
-    {EF_CRIMSON_STR, 100},
-    {EF_HELL_STR, 100},
-    {EF_SPR_MASH, 100},
-    {EF_SPR_SOULE, 100},
-    {EF_DHOWL_STR, 24},
-    {EF_EARTHWALL, 100},
-    {EF_SOULBREAKER4, 300},
-    {EF_CHAINL_STR, 100},
-    {EF_CHOOKGI_FIRE, 999999},
-    {EF_CHOOKGI_WIND, 999999},
-    {EF_CHOOKGI_WATER, 999999},
-    {EF_CHOOKGI_GROUND, 999999},
-    {EF_MAGENTA_TRAP, 23},
-    {EF_COBALT_TRAP, 23},
-    {EF_MAIZE_TRAP, 23},
-    {EF_VERDURE_TRAP, 23},
-    {EF_NORMAL_TRAP, 23},
-    {EF_CLOAKING2, 99999999},
-    {EF_AIMED_STR, 100},
-    {EF_ARROWSTORM_STR, 100},
-    {EF_LAULAMUS_STR, 100},
-    {EF_LAUAGNUS_STR, 100},
-    {EF_MILSHIELD_STR, 100},
-    {EF_CONCENTRATION2, 999},
-    {EF_FIREBALL2, 100},
-    {EF_BUNSINJYUTSU2, 9999},
-    {EF_CLEARTIME, 300},
-    {EF_GLASSWALL3, 9999},
-    {EF_ORATIO, 99999999},
-    {EF_POTION_BERSERK2, 199},
-    {EF_CIRCLEPOWER, 99999999},
-    {EF_ROLLING1, 99999999},
-    {EF_ROLLING2, 99999999},
-    {EF_ROLLING3, 99999999},
-    {EF_ROLLING4, 99999999},
-    {EF_ROLLING5, 99999999},
-    {EF_ROLLING6, 99999999},
-    {EF_ROLLING7, 99999999},
-    {EF_ROLLING8, 99999999},
-    {EF_ROLLING9, 99999999},
-    {EF_ROLLING10, 99999999},
-    {EF_PURPLEBODY, 120},
-    {EF_STIN6, 200},
-    {EF_RG_COIN4, 300},
-    {EF_POISONWAV, 300},
-    {EF_POISONSMOKE, 100},
-    {EF_GUMGANG4, 300},
-    {EF_SHIELDBOOMERANG4, 499},
-    {EF_CASTSPIN2, 100},
-    {EF_VULCANWAV, 100},
-    {EF_AGIUP2, 100},
-    {EF_DETECT3, 250},
-    {EF_AGIUP3, 100},
-    {EF_DETECT4, 250},
-    {EF_ELECTRIC3, 300},
-    {EF_GUARD4, 200},
-    {EF_BOTTOM_BARRIER, 29999},
-    {EF_BOTTOM_STEALTH, 29999},
-    {EF_REPAIRTIME, 300},
-    {EF_NC_ANAL, 100},
-    {EF_FIRETHROW, 200},
-    {EF_VENOMIMPRESS, 99999999},
-    {EF_FROSTMISTY, 99999999},
-    {EF_BURNING, 99999999},
-    {EF_COLDTHROW, 200},
-    {EF_MAKEHALLU, 9999},
-    {EF_HALLUTIME, 100},
-    {EF_INFRAREDSCAN, 300},
-    {EF_CRASHAXE, 999},
-    {EF_GTHUNDER, 1999},
-    {EF_STONERING, 300},
-    {EF_INTIMIDATE2, 999},
-    {EF_STASIS, 300},
-    {EF_REDLINE, 75},
-    {EF_FROSTDIVER3, 150},
-    {EF_BOTTOM_BASILICA2, 2999},
-    {EF_RECOGNIZED, 500},
-    {EF_TETRA, 600},
-    {EF_TETRACASTING, 40},
-    {EF_FIREBALL3, 100},
-    {EF_INTIMIDATE3, 999},
-    {EF_RECOGNIZED2, 500},
-    {EF_CLOAKING3, 99999999},
-    {EF_INTIMIDATE4, 999},
-    {EF_STRETCH, 200},
-    {EF_BLACKBODY, 100},
-    {EF_ENERVATION, 100},
-    {EF_ENERVATION2, 100},
-    {EF_ENERVATION3, 100},
-    {EF_ENERVATION4, 100},
-    {EF_ENERVATION5, 100},
-    {EF_ENERVATION6, 100},
-    {EF_LINELINK4, 99999},
-    {EF_RG_COIN5, 300},
-    {EF_WATERFALL_ANI, 99999999},
-    {EF_BOTTOM_MANHOLE, 29999},
-    {EF_MANHOLE, 99999999},
-    {EF_MAKEFEINT, 9999},
-    {EF_FORESTLIGHT6, 29999},
-    {EF_DARKCASTING2, 60},
-    {EF_BOTTOM_ANI, 29999},
-    {EF_BOTTOM_MAELSTROM, 29999},
-    {EF_BOTTOM_BLOODYLUST, 29999},
-    {EF_BEGINSPELL_N1, 100},
-    {EF_BEGINSPELL_N2, 100},
-    {EF_HEAL_N, 2000},
-    {EF_CHOOKGI_N, 999999},
-    {EF_JOBLVUP50_2, 200},
-    {EF_CHEMICAL2DASH2, 300},
-    {EF_CHEMICAL2DASH3, 300},
-    {EF_ROLLINGCAST, 60},
-    {EF_WATER_BELOW, 99999999},
-    {EF_WATER_FADE, 99999999},
-    {EF_BEGINSPELL_N3, 100},
-    {EF_BEGINSPELL_N4, 100},
-    {EF_BEGINSPELL_N5, 100},
-    {EF_BEGINSPELL_N6, 100},
-    {EF_BEGINSPELL_N7, 100},
-    {EF_BEGINSPELL_N8, 100},
-    {EF_WATER_SMOKE, 99999999},
-    {EF_DANCE1, 100},
-    {EF_DANCE2, 100},
-    {EF_LINKPARTICLE, 500},
-    {EF_SOULLIGHT2, 100},
-    {EF_SPR_PARTICLE, 300},
-    {EF_SPR_PARTICLE2, 300},
-    {EF_SPR_PLANT, 400},
-    {EF_CHEMICAL_V, 300},
-    {EF_SHOOTPARTICLE, 300},
-    {EF_BOT_REVERB, 29999},
-    {EF_RAIN_PARTICLE, 1000},
-    {EF_CHEMICAL_V2, 300},
-    {EF_SECRA, 300},
-    {EF_BOT_REVERB2, 29999},
-    {EF_CIRCLEPOWER2, 400},
-    {EF_SECRA2, 300},
-    {EF_CHEMICAL_V3, 300},
-    {EF_ENERVATION7, 100},
-    {EF_CIRCLEPOWER3, 400},
-    {EF_SPR_PLANT2, 400},
-    {EF_CIRCLEPOWER4, 400},
-    {EF_SPR_PLANT3, 400},
-    {EF_RG_COIN6, 300},
-    {EF_SPR_PLANT4, 400},
-    {EF_CIRCLEPOWER5, 400},
-    {EF_SPR_PLANT5, 400},
-    {EF_CIRCLEPOWER6, 400},
-    {EF_SPR_PLANT6, 400},
-    {EF_CIRCLEPOWER7, 400},
-    {EF_SPR_PLANT7, 400},
-    {EF_CIRCLEPOWER8, 400},
-    {EF_SPR_PLANT8, 400},
-    {EF_HEARTASURA, 99999999},
-    {EF_BEGINSPELL_150, 99999999},
-    {EF_LEVEL99_150, 99999999},
-    {EF_PRIMECHARGE, 500},
-    {EF_GLASSWALL4, 9999},
-    {EF_GRADIUS_LASER, 500},
-    {EF_BASH3D6, 200},
-    {EF_GUMGANG5, 300},
-    {EF_HITLINE8, 200},
-    {EF_ELECTRIC4, 150},
-    {EF_TEIHIT1T, 300},
-    {EF_SPINMOVE, 100},
-    {EF_FIREBALL4, 100},
-    {EF_TRIPLEATTACK4, 100},
-    {EF_CHEMICAL3S, 300},
-    {EF_GROUNDSHAKE, 200},
-    {EF_DQ9_CHARGE, 500},
-    {EF_DQ9_CHARGE2, 500},
-    {EF_DQ9_CHARGE3, 500},
-    {EF_DQ9_CHARGE4, 5000},
-    {EF_BLUELINE, 999},
-    {EF_SELFSCROLL, 5000},
-    {EF_SPR_LIGHTPRINT, 500},
-    {EF_PNG_TEST, 1000},
-    {EF_BEGINSPELL_YB, 400},
-    {EF_CHEMICAL2DASH4, 300},
-    {EF_GROUNDSHAKE2, 200},
-    {EF_PRESSURE2, 300},
-    {EF_RG_COIN7, 300},
-    {EF_PRIMECHARGE2, 500},
-    {EF_PRIMECHARGE3, 500},
-    {EF_PRIMECHARGE4, 500},
-    {EF_GREENCASTING, 60},
-    {EF_WALLOFTHORN, 1000},
-    {EF_FIREBALL5, 100},
-    {EF_THROWITEM11, 300},
-    {EF_SPR_PLANT9, 200},
-    {EF_DEMONICFIRE, 2000},
-    {EF_DEMONICFIRE2, 2000},
-    {EF_DEMONICFIRE3, 2000},
-    {EF_HELLSPLANT, 1000},
-    {EF_FIREWALL2, 40},
-    {EF_VACUUM, 1000},
-    {EF_SPR_PLANT10, 140},
-    {EF_SPR_LIGHTPRINT2, 500},
-    {EF_POISONSMOKE2, 400},
-    {EF_MAKEHALLU2, 9999},
-    {EF_SHOCKWAVE2, 32797},
-    {EF_SPR_PLANT11, 140},
-    {EF_COLDTHROW2, 200},
-    {EF_DEMONICFIRE4, 9999},
-    {EF_PRESSURE3, 300},
-    {EF_LINKPARTICLE2, 500},
-    {EF_SOULLIGHT3, 100},
-    {EF_CHAREFFECT, 99999999},
-    {EF_GUMGANG6, 300},
-    {EF_FIREBALL6, 100},
-    {EF_GUMGANG7, 300},
-    {EF_GUMGANG8, 300},
-    {EF_GUMGANG9, 300},
-    {EF_BOTTOM_DE2, 29999},
-    {EF_COLDSTATUS, 99999999},
-    {EF_SPR_LIGHTPRINT3, 500},
-    {EF_WATERBALL3, 100},
-    {EF_HEAL_N2, 2000},
-    {EF_RAIN_PARTICLE2, 100},
-    {EF_CLOUD9, 99999999},
-    {EF_YELLOWFLY3, 99999999},
-    {EF_EL_GUST, 100},
-    {EF_EL_BLAST, 100},
-    {EF_EL_AQUAPLAY, 100},
-    {EF_EL_UPHEAVAL, 100},
-    {EF_EL_WILD_STORM, 100},
-    {EF_EL_CHILLY_AIR, 100},
-    {EF_EL_CURSED_SOIL, 100},
-    {EF_EL_COOLER, 100},
-    {EF_EL_TROPIC, 100},
-    {EF_EL_PYROTECHNIC, 100},
-    {EF_EL_PETROLOGY, 100},
-    {EF_EL_HEATER, 100},
-    {EF_POISON_MIST, 60},
-    {EF_ERASER_CUTTER, 100},
-    {EF_SILENT_BREEZE, 100},
-    {EF_MAGMA_FLOW, 100},
-    {EF_GRAYBODY, 99999},
-    {EF_LAVA_SLIDE, 40},
-    {EF_SONIC_CLAW, 100},
-    {EF_TINDER_BREAKER, 100},
-    {EF_MIDNIGHT_FRENZY, 100},
-    {EF_MACRO, 99999999},
-    {EF_CHEMICAL_ALLRANGE, 200},
-    {EF_TETRA_FIRE, 600},
-    {EF_TETRA_WATER, 600},
-    {EF_TETRA_WIND, 600},
-    {EF_TETRA_GROUND, 600},
-    {EF_EMITTER, 99999999},
-    {EF_VOLCANIC_ASH, 40},
-    {EF_LEVEL99_ORB1, 99999999},
-    {EF_LEVEL99_ORB2, 99999999},
-    {EF_LEVEL150, 99999999},
-    {EF_LEVEL150_SUB, 99999999},
-    {EF_THROWITEM4_1, 99999999},
-    {EF_THROW_HAPPOKUNAI, 99999999},
-    {EF_THROW_MULTIPLE_COIN, 99999999},
-    {EF_THROW_BAKURETSU, 99999999},
-    {EF_ROTATE_HUUMARANKA, 99999999},
-    {EF_ROTATE_BG, 99999999},
-    {EF_ROTATE_LINE_GRAY, 99999999},
-    {EF_2011RWC, 100},
-    {EF_2011RWC2, 100},
-    {EF_KAIHOU, 99999999},
-    {EF_GROUND_EXPLOSION, 99999999},
-    {EF_KG_KAGEHUMI, 99999999},
-    {EF_KO_ZENKAI_WATER, 99999999},
-    {EF_KO_ZENKAI_LAND, 99999999},
-    {EF_KO_ZENKAI_FIRE, 99999999},
-    {EF_KO_ZENKAI_WIND, 99999999},
-    {EF_KO_JYUMONJIKIRI, 99999999},
-    {EF_KO_SETSUDAN, 99999999},
-    {EF_RED_CROSS, 99999999},
-    {EF_KO_IZAYOI, 99999999},
-    {EF_ROTATE_LINE_BLUE, 99999999},
-    {EF_KG_KYOMU, 99999999},
-    {EF_KO_HUUMARANKA, 99999999},
-    {EF_BLUELIGHTBODY, 99999999},
-    {EF_KAGEMUSYA, 99999999},
-    {EF_OB_GENSOU, 99999999},
-    {EF_NO100_FIRECRACKER, 100},
-    {EF_KO_MAKIBISHI, 99999999},
-    {EF_KAIHOU1, 99999999},
-    {EF_AKAITSUKI, 99999999},
-    {EF_ZANGETSU, 99999999},
-    {EF_GENSOU, 99999999},
-    {EF_HAT_EFFECT, 99999999},
-    {EF_CHERRYBLOSSOM, 99999999},
-    {EF_EVENT_CLOUD, 99999999},
-    {EF_RUN_MAKE_OK, 100},
-    {EF_RUN_MAKE_FAILURE, 90},
-    {EF_MIRESULT_MAKE_OK, 100},
-    {EF_MIRESULT_MAKE_FAIL, 100},
-    {EF_ALL_RAY_OF_PROTECTION, 200},
-    {EF_VENOMFOG, 100},
-    {EF_DUSTSTORM, 20000},
-    {EF_LEVEL160, 999},
-    {EF_LEVEL160_SUB, 999},
-    {EF_MAPCHAIN, 999},
-    {EF_MAGIC_FLOOR, 999},
-    {EF_ICEMINE, 999},
-    {EF_FLAMECORSS, 999},
-    {EF_ICEMINE_1, 999},
-    {EF_DANCE_BLADE_ATK, 40},
-    {EF_DARKPIERCING, 5000},
-    {EF_INVINCIBLEOFF2, 999},
-    {EF_MAXPAIN, 999},
-    {EF_DEATHSUMMON, 999},
-    {EF_MOONSTAR, 999},
-    {EF_STRANGELIGHTS, 999},
-    {EF_SUPER_STAR, 999},
-    {EF_YELLOBODY, 99999},
-    {EF_COLORPAPER2, 9999},
-    {EF_EVILS_PAW, 999},
-    {EF_GC_DARKCROW, 9999},
-    {EF_RK_DRAGONBREATH_WATER, 999},
-    {EF_ALL_FULL_THROTTLE, 100},
-    {EF_SR_FLASHCOMBO, 999},
-    {EF_RK_LUXANIMA, 999},
-    {EF_CLOUD10, 99999999},
-    {EF_SO_ELEMENTAL_SHIELD, 999},
-    {EF_AB_OFFERTORIUM, 999},
-    {EF_WL_TELEKINESIS_INTENSE, 9999},
-    {EF_GN_ILLUSIONDOPING, 999},
-    {EF_NC_MAGMA_ERUPTION, 999},
-    {EF_LG_KINGS_GRACE, 999},
-    {EF_BLOODDRAIN2, 200},
-    {EF_NPC_WIDEWEB, 999},
-    {EF_NPC_BURNT, 9999},
-    {EF_NPC_CHILL, 9999},
-    {EF_RA_UNLIMIT, 9999},
-    {EF_AB_OFFERTORIUM_RING, 9999},
-    {EF_SC_ESCAPE, 9999},
-    {EF_WM_FRIGG_SONG, 350},
-    {EF_FLICKER, 9999},
-    {EF_C_MAKER, 9999},
-    {EF_HAMMER_OF_GOD, 9999},
-    {EF_MASS_SPIRAL, 9999},
-    {EF_FIRE_RAIN, 9},
-    {EF_WHITEBODY, 9999},
-    {EF_BANISHING_BUSTER, 9999},
-    {EF_SLUGSHOT, 9999},
-    {EF_D_TAIL, 9999},
-    {EF_BIND_TRAP1, 9999},
-    {EF_BIND_TRAP2, 9999},
-    {EF_BIND_TRAP3, 9999},
-    {EF_JUMPBODY1, 30},
-    {EF_ANIMATED_EMITTER, 9999},
-    {EF_RL_EXPLOSION, 9999},
-    {EF_C_MAKER_1, 9999},
-    {EF_QD_SHOT, 9999},
-    {EF_P_ALTER, 9999},
-    {EF_S_STORM, 9999},
-    {EF_MUSIC_HAT, 999},
-    {EF_CLOUD_KILL, 9999},
-    {EF_ESCAPE, 9999},
-    {EF_XENO_SLASHER, 300},
-    {EF_FLOWERSMOKE, 999},
-    {EF_FSTONE, 999},
-    {EF_QSCARABA, 999},
-    {EF_LJOSALFAR, 999},
-    {EF_HAPPINESSSTAR, 999},
-    {EF_POWER_OF_GAIA, 2000},
-    {EF_MAPLE_FALLS, 999},
-    {EF_MARKING_USE_CHANGEMONSTER, 9999},
-    {EF_MAGICAL_FEATHER, 999},
-    {EF_MERMAID_LONGING, 999},
-    {EF_GIFT_OF_SNOW, 999},
-    {EF_ACH_COMPLETE, 999},
-    {EF_TIME_ACCESSORY, 999},
-    {EF_SPRITEMABLE, 1096},
-    {EF_TUNAPARTY, 1097},
-    {EF_FRESHSHRIMP, 1098},
-    {EF_UNK_1099, 1099},
-    {EF_UNK_1100, 1100},
-    {EF_SU_SV_STEMSPEAR, 1101},
-    {EF_SU_TUNABELLY, 1102},
-    {EF_SU_SCRATCH, 1103},
-    {EF_UNK_1104, 1104},
-    {EF_SU_BITE, 1105},
-    {EF_UNK_1106, 1106},
-    {EF_SU_SCAROFTAROU, 1107},
-    {EF_SU_ARCLOUSEDASH, 1108},
-    {EF_SU_PICKYPECK, 1109},
-    {EF_UNK_1110, 9999},
-    {EF_UNK_1111, 1111},
-    {EF_UNK_1112, 1112},
-    {EF_UNK_1113, 100},
-    {EF_UNK_1114, 1114},
-    {EF_SU_CN_METEOR, 99999999},
-    {EF_SU_BUNCHOFSHRIMP, 1116},
-    {EF_UNK_1117, 1117},
-    {EF_UNK_1118, 1118},
-    {EF_BITE_SCAR, 1119},
-    {EF_SU_LUNATIC_CARROT_BEAT, 1120},
-    {EF_WIDE_CRITICAL_WOUND, 1121},
-    {EF_SU_SOUL_ATTACK, 99999999},
-    {EF_SU_GROOMING, 1123},
-    {EF_SU_CHATTERING, 1124},
-    {EF_SU_LOPE, 1125},
-    {EF_SU_HISS, 1126},
-    {EF_SU_POWEROFFLOCK, 1127},
-    {EF_UNK_1128, 1128},
-    {EF_SU_SVG_SPIRIT, 1129},
-    {EF_UNK_1130, 1130},
-    {EF_SU_SPIRIT_OF_LIFE, 99},
-    {EF_SU_STOOP, 99999999},
-    {EF_FIREDANCE, 1133},
-    {EF_RICHS_COIN_A, 1134},
-    {EF_RL_B_TRAP, 99999999},
-    {EF_RL_ANTI_MATERIAL_BLAST, 1136},
-    {EF_E_CHAIN, 1137},
-    {EF_HEAT_BARREL, 1138},
-    {EF_H_MINE, 1139},
-    {EF_FALLEN_ANGEL, 1140},
-    {EF_WE_ONEFOREVER, 1141},
-    {EF_WE_CHEERUP, 1142},
-    {EF_UNK_1143, 100},
-    {EF_UNK_1144, 100},
-    {EF_RL_HAMMER_OF_GOD, 99999999},
-    {EF_UNK_1146, 1146},
-    {EF_UNK_1147, 99999999},
-    {EF_RL_R_TRIP, 9999999},
-    {EF_IMMUNE_PROPERTY, 99999},
-    {EF_MOVE_COORDINATE, 300},
-    {EF_UNK_1151, 1151},
-    {EF_UNK_1152, 1152},
-    {EF_UNK_1153, 1153},
-    {EF_UNK_1154, 1154},
-    {EF_UNK_1155, 1155},
-    {EF_UNK_1156, 1156},
-    {EF_UNK_1157, 1157},
-    {EF_UNK_1158, 1158},
-    {EF_UNK_1159, 1159},
-    {EF_UNK_1160, 1160},
-    {EF_QUAGMIRE_VISUAL, 150},
-    {EF_LORD_OF_VERMILLION_VISUAL, 9999},
-    {EF_METEOR_STORM_VISUAL, 9999},
-    {EF_UNK_1164, 99999999},
-    {EF_UNK_1165, 99999999},
-    {EF_UNK_1166, 99999999},
-    {EF_UNK_1167, 99999999},
-    {EF_UNK_1168, 99999999},
-    {EF_UNK_1169, 99999999},
-    {EF_UNK_1170, 99999999},
-    {EF_UNK_1171, 99999999},
-    {EF_UNK_1172, 99999999},
-    {EF_UNK_1173, 99999999},
-    {EF_UNK_1174, 99999999},
-    {EF_UNK_1175, 99999999},
-    {EF_UNK_1176, 99999999},
-    {EF_UNK_1177, 99999999},
-    {EF_UNK_1178, 99999999},
-    {EF_UNK_1179, 99999999},
-    {EF_UNK_1180, 99999999},
-    {EF_UNK_1181, 99999999},
-    {EF_UNK_1182, 99999999},
-    {EF_UNK_1183, 99999999},
-    {EF_UNK_1184, 1184},
-    {EF_WARPZONE3, 99999999},
-    {EF_UNK_1186, 1186},
-    {EF_UNK_1187, 1187},
-    {EF_UNK_1188, 1188},
-    {EF_UNK_1189, 1189},
-    {EF_UNK_1190, 1190},
-    {EF_UNK_1191, 1191},
-    {EF_UNK_1192, 1192},
-    {EF_UNK_1193, 1193},
-    {EF_UNK_1194, 1194},
-    {EF_AUTOSHADOWSPELL_ACTIVE, 1195},
-    {EF_UNK_1196, 1196},
-    {EF_LIGHTSPHERE_SUN, 1197},
-    {EF_LIGHTSPHERE_MOON, 1198},
-    {EF_LIGHTSPHERE_STAR, 1199},
-    {EF_UNK_1200, 1200},
-    {EF_UNK_1201, 1201},
-    {EF_NOVAEXPLOSING, 1202},
-    {EF_STAR_EMPEROR, 1203},
-    {EF_SMA_BLACK, 100},
-    {EF_SMA_BLACK2, 100},
-    {EF_STIN_BLACK, 200},
-    {EF_PEONG_BLACK, 200},
-    {EF_ENERGYDRAIN_BLACK, 200},
-    {EF_BLINK_BODY, 100},
-    {EF_LINELINK5, 200},
-    {EF_UNK_1211, 1211},
-    {EF_UNK_1212, 1212},
-    {EF_UNK_1213, 1213},
-    {EF_UNK_1214, 1214},
-    {EF_UNK_1215, 1215},
-    {EF_UNK_1216, 1216},
-    {EF_UNK_1217, 1217},
-    {EF_SOLARBURST, 1218},
-    {EF_SJ_DOCUMENT, 1219},
-    {EF_FALLING_STAR, 1220},
-    {EF_FLASH_KICK, 1221},
-    {EF_UNK_1222, 1222},
-    {EF_STORMKICK8, 1223},
-    {EF_SOLAR_EXPLOSION, 50},
-    {EF_UNK_1225, 1225},
-    {EF_UNK_1226, 1226},
-    {EF_UNK_1227, 1227},
-    {EF_SOUL_GOLEM, 1228},
-    {EF_NEWMOON_KICK, 1229},
-    {EF_FULLMOON_KICK, 1230},
-    {EF_BOOK_OF_DIMENSION, 1231},
-    {EF_UNK_1232, 1232},
-    {EF_CURSE_EXPLOSION, 1233},
-    {EF_SOUL_REAPER, 1234},
-    {EF_UNK_1235, 1235},
-    {EF_UNK_1236, 1236},
-    {EF_UNK_1237, 1237},
-    {EF_SOUL_CURSE, 1238},
-    {EF_PROMINENCE_KICK, 1239},
-    {EF_SOUL_REAPER_COLLECT, 1240},
-    {EF_UNK_1241, 1241},
-    {EF_SOUL_EXPLOSION, 1242},
-    {EF_SOUL_REVOLVE, 1243},
-    {EF_TEST_EFFECT_00, 1244},
-    {EF_TEST_EFFECT_01, 1245},
-    {EF_TEST_EFFECT_02, 1246},
-    {EF_TEST_EFFECT_03, 1247},
-    {EF_TEST_EFFECT_04, 1248},
-    {EF_TEST_EFFECT_05, 1249},
-    {EF_TEST_EFFECT_06, 1250},
-    {EF_TEST_EFFECT_07, 1251},
-    {EF_TEST_EFFECT_08, 1252},
-    {EF_TEST_EFFECT_09, 1253},
-    {EF_NEW_METEORSTORM, 1254},
-    {EF_NEW_METEORSTORM_BOTTOM, 1255},
-    {EF_UNK_1256, 1256},
-    {EF_UNK_1257, 1257},
-    {EF_NEW_ADORAMUS, 1258},
-    {EF_NEW_ADORAMUS_BOTTOM, 1259},
-    {EF_TETRA_VORTEX_CAST, 1260},
-    {EF_TETRA_VORTEX_CORE, 1261},
-    {EF_TETRA_VORTEX_BALL_1, 1262},
-    {EF_TETRA_VORTEX_BALL_2, 1263},
-    {EF_TETRA_VORTEX_BALL_3, 1264},
-    {EF_TETRA_VORTEX_BALL_4, 1265},
-    {EF_TETRA_VORTEX_FIRE_EXP, 1266},
-    {EF_TETRA_VORTEX_WATER_EXP, 1267},
-    {EF_TETRA_VORTEX_WIND_EXP, 1268},
-    {EF_TETRA_VORTEX_EARTH_EXP, 1269},
-    {EF_TETRA_VORTEX_FIRE_GROUND, 1270},
-    {EF_TETRA_VORTEX_WATER_GROUND, 1271},
-    {EF_TETRA_VORTEX_WIND_GROUND, 1272},
-    {EF_TETRA_VORTEX_EARTH_GROUND, 1273},
-    {EF_NEW_CRIMSONROCK, 1274},
-    {EF_NEW_CRIMSONROCK_BOTTOM, 1275},
-    {EF_UNK_1276, 1276},
-    {EF_TETRA_VORTEX_CORE_GROUND, 1277},
-    {EF_TETRA_VORTEX_FIRE_SUB, 1278},
-    {EF_TETRA_VORTEX_WATER_SUB, 1279},
-    {EF_TETRA_VORTEX_WIND_SUB, 1280},
-    {EF_TETRA_VORTEX_EARTH_SUB, 1281},
-    {EF_NEW_DIAMONDDUST, 1282},
-    {EF_NEW_DIAMONDDUST_BOTTOM, 1283},
-    {EF_NEW_DIAMONDDUST_CAST, 1284},
-    {EF_NEW_SEVERERAINSTORM_CAST, 1285},
-    {EF_NEW_SEVERERAINSTORM_HIT, 1286},
-    {EF_NEW_SECRAMENT, 1287},
-    {EF_NEW_PSYCHICWAVE, 1288},
-    {EF_NEW_PSYCHICWAVE_BOTTOM, 1289},
-    {EF_NEW_PSYCHICWAVE_CAST, 1290},
-    {EF_UNK_1291, 99999999},
-    {EF_UNK_1292, 99999999},
-    {EF_NEW_ARROWSTORM_00, 1293},
-    {EF_NEW_ARROWSTORM_01, 1294},
-    {EF_NEW_SECRAMENT_AURA, 1295},
-    {EF_NEW_TRIANGLESHOT, 1296},
-    {EF_NEW_TRIANGLESHOT_BOTTOM, 1297},
-    {EF_NEW_CRIMSONROCK_SUB, 1298},
-    {EF_NEW_ROLLINGCUTTER, 1299},
-    {EF_NEW_ROLLINGCUTTER_COUNT_01, 1300},
-    {EF_NEW_ROLLINGCUTTER_COUNT_02, 1301},
-    {EF_NEW_ROLLINGCUTTER_COUNT_03, 1302},
-    {EF_NEW_ROLLINGCUTTER_COUNT_04, 1303},
-    {EF_NEW_ROLLINGCUTTER_COUNT_05, 1304},
-    {EF_NEW_ROLLINGCUTTER_COUNT_06, 1305},
-    {EF_NEW_ROLLINGCUTTER_COUNT_07, 1306},
-    {EF_NEW_ROLLINGCUTTER_COUNT_08, 1307},
-    {EF_NEW_ROLLINGCUTTER_COUNT_09, 1308},
-    {EF_NEW_ROLLINGCUTTER_COUNT_10, 1309},
-    {EF_NEW_RAMPAGEBLASTER, 1310},
-    {EF_NEW_RAMPAGEBLASTER_BOTTOM, 1311},
-    {EF_NEW_FEINTBOMB, 1312},
-    {EF_NEW_FEINTBOMB_BOTTOM, 1313},
-    {EF_NEW_CROSSRIPPERSLASHER, 1314},
-    {EF_NEW_CROSSRIPPERSLASHER_00, 1315},
-    {EF_NEW_CROSSRIPPERSLASHER_01, 1316},
-    {EF_NEW_CROSSRIPPERSLASHER_03, 1317},
-    {EF_NEW_CROSSRIPPERSLASHER_05, 1318},
-    {EF_NEW_CROSSRIPPERSLASHER_06, 1319},
-    {EF_NEW_CROSSRIPPERSLASHER_07, 1320},
-    {EF_NEW_CROSSRIPPERSLASHER_09, 1321},
-    {EF_NEW_CROSSRIPPERSLASHER_11, 1322},
-    {EF_NEW_TIGERCANNON, 1323},
-    {EF_UNK_1324, 1324},
-    {EF_UNK_1325, 99999999},
-    {EF_UNK_1326, 99999999},
-    {EF_UNK_1327, 99999999},
-    {EF_UNK_1328, 99999999},
-    {EF_UNK_1329, 99999999},
-    {EF_UNK_1330, 99999999},
-    {EF_UNK_1331, 99999999},
-    {EF_UNK_1332, 99999999},
-    {EF_UNK_1333, 99999999},
-    {EF_UNK_1334, 99999999},
-    {EF_UNK_1335, 99999999},
-    {EF_UNK_1336, 99999999},
-    {EF_UNK_1337, 99999999},
-    {EF_UNK_1338, 99999999},
-    {EF_UNK_1339, 99999999},
-    {EF_UNK_1340, 99999999},
-    {EF_UNK_1341, 99999999},
-    {EF_UNK_1342, 99999999},
-    {EF_UNK_1343, 99999999},
-    {EF_UNK_1344, 99999999},
-    {EF_UNK_1345, 99999999},
-    {EF_UNK_1346, 99999999},
-    {EF_NEW_ARMSCANNON_01_UP, 1347},
-    {EF_NEW_ARMSCANNON_01_DOWN, 1348},
-    {EF_NEW_ARMSCANNON_05_UP, 1349},
-    {EF_NEW_ARMSCANNON_05_DOWN, 1350},
-    {EF_NEW_ARMSCANNON_07_UP, 1351},
-    {EF_NEW_ARMSCANNON_07_DOWN, 1352},
-    {EF_NEW_ARMSCANNON_11_UP, 1353},
-    {EF_NEW_ARMSCANNON_11_DOWN, 1354},
-    {EF_NEW_ARMSCANNON_EXPLOSION, 1355},
-    {EF_NEW_ARMSCANNON_EXPLOSION_BOTTOM, 1356},
-    {EF_UNK_1357, 1357},
-    {EF_NEW_CART_CANNON_EXPLOSION, 1358},
-    {EF_NEW_CART_CANNON_EXPLOSION_BOTTOM, 1359},
-    {EF_NEW_CART_CANNON_FIRE, 1360},
-    {EF_NEW_CART_CANNON_FIRE_BOTTOM, 1361},
-    {EF_QSCARABA_VISUAL, 1362},
-    {EF_NEW_AXETORNADO, 1363},
-    {EF_NEW_AXETORNADO_BOTTOM, 1364},
-    {EF_NEW_CART_TORNADO, 50},
-    {EF_NEW_CART_TORNADO_BOTTOM, 1366},
-    {EF_HELP_ANGEL, 1367},
-    {EF_HELP_ANGEL_BOTTOM, 1368},
-    {EF_NEW_BANISHINGPOINT_TARGET, 1369},
-    {EF_NEW_BANISHINGPOINT_TARGET_BOTTOM, 1370},
-    {EF_NEW_BANISHINGPOINT_CAST, 1371},
-    {EF_NEW_BANISHINGPOINT_CAST_BOTTOM, 1372},
-    {EF_NEW_BANISHINGPOINT_01, 1373},
-    {EF_NEW_BANISHINGPOINT_05, 1374},
-    {EF_NEW_BANISHINGPOINT_07, 1375},
-    {EF_NEW_BANISHINGPOINT_11, 1376},
-    {EF_UNK_1377, 99999999},
-    {EF_NEW_DRAGONBREATH_BOMB, 1378},
-    {EF_NEW_DRAGONBREATH_BOMB_BOTTOM, 1379},
-    {EF_NEW_DRAGONBREATH_01, 1380},
-    {EF_NEW_DRAGONBREATH_05, 1381},
-    {EF_NEW_DRAGONBREATH_07, 1382},
-    {EF_NEW_DRAGONBREATH_11, 1383},
-    {EF_NEW_ARMSCANNON_CAST, 1384},
-    {EF_NEW_ARMSCANNON_CAST_BOTTOM, 1385},
-    {EF_NEW_DRAGONBREATH_WATER_BOMB, 1386},
-    {EF_NEW_DRAGONBREATH_WATER_BOMB_BOTTOM, 1387},
-    {EF_NEW_DRAGONBREATH_WATER_01, 1388},
-    {EF_NEW_DRAGONBREATH_WATER_05, 1389},
-    {EF_NEW_DRAGONBREATH_WATER_07, 1390},
-    {EF_NEW_DRAGONBREATH_WATER_11, 1391},
-    {EF_NEW_COUNTER_SLASH, 1392},
-    {EF_NEW_COUNTER_SLASH_BOTTOM, 1393},
-    {EF_NEW_FATAL_MENACE, 1394},
-    {EF_NEW_FATAL_MENACE_BOTTOM, 1395},
-    {EF_NEW_FATAL_MENACE_CAST, 1396},
-    {EF_NEW_FATAL_MENACE_CAST_BOTTOM, 1397},
-    {EF_UNK_1398, 99999999},
-    {EF_NEW_HEAVENS_DRIVE, 75},
-    {EF_NEW_CANNON_SPEAR_12, 1400},
-    {EF_NEW_CANNON_SPEAR_01, 1401},
-    {EF_NEW_CANNON_SPEAR_03, 1402},
-    {EF_NEW_CANNON_SPEAR_05, 1403},
-    {EF_NEW_CANNON_SPEAR_06, 1404},
-    {EF_NEW_CANNON_SPEAR_07, 1405},
-    {EF_NEW_CANNON_SPEAR_09, 1406},
-    {EF_NEW_CANNON_SPEAR_11, 1407},
-    {EF_NEW_CANNON_SPEAR_BOTTOM, 1408},
-    {EF_NEW_TRIPLEATTACK, 300},
-    {EF_NEW_BASICATTACK, 1410},
-    {EF_NEW_CRITICALATTACK, 1411},
-    {EF_NEW_RANGEDATTACK, 1412},
-    {EF_NEW_COMET, 1413},
-    {EF_NEW_COMET_BOTTOM, 1414},
-    {EF_NEW_COMET_CAST_BOTTOM, 1415},
-    {EF_NEW_COMET_SUB_EXP, 1416},
-    {EF_NEW_COMET_SUB_EXP_BOTTOM, 1417},
-    {EF_NEW_MOON_SLASH, 1418},
-    {EF_UNK_1419, 1419},
-    {EF_NEW_GRANDCROSS, 99999999},
-    {EF_NEW_COMET_CAST, 1421},
-    {EF_NEW_CART_CANNON_CAST, 1422},
-    {EF_NEW_CART_CANNON_CAST_BOTTOM, 1423},
-    {EF_NEW_RAYOFGENESIS, 1424},
-    {EF_NEW_RAYOFGENESIS_CAST, 1425},
-    {EF_NEW_RAYOFGENESIS_CAST_BOTTOM, 1426},
-    {EF_NEW_RAYOFGENESIS_HIT, 1427},
-    {EF_MINEFFECT_ADORAMUS, 1428},
-    {EF_MINEFFECT_ADORAMUS_BOTTOM, 1429},
-    {EF_MINEFFECT_TETRA_CAST, 1430},
-    {EF_MINEFFECT_TETRA_CORE, 1431},
-    {EF_MINEFFECT_TETRA_FIRE, 1432},
-    {EF_MINEFFECT_TETRA_WATER, 1433},
-    {EF_MINEFFECT_TETRA_WIND, 1434},
-    {EF_MINEFFECT_TETRA_EARTH, 1435},
-    {EF_MINEFFECT_TETRA_FIRE_BOTTOM, 1436},
-    {EF_MINEFFECT_TETRA_WATER_BOTTOM, 1437},
-    {EF_MINEFFECT_TETRA_WIND_BOTTOM, 1438},
-    {EF_MINEFFECT_TETRA_EARTH_BOTTOM, 1439},
-    {EF_MINEFFECT_TETRA_CORE_BOTTOM, 1440},
-    {EF_MINEFFECT_CRIMSONROCK, 1441},
-    {EF_MINEFFECT_CRIMSONROCK_BOTTOM, 1442},
-    {EF_NEW_JACKFROST_00, 1443},
-    {EF_NEW_JACKFROST_01, 1444},
-    {EF_NEW_JACKFROST_02, 1445},
-    {EF_NEW_JACKFROST_CAST, 1446},
-    {EF_NEW_JACKFROST_RUNE, 1447},
-    {EF_NEW_JACKFROST_ART, 1448},
-    {EF_NEW_FROSTMISTY, 1449},
-    {EF_MINEFFECT_DIAMONDDUST, 1450},
-    {EF_MINEFFECT_DIAMONDDUST_BOTTOM, 1451},
-    {EF_MINEFFECT_DIAMONDDUST_CAST, 1452},
-    {EF_MINEFFECT_SECRAMENT, 1453},
-    {EF_MINEFFECT_PSYCHICWAVE, 1454},
-    {EF_MINEFFECT_PSYCHICWAVE_BOTTOM, 1455},
-    {EF_MINEFFECT_PSYCHICWAVE_CAST, 1456},
-    {EF_MINEFFECT_ARROWSTORM_00, 1457},
-    {EF_MINEFFECT_ARROWSTORM_01, 1458},
-    {EF_MINEFFECT_TRIANGLESHOT, 1459},
-    {EF_MINEFFECT_TRIANGLESHOT_BOTTOM, 1460},
-    {EF_MINEFFECT_RAMPAGEBLASTER, 1461},
-    {EF_MINEFFECT_RAMPAGEBLASTER_BOTTOM, 1462},
-    {EF_MINEFFECT_FEINTBOMB, 1463},
-    {EF_MINEFFECT_FEINTBOMB_BOTTOM, 1464},
-    {EF_NEW_EARTHGRAVE_VISUAL, 1465},
-    {EF_MINEFFECT_ROLLINGCUTTER_CAST, 1466},
-    {EF_MINEFFECT_ROLLINGCUTTER_01, 1467},
-    {EF_MINEFFECT_ROLLINGCUTTER_02, 1468},
-    {EF_MINEFFECT_ROLLINGCUTTER_03, 1469},
-    {EF_MINEFFECT_ROLLINGCUTTER_04, 1470},
-    {EF_MINEFFECT_ROLLINGCUTTER_05, 1471},
-    {EF_MINEFFECT_ROLLINGCUTTER_06, 1472},
-    {EF_MINEFFECT_ROLLINGCUTTER_07, 1473},
-    {EF_MINEFFECT_ROLLINGCUTTER_08, 1474},
-    {EF_MINEFFECT_ROLLINGCUTTER_09, 1475},
-    {EF_MINEFFECT_ROLLINGCUTTER_10, 1476},
-    {EF_MINEFFECT_CROSSRIPPERSLASHER, 1477},
-    {EF_MINEFFECT_CROSSRIPPERSLASHER_12, 1478},
-    {EF_MINEFFECT_CROSSRIPPERSLASHER_01, 1479},
-    {EF_MINEFFECT_CROSSRIPPERSLASHER_03, 1480},
-    {EF_MINEFFECT_CROSSRIPPERSLASHER_05, 1481},
-    {EF_MINEFFECT_CROSSRIPPERSLASHER_06, 1482},
-    {EF_MINEFFECT_CROSSRIPPERSLASHER_07, 1483},
-    {EF_MINEFFECT_CROSSRIPPERSLASHER_09, 1484},
-    {EF_MINEFFECT_CROSSRIPPERSLASHER_11, 1485},
-    {EF_MINEFFECT_ARMSCANNON_01, 1486},
-    {EF_MINEFFECT_ARMSCANNON_05, 1487},
-    {EF_MINEFFECT_ARMSCANNON_07, 1488},
-    {EF_MINEFFECT_ARMSCANNON_11, 1489},
-    {EF_MINEFFECT_ARMSCANNON_EXPLOSION, 1490},
-    {EF_MINEFFECT_ARMSCANNON_EXPLOSION_BOTTOM, 1491},
-    {EF_MINEFFECT_ARMSCANNON_CAST, 1492},
-    {EF_MINEFFECT_ARMSCANNON_CAST_BOTTOM, 1493},
-    {EF_MINEFFECT_AXETORNADO, 1494},
-    {EF_MINEFFECT_AXETORNADO_BOTTOM, 1495},
-    {EF_MINEFFECT_CART_CANNON_EXPLOSION, 1496},
-    {EF_MINEFFECT_CART_CANNON_EXPLOSION_BOTTOM, 1497},
-    {EF_MINEFFECT_CART_CANNON_FIRE_BOTTOM, 1498},
-    {EF_MINEFFECT_CART_CANNON_CAST, 1499},
-    {EF_MINEFFECT_CART_CANNON_CAST_BOTTOM, 1500},
-    {EF_MINEFFECT_CART_TORNADO, 1501},
-    {EF_MINEFFECT_CART_TORNADO_BOTTOM, 1502},
-    {EF_MINEFFECT_BANISHINGPOINT_TARGET, 1503},
-    {EF_MINEFFECT_BANISHINGPOINT_TARGET_BOTTOM, 1504},
-    {EF_MINEFFECT_BANISHINGPOINT_CAST, 1505},
-    {EF_MINEFFECT_BANISHINGPOINT_CAST_BOTTOM, 1506},
-    {EF_MINEFFECT_BANISHINGPOINT_01, 1507},
-    {EF_MINEFFECT_BANISHINGPOINT_05, 1508},
-    {EF_MINEFFECT_BANISHINGPOINT_07, 1509},
-    {EF_MINEFFECT_BANISHINGPOINT_11, 1510},
-    {EF_MINEFFECT_CANNON_SPEAR_12, 1511},
-    {EF_MINEFFECT_CANNON_SPEAR_01, 1512},
-    {EF_MINEFFECT_CANNON_SPEAR_03, 1513},
-    {EF_MINEFFECT_CANNON_SPEAR_05, 1514},
-    {EF_MINEFFECT_CANNON_SPEAR_06, 1515},
-    {EF_MINEFFECT_CANNON_SPEAR_07, 1516},
-    {EF_MINEFFECT_CANNON_SPEAR_09, 1517},
-    {EF_MINEFFECT_CANNON_SPEAR_11, 1518},
-    {EF_MINEFFECT_CANNON_SPEAR_BOTTOM, 1519},
-    {EF_MINEFFECT_DRAGONBREATH_BOMB, 1520},
-    {EF_MINEFFECT_DRAGONBREATH_01, 1521},
-    {EF_MINEFFECT_DRAGONBREATH_05, 1522},
-    {EF_MINEFFECT_DRAGONBREATH_07, 1523},
-    {EF_MINEFFECT_DRAGONBREATH_11, 1524},
-    {EF_WHITEIMPRISON_STATE, 99999999},
-    {EF_MINEFFECT_DRAGONBREATH_WATER_BOMB, 1526},
-    {EF_MINEFFECT_DRAGONBREATH_WATER_01, 1527},
-    {EF_MINEFFECT_DRAGONBREATH_WATER_05, 1528},
-    {EF_MINEFFECT_DRAGONBREATH_WATER_07, 1529},
-    {EF_MINEFFECT_DRAGONBREATH_WATER_11, 1530},
-    {EF_POK_THUNDER, 99999999},
-    {EF_MINEFFECT_TIGERCANNON, 1532},
-    {EF_MINEFFECT_SEVERERAINSTORM_CAST, 1533},
-    {EF_MINEFFECT_COMET, 1534},
-    {EF_MINEFFECT_COMET_BOTTOM, 1535},
-    {EF_MINEFFECT_COMET_CAST_BOTTOM, 1536},
-    {EF_MINEFFECT_COMET_SUB_EXP, 1537},
-    {EF_MINEFFECT_COMET_SUB_EXP_BOTTOM, 1538},
-    {EF_MINEFFECT_COMET_CAST, 1539},
-    {EF_MINEFFECT_JACKFROST_00, 1540},
-    {EF_MINEFFECT_JACKFROST_01, 1541},
-    {EF_MINEFFECT_JACKFROST_02, 1542},
-    {EF_MINEFFECT_JACKFROST_CAST, 1543},
-    {EF_MINEFFECT_JACKFROST_RUNE, 1544},
-    {EF_NEW_MAGNUM_BREAK, 300},
-    {EF_NEW_POISONSMOKE_1, 1546},
-    {EF_NEW_POISONSMOKE_2, 1547},
-    {EF_NEW_POISONSMOKE_CAST, 1548},
-    {EF_NEW_FEARBREEZE, 1549},
-    {EF_NEW_HELLINFERNO, 1550},
-    {EF_NEW_HELLINFERNO_BOTTOM, 1551},
-    {EF_NEW_HELLINFERNO_CAST_BOTTOM, 1552},
-    {EF_NEW_HELLINFERNO_SUB, 1553},
-    {EF_NEW_HELLINFERNO_SUB_BOTTOM, 1554},
-    {EF_UNK_1555, 1555},
-    {EF_NEW_HEAL_BLUE, 60},
-    {EF_NEW_CLEARANCE, 1557},
-    {EF_NEW_CLEARANCE_BOTTOM, 1558},
-    {EF_NEW_CLEARANCE_CAST, 1559},
-    {EF_NEW_HEAL_WHITE, 40},
-    {EF_NEW_VARETYRSPEAR, 1561},
-    {EF_NEW_VARETYRSPEAR_BOTTOM, 1562},
-    {EF_NEW_VARETYRSPEAR_CAST, 1563},
-    {EF_NEW_VARETYRSPEAR_CAST_BOTTOM, 1564},
-    {EF_NEW_HEAL_YELLOW, 40},
-    {EF_NEW_CROSSIMPACT, 1566},
-    {EF_NEW_CROSSIMPACT_TARGET, 1567},
-    {EF_NEW_CROSSIMPACT_HIT, 300},
-    {EF_NEW_REVERBERATION, 150},
-    {EF_NEW_FALLENEMPIRE, 1570},
-    {EF_NEW_FALLENEMPIRE_BOTTOM, 1571},
-    {EF_NEW_FALLENEMPIRE_HIT, 1572},
-    {EF_NEW_GATEOFHELL_CAST, 1573},
-    {EF_NEW_GATEOFHELL_TARGET, 1574},
-    {EF_NEW_GATEOFHELL, 300},
-    {EF_NEW_HOWLINGOFLION, 1576},
-    {EF_NEW_HOWLINGOFLION_BOTTOM, 1577},
-    {EF_NEW_HOWLINGOFLION_CAST, 1578},
-    {EF_NEW_HOWLINGOFLION_CAST_BOTTOM, 1579},
-    {EF_NEW_HOWLINGOFLION_HIT, 1580},
-    {EF_NEW_METALLICSOUND, 1581},
-    {EF_NEW_METALLICSOUND_BOTTOM, 1582},
-    {EF_NEW_METALLICSOUND_HIT, 1583},
-    {EF_NEW_METALLICSOUND_LINE, 300},
-    {EF_NEW_REPRODUCE, 1585},
-    {EF_NEW_REPRODUCE_BOTTOM, 1586},
-    {EF_NEW_SOULEXPANSION_CAST, 1587},
-    {EF_NEW_SOULEXPANSION_CAST_BOTTOM, 1588},
-    {EF_NEW_SOULEXPANSION_LOOP, 1589},
-    {EF_NEW_SOULEXPANSION_LOOP_BOTTOM, 1590},
-    {EF_NEW_SOULEXPANSION_HIT, 1591},
-    {EF_NEW_SOULEXPANSION_HIT_BOTTOM, 1592},
-    {EF_NEW_REVERBERATION_HIT, 1593},
-    {EF_NEW_REVERBERATION_NOTE, 200},
-    {EF_NEW_AROMAOIL, 1595},
-    {EF_NEW_AROMAOIL_BOTTOM, 1596},
-    {EF_NEW_BATHFOAM, 1597},
-    {EF_NEW_BATHFOAM_BOTTOM, 1598},
-    {EF_TETRA_VORTEX_CORE_REUSE, 1599},
-    {EF_GUARD5, 200},
-    {EF_MAGIC_CIRCLE_1, 99999999},
-    {EF_BIO5_PLANT_GREEN, 9999},
-    {EF_BIO5_PLANT_BLUE, 9999},
-    {EF_BIO5_PLANT_YELLOW, 9999},
-    {EF_BIO5_PLANT_WHITE, 9999},
-    {EF_BIO5_PLANT_RED, 9999},
-    {EF_GRADE_ENCHANT_INTRO, 1607},
-    {EF_GRADE_ENCHANT_SUCCESS, 1608},
-    {EF_GRADE_ENCHANT_FAILED, 1609},
-    {EF_POK_MAGIC, 99999999},
-    {EF_BLUE_WAVE_1, 1611},
-    {EF_BLUE_WAVE_2, 1612},
-    {EF_BLUE_WAVE_3, 1613},
-    {EF_RED_WAVE_1, 1614},
-    {EF_RED_WAVE_2, 1615},
-    {EF_RED_WAVE_3, 1616},
-    {EF_UNK_1617, 1617},
-    {EF_UNK_1618, 1618},
-    {EF_UNK_1619, 1619},
-    {EF_NEW_WALLOFTHORN_CAST, 1620},
-    {EF_NEW_WALLOFTHORN_CAST_BOTTOM, 1621},
-    {EF_NEW_EARTHGRAVE_BOTTOM, 1622},
-    {EF_NEW_EARTHGRAVE_HIT, 1623},
-    {EF_NEW_IGNITIONBREAK, 1624},
-    {EF_NEW_IGNITIONBREAK_BOTTOM, 1625},
-    {EF_NEW_IGNITIONBREAK_CAST, 1626},
-    {EF_NEW_JUDEX_CAST, 1627},
-    {EF_NEW_JUDEX_CAST_BOTTOM, 1628},
-    {EF_NEW_JUDEX_CAST_LOOP, 1629},
-    {EF_NEW_JUDEX_CAST_LOOP_BOTTOM, 1630},
-    {EF_NEW_JUDEX_TARGET, 1631},
-    {EF_NEW_JUDEX_TARGET_BOTTOM, 1632},
-    {EF_NEW_JUDEX_LIGHT, 1633},
-    {EF_NEW_JUDEX_LIGHT_BOTTOM, 1634},
-    {EF_NEW_CHAINLIGHTNING_CAST, 1635},
-    {EF_NEW_CHAINLIGHTNING_CAST_BOTTOM, 1636},
-    {EF_NEW_CHAINLIGHTNING_LOCKON, 1637},
-    {EF_NEW_CHAINLIGHTNING_TARGET, 1638},
-    {EF_NEW_MANDRAGORA, 1639},
-    {EF_NEW_MANDRAGORA_BOTTOM, 1640},
-    {EF_NEW_MANDRAGORA_CAST, 1641},
-    {EF_NEW_SOUNDOFDESTRUCTION_CAST, 1642},
-    {EF_NEW_SOUNDOFDESTRUCTION_CAST_BOTTOM, 1643},
-    {EF_NEW_SOUNDOFDESTRUCTION_TARGET, 1644},
-    {EF_NEW_AIMEDBOLT_01, 1645},
-    {EF_NEW_AIMEDBOLT_05, 1646},
-    {EF_NEW_AIMEDBOLT_07, 1647},
-    {EF_NEW_AIMEDBOLT_11, 1648},
-    {EF_NEW_AIMEDBOLT_CAST_BOTTOM, 1649},
-    {EF_NEW_AIMEDBOLT_END, 1650},
-    {EF_NEW_AIMEDBOLT_TARGET_LOOP, 1651},
-    {EF_NEW_UNLIMIT, 1652},
-    {EF_NEW_UNLIMIT_BOTTOM, 1653},
-    {EF_NEW_EPICLESIS, 1654},
-    {EF_NEW_EPICLESIS_AURA, 99999999},
-    {EF_NEW_EPICLESIS_CAST, 100},
-    {EF_UNK_1657, 1657},
-    {EF_NEW_AXEBOOMERANG_CAST, 1658},
-    {EF_NEW_AXEBOOMERANG_CAST_BOTTOM, 1659},
-    {EF_NEW_AXEBOOMERANG_HIT, 1660},
-    {EF_UNK_1661, 1661},
-    {EF_UNK_1662, 1662},
-    {EF_UNK_1663, 1663},
-    {EF_NEW_SANCTUARY, 100},
-    {EF_NEW_SPELLFIST_FIRE, 1665},
-    {EF_NEW_SPELLFIST_FIRE_BOTTOM, 1666},
-    {EF_NEW_SPELLFIST_WATER, 1667},
-    {EF_NEW_SPELLFIST_WATER_BOTTOM, 1668},
-    {EF_NEW_SPELLFIST_WIND, 1669},
-    {EF_UNK_1670, 1670},
-    {EF_UNK_1671, 1671},
-    {EF_UNK_1672, 1672},
-    {EF_UNK_1673, 1673},
-    {EF_UNK_1674, 1674},
-    {EF_NEW_CARTBOOST, 1675},
-    {EF_NEW_CARTBOOST_BOTTOM, 1676},
-    {EF_NEW_SAFETYWALL, 60},
-    {EF_NEW_SONICWAVE, 1678},
-    {EF_NEW_OVERBRAND_01, 1679},
-    {EF_NEW_OVERBRAND_03, 1680},
-    {EF_NEW_OVERBRAND_05, 1681},
-    {EF_NEW_OVERBRAND_06, 1682},
-    {EF_NEW_OVERBRAND_07, 1683},
-    {EF_NEW_OVERBRAND_09, 1684},
-    {EF_NEW_OVERBRAND_11, 1685},
-    {EF_NEW_OVERBRAND_12, 1686},
-    {EF_NEW_OVERBRAND_CAST, 1687},
-    {EF_NEW_OVERBRAND_CAST_BOTTOM, 1688},
-    {EF_NEW_OVERBRAND_HIT, 1689},
-    {EF_NEW_WINDCUTTER, 1690},
-    {EF_NEW_WINDCUTTER_BOTTOM_01, 1691},
-    {EF_NEW_WINDCUTTER_BOTTOM_05, 1692},
-    {EF_NEW_WINDCUTTER_TARGET, 1693},
-    {EF_UNK_1694, 1694},
-    {EF_UNK_1695, 1695},
-    {EF_UNK_1696, 1696},
-    {EF_UNK_1697, 1697},
-    {EF_NEW_POWERSWING_01, 1698},
-    {EF_NEW_POWERSWING_05, 1699},
-    {EF_NEW_POWERSWING_07, 1700},
-    {EF_NEW_POWERSWING_11, 1701},
-    {EF_NEW_POWERSWING_BOTTOM, 1702},
-    {EF_NEW_VULCANARM, 1703},
-    {EF_NEW_VULCANARM_BOTTOM, 1704},
-    {EF_NEW_VULCANARM_SHOTHOLE, 1705},
-    {EF_NEW_EARTHDRIVE, 1706},
-    {EF_NEW_EARTHDRIVE_BOTTOM, 1707},
-    {EF_NEW_EARTHDRIVE_TARGET, 1708},
-    {EF_NEW_EARTHDRIVE_CAST, 40},
-    {EF_UNK_1710, 1710},
-    {EF_UNK_1711, 1711},
-    {EF_UNK_1712, 1712},
-    {EF_UNK_1713, 1713},
-    {EF_UNK_1714, 1714},
-    {EF_UNK_1715, 1715},
-    {EF_UNK_1716, 1716},
-    {EF_UNK_1717, 1717},
-    {EF_UNK_1718, 1718},
-    {EF_UNK_1719, 1719},
-    {EF_UNK_1720, 1720},
-    {EF_UNK_1721, 1721},
-    {EF_DRAGONIC_AURA, 1722},
-    {EF_DRAGONIC_AURA_BOTTOM, 1723},
-    {EF_DRAGONIC_AURA_HIT, 1724},
-    {EF_DRAGONIC_AURA_HIT_BOTTOM, 1725},
-    {EF_DRAGONIC_AURA_BUFF, 1726},
-    {EF_DRAGONIC_AURA_BUFF_BOTTOM, 1727},
-    {EF_UNK_1728, 1728},
-    {EF_UNK_1729, 1729},
-    {EF_NEW_AUTOSHADOWSPELL, 1730},
-    {EF_NEW_AUTOSHADOWSPELL_BOTTOM, 1731},
-    {EF_DESTRUCTIVE_HURRICANE, 1732},
-    {EF_DESTRUCTIVE_HURRICANE_BOTTOM, 1733},
-    {EF_DESTRUCTIVE_HURRICANE_CAST, 1734},
-    {EF_DESTRUCTIVE_HURRICANE_CAST_BOTTOM, 1735},
-    {EF_DESTRUCTIVE_HURRICANE_CLIMAX, 1736},
-    {EF_DESTRUCTIVE_HURRICANE_HIT, 1737},
-    {EF_DEADLY_PROJECTION_CAST, 1738},
-    {EF_DEADLY_PROJECTION_CAST_BOTTOM, 1739},
-    {EF_DEADLY_PROJECTION_HIT, 1740},
-    {EF_DEADLY_PROJECTION, 1741},
-    {EF_SOUL_VC_STRIKE_CAST, 1742},
-    {EF_SOUL_VC_STRIKE_CAST_BOTTOM, 1743},
-    {EF_SOUL_VC_STRIKE_HIT, 1744},
-    {EF_ROCKDOWN, 1745},
-    {EF_ROCKDOWN_BOTTOM, 1746},
-    {EF_ROCKDOWN_CAST, 1747},
-    {EF_ROCKDOWN_CAST_BOTTOM, 1748},
-    {EF_ROCKDOWN_HIT, 1749},
-    {EF_UNK_1750, 1750},
-    {EF_UNK_1751, 1751},
-    {EF_UNK_1752, 1752},
-    {EF_RAIN_OF_CRYSTAL, 1753},
-    {EF_RAIN_OF_CRYSTAL_BOTTOM, 1754},
-    {EF_UNK_1755, 1755},
-    {EF_UNK_1756, 1756},
-    {EF_CRIMSON_ARROW_CAST, 1757},
-    {EF_CRIMSON_ARROW_CAST_BOTTOM, 1758},
-    {EF_CRIMSON_ARROW_HIT, 1759},
-    {EF_UNK_1760, 1760},
-    {EF_VIOLENT_QUAKE_CAST, 1761},
-    {EF_VIOLENT_QUAKE_CAST_BOTTOM, 1762},
-    {EF_VIOLENT_QUAKE_HIT, 1763},
-    {EF_UNK_1764, 1764},
-    {EF_UNK_1765, 1765},
-    {EF_UNK_1766, 1766},
-    {EF_UNK_1767, 1767},
-    {EF_UNK_1768, 1768},
-    {EF_ASTRAL_STRIKE_CAST, 1769},
-    {EF_ASTRAL_STRIKE_CAST_BOTTOM, 1770},
-    {EF_MYSTERY_ILLUSION, 1771},
-    {EF_MYSTERY_ILLUSION_BOTTOM, 1772},
-    {EF_MYSTERY_ILLUSION_CAST, 1773},
-    {EF_MYSTERY_ILLUSION_CAST_BOTTOM, 1774},
-    {EF_MYSTERY_ILLUSION_HIT, 1775},
-    {EF_TORNADO_STORM, 1776},
-    {EF_TORNADO_STORM_BOTTOM, 1777},
-    {EF_TORNADO_STORM_CAST, 1778},
-    {EF_TORNADO_STORM_CAST_BOTTOM, 1779},
-    {EF_TORNADO_STORM_HIT, 1780},
-    {EF_FROZEN_SLASH, 1781},
-    {EF_FROZEN_SLASH_CAST, 1782},
-    {EF_FROZEN_SLASH_CAST_BOTTOM, 1783},
-    {EF_FROZEN_SLASH_HIT, 1784},
-    {EF_FROZEN_SLASH_ICE_01, 1785},
-    {EF_FROZEN_SLASH_ICE_02, 1786},
-    {EF_FROZEN_SLASH_ICE_03, 1787},
-    {EF_FROZEN_SLASH_ICE_04, 1788},
-    {EF_FROZEN_SLASH_ICE_05, 1789},
-    {EF_FROZEN_SLASH_ICE_06, 1790},
-    {EF_FROZEN_SLASH_ICE_07, 1791},
-    {EF_FROZEN_SLASH_ICE_08, 1792},
-    {EF_VIOLENT_QUAKE_BOTTOM, 1793},
-    {EF_ALL_BLOOM, 1794},
-    {EF_ALL_BLOOM_BOTTOM, 1795},
-    {EF_ALL_BLOOM_CAST, 1796},
-    {EF_ALL_BLOOM_CAST_BOTTOM, 1797},
-    {EF_UNK_1798, 1798},
-    {EF_ALL_BLOOM_HIT, 1799},
-    {EF_UNK_1800, 1800},
-    {EF_CLIMAX_LIGHT, 1801},
-    {EF_CLIMAX_CAST, 1802},
-    {EF_CLIMAX_CAST_LOOP, 1803},
-    {EF_UNK_1804, 1804},
-    {EF_FLORAL_FLARE_ROAD_CAST, 1805},
-    {EF_FLORAL_FLARE_ROAD_CAST_BOTTOM, 1806},
-    {EF_FLORAL_FLARE_ROAD_HIT, 1807},
-    {EF_MEDIALE_VOTUM, 1808},
-    {EF_MEDIALE_VOTUM_CAST, 1809},
-    {EF_MEDIALE_VOTUM_LOOP, 1810},
-    {EF_ARGUTUS_VITA, 1811},
-    {EF_ARGUTUS_VITA_CAST, 1812},
-    {EF_ARGUTUS_TELUM, 1813},
-    {EF_ARGUTUS_TELUM_CAST, 1814},
-    {EF_PRESENS_ACIES, 1815},
-    {EF_PRESENS_ACIES_CAST, 1816},
-    {EF_NEW_D_MACHINE, 1817},
-    {EF_NEW_D_MACHINE_CAST, 1818},
-    {EF_NEW_D_MACHINE_CAST_BOTTOM, 1819},
-    {EF_NEW_D_MACHINE_START, 1820},
-    {EF_NEW_D_MACHINE_END, 1821},
-    {EF_ARBITRIUM_CAST, 1822},
-    {EF_ARBITRIUM_CAST_BOTTOM, 1823},
-    {EF_ARBITRIUM, 1824},
-    {EF_ARBITRIUM_BOTTOM, 1825},
-    {EF_ARBITRIUM_HIT, 1826},
-    {EF_UNK_1827, 1827},
-    {EF_UNK_1828, 1828},
-    {EF_UNK_1829, 1829},
-    {EF_UNK_1830, 1830},
-    {EF_NEW_REPARATIO_CAST, 1831},
-    {EF_NEW_REPARATIO_CAST_BOTTOM, 1832},
-    {EF_NEW_REPARATIO, 1833},
-    {EF_NEW_REPARATIO_BOTTOM, 1834},
-    {EF_NEW_REPARATIO_TARGET, 1835},
-    {EF_NEW_REPARATIO_TARGET_BOTTOM, 1836},
-    {EF_UNK_1837, 1837},
-    {EF_ETERNAL_SLASH_HIT_1, 1838},
-    {EF_UNK_1839, 1839},
-    {EF_A_MACHINE_CAST, 1840},
-    {EF_UNK_1841, 1841},
-    {EF_A_MACHINE_HIT, 1842},
-    {EF_UNK_1843, 1843},
-    {EF_UNK_1844, 1844},
-    {EF_UNK_1845, 1845},
-    {EF_EFFLIGO, 1846},
-    {EF_EFFLIGO_BOTTOM, 1847},
-    {EF_EFFLIGO_HIT, 1848},
-    {EF_COMPETENTIA, 1849},
-    {EF_COMPETENTIA_BOTTOM, 1850},
-    {EF_UNK_1851, 1851},
-    {EF_COMPETENTIA_LOOP, 1852},
-    {EF_COMPETENTIA_LOOP_BOTTOM, 1853},
-    {EF_CRYSTAL_IMPACT, 1854},
-    {EF_CRYSTAL_IMPACT_BOTTOM, 1855},
-    {EF_CRYSTAL_IMPACT_CAST, 1856},
-    {EF_CRYSTAL_IMPACT_CAST_BOTTOM, 1857},
-    {EF_CRYSTAL_IMPACT_HIT, 1858},
-    {EF_CRYSTAL_IMPACT_BUFF, 1859},
-    {EF_RELIGIO, 1860},
-    {EF_RELIGIO_CAST, 1861},
-    {EF_UNK_1862, 1862},
-    {EF_UNK_1863, 1863},
-    {EF_FATAL_SHADOW_CROW, 1864},
-    {EF_FATAL_SHADOW_CROW_BOTTOM, 1865},
-    {EF_FATAL_SHADOW_CROW_HIT, 1866},
-    {EF_UNK_1867, 1867},
-    {EF_UNK_1868, 1868},
-    {EF_UNK_1869, 1869},
-    {EF_UNK_1870, 1870},
-    {EF_UNK_1871, 1871},
-    {EF_NEW_PNEUMA, 1872},
-    {EF_DEEP_BLIND_TRAP_CAST, 1873},
-    {EF_DEEP_BLIND_TRAP, 1874},
-    {EF_DEEP_BLIND_TRAP_HIT, 1875},
-    {EF_NEW_SW_CAST, 1876},
-    {EF_SWIFT_TRAP_CAST, 1877},
-    {EF_SWIFT_TRAP, 1878},
-    {EF_SWIFT_TRAP_HIT, 1879},
-    {EF_SOLID_TRAP_CAST, 1880},
-    {EF_SOLID_TRAP_CAST_BOTTOM, 1881},
-    {EF_SOLID_TRAP, 1882},
-    {EF_SOLID_TRAP_HIT, 1883},
-    {EF_NEW_RUSH_QUAKE, 1884},
-    {EF_NEW_RUSH_QUAKE_BOTTOM, 1885},
-    {EF_NEW_RUSH_QUAKE_HIT, 1886},
-    {EF_BENEDICTUM, 1887},
-    {EF_BENEDICTUM_CAST, 1888},
-    {EF_BENEDICTUM_CAST_BOTTOM, 1889},
-    {EF_STRATUM_TREMOR_CAST, 1890},
-    {EF_STRATUM_TREMOR_CAST_BOTTOM, 1891},
-    {EF_STRATUM_TREMOR_HIT, 1892},
-    {EF_STRATUM_TREMOR, 1893},
-    {EF_STRATUM_TREMOR_BOTTOM, 1894},
-    {EF_UNK_1895, 1895},
-    {EF_UNK_1896, 1896},
-    {EF_UNK_1897, 1897},
-    {EF_UNK_1898, 1898},
-    {EF_WIND_SIGN, 1899},
-    {EF_WIND_SIGN_LOOP, 1900},
-    {EF_ABR_MOTHER_CAST, 1901},
-    {EF_ABR_MOTHER, 1902},
-    {EF_ABR_MOTHER_01, 1903},
-    {EF_ABR_MOTHER_02, 1904},
-    {EF_HAWK_RUSH, 1905},
-    {EF_ABR_INFINITY, 1906},
-    {EF_ABR_INFINITY_BOTTOM, 1907},
-    {EF_ABR_INFINITY_CAST, 1908},
-    {EF_ABR_INFINITY_HIT, 1909},
-    {EF_ABR_INFINITY_RING, 1910},
-    {EF_UNK_1911, 1911},
-    {EF_UNK_1912, 1912},
-    {EF_UNK_1913, 1913},
-    {EF_ETERNAL_SLASH_HIT_2, 1914},
-    {EF_NEW_D_CANNON, 1915},
-    {EF_NEW_D_CANNON_CAST, 1916},
-    {EF_NEW_D_CANNON_HIT, 1917},
-    {EF_NEW_D_CANNON_ENTITY, 1918},
-    {EF_FLAME_TRAP, 1919},
-    {EF_UNK_1920, 1920},
-    {EF_FLAME_TRAP_CAST, 1921},
-    {EF_FLAME_TRAP_HIT, 1922},
-    {EF_FLAME_TRAP_RING, 1923},
-    {EF_NEW_DILECTIO_HEAL, 1924},
-    {EF_NEW_DILECTIO_HEAL_CAST, 1925},
-    {EF_NEW_DILECTIO_HEAL_CAST_BOTTOM, 1926},
-    {EF_NEW_DILECTIO_HEAL_TARGET, 1927},
-    {EF_NEW_DILECTIO_HEAL_TARGET_BOTTOM, 1928},
-    {EF_NEW_PRAMEN_BOTTOM, 1929},
-    {EF_NEW_PRAMEN_CAST, 1930},
-    {EF_NEW_PRAMEN, 1931},
-    {EF_NEW_PRAMEN_RING, 1932},
-    {EF_NEW_POTENT_VENOM, 1933},
-    {EF_NEW_BATTLE_W, 1934},
-    {EF_NEW_BATTLE_W_CAST, 1935},
-    {EF_NEW_BATTLE_W_BOTTOM, 1936},
-    {EF_NEW_BATTLE_W_HIT, 1937},
-    {EF_NEW_BATTLE_W_ENTITY, 1938},
-    {EF_NEW_AXE_STOMP_HIT, 1939},
-    {EF_NEW_AXE_STOMP_BOTTOM, 1940},
-    {EF_NEW_AXE_STOMP, 1941},
-    {EF_NEW_AXE_STOMP_12, 1942},
-    {EF_NEW_AXE_STOMP_01, 1943},
-    {EF_NEW_AXE_STOMP_03, 1944},
-    {EF_NEW_AXE_STOMP_05, 1945},
-    {EF_NEW_AXE_STOMP_06, 1946},
-    {EF_NEW_AXE_STOMP_08, 1947},
-    {EF_NEW_AXE_STOMP_09, 1948},
-    {EF_NEW_AXE_STOMP_11, 1949},
-    {EF_UNK_1950, 1950},
-    {EF_UNK_1951, 1951},
-    {EF_UNK_1952, 1952},
-    {EF_UNK_1953, 1953},
-    {EF_UNK_1954, 1954},
-    {EF_UNK_1955, 1955},
-    {EF_UNK_1956, 1956},
-    {EF_UNK_1957, 1957},
-    {EF_PNEUMATICUS_PROCELLA_CAST, 1958},
-    {EF_PNEUMATICUS_PROCELLA_RING, 1959},
-    {EF_UNK_1960, 1960},
-    {EF_UNK_1961, 1961},
-    {EF_UNK_1962, 1962},
-    {EF_SINCERE_FAITH_RING, 1963},
-    {EF_SINCERE_FAITH, 1964},
-    {EF_SINCERE_FAITH_BOTTOM, 1965},
-    {EF_ABYSS_DAGGER, 1966},
-    {EF_ABYSS_DAGGER_HIT, 1967},
-    {EF_UNK_1968, 1968},
-    {EF_HAWK_BOOMERANG_CAST, 1969},
-    {EF_HAWK_BOOMERANG_HIT, 1970},
-    {EF_HAWK_BOOMERANG_START, 1971},
-    {EF_GALE_STORM_CAST, 1972},
-    {EF_UNK_1973, 120},
-    {EF_GALE_STORM_HIT, 1974},
-    {EF_FIRST_FAITH_POWER, 1975},
-    {EF_FIRST_FAITH_POWER_CAST, 1976},
-    {EF_FIRST_FAITH_POWER_START, 1977},
-    {EF_JUDGE, 1978},
-    {EF_JUDGE_CAST, 1979},
-    {EF_JUDGE_START, 1980},
-    {EF_JUDGE_AURA, 1981},
-    {EF_THIRD_EXOR_FLAME, 1982},
-    {EF_THIRD_EXOR_FLAME_CAST, 1983},
-    {EF_THIRD_EXOR_FLAME_START, 1984},
-    {EF_THIRD_EXOR_FLAME_AURA, 1985},
-    {EF_POWERFUL_FAITH_RING, 1986},
-    {EF_POWERFUL_FAITH, 1987},
-    {EF_OLEUM_SANCTUM, 1988},
-    {EF_OLEUM_SANCTUM_BOTTOM, 1989},
-    {EF_OLEUM_SANCTUM_HIT, 1990},
-    {EF_OLEUM_SANCTUM_LOOP, 1991},
-    {EF_INCREASING_ACTIVITY, 1992},
-    {EF_INCREASING_ACTIVITY_CAST, 1993},
-    {EF_INCREASING_ACTIVITY_CAST_BOTTOM, 1994},
-    {EF_EXPLOSION_BLASTER, 1995},
-    {EF_EXPLOSION_BLASTER_BOTTOM, 1996},
-    {EF_EXPLOSION_BLASTER_HIT, 1997},
-    {EF_FIRM_FAITH_RING, 1998},
-    {EF_FIRM_FAITH, 1999},
-    {EF_UNK_2000, 2000},
-    {EF_UNK_2001, 2001},
-    {EF_UNK_2002, 2002},
-    {EF_ACTIVITY_BURN, 2003},
-    {EF_ACTIVITY_BURN_CAST, 2004},
-    {EF_ACTIVITY_BURN_CAST_BOTTOM, 2005},
-    {EF_UNK_2006, 2006},
-    {EF_UNK_2007, 2007},
-    {EF_UNK_2008, 2008},
-    {EF_SERPENS_BOTTOM, 2009},
-    {EF_SERPENS_CAST, 2010},
-    {EF_SERPENS_CAST_BOTTOM, 2011},
-    {EF_SERPENS_HIT, 2012},
-    {EF_SERPENS_SHIELD, 2013},
-    {EF_CHAIN_REACTION_SHOT_CAST, 2014},
-    {EF_CHAIN_REACTION_SHOT_CAST_BOTTOM, 2015},
-    {EF_ETERNAL_SLASH_HIT_3, 2016},
-    {EF_CHAIN_REACTION_SHOT_HITSUB, 2017},
-    {EF_CHAIN_REACTION_SHOT, 2018},
-    {EF_DILUVIO_ICE, 2019},
-    {EF_DILUVIO_ICE_BOTTOM, 2020},
-    {EF_DILUVIO_CAST, 2021},
-    {EF_DILUVIO_CAST_BOTTOM, 2022},
-    {EF_DILUVIO_HIT, 2023},
-    {EF_DILUVIO_ARMOR, 2024},
-    {EF_SPELL_ENCHANTING, 2025},
-    {EF_UNK_2026, 60},
-    {EF_DIAMOND_STORM_BOTTOM, 60},
-    {EF_DIAMOND_STORM_CAST, 2028},
-    {EF_DIAMOND_STORM_CAST_BOTTOM, 2029},
-    {EF_DIAMOND_STORM_HIT, 2030},
-    {EF_VENOM_SWAMP_BOTTOM, 2031},
-    {EF_VENOM_SWAMP_CAST, 2032},
-    {EF_VENOM_SWAMP_CAST_BOTTOM, 2033},
-    {EF_VENOM_SWAMP_HIT, 2034},
-    {EF_ARDOR, 2035},
-    {EF_ARDOR_BOTTOM, 2036},
-    {EF_ARDOR_CAST, 2037},
-    {EF_ARDOR_CAST_BOTTOM, 2038},
-    {EF_ARDOR_HIT, 2039},
-    {EF_ARDOR_FLAMEARMOR, 2040},
-    {EF_LIGHTNING_LAND, 2041},
-    {EF_LIGHTNING_LAND_BOTTOM, 2042},
-    {EF_LIGHTNING_LAND_CAST, 2043},
-    {EF_LIGHTNING_LAND_CAST_BOTTOM, 2044},
-    {EF_LIGHTNING_LAND_HIT, 2045},
-    {EF_UNK_2046, 2046},
-    {EF_UNK_2047, 2047},
-    {EF_UNK_2048, 2048},
-    {EF_UNK_2049, 2049},
-    {EF_UNK_2050, 2050},
-    {EF_FIRST_BRAND, 2051},
-    {EF_FIRST_BRAND_AURA, 2052},
-    {EF_FIRST_BRAND_HIT, 2053},
-    {EF_FIRST_BRAND_START, 2054},
-    {EF_CONFLAGRATION, 2055},
-    {EF_CONFLAGRATION_BOTTOM, 2056},
-    {EF_CONFLAGRATION_CAST, 2057},
-    {EF_CONFLAGRATION_CAST_BOTTOM, 2058},
-    {EF_CONFLAGRATION_HIT, 2059},
-    {EF_SOUND_BLEND, 2060},
-    {EF_SOUND_BLEND_CAST, 2061},
-    {EF_SOUND_BLEND_CAST_BOTTOM, 2062},
-    {EF_SOUND_BLEND_RED, 2063},
-    {EF_METALLIC_FURY, 2064},
-    {EF_UNK_2065, 2065},
-    {EF_UNK_2066, 2066},
-    {EF_UNK_2067, 2067},
-    {EF_UNK_2068, 2068},
-    {EF_UNK_2069, 2069},
-    {EF_UNK_2070, 2070},
-    {EF_UNK_2071, 2071},
-    {EF_UNK_2072, 2072},
-    {EF_UNK_2073, 2073},
-    {EF_UNK_2074, 2074},
-    {EF_NIFLHEIM, 2075},
-    {EF_NIFLHEIM_CAST, 2076},
-    {EF_UNK_2077, 2077},
-    {EF_SECOND_FAITH, 2078},
-    {EF_SECOND_FAITH_AURA, 2079},
-    {EF_UNK_2080, 2080},
-    {EF_SECOND_FAITH_START, 2081},
-    {EF_UNK_2082, 2082},
-    {EF_SECOND_FLAME, 2083},
-    {EF_SECOND_FLAME_BOTTOM, 2084},
-    {EF_THIRD_FLAME_BOMB, 2085},
-    {EF_THIRD_FLAME_BOMB_BOTTOM, 2086},
-    {EF_ABYSS_STRIKE, 2087},
-    {EF_ABYSS_STRIKE_BOTTOM, 2088},
-    {EF_ABYSS_STRIKE_CAST, 2089},
-    {EF_ABYSS_STRIKE_CAST_BOTTOM, 2090},
-    {EF_ABYSS_STRIKE_GROUND, 2091},
-    {EF_ABYSS_STRIKE_GROUND_BOTTOM, 2092},
-    {EF_ABYSS_STRIKE_HIT, 2093},
-    {EF_MASSIVE_FLAME_BLASTER, 2094},
-    {EF_MASSIVE_FLAME_BLASTER_HIT, 2095},
-    {EF_MASSIVE_FLAME_BLASTER_HIT_BOTTOM, 2096},
-    {EF_THIRD_CONSECRATION, 2094},
-    {EF_PROCELLA, 2098},
-    {EF_PROCELLA_BOTTOM, 2099},
-    {EF_PROCELLA_CAST, 2100},
-    {EF_PROCELLA_CAST_BOTTOM, 2101},
-    {EF_PROCELLA_HIT, 2102},
-    {EF_PROCELLA_STORM, 2103},
-    {EF_TERREMOTUS, 2104},
-    {EF_TERREMOTUS_CAST, 2105},
-    {EF_TERREMOTUS_CAST_BOTTOM, 2106},
-    {EF_TERREMOTUS_HIT, 2107},
-    {EF_TERREMOTUS_PROTECT, 2108},
-    {EF_UNK_2109, 2109},
-    {EF_FROM_THE_ABYSS, 2110},
-    {EF_ABYSS_STRIKE_HIT_2, 2111},
-    {EF_THIRD_PUNISH, 2095},
-    {EF_THIRD_PUNISH_BOTTOM, 2096},
-    {EF_UNK_2114, 2114},
-    {EF_FRENZY_SHOT_HIT, 2115},
-    {EF_UNK_2116, 2116},
-    {EF_UNK_2117, 2117},
-    {EF_UNK_2118, 2118},
-    {EF_UNK_2119, 2119},
-    {EF_UNK_2120, 2120},
-    {EF_UNK_2121, 2121},
-    {EF_MUSICAL_INTERLUDE, 2122},
-    {EF_MUSICAL_INTERLUDE_CAST, 2123},
-    {EF_UNK_2124, 2124},
-    {EF_UNK_2125, 2125},
-    {EF_ABYSS_SLAYER, 2126},
-    {EF_ABYSS_SLAYER_CAST, 2127},
-    {EF_ABYSS_SLAYER_CAST_BOTTOM, 2128},
-    {EF_ABYSS_SQUARE, 2129},
-    {EF_ABYSS_SQUARE_BOTTOM, 2130},
-    {EF_ABYSS_DAGGER_HIT_2, 2131},
-    {EF_DEFT_STAB, 2132},
-    {EF_TERRA_DRIVE, 2133},
-    {EF_TERRA_DRIVE_BOTTOM, 2134},
-    {EF_TERRA_DRIVE_CAST, 2135},
-    {EF_TERRA_DRIVE_CAST_BOTTOM, 2136},
-    {EF_TERRA_DRIVE_HIT, 2137},
-    {EF_ELEMENTAL_BUSTER_CAST, 2138},
-    {EF_ELEMENTAL_BUSTER_FIRE, 2139},
-    {EF_ELEMENTAL_BUSTER_FIRE_BOTTOM, 2140},
-    {EF_ELEMENTAL_BUSTER_FIRE_HIT, 2141},
-    {EF_ELEMENTAL_BUSTER_LAND, 2142},
-    {EF_ELEMENTAL_BUSTER_LAND_BOTTOM, 2143},
-    {EF_ELEMENTAL_BUSTER_LAND_HIT, 2144},
-    {EF_ELEMENTAL_BUSTER_POISON, 2145},
-    {EF_ELEMENTAL_BUSTER_POISON_BOTTOM, 2146},
-    {EF_ELEMENTAL_BUSTER_POISON_HIT, 2147},
-    {EF_ELEMENTAL_BUSTER_WATER, 2148},
-    {EF_ELEMENTAL_BUSTER_WATER_BOTTOM, 2149},
-    {EF_ELEMENTAL_BUSTER_WATER_HIT, 2150},
-    {EF_ELEMENTAL_BUSTER_WIND, 2151},
-    {EF_ELEMENTAL_BUSTER_WIND_BOTTOM, 2152},
-    {EF_ELEMENTAL_BUSTER_WIND_HIT, 2153},
-    {EF_UNK_2154, 2154},
-    {EF_UNLUCKY_RUSH_CAST, 2155},
-    {EF_ABYSS_DAGGER_HIT_3, 2156},
-    {EF_UNK_2157, 2157},
-    {EF_UNK_2158, 2158},
-    {EF_UNK_2159, 2159},
-    {EF_UNK_2160, 2160},
-    {EF_ADVANCED_PROTECTION, 2161},
-    {EF_ADVANCED_PROTECTION_BOTTOM, 2162},
-    {EF_ADVANCED_PROTECTION_CAST, 2163},
-    {EF_ADVANCED_PROTECTION_CAST_BOTTOM, 2164},
-    {EF_UNK_2165, 2165},
-    {EF_UNK_2166, 2166},
-    {EF_UNK_2167, 2167},
-    {EF_UNK_2168, 2168},
-    {EF_UNK_2169, 2169},
-    {EF_UNK_2170, 2170},
-    {EF_UNK_2171, 2171},
-    {EF_UNK_2172, 2172},
-    {EF_UNK_2173, 2173},
-    {EF_UNK_2174, 2174},
-    {EF_UNK_2175, 2175},
-    {EF_UNK_2176, 2176},
-    {EF_UNK_2177, 2177},
-    {EF_UNK_2178, 2178},
-    {EF_UNK_2179, 2179},
-    {EF_UNK_2180, 2180},
-    {EF_UNK_2181, 2181},
-    {EF_UNK_2182, 2182},
-    {EF_UNK_2183, 2183},
-    {EF_SHIELD_SHOOTING_CAST, 2184},
-    {EF_SHIELD_SHOOTING_HIT, 2185},
-    {EF_THE_W_PROTECTION, 2186},
-    {EF_THE_W_PROTECTION_CAST, 2187},
-    {EF_UNK_2188, 2188},
-    {EF_UNK_2189, 2189},
-    {EF_UNK_2190, 2190},
-    {EF_UNK_2191, 2191},
-    {EF_UNK_2192, 2192},
-    {EF_UNK_2193, 2193},
-    {EF_UNK_2194, 2194},
-    {EF_UNK_2195, 2195},
-    {EF_UNK_2196, 2196},
-    {EF_UNK_2197, 2197},
-    {EF_UNK_2198, 2198},
-    {EF_UNK_2199, 2199},
-    {EF_UNK_2200, 2200},
-    {EF_UNK_2201, 2201},
-    {EF_UNK_2202, 2202},
-    {EF_UNK_2203, 2203},
-    {EF_ACIDIFIED_ZONE_FIRE_CAST, 2204},
-    {EF_ACIDIFIED_ZONE_FIRE_CAST_BOTTOM, 2205},
-    {EF_UNK_2206, 2206},
-    {EF_ACIDIFIED_ZONE_FIRE_HIT, 2207},
-    {EF_ACIDIFIED_ZONE_FIRE_START, 2208},
-    {EF_ACIDIFIED_ZONE_FIRE_START_BOTTOM, 2209},
-    {EF_ACIDIFIED_ZONE_FIRE_LOOP, 2210},
-    {EF_ACIDIFIED_ZONE_FIRE_LOOP_BOTTOM, 2211},
-    {EF_ACIDIFIED_ZONE_WATER_CAST, 2212},
-    {EF_ACIDIFIED_ZONE_WATER_CAST_BOTTOM, 2213},
-    {EF_UNK_2214, 2214},
-    {EF_ACIDIFIED_ZONE_WATER_HIT, 2215},
-    {EF_ACIDIFIED_ZONE_WATER_START, 2216},
-    {EF_ACIDIFIED_ZONE_WATER_START_BOTTOM, 2217},
-    {EF_ACIDIFIED_ZONE_WATER_LOOP, 2218},
-    {EF_ACIDIFIED_ZONE_WATER_LOOP_BOTTOM, 2219},
-    {EF_ACIDIFIED_ZONE_WIND_CAST, 2220},
-    {EF_ACIDIFIED_ZONE_WIND_CAST_BOTTOM, 2221},
-    {EF_UNK_2222, 2222},
-    {EF_ACIDIFIED_ZONE_WIND_HIT, 2223},
-    {EF_ACIDIFIED_ZONE_WIND_START, 2224},
-    {EF_ACIDIFIED_ZONE_WIND_START_BOTTOM, 2225},
-    {EF_ACIDIFIED_ZONE_WIND_LOOP, 2226},
-    {EF_ACIDIFIED_ZONE_WIND_LOOP_BOTTOM, 2227},
-    {EF_ACIDIFIED_ZONE_GROUND_CAST, 2228},
-    {EF_ACIDIFIED_ZONE_GROUND_CAST_BOTTOM, 2229},
-    {EF_UNK_2230, 2230},
-    {EF_ACIDIFIED_ZONE_GROUND_HIT, 2231},
-    {EF_ACIDIFIED_ZONE_GROUND_START, 2232},
-    {EF_ACIDIFIED_ZONE_GROUND_START_BOTTOM, 2233},
-    {EF_ACIDIFIED_ZONE_GROUND_LOOP, 2234},
-    {EF_ACIDIFIED_ZONE_GROUND_LOOP_BOTTOM, 2235},
-    {EF_HELLTREE_CAST, 2236},
-    {EF_HELLTREE_CAST_BOTTOM, 2237},
-    {EF_HELLTREE_DUSTY, 2238},
-    {EF_HELLTREE_HOWLING, 2239},
-    {EF_RESEARCH_REPORT_RING, 2240},
-    {EF_RESEARCH_REPORT, 2241},
-    {EF_RESEARCH_REPORT_CAST, 2242},
-    {EF_RESEARCH_REPORT_CAST_BOTTOM, 2243},
-    {EF_STATE_LASSITUDE, 2244},
-    {EF_STATE_SWOONING, 2245},
-    {EF_STATE_HOLYFLAME, 2246},
-    {EF_WOODEN_WARRIOR_CAST, 2247},
-    {EF_WOODEN_WARRIOR_CAST_BOTTOM, 2248},
-    {EF_WOODEN_WARRIOR_RING, 2249},
-    {EF_WOODEN_WARRIOR_ATTACK, 2250},
-    {EF_WOODEN_WARRIOR_ATTACK_HIT, 2251},
-    {EF_WOODEN_WARRIOR_THROWROCK, 2252},
-    {EF_WOODEN_WARRIOR_THROWROCK_HIT, 2253},
-    {EF_WOODEN_FAIRY_CAST, 2254},
-    {EF_WOODEN_FAIRY_RING, 2255},
-    {EF_WOODEN_FAIRY_CAST_BOTTOM, 2256},
-    {EF_WOODEN_FAIRY_DUSTY, 2257},
-    {EF_SERPENS_DEEP_POISONING, 2258},
-    {EF_SERPENS_DEEP_POISONING_BOTTOM, 2259},
-    {EF_DILUVIO_COLD_FORCE, 2260},
-    {EF_DILUVIO_COLD_FORCE_BOTTOM, 2261},
-    {EF_ARDOR_FLAMETECHNIC, 2262},
-    {EF_ARDOR_FLAMETECHNIC_BOTTOM, 2263},
-    {EF_PROCELLA_GRACE_BREEZE, 2264},
-    {EF_PROCELLA_GRACE_BREEZE_BOTTOM, 2265},
-    {EF_TERREMOTUS_EARTH_CARE, 2266},
-    {EF_TERREMOTUS_EARTH_CARE_BOTTOM, 2267},
-    {EF_STATE_LIGHTNINGSTRIKE, 2268},
-    {EF_STATE_CONFLAGRATION, 2269},
-    {EF_STATE_FROSTBITE, 2270},
-    {EF_STATE_FROSTBITE_FINISH, 2271},
-    {EF_UNK_2272, 2272},
-    {EF_STATE_CRYSTALLIZATION, 2273},
-    {EF_STATE_DEADLYPOISON, 2274},
-    {EF_UNK_2275, 2275},
-    {EF_UNK_2276, 2276},
-    {EF_UNK_2277, 99999},
-    {EF_UNK_2278, 99999},
-    {EF_THIRD_CONSECRATION_BOTTOM, 2279},
-    {EF_UNK_2280, 2280},
-    {EF_UNK_2281, 2281},
-    {EF_UNK_2282, 2281},
-    {EF_UNK_2283, 2282},
-    {EF_UNK_2284, 2283},
-    {EF_UNK_2285, 2284},
-    {EF_UNK_2286, 2285},
-    {EF_UNK_2287, 2286},
-    {EF_STATUS_CRATE_UP, 100},
-    {EF_STATUS_CRATE_DOWN, 100},
-    {EF_STATUS_HPLUS_UP, 100},
-    {EF_STATUS_HPLUS_DOWN, 100},
-    {EF_STATUS_MRES_UP, 100},
-    {EF_STATUS_MRES_DOWN, 100},
-    {EF_STATUS_PATK_UP, 100},
-    {EF_STATUS_PATK_DOWN, 100},
-    {EF_STATUS_RES_UP, 100},
-    {EF_STATUS_RES_DOWN, 100},
-    {EF_STATUS_SMATK_UP, 100},
-    {EF_STATUS_SMATK_DOWN, 100},
-    {EF_STATUS_PATK_SMATK_UP, 100},
-    {EF_UNK_2301, 2301},
-    {EF_NPC_KILLING_AURA, 2302},
-    {EF_NPC_KILLING_AURA_END, 2303},
-    {EF_NPC_KILLING_AURA_HIT, 2304},
-    {EF_UNK_2305, 2305},
-    {EF_UNK_2306, 2306},
-    {EF_UNK_2307, 2307},
-    {EF_NPC_CANE_OF_EVIL_EYE, 2308},
-    {EF_UNK_2309, 99999999},
-    {EF_UNK_2310, 99999999},
-    {EF_UI_ENCHANT_INTRO_YELLOW, 2311},
-    {EF_UI_ENCHANT_SUCCESS, 2312},
-    {EF_UI_ENCHANT_FAIL, 2313},
-    {EF_UI_ENCHANT_INTRO_BLUE, 2314},
-    {EF_UI_LEVELUP_SUCCESS, 2315},
-    {EF_UI_LEVELUP_FAIL, 2316},
-    {EF_UI_ENCHANT_INTRO_GREEN, 2317},
-    {EF_UI_RESET_SUCCESS, 2318},
-    {EF_UI_RESET_FAIL, 2319},
-    {EF_TOXIN_OF_MANDARA_BOMB, 2320},
-    {EF_TOXIN_OF_MANDARA_BOMB_BOTTOM, 2321},
-    {EF_TOXIN_OF_MANDARA_SHOCK, 2322},
-    {EF_NEEDLE_STINGER, 2323},
-    {EF_NEEDLE_STINGER_BOTTOM, 2324},
-    {EF_NEEDLE_STINGER_HIT, 2325},
-    {EF_ABSOLUTE_ZEPHYR, 2326},
-    {EF_ABSOLUTE_ZEPHYR_BOTTOM, 2327},
-    {EF_ABSOLUTE_ZEPHYR_HIT, 2328},
-    {EF_TWISTER_CUTTER, 2329},
-    {EF_TWISTER_CUTTER_HIT, 2330},
-    {EF_HEILIGE_PFERD, 2331},
-    {EF_HEILIGE_PFERD_BOTTOM, 2332},
-    {EF_HEILIGE_PFERD_CAST, 2333},
-    {EF_GOLDENE_TONE, 2334},
-    {EF_GLANZEN_SPIES, 2335},
-    {EF_GLANZEN_SPIES_HIT, 2336},
-    {EF_BLAZING_AND_FURIOUS, 2337},
-    {EF_THE_ONE_FIGHTER_RISES, 70},
-    {EF_THE_ONE_FIGHTER_RISES_BOTTOM, 2339},
-    {EF_TEMPERING, 2340},
-    {EF_UNK_2341, 2341},
-    {EF_BLAST_FORGE_HIT, 2342},
-    {EF_UNK_2343, 2343},
-    {EF_UNK_2344, 2344},
-    {EF_UNK_2345, 2345},
-    {EF_POK_94, 99999999},
-    {EF_POK_95, 99999999},
-    {EF_UNK_2348, 2348},
-    {EF_UNK_2349, 2349},
-    {EF_UNK_2350, 2350},
-    {EF_UNK_2351, 2351},
-    {EF_UNK_2352, 2352},
-    {EF_UNK_2353, 2353},
-    {EF_UNK_2354, 2354},
-    {EF_UNK_2355, 2355},
-    {EF_POK_96, 99999999},
-    {EF_POK_97, 99999999},
-    {EF_POK_98, 99999999},
-    {EF_POK_99, 99999999},
-    {EF_POK_100, 99999999},
-    {EF_POK_101, 99999999},
-    {EF_POK_102, 99999999},
-    {EF_POK_103, 99999999},
-    {EF_POK_104, 99999999},
-    {EF_POK_105, 99999999},
-    {EF_UNK_2366, 2366},
-    {EF_UNKNOWN_RING_YELLOW, 40},
-    {EF_UNKNOWN_SPELL, 100},
-    {EF_UNKNOWN_RING_WHITE, 40},
-    {EF_UNK_2370, 2370},
-    {EF_TETRA_VORTEX_WATER_SUB_2, 2371},
-    {EF_TETRA_VORTEX_EARTH_SUB_2, 2372},
-    {EF_VOLCANO_BLACK, 300},
-    {EF_CHANGE_SIZE, 99999999},
-    {EF_UNK_2375, 99999999},
-    {EF_NPC_20TH_CRYSTAL_S, 2376},
-    {EF_NPC_20TH_CRYSTAL_M, 2377},
-    {EF_NPC_20TH_CRYSTAL_L, 2378},
-    {EF_NPC_GATE_GREEN_1, 2379},
-    {EF_NPC_GATE_PURPLE_1, 2380},
-    {EF_NPC_GATE_RED_1, 2381},
-    {EF_20TH_FIREWORK, 2382},
-    {EF_NPC_GATE_GREEN_2, 2383},
-    {EF_NPC_GATE_PURPLE_2, 2384},
-    {EF_NPC_GATE_RED_2, 2385},
-    {EF_NPC_GATE_GREEN_3, 2386},
-    {EF_NPC_GATE_PURPLE_3, 2387},
-    {EF_NPC_GATE_RED_3, 2388},
-    {EF_NPC_GATE_SKYBLUE, 2389},
-    {EF_UNK_2390, 999999},
-    {EF_UNK_2391, 999999},
-    {EF_UNK_2392, 999999},
-    {EF_UNK_2393, 999999},
-    {EF_UNK_2394, 2394},
-    {EF_RUNE_ACTIVE_FINISH, 2395},
-    {EF_RUNESET_ACTIVE, 2396},
-    {EF_RUNESET_UPGRADE_SUCCESS, 2397},
-    {EF_RUNESET_UPGRADE_FAIL, 2398},
-    {EF_RUNE_BROKEN, 2399},
-    {EF_ALPHA_DOWN_ANIM, 2415},
-    {EF_GLOW_BLACK, 99999999},
-    {EF_UNK_2413, 99999999},
-    {EF_UNK_2414, 99999999},
-    {EF_UNK_2415, 99999999},
-    {EF_ABC_CHASING_LINE, 300},
-    {EF_ABC_CROSSIMPACT_LINE, 300},
-    {EF_UNK_2418, 2418},
-    {EF_UNK_2419, 2419},
-    {EF_RUNE_SLOT_SMALL, 2421},
-    {EF_RUNE_SLOT_BIG, 2422},
-    {EF_UNK_2423, 2423},
-    {EF_WH_WILD_WALK, 250},
-    {EF_FORCE_ANIM_27, 100},
-    {EF_HEAL_BLUE_2, 100},
-    {EF_UNK_2432, 2432},
-    {EF_UNK_2433, 2433},
-    {EF_UNK_2434, 2434},
-    {EF_UNK_2435, 300},
-    {EF_RG_COIN_BLUE, 3000},
-    {EF_RG_COIN_BLUE_2, 3000},
-    {EF_UNK_2438, 2438},
-    {EF_UNK_2439, 300},
-    {EF_UNK_2440, 99999999},
-    {EF_UNK_2441, 300},
-    {EF_UNK_2442, 300},
-    {EF_UNK_2443, 99999999},
-    {EF_UNK_2444, 500},
-    {EF_UNK_2445, 2435},
-    {EF_UNK_2446, 2436},
-    {EF_UNK_2447, 40},
-    {EF_UNK_2448, 40},
-    {EF_UNK_2449, 2438},
-    {EF_UNK_2450, 40},
-    {EF_UNK_2451, 9999},
-    {EF_UNK_2452, 999},
-    {EF_UNK_2453, 2000},
-    {EF_UNK_2454, 40},
-    {EF_UNK_2455, 499},
-    {EF_UNK_2456, 9999},
-    {EF_UNK_2457, 40},
-    {EF_UNK_2463, 100},
-    {EF_UNK_2464, 100},
-    {EF_UNK_2465, 100},
-    {EF_UNK_2466, 1000},
-    {EF_UNK_2468, 300},
-    {EF_UNK_2469, 40},
-    {EF_UNK_2470, 250},
-    {EF_UNK_2471, 29999},
-    {EF_UNK_2472, 9999},
-    {EF_UNK_2473, 9999},
-    {EF_UNK_2474, 100},
-    {EF_UNK_2477, 250},
-    {EF_UNK_2478, 100},
-    {EF_UNK_2479, 999},
-    {EF_UNK_2480, 499},
-    {EF_UNK_2481, 200},
-    {EF_UNK_2482, 99999999},
-    {EF_UNK_2483, 99999999},
-  };
+  const std::unordered_map<int, int> lifetimes = BuildLifetimes();
 }
 
 // OFFSET: 0x00C16440
