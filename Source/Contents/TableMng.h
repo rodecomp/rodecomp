@@ -36,6 +36,10 @@ public:
   void Clear();
   bool AddEntryQueueInfo(unsigned int id, EntryQueueInfo* info);
   void Release();
+  bool ReadEntryQueue();
+  bool ReadEntryQueueFromXls();
+  bool ReadEntryQueueXls(void* excel);
+  bool WriteEntryQueueXls();
 
   /* 0004 */ std::map<unsigned int, EntryQueueInfo*> m_entryQueue;
 };
