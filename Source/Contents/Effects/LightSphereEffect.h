@@ -10,7 +10,10 @@ class CParticle;
 
 class CLightSphereEffect : public CEffect {
 public:
+  CLightSphereEffect();
+  void Slot03() override;
   void Slot04() override;
+  bool Slot06() override;
 
   /* 00CC */ std::vector<CParticle*> spheres;
   /* 00D8 */ std::vector<CParticle*> rays;

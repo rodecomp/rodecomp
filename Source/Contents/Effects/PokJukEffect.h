@@ -11,7 +11,10 @@ class CParticle;
 
 class CPokJukEffect : public CEffect {
 public:
+  void Slot03() override;
+  void Slot04() override;
   bool Slot06() override;
+  __declspec(noinline) void FaceCamera(vector3d* corners);
 
   /* 00CC */ vector3d trails[640][4];
   /* 78CC */ int states[640];
