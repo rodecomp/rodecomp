@@ -63,5 +63,21 @@ void UIRenewDetailQuestInfoWnd::Slot25(int x, int y) {
 // OFFSET: 0x007FC9B0
 
 // OFFSET: 0x007FCD80
+// FUNCTION: fn_09976
+void UIRenewQuestWnd::Slot31(int x, int y) {
+  this->m_pressed = 0;
+  this->Invalidate();
+  UIFrameWnd::Slot31(x, y);
+}
 
 // OFFSET: 0x007FCDB0
+// FUNCTION: fn_09977
+void UIRenewQuestWnd::Slot35(int delta) {
+  if (this->m_scrollable) {
+    if (delta < 0) {
+      this->SendMsg(this->m_scrollBar, 7, 3, 0, 0, 0);
+      return;
+    }
+    this->SendMsg(this->m_scrollBar, 7, -3, 0, 0, 0);
+  }
+}
