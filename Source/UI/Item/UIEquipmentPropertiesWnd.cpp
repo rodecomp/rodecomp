@@ -5,8 +5,18 @@
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
 
+#include <list>
 #include <string>
 #include <windows.h>
+
+namespace EquipmentProperties {
+class CEquipmentPropertiesMgr {
+public:
+  static CEquipmentPropertiesMgr* GetInstance();
+  void SetWindow(UIWindow* window);
+  void GetDescriptions(const int& group, std::list<std::string>& lines);
+};
+}
 
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Paint();
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot35(int);
@@ -191,6 +201,12 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Paint() {
   this->FillRegion(44, 0, 1, this->geometry.height, this->oddRowColor);
 }
 
+// OFFSET: 0x00A0F1F0
+// FUNCTION: fn_15167
+void CUIEquipmentPropertiesWnd::Slot16() {
+  EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->SetWindow(this);
+}
+
 // OFFSET: 0x00A0F270
 // FUNCTION: fn_15168
 void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot16() {
@@ -214,6 +230,41 @@ void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot53(int resolveS
   this->evenRowColor = RGB(red, green, blue);
   SkinPaletteChannels(ResourceMgr::Instance(), 2, 10, red, green, blue);
   this->oddRowColor = RGB(red, green, blue);
+}
+
+// OFFSET: 0x00A0F370
+// FUNCTION: fn_15171
+void CUIEquipmentPropertiesWnd::SetTab(const int& tab) {
+  this->currentTab = tab;
+  std::list<std::string> lines;
+  const int group = this->currentTab;
+  EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->GetDescriptions(group, lines);
+
+  auto* listBox = this->list;
+  if (listBox->data != lines) {
+    listBox->data.swap(lines);
+    listBox->UpdateScrollBar();
+  }
+}
+
+// OFFSET: 0x00A0F550
+// FUNCTION: fn_15172
+int CUIEquipmentPropertiesWnd::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  if (message == 60) {
+    this->SetTab(this->currentTab);
+  }
+  return 0;
+}
+
+// OFFSET: 0x00A0F570
+// FUNCTION: fn_15173
+void CUIEquipmentPropertiesWnd::OnChangeTab(CUITabButton* button) {
+  if (button && button->geometry.id != this->currentTab) {
+    const int tab = button->geometry.id;
+    this->SetTab(tab);
+  }
 }
 
 // OFFSET: 0x00A0F5A0
