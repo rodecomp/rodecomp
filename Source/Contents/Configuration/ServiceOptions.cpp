@@ -326,6 +326,15 @@ bool GameSettings::ReadOptionTable() {
 void sub_AAB070(int id);
 
 // OFFSET: 0x006C2610
+// FUNCTION: fn_06322
+void GameSettings::ResetToDefaults() {
+  for (const GameSettingsOption& option : this->options) {
+    if (option.type == 0) {
+      this->sub_6C0C40(option.id, option.defaultValue, true);
+    }
+  }
+}
+
 // OFFSET: 0x006C27D0
 // FUNCTION: fn_06323
 void GameSettings::ToggleOption(int id) {
@@ -712,9 +721,6 @@ void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, in
   SendClientOption(value, GetRagConnection(), g_packetLengths);
 }
 
-
-// OFFSET: 0x006C5FC0
-
 // OFFSET: 0x006C60F0
 // FUNCTION: fn_06375
 void ApplyServiceOptionWindow190(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -746,8 +752,6 @@ void ApplyServiceOptionWindow267(int id, unsigned char value, bool notify, int e
 }
 
 // OFFSET: 0x006C61B0
-
-
 // FUNCTION: fn_06377
 void ApplyServiceOptionWindows189(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
   if (g_serviceOptions.Get(id) != value) {
