@@ -1,6 +1,7 @@
 #include "UI/Enchant/EnchantUI.h"
 #include "Contents/EnchantMgr.h"
 #include "Render/Renderer.h"
+#include "UI/Buttons/UIRadioButton.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Text/UITextViewerControl.h"
 
@@ -31,7 +32,15 @@ CUIIngredient* CUIEnchantPage::CreateIngredient() {
 // FUNCTION: fn_14813
 void CUIEnchantPage::Slot54(int argument1, int argument2) {
 }
+}
 
+// OFFSET: 0x00A021D0
+// FUNCTION: fn_14838
+void CUIRadioButton::SetOnSelect(std::function<void(CUIRadioButton*)> callback) {
+  this->onSelect = callback;
+}
+
+namespace EnchantUI {
 // OFFSET: 0x00A02D80
 // FUNCTION: fn_14845
 void CUIEnchantPage::Slot59(int value) {
