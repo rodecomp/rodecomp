@@ -141,6 +141,10 @@ public:
 class CEfstAction_IG_GUARD_STANCE : public CEfstAction {
 public:
   void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
 };
 
 // OFFSET: 0x00787A30
@@ -775,4 +779,30 @@ void CSkillAction_IG_GUARDIAN_SHIELD::Slot08(int level, CGameActor* source) {
     static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
     g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
+}
+
+// OFFSET: 0x0078C6F0
+// FUNCTION: fn_08647
+void CEfstAction_IG_GUARD_STANCE::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_loop_bottom"));
+  }
+}
+
+// OFFSET: 0x0078C830
+// FUNCTION: fn_08648
+void CEfstAction_IG_GUARD_STANCE::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x0078C850
+// FUNCTION: fn_08649
+EfstActionMessage CEfstAction_IG_GUARD_STANCE::Slot03() {
+  return {LookupMessage(3750), 0xFFFF00};
+}
+
+// OFFSET: 0x0078C880
+// FUNCTION: fn_08650
+EfstActionMessage CEfstAction_IG_GUARD_STANCE::Slot04() {
+  return {LookupMessage(3751), 0xFF};
 }

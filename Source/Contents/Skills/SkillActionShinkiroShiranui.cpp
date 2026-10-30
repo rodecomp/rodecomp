@@ -1,4 +1,5 @@
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/RenderObject.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectActor.h"
@@ -344,4 +345,137 @@ std::vector<int> ShuffledSequence::operator()(int count) const {
   std::mt19937 engine(device());
   std::shuffle(sequence.begin(), sequence.end(), engine);
   return sequence;
+}
+
+class CEfstAction_NIGHTMARE : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_SHADOW_CLOCK : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillObjectAction_SS_SBUNSHIN : public CSkillObjectAction {
+public:
+  void Slot00(int argument, CRenderObject* object, CGameActor* source) override;
+};
+
+class CSkillObjectAction_SS_KUNAITRAP : public CSkillObjectAction {
+public:
+  void Slot00(int argument, CRenderObject* object, CGameActor* source) override;
+};
+
+class CSkillAction_SS_TOKEDASU : public CSkillAction {
+public:
+  void Slot12(vector3d position, int argument2, int argument3) override;
+};
+
+class CSkillAction_SS_AKUMUKESU : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+};
+
+// OFFSET: 0x00792500
+// FUNCTION: fn_08738
+void CEfstAction_NIGHTMARE::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("efst_nightmare"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00792670
+// FUNCTION: fn_08739
+void CEfstAction_NIGHTMARE::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("efst_nightmare"));
+  }
+}
+
+// OFFSET: 0x00792790
+// FUNCTION: fn_08740
+void CEfstAction_NIGHTMARE::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x007927B0
+// FUNCTION: fn_08741
+void CEfstAction_SHADOW_CLOCK::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  const vector3d position = actor->render.position;
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kagekakusi"), position.x, position.y, position.z, 0, -1, 0, 0);
+  static_cast<EffectActor*>(actor)->LaunchEffect(963, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+}
+
+// OFFSET: 0x00792930
+// FUNCTION: fn_08742
+void CEfstAction_SHADOW_CLOCK::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    while (static_cast<EffectActor*>(actor)->state.Attachments().HasId(963)) {
+      actor->SendMsg(nullptr, 109, 0, 963, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00792990
+// FUNCTION: fn_08743
+void CEfstAction_SHADOW_CLOCK::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    static_cast<EffectActor*>(actor)->LaunchEffect(963, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  }
+}
+
+// OFFSET: 0x007929E0
+// FUNCTION: fn_08744
+void CSkillObjectAction_SS_SBUNSHIN::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+  if (object) {
+    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shinkirou_idle_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shinkirou_idle_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00792F90
+// FUNCTION: fn_08746
+void CSkillObjectAction_SS_KUNAITRAP::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+  if (object) {
+    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiarea_01_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiarea_01_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00793450
+// FUNCTION: fn_08748
+void CSkillAction_SS_TOKEDASU::Slot12(vector3d position, int argument2, int argument3) {
+  CGameActor* shadow = reinterpret_cast<CGameActor*>(argument3);
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("tokedasu"), position.x, position.y, position.z, 0, -1, 0, 0);
+  if (shadow) {
+    g_effectMgr->Spawn(shadow->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("tokedasu_shadow"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x007936A0
+// FUNCTION: fn_08749
+int CSkillAction_SS_AKUMUKESU::Slot01() {
+  return 55;
+}
+
+// OFFSET: 0x007936B0
+// FUNCTION: fn_08750
+int CSkillAction_SS_AKUMUKESU::Slot02() {
+  return 56;
+}
+
+// OFFSET: 0x007936C0
+// FUNCTION: fn_08751
+void CSkillAction_SS_AKUMUKESU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(934, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+  }
 }
