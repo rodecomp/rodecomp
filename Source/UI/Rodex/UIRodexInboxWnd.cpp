@@ -19,6 +19,10 @@ void UIRodexInboxWnd::Slot25(int x, int y) {
   }
 }
 
+// OFFSET: 0x00807660
+// FUNCTION: fn_10050
+void UIRodexInboxWnd::Slot26(int, int) {}
+
 // OFFSET: 0x00805750
 
 // OFFSET: 0x008058B0
