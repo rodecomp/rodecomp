@@ -1,6 +1,13 @@
 #include "UI/Window/UIRodexContentsWnd.h"
 
+#include "Client/Input/InputCharset.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Client/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemNaming.h"
+#include "Contents/PlayerNameDictionary.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -122,6 +129,28 @@ void UIRodexContentsWnd::Paint() {
 void UIRodexContentsWnd::Slot25(int x, int y) {
   if (y < 17) {
     UIFrameWnd::Slot25(x, y);
+  }
+}
+
+// OFFSET: 0x00802700
+// FUNCTION: fn_10023
+void UIRodexContentsWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAtPoint(x, y);
+  if (std::atoi(item.itemId.c_str()) != 0) {
+    int tooltipX = this->m_itemIndex * 34 + 30;
+    int tooltipY = 290;
+    this->ToScreen(tooltipX, tooltipY);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+    if (item.identified == 1 && item.unknown_0098 != 0) {
+      tooltip->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+                    g_session.GetItemNameColor(item), 0, 1);
+    } else {
+      tooltip->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    }
   }
 }
 
