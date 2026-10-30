@@ -1,15 +1,25 @@
 #include "UI/Clan/UIClanWnd.h"
 #include "Contents/ClanInfo.h"
+#include "Contents/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Text/UIStaticText.h"
 
 #include <cstdio>
 #include <cstring>
 #include <windows.h>
+
+// OFFSET: 0x0084CEF0
+// FUNCTION: fn_10628
+int UIClanInfoManageWnd::Slot53() {
+  return 0;
+}
+
+// OFFSET: 0x0084CFD0
 
 // OFFSET: 0x0084D8F0
 
