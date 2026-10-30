@@ -1831,6 +1831,7 @@ EquipmentPropertyDefinition* EquipmentProperties::CEquipmentPropertiesMgr::FindD
 }
 
 // OFFSET: 0x006AD580
+// FUNCTION: fn_06185
 int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown01BC(const int& first, const int& second, const unsigned int& third) {
   auto outer = this->unknown_01BC.find(first);
   if (outer == this->unknown_01BC.end()) {
@@ -1851,6 +1852,7 @@ int EquipmentProperties::CEquipmentPropertiesMgr::GetUnknown01BC(const int& firs
 }
 
 // OFFSET: 0x006B6AF0
+// FUNCTION: fn_06200
 void EquipmentProperties::CEquipmentPropertiesMgr::AddExpansion(const int& kind, const int& itemId, bool notify) {
   this->m_dirty = true;
 
@@ -1902,6 +1904,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RemoveExpansion(const int& ki
 }
 
 // OFFSET: 0x006B7020
+// FUNCTION: fn_06204
 void EquipmentProperties::CEquipmentPropertiesMgr::RefreshExpansion(const int& kind, const int& itemId) {
   int key = itemId;
   if (kind == 0 || kind == 1) {
