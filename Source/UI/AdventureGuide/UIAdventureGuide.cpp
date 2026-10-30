@@ -292,5 +292,27 @@ void CUIListBox<AdventureGuide::CUISubTab>::SelectItem(CUIListItem* item) {
 }
 
 // OFFSET: 0x009DE560
+// FUNCTION: fn_14355
+template <>
+void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
+  if (this->locked) {
+    return;
+  }
+  for (AdventureGuide::CUITab* entry : this->items) {
+    if (entry != item) {
+      entry->SetSelected(false);
+    }
+  }
+  item->SetSelected(true);
+  if (this->selected != item) {
+    AdventureGuide::CUITab* selected = dynamic_cast<AdventureGuide::CUITab*>(item);
+    if (selected) {
+      this->selected = selected;
+      if (this->onSelect) {
+        this->onSelect(selected);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x009DEBF0
