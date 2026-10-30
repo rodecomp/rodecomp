@@ -800,6 +800,7 @@
   "Source/UI/Chat/UIChatRoomTitle.cpp": 2,
   "Source/UI/Chat/UISubChatHisWnd.cpp": 2,
   "Source/UI/Chat/UIWhisperWnd.cpp": 2,
+  "Source/UI/Clan/UIClanWnd.cpp": 2,
   "Source/UI/Cooldowns/CooldownDrawing.cpp": 2,
   "Source/UI/Cooldowns/CooldownOwner.cpp": 2,
   "Source/UI/Cooldowns/CooldownState.cpp": 2,
