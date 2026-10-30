@@ -71,7 +71,8 @@ public:
 
 class CSkillAction_DamageWereRaptorForm : public CSkillAction_AnimalForm, public CSkillAction_Direction {
 public:
-  void sub_5A4930(int level, CGameActor* source);
+  __declspec(noinline) void sub_5A4930(int level, CGameActor* source);
+  __declspec(noinline) void sub_5A4B00(int level, CGameActor* source);
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
   bool Slot17(CGameActor* actor) override;
   void Slot18(CGameActor* actor) override;
@@ -2010,4 +2011,91 @@ void CSkillAction_AT_FERAL_CLAW::Slot11(int level, CGameActor* source, CGameActo
     thread_local EncryptedName<sizeof(bytes), 0x3375B1C7DBB5FD55ULL> name(bytes);
     return name.Text();
   }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
+
+// GLOBAL: gl_25058
+const float g_featherOffsets[3] = {0.0f, 0.1f, -0.1f};
+
+// OFFSET: 0x005A4930
+// FUNCTION: fn_03153
+void CSkillAction_DamageWereRaptorForm::sub_5A4930(int sourceActor, CGameActor* target) {
+  CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
+  if (source && target) {
+    const std::uint8_t bytes[] = {0xD2, 0x13, 0xB7, 0x32, 0x9A, 0xF0, 0x6A, 0x27, 0x82, 0x67};
+    thread_local EncryptedName<sizeof(bytes), 0x17359BF953C367B3ULL> name(bytes);
+    const std::string effectName = name.Text();
+    this->SpawnDirectionalEffect(source, target, effectName);
+  }
+}
+
+// OFFSET: 0x005A4B00
+// FUNCTION: fn_03154
+void CSkillAction_DamageWereRaptorForm::sub_5A4B00(int sourceActor, CGameActor* target) {
+  CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
+  if (!target || !source) {
+    return;
+  }
+
+  const float angle = ScreenAngle(
+    &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+  );
+  const int direction = this->GetDirection(angle);
+  if (!this->IsValidDirection(direction)) {
+    return;
+  }
+
+  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0x76, 0x8D, 0x3B, 0xD8, 0x98, 0xDE, 0x70, 0xF5, 0x25, 0xF9};
+    thread_local EncryptedName<sizeof(bytes), 0xC52FB5FBB94FF917ULL> name(bytes);
+    return name.Text();
+  }());
+  const bool flipped = direction == 1 || direction == 2;
+
+  const float deltaY = target->render.position.y - source->render.position.y;
+  const float deltaX = target->render.position.x - source->render.position.x;
+  const float deltaZ = target->render.position.z - source->render.position.z;
+  const float inverseLength = 1.0f / SquareRoot(deltaY * deltaY + deltaX * deltaX + deltaZ * deltaZ);
+  const float forwardY = inverseLength * deltaY * 35.0f;
+  const float forwardZ = inverseLength * deltaZ * 35.0f;
+  const float forwardX = inverseLength * deltaX * 35.0f;
+
+  const float sideX = forwardY * 0.0f - forwardZ;
+  const float sideY = forwardZ * 0.0f - forwardX * 0.0f;
+  const float sideZ = forwardX - forwardY * 0.0f;
+  const float inverseSide = 1.0f / SquareRoot(sideY * sideY + sideX * sideX + sideZ * sideZ);
+  const float rightX = inverseSide * sideX * 7.5f;
+  const float rightY = inverseSide * sideY * 7.5f;
+  const float rightZ = inverseSide * sideZ * 7.5f;
+
+  int count = 1;
+  int row = 0;
+  for (int alpha = 150; alpha < 525; alpha += 125) {
+    const float advance = static_cast<float>(row + 1) / 3.0f;
+    const float shift = static_cast<float>(row);
+    const float baseX = (forwardX * advance + source->render.position.x) - rightX * shift;
+    const float baseY = (forwardY * advance + source->render.position.y) - rightY * shift;
+    const float baseZ = (forwardZ * advance + source->render.position.z) - rightZ * shift;
+
+    for (int column = 0; column < count; ++column) {
+      if (std::max(std::rand() % 2, 0) != 0) {
+        continue;
+      }
+
+      const float offset = g_featherOffsets[std::max(std::rand() % 3, 0)];
+      const float step = static_cast<float>(column);
+      const float x = rightX * step + baseX + offset * forwardX;
+      const float y = rightY * step + baseY + offset * forwardY;
+      const float z = rightZ * step + baseZ + offset * forwardZ;
+      const int fade = std::max(std::rand() % 101, 0) + alpha;
+      const int scale = std::max(std::rand() % 11, 7);
+      if (CEffect* effect = g_effectMgr->Spawn(0, effectId, x, y, z, 0, -1, 0, 0)) {
+        effect->Slot26(flipped);
+        effect->Slot16(fade);
+        effect->Slot22(static_cast<float>(scale) * 0.1f);
+      }
+    }
+
+    count += 2;
+    ++row;
+  }
 }
