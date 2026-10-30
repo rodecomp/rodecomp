@@ -389,6 +389,7 @@ void UITabControl::SelectTab(int index) {
 }
 
 // OFFSET: 0x0087A3C0
+// FUNCTION: fn_11233
 void UITabControl::RemoveTab(int index) {
   this->edit->SetText("");
   this->edit->Move(-100, -100);
