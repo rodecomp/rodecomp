@@ -720,6 +720,23 @@ __declspec(noinline) void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long
   }
 }
 
+class CQuestItemSelector {
+public:
+  void SetHighlighted(CUIListItem* const& item);
+
+private:
+  /* 0000 */ void* unknown_0000;
+  /* 0004 */ CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox;
+};
+
+// OFFSET: 0x00A64DE0
+// FUNCTION: fn_16497
+void CQuestItemSelector::SetHighlighted(CUIListItem* const& item) {
+  for (RenewQuestUI::CUIQuestItem* entry : this->listBox->items) {
+    entry->SetHighlighted(static_cast<CUIListItem*>(entry) == item);
+  }
+}
+
 // OFFSET: 0x00A67CE0
 // FUNCTION: fn_16631
 template <>
