@@ -20,6 +20,7 @@
 #include <array>
 #include <climits>
 #include <cstring>
+#include <ctime>
 #include <iterator>
 #include <map>
 #include <new>
@@ -810,6 +811,18 @@ bool CCashEmotionMgr::IsPackAvailable(unsigned int now, int packId) {
 // FUNCTION: fn_02975
 bool CCashEmotionMgr::IsOwnedPack(int packId) {
   return std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId) != this->m_ownedPacks.end();
+}
+
+// OFFSET: 0x0059CDE0
+// FUNCTION: fn_02981
+void CCashEmotionMgr::sub_59CDE0(int param) {
+  this->unknown_01D0 = _time32(nullptr) - param;
+}
+
+// OFFSET: 0x0059FC50
+// FUNCTION: fn_03031
+int CCashEmotionMgr::sub_59FC50() {
+  return _time32(nullptr) - this->unknown_01D0 - this->unknown_01CC;
 }
 
 // OFFSET: 0x007C3AD0
