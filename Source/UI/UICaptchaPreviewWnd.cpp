@@ -3,6 +3,8 @@
 #include "UI/UIMacroDetectorWnd.h"
 #include "UI/Window/WindowBorder.h"
 #include "Contents/MessageTable.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstdlib>
@@ -27,6 +29,31 @@ void UICaptchaPreviewWnd::AddImageData(const void* data, int size) {
       delete[] image;
     }
     this->Show(1);
+  }
+}
+
+// OFFSET: 0x007ED400
+// FUNCTION: fn_09809
+void UIMacroDetectorWnd::AddImageData(const void* data, int size) {
+  memcpy_s(this->m_imageData + this->m_imageReceived, 0x400, data, size);
+  this->m_imageReceived += size;
+
+  if (this->m_imageSize == this->m_imageReceived) {
+    if (this->m_imageData && this->m_imageReceived) {
+      uLongf length = 0x9AB0;
+      Bytef* image = new (std::nothrow) Bytef[0x9AB0];
+      uncompress(image, &length, this->m_imageData, this->m_imageReceived);
+      this->m_image->m_bitmap.image.DecodeBitmap(image, length, false);
+      if (image) {
+        delete[] image;
+      }
+      this->m_image->Invalidate();
+      this->Invalidate();
+    }
+
+    short packetType = 0xA5A;
+    CRagConnection& connection = GetRagConnection();
+    connection.Send(g_packetLengths.FixedLength(packetType), &packetType);
   }
 }
 

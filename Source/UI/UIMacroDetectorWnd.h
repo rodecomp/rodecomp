@@ -7,6 +7,7 @@
 #include <string>
 
 class UIEditCtrl;
+class UICaptchaImage;
 
 class UIMacroDetectorWnd : public UIFrameWnd {
 public:
@@ -20,6 +21,7 @@ public:
   void sub_8D2CE0(bool closeButton, const char* title, int width);
   void sub_A84360(int x, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold, unsigned char italic);
   void sub_A86440(int right, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold);
+  void AddImageData(const void* data, int size);
   void ClearImageData();
   void SetCountdown(unsigned char count, std::uint32_t duration);
   void InitImageData(unsigned short size);
@@ -39,6 +41,7 @@ public:
   /* 0110 */ std::uint32_t unknown_0110;
   /* 0114 */ std::uint32_t messageTick;
 
+  /* 00B4 */ UICaptchaImage* m_image;
   /* 00B8 */ UIEditCtrl* m_editCtrl;
 };
 
