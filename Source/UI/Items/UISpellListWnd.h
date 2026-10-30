@@ -10,7 +10,6 @@ struct UIButtonContext;
 
 class UISpellListWnd : public UIItemIdentifyWnd {
 public:
-  /* 00D4 */ unsigned char unknown_00D4[0x1C];
   /* 00F0 */ std::vector<std::uint32_t> m_skills;
 
   void Paint() override;

@@ -1,3 +1,4 @@
+#include "Contents/UserData/NormalItemSlots.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
@@ -1810,4 +1811,104 @@ std::vector<char> MakeFramedMessage(std::uint16_t type, const std::vector<char>&
     std::memcpy(message.data() + sizeof(FramedMessageHeader), body.data(), body.size());
   }
   return message;
+}
+
+// OFFSET: 0x00909DF0
+// FUNCTION: fn_12402
+void UIChooseWnd::Slot11() {
+  if (this->m_placement) {
+    this->m_placement->width = this->geometry.width;
+    this->m_placement->height = this->geometry.height;
+    this->m_placement->x = this->geometry.x;
+    this->m_placement->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x00909E30
+// FUNCTION: fn_12403
+void UICombinedCardItemCollectionWnd::Slot11() {
+  if (this->m_cardPlacement) {
+    this->m_cardPlacement->x = this->geometry.x;
+    this->m_cardPlacement->y = this->geometry.y;
+    this->m_cardPlacement->width = this->geometry.width;
+    this->m_cardPlacement->height = this->geometry.height;
+  }
+}
+
+// OFFSET: 0x00909E70
+// FUNCTION: fn_12404
+void UIEquipWnd::Slot11() {
+  if (this->m_placement) {
+    this->m_placement->width = this->geometry.width;
+    this->m_placement->height = this->geometry.height;
+    this->m_placement->x = this->geometry.x;
+    this->m_placement->y = this->geometry.y;
+    this->m_placement->show = this->m_show;
+  }
+}
+
+// OFFSET: 0x00909F00
+// FUNCTION: fn_12406
+void UIItemCollectionWnd::Slot11() {
+  if (this->m_placement) {
+    this->m_placement->x = this->geometry.x;
+    this->m_placement->y = this->geometry.y;
+    this->m_placement->width = this->geometry.width;
+    this->m_placement->height = this->geometry.height;
+  }
+}
+
+// OFFSET: 0x00909F80
+// FUNCTION: fn_12408
+void UIItemIdentifyWnd::Slot11() {
+  if (this->m_placement) {
+    this->m_placement->width = this->geometry.width;
+    this->m_placement->height = this->geometry.height;
+    this->m_placement->x = this->geometry.x;
+    this->m_placement->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x00909FC0
+// FUNCTION: fn_12409
+void UIItemParamChangeDisplayWnd::Slot11() {
+  if (this->m_placement) {
+    this->m_placement->x = this->geometry.x;
+    this->m_placement->y = this->geometry.y;
+    this->m_placement->width = this->geometry.width;
+    this->m_placement->height = this->geometry.height;
+  }
+}
+
+// OFFSET: 0x0090A000
+// FUNCTION: fn_12410
+void UIPartySettingWnd::Slot11() {
+  if (this->m_placement) {
+    this->m_placement->x = this->geometry.x;
+    this->m_placement->y = this->geometry.y;
+    this->m_placement->width = this->geometry.width;
+    this->m_placement->height = this->geometry.height;
+  }
+}
+
+// OFFSET: 0x0090A040
+// FUNCTION: fn_12411
+void UISayDialogWnd::Slot11() {
+  if (this->m_placement) {
+    this->m_placement->width = this->geometry.width;
+    this->m_placement->height = this->geometry.height;
+    this->m_placement->x = this->geometry.x;
+    this->m_placement->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x0090A180
+// FUNCTION: fn_12414
+void UInCashWnd::Slot11() {
+  if (this->m_placement) {
+    this->m_placement->width = this->geometry.width;
+    this->m_placement->height = this->geometry.height;
+    this->m_placement->x = this->geometry.x;
+    this->m_placement->y = this->geometry.y;
+  }
 }

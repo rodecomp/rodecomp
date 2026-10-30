@@ -4,10 +4,14 @@
 #include "UI/Window/UIFrameWnd.h"
 
 struct UIButtonContext;
+struct WindowPlacement;
 
 class UIPartySettingWnd : public UIFrameWnd {
 public:
-  /* 00B4 */ unsigned char unknown_00B4[0x28];
+  void Slot11() override;
+  /* 00B4 */ unsigned char unknown_00B4[0x20];
+  /* 00D4 */ WindowPlacement* m_placement;
+  /* 00D8 */ unsigned char unknown_00D8[0x4];
   /* 00DC */ int m_mode;
 
   void Paint() override;

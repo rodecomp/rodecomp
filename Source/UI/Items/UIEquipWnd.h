@@ -3,11 +3,17 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+struct NormalItemSlotWindow;
+
 class UIEquipWnd : public UIFrameWnd {
 public:
   bool Slot03() override;
   void Move(int x, int y) override;
-  /* 00B4 */ unsigned char unknown_00B4[0x3C];
+  void Slot11() override;
+  /* 00B4 */ unsigned char unknown_00B4[0x10];
+  /* 00C4 */ int m_show;
+  /* 00C8 */ NormalItemSlotWindow* m_placement;
+  /* 00CC */ unsigned char unknown_00CC[0x24];
   /* 00F0 */ int m_page;
   /* 00F4 */ unsigned char unknown_00F4[0x30];
   /* 0124 */ UIWindow* unknown_0124;

@@ -114,3 +114,14 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
   return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
+
+// OFFSET: 0x00909EC0
+// FUNCTION: fn_12405
+void UIExchangeAcceptWnd::Slot11() {
+  if (this->saved) {
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+  }
+}
