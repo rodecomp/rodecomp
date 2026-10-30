@@ -156,6 +156,52 @@ void UISeekPartyListWnd::UpdateScrollBar() {
 }
 
 // OFFSET: 0x00943F40
+// FUNCTION: fn_12830
+void UISeekPartyListWnd::InitRegionFilter() {
+  g_luaScript->HasTable("map_list");
+  std::string regionName;
+
+  int region = 1;
+  for (;; ++region) {
+    int id = 0;
+    const char* name = nullptr;
+    if (g_luaScript->Call("queryRegionInfo", "d>ds", region, &id, &name)) {
+      if (!name) {
+        break;
+      }
+
+      this->m_regionCombo->AddOption(name, 0);
+    }
+  }
+
+  g_luaScript->HasTable("map_list");
+  for (int current = 1; current < region; ++current) {
+    std::vector<SeekPartyMapEntry> maps;
+    int x = 0;
+    int y = 0;
+    const char* name = nullptr;
+    int red = 0;
+    int green = 0;
+    int blue = 0;
+    for (int index = 1;; ++index) {
+      if (g_luaScript->Call("queryMapInfo", "dd>ddsddd", current, index, &x, &y, &name, &red, &green, &blue)) {
+        if (!name) {
+          break;
+        }
+
+        std::string mapName(name);
+        const unsigned int color =
+          (static_cast<unsigned char>(blue) << 16) | (static_cast<unsigned char>(green) << 8) | static_cast<unsigned char>(red);
+        maps.push_back(SeekPartyMapEntry{mapName, color});
+      }
+    }
+
+    this->m_regionMaps.insert(std::make_pair(current, maps));
+  }
+
+  this->m_regionCombo->Select(0);
+  this->SelectRegion(1);
+}
 
 // OFFSET: 0x00943830
 // FUNCTION: fn_12829
@@ -192,5 +238,37 @@ void UISeekPartyListWnd::InitJobFilter() {
 }
 
 // OFFSET: 0x00945CF0
+// FUNCTION: fn_12836
+void UISeekPartyListWnd::SelectRegion(int region) {
+  this->m_mapCombo->Clear();
+
+  auto it = this->m_regionMaps.find(region);
+  if (it != this->m_regionMaps.end()) {
+    std::vector<SeekPartyMapEntry> maps = it->second;
+    for (SeekPartyMapEntry entry : maps) {
+      this->m_mapCombo->AddOption(entry.name.c_str(), entry.color);
+    }
+
+    this->m_mapCombo->Select(0);
+    this->m_mapIndex = 0;
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00945FB0
+// FUNCTION: fn_12837
+void UISeekPartyListWnd::SelectJobCategory(int category) {
+  if (category == this->m_jobCategory && this->m_jobCategory != 0) {
+    return;
+  }
+
+  this->m_jobCombo->Clear();
+  for (const std::string& option : this->m_jobOptions[category]) {
+    this->m_jobCombo->AddOption(option, 0);
+  }
+
+  this->m_jobCombo->Select(0);
+  this->m_jobCategory = category;
+  this->m_jobCategoryChanged = 1;
+  this->Invalidate();
+}
