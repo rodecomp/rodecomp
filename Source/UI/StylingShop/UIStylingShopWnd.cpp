@@ -619,3 +619,13 @@ void UIStylingShopWnd::SetBuyEnabled(bool enabled) {
 }
 
 // OFFSET: 0x0082A030
+// FUNCTION: fn_10351
+void UIStylingShopWnd::Paint() {
+  this->RefreshFavoriteButton();
+  this->ClearSurface(0xFFFFFFFF);
+  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, true, LookupMessage(2813), 0);
+  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\bg_styling.bmp")));
+  if (background) {
+    this->DrawBitmap(0, 0, &background->image, false);
+  }
+}
