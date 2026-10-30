@@ -22,6 +22,7 @@
 #include "Render/Renderer.h"
 #include "Render/SpriteQuad.h"
 #include "Render/TextureQuad.h"
+#include "Render/Textures/TextureCache.h"
 #include "Resource/Models/GrannyModelResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -37,6 +38,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <vector>
 #include <windows.h>
 #include <timeapi.h>
 
@@ -78,22 +80,33 @@ private:
 
 class C3dGrannyGameActor : public CGameActor {
 public:
+  explicit C3dGrannyGameActor(const char* name);
   void SetAction(unsigned animation, int motion, int repeat) override;
   void Slot08() override;
   void Slot36() override;
   int Slot37() override;
 
-  /* 0410 */ unsigned char unknown_0410[4];
+  /* 0410 */ int unknown_0410;
   /* 0414 */ C3dGrannyModelRes* model;
   /* 0418 */ granny_model_instance* instance;
-  /* 041C */ unsigned char unknown_041C[0xF0];
+  /* 041C */ RenderCommand* commands[30];
+  /* 0494 */ RenderVertex* vertices[30];
   /* 050C */ granny_system_clock clock;
   /* 051C */ granny_system_clock lastClock;
   /* 052C */ float unknown_052C;
-  /* 0530 */ unsigned char unknown_0530[0x14];
+  /* 0530 */ unsigned char unknown_0530[0x0C];
+  /* 053C */ unsigned char alpha;
+  /* 053D */ unsigned char unknown_053D[0x07];
   /* 0544 */ int motion;
-  /* 0548 */ unsigned char unknown_0548[0x110];
+  /* 0548 */ unsigned char unknown_0548[0x04];
+  /* 054C */ char name[0x104];
+  /* 0650 */ int unknown_0650;
+  /* 0654 */ int unknown_0654;
   /* 0658 */ granny_control* controls[20];
+  /* 06A8 */ unsigned char unknown_06A8;
+  /* 06A9 */ unsigned char unknown_06A9[0x70F];
+  /* 0DB8 */ CTexture* texture;
+  /* 0DBC */ std::vector<vector3d> unknown_0DBC;
 };
 
 class CGrannyCorpse3d : public CGameObject {
@@ -126,6 +139,14 @@ static_assert(offsetof(C3dGrannyGameActor, model) == 0x414);
 static_assert(offsetof(C3dGrannyGameActor, unknown_052C) == 0x52C);
 static_assert(offsetof(C3dGrannyGameActor, motion) == 0x544);
 static_assert(offsetof(C3dGrannyGameActor, controls) == 0x658);
+static_assert(offsetof(C3dGrannyGameActor, commands) == 0x41C);
+static_assert(offsetof(C3dGrannyGameActor, vertices) == 0x494);
+static_assert(offsetof(C3dGrannyGameActor, alpha) == 0x53C);
+static_assert(offsetof(C3dGrannyGameActor, name) == 0x54C);
+static_assert(offsetof(C3dGrannyGameActor, unknown_0650) == 0x650);
+static_assert(offsetof(C3dGrannyGameActor, unknown_06A8) == 0x6A8);
+static_assert(offsetof(C3dGrannyGameActor, texture) == 0xDB8);
+static_assert(offsetof(C3dGrannyGameActor, unknown_0DBC) == 0xDBC);
 static_assert(offsetof(CGrannyCorpse3d, tick) == 0x140);
 static_assert(offsetof(CGrannyCorpse3d, alpha) == 0x148);
 static_assert(offsetof(CGrannyCorpse3d, startClock) == 0x128);
@@ -1648,6 +1669,29 @@ int CGameActor::MountHeightOffset() {
 // FUNCTION: fn_21036
 int CGameActor::GetUnknown0404() {
   return this->unknown_0404;
+}
+
+// OFFSET: 0x00CC4EA0
+// FUNCTION: fn_21172
+C3dGrannyGameActor::C3dGrannyGameActor(const char* name) {
+  this->model = nullptr;
+  this->instance = nullptr;
+  this->unknown_06A8 = 1;
+  for (int mesh = 0; mesh < 30; ++mesh) {
+    this->commands[mesh] = nullptr;
+    this->vertices[mesh] = nullptr;
+  }
+  this->motion = 0;
+  this->alpha = 0xFF;
+  std::strcpy(this->name, name);
+  this->unknown_0650 = 0;
+  this->unknown_0654 = 0;
+  for (int index = 0; index < 20; ++index) {
+    this->controls[index] = nullptr;
+  }
+  this->unknown_0410 = 0;
+  this->texture = CreateTexture(35, 35, 1, false, false);
+  this->unknown_0DBC.resize(4900);
 }
 
 // OFFSET: 0x00CC5650
