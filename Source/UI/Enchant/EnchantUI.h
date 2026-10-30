@@ -12,6 +12,7 @@
 
 class CUIStaticText;
 class CUITextViewer;
+class CUITab;
 struct EnchantInfo;
 struct EnchantOptionInfo;
 
@@ -129,6 +130,9 @@ class CUIMainPage : public CUIControl {
 public:
   /* 0080 */ CUIEnchantPage* firstPage;
   /* 0084 */ CUIEnchantPage* secondPage;
+  /* 0088 */ CUITab* tab;
+
+  void Slot16() override;
 };
 
 class CEnchantItemData {

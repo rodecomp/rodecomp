@@ -340,6 +340,24 @@ void CUIEnchantItem::SetFrozen(bool frozen) {
   this->itemIcon->Invalidate();
   this->name->SetColor(frozen ? 0xAAAAAA : 0xC89682);
 }
+
+// OFFSET: 0x00A05860
+
+// OFFSET: 0x00A05E20
+// FUNCTION: fn_14984
+void CUIMainPage::Slot16() {
+  CUITabButton* button = this->tab->FindButton(this->firstPage);
+  if (button != nullptr) {
+    button->disabled = 1;
+    button->Invalidate();
+  }
+
+  button = this->tab->FindButton(this->secondPage);
+  if (button != nullptr) {
+    button->disabled = 1;
+    button->Invalidate();
+  }
+}
 }
 
 // OFFSET: 0x009F3160
