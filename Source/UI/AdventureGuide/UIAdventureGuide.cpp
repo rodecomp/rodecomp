@@ -16,6 +16,51 @@ template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMons
 template void CUIListBox<AdventureGuide::CUITab>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
 
+// OFFSET: 0x009C28B0
+// OFFSET: 0x009C2980
+// FUNCTION: fn_13993
+// FUNCTION: fn_13994
+template <class T> void CUIListBox<T>::Slot15(int width, int height) {
+  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar->Show(0);
+  this->scrollBar->SetOnChange([this](int position) {
+    int y = 0;
+    for (T* item : this->items) {
+      if (position <= item->geometry.height + y && y < this->geometry.height + position) {
+        item->Show(1);
+        item->Move(this->itemX, this->itemY - position + y);
+      } else {
+        item->Show(0);
+      }
+      y += item->geometry.height;
+    }
+  });
+  this->AddChild(this->scrollBar);
+}
+
+template void CUIListBox<AdventureGuide::CUISubTab>::Slot15(int, int);
+template void CUIListBox<AdventureGuide::CUITab>::Slot15(int, int);
+
+// OFFSET: 0x009C2A50
+// OFFSET: 0x009C2B20
+// OFFSET: 0x009C2BF0
+// OFFSET: 0x009C2CC0
+// FUNCTION: fn_13995
+// FUNCTION: fn_13996
+// FUNCTION: fn_13997
+// FUNCTION: fn_13998
+template <class T, class D> void CUIListBoxEx<T, D>::Slot15(int width, int height) {
+  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar->Show(0);
+  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
+  this->AddChild(this->scrollBar);
+}
+
+template void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Slot15(int, int);
+template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::Slot15(int, int);
+template void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Slot15(int, int);
+template void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Slot15(int, int);
+
 // OFFSET: 0x009C12B0
 // FUNCTION: fn_13987
 template <>

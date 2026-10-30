@@ -150,6 +150,7 @@ struct Contents {
 
 template <class T> class CUIListBox : public CUIControl {
 public:
+  void Slot15(int width, int height) override;
   // OFFSET: 0x009D23B0
   // OFFSET: 0x009D23C0
   // FUNCTION: fn_14011
@@ -204,7 +205,9 @@ public:
 
   /* 0084 */ unsigned char unknown_0084[0x2C];
   /* 00B0 */ CUIVScrollBar* scrollBar;
-  /* 00B4 */ unsigned char unknown_00B4[0x10];
+  /* 00B4 */ unsigned char unknown_00B4[0x08];
+  /* 00BC */ int itemX;
+  /* 00C0 */ int itemY;
   /* 00C4 */ std::list<T*> items;
   /* 00CC */ T* selected;
   /* 00D0 */ unsigned char locked;
