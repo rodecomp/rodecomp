@@ -208,6 +208,13 @@ struct CRagEffect : CRenderObject {
   void WhiteSparks(char kind);
   void AlphaCenterTrail();
   void Waterfall(const char* name, char flag, char tall, char variant);
+  void YufitelHit(char kind);
+  void TexturedPulseKind(const char* name, char kind);
+  void EarthSpike(char type);
+  void Sightrasher();
+  void RingBurstSparks();
+  void FireArrow();
+  void BlitzBeat();
   bool GlassWall();
   void Portal();
 

@@ -8978,3 +8978,114 @@ void CRagEffect::Portal() {
   }
 }
 
+
+// OFFSET: 0x00C40450
+
+// OFFSET: 0x00C457B0
+
+// OFFSET: 0x00C10860
+
+// OFFSET: 0x00C39730
+
+// OFFSET: 0x00C35610
+// FUNCTION: fn_20090
+void CRagEffect::RingBurstSparks() {
+  if (this->state.stateCnt % 20 != 0 || this->state.stateCnt >= this->state.level * 20) {
+    return;
+  }
+
+  const int facing = static_cast<int>(180.0f - this->state.parent->render.angle);
+  const int direction = facing < 0 ? facing + 360 : facing;
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = 15;
+  this->state.unknown_11C84->longitude = static_cast<float>(direction);
+  this->state.unknown_11C84->latitude = -90.0f;
+  EffectPrimitiveState& tilt = *this->state.unknown_11C84;
+  reinterpret_cast<matrix*>(tilt.transform)->MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
+  EffectPrimitiveState& turn = *this->state.unknown_11C84;
+  reinterpret_cast<matrix*>(turn.transform)->AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
+  this->state.unknown_11C84->deltaPos2 = {0.0f, -10.0f, 0.0f};
+  this->state.unknown_11C84->speed = 0.7f;
+  EffectPrimitiveState& slow = *this->state.unknown_11C84;
+  slow.accel = -(slow.speed / slow.duration) * 0.5f;
+  this->state.unknown_11C84->outerSize = static_cast<float>(this->state.stateCnt * 0.1 + 11.0);
+  this->state.unknown_11C84->innerSize = static_cast<float>(this->state.stateCnt * 0.1 + 6.0);
+  this->state.unknown_11C84->heightSize = 2.5f;
+  const int lifetime = this->state.unknown_11C84->duration;
+  this->state.unknown_11C84->fadeOutCnt = lifetime - lifetime / 2;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
+
+  if (this->state.stateCnt <= 0) {
+    return;
+  }
+
+  for (int count = 4; count != 0; --count) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->longitude = static_cast<float>(std::max(rand() % 80, 0) + direction - 40);
+    this->state.unknown_11C84->latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
+    EffectPrimitiveState& yaw = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(yaw.transform)->MakeYRotation(GetRadian(static_cast<int>(yaw.longitude)));
+    EffectPrimitiveState& pitch = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(pitch.transform)->AppendXRotation(GetRadian(static_cast<int>(pitch.latitude)));
+    EffectPrimitiveState& spark = *this->state.unknown_11C84;
+    spark.deltaPos3 = RotatedForward(spark.transform, static_cast<float>(std::max(rand() % 4, 0) + 4));
+    EffectPrimitiveState& moving = *this->state.unknown_11C84;
+    moving.deltaPos2.x = moving.deltaPos3.x + 0.0f;
+    moving.deltaPos2.y = moving.deltaPos3.y - 10.0f;
+    moving.deltaPos2.z = moving.deltaPos3.z + 0.0f;
+    this->state.unknown_11C84->speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
+    this->state.unknown_11C84->duration = std::max(rand() % 24, 0) + 6;
+    EffectPrimitiveState& fading = *this->state.unknown_11C84;
+    fading.accel = -(fading.speed / fading.duration) * 0.5f;
+    this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
+    EffectPrimitiveState& shrinking = *this->state.unknown_11C84;
+    shrinking.sizeSpeed = -(shrinking.size / shrinking.duration);
+    this->state.unknown_11C84->fadeOutCnt = 0;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.unknown_11C84->numSegment = 3;
+    Owner(this->state.unknown_11C84).InitSegment();
+  }
+
+  for (int count = 4; count != 0; --count) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 6, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->longitude = static_cast<float>(std::max(rand() % 80, 0) + direction + 140);
+    this->state.unknown_11C84->latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
+    EffectPrimitiveState& yaw = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(yaw.transform)->MakeYRotation(GetRadian(static_cast<int>(yaw.longitude)));
+    EffectPrimitiveState& pitch = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(pitch.transform)->AppendXRotation(GetRadian(static_cast<int>(pitch.latitude)));
+    EffectPrimitiveState& spark = *this->state.unknown_11C84;
+    spark.deltaPos3 = RotatedForward(spark.transform, static_cast<float>(std::max(rand() % 4, 0) + 4));
+    EffectPrimitiveState& moving = *this->state.unknown_11C84;
+    moving.deltaPos2.x = moving.deltaPos3.x + 0.0f;
+    moving.deltaPos2.y = moving.deltaPos3.y - 10.0f;
+    moving.deltaPos2.z = moving.deltaPos3.z + 0.0f;
+    EffectPrimitiveState& facingYaw = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(facingYaw.transform)->MakeYRotation(GetRadian(static_cast<int>(facingYaw.longitude)));
+    this->state.unknown_11C84->duration = std::max(rand() % 24, 0) + 6;
+    this->state.unknown_11C84->speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
+    EffectPrimitiveState& fading = *this->state.unknown_11C84;
+    fading.accel = -(fading.speed / fading.duration) * 0.5f;
+    this->state.unknown_11C84->gravSpeed = -static_cast<float>(std::max(rand() % 90, 0) + 30) / 100.0f;
+    EffectPrimitiveState& falling = *this->state.unknown_11C84;
+    const float fall = falling.gravSpeed / falling.duration;
+    falling.gravAccel = -(fall + fall);
+    this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
+    EffectPrimitiveState& shrinking = *this->state.unknown_11C84;
+    shrinking.sizeSpeed = -(shrinking.size / shrinking.duration);
+    this->state.unknown_11C84->fadeOutCnt = 0;
+    Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+    Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.unknown_11C84->numSegment = 3;
+    Owner(this->state.unknown_11C84).InitSegment();
+  }
+}
+
+// OFFSET: 0x00C134B0
+
+// GLOBAL: gl_24762
+static int g_blitzBeatCount;
+
+// OFFSET: 0x00C0CAC0
