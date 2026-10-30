@@ -368,6 +368,7 @@
   "Source/Contents/Effects/RagEffect.cpp": 4,
   "Source/Contents/Effects/RagEffectInitialization.cpp": 4,
   "Source/Contents/Effects/RectUpEffect.cpp": 4,
+  "Source/Contents/Effects/RotateItemEffect.cpp": 4,
   "Source/Contents/Effects/SaintCastingEffect.cpp": 4,
   "Source/Contents/Effects/ScatterEffect.cpp": 4,
   "Source/Contents/Effects/SpriteParticle.cpp": 4,
