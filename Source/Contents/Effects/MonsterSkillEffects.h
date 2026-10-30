@@ -196,6 +196,7 @@ public:
 
 class CFootprintStrEffect : public CEffect {
 public:
+  CFootprintStrEffect();
   void Slot04() override;
   bool Slot06() override;
   bool Slot33() override;
@@ -203,6 +204,18 @@ public:
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;
+  /* 00DC */ std::string unknown_00DC;
+  /* 00F4 */ std::string unknown_00F4;
+  /* 010C */ std::string unknown_010C;
+  /* 0124 */ std::string unknown_0124;
+  /* 0140 */ double unknown_0140;
+  /* 0148 */ double unknown_0148;
+  /* 0150 */ double unknown_0150;
+  /* 0158 */ double unknown_0158;
+  /* 0160 */ double unknown_0160;
+  /* 0168 */ unsigned char unknown_0168;
+  /* 0169 */ unsigned char unknown_0169;
+  /* 016C */ vector3d unknown_016C;
 };
 
 class CFromTheAbyssEffect : public CEffect {
@@ -313,6 +326,7 @@ public:
 class CServantWeaponEffect : public CEffect {
 public:
   CServantWeaponEffect();
+  void Slot01() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
@@ -384,6 +398,7 @@ public:
 class CNewCloudKillEffect : public CEffect {
 public:
   CNewCloudKillEffect();
+  void Slot03() override;
   bool Slot06() override;
   void Close() override;
 
@@ -456,7 +471,11 @@ static_assert(sizeof(CFloralFlareRoad) == 0xDC);
 static_assert(offsetof(CFootprintEffect, stepDistance) == 0x108);
 static_assert(offsetof(CFootprintEffect, lastPosition) == 0x114);
 static_assert(sizeof(CFootprintEffect) == 0x128);
-static_assert(sizeof(CFootprintStrEffect) == 0xDC);
+static_assert(sizeof(CFootprintStrEffect) == 0x178);
+static_assert(offsetof(CFootprintStrEffect, unknown_00DC) == 0xDC);
+static_assert(offsetof(CFootprintStrEffect, unknown_0124) == 0x124);
+static_assert(offsetof(CFootprintStrEffect, unknown_0140) == 0x140);
+static_assert(offsetof(CFootprintStrEffect, unknown_016C) == 0x16C);
 static_assert(offsetof(CFullScreenEffect, loaded) == 0xD8);
 static_assert(sizeof(CFullScreenEffect) == 0xDC);
 static_assert(sizeof(CPetitioEffect) == 0xD8);

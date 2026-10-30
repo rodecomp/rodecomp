@@ -44,6 +44,11 @@ static CSpriteParticle* AsSprite(EZ2STREmitter* emitter) {
   return reinterpret_cast<CSpriteParticle*>(emitter);
 }
 
+void __stdcall fn_07334(CParticle* particle);
+void __stdcall fn_07337(CParticle* particle);
+void __stdcall fn_07338(CParticle* particle);
+void __stdcall fn_07339(CParticle* particle);
+
 // OFFSET: 0x0070C070
 // FUNCTION: fn_07123
 bool CCrimsonArrowEffect::Slot06() {
@@ -648,6 +653,13 @@ void CFootprintEffect::Slot04() {
   }
 }
 
+// OFFSET: 0x00712CA0
+// FUNCTION: fn_07245
+CFootprintStrEffect::CFootprintStrEffect()
+    : CEffect(2412), unknown_0140(1.0), unknown_0148(1.0), unknown_0150(0.0), unknown_0158(50.0), unknown_0160(2.0),
+      unknown_0168(0), unknown_0169(1), unknown_016C{} {
+}
+
 // OFFSET: 0x007130E0
 // FUNCTION: fn_07247
 void CFootprintStrEffect::Close() {
@@ -996,6 +1008,248 @@ bool CNewCloudKillEffect::Slot06() {
   return this->ActorExists();
 }
 
+// OFFSET: 0x0071E080
+// FUNCTION: fn_07341
+void CNewCloudKillEffect::Slot03() {
+  const unsigned int now = timeGetTime();
+
+  for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ++it) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (now - static_cast<unsigned int>(this->unknown_00F4) > 5000) {
+      particle->alpha = 0xFF;
+      *reinterpret_cast<float*>(&particle->unknown_00C4) = 0.0f;
+      particle->unknown_00E8 = 60;
+      particle->unknown_00A8 = 0;
+      InitParticleQuad(particle->vertices);
+    }
+
+    if (particle != nullptr) {
+      if (particle->unknown_00E8 == 0) {
+        particle->unknown_00A8 = 1;
+      } else {
+        const int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_00C4) + 1.0f) % 360;
+        particle->alpha = static_cast<int>(static_cast<float>(particle->unknown_00E8) * 4.25f);
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
+
+        matrix rotation;
+        rotation.MakeZRotation(static_cast<float>(angle) / 180.0f * 3.141592f);
+        rotation.AppendXRotation(1.5707964f);
+
+        matrix scale;
+        scale.SetScale(particle->scale, particle->scale, 1.0f);
+
+        matrix transform;
+        transform.Compose(scale, rotation);
+        particle->transform = transform;
+
+        particle->position.x = this->position[0];
+        particle->position.y = this->position[1];
+        particle->position.z = this->position[2];
+      }
+    }
+
+    --particle->unknown_00E8;
+  }
+
+  if (now - static_cast<unsigned int>(this->unknown_00F4) > 5000) {
+    this->unknown_00F4 = static_cast<int>(timeGetTime());
+  }
+
+  for (auto it = this->unknown_00D4.begin(); it != this->unknown_00D4.end(); ++it) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (now - static_cast<unsigned int>(this->unknown_00F8) > 5000) {
+      fn_07337(particle);
+    }
+
+    if (particle != nullptr) {
+      int alpha = particle->alpha - 3;
+      if (alpha < 0) {
+        alpha = 0;
+      }
+      particle->alpha = alpha;
+      if (alpha == 0) {
+        particle->unknown_00A8 = 1;
+      } else {
+        const float fall = particle->unknown_00C0 * 1.0f;
+        particle->scale -= particle->scale / static_cast<float>(alpha);
+        particle->unknown_00D4 -= fall;
+        particle->unknown_00D0 += 0.0f;
+        particle->unknown_00D8 += 0.0f;
+
+        particle->position.x = particle->unknown_00D0 + this->position[0];
+        particle->position.y = particle->unknown_00D4 + this->position[1];
+        particle->position.z = particle->unknown_00D8 + this->position[2];
+
+        float angle = *reinterpret_cast<float*>(&particle->unknown_00C4) + 1.0f;
+        angle = static_cast<float>(static_cast<int>(angle) % 360);
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = angle;
+
+        matrix rotation;
+        rotation.MakeZRotation(angle / 180.0f * 3.141592f);
+        rotation.AppendXRotation(
+            static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f
+        );
+
+        matrix scale;
+        scale.SetScale(particle->scale, particle->scale, 1.0f);
+
+        matrix transform;
+        transform.Compose(scale, rotation);
+        particle->transform = transform;
+      }
+    }
+  }
+
+  if (now - static_cast<unsigned int>(this->unknown_00F8) > 5000) {
+    this->unknown_00F8 = static_cast<int>(timeGetTime());
+  }
+
+  for (auto it = this->unknown_00DC.begin(); it != this->unknown_00DC.end(); ++it) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    ++particle->unknown_00E8;
+    if (particle->unknown_00E8 <= 0 || particle == nullptr) {
+      continue;
+    }
+
+    const int maximum = *reinterpret_cast<int*>(particle->unknown_0048);
+    if (particle->unknown_00A8 == 0) {
+      int alpha = particle->alpha + 2;
+      if (alpha > maximum) {
+        alpha = maximum;
+      }
+      particle->alpha = alpha;
+      if (alpha == maximum) {
+        particle->unknown_00A8 = 1;
+      }
+    } else if (particle->unknown_00A8 == 1) {
+      int alpha = particle->alpha - 1;
+      if (alpha < 0) {
+        alpha = 0;
+      }
+      particle->alpha = alpha;
+      if (alpha == 0) {
+        fn_07339(particle);
+        continue;
+      }
+      particle->scale -= particle->scale / static_cast<float>(alpha);
+    }
+
+    const float fall = particle->unknown_00C0 * 1.0f;
+    particle->unknown_00D4 -= fall;
+    particle->unknown_00D0 += 0.0f;
+    particle->unknown_00D8 += 0.0f;
+
+    particle->position.x = particle->unknown_00D0 + this->position[0];
+    particle->position.y = particle->unknown_00D4 + this->position[1];
+    particle->position.z = particle->unknown_00D8 + this->position[2];
+
+    matrix scale;
+    scale.SetScale(particle->scale, particle->scale, 1.0f);
+
+    matrix rotation;
+    rotation.MakeXRotation(
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f
+    );
+
+    matrix transform;
+    transform.Compose(rotation, scale);
+    particle->transform = transform;
+  }
+
+  for (auto it = this->unknown_00E4.begin(); it != this->unknown_00E4.end(); ++it) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (particle->unknown_00E8 < particle->unknown_004C) {
+      int state = static_cast<signed char>(particle->unknown_00A8) - 1;
+      if (state < 0) {
+        state = 0;
+      }
+      particle->unknown_00A8 = static_cast<unsigned char>(state);
+      particle->alpha = state * 25;
+
+      matrix scale;
+      scale.SetScale(particle->scale, particle->scale, 1.0f);
+
+      matrix rotation;
+      rotation.MakeZRotation(*reinterpret_cast<float*>(&particle->unknown_00C4) / 180.0f * 3.141592f);
+      rotation.AppendXRotation(
+          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f
+      );
+
+      matrix transform;
+      transform.Compose(scale, rotation);
+      particle->transform = transform;
+
+      matrix yaw;
+      yaw.MakeYRotation(
+          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / 180.0f * 3.141592f
+      );
+
+      particle->position.x = yaw.values[0] * particle->unknown_00D0 + yaw.values[3] * particle->unknown_00D4 +
+                             yaw.values[6] * particle->unknown_00D8 + yaw.values[9] + this->position[0];
+      particle->position.y = yaw.values[1] * particle->unknown_00D0 + yaw.values[4] * particle->unknown_00D4 +
+                             yaw.values[7] * particle->unknown_00D8 + yaw.values[10] + this->position[1];
+      particle->position.z = yaw.values[2] * particle->unknown_00D0 + yaw.values[5] * particle->unknown_00D4 +
+                             yaw.values[8] * particle->unknown_00D8 + yaw.values[11] + this->position[2];
+    } else {
+      fn_07338(particle);
+    }
+
+    ++particle->unknown_00E8;
+  }
+
+  for (auto it = this->unknown_00EC.begin(); it != this->unknown_00EC.end(); ++it) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    ++particle->unknown_00E8;
+    if (particle->unknown_00E8 <= 0 || particle == nullptr) {
+      continue;
+    }
+
+    const int maximum = *reinterpret_cast<int*>(particle->unknown_0048);
+    if (particle->unknown_00A8 == 0) {
+      int alpha = particle->alpha + 5;
+      if (alpha > maximum) {
+        alpha = maximum;
+      }
+      particle->alpha = alpha;
+      if (alpha == maximum) {
+        particle->unknown_00A8 = 1;
+      }
+    } else if (particle->unknown_00A8 == 1) {
+      int alpha = particle->alpha - 2;
+      if (alpha < 0) {
+        alpha = 0;
+      }
+      particle->alpha = alpha;
+      if (alpha == 0) {
+        fn_07334(particle);
+        continue;
+      }
+      particle->scale = (particle->scale / static_cast<float>(maximum)) * static_cast<float>(alpha);
+    }
+
+    const float fall = particle->unknown_00C0 * 1.0f;
+    particle->unknown_00D4 -= fall;
+    particle->unknown_00D0 += 0.0f;
+    particle->unknown_00D8 += 0.0f;
+
+    particle->position.x = particle->unknown_00D0 + this->position[0];
+    particle->position.y = particle->unknown_00D4 + this->position[1];
+    particle->position.z = particle->unknown_00D8 + this->position[2];
+
+    matrix scale;
+    scale.SetScale(particle->scale, particle->scale, 1.0f);
+
+    matrix rotation;
+    rotation.MakeXRotation(
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f
+    );
+
+    matrix transform;
+    transform.Compose(rotation, scale);
+    particle->transform = transform;
+  }
+}
+
 // OFFSET: 0x0071F5F0
 // FUNCTION: fn_07344
 CPetitioEffect::CPetitioEffect() : CEffect(1911) {
@@ -1276,6 +1530,37 @@ void CServantWeaponNewEffect::Close() {
     FreeParticle(AsParticle(trail));
   }
   this->trails.clear();
+}
+
+// OFFSET: 0x007237E0
+// FUNCTION: fn_07400
+void CServantWeaponEffect::Slot01() {
+  this->retained = 1;
+
+  for (int column = 0; column < 5; ++column) {
+    this->emitters[0][column] = nullptr;
+    this->emitters[1][column] = nullptr;
+    this->emitters[2][column] = nullptr;
+  }
+
+  this->offsets[0] = {-7.0f, -2.0f, 0.0f};
+  this->offsets[1] = {-10.0f, -12.0f, 0.0f};
+  this->offsets[2] = {0.0f, -19.0f, 0.0f};
+  this->offsets[3] = {10.0f, -12.0f, 0.0f};
+  this->offsets[4] = {7.0f, -2.0f, 0.0f};
+
+  for (int attempt = 0; attempt < 5; ++attempt) {
+    for (int column = 0; column < 5; ++column) {
+      if (this->emitters[0][column] != nullptr || this->emitters[1][column] != nullptr) {
+        continue;
+      }
+
+      EZ2STREmitter* emitter =
+          reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+      AsParticle(emitter)->Load(std::string("servantweapon\\servantweapon_cast\\servantweapon_cast.str"));
+      this->emitters[1][column] = emitter;
+    }
+  }
 }
 
 // OFFSET: 0x00723A90
