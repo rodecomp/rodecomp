@@ -12,6 +12,10 @@ public:
   virtual void Slot53();
 
   void OnButtonClick();
+  void MarkQuest(int questId);
+
+  /* 00D8 */ unsigned char unknown_00D8[0x20];
+  /* 00F8 */ CUIListBox<AdventureGuide::CUITab>* tabs;
 };
 
 namespace AdventureGuide {
@@ -52,6 +56,8 @@ public:
   void Paint() override;
   void Slot54(int first, int second) override;
 
+  void OnSelectMonster(CUIMonsterInfo* item, const CMonsterData& data);
+
   /* 0084 */ UIWindow* unknown_0084;
   /* 0088 */ std::string unknown_0088;
   /* 0080 */ CUIListBoxEx<CUIMonsterInfo, CMonsterData>* monsterList;
@@ -67,6 +73,7 @@ public:
   /* 0084 */ UIWindow* unknown_0084;
   /* 0088 */ UIWindow* unknown_0088;
   /* 008C */ std::string unknown_008C;
+  /* 0080 */ CUIListBoxEx<CUIQuestInfo, CQuestInfo>* questList;
 };
 
 }
@@ -75,7 +82,7 @@ public:
 static_assert(sizeof(AdventureGuide::CUIIntro) == 0x8C);
 static_assert(sizeof(AdventureGuide::CUIItem) == 0xA8);
 static_assert(sizeof(AdventureGuide::CUIMonster) == 0xA4);
-static_assert(sizeof(AdventureGuide::CUIQuest) == 0xA4);
+static_assert(sizeof(AdventureGuide::CUIQuest) == 0xA8);
 #endif
 
 #endif

@@ -3,11 +3,15 @@
 
 #include "UI/Window/UIControl.h"
 
+#include <string>
+
 class CUIVScrollBar;
 
 class CUIStaticText : public CUIControl {
 public:
-  /* 0084 */ unsigned char unknown_0084[0x3C];
+  /* 0080 */ std::string text;
+  /* 0098 */ std::string unknown_0098;
+  /* 00B0 */ unsigned char unknown_00B0[0x0C];
   /* 00C0 */ CUIVScrollBar* scrollBar;
   /* 00C4 */ unsigned char unknown_00C4[0x38];
 };

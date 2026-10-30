@@ -33,6 +33,8 @@ public:
 
 class CUIStaticText;
 
+template <class T> class CUIListBox;
+
 namespace AdventureGuide {
 class CUIPage;
 
@@ -49,13 +51,16 @@ public:
 class CUITab : public CUIListItem {
 public:
   void Slot16() override;
+  void SetSelected(bool selected) override;
 
   void OnSelectSubTab(CUISubTab* subTab);
 
-  /* 00E8 */ unsigned char unknown_00E8[0x08];
+  /* 00E8 */ unsigned char unknown_00E8[0x04];
+  /* 00EC */ CUIListBox<CUISubTab>* subTabs;
   /* 00F0 */ std::string unknown_00F0;
   /* 0108 */ int type;
   /* 010C */ CUIPage* page;
+  /* 0110 */ int unknown_0110;
 };
 
 class CUIItemInfo : public CUIListItem {
@@ -74,7 +79,7 @@ class CUIMonsterInfo : public CUIListItem {
 public:
   void Slot16() override;
 
-  /* 00E8 */ unsigned char unknown_00E8[0x04];
+  /* 00E8 */ CUIStaticText* unknown_00E8;
   /* 00EC */ CUIStaticText* unknown_00EC;
   /* 00F0 */ CUIStaticText* unknown_00F0;
 };
@@ -83,11 +88,12 @@ class CUIQuestInfo : public CUIListItem {
 public:
   void Slot16() override;
 
-  /* 00E8 */ unsigned char unknown_00E8[0x04];
+  /* 00E8 */ UIWindow* unknown_00E8;
   /* 00EC */ CUIStaticText* unknown_00EC;
   /* 00F0 */ CUIStaticText* unknown_00F0;
   /* 00F4 */ CUIStaticText* unknown_00F4;
   /* 00F8 */ std::string unknown_00F8;
+  /* 0110 */ int questId;
 };
 
 class CUITabInfo : public CUIListItem {
@@ -165,10 +171,16 @@ public:
     this->scrollBar->SetPosition(this->scrollBar->position);
   }
 
+  void SelectItem(CUIListItem* item);
+
   /* 0084 */ unsigned char unknown_0084[0x2C];
   /* 00B0 */ CUIVScrollBar* scrollBar;
   /* 00B4 */ unsigned char unknown_00B4[0x10];
   /* 00C4 */ std::list<T*> items;
+  /* 00CC */ T* selected;
+  /* 00D0 */ unsigned char locked;
+  /* 00D1 */ unsigned char unknown_00D1[0x07];
+  /* 00D8 */ std::function<void(T*)> onSelect;
 };
 
 template <class T, class D> class CUIListBoxEx : public CUIControl {

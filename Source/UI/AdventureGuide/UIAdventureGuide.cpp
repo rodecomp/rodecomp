@@ -105,6 +105,15 @@ void CUIItem::OnSelectItem(CUIItemInfo* item, const CItemData&) {
   this->unknown_0088->Show(selected);
 }
 
+// OFFSET: 0x009DC270
+// FUNCTION: fn_14319
+void CUIMonster::OnSelectMonster(CUIMonsterInfo* item, const CMonsterData&) {
+  if (item) {
+    this->unknown_0088 = item->unknown_00E8->unknown_0098;
+  }
+  this->unknown_0084->Show(!this->unknown_0088.empty());
+}
+
 // OFFSET: 0x009DC2C0
 // FUNCTION: fn_14320
 void CUIQuest::OnSelectQuest(CUIQuestInfo* item, const CQuestInfo&) {
@@ -237,4 +246,51 @@ void CUIMonster::Slot54(int, int) {
   this->unknown_0084->Show(0);
 }
 
+
+// OFFSET: 0x009DE410
+// FUNCTION: fn_14353
+void CUITab::SetSelected(bool selected) {
+  CUIListItem::SetSelected(selected);
+  const bool expand = selected && this->subTabs && !this->subTabs->geometry.visible;
+  if (this->subTabs) {
+    this->subTabs->Show(expand);
+  }
+  this->Resize(this->geometry.width, this->unknown_0110 + (expand ? this->subTabs->geometry.height : 0));
+  CUIListBox<CUITab>* list = dynamic_cast<CUIListBox<CUITab>*>(this->parent);
+  if (list) {
+    list->UpdateScrollBar();
+  }
+  if (this->page) {
+    this->page->Show(selected);
+  }
 }
+
+}
+
+// OFFSET: 0x009DE4C0
+// FUNCTION: fn_14354
+template <>
+void CUIListBox<AdventureGuide::CUISubTab>::SelectItem(CUIListItem* item) {
+  if (this->locked) {
+    return;
+  }
+  for (AdventureGuide::CUISubTab* entry : this->items) {
+    if (entry != item) {
+      entry->SetSelected(false);
+    }
+  }
+  item->SetSelected(true);
+  if (this->selected != item) {
+    AdventureGuide::CUISubTab* selected = dynamic_cast<AdventureGuide::CUISubTab*>(item);
+    if (selected) {
+      this->selected = selected;
+      if (this->onSelect) {
+        this->onSelect(selected);
+      }
+    }
+  }
+}
+
+// OFFSET: 0x009DE560
+
+// OFFSET: 0x009DEBF0
