@@ -4,6 +4,7 @@
 #include "UI/Window/UIWindow.h"
 
 #include <cstdint>
+#include <functional>
 
 struct UIButtonContext;
 
@@ -47,6 +48,24 @@ public:
   void SetValue(int value);
 
   /* 007C */ int unknown_007C;
+};
+
+class UIBarGraphHomun : public UIWindow {
+public:
+  explicit UIBarGraphHomun(UIWindowContext& context);
+
+protected:
+  /* 0080 */ std::function<std::int64_t()> m_current;
+  /* 00A8 */ std::function<std::int64_t()> m_maximum;
+};
+
+class UIBarGraphPlayer : public UIWindow {
+public:
+  explicit UIBarGraphPlayer(UIWindowContext& context);
+
+protected:
+  /* 0080 */ std::function<std::int64_t()> m_current;
+  /* 00A8 */ std::function<std::int64_t()> m_maximum;
 };
 
 #endif

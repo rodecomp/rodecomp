@@ -841,6 +841,7 @@
   "Source/UI/Text/UITransBalloonText.cpp": 2,
   "Source/UI/TextTagExtraction.cpp": 2,
   "Source/UI/TextTagRegistry.cpp": 2,
+  "Source/UI/UIBarGraph.cpp": 2,
   "Source/UI/UIBartermarketWnd.cpp": 2,
   "Source/UI/UIBroadcastBalloon.cpp": 2,
   "Source/UI/UICaptchaPreviewWnd.cpp": 2,
