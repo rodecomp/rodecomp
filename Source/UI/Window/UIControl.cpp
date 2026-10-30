@@ -553,6 +553,8 @@ void CUIButton::Slot25(int, int) {
   }
 }
 
+// OFFSET: 0x009EE970
+
 // OFFSET: 0x009EE9D0
 // FUNCTION: fn_14630
 void CUIButton::Slot47() {
@@ -569,6 +571,13 @@ void CUIButton::Slot48() {
 // FUNCTION: fn_14633
 void CUIButton::ResetCursor(int, int) {
   this->m_context->cursor.Set(this->disabled ? 0 : 2, this->m_context->cursorTick);
+}
+
+// OFFSET: 0x009ECF40
+// FUNCTION: fn_14564
+void CUITextButton::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  this->Slot55();
 }
 
 // OFFSET: 0x009F26B0

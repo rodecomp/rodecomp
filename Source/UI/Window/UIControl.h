@@ -89,6 +89,7 @@ public:
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void ResetCursor(int x, int y) override;
+  void Slot31(int argument1, int argument2) override;
   void Slot47() override;
   void Slot48() override;
 
@@ -96,10 +97,17 @@ public:
 
   /* 0080 */ int state;
   /* 0084 */ unsigned char disabled;
-  /* 0085 */ unsigned char unknown_0085[0x6B];
+  /* 0085 */ unsigned char unknown_0085[0x3F];
+  /* 00C4 */ UIWindow* unknown_00C4;
+  /* 00C8 */ unsigned char unknown_00C8[0x28];
 };
 
-class CUITextButton : public CUIButton {};
+class CUITextButton : public CUIButton {
+public:
+  void Paint() override;
+  virtual void Slot54(int value);
+  virtual void Slot55();
+};
 
 class CUIImageTextButton : public CUITextButton {};
 
