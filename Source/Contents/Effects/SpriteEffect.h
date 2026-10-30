@@ -12,6 +12,9 @@ class CSpriteEffect : public CEffect {
 public:
   CSpriteEffect();
 
+  void Slot01() override;
+  void Close() override;
+
   void SetupParticle(CSpriteParticle* particle);
 
   /* 00CC */ std::vector<CSpriteParticle*> particles;

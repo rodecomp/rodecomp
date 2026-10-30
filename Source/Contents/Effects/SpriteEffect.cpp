@@ -1,5 +1,6 @@
 #include "Contents/Effects/SpriteEffect.h"
 
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/SpriteParticle.h"
 #include "Utility/Cipher/XorBytes.h"
 
@@ -41,6 +42,33 @@ private:
 // OFFSET: 0x00B78840
 // FUNCTION: fn_19194
 CSpriteEffect::CSpriteEffect() : CEffect(-1) {
+}
+
+// OFFSET: 0x00B78B00
+// FUNCTION: fn_19196
+void CSpriteEffect::Close() {
+  for (CSpriteParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
+
+// OFFSET: 0x00B78B40
+// FUNCTION: fn_19197
+void CSpriteEffect::Slot01() {
+  CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x200));
+  if (!particle) {
+    return;
+  }
+
+  particle->unknown_0004 = this->id;
+  particle->unknown_000C = 1;
+  particle->unknown_0010 = 0;
+  particle->unknown_0008 = 1;
+  this->SetupParticle(particle);
+  particle->unknown_02F4 = this->actor;
+  this->particles.push_back(particle);
 }
 
 // OFFSET: 0x00B78BC0
