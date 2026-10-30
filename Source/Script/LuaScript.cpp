@@ -131,56 +131,242 @@ int LuaRGB(lua_State* state) {
 // FUNCTION: fn_19249
 int SetEmitterInfo(lua_State* state) {
   const int index = static_cast<int>(luaL_checknumber(state, 1));
-  CEffect* effect = g_effectMgr->At(EF_EMITTER, static_cast<unsigned>(index));
-  if (effect) {
-    const int key = static_cast<int>(luaL_checknumber(state, 2));
-    if (key == 0) {
-      effect->Slot07();
-    }
+  CEmitterEffect* effect = static_cast<CEmitterEffect*>(g_effectMgr->At(EF_EMITTER, static_cast<unsigned>(index)));
+  if (!effect) {
+    return 0;
   }
+
+  const int key = static_cast<int>(luaL_checknumber(state, 2));
+  switch (key) {
+  case 0:
+    effect->Slot07();
+    break;
+  case 1:
+  case 2:
+  case 3:
+  case 4:
+  case 5: {
+    const float x = static_cast<float>(luaL_checknumber(state, 3));
+    const float y = static_cast<float>(luaL_checknumber(state, 4));
+    const float z = static_cast<float>(luaL_checknumber(state, 5));
+    if (key == 1) {
+      effect->velocityMin.x = x;
+      effect->velocityMin.y = y;
+      effect->velocityMin.z = z;
+    } else if (key == 2) {
+      effect->velocityMax.x = x;
+      effect->velocityMax.y = y;
+      effect->velocityMax.z = z;
+    } else if (key == 3) {
+      effect->acceleration.x = x;
+      effect->acceleration.y = y;
+      effect->acceleration.z = z;
+    } else if (key == 4) {
+      effect->position[0] = x;
+      effect->position[1] = y;
+      effect->position[2] = z;
+    } else if (key == 5) {
+      effect->spread.x = x;
+      effect->spread.y = y;
+      effect->spread.z = z;
+    }
+    break;
+  }
+  case 6: {
+    const int red = (std::min)(static_cast<int>(luaL_checknumber(state, 3)), 255);
+    const int green = (std::min)(static_cast<int>(luaL_checknumber(state, 4)), 255);
+    const int blue = (std::min)(static_cast<int>(luaL_checknumber(state, 5)), 255);
+    const int alpha = (std::min)(static_cast<int>(luaL_checknumber(state, 6)), 255);
+    effect->red = red;
+    effect->green = green;
+    effect->blue = blue;
+    effect->alpha = alpha;
+    break;
+  }
+  case 7:
+  case 8:
+  case 9: {
+    const float minimum = static_cast<float>(luaL_checknumber(state, 3));
+    const float maximum = static_cast<float>(luaL_checknumber(state, 4));
+    if (key == 7) {
+      effect->rateMin = minimum;
+      effect->rateMax = maximum;
+    } else if (key == 8) {
+      effect->scaleMin = minimum;
+      effect->scaleMax = maximum;
+    } else if (key == 9) {
+      effect->lifeMin = minimum;
+      effect->lifeMax = maximum;
+    }
+    break;
+  }
+  case 10: {
+    std::string texture = luaL_checkstring(state, 3);
+    effect->SetTexture(texture);
+    break;
+  }
+  case 11:
+    effect->SetParticleSpeed(static_cast<float>(luaL_checknumber(state, 3)));
+    break;
+  case 12:
+    effect->sourceBlend = luaL_checknumber(state, 3);
+    break;
+  case 13:
+    effect->destinationBlend = luaL_checknumber(state, 3);
+    break;
+  case 14:
+    effect->SetCount(static_cast<int>(luaL_checknumber(state, 3)));
+    break;
+  case 43:
+    effect->depth = static_cast<int>(luaL_checknumber(state, 3)) != 0;
+    break;
+  case 45:
+    effect->billboard = static_cast<int>(luaL_checknumber(state, 3)) != 0;
+    break;
+  case 46: {
+    const float x = static_cast<float>(luaL_checknumber(state, 3));
+    const float y = static_cast<float>(luaL_checknumber(state, 4));
+    const float z = static_cast<float>(luaL_checknumber(state, 5));
+    effect->rotation[0] = x;
+    effect->rotation[1] = y;
+    effect->rotation[2] = z;
+    break;
+  }
+  case 51:
+    effect->fixedAlpha = static_cast<int>(luaL_checknumber(state, 3)) == 1;
+    break;
+  case 52: {
+    const float width = static_cast<float>(luaL_checknumber(state, 3));
+    const float height = static_cast<float>(luaL_checknumber(state, 4));
+    effect->width = width;
+    effect->height = height;
+    break;
+  }
+  }
+
   return 0;
 }
 
 // OFFSET: 0x00B80640
 // FUNCTION: fn_19251
 int SetMagicFloorInfo(lua_State* state) {
+  EffectLists* effects = g_effectMgr;
   const int index = static_cast<int>(luaL_checknumber(state, 1));
-  CEffect* effect = g_effectMgr->At(EF_MAGIC_FLOOR, static_cast<unsigned>(index));
-  if (effect) {
-    const int key = static_cast<int>(luaL_checknumber(state, 2));
-    if (key == 0) {
-      effect->Slot07();
-    }
+  const double value = luaL_checknumber(state, 2);
+  CEffect* effect = effects->At(EF_MAGIC_FLOOR, static_cast<unsigned>(index));
+  if (!effect) {
+    return 0;
   }
+
+  const int key = static_cast<int>(value);
+  switch (key) {
+  case 0:
+    effect->Slot07();
+    break;
+  case 16:
+    *reinterpret_cast<float*>(&effect->unknown_003C[8]) = static_cast<float>(luaL_checknumber(state, 3));
+    break;
+  case 42:
+    reinterpret_cast<float&>(effect->unknown_0048) = static_cast<float>(luaL_checknumber(state, 3));
+    break;
+  case 17:
+    *reinterpret_cast<int*>(effect->unknown_004C) = luaL_checknumber(state, 3);
+    break;
+  case 18:
+    reinterpret_cast<float&>(effect->unknown_0050) = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
+    break;
+  case 19:
+    *reinterpret_cast<int*>(&effect->unknown_0054[0]) = luaL_checknumber(state, 3);
+    break;
+  case 20:
+    *reinterpret_cast<int*>(&effect->unknown_0054[4]) = luaL_checknumber(state, 3);
+    break;
+  default:
+    if (key >= 21 && key <= 41) {
+      reinterpret_cast<float*>(&effect->unknown_0054[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
+    }
+    break;
+  }
+
   return 0;
 }
 
 // OFFSET: 0x00B804E0
 // FUNCTION: fn_19250
 int SetEvilsPawInfo(lua_State* state) {
+  EffectLists* effects = g_effectMgr;
   const int index = static_cast<int>(luaL_checknumber(state, 1));
-  CEffect* effect = g_effectMgr->At(EF_EVILS_PAW, static_cast<unsigned>(index));
-  if (effect) {
-    const int key = static_cast<int>(luaL_checknumber(state, 2));
-    if (key == 0) {
-      effect->Slot07();
-    }
+  const double key = luaL_checknumber(state, 2);
+  CEvilsPawEffect* effect = static_cast<CEvilsPawEffect*>(effects->At(EF_EVILS_PAW, static_cast<unsigned>(index)));
+  if (!effect) {
+    return 0;
   }
+
+  switch (static_cast<int>(key)) {
+  case 0:
+    effect->Slot07();
+    break;
+  case 8:
+    effect->size = static_cast<int>(static_cast<float>(luaL_checknumber(state, 3)));
+    break;
+  case 11:
+    effect->frameDelay = static_cast<int>(static_cast<float>(luaL_checknumber(state, 3)));
+    break;
+  case 44: {
+    const float x = static_cast<float>(luaL_checknumber(state, 3));
+    const float y = static_cast<float>(luaL_checknumber(state, 4));
+    const float z = static_cast<float>(luaL_checknumber(state, 5));
+    effect->offset.x = x;
+    effect->offset.y = y;
+    effect->offset.z = z;
+    break;
+  }
+  }
+
   return 0;
 }
 
 // OFFSET: 0x00B807E0
 // FUNCTION: fn_19252
 int SetOtherEffectInfo(lua_State* state) {
+  EffectLists* effects = g_effectMgr;
   const int id = static_cast<int>(luaL_checknumber(state, 1));
   const int index = static_cast<int>(luaL_checknumber(state, 2));
-  CEffect* effect = g_effectMgr->At(id, static_cast<unsigned>(index));
-  if (effect) {
-    const int key = static_cast<int>(luaL_checknumber(state, 3));
-    if (key == 0) {
-      effect->Slot07();
-    }
+  CEffect* effect = effects->At(id, static_cast<unsigned>(index));
+  if (!effect) {
+    return 0;
   }
+
+  const int key = static_cast<int>(luaL_checknumber(state, 3));
+  switch (key) {
+  case 0:
+    effect->Slot07();
+    break;
+  case 16:
+    *reinterpret_cast<float*>(&effect->unknown_003C[8]) = static_cast<float>(luaL_checknumber(state, 4));
+    break;
+  case 42:
+    reinterpret_cast<float&>(effect->unknown_0048) = static_cast<float>(luaL_checknumber(state, 4));
+    break;
+  case 17:
+    *reinterpret_cast<int*>(effect->unknown_004C) = luaL_checknumber(state, 4);
+    break;
+  case 18:
+    reinterpret_cast<float&>(effect->unknown_0050) = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
+    break;
+  case 19:
+    *reinterpret_cast<int*>(&effect->unknown_0054[0]) = luaL_checknumber(state, 4);
+    break;
+  case 20:
+    *reinterpret_cast<int*>(&effect->unknown_0054[4]) = luaL_checknumber(state, 4);
+    break;
+  default:
+    if (key >= 21 && key <= 41) {
+      reinterpret_cast<float*>(&effect->unknown_0054[8])[key - 21] = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
+    }
+    break;
+  }
+
   return 0;
 }
 
@@ -188,13 +374,97 @@ int SetOtherEffectInfo(lua_State* state) {
 // FUNCTION: fn_19247
 int SetAnimatedEmitterInfo(lua_State* state) {
   const int index = static_cast<int>(luaL_checknumber(state, 1));
-  CEffect* effect = g_effectMgr->At(EF_ANIMATED_EMITTER, static_cast<unsigned>(index));
-  if (effect) {
-    const int key = static_cast<int>(luaL_checknumber(state, 2));
-    if (key == 0) {
-      effect->Slot07();
-    }
+  CEmitterEffect* effect = static_cast<CEmitterEffect*>(g_effectMgr->At(EF_ANIMATED_EMITTER, static_cast<unsigned>(index)));
+  if (!effect) {
+    return 0;
   }
+
+  const int key = static_cast<int>(luaL_checknumber(state, 2));
+  switch (key) {
+  case 0:
+    effect->Slot07();
+    break;
+  case 1:
+  case 2:
+  case 3:
+  case 4:
+  case 5: {
+    const float x = static_cast<float>(luaL_checknumber(state, 3));
+    const float y = static_cast<float>(luaL_checknumber(state, 4));
+    const float z = static_cast<float>(luaL_checknumber(state, 5));
+    if (key == 1) {
+      effect->velocityMin.x = x;
+      effect->velocityMin.y = y;
+      effect->velocityMin.z = z;
+    } else if (key == 2) {
+      effect->velocityMax.x = x;
+      effect->velocityMax.y = y;
+      effect->velocityMax.z = z;
+    } else if (key == 3) {
+      effect->acceleration.x = x;
+      effect->acceleration.y = y;
+      effect->acceleration.z = z;
+    } else if (key == 4) {
+      effect->position[0] = x;
+      effect->position[1] = y;
+      effect->position[2] = z;
+    } else if (key == 5) {
+      effect->spread.x = x;
+      effect->spread.y = y;
+      effect->spread.z = z;
+    }
+    break;
+  }
+  case 6: {
+    const int red = (std::min)(static_cast<int>(luaL_checknumber(state, 3)), 255);
+    const int green = (std::min)(static_cast<int>(luaL_checknumber(state, 4)), 255);
+    const int blue = (std::min)(static_cast<int>(luaL_checknumber(state, 5)), 255);
+    const int alpha = (std::min)(static_cast<int>(luaL_checknumber(state, 6)), 255);
+    effect->red = red;
+    effect->green = green;
+    effect->blue = blue;
+    effect->alpha = alpha;
+    break;
+  }
+  case 7:
+  case 8:
+  case 9: {
+    const float minimum = static_cast<float>(luaL_checknumber(state, 3));
+    const float maximum = static_cast<float>(luaL_checknumber(state, 4));
+    if (key == 7) {
+      effect->rateMin = minimum;
+      effect->rateMax = maximum;
+    } else if (key == 8) {
+      effect->scaleMin = minimum;
+      effect->scaleMax = maximum;
+    } else if (key == 9) {
+      effect->lifeMin = minimum;
+      effect->lifeMax = maximum;
+    }
+    break;
+  }
+  case 10: {
+    std::string texture = luaL_checkstring(state, 3);
+    effect->SetTexture(texture);
+    break;
+  }
+  case 11:
+    effect->SetParticleSpeed(static_cast<float>(luaL_checknumber(state, 3)));
+    break;
+  case 12:
+    effect->sourceBlend = luaL_checknumber(state, 3);
+    break;
+  case 13:
+    effect->destinationBlend = luaL_checknumber(state, 3);
+    break;
+  case 14:
+    effect->SetCount(static_cast<int>(luaL_checknumber(state, 3)));
+    break;
+  case 43:
+    effect->depth = static_cast<int>(luaL_checknumber(state, 3)) != 0;
+    break;
+  }
+
   return 0;
 }
 
@@ -234,14 +504,78 @@ int SetEZ2STRInfo(lua_State* state) {
 // OFFSET: 0x00B80990
 // FUNCTION: fn_19253
 int SetWindEffectInfo(lua_State* state) {
+  EffectLists* effects = g_effectMgr;
   const int index = static_cast<int>(luaL_checknumber(state, 1));
-  CEffect* effect = g_effectMgr->At(0x927, static_cast<unsigned>(index));
-  if (effect) {
-    const int key = static_cast<int>(luaL_checknumber(state, 2));
-    if (key == 0) {
-      effect->Slot07();
-    }
+  const double key = luaL_checknumber(state, 2);
+  CWindEffect* effect = static_cast<CWindEffect*>(effects->At(EF_UNK_2343, static_cast<unsigned>(index)));
+  if (!effect) {
+    return 0;
   }
+
+  switch (static_cast<int>(key)) {
+  case 0:
+    effect->Slot07();
+    break;
+  case 4: {
+    const float x = static_cast<float>(luaL_checknumber(state, 3));
+    const float y = static_cast<float>(luaL_checknumber(state, 4));
+    const float z = static_cast<float>(luaL_checknumber(state, 5));
+    effect->position[0] = x;
+    effect->position[1] = y;
+    effect->position[2] = z;
+    break;
+  }
+  case 53:
+    effect->ringCount = static_cast<unsigned short>(luaL_checknumber(state, 3));
+    break;
+  case 6: {
+    const double alpha = luaL_checknumber(state, 3);
+    const double red = luaL_checknumber(state, 4);
+    const double green = luaL_checknumber(state, 5);
+    const double blue = luaL_checknumber(state, 6);
+    effect->green = static_cast<unsigned char>(static_cast<int>(green));
+    effect->maxAlpha = static_cast<unsigned char>(static_cast<int>(alpha));
+    effect->blue = static_cast<unsigned char>(static_cast<int>(blue));
+    effect->red = static_cast<unsigned char>(static_cast<int>(red));
+    break;
+  }
+  case 8:
+    effect->particleScale = static_cast<float>(luaL_checknumber(state, 3));
+    break;
+  case 18:
+    effect->width = static_cast<float>(luaL_checknumber(state, 3));
+    break;
+  case 21:
+    effect->height = static_cast<float>(luaL_checknumber(state, 3));
+    break;
+  case 11:
+    effect->angleSpeed = static_cast<float>(luaL_checknumber(state, 3));
+    break;
+  case 20:
+    effect->arcLength = static_cast<unsigned short>(luaL_checknumber(state, 3));
+    break;
+  case 46: {
+    const float x = static_cast<float>(luaL_checknumber(state, 3));
+    const float z = static_cast<float>(luaL_checknumber(state, 4));
+    effect->rotation.x = x;
+    effect->rotation.y = 0.0f;
+    effect->rotation.z = z;
+    break;
+  }
+  case 12:
+    effect->sourceBlend = static_cast<int>(luaL_checknumber(state, 3));
+    break;
+  case 13:
+    effect->destinationBlend = static_cast<int>(luaL_checknumber(state, 3));
+    break;
+  case 10: {
+    std::string name = luaL_checkstring(state, 3);
+    std::string texture = name;
+    effect->textureName = texture;
+    break;
+  }
+  }
+
   return 0;
 }
 
