@@ -1,9 +1,14 @@
 #include "Contents/Effects/EnergyOrbEffect.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>
 #include <cstdlib>
+#include <cstring>
 
 // OFFSET: 0x00B50D10
 // FUNCTION: fn_19022
@@ -95,6 +100,59 @@ void CEnergyOrbEffect::Slot01() {
 // FUNCTION: fn_19026
 bool CEnergyOrbEffect::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x00B51250
+// FUNCTION: fn_19027
+void CEnergyOrbEffect::Slot03() {
+  for (CParticle* particle : this->particles) {
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+    if (particle) {
+      if (particle->unknown_00E8 <= 200) {
+        ++particle->alpha;
+      }
+
+      float angle = particle->unknown_00C0 * 5.0f + *reinterpret_cast<float*>(&particle->unknown_00C4);
+      if (angle > 360.0f) {
+        angle -= 360.0f;
+      }
+      *reinterpret_cast<float*>(&particle->unknown_00C4) = angle;
+
+      if (particle->alpha > 0) {
+        matrix rotation;
+        std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+        rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+        rotation.AppendXRotation(3.141592f);
+
+        const float scale = particle->scale;
+        particle->unknown_004C = static_cast<int>(static_cast<float>(particle->unknown_004C) + *reinterpret_cast<float*>(&particle->unknown_0058[0])) % 360;
+        float pulse = scale * 0.1f * g_sinTable[particle->unknown_004C];
+        if (this->mode > 1 && particle->unknown_000C == 0) {
+          pulse = static_cast<float>(scale * 0.1 + pulse);
+        }
+        const float size = scale + pulse;
+        matrix scaling;
+        std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
+        scaling.SetScale(size, size, size);
+
+        const float wave = g_sinTable[particle->unknown_004C] * 0.6f;
+        const int index = static_cast<int>(*reinterpret_cast<float*>(&particle->unknown_00C4));
+        const float radius = wave + particle->unknown_0054;
+        matrix translation;
+        std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));
+        translation.MakeTranslate(radius * g_cosTable[index], wave * *reinterpret_cast<float*>(&particle->unknown_0058[0]) + *reinterpret_cast<float*>(&particle->unknown_0058[4]), radius * g_sinTable[index]);
+
+        matrix scaled;
+        scaled.Compose(scaling, rotation);
+        matrix result;
+        result.Compose(scaled, translation);
+        particle->transform = result;
+      }
+    }
+    ++particle->unknown_00E8;
+  }
 }
 
 // OFFSET: 0x00B51750
