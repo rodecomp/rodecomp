@@ -184,6 +184,19 @@ struct CEffectPrim : CRenderObject {
   void RenderSoulParticle(matrix& wtm);
   void RenderSphereWind(matrix& wtm);
   void RenderMagicTarget(matrix& wtm);
+  void RenderGroundArcGlow(matrix& wtm);
+  void RenderGroundArc(matrix& wtm);
+  void RenderGroundArc2(matrix& wtm);
+  void RenderGroundArcStep(matrix& wtm);
+  void RenderGroundSquare(matrix& wtm);
+  void RenderGroundSquareBlend(matrix& wtm);
+  void RenderFanWedge(matrix& wtm);
+  void RenderFanSlice(matrix& wtm);
+  void RenderFanTrail(matrix& wtm);
+  void RenderTwinFacingSquares(matrix& wtm);
+  void RenderPillarSquares(matrix& wtm);
+  void RenderBladeFins(matrix& wtm);
+  void RenderPolygonFrames(matrix& wtm);
 
   /* 0138 */ EffectPrimitiveState state;
 };

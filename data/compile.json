@@ -355,6 +355,7 @@
   "Source/Contents/Effects/EffectMaker.cpp": 4,
   "Source/Contents/Effects/EffectMemoryMgr.cpp": 4,
   "Source/Contents/Effects/EffectPrim.cpp": 4,
+  "Source/Contents/Effects/EffectPrimitiveArcs.cpp": 4,
   "Source/Contents/Effects/EffectPrimitiveColor.cpp": 4,
   "Source/Contents/Effects/EffectPrimitiveMotion.cpp": 4,
   "Source/Contents/Effects/EffectPrimitiveRecords.cpp": 4,
