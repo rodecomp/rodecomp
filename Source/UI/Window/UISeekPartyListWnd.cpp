@@ -69,7 +69,7 @@ int UISeekPartyListWnd::HitTestRow(int x, int y) {
     return -1;
   }
 
-  const int row = (y - 0x78) / 0x1e;
+  const int row = (y - 0x78) / 0x28;
   int found = 0;
   int index = 0;
   const int firstIndex = this->m_firstRow * this->m_columnCount;
