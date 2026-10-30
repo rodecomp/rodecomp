@@ -31,6 +31,7 @@ public:
   void Slot15(int first, int second) override;
   void Slot22(int value) override;
   void Slot23(int first, int second) override;
+  void Slot24(int first, int second) override;
   void Slot25(int value) override;
   void Slot26(int value) override;
   void Slot27(int value) override;
@@ -58,6 +59,11 @@ public:
   void RenderBodyOutline(int layer, const float* position, float x, float y, float distanceScale, float scale, float depth, std::uint32_t color);
   bool IsDrawOnTop();
   const ActionFrame& SelectStanceFrame(int layer, CActRes* actRes, int* animation, int* frame, bool* replaced);
+  void ApplyLayerEffects(
+    SpriteQuad* quad, const SpriteFrameCell* cell, int layer, const int* box, float shiftX, float distance, float bottomRhw,
+    float topRhw, float screenX, float screenY, const std::uint32_t* palette, const SpriteRleImage* image, int* blend, int offsetX,
+    int offsetY
+  );
   void LoadEquipAction(int slot, const char* name);
   void LoadEquipSprite(int slot, const char* name);
   void LoadEquipActions(const std::vector<std::string>& names);

@@ -1,5 +1,7 @@
 #include "Contents/Actors/Pc.h"
 
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/RenderObject.h"
@@ -12,6 +14,7 @@
 #include "Contents/Jobs/JobNames.h"
 #include "Contents/MapSkyMgr.h"
 #include "Contents/MessageTable.h"
+#include "Contents/Skills/ClientSkills.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
 #include "Render/SpriteQuad.h"
@@ -21,6 +24,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "Script/LuaScript.h"
+#include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
 
 // GLOBAL: gl_24753
@@ -738,6 +742,401 @@ const ActionFrame& CPc::SelectStanceFrame(int layer, CActRes* actRes, int* anima
   }
 
   return current;
+}
+
+// OFFSET: 0x00DA99A0
+// FUNCTION: fn_22569
+void CPc::ApplyLayerEffects(
+  SpriteQuad* quad, const SpriteFrameCell* cell, int layer, const int* box, float shiftX, float distance, float bottomRhw, float topRhw,
+  float screenX, float screenY, const std::uint32_t* palette, const SpriteRleImage* image, int* blend, int offsetX, int offsetY
+) {
+  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+    if (effect.id == 184) {
+      if ((!this->render.visible || !this->render.enabled) && !StateFlag06(this->stateFlags)) {
+        return;
+      }
+      break;
+    }
+  }
+
+  if ((this->render.flags & 1) != 0 && layer < 5) {
+    *blend = 5;
+  }
+
+  if ((this->render.flags & 2) != 0 && layer == 5) {
+    *blend = 5;
+  }
+
+  if ((this->render.flags & 4) != 0 && layer == 5) {
+    if (!this->render.unknown_00ECBytes[1]) {
+      this->DrawQuad(*quad, palette, layer, 0.0f, 0.0f, 0);
+      this->render.unknown_00ECBytes[1] = 1;
+    } else {
+      this->render.unknown_00ECBytes[1] = 0;
+    }
+  }
+
+  short hover = 0;
+  if (StateFlag15(this->Slot13()) == true) {
+    hover = static_cast<short>(this->HoverHeight());
+  }
+
+  const std::int64_t hoverOffset = hover;
+  this->render.unknown_0128 = static_cast<std::uint32_t>(hoverOffset);
+  this->render.unknown_012C = static_cast<std::uint32_t>(hoverOffset >> 32);
+
+  SpriteQuad jitter;
+  if ((this->render.flags & 8) != 0 && layer < 5 && (this->render.flags & 0x30000) == 0) {
+    if (++this->render.unknown_00ECBytes[2] > 180) {
+      this->render.unknown_00ECBytes[2] = 0;
+    }
+
+    float wave = g_sinTable[this->render.unknown_00ECBytes[2]] + 3.0f;
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    float spread = 400.0f / mode->camera->camera.desiredDistance * wave;
+    jitter.top = static_cast<float>(box[1]) - spread - static_cast<float>(hover);
+    jitter.bottom = static_cast<float>(box[3]) + spread - static_cast<float>(hover);
+    float left = static_cast<float>(box[0]) + shiftX;
+    float right = static_cast<float>(box[2]) + shiftX;
+    if (left > right) {
+      left += spread;
+      right -= spread;
+    } else {
+      left -= spread;
+      right += spread;
+    }
+    jitter.left = left;
+    jitter.right = right;
+    const float jitterBottomRhw = bottomRhw - 0.00005f;
+    const float jitterTopRhw = topRhw - 0.00005f;
+    jitter.bottomRhw = jitterBottomRhw;
+    jitter.topRhw = jitterTopRhw;
+    jitter.color = 0x64FFFFFF;
+    jitter.angle = static_cast<float>(cell->unknown_001C + static_cast<int>(this->render.unknown_007C));
+    jitter.image = image;
+    this->DrawQuad(jitter, palette, 5, 0.0f, 0.0f, 0);
+
+    wave = g_sinTable[this->render.unknown_00ECBytes[2]];
+    mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    spread = 400.0f / mode->camera->camera.desiredDistance * (wave + wave + 5.0f);
+    jitter.top = static_cast<float>(box[1]) - spread - static_cast<float>(hover);
+    jitter.bottom = static_cast<float>(box[3]) + spread - static_cast<float>(hover);
+    left = static_cast<float>(box[0]) + shiftX;
+    right = static_cast<float>(box[2]) + shiftX;
+    if (left > right) {
+      left += spread;
+      right -= spread;
+    } else {
+      left -= spread;
+      right += spread;
+    }
+    jitter.left = left;
+    jitter.right = right;
+    jitter.bottomRhw = jitterBottomRhw;
+    jitter.topRhw = jitterTopRhw;
+    jitter.color = 0x78FFFFFF;
+    jitter.angle = static_cast<float>(cell->unknown_001C + static_cast<int>(this->render.unknown_007C));
+    jitter.image = image;
+    this->DrawQuad(jitter, palette, 5, 0.0f, 0.0f, 0);
+  }
+
+  if ((this->render.flags & 0x80800) != 0 && (this->render.flags & 0x20000) == 0) {
+    const float scale = this->render.scale;
+    for (int step = 1, depth = 3; depth < 7; ++step, depth += 3) {
+      const unsigned char alpha = this->render.unknown_00F2;
+      const float distanceScale = g_renderer->ScaleDistance(distance);
+      const float factor = GetSkillFactor(this->GetEffectiveJob(-1)) * distanceScale * (static_cast<float>(step) * 0.01f + 1.0f);
+      const float shift =
+        g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->render.unknown_0078)) * this->render.scale) * factor;
+      const int boxTop = box[1];
+      const float top = static_cast<float>(static_cast<double>(cell->y + offsetY) * factor * cell->scaleY * scale + screenY);
+      const float bottom = static_cast<float>(
+        static_cast<double>((static_cast<short>(image->unknown_0006) + 1) * image->height + cell->y + offsetY) * factor * cell->scaleY *
+          scale +
+        screenY + 1.0
+      );
+
+      double left;
+      double right;
+      if ((cell->mirrored & 1) != 0) {
+        left = static_cast<double>((static_cast<short>(image->unknown_0004) + 1) * image->width + cell->x + offsetX) * factor * cell->scaleX;
+        right = static_cast<double>(offsetX + cell->x) * factor * cell->scaleX;
+        if (boxTop >= g_renderer->viewport.height || boxTop <= 0 || box[2] >= g_renderer->viewport.width || box[0] <= 0) {
+          continue;
+        }
+      } else {
+        if (boxTop >= g_renderer->viewport.height || box[3] <= 0 || box[0] >= g_renderer->viewport.width || box[2] <= 0) {
+          continue;
+        }
+        left = static_cast<double>(cell->x + offsetX) * factor * cell->scaleX;
+        right = static_cast<double>((static_cast<short>(image->unknown_0004) + 1) * image->width + cell->x + offsetX) * factor * cell->scaleX;
+      }
+
+      jitter.image = image;
+      jitter.left = static_cast<float>(scale * left + screenX) + shift;
+      jitter.right = static_cast<float>(scale * right + screenX + 1.0) + shift;
+      jitter.top = top - static_cast<float>(hover);
+      jitter.bottom = (static_cast<float>(boxTop) - top) * g_depthAverageHalf + bottom - static_cast<float>(hover);
+      jitter.bottomRhw = static_cast<float>(depth) * 0.000005f + bottomRhw + 0.00001f;
+      jitter.topRhw = static_cast<float>(depth) * 0.000005f + topRhw + 0.00001f;
+      if ((this->render.flags & 0x800) != 0) {
+        jitter.color = (alpha << 24) + 0x3737FF;
+      } else if ((this->render.flags & 0x80000) != 0) {
+        jitter.color = (alpha << 24) + 0x56405;
+      }
+      jitter.angle = static_cast<float>(cell->unknown_001C + static_cast<int>(this->render.unknown_007C));
+      this->DrawQuad(jitter, palette, 5, 0.0f, 0.0f, 0);
+    }
+  }
+
+  if ((this->render.flags & 0x30000) == 0) {
+    this->Slot10(cell, box, shiftX, bottomRhw, topRhw, palette, image, 4.0f, hover);
+    this->Slot11(quad, cell, box, shiftX, bottomRhw, topRhw, palette, image, *blend, hover);
+  }
+
+  this->Slot12(quad, box, shiftX, 11, 5);
+
+  if ((this->render.flags & 0x10000) != 0) {
+    const short level = this->render.unknown_00F4;
+    const short alpha = static_cast<short>(255 - level * 20);
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    const float rise = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(level * 20);
+    quad->top = static_cast<float>(box[1]) - rise;
+    quad->bottom = static_cast<float>(box[3]) - rise;
+    quad->color = (std::max<short>(alpha, 0) << 24) + 0xFFFFFF;
+  }
+
+  if ((this->render.flags & 0x20000) != 0) {
+    const unsigned char phase = this->render.unknown_00F6;
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    short alpha = static_cast<short>((this->render.unknown_00F6 - 10) * 17);
+    if (alpha > 255) {
+      alpha = 255;
+    }
+    const float rise = std::max(0.0f, 400.0f / mode->camera->camera.desiredDistance * static_cast<float>((25 - phase) * 20));
+    quad->top = static_cast<float>(box[1]) - rise;
+    quad->color = (std::max<short>(alpha, 0) << 24) + 0xFFFFFF;
+    quad->bottom = static_cast<float>(box[3]) - rise;
+  }
+
+  if (hover != 0) {
+    quad->top -= static_cast<float>(hover);
+    quad->bottom -= static_cast<float>(hover);
+  }
+
+  if ((this->render.flags & 0x100000) != 0) {
+    if (layer == 0 || layer > 4) {
+      quad->color = 0x1E373737;
+      *blend = 5;
+    }
+
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    const float sink = 24000.0f / mode->camera->camera.desiredDistance;
+    quad->top = static_cast<float>(box[1]) + sink;
+    quad->bottom = static_cast<float>(box[3]) + sink;
+  }
+}
+
+// OFFSET: 0x00DB2840
+// FUNCTION: fn_22647
+void CPc::Slot24(int first, int second) {
+  this->weapon = first;
+  this->unknown_044C = second;
+
+  int job = this->GetEffectiveJob(-1);
+  if (this->IsCostumeOutfit()) {
+    job = this->unknown_04D4;
+  }
+
+  const int viewJob = job > 3950 ? job - 3950 : job;
+
+  if (this->unknown_02CC) {
+    return;
+  }
+
+  this->LoadEquipAction(5, "");
+  this->LoadEquipSprite(5, "");
+  this->LoadEquipAction(6, "");
+  this->LoadEquipSprite(6, "");
+
+  switch (this->GetEffectiveJob(-1)) {
+    case JT_TAEKWON:
+    case JT_STAR:
+    case JT_STAR2:
+    case JT_TAEKWON_B:
+    case JT_STAR_B:
+    case JT_STAR2_B:
+    case JT_STAR_EMPEROR:
+    case JT_STAR_EMPEROR_B:
+    case JT_STAR2_EMPEROR:
+    case JT_STAR2_EMPEROR_B:
+    case JT_SKY_EMPEROR:
+    case JT_SKY_EMPEROR2: {
+      if ((this->GetEffectiveJob(-1) == JT_TAEKWON || this->GetEffectiveJob(-1) == JT_TAEKWON_B) &&
+          this->GetEffectiveJob(-1) != this->unknown_04D0) {
+        return;
+      }
+
+      const std::string actName = g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, 0, -1, 1, this->unknown_04D0);
+      const std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, 0, -1, 1, this->unknown_04D0);
+      this->LoadEquipAction(6, actName.c_str());
+      this->LoadEquipSprite(6, sprName.c_str());
+      return;
+    }
+    case JT_WOLF_RANGER:
+    case JT_WOLF_RANGER_H:
+    case JT_WOLF_RANGER_B:
+    case JT_WOLF_WINDHAWK: {
+      const std::string actName = g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, 0, -1, 0, this->unknown_04D0);
+      const std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, 0, -1, 0, this->unknown_04D0);
+      this->LoadEquipAction(6, actName.c_str());
+      this->LoadEquipSprite(6, sprName.c_str());
+      return;
+    }
+    case JT_MADOGEAR:
+    case JT_MADOGEAR_H:
+    case JT_MADOGEAR_B: {
+      std::string actName = g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, 0, -1, 0, this->unknown_04D0);
+      std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, 0, -1, 0, this->unknown_04D0);
+      if (this->Slot56() == 2) {
+        std::size_t pos = actName.rfind("마도기어_");
+        if (pos != std::string::npos) {
+          actName.replace(pos, 9, "마도아머_", 9);
+        }
+        pos = sprName.rfind("마도기어_");
+        if (pos != std::string::npos) {
+          sprName.replace(pos, 9, "마도아머_", 9);
+        }
+      }
+      this->LoadEquipAction(6, actName.c_str());
+      this->LoadEquipSprite(6, sprName.c_str());
+      return;
+    }
+    case JT_MEISTER_MADOGEAR: {
+      std::string actName = g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, 0, -1, 0, this->unknown_04D0);
+      std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, 0, -1, 0, this->unknown_04D0);
+      if (this->Slot56() == 2) {
+        std::size_t pos = actName.rfind("MEISTER_MADOGEAR1");
+        if (pos != std::string::npos) {
+          actName.replace(pos, 17, "MEISTER_MADOGEAR2", 17);
+        }
+        pos = sprName.rfind("MEISTER_MADOGEAR1");
+        if (pos != std::string::npos) {
+          sprName.replace(pos, 17, "MEISTER_MADOGEAR2", 17);
+        }
+      }
+      this->LoadEquipAction(6, actName.c_str());
+      this->LoadEquipSprite(6, sprName.c_str());
+      return;
+    }
+  }
+
+  const int weaponItem = this->weapon;
+  const int shieldItem = this->unknown_044C;
+  if (weaponItem == 0 && shieldItem == 0) {
+    return;
+  }
+
+  if (GetWeaponViewValue(shieldItem) > 0) {
+    int weaponType = this->GetDualWieldWeaponType(weaponItem, shieldItem);
+    switch (this->GetEffectiveJob(-1)) {
+      case JT_ASSASSIN:
+      case JT_ASSASSIN_H:
+      case JT_ASSASSIN_B:
+      case JT_GUILLOTINE_CROSS:
+      case JT_GUILLOTINE_CROSS_H:
+      case JT_GUILLOTINE_CROSS_B:
+      case JT_SHADOW_CROSS:
+        if (weaponType == W_FIST || weaponType == W_2HAXE || weaponType == W_MACE) {
+          weaponType = W_1HSWORD;
+        }
+        break;
+    }
+
+    const std::string actName = g_session.GetWeaponActName(viewJob, this->unknown_0260, weaponType, -1, this->unknown_04D0);
+    const std::string sprName = g_session.GetWeaponSprName(viewJob, this->unknown_0260, weaponType, -1, this->unknown_04D0);
+    this->LoadEquipAction(5, actName.c_str());
+    this->LoadEquipSprite(5, sprName.c_str());
+
+    switch (weaponType) {
+      case W_DAGGER:
+      case W_1HSWORD:
+      case W_2HSWORD:
+      case W_1HSPEAR:
+      case W_2HSPEAR:
+      case W_1HAXE:
+      case W_2HAXE:
+      case W_KATAR:
+      case W_REVOLVER:
+      case W_RIFLE:
+      case W_DOUBLE_DD:
+      case W_DOUBLE_SS:
+      case W_DOUBLE_AA:
+      case W_DOUBLE_DS:
+      case W_DOUBLE_DA:
+      case W_DOUBLE_SA: {
+        const std::string effectActName =
+          g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, weaponType, -1, 0, this->unknown_04D0);
+        const std::string effectSprName =
+          g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, weaponType, -1, 0, this->unknown_04D0);
+        this->LoadEquipAction(6, effectActName.c_str());
+        this->LoadEquipSprite(6, effectSprName.c_str());
+        break;
+      }
+    }
+    return;
+  }
+
+  int viewType = GetWeaponViewValue(this->weapon);
+  const std::string actName = g_session.GetWeaponActName(viewJob, this->unknown_0260, viewType, weaponItem, this->unknown_04D0);
+  if (ResourceMgr::Instance().Exists(actName.c_str())) {
+    this->LoadEquipAction(5, actName.c_str());
+    const std::string sprName = g_session.GetWeaponSprName(viewJob, this->unknown_0260, viewType, weaponItem, this->unknown_04D0);
+    this->LoadEquipSprite(5, sprName.c_str());
+    viewType = this->MapMotion(viewType);
+  } else {
+    viewType = GetWeaponViewValue(weaponItem);
+    if (viewType == -1 || viewType == 0 || weaponItem == 1599) {
+      return;
+    }
+
+    if (viewType == W_KNUCKLE) {
+      switch (this->GetEffectiveJob(-1)) {
+        case JT_PRIEST:
+        case JT_PRIEST_H:
+        case JT_PRIEST_B:
+        case JT_ARCHBISHOP:
+        case JT_ARCHBISHOP_H:
+        case JT_ARCHBISHOP_B:
+          return;
+      }
+    }
+
+    if (this->GetEffectiveJob(-1) == JT_CARDINAL && viewType == W_KNUCKLE) {
+      return;
+    }
+
+    viewType = this->MapMotion(viewType);
+    const std::string fallbackActName = g_session.GetWeaponActName(viewJob, this->unknown_0260, viewType, -1, this->unknown_04D0);
+    if (ResourceMgr::Instance().Exists(fallbackActName.c_str())) {
+      this->LoadEquipAction(5, fallbackActName.c_str());
+      const std::string fallbackSprName = g_session.GetWeaponSprName(viewJob, this->unknown_0260, viewType, -1, this->unknown_04D0);
+      this->LoadEquipSprite(5, fallbackSprName.c_str());
+    }
+  }
+
+  std::string effectActName = g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, viewType, weaponItem, 0, this->unknown_04D0);
+  std::string effectSprName = g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, viewType, weaponItem, 0, this->unknown_04D0);
+  if (!ResourceMgr::Instance().Exists(effectActName.c_str())) {
+    effectActName = g_session.GetWeaponEffectActName(viewJob, this->unknown_0260, viewType, -1, 0, this->unknown_04D0);
+    effectSprName = g_session.GetWeaponEffectSprName(viewJob, this->unknown_0260, viewType, -1, 0, this->unknown_04D0);
+    if (!ResourceMgr::Instance().Exists(effectActName.c_str())) {
+      return;
+    }
+  }
+
+  this->LoadEquipAction(6, effectActName.c_str());
+  this->LoadEquipSprite(6, effectSprName.c_str());
 }
 
 // OFFSET: 0x00DB3740

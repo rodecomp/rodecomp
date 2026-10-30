@@ -156,9 +156,15 @@ public:
     float* bottomRhw, float* topRhw, const SpriteRleImage* image, SpriteQuad* quad, int* box, std::uint32_t* color, int offsetX, int offsetY,
     int flags
   ) = 0;
-  virtual void Slot10(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth) = 0;
-  virtual void Slot11(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth) = 0;
-  virtual void Slot12(int first, int second, int third, int fourth, int fifth) = 0;
+  virtual void Slot10(
+    const SpriteFrameCell* cell, const int* box, float shiftX, float bottomRhw, float topRhw, const std::uint32_t* palette,
+    const SpriteRleImage* image, float scale, short hover
+  ) = 0;
+  virtual void Slot11(
+    SpriteQuad* quad, const SpriteFrameCell* cell, const int* box, float shiftX, float bottomRhw, float topRhw,
+    const std::uint32_t* palette, const SpriteRleImage* image, int blend, short hover
+  ) = 0;
+  virtual void Slot12(SpriteQuad* quad, const int* box, float shiftX, int first, int second) = 0;
   virtual std::uint32_t Slot13();
   virtual void Slot14() = 0;
   virtual void Slot15(int first, int second) = 0;
