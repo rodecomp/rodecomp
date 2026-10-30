@@ -1,24 +1,31 @@
 #include "UI/Text/NavigationLink.h"
 
+#include <algorithm>
+#include <cctype>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <mbstring.h>
 #include <new>
+#include <regex>
 #include <vector>
 #include <windows.h>
 #include <timeapi.h>
 
 #include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
+#include "Network/TextEncoding.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Text/ColoredText.h"
+#include "UI/Text/CreateLineInfo.h"
 #include "UI/Window/UIWindow.h"
+#include "Utility/Text/TextTokens.h"
 
 namespace LineCutter {
   class UIText : public UIWindow {
@@ -117,6 +124,46 @@ void DestroyNavigationLinkParser() {
   }
 }
 
+// GLOBAL: gl_24818
+static const std::string g_urlTag = "<URL>";
+// GLOBAL: gl_24819
+static const std::string g_urlCloseTag = "</URL>";
+// GLOBAL: gl_24820
+static const std::string g_naviTag = "<NAVI>";
+// GLOBAL: gl_24821
+static const std::string g_naviCloseTag = "</NAVI>";
+// GLOBAL: gl_24822
+static const std::string g_infoTag = "<INFO>";
+// GLOBAL: gl_24823
+static const std::string g_infoCloseTag = "</INFO>";
+// GLOBAL: gl_24824
+static const std::string g_itemTag = "<ITEM>";
+// GLOBAL: gl_24825
+static const std::string g_itemCloseTag = "</ITEM>";
+// GLOBAL: gl_24826
+static const std::string g_itemLinkTag = "<ITEML>";
+// GLOBAL: gl_24827
+static const std::string g_itemLinkCloseTag = "</ITEML>";
+// GLOBAL: gl_24828
+static const std::string g_messageTag = "<MSG>";
+// GLOBAL: gl_24829
+static const std::string g_messageCloseTag = "</MSG>";
+// GLOBAL: gl_24830
+static const std::string g_naviLinkTag = "<NAVIL>";
+// GLOBAL: gl_24831
+static const std::string g_naviLinkCloseTag = "</NAVIL>";
+// GLOBAL: gl_24832
+static const std::string g_tipBoxTag = "<TIPBOX>";
+// GLOBAL: gl_24833
+static const std::string g_tipBoxCloseTag = "</TIPBOX>";
+// GLOBAL: gl_24834
+static const std::string g_questTag = "<QUEST>";
+// GLOBAL: gl_24835
+static const std::string g_questCloseTag = "</QUEST>";
+
+// GLOBAL: gl_24836
+std::vector<LineFontState> CCreateLineInfo::s_fontStackCache;
+
 // OFFSET: 0x00833160
 // FUNCTION: fn_10409
 int DecodeNavigationNumber(std::string value) {
@@ -190,14 +237,23 @@ bool ParseNavigationLink(std::string value, std::string& name, int& x, int& y) {
 // FUNCTION: fn_10419
 std::string FormatNavigationLink(std::string value, bool brackets) {
   std::string name;
-  int x = 0, y = 0;
-  ParseNavigationLink(value, name, x, y);
+  int x = 0;
+  int y = 0;
+  ParseNavigationLink(std::move(value), name, x, y);
   char text[128] = {};
 
-  if (x > 999 && y > 999) {
-    std::sprintf(text, brackets ? "<%s>" : "%s", name.c_str());
+  if (brackets) {
+    if (x > 999 && y > 999) {
+      std::sprintf(text, "<%s>", name.c_str());
+    } else {
+      std::sprintf(text, "<%s %d,%d>", name.c_str(), x, y);
+    }
   } else {
-    std::sprintf(text, brackets ? "<%s %d,%d>" : "%s %d,%d", name.c_str(), x, y);
+    if (x > 999 && y > 999) {
+      std::sprintf(text, "%s", name.c_str());
+    } else {
+      std::sprintf(text, "%s %d,%d", name.c_str(), x, y);
+    }
   }
 
   return text;
@@ -408,3 +464,92 @@ void UIEmotion::Slot19() {
 }
 
 // OFFSET: 0x0083B0A0
+
+// OFFSET: 0x00837390
+
+// OFFSET: 0x008379D0
+
+// OFFSET: 0x00837B40
+
+// OFFSET: 0x00837B80
+
+// OFFSET: 0x00839310
+
+// OFFSET: 0x00839D60
+
+// OFFSET: 0x0083A180
+
+// OFFSET: 0x0083A820
+
+// OFFSET: 0x0083AA40
+
+// OFFSET: 0x0083AB90
+
+// OFFSET: 0x0083AF20
+
+// OFFSET: 0x0083BD80
+
+// INLINED
+inline void CCreateLineInfo::CloseFont(std::string tag) {
+  if (!this->m_fontStack.empty()) {
+    this->m_fontStack.pop_back();
+    if (this->m_fontStack.empty()) {
+      this->m_fontHeight = this->m_defaultFontHeight;
+      this->m_color = this->m_defaultColor;
+    } else {
+      this->m_fontHeight = this->m_fontStack.back().fontHeight;
+      this->m_color = this->m_fontStack.back().color;
+    }
+    this->m_newSegment = true;
+  }
+}
+
+// INLINED
+inline void CCreateLineInfo::OpenBold(std::string tag) {
+  if (this->m_bold == 0) {
+    this->m_newSegment = true;
+  }
+  ++this->m_bold;
+}
+
+// INLINED
+inline void CCreateLineInfo::CloseBold(std::string tag) {
+  if (--this->m_bold == 0) {
+    this->m_newSegment = true;
+  }
+}
+
+// INLINED
+inline void CCreateLineInfo::OpenItalic(std::string tag) {
+  if (this->m_italic == 0) {
+    this->m_newSegment = true;
+  }
+  ++this->m_italic;
+}
+
+// INLINED
+inline void CCreateLineInfo::CloseItalic(std::string tag) {
+  if (--this->m_italic == 0) {
+    this->m_newSegment = true;
+  }
+}
+
+// OFFSET: 0x0083BFF0
+
+// OFFSET: 0x0083C3D0
+
+// OFFSET: 0x0083C6A0
+
+// OFFSET: 0x0083C890
+
+// OFFSET: 0x0083CDA0
+
+// OFFSET: 0x0083CFE0
+
+// OFFSET: 0x0083D090
+
+// OFFSET: 0x0083D1F0
+
+// OFFSET: 0x0083D360
+
+// OFFSET: 0x0083D660
