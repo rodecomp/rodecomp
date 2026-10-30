@@ -17,16 +17,21 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
+#include "Contents/Jobs/JobInheritance.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/PlayerNameDictionary.h"
+#include "Contents/RenewQuestMgr.h"
 #include "Contents/RodexMailStore.h"
 #include "Contents/RouletteMgr.h"
 #include "Contents/World/World.h"
 #include "Render/Renderer.h"
+#include "UI/AdventureGuide/UIAdventureGuide.h"
+#include "UI/UICaptchaRegisterWnd.h"
 #include "UI/UIGradeEnchantWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstdint>
@@ -788,3 +793,78 @@ void CGameMode::ReceiveGuildUnknown0114List(const unsigned char* packet) {
     guildInfo->AddUnknown0114(value);
   }
 }
+
+#pragma pack(push, 1)
+struct ShortcutPagePayload {
+  /* 0000 */ NormalItemSlot slots[36];
+  /* 00FC */ NormalItemSlot slot06EB;
+  /* 0103 */ NormalItemSlot slot06F2;
+};
+
+struct QuestStateEntry {
+  /* 0000 */ unsigned int questId;
+  /* 0004 */ unsigned char state;
+};
+
+struct MessageBoxPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t captionId;
+  /* 0004 */ int captionArgument;
+  /* 0008 */ std::uint16_t textId;
+  /* 000A */ int textArgument;
+};
+
+struct Item1784Entry {
+  /* 0000 */ int itemId;
+  /* 0004 */ int quantity;
+  /* 0008 */ std::uint32_t unknown_0008;
+  /* 000C */ std::uint32_t unknown_000C;
+  /* 0010 */ std::uint32_t unknown_0010;
+  /* 0014 */ std::uint32_t unknown_0014;
+};
+
+struct Item1784ListPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::int16_t flag;
+  /* 0006 */ Item1784Entry entries[1];
+};
+#pragma pack(pop)
+
+struct ClientItemLists {
+  void ClearItems1784(int index);
+};
+
+// OFFSET: 0x00D18BD0
+// FUNCTION: fn_21601
+void ReceiveShortcutPage(int position, const ShortcutPagePayload* payload, std::int16_t bank) {
+  int base = 0;
+  if (bank == 0) {
+    g_session.ClearShortcutSlots();
+    memcpy_s(g_session.m_shortcutSlots, sizeof(g_session.m_shortcutSlots), payload, sizeof(payload->slots));
+    g_session.ClearSlots06EB();
+    g_session.unknown_06EB = payload->slot06EB;
+    g_session.unknown_06F2 = payload->slot06F2;
+    base = g_session.unknown_06FC;
+  } else if (bank == 1) {
+    g_session.ClearSecondaryShortcutSlots();
+    memcpy_s(g_session.m_secondaryShortcutSlots, sizeof(g_session.m_secondaryShortcutSlots), payload, sizeof(payload->slots));
+    base = g_session.unknown_06A8;
+  }
+
+  if (g_windowMgr.window_01E8) {
+    g_windowMgr.window_01E8->SendMsg(nullptr, 143, position - base + 4, bank, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D18F60
+
+// OFFSET: 0x00D69260
+
+// OFFSET: 0x00D694C0
+
+// OFFSET: 0x00D6E1E0
+
+// OFFSET: 0x00D6E5F0
+
+// OFFSET: 0x00D6ECB0

@@ -100,11 +100,12 @@ public:
   /* 0420 */ std::uint32_t unknown_0420[36];
   /* 04B0 */ NormalItemSlot m_shortcutSlots[36];
   /* 05AC */ NormalItemSlot m_secondaryShortcutSlots[36];
-  /* 06A8 */ unsigned char unknown_06A8[0x04];
+  /* 06A8 */ int unknown_06A8;
   /* 06AC */ NormalItemSlot m_normalItemSlots[9];
   /* 06EB */ NormalItemSlot unknown_06EB;
   /* 06F2 */ NormalItemSlot unknown_06F2;
-  /* 06F9 */ unsigned char unknown_06F9[0x07];
+  /* 06F9 */ unsigned char unknown_06F9[0x03];
+  /* 06FC */ int unknown_06FC;
   /* 0700 */ std::map<int, int> unknown_0700;
   /* 0708 */ std::map<int, int> unknown_0708;
   /* 0710 */ unsigned char unknown_0710[0x0C];
@@ -298,7 +299,8 @@ public:
   /* 6150 */ std::int16_t unknown_6150;
   /* 6154 */ int unknown_6154;
   /* 6158 */ int unknown_6158;
-  /* 615C */ unsigned char unknown_615C[0x10];
+  /* 615C */ int unknown_615C;
+  /* 6160 */ unsigned char unknown_6160[0x0C];
   /* 616C */ std::vector<int> unknown_616C;
   /* 6178 */ std::vector<SessionRecord6178> unknown_6178;
   /* 6184 */ unsigned char unknown_6184[0x04];

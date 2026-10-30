@@ -204,6 +204,12 @@ public:
   void ReceivePartyItemPickup(const unsigned char* packet);
   void NotifyResult3995(unsigned char result);
   void ReceiveActorEffect228(const unsigned char* packet);
+  void ResendMinimapMarkers();
+  void ReceiveJobTitle(unsigned char result, int job);
+  void ReceiveQuestStates(int count, const unsigned char* entries);
+  void ReceiveMessageBox(const unsigned char* packet);
+  void NotifyCaptchaRegistered();
+  void ReceiveItem1784List(const unsigned char* packet);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
