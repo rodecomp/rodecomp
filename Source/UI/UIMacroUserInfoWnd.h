@@ -37,6 +37,7 @@ public:
   void Slot35(int delta) override;
 
   void UpdateScrollBar();
+  bool ValidateTarget(unsigned char notify);
 
   /* 00B4 */ std::vector<std::pair<UIButton*, UIButton*>> m_rows;
   /* 00C0 */ UIScrollBar* m_scrollBar;

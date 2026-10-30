@@ -1,5 +1,6 @@
 #include "UI/UIMacroUserInfoWnd.h"
 
+#include "Contents/MessageTable.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Layout/WindowSnapping.h"
@@ -7,8 +8,11 @@
 #include "UI/Window/FrameFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
+#include "Utility/Text/FormatString.h"
 
 #include <algorithm>
+#include <cstdlib>
+#include <cstring>
 
 // OFFSET: 0x007F0480
 // FUNCTION: fn_09845
@@ -155,4 +159,46 @@ void UIMacroReporterWnd::UpdateScrollBar() {
 
   this->m_scrollBar->Invalidate();
   this->Invalidate();
+}
+
+// OFFSET: 0x007F01A0
+// FUNCTION: fn_09844
+bool UIMacroReporterWnd::ValidateTarget(unsigned char notify) {
+  std::string text = this->m_target;
+  if (text.empty() || text.size() - 4 > 4) {
+    if (notify == 1) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(4011)).c_str()), 0xFF, 0, 0, 0);
+    }
+    return false;
+  }
+
+  const int value = std::atoi(text.c_str());
+  char digits[16] = {};
+  if (text.size() != 0) {
+    std::memset(digits, '0', text.size());
+  }
+
+  if (value == 0 && text.compare(digits) != 0) {
+    if (notify == 1) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(4011)).c_str()), 0xFF, 0, 0, 0);
+    }
+    return false;
+  }
+
+  text = "1" + this->m_target;
+  char number[16] = {};
+  int scale = 1;
+  for (std::size_t index = 1; index < text.size(); ++index) {
+    scale *= 10;
+  }
+  _itoa(scale + value, number, 10);
+
+  if (text.compare(number) != 0) {
+    if (notify == 1) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(4011)).c_str()), 0xFF, 0, 0, 0);
+    }
+    return false;
+  }
+
+  return true;
 }
