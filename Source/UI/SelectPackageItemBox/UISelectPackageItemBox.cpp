@@ -7,6 +7,7 @@
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 
+#include <algorithm>
 #include <iterator>
 #include <new>
 
@@ -45,6 +46,28 @@ void CUISelectPackageItemBox::Slot53() {
   this->SetSkinColors(0, 0, 0, 0);
   this->m_buttonBarStyle = 3;
 }
+
+// OFFSET: 0x00A6D060
+// FUNCTION: fn_16666
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x00A6D070
+// FUNCTION: fn_16667
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x00A6D080
+
+// OFFSET: 0x00A6D0C0
+
+// OFFSET: 0x00A6DB80
+
+// OFFSET: 0x00A6DD80
 
 // OFFSET: 0x00A6FBC0
 // FUNCTION: fn_16779
