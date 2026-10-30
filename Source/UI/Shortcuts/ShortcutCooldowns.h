@@ -32,6 +32,7 @@ struct ShortcutCooldowns {
     const void* packet, const std::list<ShortcutCooldownIcon>& mainIcons, const std::list<ShortcutCooldownIcon>& alternateIcons, int replayMode,
     const std::uint32_t& serverTick
   );
+  void LoadRecords(const void* packet);
   bool RotateRows(int amount, int bank, int& rotation0, int& rotation1, const CooldownClock& clock);
 
   void PaintMain(

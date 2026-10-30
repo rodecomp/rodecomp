@@ -461,3 +461,24 @@ void UISeekPartyListWnd::Slot11() {
     this->m_saved->y = this->geometry.y;
   }
 }
+
+// OFFSET: 0x00D42590
+// FUNCTION: fn_21828
+void ShortcutCooldowns::LoadRecords(const void* packet) {
+  const auto* bytes = static_cast<const unsigned char*>(packet);
+  std::int16_t size;
+  std::memcpy(&size, bytes + 2, sizeof(size));
+  const int count = (size - 2) / 6;
+
+  for (int index = 0; index < count; ++index) {
+    const unsigned char* source = bytes + 4 + index * 6;
+    ShortcutCooldownRecord value;
+    std::uint16_t id;
+    std::uint32_t remaining;
+    std::memcpy(&id, source, sizeof(id));
+    std::memcpy(&remaining, source + 2, sizeof(remaining));
+    value.id = id;
+    value.end = timeGetTime() + remaining;
+    this->records.push_back(value);
+  }
+}

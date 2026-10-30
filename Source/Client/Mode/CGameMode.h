@@ -31,6 +31,13 @@ struct MiniMapMember {
   /* 0008 */ std::uint32_t color;
 };
 
+struct GameModeLoopSound {
+  /* 0000 */ std::string name;
+  /* 0018 */ std::uint32_t npcId;
+  /* 001C */ std::uint32_t term;
+  /* 0020 */ std::uint32_t nextTick;
+};
+
 struct MiniMapPing {
   /* 0000 */ int x;
   /* 0004 */ int y;
@@ -67,7 +74,8 @@ public:
   /* 01B4 */ std::map<std::uint32_t, MiniMapMember> unknown_01B4;
   /* 01BC */ std::map<std::uint32_t, MiniMapMember> unknown_01BC;
   /* 01C4 */ std::map<std::uint32_t, MiniMapPing> unknown_01C4;
-  /* 01CC */ unsigned char unknown_01CC[0x24];
+  /* 01CC */ unsigned char unknown_01CC[0x18];
+  /* 01E4 */ std::vector<GameModeLoopSound> loopSounds;
   /* 01F0 */ std::map<std::uint32_t, MinimapMarker> minimapMarkers;
   /* 01F8 */ unsigned char unknown_01F8[0x54];
   /* 024C */ int unknown_024C;
@@ -151,6 +159,7 @@ public:
   void ReceiveHuntingList(const unsigned char* packet);
   void ReceiveEquipAck(const unsigned char* packet);
   void ReceiveToggleNotice(const unsigned char* packet);
+  void ReceiveSound(const unsigned char* packet);
   void ReceivePendingResult(const unsigned char* packet);
   void ReceivePetAct(unsigned char* packet);
   void PlayBgm(unsigned char type, std::string name);
@@ -326,6 +335,7 @@ static_assert(offsetof(CGameMode, camera) == 0xD0);
 static_assert(offsetof(CGameMode, nameCard) == 0x160);
 static_assert(offsetof(CGameMode, unknown_01BC) == 0x1BC);
 static_assert(offsetof(CGameMode, unknown_01C4) == 0x1C4);
+static_assert(offsetof(CGameMode, loopSounds) == 0x1E4);
 static_assert(offsetof(CGameMode, minimapMarkers) == 0x1F0);
 static_assert(offsetof(CGameMode, unknown_0294) == 0x294);
 static_assert(offsetof(CGameMode, drag) == 0x308);

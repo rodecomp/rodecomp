@@ -265,6 +265,7 @@
   "Source/Client/Mode/GameModeNotices.cpp": 0,
   "Source/Client/Mode/GameModePackets.cpp": 0,
   "Source/Client/Mode/GameModeProtocol.cpp": 0,
+  "Source/Client/Mode/GameModeSounds.cpp": 0,
   "Source/Client/Mode/LoginMode.cpp": 0,
   "Source/Client/Mode/LoginModeNotices.cpp": 0,
   "Source/Client/Mode/ModeCursor.cpp": 0,
