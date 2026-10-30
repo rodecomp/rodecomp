@@ -920,6 +920,7 @@
   "Source/UI/Window/UIMileageWnd.cpp": 2,
   "Source/UI/Window/UINavigationWnd.cpp": 2,
   "Source/UI/Window/UINewSelectCharWnd.cpp": 2,
+  "Source/UI/Window/UINewSkillListWnd.cpp": 2,
   "Source/UI/Window/UINormalMB.cpp": 2,
   "Source/UI/Window/UINoteWnd.cpp": 2,
   "Source/UI/Window/UIOpenMailBoxWnd.cpp": 2,
