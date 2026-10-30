@@ -9,6 +9,8 @@
 #include "Contents/World/World.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Projection/RendererViewport.h"
 #include "Render/Renderer.h"
@@ -26,7 +28,9 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 
+#include <algorithm>
 #include <cstdio>
+#include <list>
 
 namespace {
   // STATIC: 0x0135EF80
@@ -720,5 +724,161 @@ void CGameActor::ApplyPendingUnknown0408() {
 }
 
 // OFFSET: 0x00CB4100
+// FUNCTION: fn_21111
+void EffectActor::SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int, int, int, int, int, int, int, int) {
+  switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
+    case 23:
+      if (sender) {
+        RagEffectState* const effect = reinterpret_cast<RagEffectState*>(sender);
+        for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+          if (*it == effect) {
+            this->state.effects.erase(it);
+
+            if (this->state.first == effect) {
+              this->state.first = nullptr;
+            } else if (this->state.second == effect) {
+              this->state.second = nullptr;
+            }
+
+            return;
+          }
+        }
+      }
+      break;
+
+    case 24:
+      for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+        reinterpret_cast<CRagEffect*>(*it)->SendMsg(this, 24, 0, 0, 0, 0, 0, 0);
+      }
+
+      this->state.effects.clear();
+      break;
+
+    case 84:
+      if (this->state.first) {
+        const auto end = this->state.effects.end();
+        const auto it = std::find(this->state.effects.begin(), end, this->state.first);
+        if (it != end) {
+          reinterpret_cast<CRagEffect*>(*it)->SendMsg(this, 24, 0, 0, 0, 0, 0, 0);
+          this->state.effects.erase(it);
+        }
+
+        this->state.first = nullptr;
+      }
+      break;
+
+    case 85:
+      if (!this->state.first) {
+        this->state.first = reinterpret_cast<RagEffectState*>(this->LaunchEffect(b, vector3d{0.0f, 0.0f, 0.0f}, 0.0f));
+        if (!this->state.first) {
+          return;
+        }
+      }
+
+      if ((static_cast<std::int64_t>(c) << 32 | static_cast<std::uint32_t>(b)) > 0) {
+        this->SendMsg(nullptr, 109, 0, b, c, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->state.first = reinterpret_cast<RagEffectState*>(this->LaunchEffect(b, vector3d{0.0f, 0.0f, 0.0f}, 0.0f));
+        if (!this->state.first) {
+          return;
+        }
+      }
+
+      reinterpret_cast<CRagEffect*>(this->state.first)->SendMsg(nullptr, 80, 0, static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d), 0, 0, 0, 0);
+      break;
+
+    case 86:
+      if (!this->state.second) {
+        this->state.second = reinterpret_cast<RagEffectState*>(this->LaunchEffect(b, vector3d{0.0f, 0.0f, 0.0f}, 0.0f));
+        if (!this->state.second) {
+          return;
+        }
+      }
+
+      reinterpret_cast<CRagEffect*>(this->state.second)->SendMsg(
+        nullptr, 80, 0, static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d), 0, 0, 0, 0
+      );
+      break;
+
+    case 87:
+      if (this->state.second) {
+        const auto end = this->state.effects.end();
+        const auto it = std::find(this->state.effects.begin(), end, this->state.second);
+        if (it != end) {
+          reinterpret_cast<CRagEffect*>(*it)->SendMsg(this, 24, 0, 0, 0, 0, 0, 0);
+          this->state.effects.erase(it);
+        }
+
+        this->state.second = nullptr;
+      }
+      break;
+
+    case 109:
+      if (g_effectMgr->HasAllocator(b) && sender) {
+        g_effectMgr->Retire(static_cast<CRenderObject*>(sender)->render.accountId, b);
+        return;
+      }
+
+      for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+        CRagEffect* const effect = reinterpret_cast<CRagEffect*>(*it);
+        if (!effect) {
+          this->state.effects.erase(it);
+        } else if (effect->state.type == (static_cast<std::int64_t>(c) << 32 | static_cast<std::uint32_t>(b))) {
+          effect->SendMsg(this, 24, 0, 0, 0, 0, 0, 0);
+          this->state.effects.erase(it);
+          return;
+        }
+      }
+      break;
+
+    case 120:
+      if (g_effectMgr->HasAllocator(b) == true && sender) {
+        if (g_effectMgr->Has(static_cast<CRenderObject*>(sender)->render.accountId, b) == true) {
+          *reinterpret_cast<int*>(b) = -1;
+        }
+        return;
+      }
+
+      for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+        CRagEffect* const effect = reinterpret_cast<CRagEffect*>(*it);
+        if (!effect) {
+          this->state.effects.erase(it);
+        } else if (*reinterpret_cast<int*>(b) == effect->state.type) {
+          *reinterpret_cast<int*>(b) = -1;
+          return;
+        }
+      }
+      break;
+
+    case 143:
+      for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+        CRagEffect* const effect = reinterpret_cast<CRagEffect*>(*it);
+        if (!effect) {
+          this->state.effects.erase(it);
+        } else if (effect->state.type == (static_cast<std::int64_t>(c) << 32 | static_cast<std::uint32_t>(b))) {
+          effect->SendMsg(this, 143, 0, static_cast<std::int64_t>(c) << 32 | static_cast<std::uint32_t>(b), d, e, 0, 0);
+        }
+      }
+      break;
+
+    case 159:
+      if (g_effectMgr->HasAllocator(d) && sender) {
+        g_effectMgr->Retire(static_cast<CRenderObject*>(sender)->render.accountId, b, d);
+        return;
+      }
+
+      for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+        CRagEffect* const effect = reinterpret_cast<CRagEffect*>(*it);
+        if (!effect) {
+          this->state.effects.erase(it);
+        } else if (static_cast<int>(effect->state.tag) == (static_cast<std::int64_t>(c) << 32 | static_cast<std::uint32_t>(b)) &&
+                   effect->state.type == (static_cast<std::int64_t>(e) << 32 | static_cast<std::uint32_t>(d))) {
+          effect->SendMsg(this, 24, 0, 0, 0, 0, 0, 0);
+          this->state.effects.erase(it);
+          return;
+        }
+      }
+      break;
+  }
+}
 
 // OFFSET: 0x00CB4800

@@ -24,6 +24,7 @@ struct EffectActorState {
 
 struct EffectActor : CRenderObject {
   EffectActor();
+  void SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) override;
   bool EffectVisible() const;
   void ResetEffectState();
   CRagEffect* LaunchEffect(int effectId, vector3d deltaPos, float rotation);
