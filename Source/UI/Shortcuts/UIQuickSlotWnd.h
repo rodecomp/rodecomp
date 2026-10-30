@@ -12,6 +12,7 @@ struct TextLocale;
 struct ClientSkills;
 struct ITEM_INFO;
 struct ItemDescriptions;
+class AutomaticSkills;
 
 struct QuickSlotPainting {
   FontCache& fonts;
@@ -25,6 +26,7 @@ struct QuickSlotPainting {
   const CooldownClock& clock;
   RenderCommandPool& commands;
   CRenderSystemBase& system;
+  AutomaticSkills& automatic;
 };
 
 #pragma pack(push, 1)
@@ -45,6 +47,7 @@ public:
   void Slot19() override;
   void Paint() override;
   void Slot25(int x, int y) override;
+  void Slot26(int x, int y) override;
   int SlotX(int slot);
   int SlotAt(int x, int y);
 

@@ -5,6 +5,7 @@
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Skills/AutomaticSkills.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/SkinMgr.h"
 #include "UI/Buttons/UIButton.h"
@@ -342,6 +343,33 @@ void UIQuickSlotWnd::Paint() {
 // OFFSET: 0x00924A50
 // FUNCTION: fn_12646
 void UIQuickSlotWnd::Slot15(int, int) {}
+
+// OFFSET: 0x00930610
+// FUNCTION: fn_12686
+void UIQuickSlotWnd::Slot26(int x, int y) {
+  if (g_session.GetOption(5) > 0 || static_cast<unsigned>(y) > 23) {
+    return;
+  }
+
+  if (x > 58 && x < this->geometry.width) {
+    return;
+  }
+
+  const int slot = (x - 4) / 29;
+  if (x > slot * 29 + 30 || slot == -1) {
+    return;
+  }
+
+  AutomaticSkills& automatic = this->m_painting->automatic;
+  const QuickSlotEntry& entry = this->m_entries[slot];
+  if (entry.skill && automatic.Contains(static_cast<std::uint16_t>(entry.id))) {
+    g_session.SetOption(AutomaticSkills::CancelOption(static_cast<std::int16_t>(entry.id)), 1, 0);
+  } else {
+    automatic.DisableAll();
+  }
+
+  this->SendMsg(nullptr, 41, slot, 0, 0, 0);
+}
 
 // OFFSET: 0x00932E80
 // FUNCTION: fn_12718
