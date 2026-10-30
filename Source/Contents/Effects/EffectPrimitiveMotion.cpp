@@ -6656,6 +6656,107 @@ void CEffectPrim::PrimAuraGlow() {
 }
 
 // OFFSET: 0x00BC1080
+// FUNCTION: fn_19827
+void CEffectPrim::PrimBubbleSwirl() {
+  const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+  this->state.slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
+  const short pitch = static_cast<short>(-static_cast<int>(view->camera.pitch));
+  short anglePitch = pitch + 450;
+  this->state.slots[1].alphaT = anglePitch;
+  if (anglePitch > 359) {
+    this->state.slots[1].alphaT = pitch + 90;
+  }
+
+  this->render.position.x = this->state.master->render.position.x;
+  this->render.position.y = this->state.master->render.position.y;
+  this->render.position.z = this->state.master->render.position.z;
+
+  if (this->state.slots[0].life != 1) {
+    return;
+  }
+
+  const int process = ++this->state.slots[0].process;
+  if (process < 1) {
+    return;
+  }
+
+  if (process > 3) {
+    this->state.slots[3].fullDisplayAngle = this->state.slots[2].fullDisplayAngle;
+    this->state.slots[3].distance = this->state.slots[2].distance;
+    this->state.slots[3].height[8] = this->state.slots[2].height[8];
+    const short alpha = this->state.slots[2].alphaB - 25;
+    this->state.slots[3].alphaB = alpha < 0 ? 0 : alpha;
+    this->state.slots[3].vecBNow = this->state.slots[2].vecBNow;
+    this->state.slots[3].flag1[0] = this->state.slots[2].flag1[0];
+  }
+
+  if (process > 2) {
+    this->state.slots[2].fullDisplayAngle = this->state.slots[1].fullDisplayAngle;
+    this->state.slots[2].distance = this->state.slots[1].distance;
+    this->state.slots[2].height[8] = this->state.slots[1].height[8];
+    const short alpha = this->state.slots[1].alphaB - 25;
+    this->state.slots[2].alphaB = alpha < 0 ? 0 : alpha;
+    this->state.slots[2].vecBNow = this->state.slots[1].vecBNow;
+    this->state.slots[2].flag1[0] = this->state.slots[1].flag1[0];
+  }
+
+  if (process > 1) {
+    this->state.slots[1].fullDisplayAngle = this->state.slots[0].fullDisplayAngle;
+    this->state.slots[1].distance = this->state.slots[0].distance;
+    this->state.slots[1].height[8] = this->state.slots[0].height[8];
+    const short alpha = this->state.slots[0].alphaB - 100;
+    this->state.slots[1].alphaB = alpha < 0 ? 0 : alpha;
+    this->state.slots[1].vecBNow = this->state.slots[0].vecBNow;
+    this->state.slots[1].flag1[0] = this->state.slots[0].flag1[0];
+  }
+
+  if (process <= 10) {
+    this->state.slots[0].alphaB += 20;
+  }
+
+  const char pattern = this->state.slots[0].flag1[4];
+  if (pattern == 4) {
+    short angle = this->state.slots[0].fullDisplayAngle - 15;
+    if (angle < 0) {
+      angle += 360;
+    }
+    this->state.slots[0].fullDisplayAngle = angle;
+    this->state.slots[0].height[9] += this->state.slots[0].maxHeight;
+    this->state.slots[0].vecBNow.x = this->render.position.x + this->state.slots[0].height[8];
+    this->state.slots[0].vecBNow.y = this->render.position.y + this->state.slots[0].height[9];
+    this->state.slots[0].vecBNow.z = this->render.position.z + this->state.slots[0].height[10];
+
+    if (this->state.slots[0].height[9] >= -60.0f && static_cast<unsigned short>(this->state.slots[0].fullDisplayAngle - 250) < 31) {
+      this->state.slots[0].flag1[4] = 0;
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      mode->SendMsg(122, 0, 0, 0, 0);
+      return;
+    }
+  } else {
+    if (process < 33) {
+      if (pattern == 0 || process < 25) {
+        short angle = this->state.slots[0].fullDisplayAngle - 15;
+        if (angle < 0) {
+          angle += 360;
+        }
+        this->state.slots[0].fullDisplayAngle = angle;
+        this->state.slots[0].height[9] += this->state.slots[0].maxHeight;
+      }
+      this->state.slots[0].vecBNow.x = this->render.position.x + this->state.slots[0].height[8];
+      this->state.slots[0].vecBNow.y = this->render.position.y + this->state.slots[0].height[9];
+      this->state.slots[0].vecBNow.z = this->render.position.z + this->state.slots[0].height[10];
+      return;
+    }
+    if (pattern == 0 && process == 33) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      mode->SendMsg(122, 0, 0, 0, 0);
+    }
+    this->state.slots[0].alphaB -= 5;
+    if (this->state.slots[0].alphaB < 0) {
+      this->state.slots[0].alphaB = 0;
+    }
+  }
+}
 
 // OFFSET: 0x00BC1B50
 // FUNCTION: fn_19831
