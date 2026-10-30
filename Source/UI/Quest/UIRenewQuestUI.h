@@ -6,6 +6,10 @@
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UIFrameWnd.h"
 
+#include <string>
+
+struct RenewQuestInfo;
+
 namespace RenewQuestUI {
 class CUIQuestItem : public CUIListItem {
 public:
@@ -32,13 +36,25 @@ class CUIRenewQuestUI : public CUIFrameWnd {
 public:
   void Paint() override;
   virtual void Slot53(int value);
+  bool MatchesFilter(const RenewQuestInfo& info) const;
 
   void OnTabButton(CUITabButton* button);
   void OnPanelButton();
+  void OnCallback6();
+  void OnCallback43();
+  void OnCallback50();
+  void OnCallback56();
+  void OnCallback74();
+  void OnCallback80();
+
+  /* 00E0 */ unsigned char unknown_00E0[0x2C];
+  /* 010C */ int filter;
+  /* 0110 */ std::string searchText;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenewQuestUI::CUIQuestItem) == 0x110);
+static_assert(sizeof(CUIRenewQuestUI) == 0x128);
 #endif
 
 #endif

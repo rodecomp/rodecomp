@@ -1,4 +1,6 @@
 #include "UI/Quest/UIRenewQuestUI.h"
+#include "Contents/RenewQuestMgr.h"
+#include "Network/TextEncoding.h"
 #include "Render/Renderer.h"
 #include "Utility/Cipher/XorBytes.h"
 
@@ -615,4 +617,53 @@ void CUIRenewQuestUI::OnTabButton(CUITabButton* button) {
 // OFFSET: 0x00A67FB0
 // FUNCTION: fn_16635
 void CUIRenewQuestUI::OnPanelButton() {
+}
+
+template void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::ClearData();
+
+// OFFSET: 0x00A66410
+// FUNCTION: fn_16615
+bool CUIRenewQuestUI::MatchesFilter(const RenewQuestInfo& info) const {
+  if (!g_renewQuestMgr->IsInFilter(this->filter, info.m_icon)) {
+    return false;
+  }
+
+  if (!this->searchText.empty()) {
+    if (FindSubstring(info.unknown_004C.c_str(), static_cast<int>(info.unknown_004C.size()), this->searchText.c_str()) == -1 &&
+        FindSubstring(info.m_title.c_str(), static_cast<int>(info.m_title.size()), this->searchText.c_str()) == -1) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00A660E0
+// FUNCTION: fn_16605
+void CUIRenewQuestUI::OnCallback6() {
+}
+
+// OFFSET: 0x00A660F0
+// FUNCTION: fn_16606
+void CUIRenewQuestUI::OnCallback50() {
+}
+
+// OFFSET: 0x00A66110
+// FUNCTION: fn_16607
+void CUIRenewQuestUI::OnCallback43() {
+}
+
+// OFFSET: 0x00A66120
+// FUNCTION: fn_16608
+void CUIRenewQuestUI::OnCallback80() {
+}
+
+// OFFSET: 0x00A66130
+// FUNCTION: fn_16609
+void CUIRenewQuestUI::OnCallback74() {
+}
+
+// OFFSET: 0x00A661E0
+// FUNCTION: fn_16611
+void CUIRenewQuestUI::OnCallback56() {
 }

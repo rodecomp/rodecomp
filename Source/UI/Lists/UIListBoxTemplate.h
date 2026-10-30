@@ -210,7 +210,9 @@ public:
   }
 
   // OFFSET: 0x00A051E0
+  // OFFSET: 0x00A662D0
   // FUNCTION: fn_14971
+  // FUNCTION: fn_16614
   void ClearData() {
     this->data.clear();
     this->selected = static_cast<unsigned int>(-1);
