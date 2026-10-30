@@ -505,12 +505,70 @@ EnchantInfo* CEnchantMgr::GetEnchantInfo(uint64_t group) {
 }
 
 // OFFSET: 0x00682A00
+// FUNCTION: fn_05542
+std::map<int, int> CEnchantMgr::ConvertMaterials(std::map<std::string, int> materials) {
+  std::map<int, int> result;
+  for (auto it = materials.begin(); it != materials.end(); ++it) {
+    int itemId = CItemDBToIDMgr::GetInstance()->GetItemID(it->first);
+    if (itemId != 0) {
+      result[itemId] = it->second;
+    }
+  }
+  return result;
+}
 
 // OFFSET: 0x00682D10
 
 // OFFSET: 0x006845C0
 
 // OFFSET: 0x006864D0
+// FUNCTION: fn_05566
+int L_AddPerfectEnchant(lua_State* L) {
+  if (!lua_isnumber(L, -5)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_AddPerfectEnchant : 1th argument must be number");
+    return 2;
+  }
+
+  if (!lua_isnumber(L, -4)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_AddPerfectEnchant : 2th argument must be number");
+    return 2;
+  }
+
+  if (!lua_isstring(L, -3)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_AddPerfectEnchant : 3th argument must be string");
+    return 2;
+  }
+
+  if (!lua_isnumber(L, -2)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_AddPerfectEnchant : 4th argument must be number");
+    return 2;
+  }
+
+  if (lua_type(L, -1) != LUA_TTABLE) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_AddPerfectEnchant : 5th argument must be table");
+    return 2;
+  }
+
+  uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -5));
+  uint32_t optionKey = static_cast<uint32_t>(lua_tonumber(L, -4));
+  std::string itemName(lua_tostring(L, -3));
+  uint64_t cost = static_cast<uint64_t>(lua_tonumber(L, -2));
+  std::map<std::string, int> materials;
+  lua_pushnil(L);
+  while (lua_next(L, -2) != 0) {
+    uint32_t count = static_cast<uint32_t>(lua_tonumber(L, -1));
+    materials[lua_tostring(L, -2)] = count;
+    lua_pop(L, 1);
+  }
+
+  CEnchantMgr::GetInstance()->AddPerfectEnchant(id, optionKey, itemName, cost, materials);
+  return 2;
+}
 
 // OFFSET: 0x00686830
 
