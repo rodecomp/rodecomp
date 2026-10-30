@@ -39,6 +39,8 @@ class ICashEmotionAction {
 public:
   virtual ~ICashEmotionAction();
   virtual bool Execute(int packId, int argument) = 0;
+
+  bool ExecuteNamed(const char* name);
 };
 
 class UICashEmotionPack_Purchase : public UICashEmotionPack {
@@ -197,6 +199,16 @@ protected:
 // OFFSET: 0x00591D80
 // FUNCTION: fn_02841
 ICashEmotionAction::~ICashEmotionAction() {
+}
+
+// OFFSET: 0x00591E60
+// FUNCTION: fn_02844
+bool ICashEmotionAction::ExecuteNamed(const char* name) {
+  if (!name || std::strlen(name) == 0) {
+    return false;
+  }
+
+  return this->Execute(g_cashEmotionMgr->BasePackId(), g_cashEmotionMgr->FindEmotionId(name));
 }
 
 // OFFSET: 0x00592290
