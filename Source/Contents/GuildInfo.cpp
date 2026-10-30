@@ -238,3 +238,26 @@ void GuildInfo::UpdateUnknown00D4(Unknown00D4Entry entry) {
     }
   }
 }
+
+// OFFSET: 0x00AE3F40
+// FUNCTION: fn_18027
+void GuildInfo::AddUnknown0114(int value) {
+  for (auto it = this->unknown_0114.begin(); it != this->unknown_0114.end(); ++it) {
+    if (value == *it) {
+      return;
+    }
+  }
+  this->unknown_0114.push_back(value);
+}
+
+// OFFSET: 0x00AE3FA0
+// FUNCTION: fn_18028
+void GuildInfo::AddMember(const Member& member) {
+  this->m_members.push_back(member);
+  if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
+    CRenderObject* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetActorByGID(member.characterId);
+    if (actor != nullptr) {
+      static_cast<CGameActor*>(actor)->Slot48(this->m_guildId);
+    }
+  }
+}

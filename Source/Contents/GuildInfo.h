@@ -99,6 +99,8 @@ public:
   void SetMemberOnline(int accountId, int online);
   void SetMasterCharacterId(int characterId);
   void UpdateUnknown00D4(Unknown00D4Entry entry);
+  void AddUnknown0114(int value);
+  void AddMember(const Member& member);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
