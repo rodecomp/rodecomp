@@ -129,8 +129,26 @@ void CNavigationManager::SetViewIcon(int icon) {
 }
 
 // OFFSET: 0x00B9F9B0
+// FUNCTION: fn_19630
+bool CNavigationManager::SetViewMode(int mode) {
+  if (mode != 1 && mode != 2 && mode != 0) {
+    return false;
+  }
+
+  this->unknown_1258 = mode;
+  return true;
+}
 
 // OFFSET: 0x00B9F9E0
+// FUNCTION: fn_19631
+void CNavigationManager::BuildGridLabels() {
+  char path[260];
+  for (int index = 0; index < 8; ++index) {
+    std::memset(path, 0, sizeof(path));
+    std::sprintf(path, "유저인터페이스\\navigation_interface3\\navi_grid%d_%d.tga", this->viewIcon, index);
+    this->labels[index] = path;
+  }
+}
 
 // OFFSET: 0x00B97200
 // FUNCTION: fn_19598
