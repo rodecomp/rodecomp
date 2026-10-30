@@ -1289,6 +1289,12 @@ void RanluxEngine_655F00::sub_655F00(const unsigned int* seed_ptr, char flag, in
 }
 
 // OFFSET: 0x00656370
+// FUNCTION: fn_05072
+void sub_656370(unsigned int* first, unsigned int* last, const unsigned int* val) {
+  for (; first != last; ++first) {
+    *first = *val;
+  }
+}
 
 // OFFSET: 0x00656C70
 // FUNCTION: fn_05080
