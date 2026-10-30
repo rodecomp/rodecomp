@@ -5,7 +5,8 @@
 
 class UISkillDescribeWnd : public UIFrameWnd {
 public:
-  /* 00B4 */ unsigned char unknown_00B4[0x54];
+  /* 00B4 */ unsigned char unknown_00B4[0x50];
+  /* 0104 */ int m_skillId;
   /* 0108 */ UIWindow* m_text;
 
   void Paint() override;
