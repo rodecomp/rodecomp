@@ -34,6 +34,12 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Buttons/UIButton.h"
 #include "Render/Text/TextContext.h"
+#include "Contents/MessageTable.h"
+#include "UI/Text/ColoredText.h"
+#include "Client/Mode/CMode.h"
+#include "UI/Window/UIPayConfirmWnd.h"
+#include "UI/Window/UIReplayControlWnd.h"
+#include "UI/Window/UIMakeCharWnd.h"
 #include <cstring>
 
 #include <cstdio>
@@ -866,4 +872,105 @@ void UIReplayRECControlWnd::ApplyMode() {
   }
 
   this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x008B9790
+
+// OFFSET: 0x008BB070
+// FUNCTION: fn_11793
+void UINoticeWnd::Slot35(int delta) {
+  if (delta < 0) {
+    this->SendMsg(this->m_scrollBar, 7, 6, 0, 0, 0);
+  } else {
+    this->SendMsg(this->m_scrollBar, 7, -6, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x008B9940
+// FUNCTION: fn_11772
+void UIPayConfirmWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, true, this->m_title.c_str(), 0);
+  this->DrawPanelBackground(17, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+
+  if (this->m_image) {
+    this->DrawBitmapScaled(158, 27, 56, 75, this->m_image, 0);
+  }
+}
+
+// OFFSET: 0x008B9E90
+// FUNCTION: fn_11774
+void UIReplayControlWnd::Paint() {
+  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\replay_interface\\replay_base.bmp")));
+  this->DrawBitmap(0, 0, &background->image, false);
+}
+
+// OFFSET: 0x008B9ED0
+// FUNCTION: fn_11775
+void UIReplayRECControlWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, 34, 0xF5B899);
+  DrawRoundedBorder(*this, 0, 0, this->geometry.width, 34, 0x945A63);
+  DrawRoundedBorder(*this, 1, 1, this->geometry.width - 2, 32, 0xF7C6AD);
+  DrawRoundedBorder(*this, 2, 2, this->geometry.width - 4, 30, 0xFFFFFF);
+  DrawRoundedBorder(*this, 3, 3, this->geometry.width - 6, 28, 0xAD7B84);
+
+  if (this->mode == 2) {
+    DrawFilledRoundedBorder(*this, 0, 34, this->geometry.width, this->geometry.height - 34, 0xDEDEDE);
+    DrawFilledRoundedBorder(*this, 4, 38, this->geometry.width - 8, 95, 0xFFFFFF);
+    DrawFilledRoundedBorder(*this, 4, 138, this->geometry.width - 8, 57, 0xFFFFFF);
+    DrawOutlinedText(*this, 10, 42, LookupMessage(1973), 0, 0x7F3C00, 0xFFFFFF, 0, 12, 1, 0);
+    DrawOutlinedText(*this, 10, 142, LookupMessage(1974), 0, 0x7F3C00, 0xFFFFFF, 0, 12, 1, 0);
+  }
+}
+
+// OFFSET: 0x008BA010
+// FUNCTION: fn_11776
+void UISelectReplayDataWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2084), 0);
+  this->DrawPanelBackground(17, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+  this->FillRegion(6, 32, 268, 77, 0xFFE7E7E7);
+  this->DrawTextAt(controls.fonts, controls.locale, 6, 19, LookupMessage(2085), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 6, 112, LookupMessage(2086), 0, 0, 12, 0, 0, 0);
+}
+
+// OFFSET: 0x008BA0B0
+// FUNCTION: fn_11777
+void UISelectServerWnd::Paint() {
+  auto& controls = *this->m_controls;
+  const char* title = LookupMessage(2082);
+
+  if (g_modeMgr.GetLoginMode()->cursorType == 30) {
+    title = LookupMessage(2083);
+  }
+
+  this->DrawTitleBar(controls.fonts, controls.locale, true, title, 0);
+  this->DrawPanelBackground(17, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+}
+
+// OFFSET: 0x008BA110
+// FUNCTION: fn_11778
+void UITalkboxTrapInputWnd::Paint() {
+  auto& controls = *this->m_controls;
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+  this->DrawTextAt(controls.fonts, controls.locale, 17, 3, LookupMessage(435), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 16, 2, LookupMessage(435), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 17, 23, LookupMessage(436), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 16, 22, LookupMessage(436), 0, 0, 12, 0, 0, 0);
+}
+
+// OFFSET: 0x008BA660
+// FUNCTION: fn_11787
+void UILoginWnd::Slot27(int, int) {
+}
+
+// OFFSET: 0x008BADB0
+// FUNCTION: fn_11790
+void UIMakeCharWnd::Slot19() {
 }

@@ -6,6 +6,10 @@
 class UISelectServerWnd : public UIFrameWnd {
 public:
   void Slot18() override;
+  void Paint() override;
+
+protected:
+  UIButtonContext* m_controls;
 };
 
 #endif

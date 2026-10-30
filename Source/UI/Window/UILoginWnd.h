@@ -9,6 +9,7 @@ class UILoginWnd : public UIFrameWnd {
 public:
   void Slot11() override;
   void Paint() override;
+  void Slot27(int x, int y) override;
   void SaveLogin();
 
   /* 00B4 */ UIEditCtrl* idEdit;
