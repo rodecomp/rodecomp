@@ -783,6 +783,7 @@
   "Source/UI/Buttons/UITextureButton.cpp": 2,
   "Source/UI/CashShop/UICashShopWnd.cpp": 2,
   "Source/UI/Chat/ChatSuggestions.cpp": 2,
+  "Source/UI/Chat/UIChatRoomMakeWnd.cpp": 2,
   "Source/UI/Chat/UIChatRoomTitle.cpp": 2,
   "Source/UI/Chat/UISubChatHisWnd.cpp": 2,
   "Source/UI/Chat/UIWhisperWnd.cpp": 2,
