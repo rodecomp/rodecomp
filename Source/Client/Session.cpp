@@ -5,12 +5,22 @@
 #include "Contents/GuildInfo.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Jobs/JobId.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/World/World.h"
+#include "Contents/Actors/GameActor.h"
+#include "Contents/Messenger/ClientMessenger.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 #include "Network/TextEncoding.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <algorithm>
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <list>
+#include <string>
+#include <vector>
 #include <windows.h>
 #include <timeapi.h>
 
@@ -989,4 +999,117 @@ void CSession::RemovePartyMemberByName(const char* name) {
     this->m_partyMembers.erase(it);
     return;
   }
+}
+
+namespace {
+#pragma pack(push, 1)
+  struct PACKET_CZ_USE_SKILL_END {
+    /* 0000 */ std::int16_t packetType;
+    /* 0002 */ std::uint16_t skillId;
+  };
+#pragma pack(pop)
+}
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(PACKET_CZ_USE_SKILL_END) == 4);
+#endif
+
+// OFFSET: 0x00E2ED90
+// FUNCTION: fn_24151
+void CSession::AddUnknown7F94(std::uint32_t id) {
+  this->unknown_7F94.insert(id);
+}
+
+// OFFSET: 0x00E2F3B0
+// FUNCTION: fn_24153
+void CSession::EndSkillOption() {
+  if (this->GetOption(2) != 0) {
+    this->unknown_61A4 = 0;
+    PACKET_CZ_USE_SKILL_END packet;
+    packet.packetType = ID_CZ_USE_SKILL_END;
+    packet.skillId = GC_ROLLINGCUTTER;
+    GetRagConnection().Send(sizeof(packet), &packet);
+    this->m_options.Set(2, 0);
+  }
+}
+
+// OFFSET: 0x00E2F520
+// FUNCTION: fn_24154
+void CSession::ClearNormalItemSlots() {
+  std::memset(this->m_normalItemSlots, 0, sizeof(this->m_normalItemSlots));
+}
+
+// OFFSET: 0x00E2F540
+// FUNCTION: fn_24155
+void CSession::ResetItems6B68() {
+  for (int index = 0; index < 10; ++index) {
+    this->unknown_6B68[index].Reset();
+  }
+
+  RefreshItemWindows(&g_windowMgr);
+}
+
+// OFFSET: 0x00E2F570
+// FUNCTION: fn_24156
+void CSession::ResetItems61B8() {
+  for (int index = 0; index < 10; ++index) {
+    this->unknown_61B8[index].Reset();
+  }
+
+  RefreshItemWindows(&g_windowMgr);
+}
+
+// OFFSET: 0x00E2F5A0
+// FUNCTION: fn_24157
+bool CSession::IsPartyRecommendTarget(std::uint32_t aid) {
+  if (g_session.m_level < 70 || g_session.IsBabyJob(g_session.GetDisplayJob()) == true || g_session.unknown_5468 == 0) {
+    return false;
+  }
+
+  CGameActor* actor = static_cast<CGameActor*>(g_session.FindGameActor(aid));
+
+  if (!actor) {
+    return false;
+  }
+
+  const std::string name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(aid);
+  if (ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByName(name.c_str()).valid == 0) {
+    return false;
+  }
+
+  return static_cast<std::int16_t>(actor->unknown_0210) <= 50 && g_session.IsBabyJob(aid) != true &&
+         static_cast<unsigned>(aid - JT_NOVICE_H) > 20;
+}
+
+// OFFSET: 0x00E2F710
+// FUNCTION: fn_24158
+int CSession::GetBodyStyle(int job, int style, int renderJob) {
+  if (style >= 2 || (renderJob >= JT_RUNE_KNIGHT_2ND && renderJob < JT_SECOND_JOB_END)) {
+    return style;
+  }
+
+  if (static_cast<unsigned>(job - JT_NOVICE_H) <= 21) {
+    return job <= JT_THIEF_H;
+  }
+
+  return static_cast<unsigned>(job - JT_NOVICE_H) <= 6;
+}
+
+// OFFSET: 0x00E2F920
+// FUNCTION: fn_24160
+std::vector<unsigned char> SerializeItems(const std::list<ITEM_INFO>& items) {
+  std::vector<unsigned char> result;
+
+  for (std::list<ITEM_INFO>::const_iterator it = items.begin(); it != items.end(); ++it) {
+    const std::vector<unsigned char> bytes = it->Serialize();
+    result.insert(result.end(), bytes.begin(), bytes.end());
+  }
+
+  return result;
+}
+
+// OFFSET: 0x00E2F9E0
+// FUNCTION: fn_24161
+int CSession::GetUnknown8148() const {
+  return this->unknown_8148;
 }

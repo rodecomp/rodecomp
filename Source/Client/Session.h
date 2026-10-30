@@ -13,6 +13,7 @@
 #include <ctime>
 #include <list>
 #include <map>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
@@ -77,7 +78,8 @@ public:
   /* 0420 */ std::uint32_t unknown_0420[36];
   /* 04B0 */ NormalItemSlot m_shortcutSlots[36];
   /* 05AC */ NormalItemSlot m_secondaryShortcutSlots[36];
-  /* 06A8 */ unsigned char unknown_06A8[0x43];
+  /* 06A8 */ unsigned char unknown_06A8[0x04];
+  /* 06AC */ NormalItemSlot m_normalItemSlots[9];
   /* 06EB */ NormalItemSlot unknown_06EB;
   /* 06F2 */ NormalItemSlot unknown_06F2;
   /* 06F9 */ unsigned char unknown_06F9[0x07];
@@ -205,7 +207,9 @@ public:
   /* 5448 */ int unknown_5448;
   /* 544C */ unsigned char unknown_544C[0x04];
   /* 5450 */ int unknown_5450;
-  /* 5454 */ unsigned char unknown_5454[0xE8];
+  /* 5454 */ unsigned char unknown_5454[0x14];
+  /* 5468 */ int unknown_5468;
+  /* 546C */ unsigned char unknown_546C[0xD0];
   /* 553C */ std::string m_serverName;
   /* 5554 */ unsigned char unknown_5554[4];
   /* 5558 */ int unknown_5558;
@@ -260,7 +264,9 @@ public:
   /* 618C */ const char* const* m_doramMaleHeadNames;
   /* 6190 */ unsigned char unknown_6190[0x08];
   /* 6198 */ const char* const* m_doramFemaleHeadNames;
-  /* 619C */ unsigned char unknown_619C[0x1C];
+  /* 619C */ unsigned char unknown_619C[0x08];
+  /* 61A4 */ int unknown_61A4;
+  /* 61A8 */ unsigned char unknown_61A8[0x10];
   /* 61B8 */ ITEM_INFO unknown_61B8[10];
   /* 6B68 */ ITEM_INFO unknown_6B68[10];
   /* 7518 */ unsigned char unknown_7518[0x9C0];
@@ -274,7 +280,9 @@ public:
   /* 7F70 */ int m_maxLevelEffect4thSub;
   /* 7F74 */ unsigned char unknown_7F74[8];
   /* 7F7C */ bool m_homunculusAutoFeed;
-  /* 7F7D */ unsigned char unknown_7F7D[0x2B];
+  /* 7F7D */ unsigned char unknown_7F7D[0x17];
+  /* 7F94 */ std::set<std::uint32_t> unknown_7F94;
+  /* 7F9C */ unsigned char unknown_7F9C[0x0C];
   /* 7FA8 */ CInstantVar m_options;
   /* 7FB4 */ unsigned char unknown_7FB4[0x8];
   /* 7FBC */ int unknown_7FBC;
@@ -571,6 +579,14 @@ public:
   ITEM_INFO FindItem1738(std::uint32_t id) const;
   ITEM_INFO GetItem1738At(int index) const;
   int GetItem1738Quantity(std::uint32_t id) const;
+  void AddUnknown7F94(std::uint32_t id);
+  void EndSkillOption();
+  void ClearNormalItemSlots();
+  void ResetItems6B68();
+  void ResetItems61B8();
+  bool IsPartyRecommendTarget(std::uint32_t aid);
+  int GetBodyStyle(int job, int style, int renderJob);
+  int GetUnknown8148() const;
 };
 
 extern CSession g_session;
@@ -692,6 +708,12 @@ static_assert(offsetof(CSession, unknown_0708) == 0x708);
 static_assert(offsetof(CSession, m_newRobeDrawOnTop) == 0xF04);
 static_assert(offsetof(CSession, m_imfNames) == 0xF84);
 static_assert(offsetof(CSession, m_fogParameters) == 0x5230);
+static_assert(offsetof(CSession, m_normalItemSlots) == 0x6AC);
+static_assert(offsetof(CSession, unknown_5468) == 0x5468);
+static_assert(offsetof(CSession, unknown_61A4) == 0x61A4);
+static_assert(offsetof(CSession, unknown_6B68) == 0x6B68);
+static_assert(offsetof(CSession, unknown_7F94) == 0x7F94);
+static_assert(offsetof(CSession, unknown_8148) == 0x8148);
 #endif
 
 #endif
