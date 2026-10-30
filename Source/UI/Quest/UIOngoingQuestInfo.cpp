@@ -24,6 +24,14 @@
 template <>
 void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnScroll(int position);
 
+// OFFSET: 0x00A4F630
+// FUNCTION: fn_16217
+template <>
+CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
+
 // OFFSET: 0x00A4FDE0
 // FUNCTION: fn_16223
 template <>
