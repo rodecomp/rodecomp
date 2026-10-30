@@ -11,6 +11,7 @@ class CClimaxEffect : public CEffect {
 public:
   CClimaxEffect();
 
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   void Close() override;

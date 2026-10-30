@@ -25,6 +25,42 @@ void CClimaxEffect::Close() {
   }
 }
 
+// OFFSET: 0x00706B00
+// FUNCTION: fn_07050
+void CClimaxEffect::Slot01() {
+  this->retained = 1;
+
+  CParticle* particle = CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  static_cast<CEZ2STRParticle*>(particle)->Load("climax\\climax\\climax.str");
+  static_cast<CEZ2STRParticle*>(particle)->m_loop = true;
+  this->particles[0] = particle;
+
+  CParticle* bottom = CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13);
+  switch (this->unknown_00B0) {
+    case 1:
+      static_cast<CEZ2STRParticle*>(bottom)->Load("climax\\climax_bottom\\climax_bottom_1.str");
+      break;
+    case 2:
+      static_cast<CEZ2STRParticle*>(bottom)->Load("climax\\climax_bottom\\climax_bottom_2.str");
+      break;
+    case 3:
+      static_cast<CEZ2STRParticle*>(bottom)->Load("climax\\climax_bottom\\climax_bottom_3.str");
+      break;
+    case 4:
+      static_cast<CEZ2STRParticle*>(bottom)->Load("climax\\climax_bottom\\climax_bottom_4.str");
+      break;
+    case 5:
+      static_cast<CEZ2STRParticle*>(bottom)->Load("climax\\climax_bottom\\climax_bottom_5.str");
+      break;
+    default:
+      break;
+  }
+
+  static_cast<CEZ2STRParticle*>(bottom)->m_loop = true;
+  this->particles[1] = bottom;
+  this->AddEvent(0, "effect\\AG_CLIMAX.wav", 0, 0);
+}
+
 // OFFSET: 0x00706F00
 // FUNCTION: fn_07051
 bool CClimaxEffect::Slot06() {
