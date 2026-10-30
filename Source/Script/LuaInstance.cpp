@@ -109,8 +109,8 @@ void CLuaInstance::SetGlobal(const std::string& name, bool value) {
 
 // OFFSET: 0x005228B0
 // FUNCTION: fn_01133
-void CLuaInstance::SetGlobal(const std::string& name, int value) {
-  lua_pushinteger(this->m_state, value);
+void CLuaInstance::SetGlobal(const std::string& name, lua_CFunction function) {
+  lua_pushcfunction(this->m_state, function);
   lua_setglobal(this->m_state, name.c_str());
 }
 

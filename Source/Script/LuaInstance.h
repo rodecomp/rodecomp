@@ -16,7 +16,7 @@ public:
   bool LoadFile(const std::string& path);
   bool LoadFile(const std::string& path, bool showError);
   void SetGlobal(const std::string& name, bool value);
-  void SetGlobal(const std::string& name, int value);
+  void SetGlobal(const std::string& name, lua_CFunction function);
   void SetGlobal(const std::string& name, double value);
   int ReadStrings(std::vector<std::string>& values, const char* global);
   lua_State* GetState() const { return this->m_state; }
