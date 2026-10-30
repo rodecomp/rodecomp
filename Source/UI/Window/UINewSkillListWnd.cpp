@@ -2,6 +2,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeTooltip.h"
+#include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Jobs/JobNames.h"
 #include "Contents/MessageTable.h"
@@ -230,6 +231,38 @@ bool UINewSkillListWnd::IsSkillArea(int x, int y) {
 // OFFSET: 0x009B2590
 
 // OFFSET: 0x009B26D0
+// FUNCTION: fn_13817
+void UINewSkillListWnd::Slot25(int x, int y) {
+  if (y < this->m_topMargin) {
+    UIFrameWnd::Slot25(x, y);
+    return;
+  }
+
+  if (this->m_showDetail) {
+    this->m_showDetail = false;
+    this->sub_9B2CD0();
+  }
+
+  int oldSelected = this->m_selectedSkill;
+  this->m_selectedSkill = this->SkillIndexAt(x, y);
+  if (oldSelected != this->m_selectedSkill) {
+    this->Invalidate();
+  }
+
+  if (this->IsSkillArea(x, y) && !this->m_locked && this->m_selectedSkill != -1 && g_replayAnimationScaling == 0) {
+    CSkillInfo skill = this->SkillAt(this->m_selectedSkill, false);
+    if (skill.available != 0 && skill.level != 0 && skill.unknown_000C != 0) {
+      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      if (gameMode) {
+        int level = reinterpret_cast<CharacterConfigSave*>(&g_session)->UseLevel(skill.id);
+        if (level == 0) {
+          level = skill.level;
+        }
+        gameMode->drag.BeginSkill(reinterpret_cast<WindowManagerWindows&>(g_windowMgr), ResourceMgr::Instance(), 8, skill.id, skill.name, level, -1);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x009B2810
 
