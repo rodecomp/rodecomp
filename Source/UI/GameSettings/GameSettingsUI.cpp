@@ -15,6 +15,7 @@
 #include "Script/LuaScript.h"
 #include "UI/Buttons/UIRadioButton.h"
 #include "UI/Lists/UIVScrollBar.h"
+#include "UI/Text/UIStaticTextControl.h"
 #include "UI/Window/UIRoulletteWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
@@ -22,6 +23,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <cstring>
 #include <iterator>
 #include <list>
 #include <string>
@@ -1317,4 +1319,42 @@ void sub_A43040(int option) {
 void CUIGameSettingsUI::sub_A433D0(UIWindow* window) {
   this->m_pageContainer->Show(window != this->m_tab->FindChildById(3));
   this->sub_A421E0();
+}
+
+// OFFSET: 0x00A3F9B0
+// FUNCTION: fn_15952
+void SetComboItemAdapterText(GameSettingsUI::CUIComboItem* item, const RenderAdapter& adapter) {
+  item->m_text->SetText(adapter.description.c_str(), adapter.description.size());
+}
+
+// OFFSET: 0x00A3FA90
+// FUNCTION: fn_15954
+void SetComboItemModeText(GameSettingsUI::CUIComboItem* item, const DisplayMode& mode) {
+  item->m_text->SetText(mode.description.c_str(), mode.description.size());
+}
+
+// OFFSET: 0x00A3FB20
+// FUNCTION: fn_15956
+void SetComboItemBackendText(GameSettingsUI::CUIComboItem* item, const RenderBackend& backend) {
+  item->m_text->SetText(backend.name.c_str(), backend.name.size());
+}
+
+// OFFSET: 0x00A3FBA0
+// FUNCTION: fn_15958
+void SetComboItemSkinText(GameSettingsUI::CUIComboItem* item, const std::string& name) {
+  item->m_text->SetText(name.c_str(), name.size());
+}
+
+// OFFSET: 0x00A41C60
+// FUNCTION: fn_15996
+void GameSettingsUI::CUIGroupSpriteDetailLevel::Slot16() {
+  const char* text = LookupMessage(0x144);
+  this->m_title->SetText(text, std::strlen(text));
+}
+
+// OFFSET: 0x00A41CA0
+// FUNCTION: fn_15997
+void GameSettingsUI::CUIGroupTextureDetailLevel::Slot16() {
+  const char* text = LookupMessage(0x145);
+  this->m_title->SetText(text, std::strlen(text));
 }

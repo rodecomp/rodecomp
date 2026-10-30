@@ -88,6 +88,7 @@ public:
 
 class CUIGroupGraphicsAPI : public CUIGroup {
 public:
+  void Slot16() override;
   void Apply() override;
   void Refresh() override;
   void LoadBackends();
@@ -167,6 +168,7 @@ public:
 
 class CUIGroupSpriteDetailLevel : public CUIGroup {
 public:
+  void Slot16() override;
   void Paint() override;
   void Refresh() override;
 
@@ -175,6 +177,7 @@ public:
 
 class CUIGroupTextureDetailLevel : public CUIGroup {
 public:
+  void Slot16() override;
   void Paint() override;
   void Refresh() override;
 
@@ -223,6 +226,8 @@ public:
 class CUIComboItem : public CUIListItem {
 public:
   void Slot16() override;
+
+  /* 00E8 */ CUIStaticText* m_text;
 };
 
 class CUIOptionItem : public CUIListItem {
