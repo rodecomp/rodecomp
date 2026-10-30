@@ -20,6 +20,8 @@ public:
   /* 0104 */ int m_reportType;
   /* 0108 */ std::string unknown_0108;
 
+  void Slot16() override;
+
   void OnButtonClick();
   void OnEditSubmit();
   void OnReportTypeSelect(CUIRadioButton* button);

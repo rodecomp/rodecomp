@@ -34,7 +34,11 @@ public:
   /* 01B4 */ unsigned char unknown_01B4[0xE0];
   /* 0294 */ char unknown_0294[0x20];
   /* 02B4 */ UIWindow* itemWindow;
-  /* 02B8 */ unsigned char unknown_02B8[0x50];
+  /* 02B8 */ unsigned char unknown_02B8[0x28];
+  /* 02E0 */ int unknown_02E0;
+  /* 02E4 */ unsigned char unknown_02E4[0x08];
+  /* 02EC */ std::string unknown_02EC;
+  /* 0304 */ unsigned char unknown_0304[0x04];
   /* 0308 */ ModeDragState drag;
   /* 03C8 */ unsigned char unknown_03C8[0x2A8];
 
