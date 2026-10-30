@@ -1141,6 +1141,34 @@ void UICashEmotionListWnd::RefreshCurrentList() {
 }
 
 // OFFSET: 0x007C7D10
+// FUNCTION: fn_09412
+void UICashEmotionListWnd::ShowPack(int packId) {
+  const char* title = g_cashEmotionMgr->GetPackTitle(packId);
+  if (!title) {
+    return;
+  }
+
+  auto tab = this->m_tabs.find(3);
+  if (tab != this->m_tabs.end()) {
+    this->SendMsg(tab->second, 6, 215, 0, 0, 0);
+  }
+
+  if (this->m_searchEdit) {
+    this->m_searchEdit->SetText(title);
+  }
+
+  if (this->m_currentList) {
+    this->m_currentList->Refresh(this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
+  }
+
+  if (this->m_searchEdit) {
+    this->m_searchEdit->SetText("");
+  }
+
+  if (this->m_currentList) {
+    this->m_currentList->SendMsg(this, 171, packId, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x007C7E50
 
