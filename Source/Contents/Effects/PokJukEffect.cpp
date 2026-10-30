@@ -3,10 +3,84 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <algorithm>
 #include <cstdlib>
+
+// OFFSET: 0x00B6F400
+// FUNCTION: fn_19120
+void CPokJukEffect::SpawnParticles() {
+  int row = 0;
+  for (int rowStart = 0; rowStart < 640; rowStart += 160) {
+    for (int column = 0; column < 160; ++column) {
+      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      if (particle) {
+        particle->unknown_0004 = this->id;
+        particle->unknown_000C = column;
+        particle->unknown_0010 = row;
+        particle->unknown_0008 = 1;
+        particle->unknown_00E8 = -300 - std::max(rand() % 50, 0);
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(std::max(rand() % 360, 0));
+        particle->alpha = 0;
+        particle->unknown_00C0 = 2.0f;
+        particle->scale = static_cast<float>(std::max(rand() % 100, 0)) * 0.004f + 0.4f;
+        particle->unknown_0050 = std::max(rand() % 360, 0);
+        particle->unknown_004C = std::max(rand() % 360, 0);
+        InitParticleQuad(particle->vertices);
+        this->particles.push_back(particle);
+
+        const int index = column + rowStart;
+        switch (std::max(rand() % 5, 0)) {
+        case 0:
+          particle->SetColor(70, 70, 255);
+          break;
+        case 1:
+          particle->SetColor(255, 70, 70);
+          break;
+        case 2:
+          particle->SetColor(70, 255, 70);
+          break;
+        case 3:
+          particle->SetColor(255, 255, 90);
+          break;
+        case 4:
+          particle->SetColor(255, 70, 255);
+          break;
+        }
+
+        this->states[index] = 0;
+        this->beats[index] = 0;
+        this->delays[index] = std::max(rand() % 4, 0) * 20;
+        for (int corner = 0; corner < 4; ++corner) {
+          this->trails[index][corner].x = -15.0f;
+          this->trails[index][corner].y = 0.0f;
+          this->trails[index][corner].z = 0.0f;
+        }
+      }
+    }
+
+    ++row;
+  }
+}
+
+// OFFSET: 0x00B6F770
+// FUNCTION: fn_19121
+void CPokJukEffect::Close() {
+  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
+  }
+
+  this->particles.clear();
+}
+
+// OFFSET: 0x00B6F7B0
+// FUNCTION: fn_19122
+void CPokJukEffect::Slot01() {
+  this->SpawnParticles();
+}
 
 // OFFSET: 0x00B6F7C0
 // FUNCTION: fn_19123
