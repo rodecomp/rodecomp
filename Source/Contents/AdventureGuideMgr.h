@@ -58,6 +58,8 @@ struct AdventureGuideContents {
 };
 
 struct AdventureGuideEntry {
+  bool IsAvailable(int itemId) const;
+
   /* 0000 */ std::uint8_t unknown_0000;
   /* 0001 */ std::uint8_t unknown_0001;
   /* 0002 */ std::uint8_t unknown_0002;
@@ -99,6 +101,7 @@ public:
   CAdventureGuideMgr();
   virtual ~CAdventureGuideMgr();
 
+  bool IsAvailable(int type, int id) const;
   void Init();
   bool Load();
   void GetEpisodeList(std::list<AdventureGuideEpisode>& out);

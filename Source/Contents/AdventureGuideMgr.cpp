@@ -1,6 +1,8 @@
 #include "Contents/AdventureGuideMgr.h"
 
 #include "Client/Session.h"
+#include "Contents/JobCodeForItem.h"
+#include "Script/LuaScript.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
@@ -1223,10 +1225,11 @@ void CAdventureGuideMgr::GetContentsList(std::list<std::pair<int, AdventureGuide
     return;
   }
 
-  std::copy_if((*contents)->begin(), (*contents)->end(), std::back_inserter(out),
-               [](const std::pair<const int, AdventureGuideContents>& entry) {
-                 return entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008;
-               });
+  for (const auto& entry : **contents) {
+    if (entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008) {
+      out.emplace_back(entry.first, entry.second);
+    }
+  }
   out.sort([](const std::pair<int, AdventureGuideContents>& lhs, const std::pair<int, AdventureGuideContents>& rhs) {
     return lhs.second.unknown_0004 < rhs.second.unknown_0004;
   });
@@ -1563,3 +1566,49 @@ bool CAdventureGuideMgr::Load() {
   });
   return true;
 }
+
+// OFFSET: 0x00667200
+// FUNCTION: fn_05256
+bool CAdventureGuideMgr::IsAvailable(int type, int id) const {
+  const std::map<int, std::map<int, AdventureGuideContents>>* contents = nullptr;
+  switch (type) {
+  case 1:
+    contents = &this->unknown_003C;
+    break;
+  case 3:
+    contents = &this->unknown_0044;
+    break;
+  case 4:
+    contents = &this->unknown_004C;
+    break;
+  case 5:
+  case 6: {
+    const auto& entries = type == 5 ? this->unknown_0054 : this->unknown_005C;
+    const auto found = entries.find(id);
+    if (found == entries.end()) {
+      return true;
+    }
+    for (const auto& entry : found->second) {
+      if (entry.second.IsAvailable(entry.first)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  default:
+    return true;
+  }
+
+  const auto found = contents->find(id);
+  if (found == contents->end()) {
+    return true;
+  }
+  for (const auto& entry : found->second) {
+    if (entry.second.unknown_0004 <= g_session.m_level && g_session.m_level <= entry.second.unknown_0008) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// OFFSET: 0x00667510
