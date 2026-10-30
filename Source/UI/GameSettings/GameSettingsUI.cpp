@@ -42,6 +42,12 @@ int g_configuredRenderBackend;
 // GLOBAL: gl_24396
 int dwPriorityClass;
 
+// GLOBAL: gl_24509
+int g_textureFiltering;
+
+// GLOBAL: gl_24964
+int g_textureDetailLevel;
+
 template <>
 __declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::SelectItem(CUIListItem* item);
 template <>
@@ -1085,6 +1091,23 @@ void CUIGroupSpriteDetailLevel::Refresh() {
   this->m_slider->SetPosition(std::min(static_cast<unsigned int>(g_effectDetailLevel), 2u));
 }
 
+// OFFSET: 0x00A43A80
+// FUNCTION: fn_16042
+void CUIGroupTextureDetailLevel::Refresh() {
+  this->m_slider->SetTotal(3);
+  this->m_slider->SetVisible(1);
+  this->m_slider->SetPosition(std::min(static_cast<unsigned int>(g_textureDetailLevel), 2u));
+}
+
+// OFFSET: 0x00A43AC0
+// FUNCTION: fn_16043
+void CUIGroupTrilinear::Refresh() {
+  this->m_onButton->checked = g_textureFiltering != 0;
+  this->m_onButton->Invalidate();
+  this->m_offButton->checked = g_textureFiltering == 0;
+  this->m_offButton->Invalidate();
+}
+
 // OFFSET: 0x00A43B70
 // FUNCTION: fn_16045
 void CUIPage::Refresh() {
@@ -1151,4 +1174,62 @@ void GameSettingsUI::CUIGroupGraphicsAPI::Apply() {
 void sub_A404D0() {
   dwPriorityClass = NORMAL_PRIORITY_CLASS;
   SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
+}
+
+// OFFSET: 0x00A421E0
+// FUNCTION: fn_16013
+void CUIGameSettingsUI::sub_A421E0() {
+  bool visible = false;
+  if (this->m_tab->current && this->m_tab->current->geometry.id == 3) {
+    GameSettingsUI::CUIGraphicsPage* page = this->m_graphicsPage;
+    if (page->IsModified() || page->m_spriteDetailLevel->m_slider->position != g_effectDetailLevel ||
+        page->m_textureDetailLevel->m_slider->position != g_textureDetailLevel ||
+        page->m_trilinear->m_onButton->checked != (g_textureFiltering != 0)) {
+      visible = true;
+    }
+  }
+  this->m_applyButton->Show(visible);
+}
+
+// OFFSET: 0x00A41E50
+// FUNCTION: fn_16004
+void sub_A41E50(int option) {
+  CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
+  if (wnd) {
+    wnd->sub_A421E0();
+  }
+}
+
+// OFFSET: 0x00A41FA0
+// FUNCTION: fn_16008
+void sub_A41FA0(int option) {
+  CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
+  if (wnd) {
+    wnd->sub_A421E0();
+  }
+}
+
+// OFFSET: 0x00A43000
+// FUNCTION: fn_16022
+void sub_A43000(int option) {
+  CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
+  if (wnd) {
+    wnd->sub_A421E0();
+  }
+}
+
+// OFFSET: 0x00A43040
+// FUNCTION: fn_16023
+void sub_A43040(int option) {
+  CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
+  if (wnd) {
+    wnd->sub_A421E0();
+  }
+}
+
+// OFFSET: 0x00A433D0
+// FUNCTION: fn_16029
+void CUIGameSettingsUI::sub_A433D0(UIWindow* window) {
+  this->m_pageContainer->Show(window != this->m_tab->FindChildById(3));
+  this->sub_A421E0();
 }

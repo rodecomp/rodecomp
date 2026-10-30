@@ -16,6 +16,9 @@ class CUICheckBox;
 class CUIRadioButton;
 class CUIStaticText;
 
+extern int g_textureDetailLevel;
+extern int g_textureFiltering;
+
 template <class T, class D> class CUIComboBox : public CUIControl {
 public:
   void Paint() override;
@@ -158,12 +161,15 @@ public:
 class CUIGroupTextureDetailLevel : public CUIGroup {
 public:
   void Paint() override;
+  void Refresh() override;
 
   /* 0084 */ CUIVScrollBar* m_slider;
 };
 
 class CUIGroupTrilinear : public CUIGroup {
 public:
+  void Refresh() override;
+
   /* 0084 */ CUIRadioButton* m_onButton;
   /* 0088 */ CUIStaticText* m_onText;
   /* 008C */ CUIRadioButton* m_offButton;
@@ -180,7 +186,7 @@ public:
 
 class CUIGraphicsPage : public CUIPage {
 public:
-  bool IsModified();
+  __declspec(noinline) bool IsModified();
   int GetPendingBackend();
   void LoadAdapters();
 
@@ -218,6 +224,8 @@ public:
   void Slot25(int x, int y) override;
 
   void sub_A3F0F0();
+  void sub_A421E0();
+  void sub_A433D0(UIWindow* window);
   bool IsTab4Selected();
   void sub_A43380();
   void sub_A43390();
@@ -227,8 +235,12 @@ public:
 
   /* 00B8 */ unsigned char unknown_00B8[0x1C];
   /* 00D8 */ CUIControl* m_titleBar;
-  /* 00DC */ unsigned char unknown_00DC[0x14];
+  /* 00DC */ unsigned char unknown_00DC[0x04];
+  /* 00E0 */ GameSettingsUI::CUIGraphicsPage* m_graphicsPage;
+  /* 00E4 */ unsigned char unknown_00E4[0x0C];
   /* 00F0 */ CUITab* m_tab;
+  /* 00F4 */ CUIControl* m_pageContainer;
+  /* 00F8 */ CUIControl* m_applyButton;
 };
 
 #endif
