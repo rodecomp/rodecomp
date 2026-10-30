@@ -627,6 +627,30 @@ void UIComboBox::Refresh() {
 }
 
 // OFFSET: 0x00896FA0
+// FUNCTION: fn_11523
+void UITabControl::RecalculateWidths() {
+  if (this->uniformWidths) {
+    int widest = 0;
+
+    for (int index = 0; index < static_cast<int>(this->labels.size()); ++index) {
+      int width;
+
+      if (this->layout == 0 || this->layout == 2) {
+        width = this->VerticalTextHeight(this->m_controls->fonts, this->m_controls->locale, this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0);
+      } else {
+        width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0, 0);
+      }
+
+      widest = std::max(width + this->tabPadding, widest);
+    }
+
+    for (int index = 0; index < static_cast<int>(this->labels.size()); ++index) {
+      this->widths[index] = widest;
+    }
+  }
+
+  this->FitToTabs();
+}
 
 // OFFSET: 0x00897370
 // FUNCTION: fn_11526
@@ -733,6 +757,42 @@ int UIComboBoxV2Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 }
 
 // OFFSET: 0x00898730
+// FUNCTION: fn_11550
+int UIImgMenu::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 34: {
+    this->horizontal = argument1;
+    this->count = argument2;
+    std::string name(reinterpret_cast<const char*>(argument3));
+    this->bitmapName = name + ".bmp";
+    this->baseName = name;
+    this->unknown_0090 = new bool[this->count];
+    this->unknown_0094 = new bool[this->count];
+
+    for (int index = 0; index < this->count; ++index) {
+      this->unknown_0090[index] = false;
+      this->unknown_0094[index] = false;
+    }
+
+    this->Invalidate();
+    return 0;
+  }
+  case 83:
+    this->unknown_00C8 = argument1;
+    return 0;
+  case 102:
+    this->geometry.id = argument1;
+    return 0;
+  case 105:
+    this->unknown_0090[argument1 - 1] = argument2 != 0;
+    return 0;
+  case 106:
+    this->unknown_0094[argument1 - 1] = argument2 != 0;
+    return 0;
+  default:
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+}
 
 // OFFSET: 0x00897BF0
 // FUNCTION: fn_11541
