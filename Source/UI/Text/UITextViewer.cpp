@@ -250,3 +250,28 @@ void UITextViewer::Paint() {
 void UITextViewEX::Slot15(int width, int height) {
   UIListBox::Slot15(width, height);
 }
+
+// OFFSET: 0x00896100
+// FUNCTION: fn_11515
+void UITextViewEX::Refresh() {
+  const int visible = this->geometry.height / this->lineHeight;
+  const int overflow = std::max((static_cast<int>(this->lineLinks.size()) - visible), 0);
+
+  this->verticalOverflow = overflow != 0;
+  UIScrollBar* bar = this->verticalBar;
+  if (overflow != 0) {
+    bar->maximum = this->bottomMargin + overflow;
+    bar->total = static_cast<int>(this->lineLinks.size());
+  } else {
+    bar->maximum = 0;
+    bar->total = static_cast<int>(this->lineLinks.size());
+  }
+  bar->visible = visible;
+  bar->Invalidate();
+
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
+  }
+
+  this->verticalBar->Invalidate();
+}

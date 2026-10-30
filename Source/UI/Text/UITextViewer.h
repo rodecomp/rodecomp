@@ -76,6 +76,7 @@ public:
   void Configure(int x, int y, int width, int height, unsigned char transparent) override;
   void Slot15(int width, int height) override;
   void Clear() override;
+  void Refresh() override;
 
   std::vector<UIWindow*> extraLinks;
   std::vector<std::vector<UITextButton*>> lineLinks;
