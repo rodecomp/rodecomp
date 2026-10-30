@@ -6,6 +6,7 @@
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstdint>
+#include <string>
 #include <vector>
 
 class UIButton;
@@ -15,8 +16,15 @@ struct MaterialSlotPos {
   /* 0004 */ int y;
 };
 
+struct MaterialListItemRef {
+  /* 0000 */ int id;
+  /* 0004 */ int quantity;
+};
+
 struct MaterialListEntry {
-  /* 0000 */ unsigned char unknown_0000[0x1C];
+  /* 0000 */ unsigned char unknown_0000[0x10];
+  /* 0010 */ MaterialListItemRef* item;
+  /* 0014 */ unsigned char unknown_0014[0x8];
 };
 
 class UIChangeMaterialWnd : public UIFrameWnd {
@@ -26,6 +34,7 @@ public:
   void Slot32(int x, int y) override;
   ITEM_INFO* GetItemAt(int x, int y);
   void sub_5E39A0();
+  void UpdateSearchPlaceholder();
 
   /* 00BC */ std::uint32_t unknown_00BC;
   /* 00C0 */ UIButton* m_button;
@@ -41,7 +50,12 @@ public:
   void Move(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot35(int argument) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4)
+    override;
 
+  void ApplyFilter(const std::string& text);
+  void SortItems(bool ascending);
+  void RefreshVisibleEntries();
   void sub_5E2A70();
   void sub_5E3B80(int index);
   void sub_5E2590(int unknown, int position);
@@ -73,6 +87,7 @@ static_assert(offsetof(UIChangeMaterialWnd_List, m_previousScrollOffset) == 0xD4
 static_assert(offsetof(UIChangeMaterialWnd_List, m_items) == 0xDC);
 static_assert(offsetof(UIChangeMaterialWnd_List, m_entries) == 0xE8);
 static_assert(sizeof(MaterialListEntry) == 0x1C);
+static_assert(offsetof(MaterialListEntry, item) == 0x10);
 #endif
 
 #endif

@@ -2,14 +2,19 @@
 
 #include "Client/Mode/ModeTooltip.h"
 #include "Contents/Items/ItemNaming.h"
+#include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/StackAlloc.h"
 
+#include <algorithm>
+#include <cctype>
 #include <cstdint>
 #include <cstdlib>
 #include <malloc.h>
+#include <string>
 
 // OFFSET: 0x005E1080
 // FUNCTION: fn_03871
@@ -98,6 +103,22 @@ void UIChangeMaterialWnd::Slot28(int x, int y) {
 void UIChangeMaterialWnd_List::Slot27(int x, int y) {
 }
 
+// OFFSET: 0x005E2850
+// FUNCTION: fn_03887
+void UIChangeMaterialWnd::UpdateSearchPlaceholder() {
+  auto* edit = *reinterpret_cast<UIEditCtrl**>(reinterpret_cast<char*>(this) + 0xB8);
+  const std::string text = edit->Text();
+  const char* placeholder = LookupMessage(0xec0);
+  if (text != placeholder) {
+    if (text.empty()) {
+      edit->SetText(placeholder);
+      edit->TextColor(0xb1b1b1u, 0xffffffffu);
+    } else {
+      edit->TextColor(0, 0xffffffffu);
+    }
+  }
+}
+
 // OFFSET: 0x005E29F0
 // FUNCTION: fn_03888
 void UIChangeMaterialWnd::Slot32(int x, int y) {
@@ -141,6 +162,46 @@ void UIChangeMaterialWnd_List::sub_5E2A70() {
   if (this->parent) {
     this->parent->Invalidate();
   }
+}
+
+// OFFSET: 0x005E2B20
+// FUNCTION: fn_03891
+void UIChangeMaterialWnd_List::ApplyFilter(const std::string& text) {
+  const int rowHeight = *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
+  this->m_pageSize = this->geometry.height / rowHeight;
+  this->m_selectedIndex = 0;
+  this->m_scrollOffset = 0;
+  this->m_previousScrollOffset = 0;
+  this->m_scrollBar->Show(0);
+  this->m_items.clear();
+
+  std::string filter = text;
+  for (std::size_t i = 0; i < filter.size(); ++i) {
+    filter[i] = static_cast<char>(tolower(static_cast<unsigned char>(filter[i])));
+  }
+
+  for (int index = 0; index < static_cast<int>(this->m_entries.size()); ++index) {
+    MaterialListItemRef* item = this->m_entries[index].item;
+    std::string name = ItemDisplayName(item->id);
+    for (std::size_t i = 0; i < name.size(); ++i) {
+      name[i] = static_cast<char>(tolower(static_cast<unsigned char>(name[i])));
+    }
+
+    if (filter.empty() || name.find(filter) != std::string::npos) {
+      this->m_items.push_back(index);
+    }
+  }
+
+  this->sub_5E2A70();
+  this->SortItems(true);
+}
+
+// OFFSET: 0x005E30B0
+// FUNCTION: fn_03892
+void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
+  this->m_entries.clear();
+  this->ApplyFilter(std::string());
+  this->sub_5E3B80(0);
 }
 
 // OFFSET: 0x005E39A0
@@ -188,6 +249,75 @@ void UIChangeMaterialWnd_List::sub_5E3B80(int index) {
   }
 
   this->parent->SendMsg(nullptr, 23, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
+}
+
+// OFFSET: 0x005E4170
+// FUNCTION: fn_03896
+int UIChangeMaterialWnd_List::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  switch (message) {
+  case 3:
+    this->ShiftSelectedIndex(this->m_pageSize);
+    break;
+  case 4:
+    this->sub_5E1080(this->m_pageSize);
+    break;
+  case 6:
+    if (argument1 == 0x141 && argument2 != 0) {
+      std::string filter(reinterpret_cast<const char*>(argument2));
+      if (filter == LookupMessage(0xec0)) {
+        filter.clear();
+      }
+      this->ApplyFilter(filter);
+    }
+    break;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scrollOffset;
+    int delta = static_cast<int>(argument1);
+    if (message == 9) {
+      delta = -1;
+    } else if (message == 10) {
+      delta = 1;
+    }
+    this->m_scrollOffset = previous + delta;
+    if (previous != this->m_scrollOffset) {
+      this->sub_5E2A70();
+    }
+    return this->m_scrollOffset - previous;
+  }
+  case 0x12:
+    this->ShiftSelectedIndex(1);
+    break;
+  case 0x13:
+    this->sub_5E1080(1);
+    break;
+  case 0x17:
+    this->RefreshVisibleEntries();
+    break;
+  default:
+    break;
+  }
+
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x005E4330
+// FUNCTION: fn_03897
+void UIChangeMaterialWnd_List::SortItems(bool ascending) {
+  std::sort(this->m_items.begin(), this->m_items.end(), [this](int left, int right) {
+    const std::string leftName = ItemDisplayName(this->m_entries[left].item->id);
+    const std::string rightName = ItemDisplayName(this->m_entries[right].item->id);
+    return leftName < rightName;
+  });
+
+  if (!ascending) {
+    std::reverse(this->m_items.begin(), this->m_items.end());
+  }
+
+  this->Invalidate();
 }
 
 // OFFSET: 0x005E44C0
