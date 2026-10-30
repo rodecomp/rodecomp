@@ -76,3 +76,9 @@ void UISecondCostumeWnd::RefreshList(int tab) {
   this->m_list->Invalidate();
   this->Invalidate();
 }
+
+// OFFSET: 0x0094A410
+// FUNCTION: fn_12888
+bool UISecondCostumeWnd::Slot03() {
+  return true;
+}
