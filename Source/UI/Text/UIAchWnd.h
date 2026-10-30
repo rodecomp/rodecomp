@@ -153,6 +153,7 @@ public:
   /* 00B4 */ int unknown_00B4;
   /* 00B8 */ int unknown_00B8;
 
+  void Paint() override;
   void Set(const char* name, const char* text, int item);
 };
 

@@ -1,3 +1,5 @@
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -8,6 +10,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
+#include <cstring>
 #include <new>
 
 namespace {
@@ -309,6 +312,31 @@ void UICustomGageBar::Paint() {
   const float percent = static_cast<float>(this->value) * 100.0f / static_cast<float>(this->maximum);
   if (percent > 0.0f) {
     this->FillRegion(2, 2, static_cast<int>(percent) * this->geometry.width / 100, this->geometry.height - 4, this->barColor);
+  }
+}
+
+// OFFSET: 0x007B7760
+// FUNCTION: fn_09226
+void UIToolTipBitmapWnd::Paint() {
+  this->bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())));
+  if (this->bitmap) {
+    this->DrawBitmap(0, 0, &this->bitmap->image, false);
+  }
+
+  const int item = this->itemId;
+  if (item > 0) {
+    this->unknown_00B4 = 20;
+    this->unknown_00B8 = 15;
+    ITEM_INFO info;
+    info.SetItemId(item);
+    char path[260];
+    std::memset(path, 0, sizeof(path));
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.IconPath(path, info.itemId.c_str(), 1);
+    CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+    if (icon) {
+      this->DrawBitmap(20, 15, &icon->image, true);
+    }
   }
 }
 
