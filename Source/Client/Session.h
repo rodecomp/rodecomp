@@ -191,7 +191,9 @@ public:
   /* 1650 */ int m_level;
   /* 1654 */ unsigned char unknown_1654[0x04];
   /* 1658 */ int m_jobLevel;
-  /* 165C */ unsigned char unknown_165C[0x28];
+  /* 165C */ unsigned char unknown_165C[0x04];
+  /* 1660 */ int m_guildSkillPoint;
+  /* 1664 */ unsigned char unknown_1664[0x20];
   /* 1684 */ int m_standardStats[6];
   /* 169C */ unsigned char unknown_169C[0x50];
   /* 16EC */ std::uint32_t unknown_16EC;

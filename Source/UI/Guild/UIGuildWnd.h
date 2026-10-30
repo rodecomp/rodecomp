@@ -3,6 +3,7 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+#include "Contents/GuildInfo.h"
 #include "Contents/Skills/SkillInfo.h"
 
 #include <cstdint>
@@ -12,6 +13,8 @@
 
 class UIBitmapButton;
 class UIButton;
+class UICheckBox;
+class UIEditCtrl;
 class UIListBoxAgit;
 class UIListBoxAgitMenu;
 class UIScrollBar;
@@ -26,10 +29,10 @@ struct GuildPositionEntry {
   /* 0000 */ int id;
   /* 0004 */ int unknown_0004;
   /* 0008 */ std::string name;
-  /* 0020 */ int unknown_0020;
-  /* 0024 */ int unknown_0024;
-  /* 0028 */ int unknown_0028;
-  /* 002C */ int unknown_002C;
+  /* 0020 */ int canInvite;
+  /* 0024 */ int canExpel;
+  /* 0028 */ int tax;
+  /* 002C */ int canStorage;
 };
 
 class UIGuildWnd : public UIFrameWnd {
@@ -43,6 +46,7 @@ public:
 
 protected:
   void CreateTabs();
+  std::string StripNamelessTag(const std::string& name);
 
   /* 00B4 */ GuildWndInfo* m_saved;
   /* 00B8 */ UIStaticText* m_tabs[6];
@@ -74,6 +78,7 @@ public:
   int Tab() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
@@ -97,12 +102,16 @@ class UIGuildMemberManageWnd : public UIGuildWnd {
 public:
   int Tab() override;
   void Slot19() override;
+  void Slot25(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
   void Slot35(int delta) override;
   void UpdateScroll();
 
 protected:
+  bool GetMember(int index, GuildInfo::Member& member);
+  void SortMembers(int column);
+
   /* 00D0 */ unsigned char unknown_00D0[0x78];
   /* 0148 */ UIScrollBar* m_scrollBar;
   /* 014C */ UIButton* m_button;
@@ -114,21 +123,30 @@ protected:
   /* 016C */ int unknown_016C;
   /* 0170 */ int m_scrollable;
   /* 0174 */ int m_rowSpacing;
-  /* 0178 */ int unknown_0178;
-  /* 017C */ unsigned int m_rowCount;
-  /* 0180 */ unsigned char unknown_0180[0x18];
+  /* 0178 */ std::list<GuildInfo::Member> m_members;
+  /* 0180 */ int unknown_0180;
+  /* 0184 */ int unknown_0184;
+  /* 0188 */ int m_sortColumn;
+  /* 018C */ std::map<int, int> m_sortOrders;
+  /* 0194 */ int unknown_0194;
   /* 0198 */ std::uint32_t m_buttonTime;
 };
 
 class UIGuildNoticeWnd : public UIGuildWnd {
 public:
+  void Paint() override;
   void Slot25(int x, int y) override;
+
+protected:
+  /* 00D0 */ UIEditCtrl* m_titleEdit;
+  /* 00D4 */ UIEditCtrl* m_bodyEdit;
 };
 
 class UIGuildPositionManageWnd : public UIGuildWnd {
 public:
   UIGuildPositionManageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot19() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot32(int x, int y) override;
   void Invalidate() override;
@@ -139,13 +157,13 @@ protected:
   int PositionIndexAt(int x, int y);
   const GuildPositionEntry& PositionAt(int index, int* found);
 
-  /* 00D0 */ int unknown_00D0[11];
-  /* 00FC */ int unknown_00FC[11];
-  /* 0128 */ int unknown_0128[11];
-  /* 0154 */ int unknown_0154[11];
-  /* 0180 */ int unknown_0180[11];
-  /* 01AC */ int unknown_01AC[11];
-  /* 01D8 */ int unknown_01D8[11];
+  /* 00D0 */ UICheckBox* unknown_00D0[11];
+  /* 00FC */ UICheckBox* unknown_00FC[11];
+  /* 0128 */ UICheckBox* unknown_0128[11];
+  /* 0154 */ UIEditCtrl* unknown_0154[11];
+  /* 0180 */ UIEditCtrl* unknown_0180[11];
+  /* 01AC */ UIStaticText* unknown_01AC[11];
+  /* 01D8 */ UIStaticText* unknown_01D8[11];
   /* 0204 */ UIScrollBar* m_scrollBar;
   /* 0208 */ UIButton* m_button;
   /* 020C */ int m_scrollTop;
@@ -161,6 +179,7 @@ protected:
 class UIGuildSkillWnd : public UIGuildWnd {
 public:
   int Tab() override;
+  void Paint() override;
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
   void Slot35(int delta) override;
@@ -170,10 +189,14 @@ protected:
   int SkillIndexAt(int x, int y);
   CSkillInfo SkillAt(int index);
   CSkillInfo VisibleSkillAt(int row);
+  void UpdateSkillButtons();
 
   /* 00D0 */ unsigned char unknown_00D0[0x04];
   /* 00D4 */ UIScrollBar* m_scrollBar;
-  /* 00D8 */ unsigned char unknown_00D8[0x5C];
+  /* 00D8 */ unsigned char unknown_00D8[0x08];
+  /* 00E0 */ UIWindow* unknown_00E0[7];
+  /* 00FC */ UIWindow* unknown_00FC[7];
+  /* 0118 */ UIWindow* m_levelUpButtons[7];
   /* 0134 */ int m_hoverIndex;
   /* 0138 */ int m_scrollTop;
   /* 013C */ int m_columns;

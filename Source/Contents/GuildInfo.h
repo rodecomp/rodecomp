@@ -16,11 +16,11 @@ public:
     /* 0008 */ std::string name;
     /* 0020 */ int unknown_0020;
     /* 0024 */ int unknown_0024;
-    /* 0028 */ unsigned char unknown_0028[0x04];
+    /* 0028 */ int job;
     /* 002C */ int unknown_002C;
     /* 0030 */ int positionId;
     /* 0034 */ std::string positionName;
-    /* 004C */ unsigned char unknown_004C[0x04];
+    /* 004C */ int level;
     /* 0050 */ std::string unknown_0050;
     /* 0068 */ float expRatio;
     /* 006C */ int exp;
