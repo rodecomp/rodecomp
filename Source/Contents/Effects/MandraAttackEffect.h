@@ -9,6 +9,7 @@ class CMandraAttackEffect : public CRenderObject {
 public:
   CMandraAttackEffect();
   bool OnProcess() override;
+  void SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) override;
 
   /* 0138 */ float startFrame;
   /* 013C */ int unknown_013C;
