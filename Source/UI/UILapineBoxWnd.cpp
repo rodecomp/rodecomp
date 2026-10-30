@@ -203,29 +203,34 @@ void UIIngredientInfoWnd::Slot32(int, int) {
   }
 }
 
+// OFFSET: 0x006024F0
+// FUNCTION: fn_04181
 __declspec(noinline) void UILapineBoxWnd::MaterialPosition(int* out, int index) {
-  const int count = static_cast<int>(this->items.size());
-  if (index < 0 || static_cast<unsigned>(index) >= static_cast<unsigned>(count)) {
-    out[0] = 0;
-    out[1] = 0;
-    return;
+  if (index >= 0) {
+    const unsigned int count = this->items.size();
+    if (static_cast<unsigned int>(index) <= count) {
+      int left = count > 5 ? 0x19 : 0x21;
+      int top = count > 5 ? 0x98 : 0xA2;
+      if (index >= 5) {
+        left = 0x2A;
+        top = 0xB7;
+      }
+      out[1] = top;
+      out[0] = left + static_cast<unsigned int>(index) % 5 * 0x22;
+      return;
+    }
   }
 
-  int left = count > 5 ? 0x19 : 0x21;
-  int top = count > 5 ? 0x98 : 0xA2;
-  if (index >= 5) {
-    left = 0x2A;
-    top = 0xB7;
-  }
-  left += (index % 5) * 0x22;
-  out[0] = left;
-  out[1] = top;
+  out[0] = 0;
+  out[1] = 0;
 }
 
+// OFFSET: 0x00602410
+// FUNCTION: fn_04180
 __declspec(noinline) void UILapineBoxWnd::ReadMaterial(ITEM_INFO* out, int x, int y) {
-  const int count = static_cast<int>(this->items.size());
-  for (int index = 0; index < count; ++index) {
-    int position[2] = {};
+  const unsigned int count = this->items.size();
+  for (unsigned int index = 0; index < count; ++index) {
+    int position[2];
     this->MaterialPosition(position, index);
     if (x >= position[0] && x <= position[0] + 0x18 && y >= position[1] && y <= position[1] + 0x18) {
       new (out) ITEM_INFO(this->items[index]);
@@ -233,6 +238,16 @@ __declspec(noinline) void UILapineBoxWnd::ReadMaterial(ITEM_INFO* out, int x, in
     }
   }
   new (out) ITEM_INFO(0);
+}
+
+// OFFSET: 0x00602AC0
+// FUNCTION: fn_04184
+void UILapineBoxWnd::SetWaiting(unsigned char waiting) {
+  UIBitmapButton* button = this->makeButton;
+  this->waiting = waiting;
+  button->SetDisabled(waiting);
+  button->Invalidate();
+  this->Invalidate();
 }
 
 // OFFSET: 0x00600C40

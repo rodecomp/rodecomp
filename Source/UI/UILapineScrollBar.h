@@ -92,6 +92,7 @@ public:
   void AddMaterial(int id, int quantity);
   __declspec(noinline) void ReadMaterial(ITEM_INFO* out, int x, int y);
   __declspec(noinline) void MaterialPosition(int* out, int index);
+  void SetWaiting(unsigned char waiting);
   // INLINED
   UIFrameContext& FrameContext() {
     return *this->m_frameContext;
