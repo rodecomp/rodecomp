@@ -1,17 +1,24 @@
 #include "UI/GameSettings/GameSettingsUI.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/MessageTable.h"
 #include "Contents/SkinMgr.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Render/DisplayMode.h"
+#include "Render/DX7/RenderSystemDX7.h"
 #include "Render/RenderAdapter.h"
 #include "Render/RenderBackends.h"
 #include "UI/Buttons/UIRadioButton.h"
+#include "UI/Lists/UIVScrollBar.h"
+#include "UI/Window/UIRoulletteWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 
+#include <algorithm>
 #include <cstdint>
+#include <string>
 
 namespace {
   struct RodexSpamOptionPacket {
@@ -21,6 +28,9 @@ namespace {
   };
   static_assert(sizeof(RodexSpamOptionPacket) == 12);
 }
+
+template <>
+__declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::SelectItem(CUIListItem* item);
 
 // OFFSET: 0x00A344D0
 // OFFSET: 0x00A34500
@@ -39,6 +49,44 @@ template void CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::Paint();
 template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderBackend>::Paint();
 template void CUIComboBox<GameSettingsUI::CUIComboItem, DisplayMode>::Paint();
 template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderAdapter>::Paint();
+
+// OFFSET: 0x00A40040
+// OFFSET: 0x00A40050
+// OFFSET: 0x00A40060
+// OFFSET: 0x00A40070
+// FUNCTION: fn_15962
+// FUNCTION: fn_15963
+// FUNCTION: fn_15964
+// FUNCTION: fn_15965
+template <class T, class D> unsigned int CUIComboBox<T, D>::Selected() const {
+  return this->listBox->selected;
+}
+
+template unsigned int CUIComboBox<GameSettingsUI::CUIComboItem, RenderAdapter>::Selected() const;
+template unsigned int CUIComboBox<GameSettingsUI::CUIComboItem, DisplayMode>::Selected() const;
+template unsigned int CUIComboBox<GameSettingsUI::CUIComboItem, RenderBackend>::Selected() const;
+template unsigned int CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::Selected() const;
+
+// OFFSET: 0x00A41FE0
+// OFFSET: 0x00A42060
+// OFFSET: 0x00A420E0
+// OFFSET: 0x00A42160
+// FUNCTION: fn_16009
+// FUNCTION: fn_16010
+// FUNCTION: fn_16011
+// FUNCTION: fn_16012
+template <class T, class D> void CUIComboBox<T, D>::UpdateListHeight() {
+  const int height = std::min<unsigned int>(this->listBox->data.size(), this->visibleItems) * this->itemHeight;
+  if (height != this->listBox->geometry.height) {
+    this->listBox->Resize(this->listBox->geometry.width, height);
+  }
+  this->listBox->UpdateScrollBar();
+}
+
+template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderAdapter>::UpdateListHeight();
+template void CUIComboBox<GameSettingsUI::CUIComboItem, DisplayMode>::UpdateListHeight();
+template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderBackend>::UpdateListHeight();
+template void CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::UpdateListHeight();
 
 // OFFSET: 0x00A34590
 // FUNCTION: fn_15411
@@ -642,6 +690,49 @@ void CUIPage::Slot16() {
     y += child->geometry.height;
   }
 }
+
+// OFFSET: 0x00A3F360
+
+// OFFSET: 0x00A3F3D0
+
+// OFFSET: 0x00A3F4C0
+
+// OFFSET: 0x00A3F560
+
+// OFFSET: 0x00A3F5C0
+
+// OFFSET: 0x00A3F6B0
+
+// OFFSET: 0x00A3F6D0
+
+// OFFSET: 0x00A401C0
+
+// OFFSET: 0x00A40270
+// FUNCTION: fn_15968
+void CUIListPage::Slot54(CUIOptionItem* item, const TALKTYPE& type) {
+}
+
+// OFFSET: 0x00A41E30
+
+// OFFSET: 0x00A41E90
+
+// OFFSET: 0x00A41F30
+
+// OFFSET: 0x00A42FE0
+
+// OFFSET: 0x00A42FF0
+
+// OFFSET: 0x00A43650
+
+// OFFSET: 0x00A436A0
+
+// OFFSET: 0x00A43700
+
+// OFFSET: 0x00A43810
+
+// OFFSET: 0x00A43870
+
+// OFFSET: 0x00A43A40
 
 // OFFSET: 0x00A43B70
 // FUNCTION: fn_16045

@@ -46,6 +46,8 @@ private:
   /* 000C */ std::shared_ptr<CSurface> m_backBuffer;
 };
 
+extern int g_configuredFullscreen;
+
 void ClearDirectDrawModes();
 
 #if defined(_WIN32) && !defined(_WIN64)
