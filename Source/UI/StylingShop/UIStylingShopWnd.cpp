@@ -247,6 +247,54 @@ int UIAccessoryCusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
   return 0;
 }
 
+// OFFSET: 0x0082D3A0
+// FUNCTION: fn_10370
+int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  UIWindow* preview = g_windowMgr.LookupWindow(281);
+  if (message != 6) {
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  switch (argument1) {
+  case 584: {
+    UIDisplayCharacter* display = this->m_display;
+    if (display->m_jobs.size() >= 2) {
+      std::set<int>::iterator it = display->m_jobs.find(display->job);
+      if (it == display->m_jobs.end()) {
+        --it;
+      }
+      if (it == display->m_jobs.begin()) {
+        it = display->m_jobs.end();
+      }
+      --it;
+      display->job = *it;
+    }
+    break;
+  }
+  case 585: {
+    UIDisplayCharacter* display = this->m_display;
+    if (display->m_jobs.size() >= 2) {
+      std::set<int>::iterator it = display->m_jobs.find(display->job);
+      if (it != display->m_jobs.end()) {
+        ++it;
+      }
+      if (it == display->m_jobs.end()) {
+        it = display->m_jobs.begin();
+      }
+      display->job = *it;
+    }
+    break;
+  }
+  }
+
+  this->Invalidate();
+  if (preview) {
+    preview->InvalidateChildren();
+  }
+
+  return 0;
+}
+
 // OFFSET: 0x0082DC60
 // FUNCTION: fn_10373
 int UIShowInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {

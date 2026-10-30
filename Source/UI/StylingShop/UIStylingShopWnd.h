@@ -8,6 +8,7 @@
 #include "UI/Window/UIWindow.h"
 
 #include <map>
+#include <set>
 
 class UIDisplayCharacter : public UIWindow {
 public:
@@ -17,6 +18,20 @@ public:
   /* 0088 */ int unknown_0088;
   /* 008C */ int unknown_008C;
   /* 0090 */ int job;
+  /* 0094 */ int unknown_0094;
+  /* 0098 */ int unknown_0098;
+  /* 009C */ int unknown_009C;
+  /* 00A0 */ int unknown_00A0;
+  /* 00A4 */ int unknown_00A4;
+  /* 00A8 */ int unknown_00A8;
+  /* 00AC */ int unknown_00AC;
+  /* 00B0 */ int unknown_00B0;
+  /* 00B4 */ int unknown_00B4;
+  /* 00B8 */ int unknown_00B8;
+  /* 00BC */ int unknown_00BC;
+  /* 00C0 */ int unknown_00C0;
+  /* 00C4 */ int unknown_00C4;
+  /* 00C8 */ std::set<int> m_jobs;
 };
 
 class UIShowInfoWnd : public UIWindow {
@@ -40,6 +55,7 @@ public:
 class UICostumeChangeWnd : public UIStylingshopTabParentWnd {
 public:
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
 
 class UIStylingShopWnd : public UIFrameWnd {
