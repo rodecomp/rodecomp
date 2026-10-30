@@ -4,9 +4,21 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Window/UIWindow.h"
 
+#include <cstdint>
 #include <string>
+#include <vector>
 
 struct UIButtonContext;
+
+struct UIBmpRadioBtnText {
+  /* 0000 */ int id;
+  /* 0004 */ int x;
+  /* 0008 */ int y;
+  /* 000C */ int height;
+  /* 0010 */ bool bold;
+  /* 0014 */ std::uint32_t color;
+  /* 0018 */ bool unknown_0018;
+};
 
 class UIBmpRadioBtn : public UIWindow {
 public:
@@ -14,13 +26,18 @@ public:
   void Slot28(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
+  bool SetBitmap(const char* name, int state);
+  void AddText(int id, int height, std::uint32_t color, bool bold, bool unknown, int x, int y);
+
 protected:
-  /* 007C */ unsigned char unknown_007C[0x60];
+  /* 007C */ std::string m_names[4];
   /* 00DC */ bool m_hovered;
   /* 00DD */ unsigned char unknown_00DD[3];
   /* 00E0 */ std::string m_tooltip;
   UIButtonContext* m_controls;
   /* 00FC */ int m_value;
+  /* 0100 */ std::vector<UIBmpRadioBtnText> m_texts;
+  /* 010C */ std::string m_label;
 };
 
 class UIBmpRadioBtn2 : public UIBmpRadioBtn {

@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 
 class UIGage : public UIWindow {
 public:
@@ -25,6 +26,37 @@ public:
   /* 00A4 */ int maximum;
   /* 00A8 */ int unknown_00A8;
   /* 00AC */ int unknown_00AC;
+};
+
+class UIRechargeGage : public UIGage {
+public:
+  void SetValues(int current, int maximum);
+
+  /* 009C */ int current;
+  /* 00A0 */ int maximum;
+};
+
+class UIPlayerGage : public UIGage {
+public:
+  void SetFirstValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
+  void SetSecondValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
+  void SetThirdValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
+  void SetFourthValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
+
+  /* 009C */ int unknown_009C;
+  /* 00A0 */ std::function<std::int64_t()> m_firstCurrent;
+  /* 00C8 */ std::function<std::int64_t()> m_firstMaximum;
+  /* 00F0 */ std::function<std::int64_t()> m_secondCurrent;
+  /* 0118 */ std::function<std::int64_t()> m_secondMaximum;
+  /* 0140 */ std::function<std::int64_t()> m_thirdCurrent;
+  /* 0168 */ std::function<std::int64_t()> m_thirdMaximum;
+  /* 0190 */ std::function<std::int64_t()> m_fourthCurrent;
+  /* 01B8 */ std::function<std::int64_t()> m_fourthMaximum;
+};
+
+class UIMonsterGage : public UIPcGage {
+public:
+  void SetMode(int mode);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

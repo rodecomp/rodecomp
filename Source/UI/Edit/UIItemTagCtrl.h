@@ -6,6 +6,7 @@
 
 #include <list>
 #include <string>
+#include <vector>
 
 class UIItemTagCtrl : public UIEditCtrl {
 public:
@@ -18,6 +19,13 @@ public:
   /* 0128 */ std::string taggedText;
   /* 0140 */ unsigned char unknown_0140[0x18];
   /* 0158 */ int tagWidth;
+};
+
+class UIItemTagOnMail : public UIItemTagCtrl {
+public:
+  void SetLines(const std::vector<std::string>& lines);
+
+  /* 015C */ std::vector<std::string> m_lines;
 };
 
 #endif

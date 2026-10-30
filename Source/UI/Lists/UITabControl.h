@@ -23,6 +23,7 @@ public:
   void SelectTab(int index);
   void RemoveTab(int index);
   void ClearTabs();
+  void SetFlag(int index, bool value);
   void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;

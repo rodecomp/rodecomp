@@ -23,6 +23,7 @@ public:
   void Slot35(int value) override;
   void Configure(const char* text, std::uint32_t color, int family, int height, unsigned char outline, unsigned char underline);
   void ResizeToText();
+  void CenterIn(int width, int height);
   const std::string& GetLine(std::size_t index) const;
 
 protected:

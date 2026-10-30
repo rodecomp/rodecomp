@@ -425,6 +425,8 @@ void UITabControl::ClearTabs() {
   this->FitToTabs();
 }
 
+// OFFSET: 0x0089C1B0
+
 // OFFSET: 0x00880B20
 // FUNCTION: fn_11283
 int UITabControl::TabCount() {

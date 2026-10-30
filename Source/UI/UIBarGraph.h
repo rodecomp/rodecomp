@@ -58,6 +58,8 @@ class UIBarGraphHomun : public UIWindow {
 public:
   explicit UIBarGraphHomun(UIWindowContext& context);
 
+  void SetValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
+
 protected:
   /* 0080 */ std::function<std::int64_t()> m_current;
   /* 00A8 */ std::function<std::int64_t()> m_maximum;
@@ -67,6 +69,8 @@ class UIBarGraphPlayer : public UIWindow {
 public:
   explicit UIBarGraphPlayer(UIWindowContext& context);
   ~UIBarGraphPlayer() override;
+
+  void SetValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
 
 protected:
   /* 0080 */ std::function<std::int64_t()> m_current;

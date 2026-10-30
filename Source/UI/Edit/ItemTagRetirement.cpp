@@ -40,3 +40,13 @@ std::string UIItemTagCtrl::AppendTag(const std::string& name) {
   this->taggedText += tag;
   return this->taggedText;
 }
+
+// OFFSET: 0x0089CF10
+// FUNCTION: fn_11595
+void UIItemTagOnMail::SetLines(const std::vector<std::string>& lines) {
+  this->m_lines.clear();
+
+  for (std::size_t index = 0; index < lines.size(); ++index) {
+    this->m_lines.push_back(lines[index]);
+  }
+}

@@ -261,6 +261,95 @@ void UIBmpRadioBtn::Slot28(int, int) {
   }
 }
 
+// OFFSET: 0x0089B640
+// FUNCTION: fn_11570
+bool UIBmpRadioBtn::SetBitmap(const char* name, int state) {
+  const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+  if (!bitmap) {
+    return false;
+  }
+
+  if (bitmap->image.width > this->geometry.width) {
+    this->geometry.width = bitmap->image.width;
+  }
+
+  if (bitmap->image.height > this->geometry.height) {
+    this->geometry.height = bitmap->image.height;
+  }
+
+  this->Resize(this->geometry.width, this->geometry.height);
+
+  switch (state) {
+  case 0:
+    this->m_names[0] = name;
+    break;
+  case 1:
+    this->m_names[1] = name;
+    break;
+  case 2:
+    this->m_names[2] = name;
+    break;
+  case 3:
+    this->m_names[3] = name;
+    break;
+  }
+
+  return true;
+}
+
+// OFFSET: 0x0089BA00
+// FUNCTION: fn_11573
+void UITextButton::CenterIn(int width, int height) {
+  UIWindow::Move(
+    static_cast<int>((width - this->geometry.width) * 0.5 + this->geometry.x), static_cast<int>((height - this->geometry.height) * 0.5 + this->geometry.y)
+  );
+}
+
+// OFFSET: 0x0089CA70
+// FUNCTION: fn_11590
+void UITVTextButton::SetLabel(std::string text) {
+  this->label = text;
+  this->ResizeToText();
+}
+
+// OFFSET: 0x0089CC30
+// FUNCTION: fn_11592
+void UIBmpRadioBtn::AddText(int id, int height, std::uint32_t color, bool bold, bool unknown, int x, int y) {
+  UIBmpRadioBtnText text;
+  text.id = id;
+  text.x = x;
+  text.y = y;
+  text.height = height;
+  text.bold = bold;
+  text.color = color;
+  text.unknown_0018 = unknown;
+
+  if (x == -1000) {
+    const int textWidth =
+      this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->m_label.c_str(), static_cast<unsigned>(this->m_label.size()), 0, height, bold, 0);
+    text.x = static_cast<int>((this->geometry.width - textWidth) * 0.5);
+  }
+
+  if (y == -1000) {
+    const int textHeight =
+      this->TextHeight(this->m_controls->fonts, this->m_controls->locale, this->m_label.c_str(), static_cast<unsigned>(this->m_label.size()), 0, height, bold, 0);
+    text.y = static_cast<int>((this->geometry.height - textHeight) * 0.5);
+  }
+
+  auto it = this->m_texts.begin();
+  for (; it != this->m_texts.end(); ++it) {
+    if (it->id == id) {
+      break;
+    }
+  }
+
+  if (it != this->m_texts.end()) {
+    *it = text;
+  }
+
+  this->m_texts.push_back(text);
+}
+
 // OFFSET: 0x007C7CA0
 // FUNCTION: fn_09408
 void UIBmpRadioBtn2::Slot47() {
