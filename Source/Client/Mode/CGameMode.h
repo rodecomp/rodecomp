@@ -15,6 +15,7 @@
 #include <vector>
 
 class CView;
+class CMousePointer;
 class CCorpse;
 class CMsgEffect;
 class CGameActor;
@@ -52,7 +53,8 @@ public:
   /* 0078 */ unsigned char unknown_0078[0x54];
   /* 00CC */ CWorld* scene;
   /* 00D0 */ CView* camera;
-  /* 00D4 */ unsigned char unknown_00D4[0x28];
+  /* 00D4 */ CMousePointer* mousePointer;
+  /* 00D8 */ unsigned char unknown_00D8[0x24];
   /* 00FC */ int unknown_00FC;
   /* 0100 */ unsigned char unknown_0100[0x18];
   /* 0118 */ std::string unknown_0118;
@@ -105,6 +107,13 @@ public:
   void WorldCell(float x, float z, int& column, int& row) const;
   void SubcellPosition(int column, int row, int subColumn, int subRow, float& x, float& z) const;
   void PlayerCell(int* column, int* row) const;
+  int GetSkillAttackRange(int id, int level);
+  int TerrainHeight() const;
+  int TerrainWidth() const;
+  std::string LocationText();
+  bool HasInventoryItem(int id);
+  bool HasResurrectionItem();
+  void SendMousePointerState(int value);
   bool CanFindPath(int sx, int sy, int cellX, int cellY, int dx, int dy);
   bool IsAllowedPair(int kind, int value);
   bool IsWithinRange(const int& x1, const int& y1, const int& x2, const int& y2, int range);

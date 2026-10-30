@@ -6,15 +6,22 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/MessageTable.h"
+#include "Contents/Actors/MousePointer.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/Items/ItemInfo.h"
 #include "Contents/Skills/ClientSkills.h"
+#include "Contents/Skills/SkillInfo.h"
 #include "Contents/World/World.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Render/Renderer.h"
+#include "Resource/World/TerrainResource.h"
+#include "Script/LuaScript.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstdint>
+#include <cstdio>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -74,6 +81,121 @@ void CGameMode::CompleteUnknown0194(std::uint32_t id, const std::string& text) {
   if (it != this->unknown_0194.end()) {
     this->SendMsg(140, reinterpret_cast<int>(text.c_str()), it->second, 0, 0);
     this->unknown_0194.erase(it);
+  }
+}
+
+// OFFSET: 0x00CD52F0
+// FUNCTION: fn_21279
+int CGameMode::GetSkillAttackRange(int id, int level) {
+  if (id == 10000) {
+    return 5;
+  }
+
+  int range = 1;
+  CSkillInfo skill = reinterpret_cast<const ClientSkills&>(g_session).Lookup(id);
+  if (!skill.available) {
+    skill = g_session.m_skillBundle.Pending(id);
+    if (!skill.available) {
+      return range;
+    }
+
+    level = skill.level;
+  }
+
+  int reduction = 0;
+  g_luaScript->Call("GetSkillAttackRange", "ddd>dd", id, level, skill.level, &range, &reduction);
+  range += skill.unknown_001C - reduction;
+  return range;
+}
+
+// OFFSET: 0x00CD54D0
+// FUNCTION: fn_21280
+int CGameMode::TerrainHeight() const {
+  if (!this->scene || !this->scene->terrain) {
+    return 0;
+  }
+
+  return this->scene->terrain->height;
+}
+
+// OFFSET: 0x00CD54F0
+// FUNCTION: fn_21281
+int CGameMode::TerrainWidth() const {
+  if (!this->scene || !this->scene->terrain) {
+    return 0;
+  }
+
+  return this->scene->terrain->width;
+}
+
+// OFFSET: 0x00CD5550
+// FUNCTION: fn_21283
+std::string CGameMode::LocationText() {
+  char text[120];
+  std::memset(text, 0, sizeof(text));
+
+  int column;
+  int row;
+  const auto* player = reinterpret_cast<const CRenderObject*>(this->scene->player);
+  this->WorldCell(player->render.position.x, player->render.position.z, column, row);
+
+  std::string name = this->mapName;
+  if (name.size() > 4) {
+    name.resize(name.size() - 4);
+  }
+
+  std::sprintf(text, "Location: %s ( %d , %d )", name.c_str(), column, row);
+  return text;
+}
+
+// OFFSET: 0x00CD5800
+// FUNCTION: fn_21284
+bool CGameMode::HasInventoryItem(int id) {
+  const ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, id, 0);
+  return item.unknown_0000[1] != 0 && item.quantity > 0;
+}
+
+// OFFSET: 0x00CD58B0
+// FUNCTION: fn_21285
+bool CGameMode::HasResurrectionItem() {
+  ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, 7621, 0);
+  const CWorld* world = this->scene;
+  if (world->unknown_0048 || world->unknown_004C || world->unknown_0054) {
+    return false;
+  }
+
+  if (item.unknown_0000[1] != 0 && item.quantity > 0) {
+    return true;
+  }
+
+  item = LookupClientItem(g_session.m_inventoryItems, 6833, 0);
+  if (item.unknown_0000[1] != 0 && item.quantity > 0) {
+    return true;
+  }
+
+  item = LookupClientItem(g_session.m_inventoryItems, 6316, 0);
+  if (item.unknown_0000[1] != 0 && item.quantity > 0) {
+    return true;
+  }
+
+  item = LookupClientItem(g_session.m_inventoryItems, 6293, 0);
+  if (item.unknown_0000[1] != 0 && item.quantity > 0) {
+    return true;
+  }
+
+  item = LookupClientItem(g_session.m_inventoryItems, 25310, 0);
+  if (item.unknown_0000[1] != 0 && item.quantity > 0) {
+    return true;
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00CD5CD0
+// FUNCTION: fn_21287
+void CGameMode::SendMousePointerState(int value) {
+  if (this->mousePointer) {
+    this->mousePointer->SendMsg(nullptr, 2, 0, value, value >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
 
