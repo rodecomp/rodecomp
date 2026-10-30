@@ -288,6 +288,34 @@ void UINewSkillListWnd::Slot31(int x, int y) {
 }
 
 // OFFSET: 0x009B28F0
+// FUNCTION: fn_13819
+void UINewSkillListWnd::Slot28(int x, int y) {
+  const int gate = *reinterpret_cast<const int*>(0x017326EC);
+  if (!this->IsSkillArea(x, y) || (gate != 0 && x > 96)) {
+    return;
+  }
+
+  const int previous = this->m_selectedSkill;
+  this->m_selectedSkill = this->SkillIndexAt(x, y);
+  if (this->m_selectedSkill != -1) {
+    std::pair<CSkillInfo*, bool> skill = this->SkillPtr(this->m_selectedSkill, false);
+    if (skill.second && skill.first->available != 0) {
+      int tooltipX = -10;
+      int tooltipY = -20;
+      this->ToScreen(tooltipX, tooltipY);
+      const char* name = skill.first->DisplayName(*g_luaScript);
+      (*reinterpret_cast<ModeTooltip**>(0x013495BC))->Show(name, tooltipX + x, tooltipY + y, -1, 0, 1);
+    }
+  }
+
+  if (previous != this->m_selectedSkill) {
+    if (!this->m_showDetail) {
+      this->sub_9B2CD0();
+    }
+    this->m_needsRedraw = 1;
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x009B29E0
 
