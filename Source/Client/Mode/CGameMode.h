@@ -134,6 +134,15 @@ public:
   void ReceiveActorSequenceDeadline(const unsigned char* packet);
   void ReceiveActorSignal(const unsigned char* packet);
   void IgnorePacket(const unsigned char* packet);
+  void IgnorePacket473(const unsigned char* packet);
+  void IgnorePacket474(const unsigned char* packet);
+  void IgnorePacket478(const unsigned char* packet);
+  void ClearUnknown0244(const unsigned char* packet);
+  void ReceiveActorStatusBlock(const unsigned char* packet);
+  void ReceiveActorStatusUpdate(const unsigned char* packet);
+  void ReceiveActorTitle(const unsigned char* packet);
+  void ReceiveActorInt8(const unsigned char* packet);
+  void ReceiveActorInt64Pair(const unsigned char* packet);
   void ReceiveItem1738EquipList(const unsigned char* packet);
   void ReceiveItem1738EquipListOptions(const unsigned char* packet);
   void ReceiveItem1738NormalList(const unsigned char* packet);

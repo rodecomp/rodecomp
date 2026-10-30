@@ -952,3 +952,95 @@ void CGameMode::ReceiveWindow17Entries(const unsigned char* packet) {
     g_windowMgr.unknown_01F0->SendMsg(nullptr, 32, 0, 0, 0, 0);
   }
 }
+
+// OFFSET: 0x00D32820
+// FUNCTION: fn_21744
+void CGameMode::IgnorePacket473(const unsigned char*) {
+}
+
+// OFFSET: 0x00D33970
+// FUNCTION: fn_21750
+void CGameMode::IgnorePacket474(const unsigned char*) {
+}
+
+// OFFSET: 0x00D61290
+// FUNCTION: fn_21978
+void CGameMode::IgnorePacket478(const unsigned char*) {
+}
+
+// OFFSET: 0x00D3A1D0
+// FUNCTION: fn_21775
+void CGameMode::ClearUnknown0244(const unsigned char*) {
+  *reinterpret_cast<int*>(this->unknown_01F8 + 0x4C) = 0;
+}
+
+// OFFSET: 0x00D272A0
+// FUNCTION: fn_21688
+void CGameMode::ReceiveActorStatusBlock(const unsigned char* packet) {
+  g_session.SetUnknown5BC0(*reinterpret_cast<const int*>(packet + 2));
+  g_session.unknown_5BC4 = *reinterpret_cast<const int*>(packet + 6);
+  g_session.unknown_5BC8 = *reinterpret_cast<const int*>(packet + 0xE);
+  g_session.unknown_5BCC = *reinterpret_cast<const int*>(packet + 0xA);
+  g_session.unknown_5BD0 = *reinterpret_cast<const int*>(packet + 0x12);
+  if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2))) {
+    actor->SendMsg(nullptr, 0x22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D27320
+// FUNCTION: fn_21689
+void CGameMode::ReceiveActorStatusUpdate(const unsigned char* packet) {
+  if (g_session.unknown_5BC0 != -1) {
+    const unsigned int field = *reinterpret_cast<const std::uint16_t*>(packet + 2) - 5;
+    switch (field) {
+    case 0:
+      g_session.unknown_5BC4 = *reinterpret_cast<const int*>(packet + 4);
+      break;
+    case 1:
+      g_session.unknown_5BCC = *reinterpret_cast<const int*>(packet + 4);
+      break;
+    case 2:
+      g_session.unknown_5BC8 = *reinterpret_cast<const int*>(packet + 4);
+      break;
+    case 3:
+      g_session.unknown_5BD0 = *reinterpret_cast<const int*>(packet + 4);
+      break;
+    }
+    if (CRenderObject* actor = this->scene->GetGameActorByAID(g_session.unknown_5BC0)) {
+      actor->SendMsg(nullptr, 0x22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00D51A90
+// FUNCTION: fn_21890
+void CGameMode::ReceiveActorTitle(const unsigned char* packet) {
+  char text[81];
+  std::strncpy(text, reinterpret_cast<const char*>(packet + 6), 80);
+  text[80] = '\0';
+  if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2))) {
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(text);
+    actor->SendMsg(nullptr, 0x37, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D61340
+// FUNCTION: fn_21981
+void CGameMode::ReceiveActorInt8(const unsigned char* packet) {
+  if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2))) {
+    const std::int64_t value = *reinterpret_cast<const signed char*>(packet + 6);
+    actor->SendMsg(nullptr, 0x91, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0x14, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D612F0
+// FUNCTION: fn_21980
+void CGameMode::ReceiveActorInt64Pair(const unsigned char* packet) {
+  if (CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2))) {
+    const std::int64_t first = *reinterpret_cast<const int*>(packet + 6);
+    const std::int64_t second = *reinterpret_cast<const int*>(packet + 0xA);
+    actor->SendMsg(
+      nullptr, 0x91, 0, static_cast<int>(first), static_cast<int>(first >> 32), static_cast<int>(second), static_cast<int>(second >> 32), 0, 0, 0, 0, 0, 0, 0, 0
+    );
+  }
+}
