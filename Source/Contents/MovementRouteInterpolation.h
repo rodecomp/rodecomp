@@ -36,6 +36,8 @@ struct MovementRouteInterpolation {
   int NextPoint(std::uint32_t tick, std::uint32_t* nextTick, float* x, float* y) const;
   int Sample(std::uint32_t tick, float* x, float* y, int* metadata);
   std::uint32_t Segment() const;
+  std::uint32_t Duration() const;
+  bool Empty() const;
 };
 
 void BuildMovementRoute(std::uint32_t tick, const PathNode* last, int stepDuration, MovementRouteInterpolation& route);

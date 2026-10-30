@@ -45,6 +45,7 @@ public:
   void Clear();
   void Reset();
   bool CanMove(int startX, int startY, int targetX, int targetY, char flag) const;
+  bool Walkable(int column, int row) const;
   PathNode* FindOrCreateNode(int x, int y);
   bool AddNeighbor(PathNode* current, int cost, int nextX, int nextY, int metadata);
   bool FindPath(
