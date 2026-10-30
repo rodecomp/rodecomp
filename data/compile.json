@@ -488,6 +488,7 @@
   "Source/Contents/Items/ItemLink.cpp": 4,
   "Source/Contents/Items/ItemNaming.cpp": 4,
   "Source/Contents/Items/ItemResources.cpp": 4,
+  "Source/Contents/Items/NeoPackageItemMgr.cpp": 4,
   "Source/Contents/Items/RuneSystem.cpp": 4,
   "Source/Contents/Items/SelectPackageItemMgr.cpp": 4,
   "Source/Contents/JobCodeForItem.cpp": 4,
