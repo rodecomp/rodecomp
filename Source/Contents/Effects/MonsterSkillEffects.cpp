@@ -5,6 +5,7 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/GravityControlEffect.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/Effects/SkillEffects.h"
@@ -16,6 +17,7 @@
 #include "Utility/Math/AffineMatrix.h"
 
 #include <windows.h>
+#include <cstdlib>
 #include <timeapi.h>
 
 // INLINED
@@ -1019,4 +1021,315 @@ void CServantWeaponNewEffect::Slot04() {
 // FUNCTION: fn_07410
 CSevereRainStorm::CSevereRainStorm() : CEffect(-1) {
   this->unknown_0050 = 0;
+}
+
+// OFFSET: 0x0071D650
+// FUNCTION: fn_07334
+void __stdcall fn_07334(CParticle* particle) {
+  particle->alpha = 0;
+  *reinterpret_cast<int*>(particle->unknown_0048) = rand() % 50 + 150;
+  particle->unknown_00A8 = 0;
+  particle->unknown_00E8 = 0;
+  InitParticleQuad(particle->vertices);
+
+  const int spread = rand() % 15 + 2;
+  const int angle = rand() % 360;
+  particle->unknown_00D4 = 0.0f;
+  particle->unknown_00D8 = static_cast<float>(spread) * g_sinTable[angle];
+  particle->unknown_00D0 = static_cast<float>(spread) * g_cosTable[angle];
+  particle->scale = static_cast<float>(rand() % 10) * 0.1f + 0.5f;
+  particle->unknown_00C0 = static_cast<float>(rand() % 30) * 0.01f + 0.05f;
+}
+
+// OFFSET: 0x0071DB70
+// FUNCTION: fn_07337
+void __stdcall fn_07337(CParticle* particle) {
+  particle->unknown_00A9[0] = rand() % 2;
+
+  const int angle = rand() % 360;
+  particle->unknown_00D4 = 0.0f;
+  particle->alpha = 0xFF;
+  particle->unknown_00D0 = g_cosTable[angle] * 18.0f;
+  particle->unknown_00D8 = g_sinTable[angle] * 18.0f;
+  particle->scale = static_cast<float>(rand() % 31) * 0.1f + 2.0f;
+  particle->unknown_00A8 = 0;
+  particle->unknown_00C0 = static_cast<float>(rand() % 31) * 0.01f + 0.05f;
+  InitParticleQuad(particle->vertices);
+}
+
+// OFFSET: 0x0071DC70
+// FUNCTION: fn_07338
+void __stdcall fn_07338(CParticle* particle) {
+  particle->scale = static_cast<float>(rand() % 5) + 10.0f;
+  particle->unknown_00A8 = 10;
+  particle->unknown_00A9[0] = rand() % 4;
+  particle->unknown_004C = rand() % 50 + 10;
+  *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(rand() % 360);
+  particle->unknown_00D8 = static_cast<float>(rand() % 10) - 5.0f;
+  particle->unknown_00D0 = static_cast<float>(rand() % 10) - 5.0f;
+  particle->unknown_00D4 = -10.0f;
+  particle->unknown_00E8 = 0;
+  InitParticleQuad(particle->vertices);
+}
+
+// OFFSET: 0x0071DD80
+// FUNCTION: fn_07339
+void __stdcall fn_07339(CParticle* particle) {
+  particle->alpha = 0;
+  particle->unknown_00A8 = 0;
+  particle->unknown_00E8 = 0;
+  InitParticleQuad(particle->vertices);
+
+  particle->scale = static_cast<float>(rand() % 51) * 0.1f + 7.0f;
+  particle->unknown_00D4 = particle->scale * -0.5f;
+
+  const int spread = rand() % 13 + 2;
+  const int angle = rand() % 360;
+  particle->unknown_00D8 = static_cast<float>(spread) * g_sinTable[angle];
+  particle->unknown_00D0 = static_cast<float>(spread) * g_cosTable[angle];
+
+  particle->unknown_00A9[0] = rand() % 4;
+  *reinterpret_cast<int*>(particle->unknown_0048) = rand() % 151 + 50;
+  particle->unknown_00C0 = static_cast<float>(rand() % 10) * 0.01f + 0.05f;
+}
+
+// OFFSET: 0x0070C2B0
+// FUNCTION: fn_07128
+void CRootTwistEffect::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+}
+
+// OFFSET: 0x0070D000
+// FUNCTION: fn_07143
+void CSpriteMableEffect::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+}
+
+// OFFSET: 0x0070DE50
+// FUNCTION: fn_07165
+void CTunaPartyEffect::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+}
+
+// OFFSET: 0x0070EAD0
+// FUNCTION: fn_07175
+void CCurseOfCubeEffect::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+}
+
+// OFFSET: 0x0070F310
+// FUNCTION: fn_07184
+void CWarningPlaneEffect::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+}
+
+// OFFSET: 0x00710C40
+// FUNCTION: fn_07208
+void CEternalSlashAttackEffect::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+}
+
+// OFFSET: 0x00716960
+// FUNCTION: fn_07276
+void CFullScreenEffect::Close() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->particles.clear();
+}
+
+// OFFSET: 0x00717DA0
+// FUNCTION: fn_07284
+void CGaleStorm::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+}
+
+// OFFSET: 0x007211E0
+// FUNCTION: fn_07369
+void CRandomOptEffect::Close() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->particles.clear();
+}
+
+// OFFSET: 0x0070FB10
+// FUNCTION: fn_07192
+void CCylinderEffect::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+}
+
+// OFFSET: 0x0070C520
+// FUNCTION: fn_07135
+void CSprArrowEffect::Close() {
+  if (this->unknown_00CC != 0) {
+    FreeParticle(reinterpret_cast<CParticle*>(this->unknown_00CC));
+    this->unknown_00CC = 0;
+  }
+}
+
+// OFFSET: 0x0070D980
+// FUNCTION: fn_07158
+void CSvgSpiritEffect::Close() {
+  if (this->emitter != nullptr) {
+    FreeParticle(AsParticle(this->emitter));
+    this->emitter = nullptr;
+  }
+}
+
+// OFFSET: 0x00711250
+// FUNCTION: fn_07215
+void CEternalSlashCountEffect::Close() {
+  if (this->emitter != nullptr) {
+    FreeParticle(AsParticle(this->emitter));
+    this->emitter = nullptr;
+  }
+}
+
+// OFFSET: 0x007205A0
+// FUNCTION: fn_07359
+void CRandomHitEffect::Close() {
+  if (this->emitter != nullptr) {
+    FreeParticle(AsParticle(this->emitter));
+    this->emitter = nullptr;
+  }
+}
+
+// OFFSET: 0x00711570
+// FUNCTION: fn_07222
+void CFallenAngelEffect::Close() {
+  FreeParticle(AsParticle(this->emitter));
+}
+
+// OFFSET: 0x007221B0
+// FUNCTION: fn_07383
+void CSavageImpactEffect::Close() {
+  FreeParticle(AsParticle(this->emitter));
+}
+
+// OFFSET: 0x007193B0
+// FUNCTION: fn_07306
+void CDropItemEffect::Close() {
+  for (std::size_t i = 0; i < this->emitters.size(); ++i) {
+    if (this->emitters[i] != nullptr) {
+      FreeParticle(AsParticle(this->emitters[i]));
+    }
+  }
+}
+
+// OFFSET: 0x00711A20
+// FUNCTION: fn_07230
+void CFloralFlareRoad::Close() {
+  FreeParticle(AsParticle(this->unknown_00CC));
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+}
+
+// OFFSET: 0x0071FD50
+// FUNCTION: fn_07353
+void CPneumaticusProcellaEffect::Close() {
+  if (this->emitter != nullptr) {
+    FreeParticle(AsParticle(this->emitter));
+    this->emitter = nullptr;
+  }
+  for (std::vector<EZ2STREmitter*>::iterator it = this->emitters.begin(); it < this->emitters.end(); ++it) {
+    if (*it != nullptr) {
+      FreeParticle(AsParticle(*it));
+      *it = nullptr;
+    }
+  }
+  this->emitters.clear();
+}
+
+// OFFSET: 0x00723370
+// FUNCTION: fn_07398
+void CServantWeaponEffect::Close() {
+  for (int column = 0; column < 5; ++column) {
+    if (this->emitters[0][column] != nullptr) {
+      FreeParticle(AsParticle(this->emitters[0][column]));
+      this->emitters[0][column] = nullptr;
+    }
+    if (this->emitters[1][column] != nullptr) {
+      FreeParticle(AsParticle(this->emitters[1][column]));
+      this->emitters[1][column] = nullptr;
+    }
+    if (this->emitters[2][column] != nullptr) {
+      FreeParticle(AsParticle(this->emitters[2][column]));
+      this->emitters[2][column] = nullptr;
+    }
+  }
+}
+
+// OFFSET: 0x00712350
+// FUNCTION: fn_07237
+void CFootprintEffect::Close() {
+  for (EZ2STREmitter* emitter : this->emitters) {
+    FreeParticle(AsParticle(emitter));
+  }
+  this->emitters.clear();
+}
+
+// OFFSET: 0x00710790
+// FUNCTION: fn_07201
+void CDancingKnifeEffect::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+  for (auto it = this->unknown_00D8.begin(); it != this->unknown_00D8.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->unknown_00D8.clear();
+}
+
+// OFFSET: 0x0071C4B0
+// FUNCTION: fn_07322
+void CJupitelThunderHit::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+  for (auto it = this->unknown_00D8.begin(); it != this->unknown_00D8.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->unknown_00D8.clear();
+}
+
+// OFFSET: 0x00721860
+// FUNCTION: fn_07376
+void CRichsCoinEffect::Close() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->particles.clear();
+  for (auto it = this->coins.begin(); it != this->coins.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->coins.clear();
 }

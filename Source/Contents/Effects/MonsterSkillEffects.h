@@ -26,6 +26,7 @@ public:
   void Slot04() override;
   bool Slot06() override;
   void Slot12() override;
+  void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
 };
@@ -35,6 +36,7 @@ public:
   CSpriteMableEffect();
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
 };
@@ -55,6 +57,7 @@ public:
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
 };
@@ -64,6 +67,7 @@ public:
   CTunaPartyEffect();
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
 };
@@ -73,6 +77,7 @@ public:
   CCurseOfCubeEffect();
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ int unknown_00D8;
@@ -87,6 +92,7 @@ public:
   void Slot01() override;
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ unsigned char fadingIn;
@@ -99,6 +105,7 @@ public:
   CCylinderEffect();
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ unsigned int startTime;
   /* 00D0 */ std::vector<EZ2STREmitter*> emitters;
@@ -109,6 +116,7 @@ public:
   CDancingKnifeEffect();
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ std::vector<EZ2STREmitter*> unknown_00D8;
@@ -121,6 +129,7 @@ public:
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
 };
@@ -131,6 +140,7 @@ public:
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
 };
@@ -141,6 +151,7 @@ public:
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
   void SetPosition(vector3d position);
 
   /* 00CC */ EZ2STREmitter* emitter;
@@ -154,6 +165,7 @@ public:
   CFloralFlareRoad();
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ EZ2STREmitter* unknown_00CC;
   /* 00D0 */ std::vector<EZ2STREmitter*> emitters;
@@ -165,6 +177,7 @@ public:
   void Slot04() override;
   bool Slot06() override;
   bool Slot33() override;
+  void Close() override;
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::string unknown_00D4;
@@ -215,6 +228,7 @@ public:
   CFullScreenEffect();
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ unsigned char loaded;
@@ -235,6 +249,7 @@ class CPneumaticusProcellaEffect : public CEffect {
 public:
   CPneumaticusProcellaEffect();
   void Slot04() override;
+  void Close() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
   /* 00D0 */ std::vector<EZ2STREmitter*> emitters;
@@ -245,6 +260,7 @@ public:
   CRandomHitEffect();
   void Slot03() override;
   void Slot04() override;
+  void Close() override;
 
   /* 00CC */ bool active;
   /* 00CD */ unsigned char unknown_00CD[3];
@@ -257,6 +273,7 @@ public:
   void Slot04() override;
   void Slot08(int red, int green, int blue) override;
   void Slot11(std::string name) override;
+  void Close() override;
 
   /* 00CC */ vector3d offsets[2];
   /* 00E4 */ std::vector<CParticle*> particles;
@@ -267,6 +284,7 @@ public:
   CRichsCoinEffect();
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ std::vector<CParticle*> coins;
@@ -279,6 +297,7 @@ public:
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ EZ2STREmitter* emitter;
   /* 00D0 */ vector3d offset;
@@ -288,6 +307,7 @@ class CServantWeaponEffect : public CEffect {
 public:
   CServantWeaponEffect();
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ vector3d offsets[5];
   /* 0108 */ EZ2STREmitter* emitters[3][5];
@@ -318,6 +338,7 @@ public:
   void Slot01() override;
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ int unknown_00D8;
@@ -329,6 +350,7 @@ public:
   CJupitelThunderHit();
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
   /* 00D8 */ std::vector<EZ2STREmitter*> unknown_00D8;
@@ -355,6 +377,7 @@ public:
   CDropItemEffect();
   void Slot03() override;
   void Slot04() override;
+  void Close() override;
 
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ int emitterCount;
