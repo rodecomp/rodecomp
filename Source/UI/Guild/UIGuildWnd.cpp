@@ -1598,3 +1598,77 @@ void UIGuildSkillWnd::Slot25(int x, int y) {
 }
 
 // OFFSET: 0x0095F460
+
+// FUNCTION: fn_13079
+void UIGuildTotalInfoWnd::Paint() {
+  UIGuildWnd::Paint();
+  for (int index = 0; index < 12; ++index) {
+    this->m_rows[index]->Move(-200, -200);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+  this->FillRegion(4, 45, this->geometry.width - 22, this->geometry.height - 69, RGB(red, green, blue));
+
+  const int cellHeight = g_guildTotalInfoRowHeight - 1;
+  int widths[4];
+  widths[0] = g_guildTotalInfoColumnWidths[0];
+  widths[1] = g_guildTotalInfoColumnWidths[1];
+  widths[2] = g_guildTotalInfoColumnWidths[2];
+  widths[3] = g_guildTotalInfoColumnWidths[3];
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  for (int row = 0; row < 12; ++row) {
+    int x = 0;
+    for (int column = 0; column < 4; ++column) {
+      const int width = widths[column];
+      this->FillRegion(x + 5, row * g_guildTotalInfoRowHeight + 46, width, cellHeight, RGB(red, green, blue));
+      x += width + 1;
+    }
+  }
+
+  const char* headers[4];
+  headers[0] = LookupMessage(517);
+  headers[1] = LookupMessage(518);
+  headers[2] = LookupMessage(519);
+  headers[3] = LookupMessage(520);
+  auto& controls = *this->m_controls;
+  int x = 0;
+  for (int column = 0; column < 4; ++column) {
+    this->DrawTextAt(controls.fonts, controls.locale, x + 8, 49, headers[column], 0, 0, 12, 0, 0, 0);
+    x += widths[column] + 1;
+  }
+
+  const auto& entries = *reinterpret_cast<const std::list<GuildTotalInfoEntry>*>(&GuildData().unknown_00F4);
+  int drawn = 0;
+  int index = 0;
+  for (auto entry = entries.begin(); entry != entries.end(); ++entry, ++index) {
+    if (index < this->m_scrollTop * this->m_columns) {
+      continue;
+    }
+
+    const int y = drawn / this->m_columns * g_guildBanishedRowHeight + 68;
+    if (this->m_hoverRow == index) {
+      unsigned hoverRed, hoverGreen, hoverBlue;
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      this->FillRegion(5, y - 3, this->geometry.width - 24, 18, RGB(hoverRed, hoverGreen, hoverBlue));
+    }
+
+    char buffer[512];
+    this->m_rows[drawn]->SetTextFitted(entry->name.c_str());
+    this->m_rows[drawn]->Move(8, y);
+    std::sprintf(buffer, "%d", entry->unknown_001C);
+    this->DrawTextAt(controls.fonts, controls.locale, g_guildTotalInfoColumnWidths[0] + 9, y, buffer, 0, 0, 12, 0, 0, 0);
+    std::sprintf(buffer, "%d/%d", entry->unknown_0020, entry->unknown_0024);
+    this->DrawTextAt(
+      controls.fonts, controls.locale, g_guildTotalInfoColumnWidths[0] + g_guildTotalInfoColumnWidths[1] + 10, y, buffer, 0, 0, 12, 0, 0, 0
+    );
+    std::sprintf(buffer, "%d", entry->unknown_0028);
+    this->DrawTextAt(
+      controls.fonts, controls.locale,
+      g_guildTotalInfoColumnWidths[0] + g_guildTotalInfoColumnWidths[1] + g_guildTotalInfoColumnWidths[2] + 11, y, buffer, 0, 0, 12, 0, 0, 0
+    );
+    if (++drawn == this->m_visibleRows * this->m_columns) {
+      return;
+    }
+  }
+}
