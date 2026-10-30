@@ -730,6 +730,17 @@ bool UIWindow::Contains(const UIWindow* window) const {
   return false;
 }
 
+// OFFSET: 0x00A7B3F0
+// FUNCTION: fn_16926
+void UIWindow::ResetStates() {
+  this->geometry.unknown_0030 = 0;
+  this->Invalidate();
+
+  for (auto it = this->m_children.begin(); it != this->m_children.end(); ++it) {
+    (*it)->ResetStates();
+  }
+}
+
 // OFFSET: 0x00A7B430
 // FUNCTION: fn_16927
 void UIWindow::ClearSurface(std::uint32_t color) {

@@ -124,6 +124,7 @@ public:
   UIWindow* Root();
   UIWindow* NextFocusable(UIWindow* child);
   UIWindow* PreviousFocusable(UIWindow* child);
+  void ResetStates();
   void ClearSurface(std::uint32_t color);
   void SetSize(int width, int height);
   void DrawBitmap(int x, int y, const BitmapImage* image, bool transparent);
