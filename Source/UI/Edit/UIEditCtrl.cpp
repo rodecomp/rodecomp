@@ -2181,55 +2181,625 @@ void UIItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
 }
 
 // OFFSET: 0x009729C0
+// FUNCTION: fn_13276
+void UIMerchantItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source == 12) {
+    switch (drag->type) {
+    case 4:
+    case 5:
+    case 8:
+    case 9:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+      if (g_session.GetItem1760Quantity(drag->id)) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(119)), 0xFF, 0, 0, 0);
+        return;
+      }
+
+      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      return;
+    default:
+      reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+      g_windowMgr.window_01EC->SendMsg(nullptr, 13, 12, 0, 0, 0);
+      return;
+    }
+  }
+
+  if (drag->source == 22) {
+    if (drag->quantity > 1) {
+      reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+      g_windowMgr.window_01EC->SendMsg(nullptr, 13, 17, 0, 0, 0);
+      return;
+    }
+
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  }
+
+  mode->SendMsg(18, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x00972CE0
+// FUNCTION: fn_13279
+void UIMerchantMirrorItemWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  switch (drag->source) {
+  case 10:
+  case 21:
+    if (drag->quantity == 1) {
+      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      return;
+    }
+
+    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    if (this->unknown_00F4 == 2) {
+      g_windowMgr.window_01EC->SendMsg(nullptr, 13, 18, 0, 0, 0);
+      return;
+    }
+
+    g_windowMgr.window_01EC->SendMsg(nullptr, 13, 10, 0, 0, 0);
+    return;
+  case 19:
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  default:
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+}
 
 // OFFSET: 0x00972DB0
+// FUNCTION: fn_13280
+void UIMerchantShopMakeWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  switch (drag->source) {
+  case 11:
+    if (drag->quantity == 1) {
+      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      return;
+    }
+
+    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.window_01EC->SendMsg(nullptr, 13, 9, 0, 0, 0);
+    return;
+  case 20:
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  default:
+    g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+}
 
 // OFFSET: 0x009738A0
+// FUNCTION: fn_13290
+int UIItemBaseWnd::GetItemIndexAt(int x, int y) {
+  if (x < 40 || y < 17 || y >= this->visibleRows * 32 + 17) {
+    return -1;
+  }
+
+  int column = (x - 40) / 32;
+  const int row = (y - 17) / 32;
+
+  if (column > this->columns - 1) {
+    column = this->columns - 1;
+  }
+
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index >= this->scroll * this->columns) {
+      if (!g_session.IsPetEgg(std::atoi(it->itemId.c_str())) || !it->unknown_005D) {
+        if (visible == this->columns * row + column) {
+          return index;
+        }
+
+        ++visible;
+      }
+    }
+  }
+
+  return -1;
+}
 
 // OFFSET: 0x00984050
 
 // OFFSET: 0x009840C0
 
 // OFFSET: 0x009844E0
+// FUNCTION: fn_13354
+void UISkillListWnd::Slot26(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+    return;
+  }
+
+  if (this->hovered != -1) {
+    CSkillInfo skill = this->GetSkillByIndex(this->hovered);
+
+    if (skill.available && skill.level && skill.unknown_0014) {
+      this->SendMsg(nullptr, 58, reinterpret_cast<std::intptr_t>(&skill), 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00985510
+// FUNCTION: fn_13366
+void UIMerchantItemShopWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  if (this->unknown_010C == 0) {
+    const int previous = this->hovered;
+    this->hovered = this->GetItemIndexAt(x, y);
+
+    if (previous != this->hovered) {
+      this->Invalidate();
+    }
+
+    ITEM_INFO item = this->GetItemByIndex(this->hovered);
+
+    if (item.unknown_0000[1] > 0) {
+      ItemDescriptions descriptions{g_itemDescriptions};
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 12, item, 1, -1);
+    }
+  }
+}
 
 // OFFSET: 0x00988C60
+// FUNCTION: fn_13391
+void UIItemPurchaseWnd::Slot32(int x, int y) {
+  const int previous = this->hovered;
+  this->hovered = this->GetItemIndexAt(x, y);
+
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+
+  ITEM_INFO item = this->GetItemByIndex(this->hovered);
+
+  if (item.unknown_0000[1] > 0) {
+    g_modeMgr.GetGameMode();
+    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00988F90
+// FUNCTION: fn_13395
+void UIItemShopWnd::Slot32(int x, int y) {
+  const int previous = this->hovered;
+  this->hovered = this->GetItemIndexAt(x, y);
+
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+
+  ITEM_INFO item = this->GetItemByIndex(this->hovered);
+
+  if (item.unknown_0000[1] > 0) {
+    g_modeMgr.GetGameMode();
+    this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x0098A260
+// FUNCTION: fn_13409
+void UIItemBaseWnd::Slot35(int value) {
+  if (this->unknown_00E4) {
+    int step = this->visibleRows - 1;
+    if (step > 3) {
+      step = 3;
+    }
+
+    this->SendMsg(this->scrollBar, 7, value < 0 ? step : -step, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x0098A2B0
+// FUNCTION: fn_13410
+void UIItemStoreFindWnd::Slot35(int value) {
+  if (this->unknown_00E4) {
+    int step = this->visibleRows - 1;
+    if (step > 3) {
+      step = 3;
+    }
+
+    this->SendMsg(this->scrollBar, 7, value < 0 ? step : -step, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x0098A300
+// FUNCTION: fn_13411
+void UIItemStoreSubWnd::Slot35(int value) {
+  if (this->unknown_00E4) {
+    int step = this->visibleRows - 1;
+    if (step > 3) {
+      step = 3;
+    }
+
+    this->SendMsg(this->scrollBar, 7, value < 0 ? step : -step, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x0098A350
+// FUNCTION: fn_13412
+void UIMerchantShopMakeWnd::Slot35(int value) {
+  if (this->unknown_0144) {
+    int step = this->unknown_0140 - 1;
+    if (step > 3) {
+      step = 3;
+    }
+
+    this->SendMsg(this->scrollBar, 7, value < 0 ? step : -step, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00993A20
+// FUNCTION: fn_13434
+int UINoticeMessageBox_LockSellItem::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message != 6) {
+    UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+    return 0;
+  }
+
+  if (a == 201 && this->parent) {
+    this->parent->SendMsg(this, 6, 201, 0, 0, 0);
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00898650
+// FUNCTION: fn_11549
+int UIEditCtrl_Currency::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == WM_KEYDOWN) {
+    if (a == VK_BACK) {
+      int anchor;
+      int cursor;
+      this->m_edit->input.Selection(anchor, cursor);
+
+      if (anchor == cursor) {
+        if (cursor <= 2) {
+          if (this->text[1] == ',') {
+            this->m_edit->input.Select(0, 2);
+          }
+        } else if (this->text[cursor - 1] == ',') {
+          this->m_edit->input.Select(cursor - 1, cursor - 1);
+        }
+      }
+    } else if (a == VK_DELETE) {
+      int anchor;
+      int cursor;
+      this->m_edit->input.Selection(anchor, cursor);
+
+      if (anchor == cursor) {
+        if (cursor == 0) {
+          if (this->text[1] == ',') {
+            this->m_edit->input.Select(0, 2);
+          }
+        } else if (this->text[cursor] == ',') {
+          this->m_edit->input.Select(cursor + 1, cursor + 1);
+        }
+      }
+    }
+  }
+
+  return UIEditCtrl2::SendMsg(sender, message, a, b, c, d);
+}
 
 // OFFSET: 0x009845A0
+// FUNCTION: fn_13355
+void UIItemPurchaseWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  const int previous = this->hovered;
+  this->hovered = this->GetItemIndexAt(x, y);
+
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->GetItemByIndex(this->hovered);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    item = g_session.FindItem1720ByItemId(item.itemId.c_str());
+    ItemDescriptions descriptions{g_itemDescriptions};
+    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 4, item, item.quantity, -1);
+  }
+}
 
 // OFFSET: 0x00984700
+// FUNCTION: fn_13356
+void UIItemSellWnd2::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  const int previous = this->hovered;
+  this->hovered = this->GetItemIndexAt(x, y);
+
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] == 0) {
+    item = this->GetItemByIndex(this->hovered);
+
+    if (item.unknown_0000[1] > 0) {
+      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 1, 0, 0);
+    }
+  }
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    item = g_session.FindItem1730(item.unknown_0000[1]);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 5, item, item.quantity, -1);
+  }
+}
 
 // OFFSET: 0x009848E0
+// FUNCTION: fn_13357
+void UIItemSellWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  const int previous = this->hovered;
+  this->hovered = this->GetItemIndexAt(x, y);
+
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] == 0) {
+    item = this->GetItemByIndex(this->hovered);
+
+    if (item.unknown_0000[1] > 0) {
+      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 1, 0, 0);
+    }
+  }
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    item = g_session.FindItem1730(item.unknown_0000[1]);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 5, item, item.quantity, -1);
+  }
+}
 
 // OFFSET: 0x00984AC0
+// FUNCTION: fn_13358
+void UIItemShopWnd2::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  const int previous = this->hovered;
+  this->hovered = this->GetItemIndexAt(x, y);
+
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] == 0) {
+    item = this->GetItemByIndex(this->hovered);
+
+    if (item.unknown_0000[1] > 0) {
+      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 1, 0, 0);
+    }
+  }
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, item.unknown_0000[1]);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 3, item, owned.unknown_0000[1] > 0 ? item.quantity : 1, -1);
+  }
+}
 
 // OFFSET: 0x00984CA0
+// FUNCTION: fn_13359
+void UIItemShopWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  const int previous = this->hovered;
+  this->hovered = this->GetItemIndexAt(x, y);
+
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->GetItemByIndex(this->hovered);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, item.unknown_0000[1]);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 3, item, owned.unknown_0000[1] > 0 ? item.quantity : 1, -1);
+  }
+}
 
 // OFFSET: 0x00984DF0
+// FUNCTION: fn_13360
+void UIItemStoreFindWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0 && item.unknown_0074[2] == 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    item = g_session.FindItem1738(item.unknown_0000[1]);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 6, item, item.quantity, -1);
+  }
+}
 
 // OFFSET: 0x00984F10
+// FUNCTION: fn_13361
+void UIItemStoreSubWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0 && item.unknown_0074[2] == 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    item = g_session.FindItem1738(item.unknown_0000[1]);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 6, item, item.quantity, -1);
+  }
+}
 
 // OFFSET: 0x00985030
+// FUNCTION: fn_13362
+void UIItemStoreWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0 && item.unknown_0074[2] == 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    item = g_session.FindItem1738(item.unknown_0000[1]);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 6, item, item.quantity, -1);
+  }
+}
 
 // OFFSET: 0x009853A0
+// FUNCTION: fn_13365
+void UIMerchantItemPurchaseWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  const int previous = this->hovered;
+  this->hovered = this->GetItemIndexAt(x, y);
+
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->GetItemByIndex(this->hovered);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    item = g_session.FindItem1760ByItemId(item.itemId.c_str());
+    ItemDescriptions descriptions{g_itemDescriptions};
+    mode->drag.BeginItem(this->m_frameContext->windows, descriptions, this->unknown_0108 != 0 ? 21 : 13, item, item.quantity, -1);
+  }
+}
 
 // OFFSET: 0x00985830
+// FUNCTION: fn_13368
+void UIMerchantMirrorItemWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    item = g_session.FindItem1750(item.unknown_0000[1]);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    mode->drag.BeginItem(
+      this->m_frameContext->windows, descriptions, this->unknown_00F4 == 1 ? 20 : this->unknown_00F4 == 2 ? 22 : 11, item, item.quantity, -1
+    );
+  }
+}
 
 // OFFSET: 0x00985970
+// FUNCTION: fn_13369
+void UIMerchantShopMakeWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+    return;
+  }
+
+  if (g_replayAnimationScaling != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    item = g_session.FindItem1768(item.unknown_0000[1]);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    gameMode->drag.BeginItem(this->m_frameContext->windows, descriptions, this->mode != 0 ? 19 : 10, item, item.quantity, -1);
+  }
+}
