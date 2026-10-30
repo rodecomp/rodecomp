@@ -34,8 +34,29 @@ void CReassemblyPacketImpl::Detach() {
 }
 
 // OFFSET: 0x00B15510
+// FUNCTION: fn_18421
+bool CReassemblyPacketImpl::Create() {
+  if (g_packetReassembler == nullptr) {
+    g_packetReassembler = new (std::nothrow) CReassemblyPacketImpl();
+    if (g_packetReassembler != nullptr) {
+      if (g_packetReassembler->m_valid) {
+        return true;
+      }
+      delete g_packetReassembler;
+      g_packetReassembler = nullptr;
+    }
+  }
+  return false;
+}
 
 // OFFSET: 0x00B155D0
+// FUNCTION: fn_18422
+void CReassemblyPacketImpl::Destroy() {
+  if (g_packetReassembler != nullptr) {
+    delete g_packetReassembler;
+    g_packetReassembler = nullptr;
+  }
+}
 
 // OFFSET: 0x00B155F0
 // FUNCTION: fn_18423
@@ -44,6 +65,20 @@ int CReassemblyPacketImpl::Notify(int) {
 }
 
 // OFFSET: 0x00B156E0
+// FUNCTION: fn_18424
+bool CReassemblyPacketMgr::CreateInstance() {
+  if (g_reassemblyPacketMgr == nullptr) {
+    g_reassemblyPacketMgr = new (std::nothrow) CReassemblyPacketMgr();
+    if (g_reassemblyPacketMgr != nullptr) {
+      if (g_reassemblyPacketMgr->m_valid) {
+        return true;
+      }
+      delete g_reassemblyPacketMgr;
+      g_reassemblyPacketMgr = nullptr;
+    }
+  }
+  return false;
+}
 
 // OFFSET: 0x00B157A0
 // FUNCTION: fn_18425
@@ -52,3 +87,10 @@ void CReassemblyPacketMgr::Release() {
 }
 
 // OFFSET: 0x00B157B0
+// FUNCTION: fn_18426
+void CReassemblyPacketMgr::DestroyInstance() {
+  if (g_reassemblyPacketMgr != nullptr) {
+    delete g_reassemblyPacketMgr;
+    g_reassemblyPacketMgr = nullptr;
+  }
+}
