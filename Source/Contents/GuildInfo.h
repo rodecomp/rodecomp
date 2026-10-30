@@ -44,6 +44,13 @@ public:
     /* 0008 */ std::string unknown_0008;
   };
 
+  struct Unknown00ECEntry {
+    /* 0000 */ int characterId;
+    /* 0004 */ std::string name;
+    /* 001C */ std::string unknown_001C;
+    /* 0034 */ std::string unknown_0034;
+  };
+
   /* 0000 */ std::string unknown_0000;
   /* 0018 */ std::string unknown_0018;
   /* 0030 */ std::string unknown_0030;
@@ -75,7 +82,7 @@ public:
   /* 00D4 */ std::list<Unknown00D4Entry> unknown_00D4;
   /* 00DC */ std::list<Member> m_members;
   /* 00E4 */ std::list<RelatedGuild> unknown_00E4;
-  /* 00EC */ std::list<int> unknown_00EC;
+  /* 00EC */ std::list<Unknown00ECEntry> unknown_00EC;
   /* 00F4 */ std::list<int> unknown_00F4;
   /* 00FC */ std::map<int, std::string> m_positions;
   /* 0104 */ std::map<int, int> unknown_0104;
@@ -101,6 +108,9 @@ public:
   void UpdateUnknown00D4(Unknown00D4Entry entry);
   void AddUnknown0114(int value);
   void AddMember(const Member& member);
+  void AddUnknown00EC(const Unknown00ECEntry& entry);
+  int DeleteMemberByCharacterId(int characterId);
+  void UpdateCharacterName(int characterId, const char* name);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -116,6 +126,12 @@ static_assert(offsetof(GuildInfo::Member, online) == 0x70);
 static_assert(sizeof(GuildInfo::Unknown00D4Entry) == 0x30);
 
 static_assert(sizeof(GuildInfo::RelatedGuild) == 0x20);
+
+static_assert(sizeof(GuildInfo::Unknown00ECEntry) == 0x4C);
+static_assert(offsetof(GuildInfo::Unknown00ECEntry, characterId) == 0x00);
+static_assert(offsetof(GuildInfo::Unknown00ECEntry, name) == 0x04);
+static_assert(offsetof(GuildInfo::Unknown00ECEntry, unknown_001C) == 0x1C);
+static_assert(offsetof(GuildInfo::Unknown00ECEntry, unknown_0034) == 0x34);
 
 static_assert(sizeof(GuildInfo) == 0x120);
 static_assert(offsetof(GuildInfo, m_guildId) == 0xA8);

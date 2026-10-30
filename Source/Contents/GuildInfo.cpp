@@ -4,8 +4,17 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/MessageTable.h"
 #include "Contents/World/World.h"
+#include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+
+// OFFSET: 0x00AE40C0
+// FUNCTION: fn_18029
+void GuildInfo::AddUnknown00EC(const Unknown00ECEntry& entry) {
+  this->unknown_00EC.push_back(entry);
+  g_windowMgr.RefreshGuildWindows();
+}
 
 // OFFSET: 0x00AE41C0
 // FUNCTION: fn_18030
@@ -165,6 +174,25 @@ void GuildInfo::UpdateMemberExpRatios() {
   }
 }
 
+// OFFSET: 0x00AE4C00
+// FUNCTION: fn_18042
+int GuildInfo::DeleteMemberByCharacterId(int characterId) {
+  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
+    if (it->characterId == characterId) {
+      if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
+        CRenderObject* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetActorByGID(it->characterId);
+        if (actor != nullptr) {
+          static_cast<CGameActor*>(actor)->Slot48(0);
+        }
+      }
+      this->m_members.erase(it);
+      g_windowMgr.RefreshGuildWindows();
+      return 1;
+    }
+  }
+  return 0;
+}
+
 // OFFSET: 0x00AE4CA0
 // FUNCTION: fn_18043
 int GuildInfo::DeleteMember(const char* name) {
@@ -176,6 +204,37 @@ int GuildInfo::DeleteMember(const char* name) {
     }
   }
   return 0;
+}
+
+// OFFSET: 0x00AE4D30
+// FUNCTION: fn_18044
+void GuildInfo::UpdateCharacterName(int characterId, const char* name) {
+  if (this->unknown_00D0 == characterId) {
+    this->unknown_0018 = name;
+  }
+
+  std::string unknownName = LookupMessage(581);
+  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
+    if (it->characterId == characterId) {
+      if (it->name.empty() || it->name == unknownName) {
+        it->name = name;
+      }
+      break;
+    }
+  }
+
+  for (auto it = this->unknown_00EC.begin(); it != this->unknown_00EC.end(); ++it) {
+    if (it->characterId == characterId) {
+      if (it->name.empty() || it->name == unknownName) {
+        it->name = name;
+      }
+      break;
+    }
+  }
+
+  if (g_windowMgr.GetGuildWindow()) {
+    g_windowMgr.GetGuildWindow()->Invalidate();
+  }
 }
 
 // OFFSET: 0x00AE4F50
