@@ -36,3 +36,9 @@ void UIWindowMgr::ForgetWindowReferences(UIWindow* removed) {
     this->window_4F1D4 = nullptr;
   }
 }
+
+// OFFSET: 0x00AA8F30
+// FUNCTION: fn_17250
+void UIWindowMgr::ClearWindow01B8() {
+  this->window_01B8 = nullptr;
+}
