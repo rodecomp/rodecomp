@@ -4,6 +4,8 @@
 #include "Client/Session.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/MessageTable.h"
+#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/MessengerMember.h"
 #include "Contents/World/World.h"
 #include "UI/Items/UIEquipWnd.h"
@@ -73,6 +75,37 @@ namespace {
     /* 001F */ ItemRandomOption options[5];
     /* 0038 */ unsigned char refine;
     /* 0039 */ unsigned char grade;
+  };
+
+  struct ItemSlotPacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ int slot;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ int itemId;
+    /* 000B */ unsigned char identified;
+    /* 000C */ unsigned char damaged;
+    /* 000D */ unsigned char refine;
+    /* 000E */ std::uint32_t cards[4];
+  };
+
+  struct ItemSlotOptionsPacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ int slot;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ int itemId;
+    /* 000B */ unsigned char identified;
+    /* 000C */ unsigned char damaged;
+    /* 000D */ unsigned char refine;
+    /* 000E */ std::uint32_t cards[4];
+    /* 001E */ ItemRandomOption options[5];
+  };
+
+  struct FriendNoticePacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ std::int16_t result;
+    /* 0004 */ int accountId;
+    /* 0008 */ int characterId;
+    /* 000C */ char name[24];
   };
 #pragma pack(pop)
 
@@ -287,6 +320,66 @@ void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
   }
   item.unknown_0088 = 0;
   reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 1);
+}
+
+// OFFSET: 0x00D1F770
+
+// OFFSET: 0x00D1F970
+
+// OFFSET: 0x00D1FBA0
+// FUNCTION: fn_21643
+void sub_D1FBA0(const unsigned char* data) {
+  const FriendNoticePacket* packet = reinterpret_cast<const FriendNoticePacket*>(data);
+  char name[25];
+  std::memcpy(name, packet->name, 24);
+  name[24] = '\0';
+
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+
+  char buffer[128];
+  const char* format = nullptr;
+  switch (packet->result) {
+    case 0: {
+      std::sprintf(buffer, LookupMessage(821), name);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0xFFFF00, 0, 0, 0);
+
+      MessengerMember member;
+      member.name = name;
+      member.accountId = packet->accountId;
+      member.characterId = packet->characterId;
+      member.offline = 0;
+      ClientMessenger messenger{g_session.m_partyMembers, g_session.m_friends};
+      messenger.AddFriend(member);
+      g_session.RefreshWindow02C8();
+      return;
+    }
+    case 1:
+      format = LookupMessage(822);
+      break;
+    case 2:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(819)), 0xFF, 0, 0, 0);
+      return;
+    case 3:
+      format = LookupMessage(820);
+      break;
+    case 4:
+      format = LookupMessage(2737);
+      break;
+    case 6:
+      format = LookupMessage(3448);
+      break;
+    case 7:
+      format = LookupMessage(3449);
+      break;
+    case 8:
+      format = LookupMessage(3450);
+      break;
+    default:
+      return;
+  }
+
+  std::sprintf(buffer, format, name);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D1FDA0
@@ -1038,30 +1131,205 @@ int ClientItemLists::IsDifferentName(const char* name, const char* other) {
 // OFFSET: 0x00DDA470
 
 // OFFSET: 0x00DDA510
+// FUNCTION: fn_23339
+void ClientItemLists::RemoveItem1710(std::uint32_t id, int quantity) {
+  for (auto it = this->inventory.begin(); it != this->inventory.end(); ++it) {
+    if (it->unknown_0000[1] == id) {
+      if (quantity < it->quantity) {
+        it->quantity -= quantity;
+      } else {
+        this->inventory.erase(it);
+      }
+      for (auto it2 = this->inventory.begin(); it2 != this->inventory.end(); ++it2) {
+        if (it2->unknown_0000[1] == id) {
+          it2->unknown_0074[2] = 0;
+          break;
+        }
+      }
+      break;
+    }
+  }
+  RefreshItemWindows(&g_windowMgr);
+}
 
 // OFFSET: 0x00DDA5A0
+// FUNCTION: fn_23340
+bool ClientItemLists::RemoveItem1768(const ITEM_INFO& item, unsigned char alternate) {
+  int index = 0;
+  for (auto it = this->items_1768.begin(); it != this->items_1768.end(); ++it, ++index) {
+    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+      if (!alternate) {
+        it->quantity -= item.quantity;
+        if (it->quantity < 1) {
+          this->items_1768.erase(it);
+          reinterpret_cast<CSession*>(this)->RefreshItem1768Window(0, index + 1);
+          return true;
+        }
+        reinterpret_cast<CSession*>(this)->RefreshItem1768Window(0, 0);
+        return true;
+      }
+      this->items_1768.erase(it);
+      reinterpret_cast<CSession*>(this)->RefreshItem1768Window(1, 0);
+      return true;
+    }
+  }
+  reinterpret_cast<CSession*>(this)->RefreshItem1768Window(alternate, 0);
+  return false;
+}
 
 // OFFSET: 0x00DDA690
+// FUNCTION: fn_23341
+bool ClientItemLists::RemoveItem1740(const ITEM_INFO& item) {
+  for (auto it = this->items_1740.begin(); it != this->items_1740.end(); ++it) {
+    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+      it->quantity -= item.quantity;
+      if (it->quantity < 1) {
+        this->items_1740.erase(it);
+      }
+      for (auto it2 = this->items_1740.begin(); it2 != this->items_1740.end(); ++it2) {
+        if (it2->unknown_0000[1] == item.unknown_0000[1]) {
+          it2->unknown_0074[2] = 0;
+          break;
+        }
+      }
+      reinterpret_cast<CSession*>(this)->RefreshItem1740Window();
+      return true;
+    }
+  }
+  reinterpret_cast<CSession*>(this)->RefreshItem1740Window();
+  return false;
+}
 
 // OFFSET: 0x00DDA740
 
 // OFFSET: 0x00DDA8B0
 
 // OFFSET: 0x00DDA920
+// FUNCTION: fn_23344
+void ClientItemLists::RemoveItem1760(const ITEM_INFO& item) {
+  for (auto it = this->items_1760.begin(); it != this->items_1760.end(); ++it) {
+    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+      it->quantity -= item.quantity;
+      if (it->quantity < 1) {
+        this->items_1760.erase(it);
+      }
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00DDA9C0
+// FUNCTION: fn_23345
+void ClientItemLists::RemoveItem1718ByItemId(const ITEM_INFO& item) {
+  for (auto it = this->items_1718.begin(); it != this->items_1718.end(); ++it) {
+    if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
+      if (it->quantity != -1) {
+        it->quantity -= item.quantity;
+        if (it->quantity < 1) {
+          this->items_1718.erase(it);
+        }
+      }
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00DDAA50
+// FUNCTION: fn_23346
+void ClientItemLists::RemoveItem1718(const ITEM_INFO& item) {
+  for (auto it = this->items_1718.begin(); it != this->items_1718.end(); ++it) {
+    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+      if (it->quantity != -1) {
+        it->quantity -= item.quantity;
+        if (it->quantity < 1) {
+          this->items_1718.erase(it);
+        }
+      }
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00DDAAB0
+// FUNCTION: fn_23347
+void ClientItemLists::RemoveItem1720ByName(const ITEM_INFO& item) {
+  for (auto it = this->items_1720.begin(); it != this->items_1720.end(); ++it) {
+    if (it->itemId == item.itemId) {
+      it->quantity -= item.quantity;
+      if (it->quantity < 1) {
+        this->items_1720.erase(it);
+      }
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00DDAB30
+// FUNCTION: fn_23348
+void ClientItemLists::RemoveItem1720(const ITEM_INFO& item) {
+  const bool hasFlag = item.unknown_0074[3] != 0;
+  for (auto it = this->items_1720.begin(); it != this->items_1720.end(); ++it) {
+    const bool same = hasFlag ? it->unknown_0000[1] == item.unknown_0000[1] : it->itemId == item.itemId;
+    if (same) {
+      it->quantity -= item.quantity;
+      if (it->quantity < 1) {
+        this->items_1720.erase(it);
+      }
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00DDAC40
+// FUNCTION: fn_23349
+void ClientItemLists::RemoveItem1730(const ITEM_INFO& item) {
+  for (auto it = this->items_1730.begin(); it != this->items_1730.end(); ++it) {
+    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+      it->quantity -= item.quantity;
+      if (it->quantity < 1) {
+        this->items_1730.erase(it);
+      }
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00DDAC90
+// FUNCTION: fn_23350
+void ClientItemLists::ReduceItem1718(const ITEM_INFO& item) {
+  for (auto it = this->items_1718.begin(); it != this->items_1718.end(); ++it) {
+    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+      it->quantity -= item.quantity;
+      if (it->quantity < 1) {
+        this->items_1718.erase(it);
+      }
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00DDACE0
+// FUNCTION: fn_23351
+bool ClientItemLists::RemoveItem1738(const ITEM_INFO& item) {
+  for (auto it = this->items_1738.begin(); it != this->items_1738.end(); ++it) {
+    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+      it->quantity -= item.quantity;
+      if (it->quantity < 1) {
+        this->items_1738.erase(it);
+      }
+      for (auto it2 = this->items_1738.begin(); it2 != this->items_1738.end(); ++it2) {
+        if (it2->unknown_0000[1] == item.unknown_0000[1]) {
+          it2->unknown_0074[2] = 0;
+          break;
+        }
+      }
+      reinterpret_cast<CSession*>(this)->RefreshItem1738Window();
+      return true;
+    }
+  }
+  reinterpret_cast<CSession*>(this)->RefreshItem1738Window();
+  return false;
+}
 
 // OFFSET: 0x00E2EC10
 // FUNCTION: fn_24149
