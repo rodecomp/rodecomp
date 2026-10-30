@@ -9,8 +9,19 @@
 #include <cstring>
 
 // OFFSET: 0x00B763E0
+// FUNCTION: fn_19174
+CSmokeEffect::CSmokeEffect() : CEffect(44), visibleCount(1) {
+}
 
 // OFFSET: 0x00B76540
+// FUNCTION: fn_19176
+void CSmokeEffect::Close() {
+  for (CSpriteParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
 
 // OFFSET: 0x00B76580
 
