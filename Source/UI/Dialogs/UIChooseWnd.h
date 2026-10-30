@@ -3,6 +3,8 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+#include <vector>
+
 struct WindowPlacement;
 struct UIButtonContext;
 struct UIListBoxContext;
@@ -11,11 +13,13 @@ class UIListBox;
 
 class UIChooseWnd : public UIFrameWnd {
 public:
+  ~UIChooseWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
 
-  /* 00B4 */ unsigned char unknown_00B4[0x10];
+  /* 00B4 */ unsigned char unknown_00B4[0x4];
+  /* 00B8 */ std::vector<int> m_items;
   /* 00C4 */ UIListBox* m_list;
   /* 00C8 */ unsigned char unknown_00C8[0x4];
   /* 00CC */ WindowPlacement* m_placement;
