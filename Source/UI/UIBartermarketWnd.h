@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_UIBARTERMARKETWND_H
 
 #include "Contents/Items/BarterMarketItemMgr.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Item/UIItemPurchaseWnd.h"
 #include "UI/Item/UIItemShopWnd.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -75,6 +76,17 @@ public:
   void Slot32(int x, int y) override;
   __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemAt(int x, int y);
   __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemOrPriceAt(int x, int y);
+};
+
+class UIPurchaseButton : public UIBitmapButton {
+public:
+  void Slot28(int x, int y) override;
+};
+
+class UIExpandedBarterPurchaseButton : public UIBitmapButton {
+public:
+  void Slot28(int x, int y) override;
+  std::string FormatChunkText(int refine, std::string name, int amount);
 };
 
 #endif

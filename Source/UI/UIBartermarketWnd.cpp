@@ -829,3 +829,83 @@ void UIExpandedBartermarketWnd::Slot28(int x, int y) {
     }
   }
 }
+
+// OFFSET: 0x00843910
+// FUNCTION: fn_10560
+void UIPurchaseButton::Slot28(int x, int y) {
+  std::string text;
+  std::map<int, int> totals = *g_barterMarketItemMgr->GetTotals();
+  int count = 0;
+  for (std::map<int, int>::iterator it = totals.begin(); it != totals.end();) {
+    const int amount = it->second;
+    ITEM_DESC description = FindItemDescription(it->first);
+    ++it;
+    ++count;
+    if (count == 30) {
+      text += "...";
+      break;
+    }
+    if (it == totals.end()) {
+      text += FormatOwnedString(LookupMessage(3553), description.identifiedName, amount);
+    } else {
+      std::string line = FormatOwnedString(LookupMessage(3553), description.identifiedName, amount);
+      text += line + '\n';
+    }
+  }
+  int tooltipX = 0;
+  int tooltipY = -4 - count * 16;
+  this->ToScreen(tooltipX, tooltipY);
+  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+  if (tooltip) {
+    tooltip->Show(text.c_str(), tooltipX, tooltipY, 0xFFFFFFFF, 0, 1);
+  }
+}
+
+// OFFSET: 0x00846940
+// FUNCTION: fn_10582
+std::string UIExpandedBarterPurchaseButton::FormatChunkText(int refine, std::string name, int amount) {
+  std::string text;
+  if (refine > 0) {
+    char buffer[5] = {};
+    _itoa(refine, buffer, 10);
+    text += "+" + std::string(buffer) + " ";
+  }
+  char line[1024];
+  std::memset(line, 0, sizeof(line));
+  StringFormat(line, sizeof(line), static_cast<std::size_t>(-1), LookupMessage(3553), name.c_str(), amount);
+  text += std::string(line);
+  return text;
+}
+
+// OFFSET: 0x00848790
+// FUNCTION: fn_10590
+void UIExpandedBarterPurchaseButton::Slot28(int x, int y) {
+  std::string text;
+  std::vector<BarterChunk16> chunks = *g_expandedBarterMarketItemMgr->GetChunks();
+  int index = 0;
+  for (std::vector<BarterChunk16>::iterator chunk = chunks.begin(); chunk != chunks.end(); ++chunk, ++index) {
+    ITEM_DESC description = FindItemDescription(chunk->field_0);
+    const char* name = description.identifiedName;
+    if (index == 30) {
+      text += "...";
+      break;
+    }
+    text += this->FormatChunkText(chunk->field_4, name, chunk->amount);
+    if (index != static_cast<int>(chunks.size()) - 1) {
+      text += "\n";
+    }
+  }
+  if (g_expandedBarterMarketItemMgr->total > 0) {
+    std::string total = FormatOwnedString(LookupMessage(3699), g_expandedBarterMarketItemMgr->total);
+    text += "\n" + total;
+  }
+  if (!text.empty()) {
+    int tooltipX = 0;
+    int tooltipY = -4 - index * 16;
+    this->ToScreen(tooltipX, tooltipY);
+    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+    if (tooltip) {
+      tooltip->Show(text.c_str(), tooltipX, tooltipY, 0xFFFFFFFF, 0, 1);
+    }
+  }
+}
