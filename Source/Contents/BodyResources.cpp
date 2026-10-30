@@ -6315,15 +6315,51 @@ EncryptedName<12, 0xF535E561137F138DULL>& FrogOboroBabySpriteName() {
 }
 
 // OFFSET: 0x00E2B0B0
+// FUNCTION: fn_24078
+EncryptedName<18, 0xABED6971354375C3ULL>& TaekwonBabySpriteName() {
+  const std::uint8_t source[] = {0x06, 0xB7, 0xF2, 0xF2, 0xCD, 0xBB, 0x5E, 0x49, 0x9F, 0xB0, 0x81, 0x84, 0xB6, 0xD5, 0x3F, 0x18, 0x21, 0x75};
+  thread_local EncryptedName<sizeof(source), 0xABED6971354375C3ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E2B180
+// FUNCTION: fn_24079
+EncryptedName<18, 0x01C9FBA7819FFBD7ULL>& PoringTaekwonBabySpriteName() {
+  const std::uint8_t source[] = {0x12, 0x39, 0x2E, 0x46, 0x1B, 0x29, 0x7A, 0xE3, 0x8B, 0x3E, 0x5D, 0x30, 0x60, 0x47, 0x1B, 0xB2, 0x35, 0xFB};
+  thread_local EncryptedName<sizeof(source), 0x01C9FBA7819FFBD7ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E2B250
+// FUNCTION: fn_24080
+EncryptedName<10, 0xFBAD074BDB2B77A1ULL>& StarGladiatorBabySpriteName() {
+  const std::uint8_t source[] = {0x10, 0xB0, 0x97, 0x61, 0x17, 0xB6, 0x6A, 0x47, 0x1B, 0x77};
+  thread_local EncryptedName<sizeof(source), 0xFBAD074BDB2B77A1ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E2B320
+// FUNCTION: fn_24081
+EncryptedName<10, 0x6BA557130BDFE997ULL>& StarGladiator2BabySpriteName() {
+  const std::uint8_t source[] = {0x26, 0x2E, 0x63, 0xB1, 0x4F, 0xE6, 0x62, 0xD7, 0x2D, 0xE9};
+  thread_local EncryptedName<sizeof(source), 0x6BA557130BDFE997ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E2B3F0
+// FUNCTION: fn_24082
+EncryptedName<10, 0x050DF16FC75B25B9ULL>& PoringStarGladiatorBabySpriteName() {
+  const std::uint8_t source[] = {0x08, 0xE2, 0xE7, 0x7D, 0x33, 0x40, 0xCA, 0xB9, 0x03, 0x25};
+  thread_local EncryptedName<sizeof(source), 0x050DF16FC75B25B9ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E2B4C0
+// FUNCTION: fn_24083
+EncryptedName<18, 0x6D05D5271B5D65C3ULL>& SoulLinkerBabySpriteName() {
+  const std::uint8_t source[] = {0x7F, 0xB7, 0xE2, 0xF4, 0x9F, 0x60, 0xC1, 0xD2, 0x9F, 0xD9, 0x8F, 0xA4, 0xC8, 0x6D, 0xB0, 0xA9, 0x7C, 0x65};
+  thread_local EncryptedName<sizeof(source), 0x6D05D5271B5D65C3ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E2B590
