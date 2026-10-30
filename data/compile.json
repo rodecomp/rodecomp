@@ -635,6 +635,7 @@
   "Source/Contents/UserData/CharacterLinkedUserDataMgr.cpp": 4,
   "Source/Contents/UserData/CharacterLinkedUserDataSaveAsyncWork.cpp": 4,
   "Source/Contents/UserData/NormalItemSlots.cpp": 4,
+  "Source/Contents/World/SkyBox.cpp": 3,
   "Source/Contents/World/WorldActors.cpp": 4,
   "Source/Contents/World/WorldModelLoading.cpp": 3,
   "Source/Contents/World/WorldModelView.cpp": 3,
