@@ -1028,6 +1028,7 @@
   "Source/Utility/Async/NRecycleObjectPoolMgr.cpp": 0,
   "Source/Utility/CRC32.cpp": 0,
   "Source/Utility/Cipher/AES.cpp": 0,
+  "Source/Utility/Cipher/CipherPrimitives.cpp": 0,
   "Source/Utility/Cipher/Rijndael.cpp": 0,
   "Source/Utility/Cipher/XorBytes.cpp": 0,
   "Source/Utility/FileSignatureVerifier.cpp": 0,
