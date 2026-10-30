@@ -13,7 +13,9 @@
 struct EZ2STREffectInfo {
   /* 0000 */ int id;
   /* 0004 */ std::string name;
-  /* 001C */ int unknown_001C[3];
+  /* 001C */ float offsetX;
+  /* 0020 */ float offsetY;
+  /* 0024 */ int unknown_0024;
   /* 0028 */ std::string unknown_0028;
   /* 0040 */ int unknown_0040[2];
 };
@@ -58,6 +60,8 @@ public:
   /* 00D4 */ vector3d spawnPosition;
   /* 00E0 */ std::string sourceName;
   /* 00F8 */ std::string targetName;
+
+  EffectResourceSwitcher();
 
   // INLINED
   ~EffectResourceSwitcher() override {

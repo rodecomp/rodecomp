@@ -328,6 +328,7 @@
   "Source/Contents/Effects/BlastForge.cpp": 4,
   "Source/Contents/Effects/CaneOfEvilEyeEffect.cpp": 4,
   "Source/Contents/Effects/ChangeSizeEffect.cpp": 4,
+  "Source/Contents/Effects/CharacterParticleBundle.cpp": 4,
   "Source/Contents/Effects/ChargingPierceEffect.cpp": 4,
   "Source/Contents/Effects/ClimaxEffect.cpp": 4,
   "Source/Contents/Effects/CloudEffect.cpp": 4,
