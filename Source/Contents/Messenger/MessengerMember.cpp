@@ -9,6 +9,11 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Gauges/UIPcGage.h"
+#include "UI/Lists/UIScrollBar.h"
+#include "Client/Mode/CGameMode.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/World/World.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -103,6 +108,59 @@ public:
 
   /* 0120 */ int unknown_0120;
 };
+
+class UIMessengerGroupWnd : public UIFrameWnd {
+public:
+  void Slot26(int x, int y) override;
+  void Slot27(int x, int y) override;
+  void Slot35(int delta) override;
+  MessengerMember MemberAtIndex(int index);
+  void UpdateScroll();
+  void LayoutButtons();
+  void UpdateGauges();
+
+  // INLINED
+  UIWindow* CompanionWindow() const {
+    if (this->mode == 0) {
+      return reinterpret_cast<UIWindow*>(g_windowMgr.unknown_033C);
+    }
+    UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_042C);
+    if (g_windowMgr.unknown_030C) {
+      window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_030C);
+    }
+    return window;
+  }
+
+  /* 00B4 */ MessengerGroupWndInfo* saved;
+  /* 00B8 */ UIScrollBar* scrollBar;
+  /* 00BC */ int unknown_00BC;
+  /* 00C0 */ int unknown_00C0;
+  /* 00C4 */ int unknown_00C4;
+  /* 00C8 */ UIWindow* buttons[11];
+  /* 00F4 */ int unknown_00F4;
+  /* 00F8 */ int unknown_00F8;
+  /* 00FC */ std::list<MessengerMember> members;
+  /* 0104 */ int unknown_0104;
+  /* 0108 */ int unknown_0108;
+  /* 010C */ int unknown_010C;
+  /* 0110 */ int scrollable;
+  /* 0114 */ int scrollTop;
+  /* 0118 */ int columns;
+  /* 011C */ int visibleRows;
+  /* 0120 */ int selected;
+  /* 0124 */ int rowHeight;
+  /* 0128 */ UIPcGage* gauges[40];
+  /* 01C8 */ UIJobIconButton* jobIcons[40];
+  /* 0268 */ int iconIndex;
+  /* 026C */ std::vector<MiniPartyIconPosition> iconPositions;
+  /* 0278 */ int unknown_0278;
+  /* 027C */ UIWindow* unknown_027C;
+  /* 0280 */ unsigned char hiddenButtons[11];
+  /* 028C */ int mode;
+};
+
+// GLOBAL: gl_24961
+bool g_messengerGroupCollapsed;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(MiniPartyIconPosition) == 12);
@@ -570,4 +628,60 @@ void UIJobIconButton::Slot33(int x, int y) {
   if (UIWindow* window = this->m_context->windowMgr.LookupWindow(34)) {
     window->Slot33(x + this->geometry.x, y + this->geometry.y);
   }
+}
+
+// OFFSET: 0x0073A540
+// FUNCTION: fn_07705
+MessengerMember UIMessengerGroupWnd::MemberAtIndex(int index) {
+  int position = 0;
+  for (auto it = this->members.begin(); it != this->members.end(); ++it, ++position) {
+    if (index == position) {
+      return *it;
+    }
+  }
+  return MessengerMember(0);
+}
+
+// OFFSET: 0x0073CD30
+// FUNCTION: fn_07708
+void UIMessengerGroupWnd::Slot26(int, int) {
+  if (!g_messengerGroupCollapsed) {
+    this->SendMsg(nullptr, 6, 232, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x0073D3F0
+// FUNCTION: fn_07712
+void UIMessengerGroupWnd::Slot27(int x, int y) {
+  UIFrameWnd::Slot27(x, y);
+  if (UIWindow* window = this->CompanionWindow()) {
+    x = 0;
+    y = 0;
+    this->ToScreen(x, y);
+    window->Move(x + 2 + this->geometry.width, y);
+  }
+}
+
+// OFFSET: 0x0073D530
+// FUNCTION: fn_07714
+void UIMessengerGroupWnd::Slot35(int delta) {
+  if (this->scrollable) {
+    int step = this->visibleRows - 1;
+    if (step > 3) {
+      step = 3;
+    }
+    this->SendMsg(this->scrollBar, 7, delta < 0 ? step : -step, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x0073D580
+
+// OFFSET: 0x0073D640
+
+// OFFSET: 0x0073D800
+
+// OFFSET: 0x0089CFD0
+// FUNCTION: fn_11596
+void UIGage::SetColor(std::uint32_t color) {
+  this->colors[0] = color;
 }
