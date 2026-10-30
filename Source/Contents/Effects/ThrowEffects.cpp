@@ -1,7 +1,9 @@
 #include "Contents/Effects/ThrowEffects.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/GameActor.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/World/World.h"
@@ -26,6 +28,12 @@ void CThrowItemEffect::Close() {
 
   this->particles.clear();
 }
+
+// OFFSET: 0x00B7CD30
+
+// OFFSET: 0x00B7D3B0
+
+// OFFSET: 0x00B7D4D0
 
 // OFFSET: 0x00B7D810
 // FUNCTION: fn_19233
@@ -60,6 +68,12 @@ void CThrowItemEffect::Slot12() {
     this->AddEvent(0, "effect\\G스포어익스플로젼.wav", 0, 0);
     break;
   }
+}
+
+// OFFSET: 0x00B7DE60
+// FUNCTION: fn_19235
+bool CThrowItemEffect::Slot06() {
+  return !this->IsFinished();
 }
 
 // OFFSET: 0x00B7DE70
@@ -146,6 +160,18 @@ void CThrowItemEffect::Slot03() {
     ++target->unknown_00E8;
   }
 }
+
+// OFFSET: 0x00B7E660
+// FUNCTION: fn_19237
+void CThrowItemEffect::Slot04() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    if (*it) {
+      (*it)->Render(true, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    }
+  }
+}
+
+// OFFSET: 0x00B7E700
 
 // OFFSET: 0x00B7EA40
 // FUNCTION: fn_19240

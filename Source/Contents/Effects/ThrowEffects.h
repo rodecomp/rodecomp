@@ -12,10 +12,16 @@ class CParticle;
 class CThrowItemEffect : public CEffect {
 public:
   CThrowItemEffect();
+  void Slot01() override;
   void Slot03() override;
+  void Slot04() override;
   void Close() override;
+  bool Slot06() override;
   void Slot12() override;
+  void InitFlameParticle(CParticle* particle);
+  void InitPotionParticle(CParticle* particle, int kind);
   void InitSpinParticle(CParticle* particle);
+  void InitTrajectory(CParticle* particle);
 
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ int unknown_00D0;
