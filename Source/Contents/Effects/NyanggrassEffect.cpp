@@ -9,6 +9,37 @@
 #include "Render/Projection/RendererViewport.h"
 #include "Render/Renderer.h"
 
+#include <cstdlib>
+
+// OFFSET: 0x00707D70
+
+// INLINED
+CMultiTexParticle::~CMultiTexParticle() {
+  if (this->command.vertices) {
+    std::free(this->command.vertices);
+    this->command.vertices = nullptr;
+  }
+  if (this->command.indices) {
+    std::free(this->command.indices);
+    this->command.indices = nullptr;
+  }
+}
+
+// OFFSET: 0x00707F60
+// FUNCTION: fn_07066
+void CMultiTexParticle::Slot01() {
+}
+
+// OFFSET: 0x00707F70
+// FUNCTION: fn_07067
+void CMultiTexParticle::Reset() {
+  CParticle::Reset();
+  this->texture1 = nullptr;
+  this->texture2 = nullptr;
+  this->offsetU = 0.0f;
+  this->offsetV = 0.0f;
+}
+
 // OFFSET: 0x007080F0
 // FUNCTION: fn_07069
 void CMultiTexParticle::Render(int column, int row) {
@@ -63,6 +94,8 @@ void CNyanggrassEffect::Close() {
 
   this->particles.clear();
 }
+
+// OFFSET: 0x007085F0
 
 // OFFSET: 0x00708820
 // FUNCTION: fn_07074
