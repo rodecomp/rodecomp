@@ -3,9 +3,11 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/Particle.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <cstring>
 
 // OFFSET: 0x00709F50
@@ -117,3 +119,14 @@ void CRectUpEffect::Slot35(CParticle* particle) {
     particle->SetTexture("effect\\ring_yellow.tga");
   }
 }
+
+// OFFSET: 0x0070A220
+// FUNCTION: fn_07098
+void CRectUpEffect::Close() {
+  for (CParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+  this->particles.clear();
+}
+
+// OFFSET: 0x0070A260
