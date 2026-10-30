@@ -13,7 +13,8 @@
 #include <cstdint>
 #include <cstring>
 
-// INLINED
+// OFFSET: 0x0091B800
+// FUNCTION: fn_12605
 std::string UITextViewer::ConvertChat(std::string text) {
   std::string converted;
   DisplayNavigationLink(converted, text);
