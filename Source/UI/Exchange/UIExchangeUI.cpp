@@ -8,6 +8,7 @@
 #include "Resource/SkinPalette.h"
 #include "UI/Buttons/UIRadioButton.h"
 #include "UI/Lists/UIVScrollBar.h"
+#include "UI/Shop/PriceColor.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
@@ -225,6 +226,18 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::UpdateScrollBar()
   this->scrollBar->SetVisible(this->geometry.height);
   this->scrollBar->SetPosition(this->scrollBar->position);
   this->rebind = 1;
+}
+
+// OFFSET: 0x00A18940
+// FUNCTION: fn_15306
+void CUIExchangeUI::SetZeny(int amount) {
+  const PriceColors colors = PriceColor(amount);
+  this->zenyEdit->SetTextColor(colors.primary);
+  if (colors.secondary == static_cast<std::uint32_t>(-1)) {
+    this->zenyEdit->ResetSelection();
+  } else {
+    this->zenyEdit->SetHighlight(colors.secondary);
+  }
 }
 
 // OFFSET: 0x00A18AA0

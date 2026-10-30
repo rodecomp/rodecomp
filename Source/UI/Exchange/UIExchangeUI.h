@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_EXCHANGE_UIEXCHANGEUI_H
 
 #include "Contents/Items/ItemInfo.h"
+#include "UI/Edit/UIEditBoxEx.h"
 #include "UI/FrameSkin.h"
 #include "UI/Items/UIGameItem.h"
 #include "UI/Lists/UIListBoxTemplate.h"
@@ -43,7 +44,7 @@ public:
   /* 00E8 */ UIWindow* unknown_00E8;
   /* 00EC */ UIWindow* unknown_00EC;
   /* 00F0 */ UIWindow* unknown_00F0;
-  /* 00F4 */ UIWindow* unknown_00F4;
+  /* 00F4 */ CUIEditBoxEx* zenyEdit;
   /* 00F8 */ ExchangeUI::CItemListBox* secondList;
   /* 00FC */ UIWindow* unknown_00FC;
   /* 0100 */ UIWindow* unknown_0100;
@@ -59,6 +60,7 @@ public:
 
   void Conclude();
   void FreezeItems(bool mine);
+  void SetZeny(int amount);
 
   void OnCheckChanged(bool checked);
   void OnEditSubmit();
