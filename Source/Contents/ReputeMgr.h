@@ -35,6 +35,9 @@ public:
   std::vector<std::string> GetGroupNames() const;
   std::vector<const ReputeInfo*> GetGroupReputes(const std::string& groupName) const;
   std::vector<const ReputeInfo*> GetAllReputes() const;
+  bool sub_60DBF0();
+  bool sub_60DC70(std::map<std::uint64_t, ReputeGroup>& groups);
+  bool sub_60E090(std::map<std::uint64_t, ReputeInfo>& infos);
   void SetPoint(std::uint64_t id, std::int64_t point);
   std::vector<const ReputeInfo*> FindReputes(const std::string& keyword) const;
   void SetPointsReceived(bool received);

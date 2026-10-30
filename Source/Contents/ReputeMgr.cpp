@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <utility>
 
+int sub_AD6360(const char* text, unsigned int type);
+
 // OFFSET: 0x0060D8B0
 // FUNCTION: fn_04290
 std::vector<std::string> CReputeMgr::GetGroupNames() const {
@@ -57,6 +59,17 @@ std::vector<const ReputeInfo*> CReputeMgr::GetAllReputes() const {
   }
 
   return reputes;
+}
+
+// OFFSET: 0x0060DBF0
+// FUNCTION: fn_04293
+bool CReputeMgr::sub_60DBF0() {
+  if (this->sub_60E090(this->m_infos) && this->sub_60DC70(this->m_groups)) {
+    return true;
+  }
+
+  sub_AD6360("Failed : LoadReputeInfoData", 0);
+  return false;
 }
 
 // OFFSET: 0x0060E5B0
