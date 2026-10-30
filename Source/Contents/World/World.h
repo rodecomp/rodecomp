@@ -11,6 +11,7 @@
 #include <vector>
 
 class BinkMovies;
+class CItem;
 class CGameMode;
 class CPlayer;
 class CRenderObject;
@@ -27,6 +28,8 @@ public:
   CRenderObject* GetGameActorByAID(std::uint32_t aid) const;
   CRenderObject* GetGameActorByAidIncludeMe(std::uint32_t aid) const;
   __declspec(noinline) CRenderObject* GetSkillByAID(std::uint32_t aid) const;
+  CItem* GetItemByAID(std::uint32_t aid) const;
+  CRenderObject* GetActorByGID(int gid) const;
   void ClearActorCells();
 
   /* 0004 */ CGameMode* gameMode;

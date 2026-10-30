@@ -4,6 +4,8 @@
 #include "Resource/ResourceMgr.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Actors/Skill.h"
+#include "Contents/Actors/Item.h"
+#include "Contents/Actors/GameActor.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/World/WorldObjects.h"
 #include "Contents/World/World.h"
@@ -100,6 +102,40 @@ CCorpse* CGameMode::SpawnCorpse(float x, float y, float z, const char* action, c
   }
 
   return corpse;
+}
+
+// OFFSET: 0x00AC8350
+// FUNCTION: fn_17669
+CItem* CWorld::GetItemByAID(std::uint32_t aid) const {
+  for (CRenderObject* object : this->unknown_0018) {
+    CItem* item = static_cast<CItem*>(object);
+
+    if (item->itemAid == aid) {
+      return item;
+    }
+  }
+
+  return nullptr;
+}
+
+// OFFSET: 0x00AC8380
+// FUNCTION: fn_17670
+CRenderObject* CWorld::GetActorByGID(int gid) const {
+  auto it = this->actors.begin();
+
+  for (; it != this->actors.end(); ++it) {
+    CGameActor* actor = static_cast<CGameActor*>(*it);
+
+    if (!actor->unknown_0314 && gid == actor->Slot42()) {
+      break;
+    }
+  }
+
+  if (it == this->actors.end()) {
+    return nullptr;
+  }
+
+  return *it;
 }
 
 // OFFSET: 0x00AC8440
