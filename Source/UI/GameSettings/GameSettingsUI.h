@@ -18,6 +18,7 @@ class CUIStaticText;
 
 extern int g_textureDetailLevel;
 extern int g_textureFiltering;
+extern bool g_gameOptionFlag;
 
 template <class T, class D> class CUIComboBox : public CUIControl {
 public:
@@ -110,9 +111,23 @@ public:
   /* 0090 */ CUIStaticText* m_offText;
 };
 
+class CUIGroupProcessPriority : public CUIGroup {
+public:
+  void Refresh() override;
+  void OnSelect(CUIRadioButton* button);
+
+  /* 0084 */ CUIRadioButton* m_highButton;
+  /* 0088 */ CUIStaticText* m_highText;
+  /* 008C */ CUIRadioButton* m_normalButton;
+  /* 0090 */ CUIStaticText* m_normalText;
+  /* 0094 */ CUIRadioButton* m_idleButton;
+  /* 0098 */ CUIStaticText* m_idleText;
+};
+
 class CUIGroupRodexSpam : public CUIGroup {
 public:
   void Apply() override;
+  void Refresh() override;
   void OnSelect(CUIRadioButton* button);
 
   /* 0084 */ CUIRadioButton* m_onButton;

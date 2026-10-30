@@ -1042,6 +1042,21 @@ void CUIGroupLogInOut::OnSelect(CUIRadioButton* button) {
   this->SetEnabled(button == this->m_onButton);
 }
 
+// OFFSET: 0x00A41EB0
+// FUNCTION: fn_16006
+void CUIGroupProcessPriority::OnSelect(CUIRadioButton* button) {
+  if (this->m_highButton == button) {
+    dwPriorityClass = HIGH_PRIORITY_CLASS;
+    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+  } else if (this->m_normalButton == button) {
+    dwPriorityClass = NORMAL_PRIORITY_CLASS;
+    SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
+  } else if (this->m_idleButton == button) {
+    dwPriorityClass = IDLE_PRIORITY_CLASS;
+    SetPriorityClass(GetCurrentProcess(), IDLE_PRIORITY_CLASS);
+  }
+}
+
 // OFFSET: 0x00A41F30
 // FUNCTION: fn_16007
 void CUIGroupRodexSpam::OnSelect(CUIRadioButton* button) {
@@ -1090,6 +1105,26 @@ void CUIGroupLogInOut::Refresh() {
   this->m_onButton->checked = g_serviceOptions.Get(0xA5);
   this->m_onButton->Invalidate();
   this->m_offButton->checked = !g_serviceOptions.Get(0xA5);
+  this->m_offButton->Invalidate();
+}
+
+// OFFSET: 0x00A43760
+// FUNCTION: fn_16037
+void CUIGroupProcessPriority::Refresh() {
+  this->m_highButton->checked = dwPriorityClass == HIGH_PRIORITY_CLASS;
+  this->m_highButton->Invalidate();
+  this->m_normalButton->checked = dwPriorityClass == NORMAL_PRIORITY_CLASS;
+  this->m_normalButton->Invalidate();
+  this->m_idleButton->checked = dwPriorityClass == IDLE_PRIORITY_CLASS;
+  this->m_idleButton->Invalidate();
+}
+
+// OFFSET: 0x00A437D0
+// FUNCTION: fn_16038
+void CUIGroupRodexSpam::Refresh() {
+  this->m_onButton->checked = g_gameOptionFlag;
+  this->m_onButton->Invalidate();
+  this->m_offButton->checked = !g_gameOptionFlag;
   this->m_offButton->Invalidate();
 }
 
