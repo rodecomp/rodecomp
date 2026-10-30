@@ -1,5 +1,6 @@
 #include "UI/Chat/UISubChatHisWnd.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include "Client/Session.h"
 
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
@@ -54,6 +55,19 @@ void UISubChatHisWnd::Slot31(int x, int y) {
       }
     }
   }
+}
+
+// OFFSET: 0x0091EA90
+// FUNCTION: fn_12633
+void UISubChatHisWnd::Move(int x, int y) {
+  this->UIFrameWnd::Move(x, y);
+  int screenX = 0;
+  int screenY = 0;
+  this->ToScreen(screenX, screenY);
+  this->m_state.unknown_0000 = screenX;
+  this->m_state.unknown_0004 = screenY + this->m_inputHeight;
+  g_session.m_subChatWnds[this->m_index].x = screenX;
+  g_session.m_subChatWnds[this->m_index].y = screenY;
 }
 
 // OFFSET: 0x0091C9E0

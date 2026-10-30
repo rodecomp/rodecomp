@@ -9,6 +9,7 @@ struct UIButtonContext;
 class UIEscOptionWnd : public UIFrameWnd {
 public:
   void Paint() override;
+  void Slot15(int width, int height) override;
   void LayoutButtons();
 
   /* 00B4 */ UIButton* m_buttons[7];

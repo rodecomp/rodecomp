@@ -3,10 +3,33 @@
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "File/ShortcutFilename.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "Utility/Text/FormatString.h"
 
 #include <string>
+
+// OFFSET: 0x0091F4F0
+// FUNCTION: fn_12638
+void UIEscOptionWnd::Slot15(int, int) {
+  const std::string prefix("유저인터페이스\\");
+  int ids[7] = {371, 458, 370, 251, 185, 353, 372};
+  const char* names[7] = {"esc_01", "esc_001", "esc_08", "esc_09", "esc_02", "esc_05", "esc_10"};
+
+  for (int i = 0; i < 7; ++i) {
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_buttons[i] = button;
+    button->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[i] + "b.bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[i] + "c.bmp").c_str(), 2, 0);
+    this->m_buttons[i]->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    this->m_buttons[i]->Move(-100, -100);
+    this->m_buttons[i]->SetId(ids[i]);
+    this->AddChild(this->m_buttons[i]);
+  }
+
+  this->LayoutButtons();
+}
 
 // OFFSET: 0x0092BDE0
 // FUNCTION: fn_12662
