@@ -403,6 +403,10 @@ public:
   int GetMapProperty13() const;
   bool HasUnknown6178Records() const;
   bool HasUnknown6178Record(int id) const;
+  int IsBerserkActive() const;
+  int IsTrickDeadActive() const;
+  int HasActiveSkillEffect(int id) const;
+  bool PlaySkillTargetEffect(int skillId, int level, CGameActor* source, CGameActor* target);
   int IsState291To303(int state) const;
   int IsType0Or4(int type) const;
   int IsMonsterActor(CGameActor* actor) const;

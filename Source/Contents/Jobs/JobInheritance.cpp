@@ -5,7 +5,12 @@
 #include "Contents/Items/WeaponType.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Client/Session.h"
+#include "Contents/Actors/GameActor.h"
+#include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EffectTypes.h"
 #include "Contents/EquipmentResourceMgr.h"
+#include "Contents/Skills/ClientSkills.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/MapPropertyMgr.h"
@@ -1239,6 +1244,28 @@ bool CSession::IsCostumeLocation(int location) const {
   return false;
 }
 
+// OFFSET: 0x00E1DA40
+// FUNCTION: fn_23858
+int CSession::IsBerserkActive() const {
+  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+    if (effect.id == EFST_BERSERK) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+// OFFSET: 0x00E1DA70
+// FUNCTION: fn_23859
+int CSession::IsTrickDeadActive() const {
+  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+    if (effect.id == EFST_TRICKDEAD) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
 // OFFSET: 0x00E1DAA0
 // FUNCTION: fn_23860
 int CSession::GetMapProperty08() const {
@@ -1311,6 +1338,17 @@ bool CSession::HasUnknown6178Records() const {
   return this->unknown_6178.size() != 0;
 }
 
+// OFFSET: 0x00E1DBD0
+// FUNCTION: fn_23871
+int CSession::HasActiveSkillEffect(int id) const {
+  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+    if (effect.id == id) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
 // OFFSET: 0x00E1DC00
 // FUNCTION: fn_23872
 int CSession::IsGuardianJob(int job) const {
@@ -1341,6 +1379,8 @@ bool CSession::IsSuperNoviceClass(int job) const {
   }
   return false;
 }
+
+// OFFSET: 0x00E24550
 
 // OFFSET: 0x00E248E0
 // FUNCTION: fn_23897
