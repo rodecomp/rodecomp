@@ -36,15 +36,25 @@ public:
 };
 }
 
+class CUITitleBar;
+class CUIStaticText;
+class CUITextViewer;
+
 class CUISkillDelayInfo : public CUIFrameWnd {
 public:
+  void Slot16() override;
   void Paint() override;
   virtual void Slot53();
 
   void OnButtonClick();
   void OnSelectItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data);
 
-  /* 00D8 */ unsigned char unknown_00D8[0x2C];
+  /* 00D8 */ CUITitleBar* titleBar;
+  /* 00DC */ UIWindow* unknown_00DC;
+  /* 00E0 */ CUIStaticText* labels[3];
+  /* 00EC */ CUIStaticText* columns[4];
+  /* 00FC */ CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>* delayList;
+  /* 0100 */ CUITextViewer* description;
   /* 0104 */ std::uint32_t backgroundColor;
   /* 0108 */ std::uint32_t borderColor;
   /* 010C */ int skillId;

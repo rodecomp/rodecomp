@@ -1,10 +1,13 @@
 #include "UI/SkillDelayInfo/SkillDelayInfo.h"
+#include "Contents/MessageTable.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "UI/Lists/UIVScrollBar.h"
+#include "UI/Text/UIStaticTextControl.h"
+#include "UI/Text/UITextViewerControl.h"
 #include "UI/Window/WindowBorder.h"
-
 #include <algorithm>
+#include <cstring>
 #include <iterator>
 
 template <>
@@ -203,4 +206,32 @@ void CUISkillDelayInfo::Paint() {
   DrawRectangleBorder(*this, 194, 59, 1, 44, this->borderColor);
   DrawRectangleBorder(*this, 124, 83, 1, 21, this->borderColor);
   DrawRectangleBorder(*this, 264, 83, 1, 21, this->borderColor);
+}
+
+// OFFSET: 0x00A77F70
+// FUNCTION: fn_16886
+void CUISkillDelayInfo::Slot16() {
+  this->backgroundColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{0, 2}, true);
+  this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{6, 2}, true);
+
+  const char* text = LookupMessage(4254);
+  this->titleBar->SetTitle(text, std::strlen(text));
+  text = LookupMessage(4255);
+  this->columns[0]->SetText(text, std::strlen(text));
+  text = LookupMessage(4256);
+  this->columns[1]->SetText(text, std::strlen(text));
+  text = LookupMessage(4257);
+  this->columns[2]->SetText(text, std::strlen(text));
+  text = LookupMessage(4258);
+  this->columns[3]->SetText(text, std::strlen(text));
+  text = LookupMessage(4303);
+  this->labels[0]->SetText(text, std::strlen(text));
+  text = LookupMessage(4304);
+  this->labels[1]->SetText(text, std::strlen(text));
+  text = LookupMessage(4305);
+  this->labels[2]->SetText(text, std::strlen(text));
+
+  this->delayList->unknown_00C4 = 1;
+  this->delayList->Invalidate();
+  this->description->scrollBar->SetHidden(1);
 }
