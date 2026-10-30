@@ -18,6 +18,10 @@ namespace {
 }
 
 // OFFSET: 0x007B2420
+// FUNCTION: fn_09186
+UIAchievementWnd::UIAchievementWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls)
+    : UIFrameWnd(windows, frame, 0), upper(nullptr), tab(nullptr), list(nullptr), group(0), sub(-1), m_controls(&controls) {
+}
 
 // OFFSET: 0x007B32B0
 
@@ -74,6 +78,57 @@ void UIAchListWnd::Create(int width, int height, int rows) {
 }
 
 // OFFSET: 0x007B3DA0
+// FUNCTION: fn_09209
+void UIAchTab::DrawGroup(int group) {
+  UIButtonContext& controls = *this->m_controls;
+  int y = this->groupHeight * group;
+  std::string name = this->groups[group].name;
+  int textY = (this->groupHeight - this->TextHeight(controls.fonts, controls.locale, name.c_str(), 0, 0, this->fontHeight, 0, 0)) / 2 + y;
+
+  if (group > this->unknown_007C) {
+    y += std::min(static_cast<int>(this->groups[this->unknown_007C].subs.size()), this->visibleSubs) * this->subHeight;
+    textY += std::min(static_cast<int>(this->groups[this->unknown_007C].subs.size()), this->visibleSubs) * this->subHeight;
+  }
+
+  if (group == this->unknown_007C) {
+    this->DrawBitmap(0, y, AchievementBitmap("유저인터페이스\\achievement_re\\tab_press.bmp"), false);
+    this->DrawTextAt(controls.fonts, controls.locale, 11, textY, name.c_str(), 0, 0, this->fontHeight, this->selectedGroupColor, 1, 0);
+
+    int index = 0;
+    std::map<int, std::string>& subs = this->groups[group].subs;
+    int row = 0;
+    for (auto it = subs.begin(); it != subs.end(); ++it, ++index) {
+      if (row >= this->visibleSubs) {
+        break;
+      }
+
+      if (index >= this->scrollPos) {
+        const int rowY = (group + 1) * this->groupHeight + this->subHeight * row;
+        ++row;
+        name = this->groups[group].subs[it->first];
+        const int height = this->TextHeight(controls.fonts, controls.locale, name.c_str(), 0, 0, this->fontHeight, 0, 0);
+        const int rowHeight = this->subHeight;
+        std::uint32_t color;
+
+        if (it->first == this->unknown_0080) {
+          this->DrawBitmap(0, rowY, AchievementBitmap("유저인터페이스\\achievement_re\\tab_sub_press.bmp"), false);
+          this->DrawBitmap(12, rowY + 7, AchievementBitmap("유저인터페이스\\achievement_re\\tab_subarrow.bmp"), true);
+          color = this->selectedSubColor;
+        } else {
+          const char* bitmap = it->first == this->hoverSub ? "유저인터페이스\\achievement_re\\tab_sub_over.bmp" : "유저인터페이스\\achievement_re\\tab_sub_out.bmp";
+          this->DrawBitmap(0, rowY, AchievementBitmap(bitmap), false);
+          color = this->subColor;
+        }
+
+        this->DrawTextAt(controls.fonts, controls.locale, 26, (rowHeight - height) / 2 + rowY, name.c_str(), 0, 0, this->fontHeight, color, 0, 0);
+      }
+    }
+  } else {
+    const char* bitmap = group == this->hoverGroup ? "유저인터페이스\\achievement_re\\tab_over.bmp" : "유저인터페이스\\achievement_re\\tab_out.bmp";
+    this->DrawBitmap(0, y, AchievementBitmap(bitmap), false);
+    this->DrawTextAt(controls.fonts, controls.locale, 11, textY, name.c_str(), 0, 0, this->fontHeight, this->groupColor, 1, 0);
+  }
+}
 
 // OFFSET: 0x007B4220
 // FUNCTION: fn_09210
@@ -159,6 +214,32 @@ void UIAchievementWnd::CreateTab() {
 }
 
 // OFFSET: 0x007B65F0
+// FUNCTION: fn_09218
+void UIAchScrollBar::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->maximum == 0) {
+    return;
+  }
+
+  const BitmapImage* middle = AchievementBitmap("유저인터페이스\\achievement_re\\scroll_v_bg_mid.bmp");
+  for (int index = 0; index < this->geometry.height / this->thickness; ++index) {
+    this->DrawBitmap(0, this->thickness * index, middle, false);
+  }
+
+  this->DrawBitmap(0, this->geometry.height - this->thickness, AchievementBitmap("유저인터페이스\\achievement_re\\scroll_v_bg_down.bmp"), false);
+  this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\scroll_v_arrow_up.bmp"), true);
+  this->DrawBitmap(0, this->geometry.height - this->arrowLength, AchievementBitmap("유저인터페이스\\achievement_re\\scroll_v_arrow_down.bmp"), true);
+
+  int y = this->ThumbOffset() + this->arrowLength;
+  this->DrawBitmap(0, y, AchievementBitmap("유저인터페이스\\achievement_re\\scroll_v_thumb_up.bmp"), true);
+
+  const int end = this->ThumbLength() - 4 + y;
+  while ((y += 4) < end) {
+    this->DrawBitmap(0, y, AchievementBitmap("유저인터페이스\\achievement_re\\scroll_v_thumb_mid.bmp"), true);
+  }
+
+  this->DrawBitmap(0, end, AchievementBitmap("유저인터페이스\\achievement_re\\scroll_v_thumb_down.bmp"), true);
+}
 
 // OFFSET: 0x007B6DB0
 // FUNCTION: fn_09220
@@ -194,6 +275,18 @@ void UIAchTV::Paint() {
 }
 
 // OFFSET: 0x007B6F60
+// FUNCTION: fn_09221
+void UIAchTab::Paint() {
+  this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_tab.bmp"), false);
+
+  if (this->parent) {
+    this->parent->SendMsg(this, 116, 0, 0, 0, 0);
+  }
+
+  for (auto it = this->groups.begin(); it != this->groups.end(); ++it) {
+    this->DrawGroup(it->first);
+  }
+}
 
 // OFFSET: 0x007B7650
 // FUNCTION: fn_09224
