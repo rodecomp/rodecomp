@@ -755,6 +755,313 @@ void CEffectPrim::RenderFanTrail(matrix& wtm) {
 }
 
 // OFFSET: 0x00BF0370
+// FUNCTION: fn_19985
+void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  vector3d vec4{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+    for (short step = 0; step < 7; ++step) {
+      const float size = slot.maxHeight;
+      const float dist = step * size + slot.distance;
+      short angle = slot.riseAngle;
+      if (dist > 20.0f) {
+        angle += 5;
+      }
+      if (dist > 33.0f) {
+        angle += 5;
+      }
+      if (dist > 46.0f) {
+        angle += 5;
+      }
+      if (dist > 59.0f) {
+        angle += 5;
+      }
+      if (dist > 71.0f) {
+        angle += 5;
+      }
+      if (dist > 84.0f) {
+        angle += 5;
+      }
+      if (angle >= 360) {
+        angle -= 360;
+      }
+
+      const int low = angle - 15;
+      const int high = angle + 15;
+      const int leftAngle = low < 0 ? low + 360 : low;
+      const int rightAngle = high < 360 ? high : high - 360;
+      const int backRightAngle = high - 180 < 0 ? high - 180 + 360 : high - 180;
+      const int backLeftAngle = low + 180 < 360 ? low + 180 : low + 180 - 360;
+      const float rotCos = g_cosTable[slot.rotStart];
+      const float rotSin = g_sinTable[slot.rotStart];
+      const float base = slot.height[0];
+      vector3d left;
+      left.x = size * g_cosTable[leftAngle] * rotCos;
+      left.y = size * g_cosTable[leftAngle] * rotSin + base;
+      left.z = size * g_sinTable[leftAngle];
+      vector3d right;
+      right.x = size * g_cosTable[rightAngle] * rotCos;
+      right.y = size * g_cosTable[rightAngle] * rotSin + base;
+      right.z = size * g_sinTable[rightAngle];
+      vector3d backRight;
+      backRight.x = size * g_cosTable[backRightAngle] * rotCos;
+      backRight.y = size * g_cosTable[backRightAngle] * rotSin + base;
+      backRight.z = size * g_sinTable[backRightAngle];
+      vector3d backLeft;
+      backLeft.x = size * g_cosTable[backLeftAngle] * rotCos;
+      backLeft.y = size * g_cosTable[backLeftAngle] * rotSin + base;
+      backLeft.z = size * g_sinTable[backLeftAngle];
+
+      float remain = dist;
+      int dir = slot.riseAngle;
+      vector3d bend0{};
+      if (dist > 20.0f) {
+        remain = dist - 20.0f;
+        bend0.x = g_cosTable[dir] * 20.0f;
+        bend0.z = g_sinTable[dir] * 20.0f;
+      }
+      vector3d bend1{};
+      if (dist > 33.0f) {
+        dir += 5;
+        if (dir >= 360) {
+          dir -= 360;
+        }
+        remain = dist - 33.0f;
+        bend1.x = g_cosTable[dir] * 13.0f;
+        bend1.z = g_sinTable[dir] * 13.0f;
+      }
+      vector3d bend2{};
+      if (dist > 46.0f) {
+        dir += 5;
+        if (dir >= 360) {
+          dir -= 360;
+        }
+        remain = dist - 46.0f;
+        bend2.x = g_cosTable[dir] * 13.0f;
+        bend2.z = g_sinTable[dir] * 13.0f;
+      }
+      vector3d bend3{};
+      if (dist > 59.0f) {
+        dir += 5;
+        if (dir >= 360) {
+          dir -= 360;
+        }
+        remain = dist - 59.0f;
+        bend3.x = g_cosTable[dir] * 13.0f;
+        bend3.z = g_sinTable[dir] * 13.0f;
+      }
+      vector3d bend4{};
+      if (dist > 71.0f) {
+        dir += 5;
+        if (dir >= 360) {
+          dir -= 360;
+        }
+        remain = dist - 71.0f;
+        bend4.x = g_cosTable[dir] * 12.0f;
+        bend4.z = g_sinTable[dir] * 12.0f;
+      }
+      vector3d bend5{};
+      if (dist > 84.0f) {
+        dir += 5;
+        if (dir >= 360) {
+          dir -= 360;
+        }
+        remain = dist - 84.0f;
+        bend5.x = g_cosTable[dir] * 13.0f;
+        bend5.z = g_sinTable[dir] * 13.0f;
+      }
+      if (dist > 20.0f) {
+        dir += 5;
+        if (dir >= 360) {
+          dir -= 360;
+        }
+      }
+      vector3d tail;
+      tail.x = remain * g_cosTable[dir];
+      tail.y = 0.0f;
+      tail.z = remain * g_sinTable[dir];
+
+      vec1.x = backRight.x + bend0.x + bend1.x + bend2.x + bend3.x + bend4.x + bend5.x + tail.x;
+      vec1.y = backRight.y + bend0.y + bend1.y + bend2.y + bend3.y + bend4.y + bend5.y + tail.y;
+      vec1.z = backRight.z + bend0.z + bend1.z + bend2.z + bend3.z + bend4.z + bend5.z + tail.z;
+      vec2.x = left.x + bend0.x + bend1.x + bend2.x + bend3.x + bend4.x + bend5.x + tail.x;
+      vec2.y = left.y + bend0.y + bend1.y + bend2.y + bend3.y + bend4.y + bend5.y + tail.y;
+      vec2.z = left.z + bend0.z + bend1.z + bend2.z + bend3.z + bend4.z + bend5.z + tail.z;
+      vec3.x = right.x + bend0.x + bend1.x + bend2.x + bend3.x + bend4.x + bend5.x + tail.x;
+      vec3.y = right.y + bend0.y + bend1.y + bend2.y + bend3.y + bend4.y + bend5.y + tail.y;
+      vec3.z = right.z + bend0.z + bend1.z + bend2.z + bend3.z + bend4.z + bend5.z + tail.z;
+      vec4.x = backLeft.x + bend0.x + bend1.x + bend2.x + bend3.x + bend4.x + bend5.x + tail.x;
+      vec4.y = backLeft.y + bend0.y + bend1.y + bend2.y + bend3.y + bend4.y + bend5.y + tail.y;
+      vec4.z = backLeft.z + bend0.z + bend1.z + bend2.z + bend3.z + bend4.z + bend5.z + tail.z;
+
+      if (dist > 100.0f) {
+        break;
+      }
+
+      if (dist > 0.0f) {
+        this->RenderTeiRect(
+          &rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<unsigned char>(slot.height[1]), 0,
+          65, 65, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+        );
+      }
+    }
+
+    for (short step = 0; step < 7; ++step) {
+      const float size = slot.maxHeight;
+      const float dist = step * size + slot.height[10];
+      short angle = slot.riseAngle;
+      if (dist > 20.0f) {
+        angle += 5;
+      }
+      if (dist > 33.0f) {
+        angle += 5;
+      }
+      if (dist > 46.0f) {
+        angle += 5;
+      }
+      if (dist > 59.0f) {
+        angle += 5;
+      }
+      if (dist > 71.0f) {
+        angle += 5;
+      }
+      if (dist > 84.0f) {
+        angle += 5;
+      }
+      if (angle >= 360) {
+        angle -= 360;
+      }
+
+      const int low = angle - 25;
+      const int high = angle + 25;
+      const int leftAngle = low < 0 ? low + 360 : low;
+      const int rightAngle = high < 360 ? high : high - 360;
+      const int backRightAngle = high - 180 < 0 ? high - 180 + 360 : high - 180;
+      const int backLeftAngle = low + 180 < 360 ? low + 180 : low + 180 - 360;
+      const float rotCos = g_cosTable[slot.rotStart];
+      const float rotSin = g_sinTable[slot.rotStart];
+      const float base = slot.height[0];
+      vector3d left;
+      left.x = size * g_cosTable[leftAngle] * rotCos;
+      left.y = size * g_cosTable[leftAngle] * rotSin + base;
+      left.z = size * g_sinTable[leftAngle];
+      vector3d right;
+      right.x = size * g_cosTable[rightAngle] * rotCos;
+      right.y = size * g_cosTable[rightAngle] * rotSin + base;
+      right.z = size * g_sinTable[rightAngle];
+      vector3d backRight;
+      backRight.x = size * g_cosTable[backRightAngle] * rotCos;
+      backRight.y = size * g_cosTable[backRightAngle] * rotSin + base;
+      backRight.z = size * g_sinTable[backRightAngle];
+      vector3d backLeft;
+      backLeft.x = size * g_cosTable[backLeftAngle] * rotCos;
+      backLeft.y = size * g_cosTable[backLeftAngle] * rotSin + base;
+      backLeft.z = size * g_sinTable[backLeftAngle];
+
+      float remain = dist;
+      int dir = slot.riseAngle;
+      vector3d bend0{};
+      if (dist > 20.0f) {
+        remain = dist - 20.0f;
+        bend0.x = g_cosTable[dir] * 20.0f;
+        bend0.z = g_sinTable[dir] * 20.0f;
+      }
+      vector3d bend1{};
+      if (dist > 33.0f) {
+        dir += 5;
+        if (dir >= 360) {
+          dir -= 360;
+        }
+        remain = dist - 33.0f;
+        bend1.x = g_cosTable[dir] * 13.0f;
+        bend1.z = g_sinTable[dir] * 13.0f;
+      }
+      vector3d bend2{};
+      if (dist > 46.0f) {
+        dir += 5;
+        if (dir >= 360) {
+          dir -= 360;
+        }
+        remain = dist - 46.0f;
+        bend2.x = g_cosTable[dir] * 13.0f;
+        bend2.z = g_sinTable[dir] * 13.0f;
+      }
+      vector3d bend3{};
+      if (dist > 59.0f) {
+        dir += 5;
+        if (dir >= 360) {
+          dir -= 360;
+        }
+        remain = dist - 59.0f;
+        bend3.x = g_cosTable[dir] * 13.0f;
+        bend3.z = g_sinTable[dir] * 13.0f;
+      }
+      vector3d bend4{};
+      if (dist > 71.0f) {
+        dir += 5;
+        if (dir >= 360) {
+          dir -= 360;
+        }
+        remain = dist - 71.0f;
+        bend4.x = g_cosTable[dir] * 12.0f;
+        bend4.z = g_sinTable[dir] * 12.0f;
+      }
+      vector3d bend5{};
+      if (dist > 84.0f) {
+        dir += 5;
+        if (dir >= 360) {
+          dir -= 360;
+        }
+        remain = dist - 84.0f;
+        bend5.x = g_cosTable[dir] * 13.0f;
+        bend5.z = g_sinTable[dir] * 13.0f;
+      }
+      if (dist > 20.0f) {
+        dir += 5;
+        if (dir >= 360) {
+          dir -= 360;
+        }
+      }
+      vector3d tail;
+      tail.x = remain * g_cosTable[dir];
+      tail.y = 0.0f;
+      tail.z = remain * g_sinTable[dir];
+
+      vec1.x = backRight.x + bend0.x + bend1.x + bend2.x + bend3.x + bend4.x + bend5.x + tail.x;
+      vec1.y = backRight.y + bend0.y + bend1.y + bend2.y + bend3.y + bend4.y + bend5.y + tail.y;
+      vec1.z = backRight.z + bend0.z + bend1.z + bend2.z + bend3.z + bend4.z + bend5.z + tail.z;
+      vec2.x = left.x + bend0.x + bend1.x + bend2.x + bend3.x + bend4.x + bend5.x + tail.x;
+      vec2.y = left.y + bend0.y + bend1.y + bend2.y + bend3.y + bend4.y + bend5.y + tail.y;
+      vec2.z = left.z + bend0.z + bend1.z + bend2.z + bend3.z + bend4.z + bend5.z + tail.z;
+      vec3.x = right.x + bend0.x + bend1.x + bend2.x + bend3.x + bend4.x + bend5.x + tail.x;
+      vec3.y = right.y + bend0.y + bend1.y + bend2.y + bend3.y + bend4.y + bend5.y + tail.y;
+      vec3.z = right.z + bend0.z + bend1.z + bend2.z + bend3.z + bend4.z + bend5.z + tail.z;
+      vec4.x = backLeft.x + bend0.x + bend1.x + bend2.x + bend3.x + bend4.x + bend5.x + tail.x;
+      vec4.y = backLeft.y + bend0.y + bend1.y + bend2.y + bend3.y + bend4.y + bend5.y + tail.y;
+      vec4.z = backLeft.z + bend0.z + bend1.z + bend2.z + bend3.z + bend4.z + bend5.z + tail.z;
+
+      if (dist > 100.0f) {
+        break;
+      }
+
+      if (dist > 0.0f) {
+        this->RenderTeiRect(
+          &rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<unsigned char>(slot.height[1]), 0,
+          35, 35, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+        );
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00BEE900
 // FUNCTION: fn_19980
