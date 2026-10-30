@@ -27,6 +27,7 @@ void CEvilsPawEffect::Close() {
 }
 
 // OFFSET: 0x006FED20
+// FUNCTION: fn_06957
 void CEvilsPawEffect::Slot01() {
   CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
   if (particle) {
