@@ -723,6 +723,19 @@ void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, in
 }
 
 // OFFSET: 0x006C5FC0
+// FUNCTION: fn_06371
+void ApplyServiceOptionWindow159(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  if (UIWindow* window = g_windowMgr.EnsureWindow(0x9F)) {
+    window->Show(value);
+  }
+}
 
 // OFFSET: 0x006C60F0
 // FUNCTION: fn_06375
