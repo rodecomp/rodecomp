@@ -1,19 +1,29 @@
 #include "UI/CashShop/UICashShopWnd.h"
 
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
+#include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
+#include "Utility/Text/FormatString.h"
 
 #include <cstdarg>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
+#include <string>
+#include <windows.h>
+#include <shellapi.h>
+#include <timeapi.h>
 
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
@@ -153,6 +163,20 @@ bool UICashShopWnd::Slot03() {
   return true;
 }
 
+// OFFSET: 0x007D04F0
+// FUNCTION: fn_09540
+void UICashShopWnd_Banner::Paint() {
+  if (this->m_entries.empty()) {
+    return;
+  }
+
+  ResourceMgr& resources = ResourceMgr::Instance();
+  this->DrawBitmap(
+    0, 0, reinterpret_cast<const BitmapImage*>(resources.Load(Resolve(("유저인터페이스\\cashshop\\" + this->m_entries[this->m_index].image).c_str()))),
+    false
+  );
+}
+
 // OFFSET: 0x007D05F0
 // FUNCTION: fn_09541
 void UICashShopWnd_Cart::Paint() {
@@ -176,6 +200,56 @@ void UICashShopWnd_CartItem::Slot26(int, int) {
   this->SendMsg(this, 6, 0xD3, 0, 0, 0);
 }
 
+// OFFSET: 0x007D10B0
+// FUNCTION: fn_09547
+void UICashShopWnd_Banner::Slot31(int, int) {
+  if (this->m_entries.empty()) {
+    return;
+  }
+
+  std::string url = this->m_entries[this->m_index].url;
+  ShellExecuteA(nullptr, "OPEN", url.c_str(), url.c_str(), nullptr, SW_SHOW);
+}
+
+// OFFSET: 0x007D1230
+// FUNCTION: fn_09550
+void UICashShopWnd_Banner::ResetCursor(int, int) {
+  this->m_context->cursor.Set(2, this->m_context->cursorTick);
+}
+
+// OFFSET: 0x007D1240
+// FUNCTION: fn_09551
+void UICashShopWnd::Slot19() {
+  std::string search(this->unknown_00E0->Text());
+  if (search.compare(LookupMessage(3302)) != 0) {
+    if (search.size() == 0) {
+      this->unknown_00E0->SetText(LookupMessage(3302));
+      this->unknown_00E0->TextColor(0xB1B1B1, 0xFFFFFFFFu);
+    } else {
+      this->unknown_00E0->TextColor(0, 0xFFFFFFFFu);
+    }
+  }
+
+  std::string amount(this->unknown_00F4->Text());
+  if (amount.size() == 0) {
+    this->unknown_00F4->SetText(IntToString(0, 0).c_str());
+  }
+
+  this->m_banner->Slot19();
+  if (g_session.unknown_5912) {
+    this->m_secondBanner->Slot19();
+  }
+}
+
+// OFFSET: 0x007D14C0
+// FUNCTION: fn_09552
+void UICashShopWnd_Banner::Slot19() {
+  if (!this->m_entries.empty() && this->m_lastTick + 5000 < timeGetTime()) {
+    const unsigned int next = this->m_index + 1;
+    this->SendMsg(this->m_buttons[next < this->m_entries.size() ? next : 0], 6, 0xD7, 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x007D15E0
 // FUNCTION: fn_09555
 void UICashShopWnd_Cart::Slot35(int delta) {
@@ -192,4 +266,91 @@ void UICashShopWnd_CartItem::Slot35(int delta) {
   if (this->parent) {
     this->parent->Slot35(delta);
   }
+}
+
+// OFFSET: 0x007D2C00
+// FUNCTION: fn_09559
+int UICashShopWnd_Banner::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6 && argument1 == 0xD7) {
+    for (unsigned int index = 0; index < this->m_buttons.size(); ++index) {
+      UIWindow* button = this->m_buttons[index];
+      if (sender == button) {
+        button->SendMsg(this, 13, 1, 0, 0, 0);
+        this->m_index = index;
+      } else {
+        button->SendMsg(this, 13, 0, 0, 0, 0);
+      }
+    }
+
+    this->m_lastTick = timeGetTime();
+    this->Invalidate();
+  }
+
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x007D3430
+// FUNCTION: fn_09561
+int UICashShopWnd_CartItem::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    switch (argument1) {
+    case 0xD3:
+      if (this->parent != nullptr) {
+        this->parent->SendMsg(this, 0x68, atoi(this->m_item.itemId.c_str()), 0, 0, 0);
+        this->Invalidate();
+      }
+      break;
+    case 0x117:
+      if (this->parent != nullptr) {
+        this->parent->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&this->m_item), 1, 0, 0);
+      }
+      this->Invalidate();
+      break;
+    case 0x118:
+      if (this->parent != nullptr) {
+        this->parent->SendMsg(this, 0x1F, reinterpret_cast<std::intptr_t>(&this->m_item), -1, 0, 0);
+      }
+      this->Invalidate();
+      break;
+    }
+  } else if (message == 0x17) {
+    this->m_item = *reinterpret_cast<const ITEM_INFO*>(argument1);
+    this->Show(1);
+    this->Invalidate();
+  }
+
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x007D37C0
+// FUNCTION: fn_09563
+void UICashShopWnd::LayoutPage() {
+  for (unsigned int window = 0; window < this->m_itemWindows.size(); ++window) {
+    this->m_itemWindows[window]->Show(0);
+  }
+
+  const int first = this->m_page * this->m_itemsPerPage;
+  std::list<ITEM_INFO>::iterator item = this->m_items.begin();
+  int index = 0;
+  for (; index < first; ++index) {
+    ++item;
+  }
+
+  for (int slot = 0; slot < this->m_itemsPerPage; ++slot, ++item, ++index) {
+    if (index >= this->m_items.size() || slot >= this->m_itemWindows.size()) {
+      break;
+    }
+
+    if (this->m_selectedTab == 9) {
+      this->m_itemWindows[slot]->Resize(0xAC, 0xBD);
+      this->m_itemWindows[slot]->Move(slot % this->m_columns * 0xAF + 8, slot / this->m_columns * 0xC0 + 0x6B);
+    } else {
+      this->m_itemWindows[slot]->Resize(0xAC, 0x7E);
+      this->m_itemWindows[slot]->Move(slot % this->m_columns * 0xAF + 8, slot / this->m_columns * 0x7F + 0x6B);
+    }
+
+    this->m_itemWindows[slot]->SendMsg(this, 0x17, reinterpret_cast<std::intptr_t>(&*item), this->m_selectedTab, 0, 0);
+  }
+
+  this->Invalidate();
 }
