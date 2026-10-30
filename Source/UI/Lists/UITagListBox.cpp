@@ -3,6 +3,8 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Network/TextEncoding.h"
+#include "UI/Buttons/UITagButton.h"
+#include "UI/Lists/UIScrollBar.h"
 
 #include <cstdint>
 #include <cstring>
@@ -17,7 +19,7 @@ void UITagListBox::AddLine(const char* text) {
 // FUNCTION: fn_13871
 void UITagListBox::Clear() {
   this->UIListBox::Clear();
-  for (UIWindow* window : this->m_tagWindows) {
+  for (UITagButton* window : this->m_tagWindows) {
     this->RemoveChild(window, 1);
   }
   this->m_tagWindows.clear();
@@ -167,4 +169,55 @@ int UITagListBox::DecodeCards(std::vector<int>& fields, const char* text, int& p
   }
 
   return count;
+}
+
+// OFFSET: 0x009BB560
+// FUNCTION: fn_13887
+int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 7:
+  case 8:
+  case 9:
+  case 10:
+  case 11:
+  case 12: {
+    UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+    const int offset = this->horizontalOffset;
+    for (unsigned int index = 0; index < this->m_tagWindows.size(); ++index) {
+      UITagButton* tag = this->m_tagWindows[index];
+      if (tag) {
+        const int line = tag->m_value;
+        if (line < this->topLine || this->geometry.height / this->lineHeight - this->bottomMargin + this->topLine <= line) {
+          tag->Enable(0);
+        } else {
+          tag->Enable(1);
+          tag->Move(tag->geometry.x - this->horizontalOffset + offset, (line - this->topLine) * this->lineHeight + 3);
+        }
+      }
+    }
+    break;
+  }
+  case 18:
+    if (this->verticalOverflow) {
+      this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
+      return 0;
+    }
+    break;
+  case 19:
+    if (this->verticalOverflow) {
+      this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
+      return 0;
+    }
+    break;
+  case 29:
+    this->sub_9B9EA0(argument1, argument2, argument3, argument4);
+    return 0;
+  case 98:
+    this->sub_9BC0A0(argument1, sender);
+    break;
+  default:
+    return UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  return 0;
 }

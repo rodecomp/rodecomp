@@ -9,6 +9,8 @@
 #include <vector>
 
 class UITagButton : public UITextButton {
+  friend class UITagListBox;
+
 public:
   /* 00F8 */ ITEM_INFO item;
   /* 01F0 */ std::vector<std::string> m_strings;
