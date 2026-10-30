@@ -599,12 +599,15 @@ public:
   void RemovePartyMemberByName(const char* name);
   bool IsGuildMemberAccount(std::uint32_t accountId) const;
   bool IsGuildMemberCharacter(std::uint32_t characterId) const;
+  bool IsGuildMemberCharacter(int characterId, char* name) const;
   bool IsGuildMemberName(const char* name) const;
   long long GetItem1760Total() const;
   ITEM_INFO GetItem1748At(int index) const;
   bool HasItem1718(std::uint32_t id) const;
   bool HasExchangeItem(std::uint32_t id) const;
   int CountItems5C68() const;
+  int CountItems2B50() const;
+  int CountItems17F0() const;
   void SplitDate(__time32_t time, std::uint16_t& year, std::uint16_t& month, std::uint16_t& day) const;
   int GetDefaultOptionValue(const char* name, int fallback) const;
   int FindUnknown0778(int key) const;
@@ -712,6 +715,8 @@ public:
   std::string GetRobeActName(int job, int sex, int robe, bool riding, int unused, int costumeJob);
   std::string GetRobeSprName(int job, int sex, int robe, bool riding, int unused, int costumeJob);
   std::string GetRobeName(unsigned int robe);
+  std::string GetBodyPalName(int job, int sex, int palette, int costumeJob, int costume, int unused);
+  std::string GetRaceBodyResourceName(int type, int raceJob, int job, int sex, int costumeJob);
   int GetItemDescription40(int id);
   std::uint32_t GetUnknown0420(int index);
   void GetSkillActionInfo(int skillId, int& effectId, int& motion, int variant, int level);

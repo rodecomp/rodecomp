@@ -2,6 +2,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Effects/EffectActor.h"
+#include "Contents/EquipmentResourceMgr.h"
 #include "Contents/GuildInfo.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Jobs/JobId.h"
@@ -663,6 +664,18 @@ const char* CSession::GetEnemyHitWaveName(int element) {
   }
 }
 
+// OFFSET: 0x00DDC1D0
+// FUNCTION: fn_23364
+std::string CSession::GetBodyPalName(int job, int sex, int palette, int costumeJob, int costume, int unused) {
+  return g_equipmentResourceMgr->GetBodyPalName(job, sex, palette, costumeJob, costume, unused);
+}
+
+// OFFSET: 0x00DDC2C0
+// FUNCTION: fn_23365
+std::string CSession::GetRaceBodyResourceName(int type, int raceJob, int job, int sex, int costumeJob) {
+  return g_equipmentResourceMgr->GetRaceBodyResourceName(type, raceJob, job, sex, costumeJob);
+}
+
 // OFFSET: 0x00DDC330
 // FUNCTION: fn_23366
 ITEM_INFO* CSession::GetEquippedItem(const ITEM_INFO* item) {
@@ -1209,6 +1222,12 @@ bool CSession::IsGuildMemberCharacter(std::uint32_t characterId) const {
     }
   }
 
+  return false;
+}
+
+// OFFSET: 0x00DFA150
+// FUNCTION: fn_23570
+bool CSession::IsGuildMemberCharacter(int characterId, char* name) const {
   return false;
 }
 
@@ -1846,4 +1865,36 @@ std::uint32_t CSession::GetItemNameColor(const ITEM_INFO& item) const {
     return item.unknown_0064 == 2 ? 0xFFFFFF00 : 0xFFFFFFFF;
   }
   return color;
+}
+
+// OFFSET: 0x00E30720
+// FUNCTION: fn_24166
+int CSession::CountItems2B50() const {
+  std::vector<std::uint32_t> itemIds;
+  int count = 0;
+  for (int i = 0; i < 10; ++i) {
+    const std::uint32_t itemId = this->unknown_2B50[i].unknown_0000[1];
+    if (itemId != 0 && std::find(itemIds.begin(), itemIds.end(), itemId) == itemIds.end()) {
+      itemIds.push_back(itemId);
+      ++count;
+    }
+  }
+
+  return count;
+}
+
+// OFFSET: 0x00E30830
+// FUNCTION: fn_24167
+int CSession::CountItems17F0() const {
+  std::vector<std::uint32_t> itemIds;
+  int count = 0;
+  for (int i = 0; i < 10; ++i) {
+    const std::uint32_t itemId = this->unknown_17F0[i].unknown_0000[1];
+    if (itemId != 0 && std::find(itemIds.begin(), itemIds.end(), itemId) == itemIds.end()) {
+      itemIds.push_back(itemId);
+      ++count;
+    }
+  }
+
+  return count;
 }
