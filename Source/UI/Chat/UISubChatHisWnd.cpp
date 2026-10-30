@@ -2,8 +2,12 @@
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Client/Session.h"
 
+#include "Network/TextEncoding.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Text/ColoredText.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -75,6 +79,29 @@ void UISubChatHisWnd::Move(int x, int y) {
 bool UISubChatHisWnd::Slot42(void* output) {
   *static_cast<SubChatHistoryState*>(output) = this->m_state;
   return true;
+}
+
+// OFFSET: 0x00930370
+// FUNCTION: fn_12682
+void UISubChatHisWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  std::uint32_t color = 0xFFFFFF;
+  const TextLocale locale = {};
+  this->DrawTextAt(g_fontCache, locale, 5, 4, this->m_name.c_str(), 0, 0, 12, 0, 0, 0);
+  DrawColoredText(*this, static_cast<unsigned short>(g_textCodePage), 4, 3, this->m_name.c_str(), 0, color, 0, 12, false);
+  this->FillRegion(2, 0, this->m_inputWidth - 5, 1, color);
+  this->FillRegion(1, 1, 1, 1, color);
+  this->FillRegion(0, 2, 1, this->geometry.height - 4, color);
+  this->FillRegion(this->m_inputWidth, this->m_inputHeight, this->geometry.width - this->m_inputWidth - 3, 1, color);
+  this->FillRegion(this->m_inputWidth - 3, 0, 1, 1, 0x8E8E8E);
+  this->FillRegion(this->m_inputWidth - 2, 1, 1, 1, 0x8E8E8E);
+  this->FillRegion(this->m_inputWidth - 1, 2, 1, this->m_inputHeight - 1, 0x8E8E8E);
+  this->FillRegion(this->geometry.width - 3, this->m_inputHeight, 1, 1, 0x8E8E8E);
+  this->FillRegion(this->geometry.width - 2, this->m_inputHeight + 1, 1, 1, 0x8E8E8E);
+  this->FillRegion(this->geometry.width - 1, this->m_inputHeight + 2, 1, this->geometry.height - this->m_inputHeight - 4, 0x8E8E8E);
+  this->FillRegion(1, this->geometry.height - 2, 1, 1, 0x8E8E8E);
+  this->FillRegion(this->geometry.width - 2, this->geometry.height - 2, 1, 1, 0x8E8E8E);
+  this->FillRegion(2, this->geometry.height - 1, this->geometry.width - 4, 1, 0x8E8E8E);
 }
 
 // OFFSET: 0x00941020

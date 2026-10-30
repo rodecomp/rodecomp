@@ -95,6 +95,37 @@ void UIBattleMsgOptionWnd::Slot26(int x, int y) {
   }
 }
 
+// OFFSET: 0x00930A80
+// FUNCTION: fn_12692
+void UIBattleMsgOptionWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    this->UIFrameWnd::Slot25(x, y);
+    return;
+  }
+
+  const int previous = this->unknown_00B8;
+  this->unknown_00B8 = this->RowAt(x, y);
+  if (previous != this->unknown_00B8) {
+    this->Invalidate();
+  }
+
+  if (this->unknown_00B8 != -1) {
+    this->unknown_00EC[this->unknown_00B8] = this->unknown_00EC[this->unknown_00B8] == 0;
+    (this->unknown_0110 ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->unknown_0108].options[this->unknown_00B8] =
+      this->unknown_00EC[this->unknown_00B8];
+    this->unknown_010C = 1;
+    for (int i = 0; i < 25; ++i) {
+      if (this->unknown_00EC[i] == 0) {
+        this->unknown_010C = 0;
+        break;
+      }
+    }
+    this->m_allCheckBox->geometry.unknown_0030 = this->unknown_010C;
+    this->m_allCheckBox->Invalidate();
+    this->Invalidate();
+  }
+}
+
 // OFFSET: 0x009317A0
 // FUNCTION: fn_12707
 void UIBattleMsgOptionWnd::Slot28(int x, int y) {

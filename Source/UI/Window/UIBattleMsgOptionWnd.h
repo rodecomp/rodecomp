@@ -14,6 +14,7 @@ class UIBattleMsgOptionWnd : public UIFrameWnd {
 public:
   UIBattleMsgOptionWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Paint() override;
+  void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot35(int delta) override;

@@ -43,6 +43,7 @@ public:
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
+  void Slot25(int x, int y) override;
   int SlotX(int slot);
   int SlotAt(int x, int y);
 
