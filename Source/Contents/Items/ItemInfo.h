@@ -113,6 +113,8 @@ ITEM_INFO LookupClientItemByIdentity(const std::list<ITEM_INFO>& values, std::ui
 bool IsNumericText(const char* text);
 bool MatchItemName(std::string name, std::string query, unsigned char partial, std::list<int>* result, int id);
 std::list<int> SearchItemIds(std::string query, unsigned char cardsOnly, unsigned char partial);
+int ReadItemList(std::list<ITEM_INFO>& items, int offset, int size, const std::vector<unsigned char>& data);
+int ReadItemArray(ITEM_INFO* items, int offset, int size, const std::vector<unsigned char>& data);
 
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -534,3 +534,54 @@ void ITEM_INFO::SetCard(const int& card, const int& index) {
     std::memcpy(this->unknown_001C + index * 4, &card, sizeof(card));
   }
 }
+
+// OFFSET: 0x00E48E90
+// FUNCTION: fn_24229
+int ReadItemList(std::list<ITEM_INFO>& items, int offset, int size, const std::vector<unsigned char>& data) {
+  if (size <= 0) {
+    return offset;
+  }
+
+  std::vector<unsigned char> buffer(size, 0);
+  std::memcpy(buffer.data(), data.data() + offset, size);
+  int end = offset + size;
+  std::uint32_t consumed = 0;
+  std::vector<unsigned char> remaining(buffer);
+  while (consumed < buffer.size()) {
+    ITEM_INFO item;
+    consumed += item.Deserialize(remaining);
+    items.push_back(item);
+    int left = static_cast<int>(buffer.size()) - static_cast<int>(consumed);
+    if (left > 0) {
+      std::memcpy(remaining.data(), buffer.data() + consumed, left);
+    }
+  }
+
+  return end;
+}
+
+// OFFSET: 0x00E49090
+// FUNCTION: fn_24230
+int ReadItemArray(ITEM_INFO* items, int offset, int size, const std::vector<unsigned char>& data) {
+  if (size <= 0) {
+    return offset;
+  }
+
+  std::vector<unsigned char> buffer(size, 0);
+  std::memcpy(buffer.data(), data.data() + offset, size);
+  int end = offset + size;
+  std::uint32_t consumed = 0;
+  ITEM_INFO item;
+  std::vector<unsigned char> remaining(buffer);
+  for (int i = 0; i < 10; ++i) {
+    consumed += item.Deserialize(remaining);
+    items[i] = item;
+    if (consumed >= buffer.size()) {
+      break;
+    }
+
+    std::memcpy(remaining.data(), buffer.data() + consumed, buffer.size() - consumed);
+  }
+
+  return end;
+}

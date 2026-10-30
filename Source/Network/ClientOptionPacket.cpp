@@ -1,4 +1,5 @@
 #include "Network/ClientOptionPacket.h"
+#include "Client/Session.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 
@@ -24,3 +25,7 @@ void SendClientOption(unsigned char value, CConnection& connection, const Packet
   packet.value = value;
   connection.Send(lengths.FixedLength(packet.id), &packet);
 }
+
+// OFFSET: 0x00E48BA0
+
+// OFFSET: 0x00E49380

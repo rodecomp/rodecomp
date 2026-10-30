@@ -266,7 +266,9 @@ public:
   /* 59D0 */ int unknown_59D0;
   /* 59D4 */ int unknown_59D4;
   /* 59D8 */ LuaScript* m_hotkeyScript;
-  /* 59DC */ unsigned char unknown_59DC[0x218];
+  /* 59DC */ unsigned char unknown_59DC[0x1E4];
+  /* 5BC0 */ int unknown_5BC0;
+  /* 5BC4 */ unsigned char unknown_5BC4[0x30];
   /* 5BF4 */ int m_pairValues[3];
   /* 5C00 */ unsigned char unknown_5C00[0x1C];
   /* 5C1C */ int unknown_5C1C;
@@ -340,6 +342,7 @@ public:
   void SetShopItem(int shopId, unsigned int index, int itemId, int first, int second);
   bool AddShopName(std::string name, int shopId);
   int SetUnknown8134(int value);
+  void SetUnknown5BC0(int value);
   void ClearUnknown1710(int id);
   void ClearUnknown1740(int id);
   void ClearUnknown1738(int id);
@@ -519,6 +522,8 @@ public:
   void CollectCardItems();
   void SetHomunculusAutoFeed(bool enabled);
   void SetPetAutoFeed(bool enabled);
+  void SendHomunculusAutoFeedOption(unsigned char enabled);
+  void SendPetAutoFeedOption(unsigned char enabled);
   int GetRobeAlpha(int robeId);
   bool IsTopLayerRobe(int robe);
   int IsExchangeItemListFull();

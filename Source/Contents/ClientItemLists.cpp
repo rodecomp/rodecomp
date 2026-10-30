@@ -200,6 +200,7 @@ struct ClientItemLists {
   void ClearItems1768();
   void ClearItems1740();
   void ClearItems1750();
+  void SetItems1750(int count, const short* ids);
   void ClearItems1758();
   void ClearItems1760();
   void ClearItems1748();
@@ -1145,4 +1146,16 @@ ITEM_INFO CSession::FindItemByIdentity(std::uint32_t identity, int location) {
   }
 
   return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00E49F40
+// FUNCTION: fn_24247
+void ClientItemLists::SetItems1750(int count, const short* ids) {
+  this->ClearItems1750();
+  for (int i = 0; i < count; ++i) {
+    const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, ids[i]);
+    if (item.unknown_0000[1] > 0) {
+      this->items_1750.push_back(item);
+    }
+  }
 }

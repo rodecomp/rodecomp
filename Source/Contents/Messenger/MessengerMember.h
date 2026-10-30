@@ -2,7 +2,9 @@
 #define RAGNAROK_SOURCE_CONTENTS_MESSENGER_MESSENGERMEMBER_H
 
 #include <cstdint>
+#include <list>
 #include <string>
+#include <vector>
 
 struct MessengerMember {
   MessengerMember();
@@ -10,6 +12,7 @@ struct MessengerMember {
   MessengerMember(const MessengerMember& other);
   MessengerMember& operator=(const MessengerMember& other);
   ~MessengerMember();
+  std::uint32_t Deserialize(const std::vector<unsigned char>& data);
 
   /* 0000 */ std::int32_t valid;
   /* 0004 */ std::uint32_t accountId;
@@ -23,6 +26,8 @@ struct MessengerMember {
   /* 004A */ std::uint16_t level;
   /* 004C */ std::int32_t dead;
 };
+
+int ReadMessengerMembers(std::list<MessengerMember>& members, int offset, int size, const std::vector<unsigned char>& data);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(MessengerMember) == 80);

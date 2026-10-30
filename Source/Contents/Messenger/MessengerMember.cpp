@@ -23,6 +23,13 @@
 #include <vector>
 
 namespace {
+#pragma pack(push, 1)
+  struct MessengerRecordHeader {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ std::uint32_t bytes;
+  };
+#pragma pack(pop)
+
   struct MiniPartyIconPosition {
     /* 0000 */ int x;
     /* 0004 */ int y;
@@ -99,6 +106,7 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(MiniPartyIconPosition) == 12);
+static_assert(sizeof(MessengerRecordHeader) == 6);
 #endif
 
 // OFFSET: 0x00D03DC0
@@ -139,6 +147,102 @@ MessengerMember& MessengerMember::operator=(const MessengerMember& other) {
 // OFFSET: 0x007384A0
 // FUNCTION: fn_07666
 MessengerMember::~MessengerMember() = default;
+
+// OFFSET: 0x00E48C00
+// FUNCTION: fn_24228
+int ReadMessengerMembers(std::list<MessengerMember>& members, int offset, int size, const std::vector<unsigned char>& data) {
+  if (size <= 0) {
+    return offset;
+  }
+
+  std::vector<unsigned char> buffer(size, 0);
+  std::memcpy(buffer.data(), data.data() + offset, size);
+  int end = offset + size;
+  std::uint32_t consumed = 0;
+  std::vector<unsigned char> remaining(buffer);
+  while (consumed < buffer.size()) {
+    MessengerMember member;
+    consumed += member.Deserialize(remaining);
+    members.push_back(member);
+    int left = static_cast<int>(buffer.size()) - static_cast<int>(consumed);
+    if (left > 0) {
+      std::memcpy(remaining.data(), buffer.data() + consumed, left);
+    }
+  }
+
+  return end;
+}
+
+// OFFSET: 0x00E494F0
+// FUNCTION: fn_24236
+std::uint32_t MessengerMember::Deserialize(const std::vector<unsigned char>& data) {
+  if (data.begin() == data.end()) {
+    return 0xFFFFFFFF;
+  }
+
+  std::uint32_t offset = 6;
+  MessengerRecordHeader header{};
+  std::memcpy(&header, data.data(), sizeof(header));
+  if (header.id != 251) {
+    return 0xFFFFFFFF;
+  }
+
+  while (offset < data.size()) {
+    header = {};
+    std::memcpy(&header, data.data() + offset, sizeof(header));
+    offset += 6;
+    const unsigned char* source = data.data() + offset;
+    switch (header.id) {
+    case 252:
+      return offset;
+    case 253:
+      std::memcpy(&this->valid, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 254:
+      std::memcpy(&this->accountId, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 255:
+      std::memcpy(&this->characterId, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 256: {
+      char buffer[260];
+      std::memset(buffer, 0, sizeof(buffer));
+      std::memcpy(buffer, source, header.bytes);
+      offset += header.bytes;
+      this->name = buffer;
+      break;
+    }
+    case 257: {
+      char buffer[260];
+      std::memset(buffer, 0, sizeof(buffer));
+      std::memcpy(buffer, source, header.bytes);
+      offset += header.bytes;
+      this->map = buffer;
+      break;
+    }
+    case 258:
+      std::memcpy(&this->leader, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 259:
+      std::memcpy(&this->offline, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 260:
+      std::memcpy(&this->color, source, header.bytes);
+      offset += header.bytes;
+      break;
+    default:
+      offset += header.bytes;
+      break;
+    }
+  }
+
+  return offset;
+}
 
 // OFFSET: 0x00738590
 // FUNCTION: fn_07667

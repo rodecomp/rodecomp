@@ -7,9 +7,12 @@
 
 struct CEffectMaker : EffectActor {
   CEffectMaker();
+  bool OnProcess() override;
 
-  /* 0158 */ int unknown_0158;
-  /* 015C */ int unknown_015C;
+  void Reset();
+
+  /* 0158 */ unsigned unknown_0158;
+  /* 015C */ unsigned unknown_015C;
   /* 0160 */ int unknown_0160;
   /* 0164 */ int unknown_0164;
   /* 0168 */ int unknown_0168;

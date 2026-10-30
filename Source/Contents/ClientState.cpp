@@ -80,3 +80,19 @@ void RequestBasicInfoRefresh() {
     g_windowMgr.unknown_01E0->SendMsg(nullptr, 106, 575, 0, 0, 0);
   }
 }
+
+// OFFSET: 0x00E49290
+// FUNCTION: fn_24232
+void CSession::SetUnknown5BC0(int value) {
+  this->unknown_5BC0 = value;
+  UIWindow* window = g_windowMgr.LookupWindow(0x272E);
+  if (window != nullptr) {
+    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00E4A180
+// FUNCTION: fn_24249
+void AppendBytes(std::vector<unsigned char>& output, const std::vector<unsigned char>& bytes) {
+  output.insert(output.end(), bytes.begin(), bytes.end());
+}
