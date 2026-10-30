@@ -1,6 +1,10 @@
+#include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -12,6 +16,13 @@
 #include <algorithm>
 #include <cstring>
 #include <new>
+
+#pragma pack(push, 1)
+struct PACKET_CZ_REQ_ACH_REWARD {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int achievementId;
+};
+#pragma pack(pop)
 
 namespace {
   // INLINED
@@ -216,6 +227,8 @@ void UIAchievementWnd::CreateTab() {
   this->tab->SetLabel(LookupMessage(2678), 6, -1);
 }
 
+// OFFSET: 0x007B5B60
+
 // OFFSET: 0x007B65F0
 // FUNCTION: fn_09218
 void UIAchScrollBar::Paint() {
@@ -277,6 +290,8 @@ void UIAchTV::Paint() {
   }
 }
 
+// OFFSET: 0x007B67B0
+
 // OFFSET: 0x007B6F60
 // FUNCTION: fn_09221
 void UIAchTab::Paint() {
@@ -288,6 +303,85 @@ void UIAchTab::Paint() {
 
   for (auto it = this->groups.begin(); it != this->groups.end(); ++it) {
     this->DrawGroup(it->first);
+  }
+}
+
+// OFFSET: 0x007B7010
+// FUNCTION: fn_09222
+void UIAchUpperWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  int visible;
+
+  if (this->title == LookupMessage(2679)) {
+    this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_upper.bmp"), false);
+    this->DrawRightAlignedText(130, 13, FormatOwnedString("%d/%d", this->unknown_0094, this->unknown_0098).c_str(), 0, 0, 11, 0, 0);
+    this->DrawCenteredText(353, 6, FormatOwnedString("%d", g_session.unknown_614C).c_str(), 46, 0, 12, 0x582708, 1);
+    this->DrawCenteredText(16, 19, FormatOwnedString("%d", g_session.unknown_6150).c_str(), 15, 0, 12, 0x44C58, 1);
+    for (UIWindow* button : this->buttons) {
+      button->Show(0);
+    }
+
+    visible = 0;
+  } else {
+    this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_upper.bmp"), false);
+    this->DrawBitmap(575, 3, AchievementBitmap("유저인터페이스\\achievement_re\\upper_trophy.bmp"), true);
+    this->DrawTextAt(controls.fonts, controls.locale, 169, 11, LookupMessage(3106), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, 169, 26, LookupMessage(3107), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, 614, 15, this->title.c_str(), 0, 0, 11, 0x582708, 0, 0);
+    this->DrawRightAlignedText(130, 13, FormatOwnedString("%d/%d", this->unknown_0094, this->unknown_0098).c_str(), 0, 0, 11, 0, 0);
+    this->DrawRightAlignedText(737, 15, FormatOwnedString("(%d/%d)", this->unknown_009C, this->unknown_00A0).c_str(), 0, 0, 11, 0x582708, 0);
+    this->DrawCenteredText(353, 6, FormatOwnedString("%d", g_session.unknown_614C).c_str(), 46, 0, 12, 0x582708, 1);
+    this->DrawCenteredText(16, 19, FormatOwnedString("%d", g_session.unknown_6150).c_str(), 15, 0, 12, 0x44C58, 1);
+    for (UIWindow* button : this->buttons) {
+      button->Show(1);
+    }
+
+    visible = 1;
+  }
+
+  this->unknown_00A8->Show(visible);
+}
+
+// OFFSET: 0x007B7420
+// FUNCTION: fn_09223
+void UIAchViewWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_detail.bmp"), false);
+  if (this->achievementId == -1 || this->info == nullptr) {
+    return;
+  }
+
+  if (static_cast<unsigned char>(g_session.FindRecord6144(this->achievementId).unknown_0000 >> 8) == 1) {
+    this->DrawBitmap(264, 3, AchievementBitmap("유저인터페이스\\achievement_re\\detail_stamp.bmp"), true);
+  }
+
+  this->DrawTextAt(controls.fonts, controls.locale, 15, 14, this->info->title.c_str(), 0, 0, 12, 0xA55239, 1, 0);
+
+  for (unsigned index = 0; index < this->info->rewards.size(); ++index) {
+    if (this->info->unknown_0064 == 0) {
+      this->DrawBitmap(20, 103 + 19 * index, AchievementBitmap("유저인터페이스\\achievement_re\\detail_bullet.bmp"), true);
+    } else if (this->info->unknown_0064 == 1) {
+      this->DrawBitmap(20, 111 + 36 * index, AchievementBitmap("유저인터페이스\\achievement_re\\detail_bullet.bmp"), true);
+    }
+  }
+
+  if (this->info->unknown_004C > 0 || this->info->unknown_0050 > 0 || this->info->unknown_0054 > 0) {
+    int width = 0;
+    int count = 0;
+    for (UIToolTipBitmapWnd* reward : this->rewards) {
+      if (reward->geometry.visible == 1) {
+        width += reward->geometry.width;
+        ++count;
+      }
+    }
+
+    int x = static_cast<int>((this->geometry.width - count * 8 - width + 8) * 0.5);
+    for (UIToolTipBitmapWnd* reward : this->rewards) {
+      if (reward->geometry.visible == 1) {
+        reward->Move(x, 304);
+        x += 70;
+      }
+    }
   }
 }
 
@@ -350,6 +444,10 @@ void UIAchTab::Slot27(int x, int y) {
   this->hoverSub = sub;
   this->Invalidate();
 }
+
+// OFFSET: 0x007B7BB0
+
+// OFFSET: 0x007B7CA0
 
 // OFFSET: 0x007B7D90
 // FUNCTION: fn_09239
@@ -466,6 +564,8 @@ void UIAchTab::Refresh() {
   this->Invalidate();
 }
 
+// OFFSET: 0x007B8170
+
 // OFFSET: 0x007B81B0
 // FUNCTION: fn_09246
 int UIAchTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
@@ -513,6 +613,10 @@ int UIAchUpperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
   return 0;
 }
 
+// OFFSET: 0x007B82C0
+
+// OFFSET: 0x007B8810
+
 // OFFSET: 0x007B8C20
 // FUNCTION: fn_09251
 void UIToolTipBitmapWnd::Set(const char* name, const char* text, int item) {
@@ -537,6 +641,8 @@ void UIAchSummaryWnd::Show(int visible) {
     button->Slot27(-1, -1);
   }
 }
+
+// OFFSET: 0x007B8DF0
 
 // OFFSET: 0x007B8FA0
 // FUNCTION: fn_09254

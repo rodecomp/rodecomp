@@ -1632,3 +1632,31 @@ void CSession::SetRecord0734Value(int id, std::uint32_t value) {
     }
   }
 }
+
+// OFFSET: 0x00E31B20
+// FUNCTION: fn_24174
+ITEM_INFO CSession::GetItem6B68(int index) const {
+  if (index == 15) {
+    return ITEM_INFO(0);
+  }
+
+  if (static_cast<unsigned int>(index) <= 9) {
+    return this->unknown_6B68[index];
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00E31BB0
+// FUNCTION: fn_24175
+ITEM_INFO CSession::GetItem61B8(int index) const {
+  if (index == 15) {
+    return LookupClientItemByIdentity(this->m_inventoryItems, this->unknown_7EC8);
+  }
+
+  if (static_cast<unsigned int>(index) <= 9) {
+    return this->unknown_61B8[index];
+  }
+
+  return ITEM_INFO(0);
+}

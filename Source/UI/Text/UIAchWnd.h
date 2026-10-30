@@ -7,14 +7,16 @@
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/WindowManagerWindows.h"
 
 #include <cstdint>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 class CBitmapRes;
-class UIAchViewWnd;
+class UIBitmapButton;
 
 struct UIAchListInfo {
   /* 0000 */ int unknown_0000;
@@ -68,6 +70,7 @@ public:
 
   void Create(int width, int height, int rows);
   void sub_7B37F0(int index);
+  void SetAchievements(std::map<int, AchievementInfo>* achievements, int mode);
   void UpdateScroll();
 
   void Slot25(int x, int y) override;
@@ -154,11 +157,52 @@ public:
   /* 00B8 */ int unknown_00B8;
 
   void Paint() override;
+  void Slot32(int x, int y) override;
+
   void Set(const char* name, const char* text, int item);
+
+private:
+  WindowManagerWindows* m_windows;
+};
+
+class UIAchViewWnd : public UIWindow {
+public:
+  // INLINED
+  UIAchViewWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), achievementId(-1), info(nullptr), m_controls(&controls) {
+    this->receiveButton = nullptr;
+    this->description = nullptr;
+    for (int index = 0; index < 10; ++index) {
+      this->conditions[index] = nullptr;
+      this->gauges[index] = nullptr;
+    }
+    for (UIToolTipBitmapWnd*& reward : this->rewards) {
+      reward = nullptr;
+    }
+  }
+
+  /* 007C */ UIBitmapButton* receiveButton;
+  /* 0080 */ UIAchTV* description;
+  /* 0084 */ UIAchTV* conditions[10];
+  /* 00AC */ UICustomGageBar* gauges[10];
+  /* 00D4 */ UIToolTipBitmapWnd* rewards[3];
+  /* 00E0 */ int achievementId;
+  /* 00E4 */ AchievementInfo* info;
+
+  void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+private:
+  UIButtonContext* m_controls;
 };
 
 class UIAchUpperWnd : public UIWindow {
 public:
+  // INLINED
+  UIAchUpperWnd(UIWindowContext& windows, UIButtonContext& controls)
+      : UIWindow(windows, 0), unknown_0094(0), unknown_0098(0), unknown_009C(0), unknown_00A0(0), unknown_00A4(nullptr), unknown_00A8(nullptr), buttons{},
+        selected(0), m_controls(&controls) {
+  }
+
   /* 007C */ std::string title;
   /* 0094 */ int unknown_0094;
   /* 0098 */ int unknown_0098;
@@ -169,19 +213,30 @@ public:
   /* 00AC */ UIWindow* buttons[2];
   /* 00B4 */ int selected;
 
+  void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+private:
+  UIButtonContext* m_controls;
 };
 
 class UIAchSummaryWnd : public UIWindow {
 public:
+  // INLINED
+  UIAchSummaryWnd(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), unknown_007C(7), m_controls(&controls) {
+  }
+
   /* 007C */ int unknown_007C;
   /* 0080 */ std::vector<UICustomGageBar*> gauges;
-  /* 008C */ int unknown_008C;
-  /* 0090 */ int unknown_0090;
-  /* 0094 */ int unknown_0094;
+  /* 008C */ std::vector<std::pair<int, AchievementInfo>> recent;
   /* 0098 */ UIWindow* buttons[2];
 
   void Show(int visible) override;
+  void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+private:
+  UIButtonContext* m_controls;
 };
 
 class UIAchievementWnd : public UIFrameWnd {
@@ -197,9 +252,12 @@ public:
   /* 00CC */ int sub;
   /* 00D0 */ std::map<int, AchievementInfo> achievements;
 
+  void Slot15(int width, int height) override;
   void Paint() override;
 
   void CreateTab();
+  void SelectAchievement(int id);
+  void SelectTab(int group, int sub);
 
 private:
   UIButtonContext* m_controls;

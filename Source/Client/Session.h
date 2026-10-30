@@ -29,9 +29,12 @@ struct WindowDialogs;
 struct SessionRecord6144 {
   /* 0000 */ std::uint16_t unknown_0000 = 0;
   /* 0004 */ std::uint32_t unknown_0004[10] = {};
-  /* 002C */ std::uint32_t unknown_002C = 0;
+  /* 002C */ int unknown_002C = 0;
   /* 0030 */ std::uint8_t unknown_0030 = 0;
-  /* 0031 */ std::uint8_t unknown_0031[7];
+  /* 0031 */ std::uint8_t unknown_0031;
+  /* 0032 */ std::int16_t year;
+  /* 0034 */ std::int16_t month;
+  /* 0036 */ std::int16_t day;
 };
 
 struct SessionRecord6178 {
@@ -277,7 +280,11 @@ public:
   /* 5C68 */ ITEM_INFO unknown_5C68[5];
   /* 6140 */ std::uint16_t unknown_6140;
   /* 6144 */ std::map<int, SessionRecord6144> unknown_6144;
-  /* 614C */ unsigned char unknown_614C[0x20];
+  /* 614C */ int unknown_614C;
+  /* 6150 */ std::int16_t unknown_6150;
+  /* 6154 */ int unknown_6154;
+  /* 6158 */ int unknown_6158;
+  /* 615C */ unsigned char unknown_615C[0x10];
   /* 616C */ std::vector<int> unknown_616C;
   /* 6178 */ std::vector<SessionRecord6178> unknown_6178;
   /* 6184 */ unsigned char unknown_6184[0x04];
@@ -290,7 +297,9 @@ public:
   /* 61A8 */ unsigned char unknown_61A8[0x10];
   /* 61B8 */ ITEM_INFO unknown_61B8[10];
   /* 6B68 */ ITEM_INFO unknown_6B68[10];
-  /* 7518 */ unsigned char unknown_7518[0x9C0];
+  /* 7518 */ unsigned char unknown_7518[0x9B0];
+  /* 7EC8 */ std::uint32_t unknown_7EC8;
+  /* 7ECC */ unsigned char unknown_7ECC[0x0C];
   /* 7ED8 */ int m_swapEquipmentMode = 0;
   /* 7EDC */ unsigned char unknown_7EDC[4];
   /* 7EE0 */ std::map<int, RobeAlpha> m_robeAlpha;
@@ -433,6 +442,8 @@ public:
   bool IsPvpMap();
   ITEM_INFO GetItem2B50(int index) const;
   ITEM_INFO GetItem17F0(int index) const;
+  ITEM_INFO GetItem6B68(int index) const;
+  ITEM_INFO GetItem61B8(int index) const;
   ITEM_INFO FindItemByIdentity(std::uint32_t identity, int location);
   unsigned char IsAllyActor(std::uint32_t aid, int job);
   const char* Text8104() const;
