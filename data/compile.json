@@ -286,6 +286,7 @@
   "Source/Client/Session.cpp": 0,
   "Source/Client/SessionParty.cpp": 0,
   "Source/Client/SessionPredicates.cpp": 0,
+  "Source/Client/SessionState.cpp": 0,
   "Source/Client/Stove/StoveMgr.cpp": 0,
   "Source/Client/Timer.cpp": 0,
   "Source/Contents/AchievementMgr.cpp": 4,

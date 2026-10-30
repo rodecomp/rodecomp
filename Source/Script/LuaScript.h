@@ -25,6 +25,10 @@ public:
   int TableInteger(std::string table, int keyType, std::intptr_t key);
   void Close();
   void Register(std::string name, int (*function)(lua_State*));
+  // INLINED
+  lua_State* GetState() const {
+    return this->m_state;
+  }
 
 protected:
   /* 0000 */ lua_State* m_state;
