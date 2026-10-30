@@ -1,7 +1,7 @@
 #include "Client/Application/Launcher.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
-
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -663,4 +663,47 @@ void ExitForProtectionCheck(const char* commandLine) {
 bool AcquireInstanceMutex(HANDLE* mutex) {
   *mutex = CreateMutexA(nullptr, TRUE, "MutexInit");
   return GetLastError() != ERROR_ALREADY_EXISTS;
+}
+
+// GLOBAL: gl_24515
+char* g_commandLine;
+
+// GLOBAL: gl_25074
+bool g_launchAccountEnabled;
+
+// GLOBAL: gl_25075
+char g_launchAccountName[0x1F4];
+
+// GLOBAL: gl_25076
+char g_launchAccountPassword[24];
+
+// GLOBAL: gl_25077
+char g_launchAccountSex;
+
+// GLOBAL: gl_25078
+bool g_launchPassCommandLine;
+
+// OFFSET: 0x00E57E60
+// FUNCTION: fn_24361
+HANDLE StartClientProcess(char* program) {
+  char commandLine[1024];
+  std::memset(commandLine, 0, sizeof(commandLine));
+
+  if (g_launchPassCommandLine) {
+    StringFormat(commandLine, sizeof(commandLine), static_cast<std::size_t>(-1), "%s %s", program, g_commandLine);
+  } else if (g_launchAccountEnabled) {
+    StringFormat(commandLine, sizeof(commandLine), static_cast<std::size_t>(-1), "%s %s %s %c %s", program, g_launchAccountName,
+                 g_launchAccountPassword, g_launchAccountSex, g_launchServerName);
+  } else {
+    StringFormat(commandLine, sizeof(commandLine), static_cast<std::size_t>(-1), program);
+  }
+
+  STARTUPINFOA startup = {};
+  startup.cb = sizeof(startup);
+  startup.dwFlags = STARTF_USESHOWWINDOW;
+  startup.wShowWindow = SW_SHOWNORMAL;
+  PROCESS_INFORMATION process = {};
+
+  CreateProcessA(nullptr, commandLine, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startup, &process);
+  return process.hProcess;
 }
