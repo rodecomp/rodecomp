@@ -1803,3 +1803,11 @@ void CEZ2STRScreenEffect::Slot20(int argument) {
   FreeParticle(this->particle);
   this->Slot01();
 }
+
+// OFFSET: 0x00B52970
+// FUNCTION: fn_19038
+int CEZ2STRScreenEffect::Slot28() {
+  return this->particle->m_frame;
+}
+
+// OFFSET: 0x00B52980

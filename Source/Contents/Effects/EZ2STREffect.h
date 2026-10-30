@@ -15,6 +15,7 @@ class CEZ2STRScreenEffect : public CEffect {
 public:
   CEZ2STRScreenEffect();
   void Slot00(int argument) override;
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   void Close() override;
@@ -30,8 +31,10 @@ public:
   void Slot23(float argument) override;
   void Slot24(int argument1, int argument2, int argument3, int argument4, int argument5) override;
   vector3d Slot25() override;
+  int Slot28() override;
   void Slot29(int id) override;
   bool Slot33() override;
+  virtual void Slot34(CEZ2STRParticle* particle, int id);
 
   bool ApplyHeadOffset(CEZ2STRParticle* particle);
   bool IsAttachedToHead() const;
