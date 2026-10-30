@@ -443,7 +443,7 @@ BarterChunk16* MoveChunks16(BarterChunk16* first, BarterChunk16* last, BarterChu
     ++first;
     ++dest;
   }
-  return dest;
+  return first;
 }
 
 struct BarterTriple {
