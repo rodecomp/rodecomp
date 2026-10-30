@@ -2,7 +2,11 @@
 #include "Contents/AdventureGuideMgr.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
+#include "Contents/NavigationManager.h"
 #include "Contents/RenewQuestMgr.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "Render/Renderer.h"
@@ -302,28 +306,27 @@ void CUIIntro::BindContents(CUITabInfo* item, const Guide_Intro::Contents& conte
 // OFFSET: 0x009DFAD0
 // FUNCTION: fn_14359
 void CUIQuestInfo::SetStatusLines(bool first, bool second, bool third) {
-  CUITextViewer* viewer = reinterpret_cast<CUITextViewer*>(this->unknown_00F4);
-  viewer->Clear();
+  reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->Clear();
   if (first == true) {
-    viewer->SetTextColor(0xC86464u);
-    viewer->AddLine(FormatOwnedString(LookupMessage(0xFC2)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0xC86464u);
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(0xFC2)));
   } else {
-    viewer->SetTextColor(0x6464C8u);
-    viewer->AddLine(FormatOwnedString(LookupMessage(0xFC3)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0x6464C8u);
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(0xFC3)));
   }
   if (second == true) {
-    viewer->SetTextColor(0xC86464u);
-    viewer->AddLine(FormatOwnedString(LookupMessage(0xFC4)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0xC86464u);
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(0xFC4)));
   } else {
-    viewer->SetTextColor(0x6464C8u);
-    viewer->AddLine(FormatOwnedString(LookupMessage(0xFC5)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0x6464C8u);
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(0xFC5)));
   }
   if (third == true) {
-    viewer->SetTextColor(0xC86464u);
-    viewer->AddLine(FormatOwnedString(LookupMessage(0xFC6)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0xC86464u);
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(0xFC6)));
   } else {
-    viewer->SetTextColor(0x6464C8u);
-    viewer->AddLine(FormatOwnedString(LookupMessage(0xFC7)));
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->SetTextColor(0x6464C8u);
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F4)->AddLine(FormatOwnedString(LookupMessage(0xFC7)));
   }
 }
 
@@ -601,6 +604,97 @@ void CUIItemInfo::Slot32(int, int) {
   UIWindow* window = g_windowMgr.EnsureWindow(12);
   if (window) {
     window->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x009DC720
+// FUNCTION: fn_14322
+void CUIMonster::BindMonster(CUIMonsterInfo* item, const CMonsterData& data) {
+  item->SetMonster(data.name);
+  reinterpret_cast<CUITextViewer*>(item->unknown_00F0)->Clear();
+  for (const std::string& value : data.values) {
+    reinterpret_cast<CUITextViewer*>(item->unknown_00F0)->AddLine(value);
+  }
+}
+
+// OFFSET: 0x009DFCB0
+// FUNCTION: fn_14360
+void CUIMonsterInfo::SetMonster(const std::string& title) {
+  CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
+  details->Clear();
+
+  std::string name;
+  std::string spriteName;
+  int x = 0;
+  int size = 0;
+  int element = 0;
+  int elementLevel = 0;
+  int race = 0;
+  int type = 0;
+  if (!g_navigationManager.GetMobInfo(title, &name, &spriteName, &x, &size, &element, &elementLevel, &race, &type)) {
+    this->unknown_00E8->SetText(title.c_str(), title.size());
+    return;
+  }
+
+  this->unknown_00E8->SetText(name.c_str(), name.size());
+  this->sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(spriteName + ".spr"));
+  this->action = static_cast<CActRes*>(ResourceMgr::Instance().Load(spriteName + ".act"));
+
+  if (element == 1) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8D7), elementLevel));
+  } else if (element == 2) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8D8), elementLevel));
+  } else if (element == 3) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8D9), elementLevel));
+  } else if (element == 4) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8DA), elementLevel));
+  } else if (element == 5) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8DB), elementLevel));
+  } else if (element == 6) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8DC), elementLevel));
+  } else if (element == 7) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8DD), elementLevel));
+  } else if (element == 8) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8DE), elementLevel));
+  } else if (element == 9) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8DF), elementLevel));
+  } else {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8E0), elementLevel));
+  }
+
+  if (race == 1) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8E4)));
+  } else if (race == 2) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8E5)));
+  } else if (race == 3) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8E6)));
+  } else if (race == 4) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8E7)));
+  } else if (race == 5) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8E8)));
+  } else if (race == 6) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8E9)));
+  } else if (race == 7) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8EA)));
+  } else if (race == 8) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8EB)));
+  } else if (race == 9) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8EC)));
+  } else {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8ED)));
+  }
+
+  if (size == 1) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8E1)));
+  } else if (size == 2) {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8E2)));
+  } else {
+    details->AddLine(FormatOwnedString(LookupMessage(0x8E3)));
+  }
+
+  if (type == 0x12D) {
+    details->SetTextColor(0x6464FFu);
+    details->AddLine(FormatOwnedString(LookupMessage(0x8B6)));
   }
 }
 

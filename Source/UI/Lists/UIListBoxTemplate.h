@@ -34,6 +34,8 @@ public:
 };
 
 class CUIStaticText;
+class CSprRes;
+class CActRes;
 
 template <class T> class CUIListBox;
 
@@ -83,10 +85,13 @@ public:
 class CUIMonsterInfo : public CUIListItem {
 public:
   void Slot16() override;
+  void SetMonster(const std::string& title);
 
   /* 00E8 */ CUIStaticText* unknown_00E8;
   /* 00EC */ CUIStaticText* unknown_00EC;
   /* 00F0 */ CUIStaticText* unknown_00F0;
+  /* 00F4 */ CSprRes* sprite;
+  /* 00F8 */ CActRes* action;
 };
 
 class CUIQuestInfo : public CUIListItem {

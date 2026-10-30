@@ -73,6 +73,7 @@ public:
   void Slot54(int first, int second) override;
 
   void OnSelectMonster(CUIMonsterInfo* item, const CMonsterData& data);
+  void BindMonster(CUIMonsterInfo* item, const CMonsterData& data);
 
   /* 0084 */ UIWindow* unknown_0084;
   /* 0088 */ std::string unknown_0088;
