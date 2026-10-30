@@ -873,6 +873,7 @@
   "Source/UI/Quest/UIRenewQuestUI.cpp": 2,
   "Source/UI/Quest/UIRenewQuestWnd.cpp": 2,
   "Source/UI/Rodex/UIRodexComposeWnd.cpp": 2,
+  "Source/UI/Rodex/UIRodexInboxWnd.cpp": 2,
   "Source/UI/RuneSystem/UIRuneSystemWnd.cpp": 2,
   "Source/UI/SelectPackageItemBox/UISelectPackageItemBox.cpp": 2,
   "Source/UI/Shop/ItemDrawing.cpp": 2,
