@@ -1,4 +1,14 @@
 #include "UI/SelectPackageItemBox/SelectPackageItemBox.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Items/SelectPackageItemMgr.h"
+#include "Contents/MessageTable.h"
+#include "UI/Items/UIGameItem.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
+#include "Utility/Text/FormatString.h"
+
+#include <iterator>
+#include <new>
 
 // OFFSET: 0x00A693D0
 // FUNCTION: fn_16659
@@ -35,3 +45,34 @@ void CUISelectPackageItemBox::Slot53() {
   this->SetSkinColors(0, 0, 0, 0);
   this->m_buttonBarStyle = 3;
 }
+
+// OFFSET: 0x00A6FBC0
+// FUNCTION: fn_16779
+void CUISelectPackageItemBox::OnCancel() {
+}
+
+// OFFSET: 0x00A6FBE0
+
+// OFFSET: 0x00A6FD00
+
+// OFFSET: 0x00A6FE10
+// FUNCTION: fn_16782
+void CUISelectPackageItemBox::OnSelectItem(SelectPackageItemBox::CUIItemInfo*, const ITEM_INFO&) {
+}
+
+namespace SelectPackageItemBox {
+// OFFSET: 0x00A703A0
+// FUNCTION: fn_16784
+void CUIItemInfo::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x00A703B0
+
+// OFFSET: 0x00A705E0
+// FUNCTION: fn_16787
+void CUITabInfo::Slot16() {
+}
+}
+
+// OFFSET: 0x00A709E0
