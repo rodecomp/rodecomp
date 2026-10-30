@@ -12,7 +12,9 @@
 UIEditCtrl2::UIEditCtrl2(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit) {
 }
 
+// OFFSET: 0x008515E0
 // OFFSET: 0x00852700
+// FUNCTION: fn_10692
 UIEditCtrl2::~UIEditCtrl2() = default;
 
 // OFFSET: 0x00863BF0
