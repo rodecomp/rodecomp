@@ -15,6 +15,7 @@
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 #include "UI/Text/ColoredText.h"
+#include "UI/Window/UINavigationWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -67,6 +68,24 @@ void UIRoMapWnd::ResetKafraBounds() {
   *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(this) + 0x224) = 0;
   *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(this) + 0x218) = 0;
   *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(this) + 0x220) = 0;
+}
+
+// OFFSET: 0x0091EBA0
+// FUNCTION: fn_12634
+void UIRoMapWnd::UpdateNavigationButtons() {
+  UIWindow** buttons = reinterpret_cast<UIWindow**>(reinterpret_cast<unsigned char*>(this) + 0x20C);
+  if (g_navigationWindow != nullptr && !g_navigationMinimized) {
+    buttons[0]->Move(-100, -100);
+    buttons[1]->Move(-100, -100);
+    buttons[2]->Move(-100, -100);
+  } else {
+    buttons[0]->Move(335, 0);
+    buttons[1]->Move(375, 3);
+    buttons[2]->Move(131, 0);
+    g_navigationHidden = true;
+  }
+
+  this->Invalidate();
 }
 
 // OFFSET: 0x009335B0

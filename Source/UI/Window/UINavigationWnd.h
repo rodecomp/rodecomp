@@ -15,6 +15,8 @@ struct NavigationWndInfo {
 
 extern bool g_navigationMinimized;
 extern int g_navigationMode;
+extern UIWindow* g_navigationWindow;
+extern bool g_navigationHidden;
 
 class UINavigationWnd : public UIFrameWnd {
 public:

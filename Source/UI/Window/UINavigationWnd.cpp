@@ -15,6 +15,12 @@ bool g_navigationMinimized;
 // GLOBAL: gl_24610
 int g_navigationMode;
 
+// GLOBAL: gl_24769
+UIWindow* g_navigationWindow;
+
+// GLOBAL: gl_24608
+bool g_navigationHidden;
+
 // OFFSET: 0x00931390
 // FUNCTION: fn_12702
 void UINavigationWnd::Slot31(int x, int y) {

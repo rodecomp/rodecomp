@@ -34,6 +34,7 @@ public:
   void Slot33(int x, int y) override;
   void ClearRecords();
   void ResetKafraBounds();
+  void UpdateNavigationButtons();
   void DrawHoverTooltip();
   void DrawMapNames();
   void DrawFieldLabels();
