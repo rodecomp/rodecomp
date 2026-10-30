@@ -27,6 +27,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "Script/LuaScript.h"
+#include "UI/Window/UIWindow.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
 
@@ -1860,4 +1861,149 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
   } else {
     this->SetTlvert(x, y);
   }
+}
+
+// OFFSET: 0x00DABF50
+// FUNCTION: fn_22589
+void CGrannyPc::UpdateGaugeWindow() {
+  if (reinterpret_cast<UIWindow*>(this->unknown_0478) != nullptr) {
+    reinterpret_cast<UIWindow*>(this->unknown_0478)->Move(
+      this->render.screenX - 30,
+      static_cast<int>(static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.unknown_005C + static_cast<float>(this->render.screenY))
+    );
+  }
+  this->UpdateHpGauge();
+}
+
+// OFFSET: 0x00DABFC0
+// FUNCTION: fn_22590
+void CPc::UpdateGaugeWindow() {
+  if (reinterpret_cast<UIWindow*>(this->unknown_0490) != nullptr) {
+    reinterpret_cast<UIWindow*>(this->unknown_0490)->Move(
+      this->render.screenX - 30,
+      static_cast<int>(static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.unknown_005C + static_cast<float>(this->render.screenY))
+    );
+  }
+  this->UpdateHpGauge();
+}
+
+// OFFSET: 0x00DB1760
+// FUNCTION: fn_22635
+void CPc::Slot20(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
+  this->unknown_04D4 = first;
+  this->SetUnknown0260(second);
+  this->unknown_0440 = third;
+  this->weapon = fourth;
+  this->unknown_044C = fifth;
+  this->unknown_0450 = sixth;
+  this->unknown_0454 = seventh;
+  this->unknown_0458 = eighth;
+  this->unknown_045C = ninth;
+  this->unknown_0444 = tenth;
+  this->render.unknown_0048 = eleventh;
+  this->SetActorJob(first);
+
+  int job = first;
+  if (StateFlag12(this->stateFlags)) {
+    job = 0x16;
+  } else if (StateFlag16(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+    job = 0x1a;
+  } else if (StateFlag18(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+    job = 0x1b;
+  } else if (StateFlag27(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+    job = 0x1c;
+  } else if (StateFlag28(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+    job = 0x1d;
+  } else if (this->unknown_03DC == 1 && !StateFlag15(this->stateFlags)) {
+    job = 0x1e;
+  } else if (this->unknown_02CC != 0) {
+    job = g_session.GetRidingJob(job);
+  }
+
+  this->SetActorJob(job);
+  this->Slot22(this->unknown_0440);
+  this->Slot23(this->weapon, this->unknown_044C);
+  this->Slot25(this->unknown_0450);
+  this->Slot26(this->unknown_0454);
+  this->Slot27(this->unknown_0458);
+  this->Slot28(this->unknown_045C);
+  this->Slot30();
+  this->Slot31();
+  this->Slot33(this->render.unknown_0048);
+  this->Slot32();
+}
+
+// OFFSET: 0x00DB0CE0
+// FUNCTION: fn_22633
+void CPc::Slot19(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
+  this->unknown_04D4 = first;
+  this->SetUnknown0260(second);
+  this->unknown_0440 = third;
+  this->weapon = fourth;
+  this->unknown_044C = fifth;
+  this->unknown_0450 = sixth;
+  this->unknown_0454 = seventh;
+  this->unknown_0458 = eighth;
+  this->unknown_045C = GetWeaponViewValue(fifth) < 0 ? fifth : 0;
+  this->unknown_0444 = ninth;
+  this->render.unknown_0048 = tenth;
+  this->render.unknown_0048 = g_session.GetBodyStyle(first, tenth, this->unknown_04D0);
+
+  int job = first;
+  bool applyJob = true;
+  if (StateFlag12(eleventh)) {
+    job = 0x16;
+  } else if (StateFlag16(eleventh) && !StateFlag15(eleventh)) {
+    job = 0x1a;
+  } else if (StateFlag18(eleventh) && !StateFlag15(eleventh)) {
+    job = 0x1b;
+  } else if (StateFlag27(eleventh) && !StateFlag15(eleventh)) {
+    job = 0x1c;
+  } else if (StateFlag28(eleventh) && !StateFlag15(eleventh)) {
+    job = 0x1d;
+  } else if (this->unknown_03DC == 1 && !StateFlag15(this->stateFlags)) {
+    job = 0x1e;
+  } else if (this->HasShapeShift()) {
+    applyJob = false;
+    this->Slot21(this->GetUnknown0404Job());
+  } else if (this->unknown_02CC != 0) {
+    job = g_session.GetRidingJob(first);
+  }
+
+  if (applyJob) {
+    this->SetActorJob(job);
+  }
+
+  this->Slot22(this->unknown_0440);
+
+  if (!StateFlag12(eleventh) && !StateFlag16(eleventh) && !StateFlag18(eleventh) && !StateFlag27(eleventh) &&
+      !StateFlag28(eleventh) && this->unknown_03DC != 1 && this->unknown_02CC == 0) {
+    switch (this->GetEffectiveJob(-1)) {
+      case 0xC:
+      case 0xFAD:
+      case 0xFC3:
+      case 0xFDB:
+      case 0xFE1:
+      case 0x1005:
+      case 0x109E:
+        this->Slot24(fourth, fifth);
+        break;
+      default:
+        this->Slot24(fourth, fourth >> 31);
+        break;
+    }
+  }
+
+  this->Slot25(this->unknown_0450);
+  this->Slot26(this->unknown_0454);
+  this->Slot27(this->unknown_0458);
+
+  if (!StateFlag12(eleventh) && !StateFlag16(eleventh) && !StateFlag18(eleventh) && !StateFlag27(eleventh) &&
+      !StateFlag28(eleventh) && this->unknown_03DC != 1 && this->unknown_02CC == 0) {
+    this->Slot28(this->unknown_045C);
+  }
+
+  this->Slot30();
+  this->Slot31();
+  this->Slot32();
 }

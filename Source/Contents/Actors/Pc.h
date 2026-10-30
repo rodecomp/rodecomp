@@ -31,6 +31,12 @@ public:
   ) override;
 
   void Slot15(int first, int second) override;
+  void Slot19(
+    int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh
+  ) override;
+  void Slot20(
+    int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh
+  ) override;
   void Slot22(int value) override;
   void Slot23(int first, int second) override;
   void Slot24(int first, int second) override;
@@ -81,6 +87,7 @@ public:
   bool HasAppearanceOverride();
   void DrawBody(int argument, int layer, const float* position, float x, float y, float distanceScale, float scale, float depth);
   void RenderOverlaySprite(const float* matrix, int);
+  void UpdateGaugeWindow();
 
   float* GetExtent(float* extent) const override;
 
@@ -193,6 +200,7 @@ public:
 
   void PlayMotion(int repeat);
   void ReleaseMeshes();
+  void UpdateGaugeWindow();
   void UpdateAnimation(C3dGrannyModelRes* model);
   void RenderCached(const matrix& view, int layer, C3dGrannyModelRes* model);
 
