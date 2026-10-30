@@ -536,6 +536,7 @@ public:
   int GetItemDescription40(int id);
   std::uint32_t GetUnknown0420(int index);
   void GetSkillActionInfo(int skillId, int& effectId, int& motion, int variant, int level);
+  void GetSkillActionInfo2(int skillId, int& effectId, int& motion);
   bool IsNumberWithCommas(char* text);
   bool IsRobeDrawOnTop(int action, int frame, bool riding);
   int GetUnknown8134() const;
