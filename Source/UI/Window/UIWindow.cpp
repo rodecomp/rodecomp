@@ -1975,6 +1975,7 @@ void UINavigationV4Wnd::SelectRoute(int route) {
 }
 
 // OFFSET: 0x005C9A20
+// FUNCTION: fn_03634
 void UINavigationV4Wnd::FillRouteGroups() {
   this->unknown_00EC->Clear();
   this->unknown_00EC->Invalidate();
