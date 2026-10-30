@@ -433,9 +433,11 @@ public:
   /* 807C */ unsigned char unknown_807C[0x38];
   /* 80B4 */ std::map<std::string, int> m_nameToId;
   /* 80BC */ std::map<int, SessionShop> m_shops;
-  /* 80C4 */ unsigned char unknown_80C4[4];
+  /* 80C4 */ int m_damageSkinIndex;
   /* 80C8 */ int unknown_80C8;
-  /* 80CC */ unsigned char unknown_80CC[0x20];
+  /* 80CC */ int m_damageSkinMode;
+  /* 80D0 */ int m_damageMillionUnit;
+  /* 80D4 */ std::string m_damageResourceName;
   /* 80EC */ std::string unknown_80EC;
   /* 8104 */ std::string unknown_8104;
   /* 811C */ std::vector<ITEM_INFO> m_cardItems;
@@ -471,6 +473,8 @@ public:
   void LoadNavigationScripts();
   bool IsNavigationAllowed() const;
   void LoadRobeAlpha();
+  void LoadDamageSkinSettings();
+  void ClearHomunStatus();
   std::pair<int, int>* InsertPair(int key, int value);
   int SetPairValue(int value, int slot);
   int GetPairValue() const;
@@ -659,6 +663,7 @@ public:
   std::uint32_t ReadReplayShops(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayExtra(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayReserved(const std::vector<unsigned char>& data);
+  std::uint32_t ReadReplayEntryQueue(const std::vector<unsigned char>& data);
   void SetHomunculusAutoFeed(bool enabled);
   void SetPetAutoFeed(bool enabled);
   void SendHomunculusAutoFeedOption(unsigned char enabled);

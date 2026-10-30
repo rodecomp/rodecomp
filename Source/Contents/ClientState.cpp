@@ -4,8 +4,10 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/EntryQueueMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/World/World.h"
+#include "UI/EntryQueue/UIEntryQueueWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -943,4 +945,100 @@ void CSession::SetUnknown5BC0(int value) {
 // FUNCTION: fn_24249
 void AppendBytes(std::vector<unsigned char>& output, const std::vector<unsigned char>& bytes) {
   output.insert(output.end(), bytes.begin(), bytes.end());
+}
+
+// OFFSET: 0x00E44EE0
+// FUNCTION: fn_24208
+std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& data) {
+  if (data.begin() == data.end()) {
+    return 0xFFFFFFFF;
+  }
+
+  int waiting;
+  int ranking;
+  std::uint32_t offset = 6;
+  ReplayBlockHeader header{};
+  std::memcpy(&header, data.data(), sizeof(header));
+  if (header.id != 6500) {
+    return 0xFFFFFFFF;
+  }
+
+  while (offset < data.size()) {
+    header = {};
+    std::memcpy(&header, data.data() + offset, sizeof(header));
+    offset += 6;
+    const unsigned char* source = data.data() + offset;
+    switch (header.id) {
+    case 6501:
+      return offset;
+    case 6511: {
+      int queueId = 0;
+      std::memcpy(&queueId, source, header.bytes);
+      offset += header.bytes;
+      for (const auto& entry : g_entryQueueList) {
+        if (queueId == entry.second->id) {
+          g_entryQueueMgr->current = entry.second;
+        }
+      }
+      break;
+    }
+    case 6512: {
+      unsigned char ready = 1;
+      std::memcpy(&ready, source, header.bytes);
+      offset += header.bytes;
+      g_entryQueueMgr->ready = ready;
+      break;
+    }
+    case 6513: {
+      char queueName[0x30];
+      std::memset(queueName, 0, sizeof(queueName));
+      std::memcpy(queueName, source, header.bytes);
+      offset += header.bytes;
+      g_entryQueueMgr->SetQueueName(*reinterpret_cast<const EntryQueueName*>(queueName));
+      break;
+    }
+    case 6514: {
+      char characterName[0x30];
+      std::memset(characterName, 0, sizeof(characterName));
+      std::memcpy(characterName, source, header.bytes);
+      offset += header.bytes;
+      g_entryQueueMgr->SetCharacterName(*reinterpret_cast<const EntryQueueName*>(characterName));
+      break;
+    }
+    case 6515: {
+      int value;
+      std::memcpy(&value, source, header.bytes);
+      offset += header.bytes;
+      UIEntryQueueWnd* window = dynamic_cast<UIEntryQueueWnd*>(g_windowMgr.LookupWindow(157));
+      if (window) {
+        window->SendMsg(nullptr, 135, 0, value, 0, 0);
+      }
+      break;
+    }
+    case 6516: {
+      char queueText[100];
+      std::memset(queueText, 0, sizeof(queueText));
+      std::memcpy(queueText, source, header.bytes);
+      offset += header.bytes;
+      UIEntryQueueStandByWnd* window = dynamic_cast<UIEntryQueueStandByWnd*>(g_windowMgr.LookupWindow(209));
+      if (window) {
+        window->SetInfo(queueText, waiting, ranking);
+      }
+      break;
+    }
+    case 6517:
+      std::memcpy(&waiting, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 6518:
+      std::memcpy(&ranking, source, header.bytes);
+      offset += header.bytes;
+      break;
+    default:
+      offset += header.bytes;
+      break;
+    }
+  }
+
+  return offset;
 }

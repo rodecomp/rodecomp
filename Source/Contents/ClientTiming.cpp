@@ -728,3 +728,41 @@ std::uint32_t CSession::SyncServerTime(std::uint32_t serverTime) {
   this->m_serverTimeAdjustCount = 0;
   return serverTime + 144;
 }
+
+// OFFSET: 0x00DE4D80
+// FUNCTION: fn_23490
+void CSession::LoadDamageSkinSettings() {
+  g_luaScript->Call("GetDamageSkinSize", ">d", &this->unknown_80C8);
+  if (this->m_damageSkinIndex < 0 || this->m_damageSkinIndex >= this->unknown_80C8) {
+    this->m_damageSkinIndex = 0;
+  }
+  if (this->m_damageSkinMode < 0 || this->m_damageSkinMode >= 4) {
+    this->m_damageSkinMode = 0;
+  }
+
+  const char* resourceName = nullptr;
+  const char* name80EC = nullptr;
+  const char* name8104 = nullptr;
+  g_luaScript->Call("GetDamageResourceName", "d>sss", this->m_damageSkinIndex, &resourceName, &name80EC, &name8104);
+  if (resourceName) {
+    this->m_damageResourceName = resourceName;
+  }
+  if (name80EC) {
+    this->unknown_80EC = name80EC;
+  }
+  if (name8104) {
+    this->unknown_8104 = name8104;
+  }
+  g_luaScript->Call("GetDamageMillionUnit", "d>d", this->m_damageSkinIndex, &this->m_damageMillionUnit);
+}
+
+// OFFSET: 0x00DE5B40
+// FUNCTION: fn_23493
+void CSession::ClearHomunStatus() {
+  this->unknown_5608 = 0;
+  this->unknown_560C = 0;
+  this->unknown_5610 = 0;
+  this->unknown_55FC = 0;
+  this->unknown_5600 = 0;
+  this->unknown_5604 = 0;
+}
