@@ -2,6 +2,8 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <cstdlib>
+
 // OFFSET: 0x00BF1F00
 // FUNCTION: fn_19988
 void CEffectPrim::RenderSpinSquares(matrix& wtm) {
@@ -426,6 +428,97 @@ void CEffectPrim::RenderArcWalls(matrix& wtm) {
       }
       prevB = curB;
       prevT = curT;
+    }
+  }
+}
+
+// OFFSET: 0x00BF2AC0
+// FUNCTION: fn_19991
+void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
+  vector3d previousBottom[20] = {};
+  vector3d previousTop[20] = {};
+  vector3d bottom[20] = {};
+  vector3d top[20] = {};
+  vector3d lastBottom = {};
+  vector3d lastTop = {};
+  int count = 0;
+
+  for (int layer = 0; layer < 4; ++layer) {
+    EffectPrimitiveSlot& slot = this->state.slots[layer];
+    float jitterY[21];
+    float jitterX[21];
+    float jitterZ[21];
+    for (int i = 0; i < slot.vecTNow.y; ++i) {
+      jitterY[i] = static_cast<float>(std::rand() % 7) * 0.1f - 0.3f;
+      jitterX[i] = static_cast<float>(std::rand() % 7) * 0.1f - 0.3f;
+      jitterZ[i] = static_cast<float>(std::rand() % 7) * 0.1f - 0.3f;
+    }
+
+    if (slot.life != 1 || slot.alphaB <= 0 || slot.process <= 0) {
+      continue;
+    }
+
+    for (int i = 0; i < slot.vecTNow.y; ++i) {
+      float height1 = slot.height[i];
+      float height2 = slot.height[i + 1];
+      float radius1 = height1 > 0.0f ? height1 / 90.0f * slot.distance : 0.0f;
+      float radius2 = height2 > 0.0f ? height2 / 90.0f * slot.distance : 0.0f;
+      const short angle = slot.riseAngle;
+      vector3d start;
+      vector3d end;
+      start.x = g_cosTable[angle] * radius1 + jitterX[i];
+      start.y = -slot.distance * g_sinTable[static_cast<short>(height1)] * slot.vecTNow.x + jitterY[i] - 2.0f;
+      start.z = g_sinTable[angle] * radius1 + jitterZ[i];
+      end.x = g_cosTable[angle] * radius2 + jitterX[i + 1];
+      end.y = -slot.distance * g_sinTable[static_cast<short>(height2)] * slot.vecTNow.x + jitterY[i + 1] - 2.0f;
+      end.z = g_sinTable[angle] * radius2 + jitterZ[i + 1];
+      short facing = static_cast<short>(height2);
+      Get_Angle(start.x - end.x, start.z - end.z, &facing);
+      start.x += slot.vecBNow.x;
+      start.y += slot.vecBNow.y;
+      start.z += slot.vecBNow.z;
+      end.x += slot.vecBNow.x;
+      end.y += slot.vecBNow.y;
+      end.z += slot.vecBNow.z;
+      facing += 90;
+      if (facing > 359) {
+        facing -= 360;
+      }
+
+      if (i > 0 && i < 19) {
+        for (int ring = 0; ring < 4; ++ring) {
+          const int turn = ring * 120;
+          const float rise = slot.maxHeight * g_sinTable[turn];
+          const float radial = slot.maxHeight * g_cosTable[turn];
+          const float dx = radial * g_cosTable[facing];
+          const float dz = radial * g_sinTable[facing];
+          vector3d currentBottom = {start.x + dx, start.y + rise, start.z + dz};
+          vector3d currentTop = {end.x + dx, end.y + rise, end.z + dz};
+          if (ring > 0 && layer == 0 && slot.alphaB - i * 5 > 0) {
+            unsigned char green = static_cast<unsigned char>(i * 3);
+            unsigned char blue = green;
+            if (this->state.slots[0].fullDisplayAngle == 3) {
+              blue = static_cast<unsigned char>(std::rand() % 26 + 100);
+              green = static_cast<unsigned char>(std::rand() % 51);
+            }
+            this->RenderTeiRect(&count, static_cast<short>(slot.alphaB - i * 5), currentBottom, currentTop, lastBottom, lastTop,
+                                wtm, 0, 0, 1, 255, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          }
+          lastBottom = currentBottom;
+          lastTop = currentTop;
+        }
+
+        if (layer == 0) {
+          previousBottom[i] = bottom[i] = lastBottom;
+          previousTop[i] = top[i] = lastTop;
+        } else {
+          int alpha = slot.alphaB;
+          if (layer == 1) alpha /= 3;
+          else if (layer == 2) alpha /= 2;
+          this->RenderTeiRect(&count, static_cast<short>(alpha), lastBottom, lastTop, previousTop[i], previousBottom[i],
+                              wtm, 0, 0, 1, 255, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
+      }
     }
   }
 }

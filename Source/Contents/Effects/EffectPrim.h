@@ -225,6 +225,7 @@ struct CEffectPrim : CRenderObject {
   void RenderGroundSquare(matrix& wtm);
   void RenderGroundSquareBlend(matrix& wtm);
   void RenderJitterQuads(matrix& wtm);
+  void RenderJitterSweeps(matrix& wtm);
   void RenderFanWedge(matrix& wtm);
   void RenderFanSlice(matrix& wtm);
   void RenderFanTrail(matrix& wtm);
