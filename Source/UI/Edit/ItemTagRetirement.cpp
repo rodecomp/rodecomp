@@ -62,6 +62,37 @@ bool UIItemTagOnMail::CanInsertTag(const std::string& name, int width) {
 }
 
 // OFFSET: 0x0087ABB0
+// FUNCTION: fn_11239
+bool UIItemTagCtrl::SyncTagsWithText() {
+  std::string text = this->taggedText;
+  std::list<ItemTagRecord> kept;
+
+  while (text.find("<") != std::string::npos) {
+    std::string token = text.substr(text.find("<"));
+
+    if (token.find(">") == std::string::npos) {
+      text = text.substr(text.find("<") + 1);
+      continue;
+    }
+
+    text = text.substr(text.find(">") + 1);
+    token = token.substr(0, token.find(">") + 1);
+
+    for (auto entry = this->tags.begin(); entry != this->tags.end(); ++entry) {
+      std::string fitted = FitText(*this->geometry.surface, entry->name, this->tagWidth / 2);
+      if (token.find(fitted) != std::string::npos) {
+        entry->index = kept.size();
+        kept.push_back(*entry);
+        this->tags.erase(entry);
+        break;
+      }
+    }
+  }
+
+  reinterpret_cast<ItemTagRetirement*>(this)->Clear();
+  this->tags.swap(kept);
+  return true;
+}
 
 // INLINED
 MailItemTagRemoval::MailItemTagRemoval(UIWindow* const& owner) : m_owner(owner) {
