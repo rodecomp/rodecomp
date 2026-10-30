@@ -11,6 +11,8 @@
 #include <ctime>
 
 // OFFSET: 0x00910B20
+// FUNCTION: fn_12508
+PartyBookingEntry::PartyBookingEntry(const PartyBookingEntry& other) = default;
 
 // OFFSET: 0x00B15C80
 // FUNCTION: fn_18432
