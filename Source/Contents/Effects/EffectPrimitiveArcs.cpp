@@ -1601,3 +1601,155 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     }
   }
 }
+
+// OFFSET: 0x00BF6AD0
+// FUNCTION: fn_20000
+void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
+  CSprRes* sprite = this->render.sprite;
+  CActRes* action = this->GetActRes();
+  const short alpha = static_cast<short>(this->state.alpha);
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life <= 0 || this->state.alpha <= 0.0f) {
+      continue;
+    }
+
+    for (int seg = 0; seg < this->state.numSegment; ++seg) {
+      EffectPrimitiveRecord& record = this->state.records[seg];
+      const float depth = record.position.y * wtm.values[5] + record.position.x * wtm.values[2] + record.position.z * wtm.values[8] + wtm.values[11];
+
+      float screenX;
+      float screenY;
+      float reciprocalDepth;
+      g_renderer->ProjectViewport(&record.position.x, wtm.values, &screenX, &screenY, &reciprocalDepth);
+      const float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
+
+      const ActionFrame& frame = action->Frame(this->render.previousAnimation, this->render.curMotion);
+      for (int index = 0; index < frame.cellCount; ++index) {
+        const SpriteFrameCell& cell = frame.Cell(index);
+        if (cell.image == -1) {
+          continue;
+        }
+
+        const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+        const double scale = record.scale;
+        const float top = static_cast<float>(cell.y * scale * cell.scaleY * distanceScale + screenY);
+        const float bottom = static_cast<float>(((static_cast<short>(image->unknown_0006) + 1) * image->height + cell.y) * scale * cell.scaleY * distanceScale + screenY);
+        if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f) {
+          continue;
+        }
+
+        float left;
+        float right;
+        if ((cell.mirrored & 1) != 0) {
+          left = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+          right = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
+          if (right >= static_cast<float>(g_renderer->viewport.width) || left <= 0.0f) {
+            continue;
+          }
+        } else {
+          left = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
+          right = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+          if (left >= static_cast<float>(g_renderer->viewport.width) || right <= 0.0f) {
+            continue;
+          }
+        }
+
+        SpriteQuad quad;
+        quad.top = top;
+        quad.left = left;
+        quad.bottom = bottom;
+        quad.right = right;
+        quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth);
+        quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth);
+        quad.angle = static_cast<float>(cell.unknown_001C) + this->state.roll;
+
+        unsigned char red = static_cast<unsigned char>(cell.color);
+        unsigned char green = static_cast<unsigned char>(cell.color >> 8);
+        unsigned char blue = static_cast<unsigned char>(cell.color >> 16);
+        quad.image = image;
+        this->state.GetColorOverride(&red, &green, &blue);
+        const std::uint32_t color = (((((alpha << 8) + red) << 8) + green) << 8) + blue;
+        quad.color = color;
+        this->DrawQuad(quad, sprite->palette, slot.flag1[2] == 1 ? 5 : 0x101, 0.0f, 0.0f, 0);
+
+        SpriteQuad glow;
+        glow.top = top - 1.0f;
+        glow.bottom = bottom + 1.0f;
+        glow.left = left - 1.0f;
+        glow.right = right + 1.0f;
+        glow.image = image;
+        glow.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + 0.0001f;
+        glow.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0001f;
+        glow.color = color;
+        glow.angle = static_cast<float>(cell.unknown_001C) + this->state.roll;
+        this->DrawQuad(glow, sprite->palette, 5, 0.0f, 0.0f, 0);
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00BF6FD0
+// FUNCTION: fn_20001
+void CEffectPrim::RenderTaperedQuad(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  vector3d vec4{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    const float dist = slot.distance;
+    const int angle = slot.fullDisplayAngle;
+    const float inner = dist - slot.rotStart * dist / 50.0f;
+    int angle1 = angle - 90;
+    if (angle1 < 0) {
+      angle1 += 360;
+    }
+    int angle2 = angle1 - 180;
+    if (angle2 < 0) {
+      angle2 += 360;
+    }
+    const int angle4 = angle + (angle >= 90 ? -90 : 270);
+    int angle3 = angle4 - 180;
+    if (angle3 < 0) {
+      angle3 += 360;
+    }
+
+    vec1.x = dist * g_cosTable[angle1] * g_depthAverageHalf + g_cosTable[angle] * inner;
+    vec1.y = 0.0f;
+    vec1.z = dist * g_sinTable[angle1] * g_depthAverageHalf + g_sinTable[angle] * inner;
+    vec2.x = dist * g_cosTable[angle2] * g_depthAverageHalf + g_cosTable[angle] * inner;
+    vec2.y = 0.0f;
+    vec2.z = dist * g_sinTable[angle2] * g_depthAverageHalf + g_sinTable[angle] * inner;
+    vec3.x = dist * g_cosTable[angle3] * g_depthAverageHalf + g_cosTable[angle] * dist;
+    vec3.y = 0.0f;
+    vec3.z = dist * g_sinTable[angle3] * g_depthAverageHalf + g_sinTable[angle] * dist;
+    vec4.x = dist * g_cosTable[angle4] * g_depthAverageHalf + g_cosTable[angle] * dist;
+    vec4.y = 0.0f;
+    vec4.z = dist * g_sinTable[angle4] * g_depthAverageHalf + g_sinTable[angle] * dist;
+    this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+
+    vec1.x = slot.vecBNow.x + vec1.x;
+    vec1.y = slot.vecBNow.y + vec1.y;
+    vec1.z = slot.vecBNow.z + vec1.z;
+    vec2.x = slot.vecBNow.x + vec2.x;
+    vec2.y = slot.vecBNow.y + vec2.y;
+    vec2.z = slot.vecBNow.z + vec2.z;
+    vec3.x = slot.vecBNow.x + vec3.x;
+    vec3.y = slot.vecBNow.y + vec3.y;
+    vec3.z = slot.vecBNow.z + vec3.z;
+    vec4.x = slot.vecBNow.x + vec4.x;
+    vec4.y = slot.vecBNow.y + vec4.y;
+    vec4.z = slot.vecBNow.z + vec4.z;
+    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, slot.flag1[0], 1, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+  }
+}

@@ -215,6 +215,8 @@ struct CEffectPrim : CRenderObject {
   void RenderGroundArc2(matrix& wtm);
   void RenderGroundArcStep(matrix& wtm);
   void RenderSegmentSprites(matrix& wtm);
+  void RenderSegmentSpriteGlow(matrix& wtm);
+  void RenderTaperedQuad(matrix& wtm);
   void RenderGroundSquare(matrix& wtm);
   void RenderGroundSquareBlend(matrix& wtm);
   void RenderJitterQuads(matrix& wtm);
