@@ -19,6 +19,28 @@ void FocusedItemTagRemoval::Remove(UIWindow* child) {
 }
 
 // OFFSET: 0x00879830
+// FUNCTION: fn_11218
+bool UIItemTagOnChat::CanInsertTag(const std::string& name, int width) {
+  if (g_windowMgr.GetHoverWindow()->geometry.id != 490 && g_windowMgr.GetHoverWindow()->geometry.id != 494 &&
+      !g_windowMgr.unknown_0024) {
+    reinterpret_cast<ItemTagRetirement*>(this)->Clear();
+    return false;
+  }
+
+  if (this->tags.size() >= 3) {
+    return false;
+  }
+
+  std::string tag = "<";
+  this->tagWidth = width;
+  tag += FitText(*this->geometry.surface, name, width / 2);
+  tag += ">";
+
+  UIEditCtrl* edit = static_cast<UIEditCtrl*>(g_windowMgr.GetHoverWindow());
+  this->taggedText = edit->text;
+  std::string text = this->taggedText += tag;
+  return text.size() <= static_cast<unsigned int>(edit->maximum);
+}
 
 // OFFSET: 0x00879A10
 // FUNCTION: fn_11219

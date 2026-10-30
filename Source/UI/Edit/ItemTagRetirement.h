@@ -11,7 +11,8 @@ struct InputFocus;
 struct ItemTagRecord {
   /* 0000 */ UIWindow* child;
   /* 0004 */ std::array<std::byte, 64> unknown_0004;
-  /* 0044 */ char name[388];
+  /* 0044 */ char name[384];
+  /* 01C4 */ int index;
 };
 
 class ItemTagRemoval {
@@ -58,6 +59,7 @@ static_assert(sizeof(ItemTagRecord) == 456);
 static_assert(offsetof(ItemTagRecord, child) == 0x0000);
 static_assert(offsetof(ItemTagRecord, unknown_0004) == 0x0004);
 static_assert(offsetof(ItemTagRecord, name) == 0x0044);
+static_assert(offsetof(ItemTagRecord, index) == 0x01C4);
 #endif
 
 #endif
