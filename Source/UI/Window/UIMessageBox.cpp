@@ -1092,6 +1092,92 @@ void UIMonsterInfoWnd::DrawResistance(int x, int y, const char* label, int value
 }
 
 // OFFSET: 0x008B8ED0
+// FUNCTION: fn_11770
+void UIMonsterInfoWnd::Paint() {
+  auto& controls = *this->m_controls;
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  const std::uint32_t fill = RGB(red, green, blue);
+  this->ClearSurface(fill);
+  this->DrawPanelBackground(this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0), 0, "");
+  this->DrawButtonBar(2, 0, 1);
+  SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
+  const std::uint32_t border = RGB(red, green, blue);
+
+  this->DrawTextAt(controls.fonts, controls.locale, 17, 3, LookupMessage(406), 0, 0, 12, 0xFFFFFF, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 16, 2, LookupMessage(406), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 120, 30, LookupMessage(407), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 160, 30, this->name.c_str(), 0, 0, 12, 0, 0, 0);
+
+  char text[256];
+  StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.level);
+  this->DrawTextAt(controls.fonts, controls.locale, 120, 50, LookupMessage(408), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 160, 50, text, 0, 0, 12, 0, 0, 0);
+  StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.hp);
+  this->DrawTextAt(controls.fonts, controls.locale, 120, 70, LookupMessage(409), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 160, 70, text, 0, 0, 12, 0, 0, 0);
+  StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.defense);
+  this->DrawTextAt(controls.fonts, controls.locale, 120, 90, LookupMessage(3910), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 160, 90, text, 0, 0, 12, 0, 0, 0);
+
+  this->DrawTextAt(controls.fonts, controls.locale, 260, 30, LookupMessage(410), 0, 0, 12, 0, 0, 0);
+  int message;
+  switch (this->info.size) {
+  case 0:
+    message = 3907;
+    break;
+  case 1:
+    message = 3908;
+    break;
+  case 2:
+    message = 3909;
+    break;
+  default:
+    message = 0;
+    break;
+  }
+  if (message != 0) {
+    this->DrawTextAt(controls.fonts, controls.locale, 300, 30, LookupMessage(message), 0, 0, 12, 0, 0, 0);
+  }
+
+  StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.race);
+  this->DrawTextAt(controls.fonts, controls.locale, 260, 50, LookupMessage(411), 0, 0, 12, 0, 0, 0);
+  if (static_cast<unsigned short>(this->info.race) <= 9) {
+    this->DrawTextAt(controls.fonts, controls.locale, 300, 50, LookupMessage(3887 + static_cast<unsigned short>(this->info.race)), 0, 0, 12, 0, 0, 0);
+  }
+
+  StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", this->info.magicDefense);
+  this->DrawTextAt(controls.fonts, controls.locale, 260, 90, LookupMessage(412), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 300, 90, text, 0, 0, 12, 0, 0, 0);
+
+  this->DrawTextAt(controls.fonts, controls.locale, 260, 70, LookupMessage(413), 0, 0, 12, 0, 0, 0);
+  const int element = this->info.element % 20;
+  if (element >= 0 && element <= 9) {
+    this->DrawTextAt(controls.fonts, controls.locale, 300, 70, LookupMessage(3897 + element), 0, 0, 12, 0, 0, 0);
+  }
+
+  this->DrawResistance(120, 110, LookupMessage(3898), this->info.resistances[0], border, fill);
+  this->DrawResistance(120, 128, LookupMessage(3899), this->info.resistances[1], border, fill);
+  this->DrawResistance(120, 146, LookupMessage(3900), this->info.resistances[2], border, fill);
+  this->DrawResistance(200, 110, LookupMessage(3901), this->info.resistances[3], border, fill);
+  this->DrawResistance(200, 128, LookupMessage(3902), this->info.resistances[4], border, fill);
+  this->DrawResistance(200, 146, LookupMessage(3903), this->info.resistances[5], border, fill);
+  this->DrawResistance(280, 110, LookupMessage(3904), this->info.resistances[6], border, fill);
+  this->DrawResistance(280, 128, LookupMessage(3905), this->info.resistances[7], border, fill);
+  this->DrawResistance(280, 146, LookupMessage(3906), this->info.resistances[8], border, fill);
+
+  char spriteName[128];
+  StringFormat(spriteName, sizeof(spriteName), static_cast<std::size_t>(-1), "몬스터\\%s.spr", g_session.GetJobName(this->info.job, -1));
+  char actionName[128];
+  StringFormat(actionName, sizeof(actionName), static_cast<std::size_t>(-1), "몬스터\\%s.act", g_session.GetJobName(this->info.job, -1));
+  if (ResourceMgr::Instance().Exists(actionName) && ResourceMgr::Instance().Exists(spriteName)) {
+    auto* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));
+    auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(spriteName));
+    this->DrawActionSprite(sprite, action, 2, 19, 116, 152, 0, true, nullptr);
+  }
+}
 
 // OFFSET: 0x008C3440
 // FUNCTION: fn_11823
