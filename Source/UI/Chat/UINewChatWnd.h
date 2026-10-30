@@ -15,6 +15,7 @@ public:
   void Show(int visible) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
+  bool Slot42(void* output) override;
 
 private:
   /* 00BC */ int unknown_00BC;

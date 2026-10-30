@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <cstdlib>
+#include <cstring>
 
 namespace {}
 
@@ -427,6 +428,13 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   default:
     return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+}
+
+// OFFSET: 0x0091C9B0
+// FUNCTION: fn_12618
+bool UINewChatWnd::Slot42(void* output) {
+  std::memcpy(output, &this->m_inputX, 28);
+  return true;
 }
 
 // OFFSET: 0x0091E9C0
