@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_WINDOW_FUNCDRAWWNDCHAR_H
 #define RAGNAROK_SOURCE_UI_WINDOW_FUNCDRAWWNDCHAR_H
 
+#include <list>
 #include <map>
 #include <string>
 #include <utility>
@@ -19,6 +20,7 @@ public:
   virtual ~FuncDrawWNDChar();
   void Draw(int option);
   bool DrawOnTop();
+  std::list<int> DrawOrder();
 
   /* 0004 */ UIWindow* m_window;
   /* 0008 */ int m_x;
