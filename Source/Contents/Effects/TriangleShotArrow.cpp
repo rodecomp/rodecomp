@@ -3,13 +3,28 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/Particle.h"
+#include "Utility/Math/AffineMatrix.h"
+
+#include <cmath>
+
+CParticle* sub_B82ED0(const vector3d* position, int flags);
+void sub_B82FD0(CParticle* particle);
 
 // OFFSET: 0x0072ED00
 // FUNCTION: fn_07521
 CTriangleShotArrow::CTriangleShotArrow() : CEffect(-1), current{}, direction{}, origin{} {
   this->unknown_0050 = 0;
 }
+
+// OFFSET: 0x0072EE80
+// FUNCTION: fn_07523
+void CTriangleShotArrow::Close() {
+  sub_B82FD0(this->arrow);
+}
+
+// OFFSET: 0x0072EE90
 
 // OFFSET: 0x0072F2B0
 // FUNCTION: fn_07525

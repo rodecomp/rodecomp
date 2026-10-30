@@ -12,7 +12,9 @@ class CTriangleShotArrow : public CEffect {
 public:
   CTriangleShotArrow();
 
+  void Slot01() override;
   void Slot03() override;
+  void Close() override;
   void Slot04() override;
   bool Slot06() override;
   void Slot16(int delay) override;
