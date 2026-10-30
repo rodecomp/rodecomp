@@ -2371,8 +2371,38 @@ int UIItemBaseWnd::GetItemIndexAt(int x, int y) {
 }
 
 // OFFSET: 0x00984050
+// FUNCTION: fn_13349
+void UIItemShopWnd2::Slot26(int x, int y) {
+  if (this->unknown_00F8 == 0 || g_windowMgr.unknown_0064 == 0) {
+    return;
+  }
+
+  UIWindow* target = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0260);
+
+  if (target) {
+    this->Slot25(x, y);
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    this->m_recorder->RecordDrop(x, y, mode->drag, 161);
+    target->Slot10(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
+  }
+}
 
 // OFFSET: 0x009840C0
+// FUNCTION: fn_13350
+void UIItemShopWnd::Slot26(int x, int y) {
+  if (this->unknown_00F8 == 0 || g_windowMgr.unknown_0064 == 0) {
+    return;
+  }
+
+  UIWindow* target = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_025C);
+
+  if (target) {
+    this->Slot25(x, y);
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    this->m_recorder->RecordDrop(x, y, mode->drag, 24);
+    target->Slot10(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
+  }
+}
 
 // OFFSET: 0x009844E0
 // FUNCTION: fn_13354
