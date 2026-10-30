@@ -131,6 +131,15 @@ void UIComboBoxDefWnd::Select(int index) {
   this->label->SetText(this->list->lines[index].text.c_str(), 0);
 }
 
+// OFFSET: 0x008A28B0
+// FUNCTION: fn_11643
+void TrimTrailing(std::string& text, const char* characters) {
+  const std::size_t end = text.find_last_not_of(characters) + 1;
+  if (end < text.size()) {
+    text.erase(end, text.size() - end);
+  }
+}
+
 // OFFSET: 0x00897E90
 // FUNCTION: fn_11544
 int UIComboBoxDefWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
