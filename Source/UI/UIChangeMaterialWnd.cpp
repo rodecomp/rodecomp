@@ -1,5 +1,15 @@
 #include "UI/UIChangeMaterialWnd.h"
 
+#include "Client/Mode/ModeTooltip.h"
+#include "Contents/Items/ItemNaming.h"
+#include "Network/Connection/Connection.h"
+#include "UI/Buttons/UIButton.h"
+#include "Utility/StackAlloc.h"
+
+#include <cstdint>
+#include <cstdlib>
+#include <malloc.h>
+
 // OFFSET: 0x005E1080
 // FUNCTION: fn_03871
 void UIChangeMaterialWnd_List::sub_5E1080(int delta) {
@@ -56,6 +66,31 @@ void UIChangeMaterialWnd_List::Move(int x, int y) {
   UIWindow::Move(x, y);
 }
 
+// OFFSET: 0x005E2590
+// FUNCTION: fn_03883
+void UIChangeMaterialWnd_List::sub_5E2590(int, int position) {
+  unsigned int index = static_cast<unsigned int>(position / this->m_pageSize + this->m_scrollOffset);
+  const unsigned int last = static_cast<unsigned int>(this->m_items.size() - 1);
+  if (last < index) {
+    index = last;
+  }
+  this->sub_5E3B80(static_cast<int>(index));
+}
+
+// OFFSET: 0x005E25D0
+// FUNCTION: fn_03884
+void UIChangeMaterialWnd::Slot28(int x, int y) {
+  ITEM_INFO* item = this->GetItemAt(x, y);
+  if (!item) {
+    return;
+  }
+
+  this->ToScreen(x, y);
+  const int itemId = std::atoi(item->itemId.c_str());
+  const std::string name = ItemDisplayName(itemId);
+  (*reinterpret_cast<ModeTooltip**>(0x013495BC))->Show(name.c_str(), x + 5, y - 5, -1, 0, 1);
+}
+
 // OFFSET: 0x005E2840
 // FUNCTION: fn_03886
 void UIChangeMaterialWnd_List::Slot27(int x, int y) {
@@ -90,6 +125,35 @@ void UIChangeMaterialWnd_List::sub_5E2A70() {
   if (this->parent) {
     this->parent->Invalidate();
   }
+}
+
+// OFFSET: 0x005E39A0
+// FUNCTION: fn_03893
+void UIChangeMaterialWnd::sub_5E39A0() {
+  const int count = static_cast<int>(this->m_materials.size());
+  const int length = count * 4 + 0xC;
+  auto* packet = static_cast<unsigned char*>(STACK_ALLOC(static_cast<std::size_t>(length)));
+
+  if (!packet) {
+    return;
+  }
+
+  *reinterpret_cast<std::uint16_t*>(packet) = 0x7E4;
+  *reinterpret_cast<std::uint16_t*>(packet + 2) = static_cast<std::uint16_t>(length);
+  *reinterpret_cast<std::int32_t*>(packet + 4) = 0;
+  *reinterpret_cast<std::int32_t*>(packet + 8) = 1;
+
+  unsigned char* entry = packet + 0xC;
+  for (const ITEM_INFO& material : this->m_materials) {
+    *reinterpret_cast<std::uint16_t*>(entry) = static_cast<std::uint16_t>(material.unknown_0000[1]);
+    *reinterpret_cast<std::uint16_t*>(entry + 2) = static_cast<std::uint16_t>(material.quantity);
+    entry += 4;
+  }
+
+  GetRagConnection().Send(static_cast<int>(*reinterpret_cast<const std::int16_t*>(packet + 2)), packet);
+  this->m_button->SetDisabled(1);
+  this->m_button->Invalidate();
+  _freea(packet);
 }
 
 // OFFSET: 0x005E3B80

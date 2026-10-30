@@ -8,6 +8,8 @@
 #include <cstdint>
 #include <vector>
 
+class UIButton;
+
 struct MaterialSlotPos {
   /* 0000 */ int x;
   /* 0004 */ int y;
@@ -20,10 +22,12 @@ struct MaterialListEntry {
 class UIChangeMaterialWnd : public UIFrameWnd {
 public:
   bool Slot02() override;
+  void Slot28(int x, int y) override;
   ITEM_INFO* GetItemAt(int x, int y);
+  void sub_5E39A0();
 
   /* 00BC */ std::uint32_t unknown_00BC;
-  /* 00C0 */ std::uint32_t unknown_00C0;
+  /* 00C0 */ UIButton* m_button;
   /* 00C4 */ int m_resultX;
   /* 00C8 */ int m_resultY;
   /* 00D0 */ ITEM_INFO m_resultItem;
@@ -39,6 +43,7 @@ public:
 
   void sub_5E2A70();
   void sub_5E3B80(int index);
+  void sub_5E2590(int unknown, int position);
   void sub_5E1080(int delta);
   void ShiftSelectedIndex(int value);
 

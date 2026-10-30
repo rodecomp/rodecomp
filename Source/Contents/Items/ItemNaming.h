@@ -53,6 +53,7 @@ ItemCardName& FindItemCardName(int id, std::map<int, ItemCardName>& values);
 ItemCardName& FindItemCardName(int id);
 ItemMoveInfo& FindItemMoveInfo(int id);
 bool IsItemCard(int id);
+std::string ItemDisplayName(int id);
 const char* ItemResourcePath(const ITEM_INFO& item);
 int ItemSlotsCount(const ITEM_INFO& item);
 
