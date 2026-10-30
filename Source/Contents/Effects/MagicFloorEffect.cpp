@@ -10,12 +10,29 @@
 #include <string>
 
 // OFFSET: 0x00B48220
+// FUNCTION: fn_18927
+CMagicFloorEffect::CMagicFloorEffect() : CEffect(0x401) {
+}
 
 // OFFSET: 0x00B48400
 
 // OFFSET: 0x00B48880
 
 // OFFSET: 0x00B48D50
+// FUNCTION: fn_18931
+void CMagicFloorEffect::Close() {
+  for (CParticle* particle : this->floors) {
+    FreeParticle(particle);
+  }
+
+  this->floors.clear();
+
+  for (CParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
 
 // OFFSET: 0x00B48DC0
 // FUNCTION: fn_18932
