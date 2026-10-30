@@ -791,6 +791,7 @@
   "Source/UI/Quest/UIQuestDisplay.cpp": 2,
   "Source/UI/Quest/UIRecommendedQuestInfo.cpp": 2,
   "Source/UI/Quest/UIRenewQuestUI.cpp": 2,
+  "Source/UI/SelectPackageItemBox/UISelectPackageItemBox.cpp": 2,
   "Source/UI/Shop/ItemDrawing.cpp": 2,
   "Source/UI/Shop/MerchantShopRefresh.cpp": 2,
   "Source/UI/Shop/PriceColor.cpp": 2,

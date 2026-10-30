@@ -606,3 +606,13 @@ void CUIRenewQuestUI::Slot53(int value) {
   this->Slot15(this->geometry.width, this->geometry.height);
   this->Slot16();
 }
+
+// OFFSET: 0x00A67FA0
+// FUNCTION: fn_16634
+void CUIRenewQuestUI::OnTabButton(CUITabButton* button) {
+}
+
+// OFFSET: 0x00A67FB0
+// FUNCTION: fn_16635
+void CUIRenewQuestUI::OnPanelButton() {
+}

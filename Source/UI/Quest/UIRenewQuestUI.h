@@ -32,6 +32,9 @@ class CUIRenewQuestUI : public CUIFrameWnd {
 public:
   void Paint() override;
   virtual void Slot53(int value);
+
+  void OnTabButton(CUITabButton* button);
+  void OnPanelButton();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
