@@ -27,6 +27,7 @@ public:
   void Paint() override;
 
   void SetText(const char* text, int width);
+  void WrapText(const char* text, int width);
   void FitText();
   void SetFontHeight(int height);
 

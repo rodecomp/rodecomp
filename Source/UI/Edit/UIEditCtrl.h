@@ -125,6 +125,7 @@ public:
   UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
   void Paint() override;
   void Slot35(int value) override;
+  void Trim() override;
 
   void PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int& unused);
 
@@ -163,6 +164,8 @@ public:
   void Slot23() override;
   void PaintText() override;
   void SetPlaceholderEnabled(bool enabled);
+  void SetPlaceholderColor(std::uint32_t color);
+  void SetPlaceholder(const char* value);
 
   /* 011C */ std::uint32_t placeholderColor;
   /* 0120 */ std::string placeholder;
@@ -205,6 +208,14 @@ public:
   /* 011C */ std::string bitmapName;
   /* 0134 */ std::vector<std::string> history;
   /* 0140 */ int historyIndex;
+};
+
+class UIWhisperEditCtrl : public UIEditCtrl {
+public:
+  void SetText(const char* value) override;
+
+  /* 011C */ std::vector<std::string> history;
+  /* 0128 */ int historyIndex;
 };
 
 class UIEditCtrlVarId : public UIEditCtrl {

@@ -6,6 +6,10 @@
 #include "Resource/TextureNames.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "Network/TextEncoding.h"
+
+#include <cstring>
+#include <windows.h>
 
 // OFFSET: 0x0084F250
 // FUNCTION: fn_10657
@@ -109,6 +113,31 @@ void UIEditCtrl4::SetPlaceholderEnabled(bool enabled) {
   this->placeholderEnabled = enabled;
 }
 
+// OFFSET: 0x00867960
+// FUNCTION: fn_10943
+void UIEditCtrl4::SetPlaceholder(const char* value) {
+  this->placeholder.assign(value, std::strlen(value));
+  this->Trim();
+
+  if (this->m_edit->focus.window == this) {
+    this->m_edit->input.ResetInput();
+    this->m_edit->input.ResetInput();
+    this->m_edit->input.Insert(this->placeholder.c_str());
+  }
+
+  this->SelectAll();
+
+  if (this->parent) {
+    this->parent->Invalidate();
+  }
+}
+
+// OFFSET: 0x008679F0
+// FUNCTION: fn_10944
+void UIEditCtrl4::SetPlaceholderColor(std::uint32_t color) {
+  this->placeholderColor = color;
+}
+
 // OFFSET: 0x0084F7B0
 // FUNCTION: fn_10661
 UIEditCtrl5::UIEditCtrl5(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl4(windows, edit) {
@@ -165,6 +194,34 @@ void UIEditCtrl3::Slot35(int value) {
     this->SendMsg(this->unknown_0130, 7, 3, 0, 0, 0);
   } else {
     this->SendMsg(this->unknown_0130, 7, -3, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00868300
+// FUNCTION: fn_10958
+void UIEditCtrl3::Trim() {
+  const int limit = this->maximum - this->unknown_00F0;
+  const auto length = this->text.size();
+
+  if (static_cast<int>(length) <= limit) {
+    return;
+  }
+
+  const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), 0);
+
+  while (length - std::strlen(next) <= static_cast<unsigned>(limit)) {
+    next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
+  }
+
+  const char* previous = CharPrevExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), next, 0);
+  this->text.resize(length - std::strlen(previous));
+
+  this->m_edit->input.ResetInput();
+  this->m_edit->input.ResetInput();
+  this->m_edit->input.Insert(this->text.c_str());
+
+  while (this->text.size() < static_cast<unsigned>(limit)) {
+    this->text += " ";
   }
 }
 
@@ -252,6 +309,16 @@ int UIEditCtrlVarId::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 void UIEditCtrlVarId::SetText(const char* value) {
   this->UIEditCtrl::SetText(value);
   this->Invalidate();
+}
+
+// OFFSET: 0x00868230
+// FUNCTION: fn_10956
+void UIWhisperEditCtrl::SetText(const char* value) {
+  this->UIEditCtrl::SetText(value);
+
+  if (std::strlen(value) == 0) {
+    this->historyIndex = static_cast<int>(this->history.size());
+  }
 }
 
 // OFFSET: 0x00864D20

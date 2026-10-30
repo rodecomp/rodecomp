@@ -58,6 +58,15 @@ void UITransBalloonText::AddLine(const char* text, std::uint32_t color) {
   this->m_lineColors.push_back(color);
 }
 
+// OFFSET: 0x00868280
+// FUNCTION: fn_10957
+void UITransBalloonText::SetLine(const char* text, std::uint32_t color) {
+  this->m_lines.clear();
+  this->m_lineColors.clear();
+  this->AddText(text);
+  this->m_lineColors.push_back(color);
+}
+
 // OFFSET: 0x00853EA0
 // FUNCTION: fn_10744
 void UITransBalloonText::ChangeText(const char* text, int line) {

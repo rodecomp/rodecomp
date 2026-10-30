@@ -19,6 +19,7 @@ public:
   int FrameWidth(int action, int frame);
   void SetActName(const char* name);
   void SetSprite(const char* name);
+  void SetPalette(const char* name);
 
 protected:
   /* 00B4 */ int unknown_00B4;

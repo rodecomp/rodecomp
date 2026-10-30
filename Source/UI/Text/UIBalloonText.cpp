@@ -100,6 +100,17 @@ void UIBalloonText::SetText(const char* text, int width) {
   }
 }
 
+// OFFSET: 0x00867EC0
+// FUNCTION: fn_10949
+void UIBalloonText::WrapText(const char* text, int width) {
+  if (std::strlen(text) == 0) {
+    return;
+  }
+
+  this->m_lines.clear();
+  WrapPlainText(text, this->m_lines, width, this->m_textContext->codePage);
+}
+
 // OFFSET: 0x00853530
 // FUNCTION: fn_10740
 void UIBalloonText::FitText() {

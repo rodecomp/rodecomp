@@ -79,3 +79,10 @@ int UIRadioBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
 
   return 0;
 }
+
+// OFFSET: 0x00868180
+// FUNCTION: fn_10954
+void UIRadioBtn::SetText(const char* value) {
+  this->text = value;
+  this->Invalidate();
+}

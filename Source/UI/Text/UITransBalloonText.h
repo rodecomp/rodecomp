@@ -34,6 +34,7 @@ public:
   void SetBackground(std::uint32_t color);
   __declspec(noinline) void AddText(const char* text);
   void AddLine(const char* text, std::uint32_t color);
+  void SetLine(const char* text, std::uint32_t color);
   void ChangeText(const char* text, int line);
 
 private:

@@ -2237,6 +2237,12 @@ void UISpriteButton::SetActName(const char* name) {
   this->actionName = name;
 }
 
+// OFFSET: 0x00867AA0
+// FUNCTION: fn_10945
+void UISpriteButton::SetPalette(const char* name) {
+  this->unknown_00FC = name;
+}
+
 // OFFSET: 0x00867AD0
 // FUNCTION: fn_10946
 void UISpriteButton::SetSprite(const char* name) {
