@@ -130,7 +130,7 @@ void UIChangeMaterialWnd_List::sub_5E2A70() {
 // OFFSET: 0x005E39A0
 // FUNCTION: fn_03893
 void UIChangeMaterialWnd::sub_5E39A0() {
-  const int count = static_cast<int>(this->m_materials.size());
+  const std::int16_t count = static_cast<std::int16_t>(this->m_materials.size());
   const int length = count * 4 + 0xC;
   auto* packet = static_cast<unsigned char*>(STACK_ALLOC(static_cast<std::size_t>(length)));
 
