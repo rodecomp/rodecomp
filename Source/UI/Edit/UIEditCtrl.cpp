@@ -920,6 +920,15 @@ void UIEditCtrl_Custom::Synchronize() {
 }
 
 // OFFSET: 0x00972520
+// FUNCTION: fn_13272
+void UIItemStoreFindWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x009727F0
 // FUNCTION: fn_13275
@@ -2825,6 +2834,77 @@ void UIItemBaseWnd::UpdateScrollBar() {
 }
 
 // OFFSET: 0x0098A920
+// FUNCTION: fn_13418
+int UIItemBaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 3:
+    if (this->unknown_00E4 == 1) {
+      this->SendMsg(this->scrollBar, 7, -this->visibleRows, 0, 0, 0);
+    }
+    break;
+  case 4:
+    if (this->unknown_00E4 == 1) {
+      this->SendMsg(this->scrollBar, 7, this->visibleRows, 0, 0, 0);
+      return 0;
+    }
+    break;
+  case 6:
+  case 23:
+    break;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->scroll;
+    if (message == 9) {
+      this->scroll = previous - this->visibleRows + 1;
+    } else if (message == 10) {
+      this->scroll = this->visibleRows - 1 + previous;
+    } else {
+      this->scroll = a + previous;
+    }
+
+    if (previous != this->scroll) {
+      this->UpdateScrollBar();
+      this->Invalidate();
+    }
+
+    return this->scroll - previous;
+  }
+  case 14:
+    if (a == 7) {
+      int width = b <= 320 ? b : 320;
+      int height = c <= 240 ? c : 240;
+      if (width < 232) {
+        width = 232;
+      }
+      if (height < 102) {
+        height = 102;
+      }
+
+      const int rowsHeight = (height - 38) / 32 * 32;
+      const int columnsWidth = (width - 280) / 32 * 32;
+      const int newWidth = columnsWidth + 280;
+      const int newHeight = rowsHeight + 38;
+      if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
+        this->Resize(newWidth, newHeight);
+        this->columns = (newWidth - 40) / 32;
+        this->visibleRows = rowsHeight / 32;
+        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->scrollBar->Move(this->geometry.width - 15, 17);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
+        this->UpdateScrollBar();
+      }
+
+      this->m_frameContext->snapping.Store(this);
+      return 0;
+    }
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00993A20
 // FUNCTION: fn_13434
