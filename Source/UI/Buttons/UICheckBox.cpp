@@ -153,6 +153,18 @@ void UICheckBox::SetImages(const char* checked, const char* unchecked, const cha
   }
 }
 
+// OFFSET: 0x00865600
+// FUNCTION: fn_10928
+void UICheckBox::SetBitmaps(const char* checked, const char* unchecked) {
+  this->m_checked = checked;
+  this->m_unchecked = unchecked;
+
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
+  this->geometry.width = bitmap->image.width;
+  this->geometry.height = bitmap->image.height;
+  ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str()));
+}
+
 // OFFSET: 0x00869760
 // FUNCTION: fn_10968
 void UICheckBox::SetTooltip(const char* text) {
