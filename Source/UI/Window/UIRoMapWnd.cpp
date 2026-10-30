@@ -60,6 +60,15 @@ void UIRoMapWnd::ClearRecords() {
   this->unknown_00CC = 0;
 }
 
+// OFFSET: 0x0091E0F0
+// FUNCTION: fn_12625
+void UIRoMapWnd::ResetKafraBounds() {
+  *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(this) + 0x21C) = 0;
+  *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(this) + 0x224) = 0;
+  *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(this) + 0x218) = 0;
+  *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(this) + 0x220) = 0;
+}
+
 // OFFSET: 0x009335B0
 // FUNCTION: fn_12725
 void UIRoMapWnd::Slot33(int, int) {

@@ -33,6 +33,7 @@ public:
   void Slot25(int x, int y) override;
   void Slot33(int x, int y) override;
   void ClearRecords();
+  void ResetKafraBounds();
   void DrawHoverTooltip();
   void DrawMapNames();
   void DrawFieldLabels();
