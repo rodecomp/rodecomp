@@ -518,8 +518,54 @@ std::map<int, int> CEnchantMgr::ConvertMaterials(std::map<std::string, int> mate
 }
 
 // OFFSET: 0x00682D10
+// FUNCTION: fn_05543
+bool CEnchantMgr::Init() {
+  m_lua.SetGlobal("MAX_REFINE_LEVEL", 20.0);
+  m_lua.SetGlobal("MAX_GRADE_LEVEL", 7.0);
+  m_lua.SetGlobal("MAX_SLOT_NUM", 4.0);
+  m_lua.SetGlobal("MAX_MATERIAL_NUM", 8.0);
+  m_lua.SetGlobal("IS_CLIENT", true);
+  m_lua.SetGlobal("C_SetSlotOrder", L_SetSlotOrder);
+  m_lua.SetGlobal("C_AddTargetItem", L_AddTargetItem);
+  m_lua.SetGlobal("C_SetCondition", L_SetCondition);
+  m_lua.SetGlobal("C_ApproveRandomOption", L_ApproveRandomOption);
+  m_lua.SetGlobal("C_SetReset", L_SetReset);
+  m_lua.SetGlobal("C_SetCaution", L_SetCaution);
+  m_lua.SetGlobal("C_SetRequire", L_SetRequire);
+  m_lua.SetGlobal("C_SetSuccessRate", L_SetSuccessRate);
+  m_lua.SetGlobal("C_SetGradeBonus", L_SetGradeBonus);
+  m_lua.SetGlobal("C_SetEnchant", L_SetEnchant);
+  m_lua.SetGlobal("C_AddPerfectEnchant", L_AddPerfectEnchant);
+  m_lua.SetGlobal("C_AddUpgradeEnchant", L_AddUpgradeEnchant);
+  m_lua.SetGlobal("C_SetRandomUpgradeRequire", L_SetRandomUpgradeRequire);
+  m_lua.SetGlobal("C_AddRandomUpgradeEnchant", L_AddRandomUpgradeEnchant);
+  m_lua.SetGlobal("C_AddPerfectUpgradeEnchant", L_AddPerfectUpgradeEnchant);
+  m_lua.SetGlobal("C_GetSlotCount", L_GetSlotCount);
+
+  if (!m_lua.LoadFile("LuaFiles514\\Lua Files\\Enchant\\EnchantList_f.lub")) {
+    return false;
+  }
+  if (!m_lua.LoadFile("LuaFiles514\\Lua Files\\Enchant\\EnchantList.lub")) {
+    return false;
+  }
+  if (!CallScript("CheckFile")) {
+    return false;
+  }
+  return CallScript("LoadAllData");
+}
 
 // OFFSET: 0x006845C0
+// FUNCTION: fn_05552
+void CEnchantMgr::SetEnchant(uint64_t group, uint32_t optionKey, uint32_t slot, const std::map<std::string, uint64_t>& enchants) {
+  std::map<int, uint64_t> items;
+  for (auto it = enchants.begin(); it != enchants.end(); ++it) {
+    int itemId = CItemDBToIDMgr::GetInstance()->GetItemID(it->first);
+    if (itemId != 0) {
+      items[itemId] = it->second;
+    }
+  }
+  m_enchants[group].options[optionKey].enchants[slot] = items;
+}
 
 // OFFSET: 0x006864D0
 // FUNCTION: fn_05566
@@ -571,6 +617,60 @@ int L_AddPerfectEnchant(lua_State* L) {
 }
 
 // OFFSET: 0x00686830
+// FUNCTION: fn_05567
+int L_AddPerfectUpgradeEnchant(lua_State* L) {
+  if (!lua_isnumber(L, -6)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_AddPerfectEnchant : 1th argument must be number");
+    return 2;
+  }
+
+  if (!lua_isnumber(L, -5)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_AddPerfectEnchant : 2th argument must be number");
+    return 2;
+  }
+
+  if (!lua_isstring(L, -4)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_AddPerfectEnchant : 3th argument must be string");
+    return 2;
+  }
+
+  if (!lua_isstring(L, -3)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_AddPerfectEnchant : 4th argument must be string");
+    return 2;
+  }
+
+  if (!lua_isnumber(L, -2)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_AddPerfectEnchant : 5th argument must be number");
+    return 2;
+  }
+
+  if (lua_type(L, -1) != LUA_TTABLE) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_AddPerfectEnchant : 6th argument must be table");
+    return 2;
+  }
+
+  uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -6));
+  uint32_t optionKey = static_cast<uint32_t>(lua_tonumber(L, -5));
+  std::string baseItemName(lua_tostring(L, -4));
+  std::string itemName(lua_tostring(L, -3));
+  uint64_t cost = static_cast<uint64_t>(lua_tonumber(L, -2));
+  std::map<std::string, int> materials;
+  lua_pushnil(L);
+  while (lua_next(L, -2) != 0) {
+    uint32_t count = static_cast<uint32_t>(lua_tonumber(L, -1));
+    materials[lua_tostring(L, -2)] = count;
+    lua_pop(L, 1);
+  }
+
+  CEnchantMgr::GetInstance()->AddPerfectUpgradeEnchant(id, optionKey, baseItemName, itemName, cost, materials);
+  return 2;
+}
 
 // OFFSET: 0x006871E0
 // FUNCTION: fn_05570
@@ -673,6 +773,58 @@ int L_SetEnchant(lua_State* L) {
 }
 
 // OFFSET: 0x00688290
+// FUNCTION: fn_05577
+int L_SetRandomUpgradeRequire(lua_State* L) {
+  if (!lua_isnumber(L, -5)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_SetRandomUpgradeRequire : 1th argument must be number");
+    return 2;
+  }
+
+  if (!lua_isnumber(L, -4)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_SetRandomUpgradeRequire : 2th argument must be number");
+    return 2;
+  }
+
+  if (!lua_isstring(L, -3)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_SetRandomUpgradeRequire : 3th argument must be string");
+    return 2;
+  }
+
+  if (!lua_isnumber(L, -2)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_SetRandomUpgradeRequire : 4th argument must be number");
+    return 2;
+  }
+
+  if (lua_type(L, -1) != LUA_TTABLE) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_SetRandomUpgradeRequire : 4th argument must be table");
+    return 2;
+  }
+
+  uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -5));
+  uint32_t optionKey = static_cast<uint32_t>(lua_tonumber(L, -4));
+  std::string itemName(lua_tostring(L, -3));
+  uint64_t cost = static_cast<uint64_t>(lua_tonumber(L, -2));
+  std::map<std::string, int> materials;
+  lua_pushnil(L);
+  while (lua_next(L, -2) != 0) {
+    uint32_t count = static_cast<uint32_t>(lua_tonumber(L, -1));
+    materials[lua_tostring(L, -2)] = count;
+    lua_pop(L, 1);
+  }
+
+  CEnchantMgr* mgr = CEnchantMgr::GetInstance();
+  int itemId = CItemDBToIDMgr::GetInstance()->GetItemID(itemName);
+  if (itemId != 0) {
+    mgr->m_enchants[id].options[optionKey].randomUpgrades[itemId].cost = cost;
+    mgr->m_enchants[id].options[optionKey].randomUpgrades[itemId].materials = mgr->ConvertMaterials(materials);
+  }
+  return 2;
+}
 
 // OFFSET: 0x006886E0
 // FUNCTION: fn_05578
@@ -719,3 +871,54 @@ int L_SetRequire(lua_State* L) {
 }
 
 // OFFSET: 0x00688A70
+// FUNCTION: fn_05579
+int L_SetReset(lua_State* L) {
+  if (!lua_isnumber(L, -5)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_SetReset : 1th argument must be number");
+    return 2;
+  }
+
+  if (lua_type(L, -4) != LUA_TBOOLEAN) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_SetReset : 2th argument must be boolean");
+    return 2;
+  }
+
+  if (!lua_isnumber(L, -3)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_SetReset : 3th argument must be number");
+    return 2;
+  }
+
+  if (!lua_isnumber(L, -2)) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_SetReset : 4th argument must be number");
+    return 2;
+  }
+
+  if (lua_type(L, -1) != LUA_TTABLE) {
+    lua_pushboolean(L, 0);
+    lua_pushstring(L, "L_SetReset : 5th argument must be table");
+    return 2;
+  }
+
+  uint64_t id = static_cast<uint64_t>(lua_tonumber(L, -5));
+  bool enabled = lua_toboolean(L, -4) != 0;
+  uint64_t rate = static_cast<uint64_t>(lua_tonumber(L, -3));
+  uint64_t cost = static_cast<uint64_t>(lua_tonumber(L, -2));
+  std::map<std::string, int> materials;
+  lua_pushnil(L);
+  while (lua_next(L, -2) != 0) {
+    uint32_t count = static_cast<uint32_t>(lua_tonumber(L, -1));
+    materials[lua_tostring(L, -2)] = count;
+    lua_pop(L, 1);
+  }
+
+  CEnchantMgr* mgr = CEnchantMgr::GetInstance();
+  mgr->m_enchants[id].resetEnabled = enabled;
+  mgr->m_enchants[id].resetRate = rate;
+  mgr->m_enchants[id].resetCost = cost;
+  mgr->m_enchants[id].resetMaterials = mgr->ConvertMaterials(materials);
+  return 2;
+}
