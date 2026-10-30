@@ -550,6 +550,7 @@
   "Source/Contents/RobeOpacity.cpp": 4,
   "Source/Contents/RobeResources.cpp": 4,
   "Source/Contents/RobeTopLayer.cpp": 4,
+  "Source/Contents/RodexMailStore.cpp": 4,
   "Source/Contents/RouletteMgr.cpp": 4,
   "Source/Contents/Schedule/CaptchaUploadSchedule.cpp": 4,
   "Source/Contents/Schedule/CheckGDISchedule.cpp": 4,

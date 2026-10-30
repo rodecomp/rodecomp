@@ -39,3 +39,5 @@ void UIRodexScrollBar::Paint() {
 
   this->minimumThumb = 0;
 }
+
+// OFFSET: 0x007FF520
