@@ -1,9 +1,10 @@
 #include "Client/Replay.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-
+#include "Contents/Skills/SkillInfo.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <list>
 #include <string>
 #include <windows.h>
 #include <timeapi.h>
@@ -892,4 +893,28 @@ void Replay::RestartClock() {
     this->baseFrame = this->frame;
     this->started = this->previousTick = timeGetTime();
   }
+}
+
+// OFFSET: 0x00E31240
+// FUNCTION: fn_24172
+std::vector<unsigned char> BuildSkillInfoListPacket(std::uint16_t id, const std::list<CSkillInfo>& skills) {
+  const int bytes = static_cast<int>(skills.size()) * 37 + 4;
+  std::vector<unsigned char> packet(bytes, 0);
+  unsigned char* data = packet.data();
+  *reinterpret_cast<std::uint16_t*>(data) = id;
+  *reinterpret_cast<std::uint16_t*>(data + 2) = static_cast<std::uint16_t>(bytes);
+  unsigned char* record = data + 4;
+  for (const CSkillInfo& skill : skills) {
+    *reinterpret_cast<std::uint16_t*>(record) = static_cast<std::uint16_t>(skill.id);
+    *reinterpret_cast<std::uint32_t*>(record + 2) = skill.unknown_000C;
+    *reinterpret_cast<std::uint16_t*>(record + 6) = static_cast<std::uint16_t>(skill.level);
+    *reinterpret_cast<std::uint16_t*>(record + 8) = static_cast<std::uint16_t>(skill.unknown_0014);
+    record[36] = skill.unknown_0018 != 0;
+    *reinterpret_cast<std::uint16_t*>(record + 10) = static_cast<std::uint16_t>(skill.unknown_001C);
+    const char* name = skill.name;
+    std::memcpy(record + 12, name, (std::min)(std::strlen(name), std::size_t{24}));
+    record[35] = 0;
+    record += 37;
+  }
+  return packet;
 }
