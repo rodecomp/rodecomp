@@ -17,3 +17,8 @@ void NotifyImeHelper() {
     }
   }
 }
+
+// OFFSET: 0x00AFB780
+// FUNCTION: fn_18306
+void ImeHelperNoop() {
+}
