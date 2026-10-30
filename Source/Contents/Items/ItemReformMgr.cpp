@@ -11,6 +11,7 @@ extern "C" {
 }
 
 #include <new>
+#include <utility>
 
 // GLOBAL: gl_24923
 CItemReformMgr* g_itemReformMgr = nullptr;
@@ -95,24 +96,50 @@ bool CItemReformMgr::HasItem(int itemId) {
   return this->m_reformItemList.find(itemId) != this->m_reformItemList.end();
 }
 
-static void ReformError(std::uint64_t id, const char* format) {
-  ShowErrorDialog(FormatOwnedString(format, id), 0);
-}
-
-static void ReformError(std::uint64_t id, unsigned int limit, const char* format) {
-  ShowErrorDialog(FormatOwnedString(format, id, limit), 0);
-}
-
-static int EnsureItemDbId(const char* name) {
-  if (!g_itemDbToIdMgr) {
+static void EnsureItemDbMgr() {
+  if (g_itemDbToIdMgr == nullptr) {
     g_itemDbToIdMgr = new (std::nothrow) CItemDBToIDMgr;
   }
-  if (!g_itemDbToIdMgr) {
-    return 0;
-  }
-  return g_itemDbToIdMgr->GetItemID(name);
 }
 
 // OFFSET: 0x005FA180
 
 // OFFSET: 0x005FB1E0
+// FUNCTION: fn_04086
+void CItemReformMgr::LoadReformItemList() {
+  this->m_reformItemList.clear();
+
+  lua_State* state = this->m_lua.GetState();
+  if (state == nullptr) {
+    return;
+  }
+
+  lua_getglobal(state, "ReformItemList");
+  if (lua_type(state, -1) != LUA_TTABLE) {
+    ShowErrorDialog("Can't find global table \"ReformItemList\"", 0);
+  }
+
+  lua_pushnil(state);
+  while (lua_next(state, -2) != 0) {
+    const std::string itemName(lua_tostring(state, -2));
+    EnsureItemDbMgr();
+    const int itemId = g_itemDbToIdMgr->GetItemID(itemName);
+
+    lua_pushnil(state);
+    while (lua_next(state, -2) != 0) {
+      const std::uint32_t reformId = static_cast<std::uint32_t>(static_cast<int>(lua_tointeger(state, -1)));
+      if (this->m_reformInfo.find(reformId) == this->m_reformInfo.end()) {
+        ShowErrorDialog(FormatOwnedString("ReformItemList[ %s ] : Can't find [ %I64u ] in ReformInfo", itemName.c_str(),
+                                          static_cast<std::uint64_t>(reformId)),
+                        0);
+      } else {
+        this->m_reformItemList[itemId].push_back(std::make_pair(reformId, 0u));
+      }
+      lua_pop(state, 1);
+    }
+
+    lua_pop(state, 1);
+  }
+
+  lua_pop(state, 1);
+}
