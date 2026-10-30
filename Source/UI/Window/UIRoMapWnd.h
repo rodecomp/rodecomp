@@ -21,6 +21,7 @@ void SetRoMapMarker(std::string name, const WorldViewArea& area, RoMapMarker& ma
 class UIRoMapWnd : public UIFrameWnd {
 public:
   void Slot25(int x, int y) override;
+  void Slot33(int x, int y) override;
   void ClearRecords();
 
 private:
@@ -31,6 +32,8 @@ private:
   /* 00C8 */ int unknown_00C8;
   /* 00CC */ unsigned char unknown_00CC;
   /* 00D0 */ int unknown_00D0;
+  /* 00D4 */ unsigned char unknown_00D4[0x134];
+  /* 0208 */ int unknown_0208;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

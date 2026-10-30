@@ -15,6 +15,7 @@ public:
   void Slot26(int x, int y) override;
   void Slot35(int delta) override;
   void NotifyNewAd();
+  void UpdateScrollBar();
   bool MatchesFilter(PARTY_BOOKING_AD_INFO info);
 
 protected:

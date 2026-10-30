@@ -118,3 +118,37 @@ void UISeekPartyListWnd::Slot25(int x, int y) {
     this->Invalidate();
   }
 }
+
+// OFFSET: 0x00933740
+// FUNCTION: fn_12729
+void UISeekPartyListWnd::UpdateScrollBar() {
+  if (!this->m_scrollBar) {
+    return;
+  }
+
+  const int count = g_friendRows.size();
+  const int rows = count / this->m_columnCount + (count % this->m_columnCount != 0 ? 1 : 0);
+
+  const int visible = this->m_visibleRows;
+  int range = rows - visible;
+  if (range < 0) {
+    range = 0;
+  }
+
+  this->m_scrollable = range != 0;
+  if (range != 0) {
+    this->m_scrollBar->SetRange(range, visible, rows);
+    if (this->m_firstRow < 0) {
+      this->m_firstRow = 0;
+    }
+    if (this->m_firstRow > rows - this->m_visibleRows) {
+      this->m_firstRow = rows - this->m_visibleRows;
+    }
+    this->m_scrollBar->SetPosition(this->m_firstRow);
+  } else {
+    this->m_firstRow = 0;
+    this->m_scrollBar->SetRange(0, visible, rows);
+  }
+
+  this->m_scrollBar->Invalidate();
+}
