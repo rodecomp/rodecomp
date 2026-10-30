@@ -831,3 +831,65 @@ ReplayFileList& ReplayFileList::Instance() {
   static ReplayFileList g_replayFileList;
   return g_replayFileList;
 }
+
+// OFFSET: 0x00B87110
+// FUNCTION: fn_19339
+bool Replay::SetHeaderInfo(
+  std::uint32_t key0, std::uint32_t key1, const char* characterName, const char* mapName, int accountId, int cellX, int cellY, int unknown0078, int service,
+  int serviceType, int unknown0014
+) {
+  if (!characterName || !mapName) {
+    return false;
+  }
+  std::memcpy(this->header.mapName, mapName, sizeof(this->header.mapName));
+  std::memcpy(this->header.characterName, characterName, sizeof(this->header.characterName));
+  this->header.service = service;
+  this->header.serviceType = serviceType;
+  this->header.unknown_0014 = unknown0014;
+  this->header.key0 = key0;
+  this->header.key1 = key1;
+  this->header.accountId = accountId;
+  this->header.cellX = cellX;
+  this->header.cellY = cellY;
+  this->header.unknown_0078 = unknown0078;
+  this->header.signature = 0x52414705;
+  this->header.closingSignature = 0x52414705;
+  return true;
+}
+
+// OFFSET: 0x00B871C0
+// FUNCTION: fn_19340
+void Replay::IncreaseSpeed() {
+  if (this->speed == 0.25f) {
+    this->speed = 0.5f;
+  } else if (this->speed == 0.5f) {
+    this->speed = 1.0f;
+  } else if (this->speed == 1.0f) {
+    this->speed = 2.0f;
+  } else if (this->speed == 2.0f || this->speed == 4.0f) {
+    this->speed = 4.0f;
+  }
+}
+
+// OFFSET: 0x00B87240
+// FUNCTION: fn_19341
+void Replay::DecreaseSpeed() {
+  if (this->speed == 0.25f || this->speed == 0.5f) {
+    this->speed = 0.25f;
+  } else if (this->speed == 1.0f) {
+    this->speed = 0.5f;
+  } else if (this->speed == 2.0f) {
+    this->speed = 1.0f;
+  } else if (this->speed == 4.0f) {
+    this->speed = 2.0f;
+  }
+}
+
+// OFFSET: 0x00B872C0
+// FUNCTION: fn_19342
+void Replay::RestartClock() {
+  if (this->state != 3 && this->state != 8) {
+    this->baseFrame = this->frame;
+    this->started = this->previousTick = timeGetTime();
+  }
+}

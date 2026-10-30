@@ -140,6 +140,13 @@ public:
   bool ReadRecord(unsigned char* buffer, std::uint16_t& id, bool force);
   bool AllowsEvent(int event) const;
   void Rewind();
+  bool SetHeaderInfo(
+    std::uint32_t key0, std::uint32_t key1, const char* characterName, const char* mapName, int accountId, int cellX, int cellY, int unknown0078, int service,
+    int serviceType, int unknown0014
+  );
+  void IncreaseSpeed();
+  void DecreaseSpeed();
+  void RestartClock();
 };
 
 struct ReplayFileEntry {

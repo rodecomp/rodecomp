@@ -691,3 +691,40 @@ bool CNavigationManager::SavedTargetText(char* out, int size) {
   }
   return true;
 }
+
+// OFFSET: 0x00B887B0
+// FUNCTION: fn_19374
+int NaviDataEntry::GetPrevious() const {
+  return this->previous;
+}
+
+// OFFSET: 0x00B887C0
+// FUNCTION: fn_19375
+int NaviDataEntry::GetCost() const {
+  return this->cost;
+}
+
+// OFFSET: 0x00B890E0
+// FUNCTION: fn_19384
+bool CNaviData::CollectLinksTo(CNaviInfo* target, std::vector<CNavi_Link*>* out) {
+  out->clear();
+  for (auto info = this->destinations.begin(); info != this->destinations.end(); ++info) {
+    for (auto link = (*info)->LinksBegin(); link != (*info)->LinksEnd(); ++link) {
+      if ((*link)->GetLinkedInfo() == target) {
+        out->push_back(*link);
+      }
+    }
+  }
+  for (auto link = this->objects.begin(); link != this->objects.end(); ++link) {
+    if ((*link)->GetLinkedInfo() == target) {
+      out->push_back(*link);
+    }
+  }
+  return out->size() != 0;
+}
+
+// OFFSET: 0x00B89980
+// FUNCTION: fn_19389
+int CNaviData::ObjectCount() const {
+  return static_cast<int>(this->objects.size());
+}
