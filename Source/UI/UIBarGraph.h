@@ -7,6 +7,13 @@
 
 struct UIButtonContext;
 
+class UIBarGraph : public UIWindow {
+public:
+  void SetValue(float value);
+
+  /* 007C */ float m_value;
+};
+
 class UIBarGraph3 : public UIWindow {
 };
 
