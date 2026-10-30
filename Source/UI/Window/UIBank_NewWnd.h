@@ -5,10 +5,12 @@
 
 class UIEditCtrl;
 struct UIButtonContext;
+struct UIEditContext;
 
 class UIBank_NewWnd : public UIFrameWnd {
 public:
   bool Slot03() override;
+  void Slot15(int width, int height) override;
   long long AdjustAmount(int amount);
   long long TransactionAmount(unsigned char deposit);
   void Paint() override;
@@ -21,6 +23,7 @@ protected:
   /* 00D0 */ int unknown_00D0;
   /* 00D4 */ UIWindow* m_loading[4];
   UIButtonContext* m_controls;
+  UIEditContext* m_editContext;
 };
 
 #endif

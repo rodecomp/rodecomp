@@ -1416,3 +1416,61 @@ UINoticeWnd::UINoticeWnd(UIWindowContext& windows, UIFrameContext& frames) : UIF
   InputFocus focus{g_windowMgr.hoverWindow};
   focus.Set(this);
 }
+
+// OFFSET: 0x008AD190
+// FUNCTION: fn_11737
+void UIBank_NewWnd::Slot15(int, int) {
+  this->AddCloseButton(*this->m_controls, "Exit", 0);
+  this->AddBitmapButton(*this->m_controls, 462, 209, 77, "bank\\btn_deposit", LookupMessage(2774));
+  this->AddBitmapButton(*this->m_controls, 463, 209, 102, "bank\\btn_withdraw", LookupMessage(2775));
+  this->AddBitmapButton(*this->m_controls, 279, 177, 89, "bank\\btn_upper", LookupMessage(2776));
+  this->AddBitmapButton(*this->m_controls, 280, 177, 99, "bank\\btn_buttom", LookupMessage(2777));
+  this->AddBitmapButton(*this->m_controls, 392, 189, 132, "bank\\btn_10mil", "+ 100,000");
+  this->AddBitmapButton(*this->m_controls, 391, 141, 132, "bank\\btn_100mil", "+ 1,000,000");
+  this->AddBitmapButton(*this->m_controls, 390, 93, 132, "bank\\btn_1000mil", "+ 10,000,000");
+  this->AddBitmapButton(*this->m_controls, 389, 45, 132, "bank\\btn_max", LookupMessage(2778));
+
+  this->m_amountEdit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_amountEdit->SetSize(99, 17);
+  this->m_amountEdit->maximum = 10;
+  this->m_amountEdit->Move(78, 90);
+  this->m_amountEdit->Background(247, 247, 247);
+  this->m_amountEdit->Border(198, 198, 198);
+  this->m_amountEdit->flat = 0;
+  this->m_amountEdit->topPadding = 1;
+  this->AddChild(this->m_amountEdit);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_amountEdit);
+}
+
+// OFFSET: 0x008AD770
+// FUNCTION: fn_11739
+void UICntWnd::Slot15(int, int) {
+  this->m_edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_edit->SetSize(80, 16);
+  this->m_edit->Move(15, 22);
+  this->m_edit->maximum = 6;
+  this->m_edit->Background(232, 232, 232);
+  this->AddChild(this->m_edit);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_edit);
+  this->m_edit->SelectAll();
+
+  this->m_text = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_text->SetSize(this->geometry.width - 30, 15);
+  this->m_text->Move(15, 6);
+  this->AddChild(this->m_text);
+
+  const std::string prefix("유저인터페이스\\");
+  const int width = this->geometry.width;
+  const int height = this->geometry.height;
+  UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(width - 55, height - 32);
+  button->SetId(184);
+  this->AddChild(button);
+  this->m_message0 = 184;
+}
