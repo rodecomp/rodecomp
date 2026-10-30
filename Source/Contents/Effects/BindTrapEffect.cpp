@@ -69,6 +69,31 @@ bool CBindTrapEffect::Slot06() {
 }
 
 // OFFSET: 0x006FB630
+// FUNCTION: fn_06910
+void CBindTrapEffect::Slot03() {
+  for (CParticle* particle : this->particles) {
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+
+    if (particle) {
+      matrix rotation;
+      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+      rotation.MakeXRotation(1.570796f);
+      rotation.AppendYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
+
+      matrix scale;
+      std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
+      scale.SetScale(particle->scale, particle->scale, 1.0f);
+
+      matrix composed;
+      composed.Compose(scale, rotation);
+      particle->transform = composed;
+    }
+
+    ++particle->unknown_00E8;
+  }
+}
 
 // OFFSET: 0x006FB8B0
 // FUNCTION: fn_06911
