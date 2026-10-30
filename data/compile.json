@@ -738,6 +738,7 @@
   "Source/Script/LuaScript.cpp": 5,
   "Source/Script/NLuaState.cpp": 5,
   "Source/Security/NProtectGameGuardMgr.cpp": 4,
+  "Source/Security/ThemidaMgr.cpp": 4,
   "Source/UI/Acceptance/UIChooseSellBuyWnd.cpp": 2,
   "Source/UI/Acceptance/UIExchangeAcceptWnd.cpp": 2,
   "Source/UI/Acceptance/UIJoinPartyAcceptWnd.cpp": 2,
