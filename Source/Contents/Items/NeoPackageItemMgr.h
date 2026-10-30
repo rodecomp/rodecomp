@@ -16,6 +16,10 @@ struct lua_State;
 namespace NEO_PACKAGEITEM {
 
 struct PackageEntry {
+  // INLINED
+  PackageEntry(int itemId, const std::string& name, int probability) : itemId(itemId), name(name), probability(probability) {
+  }
+
   /* 0000 */ int itemId;
   /* 0004 */ std::string name;
   /* 001C */ int probability;
@@ -28,9 +32,13 @@ struct PackageGroup {
 
 class CNeoPackageItemMgr : public Singleton<CNeoPackageItemMgr> {
 public:
+  static int LuaInsertPackage(lua_State* state);
+  static bool LoadScript();
+
   CNeoPackageItemMgr();
 
   void Init();
+  void InsertPackage(int packageId, int groupId, int itemId, const std::string& name, int probability);
   std::optional<std::map<int, PackageGroup>*> FindPackage(int itemId);
   bool HasPackage(int itemId);
 
