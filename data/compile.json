@@ -1067,6 +1067,7 @@
   "Source/Utility/Math/AffineLookAt.cpp": 0,
   "Source/Utility/Math/AffineMatrix.cpp": 0,
   "Source/Utility/Math/ClientAngles.cpp": 0,
+  "Source/Utility/Math/Int64Math.cpp": 0,
   "Source/Utility/Math/RadialGrid.cpp": 0,
   "Source/Utility/Math/RayTriangle.cpp": 0,
   "Source/Utility/Md5State.cpp": 0,
