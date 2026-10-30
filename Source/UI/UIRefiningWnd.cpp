@@ -14,6 +14,7 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Buttons/UIBasicButton.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
@@ -44,6 +45,62 @@ struct RefiningClosePacket {
   /* 0000 */ std::uint16_t id;
 };
 #pragma pack(pop)
+
+// OFFSET: 0x007F5E30
+// FUNCTION: fn_09907
+void UIRefiningWnd::Slot15(int width, int height) {
+  this->AddBaseButton(*this->m_controls);
+  this->AddCloseButton(*this->m_controls, "", 0);
+
+  UIBasicButton* basic = new UIBasicButton(*this->m_context, *this->m_controls);
+  basic->Configure(56, LookupMessage(218));
+  basic->Move(204, 322);
+  basic->SetId(185);
+  this->AddChild(basic);
+  this->unknown_00C0 = basic;
+
+  this->refiningButton = new UIRefining_BtnRefining(*this->m_context, *this->m_controls);
+  this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 0, 0);
+  this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_normal.bmp", 1, 0);
+  this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_press.bmp", 2, 0);
+  this->refiningButton->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_disable.bmp", 3, 0);
+  this->refiningButton->Resize(this->refiningButton->BitmapWidth(), this->refiningButton->BitmapHeight());
+  this->refiningButton->Move(84, 262);
+  this->refiningButton->SetId(184);
+  this->refiningButton->SetDisabled(1);
+  this->refiningButton->Invalidate();
+  this->AddChild(this->refiningButton);
+
+  this->returnButton = new UIRefining_BtnReturn(*this->m_context, *this->m_controls);
+  this->returnButton->UpdateBitmaps();
+  this->returnButton->Move(20, 267);
+  this->returnButton->SetId(519);
+  this->returnButton->Enable(0);
+  this->AddChild(this->returnButton);
+
+  this->againButton = new UIRefining_BtnAgain(*this->m_context, *this->m_controls);
+  this->againButton->UpdateBitmaps();
+  this->againButton->Move(142, 267);
+  this->againButton->SetId(520);
+  this->againButton->Enable(0);
+  this->AddChild(this->againButton);
+
+  this->notice = new UIRefining_Notice(*this->m_context, *this->m_controls);
+  this->notice->SetSize(194, 22);
+  this->notice->Move(6, 322);
+  this->AddChild(this->notice);
+
+  UIBitmapButton* help = new UIBitmapButton(*this->m_context, *this->m_controls);
+  help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_normal.bmp", 0, 0);
+  help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_over.bmp", 1, 0);
+  help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_pressed.bmp", 2, 0);
+  help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_disabled.bmp", 3, 0);
+  help->SetSize(help->BitmapWidth(), help->BitmapHeight());
+  help->Move(230, 20);
+  help->SetTooltip(LookupMessage(4115));
+  help->SetId(510);
+  this->AddChild(help);
+}
 
 // OFFSET: 0x007F5270
 // FUNCTION: fn_09902
