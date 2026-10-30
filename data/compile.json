@@ -870,6 +870,7 @@
   "Source/UI/Lists/UIDropDownBox.cpp": 2,
   "Source/UI/Lists/UIListBox.cpp": 2,
   "Source/UI/Lists/UIListBoxEx.cpp": 2,
+  "Source/UI/Lists/UINewComboBoxCtrl.cpp": 2,
   "Source/UI/Lists/UIScrollBar.cpp": 2,
   "Source/UI/Lists/UIScrollBarNavi.cpp": 2,
   "Source/UI/Lists/UITagListBox.cpp": 2,
