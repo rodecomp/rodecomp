@@ -394,7 +394,9 @@ public:
   /* 4F198 */ std::map<int, UIWindow*> overlays;
   /* 4F1A0 */ unsigned previousHitUid;
   /* 4F1A4 */ unsigned currentHitUid;
-  /* 4F1A8 */ unsigned char unknown_4F1A8[0x24];
+  /* 4F1A8 */ int miniMapClickX;
+  /* 4F1AC */ int miniMapClickY;
+  /* 4F1B0 */ unsigned char unknown_4F1B0[0x1C];
   /* 4F1CC */ UIWindow* window_4F1CC;
   /* 4F1D0 */ UIWindow* window_4F1D0;
   /* 4F1D4 */ UIWindow* window_4F1D4;

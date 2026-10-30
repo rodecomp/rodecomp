@@ -10,6 +10,7 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Dialogs/UIMiniMapWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstdio>
@@ -120,6 +121,22 @@ void UIEditctrlWnd::Paint() {
   UIButtonContext& controls = *this->m_controls;
   this->ClearSurface(0xFFFFFFFF);
   this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2755), 0);
+}
+
+// OFFSET: 0x0099C820
+// FUNCTION: fn_13560
+void UIMiniMapWnd::Slot25(int x, int y) {
+  if (y <= 17) {
+    UIFrameWnd::Slot25(x, y);
+    return;
+  }
+
+  if (x >= 2 && y >= 19 && this->geometry.width - 2 >= x && this->geometry.height - 19 >= y && this->dragging) {
+    this->dragging = 0;
+    g_windowMgr.miniMapClickY = y - 6;
+    g_windowMgr.miniMapClickX = x - 6 < 0 ? 0 : x - 6;
+    g_windowMgr.EnsureWindow(274);
+  }
 }
 
 // OFFSET: 0x0099C8A0

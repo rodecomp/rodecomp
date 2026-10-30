@@ -16,6 +16,7 @@ struct MiniMapMark {
 
 class UIMiniMapWnd : public UIFrameWnd {
 public:
+  void Slot25(int x, int y) override;
   void ResetCursor(int x, int y) override;
   void AddTownMarks();
   int LoadMemos();
