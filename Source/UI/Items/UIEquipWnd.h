@@ -29,6 +29,7 @@ public:
   void Slot35(int delta) override;
 
   void NotifyEquipmentChanged();
+  void UpdateCharacterView(int reset);
 };
 
 #endif

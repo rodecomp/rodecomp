@@ -2,6 +2,7 @@
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
+#include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "File/File.h"
 #include "UI/Items/UISpellListWnd.h"
@@ -52,6 +53,7 @@
 #include "UI/Dialogs/UISayDialogWnd.h"
 #include "UI/Dialogs/UISelectCartWnd.h"
 #include "UI/Dialogs/UITipOfTheDayWnd.h"
+#include "UI/Dialogs/UITipboxWnd.h"
 #include "UI/Dialogs/UIToolTipWnd.h"
 #include "UI/Dialogs/UIWaitWnd.h"
 #include "UI/Items/UICardItemIllustWnd.h"
@@ -1831,6 +1833,76 @@ std::vector<char> MakeFramedMessage(std::uint16_t type, const std::vector<char>&
     std::memcpy(message.data() + sizeof(FramedMessageHeader), body.data(), body.size());
   }
   return message;
+}
+
+// OFFSET: 0x00909830
+// FUNCTION: fn_12392
+int UInCash_CallWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message != 6) {
+    return UIWindow::SendMsg(sender, message, a, b, c, d);
+  }
+
+  if (a == 192) {
+    if (g_session.unknown_5912) {
+      g_modeMgr.GetGameMode()->SendMsg(331, 2, 0, 0, 0);
+      return 0;
+    }
+    g_modeMgr.GetGameMode()->SendMsg(323, 0, 0, 0, 0);
+  }
+  return 0;
+}
+
+// OFFSET: 0x009098A0
+// FUNCTION: fn_12393
+void UIEquipWnd::UpdateCharacterView(int reset) {
+  CMode* mode = g_modeMgr.gameMode;
+  if (!reset && g_session.unknown_5C1C > 0) {
+    mode->SendMsg(80, 6, 0, 0, 0);
+    return;
+  }
+
+  int view = 0;
+  if (StateFlag04(g_session.m_jobFlags)) {
+    view = 5;
+  } else if (StateFlag05(g_session.m_jobFlags)) {
+    view = 4;
+  } else if (StateFlag22(g_session.m_jobFlags)) {
+    view = 3;
+  } else if (StateFlag19(g_session.m_jobFlags) || StateFlag23(g_session.m_jobFlags) || StateFlag24(g_session.m_jobFlags) ||
+             StateFlag25(g_session.m_jobFlags) || StateFlag26(g_session.m_jobFlags)) {
+    view = 1;
+  }
+  mode->SendMsg(80, view, 0, 0, 0);
+}
+
+// OFFSET: 0x009099C0
+// FUNCTION: fn_12394
+void UIComboBoxWnd::SetOwner(UIWindow* owner) {
+  if (owner) {
+    this->m_owner = owner;
+  }
+}
+
+// OFFSET: 0x00909C90
+// FUNCTION: fn_12397
+void UIWaitWnd::SetMessage(const char* text, int, int) {
+  this->m_textViewer->Clear();
+  this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
+}
+
+// OFFSET: 0x00909CE0
+// FUNCTION: fn_12399
+bool UINotifyItemObtainWnd::CanHitTest() {
+  return false;
+}
+
+// OFFSET: 0x00909D20
+// FUNCTION: fn_12401
+void UITipboxWnd::TrimAt(std::string& text, const char* marker) {
+  const std::size_t position = text.find(marker);
+  if (position != std::string::npos) {
+    text = text.substr(0, position);
+  }
 }
 
 // OFFSET: 0x00909DF0

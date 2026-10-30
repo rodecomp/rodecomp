@@ -239,7 +239,8 @@ public:
   /* 56B4 */ int m_mercenaryActionState;
   /* 56B8 */ unsigned char unknown_56B8[0x242];
   /* 58FA */ char unknown_58FA[0x18];
-  /* 5912 */ unsigned char unknown_5912[0xAA];
+  /* 5912 */ unsigned char unknown_5912;
+  /* 5913 */ unsigned char unknown_5913[0xA9];
   /* 59BC */ int unknown_59BC;
   /* 59C0 */ int unknown_59C0;
   /* 59C4 */ int unknown_59C4;
@@ -250,7 +251,8 @@ public:
   /* 59D8 */ LuaScript* m_hotkeyScript;
   /* 59DC */ unsigned char unknown_59DC[0x218];
   /* 5BF4 */ int m_pairValues[3];
-  /* 5C00 */ unsigned char unknown_5C00[0x20];
+  /* 5C00 */ unsigned char unknown_5C00[0x1C];
+  /* 5C1C */ int unknown_5C1C;
   /* 5C20 */ long long m_bankBalance;
   /* 5C28 */ unsigned char unknown_5C28[0x40];
   /* 5C68 */ ITEM_INFO unknown_5C68[5];
