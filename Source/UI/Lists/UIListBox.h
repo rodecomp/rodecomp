@@ -40,6 +40,8 @@ public:
   virtual void Refresh();
   int LineAt(int x, int y) const;
   int LineCount() const;
+  bool CopyText(char* buffer, int length);
+  int TextLength();
 
   /* 007C */ int backgroundRed;
   /* 0080 */ int backgroundGreen;

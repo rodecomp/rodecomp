@@ -2364,3 +2364,94 @@ void UISlotBmpButton::Slot15(int, int) {
 int UITableBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
+
+// OFFSET: 0x008805E0
+// FUNCTION: fn_11276
+int UIListBoxNavi::LineOffset() {
+  return this->lineOffset;
+}
+
+// OFFSET: 0x00880CC0
+// FUNCTION: fn_11289
+std::string UIComboBoxV2Wnd::SelectedText() {
+  int index = this->selected;
+
+  if (index < 0 || index >= static_cast<int>(this->list->lines.size())) {
+    return std::string();
+  }
+
+  const std::string& text = this->list->lines[index].text;
+  return std::string(text.c_str(), text.size());
+}
+
+// OFFSET: 0x00880FF0
+// FUNCTION: fn_11293
+void UITreeView::HideNodes(std::list<UITreeNode*>& nodes) {
+  if (static_cast<int>(nodes.size()) <= 0) {
+    return;
+  }
+
+  for (UITreeNode* node : nodes) {
+    if (node->collapseButton) {
+      node->collapseButton->Move(-100, -100);
+    }
+
+    if (node->expandButton) {
+      node->expandButton->Move(-100, -100);
+    }
+
+    node->labelButton->Move(-100, -100);
+
+    if (static_cast<int>(node->children.size()) > 0) {
+      this->HideNodes(node->children);
+    }
+  }
+}
+
+// OFFSET: 0x00881110
+// FUNCTION: fn_11296
+void UITreeView::AddNodeButtons(UITreeNode* node, int id) {
+  const char* names[] = {"battle_option_b.bmp", "wnd_mini_b.bmp", nullptr};
+  std::string path = "유저인터페이스\\basic_interface\\";
+
+  for (int index = 0; index < 2; ++index) {
+    UITVBitmapButton* button = new UITVBitmapButton(*this->m_context, *this->m_controls);
+    button->SetBitmap((path + names[index]).c_str(), 0, 0);
+    button->SetBitmap((path + names[index]).c_str(), 1, 0);
+    button->SetBitmap((path + names[index]).c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(-100, -100);
+    button->SetId(id);
+    button->m_value = reinterpret_cast<int>(node);
+    this->AddChild(button);
+
+    if (this->itemHeight < this->itemPadding + button->BitmapHeight()) {
+      this->itemHeight = this->itemPadding + button->BitmapHeight();
+    }
+
+    if (index == 0) {
+      node->expandButton = button;
+    } else {
+      node->collapseButton = button;
+    }
+  }
+}
+
+// OFFSET: 0x008814C0
+// FUNCTION: fn_11297
+void UITreeView::AddNodeLabel(UITreeNode* node, int id) {
+  UITVTextButton* button = new UITVTextButton(*this->m_context, *this->m_controls);
+  button->SetSize(1, 1);
+  button->SetLabel(node->name);
+  button->ResizeToText();
+  button->Move(-100, -100);
+  button->SetId(id);
+  button->m_value = reinterpret_cast<int>(node);
+  this->AddChild(button);
+
+  if (this->itemHeight < this->itemPadding + button->geometry.height) {
+    this->itemHeight = this->itemPadding + button->geometry.height;
+  }
+
+  node->labelButton = button;
+}

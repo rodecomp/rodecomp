@@ -99,3 +99,10 @@ void UIItemTagOnMail::SetLines(const std::vector<std::string>& lines) {
     this->m_lines.push_back(lines[index]);
   }
 }
+
+// OFFSET: 0x00881080
+// FUNCTION: fn_11294
+void UIItemTagCtrl::SetTaggedText(const std::string& text, int width) {
+  this->taggedText = text;
+  this->tagWidth = width;
+}

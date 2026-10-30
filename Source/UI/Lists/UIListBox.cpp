@@ -358,3 +358,38 @@ int UIListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
   this->Refresh();
   return 0;
 }
+
+// OFFSET: 0x00880D90
+// FUNCTION: fn_11291
+bool UIListBox::CopyText(char* buffer, int length) {
+  if (!buffer) {
+    return false;
+  }
+
+  std::string text;
+  const int count = static_cast<int>(this->lines.size());
+
+  for (int index = 0; index < count; ++index) {
+    text += this->lines[index].c_str();
+  }
+
+  if (length == 0) {
+    length = this->TextLength();
+  }
+
+  std::memcpy(buffer, text.c_str(), length);
+  return true;
+}
+
+// OFFSET: 0x00880F60
+// FUNCTION: fn_11292
+int UIListBox::TextLength() {
+  int length = 0;
+  const int count = static_cast<int>(this->lines.size());
+
+  for (int index = 0; index < count; ++index) {
+    length += static_cast<int>(this->lines[index].size());
+  }
+
+  return length;
+}

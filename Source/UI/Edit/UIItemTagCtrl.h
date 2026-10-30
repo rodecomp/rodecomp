@@ -14,6 +14,7 @@ public:
 
   std::string AppendTag(const std::string& name);
   bool SyncTagsWithText();
+  void SetTaggedText(const std::string& text, int width);
 
   /* 011C */ int unknown_011C;
   /* 0120 */ std::list<ItemTagRecord> tags;
