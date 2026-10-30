@@ -14,6 +14,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Script/LuaInstance.h"
+#include "Script/LuaScript.h"
 #include "Utility/Singleton.h"
 #include "Utility/Text/StringUtil.h"
 
@@ -23,6 +24,7 @@ extern "C" {
 
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <format>
 #include <functional>
 #include <list>
@@ -33,17 +35,17 @@ extern "C" {
 #include <windows.h>
 
 struct GameSettingsOption {
-  /* 0000 */ int id;
+  /* 0000 */ int id = 300;
   /* 0004 */ int tab;
   /* 0008 */ int type;
   /* 000C */ std::string title;
   /* 0024 */ std::string tooltip;
-  /* 003C */ int tipBoxId;
+  /* 003C */ int tipBoxId = 0;
   /* 0040 */ std::string description;
   /* 0058 */ unsigned char defaultValue;
   /* 0059 */ unsigned char unknown_0059[3];
-  /* 005C */ int unknown_005c;
-  /* 0060 */ int unknown_0060;
+  /* 005C */ int unknown_005c = 4698;
+  /* 0060 */ int unknown_0060 = 4698;
 };
 
 class CGameSettingsMgr : public Singleton<CGameSettingsMgr>, public CLuaInstance {
@@ -56,6 +58,7 @@ public:
   /* 0038 */ std::unordered_map<std::uint32_t, std::function<void()>, SkillIdHash> functions;
 
   bool Load();
+  bool ReadOptionTable();
   void ResetToDefaults();
   void ToggleOption(int id);
   void sub_6C0C40(int id, unsigned char value, bool notify);
@@ -76,6 +79,9 @@ static_assert(sizeof(GameSettings) == 0x58);
 
 // GLOBAL: gl_24579
 ServiceOptions g_serviceOptions;
+
+// GLOBAL: gl_24791
+LuaScript* g_luaScript;
 
 void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage);
 
@@ -191,6 +197,119 @@ bool IsServiceOption(int id) {
 }
 
 // OFFSET: 0x006C19D0
+// FUNCTION: fn_06321
+bool GameSettings::ReadOptionTable() {
+  lua_State* state = this->m_state;
+  if (!state) {
+    return false;
+  }
+
+  lua_getfield(state, LUA_GLOBALSINDEX, "OptionTbl");
+  if (lua_type(state, -1) != LUA_TTABLE) {
+    return false;
+  }
+
+  this->options.resize(lua_objlen(state, -1));
+  lua_pushnil(state);
+  while (lua_next(state, -2)) {
+    GameSettingsOption option;
+    const int index = lua_tointeger(state, -2);
+
+    lua_pushstring(state, "ID");
+    lua_gettable(state, -2);
+    if (lua_type(state, -1) > LUA_TNIL && lua_isnumber(state, -1)) {
+      option.id = lua_tointeger(state, -1);
+    } else {
+      MessageBoxA(nullptr, std::format("OptionTbl[ {} ].ID가 선언되지 않았습니다. 클라이언트로 문의 부탁드립니다.", index).c_str(), "GameSettings.lua", MB_OK);
+    }
+    lua_pop(state, 1);
+
+    lua_pushstring(state, "Tab");
+    lua_gettable(state, -2);
+    if (lua_type(state, -1) > LUA_TNIL && lua_isnumber(state, -1)) {
+      option.tab = lua_tointeger(state, -1);
+    } else {
+      MessageBoxA(nullptr, std::format("OptionTbl[ {} ].Tab이 잘못되었습니다.", index).c_str(), "GameSettings.lua", MB_OK);
+    }
+    lua_pop(state, 1);
+
+    lua_pushstring(state, "Type");
+    lua_gettable(state, -2);
+    if (lua_type(state, -1) > LUA_TNIL && lua_isnumber(state, -1)) {
+      option.type = lua_tointeger(state, -1);
+    } else {
+      MessageBoxA(nullptr, std::format("OptionTbl[ {} ].Type이 잘못되었습니다.", index).c_str(), "GameSettings.lua", MB_OK);
+    }
+    lua_pop(state, 1);
+
+    if (option.type == 0) {
+      lua_pushstring(state, "Default");
+      lua_gettable(state, -2);
+      if (lua_type(state, -1) > LUA_TNIL && lua_isboolean(state, -1)) {
+        option.defaultValue = (lua_toboolean(state, -1) != 0) ^ IsServiceOption(option.id);
+      } else {
+        MessageBoxA(nullptr, std::format("OptionTbl[ {} ].Default가 잘못되었습니다.", index).c_str(), "GameSettings.lua", MB_OK);
+      }
+      lua_pop(state, 1);
+
+      lua_pushstring(state, "MSGs");
+      lua_gettable(state, -2);
+      if (lua_type(state, -1) > LUA_TNIL && lua_istable(state, -1)) {
+        lua_pushnumber(state, 1.0);
+        lua_gettable(state, -2);
+        const int enabledMessage = FindMessageId(lua_tostring(state, -1));
+        lua_pop(state, 1);
+        lua_pushnumber(state, 2.0);
+        lua_gettable(state, -2);
+        const int disabledMessage = FindMessageId(lua_tostring(state, -1));
+        lua_pop(state, 1);
+        option.unknown_005c = enabledMessage;
+        option.unknown_0060 = disabledMessage;
+      }
+      lua_pop(state, 1);
+
+      g_serviceOptions.values[static_cast<std::uint32_t>(option.id)] = option.defaultValue;
+    }
+
+    lua_pushstring(state, "Title");
+    lua_gettable(state, -2);
+    if (lua_type(state, -1) > LUA_TNIL && lua_isstring(state, -1)) {
+      option.title = lua_tostring(state, -1);
+    } else {
+      MessageBoxA(nullptr, std::format("OptionTbl[ {} ].Title이 잘못되었습니다.", index).c_str(), "GameSettings.lua", MB_OK);
+    }
+    lua_pop(state, 1);
+
+    lua_pushstring(state, "Tooltip");
+    lua_gettable(state, -2);
+    if (lua_type(state, -1) > LUA_TNIL && lua_isstring(state, -1)) {
+      option.tooltip = lua_tostring(state, -1);
+    }
+    lua_pop(state, 1);
+
+    lua_pushstring(state, "TipBoxID");
+    lua_gettable(state, -2);
+    if (lua_type(state, -1) > LUA_TNIL && lua_isnumber(state, -1)) {
+      option.tipBoxId = lua_tointeger(state, -1);
+    }
+    lua_pop(state, 1);
+
+    lua_pushstring(state, "Description");
+    lua_gettable(state, -2);
+    if (lua_type(state, -1) > LUA_TNIL && lua_isstring(state, -1)) {
+      option.description = lua_tostring(state, -1);
+    } else {
+      MessageBoxA(nullptr, std::format("OptionTbl[ {} ].Description이 잘못되었습니다.", index).c_str(), "GameSettings.lua", MB_OK);
+    }
+    lua_pop(state, 1);
+
+    this->options[index - 1] = std::move(option);
+    lua_pop(state, 1);
+  }
+
+  lua_pop(state, 1);
+  return lua_gettop(state) == 0;
+}
 
 void sub_AAB070(int id);
 
@@ -417,6 +536,20 @@ void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMes
     g_serviceOptions.Set(id, value);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+}
+
+// OFFSET: 0x006C4750
+// FUNCTION: fn_06359
+void ShowHelpMessages() {
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  int count = 0;
+  g_luaScript->Call("GetTableSizeForC", "s>d", "HelpMsgStr", &count);
+  for (int index = 1; index <= count; ++index) {
+    const char* text = nullptr;
+    if (g_luaScript->Call("getHelpMsg", "d>s", index, &text) && std::strlen(text) != 0) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF64, 0, 0, 0);
     }
   }
 }
