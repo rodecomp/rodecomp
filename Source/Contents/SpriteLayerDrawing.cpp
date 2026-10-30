@@ -15,6 +15,29 @@
 #include <cstring>
 
 // OFFSET: 0x0063FC90
+// FUNCTION: fn_04808
+void SpriteLayerRenderer::QueueQuad(int layer, const SpriteQuad* quad, const std::uint32_t* palette, int blend) {
+  const int direction = this->pc->render.previousAnimation - this->pc->render.animation;
+  if (this->layerViews[layer] > 0) {
+    int priority = -1;
+    g_luaScript->Call("GetLayerPriority", "ddd>d", direction, layer, this->layerViews[layer], &priority);
+    if (priority == -1) {
+      return;
+    }
+
+    SpriteLayerQuad entry;
+    memcpy_s(&entry.quad, sizeof(entry.quad), quad, sizeof(SpriteQuad));
+    entry.palette = palette;
+    entry.blend = blend;
+    this->quads.insert(std::make_pair(priority, entry));
+  } else {
+    SpriteLayerQuad entry;
+    memcpy_s(&entry.quad, sizeof(entry.quad), quad, sizeof(SpriteQuad));
+    entry.palette = palette;
+    entry.blend = blend;
+    this->quads.emplace(static_cast<int>(this->quads.size()) + 1, entry);
+  }
+}
 
 // OFFSET: 0x00640050
 
