@@ -108,3 +108,30 @@ void WindowRetirement::DrainPending(
 
   this->windows.retired.clear();
 }
+
+// OFFSET: 0x00A8F840
+// FUNCTION: fn_17145
+void UIWindowMgr::DestroyWindow0478() {
+  if (this->unknown_0478) {
+    delete this->unknown_0478;
+    this->unknown_0478 = nullptr;
+  }
+}
+
+// OFFSET: 0x00A8FB80
+// FUNCTION: fn_17147
+void UIWindowMgr::SubmitActiveDialog() {
+  UIWindow* window = this->unknown_01F8;
+  if (window || (window = this->unknown_01F0) != nullptr || (window = this->unknown_01F4) != nullptr || (window = this->unknown_0214) != nullptr ||
+      (window = this->unknown_021C) != nullptr || (window = this->unknown_020C) != nullptr || (window = this->unknown_0374) != nullptr ||
+      (window = this->hoverWindow) != nullptr) {
+    window->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    return;
+  }
+
+  for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
+    if ((*entry)->Slot02()) {
+      (*entry)->SendMsg(nullptr, 19, 0, 0, 0, 0);
+    }
+  }
+}
