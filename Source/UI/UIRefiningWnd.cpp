@@ -223,6 +223,62 @@ void UIRefiningWnd::ApplyResult() {
   this->Invalidate();
 }
 
+// OFFSET: 0x007F6BF0
+// FUNCTION: fn_09909
+void UIRefining_BtnAgain::Paint() {
+  UIBitmapButton::Paint();
+  auto& controls = *this->m_buttonContext;
+  if (this->m_disabled == 1) {
+    int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(3241), 0, 0, 12, 1, 0);
+    std::uint32_t color = this->success == 1 ? 0xE1C1F : (this->m_disabled == 1 ? 0x6F4333 : 0x3E1B12);
+    this->DrawTextAt(
+      controls.fonts, controls.locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
+      (this->geometry.unknown_0030 == 2) + 14, LookupMessage(3241), 0, 0, 12, color, 1, 0
+    );
+    return;
+  }
+
+  int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(3241), 0, 0, 12, 1, 0);
+  std::uint32_t color = this->success == 1 ? 0xE1C1F : (this->m_disabled == 1 ? 0x6F4333 : 0x3E1B12);
+  this->DrawTextAt(
+    controls.fonts, controls.locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
+    (this->geometry.unknown_0030 == 2) + 9, LookupMessage(3241), 0, 0, 12, color, 1, 0
+  );
+
+  std::string count = FormatOwnedString(LookupMessage(3285), this->unknown_0125);
+  width = this->TextWidth(controls.fonts, controls.locale, count.c_str(), 0, 0, 11, 0, 0);
+  this->DrawTextAt(
+    controls.fonts, controls.locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
+    (this->geometry.unknown_0030 == 2) + 22, count.c_str(), 0, 0, 11, 0, 0, 0
+  );
+
+  width = this->TextWidth(controls.fonts, controls.locale, IntToString(this->cost, 0).c_str(), 0, 0, 11, 1, 0);
+  this->DrawTextAt(
+    controls.fonts, controls.locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
+    (this->geometry.unknown_0030 == 2) + 38, IntToString(this->cost, 0).c_str(), 0, 0, 11, 0xFFFFFF, 1, 0
+  );
+}
+
+// OFFSET: 0x007F6EA0
+// FUNCTION: fn_09910
+void UIRefining_BtnRefining::Paint() {
+  UIBitmapButton::Paint();
+  auto& controls = *this->m_buttonContext;
+  int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(2966), 0, 0, 13, 1, 0);
+  std::uint32_t color = this->m_disabled == 1 ? 0x94644A : 0x3E1B12;
+  this->DrawTextAt(
+    controls.fonts, controls.locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
+    (this->geometry.unknown_0030 == 2) + 11, LookupMessage(2966), 0, 0, 12, color, 1, 0
+  );
+
+  if (this->m_disabled == 0) {
+    width = this->TextWidth(controls.fonts, controls.locale, IntToString(this->cost, 0).c_str(), 0, 0, 12, 1, 0);
+    this->DrawTextAt(
+      controls.fonts, controls.locale, 83 - width, (this->geometry.unknown_0030 == 2) + 28, IntToString(this->cost, 0).c_str(), 0, 0, 12, 0xFFFFFF, 1, 0
+    );
+  }
+}
+
 // OFFSET: 0x007F7030
 // FUNCTION: fn_09911
 void UIRefining_BtnReturn::Paint() {

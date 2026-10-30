@@ -55,6 +55,7 @@ struct RenewQuestOngoingInfo : RenewQuestInfo {
 
   RenewQuestOngoingInfo();
   std::string GetDateString() const;
+  std::string GetHuntText(int index) const;
 };
 
 struct RenewQuestRecommendedInfo : RenewQuestInfo {
@@ -97,6 +98,7 @@ public:
   void RemoveStatusRequest(unsigned int id);
   void AddIconTooltip(std::string_view icon, std::string_view tooltip);
   std::string GetFilterName(int filter);
+  std::string GetMonsterConditionText(unsigned int flags, int minLevel, int maxLevel);
   std::string GetIconTooltip(std::string_view icon);
   const RenewQuestOngoingInfo& GetOngoingQuest(unsigned int id);
   RenewQuestOngoingInfo* FindOngoingQuest(unsigned int id);
@@ -113,6 +115,8 @@ public:
   bool SetRecommendedQuestActive(unsigned int id, bool active);
   bool SetOngoingSimpleView(unsigned int id, bool simpleView);
   void SetParameter(int key, int value);
+  void SaveOngoingSimpleViewList();
+  void SaveRecommendedActiveList();
   void sub_67B620(unsigned int questId);
 };
 

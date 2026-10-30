@@ -24,6 +24,7 @@ static_assert(sizeof(RefiningMaterial) == 9);
 
 class UIRefining_BtnAgain : public UIBitmapButton {
 public:
+  void Paint() override;
   void Enable(unsigned char value) override;
   void UpdateBitmaps();
 
@@ -34,6 +35,7 @@ public:
 
 class UIRefining_BtnRefining : public UIBitmapButton {
 public:
+  void Paint() override;
   void Enable(unsigned char value) override;
 
   /* 0120 */ int cost;

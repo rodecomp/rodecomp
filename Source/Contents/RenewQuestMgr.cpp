@@ -1,7 +1,9 @@
 #include "Contents/RenewQuestMgr.h"
 #include "Contents/MessageTable.h"
+#include "File/File.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
+#include "Utility/Text/FormatString.h"
 #include "Utility/Text/TextEscapes.h"
 
 extern "C" {
@@ -167,11 +169,187 @@ std::string CRenewQuestMgr::GetFilterName(int filter) {
   return found == this->m_filters.end() ? std::string() : found->second.m_name;
 }
 
+// OFFSET: 0x006780B0
+// FUNCTION: fn_05440
+std::string CRenewQuestMgr::GetMonsterConditionText(unsigned int flags, int minLevel, int maxLevel) {
+  std::string result;
+  std::string separator = " ";
+
+  if (flags != 0) {
+    if (flags & 0x20000) {
+      std::string text(LookupMessage(2263));
+      text.erase(text.size() - 2, text.size());
+      result = result + text + separator;
+    }
+
+    if (flags & 0x40000) {
+      std::string text(LookupMessage(2266));
+      text.erase(text.size() - 2, text.size());
+      result = result + text + separator;
+    }
+
+    if (flags & 0x80000) {
+      std::string text(LookupMessage(2264));
+      text.erase(text.size() - 2, text.size());
+      result = result + text + separator;
+    }
+
+    if (flags & 0x100000) {
+      std::string text(LookupMessage(2265));
+      text.erase(text.size() - 2, text.size());
+      result = result + text + separator;
+    }
+
+    if (flags & 0x200000) {
+      std::string text(LookupMessage(2269));
+      text.erase(text.size() - 2, text.size());
+      result = result + text + separator;
+    }
+
+    if (flags & 0x400000) {
+      std::string text(LookupMessage(2268));
+      text.erase(text.size() - 2, text.size());
+      result = result + text + separator;
+    }
+
+    if (flags & 0x800000) {
+      std::string text(LookupMessage(2267));
+      text.erase(text.size() - 2, text.size());
+      result = result + text + separator;
+    }
+
+    if (flags & 0x1000000) {
+      std::string text(LookupMessage(2270));
+      text.erase(text.size() - 2, text.size());
+      result = result + text + separator;
+    }
+
+    if (flags & 0x2000000) {
+      std::string text(LookupMessage(2272));
+      text.erase(text.size() - 2, text.size());
+      result = result + text + separator;
+    }
+
+    if (flags & 0x4000000) {
+      std::string text(LookupMessage(2271));
+      text.erase(text.size() - 2, text.size());
+      result = result + text + separator;
+    }
+
+    if (flags & 0x10) {
+      result = result + std::string(LookupMessage(2275)) + separator;
+    }
+
+    if (flags & 0x20) {
+      result = result + std::string(LookupMessage(2273)) + separator;
+    }
+
+    if (flags & 0x40) {
+      result = result + std::string(LookupMessage(2274)) + separator;
+    }
+
+    if (flags & 0x80) {
+      result = result + std::string(LookupMessage(2282)) + separator;
+    }
+
+    if (flags & 0x100) {
+      result = result + std::string(LookupMessage(2277)) + separator;
+    }
+
+    if (flags & 0x200) {
+      result = result + std::string(LookupMessage(2279)) + separator;
+    }
+
+    if (flags & 0x400) {
+      result = result + std::string(LookupMessage(2280)) + separator;
+    }
+
+    if (flags & 0x800) {
+      result = result + std::string(LookupMessage(2278)) + separator;
+    }
+
+    if (flags & 0x1000) {
+      result = result + std::string(LookupMessage(2281)) + separator;
+    }
+
+    if (flags & 0x2000) {
+      result = result + std::string(LookupMessage(2283)) + separator;
+    }
+
+    if (flags & 0x4000) {
+      result = result + std::string(LookupMessage(2276)) + separator;
+    }
+
+    if (flags & 0x8000) {
+      result = result + std::string(LookupMessage(2285)) + separator;
+    }
+
+    if (flags & 0x10000) {
+      result = result + std::string(LookupMessage(2284)) + separator;
+    }
+  }
+
+  if (minLevel == 0) {
+    if (maxLevel > 0) {
+      result = result + " Lv." + IntToString(maxLevel, 0) + "▼";
+    }
+  } else if (minLevel > 0) {
+    if (maxLevel == 0) {
+      result = result + " Lv." + IntToString(minLevel, 0) + "▲";
+    } else if (maxLevel > minLevel) {
+      result = result + " Lv." + IntToString(minLevel, 0) + "~Lv." + IntToString(maxLevel, 0);
+    }
+  }
+
+  return result;
+}
+
 // OFFSET: 0x006792A0
 // FUNCTION: fn_05441
 std::string CRenewQuestMgr::GetIconTooltip(std::string_view icon) {
   const auto found = this->m_iconTooltips.find(std::string(icon));
   return found == this->m_iconTooltips.end() ? std::string("QUEST") : found->second;
+}
+
+// OFFSET: 0x006794D0
+// FUNCTION: fn_05442
+std::string RenewQuestOngoingInfo::GetHuntText(int index) const {
+  if (index > 2 || this->m_huntCount <= index) {
+    return std::string();
+  }
+
+  std::string text;
+  const short minLevel = this->m_huntUnknown01AC[index];
+  const short maxLevel = this->m_huntUnknown01B2[index];
+  if (this->m_huntUnknown00D4[index] == 31999) {
+    const std::string condition = g_renewQuestMgr->GetMonsterConditionText(this->m_huntUnknown01A0[index], minLevel, maxLevel);
+    text = condition;
+  } else {
+    const char* name = this->m_huntName[index];
+    if (this->m_huntUnknown01AC[index] >= 0 && this->m_huntUnknown01B2[index] >= 0 && (minLevel != 0 || this->m_huntUnknown01B2[index] != 0)) {
+      if (minLevel == 0) {
+        text = std::format("{} Lv.{}▼", name, maxLevel);
+      } else if (this->m_huntUnknown01B2[index] != 0) {
+        text = std::format("{} Lv.{}~Lv.{}", name, minLevel, maxLevel);
+      } else {
+        text = std::format("{} Lv.{}▲", name, minLevel);
+      }
+    } else {
+      text = name;
+    }
+  }
+
+  const short goal = this->m_huntUnknown0180[index];
+  if (goal > 0) {
+    const short count = this->m_huntUnknown00E0[index];
+    if (count == goal) {
+      text = std::format("{} ( {} )", text, LookupMessage(2030));
+    } else {
+      text = std::format("{} ( {} / {} )", text, count, goal);
+    }
+  }
+
+  return text;
 }
 
 // OFFSET: 0x00679920
@@ -411,6 +589,54 @@ bool CRenewQuestMgr::SetOngoingSimpleView(unsigned int id, bool simpleView) {
 void CRenewQuestMgr::SetParameter(int key, int value) {
   if (key == 3502) {
     this->m_parameter = value;
+  }
+}
+
+// OFFSET: 0x0067BFB0
+// FUNCTION: fn_05467
+void CRenewQuestMgr::SaveOngoingSimpleViewList() {
+  std::string path = "SaveData\\OngoingSimpleViewList.lua";
+  CFile file;
+  if (file.Open(path.c_str(), 0x1001, true, true)) {
+    std::string text = "OngoingSimpleViewList = {}\r\n\r\n";
+    file.Write(text.c_str(), text.size());
+    text = "OngoingSimpleViewList = \r\n{\r\n";
+    file.Write(text.c_str(), text.size());
+
+    for (auto it = this->m_ongoingQuests.begin(); it != this->m_ongoingQuests.end(); ++it) {
+      if (!it->second.m_simpleView) {
+        text = '\t' + IntToString(it->first, 0) + ",\r\n";
+        file.Write(text.c_str(), text.size());
+      }
+    }
+
+    text = "}";
+    file.Write(text.c_str(), text.size());
+    file.Close();
+  }
+}
+
+// OFFSET: 0x0067C5A0
+// FUNCTION: fn_05468
+void CRenewQuestMgr::SaveRecommendedActiveList() {
+  std::string path = "SaveData\\RecommendedActiveList.lua";
+  CFile file;
+  if (file.Open(path.c_str(), 0x1001, true, true)) {
+    std::string text = "RecommendedActiveList = {}\r\n\r\n";
+    file.Write(text.c_str(), text.size());
+    text = "RecommendedActiveList = \r\n{\r\n";
+    file.Write(text.c_str(), text.size());
+
+    for (auto it = this->m_recommendedQuests.begin(); it != this->m_recommendedQuests.end(); ++it) {
+      if (!it->second.m_active) {
+        text = '\t' + IntToString(it->first, 0) + ",\r\n";
+        file.Write(text.c_str(), text.size());
+      }
+    }
+
+    text = "}";
+    file.Write(text.c_str(), text.size());
+    file.Close();
   }
 }
 

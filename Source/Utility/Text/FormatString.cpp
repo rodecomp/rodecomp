@@ -4,9 +4,13 @@
 #include <array>
 #include <cstdarg>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <map>
 #include <windows.h>
+
+// GLOBAL: gl_24365
+static char s_numberBuffer[1024];
 
 // OFFSET: 0x005BAEF0
 // FUNCTION: fn_03451
@@ -81,4 +85,21 @@ std::string FormatOwnedString(const char* format, ...) {
   _vsnprintf_s(buffer, sizeof(buffer), static_cast<std::size_t>(-1), format, arguments);
   va_end(arguments);
   return std::string(buffer, std::strlen(buffer));
+}
+
+// OFFSET: 0x00A95590
+// FUNCTION: fn_17181
+std::string IntToString(int value, unsigned int digits) {
+  if (digits == 0) {
+    _itoa(value, s_numberBuffer, 10);
+    return std::string(s_numberBuffer);
+  }
+
+  std::sprintf(s_numberBuffer, "%.10d", value);
+  std::string text(s_numberBuffer);
+  if (text.size() > digits) {
+    text.erase(0, text.size() - digits);
+  }
+
+  return text;
 }
