@@ -353,6 +353,7 @@ namespace EquipmentProperties {
     int GetUnknown01BC(const int& first, const int& second, const unsigned int& third);
     void SetCurrentEquipment(CEquipment* equipment);
     void RefreshPretend();
+    void RefreshShop();
     void Rebuild();
     void GetDescriptions(const int& group, std::list<std::string>& lines);
     void ApplyProperty(const char* name, lua_State* state, const int& count, const int& valuePosition, const int& indexPosition, const int& keyPosition);
@@ -422,6 +423,7 @@ namespace EquipmentProperties {
 
     std::vector<CEquipmentAttachable>& GetAttachables();
     bool IsActive();
+    __declspec(noinline) bool UpdateActive();
   };
 
   class CEquipmentExpansion : public CEquipment {
@@ -727,6 +729,43 @@ void EquipmentProperties::CEquipment::AddProperty(const std::string& name, const
   CEquipmentProperties2Dim property(definition);
   property.SetValue(index, value * sign, key);
   this->m_properties += &property;
+}
+
+// OFFSET: 0x00DDE720
+// FUNCTION: fn_23398
+SessionShop* FindShop(CSession& session, const int& shopId) {
+  const auto found = session.m_shops.lower_bound(shopId);
+  if (found == session.m_shops.end() || shopId < found->first) {
+    return nullptr;
+  }
+  return &found->second;
+}
+
+// OFFSET: 0x00DE3B10
+// FUNCTION: fn_23485
+int FindShopId(CSession& session, std::string name) {
+  if (name.empty()) {
+    name = session.m_navigationPlayerMap;
+  }
+
+  const auto found = session.m_nameToId.lower_bound(name);
+  if (found == session.m_nameToId.end() || name < found->first) {
+    return -1;
+  }
+  return found->second;
+}
+
+// OFFSET: 0x0068BDB0
+// FUNCTION: fn_05621
+bool EquipmentProperties::CEquipmentWearable::UpdateActive() {
+  const bool previous = this->m_active;
+  SessionShop* shop = FindShop(g_session, FindShopId(g_session, std::string()));
+  if (shop != nullptr && !shop->unknown_0004.empty()) {
+    this->m_active = shop->unknown_0004[0].find(this->m_id) != shop->unknown_0004[0].end();
+  } else {
+    this->m_active = true;
+  }
+  return previous != this->m_active;
 }
 
 // OFFSET: 0x0068BEA0
@@ -2099,6 +2138,36 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RefreshExpansion(const int& k
     }
   }
 
+  if (this->unknown_0020 != nullptr) {
+    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006B7390
+// FUNCTION: fn_06206
+void EquipmentProperties::CEquipmentPropertiesMgr::RefreshShop() {
+  const int shopId = FindShopId(g_session, std::string());
+  if (this->unknown_0014 != shopId) {
+    for (auto& entry : this->properties1) {
+      CEquipmentWearable* equipment = entry.second;
+      const bool previous = equipment->IsActive();
+      this->m_dirty |= equipment->UpdateActive();
+      if (previous != equipment->IsActive()) {
+        if (equipment->IsActive()) {
+          this->EquipItem(equipment->GetId(), false);
+          for (CEquipmentAttachable& attachable : equipment->GetAttachables()) {
+            this->EquipItem(attachable.GetId(), false);
+          }
+        } else {
+          for (CEquipmentAttachable& attachable : equipment->GetAttachables()) {
+            this->UnequipItem(attachable.GetId(), false);
+          }
+          this->UnequipItem(equipment->GetId(), false);
+        }
+      }
+    }
+  }
+  this->unknown_0014 = shopId;
   if (this->unknown_0020 != nullptr) {
     this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
   }
