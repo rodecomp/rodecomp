@@ -11,14 +11,25 @@ class CUIVScrollBar;
 
 class CUIStaticText : public CUIControl {
 public:
+  void UpdateText();
+  void SetAlign(int horizontal, int vertical);
+  void SetFitText(bool enabled);
+  void SetBold(unsigned char enabled);
   void SetColor(std::uint32_t color);
+  void SetFontHeight(int height);
+  void SetFont(const std::string& name);
   void SetOutline(bool enabled, std::uint32_t color);
   void SetShadow(bool enabled, std::uint32_t color);
-  void SetText(const char* value, std::size_t length);
+  __declspec(noinline) void SetText(const char* value, std::size_t length);
+  void SetTooltip(const char* value, std::size_t length);
 
-  /* 0080 */ std::string text;
+  std::string& Tooltip() {
+    return *reinterpret_cast<std::string*>(this->unknown_00B0);
+  }
+
+  /* 0084 */ unsigned char unknown_0084[0x14];
   /* 0098 */ std::string unknown_0098;
-  /* 00B0 */ unsigned char unknown_00B0[0x0C];
+  /* 00B0 */ unsigned char unknown_00B0[0x10];
   /* 00C0 */ CUIVScrollBar* scrollBar;
   /* 00C4 */ unsigned char unknown_00C4[0x04];
   /* 00C8 */ bool fitText;
@@ -34,10 +45,13 @@ public:
   /* 00F0 */ std::uint32_t outlineColor;
   /* 00F4 */ int textX;
   /* 00F8 */ int textY;
+  /* 0080 */ std::string text;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CUIStaticText) == 0xFC);
+static_assert(sizeof(CUIStaticText) == 0x114);
+static_assert(offsetof(CUIStaticText, unknown_0098) == 0x98);
+static_assert(offsetof(CUIStaticText, scrollBar) == 0xC0);
 static_assert(offsetof(CUIStaticText, color) == 0xE0);
 static_assert(offsetof(CUIStaticText, outlineColor) == 0xF0);
 #endif

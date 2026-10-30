@@ -132,15 +132,32 @@ public:
 
   void SetShadow(bool enabled, std::uint32_t color);
   void SetOutline(bool enabled, std::uint32_t color);
+  void UpdateText();
+  void SetAlign(int horizontal, int vertical);
+  void SetOrientation(int value);
+  void SetFitText(bool enabled);
+  void SetBold(unsigned char enabled);
+  void SetFontHeight(int height);
+  void SetFont(const std::string& name);
+  void SetText(const std::string& value);
 
-  /* 00F0 */ unsigned char unknown_00F0[0x30];
+  /* 00F0 */ std::string text;
+  /* 0108 */ std::string displayText;
   /* 0120 */ std::string fullText;
-  /* 0138 */ unsigned char unknown_0138[0x28];
+  /* 0138 */ bool fitText;
+  /* 013C */ int orientation;
+  /* 0140 */ int horizontalAlign;
+  /* 0144 */ int verticalAlign;
+  /* 0148 */ int fontIndex;
+  /* 014C */ int fontHeight;
+  /* 0150 */ unsigned char bold;
+  /* 0151 */ unsigned char unknown_0151[0x0F];
   /* 0160 */ unsigned char shadow;
   /* 0164 */ std::uint32_t shadowColor;
   /* 0168 */ unsigned char outline;
   /* 016C */ std::uint32_t outlineColor;
-  /* 0170 */ unsigned char unknown_0170[0x08];
+  /* 0170 */ int textX;
+  /* 0174 */ int textY;
   /* 0178 */ std::string tooltipText;
 };
 
@@ -231,6 +248,7 @@ public:
 
   void SetImages(const std::string& left, const std::string& middle, const std::string& right);
   void SetSecondButton(CUIButton* button);
+  void SetTitle(const char* title, std::size_t length);
 
   /* 0080 */ unsigned char resizable;
   /* 0084 */ CResPtr<CBitmapRes> left;
@@ -239,7 +257,8 @@ public:
   /* 0090 */ std::string leftName;
   /* 00A8 */ std::string middleName;
   /* 00C0 */ std::string rightName;
-  /* 00D8 */ unsigned char unknown_00D8[0x08];
+  /* 00D8 */ unsigned char unknown_00D8[0x04];
+  /* 00DC */ class CUIStaticText* titleText;
   /* 00E0 */ UIWindow* firstButton;
   /* 00E4 */ UIWindow* secondButton;
 };

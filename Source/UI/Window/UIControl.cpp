@@ -1954,3 +1954,189 @@ void CUIVScrollBar::Slot55(int value) {
     this->SetPosition(target);
   }
 }
+
+// OFFSET: 0x009F0AE0
+// FUNCTION: fn_14671
+void CUIStaticText::UpdateText() {
+  this->Tooltip().clear();
+  if (this->fitText) {
+    this->unknown_0098 = this->FitDisplayText(this->geometry.width, this->text.c_str(), this->fontIndex, this->fontHeight, this->bold);
+    if (this->unknown_0098 != this->text) {
+      this->Tooltip() = this->text;
+    }
+  } else {
+    this->unknown_0098 = this->text;
+  }
+
+  const SIZE size =
+    this->TextSize(this->m_context->fonts, this->m_context->locale, this->unknown_0098.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0);
+
+  if (this->horizontalAlign == 0) {
+    this->textX = 0;
+  } else if (this->horizontalAlign == 6) {
+    this->textX = static_cast<int>(std::roundf(static_cast<float>(this->geometry.width - size.cx) * 0.5f));
+  } else if (this->horizontalAlign == 2) {
+    this->textX = this->geometry.width - size.cx;
+  }
+
+  if (this->verticalAlign == 0) {
+    this->textY = 0;
+  } else if (this->verticalAlign == 6) {
+    this->textY = static_cast<int>(std::roundf(static_cast<float>(this->geometry.height - size.cy) * 0.5f));
+  } else if (this->verticalAlign == 8) {
+    this->textY = this->geometry.height - size.cy;
+  }
+
+  this->Invalidate();
+}
+
+// OFFSET: 0x009F0D40
+// FUNCTION: fn_14672
+void CUIStaticText::SetAlign(int horizontal, int vertical) {
+  this->horizontalAlign = horizontal;
+  this->verticalAlign = vertical;
+  this->UpdateText();
+}
+
+// OFFSET: 0x009F0D60
+// FUNCTION: fn_14673
+void CUIStaticText::SetFitText(bool enabled) {
+  this->fitText = enabled;
+  this->UpdateText();
+}
+
+// OFFSET: 0x009F0D80
+// FUNCTION: fn_14674
+void CUIStaticText::SetBold(unsigned char enabled) {
+  this->bold = enabled;
+  this->UpdateText();
+}
+
+// OFFSET: 0x009F0DC0
+// FUNCTION: fn_14676
+void CUIStaticText::SetFontHeight(int height) {
+  this->fontHeight = height;
+  this->UpdateText();
+}
+
+// OFFSET: 0x009F0DE0
+// FUNCTION: fn_14677
+void CUIStaticText::SetFont(const std::string& name) {
+  this->fontIndex = FallbackFontIndex(name);
+  this->UpdateText();
+}
+
+// OFFSET: 0x009F0E50
+// FUNCTION: fn_14680
+void CUIStaticText::SetText(const char* value, std::size_t length) {
+  this->text.assign(value, length);
+  this->UpdateText();
+}
+
+// OFFSET: 0x009F0E80
+// FUNCTION: fn_14681
+void CUIStaticText::SetTooltip(const char* value, std::size_t length) {
+  this->Tooltip().assign(value, length);
+}
+
+// OFFSET: 0x009F1D20
+// FUNCTION: fn_14702
+void CUITitleBar::SetTitle(const char* title, std::size_t length) {
+  if (this->titleText) {
+    this->titleText->SetText(title, length);
+  }
+}
+
+// OFFSET: 0x009ED010
+// FUNCTION: fn_14566
+void CUITextButton::UpdateText() {
+  if (this->fitText) {
+    if (this->orientation == 1) {
+      this->displayText = this->FitVerticalDisplayText(this->geometry.height, this->text.c_str(), this->fontIndex, this->fontHeight, this->bold);
+    } else {
+      this->displayText = this->FitDisplayText(this->geometry.width, this->text.c_str(), this->fontIndex, this->fontHeight, this->bold);
+    }
+    if (this->displayText != this->text) {
+      this->fullText = this->text;
+    }
+  } else {
+    this->displayText = this->text;
+    this->fullText.clear();
+  }
+
+  const SIZE size = this->orientation == 1
+                      ? this->VerticalTextSize(
+                          this->m_context->fonts, this->m_context->locale, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
+                        )
+                      : this->TextSize(
+                          this->m_context->fonts, this->m_context->locale, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
+                        );
+
+  if (this->horizontalAlign == 0) {
+    this->textX = 0;
+  } else if (this->horizontalAlign == 6) {
+    this->textX = (this->geometry.width - size.cx) / 2;
+  } else if (this->horizontalAlign == 2) {
+    this->textX = this->geometry.width - size.cx;
+  }
+
+  if (this->verticalAlign == 0) {
+    this->textY = 0;
+  } else if (this->verticalAlign == 6) {
+    this->textY = (this->geometry.height - size.cy) / 2;
+  } else if (this->verticalAlign == 8) {
+    this->textY = this->geometry.height - size.cy;
+  }
+
+  this->Invalidate();
+}
+
+// OFFSET: 0x009ED2E0
+// FUNCTION: fn_14567
+void CUITextButton::SetAlign(int horizontal, int vertical) {
+  this->horizontalAlign = horizontal;
+  this->verticalAlign = vertical;
+  this->UpdateText();
+}
+
+// OFFSET: 0x009ED300
+// FUNCTION: fn_14568
+void CUITextButton::SetOrientation(int value) {
+  this->orientation = value;
+  this->UpdateText();
+}
+
+// OFFSET: 0x009ED320
+// FUNCTION: fn_14569
+void CUITextButton::SetFitText(bool enabled) {
+  this->fitText = enabled;
+  this->UpdateText();
+}
+
+// OFFSET: 0x009ED340
+// FUNCTION: fn_14570
+void CUITextButton::SetBold(unsigned char enabled) {
+  this->bold = enabled;
+  this->UpdateText();
+}
+
+// OFFSET: 0x009ED3E0
+// FUNCTION: fn_14572
+void CUITextButton::SetFontHeight(int height) {
+  this->fontHeight = height;
+  this->UpdateText();
+}
+
+// OFFSET: 0x009ED400
+// FUNCTION: fn_14573
+void CUITextButton::SetFont(const std::string& name) {
+  this->fontIndex = FallbackFontIndex(name);
+  this->UpdateText();
+}
+
+// OFFSET: 0x009ED470
+// FUNCTION: fn_14576
+void CUITextButton::SetText(const std::string& value) {
+  this->text = value;
+  this->UpdateText();
+}
