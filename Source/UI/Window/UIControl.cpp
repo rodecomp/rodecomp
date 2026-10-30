@@ -11,6 +11,7 @@
 #include "Resource/TextureNames.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIPadding.h"
+#include "UI/Text/UIStaticTextControl.h"
 #include "UI/Text/UITextViewerControl.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "Render/Text/FontCache.h"
@@ -809,6 +810,27 @@ void CUIStaticImage::SetImage(const std::string& name) {
   this->imageName = name;
   this->Slot53(0);
   this->Invalidate();
+}
+
+// OFFSET: 0x009F0DA0
+// FUNCTION: fn_14675
+void CUIStaticText::SetColor(std::uint32_t color) {
+  this->color = color;
+  this->Invalidate();
+}
+
+// OFFSET: 0x009F0E10
+// FUNCTION: fn_14678
+void CUIStaticText::SetOutline(bool enabled, std::uint32_t color) {
+  this->outline = enabled;
+  this->outlineColor = color;
+}
+
+// OFFSET: 0x009F0E30
+// FUNCTION: fn_14679
+void CUIStaticText::SetShadow(bool enabled, std::uint32_t color) {
+  this->shadow = enabled;
+  this->shadowColor = color;
 }
 
 // OFFSET: 0x009F1C40
