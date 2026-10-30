@@ -1222,7 +1222,7 @@ bool CSession::IsGuildMemberName(const char* name) const {
     }
   }
 
-  return g_guildName == name;
+  return std::strcmp(g_guildName.c_str(), name) == 0;
 }
 
 // OFFSET: 0x00DDB580
