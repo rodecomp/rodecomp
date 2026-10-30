@@ -7,6 +7,8 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/GuildInfo.h"
+#include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/World/World.h"
 #include "Render/Renderer.h"
@@ -47,6 +49,11 @@ struct ActorPointPacket {
   /* 0002 */ std::uint32_t aid;
   /* 0006 */ std::int16_t x;
   /* 0008 */ std::int16_t y;
+};
+
+struct VariablePacketHeader {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
 };
 
 struct ByteValuePacket {
@@ -429,4 +436,19 @@ void CGameMode::NotifyResult4138(int result) {
   }
 
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0xFF, 0, 0, 0);
+}
+
+// OFFSET: 0x00D6FAC0
+// FUNCTION: fn_22125
+void CGameMode::ReceiveGuildUnknown0114List(const unsigned char* packet) {
+  const auto* header = reinterpret_cast<const VariablePacketHeader*>(packet);
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+
+  guildInfo->ClearUnknown0114();
+  const int count = header->length - 4;
+  for (int i = 0; i < count; ++i) {
+    unsigned char value;
+    memcpy_s(&value, sizeof(value), packet + sizeof(VariablePacketHeader) + i, sizeof(value));
+    guildInfo->AddUnknown0114(value);
+  }
 }

@@ -107,6 +107,7 @@ public:
   void ReceiveActorMessage144(const unsigned char* packet);
   void StopActorMove(std::uint32_t aid, std::int16_t x, std::int16_t y, unsigned char flag);
   void NotifyResult4138(int result);
+  void ReceiveGuildUnknown0114List(const unsigned char* packet);
   void ReceiveClanLeave(const unsigned char* packet);
   void ReceiveClanInfo(const unsigned char* packet);
   void ReceiveGameOptions(int count, const GameOptionEntry* entries);
