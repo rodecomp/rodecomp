@@ -3,9 +3,13 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/World/World.h"
 #include "File/File.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "UI/Window/UIWindowMgr.h"
 
 extern "C" {
@@ -19,6 +23,44 @@ extern "C" {
 #include <list>
 #include <string>
 #include <windows.h>
+
+namespace {
+
+struct SkillOwnerPacket {
+  /* 0000 */ std::int16_t opcode;
+  /* 0002 */ std::uint32_t aid;
+};
+
+// INLINED
+bool IsHomunAid(std::uint32_t aid) {
+  return aid != 0xFFFFFFFF && aid == *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
+}
+
+// INLINED
+bool IsMercenaryAid(std::uint32_t aid) {
+  return aid != 0xFFFFFFFF && aid == *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
+}
+
+// INLINED
+bool IsLocalPlayerAid(std::uint32_t aid) {
+  CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+  if (!player) {
+    return false;
+  }
+  return player->Slot50() == static_cast<int>(aid);
+}
+
+// INLINED
+bool IsFirstSkillRange(unsigned id) {
+  return id - 8000u <= 60;
+}
+
+// INLINED
+bool IsOtherSkillRange(unsigned id) {
+  return id - 8200u <= 41 || id - 8400u <= 57;
+}
+
+}
 
 // OFFSET: 0x00D9E3F0
 // FUNCTION: fn_22327
@@ -237,4 +279,38 @@ void AiSetTableNumber(lua_State* state, int key, int value) {
   lua_pushnumber(state, key);
   lua_pushnumber(state, value);
   lua_settable(state, -3);
+}
+
+// OFFSET: 0x00D9EEF0
+
+// OFFSET: 0x00D9F0B0
+
+// OFFSET: 0x00D9FF50
+
+// OFFSET: 0x00DA0260
+
+// OFFSET: 0x00DA0300
+// FUNCTION: fn_22346
+int AiSkillGround(lua_State* state) {
+  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  int skillArgs[4];
+  skillArgs[0] = static_cast<int>(lua_tonumber(state, 3));
+  skillArgs[1] = static_cast<int>(lua_tonumber(state, 4));
+  skillArgs[2] = static_cast<int>(lua_tonumber(state, 5));
+  skillArgs[3] = static_cast<int>(lua_tonumber(state, 2));
+
+  if (!IsHomunAid(aid) && !IsMercenaryAid(aid)) {
+    return 0;
+  }
+  if (!IsFirstSkillRange(static_cast<unsigned>(skillArgs[0])) && !IsOtherSkillRange(static_cast<unsigned>(skillArgs[0]))) {
+    return 0;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameActor* actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
+  if (actor->render.unknown_0070 == 1 || actor->render.unknown_0070 == 0 || actor->render.unknown_0070 == 4) {
+    mode->SendMsg(0x46, reinterpret_cast<int>(skillArgs), 0, 0, 0);
+  }
+  mode->SendMsg(0x1a, 0, 0, 0, 0);
+  return 0;
 }
