@@ -838,6 +838,29 @@ struct ItemNamingContext : public ItemNaming {
 };
 
 // OFFSET: 0x006D5650
+// FUNCTION: fn_06575
+std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item) {
+  int ids[4];
+  CardIds(*item, ids);
+  const bool first = IsItemCard(ids[0]);
+  const unsigned id = static_cast<unsigned>(std::atoi(item->itemId.c_str()));
+  const bool hasCards = id - 9001u <= 498 || id - 10000u <= 999 || ids[0] == 254 || ids[0] == 255 || !Equipment(*item)
+                            ? first
+                            : first || IsItemCard(ids[1]) || IsItemCard(ids[2]) || IsItemCard(ids[3]);
+  if (!hasCards) {
+    return 0;
+  }
+
+  const std::uint32_t colors[5] = {0, 0x00ADFF2F, 0x0000BFFF, 0x00FFA500, 0x009400D3};
+  const int slots = FindItemDescription(std::atoi(item->itemId.c_str())).slots;
+  int count = 0;
+  for (int index = 0; index < 4; ++index) {
+    if (index >= slots && IsItemCard(ids[index])) {
+      ++count;
+    }
+  }
+  return colors[count];
+}
 
 // OFFSET: 0x006D6AA0
 // FUNCTION: fn_06583
