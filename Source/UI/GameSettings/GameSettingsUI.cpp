@@ -767,8 +767,20 @@ void CUIGroupSound::SetBgmEnabled(bool enabled) {
 // OFFSET: 0x00A3F4C0
 
 // OFFSET: 0x00A3F560
+// FUNCTION: fn_15945
+void CUIGroupEmblem::SetEnabled(bool enabled) {
+  g_serviceOptions.Set(0xF3, enabled);
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? 0xDC7 : 0xDC8)), 0x64FFFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00A3F5C0
+// FUNCTION: fn_15946
+void CUIGroupLogInOut::SetEnabled(bool enabled) {
+  g_serviceOptions.Set(0xA5, enabled);
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? 0x414 : 0x415)), 0x64FFFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00A3F6B0
 // FUNCTION: fn_15948
@@ -792,6 +804,10 @@ void CUIGroupEmblem::OnSelect(CUIRadioButton* button) {
 }
 
 // OFFSET: 0x00A41E90
+// FUNCTION: fn_16005
+void CUIGroupLogInOut::OnSelect(CUIRadioButton* button) {
+  this->SetEnabled(button == this->m_onButton);
+}
 
 // OFFSET: 0x00A41F30
 
