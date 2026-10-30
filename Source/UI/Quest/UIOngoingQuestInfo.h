@@ -5,6 +5,8 @@
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Window/UIControl.h"
 
+class CUITextViewer;
+
 class CUIOngoingQuestInfo : public CUIFrameWnd {
 public:
   void OnFirstAction();
@@ -13,14 +15,17 @@ public:
 
 namespace OngoingQuestInfo {
 
-class CRewardItemData;
+class CRewardItemData {};
 
 class CUIContents : public CUIControl {
 public:
   void Slot16() override;
   void Paint() override;
 
-  /* 0084 */ unsigned char unknown_0084[0x08];
+  void UpdateHeight();
+
+  /* 0084 */ unsigned char unknown_0084[0x04];
+  /* 0088 */ CUITextViewer* textViewer;
 };
 
 class CUIRewardItem : public CUIListItem {
@@ -34,8 +39,11 @@ public:
   void Paint() override;
 
   void OnPrepareItem(CUIRewardItem* item, const CRewardItemData& data);
+  void UpdateHeight();
 
-  /* 0084 */ unsigned char unknown_0084[0x20];
+  /* 0084 */ unsigned char unknown_0084[0x18];
+  /* 009C */ CUIListBoxEx<CUIRewardItem, CRewardItemData>* rewardList;
+  /* 00A0 */ unsigned char unknown_00A0[0x04];
 };
 
 class CUIScrollWindow : public CUIControl {
