@@ -1,5 +1,6 @@
 #include "Contents/Effects/SquareRangeEffect.h"
 
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -8,6 +9,51 @@
 // OFFSET: 0x00B4C5E0
 // FUNCTION: fn_18960
 CSquareRangeEffect::CSquareRangeEffect() : CEffect(-1), size(1.0f), resize(0), particles() {
+}
+
+// OFFSET: 0x00B4C750
+// FUNCTION: fn_18962
+void CSquareRangeEffect::Close() {
+  for (CParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
+
+// OFFSET: 0x00B4C790
+// FUNCTION: fn_18963
+void CSquareRangeEffect::Slot01() {
+  if (this->id == 991) {
+    this->size = 7.0f;
+  }
+
+  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  if (!particle) {
+    return;
+  }
+
+  particle->alpha = 255;
+  particle->SetColor(255, 255, 255);
+  particle->SetTexture("effect\\SquareRange.tga");
+  particle->scale = this->size * 2.5f;
+  if (this->id == 991) {
+    this->unknown_002C = 300;
+    particle->SetColor(92, 92, 92);
+    particle->destinationBlend = 6;
+  }
+
+  this->particles.push_back(particle);
+}
+
+// OFFSET: 0x00B4C8C0
+// FUNCTION: fn_18964
+bool CSquareRangeEffect::Slot06() {
+  if (this->id == 991) {
+    return !this->IsFinished();
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00B4C8E0
