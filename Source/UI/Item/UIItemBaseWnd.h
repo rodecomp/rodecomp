@@ -27,7 +27,7 @@ public:
   /* 00B8 */ int unknown_00B8;
   /* 00BC */ UIWindow* resizer;
   /* 00C0 */ UIWindow* scrollBar;
-  /* 00C4 */ unsigned char unknown_00C4[0x8];
+  /* 00C4 */ UIWindow* buttons[2];
 
 protected:
   UIButtonContext* m_controls;

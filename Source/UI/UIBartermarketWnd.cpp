@@ -10,12 +10,15 @@
 #include "Contents/MessageTable.h"
 #include "UI/Layout/WindowSnapping.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
+#include "UI/Window/UIResizer.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <map>
+#include <string>
 
 // OFFSET: 0x00840B30
 // FUNCTION: fn_10545
@@ -908,4 +911,403 @@ void UIExpandedBarterPurchaseButton::Slot28(int x, int y) {
       tooltip->Show(text.c_str(), tooltipX, tooltipY, 0xFFFFFFFF, 0, 1);
     }
   }
+}
+
+// GLOBAL: gl_25056
+int g_extraInventorySlots;
+// GLOBAL: gl_25087
+int g_barterValueA;
+// GLOBAL: gl_25088
+int g_barterValueB;
+
+// OFFSET: 0x00840530
+// FUNCTION: fn_10544
+bool UIBarterItemPurchaseWnd::Purchase() {
+  std::map<std::string, int> totals;
+  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
+
+  int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size();
+  count += g_session.CountItems17F0();
+  count += g_session.CountItems2B50();
+
+  for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it) {
+    std::map<std::string, int>::iterator total = totals.find(it->name);
+    if (total != totals.end()) {
+      total->second += it->value;
+    } else {
+      totals.insert(std::make_pair(it->name, it->value));
+    }
+
+    if (g_session.IsEquipItemType(it->field_1c) == true || g_session.IsShadowItemType(it->field_1c) == true) {
+      ++count;
+    } else if (this->GetInventoryItemCount(std::atoi(it->name.c_str())) == 0) {
+      ++count;
+    }
+  }
+
+  if (count > g_extraInventorySlots + 100) {
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3568)), 255, 0, 0, 0);
+    this->SendMsg(nullptr, 6, 185, 0, 0, 0);
+    return false;
+  }
+
+  std::map<int, int>* required = g_barterMarketItemMgr->GetTotals();
+  for (std::map<int, int>::iterator it = required->begin(); it != required->end(); ++it) {
+    if (this->GetInventoryItemCount(it->first) < it->second) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3556)), 255, 0, 0, 0);
+      this->SendMsg(nullptr, 6, 185, 0, 0, 0);
+      return false;
+    }
+  }
+
+  for (std::map<std::string, int>::iterator it = totals.begin(); it != totals.end(); ++it) {
+    if (it->second + this->GetInventoryItemCount(std::atoi(it->first.c_str())) > 30000) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      const std::string text = FormatOwnedString(LookupMessage(3567), 30000);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 255, 0, 0, 0);
+      this->SendMsg(nullptr, 6, 185, 0, 0, 0);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00841A10
+// FUNCTION: fn_10552
+void UIBarterItemPurchaseWnd::Slot15(int width, int height) {
+  UIResizer* resizer = new UIResizer(*this->m_context);
+  this->resizer = resizer;
+  resizer->SetSize(16, 16);
+  resizer->SetDirection(3);
+  resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(resizer);
+
+  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
+  this->AddChild(scrollBar);
+
+  const std::string prefix = "유저인터페이스\\";
+  const char* names[2][3] = {
+    {"btn_buy", "btn_buy_a", "btn_buy_b"},
+    {"btn_cancel", "btn_cancel_a", "btn_cancel_b"},
+  };
+  const int ids[2] = {184, 185};
+  const int xs[2] = {this->geometry.width - 106, this->geometry.width - 61};
+  const int y = this->geometry.height - 24;
+
+  for (int index = 0; index < 2; ++index) {
+    UIBitmapButton* button = index == 0 ? static_cast<UIBitmapButton*>(new UIPurchaseButton()) : new UIBitmapButton();
+    this->buttons[index] = button;
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(xs[index], y);
+    button->SetId(ids[index]);
+    this->AddChild(button);
+  }
+
+  this->columns = 1;
+  this->visibleRows = (height - 38) / 32;
+
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00843FA0
+// FUNCTION: fn_10563
+int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (!mode) {
+      return 0;
+    }
+
+    if (a == 184) {
+      if (!this->Purchase()) {
+        return 0;
+      }
+      mode->SendMsg(308, 0, 0, 0, 0);
+    } else if (a != 185) {
+      return 0;
+    }
+
+    mode->SendMsg(40, 0, 0, 0, 0);
+    g_barterMarketItemMgr->Clear();
+    return 0;
+  }
+
+  case 14: {
+    if (a != 3) {
+      return 0;
+    }
+
+    int width = b <= 320 ? static_cast<int>(b) : 320;
+    int height = c <= 336 ? static_cast<int>(c) : 336;
+    if (width < 232) {
+      width = 232;
+    }
+    if (height < 120) {
+      height = 120;
+    }
+    width = (width - 280) / 32 * 32 + 280;
+    height = (height - 120) / 32 * 32 + 120;
+
+    if (width != this->geometry.width || height != this->geometry.height) {
+      this->Resize(width, height);
+      this->columns = 1;
+      const int rowsHeight = this->geometry.height - 38;
+      this->visibleRows = rowsHeight / 32;
+      this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+      this->scrollBar->Move(this->geometry.width - 15, 14);
+      this->scrollBar->Resize(this->scrollBar->geometry.width, rowsHeight);
+      this->UpdateScrollBar();
+    }
+
+    const int xs[2] = {this->geometry.width - 106, this->geometry.width - 61};
+    const int y = this->geometry.height - 24;
+    for (int index = 0; index < 2; ++index) {
+      this->buttons[index]->Move(xs[index], y);
+    }
+
+    this->m_frameContext->snapping.Store(this);
+    return 0;
+  }
+
+  case 23: {
+    this->items.clear();
+    std::list<BarterMarketItem>* items = g_barterMarketItemMgr->GetAllItems();
+    for (std::list<BarterMarketItem>::iterator it = items->begin(); it != items->end(); ++it) {
+      this->items.push_back(it->ToItemInfo());
+    }
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  }
+
+  case 34: {
+    this->saved = reinterpret_cast<ItemPurchaseWndInfo*>(a);
+    if (!this->saved) {
+      return 0;
+    }
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  }
+
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (!mode) {
+      return 0;
+    }
+
+    std::pair<bool, BarterMarketItem> found = g_barterMarketItemMgr->FindItem(mode->drag.unknown_03B0);
+    if (found.first == false) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3554)), 255, 0, 0, 0);
+      mode->SendMsg(18, 0, 0, 0, 0);
+      return 0;
+    }
+
+    found.second.value = mode->drag.quantity;
+    if (g_session.HasItemId(found.second.field_2c)) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3665)), 255, 0, 0, 0);
+      mode->SendMsg(18, 0, 0, 0, 0);
+      return 0;
+    }
+
+    if (g_barterMarketItemMgr->HasItemByName(mode->drag.name)) {
+      int notice = 0;
+      if (g_session.IsEquipItemType(mode->drag.type)) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+        notice = 119;
+      } else if (g_session.IsShadowItemType(mode->drag.type)) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+        notice = 3569;
+      }
+
+      if (notice != 0) {
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(notice)), 255, 0, 0, 0);
+        return 0;
+      }
+    }
+
+    if (mode->drag.quantity + g_barterMarketItemMgr->GetAllItemValueByName(mode->drag.name) > 30000) {
+      char buffer[200] = {};
+      StringFormat(buffer, 200, static_cast<std::size_t>(-1), LookupMessage(1704), 30000);
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 255, 0, 0, 0);
+      return 0;
+    }
+
+    const int amountById = g_barterMarketItemMgr->GetAmountById(mode->drag.unknown_03B0);
+    if (amountById < 0) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3554)), 255, 0, 0, 0);
+      mode->SendMsg(18, 0, 0, 0, 0);
+      return 0;
+    }
+
+    if (amountById > 0) {
+      const int available = g_barterValueA - g_barterValueB;
+      const float remaining = static_cast<float>(available) - g_barterMarketItemMgr->GetTotalAmount();
+      if (static_cast<int>(remaining) / amountById < mode->drag.quantity) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(56)), 255, 0, 0, 0);
+        mode->SendMsg(18, 0, 0, 0, 0);
+        return 0;
+      }
+    }
+
+    g_barterMarketItemMgr->AddItem(found.second);
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    if (UIWindow* window = g_windowMgr.LookupWindow(334)) {
+      window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    }
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+
+  default:
+    break;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+}
+
+// OFFSET: 0x00846FB0
+// FUNCTION: fn_10583
+void UIExpandedBarterItemPurchaseWnd::Slot15(int width, int height) {
+  UIResizer* resizer = new UIResizer(*this->m_context);
+  this->resizer = resizer;
+  resizer->SetSize(16, 16);
+  resizer->SetDirection(3);
+  resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(resizer);
+
+  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 46);
+  this->AddChild(scrollBar);
+
+  UIExpandedBarterPurchaseButton* buyButton = new UIExpandedBarterPurchaseButton();
+  this->buyButton = buyButton;
+  buyButton->SetBitmap("유저인터페이스\\btn_buy.bmp", 0, 0);
+  buyButton->SetBitmap("유저인터페이스\\btn_buy_a.bmp", 1, 0);
+  buyButton->SetBitmap("유저인터페이스\\btn_buy_b.bmp", 2, 0);
+  buyButton->SetSize(buyButton->BitmapWidth(), buyButton->BitmapHeight());
+  buyButton->Move(this->geometry.width - 105, this->geometry.height - 24);
+  buyButton->SetId(184);
+  this->AddChild(buyButton);
+
+  UIBitmapButton* cancelButton = new UIBitmapButton();
+  this->cancelButton = cancelButton;
+  cancelButton->SetBitmap("유저인터페이스\\btn_cancel.bmp", 0, 0);
+  cancelButton->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
+  cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
+  cancelButton->SetSize(cancelButton->BitmapWidth(), cancelButton->BitmapHeight());
+  cancelButton->Move(this->geometry.width - 60, this->geometry.height - 24);
+  cancelButton->SetId(185);
+  this->AddChild(cancelButton);
+
+  this->rowCount = (height - 46) / 64;
+
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x008446D0
+// FUNCTION: fn_10564
+int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 14: {
+    if (a == 7) {
+      int width = b <= 320 ? static_cast<int>(b) : 320;
+      int height = c <= 336 ? static_cast<int>(c) : 336;
+      if (width < 232) {
+        width = 232;
+      }
+      if (height < 120) {
+        height = 120;
+      }
+      width = (width - 280) / 32 * 32 + 280;
+      height = (height - 120) / 32 * 32 + 120;
+
+      if (width != this->geometry.width || height != this->geometry.height) {
+        this->Resize(width, height);
+        this->columns = 1;
+        const int contentHeight = this->geometry.height - this->unknown_0108 - this->unknown_0104 - 17;
+        this->visibleRows = contentHeight / 32;
+        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, contentHeight);
+        this->UpdateScrollBar();
+      }
+
+      this->m_frameContext->snapping.Store(this);
+    }
+    return 0;
+  }
+
+  case 23: {
+    this->items.clear();
+    std::list<BarterMarketItem>* items = g_barterMarketItemMgr->GetItems();
+    for (std::list<BarterMarketItem>::iterator it = items->begin(); it != items->end(); ++it) {
+      this->items.push_back(it->ToItemInfo());
+    }
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  }
+
+  case 34: {
+    this->saved = reinterpret_cast<ItemShopWndInfo*>(a);
+    if (a == 0) {
+      return 0;
+    }
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  }
+
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (!mode) {
+      return 0;
+    }
+
+    std::pair<bool, BarterMarketItem> found = g_barterMarketItemMgr->FindAllItem(mode->drag.unknown_03B0);
+    if (found.first == false) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3554)), 255, 0, 0, 0);
+      mode->SendMsg(18, 0, 0, 0, 0);
+      return 0;
+    }
+
+    found.second.value = mode->drag.quantity;
+    g_barterMarketItemMgr->RemoveItem(found.second);
+    if (UIWindow* window = g_windowMgr.LookupWindow(335)) {
+      window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    }
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+
+  default:
+    break;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }

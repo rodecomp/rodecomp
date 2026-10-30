@@ -12,9 +12,13 @@
 #include <list>
 #include <utility>
 
+class UIExpandedBarterPurchaseButton;
+class UIResizer;
+
 class UIExpandedBarterItemPurchaseWnd : public UIFrameWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -26,12 +30,14 @@ public:
 
   /* 00B4 */ int unknown_00B4;
   /* 00B8 */ int itemCount;
-  /* 00BC */ int unknown_00BC;
+  /* 00BC */ UIResizer* resizer;
   /* 00C0 */ UIScrollBar* scrollBar;
   /* 00C4 */ int unknown_00C4;
   /* 00C8 */ int rowCount;
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ unsigned char scrollEnabled;
+  /* 00D4 */ UIExpandedBarterPurchaseButton* buyButton;
+  /* 00D8 */ UIBitmapButton* cancelButton;
 };
 
 class UIExpandedBartermarketWnd : public UIFrameWnd {
@@ -60,9 +66,12 @@ public:
 class UIBarterItemPurchaseWnd : public UIItemPurchaseWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  bool Purchase();
   __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemOrPriceAt(int x, int y);
   __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemAt(int x, int y);
   int GetInventoryItemCount(int itemId);
@@ -74,8 +83,12 @@ public:
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemAt(int x, int y);
   __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemOrPriceAt(int x, int y);
+
+  /* 0104 */ int unknown_0104;
+  /* 0108 */ int unknown_0108;
 };
 
 class UIPurchaseButton : public UIBitmapButton {
