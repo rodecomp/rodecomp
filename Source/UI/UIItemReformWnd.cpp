@@ -354,3 +354,12 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
   }
   this->Invalidate();
 }
+
+// OFFSET: 0x005FECD0
+// FUNCTION: fn_04137
+CItemReformMgr* CItemReformMgr::Instance() {
+  if (!g_itemReformMgr) {
+    g_itemReformMgr = new (std::nothrow) CItemReformMgr;
+  }
+  return g_itemReformMgr;
+}

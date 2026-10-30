@@ -35,7 +35,7 @@ class CItemReformMgr {
 public:
   CItemReformMgr();
   virtual ~CItemReformMgr();
-
+  static CItemReformMgr* Instance();
   void NullSub();
   std::vector<int> GetReformBaseItems(int itemId);
   ItemReformInfo* FindReform(int itemId, int baseItem);
