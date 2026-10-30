@@ -675,10 +675,128 @@ void UIMessengerGroupWnd::Slot35(int delta) {
 }
 
 // OFFSET: 0x0073D580
+// FUNCTION: fn_07715
+void UIMessengerGroupWnd::UpdateScroll() {
+  if (!this->scrollBar) {
+    return;
+  }
+
+  const int rows = this->members.size() / this->columns + (this->members.size() % this->columns != 0);
+  const int visible = this->visibleRows;
+  int range = 0;
+  if (rows - visible >= 0) {
+    range = rows - visible;
+  }
+  this->scrollable = range != 0;
+  if (range) {
+    this->scrollBar->SetRange(range, visible, rows);
+    int top = this->scrollTop;
+    if (top < 0) {
+      this->scrollTop = 0;
+      top = 0;
+    }
+    const int limit = rows - this->visibleRows;
+    if (top > limit) {
+      this->scrollTop = limit;
+      top = limit;
+    }
+    this->scrollBar->SetPosition(top);
+  } else {
+    this->scrollTop = 0;
+    this->scrollBar->SetRange(0, visible, rows);
+  }
+  this->scrollBar->Invalidate();
+  this->UpdateGauges();
+}
 
 // OFFSET: 0x0073D640
+// FUNCTION: fn_07716
+void UIMessengerGroupWnd::LayoutButtons() {
+  int hidden = 0;
+  for (int index = 0; index < 11; ++index) {
+    if (this->mode == 1 && this->hiddenButtons[index]) {
+      this->buttons[index]->Move(-100, -100);
+      ++hidden;
+    } else {
+      this->buttons[index]->Move((index - hidden) * 26 + 5, this->geometry.height - 40);
+    }
+  }
+
+  int x;
+  if (this->mode == 1) {
+    const int offset = hidden * -26;
+    if (ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount()) {
+      this->buttons[10]->Move(offset + 213, this->geometry.height - 40);
+      this->buttons[9]->Move(offset + 161, this->geometry.height - 40);
+      this->buttons[8]->Move(offset + 187, this->geometry.height - 40);
+      this->buttons[7]->Move(-100, -100);
+    } else {
+      this->buttons[10]->Move(-100, -100);
+      this->buttons[7]->Move(offset + 161, this->geometry.height - 40);
+      this->buttons[8]->Move(-100, -100);
+      this->buttons[9]->Move(-100, -100);
+    }
+    x = offset + 135;
+  } else {
+    this->buttons[7]->Move(-100, -100);
+    this->buttons[8]->Move(-100, -100);
+    this->buttons[9]->Move(-100, -100);
+    this->buttons[10]->Move(-100, -100);
+    x = 135;
+  }
+
+  if (g_messengerGroupCollapsed) {
+    this->buttons[5]->Move(x, this->geometry.height - 40);
+    this->buttons[6]->Move(-100, -100);
+  } else {
+    this->buttons[6]->Move(x, this->geometry.height - 40);
+    this->buttons[5]->Move(-100, -100);
+  }
+}
 
 // OFFSET: 0x0073D800
+// FUNCTION: fn_07717
+void UIMessengerGroupWnd::UpdateGauges() {
+  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (!gameMode || !this->mode) {
+    return;
+  }
+
+  int shown = 0;
+  int index = 0;
+  UIPcGage** gauge = this->gauges;
+  for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index, ++gauge) {
+    if (index < this->scrollTop * this->columns) {
+      if ((*gauge)->geometry.x != -100) {
+        (*gauge)->Move(-100, -100);
+      }
+      continue;
+    }
+
+    if (it->valid) {
+      CPc* pc;
+      if (it->accountId == g_session.m_aid) {
+        pc = gameMode->scene->player;
+      } else {
+        pc = dynamic_cast<CPc*>(static_cast<CGameActor*>(gameMode->scene->GetGameActorByAID(it->accountId)));
+      }
+
+      const int y = shown / this->columns * this->rowHeight + 17;
+      if ((*gauge)->geometry.y != y) {
+        (*gauge)->Move(47, static_cast<int>(static_cast<float>(this->rowHeight) * 0.76f + static_cast<float>(y)));
+      }
+      if (pc && !it->offline) {
+        (*gauge)->SetColor(0x444444);
+      } else if ((*gauge)->geometry.x != -100) {
+        (*gauge)->Move(-100, -100);
+      }
+    }
+
+    if (++shown > this->visibleRows * this->columns && (*gauge)->geometry.x != -100) {
+      (*gauge)->Move(-100, -100);
+    }
+  }
+}
 
 // OFFSET: 0x0089CFD0
 // FUNCTION: fn_11596
