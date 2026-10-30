@@ -664,3 +664,13 @@ bool EffectLists::RegisterAllocator(int id, CAllocator* allocator) {
 }
 
 // OFFSET: 0x00B3AF30
+// FUNCTION: fn_18793
+void EffectLists::Update() {
+  for (auto& entry : this->active) {
+    std::list<CEffect*>& effects = entry.second;
+    effects.remove_if([](CEffect* effect) { return effect->RetireIfInactive(); });
+    for (CEffect* effect : effects) {
+      effect->Update(entry.first);
+    }
+  }
+}
