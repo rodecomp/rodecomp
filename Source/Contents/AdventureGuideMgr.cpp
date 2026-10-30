@@ -1109,6 +1109,12 @@ int InsertArmorObtainGuide(lua_State* state) {
 using AdventureGuideEntryTable = std::map<int, std::map<int, AdventureGuideEntry>>;
 using AdventureGuideContentsTable = std::map<int, std::map<int, AdventureGuideContents>>;
 
+// OFFSET: 0x0065F5C0
+// FUNCTION: fn_05188
+AdventureGuideEpisode::AdventureGuideEpisode(AdventureGuideEpisodeSource&& source)
+    : name(source.name), order(source.order), unknown_001C(source.unknown_0008), values(std::move(source.values)) {
+}
+
 // OFFSET: 0x0065F680
 // FUNCTION: fn_05189
 static std::optional<AdventureGuideEntryTable::mapped_type*> FindMapped(AdventureGuideEntryTable& map, const int& key) {

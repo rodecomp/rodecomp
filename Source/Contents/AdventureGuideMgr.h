@@ -39,9 +39,7 @@ struct AdventureGuideEpisodeSource {
 };
 
 struct AdventureGuideEpisode {
-  AdventureGuideEpisode(AdventureGuideEpisodeSource&& source)
-      : name(source.name), order(source.order), unknown_001C(source.unknown_0008), values(std::move(source.values)) {
-  }
+  AdventureGuideEpisode(AdventureGuideEpisodeSource&& source);
 
   /* 0000 */ std::string name;
   /* 0018 */ int order;
