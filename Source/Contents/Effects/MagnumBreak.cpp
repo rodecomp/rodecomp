@@ -1,7 +1,80 @@
 #include "Contents/Effects/MagnumBreak.h"
 
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
+
+// OFFSET: 0x00B49AD0
+// FUNCTION: fn_18938
+void CMagnumBreak::AddRings() {
+  const float growth = -(1.75f / static_cast<float>(this->unknown_002C)) * 0.5f;
+
+  for (int index = 0; index < 10; ++index) {
+    CParticle* ring = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x201);
+    ring->unknown_0004 = this->id;
+    ring->unknown_000C = index;
+    ring->unknown_0010 = 0;
+    ring->unknown_0008 = 1;
+    *reinterpret_cast<float*>(&ring->unknown_00C4) = static_cast<float>(index) * 36.0f;
+    ring->scale = 0.0f;
+    ring->unknown_00C0 = 1.75f;
+    *reinterpret_cast<float*>(&ring->unknown_0048[0x0C]) = growth;
+    *reinterpret_cast<float*>(&ring->unknown_0048[0x10]) = 12.0f;
+    *reinterpret_cast<float*>(&ring->unknown_0048[0x14]) = 0.0f;
+    ring->SetTexture("effect\\ring_yellow.tga");
+    this->rings.push_back(ring);
+  }
+}
+
+// INLINED
+void CMagnumBreak::AddWaves() {
+  const float growth = -(1.15f / static_cast<float>(this->unknown_002C)) * 0.5f;
+
+  for (int tilt = -90; tilt <= 54; tilt += 36) {
+    for (int angle = 0; angle <= 324; angle += 36) {
+      CParticle* wave = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+      wave->unknown_0004 = this->id;
+      wave->unknown_000C = angle;
+      wave->unknown_0010 = tilt;
+      wave->unknown_0008 = 1;
+      wave->scale = 0.0f;
+      wave->unknown_00C0 = 1.15f;
+      *reinterpret_cast<float*>(&wave->unknown_0048[0x0C]) = growth;
+      *reinterpret_cast<float*>(&wave->unknown_0048[0x10]) = 3.0f;
+      *reinterpret_cast<float*>(&wave->unknown_0048[0x14]) = 0.0f;
+      wave->SetTexture("effect\\대폭발.tga");
+      this->waves.push_back(wave);
+    }
+  }
+}
+
+// OFFSET: 0x00B49CD0
+// FUNCTION: fn_18939
+void CMagnumBreak::Close() {
+  for (auto it = this->rings.begin(); it != this->rings.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->rings.clear();
+
+  for (auto it = this->waves.begin(); it != this->waves.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->waves.clear();
+}
+
+// OFFSET: 0x00B49D40
+// FUNCTION: fn_18940
+void CMagnumBreak::Slot01() {
+  this->AddRings();
+  this->AddRings();
+  this->AddWaves();
+}
+
+// OFFSET: 0x00B49E50
+// FUNCTION: fn_18941
+bool CMagnumBreak::Slot06() {
+  return !this->IsFinished();
+}
 
 // OFFSET: 0x00B49E60
 // FUNCTION: fn_18942
