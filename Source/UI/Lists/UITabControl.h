@@ -21,6 +21,7 @@ public:
   void RecalculateWidths();
   void FitToTabs();
   void SelectTab(int index);
+  void RemoveTab(int index);
   void ClearTabs();
   void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Slot25(int x, int y) override;
@@ -50,10 +51,7 @@ public:
   /* 00DC */ std::vector<std::string> tooltips;
   /* 007C */ int unknown_007C;
   /* 00E8 */ int unknown_00E8;
-  /* 00EC */ int unknown_00EC;
-  /* 00F0 */ int unknown_00F0;
-  /* 00F4 */ int unknown_00F4;
-  /* 00F8 */ int unknown_00F8;
+  /* 00EC */ std::vector<bool> flags;
 
 private:
   UIButtonContext* m_controls;

@@ -364,7 +364,7 @@ int UIImgMenu::ItemAt(int x, int y) {
 // OFFSET: 0x0086ECF0
 // FUNCTION: fn_11083
 UITabControl::UITabControl(UIWindowContext& windows, UIButtonContext& controls)
-    : UIWindow(windows, 0), unknown_00E8(12), unknown_00EC(0), unknown_00F0(0), unknown_00F4(0), unknown_00F8(0), m_controls(&controls) {
+    : UIWindow(windows, 0), unknown_00E8(12), flags(), m_controls(&controls) {
   this->unknown_007C = -1;
   this->dragX = 0;
   this->dragY = 0;
@@ -388,14 +388,37 @@ void UITabControl::SelectTab(int index) {
   this->Invalidate();
 }
 
+// OFFSET: 0x0087A3C0
+void UITabControl::RemoveTab(int index) {
+  this->edit->SetText("");
+  this->edit->Move(-100, -100);
+
+  if (g_windowMgr.GetHoverWindow() == this->edit) {
+    g_windowMgr.NotifyHoverWindow();
+  }
+
+  const int count = static_cast<int>(this->labels.size());
+
+  for (int tab = 0; tab < count; ++tab) {
+    if (tab == index) {
+      this->colors.erase(this->colors.begin() + tab);
+      this->labels.erase(this->labels.begin() + tab);
+      this->widths.erase(this->widths.begin() + tab);
+      this->flags.erase(this->flags.begin() + tab);
+      this->unknown_007C = 0;
+      this->FitToTabs();
+      return;
+    }
+  }
+}
+
 // OFFSET: 0x0087A520
 // FUNCTION: fn_11234
 void UITabControl::ClearTabs() {
   this->labels.clear();
   this->colors.clear();
   this->widths.clear();
-  this->unknown_00F0 = this->unknown_00EC;
-  this->unknown_00F8 = 0;
+  this->flags.clear();
   this->unknown_007C = 0;
   this->unknown_00E8 = 12;
   this->FitToTabs();
