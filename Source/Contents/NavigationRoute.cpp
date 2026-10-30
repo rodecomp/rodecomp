@@ -4,10 +4,17 @@
 #include "Utility/Text/FormatString.h"
 #include "Client/Registry.h"
 #include "Client/Replay.h"
+#include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
 #include "Resource/ResourceMgr.h"
+#include "Network/Packets/PacketLengths.h"
+#include "Render/Textures/Texture.h"
+#include "Render/Textures/TextureCache.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
+#include "UI/Window/UINavigationWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/RegistryKey.h"
@@ -16,6 +23,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <timeapi.h>
 
 // OFFSET: 0x00B88800
 // FUNCTION: fn_19376
@@ -848,4 +856,398 @@ void CNavigationManager::RefreshSearch() {
   if (this->data.Search(this->unknown_1264, this->unknown_1260, this->states) && g_windowMgr.window_4F174) {
     static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->FillRouteGroups();
   }
+}
+
+// OFFSET: 0x00B9C740
+// FUNCTION: fn_19623
+int CNavigationManager::AddWrappedRouteLines(int kind, int x, int y, const char* text) {
+  std::string bracketed = "[";
+  bracketed += text;
+
+  wchar_t wide[100];
+  std::memset(wide, 0, sizeof(wide));
+  MultiByteToWideChar(CP_ACP, 0, bracketed.c_str(), -1, wide, static_cast<int>(bracketed.size()));
+  const int length = static_cast<int>(wcsnlen(wide, 100));
+
+  char line[40] = {};
+  const int count = length / 12;
+  for (int index = 0; index <= count; ++index) {
+    const int limit = 11 * (index + 1);
+    const int end = length <= limit ? length : limit;
+    std::wstring part(wide + 11 * index, wide + end);
+    WideCharToMultiByte(CP_ACP, 0, part.c_str(), -1, line, 40, nullptr, nullptr);
+    NaviRouteLine routeLine(kind, x, y + 14 * index, line, 0xDCDCDC, 0xCB6B54);
+    this->routeLines.push_back(routeLine);
+  }
+
+  this->routeLines.back().text += "]";
+  return count + 1;
+}
+
+// OFFSET: 0x00B9DB50
+// FUNCTION: fn_19624
+bool CNavigationManager::SelectState(int index) {
+  if (this->states.empty() || this->states[index].object == nullptr) {
+    return false;
+  }
+
+  this->currentTarget = this->states[index];
+  return this->LoadTargetPreview();
+}
+
+// OFFSET: 0x00B9DBD0
+// FUNCTION: fn_19625
+bool CNavigationManager::SelectNodeState() {
+  const int path = this->unknown_12C4;
+  const int node = this->unknown_12C8;
+  if (path >= 0 && static_cast<unsigned int>(path) < this->nodePaths.size() && node >= 0 &&
+      static_cast<unsigned int>(node) < this->nodePaths[path].size() && this->nodePaths[path][node] != -1) {
+    return this->SelectState(this->nodePaths[path][node]);
+  }
+
+  this->currentTarget = NavigationTarget();
+  this->LoadTargetPreview();
+  this->ClearRouteNodes();
+  if (this->data.GetInfo() && !this->data.GetInfo()->IsSearchable(this->data.GetInfo()->GetName())) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4195)), 0x0A0AFF, 0, 0, 0);
+  }
+  return false;
+}
+
+#pragma pack(push, 1)
+struct NavigationDestinationRecord {
+  /* 0000 */ std::uint32_t header;
+  /* 0004 */ std::int16_t length;
+  /* 0006 */ char mapName[30];
+  /* 0024 */ int x;
+  /* 0028 */ int y;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(NavigationDestinationRecord) == 0x2C);
+
+// OFFSET: 0x00B9E290
+// FUNCTION: fn_19628
+bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
+  CNaviInfo* info = this->FindObject(mapName.c_str());
+  if (!info) {
+    return false;
+  }
+
+  {
+    std::string name = mapName;
+    if (Replay::Instance().state == 2) {
+      char packet[100] = {};
+      NavigationDestinationRecord record;
+      record.header = 0x039008AE;
+      record.length = sizeof(record);
+      std::memset(record.mapName, 0, sizeof(record.mapName));
+      std::memcpy(record.mapName, name.c_str(), name.size());
+      record.x = x;
+      record.y = y;
+      std::memcpy(packet, &record, sizeof(record));
+
+      Replay& replay = Replay::Instance();
+      ReplayPacketRecorder recorder = {
+        g_packetLengths,
+        replay.baseFrame,
+        replay.started,
+        replay.frame,
+        replay.header.key0,
+        replay.header.key1,
+        replay.header.options.recordRestricted,
+        replay.file,
+        replay.fileOffset,
+        replay.records,
+        replay.cipherIndex,
+        replay.cipherBase,
+        replay.cipherKey,
+      };
+      recorder.Record(static_cast<std::uint16_t>(record.length), packet, 0x29, 0);
+    }
+  }
+
+  char text[50];
+  std::memset(text, 0, sizeof(text));
+  this->currentTarget.object = info;
+  if (x == 1000) {
+    this->currentTarget.type = 1;
+    this->currentTarget.x = -1;
+    this->currentTarget.y = -1;
+    std::sprintf(text, "%s", info->GetName());
+  } else {
+    this->currentTarget.x = x;
+    this->currentTarget.type = 0;
+    this->currentTarget.y = y;
+    std::sprintf(text, "%s %d,%d", info->GetName(), x, y);
+  }
+  this->currentTarget.name = text;
+
+  this->unknown_125C = 0;
+  this->unknown_1254 = false;
+  this->unknown_1248 = false;
+  if (this->unknown_1258 != 2) {
+    this->unknown_1258 = 1;
+  }
+
+  this->LoadTargetPreview();
+  g_windowMgr.EnsureWindow(203);
+  if (g_windowMgr.window_4F174) {
+    UIWindow* window = g_windowMgr.window_4F174;
+    window->geometry.targetAlpha = 255;
+    window->geometry.alphaStart = timeGetTime();
+    static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->RefreshLayout();
+    static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->LayoutWithDetails();
+    g_windowMgr.window_4F174->Invalidate();
+  }
+
+  if (g_windowMgr.modal) {
+    reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
+    reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
+  }
+  return true;
+}
+
+// OFFSET: 0x00B9FBB0
+// FUNCTION: fn_19632
+bool CNavigationManager::LoadTargetPreview() {
+  this->unknown_128C = -1;
+  this->unknown_1290 = -1;
+  this->unknown_12A4 = nullptr;
+  this->unknown_12A0 = nullptr;
+  this->unknown_1288 = nullptr;
+  if (!this->currentTarget.object || !this->BuildTargetRouteLines()) {
+    return false;
+  }
+
+  const int type = this->currentTarget.type;
+  void* object = this->currentTarget.object;
+  this->unknown_1284 = 1;
+
+  int mapType;
+  const char* mapName;
+  if (type == 0 || type == 1) {
+    if (!object) {
+      return false;
+    }
+    CNaviInfo* info = static_cast<CNaviInfo*>(object);
+    mapType = info->GetType();
+    mapName = info->GetName();
+  } else if (type == 6) {
+    if (!object) {
+      return false;
+    }
+    CNavi_Object* target = static_cast<CNavi_Object*>(object);
+    if (target->GetType() == 400) {
+      mapName = target->GetName();
+      mapType = 5004;
+    } else {
+      mapType = target->GetInfo()->GetType();
+      mapName = target->GetInfo()->GetName();
+    }
+  } else {
+    this->unknown_12A4 = nullptr;
+    this->unknown_12A0 = nullptr;
+    if (!object) {
+      return false;
+    }
+    CNavi_Object* target = static_cast<CNavi_Object*>(object);
+    mapType = target->GetInfo()->GetType();
+    mapName = target->GetInfo()->GetName();
+    if (target->GetIndex() >= 0) {
+      char spriteName[128];
+      char actionName[128];
+      std::memset(spriteName, 0, sizeof(spriteName));
+      std::memset(actionName, 0, sizeof(actionName));
+      bool found = false;
+      if (this->currentTarget.type == 2) {
+        std::sprintf(spriteName, "npc\\%s.spr", g_session.GetJobName(target->GetIndex(), -1));
+        std::sprintf(actionName, "npc\\%s.act", g_session.GetJobName(target->GetIndex(), -1));
+        if (ResourceMgr::Instance().Exists(spriteName) && ResourceMgr::Instance().Exists(actionName)) {
+          found = true;
+        } else {
+          std::sprintf(spriteName, "몬스터\\%s.spr", g_session.GetJobName(target->GetIndex(), -1));
+          std::sprintf(actionName, "몬스터\\%s.act", g_session.GetJobName(target->GetIndex(), -1));
+          found = ResourceMgr::Instance().Exists(spriteName) && ResourceMgr::Instance().Exists(actionName);
+        }
+      } else if (this->currentTarget.type == 3) {
+        std::sprintf(spriteName, "몬스터\\%s.spr", g_session.GetJobName(target->GetIndex(), -1));
+        std::sprintf(actionName, "몬스터\\%s.act", g_session.GetJobName(target->GetIndex(), -1));
+        if (ResourceMgr::Instance().Exists(spriteName) && ResourceMgr::Instance().Exists(actionName)) {
+          found = true;
+        } else {
+          std::sprintf(spriteName, "npc\\%s.spr", g_session.GetJobName(target->GetIndex(), -1));
+          std::sprintf(actionName, "npc\\%s.act", g_session.GetJobName(target->GetIndex(), -1));
+          found = ResourceMgr::Instance().Exists(spriteName) && ResourceMgr::Instance().Exists(actionName);
+        }
+      }
+      if (found) {
+        this->unknown_12A4 = dynamic_cast<CSprRes*>(ResourceMgr::Instance().Load(spriteName));
+        this->unknown_12A0 = dynamic_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));
+      }
+    }
+    this->unknown_1284 = 2;
+  }
+
+  this->unknown_1288 = nullptr;
+  if (mapType == 5004) {
+    this->unknown_1288 = g_texMgr.Load("유저인터페이스\\collection\\불의주문서.bmp", 0, false, true, false);
+  } else if (mapType != 5001 && mapType != 5005) {
+    this->unknown_1288 = g_texMgr.Load("유저인터페이스\\navigation_interface\\Interior.bmp", 0, false, true, false);
+  } else {
+    char path[60];
+    std::memset(path, 0, sizeof(path));
+    std::sprintf(path, "유저인터페이스\\map\\%s.bmp", mapName);
+    this->unknown_1288 = g_texMgr.Load(path, 0, false, true, false);
+    if (this->unknown_1288) {
+      const int targetType = this->currentTarget.type;
+      if (targetType == 2 || targetType == 6) {
+        CNavi_Object* target = static_cast<CNavi_Object*>(this->currentTarget.object);
+        NaviCell cellY;
+        NaviCell cellX;
+        const int cellRow = target->GetCell(&cellY)->y;
+        const int cellColumn = target->GetCell(&cellX)->x;
+        CNaviInfo* info = target->GetInfo();
+        int viewX = -1;
+        int viewY = -1;
+        if (info) {
+          int offsetX;
+          int offsetY;
+          const float scale = this->FitToSquare(&offsetX, &offsetY, info->GetCellX(), info->GetCellY(), 126.0f);
+          viewX = static_cast<int>(cellColumn * scale + offsetX);
+          viewY = static_cast<int>(126.0f - (cellRow * scale + offsetY));
+        }
+        this->unknown_1290 = viewY;
+        this->unknown_128C = viewX;
+      } else if (targetType == 0) {
+        int cellColumn = this->currentTarget.x;
+        int cellRow;
+        CNaviInfo* info;
+        if (cellColumn < 0) {
+          NaviCell cellY;
+          NaviCell cellX;
+          cellRow = this->data.GetCell(&cellY)->y;
+          cellColumn = this->data.GetCell(&cellX)->x;
+          info = this->data.GetInfo();
+        } else {
+          cellRow = this->currentTarget.y;
+          info = static_cast<CNaviInfo*>(this->currentTarget.object);
+        }
+        int viewX = -1;
+        int viewY = -1;
+        if (info) {
+          int offsetX;
+          int offsetY;
+          const float scale = this->FitToSquare(&offsetX, &offsetY, info->GetCellX(), info->GetCellY(), 126.0f);
+          viewX = static_cast<int>(cellColumn * scale + offsetX);
+          viewY = static_cast<int>(126.0f - (cellRow * scale + offsetY));
+        }
+        this->unknown_1290 = viewY;
+        this->unknown_128C = viewX;
+      }
+    }
+  }
+
+  if (!this->unknown_1288 || this->unknown_1288->Width() == 1) {
+    this->unknown_1288 = g_texMgr.Load("유저인터페이스\\navigation_interface\\NoImage.bmp", 0, false, true, false);
+  }
+  return true;
+}
+
+// OFFSET: 0x00BA02F0
+// FUNCTION: fn_19633
+bool CNavigationManager::BuildTargetRouteLines() {
+  this->ClearRouteNodes();
+  void* object = this->currentTarget.object;
+  if (!object) {
+    return false;
+  }
+
+  char text[50];
+  std::memset(text, 0, sizeof(text));
+  const int type = this->currentTarget.type;
+  if (type == 1) {
+    this->AddWrappedRouteLines(1, 141, 46, static_cast<CNaviInfo*>(object)->GetTitle());
+  } else if (type == 2) {
+    CNavi_Object* npc = static_cast<CNavi_Object*>(object);
+    this->AddWrappedRouteLines(2, 141, 46, npc->GetName());
+    NaviCell cellY;
+    NaviCell cellX;
+    std::sprintf(text, "( %d %d )", npc->GetCell(&cellX)->x, npc->GetCell(&cellY)->y);
+    this->routeLines.push_back(NaviRouteLine(2, 142, 149, text, 0xDCDCDC, 0xCB6B54));
+  } else if (type == 3) {
+    CNavi_Object* mob = static_cast<CNavi_Object*>(object);
+    this->AddWrappedRouteLines(2, 141, 46, mob->GetName());
+    NaviCell cell;
+    std::sprintf(text, "Lv. %d", mob->GetCell(&cell)->x);
+    this->routeLines.push_back(NaviRouteLine(2, 142, 77, text, 0xDCDCDC, 0xCB6B54));
+
+    const int attributes = mob->GetCell(&cell)->y;
+    const unsigned int property = static_cast<unsigned char>(attributes >> 16);
+    const unsigned int propertyLevel = property / 20;
+    const unsigned int element = property % 10;
+    const unsigned int size = static_cast<unsigned char>(attributes);
+
+    int message;
+    if (element == 1) {
+      message = 2263;
+    } else if (element == 2) {
+      message = 2264;
+    } else if (element == 3) {
+      message = 2265;
+    } else if (element == 4) {
+      message = 2266;
+    } else if (element == 5) {
+      message = 2267;
+    } else if (element == 6) {
+      message = 2268;
+    } else if (element == 7) {
+      message = 2269;
+    } else if (element == 8) {
+      message = 2270;
+    } else {
+      message = element == 9 ? 2271 : 2272;
+    }
+    std::sprintf(text, LookupMessage(message), propertyLevel);
+    this->routeLines.push_back(NaviRouteLine(2, 142, 93, text, 0xDCDCDC, 0xCB6B54));
+
+    if (size == 1) {
+      message = 2276;
+    } else if (size == 2) {
+      message = 2277;
+    } else if (size == 3) {
+      message = 2278;
+    } else if (size == 4) {
+      message = 2279;
+    } else if (size == 5) {
+      message = 2280;
+    } else if (size == 6) {
+      message = 2281;
+    } else if (size == 7) {
+      message = 2282;
+    } else if (size == 8) {
+      message = 2283;
+    } else {
+      message = size == 9 ? 2284 : 2285;
+    }
+    std::sprintf(text, LookupMessage(message));
+    this->routeLines.push_back(NaviRouteLine(2, 142, 109, text, 0xDCDCDC, 0xCB6B54));
+
+    if ((attributes & 0xFF00) == 0x100) {
+      message = 2273;
+    } else {
+      message = (attributes & 0xFF00) == 0x200 ? 2274 : 2275;
+    }
+    std::sprintf(text, LookupMessage(message));
+    this->routeLines.push_back(NaviRouteLine(2, 142, 125, text, 0xDCDCDC, 0xCB6B54));
+
+    if (mob->GetType() == 301) {
+      this->routeLines.push_back(NaviRouteLine(2, 142, 149, LookupMessage(2230), 0xC8C8C8, 0xFF));
+    }
+  } else if (type == 0) {
+    this->AddWrappedRouteLines(1, 141, 46, static_cast<CNaviInfo*>(object)->GetName());
+    std::sprintf(text, "( %d %d )", this->currentTarget.x, this->currentTarget.y);
+    this->routeLines.push_back(NaviRouteLine(1, 142, 149, text, 0xDCDCDC, 0xCB6B54));
+  }
+  return true;
 }

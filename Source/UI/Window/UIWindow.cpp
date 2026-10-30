@@ -2482,3 +2482,70 @@ void UINavigationV4Wnd::InsertNavigationLink(std::string name, int x, int y) {
 
   g_windowMgr.GetHoverWindow()->SendMsg(nullptr, 153, reinterpret_cast<std::intptr_t>(link.c_str()), 0, 0, 0);
 }
+
+// OFFSET: 0x005C4830
+// FUNCTION: fn_03576
+void UINavigationV4Wnd::RefreshLayout() {
+  if (g_navigationManager.unknown_1254) {
+    this->Resize(134, 61);
+    this->unknown_00B8->Move((this->geometry.width - 15), 2);
+    this->unknown_00C4->Move((this->geometry.width - 32), 2);
+    this->unknown_00C0->Move(-1000, -1000);
+    this->unknown_00B4->Move(-1000, -1000);
+    this->unknown_00BC->Move(-1000, -1000);
+    this->unknown_00DC->Move(-1000, -1000);
+    this->unknown_00E0->Move(-1000, -1000);
+    this->unknown_00E4->Move(-1000, -1000);
+    this->unknown_00CC->Move(-1000, -1000);
+    this->unknown_00D0->Move(-1000, -1000);
+    this->unknown_00C8->Move(-1000, -1000);
+    this->unknown_00D4->Move(-1000, -1000);
+    this->unknown_00E8->Move(-1000, -1000);
+    this->unknown_00EC->Move(-1000, -1000);
+    this->unknown_00F0->Move(-1000, -1000);
+    this->unknown_00F4->Move(-1000, -1000);
+    this->unknown_00F8->Move(-1000, -1000);
+    this->unknown_00FC->Move(-1000, -1000);
+    this->unknown_00D8->Move(-1000, -1000);
+    this->unknown_0100->Move(-1000, -1000);
+  } else {
+    this->Resize(272, 338);
+    if (g_navigationManager.unknown_125C == 0) {
+      this->LayoutWithDetails();
+    } else {
+      this->LayoutWithoutDetails();
+    }
+  }
+
+  this->Show(!g_navigationManager.unknown_1248);
+  this->FillRouteGroups();
+  this->SelectRoute(g_navigationManager.unknown_12C4);
+  g_navigationManager.LoadTargetPreview();
+  g_navigationManager.DestinationTitle();
+  g_navigationManager.DestinationText();
+  g_navigationManager.RouteText();
+  g_navigationManager.SelectedNodeText();
+  g_navigationManager.SubDestinationText();
+  this->Invalidate();
+}
+
+// OFFSET: 0x005C9FE0
+// FUNCTION: fn_03637
+void UINavigationV4Wnd::SelectRouteNode(int node) {
+  if (node == -1) {
+    return;
+  }
+
+  g_navigationManager.unknown_12C8 = node;
+  if (!g_navigationManager.SelectNodeState()) {
+    g_navigationManager.unknown_12C8 = 0;
+    g_navigationManager.SelectNodeState();
+  }
+
+  this->unknown_00F0->selected = g_navigationManager.unknown_12C8;
+  this->unknown_00F0->Invalidate();
+  if (g_windowMgr.modal) {
+    reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
+  }
+  this->Invalidate();
+}

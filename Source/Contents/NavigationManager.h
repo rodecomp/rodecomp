@@ -349,6 +349,12 @@ public:
   bool GetRouteFlag() const;
   int GetSelectedNode() const;
   CNavi_Link* GetNode(int index) const;
+  int AddWrappedRouteLines(int kind, int x, int y, const char* text);
+  bool SelectState(int index);
+  bool SelectNodeState();
+  bool SetDestinationMap(std::string mapName, int x, int y);
+  bool LoadTargetPreview();
+  bool BuildTargetRouteLines();
 
   /* 0000 */ CNaviData data;
   /* 004C */ CPathFinder pathFinder;
