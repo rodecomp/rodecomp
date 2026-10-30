@@ -1,4 +1,5 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "File/File.h"
@@ -58,6 +59,7 @@
 #include "UI/Items/UIItemIdentifyWnd.h"
 #include "UI/Items/UIItemParamChangeDisplayWnd.h"
 #include "UI/Items/UINotifyItemObtainWnd.h"
+#include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UIComboBoxWnd.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Party/UIPartySettingWnd.h"
@@ -78,14 +80,28 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/TextTokens.h"
 
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <direct.h>
+#include <io.h>
+#include <string>
+#include <vector>
 #include <windows.h>
 #include <timeapi.h>
 
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
+
+#pragma pack(push, 1)
+  struct FramedMessageHeader {
+    /* 0000 */ std::uint16_t type;
+    /* 0002 */ std::uint32_t length;
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(FramedMessageHeader) == 6);
 }
 
 // STRING: st_16833
@@ -1743,4 +1759,51 @@ void UICardItemIllustWnd::Slot15(int, int) {
   this->unknown_00E4 = 0;
   this->m_name = LookupMessage(527);
   this->AddCloseButton(*this->m_controls, "", 0);
+}
+
+// OFFSET: 0x0090AED0
+
+// OFFSET: 0x0090B080
+// FUNCTION: fn_12419
+void UIWhisperWnd::SaveChatLog() {
+  char path[2048];
+  int index = 0;
+  std::sprintf(path, "%s\\Whisper", g_applicationDirectory);
+  if (_access(path, 0) != 0 && _mkdir(path) != 0) {
+    return;
+  }
+
+  std::string name(this->m_target);
+  for (std::size_t i = 0; i < name.size(); ++i) {
+    const char c = name[i];
+    if (c == '\\' || c == '/' || c == ':' || c == '*' || c == '?' || c == '"' || c == '<' || c == '>' || c == '|') {
+      name[i] = '_';
+    }
+  }
+
+  std::sprintf(path, "%s\\Whisper\\%s.txt", g_applicationDirectory, name.c_str());
+  while (_access(path, 0) == 0) {
+    ++index;
+    std::sprintf(path, "%s\\Whisper\\%s%03d.txt", g_applicationDirectory, name.c_str(), index);
+  }
+
+  if (this->m_chatHistory->SaveChatLog(path)) {
+    std::string message(path);
+    message += " is Saved.";
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF00, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x0090C8C0
+// FUNCTION: fn_12450
+std::vector<char> MakeFramedMessage(std::uint16_t type, const std::vector<char>& body) {
+  std::vector<char> message(body.size() + sizeof(FramedMessageHeader), 0);
+  FramedMessageHeader* header = reinterpret_cast<FramedMessageHeader*>(message.data());
+  header->type = type;
+  header->length = static_cast<std::uint32_t>(body.size());
+  if (body.size() != 0) {
+    std::memcpy(message.data() + sizeof(FramedMessageHeader), body.data(), body.size());
+  }
+  return message;
 }
