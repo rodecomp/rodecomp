@@ -1,5 +1,9 @@
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/EffectResourceSwitcher.h"
+#include "Contents/Effects/EZ2STREffectEx.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/MessageTable.h"
@@ -40,6 +44,7 @@ class CSkillAction_WH_WILD_WALK : public CSkillAction {
 public:
   void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
 // OFFSET: 0x007A5A80
@@ -122,5 +127,15 @@ void CSkillAction_WH_WILD_WALK::Slot11(int level, CGameActor* source, CGameActor
   if (source) {
     g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     source->LaunchEffect(2425, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  }
+}
+
+// OFFSET: 0x007A6D20
+// FUNCTION: fn_09041
+void CSkillAction_WH_WILD_WALK::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source && target) {
+    if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot17(ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values));
+    }
   }
 }
