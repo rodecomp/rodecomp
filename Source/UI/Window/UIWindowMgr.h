@@ -447,6 +447,7 @@ public:
   static int CenterOnViewportY(int y);
   void ConfirmActiveDialog();
   UIWindow* LookupWindow(int id);
+  UIWindow* EnsureWindow(int id);
   void GetMiniPartyUsableArea(RECT* area);
   UIWindow* FindSnapExcludedWindow(int cell);
   void Schedule(UIWindow* window);

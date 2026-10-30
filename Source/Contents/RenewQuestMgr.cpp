@@ -8,6 +8,9 @@
 #include "Script/LuaScript.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/TextEscapes.h"
+#include "UI/Quest/UIOngoingQuestInfo.h"
+#include "UI/Quest/UIRenewQuestUI.h"
+#include "UI/Window/UIWindowMgr.h"
 
 extern "C" {
 #include <lua.h>
@@ -127,6 +130,11 @@ bool CRenewQuestMgr::Create() {
   }
 
   return false;
+}
+
+// OFFSET: 0x00677CF0
+// FUNCTION: fn_05435
+void Nullsub212() {
 }
 
 // OFFSET: 0x00677D00
@@ -560,6 +568,43 @@ int CRenewQuestMgr::L_AddQuestIconTooltip(lua_State* state) {
   const std::string tooltip = lua_tostring(state, -1);
   g_renewQuestMgr->AddIconTooltip(icon, tooltip);
   return 0;
+}
+
+// OFFSET: 0x0067B620
+// FUNCTION: fn_05457
+void CRenewQuestMgr::sub_67B620(unsigned int questId) {
+  if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.EnsureWindow(0x2719))) {
+    window->sub_A56050(questId);
+  }
+}
+
+// OFFSET: 0x0067B650
+// FUNCTION: fn_05458
+void CRenewQuestMgr::sub_67B650(unsigned int questId) {
+  if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.EnsureWindow(0x2718))) {
+    window->sub_A67290(0xF);
+    window->sub_A66FF0(questId);
+  }
+}
+
+// OFFSET: 0x0067B690
+// FUNCTION: fn_05459
+void CRenewQuestMgr::sub_67B690() {
+  if (auto* window = static_cast<CUIOngoingQuestInfo*>(g_windowMgr.LookupWindow(0x2719))) {
+    window->sub_A55B70();
+  }
+}
+
+// OFFSET: 0x0067B6B0
+// FUNCTION: fn_05460
+void CRenewQuestMgr::sub_67B6B0() {
+  if (g_windowMgr.window_0428 != nullptr) {
+    g_windowMgr.window_0428->Invalidate();
+  }
+
+  if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(0x2718))) {
+    window->sub_A67290(0xD);
+  }
 }
 
 // OFFSET: 0x0067B6E0

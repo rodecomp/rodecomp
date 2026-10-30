@@ -54,6 +54,9 @@ public:
   void OnCallback56();
   void OnCallback74();
   void OnCallback80();
+  void sub_A56050(unsigned int questId);
+  void sub_A67290(unsigned int flags);
+  void sub_A66FF0(unsigned int questId);
 
   /* 00E0 */ unsigned char unknown_00E0[0x2C];
   /* 010C */ int filter;

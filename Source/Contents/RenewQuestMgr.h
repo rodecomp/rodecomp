@@ -120,6 +120,9 @@ public:
   void SaveOngoingSimpleViewList();
   void SaveRecommendedActiveList();
   void sub_67B620(unsigned int questId);
+  void sub_67B650(unsigned int questId);
+  void sub_67B690();
+  void sub_67B6B0();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
