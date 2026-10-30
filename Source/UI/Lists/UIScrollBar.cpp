@@ -794,3 +794,39 @@ void UITabControl::HideEdit() {
 }
 
 // OFFSET: 0x00899A30
+// FUNCTION: fn_11559
+int UITabControl::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 0) {
+    return 0;
+  }
+
+  if (sender != this->edit || this->edit->geometry.x == -100) {
+    if (this->parent) {
+      this->parent->SendMsg(this, 0, 0, 0, 0, 0);
+    }
+    return 0;
+  }
+
+  if (argument1 != 1) {
+    std::string text = this->edit->Text();
+    if (text.empty()) {
+      return 0;
+    }
+
+    const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text.c_str(), 0, 0, this->unknown_00E8, 0, 0);
+    if ((this->tabPadding + width) * this->TabCount() >= this->parent->geometry.width - 90) {
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1577), 0, true, false, 0, "Message", 280, 120, 0);
+    } else {
+      this->labels[this->unknown_007C] = text;
+      const int previousWidth = this->geometry.width;
+      this->RecalculateWidths();
+      if (this->parent) {
+        this->parent->SendMsg(this, 116, reinterpret_cast<std::intptr_t>(text.c_str()), this->unknown_007C, previousWidth > this->geometry.width ? previousWidth : 0, 0);
+      }
+    }
+  }
+
+  this->HideEdit();
+  this->Invalidate();
+  return 0;
+}
