@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <string>
 
 struct EffectActor;
 class TextureCache;
@@ -160,6 +161,55 @@ struct CRagEffect : CRenderObject {
   void BubbleFanSweep(const char* name, char rising);
   void TexturedTripleOrbit(const char* name);
   void TexturedRisingOrbs(const char* name, char kind);
+  void TexturedForkBolt(const char* name, char flag);
+  void MonsterSpriteBurst(char kind);
+  void TexturedDescendingRings(const char* name, char flag);
+  void TexturedQuadSpiral(const char* name);
+  void TexturedRisingPillar(const char* name, char unused);
+  void CloudBurst();
+  bool AgilityChange(char increase, const std::string& textureName);
+  void CloudSpread();
+  void FrostSplash(int, int);
+  void AssassinCloakingClear();
+  void TintedRisingSparkles(char);
+  void SpriteRing(char kind);
+  void RocketPunch();
+  void GreenRocketPunch();
+  void TexturedQuadRing(std::int16_t baseAlpha, const char* name, char kind);
+  void TexturedTwinkleRing(const char* name, char level);
+  void TetraVortexPillar(char kind);
+  void BlueFireballVolley();
+  void PaleFireballVolley();
+  void TeleportRings(const char* name, std::int16_t level);
+  void AlphaCenterStream();
+  void CloudDrift();
+  void NotifyGameMode(char value);
+  void ScatterItemIcons(char kind);
+  void Vallentine(char kind);
+  void TexturedSpinShards(const char* name, char kind);
+  void HealCloudRings();
+  void WhiteLightSparkle(char kind);
+  void FrostScatter(char swapAxes, char narrow);
+  void AlphaDownRipples(const char* name, char kind);
+  bool Concentration();
+  bool FirePillarBomb();
+  bool ProcessEZ2STRAtTarget();
+  bool TwoHandQuicken();
+  void SageMagicRod();
+  void AssassinCloaking();
+  bool ProcessEZ2STRRaised();
+  void LockOnMarker();
+  void MagnumBreak();
+  void StoneCurseRing();
+  void SnowDrift(char flag);
+  void ElectricRingEarly(char kind, std::int16_t angle);
+  void ElectricRing(char kind, std::int16_t angle);
+  void ElectricRingLate(char kind, std::int16_t angle);
+  void WhiteSparks(char kind);
+  void AlphaCenterTrail();
+  void Waterfall(const char* name, char flag, char tall, char variant);
+  bool GlassWall();
+  void Portal();
 
   virtual void Slot08();
   virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);
