@@ -24,6 +24,16 @@ __declspec(noinline) bool IsMonsterJob(int job) {
   return std::find(g_monsterJobs.begin(), g_monsterJobs.end(), job) != g_monsterJobs.end();
 }
 
+// OFFSET: 0x00AD1C50
+// FUNCTION: fn_17815
+__declspec(noinline) void TraceSelectionRange(int first, int last) {
+}
+
+// OFFSET: 0x00AD1C70
+// FUNCTION: fn_17816
+__declspec(noinline) void TraceSelection(int selection) {
+}
+
 // OFFSET: 0x00DDC6F0
 // FUNCTION: fn_23368
 ITEM_INFO CSession::GetItem17F0(int index) const {
