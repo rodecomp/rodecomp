@@ -705,3 +705,123 @@ bool ReplayFileList::Select(int index) {
   this->selected = index;
   return true;
 }
+
+// STRING: st_10400
+static const char g_replayExtensionFormat[] = "%s.rrf";
+
+// STRING: st_10401
+static const char g_replayPathFormat[] = "Replay\\%s.rrf";
+
+// STRING: st_10402
+static const char g_replayNewFileFormat[] = "Replay\\RagnarokReplay_%04d.rrf";
+
+// OFFSET: 0x00B87360
+// FUNCTION: fn_19344
+bool Replay::SetOptions(const void* data, int bytes) {
+  std::memset(&this->header.options, 0, bytes);
+  std::memcpy(&this->header.options, data, bytes);
+  return true;
+}
+
+// OFFSET: 0x00B86B50
+// FUNCTION: fn_19337
+int ReplayFileList::Open(int mode, int argument1, int argument2) {
+  if (!this->replay) {
+    return 0;
+  }
+
+  if (mode == 0x20) {
+    if (this->selected < 0 || this->files.empty()) {
+      return 0;
+    }
+
+    std::string name("Replay\\");
+    const ReplayFileEntry& entry = this->files[this->selected];
+    name.append(entry.name, std::strlen(entry.name));
+    std::memset(this->path, 0, sizeof(this->path));
+    std::memcpy(this->path, name.data(), name.size());
+
+    this->replay->fileMode = 0x20;
+    this->replay->file = std::fopen(this->path, "rb");
+
+    if (this->replay->file) {
+      std::fseek(this->replay->file, 100, SEEK_SET);
+      std::memset(&this->replay->header, 0, 0xC);
+      std::fread(&this->replay->header, 0xC, 1, this->replay->file);
+
+      if (this->replay->header.signature == 0x52414705u || this->replay->header.signature == 0x51404605u) {
+        for (int index = 0; index <= 0x1A; ++index) {
+          ReplaySection section = {};
+          std::fread(&section, sizeof(section), 1, this->replay->file);
+
+          if (section.id > 0x1A) {
+            break;
+          }
+
+          this->replay->sections[section.id] = section;
+        }
+
+        if (this->replay->ParseMetadata(this->replay->ReadSection(2)) != 0xFFFFFFFFu) {
+          return 1;
+        }
+
+        std::memset(&this->replay->header, 0, sizeof(this->replay->header));
+      }
+
+      if (this->replay->file) {
+        std::fclose(this->replay->file);
+        this->replay->file = nullptr;
+      }
+
+      std::memset(&this->replay->header, 0, sizeof(this->replay->header));
+      std::memset(this->replay->sections, 0, sizeof(this->replay->sections));
+    }
+
+    return 0;
+  }
+
+  this->Refresh();
+
+  if (!this->pathEnabled) {
+    int index = 1;
+
+    for (std::size_t i = 0; i < this->files.size(); ++i) {
+      if (this->files[i].unknown_0000 == index) {
+        ++index;
+      }
+    }
+
+    std::memset(this->path, 0, sizeof(this->path));
+    std::sprintf(this->path, g_replayNewFileFormat, index);
+  } else {
+    if (this->unknown_0119) {
+      char name[0x104];
+      std::memset(name, 0, sizeof(name));
+      std::sprintf(name, g_replayExtensionFormat, this->path);
+
+      for (std::size_t i = 0; i < this->files.size(); ++i) {
+        if (std::strcmp(name, this->files[i].name) == 0) {
+          std::memset(this->path, 0, sizeof(this->path));
+          return -2;
+        }
+      }
+    }
+
+    char name[0x104];
+    std::memset(name, 0, sizeof(name));
+    std::sprintf(name, g_replayPathFormat, this->path);
+    std::memcpy(this->path, name, sizeof(this->path));
+  }
+
+  this->replay->fileMode = 0x1F;
+  this->replay->file = std::fopen(this->path, "wb");
+
+  if (!this->replay->file) {
+    return 0;
+  }
+
+  this->replay->fileOffset = 0x174;
+  return 1;
+}
+
+// OFFSET: 0x00B87680

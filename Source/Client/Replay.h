@@ -135,6 +135,7 @@ public:
   int FindSection(int id) const;
   int SpeedLevel() const;
   void ResetFile();
+  bool SetOptions(const void* data, int bytes);
   std::vector<unsigned char> ReadSection(int id);
   bool ReadRecord(unsigned char* buffer, std::uint16_t& id, bool force);
   bool AllowsEvent(int event) const;
@@ -148,17 +149,38 @@ struct ReplayFileEntry {
 
 class ReplayFileList {
 public:
+  static ReplayFileList& Instance();
+
   /* 0000 */ int selected;
   /* 0004 */ std::vector<ReplayFileEntry> files;
   /* 0010 */ Replay* replay;
   /* 0014 */ char path[0x104];
   /* 0118 */ bool pathEnabled;
+  /* 0119 */ bool unknown_0119;
+  /* 011C */ int unknown_011C;
+  /* 0120 */ int unknown_0120;
+  /* 0124 */ int unknown_0124;
+  /* 0128 */ unsigned char buffer[0x3E80];
+
+  // INLINED
+  __forceinline ReplayFileList()
+      : selected(-1),
+        replay(nullptr),
+        path(),
+        pathEnabled(true),
+        unknown_0119(true),
+        unknown_011C(0),
+        unknown_0120(0),
+        unknown_0124(0),
+        buffer() {
+  }
 
   void Clear();
   void Refresh();
   const char* FileName(int index) const;
   char* SetPath(const char* value);
   bool Select(int index);
+  int Open(int mode, int argument1, int argument2);
 };
 
 std::vector<unsigned char> BuildReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes);
