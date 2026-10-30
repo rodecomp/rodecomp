@@ -740,3 +740,100 @@ void CHalluNPC::Render(int argument) {
 }
 
 // OFFSET: 0x00DA44D0
+// FUNCTION: fn_22416
+void CNpc::Render(int argument) {
+  const float* matrix = reinterpret_cast<const float*>(argument);
+  switch (this->GetEffectiveJob(-1)) {
+    case 45: {
+      if (!this->render.enabled) {
+        this->UpdateTlvertex(matrix);
+        return;
+      }
+
+      float x;
+      float y;
+      float reciprocalDepth;
+      g_renderer->ProjectViewport(&this->render.position.x, matrix, &x, &y, &reciprocalDepth);
+      const float scale = g_renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
+      this->render.unknown_005C = scale;
+
+      float bounds[5];
+      bounds[0] = x - g_renderer->viewport.uiScaleX * 50.0f * scale;
+      bounds[1] = y - g_renderer->viewport.uiScaleY * 50.0f * scale;
+      bounds[2] = g_renderer->viewport.uiScaleX * 50.0f * scale + x;
+      bounds[3] = g_renderer->viewport.uiScaleY * 50.0f * scale + y;
+      bounds[4] = reciprocalDepth;
+      this->SetRenderInfo(bounds, x, y);
+
+      if (!g_serviceOptions.Get(8)) {
+        this->DrawShadow(argument, this->render.scale * 3.0f);
+      }
+      return;
+    }
+    case 104:
+    case 139:
+      return;
+    case 111: {
+      float x;
+      float y;
+      float reciprocalDepth;
+      g_renderer->ProjectViewport(&this->render.position.x, matrix, &x, &y, &reciprocalDepth);
+      const float scale = g_renderer->ScaleDistance(reciprocalDepth) / g_heightScale;
+      this->render.unknown_005C = scale;
+
+      const float halfWidth = static_cast<float>(this->unknown_0294 / 2);
+      const float halfHeight = static_cast<float>(this->unknown_0298 / 2);
+      float bounds[5];
+      bounds[0] = x - halfWidth * g_renderer->viewport.uiScaleX * scale;
+      bounds[1] = y - halfHeight * g_renderer->viewport.uiScaleY * scale;
+      bounds[2] = halfWidth * g_renderer->viewport.uiScaleX * scale + x;
+      bounds[3] = y;
+      bounds[4] = reciprocalDepth;
+      this->SetRenderInfo(bounds, x, y);
+      return;
+    }
+  }
+
+  if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+    if (!this->render.visible) {
+      return;
+    }
+
+    if ((this->render.color & 0xFF000000) == 0xFF000000) {
+      this->DrawShadow(argument, this->render.scale);
+    }
+    if (this->render.enabled) {
+      this->RenderMercenary(matrix, this->GetEffectiveJob(-1));
+    } else {
+      this->UpdateTlvertex(matrix);
+    }
+    return;
+  }
+
+  bool hidden = false;
+  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+    if (effect.id == 184) {
+      hidden = true;
+      break;
+    }
+  }
+
+  if (hidden && this->unknown_0314 == 5 && (!this->render.visible || !this->render.enabled)) {
+    this->SetColor(-1, 0, 0, 0);
+    this->DrawSprite(argument, this->IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
+    return;
+  }
+
+  if (!this->render.visible) {
+    return;
+  }
+
+  if ((this->render.color & 0xFF000000) == 0xFF000000) {
+    this->DrawShadow(argument, this->render.scale);
+  }
+  if (this->render.enabled) {
+    this->DrawSprite(argument, this->IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
+  } else {
+    this->UpdateTlvertex(matrix);
+  }
+}
