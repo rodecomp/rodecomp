@@ -84,3 +84,13 @@ void CThemidaMgr::Destroy() {
     g_themidaMgr = nullptr;
   }
 }
+
+// OFFSET: 0x0076EEB0
+// FUNCTION: fn_08242
+void CThemidaMgr::Check() {
+}
+
+// OFFSET: 0x0076F050
+// FUNCTION: fn_08243
+void CThemidaMgr::StopThread() {
+}

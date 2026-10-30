@@ -11,6 +11,8 @@ public:
 
   static bool Create();
   static void Destroy();
+  static void Check();
+  static void StopThread();
 
   /* 0004 */ bool m_valid;
 };
