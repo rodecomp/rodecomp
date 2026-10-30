@@ -1,9 +1,12 @@
 #include "Contents/Effects/WindEffect.h"
 
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <algorithm>
 #include <cmath>
+#include <cstdlib>
 
 // INLINED
 static vector3d TransformPoint(const matrix& transform, const vector3d& point) {
@@ -17,6 +20,31 @@ static vector3d TransformPoint(const matrix& transform, const vector3d& point) {
 // OFFSET: 0x00730210
 // FUNCTION: fn_07537
 CWindEffect::CWindEffect() : CEffect(2343) {
+}
+
+// OFFSET: 0x00730510
+
+// OFFSET: 0x00730810
+// FUNCTION: fn_07540
+void CWindEffect::Close() {
+  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
+  }
+
+  this->particles.clear();
+}
+
+// OFFSET: 0x00730850
+// FUNCTION: fn_07541
+void CWindEffect::Slot01() {
+  this->Init();
+}
+
+// OFFSET: 0x00730860
+// FUNCTION: fn_07542
+void CWindEffect::Slot07() {
+  this->Close();
+  this->Init();
 }
 
 // OFFSET: 0x00730870
