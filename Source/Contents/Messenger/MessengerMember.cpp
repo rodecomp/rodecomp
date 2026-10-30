@@ -875,3 +875,14 @@ void UIWindowMgr::MoveTransient(int x, int y) {
     transient->Move(x - transient->unknown_010C, y - transient->unknown_0110);
   }
 }
+
+// OFFSET: 0x00AA9E90
+// FUNCTION: fn_17262
+void UIWindowMgr::RetireTransientWindow() {
+  UIDragMiniPartyWnd* transient = static_cast<UIDragMiniPartyWnd*>(this->window_4F250);
+  if (transient && transient->member.valid) {
+    transient->geometry.unknown_0030 = 1;
+    this->Schedule(transient);
+    this->window_4F250 = nullptr;
+  }
+}
