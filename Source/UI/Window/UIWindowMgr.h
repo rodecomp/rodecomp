@@ -48,7 +48,8 @@ public:
   int SendNotice(int selector, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d, std::intptr_t e);
   /* 0004 */ int activeWindowId;
   /* 0008 */ std::map<int, UIWindow*> windows;
-  /* 0010 */ unsigned char unknown_0010[8];
+  /* 0010 */ int keyCode;
+  /* 0014 */ int modifierKey;
   /* 0018 */ std::list<int> windowHistory;
   /* 0020 */ int lastWindowId;
   /* 0024 */ unsigned char unknown_0024;
@@ -526,6 +527,9 @@ public:
   int LoadReplaySettings(const std::vector<unsigned char>& data);
   int LoadReplayReserved(const std::vector<unsigned char>& data);
   void BroadcastMessage21();
+  bool HasModalWindow();
+  int TranslateHotkey(int key, int keyData);
+  std::vector<unsigned char> SaveReplayWindows();
 };
 
 extern UIWindowMgr g_windowMgr;

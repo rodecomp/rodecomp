@@ -960,3 +960,45 @@ bool UIWindowMgr::IsHoverOnWindow01C8Button() {
   }
   return false;
 }
+
+// OFFSET: 0x007D5250
+// FUNCTION: fn_09589
+bool UIWindowMgr::HasModalWindow() {
+  UIWindow* top = this->modalWindows.empty() ? nullptr : this->modalWindows.back();
+  return top != nullptr;
+}
+
+// OFFSET: 0x00A8BC00
+
+// OFFSET: 0x00AA8660
+// FUNCTION: fn_17244
+std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
+  std::vector<unsigned char> data;
+  {
+    std::vector<unsigned char> chunk(6);
+    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 20000;
+    *reinterpret_cast<int*>(&chunk[2]) = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+  for (UIWindow* window : this->rendered) {
+    const unsigned id = static_cast<unsigned>(window->geometry.id);
+    if (id <= 10040 && this->policy[id].actions[7]) {
+      std::vector<std::uint32_t> state = window->Slot44();
+      const int tag = window->geometry.id + 20100;
+      std::vector<unsigned char> chunk(state.size() * sizeof(std::uint32_t) + 6, 0);
+      *reinterpret_cast<std::int16_t*>(&chunk[0]) = static_cast<std::int16_t>(tag);
+      *reinterpret_cast<int*>(&chunk[2]) = static_cast<int>(state.size() * sizeof(std::uint32_t));
+      if (state.size() * sizeof(std::uint32_t)) {
+        std::memcpy(&chunk[6], state.data(), state.size() * sizeof(std::uint32_t));
+      }
+      data.insert(data.end(), chunk.begin(), chunk.end());
+    }
+  }
+  {
+    std::vector<unsigned char> chunk(6);
+    *reinterpret_cast<std::int16_t*>(&chunk[0]) = 20001;
+    *reinterpret_cast<int*>(&chunk[2]) = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+  return data;
+}
