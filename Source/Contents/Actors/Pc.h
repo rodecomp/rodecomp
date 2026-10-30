@@ -3,6 +3,7 @@
 
 #include "Contents/Actors/GameActor.h"
 #include "Resource/Models/GrannyModelResource.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -12,6 +13,7 @@
 class C3dGrannyModelRes;
 class CActRes;
 class CRes;
+class CTexture;
 struct ActionFrame;
 struct RenderCommand;
 struct RenderVertex;
@@ -76,6 +78,9 @@ public:
   int JobActionBase(int state);
   bool IsCostumeOutfit() const;
   int GetDualWieldWeaponType(int first, int second);
+  bool HasAppearanceOverride();
+  void DrawBody(int argument, int layer, const float* position, float x, float y, float distanceScale, float scale, float depth);
+  void RenderOverlaySprite(const float* matrix, int);
 
   float* GetExtent(float* extent) const override;
 
@@ -97,7 +102,8 @@ public:
   /* 0478 */ std::string unknown_0478;
   /* 0490 */ unsigned char unknown_0490[0x0C];
   /* 049C */ int unknown_049C;
-  /* 04A0 */ unsigned char unknown_04A0[0x14];
+  /* 04A0 */ int blend;
+  /* 04A4 */ unsigned char unknown_04A4[0x10];
   /* 04B4 */ std::vector<CRes*> equipSprites;
   /* 04C0 */ std::vector<CRes*> equipActions;
   /* 04CC */ int unknown_04CC;
@@ -188,6 +194,7 @@ public:
   void PlayMotion(int repeat);
   void ReleaseMeshes();
   void UpdateAnimation(C3dGrannyModelRes* model);
+  void RenderCached(const matrix& view, int layer, C3dGrannyModelRes* model);
 
   /* 0410 */ std::string unknown_0410;
   /* 0428 */ int unknown_0428;
@@ -215,12 +222,26 @@ public:
   /* 0F04 */ granny_system_clock clock;
   /* 0F14 */ granny_system_clock lastClock;
   /* 0F24 */ float unknown_0F24;
-  /* 0F28 */ unsigned char unknown_0F28[0x14];
+  /* 0F28 */ unsigned char unknown_0F28[0x08];
+  /* 0F30 */ float angle;
+  /* 0F34 */ unsigned char alpha;
+  /* 0F35 */ unsigned char unknown_0F35[0x03];
+  /* 0F38 */ unsigned brightness;
   /* 0F3C */ int motion;
   /* 0F40 */ unsigned char unknown_0F40[0x110];
   /* 1050 */ granny_control* controls[20];
-  /* 10A0 */ unsigned char unknown_10A0[0x14B0];
+  /* 10A0 */ int unknown_10A0;
+  /* 10A4 */ int renderFrame;
+  /* 10A8 */ CTexture* meshTextures[10][30];
+  /* 1558 */ std::uint16_t* meshIndices[10][30];
+  /* 1A08 */ int meshTriangleCounts[10][30];
+  /* 1EB8 */ matrix meshTransforms[30];
+  /* 2458 */ unsigned char unknown_2458[0xF8];
   /* 2550 */ int unknown_2550;
+  /* 2554 */ unsigned char unknown_2554[0x10];
+  /* 2564 */ int attachLayer;
+  /* 2568 */ int unknown_2568;
+  /* 256C */ matrix attachTransform;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -242,6 +263,14 @@ static_assert(offsetof(CGrannyPc, layerCommands) == 0x52C);
 static_assert(offsetof(CGrannyPc, vertices) == 0x9DC);
 static_assert(offsetof(CGrannyPc, layerVertices) == 0xA54);
 static_assert(offsetof(CGrannyPc, unknown_2550) == 0x2550);
+static_assert(offsetof(CGrannyPc, angle) == 0xF30);
+static_assert(offsetof(CGrannyPc, brightness) == 0xF38);
+static_assert(offsetof(CGrannyPc, meshTextures) == 0x10A8);
+static_assert(offsetof(CGrannyPc, meshIndices) == 0x1558);
+static_assert(offsetof(CGrannyPc, meshTriangleCounts) == 0x1A08);
+static_assert(offsetof(CGrannyPc, meshTransforms) == 0x1EB8);
+static_assert(offsetof(CGrannyPc, attachLayer) == 0x2564);
+static_assert(offsetof(CGrannyPc, attachTransform) == 0x256C);
 static_assert(sizeof(CBlurPC) == 0x510);
 static_assert(sizeof(CHalluPC) == 0x518);
 static_assert(sizeof(CHalluPC2) == 0x518);

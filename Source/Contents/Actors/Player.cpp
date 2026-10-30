@@ -17,9 +17,12 @@
 #include "Contents/Skills/ClientSkills.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
+#include "Render/SpriteGeometry.h"
 #include "Render/SpriteQuad.h"
+#include "Render/TextureQuad.h"
 #include "Render/Textures/SpritePixels.h"
 #include "Resource/Models/GrannyModelResource.h"
+#include "Resource/PaletteResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
@@ -1567,5 +1570,294 @@ void CGrannyPc::Slot08() {
     this->render.isMotionFinished = GrannyGetControlDurationLeft(this->controls[2]) < 0.1f;
   } else {
     this->render.isMotionFinished = true;
+  }
+}
+
+// OFFSET: 0x00DAB210
+// FUNCTION: fn_22581
+bool CPc::HasAppearanceOverride() {
+  if (this->Slot55() > 0) {
+    return true;
+  }
+
+  if (g_session.IsCostumeJob(this->GetEffectiveJob(-1)) == true) {
+    return false;
+  }
+
+  return this->HasShapeShift();
+}
+
+// OFFSET: 0x00DACF90
+// FUNCTION: fn_22597
+void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* model) {
+  if (!this->render.visible || this->render.accountId == 0xFFFFFFFF) {
+    return;
+  }
+
+  this->brightness = (this->alpha << 24) + 0xFFFFFF;
+  g_modeMgr.GetGameMode();
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  bool attached = false;
+  matrix rotation;
+  rotation.MakeXRotation(1.570796f);
+  rotation.AppendYRotation((this->angle + 180.0f) / 180.0f * 3.141592f);
+  rotation.AppendScale(0.3f, 0.3f, 0.3f);
+  vector3d position;
+  position.x = this->render.position.x - 2.0f;
+  position.y = this->render.position.y;
+  position.z = this->render.position.z - 2.0f;
+  rotation.AppendTranslate(&position.x);
+
+  float screenX;
+  float screenY;
+  float reciprocalDepth;
+  g_renderer->ProjectViewport(&this->render.position.x, view.values, &screenX, &screenY, &reciprocalDepth);
+
+  float bounds[5];
+  bounds[0] = static_cast<float>(g_renderer->viewport.width);
+  bounds[1] = static_cast<float>(g_renderer->viewport.height);
+  bounds[2] = 0.0f;
+  bounds[3] = 0.0f;
+  bounds[4] = reciprocalDepth;
+
+  RenderCommand** commands = this->layerCommands[layer];
+  if (!model) {
+    model = this->model;
+    commands = this->commands;
+  }
+
+  for (int mesh = 0; mesh < model->instance->meshCount; ++mesh) {
+    const GrannyPNT332Vertex* source = reinterpret_cast<const GrannyPNT332Vertex*>(model->GetRigidVertices(mesh));
+    if (!source) {
+      if (layer == 0) {
+        source = reinterpret_cast<const GrannyPNT332Vertex*>(this->vertices[mesh]);
+      } else {
+        source = reinterpret_cast<const GrannyPNT332Vertex*>(this->layerVertices[layer][mesh]);
+      }
+
+      if (!source) {
+        continue;
+      }
+    }
+
+    if (!this->meshTextures[layer][mesh]) {
+      continue;
+    }
+
+    const matrix* transform;
+    if (layer == this->attachLayer) {
+      attached = true;
+      transform = &this->attachTransform;
+    } else {
+      transform = &this->meshTransforms[mesh];
+    }
+
+    matrix local;
+    local.Compose(*transform, rotation);
+    matrix world;
+    world.Compose(local, view);
+
+    const std::uint16_t* indices = this->meshIndices[layer][mesh];
+    RenderCommand* command = commands[mesh];
+    int vertexCount = 0;
+    for (int triangle = this->meshTriangleCounts[layer][mesh]; triangle != 0; --triangle) {
+      for (int corner = 0; corner < 3; ++corner) {
+        RenderVertex& output = command->vertices[vertexCount];
+        const GrannyPNT332Vertex& vertex = source[indices[vertexCount]];
+        ++vertexCount;
+        position.x = vertex.position[0];
+        position.y = vertex.position[1];
+        position.z = vertex.position[2];
+        if (attached == true && mesh > 0) {
+          const float* values = this->meshTransforms[mesh].values;
+          const vector3d corner = position;
+          position.x = corner.x * values[0] + corner.y * values[3] + corner.z * values[6] + values[9];
+          position.y = corner.y * values[4] + corner.x * values[1] + corner.z * values[7] + values[10];
+          position.z = corner.y * values[5] + corner.x * values[2] + corner.z * values[8] + values[11];
+        }
+
+        g_renderer->viewport.Projection().Project(&position.x, world.values, output);
+      }
+    }
+
+    command->texture = this->meshTextures[layer][mesh];
+    command->vertexCount = this->meshTriangleCounts[layer][mesh] * 3;
+    g_renderer->queues.Submit(command, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  }
+
+  if (model == this->model) {
+    if (this->model->ProjectBounds(bounds, view, rotation, mode->camera->frame.eye)) {
+      this->SetRenderInfo(bounds, screenX, screenY);
+    } else {
+      this->SetTlvert(screenX, screenY);
+    }
+  }
+}
+
+// OFFSET: 0x00DA88D0
+// FUNCTION: fn_22565
+void CPc::DrawBody(int, int layer, const float* position, float x, float y, float distanceScale, float scale, float depth) {
+  RenderBounds bounds;
+  bounds.left = static_cast<float>(g_renderer->viewport.width);
+  bounds.top = static_cast<float>(g_renderer->viewport.height);
+  bounds.right = 0.0f;
+  bounds.bottom = 0.0f;
+  bounds.offset = depth;
+
+  CSprRes* sprite = static_cast<CSprRes*>(this->equipSprites[0]);
+  CActRes* action = static_cast<CActRes*>(this->GetEquipAction(0));
+
+  int motion;
+  if (this->render.unknown_0070 == 3 || this->unknown_017C != 0) {
+    this->render.previousAnimation = this->ActionBase(this->render.unknown_0070);
+    motion = action->FrameCount(this->render.previousAnimation) - 1;
+    this->render.curMotion = motion;
+  } else {
+    motion = this->render.curMotion;
+  }
+
+  const ActionFrame* frame = &action->Frame(this->render.previousAnimation, motion);
+  if (frame->cellCount < 1) {
+    frame = &action->Frame(0, this->render.curMotion);
+  }
+
+  for (int index = 0; index < frame->cellCount; ++index) {
+    const SpriteFrameCell* cell = &frame->Cell(index);
+    if (cell->image == -1) {
+      continue;
+    }
+
+    SpriteRleImage* image = sprite->images[cell->imageType][cell->image];
+    float bottomRhw;
+    float topRhw;
+    SpriteQuad quad;
+    int box[4];
+    std::uint32_t color;
+    if (this->Slot55() == JT_THANATOS) {
+      this->Slot09(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0);
+      if (this->render.unknown_0070 == 0 && index == 1) {
+        quad.bottomRhw = bottomRhw + 0.000008f;
+        quad.topRhw = topRhw + 0.00008f;
+      }
+    } else {
+      this->Slot09(layer, layer, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0);
+      if (g_cameraDistance <= 320.0f) {
+        quad.bottomRhw = bottomRhw - 0.0000025f;
+        quad.topRhw = topRhw - 0.0000025f;
+      }
+    }
+
+    this->RaiseUnknown03C8((box[3] - box[1]) / 4);
+    if (this->render.unknown_0130[0] == 1) {
+      quad.color = quad.color & 0xFFFFFF | 0x46000000;
+    }
+
+    quad.image = image;
+    if (this->render.unknown_00A4Bytes[1] != 0) {
+      bounds.Include(&quad.top);
+    }
+
+    int blend = this->blend;
+    const std::uint32_t* palette = sprite->palette;
+    if (this->render.unknown_0048 != 0 && this->Slot55() < 0 && this->HasShapeShift() == true) {
+      palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->render.name.c_str()))->palette;
+    }
+
+    this->ApplyLayerEffects(&quad, cell, 0, box, scale, bottomRhw, bottomRhw, topRhw, x, y, palette, image, &blend, 0, 0);
+    if (IsScreenShakeActive()) {
+      this->DrawFlippedQuad(quad, palette, 0x101, x, y, 0);
+    } else {
+      this->DrawQuad(quad, palette, 0x101, 0.0f, 0.0f, 0);
+    }
+
+    this->DrawStatusOverlays(quad, palette);
+  }
+
+  this->SetRenderInfo(&bounds.left, x, y);
+  this->render.unknown_00ECBytes[0] = 1;
+}
+
+// OFFSET: 0x00DAD4D0
+// FUNCTION: fn_22598
+void CPc::RenderOverlaySprite(const float* matrix, int) {
+  const float* origin = &this->render.position.x;
+  float position[3];
+  position[0] = origin[0] * matrix[0] + origin[1] * matrix[3] + origin[2] * matrix[6] + matrix[9];
+  position[1] = origin[0] * matrix[1] + origin[1] * matrix[4] + origin[2] * matrix[7] + matrix[10];
+  position[2] = origin[0] * matrix[2] + origin[1] * matrix[5] + origin[2] * matrix[8] + matrix[11];
+
+  float x;
+  float y;
+  float reciprocalDepth;
+  g_renderer->ProjectViewport(origin, matrix, &x, &y, &reciprocalDepth);
+  const float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
+  this->render.unknown_005C = distanceScale / g_heightScale;
+  const float scale =
+    g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->render.unknown_0078)) * this->render.scale) * this->render.unknown_005C;
+
+  RenderBounds bounds;
+  bounds.left = static_cast<float>(g_renderer->viewport.width);
+  bounds.top = static_cast<float>(g_renderer->viewport.height);
+  bounds.right = 0.0f;
+  bounds.bottom = 0.0f;
+  bounds.offset = reciprocalDepth;
+
+  ResourceMgr::Instance().Load(this->unknown_0418.c_str());
+  int count = 0;
+  bool drawn = false;
+  if (std::strlen(this->equipActions[0] ? this->equipActions[0]->name.text : "") == 0) {
+    return;
+  }
+
+  if (std::strlen(this->equipSprites[0] ? this->equipSprites[0]->name.text : "") == 0) {
+    return;
+  }
+
+  CActRes* action = static_cast<CActRes*>(this->GetEquipAction(0));
+  CSprRes* sprite = static_cast<CSprRes*>(this->equipSprites[0]);
+  if (this->render.curMotion >= action->FrameCount(this->render.previousAnimation)) {
+    return;
+  }
+
+  const ActionFrame& frame = action->Frame(this->render.previousAnimation, this->render.curMotion);
+  for (int index = 0; index < frame.cellCount; ++index) {
+    const SpriteFrameCell& cell = frame.Cell(index);
+    if (cell.image == -1) {
+      continue;
+    }
+
+    SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    float bottomRhw;
+    float topRhw;
+    SpriteQuad quad;
+    int box[4];
+    std::uint32_t color;
+    if (!this->Slot09(0, count, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0)) {
+      continue;
+    }
+
+    ++count;
+    drawn = true;
+    quad.image = image;
+    if (this->render.unknown_00A4Bytes[1] != 0) {
+      bounds.Include(&quad.top);
+    }
+
+    const std::uint32_t* palette;
+    if (this->render.unknown_0048 != 0) {
+      palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->render.name.c_str()))->palette;
+    } else {
+      palette = sprite->palette;
+    }
+
+    int effectId;
+    this->SendMsg(nullptr, 120, 0, reinterpret_cast<int>(&effectId), reinterpret_cast<int>(&effectId) >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->DrawQuad(quad, palette, 0x101, 0.0f, 0.0f, 0);
+  }
+
+  if (drawn) {
+    this->SetRenderInfo(&bounds.left, x, y);
+  } else {
+    this->SetTlvert(x, y);
   }
 }
