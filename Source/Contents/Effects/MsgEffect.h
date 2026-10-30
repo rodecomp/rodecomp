@@ -7,6 +7,7 @@
 
 class CMsgEffect : public EffectActor {
 public:
+  CMsgEffect();
   static bool UsesMsgEffect(int type);
 
   ~CMsgEffect() override;

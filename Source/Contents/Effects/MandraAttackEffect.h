@@ -7,6 +7,7 @@
 
 class CMandraAttackEffect : public CRenderObject {
 public:
+  CMandraAttackEffect();
   bool OnProcess() override;
 
   /* 0138 */ float startFrame;

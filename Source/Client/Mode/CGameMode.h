@@ -16,6 +16,7 @@
 
 class CView;
 class CCorpse;
+class CMsgEffect;
 class CGameActor;
 struct ActorNameAllPacket;
 struct GameOptionEntry;
@@ -85,7 +86,9 @@ public:
   /* 05C8 */ int unknown_05C8;
   /* 05CC */ unsigned char unknown_05CC[0x04];
   /* 05D0 */ UIWindow* unknown_05D0;
-  /* 05D4 */ unsigned char unknown_05D4[0x54];
+  /* 05D4 */ unsigned char unknown_05D4[0x30];
+  /* 0604 */ std::list<UIWindow*> unknown_0604;
+  /* 060C */ unsigned char unknown_060C[0x1C];
   /* 0628 */ std::unordered_set<int> unknown_0628;
   /* 0648 */ unsigned char unknown_0648[0x28];
 
@@ -124,6 +127,11 @@ public:
   void NotifyItemBounds();
   CCorpse* SpawnCorpse(float x, float y, float z, const char* action, const char* sprite, int animation, int motion, float angle);
   bool LaunchTargetEffect(int effectId, CGameActor* source, CGameActor* target, int argument);
+  void ShowGuildEmblem(CGameActor* actor, int guildId, int unused);
+  CMsgEffect* SpawnCashEmotion(int aid, int packId, int emotionId, std::uint32_t duration);
+  void ApplyMapFog(int enabled);
+  void SpawnGrannyCorpse(float x, float y, float z, float angle, const char* name);
+  void SpawnMandraAttack(std::uint32_t aid, int target, char flag);
   std::uint32_t FindUnknown01AC(std::uint32_t key);
   std::string ActorName(std::uint32_t id);
   std::uint32_t ActorNameColor(int job, std::uint32_t aid);
@@ -248,6 +256,7 @@ static_assert(offsetof(CGameMode, unknown_0294) == 0x294);
 static_assert(offsetof(CGameMode, drag) == 0x308);
 static_assert(offsetof(CGameMode, unknown_05C4) == 0x5C4);
 static_assert(offsetof(CGameMode, unknown_05D0) == 0x5D0);
+static_assert(offsetof(CGameMode, unknown_0604) == 0x604);
 static_assert(offsetof(CGameMode, unknown_0628) == 0x628);
 static_assert(sizeof(CGameMode) == 0x670);
 #endif

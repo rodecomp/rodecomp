@@ -2012,6 +2012,17 @@ CGrannyCorpse3d::~CGrannyCorpse3d() {
   GrannyFreeModelInstance(this->instance);
 }
 
+// OFFSET: 0x00CD8E00
+// FUNCTION: fn_21305
+void CGameMode::SpawnGrannyCorpse(float x, float y, float z, float angle, const char* name) {
+  CGrannyCorpse3d* corpse = new CGrannyCorpse3d(name);
+  corpse->position.x = x;
+  corpse->position.y = y;
+  corpse->position.z = z;
+  corpse->angle = angle;
+  this->scene->objects.push_back(reinterpret_cast<CRenderObject*>(corpse));
+}
+
 // OFFSET: 0x00CC8230
 // FUNCTION: fn_21193
 void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, int) {
