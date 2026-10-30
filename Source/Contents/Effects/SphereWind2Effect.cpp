@@ -13,8 +13,61 @@
 #include <cstdlib>
 
 // OFFSET: 0x00B77340
+// FUNCTION: fn_19182
+void CSphereWind2Effect::Close() {
+  for (CParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
 
 // OFFSET: 0x00B77380
+// FUNCTION: fn_19183
+void CSphereWind2Effect::Slot01() {
+  for (int base = 0; base < 45; base += 9) {
+    int angle = base;
+    for (int ring = 0; ring < 4; ++ring) {
+      const int delay = -std::max(rand() % 20, 0);
+      const float radius = static_cast<float>(std::max(rand() % 11, 0)) * 0.2f + 2.0f;
+      const int rotation = std::max(rand() % 360, 0);
+      const int step = std::max(rand() % 91, 0) + 180;
+      const int speed = std::max(rand() % 4, 0) + 3;
+
+      for (int part = 0; part < 21; ++part) {
+        CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+        if (!particle) {
+          continue;
+        }
+
+        particle->unknown_0004 = this->id;
+        particle->unknown_000C = part;
+        particle->unknown_0010 = ring;
+        particle->unknown_0008 = 1;
+        particle->unknown_00E8 = delay;
+        particle->unknown_00C0 = radius;
+        particle->scale = 5.0f;
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(rotation);
+        particle->unknown_004C = angle;
+        particle->alpha = 0;
+        particle->unknown_0050 = step;
+        particle->unknown_0054 = -10.0f;
+        *reinterpret_cast<float*>(particle->unknown_0058) = static_cast<float>(speed);
+        particle->SetTexture("effect\\fire_ivy.bmp");
+        particle->SetColor(255, 89, 182);
+        InitParticleQuad(particle->vertices);
+        this->particles.push_back(particle);
+      }
+
+      angle += 45;
+    }
+  }
+
+  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+  g_soundMgr->PlayWave("effect\\EF_Blessing.wav", this->position[0] - player.x, 0.0f, this->position[2] - player.z, 250, 40, 1.0f, 0);
+  this->unknown_002C = 200;
+}
 
 // OFFSET: 0x00B775E0
 // FUNCTION: fn_19184
