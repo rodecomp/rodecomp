@@ -4,6 +4,55 @@
 #include "Utility/Math/AffineMatrix.h"
 
 // OFFSET: 0x00B49E60
+// FUNCTION: fn_18942
+void CMagnumBreak::Slot03() {
+  for (std::vector<CParticle*>::iterator it = this->rings.begin(); it != this->rings.end(); ++it) {
+    CParticle* ring = *it;
+    float& growth = *reinterpret_cast<float*>(&ring->unknown_0048[0x0C]);
+    float& maximum = *reinterpret_cast<float*>(&ring->unknown_0048[0x10]);
+    float& spin = *reinterpret_cast<float*>(&ring->unknown_0048[0x14]);
+    const float angle = spin;
+    float speed = growth + ring->unknown_00C0;
+    speed = speed > 0.0f ? speed : 0.0f;
+    float scale = speed + ring->scale;
+    scale = scale < maximum ? scale : maximum;
+    matrix rotation;
+    rotation.MakeXRotation(1.5707964f);
+    ring->scale = scale;
+    ring->unknown_00C0 = speed;
+    spin = angle + speed;
+    ++ring->unknown_00E8;
+    ring->alpha = this->alpha;
+    ring->transform = rotation;
+  }
+
+  for (std::vector<CParticle*>::iterator it = this->waves.begin(); it != this->waves.end(); ++it) {
+    CParticle* wave = *it;
+    const float speed = *reinterpret_cast<float*>(&wave->unknown_0048[0x0C]) + wave->unknown_00C0;
+    wave->unknown_00C0 = speed;
+    wave->scale = speed + wave->scale;
+    *reinterpret_cast<float*>(&wave->unknown_0048[0x14]) =
+        *reinterpret_cast<float*>(&wave->unknown_0048[0x10]) + *reinterpret_cast<float*>(&wave->unknown_0048[0x14]);
+    ++wave->unknown_00E8;
+    wave->alpha = this->alpha;
+  }
+
+  float step;
+  if (this->frame == this->fadeFrame) {
+    step = static_cast<float>(-(this->alpha / (this->unknown_002C - this->frame)));
+    this->fadeStep = step;
+  } else {
+    step = this->fadeStep;
+  }
+
+  const int value = static_cast<int>(static_cast<float>(this->alpha) + step);
+  this->alpha = value;
+  if (static_cast<float>(value) < 0.0f) {
+    this->alpha = 0;
+  } else {
+    this->alpha = value > 255 ? 255 : value;
+  }
+}
 
 // OFFSET: 0x00B4A150
 // FUNCTION: fn_18943

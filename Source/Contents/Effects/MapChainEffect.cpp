@@ -3,6 +3,10 @@
 #include "Contents/Effects/Particle.h"
 
 // OFFSET: 0x00B4A9E0
+// FUNCTION: fn_18945
+CMapChainEffect::CMapChainEffect()
+    : CEffect(1024), particles(), unknown_00F0(2), unknown_00F4(2), unknown_00F8(2), unknown_00FC(2), unknown_0100(2) {
+}
 
 // OFFSET: 0x00B4B130
 // FUNCTION: fn_18951
