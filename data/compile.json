@@ -371,6 +371,7 @@
   "Source/Contents/Effects/RotateItemEffect.cpp": 4,
   "Source/Contents/Effects/SaintCastingEffect.cpp": 4,
   "Source/Contents/Effects/ScatterEffect.cpp": 4,
+  "Source/Contents/Effects/SphereWind2Effect.cpp": 4,
   "Source/Contents/Effects/SpriteParticle.cpp": 4,
   "Source/Contents/Effects/SquareRangeEffect.cpp": 4,
   "Source/Contents/Effects/StealEffect.cpp": 4,
