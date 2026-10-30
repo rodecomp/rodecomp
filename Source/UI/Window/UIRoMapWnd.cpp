@@ -19,7 +19,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
-
+#include "Contents/Messenger/ClientMessenger.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -439,4 +439,69 @@ void UIRoMapWnd::DrawRecordFaces(int) {
       g_texMgr.Load(image.c_str(), 0, false, true, false), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
     );
   }
+}
+
+// OFFSET: 0x0091BF80
+// FUNCTION: fn_12612
+void UIRoMapWnd::RefreshPartyRecords() {
+  const int count = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount();
+  if (count > 0) {
+    for (int index = 0; index < count; ++index) {
+      MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyAt(index);
+      if (member.valid == 0 || member.offline != 0) {
+        continue;
+      }
+
+      bool found;
+      {
+        std::string name = member.name;
+        std::string map = member.map;
+        found = false;
+        for (std::list<WorldViewRecord>::iterator it = this->m_records.begin(); it != this->m_records.end(); ++it) {
+          if (it->name == map) {
+            it->unknown_004C.push_back(name);
+            found = true;
+            break;
+          }
+        }
+      }
+
+      if (!found) {
+        WorldViewRecord record;
+        record.name = member.map;
+        record.unknown_004C.push_back(member.name);
+        if (this->LocateRecord(record)) {
+          this->m_records.push_back(record);
+        }
+      }
+    }
+  } else {
+    std::string map = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(9, 0, 0, 0, 0));
+    WorldViewRecord record;
+    record.name = map;
+    std::string name = g_session.DecodePlayerName();
+    record.unknown_004C.push_back(std::move(name));
+    if (this->LocateRecord(record)) {
+      this->m_records.push_back(record);
+    }
+  }
+}
+
+// OFFSET: 0x0091C400
+// FUNCTION: fn_12613
+bool UIRoMapWnd::LocateRecord(WorldViewRecord& record) {
+  std::string name = record.name;
+  for (unsigned int index = 0; index < g_worldViewMgr.worlds.size(); ++index) {
+    if (CWorldViewField* field = g_worldViewMgr.worlds[index]->FindField(name.c_str())) {
+      record.worldIndex = index;
+      record.left = field->left;
+      record.top = field->top;
+      record.right = field->right;
+      record.bottom = field->bottom;
+      record.unknown_0048 = field->unknown_0010;
+      return true;
+    }
+  }
+
+  return false;
 }

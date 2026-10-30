@@ -9,6 +9,7 @@ extern int g_memorialDunWndY;
 class UIMemorialDunWnd : public UIFrameWnd {
 public:
   void Move(int x, int y) override;
+  void ResetDungeonInfo();
 };
 
 #endif

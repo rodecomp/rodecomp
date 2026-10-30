@@ -44,6 +44,8 @@ public:
   void DrawRecordFaces(int unused);
   void DrawRecordAreas();
   void DrawKafraIcon(float x, float y);
+  void RefreshPartyRecords();
+  bool LocateRecord(WorldViewRecord& record);
 
 private:
   /* 00B4 */ std::list<WorldViewRecord> m_records;

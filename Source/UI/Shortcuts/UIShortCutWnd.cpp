@@ -616,6 +616,16 @@ void UIMemorialDunWnd::Move(int x, int y) {
   }
 }
 
+// OFFSET: 0x0091CF00
+// FUNCTION: fn_12621
+void UIMemorialDunWnd::ResetDungeonInfo() {
+  g_session.unknown_5950 = "";
+  g_session.unknown_5968 = 0;
+  g_session.unknown_596C = 0;
+  g_session.unknown_5970 = 0;
+  g_session.unknown_5948 = 0;
+}
+
 // OFFSET: 0x0092AFE0
 // FUNCTION: fn_12656
 void UISubChatMiniWnd::Slot15(int, int) {
