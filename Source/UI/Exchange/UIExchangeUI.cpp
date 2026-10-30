@@ -1,5 +1,6 @@
 #include "UI/Exchange/UIExchangeUI.h"
 
+#include "Client/Session.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
@@ -11,8 +12,12 @@
 #include "UI/Shop/PriceColor.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/Text/GroupedInteger.h"
 
+#include <cstdio>
+#include <cstdlib>
 #include <functional>
 #include <string>
 #include <windows.h>
@@ -128,6 +133,32 @@ void CUIExchangeUI::Conclude() {
   this->tradeButton->Invalidate();
 }
 
+// OFFSET: 0x00A17420
+// FUNCTION: fn_15288
+void CUIExchangeUI::SubmitZeny() {
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (!mode) {
+    return;
+  }
+
+  char text[24];
+  _snprintf_s(text, sizeof(text), "%s", this->zenyEdit->edit->Text());
+  if (g_session.IsNumberWithCommas(text)) {
+    int amount = g_session.m_zeny;
+    const int value = std::atoi(text);
+    if (value <= amount) {
+      amount = value < 0 ? 0 : value;
+    }
+
+    mode->SendMsg(0x33, 0, g_session.unknown_5210 + amount, 0, 0);
+    mode->SendMsg(0x34, 0, 0, 0, 0);
+    this->lockButton->disabled = 1;
+    this->lockButton->Invalidate();
+  } else {
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x25A), 0, true, false, 0, "Message", 280, 120, 0);
+  }
+}
+
 // OFFSET: 0x00A17530
 // FUNCTION: fn_15289
 void CUIExchangeUI::OnCheckChanged(bool) {
@@ -211,6 +242,8 @@ void ExchangeUI::CUIItem::Slot16() {
 void ExchangeUI::CUIItem::Slot28(int x, int y) {
   this->itemIcon->Slot28(x - this->itemIcon->geometry.x, y - this->itemIcon->geometry.y);
 }
+
+// OFFSET: 0x00A17C20
 
 // OFFSET: 0x00A17F30
 // FUNCTION: fn_15302

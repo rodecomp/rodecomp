@@ -55,10 +55,13 @@ public:
   /* 0114 */ CUIImageButton* tradeButton;
   /* 0118 */ UIWindow* unknown_0118;
   /* 011C */ std::string partnerName;
+  /* 0134 */ std::string zenyText;
 
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot19() override;
 
   void Conclude();
+  void SubmitZeny();
   void FreezeItems(bool mine);
   void SetZeny(int amount);
 
