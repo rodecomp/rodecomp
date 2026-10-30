@@ -62,6 +62,15 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 }
 
 // OFFSET: 0x00A6D080
+// FUNCTION: fn_16668
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Slot35(int value) {
+  if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
+    this->scrollBar->Slot35(value);
+  } else if (this->parent) {
+    this->parent->Slot35(value);
+  }
+}
 
 // OFFSET: 0x00A6D0C0
 
