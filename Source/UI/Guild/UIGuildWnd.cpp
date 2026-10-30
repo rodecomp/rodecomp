@@ -9,6 +9,7 @@
 #include <windows.h>
 #include <timeapi.h>
 
+#include <cstring>
 #include <cwchar>
 #include <string>
 
@@ -243,6 +244,16 @@ UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows, UIF
 }
 
 // OFFSET: 0x00956050
+// FUNCTION: fn_13035
+bool CompareWideText(const char* left, const char* right) {
+  wchar_t wideLeft[260];
+  wchar_t wideRight[260];
+  memset(wideLeft, 0, sizeof(wideLeft));
+  memset(wideRight, 0, sizeof(wideRight));
+  MultiByteToWideChar(CP_ACP, 0, left, -1, wideLeft, 260);
+  MultiByteToWideChar(CP_ACP, 0, right, -1, wideRight, 260);
+  return wcscmp(wideLeft, wideRight) < 0;
+}
 
 // OFFSET: 0x009578F0
 // FUNCTION: fn_13039

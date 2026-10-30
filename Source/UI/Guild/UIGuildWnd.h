@@ -14,7 +14,7 @@ class UIButton;
 struct UIButtonContext;
 struct GuildWndInfo;
 
-int CompareWideText(const char* left, const char* right);
+bool CompareWideText(const char* left, const char* right);
 
 struct GuildPositionEntry {
   /* 0000 */ int id;
