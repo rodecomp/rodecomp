@@ -1,6 +1,12 @@
 #include "UI/Item/UIEquipmentPropertiesWnd.h"
 
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
+#include "Resource/TextureNames.h"
+
 #include <string>
+#include <windows.h>
 
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Paint();
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot35(int);
@@ -60,4 +66,101 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
     (*it)->index = -1;
     (*it)->Show(0);
   }
+}
+
+// OFFSET: 0x00A0EE90
+// FUNCTION: fn_15155
+void CUIEquipmentPropertiesWnd::OnClickButton1() {
+}
+
+// OFFSET: 0x00A0EEA0
+// FUNCTION: fn_15156
+void CUIEquipmentPropertiesWnd::OnClickButton3() {
+}
+
+// OFFSET: 0x00A0EEB0
+// FUNCTION: fn_15157
+void CUIEquipmentPropertiesWnd::OnClickButton4() {
+}
+
+// OFFSET: 0x00A0EEC0
+// FUNCTION: fn_15158
+void CUIEquipmentPropertiesWnd::OnClickButton5() {
+}
+
+// OFFSET: 0x00A0EED0
+// FUNCTION: fn_15159
+void CUIEquipmentPropertiesWnd::OnClickButton6() {
+}
+
+// OFFSET: 0x00A0EEE0
+// FUNCTION: fn_15160
+void CUIEquipmentPropertiesWnd::OnClickButton7() {
+}
+
+// OFFSET: 0x00A0EEF0
+// FUNCTION: fn_15161
+void CUIEquipmentPropertiesWnd::OnClickButton8() {
+}
+
+// OFFSET: 0x00A0EF00
+// FUNCTION: fn_15162
+void CUIEquipmentPropertiesWnd::OnClickButton9() {
+}
+
+// OFFSET: 0x00A0EF20
+// FUNCTION: fn_15163
+void CUIEquipmentPropertiesWnd::OnSelectLine(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* line, const std::string& text) {
+}
+
+// OFFSET: 0x00A0F0F0
+// FUNCTION: fn_15165
+void CUIEquipmentPropertiesWnd::Paint() {
+  CUIFrameWnd::Paint();
+  const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+  if (left) {
+    const int bottom = this->list->geometry.height + 1;
+    for (int y = 0; y < bottom; y += left->image.height) {
+      this->DrawBitmap(0, this->list->geometry.y + y, &left->image, false);
+    }
+  }
+  this->FillRegion(this->list->geometry.x - 1, this->list->geometry.y + this->list->geometry.height, this->list->geometry.width + 2, 1, this->m_borderColor);
+  this->FillRegion(this->list->geometry.x - 1, this->list->geometry.y, 1, this->list->geometry.height + 1, this->m_borderColor);
+}
+
+// OFFSET: 0x00A0F1B0
+// FUNCTION: fn_15166
+void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Paint() {
+  this->ClearSurface((this->index & 1) ? this->oddRowColor : this->evenRowColor);
+  this->FillRegion(44, 0, 1, this->geometry.height, this->oddRowColor);
+}
+
+// OFFSET: 0x00A0F270
+// FUNCTION: fn_15168
+void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot16() {
+  this->Slot53(1);
+}
+
+// OFFSET: 0x00A0F280
+// FUNCTION: fn_15169
+void CUIEquipmentPropertiesWnd::Grow(int width, int height) {
+  this->Resize(this->geometry.width + width, this->geometry.height + height);
+  this->resizer->Move(this->resizer->geometry.x + width, this->resizer->geometry.y + height);
+  this->titleBar->Resize(this->titleBar->geometry.width + width, this->titleBar->geometry.height);
+  this->list->Resize(this->list->geometry.width + width, this->list->geometry.height + height);
+}
+
+// OFFSET: 0x00A0F2F0
+// FUNCTION: fn_15170
+void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot53(int resolveSkin) {
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->evenRowColor = RGB(red, green, blue);
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 10, red, green, blue);
+  this->oddRowColor = RGB(red, green, blue);
+}
+
+// OFFSET: 0x00A0F5A0
+// FUNCTION: fn_15174
+void CUIEquipmentPropertiesWnd::OnClickButton2() {
 }

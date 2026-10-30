@@ -1,10 +1,53 @@
 #ifndef RAGNAROK_SOURCE_UI_ITEM_UIEQUIPMENTPROPERTIESWND_H
 #define RAGNAROK_SOURCE_UI_ITEM_UIEQUIPMENTPROPERTIESWND_H
 
+#include "UI/FrameSkin.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 
+#include <cstddef>
+#include <cstdint>
+#include <string>
+
 namespace EquipmentPropertiesWnd {
-class CUIItemEquipmentPropertiesLine : public CUIListItem {};
+class CUIItemEquipmentPropertiesLine : public CUIListItem {
+public:
+  /* 00E8 */ CUIStaticText* unknown_00E8;
+  /* 00EC */ CUIStaticText* unknown_00EC;
+  /* 00F0 */ std::uint32_t evenRowColor;
+  /* 00F4 */ std::uint32_t oddRowColor;
+
+  void Slot16() override;
+  void Paint() override;
+  void Slot53(int resolveSkin) override;
+};
 }
+
+class CUIEquipmentPropertiesWnd : public CUIFrameWnd {
+public:
+  /* 00D8 */ CUITitleBar* titleBar;
+  /* 00DC */ CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>* list;
+  /* 00E0 */ CUIControl* tabs;
+  /* 00E4 */ CUIControl* resizer;
+  /* 00E8 */ int currentTab;
+
+  void Grow(int width, int height) override;
+  void Paint() override;
+  void OnClickButton1();
+  void OnClickButton2();
+  void OnClickButton3();
+  void OnClickButton4();
+  void OnClickButton5();
+  void OnClickButton6();
+  void OnClickButton7();
+  void OnClickButton8();
+  void OnClickButton9();
+  void OnSelectLine(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* line, const std::string& text);
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine) == 0xF8);
+static_assert(offsetof(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, evenRowColor) == 0xF0);
+static_assert(offsetof(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, oddRowColor) == 0xF4);
+#endif
 
 #endif
