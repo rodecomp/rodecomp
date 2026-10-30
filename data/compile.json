@@ -559,6 +559,7 @@
   "Source/Contents/Schedule/PartialShutDownSchedule.cpp": 4,
   "Source/Contents/Schedule/Schedule.cpp": 4,
   "Source/Contents/Schedule/ShutDownSchedule.cpp": 4,
+  "Source/Contents/Schedule/TimeScheduler.cpp": 4,
   "Source/Contents/ServerTimeManager.cpp": 4,
   "Source/Contents/ShowRankingScheduler.cpp": 4,
   "Source/Contents/SignBoard/SignBoard.cpp": 4,
