@@ -27,6 +27,7 @@ public:
   void ResetEffect();
   void ApplyMapWeather(std::string mapName);
   void ExtendEffect();
+  void Unused();
 
   /* 0000 */ unsigned char darken;
   /* 0001 */ unsigned char unknown_0001;

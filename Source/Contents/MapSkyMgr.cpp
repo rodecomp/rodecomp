@@ -233,6 +233,11 @@ void CWeatherEffect::ResetEffect() {
 
 // OFFSET: 0x00C7BD40
 
+// OFFSET: 0x00C7C010
+// FUNCTION: fn_20375
+void CWeatherEffect::Unused() {
+}
+
 // OFFSET: 0x00C7C040
 // FUNCTION: fn_20376
 void CWeatherEffect::StopDarken() {
