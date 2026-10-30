@@ -3,15 +3,22 @@
 
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/Particle.h"
+#include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
 #include <cstdint>
 #include <string>
 
+class CGameActor;
+
 class CEZ2STRScreenEffect : public CEffect {
 public:
+  CEZ2STRScreenEffect();
   void Slot00(int argument) override;
+  void Slot03() override;
   void Slot04() override;
+  void Close() override;
+  bool Slot06() override;
   void Slot13(int argument) override;
   void Slot14(int argument) override;
   void Slot15(int argument) override;
@@ -22,7 +29,12 @@ public:
   void Slot22(float argument) override;
   void Slot23(float argument) override;
   void Slot24(int argument1, int argument2, int argument3, int argument4, int argument5) override;
+  vector3d Slot25() override;
   void Slot29(int id) override;
+  bool Slot33() override;
+
+  bool ApplyHeadOffset(CEZ2STRParticle* particle);
+  bool IsAttachedToHead() const;
 
   /* 00CC */ CEZ2STRParticle* particle;
   /* 00D0 */ std::string name;
@@ -32,6 +44,9 @@ public:
   /* 00F8 */ double cameraAngle;
   /* 0100 */ unsigned char jobScaled;
 };
+
+float GetHatEffectOffsetX(int id, const char* name);
+int GetHatEffectOffsetY(int id, CGameActor* actor);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CEZ2STRScreenEffect, particle) == 0xCC);
