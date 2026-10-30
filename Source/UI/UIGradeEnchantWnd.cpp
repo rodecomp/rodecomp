@@ -6,12 +6,18 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
+#include "UI/Buttons/UIBasicButton.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
+
+#include <cstring>
 
 #include <windows.h>
 #include <shellapi.h>
@@ -94,6 +100,93 @@ int UIGradeEnchantWnd::SuccessRate() {
   }
 
   return rate > 100 ? 100 : rate;
+}
+
+// OFFSET: 0x007E7780
+
+// OFFSET: 0x007E7BA0
+// FUNCTION: fn_09754
+void UIGradeEnchantWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\grade_enchant\\bg_grade_enchant.bmp"))), false);
+
+  this->DrawBitmap(158, 142, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\btn_material.bmp").c_str()))), false);
+  this->DrawBitmap(158, 182, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\btn_material.bmp").c_str()))), false);
+  this->DrawBitmap(158, 102, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\btn_material.bmp").c_str()))), false);
+
+  if (this->state == 0) {
+    this->DrawBitmap(152, 46, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\caution.bmp").c_str()))), true);
+    this->DrawBitmap(152, 62, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\caution.bmp").c_str()))), true);
+    this->DrawBitmap(152, 78, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\caution.bmp").c_str()))), true);
+
+    this->sub_A85850(166, 46, LookupMessage(3870), 228, 0, 0x00A0ADC, 0, 0, 11, 1, 0);
+    this->sub_A85850(166, 62, LookupMessage(3871), 228, 0, 0x5AEB00, 0, 0, 11, 1, 0);
+    this->sub_A85850(166, 78, LookupMessage(3872), 228, 0, 0x5AEB00, 0, 0, 11, 1, 0);
+  }
+
+  if (this->state == 1 || this->state == 2) {
+    this->DrawBitmap(192, 225, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\btn_unbroken.bmp").c_str()))), false);
+    this->DrawBitmap(24, 54, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\bg_gradeitem%d.bmp", this->unknown_00D8).c_str()))), false);
+
+    if (this->hoverMaterial >= 0 && this->hoverMaterial != this->selectedMaterial) {
+      this->DrawBitmap(158, this->hoverMaterial * 40 + 102, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\btn_material_over.bmp").c_str()))), false);
+    }
+
+    if (this->selectedMaterial >= 0) {
+      this->DrawBitmap(158, this->selectedMaterial * 40 + 102, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\btn_material_pick.bmp").c_str()))), false);
+    }
+
+    char description[260];
+    std::memset(description, 0, sizeof(description));
+    int capacity = sizeof(description);
+
+    int y = 118;
+    for (size_t i = 0; i < this->materials.size(); ++i) {
+      ITEM_INFO itemInfo;
+      itemInfo.SetItemId(this->materials[i].itemId);
+      itemInfo.sub_6D5810(description, capacity, 0);
+      this->sub_8A8EE0(170, y - 9, &itemInfo, 0);
+      this->sub_A85850(203, y, FormatOwnedString(LookupMessage(3553), description, this->materials[i].amount), 180, 0, 0, 0, 0, 11, 0, 0);
+      y += 40;
+    }
+
+    if (this->info.unknown_0000 > 0) {
+      ITEM_INFO itemInfo;
+      itemInfo.SetItemId(this->info.unknown_0000);
+      itemInfo.sub_6D5810(description, capacity, 0);
+      this->sub_8A8EE0(195, 228, &itemInfo, 0);
+      this->sub_A85850(228, 237, FormatOwnedString(LookupMessage(3553), description, this->unknown_0114), 160, 0, 0xFFFFFF, 0, 0, 11, 1, 1);
+    }
+
+    this->sub_7E7050();
+
+    for (size_t i = 0; i < this->unknown_011C.size() && i < 3; ++i) {
+      int itemY = 46 + i * 16;
+      this->DrawBitmap(152, itemY, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\caution.bmp").c_str()))), true);
+      int msgId = this->unknown_011C[i];
+      std::uint32_t color = (msgId == 3711 || msgId == 3822) ? 0x5AEB00 : 0x00A0ADC;
+      this->sub_A85850(166, itemY, LookupMessage(msgId), 228, 0, color, 0, 0, 11, 1, 0);
+    }
+
+    this->sub_A85850(307, 303, FormatOwnedString("%d", this->SelectedMaterialZeny()), 120, 2, 0, 0, 0, 16, 1, 0);
+  }
+
+  if (this->state == 2) {
+    this->DrawBitmap(56, 268, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\gradewheel%d.bmp", this->unknown_00DC).c_str()))), true);
+  } else {
+    this->DrawBitmap(56, 268, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\gradewheel%d.bmp", 1).c_str()))), true);
+  }
+
+  if (this->item.unknown_0000[1] > 0) {
+    this->sub_8A8EE0(64, 125, &this->item, 0);
+    if (this->item.unknown_0088 > 0) {
+      this->DrawBitmap(64, 137, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.unknown_0088).c_str()))), true);
+    }
+  }
+
+  if (this->state == 1 || this->state == 2) {
+    this->sub_A85850(39, 88, FormatOwnedString("%d%%", this->SuccessRate()), 74, 6, 0xFFFFFF, 0, 29, 28, 1, 1);
+  }
 }
 
 // OFFSET: 0x007E8960

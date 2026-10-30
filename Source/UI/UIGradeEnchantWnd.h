@@ -31,12 +31,15 @@ static_assert(sizeof(GradeEnchantInfo) == 16);
 
 class UIGradeEnchant_BtnStart : public UIBitmapButton {
 public:
+  using UIBitmapButton::UIBitmapButton;
   void Paint() override;
   void Enable(unsigned char value) override;
 };
 
 class UIGradeEnchant_BtnEnhancedUp : public UIBitmapButton {
 public:
+  UIGradeEnchant_BtnEnhancedUp(UIWindowContext& windows, UIButtonContext& controls)
+    : UIBitmapButton(windows, controls), tooltipValue(0), tooltipEnabled(0) {}
   void Paint() override;
   void Slot28(int x, int y) override;
   void Enable(unsigned char value) override;
@@ -47,6 +50,7 @@ public:
 
 class UIGradeEnchant_BtnEnhancedDown : public UIBitmapButton {
 public:
+  using UIBitmapButton::UIBitmapButton;
   void Paint() override;
   void Enable(unsigned char value) override;
 };
@@ -54,7 +58,9 @@ public:
 class UIGradeEnchantWnd : public UIFrameWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
@@ -65,6 +71,7 @@ public:
   void ResetItem();
   int SelectedMaterialZeny();
   int SuccessRate();
+  void sub_7E7050();
   void SetEnchantInfo(
     short index, int value, int materialCount, GradeEnchantInfo info, int value0108, int value010C, const GradeEnchantMaterial* materials
   );
@@ -93,6 +100,7 @@ public:
   /* 0128 */ ITEM_INFO item;
   /* 0220 */ unsigned char unknown_0220;
   /* 00B4 */ UIGradeEnchant_BtnStart* startButton;
+  /* 00BC */ UIGradeEnchant_BtnEnhancedDown* enhancedDownButton;
 
 protected:
   UIButtonContext* m_controls;
