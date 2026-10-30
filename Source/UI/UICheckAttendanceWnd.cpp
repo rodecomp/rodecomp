@@ -1,5 +1,6 @@
 #include "UI/UICheckAttendanceWnd.h"
 
+#include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeTooltip.h"
@@ -13,8 +14,10 @@
 #include "Render/Textures/TextureCache.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <windows.h>
+#include <shellapi.h>
 #include <timeapi.h>
 #include <cstring>
 
@@ -96,6 +99,29 @@ void UICheckAttendanceWnd::Slot31(int x, int y) {
   }
 }
 
+// OFFSET: 0x007DDC30
+// FUNCTION: fn_09644
+void UICheckAttendanceWnd_Banner::Slot31(int x, int y) {
+  const std::string url = this->m_entries[this->m_current].url;
+  if (!url.empty()) {
+    ShellExecuteA(nullptr, "OPEN", url.c_str(), url.c_str(), nullptr, SW_SHOW);
+    return;
+  }
+
+  if (g_windowMgr.LookupWindow(this->m_entries[this->m_current].action)) {
+    return;
+  }
+
+  if (this->m_current < this->m_entries.size()) {
+    const AttendanceBanner& entry = this->m_entries[this->m_current];
+    if (entry.action == 318) {
+      g_modeMgr.gameMode->SendMsg(323, entry.argument, 0, 0, 0);
+    } else {
+      g_windowMgr.EnsureWindow(entry.action);
+    }
+  }
+}
+
 // OFFSET: 0x007DDD70
 // FUNCTION: fn_09645
 void UICheckAttendanceWnd::Slot28(int x, int y) {
@@ -146,6 +172,25 @@ void UICheckAttendanceWnd_Banner::Slot19() {
     const unsigned int next = this->m_current + 1 < this->m_entries.size() ? this->m_current + 1 : 0;
     this->SendMsg(this->m_buttons[next], 6, 215, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x007DDFC0
+// FUNCTION: fn_09649
+void UICheckAttendanceWnd::Slot32(int x, int y) {
+  const int slot = this->SlotAt(x, y);
+  if (slot < 0 || slot >= this->m_rewardCount) {
+    return;
+  }
+
+  UIWindow* window = g_windowMgr.EnsureWindow(12);
+  if (!window) {
+    return;
+  }
+
+  ITEM_INFO item;
+  item.SetItemId(g_checkAttendanceMgr->GetReward(slot + 1).first);
+  item.identified = 1;
+  window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
 }
 
 // OFFSET: 0x007DE460
