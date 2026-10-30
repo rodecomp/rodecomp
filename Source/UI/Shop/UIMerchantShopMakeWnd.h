@@ -27,6 +27,7 @@ public:
   void SendShopRequest();
   void AddActionButton();
   void SetSuspended(unsigned char suspend);
+  void Slot32(int x, int y) override;
 
   /* 00BC */ unsigned char unknown_00BC[0x10];
   /* 00CC */ UIEditCtrl* unknown_00CC;

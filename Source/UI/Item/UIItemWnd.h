@@ -5,10 +5,14 @@
 #include "UI/Item/UIItemBaseWnd.h"
 
 #include <cstddef>
+#include <cstdint>
+
+class UITabControl;
 
 class UIItemWnd : public UIItemBaseWnd {
 public:
   void Slot11() override;
+  void Slot10(int x, int y, std::intptr_t value) override;
   void Slot18() override;
   void Slot19() override;
 
@@ -22,13 +26,16 @@ public:
   /* 0108 */ int unknown_0108;
   /* 010C */ int unknown_010C;
   /* 0110 */ int unknown_0110;
-  /* 0114 */ unsigned char unknown_0114[0x14];
+  /* 0114 */ unsigned char unknown_0114[0x4];
+  /* 0118 */ UITabControl* tabs;
+  /* 011C */ unsigned char unknown_011C[0xC];
   /* 0128 */ UIWindow* unknown_0128;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(UIItemWnd, saved) == 0xF0);
 static_assert(offsetof(UIItemWnd, unknown_0110) == 0x110);
+static_assert(offsetof(UIItemWnd, tabs) == 0x118);
 static_assert(offsetof(UIItemWnd, unknown_0128) == 0x128);
 #endif
 

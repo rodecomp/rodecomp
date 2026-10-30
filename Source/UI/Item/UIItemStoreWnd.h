@@ -10,6 +10,7 @@ class UICheckBox;
 
 class UIItemStoreWnd : public UIItemBaseWnd {
 public:
+  void Slot32(int x, int y) override;
   void Slot11() override;
   void Slot25(int x, int y) override;
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);

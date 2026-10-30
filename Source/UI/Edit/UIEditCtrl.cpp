@@ -64,6 +64,13 @@
 #include "Client/Mode/ModeDragState.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shop/UIMerchantItemPurchaseMSGWnd.h"
+#include "UI/Lists/UITabControl.h"
+#include "UI/UIGradeEnchantWnd.h"
+#include "UI/UIRefiningWnd.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
+#include "Network/Packets/PacketLengths.h"
+#include "UI/Text/UIStaticText.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -78,6 +85,16 @@
 bool g_vendingSaleAlarm;
 
 namespace {
+#pragma pack(push, 1)
+struct PACKET_CZ_INVENTORY_TAB {
+  /* 0000 */ short packetType;
+  /* 0002 */ unsigned short index;
+  /* 0004 */ unsigned char favorite;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(PACKET_CZ_INVENTORY_TAB) == 5);
+
 class EditLinkLayout {
 public:
   virtual void Update() = 0;
@@ -785,6 +802,84 @@ void UINoticeMessageBox_LockSellItem::Slot15(int, int) {
 void UIItemWnd::Slot18() {
 }
 
+// OFFSET: 0x00896BC0
+// FUNCTION: fn_11518
+void UIEditCtrl_Custom::Synchronize() {
+  const int previousCursor = this->cursor;
+  CLanguage& input = this->m_edit->input;
+  input.CopyDisplayText(this->text);
+  input.Selection(this->anchor, this->cursor);
+  this->Trim();
+
+  const auto length = static_cast<unsigned>(this->text.size());
+  bool clamped = false;
+
+  if (static_cast<unsigned>(this->cursor) > length || static_cast<unsigned>(this->anchor) > length) {
+    this->anchor = std::min<unsigned>(this->anchor, length);
+    this->cursor = std::min<unsigned>(this->cursor, length);
+    input.Select(this->anchor, this->cursor);
+    clamped = true;
+  }
+
+  if (this->cursor == 0) {
+    this->firstVisible = 0;
+    return;
+  }
+
+  std::string visible;
+
+  if (static_cast<unsigned>(std::abs(input.cursor - input.anchor)) >= this->text.size()) {
+    this->firstVisible = 0;
+  }
+
+  FontCache& fonts = this->m_edit->buttons.fonts;
+  const TextLocale& locale = this->m_edit->buttons.locale;
+  const int available = this->geometry.width - 12;
+
+  if (this->cursor > previousCursor || clamped) {
+    int before = 0;
+
+    if (this->firstVisible != 0) {
+      before = this->TextWidth(fonts, locale, this->text.c_str(), this->firstVisible, 0, 12, this->unknown_011C, 0);
+    }
+
+    const int position = this->TextWidth(fonts, locale, this->text.c_str(), this->cursor, 0, 12, this->unknown_011C, 0);
+
+    if (position + 3 - before > available) {
+      const char* end = this->text.c_str() + this->text.size();
+      const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), 0);
+
+      while (this->TextWidth(fonts, locale, next, 0, 0, 12, this->unknown_011C, 0) + 3 > available && next < end) {
+        next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
+      }
+
+      const auto tail = static_cast<unsigned>(std::strlen(next));
+      const auto scrolled = static_cast<unsigned>(this->firstVisible + this->cursor - previousCursor);
+      this->firstVisible = std::min<unsigned>(this->cursor - tail, scrolled);
+    }
+  } else if (this->cursor < previousCursor) {
+    if (this->TextWidth(fonts, locale, this->text.c_str(), this->cursor, 0, 12, this->unknown_011C, 0) + 3 < available && this->firstVisible > this->cursor) {
+      this->firstVisible += this->cursor - previousCursor;
+    }
+
+    this->firstVisible = std::max(this->firstVisible, 0);
+  }
+}
+
+// OFFSET: 0x009727F0
+
+// OFFSET: 0x00989080
+
+// OFFSET: 0x00989210
+
+// OFFSET: 0x009893A0
+
+// OFFSET: 0x00989C40
+
+// OFFSET: 0x00989DF0
+
+// OFFSET: 0x00989FE0
+
 // OFFSET: 0x0097E790
 // FUNCTION: fn_13329
 void UIItemDropCntWnd::Paint() {
@@ -910,6 +1005,8 @@ void UIMerchantItemMyShopWnd::Paint() {
     }
   }
 }
+
+// OFFSET: 0x0097A670
 
 // OFFSET: 0x00981990
 // FUNCTION: fn_13340
