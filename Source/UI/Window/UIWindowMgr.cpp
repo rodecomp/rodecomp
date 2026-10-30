@@ -947,3 +947,16 @@ void UIWindowMgr::BroadcastMessage21() {
     }
   }
 }
+
+// OFFSET: 0x00AB1120
+// FUNCTION: fn_17332
+bool UIWindowMgr::IsHoverOnWindow01C8Button() {
+  const UIWindow* window = this->window_01C8;
+  if (window) {
+    UIWindow* const* buttons = reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(window) + 0xBC);
+    if (this->hoverWindow == buttons[0] || this->hoverWindow == buttons[1]) {
+      return true;
+    }
+  }
+  return false;
+}
