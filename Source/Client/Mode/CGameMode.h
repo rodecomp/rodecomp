@@ -74,7 +74,13 @@ public:
   /* 02EC */ std::string unknown_02EC;
   /* 0304 */ unsigned char unknown_0304[0x04];
   /* 0308 */ ModeDragState drag;
-  /* 03C8 */ unsigned char unknown_03C8[0x1FC];
+  /* 03C8 */ std::string unknown_03C8;
+  /* 03E0 */ std::string unknown_03E0;
+  /* 03F8 */ int unknown_03F8;
+  /* 03FC */ int unknown_03FC;
+  /* 0400 */ int unknown_0400;
+  /* 0404 */ int unknown_0404;
+  /* 0408 */ unsigned char unknown_0408[0x1BC];
   /* 05C4 */ int unknown_05C4;
   /* 05C8 */ int unknown_05C8;
   /* 05CC */ unsigned char unknown_05CC[0x04];
@@ -187,6 +193,10 @@ public:
   void IgnoreRemovedPacket4(const unsigned char* packet);
   void IgnoreRemovedPacket5(const unsigned char* packet);
   void IgnoreRemovedPacket7(const unsigned char* packet);
+  void IgnoreRemovedPacket8();
+  void IgnoreRemovedPacket9();
+  void IgnoreRemovedPacket10(const unsigned char* packet);
+  void IgnoreRemovedPacket11(const unsigned char* packet);
   void ReceiveItem1738Add(const unsigned char* packet);
   void ReceiveItem1738AddOptions(const unsigned char* packet);
   void ReceiveItem1738AddGrade(const unsigned char* packet);
@@ -197,6 +207,7 @@ public:
   void ReceiveHpSpRecovery(const unsigned char* packet, int variant);
   void ReceiveUnknown173A5BC(const unsigned char* packet);
   void ReceiveUnknown16FC588(const unsigned char* packet);
+  void ResetItemLists(const unsigned char* packet);
   void StepTowardWalkableCell(const int& targetX, const int& targetY, int& x, int& y);
   void FindWalkableCellToward(float x, float z, float originX, float originZ, int& column, int& row, int distance);
   void RemoveMiniMapPing(std::uint32_t id);
@@ -217,6 +228,7 @@ public:
   void ReceiveItem1784List(const unsigned char* packet);
   void ReceiveItemListPart(unsigned char listType, int count, const unsigned char* data);
   void RefreshItemListWindow(unsigned char listType, bool partial);
+  void sub_CEB8E0();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

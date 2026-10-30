@@ -564,3 +564,30 @@ void CGameMode::ReceiveUnknown16FC588(const unsigned char* packet) {
     g_unknown16FC588 = 0;
   }
 }
+
+// OFFSET: 0x00D08370
+// FUNCTION: fn_21586
+void CGameMode::IgnoreRemovedPacket8() {
+}
+
+// OFFSET: 0x00D08380
+// FUNCTION: fn_21587
+void CGameMode::IgnoreRemovedPacket9() {
+}
+
+// OFFSET: 0x00D088F0
+// FUNCTION: fn_21593
+void CGameMode::IgnoreRemovedPacket10(const unsigned char*) {
+}
+
+// OFFSET: 0x00D08900
+// FUNCTION: fn_21594
+void CGameMode::IgnoreRemovedPacket11(const unsigned char*) {
+}
+
+// OFFSET: 0x00D89CA0
+// FUNCTION: fn_22213
+void CGameMode::ResetItemLists(const unsigned char*) {
+  g_session.ResetItems61B8();
+  g_session.ResetItems6B68();
+}
