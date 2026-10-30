@@ -3,13 +3,16 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+class UIButton;
 struct UIButtonContext;
 
 class UIEscOptionWnd : public UIFrameWnd {
 public:
   void Paint() override;
+  void LayoutButtons();
 
-  /* 00B4 */ unsigned char unknown_00B4[0x20];
+  /* 00B4 */ UIButton* m_buttons[7];
+  /* 00D0 */ int m_mode;
   /* 00D4 */ int m_titleHeight;
 
 protected:

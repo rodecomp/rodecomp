@@ -1,12 +1,15 @@
 #include "UI/Window/UIBattleMsgOptionWnd.h"
 
+#include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UICheckBox.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Window/WindowManagerWindows.h"
 
 #include <cstring>
 #include <windows.h>
@@ -184,4 +187,80 @@ void UIBattleMsgOptionWnd::Paint() {
     y += 20;
     ++row;
   }
+}
+
+// OFFSET: 0x00934780
+// FUNCTION: fn_12742
+int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    if (a == 193) {
+      if (this->unknown_0108 == b && this->unknown_0110 == (c != 0)) {
+        if (d != 2) {
+          this->m_frameContext->windows.CloseWindow(132);
+          return 0;
+        }
+      } else if (d == 1) {
+        return 0;
+      }
+
+      this->unknown_0108 = b;
+      this->unknown_0110 = c != 0;
+      SubChatWndInfo info;
+      info = (this->unknown_0110 ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->unknown_0108];
+      if (!info.name.empty()) {
+        this->unknown_010C = 1;
+        for (int i = 0; i < 25; ++i) {
+          this->unknown_00EC[i] = info.options[i];
+          if (!info.options[i]) {
+            this->unknown_010C = 0;
+          }
+        }
+        this->m_allCheckBox->geometry.unknown_0030 = this->unknown_010C;
+        this->m_allCheckBox->Invalidate();
+        this->text = info.name;
+        this->text += LookupMessage(0x6F1);
+        this->Invalidate();
+      }
+      this->UpdateScrollBar();
+      return 0;
+    }
+
+    if (a == 201) {
+      this->m_frameContext->windows.CloseWindow(132);
+      return 0;
+    }
+
+    if (a == 213) {
+      this->unknown_010C = b;
+      for (int i = 0; i < 25; ++i) {
+        const bool checked = this->unknown_010C != 0;
+        this->unknown_00EC[i] = checked;
+        (this->unknown_0110 ? g_session.m_noSubChatWnds : g_session.m_subChatWnds)[this->unknown_0108].options[i] = checked;
+      }
+      this->Invalidate();
+      return 0;
+    }
+    return 0;
+
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->unknown_00C4;
+    if (message == 9) {
+      this->unknown_00C4 = previous - this->m_visibleRows + 1;
+    } else if (message == 10) {
+      this->unknown_00C4 = previous + this->m_visibleRows - 1;
+    } else {
+      this->unknown_00C4 = previous + static_cast<int>(a);
+    }
+    if (previous != this->unknown_00C4) {
+      this->UpdateScrollBar();
+      this->Invalidate();
+    }
+    return this->unknown_00C4 - previous;
+  }
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }

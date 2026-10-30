@@ -12,6 +12,8 @@ extern std::uint8_t g_chatInputFlag;
 
 class UINewChatWnd : public UIFrameWnd {
 public:
+  static void SaveChatWndInfo();
+
   void Resize(int width, int height) override;
   void Move(int x, int y) override;
   void Show(int visible) override;

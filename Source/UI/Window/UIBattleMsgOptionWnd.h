@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+class UICheckBox;
 class UIScrollBar;
 struct UIButtonContext;
 
@@ -16,6 +17,7 @@ public:
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   int RowAt(int x, int y);
   virtual void UpdateScrollBar();
 
@@ -30,7 +32,8 @@ public:
   /* 0108 */ int unknown_0108;
   /* 010C */ int unknown_010C;
   /* 0110 */ unsigned char unknown_0110;
-  /* 0111 */ unsigned char unknown_0111[0x7];
+  /* 0111 */ unsigned char unknown_0111[0x3];
+  /* 0114 */ UICheckBox* m_allCheckBox;
 
 protected:
   UIButtonContext* m_controls;

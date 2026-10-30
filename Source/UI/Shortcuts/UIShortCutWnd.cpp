@@ -26,6 +26,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindowCallBtnWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "File/File.h"
 #include "Render/Renderer.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -34,6 +35,7 @@
 #include <stdio.h>
 #include <cstdlib>
 #include <cstring>
+#include <map>
 
 namespace {}
 
@@ -489,6 +491,55 @@ void UINewChatWnd::Resize(int width, int height) {
   this->UIFrameWnd::Resize(width, height);
   this->m_listWidth = this->geometry.width - 6;
   this->m_listHeight = this->geometry.height - this->m_inputOffsetY;
+}
+
+// OFFSET: 0x00933E40
+// FUNCTION: fn_12739
+void UINewChatWnd::SaveChatWndInfo() {
+  CFile file;
+  file.Open("SaveData\\ChatWndInfo_U.lua", 0x1001, true, false);
+
+  char text[500];
+  sprintf(text, "CanDragWnd = %d\r\n\r\n", g_chatInputFlag == 1);
+  file.Write(text, std::strlen(text));
+
+  int index = 1;
+  for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_noSubChatWnds.begin(); it != g_session.m_noSubChatWnds.end(); ++it, ++index) {
+    const SubChatWndInfo& info = it->second;
+    sprintf(text, "ChatSubWnd_%d = {\r\n", index);
+    file.Write(text, std::strlen(text));
+    sprintf(text, "\tXPos = 0,\r\n\tYPos = 0,\r\n");
+    file.Write(text, std::strlen(text));
+    sprintf(text, "\tWidth = 0,\r\n\tHeight = 0,\r\n");
+    file.Write(text, std::strlen(text));
+    sprintf(text, "\tTabState = \"On\",\r\n\tTabName = [[%s]],\r\n", info.name.c_str());
+    file.Write(text, std::strlen(text));
+    for (int option = 1; option <= 25; ++option) {
+      sprintf(text, "\toption%d = %d,\r\n", option, info.options[option - 1]);
+      file.Write(text, std::strlen(text));
+    }
+    file.Write("}\r\n\r\n", 5);
+  }
+
+  index = static_cast<int>(g_session.m_noSubChatWnds.size()) + 1;
+  for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_subChatWnds.begin(); it != g_session.m_subChatWnds.end(); ++it, ++index) {
+    const SubChatWndInfo& info = it->second;
+    sprintf(text, "ChatSubWnd_%d = {\r\n", index);
+    file.Write(text, std::strlen(text));
+    sprintf(text, "\tXPos = %d,\r\n\tYPos = %d,\r\n", info.x, info.y);
+    file.Write(text, std::strlen(text));
+    sprintf(text, "\tWidth = %d,\r\n\tHeight = %d,\r\n", info.width, info.height);
+    file.Write(text, std::strlen(text));
+    sprintf(text, "\tTabState = \"Off\",\r\n\tTabName = \"%s\",\r\n", info.name.c_str());
+    file.Write(text, std::strlen(text));
+    for (int option = 1; option <= 25; ++option) {
+      sprintf(text, "\toption%d = %d,\r\n", option, info.options[option - 1]);
+      file.Write(text, std::strlen(text));
+    }
+    file.Write("}\r\n\r\n", 5);
+  }
+
+  file.Close();
 }
 
 // OFFSET: 0x009328F0
