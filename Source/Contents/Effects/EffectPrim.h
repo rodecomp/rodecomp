@@ -177,6 +177,7 @@ struct CEffectPrim : CRenderObject {
   void RenderSoulLink(matrix& wtm);
   void RenderSoulParticle(matrix& wtm);
   void RenderSphereWind(matrix& wtm);
+  void RenderMagicTarget(matrix& wtm);
 
   /* 0138 */ EffectPrimitiveState state;
 };

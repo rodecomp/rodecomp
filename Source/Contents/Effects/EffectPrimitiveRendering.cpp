@@ -17,6 +17,9 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/World/World.h"
+#include "Contents/Ground/GroundGeometry.h"
+#include "Contents/Ground/GroundRendering.h"
+#include "Render/Textures/TextureCache.h"
 
 // OFFSET: 0x00BCD960
 // FUNCTION: fn_19865
@@ -5220,5 +5223,74 @@ void CEffectPrim::RenderGrandCross2(matrix& wtm) {
     const short alpha = static_cast<short>(slot.alphaB / 2);
     this->RenderTeiRect(&rpCnt, alpha, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     this->RenderTeiRect(&rpCnt, alpha, slot.vecTPre, slot.vecTNow, slot.vecBNow, slot.vecBPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+  }
+}
+
+// OFFSET: 0x00BD9180
+// FUNCTION: fn_19891
+void CEffectPrim::RenderMagicTarget(matrix& wtm) {
+  const RenderProjection projection = g_renderer->viewport.Projection();
+  const bool depthAlpha = g_renderer->fog.supported != 0;
+  GroundRenderContext context{
+    projection, g_renderer->primitives, g_renderer->queues, g_renderer->viewport.width, g_renderer->viewport.height, g_renderer->frame, depthAlpha,
+    g_depthStart, g_depthEnd
+  };
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    const GroundGeometry* ground = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->ground;
+    int column;
+    int row;
+    gameMode->WorldCell(this->render.position.x, this->render.position.z, column, row);
+    column -= 3;
+    row -= 3;
+
+    const float sn = g_sinTable[slot.rotStart];
+    const float cs = g_cosTable[slot.rotStart];
+
+    for (int z = 0; z < 7; ++z) {
+      for (int x = 0; x < 7; ++x) {
+        const float x0 = static_cast<float>(x) - 3.5f;
+        const float x1 = static_cast<float>(x + 1) - 3.5f;
+        const float z0 = static_cast<float>(z) - 3.5f;
+        const float z1 = static_cast<float>(z + 1) - 3.5f;
+        const float u00 = z0 * sn + x0 * cs;
+        const float v00 = z0 * cs - x0 * sn;
+        const float u10 = x1 * cs + z0 * sn;
+        const float v10 = z0 * cs - x1 * sn;
+        const float u01 = z1 * sn + x0 * cs;
+        const float v01 = z1 * cs - x0 * sn;
+        const float u11 = z1 * sn + x1 * cs;
+        const float v11 = z1 * cs - x1 * sn;
+
+        float scale = slot.maxHeight;
+        float uv[8] = {
+          (u00 * scale + 3.5f) / 7.0f, (v00 * scale + 3.5f) / 7.0f, (u10 * scale + 3.5f) / 7.0f, (v10 * scale + 3.5f) / 7.0f,
+          (u01 * scale + 3.5f) / 7.0f, (v01 * scale + 3.5f) / 7.0f, (u11 * scale + 3.5f) / 7.0f, (v11 * scale + 3.5f) / 7.0f,
+        };
+        ground->DrawGridDecal(
+          *gameMode->scene->terrain, wtm.values, column + x, row + z, 0xAA9999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv, context
+        );
+
+        scale = slot.maxHeight + 0.1f;
+        uv[0] = (scale * u00 + 3.5f) / 7.0f;
+        uv[1] = (scale * v00 + 3.5f) / 7.0f;
+        uv[2] = (scale * u10 + 3.5f) / 7.0f;
+        uv[3] = (scale * v10 + 3.5f) / 7.0f;
+        uv[4] = (scale * u01 + 3.5f) / 7.0f;
+        uv[5] = (scale * v01 + 3.5f) / 7.0f;
+        uv[6] = (scale * u11 + 3.5f) / 7.0f;
+        uv[7] = (scale * v11 + 3.5f) / 7.0f;
+        ground->DrawGridDecal(
+          *gameMode->scene->terrain, wtm.values, column + x, row + z, 0x559999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv, context
+        );
+      }
+    }
   }
 }
