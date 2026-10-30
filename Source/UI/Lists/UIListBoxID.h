@@ -19,6 +19,7 @@ public:
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot35(int value) override;
+  virtual void Configure(int x, int y, int width, int height, unsigned char transparent);
   virtual void Clear();
   virtual void Refresh();
 
@@ -32,7 +33,7 @@ public:
   /* 00A4 */ int bottomMargin;
   /* 00A8 */ UIScrollBar* verticalBar;
   /* 00AC */ UIScrollBar* horizontalBar;
-  /* 00B0 */ unsigned char unknown_00B0[0x4];
+  /* 00B0 */ int transparent;
   /* 00B4 */ int lineHeight;
 };
 
@@ -42,6 +43,7 @@ public:
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
+  void Configure(int x, int y, int width, int height, unsigned char transparent) override;
   void Refresh() override;
 };
 
