@@ -12,6 +12,8 @@
 
 struct lua_State;
 
+extern short g_itemOptionPlaceholderId;
+
 struct SelectPackageTab {
   /* 0000 */ std::string name;
   /* 0018 */ std::vector<ITEM_INFO> items;
@@ -20,6 +22,8 @@ struct SelectPackageTab {
 class CSelectPackageItemMgr : public Singleton<CSelectPackageItemMgr> {
 public:
   static int LuaAddTab(lua_State* L);
+  static int LuaAddItem(lua_State* L);
+  static bool LoadScript();
 
   /* 0004 */ std::map<int, std::map<int, SelectPackageTab>> m_packages;
 
