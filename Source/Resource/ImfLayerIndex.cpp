@@ -1,5 +1,10 @@
 #include "Resource/ImfResource.h"
 
+// OFFSET: 0x00750540
+// FUNCTION: fn_07937
+void CImfRes::Reset() {
+}
+
 // OFFSET: 0x00750550
 // FUNCTION: fn_07938
 int CImfRes::GetLayer(int priority, int action, int motion) {
@@ -16,4 +21,13 @@ int CImfRes::GetLayer(int priority, int action, int motion) {
   }
 
   return -1;
+}
+
+// OFFSET: 0x007506E0
+// FUNCTION: fn_07939
+POINT CImfRes::GetLongPoint(int layer, int action, int motion) {
+  POINT point;
+  point.x = this->m_imfData[layer][action].cx[motion];
+  point.y = this->m_imfData[layer][action].cy[motion];
+  return point;
 }

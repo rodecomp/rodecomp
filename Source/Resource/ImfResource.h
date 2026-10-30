@@ -3,6 +3,8 @@
 
 #include "Resource/Resource.h"
 
+#include <windows.h>
+
 #include <vector>
 
 struct ImfData {
@@ -15,7 +17,9 @@ class CImfRes : public CRes {
 public:
   bool Load(const char* name) override;
 
+  void Reset();
   int GetLayer(int priority, int action, int motion);
+  POINT GetLongPoint(int layer, int action, int motion);
 
 private:
   /* 0110 */ std::vector<std::vector<ImfData>> m_imfData;
