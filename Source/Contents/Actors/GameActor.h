@@ -90,7 +90,9 @@ public:
   /* 0288 */ int unknown_0288;
   /* 028C */ unsigned char unknown_028C[0x04];
   /* 0290 */ int unknown_0290;
-  /* 0294 */ unsigned char unknown_0294[0x0C];
+  /* 0294 */ int unknown_0294;
+  /* 0298 */ int unknown_0298;
+  /* 029C */ unsigned char unknown_029C[0x04];
   /* 02A0 */ std::list<ActorDamageMessage> unknown_02A0;
   /* 02A8 */ std::list<ActorDamageMessage> unknown_02A8;
   /* 02B0 */ int unknown_02B0;
@@ -304,6 +306,7 @@ static_assert(offsetof(CGameActor, unknown_023C) == 0x23C);
 static_assert(offsetof(CGameActor, unknown_0258) == 0x258);
 static_assert(offsetof(CGameActor, unknown_0264) == 0x264);
 static_assert(offsetof(CGameActor, unknown_0290) == 0x290);
+static_assert(offsetof(CGameActor, unknown_0298) == 0x298);
 static_assert(offsetof(CGameActor, unknown_02A0) == 0x2A0);
 static_assert(offsetof(CGameActor, unknown_02A8) == 0x2A8);
 static_assert(offsetof(CGameActor, unknown_02B8) == 0x2B8);

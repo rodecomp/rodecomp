@@ -1,5 +1,6 @@
 #include "Contents/Sound/SoundMaker.h"
 
+#include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/EffectActors.h"
 #include "Contents/Actors/GndRiser.h"
 #include "Contents/Actors/Npc.h"
@@ -8,15 +9,21 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Skills/ClientSkills.h"
 #include "Contents/World/World.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
 #include "Resource/World/WorldResource.h"
+#include "Render/Renderer.h"
+#include "Render/SpriteGeometry.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
 
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <windows.h>
 #include <timeapi.h>
 
@@ -676,3 +683,60 @@ bool CHalluPC::OnProcess() {
   }
   return true;
 }
+
+// OFFSET: 0x00DA3010
+// FUNCTION: fn_22398
+bool CCorpse::OnProcess() {
+  const float elapsed = static_cast<float>((timeGetTime() - this->render.unknown_008C) / 24.0);
+  this->render.previousAnimation = this->Get8Dir(this->render.angle) + this->render.animation;
+  this->render.curMotion = this->GetActRes()->FrameCount(this->render.previousAnimation) - 1;
+  this->SetColor(static_cast<int>(255.0f - elapsed), -1, -1, -1);
+  return elapsed < 255.0f;
+}
+
+// OFFSET: 0x00DA4160
+// FUNCTION: fn_22412
+void CHalluNPC::Render(int argument) {
+  const float* matrix = reinterpret_cast<const float*>(argument);
+  if (StateFlag02(this->stateFlags) || StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags)) {
+    return;
+  }
+
+  rand();
+  rand();
+  rand();
+  rand();
+
+  if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+    if (!this->render.visible) {
+      this->UpdateTlvertex(matrix);
+      return;
+    }
+
+    if ((this->render.color & 0xFF000000) == 0xFF000000) {
+      this->DrawShadow(argument, this->render.scale);
+    }
+    if (this->render.enabled) {
+      this->RenderMercenary(matrix, this->GetEffectiveJob(-1));
+    } else {
+      this->UpdateTlvertex(matrix);
+    }
+    return;
+  }
+
+  if (!this->render.visible) {
+    this->UpdateTlvertex(matrix);
+    return;
+  }
+
+  if (this->render.unknown_0070 != 6 && this->render.unknown_0070 != 3) {
+    this->DrawShadow(argument, this->render.scale);
+  }
+  if (this->render.enabled) {
+    this->DrawSprite(argument, this->IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
+  } else {
+    this->UpdateTlvertex(matrix);
+  }
+}
+
+// OFFSET: 0x00DA44D0
