@@ -38,6 +38,22 @@ static const std::array<std::string, 4> s_talismanLoopEffects = {
   "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\black_tortoise_loop.str",
 };
 
+// OFFSET: 0x0072DE70
+// FUNCTION: fn_07499
+CTalismanMarkEffect::CTalismanMarkEffect() : CEffect(-1) {
+}
+
+// OFFSET: 0x0072DFD0
+// FUNCTION: fn_07501
+void CTalismanMarkEffect::Close() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    if (*it) {
+      sub_B82FD0(*it);
+    }
+  }
+  this->particles.clear();
+}
+
 // OFFSET: 0x0072E020
 // FUNCTION: fn_07502
 void CTalismanMarkEffect::PlayEnd() {

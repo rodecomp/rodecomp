@@ -12,9 +12,11 @@ class CTalismanMarkEffect : public CEffect {
 public:
   /* 00CC */ std::vector<CEZ2STRParticle*> particles;
 
+  CTalismanMarkEffect();
   void Slot01() override;
   void Slot03() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
 
   void PlayEnd();
