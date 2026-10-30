@@ -100,8 +100,12 @@ public:
   void SubD97F00(int);
   void ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet);
   void ReceiveLoginError(const LoginErrorPacket* packet);
+  void ReceiveBillingInfo(const unsigned char* packet);
+  void ReceiveNotifyBan(const unsigned char* packet);
   void SubD9E170(int);
 };
+
+extern bool g_loginModeFlag;
 
 int GetClientType();
 std::string GetMacAddress();
