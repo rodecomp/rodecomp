@@ -576,6 +576,10 @@ void UIComboBox::Resize(int width, int height) {
 }
 
 // OFFSET: 0x00885240
+// FUNCTION: fn_11317
+void UIComboBox::Slot15(int width, int height) {
+  UIListBox::Slot15(width, height);
+}
 
 // OFFSET: 0x00895AC0
 // FUNCTION: fn_11509
