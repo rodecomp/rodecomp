@@ -14,7 +14,32 @@
 
 #include <cstdio>
 #include <cstring>
+#include <utility>
 #include <windows.h>
+
+// OFFSET: 0x00BA4260
+// FUNCTION: fn_19680
+void UIEntryQueueHelpWnd::Slot18() {
+}
+
+// OFFSET: 0x00BA4270
+
+// OFFSET: 0x00BA42A0
+// FUNCTION: fn_19682
+void UIEntryQueueHelpWnd::Slot19() {
+}
+
+// OFFSET: 0x00BA42B0
+
+// OFFSET: 0x00BA42E0
+
+// OFFSET: 0x00BA4490
+
+// OFFSET: 0x00BA46A0
+
+// OFFSET: 0x00BA4770
+
+// OFFSET: 0x00BA48E0
 
 // OFFSET: 0x00BA5380
 // FUNCTION: fn_19692

@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <map>
 #include <string>
 
 class UIBitmapButton;
@@ -20,10 +21,7 @@ struct UIEntryQueueContext {
   WindowResponseRecorder& recorder;
 };
 
-class UIEntryQueueListBox : public UIListBox {
-};
-
-class UIEntryQueueRequestWnd : public UIFrameWnd {
+class UIEntryQueueHelpWnd : public UIFrameWnd {
 public:
   void Slot18() override;
   void Slot19() override;
@@ -32,9 +30,33 @@ public:
 
 protected:
   UIEntryQueueContext* m_entryQueue;
+};
+
+class UIEntryQueueListBox : public UIListBox {
+public:
+  UIEntryQueueListBox(UIWindowContext& windows, UIListBoxContext& list);
+  void Slot31(int x, int y) override;
+  virtual void AddEntry(const char* name, int value);
+  virtual int EntryValue(int index);
+
+  /* 00D4 */ std::map<std::string, int> m_entries;
+};
+
+class UIEntryQueueRequestWnd : public UIFrameWnd {
+public:
+  void Slot18() override;
+  void Slot19() override;
+  void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  bool Create();
+
+protected:
+  UIEntryQueueContext* m_entryQueue;
 
 public:
-  /* 00B4 */ unsigned char unknown_00B4[0xC];
+  /* 00B4 */ UITextViewer* m_viewer;
+  /* 00B8 */ UIBitmapButton* m_ok;
+  /* 00BC */ UIBitmapButton* m_cancel;
   /* 00C0 */ unsigned m_interval;
   /* 00C4 */ unsigned m_elapsed;
   /* 00C8 */ unsigned m_delta;
