@@ -27,6 +27,7 @@ class UINavigationV4Wnd : public UIFrameWnd {
 public:
   void Slot11() override;
   void Slot19() override;
+  void Slot31(int x, int y) override;
   bool ClearRouteTexts();
   void LayoutWithoutDetails();
   void LayoutWithDetails();
@@ -37,6 +38,7 @@ public:
   std::string MobName(CNavi_Object* mob);
   void SelectRoute(int route);
   void FillRouteGroups();
+  void InsertNavigationLink(std::string name, int x, int y);
 
   /* 00B4 */ UIWindow* unknown_00B4;
   /* 00B8 */ UIWindow* unknown_00B8;

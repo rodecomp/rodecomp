@@ -21,6 +21,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Chat/ChatSuggestions.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UIListBoxNaviSearch.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -33,6 +34,8 @@
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Navigation/UIPrivateAirplaneWnd.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/Window/InputFocus.h"
+#include "UI/Window/UINavigationWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -2410,4 +2413,72 @@ void UIWindow::DrawActionSprite(
       this->m_context->renderer.atlas, this->m_context->renderSystem, g_serviceType, g_resourceReuseDelay
     );
   }
+}
+
+// OFFSET: 0x005C6F90
+// FUNCTION: fn_03596
+void UINavigationV4Wnd::Slot31(int x, int y) {
+  UIFrameWnd::Slot31(x, y);
+
+  if (!g_navigationMinimized) {
+    const int mapY = y - 46;
+    const int mapX = x - 3;
+    if (mapY >= 0 && mapY <= 266 && mapX >= 0 && mapX <= 266 && g_navigationTab == 2) {
+      NavigationTarget target = g_navigationManager.GetCurrentTarget();
+      CNaviInfo* info = static_cast<CNaviInfo*>(target.object);
+      const int width = info->GetCellX();
+      const int height = info->GetCellY();
+      const int size = width > height ? width : height;
+      const float scale = static_cast<float>(size) / 265.0f;
+      const int difference = width - height;
+
+      double offsetX = 0.0;
+      double offsetY = 0.0;
+      if (difference > 0) {
+        offsetY = difference * 0.5;
+      } else {
+        offsetX = difference * 0.5;
+      }
+
+      const int cellX = static_cast<int>(static_cast<float>(mapX) * scale - static_cast<float>(static_cast<int>(std::fabs(offsetX))));
+      const int cellY = static_cast<int>(static_cast<float>(size) - static_cast<float>(mapY) * scale - static_cast<float>(static_cast<int>(std::fabs(offsetY))));
+
+      if (cellX >= 0 && cellY >= 0 && cellX <= width && cellY <= height) {
+        this->InsertNavigationLink(info->GetName(), cellX, cellY);
+      }
+    }
+  } else {
+    this->geometry.targetAlpha = 170;
+    this->geometry.alphaStart = timeGetTime();
+  }
+}
+
+// GLOBAL: gl_25052
+static const std::string g_windowNaviLinkTag = "<NAVIL>";
+// GLOBAL: gl_25053
+static const std::string g_windowNaviLinkCloseTag = "</NAVIL>";
+
+// OFFSET: 0x005C9E00
+// FUNCTION: fn_03636
+void UINavigationV4Wnd::InsertNavigationLink(std::string name, int x, int y) {
+  const std::string xText = EncodeNavigationNumber(x < 0 ? 1000 : x);
+  const std::string yText = EncodeNavigationNumber(y < 0 ? 1000 : y);
+  std::string link = g_windowNaviLinkTag;
+  link += name;
+  link += xText;
+  link += yText;
+  link += g_windowNaviLinkCloseTag;
+
+  if (g_windowMgr.GetHoverWindow() && g_windowMgr.GetHoverWindow()->geometry.id != 516) {
+    if (g_windowMgr.GetHoverWindow() == g_chatSuggestions->window && !g_windowMgr.unknown_0024) {
+      reinterpret_cast<ChatInputFocus*>(g_chatSuggestions)->Toggle();
+    }
+  } else if (!g_windowMgr.unknown_0024) {
+    reinterpret_cast<ChatInputFocus*>(g_chatSuggestions)->Toggle();
+  } else {
+    InputFocus focus{g_windowMgr.hoverWindow};
+    focus.Set(g_chatSuggestions->window);
+  }
+
+  g_windowMgr.GetHoverWindow()->SendMsg(nullptr, 153, reinterpret_cast<std::intptr_t>(link.c_str()), 0, 0, 0);
 }
