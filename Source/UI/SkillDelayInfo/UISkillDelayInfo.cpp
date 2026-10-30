@@ -16,6 +16,16 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
 }
 
 // OFFSET: 0x00A719E0
+// FUNCTION: fn_16807
+void CUISkillDelayInfo::Slot53() {
+  this->unknown_00B4 = 0;
+  this->m_resolveSkin = true;
+  this->Resize(345, 379);
+  this->Move(0, 0);
+  this->Slot15(this->geometry.width, this->geometry.height);
+  this->Slot16();
+  this->SetSkinColors(0, 0, 0, 0);
+}
 
 namespace SkillDelayInfo {
 // OFFSET: 0x00A778C0
