@@ -4,6 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/NyanggrassEffect.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/World/World.h"
@@ -11,11 +12,11 @@
 
 // OFFSET: 0x007088B0
 // FUNCTION: fn_07076
-void CCompetentia::Slot04() {
+void CNyanggrassEffect::Slot04() {
   for (CParticle* particle : this->particles) {
     if (particle != nullptr) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      static_cast<CEZ2STRParticle*>(particle)->DrawBillboards(mode->camera->frame.view);
+      static_cast<CEZ2STRParticle*>(particle)->DrawScreen(mode->camera->frame.view);
     }
   }
 }
@@ -62,6 +63,10 @@ void CCompetentia::Slot01() {
 bool CCompetentia::Slot06() {
   return !this->particles.empty();
 }
+
+// OFFSET: 0x00708CC0
+
+// OFFSET: 0x00708DB0
 
 // OFFSET: 0x00708E30
 // FUNCTION: fn_07084
