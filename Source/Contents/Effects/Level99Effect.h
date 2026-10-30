@@ -5,6 +5,7 @@
 #include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
+#include <string>
 #include <vector>
 
 class CParticle;
@@ -12,10 +13,15 @@ class CParticle;
 class CLevel99Effect : public CEffect {
 public:
   CLevel99Effect();
+  void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   void Close() override;
   bool Slot06() override;
   void Slot08(int red, int green, int blue) override;
+  void Slot11(std::string name) override;
+
+  void AddRings();
 
   /* 00CC */ vector3d unknown_00CC[2] = {};
   /* 00E4 */ std::vector<CParticle*> sparkles;
