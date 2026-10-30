@@ -542,6 +542,13 @@ void CLoginMode::SubD91780(int) {
 }
 
 // OFFSET: 0x00D97180
+// FUNCTION: fn_22298
+void CLoginMode::End() {
+  g_soundMgr->EndSamples();
+  ResourceMgr::Instance().ClearUnused();
+  g_renderer->atlas.Clear();
+  this->unknown_6F50.clear();
+}
 
 // OFFSET: 0x00D97B20
 // FUNCTION: fn_22303
@@ -559,3 +566,54 @@ void CLoginMode::SubD97F00(int) {
 }
 
 // OFFSET: 0x00D97F10
+// FUNCTION: fn_22308
+void OpenAccountRegistration() {
+  switch (g_serviceType) {
+  case 0:
+    if (*reinterpret_cast<const int*>(&g_session.unknown_59DC[0x198]) == 1) {
+      const char* url = LookupMessage(1308);
+      const std::uint8_t source[] = {0x30, 0x45, 0xCA, 0xFB, 0x9D};
+      thread_local EncryptedName<sizeof(source), 0xCFF3899D95AF355FULL> operation(source);
+      ShellExecuteA(hWnd, operation.Text(), url, nullptr, nullptr, SW_SHOWNORMAL);
+    } else {
+      const char* url = LookupMessage(528);
+      const std::uint8_t source[] = {0x4A, 0x01, 0xCA, 0xA5, 0x0D};
+      thread_local EncryptedName<sizeof(source), 0xE52DF30DCBAF7125ULL> operation(source);
+      ShellExecuteA(hWnd, operation.Text(), url, nullptr, nullptr, SW_SHOWNORMAL);
+    }
+    break;
+  case 1: {
+    const std::uint8_t urlSource[] = {0x0F, 0xDF, 0xE5, 0xD5, 0xD2, 0x05, 0xCC, 0x3C, 0x0E, 0xD9, 0xFE, 0x8B, 0xD3, 0x5E, 0x84, 0x7D,
+                                      0x06, 0xD9, 0xFE, 0xCE, 0xCE, 0x51, 0x8F, 0x7A, 0x09, 0xCE, 0xBF, 0xC6, 0xCE, 0x52, 0xCC, 0x7E,
+                                      0x02, 0xC6, 0xF3, 0xC0, 0xD3, 0x10, 0x8E, 0x76, 0x0A, 0xC9, 0xF4, 0xD7, 0xCB, 0x50, 0x8A, 0x7D,
+                                      0x56, 0x85, 0xF0, 0xD6, 0xD1, 0x00, 0x8E, 0x5D, 0x12, 0xC6, 0xAC, 0x94, 0xA1};
+    thread_local EncryptedName<sizeof(urlSource), 0x13E33FA1A591AB67ULL> url(urlSource);
+    const char* file = url.Text();
+    const std::uint8_t source[] = {0x58, 0x37, 0xC8, 0x57, 0xBF};
+    thread_local EncryptedName<sizeof(source), 0x17A9E5BF39AD4737ULL> operation(source);
+    ShellExecuteA(hWnd, operation.Text(), file, nullptr, nullptr, SW_SHOWNORMAL);
+    break;
+  }
+  case 2:
+    break;
+  case 3: {
+    const std::uint8_t urlSource[] = {0x2B, 0x5D, 0x27, 0x57, 0xEF, 0x90, 0x66, 0xED, 0x6D, 0x42, 0x26, 0x49, 0xB9, 0xCA, 0x27, 0xB7,
+                                      0x20, 0x46, 0x3E, 0x08, 0xEA, 0xDE, 0x2A, 0xED, 0x7E, 0x5F, 0x3C, 0x52, 0xB6, 0xD7, 0x2C, 0xEB,
+                                      0x6D, 0x44, 0x32, 0x4E, 0xBB, 0x99, 0x2A, 0xF0, 0x27, 0x14, 0x62, 0x17, 0xE5, 0x8F, 0x6F, 0xE9,
+                                      0x2A, 0x4D, 0x6E, 0x11, 0xE4, 0xBF};
+    thread_local EncryptedName<sizeof(urlSource), 0x9949BFD527532943ULL> url(urlSource);
+    const char* file = url.Text();
+    const std::uint8_t source[] = {0x00, 0x0D, 0x9E, 0x4D, 0x71};
+    thread_local EncryptedName<sizeof(source), 0xCD8F077123FB7D6FULL> operation(source);
+    ShellExecuteA(hWnd, operation.Text(), file, nullptr, nullptr, SW_SHOWNORMAL);
+    break;
+  }
+  default: {
+    const char* url = LookupMessage(528);
+    const std::uint8_t source[] = {0x02, 0xCB, 0xF0, 0x43, 0x93};
+    thread_local EncryptedName<sizeof(source), 0xC517FB932D95BB6DULL> operation(source);
+    ShellExecuteA(hWnd, operation.Text(), url, nullptr, nullptr, SW_SHOWNORMAL);
+    break;
+  }
+  }
+}
