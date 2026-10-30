@@ -8,10 +8,14 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "UI/Buttons/UISpriteButton.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/SimpleStringMgr.h"
+#include "Network/TextEncoding.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
+#include "Script/LuaScript.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICashEmotionSprBtn.h"
 #include "UI/CashEmotion/UICashEmotionPack.h"
@@ -21,16 +25,28 @@
 #include "Contents/MessageTable.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Text/UIStaticText.h"
 #include "UI/UILapineScrollBar.h"
+#include "UI/Window/InputFocus.h"
 #include "UI/Window/UIFrameWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Text/FormatString.h"
 
+extern "C" {
+#include <lauxlib.h>
+#include <lua.h>
+}
+
 #include <algorithm>
 #include <array>
+#include <cctype>
 #include <climits>
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <format>
+#include <functional>
 #include <iterator>
 #include <map>
 #include <new>
@@ -52,11 +68,25 @@ public:
   bool ExecuteNamed(const char* name);
 };
 
+class CCashEmotionAction_Play : public ICashEmotionAction {
+public:
+  CCashEmotionAction_Play();
+  ~CCashEmotionAction_Play() override;
+  bool Execute(int packId, int emotionId) override;
+
+protected:
+  /* 0004 */ int m_diceEmotion;
+  /* 0008 */ int m_yutEmotion;
+};
+
 class UICashEmotionPack_Purchase : public UICashEmotionPack {
 public:
   ~UICashEmotionPack_Purchase() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+  void UpdateExpiry(Timestamp* expiry) override;
+  void ShowExpiry(__time32_t expiry) override;
 
 protected:
   /* 00E0 */ ICashEmotionAction* m_selectAction;
@@ -112,18 +142,26 @@ protected:
 
 class UICashEmotionScrollWnd : public UIScrollWnd {
 public:
+  UICashEmotionScrollWnd(UIWindowContext& windows, int width, int height, unsigned char cached);
   void Slot15(int width, int height) override;
+  virtual void Slot53() = 0;
+
+  void AddChild(UIWindow* child);
 };
 
 class UICashEmotionListChildWnd_Abstract : public UICashEmotionScrollWnd {
 public:
   void Slot35(int delta) override;
+  virtual void Refresh(const char* filter) = 0;
+  virtual const char* Filter() = 0;
 };
 
 class UICashEmotionListChildWnd_Basic : public UICashEmotionListChildWnd_Abstract {
 public:
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
+  const char* Filter() override;
 
 protected:
   /* 00B0 */ std::vector<UIWindow*> m_items;
@@ -133,17 +171,38 @@ protected:
 
 class UICashEmotionListChildWnd_Purchase : public UICashEmotionListChildWnd_Abstract {
 public:
+  void Slot15(int width, int height) override;
   void Paint() override;
+  const char* Filter() override;
+
+  void UpdateExpiry(int packId, Timestamp* expiry);
+
+protected:
+  /* 00B0 */ std::vector<UICashEmotionPack*> m_items;
+  /* 00BC */ ICashEmotionAction* unknown_00BC;
+  /* 00C0 */ std::string m_filter;
 };
 
 class UICashEmotionListChildWnd_Search : public UICashEmotionListChildWnd_Abstract {
 public:
+  void Slot15(int width, int height) override;
   void Paint() override;
+  const char* Filter() override;
+
+protected:
+  /* 00B0 */ std::uint8_t unknown_00B0[0x10];
+  /* 00C0 */ std::string m_filter;
 };
 
 class UICashEmotionListChildWnd_UnPurchased : public UICashEmotionListChildWnd_Abstract {
 public:
+  void Slot15(int width, int height) override;
   void Paint() override;
+  const char* Filter() override;
+
+protected:
+  /* 00B0 */ std::vector<UICashEmotionPack*> m_items;
+  /* 00BC */ std::string m_filter;
 };
 
 struct CashEmotionListPlacement {
@@ -161,22 +220,30 @@ public:
   void Paint() override;
 
   UIBitmapButton* CreateButton(int x, int y, int width, int height, int id, const char* format, bool hasDisabled);
+  void RefreshCurrentList();
+  void ShowPack(int packId);
+  void sub_7C7E50();
+  void ResetLists();
+  int SetPeriod(int packId);
+  void SetTab(char tab);
+  void UpdateExpiry(int packId, Timestamp* expiry);
+  void RefreshSelection();
 
 protected:
   /* 00B4 */ CashEmotionListPlacement* m_placement;
-  /* 00B8 */ UICashEmotionListChildWnd_Abstract* m_basicList;
-  /* 00BC */ UICashEmotionListChildWnd_Abstract* m_purchaseList;
-  /* 00C0 */ UICashEmotionListChildWnd_Abstract* m_searchList;
-  /* 00C4 */ UICashEmotionListChildWnd_Abstract* m_unpurchasedList;
+  /* 00B8 */ UICashEmotionListChildWnd_Basic* m_basicList;
+  /* 00BC */ UICashEmotionListChildWnd_Purchase* m_purchaseList;
+  /* 00C0 */ UICashEmotionListChildWnd_Search* m_searchList;
+  /* 00C4 */ UICashEmotionListChildWnd_UnPurchased* m_unpurchasedList;
   /* 00C8 */ std::map<char, UIWindow*> m_tabs;
   /* 00D0 */ char m_tab;
-  /* 00D4 */ UIWindow* unknown_00D4;
+  /* 00D4 */ UIBitmapButton* unknown_00D4;
   /* 00D8 */ UIEditCtrl* m_searchEdit;
-  /* 00DC */ UIWindow* unknown_00DC;
-  /* 00E0 */ UIWindow* unknown_00E0;
-  /* 00E4 */ UIWindow* unknown_00E4;
+  /* 00DC */ UIBitmapButton* unknown_00DC;
+  /* 00E0 */ UIBitmapButton* unknown_00E0;
+  /* 00E4 */ UIBitmapButton* unknown_00E4;
   /* 00E8 */ UICashEmotionListChildWnd_Abstract* m_currentList;
-  /* 00EC */ UIWindow* unknown_00EC;
+  /* 00EC */ UIStaticText* m_period;
   UIButtonContext* m_controls;
 };
 
@@ -205,6 +272,10 @@ protected:
   UICashEmotionPieceContext* m_controls;
 };
 
+// OFFSET: 0x00591CA0
+
+// OFFSET: 0x00591D30
+
 // OFFSET: 0x00591D80
 // FUNCTION: fn_02841
 ICashEmotionAction::~ICashEmotionAction() {
@@ -219,6 +290,8 @@ bool ICashEmotionAction::ExecuteNamed(const char* name) {
 
   return this->Execute(g_cashEmotionMgr->BasePackId(), g_cashEmotionMgr->FindEmotionId(name));
 }
+
+// OFFSET: 0x00591EB0
 
 // OFFSET: 0x00592290
 // FUNCTION: fn_02849
@@ -841,6 +914,12 @@ bool CCashEmotionMgr::IsOwnedPack(int packId) {
   return std::find(this->m_ownedPacks.begin(), this->m_ownedPacks.end(), packId) != this->m_ownedPacks.end();
 }
 
+// OFFSET: 0x0059C5A0
+
+// OFFSET: 0x0059C730
+
+// OFFSET: 0x0059C860
+
 // OFFSET: 0x0059CDE0
 // FUNCTION: fn_02981
 void CCashEmotionMgr::sub_59CDE0(int param) {
@@ -870,11 +949,28 @@ void CCashEmotionMgr::SetServerTimeZone(short serverBias) {
   }
 }
 
+// OFFSET: 0x0059CEC0
+
+// OFFSET: 0x0059D040
+// FUNCTION: fn_02984
+void CCashEmotionMgr::Unknown59D040(int, int) {
+}
+
+// OFFSET: 0x0059D2C0
+
 // OFFSET: 0x0059FC50
 // FUNCTION: fn_03031
 int CCashEmotionMgr::sub_59FC50() {
   return _time32(nullptr) - this->unknown_01D0 - this->unknown_01CC;
 }
+
+// OFFSET: 0x0059FDC0
+
+// OFFSET: 0x005A0290
+
+// OFFSET: 0x005A07F0
+
+// OFFSET: 0x005A0CE0
 
 // OFFSET: 0x007C3AD0
 // FUNCTION: fn_09344
@@ -886,6 +982,18 @@ void UICashEmotionListChildWnd_Abstract::Slot35(int delta) {
     }
     this->SendMsg(this->scrollBar, 7, -15, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x007C4100
+// FUNCTION: fn_09351
+const char* UICashEmotionListChildWnd_Basic::Filter() {
+  return nullptr;
+}
+
+// OFFSET: 0x007C4440
+// FUNCTION: fn_09353
+void UICashEmotionListChildWnd_Basic::Slot15(int, int) {
+  this->Refresh(nullptr);
 }
 
 // OFFSET: 0x007C4450
@@ -904,16 +1012,54 @@ void UICashEmotionListChildWnd_Basic::Slot19() {
   }
 }
 
+// OFFSET: 0x007C4D10
+// FUNCTION: fn_09366
+const char* UICashEmotionListChildWnd_Purchase::Filter() {
+  return this->m_filter.c_str();
+}
+
+// OFFSET: 0x007C5290
+// FUNCTION: fn_09368
+void UICashEmotionListChildWnd_Purchase::Slot15(int, int) {
+  this->Refresh(nullptr);
+}
+
 // OFFSET: 0x007C52A0
 // FUNCTION: fn_09369
 void UICashEmotionListChildWnd_Purchase::Paint() {
   this->ClearSurface(0xFFFF00FF);
 }
 
+// OFFSET: 0x007C52F0
+
+// OFFSET: 0x007C5980
+// FUNCTION: fn_09380
+const char* UICashEmotionListChildWnd_Search::Filter() {
+  return this->m_filter.c_str();
+}
+
+// OFFSET: 0x007C5D80
+// FUNCTION: fn_09383
+void UICashEmotionListChildWnd_Search::Slot15(int, int) {
+  this->Refresh(nullptr);
+}
+
 // OFFSET: 0x007C5D90
 // FUNCTION: fn_09384
 void UICashEmotionListChildWnd_Search::Paint() {
   this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x007C6520
+// FUNCTION: fn_09392
+const char* UICashEmotionListChildWnd_UnPurchased::Filter() {
+  return this->m_filter.c_str();
+}
+
+// OFFSET: 0x007C6AA0
+// FUNCTION: fn_09394
+void UICashEmotionListChildWnd_UnPurchased::Slot15(int, int) {
+  this->Refresh(nullptr);
 }
 
 // OFFSET: 0x007C6AB0
@@ -927,7 +1073,7 @@ void UICashEmotionListChildWnd_UnPurchased::Paint() {
 UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows, UIFrameContext& frame, UIButtonContext& controls)
     : UIFrameWnd(windows, frame, 0), m_placement(nullptr), m_basicList(nullptr), m_purchaseList(nullptr), m_searchList(nullptr), m_unpurchasedList(nullptr),
       m_tab(0), unknown_00D4(nullptr), m_searchEdit(nullptr), unknown_00DC(nullptr), unknown_00E0(nullptr), unknown_00E4(nullptr), m_currentList(nullptr),
-      unknown_00EC(nullptr), m_controls(&controls) {
+      m_period(nullptr), m_controls(&controls) {
 }
 
 // OFFSET: 0x007C7240
@@ -973,6 +1119,18 @@ void UICashEmotionListWnd::Slot19() {
   }
 }
 
+// OFFSET: 0x007C7CD0
+
+// OFFSET: 0x007C7D10
+
+// OFFSET: 0x007C7E50
+
+// OFFSET: 0x007C7F00
+
+// OFFSET: 0x007C7F60
+
+// OFFSET: 0x007C8800
+
 // OFFSET: 0x007C8AF0
 // FUNCTION: fn_09420
 void UICashEmotionListWnd::Slot11() {
@@ -983,6 +1141,10 @@ void UICashEmotionListWnd::Slot11() {
     this->m_placement->height = this->geometry.height;
   }
 }
+
+// OFFSET: 0x007C8B30
+
+// OFFSET: 0x007C8B50
 
 // OFFSET: 0x007C90B0
 // FUNCTION: fn_09427
@@ -1229,6 +1391,12 @@ UICashEmotionPack::~UICashEmotionPack() {
   this->m_pieces.clear();
 }
 
+// OFFSET: 0x007C9EB0
+
+// OFFSET: 0x007C9FE0
+
+// OFFSET: 0x007CA100
+
 // OFFSET: 0x007CA690
 // FUNCTION: fn_09446
 void UICashEmotionPack::Paint() {
@@ -1346,6 +1514,10 @@ UICashEmotionPack_Purchase::~UICashEmotionPack_Purchase() {
   delete this->m_purchaseAction;
   this->m_purchaseAction = nullptr;
 }
+
+// OFFSET: 0x007CACE0
+
+// OFFSET: 0x007CAE70
 
 // OFFSET: 0x007CAEB0
 // FUNCTION: fn_09462
@@ -1704,6 +1876,10 @@ void UICashEmotionScrollBar::SetDisabled(bool disabled) {
   }
 }
 
+// OFFSET: 0x007CC2B0
+
+// OFFSET: 0x007CC440
+
 // OFFSET: 0x007CC5D0
 // FUNCTION: fn_09496
 void UICashEmotionScrollWnd::Slot15(int, int) {
@@ -1728,6 +1904,8 @@ void UICashEmotionSprBtn::SetSelected(bool selected) {
     this->Invalidate();
   }
 }
+
+// OFFSET: 0x007CCD90
 
 // OFFSET: 0x008502C0
 // FUNCTION: fn_10674

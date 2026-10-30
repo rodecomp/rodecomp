@@ -13,6 +13,7 @@
 
 class CCashEmotionMgr;
 class ICashEmotionAction;
+struct lua_State;
 
 struct CashEmotionKeyHash {
   // INLINED
@@ -49,6 +50,12 @@ struct CashEmotionData {
 };
 
 struct CashEmotionPack {
+  // INLINED
+  CashEmotionPack(const char* name, int unknown18, unsigned int startTime, unsigned int endTime, int unknown24, char unknown28)
+      : name(name), unknown_0018(unknown18), startTime(startTime), endTime(endTime), unknown_0024(unknown24), unknown_0028(unknown28),
+        originalStartTime(startTime), originalEndTime(endTime) {
+  }
+
   // INLINED
   bool IsAvailable(unsigned int now) const {
     if (this->startTime == 0 && this->endTime == 0) {
@@ -88,6 +95,11 @@ struct CashEmotionSpecialHash {
   }
 };
 
+struct CashEmotionPackRefresh {
+  /* 0000 */ bool changed;
+  /* 0004 */ int nextTime;
+};
+
 using CashEmotionTable = std::unordered_map<int, CashEmotionData, CashEmotionKeyHash>;
 using CashEmotionFileNames = std::unordered_map<int, std::string, CashEmotionKeyHash>;
 
@@ -99,12 +111,18 @@ struct CashEmotionPackOrder {
 };
 
 class CCashEmotionMgr {
+  friend class UICashEmotionListWnd;
+
 public:
   CCashEmotionMgr();
   virtual ~CCashEmotionMgr();
 
   static bool Initialize();
   static void Shutdown();
+  static int InsertEmotionGroup(lua_State* state);
+  static int InsertEmotionMsgListTable(lua_State* state);
+  static int InsertEmotionMsgListTableForCustom(lua_State* state);
+  static int InsertPackInfo(lua_State* state);
 
   void Reset();
   void ClearOwnedPacks();
@@ -144,10 +162,14 @@ public:
   bool IsChatProhibitEmotion(int emotionId);
   bool IsPackAvailable(unsigned int now, int packId);
   bool IsOwnedPack(int packId);
+  void RemoveOwnedPack(int packId, bool refresh, bool clearExpiry);
+  CashEmotionPackRefresh RefreshUnownedPacks();
   void sub_59CDE0(int param);
   void SetServerTimeZone(short serverBias);
   bool sub_59C5A0();
   bool sub_59D2C0();
+  void ShowErrorMessage(const char* key, int value);
+  void Unknown59D040(int argument1, int argument2);
   int sub_59FC50();
   // INLINED
   int BasePackId() const {

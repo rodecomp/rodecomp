@@ -5,10 +5,16 @@
 #include "UI/Window/UIWindow.h"
 
 #include <cstdint>
+#include <ctime>
 #include <string>
 #include <vector>
 
+class Timestamp;
+class UIStaticText;
+
 class UICashEmotionPack : public UIWindow {
+  friend class UICashEmotionListChildWnd_Purchase;
+
 public:
   ~UICashEmotionPack() override;
   void Slot19() override;
@@ -18,14 +24,18 @@ public:
   void Slot27(int x, int y) override;
   void Slot35(int argument) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  virtual int Slot53(int packId, bool showTooltip, bool hoverable) = 0;
+  virtual void UpdateExpiry(Timestamp* expiry);
+  virtual void ShowExpiry(__time32_t expiry);
 
+  std::string GetPriceText(int packId);
   void SetSaleBadge(char type);
   void SetTitle(const char* title);
 
 protected:
   /* 007C */ std::vector<UICashEmotionPiece*> m_pieces;
   /* 0088 */ UIWindow* unknown_0088;
-  /* 008C */ UIWindow* m_titleText;
+  /* 008C */ UIStaticText* m_titleText;
   /* 0090 */ std::string m_background;
   /* 00A8 */ int unknown_00A8;
   /* 00AC */ std::string m_title;
