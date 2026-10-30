@@ -11,6 +11,7 @@
 class CUIVScrollBar : public CUIControl {
 public:
   CUIVScrollBar();
+  explicit CUIVScrollBar(UIWindowContext& context);
   ~CUIVScrollBar() override;
   void Resize(int width, int height) override;
   void Show(int visible) override;

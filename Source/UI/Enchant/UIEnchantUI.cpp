@@ -14,6 +14,20 @@
 template <>
 CEnchantMgr* Singleton<CEnchantMgr>::s_instance = nullptr;
 
+// OFFSET: 0x009F9B40
+// OFFSET: 0x009F9C10
+// FUNCTION: fn_14814
+// FUNCTION: fn_14815
+template <class T, class D> void CUIListBoxEx<T, D>::Slot15(int width, int height) {
+  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar->Show(0);
+  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
+  this->AddChild(this->scrollBar);
+}
+
+template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::Slot15(int, int);
+template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Slot15(int, int);
+
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::Paint();
 template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Paint();
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::Slot35(int);

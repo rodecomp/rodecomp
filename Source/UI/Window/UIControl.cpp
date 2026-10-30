@@ -48,6 +48,13 @@ CUIButton::CUIButton(UIWindowContext& context) : CUIControl(context), state(0), 
 CUIImageButton::CUIImageButton(UIWindowContext& context) : CUIButton(context), images(), disabledImage(), transparent(0), imageNames(), disabledName() {
 }
 
+// OFFSET: 0x009BE480
+// FUNCTION: fn_13948
+CUIVScrollBar::CUIVScrollBar(UIWindowContext& context)
+    : CUIControl(context), downButton(nullptr), thumb(nullptr), total(1), visible(1), step(1), position(0), maximum(0), trackLength(1), dragging(0),
+      hidden(0), transparent(0), upButton(nullptr) {
+}
+
 // OFFSET: 0x009C08C0
 CUIControl::~CUIControl() = default;
 
