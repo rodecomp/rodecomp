@@ -1,6 +1,8 @@
 #include "UI/Window/UIDebuffRemoveWnd.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 
 #include <cstdint>
 
@@ -10,6 +12,14 @@ struct DebuffRemovePacket {
   /* 0000 */ std::int16_t id;
 };
 #pragma pack(pop)
+}
+
+// OFFSET: 0x0094D260
+// FUNCTION: fn_12903
+void UIDebuffRemoveWnd::Paint() {
+  const TextLocale locale = {};
+  this->DrawTitleBar(g_fontCache, locale, false, "", 0);
+  this->DrawPanelBackground(17, 0, "");
 }
 
 // OFFSET: 0x0094EE60
