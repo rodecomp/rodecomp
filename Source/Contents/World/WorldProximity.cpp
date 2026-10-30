@@ -7,6 +7,7 @@
 #include "Resource/World/TerrainResource.h"
 
 #include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <functional>
 
@@ -138,3 +139,37 @@ void CWorld::RemovePcPosForMove(std::uint32_t aid, bool notify) {
     return;
   }
 }
+
+struct WorldProximityGuildMasterCallback {
+  void* unknown_0000;
+  CWorld* world;
+
+  bool Invoke(const std::uint32_t& aid);
+};
+
+// OFFSET: 0x00ACBA10
+// FUNCTION: fn_17717
+bool WorldProximityRejectA() {
+  return false;
+}
+
+// OFFSET: 0x00ACBA20
+// FUNCTION: fn_17718
+bool WorldProximityRejectB() {
+  return false;
+}
+
+// OFFSET: 0x00ACBA30
+
+struct WorldProximityRangeCallback {
+  void* unknown_0000;
+  int range;
+  float playerX;
+  float playerZ;
+  float cellX;
+  float cellZ;
+
+  bool Invoke();
+};
+
+// OFFSET: 0x00ACBA80
