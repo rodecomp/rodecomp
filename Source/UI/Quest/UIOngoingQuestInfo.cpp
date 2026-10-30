@@ -15,10 +15,12 @@
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Text/UITextViewerControl.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
 #include <cstring>
+#include <format>
 #include <string>
 
 template <>
@@ -335,4 +337,70 @@ void CUIOngoingQuestInfo::sub_A55B70() {
   const int total = window->ContentHeight();
   window->scrollBar->SetTotal((std::max)(window->geometry.height, total));
   window->scrollBar->SetPosition(0);
+}
+
+// OFFSET: 0x00A56050
+// FUNCTION: fn_16317
+void CUIOngoingQuestInfo::SetQuest(unsigned int id) {
+  const auto found = g_renewQuestMgr->m_ongoingQuests.find(id);
+  if (found != g_renewQuestMgr->m_ongoingQuests.end()) {
+    const RenewQuestOngoingInfo& quest = found->second;
+    this->titleText->SetText(quest.m_title.c_str(), quest.m_title.size());
+    CUIStaticText* date = this->dateText;
+    const std::string text = quest.GetDateString();
+    date->SetText(text.c_str(), text.size());
+    this->scrollWindow->SetQuest(id);
+    this->questId = id;
+  }
+}
+
+namespace OngoingQuestInfo {
+
+// OFFSET: 0x00A56150
+// FUNCTION: fn_16318
+void CUIScrollWindow::SetQuest(unsigned int id) {
+  this->firstContents->textViewer->Clear();
+  this->secondContents->textViewer->Clear();
+  this->rewards->rewardList->ClearData();
+
+  const auto found = g_renewQuestMgr->m_ongoingQuests.find(id);
+  if (found != g_renewQuestMgr->m_ongoingQuests.end()) {
+    const RenewQuestOngoingInfo& quest = found->second;
+    for (const std::string& description : quest.m_descriptions) {
+      this->firstContents->textViewer->AddLine(description);
+    }
+    for (int index = 0; index < quest.m_huntCount; ++index) {
+      this->secondContents->textViewer->AddLine(quest.GetHuntText(index));
+    }
+    this->rewards->firstText->SetText(quest.unknown_01B8.c_str(), quest.unknown_01B8.size());
+    this->rewards->secondText->SetText(quest.unknown_01D0.c_str(), quest.unknown_01D0.size());
+    for (const auto& reward : quest.m_rewards) {
+      this->rewards->rewardList->AddData(CRewardItemData{static_cast<int>(reward.first), static_cast<int>(reward.second)}, false);
+    }
+    this->rewards->rewardList->UpdateScrollBar();
+
+    CUIRewards* rewards = this->rewards;
+    if (quest.unknown_007C.empty()) {
+      rewards->npcSprite->Show(0);
+    } else {
+      rewards->npcSprite->SetSprite(75, 145, quest.unknown_007C);
+      if (!quest.unknown_0094.empty()) {
+        rewards->npcSprite->SetDestination(quest.unknown_0094, quest.unknown_00AC, quest.unknown_00B0);
+      }
+      rewards->npcSprite->Move(rewards->geometry.width - rewards->npcSprite->geometry.width - 23, 9);
+      rewards->npcSprite->Show(1);
+    }
+  } else {
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(std::format("Not found Quest Info = %lu", id).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+  }
+
+  this->firstContents->UpdateHeight();
+  this->secondContents->UpdateHeight();
+  this->rewards->UpdateHeight();
+
+  const int total = this->ContentHeight();
+  this->scrollBar->SetTotal((std::max)(this->geometry.height, total));
+  this->scrollBar->SetPosition(0);
+}
+
 }

@@ -20,11 +20,14 @@ public:
   void OnFirstAction();
   virtual void Slot53();
   void sub_A55B70();
+  void SetQuest(unsigned int id);
 
   /* 00D8 */ CUITitleBar* titleBar;
-  /* 00DC */ unsigned char unknown_00DC[0x08];
+  /* 00DC */ unsigned char unknown_00DC[0x04];
+  /* 00E0 */ CUIStaticText* titleText;
   /* 00E4 */ OngoingQuestInfo::CUIScrollWindow* scrollWindow;
-  /* 00E8 */ unsigned char unknown_00E8[0x08];
+  /* 00E8 */ CUIStaticText* dateText;
+  /* 00EC */ unsigned char unknown_00EC[0x04];
   /* 00F0 */ unsigned int questId;
 };
 
@@ -79,9 +82,9 @@ public:
 
   /* 0084 */ CUIStaticText* title;
   /* 0088 */ CUIStaticText* firstLabel;
-  /* 008C */ unsigned char unknown_008C[0x04];
+  /* 008C */ CUIStaticText* firstText;
   /* 0090 */ CUIStaticText* secondLabel;
-  /* 0094 */ unsigned char unknown_0094[0x04];
+  /* 0094 */ CUIStaticText* secondText;
   /* 0098 */ CUIStaticText* thirdLabel;
   /* 009C */ CUIListBoxEx<CUIRewardItem, CRewardItemData>* rewardList;
   /* 00A0 */ UINpcSprWnd* npcSprite;
@@ -94,6 +97,7 @@ public:
   void Slot35(int value) override;
 
   void OnScroll(int position);
+  void SetQuest(unsigned int id);
 
   // INLINED
   int ContentHeight() {
