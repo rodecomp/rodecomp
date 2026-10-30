@@ -2,7 +2,14 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/MapSkyMgr.h"
+#include "Render/Renderer.h"
+#include "Render/SpriteGeometry.h"
+#include "Render/SpriteQuad.h"
+#include "Render/Textures/SpritePixels.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 #include "Utility/Math/AffineMatrix.h"
+#include <cstdlib>
 
 // OFFSET: 0x00BEBC80
 // FUNCTION: fn_19972
@@ -266,6 +273,101 @@ void CEffectPrim::RenderGroundArcStep(matrix& wtm) {
   }
 }
 
+// OFFSET: 0x00BEC960
+// FUNCTION: fn_19976
+void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
+  CSprRes* sprite = this->render.sprite;
+  CActRes* action = this->GetActRes();
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    for (int seg = 0; seg < this->state.numSegment; ++seg) {
+      const EffectPrimitiveRecord& record = this->state.records[seg];
+      vector3d position;
+      position.x = record.position.x + slot.vecBNow.x;
+      position.y = record.position.y + slot.vecBNow.y;
+      position.z = record.position.z + slot.vecBNow.z;
+      const float depth = position.y * wtm.values[5] + position.x * wtm.values[2] + position.z * wtm.values[8] + wtm.values[11];
+
+      float screenX;
+      float screenY;
+      float reciprocalDepth;
+      g_renderer->ProjectViewport(&position.x, wtm.values, &screenX, &screenY, &reciprocalDepth);
+      const float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
+
+      const ActionFrame& frame = action->Frame(this->render.previousAnimation, this->render.curMotion);
+      for (int index = 0; index < frame.cellCount; ++index) {
+        const SpriteFrameCell& cell = frame.Cell(index);
+        if (cell.image == -1) {
+          continue;
+        }
+
+        const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+        const double scale = record.scale;
+        const float top = static_cast<float>(cell.y * scale * cell.scaleY * distanceScale + screenY);
+        const float bottom = static_cast<float>(((static_cast<short>(image->unknown_0006) + 1) * image->height + cell.y) * scale * cell.scaleY * distanceScale + screenY);
+        if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f) {
+          continue;
+        }
+
+        float left;
+        float right;
+        if ((cell.mirrored & 1) != 0) {
+          left = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+          right = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
+          if (right >= static_cast<float>(g_renderer->viewport.width) || left <= 0.0f) {
+            continue;
+          }
+        } else {
+          left = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
+          right = static_cast<float>(((static_cast<short>(image->unknown_0004) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+          if (left >= static_cast<float>(g_renderer->viewport.width) || right <= 0.0f) {
+            continue;
+          }
+        }
+
+        SpriteQuad quad;
+        quad.top = top;
+        quad.left = left;
+        quad.bottom = bottom;
+        quad.right = right;
+        short alpha = static_cast<short>((cell.color >> 24) * 0.85f);
+        quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + 0.0001f;
+        quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0001f;
+        if ((this->state.pattern & 0x200) == 0) {
+          quad.color = record.color;
+        } else if (slot.flag1[0] == 0) {
+          quad.color = (((((alpha << 8) + (cell.color & 0xFF)) << 8) + (cell.color >> 8 & 0xFF)) << 8) + (cell.color >> 16 & 0xFF);
+        } else if (slot.flag1[0] == 1) {
+          quad.color = (alpha << 24) + 0x3737FF;
+        }
+        quad.angle = static_cast<float>(cell.unknown_001C) + this->state.roll;
+        quad.image = image;
+        this->DrawQuad(quad, sprite->palette, 5, 0.0f, 0.0f, 0);
+
+        quad.top -= 4.0f;
+        quad.bottom += 4.0f;
+        quad.left -= 4.0f;
+        quad.right += 4.0f;
+        alpha = static_cast<short>((cell.color >> 24) * g_depthAverageHalf);
+        quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + 0.0002f;
+        quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0002f;
+        if ((this->state.pattern & 0x200) == 0) {
+          quad.color = record.color;
+        } else if (slot.flag1[0] == 0) {
+          quad.color = (((alpha << 8) + (cell.color & 0xFF)) << 16) + 0x3737;
+        } else if (slot.flag1[0] == 1) {
+          quad.color = (alpha << 24) + 0x3737FF;
+        }
+        quad.angle = static_cast<float>(cell.unknown_001C) + this->state.roll;
+        quad.image = image;
+        this->DrawQuad(quad, sprite->palette, 5, 0.0f, 0.0f, 0);
+      }
+    }
+  }
+}
+
 // OFFSET: 0x00BECEB0
 // FUNCTION: fn_19977
 void CEffectPrim::RenderGroundSquare(matrix& wtm) {
@@ -350,6 +452,8 @@ void CEffectPrim::RenderGroundSquareBlend(matrix& wtm) {
     );
   }
 }
+
+// OFFSET: 0x00BED490
 
 // OFFSET: 0x00BEFD80
 // FUNCTION: fn_19983
@@ -513,6 +617,8 @@ void CEffectPrim::RenderFanTrail(matrix& wtm) {
     }
   }
 }
+
+// OFFSET: 0x00BF0370
 
 // OFFSET: 0x00BEE900
 // FUNCTION: fn_19980
