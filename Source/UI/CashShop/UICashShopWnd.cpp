@@ -1,10 +1,13 @@
 #include "UI/CashShop/UICashShopWnd.h"
 
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
+#include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -12,9 +15,12 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Lists/UIScrollBar.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/UIStaticBitmap.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
+#include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 
@@ -256,6 +262,25 @@ void UICashShopWnd_CartItem::Slot26(int, int) {
   this->SendMsg(this, 6, 0xD3, 0, 0, 0);
 }
 
+// OFFSET: 0x007D1040
+// FUNCTION: fn_09545
+void UICashShopWnd_CartItem::Slot25(int, int) {
+  if (this->m_item.unknown_0000[1] != 0) {
+    ItemDescriptions descriptions{g_itemDescriptions};
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())
+      ->drag.BeginItem(*reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), descriptions, 4, this->m_item, this->m_item.quantity, -1);
+  }
+}
+
+// OFFSET: 0x007D1080
+// FUNCTION: fn_09546
+void UICashShopWnd_Item::Slot25(int, int) {
+  if (this->m_item.unknown_0000[1] != 0) {
+    ItemDescriptions descriptions{g_itemDescriptions};
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(*reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), descriptions, 6, this->m_item, 1, -1);
+  }
+}
+
 // OFFSET: 0x007D10B0
 // FUNCTION: fn_09547
 void UICashShopWnd_Banner::Slot31(int, int) {
@@ -265,6 +290,28 @@ void UICashShopWnd_Banner::Slot31(int, int) {
 
   std::string url = this->m_entries[this->m_index].url;
   ShellExecuteA(nullptr, "OPEN", url.c_str(), url.c_str(), nullptr, SW_SHOW);
+}
+
+// OFFSET: 0x007D1160
+// FUNCTION: fn_09548
+void UICashShopWnd_CartItem::Slot28(int x, int y) {
+  if (static_cast<unsigned int>(x - 0x30) <= 0x70 && static_cast<unsigned int>(y - 0xC) <= 0xB) {
+    x = 0;
+    y = -10;
+    this->ToScreen(x, y);
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->m_item.unknown_0044.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+  }
+}
+
+// OFFSET: 0x007D11D0
+// FUNCTION: fn_09549
+void UICashShopWnd_Item::Slot28(int x, int y) {
+  if (y < 0x18) {
+    x = 0;
+    y = -20;
+    this->ToScreen(x, y);
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->m_item.unknown_0044.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+  }
 }
 
 // OFFSET: 0x007D1230
@@ -306,6 +353,28 @@ void UICashShopWnd_Banner::Slot19() {
   }
 }
 
+// OFFSET: 0x007D1540
+// FUNCTION: fn_09553
+void UICashShopWnd_CartItem::Slot33(int x, int) {
+  if (static_cast<unsigned int>(x - 4) <= 0x25) {
+    UIWindow* window = reinterpret_cast<WindowManagerWindows*>(&g_windowMgr)->EnsureWindow(12);
+    if (window != nullptr) {
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x007D1590
+// FUNCTION: fn_09554
+void UICashShopWnd_Item::Slot33(int x, int y) {
+  if (static_cast<unsigned int>(x - 5) <= 0x4B && static_cast<unsigned int>(y - 0x17) <= 0x64) {
+    UIWindow* window = reinterpret_cast<WindowManagerWindows*>(&g_windowMgr)->EnsureWindow(12);
+    if (window != nullptr) {
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->m_item), 0, 0, 0);
+    }
+  }
+}
+
 // OFFSET: 0x007D15E0
 // FUNCTION: fn_09555
 void UICashShopWnd_Cart::Slot35(int delta) {
@@ -340,6 +409,161 @@ int UICashShopWnd_Banner::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
     this->m_lastTick = timeGetTime();
     this->Invalidate();
+  }
+
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x007D2CB0
+// FUNCTION: fn_09560
+int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
+  switch (message) {
+  case 7:
+  case 9:
+  case 10: {
+    const int count = this->m_cartItems.size();
+    if (count == 0) {
+      break;
+    }
+
+    int maximum = count - this->m_visibleCount;
+    if (maximum < 0) {
+      maximum = 0;
+    }
+
+    UIScrollBar* scrollBar = static_cast<UIScrollBar*>(this->m_scrollBar);
+    if (maximum == 0) {
+      if (static_cast<int>(this->m_scrollIndex) > 0) {
+        this->m_scrollIndex = 0;
+        scrollBar->SetRange(maximum, this->m_visibleCount, this->m_cartItems.size());
+        scrollBar->SetPosition(this->m_scrollIndex);
+      }
+      break;
+    }
+
+    const int index = argument1 + this->m_scrollIndex;
+    if (index < 0) {
+      if (index <= maximum) {
+        this->Invalidate();
+        break;
+      }
+      this->m_scrollIndex = maximum;
+    } else if (index > maximum) {
+      this->m_scrollIndex = maximum;
+    } else {
+      this->m_scrollIndex = index;
+    }
+
+    scrollBar->SetRange(maximum, this->m_visibleCount, this->m_cartItems.size());
+    scrollBar->SetPosition(this->m_scrollIndex);
+    this->Invalidate();
+    break;
+  }
+  case 0x1F: {
+    if (argument1 == 0) {
+      return -1;
+    }
+
+    const ITEM_INFO& item = *reinterpret_cast<const ITEM_INFO*>(argument1);
+    int quantity = argument2;
+    if (quantity == 0) {
+      dialogs.Confirm(LookupMessage(0xE50), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      return -1;
+    }
+
+    std::vector<ITEM_INFO>::iterator it = this->m_cartItems.begin();
+    for (; it != this->m_cartItems.end(); ++it) {
+      if (atoi(it->itemId.c_str()) == atoi(item.itemId.c_str())) {
+        break;
+      }
+    }
+
+    if (it == this->m_cartItems.end()) {
+      if (g_session.unknown_5912 && !this->m_cartItems.empty()) {
+        const int result =
+          dialogs.Confirm(FormatOwnedString(CashShopReplaceCartItemText()().Text(), item.unknown_0044.c_str()).c_str(), 2, true, false, 0, "Message", 0x118, 0x78, 0);
+        if (result != 0xBB) {
+          break;
+        }
+        this->m_cartItems.clear();
+      }
+
+      if (this->m_cartItems.size() >= 8) {
+        dialogs.Confirm(FormatOwnedString(LookupMessage(0xCF0), 8).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        return -1;
+      }
+
+      ITEM_INFO entry(item);
+      const int limit = entry.unknown_0078[3];
+      if (limit != 0) {
+        if (quantity > limit) {
+          dialogs.Confirm(FormatOwnedString(LookupMessage(0x9DC), limit).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        }
+        if (quantity > limit) {
+          quantity = limit;
+        }
+      }
+      entry.quantity = quantity;
+      this->m_cartItems.push_back(entry);
+      this->SendMsg(this, 7, 1, 0, 0, 0);
+    } else {
+      const int limit = it->unknown_0078[3];
+      if (limit != 0 && it->quantity + quantity > limit) {
+        dialogs.Confirm(FormatOwnedString(LookupMessage(0x9DC), limit).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        quantity = it->unknown_0078[3] - it->quantity;
+        if (quantity == 0) {
+          return -1;
+        }
+      }
+
+      const int total = it->quantity + quantity;
+      if (total > 100) {
+        dialogs.Confirm(FormatOwnedString(LookupMessage(0x6A8), 100).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        it->quantity = 100;
+      } else {
+        it->quantity = total > 0 ? total : 1;
+      }
+      this->SendMsg(this, 7, 0, 0, 0, 0);
+    }
+
+    if (this->parent != nullptr) {
+      int price = 0;
+      for (const ITEM_INFO& entry : this->m_cartItems) {
+        price += entry.unknown_0014[0] * entry.quantity;
+      }
+      this->parent->SendMsg(this, 0x9B, price, 0, 0, 0);
+    }
+    this->Invalidate();
+    return UIWindow::SendMsg(sender, message, argument1, quantity, argument3, argument4);
+  }
+  case 0x68: {
+    if (sender == nullptr) {
+      break;
+    }
+
+    std::vector<ITEM_INFO>::iterator it = this->m_cartItems.begin();
+    for (; it != this->m_cartItems.end(); ++it) {
+      if (atoi(it->itemId.c_str()) == argument1) {
+        break;
+      }
+    }
+    if (it == this->m_cartItems.end()) {
+      break;
+    }
+
+    this->m_cartItems.erase(it);
+    if (this->parent != nullptr) {
+      int price = 0;
+      for (const ITEM_INFO& entry : this->m_cartItems) {
+        price += entry.unknown_0014[0] * entry.quantity;
+      }
+      this->parent->SendMsg(this, 0x9B, price, 0, 0, 0);
+    }
+    this->SendMsg(this, 7, 0, 0, 0, 0);
+    this->Invalidate();
+    break;
+  }
   }
 
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);

@@ -39,7 +39,10 @@ class UICashShopWnd_CartItem : public UIWindow {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
+  void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
+  void Slot28(int x, int y) override;
+  void Slot33(int x, int y) override;
   void Slot35(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -52,6 +55,7 @@ public:
   void Slot10(int x, int y, std::intptr_t value) override;
   void Paint() override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ std::vector<UICashShopWnd_CartItem*> m_slots;
   /* 0088 */ std::vector<ITEM_INFO> m_cartItems;
@@ -64,6 +68,9 @@ class UICashShopWnd_Item : public UIWindow {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
+  void Slot25(int x, int y) override;
+  void Slot28(int x, int y) override;
+  void Slot33(int x, int y) override;
 
   /* 007C */ UIBmpTextButton* m_addButton;
   /* 0080 */ ITEM_INFO m_item;
