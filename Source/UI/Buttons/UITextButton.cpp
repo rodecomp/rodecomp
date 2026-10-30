@@ -561,6 +561,16 @@ void UIItemMoveInfo::Slot48() {
   this->Invalidate();
 }
 
+// OFFSET: 0x0087B550
+// FUNCTION: fn_11242
+void UIComboBox::Configure(int x, int y, int width, int height, unsigned char value) {
+  this->transparent = value;
+  UIWindow::Resize(width, height);
+  this->Move(x, y);
+  this->Slot15(width, height);
+  this->Slot22(width, height);
+}
+
 // OFFSET: 0x008974A0
 // FUNCTION: fn_11528
 void UIComboBox::Resize(int width, int height) {
@@ -1090,6 +1100,16 @@ void UIBitmapButton2::Slot33(int x, int y) {
 
   this->Invalidate();
   g_windowMgr.ReleaseCapture();
+}
+
+// OFFSET: 0x0087B4B0
+// FUNCTION: fn_11240
+void UIChatHisBox2::Configure(int x, int y, int width, int height, unsigned char) {
+  this->transparent = 0;
+  UIWindow::Resize(width, height);
+  this->Move(x, y);
+  this->Slot15(width, height);
+  this->Slot22(width, height);
 }
 
 // OFFSET: 0x00892C20

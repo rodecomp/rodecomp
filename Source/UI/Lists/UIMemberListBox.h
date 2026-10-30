@@ -10,6 +10,7 @@ class UIChatHisBox : public UIListBox {
 
 class UIChatHisBox2 : public UIChatHisBox {
 public:
+  void Configure(int x, int y, int width, int height, unsigned char transparent) override;
   void Slot33(int x, int y) override;
 };
 

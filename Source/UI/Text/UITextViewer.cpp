@@ -79,6 +79,17 @@ void UITextViewer::Slot15(int width, int height) {
   UIListBox::Slot15(width, height);
 }
 
+// OFFSET: 0x0087B730
+// FUNCTION: fn_11248
+void UITextViewEX::Configure(int x, int y, int width, int height, unsigned char value) {
+  this->transparent = value;
+  UIWindow::Resize(width, height);
+  this->Move(x, y);
+  this->Slot15(width, height);
+  this->Slot22(width, height);
+  this->lineHeight = 21;
+}
+
 // OFFSET: 0x0087B780
 // FUNCTION: fn_11249
 void UITextViewer::Configure(int x, int y, int width, int height, unsigned char value) {

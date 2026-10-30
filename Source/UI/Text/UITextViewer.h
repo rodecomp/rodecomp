@@ -69,6 +69,11 @@ private:
   void Activate(UITextButton* button, int id);
 };
 
+class UITextViewEX : public UITextViewer {
+public:
+  void Configure(int x, int y, int width, int height, unsigned char transparent) override;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UITextViewer) == 248);
 #endif

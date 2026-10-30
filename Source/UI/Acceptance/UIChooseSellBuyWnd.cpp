@@ -123,6 +123,16 @@ static const char bookmarkKeySuffixText[] = "\\BookMark";
 // GLOBAL: gl_24751
 const char* g_bookmarkKeySuffix = bookmarkKeySuffixText;
 
+// OFFSET: 0x0087B500
+// FUNCTION: fn_11241
+void UIChatHisBox::Configure(int x, int y, int width, int height, unsigned char) {
+  this->transparent = 1;
+  UIWindow::Resize(width, height);
+  this->Move(x, y);
+  this->Slot15(width, height);
+  this->Slot22(width, height);
+}
+
 // OFFSET: 0x008C73C0
 // FUNCTION: fn_11930
 UIChooseSellBuyWnd::UIChooseSellBuyWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)

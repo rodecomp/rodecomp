@@ -33,6 +33,33 @@ UIListBox::UIListBox(UIWindowContext& windows, UIListBoxContext& list)
 // FUNCTION: fn_11105
 UIListBox::~UIListBox() = default;
 
+// OFFSET: 0x0087BB00
+// FUNCTION: fn_11251
+void UIScrollBar::Configure(int x, int y, int length, int vertical, int arrowLength, int thickness) {
+  this->vertical = vertical;
+  this->arrowLength = arrowLength;
+  this->thickness = thickness;
+
+  int width;
+  int height;
+  if (vertical == 0) {
+    width = length;
+    height = thickness;
+  } else {
+    width = 0;
+    height = 0;
+    if (vertical == 1) {
+      width = thickness;
+      height = length;
+    }
+  }
+
+  UIWindow::Resize(width, height);
+  this->Move(x, y);
+  this->Slot15(width, height);
+  this->Slot22(width, height);
+}
+
 // OFFSET: 0x0087B640
 // FUNCTION: fn_11245
 void UIListBox::Configure(int x, int y, int width, int height, unsigned char value) {
