@@ -1,5 +1,6 @@
 #include "UI/Window/UITransMenuWnd.h"
 #include "UI/Buttons/UIButton.h"
+#include <cstring>
 
 // OFFSET: 0x0094ED40
 // FUNCTION: fn_12916
@@ -63,6 +64,21 @@ void UITransMenuWnd::Resize(int width, int height) {
   this->UIWindow::Resize(width, height);
   this->m_width = this->geometry.width;
   this->m_height = this->geometry.height;
+}
+
+// OFFSET: 0x00949B70
+// FUNCTION: fn_12884
+bool UITransMenuWnd::Slot07(void* output) {
+  std::memcpy(output, &this->unknown_00C0, 28);
+  return true;
+}
+
+// OFFSET: 0x0094A420
+// FUNCTION: fn_12889
+void UITransMenuWnd::Move(int x, int y) {
+  this->UIWindow::Move(x, y);
+  this->unknown_00C0 = this->geometry.x;
+  this->unknown_00C4 = this->geometry.y;
 }
 
 // OFFSET: 0x00951440
