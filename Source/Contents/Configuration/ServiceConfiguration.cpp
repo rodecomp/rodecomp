@@ -1,16 +1,26 @@
 #include "Client/Input/InputCharset.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Archive/PakRegistry.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Client/Registry.h"
+#include "Contents/MapSkyMgr.h"
+#include "File/CommonObject.h"
 #include "File/File.h"
+#include "File/ResourcePath.h"
+#include "Network/TextEncoding.h"
 #include "Render/DeviceContext/DCSurface.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
 #include "UI/Text/UIBalloonText.h"
 #include "Utility/Cipher/XorBytes.h"
 
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <string>
+#include <vector>
 #include <windows.h>
 
 // GLOBAL: gl_24542
@@ -48,6 +58,9 @@ const char* g_windowName = "";
 
 // GLOBAL: gl_24974
 char g_launchServerName[24];
+
+// GLOBAL: gl_25024
+std::vector<std::string> g_loadingScreens;
 
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedText {
@@ -219,3 +232,71 @@ void InitializeServiceStrings() {
   }
   }
 }
+
+namespace {
+  class EtcInfoBytes : public ResourceBytes {
+  public:
+    CFile file;
+
+    // INLINED
+    bool Open(const char* name) override {
+      return this->file.Open(name, 0, true, false);
+    }
+
+    // INLINED
+    const void* Data() const override {
+      return this->file.GetData();
+    }
+
+    // INLINED
+    int Size() const override {
+      return static_cast<int>(this->file.GetSize());
+    }
+
+    // INLINED
+    void Close() override {
+      this->file.Close();
+    }
+  };
+}
+
+// OFFSET: 0x00AD0F60
+// FUNCTION: fn_17809
+void LoadLoadingScreens(int count) {
+  if (count == 0) {
+    switch (g_serviceType) {
+    case 0:
+      count = 7;
+      break;
+    case 1:
+    case 15:
+      count = 12;
+      break;
+    case 3:
+      count = 4;
+      break;
+    case 5:
+    case 7:
+      count = 8;
+      break;
+    case 6:
+      count = 9;
+      break;
+    default:
+      count = 1;
+      break;
+    }
+  }
+
+  for (int index = 0; index < count; ++index) {
+    const std::uint8_t source[] = {0x7D, 0x32, 0xFB, 0x1D, 0xCD, 0x4D, 0x4C, 0xB4, 0x7B, 0x79, 0xFB, 0x2B, 0xB0, 0x39, 0xD5, 0x15,
+                                   0xD2, 0xFC, 0x5F, 0x8E, 0x63, 0xE4, 0xAC, 0x49, 0x8F, 0xF9, 0x15, 0x8D, 0x7D, 0xE4, 0x89};
+    char name[256];
+    std::sprintf(name, DecryptText<0x7989830DE73B9DBDULL>(source), index);
+    if (ResourceMgr::Instance().Exists(name)) {
+      g_loadingScreens.push_back(std::string(name));
+    }
+  }
+}
+
+// OFFSET: 0x00AD1270
