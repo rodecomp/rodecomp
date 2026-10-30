@@ -52,6 +52,26 @@ struct RandomCombineItemPacket {
 }
 
 // OFFSET: 0x006006D0
+// FUNCTION: fn_04160
+void UIIngredientInfoWnd::Click(int, int) {
+  if (this->insufficient == 1) {
+    reinterpret_cast<ReturnMaterialFn>(0x00602620)(static_cast<UILapineBox_IngredientListWnd*>(this->parent), this->item.unknown_0000[1]);
+    return;
+  }
+
+  const int id = this->item.unknown_0000[1];
+  if (id == 0) {
+    return;
+  }
+
+  UILapineBox_IngredientListWnd* list = static_cast<UILapineBox_IngredientListWnd*>(this->parent);
+  UILapineBoxWnd* box = static_cast<UILapineBoxWnd*>(list->parent);
+  if (box->items.size() < static_cast<std::size_t>(box->maxItems)) {
+    if (list->SendMsg(list, 0x68, id, 0, 0, 0) >= 0) {
+      reinterpret_cast<AddMaterialSlotFn>(0x00601D20)(box, id, this->quantity);
+    }
+  }
+}
 
 // OFFSET: 0x00600830
 // FUNCTION: fn_04162
@@ -78,8 +98,38 @@ void UIIngredientInfoWnd::Slot28(int x, int y) {
 }
 
 // OFFSET: 0x00600770
+// FUNCTION: fn_04161
+void UILapineBoxWnd::DropMaterial(int x, int y) {
+  alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
+  ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
+  reinterpret_cast<ReadMaterialFn>(0x00602410)(this, &item, x, y);
+
+  if (item.unknown_0000[1] != 0) {
+    if (reinterpret_cast<CheckMaterialFn>(0x00602030)(this->ingredientList, item.unknown_0000[1]) == 1) {
+      this->SendMsg(this, 0x68, item.unknown_0000[1], 0, 0, 0);
+    }
+  }
+
+  item.~ITEM_INFO();
+}
 
 // OFFSET: 0x00600870
+// FUNCTION: fn_04163
+void UILapineBoxWnd::DragIngredient(int x, int y) {
+  if (y < 0x11) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
+  ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
+  reinterpret_cast<ReadMaterialFn>(0x00602410)(this, &item, x, y);
+
+  if (item.unknown_0000[1] != 0) {
+    reinterpret_cast<BeginItemOnModeFn>(0x00CFE140)(static_cast<CGameMode*>(g_modeMgr.GetGameMode()), 0x1A, &item, item.quantity, -1);
+  }
+
+  item.~ITEM_INFO();
+}
 
 // OFFSET: 0x006009F0
 // FUNCTION: fn_04166
