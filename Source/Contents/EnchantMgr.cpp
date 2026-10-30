@@ -433,3 +433,40 @@ int L_SetSuccessRate(lua_State* L) {
   CEnchantMgr::GetInstance()->m_enchants[id].options[optionKey].successRate = rate;
   return 2;
 }
+
+// OFFSET: 0x006821B0
+// FUNCTION: fn_05537
+void CEnchantMgr::AddPerfectEnchant(uint64_t group, uint32_t optionKey, const std::string& itemName, uint64_t cost,
+                                    const std::map<std::string, int>& materials) {
+  int itemId = CItemDBToIDMgr::GetInstance()->GetItemID(itemName);
+  if (itemId != 0) {
+    m_enchants[group].options[optionKey].perfectEnchants[itemId].cost = cost;
+    m_enchants[group].options[optionKey].perfectEnchants[itemId].materials = ConvertMaterials(materials);
+  }
+}
+
+// OFFSET: 0x00682310
+
+// OFFSET: 0x006827B0
+
+// OFFSET: 0x006829A0
+
+// OFFSET: 0x00682A00
+
+// OFFSET: 0x00682D10
+
+// OFFSET: 0x006845C0
+
+// OFFSET: 0x006864D0
+
+// OFFSET: 0x00686830
+
+// OFFSET: 0x006871E0
+
+// OFFSET: 0x00687BB0
+
+// OFFSET: 0x00688290
+
+// OFFSET: 0x006886E0
+
+// OFFSET: 0x00688A70
