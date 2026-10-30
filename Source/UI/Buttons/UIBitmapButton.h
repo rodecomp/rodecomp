@@ -7,6 +7,7 @@ class UIBitmapButton : public UIButton {
   friend class UIAdvenPartyBoardWnd;
 
 public:
+  UIBitmapButton();
   UIBitmapButton(UIWindowContext& windowContext, UIButtonContext& buttonContext);
   ~UIBitmapButton() override;
   void Paint() override;

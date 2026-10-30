@@ -15,6 +15,7 @@ struct UIComboBoxHeaderContext {
 
 class UIComboBoxDefWnd : public UIWindow {
 public:
+  UIComboBoxDefWnd();
   UIComboBoxDefWnd(UIWindowContext& windows, UIComboBoxHeaderContext& controls);
   ~UIComboBoxDefWnd() override;
   void Slot15(int width, int height) override;

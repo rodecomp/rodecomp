@@ -9,6 +9,7 @@ struct UIButtonContext;
 
 class UIStaticText : public UIWindow {
 public:
+  UIStaticText();
   UIStaticText(UIWindowContext& windows, UIButtonContext& controls);
   ~UIStaticText() override;
   void Paint() override;

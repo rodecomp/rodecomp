@@ -39,6 +39,10 @@ struct UIEditCtrlHelper : public UIEditCtrl {
   void sub_868570(int red, int green, int blue, std::uint32_t secondary);
 };
 
+struct UIStaticTextHelper : public UIStaticText {
+  void sub_868880(const char* text);
+};
+
 struct CaptchaRegisterPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ char text[16];
@@ -48,6 +52,64 @@ static_assert(sizeof(CaptchaRegisterPacket) == 20);
 }
 
 // OFFSET: 0x007EA3B0
+// FUNCTION: fn_09788
+void UICaptchaRegisterWnd::Slot15(int width, int height) {
+  this->sub_8CEF10();
+  this->sub_8CF0C0("", 0);
+
+  std::string directory = FormatOwnedString("%s\\captcha\\", g_applicationDirectory);
+
+  this->m_pathText = new UIStaticText();
+  this->m_pathText->SetSize(240, 16);
+  this->m_pathText->Move(25, 27);
+  static_cast<UIStaticTextHelper*>(this->m_pathText)->sub_868880(directory.c_str());
+  this->AddChild(this->m_pathText);
+
+  std::list<std::string> files;
+  EnumerateFileNames(files, directory.c_str(), "*.bmp");
+
+  this->m_captchaBitmap = new UIStaticBitmap();
+  this->m_captchaBitmap->SetSize(220, 90);
+  this->m_captchaBitmap->Move(35, 81);
+  this->AddChild(this->m_captchaBitmap);
+
+  this->m_fileComboBox = new UIComboBoxDefWnd();
+  this->m_fileComboBox->dropdownHeight = 80;
+  this->m_fileComboBox->SetSize(240, 18);
+  this->m_fileComboBox->Move(25, 53);
+  this->m_fileComboBox->borderRed = 100;
+  this->m_fileComboBox->borderGreen = 100;
+  this->m_fileComboBox->borderBlue = 100;
+  this->m_fileComboBox->red = 232;
+  this->m_fileComboBox->green = 232;
+  this->m_fileComboBox->blue = 232;
+  this->AddChild(this->m_fileComboBox);
+
+  for (const std::string& file : files) {
+    this->m_fileComboBox->AddOption(file, 0);
+  }
+
+  this->m_editCtrl = new UIEditCtrl();
+  this->m_editCtrl->SetSize(200, 16);
+  this->m_editCtrl->Move(30, 183);
+  this->m_editCtrl->maximum = 16;
+  this->m_editCtrl->Background(255, 255, 255);
+  this->m_editCtrl->flat = 0;
+  static_cast<UIEditCtrlHelper*>(this->m_editCtrl)->sub_865E00(0, 0, 0);
+  static_cast<UIEditCtrlHelper*>(this->m_editCtrl)->sub_868570(0, 0, 0, 0xFFFFFFFF);
+  this->m_editCtrl->preserveInput = 1;
+  this->AddChild(this->m_editCtrl);
+
+  this->registerButton = new UIBitmapButton();
+  this->registerButton->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
+  this->registerButton->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
+  this->registerButton->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
+  this->registerButton->SetBitmap("유저인터페이스\\btn_ok_dis.bmp", 3, 0);
+  this->registerButton->SetSize(this->registerButton->BitmapWidth(), this->registerButton->BitmapHeight());
+  this->registerButton->Move(238, 181);
+  this->registerButton->SetId(345);
+  this->AddChild(this->registerButton);
+}
 
 // OFFSET: 0x007EA8D0
 // FUNCTION: fn_09789

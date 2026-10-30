@@ -9,6 +9,7 @@ struct UIButtonContext;
 
 class UIStaticBitmap : public UIWindow {
 public:
+  UIStaticBitmap();
   UIStaticBitmap(UIWindowContext& windows, UIButtonContext& controls);
   ~UIStaticBitmap() override;
   void Paint() override;

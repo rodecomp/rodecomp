@@ -38,6 +38,7 @@ struct UIEditContext {
 
 class UIEditCtrl : public UIWindow {
 public:
+  UIEditCtrl();
   UIEditCtrl(UIWindowContext& windows, UIEditContext& edit);
   ~UIEditCtrl() override;
   bool Slot05() override;
