@@ -6,13 +6,18 @@
 #include <string>
 #include <vector>
 
+class UIScrollBar;
+
 class UIBattleMsgOptionWnd : public UIFrameWnd {
 public:
   UIBattleMsgOptionWnd(UIWindowContext& windows, UIFrameContext& frames);
+  void Slot35(int delta) override;
 
-  /* 00B4 */ unsigned char unknown_00B4[0x4];
+  /* 00B4 */ UIScrollBar* m_scrollBar;
   /* 00B8 */ int unknown_00B8;
-  /* 00BC */ unsigned char unknown_00BC[0xC];
+  /* 00BC */ int m_visibleRows;
+  /* 00C0 */ int m_scrollable;
+  /* 00C4 */ int unknown_00C4;
   /* 00C8 */ std::vector<const char*> messages;
   /* 00D4 */ std::string text;
   /* 00EC */ unsigned char unknown_00EC[0x1C];

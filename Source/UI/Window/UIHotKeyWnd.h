@@ -6,9 +6,13 @@
 
 #include <map>
 
+class UIButton;
+
 class UIHotKeyWnd : public UIFrameWnd {
 public:
   UIHotKeyWnd(UIWindowContext& windows, UIFrameContext& frames);
+  void Slot32(int x, int y) override;
+  void UpdatePageButtons();
 
   /* 00B4 */ int unknown_00B4;
   /* 00B8 */ int unknown_00B8;
@@ -28,7 +32,9 @@ public:
   /* 010C */ int unknown_010C;
   /* 0110 */ int unknown_0110;
   /* 0114 */ unsigned char unknown_0114;
-  /* 0115 */ unsigned char unknown_0115[0xB];
+  /* 0115 */ unsigned char unknown_0115[0x3];
+  /* 0118 */ UIButton* m_prevButton;
+  /* 011C */ UIButton* m_nextButton;
 };
 
 #endif

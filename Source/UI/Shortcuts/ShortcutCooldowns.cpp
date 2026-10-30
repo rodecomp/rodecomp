@@ -336,3 +336,23 @@ void UIQuickSlotWnd::Paint() {
 
   painting.cooldowns.PaintAlternate(painting.icons, this->geometry.x, this->geometry.y, painting.drawing, painting.clock, painting.commands, painting.system);
 }
+
+// OFFSET: 0x00932E80
+// FUNCTION: fn_12718
+void UIQuickSlotWnd::Slot19() {
+  this->Invalidate();
+}
+
+// OFFSET: 0x00932E90
+// FUNCTION: fn_12719
+void UISeekPartyWnd::Slot19() {
+  int frameCounts[6] = {5, 5, 17, 11, 11, 11};
+  const std::uint32_t now = GetTickCount();
+  this->m_frameElapsed = now - this->m_frameTick;
+  if (this->m_frameElapsed > this->m_frameDuration) {
+    this->m_level = this->m_level < frameCounts[this->m_type] ? this->m_level + 1 : 0;
+    this->m_elapsed += this->m_frameDuration;
+    this->m_frameTick = now;
+    this->Invalidate();
+  }
+}

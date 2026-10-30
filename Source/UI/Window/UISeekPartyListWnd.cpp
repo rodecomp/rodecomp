@@ -1,8 +1,8 @@
 #include "UI/Window/UISeekPartyListWnd.h"
-
 #include "Contents/MessageTable.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "UI/Buttons/UICheckBox.h"
+#include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x009431D0
@@ -35,4 +35,19 @@ bool UISeekPartyListWnd::MatchesFilter(PARTY_BOOKING_AD_INFO info) {
   }
 
   return true;
+}
+
+// OFFSET: 0x00933630
+// FUNCTION: fn_12727
+void UISeekPartyListWnd::Slot35(int delta) {
+  if (this->m_scrollable != 0) {
+    int step = this->m_visibleRows - 1;
+    if (step > 3) {
+      step = 3;
+    }
+    if (delta >= 0) {
+      step = -step;
+    }
+    this->SendMsg(this->m_scrollBar, 7, step, 0, 0, 0);
+  }
 }

@@ -857,6 +857,7 @@
   "Source/UI/Window/UIBasicInfoWnd.cpp": 2,
   "Source/UI/Window/UIBattleMsgOptionWnd.cpp": 2,
   "Source/UI/Window/UIBitmapTab.cpp": 2,
+  "Source/UI/Window/UICollectionSystemWnd.cpp": 2,
   "Source/UI/Window/UIControl.cpp": 2,
   "Source/UI/Window/UIDebuffRemoveWnd.cpp": 2,
   "Source/UI/Window/UIEmblemWnd.cpp": 2,

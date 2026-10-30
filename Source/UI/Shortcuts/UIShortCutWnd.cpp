@@ -32,6 +32,9 @@
 
 namespace {}
 
+// GLOBAL: gl_24660
+std::uint8_t g_chatInputFlag;
+
 // GLOBAL: gl_24737
 int g_memorialDunWndX;
 
@@ -461,6 +464,23 @@ void UINewChatWnd::Show(int visible) {
     g_windowMgr.retainedWindows[i]->Show(this->geometry.visible);
   }
 }
+
+// OFFSET: 0x00933D20
+// FUNCTION: fn_12737
+void UINewChatWnd::Resize(int width, int height) {
+  this->UIFrameWnd::Resize(width, height);
+  this->m_listWidth = this->geometry.width - 6;
+  this->m_listHeight = this->geometry.height - this->m_inputOffsetY;
+}
+
+// OFFSET: 0x009328F0
+// FUNCTION: fn_12712
+void UINewChatWnd::Slot27(int x, int y) {
+  if (g_windowMgr.Capture() == this && g_chatInputFlag == 1) {
+    this->UIFrameWnd::Slot27(x, y);
+  }
+}
+
 // OFFSET: 0x0091E960
 // FUNCTION: fn_12630
 void UIMemorialDunWnd::Move(int x, int y) {

@@ -37,6 +37,7 @@ struct QuickSlotEntry {
 
 class UIQuickSlotWnd : public UIFrameWnd {
 public:
+  void Slot19() override;
   void Paint() override;
 
 protected:
