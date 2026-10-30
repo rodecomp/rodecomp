@@ -9,10 +9,12 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Utility/Cipher/XorBytes.h"
 
 #include <cstddef>
 #include <cstdint>
+#include <format>
 
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
@@ -892,4 +894,43 @@ void CUIRenewQuestUI::OnCallback74() {
 // OFFSET: 0x00A661E0
 // FUNCTION: fn_16611
 void CUIRenewQuestUI::OnCallback56() {
+}
+
+// FUNCTION: fn_16628
+void CUIRenewQuestUI::sub_A66FF0(unsigned int questId) {
+  for (RenewQuestUI::CUIQuestList* list : this->questLists) {
+    CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = list->list;
+    auto node = listBox->data.begin();
+    for (; node != listBox->data.end(); ++node) {
+      if (*node == questId) {
+        break;
+      }
+    }
+
+    if (node == listBox->data.end()) {
+      continue;
+    }
+
+    this->tab->SelectPage(list);
+    CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* pageListBox = list->list;
+
+    int index = 0;
+    for (auto it = listBox->data.begin(); it != node; ++it) {
+      ++index;
+    }
+
+    pageListBox->scrollBar->SetPosition(pageListBox->rowHeight * index);
+
+    for (RenewQuestUI::CUIQuestItem* item : pageListBox->items) {
+      if (item->index == index) {
+        pageListBox->SelectItem(item);
+        return;
+      }
+    }
+
+    return;
+  }
+
+  std::string text = std::format("Not found Quest Info = %lu", questId);
+  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
 }

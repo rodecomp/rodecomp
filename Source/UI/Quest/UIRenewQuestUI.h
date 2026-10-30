@@ -7,6 +7,7 @@
 #include "UI/Window/UIFrameWnd.h"
 
 #include <string>
+#include <vector>
 
 struct RenewQuestInfo;
 
@@ -61,7 +62,10 @@ public:
   void sub_A67290(unsigned int flags);
   void sub_A66FF0(unsigned int questId);
 
-  /* 00E0 */ unsigned char unknown_00E0[0x2C];
+  /* 00E0 */ CUITab* tab;
+  /* 00E4 */ unsigned char unknown_00E4[0x0C];
+  /* 00F0 */ std::vector<RenewQuestUI::CUIQuestList*> questLists;
+  /* 00FC */ unsigned char unknown_00FC[0x10];
   /* 010C */ int filter;
   /* 0110 */ std::string searchText;
 };
