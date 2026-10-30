@@ -15,6 +15,7 @@
 #include "Render/TextureQuad.h"
 #include "Render/Textures/Texture.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Utility/Text/FormatString.h"
 
 #include <windows.h>
 #include <cstdlib>
@@ -249,6 +250,44 @@ bool CCylinderEffect::Slot06() {
 CCylinderEffect::CCylinderEffect() : CEffect(-1) {
 }
 
+// OFFSET: 0x0070F390
+// FUNCTION: fn_07187
+void CWarningPlaneEffect::Slot03() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    if (this->expireTime != 0 && emitter) {
+      CEZ2STRParticle* particle = AsParticle(emitter);
+
+      matrix rotation;
+      rotation.Identity();
+      rotation.MakeXRotation(1.5707963f);
+      rotation.AppendYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
+
+      matrix scale;
+      scale.Identity();
+      scale.SetScale(particle->scale, particle->scale, 1.0f);
+
+      matrix transform;
+      transform.Compose(scale, rotation);
+      particle->transform = transform;
+
+      if (this->fadingIn == 1) {
+        particle->alpha += 2;
+        if (particle->alpha >= 250) {
+          this->fadingIn = 0;
+        }
+      } else {
+        particle->alpha -= 2;
+        if (particle->alpha <= 50) {
+          this->fadingIn = 1;
+        }
+      }
+    }
+
+    ++emitter->elapsed;
+  }
+}
+
 // OFFSET: 0x0070F670
 // FUNCTION: fn_07188
 void CWarningPlaneEffect::Slot04() {
@@ -350,6 +389,26 @@ void CEternalSlashAttackEffect::Slot04() {
 // OFFSET: 0x00711120
 // FUNCTION: fn_07213
 CEternalSlashCountEffect::CEternalSlashCountEffect() : CEffect(1913), emitter(nullptr) {
+}
+
+// OFFSET: 0x00711280
+// FUNCTION: fn_07216
+void CEternalSlashCountEffect::Slot01() {
+  if (static_cast<unsigned int>(this->unknown_00B0) - 1 > 4) {
+    return;
+  }
+
+  CEZ2STRParticle* particle =
+      static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  if (!particle) {
+    return;
+  }
+
+  particle->Load(FormatOwnedString("eternal_slash\\eternal_slash_count\\eternal_slash_count_%02d.str", this->unknown_00B0));
+  particle->unknown_00D0 = 0.0f;
+  particle->unknown_00D4 = -25.0f;
+  particle->unknown_00D8 = 0.0f;
+  this->emitter = reinterpret_cast<EZ2STREmitter*>(particle);
 }
 
 // OFFSET: 0x00711340
@@ -693,6 +752,19 @@ CHawkVumerangEffect::CHawkVumerangEffect()
       unknown_0118{} {
 }
 
+// OFFSET: 0x007187F0
+// FUNCTION: fn_07297
+void CHawkVumerangEffect::Close() {
+  for (auto it = this->unknown_00D4.begin(); it != this->unknown_00D4.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->unknown_00D4.clear();
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+}
+
 // OFFSET: 0x00718B90
 // FUNCTION: fn_07299
 bool CHawkVumerangEffect::Slot06() {
@@ -780,6 +852,31 @@ void CJupitelThunderHit::Slot04() {
 CNewCloudKillEffect::CNewCloudKillEffect() : CEffect(1196), unknown_00F4(0), unknown_00F8(0) {
 }
 
+// OFFSET: 0x0071D460
+// FUNCTION: fn_07333
+void CNewCloudKillEffect::Close() {
+  for (auto it = this->unknown_00CC.begin(); it != this->unknown_00CC.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->unknown_00CC.clear();
+  for (auto it = this->unknown_00D4.begin(); it != this->unknown_00D4.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->unknown_00D4.clear();
+  for (auto it = this->unknown_00DC.begin(); it != this->unknown_00DC.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->unknown_00DC.clear();
+  for (auto it = this->unknown_00E4.begin(); it != this->unknown_00E4.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->unknown_00E4.clear();
+  for (auto it = this->unknown_00EC.begin(); it != this->unknown_00EC.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->unknown_00EC.clear();
+}
+
 // OFFSET: 0x0071DEC0
 // FUNCTION: fn_07340
 bool CNewCloudKillEffect::Slot06() {
@@ -847,6 +944,33 @@ void CPneumaticusProcellaEffect::Slot04() {
     if (*it) {
       AsParticle(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
+  }
+}
+
+// OFFSET: 0x00720310
+// FUNCTION: fn_07355
+void CPneumaticusProcellaEffect::Slot03() {
+  if (this->emitter) {
+    AsParticle(this->emitter)->Process(0.0f, -80.0f, 0.0f);
+  }
+
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    if (!emitter) {
+      continue;
+    }
+
+    if (emitter->lifetime == 0.0f || emitter->lifetime * 60.0f <= static_cast<float>(emitter->elapsed)) {
+      FreeParticle(AsParticle(emitter));
+      *it = nullptr;
+      continue;
+    }
+
+    CEZ2STRParticle* particle = AsParticle(emitter);
+    particle->position.x = this->position[0] + emitter->offset.x;
+    particle->position.y = this->position[1] + emitter->offset.y;
+    particle->position.z = this->position[2] + emitter->offset.z;
+    particle->Process(0.0f, -80.0f, 0.0f);
   }
 }
 
@@ -987,6 +1111,19 @@ CServantWeaponEffect::CServantWeaponEffect() : CEffect(-1), offsets{} {
 CServantWeaponNewEffect::CServantWeaponNewEffect() : CEffect(2460) {
 }
 
+// OFFSET: 0x007233D0
+// FUNCTION: fn_07399
+void CServantWeaponNewEffect::Close() {
+  for (EZ2STREmitter* emitter : this->emitters) {
+    FreeParticle(AsParticle(emitter));
+  }
+  this->emitters.clear();
+  for (EZ2STREmitter* trail : this->trails) {
+    FreeParticle(AsParticle(trail));
+  }
+  this->trails.clear();
+}
+
 // OFFSET: 0x00723A90
 // FUNCTION: fn_07401
 void CServantWeaponNewEffect::Slot01() {
@@ -1003,6 +1140,22 @@ bool CServantWeaponEffect::Slot06() {
 // FUNCTION: fn_07403
 bool CServantWeaponNewEffect::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x00724EB0
+// FUNCTION: fn_07407
+void CServantWeaponEffect::Slot04() {
+  for (int column = 0; column < 5; ++column) {
+    if (this->emitters[0][column] != nullptr) {
+      AsParticle(this->emitters[0][column])->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+    if (this->emitters[1][column] != nullptr) {
+      AsParticle(this->emitters[1][column])->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+    if (this->emitters[2][column] != nullptr) {
+      AsParticle(this->emitters[2][column])->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
 }
 
 // OFFSET: 0x00724F40

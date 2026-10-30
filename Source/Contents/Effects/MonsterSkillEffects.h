@@ -91,6 +91,7 @@ class CWarningPlaneEffect : public CEffect {
 public:
   CWarningPlaneEffect();
   void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
@@ -138,6 +139,7 @@ public:
 class CEternalSlashCountEffect : public CEffect {
 public:
   CEternalSlashCountEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
@@ -249,6 +251,7 @@ public:
 class CPneumaticusProcellaEffect : public CEffect {
 public:
   CPneumaticusProcellaEffect();
+  void Slot03() override;
   void Slot04() override;
   void Close() override;
 
@@ -307,6 +310,7 @@ public:
 class CServantWeaponEffect : public CEffect {
 public:
   CServantWeaponEffect();
+  void Slot04() override;
   bool Slot06() override;
   void Close() override;
 
@@ -320,6 +324,7 @@ public:
   bool Slot06() override;
   void Slot01() override;
   void Slot04() override;
+  void Close() override;
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::list<EZ2STREmitter*> trails;
@@ -362,6 +367,7 @@ class CNewCloudKillEffect : public CEffect {
 public:
   CNewCloudKillEffect();
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::list<EZ2STREmitter*> unknown_00CC;
   /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;
@@ -394,6 +400,7 @@ public:
   CHawkVumerangEffect();
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;
