@@ -343,7 +343,9 @@ public:
   /* 56AC */ int unknown_56AC;
   /* 56B0 */ int unknown_56B0;
   /* 56B4 */ int m_mercenaryActionState;
-  /* 56B8 */ unsigned char unknown_56B8[0x242];
+  /* 56B8 */ unsigned char unknown_56B8[0x35];
+  /* 56ED */ char m_loginErrorText[500];
+  /* 58E1 */ unsigned char unknown_58E1[0x19];
   /* 58FA */ char unknown_58FA[0x18];
   /* 5912 */ unsigned char unknown_5912;
   /* 5913 */ unsigned char unknown_5913[0x25];

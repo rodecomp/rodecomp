@@ -1,9 +1,13 @@
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Application/ErrorDialog.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Sound/SoundMgr.h"
+#include "Network/Connection/Connection.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Render/Renderer.h"
 #include "Resource/ResourceMgr.h"
 #include "UI/Window/UIWindow.h"
@@ -22,6 +26,7 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <shellapi.h>
+#include <timeapi.h>
 
 #pragma pack(push, 1)
 struct CharacterSlotsPacket {
@@ -70,6 +75,21 @@ struct CharacterListPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t length;
   /* 0004 */ CharacterInfo characters[1];
+};
+
+struct LoginErrorPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ int error;
+  /* 0008 */ char text[1];
+};
+
+struct LoginErrorDetailPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ int error;
+  /* 0008 */ char detail[20];
+  /* 001C */ char text[1];
 };
 #pragma pack(pop)
 
@@ -656,4 +676,169 @@ void nullsub_487(int) {
 // FUNCTION: fn_22291
 bool sub_D92B60(int) {
   return false;
+}
+
+// OFFSET: 0x00D9CFD0
+// FUNCTION: fn_22315
+void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
+  this->unknown_6F74 = true;
+  std::string message;
+  switch (packet->error) {
+  case 0:
+    SecureZeroMemory(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText));
+    memcpy_s(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText), packet->text,
+      std::min<std::size_t>(packet->length - 28, sizeof(g_session.m_loginErrorText)));
+    GetRagConnection().Close();
+    g_modeMgr.gameMode->SendMsg(10000, 0, 0, 0, 0);
+    break;
+  case 400:
+    if (g_windowMgr.LookupWindow(180)) {
+      g_windowMgr.CloseWindow(180);
+    }
+    g_windowMgr.EnsureWindow(180);
+    this->unknown_6F75 = true;
+    this->otpStarted = timeGetTime();
+    break;
+  case 500:
+    message = LookupMessage(1752);
+    break;
+  case 600:
+    message = LookupMessage(7);
+    break;
+  case 700:
+    message = LookupMessage(3252);
+    break;
+  case 900: {
+    ShowErrorDialog(GetRenderSystemHolder()->system, LookupMessage(3462), 0);
+    const std::uint8_t parametersSource[] = {0x7F, 0x25, 0x95, 0x31, 0x03, 0xEC, 0xAC, 0xF5, 0x78, 0x7F, 0x86,
+                                             0x2F, 0x53, 0xAC, 0xFA, 0xA9, 0x74, 0x3E, 0x8C, 0x6E, 0x39};
+    thread_local EncryptedName<sizeof(parametersSource), 0x8783C33941E15117ULL> parameters(parametersSource);
+    const char* parametersText = parameters.Text();
+    const std::uint8_t fileSource[] = {0xE3, 0xE9, 0x03, 0xFD, 0xDB, 0xF2, 0x48, 0x65, 0xE4, 0xB3, 0x10,
+                                       0xE3, 0x8B, 0xB2, 0x1E, 0x39, 0xE8, 0xF2, 0x1A, 0xA2, 0xE1};
+    thread_local EncryptedName<sizeof(fileSource), 0x1767DDE18D779D8BULL> file(fileSource);
+    const char* fileText = file.Text();
+    const std::uint8_t operationSource[] = {0xAE, 0xD3, 0x94, 0xA3, 0x11};
+    thread_local EncryptedName<sizeof(operationSource), 0xC1BB8111EDD183E1ULL> operation(operationSource);
+    ShellExecuteA(nullptr, operation.Text(), fileText, parametersText, nullptr, SW_SHOW);
+    g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+    return;
+  }
+  case 1200:
+    message = LookupMessage(4355);
+    break;
+  default:
+    message = LookupMessage(1816);
+    break;
+  }
+
+  if (!message.empty()) {
+    const int error = packet->error;
+    const std::uint8_t codeSource[] = {0xB7, 0xF8, 0xE7, 0x36, 0x77};
+    thread_local EncryptedName<sizeof(codeSource), 0x271B45771F83DD9FULL> codeFormat(codeSource);
+    message += FormatOwnedString(codeFormat.Text(), error);
+    const std::uint8_t detailSource[] = {0xAF, 0x02, 0x44, 0x98, 0xE8, 0x19};
+    thread_local EncryptedName<sizeof(detailSource), 0xC70319B5EB61598FULL> detailFormat(detailSource);
+    message += FormatOwnedString(detailFormat.Text(), packet->detail);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 5, true, true, 0, "Message", 280, 120, 0);
+    if (this->unknown_6F76 != true) {
+      if (error == 500) {
+        this->otpStarted = timeGetTime();
+        if (g_windowMgr.LookupWindow(180)) {
+          g_windowMgr.CloseWindow(180);
+        }
+        g_windowMgr.EnsureWindow(180);
+      } else {
+        if (g_windowMgr.LookupWindow(180)) {
+          g_windowMgr.CloseWindow(180);
+        }
+        this->unknown_6F74 = false;
+        this->unknown_6F75 = false;
+        GetRagConnection().Close();
+        this->otpStarted = timeGetTime();
+        this->pendingCursorType = 3;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00D9D730
+// FUNCTION: fn_22316
+void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
+  this->unknown_6F74 = true;
+  std::string message;
+  switch (packet->error) {
+  case 0:
+    SecureZeroMemory(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText));
+    memcpy_s(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText), packet->text,
+      std::min<std::size_t>(packet->length - 8, sizeof(g_session.m_loginErrorText)));
+    GetRagConnection().Close();
+    g_modeMgr.gameMode->SendMsg(10000, 0, 0, 0, 0);
+    break;
+  case 400:
+    if (g_windowMgr.LookupWindow(180)) {
+      g_windowMgr.CloseWindow(180);
+    }
+    g_windowMgr.EnsureWindow(180);
+    this->unknown_6F75 = true;
+    this->otpStarted = timeGetTime();
+    break;
+  case 500:
+    message = LookupMessage(1752);
+    break;
+  case 600:
+    message = LookupMessage(7);
+    break;
+  case 700:
+    message = LookupMessage(3252);
+    break;
+  case 800:
+    message = LookupMessage(3440);
+    break;
+  default:
+    message = LookupMessage(1816);
+    break;
+  }
+
+  if (!message.empty()) {
+    const int error = packet->error;
+    const char* caption;
+    bool protect;
+    if (error == 800) {
+      const std::uint8_t captionSource[] = {0x37, 0x63, 0x53, 0x3B, 0xBC, 0x33, 0xAD};
+      thread_local EncryptedName<sizeof(captionSource), 0x75ADC57D87EFBD8FULL> captionText(captionSource);
+      caption = captionText.Text();
+      protect = true;
+    } else {
+      const std::uint8_t codeSource[] = {0x79, 0xAE, 0xA9, 0x28, 0xBB};
+      thread_local EncryptedName<sizeof(codeSource), 0xD1413DBB01CD8B51ULL> codeFormat(codeSource);
+      message += FormatOwnedString(codeFormat.Text(), error);
+      caption = "Message";
+      protect = false;
+    }
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 5, true, true, 0, caption, 280, 120, protect);
+    if (this->unknown_6F76 != true) {
+      if (error == 500) {
+        this->otpStarted = timeGetTime();
+        if (g_windowMgr.LookupWindow(180)) {
+          g_windowMgr.CloseWindow(180);
+        }
+        g_windowMgr.EnsureWindow(180);
+      } else {
+        if (g_windowMgr.LookupWindow(180)) {
+          g_windowMgr.CloseWindow(180);
+        }
+        this->unknown_6F74 = false;
+        this->unknown_6F75 = false;
+        GetRagConnection().Close();
+        this->otpStarted = timeGetTime();
+        this->pendingCursorType = 3;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00D9E170
+// FUNCTION: fn_22319
+void CLoginMode::SubD9E170(int) {
 }

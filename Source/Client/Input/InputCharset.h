@@ -17,6 +17,8 @@ struct InputCharset {
   const char* ServiceName(const char* name);
 
   unsigned CodePage(unsigned fallback) const;
+
+  void SetServicePrefix(std::string prefix);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

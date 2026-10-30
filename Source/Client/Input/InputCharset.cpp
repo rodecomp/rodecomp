@@ -24,3 +24,9 @@ const char* InputCharset::Prefix(bool alternate) const {
 unsigned InputCharset::CodePage(unsigned fallback) const {
   return g_inlineCharset ? LanguageCodePage(this->language) : fallback;
 }
+
+// OFFSET: 0x00D9CE80
+// FUNCTION: fn_22314
+void InputCharset::SetServicePrefix(std::string prefix) {
+  this->servicePrefix = prefix;
+}

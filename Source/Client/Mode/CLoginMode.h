@@ -15,6 +15,8 @@ struct CharacterDeletePacket;
 struct AcceptEnterPacket;
 struct MapStatePacket;
 struct WindowDialogs;
+struct LoginErrorPacket;
+struct LoginErrorDetailPacket;
 
 #pragma pack(push, 1)
 struct CharacterInfo {
@@ -62,7 +64,10 @@ public:
   /* 6F10 */ unsigned char unknown_6F10[0x40];
   /* 6F50 */ std::string unknown_6F50;
   /* 6F68 */ std::vector<MapStateEntry> mapStates;
-  /* 6F74 */ unsigned char unknown_6F74[0x8];
+  /* 6F74 */ bool unknown_6F74;
+  /* 6F75 */ bool unknown_6F75;
+  /* 6F76 */ bool unknown_6F76;
+  /* 6F77 */ unsigned char unknown_6F77[0x5];
 
   void End() override;
 
@@ -82,6 +87,9 @@ public:
   void SubD97B20(int);
   void SubD97EF0(int);
   void SubD97F00(int);
+  void ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet);
+  void ReceiveLoginError(const LoginErrorPacket* packet);
+  void SubD9E170(int);
 };
 
 int GetClientType();
