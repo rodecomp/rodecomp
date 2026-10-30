@@ -426,6 +426,12 @@ void UITabControl::ClearTabs() {
 }
 
 // OFFSET: 0x0089C1B0
+// FUNCTION: fn_11582
+void UITabControl::SetFlag(int index, bool value) {
+  if (index >= 0 && index < static_cast<int>(this->labels.size())) {
+    this->flags[index] = value;
+  }
+}
 
 // OFFSET: 0x00880B20
 // FUNCTION: fn_11283
