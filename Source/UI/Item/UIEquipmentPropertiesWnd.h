@@ -30,6 +30,10 @@ public:
   /* 00E4 */ CUIControl* resizer;
   /* 00E8 */ int currentTab;
 
+  bool Slot02() override;
+  bool Slot03() override;
+  bool Slot08() override;
+  virtual void Slot53();
   void Grow(int width, int height) override;
   void Paint() override;
   void OnClickButton1();
@@ -43,6 +47,13 @@ public:
   void OnClickButton9();
   void OnSelectLine(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* line, const std::string& text);
 };
+
+template <>
+CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::CUIListBoxEx(UIWindowContext& context);
+template <>
+CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::~CUIListBoxEx();
+template <>
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot15(int width, int height);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine) == 0xF8);

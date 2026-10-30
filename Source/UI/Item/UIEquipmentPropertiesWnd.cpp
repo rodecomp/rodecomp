@@ -10,6 +10,7 @@
 
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Paint();
 template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot35(int);
+template void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::ClearItems();
 
 // OFFSET: 0x00A0D3F0
 // FUNCTION: fn_15042
@@ -66,6 +67,61 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
     (*it)->index = -1;
     (*it)->Show(0);
   }
+}
+
+// OFFSET: 0x00A08410
+// FUNCTION: fn_15021
+bool CUIEquipmentPropertiesWnd::Slot02() {
+  return true;
+}
+
+// OFFSET: 0x00A08420
+// FUNCTION: fn_15022
+bool CUIEquipmentPropertiesWnd::Slot03() {
+  return true;
+}
+
+// OFFSET: 0x00A08430
+// FUNCTION: fn_15023
+bool CUIEquipmentPropertiesWnd::Slot08() {
+  return true;
+}
+
+// OFFSET: 0x00A084C0
+template <>
+CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), unknown_00C5{0, 0, 0},
+      selected(static_cast<unsigned int>(-1)), unknown_00E0(1), rebind(0), unknown_00E2{0, 0, 0, 0, 0, 0} {
+  this->scrollBar = nullptr;
+}
+
+// OFFSET: 0x00A08680
+template <>
+CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x00A08E70
+// FUNCTION: fn_15033
+void CUIEquipmentPropertiesWnd::Slot53() {
+  this->Resize(300, 308);
+  this->unknown_00B4 = 0x101;
+  this->m_resolveSkin = true;
+  this->Move(0, 0);
+  this->Slot15(this->geometry.width, this->geometry.height);
+  this->Slot16();
+  this->SetSkinColors(0, 0, 3, 1);
+  this->m_buttonBarStyle = 1;
+}
+
+// OFFSET: 0x00A08F20
+template <>
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot15(int width, int height) {
+  this->scrollBar = new CUIVScrollBar();
+  this->scrollBar->SetHidden(0);
+  this->scrollBar->SetOnChange([this](int position) {
+    this->OnScroll(position);
+  });
+  this->AddChild(this->scrollBar);
 }
 
 // OFFSET: 0x00A0EE90

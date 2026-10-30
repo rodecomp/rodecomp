@@ -173,6 +173,9 @@ public:
 
 template <class T, class D> class CUIListBoxEx : public CUIControl {
 public:
+  explicit CUIListBoxEx(UIWindowContext& context);
+  ~CUIListBoxEx() override;
+  void Slot15(int width, int height) override;
   // OFFSET: 0x00A01E70
   // OFFSET: 0x00A01E80
   // OFFSET: 0x00A0CE60
@@ -203,8 +206,10 @@ public:
 
   // OFFSET: 0x009F9890
   // OFFSET: 0x009F98F0
+  // OFFSET: 0x00A08DE0
   // FUNCTION: fn_14810
   // FUNCTION: fn_14811
+  // FUNCTION: fn_15032
   void ClearItems() {
     for (T* item : this->items) {
       this->RemoveChild(item, 1);
