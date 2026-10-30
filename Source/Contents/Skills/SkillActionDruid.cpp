@@ -968,10 +968,44 @@ void CSkillAction_DR_AROUND_FLOWER::Slot11(int level, CGameActor* source, CGameA
 }
 
 // OFFSET: 0x006249E0
+// FUNCTION: fn_04548
+void CSkillAction_DR_EARTH_FLOWER::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x98, 0x9C, 0x0F, 0x87, 0x89, 0x4A, 0x9F, 0x77, 0x92, 0x8A, 0x18, 0x81, 0xE1};
+  thread_local EncryptedName<sizeof(effectSource), 0x1BF915E1F37DFDFDULL> effectName(effectSource);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+
+  const std::uint8_t bottomSource[] = {0xBA, 0xB8, 0x2F, 0x1D, 0x7B, 0xCC, 0x99, 0x6D, 0xB0, 0xAE, 0x38, 0x1B, 0x4C, 0xF1, 0x90, 0x75, 0xAB, 0xB6, 0x30, 0x69};
+  thread_local EncryptedName<sizeof(bottomSource), 0x01FF9313695DD9DFULL> bottomName(bottomSource);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x00624D80
+// FUNCTION: fn_04549
+void CSkillAction_DR_ICE_CLOUD::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x3E, 0xE0, 0x8C, 0x8A, 0xE2, 0xA9, 0x22, 0x32, 0x33, 0x83};
+  thread_local EncryptedName<sizeof(effectSource), 0x474DC581D5E98357ULL> effectName(effectSource);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x00624F80
+// FUNCTION: fn_04550
+void CSkillAction_DR_ICE_TOTEM::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x04, 0x3C, 0x9C, 0x6C, 0x97, 0x14, 0x21, 0x5A, 0x00, 0x5F};
+  thread_local EncryptedName<sizeof(effectSource), 0x3F557BE333F95F6DULL> effectName(effectSource);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x00625180
 // FUNCTION: fn_04551
@@ -980,7 +1014,28 @@ int CSkillAction_DR_WEREWOLF::Slot02() {
 }
 
 // OFFSET: 0x00625190
+// FUNCTION: fn_04552
+void CSkillAction_DR_WEREWOLF::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+  if (this->Slot17(source) == true) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0xCE, 0x68, 0x5D, 0xC4, 0x34, 0x94, 0x63, 0x2F, 0xB9};
+  thread_local EncryptedName<sizeof(effectSource), 0x490FFB43A12F0DB9ULL> effectName(effectSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x006253A0
+// FUNCTION: fn_04553
+EfstActionMessage CEfstAction_WEREWOLF::Slot03() {
+  return {LookupMessage(4642), 0xFFFF00};
+}
 
 // OFFSET: 0x006253D0
+// FUNCTION: fn_04554
+EfstActionMessage CEfstAction_WEREWOLF::Slot04() {
+  return {LookupMessage(4643), 0xFF};
+}
