@@ -876,6 +876,40 @@ void UIGuildTotalInfoWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x00958740
+// FUNCTION: fn_13057
+void UIGuildBanishedMemberWnd::Slot15(int, int) {
+  this->CreateTabs();
+  if (std::strcmp(g_guildName.c_str(), "") == 0) {
+    g_modeMgr.gameMode->SendMsg(107, 0, 0, 0, 0);
+  }
+
+  GuildData().unknown_00CC = 1;
+  g_modeMgr.gameMode->SendMsg(107, 4, 0, 0, 0);
+  this->m_scrollTop = 0;
+  this->m_hoverRow = 0;
+  this->m_columns = 1;
+  this->m_visibleRows = 11;
+  this->m_scrollable = 0;
+  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar->Configure(this->geometry.width - 15, 63, 1, this->geometry.height - 87);
+  this->AddChild(this->m_scrollBar);
+
+  for (int index = 0; index < 11; ++index) {
+    this->m_names[index] = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_names[index]->SetSize(g_guildBanishedColumnWidths[0] - 4, 15);
+    this->m_names[index]->SetTextFitted("");
+    this->m_names[index]->Move(8, index * g_guildBanishedRowHeight + 63);
+    this->AddChild(this->m_names[index]);
+
+    this->m_reasons[index] = new UIStaticText(*this->m_context, *this->m_controls);
+    this->m_reasons[index]->SetSize(g_guildBanishedColumnWidths[1] - 4, 15);
+    this->m_reasons[index]->SetTextFitted("");
+    this->m_reasons[index]->Move(g_guildMemberColumnWidths[0] + 58, index * g_guildBanishedRowHeight + 63);
+    this->AddChild(this->m_reasons[index]);
+  }
+
+  this->UpdateScroll();
+}
 
 // OFFSET: 0x00958FF0
 
