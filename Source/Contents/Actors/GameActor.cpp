@@ -566,6 +566,24 @@ float CGameActor::GetElapsedFrames() {
   return static_cast<float>(static_cast<double>(timeGetTime() - this->render.unknown_008C) / 24.0);
 }
 
+// OFFSET: 0x00CADAF0
+// FUNCTION: fn_21058
+int CGameActor::GetGaugeCurrent() {
+  if (this->unknown_0300 == 0) {
+    return -1;
+  }
+  return reinterpret_cast<UIPcGage*>(this->unknown_0300)->current;
+}
+
+// OFFSET: 0x00CADB10
+// FUNCTION: fn_21059
+int CGameActor::GetGaugeMaximum() {
+  if (this->unknown_0300 == 0) {
+    return -1;
+  }
+  return reinterpret_cast<UIPcGage*>(this->unknown_0300)->maximum;
+}
+
 // OFFSET: 0x00CADB30
 // FUNCTION: fn_21060
 void CGameActor::ResetUnknown03B8() {

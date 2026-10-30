@@ -273,6 +273,8 @@ public:
   void SetStackedEffect(int effectId, bool on);
   CSprRes* GetSprite();
   float GetElapsedFrames();
+  int GetGaugeCurrent();
+  int GetGaugeMaximum();
   void ResetUnknown03B8();
   bool IsMonsterClass(int job);
   bool HasPendingDamage();
