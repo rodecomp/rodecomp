@@ -321,6 +321,8 @@ public:
   int SetPairValue(int value, int slot);
   int GetPairValue() const;
   bool IsNpcJob(int job) const;
+  bool HasJobShieldSprite(int job, int shield) const;
+  bool IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const;
   int IsGuardianJob(int job) const;
   bool IsBabyJob(int job) const;
   int IsMercenaryJob(int job) const;

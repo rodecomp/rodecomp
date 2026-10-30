@@ -2,6 +2,7 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/WeaponType.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Client/Session.h"
 #include "Contents/EquipmentResourceMgr.h"
@@ -127,9 +128,512 @@ bool IsNavigationActive() {
 }
 
 // OFFSET: 0x00DFA8D0
+// FUNCTION: fn_23580
+bool CSession::HasJobShieldSprite(int job, int shield) const {
+  if (shield > 2000) {
+    switch (job) {
+    case JT_CHICKEN:
+    case JT_CHICKEN2:
+    case JT_MARRIED:
+    case JT_SANTA:
+    case JT_SUMMER:
+    case JT_HANBOK:
+    case JT_OKTOBERFEST:
+    case JT_SUMMER2:
+    case JT_CHICKEN_H:
+    case JT_CHICKEN2_H:
+    case JT_CHICKEN_B:
+    case JT_CHICKEN2_B:
+    case JT_GANGSI:
+    case JT_DEATHKNIGHT:
+    case JT_COLLECTOR:
+    case JT_RUNE_CHICKEN:
+    case JT_RUNE_CHICKEN_H:
+    case JT_ROYAL_CHICKEN:
+    case JT_ROYAL_CHICKEN_H:
+    case JT_WOLF_RANGER:
+    case JT_WOLF_RANGER_H:
+    case JT_MADOGEAR:
+    case JT_MADOGEAR_H:
+    case JT_RUNE_CHICKEN2:
+    case JT_RUNE_CHICKEN2_H:
+    case JT_RUNE_CHICKEN3:
+    case JT_RUNE_CHICKEN3_H:
+    case JT_RUNE_CHICKEN4:
+    case JT_RUNE_CHICKEN4_H:
+    case JT_RUNE_CHICKEN5:
+    case JT_RUNE_CHICKEN5_H:
+    case JT_RUNE_CHICKEN_B:
+    case JT_ROYAL_CHICKEN_B:
+    case JT_WOLF_RANGER_B:
+    case JT_MADOGEAR_B:
+    case JT_DO_CART_SUMMONER:
+    case JT_WOLF_WINDHAWK:
+    case JT_MEISTER_MADOGEAR:
+    case JT_DRAGON_KNIGHT_CHICKEN:
+    case JT_IMPERIAL_GUARD_CHICKEN:
+      return false;
+    }
+
+    return true;
+  }
+
+  switch (job) {
+  case JT_NOVICE:
+  case JT_MAGICIAN:
+  case JT_ARCHER:
+  case JT_WIZARD:
+  case JT_HUNTER:
+  case JT_SAGE:
+  case JT_BARD:
+  case JT_DANCER:
+  case JT_SUPERNOVICE:
+  case JT_NOVICE_H:
+  case JT_MAGICIAN_H:
+  case JT_ARCHER_H:
+  case JT_WIZARD_H:
+  case JT_HUNTER_H:
+  case JT_SAGE_H:
+  case JT_BARD_H:
+  case JT_DANCER_H:
+  case JT_NOVICE_B:
+  case JT_MAGICIAN_B:
+  case JT_ARCHER_B:
+  case JT_WIZARD_B:
+  case JT_HUNTER_B:
+  case JT_SAGE_B:
+  case JT_BARD_B:
+  case JT_DANCER_B:
+  case JT_SUPERNOVICE_B:
+  case JT_WARLOCK:
+  case JT_RANGER:
+  case JT_WARLOCK_H:
+  case JT_RANGER_H:
+  case JT_SORCERER:
+  case JT_MINSTREL:
+  case JT_WANDERER:
+  case JT_SORCERER_H:
+  case JT_MINSTREL_H:
+  case JT_WANDERER_H:
+  case JT_WARLOCK_B:
+  case JT_RANGER_B:
+  case JT_SORCERER_B:
+  case JT_MINSTREL_B:
+  case JT_WANDERER_B:
+  case JT_SUPERNOVICE2:
+  case JT_SUPERNOVICE2_B:
+  case JT_ARCH_MAGE:
+  case JT_WINDHAWK:
+  case JT_ELEMENTAL_MASTER:
+  case JT_TROUBADOUR:
+  case JT_TROUVERE:
+  case JT_HYPER_NOVICE:
+    return shield == 1;
+  case JT_ACOLYTE:
+  case JT_MERCHANT:
+  case JT_THIEF:
+  case JT_PRIEST:
+  case JT_BLACKSMITH:
+  case JT_ASSASSIN:
+  case JT_ROGUE:
+  case JT_ALCHEMIST:
+  case JT_ACOLYTE_H:
+  case JT_MERCHANT_H:
+  case JT_THIEF_H:
+  case JT_PRIEST_H:
+  case JT_BLACKSMITH_H:
+  case JT_ASSASSIN_H:
+  case JT_ROGUE_H:
+  case JT_ALCHEMIST_H:
+  case JT_ACOLYTE_B:
+  case JT_MERCHANT_B:
+  case JT_THIEF_B:
+  case JT_PRIEST_B:
+  case JT_BLACKSMITH_B:
+  case JT_ASSASSIN_B:
+  case JT_ROGUE_B:
+  case JT_ALCHEMIST_B:
+  case JT_ARCHBISHOP:
+  case JT_MECHANIC:
+  case JT_GUILLOTINE_CROSS:
+  case JT_ARCHBISHOP_H:
+  case JT_MECHANIC_H:
+  case JT_GUILLOTINE_CROSS_H:
+  case JT_GENETIC:
+  case JT_SHADOW_CHASER:
+  case JT_GENETIC_H:
+  case JT_SHADOW_CHASER_H:
+  case JT_ARCHBISHOP_B:
+  case JT_MECHANIC_B:
+  case JT_GUILLOTINE_CROSS_B:
+  case JT_GENETIC_B:
+  case JT_SHADOW_CHASER_B:
+  case JT_MEISTER:
+  case JT_SHADOW_CROSS:
+  case JT_CARDINAL:
+  case JT_BIOLO:
+  case JT_ABYSS_CHASER:
+    switch (shield) {
+    case 1:
+    case 2:
+      return true;
+    }
+    return false;
+  case JT_SWORDMAN:
+  case JT_KNIGHT:
+  case JT_CRUSADER:
+  case JT_SWORDMAN_H:
+  case JT_KNIGHT_H:
+  case JT_CRUSADER_H:
+  case JT_SWORDMAN_B:
+  case JT_KNIGHT_B:
+  case JT_CRUSADER_B:
+  case JT_RUNE_KNIGHT:
+  case JT_RUNE_KNIGHT_H:
+  case JT_ROYAL_GUARD:
+  case JT_ROYAL_GUARD_H:
+  case JT_RUNE_KNIGHT_B:
+  case JT_ROYAL_GUARD_B:
+  case JT_DO_SUMMONER:
+  case JT_DO_SUMMONER_B:
+  case JT_DRAGON_KNIGHT:
+  case JT_IMPERIAL_GUARD:
+  case JT_DRAGON_KNIGHT_CHICKEN:
+  case JT_IMPERIAL_GUARD_CHICKEN:
+  case JT_SPIRIT_HANDLER:
+    switch (shield) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+      return true;
+    }
+    return false;
+  case JT_DRUID:
+  case JT_DRUID_B:
+  case JT_KARNOS:
+  case JT_KARNOS_B:
+  case JT_ALITEA:
+    switch (shield) {
+    case 1:
+    case 2:
+    case 4:
+      return true;
+    }
+    return false;
+  }
+
+  return false;
+}
 
 // OFFSET: 0x00DFAC70
+// FUNCTION: fn_23581
+bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
+  switch (job) {
+  case JT_NOVICE:
+  case JT_SUPERNOVICE:
+  case JT_NOVICE_H:
+  case JT_NOVICE_B:
+  case JT_SUPERNOVICE_B:
+  case JT_SUPERNOVICE2:
+  case JT_SUPERNOVICE2_B:
+  case JT_HYPER_NOVICE:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_1HAXE:
+    case W_MACE:
+    case W_STAFF:
+    case W_2HSTAFF:
+      return true;
+    }
+    return false;
+  case JT_SWORDMAN:
+  case JT_KNIGHT:
+  case JT_CHICKEN:
+  case JT_SWORDMAN_H:
+  case JT_KNIGHT_H:
+  case JT_CHICKEN_H:
+  case JT_SWORDMAN_B:
+  case JT_KNIGHT_B:
+  case JT_CHICKEN_B:
+  case JT_RUNE_KNIGHT:
+  case JT_RUNE_KNIGHT_H:
+  case JT_RUNE_CHICKEN:
+  case JT_RUNE_CHICKEN_H:
+  case JT_RUNE_CHICKEN2:
+  case JT_RUNE_CHICKEN2_H:
+  case JT_RUNE_CHICKEN3:
+  case JT_RUNE_CHICKEN3_H:
+  case JT_RUNE_CHICKEN4:
+  case JT_RUNE_CHICKEN4_H:
+  case JT_RUNE_CHICKEN5:
+  case JT_RUNE_CHICKEN5_H:
+  case JT_RUNE_KNIGHT_B:
+  case JT_RUNE_CHICKEN_B:
+  case JT_DRAGON_KNIGHT:
+  case JT_DRAGON_KNIGHT_CHICKEN:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_2HSWORD:
+    case W_1HSPEAR:
+    case W_2HSPEAR:
+    case W_1HAXE:
+    case W_2HAXE:
+    case W_MACE:
+    case W_2HMACE:
+      return true;
+    }
+    return false;
+  case JT_MAGICIAN:
+  case JT_WIZARD:
+  case JT_MAGICIAN_H:
+  case JT_WIZARD_H:
+  case JT_MAGICIAN_B:
+  case JT_WIZARD_B:
+  case JT_LINKER:
+  case JT_WARLOCK:
+  case JT_WARLOCK_H:
+  case JT_WARLOCK_B:
+  case JT_LINKER_B:
+  case JT_SOUL_REAPER:
+  case JT_SOUL_REAPER_B:
+  case JT_ARCH_MAGE:
+  case JT_SOUL_ASCETIC:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_STAFF:
+    case W_2HSTAFF:
+      return true;
+    }
+    return false;
+  case JT_ARCHER:
+  case JT_HUNTER:
+  case JT_ARCHER_H:
+  case JT_HUNTER_H:
+  case JT_ARCHER_B:
+  case JT_HUNTER_B:
+  case JT_RANGER:
+  case JT_RANGER_H:
+  case JT_WOLF_RANGER:
+  case JT_WOLF_RANGER_H:
+  case JT_RANGER_B:
+  case JT_WOLF_RANGER_B:
+  case JT_WINDHAWK:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_BOW:
+      return true;
+    }
+    return false;
+  case JT_ACOLYTE:
+  case JT_ACOLYTE_H:
+  case JT_ACOLYTE_B:
+    switch (weaponType) {
+    case W_MACE:
+    case W_STAFF:
+    case W_2HSTAFF:
+      return true;
+    }
+    return false;
+  case JT_MERCHANT:
+  case JT_BLACKSMITH:
+  case JT_MERCHANT_H:
+  case JT_BLACKSMITH_H:
+  case JT_MERCHANT_B:
+  case JT_BLACKSMITH_B:
+  case JT_MECHANIC:
+  case JT_MECHANIC_H:
+  case JT_MADOGEAR:
+  case JT_MADOGEAR_H:
+  case JT_MECHANIC_B:
+  case JT_MADOGEAR_B:
+  case JT_MEISTER:
+  case JT_MEISTER_MADOGEAR:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_1HAXE:
+    case W_2HAXE:
+    case W_MACE:
+      return true;
+    }
+    return false;
+  case JT_THIEF:
+  case JT_ROGUE:
+  case JT_THIEF_H:
+  case JT_ROGUE_H:
+  case JT_THIEF_B:
+  case JT_ROGUE_B:
+  case JT_SHADOW_CHASER:
+  case JT_SHADOW_CHASER_H:
+  case JT_SHADOW_CHASER_B:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_BOW:
+      return true;
+    }
+    return false;
+  case JT_PRIEST:
+  case JT_PRIEST_H:
+  case JT_PRIEST_B:
+  case JT_ARCHBISHOP:
+  case JT_ARCHBISHOP_H:
+  case JT_ARCHBISHOP_B:
+  case JT_CARDINAL:
+    switch (weaponType) {
+    case W_MACE:
+    case W_STAFF:
+    case W_BOOK:
+    case W_2HSTAFF:
+      return true;
+    }
+    return false;
+  case JT_ASSASSIN:
+  case JT_ASSASSIN_H:
+  case JT_ASSASSIN_B:
+  case JT_GUILLOTINE_CROSS:
+  case JT_GUILLOTINE_CROSS_H:
+  case JT_GUILLOTINE_CROSS_B:
+  case JT_SHADOW_CROSS:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_1HAXE:
+    case W_KATAR:
+    case W_DOUBLE_DD:
+    case W_DOUBLE_SS:
+    case W_DOUBLE_AA:
+    case W_DOUBLE_DS:
+    case W_DOUBLE_DA:
+    case W_DOUBLE_SA:
+      return true;
+    }
+    return false;
+  case JT_CRUSADER:
+  case JT_CHICKEN2:
+  case JT_CRUSADER_H:
+  case JT_CHICKEN2_H:
+  case JT_CRUSADER_B:
+  case JT_CHICKEN2_B:
+  case JT_ROYAL_GUARD:
+  case JT_ROYAL_GUARD_H:
+  case JT_ROYAL_CHICKEN:
+  case JT_ROYAL_CHICKEN_H:
+  case JT_ROYAL_GUARD_B:
+  case JT_ROYAL_CHICKEN_B:
+  case JT_IMPERIAL_GUARD:
+  case JT_IMPERIAL_GUARD_CHICKEN:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_2HSWORD:
+    case W_1HSPEAR:
+    case W_2HSPEAR:
+    case W_1HAXE:
+    case W_2HAXE:
+    case W_MACE:
+      return true;
+    }
+    return false;
+  case JT_MONK:
+  case JT_MONK_H:
+  case JT_MONK_B:
+  case JT_SURA:
+  case JT_SURA_H:
+  case JT_SURA_B:
+  case JT_INQUISITOR:
+    switch (weaponType) {
+    case W_MACE:
+    case W_STAFF:
+    case W_KNUCKLE:
+    case W_2HSTAFF:
+      return true;
+    }
+    return false;
+  case JT_SAGE:
+  case JT_SAGE_H:
+  case JT_SAGE_B:
+  case JT_SORCERER:
+  case JT_SORCERER_H:
+  case JT_SORCERER_B:
+  case JT_ELEMENTAL_MASTER:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_STAFF:
+    case W_BOOK:
+    case W_2HSTAFF:
+      return true;
+    }
+    return false;
+  case JT_ALCHEMIST:
+  case JT_ALCHEMIST_H:
+  case JT_ALCHEMIST_B:
+  case JT_GENETIC:
+  case JT_GENETIC_H:
+  case JT_GENETIC_B:
+  case JT_BIOLO:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_1HSWORD:
+    case W_1HAXE:
+    case W_2HAXE:
+    case W_MACE:
+    case W_STAFF:
+    case W_2HSTAFF:
+      return true;
+    }
+    return false;
+  case JT_BARD:
+  case JT_BARD_H:
+  case JT_BARD_B:
+  case JT_MINSTREL:
+  case JT_MINSTREL_H:
+  case JT_MINSTREL_B:
+  case JT_TROUBADOUR:
+    switch (weaponType) {
+    case W_DAGGER:
+    case W_BOW:
+    case W_MUSICAL:
+      return true;
+    }
+    return false;
+  case JT_GUNSLINGER:
+  case JT_GUNSLINGER_B:
+    switch (weaponType) {
+    case W_REVOLVER:
+    case W_RIFLE:
+    case W_GATLING:
+    case W_SHOTGUN:
+    case W_GRENADE:
+      return true;
+    }
+    return false;
+  case JT_NINJA:
+  case JT_NINJA_B:
+    return weaponType == W_HUUMA;
+  case JT_STAR:
+  case JT_STAR2:
+  case JT_STAR_B:
+  case JT_STAR2_B:
+  case JT_STAR_EMPEROR:
+  case JT_STAR_EMPEROR_B:
+  case JT_STAR2_EMPEROR:
+  case JT_STAR2_EMPEROR_B:
+  case JT_SKY_EMPEROR:
+  case JT_SKY_EMPEROR2:
+    return weaponType == W_BOOK;
+  case JT_GANGSI:
+  case JT_DEATHKNIGHT:
+  case JT_COLLECTOR:
+    return true;
+  }
 
+  return weaponType == W_DAGGER;
+}
 
 // OFFSET: 0x00DFBCE0
 // FUNCTION: fn_23587
