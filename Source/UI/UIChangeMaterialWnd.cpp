@@ -1,6 +1,8 @@
 #include "UI/UIChangeMaterialWnd.h"
 
 #include "Client/Mode/ModeTooltip.h"
+#include "Client/Session.h"
+#include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
@@ -8,6 +10,7 @@
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/StackAlloc.h"
+#include "Utility/Text/FormatString.h"
 
 #include <algorithm>
 #include <cctype>
@@ -181,8 +184,7 @@ void UIChangeMaterialWnd_List::ApplyFilter(const std::string& text) {
   }
 
   for (int index = 0; index < static_cast<int>(this->m_entries.size()); ++index) {
-    MaterialListItemRef* item = this->m_entries[index].item;
-    std::string name = ItemDisplayName(item->id);
+    std::string name = ItemDisplayName(this->m_entries[index].results.front().id);
     for (std::size_t i = 0; i < name.size(); ++i) {
       name[i] = static_cast<char>(tolower(static_cast<unsigned char>(name[i])));
     }
@@ -251,6 +253,92 @@ void UIChangeMaterialWnd_List::sub_5E3B80(int index) {
   this->parent->SendMsg(nullptr, 23, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
 }
 
+// OFFSET: 0x005E3C30
+// FUNCTION: fn_03895
+int UIChangeMaterialWnd::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  auto* list = *reinterpret_cast<UIChangeMaterialWnd_List**>(reinterpret_cast<char*>(this) + 0xB4);
+  auto* edit = *reinterpret_cast<UIEditCtrl**>(reinterpret_cast<char*>(this) + 0xB8);
+
+  switch (message) {
+  case 0:
+    if (sender == reinterpret_cast<UIWindow*>(edit) && g_windowMgr.GetHoverWindow() == reinterpret_cast<UIWindow*>(edit)) {
+      list->SendMsg(nullptr, 6, 0x141, reinterpret_cast<std::intptr_t>(edit->Text()), 0, 0);
+    }
+    break;
+  case 6:
+    switch (argument1) {
+    case 0xb8:
+      this->sub_5E39A0();
+      break;
+    case 0xc9:
+      g_windowMgr.CloseWindow(0x158);
+      break;
+    case 0x141:
+      list->SendMsg(nullptr, 6, 0x141, reinterpret_cast<std::intptr_t>(edit->Text()), 0, 0);
+      break;
+    case 0x16c:
+      list->SortItems(argument2 > 0);
+      break;
+    case 0x19f:
+      list->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+      break;
+    default:
+      break;
+    }
+    break;
+  case 0x12:
+    list->SendMsg(nullptr, 0x12, 0, 0, 0, 0);
+    break;
+  case 0x13:
+    list->SendMsg(nullptr, 0x13, 0, 0, 0, 0);
+    break;
+  case 0x17:
+    if (argument1 != 0) {
+      auto* entry = reinterpret_cast<MaterialListEntry*>(argument1);
+      this->m_materials.clear();
+      this->m_resultItem.SetItemId(entry->results.front().id);
+      this->m_resultItem.quantity = entry->results.front().quantity;
+
+      for (const MaterialReq& req : entry->materials) {
+        ITEM_INFO info;
+        info.SetItemId(req.id);
+        info.quantity = req.quantity;
+        const ITEM_INFO stock = LookupClientItem(g_session.m_inventoryItems, req.id, 1);
+        info.unknown_0000[1] = stock.unknown_0000[1];
+        info.identified = req.quantity <= stock.quantity;
+        this->m_materials.push_back(info);
+      }
+
+      if (entry->results.size() < 2) {
+        this->m_resultAmount = entry->results.front().amount;
+        this->m_resultText.clear();
+      } else {
+        int total = 0;
+        for (const MaterialResult& result : entry->results) {
+          total += result.amount;
+        }
+        this->m_resultAmount = total > 1000 ? total : 1000;
+        const MaterialResult& first = entry->results.front();
+        const MaterialResult& last = entry->results.back();
+        const std::string name = ItemDisplayName(first.id);
+        this->m_resultText =
+          FormatOwnedString(LookupMessage(0xe8b), name.c_str(), first.quantity, last.quantity);
+      }
+
+      this->m_button->SetDisabled(entry->state != 1);
+      this->m_button->Invalidate();
+      this->Invalidate();
+    }
+    break;
+  default:
+    break;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
 // OFFSET: 0x005E4170
 // FUNCTION: fn_03896
 int UIChangeMaterialWnd_List::SendMsg(
@@ -308,8 +396,8 @@ int UIChangeMaterialWnd_List::SendMsg(
 // FUNCTION: fn_03897
 void UIChangeMaterialWnd_List::SortItems(bool ascending) {
   std::sort(this->m_items.begin(), this->m_items.end(), [this](int left, int right) {
-    const std::string leftName = ItemDisplayName(this->m_entries[left].item->id);
-    const std::string rightName = ItemDisplayName(this->m_entries[right].item->id);
+    const std::string leftName = ItemDisplayName(this->m_entries[left].results.front().id);
+    const std::string rightName = ItemDisplayName(this->m_entries[right].results.front().id);
     return leftName < rightName;
   });
 
