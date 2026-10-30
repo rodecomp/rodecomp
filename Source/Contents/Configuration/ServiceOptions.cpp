@@ -4,6 +4,7 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
+#include "Contents/Skills/ClientSkills.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
 #include "Contents/World/World.h"
 #include "Client/Mode/CGameMode.h"
@@ -22,6 +23,7 @@ extern "C" {
 #include <lua.h>
 }
 
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -33,6 +35,7 @@ extern "C" {
 #include <string>
 #include <vector>
 #include <windows.h>
+#include <timeapi.h>
 
 struct GameSettingsOption {
   /* 0000 */ int id = 300;
@@ -540,6 +543,44 @@ void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMes
   }
 }
 
+// OFFSET: 0x006C42B0
+// FUNCTION: fn_06354
+void ToggleSitStand() {
+  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+    if (effect.id == 933) {
+      return;
+    }
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (!mode) {
+    return;
+  }
+
+  CPlayer* player = mode->scene->player;
+  if (!player) {
+    return;
+  }
+
+  const int motion = (player->render.curMotion != 2) + 1;
+  player->render.curMotion = motion;
+  player->render.angle = static_cast<float>(std::ceil(player->render.angle));
+  mode->SendMsg(0x8B, (static_cast<int>(player->render.angle) + 180) / 45 % 8, motion, 0, 0);
+
+  if (player->render.unknown_0070 == 6) {
+    std::list<unsigned long>& times = *reinterpret_cast<std::list<unsigned long>*>(mode->unknown_05D4);
+    times.pop_front();
+    times.push_back(timeGetTime());
+    const unsigned long elapsed = times.back() - times.front();
+    if (elapsed - 1501 <= 1498) {
+      mode->SendMsg(0xA9, 0, 0, 0, 0);
+      for (unsigned long& time : times) {
+        time = 0;
+      }
+    }
+  }
+}
+
 // OFFSET: 0x006C4750
 // FUNCTION: fn_06359
 void ShowHelpMessages() {
@@ -552,6 +593,19 @@ void ShowHelpMessages() {
       g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF64, 0, 0, 0);
     }
   }
+}
+
+// OFFSET: 0x006C5D10
+// FUNCTION: fn_06366
+void ApplyServiceOptionSessionFlag(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  *reinterpret_cast<int*>(g_session.unknown_5454) = value;
 }
 
 // OFFSET: 0x006C5FC0

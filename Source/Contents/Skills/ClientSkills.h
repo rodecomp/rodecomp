@@ -40,6 +40,8 @@ struct ActiveSkillEffect {
   /* 0018 */ std::uint32_t unknown_0018;
 };
 
+extern std::vector<ActiveSkillEffect> g_activeSkillEffects;
+
 struct ClientSkills {
   CPlayerSkillBundle& bundle;
   const std::list<CSkillInfo>& firstRange;
