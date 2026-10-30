@@ -676,5 +676,63 @@ void UISubChatMiniWnd::Slot25(int x, int) {
 }
 
 // OFFSET: 0x00940EB0
+// FUNCTION: fn_12782
+void UINewChatWnd::Slot11() {
+  g_windowMgr.unknown_004C = this->geometry.unknown_0030;
+  g_windowMgr.unknown_0038 = this->geometry.height;
+  g_windowMgr.unknown_0030 = this->geometry.x;
+  g_windowMgr.unknown_0034 = this->geometry.y;
+}
 
 // OFFSET: 0x00941190
+// FUNCTION: fn_12790
+void UINewChatWnd::SaveChatLogs() {
+  char path[2048];
+  sprintf(path, "%s\\Chat", g_applicationDirectory);
+  if (_access(path, 0) != 0 && _mkdir(path) != 0) {
+    return;
+  }
+
+  std::string name;
+  int index = 0;
+  for (std::vector<UIWindow*>::iterator tab = this->m_tabs.begin(); tab != this->m_tabs.end(); ++tab, ++index) {
+    const std::map<int, SubChatWndInfo>::iterator info = g_session.m_noSubChatWnds.find(index);
+    if (info != g_session.m_noSubChatWnds.end()) {
+      name = info->second.name;
+    }
+
+    if (!name.empty()) {
+      sprintf(path, "%s\\Chat\\Chat_%s.txt", g_applicationDirectory, name.c_str());
+      int number = 0;
+      while (_access(path, 0) == 0) {
+        ++number;
+        sprintf(path, "%s\\Chat\\Chat_%s_%03d.txt", g_applicationDirectory, name.c_str(), number);
+      }
+
+      if (static_cast<UIChatHisBox*>(*tab)->SaveChatLog(path)) {
+        std::string message(path);
+        message += " is Saved.";
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF00, 0, 0, 0);
+      }
+    }
+  }
+
+  for (std::map<int, UIWindow*>::iterator it = g_windowMgr.retainedWindows.begin(); it != g_windowMgr.retainedWindows.end(); ++it) {
+    UISubChatHisWnd* window = static_cast<UISubChatHisWnd*>(it->second);
+    name = window->Name();
+    sprintf(path, "%s\\Chat\\Chat_%s.txt", g_applicationDirectory, name.c_str());
+    int number = 0;
+    while (_access(path, 0) == 0) {
+      ++number;
+      sprintf(path, "%s\\Chat\\Chat_%s_%03d.txt", g_applicationDirectory, name.c_str(), number);
+    }
+
+    if (window->ChatBox()->SaveChatLog(path)) {
+      std::string message(path);
+      message += " is Saved.";
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF00, 0, 0, 0);
+    }
+  }
+}

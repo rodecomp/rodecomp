@@ -43,3 +43,20 @@ void UIMiniBtnWnd::Slot25(int, int) {
 }
 
 // OFFSET: 0x00941120
+// FUNCTION: fn_12789
+void UIMiniBtnWnd::Toggle() {
+  bool visible;
+  UIWindow* window = g_windowMgr.LookupWindow(this->m_windowId);
+  if (window) {
+    visible = window->geometry.visible == 0;
+  } else {
+    window = this->m_frameContext->windows.EnsureWindow(this->m_windowId);
+    visible = true;
+  }
+
+  if (window) {
+    window->Show(visible);
+    window->SendMsg(this, 6, 271, visible, 0, 0);
+  }
+  this->Invalidate();
+}
