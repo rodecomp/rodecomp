@@ -23,6 +23,7 @@ protected:
 
 class UIStaticItem_Illust : public UIStaticItem {
 public:
+  void Paint() override;
   void Slot28(int x, int y) override;
 };
 

@@ -10,6 +10,7 @@ class UIChatHisBox : public UIListBox {
 public:
   void Resize(int width, int height) override;
   void Show(int visible) override;
+  void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot31(int x, int y) override;
@@ -23,6 +24,9 @@ public:
   /* 00E4 */ std::vector<int> unknown_00E4;
   /* 00F0 */ unsigned char unknown_00F0[0x4];
   /* 00F4 */ std::vector<std::string> history;
+  /* 0100 */ std::vector<std::string> unknown_0100;
+  /* 010C */ std::vector<int> unknown_010C;
+  /* 0118 */ std::vector<std::string> unknown_0118;
 };
 
 #endif

@@ -26,10 +26,10 @@
 #include "UI/Lists/UIComboBox.h"
 #include "UI/Lists/UIComboBoxV2Wnd.h"
 #include "UI/Lists/UIItemStoreComboBox.h"
-#include "UI/Lists/UIListBox.h"
+#include "UI/Lists/UIPackageBoxNameList.h"
 #include "UI/Lists/UIListBoxEx.h"
 #include "UI/Lists/UIListBoxID.h"
-#include "UI/Lists/UIScrollBar.h"
+#include "UI/Lists/UIScrollBarVariants.h"
 #include "UI/Lists/TableBox.h"
 #include "UI/Window/WindowPolicy.h"
 #include "UI/Text/UITransBalloonText.h"
@@ -1743,3 +1743,38 @@ const std::string& UITextButton::GetLine(std::size_t index) const {
     return g_emptyString;
   }
 }
+
+// OFFSET: 0x0088D750
+
+// OFFSET: 0x0088DBF0
+
+// OFFSET: 0x0088E0B0
+
+// OFFSET: 0x0088E730
+
+// OFFSET: 0x0088FE20
+
+// OFFSET: 0x00884DD0
+// FUNCTION: fn_11313
+void TableBox::Slot15(int, int) {
+}
+
+// OFFSET: 0x00884DE0
+
+// OFFSET: 0x00884F40
+
+// OFFSET: 0x008850C0
+
+// OFFSET: 0x0088C530
+
+// OFFSET: 0x0088AEC0
+
+// OFFSET: 0x0088F1C0
+
+// OFFSET: 0x0088F810
+// FUNCTION: fn_11391
+void UITableBox::Paint() {
+  this->ClearSurface(0);
+}
+
+// OFFSET: 0x008906D0

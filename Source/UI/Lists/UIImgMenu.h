@@ -9,6 +9,7 @@ class UIImgMenu : public UIWindow {
 public:
   int ItemAt(int x, int y);
   void Move(int x, int y) override;
+  void Paint() override;
   void Slot27(int x, int y) override;
   void Slot28(int x, int y) override;
   void ResetCursor(int x, int y) override;
