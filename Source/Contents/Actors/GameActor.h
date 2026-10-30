@@ -236,6 +236,7 @@ public:
   void SetUnknown03B8(int value, int slot);
   void SetTetraBall(int index, int on, int value);
   bool IsSkillWithoutAction(int skillId);
+  bool HasUnknown0310Entry();
   void SetCharm(int type, int count);
   int ActionBase(int state);
   void SetUnknown03C4(int value);

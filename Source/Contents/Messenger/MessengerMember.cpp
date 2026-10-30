@@ -866,3 +866,12 @@ void UIMiniPartyInfoWnd::Slot15(int width, int) {
     this->AddChild(this->m_gauge);
   }
 }
+
+// OFFSET: 0x00AA24D0
+// FUNCTION: fn_17213
+void UIWindowMgr::MoveTransient(int x, int y) {
+  UIDragMiniPartyWnd* transient = static_cast<UIDragMiniPartyWnd*>(this->window_4F250);
+  if (transient && transient->member.valid) {
+    transient->Move(x - transient->unknown_010C, y - transient->unknown_0110);
+  }
+}

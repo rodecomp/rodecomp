@@ -625,3 +625,10 @@ void CGameActor::SetStackedEffect(int effectId, bool on) {
     this->ApplyEffectState(id, true);
   }
 }
+
+// OFFSET: 0x00AA20D0
+// FUNCTION: fn_17210
+bool CGameActor::HasUnknown0310Entry() {
+  const int* entry = reinterpret_cast<const int*>(this->unknown_0310);
+  return entry && entry[1] != 0;
+}

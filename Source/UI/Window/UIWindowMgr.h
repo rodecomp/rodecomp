@@ -462,6 +462,7 @@ public:
   void Destroy(UIWindow* window);
   void ForgetWindowReferences(UIWindow* removed);
   void DismissTransient();
+  void MoveTransient(int x, int y);
   void ClearWindow01B8();
   bool CloseWindow(int id);
   void CloseWindowExcept251(int id);
