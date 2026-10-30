@@ -763,6 +763,12 @@ void CUIGroupSound::SetBgmEnabled(bool enabled) {
 }
 
 // OFFSET: 0x00A3F3D0
+// FUNCTION: fn_15943
+void CUIGroupSound::SetBgmVolume(int volume) {
+  CSoundMgr::SetVolume(g_soundMgr, volume);
+  g_soundMgr->SetTargetVolume(CSoundMgr::Volume(g_soundMgr));
+  this->m_bgmSlider->SetThumbTooltip(std::to_string(CSoundMgr::Volume(g_soundMgr)));
+}
 
 // OFFSET: 0x00A3F4C0
 
