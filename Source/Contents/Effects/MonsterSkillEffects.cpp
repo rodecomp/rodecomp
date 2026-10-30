@@ -106,6 +106,7 @@ bool CRootTwistEffect::Slot06() {
 }
 
 // OFFSET: 0x0070C3E0
+// FUNCTION: fn_07132
 void CRootTwistEffect::Slot03() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
@@ -189,6 +190,7 @@ CSvgSpiritEffect::CSvgSpiritEffect() : CEffect(1128), emitter(nullptr) {
 }
 
 // OFFSET: 0x0070D690
+// FUNCTION: fn_07154
 void CStemSpearEffect::Slot03() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     EZ2STREmitter* emitter = *it;
@@ -235,6 +237,7 @@ bool CSvgSpiritEffect::Slot06() {
 }
 
 // OFFSET: 0x0070DB50
+// FUNCTION: fn_07161
 void CSvgSpiritEffect::Slot03() {
   EZ2STREmitter* emitter = this->emitter;
   if (emitter->elapsed >= 0) {
@@ -906,6 +909,7 @@ CDropItemEffect::CDropItemEffect()
 }
 
 // OFFSET: 0x00719660
+// FUNCTION: fn_07309
 bool CDropItemEffect::Slot06() {
   if (this->actor == 0) {
     return false;
@@ -1396,6 +1400,7 @@ void CRandomOptEffect::Slot11(std::string name) {
 }
 
 // OFFSET: 0x00721230
+// FUNCTION: fn_07371
 bool CRandomOptEffect::Slot06() {
   if (this->actor == 0) {
     return false;
@@ -1414,6 +1419,7 @@ bool CRandomOptEffect::Slot06() {
 }
 
 // OFFSET: 0x00721270
+// FUNCTION: fn_07372
 void CRandomOptEffect::Slot03() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
