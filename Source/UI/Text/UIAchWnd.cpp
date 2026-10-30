@@ -313,6 +313,15 @@ void UICustomGageBar::Paint() {
 }
 
 // OFFSET: 0x007B7B60
+// FUNCTION: fn_09236
+void UIAchTab::Slot27(int x, int y) {
+  int sub = 0;
+  int group = 0;
+  this->sub_7B4370(x, y, &group, &sub);
+  this->hoverGroup = group;
+  this->hoverSub = sub;
+  this->Invalidate();
+}
 
 // OFFSET: 0x007B7D90
 // FUNCTION: fn_09239
