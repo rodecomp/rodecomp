@@ -53,6 +53,7 @@ public:
   );
   int Height() const;
   int Width() const;
+  bool LoadAttr(std::string name);
 };
 
 extern CPathFinder g_pathFinder;

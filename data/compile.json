@@ -212,6 +212,7 @@
   ]
  ],
  "units": {
+  "Source/ActorPickNode.cpp": 4,
   "Source/Archive/GPak.cpp": 1,
   "Source/Archive/MemMapPakFile.cpp": 1,
   "Source/Archive/PakCipher.cpp": 1,
