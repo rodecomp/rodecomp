@@ -3,6 +3,7 @@
 #include "Contents/MessageTable.h"
 #include "Contents/NavigationManager.h"
 #include "Render/Renderer.h"
+#include "UI/Buttons/UIButton.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Window/UIRoMapWnd.h"
 
@@ -133,6 +134,84 @@ void UINavigationWnd::RefreshWorldMapLevels() {
       }
     }
     this->Invalidate();
+  }
+}
+
+// OFFSET: 0x0093EB60
+// FUNCTION: fn_12776
+void UINavigationWnd::ApplyMinimized() {
+  if (g_navigationMinimized) {
+    this->Resize(134, 61);
+    int x = this->geometry.x;
+    int y = this->geometry.y;
+    if (x >= g_renderer->viewport.width - 272) {
+      x = g_renderer->viewport.width - this->geometry.width;
+    }
+    if (y >= g_renderer->viewport.height - 338) {
+      y = g_renderer->viewport.height - this->geometry.height;
+    }
+    this->Move(x < 0 ? 0 : x, y < 0 ? 0 : y);
+
+    this->unknown_0128->Move(-1000, -1000);
+    this->unknown_0120->Move(this->geometry.width - 42, 3);
+    this->m_closeButton->Move(this->geometry.width - 14, 3);
+    this->m_minimizeButton->Move(this->geometry.width - 28, 3);
+    this->m_minimizeButton->SetTooltip(LookupMessage(0x89B));
+
+    this->unknown_00FC->Move(-1000, -1000);
+    this->unknown_0100->Move(-1000, -1000);
+    this->m_routeFooter->Move(-1000, -1000);
+    this->m_searchFooter->Move(-1000, -1000);
+    this->unknown_010C->Move(-1000, -1000);
+    this->unknown_0110->Move(-1000, -1000);
+    this->LayoutTabs();
+
+    this->unknown_00EC->Move(-1000, -1000);
+    this->unknown_0114->Move(-1000, -1000);
+    this->unknown_0118->Move(-1000, -1000);
+    this->unknown_011C->Move(-1000, -1000);
+    this->m_titleBar->Move(-1000, -1000);
+  } else {
+    if (this->m_saved->minimized) {
+      this->m_saved->width = 272;
+      this->m_titleBar->Resize(226, 18);
+    } else {
+      this->m_saved->width = 228;
+      this->m_titleBar->Resize(182, 18);
+    }
+    this->Resize(this->m_saved->width, this->m_saved->height);
+
+    int x = g_renderer->viewport.width - this->m_saved->width;
+    if (x > this->geometry.x) {
+      x = this->geometry.x;
+    }
+    int y = g_renderer->viewport.height - this->m_saved->height;
+    if (y > this->geometry.y) {
+      y = this->geometry.y;
+    }
+    this->Move(x < 0 ? 0 : x, y < 0 ? 0 : y);
+
+    this->m_routePanel->Resize(215, this->geometry.height - 78);
+    this->m_searchPanel->Resize(215, this->geometry.height - 78);
+    this->unknown_0128->Move(this->geometry.width - 14, this->geometry.height - 14);
+    this->unknown_0120->Move(this->geometry.width - 42, 3);
+    this->m_closeButton->Move(this->geometry.width - 14, 3);
+    this->m_minimizeButton->Move(this->geometry.width - 28, 3);
+    this->m_minimizeButton->SetTooltip(LookupMessage(0x89C));
+
+    this->unknown_00FC->Move(this->geometry.width - 66, 18);
+    this->unknown_0100->Move(this->geometry.width - 77, this->geometry.height - 37);
+    this->m_routeFooter->Move(-1000, -1000);
+    this->m_searchFooter->Move(-1000, -1000);
+    this->unknown_010C->Move(this->geometry.width - 224, this->geometry.height - 22);
+    this->unknown_0110->Move(this->geometry.width - 31, 18);
+    this->LayoutTabs();
+
+    this->unknown_00EC->Move(6, 18);
+    this->unknown_0114->Move(this->geometry.width - 136, this->geometry.height - 37);
+    this->unknown_0118->Move(this->geometry.width - 186, this->geometry.height - 37);
+    this->unknown_011C->Move(this->geometry.width - 136, this->geometry.height - 21);
+    this->m_titleBar->Move(65, 18);
   }
 }
 

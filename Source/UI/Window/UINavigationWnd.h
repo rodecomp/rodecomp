@@ -5,6 +5,8 @@
 
 #include <string>
 
+class UIButton;
+
 struct NavigationWndInfo {
   /* 0000 */ int x;
   /* 0004 */ int y;
@@ -23,23 +25,33 @@ public:
   void Slot11() override;
   void Slot31(int x, int y) override;
   void LayoutTabs();
+  void ApplyMinimized();
   void RefreshHeaderTexts(int mode);
   void RefreshWorldMapMarks();
   void RefreshWorldMapSelection();
   void RefreshWorldMapLevels();
 
 protected:
-  /* 00B4 */ unsigned char unknown_00B4[0x8];
+  /* 00B4 */ UIWindow* m_closeButton;
+  /* 00B8 */ UIButton* m_minimizeButton;
   /* 00BC */ std::string m_title;
   /* 00D4 */ std::string m_subtitle;
-  /* 00EC */ unsigned char unknown_00EC[0x8];
+  /* 00EC */ UIWindow* unknown_00EC;
+  /* 00F0 */ UIWindow* m_titleBar;
   /* 00F4 */ UIWindow* m_routePanel;
   /* 00F8 */ UIWindow* m_searchPanel;
-  /* 00FC */ unsigned char unknown_00FC[0x8];
+  /* 00FC */ UIWindow* unknown_00FC;
+  /* 0100 */ UIWindow* unknown_0100;
   /* 0104 */ UIWindow* m_routeFooter;
   /* 0108 */ UIWindow* m_searchFooter;
-  /* 010C */ unsigned char unknown_010C[0x18];
+  /* 010C */ UIWindow* unknown_010C;
+  /* 0110 */ UIWindow* unknown_0110;
+  /* 0114 */ UIWindow* unknown_0114;
+  /* 0118 */ UIWindow* unknown_0118;
+  /* 011C */ UIWindow* unknown_011C;
+  /* 0120 */ UIWindow* unknown_0120;
   /* 0124 */ NavigationWndInfo* m_saved;
+  /* 0128 */ UIWindow* unknown_0128;
 };
 
 #endif
