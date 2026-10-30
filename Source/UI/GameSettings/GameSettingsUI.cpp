@@ -102,6 +102,14 @@ template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderBackend>::UpdateLi
 template void CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::UpdateListHeight();
 
 // OFFSET: 0x00A3EA80
+// FUNCTION: fn_15933
+template <class T, class D> int CUIComboBox<T, D>::AddItem(const D& value, bool refresh) {
+  const int index = this->listBox->AddData(value, false);
+  if (refresh) {
+    this->UpdateListHeight();
+  }
+  return index;
+}
 
 template int CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::AddItem(const std::string& value, bool refresh);
 
@@ -684,16 +692,101 @@ void CUIPage::Paint() {
 }
 
 // OFFSET: 0x00A40030
+// FUNCTION: fn_15961
+int CUIGraphicsPage::GetPendingBackend() {
+  return this->m_graphicsApi->m_pendingBackend;
+}
 
 // OFFSET: 0x00A3F6A0
+// FUNCTION: fn_15947
+void CUIGraphicsPage::LoadAdapters() {
+  this->m_graphics->LoadAdapters();
+}
 
 // OFFSET: 0x00A3FBD0
+// FUNCTION: fn_15959
+int CUIGroupGraphics::GetPendingBackend() {
+  return static_cast<CUIGraphicsPage*>(this->parent)->GetPendingBackend();
+}
 
 // OFFSET: 0x00A42460
+// FUNCTION: fn_16015
+void CUIGroupGraphics::LoadAdapters() {
+  this->m_adapterCombo->listBox->ClearData();
+
+  const std::vector<RenderAdapter> adapters = EnumerateRenderAdapters(this->GetPendingBackend());
+  for (const RenderAdapter& adapter : adapters) {
+    this->m_adapterCombo->listBox->AddData(adapter, false);
+  }
+  this->m_adapterCombo->UpdateListHeight();
+
+  std::list<RenderAdapter>& data = this->m_adapterCombo->listBox->data;
+  if (data.size() == 0) {
+    return;
+  }
+
+  const auto found = std::find_if(data.begin(), data.end(), [this](const RenderAdapter& adapter) { return this->m_pendingAdapter.Matches(adapter); });
+  const int index = found != data.end() ? static_cast<int>(std::distance(data.begin(), found)) : 0;
+
+  CUIListBoxEx<CUIComboItem, RenderAdapter>* list = this->m_adapterCombo->listBox;
+  list->scrollBar->SetPosition(list->rowHeight * index);
+  for (CUIComboItem* item : list->items) {
+    if (item->index == index) {
+      list->SelectItem(item);
+      break;
+    }
+  }
+}
 
 // OFFSET: 0x00A427A0
+// FUNCTION: fn_16016
+void CUIGroupGraphics::LoadModes() {
+  this->m_modeCombo->listBox->ClearData();
+
+  const std::vector<DisplayMode> modes = EnumerateDisplayModes(this->GetPendingBackend(), this->m_pendingAdapter.ordinal);
+  for (const DisplayMode& mode : modes) {
+    this->m_modeCombo->listBox->AddData(mode, false);
+  }
+  this->m_modeCombo->UpdateListHeight();
+
+  std::list<DisplayMode>& data = this->m_modeCombo->listBox->data;
+  if (data.size() == 0) {
+    return;
+  }
+
+  auto found = std::find_if(data.begin(), data.end(), [this](const DisplayMode& mode) { return this->m_pendingMode.Matches(mode); });
+  if (found == data.end()) {
+    DisplayMode fallback{};
+    ScreenDimensions screen;
+    const ScreenDimensions* resolution = DefaultResolution(&screen);
+    fallback.width = resolution->width;
+    fallback.height = resolution->height;
+    fallback.bitsPerPixel = g_configuredBitsPerPixel;
+    found = std::find_if(data.begin(), data.end(), [fallback](const DisplayMode& mode) { return fallback.Matches(mode); });
+  }
+  const int index = found != data.end() ? static_cast<int>(std::distance(data.begin(), found)) : 0;
+
+  CUIListBoxEx<CUIComboItem, DisplayMode>* list = this->m_modeCombo->listBox;
+  list->scrollBar->SetPosition(list->rowHeight * index);
+  for (CUIComboItem* item : list->items) {
+    if (item->index == index) {
+      list->SelectItem(item);
+      break;
+    }
+  }
+}
 
 // OFFSET: 0x00A3F950
+// FUNCTION: fn_15951
+void CUIGroupGraphics::OnAdapterSelect(CUIComboItem* item, const RenderAdapter& adapter) {
+  CUIListBoxEx<CUIComboItem, RenderAdapter>* list = this->m_adapterCombo->listBox;
+  if (static_cast<int>(list->selected) >= 0 && list->selected < list->data.size()) {
+    auto node = list->data.begin();
+    std::advance(node, static_cast<int>(list->selected));
+    this->m_pendingAdapter = *node;
+    this->LoadModes();
+  }
+}
 
 // OFFSET: 0x00A436E0
 // FUNCTION: fn_16034
@@ -702,6 +795,33 @@ void CUIGroupGraphics::Refresh() {
 }
 
 // OFFSET: 0x00A42BD0
+// FUNCTION: fn_16017
+void CUIGroupGraphicsAPI::LoadBackends() {
+  this->m_combo->listBox->ClearData();
+
+  const std::vector<RenderBackend> backends = EnumerateRenderBackends();
+  for (const RenderBackend& backend : backends) {
+    this->m_combo->listBox->AddData(backend, false);
+  }
+  this->m_combo->UpdateListHeight();
+
+  std::list<RenderBackend>& data = this->m_combo->listBox->data;
+  if (data.size() == 0) {
+    return;
+  }
+
+  const auto found = std::find_if(data.begin(), data.end(), [this](const RenderBackend& backend) { return backend.identity == this->m_pendingBackend; });
+  const int index = found != data.end() ? static_cast<int>(std::distance(data.begin(), found)) : 0;
+
+  CUIListBoxEx<CUIComboItem, RenderBackend>* list = this->m_combo->listBox;
+  list->scrollBar->SetPosition(list->rowHeight * index);
+  for (CUIComboItem* item : list->items) {
+    if (item->index == index) {
+      list->SelectItem(item);
+      break;
+    }
+  }
+}
 
 // OFFSET: 0x00A3FAC0
 // FUNCTION: fn_15955
