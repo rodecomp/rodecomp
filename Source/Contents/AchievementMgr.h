@@ -3,7 +3,10 @@
 
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
+
+struct lua_State;
 
 struct AchievementReward {
   /* 0000 */ std::string text;
@@ -49,6 +52,28 @@ public:
   bool GetAchievement(AchievementInfo& out, int id);
   std::string GetUnknown0068(int id);
   bool GetGroupAchievements(std::map<int, AchievementInfo>& out, int group, int index);
+  int GetUnknown0048(int id);
+  std::string GetUnknown0018(int id);
+  int GetUnknown0050(int id);
+  int GetAchievementCount(int group, int index);
+  int GetCompletedCount(int group, int index);
+  bool FindTab(int id, int& group, int& index);
+  std::pair<bool, std::string> InsertAchieveInfo(int id, std::string title, std::string unknown0018, std::string unknown0030, int unknown0048);
+  std::pair<bool, std::string> InsertAchieveResource(int id, std::string text, int unknown0018, int unknown001C);
+  std::pair<bool, std::string> InsertAchieveRewardBuff(int id, int value);
+  std::pair<bool, std::string> InsertAchieveRewardItem(int id, int value);
+  std::pair<bool, std::string> InsertAchieveRewardTitle(int id, int value);
+  std::pair<bool, std::string> InsertAchieveUIType(int id, int type, std::string text);
+  bool HasReward(int id);
+  std::pair<bool, std::string> SetAchieveTab(int id, int group, int index);
+
+  static int L_InsertAchieveInfo(lua_State* state);
+  static int L_InsertAchieveResource(lua_State* state);
+  static int L_InsertAchieveRewardBuff(lua_State* state);
+  static int L_InsertAchieveRewardItem(lua_State* state);
+  static int L_InsertAchieveRewardTitle(lua_State* state);
+  static int L_InsertAchieveUIType(lua_State* state);
+  static int L_SetAchieveIDByTab(lua_State* state);
 };
 
 static_assert(sizeof(CAchievementMgr) == 0x1C);
