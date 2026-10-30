@@ -1221,3 +1221,77 @@ void UIChatRoomWnd::SaveChatLog() {
 }
 
 // OFFSET: 0x008ABDB0
+// FUNCTION: fn_11728
+void UILoginWnd::LoadLogin() {
+  HKEY probe;
+  if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &probe) != ERROR_SUCCESS) {
+    this->idEdit->SetText("");
+    this->passwordEdit->SetText("");
+    return;
+  }
+
+  RegCloseKey(probe);
+  HKEY key;
+  if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &key) != ERROR_SUCCESS) {
+    return;
+  }
+
+  DWORD type = REG_DWORD;
+  DWORD size = 4;
+  int saveId;
+  const std::uint8_t checkSource[] = {0xB2, 0x8F, 0x7C, 0x4A, 0x5C, 0x2A, 0x0E, 0xA7, 0xB4, 0xC7};
+  thread_local EncryptedName<sizeof(checkSource), 0xF14F79170939C7F1ULL> checkName(checkSource);
+  RegQueryValueExA(key, checkName.Text(), nullptr, &type, reinterpret_cast<BYTE*>(&saveId), &size);
+  saveId = saveId == 1;
+
+  int bitwise;
+  const std::uint8_t bitwiseSource[] = {0xDD, 0x8C, 0x39, 0xFC, 0x9E, 0x7A, 0xB8, 0xA5};
+  thread_local EncryptedName<sizeof(bitwiseSource), 0xA5FD29D7AB6DC59FULL> bitwiseName(bitwiseSource);
+  RegQueryValueExA(key, bitwiseName.Text(), nullptr, &type, reinterpret_cast<BYTE*>(&bitwise), &size);
+
+  char id[52];
+  std::memset(id, 0, sizeof(id));
+  char password[26] = {};
+  type = REG_SZ;
+  size = 25;
+  const std::uint8_t passwordSource[] = {0xB1, 0x3A, 0xAA, 0x84, 0x82, 0x5C, 0x6B, 0x99, 0xE1};
+  thread_local EncryptedName<sizeof(passwordSource), 0xDD3913D5D7F97BE1ULL> passwordName(passwordSource);
+  RegQueryValueExA(key, passwordName.Text(), nullptr, &type, reinterpret_cast<BYTE*>(password), &size);
+  password[24] = 0;
+
+  type = REG_SZ;
+  size = 51;
+  const std::uint8_t idSource[] = {0xD2, 0x13, 0x03};
+  thread_local EncryptedName<sizeof(idSource), 0x050505679903579BULL> idName(idSource);
+  RegQueryValueExA(key, idName.Text(), nullptr, &type, reinterpret_cast<BYTE*>(id), &size);
+  id[50] = 0;
+  password[24] = 0;
+  this->saveId = saveId;
+
+  if (saveId != 0) {
+    unsigned char shade;
+    bool placeholder = std::strcmp("", id) == 0;
+    if (!placeholder) {
+      const std::uint8_t compareSource[] = {0xF4, 0xF9, 0xED};
+      thread_local EncryptedName<sizeof(compareSource), 0x83EFBFBB37EDBDBDULL> compareName(compareSource);
+      placeholder = std::strcmp(compareName.Text(), id) == 0;
+    }
+
+    if (placeholder) {
+      this->idPlaceholder = true;
+      const std::uint8_t textSource[] = {0xEE, 0xB1, 0x7F};
+      thread_local EncryptedName<sizeof(textSource), 0xBF2B4B31397FF5A7ULL> textName(textSource);
+      this->idEdit->SetText(textName.Text());
+      shade = 156;
+    } else {
+      shade = 0;
+      this->idPlaceholder = false;
+    }
+
+    this->idEdit->TextColor(RGB(shade, shade, shade), 0xFFFFFFFF);
+    this->idEdit->SetText(id);
+    this->passwordEdit->SetText("");
+  }
+
+  RegCloseKey(key);
+}
