@@ -125,3 +125,124 @@ bool CVolcanoEffect::Slot06() {
 
   return false;
 }
+
+// OFFSET: 0x00B7F1C0
+// FUNCTION: fn_19244
+void CVolcanoEffect::Slot03() {
+  int fadeIn;
+  int fadeOut;
+
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+
+    if (particle) {
+      particle->scale += this->id == 261 ? 0.1f : 0.3f;
+
+      int tilt = particle->unknown_004C - 1;
+      if (this->id == 261) {
+        if (tilt < 30) {
+          tilt = 30;
+        }
+      } else if (tilt < 40) {
+        tilt = 40;
+      }
+      particle->unknown_004C = tilt;
+
+      float& spin = *reinterpret_cast<float*>(&particle->unknown_00C4);
+      spin = static_cast<float>(static_cast<int>(spin) + (this->id != 261) * 2 + 3);
+
+      switch (this->id) {
+      case 223:
+        fadeIn = 20;
+        fadeOut = 8;
+        break;
+      case 225:
+      case 236:
+      case 237:
+      case 238:
+      case 261:
+        fadeIn = 20;
+        fadeOut = 2;
+        break;
+      case 263:
+      case 773:
+        fadeIn = 10;
+        fadeOut = 2;
+        break;
+      case 886:
+      case 934:
+      case 936:
+      case 937:
+      case 938:
+        fadeIn = 20;
+        fadeOut = 5;
+        break;
+      }
+
+      if (particle->unknown_00E8 > 10) {
+        const int alpha = particle->alpha - fadeOut;
+        particle->alpha = alpha > 0 ? alpha : 0;
+      } else {
+        particle->alpha += fadeIn;
+      }
+
+      const int segment = particle->unknown_000C;
+      const float radius = g_sinTable[segment * 9] * particle->unknown_00C0;
+      const int angle =
+        static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f) * segment) + spin) % 360;
+      const float spread = radius * g_cosTable[tilt];
+      const float cosine = g_cosTable[angle];
+      const float sine = g_sinTable[angle];
+      const float height = radius * g_sinTable[tilt];
+
+      vector3d corners[2] = {};
+      corners[0].x = particle->scale * cosine;
+      corners[0].y = 0.0f;
+      corners[0].z = particle->scale * sine;
+      corners[1].x = corners[0].x + spread * cosine;
+      corners[1].y = 0.0f - height;
+      corners[1].z = corners[0].z + spread * sine;
+
+      particle->vertices[3].x = corners[0].x;
+      particle->vertices[3].y = corners[0].y;
+      particle->vertices[3].z = corners[0].z;
+      particle->vertices[1].x = corners[1].x;
+      particle->vertices[1].y = corners[1].y;
+      particle->vertices[1].z = corners[1].z;
+
+      if (segment != 0) {
+        particle->vertices[0].x = this->lastOuter.x;
+        particle->vertices[0].y = this->lastOuter.y;
+        particle->vertices[0].z = this->lastOuter.z;
+        particle->vertices[2].x = this->lastInner.x;
+        particle->vertices[2].y = this->lastInner.y;
+        particle->vertices[2].z = this->lastInner.z;
+      }
+
+      this->lastInner = corners[0];
+      this->lastOuter = corners[1];
+    }
+
+    ++particle->unknown_00E8;
+  }
+}
+
+// OFFSET: 0x00B7F7B0
+// FUNCTION: fn_19245
+void CVolcanoEffect::Slot04() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
+    if (!particle || particle->unknown_000C <= 0) {
+      continue;
+    }
+
+    particle->destinationBlend = 6;
+
+    const int segment = particle->unknown_000C;
+    const ParticleQuad quad = {false, 0.0f, 1.0f, static_cast<float>(segment - 1) / 21.0f, static_cast<float>(segment) / 21.0f, false, true};
+    particle->Render(quad);
+  }
+}

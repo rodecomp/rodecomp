@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_THROWEFFECTS_H
 
 #include "Contents/Effects/Effect.h"
+#include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
 #include <vector>
@@ -33,9 +34,12 @@ static_assert(offsetof(CThrowItemEffect, particles) == 0xF8);
 
 class CVolcanoEffect : public CEffect {
 public:
+  void Slot03() override;
+  void Slot04() override;
   bool Slot06() override;
 
-  /* 00CC */ unsigned char unknown_00CC[0x18];
+  /* 00CC */ vector3d lastInner;
+  /* 00D8 */ vector3d lastOuter;
   /* 00E4 */ std::vector<CParticle*> particles;
 };
 
