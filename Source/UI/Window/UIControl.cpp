@@ -654,6 +654,51 @@ void CUIBasicButton::Resize(int width, int height) {
   this->Slot53(0);
 }
 
+// OFFSET: 0x009E1F90
+// FUNCTION: fn_14405
+void CUIBasicButton::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  CBitmapRes* left = this->disabled ? this->disabledLeft : this->leftImages[this->state];
+  CBitmapRes* middle = this->disabled ? this->disabledMiddle : this->middleImages[this->state];
+  CBitmapRes* right = this->disabled ? this->disabledRight : this->rightImages[this->state];
+  const int end = this->geometry.width - (right ? right->image.width : 0);
+  int x = 0;
+
+  if (left) {
+    this->DrawBitmap(0, 0, &left->image, false);
+    x = left->image.width;
+  }
+
+  if (middle) {
+    for (; x < end; x += middle->image.width) {
+      this->DrawBitmap(x, 0, &middle->image, false);
+    }
+  }
+
+  if (right) {
+    this->DrawBitmap(this->geometry.width - right->image.width, 0, &right->image, false);
+  }
+
+  this->Slot55();
+}
+
+// OFFSET: 0x009E20B0
+// FUNCTION: fn_14406
+void CUIBasicButton::Slot53(int resolveSkin) {
+  this->leftImages[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_left.bmp", resolveSkin));
+  this->leftImages[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_left.bmp", resolveSkin));
+  this->leftImages[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_left.bmp", resolveSkin));
+  this->disabledLeft = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_disable_left.bmp", resolveSkin));
+  this->middleImages[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_mid.bmp", resolveSkin));
+  this->middleImages[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_mid.bmp", resolveSkin));
+  this->middleImages[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_mid.bmp", resolveSkin));
+  this->disabledMiddle = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_disable_mid.bmp", resolveSkin));
+  this->rightImages[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_right.bmp", resolveSkin));
+  this->rightImages[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_press_right.bmp", resolveSkin));
+  this->rightImages[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_over_right.bmp", resolveSkin));
+  this->disabledRight = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_disable_right.bmp", resolveSkin));
+}
+
 // OFFSET: 0x009F26B0
 // FUNCTION: fn_14718
 void CUIThumb::Slot53(int resolveSkin) {

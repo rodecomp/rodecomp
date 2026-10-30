@@ -142,6 +142,18 @@ public:
 class CUIBasicButton : public CUITextButton {
 public:
   void Resize(int width, int height) override;
+  void Paint() override;
+  void Slot53(int resolveSkin) override;
+
+  /* 00F0 */ unsigned char unknown_00F0[0xA0];
+  /* 0190 */ unsigned char unknown_0190;
+  /* 0194 */ int unknown_0194;
+  /* 0198 */ std::map<int, CResPtr<CBitmapRes>> leftImages;
+  /* 01A0 */ CResPtr<CBitmapRes> disabledLeft;
+  /* 01A4 */ std::map<int, CResPtr<CBitmapRes>> middleImages;
+  /* 01AC */ CResPtr<CBitmapRes> disabledMiddle;
+  /* 01B0 */ std::map<int, CResPtr<CBitmapRes>> rightImages;
+  /* 01B8 */ CResPtr<CBitmapRes> disabledRight;
 };
 
 class CUITabButton : public CUIImageTextButton {
