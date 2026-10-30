@@ -291,3 +291,85 @@ void UIExpandedBartermarketWnd::UpdateScrollBar() {
 }
 
 // OFFSET: 0x00849B30
+// FUNCTION: fn_10599
+int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->unknown_00C4;
+    if (message == 9) {
+      this->unknown_00C4 = previous - this->rowCount + 1;
+    } else {
+      if (message == 10) {
+        a = this->rowCount - 1;
+      }
+      this->unknown_00C4 = a + previous;
+    }
+
+    if (previous != this->unknown_00C4) {
+      this->UpdateScrollBar();
+      this->Invalidate();
+    }
+    return this->unknown_00C4 - previous;
+  }
+
+  case 14: {
+    if (a != 7) {
+      return 0;
+    }
+
+    int width = b;
+    int height = c;
+    if (width < 366) {
+      width = 366;
+    } else if (width > 439.2f) {
+      width = 439;
+    }
+    if (height < 366) {
+      height = 366;
+    } else if (height > 549.0f) {
+      height = 549;
+    }
+    height = height / 64 * 64;
+
+    if (width != this->geometry.width || height != this->geometry.height) {
+      this->Resize(width, height);
+      this->rowCount = (height - 46) / 64;
+      this->unknown_00BC->Move(this->geometry.width - 15, this->geometry.height - 15);
+      this->scrollBar->Move(this->geometry.width - 15, 14);
+      this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 46);
+      this->UpdateScrollBar();
+    }
+    this->m_frameContext->snapping.Store(this);
+    return 0;
+  }
+
+  case 23: {
+    this->Entries().clear();
+    std::vector<BarterMarketEntry>* items = g_expandedBarterMarketItemMgr->GetItems();
+    for (std::vector<BarterMarketEntry>::iterator it = items->begin(); it != items->end(); ++it) {
+      this->Entries().push_back(*it);
+    }
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  }
+
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    std::pair<bool, BarterMarketEntry> found = g_expandedBarterMarketItemMgr->FindEntry(mode->drag.unknown_03B0);
+    if (found.first) {
+      found.second.value = mode->drag.quantity;
+      g_expandedBarterMarketItemMgr->RemoveEntry(found.second);
+      g_windowMgr.LookupWindow(342)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    }
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
