@@ -84,6 +84,7 @@ public:
 
 class CUIGroupGraphicsAPI : public CUIGroup {
 public:
+  void Apply() override;
   void Refresh() override;
   void LoadBackends();
   void OnSelect(CUIComboItem* item, const RenderBackend& backend);

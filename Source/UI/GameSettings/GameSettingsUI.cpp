@@ -36,6 +36,12 @@ namespace {
   static_assert(sizeof(RodexSpamOptionPacket) == 12);
 }
 
+// GLOBAL: gl_24768
+int g_configuredRenderBackend;
+
+// GLOBAL: gl_24396
+int dwPriorityClass;
+
 template <>
 __declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::SelectItem(CUIListItem* item);
 template <>
@@ -1131,4 +1137,18 @@ void CUIGameSettingsUI::sub_A433B0() {
 // OFFSET: 0x00A433C0
 // FUNCTION: fn_16028
 void CUIGameSettingsUI::sub_A433C0() {
+}
+
+// OFFSET: 0x00A42FC0
+// FUNCTION: fn_16019
+void GameSettingsUI::CUIGroupGraphicsAPI::Apply() {
+  this->m_backend = this->m_pendingBackend;
+  g_configuredRenderBackend = this->m_pendingBackend;
+}
+
+// OFFSET: 0x00A404D0
+// FUNCTION: fn_15973
+void sub_A404D0() {
+  dwPriorityClass = NORMAL_PRIORITY_CLASS;
+  SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
 }
