@@ -1,5 +1,6 @@
 #include "UI/Menu/UIMenuIconWnd.h"
 
+#include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Script/LuaScript.h"
 #include "UI/Layout/WindowSnapping.h"
@@ -14,6 +15,9 @@
 static bool s_menuIconExpanded;
 
 // OFFSET: 0x0084A240
+// FUNCTION: fn_10607
+UIMenuIconWnd::UIMenuIconWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
+    : UIFrameWnd(windowContext, frameContext, 1), unknown_00CC(nullptr), unknown_00D0(nullptr), unknown_00D4(nullptr) {}
 
 // OFFSET: 0x0084A850
 // FUNCTION: fn_10612
@@ -69,6 +73,94 @@ void UIMenuIconWnd::Move(int x, int y) {
   this->geometry.x = x;
   this->geometry.y = y - 4;
   this->m_frameContext->snapping.Store(this);
+}
+
+// OFFSET: 0x0084A9A0
+// FUNCTION: fn_10616
+void UIMenuIconWnd::Slot15(int width, int height) {
+  const int ids[24] = {192, 195, 194, 196, 379, 199, 373, 376, 361, 219, 430, 193, 461, 399, 476, 473, 511, 512, 370, 540, 544, 567, 581, 587};
+  std::string names[24] = {
+    "status", "equip", "item", "skill", "booking", "party", "guild", "battle", "quest", "map", "navigation", "option",
+    "bank", "rec", "mail", "achievement", "tip", "shop", "keyboard", "attendance", "adventurerAgency", "repute", "adventureguide", "probability",
+  };
+
+  int position = 0;
+  for (int index = 0; index < 24; ++index) {
+    if (ids[index] == 192 && g_session.IsDoramJob(g_session.m_job) == true) {
+      names[index] = "status_doram";
+    }
+
+    if (ids[index] == 379 || ids[index] == 600) {
+      continue;
+    }
+
+    UIMenuIcon* icon = new UIMenuIcon(*this->m_context, *this->m_controls);
+    icon->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s.bmp", names[index].c_str()).c_str(), 0, 0);
+    icon->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s.bmp", names[index].c_str()).c_str(), 1, 0);
+    icon->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s_press.bmp", names[index].c_str()).c_str(), 2, 0);
+    icon->SetSize(icon->BitmapWidth(), icon->BitmapHeight());
+    const int row = position / 5 * 43;
+    const int x = position % 5 * 42 + 9;
+    icon->Move(x, row + 23);
+    icon->SetId(ids[index]);
+    icon->Enable(0);
+    this->AddChild(icon);
+    this->unknown_00B4[ids[index]] = icon;
+
+    switch (ids[index]) {
+    case 192:
+    case 194:
+    case 196:
+    case 473:
+    case 476: {
+      UIMenuIcon* badge = new UIMenuIcon(*this->m_context, *this->m_controls);
+      badge->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s_new.bmp", names[index].c_str()).c_str(), 0, 0);
+      badge->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s_new.bmp", names[index].c_str()).c_str(), 1, 0);
+      badge->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s_new_press.bmp", names[index].c_str()).c_str(), 2, 0);
+      badge->SetSize(badge->BitmapWidth(), badge->BitmapHeight());
+      badge->Move(x, row + 17);
+      badge->SetId(ids[index]);
+      badge->Enable(0);
+      this->AddChild(badge);
+      this->unknown_00BC[ids[index]] = badge;
+      break;
+    }
+    }
+
+    ++position;
+  }
+
+  this->unknown_00CC = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00CC->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_normal.bmp", 0, 0);
+  this->unknown_00CC->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_over.bmp", 1, 0);
+  this->unknown_00CC->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_press.bmp", 2, 0);
+  this->unknown_00CC->SetSize(this->unknown_00CC->BitmapWidth(), this->unknown_00CC->BitmapHeight());
+  this->unknown_00CC->Move(0, 4);
+  this->unknown_00CC->SetId(510);
+  this->unknown_00CC->Enable(0);
+  this->AddChild(this->unknown_00CC);
+  this->unknown_00D0 = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00D0->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_new_normal.bmp", 0, 0);
+  this->unknown_00D0->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_new_over.bmp", 1, 0);
+  this->unknown_00D0->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_new_press.bmp", 2, 0);
+  this->unknown_00D0->SetSize(this->unknown_00D0->BitmapWidth(), this->unknown_00D0->BitmapHeight());
+  this->unknown_00D0->Move(0, 0);
+  this->unknown_00D0->SetId(510);
+  this->unknown_00D0->Enable(0);
+  this->AddChild(this->unknown_00D0);
+  this->unknown_00D4 = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00D4->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_close_normal.bmp", 0, 0);
+  this->unknown_00D4->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_close_over.bmp", 1, 0);
+  this->unknown_00D4->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_close_press.bmp", 2, 0);
+  this->unknown_00D4->SetSize(this->unknown_00D4->BitmapWidth(), this->unknown_00D4->BitmapHeight());
+  this->unknown_00D4->Move(0, 4);
+  this->unknown_00D4->SetId(201);
+  this->unknown_00D4->Enable(0);
+  this->AddChild(this->unknown_00D4);
+  this->SendMsg(this, 6, s_menuIconExpanded == true ? 510 : 201, 0, 0, 0);
+  if (this->unknown_00B4.size() > 20) {
+    this->Resize(220, 238);
+  }
 }
 
 // OFFSET: 0x0084B940
