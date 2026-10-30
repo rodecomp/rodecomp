@@ -77,6 +77,10 @@
 #include "UI/Shop/PriceColor.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/GroupedInteger.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Items/ItemNaming.h"
+#include "Contents/PlayerNameDictionary.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -3248,5 +3252,390 @@ void UIMerchantShopMakeWnd::Slot25(int x, int y) {
     item = g_session.FindItem1768(item.unknown_0000[1]);
     ItemDescriptions descriptions{g_itemDescriptions};
     gameMode->drag.BeginItem(this->m_frameContext->windows, descriptions, this->mode != 0 ? 19 : 10, item, item.quantity, -1);
+  }
+}
+
+// OFFSET: 0x00985B90
+// FUNCTION: fn_13371
+void UIItemPurchaseWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] > 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    std::string text;
+    char currency[12];
+    sprintf(currency, "Zeny");
+    if (this->unknown_00FC) {
+      if (g_serviceType == 6) {
+        sprintf(currency, "Koin");
+      } else if (g_serviceType == 0) {
+        if (*reinterpret_cast<const int*>(&g_session.unknown_59DC[0x198]) == 1) {
+          sprintf(currency, "한코인");
+        } else {
+          sprintf(currency, LookupMessage(1307));
+        }
+      } else {
+        sprintf(currency, "Point");
+      }
+    }
+
+    char price[64];
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    if (item.unknown_0014[0] != item.unknown_0014[1]) {
+      text = FormatOwnedString("%s %d %s %d -> %s %s", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+    } else {
+      text = FormatOwnedString("%s %d %s %s %s", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588),
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), currency);
+    }
+
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+  }
+}
+
+// OFFSET: 0x00985ED0
+// FUNCTION: fn_13372
+void UIItemSellWnd2::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] > 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    std::string text;
+    char price[64];
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    if (item.unknown_0014[0] != item.unknown_0014[1]) {
+      text = FormatOwnedString("%s %d %s %d -> %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+    } else {
+      text = FormatOwnedString("%s %d %s %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588),
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+    }
+
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+  }
+}
+
+// OFFSET: 0x00986190
+// FUNCTION: fn_13373
+void UIItemSellWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] == 0) {
+    return;
+  }
+
+  int tooltipX = (x - 40) / 32 * 32 + 40;
+  int tooltipY = (y - 17) / 32 * 32 + 1;
+  this->ToScreen(tooltipX, tooltipY);
+
+  std::string text;
+  char price[64];
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  if (item.unknown_0014[0] != item.unknown_0014[1]) {
+    if (item.identified == 1 && item.unknown_0098 != 0) {
+      text = FormatOwnedString(LookupMessage(2758), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
+                               item.unknown_0014[0], FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), "Zeny");
+    } else {
+      text = FormatOwnedString("%s %d %s %d -> %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+    }
+  } else {
+    if (item.identified == 1 && item.unknown_0098 != 0) {
+      text = FormatOwnedString(LookupMessage(2759), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity, LookupMessage(588),
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64), "Zeny");
+    } else {
+      text = FormatOwnedString("%s %d %s %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588),
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+    }
+  }
+
+  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+}
+
+// OFFSET: 0x009865C0
+// FUNCTION: fn_13374
+void UIItemShopWnd2::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] == 0) {
+    return;
+  }
+
+  int tooltipX = (x - 40) / 32 * 32 + 40;
+  int tooltipY = (y - 17) / 32 * 32 + 1;
+  this->ToScreen(tooltipX, tooltipY);
+
+  std::string text;
+  char price[64];
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  if (this->unknown_00F8 == 0) {
+    if (item.unknown_0014[0] == item.unknown_0014[1]) {
+      text = FormatOwnedString("%s %s Zeny", naming.DisplayName(item, 0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+    } else {
+      text = FormatOwnedString("%s %d -> %s Zeny", naming.DisplayName(item, 0).c_str(), item.unknown_0014[0],
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+    }
+  } else {
+    if (item.unknown_0014[0] == item.unknown_0014[1]) {
+      text = FormatOwnedString("%s %d %s %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588),
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+    } else {
+      text = FormatOwnedString("%s %d %s %d -> %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588), item.unknown_0014[0],
+                               FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+    }
+  }
+
+  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+}
+
+// OFFSET: 0x00987000
+// FUNCTION: fn_13376
+void UIItemStoreFindWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] > 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    if (item.identified == 1 && item.unknown_0098 != 0) {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
+          ->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+                 g_session.GetItemNameColor(item), 0, 1);
+    } else {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    }
+  }
+}
+
+// OFFSET: 0x00987200
+// FUNCTION: fn_13377
+void UIItemStoreSubWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] > 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    if (item.identified == 1 && item.unknown_0098 != 0) {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
+          ->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+                 g_session.GetItemNameColor(item), 0, 1);
+    } else {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    }
+  }
+}
+
+// OFFSET: 0x00987400
+// FUNCTION: fn_13378
+void UIItemStoreWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] > 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    if (item.identified == 1 && item.unknown_0098 != 0) {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
+          ->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+                 g_session.GetItemNameColor(item), 0, 1);
+    } else {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    }
+  }
+}
+
+// OFFSET: 0x00987600
+// FUNCTION: fn_13379
+void UIItemWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] > 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    if (item.identified == 1 && item.unknown_0098 != 0) {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
+          ->Show(FormatOwnedString(LookupMessage(2551), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+                 g_session.GetItemNameColor(item), 0, 1);
+    } else {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
+          ->Show(FormatOwnedString(LookupMessage(183), naming.DisplayName(item, 0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
+                 g_session.GetItemNameColor(item), 0, 1);
+    }
+  }
+}
+
+// OFFSET: 0x00987850
+// FUNCTION: fn_13380
+void UIMerchantItemMyShopWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] > 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    std::string text;
+    char price[64];
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    if (this->unknown_0100 == 0) {
+      if (item.identified == 1 && item.unknown_0098 != 0) {
+        text = FormatOwnedString(LookupMessage(2757), naming.DisplayName(item, 0).c_str(), item.unknown_0098,
+                                 FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+      } else {
+        text = FormatOwnedString("%s %s Zeny", naming.DisplayName(item, 0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64));
+      }
+    } else {
+      text = FormatOwnedString(LookupMessage(1736), naming.DisplayName(item, 0).c_str(), FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64),
+                               item.quantity);
+    }
+
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+  }
+}
+
+// OFFSET: 0x00987B90
+// FUNCTION: fn_13381
+void UIMerchantItemPurchaseWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] > 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    char price[64];
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
+        ->Show(FormatOwnedString("%s %d %s %s Zeny", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588),
+                                 FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, 64))
+                   .c_str(),
+               tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+  }
+}
+
+// OFFSET: 0x00987D40
+// FUNCTION: fn_13382
+void UIMerchantItemShopWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  if (item.unknown_0000[1] > 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    if (item.identified == 1 && item.unknown_0098 != 0) {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
+          ->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+                 g_session.GetItemNameColor(item), 0, 1);
+    } else {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    }
+    return;
+  }
+
+  item = this->GetItemByIndex(this->GetItemIndexAt(x, y));
+  if (item.unknown_0000[1] == 0) {
+    return;
+  }
+
+  int tooltipX = 72;
+  int tooltipY = (y - 17) / 32 * 32 + 1;
+  this->ToScreen(tooltipX, tooltipY);
+
+  if (item.identified == 1 && item.unknown_0098 != 0) {
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
+        ->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX - 2, tooltipY + 24,
+               g_session.GetItemNameColor(item), 0, 1);
+  } else {
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(naming.DisplayName(item, 0).c_str(), tooltipX - 2, tooltipY + 24, g_session.GetItemNameColor(item), 0, 1);
+  }
+}
+
+// OFFSET: 0x009880F0
+// FUNCTION: fn_13383
+void UIMerchantItemWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] > 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    if (item.identified == 1 && item.unknown_0098 != 0) {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
+          ->Show(FormatOwnedString(LookupMessage(2551), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+                 g_session.GetItemNameColor(item), 0, 1);
+    } else {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
+          ->Show(FormatOwnedString("%s %d %s", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588)).c_str(), tooltipX, tooltipY,
+                 g_session.GetItemNameColor(item), 0, 1);
+    }
+  }
+}
+
+// OFFSET: 0x00988340
+// FUNCTION: fn_13384
+void UIMerchantMirrorItemWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] > 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    if (item.identified == 1 && item.unknown_0098 != 0) {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
+          ->Show(FormatOwnedString(LookupMessage(2756), naming.DisplayName(item, 0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX, tooltipY,
+                 g_session.GetItemNameColor(item), 0, 1);
+    } else {
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)
+          ->Show(FormatOwnedString("%s %d %s", naming.DisplayName(item, 0).c_str(), item.quantity, LookupMessage(588)).c_str(), tooltipX, tooltipY,
+                 g_session.GetItemNameColor(item), 0, 1);
+    }
   }
 }

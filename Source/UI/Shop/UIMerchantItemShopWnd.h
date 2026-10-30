@@ -13,6 +13,7 @@ public:
   void Slot19() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot25(int x, int y) override;
+  void Slot28(int x, int y) override;
 
   void StartTimer(std::uint32_t value);
 
