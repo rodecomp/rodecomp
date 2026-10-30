@@ -26,6 +26,9 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UIScrollBarNavi.h"
 #include "UI/Text/ColoredText.h"
+#include "UI/Text/NavigationLink.h"
+#include "UI/Text/TextMarkup.h"
+#include "UI/Text/UITextViewer.h"
 #include "UI/UIStaticBitmap.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Navigation/UIPrivateAirplaneWnd.h"
@@ -35,8 +38,10 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/WindowPolicy.h"
 #include "UI/Window/WindowRegistration.h"
+#include "Utility/Text/StringUtil.h"
 
 #include <algorithm>
+#include <atlconv.h>
 #include <bit>
 #include <cstdlib>
 #include <cstdio>
@@ -1338,6 +1343,118 @@ int UIWindow::FormattedTextWidth(std::string text, int family, int height, unsig
   }
 
   return total;
+}
+
+// OFFSET: 0x00A80880
+// FUNCTION: fn_16977
+std::string UIWindow::FitDisplayText(int width, const char* text, int family, int height, unsigned char bold) {
+  std::string display = DisplayTextTag(std::string(text), "<URL>", "</URL>");
+  display = DisplayTextTag(std::move(display), "<NAVI>", "</NAVI>");
+  display = DisplayTextTag(std::move(display), "<TIPBOX>", "</TIPBOX>");
+  display = DisplayTextTag(std::move(display), "<ITEM>", "</ITEM>");
+  display = RemoveTextLinkInfo(std::move(display));
+
+  if (this->m_context->chatConverter) {
+    display = this->m_context->chatConverter->ConvertChat(std::move(display));
+  }
+
+  std::string navigation;
+  DisplayNavigationLink(navigation, display);
+  display = std::move(navigation);
+  display = DisplayTextTag(std::move(display), "<QUEST>", "</QUEST>");
+
+  const auto textWidth = [this, family, height, bold](const char* value) {
+    if (!value) {
+      return 0;
+    }
+
+    const unsigned bytes = static_cast<unsigned>(std::strlen(value));
+    if (!bytes) {
+      return 0;
+    }
+
+    TextContext context(*this->geometry.surface);
+    context.SetFont(family, height, bold, 0);
+    return static_cast<int>(context.Measure(value, bytes).cx);
+  };
+
+  const int extent = textWidth(display.c_str());
+  {
+    TextContext context(*this->geometry.surface);
+    context.SetFont(family, height, bold, 0);
+    context.Measure("...", 3);
+  }
+
+  if (extent <= width) {
+    return display;
+  }
+
+  std::string fitted(display);
+  ATL::CA2WEX<128> wide(display.c_str(), CP_THREAD_ACP);
+  std::wstring remaining(wide);
+
+  while (remaining.size() > 1) {
+    std::size_t length = remaining.size() - 1;
+
+    if ((remaining[remaining.size() - 2] & 0x80) != 0 && (remaining[remaining.size() - 1] & 0x80) != 0) {
+      --length;
+    }
+
+    remaining.resize(length);
+
+    ATL::CW2AEX<128> converted(remaining.c_str(), CP_THREAD_ACP);
+    fitted = std::string(converted) + "...";
+
+    if (textWidth(fitted.c_str()) <= width) {
+      return fitted;
+    }
+  }
+
+  ATL::CW2AEX<128> converted(remaining.c_str(), CP_THREAD_ACP);
+  fitted = std::string(converted) + "...";
+  return fitted;
+}
+
+// OFFSET: 0x00A81400
+// FUNCTION: fn_16978
+std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int family, int fontHeight, unsigned char bold) {
+  std::string display = DisplayTextTag(std::string(text), "<URL>", "</URL>");
+  display = DisplayTextTag(std::move(display), "<NAVI>", "</NAVI>");
+  display = DisplayTextTag(std::move(display), "<TIPBOX>", "</TIPBOX>");
+  display = DisplayTextTag(std::move(display), "<ITEM>", "</ITEM>");
+  display = RemoveTextLinkInfo(std::move(display));
+
+  if (this->m_context->chatConverter) {
+    display = this->m_context->chatConverter->ConvertChat(std::move(display));
+  }
+
+  std::string navigation;
+  DisplayNavigationLink(navigation, display);
+  display = std::move(navigation);
+  display = DisplayTextTag(std::move(display), "<QUEST>", "</QUEST>");
+
+  if (this->VerticalTextHeight(this->m_context->fonts, this->m_context->locale, display.c_str(), display.size(), family, fontHeight, bold) <= height) {
+    return display;
+  }
+
+  const char* begin = display.c_str();
+  std::size_t length = display.size();
+  std::string fitted(display);
+  int extent;
+
+  do {
+    fitted.resize(length);
+    fitted += ".";
+
+    if (CountCharacters(static_cast<WORD>(g_textCodePage), begin, begin + length) <= 1) {
+      break;
+    }
+
+    extent = this->VerticalTextHeight(this->m_context->fonts, this->m_context->locale, fitted.c_str(), fitted.size(), family, fontHeight, bold);
+    length = CharPrevExA(static_cast<WORD>(g_textCodePage), begin, begin + length, 0) - begin;
+  } while (height < extent);
+
+  return fitted;
 }
 
 // OFFSET: 0x00A7E120

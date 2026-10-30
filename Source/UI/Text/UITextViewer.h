@@ -34,6 +34,8 @@ struct UITextViewerContext {
 };
 
 class UITextViewer : public UIListBox {
+  friend class UIWindow;
+
 public:
   UITextViewer(UIWindowContext& windows, UITextViewerContext& text);
   ~UITextViewer() override;

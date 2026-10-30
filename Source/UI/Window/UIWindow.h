@@ -31,6 +31,7 @@ struct SpriteFrameCell;
 class CBitmapRes;
 class CActRes;
 class TextureCache;
+class UITextViewer;
 struct WindowReplayRecorder;
 
 struct UIWindowContext {
@@ -43,6 +44,9 @@ struct UIWindowContext {
   WindowRegistration& registration;
   UIWindowMgr& windowMgr;
   std::unordered_set<UIWindow*>& deferredDeletion;
+  UITextViewer* const& chatConverter;
+  FontCache& fonts;
+  const TextLocale& locale;
 
   void DestroyDeferredChildren();
 };
@@ -175,6 +179,8 @@ public:
     FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
   );
   int FormattedTextWidth(std::string text, int family, int height, unsigned char bold);
+  std::string FitDisplayText(int width, const char* text, int family, int height, unsigned char bold);
+  std::string FitVerticalDisplayText(int height, const char* text, int family, int fontHeight, unsigned char bold);
   std::list<int> WrapFormattedText(std::string text, std::list<std::string>* lines, int maxWidth, int family, int height, unsigned char bold);
   int RecordEditTexts(WindowReplayRecorder& recorder);
   int RestoreEditTexts(const unsigned char* data);
