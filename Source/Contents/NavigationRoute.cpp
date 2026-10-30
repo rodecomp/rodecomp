@@ -441,7 +441,7 @@ std::string CNavigationManager::DestinationTitle() {
 void CNavigationManager::LoadSettings() {
   RegistryKey key;
   std::string subKey(g_subKey);
-  subKey += "\Navigation";
+  subKey += "\\Navigation";
   if (key.Open(HKEY_LOCAL_MACHINE, subKey.c_str())) {
     DWORD viewIcon = 0;
     if (key.Query("ViewIcon", REG_DWORD, reinterpret_cast<BYTE*>(&viewIcon), sizeof(viewIcon))) {
