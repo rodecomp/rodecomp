@@ -28,10 +28,72 @@ void UIRuneSetList::ScrollBy(int delta) {
 }
 
 // OFFSET: 0x00816830
+// FUNCTION: fn_10166
+void UIRune_Decom::Reset() {
+  this->unknown_007C.clear();
+  this->unknown_0094.clear();
+  this->m_ownedCount = 0;
+  this->m_itemId = 0;
+  this->m_decomList = nullptr;
+  this->m_decomButton->SetDisabled(1);
+  this->m_decomButton->Invalidate();
+
+  this->m_decomType = 0;
+  for (unsigned int index = 0; index < 2; ++index) {
+    this->m_radioButtons[index]->Show(0);
+    this->m_radioButtons[index]->Invalidate();
+    this->m_radioButtons[index]->SendMsg(nullptr, 0x0D, this->m_decomType != index, 0, 0, 0);
+  }
+  this->Invalidate();
+}
 
 // OFFSET: 0x00816AD0
+// FUNCTION: fn_10168
+int UIRuneSystem_ActiveWnd::HitTestItem(int x, int y) {
+  if (this->m_listId == -1 || x < 18 || y < 11 || y > 119) {
+    return -1;
+  }
+
+  int column = 0;
+  if (x - 18 > 0) {
+    column = (x - 18) / 54;
+    if (column > this->m_columns - 1) {
+      column = this->m_columns - 1;
+    }
+  }
+  const int row = y - 11 > 54 ? this->m_columns : 0;
+  const int index = row + column;
+  if (index < g_runeSystemMgr->GetItemListCount(this->m_listId)) {
+    return index;
+  }
+  return -1;
+}
 
 // OFFSET: 0x00816BE0
+// FUNCTION: fn_10169
+int UIRune_Decom::HitTestItem(int x, int y) {
+  std::vector<Decom_ItemInfo>* list = this->m_decomList;
+  if (!list || x < 211 || x > 411 || y < 354 || y > 446) {
+    return -1;
+  }
+
+  const int offsetX = x - 211;
+  const int offsetY = y - 354;
+  int index = offsetX / 54;
+  if (offsetX % 54 > 38) {
+    return -1;
+  }
+  if (offsetY - 54 > 0) {
+    index += 4;
+  } else if (offsetY > 38) {
+    return -1;
+  }
+
+  if (static_cast<unsigned int>(index) < list->size()) {
+    return index;
+  }
+  return -1;
+}
 
 // OFFSET: 0x00819610
 // FUNCTION: fn_10181
@@ -387,7 +449,64 @@ int UIRuneSystemTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, st
 }
 
 // OFFSET: 0x0081E520
+// FUNCTION: fn_10227
+int UIRuneSystem_tagListWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t, std::intptr_t) {
+  if (message == 0xA9) {
+    this->Move(0, (argument1 == 0 ? argument2 : 0) + 44);
+    return 0;
+  }
+
+  if (message == 6) {
+    if (argument1 == 0x13C) {
+      --this->m_firstTag;
+      this->m_firstTag = this->m_firstTag < 0 ? 0 : this->m_firstTag;
+      this->Invalidate();
+    } else if (argument1 == 0x13D) {
+      const int first = ++this->m_firstTag;
+      if (g_runeSystemMgr->GetTagCount() < first + 10) {
+        this->m_firstTag = first - 1;
+      }
+      this->Invalidate();
+      return 0;
+    }
+  }
+  return 0;
+}
 
 // OFFSET: 0x0081E970
+// FUNCTION: fn_10230
+void UIRune_Decom::SelectDecomType(unsigned int type) {
+  if (this->m_decomType > 1) {
+    return;
+  }
+
+  if (this->m_decomType != type) {
+    this->m_decomType = type;
+    for (int index = 0; index < 2; ++index) {
+      this->m_radioButtons[index]->SendMsg(nullptr, 0x0D, 1, 0, 0, 0);
+    }
+    this->m_radioButtons[this->m_decomType]->SendMsg(nullptr, 0x0D, 0, 0, 0, 0);
+    this->m_decomList = g_runeSystemMgr->GetDecomList(this->m_itemId, this->m_decomType);
+    this->Invalidate();
+  }
+
+  this->m_decomButton->SetDisabled(0);
+  this->m_decomButton->Invalidate();
+  if (this->m_decomType == 1 && this->m_ownedCount < static_cast<unsigned int>(g_runeSystemMgr->GetDecomItem(1))) {
+    this->m_decomButton->SetDisabled(1);
+    this->m_decomButton->Invalidate();
+  }
+}
 
 // OFFSET: 0x0081F230
+// FUNCTION: fn_10233
+void UIRuneSetList::Select(int index) {
+  const int previous = this->position;
+  const int next = index > this->maximum ? this->maximum : index;
+  this->position = next;
+  if (previous != next) {
+    this->Invalidate();
+  }
+  this->m_selected = index;
+  this->Invalidate();
+}
