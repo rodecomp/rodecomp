@@ -506,6 +506,12 @@ void UIMemorialDunWnd::Move(int x, int y) {
   }
 }
 
+// OFFSET: 0x0092AFE0
+// FUNCTION: fn_12656
+void UISubChatMiniWnd::Slot15(int, int) {
+  this->Resize(this->m_rowHeight * this->unknown_00B4, this->m_offsetY);
+}
+
 // OFFSET: 0x0093CA50
 // FUNCTION: fn_12762
 int UISubChatMiniWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
