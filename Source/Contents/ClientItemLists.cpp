@@ -336,6 +336,17 @@ void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
   reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 1);
 }
 
+  struct ItemAddSlotPacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ int itemId;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ int slot;
+    /* 000B */ unsigned char identified;
+    /* 000C */ unsigned char damaged;
+    /* 000D */ unsigned char refine;
+    /* 000E */ std::uint32_t cards[4];
+  };
+
 // OFFSET: 0x00D1F770
 
 // OFFSET: 0x00D1F970
