@@ -139,6 +139,12 @@ struct CRagEffect : CRenderObject {
   void POISON(char flag);
   void Rainbow(const char* name, int unused);
   void BLIND(char flag);
+  void TexturedTwinSpin(const char* name, char kind);
+  void TexturedScatterSphere(const char* name, char flag, int unused);
+  void DigitalSpace(int effectId);
+  void TexturedFloatingDust(const char* name, int unused);
+  void Mavka(char flag);
+  void TexturedFanSweep(const char* name, char wide);
 
   virtual void Slot08();
   virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);
