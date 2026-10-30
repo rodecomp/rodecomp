@@ -24,7 +24,7 @@ public:
   void Paint() override;
   void Invalidate() override;
   void SelectAll() override;
-  virtual void UpdateScrollBar();
+  void UpdateScrollBar() override;
 
   void RefreshPlaceholder();
   void ResetDragState();

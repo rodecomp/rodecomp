@@ -131,6 +131,7 @@ public:
   void Paint() override;
   void Slot35(int value) override;
   void Trim() override;
+  virtual void UpdateScrollBar();
 
   void PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int& unused);
   std::string TakePendingText();
