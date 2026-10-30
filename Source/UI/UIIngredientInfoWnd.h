@@ -18,7 +18,12 @@ public:
       : UIFrameWnd(windows, frames, 0), selected(0), insufficient(0), quantity(0), m_controls(nullptr) {}
   void Move(int x, int y) override;
   void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
+  void Slot25(int x, int y) override;
+  void Slot26(int x, int y) override;
+  void Slot28(int x, int y) override;
+  void Slot35(int argument) override;
   void Paint() override;
+  void Click(int button, int unused);
 
   /* 00B8 */ ITEM_INFO item;
   /* 01B0 */ unsigned char selected;

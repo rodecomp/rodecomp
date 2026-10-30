@@ -915,6 +915,7 @@
   "Source/UI/UIGradeEnchantWnd.cpp": 2,
   "Source/UI/UIHotkeyGuideWnd.cpp": 2,
   "Source/UI/UIItemReformWnd.cpp": 2,
+  "Source/UI/UILapineBoxWnd.cpp": 2,
   "Source/UI/UILapineScrollBar.cpp": 2,
   "Source/UI/UILapineUpgradeBoxWnd.cpp": 2,
   "Source/UI/UIMacroBlackListCheckWnd.cpp": 2,

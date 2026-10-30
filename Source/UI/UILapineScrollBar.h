@@ -55,7 +55,9 @@ public:
   UILapineBox_IngredientListWnd(UIWindowContext& windows, int width, int height);
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
+  void Slot35(int argument) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   unsigned char AddIngredient(std::uint32_t id);
 
   /* 00B0 */ std::vector<ITEM_INFO> materials;
@@ -77,8 +79,17 @@ class UILapineBoxWnd : public UIFrameWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
+  void Slot19() override;
+  void Slot28(int x, int y) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   int AddIngredient(std::uint32_t id, int quantity);
+  void DropMaterial(int x, int y);
+  void DragIngredient(int x, int y);
+  void NotifyWindow(int unused, int alsoUnused);
+  void NotifyWindowAt(int x, int y);
+  void SetIngredient(int id);
+  void AddMaterial(int id, int quantity);
   // INLINED
   UIFrameContext& FrameContext() {
     return *this->m_frameContext;
@@ -96,6 +107,7 @@ public:
   /* 0108 */ std::string notice;
   /* 0120 */ std::uint32_t noticeTick;
   /* 0124 */ std::uint32_t noticeDuration;
+  /* 0128 */ unsigned char waiting;
 
 protected:
   UIButtonContext* m_controls;
