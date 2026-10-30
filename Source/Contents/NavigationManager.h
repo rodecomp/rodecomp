@@ -340,6 +340,7 @@ public:
   void ClearCurrentObject();
   void ClearStates();
   void ClearNodes();
+  void RefreshSearch();
   int FindNodePath(unsigned int index);
   void SelectNodePath(std::string name);
   int GetRouteResult() const;

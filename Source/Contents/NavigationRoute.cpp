@@ -7,6 +7,7 @@
 #include "Client/Session.h"
 #include "Resource/ResourceMgr.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/RegistryKey.h"
@@ -839,4 +840,12 @@ CNavi_Object* CNaviData::FindMobByTitle(std::string title) {
     }
   }
   return nullptr;
+}
+
+// OFFSET: 0x00B9C6B0
+// FUNCTION: fn_19621
+void CNavigationManager::RefreshSearch() {
+  if (this->data.Search(this->unknown_1264, this->unknown_1260, this->states) && g_windowMgr.window_4F174) {
+    static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->FillRouteGroups();
+  }
 }
