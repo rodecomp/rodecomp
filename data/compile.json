@@ -731,6 +731,7 @@
   "Source/Render/Primitives/RenderPrimitivePool.cpp": 0,
   "Source/Render/Primitives/RenderQueues.cpp": 0,
   "Source/Render/Primitives/RenderVertexPool.cpp": 0,
+  "Source/Render/Primitives/ScreenLine.cpp": 0,
   "Source/Render/Primitives/UIRPData.cpp": 0,
   "Source/Render/Projection/RenderProjection.cpp": 0,
   "Source/Render/Projection/RenderRay.cpp": 0,

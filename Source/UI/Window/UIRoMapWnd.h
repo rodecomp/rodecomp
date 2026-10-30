@@ -40,6 +40,8 @@ public:
   void DrawDungeonLinks();
   void DrawMarks();
   void DrawRecordFaces(int unused);
+  void DrawRecordAreas();
+  void DrawKafraIcon(float x, float y);
 
 private:
   /* 00B4 */ std::list<WorldViewRecord> m_records;
@@ -52,6 +54,11 @@ private:
   /* 00D4 */ unsigned char m_showLabels;
   /* 00D5 */ unsigned char unknown_00D5[0x133];
   /* 0208 */ int unknown_0208;
+  /* 020C */ unsigned char unknown_020C[0xC];
+  /* 0218 */ int m_kafraLeft;
+  /* 021C */ int m_kafraTop;
+  /* 0220 */ int m_kafraRight;
+  /* 0224 */ int m_kafraBottom;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
