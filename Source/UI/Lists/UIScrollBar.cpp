@@ -4,6 +4,11 @@
 #include "Resource/ResourceMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Resource/TextureNames.h"
+#include "UI/Buttons/UIButton.h"
+#include "UI/UIBasicCtrl.h"
+#include "Utility/Text/FormatString.h"
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UIImgMenu.h"
 #include "UI/Lists/UIListBoxEx.h"
@@ -503,6 +508,45 @@ void UIChatHisBox::PlaceNaviLinks(int line) {
 }
 
 // OFFSET: 0x0087F520
+
+// OFFSET: 0x0087E730
+// FUNCTION: fn_11266
+void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
+  const int id = std::atoi(this->m_item.itemId.c_str());
+  if (id <= 0) {
+    return;
+  }
+
+  char path[128];
+  ItemDescriptions descriptions{g_itemDescriptions};
+  descriptions.IconPath(path, FormatOwnedString("%d", id).c_str(), this->m_item.identified);
+  auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+  if (bitmap) {
+    this->DrawBitmap(x, y, &bitmap->image, true);
+  }
+
+  if (this->m_item.unknown_0000[1] == 0 || this->m_item.quantity == 0) {
+    return;
+  }
+
+  const std::string count = FormatOwnedString("%d", this->m_item.quantity);
+  FontCache& fonts = this->m_controls->fonts;
+  const TextLocale& locale = this->m_controls->locale;
+  int textY;
+  if (compact) {
+    textY = y + 20;
+    x += 16;
+  } else {
+    textY = y + 15;
+    x += this->m_item.quantity < 1000 ? 14 : 0;
+    this->DrawTextAt(fonts, locale, x + 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(fonts, locale, x - 1, textY, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(fonts, locale, x, y + 16, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(fonts, locale, x, y + 14, count.c_str(), 0, 0, 11, 0xFFFFFF, 0, 0);
+  }
+
+  this->DrawTextAt(fonts, locale, x, textY, count.c_str(), 0, 0, 11, 0, 0, 0);
+}
 
 // OFFSET: 0x008900D0
 // FUNCTION: fn_11399

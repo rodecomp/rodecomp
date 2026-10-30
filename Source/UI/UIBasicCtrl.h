@@ -16,6 +16,7 @@ public:
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
+  void DrawItemIcon(int x, int y, int unused, bool compact);
 
 protected:
   /* 007C */ unsigned char unknown_007C[0xC];
