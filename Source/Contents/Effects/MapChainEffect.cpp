@@ -3,6 +3,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -12,6 +13,108 @@
 // FUNCTION: fn_18945
 CMapChainEffect::CMapChainEffect()
     : CEffect(1024), particles(), unknown_00F0(2), unknown_00F4(2), unknown_00F8(2), unknown_00FC(2), unknown_0100(2) {
+}
+
+// OFFSET: 0x00B4AB90
+// FUNCTION: fn_18947
+void CMapChainEffect::sub_B4AB90(int param) {
+  int local8 = 0;
+  for (int localC = 0; localC < 360; localC += 60, ++local8) {
+    for (int i = 0; i < 21; ++i) {
+      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(&this->position), 5);
+      if (particle != nullptr) {
+        particle->unknown_0010 = local8;
+        particle->unknown_0004 = this->id;
+        particle->unknown_000C = i;
+        particle->unknown_0008 = 1;
+        particle->unknown_00C0 = 10.0f;
+        particle->scale = 14.0f;
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(localC);
+        particle->unknown_004C = param;
+        particle->alpha = 255;
+        particle->unknown_0050 = 60;
+        particle->unknown_0054 = -14.0f;
+        *reinterpret_cast<float*>(particle->unknown_0058) = 1.0f;
+        particle->destinationBlend = 6;
+        InitParticleQuad(particle->vertices);
+        particle->SetTexture("effect\\hero_005.tga");
+        this->particles.push_back(particle);
+      }
+    }
+  }
+
+  int localC2 = 6;
+  for (int local82 = 0; local82 < 360; local82 += 60, ++localC2) {
+    for (int i = 0; i < 21; ++i) {
+      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(&this->position), 5);
+      if (particle != nullptr) {
+        particle->unknown_0010 = localC2;
+        particle->unknown_0004 = this->id;
+        particle->unknown_000C = i;
+        particle->unknown_0008 = 1;
+        particle->unknown_00C0 = 10.0f;
+        particle->scale = 14.0f;
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(local82);
+        particle->unknown_004C = param;
+        particle->alpha = 255;
+        particle->unknown_0050 = 60;
+        particle->unknown_0054 = -14.0f;
+        *reinterpret_cast<float*>(particle->unknown_0058) = 1.0f;
+        particle->sourceBlend = 5;
+        particle->destinationBlend = 7;
+        InitParticleQuad(particle->vertices);
+        particle->SetTexture("effect\\hero_005.tga");
+        this->particles.push_back(particle);
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00B4AFA0
+// FUNCTION: fn_18948
+void CMapChainEffect::Close() {
+  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->particles.clear();
+}
+
+// OFFSET: 0x00B4AFE0
+// FUNCTION: fn_18949
+void CMapChainEffect::Slot01() {
+  this->sub_B4AB90(25);
+  this->sub_B4AB90(50);
+  this->sub_B4AB90(95);
+  this->sub_B4AB90(120);
+  this->sub_B4AB90(165);
+}
+
+// OFFSET: 0x00B4B0A0
+// FUNCTION: fn_18950
+void CMapChainEffect::Slot07() {
+  const char* base = reinterpret_cast<const char*>(this);
+  const float u44 = *reinterpret_cast<const float*>(base + 0x44);
+  const float u48 = *reinterpret_cast<const float*>(base + 0x48);
+  const int u54 = *reinterpret_cast<const int*>(base + 0x54);
+  const float u5C = *reinterpret_cast<const float*>(base + 0x5C);
+  const float u60 = *reinterpret_cast<const float*>(base + 0x60);
+
+  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
+    particle->flags = 5;
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+    particle->unknown_00C0 = u44;
+    particle->scale = u48;
+    particle->alpha = u54;
+    particle->unknown_0054 = u5C;
+    *reinterpret_cast<float*>(particle->unknown_0058) = u60;
+    particle->sourceBlend = 5;
+    particle->destinationBlend = 7;
+    InitParticleQuad(particle->vertices);
+    particle->unknown_00E8 = 0;
+  }
 }
 
 // OFFSET: 0x00B4B130
