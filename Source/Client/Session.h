@@ -271,7 +271,14 @@ public:
   /* 556C */ int unknown_556C;
   /* 5570 */ unsigned char unknown_5570[0x4C];
   /* 55BC */ int m_homunJob;
-  /* 55C0 */ unsigned char unknown_55C0[0x58];
+  /* 55C0 */ unsigned char unknown_55C0[0x04];
+  /* 55C4 */ int m_homunHp;
+  /* 55C8 */ unsigned char unknown_55C8[0x04];
+  /* 55CC */ int m_homunSp;
+  /* 55D0 */ unsigned char unknown_55D0[0x10];
+  /* 55E0 */ std::int64_t m_homunExp;
+  /* 55E8 */ std::int64_t m_homunMaxExp;
+  /* 55F0 */ unsigned char unknown_55F0[0x28];
   /* 5618 */ int m_traceAi;
   /* 561C */ int m_homunActionState;
   /* 5620 */ unsigned char unknown_5620[0xC];
@@ -706,6 +713,7 @@ public:
   void UpdateUnknown1708(int enabled);
   void RefreshItem1738Window();
   void RefreshHpSpWindows();
+  void RefreshHomunculusInfo();
   void EraseRecord0734(int id);
   void IgnoreText(std::string text);
   void SaveMiniPartyInfo();

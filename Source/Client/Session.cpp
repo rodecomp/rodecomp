@@ -1681,6 +1681,15 @@ void CSession::RefreshHpSpWindows() {
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->NotifyItemBounds();
 }
 
+// OFFSET: 0x00DF9460
+// FUNCTION: fn_23515
+void CSession::RefreshHomunculusInfo() {
+  if (g_modeMgr.GetGameMode() && g_windowMgr.window_03C0) {
+    g_windowMgr.window_03C0->Invalidate();
+    g_windowMgr.window_03C0->InvalidateChildren();
+  }
+}
+
 // OFFSET: 0x00DFC0B0
 // FUNCTION: fn_23593
 void CSession::FlagInventoryItem(std::uint32_t id) {

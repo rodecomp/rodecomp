@@ -13,6 +13,10 @@
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/World/World.h"
 #include "Network/TextEncoding.h"
+#include "UI/Item/UIItemStoreWnd.h"
+#include "UI/Text/UIStaticText.h"
+#include "UI/UIBarGraph.h"
+#include "UI/Window/UIHomunInfoWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
@@ -28,6 +32,10 @@
 
 struct SessionMessengerContext {
   void UpdateRandomStats();
+};
+
+struct ClientItemLists {
+  bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
 };
 
 namespace {
@@ -71,7 +79,88 @@ namespace {
     /* 000F */ unsigned char unknown_000F[4];
     /* 0013 */ char name[1];
   };
+
+  struct ItemStoreListHeader {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t length;
+    /* 0004 */ char title[24];
+  };
+
+  struct StoreItemOption {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ std::int16_t value;
+    /* 0004 */ unsigned char param;
+  };
+
+  struct StoreEquipRecord {
+    /* 0000 */ std::int16_t index;
+    /* 0002 */ int itemId;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ std::uint32_t location;
+    /* 000B */ std::uint32_t wearState;
+    /* 000F */ unsigned char refine;
+    /* 0010 */ std::uint32_t cards[4];
+    /* 0020 */ std::uint32_t expireTime;
+    /* 0024 */ std::uint16_t bindOnEquip;
+    /* 0026 */ std::uint16_t sprite;
+    /* 0028 */ unsigned char flags;
+  };
+
+  struct StoreEquipOptionRecord {
+    /* 0000 */ std::int16_t index;
+    /* 0002 */ int itemId;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ std::uint32_t location;
+    /* 000B */ std::uint32_t wearState;
+    /* 000F */ unsigned char refine;
+    /* 0010 */ std::uint32_t cards[4];
+    /* 0020 */ std::uint32_t expireTime;
+    /* 0024 */ std::uint16_t bindOnEquip;
+    /* 0026 */ std::uint16_t sprite;
+    /* 0028 */ unsigned char optionCount;
+    /* 0029 */ StoreItemOption options[5];
+    /* 0042 */ unsigned char flags;
+  };
+
+  struct StoreNormalRecord {
+    /* 0000 */ std::int16_t index;
+    /* 0002 */ int itemId;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ std::int16_t amount;
+    /* 0009 */ std::uint32_t location;
+    /* 000D */ std::uint32_t cards[4];
+    /* 001D */ std::uint32_t expireTime;
+    /* 0021 */ unsigned char flags;
+  };
+
+  struct HomunculusProperty64Packet {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t type;
+    /* 0004 */ std::int64_t value;
+  };
+
+  struct HomunculusPropertyPacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t type;
+    /* 0004 */ int value;
+  };
 #pragma pack(pop)
+
+  static_assert(sizeof(ItemStoreListHeader) == 0x1C);
+  static_assert(sizeof(StoreEquipRecord) == 0x29);
+  static_assert(sizeof(StoreEquipOptionRecord) == 0x43);
+  static_assert(sizeof(StoreNormalRecord) == 0x22);
+
+  // INLINED
+  int CountStoreItemOptions(const StoreItemOption* options) {
+    int count = 0;
+    for (int index = 0; index < 5; ++index) {
+      if (options[index].id != 0) {
+        ++count;
+      }
+    }
+    return count;
+  }
 
   static_assert(sizeof(SimulationPacketHeader) == 0x24);
   static_assert(sizeof(EnchantSimulationRecord) == 0x1C);
@@ -206,6 +295,168 @@ void CGameMode::ReceiveActorSignal(const unsigned char* packet) {
 // OFFSET: 0x00D2AF90
 // FUNCTION: fn_21707
 void CGameMode::IgnorePacket(const unsigned char*) {
+}
+
+// OFFSET: 0x00D2B710
+// FUNCTION: fn_21710
+void CGameMode::ReceiveItem1738EquipList(const unsigned char* data) {
+  const ItemStoreListHeader* packet = reinterpret_cast<const ItemStoreListHeader*>(data);
+  UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(33));
+  if (packet->title[0] != '\0') {
+    std::string title(packet->title);
+    window->title->SetTextFitted(title.c_str());
+  }
+
+  const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreEquipRecord);
+  const StoreEquipRecord* record = reinterpret_cast<const StoreEquipRecord*>(data + sizeof(ItemStoreListHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    StoreItemOption options[5] = {};
+    ITEM_INFO item;
+    item.unknown_0000[0] = record->type;
+    item.unknown_0000[1] = record->index;
+    item.unknown_0000[2] = record->location;
+    item.unknown_0000[3] = record->wearState;
+    item.quantity = 1;
+    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.SetItemId(record->itemId);
+    item.identified = record->flags & 1;
+    item.unknown_005D = (record->flags >> 1) & 1;
+    item.unknown_0060 = record->refine;
+    item.unknown_0068 = record->expireTime;
+    item.unknown_0064 = record->bindOnEquip;
+    *reinterpret_cast<std::uint32_t*>(item.unknown_0074) = record->sprite;
+    *reinterpret_cast<unsigned char*>(item.unknown_0078) = (record->flags >> 2) & 1;
+    item.unknown_0098 = CountStoreItemOptions(options);
+    for (int index = 0; index < item.unknown_0098; ++index) {
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = options[index];
+    }
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 1);
+  }
+
+  g_session.RefreshItem1738Window();
+}
+
+// OFFSET: 0x00D2BA50
+// FUNCTION: fn_21711
+void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
+  const ItemStoreListHeader* packet = reinterpret_cast<const ItemStoreListHeader*>(data);
+  UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(33));
+  if (packet->title[0] != '\0') {
+    std::string title(packet->title);
+    window->title->SetTextFitted(title.c_str());
+  }
+
+  const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreEquipOptionRecord);
+  const StoreEquipOptionRecord* record = reinterpret_cast<const StoreEquipOptionRecord*>(data + sizeof(ItemStoreListHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    StoreItemOption options[5];
+    std::memcpy(options, record->options, sizeof(options));
+    ITEM_INFO item;
+    item.unknown_0000[0] = record->type;
+    item.unknown_0000[1] = record->index;
+    item.unknown_0000[2] = record->location;
+    item.unknown_0000[3] = record->wearState;
+    item.quantity = 1;
+    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.SetItemId(record->itemId);
+    item.identified = record->flags & 1;
+    item.unknown_005D = (record->flags >> 1) & 1;
+    item.unknown_0060 = record->refine;
+    item.unknown_0068 = record->expireTime;
+    item.unknown_0064 = record->bindOnEquip;
+    *reinterpret_cast<std::uint32_t*>(item.unknown_0074) = record->sprite;
+    *reinterpret_cast<unsigned char*>(item.unknown_0078) = (record->flags >> 2) & 1;
+    item.unknown_0098 = CountStoreItemOptions(options);
+    for (int index = 0; index < item.unknown_0098; ++index) {
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = options[index];
+    }
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 1);
+  }
+
+  g_session.RefreshItem1738Window();
+}
+
+// OFFSET: 0x00D2BDF0
+// FUNCTION: fn_21712
+void CGameMode::ReceiveItem1738NormalList(const unsigned char* data) {
+  const ItemStoreListHeader* packet = reinterpret_cast<const ItemStoreListHeader*>(data);
+  UIItemStoreWnd* window = static_cast<UIItemStoreWnd*>(g_windowMgr.EnsureWindow(33));
+  if (packet->title[0] != '\0') {
+    std::string title(packet->title);
+    window->title->SetTextFitted(title.c_str());
+  }
+
+  const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreNormalRecord);
+  const StoreNormalRecord* record = reinterpret_cast<const StoreNormalRecord*>(data + sizeof(ItemStoreListHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    ITEM_INFO item;
+    item.unknown_0000[0] = record->type;
+    item.unknown_0000[1] = record->index;
+    item.unknown_0000[3] = record->location;
+    item.unknown_0000[2] = 0;
+    item.quantity = record->amount;
+    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.SetItemId(record->itemId);
+    item.identified = record->flags & 1;
+    item.unknown_005D = 0;
+    item.unknown_0060 = 0;
+    item.unknown_0068 = record->expireTime;
+    item.unknown_0074[0] = (record->flags >> 1) & 1;
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 0);
+  }
+
+  g_session.RefreshItem1738Window();
+}
+
+// OFFSET: 0x00D2C190
+// FUNCTION: fn_21713
+void CGameMode::ReceiveHomunculusProperty64(const unsigned char* data) {
+  if (!data) {
+    return;
+  }
+
+  const HomunculusProperty64Packet* packet = reinterpret_cast<const HomunculusProperty64Packet*>(data);
+  switch (packet->type) {
+  case 1:
+    g_session.m_homunExp = packet->value;
+    g_session.RefreshHomunculusInfo();
+    if (UIHomunInfoWnd* window = static_cast<UIHomunInfoWnd*>(g_windowMgr.window_03C0)) {
+      window->expBar->SetValues(g_session.m_homunExp, g_session.m_homunMaxExp);
+    }
+    break;
+  case 5:
+    g_session.m_homunHp = static_cast<int>(packet->value);
+    g_session.RefreshHomunculusInfo();
+    break;
+  case 7:
+    g_session.m_homunSp = static_cast<int>(packet->value);
+    g_session.RefreshHomunculusInfo();
+    break;
+  }
+
+  g_session.RefreshHomunculusInfo();
+}
+
+// OFFSET: 0x00D2C250
+// FUNCTION: fn_21714
+void CGameMode::ReceiveHomunculusProperty(const unsigned char* data) {
+  const HomunculusPropertyPacket* packet = reinterpret_cast<const HomunculusPropertyPacket*>(data);
+  switch (packet->type) {
+  case 5:
+    g_session.m_homunHp = packet->value;
+    g_session.RefreshHomunculusInfo();
+    break;
+  case 7:
+    g_session.m_homunSp = packet->value;
+    g_session.RefreshHomunculusInfo();
+    break;
+  case 1:
+    g_session.m_homunExp = packet->value;
+    g_session.RefreshHomunculusInfo();
+    break;
+  }
+
+  g_session.RefreshHomunculusInfo();
 }
 
 // OFFSET: 0x00D2C2B0

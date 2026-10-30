@@ -115,6 +115,11 @@ public:
   void ReceiveActorSequenceDeadline(const unsigned char* packet);
   void ReceiveActorSignal(const unsigned char* packet);
   void IgnorePacket(const unsigned char* packet);
+  void ReceiveItem1738EquipList(const unsigned char* packet);
+  void ReceiveItem1738EquipListOptions(const unsigned char* packet);
+  void ReceiveItem1738NormalList(const unsigned char* packet);
+  void ReceiveHomunculusProperty64(const unsigned char* packet);
+  void ReceiveHomunculusProperty(const unsigned char* packet);
   void ReceiveHuntingList(const unsigned char* packet);
   void ReceiveEquipAck(const unsigned char* packet);
   void ReceiveToggleNotice(const unsigned char* packet);

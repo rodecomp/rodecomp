@@ -7,6 +7,7 @@
 #include <cstddef>
 
 class UICheckBox;
+class UIStaticText;
 
 class UIItemStoreWnd : public UIItemBaseWnd {
 public:
@@ -21,7 +22,9 @@ public:
   /* 00F8 */ unsigned char unknown_00F8[0x08];
   /* 0100 */ UICheckBox* tabs[8];
   /* 0120 */ int unknown_0120[8];
-  /* 0140 */ unsigned char unknown_0140[0x24];
+  /* 0140 */ unsigned char unknown_0140[0x1C];
+  /* 015C */ UIStaticText* title;
+  /* 0160 */ unsigned char unknown_0160[0x04];
   /* 0164 */ WindowPlacement* saved;
 };
 
