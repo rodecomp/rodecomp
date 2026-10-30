@@ -2317,3 +2317,99 @@ void UINotifyItemObtainWnd::Slot15(int, int) {
 // FUNCTION: fn_12193
 void UIPetTamingDeceiveWnd::Slot15(int, int) {
 }
+
+// OFFSET: 0x008D3230
+// FUNCTION: fn_12100
+void UITipboxWnd::UpdateAnimations() {
+  for (unsigned int i = 0; i < this->m_animations.size(); ++i) {
+    if (this->m_animations[i].blink != 0 && this->m_frameTime - this->m_animations[i].blinkStart >= 500) {
+      this->m_animations[i].visible = true;
+      if (this->m_frameTime - this->m_animations[i].blinkStart >= 1000) {
+        this->m_animations[i].visible = false;
+        this->m_animations[i].blinkStart = this->m_frameTime;
+      }
+    }
+  }
+
+  for (unsigned int i = 0; i < this->m_animations.size(); ++i) {
+    if (this->m_animations[i].fromX != this->m_animations[i].toX || this->m_animations[i].fromY != this->m_animations[i].toY) {
+      const std::uint32_t frameTime = this->m_frameTime;
+      const std::uint32_t elapsed = timeGetTime() - frameTime;
+      const std::uint32_t running = frameTime - this->m_animations[i].moveStart;
+      TipBoxAnimation& animation = this->m_animations[i];
+      const float duration = animation.duration;
+      const float step = static_cast<float>(elapsed) * 0.001f;
+      if (static_cast<float>(running) >= duration * 1000.0f) {
+        animation.x = static_cast<float>(animation.fromX);
+        this->m_animations[i].y = static_cast<float>(this->m_animations[i].fromY);
+        this->m_animations[i].moveStart = this->m_frameTime;
+      } else {
+        animation.x += static_cast<float>(animation.toX - animation.fromX) * step / duration;
+        animation.y += static_cast<float>(animation.toY - animation.fromY) * step / duration;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x008D3430
+// FUNCTION: fn_12101
+bool UITipboxWnd::BuildAnimations() {
+  CTipBoxMgr* manager = g_itemTagOwner;
+  this->m_animations.clear();
+  this->m_dots.clear();
+  if (manager->m_currentEntry.images.empty()) {
+    return false;
+  }
+
+  for (unsigned int i = 0; i < manager->m_currentEntry.images.size(); ++i) {
+    if (manager->m_currentEntry.images[i].unknown_0000 == 6) {
+      const TipBoxImage& image = manager->m_currentEntry.images[i];
+      const float dx = static_cast<float>(image.unknown_0010 - image.unknown_0008);
+      const float dy = static_cast<float>(image.unknown_0014 - image.unknown_000C);
+      int count = 5;
+      if (image.unknown_0018 != 0.0f) {
+        count = static_cast<int>(image.unknown_0018);
+      }
+
+      for (int step = 0; step < count; ++step) {
+        TipBoxDot dot;
+        dot.x = static_cast<float>(step) * dx / static_cast<float>(count) + static_cast<float>(manager->m_currentEntry.images[i].unknown_0008);
+        dot.y = static_cast<float>(step) * dy / static_cast<float>(count) + static_cast<float>(manager->m_currentEntry.images[i].unknown_000C);
+        dot.visible = false;
+        this->m_dots.push_back(dot);
+      }
+    } else {
+      TipBoxAnimation animation;
+      animation.kind = manager->m_currentEntry.images[i].unknown_0000;
+      animation.x = static_cast<float>(manager->m_currentEntry.images[i].unknown_0008);
+      animation.y = static_cast<float>(manager->m_currentEntry.images[i].unknown_000C);
+      animation.moveStart = timeGetTime();
+      animation.blink = manager->m_currentEntry.images[i].unknown_0004;
+      animation.blinkStart = timeGetTime();
+      animation.fromX = manager->m_currentEntry.images[i].unknown_0008;
+      animation.fromY = manager->m_currentEntry.images[i].unknown_000C;
+      animation.toX = manager->m_currentEntry.images[i].unknown_0010;
+      animation.toY = manager->m_currentEntry.images[i].unknown_0014;
+      animation.duration = manager->m_currentEntry.images[i].unknown_0018;
+      animation.visible = true;
+      this->m_animations.push_back(animation);
+    }
+  }
+
+  this->m_buildTime = timeGetTime();
+  return true;
+}
+
+// OFFSET: 0x008D36C0
+// FUNCTION: fn_12102
+void UIStatusWnd::ValidatePlacement() {
+  if (!this->m_info->IsValid()) {
+    this->m_info->Reset();
+    this->m_expandedHeight = this->m_info->unknown_0010;
+    if (this->geometry.height != 17) {
+      this->Resize(this->geometry.width, this->m_expandedHeight);
+    }
+  }
+
+  this->SendMsg(nullptr, 35, 0, 0, 0, 0);
+}
