@@ -1281,6 +1281,95 @@ void UIListBoxID::Clear() {
   this->lines.clear();
 }
 
+// OFFSET: 0x008977C0
+// FUNCTION: fn_11534
+void UIListBoxID::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->verticalBar->Resize(12, height);
+  this->verticalBar->Move(width - 13, 0);
+  this->horizontalBar->Resize(width - 13, 12);
+  this->horizontalBar->Move(0, height - 13);
+  this->Refresh();
+}
+
+// OFFSET: 0x00897630
+// FUNCTION: fn_11531
+void UIComboBoxID::Resize(int width, int height) {
+  UIListBoxID::Resize(width, height);
+  this->topLine = 0;
+  this->verticalBar->position = this->topLine;
+  this->verticalBar->Move(width - 13, 0);
+  if (this->verticalOverflow != 0) {
+    this->verticalBar->Invalidate();
+  }
+}
+
+// OFFSET: 0x00896060
+// FUNCTION: fn_11514
+void UIListBoxID::Refresh() {
+  const int visible = this->geometry.height / this->lineHeight;
+  const int count = static_cast<int>(this->lines.size());
+  const int overflow = std::max((count - visible), 0);
+
+  this->verticalOverflow = overflow != 0;
+  this->verticalBar->maximum = overflow != 0 ? (this->bottomMargin + overflow) : 0;
+  this->verticalBar->total = count;
+  this->verticalBar->visible = visible;
+  this->verticalBar->Invalidate();
+
+  if (this->verticalBar->position > this->verticalBar->maximum) {
+    this->verticalBar->position = this->verticalBar->maximum;
+  }
+
+  this->verticalBar->Invalidate();
+}
+
+// OFFSET: 0x00895D80
+// FUNCTION: fn_11511
+void UIComboBoxID::Refresh() {
+  const int visible = this->geometry.height / this->lineHeight;
+  const int count = static_cast<int>(this->lines.size());
+  const int overflow = std::max((count - visible), 0);
+
+  this->verticalOverflow = overflow != 0;
+  UIScrollBar* bar = this->verticalBar;
+  if (overflow != 0) {
+    bar->visible = visible;
+    bar->maximum = this->bottomMargin + overflow;
+    bar->total = count;
+    bar->Invalidate();
+    if (bar->position > bar->maximum) {
+      bar->position = bar->maximum;
+    }
+
+    if (this->selected < this->topLine) {
+      this->topLine = this->selected;
+    } else if (this->topLine + visible <= this->selected) {
+      this->topLine = this->selected - visible + 1;
+    }
+    if (this->topLine < 0) {
+      this->topLine = 0;
+    }
+    if (this->topLine > overflow) {
+      this->topLine = overflow;
+    }
+    this->verticalBar->position = this->topLine;
+  } else {
+    bar->total = count;
+    bar->visible = visible;
+    bar->maximum = 0;
+    bar->Invalidate();
+    if (bar->position > bar->maximum) {
+      bar->position = bar->maximum;
+    }
+  }
+
+  this->verticalBar->Invalidate();
+  if (this->Root()) {
+    this->Root()->Invalidate();
+  }
+}
+
 // OFFSET: 0x00892EE0
 // FUNCTION: fn_11498
 void UIListBoxID::Slot35(int value) {

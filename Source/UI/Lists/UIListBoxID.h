@@ -15,10 +15,12 @@ struct IdListLine {
 
 class UIListBoxID : public UIWindow {
 public:
+  void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot35(int value) override;
   virtual void Clear();
+  virtual void Refresh();
 
   /* 007C */ unsigned char unknown_007C[0xC];
   /* 0088 */ std::map<int, IdListLine> lines;
@@ -36,9 +38,11 @@ public:
 
 class UIComboBoxID : public UIListBoxID {
 public:
+  void Resize(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
+  void Refresh() override;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
