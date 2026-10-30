@@ -1,11 +1,34 @@
 #include "UI/UICaptchaPreviewWnd.h"
+#include "UI/Buttons/UIBmpRadioBtn.h"
 #include "UI/UIMacroDetectorWnd.h"
 #include "UI/Window/WindowBorder.h"
 #include "Contents/MessageTable.h"
 #include "Utility/Text/FormatString.h"
 
+#include <cstdlib>
+#include <cstring>
+#include <new>
 #include <windows.h>
 #include <timeapi.h>
+#include <zlib.h>
+
+// OFFSET: 0x007ED2F0
+// FUNCTION: fn_09808
+void UICaptchaPreviewWnd::AddImageData(const void* data, int size) {
+  memcpy_s(this->m_imageData + this->m_imageReceived, 0x400, data, size);
+  this->m_imageReceived += size;
+
+  if (this->m_imageSize == this->m_imageReceived && this->m_imageData && this->m_imageReceived) {
+    uLongf length = 0x9AB0;
+    Bytef* image = new (std::nothrow) Bytef[0x9AB0];
+    uncompress(image, &length, this->m_imageData, this->m_imageReceived);
+    this->m_image->m_bitmap.image.DecodeBitmap(image, length, false);
+    if (image) {
+      delete[] image;
+    }
+    this->Show(1);
+  }
+}
 
 // OFFSET: 0x007ED950
 // FUNCTION: fn_09812
@@ -46,4 +69,28 @@ void UIMacroDetectorWnd::Paint() {
       this->sub_A84360(60, 138, str.c_str(), 0, 0, 13, 0x2323FF, 1, 0);
     }
   }
+}
+
+// OFFSET: 0x007EDC70
+// FUNCTION: fn_09818
+void UICaptchaPreviewWnd::ClearImageData() {
+  if (this->m_imageData) {
+    std::free(this->m_imageData);
+    this->m_imageData = nullptr;
+  }
+  this->m_imageSize = 0;
+  this->m_imageReceived = 0;
+  std::memset(this->m_captchaKey, 0, sizeof(this->m_captchaKey));
+}
+
+// OFFSET: 0x007EDFC0
+// FUNCTION: fn_09823
+void UICaptchaPreviewWnd::InitImageData(unsigned short size) {
+  if (this->m_imageData) {
+    std::free(this->m_imageData);
+    this->m_imageData = nullptr;
+  }
+  this->m_imageSize = size;
+  this->m_imageData = static_cast<unsigned char*>(std::malloc(size));
+  std::memset(this->m_imageData, 0, size);
 }

@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_BUTTONS_UIBMPRADIOBTN_H
 #define RAGNAROK_SOURCE_UI_BUTTONS_UIBMPRADIOBTN_H
 
+#include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Window/UIWindow.h"
 
 #include <string>
@@ -32,8 +33,9 @@ class UICaptchaImage : public UIWindow {
 public:
   void Slot28(int x, int y) override;
 
+  /* 007C */ CBitmapRes m_bitmap;
+
 protected:
-  /* 007C */ unsigned char unknown_007C[0x124];
   /* 01A0 */ std::string m_tooltip;
   UIButtonContext* m_controls;
 };

@@ -17,8 +17,15 @@ public:
   void sub_8D2CE0(bool closeButton, const char* title, int width);
   void sub_A84360(int x, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold, unsigned char italic);
   void sub_A86440(int right, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold);
+  void ClearImageData();
+  void SetCountdown(unsigned char count, std::uint32_t duration);
+  void InitImageData(unsigned short size);
 
-  /* 00BC */ unsigned char unknown_00BC[0x14];
+  /* 00BC */ unsigned char unknown_00BC[4];
+  /* 00C0 */ char m_captchaKey[4];
+  /* 00C4 */ unsigned char* m_imageData;
+  /* 00C8 */ int m_imageSize;
+  /* 00CC */ int m_imageReceived;
   /* 00D0 */ unsigned char unknown_00D0;
   /* 00D1 */ unsigned char unknown_00D1[3];
   /* 00D4 */ std::uint32_t totalDuration;
