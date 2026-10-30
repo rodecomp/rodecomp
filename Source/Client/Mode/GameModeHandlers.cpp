@@ -752,3 +752,15 @@ void CGameMode::ReceiveGuildEmblemVersion(std::uint32_t aid, int guildId, int em
     g_guildMgr->SetEmblemVersion(guildId, emblemVersion);
   }
 }
+
+// OFFSET: 0x00D658B0
+// FUNCTION: fn_22004
+int CGameMode::RejectRequest(int, int, int, int, int) {
+  return -1;
+}
+
+// OFFSET: 0x00D65FA0
+// FUNCTION: fn_22006
+void CGameMode::EnsureWindow259(const unsigned char*) {
+  g_windowMgr.EnsureWindow(0x103);
+}

@@ -176,6 +176,8 @@ public:
   void ReceiveActorClanName(const unsigned char* packet);
   void ReceiveClanMemberCount(const unsigned char* packet);
   void ReceiveGuildEmblemVersion(std::uint32_t aid, int guildId, int emblemVersion);
+  int RejectRequest(int, int, int, int, int);
+  void EnsureWindow259(const unsigned char* packet);
   void ReceiveRuneActivation(const unsigned char* packet);
   void ReceiveRuneSetGrades(const unsigned char* packet);
   void ReceiveRuneRewardResult(int result, int tagId, std::int64_t id, int step);
