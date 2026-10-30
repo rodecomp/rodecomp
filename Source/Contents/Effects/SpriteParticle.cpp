@@ -27,6 +27,34 @@ static __forceinline float ToRadians(float degrees) {
   return (degrees / 180.0f) * 3.141592f;
 }
 
+// OFFSET: 0x00B40B60
+// FUNCTION: fn_18861
+CSpriteParticle::CSpriteParticle(vector3d position, int flags)
+  : CParticle(position, flags), unknown_02BC(0), unknown_02BD(0), velocity(), sprite(nullptr), action(nullptr) {
+  this->Reset();
+}
+
+// OFFSET: 0x00B40D90
+// FUNCTION: fn_18863
+void CSpriteParticle::Reset() {
+  CParticle::Reset();
+  this->sprite = nullptr;
+  this->action = nullptr;
+  this->frameDelay = 0;
+  this->unknown_02D4 = 0;
+  this->velocity.x = 0;
+  this->velocity.y = 0;
+  this->velocity.z = 0;
+  this->animation = 0;
+  this->frame = 0;
+  this->loopMode = 0;
+  this->unknown_02BC = 0;
+  this->unknown_02BD = 0;
+  this->unknown_02C0 = 0;
+  this->unknown_02C4 = 0;
+  this->unknown_02F4 = 0;
+}
+
 // OFFSET: 0x00B40E30
 // FUNCTION: fn_18864
 void CSpriteParticle::UpdateFrame() {
