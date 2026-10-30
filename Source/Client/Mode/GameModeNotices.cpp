@@ -130,6 +130,47 @@ void CGameMode::NotifyResult2877(int result) {
 }
 
 // OFFSET: 0x00D69700
+// FUNCTION: fn_22051
+void CGameMode::ReceiveRodexMailDeleted(const unsigned char* packet) {
+  const auto* deleted = reinterpret_cast<const RodexMailDeletedPacket*>(packet);
+  std::map<std::int64_t, RodexMail>::iterator mail;
+  std::map<std::int64_t, RodexMail>::iterator end;
+
+  switch (deleted->type) {
+  case 0:
+    mail = g_rodexMailStore->m_mails0.find(deleted->mailId);
+    end = g_rodexMailStore->m_mails0.end();
+    break;
+  case 1:
+    mail = g_rodexMailStore->m_mails1.find(deleted->mailId);
+    end = g_rodexMailStore->m_mails1.end();
+    break;
+  case 2:
+    mail = g_rodexMailStore->m_mails2.find(deleted->mailId);
+    end = g_rodexMailStore->m_mails2.end();
+    break;
+  default:
+    goto refresh;
+  }
+
+  if (mail != end) {
+    mail->second.unknown_0190 = 1;
+    if (!mail->second.isRead) {
+      --g_rodexMailStore->unknown_0018;
+      if (g_rodexMailStore->unknown_0018 == 0) {
+        UIWindow* window = g_windowMgr.LookupWindow(307);
+        if (window) {
+          window->SendMsg(nullptr, 6, 286, 476, 0, 0);
+        }
+      }
+    }
+  }
+
+refresh:
+  if (g_windowMgr.unknown_0454) {
+    reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0454)->Invalidate();
+  }
+}
 
 // OFFSET: 0x00D69850
 // FUNCTION: fn_22052
