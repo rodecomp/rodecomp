@@ -8,6 +8,9 @@
 #include <string>
 #include <windows.h>
 #include <timeapi.h>
+#include "Contents/EntryQueueMgr.h"
+#include "UI/EntryQueue/UIEntryQueueWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 
 // GLOBAL: gl_24549
 int g_replayAnimationScaling = 0;
@@ -50,6 +53,58 @@ std::vector<unsigned char> BuildReplayTaggedRecord(std::uint16_t id, const void*
     std::memcpy(record.data() + sizeof(header), data, bytes);
   }
   return record;
+}
+
+// OFFSET: 0x00E3DBA0
+// FUNCTION: fn_24195
+std::vector<unsigned char> BuildEntryQueueReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(6500, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  if (g_entryQueueMgr->current != nullptr) {
+    const int id = g_entryQueueMgr->current->id;
+    const auto record = BuildReplayTaggedRecord(6511, &id, sizeof(id));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const unsigned char ready = g_entryQueueMgr->ready;
+    const auto record = BuildReplayTaggedRecord(6512, &ready, sizeof(ready));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  std::string text = g_entryQueueMgr->queueName.text;
+  if (text.size() != 0) {
+    const auto record = BuildReplayTaggedRecord(6513, text.c_str(), text.size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  text = g_entryQueueMgr->characterName.text;
+  if (text.size() != 0) {
+    const auto record = BuildReplayTaggedRecord(6514, text.c_str(), text.size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  if (UIEntryQueueWnd* window = dynamic_cast<UIEntryQueueWnd*>(g_windowMgr.LookupWindow(157))) {
+    const int selected = window->SelectedIndex();
+    const auto record = BuildReplayTaggedRecord(6515, &selected, sizeof(selected));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  if (UIEntryQueueStandByWnd* window = dynamic_cast<UIEntryQueueStandByWnd*>(g_windowMgr.LookupWindow(209))) {
+    {
+      const auto record = BuildReplayTaggedRecord(6517, &window->m_waiting, sizeof(window->m_waiting));
+      records.insert(records.end(), record.begin(), record.end());
+    }
+    {
+      const auto record = BuildReplayTaggedRecord(6518, &window->m_ranking, sizeof(window->m_ranking));
+      records.insert(records.end(), record.begin(), record.end());
+    }
+    const auto record = BuildReplayTaggedRecord(6516, window->m_queueName.c_str(), window->m_queueName.size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(6501, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
 }
 
 // OFFSET: 0x00B83920
