@@ -26,6 +26,8 @@ public:
   void SetPadding(int left, int top, int right, int bottom);
   void SetScrollStep(int value);
   void SetScrollBarSize(int width, int height);
+  void SetText(const std::string& text);
+  void Clear();
 
   /* 0080 */ int textX;
   /* 0084 */ int textY;

@@ -1,6 +1,7 @@
 #include "UI/ProbabilityTable/UIProbabilityTable.h"
 
 #include "UI/Window/WindowBorder.h"
+#include "Utility/Text/FormatString.h"
 
 // OFFSET: 0x00A4BFF0
 // FUNCTION: fn_16120
@@ -113,6 +114,17 @@ void CUIProbabilityTable::OnButtonClick() {
 // OFFSET: 0x00A4E030
 // FUNCTION: fn_16198
 void CUIProbabilityTable::OnPrepareItem(ProbabilityTable::CUIItem*, const ProbabilityTable::CItemData&) {
+}
+
+// OFFSET: 0x00A4E040
+// FUNCTION: fn_16199
+void BindItem(ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data) {
+  item->nameText->Clear();
+  item->probabilityText->Clear();
+  item->nameText->SetText(data.name);
+  item->nameText->SetBackgroundColor(data.color);
+  item->probabilityText->SetBackgroundColor(data.color);
+  item->probabilityText->SetText(FormatOwnedString("%.4lf%%", data.probability));
 }
 
 namespace ProbabilityTable {
