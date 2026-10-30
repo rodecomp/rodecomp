@@ -490,6 +490,7 @@
   "Source/Contents/Items/ItemInfoMgr.cpp": 4,
   "Source/Contents/Items/ItemLink.cpp": 4,
   "Source/Contents/Items/ItemNaming.cpp": 4,
+  "Source/Contents/Items/ItemReformMgr.cpp": 4,
   "Source/Contents/Items/ItemResources.cpp": 4,
   "Source/Contents/Items/NeoPackageItemMgr.cpp": 4,
   "Source/Contents/Items/RuneSystem.cpp": 4,
