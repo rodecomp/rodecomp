@@ -1,16 +1,36 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Replay.h"
+#include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
+#include "Network/Packets/PacketLengths.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstdint>
+#include <cstring>
 #include <string>
 #include <vector>
 
 #include <timeapi.h>
+
+#pragma pack(push, 1)
+struct GameModeTextRecord {
+  /* 0000 */ std::uint32_t header;
+  /* 0004 */ std::int16_t length;
+  /* 0006 */ int firstLength;
+  /* 000A */ int secondLength;
+  /* 000E */ int unknown_000E;
+  /* 0012 */ int unknown_0012;
+  /* 0016 */ int unknown_0016;
+  /* 001A */ int unknown_001A;
+  /* 001E */ char buffer[0x172];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GameModeTextRecord) == 0x190);
+static_assert(offsetof(GameModeTextRecord, buffer) == 0x1E);
 
 // GLOBAL: gl_24661
 std::vector<ActiveSkillEffect> g_activeSkillEffects;
@@ -163,4 +183,43 @@ int CGameMode::SubD07740(int id, int defaultResult) {
   }
 
   return defaultResult;
+}
+
+// OFFSET: 0x00CEB8E0
+// FUNCTION: fn_21352
+void CGameMode::sub_CEB8E0() {
+  if (Replay::Instance().state != 2) {
+    return;
+  }
+
+  GameModeTextRecord record = {};
+  record.header = 0x038808AE;
+  record.firstLength = static_cast<int>(this->unknown_03C8.size());
+  record.secondLength = static_cast<int>(this->unknown_03E0.size());
+  record.unknown_000E = this->unknown_03F8;
+  record.unknown_0012 = this->unknown_03FC;
+  record.unknown_0016 = this->unknown_0400;
+  record.unknown_001A = this->unknown_0404;
+
+  std::memcpy(record.buffer, this->unknown_03C8.data(), record.firstLength);
+  std::memcpy(record.buffer + record.firstLength, this->unknown_03E0.data(), record.secondLength);
+  record.length = static_cast<std::int16_t>(offsetof(GameModeTextRecord, buffer) + record.firstLength + record.secondLength);
+
+  Replay& replay = Replay::Instance();
+  ReplayPacketRecorder recorder = {
+    g_packetLengths,
+    replay.baseFrame,
+    replay.started,
+    replay.frame,
+    replay.header.key0,
+    replay.header.key1,
+    replay.header.options.recordRestricted,
+    replay.file,
+    replay.fileOffset,
+    replay.records,
+    replay.cipherIndex,
+    replay.cipherBase,
+    replay.cipherKey,
+  };
+  recorder.Record(static_cast<std::uint16_t>(record.length), &record, 0x2A, 0);
 }
