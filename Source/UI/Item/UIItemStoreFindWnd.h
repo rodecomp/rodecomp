@@ -10,6 +10,7 @@
 class UIItemStoreFindWnd : public UIItemBaseWnd {
 public:
   void Slot32(int x, int y) override;
+  void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;

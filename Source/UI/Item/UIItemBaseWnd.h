@@ -16,14 +16,16 @@ public:
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot35(int value) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   int GetItemIndexAt(int x, int y);
   __declspec(noinline) ITEM_INFO GetItemByIndex(int index);
   ITEM_INFO GetItemAt(int x, int y);
+  void UpdateScrollBar();
 
   /* 00B4 */ int showQuantity;
   /* 00B8 */ int unknown_00B8;
-  /* 00BC */ int unknown_00BC;
+  /* 00BC */ UIWindow* resizer;
   /* 00C0 */ UIWindow* scrollBar;
   /* 00C4 */ unsigned char unknown_00C4[0x8];
 

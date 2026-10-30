@@ -71,6 +71,8 @@
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/Lists/UIScrollBar.h"
+#include "UI/Layout/WindowSnapping.h"
 #include "UI/PriceCommission.h"
 #include "UI/Shop/PriceColor.h"
 #include "UI/Window/WindowDialogs.h"
@@ -916,6 +918,8 @@ void UIEditCtrl_Custom::Synchronize() {
     this->firstVisible = std::max(this->firstVisible, 0);
   }
 }
+
+// OFFSET: 0x00972520
 
 // OFFSET: 0x009727F0
 // FUNCTION: fn_13275
@@ -2780,6 +2784,47 @@ void UIMerchantShopMakeWnd::Slot35(int value) {
     this->SendMsg(this->scrollBar, 7, value < 0 ? step : -step, 0, 0, 0);
   }
 }
+
+// OFFSET: 0x0098A5A0
+// FUNCTION: fn_13415
+void UIItemBaseWnd::UpdateScrollBar() {
+  UIScrollBar* bar = static_cast<UIScrollBar*>(this->scrollBar);
+  if (!bar) {
+    return;
+  }
+
+  const int visible = this->visibleRows;
+  const int rows = (this->items.size() % this->columns != 0) + this->items.size() / this->columns;
+  int overflow = rows - visible;
+  if (overflow < 0) {
+    overflow = 0;
+  }
+
+  this->unknown_00E4 = overflow != 0;
+  if (overflow != 0) {
+    bar->SetRange(overflow, visible, rows);
+    int position = this->scroll;
+    if (position < 0) {
+      this->scroll = 0;
+      position = 0;
+    }
+
+    const int last = rows - this->visibleRows;
+    if (position > last) {
+      this->scroll = last;
+      position = last;
+    }
+
+    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(position);
+  } else {
+    this->scroll = 0;
+    bar->SetRange(0, visible, rows);
+  }
+
+  this->scrollBar->Invalidate();
+}
+
+// OFFSET: 0x0098A920
 
 // OFFSET: 0x00993A20
 // FUNCTION: fn_13434
