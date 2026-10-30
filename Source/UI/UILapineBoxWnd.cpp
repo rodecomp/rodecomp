@@ -61,6 +61,17 @@ void UIIngredientInfoWnd::Slot25(int x, int y) {
 // OFFSET: 0x00600940
 
 // OFFSET: 0x00600980
+// FUNCTION: fn_04165
+void UIIngredientInfoWnd::Slot28(int x, int y) {
+  this->Slot27(x, y);
+
+  if (this->tooltip.size() != 0) {
+    int tipX = 0;
+    int tipY = -20;
+    this->ToScreen(tipX, tipY);
+    (*reinterpret_cast<ModeTooltip**>(0x013495BC))->Show(this->tooltip.c_str(), tipX, tipY, -1, 0, 1);
+  }
+}
 
 // OFFSET: 0x00600770
 
