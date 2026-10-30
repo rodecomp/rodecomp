@@ -152,6 +152,10 @@ public:
   );
   void DrawFormattedText(int x, int y, const std::string& text, int width, int align, int family, int height, std::uint32_t color, unsigned char bold);
   void DrawEmboldenedText(int x, int y, const char* text, std::uint32_t color, std::uint32_t secondColor, int bytes, int family, int height);
+  int sub_A84400(
+    int x, int y, const std::string& text, int width, int lineSpacing, int align, int family, int height,
+    std::uint32_t color, unsigned char bold
+  );
   void FlushPrimitives(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
   void FillSurface(std::uint32_t color, const tagRECT* rectangle);
   void DrawBitmapScaled(int x, int y, int width, int height, const BitmapImage* image, int option);

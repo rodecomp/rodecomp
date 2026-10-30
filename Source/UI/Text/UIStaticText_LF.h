@@ -5,6 +5,7 @@
 
 class UIStaticText_LF : public UIWindow {
 public:
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot35(int delta) override;
