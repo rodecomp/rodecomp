@@ -238,6 +238,13 @@ int UIEditCtrlVarId::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   return 0;
 }
 
+// OFFSET: 0x00868160
+// FUNCTION: fn_10953
+void UIEditCtrlVarId::SetText(const char* value) {
+  this->UIEditCtrl::SetText(value);
+  this->Invalidate();
+}
+
 // OFFSET: 0x00864D20
 // FUNCTION: fn_10916
 int UIEditCtrl_OldList::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
