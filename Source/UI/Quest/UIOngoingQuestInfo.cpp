@@ -1,9 +1,23 @@
 #include "UI/Quest/UIOngoingQuestInfo.h"
 
+#include "Client/Input/InputCharset.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemNaming.h"
+#include "Contents/MessageTable.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "Render/Renderer.h"
+#include "UI/Items/UIGameItem.h"
 #include "UI/Lists/UIVScrollBar.h"
+#include "UI/Text/UIStaticTextControl.h"
 #include "UI/Text/UITextViewerControl.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
 #include <algorithm>
+#include <cstring>
+#include <string>
 
 template <>
 void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnScroll(int position);
@@ -213,6 +227,59 @@ void CUIScrollWindow::OnScroll(int position) {
       y = child->geometry.y + child->geometry.height;
     }
   }
+}
+
+}
+
+namespace OngoingQuestInfo {
+
+// OFFSET: 0x00A55720
+// FUNCTION: fn_16302
+void CUIRewards::OnBindItem(CUIRewardItem* item, const CRewardItemData& data) {
+  ITEM_INFO info;
+  info.SetItemId(data.itemId);
+  info.identified = 1;
+  item->gameItem->SetItem(info);
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  std::string name = naming.DisplayName(info, 0);
+  item->nameText->SetText(name.c_str(), name.size());
+  std::string count = FormatOwnedString(LookupMessage(0xB6), data.count);
+  item->countText->SetText(count.c_str(), count.size());
+}
+
+}
+
+// OFFSET: 0x00A558B0
+// FUNCTION: fn_16308
+void CUIOngoingQuestInfo::Slot16() {
+  const char* title = LookupMessage(0xD48);
+  this->titleBar->SetTitle(title, std::strlen(title));
+  UIWindow* window = g_windowMgr.LookupWindow(0x2718);
+  if (window) {
+    this->Move(window->geometry.x + window->geometry.width, window->geometry.y);
+  } else {
+    this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
+  }
+}
+
+namespace OngoingQuestInfo {
+
+// OFFSET: 0x00A55A90
+// FUNCTION: fn_16311
+void CUIScrollWindow::Slot16() {
+  this->firstContents->EnableClip();
+  this->secondContents->EnableClip();
+  this->rewards->EnableClip();
+  const char* first = LookupMessage(0xD49);
+  this->firstContents->title->SetText(first, std::strlen(first));
+  const char* second = LookupMessage(0xD4A);
+  this->secondContents->title->SetText(second, std::strlen(second));
+  const char* reward = LookupMessage(0xD4B);
+  this->rewards->title->SetText(reward, std::strlen(reward));
 }
 
 }
