@@ -16,6 +16,7 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "UI/UIGradeEnchantWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -831,4 +832,57 @@ int CGameMode::RejectRequest(int, int, int, int, int) {
 // FUNCTION: fn_22006
 void CGameMode::EnsureWindow259(const unsigned char*) {
   g_windowMgr.EnsureWindow(0x103);
+}
+
+// OFFSET: 0x00D66A50
+// FUNCTION: fn_22019
+void CGameMode::IgnoreRemovedPacket12(const unsigned char*, int, int, int, int) {
+}
+
+// OFFSET: 0x00D67670
+// FUNCTION: fn_22031
+void CGameMode::ToggleWindow169(unsigned char enable) {
+  UIWindow* window = g_windowMgr.LookupWindow(0x169);
+  if (enable == 0) {
+    if (window) {
+      g_windowMgr.CloseWindow(0x169);
+    }
+  } else if (!window) {
+    g_windowMgr.EnsureWindow(0x169);
+  }
+}
+
+#pragma pack(push, 1)
+struct RequestWindow169Packet {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ unsigned char unknown_0002;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D67600
+// FUNCTION: fn_22030
+void CGameMode::RequestWindow169(unsigned char enable) {
+  UIWindow* window = g_windowMgr.LookupWindow(0x169);
+  if (enable == 0) {
+    if (window) {
+      g_windowMgr.CloseWindow(0x169);
+    }
+    return;
+  }
+
+  if (window) {
+    return;
+  }
+
+  RequestWindow169Packet packet;
+  packet.id = 0x0BE0;
+  packet.unknown_0002 = 0;
+  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x00D66A60
+// FUNCTION: fn_22020
+void CGameMode::ShowNoticeText(std::string text) {
+  const std::string message = FormatOwnedString(LookupMessage(0xF18), text.c_str());
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0x64FFFF, 0, 0, 0);
 }
