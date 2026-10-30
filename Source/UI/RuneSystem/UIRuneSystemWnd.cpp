@@ -7,6 +7,37 @@
 #include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x0081BD10
+// FUNCTION: fn_10194
+void UIRuneSetList::DrawScrollBar(bool drawLine) {
+  const int x = this->geometry.width - 7;
+  this->FillRegion(x, 0, 7, this->geometry.height, 0xDCC4B1);
+  this->FillRegion(x + 1, 1, 5, this->geometry.height - 2, 0xFFFFFF);
+  if (drawLine) {
+    this->FillRegion(0, 0, this->geometry.width, 1, 0xD1AF9E);
+  }
+
+  if (this->maximum == 0) {
+    return;
+  }
+
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollbar_arrow_upper.bmp")));
+  this->DrawBitmap(x, 1, bitmap ? &bitmap->image : nullptr, true);
+  bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollbar_arrow_down.bmp")));
+  this->DrawBitmap(x, this->geometry.height - this->arrowLength - 1, bitmap ? &bitmap->image : nullptr, true);
+
+  const int top = this->arrowLength + 1 + this->ThumbOffset();
+  bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_up.bmp")));
+  this->DrawBitmap(x, top, bitmap ? &bitmap->image : nullptr, true);
+
+  const int bottom = this->ThumbLength() - 5 + top;
+  for (int y = top + 3; y < bottom; y += 3) {
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_m.bmp")));
+    this->DrawBitmap(x, y, bitmap ? &bitmap->image : nullptr, true);
+  }
+
+  bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\scrollBar_down.bmp")));
+  this->DrawBitmap(x, bottom, bitmap ? &bitmap->image : nullptr, true);
+}
 
 // OFFSET: 0x0081BE90
 // FUNCTION: fn_10195
@@ -21,8 +52,40 @@ void UIEquipRuneSetWnd::Slot25(int, int) {
 }
 
 // OFFSET: 0x0081C000
+// FUNCTION: fn_10198
+void UIRuneSetList::Slot25(int x, int y) {
+  if (y == 0) {
+    return;
+  }
+
+  if (x < this->geometry.width - 7 && y < this->visible * this->m_itemHeight) {
+    this->m_selected = y / this->m_itemHeight + this->position;
+    this->parent->SendMsg(this, 0xAB, 0xC2, this->m_selected, 0, 0);
+    this->Invalidate();
+    return;
+  }
+
+  UIScrollBar::Slot25(x, y);
+}
 
 // OFFSET: 0x0081C080
+// FUNCTION: fn_10199
+void UIRuneSystemTab::Slot25(int x, int) {
+  if (!this->parent) {
+    return;
+  }
+
+  const int tabWidth = this->geometry.width / this->m_count;
+  int index = x / tabWidth;
+  index = index > 0 ? index : 0;
+  index = index < this->m_count - 1 ? index : this->m_count - 1;
+
+  if (index < 3 && static_cast<int>(this->geometry.unknown_0030) != index) {
+    this->geometry.unknown_0030 = index;
+    this->Invalidate();
+    this->parent->SendMsg(this, 0x16, this->geometry.unknown_0030, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x0081C0E0
 // FUNCTION: fn_10200
@@ -30,8 +93,43 @@ void UIRuneSystemWnd::Slot25(int, int) {
 }
 
 // OFFSET: 0x0081C0F0
+// FUNCTION: fn_10201
+void UIRuneSystem_tagListWnd::Slot25(int x, int) {
+  if (x < 20 || x > this->geometry.width - 23) {
+    return;
+  }
+
+  const int index = (x - 20) / 27;
+  if (index > -1 && index < g_runeSystemMgr->GetTagCount()) {
+    CTagData* tag = g_runeSystemMgr->GetTagByIndex(index);
+    if (tag) {
+      g_runeSystemMgr->SetSelectTag(tag->m_id);
+      g_runeSystemMgr->SendRequest(0xBCB, nullptr, -1);
+      this->parent->SendMsg(this, 0x3C, 0, 0, 0, 0);
+      this->Invalidate();
+    }
+  }
+}
 
 // OFFSET: 0x0081C190
+// FUNCTION: fn_10202
+void UIRuneSetReWard::Slot31(int x, int y) {
+  if (this->m_state == 2) {
+    UIBitmapButton::Slot31(x, y);
+    return;
+  }
+
+  if (this->m_state == 3) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4200)), 0xFF, 0, 0, 0);
+  }
+  if (this->m_state == 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4201)), 0xFF, 0, 0, 0);
+  }
+
+  if (g_windowMgr.Capture() == this) {
+    g_windowMgr.ReleaseCapture();
+  }
+}
 
 // OFFSET: 0x0081C230
 // FUNCTION: fn_10203
@@ -44,11 +142,95 @@ void UIRuneList::Slot28(int, int) {
 }
 
 // OFFSET: 0x0081CBF0
+// FUNCTION: fn_10212
+void UIRuneSet_Info::Slot19() {
+  this->m_gauge->Slot19();
+}
 
 // OFFSET: 0x0081CC00
+// FUNCTION: fn_10213
+void UIRuneSystemWnd::Slot19() {
+  switch (this->m_tab->geometry.unknown_0030) {
+  case 0:
+    this->m_runeSetInfo->Slot19();
+    break;
+  case 1:
+    this->m_runeInfo->Slot19();
+    break;
+  case 2:
+    this->m_runeDecom->Slot19();
+    break;
+  }
+}
 
 // OFFSET: 0x0081CF10
+// FUNCTION: fn_10217
+void UIRuneSetList::Slot35(int delta) {
+  const int previous = this->position;
+  int next = previous + (delta < 0 ? 1 : -1);
+  if (next < 0) {
+    next = 0;
+  }
+  if (next > this->maximum) {
+    next = this->maximum;
+  }
+
+  this->position = next;
+  if (previous != next) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x0081D5F0
+// FUNCTION: fn_10222
+int UIRuneSetReWard::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  if (message == 0x22) {
+    if (static_cast<unsigned int>(argument1) <= 2 && argument2) {
+      this->m_texts[argument1] = reinterpret_cast<const char*>(argument2);
+    }
+    return 0;
+  }
+
+  if (message == 0x66) {
+    this->m_itemId = argument2;
+    this->SetDisabled(1);
+    if (argument2 == 0) {
+      this->m_state = 0;
+      this->Invalidate();
+      return 0;
+    }
+
+    this->m_state = argument1;
+    if (argument1 == 2) {
+      this->SetDisabled(0);
+    }
+    this->Invalidate();
+    return 0;
+  }
+
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
 
 // OFFSET: 0x0081DA20
+// FUNCTION: fn_10224
+int UIRuneSystemTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
+  switch (message) {
+  case 0x4E:
+    this->m_label = reinterpret_cast<const char*>(argument1);
+    this->Invalidate();
+    return 0;
+  case 0x16:
+    this->m_count = argument1;
+    this->Invalidate();
+    return 0;
+  case 0x0D:
+    this->geometry.unknown_0030 = argument1;
+    this->Invalidate();
+    this->parent->SendMsg(this, 0x16, this->geometry.unknown_0030, 0, 0, 0);
+    break;
+  }
+
+  return 0;
+}
