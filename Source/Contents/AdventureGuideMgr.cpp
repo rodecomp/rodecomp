@@ -1612,3 +1612,25 @@ bool CAdventureGuideMgr::IsAvailable(int type, int id) const {
 }
 
 // OFFSET: 0x00667510
+// FUNCTION: fn_05257
+bool AdventureGuideEntry::IsAvailable(int itemId) const {
+  if (g_session.m_level < this->unknown_0004 || this->unknown_0008 < g_session.m_level) {
+    return false;
+  }
+
+  int code = 0;
+  g_luaScript->Call("GetEquipJob", "d>d", itemId, &code);
+  if (!CJobCodeForItem::s_instance) {
+    CJobCodeForItem::s_instance = new (std::nothrow) CJobCodeForItem;
+  }
+  CJobCodeForItem* jobs = CJobCodeForItem::s_instance;
+  if (code == 0xFFFFE) {
+    const auto group = jobs->m_jobGroups.find(0);
+    return group != jobs->m_jobGroups.end() && group->second.find(g_session.m_job) == group->second.end();
+  }
+  if (code == 0xFFFFF) {
+    return true;
+  }
+  const auto found = jobs->m_jobCodes.find(code);
+  return found != jobs->m_jobCodes.end() && found->second.find(g_session.m_job) != found->second.end();
+}
