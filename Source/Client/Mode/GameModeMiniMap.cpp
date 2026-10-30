@@ -2,11 +2,15 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/World/World.h"
+#include "Render/ActionSpriteDrawing.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
 #include "Render/Textures/TextureCache.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 #include "Resource/World/TerrainResource.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -310,5 +314,72 @@ void CGameMode::DrawMiniMapMarker(
       g_windowMgr.LookupWindow(14)->SendMsg(nullptr, 6, 0x1C7, color, rect.left, rect.top);
       this->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load(texture.c_str(), 0, false, true, false), region);
     }
+  }
+}
+
+// OFFSET: 0x00CD1C50
+// FUNCTION: fn_21258
+void CGameMode::DrawMiniMapCoordinates() {
+  const char* player = reinterpret_cast<const char*>(this->scene->player);
+  const int coordinateX = *reinterpret_cast<const int*>(player + 0x494);
+  const int coordinateY = *reinterpret_cast<const int*>(player + 0x498);
+  if (coordinateY <= 0 || coordinateX <= 0) {
+    return;
+  }
+
+  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\RankFont.act"));
+  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\RankFont.spr"));
+
+  int digits[4];
+  int count;
+  int value = coordinateY;
+  if (value > 9999) {
+    value = 9999;
+    count = 4;
+  } else {
+    count = 1;
+    if (value > 999) {
+      count = 4;
+    } else if (value > 99) {
+      count = 3;
+    } else if (value > 9) {
+      count = 2;
+    }
+  }
+
+  digits[0] = value % 10;
+  digits[1] = value / 10 % 10;
+  digits[2] = value / 100 % 10;
+  digits[3] = value / 1000 % 10;
+
+  int x = g_renderer->viewport.width - 80 + count * 25;
+  const int y = g_renderer->viewport.height - 30;
+  for (int index = 0; index < count; ++index, x -= 25) {
+    DrawActionSprite(reinterpret_cast<CRenderSystemBase&>(*this), x, y, action, sprite, 0, digits[index], 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+  }
+
+  DrawActionSprite(
+    reinterpret_cast<CRenderSystemBase&>(*this), g_renderer->viewport.width - 80, g_renderer->viewport.height - 40, action, sprite, 0, 10, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
+  );
+
+  value = coordinateX;
+  count = 1;
+  if (value > 999) {
+    count = 4;
+  } else if (value > 99) {
+    count = 3;
+  } else if (value > 9) {
+    count = 2;
+  }
+
+  digits[0] = value % 10;
+  digits[1] = value / 10 % 10;
+  digits[2] = value / 100 % 10;
+  digits[3] = value / 1000 % 10;
+
+  x = g_renderer->viewport.width - 105;
+  const int secondY = g_renderer->viewport.height - 50;
+  for (int index = 0; index < count; ++index, x -= 25) {
+    DrawActionSprite(reinterpret_cast<CRenderSystemBase&>(*this), x, secondY, action, sprite, 0, digits[index], 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
   }
 }

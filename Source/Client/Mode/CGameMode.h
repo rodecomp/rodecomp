@@ -276,6 +276,7 @@ public:
   void DrawMiniMapMarker(
     const TextureRegion& view, int x, int y, int size, std::string texture, int kind, std::uint32_t color, bool clamp
   );
+  void DrawMiniMapCoordinates();
   void ReceiveGradeEnchantInfo(const unsigned char* packet);
   void ReceivePartyItemPickup(const unsigned char* packet);
   void ReceiveShortcutPagePacket(const unsigned char* packet);
