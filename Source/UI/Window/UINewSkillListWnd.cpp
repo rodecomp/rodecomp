@@ -265,6 +265,27 @@ void UINewSkillListWnd::Slot25(int x, int y) {
 }
 
 // OFFSET: 0x009B2810
+// FUNCTION: fn_13818
+void UINewSkillListWnd::Slot31(int x, int y) {
+  if (y < this->m_topMargin) {
+    UIFrameWnd::Slot31(x, y);
+    this->Slot11();
+    return;
+  }
+
+  const int gate = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4);
+  if (gate == 0 && this->IsSkillArea(x, y)) {
+    CSkillInfo skill = this->SkillAt(this->m_selectedSkill, false);
+    if (skill.unknown_002C != 0 && skill.available != 0) {
+      if (this->sub_9B3EB0(skill.id)) {
+        this->m_needsRedraw = 1;
+        this->m_locked = 1;
+        this->LayoutButtons();
+        this->Invalidate();
+      }
+    }
+  }
+}
 
 // OFFSET: 0x009B28F0
 
