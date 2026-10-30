@@ -1,7 +1,111 @@
 #include "UI/ProbabilityTable/UIProbabilityTable.h"
 
+#include "UI/Lists/UIVScrollBar.h"
 #include "UI/Window/WindowBorder.h"
+#include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
+
+#include <cstddef>
+#include <cstdint>
+#include <string>
+
+namespace {
+
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+
+}
+
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnScroll(int position);
+
+// OFFSET: 0x00A47EF0
+// FUNCTION: fn_16104
+bool UnusedTrueA47EF0() {
+  return true;
+}
+
+// OFFSET: 0x00A47F00
+// FUNCTION: fn_16105
+bool UnusedTrueA47F00() {
+  return true;
+}
+
+// OFFSET: 0x00A47F10
+// FUNCTION: fn_16106
+bool UnusedTrueA47F10() {
+  return true;
+}
+
+// OFFSET: 0x00A47FA0
+// FUNCTION: fn_16108
+template <>
+CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
+
+// OFFSET: 0x00A48160
+// FUNCTION: fn_16109
+template <>
+CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x00A48740
+// FUNCTION: fn_16115
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::ClearItems() {
+  for (ProbabilityTable::CUIItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x00A487D0
+// FUNCTION: fn_16116
+void CUIProbabilityTable::Slot53() {
+  this->unknown_00B4 = 0;
+  this->Resize(345, 455);
+  this->Move(0, 0);
+  this->Slot15(this->geometry.width, this->geometry.height);
+  this->Slot16();
+}
+
+// OFFSET: 0x00A48860
+
+namespace ProbabilityTable {
+
+// OFFSET: 0x00A48A70
+
+}
 
 // OFFSET: 0x00A4BFF0
 // FUNCTION: fn_16120
