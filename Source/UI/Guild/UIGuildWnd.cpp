@@ -290,8 +290,42 @@ int UIGuildSkillWnd::SkillIndexAt(int x, int y) {
 }
 
 // OFFSET: 0x00957850
+// FUNCTION: fn_13038
+int UIGuildPositionManageWnd::PositionIndexAt(int x, int y) {
+  if (x <= this->geometry.width - 14 && x > 3 && y >= g_guildPositionRowHeight + 46 && y < (this->m_visibleRows + 1) * g_guildPositionRowHeight + 46) {
+    const int row = (y - g_guildPositionRowHeight - 46) / g_guildPositionRowHeight;
+    int visible = 0;
+    int index = 0;
+    for (auto position = this->m_positions.begin(); position != this->m_positions.end(); ++position, ++index) {
+      if (index >= this->m_scrollTop * this->m_columns) {
+        if (visible == this->m_columns * row) {
+          return index;
+        }
+        ++visible;
+      }
+    }
+  }
+
+  return -1;
+}
 
 // OFFSET: 0x00957A90
+// FUNCTION: fn_13041
+const GuildPositionEntry& UIGuildPositionManageWnd::PositionAt(int index, int* found) {
+  *found = 1;
+  // GLOBAL: gl_24922
+  static GuildPositionEntry s_emptyGuildPosition;
+
+  int current = 0;
+  for (auto position = this->m_positions.begin(); position != this->m_positions.end(); ++position, ++current) {
+    if (index == current) {
+      return *position;
+    }
+  }
+
+  *found = 0;
+  return s_emptyGuildPosition;
+}
 
 // OFFSET: 0x00957BB0
 // FUNCTION: fn_13042
@@ -322,8 +356,25 @@ CSkillInfo UIGuildSkillWnd::VisibleSkillAt(int row) {
 }
 
 // OFFSET: 0x0095FE20
+// FUNCTION: fn_13088
+void UIGuildPositionManageWnd::Slot25(int x, int y) {
+  UIGuildWnd::Slot25(x, y);
+  const int previous = this->m_hoverIndex;
+  this->m_hoverIndex = this->PositionIndexAt(x, y);
+  if (previous != this->m_hoverIndex) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00960430
+// FUNCTION: fn_13104
+void UIGuildPositionManageWnd::Slot32(int x, int y) {
+  const int previous = this->m_hoverIndex;
+  this->m_hoverIndex = this->PositionIndexAt(x, y);
+  if (previous != this->m_hoverIndex) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x00960470
 // FUNCTION: fn_13105
@@ -336,12 +387,123 @@ void UIGuildSkillWnd::Slot32(int x, int y) {
 }
 
 // OFFSET: 0x00960BA0
+// FUNCTION: fn_13117
+void UIGuildMemberManageWnd::UpdateScroll() {
+  if (!this->m_scrollBar) {
+    return;
+  }
+
+  this->m_visibleRows = 6 - this->m_rowSpacing * 6 / 36;
+  const int visible = this->m_visibleRows;
+  const int rows = this->m_rowCount / this->m_columns + (this->m_rowCount % this->m_columns != 0);
+  int range = 0;
+  if (rows - visible >= 0) {
+    range = rows - visible;
+  }
+
+  this->m_scrollable = range != 0;
+  if (range == 0) {
+    this->m_scrollTop = 0;
+    this->m_scrollBar->SetRange(0, visible, rows);
+  } else {
+    this->m_scrollBar->SetRange(range, visible, rows);
+    int top = this->m_scrollTop;
+    if (top < 0) {
+      this->m_scrollTop = 0;
+      top = 0;
+    }
+    const int last = rows - this->m_visibleRows;
+    if (last < top) {
+      this->m_scrollTop = last;
+      top = last;
+    }
+    this->m_scrollBar->SetPosition(top);
+  }
+
+  this->m_scrollBar->Invalidate();
+}
 
 // OFFSET: 0x00960C80
+// FUNCTION: fn_13118
+void UIGuildPositionManageWnd::UpdateScroll() {
+  if (!this->m_scrollBar) {
+    return;
+  }
+
+  const int visible = this->m_visibleRows;
+  const int rows = this->m_positions.size() / this->m_columns + (this->m_positions.size() % this->m_columns != 0);
+  int range = 0;
+  if (rows - visible >= 0) {
+    range = rows - visible;
+  }
+
+  this->m_scrollable = range != 0;
+  if (range == 0) {
+    this->m_scrollTop = 0;
+    this->m_scrollBar->SetRange(0, visible, rows);
+  } else {
+    this->m_scrollBar->SetRange(range, visible, rows);
+    int top = this->m_scrollTop;
+    if (top < 0) {
+      this->m_scrollTop = 0;
+      top = 0;
+    }
+    const int last = rows - this->m_visibleRows;
+    if (last < top) {
+      this->m_scrollTop = last;
+      top = last;
+    }
+    this->m_scrollBar->SetPosition(top);
+  }
+
+  this->m_scrollBar->Invalidate();
+}
 
 // OFFSET: 0x00960D30
+// FUNCTION: fn_13119
+void UIGuildSkillWnd::UpdateScroll() {
+  if (!this->m_scrollBar) {
+    return;
+  }
+
+  const int visible = this->m_visibleRows;
+  const int rows = this->m_skills.size() / this->m_columns + (this->m_skills.size() % this->m_columns != 0);
+  int range = 0;
+  if (rows - visible >= 0) {
+    range = rows - visible;
+  }
+
+  this->m_scrollable = range != 0;
+  if (range == 0) {
+    this->m_scrollTop = 0;
+    this->m_scrollBar->SetRange(0, visible, rows);
+  } else {
+    this->m_scrollBar->SetRange(range, visible, rows);
+    int top = this->m_scrollTop;
+    if (top < 0) {
+      this->m_scrollTop = 0;
+      top = 0;
+    }
+    const int last = rows - this->m_visibleRows;
+    if (last < top) {
+      this->m_scrollTop = last;
+      top = last;
+    }
+    this->m_scrollBar->SetPosition(top);
+  }
+
+  this->m_scrollBar->Invalidate();
+}
 
 // OFFSET: 0x00960230
+// FUNCTION: fn_13099
+void UIGuildInfoManageWnd::Slot19() {
+  const std::string name = g_guildMgr->GetEmblemFilename(this->m_guildId);
+  CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
+  if (emblem && emblem->gif.frameChanged == true) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x009656A0
 // FUNCTION: fn_13140
