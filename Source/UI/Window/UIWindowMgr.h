@@ -442,10 +442,14 @@ public:
   void Shutdown();
   void SetScreenSize(int width, int height);
   void ArrangeMiniPartyWindows();
+  void RearrangeMiniPartyWindows();
   static int ScaleToViewportWidth(int value);
   static int CenterOnViewportX(int x);
   static int CenterOnViewportY(int y);
   void ConfirmActiveDialog();
+  void SaveVisibleWindowIds();
+  void SaveShortcutItems();
+  void SaveUIRectInfo();
   UIWindow* LookupWindow(int id);
   UIWindow* EnsureWindow(int id);
   void GetMiniPartyUsableArea(RECT* area);

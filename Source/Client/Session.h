@@ -153,7 +153,9 @@ public:
   /* 0F38 */ int cartMaxCount;
   /* 0F3C */ int cartWeight;
   /* 0F40 */ int cartMaxWeight;
-  /* 0F44 */ unsigned char unknown_0F44[0x28];
+  /* 0F44 */ unsigned char unknown_0F44[0x0C];
+  /* 0F50 */ int unknown_0F50;
+  /* 0F54 */ unsigned char unknown_0F54[0x18];
   /* 0F6C */ const char* const* m_humanMaleHeadNames;
   /* 0F70 */ unsigned char unknown_0F70[0x08];
   /* 0F78 */ const char* const* m_humanFemaleHeadNames;
@@ -248,7 +250,10 @@ public:
   /* 5450 */ int unknown_5450;
   /* 5454 */ unsigned char unknown_5454[0x14];
   /* 5468 */ int unknown_5468;
-  /* 546C */ unsigned char unknown_546C[0x34];
+  /* 546C */ unsigned char unknown_546C[0x04];
+  /* 5470 */ int unknown_5470;
+  /* 5474 */ int unknown_5474;
+  /* 5478 */ unsigned char unknown_5478[0x28];
   /* 54A0 */ int unknown_54A0;
   /* 54A4 */ int unknown_54A4;
   /* 54A8 */ int unknown_54A8;
