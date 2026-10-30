@@ -32,6 +32,7 @@ public:
   void SetQueueName(const EntryQueueName& name);
   void SetCharacterName(const EntryQueueName& name);
   void ResetCurrent(int unused);
+  void IgnorePacket(const unsigned char* packet);
   void OnNotify(const EntryQueueNotice* notice);
 
   /* 0004 */ EntryQueueName queueName;

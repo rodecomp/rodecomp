@@ -116,6 +116,11 @@ void CEntryQueueMgr::ResetCurrent(int unused) {
   this->ready = 0;
 }
 
+// OFFSET: 0x00BA28C0
+// FUNCTION: fn_19670
+void CEntryQueueMgr::IgnorePacket(const unsigned char* packet) {
+}
+
 // OFFSET: 0x00BA2EB0
 // FUNCTION: fn_19674
 void CEntryQueueMgr::OnNotify(const EntryQueueNotice* notice) {
