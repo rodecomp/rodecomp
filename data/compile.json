@@ -803,6 +803,7 @@
   "Source/Script/NLuaState.cpp": 5,
   "Source/Security/NProtectGameGuardMgr.cpp": 4,
   "Source/Security/ReassemblyPacketMgr.cpp": 4,
+  "Source/Security/SecondPwdRandom.cpp": 4,
   "Source/Security/ThemidaMgr.cpp": 4,
   "Source/UI/Acceptance/UIChooseSellBuyWnd.cpp": 2,
   "Source/UI/Acceptance/UIExchangeAcceptWnd.cpp": 2,
