@@ -3,6 +3,7 @@
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/Jobs/JobInheritance.h"
 #include "Contents/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -293,7 +294,7 @@ float CGameActor::GetNameOffset() {
     if (angle > 270) {
       scale = 0.5f;
     } else {
-      scale = (g_sinTable[angle] + 1.0f) * 0.25f + g_depthAverageHalf;
+      scale = (g_sinTable[angle >= 90 ? angle : 90] + 1.0f) * 0.25f + g_depthAverageHalf;
     }
   }
 
@@ -479,22 +480,27 @@ bool CGameActor::IsMonsterClass(int job) {
 // OFFSET: 0x00CADCC0
 // FUNCTION: fn_21066
 bool CGameActor::HasPendingDamage() {
-  return !this->unknown_02A8.empty();
+  return this->unknown_02A8.size() > 0;
 }
 
 // OFFSET: 0x00CADCF0
 // FUNCTION: fn_21067
 bool CGameActor::UpdateUnknown03E8(std::int64_t value) {
-  const std::int64_t previous = (static_cast<std::int64_t>(this->unknown_03EC) << 32) | static_cast<std::uint32_t>(this->unknown_03E8);
-  this->unknown_03EC = static_cast<int>(value >> 32);
-  this->unknown_03E8 = static_cast<int>(value);
-  return previous < value;
+  bool result = false;
+  const int high = static_cast<int>(value >> 32);
+  const unsigned int low = static_cast<unsigned int>(value);
+  if (this->unknown_03EC <= high && (this->unknown_03EC < high || static_cast<unsigned int>(this->unknown_03E8) < low)) {
+    result = true;
+  }
+  this->unknown_03EC = high;
+  this->unknown_03E8 = static_cast<int>(low);
+  return result;
 }
 
 // OFFSET: 0x00CADD30
 // FUNCTION: fn_21068
 int CGameActor::IsPlayerClass(int job) {
-  return g_session.IsPlayerJobId(job);
+  return IsPlayerJob(job);
 }
 
 // OFFSET: 0x00CAE1B0
