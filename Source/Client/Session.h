@@ -617,6 +617,7 @@ public:
   ITEM_INFO* FindInventoryItemByItemId(int itemId, bool identifiedOnly);
   int GetInventoryItemCount(int itemId) const;
   ITEM_INFO GetItem1784At(int list, int index) const;
+  void AddItem1784(const ITEM_INFO& item, int list);
   int GetCommandId(const char* name) const;
   int GetItem1728Count() const;
   ITEM_INFO GetItemSlot(int index) const;

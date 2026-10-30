@@ -1,4 +1,5 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Session.h"
 #include "Client/Stove/StoveMgr.h"
 #include "Client/Stove/StovePCSDK.h"
 #include "Network/TextEncoding.h"
@@ -116,6 +117,14 @@ EncryptedName<129, 0x2D3B15774149D5DDULL>& PurchaseCheckingMessage::operator()()
                                  0xDD};
   thread_local EncryptedName<sizeof(source), 0x2D3B15774149D5DDULL> name(source);
   return name;
+}
+
+// OFFSET: 0x0063DB80
+// FUNCTION: fn_04794
+void CSession::AddItem1784(const ITEM_INFO& item, int list) {
+  if (static_cast<unsigned int>(list) < 11) {
+    this->unknown_1784[list].push_back(item);
+  }
 }
 
 // OFFSET: 0x0063E390
