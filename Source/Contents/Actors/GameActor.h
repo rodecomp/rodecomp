@@ -151,7 +151,11 @@ public:
   void SetAction(unsigned animation, int motion, int repeat) override;
 
   virtual void Slot08() = 0;
-  virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth) = 0;
+  virtual bool Slot09(
+    int layer, int index, float distanceScale, const SpriteFrameCell& cell, float x, float y, const float* position, float scale,
+    float* bottomRhw, float* topRhw, const SpriteRleImage* image, SpriteQuad* quad, int* box, std::uint32_t* color, int offsetX, int offsetY,
+    int flags
+  ) = 0;
   virtual void Slot10(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth) = 0;
   virtual void Slot11(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth) = 0;
   virtual void Slot12(int first, int second, int third, int fourth, int fifth) = 0;
@@ -212,6 +216,7 @@ public:
   void SetUnknown02C8(int value);
   void SetUnknown0260(int value);
   void ApplyPendingUnknown0408();
+  void RenderMercenary(const float* matrix, int job);
   void ProcessBodyState();
   int GetShield();
   int GetEffectiveJob(int job);

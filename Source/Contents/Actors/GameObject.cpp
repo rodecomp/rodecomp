@@ -12,10 +12,12 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Projection/RendererViewport.h"
 #include "Render/Renderer.h"
+#include "Render/SpriteGeometry.h"
 #include "Render/SpriteQuad.h"
 #include "Render/TextureQuad.h"
 #include "Render/Textures/SpriteAtlas.h"
 #include "Render/Textures/Texture.h"
+#include "Resource/PaletteResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
@@ -23,6 +25,8 @@
 #include "Render/Textures/SpritePixels.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
+
+#include <cstdio>
 
 namespace {
   // STATIC: 0x0135EF80
@@ -177,6 +181,331 @@ void CRenderObject::Render(int argument) {
 // OFFSET: 0x00CB20F0
 
 // OFFSET: 0x00CB2830
+// FUNCTION: fn_21104
+void CGameActor::RenderMercenary(const float* matrix, int job) {
+  const float* origin = &this->render.position.x;
+  float position[3];
+  position[0] = origin[0] * matrix[0] + origin[1] * matrix[3] + origin[2] * matrix[6] + matrix[9];
+  position[1] = origin[0] * matrix[1] + origin[1] * matrix[4] + origin[2] * matrix[7] + matrix[10];
+  position[2] = origin[0] * matrix[2] + origin[1] * matrix[5] + origin[2] * matrix[8] + matrix[11];
+
+  float x;
+  float y;
+  float reciprocalDepth;
+  g_renderer->ProjectViewport(origin, matrix, &x, &y, &reciprocalDepth);
+  const float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
+  this->render.unknown_005C = distanceScale / g_heightScale;
+  const float scale =
+    g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->render.unknown_0078)) * this->render.scale) * this->render.unknown_005C;
+
+  char path[256];
+  char accessory[256];
+  const ActionFrame* bodyFrame;
+  const ActionFrame* headFrame;
+  int headOffsetX;
+  int headOffsetY;
+  int accessoryOffsetX;
+  int accessoryOffsetY;
+
+  for (unsigned char layer = 0; layer < 8; ++layer) {
+    int offsetX = 0;
+    int offsetY = 0;
+
+    if (layer >= 5 && job != 0x178A && job != 0x1794 && job != 0x179E) {
+      continue;
+    }
+
+    CSprRes* sprite;
+    CActRes* action;
+    const ActionFrame* frame;
+
+    if (layer == 0) {
+      sprite = this->render.sprite;
+      action = this->render.action;
+      frame = &action->Frame(this->render.previousAnimation, this->render.curMotion);
+      if (this->render.previousAnimation < 8) {
+        frame = &action->Frame(this->render.previousAnimation, 0);
+      }
+      bodyFrame = frame;
+    } else if (layer == 1) {
+      const int head = job % 23 + 1;
+      const char* actionName;
+      const char* spriteName;
+      if (job >= 0x1781 && job <= 0x178A) {
+        spriteName = "인간족\\머리통\\여\\%d_여.spr";
+        actionName = "인간족\\머리통\\여\\%d_여.act";
+      } else {
+        spriteName = "인간족\\머리통\\남\\%d_남.spr";
+        actionName = "인간족\\머리통\\남\\%d_남.act";
+      }
+
+      std::sprintf(path, actionName, head);
+      action = static_cast<CActRes*>(ResourceMgr::Instance().Load(path));
+      std::sprintf(path, spriteName, head);
+      sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(path));
+
+      frame = &action->Frame(this->render.previousAnimation, this->render.curMotion);
+      if (this->render.previousAnimation < 8) {
+        frame = &action->Frame(this->render.previousAnimation, 0);
+      }
+      headFrame = frame;
+
+      if (headFrame->anchorCount != 0 && bodyFrame->anchorCount != 0 && headFrame->anchors[0].unknown_0008 == bodyFrame->anchors[0].unknown_0008) {
+        headOffsetX = bodyFrame->anchors[0].x - headFrame->anchors[0].x;
+        headOffsetY = bodyFrame->anchors[0].y - headFrame->anchors[0].y;
+      }
+      offsetX = headOffsetX;
+      offsetY = headOffsetY;
+    } else if (layer == 2) {
+      const char* actionName;
+      const char* spriteName;
+      if (job >= 0x1781 && job <= 0x178A) {
+        spriteName = "인간족\\용병\\활용병_활.spr";
+        actionName = "인간족\\용병\\활용병_활.act";
+      } else if (job >= 0x178B && job <= 0x1794) {
+        spriteName = "인간족\\용병\\창용병_창.spr";
+        actionName = "인간족\\용병\\창용병_창.act";
+      } else {
+        spriteName = "인간족\\용병\\검용병_검.spr";
+        actionName = "인간족\\용병\\검용병_검.act";
+      }
+
+      std::sprintf(path, actionName);
+      action = static_cast<CActRes*>(ResourceMgr::Instance().Load(path));
+      std::sprintf(path, spriteName);
+      sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(path));
+      frame = &action->Frame(this->render.previousAnimation, this->render.curMotion);
+    } else if (layer == 3) {
+      if (job >= 0x1781 && job <= 0x178A) {
+        continue;
+      }
+
+      const char* actionName;
+      const char* spriteName;
+      if (job >= 0x178B && job <= 0x1794) {
+        spriteName = "인간족\\용병\\창용병_창_검광.spr";
+        actionName = "인간족\\용병\\창용병_창_검광.act";
+      } else {
+        spriteName = "인간족\\용병\\검용병_검_검광.spr";
+        actionName = "인간족\\용병\\검용병_검_검광.act";
+      }
+
+      std::sprintf(path, actionName);
+      action = static_cast<CActRes*>(ResourceMgr::Instance().Load(path));
+      std::sprintf(path, spriteName);
+      sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(path));
+      frame = &action->Frame(this->render.previousAnimation, this->render.curMotion);
+    } else {
+      if (layer == 4) {
+        switch (job) {
+        case 0x1781:
+          std::sprintf(accessory, "여\\여_털모자");
+          break;
+        case 0x1782:
+          std::sprintf(accessory, "여\\여_골든헤드기어");
+          break;
+        case 0x1783:
+          std::sprintf(accessory, "여\\여_대형금방울");
+          break;
+        case 0x1784:
+          std::sprintf(accessory, "여\\여_엘리스모자");
+          break;
+        case 0x1785:
+          std::sprintf(accessory, "여\\여_가부키가면");
+          break;
+        case 0x1786:
+          std::sprintf(accessory, "여\\여_여왕의투구");
+          break;
+        case 0x1787:
+          std::sprintf(accessory, "여\\여_지르타스가면");
+          break;
+        case 0x1788:
+          std::sprintf(accessory, "여\\여_실버티아라");
+          break;
+        case 0x1789:
+          std::sprintf(accessory, "여\\여_고양이모자");
+          break;
+        case 0x178A:
+          std::sprintf(accessory, "여\\여_예쁜리본");
+          break;
+        case 0x178B:
+          std::sprintf(accessory, "남\\남_간호모");
+          break;
+        case 0x178C:
+          std::sprintf(accessory, "남\\남_검은눈가리개");
+          break;
+        case 0x178D:
+          std::sprintf(accessory, "남\\남_고블린가면4호");
+          break;
+        case 0x178E:
+          std::sprintf(accessory, "남\\남_양모자");
+          break;
+        case 0x178F:
+          std::sprintf(accessory, "남\\남_귀찮은너구리");
+          break;
+        case 0x1790:
+          std::sprintf(accessory, "남\\남_돈잃은자의마음");
+          break;
+        case 0x1791:
+          std::sprintf(accessory, "남\\남_마리오넷모자");
+          break;
+        case 0x1792:
+          std::sprintf(accessory, "남\\남_라이온마스크");
+          break;
+        case 0x1793:
+          std::sprintf(accessory, "남\\남_클로스헬멧");
+          break;
+        case 0x1794:
+          std::sprintf(accessory, "남\\남_로드카호의뿔");
+          break;
+        case 0x1795:
+          std::sprintf(accessory, "남\\남_반창고");
+          break;
+        case 0x1796:
+          std::sprintf(accessory, "남\\남_분노입");
+          break;
+        case 0x1797:
+          std::sprintf(accessory, "남\\남_코끼리모자");
+          break;
+        case 0x1798:
+          std::sprintf(accessory, "남\\남_야구모자");
+          break;
+        case 0x1799:
+          std::sprintf(accessory, "남\\남_장례건");
+          break;
+        case 0x179A:
+          std::sprintf(accessory, "남\\남_부용");
+          break;
+        case 0x179B:
+          std::sprintf(accessory, "남\\남_타이거마스크");
+          break;
+        case 0x179C:
+          std::sprintf(accessory, "남\\남_초승달투구");
+          break;
+        case 0x179D:
+          std::sprintf(accessory, "남\\남_엔젤링모자");
+          break;
+        case 0x179E:
+          std::sprintf(accessory, "남\\남_태양신의모자");
+          break;
+        }
+      } else if (layer == 5) {
+        if (job == 0x178A) {
+          std::sprintf(accessory, "여\\여_꽃잎");
+        } else if (job == 0x1794) {
+          std::sprintf(accessory, "남\\남_토스트");
+        }
+      } else if (layer == 6) {
+        if (job == 0x178A) {
+          std::sprintf(accessory, "여\\여_요정의귀");
+        } else if (job == 0x1794 || job == 0x179E) {
+          std::sprintf(accessory, "남\\남_요정의귀");
+        }
+      } else if (layer == 7) {
+        if (job == 0x178A) {
+          std::sprintf(accessory, "여\\여_미스틱로즈");
+        } else if (job == 0x1794) {
+          std::sprintf(accessory, "남\\남_타키우스눈가리개");
+        } else if (job == 0x179E) {
+          std::sprintf(accessory, "남\\남_사이클롭스아이");
+        }
+      }
+
+      std::sprintf(path, "악세사리\\%s.act", accessory);
+      action = static_cast<CActRes*>(ResourceMgr::Instance().Load(path));
+      std::sprintf(path, "악세사리\\%s.spr", accessory);
+      sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(path));
+
+      frame = &action->Frame(this->render.previousAnimation, this->render.curMotion);
+      if (this->render.previousAnimation < 8) {
+        frame = &action->Frame(this->render.previousAnimation, 0);
+      }
+
+      if (frame->anchorCount != 0 && headFrame->anchorCount != 0 && frame->anchors[0].unknown_0008 == headFrame->anchors[0].unknown_0008) {
+        accessoryOffsetX = headFrame->anchors[0].x - frame->anchors[0].x;
+        accessoryOffsetY = headFrame->anchors[0].y - frame->anchors[0].y;
+      }
+      offsetX = headOffsetX + accessoryOffsetX;
+      offsetY = headOffsetY + accessoryOffsetY;
+    }
+
+    bool drawn = false;
+    RenderBounds bounds;
+    bounds.left = static_cast<float>(g_renderer->viewport.width);
+    bounds.top = static_cast<float>(g_renderer->viewport.height);
+    bounds.right = 0.0f;
+    bounds.bottom = 0.0f;
+    bounds.offset = reciprocalDepth;
+
+    for (int index = 0; index < frame->cellCount; ++index) {
+      const SpriteFrameCell& cell = frame->Cell(index);
+      if (cell.image == -1) {
+        continue;
+      }
+
+      const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+      float bottomRhw;
+      float topRhw;
+      SpriteQuad quad;
+      int box[4];
+      std::uint32_t color;
+      if (!this->Slot09(index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, offsetX, offsetY, 0)) {
+        continue;
+      }
+
+      int blend = (color >> 24) < 0xFF ? 1 : 257;
+      drawn = true;
+      quad.image = image;
+
+      if (layer >= 4) {
+        blend = 1;
+        const float bias = static_cast<float>(layer - 4) * 0.00004f + 0.0001f;
+        quad.bottomRhw += bias;
+        quad.topRhw += bias;
+      }
+
+      if (this->render.unknown_00A4Bytes[1] != 0) {
+        const float minX = quad.left < quad.right ? quad.left : quad.right;
+        const float maxX = quad.left > quad.right ? quad.left : quad.right;
+        if (bounds.left > minX) {
+          bounds.left = minX;
+        }
+        if (bounds.top > quad.top) {
+          bounds.top = quad.top;
+        }
+        if (maxX > bounds.right) {
+          bounds.right = maxX;
+        }
+        if (quad.bottom > bounds.bottom) {
+          bounds.bottom = quad.bottom;
+        }
+      }
+
+      const std::uint32_t* palette = sprite->palette;
+      if (this->render.unknown_0048 != 0) {
+        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->render.name.c_str()))->palette;
+      }
+
+      if (layer <= 1) {
+        this->DrawPulseOutline(cell, box, scale, bottomRhw, topRhw, palette, image, color);
+      }
+
+      if (IsScreenShakeActive()) {
+        this->DrawFlippedQuad(quad, palette, blend, x, y, 0);
+      } else {
+        this->DrawQuad(quad, palette, blend, 0.0f, 0.0f, 0);
+      }
+    }
+
+    if (drawn) {
+      this->SetRenderInfo(&bounds.left, x, y);
+    } else {
+      this->SetTlvert(x, y);
+    }
+  }
+
+  this->render.unknown_00ECBytes[0] = 1;
+}
 
 // OFFSET: 0x00CB35F0
 // FUNCTION: fn_21105
