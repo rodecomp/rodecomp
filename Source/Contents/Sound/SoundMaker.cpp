@@ -337,6 +337,21 @@ void CNpc::Slot16() {
   }
 }
 
+// OFFSET: 0x00DA61C0
+// FUNCTION: fn_22434
+void CNpc::Slot17() {
+  switch (this->GetEffectiveJob(-1)) {
+    case 45:
+    case 104:
+    case 111:
+    case 139:
+      break;
+    default:
+      g_modeMgr.GetGameMode()->SendMsg(13, this->render.accountId, 0, 0, 0);
+      break;
+  }
+}
+
 // OFFSET: 0x00DA5800
 // FUNCTION: fn_22429
 void CPc::Slot59(bool value) {
