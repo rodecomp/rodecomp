@@ -294,6 +294,12 @@ public:
   void ReceiveItemListPart(unsigned char listType, int count, const unsigned char* data);
   void ClearItemLists(const unsigned char* packet);
   void RefreshItemListWindow(unsigned char listType, bool partial);
+  void ClearUnknown04DC();
+  void SetFollowTicks(int updateTick, int lostTick);
+  bool IsMenuWindowOpen() const;
+  bool ShowRestrictedNotice(int grade);
+  void AddUnknown0604(UIWindow* window);
+  void RequestAdminStatus();
   void sub_CEB8E0();
   void Slot7(int value) override;
   void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);

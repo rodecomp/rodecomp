@@ -1,25 +1,32 @@
 #include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/GuildInfo.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Actors/MousePointer.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/PlayerNameDictionary.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/World/World.h"
+#include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Render/Renderer.h"
 #include "Resource/World/TerrainResource.h"
 #include "Script/LuaScript.h"
+#include "UI/Chat/ChatSuggestions.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -400,6 +407,95 @@ void CGameMode::sub_CEB8E0() {
   };
   recorder.Record(static_cast<std::uint16_t>(record.length), &record, 0x2A, 0);
 }
+
+// OFFSET: 0x00CEFE50
+// FUNCTION: fn_21407
+void CGameMode::ClearUnknown04DC() {
+  this->unknown_04DC.assign("", 0);
+}
+
+// GLOBAL: gl_24846
+int g_followUpdateTick;
+
+// GLOBAL: gl_24847
+int g_followLostTick;
+
+// OFFSET: 0x00CECB60
+// FUNCTION: fn_21358
+void CGameMode::SetFollowTicks(int updateTick, int lostTick) {
+  g_followUpdateTick = updateTick != -1 ? updateTick : g_followUpdateTick;
+  g_followLostTick = lostTick != -1 ? lostTick : g_followLostTick;
+}
+
+// OFFSET: 0x00CF0AC0
+// FUNCTION: fn_21421
+bool CGameMode::IsMenuWindowOpen() const {
+  return g_windowMgr.LookupWindow(0x122) != nullptr || g_windowMgr.LookupWindow(0x12E) != nullptr
+      || g_windowMgr.LookupWindow(0x15C) != nullptr || g_windowMgr.LookupWindow(0x2716) != nullptr
+      || g_windowMgr.LookupWindow(0x169) != nullptr;
+}
+
+// OFFSET: 0x00CF0B30
+// FUNCTION: fn_21422
+bool CGameMode::ShowRestrictedNotice(int grade) {
+  if (g_serviceMode == 3 || g_serviceType == 10 || grade < 2) {
+    return false;
+  }
+
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x31)), 255, 0, 0, 0);
+  g_windowMgr.unknown_04DC.assign("", 0);
+  return true;
+}
+
+// OFFSET: 0x00CEFE70
+// FUNCTION: fn_21408
+void CGameMode::RemoveUnknown0604(int window) {
+  UIWindow* target = reinterpret_cast<UIWindow*>(window);
+  for (std::list<UIWindow*>::iterator it = this->unknown_0604.begin(); it != this->unknown_0604.end(); ++it) {
+    if (*it == target) {
+      this->unknown_0604.erase(it);
+      return;
+    }
+  }
+}
+
+// OFFSET: 0x00CEFB30
+// FUNCTION: fn_21404
+void CGameMode::AddUnknown0604(UIWindow* window) {
+  this->unknown_0604.push_back(window);
+}
+
+#pragma pack(push, 1)
+struct AdminStatusRequestPacket {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint32_t accountId;
+  /* 0006 */ unsigned char unknown_0006;
+  /* 0007 */ std::uint16_t unknown_0007;
+};
+#pragma pack(pop)
+static_assert(sizeof(AdminStatusRequestPacket) == 9);
+
+// OFFSET: 0x00CEFCA0
+// FUNCTION: fn_21405
+void CGameMode::RequestAdminStatus() {
+  if (IsAdminAccount(g_session.m_aid)) {
+    return;
+  }
+
+  if (g_serviceMode == 3) {
+    return;
+  }
+
+  AdminStatusRequestPacket packet = {};
+  packet.id = 0x149;
+  packet.accountId = static_cast<std::uint32_t>(g_session.m_aid);
+  packet.unknown_0006 = 2;
+  packet.unknown_0007 = 0xA;
+  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x00D06BD0
 
 // OFFSET: 0x00CDD350
 // FUNCTION: fn_21316
