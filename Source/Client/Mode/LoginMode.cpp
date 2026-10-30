@@ -651,3 +651,9 @@ void nullsub_486(int) {
 // FUNCTION: fn_22296
 void nullsub_487(int) {
 }
+
+// OFFSET: 0x00D92B60
+// FUNCTION: fn_22291
+bool sub_D92B60(int) {
+  return false;
+}
