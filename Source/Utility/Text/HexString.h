@@ -1,0 +1,6 @@
+#ifndef RAGNAROK_SOURCE_UTILITY_TEXT_HEXSTRING_H
+#define RAGNAROK_SOURCE_UTILITY_TEXT_HEXSTRING_H
+
+int ParseHexString(const char* text);
+
+#endif
