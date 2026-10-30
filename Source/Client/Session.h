@@ -457,6 +457,7 @@ public:
   void NotifyHomunSkillWindows();
   void NotifyMercSkillWindows();
   int GetPetActionNumber(int hungerLevel, int friendlyLevel, int action);
+  void InitPetActionTable();
   int GetPetFriendlyState(int friendly);
   void GetPetFriendlyStateString(int friendly, char* buffer);
   int GetPetHungryState(int hunger);
