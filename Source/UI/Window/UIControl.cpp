@@ -1278,8 +1278,33 @@ void CUIVScrollBar::SetHidden(int) {
 // OFFSET: 0x009EE1B0
 
 // OFFSET: 0x009EE270
+// FUNCTION: fn_14603
+void CUIHScrollBar::Slot35(int value) {
+  if (value > 0) {
+    this->PageDown();
+  } else {
+    this->PageUp();
+  }
+}
 
 // OFFSET: 0x009EE290
+// FUNCTION: fn_14604
+void CUIHScrollBar::Slot54() {
+  CUIThumb* bar = this->thumb;
+  float offset;
+  if (bar->resizable) {
+    const int length = static_cast<int>((static_cast<float>(this->visible) / static_cast<float>(this->total)) * static_cast<float>(this->trackLength));
+    bar->Resize(length > 1 ? length : 1, this->geometry.height);
+    offset = (static_cast<float>(this->trackLength) / static_cast<float>(this->total)) * static_cast<float>(this->position);
+  } else {
+    if (this->total - this->visible <= 0) {
+      bar->Move(this->upButton->geometry.width, 0);
+      return;
+    }
+    offset = static_cast<float>((this->trackLength - bar->geometry.width) * this->position) / static_cast<float>(this->total - this->visible);
+  }
+  this->thumb->Move(static_cast<int>(offset + static_cast<float>(this->upButton->geometry.width)), 0);
+}
 
 // OFFSET: 0x009EE380
 
