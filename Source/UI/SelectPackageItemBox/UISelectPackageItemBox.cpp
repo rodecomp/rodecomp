@@ -73,10 +73,129 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Slot35(int valu
 }
 
 // OFFSET: 0x00A6D0C0
+// FUNCTION: fn_16669
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::Slot35(int value) {
+  if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
+    this->scrollBar->Slot35(value);
+  } else if (this->parent) {
+    this->parent->Slot35(value);
+  }
+}
 
 // OFFSET: 0x00A6DB80
+// FUNCTION: fn_16676
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::OnScroll(int position) {
+  auto it = this->items.begin();
+  if (it == this->items.end()) {
+    return;
+  }
+  if (this->data.size() == 0) {
+    for (; it != this->items.end(); ++it) {
+      (*it)->index = -1;
+      (*it)->Show(0);
+    }
+    return;
+  }
+
+  const int first = (*it)->index;
+  unsigned int row = position / this->rowHeight;
+  if (first != -1) {
+    if (first < static_cast<int>(row)) {
+      if (row - first < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
+      }
+    } else if (first > static_cast<int>(row)) {
+      if (first - row < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      }
+    }
+  }
+
+  it = this->items.begin();
+  for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
+    if (it == this->items.end() || row >= this->data.size()) {
+      break;
+    }
+    SelectPackageItemBox::CUIItemInfo* item = *it;
+    if (item) {
+      if (this->rebind || row != static_cast<unsigned int>(item->index)) {
+        item->index = row;
+        if (this->binder) {
+          auto node = this->data.begin();
+          std::advance(node, static_cast<int>(row));
+          this->binder(item, *node);
+        }
+      }
+      item->SetSelected(row == this->selected);
+      item->Move(this->itemX, y);
+      item->Show(1);
+    }
+  }
+
+  for (; it != this->items.end(); ++it) {
+    (*it)->index = -1;
+    (*it)->Show(0);
+  }
+}
 
 // OFFSET: 0x00A6DD80
+// FUNCTION: fn_16677
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::OnScroll(int position) {
+  auto it = this->items.begin();
+  if (it == this->items.end()) {
+    return;
+  }
+  if (this->data.size() == 0) {
+    for (; it != this->items.end(); ++it) {
+      (*it)->index = -1;
+      (*it)->Show(0);
+    }
+    return;
+  }
+
+  const int first = (*it)->index;
+  unsigned int row = position / this->rowHeight;
+  if (first != -1) {
+    if (first < static_cast<int>(row)) {
+      if (row - first < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
+      }
+    } else if (first > static_cast<int>(row)) {
+      if (first - row < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      }
+    }
+  }
+
+  it = this->items.begin();
+  for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
+    if (it == this->items.end() || row >= this->data.size()) {
+      break;
+    }
+    SelectPackageItemBox::CUITabInfo* item = *it;
+    if (item) {
+      if (this->rebind || row != static_cast<unsigned int>(item->index)) {
+        item->index = row;
+        if (this->binder) {
+          auto node = this->data.begin();
+          std::advance(node, static_cast<int>(row));
+          this->binder(item, *node);
+        }
+      }
+      item->SetSelected(row == this->selected);
+      item->Move(this->itemX, y);
+      item->Show(1);
+    }
+  }
+
+  for (; it != this->items.end(); ++it) {
+    (*it)->index = -1;
+    (*it)->Show(0);
+  }
+}
 
 // OFFSET: 0x00A6FBC0
 // FUNCTION: fn_16779
