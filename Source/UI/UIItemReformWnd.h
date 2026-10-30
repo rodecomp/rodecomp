@@ -6,12 +6,16 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/UIFrameWnd.h"
 
+#include <string>
 #include <vector>
+
+class UIBasicButton;
 
 class UIItemReformWnd_List : public UIFrameWnd {
 public:
   void Move(int x, int y) override;
   void Slot15(int width, int height) override;
+  void Paint() override;
   void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot33(int x, int y) override;
@@ -31,6 +35,8 @@ public:
 class UIItemReformWnd_Item : public UIWindow {
 public:
   void Paint() override;
+  void Slot28(int x, int y) override;
+  void Slot32(int x, int y) override;
 
   /* 007C */ ITEM_INFO* item;
 };
@@ -45,6 +51,27 @@ public:
 class UIItemReformWnd_DetailMsg : public UIWindow {
 public:
   void Paint() override;
+};
+
+class UIItemReformWnd : public UIFrameWnd {
+public:
+  void Slot19() override;
+  void Paint() override;
+  void SelectItem(ITEM_INFO* item);
+
+  /* 00B4 */ UIBasicButton* reformButton;
+  /* 00B8 */ UIItemReformWnd_List* list;
+  /* 00BC */ UIItemReformWnd_Item* baseIcon;
+  /* 00C0 */ UIItemReformWnd_Item* resultIcon;
+  /* 00C4 */ std::vector<UIItemReformWnd_Item*> materialIcons;
+  /* 00D0 */ UIItemReformWnd_DetailBtn* detailButton;
+  /* 00D4 */ UIItemReformWnd_DetailMsg* detailMsg;
+  /* 00D8 */ ITEM_INFO reformItem;
+  /* 01D0 */ ITEM_INFO* selectedItem;
+  /* 01D8 */ ITEM_INFO resultItem;
+  /* 02D0 */ std::vector<ITEM_INFO> materials;
+  /* 02DC */ std::string information;
+  /* 02F4 */ std::string warning;
 };
 
 #endif

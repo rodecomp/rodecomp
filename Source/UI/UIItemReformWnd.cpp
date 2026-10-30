@@ -1,16 +1,34 @@
 #include "UI/UIItemReformWnd.h"
 
+#include "Client/Input/InputCharset.h"
+#include "Client/Input/Mouse.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Client/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemNaming.h"
+#include "Contents/Items/ItemReformMgr.h"
+#include "Contents/Items/SelectPackageItemMgr.h"
 #include "Contents/MessageTable.h"
+#include "Contents/PlayerNameDictionary.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Buttons/UIBasicButton.h"
+#include "UI/Shop/ItemDrawing.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
 #include <cstdint>
+#include <cstdlib>
+#include <cstring>
+#include <map>
+#include <new>
 #include <string>
 
 // OFFSET: 0x005FCD10
@@ -29,6 +47,8 @@ void UIItemReformWnd_List::Slot15(int width, int height) {
   this->visibleCount = height / this->itemHeight;
   this->UpdateScrollBar();
 }
+
+// OFFSET: 0x005FD270
 
 // OFFSET: 0x005FD600
 // FUNCTION: fn_04111
@@ -62,6 +82,8 @@ void UIItemReformWnd_Item::Paint() {
   }
 }
 
+// OFFSET: 0x005FD8A0
+
 // OFFSET: 0x005FDA60
 // FUNCTION: fn_04117
 void UIItemReformWnd_List::Slot31(int x, int y) {
@@ -84,6 +106,8 @@ void UIItemReformWnd_DetailBtn::Slot47() {
   }
 }
 
+// OFFSET: 0x005FDB20
+
 // OFFSET: 0x005FDBE0
 // FUNCTION: fn_04120
 void UIItemReformWnd_List::Slot28(int x, int y) {
@@ -100,6 +124,25 @@ void UIItemReformWnd_List::Slot28(int x, int y) {
 void UIItemReformWnd_DetailBtn::Slot48() {
   if (this->parent) {
     this->parent->SendMsg(this, 168, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x005FDC80
+// FUNCTION: fn_04123
+void UIItemReformWnd::Slot19() {
+  if (this->detailMsg) {
+    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this->detailMsg);
+    this->detailMsg->Move(g_mouse.x + 5, g_mouse.y + 5);
+  }
+}
+
+// OFFSET: 0x005FDCC0
+// FUNCTION: fn_04124
+void UIItemReformWnd_Item::Slot32(int x, int y) {
+  if (this->item) {
+    if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(this->item), 0, 0, 0);
+    }
   }
 }
 
@@ -144,3 +187,5 @@ void UIItemReformWnd_List::UpdateScrollBar() {
     this->parent->Invalidate();
   }
 }
+
+// OFFSET: 0x005FDEA0
