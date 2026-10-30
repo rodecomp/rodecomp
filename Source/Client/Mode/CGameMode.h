@@ -105,6 +105,7 @@ public:
   void PlaceWindow16(unsigned int xPercent, unsigned int yPercent);
   void ReceiveUnknown7FBC(const unsigned char* packet);
   void ReceiveActorMessage144(const unsigned char* packet);
+  void StopActorMove(std::uint32_t aid, std::int16_t x, std::int16_t y, unsigned char flag);
   void NotifyResult4138(int result);
   void ReceiveClanLeave(const unsigned char* packet);
   void ReceiveClanInfo(const unsigned char* packet);

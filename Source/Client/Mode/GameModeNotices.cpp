@@ -55,6 +55,25 @@ struct ByteValuePacket {
 };
 #pragma pack(pop)
 
+// OFFSET: 0x00D45E30
+// FUNCTION: fn_21842
+void CGameMode::StopActorMove(std::uint32_t aid, std::int16_t x, std::int16_t y, unsigned char flag) {
+  CRenderObject* actor;
+  if (aid == g_session.m_aid) {
+    actor = this->scene->player;
+  } else {
+    actor = this->scene->GetGameActorByAID(aid);
+    if (!actor) {
+      return;
+    }
+  }
+
+  const int posX = x;
+  const int posY = y;
+  const int value = flag;
+  actor->SendMsg(nullptr, 19, 0, posX, posX >> 31, posY, posY >> 31, 0, 0, value, value >> 31, 0, 0, 0, 0);
+}
+
 // OFFSET: 0x00D6AE70
 // FUNCTION: fn_22065
 void CGameMode::NotifyWindow4F258(int result) {
