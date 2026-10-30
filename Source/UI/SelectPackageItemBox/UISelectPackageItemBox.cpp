@@ -75,8 +75,30 @@ void CUISelectPackageItemBox::OnCancel() {
 }
 
 // OFFSET: 0x00A6FBE0
+// FUNCTION: fn_16780
+void CUISelectPackageItemBox::OnOk() {
+  const int index = static_cast<int>(this->tabList->selected);
+  if (index < 0 || static_cast<unsigned int>(index) >= this->tabList->data.size()) {
+    return;
+  }
+
+  auto it = this->tabList->data.begin();
+  std::advance(it, index);
+  const int result = reinterpret_cast<WindowDialogs*>(&g_windowMgr)
+                       ->Confirm(FormatOwnedString(LookupMessage(3975), it->name.c_str()).c_str(), 2, true, false, 0, "Message", 280, 120, 0);
+  if (result == 187) {
+    g_modeMgr.GetGameMode()->SendMsg(325, this->sourceIndex, this->packageId, index, 0);
+  }
+}
 
 // OFFSET: 0x00A6FD00
+// FUNCTION: fn_16781
+template <>
+__declspec(noinline) void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::ClearData() {
+  this->data.clear();
+  this->selected = static_cast<unsigned int>(-1);
+  this->UpdateScrollBar();
+}
 
 // OFFSET: 0x00A6FE10
 // FUNCTION: fn_16782
@@ -91,6 +113,11 @@ void CUIItemInfo::Paint() {
 }
 
 // OFFSET: 0x00A703B0
+// FUNCTION: fn_16785
+void CUIItemInfo::Slot16() {
+  this->gameItem->showOverlay = 1;
+  this->gameItem->Invalidate();
+}
 
 // OFFSET: 0x00A705E0
 // FUNCTION: fn_16787
@@ -99,3 +126,21 @@ void CUITabInfo::Slot16() {
 }
 
 // OFFSET: 0x00A709E0
+// FUNCTION: fn_16789
+void CUISelectPackageItemBox::OnSelectTab(SelectPackageItemBox::CUITabInfo*, const SelectPackageItemBox::CTabInfoData& data) {
+  this->itemList->ClearData();
+  if (!Singleton<CSelectPackageItemMgr>::s_instance) {
+    Singleton<CSelectPackageItemMgr>::s_instance = new (std::nothrow) CSelectPackageItemMgr;
+  }
+
+  std::optional<std::vector<ITEM_INFO>*> items = Singleton<CSelectPackageItemMgr>::s_instance->FindItems(data.packageId, data.tabIndex);
+  if (!items) {
+    return;
+  }
+
+  for (const ITEM_INFO& item : **items) {
+    this->itemList->data.push_back(item);
+  }
+
+  this->itemList->UpdateScrollBar();
+}
