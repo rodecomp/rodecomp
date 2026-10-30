@@ -1031,6 +1031,19 @@ void UICashEmotionListChildWnd_Purchase::Paint() {
 }
 
 // OFFSET: 0x007C52F0
+// FUNCTION: fn_09371
+void UICashEmotionListChildWnd_Purchase::UpdateExpiry(int packId, Timestamp* expiry) {
+  auto it = this->m_items.begin();
+  for (; it != this->m_items.end(); ++it) {
+    if (packId == (*it)->unknown_00A8) {
+      break;
+    }
+  }
+
+  if (it != this->m_items.end()) {
+    (*it)->UpdateExpiry(expiry);
+  }
+}
 
 // OFFSET: 0x007C5980
 // FUNCTION: fn_09380
@@ -1120,6 +1133,12 @@ void UICashEmotionListWnd::Slot19() {
 }
 
 // OFFSET: 0x007C7CD0
+// FUNCTION: fn_09411
+void UICashEmotionListWnd::RefreshCurrentList() {
+  if (this->m_currentList) {
+    this->m_currentList->Refresh(this->m_searchEdit ? this->m_searchEdit->Text() : nullptr);
+  }
+}
 
 // OFFSET: 0x007C7D10
 
@@ -1143,6 +1162,12 @@ void UICashEmotionListWnd::Slot11() {
 }
 
 // OFFSET: 0x007C8B30
+// FUNCTION: fn_09421
+void UICashEmotionListWnd::UpdateExpiry(int packId, Timestamp* expiry) {
+  if (this->m_purchaseList) {
+    this->m_purchaseList->UpdateExpiry(packId, expiry);
+  }
+}
 
 // OFFSET: 0x007C8B50
 
@@ -1518,6 +1543,12 @@ UICashEmotionPack_Purchase::~UICashEmotionPack_Purchase() {
 // OFFSET: 0x007CACE0
 
 // OFFSET: 0x007CAE70
+// FUNCTION: fn_09460
+void UICashEmotionPack_Purchase::UpdateExpiry(Timestamp* expiry) {
+  if (expiry && this->m_titleText && !this->m_title.empty()) {
+    this->ShowExpiry(expiry->seconds);
+  }
+}
 
 // OFFSET: 0x007CAEB0
 // FUNCTION: fn_09462
