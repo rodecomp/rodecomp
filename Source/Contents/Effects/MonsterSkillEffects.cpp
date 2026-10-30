@@ -427,6 +427,18 @@ void CFallenAngelEffect::Slot04() {
   }
 }
 
+// OFFSET: 0x00711850
+// FUNCTION: fn_07227
+void CFallenAngelEffect::SetPosition(vector3d position) {
+  vector3d target = position;
+  target.y += (g_cameraDistance - 230.0f) * 0.0625f + 10.0f;
+
+  this->position[0] = target.x;
+  this->position[1] = target.y;
+  this->position[2] = target.z;
+  this->emitter->position = target;
+}
+
 // OFFSET: 0x007118C0
 // FUNCTION: fn_07228
 CFloralFlareRoad::CFloralFlareRoad() : CEffect(1804) {
@@ -534,6 +546,17 @@ bool CFromTheAbyssEffect::Slot06() {
   return this->ActorExists();
 }
 
+// OFFSET: 0x00715C80
+// FUNCTION: fn_07270
+void CFromTheAbyssEffect::Slot04() {
+  for (auto it = this->unknown_00E8.begin(); it != this->unknown_00E8.end(); ++it) {
+    EZ2STREmitter* emitter = it->second.emitter;
+    if (emitter) {
+      AsParticle(emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
+}
+
 // OFFSET: 0x00716800
 // FUNCTION: fn_07274
 CFullScreenEffect::CFullScreenEffect() : CEffect(-1), loaded(1) {
@@ -603,6 +626,24 @@ void CFullScreenEffect::Slot04() {
 // OFFSET: 0x007176E0
 // FUNCTION: fn_07280
 CGaleStorm::CGaleStorm() : CEffect(1973), unknown_00D8(5), unknown_00DC(0) {
+}
+
+// OFFSET: 0x00717DE0
+// FUNCTION: fn_07285
+void CGaleStorm::Slot01() {
+  struct LevelData {
+    int count;
+    int unknown;
+  };
+  LevelData table[10] = {{5}, {5}, {5}, {5}, {7}, {7}, {7}, {9}, {9}, {11}};
+
+  unsigned int index = this->unknown_00B0;
+  if (index > 10) {
+    index = 10;
+  }
+
+  this->unknown_00D8 = table[index - 1].count;
+  this->unknown_00DC = table[index - 1].unknown;
 }
 
 // OFFSET: 0x00717EB0

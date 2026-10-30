@@ -6,6 +6,7 @@
 
 #include <cstddef>
 #include <list>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -140,6 +141,7 @@ public:
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
+  void SetPosition(vector3d position);
 
   /* 00CC */ EZ2STREmitter* emitter;
   /* 00D0 */ float unknown_00D0;
@@ -188,8 +190,22 @@ public:
 
 class CFromTheAbyssEffect : public CEffect {
 public:
+  struct AbyssParticle {
+    /* 0000 */ int kind;
+    /* 0004 */ EZ2STREmitter* emitter;
+  };
+
+  struct AbyssWave {
+    /* 0000 */ unsigned char unknown_0000[0x18];
+  };
+
   void Slot01() override;
+  void Slot04() override;
   bool Slot06() override;
+
+  /* 00CC */ unsigned char unknown_00CC[0x14];
+  /* 00E0 */ std::map<std::uint64_t, AbyssWave> unknown_00E0;
+  /* 00E8 */ std::map<std::uint64_t, AbyssParticle> unknown_00E8;
 };
 
 class CParticle;
@@ -299,6 +315,7 @@ public:
 class CGaleStorm : public CEffect {
 public:
   CGaleStorm();
+  void Slot01() override;
   void Slot04() override;
   bool Slot06() override;
 
@@ -382,6 +399,9 @@ static_assert(sizeof(CDancingKnifeEffect) == 0xE8);
 static_assert(sizeof(CEternalSlashAttackEffect) == 0xD8);
 static_assert(sizeof(CEternalSlashCountEffect) == 0xD0);
 static_assert(sizeof(CFallenAngelEffect) == 0xDC);
+static_assert(sizeof(CFromTheAbyssEffect) == 0xF0);
+static_assert(offsetof(CFromTheAbyssEffect, unknown_00E0) == 0xE0);
+static_assert(offsetof(CFromTheAbyssEffect, unknown_00E8) == 0xE8);
 static_assert(sizeof(CFloralFlareRoad) == 0xDC);
 static_assert(offsetof(CFootprintEffect, stepDistance) == 0x108);
 static_assert(offsetof(CFootprintEffect, lastPosition) == 0x114);
