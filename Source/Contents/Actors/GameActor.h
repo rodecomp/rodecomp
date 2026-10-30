@@ -221,6 +221,9 @@ public:
   int GetShield();
   int GetEffectiveJob(int job);
   int GetUnknown0404Job() const;
+  void SetUnknown03B8(int value, int slot);
+  void SetTetraBall(int index, int on, int value);
+  bool IsSkillWithoutAction(int skillId);
   int ActionBase(int state);
   void SetUnknown03C4(int value);
   void SetUnknown0404(int value);

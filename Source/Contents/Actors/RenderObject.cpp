@@ -13,9 +13,11 @@
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/RagEffect.h"
+#include "Contents/Effects/TetraBallEffect.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
+#include "Contents/Skills/SkillInfo.h"
 #include "Contents/World/World.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
@@ -85,6 +87,8 @@ public:
   void Slot08() override;
   void Slot36() override;
   int Slot37() override;
+  void Unused6860(int value);
+  void Unused7950(int value);
 
   /* 0410 */ int unknown_0410;
   /* 0414 */ C3dGrannyModelRes* model;
@@ -1156,6 +1160,10 @@ int CGameActor::GetUnknown0404Job() const {
   }
 }
 
+// OFFSET: 0x00CC1D40
+
+// OFFSET: 0x00CC46D0
+
 // OFFSET: 0x00CC40C0
 // FUNCTION: fn_21157
 void CGameActor::SetUnknown0404(int value) {
@@ -2128,4 +2136,22 @@ void CGrannyCorpse3d::Render(int argument) {
     command->vertexCount = vertexCount;
     g_renderer->queues.Submit(command, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
   }
+}
+
+// OFFSET: 0x00CC6860
+// FUNCTION: fn_21184
+void C3dGrannyGameActor::Unused6860(int) {
+}
+
+// OFFSET: 0x00CC7950
+// FUNCTION: fn_21187
+void C3dGrannyGameActor::Unused7950(int) {
+}
+
+// OFFSET: 0x00CCC890
+
+// OFFSET: 0x00CCCAE0
+// FUNCTION: fn_21198
+int ReturnZero() {
+  return 0;
 }
