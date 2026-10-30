@@ -85,6 +85,44 @@ void UISwapEquipmentWnd::SetSlotValue(int index, int value) {
   }
 }
 
+// OFFSET: 0x00830400
+// FUNCTION: fn_10392
+ITEM_INFO UISwapEquipmentWnd::ItemAtPoint(int x, int y) {
+  int slot = -1;
+  if (y <= this->geometry.height && y >= 22 && y <= 151) {
+    if ((x >= 6 && x < 106) || (x >= 170 && x < this->geometry.width - 6)) {
+      const int row = (y - 22) / 26;
+      if (x >= 170) {
+        slot = row == 0 ? 9 : row + 3;
+      } else {
+        slot = row == 0 ? 8 : row - 1;
+      }
+    }
+
+    if (x > 112 && x < 170 && y >= 28 && y <= 52) {
+      slot = 15;
+    }
+  }
+
+  return this->GetSlotItem(slot);
+}
+
+// OFFSET: 0x008304F0
+// FUNCTION: fn_10393
+ITEM_INFO UISwapEquipmentWnd::GetSlotItem(int slot) {
+  if (slot == -1) {
+    return ITEM_INFO(0);
+  }
+
+  if (this->unknown_00BC == 2) {
+    ITEM_INFO item = g_session.GetItem6B68(slot);
+    return item.unknown_0000[1] > 0 ? item : ITEM_INFO(0);
+  }
+
+  ITEM_INFO item = g_session.GetItem61B8(slot);
+  return item.unknown_0000[1] > 0 ? item : ITEM_INFO(0);
+}
+
 // OFFSET: 0x00830760
 
 // OFFSET: 0x00830970
