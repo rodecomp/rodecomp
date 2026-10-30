@@ -107,6 +107,10 @@ CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string
 }
 
 // OFFSET: 0x00A08680
+// FUNCTION: fn_15026
+template <>
+CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::~CUIListBoxEx() {
+}
 
 // OFFSET: 0x00A08E70
 // FUNCTION: fn_15033
@@ -122,6 +126,14 @@ void CUIEquipmentPropertiesWnd::Slot53() {
 }
 
 // OFFSET: 0x00A08F20
+// FUNCTION: fn_15034
+template <>
+void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot15(int width, int height) {
+  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar->Show(0);
+  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
+  this->AddChild(this->scrollBar);
+}
 
 // OFFSET: 0x00A0EE90
 // FUNCTION: fn_15155
