@@ -89,6 +89,74 @@ struct GameOptionEntry {
 // GLOBAL: gl_24865
 bool g_gameOptionFlag;
 
+// GLOBAL: gl_24927
+int g_pendingAid;
+
+// GLOBAL: gl_24928
+int g_pendingGid;
+
+// GLOBAL: gl_24929
+unsigned char g_toggleNoticeState;
+
+// OFFSET: 0x00D3B9A0
+// FUNCTION: fn_21787
+void CGameMode::ReceiveToggleNotice(const unsigned char* packet) {
+  g_toggleNoticeState = packet[2];
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(g_toggleNoticeState == 0 ? 1326 : 1325)), 0x64FFFF, 0, 0, 0);
+}
+
+// OFFSET: 0x00D3BF00
+// FUNCTION: fn_21791
+void CGameMode::ReceivePendingResult(const unsigned char* packet) {
+  std::string text;
+  std::uint32_t color = 0xFF;
+  switch (*reinterpret_cast<const std::int16_t*>(packet + 10)) {
+  case 0:
+  case 8:
+    g_pendingAid = *reinterpret_cast<const int*>(packet + 2);
+    g_pendingGid = *reinterpret_cast<const int*>(packet + 6);
+    if (g_windowMgr.unknown_0250) {
+      g_windowMgr.unknown_0250->Invalidate();
+    }
+    if (*reinterpret_cast<const std::int16_t*>(packet + 10) == 8) {
+      text = LookupMessage(1814);
+    } else {
+      color = 0xFFFF00;
+      text = LookupMessage(54);
+    }
+    break;
+  case 1:
+    text = LookupMessage(1227);
+    break;
+  case 2:
+    text = LookupMessage(1228);
+    break;
+  case 3:
+    text = LookupMessage(56);
+    break;
+  case 4:
+    text = LookupMessage(1229);
+    break;
+  case 5:
+    text = LookupMessage(1230);
+    break;
+  case 6:
+    text = LookupMessage(1254);
+    break;
+  case 7:
+    text = LookupMessage(1813);
+    break;
+  case 9:
+    text = LookupMessage(1572);
+    break;
+  }
+
+  if (!text.empty()) {
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), color, 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x00D3CC10
 // FUNCTION: fn_21796
 void CGameMode::ReceivePetAct(unsigned char* packet) {
@@ -275,6 +343,157 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
   }
 
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFFFF, 0, 0, 0);
+}
+
+struct ActorMessage32 {
+  /* 0000 */ std::string text;
+  /* 0018 */ std::string extra;
+  /* 0030 */ int unknown_0030;
+  /* 0034 */ int unknown_0034;
+  /* 0038 */ int unknown_0038;
+  /* 003C */ int unknown_003C;
+};
+
+// OFFSET: 0x00D3F130
+// FUNCTION: fn_21811
+void CGameMode::ReceiveActorMessage32(const unsigned char* packet) {
+  this->unknown_01AC[*reinterpret_cast<const std::uint32_t*>(packet + 8)] = *reinterpret_cast<const std::uint32_t*>(packet + 4);
+  CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4));
+  if (!actor) {
+    return;
+  }
+
+  ActorMessage32 message;
+  message.text.assign(reinterpret_cast<const char*>(packet + 17), *reinterpret_cast<const std::int16_t*>(packet + 2) - 17);
+  message.unknown_0030 = packet[16];
+  message.unknown_0034 = *reinterpret_cast<const std::int16_t*>(packet + 14);
+  message.unknown_0038 = *reinterpret_cast<const std::int16_t*>(packet + 12);
+  message.unknown_003C = *reinterpret_cast<const int*>(packet + 8);
+  if (message.text.size() > 60) {
+    message.text.resize(60);
+  }
+
+  const std::int64_t argument = reinterpret_cast<std::intptr_t>(&message);
+  actor->SendMsg(nullptr, 32, 0, static_cast<int>(argument), static_cast<int>(argument >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D3F760
+// FUNCTION: fn_21813
+void CGameMode::ReceiveStatusNotice(const unsigned char* packet) {
+  int message;
+  switch (*reinterpret_cast<const int*>(packet + 2)) {
+  case 21:
+    message = 889;
+    break;
+  case 22:
+    message = 890;
+    break;
+  case 23:
+    message = 891;
+    break;
+  case 24:
+    message = 892;
+    break;
+  case 25:
+    message = 893;
+    break;
+  case 28:
+    message = 894;
+    break;
+  case 29:
+    message = 895;
+    break;
+  case 30:
+    message = 896;
+    break;
+  case 31:
+    message = 897;
+    break;
+  case 32:
+    message = 898;
+    break;
+  case 40:
+    message = 915;
+    break;
+  default:
+    return;
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0x9B9BFF, 8, 0, 0);
+}
+
+// OFFSET: 0x00D40080
+// FUNCTION: fn_21816
+void CGameMode::ReceiveWindow181Message(const unsigned char* packet) {
+  UIWindow* window = g_windowMgr.LookupWindow(181);
+  if (window) {
+    window->SendMsg(nullptr, 60, 1, packet[2], 0, 0);
+  }
+}
+
+// OFFSET: 0x00D40120
+// FUNCTION: fn_21817
+void CGameMode::ReceiveNamedResultNotice(const unsigned char* packet) {
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  std::string name(reinterpret_cast<const char*>(packet + 2));
+  switch (packet[26]) {
+  case 0:
+    switch (packet[27]) {
+    case 0:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((name + LookupMessage(3389)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    case 1:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((name + LookupMessage(3390)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    case 2:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((name + LookupMessage(3391)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    }
+    break;
+  case 1:
+    switch (packet[27]) {
+    case 0:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((name + LookupMessage(3392)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    case 1:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((name + LookupMessage(3393)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    case 2:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((name + LookupMessage(3394)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    }
+    break;
+  }
+}
+
+// OFFSET: 0x00D40360
+// FUNCTION: fn_21818
+void CGameMode::ReceiveResultNotice0118(const unsigned char* packet) {
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  switch (packet[2]) {
+  case 0:
+    switch (packet[3]) {
+    case 1:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((this->unknown_0118 + LookupMessage(194)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    case 2:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((this->unknown_0118 + LookupMessage(195)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    }
+    break;
+  case 1:
+    switch (packet[3]) {
+    case 0:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((this->unknown_0118 + LookupMessage(196)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    case 1:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((this->unknown_0118 + LookupMessage(197)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    case 2:
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>((this->unknown_0118 + LookupMessage(198)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    }
+    break;
+  }
 }
 
 // OFFSET: 0x00D65730
