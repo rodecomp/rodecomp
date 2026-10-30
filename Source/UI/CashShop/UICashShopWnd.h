@@ -11,7 +11,10 @@
 #include <string>
 #include <vector>
 
+class UIBmpTextButton;
 class UIEditCtrl;
+class UIStaticBitmap;
+struct UIButtonContext;
 
 class UICashShopWnd_Banner : public UIWindow {
 public:
@@ -35,11 +38,13 @@ public:
 class UICashShopWnd_CartItem : public UIWindow {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot15(int width, int height) override;
   void Slot26(int x, int y) override;
   void Slot35(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 0080 */ ITEM_INFO m_item;
+  UIButtonContext* m_controls;
 };
 
 class UICashShopWnd_Cart : public UIWindow {
@@ -58,6 +63,13 @@ public:
 class UICashShopWnd_Item : public UIWindow {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot15(int width, int height) override;
+
+  /* 007C */ UIBmpTextButton* m_addButton;
+  /* 0080 */ ITEM_INFO m_item;
+  /* 0178 */ bool m_largeLayout;
+  /* 017C */ UIStaticBitmap* m_soldOut;
+  UIButtonContext* m_controls;
 };
 
 class UICashShopWnd : public UIFrameWnd {

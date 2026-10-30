@@ -9,8 +9,11 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
+#include "UI/UIStaticBitmap.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
@@ -161,6 +164,59 @@ void FormatMessageBuffer(char* buffer, const char* format, ...) {
 // FUNCTION: fn_09534
 bool UICashShopWnd::Slot03() {
   return true;
+}
+
+// OFFSET: 0x007CFB20
+// FUNCTION: fn_09537
+void UICashShopWnd_CartItem::Slot15(int, int) {
+  UIBitmapButton* close = new UIBitmapButton(*this->m_context, *this->m_controls);
+  close->SetBitmap("유저인터페이스\\cashshop\\btn_close.bmp", 0, 0);
+  close->SetBitmap("유저인터페이스\\cashshop\\btn_close.bmp", 1, 0);
+  close->SetBitmap("유저인터페이스\\cashshop\\btn_close.bmp", 2, 0);
+  close->SetSize(close->BitmapWidth(), close->BitmapHeight());
+  close->Move(0xA1, 2);
+  close->SetId(0xD3);
+  this->AddChild(close);
+
+  UIBitmapButton* plus = new UIBitmapButton(*this->m_context, *this->m_controls);
+  plus->SetBitmap("유저인터페이스\\cashshop\\btn_plus_normal.bmp", 0, 0);
+  plus->SetBitmap("유저인터페이스\\cashshop\\btn_plus_over.bmp", 1, 0);
+  plus->SetBitmap("유저인터페이스\\cashshop\\btn_plus_press.bmp", 2, 0);
+  plus->SetSize(plus->BitmapWidth(), plus->BitmapHeight());
+  plus->Move(0x52, 0x1D);
+  plus->SetId(0x117);
+  this->AddChild(plus);
+
+  UIBitmapButton* minus = new UIBitmapButton(*this->m_context, *this->m_controls);
+  minus->SetBitmap("유저인터페이스\\cashshop\\btn_minus_normal.bmp", 0, 0);
+  minus->SetBitmap("유저인터페이스\\cashshop\\btn_minus_over.bmp", 1, 0);
+  minus->SetBitmap("유저인터페이스\\cashshop\\btn_minus_press.bmp", 2, 0);
+  minus->SetSize(minus->BitmapWidth(), minus->BitmapHeight());
+  minus->Move(0x52, 0x26);
+  minus->SetId(0x118);
+  this->AddChild(minus);
+}
+
+// OFFSET: 0x007CFD20
+// FUNCTION: fn_09538
+void UICashShopWnd_Item::Slot15(int, int) {
+  this->m_addButton = new UIBmpTextButton(*this->m_context, *this->m_controls);
+  this->m_addButton->SetBitmap("유저인터페이스\\cashshop\\btn_add_normal.bmp", 0, 0);
+  this->m_addButton->SetBitmap("유저인터페이스\\cashshop\\btn_add_press.bmp", 1, 0);
+  this->m_addButton->SetBitmap("유저인터페이스\\cashshop\\btn_add_press.bmp", 2, 0);
+  this->m_addButton->SetBitmap("유저인터페이스\\cashshop\\btn_add_disable.bmp", 3, 0);
+  this->m_addButton->SetSize(this->m_addButton->BitmapWidth(), this->m_addButton->BitmapHeight());
+  this->m_addButton->SetText(LookupMessage(0x6F3));
+  this->m_addButton->Move(0x53, 0x55);
+  this->m_addButton->SetId(0xE0);
+  this->AddChild(this->m_addButton);
+
+  this->m_soldOut = new UIStaticBitmap(*this->m_context, *this->m_controls);
+  this->m_soldOut->SetBitmap("유저인터페이스\\cashshop\\img_shop_soldout.bmp");
+  this->m_soldOut->SetSize(this->m_soldOut->geometry.width, this->m_soldOut->geometry.height);
+  this->m_soldOut->Move(9, 9);
+  this->m_soldOut->Show(0);
+  this->AddChild(this->m_soldOut);
 }
 
 // OFFSET: 0x007D04F0
