@@ -231,7 +231,9 @@ public:
   /* 5694 */ __time32_t m_mercenaryExpiration;
   /* 5698 */ unsigned char unknown_5698[0x1C];
   /* 56B4 */ int m_mercenaryActionState;
-  /* 56B8 */ unsigned char unknown_56B8[0x304];
+  /* 56B8 */ unsigned char unknown_56B8[0x242];
+  /* 58FA */ char unknown_58FA[0x18];
+  /* 5912 */ unsigned char unknown_5912[0xAA];
   /* 59BC */ int unknown_59BC;
   /* 59C0 */ int unknown_59C0;
   /* 59C4 */ int unknown_59C4;
