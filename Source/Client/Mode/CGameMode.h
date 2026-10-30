@@ -95,9 +95,14 @@ public:
   /* 03FC */ int unknown_03FC;
   /* 0400 */ int unknown_0400;
   /* 0404 */ int unknown_0404;
-  /* 0408 */ unsigned char unknown_0408[0x50];
+  /* 0408 */ void* unknown_0408;
+  /* 040C */ unsigned char unknown_040C[0x08];
+  /* 0414 */ int unknown_0414;
+  /* 0418 */ unsigned char unknown_0418[0x40];
   /* 0458 */ int unknown_0458;
-  /* 045C */ unsigned char unknown_045C[0x80];
+  /* 045C */ unsigned char unknown_045C[0x08];
+  /* 0464 */ int unknown_0464;
+  /* 0468 */ unsigned char unknown_0468[0x74];
   /* 04DC */ std::string unknown_04DC;
   /* 04F4 */ unsigned char unknown_04F4[0xD0];
   /* 05C4 */ int unknown_05C4;
@@ -183,6 +188,7 @@ public:
   bool LaunchTargetEffect(int effectId, CGameActor* source, CGameActor* target, int argument);
   void ShowGuildEmblem(CGameActor* actor, int guildId, int unused);
   void RemoveUnknown0604(int window);
+  void DrawMiniMapNumber();
   CMsgEffect* SpawnCashEmotion(int aid, int packId, int emotionId, std::uint32_t duration);
   void ApplyMapFog(int enabled);
   void SpawnGrannyCorpse(float x, float y, float z, float angle, const char* name);

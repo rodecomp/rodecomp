@@ -12,6 +12,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "Resource/World/TerrainResource.h"
+#include "UI/Buttons/UITextButton.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -381,5 +382,64 @@ void CGameMode::DrawMiniMapCoordinates() {
   const int secondY = g_renderer->viewport.height - 50;
   for (int index = 0; index < count; ++index, x -= 25) {
     DrawActionSprite(reinterpret_cast<CRenderSystemBase&>(*this), x, secondY, action, sprite, 0, digits[index], 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+  }
+}
+
+// GLOBAL: gl_25044
+int g_minimapCoordinateValue;
+// GLOBAL: gl_25045
+int g_minimapCoordinateDigits;
+// GLOBAL: gl_25046
+int g_minimapCoordinateDigitValues[4];
+// GLOBAL: gl_24672
+int g_screenWidth;
+
+
+// FUNCTION: fn_21261
+void CGameMode::DrawMiniMapNumber() {
+  if (this->unknown_0408 == nullptr || this->unknown_0414 == 0) {
+    return;
+  }
+
+  if (this->unknown_0414 != g_minimapCoordinateValue) {
+    g_minimapCoordinateValue = this->unknown_0414;
+    int value;
+    int count;
+    if (this->unknown_0414 > 9999) {
+      value = 9999;
+      count = 4;
+    } else {
+      value = this->unknown_0414;
+      if (value < 0) {
+        value = 0;
+      }
+      count = 1;
+      if (value > 999) {
+        count = 4;
+      } else if (value > 99) {
+        count = 3;
+      } else if (value > 9) {
+        count = 2;
+      }
+    }
+
+    g_minimapCoordinateDigits = count;
+    g_minimapCoordinateDigitValues[0] = value % 10;
+    g_minimapCoordinateDigitValues[1] = value / 10 % 10;
+    g_minimapCoordinateDigitValues[2] = value / 100 % 10;
+    g_minimapCoordinateDigitValues[3] = value / 1000 % 10;
+  }
+
+  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\숫자.act"));
+  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\숫자.spr"));
+  for (int index = 0; index < g_minimapCoordinateDigits; ++index) {
+    const int x = static_cast<int>(
+      static_cast<float>(g_screenWidth) + this->cursorOffsetX + 24.0f - static_cast<float>(index * 16) +
+      static_cast<float>(g_minimapCoordinateDigits * 16 - 16)
+    );
+    const int y = static_cast<int>(static_cast<float>(g_screenHeight) + this->cursorOffsetY);
+    DrawActionSprite(
+      reinterpret_cast<CRenderSystemBase&>(*this), x, y, action, sprite, 0, g_minimapCoordinateDigitValues[index], 2.0f, 0.0f, 0xFAFFFFFF, 0x201
+    );
   }
 }
