@@ -1,6 +1,7 @@
 #include "Contents/Effects/EffectPrimitiveMotion.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Actors/Pc.h"
@@ -12,6 +13,7 @@
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectVisibility.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Skills/ClientSkills.h"
 #include "Contents/Effects/RagEffectState.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Resource/World/TerrainResource.h"
@@ -28,6 +30,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
+
+#include <timeapi.h>
 
 namespace {
   // INLINED
@@ -5791,3 +5795,521 @@ bool CEffectPrim::PrimFieldFireflies() {
 
   return true;
 }
+
+// OFFSET: 0x00BE9EA0
+
+// OFFSET: 0x00BEB040
+
+namespace {
+  // INLINED
+  __forceinline void RaiseFanHeights(EffectPrimitiveSlot& slot, float step) {
+    slot.height[1] += step;
+
+    if (slot.height[1] >= 70.0f) {
+      slot.height[1] = 70.0f;
+    }
+
+    slot.height[2] += step;
+
+    if (slot.height[2] >= 90.0f) {
+      slot.height[2] = 90.0f;
+    }
+
+    slot.height[3] += step;
+
+    if (slot.height[3] >= 110.0f) {
+      slot.height[3] = 110.0f;
+    }
+
+    slot.height[4] += step;
+
+    if (slot.height[4] >= 130.0f) {
+      slot.height[4] = 130.0f;
+    }
+
+    slot.height[5] += step;
+
+    if (slot.height[5] >= 150.0f) {
+      slot.height[5] = 150.0f;
+    }
+
+    slot.height[6] += step;
+
+    if (slot.height[6] >= 170.0f) {
+      slot.height[6] = 170.0f;
+    }
+
+    slot.height[7] += step;
+
+    if (slot.height[7] >= 190.0f) {
+      slot.height[7] = 190.0f;
+    }
+
+    slot.height[8] += step;
+
+    if (slot.height[8] >= 210.0f) {
+      slot.height[8] = 210.0f;
+    }
+
+    slot.height[9] += step;
+
+    if (slot.height[9] >= 230.0f) {
+      slot.height[9] = 230.0f;
+    }
+
+    slot.height[10] += step;
+
+    if (slot.height[10] >= 250.0f) {
+      slot.height[10] = 250.0f;
+    }
+  }
+}
+
+// OFFSET: 0x00BE83F0
+
+// OFFSET: 0x00BBD830
+
+namespace {
+  // INLINED
+  __forceinline int NonNegativeRandom(int range) {
+    const int value = rand() % range;
+    return value < 0 ? 0 : value;
+  }
+}
+
+// OFFSET: 0x00BBEAF0
+
+// OFFSET: 0x00BBEE90
+
+// OFFSET: 0x00BC0DF0
+
+namespace {
+  // INLINED
+  __forceinline void FadeColumnHeight(const CEffectPrim& prim, EffectPrimitiveSlot& slot) {
+    const float kind = slot.height[4];
+
+    if (kind >= 20.0f && slot.process > 200 &&
+        (prim.render.position.x != prim.state.master->render.position.x || prim.render.position.z != prim.state.master->render.position.z) &&
+        slot.alphaT > 2000) {
+      slot.alphaT = static_cast<std::int16_t>(slot.process);
+    }
+
+    if (slot.process > slot.alphaT) {
+      int angle;
+
+      if (kind >= 20.0f) {
+        angle = (slot.alphaT - slot.process + 18) * 5;
+      } else if (kind >= 10.0f) {
+        angle = slot.alphaT - slot.process + 90;
+      } else if (kind == 0.0f) {
+        angle = 2505 - slot.process;
+      } else {
+        angle = 2475 - slot.process;
+      }
+
+      if (angle > 90) {
+        angle = 90;
+      }
+
+      slot.height[2] = g_sinTable[angle < 0 ? 0 : angle] * slot.maxHeight;
+    } else if (slot.process < 90) {
+      slot.height[2] = g_sinTable[slot.process] * slot.maxHeight;
+    } else {
+      slot.height[2] = slot.maxHeight;
+    }
+  }
+}
+
+// OFFSET: 0x00BC14F0
+
+// OFFSET: 0x00BBCC20
+
+// OFFSET: 0x00BC1080
+
+// OFFSET: 0x00BC1B50
+// FUNCTION: fn_19831
+void CEffectPrim::PrimSTIN3() {
+  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  EffectPrimitiveSlot* slots = this->state.slots;
+
+  for (int index = 0; index < 1; ++index) {
+    EffectPrimitiveSlot& slot = slots[index];
+
+    if (slot.life != 1 || ++slot.process <= 0) {
+      continue;
+    }
+
+    const CRenderObject* target;
+
+    if (this->state.deltaPos.y == static_cast<float>(g_session.m_aid)) {
+      target = reinterpret_cast<const CRenderObject*>(gameMode->scene->player);
+    } else {
+      target = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(this->state.deltaPos.y));
+    }
+
+    if (target == nullptr && slot.flag1[1] < 10) {
+      slot.flag1[1] = 20;
+
+      if (slot.process == 1) {
+        return;
+      }
+    }
+
+    slot.riseAngle += 30;
+
+    if (slot.riseAngle >= 360) {
+      slot.riseAngle -= 360;
+    }
+
+    if (slot.process == 1) {
+      Get_Angle(target->render.position.x - this->render.position.x, target->render.position.z - this->render.position.z, &slot.rotStart);
+
+      if (slot.flag1[2] == 0) {
+        slot.rotStart += 90;
+
+        if (slot.rotStart >= 360) {
+          slot.rotStart -= 360;
+        }
+      } else {
+        slot.rotStart -= 90;
+
+        if (slot.rotStart < 0) {
+          slot.rotStart += 360;
+        }
+      }
+    } else if (slot.process <= 20) {
+      slot.alphaB += 15;
+
+      if (slot.alphaB > 250) {
+        slot.alphaB = 250;
+      }
+    } else if (slot.process > 140 || (slot.process > 90 && slot.flag1[4] == 1)) {
+      slot.flag1[1] = 10;
+    }
+
+    if (slot.process > 5) {
+      if (slot.flag1[1] == 0) {
+        std::int16_t heading;
+        Get_Angle(target->render.position.x - slot.vecBNow.x, target->render.position.z - slot.vecBNow.z, &heading);
+
+        if (slot.rotStart < heading - 3 || slot.rotStart > heading + 3) {
+          if (slot.flag1[2] == 0) {
+            slot.rotStart -= 5;
+
+            if (slot.rotStart < 0) {
+              slot.rotStart += 360;
+            }
+          } else {
+            slot.rotStart += 5;
+
+            if (slot.rotStart >= 360) {
+              slot.rotStart -= 360;
+            }
+          }
+        }
+      } else if (slot.flag1[1] == 10) {
+        for (int fade = 0; fade < 4; ++fade) {
+          slots[fade].alphaB -= 5;
+
+          if (slots[fade].alphaB < 0) {
+            slots[fade].alphaB = 0;
+            slots[fade].life = 0;
+          }
+        }
+
+        if (slot.flag1[2] == 0) {
+          --slot.rotStart;
+
+          if (slot.rotStart < 0) {
+            slot.rotStart += 360;
+          }
+        } else {
+          ++slot.rotStart;
+
+          if (slot.rotStart >= 360) {
+            slot.rotStart -= 360;
+          }
+        }
+      } else if (slot.flag1[1] == 20) {
+        std::int16_t heading;
+        Get_Angle(this->render.position.x - slot.vecBNow.x, this->render.position.z - slot.vecBNow.z, &heading);
+
+        if (slot.rotStart < heading - 3 || slot.rotStart > heading + 3) {
+          if (slot.flag1[2] == 0) {
+            slot.rotStart -= 5;
+
+            if (slot.rotStart < 0) {
+              slot.rotStart += 360;
+            }
+          } else {
+            slot.rotStart += 5;
+
+            if (slot.rotStart >= 360) {
+              slot.rotStart -= 360;
+            }
+          }
+        }
+
+        if (slot.process > 50) {
+          slot.flag1[1] = 10;
+        }
+      }
+    }
+
+    slot.vecBNow.x += slot.height[1] * g_cosTable[slot.rotStart];
+    slot.vecBNow.z += slot.height[1] * g_sinTable[slot.rotStart];
+
+    if (slot.process % 3 == 0) {
+      for (int trail = 2; trail >= 0; --trail) {
+        slots[trail + 1].vecBNow = slots[trail].vecBNow;
+        slots[trail + 1].alphaB = static_cast<std::int16_t>(static_cast<int>(static_cast<float>(slots[trail].alphaB) * 0.8f));
+        slots[trail + 1].riseAngle = slots[trail].riseAngle;
+      }
+    }
+  }
+}
+
+namespace {
+  // INLINED
+  __forceinline int SafeRandom(int range) {
+    if (range == 0) {
+      return 0;
+    }
+
+    return NonNegativeRandom(range);
+  }
+
+  // INLINED
+  __forceinline void DriftSlotAngles(EffectPrimitiveSlot& slot, int count, float rise = 1.0f, float fall = 1.0f) {
+    for (int axis = 0; axis < count * 2; axis += 2) {
+      float& angle = slot.height[axis];
+      float& target = slot.height[axis + 1];
+
+      if (target > angle) {
+        angle += rise;
+
+        if (angle > 359.0f) {
+          angle = 359.0f;
+        }
+
+        if (angle > target) {
+          target = static_cast<float>(SafeRandom(static_cast<int>(angle)));
+        }
+      } else {
+        angle -= fall;
+
+        if (angle < 0.0f) {
+          angle = 0.0f;
+        }
+
+        if (angle <= target) {
+          target = static_cast<float>(359 - SafeRandom(static_cast<int>(angle)));
+        }
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00BE8CE0
+
+namespace {
+  // INLINED
+  __forceinline bool StepTowardAngle(float& angle, float target, float step) {
+    const float difference = angle - target;
+
+    if (difference < 180.0f && difference >= 0.0f) {
+      angle -= step;
+      return !(target < angle);
+    }
+
+    if (difference < -180.0f) {
+      angle -= step;
+      return !(target - 360.0f < angle);
+    }
+
+    angle += step;
+    return !(angle < target);
+  }
+
+  // INLINED
+  __forceinline void WrapAngle(float& angle) {
+    if (angle < 0.0f) {
+      angle += 360.0f;
+    }
+
+    if (angle >= 360.0f) {
+      angle -= 360.0f;
+    }
+  }
+
+  // INLINED
+  __forceinline void MoveWanderingSlot(EffectPrimitiveSlot& slot) {
+    const float speed = slot.maxHeight;
+    slot.vecBPre.x += speed * g_cosTable[static_cast<int>(slot.height[2])];
+    slot.vecBPre.z += speed * g_sinTable[static_cast<int>(slot.height[2])];
+    slot.vecBPre.y -= speed * g_sinTable[static_cast<int>(slot.height[4])];
+    slot.vecBNow.x += speed * g_cosTable[static_cast<int>(slot.height[7])];
+    slot.vecBNow.z += speed * g_sinTable[static_cast<int>(slot.height[7])];
+    slot.vecBNow.y += speed * g_sinTable[static_cast<int>(slot.height[9])];
+  }
+}
+
+// OFFSET: 0x00BEA4F0
+
+// OFFSET: 0x00BEA990
+
+// OFFSET: 0x00BBB410
+
+namespace {
+  // INLINED
+  __forceinline void RespawnFallingPoint(const EffectPrimitiveSlot& slot, vector3d& point) {
+    if (slot.flag1[12] == 0) {
+      point.x = static_cast<float>(NonNegativeRandom(45) - 22);
+    } else {
+      point.x = static_cast<float>(NonNegativeRandom(25) - 12);
+    }
+
+    point.y = static_cast<float>(NonNegativeRandom(30));
+    point.z = static_cast<float>(NonNegativeRandom(11) - 5);
+
+    if (slot.flag1[11] == 1) {
+      const float x = point.x;
+      point.x = point.z;
+      point.z = static_cast<float>(static_cast<int>(x));
+    }
+  }
+}
+
+// OFFSET: 0x00BC4E70
+
+namespace {
+  // INLINED
+  __forceinline void RespawnRotatedPoint(const EffectPrimitiveSlot& slot, vector3d& point, float scale, bool narrow) {
+    if (narrow) {
+      point.x = static_cast<float>(NonNegativeRandom(25) - 12);
+    } else {
+      point.x = static_cast<float>(NonNegativeRandom(45) - 22);
+    }
+
+    point.y = static_cast<float>(NonNegativeRandom(30));
+    const int z = NonNegativeRandom(11) - 5;
+    point.x = scale * point.x;
+    point.y = scale * point.y;
+    point.z = static_cast<float>(z) * scale;
+
+    const float cosine = g_cosTable[slot.fullDisplayAngle];
+    const float sine = g_sinTable[slot.fullDisplayAngle];
+    const float x = point.x;
+    point.x = cosine * x - point.z * sine;
+    point.z = sine * x + point.z * cosine;
+  }
+}
+
+// OFFSET: 0x00BEB4D0
+
+// OFFSET: 0x00BB4820
+
+namespace {
+  // INLINED
+  __forceinline void ShiftAxis(float& value, float delta, bool subtract) {
+    if (subtract) {
+      value -= delta;
+    } else {
+      value = delta + value;
+    }
+  }
+
+  // INLINED
+  __forceinline std::int16_t AxisDistance(float value) {
+    const std::int16_t truncated = static_cast<std::int16_t>(static_cast<int>(value));
+    return truncated < 0 ? static_cast<std::int16_t>(-truncated) : truncated;
+  }
+
+  // INLINED
+  __forceinline void MoveFloatingMote(
+    EffectPrimitiveSlot& slot, vector3d& point, int angleX, int angleZ, char& counter, bool riseSubtractX, bool riseSubtractZ,
+    bool subtractX, bool subtractZ, bool leading
+  ) {
+    const char kind = slot.flag1[0];
+
+    if (kind == 14) {
+      float height = point.y;
+
+      if (height > -40.0f) {
+        ShiftAxis(point.x, g_sinTable[static_cast<int>(slot.height[angleX])] * 0.1f, riseSubtractX);
+        ShiftAxis(point.z, g_sinTable[static_cast<int>(slot.height[angleZ])] * 0.1f, riseSubtractZ);
+      }
+
+      if (height > 0.0f) {
+        point.x = 0.0f;
+        point.z = 0.0f;
+        height = -40.0f;
+      }
+
+      point.y = height + slot.maxHeight;
+    } else if (kind == 16) {
+      float height = point.y;
+
+      if (height > 0.0f) {
+        point.z = 0.0f;
+        point.x = static_cast<float>(NonNegativeRandom(35) - 17);
+        height = -40.0f;
+      }
+
+      point.y = height + slot.maxHeight;
+    } else if (kind == 15) {
+      ShiftAxis(point.x, g_sinTable[static_cast<int>(slot.height[angleX])] * 0.1f, subtractX);
+      ShiftAxis(point.z, g_sinTable[static_cast<int>(slot.height[angleZ])] * 0.1f, subtractZ);
+      std::int16_t distance = AxisDistance(point.x);
+
+      if (distance < 10) {
+        distance = AxisDistance(point.z);
+      }
+
+      if (distance > 10) {
+        counter += 5;
+
+        if (counter > 119) {
+          counter = 0;
+          point.x = 0.0f;
+          point.z = 0.0f;
+        }
+      }
+    } else {
+      float height = point.y;
+
+      if (height < 0.0f) {
+        ShiftAxis(point.x, g_sinTable[static_cast<int>(slot.height[angleX])] * 0.15f, subtractX);
+        ShiftAxis(point.z, g_sinTable[static_cast<int>(slot.height[angleZ])] * 0.15f, subtractZ);
+
+        if (leading) {
+          if (kind == 11) {
+            if (height < -50.0f) {
+              point.x = static_cast<float>(NonNegativeRandom(15) - 8);
+              point.z = static_cast<float>(NonNegativeRandom(15) - 8);
+              height = static_cast<float>(NonNegativeRandom(100));
+            }
+          } else if (height < -30.0f) {
+            point.x = 0.0f;
+            point.z = 0.0f;
+            height = static_cast<float>(NonNegativeRandom(100));
+          }
+        } else if (height < -30.0f) {
+          if (kind == 11) {
+            point.x = static_cast<float>(NonNegativeRandom(15) - 8);
+            point.z = static_cast<float>(NonNegativeRandom(15) - 8);
+          } else {
+            point.x = 0.0f;
+            point.z = 0.0f;
+          }
+
+          height = static_cast<float>(NonNegativeRandom(100));
+        }
+      }
+
+      point.y = height - slot.maxHeight;
+    }
+  }
+}
+
+// OFFSET: 0x00BB4F00
