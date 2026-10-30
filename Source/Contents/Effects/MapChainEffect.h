@@ -20,6 +20,7 @@ struct MapChainPoint {
 class CMapChainEffect : public CEffect {
 public:
   CMapChainEffect();
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
 
