@@ -1,7 +1,14 @@
 #include "UI/Window/UIRoulletteWnd.h"
+#include "Client/Input/InputCharset.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Client/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
+#include "Contents/PlayerNameDictionary.h"
 #include "Contents/RouletteMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
@@ -14,6 +21,7 @@
 #include "UI/Buttons/UISpriteButton.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Utility/Text/FormatString.h"
 
 #include <cstdint>
 
@@ -74,6 +82,41 @@ ITEM_INFO UIRoulletteWnd::ItemAt(int x, int y) {
 // OFFSET: 0x0080C490
 // FUNCTION: fn_10088
 void UIRoulletteWnd::Slot25(int, int) {
+}
+
+// OFFSET: 0x0080C4A0
+// FUNCTION: fn_10089
+void UIRoulletteWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->ItemAt(x, y);
+  int tooltipX = (this->m_column + this->m_row) * 36 + 155;
+  int tooltipY = 330 - this->m_row * 40;
+  if (y >= 143 && y <= 173 && x >= 186 && x <= 216) {
+    tooltipX = 186;
+    tooltipY = 130;
+    if (g_rouletteMgr->m_resultShown == 1) {
+      item = g_rouletteMgr->m_resultItem;
+    }
+  }
+  if (y >= 133 && y <= 163 && x >= 60 && x <= 88) {
+    tooltipX = 57;
+    tooltipY = 121;
+    item = g_rouletteMgr->m_additionItem;
+  }
+
+  if (item.quantity != 0) {
+    this->ToScreen(tooltipX, tooltipY);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+    if (item.identified == 1 && item.unknown_0098 != 0) {
+      tooltip->Show(FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+                    g_session.GetItemNameColor(item), 0, 1);
+    } else {
+      tooltip->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    }
+  }
 }
 
 // OFFSET: 0x0080C730
