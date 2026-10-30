@@ -30,6 +30,7 @@ public:
   void ResizeToText();
   void CenterIn(int width, int height);
   const std::string& GetLine(std::size_t index) const;
+  int GetLinesCount() const;
 
 protected:
   /* 00B4 */ std::uint32_t m_color;

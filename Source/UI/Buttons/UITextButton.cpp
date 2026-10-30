@@ -2455,3 +2455,9 @@ void UITreeView::AddNodeLabel(UITreeNode* node, int id) {
 
   node->labelButton = button;
 }
+
+// OFFSET: 0x0089E480
+// FUNCTION: fn_11601
+int UITextButton::GetLinesCount() const {
+  return static_cast<int>(this->m_lines.size());
+}
