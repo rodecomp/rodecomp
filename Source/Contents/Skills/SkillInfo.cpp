@@ -11,6 +11,7 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/EZ2STREffectEx.h"
 #include "Contents/Effects/RagEffect.h"
+#include "Contents/Effects/ShowEffect.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillInfo.h"
@@ -53,6 +54,8 @@ public:
 
 class CEfstAction_ShowEffect : public CEfstAction {
 public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
 
@@ -791,6 +794,41 @@ void CEfstAction_ChangeSize::Slot02(int efstId, int value, int argument3, int ar
 // FUNCTION: fn_08331
 void CEfstAction_GenderChange::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x00774E60
+// FUNCTION: fn_08332
+void CEfstAction_ShowEffect::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (!actor) {
+    return;
+  }
+
+  const std::uint32_t aid = actor->render.accountId;
+  CEffect* effect = g_effectMgr->Find(static_cast<int>(aid), 2375);
+  if (!effect) {
+    effect = g_effectMgr->Spawn(static_cast<int>(aid), 2375, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    if (!effect) {
+      return;
+    }
+  }
+
+  static_cast<CShowEffect*>(effect)->Add(efstId, value);
+}
+
+// OFFSET: 0x00774ED0
+// FUNCTION: fn_08333
+void CEfstAction_ShowEffect::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (!actor) {
+    return;
+  }
+
+  const std::uint32_t aid = actor->render.accountId;
+  if (CShowEffect* effect = static_cast<CShowEffect*>(g_effectMgr->Find(static_cast<int>(aid), 2375))) {
+    effect->Remove(efstId);
+    if (static_cast<int>(effect->Count()) <= 0) {
+      g_effectMgr->Retire(static_cast<int>(aid), 2375);
+    }
+  }
 }
 
 // OFFSET: 0x00774F30
