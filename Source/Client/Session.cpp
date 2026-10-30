@@ -13,8 +13,13 @@
 #include "Network/Packets/PacketId.h"
 #include "Network/TextEncoding.h"
 #include "UI/Window/UIWindowMgr.h"
-
+#include "UI/Window/UIWindow.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/MessageTable.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "Utility/Text/FormatString.h"
 #include <algorithm>
+#include <cstdio>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -584,32 +589,274 @@ int CSession::GetSceneUnknown004C() const {
 }
 
 // OFFSET: 0x00DDB4D0
+// FUNCTION: fn_23352
+bool CSession::IsNumberWithCommas(char* text) {
+  const int length = static_cast<int>(std::strlen(text));
+  for (int i = 0; i < length; ++i) {
+    if (text[i] == ',') {
+      for (int j = i; j < length; ++j) {
+        text[j] = j == length - 1 ? ' ' : text[j + 1];
+      }
+    }
+
+    if ((text[i] < '0' || text[i] > '9') && text[i] != ' ') {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00DDC050
+// FUNCTION: fn_23361
+int CSession::FindUnknown0708(int key) const {
+  auto found = this->unknown_0708.find(key);
+  if (found != this->unknown_0708.end()) {
+    return found->second;
+  }
+
+  return -1;
+}
 
 // OFFSET: 0x00DDC0A0
+// FUNCTION: fn_23362
+int CSession::FindUnknown0700(int key) const {
+  auto found = this->unknown_0700.find(key);
+  if (found != this->unknown_0700.end()) {
+    return found->second;
+  }
+
+  return -1;
+}
 
 // OFFSET: 0x00DDC0F0
+// FUNCTION: fn_23363
+const char* CSession::GetEnemyHitWaveName(int element) {
+  switch (element) {
+  case 3:
+    switch (std::rand() % 2) {
+    case 0:
+      return "_enemy_hit_fire1.wav";
+    case 1:
+      return "_enemy_hit_fire2.wav";
+    }
+    break;
+  case 4:
+    switch (std::rand() % 2) {
+    case 0:
+      return "_enemy_hit_wind1.wav";
+    case 1:
+      return "_enemy_hit_wind2.wav";
+    }
+    break;
+  }
+
+  switch (std::rand() % 4) {
+  case 0:
+    return "_enemy_hit_normal1.wav";
+  case 1:
+    return "_enemy_hit_normal2.wav";
+  case 2:
+    return "_enemy_hit_normal3.wav";
+  default:
+    return "_enemy_hit_normal4.wav";
+  }
+}
 
 // OFFSET: 0x00DDC330
+// FUNCTION: fn_23366
+ITEM_INFO* CSession::GetEquippedItem(const ITEM_INFO* item) {
+  if (item == nullptr) {
+    return nullptr;
+  }
+
+  if (item->unknown_0000[3] != 0) {
+    if (item->unknown_0000[3] != 0x8000 || this->unknown_16EC == item->unknown_0000[1]) {
+      return nullptr;
+    }
+
+    for (ITEM_INFO& value : this->m_inventoryItems) {
+      if (value.unknown_0000[1] == this->unknown_16EC) {
+        return &value;
+      }
+    }
+
+    return nullptr;
+  }
+
+  ITEM_INFO* equipped = nullptr;
+  switch (item->unknown_0000[2]) {
+  case 0x1:
+    equipped = &this->unknown_17F0[0];
+    break;
+  case 0x2:
+  case 0x22:
+    equipped = &this->unknown_17F0[1];
+    break;
+  case 0x4:
+    equipped = &this->unknown_17F0[2];
+    break;
+  case 0x88:
+    equipped = &this->unknown_17F0[3];
+    break;
+  case 0x10:
+    equipped = &this->unknown_17F0[4];
+    break;
+  case 0x20:
+    equipped = &this->unknown_17F0[5];
+    break;
+  case 0x40:
+    equipped = &this->unknown_17F0[6];
+    break;
+  case 0x100:
+  case 0x101:
+  case 0x300:
+  case 0x301:
+    equipped = &this->unknown_17F0[8];
+    break;
+  case 0x200:
+  case 0x201:
+    equipped = &this->unknown_17F0[9];
+    break;
+  case 0x1000:
+    equipped = &this->unknown_2B50[0];
+    break;
+  case 0x20000:
+    equipped = &this->unknown_2B50[1];
+    break;
+  case 0x2000:
+    equipped = &this->unknown_2B50[2];
+    break;
+  case 0x100000:
+    equipped = &this->unknown_2B50[3];
+    break;
+  case 0x10000:
+    equipped = &this->unknown_2B50[4];
+    break;
+  case 0x40000:
+    equipped = &this->unknown_2B50[5];
+    break;
+  case 0x80000:
+    equipped = &this->unknown_2B50[6];
+    break;
+  case 0x200000:
+    equipped = &this->unknown_2B50[7];
+    break;
+  case 0x400:
+  case 0xC00:
+  case 0x1400:
+  case 0x1C00:
+    equipped = &this->unknown_2B50[8];
+    break;
+  case 0x800:
+  case 0x1800:
+    equipped = &this->unknown_2B50[9];
+    break;
+  }
+
+  if (equipped != nullptr && equipped->quantity != 0) {
+    return equipped;
+  }
+
+  return nullptr;
+}
 
 // OFFSET: 0x00DDC580
+// FUNCTION: fn_23367
+ITEM_INFO CSession::FindItem2B50(std::uint32_t id, int* index) const {
+  for (int i = 0; i < 10; ++i) {
+    if (this->unknown_2B50[i].unknown_0000[1] == id) {
+      *index = i;
+      return this->unknown_2B50[i];
+    }
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00DDC7A0
+// FUNCTION: fn_23369
+ITEM_INFO CSession::FindItem17F0(std::uint32_t id, int* index) const {
+  for (int i = 0; i < 10; ++i) {
+    if (this->unknown_17F0[i].unknown_0000[1] == id) {
+      *index = i;
+      return this->unknown_17F0[i];
+    }
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00DDC830
+// FUNCTION: fn_23370
+ITEM_INFO CSession::GetExchangeItem(int index) const {
+  return this->m_exchangeItems[index];
+}
 
 // OFFSET: 0x00DDC9D0
 
 // OFFSET: 0x00DDD300
+// FUNCTION: fn_23384
+std::uint16_t CSession::FindInventoryIndexByItemId(int itemId) {
+  const int count = static_cast<int>(this->m_inventoryItems.size());
+  for (int i = 0; i < count; ++i) {
+    ITEM_INFO item = this->GetInventoryItemAt(i);
+    if (std::atoi(item.itemId.c_str()) == itemId) {
+      return static_cast<std::uint16_t>(item.unknown_0000[1]);
+    }
+  }
+
+  return 0xFFFF;
+}
 
 // OFFSET: 0x00DDD400
 
 // OFFSET: 0x00DDD710
+// FUNCTION: fn_23388
+ITEM_INFO CSession::GetInventoryItemAt(int index) const {
+  if (this->m_inventoryItems.size() == 0) {
+    return ITEM_INFO(0);
+  }
+
+  int position = 0;
+  for (const ITEM_INFO& item : this->m_inventoryItems) {
+    if (position == index) {
+      return item;
+    }
+    ++position;
+  }
+
+  return ITEM_INFO(0);
+}
 
 // OFFSET: 0x00DDD7B0
+// FUNCTION: fn_23389
+ITEM_INFO* CSession::FindInventoryItemByItemId(int itemId, bool identifiedOnly) {
+  if (this->m_inventoryItems.size() == 0) {
+    return nullptr;
+  }
+
+  for (ITEM_INFO& item : this->m_inventoryItems) {
+    if (std::atoi(item.itemId.c_str()) == itemId && (!identifiedOnly || item.identified != 0)) {
+      return &item;
+    }
+  }
+
+  return nullptr;
+}
 
 // OFFSET: 0x00DDD9A0
+// FUNCTION: fn_23390
+int CSession::GetInventoryItemCount(int itemId) const {
+  int count = 0;
+  for (const ITEM_INFO& item : this->m_inventoryItems) {
+    if (std::atoi(item.itemId.c_str()) == itemId) {
+      count += item.quantity;
+    }
+  }
+
+  return count;
+}
 
 // OFFSET: 0x00DDF5B0
 // FUNCTION: fn_23424
@@ -1112,4 +1359,276 @@ std::vector<unsigned char> SerializeItems(const std::list<ITEM_INFO>& items) {
 // FUNCTION: fn_24161
 int CSession::GetUnknown8148() const {
   return this->unknown_8148;
+}
+
+// OFFSET: 0x00DFF060
+// FUNCTION: fn_23606
+void CSession::RefreshWindow02C8() {
+  if (UIWindow* window = g_windowMgr.window_02C8) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00DFF080
+// FUNCTION: fn_23607
+void CSession::RefreshItem1740Window() {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F4)) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00DFF0A0
+// FUNCTION: fn_23608
+void CSession::RefreshItem1750Window(int type) {
+  std::uint32_t window;
+  if (type == 1) {
+    window = g_windowMgr.unknown_0410;
+  } else {
+    window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
+  }
+
+  if (window) {
+    reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00DFF0E0
+// FUNCTION: fn_23609
+void CSession::RefreshItem1768Window(unsigned char alternate, int argument) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(alternate ? g_windowMgr.unknown_040C : g_windowMgr.unknown_02FC)) {
+    window->SendMsg(nullptr, 23, argument, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00DFF120
+// FUNCTION: fn_23610
+void CSession::UpdateUnknown1708(int enabled) {
+  this->unknown_1708 = g_serviceOptions.Get(enabled ? 45 : 46);
+}
+
+// OFFSET: 0x00DFF180
+// FUNCTION: fn_23612
+void CSession::RefreshItem1738Window() {
+  if (UIWindow* window = g_windowMgr.window_0288) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00DFF1A0
+// FUNCTION: fn_23613
+void CSession::EraseRecord0734(int id) {
+  for (auto it = this->unknown_0734.begin(); it != this->unknown_0734.end(); ++it) {
+    if (id == it->id) {
+      this->unknown_0734.erase(it);
+      return;
+    }
+  }
+}
+
+// OFFSET: 0x00DFF250
+// FUNCTION: fn_23615
+void CSession::IgnoreText(std::string text) {
+}
+
+// OFFSET: 0x00DFF2A0
+// FUNCTION: fn_23616
+void CSession::SaveMiniPartyInfo() {
+  std::string text;
+
+  for (auto it = this->unknown_0734.begin(); it != this->unknown_0734.end(); ++it) {
+    char line[512];
+    std::memset(line, 0, sizeof(line));
+    sprintf_s(line, "{%s,%d,%d,%d}\n", g_session.DecodePlayerName(), it->unknown_0000, it->id, it->unknown_0008);
+    text += line;
+  }
+
+  FILE* file = std::fopen("savedata\\MiniPartyInfo.lua", "w");
+  if (file) {
+    std::fprintf(file, text.c_str());
+    std::fclose(file);
+  }
+}
+
+// OFFSET: 0x00DFF480
+// FUNCTION: fn_23617
+void CSession::SetItem1768Quantity(int index, int quantity) {
+  int position = 0;
+  for (ITEM_INFO& item : this->unknown_1768) {
+    if (position == index) {
+      item.quantity = quantity;
+      return;
+    }
+    ++position;
+  }
+}
+
+// OFFSET: 0x00DFF4B0
+// FUNCTION: fn_23618
+void CSession::SetUnknown5C1C(int value) {
+  this->unknown_5C1C = value;
+  if (UIWindow* window = g_windowMgr.unknown_01E0) {
+    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00DFF4E0
+// FUNCTION: fn_23619
+void CSession::UpdateFriendName(std::uint32_t characterId, const char* name) {
+  for (auto it = this->m_friends.begin(); it != this->m_friends.end(); ++it) {
+    if (it->characterId == characterId) {
+      if (std::strlen(name) == 0) {
+        g_modeMgr.gameMode->SendMsg(176, it->accountId, it->characterId, 0, 0);
+        this->m_friends.erase(it);
+      } else {
+        it->name = name;
+      }
+      break;
+    }
+  }
+
+  if (UIWindow* window = g_windowMgr.LookupWindow(34)) {
+    window->Invalidate();
+  }
+}
+
+// OFFSET: 0x00DFF870
+// FUNCTION: fn_23622
+void CSession::SetNavigationPlayerMap(const char* name) {
+  if (name) {
+    StringFormat(this->m_navigationPlayerMap, 20, _TRUNCATE, name);
+  } else {
+    this->m_navigationPlayerMap[0] = '\0';
+  }
+}
+
+// OFFSET: 0x00DFF8A0
+// FUNCTION: fn_23623
+void SetMemberFlags(std::uint32_t* flags) {
+  *flags |= 0x40;
+}
+
+// OFFSET: 0x00DFFA00
+// FUNCTION: fn_23626
+int CSession::SetFriendOffline(std::uint32_t accountId, std::uint32_t characterId, unsigned char offline) {
+  for (MessengerMember& member : this->m_friends) {
+    if (member.accountId == accountId && member.characterId == characterId) {
+      member.offline = offline;
+      if (g_serviceOptions.Get(165)) {
+        if (member.name.empty() && g_modeMgr.GetGameMode()) {
+          member.name = LookupPlayerName(member.characterId);
+        }
+
+        char message[256];
+        if (member.offline == 0) {
+          std::sprintf(message, LookupMessage(1041), member.name.c_str());
+        } else {
+          std::sprintf(message, LookupMessage(1042), member.name.c_str());
+        }
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 0, 0, 0);
+      }
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00DFFB70
+// FUNCTION: fn_23627
+void CSession::SetHomunSkillLevel(int skillId, int level) {
+  const int index = skillId - 8000;
+  if (index > -1) {
+    this->m_homunSkillLevels[index] = level;
+  }
+}
+
+// OFFSET: 0x00DFFBA0
+// FUNCTION: fn_23628
+void CSession::UpdateInventoryItem(const ITEM_INFO& item, unsigned char refresh) {
+  auto it = this->m_inventoryItems.begin();
+  while (it != this->m_inventoryItems.end() && it->unknown_0000[1] != item.unknown_0000[1]) {
+    ++it;
+  }
+
+  if (it == this->m_inventoryItems.end()) {
+    this->m_inventoryItems.push_back(item);
+  } else if (item.quantity == 0) {
+    this->m_inventoryItems.erase(it);
+  } else {
+    *it = item;
+  }
+
+  if (refresh) {
+    RefreshItemWindows(&g_windowMgr);
+  }
+}
+
+// OFFSET: 0x00DFFC10
+// FUNCTION: fn_23629
+void CSession::SetMercSkillLevel(int skillId, int level) {
+  const int index = skillId - 8200;
+  if (index > -1) {
+    this->m_mercSkillLevels[index] = level;
+  }
+}
+
+// OFFSET: 0x00DFFC40
+// FUNCTION: fn_23630
+void CSession::SetItem1768Unknown0014(int index, std::uint32_t value) {
+  int position = 0;
+  for (ITEM_INFO& item : this->unknown_1768) {
+    if (position == index) {
+      item.unknown_0014[0] = value;
+      item.unknown_0014[1] = value;
+      return;
+    }
+    ++position;
+  }
+}
+
+// OFFSET: 0x00DFFC80
+// FUNCTION: fn_23631
+void CSession::AddRecord0734(int id, std::uint32_t value) {
+  SessionRecord0734 record;
+  record.unknown_0000 = 1;
+  record.id = id;
+  record.unknown_0008 = value;
+  this->unknown_0734.push_back(record);
+}
+
+// OFFSET: 0x00DFFCB0
+// FUNCTION: fn_23632
+void CSession::SetUnknown5210(int value) {
+  this->unknown_5210 = value;
+  if (UIWindow* window = g_windowMgr.LookupWindow(10011)) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00DFFD20
+// FUNCTION: fn_23634
+void CSession::SetUnknown5214(int value) {
+  this->unknown_5214 = value;
+  if (UIWindow* window = g_windowMgr.LookupWindow(10011)) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00E000D0
+// FUNCTION: fn_23635
+void CSession::SetPlayerPosition(int x, int y, int direction) {
+  this->m_playerDir = direction;
+  this->m_playerX = x;
+  this->m_playerY = y;
+}
+
+// OFFSET: 0x00E00100
+// FUNCTION: fn_23636
+void CSession::SetRecord0734Value(int id, std::uint32_t value) {
+  for (SessionRecord0734& record : this->unknown_0734) {
+    if (record.id == id) {
+      record.unknown_0008 = value;
+      return;
+    }
+  }
 }

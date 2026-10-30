@@ -118,7 +118,8 @@ public:
   /* 0F14 */ std::uint32_t m_jobFlags;
   /* 0F18 */ int m_playerX;
   /* 0F1C */ int m_playerY;
-  /* 0F20 */ unsigned char unknown_0F20[0x08];
+  /* 0F20 */ int m_playerDir;
+  /* 0F24 */ unsigned char unknown_0F24[0x04];
   /* 0F28 */ int m_score1;
   /* 0F2C */ int m_score2;
   /* 0F30 */ unsigned char unknown_0F30[0x04];
@@ -162,7 +163,9 @@ public:
   /* 16F4 */ unsigned char unknown_16F4[0x8];
   /* 16FC */ int m_maxWeight;
   /* 1700 */ int m_weight;
-  /* 1704 */ unsigned char unknown_1704[0xC];
+  /* 1704 */ unsigned char unknown_1704[0x4];
+  /* 1708 */ int unknown_1708;
+  /* 170C */ unsigned char unknown_170C[0x4];
   /* 1710 */ std::list<ITEM_INFO> m_inventoryItems;
   /* 1718 */ std::list<ITEM_INFO> unknown_1718;
   /* 1720 */ std::list<ITEM_INFO> unknown_1720;
@@ -187,7 +190,8 @@ public:
   /* 3500 */ ITEM_INFO unknown_3500[10];
   /* 3EB0 */ ITEM_INFO m_exchangeItems[10];
   /* 4860 */ ITEM_INFO m_itemSlots[10];
-  /* 5210 */ unsigned char unknown_5210[0x08];
+  /* 5210 */ int unknown_5210;
+  /* 5214 */ int unknown_5214;
   /* 5218 */ std::vector<std::pair<const char*, int>> m_commandIds;
   /* 5224 */ std::vector<std::pair<const char*, const char*>> m_bgmFileNames;
   /* 5230 */ std::vector<std::pair<std::string, std::vector<std::string>>> m_fogParameters;
@@ -565,7 +569,7 @@ public:
   std::string GetImfName(int job);
   std::uint16_t FindInventoryIndexByItemId(int itemId);
   std::vector<int> FindInventoryIndicesByItemId(int itemId, unsigned char identifiedOnly);
-  ITEM_INFO GetInventoryItemAt(int index) const;
+  __declspec(noinline) ITEM_INFO GetInventoryItemAt(int index) const;
   ITEM_INFO* FindInventoryItemByItemId(int itemId, bool identifiedOnly);
   int GetInventoryItemCount(int itemId) const;
   ITEM_INFO GetItem1784At(int list, int index) const;
@@ -602,6 +606,29 @@ public:
   bool IsPartyRecommendTarget(std::uint32_t aid);
   int GetBodyStyle(int job, int style, int renderJob);
   int GetUnknown8148() const;
+  void RefreshWindow02C8();
+  void RefreshItem1740Window();
+  void RefreshItem1750Window(int type);
+  void RefreshItem1768Window(unsigned char alternate, int argument);
+  void UpdateUnknown1708(int enabled);
+  void RefreshItem1738Window();
+  void EraseRecord0734(int id);
+  void IgnoreText(std::string text);
+  void SaveMiniPartyInfo();
+  void SetItem1768Quantity(int index, int quantity);
+  void SetUnknown5C1C(int value);
+  void UpdateFriendName(std::uint32_t characterId, const char* name);
+  void SetNavigationPlayerMap(const char* name);
+  int SetFriendOffline(std::uint32_t accountId, std::uint32_t characterId, unsigned char offline);
+  void SetHomunSkillLevel(int skillId, int level);
+  void UpdateInventoryItem(const ITEM_INFO& item, unsigned char refresh);
+  void SetMercSkillLevel(int skillId, int level);
+  void SetItem1768Unknown0014(int index, std::uint32_t value);
+  void AddRecord0734(int id, std::uint32_t value);
+  void SetUnknown5210(int value);
+  void SetUnknown5214(int value);
+  void SetPlayerPosition(int x, int y, int direction);
+  void SetRecord0734Value(int id, std::uint32_t value);
 };
 
 extern CSession g_session;
@@ -611,6 +638,7 @@ extern std::vector<int> g_monsterJobs;
 bool IsAdminAccount(int aid);
 bool IsMonsterJob(int job);
 int MonsterJobColor(int job);
+void SetMemberFlags(std::uint32_t* flags);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(SessionRecord6144) == 0x38);
@@ -650,6 +678,10 @@ static_assert(offsetof(CSession, unknown_1770) == 0x1770);
 static_assert(offsetof(CSession, m_itemSlots) == 0x4860);
 static_assert(offsetof(CSession, m_shops) == 0x80BC);
 static_assert(offsetof(CSession, unknown_8134) == 0x8134);
+static_assert(offsetof(CSession, m_playerDir) == 0xF20);
+static_assert(offsetof(CSession, unknown_1708) == 0x1708);
+static_assert(offsetof(CSession, unknown_5210) == 0x5210);
+static_assert(offsetof(CSession, unknown_5214) == 0x5214);
 static_assert(offsetof(CSession, unknown_0E94) == 0xE94);
 static_assert(offsetof(CSession, unknown_103C) == 0x103C);
 static_assert(offsetof(CSession, unknown_5450) == 0x5450);
