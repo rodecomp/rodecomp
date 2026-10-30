@@ -1,6 +1,7 @@
 #include "Contents/MapSkyMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/RagEffect.h"
@@ -8,6 +9,7 @@
 #include "File/MapName.h"
 #include "Render/Renderer.h"
 #include "Resource/World/TerrainResource.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include <cstdlib>
 
@@ -55,6 +57,12 @@ void CMapSkyMgr::Unused() {
 bool CMapSkyMgr::LoadData() {
   return this->m_script->Load("Lua Files\\MapSkyData\\MapSkyData", true, false);
 }
+
+// OFFSET: 0x00C7B200
+
+// OFFSET: 0x00C7B530
+
+// OFFSET: 0x00C7B6F0
 
 // OFFSET: 0x00C7B790
 // FUNCTION: fn_20367
@@ -109,6 +117,53 @@ void CWeatherEffect::Play(char kind) {
   }
 
   this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+}
+
+// OFFSET: 0x00C7B9E0
+// FUNCTION: fn_20368
+void CWeatherEffect::StartDarken() {
+  this->darken = 1;
+}
+
+// OFFSET: 0x00C7B9F0
+
+// OFFSET: 0x00C7BB20
+
+// OFFSET: 0x00C7BBA0
+// FUNCTION: fn_20371
+void CWeatherEffect::StartLightning() {
+  this->lightning = 1;
+  this->counter = 0;
+}
+
+// OFFSET: 0x00C7BBB0
+
+// OFFSET: 0x00C7BD30
+// FUNCTION: fn_20373
+void CWeatherEffect::ResetEffect() {
+  this->effect = nullptr;
+}
+
+// OFFSET: 0x00C7BD40
+
+// OFFSET: 0x00C7C040
+// FUNCTION: fn_20376
+void CWeatherEffect::StopDarken() {
+  this->darken = 0;
+}
+
+// OFFSET: 0x00C7C070
+// FUNCTION: fn_20377
+void CWeatherEffect::ExtendEffect() {
+  if (this->effect) {
+    this->effect->SetStateDuration(this->effect->state.stateCnt + 300);
+  }
+}
+
+// OFFSET: 0x00C7C090
+// FUNCTION: fn_20378
+void CWeatherEffect::StopLightning() {
+  this->lightning = 0;
 }
 
 // OFFSET: 0x005B90F0
