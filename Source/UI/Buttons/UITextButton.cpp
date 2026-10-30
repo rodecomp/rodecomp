@@ -1028,6 +1028,13 @@ void UITreeView::Slot35(int value) {
   }
 }
 
+// OFFSET: 0x008861E0
+// FUNCTION: fn_11324
+void UIItemStoreComboBox::Slot15(int width, int height) {
+  this->UIListBoxEx::Slot15(width, height);
+  this->lineHeight = 15;
+}
+
 // OFFSET: 0x00897A10
 // FUNCTION: fn_11538
 void UITreeView::Resize(int width, int height) {
