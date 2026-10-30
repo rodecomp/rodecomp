@@ -23,6 +23,9 @@ public:
 };
 
 struct MacroReporterEntry {
+  MacroReporterEntry() = default;
+  MacroReporterEntry(std::string name, int id, short unknown_001C);
+
   /* 0000 */ std::string name;
   /* 0018 */ int id;
   /* 001C */ short unknown_001C;

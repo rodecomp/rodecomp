@@ -16,6 +16,11 @@
 #include <cstdlib>
 #include <cstring>
 
+// OFFSET: 0x007EE980
+// FUNCTION: fn_09831
+MacroReporterEntry::MacroReporterEntry(std::string name, int id, short unknown_001C)
+    : name(name), id(id), unknown_001C(unknown_001C) {}
+
 // OFFSET: 0x007F0480
 // FUNCTION: fn_09845
 bool UIMacroUserInfoWnd::Slot08() {
