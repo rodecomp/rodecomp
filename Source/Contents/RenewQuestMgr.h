@@ -95,6 +95,7 @@ public:
 
   CRenewQuestMgr();
   bool Clear();
+  void LoadQuestInfo();
   void RemoveStatusRequest(unsigned int id);
   void AddStatusRequest(unsigned int id);
   void AddIconTooltip(std::string_view icon, std::string_view tooltip);

@@ -3,6 +3,9 @@
 #include "File/File.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Script/LuaInstance.h"
+#include "Script/LuaScript.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/TextEscapes.h"
 
@@ -446,6 +449,41 @@ int CRenewQuestMgr::GetOngoingQuestsSize() {
   }
 
   return size + this->m_ongoingQuests.size() * sizeof(RenewQuestOngoingRecord);
+}
+
+// OFFSET: 0x00679E50
+// FUNCTION: fn_05449
+void CRenewQuestMgr::LoadQuestInfo() {
+  {
+    CLuaInstance lua;
+    lua.SetGlobal("AddQuestIconTooltip", L_AddQuestIconTooltip);
+    lua.SetGlobal("AddQuestFilterInfo", L_AddQuestFilterInfo);
+    if (!lua.LoadFile("System\\QuestClassificationInfo.lub", true)) {
+      return;
+    }
+
+    lua.Execute("LoadQuestIconTooltip");
+    lua.Execute("LoadQuestFilterInfo");
+  }
+
+  g_luaScript->Register("AddOngoingDescription", L_AddOngoingDescription);
+  g_luaScript->Register("AddOngoingRewardInfo", L_AddOngoingRewardInfo);
+  g_luaScript->Register("InsertRecommededQuestInfo", L_InsertRecommendedQuestInfo);
+  g_luaScript->Register("AddRecommendedQuestInfo", L_AddRecommendedQuestInfo);
+  g_luaScript->Register("SetRecommendedQuestActive", L_SetRecommendedQuestActive);
+  g_luaScript->Load("Lua Files\\DataInfo\\QuestInfo_f", true, false);
+  g_luaScript->Load("savedata\\OngoingSimpleViewList", false, true);
+  g_luaScript->Load("savedata\\RecommendedActiveList", false, true);
+  if (g_serviceMode == 1) {
+    g_luaScript->Load("system\\OngoingQuestInfoList_Sakray", false, true);
+    g_luaScript->Load("system\\RecommendedQuestInfoList_Sakray", false, true);
+  } else {
+    g_luaScript->Load("system\\OngoingQuestInfoList_True", false, true);
+    g_luaScript->Load("system\\RecommendedQuestInfoList_True", false, true);
+  }
+
+  g_luaScript->Call("RecommendedQuestInfoLoad", "");
+  g_luaScript->Call("RecommendedQuestActiveLoad", "");
 }
 
 // OFFSET: 0x0067A500
