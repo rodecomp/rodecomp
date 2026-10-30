@@ -9,6 +9,32 @@
 #include <cstdio>
 
 // OFFSET: 0x008A8D30
+// FUNCTION: fn_11716
+void DrawItemWithQuantityAuxiliary(
+  UIWindow& window, ItemDescriptions& descriptions, FontCache& fonts, const TextLocale& locale, int mode, int x, int y, const ITEM_INFO& item,
+  unsigned char identified, unsigned char plain
+) {
+  char text[128] = {};
+  descriptions.IconPath(text, item.itemId.c_str(), identified);
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
+  window.DrawAuxiliary(mode, x, y, bitmap ? &bitmap->image : nullptr, true, false);
+
+  if (item.quantity == 0) {
+    return;
+  }
+
+  std::sprintf(text, "%d", item.quantity);
+  if (plain != 0) {
+    window.DrawTextAt(fonts, locale, x + 16, y + 20, text, 0, 0, 11, 0, 0, 0);
+  } else {
+    const int left = x + (item.quantity < 1000 ? 14 : 0);
+    window.DrawTextAt(fonts, locale, left + 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    window.DrawTextAt(fonts, locale, left - 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    window.DrawTextAt(fonts, locale, left, y + 16, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    window.DrawTextAt(fonts, locale, left, y + 14, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    window.DrawTextAt(fonts, locale, left, y + 15, text, 0, 0, 11, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x008A8EE0
 // FUNCTION: fn_11717
