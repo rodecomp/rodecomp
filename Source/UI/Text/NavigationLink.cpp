@@ -17,6 +17,8 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
 #include "Network/TextEncoding.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -49,7 +51,6 @@ namespace LineCutter {
     /* 0090 */ unsigned char m_shadowed;
     /* 0094 */ std::uint32_t m_shadowColor;
     /* 0098 */ std::string m_text;
-    UIButtonContext* m_controls;
   };
 }
 
@@ -73,11 +74,10 @@ public:
 
 protected:
   /* 007C */ std::string m_itemId;
-  ItemDescriptions* m_descriptions;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(LineCutter::UIText) == 0xB4);
+static_assert(sizeof(LineCutter::UIText) == 0xB0);
 #endif
 
 // GLOBAL: gl_24668
@@ -314,6 +314,22 @@ std::string FormatNavigationLink(std::string value, bool brackets) {
   return text;
 }
 
+// OFFSET: 0x00835B00
+// FUNCTION: fn_10422
+std::pair<bool, std::string> RemoveLineBreakTag(std::string value) {
+  std::string text = value;
+  const std::size_t position = text.find("<NR>");
+
+  if (position == std::string::npos) {
+    return std::pair<bool, std::string>(false, value);
+  }
+
+  std::string head = text.substr(0, position);
+  const std::string tail = text.substr(position + std::strlen("<NR>"));
+  head.append(tail.c_str(), tail.size());
+  return std::pair<bool, std::string>(true, head);
+}
+
 // OFFSET: 0x00833550
 // FUNCTION: fn_10411
 void DisplayNavigationLink(std::string& output, std::string value) {
@@ -336,6 +352,51 @@ void DisplayNavigationLink(std::string& output, std::string value) {
       output += rest;
     }
   }
+}
+
+// OFFSET: 0x00833A20
+// FUNCTION: fn_10414
+bool ExtractInnerItemLink(std::string& text, std::string& link, int& offset, const char* source) {
+  std::size_t closePos = text.find(g_itemLinkCloseTag);
+
+  if (closePos == std::string::npos) {
+    return false;
+  }
+
+  do {
+    text = text.substr(0, closePos);
+    std::size_t openPos = text.find(g_itemLinkTag);
+
+    if (closePos != std::string::npos && openPos == std::string::npos) {
+      offset += g_itemLinkCloseTag.size();
+      text = source;
+      text = text.substr(offset);
+      return true;
+    }
+
+    closePos = text.find(g_itemLinkCloseTag);
+
+    if (openPos != std::string::npos) {
+      for (;;) {
+        offset += openPos;
+        text = text.substr(openPos + g_itemLinkTag.size());
+        openPos = text.find(g_itemLinkTag);
+        closePos = text.find(g_itemLinkCloseTag);
+
+        if (openPos == std::string::npos) {
+          break;
+        }
+
+        offset += g_itemLinkTag.size();
+      }
+
+      link = text;
+      text = source;
+      text = text.substr(link.size() + offset + g_itemLinkTag.size() + g_itemLinkCloseTag.size());
+    }
+  } while (closePos != std::string::npos);
+
+  return true;
 }
 
 // OFFSET: 0x00834980
@@ -495,6 +556,28 @@ void LineCutter::UIText::Slot35(int value) {
 }
 
 // OFFSET: 0x0083B150
+// FUNCTION: fn_10471
+void LineCutter::UIText::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  const TextLocale locale = {};
+
+  if (this->m_shadowed) {
+    this->DrawTextAt(
+      g_fontCache, locale, 1, 1, this->m_text.c_str(), this->m_text.size(), 0, this->m_fontHeight, this->m_shadowColor, this->m_bold,
+      this->m_italic
+    );
+  }
+
+  if (this->m_outlined == 1) {
+    DrawOutlinedText(
+      *this, 1, 1, this->m_text.c_str(), this->m_text.size(), this->m_color, this->m_outlineColor, 0, this->m_fontHeight, this->m_bold, this->m_italic
+    );
+  } else {
+    this->DrawTextAt(
+      g_fontCache, locale, 0, 0, this->m_text.c_str(), this->m_text.size(), 0, this->m_fontHeight, this->m_color, this->m_bold, this->m_italic
+    );
+  }
+}
 
 // OFFSET: 0x0083B460
 // FUNCTION: fn_10478
@@ -521,6 +604,22 @@ void UIEmotion::Slot19() {
 }
 
 // OFFSET: 0x0083B0A0
+// FUNCTION: fn_10470
+void UIItemImage::Paint() {
+  if (!this->geometry.surface || this->m_itemId.empty()) {
+    return;
+  }
+
+  this->ClearSurface(0xFFFF00FF);
+  char path[128] = {};
+  ItemDescriptions descriptions{g_itemDescriptions};
+  descriptions.IconPath(path, this->m_itemId.c_str(), 1);
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+
+  if (bitmap) {
+    this->DrawBitmap(0, 0, &bitmap->image, true);
+  }
+}
 
 // OFFSET: 0x00837390
 // FUNCTION: fn_10441
