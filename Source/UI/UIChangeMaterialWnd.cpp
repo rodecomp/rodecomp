@@ -70,7 +70,8 @@ void UIChangeMaterialWnd_List::Move(int x, int y) {
 // OFFSET: 0x005E2590
 // FUNCTION: fn_03883
 void UIChangeMaterialWnd_List::sub_5E2590(int, int position) {
-  unsigned int index = static_cast<unsigned int>(position / this->m_pageSize + this->m_scrollOffset);
+  const int rowHeight = *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
+  unsigned int index = static_cast<unsigned int>(position / rowHeight + this->m_scrollOffset);
   const unsigned int last = static_cast<unsigned int>(this->m_items.size() - 1);
   if (last < index) {
     index = last;
