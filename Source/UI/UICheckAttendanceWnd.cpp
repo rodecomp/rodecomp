@@ -1,6 +1,11 @@
 #include "UI/UICheckAttendanceWnd.h"
 
 #include "Client/Mode/ModeCursor.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Contents/CheckAttendanceMgr.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemInfo.h"
 #include "Render/Renderer.h"
 #include "Render/ScreenRectangle.h"
 #include "Render/TextureQuad.h"
@@ -11,6 +16,7 @@
 
 #include <windows.h>
 #include <timeapi.h>
+#include <cstring>
 
 // OFFSET: 0x007DCAD0
 
@@ -87,6 +93,31 @@ void UICheckAttendanceWnd::Slot31(int x, int y) {
   const int slot = this->SlotAt(x, y);
   if (slot == this->m_checkedDays) {
     this->SendMsg(nullptr, 6, 184, slot, 0, 0);
+  }
+}
+
+// OFFSET: 0x007DDD70
+// FUNCTION: fn_09645
+void UICheckAttendanceWnd::Slot28(int x, int y) {
+  const int slot = this->SlotAt(x, y);
+  if (slot < 0 || slot >= this->m_rewardCount) {
+    return;
+  }
+
+  ITEM_INFO item;
+  item.SetItemId(g_checkAttendanceMgr->GetReward(slot + 1).first);
+  item.identified = 1;
+
+  char name[260];
+  std::memset(name, 0, sizeof(name));
+  int capacity = sizeof(name);
+  ItemDescriptions descriptions{g_itemDescriptions};
+  descriptions.Name(item, name, capacity, 0);
+  if (std::strlen(name) != 0) {
+    int tipX = 0;
+    int tipY = -20;
+    this->ToScreen(tipX, tipY);
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(name, tipX + x, tipY + y, 0xFFFFFFFFu, 0, 1);
   }
 }
 

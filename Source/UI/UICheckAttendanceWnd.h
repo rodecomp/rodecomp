@@ -34,6 +34,7 @@ public:
   ~UICheckAttendanceWnd() override;
   void Slot19() override;
   void Slot25(int x, int y) override;
+  void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
   void VisitChildren() override;
   int SlotAt(int x, int y);
@@ -43,7 +44,7 @@ public:
     return this->m_banner->m_entries.size() != 0 ? 42 : 0;
   }
 
-  /* 00B4 */ int unknown_00B4;
+  /* 00B4 */ int m_rewardCount;
   /* 00B8 */ unsigned char m_blinking;
   /* 00BC */ int m_checkedDays;
   /* 00C0 */ int m_daysLeft;
