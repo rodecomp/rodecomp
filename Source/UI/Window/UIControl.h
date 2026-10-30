@@ -121,6 +121,11 @@ public:
 
 class CUIImageTextButton : public CUITextButton {};
 
+class CUIBasicButton : public CUITextButton {
+public:
+  void Resize(int width, int height) override;
+};
+
 class CUITabButton : public CUIImageTextButton {
 public:
   void Slot31(int x, int y) override;

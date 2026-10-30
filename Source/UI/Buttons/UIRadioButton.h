@@ -12,6 +12,9 @@ public:
   /* 0128 */ std::function<void(bool)> onCheck;
 
   void SetOnCheck(std::function<void(bool)> callback);
+  void Paint() override;
+  void Slot25(int x, int y) override;
+  void Slot31(int x, int y) override;
 };
 
 class CUIRadioButton : public CUICheckBox {

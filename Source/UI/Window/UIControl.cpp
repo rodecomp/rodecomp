@@ -1,4 +1,5 @@
 #include "UI/Window/UIControl.h"
+#include "UI/Buttons/UIRadioButton.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Lists/UIThumb.h"
 #include "UI/Edit/UIEditCtrl.h"
@@ -587,6 +588,13 @@ void CUITextButton::Paint() {
   this->Slot55();
 }
 
+// OFFSET: 0x009E2CE0
+// FUNCTION: fn_14407
+void CUIBasicButton::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->Slot53(0);
+}
+
 // OFFSET: 0x009F26B0
 // FUNCTION: fn_14718
 void CUIThumb::Slot53(int resolveSkin) {
@@ -851,6 +859,49 @@ void CUIImageButton::SetImages(const std::string& normal, const std::string& hov
   this->disabledName = inactive;
   this->Slot53(0);
   this->Invalidate();
+}
+
+// OFFSET: 0x009E31B0
+// FUNCTION: fn_14411
+void CUICheckBox::Paint() {
+  std::map<int, CResPtr<CBitmapRes>>::iterator found;
+  if (this->checked) {
+    found = this->images.find(1);
+  } else if (this->disabled) {
+    if (this->disabledImage) {
+      this->DrawBitmap(0, 0, &this->disabledImage->image, false);
+    }
+    return;
+  } else {
+    found = this->images.find(this->state);
+  }
+
+  if (found != this->images.end() && found->second) {
+    this->DrawBitmap(0, 0, &found->second->image, false);
+  }
+}
+
+// OFFSET: 0x009E3230
+// FUNCTION: fn_14412
+void CUICheckBox::Slot25(int, int) {
+  if (this->disabled) {
+    return;
+  }
+
+  g_windowMgr.SetCapture(this);
+  this->checked = !this->checked;
+  this->Invalidate();
+  if (this->onCheck) {
+    this->onCheck(this->checked);
+  }
+}
+
+// OFFSET: 0x009E3290
+// FUNCTION: fn_14413
+void CUICheckBox::Slot31(int, int) {
+  if (this == g_windowMgr.Capture()) {
+    g_windowMgr.ReleaseCapture();
+  }
 }
 
 // OFFSET: 0x009F01B0
