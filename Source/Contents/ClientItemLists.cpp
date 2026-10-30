@@ -196,7 +196,8 @@ struct ClientItemLists {
   /* 17DC */ std::list<MessengerMember> partyMembers;
   /* 17E4 */ unsigned char unknown_17E4[0x9BC];
   /* 21A0 */ ITEM_INFO equipped[10];
-  /* 2B50 */ unsigned char unknown_2B50[0x1D10];
+  /* 2B50 */ unsigned char unknown_2B50[0x1360];
+  /* 3EB0 */ ITEM_INFO exchangeItems[10];
   /* 4860 */ ITEM_INFO itemSlots[10];
   /* 5210 */ int unknown_5210;
   /* 5214 */ int unknown_5214;
@@ -227,7 +228,8 @@ struct ClientItemLists {
   bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
   EquipSlots GetEquipSlots(int location);
   void RemoveItem1758ByItemId(ITEM_INFO& item);
-  void RemoveItem1710(std::uint32_t id, int quantity);
+  __declspec(noinline) void RemoveItem1710(std::uint32_t id, int quantity);
+  bool AddExchangeItem(ITEM_INFO item);
   bool RemoveItem1768(const ITEM_INFO& item, unsigned char alternate);
   bool RemoveItem1740(const ITEM_INFO& item);
   bool RemoveItem1750(const ITEM_INFO& item, int type, unsigned char refresh);
@@ -1495,4 +1497,45 @@ void ClientItemLists::SetItems1750(int count, const short* ids) {
       this->items_1750.push_back(item);
     }
   }
+}
+
+// OFFSET: 0x00DFCBB0
+// FUNCTION: fn_23600
+bool ClientItemLists::AddExchangeItem(ITEM_INFO item) {
+  int count = 0;
+  for (int i = 0; i < 10; ++i) {
+    if (this->exchangeItems[i].quantity != 0) {
+      ++count;
+    }
+  }
+
+  if (count == 10) {
+    return false;
+  }
+
+  this->RemoveItem1710(item.unknown_0000[1], item.quantity);
+
+  ITEM_INFO added = item;
+  int index = 0;
+  for (; index < 10; ++index) {
+    if (this->exchangeItems[index].quantity != 0 && this->exchangeItems[index].unknown_0000[1] == added.unknown_0000[1]) {
+      this->exchangeItems[index].quantity += added.quantity;
+      break;
+    }
+  }
+
+  if (index == 10) {
+    for (int i = 0; i < 10; ++i) {
+      if (this->exchangeItems[i].quantity == 0) {
+        this->exchangeItems[i] = added;
+        break;
+      }
+    }
+  }
+
+  if (UIWindow* window = g_windowMgr.LookupWindow(10011)) {
+    window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+
+  return true;
 }

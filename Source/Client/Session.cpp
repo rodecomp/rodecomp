@@ -1680,3 +1680,98 @@ void CSession::RefreshHpSpWindows() {
 
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->NotifyItemBounds();
 }
+
+// OFFSET: 0x00DFC0B0
+// FUNCTION: fn_23593
+void CSession::FlagInventoryItem(std::uint32_t id) {
+  for (ITEM_INFO& item : this->m_inventoryItems) {
+    if (item.unknown_0000[1] == id) {
+      item.unknown_0074[2] = 1;
+      RefreshItemWindows(&g_windowMgr);
+      return;
+    }
+  }
+}
+
+// OFFSET: 0x00DFC0F0
+// FUNCTION: fn_23594
+void CSession::FlagItem1740(std::uint32_t id) {
+  for (ITEM_INFO& item : this->unknown_1740) {
+    if (item.unknown_0000[1] == id) {
+      item.unknown_0074[2] = 1;
+      RefreshItemWindows(&g_windowMgr);
+      return;
+    }
+  }
+}
+
+// OFFSET: 0x00DFC130
+// FUNCTION: fn_23595
+void CSession::FlagItem1738(std::uint32_t id) {
+  for (ITEM_INFO& item : this->unknown_1738) {
+    if (item.unknown_0000[1] == id) {
+      item.unknown_0074[2] = 1;
+      RefreshItemWindows(&g_windowMgr);
+      return;
+    }
+  }
+}
+
+// OFFSET: 0x00DFC170
+// FUNCTION: fn_23596
+void CSession::CollectItems1750() {
+  this->unknown_1750.erase(this->unknown_1750.begin(), this->unknown_1750.end());
+
+  const int count = static_cast<int>(this->m_inventoryItems.size());
+  for (int i = 0; i < count; ++i) {
+    ITEM_INFO item = this->GetInventoryItemAt(i);
+    if (item.unknown_0000[1] > 0) {
+      const int itemId = std::atoi(item.itemId.c_str());
+      if (std::find(this->unknown_1778.begin(), this->unknown_1778.end(), itemId) != this->unknown_1778.end()) {
+        this->unknown_1750.push_back(item);
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00DFC330
+// FUNCTION: fn_23597
+void CSession::RefreshItems1750() {
+  this->unknown_1750.erase(this->unknown_1750.begin(), this->unknown_1750.end());
+
+  const int count = static_cast<int>(this->m_inventoryItems.size());
+  for (int i = 0; i < count; ++i) {
+    ITEM_INFO item = this->GetInventoryItemAt(i);
+    if (item.unknown_0000[1] > 0) {
+      const int itemId = std::atoi(item.itemId.c_str());
+      if (std::find(this->unknown_1778.begin(), this->unknown_1778.end(), itemId) != this->unknown_1778.end()) {
+        this->unknown_1750.push_back(item);
+      }
+    }
+  }
+
+  for (auto it = this->unknown_1750.begin(); it != this->unknown_1750.end();) {
+    const int itemId = std::atoi(it->itemId.c_str());
+    auto match = this->unknown_1748.begin();
+    for (; match != this->unknown_1748.end(); ++match) {
+      if (std::atoi(match->itemId.c_str()) == itemId) {
+        break;
+      }
+    }
+
+    if (match == this->unknown_1748.end()) {
+      it = this->unknown_1750.erase(it);
+      continue;
+    }
+
+    const std::uint32_t value = match->unknown_0014[0];
+    if (value == 0xFFFFFFFF || g_session.HasItem61B8(it->unknown_0000[1]) == 1) {
+      it = this->unknown_1750.erase(it);
+      continue;
+    }
+
+    it->unknown_0014[0] = value;
+    it->unknown_0014[1] = value;
+    ++it;
+  }
+}

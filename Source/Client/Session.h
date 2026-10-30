@@ -204,7 +204,7 @@ public:
   /* 1760 */ std::list<ITEM_INFO> unknown_1760;
   /* 1768 */ std::list<ITEM_INFO> unknown_1768;
   /* 1770 */ std::list<ITEM_INFO> unknown_1770;
-  /* 1778 */ unsigned char unknown_1778[0x0C];
+  /* 1778 */ std::vector<int> unknown_1778;
   /* 1784 */ std::list<ITEM_INFO> unknown_1784[11];
   /* 17DC */ std::list<MessengerMember> m_partyMembers;
   /* 17E4 */ std::list<MessengerMember> m_friends;
@@ -655,6 +655,11 @@ public:
   void ClearNormalItemSlots();
   void ResetItems6B68();
   void ResetItems61B8();
+  void FlagInventoryItem(std::uint32_t id);
+  void FlagItem1740(std::uint32_t id);
+  void FlagItem1738(std::uint32_t id);
+  void CollectItems1750();
+  void RefreshItems1750();
   bool IsPartyRecommendTarget(std::uint32_t aid);
   int GetBodyStyle(int job, int style, int renderJob);
   int GetUnknown8148() const;
