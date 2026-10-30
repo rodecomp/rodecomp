@@ -12,7 +12,12 @@ class CCloudKillEffect : public CEffect {
 public:
   CCloudKillEffect();
   void Slot01() override;
+  void Slot03() override;
+  void Slot04() override;
   void Close() override;
+  bool Slot06() override;
+
+  void AddSprites();
 
   /* 00CC */ std::list<CParticle*> particles;
   /* 00D4 */ std::list<CParticle*> sprites;
