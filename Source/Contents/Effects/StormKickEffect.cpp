@@ -373,3 +373,52 @@ void CStormKickEffect::Slot03() {
     actor->render.angle = angle - 360.0f;
   }
 }
+
+// OFFSET: 0x00B7C7D0
+// FUNCTION: fn_19226
+void CStormKickEffect::Slot04() {
+  for (auto it = this->storms.begin(); it != this->storms.end(); ++it) {
+    CParticle* particle = *it;
+    const int alpha = particle->alpha;
+    const float* motion = reinterpret_cast<const float*>(particle->unknown_0058);
+
+    switch (this->id) {
+    case 459:
+    case 460:
+    case 461:
+    case 465:
+      particle->destinationBlend = 6;
+      break;
+    case 464:
+      if (motion[1] == 0.0f) {
+        particle->destinationBlend = 6;
+        particle->alpha = alpha / 3;
+        particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+        particle->alpha = alpha;
+        continue;
+      }
+      if (motion[1] != 1.0f) {
+        continue;
+      }
+    default:
+      particle->destinationBlend = 2;
+      break;
+    }
+    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+  }
+
+  for (auto it = this->clouds.begin(); it != this->clouds.end(); ++it) {
+    CParticle* particle = *it;
+    if (!particle) {
+      continue;
+    }
+
+    const int texPart = particle->unknown_000C;
+    if (texPart <= 0) {
+      continue;
+    }
+
+    const ParticleQuad quad = {false, 0.0f, 1.0f, static_cast<float>(texPart - 1) / 21.0f, static_cast<float>(texPart) / 21.0f, false, true};
+    particle->Render(quad);
+  }
+}
