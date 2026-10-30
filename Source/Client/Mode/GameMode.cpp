@@ -1,10 +1,19 @@
 #include "Client/Mode/CGameMode.h"
+#include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
+#include "Contents/Skills/ClientSkills.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
 #include <cstdint>
 #include <string>
+#include <vector>
+
+#include <timeapi.h>
+
+// GLOBAL: gl_24661
+std::vector<ActiveSkillEffect> g_activeSkillEffects;
 
 // OFFSET: 0x00CCF480
 // FUNCTION: fn_21242
@@ -50,4 +59,108 @@ void CGameMode::UpdateUnknown0628(int id, bool add) {
   } else {
     this->unknown_0628.erase(id);
   }
+}
+
+// OFFSET: 0x00CF0380
+// FUNCTION: fn_21414
+std::string CGameMode::GetActiveSkillEffectTimeText(int skillId, int* activeSkillId) {
+  std::string output;
+  *activeSkillId = skillId;
+
+  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+    const int effectId = static_cast<int>(effect.id);
+    if (skillId != (effectId == 0x2A ? 0x0C : effectId)) {
+      continue;
+    }
+
+    *activeSkillId = effectId;
+    const std::uint32_t expiration = effect.unknown_0004;
+    if (expiration == 999999 || expiration == 0) {
+      return output;
+    }
+
+    std::uint32_t remainingSeconds = 0;
+    if (g_replayAnimationScaling == 0) {
+      remainingSeconds = (expiration - timeGetTime()) / 1000;
+    } else {
+      const int remainingMilliseconds = static_cast<int>(expiration) - static_cast<int>(Replay::Instance().elapsed);
+      if (remainingMilliseconds >= 1000) {
+        remainingSeconds = static_cast<std::uint32_t>(remainingMilliseconds) / 1000;
+      }
+    }
+
+    const int signedSeconds = static_cast<int>(remainingSeconds);
+    const int hours = signedSeconds / 3600;
+    if (hours != 0) {
+      output.append(FormatOwnedString("%d %s", hours, LookupMessage(0x6A1)));
+    }
+
+    const int remainder = signedSeconds - hours * 3600;
+    const int minutes = remainder / 60;
+    const int seconds = remainder % 60;
+    if (minutes != 0) {
+      output.append(FormatOwnedString(" %d %s", minutes, LookupMessage(0x70F)));
+    }
+    if (seconds != 0) {
+      output.append(FormatOwnedString(" %d %s", seconds, LookupMessage(0x710)));
+    }
+
+    break;
+  }
+
+  return output;
+}
+
+// OFFSET: 0x00CF0A80
+// FUNCTION: fn_21420
+bool CGameMode::IsActiveSkillEffectId(std::uint32_t id) {
+  if (this->IsExcludedSkillEffectId(id)) {
+    return false;
+  }
+
+  for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+    if (effect.id == id) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00D07720
+// FUNCTION: fn_21582
+bool CGameMode::IsExcludedSkillEffectId(std::uint32_t id) {
+  return id == 0x28 || id == 0x2A;
+}
+
+// OFFSET: 0x00D07740
+// FUNCTION: fn_21583
+int CGameMode::SubD07740(int id, int defaultResult) {
+  if (id < 0xFB5) {
+    if (id == 0xFB4 || id == 0x13) {
+      return 1;
+    }
+
+    if (id == 0x14) {
+      return 0;
+    }
+  } else {
+    switch (id) {
+    case 0xFB5:
+    case 0xFCB:
+    case 0xFE5:
+    case 0xFEC:
+    case 0x1009:
+    case 0x10A8:
+      return 0;
+    case 0xFCA:
+    case 0xFE4:
+    case 0xFEB:
+    case 0x1008:
+    case 0x10A7:
+      return 1;
+    }
+  }
+
+  return defaultResult;
 }

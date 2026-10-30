@@ -82,6 +82,10 @@ public:
   void PushUnknown01A4(int value);
   bool IsOverWeight(bool notify);
   void CompleteUnknown0194(std::uint32_t id, const std::string& text);
+  std::string GetActiveSkillEffectTimeText(int skillId, int* activeSkillId);
+  bool IsActiveSkillEffectId(std::uint32_t id);
+  bool IsExcludedSkillEffectId(std::uint32_t id);
+  int SubD07740(int id, int defaultResult);
   bool AppendGuildEmblem(std::vector<char>& output, std::vector<std::string>& names, int guildId, int unused);
   void ReceiveResultNotice(int result);
   void RefreshWindow16(const unsigned char* packet);
