@@ -1,0 +1,50 @@
+#include "UI/Party/UIMiniPartyWnd.h"
+#include "UI/Layout/SnapMgr.h"
+#include "UI/Layout/WindowSnapping.h"
+#include "UI/Window/UIWindowMgr.h"
+
+#include <windows.h>
+#include <mmsystem.h>
+
+// OFFSET: 0x007426F0
+// FUNCTION: fn_07737
+UIMiniPartyWnd::UIMiniPartyWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
+    : UIFrameWnd(windowContext, frameContext, 1), m_cell(-1), m_infoWnd(nullptr), m_background(nullptr), m_sizeMode(0) {
+  this->m_imageName = "유저인터페이스\\renewalparty\\img_partymini_bg.tga";
+  this->geometry.id = 301;
+}
+
+// OFFSET: 0x00742AA0
+// FUNCTION: fn_07739
+void UIMiniPartyWnd::Move(int x, int y) {
+  this->geometry.x = x;
+  this->geometry.y = y;
+}
+
+// OFFSET: 0x00742BE0
+// FUNCTION: fn_07741
+void UIMiniPartyWnd::Paint() {
+  this->m_primitives.clear();
+  const int count = this->m_member.offline != 1 ? 3 : 1;
+  for (int index = 0; index < count; ++index) {
+    this->DrawNamed(this->m_context->primitives, 0, 0, this->m_imageName, 0xFFFFFFFF, 0, 0);
+  }
+}
+
+// OFFSET: 0x00742D80
+// FUNCTION: fn_07742
+void UIMiniPartyWnd::Slot25(int x, int y) {
+  if (g_dragWindowId != this->geometry.id) {
+    g_windowMgr.BringToFront(this->geometry.id);
+    g_dragWindowId = this->geometry.id;
+  }
+
+  g_windowMgr.SetCapture(this);
+  this->ToScreen(x, y);
+  this->m_dragX = x;
+  this->m_dragY = y;
+  this->m_originX = this->geometry.x;
+  this->m_originY = this->geometry.y;
+  this->geometry.alphaStart = timeGetTime();
+  this->m_frameContext->snapping.graph.CaptureOrigins(this);
+}

@@ -865,6 +865,7 @@
   "Source/UI/MiniPartyUsableArea.cpp": 2,
   "Source/UI/Party/UIAdvenPartyBoardWnd.cpp": 2,
   "Source/UI/Party/UIApplyForPartyWnd.cpp": 2,
+  "Source/UI/Party/UIMiniPartyWnd.cpp": 2,
   "Source/UI/Party/UIPartyInfoWnd.cpp": 2,
   "Source/UI/Party/UIRegisterPartyWnd.cpp": 2,
   "Source/UI/Party/UIRequestJoinPartyMgr.cpp": 2,
