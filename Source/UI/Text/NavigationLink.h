@@ -4,7 +4,8 @@
 #include <string>
 
 struct NavigationLinkParser {
-  NavigationLinkParser() : m_ready(true) {}
+  NavigationLinkParser();
+  ~NavigationLinkParser();
 
   /* 0000 */ bool m_ready;
 };

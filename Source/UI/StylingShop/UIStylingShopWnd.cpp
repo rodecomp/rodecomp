@@ -206,3 +206,74 @@ void UIStylingShopWnd::Slot19() {
 void UIAccBitmapButton::Slot33(int, int) {
   this->parent->SendMsg(this, 101, this->geometry.id, this->m_argument, 0, 0);
 }
+
+// OFFSET: 0x0082CCB0
+// FUNCTION: fn_10366
+int UI2ndCostumeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  if (argument1 == 213) {
+    if (sender == this->m_showCheckBox) {
+      if (this->m_display && this->m_hideCheckBox && this->m_showCheckBox->geometry.unknown_0030 != 0) {
+        this->m_display->job = 1;
+        this->m_hideCheckBox->SetChecked(0);
+        this->m_showInfo->Invalidate();
+      }
+    } else if (sender == this->m_hideCheckBox) {
+      if (this->m_display && this->m_showCheckBox && this->m_hideCheckBox->geometry.unknown_0030 != 0) {
+        this->m_display->job = 0;
+        this->m_showCheckBox->SetChecked(0);
+        this->m_showInfo->Invalidate();
+      }
+    } else {
+      this->m_showInfo->Invalidate();
+    }
+  }
+
+  this->Invalidate();
+  return 0;
+}
+
+// OFFSET: 0x0082CD70
+// FUNCTION: fn_10367
+int UIAccessoryCusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  this->Invalidate();
+  return 0;
+}
+
+// OFFSET: 0x0082DC60
+// FUNCTION: fn_10373
+int UIShowInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  if (argument1 == 189) {
+    this->Invalidate();
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x0082DC90
+// FUNCTION: fn_10374
+int UISlotOfMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  this->Invalidate();
+  return 0;
+}
+
+// OFFSET: 0x0082E010
+// FUNCTION: fn_10376
+int UIStylingshopTabParentWnd::SendMsg(UIWindow*, int, std::intptr_t, std::intptr_t, std::intptr_t, std::intptr_t) {
+  return 0;
+}

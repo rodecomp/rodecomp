@@ -1,0 +1,29 @@
+#ifndef RAGNAROK_SOURCE_UI_ITEMS_UISWAPEQUIPMENTWND_H
+#define RAGNAROK_SOURCE_UI_ITEMS_UISWAPEQUIPMENTWND_H
+
+#include "UI/Window/UIFrameWnd.h"
+
+#include <cstdint>
+
+class UISwapBitmapButton;
+
+class UISwapEquipmentWnd : public UIFrameWnd {
+public:
+  void Slot10(int x, int y, std::intptr_t value) override;
+  void SetSlotValue(int index, int value);
+
+protected:
+  /* 00B4 */ std::uint32_t unknown_00B4;
+  /* 00B8 */ UISwapBitmapButton* m_swapButton;
+  /* 00BC */ int unknown_00BC;
+  /* 00C0 */ std::uint32_t unknown_00C0;
+  /* 00C4 */ int unknown_00C4;
+  /* 00C8 */ int unknown_00C8;
+  /* 00CC */ int unknown_00CC;
+  /* 00D0 */ int unknown_00D0;
+  /* 00D4 */ int unknown_00D4;
+  /* 00D8 */ int unknown_00D8;
+  /* 00DC */ int unknown_00DC;
+};
+
+#endif

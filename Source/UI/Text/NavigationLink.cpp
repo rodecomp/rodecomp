@@ -76,6 +76,16 @@ static_assert(sizeof(LineCutter::UIText) == 0xB4);
 // GLOBAL: gl_24668
 NavigationLinkParser* g_navigationLinkParser;
 
+// OFFSET: 0x00831FE0
+// FUNCTION: fn_10404
+NavigationLinkParser::NavigationLinkParser() : m_ready(true) {
+}
+
+// OFFSET: 0x00831FF0
+// FUNCTION: fn_10405
+NavigationLinkParser::~NavigationLinkParser() {
+}
+
 // OFFSET: 0x00833960
 // FUNCTION: fn_10412
 bool CreateNavigationLinkParser() {
