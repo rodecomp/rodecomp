@@ -35,6 +35,45 @@ namespace {
     /* 0002 */ std::int16_t value;
     /* 0004 */ unsigned char param;
   };
+
+  struct ItemAddPacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ std::int16_t index;
+    /* 0004 */ int amount;
+    /* 0008 */ int itemId;
+    /* 000C */ unsigned char type;
+    /* 000D */ unsigned char identified;
+    /* 000E */ unsigned char damaged;
+    /* 000F */ unsigned char refine;
+    /* 0010 */ std::uint32_t cards[4];
+  };
+
+  struct ItemAddOptionsPacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ std::int16_t index;
+    /* 0004 */ int amount;
+    /* 0008 */ int itemId;
+    /* 000C */ unsigned char type;
+    /* 000D */ unsigned char identified;
+    /* 000E */ unsigned char damaged;
+    /* 000F */ unsigned char refine;
+    /* 0010 */ std::uint32_t cards[4];
+    /* 0020 */ ItemRandomOption options[5];
+  };
+
+  struct ItemAddGradePacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ std::int16_t index;
+    /* 0004 */ int amount;
+    /* 0008 */ int itemId;
+    /* 000C */ unsigned char type;
+    /* 000D */ unsigned char identified;
+    /* 000E */ unsigned char damaged;
+    /* 000F */ std::uint32_t cards[4];
+    /* 001F */ ItemRandomOption options[5];
+    /* 0038 */ unsigned char refine;
+    /* 0039 */ unsigned char grade;
+  };
 #pragma pack(pop)
 
   bool IsSameItem(const ITEM_INFO& value, const ITEM_INFO& item) {
@@ -76,6 +115,9 @@ namespace {
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ItemRandomOption) == 5);
+static_assert(sizeof(ItemAddPacket) == 0x20);
+static_assert(sizeof(ItemAddOptionsPacket) == 0x39);
+static_assert(sizeof(ItemAddGradePacket) == 0x3A);
 #endif
 
 struct ClientItemLists {
@@ -211,6 +253,153 @@ void __fastcall RefreshItemWindows(UIWindowMgr* mgr) {
   if (mgr->window_4F260) {
     mgr->window_4F260->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
+}
+
+// INLINED
+static int CountItemOptions(const ItemRandomOption* options) {
+  int count = 0;
+  for (int index = 0; index < 5; ++index) {
+    if (options[index].id != 0) {
+      ++count;
+    }
+  }
+  return count;
+}
+
+// OFFSET: 0x00D1F5A0
+// FUNCTION: fn_21640
+void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
+  const ItemAddPacket packet = *reinterpret_cast<const ItemAddPacket*>(data);
+  ItemRandomOption options[5] = {};
+  ITEM_INFO item;
+  item.unknown_0000[1] = packet.index;
+  item.quantity = packet.amount;
+  item.SetItemId(packet.itemId);
+  item.identified = packet.identified;
+  item.unknown_005D = packet.damaged;
+  item.unknown_0060 = packet.refine;
+  item.unknown_0000[0] = packet.type;
+  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
+  item.unknown_0098 = CountItemOptions(options);
+  for (int index = 0; index < item.unknown_0098; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  }
+  item.unknown_0088 = 0;
+  reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 1);
+}
+
+// OFFSET: 0x00D1FDA0
+// FUNCTION: fn_21644
+void CGameMode::ReceiveItem1740Add(const unsigned char* data) {
+  const ItemAddPacket packet = *reinterpret_cast<const ItemAddPacket*>(data);
+  ItemRandomOption options[5] = {};
+  ITEM_INFO item;
+  item.unknown_0000[1] = packet.index;
+  item.quantity = packet.amount;
+  item.SetItemId(packet.itemId);
+  item.identified = packet.identified;
+  item.unknown_005D = packet.damaged;
+  item.unknown_0060 = packet.refine;
+  item.unknown_0000[0] = packet.type;
+  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
+  item.unknown_0098 = CountItemOptions(options);
+  for (int index = 0; index < item.unknown_0098; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  }
+  item.unknown_0088 = 0;
+  reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+}
+
+// OFFSET: 0x00D1FF70
+// FUNCTION: fn_21645
+void CGameMode::ReceiveItem1740AddOptions(const unsigned char* data) {
+  const ItemAddOptionsPacket packet = *reinterpret_cast<const ItemAddOptionsPacket*>(data);
+  ItemRandomOption options[5];
+  std::memcpy(options, packet.options, sizeof(options));
+  ITEM_INFO item;
+  item.unknown_0000[1] = packet.index;
+  item.quantity = packet.amount;
+  item.SetItemId(packet.itemId);
+  item.identified = packet.identified;
+  item.unknown_005D = packet.damaged;
+  item.unknown_0060 = packet.refine;
+  item.unknown_0000[0] = packet.type;
+  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
+  item.unknown_0098 = CountItemOptions(options);
+  for (int index = 0; index < item.unknown_0098; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  }
+  item.unknown_0088 = 0;
+  reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+}
+
+// OFFSET: 0x00D20180
+// FUNCTION: fn_21646
+void CGameMode::ReceiveItem1740AddGrade(const unsigned char* data) {
+  const ItemAddGradePacket packet = *reinterpret_cast<const ItemAddGradePacket*>(data);
+  ItemRandomOption options[5];
+  std::memcpy(options, packet.options, sizeof(options));
+  ITEM_INFO item;
+  item.unknown_0000[1] = packet.index;
+  item.quantity = packet.amount;
+  item.SetItemId(packet.itemId);
+  item.identified = packet.identified;
+  item.unknown_005D = packet.damaged;
+  item.unknown_0060 = packet.refine;
+  item.unknown_0000[0] = packet.type;
+  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
+  item.unknown_0098 = CountItemOptions(options);
+  for (int index = 0; index < item.unknown_0098; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  }
+  item.unknown_0088 = packet.grade;
+  reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+}
+
+// OFFSET: 0x00D204B0
+// FUNCTION: fn_21647
+void CGameMode::ReceiveItem1738AddOptions(const unsigned char* data) {
+  const ItemAddOptionsPacket packet = *reinterpret_cast<const ItemAddOptionsPacket*>(data);
+  ItemRandomOption options[5];
+  std::memcpy(options, packet.options, sizeof(options));
+  ITEM_INFO item;
+  item.unknown_0000[1] = packet.index;
+  item.quantity = packet.amount;
+  item.SetItemId(packet.itemId);
+  item.identified = packet.identified;
+  item.unknown_005D = packet.damaged;
+  item.unknown_0060 = packet.refine;
+  item.unknown_0000[0] = packet.type;
+  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
+  item.unknown_0098 = CountItemOptions(options);
+  for (int index = 0; index < item.unknown_0098; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  }
+  item.unknown_0088 = 0;
+  reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 1);
+}
+
+// OFFSET: 0x00D206C0
+// FUNCTION: fn_21648
+void CGameMode::ReceiveItem1738AddGrade(const unsigned char* data) {
+  const ItemAddGradePacket packet = *reinterpret_cast<const ItemAddGradePacket*>(data);
+  ItemRandomOption options[5];
+  std::memcpy(options, packet.options, sizeof(options));
+  ITEM_INFO item;
+  item.unknown_0000[1] = packet.index;
+  item.quantity = packet.amount;
+  item.SetItemId(packet.itemId);
+  item.identified = packet.identified;
+  item.unknown_005D = packet.damaged;
+  item.unknown_0060 = packet.refine;
+  item.unknown_0000[0] = packet.type;
+  std::memcpy(item.unknown_001C, packet.cards, sizeof(packet.cards));
+  item.unknown_0098 = CountItemOptions(options);
+  for (int index = 0; index < item.unknown_0098; ++index) {
+    reinterpret_cast<ItemRandomOption*>(item.unknown_009C)[index] = options[index];
+  }
+  item.unknown_0088 = packet.grade;
+  reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 1);
 }
 
 // OFFSET: 0x00DD43A0

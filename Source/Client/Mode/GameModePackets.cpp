@@ -55,11 +55,78 @@ namespace {
     /* 002A */ int unknown_002A;
     /* 002E */ int count;
   };
+
+  struct NamedProgressPacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ unsigned char result;
+    /* 0003 */ int first;
+    /* 0007 */ int second;
+    /* 000B */ std::uint16_t current;
+    /* 000D */ std::uint16_t total;
+    /* 000F */ unsigned char unknown_000F[4];
+    /* 0013 */ char name[1];
+  };
 #pragma pack(pop)
 
   static_assert(sizeof(SimulationPacketHeader) == 0x24);
   static_assert(sizeof(EnchantSimulationRecord) == 0x1C);
   static_assert(sizeof(PackageSimulationRecord) == 0x32);
+}
+
+// OFFSET: 0x00D1F540
+// FUNCTION: fn_21638
+void CGameMode::IgnoreRemovedPacket3(const unsigned char*) {
+}
+
+// OFFSET: 0x00D208F0
+// FUNCTION: fn_21649
+void CGameMode::IgnoreRemovedPacket4(const unsigned char*) {
+}
+
+// OFFSET: 0x00D21210
+// FUNCTION: fn_21653
+void CGameMode::IgnoreRemovedPacket5(const unsigned char*) {
+}
+
+// OFFSET: 0x00D21D00
+// FUNCTION: fn_21657
+void CGameMode::ReceiveUnknown05C4Result(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const NamedProgressPacket*>(data);
+  char message[256];
+  char name[51] = {};
+  std::sprintf(name, "%s", packet->name);
+  this->unknown_05C4 = -1;
+  this->unknown_05C8 = -1;
+
+  switch (packet->result) {
+  case 0:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1223)), 0xFFFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(1223)), 0xFFFFFF, 0, 0, 0);
+    return;
+  case 1:
+  case 2:
+    this->unknown_05C4 = packet->first;
+    this->unknown_05C8 = packet->second;
+    if (packet->result != 2) {
+      return;
+    }
+    std::sprintf(message, LookupMessage(1225), name);
+    break;
+  case 3:
+    if (packet->current == 0 && packet->total == 1) {
+      std::sprintf(message, LookupMessage(1261), name);
+    } else {
+      std::sprintf(message, LookupMessage(1224), name, packet->current, packet->total);
+    }
+    break;
+  default:
+    return;
+  }
+
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00D230E0

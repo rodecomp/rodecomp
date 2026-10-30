@@ -42,7 +42,10 @@ public:
   /* 02EC */ std::string unknown_02EC;
   /* 0304 */ unsigned char unknown_0304[0x04];
   /* 0308 */ ModeDragState drag;
-  /* 03C8 */ unsigned char unknown_03C8[0x208];
+  /* 03C8 */ unsigned char unknown_03C8[0x1FC];
+  /* 05C4 */ int unknown_05C4;
+  /* 05C8 */ int unknown_05C8;
+  /* 05CC */ unsigned char unknown_05CC[0x04];
   /* 05D0 */ UIWindow* unknown_05D0;
   /* 05D4 */ unsigned char unknown_05D4[0x54];
   /* 0628 */ std::unordered_set<int> unknown_0628;
@@ -123,6 +126,16 @@ public:
   void ReceivePackageSimulation(const unsigned char* packet);
   void ReceiveWindow154Result(std::int16_t value);
   void UpdateUnknown0628(int id, bool add);
+  void IgnoreRemovedPacket3(const unsigned char* packet);
+  void IgnoreRemovedPacket4(const unsigned char* packet);
+  void IgnoreRemovedPacket5(const unsigned char* packet);
+  void ReceiveItem1738Add(const unsigned char* packet);
+  void ReceiveItem1738AddOptions(const unsigned char* packet);
+  void ReceiveItem1738AddGrade(const unsigned char* packet);
+  void ReceiveItem1740Add(const unsigned char* packet);
+  void ReceiveItem1740AddOptions(const unsigned char* packet);
+  void ReceiveItem1740AddGrade(const unsigned char* packet);
+  void ReceiveUnknown05C4Result(const unsigned char* packet);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -136,6 +149,7 @@ static_assert(offsetof(CGameMode, camera) == 0xD0);
 static_assert(offsetof(CGameMode, nameCard) == 0x160);
 static_assert(offsetof(CGameMode, unknown_0294) == 0x294);
 static_assert(offsetof(CGameMode, drag) == 0x308);
+static_assert(offsetof(CGameMode, unknown_05C4) == 0x5C4);
 static_assert(offsetof(CGameMode, unknown_05D0) == 0x5D0);
 static_assert(offsetof(CGameMode, unknown_0628) == 0x628);
 static_assert(sizeof(CGameMode) == 0x670);
