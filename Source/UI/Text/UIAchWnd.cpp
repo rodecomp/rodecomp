@@ -319,6 +319,41 @@ void UIAchTV::Paint() {
 }
 
 // OFFSET: 0x007B67B0
+// FUNCTION: fn_09219
+void UIAchSummaryWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_summary.bmp"), false);
+  this->DrawTextAt(controls.fonts, controls.locale, 82, 27, LookupMessage(2679), 0, 0, 12, 0xA55239, 1, 0);
+  this->DrawRightAlignedText(600, 28, FormatOwnedString("%d/%d", this->gauges[0]->value, this->gauges[0]->maximum).c_str(), 0, 0, 11, 0x635AA5, 0);
+
+  const int categories[6] = {2657, 2661, 2668, 2671, 2674, 2678};
+  for (int index = 0; index < 6; ++index) {
+    const int row = index / 2 * 50;
+    const int column = index % 2;
+    this->DrawTextAt(controls.fonts, controls.locale, column * 302 + 82, row + 107, LookupMessage(categories[index]), 0, 0, 12, 0xA55239, 1, 0);
+    UICustomGageBar* gauge = this->gauges[index + 1];
+    this->DrawRightAlignedText(column * 304 + 296, row + 108, FormatOwnedString("%d/%d", gauge->value, gauge->maximum).c_str(), 0, 0, 11, 0x635AA5, 0);
+  }
+
+  this->DrawTextAt(controls.fonts, controls.locale, 9, 292, LookupMessage(2651), 0, 0, 12, 0x9C6B5A, 1, 0);
+
+  int x = 260;
+  for (auto it = this->recent.rbegin(); it != this->recent.rend(); ++it) {
+    std::string icon = "유저인터페이스\\achievement_re\\icon_" + g_achievementMgr->GetUnknown0068(it->first) + ".bmp";
+    this->DrawBitmap(x - 242, 314, AchievementBitmap(icon.c_str()), true);
+    this->DrawBitmap(x, 316, AchievementBitmap("유저인터페이스\\achievement_re\\badge_complete.bmp"), true);
+    this->DrawTextAt(controls.fonts, controls.locale, x + 23, 325, FormatOwnedString("%d", g_achievementMgr->GetUnknown0048(it->first)).c_str(), 0, 0, 12, 0xA55239, 1, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, x - 241, 365, g_achievementMgr->GetUnknown0018(it->first).c_str(), 0, 0, 12, 0xC9977D, 0, 0);
+
+    SessionRecord6144 record = g_session.FindRecord6144(it->first);
+    if (g_achievementMgr->HasReward(it->first) == 1 && record.unknown_0030 == 0) {
+      this->DrawBitmap(x + 12, 360, AchievementBitmap("유저인터페이스\\achievement_re\\list_rewardbox_not_receive.bmp"), true);
+    }
+
+    DrawOutlinedText(*this, x - 3, 366, FormatOwnedString("%4d.%2d.%2d", record.year, record.month, record.day).c_str(), 0, 0x635AA5, 0xFFFFFF, 0, 10, 0, 0);
+    x += 316;
+  }
+}
 
 // OFFSET: 0x007B6F60
 // FUNCTION: fn_09221
@@ -474,8 +509,47 @@ void UIAchTab::Slot27(int x, int y) {
 }
 
 // OFFSET: 0x007B7BB0
+// FUNCTION: fn_09237
+void UIToolTipBitmapWnd::Slot32(int x, int y) {
+  if (this->itemId > 0 && this->unknown_00B4 <= x && x <= this->unknown_00B4 + 24 && this->unknown_00B8 <= y && y <= this->unknown_00B8 + 24) {
+    ITEM_INFO item;
+    item.SetItemId(this->itemId);
+    item.identified = 1;
+    this->m_windows->EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x007B7CA0
+// FUNCTION: fn_09238
+void UIAchievementWnd::SelectAchievement(int id) {
+  int group = -1;
+  int sub = -1;
+  if (g_achievementMgr->FindTab(id, group, sub) != 1) {
+    return;
+  }
+
+  this->SelectTab(group, sub);
+
+  UIAchListWnd* list = this->list;
+  int index = 0;
+  for (std::vector<int>::iterator it = list->ids.begin(); it != list->ids.end() && *it != id; ++it) {
+    ++index;
+  }
+
+  list->selectedIndex = index;
+  if (index < list->rowCount) {
+    list->unknown_008C = 0;
+  } else {
+    list->unknown_008C = std::min(static_cast<unsigned>(index), static_cast<unsigned>(list->unknown_00AC->count - list->rowCount));
+  }
+
+  list->scrollBar->SetPosition(list->unknown_008C);
+  if (list->parent) {
+    list->parent->SendMsg(list, 135, static_cast<unsigned>(list->selectedIndex) < list->ids.size() ? list->ids[list->selectedIndex] : -1, 0, 0, 0);
+  }
+
+  list->Invalidate();
+}
 
 // OFFSET: 0x007B7D90
 // FUNCTION: fn_09239
@@ -593,6 +667,15 @@ void UIAchTab::Refresh() {
 }
 
 // OFFSET: 0x007B8170
+// FUNCTION: fn_09245
+int UIAchSummaryWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
+  if (message == 98 && argument1 != -1 && this->parent) {
+    static_cast<UIAchievementWnd*>(this->parent)->SelectAchievement(argument1);
+  }
+
+  this->Invalidate();
+  return 0;
+}
 
 // OFFSET: 0x007B81B0
 // FUNCTION: fn_09246
@@ -642,8 +725,72 @@ int UIAchUpperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 }
 
 // OFFSET: 0x007B82C0
+// FUNCTION: fn_09248
+int UIAchViewWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
+  if (message == 6) {
+    if (argument1 == 474) {
+      PACKET_CZ_REQ_ACH_REWARD packet;
+      packet.packetType = ID_CZ_REQ_ACH_REWARD;
+      packet.achievementId = this->achievementId;
+      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+    }
+  } else if (message == 145 && argument1 != -1 && this->parent) {
+    static_cast<UIAchievementWnd*>(this->parent)->SelectAchievement(argument1);
+    return 0;
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x007B8810
+// FUNCTION: fn_09250
+void UIAchListWnd::SetAchievements(std::map<int, AchievementInfo>* achievements, int mode) {
+  this->ids.clear();
+
+  auto byProgress = [this](int left, int right) {
+    return g_session.FindRecord6144(left).unknown_002C < g_session.FindRecord6144(right).unknown_002C;
+  };
+
+  if (mode == 0) {
+    for (auto it = achievements->begin(); it != achievements->end(); ++it) {
+      if (static_cast<unsigned char>(g_session.FindRecord6144(it->first).unknown_0000 >> 8) == 1) {
+        this->ids.push_back(it->first);
+      }
+      std::sort(this->ids.begin(), this->ids.end(), byProgress);
+    }
+
+    for (auto it = achievements->begin(); it != achievements->end(); ++it) {
+      if (static_cast<unsigned char>(g_session.FindRecord6144(it->first).unknown_0000 >> 8) == 0) {
+        this->ids.push_back(it->first);
+      }
+    }
+  } else if (mode == 1) {
+    for (auto it = achievements->begin(); it != achievements->end(); ++it) {
+      SessionRecord6144 record = g_session.FindRecord6144(it->first);
+      if (static_cast<unsigned char>(record.unknown_0000 >> 8) == 1 && g_achievementMgr->HasReward(it->first) == 1 && record.unknown_0030 == 0) {
+        this->ids.push_back(it->first);
+      }
+      std::sort(this->ids.begin(), this->ids.end(), byProgress);
+    }
+
+    for (auto it = achievements->begin(); it != achievements->end(); ++it) {
+      if (static_cast<unsigned char>(g_session.FindRecord6144(it->first).unknown_0000 >> 8) == 0) {
+        this->ids.push_back(it->first);
+      }
+    }
+  }
+
+  this->unknown_00AC = reinterpret_cast<UIAchListInfo*>(achievements);
+  this->selectedIndex = 0;
+  this->unknown_008C = 0;
+  this->UpdateScroll();
+  this->selectedIndex = 0;
+  if (this->parent) {
+    this->parent->SendMsg(this, 135, this->ids.empty() ? -1 : this->ids[0], 0, 0, 0);
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x007B8C20
 // FUNCTION: fn_09251
@@ -671,6 +818,34 @@ void UIAchSummaryWnd::Show(int visible) {
 }
 
 // OFFSET: 0x007B8DF0
+// FUNCTION: fn_09253
+void UIAchievementWnd::SelectTab(int group, int sub) {
+  if (group == 0) {
+    this->view->Show(0);
+    this->list->Show(0);
+  } else {
+    this->view->Show(1);
+    this->list->Show(1);
+  }
+  this->summary->Show(group == 0);
+
+  this->group = group;
+  this->sub = sub;
+  this->tab->unknown_007C = group;
+  this->tab->unknown_0080 = sub;
+  this->tab->Invalidate();
+
+  UIAchUpperWnd* upper = this->upper;
+  const std::string title = group == 0 ? std::string(LookupMessage(2679)) : this->tab->Label(this->group, this->sub);
+  upper->title = title;
+  this->upper->Invalidate();
+
+  if (g_achievementMgr->GetGroupAchievements(this->achievements, this->group, this->sub) == 1) {
+    this->list->SetAchievements(&this->achievements, this->upper->selected);
+  }
+
+  this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x007B8FA0
 // FUNCTION: fn_09254
