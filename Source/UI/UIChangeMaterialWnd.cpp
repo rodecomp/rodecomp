@@ -64,8 +64,12 @@ void UIChangeMaterialWnd_List::Slot27(int x, int y) {
 // OFFSET: 0x005E2A30
 // FUNCTION: fn_03889
 void UIChangeMaterialWnd_List::Slot35(int argument) {
-  this->SendMsg(reinterpret_cast<UIWindow*>(this->unknown_00D8), argument < 0 ? 10 : 9, 0, 0, 0, 0);
+  this->SendMsg(this->m_scrollBar, argument < 0 ? 10 : 9, 0, 0, 0, 0);
 }
+
+// OFFSET: 0x005E2A70
+
+// OFFSET: 0x005E3B80
 
 // OFFSET: 0x005E44C0
 // FUNCTION: fn_03898

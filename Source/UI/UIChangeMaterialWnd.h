@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_UICHANGEMATERIALWND_H
 
 #include "Contents/Items/ItemInfo.h"
+#include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstdint>
@@ -10,6 +11,10 @@
 struct MaterialSlotPos {
   /* 0000 */ int x;
   /* 0004 */ int y;
+};
+
+struct MaterialListEntry {
+  /* 0000 */ unsigned char unknown_0000[0x1C];
 };
 
 class UIChangeMaterialWnd : public UIFrameWnd {
@@ -43,9 +48,10 @@ public:
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ int m_scrollOffset;
   /* 00D4 */ int m_previousScrollOffset;
-  /* 00D8 */ int unknown_00D8;
+  /* 00D8 */ UIScrollBar* m_scrollBar;
   /* 00DC */ std::vector<int> m_items;
-  /* 00E8 */ unsigned char unknown_00E8[0x10];
+  /* 00E8 */ std::vector<MaterialListEntry> m_entries;
+  /* 00F4 */ std::uint32_t unknown_00F4;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -59,6 +65,8 @@ static_assert(offsetof(UIChangeMaterialWnd_List, m_selectedIndex) == 0xC0);
 static_assert(offsetof(UIChangeMaterialWnd_List, m_scrollOffset) == 0xD0);
 static_assert(offsetof(UIChangeMaterialWnd_List, m_previousScrollOffset) == 0xD4);
 static_assert(offsetof(UIChangeMaterialWnd_List, m_items) == 0xDC);
+static_assert(offsetof(UIChangeMaterialWnd_List, m_entries) == 0xE8);
+static_assert(sizeof(MaterialListEntry) == 0x1C);
 #endif
 
 #endif
