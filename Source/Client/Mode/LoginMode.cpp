@@ -1,5 +1,6 @@
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/ModeFadeOut.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
@@ -8,8 +9,10 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Render/DeviceContext/DCSurface.h"
+#include "Render/RenderSystemBase.h"
 #include "Render/Renderer.h"
 #include "Resource/ResourceMgr.h"
+#include "Security/NProtectGameGuardMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
@@ -1042,4 +1045,44 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
 // OFFSET: 0x00D9E170
 // FUNCTION: fn_22319
 void CLoginMode::SubD9E170(int) {
+}
+
+// GLOBAL: gl_24602
+int g_modalImmediate;
+
+// OFFSET: 0x00D97B30
+// FUNCTION: fn_22304
+int CLoginMode::Run() {
+  while (this->running) {
+    if (g_modalImmediate) {
+      break;
+    }
+
+    if (g_windowMgr.modalWindows.empty() || g_windowMgr.modalWindows.back() == nullptr) {
+      if (this->pendingCursorType != -1) {
+        this->cursorType = this->pendingCursorType;
+        this->cursorFrame = 0;
+        this->pendingCursorType = -1;
+        this->Slot7(this->cursorType);
+      }
+    }
+
+    if (g_nProtectGameGuardMgr->HasError()) {
+      GetRagConnection().Close();
+      g_modeMgr.Quit();
+      std::string message = g_nProtectGameGuardMgr->ErrorMessage();
+      if (!message.empty()) {
+        const std::uint8_t source[] = {0x83, 0x25, 0x13, 0x4C, 0xC3, 0x86, 0x32, 0x59, 0xCD, 0x32, 0x00, 0x4E,
+                                       0xD2, 0xA4, 0x24, 0x4C, 0x9F, 0x11, 0x61};
+        thread_local EncryptedName<sizeof(source), 0x2D51E3B7236175EDULL> name(source);
+        MessageBoxA(hWnd, message.c_str(), name.Text(), 0);
+      }
+    }
+
+    this->Update();
+    ++this->cursorFrame;
+  }
+
+  FadeOutMode(*g_renderer, *GetRenderSystemHolder()->system, ResourceMgr::Instance(), 0, false, 0.0f, 0.0f);
+  return 1;
 }

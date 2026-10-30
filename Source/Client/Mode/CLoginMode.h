@@ -78,6 +78,7 @@ public:
   /* 6F76 */ bool unknown_6F76;
   /* 6F77 */ unsigned char unknown_6F77[0x5];
 
+  int Run() override;
   void End() override;
 
   void SubD8D4F0(int);
