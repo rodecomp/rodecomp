@@ -169,7 +169,9 @@ public:
   /* 1014 */ unsigned char unknown_1014[4];
   /* 1018 */ char unknown_1018[0x24];
   /* 103C */ int unknown_103C;
-  /* 1040 */ unsigned char unknown_1040[0x18];
+  /* 1040 */ unsigned char unknown_1040[0x0C];
+  /* 104C */ int m_petFriendly;
+  /* 1050 */ unsigned char unknown_1050[0x08];
   /* 1058 */ int m_petActionTable[5][5][7];
   /* 1314 */ unsigned char unknown_1314[0x258];
   /* 156C */ XmlDocument m_petTalkTable;
@@ -182,7 +184,11 @@ public:
   /* 1628 */ int m_job;
   /* 162C */ unsigned char unknown_162C[0x24];
   /* 1650 */ int m_level;
-  /* 1654 */ unsigned char unknown_1654[0x98];
+  /* 1654 */ unsigned char unknown_1654[0x04];
+  /* 1658 */ int m_jobLevel;
+  /* 165C */ unsigned char unknown_165C[0x28];
+  /* 1684 */ int m_standardStats[6];
+  /* 169C */ unsigned char unknown_169C[0x50];
   /* 16EC */ std::uint32_t unknown_16EC;
   /* 16F0 */ int m_zeny;
   /* 16F4 */ unsigned char unknown_16F4[0x8];

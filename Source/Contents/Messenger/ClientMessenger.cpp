@@ -15,6 +15,7 @@
 #include "Network/TextEncoding.h"
 #include "Utility/Text/StringUtil.h"
 #include "Contents/World/World.h"
+#include "Contents/Items/RuneSystem.h"
 
 #include <algorithm>
 #include <array>
@@ -2477,10 +2478,101 @@ int GetMapName(lua_State* state) {
   return 1;
 }
 
+// OFFSET: 0x006BE680
+// FUNCTION: fn_06284
+int GetPetRelationship(lua_State* state) {
+  lua_pushnumber(state, g_session.GetPetFriendlyState(g_session.m_petFriendly));
+  return 1;
+}
+
 // OFFSET: 0x006BE6C0
 // FUNCTION: fn_06285
 int GetPureJob(lua_State* state) {
   lua_pushnumber(state, GetFirstJob(g_session.m_job));
+  return 1;
+}
+
+// OFFSET: 0x006BEC30
+// FUNCTION: fn_06288
+int GetPlayerValue(lua_State* state) {
+  std::vector<int> args;
+  int number = 0;
+  for (int index = -1; index < 0; ++index) {
+    if (!lua_isnumber(state, index)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      return 2;
+    }
+    args.push_back(static_cast<int>(lua_tonumber(state, index)));
+    ++number;
+  }
+
+  std::map<int, int>& traitStats = reinterpret_cast<std::map<int, int>&>(g_session.unknown_7FC0);
+  int value = 0;
+  switch (args[0]) {
+  case 7:
+    value = *reinterpret_cast<const int*>(&g_session.unknown_5570[0]);
+    break;
+  case 8:
+    value = *reinterpret_cast<const int*>(&g_session.unknown_5570[4]);
+    break;
+  case 11:
+    value = g_session.m_level;
+    break;
+  case 19:
+    value = g_session.m_job;
+    break;
+  case 32:
+    value = g_session.m_standardStats[0];
+    break;
+  case 33:
+    value = g_session.m_standardStats[1];
+    break;
+  case 34:
+    value = g_session.m_standardStats[2];
+    break;
+  case 35:
+    value = g_session.m_standardStats[3];
+    break;
+  case 36:
+    value = g_session.m_standardStats[4];
+    break;
+  case 37:
+    value = g_session.m_standardStats[5];
+    break;
+  case 55:
+    value = g_session.m_jobLevel;
+    break;
+  case 255:
+    value = traitStats[219];
+    break;
+  case 256:
+    value = traitStats[220];
+    break;
+  case 257:
+    value = traitStats[221];
+    break;
+  case 258:
+    value = traitStats[222];
+    break;
+  case 259:
+    value = traitStats[223];
+    break;
+  case 260:
+    value = traitStats[224];
+    break;
+  case 263:
+    value = g_runeSystemMgr->GetCurSlotCount();
+    break;
+  case 264: {
+    RuneSetData* runeSet = g_runeSystemMgr->GetCurRuneSet();
+    if (runeSet != nullptr) {
+      value = runeSet->m_grade;
+    }
+    break;
+  }
+  }
+  lua_pushnumber(state, value);
   return 1;
 }
 
