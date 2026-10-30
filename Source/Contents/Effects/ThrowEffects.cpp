@@ -147,6 +147,132 @@ void CThrowItemEffect::Slot03() {
   }
 }
 
+// OFFSET: 0x00B7EA40
+// FUNCTION: fn_19240
+void CVolcanoEffect::AddRings() {
+  int row = 0;
+  for (int baseAngle = 0; baseAngle < 360; baseAngle += 90) {
+    for (int segment = 0; segment <= 21; ++segment) {
+      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      if (!particle) {
+        continue;
+      }
+
+      particle->unknown_0004 = this->id;
+      particle->unknown_000C = segment;
+      particle->unknown_0010 = row;
+      particle->unknown_0008 = 1;
+
+      switch (this->id) {
+      case 223:
+        particle->unknown_00C0 = 15.0f;
+        particle->unknown_004C = 70;
+        particle->unknown_0054 = 0.0f;
+        particle->unknown_0050 = 360;
+        particle->alpha = 1;
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(row * 90);
+        particle->scale = static_cast<float>(row) + 1.0f;
+        break;
+      case 225:
+      case 236:
+      case 237:
+      case 238:
+      case 261:
+      case 263:
+      case 773:
+      case 934:
+      case 936:
+      case 937:
+      case 938:
+        particle->unknown_00C0 = 25.0f;
+        particle->unknown_004C = 80;
+        particle->unknown_0054 = 0.0f;
+        particle->unknown_0050 = 360;
+        particle->alpha = 1;
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(baseAngle);
+        particle->scale = static_cast<float>(row) + 1.0f;
+        break;
+      case 886:
+        particle->alpha = 1;
+        particle->unknown_0050 = 360;
+        particle->unknown_00C0 = 25.0f;
+        particle->unknown_004C = 80;
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(row * 90);
+        particle->unknown_0054 = 0.0f;
+        particle->scale = static_cast<float>(row) + 1.0f;
+        particle->SetColor(0, 0, 255);
+        break;
+      }
+
+      switch (this->id) {
+      case 223:
+      case 238:
+      case 934:
+        particle->SetTexture("effect\\ring_white.tga");
+        break;
+      case 225:
+      case 936:
+        particle->SetTexture("effect\\ring_red.tga");
+        break;
+      case 236:
+      case 886:
+        particle->SetTexture("effect\\ring_blue.tga");
+        break;
+      case 237:
+        particle->SetTexture("effect\\magic_green.tga");
+        break;
+      case 261:
+      case 263:
+      case 937:
+        particle->SetTexture("effect\\ring_yellow.tga");
+        break;
+      case 773:
+        particle->SetTexture("effect\\ring_purple.tga");
+        break;
+      case 938:
+        particle->SetTexture("effect\\ring_brown.tga");
+        break;
+      }
+
+      InitParticleQuad(particle->vertices);
+      this->particles.push_back(particle);
+    }
+
+    ++row;
+  }
+}
+
+// OFFSET: 0x00B7EE80
+// FUNCTION: fn_19241
+void CVolcanoEffect::Close() {
+  for (CParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
+
+// OFFSET: 0x00B7EEC0
+// FUNCTION: fn_19242
+void CVolcanoEffect::Slot01() {
+  switch (this->id) {
+  case 223:
+  case 225:
+  case 236:
+  case 237:
+  case 238:
+  case 261:
+  case 263:
+  case 773:
+  case 886:
+  case 934:
+  case 936:
+  case 937:
+  case 938:
+    this->AddRings();
+    break;
+  }
+}
 
 // OFFSET: 0x00B7F190
 // FUNCTION: fn_19243

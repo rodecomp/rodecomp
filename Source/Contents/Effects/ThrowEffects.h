@@ -37,9 +37,12 @@ static_assert(offsetof(CThrowItemEffect, particles) == 0xF8);
 
 class CVolcanoEffect : public CEffect {
 public:
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
+  void AddRings();
 
   /* 00CC */ vector3d lastInner;
   /* 00D8 */ vector3d lastOuter;
