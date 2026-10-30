@@ -35,6 +35,8 @@ public:
   __declspec(noinline) CRenderObject* GetSkillByAID(std::uint32_t aid) const;
   CItem* GetItemByAID(std::uint32_t aid) const;
   CRenderObject* GetActorByGID(int gid) const;
+  void RemovePcPos(std::uint32_t aid, bool notify);
+  void RemovePcPosForMove(std::uint32_t aid, bool notify);
   void ClearActorCells();
   void PlayerMove(const float& x, const float& z);
   void PcApproachToPlayer(std::uint32_t accountId, const CellFloatPos& pos);
