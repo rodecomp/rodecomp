@@ -1,8 +1,10 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Lists/UIDropDownBox.h"
+#include "UI/Party/UIMiniPartyWnd.h"
 #include <algorithm>
 #include "Client/Session.h"
+
 // STATIC: 0x014576A0
 // GLOBAL: gl_24367
 int g_dragWindowId = -1;
@@ -158,4 +160,20 @@ void UIWindowMgr::CancelActiveDialog() {
       (*entry)->SendMsg(nullptr, 20, 0, 0, 0, 0);
     }
   }
+}
+
+// OFFSET: 0x00A96C60
+// FUNCTION: fn_17193
+bool UIWindowMgr::HasMiniPartyMember(std::uint32_t accountId) {
+  for (UIWindow* window : this->snapExcluded) {
+    bool matches;
+    {
+      const MessengerMember member = static_cast<UIMiniPartyWnd*>(window)->m_member;
+      matches = member.accountId == accountId;
+    }
+    if (matches) {
+      return true;
+    }
+  }
+  return false;
 }

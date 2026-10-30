@@ -502,6 +502,7 @@ public:
   void HideWindow01C8();
   bool HasUnknown030C();
   bool IsDropDownChild(const UIWindow* window);
+  bool HasMiniPartyMember(std::uint32_t accountId);
   bool IsHoverParentVisible();
   bool IsFriend(const char* name);
   bool IsSharedWindowId(int id);
