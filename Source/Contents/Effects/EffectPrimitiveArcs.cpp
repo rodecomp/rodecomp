@@ -454,6 +454,142 @@ void CEffectPrim::RenderGroundSquareBlend(matrix& wtm) {
 }
 
 // OFFSET: 0x00BED490
+// FUNCTION: fn_19979
+void CEffectPrim::RenderJitterQuads(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  vector3d vec4{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    if (slot.height[8] >= 360.0f || slot.height[8] < 0.0f) {
+      slot.height[8] = 0.0f;
+    }
+
+    int angle = slot.fullDisplayAngle;
+    const float radius = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + slot.distance;
+    vec1.x = radius * g_cosTable[angle];
+    vec1.y = 0.0f;
+    vec1.z = radius * g_sinTable[angle];
+    angle += rand() % 16;
+    angle += angle + 85 < 360 ? 85 : -275;
+    if (angle < 0) {
+      angle += 360;
+    }
+    vec2.x = radius * g_cosTable[angle];
+    vec2.y = 0.0f;
+    vec2.z = radius * g_sinTable[angle];
+    angle += rand() % 16;
+    angle += angle + 85 < 360 ? 85 : -275;
+    if (angle < 0) {
+      angle += 360;
+    }
+    vec3.x = radius * g_cosTable[angle];
+    vec3.y = 0.0f;
+    vec3.z = radius * g_sinTable[angle];
+    angle += rand() % 16;
+    angle += angle + 85 < 360 ? 85 : -275;
+    if (angle < 0) {
+      angle += 360;
+    }
+    vec4.x = radius * g_cosTable[angle];
+    vec4.y = 0.0f;
+    vec4.z = radius * g_sinTable[angle];
+    this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+
+    vec1.x = slot.vecBNow.x + vec1.x;
+    vec1.y = slot.vecBNow.y + vec1.y;
+    vec1.z = slot.vecBNow.z + vec1.z;
+    vec2.x = slot.vecBNow.x + vec2.x;
+    vec2.y = slot.vecBNow.y + vec2.y;
+    vec2.z = slot.vecBNow.z + vec2.z;
+    vec3.x = slot.vecBNow.x + vec3.x;
+    vec3.y = slot.vecBNow.y + vec3.y;
+    vec3.z = slot.vecBNow.z + vec3.z;
+    vec4.x = slot.vecBNow.x + vec4.x;
+    vec4.y = slot.vecBNow.y + vec4.y;
+    vec4.z = slot.vecBNow.z + vec4.z;
+
+    switch (this->state.slots[0].flag1[1]) {
+    case 1:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      this->RenderTeiRect(
+        &rpCnt, slot.alphaB / 2, vector3d{vec2.x + 0.2f, vec2.y + 0.0f, vec2.z + 0.0f}, vector3d{vec1.x + 0.2f, vec1.y + 0.0f, vec1.z + 0.0f},
+        vector3d{vec4.x + 0.2f, vec4.y + 0.0f, vec4.z + 0.0f}, vector3d{vec3.x + 0.2f, vec3.y + 0.0f, vec3.z + 0.0f}, wtm, 0,
+        slot.flag1[0], 1, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+      this->RenderTeiRect(
+        &rpCnt, slot.alphaB / 2, vector3d{vec2.x - 0.2f, vec2.y - 0.0f, vec2.z - 0.0f}, vector3d{vec1.x - 0.2f, vec1.y - 0.0f, vec1.z - 0.0f},
+        vector3d{vec4.x - 0.2f, vec4.y - 0.0f, vec4.z - 0.0f}, vector3d{vec3.x - 0.2f, vec3.y - 0.0f, vec3.z - 0.0f}, wtm, 0,
+        slot.flag1[0], 1, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+      this->RenderTeiRect(
+        &rpCnt, slot.alphaB / 2, vector3d{vec2.x + 0.0f, vec2.y + 0.0f, vec2.z + 0.2f}, vector3d{vec1.x + 0.0f, vec1.y + 0.0f, vec1.z + 0.2f},
+        vector3d{vec4.x + 0.0f, vec4.y + 0.0f, vec4.z + 0.2f}, vector3d{vec3.x + 0.0f, vec3.y + 0.0f, vec3.z + 0.2f}, wtm, 0,
+        slot.flag1[0], 1, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+      this->RenderTeiRect(
+        &rpCnt, slot.alphaB / 2, vector3d{vec2.x - 0.0f, vec2.y - 0.0f, vec2.z - 0.2f}, vector3d{vec1.x - 0.0f, vec1.y - 0.0f, vec1.z - 0.2f},
+        vector3d{vec4.x - 0.0f, vec4.y - 0.0f, vec4.z - 0.2f}, vector3d{vec3.x - 0.0f, vec3.y - 0.0f, vec3.z - 0.2f}, wtm, 0,
+        slot.flag1[0], 1, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+      break;
+    case 2:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 0, slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      this->RenderTeiRect(
+        &rpCnt, slot.alphaB / 2, vector3d{vec2.x + 0.2f, vec2.y + 0.0f, vec2.z + 0.0f}, vector3d{vec1.x + 0.2f, vec1.y + 0.0f, vec1.z + 0.0f},
+        vector3d{vec4.x + 0.2f, vec4.y + 0.0f, vec4.z + 0.0f}, vector3d{vec3.x + 0.2f, vec3.y + 0.0f, vec3.z + 0.0f}, wtm, 0,
+        slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+      this->RenderTeiRect(
+        &rpCnt, slot.alphaB / 2, vector3d{vec2.x - 0.2f, vec2.y - 0.0f, vec2.z - 0.0f}, vector3d{vec1.x - 0.2f, vec1.y - 0.0f, vec1.z - 0.0f},
+        vector3d{vec4.x - 0.2f, vec4.y - 0.0f, vec4.z - 0.0f}, vector3d{vec3.x - 0.2f, vec3.y - 0.0f, vec3.z - 0.0f}, wtm, 0,
+        slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+      this->RenderTeiRect(
+        &rpCnt, slot.alphaB / 2, vector3d{vec2.x + 0.0f, vec2.y + 0.0f, vec2.z + 0.2f}, vector3d{vec1.x + 0.0f, vec1.y + 0.0f, vec1.z + 0.2f},
+        vector3d{vec4.x + 0.0f, vec4.y + 0.0f, vec4.z + 0.2f}, vector3d{vec3.x + 0.0f, vec3.y + 0.0f, vec3.z + 0.2f}, wtm, 0,
+        slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+      this->RenderTeiRect(
+        &rpCnt, slot.alphaB / 2, vector3d{vec2.x - 0.0f, vec2.y - 0.0f, vec2.z - 0.2f}, vector3d{vec1.x - 0.0f, vec1.y - 0.0f, vec1.z - 0.2f},
+        vector3d{vec4.x - 0.0f, vec4.y - 0.0f, vec4.z - 0.2f}, vector3d{vec3.x - 0.0f, vec3.y - 0.0f, vec3.z - 0.2f}, wtm, 0,
+        slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+      break;
+    default:
+      this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      this->RenderTeiRect(
+        &rpCnt, slot.alphaB / 2, vector3d{vec2.x + 0.2f, vec2.y + 0.0f, vec2.z + 0.0f}, vector3d{vec1.x + 0.2f, vec1.y + 0.0f, vec1.z + 0.0f},
+        vector3d{vec4.x + 0.2f, vec4.y + 0.0f, vec4.z + 0.0f}, vector3d{vec3.x + 0.2f, vec3.y + 0.0f, vec3.z + 0.0f}, wtm, 0,
+        slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+      this->RenderTeiRect(
+        &rpCnt, slot.alphaB / 2, vector3d{vec2.x - 0.2f, vec2.y - 0.0f, vec2.z - 0.0f}, vector3d{vec1.x - 0.2f, vec1.y - 0.0f, vec1.z - 0.0f},
+        vector3d{vec4.x - 0.2f, vec4.y - 0.0f, vec4.z - 0.0f}, vector3d{vec3.x - 0.2f, vec3.y - 0.0f, vec3.z - 0.0f}, wtm, 0,
+        slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+      this->RenderTeiRect(
+        &rpCnt, slot.alphaB / 2, vector3d{vec2.x + 0.0f, vec2.y + 0.0f, vec2.z + 0.2f}, vector3d{vec1.x + 0.0f, vec1.y + 0.0f, vec1.z + 0.2f},
+        vector3d{vec4.x + 0.0f, vec4.y + 0.0f, vec4.z + 0.2f}, vector3d{vec3.x + 0.0f, vec3.y + 0.0f, vec3.z + 0.2f}, wtm, 0,
+        slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+      this->RenderTeiRect(
+        &rpCnt, slot.alphaB / 2, vector3d{vec2.x - 0.0f, vec2.y - 0.0f, vec2.z - 0.2f}, vector3d{vec1.x - 0.0f, vec1.y - 0.0f, vec1.z - 0.2f},
+        vector3d{vec4.x - 0.0f, vec4.y - 0.0f, vec4.z - 0.2f}, vector3d{vec3.x - 0.0f, vec3.y - 0.0f, vec3.z - 0.2f}, wtm, 0,
+        slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
+      );
+      break;
+    }
+  }
+}
 
 // OFFSET: 0x00BEFD80
 // FUNCTION: fn_19983
