@@ -7,10 +7,12 @@
 #include <vector>
 
 class UIScrollBar;
+struct UIButtonContext;
 
 class UIBattleMsgOptionWnd : public UIFrameWnd {
 public:
   UIBattleMsgOptionWnd(UIWindowContext& windows, UIFrameContext& frames);
+  void Paint() override;
   void Slot26(int x, int y) override;
   void Slot35(int delta) override;
   int RowAt(int x, int y);
@@ -27,6 +29,9 @@ public:
   /* 010C */ int unknown_010C;
   /* 0110 */ unsigned char unknown_0110;
   /* 0111 */ unsigned char unknown_0111[0x7];
+
+protected:
+  UIButtonContext* m_controls;
 };
 
 #endif

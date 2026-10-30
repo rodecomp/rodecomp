@@ -21,11 +21,15 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Layout/WindowSnapping.h"
+#include "UI/Lists/UITabControl.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindowCallBtnWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Render/Renderer.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 
 #include <stdio.h>
 #include <cstdlib>
@@ -486,6 +490,46 @@ void UINewChatWnd::Resize(int width, int height) {
 void UINewChatWnd::Slot27(int x, int y) {
   if (g_windowMgr.Capture() == this && g_chatInputFlag == 1) {
     this->UIFrameWnd::Slot27(x, y);
+  }
+}
+
+// OFFSET: 0x0092D420
+// FUNCTION: fn_12669
+void UINewChatWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  this->FillRegion(4, this->geometry.height - this->m_inputAreaHeight, this->geometry.width - 8, 1, 0x8E8E8E);
+
+  if (static_cast<unsigned char>(g_windowMgr.unknown_03F4) != 0 && this->m_inputAreaHeight + this->m_inputOffsetY < this->geometry.height) {
+    const int tabsWidth = static_cast<int>(this->m_tabControl->labels.size()) * this->m_tabWidth;
+    this->FillRegion(3, this->m_inputOffsetY, 1, this->geometry.height - this->m_inputOffsetY, 0xFFFFFF);
+    this->FillRegion(tabsWidth + 3, this->m_inputOffsetY, this->geometry.width - tabsWidth - 10, 1, 0xFFFFFF);
+    this->FillRegion(this->geometry.width - 6, this->m_inputOffsetY, 1, 1, 0x8E8E8E);
+    this->FillRegion(this->geometry.width - 5, this->m_inputOffsetY + 1, 1, 1, 0x8E8E8E);
+    this->FillRegion(this->geometry.width - 4, this->m_inputOffsetY + 2, 1, this->geometry.height - this->m_inputOffsetY - 2, 0x8E8E8E);
+  }
+
+  if (g_windowMgr.unknown_0024) {
+    auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\dialog_bg.bmp")));
+    this->DrawBitmap(0, this->geometry.height - background->image.height, &background->image, false);
+  }
+
+  if (static_cast<int>(this->geometry.unknown_0030) > 0) {
+    if (g_windowMgr.unknown_0026) {
+      auto* chatMode = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+        Resolve(g_windowMgr.unknown_0024 ? "유저인터페이스\\basic_interface\\chatmode_on.bmp" : "유저인터페이스\\basic_interface\\chatmode_off.bmp")
+      ));
+      if (chatMode) {
+        this->m_chatModeX = this->m_chatModeButton->geometry.x - chatMode->image.width - 2;
+        this->DrawBitmap(this->m_chatModeX, 4, &chatMode->image, true);
+      }
+    }
+
+    auto* lock = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
+      Resolve(g_chatInputFlag ? "유저인터페이스\\basic_interface\\unlock_dragwnd.bmp" : "유저인터페이스\\basic_interface\\lock_dragwnd.bmp")
+    ));
+    if (lock) {
+      this->DrawBitmap(this->m_lockButtonX, 4, &lock->image, true);
+    }
   }
 }
 

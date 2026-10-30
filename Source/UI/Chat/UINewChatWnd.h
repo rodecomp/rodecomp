@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <vector>
 
+class UITabControl;
+
 extern std::uint8_t g_chatInputFlag;
 
 class UINewChatWnd : public UIFrameWnd {
@@ -13,6 +15,7 @@ public:
   void Resize(int width, int height) override;
   void Move(int x, int y) override;
   void Show(int visible) override;
+  void Paint() override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
   bool Slot42(void* output) override;
@@ -26,8 +29,17 @@ private:
   /* 00D0 */ int m_listHeight;
   /* 00D4 */ unsigned char unknown_00D4[0x20];
   /* 00F4 */ std::vector<UIWindow*> m_tabs;
-  /* 0100 */ unsigned char unknown_0100[0x1C];
+  /* 0100 */ unsigned char unknown_0100[0x8];
+  /* 0108 */ int m_lockButtonX;
+  /* 010C */ int m_chatModeX;
+  /* 0110 */ unsigned char unknown_0110[0xC];
   /* 011C */ int m_inputOffsetY;
+  /* 0120 */ int m_tabWidth;
+  /* 0124 */ int m_inputAreaHeight;
+  /* 0128 */ UIWindow* unknown_0128;
+  /* 012C */ UIWindow* m_chatModeButton;
+  /* 0130 */ unsigned char unknown_0130[0x8];
+  /* 0138 */ UITabControl* m_tabControl;
 };
 
 #endif
