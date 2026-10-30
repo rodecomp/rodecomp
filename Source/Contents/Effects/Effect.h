@@ -28,7 +28,7 @@ public:
   virtual bool Slot06();
   virtual void Slot07();
   virtual void Slot08(int argument1, int argument2, int argument3);
-  virtual void Slot09(int) {}
+  virtual void Slot09(int argument);
   virtual void Slot10(int argument);
   virtual void Slot11(std::string name);
   virtual void Slot12();
@@ -50,7 +50,7 @@ public:
   virtual int Slot28();
   virtual void Slot29(int id);
   virtual ~CEffect();
-  virtual void Slot31() {}
+  virtual void Slot31();
   virtual void Slot32();
   virtual bool Slot33();
   void AddEvent(int kind, const char* text, int frame, int argument);

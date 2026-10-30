@@ -1240,6 +1240,16 @@ void CGameActor::Slot60() {
 void CGameActor::Slot43(int, int) {
 }
 
+// OFFSET: 0x005A1A80
+// FUNCTION: fn_03072
+void CGameActor::Slot28(int) {
+}
+
+// OFFSET: 0x005A1AA0
+// FUNCTION: fn_03074
+void CGameActor::Slot24(int, int) {
+}
+
 // OFFSET: 0x00CABD40
 // FUNCTION: fn_21037
 int CGameActor::Slot37() {
@@ -1536,6 +1546,11 @@ void CNpc::Slot22(int) {
 // OFFSET: 0x005A1A10
 // FUNCTION: fn_03065
 void CNpc::Slot25(int) {
+}
+
+// OFFSET: 0x005A1AB0
+// FUNCTION: fn_03075
+void CNpc::Slot23(int, int) {
 }
 
 // OFFSET: 0x005A19A0

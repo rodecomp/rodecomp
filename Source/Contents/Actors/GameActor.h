@@ -178,11 +178,11 @@ public:
   virtual void Slot21(int value);
   virtual void Slot22(int value);
   virtual void Slot23(int first, int second);
-  virtual void Slot24(int first, int second) = 0;
+  virtual void Slot24(int first, int second);
   virtual void Slot25(int value);
   virtual void Slot26(int value);
   virtual void Slot27(int value);
-  virtual void Slot28(int value) = 0;
+  virtual void Slot28(int value);
   virtual void Slot29(int value) = 0;
   virtual void Slot30();
   virtual void Slot31();

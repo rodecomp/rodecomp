@@ -58,6 +58,16 @@ void CEffect::Slot08(int, int, int) {
 void CEffect::Slot11(std::string) {
 }
 
+// OFFSET: 0x005A2140
+// FUNCTION: fn_03086
+void CEffect::Slot09(int) {
+}
+
+// OFFSET: 0x005A2160
+// FUNCTION: fn_03088
+void CEffect::Slot31() {
+}
+
 // OFFSET: 0x005A2170
 // FUNCTION: fn_03089
 vector3d CEffect::Slot25() {
