@@ -3,6 +3,7 @@
 #include "Contents/MapSkyMgr.h"
 #include "Render/Primitives/AlphaRectangle.h"
 #include "Render/Renderer.h"
+#include "Render/ScreenGeometry.h"
 #include "Render/TextureQuad.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Render/Primitives/RenderPrimitive.h"
@@ -13,7 +14,9 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "Utility/Math/AffineMatrix.h"
 
+#include <cmath>
 #include <windows.h>
 #include <timeapi.h>
 
@@ -143,4 +146,73 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
   this->m_kafraBottom = static_cast<int>(vertices[3].y);
   this->m_kafraLeft = static_cast<int>(vertices[0].x);
   this->m_kafraRight = static_cast<int>(vertices[3].x);
+}
+
+// OFFSET: 0x00917D70
+// FUNCTION: fn_12590
+void UIRoMapWnd::DrawArrow(
+  float x0, float y0, float x1, float y1, float startLeft, float startTop, float startRight, float startBottom, float endLeft, float endTop, float endRight,
+  float endBottom, int bodyWidth, CTexture* body, int headWidth, CTexture* head, float progress, std::uint32_t color
+) {
+  float dy = y1 - y0;
+  float dx = x1 - x0;
+  const float length = 1.0f / SquareRoot(dy * dy + dx * dx);
+  const float dirY = length * dy;
+  const float dirX = length * dx;
+  float angle = std::acos(dirX);
+  if (dirY < 0.0f) {
+    angle = 6.283184f - angle;
+  }
+  angle += 1.570796f;
+  const float sine = std::sin(angle);
+  const float cosine = std::cos(angle);
+  const float normal = 1.0f / SquareRoot(cosine * cosine + sine * sine);
+  const float normalX = normal * cosine;
+  const float normalY = normal * sine;
+  const float offsetX = static_cast<float>(bodyWidth) * normalX;
+  const float offsetY = static_cast<float>(bodyWidth) * normalY;
+  float sideX0 = offsetX + x0;
+  float sideX1 = offsetX + x1;
+  float sideY1 = offsetY + y1;
+  float sideY0 = offsetY + y0;
+
+  while (x0 > startLeft && startRight > x0 && y0 > startTop && startBottom > y0) {
+    x0 += dirX;
+    y0 += dirY;
+  }
+  while (x1 > endLeft && endRight > x1 && y1 > endTop && endBottom > y1) {
+    x1 -= dirX;
+    y1 -= dirY;
+  }
+  while (sideX0 > startLeft && startRight > sideX0 && sideY0 > startTop && startBottom > sideY0) {
+    sideX0 += dirX;
+    sideY0 += dirY;
+  }
+  while (sideX1 > endLeft && endRight > sideX1 && sideY1 > endTop && endBottom > sideY1) {
+    sideX1 -= dirX;
+    sideY1 -= dirY;
+  }
+
+  const float midX = (x1 - x0) * progress + x0;
+  const float midY = (y1 - y0) * progress + y0;
+  float cornerX;
+  float cornerY;
+  if (progress == 1.0f) {
+    cornerX = (sideX1 - sideX0) + sideX0;
+    cornerY = (sideY1 - sideY0) + sideY0;
+  } else {
+    cornerX = midX + offsetX;
+    cornerY = midY + offsetY;
+  }
+  DrawScreenQuad(x0, y0, sideX0, sideY0, midX, midY, cornerX, cornerY, body, color);
+
+  if (progress < 1.0f) {
+    const float width = static_cast<float>(bodyWidth);
+    const float size = static_cast<float>(headWidth);
+    const float tipX = (offsetX * g_depthAverageHalf + midX) - width * dirX;
+    const float tipY = (offsetY * g_depthAverageHalf + midY) - width * dirY;
+    const float halfX = size * normalX * g_depthAverageHalf;
+    const float halfY = size * normalY * g_depthAverageHalf;
+    DrawScreenQuad(tipX, tipY, tipX - halfX, tipY - halfY, tipX + halfX, tipY + halfY, size * dirX + tipX, size * dirY + tipY, head, color);
+  }
 }

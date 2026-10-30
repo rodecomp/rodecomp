@@ -4,8 +4,11 @@
 #include "Contents/WorldView/WorldViewData.h"
 #include "UI/Window/UIFrameWnd.h"
 
+#include <cstdint>
 #include <list>
 #include <string>
+
+class CTexture;
 
 struct RoMapMarker {
   /* 0000 */ std::string name;
@@ -45,6 +48,10 @@ public:
   void DrawRecordFaces(int unused);
   void DrawRecordAreas();
   void DrawKafraIcon(float x, float y);
+  void DrawArrow(
+    float x0, float y0, float x1, float y1, float startLeft, float startTop, float startRight, float startBottom, float endLeft, float endTop, float endRight,
+    float endBottom, int bodyWidth, CTexture* body, int headWidth, CTexture* head, float progress, std::uint32_t color
+  );
   void RefreshPartyRecords();
   bool LocateRecord(WorldViewRecord& record);
 
