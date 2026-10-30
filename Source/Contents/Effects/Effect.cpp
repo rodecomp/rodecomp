@@ -10,9 +10,12 @@
 #include "Contents/Actors/Pc.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Ground/TerrainHeight.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Resource/World/TerrainResource.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"
+
+#include <bit>
 
 // OFFSET: 0x00B4DAE0
 // FUNCTION: fn_18979
@@ -114,6 +117,43 @@ void CEffect::SetSourceActor(std::uint32_t aid) {
     this->sourcePosition[1] = source->render.position.y;
     this->sourcePosition[2] = source->render.position.z;
   }
+}
+
+// OFFSET: 0x00B4E3E0
+// FUNCTION: fn_18993
+void CEffect::Update(std::uint32_t aid) {
+  if (CRenderObject* actor = FindRenderObject(aid)) {
+    this->position[0] = actor->render.position.x;
+    this->position[1] = actor->render.position.y;
+    this->position[2] = actor->render.position.z;
+  }
+
+  this->Slot02();
+  if (this->outsideRange) {
+    return;
+  }
+
+  const vector3d player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+  for (auto event = this->events.begin(); event != this->events.end(); ++event) {
+    if (this->frame != event->frame) {
+      continue;
+    }
+
+    switch (event->kind) {
+    case 0:
+      if (!event->text.empty()) {
+        g_soundMgr->PlayWave(event->text.c_str(), this->position[0] - player.x, std::bit_cast<float>(event->argument),
+                             this->position[2] - player.z, 250, 40, 1.0f, 0);
+      }
+      break;
+    case 1:
+      g_modeMgr.GetGameMode()->SendMsg(122, 0, 0, 0, 0);
+      break;
+    }
+  }
+
+  this->Slot03();
+  ++this->frame;
 }
 
 // OFFSET: 0x00B3C390

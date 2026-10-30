@@ -61,6 +61,7 @@ public:
   bool ActorExists() const;
   bool IsFinished() const;
   void UpdateVisibility();
+  void Update(std::uint32_t aid);
   bool InRange();
 
   /* 0004 */ int id;
