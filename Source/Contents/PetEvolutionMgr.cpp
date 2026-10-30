@@ -169,5 +169,69 @@ bool CPetEvolutionMgr::IsAutoFeeding(int petEgg) {
 }
 
 // OFFSET: 0x00673C50
+// FUNCTION: fn_05385
+int CPetEvolutionMgr::L_InsertEvolutionRecipeLGU(lua_State* state) {
+  if (!lua_isnumber(state, -4)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 1st is must number");
+  } else if (!lua_isnumber(state, -3)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 2nd is must number");
+  } else if (!lua_isnumber(state, -2)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 3th is must number");
+  } else if (!lua_isnumber(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 4th is must number");
+  } else {
+    const int petEgg = static_cast<int>(lua_tonumber(state, -4));
+    const int target = static_cast<int>(lua_tonumber(state, -3));
+    const double material = lua_tonumber(state, -2);
+    const int count = static_cast<int>(lua_tonumber(state, -1));
+    if (!g_session.IsPetEgg(petEgg)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("PetEgg Item %d not found or not petegg", petEgg));
+    } else if (!g_session.IsPetEgg(target)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("Revolutuion PetEgg Item %d not found or not petegg", target));
+    } else if (count < 1) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("Material Item Cnt %d Error", count));
+    } else {
+      const std::pair<bool, std::string> result = g_petEvolutionMgr->InsertRecipe(petEgg, target, static_cast<int>(material), count);
+      if (!result.first) {
+        lua_pushboolean(state, 0);
+        lua_pushstring(state, FormatString("InsertRecipe : %s", result.second.c_str()));
+      } else {
+        lua_pushboolean(state, 1);
+        lua_pushstring(state, "good");
+      }
+    }
+  }
+  return 2;
+}
 
 // OFFSET: 0x00673E90
+// FUNCTION: fn_05386
+int CPetEvolutionMgr::L_InsertPetAutoFeeding(lua_State* state) {
+  if (!lua_isnumber(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "argment 1st is must number");
+  } else {
+    const int petEgg = static_cast<int>(lua_tonumber(state, -1));
+    if (!g_session.IsPetEgg(petEgg)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, FormatString("PetEgg Item %d not found or not petegg", petEgg));
+    } else {
+      const std::pair<bool, std::string> result = g_petEvolutionMgr->InsertPetAutoFeeding(petEgg);
+      if (!result.first) {
+        lua_pushboolean(state, 0);
+        lua_pushstring(state, FormatString("InsertPetAutoFeeding : %s", result.second.c_str()));
+      } else {
+        lua_pushboolean(state, 1);
+        lua_pushstring(state, "good");
+      }
+    }
+  }
+  return 2;
+}
