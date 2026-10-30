@@ -522,6 +522,7 @@ public:
   bool HasItemCount(int itemId, int count) const;
   void NormalizeHead(int* head, int job);
   int GetDisplayJob();
+  const char* GetEFSTImgFileName(int efstId, int type);
   bool IsTreeGroupThree(int job) const;
   std::string GetSexName(int sex);
   std::string GetHeadActName(int job, int sex, int* head);
