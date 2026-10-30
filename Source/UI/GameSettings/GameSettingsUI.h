@@ -19,8 +19,9 @@ class CUIStaticText;
 template <class T, class D> class CUIComboBox : public CUIControl {
 public:
   void Paint() override;
+  int AddItem(const D& value, bool refresh);
   unsigned int Selected() const;
-  void UpdateListHeight();
+  __declspec(noinline) void UpdateListHeight();
 
   /* 0084 */ unsigned char unknown_0084[0x08];
   /* 008C */ CUIListBoxEx<T, D>* listBox;
@@ -66,6 +67,12 @@ public:
 
 class CUIGroupGraphics : public CUIGroup {
 public:
+  void Refresh() override;
+  int GetPendingBackend();
+  void LoadAdapters();
+  void LoadModes();
+  void OnAdapterSelect(CUIComboItem* item, const RenderAdapter& adapter);
+
   /* 0084 */ CUIComboBox<CUIComboItem, RenderAdapter>* m_adapterCombo;
   /* 0088 */ CUIStaticText* m_modeText;
   /* 008C */ CUIComboBox<CUIComboItem, DisplayMode>* m_modeCombo;
@@ -77,6 +84,10 @@ public:
 
 class CUIGroupGraphicsAPI : public CUIGroup {
 public:
+  void Refresh() override;
+  void LoadBackends();
+  void OnSelect(CUIComboItem* item, const RenderBackend& backend);
+
   /* 0084 */ CUIComboBox<CUIComboItem, RenderBackend>* m_combo;
   /* 0088 */ int m_backend;
   /* 008C */ int m_pendingBackend;
@@ -169,6 +180,8 @@ public:
 class CUIGraphicsPage : public CUIPage {
 public:
   bool IsModified();
+  int GetPendingBackend();
+  void LoadAdapters();
 
   /* 0080 */ CUIGroupGraphicsAPI* m_graphicsApi;
   /* 0084 */ CUIGroupGraphics* m_graphics;
@@ -195,14 +208,26 @@ public:
   void Slot16() override;
   void Paint() override;
 };
+
+std::string GetHotkeyText(int tab, int index);
 }
 
 class CUIGameSettingsUI : public UIFrameWnd {
 public:
   void Slot25(int x, int y) override;
 
+  void sub_A3F0F0();
+  bool IsTab4Selected();
+  void sub_A43380();
+  void sub_A43390();
+  void sub_A433A0();
+  void sub_A433B0();
+  void sub_A433C0();
+
   /* 00B8 */ unsigned char unknown_00B8[0x1C];
   /* 00D8 */ CUIControl* m_titleBar;
+  /* 00DC */ unsigned char unknown_00DC[0x14];
+  /* 00F0 */ CUITab* m_tab;
 };
 
 #endif

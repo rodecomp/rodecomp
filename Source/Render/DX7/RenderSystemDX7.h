@@ -47,6 +47,7 @@ private:
 };
 
 extern int g_configuredFullscreen;
+extern int g_configuredBitsPerPixel;
 
 void ClearDirectDrawModes();
 

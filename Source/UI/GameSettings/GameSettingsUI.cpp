@@ -1,24 +1,31 @@
 #include "UI/GameSettings/GameSettingsUI.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/MessageTable.h"
 #include "Contents/SkinMgr.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Render/DeviceContext/DCSurface.h"
 #include "Render/DisplayMode.h"
 #include "Render/DX7/RenderSystemDX7.h"
 #include "Render/RenderAdapter.h"
 #include "Render/RenderBackends.h"
+#include "Script/LuaScript.h"
 #include "UI/Buttons/UIRadioButton.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Window/UIRoulletteWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
+#include "Utility/Text/StringUtil.h"
 
 #include <algorithm>
 #include <cstdint>
+#include <iterator>
+#include <list>
 #include <string>
+#include <vector>
 
 namespace {
   struct RodexSpamOptionPacket {
@@ -29,6 +36,12 @@ namespace {
   static_assert(sizeof(RodexSpamOptionPacket) == 12);
 }
 
+template <>
+__declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::SelectItem(CUIListItem* item);
+template <>
+__declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::SelectItem(CUIListItem* item);
+template <>
+__declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::SelectItem(CUIListItem* item);
 template <>
 __declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::SelectItem(CUIListItem* item);
 
@@ -87,6 +100,10 @@ template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderAdapter>::UpdateLi
 template void CUIComboBox<GameSettingsUI::CUIComboItem, DisplayMode>::UpdateListHeight();
 template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderBackend>::UpdateListHeight();
 template void CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::UpdateListHeight();
+
+// OFFSET: 0x00A3EA80
+
+template int CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::AddItem(const std::string& value, bool refresh);
 
 // OFFSET: 0x00A34590
 // FUNCTION: fn_15411
@@ -666,6 +683,46 @@ void CUIPage::Paint() {
   DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xCECECE);
 }
 
+// OFFSET: 0x00A40030
+
+// OFFSET: 0x00A3F6A0
+
+// OFFSET: 0x00A3FBD0
+
+// OFFSET: 0x00A42460
+
+// OFFSET: 0x00A427A0
+
+// OFFSET: 0x00A3F950
+
+// OFFSET: 0x00A436E0
+// FUNCTION: fn_16034
+void CUIGroupGraphics::Refresh() {
+  this->LoadAdapters();
+}
+
+// OFFSET: 0x00A42BD0
+
+// OFFSET: 0x00A3FAC0
+// FUNCTION: fn_15955
+void CUIGroupGraphicsAPI::OnSelect(CUIComboItem* item, const RenderBackend& backend) {
+  CUIListBoxEx<CUIComboItem, RenderBackend>* list = this->m_combo->listBox;
+  if (static_cast<int>(list->selected) >= 0 && list->selected < list->data.size()) {
+    auto node = list->data.begin();
+    std::advance(node, static_cast<int>(list->selected));
+    this->m_pendingBackend = node->identity;
+    static_cast<CUIGraphicsPage*>(this->parent)->LoadAdapters();
+  }
+}
+
+// OFFSET: 0x00A436F0
+// FUNCTION: fn_16035
+void CUIGroupGraphicsAPI::Refresh() {
+  this->LoadBackends();
+}
+
+// OFFSET: 0x00A3FCD0
+
 // OFFSET: 0x00A40C30
 // FUNCTION: fn_15985
 void CUIComboItem::Slot16() {
@@ -761,4 +818,41 @@ void CUIGameSettingsUI::Slot25(int x, int y) {
   if (this->m_titleBar->IsPointInside(x, y)) {
     this->UIFrameWnd::Slot25(x, y);
   }
+}
+
+// OFFSET: 0x00A3F0F0
+// FUNCTION: fn_15939
+void CUIGameSettingsUI::sub_A3F0F0() {
+}
+
+// OFFSET: 0x00A40240
+// FUNCTION: fn_15967
+bool CUIGameSettingsUI::IsTab4Selected() {
+  const int id = this->m_tab->current ? this->m_tab->current->geometry.id : -1;
+  return id == 4;
+}
+
+// OFFSET: 0x00A43380
+// FUNCTION: fn_16024
+void CUIGameSettingsUI::sub_A43380() {
+}
+
+// OFFSET: 0x00A43390
+// FUNCTION: fn_16025
+void CUIGameSettingsUI::sub_A43390() {
+}
+
+// OFFSET: 0x00A433A0
+// FUNCTION: fn_16026
+void CUIGameSettingsUI::sub_A433A0() {
+}
+
+// OFFSET: 0x00A433B0
+// FUNCTION: fn_16027
+void CUIGameSettingsUI::sub_A433B0() {
+}
+
+// OFFSET: 0x00A433C0
+// FUNCTION: fn_16028
+void CUIGameSettingsUI::sub_A433C0() {
 }
