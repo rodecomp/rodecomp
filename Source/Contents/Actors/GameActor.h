@@ -238,6 +238,7 @@ public:
   int WeaponActionBase(int weaponType);
   int GetUnknown0404();
   int MountHeightOffset();
+  float sub_CAD4B0();
   void ResetState();
   void UpdateMotionFrame();
   void ProcessHitMessage(CGameObject* sender, const ActorHitInfo* info, int unused1, int unused2);

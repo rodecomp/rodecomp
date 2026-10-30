@@ -1,7 +1,12 @@
 #include "Contents/Effects/SpriteEffect.h"
 
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
+#include "Contents/Actors/GameActor.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/SpriteParticle.h"
+#include "Contents/World/World.h"
 #include "Utility/Cipher/XorBytes.h"
 
 #include <cstdint>
@@ -375,6 +380,223 @@ void CSpriteEffect::Slot04() {
     CSpriteParticle* particle = *it;
     if (particle->unknown_00E8 > 0) {
       particle->sub_B40F30(1);
+    }
+  }
+}
+
+// OFFSET: 0x00B79520
+// FUNCTION: fn_19199
+bool CSpriteEffect::Slot06() {
+  switch (this->id) {
+  case 0x3DE:
+    return !this->IsFinished();
+  case 0x4A8: {
+    if (this->actor == 0) {
+      return false;
+    }
+
+    if (!g_modeMgr.GetGameMode()) {
+      return false;
+    }
+
+    CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    if (!scene) {
+      return false;
+    }
+
+    if (!scene->GetItemByAID(this->actor)) {
+      return false;
+    }
+
+    return true;
+  }
+  case 0x46A:
+  case 0x47F:
+  case 0x480:
+  case 0x481:
+  case 0x482:
+  case 0x483:
+  case 0x484:
+  case 0x485:
+  case 0x486:
+  case 0x487:
+  case 0x488:
+  case 0x4BB:
+  case 0x4BC:
+  case 0x4BD:
+  case 0x561:
+  case 0x58B:
+  case 0x651:
+  case 0x652:
+  case 0x653:
+  case 0x95A:
+  case 0x978:
+  case 0x97C:
+  case 0x97D:
+  case 0x97E:
+  case 0x97F:
+  case 0x98B:
+  case 0x99A:
+    return this->ActorExists();
+  }
+
+  for (CSpriteParticle* particle : this->particles) {
+    if (particle->life == 0.0f) {
+      return true;
+    }
+
+    if (particle->life * 60.0f > static_cast<float>(particle->unknown_00E8)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00B79780
+// FUNCTION: fn_19200
+void CSpriteEffect::Slot03() {
+  for (CSpriteParticle* particle : this->particles) {
+    ++particle->unknown_00E8;
+
+    switch (this->id) {
+    case 0x46A: {
+      int height = 8;
+      if (CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
+        height = static_cast<int>(actor->sub_CAD4B0() + 8.0f);
+      }
+
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1] - static_cast<float>(height);
+      particle->position.z = this->position[2];
+      break;
+    }
+    case 0x47B:
+    case 0x4A8:
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1] - 10.0f;
+      particle->position.z = this->position[2];
+      break;
+    case 0x47F:
+    case 0x480:
+    case 0x481:
+    case 0x482:
+    case 0x483:
+    case 0x484:
+    case 0x485:
+    case 0x486:
+    case 0x487:
+    case 0x488: {
+      int height = 25;
+      if (CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
+        height = static_cast<int>(actor->sub_CAD4B0() + 25.0f);
+      }
+
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1] - static_cast<float>(height);
+      particle->position.z = this->position[2];
+      break;
+    }
+    case 0x4BB:
+    case 0x4BC:
+    case 0x4BD: {
+      CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
+      if (!actor) {
+        break;
+      }
+
+      const int height = static_cast<int>(actor->sub_CAD4B0() + 8.0f);
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1] - static_cast<float>(height);
+      particle->position.z = this->position[2];
+      break;
+    }
+    case 0x561: {
+      CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
+      if (!actor) {
+        break;
+      }
+
+      const int height = static_cast<int>(actor->sub_CAD4B0() + 3.0f);
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1] - static_cast<float>(height);
+      particle->position.z = this->position[2];
+      break;
+    }
+    case 0x95A:
+    case 0x978: {
+      CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
+      if (!actor) {
+        break;
+      }
+
+      const int height = static_cast<int>(actor->sub_CAD4B0());
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1] - static_cast<float>(height);
+      particle->position.z = this->position[2];
+      break;
+    }
+    case 0x97C: {
+      CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
+      if (!actor) {
+        break;
+      }
+
+      const float height = actor->sub_CAD4B0();
+      const float offset = g_session.IsDoramJob(actor->GetEffectiveJob(-1)) ? height + 13.7f : height + 17.0f;
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1] - offset;
+      particle->position.z = this->position[2];
+      break;
+    }
+    case 0x97D: {
+      CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
+      if (!actor) {
+        break;
+      }
+
+      const float offset = g_session.IsDoramJob(actor->GetEffectiveJob(-1)) ? 2.2f : 0.4f;
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1] - offset;
+      particle->position.z = this->position[2];
+      break;
+    }
+    case 0x97E:
+    case 0x97F: {
+      CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
+      if (!actor) {
+        break;
+      }
+
+      const float height = actor->sub_CAD4B0();
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1] - height;
+      particle->position.z = this->position[2];
+      break;
+    }
+    case 0x98B:
+      particle->unknown_02BC = 1;
+      particle->unknown_02BD = 1;
+      particle->unknown_02C4 = 0.0f;
+      particle->unknown_02C0 = 0.0f;
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1];
+      particle->position.z = this->position[2];
+      break;
+    case 0x99A:
+      particle->unknown_02BC = 1;
+      particle->unknown_02BD = 1;
+      particle->unknown_02C4 = -105.0f;
+      particle->unknown_02C0 = 0.0f;
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1];
+      particle->position.z = this->position[2];
+      break;
+    default:
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1];
+      particle->position.z = this->position[2];
+      break;
     }
   }
 }
