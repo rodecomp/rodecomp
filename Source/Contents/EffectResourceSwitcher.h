@@ -9,20 +9,40 @@
 #include <cstddef>
 #include <map>
 #include <string>
+#include <utility>
 
 struct EZ2STREffectInfo {
-  /* 0000 */ int id;
+  /* 0000 */ int id = 0;
   /* 0004 */ std::string name;
   /* 001C */ float offsetX;
   /* 0020 */ float offsetY;
-  /* 0024 */ int unknown_0024;
+  /* 0024 */ int unknown_0024 = 0;
   /* 0028 */ std::string unknown_0028;
-  /* 0040 */ int unknown_0040[2];
+  /* 0040 */ int unknown_0040[2] = {-1, 0};
+};
+
+struct EZ2STREffectRecord {
+  /* 0000 */ std::string name;
+  /* 0018 */ double offsetX;
+  /* 0020 */ double offsetY;
+  /* 0028 */ bool unknown_0028;
+  /* 0029 */ bool unknown_0029;
+  /* 002A */ bool unknown_002A;
+  /* 002C */ std::string unknown_002C;
+  /* 0044 */ bool unknown_0044;
+  /* 0048 */ int unknown_0048[2];
+  /* 0050 */ bool unknown_0050;
 };
 
 class CEZ2STREffectMgr : public Singleton<CEZ2STREffectMgr> {
 public:
   /* 0004 */ std::map<std::string, EZ2STREffectInfo> effects;
+
+  struct InfoInserter {
+    /* 0000 */ CEZ2STREffectMgr* manager;
+
+    void operator()(const std::pair<const std::string, EZ2STREffectRecord>& entry) const;
+  };
 
   EZ2STREffectInfo* FindById(int id);
   int EffectId(const std::string& name);
@@ -83,6 +103,9 @@ public:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EZ2STREffectInfo) == 0x48);
 static_assert(sizeof(CEZ2STREffectMgr) == 0xC);
+static_assert(sizeof(EZ2STREffectRecord) == 0x58);
+static_assert(offsetof(EZ2STREffectRecord, unknown_002C) == 0x2C);
+static_assert(offsetof(EZ2STREffectRecord, unknown_0050) == 0x50);
 static_assert(offsetof(EZ2STREmitter, currentFrame) == 0x3CC4);
 static_assert(offsetof(EZ2STREmitter, looping) == 0x3F5C);
 static_assert(offsetof(EZ2STREmitter, unknown_3F98) == 0x3F98);

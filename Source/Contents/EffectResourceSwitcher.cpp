@@ -9,8 +9,10 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/World/World.h"
+#include "Network/TextEncoding.h"
 #include "Resource/World/TerrainResource.h"
 
+#include <algorithm>
 #include <cctype>
 #include <new>
 #include <string>
@@ -467,6 +469,43 @@ void CEZ2STREffect::Slot16(int argument) {
 
   this->frameStep = argument / 16;
   this->SetEventFrame(0, this->frameStep + 1);
+}
+
+// OFFSET: 0x00700070
+// FUNCTION: fn_06983
+void CEZ2STREffectMgr::InfoInserter::operator()(const std::pair<const std::string, EZ2STREffectRecord>& entry) const {
+  const EZ2STREffectRecord& record = entry.second;
+  if (record.name.empty()) {
+    return;
+  }
+
+  EZ2STREffectInfo info;
+  info.id = static_cast<int>(this->manager->effects.size());
+  info.name = static_cast<const std::string&>(FromUtf8(record.name, g_textCodePage));
+  info.offsetX = static_cast<float>(record.offsetX);
+  if (record.unknown_0028) {
+    info.unknown_0024 |= 1;
+  }
+  if (record.unknown_0029) {
+    info.unknown_0024 |= 2;
+  }
+  info.offsetY = static_cast<float>(record.offsetY);
+  if (record.unknown_002A) {
+    info.unknown_0024 |= 4;
+  }
+  info.unknown_0028 = static_cast<const std::string&>(FromUtf8(record.unknown_002C, g_textCodePage));
+  if (record.unknown_0044) {
+    info.unknown_0024 |= 8;
+  }
+  info.unknown_0040[0] = record.unknown_0048[0];
+  info.unknown_0040[1] = record.unknown_0048[1];
+  if (record.unknown_0050) {
+    info.unknown_0024 |= 16;
+  }
+
+  std::string key = FromUtf8(entry.first, g_textCodePage);
+  std::transform(key.begin(), key.end(), key.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+  this->manager->effects.insert(std::make_pair(key, info));
 }
 
 // OFFSET: 0x00700A10
