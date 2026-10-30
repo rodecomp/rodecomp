@@ -974,6 +974,20 @@ void CWhirlwindEffect::SetDuration(int duration) {
 }
 
 // OFFSET: 0x005B0A20
+// FUNCTION: fn_03343
+void CSkillAction_KR_NASTY_SLASH::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!this->CanUse(source) || !target) {
+    return;
+  }
+
+  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  const std::uint8_t effectSource[] = {0x49, 0x60, 0x74, 0x19, 0x7A, 0x9A, 0x80, 0x43, 0x46, 0x72, 0x6F, 0x6D};
+  thread_local EncryptedName<sizeof(effectSource), 0x2FF3C5036D070127ULL> effectName(effectSource);
+  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot17(angle);
+    effect->Slot18(25.0f);
+  }
+}
 
 // OFFSET: 0x005B3EA0
 
