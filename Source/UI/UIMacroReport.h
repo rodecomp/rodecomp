@@ -24,6 +24,7 @@ public:
 
   void OnButtonClick();
   void OnEditSubmit();
+  void SendReport();
   void OnReportTypeSelect(CUIRadioButton* button);
 };
 

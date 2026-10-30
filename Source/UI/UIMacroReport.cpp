@@ -1,11 +1,54 @@
 #include "UI/UIMacroReport.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Render/Renderer.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Window/UIControl.h"
+#include "UI/Window/WindowManagerWindows.h"
+
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+
+#pragma pack(push, 1)
+struct ReportUserPacket {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint32_t accountId;
+  /* 0006 */ int targetId;
+  /* 000A */ char targetName[24];
+  /* 0022 */ std::uint16_t type;
+  /* 0024 */ char message[101];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ReportUserPacket) == 0x89);
+static_assert(offsetof(ReportUserPacket, type) == 0x22);
+static_assert(offsetof(ReportUserPacket, message) == 0x24);
 
 // OFFSET: 0x00A47A30
 // FUNCTION: fn_16098
 void CUIMacroReport::OnButtonClick() {
+}
+
+// OFFSET: 0x00A47A50
+// FUNCTION: fn_16099
+void CUIMacroReport::SendReport() {
+  ReportUserPacket packet;
+  packet.id = ID_CZ_REQ_REPORT_USER;
+  packet.targetId = this->unknown_0100;
+  packet.accountId = g_session.m_aid;
+  packet.type = static_cast<std::uint16_t>(this->m_reportType);
+  strncpy_s(packet.targetName, sizeof(packet.targetName), this->unknown_0108.c_str(), _TRUNCATE);
+  {
+    const std::string message = this->m_messageEdit->edit->Text();
+    strncpy_s(packet.message, sizeof(packet.message), message.c_str(), _TRUNCATE);
+  }
+  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+  this->m_frameContext->windows.CloseWindow(10005);
 }
 
 // OFFSET: 0x00A47C30
