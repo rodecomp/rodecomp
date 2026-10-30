@@ -435,3 +435,22 @@ bool UIChatHisBox::SaveChatLog(const char* path) {
   std::fclose(file);
   return true;
 }
+
+// OFFSET: 0x0089C210
+// FUNCTION: fn_11583
+void UIScrollBar::SetPosition(int value) {
+  this->position = value;
+}
+
+// OFFSET: 0x0089C220
+// FUNCTION: fn_11584
+void UIScrollBar::SetRange(int maximum, int visible, int total) {
+  this->maximum = maximum;
+  this->visible = visible;
+  this->total = total;
+  this->Invalidate();
+
+  if (this->position > this->maximum) {
+    this->position = this->maximum;
+  }
+}

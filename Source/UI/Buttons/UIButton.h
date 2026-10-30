@@ -35,6 +35,7 @@ struct UIButtonContext {
 
 class UIButton : public UIWindow {
   friend class UIAdvenPartyBoardWnd;
+  friend class UIAchListWnd;
 
 public:
   UIButton(UIWindowContext& windowContext, UIButtonContext& buttonContext);

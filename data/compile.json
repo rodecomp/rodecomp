@@ -803,6 +803,7 @@
   "Source/UI/Text/TextFitting.cpp": 2,
   "Source/UI/Text/TextMarkup.cpp": 2,
   "Source/UI/Text/TextWrapping.cpp": 2,
+  "Source/UI/Text/UIAchWnd.cpp": 2,
   "Source/UI/Text/UIBalloonText.cpp": 2,
   "Source/UI/Text/UIStaticText.cpp": 2,
   "Source/UI/Text/UITextViewer.cpp": 2,
