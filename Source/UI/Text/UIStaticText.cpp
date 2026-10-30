@@ -1,6 +1,9 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Text/UIStaticText.h"
+
+#include <cstdio>
 
 // OFFSET: 0x00850550
 // FUNCTION: fn_10678
@@ -231,4 +234,73 @@ void UIStaticText::SetFont(int family, int height, unsigned char bold, unsigned 
   this->fontHeight = height;
   this->bold = bold;
   this->italic = italic;
+}
+
+// OFFSET: 0x008685E0
+// FUNCTION: fn_10962
+void UIBmpTextButton::AddTextStyle(int state, int height, std::uint32_t color, unsigned char bold, unsigned char shadow, int x, int y) {
+  if (x == -1000) {
+    const int width = this->TextWidth(
+      this->m_buttonContext->fonts, this->m_buttonContext->locale, this->text.c_str(), this->text.size(), 0, height, bold, 0
+    );
+    x = static_cast<int>((this->geometry.width - width) * 0.5);
+  }
+
+  if (y == -1000) {
+    const int textHeight = this->TextHeight(
+      this->m_buttonContext->fonts, this->m_buttonContext->locale, this->text.c_str(), this->text.size(), 0, height, bold, 0
+    );
+    y = static_cast<int>((this->geometry.height - textHeight) * 0.5);
+  }
+
+  for (const BitmapButtonTextStyle& style : this->styles) {
+    if (style.state == state) {
+      return;
+    }
+  }
+
+  this->styles.push_back(BitmapButtonTextStyle{state, x, y, height, bold, color, shadow});
+}
+
+// OFFSET: 0x00868750
+// FUNCTION: fn_10963
+void UIStaticText::SetTextAutoWidth(const char* value) {
+  this->tooltipEnabled = 0;
+  this->tooltip = value;
+  this->text = value;
+  this->Invalidate();
+
+  const int height = this->geometry.height;
+  const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, value, 0, this->fontFamily, this->fontHeight, this->bold, 0);
+  this->Resize(width + 2, height);
+}
+
+// OFFSET: 0x008687F0
+// FUNCTION: fn_10964
+void UIStaticText::SetNumber(int value) {
+  char buffer[40];
+  std::sprintf(buffer, "%d", value);
+  this->text = buffer;
+  this->tooltip = buffer;
+  this->tooltipEnabled = 0;
+  this->Invalidate();
+}
+
+// OFFSET: 0x00867CA0
+// FUNCTION: fn_10948
+void UIStaticText::SetTextWithinWidth(const char* value, int outlineValue) {
+  this->text = value;
+  this->tooltip = value;
+  this->outline = outlineValue;
+  this->tooltipEnabled = 0;
+
+  const int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, value, 0, 0, this->fontHeight, this->bold, 0);
+  if (this->geometry.width < width) {
+    this->SetTextFitted(value);
+  } else {
+    const int height = this->geometry.height;
+    const int textWidth = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, value, 0, 0, this->fontHeight, this->bold, 0);
+    this->Resize(textWidth, height);
+  }
+  this->Invalidate();
 }

@@ -21,6 +21,7 @@ public:
   ~UIBmpTextButton() override;
   void Paint() override;
   void SetText(std::string value);
+  void AddTextStyle(int state, int height, std::uint32_t color, unsigned char bold, unsigned char shadow, int x, int y);
 
   /* 0120 */ std::string text;
   /* 0138 */ std::vector<BitmapButtonTextStyle> styles;
