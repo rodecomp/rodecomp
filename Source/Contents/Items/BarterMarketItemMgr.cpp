@@ -724,7 +724,7 @@ struct BarterChunkVector {
 
 // OFFSET: 0x005DB160
 // FUNCTION: fn_03784
-BarterChunk16* CopyChunks16(BarterChunk16* first, BarterChunk16* last, BarterChunk16* dest)
+BarterChunk16* BarterChunkVector::Umove(BarterChunk16* first, BarterChunk16* last, BarterChunk16* dest)
 {
   while (first != last) {
     *dest = *first;
@@ -875,5 +875,46 @@ BarterKeyLookup BarterKeyTree::FindLowerBound(const std::vector<int>& key)
 }
 
 // OFFSET: 0x005D98E0
+// FUNCTION: fn_03758
+void CExpandedBarterMarketItemMgr::LoadInventoryItems()
+{
+  this->itemInfos.clear();
+  const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size();
+  for (int i = 0; i < count; ++i) {
+    ITEM_INFO item = g_session.GetInventoryItemAt(i);
+    if (item.identified) {
+      this->itemInfos.insert(std::make_pair(item.unknown_0060, item));
+    }
+  }
+}
 
 // OFFSET: 0x005DA6D0
+// FUNCTION: fn_03774
+bool CExpandedBarterMarketItemMgr::HasRequiredItems()
+{
+  this->LoadInventoryItems();
+  for (std::vector<BarterChunk16>::iterator chunk = this->chunks.begin(); chunk != this->chunks.end(); ++chunk) {
+    int required = chunk->amount;
+    std::multimap<int, ITEM_INFO>::iterator it = this->itemInfos.begin();
+    for (;;) {
+      if (it == this->itemInfos.end()) {
+        return false;
+      }
+      if (std::atoi(it->second.itemId.c_str()) == chunk->field_0 && (chunk->field_4 <= 0 || it->second.unknown_0060 >= chunk->field_4)) {
+        if (it->second.quantity > required) {
+          it->second.quantity -= required;
+          break;
+        }
+        if (it->second.quantity == required) {
+          this->itemInfos.erase(it);
+          break;
+        }
+        required -= it->second.quantity;
+        it = this->itemInfos.erase(it);
+      } else {
+        ++it;
+      }
+    }
+  }
+  return true;
+}
