@@ -17,8 +17,13 @@ public:
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot48() override;
+  void Slot16() override;
 
-  /* 00E8 */ unsigned char unknown_00E8[0x14];
+  void OnSimpleView(bool simpleView);
+
+  /* 00E8 */ unsigned char unknown_00E8[0x0C];
+  /* 00F4 */ CUIButton* unknown_00F4;
+  /* 00F8 */ CUIButton* unknown_00F8;
   /* 00FC */ int questType;
   /* 0100 */ int questId;
   /* 0104 */ unsigned char pressed;
@@ -29,6 +34,9 @@ public:
 class CUIQuestList : public CUIControl {
 public:
   void Paint() override;
+  void Slot16() override;
+
+  /* 0080 */ CUIListBoxEx<CUIQuestItem, unsigned long>* list;
 };
 }
 

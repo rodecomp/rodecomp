@@ -231,6 +231,7 @@ public:
   }
 
   void SelectItem(CUIListItem* item);
+  bool SelectIndex(int index);
 
   // OFFSET: 0x00A04B30
   // FUNCTION: fn_14963
