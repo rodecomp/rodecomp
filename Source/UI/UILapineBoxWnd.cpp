@@ -16,12 +16,11 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 
-#include <list>
-
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <new>
+#include <utility>
 #include <vector>
 #include <windows.h>
 #include <timeapi.h>
@@ -83,6 +82,17 @@ void UIIngredientInfoWnd::Slot25(int x, int y) {
 }
 
 // OFFSET: 0x00600940
+// FUNCTION: fn_04164
+void UIIngredientInfoWnd::Slot31(int, int) {
+  if (this->insufficient != 1) {
+    this->selected = 1;
+    this->Invalidate();
+
+    if (this->parent) {
+      this->parent->SendMsg(this, 6, 0, 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00600980
 // FUNCTION: fn_04165
@@ -193,7 +203,52 @@ void UIIngredientInfoWnd::Slot32(int, int) {
   }
 }
 
+__declspec(noinline) void UILapineBoxWnd::MaterialPosition(int* out, int index) {
+  const int count = static_cast<int>(this->items.size());
+  if (index < 0 || static_cast<unsigned>(index) >= static_cast<unsigned>(count)) {
+    out[0] = 0;
+    out[1] = 0;
+    return;
+  }
+
+  int left = count > 5 ? 0x19 : 0x21;
+  int top = count > 5 ? 0x98 : 0xA2;
+  if (index >= 5) {
+    left = 0x2A;
+    top = 0xB7;
+  }
+  left += (index % 5) * 0x22;
+  out[0] = left;
+  out[1] = top;
+}
+
+__declspec(noinline) void UILapineBoxWnd::ReadMaterial(ITEM_INFO* out, int x, int y) {
+  const int count = static_cast<int>(this->items.size());
+  for (int index = 0; index < count; ++index) {
+    int position[2] = {};
+    this->MaterialPosition(position, index);
+    if (x >= position[0] && x <= position[0] + 0x18 && y >= position[1] && y <= position[1] + 0x18) {
+      new (out) ITEM_INFO(this->items[index]);
+      return;
+    }
+  }
+  new (out) ITEM_INFO(0);
+}
+
 // OFFSET: 0x00600C40
+// FUNCTION: fn_04169
+void UILapineBoxWnd::NotifyWindowAt(int x, int y) {
+  alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
+  ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
+  this->ReadMaterial(&item, x, y);
+
+  if (static_cast<unsigned>(item.unknown_0000[1]) > 0) {
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
+    window->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+
+  item.~ITEM_INFO();
+}
 
 // OFFSET: 0x00600D00
 // FUNCTION: fn_04170
@@ -294,8 +349,148 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   return 0;
 }
 // OFFSET: 0x006011E0
+// FUNCTION: fn_04173
+int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c,
+                                           std::intptr_t d) {
+  switch (message) {
+  case 6:
+    for (UIIngredientInfoWnd* entry : this->items) {
+      if (sender != entry) {
+        entry->selected = 0;
+        entry->Invalidate();
+      }
+    }
+    this->Invalidate();
+    break;
+
+  case 0x17:
+    for (const ITEM_INFO& material : this->materials) {
+      const int id = std::atoi(material.itemId.c_str());
+      std::vector<int> ids = g_session.FindInventoryIndicesByItemId(id, 1);
+      for (const int value : ids) {
+        this->AddIngredient(static_cast<std::uint32_t>(value));
+      }
+    }
+
+    for (UIIngredientInfoWnd* entry : this->items) {
+      const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, entry->item.unknown_0000[1]);
+      if (owned.unknown_0000[1] == 0) {
+        entry->Show(0);
+      }
+    }
+    this->SendMsg(this, 0x57, 0, 0, 0, 0);
+    break;
+
+  case 0x57: {
+    std::vector<UIIngredientInfoWnd*>& items = this->items;
+    std::size_t index = 0;
+    int y = 7;
+    while (index < items.size()) {
+      UIIngredientInfoWnd* entry = items[index];
+      if (entry->geometry.visible == 0) {
+        entry->Invalidate();
+        items.erase(items.begin() + static_cast<std::ptrdiff_t>(index));
+      } else {
+        entry->Move(0, y);
+        this->childOrigins[entry] = std::pair<int, int>(0, y);
+        SortChildWindows(this);
+        entry->Invalidate();
+        ++index;
+        y += 0x1E;
+      }
+    }
+    SortChildWindows(this);
+    this->Invalidate();
+    break;
+  }
+
+  case 0x68: {
+    UIIngredientInfoWnd* selected = nullptr;
+    for (UIIngredientInfoWnd* entry : this->items) {
+      if (static_cast<int>(a) == entry->item.unknown_0000[1]) {
+        selected = entry;
+        break;
+      }
+    }
+    if (selected == nullptr) {
+      return UIWindow::SendMsg(sender, message, a, b, c, d);
+    }
+
+    std::vector<ITEM_INFO>::iterator found = this->materials.end();
+    for (std::vector<ITEM_INFO>::iterator it = this->materials.begin(); it != this->materials.end(); ++it) {
+      ITEM_INFO copy(*it);
+      if (std::atoi(selected->item.itemId.c_str()) == std::atoi(copy.itemId.c_str())) {
+        found = it;
+        break;
+      }
+    }
+
+    if (found != this->materials.end()) {
+      if (selected->item.quantity < found->quantity) {
+        const char* text = FormatString(LookupMessage(0xB52), found->quantity);
+        this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+        return -1;
+      }
+
+      if (selected->item.unknown_0060 < found->unknown_0060) {
+        this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xB53)), 0, 0, 0);
+        return -1;
+      }
+
+      selected->item.quantity -= found->quantity;
+      if (selected->item.quantity < 1) {
+        selected->Show(0);
+      } else {
+        selected->insufficient = 1;
+        selected->Invalidate();
+      }
+      this->SendMsg(this, 0x57, 0, 0, 0, 0);
+      break;
+    }
+    break;
+  }
+
+  default:
+    break;
+  }
+
+  return UIWindow::SendMsg(sender, message, a, b, c, d);
+}
 
 // OFFSET: 0x006016C0
+// FUNCTION: fn_04174
+void UILapineBoxWnd::SetIngredient(int id) {
+  this->unknown_00C4 = id;
+
+  ITEM_INFO item;
+  item.SetItemId(id);
+
+  char name[0x104];
+  std::memset(name, 0, sizeof(name));
+  int capacity = 0x104;
+  ItemDescriptions descriptions{g_itemDescriptions};
+  descriptions.Name(item, name, capacity, 0);
+  this->title.assign(name, std::strlen(name));
+
+  int optionCount = 0;
+  g_luaScript->CallTable("tblLapineDdukddakBox", "set_resource_item_list", "d>d", id, &optionCount);
+
+  int minRefine = 0;
+  g_luaScript->CallTable("tblLapineDdukddakBox", "get_min_need_refine", "d>d", id, &minRefine);
+  this->ingredientList->minRefine = minRefine;
+
+  int refine = 0;
+  g_luaScript->CallTable("tblLapineDdukddakBox", "get_max_need_refine", "d>d", id, &refine);
+  this->ingredientList->maxRefine = refine;
+
+  this->ingredientList->SendMsg(this, 0x17, 0, 0, 0, 0);
+
+  g_luaScript->CallTable("tblLapineDdukddakBox", "get_need_item_count", "d>d", id, &this->maxItems);
+
+  const char* source = nullptr;
+  g_luaScript->CallTable("tblLapineDdukddakBox", "get_need_source_string", "d>s", id, &source);
+  this->description.assign(source, std::strlen(source));
+}
 
 // OFFSET: 0x00601BC0
 // FUNCTION: fn_04176
