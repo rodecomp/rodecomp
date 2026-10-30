@@ -7,6 +7,9 @@
 #include <string>
 #include <vector>
 
+class UIBmpTextButton;
+struct UIButtonContext;
+
 struct AttendanceBanner {
   /* 0000 */ std::string image;
   /* 0018 */ std::string url;
@@ -16,6 +19,7 @@ struct AttendanceBanner {
 
 class UICheckAttendanceWnd_Banner : public UIWindow {
 public:
+  UICheckAttendanceWnd_Banner(UIWindowContext& windows, UIButtonContext& controls);
   ~UICheckAttendanceWnd_Banner() override;
   void Slot19() override;
   void Paint() override;
@@ -23,21 +27,27 @@ public:
   void Slot31(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void AddBanner(std::string image, std::string url, int action, int argument);
+  void CreateButtons();
 
   /* 007C */ std::vector<AttendanceBanner> m_entries;
   /* 0088 */ std::vector<UIWindow*> m_buttons;
   /* 0094 */ unsigned int m_current;
   /* 0098 */ std::uint32_t m_lastSwitch;
+
+protected:
+  UIButtonContext* m_controls;
 };
 
 class UICheckAttendanceWnd : public UIFrameWnd {
 public:
   ~UICheckAttendanceWnd() override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot32(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void VisitChildren() override;
   int SlotAt(int x, int y);
 
@@ -52,7 +62,10 @@ public:
   /* 00C0 */ int m_daysLeft;
   /* 00C4 */ int m_highlight;
   /* 00C8 */ UICheckAttendanceWnd_Banner* m_banner;
-  /* 00CC */ UIWindow* m_notice;
+  /* 00CC */ UIBmpTextButton* m_notice;
+
+protected:
+  UIButtonContext* m_controls;
 };
 
 #endif

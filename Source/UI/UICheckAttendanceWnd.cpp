@@ -14,12 +14,23 @@
 #include "Render/Textures/TextureCache.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "Contents/MessageTable.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "Script/LuaScript.h"
+#include "UI/Buttons/UIBmpRadioBtn.h"
+#include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <windows.h>
 #include <shellapi.h>
 #include <timeapi.h>
 #include <cstring>
+#include <ctime>
+
+struct CheckAttendanceRequestPacket {
+  /* 0000 */ std::int16_t id;
+};
 
 // OFFSET: 0x007DCAD0
 
@@ -65,6 +76,50 @@ int UICheckAttendanceWnd::SlotAt(int x, int y) {
     }
   }
   return -1;
+}
+
+// INLINED
+UICheckAttendanceWnd_Banner::UICheckAttendanceWnd_Banner(UIWindowContext& windows, UIButtonContext& controls)
+    : UIWindow(windows, 0), m_current(0), m_lastSwitch(timeGetTime()), m_controls(&controls) {
+}
+
+// OFFSET: 0x007DCF50
+// FUNCTION: fn_09639
+void UICheckAttendanceWnd::Slot15(int, int) {
+  tm end;
+  end.tm_mday = g_checkAttendanceMgr->m_config1;
+  end.tm_hour = 15;
+  end.tm_min = 0;
+  end.tm_sec = 0;
+  end.tm_year = end.tm_mday / 10000 - 1900;
+  end.tm_mon = end.tm_mday % 10000 / 100 - 1;
+  end.tm_mday = end.tm_mday % 100;
+  __time32_t now;
+  _time32(&now);
+  __time32_t remaining = _mktime32(&end) - now;
+  if (remaining < 1) {
+    this->m_daysLeft = 0;
+  } else {
+    this->m_daysLeft = _localtime32(&remaining)->tm_yday;
+  }
+
+  this->m_notice = new UIBmpTextButton(*this->m_context, *this->m_controls);
+  this->m_notice->SetBitmap("유저인터페이스\\check_attendance\\bt_ok_normal.bmp", 0, 0);
+  this->m_notice->SetBitmap("유저인터페이스\\check_attendance\\bt_ok_normal.bmp", 1, 0);
+  this->m_notice->SetBitmap("유저인터페이스\\check_attendance\\bt_ok_press.bmp", 2, 0);
+  this->m_notice->SetSize(this->m_notice->BitmapWidth(), this->m_notice->BitmapHeight());
+  this->m_notice->SetText(LookupMessage(3045));
+  this->m_notice->AddTextStyle(0, 14, 0x313131, 1, 1, -1000, -1000);
+  this->m_notice->AddTextStyle(1, 14, 0x313131, 1, 1, -1000, -1000);
+  this->m_notice->AddTextStyle(2, 14, 0x313131, 1, 1, -1000, -1000);
+  this->m_notice->Move(170, 376);
+  this->m_notice->SetId(201);
+  this->AddChild(this->m_notice);
+
+  this->m_banner = new UICheckAttendanceWnd_Banner(*this->m_context, *this->m_controls);
+  this->m_banner->SetSize(441, 41);
+  this->m_banner->Move(this->geometry.width / 2 - this->m_banner->geometry.width / 2, 85);
+  this->AddChild(this->m_banner);
 }
 
 // OFFSET: 0x007DDA90
@@ -191,6 +246,61 @@ void UICheckAttendanceWnd::Slot32(int x, int y) {
   item.SetItemId(g_checkAttendanceMgr->GetReward(slot + 1).first);
   item.identified = 1;
   window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+}
+
+// OFFSET: 0x007DE0C0
+// FUNCTION: fn_09650
+void UICheckAttendanceWnd_Banner::CreateButtons() {
+  if (this->m_entries.size() > 1) {
+    int index = 0;
+    for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
+      UIBmpRadioBtn* button = new UIBmpRadioBtn(*this->m_context, *this->m_controls);
+      button->SetBitmap("유저인터페이스\\check_attendance\\btn_ad_off.bmp", 0);
+      button->SetBitmap("유저인터페이스\\check_attendance\\btn_ad_off.bmp", 1);
+      button->SetBitmap("유저인터페이스\\check_attendance\\btn_ad_on.bmp", 2);
+      button->Move(this->geometry.width + (index - static_cast<int>(this->m_entries.size())) * 12 - 12, 41);
+      button->SendMsg(this, 13, index == static_cast<int>(this->m_current), 0, 0, 0);
+      this->AddChild(button);
+      this->m_buttons.push_back(button);
+      ++index;
+    }
+    this->Invalidate();
+  }
+}
+
+// OFFSET: 0x007DE250
+// FUNCTION: fn_09651
+int UICheckAttendanceWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    if (argument1 == 184) {
+      if (this->m_blinking) {
+        CheckAttendanceRequestPacket packet;
+        packet.id = 0xAEF;
+        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+      }
+    } else if (argument1 == 201) {
+      g_windowMgr.CloseWindow(328);
+    }
+  } else if (message == 34) {
+    if (g_luaScript->Call("set_checkAttendance_banner", "") == true) {
+      this->m_banner->CreateButtons();
+    }
+    if (this->m_banner->m_entries.size() == 0) {
+      this->m_banner->Show(0);
+      this->Resize(488, 413);
+      this->m_notice->Move(170, 376);
+    } else {
+      this->m_banner->Show(1);
+      this->Resize(488, 455);
+      this->m_notice->Move(170, 418);
+    }
+    this->m_checkedDays = argument1 / 10;
+    this->m_blinking = argument1 == this->m_checkedDays * 10;
+    this->m_blinking = this->m_checkedDays < this->m_rewardCount && this->m_blinking;
+    this->Invalidate();
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
 // OFFSET: 0x007DE460

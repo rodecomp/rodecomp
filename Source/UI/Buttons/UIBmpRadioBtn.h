@@ -22,6 +22,7 @@ struct UIBmpRadioBtnText {
 
 class UIBmpRadioBtn : public UIWindow {
 public:
+  UIBmpRadioBtn(UIWindowContext& windows, UIButtonContext& controls);
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
