@@ -103,8 +103,6 @@ void RouletteMgr::Draw() {
   this->Update();
 }
 
-// OFFSET: 0x0080ADC0
-
 // OFFSET: 0x0080B1D0
 // FUNCTION: fn_10078
 void RouletteMgr::SetAdditionItem(int itemId) {
@@ -126,9 +124,7 @@ void RouletteMgr::SetAdditionItem(int itemId) {
 // FUNCTION: fn_10079
 void RouletteMgr::StartSpin(int x, int y, int originX, int originY) {
   this->SetQuad(x, y, originX, originY);
-  for (int i = 0; i < 6; ++i) {
-    this->m_quads.start.vertices[i] = this->m_quads.current.vertices[i];
-  }
+  this->m_quads.start = this->m_quads.current;
 
   const float distance = (8 - this->m_stage) * 36.0f;
   for (int i = 0; i < 6; ++i) {
@@ -195,4 +191,52 @@ void RouletteMgr::SetResult(unsigned short index, unsigned char shown, unsigned 
       this->m_resultItem = it->second;
     }
   }
+}
+
+// OFFSET: 0x0080ADC0
+// FUNCTION: fn_10077
+void RouletteMgr::Update() {
+  if (this->m_spinning != 1) {
+    return;
+  }
+
+  if (this->m_cycle > 6) {
+    if (this->m_frame >= 8 - this->m_stage - this->m_index) {
+      this->m_resultShown = 1;
+      const int originY = static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0);
+      const int originX = static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0);
+      this->SetQuad((this->m_stage + this->m_index) * 36 + 173, 341 - this->m_stage * 40, originX, originY);
+      g_windowMgr.unknown_0464->m_enabled = 1;
+      g_windowMgr.unknown_0464->Invalidate();
+      this->m_spinning = 0;
+      return;
+    }
+
+    if (timeGetTime() - this->m_lastTick < this->m_interval) {
+      return;
+    }
+  } else {
+    if (timeGetTime() - this->m_lastTick < this->m_interval) {
+      return;
+    }
+
+    if (this->m_frame >= 8 - this->m_stage) {
+      this->m_quads.current = this->m_quads.start;
+      const float interval = static_cast<float>(this->m_interval);
+      this->m_interval = static_cast<unsigned long>(interval * 0.34f + interval);
+      ++this->m_cycle;
+      this->m_frame = 0;
+      return;
+    }
+  }
+
+  for (int index = 0; index < 6; ++index) {
+    if (this->m_quads.current.vertices[index].x > this->m_quads.target.vertices[index].x) {
+      this->m_quads.current.vertices[index].x -= 36.0f;
+    }
+  }
+
+  const DWORD now = timeGetTime();
+  ++this->m_frame;
+  this->m_lastTick = now;
 }
