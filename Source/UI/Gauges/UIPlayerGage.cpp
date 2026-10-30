@@ -1,5 +1,11 @@
 #include "UI/Gauges/UIPcGage.h"
 
+// OFFSET: 0x00882450
+// FUNCTION: fn_11304
+bool UIPlayerGage::Slot03() {
+  return true;
+}
+
 // OFFSET: 0x0089B560
 // FUNCTION: fn_11568
 void UIRechargeGage::SetValues(int current, int maximum) {

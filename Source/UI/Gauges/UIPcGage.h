@@ -38,6 +38,7 @@ public:
 
 class UIPlayerGage : public UIGage {
 public:
+  bool Slot03() override;
   void SetFirstValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
   void SetSecondValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
   void SetThirdValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
