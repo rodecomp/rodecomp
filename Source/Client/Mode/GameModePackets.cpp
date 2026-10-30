@@ -272,6 +272,32 @@ void CGameMode::ReceiveRentalItemTime(const unsigned char* packet) {
   }
 }
 
+// OFFSET: 0x00D264E0
+// FUNCTION: fn_21679
+void CGameMode::ReceiveUnknownD264E0(const unsigned char* packet) {
+  if (UIWindow* window = g_windowMgr.unknown_01F0) {
+    window->SendMsg(nullptr, 32, 0, 0, 0, 0);
+    window->SendMsg(nullptr, 63, 0, 0, 0, 0);
+  } else {
+    this->unknown_024C = 0;
+    this->unknown_02DC = *reinterpret_cast<const int*>(packet + 2);
+    g_windowMgr.CloseWindow(16);
+    g_windowMgr.CloseWindow(17);
+    g_windowMgr.CloseWindow(226);
+  }
+
+  if (UIWindow* window = g_windowMgr.unknown_01F4) {
+    window->SendMsg(nullptr, 32, 0, 0, 0, 0);
+    window->SendMsg(nullptr, 63, 0, 0, 0, 0);
+  } else {
+    this->unknown_024C = 0;
+    this->unknown_02DC = *reinterpret_cast<const int*>(packet + 2);
+    g_windowMgr.CloseWindow(226);
+    g_windowMgr.CloseWindow(17);
+    g_windowMgr.CloseWindow(226);
+  }
+}
+
 // OFFSET: 0x00D26600
 // FUNCTION: fn_21680
 void CGameMode::ReceiveActorSequenceDeadline(const unsigned char* packet) {
@@ -743,6 +769,36 @@ void CGameMode::ReceivePackageSimulation(const unsigned char* packet) {
   }
   std::fprintf(file, "============================\tEND\t============================\n");
   std::fclose(file);
+}
+
+// OFFSET: 0x00D612A0
+// FUNCTION: fn_21979
+void CGameMode::ReceiveUnknownD612A0(const unsigned char* packet) {
+  UIWindow* window = g_windowMgr.EnsureWindow(267);
+  if (!window) {
+    return;
+  }
+
+  window->SendMsg(
+    nullptr, 34, packet[2] != 0, *reinterpret_cast<const int*>(packet + 4), *reinterpret_cast<const int*>(packet + 8), static_cast<signed char>(packet[3])
+  );
+}
+
+// OFFSET: 0x00D77BF0
+// FUNCTION: fn_22152
+void CGameMode::ReceiveUnknownD77BF0(const unsigned char* packet) {
+  if (packet[2] == 1) {
+    if (!g_windowMgr.unknown_0450) {
+      g_windowMgr.EnsureWindow(262);
+    }
+
+    if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
+      window->SendMsg(nullptr, 6, 286, 476, 1, 0);
+    }
+    return;
+  }
+
+  g_windowMgr.CloseWindow(262);
 }
 
 // OFFSET: 0x00D8A300
