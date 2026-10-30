@@ -2428,3 +2428,14 @@ void UIStatusWnd::ValidatePlacement() {
 
   this->SendMsg(nullptr, 35, 0, 0, 0, 0);
 }
+
+// OFFSET: 0x008FEAA0
+// FUNCTION: fn_12354
+int UILoadingWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
+  if (message == 17) {
+    char text[100];
+    std::sprintf(text, "Loading %d %s", static_cast<int>(argument1), "%");
+    this->m_progressBar->SetValue(static_cast<float>(argument1));
+  }
+  return 0;
+}
