@@ -134,6 +134,12 @@ public:
   void ReceiveActorMessage144(const unsigned char* packet);
   void StopActorMove(std::uint32_t aid, std::int16_t x, std::int16_t y, unsigned char flag);
   void NotifyResult4138(int result);
+  void NotifyResult2877(int result);
+  void ReceiveRodexMailDeleted(const unsigned char* packet);
+  void NotifyResult3562(const unsigned char* packet);
+  void IgnoreRemovedPacket6();
+  void ReceiveRouletteResult(const unsigned char* packet);
+  void NotifyResult4013(unsigned char result, unsigned short value);
   void ReceiveGuildUnknown0114List(const unsigned char* packet);
   void ReceiveClanLeave(const unsigned char* packet);
   void ReceiveClanInfo(const unsigned char* packet);

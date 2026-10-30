@@ -10,6 +10,8 @@
 #include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
+#include "Contents/RodexMailStore.h"
+#include "Contents/RouletteMgr.h"
 #include "Contents/World/World.h"
 #include "Render/Renderer.h"
 #include "UI/Window/UIWindow.h"
@@ -18,6 +20,8 @@
 
 #include <cstdint>
 #include <cstdio>
+#include <cstring>
+#include <map>
 #include <string>
 
 #pragma pack(push, 1)
@@ -56,6 +60,23 @@ struct VariablePacketHeader {
   /* 0002 */ std::int16_t length;
 };
 
+struct RodexMailDeletedPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char type;
+  /* 0003 */ std::int64_t mailId;
+};
+
+struct RouletteResultPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char result;
+  /* 0003 */ std::uint16_t stage;
+  /* 0005 */ std::uint16_t index;
+  /* 0007 */ int additionItemId;
+  /* 000B */ int goldPoint;
+  /* 000F */ int silverPoint;
+  /* 0013 */ int bronzePoint;
+};
+
 struct ByteValuePacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ unsigned char value;
@@ -80,6 +101,21 @@ void CGameMode::StopActorMove(std::uint32_t aid, std::int16_t x, std::int16_t y,
   const int value = flag;
   actor->SendMsg(nullptr, 19, 0, posX, posX >> 31, posY, posY >> 31, 0, 0, value, value >> 31, 0, 0, 0, 0);
 }
+
+// OFFSET: 0x00D69140
+
+// OFFSET: 0x00D69700
+
+// OFFSET: 0x00D69850
+
+// OFFSET: 0x00D698F0
+// FUNCTION: fn_22053
+void CGameMode::IgnoreRemovedPacket6() {
+}
+
+// OFFSET: 0x00D69900
+
+// OFFSET: 0x00D69FC0
 
 // OFFSET: 0x00D6AE70
 // FUNCTION: fn_22065

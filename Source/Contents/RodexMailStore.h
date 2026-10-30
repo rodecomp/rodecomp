@@ -8,7 +8,9 @@
 #include <string>
 
 struct RodexMail {
-  /* 0000 */ int unknown_0000;
+  /* 0000 */ unsigned char isRead;
+  /* 0001 */ unsigned char unknown_0001;
+  /* 0002 */ std::array<std::byte, 2> unknown_0002;
   /* 0004 */ std::string unknown_0004;
   /* 001C */ std::array<std::byte, 8> unknown_001C;
   /* 0024 */ std::string unknown_0024;
@@ -49,9 +51,9 @@ public:
   /* 0014 */ int unknown_0014;
   /* 0018 */ int unknown_0018;
   /* 001C */ bool unknown_001C;
-  /* 0020 */ std::map<std::uint64_t, RodexMail> m_mails0;
-  /* 0028 */ std::map<std::uint64_t, RodexMail> m_mails1;
-  /* 0030 */ std::map<std::uint64_t, RodexMail> m_mails2;
+  /* 0020 */ std::map<std::int64_t, RodexMail> m_mails0;
+  /* 0028 */ std::map<std::int64_t, RodexMail> m_mails1;
+  /* 0030 */ std::map<std::int64_t, RodexMail> m_mails2;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
