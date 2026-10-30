@@ -32,6 +32,7 @@ struct ReputeGroup {
 
 class CReputeMgr : public Singleton<CReputeMgr> {
 public:
+  CReputeMgr();
   std::vector<std::string> GetGroupNames() const;
   std::vector<const ReputeInfo*> GetGroupReputes(const std::string& groupName) const;
   std::vector<const ReputeInfo*> GetAllReputes() const;

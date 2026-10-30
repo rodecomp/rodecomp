@@ -3,9 +3,33 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+#include <cstdint>
+#include <string>
+#include <vector>
+
+struct ReputeInfo;
+class UIBitmapButton;
+class UIComboBoxDefWnd;
+class UIEditCtrl;
+
 class UIReputeWnd : public UIFrameWnd {
 public:
   bool Slot02() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  void FilterByGroup(const std::string& group);
+  void SetPage(unsigned int page);
+  void ClearUpdated();
+
+  UIComboBoxDefWnd* m_groupCombo;
+  UIEditCtrl* m_searchEdit;
+  UIBitmapButton* m_prevButton;
+  UIBitmapButton* m_nextButton;
+  unsigned int m_perPage;
+  unsigned int m_page;
+  unsigned int m_pageCount;
+  bool m_groupSelected;
+  std::int64_t m_totalPoints;
+  std::vector<const ReputeInfo*> m_reputes;
 };
 
 #endif

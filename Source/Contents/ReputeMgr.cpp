@@ -7,6 +7,11 @@
 
 int sub_AD6360(const char* text, unsigned int type);
 
+// OFFSET: 0x0060C5D0
+// FUNCTION: fn_04283
+CReputeMgr::CReputeMgr() {
+}
+
 // OFFSET: 0x0060D8B0
 // FUNCTION: fn_04290
 std::vector<std::string> CReputeMgr::GetGroupNames() const {
