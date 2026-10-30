@@ -2293,3 +2293,83 @@ void CSevereRainStorm::Slot04() {
     }
   }
 }
+
+// OFFSET: 0x0070B820
+// FUNCTION: fn_07119
+CCrimsonArrowEffect::CCrimsonArrowEffect() : CEffect(-1), emitter(nullptr) {
+}
+
+// OFFSET: 0x0070B940
+// FUNCTION: fn_07121
+void CCrimsonArrowEffect::Close() {
+  if (this->emitter) {
+    FreeParticle(AsParticle(this->emitter));
+    this->emitter = nullptr;
+  }
+}
+
+// OFFSET: 0x0070B970
+// FUNCTION: fn_07122
+void CCrimsonArrowEffect::Slot01() {
+  CEZ2STRParticle* arrow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  if (!arrow) {
+    return;
+  }
+
+  vector3d to{this->sourcePosition[0], this->sourcePosition[1], this->sourcePosition[2]};
+  vector3d from{this->position[0], this->position[1], this->position[2]};
+  float fromReciprocalDepth = 0.0f;
+  float toReciprocalDepth = 0.0f;
+  float fromX;
+  float fromY;
+  float toX;
+  float toY;
+  g_renderer->ProjectViewport(&from.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+  g_renderer->ProjectViewport(&to.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+
+  const float dx = toX - fromX;
+  const float dy = toY - fromY;
+  const float length = SquareRoot(dy * dy + dx * dx);
+  double angle = static_cast<float>(std::acos(static_cast<double>(dx / length))) / 3.141592f * 180.0f;
+  if (fromY > toY) {
+    angle = 360.0 - angle;
+  }
+
+  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(arrow);
+  switch (this->id) {
+  case 1756:
+    arrow->Load("crimsonarrow\\crimsonarrow\\crimsonarrow.str");
+    emitter->offset.x = 0.0f;
+    emitter->offset.y = -13.0f;
+    emitter->offset.z = 0.0f;
+    arrow->m_angle = static_cast<float>(angle);
+    this->AddEvent(0, "effect\\AG_CRIMSON_ARROW1.wav", 0, 0);
+    break;
+  case 2074:
+    arrow->Load("rhythmshooting\\rhythmshooting_shot\\rhythmshooting_shot.str");
+    emitter->offset.x = 0.0f;
+    emitter->offset.y = -8.0f;
+    emitter->offset.z = 0.0f;
+    arrow->m_angle = static_cast<float>(angle + 180.0);
+    this->AddEvent(0, "effect\\TR_RHYTHMSHOOTING.wav", 0, 0);
+    break;
+  case 2114:
+    arrow->Load("frenzy_shot\\frenzy_shot\\frenzy_shot.str");
+    emitter->offset.x = 0.0f;
+    emitter->offset.y = -4.0f;
+    emitter->offset.z = 0.0f;
+    arrow->m_angle = static_cast<float>(angle);
+    this->AddEvent(0, "effect\\ABC_FRENZY_SHOT.wav", 0, 0);
+    break;
+  case 2154:
+    arrow->Load("unlucky_rush\\unlucky_rush\\unlucky_rush.str");
+    arrow->m_angle = static_cast<float>(angle);
+    break;
+  case 2195:
+    arrow->Load("judgement_cross\\judgement_cross_shot\\judgement_cross_shot.str");
+    arrow->m_angle = static_cast<float>(angle + 180.0);
+    break;
+  }
+
+  this->emitter = emitter;
+}
