@@ -27,6 +27,7 @@ public:
 
 class UIListBoxAgit : public UIListBox {
 public:
+  using UIListBox::UIListBox;
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -34,6 +35,7 @@ public:
 
 class UIListBoxAgitMenu : public UIListBox {
 public:
+  using UIListBox::UIListBox;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void Slot25(int x, int y) override;

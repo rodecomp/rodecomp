@@ -3,8 +3,10 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 
@@ -239,3 +241,38 @@ int UIGuildTipWnd::SendMsg(UIWindow*, int message, std::intptr_t a1, std::intptr
 
   return 0;
 }
+
+// OFFSET: 0x00958070
+// FUNCTION: fn_13055
+void UICreateGuildWnd::Slot15(int, int) {
+  this->m_nameEdit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_nameEdit->SetSize(124, 20);
+  this->m_nameEdit->Move(13, 42);
+  this->m_nameEdit->maximum = 23;
+  this->m_nameEdit->Background(230, 230, 230);
+  this->AddChild(this->m_nameEdit);
+
+  {
+    const std::string prefix("유저인터페이스\\");
+    int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
+    const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+    int ids[2] = {184, 185};
+
+    for (unsigned int i = 0; i < 2; ++i) {
+      auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(positions[i][0], positions[i][1]);
+      button->SetId(ids[i]);
+      this->AddChild(button);
+    }
+  }
+
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_nameEdit);
+  this->m_message0 = 184;
+}
+
+// OFFSET: 0x00958990

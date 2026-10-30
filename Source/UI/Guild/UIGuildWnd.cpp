@@ -9,6 +9,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Script/LuaScript.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Guild/UIAgitWnd.h"
@@ -25,6 +26,9 @@
 #include <cstring>
 #include <cwchar>
 #include <string>
+
+// GLOBAL: gl_24999
+int g_guildMemberColumnWidths[6] = {98, 65, 53, 39, 39, 76};
 
 // GLOBAL: gl_24918
 int g_guildPositionRowHeight = 19;
@@ -870,6 +874,10 @@ void UIGuildTotalInfoWnd::Slot15(int, int) {
 
   this->UpdateScroll();
 }
+
+// OFFSET: 0x00958740
+
+// OFFSET: 0x00958FF0
 
 // OFFSET: 0x00957DA0
 // FUNCTION: fn_13051

@@ -10,12 +10,14 @@
 #include <map>
 #include <string>
 
+class UIBitmapButton;
 class UIButton;
 class UIListBoxAgit;
 class UIListBoxAgitMenu;
 class UIScrollBar;
 class UIStaticText;
 struct UIButtonContext;
+struct UIListBoxContext;
 struct GuildWndInfo;
 
 bool CompareWideText(const char* left, const char* right);
@@ -50,6 +52,7 @@ protected:
 class UIGuildBanishedMemberWnd : public UIGuildWnd {
 public:
   int Tab() override;
+  void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot35(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -69,6 +72,7 @@ protected:
 class UIGuildInfoManageWnd : public UIGuildWnd {
 public:
   int Tab() override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Slot25(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -78,12 +82,15 @@ protected:
   void RefreshAgitList();
   void HideAgitMenu();
 
-  /* 00D0 */ unsigned char unknown_00D0[0x24];
+  /* 00D0 */ UIBitmapButton* m_editButton;
+  /* 00D4 */ UIBitmapButton* m_disbandButton;
+  /* 00D8 */ unsigned char unknown_00D8[0x1C];
   /* 00F4 */ std::uint32_t m_guildId;
   /* 00F8 */ int m_allyRow;
   /* 00FC */ int m_hostileRow;
   /* 0100 */ UIListBoxAgit* m_agitList;
   /* 0104 */ UIListBoxAgitMenu* m_agitMenu;
+  UIListBoxContext* m_listContext;
 };
 
 class UIGuildMemberManageWnd : public UIGuildWnd {
