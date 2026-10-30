@@ -947,6 +947,7 @@
   "Source/UI/Window/UITab.cpp": 2,
   "Source/UI/Window/UITransMenuWnd.cpp": 2,
   "Source/UI/Window/UIVideoWnd.cpp": 2,
+  "Source/UI/Window/UIViewCameraInfoWnd.cpp": 2,
   "Source/UI/Window/UIWindow.cpp": 2,
   "Source/UI/Window/UIWindowMgr.cpp": 2,
   "Source/UI/Window/UIWordDisplayWnd.cpp": 2,
