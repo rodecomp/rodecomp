@@ -4,6 +4,7 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/Effect.h"
+#include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/SkillInfo.h"
@@ -11,8 +12,12 @@
 #include "Contents/World/World.h"
 #include "Utility/Math/Vector3d.h"
 
+#include <algorithm>
+#include <cstdlib>
+
 class CSkillAction_IG_GUARDIAN_SHIELD : public CSkillAction {
 public:
+  void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -603,5 +608,146 @@ void CSkillAction_IG_GUARD_STANCE::Slot11(int level, CGameActor* source, CGameAc
 void CEfstAction_IG_GUARD_STANCE::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_guard_stance_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+class CSkillAction_IG_CROSS_RAIN : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  int Slot14() override;
+};
+
+class CSkillObjectAction_IG_CROSS_RAIN : public CSkillObjectAction {
+public:
+  void Slot00(int argument, CRenderObject* object, CGameActor* source) override;
+};
+
+class CSkillAction_IG_GRAND_JUDGEMENT : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_IG_GRAND_JUDGEMENT : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+// OFFSET: 0x00786AA0
+// FUNCTION: fn_08579
+void CSkillAction_IG_CROSS_RAIN::Slot08(int level, CGameActor* source) {
+  if (!source) {
+    return;
+  }
+
+  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  if (effect) {
+    effect->Slot14(level);
+  }
+  effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  if (effect) {
+    effect->Slot14(level);
+  }
+}
+
+// OFFSET: 0x00786D50
+// FUNCTION: fn_08580
+int CSkillAction_IG_CROSS_RAIN::Slot14() {
+  return 9;
+}
+
+// OFFSET: 0x00786D60
+// FUNCTION: fn_08581
+void CSkillObjectAction_IG_CROSS_RAIN::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+  if (object && source) {
+    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, 2462, object->render.position.x, object->render.position.y, object->render.position.z, 0, argument, 0, 0);
+  }
+}
+
+// OFFSET: 0x00786F30
+// FUNCTION: fn_08583
+void CSkillAction_IG_GRAND_JUDGEMENT::Slot08(int level, CGameActor* source) {
+  if (!source) {
+    return;
+  }
+
+  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_cast"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  if (effect) {
+    effect->Slot14(level);
+  }
+  effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_cast_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  if (effect) {
+    effect->Slot14(level);
+  }
+}
+
+// OFFSET: 0x007871F0
+// FUNCTION: fn_08584
+void CSkillAction_IG_GRAND_JUDGEMENT::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  const int subEffectId = CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_sub");
+  for (int index = 0; index < 8; ++index) {
+    const float originX = target->render.position.x;
+    float x = originX;
+    const float y = target->render.position.y;
+    const float originZ = target->render.position.z;
+    float z = originZ;
+    switch (index & 3) {
+    case 1:
+      x = originX + static_cast<float>(std::max(rand() % 8, 0));
+      z = originZ + static_cast<float>(std::max(rand() % 8, 0));
+      break;
+    case 2:
+      x = originX + static_cast<float>(std::max(rand() % 8, 0));
+      z = originZ - static_cast<float>(std::max(rand() % 8, 0));
+      break;
+    case 3:
+      x = originX - static_cast<float>(std::max(rand() % 8, 0));
+      z = originZ + static_cast<float>(std::max(rand() % 8, 0));
+      break;
+    }
+    CEffect* effect = g_effectMgr->Spawn(0, subEffectId, x, y, z, 0, -1, 0, 0);
+    if (effect) {
+      effect->Slot16(140 * (index + 1));
+    }
+  }
+}
+
+// OFFSET: 0x007876E0
+// FUNCTION: fn_08585
+void CEfstAction_IG_GRAND_JUDGEMENT::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00787860
+// FUNCTION: fn_08586
+void CEfstAction_IG_GRAND_JUDGEMENT::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_buff"));
+  }
+}
+
+// OFFSET: 0x007879A0
+// FUNCTION: fn_08587
+void CEfstAction_IG_GRAND_JUDGEMENT::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x007879D0
+// FUNCTION: fn_08589
+void CSkillAction_IG_GUARDIAN_SHIELD::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+    g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 }

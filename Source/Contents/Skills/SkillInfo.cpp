@@ -4,9 +4,11 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/EffectResourceSwitcher.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
+#include "Contents/Effects/EZ2STREffectEx.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/SkillId.h"
@@ -2143,4 +2145,710 @@ void CEfstAction_FROST_STORM::Slot01(int efstId, int argument2, int argument3, i
 // FUNCTION: fn_08504
 void CEfstAction_FROST_STORM::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+class CSkillAction_NPC_LIGHTNING_JUDGEMENT : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_GROGGY : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_NPC_RESET_EFST : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_TARGET_MARKER : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_NPC_AIMED_SHOWER : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_NPC_BLAZING_ERUPTION : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_NPC_BLOCK_SEAL : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+};
+
+class CEfstAction_BLOCK_SEAL : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_HN_DOUBLEBOWLINGBASH : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_HN_MEGA_SONIC_BLOW : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_HN_SHIELD_CHAIN_RUSH : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_HN_SPIRAL_PIERCE_MAX : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_HN_METEOR_STORM_BUSTER : public CSkillAction {
+public:
+  bool Slot03(int argument) override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot12(vector3d position, int argument2, int argument3) override;
+  bool Slot13() override;
+  int Slot14() override;
+};
+
+class CSkillAction_HN_JUPITEL_THUNDER_STORM : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_HN_JACK_FROST_NOVA : public CSkillAction {
+public:
+  int Slot02() override;
+  bool Slot03(int argument) override;
+  void Slot08(int level, CGameActor* source) override;
+  int Slot14() override;
+};
+
+class CSkillObjectAction_HN_JACK_FROST_NOVA : public CSkillObjectAction {
+public:
+  void Slot00(int argument, CRenderObject* object, CGameActor* source) override;
+};
+
+class CSkillAction_HN_HELLS_DRIVE : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+};
+
+class CSkillAction_HN_GROUND_GRAVITATION : public CSkillAction {
+public:
+  int Slot02() override;
+  bool Slot03(int argument) override;
+  void Slot08(int level, CGameActor* source) override;
+};
+
+class CSkillObjectAction_HN_GROUND_GRAVITATION : public CSkillObjectAction {
+public:
+  void Slot00(int argument, CRenderObject* object, CGameActor* source) override;
+  void Slot01(CRenderObject* object) override;
+};
+
+class CSkillAction_HN_NAPALM_VULCAN_STRIKE : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot15(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_HN_BREAKINGLIMIT : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_BREAKINGLIMIT : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_HN_RULEBREAK : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_RULEBREAK : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CSkillAction_HN_OVERCOMING_CRISIS : public CSkillAction {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+// OFFSET: 0x00781EA0
+// FUNCTION: fn_08505
+void CSkillAction_NPC_LIGHTNING_JUDGEMENT::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+  }
+}
+
+// OFFSET: 0x00781ED0
+// FUNCTION: fn_08506
+void CSkillAction_NPC_LIGHTNING_JUDGEMENT::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spark_blaster_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    g_soundMgr->PlayWave(
+      "effect\\NPC_LIGHTNING_JUDGEMENT.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+    );
+  }
+}
+
+// OFFSET: 0x007820B0
+// FUNCTION: fn_08507
+void CSkillAction_NPC_LIGHTNING_JUDGEMENT::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, 1256, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00782100
+// FUNCTION: fn_08508
+void CEfstAction_GROGGY::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("groggy_on_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00782270
+// FUNCTION: fn_08509
+void CEfstAction_GROGGY::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("groggy_on_loop"));
+  }
+}
+
+// OFFSET: 0x00782390
+// FUNCTION: fn_08510
+void CEfstAction_GROGGY::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x007823B0
+// FUNCTION: fn_08511
+void CSkillAction_NPC_RESET_EFST::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, 2410, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    g_soundMgr->PlayWave(
+      "effect\\NPC_RESET_EFST.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+    );
+  }
+}
+
+// OFFSET: 0x00782470
+// FUNCTION: fn_08512
+void CEfstAction_TARGET_MARKER::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("target_marker_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("target_marker_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00782700
+// FUNCTION: fn_08513
+void CEfstAction_TARGET_MARKER::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("target_marker_loop"));
+  }
+}
+
+// OFFSET: 0x00782830
+// FUNCTION: fn_08514
+void CEfstAction_TARGET_MARKER::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x00782860
+// FUNCTION: fn_08516
+void CSkillAction_NPC_AIMED_SHOWER::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+  }
+}
+
+// OFFSET: 0x00782890
+// FUNCTION: fn_08517
+void CSkillAction_NPC_AIMED_SHOWER::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, 1268, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    g_soundMgr->PlayWave(
+      "effect\\NPC_AIMED_SHOWER.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+    );
+  }
+}
+
+// OFFSET: 0x00782950
+// FUNCTION: fn_08518
+void CSkillAction_NPC_AIMED_SHOWER::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, 2405, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x007829A0
+// FUNCTION: fn_08519
+void CSkillAction_NPC_BLAZING_ERUPTION::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+  }
+}
+
+// OFFSET: 0x007829D0
+// FUNCTION: fn_08520
+void CSkillAction_NPC_BLAZING_ERUPTION::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, 1270, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, 1266, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    static_cast<EffectActor*>(source)->LaunchEffect(225, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    g_soundMgr->PlayWave(
+      "effect\\NPC_BLAZING_ERUPTION.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+    );
+  }
+}
+
+// OFFSET: 0x00782B20
+// FUNCTION: fn_08521
+void CSkillAction_NPC_BLOCK_SEAL::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+  }
+}
+
+// OFFSET: 0x00782B50
+// FUNCTION: fn_08522
+void CEfstAction_BLOCK_SEAL::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 2400, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00782F20
+// FUNCTION: fn_08523
+void CEfstAction_BLOCK_SEAL::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, 2400);
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop_bottom"));
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop"));
+  }
+}
+
+// OFFSET: 0x00783160
+// FUNCTION: fn_08524
+void CEfstAction_BLOCK_SEAL::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x007832E0
+// FUNCTION: fn_08525
+int CSkillAction_HN_DOUBLEBOWLINGBASH::Slot02() {
+  return 58;
+}
+
+// OFFSET: 0x007832F0
+// FUNCTION: fn_08526
+void CSkillAction_HN_DOUBLEBOWLINGBASH::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+  }
+}
+
+// OFFSET: 0x00783320
+// FUNCTION: fn_08527
+void CSkillAction_HN_DOUBLEBOWLINGBASH::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("double_bowlingbash"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x007834A0
+// FUNCTION: fn_08528
+void CSkillAction_HN_DOUBLEBOWLINGBASH::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(73, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  }
+}
+
+// OFFSET: 0x007834E0
+// FUNCTION: fn_08529
+int CSkillAction_HN_MEGA_SONIC_BLOW::Slot02() {
+  return 58;
+}
+
+// OFFSET: 0x007834F0
+// FUNCTION: fn_08530
+void CSkillAction_HN_MEGA_SONIC_BLOW::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(121, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mega_sonic_blow"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00783690
+// FUNCTION: fn_08531
+int CSkillAction_HN_SHIELD_CHAIN_RUSH::Slot02() {
+  return 59;
+}
+
+// OFFSET: 0x007836A0
+// FUNCTION: fn_08532
+void CSkillAction_HN_SHIELD_CHAIN_RUSH::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+  }
+}
+
+// OFFSET: 0x007836D0
+// FUNCTION: fn_08533
+void CSkillAction_HN_SHIELD_CHAIN_RUSH::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shield_chain_rush"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00783850
+// FUNCTION: fn_08534
+int CSkillAction_HN_SPIRAL_PIERCE_MAX::Slot02() {
+  return 58;
+}
+
+// OFFSET: 0x00783860
+// FUNCTION: fn_08535
+void CSkillAction_HN_SPIRAL_PIERCE_MAX::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(502, level / 16);
+  }
+}
+
+// OFFSET: 0x00783890
+// FUNCTION: fn_08536
+void CSkillAction_HN_SPIRAL_PIERCE_MAX::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source || !target) {
+    return;
+  }
+
+  if (!g_serviceOptions.Get(229)) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_pierce_max_aura_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_pierce_max_aura"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  const vector3d position = source->render.position;
+  CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_pierce_max"), position.x, position.y, position.z, 0, -1, 0, 0);
+  if (effect) {
+    effect->Slot17(angle);
+  }
+}
+
+// OFFSET: 0x00783C90
+// FUNCTION: fn_08537
+bool CSkillAction_HN_METEOR_STORM_BUSTER::Slot03(int argument) {
+  return true;
+}
+
+// OFFSET: 0x00783CA0
+// FUNCTION: fn_08538
+void CSkillAction_HN_METEOR_STORM_BUSTER::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(55, level / 16);
+  }
+}
+
+// OFFSET: 0x00783CD0
+// FUNCTION: fn_08539
+void CSkillAction_HN_METEOR_STORM_BUSTER::Slot12(vector3d position, int argument2, int argument3) {
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor"), position.x, position.y, position.z, 0, -1, 0, 0);
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster"), position.x, position.y, position.z, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x00784100
+// FUNCTION: fn_08540
+bool CSkillAction_HN_METEOR_STORM_BUSTER::Slot13() {
+  return true;
+}
+
+// OFFSET: 0x00784110
+// FUNCTION: fn_08541
+int CSkillAction_HN_METEOR_STORM_BUSTER::Slot14() {
+  return 7;
+}
+
+// OFFSET: 0x00784120
+// FUNCTION: fn_08542
+int CSkillAction_HN_JUPITEL_THUNDER_STORM::Slot02() {
+  return 59;
+}
+
+// OFFSET: 0x00784130
+// FUNCTION: fn_08543
+void CSkillAction_HN_JUPITEL_THUNDER_STORM::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(57, level / 16);
+  }
+}
+
+// OFFSET: 0x00784160
+// FUNCTION: fn_08544
+void CSkillAction_HN_JUPITEL_THUNDER_STORM::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source && target) {
+    static_cast<EffectActor*>(source)->LaunchEffect(12, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_effectMgr->Spawn(source->render.accountId, 2366, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, level, 0, 0);
+  }
+}
+
+// OFFSET: 0x007841F0
+// FUNCTION: fn_08545
+int CSkillAction_HN_JACK_FROST_NOVA::Slot02() {
+  return 59;
+}
+
+// OFFSET: 0x00784200
+// FUNCTION: fn_08546
+bool CSkillAction_HN_JACK_FROST_NOVA::Slot03(int argument) {
+  return true;
+}
+
+// OFFSET: 0x00784210
+// FUNCTION: fn_08547
+void CSkillAction_HN_JACK_FROST_NOVA::Slot08(int level, CGameActor* source) {
+  if (!source) {
+    return;
+  }
+
+  static_cast<EffectActor*>(source)->LaunchEffect(1449, level / 16);
+  CEffect* effect = g_effectMgr->Spawn(source->render.accountId, g_serviceOptions.Get(229) ? 1543 : 1446, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  if (effect) {
+    effect->Slot14(level);
+  }
+}
+
+// OFFSET: 0x00784320
+// FUNCTION: fn_08549
+int CSkillAction_HN_JACK_FROST_NOVA::Slot14() {
+  return -2;
+}
+
+// OFFSET: 0x00784330
+// FUNCTION: fn_08550
+void CSkillObjectAction_HN_JACK_FROST_NOVA::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+  if (object) {
+    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_start_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_loop_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("jack_frost_nova_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00784950
+// FUNCTION: fn_08552
+int CSkillAction_HN_HELLS_DRIVE::Slot02() {
+  return 59;
+}
+
+// OFFSET: 0x00784960
+// FUNCTION: fn_08553
+void CSkillAction_HN_HELLS_DRIVE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(1709, level / 16);
+  }
+}
+
+// OFFSET: 0x00784E40
+// FUNCTION: fn_08555
+int CSkillAction_HN_GROUND_GRAVITATION::Slot02() {
+  return 59;
+}
+
+// OFFSET: 0x00784E50
+// FUNCTION: fn_08556
+bool CSkillAction_HN_GROUND_GRAVITATION::Slot03(int argument) {
+  return true;
+}
+
+// OFFSET: 0x00784E60
+// FUNCTION: fn_08557
+void CSkillAction_HN_GROUND_GRAVITATION::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(9, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+  }
+}
+
+// OFFSET: 0x00784EA0
+// FUNCTION: fn_08558
+void CSkillObjectAction_HN_GROUND_GRAVITATION::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+  g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_bottom_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_start"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_bottom_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_loop"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x00785370
+// FUNCTION: fn_08559
+void CSkillObjectAction_HN_GROUND_GRAVITATION::Slot01(CRenderObject* object) {
+  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_bottom_loop"))) {
+    effect->Slot31();
+  }
+  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ground_gravitation_loop"))) {
+    effect->Slot31();
+  }
+}
+
+// OFFSET: 0x007855C0
+// FUNCTION: fn_08560
+int CSkillAction_HN_NAPALM_VULCAN_STRIKE::Slot02() {
+  return 59;
+}
+
+// OFFSET: 0x007855D0
+// FUNCTION: fn_08561
+void CSkillAction_HN_NAPALM_VULCAN_STRIKE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+  }
+}
+
+// OFFSET: 0x00785600
+
+// OFFSET: 0x00785780
+// FUNCTION: fn_08563
+int CSkillAction_HN_BREAKINGLIMIT::Slot02() {
+  return 58;
+}
+
+// OFFSET: 0x00785790
+// FUNCTION: fn_08564
+void CSkillAction_HN_BREAKINGLIMIT::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(2369, level / 16);
+  }
+}
+
+// OFFSET: 0x007857C0
+// FUNCTION: fn_08565
+void CSkillAction_HN_BREAKINGLIMIT::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("breakinglimit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00785930
+// FUNCTION: fn_08566
+void CEfstAction_BREAKINGLIMIT::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("breakinglimit_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00785AB0
+// FUNCTION: fn_08567
+void CEfstAction_BREAKINGLIMIT::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("breakinglimit_buff"));
+  }
+}
+
+// OFFSET: 0x00785BE0
+// FUNCTION: fn_08568
+void CEfstAction_BREAKINGLIMIT::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x00785C00
+// FUNCTION: fn_08569
+int CSkillAction_HN_RULEBREAK::Slot02() {
+  return 58;
+}
+
+// OFFSET: 0x00785C10
+// FUNCTION: fn_08570
+void CSkillAction_HN_RULEBREAK::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(2369, level / 16);
+  }
+}
+
+// OFFSET: 0x00785C40
+// FUNCTION: fn_08571
+void CSkillAction_HN_RULEBREAK::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rulebreak"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00785DA0
+// FUNCTION: fn_08572
+void CEfstAction_RULEBREAK::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rulebreak_buff"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00785F10
+// FUNCTION: fn_08573
+void CEfstAction_RULEBREAK::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rulebreak_buff"));
+  }
+}
+
+// OFFSET: 0x00786030
+// FUNCTION: fn_08574
+void CEfstAction_RULEBREAK::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  this->Slot00(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x00786050
+// FUNCTION: fn_08575
+void CSkillAction_HN_OVERCOMING_CRISIS::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("overcoming_crisis"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("overcoming_crisis_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
 }
