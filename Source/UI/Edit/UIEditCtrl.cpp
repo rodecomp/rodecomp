@@ -84,6 +84,15 @@
 // GLOBAL: gl_24862
 bool g_vendingSaleAlarm;
 
+// GLOBAL: gl_24651
+static const std::string g_itemLinkOpen = "<ITEML>";
+// GLOBAL: gl_24652
+static const std::string g_itemLinkClose = "</ITEML>";
+// GLOBAL: gl_24647
+static const std::string g_editNaviTagBegin = "<NAVIL>";
+// GLOBAL: gl_24648
+static const std::string g_editNaviTagEnd = "</NAVIL>";
+
 namespace {
 #pragma pack(push, 1)
 struct PACKET_CZ_INVENTORY_TAB {
@@ -536,6 +545,35 @@ const char* UIEditCtrl::Text() {
   }
 
   return this->text.c_str();
+}
+
+// OFFSET: 0x00858D80
+// FUNCTION: fn_10769
+std::string UIEditCtrl::LinkedText() {
+  return std::string(this->linkedText.c_str(), this->linkedText.size());
+}
+
+// OFFSET: 0x00858F30
+// FUNCTION: fn_10771
+std::string UIEditCtrl3::TakePendingText() {
+  std::string result;
+  for (std::size_t i = 0; i < this->pendingText.size(); ++i) {
+    result.append(this->pendingText[i]);
+  }
+  this->pendingText.clear();
+  return result;
+}
+
+// OFFSET: 0x008590E0
+// FUNCTION: fn_10772
+bool HasItemLinkTag(const std::string& text) {
+  return text.find(g_itemLinkOpen) != std::string::npos || text.find(g_itemLinkClose) != std::string::npos;
+}
+
+// OFFSET: 0x00859170
+// FUNCTION: fn_10773
+bool HasNaviLinkTag(const std::string& text) {
+  return text.find(g_editNaviTagBegin) != std::string::npos || text.find(g_editNaviTagEnd) != std::string::npos;
 }
 
 // OFFSET: 0x00865DD0

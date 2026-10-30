@@ -59,6 +59,7 @@ public:
   int Length() const;
 
   const char* Text();
+  std::string LinkedText();
   void Background(int red, int green, int blue);
   void TextColor(std::uint32_t primary, std::uint32_t secondary);
   void UpdateLinks();
@@ -130,9 +131,10 @@ public:
   void Trim() override;
 
   void PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int& unused);
+  std::string TakePendingText();
 
   /* 011C */ std::list<std::vector<UIItemTagButton*>> entries;
-  /* 0124 */ std::vector<int> unknown_0124;
+  /* 0124 */ std::vector<std::string> pendingText;
   /* 0130 */ UIWindow* unknown_0130;
   /* 0134 */ unsigned char unknown_0134;
   /* 0138 */ int unknown_0138;
@@ -227,6 +229,9 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void SetText(const char* value) override;
 };
+
+bool HasItemLinkTag(const std::string& text);
+bool HasNaviLinkTag(const std::string& text);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UIEditCtrl) == 292);
