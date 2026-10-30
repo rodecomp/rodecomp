@@ -34,6 +34,7 @@ struct NaviLink {
 
 struct NaviDataEntry {
   void Reset();
+  void Init();
   int GetPrevious() const;
   int GetCost() const;
 
@@ -260,6 +261,9 @@ public:
   int FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allowGates, bool includeObjects, bool allowWarps, int side);
   void ResetLinkDepths();
   bool CollectLinksTo(CNaviInfo* target, std::vector<CNavi_Link*>* out);
+  bool Search(std::string query, int type, std::vector<NavigationTarget>& out);
+  int ParseSearchKind(std::vector<std::string>& tokens);
+  CNavi_Object* FindMobByTitle(std::string title);
   int ObjectCount() const;
 
   /* 0000 */ std::vector<CNaviInfo*> destinations;

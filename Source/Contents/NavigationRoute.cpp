@@ -13,6 +13,7 @@
 
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 // OFFSET: 0x00B88800
@@ -727,4 +728,115 @@ bool CNaviData::CollectLinksTo(CNaviInfo* target, std::vector<CNavi_Link*>* out)
 // FUNCTION: fn_19389
 int CNaviData::ObjectCount() const {
   return static_cast<int>(this->objects.size());
+}
+
+// OFFSET: 0x00B88A60
+// FUNCTION: fn_19382
+void NaviDataEntry::Init() {
+  this->previous = -1;
+  this->link = nullptr;
+  this->cost = 0;
+}
+
+// OFFSET: 0x00B88AB0
+// FUNCTION: fn_19383
+bool CNaviData::Search(std::string query, int type, std::vector<NavigationTarget>& out) {
+  if (query.size() == 0) {
+    return false;
+  }
+  std::vector<std::string> tokens;
+  std::vector<char> text(query.begin(), query.end());
+  bool result = false;
+  text.push_back(0);
+  std::vector<int> spaces;
+  spaces.push_back(-1);
+  for (unsigned int i = 0; i < text.size(); ++i) {
+    if (text[i] == ' ') {
+      spaces.push_back(i);
+    }
+  }
+  spaces.push_back(static_cast<int>(text.size()) - 1);
+  for (auto it = spaces.begin(); it != spaces.end() - 1;) {
+    int start = *it + 1;
+    ++it;
+    if (start < *it) {
+      std::string token(&text[0] + start, &text[0] + *it);
+      tokens.push_back(token);
+    }
+  }
+  if (tokens.empty()) {
+    result = false;
+  } else {
+    int kind = this->ParseSearchKind(tokens);
+    out.clear();
+    for (CNaviInfo* info : this->destinations) {
+      if (kind == 2) {
+        info->CollectTargets(type, out);
+      } else if (kind == 3) {
+        info->CollectMobsInRange(std::atoi(tokens[0].c_str()), std::atoi(tokens[1].c_str()), out);
+      } else if (kind == 4) {
+        if (tokens.size() == 2) {
+          info->CollectMobsByTitle(tokens[1].c_str(), out);
+        }
+      } else {
+        info->Search(type, tokens, out);
+      }
+    }
+    result = true;
+  }
+  return result;
+}
+
+// OFFSET: 0x00B891C0
+// FUNCTION: fn_19385
+int CNaviData::ParseSearchKind(std::vector<std::string>& tokens) {
+  if (std::strncmp(tokens[0].c_str(), LookupMessage(0x912), std::strlen(LookupMessage(0x912))) != 0) {
+    return 1;
+  }
+  std::size_t prefixLength = std::strlen(LookupMessage(0x913));
+  if (prefixLength < tokens[0].size() && std::strncmp(tokens[0].c_str(), LookupMessage(0x913), prefixLength) == 0) {
+    std::string token(tokens[0]);
+    const char* separator = std::strstr(token.c_str(), LookupMessage(0x914));
+    std::string minimum;
+    std::string maximum;
+    if (separator == nullptr) {
+      minimum.assign(token.c_str() + prefixLength, token.c_str() + token.size());
+      maximum = minimum;
+    } else {
+      minimum.assign(token.c_str() + prefixLength, separator);
+      maximum.assign(separator + std::strlen(LookupMessage(0x914)), token.c_str() + token.size());
+      if (maximum.size() == 0) {
+        maximum = "500";
+      }
+    }
+    int low = std::atoi(minimum.c_str());
+    int high = std::atoi(maximum.c_str());
+    int kind;
+    if (low < 1 || high < 1 || low > high) {
+      kind = 0;
+    } else {
+      tokens.clear();
+      tokens.push_back(minimum);
+      tokens.push_back(maximum);
+      kind = 3;
+    }
+    return kind;
+  }
+  if (std::strncmp(tokens[0].c_str(), LookupMessage(0x915), std::strlen(LookupMessage(0x915))) == 0) {
+    return 2;
+  }
+  return std::strncmp(tokens[0].c_str(), "$$DB", 4) == 0 ? 4 : 0;
+}
+
+// OFFSET: 0x00B896E0
+// FUNCTION: fn_19386
+CNavi_Object* CNaviData::FindMobByTitle(std::string title) {
+  std::vector<NavigationTarget> targets;
+  for (CNaviInfo* info : this->destinations) {
+    info->CollectMobsByTitle(title, targets);
+    if (targets.begin() != targets.end()) {
+      return static_cast<CNavi_Object*>(targets.front().object);
+    }
+  }
+  return nullptr;
 }
