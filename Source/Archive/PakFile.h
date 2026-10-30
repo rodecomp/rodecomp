@@ -5,6 +5,7 @@
 #include <vector>
 #include <windows.h>
 
+// VTABLE: vt_01910
 class CPakFile {
 public:
   virtual ~CPakFile();
