@@ -877,3 +877,667 @@ void UIRuneSystemWnd::Paint() {
   );
   this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(4050), 0);
 }
+
+// OFFSET: 0x0081E3F0
+// FUNCTION: fn_10226
+int UIRuneSystem_DecomResultWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
+  if (message == 6) {
+    if (argument1 == 0xB8) {
+      g_windowMgr.CloseWindow(0x16A);
+    }
+  } else if (message == 0x0D) {
+    const RuneDecomResultPacket* packet = reinterpret_cast<const RuneDecomResultPacket*>(argument1);
+    this->m_total = 0;
+    for (int index = 0; index < 8; ++index) {
+      this->m_itemIds[index] = packet->itemIds[index];
+      this->m_counts[index] = packet->counts[index];
+      this->m_total += this->m_counts[index];
+    }
+    this->Invalidate();
+  }
+  return 0;
+}
+
+// OFFSET: 0x00818880
+// FUNCTION: fn_10176
+void UIDecomlist::Paint() {
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_decom_list.bmp")))->image, true);
+  if (g_runeSystemMgr->GetOwnedDecomItemCount() == 0) {
+    this->DrawBitmap(56, 175, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\decom_empty.bmp")))->image, true);
+    return;
+  }
+
+  for (int row = 0; row < this->visible; ++row) {
+    const int index = this->position + row;
+    const int itemId = g_runeSystemMgr->GetOwnedDecomItem(index);
+    if (!itemId) {
+      continue;
+    }
+
+    const int y = this->m_itemHeight * row + 4;
+    const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_decom_item_1_%d.bmp", index == this->m_selected);
+    this->DrawBitmap(0, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())))->image, true);
+
+    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
+    char text[128];
+    std::memset(text, 0, sizeof(text));
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.IconPath(text, item.itemId.c_str(), 1);
+    CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
+    if (!icon) {
+      icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
+    }
+    this->DrawBitmap(19, y + 5, &icon->image, true);
+
+    std::memset(text, 0, sizeof(text));
+    int capacity = sizeof(text);
+    descriptions.Name(item, text, capacity, 0);
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 57, y + 8, text, 0, 0, 13, 0, 0, 0);
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 58, y + 28, FormatOwnedString("%d", item.quantity).c_str(), 0, 0, 13, 0, 0, 0);
+  }
+  this->DrawScrollBar(false);
+}
+
+// OFFSET: 0x00818B90
+// FUNCTION: fn_10177
+void UIEquipRuneSetWnd::Paint() {
+  RuneSetData* runeSet = g_runeSystemMgr->GetCurRuneSet();
+  ResourceMgr& resources = ResourceMgr::Instance();
+  if (!runeSet) {
+    this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(resources.Load(Resolve("유저인터페이스\\runesystem\\bg_runeequip_empty.bmp")))->image, false);
+    return;
+  }
+
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(resources.Load(Resolve("유저인터페이스\\runesystem\\bg_runeequip.bmp")))->image, false);
+  int x = 25;
+  for (unsigned int index = 0; index < runeSet->m_slots.size(); ++index, x += 40) {
+    RuneData* rune = runeSet->m_slots[index];
+    if (!rune) {
+      continue;
+    }
+
+    const std::string name = FormatOwnedString("유저인터페이스\\runesystem\\rune_icon\\%s.bmp", rune->GetResName());
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
+    if (bitmap) {
+      this->DrawBitmap(x, 35, &bitmap->image, false);
+      if (!runeSet->m_slots[index]->IsActive()) {
+        this->geometry.surface->Dim(x, 35, bitmap->image.width, bitmap->image.height, 55);
+      }
+    }
+  }
+
+  int titleX = 37;
+  if (runeSet->m_grade) {
+    const std::string grade = FormatOwnedString("+%d", runeSet->m_grade);
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 37, 12, grade.c_str(), 0, 0, 13, 0xFCDDE5, 1, 0);
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 37, 11, grade.c_str(), 0, 0, 13, 0xFF7E00, 1, 0);
+    titleX = runeSet->m_grade > 9 ? 62 : 55;
+  }
+
+  titleX += 2;
+  const std::string title = FormatOwnedString(LookupMessage(4042), runeSet->GetName());
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, titleX, 12, title.c_str(), 0, 0, 13, 0xFCDEE6, 1, 0);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, titleX, 11, title.c_str(), 0, 0, 13, 0x864D43, 1, 0);
+  const std::string tag = FormatOwnedString("유저인터페이스\\runesystem\\tag\\bt_tag_%d_equip.bmp", runeSet->GetTagId());
+  this->DrawBitmap(9, 6, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(tag.c_str())))->image, false);
+}
+
+// OFFSET: 0x00818EB0
+// FUNCTION: fn_10178
+void UIGage_Circle::Paint() {
+  if (this->m_max) {
+    this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_maxBitmap.c_str())))->image, false);
+    return;
+  }
+
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_fullBitmap.c_str())))->image, false);
+  CBitmapRes* empty = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_emptyBitmap.c_str())));
+  this->DrawBitmapRegion(
+    0, 0, &empty->image, true, false, 0, 0, empty->image.width,
+    static_cast<int>((1.0f - static_cast<float>(this->m_value) * 0.00001f) * static_cast<float>(empty->image.height))
+  );
+
+  const std::string text = FormatOwnedString("%.2f%%", static_cast<double>(static_cast<float>(this->m_value) * 0.001f));
+  const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), text.size(), 0, 12, 0, 0);
+  this->DrawTextAt(
+    this->m_context->fonts, this->m_context->locale, static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f), this->m_textY, text.c_str(), 0,
+    0, 12, 0xFFFFFF, 1, 0
+  );
+}
+
+// OFFSET: 0x00819090
+// FUNCTION: fn_10179
+void UIRuneList::Paint() {
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_rune_list.bmp")))->image, true);
+  for (int row = 0; row < 9; ++row) {
+    const int index = this->position + row;
+    RuneData* rune = g_runeSystemMgr->GetCurrentRune(1, index);
+    if (!rune) {
+      continue;
+    }
+
+    const int y = this->m_itemHeight * row + 1;
+    const bool active = rune->IsActive();
+    const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_rune_item_%d_%d.bmp", active, index == this->m_selected);
+    this->DrawBitmap(0, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())))->image, true);
+    this->DrawRuneIcon(18, y + 6, rune->GetResName(), active);
+    const std::string name = FormatOwnedString(LookupMessage(4043), rune->GetName());
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 62, y + 9, name.c_str(), 0, 0, 12, 0, 0, 0);
+  }
+  this->DrawScrollBar(true);
+}
+
+// OFFSET: 0x00819240
+// FUNCTION: fn_10180
+void UIRuneSetList::Paint() {
+  this->ClearSurface(0xFF00FF);
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_list.bmp")))->image, true);
+  if (!g_runeSystemMgr->GetTag(-1)->m_locked) {
+    this->DrawBitmap(57, 100, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\loding.bmp")))->image, false);
+    return;
+  }
+
+  for (int row = 0; row < 5; ++row) {
+    const int index = this->position + row;
+    RuneSetData* runeSet = dynamic_cast<RuneSetData*>(g_runeSystemMgr->GetCurrentRune(0, index));
+    if (!runeSet) {
+      continue;
+    }
+
+    const int y = this->m_itemHeight * row + 1;
+    const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_runeset_item_%d_%d.bmp", runeSet->IsActive(), index == this->m_selected);
+    this->DrawBitmap(0, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())))->image, true);
+    for (unsigned int slot = 0; slot < runeSet->m_slots.size(); ++slot) {
+      if (runeSet->m_slots[slot]) {
+        this->DrawRuneIcon(this->unknown_00B8 * slot + 20, y + 25, runeSet->m_slots[slot]->GetResName(), runeSet->m_slots[slot]->IsActive());
+      }
+    }
+
+    const std::string title = FormatOwnedString(LookupMessage(4042), runeSet->GetName());
+    const int titleWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, title.c_str(), title.size(), 0, 12, 0, 0);
+    std::string grade;
+    int gradeWidth = 0;
+    if (runeSet->m_grade) {
+      grade = FormatOwnedString("+%d", runeSet->m_grade);
+      gradeWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, grade.c_str(), grade.size(), 0, 12, 0, 0);
+    }
+
+    int x = static_cast<int>(static_cast<float>(this->geometry.width - gradeWidth - titleWidth) * 0.5f);
+    if (runeSet->m_grade) {
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y + 7, grade.c_str(), 0, 0, 12, 0xFF7E00, 0, 0);
+      x += gradeWidth + 5;
+    }
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y + 7, title.c_str(), 0, 0, 12, 0, 0, 0);
+  }
+  this->DrawScrollBar(true);
+}
+
+// OFFSET: 0x0081C510
+// FUNCTION: fn_10207
+void UIRuneSetReWard::Slot28(int, int) {
+  if (!this->m_itemId) {
+    return;
+  }
+
+  ITEM_INFO item;
+  item.SetItemId(this->m_itemId);
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  if (std::string("Unknown Item") == naming.DisplayName(item, 0)) {
+    return;
+  }
+
+  item.identified = 1;
+  int x = 0;
+  int y = 0;
+  this->ToScreen(x, y);
+  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+  if (tooltip) {
+    tooltip->Show(naming.DisplayName(item, 0).c_str(), x, y - 10, 0xFFFFFF, 0, 1);
+  }
+}
+
+// OFFSET: 0x0081C7F0
+// FUNCTION: fn_10209
+void UIRuneSystem_ActiveWnd::Slot28(int x, int y) {
+  if (this->m_listId == -1) {
+    return;
+  }
+
+  const int index = this->HitTestItem(x, y);
+  if (index <= -1) {
+    return;
+  }
+
+  const int itemId = g_runeSystemMgr->GetItemListEntry(this->m_listId, index).first;
+  if (!itemId) {
+    return;
+  }
+
+  ITEM_INFO item;
+  item.SetItemId(itemId);
+  item.identified = 1;
+  int tipX = index % 4 * 54 + 14;
+  int tipY = index > 3 ? 44 : -10;
+  this->ToScreen(tipX, tipY);
+  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+  if (tooltip) {
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    tooltip->Show(naming.DisplayName(item, 0).c_str(), tipX, tipY, 0xFFFFFF, 0, 1);
+  }
+}
+
+// OFFSET: 0x0081CA80
+// FUNCTION: fn_10211
+void UIRune_Decom::Slot28(int x, int y) {
+  if (!this->m_decomList) {
+    return;
+  }
+
+  const int index = this->HitTestItem(x, y);
+  if (index == -1) {
+    return;
+  }
+
+  ITEM_INFO item;
+  item.SetItemId((*this->m_decomList)[index].m_itemId);
+  item.identified = 1;
+  int tipX = index % 4 * 54 + 211;
+  int tipY = index > 3 ? 387 : 333;
+  this->ToScreen(tipX, tipY);
+  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+  if (tooltip) {
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    tooltip->Show(naming.DisplayName(item, 0).c_str(), tipX, tipY, 0xFFFFFF, 0, 1);
+  }
+}
+
+// OFFSET: 0x0081A390
+// FUNCTION: fn_10186
+void UIRuneSystem_ActiveWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->m_listId == -1) {
+    return;
+  }
+
+  CBitmapRes* blue = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\iconslot_blue.bmp")));
+  CBitmapRes* red = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\iconslot_red.bmp")));
+  int y = 11;
+  for (int row = 0; row < this->m_rows; ++row, y += 54) {
+    int x = 18;
+    for (int column = 0; column < this->m_columns; ++column, x += 54) {
+      this->DrawBitmap(x, y, &blue->image, true);
+      const std::pair<int, int>& entry = g_runeSystemMgr->GetItemListEntry(this->m_listId, this->m_columns * row + column);
+      const int itemId = entry.first;
+      const int required = entry.second;
+      if (!itemId) {
+        continue;
+      }
+
+      ITEM_INFO item;
+      item.SetItemId(itemId);
+      item.identified = 1;
+      char path[128];
+      std::memset(path, 0, sizeof(path));
+      ItemDescriptions descriptions{g_itemDescriptions};
+      descriptions.IconPath(path, item.itemId.c_str(), 1);
+      CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+      if (!icon) {
+        icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
+      }
+
+      ITEM_INFO owned = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
+      const bool lacking = required > owned.quantity;
+      owned.identified = 1;
+      this->DrawBitmap(x, y, &(lacking ? red : blue)->image, true);
+      if (icon) {
+        this->DrawBitmap(x + 8, y + 4, &icon->image, true);
+      }
+      this->DrawCount(x + 18, y + 39, owned.quantity > required ? required : owned.quantity, required, lacking ? 0xFF : 0x875F51, 10);
+    }
+  }
+}
+
+// OFFSET: 0x0081A6D0
+// FUNCTION: fn_10187
+void UIRuneSystem_DecomItemWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->m_listId == -1) {
+    return;
+  }
+
+  int y = 51;
+  for (int row = 0; row < this->m_rows; ++row, y += 69) {
+    int x = 35;
+    for (int column = 0; column < this->m_columns; ++column, x += 52) {
+      const std::pair<int, int>& entry = g_runeSystemMgr->GetItemListEntry(this->m_listId, this->m_columns * row + column);
+      const int itemId = entry.first;
+      const int required = entry.second;
+      if (!itemId) {
+        break;
+      }
+
+      ITEM_INFO item;
+      item.SetItemId(itemId);
+      item.identified = 1;
+      char path[128];
+      std::memset(path, 0, sizeof(path));
+      ItemDescriptions descriptions{g_itemDescriptions};
+      descriptions.IconPath(path, item.itemId.c_str(), 1);
+      CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+      if (!icon) {
+        icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
+      }
+
+      ITEM_INFO owned = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
+      const bool lacking = required > owned.quantity;
+      owned.identified = 1;
+      if (icon) {
+        this->DrawBitmap(x - 9, y - 36, &icon->image, true);
+      }
+      this->DrawCount(x, y, required, owned.quantity, lacking ? 0xB4B4B4 : 0, 10);
+    }
+  }
+}
+
+// OFFSET: 0x0081A980
+// FUNCTION: fn_10188
+void UIRuneSystem_DecomResultWnd::Paint() {
+  ResourceMgr& resources = ResourceMgr::Instance();
+  this->DrawBitmap(
+    0, 0,
+    &static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\bg_decomResult_%d.bmp", this->m_total > 0).c_str())))->image,
+    false
+  );
+  if (this->m_total == 0) {
+    return;
+  }
+
+  int index = 0;
+  for (int y = 77; y < 185; y += 54) {
+    for (int x = 19; x < 235; x += 54, ++index) {
+      if (!this->m_itemIds[index]) {
+        continue;
+      }
+
+      ITEM_INFO item;
+      item.SetItemId(this->m_itemIds[index]);
+      item.identified = 1;
+      char path[128];
+      std::memset(path, 0, sizeof(path));
+      ItemDescriptions descriptions{g_itemDescriptions};
+      descriptions.IconPath(path, item.itemId.c_str(), 1);
+      CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+      if (!icon) {
+        icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
+      }
+      if (icon) {
+        this->DrawBitmap(x + 8, y - 35, &icon->image, true);
+      }
+
+      const std::string count = FormatOwnedString("%d", this->m_counts[index]);
+      const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, count.c_str(), count.size(), 0, 12, 0, 0);
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x - static_cast<int>(width * 0.5f) + 19, y, count.c_str(), 0, 0, 12, 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x0081AD80
+// FUNCTION: fn_10190
+void UIRuneSystem_tagListWnd::Paint() {
+  const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\bg_tag%d.bmp", (this->geometry.y == 44) + 1);
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())))->image, true);
+  CBitmapRes* empty = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\tag\\bt_tag_bg.bmp")));
+  int x = 22;
+  for (int index = 0; index < this->m_visibleCount; ++index, x += 27) {
+    CTagData* tag = g_runeSystemMgr->GetTagByIndex(this->m_firstTag + index);
+    if (!tag) {
+      this->DrawBitmap(x, 4, &empty->image, true);
+      continue;
+    }
+
+    const std::string name = FormatOwnedString("유저인터페이스\\runesystem\\tag\\bt_tag_%d%s", tag->m_id, g_runeSystemMgr->GetTag(-1) == tag ? "_1.bmp" : "_0.bmp");
+    this->DrawBitmap(x, 4, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())))->image, true);
+  }
+}
+
+// OFFSET: 0x0081B7C0
+// FUNCTION: fn_10192
+void UIRune_Info::Paint() {
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp")))->image, true);
+  if (!this->m_rune) {
+    return;
+  }
+
+  ResourceMgr& resources = ResourceMgr::Instance();
+  CBitmapRes* bitmap =
+    static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\rune\\%s.bmp", this->m_rune->GetResName()).c_str())));
+  if (this->m_rune->IsActive()) {
+    this->DrawBitmap(225, 134, &bitmap->image, true);
+    this->DrawBitmap(214, 123, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\card_stone_frame.bmp")))->image, true);
+  } else {
+    this->DrawBitmap(221, 80, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge_big.bmp")))->image, true);
+    this->DrawBitmap(225, 84, &bitmap->image, true);
+    this->geometry.surface->Dim(225, 84, bitmap->image.width, bitmap->image.height, 55);
+  }
+
+  const std::string name = FormatOwnedString("Rune of %s", this->m_rune->GetName());
+  const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, name.c_str(), name.size(), 0, 13, 1, 0);
+  const int x = static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f + 2.0f);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, 25, name.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x - 1, 26, name.c_str(), 0, 0, 13, 0x864D43, 1, 0);
+}
+
+// OFFSET: 0x0081BA00
+// FUNCTION: fn_10193
+void UIRune_ViewInfo::Paint() {
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\View_bg_main.bmp")))->image, true);
+  const int total = g_runeSystemMgr->GetTag(-1)->GetRuneCount(1);
+  const int active = g_runeSystemMgr->GetTag(-1)->m_activeCount[1];
+  const int center = static_cast<int>(static_cast<float>(this->m_gauge->geometry.width) * 0.5f + static_cast<float>(this->m_gauge->geometry.x));
+
+  const std::string activeText = FormatOwnedString("%d", active);
+  const int activeWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, activeText.c_str(), activeText.size(), 0, 12, 0, 0);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, center - activeWidth - 7, 406, activeText.c_str(), 0, 0, 12, 0xFF7E00, 0, 0);
+  const std::string totalText = FormatOwnedString("/ %d", active, total);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, center - 3, 406, totalText.c_str(), 0, 0, 12, 0, 0, 0);
+
+  const std::string title = "수집 현황";
+  const int titleWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, title.c_str(), title.size(), 0, 13, 0, 0);
+  this->DrawTextAt(
+    this->m_context->fonts, this->m_context->locale, static_cast<int>(261.0f - static_cast<float>(titleWidth) * 0.5f), 27, title.c_str(), 0, 0, 13, 0x864D43,
+    1, 0
+  );
+
+  const std::string tagName = g_runeSystemMgr->GetTag(-1)->m_name;
+  const int tagWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, tagName.c_str(), tagName.size(), 0, 13, 0, 0);
+  this->DrawTextAt(
+    this->m_context->fonts, this->m_context->locale, static_cast<int>(261.0f - static_cast<float>(tagWidth) * 0.5f), 74, tagName.c_str(), 0, 0, 13, 0xDB632A,
+    1, 0
+  );
+}
+
+// OFFSET: 0x00814BC0
+// FUNCTION: fn_10136
+UIRuneSystemTab::UIRuneSystemTab(UIWindowContext& windows) : UIWindow(windows, 0), m_count(4), m_label("유저인터페이스\\runesystem\\runesystam_tab_%d.bmp") {
+  this->geometry.unknown_0030 = 0;
+}
+
+// OFFSET: 0x00814D40
+// FUNCTION: fn_10137
+UIRuneSystemWnd::UIRuneSystemWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), m_nextTick(0) {
+  RuneSystemOpenPacket packet;
+  packet.id = 0x0BE0;
+  packet.open = 1;
+  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x00814EE0
+// FUNCTION: fn_10139
+UIRuneSystem_DecomResultWnd::UIRuneSystem_DecomResultWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_total(0) {
+  UIBitmapButton* button = new UIBitmapButton(windows, controls);
+  this->AddChild(button);
+  button->SetBitmap("유저인터페이스\\runesystem\\bt_ok_nomal.bmp", 0, 0);
+  button->SetBitmap("유저인터페이스\\runesystem\\bt_ok_mouseon.bmp", 1, 0);
+  button->SetBitmap("유저인터페이스\\runesystem\\bt_ok_pressed.bmp", 2, 0);
+  button->SetBitmap("유저인터페이스\\runesystem\\bt_ok_disabled.bmp", 3, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(static_cast<int>(static_cast<float>(240 - button->geometry.width) * 0.5f), 154);
+  button->SetId(0xB8);
+  std::memset(this->m_itemIds, 0, sizeof(this->m_itemIds) + sizeof(this->m_counts));
+}
+
+// OFFSET: 0x008150A0
+// FUNCTION: fn_10141
+UIRuneSystem_tagListWnd::UIRuneSystem_tagListWnd(UIWindowContext& windows, UIButtonContext& controls)
+    : UIWindow(windows, 0), m_firstTag(0), m_visibleCount(9) {
+  this->m_rightButton = new UIBitmapButton(windows, controls);
+  this->AddChild(this->m_rightButton);
+  this->m_rightButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_right_nomal.bmp", 0, 0);
+  this->m_rightButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_right_mouseon.bmp", 1, 0);
+  this->m_rightButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_right_pressed.bmp", 2, 0);
+  this->m_rightButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_right_disable.bmp", 3, 0);
+  this->m_rightButton->SetSize(this->m_rightButton->BitmapWidth(), this->m_rightButton->BitmapHeight());
+  this->m_rightButton->Move(267, 9);
+  this->m_rightButton->SetId(0x13D);
+
+  this->m_leftButton = new UIBitmapButton(windows, controls);
+  this->AddChild(this->m_leftButton);
+  this->m_leftButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_left_nomal.bmp", 0, 0);
+  this->m_leftButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_left_mouseon.bmp", 1, 0);
+  this->m_leftButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_left_pressed.bmp", 2, 0);
+  this->m_leftButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_left_disable.bmp", 3, 0);
+  this->m_leftButton->SetSize(this->m_leftButton->BitmapWidth(), this->m_leftButton->BitmapHeight());
+  this->m_leftButton->Move(7, 9);
+  this->m_leftButton->SetId(0x13C);
+
+  if (g_runeSystemMgr->GetTagCount() < this->m_visibleCount) {
+    this->m_rightButton->SetDisabled(1);
+    this->m_rightButton->Invalidate();
+    this->m_leftButton->SetDisabled(1);
+    this->m_leftButton->Invalidate();
+  }
+}
+
+// OFFSET: 0x0081D6B0
+// FUNCTION: fn_10223
+int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6:
+    if (argument1 > 0x158) {
+      switch (argument1) {
+      case 0x1FD:
+        if (!this->m_runeSet) {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4048), 0, true, false, 0, "Message", 280, 120, 0);
+        } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
+          g_runeSystemMgr->SendRequest(0xBD2, this->m_runeSet, -1);
+        }
+        break;
+      case 0x23C:
+        if (!this->m_runeSet) {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4048), 0, true, false, 0, "Message", 280, 120, 0);
+        } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
+          g_runeSystemMgr->SendRequest(0xBD0, this->m_runeSet, -1);
+        }
+        break;
+      case 0x24E:
+      case 0x24F:
+      case 0x250:
+      case 0x251:
+      case 0x252:
+      case 0x253:
+      case 0x254:
+        if (!this->m_runeSet->IsRewardStep(argument1 - 0x24E)) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4199)), 0xFF, 0, 0, 0);
+        } else {
+          g_runeSystemMgr->SendRequest(0xC16, this->m_runeSet, argument1 - 0x24D);
+        }
+        break;
+      }
+    } else if (argument1 == 0x158) {
+      if (!this->parent || this->parent->SendMsg(this, 0x6A, 1500, 0, 0, 0) != 0) {
+        this->parent->SendMsg(this, 0xAB, 0x158, 0, 0, 0);
+      }
+    } else if (argument1 == 0xC3) {
+      if (this->m_runeSet && (!this->parent || this->parent->SendMsg(this, 0x6A, 1500, 0, 0, 0) != 0)) {
+        this->parent->SendMsg(this, 0xAB, 0xC3, reinterpret_cast<std::intptr_t>(this->m_runeSet), 0, 0);
+      }
+    }
+    break;
+  case 7:
+  case 9:
+  case 10:
+    this->m_infoList->ScrollBy(argument1);
+    this->Invalidate();
+    break;
+  case 0x16:
+    if (!this->m_runeSet) {
+      break;
+    }
+    if (!this->m_runeSet->IsActive()) {
+      this->m_tab->geometry.unknown_0030 = 0;
+      this->m_tab->Invalidate();
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4047), 0, true, false, 0, "Message", 280, 120, 0);
+    }
+    this->Refresh();
+    break;
+  case 0x3C:
+    this->Refresh();
+    break;
+  }
+
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x0081ED20
+// FUNCTION: fn_10232
+void UIRune_Decom::SetItem(int itemId) {
+  ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
+  item.identified = 1;
+  if (this->m_itemId != itemId) {
+    this->m_itemId = itemId;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    this->unknown_007C = naming.DisplayName(item, 0);
+
+    std::string resource;
+    if (IsItemCard(std::atoi(item.itemId.c_str()))) {
+      const ItemCardName card = FindItemCardName(std::atoi(item.itemId.c_str()));
+      resource = card.name;
+    } else {
+      resource = ItemResourcePath(item);
+    }
+
+    this->unknown_0094 = FormatOwnedString("유저인터페이스\\Illust\\%s.bmp", resource.c_str());
+    if (!ResourceMgr::Instance().Exists(this->unknown_0094.c_str())) {
+      this->unknown_0094 = FormatOwnedString("유저인터페이스\\cardbmp\\%s.bmp", resource.c_str());
+      if (!ResourceMgr::Instance().Exists(this->unknown_0094.c_str())) {
+        this->unknown_0094 = "";
+      }
+    }
+
+    this->m_decomList = g_runeSystemMgr->GetDecomList(this->m_itemId, this->m_decomType);
+    this->Invalidate();
+  }
+
+  for (int index = 0; index < 2; ++index) {
+    this->m_radioButtons[index]->Show(item.quantity != 0);
+  }
+  if (item.quantity) {
+    if (this->m_ownedCount != static_cast<unsigned int>(item.quantity)) {
+      this->m_ownedCount = item.quantity;
+    }
+    this->SelectDecomType(this->m_decomType);
+  }
+}

@@ -8,6 +8,8 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/PlayerNameDictionary.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIRadioBtn.h"
@@ -15,8 +17,10 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/WindowDialogs.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -28,6 +32,7 @@ class RuneSetData;
 class UIRuneSetReWard : public UIBitmapButton {
 public:
   void Paint() override;
+  void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot32(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -39,6 +44,7 @@ public:
 
 class UIRuneSystemTab : public UIWindow {
 public:
+  explicit UIRuneSystemTab(UIWindowContext& windows);
   void Paint() override;
   void Slot25(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -49,6 +55,7 @@ public:
 
 class UIEquipRuneSetWnd : public UIWindow {
 public:
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
@@ -56,17 +63,21 @@ public:
 
 class UIRuneSystem_tagListWnd : public UIWindow {
 public:
+  UIRuneSystem_tagListWnd(UIWindowContext& windows, UIButtonContext& controls);
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  /* 007C */ int unknown_007C;
-  /* 0080 */ int unknown_0080;
+  /* 007C */ UIBitmapButton* m_leftButton;
+  /* 0080 */ UIBitmapButton* m_rightButton;
   /* 0084 */ int m_firstTag;
+  /* 0088 */ int m_visibleCount;
 };
 
 class UIRuneSetList : public UIScrollBar {
 public:
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot35(int delta) override;
@@ -83,11 +94,13 @@ public:
 
 class UIRuneList : public UIRuneSetList {
 public:
+  void Paint() override;
   void Slot28(int x, int y) override;
 };
 
 class UIDecomlist : public UIRuneSetList {
 public:
+  void Paint() override;
   void Slot28(int x, int y) override;
 };
 
@@ -117,6 +130,8 @@ public:
 
 class UIGage_Circle : public UIWindow {
 public:
+  void Paint() override;
+
   /* 007C */ int m_textY;
   /* 0080 */ int m_value;
   /* 0084 */ bool m_max;
@@ -127,13 +142,20 @@ public:
 
 class UIRuneSystem_ActiveWnd : public UIWindow {
 public:
+  void Paint() override;
+  void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   int HitTestItem(int x, int y);
   __declspec(noinline) void DrawCount(int x, int y, int count, int total, std::uint32_t color, int fontHeight);
 
   /* 007C */ int m_columns;
-  /* 0080 */ int unknown_0080;
+  /* 0080 */ int m_rows;
   /* 0084 */ int m_listId;
+};
+
+class UIRuneSystem_DecomItemWnd : public UIRuneSystem_ActiveWnd {
+public:
+  void Paint() override;
 };
 
 class UIRuneSystem_Decom_RadioBtn : public UIRadioBtn {
@@ -148,6 +170,7 @@ public:
   void Slot19() override;
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   __declspec(noinline) void UpdateActivation();
   __declspec(noinline) void UpdateRewards();
   __declspec(noinline) void Refresh();
@@ -169,6 +192,7 @@ public:
 
 class UIRune_Info : public UIWindow {
 public:
+  void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ RuneData* m_rune;
@@ -178,10 +202,12 @@ public:
 
 class UIRune_Decom : public UIWindow {
 public:
+  void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void Reset();
   int HitTestItem(int x, int y);
   void SelectDecomType(unsigned int type);
+  __declspec(noinline) void SetItem(int itemId);
 
   /* 007C */ std::string unknown_007C;
   /* 0094 */ std::string unknown_0094;
@@ -193,14 +219,47 @@ public:
   /* 00C0 */ UIRuneSystem_Decom_RadioBtn* m_radioButtons[2];
 };
 
+class UIRune_ViewInfo : public UIWindow {
+public:
+  void Paint() override;
+
+  /* 007C */ UIGage_Circle* m_gauge;
+};
+
+#pragma pack(push, 1)
+struct RuneSystemOpenPacket {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ unsigned char open;
+};
+
+struct RuneDecomResultPacket {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ int itemIds[8];
+  /* 0022 */ std::int16_t counts[8];
+};
+#pragma pack(pop)
+
+class UIRuneSystem_DecomResultWnd : public UIFrameWnd {
+public:
+  UIRuneSystem_DecomResultWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+  /* 00B4 */ int m_total;
+  /* 00B8 */ int m_itemIds[8];
+  /* 00D8 */ int m_counts[8];
+};
+
 class UIRuneSystemWnd : public UIFrameWnd {
 public:
+  UIRuneSystemWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Slot19() override;
   void Paint() override;
   void Slot25(int x, int y) override;
   __declspec(noinline) void SelectTab();
 
-  /* 00B4 */ unsigned char unknown_00B4[0x0C];
+  /* 00B4 */ int unknown_00B4;
+  /* 00B8 */ std::int64_t m_nextTick;
   /* 00C0 */ UIRuneSystemTab* m_tab;
   /* 00C4 */ UIEquipRuneSetWnd* m_equipRuneSet;
   /* 00C8 */ UIRuneSystem_tagListWnd* m_tagList;
@@ -209,5 +268,11 @@ public:
   /* 00DC */ UIRune_Info* m_runeInfo;
   /* 00E0 */ UIRune_Decom* m_runeDecom;
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(RuneSetInfoLine) == 0x24);
+static_assert(sizeof(RuneSystemOpenPacket) == 3);
+static_assert(sizeof(RuneDecomResultPacket) == 0x32);
+#endif
 
 #endif
