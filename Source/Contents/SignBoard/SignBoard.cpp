@@ -4,7 +4,16 @@
 #include "Render/SpriteGeometry.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
 #include "Resource/TextureNames.h"
+#include "UI/Buttons/UIButton.h"
+#include "UI/Text/UIStaticText.h"
+#include "UI/Window/UIWindowMgr.h"
+
+#include <cstdlib>
+#include <new>
+#include <windows.h>
+#include <timeapi.h>
 
 // OFFSET: 0x008213D0
 // FUNCTION: fn_10258
@@ -22,9 +31,61 @@ CIcon::~CIcon() = default;
 // FUNCTION: fn_10261
 CSignBoardWnd::~CSignBoardWnd() = default;
 
+// OFFSET: 0x008215D0
+// FUNCTION: fn_10262
+void CSignBoardWnd::ApplyColor() {
+  int red = 0;
+  int green = 0;
+  int blue = 0;
+  if (this->unknown_00B0.size() != 0) {
+    int values[3] = {0, 0, 0};
+    int index = 0;
+    if (this->unknown_00B0.find(",") != std::string::npos) {
+      std::string rest = this->unknown_00B0;
+      std::size_t comma = rest.find(",");
+      while (comma != std::string::npos) {
+        values[index] = std::atoi(rest.substr(0, comma).c_str());
+        index += 1;
+        rest = rest.substr(comma + 1);
+        comma = rest.find(",");
+      }
+      values[index] = std::atoi(rest.c_str());
+    }
+    red = values[0];
+    green = values[1];
+    blue = values[2];
+    if (this->unknown_00B0.find("#") != std::string::npos) {
+      std::string hex = this->unknown_00B0.substr(this->unknown_00B0.find("#") + 1);
+      const unsigned long color = std::strtoul(hex.c_str(), nullptr, 16);
+      red = static_cast<int>((color >> 16) & 0xff);
+      green = static_cast<int>((color >> 8) & 0xff);
+      blue = static_cast<int>(color & 0xff);
+    }
+  }
+  this->text->SetColor(red, green, blue);
+}
+
 // OFFSET: 0x00821B40
 // FUNCTION: fn_10263
 void CBmpObjWnd::Slot15(int width, int height) {
+}
+
+// OFFSET: 0x00821B50
+// FUNCTION: fn_10264
+void CSignBoardWnd::Slot15(int width, int height) {
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\signboard\\bg_signboard.bmp")));
+  this->Resize(bitmap->image.width, bitmap->image.height);
+  UIStaticText* text = new (std::nothrow) UIStaticText(*this->m_context, *this->m_controls);
+  this->text = text;
+  text->SetSize(0x7e, 0xe);
+  text->Move(0x1e, this->geometry.height / 2 - 7);
+  text->SetTextFitted("");
+  text->fontFamily = 0;
+  text->fontHeight = 12;
+  text->bold = 0;
+  text->italic = 0;
+  text->SetColor(0x9e, 0xbd, 0xff);
+  this->AddChild(text);
 }
 
 // OFFSET: 0x00821C50
@@ -41,6 +102,34 @@ void CSignBoardWnd::Paint() {
   this->DrawBitmap(5, 5, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(this->iconPath.c_str()))), true);
 }
 
+// OFFSET: 0x00821D10
+// FUNCTION: fn_10267
+void C3DCooRendering::Create(UIWindowContext& windows, UIButtonContext& controls) {
+  UIWindow* window = nullptr;
+  int width = 0;
+  int height = 0;
+  if (this->type == 1) {
+    window = new (std::nothrow) CBmpObjWnd(windows);
+    width = 0xaa;
+    height = 0xaa;
+  } else if (this->type == 3) {
+    window = new (std::nothrow) CSignBoardWnd(windows, controls);
+    width = 0xa2;
+    height = 0x24;
+  } else {
+    return;
+  }
+  this->window = window;
+  window->SetSize(width, height);
+  g_windowMgr.AddRenderedFront(this->window);
+}
+
+// OFFSET: 0x00821EC0
+// FUNCTION: fn_10268
+void C3DCooRendering::SetOverrideColor() {
+  this->render.overrideColor = 0xFFFFFF00;
+}
+
 // OFFSET: 0x00821ED0
 // FUNCTION: fn_10269
 bool C3DCooRendering::OnProcess() {
@@ -51,6 +140,15 @@ bool C3DCooRendering::OnProcess() {
       static_cast<int>(static_cast<float>(this->render.screenY - window->geometry.height / 2) - static_cast<float>(lift) * this->render.unknown_005C)
     );
   }
+  return true;
+}
+
+// OFFSET: 0x00821F50
+// FUNCTION: fn_10270
+bool CIcon::OnProcess() {
+  const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.unknown_008C) / 24.0);
+  this->render.previousAnimation = this->render.animation;
+  this->render.curMotion = static_cast<int>(frame / this->render.speed) % static_cast<int>(this->GetActRes()->FrameCount(this->render.previousAnimation));
   return true;
 }
 
@@ -84,4 +182,24 @@ void CIcon::SetRenderInfo(const float* bounds, float x, float y) {
   this->SetTlvert(x, y);
 }
 
-// OFFSET: 0x00822390
+// OFFSET: 0x00822140
+// FUNCTION: fn_10275
+void CIcon::Load(const std::string& name) {
+  std::string stem;
+  if (name.find(".") != std::string::npos) {
+    stem = name.substr(0, name.find("."));
+  }
+  this->SetSpriteName(ResourceMgr::Instance(), (stem + ".spr").c_str());
+  this->SetActionName(ResourceMgr::Instance(), (stem + ".act").c_str());
+  this->SetAction(0, 10, 0);
+}
+
+// OFFSET: 0x00822310
+// FUNCTION: fn_10276
+void C3DCooRendering::SetBoard(const std::string& text, const std::string& color) {
+  CSignBoardWnd* board = static_cast<CSignBoardWnd*>(this->window);
+  board->unknown_0080 = text;
+  board->unknown_00B0 = color;
+  board->ApplyColor();
+  board->text->SetTextFitted(board->unknown_0080.c_str());
+}
