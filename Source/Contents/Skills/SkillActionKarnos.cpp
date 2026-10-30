@@ -1,5 +1,6 @@
 #include "Contents/Actors/GameActor.h"
 #include "Contents/EffectResourceSwitcher.h"
+#include "Contents/Effects/BezierArcThrowEffect.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
@@ -136,6 +137,16 @@ class CSkillAction_KR_THUNDERING_FOCUS_S : public CSkillAction_ThunderingExpand 
 public:
   int Slot02() override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_KR_THUNDERING_ORB : public CSkillAction_ThunderingBasic {
+public:
+  void Slot12(vector3d position, int argument2, int argument3) override;
+};
+
+class CSkillAction_KR_THUNDERING_ORB_S : public CSkillAction_ThunderingExpand {
+public:
+  void Slot12(vector3d position, int argument2, int argument3) override;
 };
 
 class CSkillAction_KR_ICE_SPLASH : public CSkillAction_Icing {
@@ -453,6 +464,34 @@ void CSkillAction_KR_THUNDERING_FOCUS_S::Slot11(int level, CGameActor* source, C
   const std::uint8_t effectSource[] = {0x8B, 0xED, 0x52, 0x63, 0x01, 0x5A, 0xEB, 0x14, 0x91, 0xE2, 0x78, 0x6B, 0x0A, 0x5C, 0xEC, 0x0E, 0xA0, 0xFC, 0x27};
   thread_local EncryptedName<sizeof(effectSource), 0x7D993F650D2785FFULL> effectName(effectSource);
   g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x005B2A90
+
+// OFFSET: 0x005B2E80
+// FUNCTION: fn_03362
+void CSkillAction_KR_THUNDERING_ORB_S::Slot12(vector3d position, int argument2, int argument3) {
+  CGameActor* const target = reinterpret_cast<CGameActor*>(argument3);
+  if (!target) {
+    return;
+  }
+
+  if (CEffect* orb = g_effectMgr->Spawn(target->render.accountId, 2441, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
+  }
+
+  const std::uint8_t effectSource[] = {0xB5, 0xA7, 0xA6, 0x5D, 0xF3, 0x78, 0x8F, 0x00, 0xAF, 0xA8, 0x8C, 0x5C, 0xE5, 0x7F, 0xA2, 0x10, 0xC1};
+  thread_local EncryptedName<sizeof(effectSource), 0x69FD1D9733D3CFC1ULL> effectName(effectSource);
+  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), position.x, position.y, position.z, 0, -1, 0, 0)) {
+    effect->Slot16(300);
+  }
+
+  const std::uint8_t bottomSource[] = {0xB3, 0xA5, 0x90, 0x53, 0x7B, 0x18, 0x17, 0x9C, 0xA9, 0xAA, 0xBA, 0x52, 0x6D, 0x1F, 0x3A, 0x8C,
+                                       0x98, 0xAF, 0x8A, 0x49, 0x6B, 0x12, 0x08, 0xF5};
+  thread_local EncryptedName<sizeof(bottomSource), 0xF5657D1F3DE5CDC7ULL> bottomName(bottomSource);
+  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), position.x, position.y, position.z, 0, -1, 0, 0)) {
+    effect->Slot16(300);
+  }
 }
 
 // OFFSET: 0x005B3270
