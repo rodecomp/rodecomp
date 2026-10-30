@@ -1,6 +1,22 @@
 #include "UI/Window/UINoteWnd.h"
+#include "Contents/MessageTable.h"
+#include "UI/Buttons/UIBasicButton.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/WindowBorder.h"
+
+// OFFSET: 0x0094C2D0
+// FUNCTION: fn_12895
+void UINoteWnd::Slot15(int width, int height) {
+  UIBasicButton* button = new UIBasicButton(*this->m_context, *this->m_controls);
+  button->Configure(60, LookupMessage(0xBE5));
+  button->Move(width - 68, height - 26);
+  button->SetId(201);
+  this->AddChild(button);
+
+  this->m_scroll = new UINoteWnd_Scroll(*this->m_context, width - 35, height - 59);
+  this->m_scroll->Move(16, 16);
+  this->AddChild(this->m_scroll);
+}
 
 // OFFSET: 0x0094D870
 // FUNCTION: fn_12907
