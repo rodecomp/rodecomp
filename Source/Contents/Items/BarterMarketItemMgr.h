@@ -24,6 +24,8 @@ struct BarterMarketItem {
   /* 0040 */ int field_40 = 0;
   /* 0044 */ int field_44 = 0;
 
+  // OFFSET: 0x00AE73A0
+  // FUNCTION: fn_18072
   BarterMarketItem() {}
   BarterMarketItem(const BarterMarketItem& other);
   ITEM_INFO ToItemInfo() const;
@@ -84,6 +86,8 @@ struct BarterMarketEntry {
   /* 003C */ int field_3c = 0;
   /* 0040 */ std::vector<BarterChunk16> chunks;
 
+  // OFFSET: 0x00AE7450
+  // FUNCTION: fn_18073
   BarterMarketEntry() {}
 
   // OFFSET: 0x005D8DA0
