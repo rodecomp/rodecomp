@@ -671,7 +671,6 @@ void ApplyServiceOptionActorRefresh(int id, unsigned char value, bool notify, in
   reinterpret_cast<ServiceOptionActorRefresh*>(g_modeMgr.GetGameMode())->sub_CD6DD0(0);
 }
 
-
 // OFFSET: 0x006C4750
 // FUNCTION: fn_06359
 void ShowHelpMessages() {
@@ -700,8 +699,6 @@ void ApplyServiceOptionSessionFlag(int id, unsigned char value, bool notify, int
 }
 
 // OFFSET: 0x006C5D60
-
-
 // FUNCTION: fn_06367
 void ApplyServiceOptionCursorClip(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
   if (g_serviceOptions.Get(id) != value) {
@@ -792,7 +789,6 @@ void ApplyServiceOptionWindows189(int id, unsigned char value, bool notify, int 
 
   g_windowMgr.SetWindows189Visible(value);
 }
-
 
 // OFFSET: 0x006C6200
 // FUNCTION: fn_06378
