@@ -321,6 +321,27 @@ void UIRefining_BtnReturn::Paint() {
 }
 
 // OFFSET: 0x007F70C0
+// FUNCTION: fn_09912
+void UIRefining_Notice::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->text.size() > 0) {
+    auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\refining_renewal\\ico_notice.bmp")));
+    this->DrawBitmap(0, 3, icon ? &icon->image : nullptr, false);
+
+    std::uint32_t color = this->highlight == 1 ? 0x2E15CA : 0xC4281C;
+    std::list<std::string> lines;
+    this->WrapFormattedText(this->text, &lines, this->geometry.width - 18, 0, 11, 0);
+
+    auto& controls = *this->m_controls;
+    int offset = 0;
+    for (const std::string& line : lines) {
+      this->DrawTextAt(
+        controls.fonts, controls.locale, 18, static_cast<int>((this->geometry.height - lines.size() * 11) * 0.5 + offset), line.c_str(), 0, 0, 11, color, 0, 0
+      );
+      offset += 11;
+    }
+  }
+}
 
 // OFFSET: 0x007F72A0
 // FUNCTION: fn_09913

@@ -1341,6 +1341,114 @@ int UIWindow::FormattedTextWidth(std::string text, int family, int height, unsig
 }
 
 // OFFSET: 0x00A7E120
+// FUNCTION: fn_16959
+std::list<int> UIWindow::WrapFormattedText(std::string text, std::list<std::string>* lines, int maxWidth, int family, int height, unsigned char bold) {
+  lines->clear();
+  if (maxWidth <= 0) {
+    maxWidth = this->FormattedTextWidth(text, family, height, bold);
+  }
+
+  std::list<int> widths;
+  int width = 0;
+  std::string line;
+  unsigned char currentBold = bold;
+  std::string colorCode;
+  const char* current = text.c_str();
+  const char* end = current + std::strlen(current);
+
+  while (current != end) {
+    if (*current == '\n') {
+      lines->push_back(line);
+      if (colorCode.empty()) {
+        line.clear();
+      } else {
+        line = '^' + colorCode;
+      }
+      widths.push_back(width);
+      width = 0;
+      ++current;
+      continue;
+    }
+
+    if (current[1] == '\\' && current[2] == 'n') {
+      lines->push_back(line);
+      line.clear();
+      widths.push_back(width);
+      width = 0;
+      current += 2;
+      continue;
+    }
+
+    if (*current == '^') {
+      if (current[1] == 'b') {
+        currentBold = 1;
+        line.append(current, 2);
+        current += 2;
+        if (current == end) {
+          lines->push_back(line);
+        }
+        continue;
+      }
+
+      if (current[1] == '/' && current[2] == 'b') {
+        currentBold = bold;
+        line.append(current, 3);
+        current += 3;
+        if (current == end) {
+          lines->push_back(line);
+        }
+        continue;
+      }
+
+      char color[7] = {};
+      strncpy_s(color, sizeof(color), current + 1, 6);
+      char* parsed = nullptr;
+      std::strtol(color, &parsed, 16);
+      if (parsed - color == 6) {
+        colorCode = color;
+        line.append(current, 7);
+        current += 7;
+        if (current == end) {
+          lines->push_back(line);
+        }
+        continue;
+      }
+    }
+
+    const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
+    const std::string character(current, next);
+    const char* const measured = character.c_str();
+    int characterWidth = 0;
+    if (measured) {
+      const unsigned bytes = static_cast<unsigned>(std::strlen(measured));
+      if (bytes) {
+        TextContext context(*this->geometry.surface);
+        context.SetFont(family, height, currentBold, 0);
+        characterWidth = context.Measure(measured, bytes).cx;
+      }
+    }
+
+    if (width + characterWidth > maxWidth) {
+      lines->push_back(line);
+      if (colorCode.empty()) {
+        line.clear();
+      } else {
+        line = '^' + colorCode;
+      }
+      widths.push_back(width);
+      width = 0;
+    }
+
+    width += characterWidth;
+    line.append(current, next - current);
+    current = next;
+    if (current == end) {
+      lines->push_back(line);
+    }
+  }
+
+  return widths;
+}
 
 // OFFSET: 0x00A836C0
 // FUNCTION: fn_17006

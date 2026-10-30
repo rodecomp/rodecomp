@@ -140,8 +140,98 @@ void UIBalloonText::Paint() {
 }
 
 // OFFSET: 0x0085D1F0
+// FUNCTION: fn_10812
+void UINameBalloonText::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  int x = 4;
+  int y = 4;
+  if (this->framed == 1) {
+    CBitmapRes* frame = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\emblem_frame.bmp")));
+    if (frame) {
+      this->DrawBitmap(2, (this->geometry.height - frame->image.height) / 2, &frame->image, true);
+      x = frame->image.width + 4;
+    }
+  }
+
+  if (this->iconName.size() != 0 && ResourceMgr::Instance().Exists(this->iconName.c_str())) {
+    const BitmapImage* image;
+    if (this->iconName.find(".bmp", 0, 4) != std::string::npos) {
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->iconName.c_str())));
+      if (!bitmap) {
+        goto lines;
+      }
+
+      g_modeMgr.GetGameMode();
+      image = &bitmap->image;
+    } else if (this->iconName.find(".gif", 0, 4) != std::string::npos) {
+      CGifRes* gif = static_cast<CGifRes*>(ResourceMgr::Instance().Load(Resolve(this->iconName.c_str())));
+      if (!gif) {
+        goto lines;
+      }
+
+      image = &gif->image;
+    } else {
+      CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(this->iconName.c_str()));
+      if (!emblem) {
+        goto lines;
+      }
+
+      g_modeMgr.GetGameMode();
+      image = &emblem->gif.image;
+    }
+
+    this->DrawBitmap(4, (this->geometry.height - 24) / 2, image, true);
+    if (this->framed == 0) {
+      x += 28;
+    }
+  } else if (this->monsterType != 0) {
+    const char* name;
+    if (this->monsterType == 1) {
+      name = "유저인터페이스\\montype_boss.bmp";
+    } else if (this->monsterType == 2) {
+      name = "유저인터페이스\\montype_mvp.bmp";
+    } else {
+      goto lines;
+    }
+
+    CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+    if (icon) {
+      this->DrawBitmap(0, 0, &icon->image, true);
+      x += icon->image.width;
+    }
+  }
+
+lines:
+  for (const std::string& line : this->m_lines) {
+    DrawOutlinedText(
+      *this, x, y, line.c_str(), static_cast<unsigned>(line.size()), this->m_textColor, this->m_outlineColor, 0, g_nameBalloonFontHeight,
+      g_serviceFlag06, 0
+    );
+    y += g_nameBalloonFontHeight + 2;
+  }
+}
 
 // OFFSET: 0x0085E280
+// FUNCTION: fn_10824
+void UIVerticalNameBalloonText::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  int x = 4;
+  int y = 4;
+  if (this->iconName.size() != 0 && ResourceMgr::Instance().Exists(this->iconName.c_str())) {
+    CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(this->iconName.c_str()));
+    if (emblem) {
+      this->DrawBitmap((this->geometry.width - 24) / 2, 0, &emblem->gif.image, true);
+      y = 28;
+    }
+  }
+
+  for (const std::string& line : this->m_lines) {
+    this->DrawVerticalOutlinedText(
+      x, y, line.c_str(), static_cast<int>(line.size()), this->m_textColor, this->m_outlineColor, 0, g_nameBalloonFontHeight, g_serviceFlag06
+    );
+    x += g_nameBalloonFontHeight + 2;
+  }
+}
 
 // OFFSET: 0x0085FC90
 // FUNCTION: fn_10884

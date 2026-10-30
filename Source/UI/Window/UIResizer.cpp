@@ -19,6 +19,18 @@ void UIResizer::Paint() {
 }
 
 // OFFSET: 0x0085ECE0
+// FUNCTION: fn_10845
+void UIResizer::Slot25(int x, int y) {
+  g_windowMgr.SetCapture(this);
+  this->startX = x;
+  this->startY = y;
+  if (this->parent) {
+    this->parentWidth = this->parent->geometry.width;
+    this->parentHeight = this->parent->geometry.height;
+  }
+
+  this->ToScreen(this->startX, this->startY);
+}
 
 // OFFSET: 0x0085F470
 // FUNCTION: fn_10862
@@ -26,6 +38,56 @@ void UIResizer::Slot28(int, int) {
 }
 
 // OFFSET: 0x0085F6D0
+// FUNCTION: fn_10869
+void UIResizer::Slot27(int x, int y) {
+  if (g_windowMgr.Capture() != this) {
+    return;
+  }
+
+  int screenX = x;
+  int screenY = y;
+  this->ToScreen(screenX, screenY);
+  if (!this->parent) {
+    return;
+  }
+
+  const int dx = screenX - this->startX;
+  int width = this->parentWidth;
+  int height = this->parentHeight;
+  const int dy = screenY - this->startY;
+  switch (this->direction) {
+  case 0:
+    width -= dx;
+    break;
+  case 1:
+    width += dx;
+    break;
+  case 2:
+    height -= dy;
+    break;
+  case 3:
+    height += dy;
+    break;
+  case 4:
+    width -= dx;
+    height -= dy;
+    break;
+  case 5:
+    width += dx;
+    height -= dy;
+    break;
+  case 6:
+    width -= dx;
+    height += dy;
+    break;
+  case 7:
+    width += dx;
+    height += dy;
+    break;
+  }
+
+  this->parent->SendMsg(this, 14, this->direction, width, height, 0);
+}
 
 // OFFSET: 0x0085FA20
 // FUNCTION: fn_10879
