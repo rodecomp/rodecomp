@@ -31,6 +31,78 @@ void CCartCannon::Close() {
 }
 
 // OFFSET: 0x006FAA90
+// FUNCTION: fn_06897
+void CCartCannon::Slot01() {
+  this->currentPosition.x = this->position[0];
+  this->currentPosition.y = this->position[1];
+  this->currentPosition.z = this->position[2];
+
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->currentPosition, 5));
+  if (g_serviceOptions.Get(229)) {
+    particle->Open("mineffect\\new_cart_cannon\\new_cart_cannon\\new_cart_cannon.str");
+  } else {
+    particle->Open("new_cart_cannon\\new_cart_cannon\\new_cart_cannon.str");
+  }
+  particle->m_loop = true;
+  this->particle = particle;
+
+  this->speed = 1.0f;
+  this->delay = 0;
+  this->currentPosition.y -= 10.0f;
+  vector3d target;
+  target.x = this->sourcePosition[0];
+  target.y = this->sourcePosition[1] - 10.0f;
+  target.z = this->sourcePosition[2];
+  this->currentStep = 0;
+
+  this->stepDelta.x = target.x - this->currentPosition.x;
+  this->stepDelta.y = target.y - this->currentPosition.y;
+  this->stepDelta.z = target.z - this->currentPosition.z;
+
+  const float length = SquareRoot(
+    this->stepDelta.x * this->stepDelta.x +
+    this->stepDelta.y * this->stepDelta.y +
+    this->stepDelta.z * this->stepDelta.z
+  );
+
+  this->stepDelta.x /= 10.0f;
+  this->stepDelta.y /= 10.0f;
+  this->stepDelta.z /= 10.0f;
+
+  if (length < 40.0f) {
+    this->speed = 40.0f / length;
+    this->stepDelta.x *= this->speed;
+    this->stepDelta.y *= this->speed;
+    this->stepDelta.z *= this->speed;
+  }
+
+  const float dx = target.x - this->currentPosition.x;
+  const float dy = target.y - this->currentPosition.y;
+  const float dz = target.z - this->currentPosition.z;
+  const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
+
+  this->currentPosition.x = inverse * dx * 4.0f + this->currentPosition.x;
+  this->currentPosition.y = inverse * dy * 4.0f + this->currentPosition.y;
+  this->currentPosition.z = inverse * dz * 4.0f + this->currentPosition.z;
+
+  this->startPosition = this->currentPosition;
+  this->position[0] = this->currentPosition.x;
+  this->position[1] = this->currentPosition.y;
+  this->position[2] = this->currentPosition.z;
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  const float angle = static_cast<float>(atan2(static_cast<double>(target.z - this->currentPosition.z), static_cast<double>(target.x - this->currentPosition.x)));
+  const float cameraYaw = mode->camera ? mode->camera->camera.desiredYaw : 0.0f;
+  float yaw = cameraYaw + angle / 3.141592f * 180.0f;
+  if (yaw < 0.0f) {
+    yaw += 360.0f;
+  }
+  yaw = 270.0f - yaw;
+  if (yaw < 0.0f) {
+    yaw += 360.0f;
+  }
+  this->particle->m_angle = yaw;
+}
 
 // OFFSET: 0x006FAEC0
 // FUNCTION: fn_06898
