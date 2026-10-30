@@ -58,6 +58,16 @@ void UIRadioBtn::Slot25(int, int) {
 }
 
 // OFFSET: 0x0085F400
+// FUNCTION: fn_10861
+void UIRadioBtn::Slot28(int x, int y) {
+  this->Slot27(x, y);
+  if (this->tooltip.size()) {
+    x = 10;
+    y = -20;
+    this->ToScreen(x, y);
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+  }
+}
 
 // OFFSET: 0x00865180
 // FUNCTION: fn_10919

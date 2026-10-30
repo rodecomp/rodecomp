@@ -10,6 +10,16 @@
 #include "UI/Window/WindowBorder.h"
 
 // OFFSET: 0x0085D150
+// FUNCTION: fn_10811
+void UIMerchantShopTitle::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  const std::uint32_t color = this->ownerAid == g_session.unknown_5BF0 ? 0x7DFAFF : 0xFFFFFF;
+  DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height - 6, color);
+  DrawRoundedBorder(*this, 2, 2, this->geometry.width - 4, this->geometry.height - 10, 0xC3C3C3);
+  const char* icon = this->buyingShop != 0 ? "유저인터페이스\\buyingshop.bmp" : "유저인터페이스\\shop.bmp";
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(icon)));
+  this->DrawBitmap(3, 3, bitmap ? &bitmap->image : nullptr, true);
+}
 
 // OFFSET: 0x0085EC40
 // FUNCTION: fn_10843
