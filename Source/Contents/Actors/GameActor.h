@@ -242,9 +242,21 @@ public:
   void ResetState();
   void UpdateMotionFrame();
   void ProcessHitMessage(CGameObject* sender, const ActorHitInfo* info, int unused1, int unused2);
+  int GetEffectCounter(int effectId);
+  float GetNameOffset();
+  float GetNameHeight();
+  void SetStackedEffect(int effectId, bool on);
+  CSprRes* GetSprite();
+  float GetElapsedFrames();
+  void ResetUnknown03B8();
+  bool IsMonsterClass(int job);
+  bool HasPendingDamage();
+  bool UpdateUnknown03E8(std::int64_t value);
+  int IsPlayerClass(int job);
 };
 
 int ShapeShiftJob(int form, int job);
+int __stdcall MountedJob(int job, std::uint32_t flags);
 
 extern const int g_maxMoveSpeed;
 extern int g_multiHitInterval;
