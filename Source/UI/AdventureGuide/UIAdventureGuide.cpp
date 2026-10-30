@@ -34,6 +34,24 @@ void CUIQuest::Paint() {
   this->ClearSurface(0xFFFF00FF);
 }
 
+// OFFSET: 0x009DCFF0
+// FUNCTION: fn_14331
+void CUIIntro::Slot16() {
+  const std::string& title = g_adventureGuideMgr->unknown_0014;
+  const std::map<int, AdventureGuideText>& texts = g_adventureGuideMgr->unknown_002C;
+  if (texts.empty()) {
+    return;
+  }
+
+  for (const auto& text : texts) {
+    this->contents->data.emplace_back(text.second.first, text.second.second);
+  }
+
+  this->contents->UpdateScrollBar();
+  this->image->SetImage(title);
+  this->contents->scrollBar->SetHidden(1);
+}
+
 // OFFSET: 0x009DD1C0
 // FUNCTION: fn_14333
 void CUIItem::Slot16() {

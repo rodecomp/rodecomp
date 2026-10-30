@@ -15,10 +15,12 @@ public:
 
 class CUIIntro : public CUIPage {
 public:
+  void Slot16() override;
   void Paint() override;
   void Slot54(int first, int second) override;
 
-  /* 0084 */ unsigned char unknown_0084[0x08];
+  /* 0084 */ CUIStaticImage* image;
+  /* 0088 */ CUIListBoxEx<CUITabInfo, Guide_Intro::Contents>* contents;
 };
 
 class CUIItem : public CUIPage {
