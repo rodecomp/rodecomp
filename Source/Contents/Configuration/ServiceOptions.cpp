@@ -9,6 +9,9 @@
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Script/LuaInstance.h"
+#include "Utility/Singleton.h"
+#include "Utility/Text/StringUtil.h"
 
 extern "C" {
 #include <lua.h>
@@ -18,6 +21,9 @@ extern "C" {
 #include <cstdint>
 #include <format>
 #include <functional>
+#include <list>
+#include <optional>
+#include <utility>
 #include <string>
 #include <vector>
 #include <windows.h>
@@ -36,10 +42,11 @@ struct GameSettingsOption {
   /* 0060 */ int unknown_0060;
 };
 
-struct GameSettings {
-  /* 0000 */ void* vtable;
-  /* 0004 */ void* luaInstanceVtable;
-  /* 0008 */ lua_State* state;
+class CGameSettingsMgr : public Singleton<CGameSettingsMgr>, public CLuaInstance {
+public:
+  CGameSettingsMgr();
+  ~CGameSettingsMgr() override;
+
   /* 000C */ std::vector<GameSettingsOption> options;
   /* 0018 */ std::unordered_map<std::uint32_t, std::function<void(int, unsigned char, bool, int, int)>, SkillIdHash> actions;
   /* 0038 */ std::unordered_map<std::uint32_t, std::function<void()>, SkillIdHash> functions;
@@ -49,7 +56,12 @@ struct GameSettings {
   void ToggleOption(int id);
   void sub_6C0C40(int id, unsigned char value, bool notify);
   void ApplyScriptOption(int id, const char* key, ScriptOptions& script);
+  bool RunFunction(int id);
+  std::optional<GameSettingsOption*> FindOption(int id);
+  std::list<int> GetOptionIds(int tab);
 };
+
+using GameSettings = CGameSettingsMgr;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(GameSettingsOption) == 0x64);
@@ -60,6 +72,97 @@ static_assert(sizeof(GameSettings) == 0x58);
 
 // GLOBAL: gl_24579
 ServiceOptions g_serviceOptions;
+
+void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage);
+
+// OFFSET: 0x006BFE60
+// FUNCTION: fn_06299
+CGameSettingsMgr::CGameSettingsMgr() {
+}
+
+// OFFSET: 0x006C0B80
+// FUNCTION: fn_06311
+CGameSettingsMgr::~CGameSettingsMgr() {
+}
+
+// OFFSET: 0x006C0C40
+// FUNCTION: fn_06312
+void GameSettings::sub_6C0C40(int id, unsigned char value, bool notify) {
+  for (const GameSettingsOption& option : this->options) {
+    if (option.id != id) {
+      continue;
+    }
+
+    if (option.type != 0) {
+      return;
+    }
+
+    const auto entry = this->actions.find(static_cast<std::uint32_t>(id));
+    if (entry == this->actions.end()) {
+      ApplyServiceOption(id, value, notify, option.unknown_005c, option.unknown_0060);
+      return;
+    }
+
+    const std::function<void(int, unsigned char, bool, int, int)> action = entry->second;
+    if (action) {
+      action(id, value, notify, option.unknown_005c, option.unknown_0060);
+    }
+    return;
+  }
+}
+
+// OFFSET: 0x006C0DD0
+// FUNCTION: fn_06313
+bool GameSettings::RunFunction(int id) {
+  for (const GameSettingsOption& option : this->options) {
+    if (option.id != id) {
+      continue;
+    }
+
+    if (option.type != 1) {
+      return false;
+    }
+
+    const auto& functions = this->functions;
+    const auto entry = functions.find(static_cast<std::uint32_t>(id));
+    if (entry == functions.end()) {
+      return false;
+    }
+
+    const std::function<void()> function = entry->second;
+    if (function) {
+      function();
+      return true;
+    }
+    return false;
+  }
+  return false;
+}
+
+// OFFSET: 0x006C1030
+// FUNCTION: fn_06315
+std::optional<GameSettingsOption*> GameSettings::FindOption(int id) {
+  auto option = this->options.begin();
+  while (option != this->options.end() && id != option->id) {
+    ++option;
+  }
+  if (option == this->options.end()) {
+    return std::nullopt;
+  }
+  return &*option;
+}
+
+// OFFSET: 0x006C1070
+// FUNCTION: fn_06316
+std::list<int> GameSettings::GetOptionIds(int tab) {
+  std::list<int> ids;
+  for (const GameSettingsOption& option : this->options) {
+    if (option.tab == tab) {
+      ids.push_back(option.id);
+    }
+  }
+  return ids;
+}
 
 // OFFSET: 0x006C17A0
 // FUNCTION: fn_06318
@@ -129,6 +232,23 @@ int SetOption(const char* name, unsigned char value) {
     g_serviceOptions.values[static_cast<std::uint32_t>(optionId)] = value;
   }
   return optionId;
+}
+
+// OFFSET: 0x006C0F00
+// FUNCTION: fn_06314
+std::pair<int, unsigned char> FindServiceOption(const char* name) {
+  if (IsNullOrEmpty(name)) {
+    return {3, 0};
+  }
+
+  int optionId = 3;
+  std::string strings[3];
+  reinterpret_cast<SessionCommandTarget*>(&g_session)->sub_DE1010(name, &optionId, strings);
+  const auto entry = g_serviceOptions.values.find(static_cast<std::uint32_t>(optionId));
+  if (entry == g_serviceOptions.values.end()) {
+    return {3, 0};
+  }
+  return {optionId, entry->second};
 }
 
 // OFFSET: 0x006C2A80

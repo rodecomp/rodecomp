@@ -9,6 +9,8 @@
 #include "Script/LuaInstance.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIMileageWnd.h"
+#include "Network/TextEncoding.h"
 
 #include <algorithm>
 #include <array>
@@ -1807,6 +1809,66 @@ int GetCategoryJob(lua_State* state) {
 // OFFSET: 0x006BD9D0
 
 // OFFSET: 0x006BDCE0
+
+struct EquipLocationSource {
+  virtual void Slot00();
+  virtual void Slot01();
+  virtual void Slot02();
+  virtual int GetLocation();
+};
+
+// OFFSET: 0x006BE2F0
+// FUNCTION: fn_06282
+int GetLocation(lua_State* state) {
+  int index = 0;
+  EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
+  if (mgr->unknown_001C != 0) {
+    const int location = reinterpret_cast<EquipLocationSource*>(mgr->unknown_001C)->GetLocation();
+    index = GetEquipLocationIndex(location);
+  }
+  lua_pushnumber(state, index);
+  return 1;
+}
+
+// OFFSET: 0x006BE3A0
+// FUNCTION: fn_06283
+int GetMapName(lua_State* state) {
+  std::string mapName;
+  if (g_modeMgr.GetGameMode() != nullptr) {
+    mapName = std::string(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName);
+  }
+  mapName = mapName.substr(0, mapName.find(".rsw"));
+  lua_pushstring(state, mapName.c_str());
+  return 1;
+}
+
+// OFFSET: 0x006BE6C0
+// FUNCTION: fn_06285
+int GetPureJob(lua_State* state) {
+  lua_pushnumber(state, GetFirstJob(g_session.m_job));
+  return 1;
+}
+
+// OFFSET: 0x006BF240
+// FUNCTION: fn_06290
+int IsPremiumPcCafe(lua_State* state) {
+  lua_pushnumber(state, g_mileageWndActive == 1 ? 2 : 0);
+  return 1;
+}
+
+// OFFSET: 0x006BF280
+// FUNCTION: fn_06291
+int C_Logger(lua_State* state) {
+  if (!lua_isstring(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "Logger arg1 Error");
+    return 2;
+  }
+
+  const std::string text = lua_tostring(state, -1);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FromUtf8(text, g_textCodePage).c_str()), 0xFFFF, 0, 0, 0);
+  return 0;
+}
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EquipmentPropertyDefinition) == 0x80);
