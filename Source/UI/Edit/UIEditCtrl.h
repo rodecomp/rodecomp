@@ -37,6 +37,8 @@ struct UIEditContext {
 };
 
 class UIEditCtrl : public UIWindow {
+  friend class UIMacroDetectorWnd;
+
 public:
   UIEditCtrl();
   UIEditCtrl(UIWindowContext& windows, UIEditContext& edit);
