@@ -1,6 +1,11 @@
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/EffectResourceSwitcher.h"
+#include "Contents/Effects/BezierArcThrowEffect.h"
+#include "Contents/Effects/EZ2STREffectEx.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
@@ -12,6 +17,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <format>
 #include <string>
 
 namespace {
@@ -195,6 +201,136 @@ public:
 class CEfstAction_GROUND_GROW : public CEfstAction_BasicAction {
 public:
   void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  int Slot05(int efstId, int argument4) override;
+};
+
+class CSkillAction_Earthing : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_Icing : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_NATURE_PROTECTION : public CEfstAction_BasicAction {
+public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+  int Slot05(int efstId, int argument4) override;
+};
+
+class CEfstAction_THUNDERING_ROD : public CEfstAction_BasicAction {
+public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  int Slot05(int efstId, int argument4) override;
+};
+
+class CEfstAction_THUNDERING_ROD_MAX : public CEfstAction_BasicAction {
+public:
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+  int Slot05(int efstId, int argument4) override;
+};
+
+class CSkillAction_DR_TRUTH_OF_EARTH : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_TRUTH_OF_EARTH : public CEfstAction {
+public:
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_DR_TRUTH_OF_ICE : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_TRUTH_OF_ICE : public CEfstAction {
+public:
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_DR_TRUTH_OF_WIND : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_TRUTH_OF_WIND : public CEfstAction {
+public:
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_DR_CUTTING_WIND : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DR_WIND_BOMB : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DR_AROUND_FLOWER : public CSkillAction_Earthing {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DR_EARTH_FLOWER : public CSkillAction_Earthing {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DR_ICE_CLOUD : public CSkillAction_Icing {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DR_ICE_TOTEM : public CSkillAction_Icing {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_DR_WEREWOLF : public CSkillAction_DamageWereWolfForm {
+public:
+  int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_WEREWOLF : public CEfstAction {
+public:
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
 };
 
 // OFFSET: 0x0061FF70
@@ -483,3 +619,368 @@ void CEfstAction_GROUND_GROW::Slot01(int efstId, int argument2, int argument3, i
     g_effectMgr->Retire(actor->render.accountId, this->Slot05(efstId, index + 1));
   }
 }
+
+// OFFSET: 0x006224E0
+// FUNCTION: fn_04508
+int CEfstAction_GROUND_GROW::Slot05(int efstId, int argument4) {
+  const int step = argument4 - 1;
+  if (step < 0 || step > 11) {
+    return -1;
+  }
+
+  const auto full = []() {
+    const std::uint8_t fullSource[] = {0xAF, 0xC2, 0x49, 0xFB, 0xBB};
+    thread_local EncryptedName<sizeof(fullSource), 0x078333BB9725B7C9ULL> fullName(fullSource);
+    return fullName.Text();
+  };
+  std::string suffix = step == 11 ? std::string(full()) : std::format("{:02}", step);
+
+  const std::uint8_t prefixSource[] = {0xD2, 0x07, 0x0E, 0x2A, 0x93, 0x3F, 0x44, 0xE8, 0xC7, 0x1A, 0x16, 0x00, 0xFD};
+  thread_local EncryptedName<sizeof(prefixSource), 0x8F1B5BFD5F6175B5ULL> prefixName(prefixSource);
+  return CEZ2STREffectMgr::GetInstance()->EffectId(std::string(prefixName.Text()) + suffix);
+}
+
+// OFFSET: 0x00622920
+// FUNCTION: fn_04509
+EfstActionMessage CEfstAction_NATURE_PROTECTION::Slot03() {
+  return {LookupMessage(4666), 0xFFFF00};
+}
+
+// OFFSET: 0x00622950
+// FUNCTION: fn_04510
+EfstActionMessage CEfstAction_NATURE_PROTECTION::Slot04() {
+  return {LookupMessage(4667), 0xFF};
+}
+
+// OFFSET: 0x00622980
+// FUNCTION: fn_04511
+int CEfstAction_NATURE_PROTECTION::Slot05(int efstId, int argument4) {
+  const std::uint8_t effectSource[] = {0xAD, 0xA2, 0xA1, 0xFE, 0x29, 0x8E, 0x60, 0xFB, 0xB1, 0xAC, 0xA1, 0xEE, 0x38, 0x9F, 0x56, 0xE4, 0xAD, 0xC3};
+  thread_local EncryptedName<sizeof(effectSource), 0x8B3FEB5B8BD5C3C3ULL> effectName(effectSource);
+  return CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+}
+
+// OFFSET: 0x00622B60
+// FUNCTION: fn_04513
+void CEfstAction_NATURE_PROTECTION::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    static_cast<CGameActor*>(actor)->ApplyPendingUnknown0408();
+  }
+  CEfstAction_BasicAction::Slot01(efstId, argument2, argument3, argument4, actor);
+}
+
+// OFFSET: 0x00622B90
+// FUNCTION: fn_04514
+void CEfstAction_THUNDERING_ROD::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  for (int index = 0; index < 6; ++index) {
+    g_effectMgr->Retire(actor->render.accountId, this->Slot05(efstId, index + 1));
+  }
+}
+
+// OFFSET: 0x00622BD0
+// FUNCTION: fn_04515
+int CEfstAction_THUNDERING_ROD::Slot05(int efstId, int argument4) {
+  const int step = argument4 - 1;
+  if (static_cast<unsigned int>(step) > 5) {
+    return -1;
+  }
+
+  std::string suffix = std::format("{:02}", step);
+  const std::uint8_t prefixSource[] = {0xD3, 0xDB, 0x70, 0xA7, 0xC1, 0x06, 0x99, 0x62, 0xC9, 0xD4, 0x5A, 0xBB, 0xCA, 0x07, 0xB4, 0x0B};
+  thread_local EncryptedName<sizeof(prefixSource), 0x0BEB63A5C905B3A7ULL> prefixName(prefixSource);
+  return CEZ2STREffectMgr::GetInstance()->EffectId(std::string(prefixName.Text()) + suffix);
+}
+
+// OFFSET: 0x00622DD0
+// FUNCTION: fn_04516
+EfstActionMessage CEfstAction_THUNDERING_ROD_MAX::Slot03() {
+  return {LookupMessage(4688), 0xFFFF00};
+}
+
+// OFFSET: 0x00622E00
+// FUNCTION: fn_04517
+EfstActionMessage CEfstAction_THUNDERING_ROD_MAX::Slot04() {
+  return {LookupMessage(4689), 0xFF};
+}
+
+// OFFSET: 0x00622E30
+// FUNCTION: fn_04518
+int CEfstAction_THUNDERING_ROD_MAX::Slot05(int efstId, int argument4) {
+  const std::uint8_t effectSource[] = {0x5B, 0xF7, 0xC6, 0xB5, 0x8B, 0xAC, 0x65, 0xF2, 0x41, 0xF8, 0xEC, 0xA9, 0x80, 0xAD, 0x48, 0xFD, 0x5A, 0xF3, 0xDF, 0xDB};
+  thread_local EncryptedName<sizeof(effectSource), 0x9B17C9EFDBB39F2FULL> effectName(effectSource);
+  return CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text());
+}
+
+// OFFSET: 0x00622FD0
+// FUNCTION: fn_04519
+int CSkillAction_DR_TRUTH_OF_EARTH::Slot01() {
+  return 61;
+}
+
+// OFFSET: 0x00622FE0
+// FUNCTION: fn_04520
+int CSkillAction_DR_TRUTH_OF_EARTH::Slot02() {
+  return 63;
+}
+
+// OFFSET: 0x00622FF0
+// FUNCTION: fn_04521
+void CSkillAction_DR_TRUTH_OF_EARTH::Slot08(int level, CGameActor* source) {
+  if (source) {
+    source->LaunchEffect(57, level / 16);
+  }
+}
+
+// OFFSET: 0x00623020
+// FUNCTION: fn_04522
+void CSkillAction_DR_TRUTH_OF_EARTH::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x05, 0x69, 0x86, 0x8B, 0xEF, 0x7A, 0xFE, 0xA1, 0x2E, 0x7E, 0x92, 0x8D, 0xF3, 0x4D, 0x91};
+  thread_local EncryptedName<sizeof(effectSource), 0xC7912587FFF31B71ULL> effectName(effectSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+
+  const std::uint8_t bottomSource[] = {0x19, 0x41, 0x7A, 0xE1, 0xB3, 0x1A, 0xBC, 0x0F, 0x32, 0x56, 0x6E, 0xE7, 0xAF, 0x2D, 0x8C, 0x0B, 0x02, 0x47, 0x7B, 0xFA, 0xB6, 0x45};
+  thread_local EncryptedName<sizeof(bottomSource), 0x69D345DB950F336DULL> bottomName(bottomSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x006233D0
+// FUNCTION: fn_04523
+EfstActionMessage CEfstAction_TRUTH_OF_EARTH::Slot03() {
+  return {LookupMessage(4654), 0xFFFF00};
+}
+
+// OFFSET: 0x00623400
+// FUNCTION: fn_04524
+EfstActionMessage CEfstAction_TRUTH_OF_EARTH::Slot04() {
+  return {LookupMessage(4655), 0xFF};
+}
+
+// OFFSET: 0x00623430
+// FUNCTION: fn_04525
+int CSkillAction_DR_TRUTH_OF_ICE::Slot01() {
+  return 61;
+}
+
+// OFFSET: 0x00623440
+// FUNCTION: fn_04526
+int CSkillAction_DR_TRUTH_OF_ICE::Slot02() {
+  return 65;
+}
+
+// OFFSET: 0x00623450
+// FUNCTION: fn_04527
+void CSkillAction_DR_TRUTH_OF_ICE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    source->LaunchEffect(54, level / 16);
+  }
+}
+
+// OFFSET: 0x00623480
+// FUNCTION: fn_04528
+void CSkillAction_DR_TRUTH_OF_ICE::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x47, 0x55, 0x46, 0x7B, 0xD5, 0x12, 0x56, 0x4B, 0x6C, 0x4E, 0x50, 0x6A, 0xBD};
+  thread_local EncryptedName<sizeof(effectSource), 0x2D394DBD0F332733ULL> effectName(effectSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+
+  const std::uint8_t bottomSource[] = {0x33, 0x53, 0xCE, 0x9F, 0x83, 0x28, 0x70, 0x73, 0x18, 0x48, 0xD8, 0x8E, 0xB4, 0x15, 0x70, 0x61, 0x33, 0x4E, 0xD6, 0xEB};
+  thread_local EncryptedName<sizeof(bottomSource), 0x151F77EBEBBB2147ULL> bottomName(bottomSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x00623820
+// FUNCTION: fn_04529
+EfstActionMessage CEfstAction_TRUTH_OF_ICE::Slot03() {
+  return {LookupMessage(4658), 0xFFFF00};
+}
+
+// OFFSET: 0x00623850
+// FUNCTION: fn_04530
+EfstActionMessage CEfstAction_TRUTH_OF_ICE::Slot04() {
+  return {LookupMessage(4659), 0xFF};
+}
+
+// OFFSET: 0x00623880
+// FUNCTION: fn_04531
+int CSkillAction_DR_TRUTH_OF_WIND::Slot01() {
+  return 61;
+}
+
+// OFFSET: 0x00623890
+// FUNCTION: fn_04532
+int CSkillAction_DR_TRUTH_OF_WIND::Slot02() {
+  return 65;
+}
+
+// OFFSET: 0x006238A0
+// FUNCTION: fn_04533
+void CSkillAction_DR_TRUTH_OF_WIND::Slot08(int level, CGameActor* source) {
+  if (source) {
+    source->LaunchEffect(56, level / 16);
+  }
+}
+
+// OFFSET: 0x006238D0
+// FUNCTION: fn_04534
+void CSkillAction_DR_TRUTH_OF_WIND::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x95, 0xE9, 0x86, 0x0F, 0x85, 0xD8, 0x90, 0x07, 0xBE, 0xEC, 0x9A, 0x15, 0x89, 0x87};
+  thread_local EncryptedName<sizeof(effectSource), 0x61FF87ED7BF39BE1ULL> effectName(effectSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+
+  const std::uint8_t bottomSource[] = {0x8B, 0xF7, 0x52, 0x79, 0x0D, 0x60, 0xF6, 0x1B, 0xA0, 0xF2, 0x4E, 0x63, 0x01, 0x60, 0xFB, 0x12, 0x8B, 0xF1, 0x48, 0x60, 0x65};
+  thread_local EncryptedName<sizeof(bottomSource), 0x7D993F650D2785FFULL> bottomName(bottomSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x00623C70
+// FUNCTION: fn_04535
+EfstActionMessage CEfstAction_TRUTH_OF_WIND::Slot03() {
+  return {LookupMessage(4656), 0xFFFF00};
+}
+
+// OFFSET: 0x00623CA0
+// FUNCTION: fn_04536
+EfstActionMessage CEfstAction_TRUTH_OF_WIND::Slot04() {
+  return {LookupMessage(4657), 0xFF};
+}
+
+// OFFSET: 0x00623CD0
+// FUNCTION: fn_04537
+int CSkillAction_DR_CUTTING_WIND::Slot01() {
+  return 61;
+}
+
+// OFFSET: 0x00623CE0
+// FUNCTION: fn_04538
+int CSkillAction_DR_CUTTING_WIND::Slot02() {
+  return 64;
+}
+
+// OFFSET: 0x00623CF0
+// FUNCTION: fn_04539
+void CSkillAction_DR_CUTTING_WIND::Slot08(int level, CGameActor* source) {
+  if (source) {
+    source->LaunchEffect(56, level / 16);
+  }
+}
+
+// OFFSET: 0x00623D20
+// FUNCTION: fn_04540
+void CSkillAction_DR_CUTTING_WIND::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target || !source) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x70, 0xB2, 0x77, 0x61, 0x92, 0xFF, 0x70, 0x10, 0x64, 0xAE, 0x6D, 0x71, 0xFB};
+  thread_local EncryptedName<sizeof(effectSource), 0x4F1791FB1503C713ULL> effectName(effectSource);
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot17(ScreenAngle(&target->render.position.x, &source->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values));
+  }
+}
+
+// OFFSET: 0x00623F70
+// FUNCTION: fn_04541
+void CSkillAction_DR_CUTTING_WIND::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0xB0, 0x98, 0xE3, 0x61, 0x24, 0x35, 0xC2, 0xFE, 0xA4, 0x84, 0xF9, 0x71, 0x12, 0x33, 0xCC, 0xD5, 0xD3};
+  thread_local EncryptedName<sizeof(effectSource), 0xA1A55B4D1597EDD3ULL> effectName(effectSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x00624170
+// FUNCTION: fn_04542
+int CSkillAction_DR_WIND_BOMB::Slot01() {
+  return 61;
+}
+
+// OFFSET: 0x00624180
+// FUNCTION: fn_04543
+int CSkillAction_DR_WIND_BOMB::Slot02() {
+  return 64;
+}
+
+// OFFSET: 0x00624190
+// FUNCTION: fn_04544
+void CSkillAction_DR_WIND_BOMB::Slot08(int level, CGameActor* source) {
+  if (source) {
+    source->LaunchEffect(56, level / 16);
+  }
+}
+
+// OFFSET: 0x006241C0
+// FUNCTION: fn_04545
+void CSkillAction_DR_WIND_BOMB::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source || !target) {
+    return;
+  }
+
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 2468, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    static_cast<CBezierArcThrowEffect*>(effect)->SetTarget(target->render.position);
+  }
+
+  const std::uint8_t effectSource[] = {0x76, 0x3E, 0xF9, 0xBB, 0x4C, 0xE7, 0x3C, 0xBC, 0x63, 0x08, 0xFA, 0xBE, 0x7A, 0xEB, 0x53};
+  thread_local EncryptedName<sizeof(effectSource), 0xD1538513DF975701ULL> effectName(effectSource);
+  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot16(300);
+  }
+}
+
+// OFFSET: 0x00624430
+// FUNCTION: fn_04546
+void CSkillAction_DR_WIND_BOMB::Slot16(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0xE8, 0xAA, 0x29, 0xD9, 0xB4, 0x25, 0x8E, 0xFC, 0xFD, 0x9C, 0x2F, 0xD4, 0x9F, 0x47};
+  thread_local EncryptedName<sizeof(effectSource), 0x91E147EBBD47C39FULL> effectName(effectSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x00624640
+// FUNCTION: fn_04547
+void CSkillAction_DR_AROUND_FLOWER::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0xFA, 0xDF, 0x1A, 0xBA, 0xBF, 0x59, 0xB2, 0x0B, 0xF7, 0xC2, 0x02, 0xAA, 0xA3, 0x3D};
+  thread_local EncryptedName<sizeof(effectSource), 0x6DED3DD1CF75AD9BULL> effectName(effectSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+
+  const std::uint8_t bottomSource[] = {0xA0, 0xA1, 0xB4, 0x02, 0xF5, 0x11, 0x9C, 0x2F, 0xAD, 0xBC, 0xAC, 0x12, 0xE9, 0x2A, 0xA1, 0x26, 0xB5, 0xA7, 0xB4, 0x1A, 0x9B};
+  thread_local EncryptedName<sizeof(bottomSource), 0x49C3759B77DBD3C1ULL> bottomName(bottomSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x006249E0
+
+// OFFSET: 0x00624D80
+
+// OFFSET: 0x00624F80
+
+// OFFSET: 0x00625180
+// FUNCTION: fn_04551
+int CSkillAction_DR_WEREWOLF::Slot02() {
+  return 64;
+}
+
+// OFFSET: 0x00625190
+
+// OFFSET: 0x006253A0
+
+// OFFSET: 0x006253D0
