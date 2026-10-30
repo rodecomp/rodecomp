@@ -5,6 +5,13 @@
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UIFrameWnd.h"
 
+enum TALKTYPE : int;
+
+template <class T, class D> class CUIComboBox : public CUIControl {
+public:
+  void Paint() override;
+};
+
 namespace GameSettingsUI {
 class CUIGroup : public CUIControl {
 public:

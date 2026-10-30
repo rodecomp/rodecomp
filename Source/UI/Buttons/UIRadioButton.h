@@ -10,6 +10,8 @@ class CUICheckBox : public CUIImageButton {
 public:
   /* 0120 */ bool checked;
   /* 0128 */ std::function<void(bool)> onCheck;
+
+  void SetOnCheck(std::function<void(bool)> callback);
 };
 
 class CUIRadioButton : public CUICheckBox {

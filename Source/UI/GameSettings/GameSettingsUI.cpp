@@ -4,6 +4,10 @@
 #include "Contents/SkinMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Render/DisplayMode.h"
+#include "Render/RenderAdapter.h"
+#include "Render/RenderBackends.h"
+#include "UI/Buttons/UIRadioButton.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 
@@ -17,6 +21,81 @@ namespace {
   };
   static_assert(sizeof(RodexSpamOptionPacket) == 12);
 }
+
+// OFFSET: 0x00A344D0
+// OFFSET: 0x00A34500
+// OFFSET: 0x00A34530
+// OFFSET: 0x00A34560
+
+template void CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::Paint();
+template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderBackend>::Paint();
+template void CUIComboBox<GameSettingsUI::CUIComboItem, DisplayMode>::Paint();
+template void CUIComboBox<GameSettingsUI::CUIComboItem, RenderAdapter>::Paint();
+
+// OFFSET: 0x00A34590
+// FUNCTION: fn_15411
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x00A345A0
+// FUNCTION: fn_15412
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x00A345B0
+// FUNCTION: fn_15413
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x00A345C0
+// FUNCTION: fn_15414
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x00A345D0
+// FUNCTION: fn_15415
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x00A345E0
+
+// OFFSET: 0x00A34620
+
+// OFFSET: 0x00A34660
+
+// OFFSET: 0x00A346A0
+
+// OFFSET: 0x00A346E0
+
+// OFFSET: 0x00A353D0
+
+// OFFSET: 0x00A36170
+
+// OFFSET: 0x00A36370
+
+// OFFSET: 0x00A36570
+
+// OFFSET: 0x00A36770
+
+// OFFSET: 0x00A36970
+
+// OFFSET: 0x00A36CF0
+
+// OFFSET: 0x00A36DD0
+
+// OFFSET: 0x00A36EB0
+
+// OFFSET: 0x00A36F90
 
 namespace GameSettingsUI {
 // OFFSET: 0x00A40420
