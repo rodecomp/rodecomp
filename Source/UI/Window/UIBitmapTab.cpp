@@ -48,3 +48,45 @@ void UIBitmapTab::Slot10(int argument1, int argument2, std::intptr_t argument3) 
     this->parent->Slot10(argument1, argument2, argument3);
   }
 }
+
+// OFFSET: 0x00863300
+// FUNCTION: fn_10908
+int UIBitmapTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
+  switch (message) {
+  case 13:
+    this->geometry.unknown_0030 = argument1;
+    this->Invalidate();
+    break;
+  case 14:
+    if (!this->tabs.empty()) {
+      int width = 0;
+      int height = 0;
+      for (unsigned index = 0; index < this->tabs.size(); ++index) {
+        const std::string name = FormatOwnedString(this->tabs[index].name.c_str(), 'a');
+        CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
+        if (bitmap) {
+          width = bitmap->image.width;
+          height += bitmap->image.height;
+        }
+      }
+
+      this->Resize(width, height);
+    }
+    break;
+  case 75:
+    this->tabs.clear();
+    break;
+  case 78:
+    if (argument1) {
+      const char* tabName = reinterpret_cast<const char*>(argument1);
+      const std::string name = FormatOwnedString(tabName, 'a');
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
+      if (bitmap) {
+        this->tabs.push_back(BitmapTabEntry{bitmap->image.height, tabName});
+      }
+    }
+    break;
+  }
+
+  return 0;
+}

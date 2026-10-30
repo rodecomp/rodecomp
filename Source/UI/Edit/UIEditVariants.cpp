@@ -262,6 +262,34 @@ void UIChatEditCtrl::Slot25(int x, int y) {
   this->parent->Slot25(x + this->geometry.x, y + this->geometry.y);
 }
 
+// OFFSET: 0x00863640
+// FUNCTION: fn_10909
+int UIChatEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 18) {
+    if (this->history.size() != 0) {
+      if (this->unknown_0140 == this->history.size()) {
+        this->pending = this->Text();
+      }
+      if (this->unknown_0140 != 0) {
+        --this->unknown_0140;
+      }
+
+      this->SetText(this->history[this->unknown_0140].c_str());
+      this->Slot23();
+    }
+  } else if (message == 19) {
+    if (this->history.size() != 0 && this->unknown_0140 < this->history.size()) {
+      ++this->unknown_0140;
+      this->SetText(this->unknown_0140 == this->history.size() ? this->pending.c_str() : this->history[this->unknown_0140].c_str());
+      this->Slot23();
+    }
+  } else {
+    return UIEditCtrl::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
+}
+
 // OFFSET: 0x0085CDE0
 // FUNCTION: fn_10808
 void UIEditCtrl_OldList::Paint() {
