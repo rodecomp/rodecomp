@@ -284,6 +284,7 @@
   "Source/Client/ReplayControl.cpp": 0,
   "Source/Client/ReplayPacketRecorder.cpp": 2,
   "Source/Client/Session.cpp": 0,
+  "Source/Client/SessionAchievements.cpp": 0,
   "Source/Client/SessionParty.cpp": 0,
   "Source/Client/SessionPredicates.cpp": 0,
   "Source/Client/SessionState.cpp": 0,

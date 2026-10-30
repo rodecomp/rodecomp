@@ -395,7 +395,7 @@ public:
   /* 6154 */ int unknown_6154;
   /* 6158 */ int unknown_6158;
   /* 615C */ int unknown_615C;
-  /* 6160 */ unsigned char unknown_6160[0x0C];
+  /* 6160 */ std::vector<int> unknown_6160;
   /* 616C */ std::vector<int> unknown_616C;
   /* 6178 */ std::vector<SessionRecord6178> unknown_6178;
   /* 6184 */ unsigned char unknown_6184[0x04];
@@ -536,6 +536,7 @@ public:
   void GetPetIllustName(int job, int, char* buffer);
   int GetPetJobByEggItem(int eggItemId);
   const char* GetPetString(int id);
+  int AddUnknown6160(int id);
   const char* GetPetTalkName(int job);
   const char* GetPetTalkActionName(int action);
   void GetPetTalkText(int job, int hungerState, int action, char* text);
@@ -934,6 +935,7 @@ static_assert(offsetof(CSession, m_hotkeyScript) == 0x59D8);
 static_assert(offsetof(CSession, unknown_5C68) == 0x5C68);
 static_assert(offsetof(CSession, unknown_6140) == 0x6140);
 static_assert(offsetof(CSession, unknown_6144) == 0x6144);
+static_assert(offsetof(CSession, unknown_6160) == 0x6160);
 static_assert(offsetof(CSession, unknown_616C) == 0x616C);
 static_assert(offsetof(CSession, m_swapEquipmentMode) == 0x7ED8);
 static_assert(offsetof(CSession, m_robeAlpha) == 0x7EE0);
