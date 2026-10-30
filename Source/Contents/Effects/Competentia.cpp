@@ -65,8 +65,33 @@ bool CCompetentia::Slot06() {
 }
 
 // OFFSET: 0x00708CC0
+// FUNCTION: fn_07082
+void CCompetentia::Slot03() {
+  for (auto current = this->particles.begin(); current != this->particles.end();) {
+    CParticle* particle = *current;
+    if (particle->life == 0.0f || static_cast<float>(particle->unknown_00E8) < particle->life * 60.0f) {
+      if (particle) {
+        static_cast<CEZ2STRParticle*>(particle)->Process(0.0f, -80.0f, 0.0f);
+      }
+      ++current;
+    } else {
+      FreeParticle(particle);
+      current = this->particles.erase(current);
+    }
+  }
+}
 
 // OFFSET: 0x00708DB0
+// FUNCTION: fn_07083
+void CCompetentia::Slot04() {
+  for (auto current = this->particles.begin(); current != this->particles.end(); ++current) {
+    CParticle* particle = *current;
+    if (particle) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      static_cast<CEZ2STRParticle*>(particle)->DrawScreen(mode->camera->frame.view);
+    }
+  }
+}
 
 // OFFSET: 0x00708E30
 // FUNCTION: fn_07084
