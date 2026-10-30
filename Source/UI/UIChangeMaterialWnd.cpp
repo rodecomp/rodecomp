@@ -68,6 +68,29 @@ void UIChangeMaterialWnd_List::Slot35(int argument) {
 }
 
 // OFFSET: 0x005E2A70
+// FUNCTION: fn_03890
+void UIChangeMaterialWnd_List::sub_5E2A70() {
+  const int count = static_cast<int>(this->m_items.size());
+  if (count > this->m_pageSize) {
+    this->m_scrollBar->Show(1);
+    this->m_scrollBar->SetRange(count - this->m_pageSize, this->m_pageSize, count);
+
+    const int offset = this->m_scrollOffset > 0 ? this->m_scrollOffset : 0;
+    this->m_scrollOffset = offset;
+    const int maximum = count - this->m_pageSize;
+    const int position = offset < maximum ? offset : maximum;
+    this->m_scrollOffset = position;
+    this->m_scrollBar->SetPosition(position);
+  } else {
+    this->m_scrollOffset = 0;
+    this->m_scrollBar->Show(0);
+  }
+
+  this->Invalidate();
+  if (this->parent) {
+    this->parent->Invalidate();
+  }
+}
 
 // OFFSET: 0x005E3B80
 
