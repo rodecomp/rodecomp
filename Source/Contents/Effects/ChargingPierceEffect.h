@@ -15,7 +15,9 @@ public:
   CChargingPierceEffect();
 
   void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
 
   int ActiveCount();
@@ -32,7 +34,10 @@ public:
   void Slot01() override;
   void Slot03() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
+
+  void SetCount(int count);
 
   /* 00CC */ std::list<CEZ2STRParticle*> emitters;
 };
