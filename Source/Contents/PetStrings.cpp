@@ -1,7 +1,19 @@
 #include "Client/Session.h"
+#include "Resource/ResourceMgr.h"
 #include "Script/LuaScript.h"
 
 #include <cstdio>
+
+// OFFSET: 0x00E0AC40
+// FUNCTION: fn_23804
+const char* CSession::GetPetAccActName(int id) {
+  const char* name = nullptr;
+  if (this->m_hotkeyScript->Call("GetPetAccActName", "d>s", id, &name) && ResourceMgr::Instance().Exists(name)) {
+    return name;
+  }
+
+  return "몬스터\\chocho_방독면.act";
+}
 
 // OFFSET: 0x00E0AE00
 // FUNCTION: fn_23807
