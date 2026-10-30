@@ -1,5 +1,7 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Edit/ItemTagRetirement.h"
+#include "UI/Edit/UIItemTagCtrl.h"
+#include "UI/Text/TextFitting.h"
 #include "UI/Window/UIWindow.h"
 
 // INLINED
@@ -22,3 +24,11 @@ void ItemTagRetirement::Clear() {
     entry = this->records.erase(entry);
   }
 }
+
+// OFFSET: 0x00879820
+// FUNCTION: fn_11217
+bool UIItemTagCtrl::CanInsertTag(const std::string&, int) {
+  return true;
+}
+
+// OFFSET: 0x0087A5A0

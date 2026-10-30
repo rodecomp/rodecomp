@@ -8,6 +8,7 @@
 #include "UI/Lists/UIImgMenu.h"
 #include "UI/Lists/UIListBoxEx.h"
 #include "UI/Lists/UITabControl.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "UI/Buttons/UIBitmapButton2.h"
 #include <algorithm>
 #include <cstdio>
@@ -368,6 +369,10 @@ UITabControl::UITabControl(UIWindowContext& windows, UIButtonContext& controls)
   this->dragX = 0;
   this->dragY = 0;
 }
+
+// OFFSET: 0x00879300
+
+// OFFSET: 0x0087A520
 
 // OFFSET: 0x00880B20
 // FUNCTION: fn_11283

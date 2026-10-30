@@ -20,6 +20,8 @@ public:
   void DrawTabBorder(int x, int y, int width, int height, std::uint32_t color);
   void RecalculateWidths();
   void FitToTabs();
+  void SelectTab(int index);
+  void ClearTabs();
   void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;

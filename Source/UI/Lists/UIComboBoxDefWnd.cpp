@@ -6,6 +6,8 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/WindowPolicy.h"
 
+#include <cstdio>
+
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
 }
@@ -49,6 +51,8 @@ void UIComboBoxDefWnd::Slot15(int, int) {
   this->label->shadow = 1;
   this->AddChild(this->label);
 }
+
+// OFFSET: 0x00878DF0
 
 // OFFSET: 0x00889D60
 // FUNCTION: fn_11352

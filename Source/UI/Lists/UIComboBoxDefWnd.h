@@ -56,6 +56,13 @@ public:
   /* 00B4 */ int previousTextX;
 };
 
+class UIComboBox_BmpWnd : public UIComboBoxDefWnd {
+public:
+  void Create(int width, int height, const char* path, const char* name);
+
+  std::string name;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UIComboBoxDefWnd) == 176);
 static_assert(sizeof(UIComboBoxDef2Wnd) == 192);
