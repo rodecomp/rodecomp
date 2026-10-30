@@ -10,10 +10,12 @@
 #include <cstdio>
 
 // OFFSET: 0x0075DC00
+// FUNCTION: fn_08044
 CLensFlare::CLensFlare() : m_position{0.0f, 0.0f, 0.0f} {
 }
 
 // OFFSET: 0x0075DC50
+// FUNCTION: fn_08045
 CSkyCube::CSkyCube() {
   this->m_vertices[0].x = -1250.0f;
   this->m_vertices[0].y = -450.0f;
@@ -83,6 +85,7 @@ CSkyBox::~CSkyBox() {
 }
 
 // OFFSET: 0x0075E530
+// FUNCTION: fn_08050
 void CLensFlare::Init() {
   this->m_elements[0] = FlareElement(2, 181.8f, 0.45f, 0.0f, 0.0f, 1.0f);
   this->m_elements[1] = FlareElement(1, 98.1f, 0.3f, 0.0f, 1.0f, 0.0f);
@@ -107,6 +110,7 @@ void CLensFlare::Init() {
 }
 
 // OFFSET: 0x0075EA20
+// FUNCTION: fn_08051
 void CLensFlare::Update(const float* matrix, vector3d eye, vector3d target) {
   this->m_position = g_weatherEffect.GetWindDirection();
   this->m_position.x += eye.x;
@@ -153,6 +157,7 @@ void CLensFlare::Update(const float* matrix, vector3d eye, vector3d target) {
 }
 
 // OFFSET: 0x0075ECC0
+// FUNCTION: fn_08052
 void CLensFlare::Render(const float* matrix, vector3d eye, vector3d target) {
   for (int i = 0; i < 12; ++i) {
     FlareElement& element = this->m_elements[i];
