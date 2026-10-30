@@ -19,6 +19,7 @@ public:
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot47() override;
+  void Paint() override;
   virtual void SetSelected(bool selected);
   virtual void SetHighlighted(bool highlighted);
   virtual void SetFrozen(bool frozen);

@@ -5,6 +5,8 @@
 #include "Network/Packets/PacketLengths.h"
 #include "Network/TextEncoding.h"
 #include "Render/Renderer.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
 
@@ -626,6 +628,16 @@ void RenewQuestUI::CUIQuestItem::Move(int x, int y) {
   UIWindow::Move(x, y);
   this->baseY = y;
   this->baseX = x;
+}
+
+// OFFSET: 0x00A66C10
+// FUNCTION: fn_16619
+void RenewQuestUI::CUIQuestItem::Paint() {
+  if (this->pressed) {
+    this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\renew_questui\\bg_questList_press.bmp"))), false);
+  } else {
+    CUIListItem::Paint();
+  }
 }
 
 // OFFSET: 0x00A66C50

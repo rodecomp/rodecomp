@@ -18,6 +18,7 @@ public:
   void Slot31(int x, int y) override;
   void Slot48() override;
   void Slot16() override;
+  void Paint() override;
   void OnActiveStateChanged(bool active);
 
   void OnSimpleView(bool simpleView);
