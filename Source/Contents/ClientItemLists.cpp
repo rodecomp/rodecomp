@@ -1200,6 +1200,19 @@ int ClientItemLists::IsDifferentName(const char* name, const char* other) {
 }
 
 // OFFSET: 0x00DDA470
+// FUNCTION: fn_23338
+void ClientItemLists::RemoveItem1758ByItemId(ITEM_INFO& item) {
+  for (auto it = this->items_1758.begin(); it != this->items_1758.end(); ++it) {
+    if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
+      it->itemId = item.itemId;
+      it->quantity -= item.quantity;
+      if (it->quantity < 1) {
+        this->items_1758.erase(it);
+      }
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00DDA510
 // FUNCTION: fn_23339
@@ -1272,8 +1285,64 @@ bool ClientItemLists::RemoveItem1740(const ITEM_INFO& item) {
 }
 
 // OFFSET: 0x00DDA740
+// FUNCTION: fn_23342
+bool ClientItemLists::RemoveItem1750(const ITEM_INFO& item, int type, unsigned char refresh) {
+  for (auto it = this->items_1750.begin(); it != this->items_1750.end(); ++it) {
+    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+      if (type == 0) {
+        it->quantity -= item.quantity;
+        if (it->quantity < 1) {
+          this->items_1750.erase(it);
+        }
+      } else {
+        this->items_1750.erase(it);
+      }
+
+      if (refresh == 1) {
+        std::uint32_t window;
+        if (type == 1) {
+          window = g_windowMgr.unknown_0410;
+        } else {
+          window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
+        }
+
+        if (window) {
+          reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        }
+      }
+      return true;
+    }
+  }
+
+  if (refresh == 1) {
+    std::uint32_t window;
+    if (type == 1) {
+      window = g_windowMgr.unknown_0410;
+    } else {
+      window = type == 2 ? g_windowMgr.unknown_0420 : g_windowMgr.unknown_02F8;
+    }
+
+    if (window) {
+      reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    }
+  }
+  return false;
+}
 
 // OFFSET: 0x00DDA8B0
+// FUNCTION: fn_23343
+void ClientItemLists::RemoveItem1758(ITEM_INFO& item) {
+  for (auto it = this->items_1758.begin(); it != this->items_1758.end(); ++it) {
+    if (it->unknown_0000[1] == item.unknown_0000[1]) {
+      it->itemId = item.itemId;
+      it->quantity -= item.quantity;
+      if (it->quantity < 1) {
+        this->items_1758.erase(it);
+      }
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00DDA920
 // FUNCTION: fn_23344
