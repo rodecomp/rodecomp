@@ -3,6 +3,7 @@
 #include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Effects/EffectActor.h"
+#include "Contents/GuildInfo.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
@@ -190,7 +191,8 @@ struct ClientItemLists {
   /* 1778 */ unsigned char unknown_1778[0xC];
   /* 1784 */ std::list<ITEM_INFO> items_1784[11];
   /* 17DC */ std::list<MessengerMember> partyMembers;
-  /* 17E4 */ unsigned char unknown_17E4[0x9BC];
+  /* 17E4 */ std::list<MessengerMember> friends;
+  /* 17EC */ unsigned char unknown_17EC[0x9B4];
   /* 21A0 */ ITEM_INFO equipped[10];
   /* 2B50 */ unsigned char unknown_2B50[0x1360];
   /* 3EB0 */ ITEM_INFO exchangeItems[10];
@@ -259,6 +261,8 @@ struct ClientItemLists {
   void ResetUnknown166C();
   void ResetHotkeyDescriptions();
   int IsDifferentName(const char* name, const char* other);
+  int IsGuildMemberName(const char* name);
+  int IsFriendName(const char* name);
   bool EquipItem6B68(const ITEM_INFO& item);
   void ResetItems6B68();
   void ResetItems61B8();
@@ -1658,6 +1662,31 @@ void ClientItemLists::SetItems1750(int count, const short* ids) {
       this->items_1750.push_back(item);
     }
   }
+}
+
+// OFFSET: 0x00DF9560
+// FUNCTION: fn_23520
+int ClientItemLists::IsGuildMemberName(const char* name) {
+  std::list<GuildInfo::Member> members = g_guildMembers;
+  for (auto it = members.begin(); it != members.end(); ++it) {
+    if (this->IsDifferentName(name, it->name.c_str()) == 0) {
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00DF9690
+// FUNCTION: fn_23521
+int ClientItemLists::IsFriendName(const char* name) {
+  for (auto it = this->friends.begin(); it != this->friends.end(); ++it) {
+    if (this->IsDifferentName(name, it->name.c_str()) == 0) {
+      return 1;
+    }
+  }
+
+  return 0;
 }
 
 // OFFSET: 0x00DFCBB0
