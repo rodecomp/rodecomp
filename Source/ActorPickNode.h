@@ -12,9 +12,9 @@ struct ActorPickInfo {
 
 class CActorPickNode {
 public:
+  virtual ~CActorPickNode();
   void AddPickInfo(ActorPickInfo* info);
 
-  /* 0000 */ void* vtable;
   /* 0004 */ int left;
   /* 0008 */ int top;
   /* 000C */ int right;

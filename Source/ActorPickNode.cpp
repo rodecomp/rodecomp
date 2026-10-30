@@ -4,6 +4,19 @@
 #include <map>
 #include <string>
 
+// OFFSET: 0x00ADA690
+// FUNCTION: fn_17906
+CActorPickNode::~CActorPickNode() {
+  for (ActorPickInfo* info : this->pickInfos) {
+    delete info;
+  }
+  this->pickInfos.clear();
+
+  for (CActorPickNode* child : this->children) {
+    delete child;
+  }
+}
+
 // OFFSET: 0x00AD9980
 // FUNCTION: fn_17889
 bool CPathFinder::LoadAttr(std::string name) {
