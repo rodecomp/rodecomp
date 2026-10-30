@@ -74,3 +74,32 @@ std::uint32_t LexiconSerializer::Serialize(LexiconNode* node, std::uint32_t offs
 }
 
 // OFFSET: 0x00AC4FA0
+// FUNCTION: fn_17635
+bool LexiconSerializer::Load(const char* path) {
+  bool result = false;
+  CFile file;
+  if (!file.Open(path, 0, true, false)) {
+    result = false;
+  } else {
+    if (file.Read(&this->header, sizeof(this->header)) && this->header.total == this->header.nodeCount + this->header.wordCount * 2) {
+      this->buffer = new unsigned char[this->header.size];
+      if (this->buffer && file.Read(this->buffer, this->header.size)) {
+        result = true;
+        this->wordCount = this->header.wordCount;
+        this->nodeCount = this->header.nodeCount;
+        this->unknown_000C = this->header.size;
+        this->header.loaded = result;
+        return result;
+      }
+    }
+
+    if (this->buffer) {
+      delete this->buffer;
+      this->buffer = nullptr;
+    }
+
+    this->header.loaded = result;
+  }
+
+  return result;
+}
