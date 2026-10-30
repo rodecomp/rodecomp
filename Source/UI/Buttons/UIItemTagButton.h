@@ -7,11 +7,14 @@
 
 class UIItemTagButton : public UITextButton {
 public:
+  void Paint() override;
   void Slot28(int x, int y) override;
 
   /* 00F8 */ unsigned char unknown_00F8[0xF0];
   /* 01F0 */ int column;
   /* 01F4 */ int line;
+  /* 01F8 */ int unknown_01F8;
+  /* 01FC */ int textY;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

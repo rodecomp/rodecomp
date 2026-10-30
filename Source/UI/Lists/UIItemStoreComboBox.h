@@ -9,4 +9,9 @@ public:
   void Slot31(int x, int y) override;
 };
 
+class UIItemStoreComboBoxWnd : public UIWindow {
+public:
+  void Paint() override;
+};
+
 #endif

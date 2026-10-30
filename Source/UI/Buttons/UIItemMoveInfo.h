@@ -8,6 +8,7 @@ struct WindowVisibility;
 
 class UIItemMoveInfo : public UITextButton {
 public:
+  void Paint() override;
   void Slot28(int x, int y) override;
   void Slot48() override;
 

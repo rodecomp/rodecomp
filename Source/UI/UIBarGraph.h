@@ -34,12 +34,13 @@ protected:
 
 class UIINT64BarGraph : public UIWindow {
 public:
+  void Paint() override;
   void Slot28(int x, int y) override;
 
   void SetValues(std::int64_t current, std::int64_t maximum);
 
 protected:
-  /* 007C */ int unknown_007C;
+  /* 007C */ unsigned char m_plainColor;
   /* 0080 */ std::int64_t m_current;
   /* 0088 */ std::int64_t m_maximum;
   UIButtonContext* m_controls;
@@ -47,6 +48,7 @@ protected:
 
 class UIPetInfoBarGraph : public UIWindow {
 public:
+  void Paint() override;
   void SetValue(int value);
 
   /* 007C */ int unknown_007C;

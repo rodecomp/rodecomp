@@ -45,7 +45,7 @@
 #include "UI/Lists/UIListBoxNavi.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Window/WindowBorder.h"
-
+#include "Resource/SkinPalette.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -1313,4 +1313,126 @@ void UITVTextButton::Slot31(int x, int y) {
 // FUNCTION: fn_11444
 void UITabControl::Slot31(int, int) {
   g_windowMgr.ReleaseCapture();
+}
+
+// OFFSET: 0x0088AD00
+// FUNCTION: fn_11359
+void UIINT64BarGraph::Paint() {
+  if (this->m_maximum < this->m_current || this->m_maximum == 99999999) {
+    return;
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 26, 2, red, green, blue);
+  this->ClearSurface((green & 255) << 16 | (green & 255) << 8 | (red & 255));
+  SkinPaletteChannels(ResourceMgr::Instance(), 30, 2, red, green, blue);
+  this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, (blue & 255) << 16 | (green & 255) << 8 | (red & 255));
+
+  if (this->m_maximum == 0) {
+    return;
+  }
+
+  const double ratio = static_cast<double>(this->m_current) / static_cast<double>(this->m_maximum);
+
+  if (ratio == 0.0) {
+    return;
+  }
+
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 6, red, green, blue);
+
+  if (this->m_plainColor == 0 && 25.0 > ratio * 100.0) {
+    red = 255;
+    green = 0;
+    blue = 0;
+  }
+
+  this->FillRegion(
+    1, 1, static_cast<int>((this->geometry.width - 2) * ratio), this->geometry.height - 2, (blue & 255) << 16 | (green & 255) << 8 | (red & 255)
+  );
+}
+
+// OFFSET: 0x0088B070
+// FUNCTION: fn_11361
+void UIItemMoveInfo::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  if (this->parent) {
+    this->parent->Invalidate();
+  }
+
+  if (this->m_outline != 0) {
+    DrawOutlinedText(*this, 1, 1, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
+  } else {
+    auto& controls = *this->m_buttonContext;
+    this->DrawTextAt(controls.fonts, controls.locale, 1, 1, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
+  }
+
+  if (this->m_underline != 0) {
+    this->FillRegion(0, this->geometry.height - 1, this->geometry.width, 1, this->m_color);
+  }
+}
+
+// OFFSET: 0x0088B4E0
+// FUNCTION: fn_11364
+void UIItemTagButton::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  if (this->parent) {
+    this->parent->Invalidate();
+  }
+
+  if (this->m_outline != 0) {
+    DrawOutlinedText(*this, 1, this->textY, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
+  } else {
+    auto& controls = *this->m_buttonContext;
+    this->DrawTextAt(controls.fonts, controls.locale, 1, this->textY, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
+  }
+
+  if (this->m_underline != 0) {
+    this->FillRegion(0, this->geometry.height - 1, this->geometry.width, 1, this->m_color);
+  }
+}
+
+// OFFSET: 0x0088BFB0
+// FUNCTION: fn_11369
+void UIListBoxNavi::Paint() {
+  if (this->transparent != 0) {
+    this->ClearSurface(0xFFFF00FF);
+
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+  } else {
+    this->ClearSurface((this->backgroundRed & 255) | ((this->backgroundGreen & 255) << 8) | ((this->backgroundBlue & 255) << 16));
+  }
+
+  const int first = this->topLine;
+  const int limit = this->geometry.height / this->lineHeight - this->bottomMargin + first;
+  const int end = static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
+  std::uint32_t color = 0;
+  auto& owner = *this->m_listContext;
+
+  for (int index = first, row = 0; index < end; ++index, ++row) {
+    if (this->lineColors[index] == 1) {
+      color = this->defaultLineColor;
+    }
+
+    if (index == this->selected) {
+      this->FillRegion(0, row * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
+    }
+
+    const auto& line = this->lines[index];
+    DrawColoredText(*this, owner.codePage, 3 - this->horizontalOffset, this->lineHeight * row, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
+
+    if (this->lineColors[index] == 1) {
+      color = 0;
+    }
+  }
+}
+
+// OFFSET: 0x0088B4A0
+// FUNCTION: fn_11363
+void UIItemStoreComboBoxWnd::Paint() {
+  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\bg_setting.bmp")));
+  this->DrawBitmap(0, this->geometry.height - background->image.height, &background->image, false);
 }
