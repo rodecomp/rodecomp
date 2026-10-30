@@ -45,39 +45,62 @@ struct WindowPlacement {
 };
 
 struct SkillListWndInfo : WindowPlacement {
+  void Reset();
   int IsValid() const;
 };
 
 struct StatusWndInfo : WindowPlacement {
+  /* 0010 */ int unknown_0010;
+  /* 0014 */ int unknown_0014;
+  /* 0018 */ int unknown_0018;
+
+  void Reset();
   int IsValid() const;
 };
 
 struct SubChatHisWndInfo : WindowPlacement {
+  void Reset(int side);
   int IsValid() const;
 };
 
 struct AdvenPartyBoardWndInfo : WindowPlacement {
+  void Reset();
   int IsValid() const;
 };
 
 struct ApplyForPartyWndInfo : WindowPlacement {
+  void Reset();
   int IsValid() const;
 };
 
 struct RegisterPartyWndInfo : WindowPlacement {
+  void Reset();
   int IsValid() const;
 };
 
 struct WhisperWndInfo : WindowPlacement {
+  void Reset();
   int IsValid() const;
 };
 
 struct MacroReporterWndInfo : WindowPlacement {
+  void Reset();
   bool IsValid() const;
 };
 
 struct PreviewEquipWndInfo : WindowPlacement {
+  void Reset();
   bool IsValid() const;
+};
+
+struct UnusedWndInfoC : WindowPlacement {
+  /* 0010 */ int unknown_0010;
+
+  void Reset();
+};
+
+struct UnusedWndInfoD : WindowPlacement {
+  void Reset();
 };
 
 struct AchTracingWndInfo : WindowPlacement {
@@ -369,6 +392,8 @@ static_assert(sizeof(MiniMapWndInfo) == 0x24);
 static_assert(sizeof(MessengerGroupWndInfo) == 0x1C);
 static_assert(sizeof(GuildWndInfo) == 0x14);
 static_assert(sizeof(UnusedWndInfoB) == 0x18);
+static_assert(sizeof(StatusWndInfo) == 0x1C);
+static_assert(sizeof(UnusedWndInfoC) == 0x14);
 #endif
 
 extern int g_defaultPlacementWidth;

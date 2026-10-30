@@ -1,5 +1,6 @@
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Client/Session.h"
+#include "Contents/MapSkyMgr.h"
 #include "Render/Renderer.h"
 
 #include <json/value.h>
@@ -926,4 +927,113 @@ void SayDialogWndInfo::Reset() {
   this->y = 100;
   this->width = 280;
   this->height = 180;
+}
+
+// OFFSET: 0x009A6C50
+// FUNCTION: fn_13726
+void UnusedWndInfoC::Reset() {
+  this->x = 185;
+  this->y = 300;
+  this->width = 140;
+  this->height = 30;
+  this->unknown_0010 = 0;
+}
+
+// OFFSET: 0x009A6C80
+// FUNCTION: fn_13727
+void UnusedWndInfoD::Reset() {
+  this->x = 185;
+  this->y = 300;
+  this->width = 140;
+  this->height = 30;
+}
+
+// OFFSET: 0x009A6CA0
+// FUNCTION: fn_13728
+void SkillListWndInfo::Reset() {
+  this->x = 360;
+  this->y = 200;
+  this->width = 280;
+  this->height = 240;
+}
+
+// OFFSET: 0x009A6CC0
+// FUNCTION: fn_13729
+void StatusWndInfo::Reset() {
+  this->x = 185;
+  this->y = 300;
+  this->width = 280;
+  this->unknown_0014 = 0;
+  this->height = 141;
+  this->unknown_0010 = 141;
+  this->unknown_0018 = 1;
+}
+
+// OFFSET: 0x009A6D00
+// FUNCTION: fn_13730
+void SubChatHisWndInfo::Reset(int side) {
+  switch (side) {
+  case 0:
+    this->x = 0;
+    break;
+  case 1:
+    this->x = 300;
+    break;
+  }
+
+  this->width = 300;
+  this->y = g_renderer->viewport.height - 119;
+  this->height = 95;
+}
+
+// OFFSET: 0x009A6D40
+// FUNCTION: fn_13731
+void AdvenPartyBoardWndInfo::Reset() {
+  this->x = 200;
+  this->y = 200;
+  this->width = 480;
+  this->height = 340;
+}
+
+// OFFSET: 0x009A6D60
+// FUNCTION: fn_13732
+void ApplyForPartyWndInfo::Reset() {
+  this->x = 200;
+  this->y = 200;
+  this->width = 220;
+  this->height = 190;
+}
+
+// OFFSET: 0x009A6D80
+// FUNCTION: fn_13733
+void RegisterPartyWndInfo::Reset() {
+  this->x = 200;
+  this->y = 200;
+  this->width = 220;
+  this->height = 197;
+}
+
+// OFFSET: 0x009A6DA0
+// FUNCTION: fn_13734
+void WhisperWndInfo::Reset() {
+  this->width = 280;
+  this->height = 120;
+  this->x = 0;
+  this->y = 347;
+}
+
+// OFFSET: 0x009A6DC0
+// FUNCTION: fn_13735
+void MacroReporterWndInfo::Reset() {
+  this->x = 249;
+  this->y = 308;
+  this->width = g_renderer->viewport.width - 299;
+  this->height = (g_renderer->viewport.height - 308) / 2;
+}
+
+// OFFSET: 0x009A6E00
+// FUNCTION: fn_13736
+void PreviewEquipWndInfo::Reset() {
+  this->x = static_cast<int>(static_cast<float>(g_renderer->viewport.width - 280) * g_depthAverageHalf);
+  this->y = static_cast<int>(static_cast<float>(g_renderer->viewport.height - 260) * g_depthAverageHalf);
 }
