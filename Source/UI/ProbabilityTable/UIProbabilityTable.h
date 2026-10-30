@@ -32,14 +32,17 @@ public:
 };
 
 }
-
+class CUIEditBoxEx;
 class CUIProbabilityTable : public CUIFrameWnd {
 public:
   void Paint() override;
   virtual void Slot53();
-
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void OnButtonClick();
   void OnPrepareItem(ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data);
+
+  /* 00D8 */ unsigned char unknown_00D8[0x08];
+  /* 00E0 */ CUIEditBoxEx* m_searchEdit;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -270,7 +270,7 @@ public:
     this->items.clear();
     this->selected = static_cast<unsigned int>(-1);
   }
-
+  bool RebindIndex(int index);
   void SelectItem(CUIListItem* item);
   bool SelectIndex(int index);
 
