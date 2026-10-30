@@ -61,6 +61,7 @@ struct EntryQueueReady {
 
 class CEntryQueueMgr {
 public:
+  CEntryQueueMgr();
   virtual ~CEntryQueueMgr();
 
   void SendAdmissionReply(int result);
@@ -87,6 +88,7 @@ public:
 extern CEntryQueueMgr* g_entryQueueMgr;
 extern std::map<int, EntryQueueInfo*> g_entryQueueList;
 
+bool CreateEntryQueueMgr();
 void DestroyEntryQueueMgr();
 
 #if defined(_WIN32) && !defined(_WIN64)

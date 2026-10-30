@@ -7,7 +7,7 @@
 #include "UI/EntryQueue/UIEntryQueueWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
-
+#include "Script/LuaScript.h"
 #include <cstring>
 #include <string>
 
@@ -278,4 +278,23 @@ void CEntryQueueMgr::OnNotify(const EntryQueueNotice* notice) {
   if (notice->result == 1) {
     g_soundMgr->PlayWave("se_btg_forward.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
+}
+
+// INLINED
+CEntryQueueMgr::CEntryQueueMgr() : current(nullptr), ready(0) {
+  std::memset(&this->queueName, 0, sizeof(this->queueName) + sizeof(this->characterName));
+  g_luaScript->Call("ReadEntryQueueList", "");
+}
+
+// OFFSET: 0x00BA1DF0
+// FUNCTION: fn_19659
+bool CreateEntryQueueMgr() {
+  if (!g_entryQueueMgr) {
+    g_entryQueueMgr = new (std::nothrow) CEntryQueueMgr();
+    if (g_entryQueueMgr) {
+      return true;
+    }
+  }
+
+  return false;
 }
