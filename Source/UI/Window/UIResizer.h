@@ -15,6 +15,8 @@ public:
   void ResetCursor(int x, int y) override;
   void Slot31(int x, int y) override;
   void SetDirection(int value);
+  void SetBitmapName(const char* name);
+  void SetColors(std::uint32_t line, std::uint32_t background);
 
   /* 007C */ std::string bitmapName;
   /* 0094 */ int startX;

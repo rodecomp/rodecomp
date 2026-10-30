@@ -5,6 +5,23 @@
 #include "UI/Window/UIResizer.h"
 #include "UI/Window/UIWindowMgr.h"
 
+// OFFSET: 0x008656E0
+// FUNCTION: fn_10929
+void UIResizer::SetBitmapName(const char* name) {
+  this->bitmapName = name;
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())));
+  this->geometry.width = bitmap->image.width;
+  this->geometry.height = bitmap->image.height;
+}
+
+// OFFSET: 0x00865970
+// FUNCTION: fn_10933
+void UIResizer::SetColors(std::uint32_t line, std::uint32_t background) {
+  this->Invalidate();
+  this->lineColor = line;
+  this->backgroundColor = background;
+}
+
 // OFFSET: 0x0085D650
 // FUNCTION: fn_10815
 void UIResizer::Paint() {
