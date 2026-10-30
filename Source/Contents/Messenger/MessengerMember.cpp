@@ -20,6 +20,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Render/Text/TextContext.h"
+#include "UI/Party/UIMiniPartyWnd.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -53,18 +54,11 @@ namespace {
     const char* sub_DDE770(const char* mapName);
   };
 
-  class UIMiniPartyWnd : public UIWindow {
+  class UIMessengerGroupDropWnd : public UIWindow {
   public:
     void sub_73A1C0(int x, int y, int unknown);
   };
 }
-
-struct MiniPartyInfoEntry {
-  MiniPartyInfoEntry(const char* text, int value);
-
-  /* 0000 */ std::string text;
-  /* 0018 */ int value;
-};
 
 class UIDragMiniPartyWnd : public UIFrameWnd {
 public:
@@ -119,6 +113,7 @@ public:
 
 class UIMessengerGroupWnd : public UIFrameWnd {
 public:
+  void Slot11() override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
@@ -174,7 +169,6 @@ bool g_messengerGroupCollapsed;
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(MiniPartyIconPosition) == 12);
 static_assert(sizeof(MessengerRecordHeader) == 6);
-static_assert(sizeof(MiniPartyInfoEntry) == 28);
 #endif
 
 // OFFSET: 0x00D03DC0
@@ -436,7 +430,7 @@ void UIDragMiniPartyWnd::MoveGauge(int x, int y) {
 // OFFSET: 0x00738CE0
 // FUNCTION: fn_07671
 void UIDragMiniPartyWnd::Slot31(int argument1, int argument2) {
-  auto* window = static_cast<UIMiniPartyWnd*>(g_windowMgr.LookupWindow(34));
+  auto* window = static_cast<UIMessengerGroupDropWnd*>(g_windowMgr.LookupWindow(34));
   if (window) {
     window->sub_73A1C0(argument1 + this->geometry.x, argument2 + this->geometry.y, this->unknown_0108);
   }
@@ -834,4 +828,41 @@ void UIMessengerGroupWnd::UpdateGauges() {
 // FUNCTION: fn_11596
 void UIGage::SetColor(std::uint32_t color) {
   this->colors[0] = color;
+}
+
+// OFFSET: 0x0073FD90
+// FUNCTION: fn_07719
+void UIMessengerGroupWnd::Slot11() {
+  if (this->saved) {
+    this->saved->width = this->geometry.width;
+    this->saved->height = this->geometry.height;
+    this->saved->x = this->geometry.x;
+    this->saved->y = this->geometry.y;
+    this->saved->unknown_0014 = this->mode;
+    this->saved->unknown_0018 = this->iconIndex;
+  }
+}
+
+// OFFSET: 0x0073FFC0
+// FUNCTION: fn_07726
+UIMiniPartyInfoWnd::UIMiniPartyInfoWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)
+    : UIFrameWnd(windowContext, frameContext, 0), m_gauge(nullptr), m_owner(nullptr) {
+  this->m_entries.clear();
+}
+
+// OFFSET: 0x00740170
+// FUNCTION: fn_07728
+MessengerMember UIMiniPartyWnd::GetMember() {
+  return this->m_member;
+}
+
+// OFFSET: 0x00740250
+// FUNCTION: fn_07729
+void UIMiniPartyInfoWnd::Slot15(int width, int) {
+  if (!this->m_gauge) {
+    this->m_gauge = new UIPcGage();
+    this->m_gauge->SetSize(static_cast<int>(static_cast<float>(width) * 0.38f), 5);
+    this->m_gauge->Move(35, 23);
+    this->AddChild(this->m_gauge);
+  }
 }
