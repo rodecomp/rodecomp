@@ -59,6 +59,19 @@ bool CMapSkyMgr::LoadData() {
 }
 
 // OFFSET: 0x00C7B200
+// FUNCTION: fn_20362
+CWeatherEffect::CWeatherEffect()
+    : darken(0), unknown_0001(1), lightning(0), actor(nullptr), targetColor{}, effect(nullptr), counter(0) {
+  this->color[0] = 1.0f;
+  this->color[1] = 1.0f;
+  this->color[2] = 1.0f;
+  this->fog[0] = 0.0f;
+  this->fog[1] = 0.0f;
+  this->fog[2] = 0.0f;
+  this->lightColor[0] = 1.0f;
+  this->lightColor[1] = 1.0f;
+  this->lightColor[2] = 1.0f;
+}
 
 // OFFSET: 0x00C7B530
 // FUNCTION: fn_20365
@@ -174,6 +187,43 @@ void CWeatherEffect::StartLightning() {
 }
 
 // OFFSET: 0x00C7BBB0
+// FUNCTION: fn_20372
+void CWeatherEffect::Process() {
+  if (this->darken == 1) {
+    if (this->color[0] > g_depthAverageHalf) {
+      this->color[0] -= 0.005f;
+    }
+    if (this->color[1] > g_depthAverageHalf) {
+      this->color[1] -= 0.005f;
+    }
+  } else if (this->lightning == 1) {
+    ++this->counter;
+    if (this->counter > 1000) {
+      this->lightning = 0;
+    }
+    if ((this->counter / 3 & 1) == 0) {
+      this->color[0] = 0.2f;
+      this->color[1] = 0.2f;
+    } else {
+      this->color[0] = 1.0f;
+      this->color[1] = 1.0f;
+    }
+  } else {
+    for (int index = 0; index < 3; ++index) {
+      if (this->color[index] < 1.0f && this->color[index] < this->targetColor[index]) {
+        this->color[index] += 0.005f;
+      }
+    }
+  }
+
+  if (this->effect && !static_cast<EffectActor*>(this->actor)->state.Attachments().Contains(reinterpret_cast<const RagEffectState*>(this->effect))) {
+    this->effect = nullptr;
+  }
+
+  this->lightColor[0] = 1.0f - (1.0f - this->fog[0]) * (1.0f - this->color[0]);
+  this->lightColor[1] = 1.0f - (1.0f - this->fog[1]) * (1.0f - this->color[1]);
+  this->lightColor[2] = 1.0f - (1.0f - this->fog[2]) * (1.0f - this->color[2]);
+}
 
 // OFFSET: 0x00C7BD30
 // FUNCTION: fn_20373
