@@ -36,16 +36,111 @@ void UIEntryQueueHelpWnd::Slot19() {
 }
 
 // OFFSET: 0x00BA42B0
+// FUNCTION: fn_19683
+int UIEntryQueueHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6 && a == 0) {
+    this->m_frameContext->windows.CloseWindow(211);
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00BA42E0
+// FUNCTION: fn_19684
+UIEntryQueueListBox::UIEntryQueueListBox(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list) {
+}
 
 // OFFSET: 0x00BA4490
+// FUNCTION: fn_19686
+void UIEntryQueueListBox::AddEntry(const char* name, int value) {
+  if (this->m_entries.insert(std::map<std::string, int>::value_type(name, value)).second) {
+    this->AddLine(name);
+  }
+}
 
 // OFFSET: 0x00BA46A0
+// FUNCTION: fn_19687
+int UIEntryQueueListBox::EntryValue(int index) {
+  const std::string name = this->lines[index];
+  const auto it = this->m_entries.find(name);
+  if (it != this->m_entries.end()) {
+    return it->second;
+  }
+
+  return -1;
+}
 
 // OFFSET: 0x00BA4770
+// FUNCTION: fn_19688
+void UIEntryQueueListBox::Slot31(int x, int y) {
+  if (this->selected != -1) {
+    this->parent->SendMsg(this, 135, this->geometry.id, this->selected, 0, 0);
+  }
+}
 
 // OFFSET: 0x00BA48E0
+// FUNCTION: fn_19691
+bool UIEntryQueueRequestWnd::Create() {
+  auto& text = this->m_entryQueue->text;
+  auto& controls = text.buttons;
+
+  this->Resize(300, 250);
+  this->AddBaseButton(controls);
+  this->AddCloseButton(controls, "", 0);
+  this->SetSize(300, 250);
+  this->Slot15(300, 250);
+  this->Slot22(300, 250);
+  this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
+
+  this->m_viewer = new UITextViewer(*this->m_context, text);
+  this->m_viewer->Configure(10, 22, 280, 305, 0);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->m_viewer->backgroundColor = 0xFF000000u | (blue << 16) | (green << 8) | red;
+  this->m_viewer->Invalidate();
+  this->AddChild(this->m_viewer);
+
+  char message[0x104];
+  std::memset(message, 0, sizeof(message));
+  if (g_entryQueueMgr->current) {
+    sprintf_s(message, sizeof(message), LookupMessage(2126), g_entryQueueMgr->current->displayName);
+  }
+
+  this->m_viewer->Clear();
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2127)), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(""), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2128)), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2129)), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2130)), 38, 0, 0);
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2131)), 38, 0, 0);
+
+  const std::string path = "유저인터페이스\\";
+
+  this->m_ok = new UIBitmapButton(*this->m_context, controls);
+  this->m_ok->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
+  this->m_ok->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+  this->m_ok->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+  this->m_ok->SetSize(this->m_ok->BitmapWidth(), this->m_ok->BitmapHeight());
+  this->m_ok->Move(209, 226);
+  this->m_ok->SetId(0);
+  this->AddChild(this->m_ok);
+
+  this->m_cancel = new UIBitmapButton(*this->m_context, controls);
+  this->m_cancel->SetBitmap((path + "btn_cancel" + ".bmp").c_str(), 0, 0);
+  this->m_cancel->SetBitmap((path + "btn_cancel_a" + ".bmp").c_str(), 1, 0);
+  this->m_cancel->SetBitmap((path + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
+  this->m_cancel->SetSize(this->m_cancel->BitmapWidth(), this->m_cancel->BitmapHeight());
+  this->m_cancel->Move(254, 226);
+  this->m_cancel->SetId(1);
+  this->AddChild(this->m_cancel);
+
+  this->m_countdown = new UIStaticText(*this->m_context, controls);
+  this->m_countdown->SetSize(150, 20);
+  this->m_countdown->Move(10, this->geometry.height - 20);
+  this->AddChild(this->m_countdown);
+  return true;
+}
 
 // OFFSET: 0x00BA5380
 // FUNCTION: fn_19692
