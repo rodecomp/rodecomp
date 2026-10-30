@@ -139,6 +139,20 @@ int UIRodexComposeWnd::MeasureText(const std::string& text, const unsigned& byte
 }
 
 // OFFSET: 0x007FF290
+// FUNCTION: fn_09999
+void UIRodexComposeWnd::SetRecipient(int id, unsigned short job, unsigned short level, const char* name) {
+  this->unknown_00C0->SetTextWithinWidth(FormatOwnedString("Lv%d", level).c_str(), 0);
+  this->unknown_00C0->Show(1);
+  this->unknown_00C4->SetTextWithinWidth(g_session.GetJobName(job, 99), 0);
+  this->unknown_00C4->Show(1);
+  this->unknown_00CC = id;
+  this->unknown_00C8->SetTextWithinWidth(ShortcutFilename(id).c_str(), 0);
+  this->unknown_00C8->Show(1);
+  this->unknown_00B4->Show(0);
+  this->unknown_00BC->Enable(0);
+  this->unknown_00B8->Show(1);
+  this->unknown_00B8->SetText(name);
+}
 
 // OFFSET: 0x007FF400
 
