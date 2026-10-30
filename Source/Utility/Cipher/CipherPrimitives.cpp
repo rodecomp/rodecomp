@@ -1,3 +1,48 @@
+// GLOBAL: gl_25029
+unsigned char g_cryptonPermutation0[16] = {0x0F, 0x09, 0x06, 0x08, 0x09, 0x09, 0x04, 0x0C, 0x06, 0x02, 0x06, 0x0A, 0x01, 0x03, 0x05, 0x0F};
+
+// GLOBAL: gl_25030
+unsigned char g_cryptonPermutation1[16] = {0x0A, 0x0F, 0x04, 0x07, 0x05, 0x02, 0x0E, 0x06, 0x09, 0x03, 0x0C, 0x08, 0x0D, 0x01, 0x0B, 0x00};
+
+// GLOBAL: gl_25031
+unsigned char g_cryptonPermutation2[16] = {0x00, 0x04, 0x08, 0x04, 0x02, 0x0F, 0x08, 0x0D, 0x01, 0x01, 0x0F, 0x07, 0x02, 0x0B, 0x0E, 0x0F};
+
+// GLOBAL: gl_25032
+int g_cryptonTablesReady;
+
+// GLOBAL: gl_25033
+unsigned char g_cryptonSbox[256];
+
+// GLOBAL: gl_25034
+unsigned char g_cryptonInverseSbox[256];
+
+// GLOBAL: gl_25035
+unsigned int g_cryptonTable0[256];
+
+// GLOBAL: gl_25036
+unsigned int g_cryptonTable1[256];
+
+// GLOBAL: gl_25037
+unsigned int g_cryptonTable2[256];
+
+// GLOBAL: gl_25038
+unsigned int g_cryptonTable3[256];
+
+// GLOBAL: gl_25039
+unsigned int g_cryptonDecryptKeys[52];
+
+// GLOBAL: gl_25040
+unsigned int g_cryptonEncryptKeys[52];
+
+// GLOBAL: gl_25041
+unsigned int* g_cryptonEncryptKey = g_cryptonEncryptKeys;
+
+// GLOBAL: gl_25042
+unsigned int* g_cryptonDecryptKey = g_cryptonDecryptKeys;
+
+// GLOBAL: gl_25043
+unsigned int g_cryptonKeyConstants[8] = {0xBB67AE85u, 0x3C6EF372u, 0xA54FF53Au, 0x510E527Fu, 0x9B05688Cu, 0x1F83D9ABu, 0x5BE0CD19u, 0xCBBB9D5Du};
+
 // GLOBAL: gl_25017
 unsigned short g_sboxEntries[8][64] = {
   {
@@ -118,6 +163,393 @@ unsigned short g_sboxLookup[0x10000];
 
 // GLOBAL: gl_25020
 unsigned char g_fealRotateTable[256];
+
+// INLINED
+static unsigned int CryptonRotate(unsigned int value, unsigned int shift) {
+  return (value << shift) | (value >> (32 - shift));
+}
+
+// INLINED
+static unsigned int CryptonKeyTransform(unsigned int value, unsigned int lane) {
+  switch (lane) {
+  case 0:
+    return (CryptonRotate(value, 24) & 0xFCCFFCCFu) ^ (CryptonRotate(value, 16) & 0xF33FF33Fu) ^
+           (CryptonRotate(value, 8) & 0xCFFCCFFCu) ^ (value & 0x3FF33FF3u);
+  case 1:
+    return (CryptonRotate(value, 24) & 0xF33FF33Fu) ^ (CryptonRotate(value, 16) & 0xCFFCCFFCu) ^
+           (CryptonRotate(value, 8) & 0x3FF33FF3u) ^ (value & 0xFCCFFCCFu);
+  case 2:
+    return (CryptonRotate(value, 24) & 0xCFFCCFFCu) ^ (CryptonRotate(value, 16) & 0x3FF33FF3u) ^
+           (CryptonRotate(value, 8) & 0xFCCFFCCFu) ^ (value & 0xF33FF33Fu);
+  default:
+    return (CryptonRotate(value, 24) & 0x3FF33FF3u) ^ (CryptonRotate(value, 16) & 0xFCCFFCCFu) ^
+           (CryptonRotate(value, 8) & 0xF33FF33Fu) ^ (value & 0xCFFCCFFCu);
+  }
+}
+
+// INLINED
+static void CryptonRound(unsigned int& a, unsigned int& b, unsigned int& c, unsigned int& d, const unsigned int* key, bool alternate) {
+  unsigned int x;
+  unsigned int y;
+  unsigned int z;
+  unsigned int w;
+  if (!alternate) {
+    x = g_cryptonTable0[a & 255] ^ g_cryptonTable1[b & 255] ^ g_cryptonTable2[c & 255] ^ g_cryptonTable3[d & 255];
+    y = g_cryptonTable1[(a >> 8) & 255] ^ g_cryptonTable2[(b >> 8) & 255] ^ g_cryptonTable3[(c >> 8) & 255] ^ g_cryptonTable0[(d >> 8) & 255];
+    z = g_cryptonTable2[(a >> 16) & 255] ^ g_cryptonTable3[(b >> 16) & 255] ^ g_cryptonTable0[(c >> 16) & 255] ^ g_cryptonTable1[(d >> 16) & 255];
+    w = g_cryptonTable3[a >> 24] ^ g_cryptonTable0[b >> 24] ^ g_cryptonTable1[c >> 24] ^ g_cryptonTable2[d >> 24];
+  } else {
+    x = g_cryptonTable1[a & 255] ^ g_cryptonTable2[b & 255] ^ g_cryptonTable3[c & 255] ^ g_cryptonTable0[d & 255];
+    y = g_cryptonTable2[(a >> 8) & 255] ^ g_cryptonTable3[(b >> 8) & 255] ^ g_cryptonTable0[(c >> 8) & 255] ^ g_cryptonTable1[(d >> 8) & 255];
+    z = g_cryptonTable3[(a >> 16) & 255] ^ g_cryptonTable0[(b >> 16) & 255] ^ g_cryptonTable1[(c >> 16) & 255] ^ g_cryptonTable2[(d >> 16) & 255];
+    w = g_cryptonTable0[a >> 24] ^ g_cryptonTable1[b >> 24] ^ g_cryptonTable2[c >> 24] ^ g_cryptonTable3[d >> 24];
+  }
+  a = x ^ key[0];
+  b = y ^ key[1];
+  c = z ^ key[2];
+  d = w ^ key[3];
+}
+
+// INLINED
+static void CryptonSubstitute(unsigned int a, unsigned int b, unsigned int c, unsigned int d, unsigned int* output, bool alternate) {
+  for (unsigned int lane = 0; lane < 4; ++lane) {
+    const unsigned int shift = lane * 8;
+    if ((lane & 1) == alternate) {
+      output[lane] = g_cryptonSbox[(a >> shift) & 255] |
+                     (static_cast<unsigned int>(g_cryptonInverseSbox[(b >> shift) & 255]) << 8) |
+                     (static_cast<unsigned int>(g_cryptonSbox[(c >> shift) & 255]) << 16) |
+                     (static_cast<unsigned int>(g_cryptonInverseSbox[(d >> shift) & 255]) << 24);
+    } else {
+      output[lane] = g_cryptonInverseSbox[(a >> shift) & 255] |
+                     (static_cast<unsigned int>(g_cryptonSbox[(b >> shift) & 255]) << 8) |
+                     (static_cast<unsigned int>(g_cryptonInverseSbox[(c >> shift) & 255]) << 16) |
+                     (static_cast<unsigned int>(g_cryptonSbox[(d >> shift) & 255]) << 24);
+    }
+  }
+}
+
+#define RIPEMD128_F(b, c, d) ((b) ^ (c) ^ (d))
+#define RIPEMD128_G(b, c, d) (((b) & (c)) | (~(b) & (d)))
+#define RIPEMD128_H(b, c, d) (((b) | ~(c)) ^ (d))
+#define RIPEMD128_I(b, c, d) (((b) & (d)) | ((c) & ~(d)))
+#define RIPEMD128_STEP(a, b, c, d, x, shift, function, constant) \
+  do { \
+    (a) += function(b, c, d) + (x) + (constant); \
+    (a) = ((a) << (shift)) | ((a) >> (32 - (shift))); \
+  } while (false)
+
+// OFFSET: 0x00B0DE90
+// FUNCTION: fn_18404
+void Ripemd128Transform(unsigned int* state, const unsigned int* block) {
+  unsigned int a = state[0];
+  unsigned int b = state[1];
+  unsigned int c = state[2];
+  unsigned int d = state[3];
+  unsigned int aa = a;
+  unsigned int bb = b;
+  unsigned int cc = c;
+  unsigned int dd = d;
+
+  RIPEMD128_STEP(a, b, c, d, block[0], 11, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(d, a, b, c, block[1], 14, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(c, d, a, b, block[2], 15, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(b, c, d, a, block[3], 12, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(a, b, c, d, block[4], 5, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(d, a, b, c, block[5], 8, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(c, d, a, b, block[6], 7, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(b, c, d, a, block[7], 9, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(a, b, c, d, block[8], 11, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(d, a, b, c, block[9], 13, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(c, d, a, b, block[10], 14, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(b, c, d, a, block[11], 15, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(a, b, c, d, block[12], 6, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(d, a, b, c, block[13], 7, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(c, d, a, b, block[14], 9, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(b, c, d, a, block[15], 8, RIPEMD128_F, 0u);
+
+  RIPEMD128_STEP(a, b, c, d, block[7], 7, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(d, a, b, c, block[4], 6, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(c, d, a, b, block[13], 8, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(b, c, d, a, block[1], 13, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(a, b, c, d, block[10], 11, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(d, a, b, c, block[6], 9, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(c, d, a, b, block[15], 7, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(b, c, d, a, block[3], 15, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(a, b, c, d, block[12], 7, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(d, a, b, c, block[0], 12, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(c, d, a, b, block[9], 15, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(b, c, d, a, block[5], 9, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(a, b, c, d, block[2], 11, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(d, a, b, c, block[14], 7, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(c, d, a, b, block[11], 13, RIPEMD128_G, 0x5A827999u);
+  RIPEMD128_STEP(b, c, d, a, block[8], 12, RIPEMD128_G, 0x5A827999u);
+
+  RIPEMD128_STEP(a, b, c, d, block[3], 11, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(d, a, b, c, block[10], 13, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(c, d, a, b, block[14], 6, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(b, c, d, a, block[4], 7, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(a, b, c, d, block[9], 14, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(d, a, b, c, block[15], 9, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(c, d, a, b, block[8], 13, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(b, c, d, a, block[1], 15, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(a, b, c, d, block[2], 14, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(d, a, b, c, block[7], 8, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(c, d, a, b, block[0], 13, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(b, c, d, a, block[6], 6, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(a, b, c, d, block[13], 5, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(d, a, b, c, block[11], 12, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(c, d, a, b, block[5], 7, RIPEMD128_H, 0x6ED9EBA1u);
+  RIPEMD128_STEP(b, c, d, a, block[12], 5, RIPEMD128_H, 0x6ED9EBA1u);
+
+  RIPEMD128_STEP(a, b, c, d, block[1], 11, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(d, a, b, c, block[9], 12, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(c, d, a, b, block[11], 14, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(b, c, d, a, block[10], 15, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(a, b, c, d, block[0], 14, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(d, a, b, c, block[8], 15, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(c, d, a, b, block[12], 9, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(b, c, d, a, block[4], 8, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(a, b, c, d, block[13], 9, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(d, a, b, c, block[3], 14, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(c, d, a, b, block[7], 5, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(b, c, d, a, block[15], 6, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(a, b, c, d, block[14], 8, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(d, a, b, c, block[5], 6, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(c, d, a, b, block[6], 5, RIPEMD128_I, 0x8F1BBCDCu);
+  RIPEMD128_STEP(b, c, d, a, block[2], 12, RIPEMD128_I, 0x8F1BBCDCu);
+
+  RIPEMD128_STEP(aa, bb, cc, dd, block[5], 8, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[14], 9, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[7], 9, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[0], 11, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(aa, bb, cc, dd, block[9], 13, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[2], 15, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[11], 15, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[4], 5, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(aa, bb, cc, dd, block[13], 7, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[6], 7, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[15], 8, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[8], 11, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(aa, bb, cc, dd, block[1], 14, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[10], 14, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[3], 12, RIPEMD128_I, 0x50A28BE6u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[12], 6, RIPEMD128_I, 0x50A28BE6u);
+
+  RIPEMD128_STEP(aa, bb, cc, dd, block[6], 9, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[11], 13, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[3], 15, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[7], 7, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(aa, bb, cc, dd, block[0], 12, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[13], 8, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[5], 9, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[10], 11, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(aa, bb, cc, dd, block[14], 7, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[15], 7, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[8], 12, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[12], 7, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(aa, bb, cc, dd, block[4], 6, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[9], 15, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[1], 13, RIPEMD128_H, 0x5C4DD124u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[2], 11, RIPEMD128_H, 0x5C4DD124u);
+
+  RIPEMD128_STEP(aa, bb, cc, dd, block[15], 9, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[5], 7, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[1], 15, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[3], 11, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(aa, bb, cc, dd, block[7], 8, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[14], 6, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[6], 6, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[9], 14, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(aa, bb, cc, dd, block[11], 12, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[8], 13, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[12], 5, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[2], 14, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(aa, bb, cc, dd, block[10], 13, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[0], 13, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[4], 7, RIPEMD128_G, 0x6D703EF3u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[13], 5, RIPEMD128_G, 0x6D703EF3u);
+
+  RIPEMD128_STEP(aa, bb, cc, dd, block[8], 15, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[6], 5, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[4], 8, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[1], 11, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(aa, bb, cc, dd, block[3], 14, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[11], 14, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[15], 6, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[0], 14, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(aa, bb, cc, dd, block[5], 6, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[12], 9, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[2], 12, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[13], 9, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(aa, bb, cc, dd, block[9], 12, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(dd, aa, bb, cc, block[7], 5, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(cc, dd, aa, bb, block[10], 15, RIPEMD128_F, 0u);
+  RIPEMD128_STEP(bb, cc, dd, aa, block[14], 8, RIPEMD128_F, 0u);
+
+  const unsigned int result = state[1] + c + dd;
+  state[1] = state[2] + d + aa;
+  state[2] = state[3] + a + bb;
+  state[3] = state[0] + b + cc;
+  state[0] = result;
+}
+
+#undef RIPEMD128_STEP
+#undef RIPEMD128_F
+#undef RIPEMD128_G
+#undef RIPEMD128_H
+#undef RIPEMD128_I
+
+// OFFSET: 0x00B0F710
+// FUNCTION: fn_18405
+void CryptonEncryptBlock(const unsigned int* input, unsigned int* output) {
+  unsigned int* key = g_cryptonEncryptKey;
+  unsigned int a = input[0] ^ key[0];
+  unsigned int b = input[1] ^ key[1];
+  unsigned int c = input[2] ^ key[2];
+  unsigned int d = input[3] ^ key[3];
+  CryptonRound(a, b, c, d, key + 4, false);
+  CryptonRound(a, b, c, d, key + 8, true);
+  CryptonRound(a, b, c, d, key + 12, false);
+  CryptonRound(a, b, c, d, key + 16, true);
+  CryptonRound(a, b, c, d, key + 20, false);
+  CryptonRound(a, b, c, d, key + 24, true);
+  CryptonRound(a, b, c, d, key + 28, false);
+  CryptonRound(a, b, c, d, key + 32, true);
+  CryptonRound(a, b, c, d, key + 36, false);
+  CryptonRound(a, b, c, d, key + 40, true);
+  CryptonRound(a, b, c, d, key + 44, false);
+  unsigned int result[4];
+  CryptonSubstitute(a, b, c, d, result, true);
+  output[0] = result[0] ^ key[48];
+  output[1] = result[1] ^ g_cryptonEncryptKey[49];
+  output[2] = result[2] ^ g_cryptonEncryptKey[50];
+  output[3] = result[3] ^ g_cryptonEncryptKey[51];
+}
+
+// OFFSET: 0x00B103A0
+// FUNCTION: fn_18406
+unsigned int* CryptonSetKey(const unsigned int* input, unsigned int keyBits) {
+  if (!g_cryptonTablesReady) {
+    for (unsigned int i = 0; i < 256; ++i) {
+      const unsigned int high = i >> 4;
+      const unsigned int low = i & 15;
+      const unsigned int first = g_cryptonPermutation0[low];
+      const unsigned int second = g_cryptonPermutation1[first ^ high] ^ low;
+      const unsigned int value = second | ((g_cryptonPermutation2[second] ^ first ^ high) << 4);
+      g_cryptonSbox[i] = static_cast<unsigned char>(value);
+      g_cryptonInverseSbox[value] = static_cast<unsigned char>(i);
+      g_cryptonTable0[i] = (value * 0x01010101u) & 0x3FCFF3FCu;
+      g_cryptonTable1[value] = (i * 0x01010101u) & 0xFC3FCFF3u;
+      g_cryptonTable2[i] = (value * 0x01010101u) & 0xF3FC3FCFu;
+      g_cryptonTable3[value] = (i * 0x01010101u) & 0xCFF3FC3Fu;
+    }
+    g_cryptonTablesReady = 1;
+  }
+
+  g_cryptonEncryptKey[7] = 0;
+  g_cryptonEncryptKey[6] = 0;
+  g_cryptonEncryptKey[3] = 0;
+  g_cryptonEncryptKey[2] = 0;
+  switch ((keyBits + 63) >> 6) {
+  case 4:
+    g_cryptonEncryptKey[3] = input[6];
+    g_cryptonEncryptKey[7] = input[7];
+  case 3:
+    g_cryptonEncryptKey[2] = input[4];
+    g_cryptonEncryptKey[6] = input[5];
+  case 2:
+    g_cryptonEncryptKey[0] = input[0];
+    g_cryptonEncryptKey[4] = input[1];
+    g_cryptonEncryptKey[1] = input[2];
+    g_cryptonEncryptKey[5] = input[3];
+  }
+
+  unsigned int* key = g_cryptonEncryptKey;
+  unsigned int a = key[0];
+  unsigned int b = key[1];
+  unsigned int c = key[2];
+  unsigned int d = key[3];
+  unsigned int x = (a & 0x3FCFF3FCu) ^ (b & 0xFC3FCFF3u) ^ (c & 0xF3FC3FCFu) ^ (d & 0xCFF3FC3Fu) ^ g_cryptonKeyConstants[0];
+  unsigned int y = (a & 0xFC3FCFF3u) ^ (b & 0xF3FC3FCFu) ^ (c & 0xCFF3FC3Fu) ^ (d & 0x3FCFF3FCu) ^ g_cryptonKeyConstants[1];
+  unsigned int z = (a & 0xF3FC3FCFu) ^ (b & 0xCFF3FC3Fu) ^ (c & 0x3FCFF3FCu) ^ (d & 0xFC3FCFF3u) ^ g_cryptonKeyConstants[2];
+  unsigned int w = (a & 0xCFF3FC3Fu) ^ (b & 0x3FCFF3FCu) ^ (c & 0xFC3FCFF3u) ^ (d & 0xF3FC3FCFu) ^ g_cryptonKeyConstants[3];
+  CryptonSubstitute(x, y, z, w, key, false);
+
+  a = key[4];
+  b = key[5];
+  c = key[6];
+  d = key[7];
+  x = (a & 0xFC3FCFF3u) ^ (b & 0xF3FC3FCFu) ^ (c & 0xCFF3FC3Fu) ^ (d & 0x3FCFF3FCu) ^ g_cryptonKeyConstants[4];
+  y = (a & 0xF3FC3FCFu) ^ (b & 0xCFF3FC3Fu) ^ (c & 0x3FCFF3FCu) ^ (d & 0xFC3FCFF3u) ^ g_cryptonKeyConstants[5];
+  z = (a & 0xCFF3FC3Fu) ^ (b & 0x3FCFF3FCu) ^ (c & 0xFC3FCFF3u) ^ (d & 0xF3FC3FCFu) ^ g_cryptonKeyConstants[6];
+  w = (a & 0x3FCFF3FCu) ^ (b & 0xFC3FCFF3u) ^ (c & 0xF3FC3FCFu) ^ (d & 0xCFF3FC3Fu) ^ g_cryptonKeyConstants[7];
+  CryptonSubstitute(x, y, z, w, key + 4, true);
+
+  const unsigned int first = key[0] ^ key[1] ^ key[2] ^ key[3];
+  const unsigned int second = key[4] ^ key[5] ^ key[6] ^ key[7];
+  for (unsigned int i = 0; i < 4; ++i) {
+    key[i] ^= second;
+    key[i + 4] ^= first;
+  }
+
+  key[8] = CryptonRotate(key[0], 8);
+  key[9] = key[1] ^ 0x01010101u;
+  key[10] = CryptonRotate(key[2], 16);
+  key[11] = key[3] ^ 0x01010101u;
+  key[12] = key[4] ^ 0x01010101u;
+  key[13] = CryptonRotate(key[5], 16);
+  key[14] = key[6] ^ 0x01010101u;
+  key[15] = CryptonRotate(key[7], 24);
+  key[16] = key[8] ^ 0x02020202u;
+  key[17] = CryptonRotate(key[9], 24);
+  key[18] = key[10] ^ 0x02020202u;
+  key[19] = CryptonRotate(key[11], 8);
+  key[20] = CryptonRotate(key[12], 8);
+  key[21] = key[13] ^ 0x02020202u;
+  key[22] = CryptonRotate(key[14], 16);
+  key[23] = key[15] ^ 0x02020202u;
+  key[24] = CryptonRotate(key[16], 16);
+  key[25] = key[17] ^ 0x04040404u;
+  key[26] = CryptonRotate(key[18], 24);
+  key[27] = key[19] ^ 0x04040404u;
+  key[28] = key[20] ^ 0x04040404u;
+  key[29] = CryptonRotate(key[21], 24);
+  key[30] = key[22] ^ 0x04040404u;
+  key[31] = CryptonRotate(key[23], 8);
+  key[32] = key[24] ^ 0x08080808u;
+  key[33] = CryptonRotate(key[25], 8);
+  key[34] = key[26] ^ 0x08080808u;
+  key[35] = CryptonRotate(key[27], 16);
+  key[36] = CryptonRotate(key[28], 16);
+  key[37] = key[29] ^ 0x08080808u;
+  key[38] = CryptonRotate(key[30], 24);
+  key[39] = key[31] ^ 0x08080808u;
+  key[40] = CryptonRotate(key[32], 24);
+  key[41] = key[33] ^ 0x10101010u;
+  key[42] = CryptonRotate(key[34], 8);
+  key[43] = key[35] ^ 0x10101010u;
+  key[44] = key[36] ^ 0x10101010u;
+  key[45] = CryptonRotate(key[37], 8);
+  key[46] = key[38] ^ 0x10101010u;
+  key[47] = CryptonRotate(key[39], 16);
+  key[48] = key[40] ^ 0x20202020u;
+  key[49] = CryptonRotate(key[41], 16);
+  key[50] = key[42] ^ 0x20202020u;
+  key[51] = CryptonRotate(key[43], 24);
+
+  for (unsigned int group = 0; group < 13; ++group) {
+    for (unsigned int lane = 0; lane < 4; ++lane) {
+      g_cryptonDecryptKey[(12 - group) * 4 + lane] = CryptonKeyTransform(key[group * 4 + lane], (lane + (group & 1 ? 3 : 0)) & 3);
+    }
+  }
+  for (unsigned int lane = 0; lane < 4; ++lane) {
+    g_cryptonDecryptKey[48 + lane] = CryptonKeyTransform(g_cryptonDecryptKey[48 + lane], lane);
+  }
+  for (unsigned int lane = 0; lane < 4; ++lane) {
+    key[48 + lane] = CryptonKeyTransform(key[48 + lane], lane);
+  }
+  return g_cryptonDecryptKeys;
+}
 
 // OFFSET: 0x00B0C3D0
 // FUNCTION: fn_18400
