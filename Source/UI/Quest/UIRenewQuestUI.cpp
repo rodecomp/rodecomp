@@ -8,10 +8,14 @@
 #include "Render/Renderer.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Buttons/UIRadioButton.h"
+#include "UI/Edit/UIEditBoxEx.h"
+#include "UI/Text/UIStaticTextControl.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Cipher/XorBytes.h"
 
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <format>
@@ -933,4 +937,46 @@ void CUIRenewQuestUI::sub_A66FF0(unsigned int questId) {
 
   std::string text = std::format("Not found Quest Info = %lu", questId);
   reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+}
+
+// OFFSET: 0x00A599F0
+// FUNCTION: fn_16366
+template <>
+CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
+
+// OFFSET: 0x00A59BB0
+// FUNCTION: fn_16367
+CUIEditBoxEx::CUIEditBoxEx(UIWindowContext& context)
+    : CUIControl(context), backgroundColor(0xF7F7F7), borderColor(0xC6C6C6), borderWidth(1), editLeft(0), editTop(0), editRight(0), editBottom(0),
+      edit(nullptr), onSubmit() {
+}
+
+// OFFSET: 0x00A67CA0
+// FUNCTION: fn_16630
+void RenewQuestUI::CUIQuestItem::SetSelected(bool selected) {
+  this->unknown_00EC->SetColor(selected ? 0x00E47B2E : 0x00955322);
+  CUIListItem::SetSelected(selected);
+}
+
+// OFFSET: 0x00A67D40
+// FUNCTION: fn_16632
+int CUIRenewQuestUI::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    if (a == 0xD5) {
+      const bool checked = b != 0;
+      this->checkBox->checked = checked;
+      this->checkBox->Invalidate();
+      reinterpret_cast<WindowReplayRecorder*>(this)->RecordValues(6, 0xD5, checked, 0, 0);
+      if (UIWindow* window = g_windowMgr.LookupWindow(0xCC)) {
+        window->Show(checked);
+      }
+    }
+  } else if (message == 0x16) {
+    this->tab->SelectIndex(static_cast<int>(std::log2(static_cast<double>(a))));
+  }
+
+  return CUIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }

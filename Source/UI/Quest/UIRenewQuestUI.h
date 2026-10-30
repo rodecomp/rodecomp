@@ -11,6 +11,9 @@
 
 struct RenewQuestInfo;
 
+class CUICheckBox;
+class CUIStaticText;
+
 namespace RenewQuestUI {
 class CUIQuestItem : public CUIListItem {
 public:
@@ -20,11 +23,14 @@ public:
   void Slot48() override;
   void Slot16() override;
   void Paint() override;
+  void SetSelected(bool selected) override;
   void OnActiveStateChanged(bool active);
 
   void OnSimpleView(bool simpleView);
 
-  /* 00E8 */ unsigned char unknown_00E8[0x0C];
+  /* 00E8 */ unsigned char unknown_00E8[0x04];
+  /* 00EC */ CUIStaticText* unknown_00EC;
+  /* 00F0 */ unsigned char unknown_00F0[0x04];
   /* 00F4 */ CUIButton* unknown_00F4;
   /* 00F8 */ CUIButton* unknown_00F8;
   /* 00FC */ int questType;
@@ -47,6 +53,7 @@ class CUIRenewQuestUI : public CUIFrameWnd {
 public:
   void Paint() override;
   virtual void Slot53(int value);
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   bool MatchesFilter(const RenewQuestInfo& info) const;
 
   void OnTabButton(CUITabButton* button);
@@ -63,7 +70,8 @@ public:
   void sub_A66FF0(unsigned int questId);
 
   /* 00E0 */ CUITab* tab;
-  /* 00E4 */ unsigned char unknown_00E4[0x0C];
+  /* 00E4 */ CUICheckBox* checkBox;
+  /* 00E8 */ unsigned char unknown_00E8[0x08];
   /* 00F0 */ std::vector<RenewQuestUI::CUIQuestList*> questLists;
   /* 00FC */ unsigned char unknown_00FC[0x10];
   /* 010C */ int filter;

@@ -61,6 +61,7 @@ public:
 
 class CUIEditBoxEx : public CUIControl {
 public:
+  explicit CUIEditBoxEx(UIWindowContext& context);
   void Resize(int width, int height) override;
   bool Slot05() override;
   void Paint() override;
