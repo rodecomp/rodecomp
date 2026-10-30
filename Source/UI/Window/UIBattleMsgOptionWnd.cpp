@@ -92,6 +92,16 @@ void UIBattleMsgOptionWnd::Slot26(int x, int y) {
   }
 }
 
+// OFFSET: 0x009317A0
+// FUNCTION: fn_12707
+void UIBattleMsgOptionWnd::Slot28(int x, int y) {
+  const int previous = this->unknown_00B8;
+  this->unknown_00B8 = this->RowAt(x, y);
+  if (previous != this->unknown_00B8) {
+    this->Invalidate();
+  }
+}
+
 // OFFSET: 0x00933680
 // FUNCTION: fn_12728
 void UIBattleMsgOptionWnd::UpdateScrollBar() {
