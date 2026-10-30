@@ -460,6 +460,22 @@ void CSkillAction_ThunderingExpand::Slot17(CGameActor* source) {
 }
 
 // OFFSET: 0x005A5AC0
+// FUNCTION: fn_03160
+void CSkillAction_Direction::SpawnDirectionalEffect(CGameActor* source, CGameActor* target, std::string_view name) {
+  const float angle = ScreenAngle(
+    &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+  );
+  const int direction = this->GetDirection(angle);
+  if (!this->IsValidDirection(direction)) {
+    return;
+  }
+
+  const bool flipped = direction == 1 || direction == 2;
+  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(name.data()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot26(flipped);
+    effect->Slot17(static_cast<float>((static_cast<int>(angle + (flipped ? -180.0f : 0.0f)) + 360) % 360));
+  }
+}
 
 // OFFSET: 0x005A5D20
 // FUNCTION: fn_03161
