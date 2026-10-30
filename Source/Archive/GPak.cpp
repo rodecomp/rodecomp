@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <emmintrin.h>
 #include <random>
 #include <xhash>
 #include <zlib.h>
@@ -111,6 +112,25 @@ namespace {
   // INLINED
   void SortEntries(std::vector<myGPack::PakEntry>& entries) {
     std::sort(entries.begin(), entries.end(), [](const auto& first, const auto& second) { return first.name < second.name; });
+  }
+}
+
+// OFFSET: 0x00644260
+// FUNCTION: fn_04842
+void XorWithKey16(const std::uint8_t* key, const std::uint8_t* input, std::size_t length, std::uint8_t* output) {
+  const __m128i mask = _mm_loadu_si128(reinterpret_cast<const __m128i*>(key));
+  if (length >= 16) {
+    std::size_t blocks = length >> 4;
+    do {
+      _mm_storeu_si128(reinterpret_cast<__m128i*>(output), _mm_xor_si128(_mm_loadu_si128(reinterpret_cast<const __m128i*>(input)), mask));
+      input += 16;
+      output += 16;
+    } while (--blocks != 0);
+  }
+
+  const std::size_t remainder = length & 0xF;
+  for (std::size_t i = 0; i < remainder; ++i) {
+    output[i] = input[i] ^ key[i];
   }
 }
 
