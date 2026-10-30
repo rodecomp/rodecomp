@@ -1,6 +1,11 @@
 #include "UI/Rodex/UIRodexInboxWnd.h"
 
 #include "Contents/MessageTable.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
+#include "Network/Packets/PacketLengths.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -10,6 +15,16 @@
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
+
+namespace {
+#pragma pack(push, 1)
+struct RodexMailRequestPacket {
+  std::uint16_t id;
+  std::int64_t mailId;
+  std::uint8_t type;
+};
+#pragma pack(pop)
+}
 
 // OFFSET: 0x00807640
 // FUNCTION: fn_10049
@@ -22,6 +37,10 @@ void UIRodexInboxWnd::Slot25(int x, int y) {
 // OFFSET: 0x00807660
 // FUNCTION: fn_10050
 void UIRodexInboxWnd::Slot26(int, int) {}
+
+// OFFSET: 0x00807680
+// FUNCTION: fn_10052
+void UIRodexInboxWnd::Slot28(int, int) {}
 
 // OFFSET: 0x00805750
 
@@ -188,4 +207,41 @@ void UIRodexInboxWnd::SearchByTitle(std::string keyword) {
   });
 
   std::sort(this->searchResults.begin(), this->searchResults.end(), RodexMailEntryLess());
+}
+
+// OFFSET: 0x00807690
+// FUNCTION: fn_10053
+void __stdcall RequestRodexMailAttachments(int type, std::int64_t mailId) {
+  if (g_modeMgr.GetGameMode() != nullptr) {
+    g_modeMgr.GetGameMode();
+    if (g_windowMgr.LookupWindow(0x122) != nullptr || g_windowMgr.LookupWindow(0x12E) != nullptr || g_windowMgr.LookupWindow(0x15C) != nullptr || g_windowMgr.LookupWindow(0x2716) != nullptr || g_windowMgr.LookupWindow(0x169) != nullptr) {
+      return;
+    }
+  }
+
+  unsigned char flags = 0;
+  std::map<std::int64_t, RodexMail>* mails = RodexMailsOfType(type);
+  if (mails != nullptr) {
+    std::map<std::int64_t, RodexMail>::iterator mail = mails->find(mailId);
+    if (mail != mails->end()) {
+      flags = reinterpret_cast<const std::uint8_t*>(&mail->second)[0x19];
+    }
+  }
+
+  if ((flags & 4) != 0) {
+    RodexMailRequestPacket packet;
+    packet.id = ID_CZ_REQ_ITEM_FROM_RODEX;
+    packet.mailId = mailId;
+    packet.type = static_cast<std::uint8_t>(type);
+    CRagConnection& connection = GetRagConnection();
+    connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+  }
+  if ((flags & 2) != 0) {
+    RodexMailRequestPacket packet;
+    packet.id = ID_CZ_REQ_ZENY_FROM_RODEX;
+    packet.mailId = mailId;
+    packet.type = static_cast<std::uint8_t>(type);
+    CRagConnection& connection = GetRagConnection();
+    connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+  }
 }
