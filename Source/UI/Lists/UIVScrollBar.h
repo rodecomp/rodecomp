@@ -24,16 +24,16 @@ public:
   __declspec(noinline) void SetTotal(int value);
   __declspec(noinline) void SetVisible(int value);
   __declspec(noinline) void SetPosition(int value);
-  void PageUp();
-  void PageDown();
+  __declspec(noinline) void PageUp();
+  __declspec(noinline) void PageDown();
   int PositionFromOffset(int offset);
   void SetHidden(int unused);
-  void SetButtonImages(const std::string& up, const std::string& down);
+  __declspec(noinline) void SetButtonImages(const std::string& up, const std::string& down);
   void SetTransparent(bool transparent);
-  void SetThumbImages(const std::string& top, const std::string& middle, const std::string& bottom);
-  void SetThumbImage(const std::string& name);
+  __declspec(noinline) void SetThumbImages(const std::string& top, const std::string& middle, const std::string& bottom);
+  __declspec(noinline) void SetThumbImage(const std::string& name);
   void SetThumbTooltip(const std::string& text);
-  void SetBackground(const std::string& name);
+  __declspec(noinline) void SetBackground(const std::string& name);
   void SetOnChange(std::function<void(int)> handler);
 
   /* 0084 */ CUIImageButton* downButton;
@@ -52,6 +52,17 @@ public:
   /* 00C4 */ int unknown_00C4;
   /* 00C8 */ std::function<void(int)> onChange;
   /* 0080 */ CUIImageButton* upButton;
+};
+
+class CUIHScrollBar : public CUIVScrollBar {
+public:
+  void Resize(int width, int height) override;
+  void Paint() override;
+  void Slot25(int x, int y) override;
+  void Slot35(int value) override;
+  void Slot54() override;
+
+  void SetButtonImages(const std::string& left, const std::string& right);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

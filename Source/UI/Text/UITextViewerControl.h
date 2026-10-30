@@ -4,7 +4,10 @@
 #include "UI/Window/UIControl.h"
 
 #include <cstdint>
+#include <map>
 #include <string>
+#include <utility>
+#include <vector>
 
 class CUIPadding;
 class CUIVScrollBar;
@@ -26,6 +29,10 @@ public:
   void SetPadding(int left, int top, int right, int bottom);
   void SetScrollStep(int value);
   void SetScrollBarSize(int width, int height);
+  void SetScrollBarButtonImages(const std::string& up, const std::string& down);
+  void SetScrollBarThumbImages(const std::string& top, const std::string& middle, const std::string& bottom);
+  void SetScrollBarThumbImage(const std::string& name);
+  void SetScrollBarBackground(const std::string& name);
   void SetText(const std::string& text);
   void Clear();
 
@@ -47,11 +54,9 @@ public:
   /* 00BC */ int paddingBottom;
   /* 00C0 */ CUIVScrollBar* scrollBar;
   /* 00C4 */ CUIPadding* padding;
-  /* 00C8 */ int unknown_00C8;
-  /* 00CC */ int unknown_00CC;
-  /* 00D0 */ int unknown_00D0;
-  /* 00D4 */ int unknown_00D4;
-  /* 00D8 */ unsigned char unknown_00D8[8];
+  /* 00C8 */ std::vector<std::string> lines;
+  /* 00D4 */ int contentHeight;
+  /* 00D8 */ std::map<UIWindow*, std::pair<int, int>> childPositions;
 };
 
 #endif

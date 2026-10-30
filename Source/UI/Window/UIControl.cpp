@@ -647,6 +647,22 @@ void CUITextButton::Paint() {
   this->Slot55();
 }
 
+// OFFSET: 0x009ECF60
+
+// OFFSET: 0x009ED430
+// FUNCTION: fn_14574
+void CUITextButton::SetOutline(bool enabled, std::uint32_t color) {
+  this->outline = enabled;
+  this->outlineColor = color;
+}
+
+// OFFSET: 0x009ED450
+// FUNCTION: fn_14575
+void CUITextButton::SetShadow(bool enabled, std::uint32_t color) {
+  this->shadow = enabled;
+  this->shadowColor = color;
+}
+
 // OFFSET: 0x009E2CE0
 // FUNCTION: fn_14407
 void CUIBasicButton::Resize(int width, int height) {
@@ -738,6 +754,8 @@ void CUITabButton::Slot48() {
     this->SetState(0);
   }
 }
+
+// OFFSET: 0x009F1690
 
 // OFFSET: 0x009ED6D0
 // FUNCTION: fn_14582
@@ -895,6 +913,8 @@ void CUIEditBox::SetBackgroundColor(std::uint32_t color) {
   this->backgroundColor = color;
   this->Invalidate();
 }
+
+// OFFSET: 0x009ED7D0
 
 // OFFSET: 0x009ED800
 // FUNCTION: fn_14587
@@ -1231,6 +1251,18 @@ void CUIVScrollBar::SetHidden(int) {
   this->Show(0);
 }
 
+// OFFSET: 0x009EDF80
+
+// OFFSET: 0x009EE1B0
+
+// OFFSET: 0x009EE270
+
+// OFFSET: 0x009EE290
+
+// OFFSET: 0x009EE380
+
+// OFFSET: 0x009EE3D0
+
 // OFFSET: 0x009EA990
 // FUNCTION: fn_14536
 bool CUIPadding::CanHitTest() {
@@ -1346,6 +1378,30 @@ void CUITextViewer::SetScrollStep(int value) {
 void CUITextViewer::SetScrollBarSize(int width, int height) {
   this->scrollBar->SetSize(width, height);
 }
+
+// OFFSET: 0x009EA900
+
+// OFFSET: 0x009EA940
+
+// OFFSET: 0x009EA950
+
+// OFFSET: 0x009EA960
+
+// OFFSET: 0x009E9DD0
+
+// OFFSET: 0x009E9400
+
+// OFFSET: 0x009E9430
+
+// OFFSET: 0x009E94B0
+
+// OFFSET: 0x009E9540
+
+// OFFSET: 0x009E96B0
+
+// OFFSET: 0x009E96C0
+
+// OFFSET: 0x009E9790
 
 // OFFSET: 0x009F0EA0
 // FUNCTION: fn_14682

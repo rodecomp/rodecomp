@@ -5,6 +5,7 @@
 #include "Resource/SkinPalette.h"
 #include "UI/Window/UIWindow.h"
 
+#include <cstddef>
 #include <functional>
 #include <map>
 #include <string>
@@ -120,9 +121,23 @@ public:
 
 class CUITextButton : public CUIButton {
 public:
+  void Slot28(int x, int y) override;
   void Paint() override;
   virtual void Slot54(int value);
   virtual void Slot55();
+
+  void SetShadow(bool enabled, std::uint32_t color);
+  void SetOutline(bool enabled, std::uint32_t color);
+
+  /* 00F0 */ unsigned char unknown_00F0[0x30];
+  /* 0120 */ std::string fullText;
+  /* 0138 */ unsigned char unknown_0138[0x28];
+  /* 0160 */ unsigned char shadow;
+  /* 0164 */ std::uint32_t shadowColor;
+  /* 0168 */ unsigned char outline;
+  /* 016C */ std::uint32_t outlineColor;
+  /* 0170 */ unsigned char unknown_0170[0x08];
+  /* 0178 */ std::string tooltipText;
 };
 
 class CUIImageTextButton : public CUITextButton {
@@ -131,7 +146,6 @@ public:
 
   void SetImages(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& inactive);
 
-  /* 00F0 */ unsigned char unknown_00F0[0xA0];
   /* 0190 */ std::map<int, CResPtr<CBitmapRes>> images;
   /* 0198 */ CResPtr<CBitmapRes> disabledImage;
   /* 019C */ std::map<int, std::string> imageNames;
@@ -145,7 +159,6 @@ public:
   void Paint() override;
   void Slot53(int resolveSkin) override;
 
-  /* 00F0 */ unsigned char unknown_00F0[0xA0];
   /* 0190 */ unsigned char unknown_0190;
   /* 0194 */ int unknown_0194;
   /* 0198 */ std::map<int, CResPtr<CBitmapRes>> leftImages;
@@ -161,6 +174,7 @@ public:
   void Slot31(int x, int y) override;
   void Slot47() override;
   void Slot48() override;
+  void Slot53(int resolveSkin) override;
 
   __declspec(noinline) void SetSelected(bool selected);
   void SetSkinColors(int normalColumn, int normalRow, int selectedColumn, int selectedRow, int borderColumn, int borderRow);
@@ -238,6 +252,7 @@ public:
   void SetMaximum(int value);
   void SetEditBounds(int left, int top, int right, int bottom);
   void SetText(const std::string& text);
+  void SetTextColor(std::uint32_t color);
 
   /* 0080 */ std::uint32_t backgroundColor;
   /* 0084 */ std::uint32_t borderColor;
@@ -250,8 +265,40 @@ public:
   /* 00A0 */ std::function<void()> onSubmit;
 };
 
+class CUIResizer : public CUIControl {
+public:
+  void Paint() override;
+  void Slot25(int x, int y) override;
+  void Slot27(int x, int y) override;
+  void ResetCursor(int x, int y) override;
+  void Slot31(int x, int y) override;
+  void Slot53(int resolveSkin) override;
+
+  void SetImage(const std::string& name);
+
+  /* 0084 */ int minWidth;
+  /* 0088 */ int minHeight;
+  /* 008C */ int maxWidth;
+  /* 0090 */ int maxHeight;
+  /* 0094 */ int stepX;
+  /* 0098 */ int stepY;
+  /* 009C */ int startX;
+  /* 00A0 */ int startY;
+  /* 00A4 */ int startWidth;
+  /* 00A8 */ int startHeight;
+  /* 00AC */ int deltaX;
+  /* 00B0 */ int deltaY;
+  /* 00B4 */ std::string imageName;
+  /* 00CC */ unsigned char unknown_00CC[0x04];
+  /* 00D0 */ std::function<void(int, int)> onResize;
+  /* 0080 */ CResPtr<CBitmapRes> image;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CUIControl) == 132);
+static_assert(offsetof(CUIResizer, minWidth) == 0x84);
+static_assert(offsetof(CUIResizer, imageName) == 0xB4);
+static_assert(offsetof(CUIResizer, onResize) == 0xD0);
 #endif
 
 #endif
