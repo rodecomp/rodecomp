@@ -1029,6 +1029,11 @@ void UIMakeCharWnd::Slot18() {
 }
 
 // OFFSET: 0x008B8E90
+// FUNCTION: fn_11769
+void UIMessageBoxAutoreturn::Paint() {
+  const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox.bmp")));
+  this->DrawBitmap(0, 0, &background->image, false);
+}
 
 // OFFSET: 0x008BA670
 // FUNCTION: fn_11788
