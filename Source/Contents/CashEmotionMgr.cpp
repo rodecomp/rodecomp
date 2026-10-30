@@ -1935,6 +1935,57 @@ UISpriteButton2::~UISpriteButton2() {
 UISpriteButton::~UISpriteButton() = default;
 
 // OFFSET: 0x0085CF90
+// FUNCTION: fn_10810
+void UIHeadsprButton::Paint() {
+  if (!this->geometry.surface) {
+    return;
+  }
+
+  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->actionName.c_str()));
+  if (!action) {
+    return;
+  }
+
+  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->spriteName.c_str()));
+  if (!sprite) {
+    return;
+  }
+
+  const std::uint32_t* palette;
+  if (this->unknown_00FC.size() != 0) {
+    palette = dynamic_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->unknown_00FC.c_str()))->palette;
+  } else {
+    palette = sprite->palette;
+  }
+
+  const SpriteFrameCell& cell = action->Frame(this->unknown_00BC, 0).Cell(1);
+  const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+  if (!image) {
+    return;
+  }
+
+  SpriteAtlasRecord record{};
+  CTexture* texture;
+  if (cell.imageType == 0) {
+    texture = g_renderer->atlas.Find(image, palette, record);
+    if (!texture) {
+      texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, palette, record, g_serviceType, g_resourceReuseDelay);
+    }
+  } else {
+    texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+  }
+
+  if (!texture) {
+    return;
+  }
+
+  const int sourceY = static_cast<int>(record.v0 * 256.0f);
+  const int sourceX = static_cast<int>(record.u0 * 256.0f);
+  this->geometry.surface->DrawSurface(
+    0, 0, texture, sourceX < 0 ? 0 : sourceX, sourceY < 0 ? 0 : sourceY, image->width, image->height, cell.mirrored != 0, image->unknown_0004 + 1,
+    image->unknown_0006 + 1, 0, 0
+  );
+}
 
 // OFFSET: 0x0085D6C0
 
