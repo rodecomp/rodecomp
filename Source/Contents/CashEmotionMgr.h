@@ -145,6 +145,7 @@ public:
   bool IsPackAvailable(unsigned int now, int packId);
   bool IsOwnedPack(int packId);
   void sub_59CDE0(int param);
+  void SetServerTimeZone(short serverBias);
   int sub_59FC50();
   // INLINED
   int BasePackId() const {

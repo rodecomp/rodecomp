@@ -15,6 +15,7 @@
 #include "UI/UILapineScrollBar.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/WindowBorder.h"
+#include "Utility/Text/FormatString.h"
 
 #include <algorithm>
 #include <array>
@@ -24,6 +25,7 @@
 #include <iterator>
 #include <map>
 #include <new>
+#include <windows.h>
 
 // STATIC: 0x013896C4
 // GLOBAL: gl_24350
@@ -75,6 +77,7 @@ protected:
 
 class UICashEmotionPack_Unpurchase : public UICashEmotionPack {
 public:
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -97,6 +100,8 @@ protected:
 };
 
 class UICashEmotionScrollWnd : public UIScrollWnd {
+public:
+  void Slot15(int width, int height) override;
 };
 
 class UICashEmotionListChildWnd_Abstract : public UICashEmotionScrollWnd {
@@ -143,6 +148,8 @@ public:
   void Slot11() override;
   void Slot19() override;
   void Paint() override;
+
+  UIBitmapButton* CreateButton(int x, int y, int width, int height, int id, const char* format, bool hasDisabled);
 
 protected:
   /* 00B4 */ CashEmotionListPlacement* m_placement;
@@ -819,6 +826,29 @@ void CCashEmotionMgr::sub_59CDE0(int param) {
   this->unknown_01D0 = _time32(nullptr) - param;
 }
 
+// OFFSET: 0x0059CE00
+// FUNCTION: fn_02982
+void CCashEmotionMgr::SetServerTimeZone(short serverBias) {
+  TIME_ZONE_INFORMATION info;
+  short localBias;
+  if (GetTimeZoneInformation(&info) == TIME_ZONE_ID_INVALID) {
+    localBias = 0;
+  } else {
+    localBias = static_cast<short>(-info.Bias);
+  }
+  const int offset = (serverBias - localBias) * 60;
+  this->unknown_01D4 = offset;
+  for (auto& entry : this->unknown_0010) {
+    CashEmotionPack& pack = entry.second;
+    if (pack.originalStartTime) {
+      pack.startTime = pack.originalStartTime - offset;
+    }
+    if (pack.originalEndTime) {
+      pack.endTime = pack.originalEndTime - offset;
+    }
+  }
+}
+
 // OFFSET: 0x0059FC50
 // FUNCTION: fn_03031
 int CCashEmotionMgr::sub_59FC50() {
@@ -877,6 +907,29 @@ UICashEmotionListWnd::UICashEmotionListWnd(UIWindowContext& windows, UIFrameCont
     : UIFrameWnd(windows, frame, 0), m_placement(nullptr), m_basicList(nullptr), m_purchaseList(nullptr), m_searchList(nullptr), m_unpurchasedList(nullptr),
       m_tab(0), unknown_00D4(nullptr), m_searchEdit(nullptr), unknown_00DC(nullptr), unknown_00E0(nullptr), unknown_00E4(nullptr), m_currentList(nullptr),
       unknown_00EC(nullptr), m_controls(&controls) {
+}
+
+// OFFSET: 0x007C7240
+// FUNCTION: fn_09405
+UIBitmapButton* UICashEmotionListWnd::CreateButton(int x, int y, int width, int height, int id, const char* format, bool hasDisabled) {
+  UIBitmapButton* button = new (std::nothrow) UIBitmapButton(*this->m_context, *this->m_controls);
+  if (!button) {
+    return nullptr;
+  }
+  button->SetBitmap(FormatOwnedString(format, "normal").c_str(), 0, 0);
+  button->SetBitmap(FormatOwnedString(format, "over").c_str(), 1, 0);
+  button->SetBitmap(FormatOwnedString(format, "press").c_str(), 2, 0);
+  if (hasDisabled == true) {
+    std::string name = Resolve(FormatOwnedString(format, "disable").c_str());
+    if (ResourceMgr::Instance().Load(name)) {
+      button->SetBitmap(name.c_str(), 3, 0);
+    }
+  }
+  button->SetSize(width, height);
+  button->Move(x, y);
+  button->SetId(id);
+  this->AddChild(button);
+  return button;
 }
 
 // OFFSET: 0x007C7C20
@@ -1366,6 +1419,15 @@ int UICashEmotionPack_Search_UnPurchased::SendMsg(
   }
 }
 
+// OFFSET: 0x007CB850
+// FUNCTION: fn_09474
+void UICashEmotionPack_Unpurchase::Paint() {
+  UICashEmotionPack::Paint();
+  if (!this->unknown_00E4.empty()) {
+    this->DrawRightAlignedText(233, 42, this->unknown_00E4.c_str(), 0, 0, 12, 0xE68C5A, 1);
+  }
+}
+
 // OFFSET: 0x007CB890
 // FUNCTION: fn_09475
 void UICashEmotionPack_Unpurchase::Slot26(int, int) {
@@ -1619,6 +1681,16 @@ void UICashEmotionScrollBar::SetDisabled(bool disabled) {
     this->m_disabled = disabled;
     this->Invalidate();
   }
+}
+
+// OFFSET: 0x007CC5D0
+// FUNCTION: fn_09496
+void UICashEmotionScrollWnd::Slot15(int, int) {
+  this->RemoveChild(this->horizontalBar, 1);
+  this->RemoveChild(this->scrollBar, 1);
+  this->horizontalBar = nullptr;
+  this->scrollBar = nullptr;
+  this->scrollBarWidth = 11;
 }
 
 // OFFSET: 0x007CC870
