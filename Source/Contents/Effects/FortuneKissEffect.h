@@ -10,8 +10,10 @@ class CParticle;
 
 class CFortuneKiss : public CEffect {
 public:
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
 
   /* 00CC */ unsigned char unknown_00CC[0x38];

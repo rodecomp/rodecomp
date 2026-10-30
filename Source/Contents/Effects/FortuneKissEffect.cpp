@@ -1,9 +1,45 @@
 #include "Contents/Effects/FortuneKissEffect.h"
 
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
+#include <cstdlib>
 #include <cstring>
+
+// OFFSET: 0x00701520
+// FUNCTION: fn_06994
+void CFortuneKiss::Close() {
+  for (CParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
+
+// OFFSET: 0x00701560
+// FUNCTION: fn_06995
+void CFortuneKiss::Slot01() {
+  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  if (!particle) {
+    return;
+  }
+
+  particle->SetTexture("effect\\kiss.bmp");
+  particle->unknown_0004 = this->id;
+  particle->unknown_000C = 0;
+  particle->unknown_0010 = 0;
+  particle->unknown_0008 = 1;
+  particle->alpha = 255;
+  particle->unknown_00C4 = 0;
+  particle->unknown_004C = 0;
+  particle->scale = 1.0f;
+  particle->unknown_0054 = -5.0f - static_cast<float>(rand() % 5);
+  *reinterpret_cast<float*>(particle->unknown_0058) = 0.0f;
+  InitParticleQuad(particle->vertices);
+  this->angle = rand() % 359;
+  this->particles.push_back(particle);
+}
 
 // OFFSET: 0x00701700
 // FUNCTION: fn_06996
