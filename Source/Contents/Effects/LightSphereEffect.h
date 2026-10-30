@@ -11,9 +11,13 @@ class CParticle;
 class CLightSphereEffect : public CEffect {
 public:
   CLightSphereEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
+
+  void sub_B6CB90(int param);
 
   /* 00CC */ std::vector<CParticle*> spheres;
   /* 00D8 */ std::vector<CParticle*> rays;

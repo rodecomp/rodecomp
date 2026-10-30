@@ -3,6 +3,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"
@@ -13,6 +14,129 @@
 // OFFSET: 0x00B6C9F0
 // FUNCTION: fn_19103
 CLightSphereEffect::CLightSphereEffect() : CEffect(-1), spheres(), rays() {
+}
+
+// OFFSET: 0x00B6CB90
+// FUNCTION: fn_19105
+void CLightSphereEffect::sub_B6CB90(int param) {
+  for (int c = 0; c < 4; ++c) {
+    for (int i = 0; i < 80; ++i) {
+      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(&this->position), 5);
+      if (particle != nullptr) {
+        particle->SetTexture("effect\\white02.bmp");
+        particle->unknown_0004 = this->id;
+        particle->unknown_000C = i;
+        particle->unknown_0010 = c;
+        particle->unknown_0008 = 1;
+        particle->alpha = 40;
+        particle->scale = 1.0f;
+
+        int r1 = std::rand() % 360;
+        particle->unknown_004C = r1 < 0 ? 0 : r1;
+
+        int r2 = std::rand() % 360;
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(r2 < 0 ? 0 : r2);
+
+        int r3 = std::rand() % 360;
+        particle->unknown_0050 = r3 < 0 ? 0 : r3;
+
+        particle->unknown_0054 = 10.0f;
+        *reinterpret_cast<float*>(particle->unknown_0058) = static_cast<float>(param);
+
+        if (this->id == 0x4AD) {
+          int randVal = std::rand() % 2;
+          if (randVal < 0) {
+            randVal = 0;
+          }
+          if (randVal == 0) {
+            particle->SetColor(0xFF, 0x7C, 0x80);
+          } else {
+            particle->SetColor(0xFF, 0x4A, 0x4E);
+          }
+        } else if (this->id == 0x4AE) {
+          int randVal = std::rand() % 2;
+          if (randVal < 0) {
+            randVal = 0;
+          }
+          if (randVal == 0) {
+            particle->SetColor(0xFF, 0xFF, 0x9B);
+          } else {
+            particle->SetColor(0xFF, 0xFF, 0x37);
+          }
+        } else if (this->id == 0x4AF) {
+          int randVal = std::rand() % 2;
+          if (randVal < 0) {
+            randVal = 0;
+          }
+          if (randVal == 0) {
+            particle->SetColor(0x3B, 0xCC, 0xFF);
+          } else {
+            particle->SetColor(0x6D, 0x9A, 0xFF);
+          }
+        } else {
+          int randVal = std::rand() % 2;
+          if (randVal < 0) {
+            randVal = 0;
+          }
+          if (randVal == 0) {
+            particle->SetColor(0x69, 0x69, 0xFF);
+          } else {
+            particle->SetColor(0x37, 0x37, 0xFF);
+          }
+        }
+
+        InitParticleQuad(particle->vertices);
+        this->rays.push_back(particle);
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00B6CFF0
+// FUNCTION: fn_19106
+void CLightSphereEffect::Close() {
+  for (std::vector<CParticle*>::iterator it = this->spheres.begin(); it != this->spheres.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->spheres.clear();
+
+  for (std::vector<CParticle*>::iterator it = this->rays.begin(); it != this->rays.end(); ++it) {
+    FreeParticle(*it);
+  }
+  this->rays.clear();
+}
+
+// OFFSET: 0x00B6D060
+// FUNCTION: fn_19107
+void CLightSphereEffect::Slot01() {
+  for (int i = 0; i < 4; ++i) {
+    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(&this->position), 5);
+    if (particle != nullptr) {
+      particle->SetTexture("effect\\thunder_center.bmp");
+      particle->unknown_0004 = this->id;
+      particle->unknown_000C = i;
+      particle->unknown_0010 = 0;
+      particle->unknown_0008 = 1;
+      particle->scale = 3.5f;
+      particle->alpha = 1;
+      particle->unknown_0054 = -10.0f;
+      *reinterpret_cast<float*>(particle->unknown_0058) = 0.0f;
+
+      if (this->id == 0x4AD) {
+        particle->SetColor(0xFF, 0x7C, 0x80);
+      } else if (this->id == 0x4AE) {
+        particle->SetColor(0xFF, 0xFF, 0x37);
+      } else if (this->id == 0x4AF) {
+        particle->SetColor(0x3B, 0xCC, 0xFF);
+      }
+
+      InitParticleQuad(particle->vertices);
+      this->spheres.push_back(particle);
+    }
+  }
+
+  this->sub_B6CB90(0);
+  this->sub_B6CB90(1);
 }
 
 // OFFSET: 0x00B6D160
