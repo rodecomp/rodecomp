@@ -30,7 +30,10 @@ namespace TagTextViewer {
   public:
     explicit UIScroll(UIWindowContext& context) : UIWindow(context, 0), m_scrollPos(0), m_scrollBar(nullptr) {
     }
+    void Slot15(int width, int height) override;
     void Slot35(int delta) override;
+    int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+    void UpdateScroll();
     void StorePosition(UIWindow* child);
     int ContentHeight();
 

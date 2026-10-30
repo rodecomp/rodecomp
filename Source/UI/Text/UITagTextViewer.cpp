@@ -30,6 +30,16 @@ int TagTextViewer::UIScroll::ContentHeight() {
   return height;
 }
 
+// OFFSET: 0x0083EE40
+// FUNCTION: fn_10524
+void TagTextViewer::UIScroll::Slot15(int width, int height) {
+  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar->Configure(width - 13, 0, 1, height);
+  this->AddChild(this->m_scrollBar);
+  this->m_scrollBar->Show(0);
+  this->UpdateScroll();
+}
+
 // OFFSET: 0x0083EEF0
 // FUNCTION: fn_10525
 void UITagTextViewer::Paint() {
@@ -57,6 +67,32 @@ void TagTextViewer::UIScroll::Slot35(int delta) {
   }
 }
 
+// OFFSET: 0x0083F030
+// FUNCTION: fn_10528
+void TagTextViewer::UIScroll::UpdateScroll() {
+  int height = this->geometry.height;
+  for (std::map<UIWindow*, Position>::iterator it = this->m_positions.begin(); it != this->m_positions.end(); ++it) {
+    height = static_cast<int>(std::max(static_cast<float>(height), static_cast<float>(it->first->geometry.height) + it->second.y));
+  }
+
+  if (height > this->geometry.height) {
+    this->m_scrollBar->Show(1);
+    this->m_scrollBar->SetRange(height - this->geometry.height, this->geometry.height, height);
+    this->m_scrollPos = std::min(std::max(0, this->m_scrollPos), height - this->geometry.height);
+    this->m_scrollBar->SetPosition(this->m_scrollPos);
+    for (std::map<UIWindow*, Position>::iterator it = this->m_positions.begin(); it != this->m_positions.end(); ++it) {
+      it->first->Move(static_cast<int>(it->second.x), static_cast<int>(it->second.y - static_cast<float>(this->m_scrollPos)));
+    }
+  } else {
+    this->m_scrollBar->Show(0);
+  }
+
+  this->Invalidate();
+  if (this->parent) {
+    this->parent->Invalidate();
+  }
+}
+
 // OFFSET: 0x0083F140
 void UITagTextViewer::Resize(int width, int height) {
   this->m_textWidth += width - this->geometry.width;
@@ -66,6 +102,38 @@ void UITagTextViewer::Resize(int width, int height) {
   this->m_scrollBar->Resize(this->m_scrollBar->geometry.width, height);
   this->m_scrollBar->Move(width - this->m_scrollBar->geometry.width, 0);
   this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x0083F1C0
+// FUNCTION: fn_10530
+int TagTextViewer::UIScroll::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  switch (message) {
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scrollPos;
+    int delta = argument1;
+    if (message == 9) {
+      delta = -10;
+    } else if (message == 10) {
+      delta = 10;
+    }
+    this->m_scrollPos = previous + delta;
+    if (previous != this->m_scrollPos) {
+      this->UpdateScroll();
+    }
+    return this->m_scrollPos - previous;
+  }
+  case 0x12:
+    this->SendMsg(this->m_scrollBar, 9, 0, 0, 0, 0);
+    break;
+  case 0x13:
+    this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
+    break;
+  }
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
 // OFFSET: 0x0083F590
