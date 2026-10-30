@@ -15,6 +15,7 @@ public:
 
   void Slot01() override;
   void Close() override;
+  bool Slot06() override;
   void Slot12() override;
 
   void AddSparks(int kind);

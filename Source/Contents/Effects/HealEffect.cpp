@@ -320,6 +320,12 @@ void CHealEffect::Close() {
   this->sparkParticles.clear();
 }
 
+// OFFSET: 0x00B69050
+// FUNCTION: fn_19075
+bool CHealEffect::Slot06() {
+  return !this->IsFinished();
+}
+
 // OFFSET: 0x00B68770
 // FUNCTION: fn_19072
 void CHealEffect::Slot01() {
