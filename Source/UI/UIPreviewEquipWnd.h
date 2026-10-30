@@ -12,6 +12,7 @@ public:
   ~UIPreviewEquipWnd() override;
   void Slot11() override;
   void Slot19() override;
+  void RefreshHeadgearLocations();
 
   /* 00B4 */ PreviewEquipWndInfo* saved;
   /* 00B8 */ CCharacterRender* m_render;
