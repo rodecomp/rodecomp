@@ -635,3 +635,9 @@ void OpenAccountRegistration() {
   }
   }
 }
+
+// OFFSET: 0x00D92B70
+// FUNCTION: fn_22292
+bool sub_D92B70() {
+  return false;
+}
