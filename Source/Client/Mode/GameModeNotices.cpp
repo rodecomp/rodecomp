@@ -858,13 +858,119 @@ void ReceiveShortcutPage(int position, const ShortcutPagePayload* payload, std::
 }
 
 // OFFSET: 0x00D18F60
+// FUNCTION: fn_21603
+void CGameMode::ResendMinimapMarkers() {
+  if (g_windowMgr.window_4F1CC) {
+    for (auto it = this->minimapMarkers.begin(); it != this->minimapMarkers.end(); ++it) {
+      if (it->second.unknown_0006 != 0) {
+        g_windowMgr.window_4F1CC->SendMsg(nullptr, 485, it->second.unknown_0004, it->second.unknown_0006, it->second.unknown_0000, it->second.unknown_0002);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00D69260
+// FUNCTION: fn_22046
+void CGameMode::ReceiveJobTitle(unsigned char result, int job) {
+  if (result != 0) {
+    return;
+  }
+
+  g_session.unknown_615C = job;
+  std::string title = GetJobTitleString(job);
+  CActorNameCard card = this->LookupNameCard(g_session.m_aid);
+  this->nameCard.SetValue4(g_session.m_aid, title);
+
+  UIWindow* window = g_windowMgr.LookupWindow(10);
+  if (window) {
+    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00D694C0
+// FUNCTION: fn_22049
+void CGameMode::ReceiveQuestStates(int count, const unsigned char* data) {
+  const auto* entry = reinterpret_cast<const QuestStateEntry*>(data);
+  for (int i = 0; i < count; ++i, ++entry) {
+    const unsigned int questId = entry->questId;
+    if (entry->state == 1) {
+      g_renewQuestMgr->AddNewQuest(questId);
+      UIWindow* window = g_windowMgr.LookupWindow(10002);
+      if (window) {
+        static_cast<CUIAdventureGuide*>(window)->MarkQuest(questId);
+      }
+    } else if (entry->state == 2) {
+      g_renewQuestMgr->RemoveStatusRequest(questId);
+    }
+  }
+}
 
 // OFFSET: 0x00D6E1E0
+// FUNCTION: fn_22098
+void CGameMode::ReceiveMessageBox(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const MessageBoxPacket*>(data);
+
+  std::string caption = LookupMessage(packet->captionId);
+  if (packet->captionArgument) {
+    const std::string formatted = FormatOwnedString(caption.c_str(), packet->captionArgument);
+    caption = formatted;
+  }
+
+  std::string text = LookupMessage(packet->textId);
+  if (packet->textArgument) {
+    const std::string formatted = FormatOwnedString(text.c_str(), packet->textArgument);
+    text = formatted;
+  }
+
+  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, true, false, 0, caption.c_str(), 280, 120, 0);
+}
 
 // OFFSET: 0x00D6E5F0
+// FUNCTION: fn_22102
+void CGameMode::NotifyCaptchaRegistered() {
+  UIWindow* window = g_windowMgr.LookupWindow(284);
+  if (window) {
+    static_cast<UICaptchaRegisterWnd*>(window)->SetRegisterDisabled(0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2880), 0, true, false, 0, "Message", 280, 120, 0);
+  }
+}
 
 // OFFSET: 0x00D6ECB0
+// FUNCTION: fn_22120
+void CGameMode::ReceiveItem1784List(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const Item1784ListPacket*>(data);
+  if (g_session.unknown_5912 || packet->flag != 0) {
+    return;
+  }
+
+  const unsigned int count = (packet->length - 6) / sizeof(Item1784Entry);
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1784(9);
+
+  char name[256];
+  std::memset(name, 0, sizeof(name));
+  int capacity = sizeof(name);
+  for (unsigned int i = 0; i < count; ++i) {
+    Item1784Entry entry;
+    memcpy_s(&entry, sizeof(entry), &packet->entries[i], sizeof(entry));
+
+    ITEM_INFO item;
+    item.unknown_0000[1] = -1;
+    item.SetItemId(entry.itemId);
+    item.unknown_0078[3] = entry.unknown_0008;
+    item.quantity = entry.quantity;
+    item.unknown_0014[0] = entry.unknown_000C;
+    item.unknown_0078[1] = entry.unknown_0010;
+    item.unknown_0078[2] = entry.unknown_0014;
+    item.unknown_0064 = 8;
+    item.identified = 1;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.Name(item, name, capacity, 0);
+    item.SetName(name);
+    g_session.unknown_1784[9].push_back(item);
+  }
+
+  UIWindow* window = g_windowMgr.LookupWindow(318);
+  if (window) {
+    window->SendMsg(nullptr, 23, 1, 0, 0, 0);
+  }
+}
