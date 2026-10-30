@@ -1,5 +1,6 @@
 #include "UI/Items/UIMakeTargetProcessWnd.h"
 
+#include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
@@ -11,7 +12,52 @@
 
 struct ClientItemLists {
   bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
+  void RemoveItem1710(std::uint32_t id, int quantity);
 };
+
+// OFFSET: 0x009A0090
+// FUNCTION: fn_13598
+void UIMakeTargetProcessWnd::Slot10(int x, int y, std::intptr_t value) {
+  switch (this->makeType) {
+  case 994:
+  case 995:
+  case 996:
+  case 997:
+  case 998:
+  case 999:
+  case 1000:
+    g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source == 1) {
+    bool hasElementalStone = false;
+    int emptySlot = 3;
+    for (int index = 0; index < 3; ++index) {
+      if (this->materials[index].unknown_0000[1] != 0) {
+        hasElementalStone |= this->materials[index].IsElementalStone();
+      } else if (emptySlot == 3) {
+        emptySlot = index;
+      }
+    }
+
+    if (emptySlot < 3) {
+      ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, drag->id);
+      if (item.unknown_0000[1] != 0 && item.IsForgeMaterial() && (!hasElementalStone || !item.IsElementalStone())) {
+        this->materials[emptySlot] = item;
+        this->materials[emptySlot].quantity = 1;
+        reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1710(item.unknown_0000[1], 1);
+        if (g_windowMgr.unknown_01D4) {
+          reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01D4)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+        }
+        this->Invalidate();
+      }
+    }
+  }
+
+  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x009A09E0
 // FUNCTION: fn_13603
