@@ -11,6 +11,8 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Dialogs/UIMiniMapWnd.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
@@ -22,6 +24,9 @@
 
 // GLOBAL: gl_24906
 const char* g_miniMapMemoPath = "%s\\Memo\\$$%s.txt";
+
+// GLOBAL: gl_25072
+const char* g_miniMapMemoLineFormat = "%d\t%d\t%s\r\n";
 
 // OFFSET: 0x0099B540
 // FUNCTION: fn_13554
@@ -116,6 +121,28 @@ int UIMiniMapWnd::LoadMemos() {
   return count;
 }
 
+// OFFSET: 0x0099C090
+// FUNCTION: fn_13556
+void UIEditctrlWnd::Slot15(int, int) {
+  this->AddCloseButton(*this->m_controls, LookupMessage(2741), 0);
+  this->AddNumberedButton(*this->m_controls, 184, 205, 19, "minimap\\memo_ok", LookupMessage(2754), true);
+
+  this->edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->edit->SetSize(200, 18);
+  this->edit->Move(5, 19);
+  this->edit->maximum = 20;
+  this->edit->Background(232, 232, 232);
+  this->edit->Border(200, 100, 100);
+  this->edit->flat = 0;
+  const char* tooltip = LookupMessage(2753);
+  if (tooltip) {
+    this->edit->tooltip = tooltip;
+  }
+  this->AddChild(this->edit);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->edit);
+}
+
 // OFFSET: 0x0099C530
 // FUNCTION: fn_13558
 void UIEditctrlWnd::Paint() {
@@ -148,6 +175,40 @@ void UIMiniMapWnd::ResetCursor(int, int) {
   } else {
     this->m_context->cursor.Set(0, this->m_context->cursorTick);
   }
+}
+
+// OFFSET: 0x0099CA60
+// FUNCTION: fn_13562
+int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 0) {
+    if (this->edit == sender && this->edit->Length() > 0) {
+      this->SendMsg(this->edit, 6, 184, 0, 0, 0);
+      return 0;
+    }
+  } else if (message == 6) {
+    if (argument1 == 184) {
+      std::string text = FormatOwnedString(g_miniMapMemoPath, g_applicationDirectory, g_session.m_navigationPlayerMap);
+      FILE* file = std::fopen(text.c_str(), "ab");
+      if (file) {
+        std::fseek(file, 0, SEEK_END);
+        text = FormatOwnedString(g_miniMapMemoLineFormat, g_windowMgr.miniMapClickX, g_windowMgr.miniMapClickY, this->edit->Text());
+        std::fwrite(text.c_str(), text.size(), 1, file);
+        std::fclose(file);
+        if (g_windowMgr.window_4F1CC) {
+          static_cast<UIMiniMapWnd*>(g_windowMgr.window_4F1CC)->LoadMemos();
+        }
+        g_windowMgr.CloseWindow(274);
+      }
+      return 0;
+    }
+    if (argument1 == 201) {
+      g_windowMgr.CloseWindow(274);
+      return 0;
+    }
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
 // OFFSET: 0x0099DC90
