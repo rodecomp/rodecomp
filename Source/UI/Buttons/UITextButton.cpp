@@ -2595,3 +2595,52 @@ int UITextButton::GetLinesCount() const {
 // FUNCTION: fn_11309
 void __stdcall Nullsub275(int, int, int, int) {
 }
+
+#include "UI/Buttons/UIDescriptRace.h"
+#include "UI/Window/InputFocus.h"
+
+// OFFSET: 0x00890230
+// FUNCTION: fn_11406
+void UINewComboBoxCtrl::Slot26(int, int) {
+  if (this->parent) {
+    this->parent->SendMsg(this, 124, this->selected, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00890480
+// FUNCTION: fn_11416
+void UIDescriptRace::Slot25(int, int) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(278)) {
+    window->SendMsg(this, 6, 204, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00890330
+// FUNCTION: fn_11410
+void UITabControl::Slot26(int, int) {
+  if (this->layout == 0 || this->layout == 2 || !this->unknown_00A8) {
+    return;
+  }
+
+  this->edit->SetText(this->labels[this->unknown_007C].c_str());
+  this->edit->Resize(this->widths[this->unknown_007C] - 4, this->geometry.height - 2);
+
+  int x = 0;
+  for (int index = 0; index < this->unknown_007C; ++index) {
+    x += this->widths[index] - 1;
+  }
+
+  this->edit->Move(x + 2, 2);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->edit);
+}
+
+// OFFSET: 0x0088C6E0
+// FUNCTION: fn_11373
+void UINewComboBoxCtrl::Paint() {
+  this->FillRegion(0, 0, this->geometry.width, this->geometry.height, RGB(this->red, this->green, this->blue));
+
+  if (!this->borderless) {
+    DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, RGB(this->borderRed, this->borderGreen, this->borderBlue));
+  }
+}
