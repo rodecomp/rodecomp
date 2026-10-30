@@ -11,8 +11,12 @@
 #include "Network/Packets/PacketId.h"
 #include "Script/LuaScript.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/UIIngredientInfoWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
+
+#include <list>
 
 #include <cstdint>
 #include <cstdlib>
@@ -30,7 +34,7 @@ typedef bool(__thiscall* CheckMaterialFn)(UILapineBox_IngredientListWnd*, int);
 typedef void(__thiscall* FillItemIdsFn)(CSession*, std::vector<int>*, int, unsigned char);
 typedef void(__thiscall* LayoutChildFn)(UILapineBox_IngredientListWnd*, UIWindow*, int, int);
 typedef int(__thiscall* ScrollWndSendMsgFn)(UILapineBox_IngredientListWnd*, UIWindow*, int, std::intptr_t, std::intptr_t, std::intptr_t, std::intptr_t);
-typedef UIWindow*(__thiscall* BehaviorWindowFn)(UIWindowMgr*, int);
+typedef void(__thiscall* BeginItemOnModeFn)(CGameMode*, int, ITEM_INFO*, int, int);
 typedef void(__thiscall* CloseNotifyFn)(UIWindowMgr*, int);
 
 namespace {
@@ -131,8 +135,16 @@ void UILapineBoxWnd::Slot19() {
 }
 
 // OFFSET: 0x00600C00
+// FUNCTION: fn_04168
+void UIIngredientInfoWnd::Slot32(int, int) {
+  if (this->item.unknown_0000[1] != 0) {
+    UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+    window->SendMsg(this, 0x18, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00600C40
+
 // OFFSET: 0x00600D00
 // FUNCTION: fn_04170
 void UIIngredientInfoWnd::Slot35(int argument) {
