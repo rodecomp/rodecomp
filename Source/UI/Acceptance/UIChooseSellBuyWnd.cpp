@@ -11,9 +11,11 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
+#include "Contents/TipBoxTitles.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeEvents.h"
+#include "Client/Mode/ModeDragState.h"
 #include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -67,6 +69,7 @@
 #include "UI/Lists/UIComboBoxWnd.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Party/UIPartySettingWnd.h"
+#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Shop/UInCash_CallWnd.h"
 #include "UI/Skill/UISkillDescribeWnd.h"
@@ -1076,6 +1079,81 @@ ITEM_INFO UIItemParamChangeDisplayWnd::FindEquippedItem(int location) {
     }
   }
   return ITEM_INFO(0);
+}
+
+// OFFSET: 0x008CEA60
+// FUNCTION: fn_12070
+void UIMenuWnd::AddItem(const char* text, const std::uint32_t& color) {
+  this->m_items.push_back(text);
+  this->m_colors.push_back(color);
+}
+
+// OFFSET: 0x008CEED0
+// FUNCTION: fn_12073
+void UITipboxWnd::ShowTip(int id) {
+  g_itemTagOwner->SelectTip(id);
+  this->SendMsg(this, 6, 543, 0, 0, 0);
+  reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+}
+
+// OFFSET: 0x008D0230
+// FUNCTION: fn_12083
+void UIExchangeWnd::Slot10(int x, int y, std::intptr_t value) {
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (this->unknown_00CC != 0) {
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source != 1) {
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+
+  if (drag->quantity == 1) {
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  }
+
+  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.window_01EC->SendMsg(nullptr, 13, 5, 0, 0, 0);
+}
+
+// OFFSET: 0x008D02D0
+// FUNCTION: fn_12084
+void UInCashWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  switch (drag->source) {
+  case 4:
+    if (x < 445) {
+      const int quantity = g_session.GetItem1720QuantityByItemId(drag->name.c_str());
+      if (quantity < 2) {
+        this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+        return;
+      }
+
+      reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+      g_windowMgr.window_01EC->SendMsg(nullptr, 13, 20, quantity, 0, 0);
+      return;
+    }
+    break;
+  case 6:
+    if (x > 444) {
+      reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+      g_windowMgr.window_01EC->SendMsg(nullptr, 13, 19, 0, 0, 0);
+      return;
+    }
+    break;
+  }
+
+  mode->SendMsg(18, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x008D9F00

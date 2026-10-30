@@ -2,6 +2,15 @@
 #include "Render/Renderer.h"
 #include "Render/TextureQuad.h"
 #include "UI/Chat/UIWhisperWnd.h"
+#include "UI/Skill/UISkillDescribeWnd.h"
+
+// OFFSET: 0x008D0D80
+// FUNCTION: fn_12090
+void UISkillDescribeWnd::Slot43() {
+  int x = 0;
+  int y = 0;
+  this->ToScreen(x, y);
+}
 
 // OFFSET: 0x008D0DB0
 // FUNCTION: fn_12091

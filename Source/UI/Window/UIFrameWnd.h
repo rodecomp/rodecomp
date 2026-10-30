@@ -7,6 +7,7 @@
 struct WindowSnapping;
 class WindowManagerWindows;
 class UIBitmapButton;
+class UICheckBox;
 struct UIButtonContext;
 
 struct UIFrameContext {
@@ -33,6 +34,16 @@ public:
   std::vector<std::uint32_t> Slot44() override;
   int Slot46() override;
   UIBitmapButton* AddCloseButton(UIButtonContext& controls, const char* tooltip, int width);
+  UIBitmapButton* AddBaseButton(UIButtonContext& controls);
+  UIBitmapButton* AddBigCloseButton(UIButtonContext& controls, const char* tooltip, int width);
+  UIBitmapButton* AddMinimizeButton(UIButtonContext& controls, const char* tooltip, int width);
+  UIBitmapButton* AddBitmapButton(UIButtonContext& controls, int id, int x, int y, const char* name, const char* tooltip);
+  UIBitmapButton* AddNumberedButton(UIButtonContext& controls, int id, int x, int y, const char* name, const char* tooltip, bool prefix);
+  UICheckBox* AddStyledCheckBox(
+    UIButtonContext& controls, int id, int width, int height, const char* text, int x, int y, bool checked, const char* tooltip, int fontHeight,
+    std::uint32_t color, const char* checkedImage, const char* uncheckedImage
+  );
+  UICheckBox* AddCheckBox(UIButtonContext& controls, int id, int width, int height, const char* text, int x, int y, int checked, const char* tooltip);
   void DrawBorder(int x, int y, int width, int height);
 
 protected:

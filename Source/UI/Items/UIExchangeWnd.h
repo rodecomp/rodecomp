@@ -14,6 +14,7 @@ public:
   /* 00D4 */ unsigned char unknown_00D4[0x04];
   /* 00D8 */ int unknown_00D8;
 
+  void Slot10(int x, int y, std::intptr_t value) override;
   void Slot35(int delta) override;
 
   void LayoutButtons();

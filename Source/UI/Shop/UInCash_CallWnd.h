@@ -8,6 +8,7 @@ struct WindowPlacement;
 class UInCashWnd : public UIFrameWnd {
 public:
   bool Slot03() override;
+  void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;
 
   /* 00B4 */ unsigned char unknown_00B4[0x4C];

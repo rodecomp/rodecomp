@@ -7,6 +7,7 @@
 
 class UITipboxWnd : public UIFrameWnd {
 public:
+  void ShowTip(int id);
   void TrimAt(std::string& text, const char* marker);
 };
 

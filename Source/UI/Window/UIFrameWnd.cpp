@@ -1,6 +1,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UICheckBox.h"
 #include "UI/Buttons/UIReplayButton.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
@@ -196,6 +197,10 @@ int UIFrameWnd::Slot46() {
   return 1;
 }
 
+// OFFSET: 0x008CEF10
+
+// OFFSET: 0x008CEFD0
+
 // OFFSET: 0x008CF0C0
 // FUNCTION: fn_12076
 UIBitmapButton* UIFrameWnd::AddCloseButton(UIButtonContext& controls, const char* tooltip, int width) {
@@ -215,6 +220,16 @@ UIBitmapButton* UIFrameWnd::AddCloseButton(UIButtonContext& controls, const char
 
   return button;
 }
+
+// OFFSET: 0x008CF2A0
+
+// OFFSET: 0x008CF390
+
+// OFFSET: 0x008CF870
+
+// OFFSET: 0x008CFE50
+
+// OFFSET: 0x008CFF40
 
 // OFFSET: 0x008BA280
 // FUNCTION: fn_11780

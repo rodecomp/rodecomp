@@ -10,6 +10,7 @@ public:
 
   void Paint() override;
   bool Slot42(void* output) override;
+  void Slot43() override;
 };
 
 #endif

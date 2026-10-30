@@ -5,6 +5,7 @@
 
 class UICheckBox : public UIWindow {
   friend class CMergeItemWnd;
+  friend class UIFrameWnd;
 
 public:
   UICheckBox(UIWindowContext& windowContext, UIButtonContext& controls);
