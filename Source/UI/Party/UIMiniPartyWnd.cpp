@@ -4,7 +4,7 @@
 #include "UI/Window/UIWindowMgr.h"
 
 #include <windows.h>
-#include <mmsystem.h>
+#include <timeapi.h>
 
 // OFFSET: 0x007426F0
 // FUNCTION: fn_07737
@@ -19,6 +19,21 @@ UIMiniPartyWnd::UIMiniPartyWnd(UIWindowContext& windowContext, UIFrameContext& f
 void UIMiniPartyWnd::Move(int x, int y) {
   this->geometry.x = x;
   this->geometry.y = y;
+}
+
+// OFFSET: 0x00742AC0
+// FUNCTION: fn_07740
+void UIMiniPartyWnd::Slot15(int, int) {
+  UIMiniPartyInfoWnd* info = new UIMiniPartyInfoWnd(*this->m_context, *this->m_frameContext);
+  this->m_infoWnd = info;
+  info->m_owner = this;
+  info->SetSize(174, 52);
+  info->Move(0, 0);
+  this->AddChild(info);
+  this->m_widths.resize(3);
+  this->m_widths[0] = 174;
+  this->m_widths[1] = 101;
+  this->m_widths[2] = 64;
 }
 
 // OFFSET: 0x00742BE0

@@ -30,6 +30,7 @@ public:
 class UIMiniPartyWnd : public UIFrameWnd {
 public:
   UIMiniPartyWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
+  void Slot15(int width, int height) override;
   void Move(int x, int y) override;
   void Paint() override;
   void Slot25(int x, int y) override;
