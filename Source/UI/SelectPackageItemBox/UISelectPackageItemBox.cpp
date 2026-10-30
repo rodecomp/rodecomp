@@ -41,8 +41,16 @@ CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoDat
 }
 
 // OFFSET: 0x00A68860
+// FUNCTION: fn_16648
+template <>
+CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::~CUIListBoxEx() {
+}
 
 // OFFSET: 0x00A689C0
+// FUNCTION: fn_16649
+template <>
+CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::~CUIListBoxEx() {
+}
 
 // OFFSET: 0x00A693D0
 // FUNCTION: fn_16659
