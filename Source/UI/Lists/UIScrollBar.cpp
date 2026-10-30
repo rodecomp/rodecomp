@@ -415,6 +415,29 @@ void UIChatHisBox::Slot25(int x, int y) {
 void UIChatHisBox::Slot31(int, int) {
 }
 
+// OFFSET: 0x008973E0
+// FUNCTION: fn_11527
+void UIChatHisBox::Resize(int width, int height) {
+  UIListBox::Resize(width, height);
+  if (this->verticalOverflow) {
+    const int visibleLines = this->geometry.height / this->lineHeight;
+    this->topLine = static_cast<int>(this->lines.size()) - visibleLines + this->bottomMargin;
+    this->verticalBar->position = this->topLine;
+    this->verticalBar->Move(width - 13, 0);
+    this->verticalBar->Invalidate();
+  } else {
+    this->topLine = 0;
+    this->verticalBar->position = 0;
+    this->verticalBar->Move(width - 13, 0);
+  }
+}
+
+// OFFSET: 0x00897C10
+// FUNCTION: fn_11542
+int UIChatHisBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  return UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
 // OFFSET: 0x0089C340
 // FUNCTION: fn_11585
 void UIChatHisBox::Show(int visible) {

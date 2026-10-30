@@ -561,6 +561,30 @@ void UIItemMoveInfo::Slot48() {
   this->Invalidate();
 }
 
+// OFFSET: 0x008974A0
+// FUNCTION: fn_11528
+void UIComboBox::Resize(int width, int height) {
+  UIListBox::Resize(width, height);
+  this->topLine = 0;
+  this->verticalBar->position = this->topLine;
+  if (this->verticalOverflow) {
+    this->verticalBar->Move(width - 13, 0);
+    this->verticalBar->Invalidate();
+  } else {
+    this->verticalBar->Move(width - 13, 0);
+  }
+}
+
+// OFFSET: 0x00897BF0
+// FUNCTION: fn_11541
+int UIBmpRadioBtn::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
+  if (message == 13) {
+    this->geometry.unknown_0030 = static_cast<std::uint32_t>(argument1);
+    this->Invalidate();
+  }
+  return 0;
+}
+
 // OFFSET: 0x00892060
 // FUNCTION: fn_11463
 void UIComboBox::Slot27(int x, int y) {
