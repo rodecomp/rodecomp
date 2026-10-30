@@ -40,7 +40,7 @@ public:
 
 class UIOngoingQuestScrollWnd : public UIScrollWnd {
 public:
-  UIOngoingQuestScrollWnd(UIWindowContext& windows, int width, int height);
+  __declspec(noinline) UIOngoingQuestScrollWnd(UIWindowContext& windows, int width, int height);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot35(int delta) override;
@@ -54,6 +54,7 @@ public:
 
 class UIRecommededQuestScrollWnd : public UIScrollWnd {
 public:
+  __declspec(noinline) UIRecommededQuestScrollWnd(UIWindowContext& windows, int width, int height);
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot35(int delta) override;
@@ -64,10 +65,11 @@ public:
 
 class UIRenewDetailQuestInfoWnd : public UIFrameWnd {
 public:
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
 
-  /* 00B4 */ UIWindow* m_ongoingWnd;
+  /* 00B4 */ UIOngoingQuestScrollWnd* m_ongoingWnd;
   /* 00B8 */ UIRecommededQuestScrollWnd* m_recommendedWnd;
   /* 00BC */ UIBitmapButton* m_closeButton;
   /* 00C0 */ unsigned int m_questId;

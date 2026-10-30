@@ -16,6 +16,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "Resource/TextureNames.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/UIStaticBitmap.h"
@@ -207,6 +208,13 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
   this->Invalidate();
 }
 
+// OFFSET: 0x007FAF70
+// FUNCTION: fn_09949
+UIRecommededQuestScrollWnd::UIRecommededQuestScrollWnd(UIWindowContext& windows, int width, int height)
+    : UIScrollWnd(windows, width, height, 0), unknown_00B0(0), unknown_00B4(14) {
+  this->Slot15(width, height);
+}
+
 // OFFSET: 0x007FB0C0
 // FUNCTION: fn_09951
 void Nullsub255() {}
@@ -236,6 +244,27 @@ void UIRecommededQuestScrollWnd::Slot35(int delta) {
     }
     this->SendMsg(this->scrollBar, 7, -15, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x007FB6C0
+// FUNCTION: fn_09959
+void UIRenewDetailQuestInfoWnd::Slot15(int, int) {
+  this->m_ongoingWnd = new UIOngoingQuestScrollWnd(*this->m_context, 342, 322);
+  this->m_ongoingWnd->Move(0, 62);
+  this->AddChild(this->m_ongoingWnd);
+
+  this->m_recommendedWnd = new UIRecommededQuestScrollWnd(*this->m_context, 342, 322);
+  this->m_recommendedWnd->Move(0, 62);
+  this->AddChild(this->m_recommendedWnd);
+
+  this->m_closeButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close.bmp", 0, 0);
+  this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_a.bmp", 1, 0);
+  this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_b.bmp", 2, 0);
+  this->m_closeButton->SetSize(this->m_closeButton->BitmapWidth(), this->m_closeButton->BitmapHeight());
+  this->m_closeButton->Move(288, 388);
+  this->m_closeButton->SetId(201);
+  this->AddChild(this->m_closeButton);
 }
 
 // OFFSET: 0x007FB860
