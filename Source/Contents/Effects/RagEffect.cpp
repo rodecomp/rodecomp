@@ -1406,6 +1406,10 @@ int CRagEffect::GetDuration() {
 }
 
 // OFFSET: 0x00612780
+// FUNCTION: fn_04342
+void CRagEffect::SetStateDuration(int duration) {
+  this->state.duration = duration;
+}
 
 // OFFSET: 0x00C3A920
 // FUNCTION: fn_20104
