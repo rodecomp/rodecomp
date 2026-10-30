@@ -199,6 +199,7 @@ public:
   void Slot04() override;
   bool Slot06() override;
   bool Slot33() override;
+  void Close() override;
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;
@@ -274,7 +275,9 @@ public:
 class CRandomOptEffect : public CEffect {
 public:
   CRandomOptEffect();
+  void Slot03() override;
   void Slot04() override;
+  bool Slot06() override;
   void Slot08(int red, int green, int blue) override;
   void Slot11(std::string name) override;
   void Close() override;
@@ -399,6 +402,7 @@ public:
   CDropItemEffect();
   void Slot03() override;
   void Slot04() override;
+  bool Slot06() override;
   void Close() override;
 
   /* 00CC */ int unknown_00CC;

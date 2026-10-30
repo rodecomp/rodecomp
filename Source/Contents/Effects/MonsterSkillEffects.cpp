@@ -19,6 +19,7 @@
 #include "Contents/Effects/EffectTypes.h"
 #include <windows.h>
 #include <cstdlib>
+#include <cstring>
 #include <timeapi.h>
 
 // INLINED
@@ -44,6 +45,19 @@ static CSpriteParticle* AsSprite(EZ2STREmitter* emitter) {
 }
 
 // OFFSET: 0x0070C070
+// FUNCTION: fn_07123
+bool CCrimsonArrowEffect::Slot06() {
+  EZ2STREmitter* emitter = this->emitter;
+  if (!emitter) {
+    return false;
+  }
+
+  if (emitter->lifetime == 0.0f) {
+    return true;
+  }
+
+  return emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed);
+}
 
 // OFFSET: 0x0070C150
 // FUNCTION: fn_07126
@@ -87,6 +101,15 @@ bool CRootTwistEffect::Slot06() {
 }
 
 // OFFSET: 0x0070C3E0
+void CRootTwistEffect::Slot03() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    ++emitter->elapsed;
+    emitter->position.x = this->position[0] + 0.0f;
+    emitter->position.y = this->position[1] + 3.0f;
+    emitter->position.z = this->position[2] + 0.0f;
+  }
+}
 
 // OFFSET: 0x0070C440
 // FUNCTION: fn_07133
@@ -156,6 +179,34 @@ CSvgSpiritEffect::CSvgSpiritEffect() : CEffect(1128), emitter(nullptr) {
 }
 
 // OFFSET: 0x0070D690
+void CStemSpearEffect::Slot03() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    if (emitter->elapsed >= 0) {
+      this->SetSourceActor(this->sourceActor);
+      emitter->angle = static_cast<float>(emitter->baseAngle) - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+
+      const float dx = this->sourcePosition[0] - this->position[0];
+      const float dy = this->sourcePosition[1] - this->position[1];
+      const float dz = this->sourcePosition[2] - this->position[2];
+      const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
+
+      emitter->velocity.x += dx * inverse * emitter->speed;
+      emitter->velocity.y += dy * inverse * emitter->speed;
+      emitter->velocity.z += dz * inverse * emitter->speed;
+
+      emitter->position.x = this->position[0] + emitter->velocity.x;
+      emitter->position.y = this->position[1] - 10.0f;
+      emitter->position.z = this->position[2] + emitter->velocity.z;
+
+      if (this->frame >= 10) {
+        emitter->alpha -= 40;
+      }
+    }
+
+    ++emitter->elapsed;
+  }
+}
 
 // OFFSET: 0x0070D810
 // FUNCTION: fn_07155
@@ -174,6 +225,32 @@ bool CSvgSpiritEffect::Slot06() {
 }
 
 // OFFSET: 0x0070DB50
+void CSvgSpiritEffect::Slot03() {
+  EZ2STREmitter* emitter = this->emitter;
+  if (emitter->elapsed >= 0) {
+    this->SetSourceActor(this->sourceActor);
+    emitter->angle = static_cast<float>(emitter->baseAngle) - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+
+    const float dx = this->sourcePosition[0] - this->position[0];
+    const float dy = this->sourcePosition[1] - this->position[1];
+    const float dz = this->sourcePosition[2] - this->position[2];
+    const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
+
+    emitter->velocity.x += dx * inverse * emitter->speed;
+    emitter->velocity.y += dy * inverse * emitter->speed;
+    emitter->velocity.z += dz * inverse * emitter->speed;
+
+    emitter->position.x = this->position[0] + emitter->velocity.x;
+    emitter->position.y = this->position[1] - 10.0f;
+    emitter->position.z = this->position[2] + emitter->velocity.z;
+
+    if (this->frame >= 10) {
+      emitter->alpha -= 40;
+    }
+  }
+
+  ++emitter->elapsed;
+}
 
 // OFFSET: 0x0070DCD0
 // FUNCTION: fn_07162
@@ -238,6 +315,14 @@ void CWarningPlaneEffect::Slot01() {
 }
 
 // OFFSET: 0x0070F360
+// FUNCTION: fn_07186
+bool CWarningPlaneEffect::Slot06() {
+  if (this->expireTime != 0 && this->expireTime < timeGetTime()) {
+    return false;
+  }
+
+  return this->ActorExists();
+}
 
 // OFFSET: 0x0070FC60
 // FUNCTION: fn_07194
@@ -527,7 +612,8 @@ void CFloralFlareRoad::Slot04() {
 }
 
 // OFFSET: 0x00711F80
-CFootprintEffect::CFootprintEffect() : CEffect(2411), stepDistance(0.0), unknown_0110(1), lastPosition{}, unknown_0120(-1000.0f) {
+// FUNCTION: fn_07235
+CFootprintEffect::CFootprintEffect() : CEffect(2411), stepDistance(50.0), unknown_0110(1), lastPosition{}, unknown_0120(-1000.0f) {
   this->lastPosition.x = this->position[0];
   this->lastPosition.y = this->position[1];
   this->lastPosition.z = this->position[2];
@@ -560,6 +646,20 @@ void CFootprintEffect::Slot04() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     AsParticle(*it)->Render(true, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
+}
+
+// OFFSET: 0x007130E0
+// FUNCTION: fn_07247
+void CFootprintStrEffect::Close() {
+  for (EZ2STREmitter* emitter : this->emitters) {
+    FreeParticle(AsParticle(emitter));
+  }
+  this->emitters.clear();
+
+  for (EZ2STREmitter* emitter : this->unknown_00D4) {
+    FreeParticle(AsParticle(emitter));
+  }
+  this->unknown_00D4.clear();
 }
 
 // OFFSET: 0x00713370
@@ -786,6 +886,19 @@ void CHawkVumerangEffect::Slot04() {
 CDropItemEffect::CDropItemEffect()
     : CEffect(-1), emitterCount(2), soundPath("wav\\effect\\"), position{} {
   this->emitters.resize(this->emitterCount);
+}
+
+// OFFSET: 0x00719660
+bool CDropItemEffect::Slot06() {
+  if (this->actor == 0) {
+    return false;
+  }
+
+  if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetItemByAID(this->actor)) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00719C30
@@ -1020,6 +1133,47 @@ void CRandomOptEffect::Slot08(int red, int green, int blue) {
 void CRandomOptEffect::Slot11(std::string name) {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->SetTexture(name);
+  }
+}
+
+// OFFSET: 0x00721230
+bool CRandomOptEffect::Slot06() {
+  if (this->actor == 0) {
+    return false;
+  }
+
+  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (!gameMode || !gameMode->scene) {
+    return false;
+  }
+
+  if (!gameMode->scene->GetItemByAID(this->actor)) {
+    return false;
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00721270
+void CRandomOptEffect::Slot03() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+
+    if (particle) {
+      const int angle = static_cast<int>(
+          static_cast<float>(particle->unknown_0010) + *reinterpret_cast<const float*>(&particle->unknown_00C4) + 3.0f);
+      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
+
+      matrix rotation;
+      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+      rotation.MakeYRotation(static_cast<float>(angle) / 180.0f * 3.141592f);
+      particle->transform = rotation;
+    }
+
+    ++particle->unknown_00E8;
   }
 }
 
