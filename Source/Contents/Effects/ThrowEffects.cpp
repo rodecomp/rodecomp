@@ -30,6 +30,179 @@ void CThrowItemEffect::Close() {
 }
 
 // OFFSET: 0x00B7CD30
+// FUNCTION: fn_19230
+void CThrowItemEffect::Slot01() {
+  switch (this->id) {
+  case 981:
+    this->unknown_00D4 = 8;
+    break;
+  case 982:
+    this->unknown_00D4 = 10;
+    break;
+  case 989:
+    if (CGameActor* owner = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
+      this->unknown_00D4 = owner->unknown_03D0;
+      this->unknown_00D8 = 1;
+    }
+    break;
+  }
+
+  for (int row = 0; row < this->unknown_00D4; ++row) {
+    for (int column = 0; column < this->unknown_00D8; ++column) {
+      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      if (!particle) {
+        continue;
+      }
+
+      particle->unknown_0004 = this->id;
+      particle->unknown_000C = column;
+      particle->unknown_0010 = row;
+      particle->unknown_0008 = 1;
+
+      switch (this->id) {
+      case 298:
+        this->unknown_002C = 300;
+        this->unknown_00E0 = 30.0f;
+        this->InitTrajectory(particle);
+        particle->SetTexture("유저인터페이스\\item\\빈병.bmp");
+        particle->scale = 1.5f;
+        particle->SetColor(135, 255, 135);
+        particle->unknown_00C4 = 0;
+        particle->unknown_00C0 = particle->unknown_0054 / 25.0f;
+        particle->alpha = 255;
+        particle->unknown_00D0 = this->position[0];
+        particle->unknown_00D4 = this->position[1] - 8.0f;
+        particle->unknown_00D8 = this->position[2];
+        particle->destinationBlend = 6;
+        break;
+      case 299:
+        particle->SetTexture("유저인터페이스\\item\\빈포션병.bmp");
+        this->InitPotionParticle(particle, this->unknown_0030 == -1 ? 1 : this->unknown_0030);
+        break;
+      case 308:
+        this->unknown_002C = 300;
+        this->unknown_00E0 = 10.0f;
+        particle->SetTexture("유저인터페이스\\item\\돌.bmp");
+        particle->scale = 1.0f;
+        particle->SetColor(255, 255, 255);
+        particle->unknown_00C4 = 0;
+        particle->unknown_00C0 = 2.0f;
+        particle->alpha = 255;
+        particle->unknown_00D0 = this->position[0];
+        particle->unknown_00D4 = this->position[1] - 8.0f;
+        particle->unknown_00D8 = this->position[2];
+        particle->destinationBlend = 6;
+        break;
+      case 539:
+        this->unknown_00D0 = 5;
+        particle->SetTexture("유저인터페이스\\item\\화염병.bmp");
+        this->InitFlameParticle(particle);
+        break;
+      case 541:
+        particle->SetTexture("유저인터페이스\\item\\버서크포션.bmp");
+        this->InitPotionParticle(particle, this->unknown_0030 == -1 ? 1 : this->unknown_0030);
+        break;
+      case 600:
+        particle->SetTexture("유저인터페이스\\item\\베넘나이프.bmp");
+        this->InitSpinParticle(particle);
+        break;
+      case 613:
+        particle->SetTexture("유저인터페이스\\item\\수리검.bmp");
+        this->InitSpinParticle(particle);
+        break;
+      case 614:
+        particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
+        this->InitSpinParticle(particle);
+        break;
+      case 615:
+        particle->SetTexture("유저인터페이스\\item\\풍마_열화.bmp");
+        this->InitSpinParticle(particle);
+        break;
+      case 616:
+        particle->SetTexture("effect\\coin_a.bmp");
+        this->InitSpinParticle(particle);
+        break;
+      case 914:
+        particle->SetTexture("유저인터페이스\\item\\폭탄버섯포자.bmp");
+        this->InitPotionParticle(particle, this->unknown_0030 == -1 ? 1 : this->unknown_0030);
+        break;
+      case 980:
+        this->unknown_00D0 = 10;
+        particle->SetTexture("유저인터페이스\\item\\염산병.bmp");
+        this->InitFlameParticle(particle);
+        break;
+      case 983:
+        particle->SetTexture("유저인터페이스\\item\\쿠나이_화.bmp");
+        this->InitSpinParticle(particle);
+        particle->unknown_00C0 = 1.0f;
+      case 981:
+        this->unknown_002C = 200;
+        this->unknown_00E0 = 1.0f;
+        particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
+        particle->scale = 3.0f;
+        particle->SetColor(255, 200, 255);
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = 330.0f;
+        particle->unknown_00C0 = 1.5f;
+        particle->alpha = 255;
+        particle->unknown_00D0 = this->position[0];
+        particle->unknown_00D8 = this->position[2];
+        particle->unknown_00D4 = this->position[1] - 8.0f;
+        particle->destinationBlend = 6;
+        if (this->sourceActor == 0) {
+          this->sourcePosition[1] = this->position[1];
+          this->sourcePosition[2] = this->position[2];
+          this->sourcePosition[0] = this->position[0] - 8.0f;
+        }
+        break;
+      case 982:
+        this->unknown_002C = 200;
+        this->unknown_00E0 = 10.0f;
+        particle->SetTexture("effect\\coin_a.bmp");
+        particle->scale = 2.5f;
+        particle->SetColor(255, 200, 0);
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = 330.0f;
+        particle->unknown_00C0 = 2.0f;
+        particle->alpha = 255;
+        particle->destinationBlend = 6;
+        particle->unknown_00D8 = this->position[2];
+        particle->unknown_00D4 = this->position[1] - 8.0f;
+        particle->unknown_00D0 = this->position[0];
+        break;
+      case 989:
+        if (CGameActor* owner = static_cast<CGameActor*>(FindRenderObject(this->actor))) {
+          switch (owner->charmType) {
+          case 1:
+            particle->SetTexture("effect\\WaterOrb.bmp");
+            particle->scale = 1.0f;
+            break;
+          case 2:
+            particle->SetTexture("effect\\StoneOrb.bmp");
+            break;
+          case 3:
+            particle->SetTexture("effect\\FireOrb.bmp");
+            break;
+          case 4:
+            particle->SetTexture("effect\\LightningOrb.bmp");
+            break;
+          }
+
+          this->unknown_002C = 200;
+          particle->scale = 2.0f;
+          *reinterpret_cast<float*>(&particle->unknown_00C4) = 330.0f;
+          particle->unknown_00C0 = 1.5f;
+          particle->alpha = 255;
+          particle->unknown_00D8 = this->position[2];
+          particle->unknown_00D4 = this->position[1] - 15.0f;
+          particle->unknown_00D0 = this->position[0];
+        }
+        break;
+      }
+
+      this->InitTrajectory(particle);
+      this->particles.push_back(particle);
+    }
+  }
+}
 
 // OFFSET: 0x00B7D3B0
 
