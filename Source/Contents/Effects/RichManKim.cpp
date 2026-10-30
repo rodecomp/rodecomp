@@ -48,6 +48,47 @@ bool CRichManKim::Slot06() {
 }
 
 // OFFSET: 0x0070B380
+// FUNCTION: fn_07117
+void CRichManKim::Slot03() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+
+    if (particle) {
+      int index = ++this->angleIndex;
+      if (index > 360) {
+        this->angleIndex = 0;
+        index = 0;
+      }
+
+      float& width = *reinterpret_cast<float*>(particle->unknown_0058);
+      const float height = static_cast<float>(static_cast<double>(particle->unknown_0054) - static_cast<double>(g_cosTable[index]) * 0.08);
+      particle->unknown_0054 = height;
+      const float stretch = static_cast<float>(static_cast<double>(g_cosTable[index]) * 0.003 + static_cast<double>(width));
+      width = stretch;
+
+      matrix rotation;
+      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+      rotation.AppendXRotation(3.141592f);
+      matrix scaling;
+      std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));
+      scaling.SetScale(stretch + 2.0f, 5.0f, 1.0f);
+      matrix translation;
+      translation.IsIdentity();
+      translation.MakeTranslate(0.0f, height, 0.0f);
+
+      matrix transform;
+      transform.Compose(scaling, rotation);
+      const matrix combined = transform;
+      transform.Compose(combined, translation);
+      particle->transform = transform;
+    }
+
+    ++particle->unknown_00E8;
+  }
+}
 
 // OFFSET: 0x0070B780
 // FUNCTION: fn_07118
