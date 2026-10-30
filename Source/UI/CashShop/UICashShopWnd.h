@@ -12,14 +12,24 @@
 
 class UICashShopWnd_Banner;
 
-class UICashShopWnd_Cart : public UIWindow {
-public:
-  void Slot10(int x, int y, std::intptr_t value) override;
-};
-
 class UICashShopWnd_CartItem : public UIWindow {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot26(int x, int y) override;
+  void Slot35(int delta) override;
+};
+
+class UICashShopWnd_Cart : public UIWindow {
+public:
+  void Slot10(int x, int y, std::intptr_t value) override;
+  void Paint() override;
+  void Slot35(int delta) override;
+
+  /* 007C */ std::vector<UICashShopWnd_CartItem*> m_slots;
+  /* 0088 */ std::vector<ITEM_INFO> m_cartItems;
+  /* 0094 */ UIWindow* m_scrollBar;
+  /* 0098 */ int m_visibleCount;
+  /* 009C */ unsigned int m_scrollIndex;
 };
 
 class UICashShopWnd_Item : public UIWindow {

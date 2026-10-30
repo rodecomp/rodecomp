@@ -3,6 +3,9 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -148,4 +151,45 @@ void FormatMessageBuffer(char* buffer, const char* format, ...) {
 // FUNCTION: fn_09534
 bool UICashShopWnd::Slot03() {
   return true;
+}
+
+// OFFSET: 0x007D05F0
+// FUNCTION: fn_09541
+void UICashShopWnd_Cart::Paint() {
+  ResourceMgr& resources = ResourceMgr::Instance();
+  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(resources.Load(Resolve("유저인터페이스\\cashshop\\img_shop_cart_bg.bmp"))), false);
+
+  unsigned int index = this->m_scrollIndex;
+  for (int slot = 0; slot < this->m_visibleCount; ++slot, ++index) {
+    UICashShopWnd_CartItem* item = this->m_slots[slot];
+    if (index < this->m_cartItems.size()) {
+      item->SendMsg(this, 0x17, reinterpret_cast<std::intptr_t>(&this->m_cartItems[index]), 0, 0, 0);
+    } else {
+      item->Show(0);
+    }
+  }
+}
+
+// OFFSET: 0x007D1020
+// FUNCTION: fn_09544
+void UICashShopWnd_CartItem::Slot26(int, int) {
+  this->SendMsg(this, 6, 0xD3, 0, 0, 0);
+}
+
+// OFFSET: 0x007D15E0
+// FUNCTION: fn_09555
+void UICashShopWnd_Cart::Slot35(int delta) {
+  if (delta < 0) {
+    this->SendMsg(this->m_scrollBar, 7, 1, 0, 0, 0);
+  } else {
+    this->SendMsg(this->m_scrollBar, 7, -1, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x007D1620
+// FUNCTION: fn_09556
+void UICashShopWnd_CartItem::Slot35(int delta) {
+  if (this->parent) {
+    this->parent->Slot35(delta);
+  }
 }
