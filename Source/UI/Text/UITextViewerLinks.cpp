@@ -175,6 +175,15 @@ void UIListBoxNavi::Clear() {
   this->lineOffset = -1;
 }
 
+// OFFSET: 0x0087A390
+// FUNCTION: fn_11232
+void UIListBoxNavi::ResetLineColors() {
+  for (std::vector<std::uint32_t>::iterator color = this->lineColors.begin(); color != this->lineColors.end(); ++color) {
+    *color = 0;
+  }
+  this->Invalidate();
+}
+
 // OFFSET: 0x00877020
 // FUNCTION: fn_11209
 bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {

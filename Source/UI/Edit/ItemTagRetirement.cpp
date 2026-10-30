@@ -1,8 +1,10 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Edit/ItemTagRetirement.h"
 #include "UI/Edit/UIItemTagCtrl.h"
+#include "UI/Rodex/UIRodexComposeWnd.h"
 #include "UI/Text/TextFitting.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 
 // INLINED
 FocusedItemTagRemoval::FocusedItemTagRemoval(InputFocus& focus) : m_focus(focus) {
@@ -15,6 +17,29 @@ void FocusedItemTagRemoval::Remove(UIWindow* child) {
     this->m_focus.window->RemoveChild(child, 1);
   }
 }
+
+// OFFSET: 0x00879830
+
+// OFFSET: 0x00879A10
+// FUNCTION: fn_11219
+bool UIItemTagOnMail::CanInsertTag(const std::string& name, int width) {
+  if (this->tags.size() > 2) {
+    return false;
+  }
+
+  std::string tag = "<";
+  this->tagWidth = width;
+  tag += FitText(*this->geometry.surface, name, width / 2);
+  tag += ">";
+
+  UIRodexEditCtrl3* contents = reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->m_contents;
+  const unsigned int maximum = contents->maximum;
+  this->taggedText = contents->text;
+  std::string text = this->taggedText += tag;
+  return text.size() <= maximum;
+}
+
+// OFFSET: 0x0087ABB0
 
 // OFFSET: 0x0087A2F0
 // FUNCTION: fn_11231

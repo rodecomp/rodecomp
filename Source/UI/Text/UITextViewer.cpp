@@ -90,6 +90,18 @@ void UITextViewEX::Configure(int x, int y, int width, int height, unsigned char 
   this->lineHeight = 21;
 }
 
+// OFFSET: 0x0087A1E0
+// FUNCTION: fn_11228
+void UITextViewEX::Clear() {
+  for (UIWindow* link : this->extraLinks) {
+    this->RemoveChild(link, 1);
+  }
+  this->extraLinks.clear();
+  this->lineLinks.clear();
+  UITextViewer::Clear();
+  this->Invalidate();
+}
+
 // OFFSET: 0x0087B780
 // FUNCTION: fn_11249
 void UITextViewer::Configure(int x, int y, int width, int height, unsigned char value) {

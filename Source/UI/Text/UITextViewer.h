@@ -72,6 +72,10 @@ private:
 class UITextViewEX : public UITextViewer {
 public:
   void Configure(int x, int y, int width, int height, unsigned char transparent) override;
+  void Clear() override;
+
+  std::vector<UIWindow*> extraLinks;
+  std::vector<std::vector<UITextButton*>> lineLinks;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -13,6 +13,7 @@ public:
   virtual bool CanInsertTag(const std::string& name, int width);
 
   std::string AppendTag(const std::string& name);
+  bool SyncTagsWithText();
 
   /* 011C */ int unknown_011C;
   /* 0120 */ std::list<ItemTagRecord> tags;
@@ -21,8 +22,14 @@ public:
   /* 0158 */ int tagWidth;
 };
 
+class UIItemTagOnChat : public UIItemTagCtrl {
+public:
+  bool CanInsertTag(const std::string& name, int width) override;
+};
+
 class UIItemTagOnMail : public UIItemTagCtrl {
 public:
+  bool CanInsertTag(const std::string& name, int width) override;
   void SetLines(const std::vector<std::string>& lines);
 
   /* 015C */ std::vector<std::string> m_lines;
