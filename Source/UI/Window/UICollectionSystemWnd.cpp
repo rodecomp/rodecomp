@@ -14,6 +14,10 @@
 #include <windows.h>
 #include <timeapi.h>
 
+// OFFSET: 0x0091EC30
+// FUNCTION: fn_12635
+void CUICollectionSystemWnd::Slot15(int, int) {}
+
 // OFFSET: 0x0092B830
 // FUNCTION: fn_12658
 void CUICollectionSystemWnd::Paint() {
