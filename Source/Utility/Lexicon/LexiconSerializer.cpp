@@ -1,5 +1,7 @@
 #include "Utility/Lexicon/LexiconSerializer.h"
 
+#include "File/File.h"
+
 // OFFSET: 0x00AC3FF0
 // FUNCTION: fn_17630
 void LexiconSerializer::Destroy(LexiconNode* node) {
@@ -70,3 +72,5 @@ std::uint32_t LexiconSerializer::Serialize(LexiconNode* node, std::uint32_t offs
   this->buffer[offset] = static_cast<unsigned char>((terminal << 7) | 0x40);
   return next;
 }
+
+// OFFSET: 0x00AC4FA0
