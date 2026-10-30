@@ -12,6 +12,7 @@
 
 class UIBitmapButton;
 class UIStaticText;
+struct EntryQueueInfo;
 class UITextViewer;
 struct UITextViewerContext;
 struct WindowResponseRecorder;
@@ -96,14 +97,19 @@ public:
   ~UIEntryQueueWnd() override;
   void Slot11() override;
   int SelectedIndex();
+  void SelectQueue(EntryQueueInfo* info);
   bool ConfirmApply(const char* type);
 
-  /* 00B4 */ unsigned char unknown_00B4[0x40];
+  /* 00BC */ unsigned char unknown_00BC[0x8];
+  /* 00C4 */ UIWindow* m_labels[7];
+  /* 00E0 */ UIStaticText* m_values[7];
   /* 00FC */ UIEntryQueueListBox* m_list;
   /* 0100 */ WindowPlacement* saved;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(UIEntryQueueWnd, m_labels) == 0xC4);
+static_assert(offsetof(UIEntryQueueWnd, m_values) == 0xE0);
 static_assert(offsetof(UIEntryQueueWnd, m_list) == 0xFC);
 static_assert(offsetof(UIEntryQueueWnd, saved) == 0x100);
 #endif

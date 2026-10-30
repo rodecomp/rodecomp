@@ -4,6 +4,8 @@
 #include "Contents/EntryQueueMgr.h"
 #include "Contents/MessageTable.h"
 #include "Render/Renderer.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "UI/Buttons/UIBitmapButton.h"
@@ -310,6 +312,69 @@ void UIEntryQueueStandByWnd::SetInfo(const char* queueName, int waiting, int ran
 // FUNCTION: fn_19706
 int UIEntryQueueWnd::SelectedIndex() {
   return this->m_list->selected;
+}
+
+// OFFSET: 0x00BA78A0
+// FUNCTION: fn_19711
+void UIEntryQueueWnd::SelectQueue(EntryQueueInfo* info) {
+  g_entryQueueMgr->current = info;
+
+  char text[0x104];
+  std::memset(text, 0, sizeof(text));
+  for (int index = 0; index < 7; ++index) {
+    if (!this->m_values[index]) {
+      continue;
+    }
+
+    switch (index) {
+    case 0:
+      strcpy_s(text, sizeof(text), info->displayName);
+      break;
+    case 1:
+      strcpy_s(text, sizeof(text), info->unknown_0530);
+      break;
+    case 2:
+      sprintf_s(text, sizeof(text), LookupMessage(0x866), info->unknown_020C, info->unknown_0210);
+      break;
+    case 3:
+      switch (info->unknown_0218) {
+      case 1:
+        sprintf_s(text, sizeof(text), LookupMessage(0x867), info->unknown_021C);
+        break;
+      case 2:
+        sprintf_s(text, sizeof(text), LookupMessage(0x868), info->unknown_021C);
+        break;
+      case 3:
+        sprintf_s(text, sizeof(text), LookupMessage(0x869), info->unknown_021C, info->unknown_0220);
+        break;
+      default:
+        sprintf_s(text, sizeof(text), LookupMessage(0x86A));
+        break;
+      }
+      break;
+    case 4:
+      strcpy_s(text, sizeof(text), info->unknown_0224);
+      break;
+    case 5:
+      strcpy_s(text, sizeof(text), info->unknown_0328);
+      break;
+    case 6:
+      strcpy_s(text, sizeof(text), info->unknown_042C);
+      break;
+    }
+
+    UIWindow* label = this->m_labels[index];
+    const int x = label->geometry.x;
+    const int width = label->geometry.width;
+    const int y = label->geometry.y;
+    const TextLocale locale = {};
+    this->m_values[index]->Resize(this->TextWidth(g_fontCache, locale, text, 0, 0, 12, 0, 0), 25);
+    this->m_values[index]->SetText(text, 0);
+    this->m_values[index]->Move(x + width + 5, y);
+    this->m_values[index]->Invalidate();
+  }
+
+  this->Invalidate();
 }
 
 // OFFSET: 0x00BA7AE0
