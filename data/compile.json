@@ -336,6 +336,7 @@
   "Source/Contents/Effects/CommonFloorEffect.cpp": 4,
   "Source/Contents/Effects/Competentia.cpp": 4,
   "Source/Contents/Effects/CresciveBolt.cpp": 4,
+  "Source/Contents/Effects/EZ2STREffectEx.cpp": 4,
   "Source/Contents/Effects/Effect.cpp": 0,
   "Source/Contents/Effects/EffectActor.cpp": 4,
   "Source/Contents/Effects/EffectAttachments.cpp": 4,
