@@ -18,7 +18,10 @@ public:
   /* 00D8 */ std::string m_name;
   /* 00F0 */ vector3d m_target;
 
+  void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override { return this->m_active; }
 
   void SetTarget(const vector3d& target);
