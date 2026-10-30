@@ -9,6 +9,9 @@
 #include "UI/Text/UITextViewerControl.h"
 #include "Utility/Text/FormatString.h"
 
+#include <list>
+#include <utility>
+
 template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUITab>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
@@ -287,10 +290,65 @@ void CUIQuestInfo::SetViewerLines(const std::vector<std::string>& lines) {
 void CUIIntro::Slot54(int, int) {
 }
 
+// OFFSET: 0x009DDA50
+// FUNCTION: fn_14348
+void CUIItem::Slot54(int type, int id) {
+  this->itemList->ClearData();
+  this->location = id;
+  std::list<std::pair<int, AdventureGuideEntry>> entries;
+  g_adventureGuideMgr->GetEntryList(entries, type, id);
+  for (const auto& [key, entry] : entries) {
+    CItemData data;
+    data.id = key;
+    data.first = entry.unknown_0000;
+    data.second = entry.unknown_0001;
+    data.third = entry.unknown_0002;
+    data.unknown_0008 = entry.unknown_0004;
+    data.unknown_000C = entry.unknown_0008;
+    data.text = entry.text;
+    data.values = entry.values;
+    data.type = type;
+    this->itemList->data.push_back(data);
+  }
+  this->itemList->UpdateScrollBar();
+  this->unknown_0084->Show(0);
+  this->unknown_0088->Show(0);
+}
+
 // OFFSET: 0x009DDE50
 // FUNCTION: fn_14350
 void CUIMonster::Slot54(int, int) {
   this->unknown_0084->Show(0);
+}
+
+// OFFSET: 0x009DDE60
+// FUNCTION: fn_14351
+void CUIQuest::Slot54(int type, int id) {
+  this->questList->ClearData();
+  std::list<std::pair<int, AdventureGuideContents>> contents;
+  g_adventureGuideMgr->GetContentsList(contents, type, id);
+  for (const auto& [key, content] : contents) {
+    CQuestInfo data;
+    data.id = key;
+    data.unknown_0004 = content.unknown_0000;
+    data.unknown_0008 = content.unknown_0004;
+    data.unknown_000C = content.unknown_0008;
+    data.questId = content.unknown_000C;
+    data.title = content.first;
+    data.text = content.second;
+    data.rewards = content.values;
+    data.type = type;
+    this->questList->data.push_back(data);
+    if (type == 1 && !g_renewQuestMgr->IsNewQuest(content.unknown_000C)) {
+      g_renewQuestMgr->AddStatusRequest(content.unknown_000C);
+    }
+  }
+  this->questList->UpdateScrollBar();
+  if (type == 1) {
+    g_renewQuestMgr->SendQuestStatusRequest();
+  }
+  this->unknown_0084->Show(0);
+  this->unknown_0088->Show(0);
 }
 
 

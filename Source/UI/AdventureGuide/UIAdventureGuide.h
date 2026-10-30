@@ -42,13 +42,15 @@ class CUIItem : public CUIPage {
 public:
   void Slot16() override;
   void Paint() override;
+  void Slot54(int type, int id) override;
 
   void OnSelectItem(CUIItemInfo* item, const CItemData& data);
 
   /* 0084 */ UIWindow* unknown_0084;
   /* 0088 */ UIWindow* unknown_0088;
   /* 008C */ std::string unknown_008C;
-  /* 00A4 */ unsigned char unknown_00A4[0x04];
+  /* 00A4 */ int location;
+  /* 0080 */ CUIListBoxEx<CUIItemInfo, CItemData>* itemList;
 };
 
 class CUIMonster : public CUIPage {
@@ -68,6 +70,7 @@ class CUIQuest : public CUIPage {
 public:
   void Slot16() override;
   void Paint() override;
+  void Slot54(int type, int id) override;
 
   void OnSelectQuest(CUIQuestInfo* item, const CQuestInfo& data);
 
@@ -81,7 +84,6 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(AdventureGuide::CUIIntro) == 0x8C);
-static_assert(sizeof(AdventureGuide::CUIItem) == 0xA8);
 static_assert(sizeof(AdventureGuide::CUIMonster) == 0xA4);
 static_assert(sizeof(AdventureGuide::CUIQuest) == 0xA8);
 #endif

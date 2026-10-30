@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <cstdint>
 #include <functional>
 #include <list>
 #include <map>
@@ -105,13 +106,36 @@ public:
   /* 00E8 */ CUIStaticText* unknown_00E8;
   /* 00EC */ CUIStaticText* unknown_00EC;
 };
-class CItemData {};
+class CItemData {
+public:
+  /* 0000 */ int id;
+  /* 0004 */ std::uint8_t first;
+  /* 0005 */ std::uint8_t second;
+  /* 0006 */ std::uint8_t third;
+  /* 0008 */ int unknown_0008;
+  /* 000C */ int unknown_000C;
+  /* 0010 */ std::string text;
+  /* 0028 */ std::vector<std::string> values;
+  /* 0034 */ int type;
+};
+
 class CMonsterData {
 public:
   /* 0000 */ std::string name;
   /* 0018 */ std::vector<std::string> values;
 };
-class CQuestInfo {};
+class CQuestInfo {
+public:
+  /* 0000 */ int id;
+  /* 0004 */ std::uint8_t unknown_0004;
+  /* 0008 */ int unknown_0008;
+  /* 000C */ int unknown_000C;
+  /* 0010 */ int questId;
+  /* 0014 */ std::string title;
+  /* 002C */ std::string text;
+  /* 0044 */ std::vector<std::string> rewards;
+  /* 0050 */ int type;
+};
 }
 
 namespace Guide_Intro {
