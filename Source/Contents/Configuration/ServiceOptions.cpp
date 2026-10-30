@@ -18,6 +18,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
+#include "UI/Window/WindowManagerWindows.h"
 #include "Script/LuaInstance.h"
 #include "Script/LuaScript.h"
 #include "Utility/Singleton.h"
@@ -721,6 +722,8 @@ void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, in
   SendClientOption(value, GetRagConnection(), g_packetLengths);
 }
 
+// OFFSET: 0x006C5FC0
+
 // OFFSET: 0x006C60F0
 // FUNCTION: fn_06375
 void ApplyServiceOptionWindow190(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -865,6 +868,25 @@ void ApplyServiceOptionWeatherFlag(int id, unsigned char value, bool notify, int
   }
 
   g_weatherEffect.unknown_0001 = value ^ 1;
+}
+
+// OFFSET: 0x006C5AD0
+// FUNCTION: fn_06364
+void ApplyServiceOptionWindow27(int, unsigned char, bool, int, int) {
+  if (g_windowMgr.unknown_0304 != 0) {
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x24B), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+    return;
+  }
+
+  if (g_windowMgr.unknown_02FC != 0) {
+    CMode* mode = g_modeMgr.GetGameMode();
+    if (mode) {
+      mode->SendMsg(0x52, 0, 0, 0, 0);
+    }
+    return;
+  }
+
+  reinterpret_cast<WindowManagerWindows*>(&g_windowMgr)->EnsureWindow(0x1B);
 }
 
 // GLOBAL: gl_24912
