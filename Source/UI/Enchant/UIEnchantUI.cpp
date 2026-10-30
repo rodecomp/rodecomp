@@ -21,6 +21,11 @@ template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemDat
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::UpdateScrollBar();
 
 namespace EnchantUI {
+// OFFSET: 0x009F9880
+// FUNCTION: fn_14809
+void CUIEnchantPage::Slot58(int) {
+}
+
 // OFFSET: 0x009F99B0
 // FUNCTION: fn_14812
 CUIIngredient* CUIEnchantPage::CreateIngredient() {

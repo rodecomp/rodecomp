@@ -69,8 +69,7 @@ public:
   virtual void Slot55() = 0;
   virtual void Slot56() = 0;
   virtual void Slot57() = 0;
-  virtual void Slot58(int value) {
-  }
+  virtual void Slot58(int value);
   virtual void Slot59(int value);
 
   CUIIngredient* CreateIngredient();
