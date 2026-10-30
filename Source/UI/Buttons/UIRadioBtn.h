@@ -10,6 +10,7 @@ struct UIButtonContext;
 
 class UIRadioBtn : public UIWindow {
 public:
+  ~UIRadioBtn() override;
   void Paint() override;
   void Slot25(int x, int y) override;
 

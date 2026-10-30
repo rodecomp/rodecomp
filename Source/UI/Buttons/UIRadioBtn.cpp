@@ -4,6 +4,10 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UIRadioBtn.h"
 
+// OFFSET: 0x00851B00
+// FUNCTION: fn_10696
+UIRadioBtn::~UIRadioBtn() = default;
+
 // OFFSET: 0x0085D470
 // FUNCTION: fn_10814
 void UIRadioBtn::Paint() {
