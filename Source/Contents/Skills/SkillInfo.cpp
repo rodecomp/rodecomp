@@ -249,6 +249,7 @@ public:
   void Slot08(int level, CGameActor* source) override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
   void Slot15(int caster, CGameActor* target, CGameActor* argument3) override;
+  void Slot16(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_DK_SERVANT_W_DEMOL : public CSkillAction {
@@ -1821,6 +1822,8 @@ EfstActionMessage CEfstAction_SERVANTWEAPON::Slot04() {
   return {LookupMessage(3745), 0xFF};
 }
 
+// OFFSET: 0x0077E820
+
 // OFFSET: 0x0077EAD0
 // FUNCTION: fn_08462
 void CEfstAction_SERVANT_SIGN::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
@@ -2333,6 +2336,7 @@ public:
   int Slot02() override;
   bool Slot03(int argument) override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot10(int level, CGameActor* source, int argument3, int argument4, int argument5) override;
   int Slot14() override;
 };
 
@@ -2752,6 +2756,16 @@ void CSkillAction_HN_JACK_FROST_NOVA::Slot08(int level, CGameActor* source) {
   CEffect* effect = g_effectMgr->Spawn(source->render.accountId, g_serviceOptions.Get(229) ? 1543 : 1446, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   if (effect) {
     effect->Slot14(level);
+  }
+}
+
+// OFFSET: 0x007842D0
+// FUNCTION: fn_08548
+void CSkillAction_HN_JACK_FROST_NOVA::Slot10(int level, CGameActor* source, int argument3, int argument4, int argument5) {
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (mode) {
+    using ModeAction = void(__thiscall*)(CMode*, void*, int, int, int);
+    reinterpret_cast<ModeAction>(0x00CDFA00)(g_modeMgr.GetGameMode(), &argument3, 0x5A8, level / 24, 0);
   }
 }
 
