@@ -367,6 +367,7 @@
   "Source/Contents/Effects/EffectPrimitiveArcs.cpp": 4,
   "Source/Contents/Effects/EffectPrimitiveColor.cpp": 4,
   "Source/Contents/Effects/EffectPrimitiveMotion.cpp": 4,
+  "Source/Contents/Effects/EffectPrimitivePanels.cpp": 4,
   "Source/Contents/Effects/EffectPrimitiveRecords.cpp": 4,
   "Source/Contents/Effects/EffectPrimitiveRendering.cpp": 4,
   "Source/Contents/Effects/EffectPrimitiveState.cpp": 4,
