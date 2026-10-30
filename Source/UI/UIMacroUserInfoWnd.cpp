@@ -8,6 +8,8 @@
 #include "UI/Window/FrameFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
@@ -218,4 +220,19 @@ void UIMacroReporterWnd::Slot11() {
       this->m_state->entries[index] = this->m_entries[index];
     }
   }
+}
+
+// OFFSET: 0x007F13C0
+// FUNCTION: fn_09855
+void __stdcall SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second, std::uint8_t third) {
+  struct Packet {
+    std::uint16_t id;
+    std::uint16_t first;
+    std::uint16_t second;
+    std::uint8_t third;
+  } packet{0x0A6C, first, second, third};
+
+  CRagConnection* connection = &GetRagConnection();
+  const PacketLengths& lengths = reinterpret_cast<const PacketLengths&>(GetRagConnection());
+  connection->Send(lengths.FixedLength(packet.id), &packet);
 }
