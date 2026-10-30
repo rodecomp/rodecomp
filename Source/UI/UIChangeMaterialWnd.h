@@ -33,6 +33,13 @@ struct MaterialListEntry {
   /* 0010 */ std::vector<MaterialResult> results;
 };
 
+class UIChangeMaterialWnd_ScrollBar : public UIScrollBar {
+public:
+  // VTABLE: vt_00211
+  // INLINED
+  explicit UIChangeMaterialWnd_ScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {}
+};
+
 class UIChangeMaterialWnd : public UIFrameWnd {
 public:
   bool Slot02() override;
@@ -71,6 +78,7 @@ public:
   void sub_5E2590(int unknown, int position);
   void sub_5E1080(int delta);
   void ShiftSelectedIndex(int value);
+  void CreateScrollBar(int width, int height);
 
   /* 00BC */ int m_pageSize;
   /* 00C0 */ int64_t m_selectedIndex;

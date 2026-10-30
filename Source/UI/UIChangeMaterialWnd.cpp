@@ -19,6 +19,19 @@
 #include <malloc.h>
 #include <string>
 
+// OFFSET: 0x005E1B30
+// FUNCTION: fn_03877
+void UIChangeMaterialWnd_List::CreateScrollBar(int width, int height) {
+  auto* bar = new UIChangeMaterialWnd_ScrollBar(*this->m_context);
+  *reinterpret_cast<int*>(reinterpret_cast<char*>(bar) + 0xA4) = 0x10;
+  this->m_scrollBar = bar;
+  bar->Configure(width - *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8), 0, 1, height);
+  bar->Show(0);
+  this->AddChild(bar);
+  this->m_pageSize = height / *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
+  this->sub_5E2A70();
+}
+
 // OFFSET: 0x005E1080
 // FUNCTION: fn_03871
 void UIChangeMaterialWnd_List::sub_5E1080(int delta) {
