@@ -132,6 +132,7 @@ class CEfstAction_AnimalForm : public CEfstAction {
 public:
   void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
   void ResetAnimalForm(CRenderObject* actor);
+  void ApplyAnimalForm(CRenderObject* actor, int form);
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
 
@@ -682,6 +683,20 @@ void CEfstAction_AnimalForm::ResetAnimalForm(CRenderObject* actor) {
     return name.Text();
   }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
   gameActor->Slot32();
+}
+
+// OFFSET: 0x005A6740
+// FUNCTION: fn_03186
+void CEfstAction_AnimalForm::ApplyAnimalForm(CRenderObject* actor, int form) {
+  if (actor) {
+    CGameActor* gameActor = static_cast<CGameActor*>(actor);
+    if (g_session.m_aid == actor->render.accountId) {
+      g_session.SetUnknown8134(form);
+    }
+
+    gameActor->SetUnknown0404(form);
+    gameActor->Slot21(gameActor->GetUnknown0404Job());
+  }
 }
 
 // OFFSET: 0x005A6790
