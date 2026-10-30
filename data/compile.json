@@ -324,6 +324,7 @@
   "Source/Contents/EffectResourceSwitcher.cpp": 4,
   "Source/Contents/Effects/AMachineEffect.cpp": 4,
   "Source/Contents/Effects/AcidifiedThrow.cpp": 4,
+  "Source/Contents/Effects/AnimatedEmitterEffect.cpp": 4,
   "Source/Contents/Effects/AstralStrikeEffect.cpp": 4,
   "Source/Contents/Effects/AxeBoomerang.cpp": 4,
   "Source/Contents/Effects/Bash.cpp": 4,
