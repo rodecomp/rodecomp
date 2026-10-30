@@ -176,6 +176,13 @@ void UIBitmapEditCtrl::Paint() {
   this->PaintText();
 }
 
+// OFFSET: 0x0084EE90
+// FUNCTION: fn_10654
+UIChatEditCtrl::UIChatEditCtrl(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit), unknown_0140(0), historyLimit(30) {
+  this->history.reserve(this->historyLimit);
+  this->unknown_0144 = 0;
+}
+
 // OFFSET: 0x0085EB50
 // FUNCTION: fn_10840
 void UIChatEditCtrl::Slot25(int x, int y) {

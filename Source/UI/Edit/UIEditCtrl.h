@@ -185,7 +185,14 @@ public:
 
 class UIChatEditCtrl : public UIEditCtrl {
 public:
+  UIChatEditCtrl(UIWindowContext& windows, UIEditContext& edit);
   void Slot25(int x, int y) override;
+
+  /* 011C */ std::vector<std::string> history;
+  /* 0128 */ std::string pending;
+  /* 0140 */ int unknown_0140;
+  /* 0144 */ int unknown_0144;
+  /* 0148 */ int historyLimit;
 };
 
 class UIEditCtrl_OldList : public UIEditCtrl {

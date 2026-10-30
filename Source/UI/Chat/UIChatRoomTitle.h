@@ -7,6 +7,7 @@
 
 class UIChatRoomTitle : public UIWindow {
 public:
+  explicit UIChatRoomTitle(UIWindowContext& context);
   void Paint() override;
   void ResetCursor(int x, int y) override;
 

@@ -4,6 +4,11 @@
 #include "Resource/TextureNames.h"
 #include "UI/Chat/UIChatRoomTitle.h"
 
+// OFFSET: 0x0084EF70
+// FUNCTION: fn_10655
+UIChatRoomTitle::UIChatRoomTitle(UIWindowContext& context) : UIWindow(context, 0) {
+}
+
 // OFFSET: 0x0085C690
 // FUNCTION: fn_10802
 void UIChatRoomTitle::Paint() {
