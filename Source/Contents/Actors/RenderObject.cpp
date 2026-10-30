@@ -103,6 +103,7 @@ public:
   int Slot37() override;
   void Unused6860(int value);
   void Unused7950(int value);
+  void SetModel(int job, int value, int unused);
   void Render(int argument) override;
   void RenderLit(int argument, const GrannyActorLight& light);
   void RenderShadowed(int argument);
@@ -1902,6 +1903,43 @@ C3dGrannyGameActor::C3dGrannyGameActor(const char* name) {
   this->emblemTexture = nullptr;
   this->texture = CreateTexture(35, 35, 1, false, false);
   this->unknown_0DBC.resize(4900);
+}
+
+// OFFSET: 0x00CC7ED0
+// FUNCTION: fn_21189
+void C3dGrannyGameActor::SetModel(int job, int value, int) {
+  this->SetActorJob(job);
+  this->SetUnknown0260(value);
+  this->model = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(this->name));
+  this->instance = GrannyInstantiateModel(this->model->model);
+  for (int mesh = 0; mesh < this->model->instance->meshCount; ++mesh) {
+    RenderCommand* previous = this->commands[mesh];
+    RenderCommand* command = reinterpret_cast<RenderCommand*>(new ModelRenderCommand());
+    this->commands[mesh] = command;
+    command->AllocateTriangles(this->model->GetTriangleCount(mesh));
+    if (previous != nullptr) {
+      previous->FreeVertices();
+      ::operator delete(previous, 0x28);
+    }
+
+    RenderVertex* previousVertices = this->vertices[mesh];
+    const int triangleCount = this->model->GetTriangleCount(mesh);
+    this->vertices[mesh] = new RenderVertex[triangleCount * 3];
+    std::memset(this->vertices[mesh], 0, triangleCount * 3 * sizeof(RenderVertex));
+    if (previousVertices != nullptr) {
+      delete[] previousVertices;
+    }
+  }
+
+  this->lastClock = GrannyGetSystemSeconds();
+  this->unknown_052C = 0.0f;
+  if (job == JT_ZOMBIE_DRAGON || job == JT_HUGELING) {
+    this->unknown_02E0 = 1;
+    this->model->unknown_03A0 = 30.0f;
+    this->model->unknown_03A4 = 30.0f;
+  } else {
+    this->unknown_02E0 = job == JT_GUILD_FLAG ? 2 : 0;
+  }
 }
 
 // OFFSET: 0x00CC5650
