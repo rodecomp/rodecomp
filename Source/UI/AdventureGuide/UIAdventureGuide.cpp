@@ -699,3 +699,10 @@ void CUIMonsterInfo::SetMonster(const std::string& title) {
 }
 
 }
+
+// OFFSET: 0x009DC910
+// FUNCTION: fn_14327
+void AdventureGuide::CUIMonsterInfo::Paint() {
+  CUIListItem::Paint();
+  this->DrawActionSprite(this->sprite, this->action, 16, 2, 124, 124, 0, true, nullptr);
+}

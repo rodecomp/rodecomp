@@ -85,6 +85,7 @@ public:
 class CUIMonsterInfo : public CUIListItem {
 public:
   void Slot16() override;
+  void Paint() override;
   void SetMonster(const std::string& title);
 
   /* 00E8 */ CUIStaticText* unknown_00E8;
