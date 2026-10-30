@@ -406,9 +406,8 @@ public:
     return reinterpret_cast<const char*>(this->m_text);
   }
 
-private:
-  std::uint8_t m_text[Length];
-  bool m_encrypted;
+  /* 0000 */ std::uint8_t m_text[Length];
+  /* 0044 */ bool m_encrypted;
 };
 
 class CBezierArcThrowEffect : public CEffect {
@@ -453,7 +452,7 @@ struct CEffectAllocator : CAllocator {
 
 // OFFSET: 0x00B1D9E0
 // FUNCTION: fn_18561
-const char* ThunderingOrbName() {
+__declspec(noinline) EncryptedName<0x44, 0x2F8B0F37118D157FULL>& ThunderingOrbName() {
   const std::uint8_t source[] = {
       0x3B, 0x47, 0xD8, 0x58, 0x73, 0x53, 0xC0, 0x7D, 0x20, 0x41, 0xC5, 0x44, 0x79, 0x4B, 0xCE, 0x7D,
       0x36, 0x5B, 0xCA, 0x4E, 0x78, 0x5D, 0xC9, 0x73, 0x0B, 0x7D, 0xF8, 0x7F, 0x53, 0x6A, 0xF9, 0x46,
@@ -461,7 +460,7 @@ const char* ThunderingOrbName() {
       0x1A, 0x67, 0xE4, 0x7F, 0x50, 0x50, 0xE4, 0x5D, 0x1D, 0x4A, 0xFE, 0x7C, 0x56, 0x63, 0xE7, 0x01,
       0x0C, 0x61, 0xFF, 0x11};
   thread_local EncryptedName<sizeof(source), 0x2F8B0F37118D157FULL> name(source);
-  return name.Text();
+  return name;
 }
 
 // OFFSET: 0x00B24FA0
@@ -474,7 +473,9 @@ bool CreateEffectMgr() {
   EffectLists* mgr = new (std::nothrow) EffectLists();
   if (mgr) {
     mgr->initialized = false;
-    mgr->initialized = true;
+    if (mgr->RegisterAllocators()) {
+      mgr->initialized = true;
+    }
   }
 
   g_effectMgr = mgr;
@@ -488,6 +489,10 @@ bool CreateEffectMgr() {
     return false;
   }
 
+  return true;
+}
+
+__declspec(noinline) bool EffectLists::RegisterAllocators() {
   return true;
 }
 
@@ -553,7 +558,18 @@ namespace {
 // FUNCTION: fn_18655
 template <>
 CEffect* CEffectAllocator<CThunderingOrb>::Create() {
-  return new (std::nothrow) CThunderingOrb(ThunderingOrbName());
+  void* memory = ::operator new(0xFC, std::nothrow);
+  if (!memory) {
+    return nullptr;
+  }
+
+  EncryptedName<0x44, 0x2F8B0F37118D157FULL>& name = ThunderingOrbName();
+  if (name.m_encrypted) {
+    utility::XorBytes(name.m_text, 0x44, 0x2F8B0F37118D157FULL);
+    name.m_encrypted = false;
+  }
+
+  return new (memory) CThunderingOrb(reinterpret_cast<const char*>(name.m_text));
 }
 
 // OFFSET: 0x00B20E70

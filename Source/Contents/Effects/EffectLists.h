@@ -42,6 +42,7 @@ public:
   void Clear();
   void Release();
   void SpawnLevel99(CRenderObject* actor, unsigned char flag, int extra);
+  bool RegisterAllocators();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
