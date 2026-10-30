@@ -1,4 +1,5 @@
 #include "UI/Quest/UIRenewQuestUI.h"
+#include "Client/ReplayPacketRecorder.h"
 #include "Contents/MessageTable.h"
 #include "Contents/RenewQuestMgr.h"
 #include "Network/Connection/Connection.h"
@@ -836,6 +837,15 @@ void CUIRenewQuestUI::OnPanelButton() {
 }
 
 template void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::ClearData();
+
+// OFFSET: 0x00A661F0
+// FUNCTION: fn_16612
+void WindowReplayRecorder::RecordWindowFlag(bool value) {
+  this->RecordValues(6, 0xd5, value, 0, 0);
+  if (UIWindow* window = g_windowMgr.LookupWindow(0xcc)) {
+    window->Show(value);
+  }
+}
 
 // OFFSET: 0x00A66410
 // FUNCTION: fn_16615
