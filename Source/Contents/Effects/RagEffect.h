@@ -148,6 +148,18 @@ struct CRagEffect : CRenderObject {
   void TexturedFloatingDust(const char* name, int unused);
   void Mavka(char flag);
   void TexturedFanSweep(const char* name, char wide);
+  void RisingSparkles(char colorMode);
+  void TexturedSpreadFlat(const char* name, char kind);
+  void WhiteRingRippleSized(char size);
+  void WhiteRingRipple(char size);
+  void TexturedSpread(const char* name, char kind);
+  void TexturedTumbleOrb(const char* name, char flag);
+  void ElectricFan(const char* name, std::int16_t fade);
+  void SnowFall(const char* name, char kind);
+  void TexturedDoubleSpiral(const char* name, int unused1, int unused2);
+  void BubbleFanSweep(const char* name, char rising);
+  void TexturedTripleOrbit(const char* name);
+  void TexturedRisingOrbs(const char* name, char kind);
 
   virtual void Slot08();
   virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);
