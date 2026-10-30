@@ -105,5 +105,60 @@ std::pair<bool, SpriteLayerResources> SpriteLayerRenderer::FindLayer(int layer) 
 }
 
 // OFFSET: 0x00641620
+// FUNCTION: fn_04816
+std::pair<bool, std::string> SpriteLayerRenderer::GetLayerSound(int layer, CActRes* action, int sound) {
+  if (layer != 6) {
+    return {false, ""};
+  }
+
+  if (sound == -1) {
+    return {false, ""};
+  }
+
+  std::string name = action->Sound(sound);
+  if (name.find(".wav") != std::string::npos) {
+    name.clear();
+  }
+
+  return {true, name};
+}
 
 // OFFSET: 0x00641E40
+// FUNCTION: fn_04818
+void SpriteLayerRenderer::LoadLayers() {
+  for (int layer = 0; layer < 9; ++layer) {
+    CRes* sprite = this->pc->GetEquipSprite(layer);
+    CRes* action = this->pc->GetEquipAction(layer);
+    if (!sprite || !action) {
+      continue;
+    }
+
+    if (layer == 1) {
+      const ActionFrame& frame = static_cast<CActRes*>(action)->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion);
+      if (frame.Cell(GetSlotLayer(1)).image == -1) {
+        this->unknown_006D = true;
+      }
+
+      if (StateFlag11(this->pc->stateFlags) == true) {
+        if (g_session.IsDoramJob(this->pc->unknown_025C) == true) {
+          sprite = ResourceMgr::Instance().Load("이팩트\\orcface_doram.spr");
+          action = ResourceMgr::Instance().Load("이팩트\\orcface_doram.act");
+        } else {
+          sprite = ResourceMgr::Instance().Load("이팩트\\orcface.spr");
+          action = ResourceMgr::Instance().Load("이팩트\\orcface.act");
+        }
+      }
+    }
+
+    SpriteLayerResources& resources = this->layers[layer];
+    resources.sprite = static_cast<CSprRes*>(sprite);
+    resources.action = static_cast<CActRes*>(action);
+  }
+
+  for (int layer = 2; layer <= 4; ++layer) {
+    if (g_session.IsSpecialMonsterJob(this->layerViews[layer]) == true) {
+      this->unknown_006C = true;
+      return;
+    }
+  }
+}
