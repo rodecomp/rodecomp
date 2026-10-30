@@ -1,7 +1,7 @@
 #include "Contents/Configuration/ScriptOptions.h"
 #include "Script/LuaScript.h"
 #include "Utility/GuidParse.h"
-
+#include "Client/Session.h"
 #include <cstring>
 
 // OFFSET: 0x00E0A890
@@ -35,4 +35,12 @@ GUID ScriptOptions::Guid(const char* key, const GUID& fallback) {
   }
 
   return fallback;
+}
+
+// OFFSET: 0x00E0A670
+// FUNCTION: fn_23798
+float CSession::GetOptionFloat(const char* key, float fallback) {
+  double value = -1.0;
+  this->m_hotkeyScript->Call("l_GetOptionValue", "s>l", key, &value);
+  return value == -1.0 ? fallback : static_cast<float>(value);
 }

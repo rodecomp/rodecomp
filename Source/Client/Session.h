@@ -482,6 +482,7 @@ public:
   void InitJobNameTable(JobNameInitialization& context);
   int SyncUnknown0E98();
   void LoadXmlTables();
+  float GetOptionFloat(const char* key, float fallback);
   std::string GetAccessoryName(int id);
   std::string GetWeaponName(int weapon);
   const char* GetWeaponClassName(int item);
