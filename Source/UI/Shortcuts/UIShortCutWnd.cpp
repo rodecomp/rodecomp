@@ -18,6 +18,7 @@
 #include "UI/Chat/UISubChatHisWnd.h"
 #include "UI/Chat/UISubChatMiniWnd.h"
 #include "UI/Dialogs/UIMemorialDunWnd.h"
+#include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UICheckBox.h"
@@ -767,5 +768,26 @@ void UINewChatWnd::RefreshTabs(bool arrange) {
   }
 
   this->m_tabControl->Invalidate();
+  this->Invalidate();
+}
+
+// OFFSET: 0x00933A80
+// FUNCTION: fn_12733
+void UIMemorialDunWnd::ArrangeButtons() {
+  if (this->m_partyButton) {
+    this->m_partyButton->Move(-100, -100);
+  }
+
+  if (g_session.unknown_5948 == 0 || g_session.unknown_5948 == 1 || g_session.unknown_5948 == 2) {
+    this->m_actionButton->Move(-100, -100);
+    this->m_message0 = 600;
+    if (g_session.unknown_5464 && this->m_partyButton && g_session.unknown_5948 == 1) {
+      this->m_partyButton->Move(41, 115);
+    }
+  } else if (g_session.unknown_5948 == 3) {
+    this->m_actionButton->Move((this->geometry.width - this->m_actionButton->geometry.width) / 2, this->geometry.height - 30);
+    this->m_message0 = 184;
+  }
+
   this->Invalidate();
 }
