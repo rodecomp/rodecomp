@@ -1,8 +1,31 @@
 #include "UI/Window/UIRoMapWnd.h"
 
+#include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "Contents/MapSkyMgr.h"
+#include "Contents/NavigationManager.h"
+#include "Render/Primitives/AlphaRectangle.h"
+#include "Render/Renderer.h"
+#include "Render/ScreenGeometry.h"
+#include "Render/ScreenRectangle.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
+#include "Render/TextureQuad.h"
+#include "Render/Textures/Texture.h"
+#include "Render/Textures/TextureCache.h"
+#include "UI/Text/ColoredText.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
+
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+#include <vector>
+
+// GLOBAL: gl_24799
+CWorldViewMgr g_worldViewMgr;
 
 // OFFSET: 0x00931080
 // FUNCTION: fn_12697
@@ -45,4 +68,347 @@ void UIRoMapWnd::Slot33(int, int) {
   }
 
   this->unknown_0208 = 0;
+}
+
+// OFFSET: 0x00919B50
+// FUNCTION: fn_12598
+void UIRoMapWnd::DrawHoverTooltip() {
+  if (this->unknown_00C4 != nullptr) {
+    delete this->unknown_00C4;
+    this->unknown_00C4 = nullptr;
+  }
+
+  if (this->unknown_00BC == nullptr || this->unknown_00C8 == nullptr) {
+    return;
+  }
+
+  const TextLocale locale = {};
+  bool leftSide = false;
+  int maxWidth = 0;
+  const int lineHeight = this->TextHeight(g_fontCache, locale, " ", 0, 0, 12, 1, 0) + 3;
+  const WorldViewRecord* record = this->unknown_00BC;
+  const int* anchor = this->unknown_00C8;
+  const int recordLeft = record->left;
+  int x;
+  if (anchor[2] < record->right) {
+    leftSide = true;
+    x = anchor[0] - 10;
+  } else {
+    x = anchor[2] + 10;
+  }
+
+  int y = anchor[1];
+  int count = 0;
+  for (std::list<std::string>::const_iterator it = record->unknown_004C.begin(); it != this->unknown_00BC->unknown_004C.end(); ++it) {
+    const int width = this->TextWidth(g_fontCache, locale, it->c_str(), 0, 0, 12, 1, 0);
+    if (maxWidth < width) {
+      maxWidth = width;
+    }
+    ++count;
+  }
+
+  const int width = maxWidth + 10;
+  const int height = count * lineHeight + 7;
+  int boxX = leftSide ? x - width : x;
+  if (boxX + width > g_renderer->viewport.width) {
+    boxX = recordLeft - width - 10;
+  } else if (!leftSide) {
+    y += 17;
+  }
+
+  if (height + y > g_renderer->viewport.height) {
+    y = g_renderer->viewport.height - height + 10;
+  }
+
+  int textY = y + 5;
+  for (std::list<std::string>::const_iterator it = this->unknown_00BC->unknown_004C.begin(); it != this->unknown_00BC->unknown_004C.end(); ++it) {
+    const std::uint32_t color = std::strcmp(it->c_str(), g_session.DecodePlayerName()) == 0 ? 0x8080F0 : 0xFFFFFF;
+    DrawOutlinedText(*this, boxX + 5, textY, it->c_str(), 0, color, 0, 0, 12, 1, 0);
+    textY += lineHeight;
+  }
+
+  this->unknown_00C4 = new RoMapTooltipBox{boxX, y, width, height, 1};
+  DrawRoundedBorder(*this, boxX, y, width, height, 0xFFFFFF);
+}
+
+// OFFSET: 0x00919E00
+// FUNCTION: fn_12599
+void UIRoMapWnd::DrawMapNames() {
+  const int fontHeight = g_worldViewMgr.dungeonFontSize[g_worldViewMgr.screenScale];
+  const std::uint32_t color = g_worldViewMgr.dungeonFontColor;
+  const std::uint32_t outline = g_worldViewMgr.dungeonFontOutline;
+  const TextLocale locale = {};
+  std::string name;
+  std::vector<CWorldViewMap*>::iterator it = g_worldViewMgr.CurrentWorld()->maps.begin();
+  const std::vector<CWorldViewMap*>::iterator end = g_worldViewMgr.CurrentWorld()->maps.end();
+  for (; it != end; ++it) {
+    const CWorldViewMap* map = *it;
+    if (map->id >= 100) {
+      continue;
+    }
+
+    const int* area = map->fields.empty() ? &map->left : &map->fields.front()->left;
+    name = map->name;
+    if (name.empty()) {
+      continue;
+    }
+
+    const int textWidth = this->TextWidth(g_fontCache, locale, std::string(name).c_str(), 0, 0, fontHeight, 0, 0);
+    const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - area[2] - area[0]) * g_depthAverageHalf));
+    const int y = area[1] + 2;
+    this->DrawTextAt(g_fontCache, locale, x + 1, y + 1, name.c_str(), 0, 0, fontHeight, outline, 0, 0);
+    this->DrawTextAt(g_fontCache, locale, x, y, name.c_str(), 0, 0, fontHeight, color, 0, 0);
+  }
+}
+
+// OFFSET: 0x0091A0B0
+// FUNCTION: fn_12600
+void UIRoMapWnd::DrawFieldLabels() {
+  if (!this->m_showLabels) {
+    return;
+  }
+
+  const int townHeight = g_worldViewMgr.dungeonFontSize[g_worldViewMgr.screenScale];
+  const int fieldHeight = g_worldViewMgr.mobFont[g_worldViewMgr.screenScale];
+  const int levelHeight = g_worldViewMgr.mobLevelFont[g_worldViewMgr.screenScale];
+  const std::uint32_t townColor = g_worldViewMgr.dungeonFontColor;
+  const std::uint32_t townOutline = g_worldViewMgr.dungeonFontOutline;
+  const std::uint32_t fieldColor = g_worldViewMgr.mobColor;
+  const std::uint32_t fieldShadow = g_worldViewMgr.mobOutline;
+  const std::uint32_t levelColor = g_worldViewMgr.mobLevelColor;
+  const std::uint32_t levelOutline = g_worldViewMgr.mobLevelOutline;
+  const std::uint32_t borderColor = g_worldViewMgr.boxLineColor;
+  const TextLocale locale = {};
+  std::string name;
+  bool atBottom = false;
+  std::vector<CWorldViewMap*>::iterator it = g_worldViewMgr.CurrentWorld()->maps.begin();
+  const std::vector<CWorldViewMap*>::iterator end = g_worldViewMgr.CurrentWorld()->maps.end();
+  for (; it != end; ++it) {
+    const CWorldViewMap* map = *it;
+    if (map->id < 100) {
+      const int* area = map->fields.empty() ? &map->left : &map->fields.front()->left;
+      if (!this->m_showLabels) {
+        continue;
+      }
+
+      name = map->displayName;
+      if (name.empty()) {
+        continue;
+      }
+
+      const int textWidth = this->TextWidth(g_fontCache, locale, std::string(name).c_str(), 0, 0, townHeight, 0, 0);
+      const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - area[2] - area[0]) * g_depthAverageHalf));
+      const int y = townHeight + 2 + area[1];
+      this->DrawTextAt(g_fontCache, locale, x + 1, y + 1, name.c_str(), 0, 0, townHeight, townOutline, 0, 0);
+      this->DrawTextAt(g_fontCache, locale, x, y, name.c_str(), 0, 0, townHeight, townColor, 0, 0);
+      continue;
+    }
+
+    for (std::vector<CWorldViewField*>::const_iterator fieldIt = map->fields.begin(); fieldIt != map->fields.end(); ++fieldIt) {
+      name = (*fieldIt)->unknown_002C;
+      if (name.empty()) {
+        continue;
+      }
+
+      const CWorldViewField* field = *fieldIt;
+      DrawRoundedBorder(*this, field->left, field->top, field->right - field->left, field->bottom - field->top, borderColor);
+      int y;
+      int levelY;
+      if (atBottom) {
+        y = field->top + 3;
+        levelY = y + (fieldHeight + 3);
+        atBottom = false;
+      } else {
+        y = field->bottom - fieldHeight - 3;
+        atBottom = true;
+        levelY = y - levelHeight - 3;
+      }
+
+      const int textWidth = this->TextWidth(g_fontCache, locale, std::string(name).c_str(), 0, 0, fieldHeight, 0, 0);
+      const int x = std::abs(static_cast<int>(static_cast<float>(textWidth - field->right - field->left) * g_depthAverageHalf));
+      this->DrawTextAt(g_fontCache, locale, x + 1, y + 1, name.c_str(), 0, 0, fieldHeight, fieldShadow, 0, 0);
+      this->DrawTextAt(g_fontCache, locale, x - 1, y - 1, name.c_str(), 0, 0, fieldHeight, fieldShadow, 0, 0);
+      this->DrawTextAt(g_fontCache, locale, x, y, name.c_str(), 0, 0, fieldHeight, fieldColor, 0, 0);
+      name = (*fieldIt)->unknown_0044;
+      if (name.empty()) {
+        continue;
+      }
+
+      const int levelWidth = this->TextWidth(g_fontCache, locale, std::string(name).c_str(), 0, 0, levelHeight, 1, 0);
+      const int levelX = std::abs(static_cast<int>(static_cast<float>(levelWidth - field->right - field->left) * g_depthAverageHalf));
+      DrawOutlinedText(*this, levelX, levelY, name.c_str(), 0, levelColor, levelOutline, 0, levelHeight, 1, 0);
+    }
+  }
+}
+
+// OFFSET: 0x0091A7D0
+// FUNCTION: fn_12601
+void UIRoMapWnd::DrawRecordBorders() {
+  const std::string mapName = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(9, 0, 0, 0, 0));
+  for (std::list<WorldViewRecord>::const_iterator it = this->m_records.begin(); it != this->m_records.end(); ++it) {
+    if (g_worldViewMgr.currentWorld != it->worldIndex) {
+      continue;
+    }
+
+    DrawRoundedBorder(*this, it->left, it->top, it->right - it->left, it->bottom - it->top, mapName == it->name ? 0x23AEE8 : 0x7EE2F7);
+  }
+}
+
+// OFFSET: 0x0091A960
+// FUNCTION: fn_12602
+void UIRoMapWnd::DrawDungeonLinks() {
+  CTexture* const positionTexture = g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_dunPos.bmp", 0, true, true, false);
+  CTexture* const selectTexture = g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_dunSelect.bmp", 0, true, true, false);
+  const std::uint32_t rectColor = g_worldViewMgr.unknown_0084;
+  const std::uint32_t lineColor = g_worldViewMgr.dungeonColor;
+  const std::uint32_t selectColor = g_worldViewMgr.dungeonSelectColor;
+  std::vector<CWorldViewMap*>::iterator it = g_worldViewMgr.CurrentWorld()->maps.begin();
+  const std::vector<CWorldViewMap*>::iterator end = g_worldViewMgr.CurrentWorld()->maps.end();
+  for (; it != end; ++it) {
+    const CWorldViewMap* map = *it;
+    if (map->id >= 100) {
+      continue;
+    }
+
+    const WorldViewRecord* selected = this->unknown_00C0;
+    bool isSelected;
+    int x;
+    int y;
+    int width;
+    int height;
+    if (map->fields.empty()) {
+      isSelected = selected != nullptr && map->left == selected->left && map->right == selected->right && map->top == selected->top &&
+                   map->bottom == selected->bottom;
+      x = map->left;
+      y = map->top;
+      width = map->right - map->left;
+      height = map->bottom - map->top;
+    } else {
+      const CWorldViewField* field = map->fields.front();
+      isSelected = selected != nullptr && field->left == selected->left && field->right == selected->right && field->top == selected->top &&
+                   field->bottom == selected->bottom;
+      width = field->right - field->left;
+      height = field->bottom - field->top;
+      const int mapWidth = map->right - map->left;
+      const int mapHeight = map->bottom - map->top;
+      const float startX = static_cast<float>(width) * g_depthAverageHalf + static_cast<float>(field->left);
+      const float startY = static_cast<float>(height) * g_depthAverageHalf + static_cast<float>(field->top);
+      const float endX = static_cast<float>(mapWidth) * g_depthAverageHalf + static_cast<float>(map->left);
+      const float endY = static_cast<float>(mapHeight) * g_depthAverageHalf + static_cast<float>(map->top) + 1.0f;
+      CTexture* const lineTexture = g_texMgr.Default();
+      if (isSelected) {
+        DrawScreenLine(
+          g_renderer->primitives, g_renderer->queues, startX, startY, endX, endY, 1, lineTexture, (selectColor & 0xFFFFFF) - 0x1000000,
+          g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+        );
+      } else {
+        DrawScreenLine(
+          g_renderer->primitives, g_renderer->queues, startX, startY, endX, endY, 1, lineTexture, lineColor, g_renderer->fog.supported != 0,
+          g_depthStart, g_depthEnd
+        );
+      }
+
+      DrawTexturedRectangle(
+        g_renderer->primitives, g_renderer->queues, map->left, map->top, mapWidth, mapHeight, isSelected ? 0xFFFFFFFF : rectColor, positionTexture,
+        g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+      );
+      x = field->left;
+      y = field->top;
+    }
+
+    DrawTexturedRectangle(
+      g_renderer->primitives, g_renderer->queues, x, y, width, height, isSelected ? 0xFFFFFFFF : rectColor, selectTexture,
+      g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+    );
+  }
+}
+
+// OFFSET: 0x0091AC50
+// FUNCTION: fn_12603
+void UIRoMapWnd::DrawMarks() {
+  const int count = g_worldViewMgr.MarkCount();
+  for (int index = 0; index < count; ++index) {
+    const int* area = g_worldViewMgr.MarkAreaAt(index, true);
+    if (area == nullptr) {
+      continue;
+    }
+
+    const int x = area[0] + 1;
+    const int y = area[1] + 1;
+    const int width = area[2] - area[0] - 2;
+    const int height = area[3] - area[1] - 2;
+    DrawAlphaRectangle(
+      g_renderer->primitives, g_renderer->queues, x, y, width, height, g_worldViewMgr.runColor, g_renderer->fog.supported != 0, g_depthStart,
+      g_depthEnd
+    );
+    if (index != 0) {
+      const int* previous = g_worldViewMgr.MarkAreaAt(index - 1, true);
+      if (previous != nullptr) {
+        const float startX = static_cast<float>(previous[2] - previous[0]) * g_depthAverageHalf + static_cast<float>(previous[0]);
+        const float startY = static_cast<float>(previous[3] - previous[1]) * g_depthAverageHalf + static_cast<float>(previous[1]);
+        const float endX = static_cast<float>(area[2] - area[0]) * g_depthAverageHalf + static_cast<float>(area[0]);
+        const float endY = static_cast<float>(area[3] - area[1]) * g_depthAverageHalf + static_cast<float>(area[1]);
+        DrawScreenLine(
+          g_renderer->primitives, g_renderer->queues, startX, startY, endX, endY, 5,
+          g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Airf2.bmp", 0, false, true, false), 0x99FFFFFF,
+          g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+        );
+      }
+    }
+
+    if (count - 1 != index) {
+      continue;
+    }
+
+    const WorldViewRecord* mark = g_worldViewMgr.MarkAt(count - 1, true);
+    if (mark == nullptr) {
+      continue;
+    }
+
+    std::string destination = g_navigationManager.GetDestinationInfo()->GetName();
+    destination += ".rsw";
+    if (destination == mark->name) {
+      CTexture* texture = g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_End.bmp", 0, false, true, false);
+      if (texture != nullptr) {
+        const std::uint32_t textureHeight = texture->Height();
+        const std::uint32_t textureWidth = texture->Width();
+        const int drawY = static_cast<int>(
+          static_cast<float>(height) * g_depthAverageHalf + static_cast<float>(y) - static_cast<float>(texture->Height())
+        );
+        const int drawX = static_cast<int>(
+          static_cast<float>(width) * g_depthAverageHalf + static_cast<float>(x) - static_cast<float>(texture->Width())
+        );
+        DrawTexturedRectangle(
+          g_renderer->primitives, g_renderer->queues, drawX, drawY, textureWidth, textureHeight, 0xCCFFFFFF, texture,
+          g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+        );
+      }
+    }
+  }
+}
+
+// OFFSET: 0x0091B170
+// FUNCTION: fn_12604
+void UIRoMapWnd::DrawRecordFaces(int) {
+  const std::string mapName = reinterpret_cast<const char*>(g_modeMgr.GetGameMode()->SendMsg(9, 0, 0, 0, 0));
+  const int faceSize = g_worldViewMgr.screenScale * 2 + 8;
+  std::string image = "유저인터페이스\\worldview_interface\\wv_face1.bmp";
+  for (std::list<WorldViewRecord>::const_iterator it = this->m_records.begin(); it != this->m_records.end(); ++it) {
+    if (g_worldViewMgr.currentWorld != it->worldIndex) {
+      continue;
+    }
+
+    const int x = static_cast<int>(static_cast<float>(it->left - faceSize) + static_cast<float>(it->right - it->left) * g_depthAverageHalf);
+    const int y = static_cast<int>(static_cast<float>(it->top - faceSize) + static_cast<float>(it->bottom - it->top) * g_depthAverageHalf);
+    if (mapName == it->name) {
+      image = "유저인터페이스\\worldview_interface\\wv_face1.bmp";
+    } else {
+      image = "유저인터페이스\\worldview_interface\\wv_face.bmp";
+    }
+
+    DrawTexturedRectangle(
+      g_renderer->primitives, g_renderer->queues, x, y, faceSize * 2, faceSize * 2, 0xEEFFFFFF,
+      g_texMgr.Load(image.c_str(), 0, false, true, false), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+    );
+  }
 }
