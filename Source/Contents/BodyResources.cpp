@@ -6481,3 +6481,11 @@ EncryptedName<14, 0x85FB93CF2F494179ULL>& AliteaBodyPath2() {
   thread_local EncryptedName<sizeof(source), 0x85FB93CF2F494179ULL> name(source);
   return name;
 }
+
+// OFFSET: 0x00DD6970
+// FUNCTION: fn_23276
+EncryptedName<11, 0x61F59D5D41E76519ULL>& WereRaptorJobName1() {
+  const std::uint8_t source[] = {0x4E, 0x20, 0xB5, 0x04, 0x0F, 0xDC, 0xA5, 0x35, 0x56, 0x37, 0xE7};
+  thread_local EncryptedName<sizeof(source), 0x61F59D5D41E76519ULL> name(source);
+  return name;
+}
