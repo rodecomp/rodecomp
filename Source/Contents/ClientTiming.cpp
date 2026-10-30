@@ -235,7 +235,7 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     }
   }
 
-  int pick[11] = {};
+  int pick[9] = {};
   for (int index = 1; index < 9999; ++index) {
     const char* mapName = nullptr;
     int pickX = 0;
