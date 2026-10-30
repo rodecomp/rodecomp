@@ -325,3 +325,143 @@ int UISlotOfMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 int UIStylingshopTabParentWnd::SendMsg(UIWindow*, int, std::intptr_t, std::intptr_t, std::intptr_t, std::intptr_t) {
   return 0;
 }
+
+// OFFSET: 0x00823CE0
+// FUNCTION: fn_10298
+void UIDisplayCharacter::CopyStyle(const UIDisplayCharacter* other) {
+  this->unknown_0080 = other->unknown_0080;
+  this->unknown_0084 = other->unknown_0084;
+  this->unknown_0088 = other->unknown_0088;
+  this->unknown_008C = other->unknown_008C;
+  this->job = other->job;
+  this->unknown_0094 = other->unknown_0094;
+  this->unknown_0098 = other->unknown_0098;
+  this->unknown_009C = other->unknown_009C;
+  this->unknown_00A0 = other->unknown_00A0;
+  this->unknown_00A4 = other->unknown_00A4;
+  this->unknown_00BC = other->unknown_00BC;
+  this->unknown_00C0 = other->unknown_00C0;
+  this->unknown_00C4 = other->unknown_00C4;
+  this->Invalidate();
+}
+
+// OFFSET: 0x00824760
+// FUNCTION: fn_10315
+void UIStylingShopWnd::RefreshFavoriteButton() {
+  UIStylingshopTabParentWnd* visibleTab = nullptr;
+  for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
+    if (it->second->geometry.visible == 1) {
+      if (it->first->geometry.id == 496) {
+        return;
+      }
+
+      visibleTab = it->second;
+    }
+  }
+
+  for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
+    if (it->first->geometry.id == 496) {
+      UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(it->second);
+      UIDisplayCharacter* display = visibleTab->m_display;
+      bool favorite = false;
+      for (int i = 0; i < 2; ++i) {
+        UISlotOfMyStyleWnd* slot = myStyle->m_slots[i];
+        if (slot) {
+          UIDisplayCharacter* saved = slot->m_display;
+          if (saved->unknown_008C == display->unknown_008C && saved->unknown_0094 == display->unknown_0094 && saved->unknown_0098 == display->unknown_0098 &&
+              saved->unknown_009C == display->unknown_009C && saved->unknown_00A0 == display->unknown_00A0 && saved->unknown_00A4 == display->unknown_00A4 &&
+              saved->job == display->job) {
+            favorite = true;
+            break;
+          }
+        }
+      }
+
+      visibleTab->UpdateFavoriteButton(favorite);
+    }
+  }
+}
+
+// OFFSET: 0x00824900
+// FUNCTION: fn_10316
+void UIStylingshopTabParentWnd::UpdateFavoriteButton(const bool& favorite) {
+  UIDisplayCharacter* display = this->m_display;
+  if (!display) {
+    return;
+  }
+
+  UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281));
+  if (!shop) {
+    return;
+  }
+
+  bool full = false;
+  for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
+    if (it->first->geometry.id == 496) {
+      UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(it->second);
+      full = true;
+      for (int i = 0; i < 2; ++i) {
+        if (!myStyle->m_slots[i]) {
+          full = false;
+          break;
+        }
+      }
+      break;
+    }
+  }
+
+  if (!full) {
+    display->m_favoriteButton->SetTooltip("");
+  }
+
+  display->m_favoriteButton->m_argument = 0;
+  display->m_favoriteButton->SetBitmap("유저인터페이스\\styleshop\\btn_favorite_off.bmp", 0, 0);
+  display->m_favoriteButton->SetBitmap("유저인터페이스\\styleshop\\btn_favorite_off.bmp", 1, 0);
+  display->m_favoriteButton->SetBitmap("유저인터페이스\\styleshop\\btn_favorite_off.bmp", 2, 0);
+  if (favorite == true) {
+    display->m_favoriteButton->m_argument = 1;
+    display->m_favoriteButton->SetBitmap("유저인터페이스\\styleshop\\btn_favorite_on.bmp", 0, 0);
+    display->m_favoriteButton->SetBitmap("유저인터페이스\\styleshop\\btn_favorite_on.bmp", 1, 0);
+    display->m_favoriteButton->SetBitmap("유저인터페이스\\styleshop\\btn_favorite_on.bmp", 2, 0);
+  }
+
+  display->m_favoriteButton->Invalidate();
+}
+
+// OFFSET: 0x00824BF0
+// FUNCTION: fn_10317
+bool UIStylingShopWnd::AddToMyStyle() {
+  UIDisplayCharacter* display = nullptr;
+  for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
+    if (it->second->geometry.visible == 1) {
+      display = it->second->m_display;
+    }
+  }
+
+  for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
+    if (it->first->geometry.id == 496) {
+      UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(it->second);
+      int index = 0;
+      while (myStyle->m_slots[index]) {
+        ++index;
+        if (index >= 2) {
+          return false;
+        }
+      }
+
+      UISlotOfMyStyleWnd* slot = new UISlotOfMyStyleWnd(*this->m_context);
+      slot->SetSize(static_cast<int>(myStyle->geometry.width * 0.5 - 3.0), myStyle->geometry.height + 25);
+      slot->Move(static_cast<int>(myStyle->geometry.width * 0.5 * index), 0);
+      display->unknown_0080 = index;
+      slot->m_display->CopyStyle(display);
+      myStyle->AddChildFront(slot);
+      myStyle->m_slots[index] = slot;
+      myStyle->unknown_0094[index]->Enable(1);
+      myStyle->unknown_009C[index]->Enable(1);
+      myStyle->unknown_00A4[index]->Enable(1);
+      return true;
+    }
+  }
+
+  return false;
+}

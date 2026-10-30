@@ -12,6 +12,8 @@
 
 class UIDisplayCharacter : public UIWindow {
 public:
+  void CopyStyle(const UIDisplayCharacter* other);
+
   /* 007C */ const char* unknown_007C;
   /* 0080 */ int unknown_0080;
   /* 0084 */ int unknown_0084;
@@ -24,7 +26,7 @@ public:
   /* 00A0 */ int unknown_00A0;
   /* 00A4 */ int unknown_00A4;
   /* 00A8 */ int unknown_00A8;
-  /* 00AC */ int unknown_00AC;
+  /* 00AC */ UIBitmapButton* m_favoriteButton;
   /* 00B0 */ int unknown_00B0;
   /* 00B4 */ int unknown_00B4;
   /* 00B8 */ int unknown_00B8;
@@ -41,6 +43,11 @@ public:
 
 class UIStylingshopTabParentWnd : public UIWindow {
 public:
+  // INLINED
+  explicit UIStylingshopTabParentWnd(UIWindowContext& context) : UIWindow(context, 0), m_display(nullptr), m_showInfo(nullptr) {
+  }
+  void UpdateFavoriteButton(const bool& favorite);
+
   /* 007C */ UIDisplayCharacter* m_display;
   /* 0080 */ UIShowInfoWnd* m_showInfo;
   /* 0084 */ bool unknown_0084;
@@ -65,6 +72,8 @@ public:
   /* 00BC */ std::map<UIWindow*, UIStylingshopTabParentWnd*> m_tabs;
 
   void Slot19() override;
+  void RefreshFavoriteButton();
+  bool AddToMyStyle();
 };
 
 class UI2ndCostumeCheckBox;
@@ -95,13 +104,24 @@ public:
   void Paint() override;
 };
 
-class UIMyStyleWnd : public UIWindow {
+class UISlotOfMyStyleWnd;
+
+class UIMyStyleWnd : public UIStylingshopTabParentWnd {
 public:
   void Paint() override;
+
+  /* 0088 */ int unknown_0088;
+  /* 008C */ UISlotOfMyStyleWnd* m_slots[2];
+  /* 0094 */ UIButton* unknown_0094[2];
+  /* 009C */ UIButton* unknown_009C[2];
+  /* 00A4 */ UIButton* unknown_00A4[2];
 };
 
 class UISlotOfMyStyleWnd : public UIStylingshopTabParentWnd {
 public:
+  // INLINED
+  explicit UISlotOfMyStyleWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context) {
+  }
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
