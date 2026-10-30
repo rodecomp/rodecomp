@@ -1,9 +1,15 @@
 #include "Contents/EffectResourceSwitcher.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/RenderObject.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/EffectPrimitiveState.h"
+#include "Contents/Effects/Particle.h"
 #include "Contents/World/World.h"
+#include "Resource/World/TerrainResource.h"
 
 #include <cctype>
 #include <new>
@@ -247,6 +253,55 @@ bool CEZ2STREffect::IsFinished() {
   return this->emitter->currentFrame >= this->emitter->frameCount;
 }
 
+// OFFSET: 0x006FFA20
+// FUNCTION: fn_06968
+void CEZ2STREffect::Slot01() {
+  EZ2STREffectInfo* info = CEZ2STREffectMgr::GetInstance()->FindById(this->id);
+  if (!info) {
+    return;
+  }
+
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  if (!particle) {
+    return;
+  }
+
+  InitParticleQuad(particle->vertices);
+  particle->m_actorId = this->actor;
+  particle->Load(info->name);
+
+  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
+  emitter->offset.x = info->offsetX;
+  emitter->offset.y = info->offsetY;
+  emitter->offset.z = 0.0f;
+  if (info->unknown_0024 & 1) {
+    this->retained = 1;
+    emitter->looping = 1;
+  }
+
+  emitter->duration = info->unknown_0040[1];
+  this->frameStep = info->unknown_0040[1] / 16;
+  if (!info->unknown_0028.empty()) {
+    this->AddEvent(0, info->unknown_0028.c_str(), this->frameStep + 1, 0);
+  }
+
+  if (info->unknown_0040[0] >= 0) {
+    this->AddEvent(1, nullptr, info->unknown_0040[0], 0);
+  }
+
+  if (info->unknown_0024 & 2) {
+    particle->flags = 0xD;
+  }
+
+  if (info->unknown_0024 & 4) {
+    particle->flags = 0x205;
+  }
+
+  emitter->unknown_3FEA = (info->unknown_0024 >> 3) & 1;
+  emitter->unknown_3FEB = (info->unknown_0024 >> 4) & 1;
+  this->emitter = emitter;
+}
+
 // OFFSET: 0x006FFBF0
 // FUNCTION: fn_06969
 bool CEZ2STREffect::Slot06() {
@@ -268,6 +323,60 @@ bool CEZ2STREffect::Slot06() {
   }
 
   return static_cast<float>(emitter->elapsed) < emitter->lifetime * 60.0f;
+}
+
+// OFFSET: 0x006FFC60
+// FUNCTION: fn_06970
+void CEZ2STREffect::Slot03() {
+  if (!this->emitter) {
+    return;
+  }
+
+  if (this->timed == 1) {
+    this->emitter->remainingTime -= 0.05f;
+  }
+
+  if (this->emitter->unknown_3FEB) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    this->position[1] = mode->scene->terrain->Grid().Height(this->position[0], this->position[2]);
+  }
+
+  if (EZ2STREmitter* emitter = this->emitter) {
+    const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+    const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+
+    const float x = this->position[0];
+    const float y = this->position[1];
+    const float z = this->position[2];
+    const float viewX = x * view[0] + y * view[3] + z * view[6] + view[9] + emitter->offset.x;
+    const float viewY = x * view[1] + y * view[4] + z * view[7] + view[10] - emitter->offset.y;
+    const float viewZ = x * view[2] + y * view[5] + z * view[8] + view[11];
+
+    emitter->position.x = viewX * inverse[0] + viewY * inverse[3] + viewZ * inverse[6] + inverse[9];
+    emitter->position.y = viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10];
+    emitter->position.z = viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11];
+    reinterpret_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
+  }
+
+  if (this->emitter->unknown_3FEA == 1 && this->emitter->unknown_3F58 == 1) {
+    this->frame = this->frameStep;
+  }
+
+  ++this->emitter->elapsed;
+}
+
+// OFFSET: 0x006FFEA0
+// FUNCTION: fn_06971
+void CEZ2STREffect::Slot04() {
+  if (!this->emitter) {
+    return;
+  }
+
+  if (this->alternateRender) {
+    reinterpret_cast<CEZ2STRParticle*>(this->emitter)->DrawGround(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  } else {
+    reinterpret_cast<CEZ2STRParticle*>(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
 }
 
 // OFFSET: 0x006FFEF0

@@ -36,6 +36,9 @@ public:
   /* 00D4 */ int frameStep;
   /* 00D8 */ unsigned char alternateRender;
 
+  void Slot01() override;
+  void Slot03() override;
+  void Slot04() override;
   bool Slot06() override;
   void Slot14(int argument) override;
   void Slot16(int argument) override;
