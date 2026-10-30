@@ -77,6 +77,7 @@
 #include "UI/Status/UIStatusWnd.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/PixelTextWrapping.h"
+#include "UI/Text/UIStaticText.h"
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIMonsterDisplayWnd.h"
@@ -182,6 +183,57 @@ void UIChooseSellBuyWnd::Slot15(int width, int height) {
   this->CreateViewer(width, height);
   this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->m_acceptance->text.buttons.services.MessageText(92)), 38, 0, 0);
 }
+
+// OFFSET: 0x008DD9A0
+// FUNCTION: fn_12163
+void UIChooseWarpWnd::Slot15(int width, int height) {
+  auto* title = new UIStaticText(*this->m_context, *this->m_controls);
+  title->SetSize(this->geometry.width - 30, 15);
+  title->Move(12, 9);
+  title->SetText(LookupMessage(213), 0);
+  title->SetFont(0, 12, 0, 0);
+  this->AddChild(title);
+
+  this->m_list = new UIListBox(*this->m_context, *this->m_listContext);
+  int listWidth = width - 24;
+  int listHeight = height - 55;
+  if (listWidth < 20) {
+    listWidth = 20;
+  }
+  if (listHeight < 30) {
+    listHeight = 30;
+  }
+  this->m_list->Configure(12, 26, listWidth, listHeight, 0);
+  this->m_list->backgroundRed = 240;
+  this->m_list->backgroundGreen = 240;
+  this->m_list->backgroundBlue = 240;
+  this->m_list->SetId(184);
+  this->AddChild(this->m_list);
+
+  const std::string prefix("유저인터페이스\\");
+  int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
+  const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+  int ids[2] = {184, 185};
+
+  for (int i = 0; i < 2; ++i) {
+    auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(positions[i][0], positions[i][1]);
+    button->SetId(ids[i]);
+    this->AddChild(button);
+  }
+
+  this->m_message0 = 184;
+}
+
+// OFFSET: 0x008DE0E0
+
+// OFFSET: 0x008DE520
+
+// OFFSET: 0x008DE6D0
 
 // OFFSET: 0x008ED130
 // FUNCTION: fn_12214
