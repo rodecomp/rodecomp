@@ -825,3 +825,9 @@ int ReplayFileList::Open(int mode, int argument1, int argument2) {
 }
 
 // OFFSET: 0x00B87680
+// FUNCTION: fn_19355
+ReplayFileList& ReplayFileList::Instance() {
+  // GLOBAL: gl_24867
+  static ReplayFileList g_replayFileList;
+  return g_replayFileList;
+}
