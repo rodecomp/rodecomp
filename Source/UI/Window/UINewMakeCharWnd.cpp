@@ -1,4 +1,20 @@
 #include "UI/Window/UINewMakeCharWnd.h"
+
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/MessageTable.h"
+#include "Render/DeviceContext/DeviceContext.h"
+#include "Render/Renderer.h"
+#include "Render/Textures/SpriteAtlas.h"
+#include "Render/Textures/SpritePixels.h"
+#include "Render/Textures/Texture.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ImfResource.h"
+#include "Resource/PaletteResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "Resource/TextureNames.h"
+
 #include <cstdio>
 #include <cstring>
 
@@ -55,6 +71,61 @@ void UIHairBitmap::ResetCursor(int x, int y) {
 void UIHairBitmap::Slot31(int x, int y) {
   if (this->parent) {
     this->parent->Slot31(x, y);
+  }
+}
+
+// OFFSET: 0x007DB030
+// FUNCTION: fn_09615
+void UINewMakeCharWnd::Paint() {
+  CBitmapRes* background =
+    static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\make_character_ver2\\bg_makeBg.bmp")));
+  this->DrawBitmap(0, 0, &background->image, false);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x2C, 0x11, LookupMessage(0xD1B), 0, 0, 0xC, 0x5F5F5F, 1, 0);
+
+  for (int i = 0; i < 2; ++i) {
+    CImfRes* offsets = static_cast<CImfRes*>(ResourceMgr::Instance().Load(this->m_raceOffsets.c_str()));
+    CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_raceActions[i].c_str()));
+    CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_raceSprites[i].c_str()));
+    const ActionFrame& frame = action->Frame(this->m_action, this->m_frame);
+    POINT offset = offsets->GetLongPoint(i, this->m_action, this->m_frame);
+    const std::uint32_t* palette = sprite->palette;
+
+    if (i == 1) {
+      CActRes* first = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_raceActions[0].c_str()));
+      const ActionFrame& firstFrame = first->Frame(this->m_action, this->m_frame);
+      if (frame.anchorCount != 0 && firstFrame.anchorCount != 0 && frame.anchors[0].unknown_0008 == firstFrame.anchors[0].unknown_0008) {
+        offset.x += firstFrame.anchors[0].x - frame.anchors[0].x;
+        offset.y += firstFrame.anchors[0].y - frame.anchors[0].y;
+      }
+
+      if (this->m_racePaletteEnabled[0] > 0) {
+        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_racePalettes[0].c_str()))->palette;
+      }
+    } else if (this->m_racePaletteEnabled[1] > 0) {
+      palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_racePalettes[1].c_str()))->palette;
+    }
+
+    const SpriteFrameCell& cell = frame.Cell(i);
+    if (cell.image == -1) {
+      continue;
+    }
+
+    const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    SpriteAtlasRecord record{};
+    CTexture* texture;
+    if (cell.imageType == 0) {
+      texture = g_renderer->atlas.Find(image, palette, record);
+      if (!texture) {
+        texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      }
+    } else {
+      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+    }
+
+    this->geometry.surface->DrawSurface(
+      this->m_viewX + offset.x + cell.x, this->m_viewY + offset.y + cell.y, texture, static_cast<int>(record.u0 * 256.0f),
+      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+    );
   }
 }
 
