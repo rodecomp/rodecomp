@@ -65,6 +65,18 @@ CEffect* EffectLists::Find(int actor, int id) const {
   return nullptr;
 }
 
+// OFFSET: 0x00B3A530
+// FUNCTION: fn_18788
+bool EffectLists::Has(int actor, int id) const {
+  return this->Find(actor, id) != nullptr;
+}
+
+// OFFSET: 0x00B3ABE0
+// FUNCTION: fn_18791
+bool EffectLists::HasAllocator(int id) const {
+  return this->allocators.find(id) != this->allocators.end();
+}
+
 // OFFSET: 0x00B3B040
 // FUNCTION: fn_18794
 void EffectLists::Render() {

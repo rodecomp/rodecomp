@@ -12,9 +12,11 @@
 #include "Contents/Actors/EffectActors.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EnergyOrbEffect.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/Effects/TetraBallEffect.h"
 #include "Contents/GuildMgr.h"
+#include "Contents/MapSkyMgr.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Skills/SkillInfo.h"
@@ -24,8 +26,10 @@
 #include "Render/Renderer.h"
 #include "Render/SpriteQuad.h"
 #include "Render/TextureQuad.h"
+#include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/Models/GrannyModelResource.h"
+#include "Resource/EmblemResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
@@ -80,6 +84,14 @@ private:
 
 }
 
+struct GrannyActorLight {
+  /* 0000 */ vector3d direction;
+  /* 000C */ int intensity;
+  /* 0010 */ int red;
+  /* 0014 */ int green;
+  /* 0018 */ int blue;
+};
+
 class C3dGrannyGameActor : public CGameActor {
 public:
   explicit C3dGrannyGameActor(const char* name);
@@ -89,8 +101,11 @@ public:
   int Slot37() override;
   void Unused6860(int value);
   void Unused7950(int value);
+  void Render(int argument) override;
+  void RenderLit(int argument, const GrannyActorLight& light);
+  void RenderShadowed(int argument);
 
-  /* 0410 */ int unknown_0410;
+  /* 0410 */ CTexture* emblemTexture;
   /* 0414 */ C3dGrannyModelRes* model;
   /* 0418 */ granny_model_instance* instance;
   /* 041C */ RenderCommand* commands[30];
@@ -98,9 +113,11 @@ public:
   /* 050C */ granny_system_clock clock;
   /* 051C */ granny_system_clock lastClock;
   /* 052C */ float unknown_052C;
-  /* 0530 */ unsigned char unknown_0530[0x0C];
+  /* 0530 */ unsigned char unknown_0530[0x08];
+  /* 0538 */ float angle;
   /* 053C */ unsigned char alpha;
-  /* 053D */ unsigned char unknown_053D[0x07];
+  /* 053D */ unsigned char unknown_053D[0x03];
+  /* 0540 */ unsigned brightness;
   /* 0544 */ int motion;
   /* 0548 */ unsigned char unknown_0548[0x04];
   /* 054C */ char name[0x104];
@@ -108,7 +125,12 @@ public:
   /* 0654 */ int unknown_0654;
   /* 0658 */ granny_control* controls[20];
   /* 06A8 */ unsigned char unknown_06A8;
-  /* 06A9 */ unsigned char unknown_06A9[0x70F];
+  /* 06A9 */ unsigned char unknown_06A9[0x03];
+  /* 06AC */ CTexture* meshTextures[30];
+  /* 0724 */ std::uint16_t* meshIndices[30];
+  /* 079C */ int meshTriangleCounts[30];
+  /* 0814 */ matrix meshTransforms[30];
+  /* 0DB4 */ unsigned char unknown_0DB4[0x04];
   /* 0DB8 */ CTexture* texture;
   /* 0DBC */ std::vector<vector3d> unknown_0DBC;
 };
@@ -150,6 +172,10 @@ static_assert(offsetof(C3dGrannyGameActor, name) == 0x54C);
 static_assert(offsetof(C3dGrannyGameActor, unknown_0650) == 0x650);
 static_assert(offsetof(C3dGrannyGameActor, unknown_06A8) == 0x6A8);
 static_assert(offsetof(C3dGrannyGameActor, texture) == 0xDB8);
+static_assert(offsetof(C3dGrannyGameActor, angle) == 0x538);
+static_assert(offsetof(C3dGrannyGameActor, brightness) == 0x540);
+static_assert(offsetof(C3dGrannyGameActor, meshTextures) == 0x6AC);
+static_assert(offsetof(C3dGrannyGameActor, meshTransforms) == 0x814);
 static_assert(offsetof(C3dGrannyGameActor, unknown_0DBC) == 0xDBC);
 static_assert(offsetof(CGrannyCorpse3d, tick) == 0x140);
 static_assert(offsetof(CGrannyCorpse3d, alpha) == 0x148);
@@ -1786,7 +1812,7 @@ C3dGrannyGameActor::C3dGrannyGameActor(const char* name) {
   for (int index = 0; index < 20; ++index) {
     this->controls[index] = nullptr;
   }
-  this->unknown_0410 = 0;
+  this->emblemTexture = nullptr;
   this->texture = CreateTexture(35, 35, 1, false, false);
   this->unknown_0DBC.resize(4900);
 }
@@ -2281,4 +2307,331 @@ bool CGameActor::IsSkillWithoutAction(int skillId) {
 // FUNCTION: fn_21198
 int ReturnZero() {
   return 0;
+}
+
+// OFFSET: 0x00CC5D80
+// FUNCTION: fn_21182
+void C3dGrannyGameActor::Render(int argument) {
+  this->unknown_0DBC.clear();
+  this->clock = GrannyGetSystemSeconds();
+  const float elapsed = GrannyGetSecondsElapsed(&this->lastClock, &this->clock) * 2.0f;
+  this->unknown_052C += elapsed;
+  this->model->Animate(this->unknown_052C, this->instance);
+  this->lastClock = this->clock;
+
+  if (this->motion == 2 && this->controls[2] != nullptr && GrannyGetControlDurationLeft(this->controls[2]) <= 0.0f) {
+    this->motion = 0;
+    this->controls[this->motion] = this->model->PlayAnimation(0, this->instance, this->controls[0], 0);
+  }
+
+  GrannyActorLight light;
+  light.direction = g_weatherEffect.GetWindDirection();
+  light.red = 200;
+  light.green = 200;
+  light.blue = 200;
+  light.intensity = 0x80;
+  if (this->unknown_0650 == 1 || this->unknown_0650 == 2) {
+    return;
+  }
+
+  if (this->unknown_02E0 == 2) {
+    this->RenderShadowed(argument);
+  } else {
+    this->RenderLit(argument, light);
+  }
+}
+
+// OFFSET: 0x00CC7180
+// FUNCTION: fn_21186
+void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) {
+  const matrix& view = *reinterpret_cast<const matrix*>(argument);
+  CTexture* texture = nullptr;
+  std::uint16_t* indices = nullptr;
+  if (this->render.accountId == 0xFFFFFFFF) {
+    return;
+  }
+
+  CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  const float sine = ClientSine(static_cast<int>(this->angle));
+  const float cosine = ClientCosine(static_cast<int>(this->angle));
+  scene->terrain->Grid().Height(
+    cosine * 0.0f - sine * -40.0f + this->render.position.x, sine * 0.0f - cosine * 40.0f + this->render.position.z
+  );
+  scene->terrain->Grid().Height(
+    cosine * 0.0f - sine * 40.0f + this->render.position.x, cosine * 40.0f + sine * 0.0f + this->render.position.z
+  );
+
+  matrix transform;
+  std::memcpy(transform.values, g_identityMatrix, sizeof(g_identityMatrix));
+  matrix rotation;
+  rotation.MakeXRotation(std::strstr(this->name, "90") != nullptr ? 1.570796f : 3.141592f);
+  rotation.AppendYRotation((this->angle + 180.0f) / 180.0f * 3.141592f);
+  vector3d position;
+  position.x = this->render.position.x - 2.0f;
+  position.y = this->render.position.y;
+  position.z = this->render.position.z - 2.0f;
+  rotation.AppendTranslate(&position.x);
+
+  float screenX;
+  float screenY;
+  float reciprocalDepth;
+  g_renderer->ProjectViewport(&this->render.position.x, view.values, &screenX, &screenY, &reciprocalDepth);
+
+  matrix inverse;
+  inverse.MakeInverse(view);
+  float lightX =
+    light.direction.x * inverse.values[0] + light.direction.y * inverse.values[3] + light.direction.z * inverse.values[6] + inverse.values[9];
+  float lightY =
+    light.direction.x * inverse.values[1] + light.direction.y * inverse.values[4] + light.direction.z * inverse.values[7] + inverse.values[10];
+  float lightZ =
+    light.direction.x * inverse.values[2] + light.direction.y * inverse.values[5] + light.direction.z * inverse.values[8] + inverse.values[11];
+  const float scale = 1.0f / SquareRoot(lightY * lightY + lightX * lightX + lightZ * lightZ);
+  lightX *= scale;
+  lightY *= scale;
+  lightZ *= scale;
+
+  float bounds[5];
+  bounds[0] = static_cast<float>(g_renderer->viewport.width);
+  bounds[1] = static_cast<float>(g_renderer->viewport.height);
+  bounds[2] = 0.0f;
+  bounds[3] = 0.0f;
+  bounds[4] = reciprocalDepth;
+
+  for (int mesh = 0; mesh < this->model->instance->meshCount; ++mesh) {
+    this->model->deformBuffer = this->vertices[mesh];
+    int triangleCount;
+    const GrannyPNT332Vertex* source = static_cast<const GrannyPNT332Vertex*>(
+      this->model->GetMeshRenderData(mesh, &texture, &indices, &triangleCount, &transform, nullptr)
+    );
+    if (source == nullptr || texture == nullptr) {
+      continue;
+    }
+
+    matrix local;
+    local.Compose(transform, rotation);
+    matrix world;
+    world.Compose(local, view);
+
+    if (this->unknown_025C == 0x49D && mesh == 28) {
+      this->LaunchEffect(0x175, vector3d{source[64].position[0], source[64].position[1], source[64].position[2]}, -this->angle);
+    }
+
+    RenderCommand* command;
+    int vertexCount = 0;
+    for (int triangle = 0; triangle < triangleCount; ++triangle) {
+      command = this->commands[mesh];
+      for (int corner = 0; corner < 3; ++corner) {
+        RenderVertex& output = command->vertices[vertexCount];
+        const GrannyPNT332Vertex& vertex = source[indices[vertexCount]];
+        ++vertexCount;
+        position.x = vertex.position[0];
+        position.y = vertex.position[1];
+        position.z = vertex.position[2];
+        g_renderer->viewport.Projection().Project(&position.x, world.values, output);
+        output.u = vertex.uv[0];
+        output.v = vertex.uv[1];
+        const float shade = lightX * vertex.normal[0] + lightY * vertex.normal[1] + lightZ * vertex.normal[2];
+        this->brightness = static_cast<unsigned>(
+          std::max(0.0f, std::min(1.0f, shade)) * static_cast<float>(light.intensity) + static_cast<float>(0xFF - light.intensity)
+        );
+        output.diffuse = (((light.green + 0x38 + this->brightness) << 8) & 0xFF00) +
+                         (((light.red + 0x38 + this->brightness) << 16) & 0xFF0000) +
+                         static_cast<unsigned char>(light.blue + 0x38 + this->brightness) + (this->alpha << 24);
+      }
+
+      this->unknown_0DBC.push_back(position);
+    }
+
+    command->texture = texture;
+    command->vertexCount = vertexCount;
+    g_renderer->queues.Submit(command, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    this->meshTextures[mesh] = texture;
+    this->meshIndices[mesh] = indices;
+    this->meshTriangleCounts[mesh] = triangleCount;
+    this->meshTransforms[mesh] = transform;
+  }
+
+  if (this->model->ProjectBounds(bounds, view, rotation, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.eye)) {
+    this->SetRenderInfo(bounds, screenX, screenY);
+  } else {
+    this->SetTlvert(screenX, screenY);
+  }
+}
+
+// OFFSET: 0x00CC68F0
+// FUNCTION: fn_21185
+void C3dGrannyGameActor::RenderShadowed(int argument) {
+  const matrix& view = *reinterpret_cast<const matrix*>(argument);
+  CTexture* texture = nullptr;
+  std::uint16_t* indices = nullptr;
+  if (this->render.accountId == 0xFFFFFFFF) {
+    return;
+  }
+
+  this->brightness = (this->alpha << 24) + 0xFFFFFF;
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  matrix transform;
+  std::memcpy(transform.values, g_identityMatrix, sizeof(g_identityMatrix));
+  matrix rotation;
+  rotation.MakeXRotation(std::strstr(this->name, "90") != nullptr ? 1.570796f : 3.141592f);
+  rotation.AppendYRotation((this->angle + 180.0f) / 180.0f * 3.141592f);
+  rotation.AppendTranslate(&this->render.position.x);
+  matrix spin;
+  spin.MakeZRotation(this->angle / 180.0f * 3.141592f);
+  matrix world;
+  world.Compose(rotation, view);
+
+  vector3d position{0.0f, 0.0f, 0.0f};
+  vector3d light{0.0f, 0.0f, 0.0f};
+  mode->camera->frame.Forward(mode->camera->camera, &light.x);
+  const vector3d direction = light;
+  light.x = direction.y * view.values[3] + direction.x * view.values[0] + direction.z * view.values[6] + view.values[9];
+  light.y = direction.y * view.values[4] + direction.x * view.values[1] + direction.z * view.values[7] + view.values[10];
+  light.z = direction.y * view.values[5] + direction.x * view.values[2] + direction.z * view.values[8] + view.values[11];
+  const float scale = 1.0f / SquareRoot(light.y * light.y + light.x * light.x + light.z * light.z);
+  light.x *= scale;
+  light.y *= scale;
+  light.z *= scale;
+
+  float screenX;
+  float screenY;
+  float reciprocalDepth;
+  g_renderer->ProjectViewport(&this->render.position.x, view.values, &screenX, &screenY, &reciprocalDepth);
+
+  float bounds[5];
+  bounds[0] = static_cast<float>(g_renderer->viewport.width);
+  bounds[1] = static_cast<float>(g_renderer->viewport.height);
+  bounds[2] = 0.0f;
+  bounds[3] = 0.0f;
+  bounds[4] = reciprocalDepth;
+
+  RenderCommand* command;
+  for (int mesh = 0; mesh < this->model->instance->meshCount; ++mesh) {
+    this->model->deformBuffer = this->vertices[mesh];
+    int triangleCount;
+    const GrannyPNT332Vertex* source = static_cast<const GrannyPNT332Vertex*>(
+      this->model->GetMeshRenderData(mesh, &texture, &indices, &triangleCount, &transform, nullptr)
+    );
+    if (source == nullptr) {
+      continue;
+    }
+
+    if (this->unknown_025C == 0x49D && mesh == 28) {
+      this->LaunchEffect(0x175, vector3d{source[64].position[0], source[64].position[1], source[64].position[2]}, -this->angle);
+    }
+
+    int vertexCount = 0;
+    for (int triangle = 0; triangle < triangleCount; ++triangle) {
+      command = this->commands[mesh];
+      for (int corner = 0; corner < 3; ++corner) {
+        RenderVertex& output = command->vertices[vertexCount];
+        const GrannyPNT332Vertex& vertex = source[indices[vertexCount]];
+        ++vertexCount;
+        position.x = vertex.position[0];
+        position.y = vertex.position[1];
+        position.z = vertex.position[2];
+        g_renderer->viewport.Projection().Project(&position.x, world.values, output);
+        output.u = vertex.uv[0];
+        output.v = vertex.uv[1];
+        const float shade = light.y * vertex.normal[1] + light.x * vertex.normal[0] + light.z * vertex.normal[2];
+        this->brightness = static_cast<unsigned>(std::max(0.0f, std::min(1.0f, shade)) * 100.0f + 155.0f);
+        output.diffuse = static_cast<unsigned char>(this->brightness) * 0x10101 + (this->alpha << 24);
+      }
+    }
+
+    const vector3d corner = position;
+    position.y = spin.values[4] * corner.y + spin.values[1] * corner.x + spin.values[7] * corner.z + spin.values[10];
+    position.x = spin.values[0] * corner.x + spin.values[3] * corner.y + spin.values[6] * corner.z + spin.values[9] +
+                 static_cast<float>(static_cast<int>(this->render.position.x) % 5);
+    position.z = spin.values[5] * corner.y + spin.values[2] * corner.x + spin.values[8] * corner.z + spin.values[11] +
+                 static_cast<float>(static_cast<int>(this->render.position.z) % 5);
+    this->unknown_0DBC.push_back(position);
+
+    CTexture* meshTexture;
+    if (mesh == 1) {
+      const std::string name = g_guildMgr->GetEmblemFilename(this->Slot50());
+      CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
+      if (emblem != nullptr) {
+        if (this->emblemTexture == nullptr) {
+          this->emblemTexture = g_texMgr.Upload(24, 24, emblem->gif.image.pixels, 0, 0, false, false, false);
+        } else {
+          this->emblemTexture->Upload(0, 0, 24, 24, emblem->gif.image.pixels, 0, 0);
+        }
+      }
+
+      meshTexture = this->emblemTexture;
+    } else {
+      meshTexture = texture;
+    }
+
+    command->texture = meshTexture;
+    command->vertexCount = vertexCount;
+    if (meshTexture != nullptr) {
+      g_renderer->queues.Submit(command, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    }
+  }
+
+  if (this->model->ProjectBounds(bounds, view, rotation, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.eye)) {
+    this->SetRenderInfo(bounds, screenX, screenY);
+  } else {
+    this->SetTlvert(screenX, screenY);
+  }
+}
+
+// OFFSET: 0x00CC3E50
+// FUNCTION: fn_21156
+void CGameActor::SetCharm(int type, int count) {
+  this->SendMsg(this, 0x6D, 0, 0x2E1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, 0x2E2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, 0x2DF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, 0x6D, 0, 0x2E0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  if (count <= 0 || StateFlag01(this->Slot13()) || StateFlag02(this->Slot13())) {
+    return;
+  }
+
+  this->charmType = type;
+  this->unknown_03D0 = count;
+  if (!g_effectMgr->HasAllocator(0xE4)) {
+    int effectId;
+    if (type == 1) {
+      effectId = 0x2E1;
+    } else if (type == 2) {
+      effectId = 0x2E2;
+    } else if (type == 3) {
+      effectId = 0x2DF;
+    } else if (type == 4) {
+      effectId = 0x2E0;
+    } else {
+      effectId = 0xE4;
+    }
+
+    CRagEffect* effect = this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    vector3d position{static_cast<float>(count), 0.0f, 0.0f};
+    if (effect != nullptr) {
+      effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+    }
+    return;
+  }
+
+  int effectId;
+  if (type == 1) {
+    effectId = 0x2E1;
+  } else if (type == 2) {
+    effectId = 0x2E2;
+  } else if (type == 3) {
+    effectId = 0x2DF;
+  } else if (type == 4) {
+    effectId = 0x2E0;
+  } else if (type == 5) {
+    effectId = 0xE4;
+  } else {
+    return;
+  }
+
+  CEffect* effect = g_effectMgr->Spawn(
+    this->render.accountId, effectId, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0
+  );
+  if (effect != nullptr) {
+    static_cast<CEnergyOrbEffect*>(effect)->SetCount(count);
+  }
 }

@@ -33,6 +33,8 @@ public:
   CEffect* Find(int actor, int id) const;
   CEffect* Find(int actor, int instance, int id) const;
   CEffect* At(int id, unsigned index) const;
+  bool Has(int actor, int id) const;
+  bool HasAllocator(int id) const;
   void Add(int actor, CEffect* effect);
   void Retire(CEffect* effect, unsigned char removeActive);
   void Retire(int actor, int id);
