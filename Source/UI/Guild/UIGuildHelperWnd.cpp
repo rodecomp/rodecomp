@@ -276,3 +276,22 @@ void UICreateGuildWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x00958990
+// FUNCTION: fn_13058
+void UIGuildHelperWnd::Slot15(int width, int height) {
+  const std::string prefix("유저인터페이스\\guild_helper\\");
+  const char* names[3][3] = {{"btn_help", "btn_help_a", "btn_help_b"}, {"create_guild", "create_guild_a", "create_guild_b"}, {"btn_ok", "btn_ok_a", "btn_ok_b"}};
+  int ids[3] = {343, 448, 184};
+
+  int x = 8;
+  for (int i = 0; i < 3; ++i) {
+    this->m_button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+    this->m_button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+    this->m_button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+    this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
+    this->m_button->Move(i < 2 ? x : width - 52, height - 24);
+    this->m_button->SetId(ids[i]);
+    this->AddChild(this->m_button);
+    x += 62;
+  }
+}
