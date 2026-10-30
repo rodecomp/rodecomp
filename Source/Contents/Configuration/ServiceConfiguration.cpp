@@ -300,3 +300,38 @@ void LoadLoadingScreens(int count) {
 }
 
 // OFFSET: 0x00AD1270
+// FUNCTION: fn_17810
+void sub_AD1270() {
+  if (ResourceExists("etcinfo.txt", 0)) {
+    CCommonObject storage;
+    g_loadingScreens.clear();
+
+    std::vector<char*> tokens;
+    EtcInfoBytes file;
+    storage.LoadTokens(tokens, "etcinfo.txt", 0, file);
+
+    for (auto token = tokens.begin(); token != tokens.end(); ++token) {
+      if (std::strcmp(*token, "loadingscreen") == 0) {
+        const int count = std::atoi(token[1]);
+        if (count > 0) {
+          LoadLoadingScreens(count);
+        }
+      } else if (std::strcmp(*token, "event") == 0) {
+        if (std::atoi(token[1]) > 0) {
+          g_pakRegistry.Add("event.grf");
+        }
+      } else if (std::strcmp(*token, "weather") == 0) {
+        std::string mapName(token[1]);
+        token += 2;
+        std::string weather(*token);
+        LowercaseText(mapName);
+        LowercaseText(weather);
+        g_weatherEffect.AddMapWeather(mapName, weather);
+      }
+    }
+  }
+
+  if (g_loadingScreens.empty()) {
+    LoadLoadingScreens(0);
+  }
+}
