@@ -34,24 +34,32 @@ struct EnchantInfo {
   /* 0060 */ std::map<uint32_t, EnchantOptionInfo> options;
 };
 
+struct EnchantRequest {
+  /* 0000 */ int16_t packetType;
+  /* 0008 */ uint64_t group;
+  /* 0010 */ int16_t index;
+  /* 0012 */ int16_t slot;
+};
+
 class CEnchantMgr : public Singleton<CEnchantMgr> {
 public:
   /* 0004 */ std::map<EnchantKey, EnchantInfo> m_enchants;
   /* 000C */ CLuaInstance m_lua;
   /* 0014 */ int32_t m_unknown_0014;
-  /* 0018 */ int16_t m_unknown_0018;
-  /* 001A */ int16_t m_unknown_001A;
-  /* 001C */ int32_t m_unknown_001C;
-  /* 0020 */ int32_t m_unknown_0020;
-  /* 0024 */ int32_t m_unknown_0024;
-  /* 0028 */ int16_t m_unknown_0028;
-  /* 002A */ int16_t m_unknown_002A;
-  /* 002C */ int32_t m_unknown_002C;
+  /* 0018 */ EnchantRequest m_request;
   /* 0030 */ bool m_unknown_0030;
   /* 0031 */ uint8_t m_unknown_0031[7];
 
   CEnchantMgr();
   virtual ~CEnchantMgr();
+
+  void SendCloseEnchant();
+  void RequestPerfectEnchant(uint64_t group, int16_t index, int16_t slot, int32_t itemId);
+  void RequestRandomEnchant(uint64_t group, int16_t index, int16_t slot);
+  void RequestResetEnchant(uint64_t group, int16_t index);
+  void RequestUpgradePerfectEnchant(uint64_t group, int16_t index, int16_t slot, int32_t itemId);
+  void RequestUpgradeEnchant(uint64_t group, int16_t index, int16_t slot);
+  void RequestUpgradeRandomEnchant(uint64_t group, int16_t index, int16_t slot);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -62,11 +70,11 @@ static_assert(sizeof(CEnchantMgr) == 0x38);
 static_assert(offsetof(CEnchantMgr, m_enchants) == 0x04);
 static_assert(offsetof(CEnchantMgr, m_lua) == 0x0C);
 static_assert(offsetof(CEnchantMgr, m_unknown_0014) == 0x14);
-static_assert(offsetof(CEnchantMgr, m_unknown_0018) == 0x18);
-static_assert(offsetof(CEnchantMgr, m_unknown_0020) == 0x20);
-static_assert(offsetof(CEnchantMgr, m_unknown_0024) == 0x24);
-static_assert(offsetof(CEnchantMgr, m_unknown_0028) == 0x28);
-static_assert(offsetof(CEnchantMgr, m_unknown_002A) == 0x2A);
+static_assert(sizeof(EnchantRequest) == 0x18);
+static_assert(offsetof(EnchantRequest, group) == 0x08);
+static_assert(offsetof(EnchantRequest, index) == 0x10);
+static_assert(offsetof(EnchantRequest, slot) == 0x12);
+static_assert(offsetof(CEnchantMgr, m_request) == 0x18);
 static_assert(offsetof(CEnchantMgr, m_unknown_0030) == 0x30);
 #endif
 
