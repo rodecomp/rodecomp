@@ -464,6 +464,16 @@ CAES::CAES(int keyLength, int blockSize) : m_bKeyInit(false) {
 }
 
 // OFFSET: 0x00B0A550
+// FUNCTION: fn_18391
+CAES::~CAES() {
+  SecureZeroMemory(this->m_Ke, sizeof(this->m_Ke));
+  SecureZeroMemory(this->m_Kd, sizeof(this->m_Kd));
+  SecureZeroMemory(this->m_chain0, sizeof(this->m_chain0));
+  SecureZeroMemory(this->m_chain, sizeof(this->m_chain));
+  SecureZeroMemory(this->tk, sizeof(this->tk));
+  SecureZeroMemory(this->a, sizeof(this->a));
+  SecureZeroMemory(this->t, sizeof(this->t));
+}
 
 // OFFSET: 0x00B0A770
 
@@ -476,3 +486,13 @@ CAES::CAES(int keyLength, int blockSize) : m_bKeyInit(false) {
 // OFFSET: 0x00B0B610
 
 // OFFSET: 0x00B0BD70
+// FUNCTION: fn_18398
+void CAES::Xor(unsigned char* destination, const unsigned char* source) {
+  if (!this->m_bKeyInit) {
+    throw std::exception(sm_szErrorMsg1);
+  }
+
+  for (int i = 0; i < this->m_blockSize; ++i) {
+    destination[i] ^= source[i];
+  }
+}
