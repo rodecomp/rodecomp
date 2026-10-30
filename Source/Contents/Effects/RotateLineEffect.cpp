@@ -17,7 +17,7 @@ void CRotateLineEffect::Slot03() {
     (*it)->position.z = this->position[2];
     if (CParticle* particle = *it) {
       float& particleAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
-      int& particleSpread = *reinterpret_cast<int*>(particle->unknown_0050);
+      int& particleSpread = particle->unknown_0050;
       if (particle->unknown_000C == 0) {
         this->angle = static_cast<int>(particleAngle);
         this->spread = particleSpread;
