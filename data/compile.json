@@ -813,6 +813,7 @@
   "Source/UI/Edit/EditViewport.cpp": 2,
   "Source/UI/Edit/ItemTagRetirement.cpp": 2,
   "Source/UI/Edit/UICandidateWnd.cpp": 2,
+  "Source/UI/Edit/UIEditBoxEx.cpp": 2,
   "Source/UI/Edit/UIEditCtrl.cpp": 2,
   "Source/UI/Edit/UIEditLinks.cpp": 2,
   "Source/UI/Edit/UIEditVariants.cpp": 2,
