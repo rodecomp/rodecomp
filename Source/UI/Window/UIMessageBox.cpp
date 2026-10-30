@@ -51,7 +51,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include <cstring>
-
+#include "Client/Mode/CGameMode.h"
 #include <cstdio>
 #include <cstdlib>
 #include <windows.h>
@@ -1473,4 +1473,100 @@ void UICntWnd::Slot15(int, int) {
   button->SetId(184);
   this->AddChild(button);
   this->m_message0 = 184;
+}
+
+// OFFSET: 0x008C0B20
+// FUNCTION: fn_11813
+int UIReplayControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 401:
+      g_modeMgr.gameMode->SendMsg(276, 0, 0, 0, 0);
+      return 0;
+    case 402:
+      g_modeMgr.gameMode->SendMsg(277, 0, 0, 0, 0);
+      return 0;
+    case 403:
+      g_modeMgr.gameMode->SendMsg(278, 0, 0, 0, 0);
+      Replay::Instance().speed = 1.0f;
+      return 0;
+    case 404:
+      g_windowMgr.Schedule(this);
+      g_modeMgr.gameMode->SendMsg(281, 0, 0, 0, 0);
+      Replay::Instance().speed = 1.0f;
+      return 0;
+    case 405:
+      g_modeMgr.gameMode->SendMsg(279, 0, 0, 0, 0);
+      this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+      return 0;
+    case 406:
+      g_modeMgr.gameMode->SendMsg(280, 0, 0, 0, 0);
+      this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+      return 0;
+    }
+    return 0;
+  case 35:
+    if (!this->m_paused) {
+      this->m_playButton->Move(-100, -100);
+      this->m_pauseButton->Move(5, 89);
+      this->m_paused = true;
+    } else {
+      this->m_playButton->Move(5, 89);
+      this->m_pauseButton->Move(-100, -100);
+      this->m_paused = false;
+    }
+    this->Invalidate();
+    this->InvalidateChildren();
+    return 0;
+  case 60:
+    this->RefreshInfo();
+    return 0;
+  case 251:
+    return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+}
+
+// OFFSET: 0x008C3110
+// FUNCTION: fn_11822
+bool UIReplayControlWnd::RefreshInfo() {
+  const int seconds = static_cast<int>(Replay::Instance().elapsed) / 1000;
+  const int minutes = seconds / 60;
+  const ReplayTime duration = Replay::Instance().Duration();
+  char text[100];
+  std::memset(text, 0, sizeof(text));
+  std::sprintf(text, LookupMessage(1955), minutes / 60, minutes % 60, seconds % 60, duration.hours, duration.minutes, duration.seconds);
+  this->m_texts[0]->SetTextFitted(text);
+
+  std::memset(text, 0, sizeof(text));
+  const int level = Replay::Instance().SpeedLevel();
+  int speedMessage;
+  if (level == 1) {
+    speedMessage = 1956;
+  } else if (level == 2) {
+    speedMessage = 1957;
+  } else if (level == 3) {
+    speedMessage = 1958;
+  } else if (level == 4) {
+    speedMessage = 1959;
+  } else if (level == 5) {
+    speedMessage = 1960;
+  } else if (level == 6) {
+    speedMessage = 1961;
+  } else {
+    speedMessage = (level != 7) + 1962;
+  }
+  std::sprintf(text, LookupMessage(speedMessage));
+  this->m_texts[1]->SetTextFitted(text);
+
+  std::string location;
+  if (g_modeMgr.gameMode != nullptr) {
+    location = static_cast<CGameMode*>(g_modeMgr.gameMode)->LocationText();
+  }
+  this->m_texts[3]->SetTextFitted(location.c_str());
+  this->Invalidate();
+  this->InvalidateChildren();
+  return true;
 }
