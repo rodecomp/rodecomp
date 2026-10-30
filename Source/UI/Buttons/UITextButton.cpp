@@ -1010,6 +1010,33 @@ void UITreeView::Slot35(int value) {
   }
 }
 
+// OFFSET: 0x00897A10
+// FUNCTION: fn_11538
+void UITreeView::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->verticalBar->Move(this->geometry.width - 10, 0);
+  this->verticalBar->Resize(this->verticalBar->geometry.width, height);
+  this->Slot53();
+}
+
+// OFFSET: 0x008961F0
+// FUNCTION: fn_11516
+void UITreeView::Slot53() {
+  const int visible = this->geometry.height / this->itemHeight;
+  const int count = this->itemCount;
+  const int excess = count - visible;
+  const int overflow = excess < 0 ? 0 : excess;
+  this->verticalOverflow = overflow != 0;
+  this->verticalBar->SetRange(overflow, visible, count);
+
+  if (!overflow) {
+    this->unknown_00A8 = 0;
+    this->itemCount = 0;
+  }
+
+  this->verticalBar->Invalidate();
+}
+
 // OFFSET: 0x00892F90
 // FUNCTION: fn_11502
 void UITabControl::FillTab(int index, int x, int y, int width, int height, std::uint32_t color) {
