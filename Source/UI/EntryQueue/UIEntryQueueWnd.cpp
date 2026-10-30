@@ -47,6 +47,22 @@ void UIEntryQueueRequestWnd::Slot18() {
 }
 
 // OFFSET: 0x00BA5390
+// FUNCTION: fn_19693
+void UIEntryQueueRequestWnd::Paint() {
+  auto& controls = this->m_entryQueue->text.buttons;
+  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2133), 0);
+  this->DrawPanelBackground(17, 0, "");
+
+  char text[100];
+  std::memset(text, 0, sizeof(text));
+  const int remaining = 20 - static_cast<int>(this->m_elapsed / 1000 % 60);
+  if (remaining < 1) {
+    this->SendMsg(nullptr, 6, 1, 0, 0, 0);
+  }
+
+  std::sprintf(text, LookupMessage(2134), remaining);
+  this->m_countdown->SetText(text, 0);
+}
 
 // OFFSET: 0x00BA5460
 
