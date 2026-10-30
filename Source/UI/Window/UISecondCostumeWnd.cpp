@@ -3,6 +3,105 @@
 #include "Resource/TextureNames.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Client/Session.h"
+#include "Script/LuaScript.h"
+// OFFSET: 0x00949BA0
+// FUNCTION: fn_12885
+void UISecondCostumeWnd::LoadLists() {
+  const int job = g_session.GetDisplayJob();
+  const int sex = g_session.SyncUnknown0E98();
+
+  for (int index = 1;; ++index) {
+    const char* name = nullptr;
+    int value = 0;
+    g_luaScript->Call("_get_DressHeadPaletteList", "dd>sd", sex, index, &name, &value);
+    if (name == nullptr) {
+      break;
+    }
+
+    SecondCostumeEntry entry;
+    entry.name = name;
+    entry.unknown_0018 = value;
+    this->m_entries[0].push_back(entry);
+  }
+
+  for (int index = 1;; ++index) {
+    const char* name = nullptr;
+    int value = 0;
+    g_luaScript->Call("_get_Headstylelist", "dd>sd", sex, index, &name, &value);
+    if (name == nullptr) {
+      break;
+    }
+
+    SecondCostumeEntry entry;
+    entry.name = name;
+    entry.unknown_0018 = value;
+    this->m_entries[1].push_back(entry);
+  }
+
+  for (int index = 1;; ++index) {
+    const char* name = nullptr;
+    int value = 0;
+    g_luaScript->Call("_get_DressBodyPaletteList", "dd>sd", sex, index, &name, &value);
+    if (name == nullptr) {
+      break;
+    }
+
+    SecondCostumeEntry entry;
+    entry.name = name;
+    entry.unknown_0018 = value;
+    this->m_entries[2].push_back(entry);
+  }
+
+  for (int index = 1;; ++index) {
+    const char* name = nullptr;
+    int value = 0;
+    g_luaScript->Call("_get_dresslist", "ddd>sd", sex, job, index, &name, &value);
+    if (name == nullptr) {
+      break;
+    }
+
+    SecondCostumeEntry entry;
+    entry.name = name;
+    entry.unknown_0018 = value;
+    this->m_entries[3].push_back(entry);
+  }
+
+  this->SelectSavedEntries();
+}
+
+// OFFSET: 0x0094A2D0
+// FUNCTION: fn_12886
+void UISecondCostumeWnd::SelectSavedEntries() {
+  unsigned int index;
+  for (index = 0; index < this->m_entries[0].size(); ++index) {
+    if (this->m_entries[0][index].unknown_0018 == g_session.m_headPalette) {
+      break;
+    }
+  }
+  this->m_selected[0] = index < this->m_entries[0].size() ? index : 0;
+
+  for (index = 0; index < this->m_entries[1].size(); ++index) {
+    if (this->m_entries[1][index].unknown_0018 == g_session.m_head) {
+      break;
+    }
+  }
+  this->m_selected[1] = index < this->m_entries[1].size() ? index : 0;
+
+  for (index = 0; index < this->m_entries[2].size(); ++index) {
+    if (this->m_entries[2][index].unknown_0018 == g_session.m_bodyStyle) {
+      break;
+    }
+  }
+  this->m_selected[2] = index < this->m_entries[2].size() ? index : 0;
+
+  for (index = 0; index < this->m_entries[3].size(); ++index) {
+    if (this->m_entries[3][index].unknown_0018 == g_session.m_bodyCostume) {
+      break;
+    }
+  }
+  this->m_selected[3] = index < this->m_entries[3].size() ? index : 0;
+}
 
 // OFFSET: 0x0094EC60
 // FUNCTION: fn_12913

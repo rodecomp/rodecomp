@@ -21,6 +21,8 @@ public:
   __declspec(noinline) void RefreshList(int tab);
   int sub_8D2CE0(bool closeButton, const char* title, int width);
   void sub_948D20(int x, int y);
+  void LoadLists();
+  void SelectSavedEntries();
 
 protected:
   /* 00B4 */ std::uint32_t unknown_00B4;
