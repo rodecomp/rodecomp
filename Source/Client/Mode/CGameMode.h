@@ -91,6 +91,11 @@ public:
   void ReceiveRuneSetGrades(const unsigned char* packet);
   void ReceiveRuneRewardResult(int result, int tagId, std::int64_t id, int step);
   void ReceiveRuneRewardSteps(const unsigned char* packet);
+  void NotifyWindow4F258(int result);
+  void ReceiveNamedResult(std::uint32_t aid, std::string name, int result);
+  void ReceiveBasicInfoResult(unsigned char result);
+  void ReceiveUnknown0454Result(const unsigned char* packet);
+  void ReceiveWindow154Result(std::int16_t value);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

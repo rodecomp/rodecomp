@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
@@ -11,9 +12,11 @@
 #include "Render/Renderer.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
 #include <cstdint>
 #include <cstdio>
+#include <string>
 
 #pragma pack(push, 1)
 struct ActorPairFreezePacket {
@@ -38,7 +41,163 @@ struct ShortValuePacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::int16_t value;
 };
+
+struct ByteValuePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char value;
+};
 #pragma pack(pop)
+
+// OFFSET: 0x00D6AE70
+// FUNCTION: fn_22065
+void CGameMode::NotifyWindow4F258(int result) {
+  UIWindow* window = g_windowMgr.window_4F258;
+  if (!window) {
+    return;
+  }
+
+  switch (result) {
+  case 0:
+    if (!g_windowMgr.modalWindows.empty() && g_windowMgr.modalWindows.back()) {
+      g_windowMgr.unknown_0474 = 188;
+    }
+    break;
+  case 1:
+    window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(2825)), 0, 0, 0);
+    break;
+  case 2:
+    window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(3333)), 0, 0, 0);
+    break;
+  case 3:
+    window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(3332)), 0, 0, 0);
+    break;
+  case 4:
+    window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(3331)), 0, 0, 0);
+    break;
+  case 5:
+    window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(3352)), 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1923)), 0xFF, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D6B950
+// FUNCTION: fn_22071
+void CGameMode::ReceiveNamedResult(std::uint32_t, std::string name, int result) {
+  switch (result) {
+  case 0:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4068)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 1: {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(4069), name.c_str()).c_str()), 0x64FFFF, 0, 0, 0);
+
+    CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    if (scene) {
+      scene->player->LaunchEffect(41, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+  }
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4070)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 3:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4071)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 4:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4072)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 5:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4073)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 6:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4096)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 7:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4000)), 0x64FFFF, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D6BBC0
+// FUNCTION: fn_22073
+void CGameMode::ReceiveBasicInfoResult(unsigned char result) {
+  switch (result) {
+  case 1:
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3956)), 0xFF, 0, 0, 0);
+    if (g_windowMgr.unknown_01E0) {
+      g_windowMgr.unknown_01E0->SendMsg(nullptr, 106, 575, 0, 0, 0);
+    }
+    break;
+  }
+
+  if (g_windowMgr.unknown_01E0) {
+    g_windowMgr.unknown_01E0->SendMsg(nullptr, 106, 575, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D6BD40
+// FUNCTION: fn_22075
+void CGameMode::ReceiveUnknown0454Result(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ByteValuePacket*>(data);
+
+  switch (packet->value) {
+  case 0:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2587)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 1:
+    g_modeMgr.GetGameMode()->SendMsg(293, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2597)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 2:
+    g_modeMgr.GetGameMode()->SendMsg(293, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2603)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 3:
+    g_modeMgr.GetGameMode()->SendMsg(293, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2598)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 4:
+    g_modeMgr.GetGameMode()->SendMsg(293, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2599)), 0x64FFFF, 0, 0, 0);
+    break;
+  }
+
+  if (g_windowMgr.unknown_0454) {
+    reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0454)->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D6BFA0
+// FUNCTION: fn_22077
+void CGameMode::ReceiveWindow154Result(std::int16_t value) {
+  switch (value) {
+  case 0: {
+    UIWindow* window = g_windowMgr.LookupWindow(340);
+    if (window) {
+      window->SendMsg(nullptr, 64, 1, 0, 0, 0);
+    }
+    break;
+  }
+  case 1: {
+    UIWindow* window = g_windowMgr.LookupWindow(340);
+    if (window) {
+      window->SendMsg(nullptr, 64, 1, 1, 0, 0);
+    }
+    break;
+  }
+  case 3: {
+    UIWindow* window = g_windowMgr.LookupWindow(340);
+    if (window) {
+      window->SendMsg(nullptr, 64, 1, 3, 0, 0);
+    }
+    break;
+  }
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2517)), 0xFF, 0, 0, 0);
+    break;
+  }
+}
 
 // OFFSET: 0x00D6D200
 // FUNCTION: fn_22087
