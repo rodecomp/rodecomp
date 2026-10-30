@@ -9083,6 +9083,62 @@ void CRagEffect::RingBurstSparks() {
   }
 }
 
+// OFFSET: 0x00C7AB90
+// FUNCTION: fn_20357
+void CRagEffect::WaterBubble(int) {
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 142, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->totalTexture = 117;
+  this->state.unknown_11C84->textures = new CTexture*[this->state.unknown_11C84->totalTexture];
+  char name[64];
+
+  for (int index = 0; index < 30; ++index) {
+    std::sprintf(name, "effect\\W_C_water_%02d.tga", index);
+    this->state.unknown_11C84->textures[index] = g_texMgr.Load(name, 0, false, true, false);
+  }
+
+  for (int index = 0; index < 30; ++index) {
+    std::sprintf(name, "effect\\W_B_water_%02d.tga", index);
+    this->state.unknown_11C84->textures[index + 30] = g_texMgr.Load(name, 0, false, true, false);
+  }
+
+  for (int index = 0; index < 27; ++index) {
+    std::sprintf(name, "effect\\W_bubble%02d.tga", index + 1);
+    this->state.unknown_11C84->textures[index + 60] = g_texMgr.Load(name, 0, false, true, false);
+  }
+
+  for (int index = 0; index < 30; ++index) {
+    std::sprintf(name, "effect\\W_A_water_%02d.tga", index);
+    this->state.unknown_11C84->textures[index + 87] = g_texMgr.Load(name, 0, false, true, false);
+  }
+
+  this->state.unknown_11C84->slots[0].life = 0;
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].alphaB = 230;
+  this->state.unknown_11C84->slots[0].vecBNow.z = 0.0f;
+
+  if (this->state.param[0] < 20.0f) {
+    this->state.unknown_11C84->slots[0].distance = 40.0f;
+  } else {
+    this->state.unknown_11C84->slots[0].distance = this->state.param[0];
+  }
+
+  this->state.unknown_11C84->slots[0].rotStart = static_cast<std::int16_t>(this->state.param[1] >= 360.0f ? 0 : static_cast<int>(this->state.param[1]));
+}
+
 // OFFSET: 0x00C134B0
 
 // GLOBAL: gl_24762

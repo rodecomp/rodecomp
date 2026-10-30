@@ -170,6 +170,7 @@ struct CRagEffect : CRenderObject {
   bool AgilityChange(char increase, const std::string& textureName);
   void CloudSpread();
   void FrostSplash(int, int);
+  void WaterBubble(int);
   void AssassinCloakingClear();
   void TintedRisingSparkles(char);
   void SpriteRing(char kind);
