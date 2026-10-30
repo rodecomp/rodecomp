@@ -21,6 +21,19 @@ extern "C" {
 #include <string>
 #include <windows.h>
 
+namespace EquipmentProperties {
+class CEquipmentPropertiesMgr {
+public:
+  static CEquipmentPropertiesMgr* GetInstance();
+  void sub_6B6E10(const int* param1, const int* param2);
+  void sub_6B6AF0(const int* param1, const int* param2, int param3);
+};
+}
+
+struct SessionMessengerContext {
+  int GetList0Size() const;
+};
+
 // GLOBAL: gl_24845
 CRuneSystemMgr* g_runeSystemMgr;
 
@@ -620,7 +633,7 @@ bool RuneSetData::IsRewardStep(int step) const {
 
 // OFFSET: 0x00767FF0
 // FUNCTION: fn_08151
-bool CRuneSystemMgr::HasRequiredItems(int listId) {
+__declspec(noinline) bool CRuneSystemMgr::HasRequiredItems(int listId) {
   const auto found = this->m_itemLists.find(listId);
   if (found == this->m_itemLists.end()) {
     return false;
@@ -707,10 +720,66 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
   return 1;
 }
 
+// OFFSET: 0x007684C0
+// FUNCTION: fn_08153
+int CRuneSystemMgr::UpdateOwnedDecomItems() {
+  this->m_ownedDecomItems.clear();
+  const auto* session = reinterpret_cast<const SessionMessengerContext*>(&g_session);
+  for (int i = 0; i < session->GetList0Size(); ++i) {
+    ITEM_INFO item = g_session.GetInventoryItemAt(i);
+    if (this->m_itemDecoms.find(std::atoi(item.itemId.c_str())) != this->m_itemDecoms.end()) {
+      this->m_ownedDecomItems.push_back(std::atoi(item.itemId.c_str()));
+    }
+  }
+  return static_cast<int>(this->m_ownedDecomItems.size());
+}
+
 // OFFSET: 0x00768780
 // FUNCTION: fn_08154
 void CRuneSystemMgr::SetCurSlotCount(const int& count) {
   this->m_curSlotCount = count;
+}
+
+// OFFSET: 0x007687B0
+// FUNCTION: fn_08155
+void CRuneSystemMgr::SetCurRuneSet(int tagId, int runeSetId, int grade, int slotCount) {
+  int oldId = 0;
+  if (this->m_curRuneSet != nullptr) {
+    oldId = static_cast<int>(this->m_curRuneSet->m_id);
+    if (this->m_curRuneSet->m_id != runeSetId) {
+      EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
+      const int one = 1;
+      mgr->sub_6B6E10(&one, &oldId);
+    }
+  }
+
+  if (runeSetId == 0) {
+    this->m_curRuneSet = nullptr;
+    return;
+  }
+
+  RuneSetData* runeSet = static_cast<RuneSetData*>(this->FindRune(tagId, 0, runeSetId, nullptr));
+  this->m_curRuneSet = runeSet;
+  if (runeSet != nullptr) {
+    int activeCount = 0;
+    for (RuneData* slot : runeSet->m_slots) {
+      if (slot != nullptr) {
+        activeCount += slot->m_active;
+      }
+    }
+    this->m_curSlotCount = activeCount;
+    if (grade != -1) {
+      runeSet->m_grade = grade;
+    }
+    if (slotCount != -1) {
+      this->m_curSlotCount = slotCount;
+    }
+    if (oldId != runeSetId) {
+      EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
+      const int one = 1;
+      mgr->sub_6B6AF0(&one, &runeSetId, 0);
+    }
+  }
 }
 
 // OFFSET: 0x007688A0

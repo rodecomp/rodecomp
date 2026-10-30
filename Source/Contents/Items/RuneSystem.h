@@ -166,8 +166,10 @@ public:
   void Reset();
   void ClearCurRuneSet();
   void LoadDefaultTag();
-  bool HasRequiredItems(int listId);
+  __declspec(noinline) bool HasRequiredItems(int listId);
   int SendRequest(int packetId, RuneData* rune, int value);
+  int UpdateOwnedDecomItems();
+  void SetCurRuneSet(int tagId, int runeSetId, int grade, int slotCount);
   void SetCurSlotCount(const int& count);
   void SetSelectTag(int tagId);
   void SetRequestPending(bool pending);
