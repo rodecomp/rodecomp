@@ -2755,6 +2755,12 @@ void CSkillAction_HN_NAPALM_VULCAN_STRIKE::Slot08(int level, CGameActor* source)
 }
 
 // OFFSET: 0x00785600
+// FUNCTION: fn_08562
+void CSkillAction_HN_NAPALM_VULCAN_STRIKE::Slot15(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("napalm_vulcan_strike"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
 
 // OFFSET: 0x00785780
 // FUNCTION: fn_08563
