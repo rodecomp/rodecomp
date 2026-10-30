@@ -7,6 +7,7 @@
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindow.h"
 
+#include <list>
 #include <map>
 #include <set>
 #include <vector>
@@ -39,10 +40,20 @@ public:
 
 class UIShowInfoWnd : public UIWindow {
 public:
+  void ResetCheckBoxes();
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  /* 007C */ unsigned char unknown_007C[0x30];
+  /* 007C */ int unknown_007C;
+  /* 0080 */ UICheckBox* m_checks[8];
+  /* 00A0 */ unsigned short unknown_00A0;
+  /* 00A2 */ unsigned char unknown_00A2;
+  /* 00A3 */ unsigned char unknown_00A3[9];
   /* 00AC */ bool m_buyable;
+  /* 00AD */ unsigned char unknown_00AD[4];
+  /* 00B1 */ unsigned short unknown_00B1;
+  /* 00B3 */ unsigned char unknown_00B3;
+  /* 00B4 */ std::list<int> m_list;
+  /* 00BC */ unsigned char unknown_00BC;
 };
 
 class UIStylingshopTabParentWnd : public UIWindow {

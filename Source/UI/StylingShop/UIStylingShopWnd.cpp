@@ -76,6 +76,34 @@ void UICostumeChangeWnd::Paint() {
   this->DrawCenteredText(43, 248, g_session.GetJobName(this->m_display->job, -1), 161, 0, 11, 0, 0);
 }
 
+namespace {
+struct UICheckBoxBitmaps : UICheckBox {
+  void Apply(const char* checked, const char* unchecked) {
+    this->m_checked = checked;
+    this->m_unchecked = unchecked;
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
+    this->geometry.width = bitmap->image.width;
+    this->geometry.height = bitmap->image.height;
+    ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str()));
+  }
+};
+}
+
+// OFFSET: 0x00827670
+// FUNCTION: fn_10328
+void UIShowInfoWnd::ResetCheckBoxes() {
+  for (int i = 0; i < 8; ++i) {
+    this->m_checks[i]->SetChecked(0);
+    static_cast<UICheckBoxBitmaps*>(this->m_checks[i])->Apply(
+        "유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
+  }
+
+  *reinterpret_cast<int*>(this->unknown_00AD) = 0;
+  this->unknown_00B1 = 0;
+  this->unknown_00BC = 0;
+  this->m_list.clear();
+}
+
 // OFFSET: 0x00829F30
 // FUNCTION: fn_10348
 void UIMyStyleWnd::Paint() {
