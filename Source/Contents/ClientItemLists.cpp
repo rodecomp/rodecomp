@@ -1110,3 +1110,39 @@ void ClientItemLists::ResetItems61B8() {
   } while (--count);
   RefreshItemWindows(&g_windowMgr);
 }
+
+// OFFSET: 0x00E2FC50
+// FUNCTION: fn_24164
+ITEM_INFO CSession::FindItemByIdentity(std::uint32_t identity, int location) {
+  if (identity == 0) {
+    return ITEM_INFO(0);
+  }
+
+  ITEM_INFO item = LookupClientItemByIdentity(this->m_inventoryItems, identity);
+  if (item.unknown_0000[1] > 0) {
+    return item;
+  }
+
+  const EquipSlots slots = reinterpret_cast<ClientItemLists*>(&g_session)->GetEquipSlots(location);
+  const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
+
+  for (int index = 0; index < 3; ++index) {
+    const int slot = order[index];
+    if (slot != -1) {
+      if (this->IsCostumeLocation(location)) {
+        item = this->GetItem2B50(slot);
+      } else {
+        item = this->GetItem17F0(slot);
+      }
+      if (item.unknown_0000[1] == identity) {
+        break;
+      }
+    }
+  }
+
+  if (item.unknown_0000[1] != 0) {
+    return item;
+  }
+
+  return ITEM_INFO(0);
+}

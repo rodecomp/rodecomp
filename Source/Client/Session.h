@@ -406,6 +406,7 @@ public:
   bool IsPvpMap();
   ITEM_INFO GetItem2B50(int index) const;
   ITEM_INFO GetItem17F0(int index) const;
+  ITEM_INFO FindItemByIdentity(std::uint32_t identity, int location);
   unsigned char IsAllyActor(std::uint32_t aid, int job);
   const char* Text8104() const;
   const char* Text80EC() const;
