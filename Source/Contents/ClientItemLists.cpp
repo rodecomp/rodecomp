@@ -1204,7 +1204,7 @@ int ClientItemLists::IsDifferentName(const char* name, const char* other) {
 void ClientItemLists::RemoveItem1758ByItemId(ITEM_INFO& item) {
   for (auto it = this->items_1758.begin(); it != this->items_1758.end(); ++it) {
     if (std::atoi(it->itemId.c_str()) == std::atoi(item.itemId.c_str())) {
-      it->itemId = item.itemId;
+      item.itemId = it->itemId;
       it->quantity -= item.quantity;
       if (it->quantity < 1) {
         this->items_1758.erase(it);
@@ -1334,7 +1334,7 @@ bool ClientItemLists::RemoveItem1750(const ITEM_INFO& item, int type, unsigned c
 void ClientItemLists::RemoveItem1758(ITEM_INFO& item) {
   for (auto it = this->items_1758.begin(); it != this->items_1758.end(); ++it) {
     if (it->unknown_0000[1] == item.unknown_0000[1]) {
-      it->itemId = item.itemId;
+      item.itemId = it->itemId;
       it->quantity -= item.quantity;
       if (it->quantity < 1) {
         this->items_1758.erase(it);
