@@ -6059,30 +6059,108 @@ EncryptedName<14, 0x91493751EF33B5FDULL>& PoringSuperNovice2BabySpriteName() {
 }
 
 // OFFSET: 0x00E296D0
+// FUNCTION: fn_24046
+EncryptedName<18, 0x0DF5B33D9F21EB79ULL>& SheepPriestBabySpriteName() {
+  const std::uint8_t source[] = {0xBE, 0x2A, 0x99, 0x31, 0x80, 0x09, 0x33, 0xA3, 0x25, 0x2C, 0xE0, 0x27, 0x93, 0x0E, 0x4F, 0xCB, 0xD7, 0xEB};
+  thread_local EncryptedName<sizeof(source), 0x0DF5B33D9F21EB79ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E297A0
+// FUNCTION: fn_24047
+EncryptedName<14, 0x01E7898D9D235DDFULL>& FoxWizardBabySpriteName() {
+  const std::uint8_t source[] = {0x1F, 0xFA, 0xE3, 0x67, 0x38, 0x6C, 0xBB, 0xC1, 0x78, 0x9D, 0xD9, 0x28, 0x68, 0x89};
+  thread_local EncryptedName<sizeof(source), 0x01E7898D9D235DDFULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E29870
+// FUNCTION: fn_24048
+EncryptedName<14, 0x6961FF056999A303ULL>& PigBlacksmithBabySpriteName() {
+  const std::uint8_t source[] = {0xC2, 0x05, 0x5A, 0xDF, 0xB5, 0x07, 0x3D, 0xA8, 0xA5, 0x60, 0x2F, 0xD9, 0xFD, 0xFF};
+  thread_local EncryptedName<sizeof(source), 0x6961FF056999A303ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E29940
+// FUNCTION: fn_24049
+EncryptedName<14, 0x9DEFC105A1EB2F71ULL>& PigMechanicSpriteName() {
+  const std::uint8_t source[] = {0xC8, 0xE3, 0x2F, 0x68, 0xB1, 0x11, 0xB3, 0x24, 0xBD, 0xEB, 0x22, 0x15, 0xD5, 0xC1};
+  thread_local EncryptedName<sizeof(source), 0x9DEFC105A1EB2F71ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E29A10
+// FUNCTION: fn_24050
+EncryptedName<14, 0xC7FB6DF18577D34BULL>& PigMechanicBabySpriteName() {
+  const std::uint8_t source[] = {0xF2, 0x1F, 0xB3, 0x4C, 0x45, 0xBD, 0xA7, 0x7E, 0x87, 0x17, 0xBE, 0x31, 0x21, 0x6D};
+  thread_local EncryptedName<sizeof(source), 0xC7FB6DF18577D34BULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E29AE0
+// FUNCTION: fn_24051
+EncryptedName<14, 0xBD3F430159B551FDULL>& OstrichRangerSpriteName() {
+  const std::uint8_t source[] = {0x4A, 0xE8, 0x75, 0x97, 0xC0, 0xED, 0x63, 0x0A, 0x44, 0x91, 0x7B, 0x98, 0xAF, 0x43};
+  thread_local EncryptedName<sizeof(source), 0xBD3F430159B551FDULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E29BB0
+// FUNCTION: fn_24052
+EncryptedName<14, 0x2B477F9B5B39B301ULL>& OstrichRangerBabySpriteName() {
+  const std::uint8_t source[] = {0xB6, 0x0A, 0xF9, 0x95, 0x5A, 0xD1, 0x1B, 0x9C, 0xB8, 0x73, 0xF7, 0x9A, 0x35, 0x7F};
+  thread_local EncryptedName<sizeof(source), 0x2B477F9B5B39B301ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E29C80
+// FUNCTION: fn_24053
+EncryptedName<10, 0x5B832361BDA77197ULL>& LionKnightSpriteName() {
+  const std::uint8_t source[] = {0x26, 0x93, 0x1C, 0x5A, 0x3D, 0x92, 0x61, 0xE0, 0x70, 0x71};
+  thread_local EncryptedName<sizeof(source), 0x5B832361BDA77197ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E29D50
+// FUNCTION: fn_24054
+EncryptedName<10, 0xEB3D4FAB0FC183DBULL>& LionKnightBabySpriteName() {
+  const std::uint8_t source[] = {0x6A, 0x61, 0x7A, 0xE8, 0xF7, 0xFE, 0xDF, 0x50, 0x3C, 0x83};
+  thread_local EncryptedName<sizeof(source), 0xEB3D4FAB0FC183DBULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E29E20
+// FUNCTION: fn_24055
+EncryptedName<10, 0xFFBF43D1FFD5FF49ULL>& LionKnightHighSpriteName() {
+  const std::uint8_t source[] = {0xF8, 0x1D, 0x6E, 0x18, 0x8D, 0xF2, 0x5D, 0x44, 0xAE, 0xFF};
+  thread_local EncryptedName<sizeof(source), 0xFFBF43D1FFD5FF49ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E29EF0
+// FUNCTION: fn_24056
+EncryptedName<18, 0xE51B29334D353B81ULL>& LionRoyalGuardSpriteName() {
+  const std::uint8_t source[] = {0x36, 0xF5, 0x8B, 0xAF, 0x83, 0x88, 0xAE, 0x00, 0xDD, 0x8C, 0xFB, 0xF3, 0xD1, 0x99, 0xBA, 0x50, 0x64, 0x3B};
+  thread_local EncryptedName<sizeof(source), 0xE51B29334D353B81ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E29FC0
+// FUNCTION: fn_24057
+EncryptedName<18, 0x8F3F2FA959977F9FULL>& LionRoyalGuardBabySpriteName() {
+  const std::uint8_t source[] = {0x28, 0xB1, 0x29, 0xBB, 0x19, 0x8E, 0x8A, 0x6A, 0xC3, 0xC8, 0x59, 0xE7, 0x4B, 0x9F, 0x9E, 0x3A, 0x7A, 0x7F};
+  thread_local EncryptedName<sizeof(source), 0x8F3F2FA959977F9FULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E2A090
+// FUNCTION: fn_24058
+EncryptedName<18, 0x7FE563BD3FB7F925ULL>& LionRuneKnightSpriteName() {
+  const std::uint8_t source[] = {0x92, 0x10, 0x04, 0x95, 0x7D, 0xAF, 0x23, 0xD1, 0x79, 0x4E, 0x5E, 0x8C, 0x17, 0xA3, 0x29, 0xB9, 0x8B, 0xF9};
+  thread_local EncryptedName<sizeof(source), 0x7FE563BD3FB7F925ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00E2A160
 
