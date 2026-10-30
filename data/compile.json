@@ -543,6 +543,7 @@
   "Source/Contents/RobeTopLayer.cpp": 4,
   "Source/Contents/RouletteMgr.cpp": 4,
   "Source/Contents/Schedule/PartialShutDownSchedule.cpp": 4,
+  "Source/Contents/Schedule/Schedule.cpp": 4,
   "Source/Contents/Schedule/ShutDownSchedule.cpp": 4,
   "Source/Contents/ServerTimeManager.cpp": 4,
   "Source/Contents/ShowRankingScheduler.cpp": 4,
