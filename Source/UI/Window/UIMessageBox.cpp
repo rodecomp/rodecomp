@@ -1125,5 +1125,36 @@ void UIReplayRECControlWnd::UpdateRecordTime() {
 // OFFSET: 0x008BA820
 
 // OFFSET: 0x008C36F0
+// FUNCTION: fn_11830
+void UIChatRoomWnd::SaveChatLog() {
+  int index = 0;
+  char path[2048];
+  std::sprintf(path, "%s\\Chat", g_applicationDirectory);
+  if (_access(path, 0) != 0 && _mkdir(path) != 0) {
+    return;
+  }
+
+  std::string name = this->title;
+  for (unsigned position = 0; position < name.size(); ++position) {
+    const char character = name[position];
+    if (character == '\\' || character == '/' || character == ':' || character == '*' || character == '?' || character == '"' || character == '<' ||
+        character == '>' || character == '|') {
+      name[position] = '_';
+    }
+  }
+
+  std::sprintf(path, "%s\\Chat\\%s.txt", g_applicationDirectory, name.c_str());
+  while (_access(path, 0) == 0) {
+    ++index;
+    std::sprintf(path, "%s\\Chat\\%s%03d.txt", g_applicationDirectory, name.c_str(), index);
+  }
+
+  if (this->history->SaveChatLog(path)) {
+    std::string message = path;
+    message.append(" is Saved.", 10);
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFF00, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x008ABDB0
