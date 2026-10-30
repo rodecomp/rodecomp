@@ -1,4 +1,4 @@
-#include "UI/Edit/UIEditBoxEx.h"
+﻿#include "UI/Edit/UIEditBoxEx.h"
 #include "Network/TextEncoding.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -298,4 +298,47 @@ void CUIEditBoxEx::SetMask(char value) {
 // FUNCTION: fn_14461
 void CUIEditBoxEx::SetText(const std::string& text) {
   this->edit->SetText(text.c_str());
+}
+
+#include <chrono>
+
+// OFFSET: 0x009E4410
+// FUNCTION: fn_14432
+void CUIEditBoxEx::Create(int width, int height, bool withScrollBar) {
+  UIEditContext& edits = this->edit->EditContext();
+  this->RemoveChild(this->edit, 1);
+  CUIEditCtrlEx* edit = new CUIEditCtrlEx(*this->m_context, edits);
+  this->edit = edit;
+  edit->SetSize(width, height);
+  if (withScrollBar) {
+    reinterpret_cast<unsigned char*>(&edit->unknown_0184)[1] = 1;
+  }
+  this->AddChild(edit);
+  this->SetSize(width, height);
+}
+
+// OFFSET: 0x009E45F0
+
+// OFFSET: 0x009E4660
+
+CUIEditCtrlEx::CUIEditCtrlEx(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl3(windows, edit) {
+  this->normalColor = 0;
+  this->unknown_018C = 0;
+  this->unknown_0190 = 0;
+  this->placeholderColor = 0x808080;
+  this->alignment = 0;
+  this->unknown_01B4 = 3;
+  this->verticalPadding = 1;
+  this->selectedAll = 0;
+  this->column = 0;
+  this->line = 0;
+  this->unknown_01D4 = -1;
+  this->unknown_01D8 = 0;
+  this->unknown_01DC = 0;
+  this->caretStart = std::chrono::system_clock::now();
+  this->scrollMaximum = 0;
+  this->visibleLines = 0;
+  this->unknown_01F0 = 1;
+  this->scrollPosition = 0;
+  this->unknown_01F8 = 0;
 }

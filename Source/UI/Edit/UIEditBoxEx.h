@@ -20,6 +20,7 @@ struct EditLine {
 
 class CUIEditCtrlEx : public UIEditCtrl3 {
 public:
+  CUIEditCtrlEx(UIWindowContext& windows, UIEditContext& edit);
   void Paint() override;
   void Invalidate() override;
   void SelectAll() override;
@@ -27,6 +28,11 @@ public:
 
   void RefreshPlaceholder();
   void ResetDragState();
+  void DrawCaret(int x, int y);
+  void PaintTextLines();
+  UIEditContext& EditContext() {
+    return *this->m_edit;
+  }
   int LeadingBytesFitting(const std::string& text, int width);
   int TrailingOffsetFitting(const std::string& text, int width);
 
@@ -60,6 +66,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
+  void Create(int width, int height, bool withScrollBar);
   void ResetSelection();
   void SetCursor(std::size_t position);
   int Length();
