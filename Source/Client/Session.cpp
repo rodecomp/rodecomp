@@ -1660,3 +1660,23 @@ ITEM_INFO CSession::GetItem61B8(int index) const {
 
   return ITEM_INFO(0);
 }
+
+// OFFSET: 0x00DF9400
+// FUNCTION: fn_23514
+void CSession::RefreshHpSpWindows() {
+  if (!g_modeMgr.GetGameMode()) {
+    return;
+  }
+
+  if (g_windowMgr.unknown_01DC) {
+    if (this->unknown_556C < this->unknown_5568 ||
+        *reinterpret_cast<const int*>(&this->unknown_5570[4]) < *reinterpret_cast<const int*>(&this->unknown_5570[0])) {
+      return;
+    }
+
+    reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC)->Invalidate();
+    reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01DC)->InvalidateChildren();
+  }
+
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->NotifyItemBounds();
+}

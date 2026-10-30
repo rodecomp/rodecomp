@@ -641,6 +641,7 @@ public:
   void RefreshItem1768Window(unsigned char alternate, int argument);
   void UpdateUnknown1708(int enabled);
   void RefreshItem1738Window();
+  void RefreshHpSpWindows();
   void EraseRecord0734(int id);
   void IgnoreText(std::string text);
   void SaveMiniPartyInfo();

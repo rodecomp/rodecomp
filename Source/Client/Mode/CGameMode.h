@@ -173,6 +173,7 @@ public:
   void ReceiveItem1740AddOptions(const unsigned char* packet);
   void ReceiveItem1740AddGrade(const unsigned char* packet);
   void ReceiveUnknown05C4Result(const unsigned char* packet);
+  void ReceiveHpSpRecovery(const unsigned char* packet, int variant);
   void StepTowardWalkableCell(const int& targetX, const int& targetY, int& x, int& y);
   void FindWalkableCellToward(float x, float z, float originX, float originZ, int& column, int& row, int distance);
   void RemoveMiniMapPing(std::uint32_t id);

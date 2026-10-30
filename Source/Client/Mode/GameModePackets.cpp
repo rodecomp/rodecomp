@@ -4,6 +4,7 @@
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
+#include "Contents/Effects/EffectActor.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -24,6 +25,10 @@
 #include <cstring>
 #include <string>
 #include <vector>
+
+struct SessionMessengerContext {
+  void UpdateRandomStats();
+};
 
 namespace {
 #pragma pack(push, 1)
@@ -486,3 +491,5 @@ void CGameMode::ReceivePackageSimulation(const unsigned char* packet) {
   std::fprintf(file, "============================\tEND\t============================\n");
   std::fclose(file);
 }
+
+// OFFSET: 0x00D8A300
