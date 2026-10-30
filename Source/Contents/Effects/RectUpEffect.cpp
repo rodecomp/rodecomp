@@ -130,3 +130,45 @@ void CRectUpEffect::Close() {
 }
 
 // OFFSET: 0x0070A260
+// FUNCTION: fn_07099
+void CRectUpEffect::Slot02() {
+  if (this->id != 1088) {
+    return;
+  }
+
+  this->unknown_00E4 = 1880;
+  for (int z = -5; z < 10; z += 5) {
+    for (int x = -5; x < 10; x += 5) {
+      int index = 0;
+      for (int angle = 45; angle <= 405; angle += 90, ++index) {
+        CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+        if (!particle) {
+          continue;
+        }
+
+        particle->unknown_00D0 = static_cast<float>(x);
+        particle->unknown_00D4 = 0.0f;
+        particle->unknown_00D8 = static_cast<float>(z);
+        particle->unknown_0004 = this->id;
+        particle->unknown_000C = index;
+        particle->unknown_0010 = 0;
+        particle->unknown_0008 = 1;
+        particle->unknown_0050 = std::max(rand() % 360, 0);
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
+        particle->unknown_0054 = 0.0f;
+        if (this->id == 1088) {
+          particle->unknown_00C0 = 16.0f;
+          particle->alpha = 120;
+          particle->scale = 3.5f;
+          const int shade = std::max(rand() % 50, 0) + 100;
+          std::memcpy(particle->unknown_0048, &shade, sizeof(shade));
+          particle->unknown_004C = 0;
+        }
+        this->Slot35(particle);
+        InitParticleQuad(particle->vertices);
+        this->particles.push_back(particle);
+      }
+    }
+  }
+}
+
