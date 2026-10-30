@@ -2105,6 +2105,64 @@ void UIMemberListBox::Paint() {
   }
 }
 
+// OFFSET: 0x00888C10
+// FUNCTION: fn_11343
+void UIBasicItemCtrl::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  const char* name = "유저인터페이스\\basic_interface\\itemwin_mid.bmp";
+  if (std::atoi(this->m_item.itemId.c_str()) > 0 && this->m_item.unknown_0000[1] == 0) {
+    name = "유저인터페이스\\ExMacro\\no_item.bmp";
+  }
+
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)))->image, false);
+  this->DrawItemIcon(4, 0, 0, false);
+}
+
+// OFFSET: 0x00888C90
+// FUNCTION: fn_11344
+void UIBasicSkillCtrl::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  bool drawn = false;
+  if (this->m_skillId >= 0) {
+    CSkillInfo skill = this->m_skills->Lookup(static_cast<std::uint32_t>(this->m_skillId));
+    if (skill.available != 0) {
+      drawn = true;
+      if (this->m_level > 0) {
+        skill.level = this->m_level;
+      }
+
+      char text[1024];
+      g_session.ItemBitmapPath(skill.name, text);
+      this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)))->image, true);
+      if (skill.level != 0) {
+        std::sprintf(text, "%d", skill.level);
+        FontCache& fonts = this->m_controls->fonts;
+        const TextLocale& locale = this->m_controls->locale;
+        const int x = this->geometry.width - this->TextWidth(fonts, locale, text, 0, 0, 11, 0, 0);
+        this->DrawTextAt(fonts, locale, x, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(fonts, locale, x - 2, 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(fonts, locale, x - 1, 16, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(fonts, locale, x - 1, 14, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+        this->DrawTextAt(fonts, locale, x - 1, 15, text, 0, 0, 11, 0, 0, 0);
+      }
+    }
+  }
+
+  if (!drawn) {
+    this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\no_skill.bmp")))->image, false);
+  }
+}
+
+// OFFSET: 0x00888EA0
+
+// OFFSET: 0x008894A0
+// FUNCTION: fn_11346
+void UICaptchaImage::Paint() {
+  this->DrawBitmap(0, 0, &this->m_bitmap.image, true);
+}
+
+// OFFSET: 0x00889900
+
 // OFFSET: 0x0088AEC0
 
 // OFFSET: 0x0088F1C0

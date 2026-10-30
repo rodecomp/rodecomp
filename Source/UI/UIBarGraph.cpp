@@ -167,6 +167,8 @@ void UIBarGraphPlayer::Paint() {
   this->DrawCenteredText(0, -2, FormatOwnedString("%3I64d  /  %3I64d", current, maximum).c_str(), this->geometry.width, 1, 13, 0, 0);
 }
 
+// OFFSET: 0x008887A0
+
 // OFFSET: 0x0089CDB0
 // FUNCTION: fn_11593
 void UIBarGraphHomun::SetValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum) {

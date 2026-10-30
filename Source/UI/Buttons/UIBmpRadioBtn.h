@@ -22,6 +22,7 @@ struct UIBmpRadioBtnText {
 
 class UIBmpRadioBtn : public UIWindow {
 public:
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -38,6 +39,7 @@ protected:
   /* 00FC */ int m_value;
   /* 0100 */ std::vector<UIBmpRadioBtnText> m_texts;
   /* 010C */ std::string m_label;
+  bool m_disabled;
 };
 
 class UIBmpRadioBtn2 : public UIBmpRadioBtn {
@@ -48,6 +50,7 @@ public:
 
 class UICaptchaImage : public UIWindow {
 public:
+  void Paint() override;
   void Slot28(int x, int y) override;
 
   /* 007C */ CBitmapRes m_bitmap;

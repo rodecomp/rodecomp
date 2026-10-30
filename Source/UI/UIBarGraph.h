@@ -86,4 +86,9 @@ protected:
   /* 00A8 */ std::function<std::int64_t()> m_maximum;
 };
 
+class UIBarGraphPlayerAP : public UIBarGraphPlayer {
+public:
+  void Paint() override;
+};
+
 #endif
