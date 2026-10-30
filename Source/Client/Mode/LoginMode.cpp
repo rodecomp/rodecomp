@@ -5,9 +5,13 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
+#include "Utility/Cipher/XorBytes.h"
+#include "Utility/Text/FormatString.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <cstdint>
+#include <cstdio>
 #include <cstring>
 #include <ctime>
 #include <string>
@@ -38,6 +42,25 @@ struct CharacterDeletePacket {
   /* 000A */ int remaining;
 };
 
+struct AcceptEnterPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ CharacterSlotExtension extension;
+  /* 0018 */ unsigned char unknown_0018[3];
+  /* 001B */ CharacterInfo characters[1];
+};
+
+struct MapStateInfo {
+  /* 0000 */ int state;
+  /* 0004 */ MapStateData data;
+};
+
+struct MapStatePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ MapStateInfo states[1];
+};
+
 struct CharacterListPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t length;
@@ -46,6 +69,52 @@ struct CharacterListPacket {
 #pragma pack(pop)
 
 static_assert(sizeof(CharacterSlotsPacket) == 0x1D);
+static_assert(offsetof(AcceptEnterPacket, characters) == 0x1B);
+
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  /* 0000 */ std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+
+struct CharacterInfo2SizeErrorFormat {
+  __declspec(noinline) EncryptedName<75, 0xED15938D333D2DB9ULL>& operator()() const;
+};
+
+// OFFSET: 0x00D8CA50
+// FUNCTION: fn_22261
+EncryptedName<75, 0xED15938D333D2DB9ULL>& CharacterInfo2SizeErrorFormat::operator()() const {
+  const std::uint8_t source[] = {0xFA, 0x65, 0x7C, 0x61, 0xCC, 0xD0, 0x41, 0xA8, 0xEB, 0x72, 0x74, 0x7D, 0xCB, 0xDC, 0x27, 0xCD,
+                                 0xCA, 0x44, 0x47, 0x56, 0xAD, 0xF6, 0x67, 0x9F, 0xD6, 0x5F, 0x1C, 0x12, 0xAD, 0xF0, 0x7D, 0x8C,
+                                 0xCB, 0x4C, 0x5E, 0x47, 0xE8, 0xE1, 0x35, 0x83, 0xCC, 0x40, 0x1D, 0x09, 0xAD, 0xB6, 0x71, 0xCD,
+                                 0x99, 0x6E, 0x75, 0x72, 0xDF, 0xD2, 0x56, 0xB9, 0xFC, 0x7F, 0x62, 0x7A, 0xC3, 0xD5, 0x5A, 0xDF,
+                                 0x99, 0x5E, 0x54, 0x49, 0xE8, 0xB3, 0x2F, 0xCD, 0x9C, 0x49, 0x3D};
+  thread_local EncryptedName<sizeof(source), 0xED15938D333D2DB9ULL> name(source);
+  return name;
+}
 
 // OFFSET: 0x00D8D4F0
 // FUNCTION: fn_22265
@@ -217,6 +286,32 @@ void CLoginMode::ReceiveCharacterSlots(const CharacterSlotsPacket* packet) {
   this->slotExtension.unknown_0001 = htonl(this->slotExtension.unknown_0001);
   this->slotExtension.unknown_0005 = htonl(this->slotExtension.unknown_0005);
   this->slotExtension.unknown_0009 = htonl(this->slotExtension.unknown_0009);
+}
+
+// OFFSET: 0x00D8EAC0
+// FUNCTION: fn_22275
+void CLoginMode::ReceiveAcceptEnter(const AcceptEnterPacket* packet, WindowDialogs& dialogs) {
+  this->slotExtension = packet->extension;
+  this->slotExtension.unknown_0001 = htonl(this->slotExtension.unknown_0001);
+  this->slotExtension.unknown_0005 = htonl(this->slotExtension.unknown_0005);
+  this->slotExtension.unknown_0009 = htonl(this->slotExtension.unknown_0009);
+
+  this->characterCount = (packet->length - 27) / sizeof(CharacterInfo);
+  const int remainder = (packet->length - 27) % sizeof(CharacterInfo);
+  memcpy_s(this->characters, sizeof(this->characters), packet->characters, this->characterCount * sizeof(CharacterInfo));
+  if (remainder > 0) {
+    char text[256];
+    memset(text, 0, sizeof(text));
+    const int count = this->characterCount;
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), CharacterInfo2SizeErrorFormat{}().Text(), count, sizeof(CharacterInfo));
+    dialogs.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
+  }
+
+  g_session.unknown_59BC = this->characterCount;
+  for (int i = 0; i < this->characterCount; ++i) {
+    char* mapName = this->characters[i].mapName;
+    strncpy(mapName, g_session.GatName2RswName(mapName), strlen(mapName));
+  }
 }
 
 // OFFSET: 0x00D8EDC0
@@ -398,6 +493,42 @@ void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet, W
   if (!message.empty()) {
     dialogs.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
   }
+}
+
+// OFFSET: 0x00D904B0
+// FUNCTION: fn_22284
+void CLoginMode::ReceiveMapStates(const MapStatePacket* packet, WindowDialogs& dialogs) {
+  const unsigned int count = (packet->length - 4) / sizeof(MapStateInfo);
+  if ((packet->length - 4) % sizeof(MapStateInfo) != 0) {
+    const std::uint8_t source[] = {0xD8, 0xE6, 0x32, 0x48, 0x72, 0x89, 0x4C, 0x11, 0x95, 0xC2, 0x20, 0x55, 0x40, 0x89, 0x4E, 0x0D,
+                                   0xD0, 0xAF, 0x32, 0x4C, 0x69, 0x98, 0x07, 0x0A, 0xDC, 0xF5, 0x24, 0x05, 0x2E, 0xDD, 0x0A, 0x1D,
+                                   0x9C, 0x8F};
+    thread_local EncryptedName<sizeof(source), 0x792FFD1325418FB5ULL> format(source);
+    char text[256];
+    sprintf(text, format.Text(), sizeof(MapStateInfo));
+    dialogs.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
+    this->pendingCursorType = 7;
+    return;
+  }
+
+  this->mapStates.clear();
+  MapStateEntry entry;
+  entry.index = -1;
+  for (int i = 0; i < static_cast<int>(count); ++i) {
+    if (packet->states[i].state == 0) {
+      entry.index = i;
+      entry.data = packet->states[i].data;
+      this->mapStates.push_back(entry);
+    }
+  }
+
+  if (this->mapStates.size() == 0) {
+    dialogs.Confirm(LookupMessage(1811), 0, true, false, 0, "Message", 280, 120, 0);
+    this->pendingCursorType = 7;
+    return;
+  }
+
+  this->pendingCursorType = 30;
 }
 
 // OFFSET: 0x00D91780

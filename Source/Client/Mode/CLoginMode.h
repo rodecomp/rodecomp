@@ -5,11 +5,14 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <vector>
 
 struct CharacterListPacket;
 struct CharacterSlotsPacket;
 struct CharacterResultPacket;
 struct CharacterDeletePacket;
+struct AcceptEnterPacket;
+struct MapStatePacket;
 struct WindowDialogs;
 
 #pragma pack(push, 1)
@@ -17,7 +20,8 @@ struct CharacterInfo {
   /* 0000 */ std::uint32_t gid;
   /* 0004 */ unsigned char unknown_0004[0x86];
   /* 008A */ unsigned char slot;
-  /* 008B */ unsigned char unknown_008B[0x13];
+  /* 008B */ unsigned char unknown_008B[0x3];
+  /* 008E */ char mapName[16];
   /* 009E */ std::int32_t deleteDate;
   /* 00A2 */ unsigned char unknown_00A2[0x0D];
 };
@@ -31,6 +35,15 @@ struct CharacterSlotExtension {
 };
 #pragma pack(pop)
 
+struct MapStateData {
+  /* 0000 */ std::uint32_t values[4];
+};
+
+struct MapStateEntry {
+  /* 0000 */ int index;
+  /* 0004 */ MapStateData data;
+};
+
 class CLoginMode : public CMode {
 public:
   /* 0058 */ unsigned char unknown_0058[0x174];
@@ -43,11 +56,14 @@ public:
   /* 4068 */ CharacterInfo characters[68];
   /* 6EE4 */ unsigned char unknown_6EE4[0x18];
   /* 6EFC */ CharacterSlotExtension slotExtension;
-  /* 6F10 */ unsigned char unknown_6F10[0x6C];
+  /* 6F10 */ unsigned char unknown_6F10[0x58];
+  /* 6F68 */ std::vector<MapStateEntry> mapStates;
+  /* 6F74 */ unsigned char unknown_6F74[0x8];
 
   void SubD8D4F0(int);
   int GetMaxCharacterSlot();
   void ReceiveCharacterSlots(const CharacterSlotsPacket* packet);
+  void ReceiveAcceptEnter(const AcceptEnterPacket* packet, WindowDialogs& dialogs);
   void SubD8EDC0(int);
   void ReceiveCharacterResult(const CharacterResultPacket* packet, WindowDialogs& dialogs);
   void SubD8F560(int);
@@ -55,6 +71,7 @@ public:
   void ReceiveDeleteCharacter(const CharacterDeletePacket* packet, WindowDialogs& dialogs);
   void ReceiveDeleteCancel(const CharacterDeletePacket* packet, WindowDialogs& dialogs);
   void ReceiveDeleteReservation(const CharacterDeletePacket* packet, WindowDialogs& dialogs);
+  void ReceiveMapStates(const MapStatePacket* packet, WindowDialogs& dialogs);
   void SubD91780(int);
 };
 
@@ -64,11 +81,14 @@ const char* GetUserCountText(unsigned short userCount);
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CharacterInfo) == 0xAF);
 static_assert(offsetof(CharacterInfo, slot) == 0x8A);
+static_assert(offsetof(CharacterInfo, mapName) == 0x8E);
+static_assert(sizeof(MapStateEntry) == 0x14);
 static_assert(sizeof(CharacterSlotExtension) == 0x14);
 static_assert(offsetof(CLoginMode, characterCount) == 0x1CC);
 static_assert(offsetof(CLoginMode, unknown_01D8) == 0x1D8);
 static_assert(offsetof(CLoginMode, characters) == 0x4068);
 static_assert(offsetof(CLoginMode, slotExtension) == 0x6EFC);
+static_assert(offsetof(CLoginMode, mapStates) == 0x6F68);
 static_assert(sizeof(CLoginMode) == 0x6F7C);
 #endif
 
