@@ -21,6 +21,8 @@ public:
   void AddColumn(int kind);
   void AddCone(int kind);
   void SpawnParticles();
+  void sub_B67F90(CParticle* particle);
+  void sub_B69E30(vector3d* points);
 
   /* 00CC */ vector3d columnEdge[2];
   /* 00E4 */ vector3d coneEdge[2];

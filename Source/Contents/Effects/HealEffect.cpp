@@ -1,10 +1,14 @@
 #include "Contents/Effects/HealEffect.h"
 
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
+#include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>
 #include <cstdlib>
+#include <string>
 
 // OFFSET: 0x00B67310
 // FUNCTION: fn_19065
@@ -238,6 +242,63 @@ void CHealEffect::AddCone(int kind) {
       this->coneParticles.push_back(particle);
     }
   }
+}
+
+// OFFSET: 0x00B67F90
+// FUNCTION: fn_19070
+void CHealEffect::sub_B67F90(CParticle* particle) {
+  if (!particle) {
+    return;
+  }
+
+  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (std::string(gameMode->mapName) == "ecl_fild01.rsw") {
+    if (particle->alpha > 100) {
+      particle->alpha = 100;
+    }
+  }
+
+  const float scale = particle->scale;
+  vector3d points[4] = {};
+
+  const int angle = particle->unknown_0050;
+  points[0].x = scale * g_cosTable[angle % 360];
+  points[0].y = 0.0f;
+  points[0].z = scale * g_sinTable[angle % 360];
+
+  points[1].x = scale * g_cosTable[(angle + 90) % 360];
+  points[1].y = 0.0f;
+  points[1].z = scale * g_sinTable[(angle + 90) % 360];
+
+  points[2].x = scale * g_cosTable[(angle + 180) % 360];
+  points[2].y = 0.0f;
+  points[2].z = scale * g_sinTable[(angle + 180) % 360];
+
+  points[3].x = scale * g_cosTable[(angle + 270) % 360];
+  points[3].y = 0.0f;
+  points[3].z = scale * g_sinTable[(angle + 270) % 360];
+
+  this->sub_B69E30(points);
+
+  const float baseX = particle->unknown_00D0;
+  const float baseY = particle->unknown_00D4;
+  const float baseZ = particle->unknown_00D8;
+
+  particle->vertices[0].x = baseX + points[3].x;
+  particle->vertices[0].y = baseY + points[3].y;
+  particle->vertices[0].z = baseZ + points[3].z;
+
+  particle->vertices[1].x = baseX + points[0].x;
+  particle->vertices[1].y = baseY + points[0].y;
+  particle->vertices[1].z = baseZ + points[0].z;
+
+  particle->vertices[2].x = baseX + points[2].x;
+  particle->vertices[2].y = baseY + points[2].y;
+  particle->vertices[2].z = baseZ + points[2].z;
+
+  particle->vertices[3].x = baseX + points[1].x;
+  particle->vertices[3].y = baseY + points[1].y;
+  particle->vertices[3].z = baseZ + points[1].z;
 }
 
 // OFFSET: 0x00B686D0
