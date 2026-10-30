@@ -198,8 +198,38 @@ int UIFrameWnd::Slot46() {
 }
 
 // OFFSET: 0x008CEF10
+// FUNCTION: fn_12074
+UIBitmapButton* UIFrameWnd::AddBaseButton(UIButtonContext& controls) {
+  UIBitmapButton* button = new UIBitmapButton(*this->m_context, controls);
+  button->SetBitmap("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0, 0);
+  button->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 1, 0);
+  button->SetBitmap("유저인터페이스\\basic_interface\\sys_base_on.bmp", 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(3, 3);
+  this->AddChild(button);
+
+  return button;
+}
 
 // OFFSET: 0x008CEFD0
+// FUNCTION: fn_12075
+UIBitmapButton* UIFrameWnd::AddBigCloseButton(UIButtonContext& controls, const char* tooltip, int width) {
+  if (width == 0) {
+    width = this->geometry.width;
+  }
+
+  UIBitmapButton* button = new UIBitmapButton(*this->m_context, controls);
+  button->SetBitmap("유저인터페이스\\basic_interface\\big_sys_close_off.bmp", 0, 0);
+  button->SetBitmap("유저인터페이스\\basic_interface\\big_sys_close_on.bmp", 1, 0);
+  button->SetBitmap("유저인터페이스\\basic_interface\\big_sys_close_on.bmp", 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(width - button->BitmapWidth(), 0);
+  button->SetId(201);
+  button->SetTooltip(tooltip);
+  this->AddChild(button);
+
+  return button;
+}
 
 // OFFSET: 0x008CF0C0
 // FUNCTION: fn_12076
@@ -222,14 +252,108 @@ UIBitmapButton* UIFrameWnd::AddCloseButton(UIButtonContext& controls, const char
 }
 
 // OFFSET: 0x008CF2A0
+// FUNCTION: fn_12077
+UIBitmapButton* UIFrameWnd::AddMinimizeButton(UIButtonContext& controls, const char* tooltip, int width) {
+  if (width == 0) {
+    width = this->geometry.width;
+  }
+
+  UIBitmapButton* button = new UIBitmapButton(*this->m_context, controls);
+  button->SetBitmap("유저인터페이스\\basic_interface\\sys_mini_off.bmp", 0, 0);
+  button->SetBitmap("유저인터페이스\\basic_interface\\sys_mini_on.bmp", 1, 0);
+  button->SetBitmap("유저인터페이스\\basic_interface\\sys_mini_on.bmp", 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(width - 28, 3);
+  button->SetId(202);
+  button->SetTooltip(tooltip);
+  this->AddChild(button);
+
+  return button;
+}
 
 // OFFSET: 0x008CF390
+// FUNCTION: fn_12078
+UIBitmapButton* UIFrameWnd::AddBitmapButton(UIButtonContext& controls, int id, int x, int y, const char* name, const char* tooltip) {
+  if (!name) {
+    return nullptr;
+  }
+
+  UIBitmapButton* button = new UIBitmapButton(*this->m_context, controls);
+  std::string path = "유저인터페이스\\";
+  path += name;
+  button->SetBitmap((path + "_out" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((path + "_over" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((path + "_press" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(x, y);
+  button->SetId(id);
+  button->SetTooltip(tooltip);
+  this->AddChild(button);
+
+  return button;
+}
 
 // OFFSET: 0x008CF870
+// FUNCTION: fn_12079
+UIBitmapButton* UIFrameWnd::AddNumberedButton(UIButtonContext& controls, int id, int x, int y, const char* name, const char* tooltip, bool prefix) {
+  if (!name) {
+    return nullptr;
+  }
+
+  UIBitmapButton* button = new UIBitmapButton(*this->m_context, controls);
+  std::string path;
+  if (prefix) {
+    path += "유저인터페이스\\";
+  }
+  path += name;
+  button->SetBitmap((path + "_1" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((path + "_2" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((path + "_3" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(x, y);
+  button->SetId(id);
+  button->SetTooltip(tooltip);
+  this->AddChild(button);
+
+  return button;
+}
 
 // OFFSET: 0x008CFE50
+// FUNCTION: fn_12080
+UICheckBox* UIFrameWnd::AddStyledCheckBox(
+  UIButtonContext& controls, int id, int width, int height, const char* text, int x, int y, bool checked, const char* tooltip, int fontHeight,
+  std::uint32_t color, const char* checkedImage, const char* uncheckedImage
+) {
+  UICheckBox* checkBox = new UICheckBox(*this->m_context, controls);
+  checkBox->SetSize(width, height);
+  checkBox->SetImages(
+    checkedImage ? checkedImage : "유저인터페이스\\checkbox_1.bmp", uncheckedImage ? uncheckedImage : "유저인터페이스\\checkbox_0.bmp", text
+  );
+  checkBox->Move(x, y);
+  checkBox->SetId(id);
+  checkBox->SetChecked(checked);
+  checkBox->SetTooltip(tooltip);
+  checkBox->m_fontHeight = fontHeight;
+  checkBox->m_color = color;
+  this->AddChild(checkBox);
+
+  return checkBox;
+}
 
 // OFFSET: 0x008CFF40
+// FUNCTION: fn_12081
+UICheckBox* UIFrameWnd::AddCheckBox(UIButtonContext& controls, int id, int width, int height, const char* text, int x, int y, int checked, const char* tooltip) {
+  UICheckBox* checkBox = new UICheckBox(*this->m_context, controls);
+  checkBox->SetSize(width, height);
+  checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", text);
+  checkBox->Move(x, y);
+  checkBox->SetId(id);
+  checkBox->SetChecked(checked);
+  checkBox->SetTooltip(tooltip);
+  this->AddChild(checkBox);
+
+  return checkBox;
+}
 
 // OFFSET: 0x008BA280
 // FUNCTION: fn_11780
