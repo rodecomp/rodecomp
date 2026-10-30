@@ -1,5 +1,6 @@
 #include "UI/Guild/UIGuildHelperWnd.h"
 #include "Contents/MessageTable.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -98,3 +99,10 @@ void UIGuildTipWnd::Paint() {
 void UIGuildLeaveReasonDescWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
 }
+
+// OFFSET: 0x00965650
+// FUNCTION: fn_13138
+void UICreateGuildWnd::Slot11() {
+}
+
+// OFFSET: 0x00965660

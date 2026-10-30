@@ -6,6 +6,19 @@
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
 
+// OFFSET: 0x009663D0
+
+// OFFSET: 0x009664F0
+
+// OFFSET: 0x00966600
+
+// OFFSET: 0x00966630
+// FUNCTION: fn_13158
+HotkeyGuideKey::HotkeyGuideKey() : valid(false), x(0), y(0) {
+}
+
+// OFFSET: 0x009669D0
+
 // OFFSET: 0x0096C140
 // FUNCTION: fn_13166
 void UIHotkeyGuideWnd::Slot19() {

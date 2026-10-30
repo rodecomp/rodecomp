@@ -4,9 +4,11 @@
 #include "UI/Window/UIFrameWnd.h"
 
 struct UIButtonContext;
+struct GuildHelperWndInfo;
 
 class UIGuildHelperWnd : public UIFrameWnd {
 public:
+  void Slot11() override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
@@ -14,17 +16,20 @@ public:
 
 protected:
   UIButtonContext* m_controls;
+  /* 00B4 */ int unknown_00B4;
+  /* 00B8 */ GuildHelperWndInfo* m_saved;
 };
 
 class UICreateGuildWnd : public UIGuildHelperWnd {
 public:
+  void Slot11() override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
 
 protected:
-  /* 00B4 */ unsigned char unknown_00B4[0xC];
+  /* 00BC */ unsigned char unknown_00BC[0x4];
   /* 00C0 */ int m_mode;
 };
 

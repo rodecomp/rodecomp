@@ -1,5 +1,6 @@
 #include "UI/Guild/UIGuildWnd.h"
 #include "Contents/GuildMgr.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include "Resource/EmblemResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
@@ -222,7 +223,7 @@ void UIGuildTotalInfoWnd::Slot35(int delta) {
 }
 
 UIGuildWnd::UIGuildWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), unknown_00B4(0), unknown_00B8(0), unknown_00BC(0), unknown_00C0(0), unknown_00C4(0), unknown_00C8(0),
+    : UIFrameWnd(windows, frames, 0), m_saved(nullptr), unknown_00B8(0), unknown_00BC(0), unknown_00C0(0), unknown_00C4(0), unknown_00C8(0),
       unknown_00CC(0), m_controls(&controls) {
 }
 
@@ -252,3 +253,5 @@ UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows, UIF
 // OFFSET: 0x00960230
 
 // OFFSET: 0x00960470
+
+// OFFSET: 0x009656A0

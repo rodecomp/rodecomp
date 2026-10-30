@@ -12,6 +12,7 @@
 
 class UIButton;
 struct UIButtonContext;
+struct GuildWndInfo;
 
 int CompareWideText(const char* left, const char* right);
 
@@ -28,12 +29,13 @@ struct GuildPositionEntry {
 class UIGuildWnd : public UIFrameWnd {
 public:
   UIGuildWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  void Slot11() override;
   void Paint() override;
   void Slot25(int x, int y) override;
   virtual int Tab() = 0;
 
 protected:
-  /* 00B4 */ int unknown_00B4;
+  /* 00B4 */ GuildWndInfo* m_saved;
   /* 00B8 */ int unknown_00B8;
   /* 00BC */ int unknown_00BC;
   /* 00C0 */ int unknown_00C0;
