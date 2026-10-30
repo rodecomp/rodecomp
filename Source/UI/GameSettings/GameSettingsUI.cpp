@@ -842,6 +842,24 @@ void CUIGroupGraphicsAPI::Refresh() {
 }
 
 // OFFSET: 0x00A3FCD0
+// FUNCTION: fn_15960
+std::string GetHotkeyText(int tab, int index) {
+  HotkeyInfo info;
+  const char* keyText = nullptr;
+  const char* description = nullptr;
+  g_luaScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &keyText, &description);
+  if (IsNullOrEmpty(keyText)) {
+    g_luaScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &info.key1, &info.key2, &keyText, &description);
+  }
+
+  std::string text;
+  if (IsNullOrEmpty(keyText)) {
+    text = "";
+  } else {
+    text = keyText;
+  }
+  return text;
+}
 
 // OFFSET: 0x00A40C30
 // FUNCTION: fn_15985
