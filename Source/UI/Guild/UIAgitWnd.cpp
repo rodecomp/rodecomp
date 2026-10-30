@@ -2,15 +2,27 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/ReplayPacketRecorder.h"
+#include "Client/Session.h"
+#include "Contents/GuildInfo.h"
+#include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
+#include "Render/Renderer.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
+#include "Script/LuaScript.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
+#include <cstddef>
+#include <cstring>
 #include <windows.h>
+
+UIAgitMessageBox::UIAgitMessageBox()
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(0), *reinterpret_cast<UIFrameContext*>(0), 0), m_agitId(0) {
+}
 
 // OFFSET: 0x0095D580
 // FUNCTION: fn_13068
@@ -125,4 +137,49 @@ void UIListBoxAgitMenu::Slot28(int x, int y) {
   if (previous != line) {
     this->Invalidate();
   }
+}
+
+// OFFSET: 0x00964F80
+// FUNCTION: fn_13136
+int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message != 48) {
+    return this->UIListBox::SendMsg(sender, message, a, b, c, d);
+  }
+
+  if (a == 0) {
+    if (g_session.GetSceneUnknown004C() == 1) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3633)), 0xFF, 0, 0, 0);
+      return 0;
+    }
+
+    GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+    uint16_t agitId = static_cast<uint16_t>(guildInfo->GetUnknown0114(this->m_agitIndex));
+
+    LuaScript* luaScript = *reinterpret_cast<LuaScript* const*>(0x01738010);
+    char* agitName = nullptr;
+    luaScript->Call("get_agit_name", "d>s", agitId, &agitName);
+    if (agitName != nullptr && strnlen(agitName, 256) != 0) {
+      int costZeny = 0;
+      luaScript->Call("get_agit_costzeny", "db>d", agitId, 0, &costZeny);
+      int costGuildPoint = 0;
+      luaScript->Call("get_agit_costzeny", "db>d", agitId, 1, &costGuildPoint);
+
+      UIAgitMessageBox* box = new UIAgitMessageBox();
+      const char* text = FormatString(LookupMessage(3631), agitName, costZeny, costGuildPoint, 310, 130);
+      box->sub_956130(text);
+
+      int x = g_renderer->viewport.centerX - box->geometry.width / 2;
+      int y = g_renderer->viewport.centerY - box->geometry.height / 2;
+      box->Move(x, y);
+      box->m_agitId = agitId;
+      g_windowMgr.AddRendered(box);
+    }
+  } else if (a == 1) {
+    CMode* mode = g_modeMgr.GetGameMode();
+    GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+    uint16_t agitId = static_cast<uint16_t>(guildInfo->GetUnknown0114(this->m_agitIndex));
+    mode->SendMsg(316, agitId, 0, 0, 0);
+  }
+
+  return 0;
 }
