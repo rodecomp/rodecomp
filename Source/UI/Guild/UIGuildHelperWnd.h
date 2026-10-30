@@ -5,6 +5,13 @@
 
 struct UIButtonContext;
 struct GuildHelperWndInfo;
+class UIEditCtrl;
+
+struct GuildBanTarget {
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ int unknown_0008;
+};
 
 class UIGuildHelperWnd : public UIFrameWnd {
 public:
@@ -13,6 +20,7 @@ public:
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
   UIButtonContext* m_controls;
@@ -27,15 +35,17 @@ public:
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
-  /* 00BC */ unsigned char unknown_00BC[0x4];
+  /* 00BC */ UIEditCtrl* m_nameEdit;
   /* 00C0 */ int m_mode;
 };
 
 class UIGuildTipWnd : public UIFrameWnd {
 public:
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
   UIButtonContext* m_controls;
@@ -44,9 +54,18 @@ protected:
 class UIGuildLeaveReasonDescWnd : public UIFrameWnd {
 public:
   void Paint() override;
+
+protected:
+  /* 00B4 */ UIEditCtrl* m_reasonEdit;
+  /* 00B8 */ unsigned char unknown_00B8[0x4];
 };
 
 class UIGuildBanReasonDescWnd : public UIGuildLeaveReasonDescWnd {
+public:
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+protected:
+  /* 00BC */ GuildBanTarget m_target;
 };
 
 #endif
