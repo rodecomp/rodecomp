@@ -61,8 +61,25 @@ bool CMapSkyMgr::LoadData() {
 // OFFSET: 0x00C7B200
 
 // OFFSET: 0x00C7B530
+// FUNCTION: fn_20365
+void CWeatherEffect::AddMapWeather(std::string mapName, std::string weather) {
+  std::pair<std::string, std::string> entry;
+  entry.second = weather;
+  entry.first = mapName;
+  this->mapWeathers.push_back(std::move(entry));
+}
 
 // OFFSET: 0x00C7B6F0
+// FUNCTION: fn_20366
+vector3d CWeatherEffect::GetWindDirection() const {
+  vector3d direction = {0.0f, 0.0f, 0.0f};
+  const float sine = ClientSine((this->counter >> 3) + 90);
+  const float cosine = ClientCosine((this->counter >> 3) + 90);
+  direction.z = 0.0f;
+  direction.x = cosine * 1000.0f + sine * 0.0f;
+  direction.y = cosine * 0.0f - sine * 1000.0f;
+  return direction;
+}
 
 // OFFSET: 0x00C7B790
 // FUNCTION: fn_20367
@@ -126,8 +143,28 @@ void CWeatherEffect::StartDarken() {
 }
 
 // OFFSET: 0x00C7B9F0
+// FUNCTION: fn_20369
+void CWeatherEffect::Fireworks() {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  this->actor = mode->scene->player;
+  static_cast<EffectActor*>(this->actor)->LaunchEffect(0x12d, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+
+  for (int count = 0; count < 160; ++count) {
+    static_cast<EffectActor*>(this->actor)->LaunchEffect(0x129, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  }
+}
 
 // OFFSET: 0x00C7BB20
+// FUNCTION: fn_20370
+void CWeatherEffect::Snow() {
+  if (this->effect && this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
+    return;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  this->actor = mode->scene->player;
+  static_cast<EffectActor*>(this->actor)->LaunchEffect(0xa2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+}
 
 // OFFSET: 0x00C7BBA0
 // FUNCTION: fn_20371
