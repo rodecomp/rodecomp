@@ -348,6 +348,30 @@ void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
   };
 
 // OFFSET: 0x00D1F770
+// FUNCTION: fn_21641
+void sub_D1F770(const unsigned char* data) {
+  const ItemAddSlotPacket* packet = reinterpret_cast<const ItemAddSlotPacket*>(data);
+  if (packet->slot < 0) {
+    (*reinterpret_cast<CMode**>(0x013495BC))->SendMsg(0x35, 0, 0, 0, 0);
+  }
+
+  if (packet->itemId == 0) {
+    g_session.SetUnknown5214(packet->slot);
+    return;
+  }
+
+  ITEM_INFO item;
+  item.unknown_0000[0] = packet->type;
+  item.SetItemId(packet->itemId);
+  item.unknown_0000[1] = 0xFFFFFFFF;
+  item.quantity = packet->slot;
+  std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
+  item.identified = packet->identified;
+  item.unknown_005D = packet->damaged;
+  item.unknown_0060 = packet->refine;
+  item.unknown_0098 = 0;
+  g_session.AddItemSlot(item);
+}
 
 // OFFSET: 0x00D1F970
 
