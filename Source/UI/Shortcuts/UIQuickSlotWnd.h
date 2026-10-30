@@ -37,6 +37,7 @@ struct QuickSlotEntry {
 
 class UIQuickSlotWnd : public UIFrameWnd {
 public:
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
   int SlotX(int slot);

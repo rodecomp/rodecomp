@@ -337,6 +337,10 @@ void UIQuickSlotWnd::Paint() {
   painting.cooldowns.PaintAlternate(painting.icons, this->geometry.x, this->geometry.y, painting.drawing, painting.clock, painting.commands, painting.system);
 }
 
+// OFFSET: 0x00924A50
+// FUNCTION: fn_12646
+void UIQuickSlotWnd::Slot15(int, int) {}
+
 // OFFSET: 0x00932E80
 // FUNCTION: fn_12718
 void UIQuickSlotWnd::Slot19() {
