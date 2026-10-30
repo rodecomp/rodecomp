@@ -6,9 +6,11 @@
 
 class UICheckBox;
 class UIScrollBar;
+struct SeekPartyListWndInfo;
 
 class UISeekPartyListWnd : public UIFrameWnd {
 public:
+  void Slot11() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot35(int delta) override;
@@ -33,6 +35,8 @@ protected:
   /* 01C4 */ short m_filterLevel;
   /* 01C6 */ short m_filterMap;
   /* 01C8 */ short m_filterJob;
+  /* 01CA */ unsigned char unknown_01CA[6];
+  /* 01D0 */ SeekPartyListWndInfo* m_saved;
 };
 
 #endif

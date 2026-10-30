@@ -6,9 +6,11 @@
 #include <cstdint>
 
 struct UIButtonContext;
+struct SeekPartyWndInfo;
 
 class UISeekPartyWnd : public UIFrameWnd {
 public:
+  void Slot11() override;
   void Slot19() override;
   void Paint() override;
 
@@ -22,6 +24,8 @@ protected:
   /* 00D8 */ std::uint32_t m_frameTick;
   /* 00DC */ unsigned char unknown_00DC[0x108];
   /* 01E4 */ unsigned char m_minimized;
+  /* 01E5 */ unsigned char unknown_01E5[3];
+  /* 01E8 */ SeekPartyWndInfo* m_saved;
   UIButtonContext* m_controls;
 };
 

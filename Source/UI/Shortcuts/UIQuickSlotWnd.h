@@ -35,8 +35,11 @@ struct QuickSlotEntry {
 };
 #pragma pack(pop)
 
+struct QuickSlotWndInfo;
+
 class UIQuickSlotWnd : public UIFrameWnd {
 public:
+  void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
@@ -45,7 +48,7 @@ public:
 
 protected:
   /* 00B4 */ int m_selected;
-  /* 00B8 */ int unknown_00B8;
+  /* 00B8 */ QuickSlotWndInfo* m_saved;
   /* 00BC */ QuickSlotEntry m_entries[2];
   QuickSlotPainting* m_painting;
 };

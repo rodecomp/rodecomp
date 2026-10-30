@@ -1,4 +1,5 @@
 #include "Client/Session.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
@@ -12,6 +13,7 @@
 #include "UI/Window/UIRebirthWnd.h"
 #include "UI/Window/UISeekPartyMBWnd.h"
 #include "UI/Window/UISeekPartyWnd.h"
+#include "UI/Window/UISeekPartyListWnd.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
 
@@ -385,5 +387,49 @@ void UISeekPartyWnd::Slot19() {
     this->m_elapsed += this->m_frameDuration;
     this->m_frameTick = now;
     this->Invalidate();
+  }
+}
+
+// OFFSET: 0x00940EE0
+// FUNCTION: fn_12783
+void UIQuickSlotWnd::Slot11() {
+  if (this->m_saved) {
+    this->m_saved->width = this->geometry.width;
+    this->m_saved->height = this->geometry.height;
+    this->m_saved->x = this->geometry.x;
+    this->m_saved->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x00940F60
+// FUNCTION: fn_12785
+void UISeekPartyMBWnd::Slot11() {
+  if (this->m_saved) {
+    this->m_saved->width = this->geometry.width;
+    this->m_saved->height = this->geometry.height;
+    this->m_saved->x = this->geometry.x;
+    this->m_saved->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x00940FA0
+// FUNCTION: fn_12786
+void UISeekPartyWnd::Slot11() {
+  if (this->m_saved) {
+    this->m_saved->width = this->geometry.width;
+    this->m_saved->height = this->geometry.height;
+    this->m_saved->x = this->geometry.x;
+    this->m_saved->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x00940F20
+// FUNCTION: fn_12784
+void UISeekPartyListWnd::Slot11() {
+  if (this->m_saved) {
+    this->m_saved->width = this->geometry.width;
+    this->m_saved->height = this->geometry.height;
+    this->m_saved->x = this->geometry.x;
+    this->m_saved->y = this->geometry.y;
   }
 }
