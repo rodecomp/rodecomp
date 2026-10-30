@@ -9,6 +9,11 @@
 
 #include <cmath>
 
+// OFFSET: 0x0072D5C0
+// FUNCTION: fn_07491
+CSunStanceEffect::CSunStanceEffect() : CEffect(-1) {
+}
+
 // OFFSET: 0x0072D910
 // FUNCTION: fn_07494
 void CSunStanceEffect::Close() {

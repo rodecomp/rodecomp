@@ -10,6 +10,7 @@ class CParticle;
 
 class CSunStanceEffect : public CEffect {
 public:
+  CSunStanceEffect();
   void Slot01() override;
   void Slot03() override;
   void Slot04() override;
