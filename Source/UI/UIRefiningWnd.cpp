@@ -1,5 +1,6 @@
 #include "UI/UIRefiningWnd.h"
 
+#include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
@@ -8,14 +9,36 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 
 #include <windows.h>
+#include <shellapi.h>
 #include <timeapi.h>
 
 #include <cstddef>
 #include <cstring>
+
+#pragma pack(push, 1)
+struct RefiningSelectPacket {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint16_t index;
+};
+
+struct RefiningRequestPacket {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint16_t index;
+  /* 0004 */ std::uint32_t materialId;
+  /* 0008 */ unsigned char useCatalyst;
+};
+
+struct RefiningClosePacket {
+  /* 0000 */ std::uint16_t id;
+};
+#pragma pack(pop)
 
 // OFFSET: 0x007F5270
 // FUNCTION: fn_09902
@@ -402,6 +425,73 @@ void UIRefiningWnd::Slot31(int x, int y) {
   this->Invalidate();
 }
 
+// OFFSET: 0x007F76C0
+// FUNCTION: fn_09916
+void UIRefiningWnd::Slot28(int x, int y) {
+  if (this->state != 1) {
+    return;
+  }
+
+  char name[260];
+  std::memset(name, 0, sizeof(name));
+
+  if (this->selectedMaterial != -1 && x >= 81 && x <= 105 && y >= 150 && y <= 174) {
+    ITEM_INFO info;
+    info.SetItemId(this->materials[this->selectedMaterial].itemId);
+    int capacity = 260;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.Name(info, name, capacity, 0);
+    int tipX = 81;
+    int tipY = 150;
+    this->ToScreen(tipX, tipY);
+    this->m_controls->services.Tooltip(name, tipX, tipY - 20, -1, false, true);
+    return;
+  }
+
+  if (this->catalystEnabled == 1 && x >= 161 && x <= 185 && y >= 150 && y <= 174) {
+    ITEM_INFO info;
+    info.SetItemId(this->catalystItemId);
+    int capacity = 260;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.Name(info, name, capacity, 0);
+    int tipX = 161;
+    int tipY = 150;
+    this->ToScreen(tipX, tipY);
+    this->m_controls->services.Tooltip(name, tipX, tipY - 20, -1, false, true);
+    return;
+  }
+
+  const int offsetX = x - 11;
+  if (static_cast<unsigned>(offsetX) > 242 || static_cast<unsigned>(y - 55) > 52) {
+    return;
+  }
+  const int slot = offsetX / 49;
+  if (x > slot * 49 + 57 || slot >= 5 || slot < 0) {
+    return;
+  }
+
+  if (static_cast<unsigned>(slot) < this->materials.size()) {
+    ITEM_INFO info;
+    info.SetItemId(this->materials[slot].itemId);
+    int capacity = 260;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.Name(info, name, capacity, 0);
+  } else if (slot == 4 && this->catalystCount > 0) {
+    ITEM_INFO info;
+    info.SetItemId(this->catalystItemId);
+    int capacity = 260;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.Name(info, name, capacity, 0);
+  }
+
+  if (std::strlen(name) != 0) {
+    int tipX = slot * 49 + 11;
+    int tipY = 35;
+    this->ToScreen(tipX, tipY);
+    this->m_controls->services.Tooltip(name, tipX, tipY, -1, false, true);
+  }
+}
+
 // OFFSET: 0x007F7AA0
 // FUNCTION: fn_09917
 void UIRefiningWnd::Slot19() {
@@ -492,6 +582,78 @@ void UIRefining_Notice::Slot19() {
 void UIRefiningWnd::Slot32(int x, int y) {
 }
 
+// OFFSET: 0x007F7E20
+// FUNCTION: fn_09920
+void UIRefiningWnd::Slot33(int x, int y) {
+  if (y < 17) {
+    return;
+  }
+
+  if (this->state == 1) {
+    if (this->selectedMaterial != -1 && x >= 81 && x <= 105 && y >= 150 && y <= 174) {
+      UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+      if (!window) {
+        return;
+      }
+      ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->materials[this->selectedMaterial].itemId, 0);
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+      return;
+    }
+
+    if (this->catalystEnabled == 1 && x >= 161 && x <= 185 && y >= 150 && y <= 174) {
+      UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+      if (!window) {
+        return;
+      }
+      ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0);
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+      return;
+    }
+
+    const int offsetX = x - 11;
+    int slot = -1;
+    if (static_cast<unsigned>(offsetX) <= 242 && static_cast<unsigned>(y - 55) <= 52) {
+      const int index = offsetX / 49;
+      if (x <= index * 49 + 57 && index < 5) {
+        slot = index;
+      }
+    }
+    if (slot >= 0) {
+      if (static_cast<unsigned>(slot) < this->materials.size()) {
+        ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->materials[slot].itemId, 0);
+        if (info.unknown_0000[1] != 0) {
+          UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+          if (window) {
+            window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+          }
+        }
+        return;
+      }
+
+      if (slot == 4) {
+        if (this->catalystCount < 1) {
+          return;
+        }
+        ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0);
+        if (info.unknown_0000[1] != 0) {
+          UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+          if (window) {
+            window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
+          }
+        }
+        return;
+      }
+    }
+  }
+
+  if (this->item.unknown_0000[1] != 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
+    UIWindow* window = this->m_frameContext->windows.EnsureWindow(12);
+    if (window) {
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
+    }
+  }
+}
+
 // OFFSET: 0x007F80C0
 // FUNCTION: fn_09921
 void UIRefining_BtnAgain::UpdateBitmaps() {
@@ -522,6 +684,72 @@ void UIRefining_BtnReturn::UpdateBitmaps() {
   );
   this->Resize(this->m_bitmapWidth, this->m_bitmapHeight);
   this->Invalidate();
+}
+
+// OFFSET: 0x007F8360
+// FUNCTION: fn_09923
+int UIRefiningWnd::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  if (message == 6) {
+    if (argument1 == 510) {
+      ShellExecuteA(hWnd, "open", LookupMessage(4123), nullptr, nullptr, SW_SHOWNORMAL);
+    } else if (argument1 == 184) {
+      if (this->unknown_01F0 != 1) {
+        const std::uint32_t index = this->item.unknown_0000[1];
+        if (index != 0) {
+          if (g_session.m_zeny < static_cast<int>(this->SelectedMaterialValue())) {
+            this->notice->SetNotice(LookupMessage(2968), 3000, 1);
+          } else {
+            this->unknown_01F0 = 1;
+            RefiningRequestPacket packet;
+            packet.id = 0xAA3;
+            packet.index = static_cast<std::uint16_t>(index);
+            packet.materialId = this->materials[this->selectedMaterial].itemId;
+            packet.useCatalyst = this->catalystEnabled;
+            GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+          }
+        }
+      }
+    } else if (argument1 == 185 || argument1 == 201) {
+      if (this->state != 2) {
+        RefiningClosePacket packet;
+        packet.id = 0xAA4;
+        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+        this->m_frameContext->windows.CloseWindow(295);
+      }
+    } else if (argument1 == 519) {
+      this->notice->SetNotice("", 0, 0);
+      this->selectedMaterial = -1;
+      this->catalystEnabled = 0;
+      if (this->state == 4) {
+        this->Reset();
+      } else {
+        this->SetState(1, 7);
+      }
+    } else if (argument1 == 520) {
+      this->SendMsg(this, 6, 184, 0, 0, 0);
+    }
+  } else if (message == 23 && (this->state == 0 || this->state == 1)) {
+    const ITEM_INFO info = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
+    if (g_session.HasItem61B8(info.unknown_0000[1]) == 1) {
+      g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+      return -1;
+    }
+
+    if (info.unknown_0000[1] != 0) {
+      if (info.identified == 1) {
+        RefiningSelectPacket packet;
+        packet.id = 0xAA1;
+        packet.index = static_cast<std::uint16_t>(argument1);
+        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+      } else {
+        this->notice->SetNotice(LookupMessage(2970), 3000, 1);
+      }
+    }
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
 // OFFSET: 0x007F8C40
