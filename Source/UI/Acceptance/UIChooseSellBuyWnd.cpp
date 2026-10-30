@@ -30,6 +30,7 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UISpriteButton.h"
 #include "UI/Chat/UIWhisperWnd.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "UI/Dialogs/UIBookWnd.h"
 #include "UI/Dialogs/UIChooseWarpWnd.h"
 #include "UI/Dialogs/UIChooseWnd.h"
@@ -457,6 +458,25 @@ void UIPartySettingWnd::Paint() {
 // FUNCTION: fn_12241
 void UIPasswordWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
+}
+
+// OFFSET: 0x00900A80
+// FUNCTION: fn_12369
+int UIPasswordWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    if (a == 184) {
+      CMode* mode = g_modeMgr.gameMode;
+      mode->SendMsg(45, this->unknown_00BC, reinterpret_cast<int>(this->m_edit->Text()), 0, 0);
+      this->m_frameContext->windows.CloseWindow(29);
+    }
+    return 0;
+  case 47:
+    this->unknown_00BC = static_cast<int>(a);
+    return 0;
+  default:
+    return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
 }
 
 // OFFSET: 0x008EFCF0
