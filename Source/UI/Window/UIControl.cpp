@@ -1945,3 +1945,12 @@ bool UnusedTrue9BD5B0() {
 bool UnusedTrue9BD5C0() {
   return true;
 }
+
+// OFFSET: 0x009F2EC0
+// FUNCTION: fn_14733
+void CUIVScrollBar::Slot55(int value) {
+  const int target = this->position - value % this->step + value;
+  if (target != this->position) {
+    this->SetPosition(target);
+  }
+}

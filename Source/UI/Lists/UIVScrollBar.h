@@ -20,6 +20,7 @@ public:
   void Slot35(int value) override;
   void Slot53(int resolveSkin) override;
   virtual void Slot54();
+  virtual void Slot55(int value);
 
   __declspec(noinline) void SetTotal(int value);
   __declspec(noinline) void SetVisible(int value);

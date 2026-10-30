@@ -341,3 +341,14 @@ void CUIEnchantItem::SetFrozen(bool frozen) {
   this->name->SetColor(frozen ? 0xAAAAAA : 0xC89682);
 }
 }
+
+// OFFSET: 0x009F3160
+// FUNCTION: fn_14752
+void CUIEnchantUI::Slot53() {
+  this->unknown_00B4 = 0;
+  this->m_resolveSkin = true;
+  this->Resize(690, 470);
+  this->Move(0, 0);
+  this->Slot15(this->geometry.width, this->geometry.height);
+  this->Slot16();
+}

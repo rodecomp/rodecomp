@@ -23,6 +23,7 @@ public:
   bool CanHitTest() override;
   void Slot16() override;
   void Slot25(int x, int y) override;
+  virtual void Slot53();
 };
 
 namespace EnchantUI {
