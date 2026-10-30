@@ -1,7 +1,26 @@
 #include "Contents/Effects/SphereWind2Effect.h"
 
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
+
+#include <algorithm>
+#include <cstdlib>
+
+// OFFSET: 0x00B77340
+
+// OFFSET: 0x00B77380
+
+// OFFSET: 0x00B775E0
+// FUNCTION: fn_19184
+bool CSphereWind2Effect::Slot06() {
+  return !this->IsFinished();
+}
 
 // OFFSET: 0x00B775F0
 // FUNCTION: fn_19185
