@@ -18,6 +18,7 @@ class UICheckAttendanceWnd_Banner : public UIWindow {
 public:
   ~UICheckAttendanceWnd_Banner() override;
   void Slot19() override;
+  void Paint() override;
   void ResetCursor(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void AddBanner(std::string image, std::string url, int action, int argument);

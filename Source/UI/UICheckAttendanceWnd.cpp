@@ -6,6 +6,8 @@
 #include "Render/TextureQuad.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 
 #include <windows.h>
 #include <timeapi.h>
@@ -54,6 +56,20 @@ int UICheckAttendanceWnd::SlotAt(int x, int y) {
     }
   }
   return -1;
+}
+
+// OFFSET: 0x007DDA90
+// FUNCTION: fn_09641
+void UICheckAttendanceWnd_Banner::Paint() {
+  if (this->m_entries.size() != 0) {
+    this->DrawBitmap(
+      0, 0,
+      reinterpret_cast<const BitmapImage*>(
+        ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\check_attendance\\" + this->m_entries[this->m_current].image).c_str()))
+      ),
+      false
+    );
+  }
 }
 
 // OFFSET: 0x007DDBB0
