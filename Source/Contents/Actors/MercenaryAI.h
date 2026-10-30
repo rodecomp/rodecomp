@@ -17,6 +17,8 @@ public:
   virtual ~CMercenaryAI();
 
   explicit CMercenaryAI(int kind);
+  int Load(const char* path);
+  void RegisterFunctions();
   int Process(std::uint32_t aid);
   void Shutdown();
 };

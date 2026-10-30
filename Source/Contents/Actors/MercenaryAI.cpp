@@ -6,6 +6,8 @@
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/Skills/ClientSkills.h"
+#include "Contents/Skills/SkillInfo.h"
 #include "Contents/World/World.h"
 #include "File/File.h"
 #include "Network/Connection/Connection.h"
@@ -16,8 +18,10 @@
 extern "C" {
 #include <lauxlib.h>
 #include <lua.h>
+#include <lualib.h>
 }
 
+#include <cmath>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -113,6 +117,38 @@ void CMercenaryAI::Shutdown() {
   }
 }
 
+// OFFSET: 0x00D9E590
+// FUNCTION: fn_22332
+int CMercenaryAI::Load(const char* path) {
+  if (!path) {
+    return 1;
+  }
+
+  if (this->state) {
+    lua_close(this->state);
+    this->state = nullptr;
+  }
+
+  this->state = luaL_newstate();
+  if (!this->state) {
+    return 2;
+  }
+
+  luaL_openlibs(this->state);
+  this->RegisterFunctions();
+
+  if (luaL_loadfile(this->state, path) == 0) {
+    if (lua_pcall(this->state, 0, 0, 0) == 0) {
+      return 0;
+    }
+  }
+
+  char message[1024];
+  sprintf(message, "%s\n", lua_tostring(this->state, -1));
+  MessageBoxA(nullptr, message, "AI.lua error", 0);
+  return 3;
+}
+
 // OFFSET: 0x00D9E690
 // FUNCTION: fn_22333
 int CMercenaryAI::Process(std::uint32_t aid) {
@@ -177,6 +213,49 @@ int CMercenaryAI::Process(std::uint32_t aid) {
   MessageBoxA(nullptr, message, "AI.lua error", 0);
   this->Shutdown();
   return 1;
+}
+
+int AiGetActors(lua_State* state);
+int AiTrace(lua_State* state);
+int AiGetTick(lua_State* state);
+int AiSkillGround(lua_State* state);
+int AiIsMonster(lua_State* state);
+int AiTraceAI(lua_State* state);
+int AiMoveToOwner(lua_State* state);
+int AiMove(lua_State* state);
+int AiGetMsg(lua_State* state);
+int AiGetResMsg(lua_State* state);
+int AiSkillObject(lua_State* state);
+int AiHomunGetV(lua_State* state);
+int AiMercenaryGetV(lua_State* state);
+int AiHomunAttack(lua_State* state);
+int AiMercenaryAttack(lua_State* state);
+int AiTraceValue(lua_State* state);
+
+// OFFSET: 0x00D9E890
+// FUNCTION: fn_22334
+void CMercenaryAI::RegisterFunctions() {
+  lua_register(this->state, "GetActors", AiGetActors);
+  lua_register(this->state, "Trace", AiTrace);
+  lua_register(this->state, "GetTick", AiGetTick);
+  lua_register(this->state, "SkillGround", AiSkillGround);
+  lua_register(this->state, "IsMonster", AiIsMonster);
+  lua_register(this->state, "TraceAI", AiTraceAI);
+  lua_register(this->state, "MoveToOwner", AiMoveToOwner);
+  lua_register(this->state, "Move", AiMove);
+  lua_register(this->state, "GetMsg", AiGetMsg);
+  lua_register(this->state, "GetResMsg", AiGetResMsg);
+  lua_register(this->state, "SkillObject", AiSkillObject);
+
+  if (this->kind == 0) {
+    lua_register(this->state, "GetV", AiHomunGetV);
+    lua_register(this->state, "Attack", AiHomunAttack);
+  } else if (this->kind == 1) {
+    lua_register(this->state, "GetV", AiMercenaryGetV);
+    lua_register(this->state, "Attack", AiMercenaryAttack);
+  }
+
+  lua_register(this->state, "TraceValue", AiTraceValue);
 }
 
 // OFFSET: 0x00D9EAF0
@@ -284,6 +363,395 @@ int AiGetActors(lua_State* state) {
 // FUNCTION: fn_22340
 int AiGetTick(lua_State* state) {
   lua_pushnumber(state, GetTickCount());
+  return 1;
+}
+
+// OFFSET: 0x00D9F2B0
+// FUNCTION: fn_22341
+int AiHomunGetV(lua_State* state) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  int property = static_cast<int>(lua_tonumber(state, 1));
+  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 2));
+
+  CGameActor* actor = nullptr;
+  if (aid == g_session.m_aid) {
+    actor = mode->scene->player;
+  } else {
+    actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
+  }
+
+  double result = 0.0;
+  switch (property) {
+  case 0:
+    result = static_cast<double>(g_session.m_aid);
+    break;
+
+  case 1:
+  case 13:
+    if (actor) {
+      if (aid != g_session.m_aid) {
+        if (StateFlag06(actor->Slot13()) || StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+          lua_pushnumber(state, -1.0);
+          lua_pushnumber(state, -1.0);
+          return 2;
+        }
+      }
+
+      int cellX = 0, cellY = 0;
+      mode->WorldCell(actor->render.position.x, actor->render.position.z, cellX, cellY);
+
+      int skillId = 0;
+      int skillLevel = 0;
+      if (property == 13) {
+        skillId = static_cast<int>(lua_tonumber(state, 3));
+        skillLevel = static_cast<int>(lua_tonumber(state, 4));
+      }
+
+      std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
+      if (actor->render.accountId != g_session.m_aid && !g_session.sub_E1DE30(actor->render.accountId)) {
+        CGameActor* targetActor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(homunAid));
+        if (targetActor) {
+          int targetX = 0, targetY = 0;
+          mode->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
+
+          int range = 0;
+          if (skillId != 0) {
+            range = mode->GetSkillAttackRange(skillId, skillLevel);
+          }
+
+          int clamped = ClampTargetAttackRange(homunAid, range);
+          if (clamped > 0) {
+            int dx = targetX - cellX;
+            float dist = std::sqrt(static_cast<float>(dx * dx + (targetY - cellY) * (targetY - cellY)));
+            double angle = std::acos((1.0f / dist) * static_cast<float>(dx));
+            cellX = static_cast<int>(static_cast<float>(cellX) + std::cos(static_cast<float>(angle)) * static_cast<float>(clamped));
+            cellY = static_cast<int>(static_cast<float>(cellY) + -std::sin(static_cast<float>(angle)) * static_cast<float>(clamped));
+
+            if (!mode->IsValidCell(cellX, cellY)) {
+              if (!mode->GetClosestValidCell(&cellX, &cellY)) {
+                cellX = targetX;
+                cellY = targetY;
+              }
+            }
+          }
+        }
+      }
+
+      lua_pushnumber(state, cellX);
+      lua_pushnumber(state, cellY);
+      return 2;
+    }
+
+    lua_pushnumber(state, -1.0);
+    lua_pushnumber(state, -1.0);
+    return 2;
+
+  case 2:
+    return 1;
+
+  case 3:
+    if (!actor) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(actor->render.unknown_0070);
+    }
+    break;
+
+  case 4: {
+    int range = *reinterpret_cast<const int*>(&g_session.unknown_5620[4]);
+    if (!actor || range == 0) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(range);
+    }
+    break;
+  }
+
+  case 5:
+    if (!actor) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(actor->hitTargetAid);
+    }
+    break;
+
+  case 6:
+  case 14: {
+    std::uint32_t skillId = static_cast<std::uint32_t>(lua_tonumber(state, 3));
+    ClientSkills skills{
+      g_session.m_skillBundle,
+      g_session.m_homunSkills,
+      g_session.m_mercSkills,
+      g_session.m_additionalSkills,
+      reinterpret_cast<const int&>(g_session.m_jobFlags),
+      g_activeSkillEffects
+    };
+    CSkillInfo skill = skills.LookupFirst(skillId);
+    if (!skill.available) {
+      result = 1.0;
+    } else {
+      int range = skill.unknown_001C;
+      if (property == 14) {
+        int level = static_cast<int>(lua_tonumber(state, 4));
+        range = mode->GetSkillAttackRange(skillId, level);
+      }
+      std::uint32_t homunAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]);
+      result = static_cast<double>(ClampTargetAttackRange(homunAid, range));
+    }
+    lua_pushnumber(state, result);
+    return 1;
+  }
+
+  case 7:
+    if (!actor) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(actor->GetEffectiveJob(-1) % 6000);
+    }
+    break;
+
+  case 8:
+    if (aid == g_session.m_aid) {
+      result = static_cast<double>(g_session.unknown_5568);
+    } else if (!g_session.IsHomunAid(aid)) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(g_session.m_homunHp);
+    }
+    break;
+
+  case 9:
+    if (aid == g_session.m_aid) {
+      result = static_cast<double>(*reinterpret_cast<const int*>(&g_session.unknown_5570[0]));
+    } else if (!g_session.IsHomunAid(aid)) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(g_session.m_homunSp);
+    }
+    break;
+
+  case 10:
+    if (aid == g_session.m_aid) {
+      result = static_cast<double>(g_session.unknown_556C);
+    } else if (!g_session.IsHomunAid(aid)) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(*reinterpret_cast<const int*>(&g_session.unknown_55C8[0]));
+    }
+    break;
+
+  case 11:
+    if (aid == g_session.m_aid) {
+      result = static_cast<double>(*reinterpret_cast<const int*>(&g_session.unknown_5570[4]));
+    } else if (!g_session.IsHomunAid(aid)) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(g_session.unknown_55D0);
+    }
+    break;
+
+  default:
+    return 0;
+  }
+
+  lua_pushnumber(state, result);
+  return 1;
+}
+
+// OFFSET: 0x00D9F8E0
+// FUNCTION: fn_22342
+int AiMercenaryGetV(lua_State* state) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  int property = static_cast<int>(lua_tonumber(state, 1));
+  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 2));
+
+  CGameActor* actor = nullptr;
+  if (aid == g_session.m_aid) {
+    actor = mode->scene->player;
+  } else {
+    actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
+  }
+
+  double result = 0.0;
+  switch (property) {
+  case 0:
+    result = static_cast<double>(g_session.m_aid);
+    break;
+
+  case 1:
+  case 13:
+    if (actor) {
+      if (aid != g_session.m_aid) {
+        if (StateFlag06(actor->Slot13()) || StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+          lua_pushnumber(state, -1.0);
+          lua_pushnumber(state, -1.0);
+          return 2;
+        }
+      }
+
+      int cellX = 0, cellY = 0;
+      mode->WorldCell(actor->render.position.x, actor->render.position.z, cellX, cellY);
+
+      int skillId = 0;
+      int skillLevel = 0;
+      if (property == 13) {
+        skillId = static_cast<int>(lua_tonumber(state, 3));
+        skillLevel = static_cast<int>(lua_tonumber(state, 4));
+      }
+
+      std::uint32_t mercAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
+      if (actor->render.accountId != g_session.m_aid && !g_session.sub_E1DE30(actor->render.accountId)) {
+        CGameActor* targetActor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(mercAid));
+        if (targetActor) {
+          int targetX = 0, targetY = 0;
+          mode->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
+
+          int range = 0;
+          if (skillId != 0) {
+            range = mode->GetSkillAttackRange(skillId, skillLevel);
+          }
+
+          int clamped = ClampTargetAttackRange(*reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]), range);
+          if (clamped > 0) {
+            int dx = targetX - cellX;
+            float dist = std::sqrt(static_cast<float>(dx * dx + (targetY - cellY) * (targetY - cellY)));
+            double angle = std::acos((1.0f / dist) * static_cast<float>(dx));
+            cellX = static_cast<int>(static_cast<float>(cellX) + std::cos(static_cast<float>(angle)) * static_cast<float>(clamped));
+            cellY = static_cast<int>(static_cast<float>(cellY) + -std::sin(static_cast<float>(angle)) * static_cast<float>(clamped));
+
+            if (!mode->IsValidCell(cellX, cellY)) {
+              if (!mode->GetClosestValidCell(&cellX, &cellY)) {
+                cellX = targetX;
+                cellY = targetY;
+              }
+            }
+          }
+        }
+      }
+
+      lua_pushnumber(state, cellX);
+      lua_pushnumber(state, cellY);
+      return 2;
+    }
+
+    lua_pushnumber(state, -1.0);
+    lua_pushnumber(state, -1.0);
+    return 2;
+
+  case 2:
+    return 1;
+
+  case 3:
+    if (!actor) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(actor->render.unknown_0070);
+    }
+    break;
+
+  case 4: {
+    int range = *reinterpret_cast<const int*>(&g_session.unknown_5690[0]);
+    if (!actor || range == 0) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(range);
+    }
+    break;
+  }
+
+  case 5:
+    if (!actor || actor->render.unknown_0070 == 3) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(actor->hitTargetAid);
+    }
+    break;
+
+  case 6:
+  case 14: {
+    std::uint32_t skillId = static_cast<std::uint32_t>(lua_tonumber(state, 3));
+    ClientSkills skills{
+      g_session.m_skillBundle,
+      g_session.m_homunSkills,
+      g_session.m_mercSkills,
+      g_session.m_additionalSkills,
+      reinterpret_cast<const int&>(g_session.m_jobFlags),
+      g_activeSkillEffects
+    };
+    CSkillInfo skill = skills.LookupOther(skillId);
+    if (!skill.available) {
+      result = 1.0;
+    } else {
+      int range = skill.unknown_001C;
+      if (property == 14) {
+        int level = static_cast<int>(lua_tonumber(state, 4));
+        range = mode->GetSkillAttackRange(skillId, level);
+      }
+      std::uint32_t mercAid = *reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]);
+      result = static_cast<double>(ClampTargetAttackRange(mercAid, range));
+    }
+    lua_pushnumber(state, result);
+    return 1;
+  }
+
+  case 8:
+    if (aid == g_session.m_aid) {
+      result = static_cast<double>(g_session.unknown_5568);
+    } else if (!g_session.IsMercenaryAid(aid)) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(g_session.m_mercenaryHp);
+    }
+    break;
+
+  case 9:
+    if (aid == g_session.m_aid) {
+      result = static_cast<double>(*reinterpret_cast<const int*>(&g_session.unknown_5570[0]));
+    } else if (!g_session.IsMercenaryAid(aid)) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(g_session.m_mercenarySp);
+    }
+    break;
+
+  case 10:
+    if (aid == g_session.m_aid) {
+      result = static_cast<double>(g_session.unknown_556C);
+    } else if (!g_session.IsMercenaryAid(aid)) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(g_session.m_mercenaryMaxHp);
+    }
+    break;
+
+  case 11:
+    if (aid == g_session.m_aid) {
+      result = static_cast<double>(*reinterpret_cast<const int*>(&g_session.unknown_5570[4]));
+    } else if (!g_session.IsMercenaryAid(aid)) {
+      result = -1.0;
+    } else {
+      result = static_cast<double>(g_session.m_mercenaryMaxSp);
+    }
+    break;
+
+  case 12:
+    if (!actor) {
+      result = -1.0;
+    } else {
+      int job = actor->GetEffectiveJob(-1);
+      if (g_session.IsSkillIdInRange6018(job)) {
+        result = static_cast<double>(job % 6017 + 1);
+      } else {
+        result = 1.0;
+      }
+    }
+    break;
+
+  default:
+    return 0;
+  }
+
+  lua_pushnumber(state, result);
   return 1;
 }
 
@@ -549,6 +1017,56 @@ int AiIsMonster(lua_State* state) {
   return 1;
 }
 
+// OFFSET: 0x00DA00D0
+// FUNCTION: fn_22344
+int AiMove(lua_State* state) {
+  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  int x = static_cast<int>(lua_tonumber(state, 2));
+  int y = static_cast<int>(lua_tonumber(state, 3));
+
+  if (!g_session.IsHomunAid(aid) && !g_session.IsMercenaryAid(aid)) {
+    return 0;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameActor* actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
+  if (!actor) {
+    return 0;
+  }
+
+  if (!mode->IsValidCell(x, y)) {
+    if (!mode->GetClosestValidCell(&x, &y)) {
+      return 0;
+    }
+  }
+
+  int actorX = 0, actorY = 0;
+  mode->WorldCell(actor->render.position.x, actor->render.position.z, actorX, actorY);
+
+  if (std::abs(x - actorX) + std::abs(y - actorY) < 25) {
+#pragma pack(push, 1)
+    struct MoveNpcPacket {
+      /* 0000 */ std::int16_t opcode;
+      /* 0002 */ std::uint32_t aid;
+      /* 0006 */ unsigned char dest[3];
+    };
+#pragma pack(pop)
+    static_assert(sizeof(MoveNpcPacket) == 9);
+
+    MoveNpcPacket packet;
+    packet.opcode = ID_CZ_REQUEST_MOVENPC;
+    packet.aid = aid;
+    packet.dest[0] = static_cast<unsigned char>(x >> 2);
+    packet.dest[1] = static_cast<unsigned char>(((y >> 4) & 0x3F) | (x << 6));
+    packet.dest[2] = static_cast<unsigned char>(y << 4);
+
+    CRagConnection& connection = GetRagConnection();
+    connection.Send(g_packetLengths.FixedLength(packet.opcode), &packet);
+  }
+
+  return 0;
+}
+
 // OFFSET: 0x00DA0260
 // FUNCTION: fn_22345
 int AiMoveToOwner(lua_State* state) {
@@ -591,5 +1109,61 @@ int AiSkillGround(lua_State* state) {
     mode->SendMsg(0x46, reinterpret_cast<int>(skillArgs), 0, 0, 0);
   }
   mode->SendMsg(0x1a, 0, 0, 0, 0);
+  return 0;
+}
+
+// OFFSET: 0x00DA0420
+// FUNCTION: fn_22347
+int AiSkillObject(lua_State* state) {
+  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  unsigned int level = static_cast<unsigned int>(lua_tonumber(state, 2));
+  std::uint32_t skillId = static_cast<std::uint32_t>(lua_tonumber(state, 3));
+  std::uint32_t target = static_cast<std::uint32_t>(lua_tonumber(state, 4));
+
+  ClientSkills skills{
+    g_session.m_skillBundle,
+    g_session.m_homunSkills,
+    g_session.m_mercSkills,
+    g_session.m_additionalSkills,
+    reinterpret_cast<const int&>(g_session.m_jobFlags),
+    g_activeSkillEffects
+  };
+  CSkillInfo skill = skills.Lookup(skillId);
+  if (!skill.available) {
+    return 0;
+  }
+
+  if (!g_session.IsHomunAid(aid) && !g_session.IsMercenaryAid(aid)) {
+    return 0;
+  }
+
+  if (!IsFirstSkillRange(skillId) && !IsOtherSkillRange(skillId)) {
+    return 0;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameActor* targetActor = nullptr;
+  if (target == g_session.m_aid) {
+    targetActor = mode->scene->player;
+  } else {
+    targetActor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(target));
+    if (targetActor) {
+      if (StateFlag06(targetActor->Slot13()) || StateFlag01(targetActor->Slot13()) || StateFlag02(targetActor->Slot13())) {
+        return 0;
+      }
+    }
+  }
+
+  CGameActor* actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
+  if (targetActor && (actor->render.unknown_0070 == 1 || actor->render.unknown_0070 == 0 || actor->render.unknown_0070 == 4)) {
+    mode->SendMsg(0x45, skillId, target, level, 0);
+  }
+  mode->SendMsg(0x1a, 0, 0, 0, 0);
+
+  if (IsSupportSkill(skillId)) {
+    lua_pushnumber(state, 1.0);
+    return 1;
+  }
+
   return 0;
 }

@@ -637,6 +637,8 @@ public:
   int MercSkillLevel(int skillId) const;
   int HomunSkillLevel(int skillId) const;
   CRenderObject* FindGameActor(std::uint32_t aid) const;
+  bool sub_E1DE30(std::uint32_t aid);
+  int sub_DDD2C0(const ITEM_INFO& item);
   const char* GetJobName(unsigned job, int sex);
   void InitJobNameTable(JobNameInitialization& context);
   int SyncUnknown0E98();
