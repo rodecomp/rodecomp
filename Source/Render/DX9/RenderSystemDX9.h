@@ -26,6 +26,7 @@ struct RenderSystemDX9Context {
 
 class CRenderSystemDX9 : public CRenderSystemBase {
 public:
+  CRenderSystemDX9();
   explicit CRenderSystemDX9(RenderSystemDX9Context& context);
   ~CRenderSystemDX9() override;
   std::int32_t Backend() override;

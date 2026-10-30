@@ -37,7 +37,7 @@ struct RenderSystemHolder {
   bool IsWindowed() const;
   HRESULT TestDevice() const;
   HRESULT Present(bool option) const;
-  HRESULT Initialize(int backend, HWND window, RenderSystemDX9Context& context);
+  HRESULT Initialize(int backend, HWND window);
 };
 
 int DrawBackBufferText(int x, int y, const char* text, COLORREF color);

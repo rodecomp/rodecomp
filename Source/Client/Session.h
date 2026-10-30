@@ -315,7 +315,7 @@ public:
   void ClearUnknown1740(int id);
   void ClearUnknown1738(int id);
   std::uint32_t SyncServerTime(std::uint32_t serverTime);
-  int DefaultRenderBackend();
+  __declspec(noinline) int DefaultRenderBackend();
   void LoadNavigationScripts();
   bool IsNavigationAllowed() const;
   void LoadRobeAlpha();

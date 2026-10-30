@@ -129,6 +129,28 @@ int CSession::DefaultRenderBackend() {
 }
 
 // OFFSET: 0x0056A6A0
+// FUNCTION: fn_02293
+HRESULT RenderSystemHolder::Initialize(int backend, HWND window) {
+  if (this->system != nullptr) {
+    return 0x8000000e;
+  }
+
+  if (backend == 0) {
+    backend = (g_session.DefaultRenderBackend() == 1) ? 1 : 2;
+  }
+
+  CRenderSystemBase* renderSystem;
+  if (backend == 2) {
+    renderSystem = new CRenderSystemDX9();
+  } else if (backend == 1) {
+    renderSystem = new CRenderSystemDX7();
+  } else {
+    return 0x80070057;
+  }
+
+  this->system = renderSystem;
+  return renderSystem->Initialize(window);
+}
 
 // OFFSET: 0x0056A790
 // FUNCTION: fn_02294
