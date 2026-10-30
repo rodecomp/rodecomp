@@ -206,6 +206,7 @@ struct CRagEffect : CRenderObject {
   bool ProcessEZ2STRRaised();
   void LockOnMarker();
   void MagnumBreak();
+  void NapalmFragments();
   void StoneCurseRing();
   void SnowDrift(char flag);
   void ElectricRingEarly(char kind, std::int16_t angle);

@@ -8486,6 +8486,51 @@ void CRagEffect::MagnumBreak() {
   this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
 }
 
+// OFFSET: 0x00C1FE80
+// FUNCTION: fn_20085
+void CRagEffect::NapalmFragments() {
+  RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
+  g_renderer->viewport.Projection().Project(
+    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex
+  );
+  this->state.tlvertX = vertex.x;
+  this->state.tlvertY = vertex.y;
+
+  if (this->state.stateCnt >= 15 || this->state.stateCnt % 5 > this->state.stateCnt) {
+    return;
+  }
+
+  if (this->state.stateCnt == 0) {
+    PlayEffectWave(*this, "effect\\EF_NapalmBeat.wav");
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = 30;
+  const int distance = std::max(rand() % 50, 0) + 10;
+  const float radius = static_cast<float>(distance);
+  const float angle = static_cast<float>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->deltaPos2.x = ClientSine(static_cast<int>(angle)) * radius;
+  this->state.unknown_11C84->deltaPos2.y = ClientCosine(static_cast<int>(angle)) * -static_cast<float>(distance);
+  this->state.unknown_11C84->deltaPos2.y -= 20.0f;
+  const float size = static_cast<float>(std::max(rand() % 40, 0) + 20);
+  this->state.unknown_11C84->heightSize = size;
+  this->state.unknown_11C84->widthSize = size;
+  this->state.unknown_11C84->alpha = 0.0f;
+  this->state.unknown_11C84->alphaSpeed = this->state.unknown_11C84->maxAlpha / 10.0f;
+  EffectPrimitiveState& fade = *this->state.unknown_11C84;
+  fade.fadeOutCnt = fade.duration - fade.duration / 3;
+  this->state.unknown_11C84->repeatAnim = 0;
+  this->state.unknown_11C84->animSpeed = 2;
+  this->state.unknown_11C84->totalTexture = 8;
+  AllocateTextures(*this->state.unknown_11C84);
+  for (int index = 0; index < static_cast<int>(this->state.unknown_11C84->totalTexture); ++index) {
+    char name[128];
+    std::sprintf(name, "effect\\폭발%d.TGA", index + 1);
+    this->state.unknown_11C84->textures[index] = g_texMgr.Load(name, 0, false, true, false);
+  }
+  this->state.unknown_11C84->slots[0].flag1[0] = 0;
+}
+
 // OFFSET: 0x00C35160
 // FUNCTION: fn_20089
 void CRagEffect::StoneCurseRing() {
