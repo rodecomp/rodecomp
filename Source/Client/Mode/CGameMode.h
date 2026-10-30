@@ -113,6 +113,7 @@ public:
   void ReceiveGameOptions(int count, const GameOptionEntry* entries);
   void ReceiveActorClanName(const unsigned char* packet);
   void ReceiveClanMemberCount(const unsigned char* packet);
+  void ReceiveGuildEmblemVersion(std::uint32_t aid, int guildId, int emblemVersion);
   void ReceiveRuneActivation(const unsigned char* packet);
   void ReceiveRuneSetGrades(const unsigned char* packet);
   void ReceiveRuneRewardResult(int result, int tagId, std::int64_t id, int step);

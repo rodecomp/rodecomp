@@ -6,12 +6,14 @@
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/GuildMgr.h"
 #include "Contents/Items/RuneSystem.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstdint>
@@ -474,5 +476,27 @@ void CGameMode::ReceiveRuneRewardSteps(const unsigned char* data) {
   UIWindow* window = g_windowMgr.LookupWindow(361);
   if (window) {
     window->SendMsg(window, 60, 0, 0, 0, 0);
+  }
+}
+// OFFSET: 0x00D66A50
+
+// OFFSET: 0x00D66A60
+
+// OFFSET: 0x00D66CE0
+
+// OFFSET: 0x00D677C0
+
+// OFFSET: 0x00D686F0
+// FUNCTION: fn_22042
+void CGameMode::ReceiveGuildEmblemVersion(std::uint32_t aid, int guildId, int emblemVersion) {
+  if (this->scene) {
+    CRenderObject* actor = this->scene->GetGameActorByAID(aid);
+    if (actor) {
+      static_cast<CGameActor*>(actor)->Slot48(guildId);
+    }
+  }
+
+  if (guildId) {
+    g_guildMgr->SetEmblemVersion(guildId, emblemVersion);
   }
 }
