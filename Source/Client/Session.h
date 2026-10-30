@@ -27,6 +27,10 @@ struct JobNameInitialization;
 struct ActionFrame;
 struct WindowDialogs;
 
+struct EquipSlots {
+  /* 0000 */ int values[3];
+};
+
 struct SessionRecord6144 {
   /* 0000 */ std::uint16_t unknown_0000 = 0;
   /* 0004 */ std::uint32_t unknown_0004[10] = {};
@@ -536,6 +540,8 @@ public:
   bool UpdateHomunSkill(const CSkillInfo& value, unsigned char notify);
   bool UpdateMercSkill(const CSkillInfo& value, unsigned char notify);
   void AddUnknownId(int id);
+  EquipSlots GetEquipSlots(int location);
+  bool EquipItem3500(const ITEM_INFO& item);
   void AddStackedItem(ITEM_INFO item);
   void AddItemToFreeSlot(ITEM_INFO item);
   bool IsListedId(int id, int variant) const;

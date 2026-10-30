@@ -334,6 +334,27 @@ void CSession::AddUnknownId(int id) {
   }
 }
 
+// OFFSET: 0x00E07470
+// FUNCTION: fn_23744
+bool CSession::EquipItem3500(const ITEM_INFO& item) {
+  const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+  const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
+
+  for (int index = 0; index < 3; ++index) {
+    const int slot = order[index];
+    if (slot != -1) {
+      ITEM_INFO& equipped = this->unknown_3500[slot];
+      equipped = item;
+      equipped.quantity = 1;
+      equipped.unknown_0068 = item.unknown_0068;
+      equipped.unknown_0064 = item.unknown_0064;
+      equipped.unknown_0070 = item.unknown_0070;
+    }
+  }
+
+  return true;
+}
+
 // OFFSET: 0x00E07930
 // FUNCTION: fn_23747
 void CSession::AddStackedItem(ITEM_INFO item) {

@@ -23,10 +23,6 @@
 #include <vector>
 
 namespace {
-  struct EquipSlots {
-    /* 0000 */ int values[3];
-  };
-
   struct EquipSlotDecoder {
     EquipSlots Decode(int mask) const;
   };
@@ -226,7 +222,6 @@ struct ClientItemLists {
   void AddItem1730(const ITEM_INFO& item);
   void MergeItem1718(const ITEM_INFO& item);
   bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
-  EquipSlots GetEquipSlots(int location);
   void RemoveItem1758ByItemId(ITEM_INFO& item);
   __declspec(noinline) void RemoveItem1710(std::uint32_t id, int quantity);
   bool AddExchangeItem(ITEM_INFO item);
@@ -835,7 +830,7 @@ void ClientItemLists::AddItem1748(const ITEM_INFO& item) {
 // OFFSET: 0x00DD7510
 // FUNCTION: fn_23290
 bool ClientItemLists::Equip(const ITEM_INFO& item) {
-  const EquipSlots slots = this->GetEquipSlots(item.unknown_0000[3]);
+  const EquipSlots slots = reinterpret_cast<CSession*>(this)->GetEquipSlots(item.unknown_0000[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
   for (int index = 0; index < 3; ++index) {
@@ -997,7 +992,7 @@ bool ClientItemLists::AddItem1738(const ITEM_INFO& item, unsigned char refresh) 
 
 // OFFSET: 0x00DD7E10
 // FUNCTION: fn_23300
-EquipSlots ClientItemLists::GetEquipSlots(int location) {
+EquipSlots CSession::GetEquipSlots(int location) {
   int mask = location;
   switch (location) {
   case 0x8000: {
@@ -1571,7 +1566,7 @@ bool ClientItemLists::RemoveItem1738(const ITEM_INFO& item) {
 // OFFSET: 0x00E2EC10
 // FUNCTION: fn_24149
 bool ClientItemLists::EquipItem6B68(const ITEM_INFO& item) {
-  const EquipSlots slots = reinterpret_cast<ClientItemLists*>(&g_session)->GetEquipSlots(item.unknown_0000[3]);
+  const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
   for (int index = 0; index < 3; ++index) {
@@ -1629,7 +1624,7 @@ ITEM_INFO CSession::FindItemByIdentity(std::uint32_t identity, int location) {
     return item;
   }
 
-  const EquipSlots slots = reinterpret_cast<ClientItemLists*>(&g_session)->GetEquipSlots(location);
+  const EquipSlots slots = g_session.GetEquipSlots(location);
   const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
 
   for (int index = 0; index < 3; ++index) {
