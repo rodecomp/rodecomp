@@ -13,6 +13,7 @@ class CFriggSongEffect : public CEffect {
 public:
   CFriggSongEffect();
 
+  void Slot03() override;
   void Slot04() override;
   void Slot12() override;
 
