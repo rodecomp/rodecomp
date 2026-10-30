@@ -343,6 +343,33 @@ void UIQuickSlotWnd::Slot19() {
   this->Invalidate();
 }
 
+// OFFSET: 0x0091C4D0
+// FUNCTION: fn_12614
+int UIQuickSlotWnd::SlotX(int slot) {
+  for (int index = 0; index < 2; ++index) {
+    if (index == slot) {
+      return index * 29 + 5;
+    }
+  }
+
+  return -1;
+}
+
+// OFFSET: 0x0091C500
+// FUNCTION: fn_12615
+int UIQuickSlotWnd::SlotAt(int x, int y) {
+  if (y < 0 || y >= 24 || (x > 58 && x < this->geometry.width)) {
+    return -1;
+  }
+
+  const int index = (x - 4) / 29;
+  if (x > index * 29 + 30) {
+    return -1;
+  }
+
+  return index;
+}
+
 // OFFSET: 0x00932E90
 // FUNCTION: fn_12719
 void UISeekPartyWnd::Slot19() {

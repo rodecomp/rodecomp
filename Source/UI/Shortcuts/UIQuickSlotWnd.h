@@ -39,6 +39,8 @@ class UIQuickSlotWnd : public UIFrameWnd {
 public:
   void Slot19() override;
   void Paint() override;
+  int SlotX(int slot);
+  int SlotAt(int x, int y);
 
 protected:
   /* 00B4 */ int m_selected;

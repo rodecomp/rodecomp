@@ -3,6 +3,8 @@
 #include "Contents/MessageTable.h"
 #include "UI/Lists/UIScrollBar.h"
 
+#include <cstring>
+
 // OFFSET: 0x009335E0
 // FUNCTION: fn_12726
 void UIBattleMsgOptionWnd::Slot35(int delta) {
@@ -54,6 +56,26 @@ UIBattleMsgOptionWnd::UIBattleMsgOptionWnd(UIWindowContext& windows, UIFrameCont
   this->messages.push_back(LookupMessage(0xFBE));
 
   this->text = LookupMessage(0x509);
+}
+
+// OFFSET: 0x0091BA20
+// FUNCTION: fn_12606
+int UIBattleMsgOptionWnd::RowAt(int x, int y) {
+  if (x >= 0 && y >= 17 && y < this->m_visibleRows * 20 + 17) {
+    const int column = x / this->geometry.width;
+    int row = 0;
+    int index = 0;
+    for (std::vector<const char*>::iterator it = this->messages.begin(); it != this->messages.end(); ++it, ++index) {
+      if (std::strcmp(LookupMessage(0x60D), *it) != 0 && index >= this->unknown_00C4) {
+        if (row == (y - 17) / 20 + column) {
+          return index;
+        }
+        ++row;
+      }
+    }
+  }
+
+  return -1;
 }
 
 // OFFSET: 0x009305F0
