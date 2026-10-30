@@ -5,6 +5,8 @@
 
 #include <string>
 
+struct CRagEffect;
+
 class CWeatherEffect {
 public:
   void Play(char kind);
@@ -12,7 +14,7 @@ public:
   /* 0000 */ unsigned char unknown_0000[0x10];
   /* 0010 */ void* actor;
   /* 0014 */ unsigned char unknown_0014[0x30];
-  /* 0044 */ void* unknown_0044;
+  /* 0044 */ CRagEffect* effect;
 };
 
 class CMapSkyMgr {

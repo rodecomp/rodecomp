@@ -3,6 +3,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/World/World.h"
 #include "File/MapName.h"
 #include "Render/Renderer.h"
@@ -58,6 +59,10 @@ bool CMapSkyMgr::LoadData() {
 // OFFSET: 0x00C7B790
 // FUNCTION: fn_20367
 void CWeatherEffect::Play(char kind) {
+  if (this->effect && this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
+    return;
+  }
+
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   this->actor = mode->scene->player;
 
@@ -103,7 +108,7 @@ void CWeatherEffect::Play(char kind) {
     return;
   }
 
-  static_cast<EffectActor*>(this->actor)->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }
 
 // OFFSET: 0x005B90F0
