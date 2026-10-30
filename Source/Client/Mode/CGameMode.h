@@ -110,6 +110,8 @@ public:
   bool IsWithinRange(const int& x1, const int& y1, const int& x2, const int& y2, int range);
   bool IsRegisterCell(int x, int y);
   bool HasUnknown01A4(int value);
+  bool IsValidCell(int x, int y);
+  bool GetClosestValidCell(int* x, int* y);
   void ReceiveActorNameAll(const ActorNameAllPacket* packet);
   void ReceiveColoredNotice(const unsigned char* packet);
   void ReceiveActorText(const unsigned char* packet);

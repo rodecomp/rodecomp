@@ -11,6 +11,10 @@
 #include "Script/LuaInstance.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowOrdering.h"
+#include "Resource/World/TerrainResource.h"
+#include "Contents/Actors/Pc.h"
+#include "Client/Application/ErrorDialog.h"
 #include "UI/Window/UIMileageWnd.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Text/StringUtil.h"
@@ -321,7 +325,7 @@ namespace EquipmentProperties {
     /* 00B4 */ std::unordered_map<int, EquipmentValueA> unknown_00B4;
     /* 00D4 */ std::unordered_map<unsigned int, std::list<unsigned int>> m_itemCombinations;
     /* 00F4 */ std::unordered_map<unsigned int, std::list<unsigned int>> m_combinationItems;
-    /* 0114 */ std::unordered_map<int, std::pair<int, int>> unknown_0114;
+    /* 0114 */ std::unordered_map<unsigned int, std::list<unsigned int>> unknown_0114;
     /* 0134 */ std::unordered_map<int, EquipmentValueA> unknown_0134;
     /* 0154 */ std::unordered_map<std::uint64_t, EquipmentPropertyDefinition*> m_definitionsByName;
     /* 0174 */ std::unordered_map<int, EquipmentValueB> unknown_0174;
@@ -342,7 +346,7 @@ namespace EquipmentProperties {
     EquipmentPropertyMaps* FindUnknown0094(const int& key);
     CLuaInstance& GetScript();
     int GetUnknown0174(const int& key);
-    std::pair<int, int>* FindUnknown0114(const int& key);
+    std::list<unsigned int>* FindUnknown0114(const int& key);
     std::unordered_map<int, EquipmentValueC>& GetUnknown019C();
     bool HasUnknown0194(const std::uint64_t& key);
     EquipmentPropertyDefinition* FindDefinition(const std::uint64_t& key);
@@ -357,6 +361,9 @@ namespace EquipmentProperties {
     void AddExpansion(const int& kind, const int& itemId, bool notify);
     void RemoveExpansion(const int& kind, const int& itemId);
     void RefreshExpansion(const int& kind, const int& itemId);
+    void LoadADSkill();
+    void LoadCombiitem();
+    void LoadSkillGroup();
   };
 }
 
@@ -1675,7 +1682,7 @@ int GetEquipLocationIndex(const int& mask) {
 
 // OFFSET: 0x006AD880
 // FUNCTION: fn_06187
-std::pair<int, int>* EquipmentProperties::CEquipmentPropertiesMgr::FindUnknown0114(const int& key) {
+std::list<unsigned int>* EquipmentProperties::CEquipmentPropertiesMgr::FindUnknown0114(const int& key) {
   auto found = this->unknown_0114.find(key);
   if (found == this->unknown_0114.end()) {
     return nullptr;
@@ -1693,6 +1700,167 @@ std::unordered_map<int, EquipmentValueC>& EquipmentProperties::CEquipmentPropert
 // FUNCTION: fn_06190
 bool EquipmentProperties::CEquipmentPropertiesMgr::HasUnknown0194(const std::uint64_t& key) {
   return this->unknown_0194.find(key) != this->unknown_0194.end();
+}
+
+// OFFSET: 0x006B0170
+// FUNCTION: fn_06191
+void EquipmentProperties::CEquipmentPropertiesMgr::LoadADSkill() {
+  lua_State* state = this->script.GetState();
+  if (state == nullptr) {
+    return;
+  }
+  const char* name = "ADSkill";
+  lua_getfield(state, LUA_GLOBALSINDEX, name);
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    lua_pushnil(state);
+    while (lua_next(state, -2) != 0) {
+      unsigned int key = 0;
+      int result;
+      int type = lua_type(this->script.GetState(), -2);
+      if (type == LUA_TNUMBER) {
+        key = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
+        result = 0;
+      } else {
+        result = (type != LUA_TNIL) + 1;
+      }
+      this->unknown_000C &= result == 0;
+      if (result != 0) {
+        ShowErrorDialog(std::format("{0} table has invalid key({1})", name, result), 0);
+      }
+      if (this->unknown_000C) {
+        unsigned int value = 0;
+        type = lua_type(this->script.GetState(), -1);
+        if (type == LUA_TNUMBER) {
+          value = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -1));
+          result = 0;
+        } else {
+          result = (type != LUA_TNIL) + 1;
+        }
+        this->unknown_000C &= result == 0;
+        if (result != 0) {
+          ShowErrorDialog(std::format("{0} table has invalid value({1})", name, result), 0);
+        }
+        if (this->unknown_000C) {
+          this->unknown_0134.try_emplace(key, EquipmentValueA{static_cast<int>(value)});
+        }
+      }
+      lua_settop(state, -2);
+    }
+  } else {
+    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+  }
+  lua_settop(state, -2);
+  if (!this->unknown_000C) {
+    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+  }
+}
+
+// OFFSET: 0x006B05A0
+// FUNCTION: fn_06192
+void EquipmentProperties::CEquipmentPropertiesMgr::LoadCombiitem() {
+  lua_State* state = this->script.GetState();
+  if (state == nullptr) {
+    return;
+  }
+  const char* name = "Combiitem";
+  lua_getfield(state, LUA_GLOBALSINDEX, name);
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    lua_pushnil(state);
+    while (lua_next(state, -2) != 0) {
+      unsigned int key = 0;
+      int result;
+      const int type = lua_type(this->script.GetState(), -2);
+      if (type == LUA_TNUMBER) {
+        key = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
+        result = 0;
+      } else {
+        result = (type != LUA_TNIL) + 1;
+      }
+      this->unknown_000C &= result == 0;
+      if (result != 0) {
+        ShowErrorDialog(std::format("{0} table has invalid entry key({1})", name, result), 0);
+      }
+      if (this->unknown_000C) {
+        std::vector<unsigned int> items;
+        result = this->script.GetFieldUIntArray(items, "Item");
+        this->unknown_000C &= result == 0;
+        if (result != 0) {
+          ShowErrorDialog(std::format("Combiitem[{0}] has invalid 'Item' table({1})", key, result), 0);
+        }
+        if (this->unknown_000C) {
+          for (unsigned int item : items) {
+            this->m_combinationItems[key].push_back(item);
+          }
+        }
+      }
+      lua_settop(state, -2);
+    }
+  } else {
+    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+  }
+  lua_settop(state, -2);
+  if (!this->unknown_000C) {
+    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+  }
+}
+
+// OFFSET: 0x006B6720
+// FUNCTION: fn_06199
+void EquipmentProperties::CEquipmentPropertiesMgr::LoadSkillGroup() {
+  lua_State* state = this->script.GetState();
+  if (state == nullptr) {
+    return;
+  }
+  const char* name = "SkillGroup";
+  lua_getfield(state, LUA_GLOBALSINDEX, name);
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    lua_pushnil(state);
+    while (lua_next(state, -2) != 0) {
+      unsigned int key = 0;
+      int keyResult;
+      int type = lua_type(this->script.GetState(), -2);
+      if (type == LUA_TNUMBER) {
+        key = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
+        keyResult = 0;
+      } else {
+        keyResult = (type != LUA_TNIL) + 1;
+      }
+      const bool keyValid = keyResult == 0;
+      this->unknown_000C &= keyValid;
+      if (keyResult != 0) {
+        ShowErrorDialog(std::format("{0} table has invalid entry key({1})", name, keyResult), 0);
+      }
+      if (this->unknown_000C && lua_type(state, -1) == LUA_TTABLE) {
+        lua_pushnil(state);
+        while (lua_next(state, -2) != 0) {
+          unsigned int skill = 0;
+          int result;
+          type = lua_type(this->script.GetState(), -1);
+          if (type == LUA_TNUMBER) {
+            skill = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -1));
+            result = 0;
+          } else {
+            result = (type != LUA_TNIL) + 1;
+          }
+          this->unknown_000C &= keyValid;
+          if (keyResult != 0) {
+            ShowErrorDialog(std::format("SkillGroup[{0}] has invalid 'Skill' table({1})", key, result), 0);
+          }
+          if (this->unknown_000C) {
+            this->unknown_0114[key].push_back(skill);
+          }
+          lua_settop(state, -2);
+        }
+      }
+      lua_settop(state, -2);
+    }
+  } else {
+    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+  }
+  lua_settop(state, -2);
+  if (!this->unknown_000C) {
+    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+  }
 }
 
 // OFFSET: 0x006B7760
@@ -2857,7 +3025,9 @@ struct SessionMessengerContext {
   /* 1710 */ std::list<MessengerMember> lists[12];
   /* 1770 */ unsigned char pad_1770[0x18];
   /* 1788 */ int listData[11][2];
-  /* 17E0 */ unsigned char pad_17E0[0x26E0];
+  /* 17E0 */ unsigned char pad_17E0[0x10];
+  /* 17F0 */ ITEM_INFO equipSlots[10];
+  /* 21A0 */ unsigned char pad_21A0[0x1D20];
   /* 3EC0 */ int slots[10][62];
   /* 4870 */ unsigned char pad_4870[0x9A0];
   /* 5210 */ int slot5210;
@@ -2881,6 +3051,7 @@ struct SessionMessengerContext {
   void InitSlots();
   void PurgeMatchingMembers2();
   void ResetSlots();
+  void ResetEquipment();
 
   int GetList0Size() const;
   int GetList11Size() const;
@@ -2915,6 +3086,64 @@ void UIWindowMgr::NotifyItemWindows(int accountId, int lower, int upper) {
       break;
     }
   }
+}
+
+// OFFSET: 0x00CD3780
+// FUNCTION: fn_21271
+bool CGameMode::GetClosestValidCell(int* x, int* y) {
+  CPlayer* player = this->scene->player;
+  int column;
+  int row;
+  int subColumn;
+  int subRow;
+  this->scene->terrain->Grid().WorldSubcell(player->render.position.x, player->render.position.z, column, row, subColumn, subRow);
+  const int startY = *y;
+  const int startX = *x;
+  const int deltaY = row - startY;
+  const int deltaX = column - startX;
+  const int offsets[9][2] = {{0, 0}, {1, 0}, {1, 1}, {1, -1}, {-1, 0}, {-1, 1}, {-1, -1}, {0, 1}, {0, -1}};
+  if (std::abs(deltaX) >= std::abs(deltaY)) {
+    if (deltaX == 0) {
+      return false;
+    }
+    const int step = deltaX > 0 ? 1 : -1;
+    for (int cellX = startX; cellX != column; cellX += step) {
+      const int cellY = (cellX - *x) * deltaY / deltaX + *y;
+      for (int i = 0; i < 9; ++i) {
+        const int candidateX = cellX + offsets[i][0];
+        const int candidateY = cellY + offsets[i][1];
+        if (this->scene->terrain->Grid().Walkable(candidateX, candidateY) && !this->IsRegisterCell(candidateX, candidateY)) {
+          if (!this->CanFindPath(column, row, subColumn, subRow, candidateX, candidateY)) {
+            return false;
+          }
+          *x = candidateX;
+          *y = candidateY;
+          return true;
+        }
+      }
+    }
+  } else {
+    if (deltaY == 0) {
+      return false;
+    }
+    const int step = deltaY > 0 ? 1 : -1;
+    for (int cellY = startY; cellY != row; cellY += step) {
+      const int cellX = (cellY - *y) * deltaX / deltaY + *x;
+      for (int i = 0; i < 9; ++i) {
+        const int candidateX = cellX + offsets[i][0];
+        const int candidateY = cellY + offsets[i][1];
+        if (this->scene->terrain->Grid().Walkable(candidateX, candidateY) && !this->IsRegisterCell(candidateX, candidateY)) {
+          if (!this->CanFindPath(column, row, subColumn, subRow, candidateX, candidateY)) {
+            return false;
+          }
+          *x = candidateX;
+          *y = candidateY;
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 // OFFSET: 0x00CD6E40
@@ -3174,6 +3403,24 @@ bool CGameMode::HasUnknown01A4(int value) {
   return false;
 }
 
+// OFFSET: 0x00CD75B0
+// FUNCTION: fn_21295
+bool CGameMode::IsValidCell(int x, int y) {
+  if (!this->scene->terrain->Grid().Walkable(x, y)) {
+    return false;
+  }
+  CPlayer* player = this->scene->player;
+  if (x == reinterpret_cast<const int&>(player->unknown_04F8) && y == player->unknown_04FC) {
+    return false;
+  }
+  int column;
+  int row;
+  int subColumn;
+  int subRow;
+  this->scene->terrain->Grid().WorldSubcell(player->render.position.x, player->render.position.z, column, row, subColumn, subRow);
+  return this->CanFindPath(column, row, subColumn, subRow, x, y) && !this->IsRegisterCell(x, y);
+}
+
 // OFFSET: 0x00DD80A0
 // FUNCTION: fn_23304
 void SessionMessengerContext::UpdateRandomStats() {
@@ -3242,6 +3489,15 @@ void ClearMemberFlags(std::uint32_t* flags) {
 }
 
 // OFFSET: 0x00DD85B0
+// FUNCTION: fn_23309
+void SessionMessengerContext::ResetEquipment() {
+  for (ITEM_INFO& item : this->equipSlots) {
+    item.Reset();
+  }
+  RequestBasicInfoRefresh();
+  EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->Clear();
+  reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+}
 
 // OFFSET: 0x00DD8660
 
