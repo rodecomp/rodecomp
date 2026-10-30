@@ -6,6 +6,12 @@
 #include <d3d9.h>
 #include <utility>
 
+// OFFSET: 0x00569E60
+// FUNCTION: fn_02272
+bool DisplayMode::Matches(const DisplayMode& other) const {
+  return this->width == other.width && this->height == other.height && this->bitsPerPixel == other.bitsPerPixel;
+}
+
 // OFFSET: 0x0056A590
 // FUNCTION: fn_02291
 std::vector<DisplayMode> EnumerateDisplayModes(int backend, unsigned deviceIndex) {

@@ -11,6 +11,8 @@ struct DisplayMode {
   /* 0004 */ unsigned height;
   /* 0008 */ unsigned bitsPerPixel;
   /* 000C */ std::string description;
+
+  bool Matches(const DisplayMode& other) const;
 };
 
 std::vector<DisplayMode> EnumerateDisplayModes(int backend, unsigned deviceIndex);
