@@ -87,6 +87,7 @@ struct CEffectPrim : CRenderObject {
   bool PrimWanderingFlames();
   bool PrimWanderingFlames2();
   bool PrimDriftingOrbs();
+  bool PrimDriftingSquares();
   void PrimFallingPetals();
   void PrimFallingPetals2();
   bool Move2DPrimitive();

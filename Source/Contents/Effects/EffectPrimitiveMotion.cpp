@@ -4383,6 +4383,249 @@ bool CEffectPrim::PrimWind() {
   return true;
 }
 
+// OFFSET: 0x00BC5580
+// FUNCTION: fn_19848
+bool CEffectPrim::PrimDriftingSquares() {
+  const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+  this->state.slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
+  const short anglePitch = static_cast<short>(450 - static_cast<int>(view->camera.pitch));
+  this->state.slots[1].alphaT = anglePitch;
+  if (anglePitch >= 360) {
+    this->state.slots[1].alphaT = anglePitch - 360;
+  }
+
+  this->render.position.x = this->state.master->render.position.x;
+  this->render.position.y = this->state.master->render.position.y;
+  this->render.position.z = this->state.master->render.position.z;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    EffectPrimitiveSlot& slot = this->state.slots[ec];
+    float speed = 0.05f;
+    ++slot.process;
+    if (slot.life != 1) {
+      continue;
+    }
+
+    if (slot.flag1[11] < 120) {
+      ++slot.flag1[11];
+    }
+    if (slot.flag1[0] == 1) {
+      speed = 0.03f;
+    } else {
+      if (slot.flag1[12] < 120) {
+        ++slot.flag1[12];
+      }
+      if (slot.flag1[13] < 120) {
+        ++slot.flag1[13];
+      }
+      if (slot.flag1[14] < 120) {
+        ++slot.flag1[14];
+      }
+    }
+
+    for (int pair = 0; pair < 8; ++pair) {
+      float& current = slot.height[2 * pair];
+      float& target = slot.height[2 * pair + 1];
+      int next;
+      if (target <= current) {
+        current -= 2.0f;
+        if (current < 0.0f) {
+          current = 0.0f;
+        }
+        if (target < current) {
+          continue;
+        }
+        const int range = static_cast<int>(current);
+        int pick = 0;
+        if (range != 0) {
+          const int value = std::rand() % range;
+          pick = value >= 0 ? value : 0;
+        }
+        next = 359 - pick;
+      } else {
+        current += 3.0f;
+        if (current > 359.0f) {
+          current = 359.0f;
+        }
+        if (current <= target) {
+          continue;
+        }
+        const int range = static_cast<int>(current);
+        next = 0;
+        if (range != 0) {
+          const int value = std::rand() % range;
+          next = value >= 0 ? value : 0;
+        }
+      }
+      target = static_cast<float>(next);
+    }
+
+    const char mode = slot.flag1[0];
+    if (mode == 1) {
+      slot.vecBPre.y += g_sinTable[static_cast<int>(slot.height[0])] * speed;
+    } else {
+      slot.vecBPre.x += g_sinTable[static_cast<int>(slot.height[0])] * speed;
+      slot.vecBPre.z += speed * g_sinTable[static_cast<int>(slot.height[2])];
+    }
+
+    short offset = static_cast<short>(slot.vecBPre.x);
+    short reach = offset < 0 ? -offset : offset;
+    if (reach < 30) {
+      offset = static_cast<short>(slot.vecBPre.z);
+      reach = offset < 0 ? -offset : offset;
+    }
+    if ((mode == 1 && slot.process > 3000) || reach >= 30) {
+      slot.flag1[11] -= 2;
+      if (slot.flag1[11] < 2) {
+        if (mode == 1) {
+          slot.process = 0;
+          slot.vecBPre.y = 0.0f;
+          slot.vecBPre.x = 0.0f;
+          slot.vecBPre.z = 0.0f;
+        } else {
+          slot.vecBPre.x = static_cast<float>(std::rand() % 31 - 15);
+          slot.vecBPre.z = static_cast<float>(std::rand() % 31 - 15);
+        }
+      }
+    } else {
+      const int roll = mode == 1 ? std::rand() % 20 : std::rand() % 125;
+      if (roll == 0 && slot.flag1[11] > 100 && slot.flag1[7] == 0) {
+        slot.flag1[7] = 1;
+      }
+      if (slot.flag1[7] > 0) {
+        ++slot.flag1[7];
+        if (slot.flag1[7] <= 90) {
+          slot.flag1[11] -= 6;
+          if (slot.flag1[11] < 0) {
+            slot.flag1[11] = 0;
+          }
+        } else if (slot.flag1[7] < 120) {
+          slot.flag1[11] += 4;
+          if (slot.flag1[11] > 120) {
+            slot.flag1[11] = 120;
+          }
+        } else {
+          slot.flag1[7] = 0;
+        }
+      }
+    }
+
+    if (slot.flag1[0] == 1) {
+      return true;
+    }
+
+    slot.vecBNow.x -= speed * g_sinTable[static_cast<int>(slot.height[4])];
+    slot.vecBNow.z -= speed * g_sinTable[static_cast<int>(slot.height[6])];
+    offset = static_cast<short>(slot.vecBNow.x);
+    reach = offset < 0 ? -offset : offset;
+    if (reach < 30) {
+      offset = static_cast<short>(slot.vecBNow.z);
+      reach = offset < 0 ? -offset : offset;
+    }
+    if (reach < 30) {
+      if (std::rand() % 125 == 0 && slot.flag1[12] > 100 && slot.flag1[8] == 0) {
+        slot.flag1[8] = 1;
+      }
+      if (slot.flag1[8] > 0) {
+        ++slot.flag1[8];
+        if (slot.flag1[8] <= 90) {
+          slot.flag1[12] -= 6;
+          if (slot.flag1[12] < 0) {
+            slot.flag1[12] = 0;
+          }
+        } else if (slot.flag1[8] < 120) {
+          slot.flag1[12] += 4;
+          if (slot.flag1[12] > 120) {
+            slot.flag1[12] = 120;
+          }
+        } else {
+          slot.flag1[8] = 0;
+        }
+      }
+    } else {
+      slot.flag1[12] -= 2;
+      if (slot.flag1[12] < 2) {
+        slot.vecBNow.x = static_cast<float>(std::rand() % 31 - 15);
+        slot.vecBNow.z = static_cast<float>(std::rand() % 31 - 15);
+      }
+    }
+
+    slot.vecTPre.x += speed * g_sinTable[static_cast<int>(slot.height[8])];
+    slot.vecTPre.z -= speed * g_sinTable[static_cast<int>(slot.height[10])];
+    offset = static_cast<short>(slot.vecTPre.x);
+    reach = offset < 0 ? -offset : offset;
+    if (reach < 30) {
+      offset = static_cast<short>(slot.vecTPre.z);
+      reach = offset < 0 ? -offset : offset;
+    }
+    if (reach <= 30) {
+      if (std::rand() % 125 == 0 && slot.flag1[13] > 100 && slot.flag1[9] == 0) {
+        slot.flag1[9] = 1;
+      }
+      if (slot.flag1[9] > 0) {
+        ++slot.flag1[9];
+        if (slot.flag1[9] <= 90) {
+          slot.flag1[13] -= 6;
+          if (slot.flag1[13] < 0) {
+            slot.flag1[13] = 0;
+          }
+        } else if (slot.flag1[9] < 120) {
+          slot.flag1[13] += 4;
+          if (slot.flag1[13] > 120) {
+            slot.flag1[13] = 120;
+          }
+        } else {
+          slot.flag1[9] = 0;
+        }
+      }
+    } else {
+      slot.flag1[13] -= 2;
+      if (slot.flag1[13] < 2) {
+        slot.vecTPre.x = static_cast<float>(std::rand() % 31 - 15);
+        slot.vecTPre.z = static_cast<float>(std::rand() % 31 - 15);
+      }
+    }
+
+    slot.vecTNow.x -= speed * g_sinTable[static_cast<int>(slot.height[12])];
+    slot.vecTNow.z += speed * g_sinTable[static_cast<int>(slot.height[14])];
+    offset = static_cast<short>(slot.vecTNow.x);
+    reach = offset < 0 ? -offset : offset;
+    if (reach < 30) {
+      offset = static_cast<short>(slot.vecTNow.z);
+      reach = offset < 0 ? -offset : offset;
+    }
+    if (reach <= 30) {
+      if (std::rand() % 125 == 0 && slot.flag1[14] > 100 && slot.flag1[10] == 0) {
+        slot.flag1[10] = 1;
+      }
+      if (slot.flag1[10] > 0) {
+        ++slot.flag1[10];
+        if (slot.flag1[10] <= 90) {
+          slot.flag1[14] -= 6;
+          if (slot.flag1[14] < 0) {
+            slot.flag1[14] = 0;
+          }
+        } else if (slot.flag1[10] < 120) {
+          slot.flag1[14] += 4;
+          if (slot.flag1[14] > 120) {
+            slot.flag1[14] = 120;
+          }
+        } else {
+          slot.flag1[10] = 0;
+        }
+      }
+    } else {
+      slot.flag1[14] -= 2;
+      if (slot.flag1[14] < 2) {
+        slot.vecTNow.x = static_cast<float>(std::rand() % 31 - 15);
+        slot.vecTNow.z = static_cast<float>(std::rand() % 31 - 15);
+      }
+    }
+  }
+
+  return true;
+}
+
 // INLINED
 static __forceinline void RotatePairX(vector3d& point, int angle) {
   const float y = point.y;
