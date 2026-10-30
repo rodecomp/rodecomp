@@ -29,6 +29,7 @@ public:
 class UIRodexEditCtrl3 : public UIEditCtrl3 {
 public:
   void Slot15(int width, int height) override;
+  void sub_855150();
 };
 
 class UIRodexComposeWnd : public UIFrameWnd {
@@ -38,7 +39,10 @@ public:
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot19() override;
   void Slot25(int x, int y) override;
+  void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
+  void sub_7FF710(const ITEM_INFO& item);
+  void sub_7FF940(int tagId);
   ITEM_INFO GetItemAtPoint(int x, int y);
   int MeasureText(const std::string& text, const unsigned& bytes);
   void SetRecipient(int id, unsigned short job, unsigned short level, const char* name);

@@ -7,6 +7,7 @@
 #include "File/ShortcutFilename.h"
 #include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Edit/ItemTagRetirement.h"
+#include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Text/UIStaticText.h"
 #include "Utility/Text/FormatString.h"
@@ -17,6 +18,12 @@
 #include "UI/Edit/UIEditCtrl_Currency.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Client/Input/InputCharset.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Items/ItemNaming.h"
+#include "Contents/MessageTable.h"
+#include "Contents/PlayerNameDictionary.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -37,6 +44,61 @@ ITEM_INFO UIRodexComposeWnd::GetItemAtPoint(int x, int y) {
   }
 
   return ITEM_INFO(0);
+}
+
+// OFFSET: 0x007FF710
+// FUNCTION: fn_10003
+void UIRodexComposeWnd::sub_7FF710(const ITEM_INFO& item) {
+  if (!this->unknown_0100) {
+    this->unknown_0100 = new UIItemTagOnMail();
+    if (!this->unknown_0100) {
+      return;
+    }
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+
+  std::string name = naming.DisplayName(item, 0);
+  auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->unknown_0100);
+  if (!tagCtrl->CanInsertTag(name, this->m_contents->geometry.width)) {
+    return;
+  }
+
+  tagCtrl->taggedText = this->m_contents->Text();
+  std::string appendResult = tagCtrl->AppendTag(naming.DisplayName(item, 0));
+  this->m_contents->SetText(appendResult.c_str());
+  this->m_contents->sub_855150();
+  tagCtrl->sub_89CFE0(item, 0xd630a9);
+}
+
+// OFFSET: 0x007FF940
+// FUNCTION: fn_10004
+void UIRodexComposeWnd::sub_7FF940(int tagId) {
+  if (!this->unknown_0100) {
+    this->unknown_0100 = new UIItemTagOnMail();
+    if (!this->unknown_0100) {
+      return;
+    }
+  }
+
+  auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->unknown_0100);
+  if (tagCtrl->tags.size() >= 3) {
+    return;
+  }
+
+  if (this->m_contents->Length() + this->m_contents->unknown_00F0 > this->m_contents->maximum) {
+    return;
+  }
+
+  std::string tagText = tagCtrl->sub_874A40(tagId, 0xd630a9);
+  tagCtrl->taggedText = this->m_contents->Text();
+
+  std::string fullText = std::string(this->m_contents->Text()) + tagText;
+  this->m_contents->SetText(fullText.c_str());
+  this->m_contents->sub_855150();
 }
 
 // OFFSET: 0x00800480
@@ -95,6 +157,34 @@ void UIRodexComposeWnd::Slot25(int x, int y) {
   if (item.unknown_0000[1] > 0) {
     ItemDescriptions descriptions{g_itemDescriptions};
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(this->m_frameContext->windows, descriptions, 15, item, item.quantity, -1);
+  }
+}
+
+// OFFSET: 0x00800FA0
+// FUNCTION: fn_10010
+void UIRodexComposeWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAtPoint(x, y);
+  if (std::atoi(item.itemId.c_str()) != 0) {
+    int screenX = this->m_itemIndex * 34 + 30;
+    int screenY = 290;
+    this->ToScreen(screenX, screenY);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+    if (item.identified == 1 && item.unknown_0098 != 0) {
+      unsigned int color = g_session.sub_DDD2C0(item);
+      std::string text = FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098);
+      if (tooltip) {
+        tooltip->Show(text.c_str(), screenX, screenY, color, 0, 1);
+      }
+    } else {
+      unsigned int color = g_session.sub_DDD2C0(item);
+      if (tooltip) {
+        tooltip->Show(naming.DisplayName(item, 0).c_str(), screenX, screenY, color, 0, 1);
+      }
+    }
   }
 }
 

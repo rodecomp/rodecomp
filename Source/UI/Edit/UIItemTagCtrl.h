@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 
+struct ITEM_INFO;
+
 class UIItemTagCtrl : public UIEditCtrl {
 public:
   virtual bool CanInsertTag(const std::string& name, int width);
@@ -15,6 +17,8 @@ public:
   std::string AppendTag(const std::string& name);
   bool SyncTagsWithText();
   void SetTaggedText(const std::string& text, int width);
+  void sub_89CFE0(const ITEM_INFO& item, unsigned int color);
+  std::string sub_874A40(int tagId, unsigned int color);
 
   /* 011C */ int unknown_011C;
   /* 0120 */ std::list<ItemTagRecord> tags;
