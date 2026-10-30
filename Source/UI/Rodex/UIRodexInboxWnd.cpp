@@ -11,6 +11,14 @@
 
 #include <algorithm>
 
+// OFFSET: 0x00807640
+// FUNCTION: fn_10049
+void UIRodexInboxWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+}
+
 // OFFSET: 0x00805750
 
 // OFFSET: 0x008058B0

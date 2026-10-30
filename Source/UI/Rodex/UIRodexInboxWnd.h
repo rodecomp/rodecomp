@@ -66,6 +66,7 @@ struct RodexMailEntryLess {
 class UIRodexInboxWnd : public UIItemWnd {
 public:
   bool Slot03() override;
+  void Slot25(int x, int y) override;
 
   void DrawMailIcons(int row, unsigned char attachments, unsigned char read, unsigned char returned);
   void SetButtonsDisabled(unsigned char disabled);
