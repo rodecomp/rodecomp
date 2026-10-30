@@ -1,6 +1,9 @@
 #include "Archive/GPak.h"
 #include "Archive/GPakUpdate.h"
 #include "Archive/PakCipher.h"
+#include "Utility/AES.h"
+#include "Utility/Hash/XxHash32.h"
+#include "Utility/XxHash3.h"
 
 #include <algorithm>
 #include <cmath>
@@ -8,6 +11,7 @@
 #include <cstring>
 #include <emmintrin.h>
 #include <random>
+#include <span>
 #include <xhash>
 #include <zlib.h>
 
@@ -1656,8 +1660,24 @@ struct PakIntrusiveLink {
   /* 0004 */ PakLinkNode* m_prev;
   /* 0008 */ PakLinkNode* m_next;
 
+  void Unlink64AE10();
+  void Unlink64AE30();
   void Unlink657820();
 };
+
+// OFFSET: 0x0064AE10
+// FUNCTION: fn_04910
+void PakIntrusiveLink::Unlink64AE10() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
+
+// OFFSET: 0x0064AE30
+// FUNCTION: fn_04911
+void PakIntrusiveLink::Unlink64AE30() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
 
 // OFFSET: 0x00657820
 // FUNCTION: fn_05092
@@ -1670,6 +1690,39 @@ void PakIntrusiveLink::Unlink657820() {
 // FUNCTION: fn_05078
 PakUniformRandom::PakUniformRandom(int minimum, int maximum, unsigned int seed) : m_engine(seed), m_distribution(minimum, maximum) {
 }
+
+struct PakAuxiliaryHeader {
+  /* 0000 */ std::uint8_t version;
+  /* 0001 */ std::uint8_t keySource;
+  /* 0002 */ std::uint8_t unknown_0002[2];
+  /* 0004 */ std::uint32_t checksum;
+  /* 0008 */ std::uint8_t payload[96];
+};
+
+static_assert(sizeof(PakAuxiliaryHeader) == 0x68);
+static_assert(offsetof(PakAuxiliaryHeader, checksum) == 4);
+static_assert(offsetof(PakAuxiliaryHeader, payload) == 8);
+
+struct PakAuxiliaryContext {
+  /* 0000 */ PakSpan_655A30* name;
+  /* 0004 */ PakAuxiliaryHeader* header;
+};
+
+struct PakAuxiliaryState {
+  /* 0000 */ HashTable_655340 m_handlers;
+  /* 0020 */ PakMaskedKey48 m_key;
+  /* 0055 */ std::uint8_t unknown_0055[107];
+  /* 00C0 */ AES* m_cipher;
+
+  bool DecodeHeader(PakSpan_655A30 name, std::uint8_t* data, std::uint32_t size, PakAuxiliaryHeader* header);
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(PakAuxiliaryState, m_key) == 0x20);
+static_assert(offsetof(PakAuxiliaryState, m_cipher) == 0xC0);
+#endif
+
+// OFFSET: 0x00658B90
 
 // OFFSET: 0x00658E90
 // FUNCTION: fn_05113
