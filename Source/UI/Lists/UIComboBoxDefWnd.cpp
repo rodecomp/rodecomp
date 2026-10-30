@@ -53,6 +53,36 @@ void UIComboBoxDefWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x00878DF0
+// FUNCTION: fn_11213
+void UIComboBox_BmpWnd::Create(int width, int height, const char* path, const char* name) {
+  UIWindow::Resize(width, height);
+  this->name = name;
+  const std::string base(path);
+  auto& controls = this->m_controls->buttons;
+
+  this->button = new UIBitmapButton(*this->m_context, controls);
+  this->button->SetBitmap((base + "_out.bmp").c_str(), 0, 0);
+  this->button->SetBitmap((base + "_over.bmp").c_str(), 1, 0);
+  this->button->SetBitmap((base + "_press.bmp").c_str(), 2, 0);
+  this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
+  this->button->Move((this->geometry.width - this->button->BitmapWidth()), 0);
+  this->button->SetId(273);
+  this->AddChild(this->button);
+
+  this->list = new UIComboBoxEx(*this->m_context, this->m_controls->combo);
+  this->list->SetSize(this->geometry.width, this->dropdownHeight);
+  this->list->Move(0, this->button->BitmapHeight());
+  this->AddChild(this->list);
+
+  char text[12] = {};
+  std::sprintf(text, "(NO SELECT)");
+  this->label = new UIStaticText(*this->m_context, controls);
+  this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), this->button->BitmapHeight());
+  this->label->SetText(text, 0);
+  this->label->Move(2, 3);
+  this->label->shadow = 1;
+  this->AddChild(this->label);
+}
 
 // OFFSET: 0x00889D60
 // FUNCTION: fn_11352

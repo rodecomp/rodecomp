@@ -371,8 +371,35 @@ UITabControl::UITabControl(UIWindowContext& windows, UIButtonContext& controls)
 }
 
 // OFFSET: 0x00879300
+// FUNCTION: fn_11215
+void UITabControl::SelectTab(int index) {
+  if (index < static_cast<int>(this->labels.size()) && this->unknown_007C != index) {
+    this->unknown_007C = index;
+  }
+
+  this->edit->SetText("");
+  this->edit->Move(-100, -100);
+
+  if (this->parent) {
+    this->parent->SendMsg(this, 22, this->unknown_007C, 0, 0, 0);
+    this->parent->Invalidate();
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x0087A520
+// FUNCTION: fn_11234
+void UITabControl::ClearTabs() {
+  this->labels.clear();
+  this->colors.clear();
+  this->widths.clear();
+  this->unknown_00F0 = this->unknown_00EC;
+  this->unknown_00F8 = 0;
+  this->unknown_007C = 0;
+  this->unknown_00E8 = 12;
+  this->FitToTabs();
+}
 
 // OFFSET: 0x00880B20
 // FUNCTION: fn_11283

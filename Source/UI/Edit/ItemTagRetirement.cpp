@@ -32,3 +32,11 @@ bool UIItemTagCtrl::CanInsertTag(const std::string&, int) {
 }
 
 // OFFSET: 0x0087A5A0
+// FUNCTION: fn_11235
+std::string UIItemTagCtrl::AppendTag(const std::string& name) {
+  std::string tag = "<";
+  tag += FitText(*this->geometry.surface, name, this->tagWidth / 2);
+  tag += ">";
+  this->taggedText += tag;
+  return this->taggedText;
+}
