@@ -74,10 +74,20 @@ void CUIAdventureGuide::OnButtonClick() {
 }
 
 // OFFSET: 0x009DBFD0
+// FUNCTION: fn_14313
+void CRenewQuestMgr::AddStatusRequest(unsigned int id) {
+  this->m_statusRequests.insert(id);
+}
 
 namespace AdventureGuide {
 
 // OFFSET: 0x009DC0B0
+// FUNCTION: fn_14314
+void CUITab::OnSelectSubTab(CUISubTab* subTab) {
+  if (subTab) {
+    this->page->Slot54(this->type, subTab->id);
+  }
+}
 
 // OFFSET: 0x009DC0E0
 // FUNCTION: fn_14315
@@ -85,8 +95,26 @@ void CUIIntro::OnSelectContents(CUITabInfo*, const Guide_Intro::Contents&) {
 }
 
 // OFFSET: 0x009DC210
+// FUNCTION: fn_14318
+void CUIItem::OnSelectItem(CUIItemInfo* item, const CItemData&) {
+  if (item) {
+    this->unknown_008C = item->unknown_0108;
+  }
+  const bool selected = !this->unknown_008C.empty();
+  this->unknown_0084->Show(selected);
+  this->unknown_0088->Show(selected);
+}
 
 // OFFSET: 0x009DC2C0
+// FUNCTION: fn_14320
+void CUIQuest::OnSelectQuest(CUIQuestInfo* item, const CQuestInfo&) {
+  if (item) {
+    this->unknown_008C = item->unknown_00F8;
+  }
+  const bool selected = !this->unknown_008C.empty();
+  this->unknown_0084->Show(selected);
+  this->unknown_0088->Show(selected);
+}
 
 // OFFSET: 0x009DC8E0
 // FUNCTION: fn_14324
