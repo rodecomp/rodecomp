@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <string>
 #include <vector>
 
 struct CharacterListPacket;
@@ -56,9 +57,12 @@ public:
   /* 4068 */ CharacterInfo characters[68];
   /* 6EE4 */ unsigned char unknown_6EE4[0x18];
   /* 6EFC */ CharacterSlotExtension slotExtension;
-  /* 6F10 */ unsigned char unknown_6F10[0x58];
+  /* 6F10 */ unsigned char unknown_6F10[0x40];
+  /* 6F50 */ std::string unknown_6F50;
   /* 6F68 */ std::vector<MapStateEntry> mapStates;
   /* 6F74 */ unsigned char unknown_6F74[0x8];
+
+  void End() override;
 
   void SubD8D4F0(int);
   int GetMaxCharacterSlot();
@@ -73,10 +77,14 @@ public:
   void ReceiveDeleteReservation(const CharacterDeletePacket* packet, WindowDialogs& dialogs);
   void ReceiveMapStates(const MapStatePacket* packet, WindowDialogs& dialogs);
   void SubD91780(int);
+  void SubD97B20(int);
+  void SubD97EF0(int);
+  void SubD97F00(int);
 };
 
 int GetClientType();
 const char* GetUserCountText(unsigned short userCount);
+void OpenAccountRegistration();
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CharacterInfo) == 0xAF);
@@ -88,6 +96,7 @@ static_assert(offsetof(CLoginMode, characterCount) == 0x1CC);
 static_assert(offsetof(CLoginMode, unknown_01D8) == 0x1D8);
 static_assert(offsetof(CLoginMode, characters) == 0x4068);
 static_assert(offsetof(CLoginMode, slotExtension) == 0x6EFC);
+static_assert(offsetof(CLoginMode, unknown_6F50) == 0x6F50);
 static_assert(offsetof(CLoginMode, mapStates) == 0x6F68);
 static_assert(sizeof(CLoginMode) == 0x6F7C);
 #endif

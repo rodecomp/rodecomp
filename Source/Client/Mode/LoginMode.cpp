@@ -1,7 +1,11 @@
 #include "Client/Mode/CLoginMode.h"
+#include "Client/Application/ApplicationWindow.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "Render/Renderer.h"
+#include "Resource/ResourceMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
@@ -17,6 +21,7 @@
 #include <string>
 #include <winsock2.h>
 #include <windows.h>
+#include <shellapi.h>
 
 #pragma pack(push, 1)
 struct CharacterSlotsPacket {
@@ -535,3 +540,22 @@ void CLoginMode::ReceiveMapStates(const MapStatePacket* packet, WindowDialogs& d
 // FUNCTION: fn_22288
 void CLoginMode::SubD91780(int) {
 }
+
+// OFFSET: 0x00D97180
+
+// OFFSET: 0x00D97B20
+// FUNCTION: fn_22303
+void CLoginMode::SubD97B20(int) {
+}
+
+// OFFSET: 0x00D97EF0
+// FUNCTION: fn_22306
+void CLoginMode::SubD97EF0(int) {
+}
+
+// OFFSET: 0x00D97F00
+// FUNCTION: fn_22307
+void CLoginMode::SubD97F00(int) {
+}
+
+// OFFSET: 0x00D97F10
