@@ -54,3 +54,95 @@ void UIMakeTargetProcessWnd::Slot25(int x, int y) {
 }
 
 // OFFSET: 0x009A48C0
+// FUNCTION: fn_13617
+int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6: {
+    const int response = static_cast<int>(a);
+    this->m_recorder->Record(this->geometry.id, response, b, c, d);
+
+    if (response == 184) {
+      g_modeMgr.GetGameMode()->SendMsg(130, this->makeType, reinterpret_cast<int>(this->materials), 0, 0);
+      this->m_frameContext->windows.CloseWindow(80);
+      return 0;
+    }
+
+    if (response == 185) {
+      g_modeMgr.GetGameMode()->SendMsg(130, 0, reinterpret_cast<int>(this->materials), 0, 0);
+      bool restored = false;
+      for (ITEM_INFO& material : this->materials) {
+        if (material.unknown_0000[1] != 0) {
+          restored = true;
+          reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1710(material, 0);
+        }
+      }
+
+      if (restored) {
+        RefreshItemWindows(&g_windowMgr);
+      }
+
+      if (g_windowMgr.unknown_01D4) {
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01D4)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+
+      this->m_frameContext->windows.CloseWindow(80);
+      return 0;
+    }
+
+    return 0;
+  }
+
+  case 40:
+    this->makeType = static_cast<int>(a);
+    this->Invalidate();
+    return 0;
+
+  case 75: {
+    const char* name = reinterpret_cast<const char*>(a);
+    for (int index = 2; index >= 0; --index) {
+      ITEM_INFO& material = this->materials[index];
+      if (material.unknown_0000[1] != 0 && material.itemId == name) {
+        reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1710(material, 1);
+        material.Reset();
+        this->Invalidate();
+        return 0;
+      }
+    }
+
+    return 0;
+  }
+
+  case 123: {
+    const auto* bytes = reinterpret_cast<const unsigned char*>(a);
+    std::uint16_t marker;
+    std::memcpy(&marker, bytes, sizeof(marker));
+    unsigned offset = 6;
+
+    if (marker == 22000) {
+      while (static_cast<unsigned>(b) > offset) {
+        std::int16_t kind;
+        std::uint32_t size;
+        std::memcpy(&kind, bytes + offset, sizeof(kind));
+        std::memcpy(&size, bytes + offset + 2, sizeof(size));
+        offset += 6;
+
+        if (kind == 22001) {
+          break;
+        }
+
+        if (kind == 22002) {
+          std::memcpy(&this->makeType, bytes + offset, size);
+          offset += size;
+          this->SendMsg(nullptr, 40, this->makeType, 0, 0, 0);
+        } else {
+          offset += size;
+        }
+      }
+    }
+
+    return 0;
+  }
+  }
+
+  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+}
