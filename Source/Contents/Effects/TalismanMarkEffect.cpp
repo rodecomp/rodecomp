@@ -7,6 +7,151 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"
 
+#include <algorithm>
+#include <array>
+#include <string>
+
+CParticle* sub_B82ED0(const vector3d* position, int flags);
+void sub_B82FD0(CParticle* particle);
+
+// GLOBAL: gl_24871
+static const std::array<std::string, 4> s_talismanStartEffects = {
+  "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\blue_dragon_start.str",
+  "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\white_tiger_start.str",
+  "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\red_phoenix_start.str",
+  "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\black_tortoise_start.str",
+};
+
+// GLOBAL: gl_24873
+static const std::array<std::string, 4> s_talismanEndEffects = {
+  "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\blue_dragon_end.str",
+  "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\white_tiger_end.str",
+  "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\red_phoenix_end.str",
+  "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\black_tortoise_end.str",
+};
+
+// GLOBAL: gl_24872
+static const std::array<std::string, 4> s_talismanLoopEffects = {
+  "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\blue_dragon_loop.str",
+  "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\white_tiger_loop.str",
+  "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\red_phoenix_loop.str",
+  "SOUL_ASCETIC\\EFST_T_XXXX_GOD\\black_tortoise_loop.str",
+};
+
+// OFFSET: 0x0072E020
+// FUNCTION: fn_07502
+void CTalismanMarkEffect::PlayEnd() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CEZ2STRParticle* particle = *it;
+    if (!particle) {
+      continue;
+    }
+
+    const int index = particle->unknown_000C;
+    const int angle = particle->unknown_004C;
+    sub_B82FD0(particle);
+
+    particle = static_cast<CEZ2STRParticle*>(sub_B82ED0(reinterpret_cast<const vector3d*>(this->position), 13));
+    if (!particle) {
+      *it = nullptr;
+      continue;
+    }
+
+    particle->unknown_0004 = this->id;
+    particle->unknown_000C = index;
+    particle->unknown_0010 = 0;
+    particle->unknown_0008 = 1;
+    InitParticleQuad(particle->vertices);
+    particle->m_actorId = this->actor;
+    particle->Load(s_talismanEndEffects.at(index));
+    particle->unknown_004C = angle;
+    particle->unknown_00A8 = 2;
+    *it = particle;
+  }
+}
+
+// OFFSET: 0x0072E0F0
+// FUNCTION: fn_07503
+void CTalismanMarkEffect::Slot01() {
+  this->retained = 1;
+
+  for (int i = 0; i < std::min<unsigned int>(this->unknown_00B0, 4); ++i) {
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(sub_B82ED0(reinterpret_cast<const vector3d*>(this->position), 13));
+    if (!particle) {
+      continue;
+    }
+
+    particle->unknown_0004 = this->id;
+    particle->unknown_000C = i;
+    particle->unknown_0010 = 0;
+    particle->unknown_0008 = 1;
+    InitParticleQuad(particle->vertices);
+    particle->m_actorId = this->actor;
+    particle->Load(s_talismanStartEffects.at(i));
+    particle->unknown_004C = (i / 2 + i % 2 * 2) * 90;
+    particle->unknown_00A8 = 0;
+    this->particles.push_back(particle);
+  }
+}
+
+// OFFSET: 0x0072E240
+// FUNCTION: fn_07505
+void CTalismanMarkEffect::Slot03() {
+  for (auto it = this->particles.begin(); it != this->particles.end();) {
+    CEZ2STRParticle* particle = *it;
+    if (!particle) {
+      continue;
+    }
+
+    switch (particle->unknown_00A8) {
+    case 0:
+      if (particle->life == 0.0f || particle->life * 60.0f > particle->unknown_00E8) {
+        break;
+      }
+
+      {
+        const int index = particle->unknown_000C;
+        const int angle = particle->unknown_004C;
+        sub_B82FD0(particle);
+
+        particle = static_cast<CEZ2STRParticle*>(sub_B82ED0(reinterpret_cast<const vector3d*>(this->position), 13));
+        if (!particle) {
+          *it = nullptr;
+          continue;
+        }
+
+        particle->unknown_0004 = this->id;
+        particle->unknown_000C = index;
+        particle->unknown_0010 = 0;
+        particle->unknown_0008 = 1;
+        InitParticleQuad(particle->vertices);
+        particle->m_actorId = this->actor;
+        particle->Load(s_talismanLoopEffects.at(index));
+        particle->unknown_004C = angle;
+        particle->unknown_00A8 = 1;
+        particle->m_loop = true;
+        *it = particle;
+      }
+      break;
+    case 1:
+      break;
+    case 2:
+      if (particle->life == 0.0f || particle->life * 60.0f > particle->unknown_00E8) {
+        break;
+      }
+
+      sub_B82FD0(particle);
+      it = this->particles.erase(it);
+      continue;
+    default:
+      continue;
+    }
+
+    this->UpdateParticle(particle);
+    ++it;
+  }
+}
+
 // OFFSET: 0x0072E210
 // FUNCTION: fn_07504
 bool CTalismanMarkEffect::Slot06() {
