@@ -6,6 +6,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Messenger/MessengerMember.h"
 #include "Contents/World/World.h"
+#include "UI/Items/UIEquipWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -116,6 +117,9 @@ struct ClientItemLists {
   /* 5464 */ int unknown_5464;
   /* 5468 */ unsigned char unknown_5468[0x5C];
   /* 54C4 */ std::string unknown_54C4;
+  /* 54DC */ unsigned char unknown_54DC[0xCDC];
+  /* 61B8 */ ITEM_INFO items_61B8[10];
+  /* 6B68 */ ITEM_INFO items_6B68[10];
 
   bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
   void AddItem1718(const RawItemBasic& item, int quantity, std::uint16_t unknown_006C);
@@ -170,6 +174,9 @@ struct ClientItemLists {
   void ResetUnknown166C();
   void ResetHotkeyDescriptions();
   int IsDifferentName(const char* name, const char* other);
+  bool EquipItem6B68(const ITEM_INFO& item);
+  void ResetItems6B68();
+  void ResetItems61B8();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -185,6 +192,8 @@ static_assert(offsetof(ClientItemLists, unknown_166C) == 0x166C);
 static_assert(offsetof(ClientItemLists, partyMembers) == 0x17DC);
 static_assert(offsetof(ClientItemLists, unknown_5464) == 0x5464);
 static_assert(offsetof(ClientItemLists, unknown_54C4) == 0x54C4);
+static_assert(offsetof(ClientItemLists, items_61B8) == 0x61B8);
+static_assert(offsetof(ClientItemLists, items_6B68) == 0x6B68);
 #endif
 
 // OFFSET: 0x00AA6440
@@ -863,3 +872,52 @@ int ClientItemLists::IsDifferentName(const char* name, const char* other) {
 // OFFSET: 0x00DDAC90
 
 // OFFSET: 0x00DDACE0
+
+// OFFSET: 0x00E2EC10
+// FUNCTION: fn_24149
+bool ClientItemLists::EquipItem6B68(const ITEM_INFO& item) {
+  const EquipSlots slots = reinterpret_cast<ClientItemLists*>(&g_session)->GetEquipSlots(item.unknown_0000[3]);
+  const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
+
+  for (int index = 0; index < 3; ++index) {
+    const int slot = order[index];
+    if (slot != -1) {
+      ITEM_INFO& equipped = this->items_6B68[slot];
+      equipped = item;
+      equipped.quantity = 1;
+      equipped.unknown_0068 = item.unknown_0068;
+      equipped.unknown_0064 = item.unknown_0064;
+      equipped.unknown_0070 = item.unknown_0070;
+    }
+  }
+
+  if (g_windowMgr.unknown_01E0) {
+    static_cast<UIEquipWnd*>(g_windowMgr.unknown_01E0)->NotifyEquipmentChanged();
+  }
+  RefreshItemWindows(&g_windowMgr);
+  return true;
+}
+
+// OFFSET: 0x00E2F540
+// FUNCTION: fn_24155
+void ClientItemLists::ResetItems6B68() {
+  int count = 10;
+  ITEM_INFO* item = this->items_6B68;
+  do {
+    item->Reset();
+    ++item;
+  } while (--count);
+  RefreshItemWindows(&g_windowMgr);
+}
+
+// OFFSET: 0x00E2F570
+// FUNCTION: fn_24156
+void ClientItemLists::ResetItems61B8() {
+  int count = 10;
+  ITEM_INFO* item = this->items_61B8;
+  do {
+    item->Reset();
+    ++item;
+  } while (--count);
+  RefreshItemWindows(&g_windowMgr);
+}
