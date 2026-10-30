@@ -11,11 +11,13 @@
 #include <cstring>
 
 // OFFSET: 0x006FEA20
+// FUNCTION: fn_06954
 CEvilsPawEffect::CEvilsPawEffect()
     : CEffect(1039), particles(), frameDelay(5), size(50), delayCounter(5), offset{0.0f, -40.0f, 0.0f}, textures(), textureIndex(0) {
 }
 
 // OFFSET: 0x006FECE0
+// FUNCTION: fn_06956
 void CEvilsPawEffect::Close() {
   for (CParticle* particle : this->particles) {
     FreeParticle(particle);
@@ -50,6 +52,7 @@ void CEvilsPawEffect::Slot01() {
 }
 
 // OFFSET: 0x006FEFC0
+// FUNCTION: fn_06958
 void CEvilsPawEffect::Slot07() {
   this->textureIndex = 0;
   this->delayCounter = this->frameDelay;
@@ -70,6 +73,7 @@ bool CEvilsPawEffect::Slot06() {
 }
 
 // OFFSET: 0x006FF070
+// FUNCTION: fn_06960
 void CEvilsPawEffect::Slot03() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     (*it)->position.x = this->position[0];
@@ -109,6 +113,7 @@ void CEvilsPawEffect::Slot03() {
 }
 
 // OFFSET: 0x006FF3E0
+// FUNCTION: fn_06961
 void CEvilsPawEffect::Slot04() {
   for (CParticle* particle : this->particles) {
     if (particle) {
