@@ -102,6 +102,8 @@ public:
   void Paint() override;
   void Slot31(int x, int y) override;
   void Slot35(int delta) override;
+  void RefreshRows();
+  void UpdateScroll();
 
   /* 00B4 */ UIWindow* m_tabs;
   /* 00B8 */ UIRenewQuestScrollBar* m_scrollBar;

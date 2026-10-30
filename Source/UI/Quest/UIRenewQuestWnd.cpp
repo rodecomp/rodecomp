@@ -18,6 +18,7 @@
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UICheckBox.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/UIStaticBitmap.h"
 #include "Utility/Text/FormatString.h"
@@ -359,4 +360,89 @@ void UIRenewQuestWnd::Slot35(int delta) {
     }
     this->SendMsg(this->m_scrollBar, 7, -3, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x007FCDF0
+// FUNCTION: fn_09978
+void UIRenewQuestWnd::RefreshRows() {
+  for (int i = 0; i < 9; ++i) {
+    unsigned int index = this->m_scroll + i;
+    if (this->m_tab == 1) {
+      const std::vector<unsigned int>& ids = this->m_questIds[1];
+      if (index < ids.size()) {
+        const RenewQuestRecommendedInfo& quest = g_renewQuestMgr->GetRecommendedQuest(ids[index]);
+        this->m_rows.lockBoxes[i]->geometry.unknown_0030 = quest.m_state;
+        this->m_rows.lockBoxes[i]->Invalidate();
+        this->m_rows.lockBoxes[i]->SetTooltip(LookupMessage(3408));
+        this->m_rows.lockBoxes[i]->SetHidden(false);
+        this->m_rows.checkBoxes[i]->SetHidden(true);
+        std::string bitmap = quest.m_icon.empty() ? std::string("유저인터페이스\\renew_questui\\ico_nq.bmp") : "유저인터페이스\\renew_questui\\" + quest.m_icon;
+        this->m_rows.icons[i]->SetBitmap(bitmap.c_str());
+        this->m_rows.icons[i]->SetTooltip(quest.m_iconTooltip.c_str());
+        this->m_rows.icons[i]->Show(1);
+        this->m_rows.icons[i]->Invalidate();
+        continue;
+      }
+    } else {
+      const std::vector<unsigned int>& ids = this->m_questIds[this->m_tab];
+      if (index < ids.size()) {
+        const RenewQuestOngoingInfo& quest = g_renewQuestMgr->GetOngoingQuest(ids[index]);
+        if (this->m_tab == 3) {
+          this->m_rows.checkBoxes[i]->SetHidden(true);
+          this->m_rows.lockBoxes[i]->SetHidden(true);
+        } else {
+          this->m_rows.lockBoxes[i]->geometry.unknown_0030 = quest.m_state;
+          this->m_rows.lockBoxes[i]->Invalidate();
+          this->m_rows.lockBoxes[i]->SetTooltip(LookupMessage(3407));
+          this->m_rows.lockBoxes[i]->SetHidden(false);
+          this->m_rows.checkBoxes[i]->geometry.unknown_0030 = quest.m_simpleView;
+          this->m_rows.checkBoxes[i]->Invalidate();
+          this->m_rows.checkBoxes[i]->SetHidden(false);
+        }
+        std::string bitmap = quest.m_icon.empty() ? std::string("유저인터페이스\\renew_questui\\ico_nq.bmp") : "유저인터페이스\\renew_questui\\" + quest.m_icon;
+        this->m_rows.icons[i]->SetBitmap(bitmap.c_str());
+        this->m_rows.icons[i]->SetTooltip(quest.m_iconTooltip.c_str());
+        this->m_rows.icons[i]->Show(1);
+        this->m_rows.icons[i]->Invalidate();
+        continue;
+      }
+    }
+
+    this->m_rows.checkBoxes[i]->SetHidden(true);
+    this->m_rows.lockBoxes[i]->SetHidden(true);
+    this->m_rows.icons[i]->Show(0);
+  }
+}
+
+// OFFSET: 0x007FD420
+// FUNCTION: fn_09979
+void UIRenewQuestWnd::UpdateScroll() {
+  const std::vector<unsigned int>& ids = this->m_questIds[this->m_tab];
+  if (ids.begin() != ids.end() && this->m_scrollBar) {
+    int maximum = static_cast<int>(ids.size()) - 9;
+    if (maximum < 0) {
+      maximum = 0;
+    }
+
+    this->m_scrollable = maximum > 0;
+    if (maximum > 0) {
+      this->m_scrollBar->SetRange(maximum, 9, static_cast<int>(ids.size()));
+      if (this->m_scroll < 0) {
+        this->m_scroll = 0;
+        this->m_scrollBar->SetPosition(0);
+      } else {
+        if (this->m_scroll > maximum) {
+          this->m_scroll = maximum;
+        }
+        this->m_scrollBar->SetPosition(this->m_scroll);
+      }
+    } else {
+      this->m_scroll = 0;
+      this->m_scrollBar->SetRange(0, 9, static_cast<int>(ids.size()));
+    }
+
+    this->m_scrollBar->Invalidate();
+  }
+
+  this->RefreshRows();
 }
