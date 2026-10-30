@@ -9209,6 +9209,99 @@ void CRagEffect::EarthSpike(char type) {
 }
 
 // OFFSET: 0x00C39730
+// FUNCTION: fn_20102
+void CRagEffect::Sightrasher() {
+  RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
+  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+  g_renderer->viewport.Projection().Project(&this->state.parent->render.position.x, view, vertex);
+  this->state.tlvertX = vertex.x;
+  this->state.tlvertY = vertex.y;
+
+  if (this->state.stateCnt == 0) {
+    this->state.parent->SendMsg(nullptr, 109, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    PlayEffectWave(*this, "effect\\wizard_sightrasher.wav");
+  }
+
+  if (this->state.stateCnt % 5 == 0 && this->state.stateCnt < 20) {
+    for (int i = 0; i < 8; ++i) {
+      const int angle = static_cast<int>(static_cast<float>(i) * -45.0f);
+      const float sine = ClientSine(angle);
+      const float cosine = ClientCosine(angle);
+      GetRadian(angle);
+      this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+      this->state.unknown_11C84->duration = 85 - this->state.stateCnt;
+      this->state.unknown_11C84->pattern |= 0x400u;
+      const float reach = static_cast<float>(this->state.stateCnt / 5) + 5.0f;
+      this->state.unknown_11C84->deltaPos2.x = reach * sine;
+      this->state.unknown_11C84->deltaPos2.z = -reach * cosine;
+      this->state.unknown_11C84->deltaPos2.y = static_cast<float>(this->state.stateCnt / 3 - 20);
+      this->state.unknown_11C84->speed3d.y = 0.0f;
+      this->state.unknown_11C84->speed3d.x = static_cast<float>(static_cast<double>(sine));
+      this->state.unknown_11C84->speed3d.z = static_cast<float>(static_cast<double>(cosine) * -1.0);
+      this->state.unknown_11C84->animSpeed = std::max(rand() % 2, 0) + 3;
+      this->state.unknown_11C84->size = 2.5f - static_cast<float>(this->state.stateCnt) / 10.0f;
+      this->state.unknown_11C84->alpha = static_cast<float>((75 - this->state.stateCnt) * 2);
+      this->state.unknown_11C84->deltaPosAccel = {0.0f, 0.0f, 0.0f};
+      this->state.unknown_11C84->changeSpeed3d.x = static_cast<float>(static_cast<double>(sine) * 0.5);
+      this->state.unknown_11C84->changeSpeed3d.y = 0.0f;
+      this->state.unknown_11C84->changeSpeed3d.z = static_cast<float>(static_cast<double>(cosine) * -0.5);
+      this->state.unknown_11C84->changePoint = 35 - this->state.stateCnt;
+      this->state.unknown_11C84->changeAccel3d.x = -0.004f;
+      this->state.unknown_11C84->changeAccel3d.y = 0.0f;
+      this->state.unknown_11C84->changeAccel3d.z = 0.004f;
+      this->state.unknown_11C84->fadeOutCnt = 65 - this->state.stateCnt;
+      Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Sight.spr");
+      Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\Sight.act");
+      Owner(this->state.unknown_11C84).InitSegment();
+    }
+
+    for (int i = 0; i < 8; ++i) {
+      const int angle = static_cast<int>(static_cast<float>(i) * -45.0f);
+      const float sine = ClientSine(angle);
+      const float cosine = ClientCosine(angle);
+      GetRadian(angle);
+      this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+      this->state.unknown_11C84->duration = 85 - this->state.stateCnt;
+      this->state.unknown_11C84->pattern |= 0x400u;
+      this->state.unknown_11C84->deltaPos2.y = 0.0f;
+      const float reach = static_cast<float>(this->state.stateCnt / 5) + 5.0f;
+      this->state.unknown_11C84->deltaPos2.x = reach * sine;
+      this->state.unknown_11C84->deltaPos2.z = -reach * cosine;
+      this->state.unknown_11C84->speed3d.y = 0.0f;
+      this->state.unknown_11C84->speed3d.x = static_cast<float>(static_cast<double>(sine));
+      this->state.unknown_11C84->speed3d.z = static_cast<float>(static_cast<double>(cosine) * -1.0);
+      this->state.unknown_11C84->animSpeed = 3;
+      this->state.unknown_11C84->size = 1.0f - static_cast<float>(this->state.stateCnt) / 30.0f;
+      this->state.unknown_11C84->alpha = static_cast<float>((75 - this->state.stateCnt) * 2);
+      this->state.unknown_11C84->changeSpeed3d.x = static_cast<float>(static_cast<double>(sine) * 0.5);
+      this->state.unknown_11C84->changeSpeed3d.z = static_cast<float>(static_cast<double>(cosine) * -0.5);
+      this->state.unknown_11C84->changePoint = 35 - this->state.stateCnt;
+      this->state.unknown_11C84->changeAccel3d.x = -0.004f;
+      this->state.unknown_11C84->changeAccel3d.z = 0.004f;
+      this->state.unknown_11C84->fadeOutCnt = 65 - this->state.stateCnt;
+      Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "Shadow.spr");
+      Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "Shadow.act");
+      Owner(this->state.unknown_11C84).InitSegment();
+    }
+  }
+
+  if (this->state.stateCnt != 10) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->duration = 30;
+  this->state.unknown_11C84->latitude = 90.0f;
+  this->state.unknown_11C84->radiusSpeed = 2.5f;
+  EffectPrimitiveState& ring = *this->state.unknown_11C84;
+  ring.radiusAccel = -(ring.radiusSpeed / ring.duration) / 1.5f;
+  this->state.unknown_11C84->innerSize = -10.0f;
+  this->state.unknown_11C84->alpha = 150.0f;
+  this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - 10;
+  Owner(this->state.unknown_11C84).InitSegment();
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
+}
 
 // OFFSET: 0x00C35610
 // FUNCTION: fn_20090
