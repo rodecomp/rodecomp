@@ -7,6 +7,9 @@ struct NavigationLinkParser {
   NavigationLinkParser();
   ~NavigationLinkParser();
 
+  bool HasLink(std::string text);
+  std::string ExpandMessages(std::string text);
+
   /* 0000 */ bool m_ready;
 };
 

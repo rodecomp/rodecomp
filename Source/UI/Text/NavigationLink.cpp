@@ -164,6 +164,61 @@ static const std::string g_questCloseTag = "</QUEST>";
 // GLOBAL: gl_24836
 std::vector<LineFontState> CCreateLineInfo::s_fontStackCache;
 
+// OFFSET: 0x00832500
+// FUNCTION: fn_10407
+bool NavigationLinkParser::HasLink(std::string text) {
+  return text.find(g_naviLinkTag) != std::string::npos || text.find(g_naviLinkCloseTag) != std::string::npos ||
+         text.find(g_itemLinkTag) != std::string::npos || text.find(g_itemLinkCloseTag) != std::string::npos;
+}
+
+// OFFSET: 0x00832640
+// FUNCTION: fn_10408
+std::string NavigationLinkParser::ExpandMessages(std::string text) {
+  std::string expanded;
+
+  for (;;) {
+    std::string work;
+    if (expanded.empty()) {
+      work = text;
+    } else {
+      work = expanded;
+    }
+
+    const std::size_t begin = work.find(g_messageTag);
+    if (begin == std::string::npos) {
+      return text;
+    }
+
+    work = work.substr(begin + std::strlen(g_messageTag.c_str()));
+    const std::size_t end = work.find(g_messageCloseTag);
+    if (end == std::string::npos) {
+      return text;
+    }
+
+    work = work.substr(0, end);
+    int messageId;
+    if (work.find("MSI_") != std::string::npos) {
+      messageId = FindMessageId(work.c_str());
+    } else {
+      messageId = std::atoi(work.c_str());
+    }
+
+    const std::string message = FormatMessageArguments(work, messageId);
+    work.clear();
+    work = expanded.empty() ? text : expanded;
+    const std::string head = work.substr(0, begin);
+    const std::string tail = work.substr(work.find(g_messageCloseTag) + std::strlen(g_messageCloseTag.c_str()));
+    expanded.clear();
+    expanded += head;
+    expanded += message;
+    expanded += tail;
+
+    if (expanded.find(g_messageTag) == std::string::npos) {
+      return expanded;
+    }
+  }
+}
+
 // OFFSET: 0x00833160
 // FUNCTION: fn_10409
 int DecodeNavigationNumber(std::string value) {
@@ -527,6 +582,10 @@ std::size_t CCreateLineInfo::FindTag(std::string text, std::string keyword, bool
   return text.find(keyword, 0);
 }
 
+// OFFSET: 0x00839420
+
+// OFFSET: 0x00839860
+
 // OFFSET: 0x00839D60
 // FUNCTION: fn_10460
 std::pair<std::string, std::string> CCreateLineInfo::GetLinkTags(int type) {
@@ -551,6 +610,8 @@ std::pair<std::string, std::string> CCreateLineInfo::GetLinkTags(int type) {
     return std::pair<std::string, std::string>("", "");
   }
 }
+
+// OFFSET: 0x00839FA0
 
 // OFFSET: 0x0083A180
 // FUNCTION: fn_10462
