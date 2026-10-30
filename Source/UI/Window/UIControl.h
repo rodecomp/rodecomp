@@ -76,6 +76,7 @@ public:
   virtual void Slot53(int value);
 
   bool IsPointInside(int x, int y);
+  UIWindow* FindChildById(int id);
 
   /* 007C */ unsigned char hitEnabled;
 };

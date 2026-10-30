@@ -1227,3 +1227,15 @@ void CUITextViewer::SetScrollStep(int value) {
 void CUITextViewer::SetScrollBarSize(int width, int height) {
   this->scrollBar->SetSize(width, height);
 }
+
+// OFFSET: 0x009F0EA0
+// FUNCTION: fn_14682
+UIWindow* CUIControl::FindChildById(int id) {
+  for (UIWindow* child : this->m_children) {
+    if (child->geometry.id == id) {
+      return child;
+    }
+  }
+
+  return nullptr;
+}
