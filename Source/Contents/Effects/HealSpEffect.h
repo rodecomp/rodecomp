@@ -12,11 +12,18 @@ class CSpriteParticle;
 
 class CHealSp : public CEffect {
 public:
+  void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
+  void Close() override;
+  bool Slot06() override;
+
+  void AddRing(float inner, float outer, float height, int duration);
 
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ std::list<CSpriteParticle*> sprites;
-  /* 00E0 */ unsigned char unknown_00E0[8];
+  /* 00E0 */ int unknown_00E0;
+  /* 00E4 */ int unknown_00E4;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -134,3 +134,15 @@ void CCherryBlossomEffect::Slot03() {
     ++particle->unknown_00E8;
   }
 }
+
+// OFFSET: 0x00B44500
+// FUNCTION: fn_18888
+void CCherryBlossomEffect::Slot04() {
+  for (CParticle* particle : this->petals) {
+    if (particle) {
+      for (int i = 0; i < 2; ++i) {
+        particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+      }
+    }
+  }
+}
