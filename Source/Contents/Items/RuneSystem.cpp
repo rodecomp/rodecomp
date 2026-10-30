@@ -25,14 +25,10 @@ namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {
 public:
   static CEquipmentPropertiesMgr* GetInstance();
-  void sub_6B6E10(const int* param1, const int* param2);
-  void sub_6B6AF0(const int* param1, const int* param2, int param3);
+  void RemoveExpansion(const int& kind, const int& itemId);
+  void AddExpansion(const int& kind, const int& itemId, bool notify);
 };
 }
-
-struct SessionMessengerContext {
-  int GetList0Size() const;
-};
 
 // GLOBAL: gl_24845
 CRuneSystemMgr* g_runeSystemMgr;
@@ -724,8 +720,7 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
 // FUNCTION: fn_08153
 int CRuneSystemMgr::UpdateOwnedDecomItems() {
   this->m_ownedDecomItems.clear();
-  const auto* session = reinterpret_cast<const SessionMessengerContext*>(&g_session);
-  for (int i = 0; i < session->GetList0Size(); ++i) {
+  for (int i = 0; i < static_cast<int>(g_session.m_inventoryItems.size()); ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
     if (this->m_itemDecoms.find(std::atoi(item.itemId.c_str())) != this->m_itemDecoms.end()) {
       this->m_ownedDecomItems.push_back(std::atoi(item.itemId.c_str()));
@@ -749,7 +744,7 @@ void CRuneSystemMgr::SetCurRuneSet(int tagId, int runeSetId, int grade, int slot
     if (this->m_curRuneSet->m_id != runeSetId) {
       EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
       const int one = 1;
-      mgr->sub_6B6E10(&one, &oldId);
+      mgr->RemoveExpansion(one, oldId);
     }
   }
 
@@ -777,7 +772,7 @@ void CRuneSystemMgr::SetCurRuneSet(int tagId, int runeSetId, int grade, int slot
     if (oldId != runeSetId) {
       EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
       const int one = 1;
-      mgr->sub_6B6AF0(&one, &runeSetId, 0);
+      mgr->AddExpansion(one, runeSetId, false);
     }
   }
 }
