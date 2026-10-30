@@ -758,11 +758,165 @@ void CUIThumb::Slot53(int resolveSkin) {
   }
 }
 
+// OFFSET: 0x009F0ED0
+// FUNCTION: fn_14683
+CUITabButton* CUITab::FindButton(UIWindow* page) {
+  for (UIWindow* child : this->m_children) {
+    CUITabButton* button = static_cast<CUITabButton*>(child);
+    if (button->page == page) {
+      return button;
+    }
+  }
+
+  return nullptr;
+}
+
+// OFFSET: 0x009F0F10
+// FUNCTION: fn_14685
+void CUITab::Select(CUITabButton* button) {
+  if (this->current == button) {
+    return;
+  }
+
+  if (!button) {
+    this->current = nullptr;
+    for (UIWindow* child : this->m_children) {
+      static_cast<CUITabButton*>(child)->SetSelected(false);
+    }
+  } else {
+    if (button->disabled) {
+      return;
+    }
+    if (this->onChanging && !this->onChanging(this->current, button)) {
+      return;
+    }
+
+    this->current = button;
+    for (UIWindow* child : this->m_children) {
+      if (child != this->current) {
+        static_cast<CUITabButton*>(child)->SetSelected(false);
+      }
+    }
+    this->current->SetSelected(true);
+  }
+
+  if (this->onChange) {
+    this->onChange(this->current);
+  }
+}
+
+// OFFSET: 0x009F0FF0
+// FUNCTION: fn_14686
+void CUITab::SelectPage(UIWindow* page) {
+  CUITabButton* button = this->FindButton(page);
+  if (this->current == button) {
+    return;
+  }
+
+  if (!button) {
+    this->current = nullptr;
+    for (UIWindow* child : this->m_children) {
+      static_cast<CUITabButton*>(child)->SetSelected(false);
+    }
+  } else {
+    if (button->disabled) {
+      return;
+    }
+    if (this->onChanging && !this->onChanging(this->current, button)) {
+      return;
+    }
+
+    this->current = button;
+    for (UIWindow* child : this->m_children) {
+      if (child != this->current) {
+        static_cast<CUITabButton*>(child)->SetSelected(false);
+      }
+    }
+    this->current->SetSelected(true);
+  }
+
+  if (this->onChange) {
+    this->onChange(this->current);
+  }
+}
+
 // OFFSET: 0x009F10F0
+// FUNCTION: fn_14687
+bool CUITab::SelectIndex(unsigned int index) {
+  if (index >= this->m_children.size()) {
+    return false;
+  }
+
+  CUITabButton* button = static_cast<CUITabButton*>(*std::next(this->m_children.begin(), index));
+  if (this->current == button) {
+    return true;
+  }
+
+  if (!button) {
+    this->current = nullptr;
+    for (UIWindow* child : this->m_children) {
+      static_cast<CUITabButton*>(child)->SetSelected(false);
+    }
+  } else {
+    if (button->disabled) {
+      return true;
+    }
+    if (this->onChanging && !this->onChanging(this->current, button)) {
+      return true;
+    }
+
+    this->current = button;
+    for (UIWindow* child : this->m_children) {
+      if (child != this->current) {
+        static_cast<CUITabButton*>(child)->SetSelected(false);
+      }
+    }
+    this->current->SetSelected(true);
+  }
+
+  if (this->onChange) {
+    this->onChange(this->current);
+  }
+  return true;
+}
 
 // OFFSET: 0x009F16F0
+// FUNCTION: fn_14695
+void CUITabButton::SetSelected(bool selected) {
+  this->SetState(selected);
+  if (this->page) {
+    this->page->Show(selected);
+  }
+  if (selected && this->unknown_00C4) {
+    this->unknown_00C4->Slot02();
+  }
+  this->Invalidate();
+}
 
 // OFFSET: 0x009F1740
+// FUNCTION: fn_14696
+void CUITabButton::SetSkinColors(int normalColumn, int normalRow, int selectedColumn, int selectedRow, int borderColumn, int borderRow) {
+  this->normalCell.column = normalColumn;
+  this->normalCell.row = normalRow;
+  this->selectedCell.column = selectedColumn;
+  this->selectedCell.row = selectedRow;
+  this->borderCell.column = borderColumn;
+  this->borderCell.row = borderRow;
+  this->useSkinColors = 1;
+  this->Slot53(0);
+  this->Invalidate();
+}
+
+// OFFSET: 0x009F1600
+// FUNCTION: fn_14690
+void CUITabButton::Slot25(int, int) {
+  if (!this->disabled) {
+    g_windowMgr.SetCapture(this);
+    if (this->parent) {
+      static_cast<CUITab*>(this->parent)->Select(this);
+    }
+  }
+}
 
 // OFFSET: 0x009F1630
 // FUNCTION: fn_14691
@@ -873,6 +1027,15 @@ void CUIStaticText::SetShadow(bool enabled, std::uint32_t color) {
 }
 
 // OFFSET: 0x009F1C40
+// FUNCTION: fn_14701
+void CUITitleBar::SetImages(const std::string& left, const std::string& middle, const std::string& right) {
+  this->resizable = 1;
+  this->leftName = left;
+  this->middleName = middle;
+  this->rightName = right;
+  this->Slot53(0);
+  this->Invalidate();
+}
 
 // OFFSET: 0x009F1BF0
 // FUNCTION: fn_14700

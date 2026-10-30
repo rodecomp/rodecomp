@@ -88,6 +88,9 @@ class CUITab : public CUIControl {
 public:
   void Paint() override;
 
+  CUITabButton* FindButton(UIWindow* page);
+  __declspec(noinline) void Select(CUITabButton* button);
+  void SelectPage(UIWindow* page);
   bool SelectIndex(unsigned int index);
 
   /* 0080 */ CUITabButton* current;
@@ -171,6 +174,7 @@ public:
 
 class CUITabButton : public CUIImageTextButton {
 public:
+  void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot47() override;
   void Slot48() override;
