@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <map>
 
+class CUIStaticText;
+
 namespace SkillDelayInfo {
 class CDelayItemData {
 public:
@@ -32,12 +34,13 @@ public:
   void Slot16() override;
   void Paint() override;
 
-  /* 0080 */ UIWindow* text;
+  void SetTime(int milliseconds);
+
+  /* 0080 */ CUIStaticText* text;
 };
 }
 
 class CUITitleBar;
-class CUIStaticText;
 class CUITextViewer;
 
 class CUISkillDelayInfo : public CUIFrameWnd {

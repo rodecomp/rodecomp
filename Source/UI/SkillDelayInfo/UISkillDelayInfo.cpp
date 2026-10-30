@@ -2,6 +2,7 @@
 #include "Contents/MessageTable.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
+#include "Utility/Text/StringUtil.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Text/UITextViewerControl.h"
@@ -9,6 +10,7 @@
 #include <algorithm>
 #include <cstring>
 #include <iterator>
+#include <string>
 
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Paint();
@@ -188,6 +190,13 @@ void CUIDelayItem::Slot16() {
 // OFFSET: 0x00A78180
 // FUNCTION: fn_16887
 void CUITime::Slot16() {
+}
+
+// OFFSET: 0x00A78A10
+// FUNCTION: fn_16890
+void CUITime::SetTime(int milliseconds) {
+  const std::string text = FormatDecimal(static_cast<float>(milliseconds) / 1000.0f, 3, true) + LookupMessage(1808);
+  this->text->SetText(text.c_str(), text.size());
 }
 }
 
