@@ -238,6 +238,11 @@ public:
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
+class CEfstAction_FURIOS_STORM : public CEfstAction {
+public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+};
+
 class CSkillAction_AT_ALPHA_PHASE : public CSkillAction {
 public:
   int Slot01() override;
@@ -1042,6 +1047,42 @@ void CSkillAction_AT_FURIOS_STORM::Slot11(int level, CGameActor* source, CGameAc
     }
     if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, variant ? stormABottom : stormBBottom, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
       effect->Slot16(delay);
+    }
+  }
+}
+
+// OFFSET: 0x005AAC00
+// FUNCTION: fn_03239
+void CEfstAction_FURIOS_STORM::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0x6D, 0x05, 0xBA, 0x91, 0x39, 0x64, 0xB3, 0x16, 0x77, 0x0A, 0x90, 0x9C, 0x3C, 0x72, 0xB5, 0x7F};
+      thread_local EncryptedName<sizeof(bytes), 0x7FC1015DFFCF6D19ULL> name(bytes);
+      return name.Text();
+    }()));
+    for (int index = 0; index < 4; ++index) {
+      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+        const std::uint8_t bytes[] = {0x45, 0xF6, 0xA9, 0xEA, 0x2E, 0xCE, 0x60, 0xB8, 0x57, 0xEC, 0xA9, 0xEE, 0x1E, 0xDC, 0x3F};
+        thread_local EncryptedName<sizeof(bytes), 0xCB3FBD4183DB8323ULL> name(bytes);
+        return name.Text();
+      }()));
+      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+        const std::uint8_t bytes[] = {0x2B, 0xA4, 0xB9, 0xAE, 0x96, 0x04, 0x92, 0x0C, 0x39, 0xBE, 0xB9, 0xAA, 0xA6, 0x16, 0x92, 0x1D,
+                                      0x22, 0xA5, 0xBF, 0xA8, 0x94, 0x77};
+        thread_local EncryptedName<sizeof(bytes), 0x7FCD77F9C7CBD14DULL> name(bytes);
+        return name.Text();
+      }()));
+      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+        const std::uint8_t bytes[] = {0x67, 0x22, 0xE5, 0xB6, 0x7C, 0xF6, 0x0C, 0xA2, 0x75, 0x38, 0xE5, 0xB2, 0x4C, 0xE7, 0x53};
+        thread_local EncryptedName<sizeof(bytes), 0xD1538513DF975701ULL> name(bytes);
+        return name.Text();
+      }()));
+      g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+        const std::uint8_t bytes[] = {0xF9, 0xB6, 0x35, 0xD4, 0x84, 0x34, 0xBE, 0xE2, 0xEB, 0xAC, 0x35, 0xD0, 0xB4, 0x25, 0xBE, 0xF3,
+                                      0xF0, 0xB7, 0x33, 0xD2, 0x86, 0x47};
+        thread_local EncryptedName<sizeof(bytes), 0x91E147EBBD47C39FULL> name(bytes);
+        return name.Text();
+      }()));
     }
   }
 }
