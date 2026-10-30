@@ -91,6 +91,12 @@ ServiceOptions g_serviceOptions;
 // GLOBAL: gl_24791
 LuaScript* g_luaScript;
 
+// GLOBAL: gl_24569
+const float g_jitterDistanceScale = 400.0f;
+
+// GLOBAL: gl_25022
+float g_serviceOptionJitterScale = 400.0f;
+
 void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage);
 
 // OFFSET: 0x006BFE60
@@ -924,4 +930,21 @@ CGameSettingsMgr* Singleton<CGameSettingsMgr>::GetInstance() {
   }
 
   return s_instance;
+}
+
+// OFFSET: 0x006C45F0
+// FUNCTION: fn_06356
+void ApplyServiceOptionJitterScale(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  if (value) {
+    g_serviceOptionJitterScale = 730.0f;
+  } else {
+    g_serviceOptionJitterScale = g_jitterDistanceScale;
+  }
 }
