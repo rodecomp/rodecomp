@@ -1,6 +1,7 @@
 #include "Contents/Effects/ChangeSizeEffect.h"
 
 // OFFSET: 0x00702F90
+// FUNCTION: fn_07014
 CChangeSizeEffect::CChangeSizeEffect() : CEffect(0x946) {
 }
 

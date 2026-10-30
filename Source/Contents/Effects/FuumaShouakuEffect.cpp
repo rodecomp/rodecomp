@@ -18,6 +18,7 @@ bool CFuumaShouakuEffect::Slot06() {
 }
 
 // OFFSET: 0x00702F30
+// FUNCTION: fn_07013
 void CFuumaShouakuEffect::Slot04() {
   if (this->first) {
     this->first->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);

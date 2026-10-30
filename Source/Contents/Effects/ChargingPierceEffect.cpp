@@ -8,10 +8,12 @@
 #include "Utility/Math/AffineMatrix.h"
 
 // OFFSET: 0x00703060
+// FUNCTION: fn_07017
 CChargingPierceEffect::CChargingPierceEffect() : CEffect(-1), offsets{} {
 }
 
 // OFFSET: 0x007030F0
+// FUNCTION: fn_07018
 CChargingPierceNewEffect::CChargingPierceNewEffect() : CEffect(-1) {
 }
 
@@ -68,6 +70,7 @@ bool CChargingPierceNewEffect::Slot06() {
 }
 
 // OFFSET: 0x00704360
+// FUNCTION: fn_07031
 void CChargingPierceNewEffect::Slot03() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     const float x = this->position[0];
@@ -88,6 +91,7 @@ void CChargingPierceNewEffect::Slot03() {
 }
 
 // OFFSET: 0x00704A30
+// FUNCTION: fn_07032
 void CChargingPierceEffect::Slot04() {
   for (int index = 0; index < 10; ++index) {
     CParticle* spark = this->sparks[index];
@@ -107,6 +111,7 @@ void CChargingPierceEffect::Slot04() {
 }
 
 // OFFSET: 0x00704BB0
+// FUNCTION: fn_07033
 void CChargingPierceNewEffect::Slot04() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
