@@ -2,6 +2,7 @@
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -426,4 +427,226 @@ void CHealEffect::SpawnParticles() {
   }
 
   ++this->spawnTick;
+}
+
+// OFFSET: 0x00B69160
+// FUNCTION: fn_19076
+void CHealEffect::Slot03() {
+  this->SpawnParticles();
+
+  for (auto it = this->columnParticles.begin(); it != this->columnParticles.end(); ++it) {
+    CParticle* particle = *it;
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+    if (particle) {
+      const int age = particle->unknown_00E8;
+      int alpha = particle->alpha;
+      if (this->columnLifetime < 0 || age < this->columnLifetime) {
+        if (age < 16) {
+          alpha = (std::min)(alpha + 5, 180);
+        }
+      } else {
+        alpha = (std::max)(alpha - 2, 0);
+      }
+      particle->alpha = alpha;
+
+      const int segment = particle->unknown_000C;
+      float height = particle->unknown_00C0 * 0.25f * g_sinTable[((4 - particle->unknown_0010) * age + segment * 34) % 360] + particle->unknown_00C0 * 0.75f;
+      if (particle->unknown_00E8 < 91) {
+        height *= g_sinTable[particle->unknown_00E8];
+      }
+      height = (std::max)(height, 0.0f);
+
+      const float baseAngle = *reinterpret_cast<const float*>(&particle->unknown_00C4);
+      const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f) * segment) + baseAngle) % 360;
+      const float tiltCos = g_cosTable[particle->unknown_004C];
+      const float cosine = g_cosTable[angle];
+      const float sine = g_sinTable[angle];
+      const float tiltSin = g_sinTable[particle->unknown_004C];
+
+      const float bottomX = particle->scale * cosine;
+      const float bottomZ = particle->scale * sine;
+      particle->vertices[3].x = bottomX;
+      particle->vertices[3].y = 0.0f;
+      particle->vertices[3].z = bottomZ;
+
+      const float topX = bottomX + height * tiltCos * cosine;
+      const float topY = 0.0f - height * tiltSin;
+      const float topZ = bottomZ + height * tiltCos * sine;
+      particle->vertices[1].x = topX;
+      particle->vertices[1].y = topY;
+      particle->vertices[1].z = topZ;
+
+      if (segment != 0) {
+        particle->vertices[0].x = this->columnEdge[1].x;
+        particle->vertices[0].y = this->columnEdge[1].y;
+        particle->vertices[0].z = this->columnEdge[1].z;
+        particle->vertices[2].x = this->columnEdge[0].x;
+        particle->vertices[2].y = this->columnEdge[0].y;
+        particle->vertices[2].z = this->columnEdge[0].z;
+      }
+
+      this->columnEdge[1].x = topX;
+      this->columnEdge[1].y = topY;
+      this->columnEdge[0].x = bottomX;
+      this->columnEdge[0].y = 0.0f;
+      this->columnEdge[0].z = bottomZ;
+      this->columnEdge[1].z = topZ;
+    }
+    ++particle->unknown_00E8;
+  }
+
+  for (auto it = this->coneParticles.begin(); it != this->coneParticles.end(); ++it) {
+    CParticle* particle = *it;
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+    if (particle) {
+      const int age = particle->unknown_00E8;
+      int alpha = particle->alpha;
+      if (this->coneLifetime < 0 || age < this->coneLifetime) {
+        if (age < 16) {
+          alpha = (std::min)(alpha + 5, 180);
+        }
+      } else {
+        alpha = (std::max)(alpha - 2, 0);
+      }
+      particle->alpha = alpha;
+
+      const int segment = particle->unknown_000C;
+      float height = particle->unknown_00C0 * 0.25f * g_sinTable[((segment * 17 + age) * 2) % 360] + particle->unknown_00C0 * 0.75f;
+      if (age < 91) {
+        height *= g_sinTable[age];
+      }
+      height = (std::max)(height, 0.0f);
+
+      const float baseAngle = *reinterpret_cast<const float*>(&particle->unknown_00C4);
+      const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f) * segment) + baseAngle) % 360;
+      const float tiltCos = g_cosTable[particle->unknown_004C];
+      const float cosine = g_cosTable[angle];
+      const float sine = g_sinTable[angle];
+      const float tiltSin = g_sinTable[particle->unknown_004C];
+
+      const float bottomX = particle->scale * cosine;
+      const float bottomZ = particle->scale * sine;
+      particle->vertices[3].y = 0.0f;
+      particle->vertices[3].x = bottomX;
+      particle->vertices[3].z = bottomZ;
+
+      const float topY = 0.0f - height * tiltSin;
+      const float topX = height * tiltCos * cosine + bottomX;
+      const float topZ = bottomZ + height * tiltCos * sine;
+      particle->vertices[1].y = topY;
+      particle->vertices[1].x = topX;
+      particle->vertices[1].z = topZ;
+
+      if (segment != 0) {
+        particle->vertices[0].x = this->coneEdge[1].x;
+        particle->vertices[0].y = this->coneEdge[1].y;
+        particle->vertices[0].z = this->coneEdge[1].z;
+        particle->vertices[2].x = this->coneEdge[0].x;
+        particle->vertices[2].y = this->coneEdge[0].y;
+        particle->vertices[2].z = this->coneEdge[0].z;
+      }
+
+      this->coneEdge[0].x = bottomX;
+      this->coneEdge[0].y = 0.0f;
+      this->coneEdge[0].z = bottomZ;
+      this->coneEdge[1].x = topX;
+      this->coneEdge[1].y = topY;
+      this->coneEdge[1].z = topZ;
+    }
+    ++particle->unknown_00E8;
+  }
+
+  for (auto it = this->sparkParticles.begin(); it != this->sparkParticles.end(); ++it) {
+    CParticle* particle = *it;
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+    if (particle) {
+      particle->unknown_0050 += particle->unknown_0050 - 5 >= 0 ? -5 : 355;
+
+      int alpha = particle->alpha;
+      if (particle->unknown_00E8 < 11) {
+        alpha += 15;
+      } else if (this->id != 312) {
+        const int segment = particle->unknown_000C;
+        if ((5 - segment) * 7 == particle->unknown_00E8 || 36 - segment * 7 == particle->unknown_00E8) {
+          particle->SetTexture("effect\\pok3.tga");
+        } else {
+          particle->SetTexture("effect\\pok1.tga");
+        }
+      }
+      particle->alpha = (std::max)(alpha - 3, 0);
+
+      particle->unknown_00D0 -= 0.0f;
+      particle->unknown_00D4 -= particle->unknown_0054;
+      particle->unknown_00D8 -= 0.0f;
+    }
+    this->sub_B67F90(particle);
+    ++particle->unknown_00E8;
+  }
+}
+
+// OFFSET: 0x00B69BC0
+// FUNCTION: fn_19077
+void CHealEffect::Slot04() {
+  for (auto it = this->columnParticles.begin(); it != this->columnParticles.end(); ++it) {
+    CParticle* particle = *it;
+    if (particle && particle->unknown_000C > 0) {
+      const int segment = particle->unknown_000C;
+      ParticleQuad quad;
+      quad.billboard = false;
+      quad.unused = false;
+      quad.depth = true;
+      quad.top = 0.0f;
+      quad.bottom = 1.0f;
+      quad.left = static_cast<float>(segment - 1) / 21.0f;
+      quad.right = static_cast<float>(segment) / 21.0f;
+      particle->Render(quad);
+    }
+  }
+
+  for (auto it = this->coneParticles.begin(); it != this->coneParticles.end(); ++it) {
+    CParticle* particle = *it;
+    if (particle && particle->unknown_000C > 0) {
+      const int segment = particle->unknown_000C;
+      ParticleQuad quad;
+      quad.billboard = false;
+      quad.unused = false;
+      quad.depth = true;
+      quad.top = 0.0f;
+      quad.bottom = 1.0f;
+      quad.left = static_cast<float>(segment - 1) / 21.0f;
+      quad.right = static_cast<float>(segment) / 21.0f;
+      particle->Render(quad);
+    }
+  }
+
+  for (auto it = this->sparkParticles.begin(); it != this->sparkParticles.end(); ++it) {
+    if (*it) {
+      (*it)->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
+    }
+  }
+}
+
+// OFFSET: 0x00B69E30
+// FUNCTION: fn_19078
+void CHealEffect::sub_B69E30(vector3d* points) {
+  const int yaw = 360 - static_cast<int>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw);
+  const int pitch = (450 - static_cast<int>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch)) % 360;
+
+  for (int i = 0; i < 4; ++i) {
+    const float z = points[i].z;
+    points[i].z = z * g_cosTable[pitch] - points[i].y * g_sinTable[pitch];
+    points[i].y = points[i].y * g_cosTable[pitch] + z * g_sinTable[pitch];
+  }
+
+  for (int i = 0; i < 4; ++i) {
+    const float x = points[i].x;
+    points[i].x = x * g_cosTable[yaw] - points[i].z * g_sinTable[yaw];
+    points[i].z = points[i].z * g_cosTable[yaw] + x * g_sinTable[yaw];
+  }
 }
