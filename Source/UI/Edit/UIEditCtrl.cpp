@@ -2211,12 +2211,120 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
 }
 
 // OFFSET: 0x009719C0
+// FUNCTION: fn_13264
+void UIMerchantShopMakeWnd::PrintBuyList() {
+  auto it = this->items.begin();
+  char line[256];
+  char name[256];
+  char text[24];
+  char price[32];
+  char quantity[32];
+  char grouped[32];
+
+  std::sprintf(line, "======================  BUY LIST  ======================");
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line), 0x96FFFF, 0, 0, 0);
+
+  for (unsigned index = 0; index < this->items.size(); ++index, ++it) {
+    int capacity = 256;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.Name(*it, name, capacity, 0);
+
+    std::sprintf(text, "%s ", this->priceEdits[index]->Text());
+    g_session.IsNumberWithCommas(text);
+    if (std::atoi(text) > 99990000) {
+      std::sprintf(price, "99,990,000");
+    } else {
+      std::sprintf(price, "%s", FormatGroupedInteger(std::atoi(text), grouped, 32));
+    }
+
+    const double rate = PriceCommission(_atoi64(text)) * 0.01;
+    const std::int64_t commission = static_cast<std::int64_t>(_atoi64(text) * rate);
+
+    std::sprintf(text, "%s ", this->quantityEdits[index]->Text());
+    g_session.IsNumberWithCommas(text);
+    if (std::atoi(text) > 9999) {
+      std::sprintf(quantity, "9,999");
+    } else {
+      std::sprintf(quantity, "%s", FormatGroupedInteger(std::atoi(text), grouped, 32));
+    }
+
+    std::sprintf(line, LookupMessage(1732), name, price, quantity);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line), 0x5AFFFF, 0, 0, 0);
+
+    const std::string notice = FormatOwnedString("Commission : 1 EA = %s Zeny", FormatGroupedInteger(commission, line, 256));
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice.c_str()), 0x5AFFFF, 0, 0, 0);
+  }
+
+  std::sprintf(price, "%s", FormatGroupedInteger(g_session.m_zeny, grouped, 32));
+  std::sprintf(line, "                                          Current Zeny : %s Z", price);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line), 0x78FFFF, 0, 0, 0);
+  std::sprintf(line, "============================ ============================");
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(line), 0x96FFFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00972100
+// FUNCTION: fn_13266
+void UIItemBaseWnd::Slot10(int, int, std::intptr_t) {
+  g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x00972120
+// FUNCTION: fn_13267
+void UIItemPurchaseWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source != 3) {
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+
+  switch (drag->type) {
+  case 4:
+  case 5:
+  case 8:
+  case 9:
+  case 11:
+  case 12:
+  case 13:
+  case 14:
+  case 15:
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  default:
+    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.window_01EC->SendMsg(nullptr, 13, 1, 0, 0, 0);
+    return;
+  }
+}
 
 // OFFSET: 0x009721F0
+// FUNCTION: fn_13268
+void UIItemSellWnd2::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source != 3) {
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+
+  if (drag->quantity == 1 || g_windowMgr.unknown_0064 != 0) {
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  }
+
+  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.window_01EC->SendMsg(nullptr, 13, 16, 0, 0, 0);
+}
 
 // OFFSET: 0x009722A0
 // FUNCTION: fn_13269
