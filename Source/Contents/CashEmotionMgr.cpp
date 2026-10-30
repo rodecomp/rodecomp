@@ -2052,6 +2052,97 @@ void UIHeadsprButton::Paint() {
 }
 
 // OFFSET: 0x0085D6C0
+// FUNCTION: fn_10816
+void UISpriteButton::Paint() {
+  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->actionName.c_str()));
+  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->spriteName.c_str()));
+  if (!action || !sprite) {
+    return;
+  }
+
+  CPaletteRes* paletteRes = nullptr;
+  if (this->unknown_00FC.size() != 0) {
+    paletteRes = dynamic_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->unknown_00FC.c_str()));
+  }
+
+  const ActionFrame& frame = action->Frame(this->unknown_00BC, this->unknown_00C0);
+  int halfWidth = 0;
+  int halfHeight = 0;
+  int baseX = 0;
+  int baseY = 0;
+  const std::uint32_t* palette = paletteRes ? paletteRes->palette : sprite->palette;
+  for (unsigned index = 0; index < frame.cells.size(); ++index) {
+    SpriteAtlasRecord record{};
+    const SpriteFrameCell& cell = frame.Cell(index);
+    if (cell.image == -1) {
+      continue;
+    }
+
+    const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    CTexture* texture;
+    if (cell.imageType == 0) {
+      texture = g_renderer->atlas.Find(image, palette, record);
+      if (!texture) {
+        texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      }
+    } else {
+      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+    }
+
+    const int width = this->geometry.width;
+    const int height = this->geometry.height;
+    int x;
+    int y;
+    if (index == 0) {
+      halfWidth = image->width / 2;
+      x = width / 2 - halfWidth;
+      halfHeight = image->height / 2;
+      y = height / 2 - halfHeight;
+      baseX = cell.x;
+      baseY = cell.y;
+    } else {
+      x = width / 2 - baseX - halfWidth + cell.x;
+      y = height / 2 - baseY - halfHeight + cell.y;
+    }
+
+    int drawWidth = image->width;
+    int drawHeight = image->height;
+    if (drawWidth + x > width) {
+      drawWidth = width - x;
+    }
+
+    const int clipX = x < 0 ? -x : 0;
+    const int left = x < 0 ? 0 : x;
+    if (drawHeight + y > height) {
+      drawHeight = height - y;
+    }
+
+    const int clipY = y < 0 ? -y : 0;
+    drawWidth -= clipX;
+    drawHeight -= clipY;
+    const int sourceX = static_cast<int>(record.u0 * 256.0f + clipX);
+    const float sourceY = record.v0 * 256.0f + clipY;
+    if (this->geometry.surface) {
+      const int top = static_cast<int>(sourceY);
+      this->geometry.surface->DrawSurface(
+        left, y < 0 ? 0 : y, texture, sourceX < 0 ? 0 : sourceX, top < 0 ? 0 : top, drawWidth < 0 ? 0 : drawWidth, drawHeight < 0 ? 0 : drawHeight,
+        cell.mirrored != 0, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+      );
+    }
+  }
+
+  if (this->unknown_00C4) {
+    ++this->unknown_00C0;
+    if (this->unknown_00BC >= static_cast<int>(action->animations.size())) {
+      this->unknown_00BC = 0;
+      this->unknown_00C0 = 0;
+    }
+
+    if (this->unknown_00C0 >= static_cast<int>(action->FrameCount(this->unknown_00BC))) {
+      this->unknown_00C0 = 0;
+    }
+  }
+}
 
 // OFFSET: 0x0085E9B0
 // FUNCTION: fn_10834
