@@ -4,9 +4,19 @@
 #include "Contents/Party/PartyBookingInfo.h"
 #include "UI/Window/UIFrameWnd.h"
 
+#include <map>
+#include <string>
+#include <vector>
+
 class UICheckBox;
+class UIComboBoxDefWnd;
 class UIScrollBar;
 struct SeekPartyListWndInfo;
+
+struct SeekPartyMapEntry {
+  /* 0000 */ std::string name;
+  /* 0018 */ unsigned int color;
+};
 
 class UISeekPartyListWnd : public UIFrameWnd {
 public:
@@ -17,15 +27,30 @@ public:
   void NotifyNewAd();
   void UpdateScrollBar();
   bool MatchesFilter(PARTY_BOOKING_AD_INFO info);
+  void InitRegionFilter();
+  void InitJobFilter();
+  void SelectRegion(int region);
+  void SelectJobCategory(int category);
 
 protected:
   int HitTestRow(int x, int y);
 
-  /* 00BC */ unsigned char unknown_00BC[0x34];
+  /* 00BC */ unsigned char unknown_00BC[0x24];
+  /* 00E0 */ UIComboBoxDefWnd* m_regionCombo;
+  /* 00E4 */ UIComboBoxDefWnd* m_mapCombo;
+  /* 00E8 */ UIComboBoxDefWnd* m_jobCategoryCombo;
+  /* 00EC */ UIComboBoxDefWnd* m_jobCombo;
   /* 00F0 */ UICheckBox* m_alarmCheck;
   /* 00F4 */ unsigned char unknown_00F4[0x14];
   /* 0108 */ UIScrollBar* m_scrollBar;
-  /* 010C */ unsigned char unknown_010C[0x98];
+  /* 010C */ unsigned char unknown_010C[0x4];
+  /* 0110 */ std::map<int, std::vector<SeekPartyMapEntry>> m_regionMaps;
+  /* 0118 */ std::vector<std::string> m_jobOptions[9];
+  /* 0184 */ int unknown_0184;
+  /* 0188 */ int m_mapIndex;
+  /* 018C */ int m_jobCategory;
+  /* 0190 */ int m_jobCategoryChanged;
+  /* 0194 */ unsigned char unknown_0194[0x10];
   /* 01A4 */ int m_firstRow;
   /* 01A8 */ int m_hoverIndex;
   /* 01AC */ int m_columnCount;

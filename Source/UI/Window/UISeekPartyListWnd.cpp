@@ -2,7 +2,9 @@
 #include "Contents/MessageTable.h"
 #include "Contents/Party/PartyBookingMgr.h"
 #include "Contents/Sound/SoundMgr.h"
+#include "Script/LuaScript.h"
 #include "UI/Buttons/UICheckBox.h"
+#include "UI/Lists/UIComboBoxDefWnd.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -152,3 +154,43 @@ void UISeekPartyListWnd::UpdateScrollBar() {
 
   this->m_scrollBar->Invalidate();
 }
+
+// OFFSET: 0x00943F40
+
+// OFFSET: 0x00943830
+// FUNCTION: fn_12829
+void UISeekPartyListWnd::InitJobFilter() {
+  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6E6), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DB), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DC), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DD), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DE), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6DF), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6E0), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6E1), 0);
+  this->m_jobCategoryCombo->AddOption(LookupMessage(0x6E2), 0);
+
+  int counts[9] = {0, 0, 6, 13, 6, 7, 6, 13, 8};
+  int message = 0;
+  this->m_jobOptions[0].push_back(std::string(LookupMessage(0x6E6)));
+
+  for (int i = 0; i < 4; ++i) {
+    std::string name(LookupMessage(0x6B0 + i));
+    this->m_jobOptions[1].push_back(name);
+  }
+
+  for (int category = 2; category < 9; ++category) {
+    for (int i = 0; i < counts[category]; ++i) {
+      std::string name(LookupMessage(0x65D + message));
+      this->m_jobOptions[category].push_back(name);
+      ++message;
+    }
+  }
+
+  this->m_jobCategoryCombo->Select(0);
+  this->SelectJobCategory(0);
+}
+
+// OFFSET: 0x00945CF0
+
+// OFFSET: 0x00945FB0
