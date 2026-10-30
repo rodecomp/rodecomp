@@ -6363,3 +6363,9 @@ EncryptedName<18, 0x6D05D5271B5D65C3ULL>& SoulLinkerBabySpriteName() {
 }
 
 // OFFSET: 0x00E2B590
+// FUNCTION: fn_24084
+EncryptedName<18, 0x3D8387EF97A37DCFULL>& FrogSoulLinkerBabySpriteName() {
+  const std::uint8_t source[] = {0x73, 0xAF, 0x1C, 0x78, 0x57, 0x32, 0x47, 0x82, 0x93, 0xC1, 0x71, 0x28, 0x00, 0x3F, 0x36, 0xF9, 0x70, 0x7D};
+  thread_local EncryptedName<sizeof(source), 0x3D8387EF97A37DCFULL> name(source);
+  return name;
+}
