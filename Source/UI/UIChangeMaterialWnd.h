@@ -23,6 +23,7 @@ class UIChangeMaterialWnd : public UIFrameWnd {
 public:
   bool Slot02() override;
   void Slot28(int x, int y) override;
+  void Slot32(int x, int y) override;
   ITEM_INFO* GetItemAt(int x, int y);
   void sub_5E39A0();
 

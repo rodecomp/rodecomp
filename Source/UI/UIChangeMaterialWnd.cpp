@@ -4,6 +4,7 @@
 #include "Contents/Items/ItemNaming.h"
 #include "Network/Connection/Connection.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/StackAlloc.h"
 
 #include <cstdint>
@@ -94,6 +95,20 @@ void UIChangeMaterialWnd::Slot28(int x, int y) {
 // OFFSET: 0x005E2840
 // FUNCTION: fn_03886
 void UIChangeMaterialWnd_List::Slot27(int x, int y) {
+}
+
+// OFFSET: 0x005E29F0
+// FUNCTION: fn_03888
+void UIChangeMaterialWnd::Slot32(int x, int y) {
+  ITEM_INFO* item = this->GetItemAt(x, y);
+  if (!item) {
+    return;
+  }
+
+  UIWindow* window = g_windowMgr.EnsureWindow(12);
+  if (window) {
+    window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(item), 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x005E2A30
