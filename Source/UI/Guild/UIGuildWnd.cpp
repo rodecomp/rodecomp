@@ -5,6 +5,8 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Window/InputFocus.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <windows.h>
 #include <timeapi.h>
@@ -114,6 +116,14 @@ void UIGuildPositionManageWnd::Slot19() {
     button->SetDisabled(0);
     button->Invalidate();
   }
+}
+
+// OFFSET: 0x00958050
+// FUNCTION: fn_13054
+void UIGuildPositionManageWnd::Invalidate() {
+  this->UIWindow::Invalidate();
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(nullptr);
 }
 
 // OFFSET: 0x009603C0
