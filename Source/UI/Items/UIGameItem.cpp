@@ -1,6 +1,14 @@
 #include "UI/Items/UIGameItem.h"
 #include "UI/Text/ColoredText.h"
+#include "Client/Input/InputCharset.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemNaming.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "Resource/ResourceMgr.h"
 
+#include <cstdlib>
+#include <format>
 #include <string>
 
 // OFFSET: 0x009F71F0
@@ -73,6 +81,58 @@ void CUIGameItem::Slot25(int x, int y) {
     return;
   }
   CUIControl::Slot25(x, y);
+}
+
+// OFFSET: 0x009E79D0
+// FUNCTION: fn_14484
+void CUIGameItem::SetItem(const ITEM_INFO& item) {
+  if (std::atoi(item.itemId.c_str()) <= 0) {
+    return;
+  }
+
+  this->itemInfo = item;
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  this->name = naming.DisplayName(this->itemInfo, 0);
+
+  std::string path;
+  if (this->mode == 0) {
+    path = std::format("유저인터페이스\\item\\{}.bmp", ItemResourcePath(this->itemInfo));
+  } else if (this->mode == 1) {
+    path = std::format("유저인터페이스\\collection\\{}.bmp", ItemResourcePath(this->itemInfo));
+  } else {
+    return;
+  }
+
+  if (path.empty()) {
+    return;
+  }
+
+  CBitmapRes* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));
+  if (image) {
+    image->Lock();
+  }
+  CBitmapRes* oldImage = this->image;
+  this->image = image;
+  if (oldImage) {
+    oldImage->Unlock();
+  }
+
+  if (item.unknown_0088 > 0) {
+    CBitmapRes* overlay = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(std::format("유저인터페이스\\grade_enchant\\grade_icon{}.bmp", item.unknown_0088)));
+    if (overlay) {
+      overlay->Lock();
+    }
+    CBitmapRes* oldOverlay = this->overlay;
+    this->overlay = overlay;
+    if (oldOverlay) {
+      oldOverlay->Unlock();
+    }
+  }
+
+  this->Invalidate();
 }
 
 // OFFSET: 0x009E7CE0
