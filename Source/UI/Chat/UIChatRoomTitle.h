@@ -9,6 +9,8 @@ class UIStaticText;
 struct UIButtonContext;
 
 class UIChatRoomTitle : public UIWindow {
+  friend class UIWindowMgr;
+
 public:
   explicit UIChatRoomTitle(UIWindowContext& context);
   void Slot15(int width, int height) override;

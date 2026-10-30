@@ -519,6 +519,7 @@ public:
   bool IsSharedWindowId(int id);
   bool HasNavigationBlocker();
   bool HasPendingDialog();
+  bool HasTitleAtActorCell(std::uint32_t aid);
   void CancelActiveDialog();
   void CenterSurface0478();
   std::vector<unsigned char> SaveReplaySettings();

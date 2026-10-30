@@ -4,6 +4,14 @@
 #include "UI/Party/UIMiniPartyWnd.h"
 #include <algorithm>
 #include "Client/Session.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/World/World.h"
+#include "Resource/World/TerrainResource.h"
+#include "UI/Chat/UIChatRoomTitle.h"
+#include "UI/Shop/UIMerchantShopTitle.h"
+#include <typeinfo>
 
 // STATIC: 0x014576A0
 // GLOBAL: gl_24367
@@ -144,6 +152,56 @@ bool UIWindowMgr::HasPendingDialog() {
   return this->unknown_0284 || this->unknown_02CC || this->unknown_02D0 || this->unknown_02D4 || this->unknown_02D8 || this->unknown_02DC ||
          this->unknown_02E0 || this->unknown_02E4 || this->unknown_02E8 || this->unknown_02EC || this->unknown_03B4 || this->unknown_01F0 ||
          this->unknown_01F4;
+}
+
+// OFFSET: 0x00A97200
+// FUNCTION: fn_17201
+bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
+  CRenderObject* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAidIncludeMe(aid);
+  if (actor == nullptr) {
+    return true;
+  }
+
+  int titleColumn = 0;
+  int titleRow = 0;
+  int actorColumn = 0;
+  int actorRow = 0;
+  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  world->terrain->Grid().SpatialCell(actor->render.position.x, actor->render.position.z, actorColumn, actorRow);
+  for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+    UIWindow* window = *it;
+    CRenderObject* owner;
+    if (typeid(*window) == typeid(UIMerchantShopTitle)) {
+      owner = g_session.FindGameActor(static_cast<UIMerchantShopTitle*>(window)->ownerAid);
+      if (owner == nullptr) {
+        return true;
+      }
+    } else if (typeid(*window) == typeid(UIChatRoomTitle)) {
+      const int roomId = static_cast<UIChatRoomTitle*>(window)->roomId;
+      if (roomId == 0) {
+        return true;
+      }
+
+      const std::uint32_t ownerAid = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->FindUnknown01AC(roomId);
+      if (ownerAid == 0) {
+        return true;
+      }
+
+      owner = g_session.FindGameActor(ownerAid);
+      if (owner == nullptr) {
+        return true;
+      }
+    } else {
+      continue;
+    }
+
+    world->terrain->Grid().SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
+    if (titleColumn == actorColumn && titleRow == actorRow) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 // OFFSET: 0x00A97490
