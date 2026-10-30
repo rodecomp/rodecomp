@@ -1844,6 +1844,7 @@ std::string UINavigationV4Wnd::ObjectLabel(int type, void* object) {
 }
 
 // OFFSET: 0x005C9640
+// FUNCTION: fn_03633
 void UINavigationV4Wnd::SelectRoute(int route) {
   this->unknown_00F0->Invalidate();
   this->unknown_00F0->Clear();
