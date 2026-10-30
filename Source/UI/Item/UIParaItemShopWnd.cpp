@@ -88,3 +88,10 @@ void UIParaItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
 // FUNCTION: fn_13749
 void UIParaResultWnd::Slot10(int x, int y, std::intptr_t value) {
 }
+
+// OFFSET: 0x009A96C0
+
+// OFFSET: 0x009A96B0
+// FUNCTION: fn_13753
+void __stdcall Nullsub344(int, int) {
+}
