@@ -63,3 +63,19 @@ void UIMiniPartyWnd::Slot25(int x, int y) {
   this->geometry.alphaStart = timeGetTime();
   this->m_frameContext->snapping.graph.CaptureOrigins(this);
 }
+
+// OFFSET: 0x00740D10
+// FUNCTION: fn_07732
+void UIMiniPartyInfoWnd::Slot31(int x, int y) {
+  if (g_messengerGroupCollapsed != true && this == g_windowMgr.Capture()) {
+    this->m_owner->Slot31(x, y);
+  }
+}
+
+// OFFSET: 0x00741280
+// FUNCTION: fn_07734
+void UIMiniPartyInfoWnd::Slot33(int, int) {
+  if (!g_messengerGroupCollapsed) {
+    this->SendMsg(nullptr, 0x31, 0, 0, 0, 0);
+  }
+}

@@ -29,6 +29,8 @@ struct MessengerMember {
 
 int ReadMessengerMembers(std::list<MessengerMember>& members, int offset, int size, const std::vector<unsigned char>& data);
 
+extern bool g_messengerGroupCollapsed;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(MessengerMember) == 80);
 #endif

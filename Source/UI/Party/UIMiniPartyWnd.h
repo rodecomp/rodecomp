@@ -21,6 +21,8 @@ class UIMiniPartyInfoWnd : public UIFrameWnd {
 public:
   UIMiniPartyInfoWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
   void Slot15(int width, int height) override;
+  void Slot31(int x, int y) override;
+  void Slot33(int x, int y) override;
 
   /* 00B4 */ std::vector<MiniPartyInfoEntry> m_entries;
   /* 00C0 */ UIPcGage* m_gauge;
