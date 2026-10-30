@@ -5,13 +5,19 @@
 
 #include <cstddef>
 
-class CParticle;
+class CEZ2STRParticle;
 
 class CCresciveBolt : public CEffect {
 public:
   CCresciveBolt();
 
-  /* 00CC */ CParticle* particle;
+  void Slot01() override;
+  void Slot03() override;
+  void Slot04() override;
+  void Close() override;
+  bool Slot06() override;
+
+  /* 00CC */ CEZ2STRParticle* particle;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
