@@ -1,6 +1,7 @@
 #include "Script/LuaScript.h"
 #include "Archive/PakRegistry.h"
 #include "Client/Session.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/EntryQueueMgr.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectTypes.h"
@@ -11,6 +12,7 @@
 #include "File/ResourcePath.h"
 #include "Script/LuaFileOperations.h"
 #include "UI/UICheckAttendanceWnd.h"
+#include "UI/UILapineScrollBar.h"
 #include "UI/UILapineUpgradeBoxWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -157,16 +159,27 @@ int SetSubChatWndOption(lua_State* state) {
 // OFFSET: 0x00AFF020
 // FUNCTION: fn_18351
 int SetCmdOnOffList(lua_State* state) {
-  luaL_checkstring(state, 1);
-  luaL_checknumber(state, 2);
+  const char* name = luaL_checkstring(state, 1);
+  const bool enabled = luaL_checknumber(state, 2) != 0.0;
+  Singleton<CGameSettingsMgr>::GetInstance();
+  const int optionId = SetOption(name, enabled);
+  if (optionId != 3) {
+    if (optionId == 229) {
+      const int value = enabled;
+      std::memcpy(g_session.unknown_5454, &value, sizeof(value));
+    }
+    g_session.m_commandOptions.emplace_back(name, optionId);
+  }
   return 0;
 }
 
 // OFFSET: 0x00AFEF50
 // FUNCTION: fn_18350
 int GetCmdOnOffValue(lua_State* state) {
-  luaL_checkstring(state, 1);
-  lua_pushnumber(state, 0.0);
+  const char* name = luaL_checkstring(state, 1);
+  Singleton<CGameSettingsMgr>::GetInstance();
+  const auto option = FindServiceOption(name);
+  lua_pushnumber(state, option.first == 3 ? -1.0 : static_cast<double>(option.second != 0));
   return 1;
 }
 
@@ -679,9 +692,11 @@ int AddEntryQueue(lua_State* state) {
 // OFFSET: 0x00AFFF60
 // FUNCTION: fn_18358
 int AddIngredient(lua_State* state) {
-  luaL_checknumber(state, 1);
-  luaL_checknumber(state, 2);
-  g_windowMgr.LookupWindow(0x122);
+  const int id = static_cast<int>(luaL_checknumber(state, 1));
+  const int quantity = static_cast<int>(luaL_checknumber(state, 2));
+  if (UIWindow* window = g_windowMgr.LookupWindow(0x122)) {
+    static_cast<UILapineBoxWnd*>(window)->AddMaterial(id, quantity);
+  }
   return 0;
 }
 

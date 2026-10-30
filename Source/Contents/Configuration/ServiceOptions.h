@@ -2,12 +2,18 @@
 #define RAGNAROK_SOURCE_CONTENTS_CONFIGURATION_SERVICEOPTIONS_H
 
 #include "Contents/Skills/PlayerSkillBundle.h"
+#include "Utility/Singleton.h"
 
 #include <unordered_map>
+#include <utility>
 
 enum ServiceOption : int { ConfineCursor = 271 };
 
+class CGameSettingsMgr;
+
 bool IsServiceOption(int id);
+std::pair<int, unsigned char> FindServiceOption(const char* name);
+int SetOption(const char* name, unsigned char value);
 
 struct ServiceOptions {
   /* 0000 */ std::unordered_map<std::uint32_t, unsigned char, SkillIdHash> values;

@@ -233,7 +233,8 @@ public:
   /* 52B8 */ std::vector<const char*> m_accessoryNames;
   /* 52C4 */ std::vector<const char*> m_robeNames;
   /* 52D0 */ std::vector<std::string> m_navigationForbiddenMaps;
-  /* 52DC */ unsigned char unknown_52DC[0x16C];
+  /* 52DC */ std::vector<std::pair<const char*, int>> m_commandOptions;
+  /* 52E8 */ unsigned char unknown_52E8[0x160];
   /* 5448 */ int unknown_5448;
   /* 544C */ unsigned char unknown_544C[0x04];
   /* 5450 */ int unknown_5450;
@@ -794,6 +795,7 @@ static_assert(offsetof(CSession, unknown_3500) == 0x3500);
 static_assert(offsetof(CSession, m_accessoryNames) == 0x52B8);
 static_assert(offsetof(CSession, m_robeNames) == 0x52C4);
 static_assert(offsetof(CSession, m_navigationForbiddenMaps) == 0x52D0);
+static_assert(offsetof(CSession, m_commandOptions) == 0x52DC);
 static_assert(offsetof(CSession, unknown_5558) == 0x5558);
 static_assert(offsetof(CSession, m_hotkeyScript) == 0x59D8);
 static_assert(offsetof(CSession, unknown_5C68) == 0x5C68);
