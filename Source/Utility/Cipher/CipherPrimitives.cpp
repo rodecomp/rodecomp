@@ -164,6 +164,29 @@ unsigned short g_sboxLookup[0x10000];
 // GLOBAL: gl_25020
 unsigned char g_fealRotateTable[256];
 
+struct KeyedBoxContext {
+  /* 0000 */ int blockSize;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ int unknown_0008;
+  /* 000C */ int unknown_000C;
+  /* 0010 */ int startRound;
+  /* 0014 */ unsigned char boxes[1][256];
+};
+
+struct SealContext {
+  /* 0000 */ unsigned int t[520];
+  /* 0820 */ unsigned int s[265];
+  /* 0C44 */ unsigned int r[20];
+  /* 0C94 */ unsigned int counter;
+  /* 0C98 */ unsigned int keystream[1024];
+  /* 1C98 */ int position;
+};
+
+static_assert(sizeof(SealContext) == 0x1C9C);
+
+// GLOBAL: gl_25067
+int g_keyedBoxRound;
+
 // INLINED
 static unsigned int CryptonRotate(unsigned int value, unsigned int shift) {
   return (value << shift) | (value >> (32 - shift));
@@ -794,4 +817,146 @@ void BuildSboxLookup() {
       g_sboxEntries[4][SBOX_INDEX(value, 4)] | g_sboxEntries[5][SBOX_INDEX(value, 5)] |
       g_sboxEntries[6][SBOX_INDEX(value, 6)] | g_sboxEntries[7][SBOX_INDEX(value, 7)]);
   }
+}
+
+// OFFSET: 0x00B12FC0
+// FUNCTION: fn_18414
+int KeyedBoxFeistel(const unsigned char* input, unsigned char* output, int length, const KeyedBoxContext* context) {
+  if (length == 2) {
+    const int round = g_keyedBoxRound;
+    unsigned char right = context->boxes[round][input[0]] ^ input[1];
+    output[1] = right;
+    unsigned char left = context->boxes[round + 1][right] ^ input[0];
+    output[0] = left;
+    g_keyedBoxRound = round + 4;
+    right = context->boxes[round + 2][left] ^ right;
+    output[1] = right;
+    output[0] = context->boxes[round + 3][right] ^ left;
+    return 0;
+  }
+
+  const int half = length / 2;
+  unsigned char buffer[8];
+  int i;
+
+  KeyedBoxFeistel(input, buffer, half, context);
+  for (i = 0; i < half; ++i) {
+    output[half + i] = input[half + i] ^ buffer[i];
+  }
+
+  KeyedBoxFeistel(output + half, buffer, half, context);
+  for (i = 0; i < half; ++i) {
+    output[i] = input[i] ^ buffer[i];
+  }
+
+  KeyedBoxFeistel(output, buffer, half, context);
+  for (i = 0; i < half; ++i) {
+    output[half + i] ^= buffer[i];
+  }
+
+  KeyedBoxFeistel(output + half, buffer, half, context);
+  for (i = 0; i < half; ++i) {
+    output[i] ^= buffer[i];
+  }
+
+  return 0;
+}
+
+#define SEAL_ROT8(x) (((x) >> 8) | ((x) << 24))
+#define SEAL_ROT9(x) (((x) >> 9) | ((x) << 23))
+#define SEAL_ROT16(x) (((x) >> 16) | ((x) << 16))
+#define SEAL_ROT24(x) (((x) >> 24) | ((x) << 8))
+
+// OFFSET: 0x00B134A0
+// FUNCTION: fn_18415
+int SealGenerate(const SealContext* key, unsigned int in, unsigned int* out) {
+  unsigned int a = in ^ key->r[12];
+  unsigned int b = SEAL_ROT8(in) ^ key->r[13];
+  unsigned int c = SEAL_ROT16(in) ^ key->r[14];
+  unsigned int d = SEAL_ROT24(in) ^ key->r[15];
+  unsigned int n1;
+  unsigned int n2;
+  unsigned int n3;
+  unsigned int n4;
+  unsigned short p;
+  unsigned short q;
+
+  for (int j = 0; j < 2; ++j) {
+    p = a & 0x7FC;
+    b += key->t[p / 4];
+    a = SEAL_ROT9(a);
+    p = b & 0x7FC;
+    c += key->t[p / 4];
+    b = SEAL_ROT9(b);
+    p = c & 0x7FC;
+    d += key->t[p / 4];
+    c = SEAL_ROT9(c);
+    p = d & 0x7FC;
+    a += key->t[p / 4];
+    d = SEAL_ROT9(d);
+
+    n1 = d;
+    n2 = b;
+    n3 = a;
+    n4 = c;
+
+    p = a & 0x7FC;
+    b += key->t[p / 4];
+    a = SEAL_ROT9(a);
+    p = b & 0x7FC;
+    c += key->t[p / 4];
+    b = SEAL_ROT9(b);
+    p = c & 0x7FC;
+    d += key->t[p / 4];
+    c = SEAL_ROT9(c);
+    p = d & 0x7FC;
+    a += key->t[p / 4];
+    d = SEAL_ROT9(d);
+
+    for (int i = 0; i < 64; ++i) {
+      p = a & 0x7FC;
+      b += key->t[p / 4];
+      a = SEAL_ROT9(a);
+      b ^= a;
+      q = b & 0x7FC;
+      c ^= key->t[q / 4];
+      b = SEAL_ROT9(b);
+      c += b;
+      p = (p + c) & 0x7FC;
+      d += key->t[p / 4];
+      c = SEAL_ROT9(c);
+      d ^= c;
+      q = (q + d) & 0x7FC;
+      a ^= key->t[q / 4];
+      d = SEAL_ROT9(d);
+      a += d;
+      p = (p + a) & 0x7FC;
+      b ^= key->t[p / 4];
+      a = SEAL_ROT9(a);
+      q = (q + b) & 0x7FC;
+      c += key->t[q / 4];
+      b = SEAL_ROT9(b);
+      p = (p + c) & 0x7FC;
+      d ^= key->t[p / 4];
+      c = SEAL_ROT9(c);
+      q = (q + d) & 0x7FC;
+      a += key->t[q / 4];
+      d = SEAL_ROT9(d);
+
+      *out++ = b + key->s[4 * i];
+      *out++ = c ^ key->s[4 * i + 1];
+      *out++ = d + key->s[4 * i + 2];
+      *out++ = a ^ key->s[4 * i + 3];
+
+      if (i & 1) {
+        a += n3;
+        c += n4;
+      } else {
+        a += n1;
+        c += n2;
+      }
+    }
+  }
+
+  return 0;
 }
