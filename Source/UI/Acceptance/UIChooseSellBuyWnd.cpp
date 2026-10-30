@@ -1366,6 +1366,36 @@ void UIComboBoxWnd::Resize(int width, int height) {
   this->m_list->Invalidate();
 }
 
+// OFFSET: 0x008F9570
+// FUNCTION: fn_12337
+int UIComboBoxIDWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (this->m_owner && message == 39) {
+    return this->m_owner->SendMsg(this, 39, argument1, argument2, argument3, argument4);
+  }
+  return this->m_list->SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x008F95B0
+// FUNCTION: fn_12338
+int UIComboBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (this->m_owner && message == 39) {
+    return this->m_owner->SendMsg(this, 39, argument1, argument2, argument3, argument4);
+  }
+  return this->m_list->SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x008F97D0
+// FUNCTION: fn_12340
+int UIDisconnectedServerMsgWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+  if (argument1 == 184) {
+    g_modeMgr.GetGameMode()->SendMsg(141, 0, 0, 0, 0);
+  }
+  return 0;
+}
+
 // OFFSET: 0x008F6750
 // FUNCTION: fn_12322
 void UISayDialogWnd::Resize(int width, int height) {
