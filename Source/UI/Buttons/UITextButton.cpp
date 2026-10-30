@@ -2084,6 +2084,26 @@ void UIChatHisBox::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x0088C530
+// FUNCTION: fn_11371
+void UIMemberListBox::Paint() {
+  this->ClearSurface((this->backgroundRed & 255) | ((this->backgroundGreen & 255) << 8) | ((this->backgroundBlue & 255) << 16));
+
+  const int first = this->topLine;
+  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
+  if (this->lines.size() < end) {
+    end = static_cast<unsigned>(this->lines.size());
+  }
+
+  for (int index = first, row = 0; index < static_cast<int>(end); ++index, ++row) {
+    if (index == this->selected) {
+      this->FillRegion(0, row * this->lineHeight + 1, this->geometry.width, this->lineHeight, 0xC8C832);
+    }
+
+    this->DrawTextAt(
+      this->m_controls->fonts, this->m_controls->locale, 2, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->unknown_00E4[index], 0, 0
+    );
+  }
+}
 
 // OFFSET: 0x0088AEC0
 
