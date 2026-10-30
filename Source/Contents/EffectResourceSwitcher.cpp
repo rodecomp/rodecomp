@@ -544,3 +544,13 @@ int CEZ2STREffectMgr::EffectId(const std::string& name) {
 
   return -1;
 }
+
+// OFFSET: 0x00700BA0
+// FUNCTION: fn_06990
+std::vector<int> CEZ2STREffectMgr::EffectIds() {
+  std::vector<int> ids;
+  for (auto it = this->effects.begin(); it != this->effects.end(); ++it) {
+    ids.push_back(it->second.id + 10000);
+  }
+  return ids;
+}

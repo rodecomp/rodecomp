@@ -10,6 +10,7 @@
 #include <map>
 #include <string>
 #include <utility>
+#include <vector>
 
 struct EZ2STREffectInfo {
   /* 0000 */ int id = 0;
@@ -46,6 +47,7 @@ public:
 
   EZ2STREffectInfo* FindById(int id);
   int EffectId(const std::string& name);
+  std::vector<int> EffectIds();
 };
 
 class CEZ2STREffect : public CEffect {
