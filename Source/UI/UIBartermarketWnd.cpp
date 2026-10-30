@@ -64,18 +64,129 @@ void UIBartermarketWnd::Slot10(int x, int y, std::intptr_t value) {
 }
 
 // OFFSET: 0x00840CC0
+// FUNCTION: fn_10547
+std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemAt(int x, int y) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
+    return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+  }
+
+  const int row = (y - 17) / 32;
+  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
+  int index = 0;
+  int visible = 0;
+  for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
+    if (index >= this->scroll * this->columns) {
+      if (visible == this->columns * row) {
+        return std::pair<bool, BarterMarketItem>(true, *it);
+      }
+      ++visible;
+    }
+  }
+  return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+}
 
 // OFFSET: 0x00840FF0
+// FUNCTION: fn_10548
+std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemOrPriceAt(int x, int y) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
+    return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+  }
+
+  const int column = (x - 40) / 32;
+  const int row = (y - 17) / 32;
+  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
+  int index = 0;
+  int visible = 0;
+  for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
+    if (index >= this->scroll * this->columns) {
+      if (visible == this->columns * row) {
+        if (column == 0) {
+          return std::pair<bool, BarterMarketItem>(true, *it);
+        }
+        BarterMarketItem price;
+        char buffer[100];
+        std::memset(buffer, 0, sizeof(buffer));
+        _itoa(it->field_2c, buffer, 10);
+        price.name = buffer;
+        price.field_1c = 20;
+        return std::pair<bool, BarterMarketItem>(true, price);
+      }
+      ++visible;
+    }
+  }
+  return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+}
 
 // OFFSET: 0x00841320
+// FUNCTION: fn_10549
+std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemOrPriceAt(int x, int y) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
+    return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+  }
+
+  const int column = (x - 40) / 32;
+  const int row = (y - 17) / 32;
+  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
+  int index = 0;
+  int visible = 0;
+  for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
+    if (index >= this->scroll * this->columns) {
+      if (visible == this->columns * row) {
+        if (column == 0) {
+          return std::pair<bool, BarterMarketItem>(true, *it);
+        }
+        BarterMarketItem price;
+        char buffer[100];
+        std::memset(buffer, 0, sizeof(buffer));
+        _itoa(it->field_2c, buffer, 10);
+        price.name = buffer;
+        price.field_1c = 20;
+        return std::pair<bool, BarterMarketItem>(true, price);
+      }
+      ++visible;
+    }
+  }
+  return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+}
 
 // OFFSET: 0x00841650
+// FUNCTION: fn_10550
+std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemAt(int x, int y) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
+    return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+  }
+
+  const int row = (y - 17) / 32;
+  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
+  int index = 0;
+  int visible = 0;
+  for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
+    if (index >= this->scroll * this->columns) {
+      if (visible == this->columns * row) {
+        return std::pair<bool, BarterMarketItem>(true, *it);
+      }
+      ++visible;
+    }
+  }
+  return std::pair<bool, BarterMarketItem>(false, BarterMarketItem());
+}
 
 struct SessionMessengerContext {
   int GetList0Size() const;
 };
 
 // OFFSET: 0x00841910
+// FUNCTION: fn_10551
+int UIBarterItemPurchaseWnd::GetInventoryItemCount(int itemId) {
+  const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size();
+  for (int i = 0; i < count; ++i) {
+    ITEM_INFO item = g_session.GetInventoryItemAt(i);
+    if (std::atoi(item.itemId.c_str()) == itemId) {
+      return item.quantity;
+    }
+  }
+  return 0;
+}
 
 // OFFSET: 0x00845940
 // FUNCTION: fn_10576
@@ -111,8 +222,45 @@ void UIExpandedBartermarketWnd::Slot10(int x, int y, std::intptr_t value) {
 }
 
 // OFFSET: 0x00845F60
+// FUNCTION: fn_10578
+std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryAt(int x, int y) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
+    return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+  }
+
+  const int row = (y - 17) / 64;
+  int index = 0;
+  int visible = 0;
+  for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
+    if (index >= this->unknown_00C4) {
+      if (visible == row) {
+        return std::pair<bool, BarterMarketEntry>(true, *it);
+      }
+      ++visible;
+    }
+  }
+  return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+}
 
 // OFFSET: 0x00846110
+// FUNCTION: fn_10579
+std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryAt(int x, int y) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
+    return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+  }
+
+  int index = 0;
+  int visible = 0;
+  for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
+    if (index >= this->unknown_00C4) {
+      if (visible == (y - 17) / 64) {
+        return std::pair<bool, BarterMarketEntry>(true, *it);
+      }
+      ++visible;
+    }
+  }
+  return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+}
 
 // OFFSET: 0x008462C0
 // FUNCTION: fn_10580

@@ -90,6 +90,8 @@ struct BarterMarketEntry {
   BarterMarketEntry(const BarterMarketEntry& other) = default;
 
   // OFFSET: 0x00845020
+  // FUNCTION: fn_10571
+  BarterMarketEntry& operator=(const BarterMarketEntry& other) = default;
 };
 
 static_assert(sizeof(BarterMarketEntry) == 0x4C);
