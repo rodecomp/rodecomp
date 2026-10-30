@@ -797,11 +797,91 @@ void CGameMode::ReceiveRuneRewardSteps(const unsigned char* data) {
     window->SendMsg(window, 60, 0, 0, 0, 0);
   }
 }
-// OFFSET: 0x00D66A50
-
-// OFFSET: 0x00D66A60
-
 // OFFSET: 0x00D66CE0
+// FUNCTION: fn_22022
+int CGameMode::HandleRuneResult(int result) {
+  switch (result) {
+  case 0:
+    return 0;
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFF4)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFF4), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFF5)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFF5), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 3:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFF6)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFF6), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 4:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFF7)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFF7), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 5:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFF8)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFF8), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 6:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFF9)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFF9), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 7:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFFA)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFFA), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 8:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFFB)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFFB), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 10:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFFD)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFFC), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 11:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFFD)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFFD), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 12:
+  case 13:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xFFE)), 0xFF, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xFFE), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  default:
+    return result;
+  }
+
+  return result;
+}
+
+// OFFSET: 0x00D67540
+// FUNCTION: fn_22028
+void CGameMode::ApplyRuneSetResult(int result, int tagId, int runeSetId) {
+  if (this->HandleRuneResult(result) == 0) {
+    g_runeSystemMgr->SetCurRuneSet(tagId, runeSetId, -1, -1);
+  }
+
+  UIWindow* window = g_windowMgr.LookupWindow(0x169);
+  if (window) {
+    window->SendMsg(window, 0x3C, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D67590
+// FUNCTION: fn_22029
+void CGameMode::ApplyRuneSetResultWithRequest(int result, int tagId, int runeSetId, int grade, int slotCount) {
+  if (this->HandleRuneResult(result) == 0) {
+    g_runeSystemMgr->SetCurRuneSet(tagId, runeSetId, grade, slotCount);
+  }
+
+  g_runeSystemMgr->SendRequest(0x0BCB, nullptr, tagId);
+
+  UIWindow* window = g_windowMgr.LookupWindow(0x169);
+  if (window) {
+    window->SendMsg(window, 0x3C, 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00D677C0
 

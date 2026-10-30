@@ -217,6 +217,9 @@ public:
   void ReceiveRuneSetGrades(const unsigned char* packet);
   void ReceiveRuneRewardResult(int result, int tagId, std::int64_t id, int step);
   void ReceiveRuneRewardSteps(const unsigned char* packet);
+  int HandleRuneResult(int result);
+  void ApplyRuneSetResult(int result, int tagId, int runeSetId);
+  void ApplyRuneSetResultWithRequest(int result, int tagId, int runeSetId, int grade, int slotCount);
   void NotifyWindow4F258(int result);
   void ReceiveNamedResult(std::uint32_t aid, std::string name, int result);
   void ReceiveBasicInfoResult(unsigned char result);
