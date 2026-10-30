@@ -23,6 +23,42 @@ CWindEffect::CWindEffect() : CEffect(2343) {
 }
 
 // OFFSET: 0x00730510
+// FUNCTION: fn_07539
+void CWindEffect::Init() {
+  const float step = static_cast<float>(this->arcLength) / 20.0f;
+  for (int ring = 0; ring < this->ringCount; ++ring) {
+    const int startAngle = std::max(rand() % 360, 0);
+    const int alpha = this->maxAlpha != 0 ? std::max(rand() % this->maxAlpha, 0) : 0;
+    for (int segment = 0; segment < 21; ++segment) {
+      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      if (!particle) {
+        continue;
+      }
+
+      particle->alpha = alpha;
+      particle->SetColor(this->red, this->green, this->blue);
+      particle->scale = this->particleScale;
+      particle->unknown_0054 = this->ringCount > 1 ? this->height / static_cast<float>(this->ringCount - 1) * static_cast<float>(ring) : 0.0f;
+      particle->unknown_00C0 = this->angleSpeed;
+      particle->unknown_0050 = this->arcLength;
+      if (this->sourceBlend != -1) {
+        particle->sourceBlend = this->sourceBlend;
+      }
+      if (this->destinationBlend != -1) {
+        particle->destinationBlend = this->destinationBlend;
+      }
+      particle->SetTexture(this->textureName);
+      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(segment) * step + static_cast<float>(startAngle);
+      particle->unknown_00A8 = 0;
+      InitParticleQuad(particle->vertices);
+      particle->unknown_0004 = this->id;
+      particle->unknown_000C = segment;
+      particle->unknown_0010 = ring;
+      particle->unknown_0008 = 1;
+      this->particles.push_back(particle);
+    }
+  }
+}
 
 // OFFSET: 0x00730810
 // FUNCTION: fn_07540
