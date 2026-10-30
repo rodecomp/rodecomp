@@ -1,7 +1,74 @@
 #include "Contents/Effects/RedLineEffect.h"
 
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
+
+#include <algorithm>
+#include <cstdlib>
+
+// OFFSET: 0x00B71770
+// FUNCTION: fn_19134
+void CRedLineEffect::CreateLines(int layer) {
+  int row = 0;
+  for (int angle = 0; angle < 360; angle += 90) {
+    const int life = std::max(rand() % 40, 0) + 60;
+    const float scale = static_cast<float>(std::max(rand() % 11, 0)) * 0.015f + 0.15f;
+    const short direction = static_cast<short>(std::max(rand() % 360, 0));
+    const float directionX = g_cosTable[direction] * 5.0f;
+    const float directionZ = g_sinTable[direction] * 5.0f;
+
+    for (int segment = 0; segment <= 21; ++segment) {
+      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      if (particle) {
+        particle->SetTexture("effect\\ring_red.tga");
+        particle->unknown_0010 = row;
+        particle->unknown_0004 = this->id;
+        particle->unknown_000C = segment;
+        particle->unknown_0008 = 3;
+        particle->unknown_0050 = 360;
+        *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(angle);
+        particle->alpha = 150;
+        particle->unknown_00C0 = 120.0f;
+        particle->unknown_004C = 90;
+        particle->scale = scale;
+        particle->unknown_00D0 = directionX;
+        particle->unknown_00D8 = directionZ;
+        particle->unknown_00D4 = 0.0f;
+        particle->unknown_00E8 = life;
+        particle->unknown_0054 = static_cast<float>(layer);
+        InitParticleQuad(particle->vertices);
+        this->lines.push_back(particle);
+      }
+    }
+
+    ++row;
+  }
+}
+
+// OFFSET: 0x00B71B80
+// FUNCTION: fn_19135
+void CRedLineEffect::Close() {
+  for (std::vector<CParticle*>::iterator it = this->lines.begin(); it != this->lines.end(); ++it) {
+    FreeParticle(*it);
+  }
+
+  this->lines.clear();
+}
+
+// OFFSET: 0x00B71BC0
+// FUNCTION: fn_19136
+void CRedLineEffect::Slot01() {
+  this->CreateLines(0);
+  this->CreateLines(1);
+  this->unknown_002C = 75;
+}
+
+// OFFSET: 0x00B71BE0
+// FUNCTION: fn_19137
+bool CRedLineEffect::Slot06() {
+  return !this->IsFinished();
+}
 
 // OFFSET: 0x00B71EA0
 // FUNCTION: fn_19138
