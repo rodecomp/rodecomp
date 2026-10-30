@@ -6042,6 +6042,30 @@ EncryptedName<9, 0xA5C5D1A3B9457B53ULL>& WerewolfJobName1() {
   return name;
 }
 
+// OFFSET: 0x00DD6A40
+// FUNCTION: fn_23277
+EncryptedName<13, 0x4B670715D543C1C3ULL>& DruidRidingName() {
+  const std::uint8_t source[] = {0x87, 0x93, 0x16, 0x9C, 0x51, 0x58, 0x35, 0x02, 0x87, 0x88, 0x0D, 0x92, 0x15};
+  thread_local EncryptedName<sizeof(source), 0x4B670715D543C1C3ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DD6B10
+// FUNCTION: fn_23278
+EncryptedName<14, 0x7155E5EF0DFB0D03ULL>& KarnosRidingName() {
+  const std::uint8_t source[] = {0x48, 0x4C, 0xA9, 0x43, 0xA0, 0xB6, 0x0A, 0x23, 0x4A, 0x49, 0xB2, 0x43, 0xA8, 0xE5};
+  thread_local EncryptedName<sizeof(source), 0x7155E5EF0DFB0D03ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00DD6BE0
+// FUNCTION: fn_23279
+EncryptedName<14, 0x4B1D078937DB892BULL>& AliteaRidingName() {
+  const std::uint8_t source[] = {0x6A, 0xC5, 0x92, 0x63, 0xCC, 0x46, 0x42, 0x19, 0x62, 0xCD, 0x92, 0x79, 0xCE, 0x07};
+  thread_local EncryptedName<sizeof(source), 0x4B1D078937DB892BULL> name(source);
+  return name;
+}
+
 // OFFSET: 0x00E29530
 // FUNCTION: fn_24044
 EncryptedName<14, 0x6BC977B3B5993503ULL>& PoringSuperNovice2SpriteName() {
