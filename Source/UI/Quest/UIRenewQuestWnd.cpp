@@ -1,19 +1,63 @@
 #include "UI/Quest/UIRenewQuestWnd.h"
 
+#include "Client/Mode/ModeCursor.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Contents/RenewQuestMgr.h"
 #include "Render/DeviceContext/DeviceContext.h"
+#include "Render/Renderer.h"
+#include "Render/Text/TextContext.h"
+#include "Render/Textures/SpriteAtlas.h"
+#include "Render/Textures/SpritePixels.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Text/UIStaticText.h"
 #include "UI/UIStaticBitmap.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstddef>
 #include <cstring>
+
+// OFFSET: 0x007F9240
+
+// OFFSET: 0x007F95D0
+
+// OFFSET: 0x007F97F0
+
+// OFFSET: 0x007F9800
+
+// OFFSET: 0x007F9820
+
+// OFFSET: 0x007F9A70
+
+// OFFSET: 0x007F9C30
+// FUNCTION: fn_09942
+void Nullsub254() {}
+
+// OFFSET: 0x007F9C40
+// FUNCTION: fn_09943
+void UIOngoingQuestScrollWnd::Slot15(int, int) {
+  this->scrollBarWidth = 9;
+}
+
+// OFFSET: 0x007F9C50
+// FUNCTION: fn_09944
+void UIOngoingQuestScrollWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->parent) {
+    this->parent->Invalidate();
+  }
+}
+
+// OFFSET: 0x007F9C70
+
+// OFFSET: 0x007F9CB0
 
 // OFFSET: 0x007FB0C0
 // FUNCTION: fn_09951

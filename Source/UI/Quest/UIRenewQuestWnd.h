@@ -6,13 +6,51 @@
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 #include <vector>
 
+class CActRes;
+class CSprRes;
 class UIBitmapButton;
 class UICheckBox;
 class UIStaticBitmap;
+class UIStaticText;
 struct UIButtonContext;
+
+class UINpcSprWnd : public UIWindow {
+public:
+  // INLINED
+  ~UINpcSprWnd() override {
+    this->m_mapName.clear();
+  }
+  void Paint() override;
+  void ResetCursor(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+  void SetSprite(int width, int height, std::string name);
+  void SetDestination(std::string mapName, int x, int y);
+
+  /* 007C */ std::string m_mapName;
+  /* 0094 */ CActRes* m_action;
+  /* 0098 */ CSprRes* m_sprite;
+  /* 009C */ int m_destinationX;
+  /* 00A0 */ int m_destinationY;
+};
+
+class UIOngoingQuestScrollWnd : public UIScrollWnd {
+public:
+  UIOngoingQuestScrollWnd(UIWindowContext& windows, int width, int height);
+  void Slot15(int width, int height) override;
+  void Paint() override;
+  void Slot35(int delta) override;
+
+  void RefreshHuntTexts();
+
+  /* 00B0 */ std::vector<UIStaticText*> m_huntTexts;
+  /* 00BC */ unsigned int m_questId;
+  /* 00C0 */ int m_lineHeight;
+};
 
 class UIRecommededQuestScrollWnd : public UIScrollWnd {
 public:
