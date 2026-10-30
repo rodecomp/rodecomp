@@ -9,7 +9,10 @@
 #include "UI/Lists/UIListBoxEx.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Edit/UIEditCtrl_Currency.h"
+#include "Render/Text/TextContext.h"
 #include "UI/Buttons/UIBitmapButton2.h"
+#include "UI/Buttons/UINaviLinkButton.h"
 #include <algorithm>
 #include <cstdio>
 
@@ -472,6 +475,34 @@ void UIChatHisBox::Clear() {
   this->unknown_00E4.erase(this->unknown_00E4.begin(), this->unknown_00E4.end());
   this->history.erase(this->history.begin(), this->history.end());
 }
+
+// OFFSET: 0x0087F430
+// FUNCTION: fn_11271
+void UIChatHisBox::PlaceNaviLinks(int line) {
+  const int top = this->topLine;
+  unsigned int end = static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top);
+  if (this->lines.size() < end) {
+    end = static_cast<unsigned int>(this->lines.size());
+  }
+
+  for (std::vector<UINaviLinkButton*>& row : this->naviLinks) {
+    for (unsigned int index = 0; index < row.size(); ++index) {
+      UINaviLinkButton* button = row[index];
+      if (button->geometry.id != 438) {
+        continue;
+      }
+
+      const int buttonLine = button->line;
+      if (buttonLine < top || buttonLine > static_cast<int>(end - 1)) {
+        button->Move(-100, -100);
+      } else if (line == buttonLine) {
+        button->Move(button->column + 1, (line - top) * this->lineHeight + 2);
+      }
+    }
+  }
+}
+
+// OFFSET: 0x0087F520
 
 // OFFSET: 0x008900D0
 // FUNCTION: fn_11399

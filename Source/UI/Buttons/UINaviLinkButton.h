@@ -17,14 +17,16 @@ public:
   ~UINaviLinkButton() override;
   void Slot25(int x, int y) override;
   std::string Link();
-  std::string link;
+  /* 00F8 */ std::string link;
+  /* 0110 */ int column;
+  /* 0114 */ int line;
 
 private:
   NavigationDestination* m_navigation;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(UINaviLinkButton) == 284);
+static_assert(sizeof(UINaviLinkButton) == 292);
 #endif
 
 #endif

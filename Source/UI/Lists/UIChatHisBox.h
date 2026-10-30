@@ -3,8 +3,11 @@
 
 #include "UI/Lists/UIListBox.h"
 
+#include <list>
 #include <string>
 #include <vector>
+
+class UINaviLinkButton;
 
 class UIChatHisBox : public UIListBox {
 public:
@@ -19,8 +22,9 @@ public:
   void Clear() override;
   const char* HistoryText(unsigned int index);
   bool SaveChatLog(const char* path);
+  void PlaceNaviLinks(int line);
 
-  /* 00DC */ unsigned char unknown_00DC[0x8];
+  /* 00DC */ std::list<std::vector<UINaviLinkButton*>> naviLinks;
   /* 00E4 */ std::vector<int> unknown_00E4;
   /* 00F0 */ unsigned char unknown_00F0[0x4];
   /* 00F4 */ std::vector<std::string> history;
