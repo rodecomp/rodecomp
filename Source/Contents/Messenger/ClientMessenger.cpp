@@ -1701,6 +1701,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::SetWindow(UIWindow* window) {
 }
 
 // OFFSET: 0x006AB520
+// FUNCTION: fn_06168
 void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* name, lua_State* state, const int& count, const int& valuePosition,
                                                                const int& indexPosition, const int& keyPosition) {
   int index = -1;
@@ -1733,6 +1734,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* nam
 }
 
 // OFFSET: 0x006AB810
+// FUNCTION: fn_06169
 void EquipmentProperties::CEquipmentPropertiesMgr::EquipItem(const int& itemId, bool notify) {
   this->unknown_0084.insert(itemId);
 
@@ -1766,6 +1768,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::EquipItem(const int& itemId, 
 }
 
 // OFFSET: 0x006ABF80
+// FUNCTION: fn_06171
 void EquipmentProperties::CEquipmentPropertiesMgr::UnequipItem(const int& itemId, bool notify) {
   this->unknown_0084.extract(itemId);
 
@@ -1801,6 +1804,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::UnequipItem(const int& itemId
 }
 
 // OFFSET: 0x006AD0E0
+// FUNCTION: fn_06182
 void EquipmentProperties::CEquipmentPropertiesMgr::GetDescriptions(const int& group, std::list<std::string>& lines) {
   if (this->m_dirty == true) {
     this->Rebuild();
@@ -2399,6 +2403,7 @@ struct EquipLocationSource {
 };
 
 // OFFSET: 0x006BD3C0
+// FUNCTION: fn_06277
 int GetEquipArmorLv(lua_State* state) {
   std::vector<int> args;
   int number = 0;
@@ -2423,6 +2428,7 @@ int GetEquipArmorLv(lua_State* state) {
 }
 
 // OFFSET: 0x006BDCE0
+// FUNCTION: fn_06280
 int GetEquipWeaponLv(lua_State* state) {
   std::vector<int> args;
   int number = 0;
@@ -2479,6 +2485,7 @@ int GetPureJob(lua_State* state) {
 }
 
 // OFFSET: 0x006BEFA0
+// FUNCTION: fn_06289
 int GetWeaponClass(lua_State* state) {
   std::vector<int> args;
   int number = 0;
