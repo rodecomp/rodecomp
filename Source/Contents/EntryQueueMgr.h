@@ -51,6 +51,7 @@ public:
   void SetCharacterName(const EntryQueueName& name);
   void ResetCurrent(int unused);
   void IgnorePacket(const unsigned char* packet);
+  void OnResultNotice(const EntryQueueNotice* notice);
   void OnNotify(const EntryQueueNotice* notice);
 
   /* 0004 */ EntryQueueName queueName;

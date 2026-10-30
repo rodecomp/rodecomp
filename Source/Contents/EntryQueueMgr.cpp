@@ -1,8 +1,11 @@
 #include "Contents/EntryQueueMgr.h"
 
+#include "Contents/MessageTable.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 
 #include <cstring>
 
@@ -119,6 +122,16 @@ void CEntryQueueMgr::ResetCurrent(int unused) {
 // OFFSET: 0x00BA28C0
 // FUNCTION: fn_19670
 void CEntryQueueMgr::IgnorePacket(const unsigned char* packet) {
+}
+
+// OFFSET: 0x00BA2E50
+// FUNCTION: fn_19673
+void CEntryQueueMgr::OnResultNotice(const EntryQueueNotice* notice) {
+  if (notice->result == 3) {
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x83F), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+  } else if (notice->result == 11) {
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x840), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+  }
 }
 
 // OFFSET: 0x00BA2EB0
