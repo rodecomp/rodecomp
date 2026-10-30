@@ -42,19 +42,28 @@ public:
 class UIShowInfoWnd : public UIWindow {
 public:
   void ResetCheckBoxes();
+  void ArrangeCheckBoxes(const int& layout);
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ int unknown_007C;
   /* 0080 */ UICheckBox* m_checks[8];
-  /* 00A0 */ unsigned short unknown_00A0;
+  /* 00A0 */ unsigned char unknown_00A0;
+  /* 00A1 */ unsigned char unknown_00A1;
   /* 00A2 */ unsigned char unknown_00A2;
-  /* 00A3 */ unsigned char unknown_00A3[9];
+  /* 00A3 */ unsigned char unknown_00A3;
+  /* 00A4 */ int m_checkTop;
+  /* 00A8 */ int unknown_00A8;
   /* 00AC */ bool m_buyable;
   /* 00AD */ unsigned char unknown_00AD[4];
   /* 00B1 */ unsigned short unknown_00B1;
   /* 00B3 */ unsigned char unknown_00B3;
   /* 00B4 */ std::list<int> m_list;
   /* 00BC */ unsigned char unknown_00BC;
+  /* 00C0 */ int unknown_00C0;
+  /* 00C4 */ int unknown_00C4;
+  /* 00C8 */ int unknown_00C8;
+  /* 00CC */ int unknown_00CC;
+  /* 00D0 */ const char* m_offBitmap;
 };
 
 class UIStylingshopTabParentWnd : public UIWindow {
@@ -83,6 +92,8 @@ public:
 };
 
 class UIStylingShopButton;
+
+void ToggleStylingAccessory(int itemId, int slot);
 
 class UIStylingShopWnd : public UIFrameWnd {
 public:

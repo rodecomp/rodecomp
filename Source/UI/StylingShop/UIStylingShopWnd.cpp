@@ -678,3 +678,99 @@ void UIDisplayCharacter::LoadCostumes() {
     }
   }
 }
+
+#include "Contents/Items/ItemDescription.h"
+
+// OFFSET: 0x0082E0B0
+// FUNCTION: fn_10377
+void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
+  switch (layout) {
+  case 496:
+  case 497:
+    this->m_checkTop = 1;
+    this->unknown_00A8 = 11;
+    this->unknown_00C8 = 24;
+    this->unknown_00CC = 0;
+    this->m_offBitmap = "유저인터페이스\\styleshop\\checkbox_mini_off.bmp";
+    for (int row = static_cast<int>(this->m_list.size()); row < 4; ++row) {
+      for (int column = static_cast<int>(this->m_list.size()); column < 2; ++column) {
+        UICheckBox* check = this->m_checks[row * 2 + column];
+        check->SetBitmaps("유저인터페이스\\styleshop\\checkbox_mini_on.bmp", "유저인터페이스\\styleshop\\checkbox_mini_non.bmp");
+        int y = this->m_checkTop;
+        if (row > 0) {
+          y += this->geometry.height / 8 * row;
+        }
+        check->Move(column * 105 + 7, y);
+      }
+    }
+    break;
+  case 200:
+  case 498:
+  case 583:
+    this->m_checkTop = 6;
+    this->unknown_00A8 = 12;
+    this->unknown_00A1 = 1;
+    this->unknown_00A2 = 1;
+    this->unknown_00A0 = 1;
+    this->unknown_00C0 = 41;
+    this->unknown_00C4 = -2;
+    this->unknown_00C8 = 68;
+    this->unknown_00CC = 6;
+    this->m_offBitmap = "유저인터페이스\\styleshop\\checkbox_off.bmp";
+    for (int i = static_cast<int>(this->m_list.size()); i < 8; ++i) {
+      this->m_checks[i]->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
+      this->m_checks[i]->Move(20, this->geometry.height / 8 * i + this->m_checkTop);
+    }
+    break;
+  }
+}
+
+// OFFSET: 0x0082E500
+// FUNCTION: fn_10378
+void ToggleStylingAccessory(int itemId, int slot) {
+  UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281));
+  UIStylingshopTabParentWnd* tab = nullptr;
+  for (auto it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
+    if (it->first->geometry.id == 497) {
+      tab = it->second;
+      break;
+    }
+  }
+
+  ITEM_DESC desc = FindItemDescription(itemId);
+  UIDisplayCharacter* display;
+  switch (slot) {
+  case 0:
+    display = tab->m_display;
+    if (desc.unknown_0040 == display->unknown_009C) {
+      display->unknown_00BC = 0;
+      display->unknown_009C = 0;
+    } else {
+      display->unknown_00BC = itemId;
+      display->unknown_009C = desc.unknown_0040;
+    }
+    break;
+  case 1:
+    display = tab->m_display;
+    if (desc.unknown_0040 == display->unknown_00A0) {
+      display->unknown_00C0 = 0;
+      display->unknown_00A0 = 0;
+    } else {
+      display->unknown_00C0 = itemId;
+      display->unknown_00A0 = desc.unknown_0040;
+    }
+    break;
+  case 2:
+    display = tab->m_display;
+    if (desc.unknown_0040 == display->unknown_00A4) {
+      display->unknown_00C4 = 0;
+      display->unknown_00A4 = 0;
+    } else {
+      display->unknown_00C4 = itemId;
+      display->unknown_00A4 = desc.unknown_0040;
+    }
+    break;
+  }
+
+  tab->InvalidateChildren();
+}
