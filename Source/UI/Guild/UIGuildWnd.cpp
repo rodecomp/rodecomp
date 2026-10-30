@@ -912,6 +912,67 @@ void UIGuildBanishedMemberWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x00958FF0
+// FUNCTION: fn_13059
+void UIGuildInfoManageWnd::Slot15(int, int) {
+  this->CreateTabs();
+  this->m_allyRow = -1;
+  this->m_hostileRow = -1;
+  if (std::strcmp(g_guildName.c_str(), "") == 0) {
+    g_modeMgr.gameMode->SendMsg(107, 0, 0, 0, 0);
+  }
+
+  GuildData().unknown_00CC = 1;
+  g_modeMgr.gameMode->SendMsg(107, 4, 0, 0, 0);
+  GuildData().unknown_00BC = 1;
+  g_modeMgr.gameMode->SendMsg(107, 0, 0, 0, 0);
+  GuildData().unknown_00C0 = 1;
+  g_modeMgr.gameMode->SendMsg(107, 1, 0, 0, 0);
+
+  {
+    const std::string prefix("유저인터페이스\\");
+    this->m_editButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_editButton->SetBitmap((prefix + "btn_edit" + ".bmp").c_str(), 0, 0);
+    this->m_editButton->SetBitmap((prefix + "btn_edit_a" + ".bmp").c_str(), 1, 0);
+    this->m_editButton->SetBitmap((prefix + "btn_edit_b" + ".bmp").c_str(), 2, 0);
+    this->m_editButton->SetSize(this->m_editButton->BitmapWidth(), this->m_editButton->BitmapHeight());
+    if (GuildData().unknown_00B4) {
+      this->m_editButton->Move(this->geometry.width - this->m_editButton->geometry.width - 8, 69);
+    } else {
+      this->m_editButton->Move(-200, -200);
+    }
+    this->m_editButton->SetId(278);
+    this->AddChild(this->m_editButton);
+
+    this->m_disbandButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_disbandButton->SetBitmap("유저인터페이스\\btn_disBand.bmp", 0, 0);
+    this->m_disbandButton->SetBitmap("유저인터페이스\\btn_disBand_a.bmp", 1, 0);
+    this->m_disbandButton->SetBitmap("유저인터페이스\\btn_disBand_b.bmp", 2, 0);
+    this->m_disbandButton->SetSize(this->m_disbandButton->BitmapWidth(), this->m_disbandButton->BitmapHeight());
+    if (GuildData().unknown_00B4) {
+      this->m_disbandButton->Move(this->geometry.width - this->m_disbandButton->geometry.width - 15, this->geometry.height - this->m_disbandButton->geometry.height - 5);
+    } else {
+      this->m_disbandButton->Move(-200, -200);
+    }
+    this->m_disbandButton->SetId(449);
+    this->AddChild(this->m_disbandButton);
+  }
+
+  this->m_agitList = new UIListBoxAgit(*this->m_context, *this->m_listContext);
+  this->m_agitList->SetSize(95, 158);
+  this->m_agitList->Move(this->TextWidth(this->m_controls->fonts, this->m_controls->locale, LookupMessage(333), 0, 0, 12, 0, 0) + 19, 129);
+  this->m_agitList->lineHeight = 13;
+  this->m_agitList->SetId(558);
+  this->AddChild(this->m_agitList);
+
+  this->m_agitMenu = new UIListBoxAgitMenu(*this->m_context, *this->m_listContext);
+  this->m_agitMenu->SetSize(120, 35);
+  this->m_agitMenu->SetId(559);
+  this->m_agitMenu->Show(0);
+  this->m_agitMenu->AddLine(LookupMessage(3629));
+  this->m_agitMenu->AddLine(LookupMessage(3630));
+  this->AddChild(this->m_agitMenu);
+  this->RefreshAgitList();
+}
 
 // OFFSET: 0x00957DA0
 // FUNCTION: fn_13051
