@@ -5612,6 +5612,127 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
 }
 
 // OFFSET: 0x00BC69A0
+// FUNCTION: fn_19852
+void CEffectPrim::Render2DPrimitive() {
+  if (this->state.slots[0].life == 'b') {
+    this->render.curMotion = 0;
+  }
+
+  const float sinRoll = ClientSine(static_cast<int>(this->state.roll));
+  const float cosRoll = ClientCosine(static_cast<int>(this->state.roll));
+  const float width = this->state.widthSize;
+  const float height = this->state.heightSize;
+
+  float extra = 0.0f;
+  float negHeight = -height;
+  if ((this->state.pattern & 1) == 0) {
+    extra = height;
+  } else {
+    negHeight += negHeight;
+  }
+
+  const float negWidth = -width;
+  const float x0 = negWidth * cosRoll;
+  const float y0 = negWidth * sinRoll;
+  const float p1_x = x0 - negHeight * sinRoll;
+  const float p1_y = y0 + negHeight * cosRoll;
+
+  const float p3_x = width * sinRoll + extra * cosRoll;
+  const float p3_y = width * cosRoll - extra * sinRoll;
+
+  const float posX = this->render.position.x;
+  const float posY = this->render.position.y;
+  const float depthAvgHalf = g_depthAverageHalf;
+
+  RenderTriangle& tri0 = this->state.triangles[0];
+  tri0.vertices[0].x = (x0 - extra * sinRoll) + posX - depthAvgHalf;
+  tri0.vertices[0].y = (y0 + extra * cosRoll) + posY - depthAvgHalf;
+  tri0.vertices[0].z = 0.000001f;
+  tri0.vertices[0].rhw = 0.999999f;
+  tri0.vertices[0].diffuse = this->state.argb;
+  tri0.vertices[0].u = 0.0f;
+  tri0.vertices[0].v = 1.0f;
+
+  tri0.vertices[1].x = (p1_x + posX) - depthAvgHalf;
+  tri0.vertices[1].y = (posY + p1_y) - depthAvgHalf;
+  tri0.vertices[1].z = 0.000001f;
+  tri0.vertices[1].rhw = 0.999999f;
+  tri0.vertices[1].diffuse = this->state.argb;
+  tri0.vertices[1].u = 0.0f;
+  tri0.vertices[1].v = 0.0f;
+
+  tri0.vertices[2].x = (p3_y + posX) - depthAvgHalf;
+  tri0.vertices[2].y = (posY + p3_x) - depthAvgHalf;
+  tri0.vertices[2].z = 0.000001f;
+  tri0.vertices[2].rhw = 0.999999f;
+  tri0.vertices[2].diffuse = this->state.argb;
+  tri0.vertices[2].u = 1.0f;
+  tri0.vertices[2].v = 1.0f;
+
+  tri0.texture = this->state.textures[this->render.curMotion];
+
+  const std::uint16_t flag1 = (this->state.unknown_01C8[0] == 0) ? 1 : static_cast<std::uint16_t>(this->state.renderFlag);
+  g_renderer->queues.SubmitTriangle(tri0, flag1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+
+  RenderTriangle& tri1 = this->state.triangles[1];
+  tri1.vertices[0].x = (p3_y + posX) - depthAvgHalf;
+  tri1.vertices[0].y = (p3_x + posY) - depthAvgHalf;
+  tri1.vertices[0].z = 0.000001f;
+  tri1.vertices[0].rhw = 0.999999f;
+  tri1.vertices[0].diffuse = this->state.argb;
+  tri1.vertices[0].u = 1.0f;
+  tri1.vertices[0].v = 1.0f;
+
+  tri1.vertices[1].x = (posX + p1_x) - depthAvgHalf;
+  tri1.vertices[1].y = (posY + p1_y) - depthAvgHalf;
+  tri1.vertices[1].z = 0.000001f;
+  tri1.vertices[1].rhw = 0.999999f;
+  tri1.vertices[1].diffuse = this->state.argb;
+  tri1.vertices[1].u = 0.0f;
+  tri1.vertices[1].v = 0.0f;
+
+  tri1.vertices[2].x = (posX + (width * cosRoll - negHeight * sinRoll)) - depthAvgHalf;
+  tri1.vertices[2].y = (posY + width * sinRoll + negHeight * cosRoll) - depthAvgHalf;
+  tri1.vertices[2].z = 0.000001f;
+  tri1.vertices[2].rhw = 0.999999f;
+  tri1.vertices[2].diffuse = this->state.argb;
+  tri1.vertices[2].u = 1.0f;
+  tri1.vertices[2].v = 0.0f;
+
+  tri1.texture = this->state.textures[this->render.curMotion];
+
+  const std::uint16_t flag2 = (this->state.unknown_01C8[0] == 0) ? 1 : static_cast<std::uint16_t>(this->state.renderFlag);
+  g_renderer->queues.SubmitTriangle(tri1, flag2, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+
+  if (this->state.slots[0].life == 'b') {
+    for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
+      if (effect.id == static_cast<std::uint32_t>(this->state.slots[0].rotStart)) {
+        const std::uint32_t expire = effect.unknown_0004;
+        bool match = false;
+        if (timeGetTime() < expire && expire != 999999 && expire != 0) {
+          match = true;
+        } else if (g_replayAnimationScaling != 0) {
+          if (Replay::Instance().elapsed < expire && expire != 999999 && expire != 0) {
+            match = true;
+          }
+        }
+        if (match) {
+          CooldownState* cdState = g_cooldownOwner->Find(effect.id);
+          if (cdState) {
+            cdState->x = static_cast<int>(this->render.position.x);
+            cdState->y = static_cast<int>(this->render.position.y);
+            g_cooldownOwner->Draw(0, 0, 16, 16, *cdState, 0, 0, 0);
+          }
+        }
+      }
+    }
+    if (g_overrideColor == 1) {
+      g_cooldownOwner->ClearReverseCommands();
+    } else {
+      g_cooldownOwner->SubmitReverse();
+    }
+  }
+}
 
 // OFFSET: 0x00BCB660
 // FUNCTION: fn_19861
