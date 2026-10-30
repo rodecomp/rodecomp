@@ -1,5 +1,11 @@
 #include "UI/Lists/UIListBoxID.h"
 
+// OFFSET: 0x0086CEA0
+// FUNCTION: fn_11038
+UIComboBoxID::UIComboBoxID() {
+  this->targetId = 10041;
+}
+
 // OFFSET: 0x0087B5F0
 // FUNCTION: fn_11244
 void UIComboBoxID::Configure(int x, int y, int width, int height, unsigned char transparent) {

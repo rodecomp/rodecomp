@@ -3,6 +3,8 @@
 
 #include "UI/Window/UIWindow.h"
 
+#include <cstdint>
+#include <cstddef>
 #include <map>
 #include <string>
 
@@ -15,6 +17,7 @@ struct IdListLine {
 
 class UIListBoxID : public UIWindow {
 public:
+  UIListBoxID();
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
@@ -35,20 +38,27 @@ public:
   /* 00AC */ UIScrollBar* horizontalBar;
   /* 00B0 */ int transparent;
   /* 00B4 */ int lineHeight;
+  /* 00B8 */ std::uint32_t selectionColor;
 };
 
 class UIComboBoxID : public UIListBoxID {
 public:
+  UIComboBoxID();
   void Resize(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
   void Configure(int x, int y, int width, int height, unsigned char transparent) override;
   void Refresh() override;
+
+  /* 00C0 */ int targetId;
+  /* 00C4 */ std::map<int, int> unknown_00C4;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(IdListLine) == 28);
+static_assert(sizeof(UIListBoxID) == 0xC0);
+static_assert(offsetof(UIComboBoxID, targetId) == 0xC0);
 #endif
 
 #endif
