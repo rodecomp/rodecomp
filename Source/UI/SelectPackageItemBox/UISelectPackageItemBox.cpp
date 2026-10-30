@@ -47,6 +47,31 @@ void CUISelectPackageItemBox::Slot53() {
   this->m_buttonBarStyle = 3;
 }
 
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::OnScroll(int position);
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::OnScroll(int position);
+
+// OFFSET: 0x00A695F0
+// FUNCTION: fn_16662
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::Slot15(int width, int height) {
+  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar->Show(0);
+  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
+  this->AddChild(this->scrollBar);
+}
+
+// OFFSET: 0x00A696C0
+// FUNCTION: fn_16663
+template <>
+void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::Slot15(int width, int height) {
+  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar->Show(0);
+  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
+  this->AddChild(this->scrollBar);
+}
+
 // OFFSET: 0x00A6D060
 // FUNCTION: fn_16666
 template <>
