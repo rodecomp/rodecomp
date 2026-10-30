@@ -10,6 +10,7 @@
 #include "Contents/World/WorldObjects.h"
 #include "Contents/World/World.h"
 #include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/RagEffect.h"
 
 #include <new>
 
@@ -168,4 +169,42 @@ CRenderObject* FindRenderObject(std::uint32_t aid) {
   }
 
   return actor;
+}
+
+// OFFSET: 0x00CD76A0
+// FUNCTION: fn_21296
+bool CGameMode::LaunchTargetEffect(int effectId, CGameActor* source, CGameActor* target, int argument) {
+  if (!source || !target) {
+    return false;
+  }
+
+  if (g_effectMgr->HasAllocator(effectId)) {
+    CEffect* effect = g_effectMgr->Spawn(source->render.accountId, effectId, source->render.position.x, source->render.position.y,
+                                         source->render.position.z, target->render.accountId, -1, 0, 0);
+    if (!effect) {
+      return false;
+    }
+
+    if (argument != -1) {
+      effect->unknown_0030 = argument;
+    }
+
+    if (effectId == 539) {
+      g_effectMgr->Spawn(source->render.accountId, 980, source->render.position.x, source->render.position.y, source->render.position.z,
+                         target->render.accountId, -1, 0, 0);
+    }
+    return true;
+  }
+
+  CRagEffect* effect = source->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  if (!effect) {
+    return false;
+  }
+
+  vector3d position = target->render.position;
+  effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+  if (argument != -1) {
+    effect->SendMsg(nullptr, 44, 0, argument, 0, 0, 0, 0);
+  }
+  return true;
 }

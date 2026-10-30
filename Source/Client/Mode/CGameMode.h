@@ -16,6 +16,7 @@
 
 class CView;
 class CCorpse;
+class CGameActor;
 struct ActorNameAllPacket;
 struct GameOptionEntry;
 struct CWorld;
@@ -116,6 +117,7 @@ public:
   bool NotifyItemResult(int result);
   void NotifyItemBounds();
   CCorpse* SpawnCorpse(float x, float y, float z, const char* action, const char* sprite, int animation, int motion, float angle);
+  bool LaunchTargetEffect(int effectId, CGameActor* source, CGameActor* target, int argument);
   std::uint32_t FindUnknown01AC(std::uint32_t key);
   std::string ActorName(std::uint32_t id);
   std::uint32_t ActorNameColor(int job, std::uint32_t aid);
