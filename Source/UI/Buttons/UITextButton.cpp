@@ -575,6 +575,8 @@ void UIComboBox::Resize(int width, int height) {
   }
 }
 
+// OFFSET: 0x00885240
+
 // OFFSET: 0x00895AC0
 // FUNCTION: fn_11509
 void UIComboBox::Refresh() {

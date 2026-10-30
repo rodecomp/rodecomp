@@ -8,6 +8,7 @@ struct UIButtonContext;
 
 class UIBank_NewWnd : public UIFrameWnd {
 public:
+  bool Slot03() override;
   long long AdjustAmount(int amount);
   long long TransactionAmount(unsigned char deposit);
   void Paint() override;

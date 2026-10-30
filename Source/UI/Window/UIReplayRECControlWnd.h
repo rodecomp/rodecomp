@@ -11,6 +11,7 @@ struct InputFocus;
 
 class UIReplayRECControlWnd : public UIFrameWnd {
 public:
+  bool Slot03() override;
   void Slot11() override;
   void Paint() override;
   void ApplyMode();

@@ -5,6 +5,7 @@
 
 class UIReplayControlWnd : public UIFrameWnd {
 public:
+  bool Slot03() override;
   void Paint() override;
 };
 

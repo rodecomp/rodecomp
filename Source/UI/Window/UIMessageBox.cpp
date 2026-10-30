@@ -160,6 +160,24 @@ void UIMessageBox::Paint() {
   this->FillRegion(2, height - 2, width - 4, 1, background);
 }
 
+// OFFSET: 0x008AC410
+// FUNCTION: fn_11729
+bool UIBank_NewWnd::Slot03() {
+  return true;
+}
+
+// OFFSET: 0x008AC420
+// FUNCTION: fn_11730
+bool UIReplayControlWnd::Slot03() {
+  return true;
+}
+
+// OFFSET: 0x008AC430
+// FUNCTION: fn_11731
+bool UIReplayRECControlWnd::Slot03() {
+  return true;
+}
+
 // OFFSET: 0x008B7A90
 // FUNCTION: fn_11756
 void UIMessageBox::Slot18() {
