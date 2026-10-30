@@ -11,7 +11,9 @@ class CParticle;
 class CEnergyOrbEffect : public CEffect {
 public:
   CEnergyOrbEffect();
+  void Slot01() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
   ~CEnergyOrbEffect() override;
 
