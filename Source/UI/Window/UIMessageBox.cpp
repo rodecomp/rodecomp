@@ -1386,3 +1386,15 @@ void UILoginWnd::LoadLogin() {
 
   RegCloseKey(key);
 }
+
+// OFFSET: 0x008AB050
+// FUNCTION: fn_11726
+int sub_8AB050() {
+  return 4;
+}
+
+// OFFSET: 0x008AB060
+// FUNCTION: fn_11727
+int sub_8AB060() {
+  return 6;
+}
