@@ -679,8 +679,46 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::ClearItems() {
 // OFFSET: 0x00A63F60
 
 // OFFSET: 0x00A64160
+// FUNCTION: fn_16445
+template <>
+__declspec(noinline) void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::SelectItem(CUIListItem* item) {
+  if (this->unknown_00C4) {
+    return;
+  }
+  for (RenewQuestUI::CUIQuestItem* other : this->items) {
+    if (item != other) {
+      other->SetSelected(0);
+    }
+  }
+  item->SetSelected(1);
+  if (item->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+    return;
+  }
+  RenewQuestUI::CUIQuestItem* selectedItem = dynamic_cast<RenewQuestUI::CUIQuestItem*>(item);
+  if (!selectedItem) {
+    return;
+  }
+  this->selected = selectedItem->index;
+  if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+    auto node = this->data.begin();
+    std::advance(node, static_cast<int>(this->selected));
+    this->onSelect(selectedItem, *node);
+  }
+}
 
 // OFFSET: 0x00A67CE0
+// FUNCTION: fn_16631
+template <>
+bool CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::SelectIndex(int index) {
+  this->scrollBar->SetPosition(this->rowHeight * index);
+  for (RenewQuestUI::CUIQuestItem* item : this->items) {
+    if (index == item->index) {
+      this->SelectItem(item);
+      return true;
+    }
+  }
+  return false;
+}
 
 // OFFSET: 0x00A65FD0
 // FUNCTION: fn_16604
@@ -694,10 +732,28 @@ int CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddData(const unsig
 }
 
 // OFFSET: 0x00A66280
+// FUNCTION: fn_16613
+void RenewQuestUI::CUIQuestItem::OnSimpleView(bool simpleView) {
+  g_renewQuestMgr->SetOngoingSimpleView(this->questId, simpleView);
+  g_renewQuestMgr->SaveOngoingSimpleViewList();
+  if (UIWindow* window = g_windowMgr.LookupWindow(204)) {
+    window->Invalidate();
+  }
+}
 
 // OFFSET: 0x00A66C70
+// FUNCTION: fn_16622
+void RenewQuestUI::CUIQuestItem::Slot16() {
+  CUIButton* button = this->unknown_00F4;
+  std::string tooltip = LookupMessage(3409);
+  button->tooltip = tooltip;
+}
 
 // OFFSET: 0x00A66D90
+// FUNCTION: fn_16623
+void RenewQuestUI::CUIQuestList::Slot16() {
+  this->list->unknown_00E0 = 0;
+}
 
 // OFFSET: 0x00A5C200
 // FUNCTION: fn_16432
