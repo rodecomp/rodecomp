@@ -7,37 +7,39 @@
 
 class CActRes;
 class CSprRes;
+class UIWindow;
 
 // VTABLE: vt_00803
 class FuncDrawWNDChar {
 public:
   virtual ~FuncDrawWNDChar();
+  bool DrawOnTop();
 
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
-  /* 0010 */ unsigned char unknown_0010;
-  /* 0012 */ short unknown_0012;
-  /* 0014 */ int unknown_0014;
-  /* 0018 */ short unknown_0018;
-  /* 001A */ short unknown_001A;
-  /* 001C */ short unknown_001C;
-  /* 001E */ short unknown_001E;
-  /* 0020 */ short unknown_0020;
-  /* 0024 */ int unknown_0024;
-  /* 0028 */ unsigned char unknown_0028;
-  /* 002C */ int unknown_002C;
-  /* 0030 */ int unknown_0030;
-  /* 0034 */ int unknown_0034;
-  /* 0038 */ int unknown_0038;
-  /* 003C */ int unknown_003C;
-  /* 0040 */ int unknown_0040;
-  /* 0044 */ unsigned char unknown_0044;
-  /* 0045 */ unsigned char unknown_0045;
+  /* 0004 */ UIWindow* m_window;
+  /* 0008 */ int m_x;
+  /* 000C */ int m_y;
+  /* 0010 */ unsigned char m_sex;
+  /* 0012 */ short m_job;
+  /* 0014 */ int m_hairColor;
+  /* 0018 */ short m_body;
+  /* 001A */ short m_head;
+  /* 001C */ short m_bottomAccessory;
+  /* 001E */ short m_topAccessory;
+  /* 0020 */ short m_midAccessory;
+  /* 0024 */ int m_robe;
+  /* 0028 */ unsigned char m_flags;
+  /* 002C */ int m_shield;
+  /* 0030 */ int m_bodyStyle;
+  /* 0034 */ int m_headPalette;
+  /* 0038 */ int m_action;
+  /* 003C */ int m_motion;
+  /* 0040 */ int m_time;
+  /* 0044 */ bool m_helmRobe;
+  /* 0045 */ bool m_drawOnTop;
   /* 0048 */ std::map<int, std::pair<CSprRes*, CActRes*>> m_resources;
   /* 0050 */ std::string unknown_0050;
   /* 0068 */ std::string unknown_0068;
-  /* 0080 */ std::map<int, int> unknown_0080;
+  /* 0080 */ std::map<int, int> m_layers;
   /* 0088 */ unsigned char unknown_0088;
   /* 008C */ int unknown_008C;
   /* 0090 */ int unknown_0090;
