@@ -11,7 +11,10 @@
 #include <string>
 
 class UIButton;
+class UIListBoxAgit;
+class UIListBoxAgitMenu;
 class UIScrollBar;
+class UIStaticText;
 struct UIButtonContext;
 struct GuildWndInfo;
 
@@ -33,28 +36,32 @@ public:
   void Slot11() override;
   void Paint() override;
   void Slot25(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   virtual int Tab() = 0;
 
 protected:
+  void CreateTabs();
+
   /* 00B4 */ GuildWndInfo* m_saved;
-  /* 00B8 */ int unknown_00B8;
-  /* 00BC */ int unknown_00BC;
-  /* 00C0 */ int unknown_00C0;
-  /* 00C4 */ int unknown_00C4;
-  /* 00C8 */ int unknown_00C8;
-  /* 00CC */ int unknown_00CC;
+  /* 00B8 */ UIStaticText* m_tabs[6];
   UIButtonContext* m_controls;
 };
 
 class UIGuildBanishedMemberWnd : public UIGuildWnd {
 public:
   int Tab() override;
+  void Slot25(int x, int y) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  void UpdateScroll();
 
 protected:
-  /* 00D0 */ unsigned char unknown_00D0[0x58];
-  /* 0128 */ UIWindow* m_scrollBar;
-  /* 012C */ unsigned char unknown_012C[0xC];
+  /* 00D0 */ UIStaticText* m_names[11];
+  /* 00FC */ UIStaticText* m_reasons[11];
+  /* 0128 */ UIScrollBar* m_scrollBar;
+  /* 012C */ int m_scrollTop;
+  /* 0130 */ int m_hoverRow;
+  /* 0134 */ int m_columns;
   /* 0138 */ int m_visibleRows;
   /* 013C */ int m_scrollable;
 };
@@ -63,11 +70,20 @@ class UIGuildInfoManageWnd : public UIGuildWnd {
 public:
   int Tab() override;
   void Slot19() override;
+  void Slot25(int x, int y) override;
+  void Slot32(int x, int y) override;
+  void Slot33(int x, int y) override;
 
 protected:
+  void RefreshAgitList();
+  void HideAgitMenu();
+
   /* 00D0 */ unsigned char unknown_00D0[0x24];
   /* 00F4 */ std::uint32_t m_guildId;
-  /* 00F8 */ unsigned char unknown_00F8[0x10];
+  /* 00F8 */ int m_allyRow;
+  /* 00FC */ int m_hostileRow;
+  /* 0100 */ UIListBoxAgit* m_agitList;
+  /* 0104 */ UIListBoxAgitMenu* m_agitMenu;
 };
 
 class UIGuildMemberManageWnd : public UIGuildWnd {
@@ -163,12 +179,18 @@ protected:
 class UIGuildTotalInfoWnd : public UIGuildWnd {
 public:
   int Tab() override;
+  void Slot15(int width, int height) override;
+  void Slot25(int x, int y) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  void UpdateScroll();
 
 protected:
-  /* 00D0 */ unsigned char unknown_00D0[0x30];
-  /* 0100 */ UIWindow* m_scrollBar;
-  /* 0104 */ unsigned char unknown_0104[0xC];
+  /* 00D0 */ UIStaticText* m_rows[12];
+  /* 0100 */ UIScrollBar* m_scrollBar;
+  /* 0104 */ int m_scrollTop;
+  /* 0108 */ int m_hoverRow;
+  /* 010C */ int m_columns;
   /* 0110 */ int m_visibleRows;
   /* 0114 */ int m_scrollable;
 };

@@ -1,13 +1,23 @@
 #include "UI/Guild/UIGuildWnd.h"
+#include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
+#include "Contents/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Resource/EmblemResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
+#include "Script/LuaScript.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Guild/UIAgitWnd.h"
+#include "UI/Guild/UIGuildHelperWnd.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Text/UIStaticText.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowManagerWindows.h"
 
 #include <windows.h>
 #include <timeapi.h>
@@ -18,6 +28,19 @@
 
 // GLOBAL: gl_24918
 int g_guildPositionRowHeight = 19;
+
+// GLOBAL: gl_24919
+int g_guildBanishedColumnWidths[2] = {82, 292};
+
+// GLOBAL: gl_24920
+int g_guildBanishedRowHeight = 19;
+
+// GLOBAL: gl_24921
+int g_guildTotalInfoRowHeight = 19;
+
+static GuildInfo& GuildData() {
+  return *reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+}
 
 // OFFSET: 0x00957D30
 // FUNCTION: fn_13044
@@ -238,8 +261,7 @@ void UIGuildTotalInfoWnd::Slot35(int delta) {
 }
 
 UIGuildWnd::UIGuildWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
-    : UIFrameWnd(windows, frames, 0), m_saved(nullptr), unknown_00B8(0), unknown_00BC(0), unknown_00C0(0), unknown_00C4(0), unknown_00C8(0),
-      unknown_00CC(0), m_controls(&controls) {
+    : UIFrameWnd(windows, frames, 0), m_saved(nullptr), m_tabs{}, m_controls(&controls) {
 }
 
 // OFFSET: 0x00953D70
@@ -516,3 +538,94 @@ void UIGuildWnd::Slot11() {
     this->m_saved->unknown_0010 = this->Tab();
   }
 }
+
+// OFFSET: 0x00957EF0
+
+// OFFSET: 0x00964D50
+// FUNCTION: fn_13135
+int UIGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
+  if (message == 34) {
+    this->m_saved = reinterpret_cast<GuildWndInfo*>(a1);
+    if (!this->m_saved->IsValid()) {
+      this->m_saved->Reset();
+    }
+    this->Move(this->m_saved->x, this->m_saved->y);
+    return 0;
+  }
+
+  if (message == 60) {
+    this->InvalidateChildren();
+    return 0;
+  }
+
+  if (message != 69) {
+    return UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
+  }
+
+  int permissions[7] = {0, 1, 2, 4, 16, 128, 64};
+  switch (a1) {
+  case 1:
+  case 2:
+  case 4:
+  case 5:
+    if ((permissions[a1] & GuildData().unknown_00A4) == 0) {
+      return 0;
+    }
+    break;
+  case 6:
+    return 0;
+  }
+
+  this->m_frameContext->windows.CloseWindow(59);
+  switch (a1) {
+  case 0:
+    this->m_frameContext->windows.EnsureWindow(60);
+    return 0;
+  case 1:
+    this->m_frameContext->windows.EnsureWindow(61);
+    return 0;
+  case 2:
+    this->m_frameContext->windows.EnsureWindow(62);
+    return 0;
+  case 3:
+    this->m_frameContext->windows.EnsureWindow(63);
+    return 0;
+  case 4:
+    this->m_frameContext->windows.EnsureWindow(64);
+    return 0;
+  case 5:
+    this->m_frameContext->windows.EnsureWindow(65);
+    return 0;
+  case 6:
+    this->m_frameContext->windows.EnsureWindow(66);
+    return 0;
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00960AF0
+
+// OFFSET: 0x0095FBF0
+
+// OFFSET: 0x00961600
+
+// OFFSET: 0x00960DE0
+
+// OFFSET: 0x0095FF60
+
+// OFFSET: 0x00964C90
+
+// OFFSET: 0x0095D3A0
+
+// OFFSET: 0x00957DA0
+
+// OFFSET: 0x00960380
+
+// OFFSET: 0x0095FCF0
+
+// OFFSET: 0x00960540
+
+// OFFSET: 0x00957DE0
+
+// OFFSET: 0x00962310

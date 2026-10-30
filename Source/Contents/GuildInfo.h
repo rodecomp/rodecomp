@@ -113,6 +113,9 @@ public:
   void UpdateCharacterName(int characterId, const char* name);
 };
 
+extern std::list<GuildInfo::Member> g_guildMembers;
+extern std::string g_guildName;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(GuildInfo::Member) == 0x78);
 static_assert(offsetof(GuildInfo::Member, accountId) == 0x00);
