@@ -23,6 +23,14 @@ void UIRodexContentsWnd::SetContentsText(const char* text) {
 }
 
 // OFFSET: 0x00801CE0
+// FUNCTION: fn_10015
+UIRodexContentsWnd::UIRodexContentsWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_contents(nullptr), m_zeny(0), m_itemButton(nullptr), m_zenyButton(nullptr), unknown_0104(nullptr),
+      unknown_0108(nullptr), m_controls(&controls) {
+  this->m_items.clear();
+  this->m_itemIndex = 0;
+  this->unknown_010C = false;
+}
 
 // OFFSET: 0x00801F80
 // FUNCTION: fn_10017
