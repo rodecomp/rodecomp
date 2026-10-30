@@ -8,6 +8,8 @@
 
 class CSkill : public CGameActor {
 public:
+  void Render(int argument) override;
+
   /* 0410 */ unsigned char unknown_0410[0x08];
   /* 0418 */ std::uint32_t skillAid;
   /* 041C */ unsigned char unknown_041C[0x10];

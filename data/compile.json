@@ -301,6 +301,7 @@
   "Source/Contents/Actors/Player.cpp": 4,
   "Source/Contents/Actors/RenderObject.cpp": 4,
   "Source/Contents/Actors/RenderObjectState.cpp": 4,
+  "Source/Contents/Actors/Skill.cpp": 4,
   "Source/Contents/Actors/SpriteDrawingPolicy.cpp": 4,
   "Source/Contents/AdventureGuideMgr.cpp": 4,
   "Source/Contents/Async/AsyncWorkMgr.cpp": 4,
