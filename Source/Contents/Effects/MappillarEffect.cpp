@@ -1,10 +1,23 @@
 #include "Contents/Effects/MappillarEffect.h"
 
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>
 #include <cstring>
+
+// OFFSET: 0x00B4BBB0
+// FUNCTION: fn_18955
+void CMappillarEffect::Close() {
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    FreeParticle(*it);
+  }
+
+  this->particles.clear();
+}
+
+// OFFSET: 0x00B4BBF0
 
 // OFFSET: 0x00B4C0B0
 // FUNCTION: fn_18957
