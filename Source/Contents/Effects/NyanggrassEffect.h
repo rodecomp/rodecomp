@@ -15,6 +15,7 @@ public:
   void Slot01() override;
 
   void Reset();
+  void AllocateVertices(int count);
   void Render(int column, int row);
 
   /* 02BC */ LightmappedCommand command;

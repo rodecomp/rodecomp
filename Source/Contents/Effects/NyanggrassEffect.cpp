@@ -44,6 +44,33 @@ void CMultiTexParticle::Reset() {
   this->offsetV = 0.0f;
 }
 
+struct MultiTexVertex : LightmappedVertex {
+  MultiTexVertex() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+    this->rhw = 0.0f;
+    this->diffuse = 0xFFFFFFFFu;
+    this->specular = 0xFFFFFFFFu;
+    this->u = 0.0f;
+    this->v = 0.0f;
+    this->lightU = 0.0f;
+    this->lightV = 0.0f;
+  }
+};
+
+// OFFSET: 0x00707FB0
+// FUNCTION: fn_07068
+void CMultiTexParticle::AllocateVertices(int count) {
+  delete[] this->command.indices;
+  this->command.indices = nullptr;
+  delete[] this->command.vertices;
+  this->command.vertices = nullptr;
+  this->command.indexCount = 0;
+  this->command.vertexCount = count;
+  this->command.vertices = new MultiTexVertex[count];
+}
+
 // OFFSET: 0x007080F0
 // FUNCTION: fn_07069
 void CMultiTexParticle::Render(int column, int row) {
