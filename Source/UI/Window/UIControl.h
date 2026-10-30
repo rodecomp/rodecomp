@@ -97,6 +97,7 @@ public:
 class CUIButton : public CUIControl {
 public:
   void Slot25(int x, int y) override;
+  void Slot28(int x, int y) override;
   void Slot26(int x, int y) override;
   void ResetCursor(int x, int y) override;
   void Slot31(int argument1, int argument2) override;
@@ -107,9 +108,12 @@ public:
 
   /* 0080 */ int state;
   /* 0084 */ unsigned char disabled;
-  /* 0085 */ unsigned char unknown_0085[0x3F];
+  /* 0085 */ unsigned char unknown_0085[0x03];
+  /* 0088 */ std::string tooltip;
+  /* 00A0 */ unsigned char unknown_00A0[0x24];
   /* 00C4 */ UIWindow* unknown_00C4;
-  /* 00C8 */ unsigned char unknown_00C8[0x28];
+  /* 00C8 */ unsigned char unknown_00C8[0x24];
+  /* 00EC */ UIWindow* unknown_00EC;
 };
 
 class CUITextButton : public CUIButton {

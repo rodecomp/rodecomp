@@ -4,6 +4,8 @@
 #include "UI/Lists/UIThumb.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "Client/Mode/ModeCursor.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -572,6 +574,28 @@ void CUIButton::Slot25(int, int) {
 // FUNCTION: fn_14630
 void CUIButton::Slot47() {
   this->SetState(2);
+}
+
+// OFFSET: 0x009EEA00
+// FUNCTION: fn_14631
+void CUIButton::Slot28(int, int) {
+  if (this->unknown_00EC) {
+    this->unknown_00EC->Slot02();
+  }
+
+  if (this->tooltip.empty()) {
+    return;
+  }
+
+  int screenX = 0;
+  int screenY = -20;
+
+  for (const UIWindow* node = this; node; node = node->parent) {
+    screenX = (screenX + node->geometry.x);
+    screenY = (screenY + node->geometry.y);
+  }
+
+  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltip.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x009EEA70
