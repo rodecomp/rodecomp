@@ -127,3 +127,9 @@ void DestroyPlayerNameDictionary() {
 std::string LookupPlayerName(std::uint32_t id) {
   return g_playerNameDictionary->Lookup(id);
 }
+
+// OFFSET: 0x0060B650
+// FUNCTION: fn_04266
+bool CPlayerNameDictionary::Entry::IsExpired() const {
+  return this->tick + 600000u < timeGetTime();
+}

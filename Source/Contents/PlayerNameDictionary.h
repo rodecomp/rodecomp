@@ -32,6 +32,8 @@ private:
   struct Entry {
     /* 0000 */ std::string name;
     /* 0018 */ std::uint32_t tick;
+
+    bool IsExpired() const;
   };
   struct Request {
     /* 0000 */ std::uint32_t id;
