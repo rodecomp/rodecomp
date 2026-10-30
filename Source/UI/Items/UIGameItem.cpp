@@ -1,11 +1,19 @@
 #include "UI/Items/UIGameItem.h"
 #include "UI/Text/ColoredText.h"
 #include "Client/Input/InputCharset.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemNaming.h"
+#include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Resource/ResourceMgr.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Window/WindowManagerWindows.h"
+#include "Utility/Text/FormatString.h"
 
 #include <cstdlib>
 #include <format>
@@ -81,6 +89,40 @@ void CUIGameItem::Slot25(int x, int y) {
     return;
   }
   CUIControl::Slot25(x, y);
+}
+
+// OFFSET: 0x009E7610
+// FUNCTION: fn_14482
+void CUIGameItem::Slot28(int x, int y) {
+  if (this->unknown_0084 == 0 || this->name.empty()) {
+    return;
+  }
+
+  int screenX = x;
+  int screenY = y - 20;
+  this->ToScreen(screenX, screenY);
+  const std::uint32_t color = g_session.GetItemNameColor(this->itemInfo);
+  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_charViewMode);
+  if (this->itemInfo.unknown_0098 > 0) {
+    const std::string text = FormatOwnedString(LookupMessage(0xA28), this->name.c_str(), this->itemInfo.unknown_0098);
+    tooltip->Show(text.c_str(), screenX, screenY, color, 0, 1);
+  } else {
+    tooltip->Show(this->name.c_str(), screenX, screenY, color, 0, 1);
+  }
+}
+
+// OFFSET: 0x009E7750
+// FUNCTION: fn_14483
+void CUIGameItem::Slot26(int, int) {
+  if (this->unknown_0085 == 0 || std::atoi(this->itemInfo.itemId.c_str()) <= 0) {
+    return;
+  }
+
+  WindowManagerWindows& windows = reinterpret_cast<WindowManagerWindows&>(g_windowMgr);
+  UIWindow* window = windows.EnsureWindow(12);
+  if (window != nullptr) {
+    window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&this->itemInfo), 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x009E79D0

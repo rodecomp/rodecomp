@@ -12,6 +12,8 @@ class UIBmpTextButton;
 class UIStaticText;
 class CUIControl;
 
+extern void* g_charViewMode;
+
 struct CharSlotInfo {
   CharSlotInfo();
   ~CharSlotInfo();

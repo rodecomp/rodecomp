@@ -25,6 +25,8 @@ public:
 
   void Paint() override;
   void Slot25(int x, int y) override;
+  void Slot26(int x, int y) override;
+  void Slot28(int x, int y) override;
   virtual void SetMode(int mode);
 
   ITEM_INFO* GetItemInfo();
