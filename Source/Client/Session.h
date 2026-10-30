@@ -19,6 +19,7 @@
 #include <vector>
 
 class CActRes;
+class CGameActor;
 class CRenderObject;
 class LuaScript;
 struct JobNameInitialization;
@@ -359,6 +360,13 @@ public:
   int GetMapProperty12() const;
   int GetMapProperty13() const;
   bool HasUnknown6178Records() const;
+  int IsState291To303(int state) const;
+  int IsType0Or4(int type) const;
+  int IsMonsterActor(CGameActor* actor) const;
+  int IsLocalPlayerAid(std::uint32_t aid) const;
+  bool IsHomunAid(std::uint32_t aid) const;
+  bool IsMercenaryAid(std::uint32_t aid) const;
+  bool IsPetAid(std::uint32_t aid) const;
   bool IsEquipItemType(int type) const;
   bool IsMiscItemType(int type) const;
   bool IsSuperNoviceJob(int job) const;
