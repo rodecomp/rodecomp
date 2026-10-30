@@ -21,6 +21,8 @@ struct UIBmpRadioBtnText {
 };
 
 class UIBmpRadioBtn : public UIWindow {
+  friend class UICashShopWnd;
+
 public:
   UIBmpRadioBtn(UIWindowContext& windows, UIButtonContext& controls);
   void Paint() override;
