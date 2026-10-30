@@ -585,6 +585,13 @@ void CUIButton::SetState(int value) {
   }
 }
 
+// OFFSET: 0x009D3050
+// FUNCTION: fn_14027
+void CUIButton::SetOnClick(std::function<void()> handler) {
+  std::function<void()>& onClick = *reinterpret_cast<std::function<void()>*>(this->unknown_00A0);
+  onClick = handler;
+}
+
 // OFFSET: 0x009EE920
 // FUNCTION: fn_14627
 void CUIButton::Slot26(int x, int y) {

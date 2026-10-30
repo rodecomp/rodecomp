@@ -111,6 +111,7 @@ public:
   void Slot48() override;
 
   void SetState(int value);
+  void SetOnClick(std::function<void()> handler);
 
   /* 0080 */ int state;
   /* 0084 */ unsigned char disabled;
