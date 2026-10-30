@@ -112,6 +112,50 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Slot1
 namespace ProbabilityTable {
 
 // OFFSET: 0x00A48A70
+// FUNCTION: fn_16118
+void CUIItem::Slot15(int width, int height) {
+  this->nameText = new CUITextViewer(*this->m_context);
+  this->nameText->SetSize(231, 29);
+  this->nameText->Move(1, 0);
+  this->nameText->SetTextOffset(0, 6);
+  const std::uint8_t nameFontSource[] = {0xA8, 0x04, 0xB3, 0x7A, 0x00, 0x4F};
+  thread_local EncryptedName<sizeof(nameFontSource), 0xEDC74F6D13DF71EFULL> nameFont(nameFontSource);
+  this->nameText->SetFont(std::string(nameFont.Text()));
+  this->nameText->SetFontHeight(12);
+  this->nameText->SetBold(0);
+  this->nameText->SetTextColor(0);
+  this->nameText->SetOutline(0, 0xFFFFFF);
+  this->nameText->SetLineSpacing(2);
+  this->nameText->SetBackgroundColor(0xFFFFFF);
+  this->nameText->SetPadding(10, 1, 0, 0);
+  this->nameText->SetScrollBarSize(13, 29);
+  this->nameText->SetScrollStep(29);
+  this->nameText->SetScrollBarButtonImages(std::string(), std::string());
+  this->nameText->SetScrollBarBackground(std::string());
+  this->nameText->SetScrollBarThumbImage(std::string());
+  this->AddChild(this->nameText);
+
+  this->probabilityText = new CUITextViewer(*this->m_context);
+  this->probabilityText->SetSize(78, 29);
+  this->probabilityText->Move(233, 0);
+  this->probabilityText->SetTextOffset(2, 6);
+  const std::uint8_t probabilityFontSource[] = {0xE2, 0xE8, 0x01, 0x90, 0x0E, 0x27};
+  thread_local EncryptedName<sizeof(probabilityFontSource), 0x03772763F96D9DA5ULL> probabilityFont(probabilityFontSource);
+  this->probabilityText->SetFont(std::string(probabilityFont.Text()));
+  this->probabilityText->SetFontHeight(12);
+  this->probabilityText->SetBold(0);
+  this->probabilityText->SetTextColor(0);
+  this->probabilityText->SetOutline(0, 0xFFFFFF);
+  this->probabilityText->SetLineSpacing(6);
+  this->probabilityText->SetBackgroundColor(0xFFFFFF);
+  this->probabilityText->SetPadding(0, 1, 10, 0);
+  this->probabilityText->SetScrollBarSize(13, 29);
+  this->probabilityText->SetScrollStep(29);
+  this->probabilityText->SetScrollBarButtonImages("", "");
+  this->probabilityText->SetScrollBarBackground("");
+  this->probabilityText->SetScrollBarThumbImage("");
+  this->AddChild(this->probabilityText);
+}
 
 }
 
