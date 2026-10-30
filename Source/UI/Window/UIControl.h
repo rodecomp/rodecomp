@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_WINDOW_UICONTROL_H
 
 #include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/SkinPalette.h"
 #include "UI/Window/UIWindow.h"
 
 #include <functional>
@@ -79,9 +80,18 @@ public:
   /* 007C */ unsigned char hitEnabled;
 };
 
+class CUITabButton;
+
 class CUITab : public CUIControl {
 public:
   void Paint() override;
+
+  bool SelectIndex(unsigned int index);
+
+  /* 0080 */ CUITabButton* current;
+  /* 0084 */ unsigned char unknown_0084[0x04];
+  /* 0088 */ std::function<void(CUITabButton*)> onChange;
+  /* 00B0 */ std::function<bool(CUITabButton*, CUITabButton*)> onChanging;
 };
 
 class CUIButton : public CUIControl {
@@ -116,6 +126,19 @@ public:
   void Slot31(int x, int y) override;
   void Slot47() override;
   void Slot48() override;
+
+  __declspec(noinline) void SetSelected(bool selected);
+  void SetSkinColors(int normalColumn, int normalRow, int selectedColumn, int selectedRow, int borderColumn, int borderRow);
+
+  /* 00F0 */ unsigned char unknown_00F0[0xD0];
+  /* 01C0 */ UIWindow* page;
+  /* 01C4 */ unsigned char useSkinColors;
+  /* 01C8 */ std::uint32_t normalColor;
+  /* 01CC */ std::uint32_t selectedColor;
+  /* 01D0 */ std::uint32_t borderColor;
+  /* 01D4 */ SkinPaletteCell normalCell;
+  /* 01DC */ SkinPaletteCell selectedCell;
+  /* 01E4 */ SkinPaletteCell borderCell;
 };
 
 class CUIImageButton : public CUIButton {
@@ -151,6 +174,8 @@ public:
   void Resize(int width, int height) override;
   void Paint() override;
   void Slot53(int resolveSkin) override;
+
+  void SetImages(const std::string& left, const std::string& middle, const std::string& right);
 
   /* 0080 */ unsigned char resizable;
   /* 0084 */ CResPtr<CBitmapRes> left;

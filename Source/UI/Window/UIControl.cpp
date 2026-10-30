@@ -12,6 +12,7 @@
 #include "UI/Lists/UIVScrollBar.h"
 #include "Render/Text/FontCache.h"
 
+#include <algorithm>
 #include <cmath>
 #include <windows.h>
 
@@ -164,11 +165,9 @@ void CUIControl::Slot53(int) {
 // OFFSET: 0x009F2B70
 // FUNCTION: fn_14726
 void CUIVScrollBar::SetTotal(int value) {
-  const int count = value > 1 ? value : 1;
-  this->total = count;
-  const int shown = this->visible <= count ? this->visible : count;
-  this->visible = shown;
-  this->maximum = count - shown;
+  this->total = std::max(1, value);
+  this->visible = std::min(this->visible, this->total);
+  this->maximum = this->total - this->visible;
   this->Invalidate();
 }
 
@@ -181,10 +180,8 @@ void CUIVScrollBar::SetOnChange(std::function<void(int)> handler) {
 // OFFSET: 0x009F2E80
 // FUNCTION: fn_14732
 void CUIVScrollBar::SetVisible(int value) {
-  const int count = this->total;
-  const int shown = count < value ? count : value;
-  this->visible = shown;
-  this->maximum = count - shown;
+  this->visible = std::min(value, this->total);
+  this->maximum = this->total - this->visible;
   this->Invalidate();
 }
 
@@ -335,6 +332,10 @@ void CUIThumb::ResetCursor(int, int) {
 void CUIVScrollBar::Slot35(int value) {
   this->SetPosition(value > 0 ? this->position - this->step : this->step + this->position);
 }
+
+// OFFSET: 0x009F2A90
+
+// OFFSET: 0x009F2B20
 
 // OFFSET: 0x009F2BC0
 // FUNCTION: fn_14727
@@ -596,6 +597,12 @@ void CUIThumb::Slot53(int resolveSkin) {
   }
 }
 
+// OFFSET: 0x009F10F0
+
+// OFFSET: 0x009F16F0
+
+// OFFSET: 0x009F1740
+
 // OFFSET: 0x009F1630
 // FUNCTION: fn_14691
 void CUITabButton::Slot31(int, int) {
@@ -673,6 +680,8 @@ void CUIStaticImage::SetImage(const std::string& name) {
   this->Slot53(0);
   this->Invalidate();
 }
+
+// OFFSET: 0x009F1C40
 
 // OFFSET: 0x009F1BF0
 // FUNCTION: fn_14700

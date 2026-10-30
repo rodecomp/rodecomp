@@ -18,9 +18,9 @@ public:
   void Slot53(int resolveSkin) override;
   virtual void Slot54();
 
-  void SetTotal(int value);
-  void SetVisible(int value);
-  void SetPosition(int value);
+  __declspec(noinline) void SetTotal(int value);
+  __declspec(noinline) void SetVisible(int value);
+  __declspec(noinline) void SetPosition(int value);
   void PageUp();
   void PageDown();
   int PositionFromOffset(int offset);

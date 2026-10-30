@@ -13,6 +13,9 @@ public:
   void ResetCursor(int x, int y) override;
   void Slot53(int resolveSkin) override;
 
+  void SetImages(const std::string& top, const std::string& middle, const std::string& bottom);
+  void SetImage(const std::string& name);
+
   /* 0084 */ CResPtr<CBitmapRes> top;
   /* 0088 */ CResPtr<CBitmapRes> middle;
   /* 008C */ CResPtr<CBitmapRes> bottom;
