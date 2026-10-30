@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Client/Session.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
@@ -19,6 +20,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
+#include <string_view>
 
 namespace {
 
@@ -62,6 +64,7 @@ public:
 
 class CSkillAction_Direction {
 public:
+  void SpawnDirectionalEffect(CGameActor* source, CGameActor* target, std::string_view name);
   int GetDirection(float angle);
   bool IsValidDirection(unsigned int direction);
 };
@@ -127,12 +130,15 @@ public:
 
 class CEfstAction_AnimalForm : public CEfstAction {
 public:
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void ResetAnimalForm(CRenderObject* actor);
   void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
 
 class CSkillAction_AT_ALPHA_CLAW : public CSkillAction_DamageWereWolfForm {
 public:
   int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_AT_PULSE_OF_MADNESS : public CSkillAction_DamageWereWolfForm {
@@ -453,6 +459,8 @@ void CSkillAction_ThunderingExpand::Slot17(CGameActor* source) {
   }
 }
 
+// OFFSET: 0x005A5AC0
+
 // OFFSET: 0x005A5D20
 // FUNCTION: fn_03161
 int CSkillAction_Earthing::Slot01() {
@@ -608,6 +616,12 @@ void CSkillAction_Thundering::Slot08(int level, CGameActor* source) {
   }
 }
 
+// OFFSET: 0x005A6470
+// FUNCTION: fn_03181
+void CEfstAction_AnimalForm::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  this->ResetAnimalForm(actor);
+}
+
 // OFFSET: 0x005A6480
 // FUNCTION: fn_03182
 void CEfstAction_BasicAction::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
@@ -633,11 +647,15 @@ void CEfstAction_BasicAction::Slot02(int efstId, int value, int argument3, int a
   }
 }
 
+// OFFSET: 0x005A6510
+
 // OFFSET: 0x005A6790
 // FUNCTION: fn_03187
 int CSkillAction_AT_ALPHA_CLAW::Slot02() {
   return 76;
 }
+
+// OFFSET: 0x005A67A0
 
 // OFFSET: 0x005A69B0
 // FUNCTION: fn_03189
