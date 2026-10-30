@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
 #include <list>
 #include <map>
 #include <string>
@@ -101,6 +102,12 @@ public:
   void ReceiveNamedResult(std::uint32_t aid, std::string name, int result);
   void ReceiveBasicInfoResult(unsigned char result);
   void ReceiveUnknown0454Result(const unsigned char* packet);
+  std::string MakeSimulatorFolder(const std::string& folder);
+  std::FILE* OpenPackageSimulatorFile(const std::string& folder, int itemId, std::string& itemName);
+  std::FILE* OpenSimulatorFile(const std::string& folder, const std::string& name);
+  void ReceiveRandomUpgradeSimulation(const unsigned char* packet);
+  void ReceiveEnchantSimulation(const unsigned char* packet);
+  void ReceivePackageSimulation(const unsigned char* packet);
   void ReceiveWindow154Result(std::int16_t value);
 };
 

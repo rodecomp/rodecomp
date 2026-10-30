@@ -1,17 +1,66 @@
+#include "Client/Application/Launcher.h"
+#include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
+#include "Contents/PlayerNameDictionary.h"
 #include "Contents/World/World.h"
+#include "Network/TextEncoding.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
+#include <direct.h>
+#include <io.h>
+#include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <vector>
+
+namespace {
+#pragma pack(push, 1)
+  struct SimulationPacketHeader {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t length;
+    /* 0004 */ std::uint32_t unknown_0004;
+    /* 0008 */ int value;
+    /* 000C */ unsigned char unknown_000C[0x18];
+  };
+
+  struct EnchantSimulationRecord {
+    /* 0000 */ int itemId;
+    /* 0004 */ int resultItemId;
+    /* 0008 */ std::uint32_t unknown_0008[2];
+    /* 0010 */ int rate;
+    /* 0014 */ std::uint32_t unknown_0014;
+    /* 0018 */ int count;
+  };
+
+  struct PackageSimulationRecord {
+    /* 0000 */ int itemId;
+    /* 0004 */ unsigned char refine;
+    /* 0005 */ unsigned char packageType;
+    /* 0006 */ int unknown_0006;
+    /* 000A */ int unknown_000A;
+    /* 000E */ char text[24];
+    /* 0026 */ int unknown_0026;
+    /* 002A */ int unknown_002A;
+    /* 002E */ int count;
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(SimulationPacketHeader) == 0x24);
+  static_assert(sizeof(EnchantSimulationRecord) == 0x1C);
+  static_assert(sizeof(PackageSimulationRecord) == 0x32);
+}
 
 // OFFSET: 0x00D230E0
 // FUNCTION: fn_21660
@@ -135,4 +184,197 @@ bool CGameMode::NotifyItemResult(int result) {
   g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0xFF, 0, 0, 0);
   return true;
+}
+
+// OFFSET: 0x00D58970
+// FUNCTION: fn_21955
+std::string CGameMode::MakeSimulatorFolder(const std::string& folder) {
+  std::string path = g_applicationDirectory + folder;
+  if (_access(path.c_str(), 0) != 0 && _mkdir(path.c_str()) != 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("Create Folder Fail!!! %s", path.c_str()).c_str()), 0xFF, 0, 0, 0);
+    return std::string();
+  }
+  return path;
+}
+
+// OFFSET: 0x00D58B20
+// FUNCTION: fn_21956
+std::FILE* CGameMode::OpenPackageSimulatorFile(const std::string& folder, int itemId, std::string& itemName) {
+  std::string directory = this->MakeSimulatorFolder(folder);
+  if (directory.size() == 0) {
+    return nullptr;
+  }
+
+  itemName = FindItemDescription(itemId).identifiedName;
+  SYSTEMTIME time;
+  GetLocalTime(&time);
+  std::string name = FormatOwnedString("%s_%d(%d_%d_%d)", itemName.c_str(), itemId, time.wYear, time.wMonth, time.wDay);
+  std::string path = FormatOwnedString("%s\\%s.txt", directory.c_str(), name.c_str());
+  int index = 0;
+  while (_access(path.c_str(), 0) == 0) {
+    ++index;
+    path = FormatOwnedString("%s\\%s_%d.txt", directory.c_str(), name.c_str(), index);
+  }
+
+  std::FILE* file = _wfopen(DecodeText(g_textCodePage, path).c_str(), L"w");
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("Simulator Result File Create %s %d!!!!!!!!!!!!", file ? "success" : "Fail", itemId).c_str()),
+                         file ? 0xFFFF : 0xFF, 0, 0, 0);
+  return file;
+}
+
+// OFFSET: 0x00D58D80
+// FUNCTION: fn_21957
+std::FILE* CGameMode::OpenSimulatorFile(const std::string& folder, const std::string& name) {
+  std::string directory = this->MakeSimulatorFolder(folder);
+  if (directory.size() == 0) {
+    return nullptr;
+  }
+
+  std::string path = FormatOwnedString("%s\\%s.txt", directory.c_str(), name.c_str());
+  int index = 0;
+  while (_access(path.c_str(), 0) == 0) {
+    ++index;
+    path = FormatOwnedString("%s\\%s_%d.txt", directory.c_str(), name.c_str(), index);
+  }
+
+  std::FILE* file = _wfopen(DecodeText(g_textCodePage, path).c_str(), L"w");
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s Simulator File Create %s !!!!!!!!!!!!", name.c_str(), file ? "success" : "Fail").c_str()),
+                         file ? 0xFFFF : 0xFF, 0, 0, 0);
+  return file;
+}
+
+// OFFSET: 0x00D5F830
+// FUNCTION: fn_21971
+void CGameMode::ReceiveRandomUpgradeSimulation(const unsigned char* packet) {
+  const SimulationPacketHeader* header = reinterpret_cast<const SimulationPacketHeader*>(packet);
+  std::string itemName;
+  SYSTEMTIME time;
+  GetLocalTime(&time);
+  std::string name = FormatOwnedString("%d_EnchantUpgradeTest_Slot_%d(%d_%d_%d)", header->value / 10, header->value % 10, time.wYear, time.wMonth, time.wDay);
+  std::FILE* file = this->OpenSimulatorFile("\\PackageItemTest", name);
+  if (!file) {
+    return;
+  }
+
+  const EnchantSimulationRecord* record = reinterpret_cast<const EnchantSimulationRecord*>(packet + sizeof(SimulationPacketHeader));
+  int total = 0;
+  const int count = static_cast<int>((header->length - sizeof(SimulationPacketHeader)) / sizeof(EnchantSimulationRecord));
+  std::fprintf(file, "\n- %s\n\n", ToUtf8(name, g_textCodePage).c_str());
+  std::fprintf(file, "============================\tSTART\t============================\n");
+  for (int i = 0; i < count; ++i) {
+    ITEM_INFO item;
+    item.SetItemId(record->itemId);
+    item.identified = 1;
+    item.unknown_0000[0] = 0x15;
+    ITEM_INFO result;
+    result.SetItemId(record->resultItemId);
+    result.identified = 1;
+    result.unknown_0000[0] = 0x15;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    std::fprintf(file, "\t\t%s\t%s\t%d\t\t%.5f%%\n", ToUtf8(naming.DisplayName(item, 0), g_textCodePage).c_str(),
+                 ToUtf8(naming.DisplayName(result, 0), g_textCodePage).c_str(), record->count, static_cast<float>(record->rate) / 1000.0f);
+    total += record->count;
+    ++record;
+  }
+  std::fprintf(file, "Try\t%d\tRandomUpgrade\n", total);
+  std::fprintf(file, "============================\tEND\t============================\n");
+  std::fclose(file);
+}
+
+// OFFSET: 0x00D5FC60
+// FUNCTION: fn_21972
+void CGameMode::ReceiveEnchantSimulation(const unsigned char* packet) {
+  const SimulationPacketHeader* header = reinterpret_cast<const SimulationPacketHeader*>(packet);
+  std::string itemName;
+  SYSTEMTIME time;
+  GetLocalTime(&time);
+  std::string name = FormatOwnedString("%d_EnchantTest_Slot_%d(%d_%d_%d)", header->value / 100, header->value / 10 % 10, time.wYear, time.wMonth, time.wDay);
+  std::FILE* file = this->OpenSimulatorFile("\\PackageItemTest", name);
+  if (!file) {
+    return;
+  }
+
+  const int grade = header->value % 10;
+  const EnchantSimulationRecord* record = reinterpret_cast<const EnchantSimulationRecord*>(packet + sizeof(SimulationPacketHeader));
+  int total = 0;
+  const int count = static_cast<int>((header->length - sizeof(SimulationPacketHeader)) / sizeof(EnchantSimulationRecord));
+  std::fprintf(file, "\n- %s\n\n", ToUtf8(name, g_textCodePage).c_str());
+  std::fprintf(file, "============================\tSTART\t============================\n");
+  std::fprintf(file, "\nGrade %d\n", grade);
+  for (int i = 0; i < count; ++i) {
+    ITEM_INFO item;
+    item.SetItemId(record->itemId);
+    item.identified = 1;
+    item.unknown_0000[0] = 6;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    std::fprintf(file, "\t\t%s\t%d\t%.5f%%\n", ToUtf8(naming.DisplayName(item, 0), g_textCodePage).c_str(), record->count,
+                 static_cast<float>(record->rate) / 1000.0f);
+    total += record->count;
+    ++record;
+  }
+  std::fprintf(file, "Try\t%d\tSetEnchant\n", total);
+  std::fprintf(file, "============================\tEND\t============================\n");
+  std::fclose(file);
+}
+
+// OFFSET: 0x00D60030
+// FUNCTION: fn_21973
+void CGameMode::ReceivePackageSimulation(const unsigned char* packet) {
+  const SimulationPacketHeader* header = reinterpret_cast<const SimulationPacketHeader*>(packet);
+  std::string itemName;
+  std::FILE* file = this->OpenPackageSimulatorFile("\\PackageItemTest", header->value, itemName);
+  if (!file) {
+    return;
+  }
+
+  const char* typeNames[22] = {
+    "PACKAGETYPE_NONE",      "PACKAGETYPE_MUST",      "PACKAGETYPE_RANDOM_0",  "PACKAGETYPE_RANDOM_1",  "PACKAGETYPE_RANDOM_2",  "PACKAGETYPE_RANDOM_3",
+    "PACKAGETYPE_RANDOM_4",  "PACKAGETYPE_RANDOM_5",  "PACKAGETYPE_RANDOM_6",  "PACKAGETYPE_RANDOM_7",  "PACKAGETYPE_RANDOM_8",  "PACKAGETYPE_RANDOM_9",
+    "PACKAGETYPE_NATURAL_0", "PACKAGETYPE_NATURAL_1", "PACKAGETYPE_NATURAL_2", "PACKAGETYPE_NATURAL_3", "PACKAGETYPE_NATURAL_4", "PACKAGETYPE_NATURAL_5",
+    "PACKAGETYPE_NATURAL_6", "PACKAGETYPE_NATURAL_7", "PACKAGETYPE_NATURAL_8", "PACKAGETYPE_NATURAL_9",
+  };
+  const PackageSimulationRecord* record = reinterpret_cast<const PackageSimulationRecord*>(packet + sizeof(SimulationPacketHeader));
+  const int count = static_cast<int>((header->length - sizeof(SimulationPacketHeader)) / sizeof(PackageSimulationRecord));
+  std::vector<const PackageSimulationRecord*> packages[22];
+  for (int i = 0; i < count; ++i) {
+    packages[record->packageType].push_back(record);
+    ++record;
+  }
+
+  std::fprintf(file, "\n--Item Name : %s (%d)\n\n", ToUtf8(itemName, g_textCodePage).c_str(), header->value);
+  std::fprintf(file, "============================\tSTART\t============================\n");
+  for (int type = 0; type < 22; ++type) {
+    if (packages[type].empty()) {
+      continue;
+    }
+
+    std::fprintf(file, "\n--\t%s\n", typeNames[type]);
+    int unpacked = 0;
+    for (const PackageSimulationRecord* package : packages[type]) {
+      ITEM_INFO item;
+      item.SetItemId(package->itemId);
+      item.unknown_0088 = package->refine;
+      item.identified = 1;
+      item.unknown_0060 = package->unknown_0006;
+      if (package->refine != 0 || package->unknown_0006 != 0) {
+        item.unknown_0000[0] = 0x15;
+      }
+      ItemDescriptions descriptions{g_itemDescriptions};
+      bool languagePrefix = false;
+      WORD language = g_serverLanguage->language;
+      ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+      std::fprintf(file, "\t%-24s\t\t\t\t\t\t\t%d\t(%d)\t%d/%d\t%s\n", ToUtf8(naming.DisplayName(item, 0), g_textCodePage).c_str(), package->count,
+                   package->unknown_000A, package->unknown_0026, package->unknown_002A, ToUtf8(std::string(package->text), g_textCodePage).c_str());
+      unpacked += package->count;
+    }
+    std::fprintf(file, "\n\t\t\t\t\tUnpacked\t%d\tPackages\n", unpacked);
+  }
+  std::fprintf(file, "============================\tEND\t============================\n");
+  std::fclose(file);
 }
