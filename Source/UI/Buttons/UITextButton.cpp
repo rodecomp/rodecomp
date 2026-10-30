@@ -2252,6 +2252,46 @@ void UICaptchaImage::Paint() {
 }
 
 // OFFSET: 0x00889900
+// FUNCTION: fn_11350
+void UIComboBox::Paint() {
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 6, 6, red, green, blue);
+  this->ClearSurface(RGB(red, green, blue));
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(red, green, blue));
+
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")))->image, false);
+  const auto* leftDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, this->geometry.height - leftDown->image.height, &leftDown->image, false);
+  const auto* rightUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ru.bmp")));
+  this->DrawBitmap(this->geometry.width - rightUp->image.width, 0, &rightUp->image, false);
+  const auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
+  this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, &rightDown->image, false);
+
+  const int first = this->topLine;
+  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
+  if (this->lines.size() < end) {
+    end = static_cast<unsigned>(this->lines.size());
+  }
+
+  for (int index = first, row = 0; index < static_cast<int>(end); ++index, ++row) {
+    if (index == this->selected) {
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      this->FillRegion(3, row * this->lineHeight + 1, this->geometry.width - 6, this->lineHeight - 2, RGB(red, green, blue));
+    }
+
+    this->DrawTextAt(
+      this->m_listContext->fonts, this->m_listContext->locale, 3 - this->horizontalOffset, this->lineHeight * row + 2, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0
+    );
+  }
+
+  if (this->verticalOverflow != 0) {
+    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    this->FillRegion(this->geometry.width - 16, 0, 16, this->geometry.height, RGB(red, green, blue));
+  }
+
+  this->parent->Invalidate();
+}
 
 // OFFSET: 0x0088AEC0
 
