@@ -113,6 +113,7 @@ public:
   bool SetRecommendedQuestActive(unsigned int id, bool active);
   bool SetOngoingSimpleView(unsigned int id, bool simpleView);
   void SetParameter(int key, int value);
+  void sub_67B620(unsigned int questId);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
