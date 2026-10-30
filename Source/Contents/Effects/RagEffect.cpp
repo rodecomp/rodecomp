@@ -1184,6 +1184,11 @@ bool CRagEffect::Aspersio() {
   return true;
 }
 
+// OFFSET: 0x00C0C4A0
+// FUNCTION: fn_20018
+void __stdcall Nullsub432() {
+}
+
 // OFFSET: 0x00C0C550
 // FUNCTION: fn_20019
 void CRagEffect::Blessing() {

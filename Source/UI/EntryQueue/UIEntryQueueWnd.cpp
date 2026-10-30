@@ -314,6 +314,11 @@ int UIEntryQueueWnd::SelectedIndex() {
   return this->m_list->selected;
 }
 
+// OFFSET: 0x00BA7440
+// FUNCTION: fn_19709
+void __stdcall Nullsub429() {
+}
+
 // OFFSET: 0x00BA78A0
 // FUNCTION: fn_19711
 void UIEntryQueueWnd::SelectQueue(EntryQueueInfo* info) {

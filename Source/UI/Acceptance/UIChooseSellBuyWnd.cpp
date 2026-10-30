@@ -322,6 +322,11 @@ void UIEmailAddressWnd::Slot15(int, int) {
   this->m_message0 = 184;
 }
 
+// OFFSET: 0x008E9360
+// FUNCTION: fn_12202
+void __stdcall Nullsub301(int, int) {
+}
+
 // OFFSET: 0x008ED130
 // FUNCTION: fn_12214
 void UIChooseSellBuyWnd::Paint() {
@@ -1525,6 +1530,11 @@ void UIItemParamChangeDisplayWnd::SumEquippedStats() {
   }
 }
 
+// OFFSET: 0x008F64A0
+// FUNCTION: fn_12316
+void __stdcall Nullsub313() {
+}
+
 // OFFSET: 0x008F6180
 // FUNCTION: fn_12314
 int UIBookWnd::LoadBookmark(const char* name) {
@@ -2149,6 +2159,11 @@ void UIComboBoxWnd::SetOwner(UIWindow* owner) {
   if (owner) {
     this->m_owner = owner;
   }
+}
+
+// OFFSET: 0x00909C80
+// FUNCTION: fn_12396
+void __stdcall Nullsub314(int, int, int) {
 }
 
 // OFFSET: 0x00909C90

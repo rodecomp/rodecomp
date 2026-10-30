@@ -109,3 +109,8 @@ void QueuedDrawingDX7::DrawAlphaQueues() {
   this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, destinationBlend);
   this->device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
 }
+
+// OFFSET: 0x0055B710
+// FUNCTION: fn_02090
+void __stdcall Nullsub99() {
+}
