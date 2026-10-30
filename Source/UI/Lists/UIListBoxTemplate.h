@@ -95,6 +95,26 @@ struct Contents {};
 
 template <class T> class CUIListBox : public CUIControl {
 public:
+  // OFFSET: 0x009D23B0
+  // OFFSET: 0x009D23C0
+  // FUNCTION: fn_14011
+  // FUNCTION: fn_14012
+  void Paint() override {
+    this->ClearSurface(0xFFFF00FF);
+  }
+
+  // OFFSET: 0x009D2410
+  // OFFSET: 0x009D2450
+  // FUNCTION: fn_14017
+  // FUNCTION: fn_14018
+  void Slot35(int value) override {
+    if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
+      this->scrollBar->Slot35(value);
+    } else if (this->parent) {
+      this->parent->Slot35(value);
+    }
+  }
+
   // OFFSET: 0x009D3FD0
   // OFFSET: 0x009D4040
   // FUNCTION: fn_14037

@@ -31,6 +31,7 @@ public:
   void SetThumbImage(const std::string& name);
   void SetThumbTooltip(const std::string& text);
   void SetBackground(const std::string& name);
+  void SetOnChange(std::function<void(int)> handler);
 
   /* 0084 */ CUIImageButton* downButton;
   /* 0088 */ CUIThumb* thumb;

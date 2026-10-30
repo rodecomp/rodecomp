@@ -172,6 +172,12 @@ void CUIVScrollBar::SetTotal(int value) {
   this->Invalidate();
 }
 
+// OFFSET: 0x009D3120
+// FUNCTION: fn_14028
+void CUIVScrollBar::SetOnChange(std::function<void(int)> handler) {
+  this->onChange = handler;
+}
+
 // OFFSET: 0x009F2E80
 // FUNCTION: fn_14732
 void CUIVScrollBar::SetVisible(int value) {
@@ -905,12 +911,88 @@ void CUIListItem::SetFrozen(bool frozen) {
   this->Invalidate();
 }
 
+// OFFSET: 0x009D23D0
+// FUNCTION: fn_14013
+template <>
+void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x009D23E0
+// FUNCTION: fn_14014
+template <>
+void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x009D23F0
+// FUNCTION: fn_14015
+template <>
+void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x009D2400
+// FUNCTION: fn_14016
+template <>
+void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+}
+
+// OFFSET: 0x009D2490
+// FUNCTION: fn_14019
+template <>
+void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::Slot35(int value) {
+  if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
+    this->scrollBar->Slot35(value);
+  } else if (this->parent) {
+    this->parent->Slot35(value);
+  }
+}
+
+// OFFSET: 0x009D24D0
+// FUNCTION: fn_14020
+template <>
+void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::Slot35(int value) {
+  if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
+    this->scrollBar->Slot35(value);
+  } else if (this->parent) {
+    this->parent->Slot35(value);
+  }
+}
+
+// OFFSET: 0x009D2510
+// FUNCTION: fn_14021
+template <>
+void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Slot35(int value) {
+  if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
+    this->scrollBar->Slot35(value);
+  } else if (this->parent) {
+    this->parent->Slot35(value);
+  }
+}
+
+// OFFSET: 0x009D2550
+// FUNCTION: fn_14022
+template <>
+void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::Slot35(int value) {
+  if (!this->scrollBar->dragging && this->scrollBar->total > this->scrollBar->visible) {
+    this->scrollBar->Slot35(value);
+  } else if (this->parent) {
+    this->parent->Slot35(value);
+  }
+}
+
 template void CUIListBox<AdventureGuide::CUITab>::Resize(int, int);
 template void CUIListBox<AdventureGuide::CUISubTab>::Resize(int, int);
 template void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::OnScroll(int);
 template void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::OnScroll(int);
 template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::OnScroll(int);
 template void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::OnScroll(int);
+template void CUIListBox<AdventureGuide::CUISubTab>::Paint();
+template void CUIListBox<AdventureGuide::CUITab>::Paint();
+template void CUIListBox<AdventureGuide::CUISubTab>::Slot35(int);
+template void CUIListBox<AdventureGuide::CUITab>::Slot35(int);
 
 // OFFSET: 0x009F1D40
 // FUNCTION: fn_14703
