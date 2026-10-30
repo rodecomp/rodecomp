@@ -3,13 +3,33 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Utility/Text/FormatString.h"
+
+#include <algorithm>
+#include <cstdlib>
+#include <string>
 
 // OFFSET: 0x0072F4E0
 // FUNCTION: fn_07529
 CViolentQuakeEffect::CViolentQuakeEffect() : CEffect(-1) {
 }
+
+// OFFSET: 0x0072F640
+
+// OFFSET: 0x0072FBA0
+// FUNCTION: fn_07532
+void CViolentQuakeEffect::Close() {
+  for (std::vector<CEZ2STRParticle*>::iterator it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(*it);
+  }
+
+  this->emitters.clear();
+}
+
+// OFFSET: 0x0072FBE0
 
 // OFFSET: 0x0072FD00
 // FUNCTION: fn_07534
