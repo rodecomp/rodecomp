@@ -11,7 +11,13 @@ class CSpriteParticle;
 
 class CSteal : public CEffect {
 public:
+  void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
+  void Close() override;
+  bool Slot06() override;
+
+  void SpawnParticles();
 
   /* 00CC */ std::list<CSpriteParticle*> particles;
   /* 00D4 */ vector3d offsets[10];
