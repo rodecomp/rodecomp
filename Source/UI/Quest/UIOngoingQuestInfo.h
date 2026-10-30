@@ -8,6 +8,11 @@
 class CUIStaticText;
 class CUITextViewer;
 class CUIGameItem;
+class UINpcSprWnd;
+
+namespace OngoingQuestInfo {
+class CUIScrollWindow;
+}
 
 class CUIOngoingQuestInfo : public CUIFrameWnd {
 public:
@@ -17,6 +22,10 @@ public:
   void sub_A55B70();
 
   /* 00D8 */ CUITitleBar* titleBar;
+  /* 00DC */ unsigned char unknown_00DC[0x08];
+  /* 00E4 */ OngoingQuestInfo::CUIScrollWindow* scrollWindow;
+  /* 00E8 */ unsigned char unknown_00E8[0x08];
+  /* 00F0 */ unsigned int questId;
 };
 
 namespace OngoingQuestInfo {
@@ -32,7 +41,7 @@ public:
   void Slot16() override;
   void Paint() override;
 
-  void UpdateHeight();
+  __declspec(noinline) void UpdateHeight();
 
   // INLINED
   void EnableClip() {
@@ -56,11 +65,12 @@ public:
 
 class CUIRewards : public CUIControl {
 public:
+  void Slot16() override;
   void Paint() override;
 
   void OnPrepareItem(CUIRewardItem* item, const CRewardItemData& data);
   void OnBindItem(CUIRewardItem* item, const CRewardItemData& data);
-  void UpdateHeight();
+  __declspec(noinline) void UpdateHeight();
 
   // INLINED
   void EnableClip() {
@@ -68,9 +78,13 @@ public:
   }
 
   /* 0084 */ CUIStaticText* title;
-  /* 0088 */ unsigned char unknown_0088[0x14];
+  /* 0088 */ CUIStaticText* firstLabel;
+  /* 008C */ unsigned char unknown_008C[0x04];
+  /* 0090 */ CUIStaticText* secondLabel;
+  /* 0094 */ unsigned char unknown_0094[0x04];
+  /* 0098 */ CUIStaticText* thirdLabel;
   /* 009C */ CUIListBoxEx<CUIRewardItem, CRewardItemData>* rewardList;
-  /* 00A0 */ unsigned char unknown_00A0[0x04];
+  /* 00A0 */ UINpcSprWnd* npcSprite;
 };
 
 class CUIScrollWindow : public CUIControl {
@@ -81,11 +95,22 @@ public:
 
   void OnScroll(int position);
 
+  // INLINED
+  int ContentHeight() {
+    int total = 0;
+    for (UIWindow* child : this->m_children) {
+      if (child != this->scrollBar) {
+        total += child->geometry.height;
+      }
+    }
+    return total;
+  }
+
   /* 0084 */ unsigned char unknown_0084[0x04];
   /* 0088 */ CUIContents* secondContents;
   /* 008C */ unsigned char unknown_008C[0x04];
   /* 0090 */ CUIRewards* rewards;
-  /* 0094 */ UIWindow* scrollBar;
+  /* 0094 */ CUIVScrollBar* scrollBar;
   /* 0080 */ CUIContents* firstContents;
 };
 

@@ -7,9 +7,11 @@
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
+#include "Contents/RenewQuestMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Items/UIGameItem.h"
 #include "UI/Lists/UIVScrollBar.h"
+#include "UI/Quest/UIRenewQuestWnd.h"
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Text/UITextViewerControl.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -282,4 +284,47 @@ void CUIScrollWindow::Slot16() {
   this->rewards->title->SetText(reward, std::strlen(reward));
 }
 
+}
+
+namespace OngoingQuestInfo {
+
+// OFFSET: 0x00A55950
+// FUNCTION: fn_16310
+void CUIRewards::Slot16() {
+  const char* first = LookupMessage(0xD4C);
+  this->firstLabel->SetText(first, std::strlen(first));
+  const char* second = LookupMessage(0xD4D);
+  this->secondLabel->SetText(second, std::strlen(second));
+  const char* third = LookupMessage(0xD4E);
+  this->thirdLabel->SetText(third, std::strlen(third));
+  this->rewardList->unknown_00C4 = 1;
+  this->rewardList->Invalidate();
+  this->npcSprite = new UINpcSprWnd(*this->m_context);
+  this->npcSprite->SetSize(75, 145);
+  this->npcSprite->Show(0);
+  this->AddChild(this->npcSprite);
+}
+
+}
+
+// OFFSET: 0x00A55B70
+// FUNCTION: fn_16313
+void CUIOngoingQuestInfo::sub_A55B70() {
+  OngoingQuestInfo::CUIScrollWindow* window = this->scrollWindow;
+  const unsigned int questId = this->questId;
+  window->secondContents->textViewer->Clear();
+  const auto found = g_renewQuestMgr->m_ongoingQuests.find(questId);
+  if (found != g_renewQuestMgr->m_ongoingQuests.end()) {
+    for (int index = 0; index < found->second.m_huntCount; ++index) {
+      window->secondContents->textViewer->AddLine(found->second.GetHuntText(index));
+    }
+  }
+
+  window->firstContents->UpdateHeight();
+  window->secondContents->UpdateHeight();
+  window->rewards->UpdateHeight();
+
+  const int total = window->ContentHeight();
+  window->scrollBar->SetTotal((std::max)(window->geometry.height, total));
+  window->scrollBar->SetPosition(0);
 }

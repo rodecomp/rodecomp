@@ -20,6 +20,10 @@ struct UIButtonContext;
 
 class UINpcSprWnd : public UIWindow {
 public:
+  __declspec(noinline) explicit UINpcSprWnd(UIWindowContext& context)
+      : UIWindow(context, 0), m_mapName(), m_action(nullptr), m_sprite(nullptr), m_destinationX(0), m_destinationY(0) {
+    this->m_mapName.clear();
+  }
   // INLINED
   ~UINpcSprWnd() override {
     this->m_mapName.clear();
