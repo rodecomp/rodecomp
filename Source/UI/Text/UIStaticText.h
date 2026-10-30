@@ -29,6 +29,7 @@ public:
   void SetNumber(int value);
   void SetTextWithinWidth(const char* value, int outlineValue);
   void SetFont(int family, int height, unsigned char bold, unsigned char italic);
+  std::string GetText() const;
 
   /* 007C */ int red;
   /* 0080 */ int green;
