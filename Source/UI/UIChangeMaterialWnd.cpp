@@ -55,3 +55,12 @@ bool UIChangeMaterialWnd::Slot02() {
 void UIChangeMaterialWnd_List::Move(int x, int y) {
   UIWindow::Move(x, y);
 }
+
+// OFFSET: 0x005E2840
+// FUNCTION: fn_03886
+void UIChangeMaterialWnd_List::Slot27(int x, int y) {
+}
+
+// OFFSET: 0x005E2A30
+
+// OFFSET: 0x005E44C0

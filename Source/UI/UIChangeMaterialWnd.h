@@ -29,10 +29,13 @@ public:
 class UIChangeMaterialWnd_List : public UIFrameWnd {
 public:
   void Move(int x, int y) override;
+  void Slot27(int x, int y) override;
+  void Slot35(int argument) override;
 
   void sub_5E2A70();
   void sub_5E3B80(int index);
   void sub_5E1080(int delta);
+  void ShiftSelectedIndex(int value);
 
   /* 00BC */ int m_pageSize;
   /* 00C0 */ int64_t m_selectedIndex;
