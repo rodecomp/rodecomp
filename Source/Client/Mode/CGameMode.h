@@ -212,6 +212,8 @@ public:
   void ReceiveMessageBox(const unsigned char* packet);
   void NotifyCaptchaRegistered();
   void ReceiveItem1784List(const unsigned char* packet);
+  void ReceiveItemListPart(unsigned char listType, int count, const unsigned char* data);
+  void RefreshItemListWindow(unsigned char listType, bool partial);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -107,6 +107,17 @@ namespace {
     /* 0008 */ int characterId;
     /* 000C */ char name[24];
   };
+
+  struct ItemListRecord {
+    /* 0000 */ std::int16_t index;
+    /* 0002 */ int itemId;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ std::int16_t amount;
+    /* 0009 */ int location;
+    /* 000D */ std::uint32_t cards[4];
+    /* 001D */ int expireTime;
+    /* 0021 */ unsigned char flags;
+  };
 #pragma pack(pop)
 
   bool IsSameItem(const ITEM_INFO& value, const ITEM_INFO& item) {
@@ -151,6 +162,7 @@ static_assert(sizeof(ItemRandomOption) == 5);
 static_assert(sizeof(ItemAddPacket) == 0x20);
 static_assert(sizeof(ItemAddOptionsPacket) == 0x39);
 static_assert(sizeof(ItemAddGradePacket) == 0x3A);
+static_assert(sizeof(ItemListRecord) == 0x22);
 #endif
 
 struct ClientItemLists {
@@ -494,6 +506,63 @@ void CGameMode::ReceiveItem1738AddGrade(const unsigned char* data) {
   }
   item.unknown_0088 = packet.grade;
   reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 1);
+}
+
+// OFFSET: 0x00D443F0
+// FUNCTION: fn_21833
+void CGameMode::ReceiveItemListPart(unsigned char listType, int count, const unsigned char* data) {
+  const ItemListRecord* record = reinterpret_cast<const ItemListRecord*>(data);
+  for (int i = 0; i < count; ++i, ++record) {
+    ITEM_INFO item;
+    item.unknown_0000[0] = record->type;
+    item.unknown_0000[1] = record->index;
+    item.unknown_0000[3] = record->location;
+    item.unknown_0000[2] = 0;
+    item.quantity = record->amount;
+    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.SetItemId(record->itemId);
+    item.unknown_005D = 0;
+    item.identified = record->flags & 1;
+    item.unknown_0068 = record->expireTime;
+    item.unknown_0060 = 0;
+    item.unknown_0074[0] = (record->flags >> 1) & 1;
+    switch (listType) {
+    case 0:
+      g_session.UpdateInventoryItem(item, 0);
+      break;
+    case 1:
+      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+      break;
+    case 2:
+    case 3:
+      reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1738(item, 0);
+      break;
+    }
+  }
+}
+
+// OFFSET: 0x00D44580
+// FUNCTION: fn_21834
+void CGameMode::RefreshItemListWindow(unsigned char listType, bool partial) {
+  if (partial) {
+    return;
+  }
+
+  switch (listType) {
+  case 0:
+    RefreshItemWindows(&g_windowMgr);
+    break;
+  case 1:
+    g_session.RefreshItem1740Window();
+    break;
+  case 2:
+  case 3:
+    if (UIWindow* window = g_windowMgr.window_0288) {
+      window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      reinterpret_cast<unsigned char*>(window)[0x190] = 1;
+    }
+    break;
+  }
 }
 
 // OFFSET: 0x00DD43A0
