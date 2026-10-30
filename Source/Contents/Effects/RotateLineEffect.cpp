@@ -1,11 +1,72 @@
 #include "Contents/Effects/RotateLineEffect.h"
 
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
+
+#include <algorithm>
+#include <cstdlib>
 
 // OFFSET: 0x00B741B0
 // FUNCTION: fn_19153
 CRotateLineEffect::CRotateLineEffect() : CEffect(-1), scale(0), angle(0), spread(0), alpha(0), started(false), previous{} {
+}
+
+// OFFSET: 0x00B74360
+// FUNCTION: fn_19155
+void CRotateLineEffect::Close() {
+  for (CParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
+
+// OFFSET: 0x00B743A0
+// FUNCTION: fn_19156
+void CRotateLineEffect::Slot01() {
+  int ring = 0;
+  for (int startAngle = 0; startAngle < 360; startAngle += 90) {
+    const int tilt = std::max(rand() % 21, 0) + 80;
+    for (int i = 0; i < 21; ++i) {
+      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      if (!particle) {
+        continue;
+      }
+
+      particle->unknown_0004 = this->id;
+      particle->unknown_000C = i;
+      particle->unknown_0010 = ring;
+      particle->unknown_0008 = 1;
+      particle->SetTexture("effect\\cloud11.tga");
+      particle->unknown_0050 = 30;
+      *reinterpret_cast<float*>(&particle->unknown_00C4) = static_cast<float>(startAngle);
+      particle->alpha = 50;
+      particle->unknown_004C = tilt;
+      particle->scale = 7.0f - static_cast<float>(ring);
+      particle->unknown_0054 = 28.0f - static_cast<float>(ring) * 5.0f;
+      *reinterpret_cast<float*>(particle->unknown_0058) = 3.0f;
+      switch (this->id) {
+      case 986:
+        particle->SetColor(50, 50, 50);
+        particle->destinationBlend = 6;
+        break;
+      case 1000:
+        particle->SetColor(100, 100, 255);
+        particle->scale += 3.0f;
+        break;
+      }
+
+      this->particles.push_back(particle);
+    }
+    ++ring;
+  }
+}
+
+// OFFSET: 0x00B74580
+// FUNCTION: fn_19157
+bool CRotateLineEffect::Slot06() {
+  return !this->IsFinished();
 }
 
 // OFFSET: 0x00B74590
