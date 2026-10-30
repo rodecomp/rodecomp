@@ -17,6 +17,7 @@ public:
   void Slot11() override;
   void Slot33(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  void Create(int width, int height);
 
 protected:
   /* 0080 */ int m_selectedIndex;

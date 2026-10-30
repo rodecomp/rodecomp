@@ -19,6 +19,12 @@ struct PACKET_CZ_ACTIVE_QUEST {
 };
 #pragma pack(pop)
 
+// OFFSET: 0x00948D10
+// FUNCTION: fn_12881
+void UIQuestDisplay::Create(int width, int height) {
+  this->SetSize(width, height);
+}
+
 // OFFSET: 0x0094F1D0
 // FUNCTION: fn_12934
 void UIQuestDisplay::Slot33(int x, int y) {
