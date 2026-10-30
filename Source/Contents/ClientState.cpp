@@ -1,7 +1,11 @@
 #include "Contents/ClientState.h"
 
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/MessageTable.h"
+#include "Contents/World/World.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -42,6 +46,175 @@ bool g_homunculusAutoFeed;
 
 // GLOBAL: gl_24493
 bool g_petAutoFeed;
+
+// OFFSET: 0x00E46040
+// FUNCTION: fn_24210
+std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) {
+  if (data.begin() == data.end()) {
+    return 0xFFFFFFFF;
+  }
+
+  std::uint32_t offset = 6;
+  ReplayBlockHeader header{};
+  std::memcpy(&header, data.data(), sizeof(header));
+  if (header.id != 2000) {
+    return 0xFFFFFFFF;
+  }
+
+  while (offset < data.size()) {
+    header = {};
+    std::memcpy(&header, data.data() + offset, sizeof(header));
+    offset += 6;
+    const unsigned char* source = data.data() + offset;
+    if (header.id == 2001) {
+      break;
+    }
+
+    switch (header.id) {
+    case 2010:
+      std::memcpy(&this->unknown_166C, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2011:
+      std::memcpy(&this->unknown_1670, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2012:
+      std::memcpy(&this->unknown_1674, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2013:
+      std::memcpy(&this->unknown_1678, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2014:
+      std::memcpy(&this->unknown_167C, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2015:
+      std::memcpy(&this->unknown_1680, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2016:
+      std::memcpy(&this->unknown_0F4C, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2017:
+      std::memcpy(&this->m_weight, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2018:
+      std::memcpy(&this->m_maxWeight, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2019:
+      std::memcpy(&this->unknown_532C, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2020:
+      std::memcpy(&this->unknown_5330, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2021:
+      std::memcpy(&this->unknown_5334, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2022:
+      std::memcpy(&this->unknown_5338, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2023:
+      std::memcpy(&this->unknown_533C, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2024:
+      std::memcpy(this->unknown_5340, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2025:
+      std::memcpy(this->unknown_5370, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2026:
+      std::memcpy(this->unknown_53A0, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2027:
+      std::memcpy(this->unknown_53D0, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2028:
+      std::memcpy(this->unknown_5400, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2029:
+      std::memcpy(&this->unknown_5568, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2030:
+      std::memcpy(&this->unknown_556C, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2031:
+      std::memcpy(&this->unknown_5570[0], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2032:
+      std::memcpy(&this->unknown_5570[4], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2033:
+      std::memcpy(&this->m_prohibitionTarget, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2034:
+      std::memcpy(&this->unknown_5480, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2035:
+      std::memcpy(&this->unknown_5484, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2036:
+      std::memcpy(&this->unknown_5488, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2037:
+      std::memcpy(&this->unknown_548C, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2038:
+      this->m_accountName.resize(header.bytes);
+      std::memcpy(this->m_accountName.data(), data.data() + offset, header.bytes);
+      offset += header.bytes;
+      break;
+    case 2052: {
+      std::memcpy(&this->unknown_8074, source, header.bytes);
+      offset += header.bytes;
+      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      if (player) {
+        player->Slot57(this->unknown_8074);
+        player->SendMsg(nullptr, this->unknown_8074 ? 105 : 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      break;
+    }
+    default:
+      offset += header.bytes;
+      break;
+    }
+  }
+
+  if (g_windowMgr.unknown_04FC == 0) {
+    g_windowMgr.unknown_04FC = 1;
+    for (UIWindow* window : g_windowMgr.rendered) {
+      if (window->Slot03()) {
+        window->InvalidateChildren();
+      }
+    }
+  }
+
+  return offset;
+}
 
 // OFFSET: 0x00E46620
 // FUNCTION: fn_24211
@@ -343,6 +516,349 @@ std::uint32_t CSession::ReadReplayExtra(const std::vector<unsigned char>& data) 
 // FUNCTION: fn_24215
 std::uint32_t CSession::ReadReplayReserved(const std::vector<unsigned char>&) {
   return 0;
+}
+
+// OFFSET: 0x00E47420
+// FUNCTION: fn_24216
+std::uint32_t CSession::ReadReplayCompanions(const std::vector<unsigned char>& data) {
+  if (data.begin() == data.end()) {
+    return 0xFFFFFFFF;
+  }
+
+  std::uint32_t offset = 6;
+  ReplayBlockHeader header{};
+  std::memcpy(&header, data.data(), sizeof(header));
+  if (header.id != 5000) {
+    return 0xFFFFFFFF;
+  }
+
+  while (offset < data.size()) {
+    header = {};
+    std::memcpy(&header, data.data() + offset, sizeof(header));
+    offset += 6;
+    const unsigned char* source = data.data() + offset;
+    switch (header.id) {
+    case 5001:
+      return offset;
+    case 5101:
+      std::memcpy(&this->unknown_5570[8], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5102:
+      std::memcpy(&this->unknown_5570[0xC], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5103:
+      std::memcpy(&this->unknown_5570[0x2C], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5104:
+      std::memcpy(&this->unknown_5570[0x30], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5105:
+      std::memcpy(&this->unknown_5570[0x34], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5106:
+      std::memcpy(&this->unknown_5570[0x38], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5107:
+      std::memcpy(&this->unknown_5570[0x3C], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5108:
+      std::memcpy(&this->unknown_5570[0x40], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5109:
+      std::memcpy(&this->unknown_5570[0x44], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5110:
+      std::memcpy(&this->unknown_5570[0x48], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5111:
+      std::memcpy(&this->m_homunJob, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5112:
+      std::memcpy(this->unknown_55C0, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5113:
+      std::memcpy(&this->m_homunHp, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5114:
+      std::memcpy(this->unknown_55C8, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5115:
+      std::memcpy(&this->m_homunSp, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5116:
+      std::memcpy(&this->unknown_55D0, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5117:
+      std::memcpy(&this->unknown_55D4, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5118:
+      std::memcpy(&this->unknown_55D8, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5119:
+      std::memcpy(&this->m_homunExp, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5120:
+      std::memcpy(&this->m_homunMaxExp, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5121:
+      std::memcpy(&this->unknown_55F0, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5122:
+      std::memcpy(&this->unknown_55F4, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5123:
+      std::memcpy(&this->unknown_55F8, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5124:
+      std::memcpy(&this->unknown_55FC, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5125:
+      std::memcpy(&this->unknown_5600, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5126:
+      std::memcpy(&this->unknown_5604, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5127:
+      std::memcpy(&this->unknown_5608, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5128:
+      std::memcpy(&this->unknown_560C, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5129:
+      std::memcpy(&this->unknown_5610, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5130:
+      std::memcpy(&this->unknown_5614, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5131:
+      std::memcpy(&this->m_traceAi, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5132:
+      std::memcpy(&this->m_homunActionState, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5133:
+      std::memcpy(&this->unknown_5620[0], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5134:
+      std::memcpy(&this->unknown_5620[4], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5201:
+      std::memcpy(&this->unknown_5620[8], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5202:
+      std::memcpy(this->m_mercenaryName, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5203:
+      std::memcpy(&this->m_mercenaryStats[0], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5204:
+      std::memcpy(&this->m_mercenaryStats[1], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5205:
+      std::memcpy(&this->m_mercenaryStats[2], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5206:
+      std::memcpy(&this->m_mercenaryStats[3], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5207:
+      std::memcpy(&this->m_mercenaryStats[4], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5208:
+      std::memcpy(&this->m_mercenaryStats[5], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5209:
+      std::memcpy(&this->m_mercenaryStats[6], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5210:
+      std::memcpy(&this->m_mercenaryStats[7], source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5211:
+      std::memcpy(&this->m_mercenaryHp, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5212:
+      std::memcpy(&this->m_mercenaryMaxHp, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5213:
+      std::memcpy(&this->m_mercenaryClass, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5214:
+      std::memcpy(&this->m_mercenaryLevel, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5215:
+      std::memcpy(&this->m_mercenarySp, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5216:
+      std::memcpy(&this->m_mercenaryMaxSp, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5217:
+      std::memcpy(&this->m_mercenaryLoyalty, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5218:
+      std::memcpy(&this->m_mercenarySummons, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5219:
+      std::memcpy(&this->m_mercenaryKills, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5220:
+      std::memcpy(this->unknown_5690, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5221:
+      std::memcpy(&this->m_mercenaryExpiration, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5222:
+      std::memcpy(&this->unknown_5698, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5223:
+      std::memcpy(&this->unknown_569C, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5224:
+      std::memcpy(&this->unknown_56A0, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5225:
+      std::memcpy(&this->unknown_56A4, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5226:
+      std::memcpy(&this->unknown_56A8, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5227:
+      std::memcpy(&this->unknown_56AC, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5228:
+      std::memcpy(&this->unknown_56B0, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5229:
+      std::memcpy(&this->m_mercenaryActionState, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5301:
+      std::memcpy(&this->unknown_1010, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5302:
+      std::memcpy(this->unknown_1014, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5303:
+      std::memcpy(this->unknown_1018, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5304:
+      std::memcpy(&this->unknown_1038, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5305:
+      std::memcpy(&this->unknown_103C, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5306:
+      std::memcpy(&this->unknown_1040, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5307:
+      std::memcpy(&this->unknown_1044, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5308:
+      std::memcpy(&this->m_petFriendly, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5309:
+      std::memcpy(&this->unknown_1050, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5310:
+      std::memcpy(&this->unknown_1054, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5401:
+      std::memcpy(&this->unknown_5BC0, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5402:
+      std::memcpy(&this->unknown_5BC4, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5403:
+      std::memcpy(&this->unknown_5BC8, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5404:
+      std::memcpy(&this->unknown_5BCC, source, header.bytes);
+      offset += header.bytes;
+      break;
+    case 5405:
+      std::memcpy(&this->unknown_5BD0, source, header.bytes);
+      offset += header.bytes;
+      break;
+    default:
+      offset += header.bytes;
+      break;
+    }
+  }
+
+  return offset;
 }
 
 // OFFSET: 0x00E488C0
