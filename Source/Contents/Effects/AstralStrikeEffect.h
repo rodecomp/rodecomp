@@ -6,21 +6,27 @@
 #include <cstddef>
 #include <vector>
 
-struct EZ2STREmitter;
+class CEZ2STRParticle;
 
 class CAstralStrikeEffect : public CEffect {
 public:
   CAstralStrikeEffect();
 
+  void Slot03() override;
+  void Slot04() override;
+  void Close() override;
   bool Slot06() override;
 
-  /* 00CC */ std::vector<EZ2STREmitter*> unknown_00CC;
-  /* 00D8 */ std::vector<EZ2STREmitter*> unknown_00D8;
+  void Init();
+  void SpawnStrike();
+
+  /* 00CC */ std::vector<CEZ2STRParticle*> emitters;
+  /* 00D8 */ std::vector<CEZ2STRParticle*> strikes;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CAstralStrikeEffect) == 0xE4);
-static_assert(offsetof(CAstralStrikeEffect, unknown_00D8) == 0xD8);
+static_assert(offsetof(CAstralStrikeEffect, strikes) == 0xD8);
 #endif
 
 #endif
