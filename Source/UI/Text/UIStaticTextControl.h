@@ -14,6 +14,7 @@ public:
   void SetColor(std::uint32_t color);
   void SetOutline(bool enabled, std::uint32_t color);
   void SetShadow(bool enabled, std::uint32_t color);
+  void SetText(const char* value, std::size_t length);
 
   /* 0080 */ std::string text;
   /* 0098 */ std::string unknown_0098;

@@ -1,10 +1,13 @@
 #include "Contents/AdventureGuideMgr.h"
+#include "Contents/MessageTable.h"
 #include "Contents/RenewQuestMgr.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "Render/Renderer.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Text/UIStaticTextControl.h"
+#include "UI/Text/UITextViewerControl.h"
+#include "Utility/Text/FormatString.h"
 
 template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUITab>::UpdateScrollBar();
@@ -233,6 +236,50 @@ void CUITab::Slot16() {
 // OFFSET: 0x009DD740
 // FUNCTION: fn_14342
 void CUITabInfo::Slot16() {
+}
+
+// OFFSET: 0x009DC0F0
+// FUNCTION: fn_14316
+void CUIIntro::BindContents(CUITabInfo* item, const Guide_Intro::Contents& contents) {
+  item->unknown_00E8->SetText(contents.first.c_str(), contents.first.size());
+  item->unknown_00EC->SetText(contents.second.c_str(), contents.second.size());
+}
+
+// OFFSET: 0x009DFAD0
+// FUNCTION: fn_14359
+void CUIQuestInfo::SetStatusLines(bool first, bool second, bool third) {
+  CUITextViewer* viewer = reinterpret_cast<CUITextViewer*>(this->unknown_00F4);
+  viewer->Clear();
+  if (first == true) {
+    viewer->SetTextColor(0xC86464u);
+    viewer->AddLine(FormatOwnedString(LookupMessage(0xFC2)));
+  } else {
+    viewer->SetTextColor(0x6464C8u);
+    viewer->AddLine(FormatOwnedString(LookupMessage(0xFC3)));
+  }
+  if (second == true) {
+    viewer->SetTextColor(0xC86464u);
+    viewer->AddLine(FormatOwnedString(LookupMessage(0xFC4)));
+  } else {
+    viewer->SetTextColor(0x6464C8u);
+    viewer->AddLine(FormatOwnedString(LookupMessage(0xFC5)));
+  }
+  if (third == true) {
+    viewer->SetTextColor(0xC86464u);
+    viewer->AddLine(FormatOwnedString(LookupMessage(0xFC6)));
+  } else {
+    viewer->SetTextColor(0x6464C8u);
+    viewer->AddLine(FormatOwnedString(LookupMessage(0xFC7)));
+  }
+}
+
+// OFFSET: 0x009E07B0
+// FUNCTION: fn_14362
+void CUIQuestInfo::SetViewerLines(const std::vector<std::string>& lines) {
+  reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->Clear();
+  for (const std::string& line : lines) {
+    reinterpret_cast<CUITextViewer*>(this->unknown_00F0)->AddLine(line);
+  }
 }
 
 // OFFSET: 0x009DDA40

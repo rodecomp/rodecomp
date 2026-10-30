@@ -36,6 +36,7 @@ public:
   void SetScrollBarBackground(const std::string& name);
   void SetText(const std::string& text);
   void Clear();
+  void AddLine(const std::string& text);
 
   /* 0080 */ int textX;
   /* 0084 */ int textY;

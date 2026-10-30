@@ -32,6 +32,7 @@ public:
   void Slot54(int first, int second) override;
 
   void OnSelectContents(CUITabInfo* item, const Guide_Intro::Contents& contents);
+  void BindContents(CUITabInfo* item, const Guide_Intro::Contents& contents);
 
   /* 0084 */ CUIStaticImage* image;
   /* 0088 */ CUIListBoxEx<CUITabInfo, Guide_Intro::Contents>* contents;

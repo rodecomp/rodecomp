@@ -87,6 +87,8 @@ public:
 class CUIQuestInfo : public CUIListItem {
 public:
   void Slot16() override;
+  void SetStatusLines(bool first, bool second, bool third);
+  void SetViewerLines(const std::vector<std::string>& lines);
 
   /* 00E8 */ UIWindow* unknown_00E8;
   /* 00EC */ CUIStaticText* unknown_00EC;
@@ -99,6 +101,9 @@ public:
 class CUITabInfo : public CUIListItem {
 public:
   void Slot16() override;
+
+  /* 00E8 */ CUIStaticText* unknown_00E8;
+  /* 00EC */ CUIStaticText* unknown_00EC;
 };
 class CItemData {};
 class CMonsterData {
