@@ -29,6 +29,14 @@ void UISubChatHisWnd::Slot26(int x, int y) {
   }
 }
 
+// OFFSET: 0x00932B70
+// FUNCTION: fn_12715
+void UISubChatHisWnd::Slot27(int x, int y) {
+  if (g_windowMgr.Capture() == this) {
+    this->UIFrameWnd::Slot27(x, y);
+  }
+}
+
 // OFFSET: 0x00931710
 // FUNCTION: fn_12706
 void UISubChatHisWnd::Slot31(int x, int y) {

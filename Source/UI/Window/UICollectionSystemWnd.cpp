@@ -10,6 +10,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "UI/Window/WindowManagerWindows.h"
 
 #include <windows.h>
 #include <timeapi.h>
@@ -58,6 +59,22 @@ void CUICollectionSystemWnd::Slot25(int, int) {
   if (this->unknown_00BC == 0) {
     this->unknown_00BC = 1;
     g_modeMgr.GetGameMode()->SendMsg(282, this->unknown_00B8, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00932E20
+// FUNCTION: fn_12717
+void CUICollectionSystemWnd::Slot19() {
+  this->Invalidate();
+  const std::uint32_t now = timeGetTime();
+  if (this->m_frame == this->m_lastFrame) {
+    if (!this->m_paused) {
+      this->m_paused = true;
+      this->m_lastTick = now;
+    }
+    if (static_cast<int>(now - this->m_lastTick) > 2000) {
+      this->m_frameContext->windows.CloseWindow(196);
+    }
   }
 }
 

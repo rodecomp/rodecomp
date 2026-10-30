@@ -16,6 +16,7 @@ public:
   void Slot26(int x, int y) override;
   void Slot35(int delta) override;
   int RowAt(int x, int y);
+  virtual void UpdateScrollBar();
 
   /* 00B4 */ UIScrollBar* m_scrollBar;
   /* 00B8 */ int unknown_00B8;

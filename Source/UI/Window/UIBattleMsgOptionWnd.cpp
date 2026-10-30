@@ -92,6 +92,33 @@ void UIBattleMsgOptionWnd::Slot26(int x, int y) {
   }
 }
 
+// OFFSET: 0x00933680
+// FUNCTION: fn_12728
+void UIBattleMsgOptionWnd::UpdateScrollBar() {
+  if (!this->m_scrollBar) {
+    return;
+  }
+
+  const int total = static_cast<int>(this->messages.size()) - (this->messages.empty() ? 1 : 0);
+  const int visible = this->m_visibleRows;
+  const int range = total - visible < 0 ? 0 : total - visible;
+  this->m_scrollable = range != 0;
+  if (range != 0) {
+    this->m_scrollBar->SetRange(range, visible, total);
+    if (this->unknown_00C4 < 0) {
+      this->unknown_00C4 = 0;
+    }
+    if (this->unknown_00C4 > total - this->m_visibleRows) {
+      this->unknown_00C4 = total - this->m_visibleRows;
+    }
+    this->m_scrollBar->SetPosition(this->unknown_00C4);
+  } else {
+    this->unknown_00C4 = 0;
+    this->m_scrollBar->SetRange(0, visible, total);
+  }
+  this->m_scrollBar->Invalidate();
+}
+
 // OFFSET: 0x0092B9C0
 // FUNCTION: fn_12659
 void UIBattleMsgOptionWnd::Paint() {
