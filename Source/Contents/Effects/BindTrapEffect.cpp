@@ -10,10 +10,41 @@
 #include <cstring>
 
 // OFFSET: 0x006FB2F0
+// FUNCTION: fn_06903
+CBindTrapEffect::CBindTrapEffect() : CEffect(-1), particles() {
+  this->unknown_002C = 8000;
+}
 
 // OFFSET: 0x006FB4E0
+// FUNCTION: fn_06906
+void CBindTrapEffect::AddParticle(int index) {
+  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  if (!particle) {
+    return;
+  }
+
+  particle->SetTexture("effect\\hero_011.tga");
+  particle->unknown_0004 = this->id;
+  particle->unknown_000C = 0;
+  particle->unknown_0010 = 0;
+  particle->unknown_0008 = 1;
+  particle->alpha = 255;
+  particle->unknown_00C4 = 0;
+  particle->unknown_004C = 0;
+  particle->scale = static_cast<float>(index) * 6.0f + 9.0f;
+  InitParticleQuad(particle->vertices);
+  this->particles.push_back(particle);
+}
 
 // OFFSET: 0x006FB5B0
+// FUNCTION: fn_06907
+void CBindTrapEffect::Close() {
+  for (CParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
 
 // OFFSET: 0x006FB5F0
 // FUNCTION: fn_06908
