@@ -575,6 +575,51 @@ void UIComboBox::Resize(int width, int height) {
   }
 }
 
+// OFFSET: 0x00895AC0
+// FUNCTION: fn_11509
+void UIComboBox::Refresh() {
+  const int visible = this->geometry.height / this->lineHeight;
+  const int overflow = std::max(static_cast<int>(this->lines.size()) - visible, 0);
+
+  this->verticalOverflow = overflow != 0;
+  UIScrollBar* bar = this->verticalBar;
+  if (overflow != 0) {
+    bar->maximum = this->bottomMargin + overflow;
+    bar->total = static_cast<int>(this->lines.size());
+    bar->visible = visible;
+    bar->Invalidate();
+    if (bar->position > bar->maximum) {
+      bar->position = bar->maximum;
+    }
+
+    if (this->selected < this->topLine) {
+      this->topLine = this->selected;
+    } else if (this->topLine + visible <= this->selected) {
+      this->topLine = this->selected - visible + 1;
+    }
+
+    if (this->topLine < 0) {
+      this->topLine = 0;
+    }
+
+    if (this->topLine > overflow) {
+      this->topLine = overflow;
+    }
+
+    this->verticalBar->position = this->topLine;
+  } else {
+    bar->maximum = 0;
+    bar->total = static_cast<int>(this->lines.size());
+    bar->visible = visible;
+    bar->Invalidate();
+    if (bar->position > bar->maximum) {
+      bar->position = bar->maximum;
+    }
+  }
+
+  this->verticalBar->Invalidate();
+}
+
 // OFFSET: 0x00897BF0
 // FUNCTION: fn_11541
 int UIBmpRadioBtn::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
