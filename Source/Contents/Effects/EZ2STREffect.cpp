@@ -50,25 +50,123 @@ draw:
 }
 
 // OFFSET: 0x00B66460
+// FUNCTION: fn_19046
+void CEZ2STRScreenEffect::Slot00(int argument) {
+  this->particle->submit = reinterpret_cast<ParticleSubmit>(argument);
+}
 
 // OFFSET: 0x00B66480
+// FUNCTION: fn_19047
+void CEZ2STRScreenEffect::Slot23(float argument) {
+  if (this->particle) {
+    this->particle->m_alpha = argument;
+  }
+}
 
 // OFFSET: 0x00B664A0
+// FUNCTION: fn_19048
+void CEZ2STRScreenEffect::Slot29(int id) {
+  CEffect::Slot29(id);
+  switch (id) {
+  case 0x3F4:
+  case 0x40A:
+  case 0x40B:
+  case 0x40C:
+  case 0x433:
+  case 0x437:
+  case 0x43B:
+  case 0x43C:
+  case 0x43D:
+  case 0x43E:
+  case 0x43F:
+  case 0x441:
+  case 0x443:
+  case 0x444:
+  case 0x445:
+  case 0x447:
+    this->unknown_00C8 = 1;
+    break;
+  default:
+    if (id >= 0x9B5) {
+      this->unknown_00C8 = 1;
+    }
+    break;
+  }
+}
 
 // OFFSET: 0x00B66540
+// FUNCTION: fn_19049
+void CEZ2STRScreenEffect::Slot24(int argument1, int argument2, int argument3, int argument4, int argument5) {
+  if (!this->particle) {
+    return;
+  }
+
+  const vector3d offset = *reinterpret_cast<const vector3d*>(&argument1);
+  this->particle->m_windowOffset = offset;
+  if (static_cast<unsigned char>(argument4) == 1) {
+    this->particle->m_attachToWindow = true;
+    this->particle->m_windowId = argument5;
+  }
+}
 
 // OFFSET: 0x00B665B0
+// FUNCTION: fn_19050
+void CEZ2STRScreenEffect::Slot21(int argument) {
+  this->particle->flags = argument;
+}
 
 // OFFSET: 0x00B665D0
+// FUNCTION: fn_19051
+void CEZ2STRScreenEffect::Slot15(int argument) {
+  if (this->particle) {
+    this->particle->m_repeat = argument - 1;
+  }
+}
 
 // OFFSET: 0x00B665F0
+// FUNCTION: fn_19052
+void CEZ2STRScreenEffect::Slot14(int argument) {
+  if (this->particle) {
+    this->particle->m_lifeTime = argument;
+  }
+}
 
 // OFFSET: 0x00B66610
+// FUNCTION: fn_19053
+void CEZ2STRScreenEffect::Slot17(float argument) {
+  if (this->particle) {
+    this->particle->m_angle = argument;
+  }
+}
 
 // OFFSET: 0x00B66630
+// FUNCTION: fn_19054
+void CEZ2STRScreenEffect::Slot22(float argument) {
+  if (this->particle) {
+    this->particle->m_scale = argument;
+  }
+}
 
 // OFFSET: 0x00B66650
+// FUNCTION: fn_19055
+void CEZ2STRScreenEffect::Slot13(int argument) {
+  if (this->particle) {
+    this->particle->Advance(*reinterpret_cast<float*>(&argument));
+  }
+}
 
 // OFFSET: 0x00B66680
+// FUNCTION: fn_19056
+void CEZ2STRScreenEffect::Slot16(int argument) {
+  if (this->particle) {
+    this->particle->m_delay = argument;
+  }
+}
 
 // OFFSET: 0x00B666A0
+// FUNCTION: fn_19057
+void CEZ2STRScreenEffect::Slot20(int argument) {
+  this->name = reinterpret_cast<const char*>(argument);
+  FreeParticle(this->particle);
+  this->Slot01();
+}
