@@ -38,6 +38,10 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int posi
 // OFFSET: 0x00A0F840
 
 // OFFSET: 0x00A0FA00
+// FUNCTION: fn_15181
+template <>
+CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::~CUIListBoxEx() {
+}
 
 // OFFSET: 0x00A100B0
 // FUNCTION: fn_15188
