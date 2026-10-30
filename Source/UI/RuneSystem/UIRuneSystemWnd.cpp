@@ -333,8 +333,8 @@ void UIEquipRuneSetWnd::Slot28(int x, int y) {
       return;
     }
 
-    int screenX = -15;
-    int screenY = 6;
+    int screenX = 6;
+    int screenY = -15;
     this->ToScreen(screenX, screenY);
     if (!g_modeMgr.gameMode) {
       return;
