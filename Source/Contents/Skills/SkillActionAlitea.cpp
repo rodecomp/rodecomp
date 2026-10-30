@@ -691,6 +691,18 @@ int CSkillAction_AT_ALPHA_CLAW::Slot02() {
 }
 
 // OFFSET: 0x005A67A0
+// FUNCTION: fn_03188
+void CSkillAction_AT_ALPHA_CLAW::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!this->CanUse(source) || !target) {
+    return;
+  }
+
+  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0x7E, 0x5D, 0xBD, 0x8F, 0x8C, 0x2A, 0x0E, 0x71, 0x7E, 0x46, 0xCD};
+    thread_local EncryptedName<sizeof(bytes), 0x1D6D75EDE7CD311FULL> name(bytes);
+    return name.Text();
+  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005A69B0
 // FUNCTION: fn_03189
