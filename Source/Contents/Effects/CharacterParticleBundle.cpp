@@ -83,8 +83,51 @@ void CChopChopClawMarks::Slot36(CEZ2STRParticle* particle) {
 }
 
 // OFFSET: 0x005A34E0
+// FUNCTION: fn_03131
+void CChopChopClawMarks::SpawnParticle() {
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  if (particle) {
+    const std::vector<RadialGridPoint>& ring = this->GetRing(3);
+    RadialGridPoint point;
+    do {
+      const int positiveX = std::max(rand() % 2, 0);
+      const int x = std::max(rand() % 4, 1);
+      point.x = static_cast<float>(positiveX ? x : -x);
+      const int positiveY = std::max(rand() % 2, 0);
+      const int y = std::max(rand() % 4, 1);
+      point.y = static_cast<float>(positiveY ? y : -y);
+    } while (std::find_if(ring.begin(), ring.end(), [&point](const RadialGridPoint& candidate) {
+      return candidate.x == point.x && candidate.y == point.y;
+    }) == ring.end());
+
+    const float x = point.x * 5.0f;
+    const float y = point.y * 5.0f;
+    const std::uint8_t bytes[] = {
+      0x5B, 0x63, 0x98, 0xAE, 0xA9, 0x29, 0x26, 0x4F, 0x40, 0x72, 0x85, 0xA8, 0xBD, 0x2A, 0x2E, 0x55,
+      0x50, 0x61, 0x91, 0x84, 0x85, 0x1A, 0x1D, 0x42, 0x7C, 0x59, 0xA2, 0x97, 0xB1, 0x16, 0x05, 0x72,
+      0x6F, 0x6E, 0xAE, 0x8F, 0x82, 0x05, 0x43, 0x6E, 0x6B, 0x43, 0xCD
+    };
+    // GLOBAL: gl_24875
+    thread_local EncryptedName<sizeof(bytes), 0x1D6D75EDE7CD311FULL> name(bytes);
+    particle->Open(name.Text());
+    particle->unknown_00D0 = x;
+    particle->unknown_00D4 = y;
+    particle->unknown_00D8 = 0.0f;
+    particle->m_angle = static_cast<float>(std::max(rand() % 360, 0));
+    this->particles.push_back(particle);
+  }
+}
 
 // OFFSET: 0x005A3820
+// FUNCTION: fn_03132
+void CChopChopClawMarks::Slot34() {
+  const std::chrono::nanoseconds elapsed = std::chrono::steady_clock::now().time_since_epoch() - std::chrono::nanoseconds(this->startTime);
+  const long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+  if (milliseconds >= this->lastSpawnTime + 30) {
+    this->SpawnParticle();
+    this->lastSpawnTime = milliseconds;
+  }
+}
 
 // OFFSET: 0x005A38A0
 // FUNCTION: fn_03133
@@ -158,6 +201,27 @@ bool CChopChopClawMarks::Slot06() {
 }
 
 // OFFSET: 0x005A3F10
+// FUNCTION: fn_03139
+void CharacterParticleBundle::Slot03() {
+  this->Slot34();
+  const auto removed = std::remove_if(this->particles.begin(), this->particles.end(), [](CEZ2STRParticle* particle) {
+    if (!particle) {
+      return true;
+    }
+    if (particle->life < 0.0f) {
+      FreeParticle(particle);
+      return true;
+    }
+    return false;
+  });
+  this->particles.erase(removed, this->particles.end());
+
+  for (CEZ2STRParticle* particle : this->particles) {
+    this->Slot36(particle);
+    this->Slot37(particle);
+  }
+  ++this->unknown_00D8;
+}
 
 // OFFSET: 0x005A4000
 // FUNCTION: fn_03140
