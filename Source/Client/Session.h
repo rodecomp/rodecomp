@@ -256,7 +256,10 @@ public:
   /* 618C */ const char* const* m_doramMaleHeadNames;
   /* 6190 */ unsigned char unknown_6190[0x08];
   /* 6198 */ const char* const* m_doramFemaleHeadNames;
-  /* 619C */ unsigned char unknown_619C[0x1D44];
+  /* 619C */ unsigned char unknown_619C[0x1C];
+  /* 61B8 */ ITEM_INFO unknown_61B8[10];
+  /* 6B68 */ ITEM_INFO unknown_6B68[10];
+  /* 7518 */ unsigned char unknown_7518[0x9C8];
   /* 7EE0 */ std::map<int, RobeAlpha> m_robeAlpha;
   /* 7EE8 */ unsigned char unknown_7EE8[4];
   /* 7EEC */ int m_maxLevel;
@@ -524,6 +527,7 @@ public:
   ITEM_INFO FindItem2B50(std::uint32_t id, int* index) const;
   ITEM_INFO FindItem17F0(std::uint32_t id, int* index) const;
   ITEM_INFO GetExchangeItem(int index) const;
+  int HasItem61B8(std::uint32_t id) const;
   const std::vector<std::string>* GetFogParameters(const char* rswName, int* found);
   std::string GetPlayerHeadSprName();
   std::string GetImfName(int job);

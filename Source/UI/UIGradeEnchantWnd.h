@@ -12,7 +12,8 @@
 struct GradeEnchantMaterial {
   /* 0000 */ std::uint32_t itemId;
   /* 0004 */ std::int32_t amount;
-  /* 0008 */ unsigned char unknown_0008[9];
+  /* 0008 */ std::int32_t zeny;
+  /* 000C */ unsigned char unknown_000C[5];
 };
 #pragma pack(pop)
 
@@ -52,10 +53,18 @@ public:
 
 class UIGradeEnchantWnd : public UIFrameWnd {
 public:
+  void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot19() override;
   void Slot25(int x, int y) override;
+  void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot32(int x, int y) override;
+  void Slot33(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  void ResetItem();
+  int SelectedMaterialZeny();
+  int SuccessRate();
   void SetEnchantInfo(
     short index, int value, int materialCount, GradeEnchantInfo info, int value0108, int value010C, const GradeEnchantMaterial* materials
   );
@@ -64,8 +73,12 @@ public:
   /* 00B8 */ UIGradeEnchant_BtnEnhancedUp* enhancedUpButton;
   /* 00C0 */ int state;
   /* 00C4 */ int result;
+  /* 00C8 */ std::uint32_t unknown_00C8;
+  /* 00CC */ std::uint32_t unknown_00CC;
   /* 00D0 */ std::uint32_t stateTick;
+  /* 00D4 */ std::uint32_t unknown_00D4;
   /* 00D8 */ int unknown_00D8;
+  /* 00DC */ int unknown_00DC;
   /* 00E0 */ std::uint32_t unknown_00E0;
   /* 00E4 */ int selectedMaterial;
   /* 00E8 */ int hoverMaterial;
@@ -76,8 +89,10 @@ public:
   /* 0110 */ unsigned char unknown_0110;
   /* 0114 */ int unknown_0114;
   /* 0118 */ int unknown_0118;
+  /* 011C */ std::vector<int> unknown_011C;
   /* 0128 */ ITEM_INFO item;
   /* 0220 */ unsigned char unknown_0220;
+  /* 00B4 */ UIGradeEnchant_BtnStart* startButton;
 
 protected:
   UIButtonContext* m_controls;

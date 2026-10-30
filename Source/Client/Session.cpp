@@ -151,6 +151,22 @@ bool CSession::IsWithinUnknown59C0(int value) const {
   return this->unknown_59C0 - this->unknown_8130 <= value;
 }
 
+// OFFSET: 0x00E3D390
+// FUNCTION: fn_24189
+int CSession::HasItem61B8(std::uint32_t id) const {
+  if (id == 0) {
+    return 0;
+  }
+
+  for (int i = 0; i < 10; ++i) {
+    if (id == this->unknown_61B8[i].unknown_0000[1] || id == this->unknown_6B68[i].unknown_0000[1]) {
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
 // OFFSET: 0x00E3DB20
 // FUNCTION: fn_24194
 bool CSession::ResetUnknownState() {
