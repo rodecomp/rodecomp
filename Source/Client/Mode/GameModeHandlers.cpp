@@ -1,16 +1,23 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
+#include "Contents/CashEmotionMgr.h"
 #include "Contents/ClanInfo.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/Actors/RenderObject.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Items/RuneSystem.h"
 #include "Contents/MessageTable.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstdint>
+#include <cstdio>
 #include <cstring>
+#include <ctime>
 #include <string>
 #include <utility>
 
@@ -79,6 +86,194 @@ struct GameOptionEntry {
 
 // GLOBAL: gl_24865
 bool g_gameOptionFlag;
+
+// OFFSET: 0x00D3CC10
+// FUNCTION: fn_21796
+void CGameMode::ReceivePetAct(unsigned char* packet) {
+  CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2));
+  if (!actor) {
+    return;
+  }
+
+  int* data = reinterpret_cast<int*>(packet + 6);
+  const int kind = *data % 10;
+  const int value = *data / 10;
+  if (kind == 2) {
+    const std::int64_t emotion = value;
+    const std::int64_t basePack = g_cashEmotionMgr->BasePackId();
+    actor->SendMsg(
+      nullptr, 160, 0, static_cast<int>(basePack), static_cast<int>(basePack >> 32), static_cast<int>(emotion), static_cast<int>(emotion >> 32), 0, 0, 0,
+      0, 0, 0, 0, 0
+    );
+    return;
+  }
+
+  const int talkId = value / 10;
+  *data = talkId;
+  char talk[256];
+  std::memset(talk, 0, sizeof(talk));
+  g_session.GetPetTalkText(talkId / 10, value % 10, talkId % 10, talk);
+  if (talk[0]) {
+    char speech[256];
+    g_session.FormatMonsterSpeech(talk, speech, *reinterpret_cast<const std::uint32_t*>(packet + 2), 1 - kind);
+    if (std::strcmp(speech, "") != 0) {
+      const std::int64_t text = reinterpret_cast<std::intptr_t>(speech);
+      actor->SendMsg(nullptr, 7, 0, static_cast<int>(text), static_cast<int>(text >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      if (!g_serviceOptions.Get(114) && !g_serviceOptions.Get(148)) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(speech), 0xFAFAFA, 0, 0, 0);
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00D3CEC0
+// FUNCTION: fn_21798
+void CGameMode::PlayBgm(unsigned char type, std::string name) {
+  if (!g_serviceOptions.Get(7)) {
+    return;
+  }
+
+  g_soundMgr->StopStreams();
+  switch (type) {
+  case 0:
+    g_soundMgr->PlayStream(FormatOwnedString("bgm\\%s.mp3", name.c_str()).c_str(), 0, false);
+    g_soundMgr->secondaryEnabled = 0;
+    break;
+  case 1:
+    g_soundMgr->PlayStream(FormatOwnedString("bgm\\%s.mp3", name.c_str()).c_str(), 1, false);
+    g_soundMgr->secondaryEnabled = 1;
+    break;
+  case 2:
+    g_soundMgr->SetDefaultName(g_session.GetBgmFileName(std::string(this->mapName).c_str()));
+    g_soundMgr->secondaryEnabled = 0;
+    break;
+  }
+}
+
+// OFFSET: 0x00D3D0F0
+// FUNCTION: fn_21799
+void CGameMode::ReceiveNpcBgm(const unsigned char* packet) {
+  if (g_serviceOptions.Get(7)) {
+    const std::string path = std::string("bgm\\") + reinterpret_cast<const char*>(packet + 2) + std::string(".mp3");
+    g_soundMgr->PlayStream(path.c_str(), 1, true);
+    g_soundMgr->secondaryEnabled = 1;
+  }
+}
+
+// OFFSET: 0x00D3D2E0
+// FUNCTION: fn_21800
+void CGameMode::IgnoreRemovedPacket1(const unsigned char*) {
+}
+
+// OFFSET: 0x00D3E0B0
+// FUNCTION: fn_21808
+void CGameMode::IgnoreRemovedPacket2(const unsigned char*) {
+}
+
+// OFFSET: 0x00D3E0C0
+// FUNCTION: fn_21809
+void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
+  char text[512];
+  std::memset(text, 0, sizeof(text));
+  if (g_serviceType == 3) {
+    switch (*reinterpret_cast<const int*>(packet + 2)) {
+    case 1:
+      std::sprintf(text, LookupMessage(1124), *reinterpret_cast<const int*>(packet + 6) / 86400 + 1);
+      break;
+    case 2: {
+      const int seconds = *reinterpret_cast<const int*>(packet + 10);
+      std::sprintf(text, LookupMessage(1125), seconds / 3600, seconds % 3600 / 60, seconds % 60);
+      break;
+    }
+    }
+  } else {
+    __time32_t now;
+    _time32(&now);
+    _localtime32(&now);
+    const __time32_t* expireTime = reinterpret_cast<const __time32_t*>(packet + 6);
+    const tm* expire = _localtime32(expireTime);
+    const int type = *reinterpret_cast<const int*>(packet + 2);
+    if (type >= 0x8000 && type <= 0x80FF) {
+      if (type & 0x20) {
+        std::strcat(text, "(PC방-실버) ");
+      }
+      if (type & 0x40) {
+        std::strcat(text, "(PC방-골드) ");
+      }
+      if (type & 0x80) {
+        std::strcat(text, "(PC방-스페셜) ");
+      }
+      if (type & 0x01) {
+        std::strcat(text, "프리미엄 정액 요금제");
+        if (type & 0x10) {
+          std::strcat(text, " + Advanced Package");
+        } else {
+          if (type & 0x02) {
+            std::strcat(text, " + Exp UP");
+          }
+          if (type & 0x04) {
+            std::strcat(text, " + Item UP");
+          }
+          if (type & 0x08) {
+            std::strcat(text, " + Death Down");
+          }
+
+          char period[256];
+          std::memset(period, 0, sizeof(period));
+          const int remaining = *reinterpret_cast<const int*>(packet + 10);
+          if (*expireTime > now) {
+            if (remaining > 0) {
+              std::sprintf(
+                period, " (종료일시 : %04d/%02d/%02d , 남은시간 : %d 시간 %d 분 %d 초)", expire->tm_year + 1900, expire->tm_mon + 1,
+                expire->tm_mday, remaining / 3600, remaining / 60 % 60, remaining % 60
+              );
+            } else if (remaining == 0) {
+              std::sprintf(period, " (종료일시 : %04d/%02d/%02d )", expire->tm_year + 1900, expire->tm_mon + 1, expire->tm_mday);
+            }
+          } else if (remaining > 0) {
+            std::sprintf(period, " (남은시간 : %d 시간 %d 분 %d 초)", remaining / 3600, remaining / 60 % 60, remaining % 60);
+          }
+          std::strcat(text, period);
+        }
+      }
+    } else {
+      switch (type) {
+      case 100: {
+        const int remaining = *reinterpret_cast<const int*>(packet + 10);
+        if (*expireTime > now) {
+          if (remaining > 0) {
+            std::sprintf(
+              text, "귀하는 혼합요금제 사용자 입니다. (종료일시 : %04d/%02d/%02d , 남은시간 : %d 시간 %d 분 %d 초)",
+              expire->tm_year + 1900, expire->tm_mon + 1, expire->tm_mday, remaining / 3600, remaining / 60 % 60, remaining % 60
+            );
+          } else if (remaining == 0) {
+            std::sprintf(
+              text, "귀하는 정액요금제 사용자 입니다. (종료일시 : %04d 년 %02d 월 %02d 일 %02d 시 %02d 분 %02d 초)",
+              expire->tm_year + 1900, expire->tm_mon + 1, expire->tm_mday, expire->tm_hour, expire->tm_min, expire->tm_sec
+            );
+          }
+        } else if (remaining > 0) {
+          std::sprintf(
+            text, "귀하는 정량요금제 사용자 입니다. (남은시간 : %d 시간 %d 분 %d 초)", remaining / 3600, remaining / 60 % 60, remaining % 60
+          );
+        }
+        break;
+      }
+      case 1000:
+        std::sprintf(text, "PC방의 요금제 정보는 요청할 수 없습니다.");
+        break;
+      case 10000:
+        std::sprintf(text, "귀하는 사크라이 2시간 무료요금제 사용자 입니다.");
+        break;
+      default:
+        std::sprintf(text, "과금정보 요청에 실패 했습니다.");
+        break;
+      }
+    }
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFFFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00D65730
 // FUNCTION: fn_22001

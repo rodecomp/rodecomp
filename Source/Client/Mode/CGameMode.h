@@ -57,6 +57,12 @@ public:
   void ReceiveActorSignal(const unsigned char* packet);
   void IgnorePacket(const unsigned char* packet);
   void ReceiveHuntingList(const unsigned char* packet);
+  void ReceivePetAct(unsigned char* packet);
+  void PlayBgm(unsigned char type, std::string name);
+  void ReceiveNpcBgm(const unsigned char* packet);
+  void IgnoreRemovedPacket1(const unsigned char* packet);
+  void IgnoreRemovedPacket2(const unsigned char* packet);
+  void ReceiveBillingInfo(const unsigned char* packet);
   bool NotifyItemResult(int result);
   void NotifyItemBounds();
   CCorpse* SpawnCorpse(float x, float y, float z, const char* action, const char* sprite, int animation, int motion, float angle);
