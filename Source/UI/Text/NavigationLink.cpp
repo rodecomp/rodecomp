@@ -468,28 +468,194 @@ void UIEmotion::Slot19() {
 // OFFSET: 0x0083B0A0
 
 // OFFSET: 0x00837390
+// FUNCTION: fn_10441
+CCreateLineInfo::~CCreateLineInfo() {
+  if (!this->m_fontStack.empty()) {
+    this->m_fontStack.swap(s_fontStackCache);
+  }
+}
 
 // OFFSET: 0x008379D0
+// FUNCTION: fn_10448
+bool CCreateLineInfo::CompareTag(std::string text, std::string keyword, bool exactMatch, bool caseSensitive) {
+  if (text.empty() || keyword.empty()) {
+    return false;
+  }
+
+  if (!caseSensitive) {
+    std::transform(text.begin(), text.end(), text.begin(), [](unsigned char ch) { return static_cast<char>(std::toupper(ch)); });
+    std::transform(keyword.begin(), keyword.end(), keyword.begin(), [](unsigned char ch) { return static_cast<char>(std::toupper(ch)); });
+  }
+
+  if (exactMatch == true) {
+    return text.compare(keyword) == 0;
+  }
+
+  return text.compare(0, keyword.size(), keyword) == 0;
+}
 
 // OFFSET: 0x00837B40
+// FUNCTION: fn_10449
+void CCreateLineInfo::AppendText(const std::string& text) {
+  if (this->m_segments.empty()) {
+    this->AddSegment(LINE_SEGMENT_TEXT);
+  }
+  this->m_segments.back().text += text;
+}
 
 // OFFSET: 0x00837B80
+// FUNCTION: fn_10450
+void CCreateLineInfo::AddWindow(UIWindow* window) {
+  if (this->m_lines.empty()) {
+    this->NewLine();
+  }
+  this->m_lines.back().push_back(window);
+}
 
 // OFFSET: 0x00839310
+// FUNCTION: fn_10457
+std::size_t CCreateLineInfo::FindTag(std::string text, std::string keyword, bool caseSensitive) {
+  if (text.empty() || keyword.empty()) {
+    return std::string::npos;
+  }
+
+  if (!caseSensitive) {
+    std::transform(text.begin(), text.end(), text.begin(), [](unsigned char ch) { return static_cast<char>(std::toupper(ch)); });
+    std::transform(keyword.begin(), keyword.end(), keyword.begin(), [](unsigned char ch) { return static_cast<char>(std::toupper(ch)); });
+  }
+
+  return text.find(keyword, 0);
+}
 
 // OFFSET: 0x00839D60
+// FUNCTION: fn_10460
+std::pair<std::string, std::string> CCreateLineInfo::GetLinkTags(int type) {
+  switch (type) {
+  case LINE_SEGMENT_URL:
+    return std::make_pair(g_urlTag, g_urlCloseTag);
+  case LINE_SEGMENT_NAVI:
+    return std::make_pair(g_naviTag, g_naviCloseTag);
+  case LINE_SEGMENT_ITEM:
+    return std::make_pair(g_itemTag, g_itemCloseTag);
+  case LINE_SEGMENT_ITEM_LINK:
+    return std::make_pair(g_itemLinkTag, g_itemLinkCloseTag);
+  case LINE_SEGMENT_TIPBOX:
+    return std::make_pair(g_tipBoxTag, g_tipBoxCloseTag);
+  case LINE_SEGMENT_QUEST:
+    return std::make_pair(g_questTag, g_questCloseTag);
+  case LINE_SEGMENT_NAVI_LINK:
+    return std::make_pair(g_naviLinkTag, g_naviLinkCloseTag);
+  case LINE_SEGMENT_MESSAGE:
+    return std::make_pair(g_messageTag, g_messageCloseTag);
+  default:
+    return std::pair<std::string, std::string>("", "");
+  }
+}
 
 // OFFSET: 0x0083A180
+// FUNCTION: fn_10462
+void CCreateLineInfo::ApplyFont(std::string tag) {
+  bool changed = false;
+
+  std::size_t position = FindTag(tag, "SIZE", false);
+  if (position != std::string::npos) {
+    const std::string value = tag.substr(position, tag.size() - position);
+    int size = 0;
+    std::sscanf(value.c_str(), "%*[^=]=%d", &size);
+    this->m_fontHeight = size != 0 ? size : this->m_fontHeight;
+    changed = true;
+  }
+
+  position = FindTag(tag, "COLOR", false);
+  if (position != std::string::npos) {
+    const std::string value = tag.substr(position, tag.size() - position);
+    char digits[7] = {};
+    std::sscanf(value.c_str(), "%*[^=]=%6s", digits);
+    char* end = nullptr;
+    const unsigned long color = std::strtol(digits, &end, 16);
+    if (end > digits && end - digits == 6) {
+      changed = true;
+      this->m_color = RGB((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+    }
+  }
+
+  if (changed == true) {
+    this->m_fontStack.push_back(LineFontState{this->m_fontHeight, this->m_color});
+    this->m_newSegment = true;
+  }
+}
 
 // OFFSET: 0x0083A820
+// FUNCTION: fn_10464
+int CCreateLineInfo::AddLink(int index, int type) {
+  const std::pair<std::string, std::string> tags = GetLinkTags(type);
+  const std::size_t end = this->m_text.find(tags.second, index);
+
+  if (end != std::string::npos) {
+    const std::string link = this->m_text.substr(index, end + tags.second.size() - index);
+    this->AddSegment(type);
+    this->AppendText(link);
+    this->m_newSegment = true;
+    index = static_cast<int>(end + tags.second.size());
+  }
+
+  return index;
+}
 
 // OFFSET: 0x0083AA40
+// FUNCTION: fn_10465
+void CCreateLineInfo::NewLine() {
+  std::vector<UIWindow*> line;
+  this->m_lines.push_back(line);
+}
 
 // OFFSET: 0x0083AB90
+// FUNCTION: fn_10466
+void CCreateLineInfo::AddSegment(int type) {
+  LineTextSegment segment(std::string(), LineTextStyle{this->m_color, this->m_fontHeight, this->m_bold > 0, this->m_italic > 0});
+  segment.type = type;
+  this->m_segments.push_back(segment);
+  this->m_newSegment = false;
+}
 
 // OFFSET: 0x0083AF20
+// FUNCTION: fn_10468
+void CCreateLineInfo::ParseText() {
+  const int length = static_cast<int>(this->m_text.size());
+  int index = 0;
+
+  while (index < length) {
+    int next = this->ParseTag(index);
+    if (index == next) {
+      next = this->ParseChar(index);
+    }
+    index = next;
+  }
+}
 
 // OFFSET: 0x0083BD80
+// FUNCTION: fn_10488
+int CCreateLineInfo::ParseEmotion(int index) {
+  const std::string text = this->m_text.substr(index, this->m_text.size() - index);
+  std::cmatch match;
+
+  bool missing = !std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[\\d{1,3}\\](\\[\\d\\])*"));
+  if (missing) {
+    missing = !std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^e\\[\\d{1,3}\\s*,\\s*\\d{1,3}\\](\\[\\d\\])*"));
+    if (missing) {
+      return index;
+    }
+  }
+
+  if (match.size() >= 2) {
+    this->AddSegment(LINE_SEGMENT_EMOTION);
+    this->AppendText(match[0].str());
+    this->m_newSegment = true;
+    index += static_cast<int>(match[0].length());
+  }
+
+  return index;
+}
 
 // INLINED
 inline void CCreateLineInfo::CloseFont(std::string tag) {
@@ -537,21 +703,313 @@ inline void CCreateLineInfo::CloseItalic(std::string tag) {
 }
 
 // OFFSET: 0x0083BFF0
+// FUNCTION: fn_10489
+int CCreateLineInfo::ParseMarkup(int index) {
+  if (this->m_text.at(index) != '<') {
+    return index;
+  }
+
+  const std::size_t end = this->m_text.find('>', index);
+  if (end == std::string::npos) {
+    return index;
+  }
+
+  const std::string tag = this->m_text.substr(index + 1, end - index - 1);
+  if (CompareTag(tag, "FONT", false, false) == true) {
+    this->ApplyFont(tag);
+  } else if (CompareTag(tag, "/FONT", true, false) == true) {
+    this->CloseFont(tag);
+  } else if (CompareTag(tag, "B", true, false) == true) {
+    this->OpenBold(tag);
+  } else if (CompareTag(tag, "/B", true, false) == true) {
+    this->CloseBold(tag);
+  } else if (CompareTag(tag, "I", true, false) == true) {
+    this->OpenItalic(tag);
+  } else if (CompareTag(tag, "/I", true, false) == true) {
+    this->CloseItalic(tag);
+  } else {
+    return index;
+  }
+
+  return static_cast<int>(end + 1);
+}
 
 // OFFSET: 0x0083C3D0
+// FUNCTION: fn_10490
+int CCreateLineInfo::ParseLink(int index) {
+  const std::string text = this->m_text.substr(index, this->m_text.size() - index);
+  int type;
+
+  if (CompareTag(text, g_urlTag, false, true) == true) {
+    type = LINE_SEGMENT_URL;
+  } else if (CompareTag(text, g_itemTag, false, true) == true) {
+    type = LINE_SEGMENT_ITEM;
+  } else if (CompareTag(text, g_itemLinkTag, false, true) == true) {
+    type = LINE_SEGMENT_ITEM_LINK;
+  } else if (CompareTag(text, g_naviTag, false, true) == true) {
+    type = LINE_SEGMENT_NAVI;
+  } else if (CompareTag(text, g_naviLinkTag, false, true) == true) {
+    type = LINE_SEGMENT_NAVI_LINK;
+  } else if (CompareTag(text, g_messageTag, false, true) == true) {
+    type = LINE_SEGMENT_MESSAGE;
+  } else if (CompareTag(text, g_questTag, false, true) == true) {
+    type = LINE_SEGMENT_QUEST;
+  } else if (CompareTag(text, g_tipBoxTag, false, true) == true) {
+    type = LINE_SEGMENT_TIPBOX;
+  } else {
+    return index;
+  }
+
+  return this->AddLink(index, type);
+}
 
 // OFFSET: 0x0083C6A0
+// FUNCTION: fn_10491
+int CCreateLineInfo::ParseItemImage(int index) {
+  const std::string text = this->m_text.substr(index, this->m_text.size() - index);
+  std::cmatch match;
+
+  const bool missing = !std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("^\\^i(\\[\\d{1,7}\\])*"));
+  if (!missing && match.size() >= 2) {
+    this->AddSegment(LINE_SEGMENT_ITEM_IMAGE);
+    this->AppendText(match[0].str());
+    this->m_newSegment = true;
+    index += static_cast<int>(match[0].length());
+  }
+
+  return index;
+}
 
 // OFFSET: 0x0083C890
+// FUNCTION: fn_10492
+int CCreateLineInfo::ParseItemName(int index) {
+  const std::string keyword = "^nItemID^";
+
+  if (index == static_cast<int>(this->m_text.find(keyword, index))) {
+    std::string digits;
+    for (long long position = index + keyword.size(); position < this->m_text.size(); ++position) {
+      const char ch = this->m_text.at(static_cast<std::size_t>(position));
+      if (!g_colorHexDigit[static_cast<unsigned char>(ch)]) {
+        break;
+      }
+      digits.push_back(ch);
+    }
+
+    if (!digits.empty()) {
+      ITEM_INFO item;
+      item.SetItemId(std::atoi(digits.c_str()));
+      char name[260];
+      std::memset(name, 0, sizeof(name));
+      int capacity = sizeof(name);
+      ItemDescriptions descriptions{g_itemDescriptions};
+      descriptions.Name(item, name, capacity, 0);
+      this->AddSegment(LINE_SEGMENT_TEXT);
+      this->AppendText(std::string(name));
+      index += static_cast<int>(digits.size()) + 9;
+      this->m_newSegment = true;
+    }
+  }
+
+  return index;
+}
 
 // OFFSET: 0x0083CDA0
+// FUNCTION: fn_10493
+int CCreateLineInfo::ParseChar(int index) {
+  const std::string text = this->m_text.substr(index, this->m_text.size() - index);
+  const std::string character = NextCharacter(text);
+
+  if (character.empty()) {
+    return index + 1;
+  }
+
+  if (character == "\n") {
+    this->AddSegment(LINE_SEGMENT_TEXT);
+    this->AppendText(character);
+    this->m_newSegment = true;
+  } else if (character != "\r") {
+    if (character == " ") {
+      if (index > 0) {
+        const std::string previousText = this->m_text.substr(index - 1, this->m_text.size() - (index - 1));
+        const std::string previous = NextCharacter(previousText);
+        if (previous == "\n") {
+          this->AddSegment(LINE_SEGMENT_TEXT);
+        }
+        this->AppendText(character);
+        this->m_newSegment = true;
+      } else {
+        this->AppendText(character);
+        this->m_newSegment = true;
+      }
+    } else {
+      if (this->m_newSegment == true) {
+        this->AddSegment(LINE_SEGMENT_TEXT);
+      }
+      this->AppendText(character);
+    }
+  }
+
+  return index + static_cast<int>(character.size());
+}
 
 // OFFSET: 0x0083CFE0
+// FUNCTION: fn_10494
+std::string CCreateLineInfo::NextCharacter(std::string text) {
+  const char* begin = text.c_str();
+  const char* end = CharNextExA(static_cast<WORD>(g_textCodePage), begin, 0);
+  if (!end) {
+    return "";
+  }
+  return std::string(begin, end);
+}
 
 // OFFSET: 0x0083D090
+// FUNCTION: fn_10495
+int CCreateLineInfo::ParseTag(int index) {
+  if (this->m_text.at(index) == '^') {
+    int next = index;
+    const std::string code = this->m_text.substr(index + 1, 6);
+    const char* digits = code.c_str();
+    if (digits) {
+      char* end = nullptr;
+      const unsigned long value = std::strtol(digits, &end, 16);
+      if (end > digits && end - digits == 6) {
+        next = index + 7;
+        const std::uint32_t color = RGB((value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
+        this->m_newSegment = true;
+        this->m_defaultColor = color;
+        this->m_color = color;
+      }
+    }
+    if (index != next) {
+      return next;
+    }
+  }
+
+  int next = this->ParseItemName(index);
+  if (index != next) {
+    return next;
+  }
+  next = this->ParseEmotion(index);
+  if (index != next) {
+    return next;
+  }
+  next = this->ParseItemImage(index);
+  if (index != next) {
+    return next;
+  }
+  next = this->ParseLink(index);
+  if (index != next) {
+    return next;
+  }
+  next = this->ParseMarkup(index);
+  return index != next ? next : index;
+}
 
 // OFFSET: 0x0083D1F0
+// FUNCTION: fn_10496
+void CCreateLineInfo::ArrangeLines() {
+  int y = 0;
+
+  for (auto lineIt = this->m_lines.begin(); lineIt != this->m_lines.end(); ++lineIt) {
+    std::vector<UIWindow*>& line = *lineIt;
+    unsigned lineHeight = 0;
+    for (UIWindow* window : line) {
+      lineHeight = std::max(lineHeight, static_cast<unsigned>(window->geometry.height));
+    }
+
+    switch (this->m_align) {
+    case 0: {
+      int x = 0;
+      for (auto it = line.begin(); it != line.end(); ++it) {
+        UIWindow* window = *it;
+        if (window) {
+          window->Move(x, lineHeight - window->geometry.height + y);
+          x += window->geometry.width;
+        }
+      }
+      break;
+    }
+    case 1: {
+      int x = this->m_width;
+      for (auto it = line.rbegin(); it != line.rend(); ++it) {
+        UIWindow* window = *it;
+        if (window) {
+          x -= window->geometry.width;
+          window->Move(x, lineHeight - window->geometry.height + y);
+        }
+      }
+      break;
+    }
+    case 2: {
+      int width = 0;
+      for (UIWindow* window : line) {
+        width += window->geometry.width;
+      }
+      int x = static_cast<unsigned>(this->m_width - width) / 2;
+      for (auto it = line.begin(); it != line.end(); ++it) {
+        UIWindow* window = *it;
+        if (window) {
+          window->Move(x, lineHeight - window->geometry.height + y);
+          x += window->geometry.width;
+        }
+      }
+      break;
+    }
+    }
+
+    y += this->m_lineSpacing + lineHeight;
+  }
+
+  this->m_height = y - this->m_lineSpacing;
+}
 
 // OFFSET: 0x0083D360
+// FUNCTION: fn_10497
+std::tuple<bool, std::string, std::string> CCreateLineInfo::SplitLinkInfo(std::string text, int type) {
+  const std::pair<std::string, std::string> tags = GetLinkTags(type);
+  const std::string open = tags.first;
+  const std::string close = tags.second;
+
+  if (text.empty() || open.empty() || close.empty()) {
+    return std::tuple<bool, std::string, std::string>(false, "", "");
+  }
+
+  const std::size_t begin = text.find(open, 0);
+  if (begin == std::string::npos) {
+    return std::tuple<bool, std::string, std::string>(false, "", "");
+  }
+
+  if (text.find(close, begin) != std::string::npos) {
+    const std::size_t infoBegin = text.find(g_infoTag, begin);
+    if (infoBegin != std::string::npos) {
+      const std::size_t infoEnd = text.find(g_infoCloseTag, infoBegin);
+      if (infoEnd != std::string::npos) {
+        const std::string name = text.substr(begin + open.size(), infoBegin - open.size() - begin);
+        const std::string info = text.substr(infoBegin + g_infoTag.size(), infoEnd - g_infoTag.size() - infoBegin);
+        return std::tuple<bool, std::string, std::string>(true, name, info);
+      }
+    }
+  }
+
+  return std::tuple<bool, std::string, std::string>(false, "", "");
+}
 
 // OFFSET: 0x0083D660
+// FUNCTION: fn_10498
+std::vector<std::string> CCreateLineInfo::SplitString(std::string text, const std::string& delimiter) {
+  std::vector<std::string> parts;
+  if (text.empty()) {
+    return parts;
+  }
+
+  std::size_t position = text.find(delimiter, 0);
+  while (position != std::string::npos) {
+    parts.push_back(text.substr(0, position));
+    text = text.substr(position + delimiter.size());
+    position = text.find(delimiter, 0);
+  }
+
+  parts.push_back(text);
+  return parts;
+}
