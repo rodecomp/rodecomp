@@ -1,6 +1,10 @@
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/EffectResourceSwitcher.h"
+#include "Contents/Effects/EZ2STREffectEx.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
@@ -134,6 +138,7 @@ public:
   int Slot01() override;
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_PULSE_OF_MADNESS : public CEfstAction {
@@ -145,6 +150,7 @@ public:
 class CSkillAction_AT_FRENZY_FANG : public CSkillAction_DamageWereWolfForm {
 public:
   int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_AT_PINION_SHOT : public CSkillAction_DamageWereRaptorForm {
@@ -152,6 +158,7 @@ public:
   int Slot01() override;
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_AT_QUILL_SPEAR : public CSkillAction_DamageWereRaptorForm {
@@ -159,6 +166,12 @@ public:
   int Slot01() override;
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_AT_QUILL_SPEAR_S : public CSkillAction_DamageWereRaptorForm {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_AT_NATURE_HARMONY : public CSkillAction {
@@ -232,10 +245,21 @@ public:
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
+class CSkillAction_AT_ROARING_PIERCER : public CSkillAction_ThunderingBasic {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_AT_ROARING_PIERCEER_S : public CSkillAction_ThunderingExpand {
+public:
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
 class CSkillAction_AT_FURIOS_STORM : public CSkillAction_Thundering {
 public:
   int Slot02() override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
+  void Slot17(CGameActor* source) override;
 };
 
 class CEfstAction_FURIOS_STORM : public CEfstAction {
@@ -630,6 +654,8 @@ void CSkillAction_AT_PULSE_OF_MADNESS::Slot08(int level, CGameActor* source) {
   }
 }
 
+// OFFSET: 0x005A6A00
+
 // OFFSET: 0x005A6C00
 // FUNCTION: fn_03193
 EfstActionMessage CEfstAction_PULSE_OF_MADNESS::Slot03() {
@@ -647,6 +673,8 @@ EfstActionMessage CEfstAction_PULSE_OF_MADNESS::Slot04() {
 int CSkillAction_AT_FRENZY_FANG::Slot02() {
   return 70;
 }
+
+// OFFSET: 0x005A6C70
 
 // OFFSET: 0x005A6EE0
 // FUNCTION: fn_03197
@@ -668,6 +696,8 @@ void CSkillAction_AT_PINION_SHOT::Slot08(int level, CGameActor* source) {
   }
 }
 
+// OFFSET: 0x005A6F30
+
 // OFFSET: 0x005A71A0
 // FUNCTION: fn_03202
 int CSkillAction_AT_QUILL_SPEAR::Slot01() {
@@ -687,6 +717,10 @@ void CSkillAction_AT_QUILL_SPEAR::Slot08(int level, CGameActor* source) {
     source->LaunchEffect(56, level / 16);
   }
 }
+
+// OFFSET: 0x005A71F0
+
+// OFFSET: 0x005A74A0
 
 // OFFSET: 0x005A7750
 // FUNCTION: fn_03207
@@ -995,6 +1029,10 @@ void CSkillAction_AT_ROARING_CHARGE_S::Slot11(int level, CGameActor* source, CGa
   }
 }
 
+// OFFSET: 0x005A9F50
+
+// OFFSET: 0x005AA180
+
 // OFFSET: 0x005AA3B0
 // FUNCTION: fn_03236
 int CSkillAction_AT_FURIOS_STORM::Slot02() {
@@ -1049,6 +1087,11 @@ void CSkillAction_AT_FURIOS_STORM::Slot11(int level, CGameActor* source, CGameAc
       effect->Slot16(delay);
     }
   }
+}
+
+// OFFSET: 0x005AABF0
+// FUNCTION: fn_03238
+void CSkillAction_AT_FURIOS_STORM::Slot17(CGameActor* source) {
 }
 
 // OFFSET: 0x005AAC00
