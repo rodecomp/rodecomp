@@ -235,6 +235,16 @@ void UIBitmapEditCtrl::Paint() {
   this->PaintText();
 }
 
+// OFFSET: 0x00865590
+// FUNCTION: fn_10927
+void UIBitmapEditCtrl::SetBitmapName(const char* name) {
+  this->bitmapName.assign(name, std::strlen(name));
+
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())));
+  this->geometry.width = bitmap->image.width;
+  this->geometry.height = bitmap->image.height;
+}
+
 // OFFSET: 0x0084EE90
 // FUNCTION: fn_10654
 UIChatEditCtrl::UIChatEditCtrl(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit), unknown_0140(0), historyLimit(30) {
@@ -309,6 +319,17 @@ int UIEditCtrlVarId::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 void UIEditCtrlVarId::SetText(const char* value) {
   this->UIEditCtrl::SetText(value);
   this->Invalidate();
+}
+
+// OFFSET: 0x0085AB10
+// FUNCTION: fn_10784
+void UIWhisperEditCtrl::Slot23() {
+  this->m_edit->input.ResetInput();
+  this->m_edit->input.ResetInput();
+  this->m_edit->input.Insert(this->text.c_str());
+  this->m_edit->password = this->mask != 0;
+  this->SelectAll();
+  this->SelectAll();
 }
 
 // OFFSET: 0x00868230

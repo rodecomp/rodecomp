@@ -187,6 +187,7 @@ public:
 class UIBitmapEditCtrl : public UIEditCtrl {
 public:
   void Paint() override;
+  void SetBitmapName(const char* name);
 
   /* 011C */ std::string bitmapName;
 };
@@ -217,6 +218,7 @@ public:
 
 class UIWhisperEditCtrl : public UIEditCtrl {
 public:
+  void Slot23() override;
   void SetText(const char* value) override;
 
   /* 011C */ std::vector<std::string> history;
