@@ -17,6 +17,7 @@ public:
   /* 00F0 */ WindowPlacement* m_placement;
 
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Paint() override;
 
   ITEM_INFO FindEquippedItem(int location);

@@ -1784,6 +1784,17 @@ void UICardItemIllustWnd::Slot15(int, int) {
   this->AddCloseButton(*this->m_controls, "", 0);
 }
 
+// OFFSET: 0x008E3090
+// FUNCTION: fn_12179
+void UIItemParamChangeDisplayWnd::Slot15(int, int) {
+  this->SendMsg(nullptr, 60, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x008E3330
+// FUNCTION: fn_12181
+void UIMenuWnd::Slot15(int, int) {
+}
+
 // OFFSET: 0x0090AED0
 // FUNCTION: fn_12418
 int ScaleByScreenHeight(int value) {

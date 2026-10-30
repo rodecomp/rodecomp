@@ -18,6 +18,7 @@ public:
   /* 00D0 */ std::uint32_t* m_colors;
 
   void Move(int x, int y) override;
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot27(int x, int y) override;
   void Slot28(int x, int y) override;
