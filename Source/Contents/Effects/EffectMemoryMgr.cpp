@@ -1,3 +1,4 @@
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/NyanggrassEffect.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/Effects/SpriteParticle.h"
@@ -33,13 +34,32 @@ class CEffectMemoryPool : public IEffectMemoryPool {
 
 class CEffectMemoryMgr {
   public:
-  virtual ~CEffectMemoryMgr();
+  // INLINED
+  CEffectMemoryMgr() : m_initialized(false) {
+    if (this->Init()) {
+      this->m_initialized = true;
+    }
+  }
+
+  // INLINED
+  virtual ~CEffectMemoryMgr() {
+    for (auto it = this->m_pools.begin(); it != this->m_pools.end(); ++it) {
+      delete *it;
+    }
+  }
 
   bool Init();
+  CParticle* Alloc(int type);
+  void Free(int type, CParticle* particle);
 
-  /* 0004 */ bool m_initialized = false;
+  /* 0004 */ bool m_initialized;
   /* 0008 */ std::vector<IEffectMemoryPool*> m_pools;
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(CEffectMemoryMgr) == 0x14);
+static_assert(offsetof(CEffectMemoryMgr, m_pools) == 0x8);
+#endif
 
 // GLOBAL: gl_24796
 CEffectMemoryMgr* g_effectMemoryMgr;
@@ -135,15 +155,13 @@ bool CEffectMemoryMgr::Init() {
 }
 
 // OFFSET: 0x00B823F0
+// FUNCTION: fn_19273
 bool CreateEffectMemoryMgr() {
   if (g_effectMemoryMgr != NULL) {
     return false;
   }
 
   CEffectMemoryMgr* mgr = new (std::nothrow) CEffectMemoryMgr;
-  if (mgr != NULL && mgr->Init()) {
-    mgr->m_initialized = true;
-  }
 
   g_effectMemoryMgr = mgr;
 
@@ -180,4 +198,74 @@ template class CEffectMemoryPool<CEZ2STRParticle>;
 template void CEffectMemoryPool<CSpriteParticle>::Free(CParticle* particle);
 template void CEffectMemoryPool<CMultiTexParticle>::Free(CParticle* particle);
 
+}
+
+// OFFSET: 0x00B820C0
+// FUNCTION: fn_19271
+CParticle* CEffectMemoryMgr::Alloc(int type) {
+  return this->m_pools[type]->Alloc();
+}
+
+// OFFSET: 0x00B82500
+// FUNCTION: fn_19274
+void DestroyEffectMemoryMgr() {
+  if (g_effectMemoryMgr) {
+    delete g_effectMemoryMgr;
+    g_effectMemoryMgr = nullptr;
+  }
+}
+
+// OFFSET: 0x00B82760
+// FUNCTION: fn_19279
+void CEffectMemoryMgr::Free(int type, CParticle* particle) {
+  this->m_pools[type]->Free(particle);
+}
+
+// OFFSET: 0x00B82ED0
+// FUNCTION: fn_19290
+CParticle* CreateEZ2STRParticle(const vector3d* position, int flags) {
+  CParticle* particle = g_effectMemoryMgr->Alloc(2);
+  particle->unknown_02B0 = 2;
+  particle->position = *position;
+  particle->flags = flags;
+  return particle;
+}
+
+// OFFSET: 0x00B82F10
+// FUNCTION: fn_19291
+CParticle* CreateMultiTexParticle(const vector3d* position, int flags) {
+  CParticle* particle = g_effectMemoryMgr->Alloc(3);
+  particle->unknown_02B0 = 3;
+  particle->position = *position;
+  particle->flags = flags;
+  return particle;
+}
+
+// OFFSET: 0x00B82F50
+// FUNCTION: fn_19292
+CParticle* CreateParticle(const vector3d* position, int flags) {
+  CParticle* particle = g_effectMemoryMgr->Alloc(0);
+  particle->unknown_02B0 = 0;
+  particle->position = *position;
+  particle->flags = flags;
+  return particle;
+}
+
+// OFFSET: 0x00B82F90
+// FUNCTION: fn_19293
+CParticle* CreateSpriteParticle(const vector3d* position, int flags) {
+  CParticle* particle = g_effectMemoryMgr->Alloc(1);
+  particle->unknown_02B0 = 1;
+  particle->position = *position;
+  particle->flags = flags;
+  return particle;
+}
+
+// OFFSET: 0x00B82FD0
+// FUNCTION: fn_19294
+void FreeParticle(CParticle* particle) {
+  if (particle) {
+    particle->Slot01();
+  }
+  g_effectMemoryMgr->Free(particle->unknown_02B0, particle);
 }

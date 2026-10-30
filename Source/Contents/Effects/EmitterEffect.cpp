@@ -2,13 +2,11 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstring>
-
-CParticle* sub_B82F50(const vector3d* position, int flags);
-void sub_B82FD0(CParticle* particle);
 
 // OFFSET: 0x00B4FAF0
 // FUNCTION: fn_19008
@@ -28,7 +26,7 @@ CEmitterEffect::~CEmitterEffect() {
 // FUNCTION: fn_19011
 void CEmitterEffect::Close() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
-    sub_B82FD0(*it);
+    FreeParticle(*it);
   }
 
   this->particles.clear();
@@ -39,7 +37,7 @@ void CEmitterEffect::Close() {
 // FUNCTION: fn_19012
 void CEmitterEffect::Slot01() {
   for (int i = 0; i < this->count; ++i) {
-    CParticle* particle = sub_B82F50(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
     if (particle) {
       particle->unknown_00C0 = this->particleSpeed;
       this->InitParticle(particle);

@@ -3,13 +3,11 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/World/World.h"
 #include "Resource/World/TerrainResource.h"
-
-CParticle* sub_B82ED0(const vector3d* position, int flags);
-void sub_B82FD0(CParticle* particle);
 
 // OFFSET: 0x007088B0
 // FUNCTION: fn_07076
@@ -31,7 +29,7 @@ CCompetentia::CCompetentia() : CEffect(1851) {
 // FUNCTION: fn_07079
 void CCompetentia::Close() {
   for (CParticle* particle : this->particles) {
-    sub_B82FD0(particle);
+    FreeParticle(particle);
   }
 
   this->particles.clear();
@@ -48,7 +46,7 @@ void CCompetentia::Slot01() {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     pos.y = mode->scene->terrain->Grid().Height(pos.x, pos.z);
 
-    CParticle* particle = sub_B82ED0(&pos, 5);
+    CParticle* particle = CreateEZ2STRParticle(&pos, 5);
     if (particle != nullptr) {
       static_cast<CEZ2STRParticle*>(particle)->Open("competentia\\competentia_cast_particle\\competentia_cast_particle.str");
       static_cast<CEZ2STRParticle*>(particle)->m_loop = true;
