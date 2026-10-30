@@ -40,7 +40,9 @@ public:
   /* 02EC */ std::string unknown_02EC;
   /* 0304 */ unsigned char unknown_0304[0x04];
   /* 0308 */ ModeDragState drag;
-  /* 03C8 */ unsigned char unknown_03C8[0x2A8];
+  /* 03C8 */ unsigned char unknown_03C8[0x208];
+  /* 05D0 */ UIWindow* unknown_05D0;
+  /* 05D4 */ unsigned char unknown_05D4[0x9C];
 
   std::string MapName();
   void WorldCell(float x, float z, int& column, int& row) const;
@@ -100,6 +102,7 @@ static_assert(offsetof(CGameMode, camera) == 0xD0);
 static_assert(offsetof(CGameMode, nameCard) == 0x160);
 static_assert(offsetof(CGameMode, unknown_0294) == 0x294);
 static_assert(offsetof(CGameMode, drag) == 0x308);
+static_assert(offsetof(CGameMode, unknown_05D0) == 0x5D0);
 static_assert(sizeof(CGameMode) == 0x670);
 #endif
 

@@ -1,8 +1,12 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Configuration/ScriptOptions.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
+#include "Contents/World/World.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Network/Connection/Connection.h"
@@ -287,6 +291,12 @@ struct WhisperBlockPacket {
   std::int16_t id;
   unsigned char enabled;
 };
+
+struct ConfigPacket {
+  std::int16_t id;
+  int type;
+  int value;
+};
 #pragma pack(pop)
 }
 
@@ -338,6 +348,52 @@ void NotifyGameModeOptionAlt() {
 void NotifyGameModeMenu() {
   if (CMode* mode = g_modeMgr.GetGameMode()) {
     mode->SendMsg(0x4B, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006C40C0
+// FUNCTION: fn_06350
+void RotatePlayerDirection(bool clockwise) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (!mode) {
+    return;
+  }
+
+  CPlayer* player = mode->scene->player;
+  if (!player) {
+    return;
+  }
+
+  float angle = static_cast<float>((8 - player->Get8Dir(player->render.angle)) * 45) - mode->camera->camera.yaw;
+  if (clockwise) {
+    angle -= 45.0f;
+    player->render.angle = angle;
+    if (angle < 0.0f) {
+      angle += 360.0f;
+      player->render.angle = angle;
+    }
+  } else {
+    angle += 45.0f;
+    player->render.angle = angle;
+    if (angle >= 360.0f) {
+      angle -= 360.0f;
+      player->render.angle = angle;
+    }
+  }
+
+  mode->SendMsg(0x8B, (static_cast<int>(angle) + 180) / 45 % 8, 0, 0, 0);
+}
+
+// OFFSET: 0x006C41B0
+// FUNCTION: fn_06351
+void SendConfigServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    ConfigPacket packet;
+    packet.id = 0x2D8;
+    packet.type = 1;
+    packet.value = value;
+    CRagConnection& connection = GetRagConnection();
+    connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
   }
 }
 
@@ -424,6 +480,22 @@ void ApplyServiceOptionWindow268(int id, unsigned char value, bool notify, int e
 
   if (UIWindow* window = g_windowMgr.LookupWindow(0x10C)) {
     window->Show(value);
+  }
+}
+
+// OFFSET: 0x006C6300
+// FUNCTION: fn_06380
+void ApplyServiceOptionHideWindow(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (mode && mode->unknown_05D0 && !g_serviceOptions.Get(id)) {
+    mode->unknown_05D0->Show(0);
   }
 }
 
