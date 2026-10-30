@@ -12,9 +12,13 @@ struct LexiconNode {
 };
 
 struct LexiconSerializer {
-  /* 0000 */ std::uint32_t unknown_0000[4];
+  /* 0000 */ LexiconNode* root;
+  /* 0004 */ int wordCount;
+  /* 0008 */ int nodeCount;
+  /* 000C */ std::uint32_t unknown_000C;
   /* 0010 */ unsigned char* buffer;
 
+  bool Insert(const unsigned char* word, int length);
   void Destroy(LexiconNode* node);
   std::uint32_t Serialize(LexiconNode* node, std::uint32_t offset, unsigned char terminal);
 };

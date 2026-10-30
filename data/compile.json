@@ -638,6 +638,7 @@
   "Source/File/ResourcePath.cpp": 1,
   "Source/File/ShortcutFilename.cpp": 1,
   "Source/Interface/BoolStubs.cpp": 4,
+  "Source/LexiconTrie.cpp": 4,
   "Source/Network/ActorNamePacket.cpp": 0,
   "Source/Network/ClientKeepalive.cpp": 0,
   "Source/Network/ClientOptionPacket.cpp": 0,
