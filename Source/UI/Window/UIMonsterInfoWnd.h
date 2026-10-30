@@ -4,26 +4,33 @@
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstdint>
+#include <string>
 
 struct UIButtonContext;
 
 struct MonsterInfo {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
-  /* 0010 */ int unknown_0010;
-  /* 0014 */ int unknown_0014;
-  /* 0018 */ int unknown_0018;
-  /* 001C */ unsigned char unknown_001C;
+  /* 0000 */ short unknown_0000;
+  /* 0002 */ short job;
+  /* 0004 */ short level;
+  /* 0006 */ short size;
+  /* 0008 */ int hp;
+  /* 000C */ short defense;
+  /* 000E */ short race;
+  /* 0010 */ short magicDefense;
+  /* 0012 */ short element;
+  /* 0014 */ unsigned char resistances[9];
 };
 
 class UIMonsterInfoWnd : public UIFrameWnd {
 public:
   void Slot28(int x, int y) override;
+  void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  void DrawResistance(int x, int y, const char* label, int value, std::uint32_t border, std::uint32_t fill);
 
   /* 00B4 */ MonsterInfo info;
+  /* 00D4 */ int unknown_00D4;
+  /* 00D8 */ std::string name;
 
 protected:
   UIButtonContext* m_controls;

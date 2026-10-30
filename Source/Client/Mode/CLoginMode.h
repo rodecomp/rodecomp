@@ -53,7 +53,9 @@ public:
   /* 01D8 */ int unknown_01D8;
   /* 01DC */ int unknown_01DC;
   /* 01E0 */ bool characterDeleted;
-  /* 01E1 */ unsigned char unknown_01E1[0x3E87];
+  /* 01E1 */ unsigned char unknown_01E1[0x3];
+  /* 01E4 */ std::uint32_t otpStarted;
+  /* 01E8 */ unsigned char unknown_01E8[0x3E80];
   /* 4068 */ CharacterInfo characters[68];
   /* 6EE4 */ unsigned char unknown_6EE4[0x18];
   /* 6EFC */ CharacterSlotExtension slotExtension;

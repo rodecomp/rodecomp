@@ -7,6 +7,7 @@
 #include <cstdint>
 
 class UIButton;
+class UIStaticText;
 struct InputFocus;
 
 class UIReplayRECControlWnd : public UIFrameWnd {
@@ -15,6 +16,7 @@ public:
   void Slot11() override;
   void Paint() override;
   void ApplyMode();
+  void UpdateRecordTime();
 
   /* 00B4 */ int mode;
   /* 00B8 */ int unknown_00B8;
@@ -25,7 +27,7 @@ public:
   /* 00CC */ UIWindow* window_00CC;
   /* 00D0 */ UIButton* button_00D0;
   /* 00D4 */ UIWindow* tabs[5];
-  /* 00E8 */ UIWindow* window_00E8;
+  /* 00E8 */ UIStaticText* window_00E8;
   /* 00EC */ UIWindow* window_00EC;
   /* 00F0 */ std::uint32_t recordStart;
   /* 00F4 */ UIWindow* options[10];

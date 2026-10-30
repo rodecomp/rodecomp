@@ -5,6 +5,7 @@
 
 class UIMakeCharWnd : public UIFrameWnd {
 public:
+  void Slot18() override;
   void Slot19() override;
 };
 

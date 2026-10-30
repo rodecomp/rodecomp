@@ -40,6 +40,16 @@
 #include "UI/Window/UIPayConfirmWnd.h"
 #include "UI/Window/UIReplayControlWnd.h"
 #include "UI/Window/UIMakeCharWnd.h"
+#include "Client/Mode/CLoginMode.h"
+#include "Client/Replay.h"
+#include "Client/Application/Launcher.h"
+#include "UI/Lists/UIChatHisBox.h"
+#include "Client/Application/ApplicationWindow.h"
+#include "UI/Text/UIStaticText.h"
+#include "UI/UIBarGraph.h"
+#include "Utility/Text/FormatString.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 #include <cstring>
 
 #include <cstdio>
@@ -47,6 +57,9 @@
 #include <windows.h>
 #include <timeapi.h>
 #include <shellapi.h>
+#include <imm.h>
+#include <direct.h>
+#include <io.h>
 
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
@@ -1004,3 +1017,31 @@ void UIChatRoomWnd::Move(int x, int y) {
 // FUNCTION: fn_11753
 void UILoginOTPWnd::Slot18() {
 }
+
+// OFFSET: 0x008B7A70
+// FUNCTION: fn_11754
+void UILoginWnd::Slot18() {
+}
+
+// OFFSET: 0x008B7A80
+// FUNCTION: fn_11755
+void UIMakeCharWnd::Slot18() {
+}
+
+// OFFSET: 0x008B8E90
+
+// OFFSET: 0x008BA670
+
+// OFFSET: 0x008BAEF0
+
+// OFFSET: 0x008AAA10
+
+// OFFSET: 0x008B8ED0
+
+// OFFSET: 0x008C3440
+
+// OFFSET: 0x008BA820
+
+// OFFSET: 0x008C36F0
+
+// OFFSET: 0x008ABDB0
