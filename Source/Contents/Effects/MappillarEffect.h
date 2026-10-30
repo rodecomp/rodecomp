@@ -10,6 +10,7 @@ class CParticle;
 
 class CMappillarEffect : public CEffect {
 public:
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
 
