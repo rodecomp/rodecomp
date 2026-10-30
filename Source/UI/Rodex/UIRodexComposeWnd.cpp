@@ -179,3 +179,11 @@ void UIRodexComposeWnd::Slot10(int x, int y, std::intptr_t value) {
 }
 
 // OFFSET: 0x007FF4A0
+// FUNCTION: fn_10001
+std::int64_t UIRodexComposeWnd::GetZeny() {
+  char text[260];
+  std::memset(text, 0, sizeof(text));
+  strcpy_s(text, sizeof(text), this->m_zeny->Text());
+  g_session.IsNumberWithCommas(text);
+  return _atoi64(text);
+}
