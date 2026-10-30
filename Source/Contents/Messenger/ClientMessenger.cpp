@@ -3,6 +3,8 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
+#include "Contents/Actors/ActorStateFlags.h"
+#include "Contents/Actors/GameActor.h"
 #include "Contents/ClientState.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Jobs/JobId.h"
@@ -11,6 +13,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIMileageWnd.h"
 #include "Network/TextEncoding.h"
+#include "Contents/World/World.h"
 
 #include <algorithm>
 #include <array>
@@ -141,6 +144,7 @@ namespace EquipmentProperties {
   public:
     explicit CEquipmentProperties2Dim(EquipmentPropertyDefinition* definition);
     CEquipmentProperties* Accumulate(CEquipmentProperties* other) override;
+    ~CEquipmentProperties2Dim() override;
     CEquipmentProperties* Clone() override;
     void SetValue(const int& index, const int& value, const unsigned int& key);
 
@@ -168,6 +172,16 @@ EquipmentProperties::CEquipmentProperties1Dim::CEquipmentProperties1Dim(Equipmen
 // OFFSET: 0x00695F60
 // FUNCTION: fn_05737
 EquipmentProperties::CEquipmentProperties2Dim::CEquipmentProperties2Dim(EquipmentPropertyDefinition* definition) : CEquipmentProperties(definition) {
+}
+
+// OFFSET: 0x0068B490
+// FUNCTION: fn_05610
+EquipmentProperties::CEquipmentProperties::~CEquipmentProperties() {
+}
+
+// OFFSET: 0x0068B3F0
+// FUNCTION: fn_05609
+EquipmentProperties::CEquipmentProperties2Dim::~CEquipmentProperties2Dim() {
 }
 
 // OFFSET: 0x00698550
@@ -2174,6 +2188,251 @@ void CGameMode::NotifyItemBounds() {
   g_windowMgr.NotifyItemWindows(g_session.m_aid, g_session.unknown_5568, g_session.unknown_556C);
 }
 
+// OFFSET: 0x0069C980
+// FUNCTION: fn_05924
+int CLuaInstance::GetFieldInt(int& value, const char* name) {
+  if (lua_type(this->m_state, -1) != LUA_TTABLE) {
+    return 3;
+  }
+
+  lua_getfield(this->m_state, -1, name);
+  const int type = lua_type(this->m_state, -1);
+  int result = 0;
+  if (type == LUA_TNUMBER) {
+    value = static_cast<int>(lua_tonumber(this->m_state, -1));
+  } else {
+    result = (type != LUA_TNIL) + 1;
+  }
+  lua_settop(this->m_state, -2);
+  return result;
+}
+
+// OFFSET: 0x0069CA00
+// FUNCTION: fn_05925
+int CLuaInstance::GetFieldUIntArray(std::vector<unsigned int>& values, const char* name) {
+  if (lua_type(this->m_state, -1) != LUA_TTABLE) {
+    return 3;
+  }
+
+  lua_getfield(this->m_state, -1, name);
+  int type = lua_type(this->m_state, -1);
+  int result = 0;
+  if (type == LUA_TTABLE) {
+    lua_pushnil(this->m_state);
+    while (lua_next(this->m_state, -2) != 0) {
+      if (lua_type(this->m_state, -1) != LUA_TNUMBER) {
+        result = 2;
+        break;
+      }
+      values.push_back(static_cast<unsigned int>(lua_tonumber(this->m_state, -1)));
+      lua_settop(this->m_state, -2);
+    }
+  } else {
+    result = (type != LUA_TNIL) + 1;
+  }
+  lua_settop(this->m_state, -2);
+  return result;
+}
+
+// OFFSET: 0x0069CB10
+// FUNCTION: fn_05926
+int CLuaInstance::GetFieldString(std::string& value, const char* name) {
+  if (lua_type(this->m_state, -1) != LUA_TTABLE) {
+    return 3;
+  }
+
+  lua_getfield(this->m_state, -1, name);
+  const int type = lua_type(this->m_state, -1);
+  int result = 0;
+  if (type == LUA_TSTRING) {
+    value = lua_tostring(this->m_state, -1);
+  } else {
+    result = (type != LUA_TNIL) + 1;
+  }
+  lua_settop(this->m_state, -2);
+  return result;
+}
+
+// OFFSET: 0x0069CBA0
+// FUNCTION: fn_05927
+int CLuaInstance::GetFieldStringArray(std::vector<std::string>& values, const char* name) {
+  if (lua_type(this->m_state, -1) != LUA_TTABLE) {
+    return 3;
+  }
+
+  lua_getfield(this->m_state, -1, name);
+  int type = lua_type(this->m_state, -1);
+  int result = 0;
+  if (type == LUA_TTABLE) {
+    lua_pushnil(this->m_state);
+    while (lua_next(this->m_state, -2) != 0) {
+      if (lua_type(this->m_state, -1) != LUA_TSTRING) {
+        result = 2;
+        break;
+      }
+      values.push_back(std::string(lua_tostring(this->m_state, -1)));
+      lua_settop(this->m_state, -2);
+    }
+  } else {
+    result = (type != LUA_TNIL) + 1;
+  }
+  lua_settop(this->m_state, -2);
+  return result;
+}
+
+// OFFSET: 0x0069CE90
+// FUNCTION: fn_05928
+int CLuaInstance::GetFieldUIntMap(std::map<unsigned int, unsigned int>& values, const char* name) {
+  lua_pushstring(this->m_state, name);
+  lua_gettable(this->m_state, -2);
+  int type = lua_type(this->m_state, -1);
+  int result = 0;
+  if (type == LUA_TTABLE) {
+    lua_pushnil(this->m_state);
+    while (lua_next(this->m_state, -2) != 0) {
+      type = lua_type(this->m_state, -2);
+      if (type != LUA_TNUMBER) {
+        result = (type != LUA_TNIL) + 1;
+        break;
+      }
+      const unsigned int key = static_cast<unsigned int>(lua_tonumber(this->m_state, -2));
+      type = lua_type(this->m_state, -1);
+      if (type != LUA_TNUMBER) {
+        result = (type != LUA_TNIL) + 1;
+        break;
+      }
+      values[key] = static_cast<unsigned int>(lua_tonumber(this->m_state, -1));
+      lua_settop(this->m_state, -2);
+    }
+  } else {
+    result = (type != LUA_TNIL) + 1;
+  }
+  lua_settop(this->m_state, -2);
+  return result;
+}
+
+// OFFSET: 0x0069D0A0
+// FUNCTION: fn_05929
+int CLuaInstance::GetFieldStringMap(std::map<unsigned int, std::string>& values, const char* name) {
+  lua_pushstring(this->m_state, name);
+  lua_gettable(this->m_state, -2);
+  int type = lua_type(this->m_state, -1);
+  int result = 0;
+  if (type == LUA_TTABLE) {
+    lua_pushnil(this->m_state);
+    while (lua_next(this->m_state, -2) != 0) {
+      type = lua_type(this->m_state, -2);
+      if (type != LUA_TNUMBER) {
+        result = (type != LUA_TNIL) + 1;
+        break;
+      }
+      const unsigned int key = static_cast<unsigned int>(lua_tonumber(this->m_state, -2));
+      std::string value;
+      type = lua_type(this->m_state, -1);
+      if (type != LUA_TSTRING) {
+        result = (type != LUA_TNIL) + 1;
+        break;
+      }
+      value = lua_tostring(this->m_state, -1);
+      values[key] = value;
+      lua_settop(this->m_state, -2);
+    }
+  } else {
+    result = (type != LUA_TNIL) + 1;
+  }
+  lua_settop(this->m_state, -2);
+  return result;
+}
+
+// OFFSET: 0x0069D380
+// FUNCTION: fn_05930
+int CLuaInstance::GetInt(int& value, int index) {
+  const int type = lua_type(this->m_state, index);
+  if (type == LUA_TNUMBER) {
+    value = static_cast<int>(lua_tonumber(this->m_state, index));
+    return 0;
+  }
+  return (type != LUA_TNIL) + 1;
+}
+
+// OFFSET: 0x00CD7180
+// FUNCTION: fn_21291
+bool CGameMode::IsAllowedPair(int kind, int value) {
+  switch (kind) {
+  case 8:
+    return value == 6 || value == 9;
+  case 0x16:
+    if (g_windowMgr.unknown_0064 != 0) {
+      return false;
+    }
+  case 0xA0:
+    return value == 4 || value == 5;
+  case 0x18:
+    if (g_windowMgr.unknown_0064 != 0) {
+      return false;
+    }
+  case 0x17:
+  case 0xA1:
+    return value == 3;
+  case 0x1F:
+  case 0x271B:
+    return value == 1;
+  case 0x21:
+    return value == 9 || value == 1;
+  case 0x28:
+    return value == 1 || value == 6;
+  case 0x29:
+    return value == 0xB;
+  case 0x2A:
+    return value == 0xA;
+  case 0x2B:
+    return value == 0xD;
+  case 0x2C:
+  case 0xB2:
+    return value == 0xC || value == 0x16;
+  case 0xAF:
+    return value == 0x15;
+  case 0xB8:
+  case 0x13E:
+    return value == 6 || value == 4;
+  }
+  return false;
+}
+
+// OFFSET: 0x00CD73B0
+// FUNCTION: fn_21292
+bool CGameMode::IsWithinRange(const int& x1, const int& y1, const int& x2, const int& y2, int range) {
+  return std::abs(x1 - x2) <= range && std::abs(y1 - y2) <= range;
+}
+
+// OFFSET: 0x00CD74B0
+// FUNCTION: fn_21293
+bool CGameMode::IsRegisterCell(int x, int y) {
+  for (auto& entry : this->unknown_019C) {
+    if (entry.second.first == x && entry.second.second == y) {
+      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.first));
+      if (actor == nullptr) {
+        return true;
+      }
+      if (!StateFlag01(actor->Slot13())) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+// OFFSET: 0x00CD7560
+// FUNCTION: fn_21294
+bool CGameMode::HasUnknown01A4(int value) {
+  for (int entry : this->unknown_01A4) {
+    if (entry == value) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // OFFSET: 0x00DD80A0
 // FUNCTION: fn_23304
 void SessionMessengerContext::UpdateRandomStats() {
@@ -2469,6 +2728,8 @@ struct MessengerIntrusiveLink {
   void Unlink6A61C0();
   void Unlink6A61E0();
   void Unlink6A6200();
+  void Unlink6A6220();
+  void Unlink6A6240();
 };
 
 // OFFSET: 0x0068B6A0
@@ -2537,6 +2798,20 @@ void MessengerIntrusiveLink::Unlink6A61E0() {
 // OFFSET: 0x006A6200
 // FUNCTION: fn_06053
 void MessengerIntrusiveLink::Unlink6A6200() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
+
+// OFFSET: 0x006A6220
+// FUNCTION: fn_06054
+void MessengerIntrusiveLink::Unlink6A6220() {
+  this->m_prev->m_next = this->m_next;
+  this->m_next->m_prev = this->m_prev;
+}
+
+// OFFSET: 0x006A6240
+// FUNCTION: fn_06055
+void MessengerIntrusiveLink::Unlink6A6240() {
   this->m_prev->m_next = this->m_next;
   this->m_next->m_prev = this->m_prev;
 }

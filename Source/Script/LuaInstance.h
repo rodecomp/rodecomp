@@ -5,6 +5,7 @@ extern "C" {
 #include <lua.h>
 }
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -19,6 +20,13 @@ public:
   void SetGlobal(const std::string& name, lua_CFunction function);
   void SetGlobal(const std::string& name, double value);
   int ReadStrings(std::vector<std::string>& values, const char* global);
+  int GetFieldInt(int& value, const char* name);
+  int GetFieldUIntArray(std::vector<unsigned int>& values, const char* name);
+  int GetFieldString(std::string& value, const char* name);
+  int GetFieldStringArray(std::vector<std::string>& values, const char* name);
+  int GetFieldUIntMap(std::map<unsigned int, unsigned int>& values, const char* name);
+  int GetFieldStringMap(std::map<unsigned int, std::string>& values, const char* name);
+  int GetInt(int& value, int index);
   lua_State* GetState() const { return this->m_state; }
 
 protected:
