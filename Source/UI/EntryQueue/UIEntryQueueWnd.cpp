@@ -23,6 +23,12 @@ void UIEntryQueueHelpWnd::Slot18() {
 }
 
 // OFFSET: 0x00BA4270
+// FUNCTION: fn_19681
+void UIEntryQueueHelpWnd::Paint() {
+  auto& controls = this->m_entryQueue->text.buttons;
+  this->DrawTitleBar(controls.fonts, controls.locale, true, LookupMessage(2125), 0);
+  this->DrawPanelBackground(17, 0, "");
+}
 
 // OFFSET: 0x00BA42A0
 // FUNCTION: fn_19682
