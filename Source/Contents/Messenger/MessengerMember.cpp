@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
+#include <timeapi.h>
 #include <string>
 #include <vector>
 
@@ -57,6 +58,13 @@ namespace {
     void sub_73A1C0(int x, int y, int unknown);
   };
 }
+
+struct MiniPartyInfoEntry {
+  MiniPartyInfoEntry(const char* text, int value);
+
+  /* 0000 */ std::string text;
+  /* 0018 */ int value;
+};
 
 class UIDragMiniPartyWnd : public UIFrameWnd {
 public:
@@ -113,6 +121,7 @@ class UIMessengerGroupWnd : public UIFrameWnd {
 public:
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
+  void Slot31(int x, int y) override;
   void Slot35(int delta) override;
   MessengerMember MemberAtIndex(int index);
   void UpdateScroll();
@@ -165,6 +174,7 @@ bool g_messengerGroupCollapsed;
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(MiniPartyIconPosition) == 12);
 static_assert(sizeof(MessengerRecordHeader) == 6);
+static_assert(sizeof(MiniPartyInfoEntry) == 28);
 #endif
 
 // OFFSET: 0x00D03DC0
@@ -630,6 +640,11 @@ void UIJobIconButton::Slot33(int x, int y) {
   }
 }
 
+// OFFSET: 0x00739BF0
+// FUNCTION: fn_07697
+MiniPartyInfoEntry::MiniPartyInfoEntry(const char* text, int value) : text(text), value(value) {
+}
+
 // OFFSET: 0x0073A540
 // FUNCTION: fn_07705
 MessengerMember UIMessengerGroupWnd::MemberAtIndex(int index) {
@@ -647,6 +662,23 @@ MessengerMember UIMessengerGroupWnd::MemberAtIndex(int index) {
 void UIMessengerGroupWnd::Slot26(int, int) {
   if (!g_messengerGroupCollapsed) {
     this->SendMsg(nullptr, 6, 232, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x0073D080
+// FUNCTION: fn_07710
+void UIMessengerGroupWnd::Slot31(int x, int y) {
+  UIFrameWnd::Slot31(x, y);
+  if (UIWindow* window = this->CompanionWindow()) {
+    window->geometry.targetAlpha = 255;
+    window->geometry.alphaStart = timeGetTime();
+  }
+
+  UIWindow* transient = g_windowMgr.window_4F250;
+  if (transient && static_cast<UIDragMiniPartyWnd*>(transient)->member.valid) {
+    transient->geometry.unknown_0030 = 1;
+    g_windowMgr.Schedule(g_windowMgr.window_4F250);
+    g_windowMgr.window_4F250 = nullptr;
   }
 }
 
