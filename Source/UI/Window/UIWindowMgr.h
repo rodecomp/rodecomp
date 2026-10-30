@@ -461,7 +461,7 @@ public:
   void ForgetWindowReferences(UIWindow* removed);
   void DismissTransient();
   void ClearWindow01B8();
-  void CloseWindow(int id);
+  bool CloseWindow(int id);
   void CloseWindowExcept251(int id);
   void RecordWindowPacket(int argument);
   void Nullsub370();
