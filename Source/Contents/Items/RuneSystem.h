@@ -162,6 +162,7 @@ public:
   int GetSelectTag() const;
   std::vector<Decom_ItemInfo>* GetDecomList(int itemId, int which);
   bool IsRequestPending() const;
+  bool LoadScripts();
   void Reset();
   void ClearCurRuneSet();
   void LoadDefaultTag();

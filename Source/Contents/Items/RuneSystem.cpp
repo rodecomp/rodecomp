@@ -4,15 +4,22 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Script/LuaFileOperations.h"
 #include "Script/LuaScript.h"
+#include "Script/NLuaState.h"
 #include "Utility/Text/FormatString.h"
 
 extern "C" {
+#include <lauxlib.h>
 #include <lua.h>
+#include <lualib.h>
 }
 
+#include <algorithm>
 #include <format>
 #include <new>
+#include <string>
+#include <windows.h>
 
 // GLOBAL: gl_24845
 CRuneSystemMgr* g_runeSystemMgr;
@@ -446,6 +453,105 @@ bool CRuneSystemMgr::IsRequestPending() const {
 // FUNCTION: fn_08145
 const char* RuneData::GetResName() const {
   return this->m_resName.c_str();
+}
+
+// OFFSET: 0x00767250
+// FUNCTION: fn_08146
+bool CRuneSystemMgr::LoadScripts() {
+  NLuaState lua;
+  if (!lua.IsValid()) {
+    return false;
+  }
+
+  lua_State* state = lua.GetState();
+  luaL_openlibs(state);
+  lua_register(state, "Add_Decom_ItemNum", AddDecomItemNum);
+  lua_register(state, "AdditemDecomType", AddItemDecomType);
+  lua_register(state, "AdditemDecom", AddItemDecom);
+  lua_register(state, "AddGradeType_Fail", AddGradeTypeFail);
+  lua_register(state, "AddGradeType", AddGradeType);
+  lua_register(state, "AddItemListTable_Type", AddItemListTableType);
+  lua_register(state, "AddTag", AddTag);
+  lua_register(state, "SetRuneSysteminfo", SetRuneSystemInfo);
+  lua_register(state, "AddRune", AddRuneData);
+  lua_register(state, "SetRune_UpGradeTable", SetRuneUpGradeTable);
+  lua_register(state, "AddRune_SlotCollectionList", AddRuneSlotCollectionList);
+  lua_register(state, "AddRune_GradeList", AddRuneGradeList);
+  lua_register(state, "SetRune_DisplayName", SetRuneDisplayName);
+  lua_register(state, "AddRune_Description", AddRuneDescription);
+  lua_register(state, "AddRuneSetReward", AddRuneSetReward);
+
+  if (!LoadLuaResource(state, "System\\Rune\\runeSystem_table.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\runeSystem_table.lub", 0);
+    return false;
+  }
+
+  if (!LoadLuaResource(state, "System\\Rune\\itemDecom.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\itemDecom.lub", 0);
+    return false;
+  }
+
+  if (!LoadLuaResource(state, "System\\Rune\\runesystemid.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\runesystemid.lub", 0);
+    return false;
+  }
+
+  if (!LoadLuaResource(state, "System\\Rune\\rune_info.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\collection_info.lub", 0);
+    return false;
+  }
+
+  if (!LoadLuaResource(state, "System\\Rune\\rune_desc.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\collection_desc.lub", 0);
+    return false;
+  }
+
+  if (!LoadLuaResource(state, "System\\Rune\\runeset_info.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\rune_info.lub", 0);
+    return false;
+  }
+
+  if (!LoadLuaResource(state, "System\\Rune\\runeset_desc.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\rune_desc.lub", 0);
+    return false;
+  }
+
+  if (!LoadLuaResource(state, "System\\Rune\\runesystem_f.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\runesystem_f.lub", 0);
+    return false;
+  }
+
+  if (!LoadLuaResource(state, "System\\Rune\\runeset_reward.lub", 0) || lua_pcall(state, 0, 0, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state, -1), "System\\Rune\\runeset_reward.lub", 0);
+    return false;
+  }
+
+  lua_getglobal(state, "main_rune");
+  if (lua_pcall(state, 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state, -1), "CRuneSystemMgr main_rune X", 0);
+    return false;
+  }
+
+  lua_getglobal(state, "main_runeset_reward");
+  if (lua_pcall(state, 0, 2, 0) != 0) {
+    MessageBoxA(nullptr, lua_tostring(state, -1), "CRuneSystemMgr main_runeset_reward X", 0);
+    return false;
+  }
+
+  if (!lua_isstring(state, -1)) {
+    MessageBoxA(nullptr, "second return value is not string...", "CRuneSystemMgr", 0);
+    return false;
+  }
+
+  if (!lua_toboolean(state, -2)) {
+    std::string message = std::string("error found :") + lua_tostring(state, -1);
+    MessageBoxA(nullptr, message.c_str(), "CRuneSystemMgr", 0);
+    return false;
+  }
+
+  std::sort(this->m_tags.begin(), this->m_tags.end(), [](const CTagData* left, const CTagData* right) { return left->m_id < right->m_id; });
+  this->LoadDefaultTag();
+  return true;
 }
 
 // OFFSET: 0x00767D20
