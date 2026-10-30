@@ -574,6 +574,15 @@ unsigned int* CryptonSetKey(const unsigned int* input, unsigned int keyBits) {
   return g_cryptonDecryptKeys;
 }
 
+// OFFSET: 0x00B0BDD0
+// FUNCTION: fn_18399
+void StoreLittleEndian32(unsigned int value, unsigned char* bytes) {
+  bytes[0] = static_cast<unsigned char>(value);
+  bytes[1] = static_cast<unsigned char>(value >> 8);
+  bytes[2] = static_cast<unsigned char>(value >> 16);
+  bytes[3] = static_cast<unsigned char>(value >> 24);
+}
+
 // OFFSET: 0x00B0C3D0
 // FUNCTION: fn_18400
 unsigned int LoadLittleEndian32(const unsigned char* bytes) {
