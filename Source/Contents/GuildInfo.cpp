@@ -1,5 +1,6 @@
 #include "Contents/GuildInfo.h"
 #include "Client/Mode/CGameMode.h"
+#include "Client/Session.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
@@ -133,4 +134,107 @@ void GuildInfo::Init() {
   this->unknown_0104.clear();
   this->unknown_010C.clear();
   this->unknown_0114.clear();
+}
+
+// OFFSET: 0x00AE49F0
+// FUNCTION: fn_18040
+bool GuildInfo::HasRelatedGuild(int unknown_0000) {
+  for (auto it = this->unknown_00E4.begin(); it != this->unknown_00E4.end(); ++it) {
+    if (it->unknown_0000 == unknown_0000 && it->unknown_0004 == 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// OFFSET: 0x00AE4A20
+// FUNCTION: fn_18041
+void GuildInfo::UpdateMemberExpRatios() {
+  double total = 0.0;
+  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
+    total += it->exp;
+  }
+
+  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
+    if (total == 0.0) {
+      it->expRatio = 0.0f;
+    } else {
+      it->expRatio = static_cast<float>(it->exp) * 100.0f / static_cast<float>(total);
+    }
+    it->positionName = this->m_positions[it->positionId];
+  }
+}
+
+// OFFSET: 0x00AE4CA0
+// FUNCTION: fn_18043
+int GuildInfo::DeleteMember(const char* name) {
+  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
+    if (it->name == name) {
+      this->m_members.erase(it);
+      g_windowMgr.RefreshGuildWindows();
+      return 1;
+    }
+  }
+  return 0;
+}
+
+// OFFSET: 0x00AE4F50
+// FUNCTION: fn_18045
+void GuildInfo::UpdateMemberStatus(int accountId, int online, int characterId, short unknown_002C, short unknown_0020, short unknown_0024) {
+  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
+    if (it->characterId == characterId) {
+      it->unknown_002C = unknown_002C;
+      it->unknown_0020 = unknown_0020;
+      it->unknown_0024 = unknown_0024;
+      it->online = online;
+      break;
+    }
+  }
+
+  int count = 0;
+  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
+    if (it->online) {
+      ++count;
+    }
+  }
+  this->unknown_0068 = count;
+  g_windowMgr.RefreshGuildWindows();
+}
+
+// OFFSET: 0x00AE4FD0
+// FUNCTION: fn_18046
+void GuildInfo::SetMemberOnline(int accountId, int online) {
+  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
+    if (it->accountId == accountId) {
+      it->online = online;
+      break;
+    }
+  }
+
+  int count = 0;
+  for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
+    if (it->online) {
+      ++count;
+    }
+  }
+  this->unknown_0068 = count;
+  g_windowMgr.RefreshGuildWindows();
+}
+
+// OFFSET: 0x00AE5030
+// FUNCTION: fn_18047
+void GuildInfo::SetMasterCharacterId(int characterId) {
+  this->unknown_00D0 = characterId;
+  this->unknown_00B4 = characterId == static_cast<int>(g_session.m_gid);
+}
+
+// OFFSET: 0x00AE5090
+// FUNCTION: fn_18048
+void GuildInfo::UpdateUnknown00D4(Unknown00D4Entry entry) {
+  for (auto it = this->unknown_00D4.begin(); it != this->unknown_00D4.end(); ++it) {
+    if (it->unknown_0004 == entry.unknown_0004) {
+      *it = entry;
+      return;
+    }
+  }
 }

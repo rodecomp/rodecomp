@@ -14,12 +14,28 @@ public:
     /* 0000 */ int accountId;
     /* 0004 */ int characterId;
     /* 0008 */ std::string name;
-    /* 0020 */ unsigned char unknown_0020[0x10];
+    /* 0020 */ int unknown_0020;
+    /* 0024 */ int unknown_0024;
+    /* 0028 */ unsigned char unknown_0028[0x04];
+    /* 002C */ int unknown_002C;
     /* 0030 */ int positionId;
     /* 0034 */ std::string positionName;
     /* 004C */ unsigned char unknown_004C[0x04];
     /* 0050 */ std::string unknown_0050;
-    /* 0068 */ unsigned char unknown_0068[0x10];
+    /* 0068 */ float expRatio;
+    /* 006C */ int exp;
+    /* 0070 */ int online;
+    /* 0074 */ unsigned char unknown_0074[0x04];
+  };
+
+  struct Unknown00D4Entry {
+    /* 0000 */ int unknown_0000;
+    /* 0004 */ int unknown_0004;
+    /* 0008 */ std::string unknown_0008;
+    /* 0020 */ int unknown_0020;
+    /* 0024 */ int unknown_0024;
+    /* 0028 */ int unknown_0028;
+    /* 002C */ int unknown_002C;
   };
 
   struct RelatedGuild {
@@ -56,7 +72,7 @@ public:
   /* 00C8 */ int unknown_00C8;
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ int unknown_00D0;
-  /* 00D4 */ std::list<int> unknown_00D4;
+  /* 00D4 */ std::list<Unknown00D4Entry> unknown_00D4;
   /* 00DC */ std::list<Member> m_members;
   /* 00E4 */ std::list<RelatedGuild> unknown_00E4;
   /* 00EC */ std::list<int> unknown_00EC;
@@ -76,6 +92,13 @@ public:
   int CountRelatedGuilds(int unknown_0004);
   int GetUnknown0114Count();
   void Init();
+  bool HasRelatedGuild(int unknown_0000);
+  void UpdateMemberExpRatios();
+  int DeleteMember(const char* name);
+  void UpdateMemberStatus(int accountId, int online, int characterId, short unknown_002C, short unknown_0020, short unknown_0024);
+  void SetMemberOnline(int accountId, int online);
+  void SetMasterCharacterId(int characterId);
+  void UpdateUnknown00D4(Unknown00D4Entry entry);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -84,6 +107,11 @@ static_assert(offsetof(GuildInfo::Member, accountId) == 0x00);
 static_assert(offsetof(GuildInfo::Member, characterId) == 0x04);
 static_assert(offsetof(GuildInfo::Member, positionId) == 0x30);
 static_assert(offsetof(GuildInfo::Member, positionName) == 0x34);
+
+static_assert(offsetof(GuildInfo::Member, expRatio) == 0x68);
+static_assert(offsetof(GuildInfo::Member, online) == 0x70);
+
+static_assert(sizeof(GuildInfo::Unknown00D4Entry) == 0x30);
 
 static_assert(sizeof(GuildInfo::RelatedGuild) == 0x20);
 
