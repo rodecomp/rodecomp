@@ -990,9 +990,75 @@ void CSkillAction_KR_NASTY_SLASH::Slot11(int level, CGameActor* source, CGameAct
 }
 
 // OFFSET: 0x005B3EA0
+// FUNCTION: fn_03369
+void CSkillAction_KR_FEATHER_SPRINKLE::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!this->CanUse(source)) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0x89, 0x46, 0xB4, 0x9B, 0x71, 0x34, 0xE3, 0x64, 0x9C, 0x53, 0xA7, 0x86, 0x77, 0x3A, 0xFD, 0x5E, 0xEF};
+  thread_local EncryptedName<sizeof(effectSource), 0x3B915119EFD523EFULL> effectName(effectSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+
+  const std::uint8_t bottomSource[] = {0x31, 0xE6, 0x88, 0xA1, 0xE9, 0xA0, 0x3F, 0x18, 0x24, 0xF3, 0x9B, 0xBC, 0xEF, 0xAE, 0x21, 0x22, 0x08, 0xE1, 0x86, 0xA1, 0xF5, 0xAA, 0x20, 0x47};
+  thread_local EncryptedName<sizeof(bottomSource), 0x474DC581D5E98357ULL> bottomName(bottomSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B42B0
+// FUNCTION: fn_03374
+void CSkillAction_KR_SHARPEN_GUST::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!this->CanUse(source) || !target) {
+    return;
+  }
+
+  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  const std::uint8_t effectSource[] = {0x1E, 0x37, 0x98, 0x41, 0x93, 0x1E, 0x3B, 0x60, 0x0A, 0x2A, 0x8A, 0x47, 0xE3};
+  thread_local EncryptedName<sizeof(effectSource), 0x3F557BE333F95F6DULL> effectName(effectSource);
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot17(angle);
+    effect->Slot18(30.0f);
+  }
+
+  const std::uint8_t bottomSource[] = {0x4A, 0x89, 0xC8, 0x9D, 0x91, 0xC2, 0x3D, 0x58, 0x5E, 0x94, 0xDA, 0x9B, 0xBE, 0xC5, 0x3C, 0x73, 0x4D, 0x8E, 0xC4, 0xEF};
+  thread_local EncryptedName<sizeof(bottomSource), 0x0753A7E1EFA9E139ULL> bottomName(bottomSource);
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(bottomName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot17(angle);
+    effect->Slot18(30.0f);
+  }
+}
 
 // OFFSET: 0x005B4FE0
+// FUNCTION: fn_03384
+void CSkillAction_KR_IRON_HOWLING::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!this->CanUse(source)) {
+    return;
+  }
+
+  const std::uint8_t effectSource[] = {0xF6, 0xB1, 0x28, 0xD3, 0xB4, 0x2F, 0x8E, 0xE6, 0xF3, 0xAA, 0x29, 0xDA, 0xEB};
+  thread_local EncryptedName<sizeof(effectSource), 0x91E147EBBD47C39FULL> effectName(effectSource);
+  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
 
 // OFFSET: 0x005B6040
+// FUNCTION: fn_03400
+void CSkillAction_SKID_KR_CHOP_CHOP::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!this->CanUse(source)) {
+    return;
+  }
+
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 2466, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->unknown_002C = 1;
+  }
+
+  const std::uint8_t effectSource[] = {0x92, 0xAB, 0x86, 0xCD, 0xF2, 0x6E, 0x1D, 0x12, 0x81, 0x9C, 0x9A, 0xC8, 0xCF, 0x0D};
+  thread_local EncryptedName<sizeof(effectSource), 0x7D750DADBDE9C3F1ULL> effectName(effectSource);
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot17(static_cast<float>(std::max(0, rand() % 360)));
+  }
+
+  if (CRagEffect* effect = source->LaunchEffect(2444, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    static_cast<CWhirlwindEffect*>(effect)->SetLifetime(1000);
+    static_cast<CWhirlwindEffect*>(effect)->SetDuration(500);
+  }
+}
