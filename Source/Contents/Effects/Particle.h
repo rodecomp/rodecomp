@@ -85,9 +85,9 @@ public:
   /* 00D0 */ float unknown_00D0 = 0;
   /* 00D4 */ float unknown_00D4 = 0;
   /* 00D8 */ float unknown_00D8 = 0;
-  /* 00DC */ int unknown_00DC = 0;
-  /* 00E0 */ int unknown_00E0 = 0;
-  /* 00E4 */ int unknown_00E4 = 0;
+  /* 00DC */ float unknown_00DC = 0;
+  /* 00E0 */ float unknown_00E0 = 0;
+  /* 00E4 */ float unknown_00E4 = 0;
   /* 00E8 */ int unknown_00E8;
   /* 00EC */ int unknown_00EC;
   /* 00F0 */ RenderPrimitive primitive;

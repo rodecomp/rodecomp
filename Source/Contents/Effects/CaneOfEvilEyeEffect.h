@@ -12,10 +12,19 @@ class CCaneOfEvilEyeEffect : public CEffect {
 public:
   CCaneOfEvilEyeEffect();
 
+  void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
 
+  CEZ2STRParticle* CreateEye(int type, const float* position);
+  CEZ2STRParticle* CreateLight(int type, const float* position);
+  void SpawnLights();
   void RemoveNullEmitters();
+  void Finish();
+  void UpdateEyes();
+  void UpdateLights();
 
   /* 00CC */ std::uint32_t startTime;
   /* 00D0 */ std::vector<CEZ2STRParticle*> unknown_00D0;
