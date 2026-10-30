@@ -65,6 +65,7 @@ public:
   void TextColor(std::uint32_t primary, std::uint32_t secondary);
   void UpdateLinks();
   void SetCursor(std::size_t position);
+  void MoveCursorToEnd();
   void DrawSelectionAt(int x, int y, int width);
   void DrawSelection(int x, int width);
   void MoveCandidateWindow(int x);

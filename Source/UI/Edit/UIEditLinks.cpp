@@ -78,6 +78,17 @@ void UIEditCtrl::SetCursor(std::size_t position) {
   this->m_edit->input.Select(this->cursor, this->cursor);
 }
 
+// OFFSET: 0x00855150
+// FUNCTION: fn_10751
+void UIEditCtrl::MoveCursorToEnd() {
+  if (this->m_edit->focus.window == this) {
+    this->m_edit->input.Select(static_cast<int>(this->m_edit->input.text.size()), static_cast<int>(this->m_edit->input.text.size()));
+    return;
+  }
+  this->anchor = static_cast<int>(this->text.size());
+  this->cursor = static_cast<int>(this->text.size());
+}
+
 // OFFSET: 0x008550E0
 // FUNCTION: fn_10750
 void UIEditCtrl::SnapLinkSelection(std::size_t prefix, std::size_t bytes) {
