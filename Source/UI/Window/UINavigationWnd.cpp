@@ -1,5 +1,7 @@
 #include "UI/Window/UINavigationWnd.h"
 
+#include "Render/Renderer.h"
+
 // OFFSET: 0x00931390
 // FUNCTION: fn_12702
 void UINavigationWnd::Slot31(int x, int y) {
@@ -8,3 +10,5 @@ void UINavigationWnd::Slot31(int x, int y) {
   }
   this->UIFrameWnd::Slot31(x, y);
 }
+
+// OFFSET: 0x00940E20

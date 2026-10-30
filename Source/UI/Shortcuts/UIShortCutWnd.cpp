@@ -15,23 +15,28 @@
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Shortcuts/UIShortCutWnd.h"
 #include "UI/Chat/UINewChatWnd.h"
+#include "UI/Chat/UISubChatHisWnd.h"
 #include "UI/Chat/UISubChatMiniWnd.h"
 #include "UI/Dialogs/UIMemorialDunWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Layout/WindowSnapping.h"
+#include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindowCallBtnWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Client/Application/Launcher.h"
 #include "File/File.h"
 #include "Render/Renderer.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 
+#include <direct.h>
+#include <io.h>
 #include <stdio.h>
 #include <cstdlib>
 #include <cstring>
@@ -669,3 +674,7 @@ void UISubChatMiniWnd::Slot25(int x, int) {
   this->SendMsg(this, 6, 271, 0, 0, 0);
   this->Invalidate();
 }
+
+// OFFSET: 0x00940EB0
+
+// OFFSET: 0x00941190

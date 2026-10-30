@@ -41,3 +41,5 @@ void UIMiniBtnWnd::Slot25(int, int) {
   }
   this->Invalidate();
 }
+
+// OFFSET: 0x00941120

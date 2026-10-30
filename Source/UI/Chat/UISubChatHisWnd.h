@@ -3,6 +3,9 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+#include <string>
+
+class UIChatHisBox;
 class UIEditCtrl;
 struct SubChatHisWndInfo;
 
@@ -24,9 +27,11 @@ public:
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
   bool Slot42(void* output) override;
+  UIChatHisBox* ChatBox() const { return m_chatBox; }
+  std::string Name() const { return m_name; }
 
 private:
-  /* 00B4 */ unsigned char unknown_00B4[4];
+  /* 00B4 */ UIChatHisBox* m_chatBox;
   /* 00B8 */ SubChatHisWndInfo* m_saved;
   /* 00BC */ unsigned char unknown_00BC[4];
   /* 00C0 */ SubChatHistoryState m_state;
@@ -35,7 +40,8 @@ private:
   /* 00EC */ int m_inputWidth;
   /* 00F0 */ int unknown_00F0;
   /* 00F4 */ int m_index;
-  /* 00F8 */ unsigned char unknown_00F8[0x34];
+  /* 00F8 */ unsigned char unknown_00F8[0x1C];
+  /* 0114 */ std::string m_name;
   /* 012C */ UIEditCtrl* m_edit;
 };
 

@@ -16,11 +16,13 @@ public:
 
   void Resize(int width, int height) override;
   void Move(int x, int y) override;
+  void Slot11() override;
   void Show(int visible) override;
   void Paint() override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
   bool Slot42(void* output) override;
+  void SaveChatLogs();
 
 private:
   /* 00BC */ int unknown_00BC;
