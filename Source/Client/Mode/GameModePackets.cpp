@@ -591,3 +591,16 @@ void CGameMode::ResetItemLists(const unsigned char*) {
   g_session.ResetItems61B8();
   g_session.ResetItems6B68();
 }
+
+// OFFSET: 0x00D8A1F0
+// FUNCTION: fn_22216
+void CGameMode::ClearItemLists(const unsigned char* packet) {
+  const std::uint16_t slot = *reinterpret_cast<const std::uint16_t*>(packet + 2);
+  g_session.ClearUnknown1710(slot);
+  this->unknown_05CE = 1;
+  RefreshItemWindows(&g_windowMgr);
+  g_session.ClearUnknown1740(slot);
+  g_session.RefreshItem1740Window();
+  g_session.ClearUnknown1738(slot);
+  g_session.RefreshItem1738Window();
+}

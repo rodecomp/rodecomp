@@ -84,7 +84,9 @@ public:
   /* 0408 */ unsigned char unknown_0408[0x1BC];
   /* 05C4 */ int unknown_05C4;
   /* 05C8 */ int unknown_05C8;
-  /* 05CC */ unsigned char unknown_05CC[0x04];
+  /* 05CC */ unsigned char unknown_05CC[0x02];
+  /* 05CE */ unsigned char unknown_05CE;
+  /* 05CF */ unsigned char unknown_05CF;
   /* 05D0 */ UIWindow* unknown_05D0;
   /* 05D4 */ unsigned char unknown_05D4[0x30];
   /* 0604 */ std::list<UIWindow*> unknown_0604;
@@ -235,6 +237,7 @@ public:
   void NotifyCaptchaRegistered();
   void ReceiveItem1784List(const unsigned char* packet);
   void ReceiveItemListPart(unsigned char listType, int count, const unsigned char* data);
+  void ClearItemLists(const unsigned char* packet);
   void RefreshItemListWindow(unsigned char listType, bool partial);
   void sub_CEB8E0();
 };
