@@ -41,3 +41,13 @@ void UIWordDisplayWnd::Slot19() {
   const int x = static_cast<int>(screenX - static_cast<float>(g_renderer->viewport.width * 5 / 640) * scale);
   this->Move(x, y);
 }
+
+// OFFSET: 0x00865360
+// FUNCTION: fn_10923
+int UIWordDisplayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 34) {
+    this->aid = argument1;
+  }
+
+  return 0;
+}

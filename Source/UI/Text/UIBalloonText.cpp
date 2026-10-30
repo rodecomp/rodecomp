@@ -149,3 +149,10 @@ void UINameBalloonText::Slot19() {
     this->Invalidate();
   }
 }
+
+// OFFSET: 0x00865CC0
+// FUNCTION: fn_10935
+void UIBalloonText::SetFontHeight(int height) {
+  this->m_fontHeight = height;
+  this->FitText();
+}

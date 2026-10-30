@@ -54,3 +54,14 @@ void UIRadioBtn::Slot25(int, int) {
     this->parent->SendMsg(this, 6, this->geometry.id, this->value, 0, 0);
   }
 }
+
+// OFFSET: 0x00865180
+// FUNCTION: fn_10919
+int UIRadioBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 13) {
+    this->geometry.unknown_0030 = argument1;
+    this->Invalidate();
+  }
+
+  return 0;
+}

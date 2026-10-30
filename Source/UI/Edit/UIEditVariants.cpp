@@ -223,3 +223,32 @@ void UIEditCtrlVarId::Slot35(int value) {
     this->parent->Slot35(value);
   }
 }
+
+// OFFSET: 0x00864CE0
+// FUNCTION: fn_10915
+int UIEditCtrlVarId::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 0) {
+    return UIEditCtrl::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  if (this->parent) {
+    this->parent->SendMsg(this, 6, this->geometry.id, 0, 0, 0);
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00864D20
+// FUNCTION: fn_10916
+int UIEditCtrl_OldList::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 18:
+    this->RecallHistory(-1);
+    return 0;
+  case 19:
+    this->RecallHistory(1);
+    return 0;
+  default:
+    return UIEditCtrl::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+}

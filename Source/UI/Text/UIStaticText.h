@@ -25,6 +25,7 @@ public:
   void SetText(const char* value, int outline);
   void SetColor(int redValue, int greenValue, int blueValue);
   void SetTextFitted(const char* value);
+  void SetFont(int family, int height, unsigned char bold, unsigned char italic);
 
   /* 007C */ int red;
   /* 0080 */ int green;

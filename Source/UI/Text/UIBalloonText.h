@@ -28,6 +28,7 @@ public:
 
   void SetText(const char* text, int width);
   void FitText();
+  void SetFontHeight(int height);
 
 protected:
   /* 007C */ unsigned char unknown_007C;

@@ -192,6 +192,7 @@ class UIEditCtrl_OldList : public UIEditCtrl {
 public:
   void Paint() override;
   void Slot35(int value) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void RecallHistory(int step);
 
   /* 011C */ std::string bitmapName;
@@ -203,6 +204,7 @@ class UIEditCtrlVarId : public UIEditCtrl {
 public:
   void Slot24(int retained) override;
   void Slot35(int value) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

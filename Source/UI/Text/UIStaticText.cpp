@@ -201,3 +201,12 @@ void UIStaticText3::Paint() {
     static_cast<unsigned char>(this->red) | (static_cast<unsigned char>(this->green) << 8) | (static_cast<unsigned char>(this->blue) << 16);
   this->DrawTextAt(controls.fonts, controls.locale, this->textX + 1, 1, this->text.c_str(), 0, this->fontFamily, this->fontHeight, color, this->bold, this->italic);
 }
+
+// OFFSET: 0x00865CE0
+// FUNCTION: fn_10936
+void UIStaticText::SetFont(int family, int height, unsigned char bold, unsigned char italic) {
+  this->fontFamily = family;
+  this->fontHeight = height;
+  this->bold = bold;
+  this->italic = italic;
+}

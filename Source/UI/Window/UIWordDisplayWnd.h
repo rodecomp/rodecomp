@@ -10,6 +10,7 @@ class UIWordDisplayWnd : public UIFrameWnd {
 public:
   void Slot19() override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 00B4 */ int screenX;
   /* 00B8 */ int screenY;
