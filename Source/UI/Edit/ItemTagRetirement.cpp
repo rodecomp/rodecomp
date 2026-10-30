@@ -1,3 +1,4 @@
+#include "UI/Chat/ChatSuggestions.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Edit/ItemTagRetirement.h"
 #include "UI/Edit/UIItemTagCtrl.h"
@@ -10,11 +11,28 @@
 FocusedItemTagRemoval::FocusedItemTagRemoval(InputFocus& focus) : m_focus(focus) {
 }
 
+// GLOBAL: gl_24635
+bool g_inputSuggestionsEnabled;
+
 // OFFSET: 0x00896EB0
 // FUNCTION: fn_11519
 void FocusedItemTagRemoval::Remove(UIWindow* child) {
   if (this->m_focus.window) {
     this->m_focus.window->RemoveChild(child, 1);
+  }
+}
+
+// OFFSET: 0x00896EE0
+// FUNCTION: fn_11520
+void ChatItemTagRemoval::Remove(UIWindow* child) {
+  if (g_inputSuggestionsEnabled == 1 && g_chatSuggestions->unknown_00BC != nullptr && g_chatSuggestions->unknown_00BC->Contains(child)) {
+    g_chatSuggestions->unknown_00BC->RemoveChild(child, 1);
+    return;
+  }
+
+  UIWindow* hoverWindow = g_windowMgr.GetHoverWindow();
+  if (hoverWindow != nullptr && hoverWindow->Contains(child)) {
+    hoverWindow->RemoveChild(child, 1);
   }
 }
 

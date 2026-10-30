@@ -15,6 +15,8 @@ struct ChatSuggestions {
   UIWindow& chat;
   UIWindow* const& window;
   UIEditCtrl* const& input;
+  /* 000C */ unsigned char unknown_000C[0xB0];
+  /* 00BC */ UIWindow* unknown_00BC;
 
   bool Visible() const;
 
@@ -22,6 +24,7 @@ struct ChatSuggestions {
 };
 
 extern ChatSuggestions* g_chatSuggestions;
+extern bool g_inputSuggestionsEnabled;
 
 struct ChatInputLayout {
   UIWindow& chat;
