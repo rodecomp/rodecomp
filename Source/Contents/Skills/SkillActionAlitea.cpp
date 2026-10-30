@@ -1,4 +1,5 @@
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectActor.h"
@@ -13,6 +14,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <string>
 
 namespace {
 
@@ -234,6 +236,122 @@ class CSkillAction_AT_FURIOS_STORM : public CSkillAction_Thundering {
 public:
   int Slot02() override;
   void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_AT_ALPHA_PHASE : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_ALPHA_PHASE : public CEfstAction {
+public:
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_AT_APEX_PHASE : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_AT_APEX_PHASE : public CEfstAction {
+public:
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_AT_FLIP_FLAP : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_FLIP_FLAP : public CEfstAction {
+public:
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_AT_AERO_SYNC : public CSkillAction {
+public:
+  bool Slot00() override;
+  int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_FLIP_FLAP_TARGET : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_AT_SAVAGE_LUNGE : public CSkillAction_DamageWereWolfForm {
+public:
+  int Slot02() override;
+};
+
+class CSkillAction_AT_TEMPEST_FLAP : public CSkillAction_DamageWereRaptorForm {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_AT_TERRA_HARVEST : public CSkillAction_Earthing {
+public:
+  int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_AT_TERRA_WAVE : public CSkillAction_Earthing {
+public:
+  void Slot12(vector3d position, int argument2, int argument3) override;
+};
+
+class CSkillAction_AT_SOLID_STOMP : public CSkillAction_Earthing {
+public:
+  int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_SOLID_STOMP : public CEfstAction {
+public:
+  EfstActionMessage Slot03() override;
+  EfstActionMessage Slot04() override;
+};
+
+class CSkillAction_AT_ZEPHYR_LINK : public CSkillAction {
+public:
+  int Slot02() override;
+};
+
+class CEfstAction_ZEPHYR_LINK : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_INSANE : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+  void Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
+  void Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_INSANE2 : public CEfstAction_INSANE {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+};
+
+class CEfstAction_INSANE3 : public CEfstAction_INSANE {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
 };
 
 // OFFSET: 0x005A50B0
@@ -925,5 +1043,423 @@ void CSkillAction_AT_FURIOS_STORM::Slot11(int level, CGameActor* source, CGameAc
     if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, variant ? stormABottom : stormBBottom, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
       effect->Slot16(delay);
     }
+  }
+}
+
+// OFFSET: 0x005AB5F0
+// FUNCTION: fn_03240
+int CSkillAction_AT_ALPHA_PHASE::Slot01() {
+  return 66;
+}
+
+// OFFSET: 0x005AB600
+// FUNCTION: fn_03241
+int CSkillAction_AT_ALPHA_PHASE::Slot02() {
+  return 68;
+}
+
+// OFFSET: 0x005AB610
+// FUNCTION: fn_03242
+void CSkillAction_AT_ALPHA_PHASE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    source->LaunchEffect(54, level / 16);
+  }
+}
+
+// OFFSET: 0x005AB640
+// FUNCTION: fn_03243
+void CSkillAction_AT_ALPHA_PHASE::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0x72, 0xAB, 0x73, 0x7D, 0x9A, 0xCE, 0x67, 0x27, 0x72, 0xB4, 0x66, 0x15};
+      thread_local EncryptedName<sizeof(bytes), 0x4F1791FB1503C713ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x005AB840
+// FUNCTION: fn_03244
+EfstActionMessage CEfstAction_ALPHA_PHASE::Slot03() {
+  return {LookupMessage(4670), 0xFFFF00};
+}
+
+// OFFSET: 0x005AB870
+// FUNCTION: fn_03245
+EfstActionMessage CEfstAction_ALPHA_PHASE::Slot04() {
+  return {LookupMessage(4671), 0xFF};
+}
+
+// OFFSET: 0x005AB8A0
+// FUNCTION: fn_03246
+int CSkillAction_AT_APEX_PHASE::Slot02() {
+  return 80;
+}
+
+// OFFSET: 0x005AB8B0
+// FUNCTION: fn_03247
+void CSkillAction_AT_APEX_PHASE::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xB2, 0x9D, 0xF2, 0x6D, 0x12, 0x2B, 0xCD, 0xC0, 0xA0, 0x88, 0x97};
+      thread_local EncryptedName<sizeof(bytes), 0xA1A55B4D1597EDD3ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x005ABAB0
+// FUNCTION: fn_03248
+EfstActionMessage CEfstAction_AT_APEX_PHASE::Slot03() {
+  return {LookupMessage(4682), 0xFFFF00};
+}
+
+// OFFSET: 0x005ABAE0
+// FUNCTION: fn_03249
+EfstActionMessage CEfstAction_AT_APEX_PHASE::Slot04() {
+  return {LookupMessage(4683), 0xFF};
+}
+
+// OFFSET: 0x005ABB10
+// FUNCTION: fn_03250
+int CSkillAction_AT_FLIP_FLAP::Slot02() {
+  return 80;
+}
+
+// OFFSET: 0x005ABB20
+// FUNCTION: fn_03251
+void CSkillAction_AT_FLIP_FLAP::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0x9B, 0x91, 0x14, 0x83, 0xBE, 0x73, 0x95, 0x7A, 0x8D, 0xFD};
+      thread_local EncryptedName<sizeof(bytes), 0x1BF915E1F37DFDFDULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x005ABD20
+// FUNCTION: fn_03252
+EfstActionMessage CEfstAction_FLIP_FLAP::Slot03() {
+  return {LookupMessage(4678), 0xFFFF00};
+}
+
+// OFFSET: 0x005ABD50
+// FUNCTION: fn_03253
+EfstActionMessage CEfstAction_FLIP_FLAP::Slot04() {
+  return {LookupMessage(4679), 0xFF};
+}
+
+// OFFSET: 0x005ABD80
+// FUNCTION: fn_03254
+bool CSkillAction_AT_AERO_SYNC::Slot00() {
+  return true;
+}
+
+// OFFSET: 0x005ABD90
+// FUNCTION: fn_03255
+int CSkillAction_AT_AERO_SYNC::Slot02() {
+  return 70;
+}
+
+// OFFSET: 0x005ABDA0
+// FUNCTION: fn_03256
+void CSkillAction_AT_AERO_SYNC::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xBE, 0xBC, 0x2F, 0x06, 0x4C, 0xE0, 0x86, 0x6F, 0xBC, 0x86, 0x2E, 0x10, 0x7D, 0xF0, 0xFF};
+      thread_local EncryptedName<sizeof(bytes), 0x01FF9313695DD9DFULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xFA, 0xC8, 0x07, 0xA0, 0x8E, 0x4E, 0x94, 0x03, 0xF8, 0xF2, 0x18, 0xAE, 0xB8, 0x53, 0xED};
+      thread_local EncryptedName<sizeof(bytes), 0x6DED3DD1CF75AD9BULL> name(bytes);
+      return name.Text();
+    }()), source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xA0, 0xB6, 0xA9, 0x18, 0xC4, 0x06, 0xBA, 0x27, 0xA2, 0x8C, 0xB6, 0x16, 0xF2, 0x1B, 0x9C, 0x2B,
+                                    0xAE, 0xA7, 0xAF, 0x18, 0xF6, 0x75};
+      thread_local EncryptedName<sizeof(bytes), 0x49C3759B77DBD3C1ULL> name(bytes);
+      return name.Text();
+    }()), source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x005AC300
+// FUNCTION: fn_03257
+EfstActionMessage CEfstAction_FLIP_FLAP_TARGET::Slot03() {
+  return {LookupMessage(4680), 0xFFFF00};
+}
+
+// OFFSET: 0x005AC330
+// FUNCTION: fn_03258
+EfstActionMessage CEfstAction_FLIP_FLAP_TARGET::Slot04() {
+  return {LookupMessage(4681), 0xFF};
+}
+
+// OFFSET: 0x005AC360
+// FUNCTION: fn_03259
+void CEfstAction_FLIP_FLAP_TARGET::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xCE, 0x2A, 0x59, 0x8C, 0x80, 0x66, 0x2A, 0x51, 0xCC, 0x10, 0x58, 0x9A, 0xB1, 0x76, 0x53};
+      thread_local EncryptedName<sizeof(bytes), 0x3F5315DFE32B4FAFULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x005AC570
+// FUNCTION: fn_03260
+int CSkillAction_AT_SAVAGE_LUNGE::Slot02() {
+  return 73;
+}
+
+// OFFSET: 0x005AC970
+// FUNCTION: fn_03262
+int CSkillAction_AT_TEMPEST_FLAP::Slot01() {
+  return 66;
+}
+
+// OFFSET: 0x005AC980
+// FUNCTION: fn_03263
+int CSkillAction_AT_TEMPEST_FLAP::Slot02() {
+  return 67;
+}
+
+// OFFSET: 0x005ACBA0
+// FUNCTION: fn_03265
+void CSkillAction_AT_TEMPEST_FLAP::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0x15, 0xCA, 0xE2, 0x49, 0xEE, 0xBA, 0x8B, 0x48, 0x07, 0xC3, 0xEE, 0x49, 0x8B};
+      thread_local EncryptedName<sizeof(bytes), 0x17FFC98B398FAF61ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0x47, 0xF6, 0x20, 0xE5, 0xFE, 0xE6, 0x2F, 0xC4, 0x55, 0xFF, 0x2C, 0xE5, 0xC4, 0xF7, 0x34, 0xEF,
+                                    0x47, 0xFC, 0x20, 0x95};
+      thread_local EncryptedName<sizeof(bytes), 0x9B5B959B954D9333ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x005ACF40
+// FUNCTION: fn_03266
+int CSkillAction_AT_TERRA_HARVEST::Slot02() {
+  return 62;
+}
+
+// OFFSET: 0x005ACF50
+// FUNCTION: fn_03267
+void CSkillAction_AT_TERRA_HARVEST::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target) {
+    return;
+  }
+
+  const int variant = std::max(std::rand() % 2, 0);
+  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(variant ? std::string([] {
+    const std::uint8_t bytes[] = {0xF1, 0x04, 0xF9, 0x65, 0x1E, 0x3E, 0xCD, 0xCE, 0xF7, 0x17, 0xEE, 0x64, 0x0B, 0x3E, 0xD7, 0xCA,
+                                  0xE1, 0x61};
+    thread_local EncryptedName<sizeof(bytes), 0xAFA5617F178B6185ULL> name(bytes);
+    return name.Text();
+  }()) : std::string([] {
+    const std::uint8_t bytes[] = {0x39, 0x40, 0xEB, 0x3B, 0x32, 0x1C, 0xE9, 0x66, 0x3F, 0x53, 0xFC, 0x3A, 0x27, 0x1C, 0xF8, 0x62,
+                                  0x21, 0x49, 0xF6, 0x3E, 0x53};
+    thread_local EncryptedName<sizeof(bytes), 0x078143534999254DULL> name(bytes);
+    return name.Text();
+  }()));
+  const int bottomId = CEZ2STREffectMgr::GetInstance()->EffectId(variant ? std::string([] {
+    const std::uint8_t bytes[] = {0x3B, 0x2E, 0xC1, 0xFD, 0x4C, 0x4A, 0x29, 0xE6, 0x3D, 0x3D, 0xD6, 0xFC, 0x59, 0x4A, 0x33, 0xE2,
+                                  0x2B, 0x14, 0xD1, 0xE0, 0x59, 0x61, 0x2E, 0xEA, 0x4F};
+    thread_local EncryptedName<sizeof(bytes), 0x8741152D8FB34B4FULL> name(bytes);
+    return name.Text();
+  }()) : std::string([] {
+    const std::uint8_t bytes[] = {0x73, 0xDE, 0x9B, 0x3F, 0x98, 0x12, 0x35, 0xF4, 0x75, 0xCD, 0x8C, 0x3E, 0x8D, 0x12, 0x24, 0xF0,
+                                  0x6B, 0xD7, 0x86, 0x3A, 0xA6, 0x2F, 0x32, 0xE1, 0x73, 0xD4, 0x84, 0x4D};
+    thread_local EncryptedName<sizeof(bytes), 0x955D4DF94DE9BB07ULL> name(bytes);
+    return name.Text();
+  }()));
+  g_effectMgr->Spawn(target->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  g_effectMgr->Spawn(target->render.accountId, bottomId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x005AD630
+// FUNCTION: fn_03268
+void CSkillAction_AT_TERRA_WAVE::Slot12(vector3d position, int argument2, int argument3) {
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0x7F, 0xD0, 0xFB, 0x67, 0x68, 0xE8, 0xEE, 0xA2, 0x7D, 0xD0, 0x89};
+    thread_local EncryptedName<sizeof(bytes), 0xC399B7091589B50BULL> name(bytes);
+    return name.Text();
+  }()), position.x, position.y, position.z, 0, -1, 0, 0);
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bytes[] = {0x1B, 0xC8, 0x53, 0x9B, 0x5E, 0x58, 0x4E, 0xD6, 0x19, 0xC8, 0x7E, 0x8B, 0x50, 0x73, 0x4D, 0xD8,
+                                  0x02, 0xAD};
+    thread_local EncryptedName<sizeof(bytes), 0xB739073FE921AD6FULL> name(bytes);
+    return name.Text();
+  }()), position.x, position.y, position.z, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x005AD970
+// FUNCTION: fn_03269
+int CSkillAction_AT_SOLID_STOMP::Slot02() {
+  return 63;
+}
+
+// OFFSET: 0x005AD980
+// FUNCTION: fn_03270
+void CSkillAction_AT_SOLID_STOMP::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xAA, 0x56, 0x7F, 0x10, 0xAF, 0xDC, 0x0E, 0x8B, 0xB6, 0x54, 0x63, 0x79};
+      thread_local EncryptedName<sizeof(bytes), 0xFF7D83CB791339D9ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0x66, 0xFC, 0xDF, 0xA8, 0x83, 0x1C, 0x22, 0x99, 0x7A, 0xFE, 0xC3, 0x9E, 0x85, 0x2C, 0x25, 0x99,
+                                    0x7A, 0xFE, 0xB3};
+      thread_local EncryptedName<sizeof(bytes), 0xED5143E7C1B39315ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x005ADD10
+// FUNCTION: fn_03271
+EfstActionMessage CEfstAction_SOLID_STOMP::Slot03() {
+  return {LookupMessage(4686), 0xFFFF00};
+}
+
+// OFFSET: 0x005ADD40
+// FUNCTION: fn_03272
+EfstActionMessage CEfstAction_SOLID_STOMP::Slot04() {
+  return {LookupMessage(4687), 0xFF};
+}
+
+// OFFSET: 0x005ADD70
+// FUNCTION: fn_03273
+int CSkillAction_AT_ZEPHYR_LINK::Slot02() {
+  return 0;
+}
+
+// OFFSET: 0x005ADD80
+// FUNCTION: fn_03274
+void CEfstAction_ZEPHYR_LINK::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    this->Slot01(efstId, value, argument3, argument4, actor);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xEB, 0xA6, 0xCD, 0x09, 0x1C, 0xE3, 0x62, 0x55, 0xF8, 0xAD, 0xD6, 0x61};
+      thread_local EncryptedName<sizeof(bytes), 0x393D916561BDC391ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xEF, 0x98, 0x61, 0xDB, 0x28, 0x17, 0xCA, 0x5D, 0xFC, 0x93, 0x7A, 0xEC, 0x33, 0x0A, 0xE1, 0x45,
+                                    0xFA, 0x90, 0x11};
+      thread_local EncryptedName<sizeof(bytes), 0x31956551B311FD95ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x005AE130
+// FUNCTION: fn_03275
+void CEfstAction_ZEPHYR_LINK::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xF3, 0x58, 0x1D, 0x8D, 0xDE, 0x73, 0x78, 0x43, 0xE0, 0x53, 0x06, 0xE5};
+      thread_local EncryptedName<sizeof(bytes), 0x2F2701A7E56D3D89ULL> name(bytes);
+      return name.Text();
+    }()));
+    g_effectMgr->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0x5F, 0xF4, 0x77, 0xCB, 0x98, 0x73, 0x6C, 0x07, 0x4C, 0xFF, 0x6C, 0xFC, 0x83, 0x6E, 0x47, 0x1F,
+                                    0x4A, 0xFC, 0x07};
+      thread_local EncryptedName<sizeof(bytes), 0x6B3301E1A3079125ULL> name(bytes);
+      return name.Text();
+    }()));
+  }
+}
+
+// OFFSET: 0x005AE460
+// FUNCTION: fn_03276
+void CEfstAction_ZEPHYR_LINK::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    this->Slot00(efstId, value, 0, 0, actor, false);
+  }
+}
+
+// OFFSET: 0x005AE480
+// FUNCTION: fn_03277
+void CEfstAction_INSANE::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    this->Slot01(efstId, value, argument3, argument4, actor);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xCA, 0xC7, 0xB6, 0x43, 0x48, 0x00, 0xD9, 0x02, 0xCE, 0xCF, 0xA0, 0x68, 0x27, 0x58, 0xB7};
+      thread_local EncryptedName<sizeof(bytes), 0x71B7691737C5A1AFULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0x06, 0x5F, 0x0E, 0xD5, 0x06, 0xDC, 0xF1, 0xB0, 0x02, 0x57, 0x18, 0xFE, 0x3B, 0xDA, 0xEB, 0xB7,
+                                    0x0C, 0x54, 0x22, 0x91, 0x68, 0xB5};
+      thread_local EncryptedName<sizeof(bytes), 0xC39FB559A17D3963ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    static_cast<CPc*>(actor)->unknown_04F4 = static_cast<int>(0xFFFFF200);
+  }
+}
+
+// OFFSET: 0x005AE840
+// FUNCTION: fn_03278
+void CEfstAction_INSANE::Slot01(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    static_cast<CPc*>(actor)->unknown_04F4 = 0;
+  }
+}
+
+// OFFSET: 0x005AE860
+// FUNCTION: fn_03279
+void CEfstAction_INSANE::Slot02(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
+  if (actor) {
+    this->Slot00(efstId, value, 0, 0, actor, false);
+  }
+}
+
+// OFFSET: 0x005AE880
+// FUNCTION: fn_03280
+void CEfstAction_INSANE2::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    this->Slot01(efstId, value, argument3, argument4, actor);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0x32, 0x97, 0xC6, 0xBF, 0x5C, 0x98, 0x8D, 0x36, 0x36, 0x9F, 0xD0, 0x94, 0x33, 0xC3, 0xE3};
+      thread_local EncryptedName<sizeof(bytes), 0x45E3F103CBB5F157ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xCE, 0x29, 0xEC, 0xD7, 0xDA, 0x46, 0x7F, 0x74, 0xCA, 0x21, 0xFA, 0xFC, 0xE7, 0x40, 0x65, 0x73,
+                                    0xC4, 0x22, 0xC0, 0x93, 0xB7, 0x2F};
+      thread_local EncryptedName<sizeof(bytes), 0x07112F85A39F4FABULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    static_cast<CPc*>(actor)->unknown_04F4 = static_cast<int>(0xFFFF7F27);
+  }
+}
+
+// OFFSET: 0x005AEC40
+// FUNCTION: fn_03281
+void CEfstAction_INSANE3::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    this->Slot01(efstId, value, argument3, argument4, actor);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0xBA, 0x21, 0xDE, 0x13, 0x40, 0x10, 0x5D, 0x5E, 0xBE, 0x29, 0xC8, 0x38, 0x2F, 0x4A, 0x33};
+      thread_local EncryptedName<sizeof(bytes), 0x2D33791F67AD47DFULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
+      const std::uint8_t bytes[] = {0x90, 0xE1, 0x8E, 0x89, 0x70, 0x54, 0x01, 0xE0, 0x94, 0xE9, 0x98, 0xA2, 0x4D, 0x52, 0x1B, 0xE7,
+                                    0x9A, 0xEA, 0xA2, 0xCD, 0x1C, 0x3D};
+      thread_local EncryptedName<sizeof(bytes), 0x936F3D2FFDFD87F5ULL> name(bytes);
+      return name.Text();
+    }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    static_cast<CPc*>(actor)->unknown_04F4 = static_cast<int>(0xFFED1C24);
   }
 }
