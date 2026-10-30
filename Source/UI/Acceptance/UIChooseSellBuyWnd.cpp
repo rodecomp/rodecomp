@@ -230,10 +230,97 @@ void UIChooseWarpWnd::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x008DE0E0
+// FUNCTION: fn_12164
+void UIChooseWnd::Slot15(int width, int height) {
+  this->m_list = new UIListBox(*this->m_context, *this->m_listContext);
+  int listHeight = height - 55;
+  if (listHeight < 30) {
+    listHeight = 30;
+  }
+  int listWidth = width - 24;
+  if (listWidth < 20) {
+    listWidth = 20;
+  }
+  this->m_list->Configure(12, 26, listWidth, listHeight, 0);
+  this->m_list->backgroundRed = 240;
+  this->m_list->backgroundGreen = 240;
+  this->m_list->backgroundBlue = 240;
+  this->m_list->SetId(184);
+  this->AddChild(this->m_list);
+  this->m_message0 = 184;
+
+  this->m_okButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_okButton->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
+  this->m_okButton->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
+  this->m_okButton->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
+  this->m_okButton->SetSize(this->m_okButton->BitmapWidth(), this->m_okButton->BitmapHeight());
+  this->m_okButton->Move(this->geometry.width - 92, this->geometry.height - 24);
+  this->m_okButton->SetId(184);
+  this->AddChild(this->m_okButton);
+
+  this->m_cancelButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel.bmp", 0, 0);
+  this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
+  this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
+  this->m_cancelButton->SetSize(this->m_cancelButton->BitmapWidth(), this->m_cancelButton->BitmapHeight());
+  this->m_cancelButton->Move(this->geometry.width - 46, this->geometry.height - 24);
+  this->m_cancelButton->SetId(185);
+  this->AddChild(this->m_cancelButton);
+}
 
 // OFFSET: 0x008DE520
+// FUNCTION: fn_12169
+void UIDisconnectedServerMsgWnd::Slot15(int width, int height) {
+  auto& text = *this->m_textContext;
+  auto* button = new UIBitmapButton(*this->m_context, text.buttons);
+  button->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
+  button->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
+  button->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(234, 96);
+  button->SetId(184);
+  this->AddChild(button);
+  this->m_message0 = 184;
+
+  this->m_viewer = new UITextViewer(*this->m_context, text);
+  this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->m_viewer->textColor = 0xFF000000u | RGB(red, green, blue);
+  this->m_viewer->Invalidate();
+  this->AddChild(this->m_viewer);
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(LookupMessage(2)), 38, 0, 0);
+}
 
 // OFFSET: 0x008DE6D0
+// FUNCTION: fn_12170
+void UIEmailAddressWnd::Slot15(int, int) {
+  g_modeMgr.gameMode->SendMsg(10013, 0, 0, 0, 0);
+  this->m_edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_edit->SetSize(this->geometry.width - 77, 16);
+  this->m_edit->Move(15, 22);
+  this->m_edit->maximum = 49;
+  this->m_edit->Background(232, 232, 232);
+  this->m_edit->SetText("");
+  this->m_edit->mask = 42;
+  this->AddChild(this->m_edit);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_edit);
+  this->m_edit->SelectAll();
+
+  const std::string prefix("유저인터페이스\\");
+  const int x = this->geometry.width - 55;
+  const int y = this->geometry.height - 28;
+  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(x, y);
+  button->SetId(184);
+  this->AddChild(button);
+  this->m_message0 = 184;
+}
 
 // OFFSET: 0x008ED130
 // FUNCTION: fn_12214
