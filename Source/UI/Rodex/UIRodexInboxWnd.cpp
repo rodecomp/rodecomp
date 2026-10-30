@@ -265,3 +265,32 @@ void UIRodexInboxWnd::InitializeMailActions() {
   this->unknown_0190->SetId(0x224);
   this->Invalidate();
 }
+
+// OFFSET: 0x00805350
+// FUNCTION: fn_10041
+bool RodexMailEntryLess::operator()(const RodexMailEntry& left, const RodexMailEntry& right) const {
+  std::map<std::int64_t, RodexMail>* leftMails = RodexMailsOfType(left.first);
+  if (!leftMails) {
+    return false;
+  }
+  std::map<std::int64_t, RodexMail>::iterator leftMail = leftMails->find(left.second);
+  if (leftMail == leftMails->end()) {
+    return false;
+  }
+  std::map<std::int64_t, RodexMail>* rightMails = RodexMailsOfType(right.first);
+  if (!rightMails) {
+    return false;
+  }
+  std::map<std::int64_t, RodexMail>::iterator rightMail = rightMails->find(right.second);
+  if (rightMail == rightMails->end()) {
+    return false;
+  }
+  if (leftMail->second.isRead == 0) {
+    if (rightMail->second.isRead == 1) {
+      return true;
+    }
+  } else if (rightMail->second.isRead == 0) {
+    return false;
+  }
+  return leftMail->second.unknown_001C > rightMail->second.unknown_001C;
+}
