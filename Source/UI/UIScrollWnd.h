@@ -15,17 +15,27 @@ public:
   UIScrollWnd(UIWindowContext& windows, int width, int height, unsigned char cached)
       : UIWindow(windows, cached), viewHeight(0), contentWidth(0), contentHeight(0), horizontalBar(nullptr), scrollBar(nullptr),
         scrollBarWidth(13), scrollBarHeight(13), unknown_009C(0), scrollPosition(0), unknown_00A4(0), wheelScroll(0) {
-    this->Resize(width, height);
+    this->UIWindow::Resize(width, height);
     this->Slot15(width, height);
   }
   ~UIScrollWnd() override;
+  void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   RenderPrimitive* DrawPrimitive() override;
+  virtual void Slot53();
 
   RenderPrimitive* BuildPrimitive(int x, int y, int sourceX, int sourceY, int width, int height, CTexture* texture, std::uint32_t color);
   void Clear();
   void RemoveChild(UIWindow* child, unsigned char destroy);
+  void AddScrollChild(UIWindow* child);
+  void MoveScrollChild(UIWindow* child, int x, int y);
+
+  // INLINED
+  int& ViewWidth() {
+    return reinterpret_cast<int&>(this->m_context);
+  }
 
   /* 0080 */ int viewHeight;
   /* 0084 */ int contentWidth;
