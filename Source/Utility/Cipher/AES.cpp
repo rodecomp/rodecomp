@@ -476,6 +476,14 @@ CAES::~CAES() {
 }
 
 // OFFSET: 0x00B0A770
+// FUNCTION: fn_18393
+void DecryptAES(const char* input, char* output, unsigned int length) {
+  CAES cipher(length, length);
+  char buffer[128];
+  std::memset(buffer, 0, sizeof(buffer));
+  cipher.Decrypt(input, buffer, length);
+  std::memcpy(output, buffer, length);
+}
 
 // OFFSET: 0x00B0AA40
 
