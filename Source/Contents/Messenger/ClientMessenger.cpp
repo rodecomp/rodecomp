@@ -2729,6 +2729,32 @@ int GetPureJob(lua_State* state) {
   return 1;
 }
 
+// OFFSET: 0x00E16510
+// FUNCTION: fn_23832
+CSkillInfo* FindGroupedSkill(CSession& session, std::uint32_t id) {
+  return session.m_skillBundle.FindGrouped(id);
+}
+
+// OFFSET: 0x006BEA40
+// FUNCTION: fn_06287
+int GetSkillLevel(lua_State* state) {
+  std::vector<int> args;
+  int number = 0;
+  for (int index = -1; index < 0; ++index) {
+    if (!lua_isnumber(state, index)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      return 2;
+    }
+    args.push_back(static_cast<int>(lua_tonumber(state, index)));
+    ++number;
+  }
+
+  CSkillInfo* skill = FindGroupedSkill(g_session, args[0]);
+  lua_pushnumber(state, skill != nullptr ? skill->level : 0);
+  return 1;
+}
+
 // OFFSET: 0x006BEC30
 // FUNCTION: fn_06288
 int GetPlayerValue(lua_State* state) {
