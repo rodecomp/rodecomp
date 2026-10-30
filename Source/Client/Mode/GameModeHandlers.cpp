@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Client/Application/Launcher.h"
 #include "Client/Session.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/ClanInfo.h"
@@ -6,11 +7,16 @@
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/EffectLists.h"
 #include "Contents/GuildMgr.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/RuneSystem.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
+#include "Network/Connection/Connection.h"
+#include "UI/UIGradeEnchantWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
@@ -22,6 +28,9 @@
 #include <ctime>
 #include <string>
 #include <utility>
+#include <direct.h>
+#include <io.h>
+#include <windows.h>
 
 #pragma pack(push, 1)
 struct ClanInfoPacket {
@@ -78,6 +87,11 @@ struct RuneSetGradesPacket : RuneListPacket {
 
 struct RuneRewardStepsPacket : RuneListPacket {
   /* 0009 */ RuneRewardStepEntry entries[1];
+};
+struct PackageItemTestEntry {
+  /* 0000 */ int itemId;
+  /* 0004 */ std::uint16_t unknown_0004;
+  /* 0006 */ int count;
 };
 #pragma pack(pop)
 
@@ -235,6 +249,10 @@ void CGameMode::ReceiveNpcBgm(const unsigned char* packet) {
 void CGameMode::IgnoreRemovedPacket1(const unsigned char*) {
 }
 
+// OFFSET: 0x00D3D2F0
+
+// OFFSET: 0x00D3DF40
+
 // OFFSET: 0x00D3E0B0
 // FUNCTION: fn_21808
 void CGameMode::IgnoreRemovedPacket2(const unsigned char*) {
@@ -354,6 +372,8 @@ struct ActorMessage32 {
   /* 003C */ int unknown_003C;
 };
 
+// OFFSET: 0x00D3E8B0
+
 // OFFSET: 0x00D3F130
 // FUNCTION: fn_21811
 void CGameMode::ReceiveActorMessage32(const unsigned char* packet) {
@@ -376,6 +396,8 @@ void CGameMode::ReceiveActorMessage32(const unsigned char* packet) {
   const std::int64_t argument = reinterpret_cast<std::intptr_t>(&message);
   actor->SendMsg(nullptr, 32, 0, static_cast<int>(argument), static_cast<int>(argument >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
+
+// OFFSET: 0x00D3F3E0
 
 // OFFSET: 0x00D3F760
 // FUNCTION: fn_21813
@@ -496,6 +518,8 @@ void CGameMode::ReceiveResultNotice0118(const unsigned char* packet) {
   }
 }
 
+// OFFSET: 0x00D652E0
+
 // OFFSET: 0x00D65730
 // FUNCTION: fn_22001
 void CGameMode::ReceiveClanLeave(const unsigned char* packet) {
@@ -566,6 +590,13 @@ void CGameMode::ReceiveActorClanName(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ActorClanNamePacket*>(data);
 
   this->nameCard.SetValue3(packet->aid, std::string(packet->name, packet->name + (packet->length - 8)));
+}
+
+// OFFSET: 0x00D66840
+// FUNCTION: fn_22015
+void CGameMode::ReceiveDeferredReset(const unsigned char*) {
+  g_session.m_options.Set(5, 0);
+  GetRagConnection().ResetDeferred();
 }
 
 // OFFSET: 0x00D66A00
@@ -704,6 +735,8 @@ void CGameMode::ReceiveRuneRewardSteps(const unsigned char* data) {
 // OFFSET: 0x00D66CE0
 
 // OFFSET: 0x00D677C0
+
+// OFFSET: 0x00D679E0
 
 // OFFSET: 0x00D686F0
 // FUNCTION: fn_22042

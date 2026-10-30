@@ -49,7 +49,9 @@ public:
   /* 0078 */ unsigned char unknown_0078[0x54];
   /* 00CC */ CWorld* scene;
   /* 00D0 */ CView* camera;
-  /* 00D4 */ unsigned char unknown_00D4[0x44];
+  /* 00D4 */ unsigned char unknown_00D4[0x28];
+  /* 00FC */ int unknown_00FC;
+  /* 0100 */ unsigned char unknown_0100[0x18];
   /* 0118 */ std::string unknown_0118;
   /* 0130 */ unsigned char unknown_0130[0x30];
   /* 0160 */ CActorNameCardHolder nameCard;
@@ -171,6 +173,13 @@ public:
   void ReceiveEnchantSimulation(const unsigned char* packet);
   void ReceivePackageSimulation(const unsigned char* packet);
   void ReceiveWindow154Result(std::int16_t value);
+  void ReceivePlayerDuration(const unsigned char* packet);
+  void ReceiveFailureNotice(const unsigned char* packet);
+  void ReceiveServerRateNotice(const unsigned char* packet);
+  void ReceiveRequestResult(const unsigned char* packet);
+  void ReceivePackageItemTest(const unsigned char* packet);
+  void ReceiveDeferredReset(const unsigned char* packet);
+  void ReceiveGradeEnchantResult(const unsigned char* packet);
   void UpdateUnknown0628(int id, bool add);
   void IgnoreRemovedPacket3(const unsigned char* packet);
   void IgnoreRemovedPacket4(const unsigned char* packet);

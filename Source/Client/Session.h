@@ -238,7 +238,11 @@ public:
   /* 5450 */ int unknown_5450;
   /* 5454 */ unsigned char unknown_5454[0x14];
   /* 5468 */ int unknown_5468;
-  /* 546C */ unsigned char unknown_546C[0xD0];
+  /* 546C */ unsigned char unknown_546C[0x34];
+  /* 54A0 */ int unknown_54A0;
+  /* 54A4 */ int unknown_54A4;
+  /* 54A8 */ int unknown_54A8;
+  /* 54AC */ unsigned char unknown_54AC[0x90];
   /* 553C */ std::string m_serverName;
   /* 5554 */ unsigned char unknown_5554[4];
   /* 5558 */ int unknown_5558;
