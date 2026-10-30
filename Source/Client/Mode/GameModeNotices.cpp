@@ -103,10 +103,44 @@ void CGameMode::StopActorMove(std::uint32_t aid, std::int16_t x, std::int16_t y,
 }
 
 // OFFSET: 0x00D69140
+// FUNCTION: fn_22044
+void CGameMode::NotifyResult2877(int result) {
+  switch (result) {
+  case 0:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2877)), 0xFF, 0, 0, 0);
+    break;
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2878)), 0xFF, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2879)), 0xFF, 0, 0, 0);
+    break;
+  }
+}
 
 // OFFSET: 0x00D69700
 
 // OFFSET: 0x00D69850
+// FUNCTION: fn_22052
+void CGameMode::NotifyResult3562(const unsigned char* packet) {
+  switch (reinterpret_cast<const ByteValuePacket*>(packet)->value) {
+  case 0:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3566)), 0xFFFF00, 0, 0, 0);
+    break;
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3562)), 0xFF, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3563)), 0xFF, 0, 0, 0);
+    break;
+  case 3:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3564)), 0xFF, 0, 0, 0);
+    break;
+  case 4:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3565)), 0xFF, 0, 0, 0);
+    break;
+  }
+}
 
 // OFFSET: 0x00D698F0
 // FUNCTION: fn_22053
@@ -114,8 +148,86 @@ void CGameMode::IgnoreRemovedPacket6() {
 }
 
 // OFFSET: 0x00D69900
+// FUNCTION: fn_22054
+void CGameMode::ReceiveRouletteResult(const unsigned char* packet) {
+  const auto* result = reinterpret_cast<const RouletteResultPacket*>(packet);
+  unsigned char bonus;
+
+  switch (result->result) {
+  case 0:
+    g_rouletteMgr->m_stage = result->stage;
+    g_rouletteMgr->SetAdditionItem(result->additionItemId);
+    bonus = 0;
+    break;
+  case 3:
+    g_rouletteMgr->m_stage = result->stage;
+    g_rouletteMgr->SetAdditionItem(result->additionItemId);
+    bonus = 1;
+    break;
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2634)), 0x64FFFF, 0, 0, 0);
+    if (g_windowMgr.unknown_0464) {
+      g_windowMgr.EnableRouletteWnd();
+    }
+    return;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2635)), 0x64FFFF, 0, 0, 0);
+    if (g_windowMgr.unknown_0464) {
+      g_windowMgr.EnableRouletteWnd();
+    }
+    return;
+  case 4:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2693)), 0x64FFFF, 0, 0, 0);
+    if (g_windowMgr.unknown_0464) {
+      g_windowMgr.EnableRouletteWnd();
+    }
+    return;
+  case 5:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2700)), 0x64FFFF, 0, 0, 0);
+    if (g_windowMgr.unknown_0464) {
+      g_windowMgr.EnableRouletteWnd();
+    }
+    return;
+  default:
+    return;
+  }
+
+  g_rouletteMgr->m_goldPoint = result->goldPoint;
+  g_rouletteMgr->m_silverPoint = result->silverPoint;
+  g_rouletteMgr->m_bronzePoint = result->bronzePoint;
+  g_rouletteMgr->SetResult(result->index, 0, bonus);
+  g_rouletteMgr->StartSpin(461, 341 - result->stage * 40, static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0),
+    static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0));
+}
 
 // OFFSET: 0x00D69FC0
+// FUNCTION: fn_22057
+void CGameMode::NotifyResult4013(unsigned char result, unsigned short value) {
+  char text[256];
+
+  switch (result) {
+  case 0:
+    std::memset(text, 0, sizeof(text));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(4013), value);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 0, 0, 0);
+    break;
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4014)), 0xFF, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4015)), 0xFF, 0, 0, 0);
+    break;
+  case 3:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4016)), 0xFF, 0, 0, 0);
+    break;
+  case 4:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4017)), 0xFF, 0, 0, 0);
+    break;
+  case 5:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4018)), 0xFF, 0, 0, 0);
+    break;
+  }
+}
 
 // OFFSET: 0x00D6AE70
 // FUNCTION: fn_22065
