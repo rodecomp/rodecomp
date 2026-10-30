@@ -14,6 +14,7 @@
 #include "UI/Text/UITextViewerControl.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "Render/Text/FontCache.h"
+#include "Script/LuaScript.h"
 
 #include <algorithm>
 #include <cmath>
@@ -341,6 +342,20 @@ void CUIHThumb::Slot27(int x, int) {
 // FUNCTION: fn_14714
 void CUIThumb::ResetCursor(int, int) {
   this->m_context->cursor.Set(2, this->m_context->cursorTick);
+}
+
+// OFFSET: 0x009F2450
+// FUNCTION: fn_14712
+void CUIThumb::Slot28(int, int) {
+  if (!this->tooltip.empty()) {
+    int screenX = 0;
+    int screenY = -20;
+    for (const UIWindow* node = this; node; node = node->parent) {
+      screenX += node->geometry.x;
+      screenY += node->geometry.y;
+    }
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltip.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+  }
 }
 
 // OFFSET: 0x009F2500
@@ -777,6 +792,19 @@ void CUITitleBar::Slot53(int resolveSkin) {
   if (this->resizable) {
     this->left = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->leftName, resolveSkin));
     this->right = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->rightName, resolveSkin));
+  }
+}
+
+// OFFSET: 0x009F17A0
+// FUNCTION: fn_14697
+void CUITitleBar::SetSecondButton(CUIButton* button) {
+  this->secondButton = button;
+  this->AddChild(button);
+
+  const char* behavior = nullptr;
+  if (g_luaScript->Call("GetBeHaviorOfWindow", "d>s", this->parent->geometry.id, &behavior) && behavior) {
+    const std::string text = behavior;
+    static_cast<CUIButton*>(this->secondButton)->tooltip = text;
   }
 }
 

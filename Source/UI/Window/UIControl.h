@@ -199,6 +199,7 @@ public:
   void Slot53(int resolveSkin) override;
 
   void SetImages(const std::string& left, const std::string& middle, const std::string& right);
+  void SetSecondButton(CUIButton* button);
 
   /* 0080 */ unsigned char resizable;
   /* 0084 */ CResPtr<CBitmapRes> left;
