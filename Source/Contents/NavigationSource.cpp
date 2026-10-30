@@ -425,6 +425,50 @@ NavigationTarget CNavigationManager::ReadTarget(const char* data, int size) {
 }
 
 // OFFSET: 0x00B94170
+// FUNCTION: fn_19567
+CNavi_Object* CNavigationManager::ReadTargetObject(const char* record) {
+  const NaviObjectRecord* header = reinterpret_cast<const NaviObjectRecord*>(record);
+  const int type = header->type;
+  if (!(type > 99 && type < 199) && !(type >= 300 && type <= 398)) {
+    return nullptr;
+  }
+
+  const int cellX = header->cellX;
+  const int cellY = header->cellY;
+
+  std::size_t offset = 0x12;
+  int length = header->nameLength;
+  std::string name(record + offset, record + offset + length);
+  offset += length;
+
+  length = *reinterpret_cast<const std::int16_t*>(record + offset);
+  offset += 2;
+  std::string title(record + offset, record + offset + length);
+  offset += length;
+
+  length = *reinterpret_cast<const std::int16_t*>(record + offset);
+  offset += 2;
+  std::string map(record + offset, record + offset + length);
+
+  CNaviInfo* info = this->FindObject(map.c_str());
+  if (info == nullptr) {
+    return nullptr;
+  }
+
+  if (type >= 100 && type <= 104) {
+    CNavi_Object* npc = info->FindNpcAt(cellX, cellY);
+    if (npc != nullptr && std::strcmp(npc->GetName(), name.c_str()) == 0) {
+      return npc;
+    }
+    return nullptr;
+  }
+
+  CNavi_Object* mob = info->FindMobByName(name.c_str());
+  if (mob != nullptr) {
+    return mob;
+  }
+  return nullptr;
+}
 
 // OFFSET: 0x00B94890
 // FUNCTION: fn_19568
@@ -579,6 +623,41 @@ void CNavigationManager::ClearNodes() {
 }
 
 // OFFSET: 0x00B95B00
+// FUNCTION: fn_19578
+bool CNavigationManager::GetMobInfo(
+  std::string title, std::string* name, std::string* sprite, int* cellX, int* cellYByte1, int* element, int* elementLevel, int* cellYByte0, int* type
+) {
+  if (title.empty()) {
+    return false;
+  }
+
+  CNavi_Object* mob = this->data.FindMobByTitle(title);
+  if (mob == nullptr) {
+    return false;
+  }
+
+  name->assign(mob->GetName());
+
+  std::string path = FormatOwnedString("몬스터\\%s", g_session.GetJobName(mob->GetIndex(), -1));
+  const bool exists = ResourceMgr::Instance().Exists((path + ".spr").c_str()) && ResourceMgr::Instance().Exists((path + ".act").c_str());
+  if (exists) {
+    *sprite = path;
+  } else {
+    const std::string npcSprite = FormatOwnedString("npc\\%s", g_session.GetJobName(mob->GetIndex(), -1));
+    *sprite = npcSprite;
+  }
+
+  NaviCell cell;
+  *cellX = mob->GetCell(&cell)->x;
+  const int packed = mob->GetCell(&cell)->y;
+  const unsigned char elementValue = static_cast<unsigned char>(packed >> 16);
+  *elementLevel = elementValue / 20;
+  *element = elementValue % 10;
+  *cellYByte1 = static_cast<unsigned char>(packed >> 8);
+  *cellYByte0 = static_cast<unsigned char>(packed);
+  *type = mob->GetType();
+  return true;
+}
 
 // OFFSET: 0x00B95DC0
 // FUNCTION: fn_19579
