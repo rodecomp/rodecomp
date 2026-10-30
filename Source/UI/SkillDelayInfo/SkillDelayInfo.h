@@ -8,10 +8,13 @@
 #include <cstddef>
 #include <cstdint>
 #include <map>
+#include <vector>
 
 class CUIStaticText;
 
 namespace SkillDelayInfo {
+class CUITime;
+
 class CDelayItemData {
 public:
   /* 0000 */ int unknown_0000;
@@ -23,7 +26,8 @@ public:
   void Slot16() override;
   void Paint() override;
 
-  /* 00E8 */ unsigned char unknown_00E8[0x10];
+  /* 00E8 */ CUIStaticText* level;
+  /* 00EC */ std::vector<CUITime*> times;
   /* 00F8 */ std::uint32_t backgroundColor;
   /* 00FC */ std::uint32_t borderColor;
 };
@@ -34,7 +38,7 @@ public:
   void Slot16() override;
   void Paint() override;
 
-  void SetTime(int milliseconds);
+  __declspec(noinline) void SetTime(int milliseconds);
 
   /* 0080 */ CUIStaticText* text;
 };
@@ -51,6 +55,7 @@ public:
 
   void OnButtonClick();
   void OnSelectItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data);
+  void OnUpdateItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data);
 
   /* 00D8 */ CUITitleBar* titleBar;
   /* 00DC */ UIWindow* unknown_00DC;

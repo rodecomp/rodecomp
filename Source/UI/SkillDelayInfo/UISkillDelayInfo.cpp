@@ -158,6 +158,18 @@ void CUISkillDelayInfo::OnButtonClick() {
 void CUISkillDelayInfo::OnSelectItem(SkillDelayInfo::CUIDelayItem*, const SkillDelayInfo::CDelayItemData&) {
 }
 
+// OFFSET: 0x00A77B20
+// FUNCTION: fn_16881
+void CUISkillDelayInfo::OnUpdateItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data) {
+  const std::string text = std::to_string(data.unknown_0000 + 1);
+  item->level->SetText(text.c_str(), text.size());
+
+  for (int index = 0; index < 4; ++index) {
+    const auto found = data.unknown_0004.find(index);
+    item->times[index]->SetTime(found != data.unknown_0004.end() ? found->second : 0);
+  }
+}
+
 namespace SkillDelayInfo {
 
 // OFFSET: 0x00A77CE0
