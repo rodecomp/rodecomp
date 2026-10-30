@@ -1381,6 +1381,38 @@ bool CSession::IsSuperNoviceClass(int job) const {
 }
 
 // OFFSET: 0x00E24550
+// FUNCTION: fn_23896
+bool CSession::PlaySkillTargetEffect(int skillId, int level, CGameActor* source, CGameActor* target) {
+  bool hasInfo = false;
+  if (!g_luaScript->Call("HaveSkillEffectInfo", "d>b", skillId, &hasInfo) || !hasInfo) {
+    return false;
+  }
+
+  const char* waveName = nullptr;
+  if (g_luaScript->Call("GetTargetEffectWaveFileName", "d>s", skillId, &waveName) && std::strcmp(waveName, "") != 0) {
+    g_soundMgr->PlayWave(waveName, 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+  }
+
+  int count = 0;
+  if (g_luaScript->Call("GetTargetEffectNum", "d>d", skillId, &count)) {
+    for (int index = 0; index < count; ++index) {
+      int effectId = -1;
+      g_luaScript->Call("GetTargetEffectID", "dd>d", skillId, index + 1, &effectId);
+      if (effectId == -1) {
+        continue;
+      }
+
+      if (g_effectMgr->HasAllocator(effectId)) {
+        g_effectMgr->Spawn(
+          target->render.accountId, effectId, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0
+        );
+      } else {
+        target->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+    }
+  }
+  return true;
+}
 
 // OFFSET: 0x00E248E0
 // FUNCTION: fn_23897
