@@ -2064,6 +2064,19 @@ int UINavigationroadiconWnd::SendMsg(UIWindow*, int message, std::intptr_t a, st
 }
 
 // OFFSET: 0x005C4D70
+// FUNCTION: fn_03580
+void UINavigationRuideWnd::Slot15(int width, int) {
+  this->AddCloseButton(*this->m_controls, LookupMessage(3045), 0);
+  this->routeList = new UIListBox_NaviSearch(*this->m_context, *this->m_listContext);
+  this->routeList->SetSize(width - 4, 293);
+  this->routeList->backgroundRed = 255;
+  this->routeList->backgroundGreen = 255;
+  this->routeList->backgroundBlue = 255;
+  this->routeList->SetId(336);
+  this->routeList->Move(2, 20);
+  this->AddChild(this->routeList);
+  this->RefreshRoute();
+}
 
 // OFFSET: 0x005C6290
 // FUNCTION: fn_03587
@@ -2155,6 +2168,42 @@ int UINavigationRuideWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
 }
 
 // OFFSET: 0x005C8F70
+// FUNCTION: fn_03630
+void UINavigationRuideWnd::RefreshRoute() {
+  char text[50];
+  std::memset(text, 0, sizeof(text));
+  this->routeList->Clear();
+
+  for (int index = 0; index < g_navigationManager.NodeCount(); ++index) {
+    CNavi_Link* node = g_navigationManager.GetNode(index);
+    NaviCell first;
+    const int y = node->GetCell(&first)->y;
+    NaviCell second;
+    const int x = node->GetCell(&second)->x;
+    std::sprintf(text, "%s (%d %d)", node->GetInfo()->GetName(), x, y);
+
+    UIListBox_NaviSearch* list = this->routeList;
+    list->icons.push_back(index == 0 ? 100 : 200);
+    list->AddLine(text);
+    list->Invalidate();
+  }
+
+  NaviCell cell;
+  if (g_navigationManager.GetDestinationCell(&cell)->x < 1) {
+    std::sprintf(text, "%s", g_navigationManager.GetDestinationInfo()->GetName());
+  } else {
+    NaviCell first;
+    const int y = g_navigationManager.GetDestinationCell(&first)->y;
+    NaviCell second;
+    const int x = g_navigationManager.GetDestinationCell(&second)->x;
+    std::sprintf(text, "%s (%d %d)", g_navigationManager.GetDestinationInfo()->GetName(), x, y);
+  }
+
+  UIListBox_NaviSearch* list = this->routeList;
+  list->icons.push_back(300);
+  list->AddLine(text);
+  list->Invalidate();
+}
 
 // OFFSET: 0x005C73B0
 // FUNCTION: fn_03616
