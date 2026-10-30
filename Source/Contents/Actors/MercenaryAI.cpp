@@ -9,6 +9,7 @@
 #include "Contents/World/World.h"
 #include "File/File.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -23,6 +24,7 @@ extern "C" {
 #include <list>
 #include <string>
 #include <windows.h>
+#include <timeapi.h>
 
 namespace {
 
@@ -30,6 +32,17 @@ struct SkillOwnerPacket {
   /* 0000 */ std::int16_t opcode;
   /* 0002 */ std::uint32_t aid;
 };
+
+#pragma pack(push, 1)
+struct ActionRequestPacket {
+  /* 0000 */ std::int16_t opcode;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::uint32_t target;
+  /* 000A */ unsigned char action;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ActionRequestPacket) == 11);
 
 // INLINED
 bool IsHomunAid(std::uint32_t aid) {
@@ -164,6 +177,86 @@ int CMercenaryAI::Process(std::uint32_t aid) {
   MessageBoxA(nullptr, message, "AI.lua error", 0);
   this->Shutdown();
   return 1;
+}
+
+// OFFSET: 0x00D9EAF0
+// FUNCTION: fn_22335
+int AiHomunAttack(lua_State* state) {
+  if (g_session.GetOption(17) > 0) {
+    return 0;
+  }
+
+  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  std::uint32_t target = static_cast<std::uint32_t>(lua_tonumber(state, 2));
+  if (!IsHomunAid(aid)) {
+    return 0;
+  }
+  if (*reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5620[8]) != 0 && IsMercenaryAid(target)) {
+    return 0;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameActor* actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
+  CGameActor* targetActor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(target));
+  if (!actor || !targetActor) {
+    return 0;
+  }
+  if (StateFlag06(targetActor->Slot13()) || StateFlag01(targetActor->Slot13()) || StateFlag02(targetActor->Slot13())) {
+    return 0;
+  }
+
+  // GLOBAL: gl_24908
+  static std::uint32_t lastAttackTime;
+  if (*reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[0x48]) + lastAttackTime < timeGetTime()) {
+    ActionRequestPacket packet;
+    packet.opcode = ID_CZ_REQUEST_ACTNPC;
+    packet.aid = aid;
+    packet.target = target;
+    packet.action = 0;
+    CRagConnection& connection = GetRagConnection();
+    connection.Send(g_packetLengths.FixedLength(packet.opcode), &packet);
+    lastAttackTime = timeGetTime();
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00D9ECA0
+// FUNCTION: fn_22336
+int AiMercenaryAttack(lua_State* state) {
+  std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
+  std::uint32_t target = static_cast<std::uint32_t>(lua_tonumber(state, 2));
+  if (!IsMercenaryAid(aid)) {
+    return 0;
+  }
+  if (*reinterpret_cast<const std::uint32_t*>(&g_session.unknown_5570[8]) != 0 && IsHomunAid(target)) {
+    return 0;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameActor* actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
+  CGameActor* targetActor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(target));
+  if (!actor || !targetActor) {
+    return 0;
+  }
+  if (StateFlag06(targetActor->Slot13()) || StateFlag01(targetActor->Slot13()) || StateFlag02(targetActor->Slot13())) {
+    return 0;
+  }
+
+  // GLOBAL: gl_24909
+  static std::uint32_t lastAttackTime;
+  if (static_cast<std::uint32_t>(g_session.m_mercenaryStats[7]) + lastAttackTime < timeGetTime()) {
+    ActionRequestPacket packet;
+    packet.opcode = ID_CZ_REQUEST_ACTNPC;
+    packet.aid = aid;
+    packet.target = target;
+    packet.action = 0;
+    CRagConnection& connection = GetRagConnection();
+    connection.Send(g_packetLengths.FixedLength(packet.opcode), &packet);
+    lastAttackTime = timeGetTime();
+  }
+
+  return 0;
 }
 
 // OFFSET: 0x00D9EE10
