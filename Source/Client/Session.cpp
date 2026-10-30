@@ -1784,3 +1784,18 @@ void CSession::RefreshItems1750() {
     ++it;
   }
 }
+
+std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item);
+
+// OFFSET: 0x00DDD2C0
+// FUNCTION: fn_23383
+std::uint32_t CSession::GetItemNameColor(const ITEM_INFO& item) const {
+  if (!item.identified) {
+    return 0xFFAAAAAA;
+  }
+  const std::uint32_t color = ItemCardColor(&item);
+  if (color == 0) {
+    return item.unknown_0064 == 2 ? 0xFFFFFF00 : 0xFFFFFFFF;
+  }
+  return color;
+}

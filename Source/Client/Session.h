@@ -719,6 +719,7 @@ public:
   std::uint16_t FindInventoryIndexByItemId(int itemId);
   std::vector<int> FindInventoryIndicesByItemId(int itemId, unsigned char identifiedOnly);
   __declspec(noinline) ITEM_INFO GetInventoryItemAt(int index) const;
+  std::uint32_t GetItemNameColor(const ITEM_INFO& item) const;
   ITEM_INFO* FindInventoryItemByItemId(int itemId, bool identifiedOnly);
   int GetInventoryItemCount(int itemId) const;
   ITEM_INFO GetItem1784At(int list, int index) const;

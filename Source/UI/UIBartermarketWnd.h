@@ -14,10 +14,13 @@
 class UIExpandedBarterItemPurchaseWnd : public UIFrameWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot25(int x, int y) override;
+  void Slot28(int x, int y) override;
+  void Slot32(int x, int y) override;
   void Slot35(int delta) override;
   void UpdateScrollBar();
-  std::pair<bool, BarterMarketEntry> GetEntryAt(int x, int y);
-  std::pair<bool, BarterMarketEntry> GetEntryOrChunkAt(int x, int y);
+  __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryAt(int x, int y);
+  __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryOrChunkAt(int x, int y);
   std::list<BarterMarketEntry>& Entries() { return *reinterpret_cast<std::list<BarterMarketEntry>*>(&this->unknown_00B4); }
 
   /* 00B4 */ int unknown_00B4;
@@ -33,11 +36,14 @@ public:
 class UIExpandedBartermarketWnd : public UIFrameWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot25(int x, int y) override;
+  void Slot28(int x, int y) override;
+  void Slot32(int x, int y) override;
   void Slot35(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void UpdateScrollBar();
-  std::pair<bool, BarterMarketEntry> GetEntryAt(int x, int y);
-  std::pair<bool, BarterMarketEntry> GetEntryOrChunkAt(int x, int y);
+  __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryAt(int x, int y);
+  __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryOrChunkAt(int x, int y);
   std::list<BarterMarketEntry>& Entries() { return *reinterpret_cast<std::list<BarterMarketEntry>*>(&this->unknown_00B4); }
 
   /* 00B4 */ int unknown_00B4;
@@ -53,16 +59,22 @@ public:
 class UIBarterItemPurchaseWnd : public UIItemPurchaseWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
-  std::pair<bool, BarterMarketItem> GetBarterItemOrPriceAt(int x, int y);
-  std::pair<bool, BarterMarketItem> GetBarterItemAt(int x, int y);
+  void Slot25(int x, int y) override;
+  void Slot28(int x, int y) override;
+  void Slot32(int x, int y) override;
+  __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemOrPriceAt(int x, int y);
+  __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemAt(int x, int y);
   int GetInventoryItemCount(int itemId);
 };
 
 class UIBartermarketWnd : public UIItemShopWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
-  std::pair<bool, BarterMarketItem> GetBarterItemAt(int x, int y);
-  std::pair<bool, BarterMarketItem> GetBarterItemOrPriceAt(int x, int y);
+  void Slot25(int x, int y) override;
+  void Slot28(int x, int y) override;
+  void Slot32(int x, int y) override;
+  __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemAt(int x, int y);
+  __declspec(noinline) std::pair<bool, BarterMarketItem> GetBarterItemOrPriceAt(int x, int y);
 };
 
 #endif

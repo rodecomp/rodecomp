@@ -1,7 +1,11 @@
 #include "Client/Mode/ModeDragState.h"
+#include "Contents/Items/BarterMarketItemMgr.h"
+#include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemResources.h"
+#include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 
 #include <cstring>
@@ -84,4 +88,41 @@ void ModeDragState::BeginSkill(
   this->skillLevel = level;
   this->skill = 1;
   this->slot = slotValue;
+}
+
+// OFFSET: 0x00CFDF90
+// FUNCTION: fn_21427
+void ModeDragState::BeginBarterItem(int sourceValue, const BarterMarketItem& item, int quantityValue, int slotValue) {
+  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 0);
+  this->Clear();
+  this->source = sourceValue;
+  this->quantity = quantityValue;
+  this->skill = 0;
+  ItemDescriptions descriptions{g_itemDescriptions};
+  this->resource = ItemDragResource(descriptions, item.name.c_str(), item.flag_24);
+  this->name = item.name.c_str();
+  this->unknown_0310 = item.field_20;
+  this->type = item.field_1c;
+  this->identified = item.flag_24;
+  this->slot = slotValue;
+  this->unknown_03B0 = item.id;
+}
+
+// OFFSET: 0x00CFE060
+// FUNCTION: fn_21428
+void ModeDragState::BeginBarterEntry(int sourceValue, const BarterMarketEntry& entry, int quantityValue, int slotValue) {
+  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 0);
+  this->Clear();
+  this->source = sourceValue;
+  this->quantity = quantityValue;
+  this->skill = 0;
+  ItemDescriptions descriptions{g_itemDescriptions};
+  this->resource = ItemDragResource(descriptions, entry.name.c_str(), entry.flag_24);
+  this->name = entry.name.c_str();
+  this->unknown_0310 = entry.field_8;
+  this->type = entry.field_0;
+  this->identified = entry.flag_24;
+  this->slot = slotValue;
+  this->refine = entry.field_28;
+  this->unknown_03B0 = entry.id;
 }

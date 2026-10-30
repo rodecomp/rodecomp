@@ -26,6 +26,7 @@ struct BarterMarketItem {
 
   BarterMarketItem() {}
   BarterMarketItem(const BarterMarketItem& other);
+  ITEM_INFO ToItemInfo() const;
 };
 
 static_assert(sizeof(BarterMarketItem) == 0x48);
@@ -92,6 +93,8 @@ struct BarterMarketEntry {
   // OFFSET: 0x00845020
   // FUNCTION: fn_10571
   BarterMarketEntry& operator=(const BarterMarketEntry& other) = default;
+
+  ITEM_INFO ToItemInfo() const;
 };
 
 static_assert(sizeof(BarterMarketEntry) == 0x4C);

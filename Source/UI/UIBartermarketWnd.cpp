@@ -4,11 +4,16 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/MessageTable.h"
 #include "UI/Layout/WindowSnapping.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 
@@ -519,5 +524,308 @@ int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intpt
 
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
+
+// OFFSET: 0x00AE75C0
+// FUNCTION: fn_18076
+ITEM_INFO BarterMarketItem::ToItemInfo() const {
+  ITEM_INFO item;
+  item.unknown_0000[0] = this->field_1c;
+  item.quantity = this->value;
+  item.unknown_0014[0] = this->field_20;
+  item.itemId = this->name;
+  item.identified = 1;
+  item.unknown_0000[2] = this->field_40;
+  item.unknown_0070 = this->field_44;
+  return item;
+}
+
+// OFFSET: 0x00AE7660
+// FUNCTION: fn_18077
+ITEM_INFO BarterMarketEntry::ToItemInfo() const {
+  ITEM_INFO item;
+  item.unknown_0000[0] = this->field_0;
+  item.quantity = this->value;
+  item.unknown_0014[0] = this->field_8;
+  item.itemId = this->name;
+  item.unknown_0060 = this->field_28;
+  item.identified = 1;
+  item.unknown_006C = static_cast<std::uint16_t>(this->factor);
+  item.unknown_0000[2] = this->field_38;
+  item.unknown_0070 = this->field_3c;
+  return item;
+}
+
+// OFFSET: 0x00843190
+// FUNCTION: fn_10556
+void UIBarterItemPurchaseWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  const int previous = this->hovered;
+  this->hovered = this->GetItemIndexAt(x, y);
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+
+  std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
+  if (found.first == true) {
+    if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+      mode->drag.BeginBarterItem(4, found.second, found.second.value, -1);
+    }
+  }
+}
+
+// OFFSET: 0x00843270
+// FUNCTION: fn_10557
+void UIBartermarketWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  const int previous = this->hovered;
+  int hovered = -1;
+  if (x >= 40 && x < this->geometry.width - 20 && y >= 17 && y < this->visibleRows * 32 + 17) {
+    const int column = std::min((x - 40) / 32, this->columns - 1);
+    int visible = 0;
+    int index = 0;
+    std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
+    for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
+      if (index >= this->scroll * this->columns) {
+        if (visible == this->columns * ((y - 17) / 32) + column) {
+          hovered = index;
+          break;
+        }
+        ++visible;
+      }
+    }
+  }
+  this->hovered = hovered;
+  if (previous != hovered) {
+    this->Invalidate();
+  }
+
+  std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
+  if (found.first) {
+    if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+      mode->drag.BeginBarterItem(31, found.second, 1, -1);
+    }
+  }
+}
+
+// OFFSET: 0x00843DE0
+// FUNCTION: fn_10561
+void UIBarterItemPurchaseWnd::Slot32(int x, int y) {
+  std::pair<bool, BarterMarketItem> found = this->GetBarterItemOrPriceAt(x, y);
+  if (found.first == true) {
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
+    ITEM_INFO item = found.second.ToItemInfo();
+    if (window) {
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00843EC0
+// FUNCTION: fn_10562
+void UIBartermarketWnd::Slot32(int x, int y) {
+  std::pair<bool, BarterMarketItem> found = this->GetBarterItemOrPriceAt(x, y);
+  if (found.first) {
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
+    ITEM_INFO item = found.second.ToItemInfo();
+    if (window) {
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x008481E0
+// FUNCTION: fn_10587
+void UIExpandedBarterItemPurchaseWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  const int previous = this->unknown_00CC;
+  int hovered = -1;
+  if (x >= 40 && x < this->geometry.width - 20 && y >= 17 && y < this->rowCount * 64 + 17) {
+    const int row = (y - 17) / 64;
+    int visible = 0;
+    int index = 0;
+    for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
+      if (index >= this->unknown_00C4) {
+        if (visible == row) {
+          hovered = index;
+          break;
+        }
+        ++visible;
+      }
+    }
+  }
+  this->unknown_00CC = hovered;
+  if (previous != hovered) {
+    this->Invalidate();
+  }
+
+  std::pair<bool, BarterMarketEntry> found = this->GetEntryAt(x, y);
+  if (found.first == true) {
+    if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+      mode->drag.BeginBarterEntry(32, found.second, found.second.value, -1);
+    }
+  }
+}
+
+// OFFSET: 0x00848320
+// FUNCTION: fn_10588
+void UIExpandedBartermarketWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot25(x, y);
+  }
+
+  const int previous = this->unknown_00CC;
+  int hovered = -1;
+  if (x >= 40 && x < this->geometry.width - 20 && y >= 17 && y < this->rowCount * 64 + 17) {
+    const int row = (y - 17) / 64;
+    int visible = 0;
+    int index = 0;
+    for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
+      if (index >= this->unknown_00C4) {
+        if (visible == row) {
+          hovered = index;
+          break;
+        }
+        ++visible;
+      }
+    }
+  }
+  this->unknown_00CC = hovered;
+  if (previous != hovered) {
+    this->Invalidate();
+  }
+
+  std::pair<bool, BarterMarketEntry> found = this->GetEntryAt(x, y);
+  if (found.first == true) {
+    if (found.second.value == 0) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3557)), 255, 0, 0, 0);
+    } else if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+      mode->drag.BeginBarterEntry(31, found.second, 1, -1);
+    }
+  }
+}
+
+// OFFSET: 0x00848E70
+// FUNCTION: fn_10592
+void UIExpandedBarterItemPurchaseWnd::Slot32(int x, int y) {
+  std::pair<bool, BarterMarketEntry> found = this->GetEntryOrChunkAt(x, y);
+  if (found.first == true) {
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
+    ITEM_INFO item = found.second.ToItemInfo();
+    if (window) {
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00848F50
+// FUNCTION: fn_10593
+void UIExpandedBartermarketWnd::Slot32(int x, int y) {
+  std::pair<bool, BarterMarketEntry> found = this->GetEntryOrChunkAt(x, y);
+  if (found.first == true) {
+    UIWindow* window = g_windowMgr.EnsureWindow(12);
+    ITEM_INFO item = found.second.ToItemInfo();
+    if (window) {
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00843420
+// FUNCTION: fn_10558
+void UIBarterItemPurchaseWnd::Slot28(int x, int y) {
+  std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
+  if (found.first) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+    std::string text;
+    BarterMarketItem item = found.second;
+    ITEM_DESC description = FindItemDescription(item.field_2c);
+    text = FormatOwnedString(LookupMessage(3553), description.identifiedName, item.field_28 * item.value);
+    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+    ITEM_INFO info = item.ToItemInfo();
+    if (tooltip) {
+      tooltip->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
+    }
+  }
+}
+
+// OFFSET: 0x008436B0
+
+// OFFSET: 0x008484A0
+// FUNCTION: fn_10589
+void UIExpandedBarterItemPurchaseWnd::Slot28(int x, int y) {
+  std::pair<bool, BarterMarketEntry> found = this->GetEntryAt(x, y);
+  if (found.first && x > 40 && x < 72) {
+    int tooltipX = x;
+    int tooltipY = (y - 17) / 64 * 64 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+    std::string text;
+    int index = 1;
+    for (std::vector<BarterChunk16>::iterator chunk = found.second.chunks.begin(); chunk != found.second.chunks.end(); ++chunk, ++index) {
+      ITEM_DESC description = FindItemDescription(chunk->field_0);
+      const char* name = description.identifiedName;
+      if (chunk->field_4 > 0) {
+        text += "+";
+        char buffer[12];
+        _itoa(chunk->field_4, buffer, 10);
+        text += buffer;
+        text += " ";
+      }
+      text += FormatOwnedString(LookupMessage(3553), name, chunk->amount * found.second.value);
+      if (index != static_cast<int>(found.second.chunks.size())) {
+        text += "\n";
+      }
+    }
+    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.GetGameMode());
+    ITEM_INFO info = found.second.ToItemInfo();
+    if (tooltip) {
+      tooltip->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
+    }
+  }
+}
+
+// OFFSET: 0x00848B80
+// FUNCTION: fn_10591
+void UIExpandedBartermarketWnd::Slot28(int x, int y) {
+  std::pair<bool, BarterMarketEntry> found = this->GetEntryAt(x, y);
+  if (found.first && x > 40 && x < 72) {
+    int tooltipX = x;
+    int tooltipY = (y - 17) / 64 * 64 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+    std::string text;
+    int index = 1;
+    for (std::vector<BarterChunk16>::iterator chunk = found.second.chunks.begin(); chunk != found.second.chunks.end(); ++chunk, ++index) {
+      ITEM_DESC description = FindItemDescription(chunk->field_0);
+      const char* name = description.identifiedName;
+      if (chunk->field_4 > 0) {
+        text += "+";
+        char buffer[12];
+        _itoa(chunk->field_4, buffer, 10);
+        text += buffer;
+        text += " ";
+      }
+      text += FormatOwnedString(LookupMessage(3553), name, chunk->amount);
+      if (index != static_cast<int>(found.second.chunks.size())) {
+        text += "\n";
+      }
+    }
+    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.GetGameMode());
+    ITEM_INFO info = found.second.ToItemInfo();
+    if (tooltip) {
+      tooltip->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
+    }
   }
 }

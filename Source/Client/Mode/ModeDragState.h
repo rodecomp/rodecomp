@@ -8,6 +8,8 @@ class WindowManagerWindows;
 class ResourceMgr;
 struct ItemDescriptions;
 struct ITEM_INFO;
+struct BarterMarketItem;
+struct BarterMarketEntry;
 
 struct ModeDragState {
   /* 0308 */ int source;
@@ -37,6 +39,8 @@ struct ModeDragState {
   void Clear();
   void BeginItem(WindowManagerWindows& windows, ItemDescriptions& descriptions, int source, const ITEM_INFO& item, int quantity, int slot);
   void BeginSkill(WindowManagerWindows& windows, ResourceMgr& resources, int source, std::uint32_t id, const char* name, int level, int slot);
+  void BeginBarterItem(int source, const BarterMarketItem& item, int quantity, int slot);
+  void BeginBarterEntry(int source, const BarterMarketEntry& entry, int quantity, int slot);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
