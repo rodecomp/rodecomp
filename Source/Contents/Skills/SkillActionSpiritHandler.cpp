@@ -37,6 +37,31 @@ public:
 class CSkillAction_SH_HOGOGONG_STRIKE : public CSkillAction {
 public:
   int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot15(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_SH_KI_SUL_WATER_SPRAYING : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_SH_MARINE_FESTIVAL_OF_KI_SUL : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CEfstAction_MARINE_FESTIVAL : public CEfstAction {
+public:
+  void Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
+};
+
+class CSkillAction_SH_SANDY_FESTIVAL_OF_KI_SUL : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CEfstAction_SANDY_FESTIVAL : public CEfstAction {
@@ -183,6 +208,78 @@ void CEfstAction_HOGOGONG::Slot02(int efstId, int value, int argument3, int argu
 // FUNCTION: fn_08939
 int CSkillAction_SH_HOGOGONG_STRIKE::Slot02() {
   return 54;
+}
+
+// OFFSET: 0x0079F2C0
+// FUNCTION: fn_08940
+void CSkillAction_SH_HOGOGONG_STRIKE::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(840, level / 16);
+  }
+}
+
+// OFFSET: 0x0079F2F0
+// FUNCTION: fn_08941
+void CSkillAction_SH_HOGOGONG_STRIKE::Slot15(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hogogong_strike"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x0079F460
+// FUNCTION: fn_08942
+void CSkillAction_SH_KI_SUL_WATER_SPRAYING::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+  }
+}
+
+// OFFSET: 0x0079F490
+// FUNCTION: fn_08943
+void CSkillAction_SH_KI_SUL_WATER_SPRAYING::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("ki_sul_water_spraying"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x0079F610
+// FUNCTION: fn_08944
+void CSkillAction_SH_MARINE_FESTIVAL_OF_KI_SUL::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(845, level / 16);
+  }
+}
+
+// OFFSET: 0x0079F640
+// FUNCTION: fn_08945
+void CSkillAction_SH_MARINE_FESTIVAL_OF_KI_SUL::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("marine_festival_of_ki_sul_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x0079F7C0
+// FUNCTION: fn_08946
+void CEfstAction_MARINE_FESTIVAL::Slot00(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
+  if (actor) {
+    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("marine_festival_of_ki_sul"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x0079F940
+// FUNCTION: fn_08947
+void CSkillAction_SH_SANDY_FESTIVAL_OF_KI_SUL::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(842, level / 16);
+  }
+}
+
+// OFFSET: 0x0079F970
+// FUNCTION: fn_08948
+void CSkillAction_SH_SANDY_FESTIVAL_OF_KI_SUL::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sandy_festival_of_ki_sul_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
 }
 
 // OFFSET: 0x0079FB10
