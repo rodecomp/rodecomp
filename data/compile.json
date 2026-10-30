@@ -801,6 +801,7 @@
   "Source/UI/Buttons/UINaviLinkButton.cpp": 2,
   "Source/UI/Buttons/UINoneVisibleButton.cpp": 2,
   "Source/UI/Buttons/UIRadioBtn.cpp": 2,
+  "Source/UI/Buttons/UITagButton.cpp": 2,
   "Source/UI/Buttons/UITextButton.cpp": 2,
   "Source/UI/Buttons/UITextureButton.cpp": 2,
   "Source/UI/CashShop/UICashShopWnd.cpp": 2,

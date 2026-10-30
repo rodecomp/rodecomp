@@ -3,6 +3,8 @@
 
 #include "UI/Buttons/UIButton.h"
 
+#include <cstddef>
+#include <string>
 #include <vector>
 
 class UITextButton : public UIButton {
@@ -21,6 +23,7 @@ public:
   void Slot35(int value) override;
   void Configure(const char* text, std::uint32_t color, int family, int height, unsigned char outline, unsigned char underline);
   void ResizeToText();
+  const std::string& GetLine(std::size_t index) const;
 
 protected:
   /* 00B4 */ std::uint32_t m_color;
@@ -35,6 +38,8 @@ protected:
   /* 00D4 */ std::string m_text;
   /* 00EC */ std::vector<std::string> m_lines;
 };
+
+extern std::string g_emptyString;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UITextButton) == 256);
