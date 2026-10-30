@@ -43,8 +43,18 @@ UITransBalloonText::UITransBalloonText(UIWindowContext& windows, BalloonTextCont
 UITransBalloonText::~UITransBalloonText() = default;
 
 // OFFSET: 0x008533B0
+// FUNCTION: fn_10738
+void UITransBalloonText::AddText(const char* text) {
+  this->m_lines.push_back(text);
+  this->FitText();
+}
 
 // OFFSET: 0x008534F0
+// FUNCTION: fn_10739
+void UITransBalloonText::AddLine(const char* text, std::uint32_t color) {
+  this->AddText(text);
+  this->m_lineColors.push_back(color);
+}
 
 // OFFSET: 0x00853EA0
 // FUNCTION: fn_10744

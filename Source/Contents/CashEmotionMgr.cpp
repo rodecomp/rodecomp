@@ -1654,8 +1654,14 @@ UISpriteButton::UISpriteButton(UIWindowContext& windowContext, UIButtonContext& 
 }
 
 // OFFSET: 0x00851C10
+// FUNCTION: fn_10697
+UISpriteButton2::~UISpriteButton2() {
+  this->m_target = nullptr;
+}
 
 // OFFSET: 0x00851C70
+// FUNCTION: fn_10698
+UISpriteButton::~UISpriteButton() = default;
 
 // OFFSET: 0x0085E9B0
 // FUNCTION: fn_10834
