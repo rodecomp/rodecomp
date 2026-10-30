@@ -103,6 +103,22 @@ EncryptedName<100, 0x4F1791FB1503C713ULL>& TokenCallbackFailureMessage::operator
   return name;
 }
 
+// OFFSET: 0x0063D260
+// FUNCTION: fn_04789
+void CStoveMgr::OnInitializeCallback(Stove::PCSDK::CallbackResult callbackResult) {
+  g_stoveWaitingCallback = false;
+  if (!callbackResult.GetResult().IsSuccessful()) {
+    const std::uint8_t captionSource[] = {0xD5, 0x3D, 0xF8, 0x60, 0x2C, 0x37, 0xD7};
+    thread_local EncryptedName<sizeof(captionSource), 0x31D7C1EDA345E36DULL> caption(captionSource);
+    const std::uint8_t messageSource[] = {0xCE, 0x63, 0xFB, 0xA9, 0xF9, 0xE6, 0x92, 0x13, 0xF5, 0x89, 0x87, 0x84, 0x67, 0xAA, 0xB5, 0x1F,
+                                          0x29, 0x14, 0x80, 0x99, 0x09, 0x9A, 0xBA, 0x6C, 0xA0, 0x89, 0xF7, 0x8B, 0x19, 0x8E, 0xB5, 0x68,
+                                          0x29, 0x68, 0xF9, 0xE8, 0x38, 0x9A, 0xA0, 0x67, 0xC6, 0x1D, 0x9E, 0x71, 0xD9};
+    thread_local EncryptedName<sizeof(messageSource), 0xD3755DD95F47A909ULL> message(messageSource);
+    MessageBoxA(hWnd, FormatOwnedString(message.Text()).c_str(), caption.Text(), MB_OK);
+    PostQuitMessage(0);
+  }
+}
+
 // OFFSET: 0x0063D490
 // FUNCTION: fn_04790
 EncryptedName<129, 0x2D3B15774149D5DDULL>& PurchaseCheckingMessage::operator()() const {

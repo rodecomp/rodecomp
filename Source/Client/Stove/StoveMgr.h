@@ -4,6 +4,10 @@
 #include <cstddef>
 #include <string>
 
+namespace Stove::PCSDK {
+  struct CallbackResult;
+}
+
 class CStoveMgr {
 public:
   /* 0000 */ void* vtable;
@@ -21,6 +25,7 @@ public:
   const char* GetAccessToken();
   void FetchUser();
   void WaitForCallback();
+  void OnInitializeCallback(Stove::PCSDK::CallbackResult callbackResult);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

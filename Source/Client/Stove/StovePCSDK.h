@@ -12,6 +12,15 @@ namespace Stove::PCSDK {
     /* 0000 */ std::uint8_t unknown_0000[12];
   };
 
+  struct __declspec(dllimport) CallbackResult {
+    CallbackResult(const CallbackResult& other);
+    ~CallbackResult();
+
+    Result GetResult() const;
+
+    /* 0000 */ std::uint8_t unknown_0000[28];
+  };
+
   namespace Base {
     struct __declspec(dllimport) StovePCUser {
       StovePCUser();
