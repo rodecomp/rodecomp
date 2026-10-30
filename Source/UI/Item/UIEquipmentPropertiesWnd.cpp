@@ -98,17 +98,15 @@ bool CUIEquipmentPropertiesWnd::Slot08() {
 }
 
 // OFFSET: 0x00A084C0
+// FUNCTION: fn_15025
 template <>
 CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::CUIListBoxEx(UIWindowContext& context)
-    : CUIControl(context), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), unknown_00C5{0, 0, 0},
-      selected(static_cast<unsigned int>(-1)), unknown_00E0(1), rebind(0), unknown_00E2{0, 0, 0, 0, 0, 0} {
-  this->scrollBar = nullptr;
+    : CUIControl(context), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
+      itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), unknown_00C5{}, items(), data(),
+      selected(static_cast<unsigned int>(-1)), unknown_00E0(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
 }
 
 // OFFSET: 0x00A08680
-template <>
-CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::~CUIListBoxEx() {
-}
 
 // OFFSET: 0x00A08E70
 // FUNCTION: fn_15033
@@ -124,15 +122,6 @@ void CUIEquipmentPropertiesWnd::Slot53() {
 }
 
 // OFFSET: 0x00A08F20
-template <>
-void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::Slot15(int width, int height) {
-  this->scrollBar = new CUIVScrollBar();
-  this->scrollBar->SetHidden(0);
-  this->scrollBar->SetOnChange([this](int position) {
-    this->OnScroll(position);
-  });
-  this->AddChild(this->scrollBar);
-}
 
 // OFFSET: 0x00A0EE90
 // FUNCTION: fn_15155
