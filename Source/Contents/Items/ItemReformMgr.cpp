@@ -19,6 +19,9 @@ CItemReformMgr* g_itemReformMgr = nullptr;
 static const char kItemReformSystemPath[] = "LuaFiles514\\Lua Files\\ItemReform\\ItemReformSystem.lub";
 
 // OFFSET: 0x005F92A0
+// FUNCTION: fn_04074
+ItemReformInfo::ItemReformInfo() {
+}
 
 // OFFSET: 0x005F91D0
 
@@ -37,6 +40,10 @@ void CItemReformMgr::NullSub() {
 // OFFSET: 0x005F9FF0
 
 // OFFSET: 0x005FA140
+// FUNCTION: fn_04084
+bool CItemReformMgr::HasItem(int itemId) {
+  return this->m_reformItemList.find(itemId) != this->m_reformItemList.end();
+}
 
 static void ReformError(std::uint64_t id, const char* format) {
   ShowErrorDialog(FormatOwnedString(format, id), 0);
