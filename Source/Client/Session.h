@@ -575,6 +575,7 @@ public:
   bool HasItemCount(int itemId, int count) const;
   void NormalizeHead(int* head, int job);
   int GetDisplayJob();
+  const char* GetHitWaveName(int job);
   const char* GetEFSTImgFileName(int efstId, int type);
   bool IsTreeGroupThree(int job) const;
   std::string GetSexName(int sex);
