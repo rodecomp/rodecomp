@@ -1,6 +1,10 @@
 #include "UI/Window/UIBasicInfoWnd.h"
 
+#include "Client/Session.h"
+#include "UI/Buttons/UIButton.h"
 #include "UI/Window/UIWindowMgr.h"
+
+#include <cstdio>
 
 // OFFSET: 0x00998190
 // FUNCTION: fn_13489
@@ -46,4 +50,25 @@ void UIBasicInfoWnd::Slot27(int x, int y) {
     this->ToScreen(screenX, screenY);
     window->Move(screenX, this->geometry.height + screenY);
   }
+}
+
+// OFFSET: 0x00999380
+// FUNCTION: fn_13495
+void UIBasicInfoWnd::Slot28(int x, int y) {
+  if (this->geometry.height != this->expandedHeight) {
+    return;
+  }
+
+  int top = this->geometry.height - 20;
+  if (x < 0 || x >= 100 || y < top || y >= this->geometry.height) {
+    return;
+  }
+
+  char text[64];
+  std::sprintf(text, "Weight %d%%", g_session.m_maxWeight ? g_session.m_weight * 100 / g_session.m_maxWeight : 0);
+
+  int screenX = 0;
+  int screenY = top - 19;
+  this->ToScreen(screenX, screenY);
+  this->m_controls->services.Tooltip(text, screenX, screenY, -1, false, true);
 }
