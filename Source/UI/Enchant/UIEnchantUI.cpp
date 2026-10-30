@@ -317,6 +317,12 @@ bool CUIEnchantUI::CanHitTest() {
 }
 
 // OFFSET: 0x009F6D40
+// FUNCTION: fn_14766
+template <>
+CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
 
 // OFFSET: 0x009F6F00
 
