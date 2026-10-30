@@ -11,6 +11,28 @@
 #include <iterator>
 #include <new>
 
+// OFFSET: 0x00A684E0
+// FUNCTION: fn_16646
+template <>
+CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
+      itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), unknown_00C5{}, items(), data(),
+      selected(static_cast<unsigned int>(-1)), unknown_00E0(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
+}
+
+// OFFSET: 0x00A686A0
+// FUNCTION: fn_16647
+template <>
+CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), unknown_0084(), unknown_0088(), unknown_008C(), imageNames(), disabledName(), scrollBar(nullptr),
+      itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), unknown_00C5{}, items(), data(),
+      selected(static_cast<unsigned int>(-1)), unknown_00E0(1), rebind(0), unknown_00E2{}, onSelect(), binder() {
+}
+
+// OFFSET: 0x00A68860
+
+// OFFSET: 0x00A689C0
+
 // OFFSET: 0x00A693D0
 // FUNCTION: fn_16659
 template <>
