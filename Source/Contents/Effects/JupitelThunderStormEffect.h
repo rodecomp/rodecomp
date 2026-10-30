@@ -13,6 +13,11 @@ class CJupitelThunderStormEffect : public CEffect {
 public:
   CJupitelThunderStormEffect();
 
+  void Slot03() override;
+  void Slot04() override;
+  void Close() override;
+  bool Slot06() override;
+
   /* 00CC */ CParticle* particle;
   /* 00D0 */ std::vector<CParticle*> particles;
   /* 00DC */ vector3d step;
