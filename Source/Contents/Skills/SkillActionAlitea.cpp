@@ -1784,3 +1784,122 @@ void CSkillAction_AT_TEMPEST_FLAP::Slot08(int level, CGameActor* source) {
     }
   }
 }
+
+// OFFSET: 0x005AF000
+// FUNCTION: fn_03282
+bool sub_5AF000() {
+  return false;
+}
+
+// OFFSET: 0x005AF010
+// FUNCTION: fn_03283
+int sub_5AF010() {
+  return 8;
+}
+
+// OFFSET: 0x005AF020
+// FUNCTION: fn_03284
+int sub_5AF020() {
+  return 7;
+}
+
+// OFFSET: 0x005AF040
+// FUNCTION: fn_03286
+bool sub_5AF040() {
+  return false;
+}
+
+// OFFSET: 0x005AF050
+// FUNCTION: fn_03287
+bool sub_5AF050() {
+  return false;
+}
+
+// OFFSET: 0x005AF060
+// FUNCTION: fn_03288
+bool sub_5AF060() {
+  return false;
+}
+
+// OFFSET: 0x005AF070
+// FUNCTION: fn_03289
+bool sub_5AF070() {
+  return false;
+}
+
+// OFFSET: 0x005AF080
+// FUNCTION: fn_03290
+void __stdcall sub_5AF080(int a, int b) {
+}
+
+// OFFSET: 0x005AF090
+// FUNCTION: fn_03291
+void __stdcall sub_5AF090(int a, int b, int c) {
+}
+
+// OFFSET: 0x005AF0A0
+// FUNCTION: fn_03292
+void __stdcall sub_5AF0A0(int a, int b, int c, int d, int e) {
+}
+
+// OFFSET: 0x005AF0B0
+// FUNCTION: fn_03293
+void __stdcall sub_5AF0B0(int a, int b, int c) {
+}
+
+// OFFSET: 0x005AF0C0
+// FUNCTION: fn_03294
+void __stdcall sub_5AF0C0(vector3d a, int b, int c) {
+}
+
+// OFFSET: 0x005AF0D0
+// FUNCTION: fn_03295
+bool sub_5AF0D0() {
+  return false;
+}
+
+// OFFSET: 0x005AF0E0
+// FUNCTION: fn_03296
+int sub_5AF0E0() {
+  return 0;
+}
+
+// OFFSET: 0x005AF0F0
+// FUNCTION: fn_03297
+void __stdcall sub_5AF0F0(int a, int b, int c) {
+}
+
+// OFFSET: 0x005AF100
+// FUNCTION: fn_03298
+void __stdcall sub_5AF100(int a, int b, int c) {
+}
+
+// OFFSET: 0x005AF110
+// FUNCTION: fn_03299
+void __stdcall sub_5AF110(int a, int b, int c, int d, int e, int f) {
+}
+
+// OFFSET: 0x005AF120
+// FUNCTION: fn_03300
+void __stdcall sub_5AF120(int a, int b, int c, int d, int e) {
+}
+
+// OFFSET: 0x005AF130
+// FUNCTION: fn_03301
+void __stdcall sub_5AF130(int a, int b, int c, int d, int e) {
+}
+
+// OFFSET: 0x005AF140
+
+// OFFSET: 0x005AF160
+
+// OFFSET: 0x005AF180
+// FUNCTION: fn_03304
+void __stdcall sub_5AF180(int a, int b, int c) {
+}
+
+// OFFSET: 0x005AF190
+// FUNCTION: fn_03305
+void __stdcall sub_5AF190(int a) {
+}
+
