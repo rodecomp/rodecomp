@@ -157,6 +157,9 @@ struct CEffectPrim : CRenderObject {
   void RenderBladeTrail(matrix& wtm);
   void RenderFieldPanel(matrix& wtm);
   void RenderTube(matrix& wtm);
+  void RenderSpinSquares(matrix& wtm);
+  void RenderSpinSquare(matrix& wtm, int* rpCnt, float scale, short slotIndex, char pw, unsigned char red, unsigned char green, unsigned char blue);
+  void RenderTrailingArc(matrix& wtm);
   void RenderRecordQuads(matrix& wtm);
   void RenderSpiralBlades(matrix& wtm);
   void RenderGlowDisc(matrix& wtm);
