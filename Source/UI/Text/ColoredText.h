@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_TEXT_COLOREDTEXT_H
 
 #include <cstdint>
+#include <string>
 
 class UIWindow;
 class FontCache;
@@ -29,5 +30,7 @@ void DrawOutlinedColoredText(
   UIWindow& window, unsigned short codePage, int x, int y, const char* text, unsigned bytes, std::uint32_t& color,
   std::uint32_t outline, int family, int height, unsigned char bold
 );
+
+std::string StripColorCodes(const char* text, unsigned bytes);
 
 #endif

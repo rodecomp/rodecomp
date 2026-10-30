@@ -1,3 +1,4 @@
+#include "Network/TextEncoding.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Text/ColoredText.h"
@@ -268,4 +269,33 @@ void DrawOutlinedColoredText(
 
     current = next;
   }
+}
+
+// OFFSET: 0x00A87300
+// FUNCTION: fn_17062
+std::string StripColorCodes(const char* text, unsigned bytes) {
+  std::string result;
+  const char* const end = text + bytes;
+  const char* const marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
+
+  while (text < end) {
+    if (text != nullptr && *text == '^') {
+      text += 7;
+    }
+
+    const char* const next = SegmentEnd(text, end, static_cast<unsigned short>(g_textCodePage));
+    std::string segment(text, next);
+
+    if (marker != nullptr && *marker != '\0') {
+      segment.insert(segment.begin(), marker, marker + 3);
+    }
+
+    if (next != text) {
+      result += segment;
+    }
+
+    text = next;
+  }
+
+  return result;
 }

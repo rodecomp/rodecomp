@@ -861,6 +861,97 @@ void UIWindow::DrawCenteredText(int x, int y, const char* text, int width, int f
   }
 }
 
+// OFFSET: 0x00A860C0
+// FUNCTION: fn_17018
+void UIWindow::DrawCenteredOutlinedText(
+  int x, int y, const char* text, int width, int bytes, std::uint32_t color, std::uint32_t outline, int family, int height, unsigned char bold
+) {
+  if (bytes == 0) {
+    bytes = static_cast<int>(std::strlen(text));
+  }
+
+  TextContext context(*this->geometry.surface);
+  context.SetFont(family, height, bold, 0);
+  const SIZE size = context.Measure(text, static_cast<int>(std::strlen(text)));
+  const int left = static_cast<int>((width - size.cx) * 0.5f + x);
+  context.SetColor(outline);
+  context.Draw(left - 1, y, text, bytes);
+  context.Draw(left + 1, y, text, bytes);
+  context.Draw(left, y - 1, text, bytes);
+  context.Draw(left, y + 1, text, bytes);
+  context.SetColor(color);
+  context.Draw(left, y, text, bytes);
+}
+
+// OFFSET: 0x00A86320
+// FUNCTION: fn_17020
+void UIWindow::DrawVerticalOutlinedText(
+  int x, int y, const char* text, int bytes, std::uint32_t color, std::uint32_t outline, int family, int height, unsigned char bold
+) {
+  if (bytes == 0) {
+    bytes = static_cast<int>(std::strlen(text));
+  }
+
+  TextContext context(*this->geometry.surface);
+  context.SetFont(family, height, bold, 0);
+  const SIZE size = context.Measure(text, bytes);
+  context.SetColor(outline);
+  context.Draw(x + size.cy - 1, y, text, bytes);
+  context.Draw(x + size.cy + 1, y, text, bytes);
+  context.Draw(x + size.cy, y - 1, text, bytes);
+  context.Draw(x + size.cy, y + 1, text, bytes);
+  context.SetColor(color);
+  context.Draw(x + size.cy, y, text, bytes);
+}
+
+// OFFSET: 0x00A86440
+// FUNCTION: fn_17021
+void UIWindow::DrawRightAlignedText(int right, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold) {
+  if (bytes == 0) {
+    bytes = static_cast<int>(std::strlen(text));
+  }
+
+  TextContext context(*this->geometry.surface);
+  context.SetFont(family, height, bold, 0);
+  const SIZE size = context.Measure(text, static_cast<int>(std::strlen(text)));
+  context.SetColor(color);
+  context.Draw(right - size.cx, y, text, bytes);
+}
+
+// OFFSET: 0x00A86510
+// FUNCTION: fn_17022
+void UIWindow::DrawShadowedText(
+  int x, int y, const char* text, int bytes, std::uint32_t color, std::uint32_t shadow, int family, int height, unsigned char bold
+) {
+  if (bytes == 0) {
+    bytes = static_cast<int>(std::strlen(text));
+  }
+
+  TextContext context(*this->geometry.surface);
+  context.SetFont(family, height, bold, 0);
+  context.SetColor(shadow);
+  context.Draw(x + 1, y + 1, text, bytes);
+  context.SetColor(color);
+  context.Draw(x, y, text, bytes);
+}
+
+// OFFSET: 0x00A865E0
+
+// OFFSET: 0x00A869C0
+// FUNCTION: fn_17024
+void UIWindow::DrawEmboldenedText(int x, int y, const char* text, std::uint32_t color, std::uint32_t secondColor, int bytes, int family, int height) {
+  if (bytes == 0) {
+    bytes = static_cast<int>(std::strlen(text));
+  }
+
+  TextContext context(*this->geometry.surface);
+  context.SetFont(family, height, 0, 0);
+  context.SetColor(color);
+  context.Draw(x, y, text, bytes);
+  context.SetColor(secondColor);
+  context.Draw(x - 1, y, text, bytes);
+}
+
 // OFFSET: 0x00A7C470
 // FUNCTION: fn_16944
 void UIWindow::FlushPrimitives(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd) {

@@ -139,6 +139,21 @@ public:
     int right, int y, const char* text, int bytes, std::uint32_t color, std::uint32_t outline, int family,
     int height, unsigned char bold
   );
+  void DrawCenteredOutlinedText(
+    int x, int y, const char* text, int width, int bytes, std::uint32_t color, std::uint32_t outline, int family, int height, unsigned char bold
+  );
+  void DrawVerticalOutlinedText(
+    int x, int y, const char* text, int bytes, std::uint32_t color, std::uint32_t outline, int family, int height, unsigned char bold
+  );
+  void DrawRightAlignedText(int right, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold);
+  void DrawShadowedText(
+    int x, int y, const char* text, int bytes, std::uint32_t color, std::uint32_t shadow, int family, int height, unsigned char bold
+  );
+  void DrawFormattedText(
+    FontCache& fonts, const TextLocale& locale, int x, int y, const std::string& text, int width, int align, int family, int height,
+    std::uint32_t color, unsigned char bold
+  );
+  void DrawEmboldenedText(int x, int y, const char* text, std::uint32_t color, std::uint32_t secondColor, int bytes, int family, int height);
   void FlushPrimitives(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
   void FillSurface(std::uint32_t color, const tagRECT* rectangle);
   void DrawBitmapScaled(int x, int y, int width, int height, const BitmapImage* image, int option);
