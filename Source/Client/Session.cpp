@@ -1690,6 +1690,54 @@ void CSession::RefreshHomunculusInfo() {
   }
 }
 
+// OFFSET: 0x00DF94D0
+// FUNCTION: fn_23517
+void CSession::RefreshMercenaryInfo() {
+  if (g_modeMgr.GetGameMode() && g_windowMgr.window_03C8) {
+    g_windowMgr.window_03C8->Invalidate();
+    g_windowMgr.window_03C8->InvalidateChildren();
+  }
+}
+
+// OFFSET: 0x00DF9520
+// FUNCTION: fn_23519
+bool CSession::IsBlankString(const char* text) const {
+  const std::size_t length = std::strlen(text);
+  if (length == 0) {
+    return true;
+  }
+
+  if (text[0] == ' ') {
+    return true;
+  }
+
+  return text[length - 1] == ' ';
+}
+
+// OFFSET: 0x00DF9AA0
+// FUNCTION: fn_23561
+bool CSession::HasNoUnknown1784Items() const {
+  for (int i = 0; i < 11; ++i) {
+    if (!this->unknown_1784[i].empty()) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00DFA3C0
+// FUNCTION: fn_23573
+bool CSession::HasItem1740Number(int value) const {
+  for (const ITEM_INFO& item : this->unknown_1740) {
+    if (std::atoi(item.itemId.c_str()) == value) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 // OFFSET: 0x00DFC0B0
 // FUNCTION: fn_23593
 void CSession::FlagInventoryItem(std::uint32_t id) {

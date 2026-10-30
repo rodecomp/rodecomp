@@ -717,6 +717,8 @@ public:
   void GetSkillActionInfo(int skillId, int& effectId, int& motion, int variant, int level);
   void GetSkillActionInfo2(int skillId, int& effectId, int& motion);
   bool IsNumberWithCommas(char* text);
+  bool HasNoUnknown1784Items() const;
+  bool HasItem1740Number(int value) const;
   bool IsRobeDrawOnTop(int action, int frame, bool riding);
   int GetUnknown8134() const;
   int FindUnknown0708(int key) const;
@@ -785,6 +787,8 @@ public:
   void RefreshItem1738Window();
   void RefreshHpSpWindows();
   void RefreshHomunculusInfo();
+  void RefreshMercenaryInfo();
+  bool IsBlankString(const char* text) const;
   void EraseRecord0734(int id);
   void IgnoreText(std::string text);
   void SaveMiniPartyInfo();
