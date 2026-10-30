@@ -867,18 +867,235 @@ void UIEditCtrl_Custom::Synchronize() {
 }
 
 // OFFSET: 0x009727F0
+// FUNCTION: fn_13275
+void UIItemWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  switch (drag->source) {
+  case 1:
+    if (reinterpret_cast<UITabControl*>(drag->unknown_038C) == this->tabs) {
+      PACKET_CZ_INVENTORY_TAB packet;
+      packet.packetType = ID_CZ_INVENTORY_TAB;
+      packet.index = static_cast<unsigned short>(drag->id);
+      packet.favorite = this->tabs->TabAt(x, y) != 3;
+      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+    }
+    break;
+  case 2:
+  case 17:
+  case 18:
+  case 24:
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  case 6:
+  case 9:
+  case 15:
+    if (drag->quantity == 1) {
+      this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      return;
+    }
+
+    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.window_01EC->SendMsg(nullptr, 13, 6, 0, 0, 0);
+    return;
+  case 14: {
+    UIWindow* target = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0378);
+
+    if (target) {
+      target->SendMsg(nullptr, 75, reinterpret_cast<std::intptr_t>(drag->name.c_str()), 0, 0, 0);
+    }
+    break;
+  }
+  case 28: {
+    UIWindow* window = g_windowMgr.LookupWindow(295);
+
+    if (window) {
+      static_cast<UIRefiningWnd*>(window)->Reset();
+    }
+    break;
+  }
+  case 33: {
+    UIWindow* window = g_windowMgr.LookupWindow(343);
+
+    if (window) {
+      static_cast<UIGradeEnchantWnd*>(window)->ResetItem();
+    }
+    break;
+  }
+  }
+
+  g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x00989080
+// FUNCTION: fn_13396
+void UIItemStoreFindWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+    if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
+      if (g_windowMgr.unknown_01D4) {
+        if (mode->unknown_05CC[2]) {
+          mode->unknown_05CC[2] = 0;
+          mode->SendMsg(56, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+        }
+      } else if (g_windowMgr.unknown_02F4 && mode->unknown_05CC[2]) {
+        mode->unknown_05CC[2] = 0;
+        mode->SendMsg(78, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+      }
+    } else if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      if (g_windowMgr.unknown_01D4) {
+        mode->SendMsg(333, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+      }
+    } else {
+      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00989210
+// FUNCTION: fn_13397
+void UIItemStoreSubWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+    if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
+      if (g_windowMgr.unknown_01D4) {
+        if (mode->unknown_05CC[2]) {
+          mode->unknown_05CC[2] = 0;
+          mode->SendMsg(56, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+        }
+      } else if (g_windowMgr.unknown_02F4 && mode->unknown_05CC[2]) {
+        mode->unknown_05CC[2] = 0;
+        mode->SendMsg(78, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+      }
+    } else if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      if (g_windowMgr.unknown_01D4) {
+        mode->SendMsg(333, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+      }
+    } else {
+      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x009893A0
+// FUNCTION: fn_13398
+void UIItemStoreWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+    if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
+      if (g_windowMgr.unknown_01D4) {
+        if (mode->unknown_05CC[2]) {
+          mode->unknown_05CC[2] = 0;
+          mode->SendMsg(56, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+        }
+      } else if (g_windowMgr.unknown_02F4 && mode->unknown_05CC[2]) {
+        mode->unknown_05CC[2] = 0;
+        mode->SendMsg(78, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+      }
+    } else if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      mode->SendMsg(333, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+    } else {
+      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00989C40
+// FUNCTION: fn_13403
+void UIMerchantItemWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+    if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
+      if (!g_windowMgr.LookupWindow(10011) && !g_windowMgr.unknown_02FC) {
+        if (g_windowMgr.window_0288) {
+          if (mode->unknown_05CC[2]) {
+            mode->unknown_05CC[2] = 0;
+            mode->SendMsg(79, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+          }
+        } else if (g_windowMgr.unknown_01D4 && mode->unknown_05CC[2]) {
+          mode->unknown_05CC[2] = 0;
+          mode->SendMsg(77, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+        }
+      }
+    } else if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      if (g_windowMgr.unknown_01D4) {
+        mode->SendMsg(335, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+      }
+    } else {
+      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00989DF0
+// FUNCTION: fn_13404
+void UIMerchantMirrorItemWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+    if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
+      if (g_windowMgr.unknown_02FC) {
+        item = g_session.FindItem1750(item.unknown_0000[1]);
+        ItemDescriptions descriptions{g_itemDescriptions};
+        mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 11, item, item.quantity, -1);
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02FC)->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      } else if (g_windowMgr.unknown_040C) {
+        item = g_session.FindItem1750(item.unknown_0000[1]);
+        ItemDescriptions descriptions{g_itemDescriptions};
+        mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 20, item, item.quantity, -1);
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_040C)->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      }
+    } else {
+      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00989FE0
+// FUNCTION: fn_13405
+void UIMerchantShopMakeWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+    if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
+      if (g_windowMgr.unknown_02F8) {
+        item = g_session.FindItem1768(item.unknown_0000[1]);
+        ItemDescriptions descriptions{g_itemDescriptions};
+        gameMode->drag.BeginItem(this->m_frameContext->windows, descriptions, 10, item, item.quantity, -1);
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_02F8)->SendMsg(nullptr, 38, 0, 0, 0, 0);
+        InputFocus focus{g_windowMgr.hoverWindow};
+        focus.Set(nullptr);
+      } else if (g_windowMgr.unknown_0410) {
+        item = g_session.FindItem1768(item.unknown_0000[1]);
+        ItemDescriptions descriptions{g_itemDescriptions};
+        gameMode->drag.BeginItem(this->m_frameContext->windows, descriptions, 19, item, item.quantity, -1);
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0410)->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      }
+    } else {
+      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x0097E790
 // FUNCTION: fn_13329
