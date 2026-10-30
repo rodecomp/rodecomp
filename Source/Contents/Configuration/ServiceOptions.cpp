@@ -628,6 +628,19 @@ void ApplyServiceOptionXmasWeather(int id, unsigned char value, bool notify, int
   }
 }
 
+// OFFSET: 0x006C4660
+// FUNCTION: fn_06357
+void ApplyServiceOptionMapFog(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ApplyMapFog(value);
+}
+
 // OFFSET: 0x006C46C0
 // FUNCTION: fn_06358
 void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
