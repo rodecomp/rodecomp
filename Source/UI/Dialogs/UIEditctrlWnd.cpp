@@ -7,6 +7,7 @@
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Contents/TownInfoMgr.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Dialogs/UIMiniMapWnd.h"
@@ -147,4 +148,18 @@ void UIMiniMapWnd::ResetCursor(int, int) {
   } else {
     this->m_context->cursor.Set(0, this->m_context->cursorTick);
   }
+}
+
+// OFFSET: 0x0099DC90
+// FUNCTION: fn_13565
+void UIMiniMapWnd::Slot11() {
+  if (this->m_saved) {
+    this->m_saved->width = this->geometry.x;
+    this->m_saved->height = this->geometry.y;
+    this->m_saved->unknown_0010 = this->geometry.width;
+    this->m_saved->unknown_0014 = this->geometry.height;
+  }
+  this->m_saved->unknown_0018 = this->unknown_011C->geometry.unknown_0030 != 0;
+  this->m_saved->unknown_001C = this->unknown_0120->geometry.unknown_0030 != 0;
+  this->m_saved->unknown_0020 = this->unknown_0124->geometry.unknown_0030 != 0;
 }

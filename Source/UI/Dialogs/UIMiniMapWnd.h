@@ -7,6 +7,7 @@
 #include <vector>
 
 class UIBitmapButton;
+struct MiniMapWndInfo;
 struct UIButtonContext;
 
 struct MiniMapMark {
@@ -16,12 +17,13 @@ struct MiniMapMark {
 
 class UIMiniMapWnd : public UIFrameWnd {
 public:
+  void Slot11() override;
   void Slot25(int x, int y) override;
   void ResetCursor(int x, int y) override;
   void AddTownMarks();
   int LoadMemos();
 
-  /* 00B4 */ unsigned char unknown_00B4[0x4];
+  /* 00B4 */ MiniMapWndInfo* m_saved;
   /* 00B8 */ float scale;
   /* 00BC */ float originX;
   /* 00C0 */ float originY;
