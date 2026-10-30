@@ -8,6 +8,8 @@
 
 class CNavi_Object;
 class CTexture;
+class UIListBox_NaviSearch;
+class UIStaticText;
 struct UIButtonContext;
 
 struct NavigationWindowInfo {
@@ -30,6 +32,8 @@ public:
   std::string ObjectName(int type, void* object);
   std::string ObjectLabel(int type, void* object);
   std::string MobName(CNavi_Object* mob);
+  void SelectRoute(int route);
+  void FillRouteGroups();
 
   /* 00B4 */ UIWindow* unknown_00B4;
   /* 00B8 */ UIWindow* unknown_00B8;
@@ -44,9 +48,9 @@ public:
   /* 00DC */ UIWindow* unknown_00DC;
   /* 00E0 */ UIWindow* unknown_00E0;
   /* 00E4 */ UIWindow* unknown_00E4;
-  /* 00E8 */ UIWindow* unknown_00E8;
-  /* 00EC */ UIWindow* unknown_00EC;
-  /* 00F0 */ UIWindow* unknown_00F0;
+  /* 00E8 */ UIStaticText* unknown_00E8;
+  /* 00EC */ UIListBox_NaviSearch* unknown_00EC;
+  /* 00F0 */ UIListBox_NaviSearch* unknown_00F0;
   /* 00F4 */ UIWindow* unknown_00F4;
   /* 00F8 */ UIWindow* unknown_00F8;
   /* 00FC */ UIWindow* unknown_00FC;

@@ -3,6 +3,8 @@
 
 #include "UI/Lists/UIListBox.h"
 
+#include <vector>
+
 class UIListBox_NaviSearch : public UIListBox {
 public:
   void Resize(int width, int height) override;
@@ -13,8 +15,7 @@ public:
   void Slot35(int value) override;
   void Clear() override;
 
-  /* 00D4 */ int unknown_00D4;
-  /* 00D8 */ int unknown_00D8;
+  /* 00D4 */ std::vector<int> icons;
 };
 
 #endif

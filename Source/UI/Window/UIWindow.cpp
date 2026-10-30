@@ -29,6 +29,7 @@
 #include "UI/UIStaticBitmap.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Navigation/UIPrivateAirplaneWnd.h"
+#include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -1371,7 +1372,7 @@ bool UIWindow::FitSprite(const ActionFrame* frame, const CSprRes* sprite, int wi
 // FUNCTION: fn_03554
 void UIListBox_NaviSearch::Clear() {
   UIListBox::Clear();
-  this->unknown_00D8 = this->unknown_00D4;
+  this->icons.clear();
 }
 
 // OFFSET: 0x005C6F20
@@ -1673,7 +1674,6 @@ void UIListBox_NaviSearch::Paint() {
   const int limit = this->geometry.height / this->lineHeight - this->bottomMargin + first;
   const int end = static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
   std::uint32_t color = 0;
-  const int* icons = reinterpret_cast<const int*>(this->unknown_00D4);
 
   for (int index = first, row = 0; index < end; ++index, ++row) {
     if (index == this->selected) {
@@ -1682,7 +1682,7 @@ void UIListBox_NaviSearch::Paint() {
 
     int x = 3 - this->horizontalOffset;
     const int y = this->lineHeight * row;
-    const int icon = icons[index];
+    const int icon = this->icons[index];
     if (icon > 0) {
       const char* name = nullptr;
       if (icon == 1) {
@@ -1841,6 +1841,75 @@ std::string UINavigationV4Wnd::ObjectLabel(int type, void* object) {
   }
 
   return label;
+}
+
+// OFFSET: 0x005C9640
+void UINavigationV4Wnd::SelectRoute(int route) {
+  this->unknown_00F0->Invalidate();
+  this->unknown_00F0->Clear();
+  if (g_navigationManager.nodePaths.empty()) {
+    return;
+  }
+
+  g_navigationManager.unknown_12C4 = route;
+  if (route == -1) {
+    return;
+  }
+
+  const int count = static_cast<int>(g_navigationManager.nodePaths[route].size());
+  std::string text;
+  for (int index = 0; index < count; ++index) {
+    NavigationTarget target = g_navigationManager.GetState(g_navigationManager.nodePaths[route][index]);
+    const bool unknownCell = target.x == -1000 && target.y == -1000;
+    if (unknownCell) {
+      text = this->MobName(static_cast<CNavi_Object*>(target.object));
+    } else {
+      text = this->ObjectLabel(target.type, target.object);
+      if (target.type == 0) {
+        char coords[30] = {};
+        std::sprintf(coords, " [%d,%d]", target.x, target.y);
+        text += coords;
+      }
+    }
+
+    const int icon = target.type;
+    const char* line = text.c_str();
+    UIListBox_NaviSearch* list = this->unknown_00F0;
+    list->icons.push_back(icon);
+    list->AddLine(line);
+    list->Invalidate();
+  }
+
+  this->Invalidate();
+}
+
+// OFFSET: 0x005C9A20
+void UINavigationV4Wnd::FillRouteGroups() {
+  this->unknown_00EC->Clear();
+  this->unknown_00EC->Invalidate();
+  for (unsigned int index = 0; index < g_navigationManager.nodePaths.size(); ++index) {
+    NavigationTarget target = g_navigationManager.GetState(g_navigationManager.nodePaths[index][0]);
+    const int count = static_cast<int>(g_navigationManager.nodePaths[index].size());
+    std::string name = this->ObjectName(target.type, target.object);
+    if (target.type == 0 && !target.name.empty()) {
+      name = target.name;
+    }
+
+    char text[50];
+    std::memset(text, 0, sizeof(text));
+    std::sprintf(text, "[%d]%s", count, name.c_str());
+    const int icon = target.type;
+    UIListBox_NaviSearch* list = this->unknown_00EC;
+    list->icons.push_back(icon);
+    list->AddLine(text);
+    list->Invalidate();
+  }
+
+  char summary[50];
+  std::memset(summary, 0, sizeof(summary));
+  std::sprintf(summary, LookupMessage(3210), static_cast<int>(g_navigationManager.nodePaths.size()));
+  this->unknown_00E8->SetText(summary, 0);
+  this->Invalidate();
 }
 
 // OFFSET: 0x00A7C580
