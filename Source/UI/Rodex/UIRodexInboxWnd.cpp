@@ -38,6 +38,10 @@ void UIRodexInboxWnd::Slot25(int x, int y) {
 // FUNCTION: fn_10050
 void UIRodexInboxWnd::Slot26(int, int) {}
 
+// OFFSET: 0x00807670
+// FUNCTION: fn_10051
+void UIRodexInboxWnd::Nullsub257() {}
+
 // OFFSET: 0x00807680
 // FUNCTION: fn_10052
 void UIRodexInboxWnd::Slot28(int, int) {}
@@ -244,4 +248,20 @@ void __stdcall RequestRodexMailAttachments(int type, std::int64_t mailId) {
     CRagConnection& connection = GetRagConnection();
     connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
   }
+}
+
+// OFFSET: 0x008078E0
+// FUNCTION: fn_10054
+void UIRodexInboxWnd::InitializeMailActions() {
+  this->unknown_019C = 0;
+  for (int i = 0; i < 6; ++i) {
+    this->checks[i]->SetChecked(0);
+    this->checks[i]->m_message = 0;
+  }
+
+  this->unknown_018C->SetText(LookupMessage(0xE05));
+  this->unknown_018C->SetId(0x222);
+  this->unknown_0190->SetText(LookupMessage(0xE08));
+  this->unknown_0190->SetId(0x224);
+  this->Invalidate();
 }

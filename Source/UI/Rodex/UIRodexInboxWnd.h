@@ -68,6 +68,8 @@ public:
   bool Slot03() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
+  void Nullsub257();
+
   void Slot28(int x, int y) override;
 
   void DrawMailIcons(int row, unsigned char attachments, unsigned char read, unsigned char returned);
@@ -78,6 +80,7 @@ public:
   void RemoveInboxMail(int id);
   void SearchBySender(std::string keyword);
   void SearchByTitle(std::string keyword);
+  void InitializeMailActions();
 
   /* 012C */ unsigned char unknown_012C[0x4];
   /* 0130 */ int unknown_0130;
