@@ -1192,6 +1192,15 @@ void CSprArrowEffect::Close() {
   }
 }
 
+// OFFSET: 0x0070D460
+// FUNCTION: fn_07150
+void CStemSpearEffect::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    FreeParticle(AsParticle(*it));
+  }
+  this->emitters.clear();
+}
+
 // OFFSET: 0x0070D980
 // FUNCTION: fn_07158
 void CSvgSpiritEffect::Close() {

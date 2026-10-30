@@ -47,6 +47,7 @@ public:
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
+  void Close() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
 };
