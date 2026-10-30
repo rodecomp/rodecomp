@@ -17,14 +17,16 @@ class UIListBoxID : public UIWindow {
 public:
   void Slot25(int x, int y) override;
   void Slot35(int value) override;
+  virtual void Clear();
 
   /* 007C */ unsigned char unknown_007C[0xC];
   /* 0088 */ std::map<int, IdListLine> lines;
   /* 0090 */ int selected;
   /* 0094 */ int topLine;
-  /* 0098 */ unsigned char unknown_0098[0x8];
+  /* 0098 */ int horizontalOffset;
+  /* 009C */ int contentWidth;
   /* 00A0 */ int verticalOverflow;
-  /* 00A4 */ int unknown_00A4;
+  /* 00A4 */ int bottomMargin;
   /* 00A8 */ UIScrollBar* verticalBar;
   /* 00AC */ unsigned char unknown_00AC[0x8];
   /* 00B4 */ int lineHeight;

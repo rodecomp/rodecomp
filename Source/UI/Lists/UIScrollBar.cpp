@@ -401,6 +401,14 @@ const char* UIChatHisBox::HistoryText(unsigned int index) {
   return nullptr;
 }
 
+// OFFSET: 0x00879F10
+// FUNCTION: fn_11222
+void UIChatHisBox::Clear() {
+  UIListBox::Clear();
+  this->unknown_00E4.erase(this->unknown_00E4.begin(), this->unknown_00E4.end());
+  this->history.erase(this->history.begin(), this->history.end());
+}
+
 // OFFSET: 0x008900D0
 // FUNCTION: fn_11399
 void UIChatHisBox::Slot26(int, int) {

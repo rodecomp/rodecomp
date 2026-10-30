@@ -1,6 +1,7 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemLink.h"
+#include "UI/Text/UITextViewer.h"
 
 #include <cctype>
 #include <cstdio>
@@ -84,6 +85,29 @@ namespace {
       }
     }
   }
+}
+
+// OFFSET: 0x0087A810
+// FUNCTION: fn_11237
+std::string UITextViewer::ItemLinkNumberText(int value) {
+  char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  int base = 62;
+  std::vector<char> reversed;
+
+  do {
+    reversed.push_back(digits[value % base]);
+    value /= base;
+  } while (value >= base);
+
+  reversed.push_back(digits[value]);
+  std::string text = "";
+  const std::size_t count = reversed.size();
+
+  for (std::size_t index = 0; index < count; ++index) {
+    text += reversed[count - 1 - index];
+  }
+
+  return text;
 }
 
 // OFFSET: 0x0087F7D0

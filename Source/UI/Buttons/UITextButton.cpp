@@ -986,6 +986,18 @@ void UIComboBoxV2Wnd::Slot35(int value) {
   this->Invalidate();
 }
 
+// OFFSET: 0x0087A080
+// FUNCTION: fn_11225
+void UIListBoxID::Clear() {
+  this->selected = -1;
+  this->contentWidth = 0;
+  this->horizontalOffset = 0;
+  this->topLine = 0;
+  this->verticalOverflow = 0;
+  this->bottomMargin = 0;
+  this->lines.clear();
+}
+
 // OFFSET: 0x00892EE0
 // FUNCTION: fn_11498
 void UIListBoxID::Slot35(int value) {
