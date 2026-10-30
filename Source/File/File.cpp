@@ -6,7 +6,8 @@
 
 #include <cstring>
 
-// INLINED
+// OFFSET: 0x00755710
+// FUNCTION: fn_07986
 CFile::CFile() : m_handle(INVALID_HANDLE_VALUE), m_data(nullptr), m_position(0), m_size(0) {
 }
 
