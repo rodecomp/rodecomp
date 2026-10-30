@@ -16,6 +16,14 @@ UINormalMB::UINormalMB(UIWindowContext& windows, UIFrameContext& frames) : UIFra
   this->m_keepOpen = 0;
 }
 
+// OFFSET: 0x0094D840
+// FUNCTION: fn_12906
+void UINormalMB::Paint() {
+  UIButtonContext& controls = this->m_textContext->buttons;
+  this->DrawTitleBar(controls.fonts, controls.locale, true, this->m_title.c_str(), 0);
+  this->DrawPanelBackground(17, 0, "");
+}
+
 // OFFSET: 0x00950740
 // FUNCTION: fn_12943
 int UINormalMB::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {

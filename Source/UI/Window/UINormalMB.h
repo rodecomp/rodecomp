@@ -12,6 +12,7 @@ struct UITextViewerContext;
 class UINormalMB : public UIFrameWnd {
 public:
   UINormalMB(UIWindowContext& windows, UIFrameContext& frames);
+  void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void Create(UIWindow* owner, const char* text, int type, bool defaultAccept, const char* title, int width, int height, const char* icon);
 
