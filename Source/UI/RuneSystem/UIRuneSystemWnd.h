@@ -8,7 +8,9 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
+class Decom_ItemInfo;
 class RuneSetData;
 
 class UIRuneSetReWard : public UIBitmapButton {
@@ -36,19 +38,29 @@ class UIEquipRuneSetWnd : public UIWindow {
 public:
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
+  void Slot28(int x, int y) override;
 };
 
 class UIRuneSystem_tagListWnd : public UIWindow {
 public:
   void Slot25(int x, int y) override;
+  void Slot28(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+  /* 007C */ int unknown_007C;
+  /* 0080 */ int unknown_0080;
+  /* 0084 */ int m_firstTag;
 };
 
 class UIRuneSetList : public UIScrollBar {
 public:
   void Slot25(int x, int y) override;
+  void Slot28(int x, int y) override;
   void Slot35(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void DrawScrollBar(bool drawLine);
+  void ScrollBy(int delta);
+  void Select(int index);
 
   /* 00B4 */ int m_itemHeight;
   /* 00B8 */ int unknown_00B8;
@@ -69,12 +81,22 @@ class UIGage_Circle : public UIWindow {
 };
 
 class UIRuneSystem_ActiveWnd : public UIWindow {
+public:
+  int HitTestItem(int x, int y);
+
+  /* 007C */ int m_columns;
+  /* 0080 */ int unknown_0080;
+  /* 0084 */ int m_listId;
+};
+
+class UIRuneSystem_Decom_RadioBtn : public UIWindow {
 };
 
 class UIRuneSet_Info : public UIWindow {
 public:
   void Slot19() override;
   void Slot26(int x, int y) override;
+  void Slot28(int x, int y) override;
   void UpdateActivation();
 
   /* 007C */ RuneSetData* m_runeSet;
@@ -90,6 +112,19 @@ class UIRune_Info : public UIWindow {
 };
 
 class UIRune_Decom : public UIWindow {
+public:
+  void Reset();
+  int HitTestItem(int x, int y);
+  void SelectDecomType(unsigned int type);
+
+  /* 007C */ std::string unknown_007C;
+  /* 0094 */ std::string unknown_0094;
+  /* 00AC */ unsigned int m_ownedCount;
+  /* 00B0 */ std::vector<Decom_ItemInfo>* m_decomList;
+  /* 00B4 */ int m_itemId;
+  /* 00B8 */ UIBitmapButton* m_decomButton;
+  /* 00BC */ unsigned int m_decomType;
+  /* 00C0 */ UIRuneSystem_Decom_RadioBtn* m_radioButtons[2];
 };
 
 class UIRuneSystemWnd : public UIFrameWnd {

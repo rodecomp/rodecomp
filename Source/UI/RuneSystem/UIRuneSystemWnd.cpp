@@ -1,3 +1,5 @@
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Contents/Items/RuneSystem.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -11,6 +13,25 @@
 extern const int g_runeSetSlotX[6] = {87, 201, 19, 269, 87, 201};
 // GLOBAL: gl_24887
 extern const int g_runeSetSlotY[6] = {70, 70, 207, 207, 344, 344};
+
+// OFFSET: 0x00816630
+// FUNCTION: fn_10164
+void UIRuneSetList::ScrollBy(int delta) {
+  const int previous = this->position;
+  int next = delta + previous;
+  next = next >= 0 ? next : 0;
+  next = next > this->maximum ? this->maximum : next;
+  this->position = next;
+  if (previous != next) {
+    this->Invalidate();
+  }
+}
+
+// OFFSET: 0x00816830
+
+// OFFSET: 0x00816AD0
+
+// OFFSET: 0x00816BE0
 
 // OFFSET: 0x00819610
 // FUNCTION: fn_10181
@@ -222,10 +243,18 @@ void UIRuneSetReWard::Slot31(int x, int y) {
 void UIDecomlist::Slot28(int, int) {
 }
 
+// OFFSET: 0x0081C240
+
 // OFFSET: 0x0081C3D0
 // FUNCTION: fn_10205
 void UIRuneList::Slot28(int, int) {
 }
+
+// OFFSET: 0x0081C3E0
+
+// OFFSET: 0x0081C6F0
+
+// OFFSET: 0x0081C960
 
 // OFFSET: 0x0081CBF0
 // FUNCTION: fn_10212
@@ -356,3 +385,9 @@ int UIRuneSystemTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, st
 
   return 0;
 }
+
+// OFFSET: 0x0081E520
+
+// OFFSET: 0x0081E970
+
+// OFFSET: 0x0081F230
