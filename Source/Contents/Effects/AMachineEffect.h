@@ -6,15 +6,21 @@
 #include <cstddef>
 #include <map>
 
-struct EZ2STREmitter;
+class CEZ2STRParticle;
 
 class CAMachineEffect : public CEffect {
 public:
   CAMachineEffect();
 
+  void Slot01() override;
+  void Slot03() override;
+  void Slot04() override;
+  void Close() override;
   bool Slot06() override;
+  void PlayAttack();
+  void SetState(int state);
 
-  /* 00CC */ std::map<int, EZ2STREmitter*> unknown_00CC;
+  /* 00CC */ std::map<int, CEZ2STRParticle*> unknown_00CC;
   /* 00D4 */ int unknown_00D4;
 };
 
