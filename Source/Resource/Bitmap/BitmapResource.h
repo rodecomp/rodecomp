@@ -27,6 +27,7 @@ struct BitmapResourceContext {
 
 class CBitmapRes : public CRes {
 public:
+  CBitmapRes();
   explicit CBitmapRes(BitmapResourceContext& context);
   ~CBitmapRes() override;
   CBitmapRes* Create() override;

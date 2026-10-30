@@ -1,7 +1,53 @@
 #include "UI/UICaptchaRegisterWnd.h"
 
+#include "Client/Application/Launcher.h"
+#include "Client/Input/InputCharset.h"
+#include "Client/Input/Language.h"
+#include "Contents/MessageTable.h"
+#include "File/File.h"
+#include "File/FileEnumeration.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Lists/UIComboBoxDefWnd.h"
+#include "UI/Text/UIStaticText.h"
+#include "UI/UIStaticBitmap.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
+#include "UI/Window/WindowManagerWindows.h"
+#include "Utility/Text/FormatString.h"
+
+#include <cstdlib>
+#include <cstring>
+#include <list>
+#include <string>
+#include <zlib.h>
+
+namespace {
+struct UIWindowMgrHelper : public UIWindowMgr {
+  int sub_A901E0(const char* text, int type, bool defaultAccept, bool replace, int timeout, const char* caption, int width, int height, unsigned char protect);
+};
+
+struct UIComboBoxDefWndHelper : public UIComboBoxDefWnd {
+  std::string sub_8A15A0();
+};
+
+struct UIEditCtrlHelper : public UIEditCtrl {
+  void sub_865E00(int red, int green, int blue);
+  void sub_868570(int red, int green, int blue, std::uint32_t secondary);
+};
+
+struct CaptchaRegisterPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ char text[16];
+  /* 0012 */ std::int16_t size;
+};
+static_assert(sizeof(CaptchaRegisterPacket) == 20);
+}
+
+// OFFSET: 0x007EA3B0
 
 // OFFSET: 0x007EA8D0
 // FUNCTION: fn_09789
@@ -10,6 +56,78 @@ void UICaptchaRegisterWnd::Paint() {
   DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xFFFFFFFF);
   this->DrawTitleBar(controls.fonts, controls.locale, true, "", 0);
   DrawRectangleBorder(*this, 34, 80, 222, 92, 0);
+}
+
+// OFFSET: 0x007EA910
+// FUNCTION: fn_09790
+int UICaptchaRegisterWnd::SendMsg(
+  UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4
+) {
+  if (message == 6) {
+    if (a1 == 201) {
+      this->m_frameContext->windows.CloseWindow(284);
+    } else if (a1 == 345) {
+      if (this->m_editCtrl->Length() < 4) {
+        static_cast<UIWindowMgrHelper*>(&g_windowMgr)->sub_A901E0(LookupMessage(2872), 0, 1, 0, 0, "Message", 280, 120, 0);
+      } else if (this->m_selectedFile.empty()) {
+        static_cast<UIWindowMgrHelper*>(&g_windowMgr)->sub_A901E0(LookupMessage(2874), 0, 1, 0, 0, "Message", 280, 120, 0);
+      } else if (this->m_decompressedSize == 0) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("compress data size error"), 0xFF, 0, 0, 0);
+      } else {
+        std::string str = FormatOwnedString(LookupMessage(2873), this->m_editCtrl->Text());
+        int result = static_cast<UIWindowMgrHelper*>(&g_windowMgr)->sub_A901E0(str.c_str(), 2, 0, 0, 0, "Message", 280, 120, 0);
+        if (result != 188) {
+          this->registerButton->SetDisabled(1);
+          this->registerButton->Invalidate();
+
+          CaptchaRegisterPacket packet;
+          packet.id = 0x0A52;
+          memcpy_s(packet.text, sizeof(packet.text), this->m_editCtrl->Text(), sizeof(packet.text));
+          packet.size = static_cast<std::int16_t>(this->m_decompressedSize);
+
+          CRagConnection& connection = GetRagConnection();
+          connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+
+          reinterpret_cast<CLanguage*>(g_serverLanguage)->ResetInput();
+        }
+      }
+    }
+  } else if (message == 39 && sender == this->m_fileComboBox) {
+    this->m_selectedFile = static_cast<UIComboBoxDefWndHelper*>(this->m_fileComboBox)->sub_8A15A0();
+    if (!this->m_selectedFile.empty()) {
+      std::string fullPath = this->m_pathText->tooltip + this->m_selectedFile;
+      CFile file;
+      if (file.Open(fullPath.c_str(), 0, 1, 0)) {
+        CBitmapRes bitmap;
+        if (bitmap.Decode(fullPath.c_str(), file.GetData(), file.GetSize(), false)) {
+          if (bitmap.image.width == 220 && bitmap.image.height == 90) {
+            if (this->m_decompressedData != nullptr) {
+              std::free(this->m_decompressedData);
+              this->m_decompressedData = nullptr;
+              this->m_decompressedSize = 0;
+            }
+
+            this->m_decompressedSize = compressBound(file.GetSize());
+            this->m_decompressedData = std::malloc(this->m_decompressedSize);
+            compress(
+              static_cast<Bytef*>(this->m_decompressedData),
+              reinterpret_cast<uLongf*>(&this->m_decompressedSize),
+              static_cast<const Bytef*>(file.GetData()),
+              file.GetSize()
+            );
+
+            this->m_captchaBitmap->SetBitmap(fullPath.c_str());
+            this->m_captchaBitmap->Invalidate();
+            this->Invalidate();
+          } else {
+            g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("image size error"), 0xFF, 0, 0, 0);
+          }
+        }
+      }
+    }
+  }
+
+  return this->UIFrameWnd::SendMsg(sender, message, a1, a2, a3, a4);
 }
 
 // OFFSET: 0x007EAD90
