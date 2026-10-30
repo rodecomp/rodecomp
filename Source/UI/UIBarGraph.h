@@ -10,6 +10,8 @@ struct UIButtonContext;
 
 class UIBarGraph : public UIWindow {
 public:
+  void Paint() override;
+
   void SetValue(float value);
 
   /* 007C */ float m_value;
@@ -22,6 +24,7 @@ public:
 
 class UIBarGraph4 : public UIBarGraph3 {
 public:
+  void Paint() override;
   void Slot28(int x, int y) override;
 
   void SetValues(const int* current, const int* maximum);
@@ -29,6 +32,7 @@ public:
 protected:
   /* 007C */ const int* m_current;
   /* 0080 */ const int* m_maximum;
+  /* 0084 */ bool m_plainColor;
   UIButtonContext* m_controls;
 };
 
@@ -58,6 +62,8 @@ class UIBarGraphHomun : public UIWindow {
 public:
   explicit UIBarGraphHomun(UIWindowContext& context);
 
+  void Paint() override;
+
   void SetValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
 
 protected:
@@ -69,6 +75,8 @@ class UIBarGraphPlayer : public UIWindow {
 public:
   explicit UIBarGraphPlayer(UIWindowContext& context);
   ~UIBarGraphPlayer() override;
+
+  void Paint() override;
 
   void SetValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
 
