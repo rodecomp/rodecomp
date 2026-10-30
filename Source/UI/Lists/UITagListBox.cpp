@@ -16,3 +16,18 @@ void UITagListBox::Clear() {
   this->m_tagWindows.clear();
   this->Invalidate();
 }
+
+// OFFSET: 0x009B9E80
+// FUNCTION: fn_13879
+void UITagListBox::Slot25(int, int) {
+}
+
+// OFFSET: 0x009B9E70
+// FUNCTION: fn_13878
+void UITagListBox::Slot26(int, int) {
+}
+
+// OFFSET: 0x009B9E90
+// FUNCTION: fn_13880
+void UITagListBox::Slot31(int, int) {
+}
