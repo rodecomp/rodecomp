@@ -1,6 +1,8 @@
 #include "UI/Quest/UIRenewQuestUI.h"
 #include "Contents/MessageTable.h"
 #include "Contents/RenewQuestMgr.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Network/TextEncoding.h"
 #include "Render/Renderer.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -731,6 +733,23 @@ int CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::AddData(const unsig
   return this->data.size() - 1;
 }
 
+// OFFSET: 0x00A66140
+// FUNCTION: fn_16610
+void RenewQuestUI::CUIQuestItem::OnActiveStateChanged(bool active) {
+  if (this->questType == 2) {
+    g_renewQuestMgr->SetRecommendedQuestActive(this->questId, active);
+    if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(0x2718))) {
+      window->sub_A67290(this->questType);
+    }
+    g_renewQuestMgr->SaveRecommendedActiveList();
+    return;
+  }
+
+  const std::uint16_t packetId = 0x02B6;
+  const unsigned char packet[3] = {0xB6, 0x02, static_cast<unsigned char>(active)};
+  GetRagConnection().Send(g_packetLengths.FixedLength(packetId), packet);
+}
+
 // OFFSET: 0x00A66280
 // FUNCTION: fn_16613
 void RenewQuestUI::CUIQuestItem::OnSimpleView(bool simpleView) {
@@ -766,6 +785,15 @@ void CUIRenewQuestUI::Slot53(int value) {
   );
   this->Slot15(this->geometry.width, this->geometry.height);
   this->Slot16();
+}
+
+// OFFSET: 0x00A67E10
+// FUNCTION: fn_16633
+void CUIRenewQuestUI::OnFilterButton(UIWindow* button) {
+  if (button) {
+    this->filter = button->geometry.id;
+    this->sub_A67290(0xF);
+  }
 }
 
 // OFFSET: 0x00A67FA0

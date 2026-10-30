@@ -18,6 +18,7 @@ public:
   void Slot31(int x, int y) override;
   void Slot48() override;
   void Slot16() override;
+  void OnActiveStateChanged(bool active);
 
   void OnSimpleView(bool simpleView);
 
@@ -47,6 +48,7 @@ public:
   bool MatchesFilter(const RenewQuestInfo& info) const;
 
   void OnTabButton(CUITabButton* button);
+  void OnFilterButton(UIWindow* button);
   void OnPanelButton();
   void OnCallback6();
   void OnCallback43();
