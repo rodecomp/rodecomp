@@ -9,6 +9,7 @@
 
 class ResourceMgr;
 struct CRagEffect;
+struct EffectVisibilityContext;
 
 struct CEffectPrim : CRenderObject {
   CEffectPrim();
@@ -120,6 +121,7 @@ struct CEffectPrim : CRenderObject {
   void Tei_TowardScreen(vector3d& vec1, vector3d& vec2, vector3d& vec3, vector3d& vec4, short rot0, short rot1);
 
   bool AnimMotion();
+  bool IsPartyVisible(const EffectVisibilityContext& context);
   bool FollowMasterAndAdvance();
   void FollowMasterAndTickSlots();
   void FollowMasterAndTickSlots2();

@@ -10,6 +10,7 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/Effects/EffectActor.h"
+#include "Contents/Effects/EffectVisibility.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/RagEffectState.h"
 #include "Contents/Sound/SoundMgr.h"
@@ -4715,6 +4716,16 @@ void CEffectPrim::PrimBobbing() {
     slot.height[0] = slot.height[2];
     slot.height[0] = g_sinTable[process % 360] * 0.1f + slot.height[2];
   }
+}
+
+// OFFSET: 0x00BE7600
+// FUNCTION: fn_19935
+bool CEffectPrim::IsPartyVisible(const EffectVisibilityContext& context) {
+  if (this->state.master) {
+    return PartyEffectVisible(this->state.master->state, context);
+  }
+
+  return false;
 }
 
 // OFFSET: 0x00BE7620
