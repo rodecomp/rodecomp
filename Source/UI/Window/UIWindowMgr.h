@@ -431,6 +431,15 @@ public:
   void ForgetWindowReferences(UIWindow* removed);
   void DismissTransient();
   void RegisterNamedWindow(std::string name, UIWindow* window);
+  void UnregisterNamedWindow(std::string name);
+  void ShowTransient(UIWindow* window);
+  void RequestAddFriend(const char* name);
+  void AddOverlay(int id, UIWindow* window);
+  void AddRenderedFront(UIWindow* window);
+  void ShowWindows189(unsigned char show);
+  void DestroyPersistentWindows();
+  void RemoveSnapRectangle(UIWindow* window);
+  void ReleaseRetainedWindow(int id);
   void InvalidateAll();
   void RefreshClanWnd();
   void RefreshGuildWindows();

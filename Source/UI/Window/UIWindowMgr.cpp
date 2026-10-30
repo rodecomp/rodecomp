@@ -3,6 +3,9 @@
 #include "Client/Replay.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
+#include "Network/Packets/PacketLengths.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Lists/UIDropDownBox.h"
 #include "UI/Window/MiniPartyWndAreaMgr.h"
@@ -10,7 +13,23 @@
 #include "UI/Window/UIWindowMgr.h"
 
 #include <algorithm>
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
 #include <new>
+#include <timeapi.h>
+
+namespace {
+#pragma pack(push, 1)
+struct AddFriendPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ char name[24];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(AddFriendPacket) == 26);
+static_assert(offsetof(AddFriendPacket, name) == 2);
+}
 
 // GLOBAL: gl_24525
 CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr = nullptr;
@@ -634,5 +653,101 @@ void UIWindowMgr::RegisterNamedWindow(std::string name, UIWindow* window) {
 void UIWindowMgr::NotifyMode() {
   if (CMode* mode = g_modeMgr.GetGameMode()) {
     mode->SendMsg(292, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00A8AD60
+// FUNCTION: fn_17116
+void UIWindowMgr::ShowTransient(UIWindow* window) {
+  if (this->window_4F250) {
+    this->Schedule(this->window_4F250);
+  }
+
+  this->window_4F250 = window;
+  window->geometry.targetAlpha = 128;
+  window->geometry.alphaStart = timeGetTime();
+  this->rendered.push_back(this->window_4F250);
+}
+
+// OFFSET: 0x00A8ADB0
+// FUNCTION: fn_17117
+void UIWindowMgr::RequestAddFriend(const char* name) {
+  AddFriendPacket packet;
+  packet.id = ID_CZ_ADD_FRIENDS;
+  std::memcpy(packet.name, name, sizeof(packet.name));
+  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x00A8AE20
+// FUNCTION: fn_17118
+void UIWindowMgr::AddOverlay(int id, UIWindow* window) {
+  this->overlays.emplace(id, window);
+}
+
+// OFFSET: 0x00A8B9F0
+// FUNCTION: fn_17126
+void UIWindowMgr::AddRenderedFront(UIWindow* window) {
+  this->rendered.push_front(window);
+}
+
+// OFFSET: 0x00A8C150
+// FUNCTION: fn_17129
+void UIWindowMgr::ShowWindows189(unsigned char show) {
+  for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+    if ((*it)->geometry.id != 189) {
+      continue;
+    }
+
+    if (show == 1) {
+      (*it)->Show(g_serviceOptions.Get(250) ? 1 : 0);
+    } else {
+      (*it)->Show(0);
+    }
+  }
+}
+
+// OFFSET: 0x00A8C310
+// FUNCTION: fn_17131
+void UIWindowMgr::DestroyPersistentWindows() {
+  while (!this->modalWindows.empty()) {
+    UIWindow* window = this->modalWindows.back();
+    this->persistentWindows.erase(window);
+    delete window;
+    this->modalWindows.pop_back();
+  }
+
+  for (UIWindow* window : this->persistentWindows) {
+    delete window;
+  }
+  this->persistentWindows.clear();
+}
+
+// OFFSET: 0x00A8CD70
+// FUNCTION: fn_17140
+void UIWindowMgr::RemoveSnapRectangle(UIWindow* window) {
+  if (g_serviceOptions.Get(141)) {
+    const auto entry = this->snapRectangles.find(window);
+    if (entry != this->snapRectangles.end()) {
+      this->snapRectangles.erase(entry);
+    }
+  }
+}
+
+// OFFSET: 0x00A8CDE0
+// FUNCTION: fn_17141
+void UIWindowMgr::ReleaseRetainedWindow(int id) {
+  const auto entry = this->retainedWindows.find(id);
+  if (entry != this->retainedWindows.end()) {
+    this->Schedule(entry->second);
+    this->retainedWindows.erase(entry);
+  }
+}
+
+// OFFSET: 0x00A8CE50
+// FUNCTION: fn_17142
+void UIWindowMgr::UnregisterNamedWindow(std::string name) {
+  const auto entry = this->namedWindows.find(name);
+  if (entry != this->namedWindows.end()) {
+    this->namedWindows.erase(entry);
   }
 }
