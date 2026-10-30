@@ -1,7 +1,19 @@
+#include "Client/Application/ApplicationWindow.h"
+#include "Client/Stove/StoveMgr.h"
+#include "Client/Stove/StovePCSDK.h"
+#include "Network/TextEncoding.h"
 #include "Utility/Cipher/XorBytes.h"
+#include "Utility/Text/FormatString.h"
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
+#include <string>
+#include <windows.h>
+
+// GLOBAL: gl_24904
+bool g_stoveWaitingCallback;
 
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
@@ -104,4 +116,49 @@ EncryptedName<129, 0x2D3B15774149D5DDULL>& PurchaseCheckingMessage::operator()()
                                  0xDD};
   thread_local EncryptedName<sizeof(source), 0x2D3B15774149D5DDULL> name(source);
   return name;
+}
+
+// OFFSET: 0x0063E390
+// FUNCTION: fn_04796
+const char* CStoveMgr::GetAccessToken() {
+  wchar_t accessToken[600];
+  std::memset(accessToken, 0, sizeof(accessToken));
+  Stove::PCSDK::Result result = Base_GetAccessToken(accessToken, 600);
+  if (result.IsSuccessful()) {
+    std::string token = EncodeText(CP_ACP, std::wstring(accessToken));
+    memcpy_s(this->m_accessToken, sizeof(this->m_accessToken), token.c_str(), std::min(sizeof(this->m_accessToken), token.size() + 1));
+    return this->m_accessToken;
+  }
+
+  const std::uint8_t source[] = {0xA7, 0xEF, 0x70, 0x24, 0x2C, 0x83, 0x6D};
+  thread_local EncryptedName<sizeof(source), 0x1D6D75EDE7CD311FULL> caption(source);
+  MessageBoxA(hWnd, FormatOwnedString(AccessTokenFailureMessage()().Text()).c_str(), caption.Text(), MB_OK);
+  PostQuitMessage(0);
+  return nullptr;
+}
+
+// OFFSET: 0x0063E700
+// FUNCTION: fn_04797
+void CStoveMgr::FetchUser() {
+  Stove::PCSDK::Base::StovePCUser user;
+  Stove::PCSDK::Result result = Base_GetUser(&user);
+  if (result.IsSuccessful()) {
+    StringFormat(this->m_memberNumber, sizeof(this->m_memberNumber), _TRUNCATE, "%llu", user.GetMemberNumber());
+    StringFormat(this->m_gameUserId, sizeof(this->m_gameUserId), _TRUNCATE, "%llu", user.GetGameUserId());
+  } else {
+    const std::uint8_t source[] = {0xB9, 0x89, 0x2A, 0x1C, 0xD2, 0x73, 0x53};
+    thread_local EncryptedName<sizeof(source), 0xD1538513DF975701ULL> caption(source);
+    MessageBoxA(hWnd, FormatOwnedString(UserFailureMessage()().Text()).c_str(), caption.Text(), MB_OK);
+    PostQuitMessage(0);
+  }
+}
+
+// OFFSET: 0x0063F090
+// FUNCTION: fn_04802
+void CStoveMgr::WaitForCallback() {
+  g_stoveWaitingCallback = true;
+  do {
+    Base_RunCallback();
+    Sleep(200);
+  } while (g_stoveWaitingCallback);
 }
