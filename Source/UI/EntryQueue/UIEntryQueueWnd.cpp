@@ -406,3 +406,52 @@ void UIEntryQueueWnd::Slot11() {
     this->saved->height = this->geometry.height;
   }
 }
+
+// OFFSET: 0x00BA3A50
+// FUNCTION: fn_19679
+void UIEntryQueueHelpWnd::Slot15(int width, int height) {
+  auto& text = this->m_entryQueue->text;
+  auto& controls = text.buttons;
+
+  this->Resize(280, 280);
+
+  this->m_viewer = new UITextViewer(*this->m_context, text);
+  this->m_viewer->Configure(10, 22, 270, 225, 0);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->m_viewer->backgroundColor = 0xFF000000u | (blue << 16) | (green << 8) | red;
+  this->m_viewer->Invalidate();
+  this->AddChild(this->m_viewer);
+
+  char message[0x104];
+  std::memset(message, 0, sizeof(message));
+  strcpy_s(message, sizeof(message), LookupMessage(2116));
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  strcpy_s(message, sizeof(message), LookupMessage(2117));
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  strcpy_s(message, sizeof(message), LookupMessage(2118));
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  strcpy_s(message, sizeof(message), LookupMessage(2119));
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  strcpy_s(message, sizeof(message), LookupMessage(2120));
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  strcpy_s(message, sizeof(message), LookupMessage(2121));
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  strcpy_s(message, sizeof(message), LookupMessage(2122));
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  strcpy_s(message, sizeof(message), LookupMessage(2123));
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+  strcpy_s(message, sizeof(message), LookupMessage(2124));
+  this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
+
+  const std::string path = "유저인터페이스\\";
+
+  this->m_close = new UIBitmapButton(*this->m_context, controls);
+  this->m_close->SetBitmap((path + "btn_close" + ".bmp").c_str(), 0, 0);
+  this->m_close->SetBitmap((path + "btn_close_a" + ".bmp").c_str(), 1, 0);
+  this->m_close->SetBitmap((path + "btn_close_b" + ".bmp").c_str(), 2, 0);
+  this->m_close->SetSize(this->m_close->BitmapWidth(), this->m_close->BitmapHeight());
+  this->m_close->Move(234, 256);
+  this->m_close->SetId(0);
+  this->AddChild(this->m_close);
+}

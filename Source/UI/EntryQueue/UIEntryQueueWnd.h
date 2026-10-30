@@ -24,6 +24,7 @@ struct UIEntryQueueContext {
 
 class UIEntryQueueHelpWnd : public UIFrameWnd {
 public:
+  void Slot15(int width, int height) override;
   void Slot18() override;
   void Slot19() override;
   void Paint() override;
@@ -31,6 +32,10 @@ public:
 
 protected:
   UIEntryQueueContext* m_entryQueue;
+
+public:
+  /* 00B4 */ UITextViewer* m_viewer;
+  /* 00B8 */ UIBitmapButton* m_close;
 };
 
 class UIEntryQueueListBox : public UIListBox {
