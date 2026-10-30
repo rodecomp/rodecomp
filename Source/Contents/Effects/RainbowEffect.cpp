@@ -54,6 +54,106 @@ bool CRainbowEffect::Slot06() {
 }
 
 // OFFSET: 0x00B70E00
+// FUNCTION: fn_19131
+void CRainbowEffect::Slot03() {
+  for (std::vector<CParticle*>::iterator it = this->bands.begin(); it != this->bands.end(); ++it) {
+    CParticle* particle = *it;
+    vector3d& position = particle->position;
+    position.x = this->position[0];
+    position.y = this->position[1];
+    position.z = this->position[2];
+
+    if (particle != nullptr) {
+      int alpha = particle->alpha;
+
+      if (particle->unknown_00E8 <= 180) {
+        ++alpha;
+      } else if (particle->unknown_00E8 <= 360) {
+        --alpha;
+      }
+
+      float& spinAngle = *reinterpret_cast<float*>(&particle->unknown_00C4);
+      spinAngle += 1.0f;
+
+      if (alpha < 0) {
+        alpha = 0;
+      }
+
+      particle->alpha = alpha >= 250 ? 250 : alpha;
+
+      matrix rotation;
+      std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+      rotation.MakeYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
+      particle->transform = rotation;
+
+      const int band = particle->unknown_0010;
+      const int step = static_cast<int>(static_cast<float>(particle->unknown_0050) / 20.0f);
+      const int angle = static_cast<int>(static_cast<float>(step * particle->unknown_000C) + spinAngle) % 360;
+
+      vector3d points[4]{};
+      const float width = particle->scale * g_cosTable[angle];
+      const float height = particle->scale * g_sinTable[angle];
+
+      float ratio = 1.0f - static_cast<float>(band) * 0.05f;
+      float flat = width * ratio;
+      float rise = height * ratio;
+      points[0].x = g_cosTable[particle->unknown_004C] * flat;
+      points[0].y = rise + rise;
+      points[0].z = g_sinTable[particle->unknown_004C] * flat;
+
+      ratio = 1.0f - static_cast<float>(band + 1) * 0.05f;
+      flat = width * ratio;
+      rise = height * ratio;
+      points[1].x = g_cosTable[particle->unknown_004C] * flat;
+      points[1].y = rise + rise;
+      points[1].z = g_sinTable[particle->unknown_004C] * flat;
+
+      if (particle->unknown_000C != 0) {
+        particle->vertices[0].x = points[1].x;
+        particle->vertices[0].y = points[1].y;
+        particle->vertices[0].z = points[1].z;
+        particle->vertices[1].x = points[0].x;
+        particle->vertices[1].y = points[0].y;
+        particle->vertices[1].z = points[0].z;
+        particle->vertices[2].x = this->previousOuter.x;
+        particle->vertices[2].y = this->previousOuter.y;
+        particle->vertices[2].z = this->previousOuter.z;
+        particle->vertices[3].x = this->previousInner.x;
+        particle->vertices[3].y = this->previousInner.y;
+        particle->vertices[3].z = this->previousInner.z;
+      }
+
+      this->previousOuter = points[1];
+      this->previousInner = points[0];
+
+      switch (band) {
+      case 0:
+        particle->SetColor(255, 0, 0);
+        break;
+      case 1:
+        particle->SetColor(255, 126, 0);
+        break;
+      case 2:
+        particle->SetColor(255, 255, 0);
+        break;
+      case 3:
+        particle->SetColor(0, 255, 0);
+        break;
+      case 4:
+        particle->SetColor(0, 0, 255);
+        break;
+      case 5:
+        particle->SetColor(115, 50, 200);
+        break;
+      case 6:
+        particle->SetColor(255, 0, 255);
+        break;
+      }
+    }
+
+    ++particle->unknown_00E8;
+  }
+}
 
 // OFFSET: 0x00B714C0
 // FUNCTION: fn_19132
