@@ -23,6 +23,7 @@ public:
 class UIParaResultWnd : public UIItemBaseWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot28(int x, int y) override;
 
   void AddItem(const RawItemBasic& item, int quantity);
   void AddItem(const ITEM_INFO& item);

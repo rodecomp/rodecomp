@@ -1,13 +1,24 @@
 #include "UI/Item/UIParaItemShopWnd.h"
 
+#include "Client/Input/InputCharset.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Client/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemNaming.h"
+#include "Contents/PlayerNameDictionary.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
+#include "Utility/Text/GroupedInteger.h"
 
 #include <cstdlib>
+#include <cstring>
+#include <string>
 
 // OFFSET: 0x009A80F0
 // FUNCTION: fn_13745
@@ -100,6 +111,34 @@ void UIParaItemPurchaseWnd::Slot25(int x, int y) {
   this->hovered = this->GetItemIndexAt(x, y);
   if (previousHovered != this->hovered) {
     this->Invalidate();
+  }
+}
+
+// OFFSET: 0x009A9710
+// FUNCTION: fn_13755
+void UIParaResultWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] != 0) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+
+    std::string text;
+    char price[64];
+    std::memset(price, 0, sizeof(price));
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    if (item.unknown_0014[0] == item.unknown_0014[1]) {
+      const char* amount = FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, sizeof(price));
+      text = FormatOwnedString("%s %s Zeny", naming.DisplayName(item, 0).c_str(), amount);
+    } else {
+      const char* amount = FormatGroupedInteger(static_cast<int>(item.unknown_0014[1]), price, sizeof(price));
+      text = FormatOwnedString("%s %d -> %s Zeny", naming.DisplayName(item, 0).c_str(), item.unknown_0014[0], amount);
+    }
+
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
