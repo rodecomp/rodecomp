@@ -179,3 +179,35 @@ void UIColorTransBalloonText::Paint() {
   std::uint32_t color = 0xFFFFFF;
   DrawColoredText(*this, this->m_textContext->codePage, 6, 4, this->m_lines[0].c_str(), 0, color, 0, 12, false);
 }
+
+// OFFSET: 0x0085B010
+// FUNCTION: fn_10792
+void UIAchBalloonText::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->m_lines.empty()) {
+    return;
+  }
+
+  const int count = static_cast<int>(this->m_lines.size());
+  const std::string& first = this->m_lines.front();
+  const int lineHeight =
+    this->TextHeight(
+      this->m_textContext->fonts, this->m_textContext->locale, first.c_str(), static_cast<unsigned>(first.size()), this->m_fontFamily, this->m_fontHeight, 1, 0
+    ) +
+    4;
+  const int top = (this->geometry.height - lineHeight * count + 4) / 2;
+
+  for (int index = 0; index < count; ++index) {
+    const std::string& line = this->m_lines[index];
+    const int width = this->TextWidth(
+      this->m_textContext->fonts, this->m_textContext->locale, line.c_str(), static_cast<unsigned>(line.size()), this->m_fontFamily, this->m_fontHeight, 1, 0
+    );
+    int y = top;
+    if (index != 0) {
+      y = top - 4 + lineHeight * index;
+    }
+    this->DrawShadowedText(
+      (this->geometry.width - width) / 2, y, this->m_lines[index].c_str(), 0, this->m_textColor, this->m_outlineColor, this->m_fontFamily, this->m_fontHeight, 1
+    );
+  }
+}

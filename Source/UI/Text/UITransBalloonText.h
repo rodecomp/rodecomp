@@ -51,6 +51,16 @@ public:
   void Paint() override;
 };
 
+class UIAchBalloonText : public UITransBalloonText {
+public:
+  // INLINED
+  UIAchBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UITransBalloonText(windows, text), m_fontFamily(0) {}
+  void Paint() override;
+
+protected:
+  /* 00CC */ int m_fontFamily;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(BalloonRectangle) == 0x1C);
 static_assert(offsetof(BalloonRectangle, x) + 0xA0 == 0xA0);

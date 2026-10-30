@@ -3,10 +3,25 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Chat/UIChatRoomTitle.h"
+#include "UI/Text/UIStaticText.h"
 
 // OFFSET: 0x0084EF70
 // FUNCTION: fn_10655
 UIChatRoomTitle::UIChatRoomTitle(UIWindowContext& context) : UIWindow(context, 0) {
+}
+
+// OFFSET: 0x0085AB80
+// FUNCTION: fn_10785
+void UIChatRoomTitle::Slot15(int, int) {
+  this->label = new UIStaticText(*this->m_context, *this->m_controls);
+  this->label->SetSize(this->geometry.width - 34, 15);
+  this->label->Move(31, 8);
+  this->label->SetTextFitted("");
+  this->label->fontFamily = 0;
+  this->label->fontHeight = 12;
+  this->label->bold = 0;
+  this->label->italic = 0;
+  this->AddChild(this->label);
 }
 
 // OFFSET: 0x0085C690

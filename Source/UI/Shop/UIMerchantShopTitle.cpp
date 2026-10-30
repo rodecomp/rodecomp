@@ -8,6 +8,21 @@
 #include "UI/Shop/UIMerchantShopTitle.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
+#include "UI/Text/UIStaticText.h"
+
+// OFFSET: 0x0085ACE0
+// FUNCTION: fn_10788
+void UIMerchantShopTitle::Slot15(int, int) {
+  this->label = new UIStaticText(*this->m_context, *this->m_controls);
+  this->label->SetSize(this->geometry.width - 34, 15);
+  this->label->Move(31, 8);
+  this->label->SetTextFitted("");
+  this->label->fontFamily = 0;
+  this->label->fontHeight = 12;
+  this->label->bold = 0;
+  this->label->italic = 0;
+  this->AddChild(this->label);
+}
 
 // OFFSET: 0x0085D150
 // FUNCTION: fn_10811

@@ -5,16 +5,23 @@
 
 #include <string>
 
+class UIStaticText;
+struct UIButtonContext;
+
 class UIChatRoomTitle : public UIWindow {
 public:
   explicit UIChatRoomTitle(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Paint() override;
   void ResetCursor(int x, int y) override;
 
-  /* 007C */ int unknown_007C;
+  /* 007C */ UIStaticText* label;
   /* 0080 */ std::string title;
   /* 0098 */ std::string unknown_0098;
   /* 00B0 */ int roomType;
+
+protected:
+  UIButtonContext* m_controls;
 };
 
 #endif

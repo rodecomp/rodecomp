@@ -1,4 +1,23 @@
 #include "UI/UISlotBitmap.h"
+#include "UI/Buttons/UIBitmapButton.h"
+
+// OFFSET: 0x0085ADA0
+// FUNCTION: fn_10789
+void UISlotBitmap::Slot15(int, int) {
+  if (this->unknown_00B8 == 1) {
+    this->addButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->addButton->SetBitmap("유저인터페이스\\select_character\\btn_add_out.bmp", 0, 0);
+    this->addButton->SetBitmap("유저인터페이스\\select_character\\btn_add_over.bmp", 1, 0);
+    this->addButton->SetBitmap("유저인터페이스\\select_character\\btn_add_press.bmp", 2, 0);
+    this->addButton->SetSize(this->addButton->BitmapWidth(), this->addButton->BitmapHeight());
+    this->addButton->Move(
+      static_cast<int>((this->geometry.width - this->addButton->geometry.width) * 0.5),
+      static_cast<int>((this->geometry.height - this->addButton->geometry.height) * 0.5)
+    );
+    this->addButton->SetId(203);
+    this->AddChild(this->addButton);
+  }
+}
 
 // OFFSET: 0x0085E980
 // FUNCTION: fn_10833

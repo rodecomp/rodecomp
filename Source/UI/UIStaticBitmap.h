@@ -31,7 +31,7 @@ public:
   /* 00B0 */ int tooltipY;
   /* 00B4 */ int forwardHover;
 
-private:
+protected:
   UIButtonContext* m_controls;
 };
 
