@@ -11,6 +11,7 @@ public:
   void Paint() override;
   void Slot28(int x, int y) override;
   void Slot35(int delta) override;
+  void LoadNotice();
 
   /* 00B4 */ UIStaticText* m_texts[19];
   /* 0100 */ unsigned char unknown_0100[0x08];

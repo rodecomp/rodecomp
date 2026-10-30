@@ -14,6 +14,7 @@ public:
   void Slot27(int x, int y) override;
   void SaveLogin();
   void LoadLogin();
+  void OpenWebPage();
 
   /* 00B4 */ UIEditCtrl* idEdit;
   /* 00B8 */ UIEditCtrl* passwordEdit;
