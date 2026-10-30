@@ -508,6 +508,23 @@ void UIChatHisBox::PlaceNaviLinks(int line) {
 }
 
 // OFFSET: 0x0087F520
+// FUNCTION: fn_11272
+void UIEditCtrl_Custom::DrawLabel(int x, int y, const char* text) {
+  const std::uint32_t outline = this->secondColor;
+  const unsigned char bold = this->unknown_011C;
+  const std::uint32_t color = this->textColor;
+  if (outline == 0xFFFFFFFF) {
+    this->DrawTextAt(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, x, y, text, 0, 0, 12, color, bold, 0);
+    return;
+  }
+
+  TextContext context(*this->geometry.surface);
+  context.SetFont(0, 12, bold, 0);
+  context.SetColor(color);
+  context.Draw(x, y, text, 0);
+  context.SetColor(outline);
+  context.Draw(x - 1, y, text, 0);
+}
 
 // OFFSET: 0x0087E730
 // FUNCTION: fn_11266
@@ -662,6 +679,39 @@ void UITabControl::Slot10(int argument1, int argument2, std::intptr_t argument3)
 }
 
 // OFFSET: 0x0087F010
+// FUNCTION: fn_11269
+void UITabControl::DrawVerticalTab(int index) {
+  const int width = this->widths[index];
+  const int textHeight =
+    this->VerticalTextHeight(this->m_controls->fonts, this->m_controls->locale, this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0);
+  int y = 0;
+  for (int previous = 0; previous < index; ++previous) {
+    y += this->widths[previous] - 1;
+  }
+
+  const int textX = (this->geometry.width - 12) / 2;
+  int x = textX + 1;
+  std::uint32_t color;
+  if (this->unknown_007C == index) {
+    this->FillTab(index, 0, y, this->geometry.width, width, this->activeFillColor);
+    this->DrawTabBorder(0, y, this->geometry.width, width, this->activeBorderColor);
+    color = this->activeTextColor;
+    x = textX;
+  } else {
+    if (this->layout == 0) {
+      this->FillTab(index, 1, y, this->geometry.width, width, this->inactiveFillColor);
+      this->DrawTabBorder(1, y, this->geometry.width, width, this->inactiveBorderColor);
+      this->FillRegion(this->geometry.width - 1, y, 1, width, this->activeBorderColor);
+    } else if (this->layout == 2) {
+      this->FillTab(index, 0, y, this->geometry.width - 1, width, this->inactiveFillColor);
+      this->DrawTabBorder(0, y, this->geometry.width - 1, width, this->inactiveBorderColor);
+      this->FillRegion(0, y, 1, width, this->activeBorderColor);
+    }
+    color = this->inactiveTextColor;
+  }
+
+  this->DrawVerticalText(x, (width - textHeight) / 2 + (width - textHeight) % 2 + y, this->labels[index].c_str(), 0, 0, this->unknown_00E8, color, 0);
+}
 
 // OFFSET: 0x0087F1D0
 // FUNCTION: fn_11270
@@ -694,3 +744,39 @@ void UITabControl::DrawTabBorder(int x, int y, int width, int height, std::uint3
 }
 
 // OFFSET: 0x0087F610
+// FUNCTION: fn_11273
+void UITabControl::DrawHorizontalTab(int index) {
+  const int width = this->widths[index];
+  const int textWidth =
+    this->TextWidth(this->m_controls->fonts, this->m_controls->locale, this->labels[index].c_str(), 0, 0, this->unknown_00E8, 0, 0);
+  int x = 0;
+  for (int previous = 0; previous < index; ++previous) {
+    x += this->widths[previous] - 1;
+  }
+
+  const int textY = (this->geometry.height - 12) / 2;
+  int y = textY + 1;
+  std::uint32_t color;
+  if (this->unknown_007C == index) {
+    this->FillTab(index, x, 0, width, this->geometry.height, this->activeFillColor);
+    this->DrawTabBorder(x, 0, width, this->geometry.height, this->activeBorderColor);
+    color = this->activeTextColor;
+    y = textY;
+  } else {
+    if (this->layout == 1) {
+      this->FillTab(index, x, 1, width, this->geometry.height, this->inactiveFillColor);
+      this->DrawTabBorder(x, 1, width, this->geometry.height, this->inactiveBorderColor);
+      this->FillRegion(x, this->geometry.height - 1, width, 1, this->activeBorderColor);
+    } else if (this->layout == 3) {
+      this->FillTab(index, x, 0, width, this->geometry.height - 1, this->inactiveFillColor);
+      this->DrawTabBorder(x, 0, width, this->geometry.height - 1, this->inactiveBorderColor);
+      this->FillRegion(x, 0, width, 1, this->activeBorderColor);
+    }
+    color = this->inactiveTextColor;
+  }
+
+  this->DrawTextAt(
+    this->m_controls->fonts, this->m_controls->locale, (width - textWidth) / 2 + (width - textWidth) % 2 + x, y, this->labels[index].c_str(), 0, 0,
+    this->unknown_00E8, color, 0, 0
+  );
+}
