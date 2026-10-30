@@ -1504,3 +1504,9 @@ void CEfstAction_INSANE3::Slot00(int efstId, int value, int argument3, int argum
     static_cast<CPc*>(actor)->unknown_04F4 = static_cast<int>(0xFFED1C24);
   }
 }
+
+// OFFSET: 0x005AF030
+// FUNCTION: fn_03285
+bool __stdcall sub_5AF030(int) {
+  return false;
+}
