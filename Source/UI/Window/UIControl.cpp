@@ -600,6 +600,16 @@ void CUIButton::Slot25(int, int) {
 }
 
 // OFFSET: 0x009EE970
+// FUNCTION: fn_14629
+void CUIButton::Slot31(int, int) {
+  this->SetState(2);
+  if (this == g_windowMgr.Capture()) {
+    if (!this->disabled && this->unknown_00C4) {
+      this->unknown_00C4->Slot02();
+    }
+    g_windowMgr.ReleaseCapture();
+  }
+}
 
 // OFFSET: 0x009EE9D0
 // FUNCTION: fn_14630
@@ -649,6 +659,27 @@ void CUITextButton::Paint() {
 }
 
 // OFFSET: 0x009ECF60
+// FUNCTION: fn_14565
+void CUITextButton::Slot28(int, int) {
+  if (!this->tooltipText.empty()) {
+    int screenX = 0;
+    int screenY = -20;
+    for (const UIWindow* node = this; node; node = node->parent) {
+      screenX += node->geometry.x;
+      screenY += node->geometry.y;
+    }
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltipText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+    return;
+  }
+
+  int screenX = -6;
+  int screenY = -4;
+  for (const UIWindow* node = this; node; node = node->parent) {
+    screenX += node->geometry.x;
+    screenY += node->geometry.y;
+  }
+  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->fullText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+}
 
 // OFFSET: 0x009ED430
 // FUNCTION: fn_14574
@@ -757,6 +788,13 @@ void CUITabButton::Slot48() {
 }
 
 // OFFSET: 0x009F1690
+// FUNCTION: fn_14694
+void CUITabButton::Slot53(int resolveSkin) {
+  this->normalColor = SkinPaletteColor(ResourceMgr::Instance(), this->normalCell, resolveSkin);
+  this->selectedColor = SkinPaletteColor(ResourceMgr::Instance(), this->selectedCell, resolveSkin);
+  this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), this->borderCell, resolveSkin);
+  this->CUIImageTextButton::Slot53(resolveSkin);
+}
 
 // OFFSET: 0x009ED6D0
 // FUNCTION: fn_14582
@@ -937,6 +975,10 @@ void CUIEditBox::SetBackgroundColor(std::uint32_t color) {
 }
 
 // OFFSET: 0x009ED7D0
+// FUNCTION: fn_14586
+void CUIEditBox::SetTextColor(std::uint32_t color) {
+  this->edit->TextColor(RGB(GetRValue(color), GetGValue(color), GetBValue(color)), 0xFFFFFFFFu);
+}
 
 // OFFSET: 0x009ED800
 // FUNCTION: fn_14587
@@ -1274,8 +1316,40 @@ void CUIVScrollBar::SetHidden(int) {
 }
 
 // OFFSET: 0x009EDF80
+// FUNCTION: fn_14597
+void CUIHScrollBar::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  if (!this->background) {
+    return;
+  }
+
+  if (this->transparent) {
+    for (int x = 0; x < this->trackLength - this->background->image.width; x += this->background->image.width) {
+      this->DrawAuxiliary(1, this->upButton->geometry.width + x, 0, &this->background->image, true, false);
+    }
+    this->DrawAuxiliary(
+      1, this->geometry.width - this->downButton->geometry.width - this->background->image.width, 0, &this->background->image, true, false
+    );
+    return;
+  }
+
+  for (int x = 0; x < this->trackLength - this->background->image.width; x += this->background->image.width) {
+    this->DrawBitmap(this->upButton->geometry.width + x, 0, &this->background->image, false);
+  }
+  this->DrawBitmap(this->geometry.width - this->downButton->geometry.width - this->background->image.width, 0, &this->background->image, false);
+}
 
 // OFFSET: 0x009EE1B0
+// FUNCTION: fn_14599
+void CUIHScrollBar::Slot25(int x, int) {
+  const int left = this->thumb->geometry.x;
+  if (x < left) {
+    this->PageUp();
+  } else if (x > this->thumb->geometry.width + left) {
+    this->PageDown();
+  }
+}
 
 // OFFSET: 0x009EE270
 // FUNCTION: fn_14603
@@ -1307,8 +1381,34 @@ void CUIHScrollBar::Slot54() {
 }
 
 // OFFSET: 0x009EE380
+// FUNCTION: fn_14605
+void CUIHScrollBar::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->downButton->Move(this->geometry.width - this->downButton->geometry.width, 0);
+  this->trackLength = this->geometry.width - this->upButton->geometry.width - this->downButton->geometry.width;
+}
 
 // OFFSET: 0x009EE3D0
+// FUNCTION: fn_14606
+void CUIHScrollBar::SetButtonImages(const std::string& left, const std::string& right) {
+  CBitmapRes* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(left));
+  if (image) {
+    this->upButton->Resize(image->image.width, image->image.height);
+    this->upButton->Move(0, 0);
+    this->upButton->SetImages(left, left, left, left);
+    this->upButton->Show(1);
+  }
+
+  image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(right));
+  if (image) {
+    this->downButton->Resize(image->image.width, image->image.height);
+    this->downButton->Move(this->geometry.width - image->image.width, 0);
+    this->downButton->SetImages(right, right, right, right);
+    this->downButton->Show(1);
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x009EA990
 // FUNCTION: fn_14536
@@ -1427,28 +1527,149 @@ void CUITextViewer::SetScrollBarSize(int width, int height) {
 }
 
 // OFFSET: 0x009EA900
+// FUNCTION: fn_14530
+void CUITextViewer::SetScrollBarButtonImages(const std::string& up, const std::string& down) {
+  this->scrollBar->SetButtonImages(up, down);
+}
 
 // OFFSET: 0x009EA940
+// FUNCTION: fn_14533
+void CUITextViewer::SetScrollBarThumbImages(const std::string& top, const std::string& middle, const std::string& bottom) {
+  this->scrollBar->SetThumbImages(top, middle, bottom);
+}
 
 // OFFSET: 0x009EA950
+// FUNCTION: fn_14534
+void CUITextViewer::SetScrollBarThumbImage(const std::string& name) {
+  this->scrollBar->SetThumbImage(name);
+}
 
 // OFFSET: 0x009EA960
+// FUNCTION: fn_14535
+void CUITextViewer::SetScrollBarBackground(const std::string& name) {
+  this->scrollBar->SetBackground(name);
+}
 
 // OFFSET: 0x009E9DD0
+// FUNCTION: fn_14512
+void CUITextViewer::Clear() {
+  for (auto& child : this->childPositions) {
+    this->RemoveChild(child.first, 1);
+  }
+  this->childPositions.clear();
+  this->lines.clear();
+  this->contentHeight = 0;
+  this->scrollBar->SetTotal(1);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->Invalidate();
+}
 
 // OFFSET: 0x009E9400
+// FUNCTION: fn_14503
+void CUIResizer::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->image) {
+    this->DrawBitmap(0, 0, &this->image->image, false);
+  }
+}
 
 // OFFSET: 0x009E9430
+// FUNCTION: fn_14504
+void CUIResizer::Slot25(int x, int y) {
+  if (this->parent) {
+    g_windowMgr.SetCapture(this);
+    for (const UIWindow* node = this; node; node = node->parent) {
+      x += node->geometry.x;
+      y += node->geometry.y;
+    }
+    this->startX = x;
+    this->startY = y;
+    this->startWidth = this->parent->geometry.width;
+    this->startHeight = this->parent->geometry.height;
+    this->deltaX = 0;
+    this->deltaY = 0;
+  }
+}
 
 // OFFSET: 0x009E94B0
+// FUNCTION: fn_14505
+void CUIResizer::Slot31(int x, int y) {
+  if (this->parent && this == g_windowMgr.Capture()) {
+    g_windowMgr.ReleaseCapture();
+    this->parent->Slot36();
+    for (const UIWindow* node = this; node; node = node->parent) {
+      x += node->geometry.x;
+      y += node->geometry.y;
+    }
+    this->startX = x;
+    this->startY = y;
+    this->startWidth = this->parent->geometry.width;
+    this->startHeight = this->parent->geometry.height;
+    this->deltaX = 0;
+    this->deltaY = 0;
+  }
+}
 
 // OFFSET: 0x009E9540
+// FUNCTION: fn_14506
+void CUIResizer::Slot27(int x, int y) {
+  if (this->parent && this == g_windowMgr.Capture()) {
+    for (const UIWindow* node = this; node; node = node->parent) {
+      x += node->geometry.x;
+      y += node->geometry.y;
+    }
+    const int rows = static_cast<int>(std::roundf(static_cast<float>(y - this->startY) / static_cast<float>(this->stepY)) * static_cast<float>(this->stepY));
+    int width = static_cast<int>(std::roundf(static_cast<float>(x - this->startX) / static_cast<float>(this->stepX)) * static_cast<float>(this->stepX)) + this->startWidth;
+    if (width > this->maxWidth) {
+      width = this->maxWidth;
+    } else if (width < this->minWidth) {
+      width = this->minWidth;
+    }
+
+    int height = rows + this->startHeight;
+    if (height > this->maxHeight) {
+      height = this->maxHeight;
+    } else if (height < this->minHeight) {
+      height = this->minHeight;
+    }
+
+    width -= this->startWidth;
+    height -= this->startHeight;
+    if (width != this->deltaX || height != this->deltaY) {
+      if (this->onResize) {
+        this->onResize(width - this->deltaX, height - this->deltaY);
+      }
+      this->deltaX = width;
+      this->deltaY = height;
+    }
+  }
+}
 
 // OFFSET: 0x009E96B0
+// FUNCTION: fn_14507
+void CUIResizer::ResetCursor(int, int) {
+  this->m_context->cursor.Set(2, this->m_context->cursorTick);
+}
 
 // OFFSET: 0x009E96C0
+// FUNCTION: fn_14508
+void CUIResizer::Slot53(int resolveSkin) {
+  this->image = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageName, resolveSkin));
+  if (this->image) {
+    this->Resize(this->image->image.width, this->image->image.height);
+    if (this->parent) {
+      this->Move(this->parent->geometry.width - this->geometry.width, this->parent->geometry.height - this->geometry.height);
+    }
+  }
+}
 
 // OFFSET: 0x009E9790
+// FUNCTION: fn_14509
+void CUIResizer::SetImage(const std::string& name) {
+  this->imageName = name;
+  this->Slot53(0);
+  this->Invalidate();
+}
 
 // OFFSET: 0x009F0EA0
 // FUNCTION: fn_14682
