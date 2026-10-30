@@ -262,20 +262,22 @@ std::string FormatNavigationLink(std::string value, bool brackets) {
 // OFFSET: 0x00833550
 // FUNCTION: fn_10411
 void DisplayNavigationLink(std::string& output, std::string value) {
-  output = value;
-  const auto begin = value.find("<NAVIL>");
+  std::string text = value;
+  output = text;
+  const auto begin = text.find(g_naviLinkTag);
 
   if (begin != std::string::npos) {
     output.clear();
-    const std::string head = value.substr(0, begin);
-    const std::string tail = value.substr(begin);
-    const auto end = tail.find("</NAVIL>");
+    const std::string head = text.substr(0, begin);
+    text = text.substr(begin);
+    const auto end = text.find(g_naviLinkCloseTag);
 
     if (end != std::string::npos) {
-      const auto extent = end + 8;
-      const std::string rest = tail.substr(extent);
-      output = head;
-      output += FormatNavigationLink(tail.substr(0, extent), true);
+      const std::string rest = text.substr(end + std::strlen(g_naviLinkCloseTag.c_str()));
+      text = text.substr(0, end + std::strlen(g_naviLinkCloseTag.c_str()));
+      const std::string link = FormatNavigationLink(text, true);
+      output += head;
+      output += link;
       output += rest;
     }
   }
