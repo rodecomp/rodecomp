@@ -42,6 +42,7 @@ const char* CSimpleStringMgr::GetString(const char* key) {
 }
 
 // OFFSET: 0x007A9780
+// FUNCTION: fn_09078
 std::vector<std::string> CSimpleStringMgr::TransformFields(const std::vector<std::string>& fields) {
   std::vector<std::string> result;
   result.reserve(fields.size());
@@ -62,6 +63,7 @@ std::vector<std::string> CSimpleStringMgr::TransformFields(const std::vector<std
 }
 
 // OFFSET: 0x007AA270
+// FUNCTION: fn_09080
 void CSimpleStringMgr::Init() {
   this->LoadCsv("simplemsg\\msg_emotion.csv",
                 [this](const std::vector<std::string>& fields) { return this->TransformFields(fields); },
@@ -74,6 +76,7 @@ void CSimpleStringMgr::Init() {
 }
 
 // OFFSET: 0x007AA360
+// FUNCTION: fn_09081
 void CSimpleStringMgr::LoadCsv(const char* name, std::function<std::vector<std::string>(std::vector<std::string>&)> transform,
                               std::function<void(std::vector<const char*>&, std::any)> insert, std::any context) {
   g_simpleStringObject.LoadCsv(name, transform, insert, context);
