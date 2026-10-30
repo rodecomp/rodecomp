@@ -1,11 +1,27 @@
 #include "UI/Window/UIJobListWnd.h"
 
+#include "Contents/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 
 #include <windows.h>
+
+// GLOBAL: gl_25023
+std::map<int, bool> g_partyBookingJobs;
+
+struct PartyBookingUpdatePacket {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t jobs[6];
+};
+
+static_assert(sizeof(PartyBookingUpdatePacket) == 14);
 
 // OFFSET: 0x0092C640
 // FUNCTION: fn_12664
@@ -26,4 +42,61 @@ void UIJobListWnd::Slot11() {
     this->m_saved->x = this->geometry.x;
     this->m_saved->y = this->geometry.y;
   }
+}
+
+// OFFSET: 0x00935610
+// FUNCTION: fn_12746
+int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    if (message != 34) {
+      return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+    }
+
+    this->m_saved = reinterpret_cast<JobListWndInfo*>(argument1);
+    if (!this->m_saved->IsValid()) {
+      this->m_saved->Reset();
+    }
+    this->Move(this->m_saved->x, this->m_saved->y);
+    this->SendMsg(nullptr, 14, 3, this->m_saved->width, this->m_saved->height, 0);
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    return 0;
+  }
+
+  if (argument1 == 184) {
+    PartyBookingUpdatePacket packet = {ID_CZ_PARTY_BOOKING_REQ_UPDATE};
+    for (int i = 0; i < 6; ++i) {
+      packet.jobs[i] = -1;
+    }
+
+    int selected = 0;
+    int index = 0;
+    for (auto it = g_partyBookingJobs.begin(); it != g_partyBookingJobs.end(); ++it, ++index) {
+      UIWindow* check = this->m_jobChecks[index];
+      std::int16_t job = -1;
+      bool enabled;
+      if (check == nullptr) {
+        enabled = false;
+      } else if (check->geometry.unknown_0030 == 0) {
+        enabled = false;
+      } else {
+        ++selected;
+        enabled = true;
+        job = static_cast<std::int16_t>(it->first);
+      }
+      packet.jobs[index] = job;
+      it->second = enabled;
+    }
+
+    if (selected == 0) {
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1767), 0, true, false, 0, "Message", 280, 120, 0);
+      return 0;
+    }
+
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+  } else if (argument1 != 201) {
+    return 0;
+  }
+
+  g_windowMgr.CloseWindow(170);
+  return 0;
 }
