@@ -14,6 +14,8 @@ class UIBarGraph4 : public UIBarGraph3 {
 public:
   void Slot28(int x, int y) override;
 
+  void SetValues(const int* current, const int* maximum);
+
 protected:
   /* 007C */ const int* m_current;
   /* 0080 */ const int* m_maximum;
@@ -23,6 +25,8 @@ protected:
 class UIINT64BarGraph : public UIWindow {
 public:
   void Slot28(int x, int y) override;
+
+  void SetValues(std::int64_t current, std::int64_t maximum);
 
 protected:
   /* 007C */ int unknown_007C;

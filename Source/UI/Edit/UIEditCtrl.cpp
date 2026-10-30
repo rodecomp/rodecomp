@@ -17,6 +17,7 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Edit/UIEditCtrl_Currency.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -1763,4 +1764,31 @@ void UIMerchantItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
 
   reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 11, 0, 0, 0);
+}
+
+// OFFSET: 0x0089CAE0
+// FUNCTION: fn_11591
+void UIEditCtrl_Custom::Trim() {
+  const auto length = this->text.size();
+  if (static_cast<int>(length) <= this->maximum) {
+    return;
+  }
+
+  const auto codePage = static_cast<WORD>(g_textCodePage);
+  const char* next = CharNextExA(codePage, this->text.c_str(), 0);
+  while (length - std::strlen(next) <= static_cast<unsigned>(this->maximum)) {
+    next = CharNextExA(codePage, next, 0);
+  }
+
+  const char* previous = CharPrevExA(codePage, this->text.c_str(), next, 0);
+  this->text.resize(length - std::strlen(previous));
+
+  CLanguage& input = this->m_edit->input;
+  input.ResetInput();
+  input.ResetInput();
+  input.Insert(this->text.c_str());
+
+  while (this->text.size() < static_cast<unsigned>(this->maximum)) {
+    this->text.append(" ", 1);
+  }
 }

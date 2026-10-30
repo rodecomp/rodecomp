@@ -13,6 +13,7 @@ public:
   /* 00D8 */ std::vector<std::uint32_t> lineColors;
   /* 00E4 */ int lineOffset;
 
+  void SetDefaultLineColor(std::uint32_t color);
   void SetLineColor(int line, std::uint32_t color);
 };
 

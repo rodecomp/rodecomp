@@ -139,6 +139,13 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   return true;
 }
 
+// OFFSET: 0x0089BA70
+// FUNCTION: fn_11575
+void UIListBoxNavi::SetDefaultLineColor(std::uint32_t color) {
+  this->defaultLineColor = color;
+  this->Invalidate();
+}
+
 // OFFSET: 0x00876FD0
 // FUNCTION: fn_11208
 void UIListBoxNavi::SetLineColor(int line, std::uint32_t color) {

@@ -17,6 +17,7 @@ class UIPcGage : public UIGage {
 public:
   UIPcGage();
   __declspec(noinline) void SetValues(int current, int maximum);
+  void SetLimits(int first, int second);
 
   /* 009C */ int unknown_009C;
   /* 00A0 */ int current;

@@ -298,6 +298,14 @@ void UIPcGage::SetValues(int current, int maximum) {
   this->Invalidate();
 }
 
+// OFFSET: 0x0089C360
+// FUNCTION: fn_11586
+void UIPcGage::SetLimits(int first, int second) {
+  this->unknown_00A8 = first;
+  this->unknown_00AC = second;
+  this->Invalidate();
+}
+
 // OFFSET: 0x00738EC0
 // FUNCTION: fn_07680
 UIFriendOptionWnd::~UIFriendOptionWnd() = default;

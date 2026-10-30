@@ -7,6 +7,8 @@
 
 class UIEditCtrl_Custom : public UIEditCtrl2 {
 public:
+  void Trim() override;
+
   /* 011C */ unsigned char unknown_011C;
   /* 0120 */ int unknown_0120;
   /* 0124 */ int unknown_0124;

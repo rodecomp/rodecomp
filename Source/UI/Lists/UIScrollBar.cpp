@@ -415,6 +415,15 @@ void UIChatHisBox::Slot25(int x, int y) {
 void UIChatHisBox::Slot31(int, int) {
 }
 
+// OFFSET: 0x0089C340
+// FUNCTION: fn_11585
+void UIChatHisBox::Show(int visible) {
+  this->geometry.visible = visible;
+  if (visible) {
+    this->Invalidate();
+  }
+}
+
 // OFFSET: 0x0089EAD0
 // FUNCTION: fn_11604
 bool UIChatHisBox::SaveChatLog(const char* path) {

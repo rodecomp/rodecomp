@@ -8,6 +8,7 @@
 
 class UIChatHisBox : public UIListBox {
 public:
+  void Show(int visible) override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot31(int x, int y) override;
