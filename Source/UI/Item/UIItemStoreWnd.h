@@ -11,7 +11,8 @@ class UICheckBox;
 class UIItemStoreWnd : public UIItemBaseWnd {
 public:
   void Slot11() override;
-  ITEM_INFO GetItemAt(int x, int y);
+  void Slot25(int x, int y) override;
+  __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetTabChecked(int index, bool checked);
 
   /* 00F0 */ int unknown_00F0;

@@ -14,13 +14,17 @@ public:
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
+  void Slot35(int value) override;
 
-  ITEM_INFO GetItemByIndex(int index);
+  int GetItemIndexAt(int x, int y);
+  __declspec(noinline) ITEM_INFO GetItemByIndex(int index);
   ITEM_INFO GetItemAt(int x, int y);
 
   /* 00B4 */ int showQuantity;
   /* 00B8 */ int unknown_00B8;
-  /* 00BC */ unsigned char unknown_00BC[0x10];
+  /* 00BC */ int unknown_00BC;
+  /* 00C0 */ UIWindow* scrollBar;
+  /* 00C4 */ unsigned char unknown_00C4[0x8];
 
 protected:
   UIButtonContext* m_controls;

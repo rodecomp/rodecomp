@@ -5,14 +5,26 @@
 #include "UI/Item/UIItemBaseWnd.h"
 
 #include <cstddef>
+#include <cstdint>
+
+struct WindowReplayRecorder;
 
 class UIItemShopWnd2 : public UIItemBaseWnd {
 public:
   void Slot11() override;
   void Slot32(int x, int y) override;
+  void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot25(int x, int y) override;
+  void Slot26(int x, int y) override;
 
-  /* 00F0 */ unsigned char unknown_00F0[0xC];
+protected:
+  WindowReplayRecorder* m_recorder;
+
+public:
+  /* 00F4 */ unsigned char unknown_00F4[0x4];
+  /* 00F8 */ int unknown_00F8;
   /* 00FC */ WindowPlacement* saved;
+  /* 0100 */ int hovered;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

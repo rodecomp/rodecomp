@@ -1,5 +1,6 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
+#include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Network/TextEncoding.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -1792,3 +1793,89 @@ void UIEditCtrl_Custom::Trim() {
     this->text.append(" ", 1);
   }
 }
+
+// OFFSET: 0x00972350
+// FUNCTION: fn_13270
+void UIItemShopWnd2::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  switch (drag->source) {
+  case 4:
+  case 5:
+    if (this->unknown_00F8 == 0) {
+      return;
+    }
+
+    if (drag->quantity == 1 || g_windowMgr.unknown_0064 != 0) {
+      this->SendMsg(nullptr, 38, 1, 0, 0, 0);
+      return;
+    }
+
+    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+    g_windowMgr.window_01EC->SendMsg(nullptr, 13, 15, 0, 0, 0);
+    return;
+  default:
+    g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+}
+
+// OFFSET: 0x00972410
+
+// OFFSET: 0x009729C0
+
+// OFFSET: 0x00972CE0
+
+// OFFSET: 0x00972DB0
+
+// OFFSET: 0x009738A0
+
+// OFFSET: 0x00984050
+
+// OFFSET: 0x009840C0
+
+// OFFSET: 0x009844E0
+
+// OFFSET: 0x00985510
+
+// OFFSET: 0x00988C60
+
+// OFFSET: 0x00988F90
+
+// OFFSET: 0x0098A260
+
+// OFFSET: 0x0098A2B0
+
+// OFFSET: 0x0098A300
+
+// OFFSET: 0x0098A350
+
+// OFFSET: 0x00993A20
+
+// OFFSET: 0x00898650
+
+// OFFSET: 0x009845A0
+
+// OFFSET: 0x00984700
+
+// OFFSET: 0x009848E0
+
+// OFFSET: 0x00984AC0
+
+// OFFSET: 0x00984CA0
+
+// OFFSET: 0x00984DF0
+
+// OFFSET: 0x00984F10
+
+// OFFSET: 0x00985030
+
+// OFFSET: 0x009853A0
+
+// OFFSET: 0x00985830
+
+// OFFSET: 0x00985970

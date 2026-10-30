@@ -11,6 +11,7 @@ struct WindowReplayRecorder;
 class UIItemSellWnd : public UIItemBaseWnd {
 public:
   void Slot11() override;
+  void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot10(int x, int y, std::intptr_t value) override;
@@ -20,6 +21,7 @@ protected:
 
 public:
   /* 00F4 */ ItemSellWndInfo* saved;
+  /* 00F8 */ int hovered;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -4,6 +4,7 @@
 #include "UI/Edit/UIEditCtrl.h"
 
 #include <cstddef>
+#include <cstdint>
 
 class UIEditCtrl_Custom : public UIEditCtrl2 {
 public:
@@ -18,6 +19,7 @@ public:
 class UIEditCtrl_Currency : public UIEditCtrl_Custom {
 public:
   void Slot19() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 012C */ std::size_t formattedLength;
 };

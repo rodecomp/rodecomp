@@ -6,6 +6,7 @@
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstddef>
+#include <cstdint>
 #include <list>
 #include <string>
 
@@ -16,8 +17,11 @@ struct UIButtonContext;
 class UIMerchantShopMakeWnd : public UIFrameWnd {
 public:
   void Slot11() override;
+  void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot25(int x, int y) override;
+  void Slot35(int value) override;
 
-  ITEM_INFO GetItemAt(int x, int y);
+  __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetSelection(short row, short column);
   bool HasSelection() const;
   void SendShopRequest();
@@ -30,7 +34,7 @@ public:
   /* 0128 */ UIEditCtrl* unknown_0128;
   /* 012C */ int unknown_012C;
   /* 0130 */ int mode;
-  /* 0134 */ int unknown_0134;
+  /* 0134 */ UIWindow* scrollBar;
   /* 0138 */ int scroll;
   /* 013C */ int columns;
   /* 0140 */ int unknown_0140;

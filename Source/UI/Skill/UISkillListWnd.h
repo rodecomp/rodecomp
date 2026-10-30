@@ -12,11 +12,12 @@ class UISkillListWnd : public UIFrameWnd {
 public:
   bool Slot03() override;
   void Slot11() override;
+  void Slot26(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
 
   __declspec(noinline) int SkillAt(int x, int y);
-  CSkillInfo GetSkillByIndex(int index);
+  __declspec(noinline) CSkillInfo GetSkillByIndex(int index);
   CSkillInfo GetSkillAt(int x, int y);
   CSkillInfo GetVisibleSkill(int row);
 

@@ -10,9 +10,11 @@
 class UIItemStoreFindWnd : public UIItemBaseWnd {
 public:
   void Slot11() override;
+  void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
+  void Slot35(int value) override;
 
-  ITEM_INFO GetItemAt(int x, int y);
+  __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetSearchText(std::string text);
 
   /* 00F0 */ unsigned char unknown_00F0[0x34];
