@@ -6041,3 +6041,97 @@ EncryptedName<9, 0xA5C5D1A3B9457B53ULL>& WerewolfJobName1() {
   thread_local EncryptedName<sizeof(source), 0xA5C5D1A3B9457B53ULL> name(source);
   return name;
 }
+
+// OFFSET: 0x00E29530
+// FUNCTION: fn_24044
+EncryptedName<14, 0x6BC977B3B5993503ULL>& PoringSuperNovice2SpriteName() {
+  const std::uint8_t source[] = {0xC0, 0xFF, 0x23, 0x0D, 0x73, 0xAD, 0x95, 0xA8, 0xC9, 0x8F, 0x21, 0x75, 0x69, 0x77};
+  thread_local EncryptedName<sizeof(source), 0x6BC977B3B5993503ULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00E29600
+// FUNCTION: fn_24045
+EncryptedName<14, 0x91493751EF33B5FDULL>& PoringSuperNovice2BabySpriteName() {
+  const std::uint8_t source[] = {0x3E, 0x7F, 0x89, 0x57, 0x91, 0xED, 0x15, 0x52, 0x37, 0x0F, 0x8B, 0x2F, 0x8B, 0x37};
+  thread_local EncryptedName<sizeof(source), 0x91493751EF33B5FDULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x00E296D0
+
+// OFFSET: 0x00E297A0
+
+// OFFSET: 0x00E29870
+
+// OFFSET: 0x00E29940
+
+// OFFSET: 0x00E29A10
+
+// OFFSET: 0x00E29AE0
+
+// OFFSET: 0x00E29BB0
+
+// OFFSET: 0x00E29C80
+
+// OFFSET: 0x00E29D50
+
+// OFFSET: 0x00E29E20
+
+// OFFSET: 0x00E29EF0
+
+// OFFSET: 0x00E29FC0
+
+// OFFSET: 0x00E2A090
+
+// OFFSET: 0x00E2A160
+
+// OFFSET: 0x00E2A230
+
+// OFFSET: 0x00E2A300
+
+// OFFSET: 0x00E2A3D0
+
+// OFFSET: 0x00E2A4A0
+
+// OFFSET: 0x00E2A560
+
+// OFFSET: 0x00E2A630
+
+// OFFSET: 0x00E2A6F0
+
+// OFFSET: 0x00E2A7C0
+
+// OFFSET: 0x00E2A890
+
+// OFFSET: 0x00E2A960
+
+// OFFSET: 0x00E2AA40
+
+// OFFSET: 0x00E2AB10
+
+// OFFSET: 0x00E2ABF0
+
+// OFFSET: 0x00E2ACC0
+
+// OFFSET: 0x00E2AD90
+
+// OFFSET: 0x00E2AE50
+
+// OFFSET: 0x00E2AF20
+
+// OFFSET: 0x00E2AFE0
+
+// OFFSET: 0x00E2B0B0
+
+// OFFSET: 0x00E2B180
+
+// OFFSET: 0x00E2B250
+
+// OFFSET: 0x00E2B320
+
+// OFFSET: 0x00E2B3F0
+
+// OFFSET: 0x00E2B4C0
+
+// OFFSET: 0x00E2B590
