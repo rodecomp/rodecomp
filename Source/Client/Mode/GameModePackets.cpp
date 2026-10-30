@@ -493,3 +493,45 @@ void CGameMode::ReceivePackageSimulation(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D8A300
+// FUNCTION: fn_22218
+void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
+  CPlayer* player = this->scene->player;
+  int amount;
+  std::int16_t type;
+  switch (variant) {
+  case 0:
+    amount = *reinterpret_cast<const std::int16_t*>(packet + 4);
+    type = *reinterpret_cast<const std::int16_t*>(packet + 2);
+    break;
+  case 1:
+    amount = *reinterpret_cast<const int*>(packet + 4);
+    type = *reinterpret_cast<const std::int16_t*>(packet + 2);
+    break;
+  }
+
+  switch (type) {
+  case 5: {
+    reinterpret_cast<SessionMessengerContext*>(&g_session)->UpdateRandomStats();
+    const int hp = g_session.unknown_5568 + amount;
+    if (g_session.unknown_5568 != hp) {
+      g_session.unknown_5568 = hp;
+      g_session.RefreshHpSpWindows();
+    }
+    player->SendMsg(nullptr, 88, 0, amount, amount >> 31, static_cast<int>(0xFF00FF00), 0, 114, 0, 0, 0, 0, 0, 0, 0);
+    player->LaunchEffect(331, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  }
+  case 7: {
+    reinterpret_cast<SessionMessengerContext*>(&g_session)->UpdateRandomStats();
+    int& sp = *reinterpret_cast<int*>(&g_session.unknown_5570[0]);
+    const int value = sp + amount;
+    if (sp != value) {
+      sp = value;
+      g_session.RefreshHpSpWindows();
+    }
+    player->SendMsg(nullptr, 88, 0, amount, amount >> 31, static_cast<int>(0xFF0000FF), 0, 114, 0, 0, 0, 0, 0, 0, 0);
+    player->LaunchEffect(332, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  }
+  }
+}
