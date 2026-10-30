@@ -29,6 +29,7 @@
 #include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/UICaptchaRegisterWnd.h"
 #include "UI/UIGradeEnchantWnd.h"
+#include "UI/UIRefiningWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
@@ -829,15 +830,43 @@ struct Item1784ListPacket {
   /* 0004 */ std::int16_t flag;
   /* 0006 */ Item1784Entry entries[1];
 };
+
+struct ShortcutPagePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ char position;
+  /* 0003 */ std::uint16_t bank;
+  /* 0005 */ ShortcutPagePayload payload;
+};
+
+struct CardCompositionPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t equipIndex;
+  /* 0004 */ std::int16_t cardIndex;
+  /* 0006 */ unsigned char result;
+};
+
+struct RefineResultPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t result;
+  /* 0004 */ std::int16_t index;
+  /* 0006 */ std::int16_t refine;
+};
+
+struct ItemEffectResultPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t type;
+  /* 0004 */ int itemId;
+};
 #pragma pack(pop)
 
 struct ClientItemLists {
   void ClearItems1784(int index);
+  void RemoveItem1710(std::uint32_t id, int quantity);
 };
 
 // OFFSET: 0x00D18BD0
 // FUNCTION: fn_21601
-void ReceiveShortcutPage(int position, const ShortcutPagePayload* payload, std::int16_t bank) {
+__declspec(noinline) void ReceiveShortcutPage(int position, const ShortcutPagePayload* payload, std::int16_t bank) {
   int base = 0;
   if (bank == 0) {
     g_session.ClearShortcutSlots();
@@ -972,5 +1001,168 @@ void CGameMode::ReceiveItem1784List(const unsigned char* data) {
   UIWindow* window = g_windowMgr.LookupWindow(318);
   if (window) {
     window->SendMsg(nullptr, 23, 1, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D48800
+// FUNCTION: fn_21854
+void CGameMode::ReceiveShortcutPagePacket(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ShortcutPagePacket*>(data);
+  ReceiveShortcutPage(packet->position, &packet->payload, packet->bank);
+}
+
+// OFFSET: 0x00D496D0
+// FUNCTION: fn_21858
+void CGameMode::ReceiveCardCompositionResult(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const CardCompositionPacket*>(data);
+  switch (packet->result) {
+  case 0: {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(493)), 0xFFFF00, 0, 0, 0);
+    ITEM_INFO card = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->cardIndex);
+    ITEM_INFO equip = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->equipIndex);
+    if (equip.unknown_0000[1] != 0 && card.unknown_0000[1] != 0) {
+      int* cards = reinterpret_cast<int*>(equip.unknown_001C);
+      for (int i = 0; i < 4; ++i) {
+        if (cards[i] == 0) {
+          cards[i] = std::atoi(card.itemId.c_str());
+          break;
+        }
+      }
+
+      reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1710(packet->cardIndex, 1);
+      g_session.UpdateInventoryItem(equip, 1);
+    }
+    break;
+  }
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(494)), 0xFF, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D499B0
+// FUNCTION: fn_21859
+void CGameMode::ReceiveRefineResult(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const RefineResultPacket*>(data);
+  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
+  if (item.unknown_0000[1] != 0) {
+    item.unknown_0060 = packet->refine;
+    g_session.UpdateInventoryItem(item, 1);
+  }
+
+  UIRefiningWnd* window = static_cast<UIRefiningWnd*>(g_windowMgr.LookupWindow(295));
+  if (window) {
+    switch (packet->result) {
+    case 0:
+      window->SetState(2, 3);
+      break;
+    case 1:
+      window->SetState(2, 4);
+      break;
+    case 2:
+      window->SetState(2, 5);
+      break;
+    case 3:
+      window->SetState(2, 6);
+      break;
+    }
+    return;
+  }
+
+  switch (packet->result) {
+  case 0:
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(154, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(498)), 0xFFFF00, 0, 0, 0);
+    break;
+  case 1:
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(499)), 0xFFFF00, 0, 0, 0);
+    break;
+  case 2:
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1537)), 0xFFFF00, 0, 0, 0);
+    break;
+  }
+
+  ITEM_INFO refined = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
+  refined.unknown_0060 = packet->refine;
+  g_session.UpdateInventoryItem(refined, 1);
+}
+
+// OFFSET: 0x00D4A650
+// FUNCTION: fn_21862
+void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ItemEffectResultPacket*>(data);
+  ITEM_INFO item;
+  item.SetItemId(packet->itemId);
+  item.identified = 1;
+  std::string text;
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+
+  switch (packet->type) {
+  case 0:
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(154, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(431), naming.DisplayName(item, 0).c_str()));
+    break;
+  case 1:
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(430), naming.DisplayName(item, 0).c_str()));
+    break;
+  case 2:
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(305)) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 305, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(305, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    text = FormatOwnedString(LookupMessage(431), naming.DisplayName(item, 0).c_str()).c_str();
+    break;
+  case 3:
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(306)) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 306, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(306, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    text = FormatOwnedString(LookupMessage(430), naming.DisplayName(item, 0).c_str()).c_str();
+    break;
+  case 4:
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(1015)) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 1015, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1015, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    text = FormatOwnedString(LookupMessage(431), naming.DisplayName(item, 0).c_str()).c_str();
+    break;
+  case 5:
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(1016)) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 1016, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1016, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    text = FormatOwnedString(LookupMessage(430), naming.DisplayName(item, 0).c_str()).c_str();
+    break;
+  case 6: {
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(1017)) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 1017, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1017, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    text = FormatOwnedString(LookupMessage(430), naming.DisplayName(item, 0).c_str()).c_str();
+    UIWindow* window = g_windowMgr.LookupWindow(344);
+    if (window) {
+      window->SendMsg(nullptr, 6, 415, 0, 0, 0);
+    }
+    break;
+  }
+  case 7: {
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->state.Attachments().HasId(1018)) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, 109, 0, 1018, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1018, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    text = FormatOwnedString(LookupMessage(430), naming.DisplayName(item, 0).c_str()).c_str();
+    UIWindow* window = g_windowMgr.LookupWindow(344);
+    if (window) {
+      window->SendMsg(nullptr, 6, 415, 0, 0, 0);
+    }
+    break;
+  }
   }
 }

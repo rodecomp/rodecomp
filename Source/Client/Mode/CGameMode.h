@@ -269,6 +269,10 @@ public:
   );
   void ReceiveGradeEnchantInfo(const unsigned char* packet);
   void ReceivePartyItemPickup(const unsigned char* packet);
+  void ReceiveShortcutPagePacket(const unsigned char* packet);
+  void ReceiveCardCompositionResult(const unsigned char* packet);
+  void ReceiveRefineResult(const unsigned char* packet);
+  void ReceiveItemEffectResult(const unsigned char* packet);
   void NotifyResult3995(unsigned char result);
   void ReceiveActorEffect228(const unsigned char* packet);
   void ResendMinimapMarkers();
