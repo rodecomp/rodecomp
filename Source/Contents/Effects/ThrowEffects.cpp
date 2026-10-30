@@ -2,12 +2,46 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <algorithm>
 #include <cstring>
+
+// OFFSET: 0x00B7CB10
+// FUNCTION: fn_19227
+CThrowItemEffect::CThrowItemEffect()
+    : CEffect(-1), unknown_00CC(0), unknown_00D0(0), unknown_00D4(1), unknown_00D8(4), unknown_00DC(0), unknown_00E0(0), unknown_00EC(0),
+      unknown_00F0(0), unknown_00F4(0) {
+}
+
+// OFFSET: 0x00B7CCC0
+// FUNCTION: fn_19229
+void CThrowItemEffect::Close() {
+  for (CParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
+
+// OFFSET: 0x00B7D810
+// FUNCTION: fn_19233
+void CThrowItemEffect::InitSpinParticle(CParticle* particle) {
+  this->unknown_002C = 200;
+  this->unknown_00E0 = 1.0f;
+  particle->scale = 2.0f;
+  particle->SetColor(255, 200, 255);
+  *reinterpret_cast<float*>(&particle->unknown_00C4) = 330.0f;
+  particle->unknown_00C0 = 3.0f;
+  particle->alpha = 255;
+  particle->unknown_00D0 = this->position[0];
+  particle->unknown_00D4 = this->position[1] - 8.0f;
+  particle->unknown_00D8 = this->position[2];
+  particle->destinationBlend = 6;
+}
 
 // OFFSET: 0x00B7D8B0
 // FUNCTION: fn_19234

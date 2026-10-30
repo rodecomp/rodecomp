@@ -11,8 +11,11 @@ class CParticle;
 
 class CThrowItemEffect : public CEffect {
 public:
+  CThrowItemEffect();
   void Slot03() override;
+  void Close() override;
   void Slot12() override;
+  void InitSpinParticle(CParticle* particle);
 
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ int unknown_00D0;
