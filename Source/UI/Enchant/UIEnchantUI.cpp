@@ -52,6 +52,13 @@ CEnchantMgr* Singleton<CEnchantMgr>::GetInstance() {
 }
 
 namespace EnchantUI {
+// OFFSET: 0x009F70C0
+// FUNCTION: fn_14768
+CUIEnchantPage::CUIEnchantPage(UIWindowContext& context)
+    : CUIControl(context), unknown_0080{}, gameItem(nullptr), unknown_0088(), unknown_0090(), enchantList(nullptr), unknown_009C{}, enchantInfo(nullptr),
+      group(0), unknown_00B0(-1) {
+}
+
 // OFFSET: 0x009F9880
 // FUNCTION: fn_14809
 void CUIEnchantPage::Slot58(int) {

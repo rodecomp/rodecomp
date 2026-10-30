@@ -9,6 +9,8 @@
 
 class CUIGameItem : public CUIControl {
 public:
+  explicit CUIGameItem(UIWindowContext& context);
+
   /* 0080 */ int mode;
   /* 0084 */ unsigned char unknown_0084;
   /* 0085 */ unsigned char unknown_0085;

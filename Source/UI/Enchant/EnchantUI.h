@@ -6,6 +6,8 @@
 #include "UI/Items/UIGameItem.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 
+#include <list>
+#include <map>
 #include <optional>
 
 class CUITextViewer;
@@ -62,9 +64,12 @@ public:
 #pragma pack(push, 4)
 class CUIEnchantPage : public CUIControl {
 public:
+  explicit CUIEnchantPage(UIWindowContext& context);
+
   /* 0080 */ unsigned char unknown_0080[0x4];
   /* 0084 */ CUIGameItem* gameItem;
-  /* 0088 */ unsigned char unknown_0088[0x10];
+  /* 0088 */ std::map<int, int> unknown_0088;
+  /* 0090 */ std::list<int> unknown_0090;
   /* 0098 */ CUIListBoxEx<CUIEnchantItem, CEnchantItemData>* enchantList;
   /* 009C */ unsigned char unknown_009C[0x8];
   /* 00A4 */ EnchantInfo* enchantInfo;
