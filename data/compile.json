@@ -551,6 +551,7 @@
   "Source/Contents/RobeTopLayer.cpp": 4,
   "Source/Contents/RouletteMgr.cpp": 4,
   "Source/Contents/Schedule/CaptchaUploadSchedule.cpp": 4,
+  "Source/Contents/Schedule/CheckGDISchedule.cpp": 4,
   "Source/Contents/Schedule/EmotionSchedule.cpp": 4,
   "Source/Contents/Schedule/PartialShutDownSchedule.cpp": 4,
   "Source/Contents/Schedule/Schedule.cpp": 4,
