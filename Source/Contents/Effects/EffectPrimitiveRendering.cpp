@@ -20,6 +20,7 @@
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Ground/GroundRendering.h"
 #include "Render/Textures/TextureCache.h"
+#include "Contents/MapSkyMgr.h"
 
 // OFFSET: 0x00BCD960
 // FUNCTION: fn_19865
@@ -585,6 +586,308 @@ void CEffectPrim::RenderTeiRect(
         triangle, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
       );
       ++*rpCnt;
+    }
+  }
+}
+
+// OFFSET: 0x00BE5BB0
+// FUNCTION: fn_19926
+void CEffectPrim::RenderPentaRing(matrix& wtm) {
+  vector3d prevB{};
+  vector3d prevT{};
+  vector3d curB{};
+  vector3d curT{};
+  int rpCnt = 0;
+  float radius;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    const short direction = static_cast<short>((slot.rotStart + 90) % 360);
+    for (int pass = 0; pass < 2; ++pass) {
+      int i = 0;
+      for (int angle = 0; angle <= 360; angle += 72) {
+        if (pass == 0) {
+          radius = slot.maxHeight;
+        } else if (pass == 1) {
+          if (slot.height[4] == 3.0f) {
+            radius = slot.maxHeight + slot.maxHeight;
+          } else {
+            radius = slot.maxHeight + 0.25f;
+          }
+        }
+
+        const float across = radius * g_cosTable[angle];
+        const float offsetX = across * g_cosTable[direction];
+        const float offsetZ = across * g_sinTable[direction];
+        const float offsetY = radius * g_sinTable[angle] - slot.height[0];
+        curB.x = offsetX + slot.vecBNow.x;
+        curT.x = offsetX + slot.vecTNow.x;
+        curB.y = offsetY + slot.vecBNow.y;
+        curT.y = offsetY + slot.vecTNow.y;
+        curB.z = offsetZ + slot.vecBNow.z;
+        curT.z = offsetZ + slot.vecTNow.z;
+
+        if (i > 0) {
+          if (pass == 0) {
+            if (slot.height[4] == 2.0f) {
+              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 1, 0, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            } else if (slot.height[4] == 3.0f) {
+              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 1, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            } else if (slot.height[4] == 4.0f) {
+              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 1, 0, 1, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+            } else if (slot.height[4] == 5.0f) {
+              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 1, 0, 1, 55, 55, 55, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+            } else {
+              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 1, 0, 1, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            }
+          } else if (pass == 1) {
+            if (slot.height[4] == 2.0f) {
+              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 0, 0, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            } else if (slot.height[4] == 3.0f) {
+              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 0, 0, 1, 255, 89, 182, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            } else if (slot.height[4] == 4.0f) {
+              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 0, 0, 1, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+            } else if (slot.height[4] == 5.0f) {
+              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 0, 0, 1, 55, 55, 55, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+            } else {
+              this->RenderTeiRect(&rpCnt, slot.alphaB, prevB, curB, curT, prevT, wtm, 0, 0, 1, 255, 255, 200, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+            }
+          }
+        }
+
+        prevB = curB;
+        prevT = curT;
+        ++i;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00BE60C0
+// FUNCTION: fn_19927
+void CEffectPrim::RenderScrollColumn(matrix& wtm) {
+  vector3d vec4{};
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1 || slot.alphaB <= 0) {
+      continue;
+    }
+
+    int frames = static_cast<int>(slot.maxHeight);
+    int cycle;
+    float scroll;
+    if (frames == 0) {
+      cycle = 0;
+      scroll = 40.0f;
+      frames = 1;
+    } else {
+      cycle = slot.process % (frames * 3);
+      scroll = static_cast<float>(slot.process % frames) * 40.0f / static_cast<float>(frames);
+    }
+
+    if (slot.flag1[1] == 1 || slot.flag1[1] == 10) {
+      scroll = 40.0f - scroll;
+    }
+
+    for (int i = 0; i < 5; ++i) {
+      if (frames == 1 && i > 0) {
+        break;
+      }
+
+      float top = scroll - slot.height[i];
+      float bottom = scroll - slot.height[i + 1];
+      const float left = -slot.distance * g_depthAverageHalf;
+      const float right = slot.distance * g_depthAverageHalf;
+      const float depth = slot.vecBNow.z;
+      vec4 = {left, top, depth};
+      vec1 = {left, bottom, depth};
+      vec2 = {right, bottom, depth};
+      vec3 = {right, top, depth};
+
+      if (slot.flag1[2] > 10) {
+        top = top * 10.0f / static_cast<float>(slot.flag1[2]);
+        bottom = bottom * 10.0f / static_cast<float>(slot.flag1[2]);
+        vec4.y = top;
+        vec1.y = bottom;
+        vec2.y = bottom;
+        vec3.y = top;
+      }
+
+      if (slot.flag1[0] == 1) {
+        vec4.x = depth;
+        vec4.z = left;
+        vec1.x = depth;
+        vec1.z = left;
+        vec3.x = depth;
+        vec3.z = right;
+        vec2.x = depth;
+        vec2.z = right;
+      }
+
+      int texture = static_cast<unsigned>(i) % 3;
+      const int shift = cycle / frames;
+      const char direction = slot.flag1[1];
+      if (direction == 1 || direction == 10) {
+        texture -= shift;
+        while (texture < 0) {
+          texture += 3;
+        }
+      } else {
+        texture += shift;
+        if (texture > 2) {
+          texture -= 3;
+        }
+      }
+
+      if (i == 0) {
+        const float cut = scroll * 0.025f;
+        top -= (top - bottom) * cut;
+        vec4.y = top;
+        vec3.y = top;
+        if (direction == 1) {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 55, 55, 255, cut, 1.0f, 0.0f, 1.0f, 0);
+        } else if (direction == 10) {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 255, 55, 255, cut, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, static_cast<char>(texture), 0, 255, 255, 255, cut, 1.0f, 0.0f, 1.0f, 0);
+        }
+      } else if (i == 4) {
+        const float cut = scroll * 0.025f;
+        bottom = (top - bottom) * (1.0f - cut) + bottom;
+        vec1.y = bottom;
+        vec2.y = bottom;
+        if (direction == 1) {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 55, 55, 255, 0.0f, cut, 0.0f, 1.0f, 0);
+        } else if (direction == 10) {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 255, 55, 255, 0.0f, cut, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, static_cast<char>(texture), 0, 255, 255, 255, 0.0f, cut, 0.0f, 1.0f, 0);
+        }
+      } else {
+        if (direction == 1) {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else if (direction == 10) {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, static_cast<char>(texture), 0, 255, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, static_cast<char>(texture), 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        }
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00BE65A0
+// FUNCTION: fn_19928
+void CEffectPrim::RenderRiseArc(matrix& wtm) {
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const int step = slot.fullDisplayAngle / 21;
+    int i = 0;
+    for (int offset = 0; offset < slot.fullDisplayAngle; offset += step) {
+      int angle = (slot.rotStart + offset) % 360;
+      if (slot.fullDisplayAngle == 360 && i == 20) {
+        angle = slot.rotStart;
+      }
+
+      const float cosine = g_cosTable[angle];
+      const float sine = g_sinTable[angle];
+      slot.vecBNow.y = -slot.maxHeight;
+      slot.vecBNow.x = slot.distance * cosine;
+      slot.vecBNow.z = slot.distance * sine;
+
+      const float rise = slot.height[i];
+      const float riseX = rise * g_cosTable[slot.riseAngle];
+      slot.vecTNow.y = -(slot.maxHeight + rise * g_sinTable[slot.riseAngle]);
+      slot.vecTNow.z = riseX * sine + slot.vecBNow.z;
+      slot.vecTNow.x = riseX * cosine + slot.vecBNow.x;
+
+      if (i > 0) {
+        this->RenderTeiRect(&rpCnt, i - 1, slot.alphaB, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0);
+      }
+
+      ++i;
+      slot.vecBPre = slot.vecBNow;
+      slot.vecTPre = slot.vecTNow;
+      if (i >= 21) {
+        i = 20;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00BE67E0
+// FUNCTION: fn_19929
+void CEffectPrim::RenderFacingQuads(matrix& wtm) {
+  vector3d vec1{};
+  vector3d vec2{};
+  vector3d vec3{};
+  vector3d vec4{};
+  int rpCnt = 0;
+
+  for (int ec = 0; ec < 4; ++ec) {
+    const EffectPrimitiveSlot& slot = this->state.slots[ec];
+
+    if (slot.life != 1) {
+      continue;
+    }
+
+    const float size = slot.distance;
+    vec1 = {size * g_cosTable[45], 0.0f, size * g_sinTable[45]};
+    vec2 = {size * g_cosTable[135], 0.0f, size * g_sinTable[135]};
+    vec3 = {size * g_cosTable[225], 0.0f, size * g_sinTable[225]};
+    vec4 = {size * g_cosTable[315], 0.0f, size * g_sinTable[315]};
+    this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+
+    const vector3d* positions[4] = {&slot.vecBPre, &slot.vecBNow, &slot.vecTPre, &slot.vecTNow};
+    const char alphas[4] = {slot.flag1[11], slot.flag1[12], slot.flag1[13], slot.flag1[14]};
+    for (int corner = 0; corner < 4; ++corner) {
+      const vector3d& position = *positions[corner];
+      const vector3d corner1{position.x + vec1.x, position.y + vec1.y, position.z + vec1.z};
+      const vector3d corner2{position.x + vec2.x, position.y + vec2.y, position.z + vec2.z};
+      const vector3d corner3{position.x + vec3.x, position.y + vec3.y, position.z + vec3.z};
+      const vector3d corner4{position.x + vec4.x, position.y + vec4.y, position.z + vec4.z};
+      const int alpha = std::max(alphas[corner] * 2, 0);
+
+      unsigned char red;
+      unsigned char green;
+      unsigned char blue;
+      if (slot.flag1[5] == 7) {
+        red = 250;
+        green = 70;
+        blue = 100;
+      } else if (slot.flag1[5] == 8) {
+        red = 250;
+        green = 250;
+        blue = 10;
+      } else if (slot.flag1[5] == 10) {
+        red = 250;
+        green = 250;
+        blue = 250;
+      } else {
+        red = 70;
+        green = 120;
+        blue = 100;
+      }
+
+      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), corner1, corner2, corner3, corner4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
   }
 }

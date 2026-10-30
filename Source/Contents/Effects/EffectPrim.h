@@ -149,6 +149,10 @@ struct CEffectPrim : CRenderObject {
   void RenderOrbitSquare(matrix& wtm);
   void RenderLightningTube(matrix& wtm);
   void RenderStackedRings(matrix& wtm);
+  void RenderRiseArc(matrix& wtm);
+  void RenderFacingQuads(matrix& wtm);
+  void RenderPentaRing(matrix& wtm);
+  void RenderScrollColumn(matrix& wtm);
   void RenderFanBeam(matrix& wtm);
   void RenderBladeTrail(matrix& wtm);
   void RenderFieldPanel(matrix& wtm);
