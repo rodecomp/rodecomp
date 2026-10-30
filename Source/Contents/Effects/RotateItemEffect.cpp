@@ -17,8 +17,39 @@ CRotateItemEffect::CRotateItemEffect() : CEffect(-1), alpha(0), angle(0) {
 }
 
 // OFFSET: 0x00B739B0
+// FUNCTION: fn_19148
+void CRotateItemEffect::Close() {
+  for (CParticle* particle : this->particles) {
+    FreeParticle(particle);
+  }
+
+  this->particles.clear();
+}
 
 // OFFSET: 0x00B739F0
+// FUNCTION: fn_19149
+void CRotateItemEffect::Slot01() {
+  for (int index = 0; index < 4; ++index) {
+    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    if (!particle) {
+      continue;
+    }
+
+    particle->unknown_0004 = this->id;
+    particle->unknown_000C = index;
+    particle->unknown_0010 = 0;
+    particle->unknown_0008 = 1;
+    particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
+    particle->scale = 2.5f;
+    particle->SetColor(255, 200, 255);
+    *reinterpret_cast<float*>(&particle->unknown_00C4) = 360.0f;
+    particle->unknown_00C0 = 0.4f;
+    particle->alpha = 255;
+    particle->unknown_0054 = 13.0f;
+    particle->destinationBlend = 6;
+    this->particles.push_back(particle);
+  }
+}
 
 // OFFSET: 0x00B73AC0
 // FUNCTION: fn_19150
