@@ -34,6 +34,7 @@ public:
 
   virtual void SetTlvert(float x, float y);
   virtual void SetAction(unsigned animation, int motion, int repeat);
+  virtual void Slot08();
   static float __stdcall Heading(float x, float z, float targetX, float targetZ);
   void Face(float x, float z);
   float CalcDist(float x, float z) const;
@@ -85,6 +86,7 @@ public:
     unsigned char finishFrame, int timed, std::uint32_t duration, int loop
   );
   void ClearLevelEffects();
+  void PlayFrameSounds();
 
   /* 0010 */ RenderObjectState render;
 };

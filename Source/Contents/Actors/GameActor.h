@@ -76,7 +76,7 @@ public:
   /* 023C */ int unknown_023C;
   /* 0240 */ float unknown_0240;
   /* 0244 */ std::uint32_t unknown_0244;
-  /* 0248 */ unsigned char unknown_0248[0x04];
+  /* 0248 */ std::uint32_t unknown_0248;
   /* 024C */ std::uint32_t hitTargetAid;
   /* 0250 */ int unknown_0250;
   /* 0254 */ std::uint32_t routeStartTick;
@@ -89,7 +89,7 @@ public:
   /* 0280 */ std::uint32_t unknown_0280;
   /* 0284 */ std::uint32_t unknown_0284;
   /* 0288 */ int unknown_0288;
-  /* 028C */ unsigned char unknown_028C[0x04];
+  /* 028C */ int unknown_028C;
   /* 0290 */ int unknown_0290;
   /* 0294 */ int unknown_0294;
   /* 0298 */ int unknown_0298;
@@ -153,7 +153,6 @@ public:
   int Get8Dir(float angle) override;
   void SetAction(unsigned animation, int motion, int repeat) override;
 
-  virtual void Slot08() = 0;
   virtual bool Slot09(
     int layer, int index, float distanceScale, const SpriteFrameCell& cell, float x, float y, const float* position, float scale,
     float* bottomRhw, float* topRhw, const SpriteRleImage* image, SpriteQuad* quad, int* box, std::uint32_t* color, int offsetX, int offsetY,
@@ -258,6 +257,8 @@ public:
   int MountHeightOffset();
   float sub_CAD4B0();
   void ResetState();
+  void UpdateGaugePositions();
+  void UpdateHpGauge();
   void UpdateMotionFrame();
   void ProcessHitMessage(CGameObject* sender, const ActorHitInfo* info, int unused1, int unused2);
   int GetEffectCounter(int effectId);

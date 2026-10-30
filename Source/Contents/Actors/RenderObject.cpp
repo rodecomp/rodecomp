@@ -22,6 +22,7 @@
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Skills/SkillInfo.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
@@ -199,6 +200,267 @@ CRenderObject::~CRenderObject() = default;
 // FUNCTION: fn_21089
 bool CRenderObject::OnProcess() {
   return false;
+}
+
+// OFFSET: 0x00CB0500
+// FUNCTION: fn_21094
+void CRenderObject::Slot08() {
+  this->render.previousAnimation = this->render.animation + this->Get8Dir(this->render.angle);
+  g_modeMgr.GetGameMode();
+  const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.unknown_008C) / 24.0);
+  CActRes* action = this->render.action;
+  if (this->render.unknown_0070 == 0x2D) {
+    action = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\여\\아크비숍_여2.Act"));
+  }
+  if (action == nullptr) {
+    return;
+  }
+
+  if (this->render.unknown_00D8 != 0) {
+    this->render.sequenceAnimation = this->render.sequenceAnimations[this->render.sequenceIndex];
+    this->render.sequenceFrame = this->render.sequenceFrames[this->render.sequenceIndex];
+    if (this->render.sequenceFinished != 0) {
+      this->render.animation = this->render.sequenceAnimations[4];
+      this->render.previousAnimation = this->render.sequenceAnimations[4] + this->Get8Dir(this->render.angle);
+      this->render.curMotion = this->render.sequenceFrames[4];
+      if (this->render.sequenceDeadline == 0) {
+        this->render.unknown_00D8 = 0;
+        this->render.unknown_006C = 1;
+      }
+    } else {
+      this->render.animation = this->render.sequenceAnimation;
+      this->render.previousAnimation = this->render.sequenceAnimation + this->Get8Dir(this->render.angle);
+      this->render.curMotion = this->render.sequenceFrame;
+    }
+    if (this->render.sequenceTimed == 0) {
+      return;
+    }
+    if (timeGetTime() >= this->render.sequenceDeadline) {
+      this->render.unknown_00D8 = 0;
+      this->render.sequenceDeadline = 0;
+      this->render.unknown_006C = 1;
+      this->render.isMotionFinished = true;
+    }
+    if (this->render.sequenceFinished == 0 && this->render.sequenceTick % this->render.unknown_00C2 == 0) {
+      ++this->render.sequenceIndex;
+    }
+    if (this->render.sequenceIndex > this->render.sequenceLast) {
+      if (this->render.sequenceLoop != 0) {
+        ++this->render.sequenceTick;
+        this->render.sequenceIndex = 0;
+        return;
+      }
+      this->render.sequenceIndex = this->render.sequenceLast;
+      this->render.sequenceFinished = 1;
+    }
+    ++this->render.sequenceTick;
+    return;
+  }
+
+  if (this->render.unknown_00DC != 0) {
+    if (this->render.sequenceFinished != 0) {
+      this->render.animation = this->render.sequenceFinishAnimation;
+      this->render.previousAnimation = this->render.sequenceFinishAnimation + this->Get8Dir(this->render.angle);
+      this->render.curMotion = this->render.sequenceFinishFrame;
+      if (this->render.sequenceDeadline == 0) {
+        this->render.unknown_00C8 = 0;
+        this->render.unknown_006C = 1;
+      }
+    } else {
+      this->render.animation = this->render.sequenceAnimation;
+      this->render.previousAnimation = this->render.sequenceAnimation + this->Get8Dir(this->render.angle);
+      this->render.curMotion = this->render.sequenceFrame;
+    }
+    if (this->render.sequenceTimed == 0) {
+      return;
+    }
+    if (timeGetTime() >= this->render.sequenceDeadline) {
+      this->render.unknown_00C8 = 0;
+      this->render.sequenceDeadline = 0;
+      this->render.unknown_006C = 1;
+      this->render.isMotionFinished = true;
+    }
+    if (this->render.sequenceFinished == 0) {
+      if (this->render.unknown_00FCBytes[2] == 3) {
+        this->render.sequenceFrame =
+          static_cast<unsigned char>(~static_cast<int>(frame * -2.0f / this->render.speed) - this->render.sequenceLast);
+      } else {
+        this->render.sequenceFrame = static_cast<unsigned char>(static_cast<int>((frame + frame) / this->render.speed));
+      }
+    }
+    if (this->render.sequenceFrame > this->render.sequenceLast) {
+      if (this->render.unknown_00FCBytes[2] == 2) {
+        ++this->render.sequenceTick;
+        this->render.unknown_00FCBytes[2] = 3;
+        this->render.sequenceFrame = 0;
+        return;
+      }
+      this->render.unknown_00FCBytes[2] = 0;
+      this->render.sequenceFrame = this->render.sequenceLast;
+      this->render.sequenceFinished = 1;
+    }
+    ++this->render.sequenceTick;
+    return;
+  }
+
+  if (this->render.unknown_00C8 != 0) {
+    if (this->render.sequenceFinished != 0) {
+      this->render.animation = this->render.sequenceFinishAnimation;
+      this->render.previousAnimation = this->render.sequenceFinishAnimation + this->Get8Dir(this->render.angle);
+      this->render.curMotion = this->render.sequenceFinishFrame;
+      if (this->render.sequenceDeadline == 0) {
+        this->render.unknown_00C8 = 0;
+        this->render.unknown_006C = 1;
+      }
+    } else {
+      this->render.animation = this->render.sequenceAnimation;
+      this->render.previousAnimation = this->render.sequenceAnimation + this->Get8Dir(this->render.angle);
+      this->render.curMotion = this->render.sequenceFrame;
+    }
+    if (this->render.sequenceTimed == 0) {
+      return;
+    }
+    if (timeGetTime() >= this->render.sequenceDeadline) {
+      this->render.unknown_00C8 = 0;
+      this->render.sequenceDeadline = 0;
+      this->render.unknown_006C = 1;
+      this->render.isMotionFinished = true;
+    }
+    if (this->render.sequenceFinished == 0 && this->render.sequenceTick % this->render.unknown_00C2 == 0) {
+      if (this->render.sequenceLoop != 0 && this->render.sequenceFinishAnimation == 0 && this->render.sequenceFinishFrame != 0) {
+        --this->render.sequenceFrame;
+        this->render.sequenceFinishFrame = 0;
+      } else {
+        ++this->render.sequenceFrame;
+      }
+    }
+    if (this->render.sequenceFrame > this->render.sequenceLast) {
+      if (this->render.sequenceLoop == 0) {
+        this->render.sequenceFinished = 1;
+        this->render.sequenceFrame = this->render.sequenceLast;
+      } else if (this->render.sequenceFinishAnimation == 0) {
+        this->render.sequenceFinishFrame = 1;
+        ++this->render.sequenceTick;
+        this->render.sequenceFrame = this->render.sequenceIndex + 1;
+        return;
+      } else {
+        this->render.sequenceFrame = this->render.sequenceIndex;
+      }
+    }
+    ++this->render.sequenceTick;
+    return;
+  }
+
+  if (this->render.isMotionFinished || this->render.isMotionFreezed) {
+    const int last = static_cast<int>(action->FrameCount(this->render.previousAnimation)) - 1;
+    if (this->render.curMotion > last) {
+      this->render.curMotion = last;
+    }
+    return;
+  }
+
+  int count;
+  int motion;
+  float progress;
+  switch (this->render.unknown_006C) {
+    case 0:
+      this->render.curMotion =
+        static_cast<int>(frame / this->render.speed) % static_cast<int>(action->FrameCount(this->render.previousAnimation));
+      return;
+    case 1:
+      count = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+      progress = frame / this->render.speed;
+      motion = static_cast<int>(progress);
+      break;
+    case 2: {
+      if (this->render.unknown_0070 != 2) {
+        return;
+      }
+      count = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+      float elapsed = frame;
+      motion = static_cast<int>(frame / this->render.speed);
+      if (motion == 2 || motion == 3) {
+        elapsed = this->render.speed * 4.0f;
+        motion = 4;
+      }
+      progress = elapsed / this->render.speed;
+      break;
+    }
+    default:
+      return;
+  }
+
+  this->render.curMotion = motion % count;
+  progress /= static_cast<float>(count);
+  if (progress >= 1.0f) {
+    this->render.curMotion = count - 1;
+    if (progress >= this->render.unknown_0060) {
+      this->render.isMotionFinished = true;
+    }
+  }
+}
+
+// OFFSET: 0x00CB0AD0
+// FUNCTION: fn_21096
+void CRenderObject::PlayFrameSounds() {
+  int lastMotion = static_cast<int>(this->render.unknown_0044);
+  if (lastMotion != this->render.curMotion || this->render.unknown_0040 != static_cast<std::uint32_t>(this->render.animation)) {
+    if (this->render.unknown_0040 != static_cast<std::uint32_t>(this->render.animation)) {
+      this->render.unknown_0044 = 0;
+      lastMotion = 0;
+    }
+    CActRes* action = this->render.action;
+    if (lastMotion < this->render.curMotion) {
+      for (int motion = lastMotion + 1; motion <= this->render.curMotion; ++motion) {
+        const ActionFrame& actionFrame = action->Frame(this->render.previousAnimation, motion);
+        if (actionFrame.sound != -1) {
+          std::string sound = action->Sound(actionFrame.sound);
+          if (sound.find(".wav", 0) != std::string::npos) {
+            CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+            const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+            g_soundMgr->PlayWave(
+              sound.c_str(), this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+            );
+          }
+        }
+      }
+    } else if (lastMotion > this->render.curMotion) {
+      const int count = static_cast<int>(action->FrameCount(this->render.previousAnimation));
+      lastMotion = static_cast<int>(this->render.unknown_0044);
+      if (lastMotion >= count) {
+        lastMotion = count - 1;
+        this->render.unknown_0044 = static_cast<std::uint32_t>(lastMotion);
+      }
+      for (int motion = lastMotion + 1; motion < count; ++motion) {
+        const ActionFrame& actionFrame = action->Frame(this->render.previousAnimation, motion);
+        if (actionFrame.sound != -1) {
+          std::string sound = action->Sound(actionFrame.sound);
+          if (sound.find(".wav", 0) != std::string::npos) {
+            CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+            const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+            g_soundMgr->PlayWave(
+              sound.c_str(), this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+            );
+          }
+        }
+      }
+      for (int motion = 0; motion <= this->render.curMotion; ++motion) {
+        const ActionFrame& actionFrame = action->Frame(this->render.previousAnimation, motion);
+        if (actionFrame.sound != -1) {
+          std::string sound = action->Sound(actionFrame.sound);
+          if (sound.find(".wav") != std::string::npos) {
+            CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+            const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+            g_soundMgr->PlayWave(
+              sound.c_str(), this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+            );
+          }
+        }
+      }
+    }
+  }
+  this->render.unknown_0044 = static_cast<std::uint32_t>(this->render.curMotion);
+  this->render.unknown_0040 = static_cast<std::uint32_t>(this->render.animation);
 }
 
 // OFFSET: 0x00CBF920

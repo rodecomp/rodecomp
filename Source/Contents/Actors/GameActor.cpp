@@ -3,10 +3,14 @@
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Render/Renderer.h"
 #include "Resource/Sprites/ActionResource.h"
+#include "UI/Gauges/UIPcGage.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstring>
 #include <windows.h>
@@ -127,6 +131,107 @@ void CGameActor::ResetState() {
   this->unknown_03D8 = 0;
   this->unknown_03E8 = 0;
   this->unknown_03EC = 0;
+}
+
+// OFFSET: 0x00CAFF00
+// FUNCTION: fn_21091
+void CGameActor::UpdateGaugePositions() {
+  // GLOBAL: gl_24991
+  static float s_gaugeOffsetY = static_cast<float>(g_renderer->viewport.height * 81 / 480);
+
+  if (this->unknown_0264[0] != 0) {
+    if (timeGetTime() < this->unknown_0248 + 5000) {
+      UIWindow* window = reinterpret_cast<UIWindow*>(this->unknown_0264[0]);
+      int x = this->render.screenX - this->unknown_0288 / 2;
+      if (x < -3) {
+        x = -3;
+      }
+      const int maximumX = g_renderer->viewport.width - window->geometry.width + 3;
+      if (x > maximumX) {
+        x = maximumX;
+      }
+      int y = static_cast<int>(
+        static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.unknown_005C - static_cast<float>(this->unknown_028C)
+      );
+      if (y < -3) {
+        y = -3;
+      }
+      const int maximumY = g_renderer->viewport.height - window->geometry.height + 3;
+      if (y > maximumY) {
+        y = maximumY;
+      }
+      window->Move(x, y);
+    } else {
+      g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_0264[0]));
+      this->unknown_0264[0] = 0;
+    }
+  }
+
+  if (this->unknown_0264[1] != 0) {
+    reinterpret_cast<UIWindow*>(this->unknown_0264[1])->Move(
+      this->render.screenX - 70,
+      static_cast<int>(static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.unknown_005C - 17.0f)
+    );
+  }
+
+  if (this->unknown_0264[2] != 0) {
+    reinterpret_cast<UIWindow*>(this->unknown_0264[2])->Move(
+      this->render.screenX - 70,
+      static_cast<int>(static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.unknown_005C - 17.0f - 17.0f)
+    );
+  }
+
+  if (this->unknown_0264[3] != 0) {
+    if (timeGetTime() > this->unknown_0280) {
+      this->SendMsg(nullptr, 0x53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      if (this->render.unknown_0070 == 8) {
+        this->Slot15(0, 1);
+      }
+    } else {
+      reinterpret_cast<UIWindow*>(this->unknown_0264[3])->Move(
+        this->render.screenX - 30,
+        static_cast<int>(static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.unknown_005C)
+      );
+      const std::uint32_t total = this->unknown_0280 - this->unknown_0284;
+      std::uint32_t elapsed = timeGetTime() - this->unknown_0284;
+      if (elapsed > total) {
+        elapsed = total;
+      }
+      reinterpret_cast<UIRechargeGage*>(this->unknown_0264[3])->SetValues(elapsed, total);
+    }
+  }
+
+  if (this->unknown_0264[4] != 0) {
+    reinterpret_cast<UIWindow*>(this->unknown_0264[4])->Move(
+      this->render.screenX - 70,
+      static_cast<int>(static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.unknown_005C - 17.0f - 17.0f)
+    );
+  }
+}
+
+// OFFSET: 0x00CB03E0
+// FUNCTION: fn_21093
+void CGameActor::UpdateHpGauge() {
+  if (this->unknown_0300 == 0) {
+    return;
+  }
+
+  if (g_serviceOptions.Get(0xD5) && reinterpret_cast<UIPcGage*>(this->unknown_0300)->unknown_009C != 0 &&
+      !StateFlag01(this->stateFlags) && !StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags) &&
+      g_windowMgr.unknown_0508 != 2) {
+    reinterpret_cast<UIPcGage*>(this->unknown_0300)->Show(1);
+    if (this->render.unknown_0070 == 3 && reinterpret_cast<UIPcGage*>(this->unknown_0300)->current != 0) {
+      reinterpret_cast<UIPcGage*>(this->unknown_0300)->SetValues(0, reinterpret_cast<UIPcGage*>(this->unknown_0300)->maximum);
+    }
+    reinterpret_cast<UIPcGage*>(this->unknown_0300)->Move(
+      this->render.screenX - reinterpret_cast<UIPcGage*>(this->unknown_0300)->geometry.width / 2,
+      static_cast<int>(static_cast<float>(ScaleByScreenHeight(12)) * this->render.unknown_005C + static_cast<float>(this->render.screenY))
+    );
+    reinterpret_cast<UIPcGage*>(this->unknown_0300)->Invalidate();
+    return;
+  }
+
+  reinterpret_cast<UIPcGage*>(this->unknown_0300)->Show(0);
 }
 
 // OFFSET: 0x00CB0A90

@@ -99,7 +99,10 @@ struct RenderObjectState {
   /* 00F8 */ short unknown_00F8;
   /* 00FA */ unsigned char unknown_00FA;
   /* 00FB */ unsigned char unknown_00FB;
-  /* 00FC */ std::uint32_t unknown_00FC;
+  union {
+    /* 00FC */ std::uint32_t unknown_00FC;
+    /* 00FC */ unsigned char unknown_00FCBytes[4];
+  };
   /* 0100 */ unsigned char unknown_0100;
   /* 0101 */ unsigned char unknown_0101[3];
   /* 0104 */ CSprRes* sprite;

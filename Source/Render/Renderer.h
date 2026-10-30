@@ -75,6 +75,8 @@ public:
 
 extern CRenderer* g_renderer;
 
+int ScaleByScreenHeight(int value);
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CRenderer) == 0x25C);
 static_assert(offsetof(CRenderer, unknown_0049) == 0x0049);
