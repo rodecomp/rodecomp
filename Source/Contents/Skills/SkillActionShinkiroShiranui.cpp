@@ -1,5 +1,6 @@
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/RenderObject.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectActor.h"
@@ -24,6 +25,9 @@ struct ShuffledSequence {
 
 class CSkillAction_SS_REIKETSUHOU : public CSkillAction {
 public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
   void Slot12(vector3d position, int level, int argument3) override;
 };
 
@@ -381,6 +385,75 @@ public:
   int Slot01() override;
   int Slot02() override;
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_SS_SHINKIROU : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+};
+
+class CSkillAction_SS_KAGEGARI : public CSkillAction {
+public:
+  void Slot12(vector3d position, int argument2, int argument3) override;
+};
+
+class CSkillAction_SS_KAGENOMAI : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_SS_KAGEGISSEN : public CSkillAction {
+public:
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_SS_FUUMASHOUAKU : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+};
+
+class CSkillObjectAction_NPC_FUUMA : public CSkillObjectAction {
+public:
+  void Slot00(int argument, CRenderObject* object, CGameActor* source) override;
+};
+
+class CSkillAction_SS_FUUMAKOUCHIKU : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot12(vector3d position, int argument2, int argument3) override;
+};
+
+class CSkillAction_SS_KUNAIWAIKYOKU : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+};
+
+class CSkillAction_SS_KUNAIKAITEN : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_SS_KUNAIKUSSETSU : public CSkillAction {
+public:
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
+};
+
+class CSkillAction_SS_SEKIENHOU : public CSkillAction {
+public:
+  int Slot01() override;
+  int Slot02() override;
+  void Slot08(int level, CGameActor* source) override;
 };
 
 // OFFSET: 0x00792500
@@ -477,5 +550,228 @@ void CSkillAction_SS_AKUMUKESU::Slot08(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(934, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+  }
+}
+
+// OFFSET: 0x00793720
+// FUNCTION: fn_08752
+void CSkillAction_SS_AKUMUKESU::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("akumukesu"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00793880
+// FUNCTION: fn_08753
+int CSkillAction_SS_SHINKIROU::Slot01() {
+  return 55;
+}
+
+// OFFSET: 0x00793890
+// FUNCTION: fn_08754
+int CSkillAction_SS_SHINKIROU::Slot02() {
+  return 56;
+}
+
+// OFFSET: 0x007938A0
+// FUNCTION: fn_08755
+void CSkillAction_SS_SHINKIROU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(2373, level / 16);
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 1774, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+      effect->Slot14(level);
+    }
+  }
+}
+
+// OFFSET: 0x00793920
+// FUNCTION: fn_08756
+void CSkillAction_SS_KAGEGARI::Slot12(vector3d position, int argument2, int argument3) {
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kagegari"), position.x, position.y, position.z, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x00793A50
+// FUNCTION: fn_08758
+void CSkillAction_SS_KAGENOMAI::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+  }
+}
+
+// OFFSET: 0x00793A80
+// FUNCTION: fn_08759
+void CSkillAction_SS_KAGENOMAI::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kagenomai"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00793BF0
+// FUNCTION: fn_08761
+void CSkillAction_SS_KAGEGISSEN::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+  }
+}
+
+// OFFSET: 0x00793C20
+// FUNCTION: fn_08762
+void CSkillAction_SS_KAGEGISSEN::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source && target) {
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_kagegissen"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_kagegissen_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_kagegissen_moon_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_kagegissen_hit"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x007940C0
+// FUNCTION: fn_08763
+int CSkillAction_SS_FUUMASHOUAKU::Slot02() {
+  return 9;
+}
+
+// OFFSET: 0x007940D0
+// FUNCTION: fn_08764
+void CSkillAction_SS_FUUMASHOUAKU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, 986, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+  }
+}
+
+// OFFSET: 0x00794140
+// FUNCTION: fn_08765
+void CSkillObjectAction_NPC_FUUMA::Slot00(int argument, CRenderObject* object, CGameActor* source) {
+  if (object && source) {
+    g_effectMgr->Spawn(object->render.accountId, 2352, source->render.position.x, source->render.position.y, source->render.position.z,
+                       object->render.accountId, -1, 0, 0);
+  }
+}
+
+// OFFSET: 0x00794190
+// FUNCTION: fn_08766
+int CSkillAction_SS_FUUMAKOUCHIKU::Slot02() {
+  return 9;
+}
+
+// OFFSET: 0x007941A0
+// FUNCTION: fn_08767
+void CSkillAction_SS_FUUMAKOUCHIKU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, 986, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+  }
+}
+
+// OFFSET: 0x00794210
+// FUNCTION: fn_08768
+void CSkillAction_SS_FUUMAKOUCHIKU::Slot12(vector3d position, int argument2, int argument3) {
+  g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_fuumakouchiku"), position.x, position.y, position.z, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x007944C0
+// FUNCTION: fn_08770
+int CSkillAction_SS_KUNAIWAIKYOKU::Slot02() {
+  return 9;
+}
+
+// OFFSET: 0x007944D0
+// FUNCTION: fn_08771
+void CSkillAction_SS_KUNAIWAIKYOKU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, 986, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+  }
+}
+
+// OFFSET: 0x007946E0
+// FUNCTION: fn_08773
+int CSkillAction_SS_KUNAIKAITEN::Slot02() {
+  return 9;
+}
+
+// OFFSET: 0x007946F0
+// FUNCTION: fn_08774
+void CSkillAction_SS_KUNAIKAITEN::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (source) {
+    std::string names[] = {"kunaikaiten_bottom", "kunaikaiten_00", "kunaikaiten_01", "kunaikaiten_02"};
+    for (int wave = 0; wave < 4; ++wave) {
+      for (const std::string& name : names) {
+        CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(name), source->render.position.x, source->render.position.y,
+                                             source->render.position.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->Slot16(wave * 480);
+        }
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00794970
+// FUNCTION: fn_08775
+int CSkillAction_SS_KUNAIKUSSETSU::Slot02() {
+  return 56;
+}
+
+// OFFSET: 0x00794980
+// FUNCTION: fn_08776
+void CSkillAction_SS_KUNAIKUSSETSU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    g_effectMgr->Spawn(source->render.accountId, 986, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+  }
+}
+
+// OFFSET: 0x007949F0
+// FUNCTION: fn_08777
+void CSkillAction_SS_KUNAIKUSSETSU::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (target) {
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu_end"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    if (!g_serviceOptions.Get(229)) {
+      g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu_bottom"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu_bottom_end"), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00794E80
+// FUNCTION: fn_08778
+int CSkillAction_SS_SEKIENHOU::Slot01() {
+  return 55;
+}
+
+// OFFSET: 0x00794E90
+// FUNCTION: fn_08779
+int CSkillAction_SS_SEKIENHOU::Slot02() {
+  return 57;
+}
+
+// OFFSET: 0x00794EA0
+// FUNCTION: fn_08780
+void CSkillAction_SS_SEKIENHOU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(55, level / 16);
+  }
+}
+
+// OFFSET: 0x00795070
+// FUNCTION: fn_08782
+int CSkillAction_SS_REIKETSUHOU::Slot01() {
+  return 55;
+}
+
+// OFFSET: 0x00795080
+// FUNCTION: fn_08783
+int CSkillAction_SS_REIKETSUHOU::Slot02() {
+  return 57;
+}
+
+// OFFSET: 0x00795090
+// FUNCTION: fn_08784
+void CSkillAction_SS_REIKETSUHOU::Slot08(int level, CGameActor* source) {
+  if (source) {
+    static_cast<EffectActor*>(source)->LaunchEffect(54, level / 16);
   }
 }
