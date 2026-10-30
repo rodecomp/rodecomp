@@ -40,6 +40,8 @@ UITransBalloonText::UITransBalloonText(UIWindowContext& windows, BalloonTextCont
 }
 
 // OFFSET: 0x00853210
+// OFFSET: 0x00851F40
+// FUNCTION: fn_10700
 UITransBalloonText::~UITransBalloonText() = default;
 
 // OFFSET: 0x008533B0
