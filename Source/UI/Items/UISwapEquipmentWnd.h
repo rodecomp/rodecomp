@@ -23,6 +23,7 @@ class UISwapEquipmentWnd : public UIFrameWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
+  void Slot32(int x, int y) override;
   ITEM_INFO ItemAtPoint(int x, int y);
   __declspec(noinline) ITEM_INFO GetSlotItem(int slot);
   void SetSlotValue(int index, int value);

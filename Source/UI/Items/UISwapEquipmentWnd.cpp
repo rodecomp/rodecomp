@@ -66,6 +66,15 @@ void UISwapEquipmentWnd::Slot10(int x, int y, std::intptr_t value) {
   g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
 }
 
+// OFFSET: 0x008315E0
+// FUNCTION: fn_10400
+void UISwapEquipmentWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->ItemAtPoint(x, y);
+  if (item.unknown_0000[1] > 0) {
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x00831860
 // FUNCTION: fn_10402
 void UISwapEquipmentWnd::SetSlotValue(int index, int value) {
