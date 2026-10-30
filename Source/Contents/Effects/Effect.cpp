@@ -166,6 +166,12 @@ bool CEffect::ActorExists() const {
   return true;
 }
 
+// OFFSET: 0x00B4E6C0
+// FUNCTION: fn_19000
+bool CEffect::IsFinished() const {
+  return this->frame >= this->unknown_002C;
+}
+
 // OFFSET: 0x00B249A0
 // FUNCTION: fn_18773
 void EffectRetirement::Clear() {

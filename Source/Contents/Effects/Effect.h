@@ -59,6 +59,7 @@ public:
   void SetEventFrame(int kind, int frame);
   bool RetireIfInactive();
   bool ActorExists() const;
+  bool IsFinished() const;
   void UpdateVisibility();
   bool InRange();
 
