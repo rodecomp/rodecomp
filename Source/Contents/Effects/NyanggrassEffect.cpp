@@ -2,6 +2,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/World/World.h"
 #include "Render/AuxiliarySubmission.h"
@@ -52,3 +53,13 @@ void CMultiTexParticle::Render(int column, int row) {
 // FUNCTION: fn_07070
 CNyanggrassEffect::CNyanggrassEffect() : CEffect(-1), unknown_00D8(0) {
 }
+
+// OFFSET: 0x007085B0
+
+// OFFSET: 0x00708820
+// FUNCTION: fn_07074
+bool CNyanggrassEffect::Slot06() {
+  return this->ActorExists();
+}
+
+// OFFSET: 0x00708830

@@ -30,6 +30,10 @@ class CNyanggrassEffect : public CEffect {
 public:
   CNyanggrassEffect();
 
+  void Slot03() override;
+  void Close() override;
+  bool Slot06() override;
+
   /* 00CC */ std::vector<CParticle*> particles;
   /* 00D8 */ int unknown_00D8;
 };
