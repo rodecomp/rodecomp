@@ -111,3 +111,15 @@ void CWebBrowser::ShowAuxiliary(unsigned char value) {
 bool CWebBrowser::MatchesWindow(HWND window) const {
   return this->host == window || this->host == GetParent(window);
 }
+
+// OFFSET: 0x00AB26D0
+// FUNCTION: fn_17415
+int CWebBrowser::AddressBarHeight() {
+  if (this->rebar && this->auxiliaryVisible) {
+    RECT rectangle;
+    GetClientRect(this->rebar, &rectangle);
+    return rectangle.bottom - rectangle.top + 4;
+  }
+
+  return 0;
+}

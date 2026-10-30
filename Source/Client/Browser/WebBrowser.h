@@ -46,6 +46,7 @@ public:
   bool Navigate(std::string address);
   void ShowAuxiliary(unsigned char value);
   bool MatchesWindow(HWND window) const;
+  int AddressBarHeight();
 
   /* 0000 */ IWebBrowser2* browser;
   /* 0004 */ IUnknown* externalEvents;
