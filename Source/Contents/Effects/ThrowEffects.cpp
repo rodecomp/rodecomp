@@ -205,8 +205,61 @@ void CThrowItemEffect::Slot01() {
 }
 
 // OFFSET: 0x00B7D3B0
+// FUNCTION: fn_19231
+void CThrowItemEffect::InitFlameParticle(CParticle* particle) {
+  this->unknown_002C = 300;
+  this->unknown_00E0 = 1.0f;
+  this->InitTrajectory(particle);
+  particle->scale = 1.5f;
+  particle->SetColor(255, 255, 255);
+  particle->unknown_00C4 = 0;
+  particle->alpha = 255;
+  particle->unknown_00C0 = particle->unknown_0054 / 25.0f;
+  particle->unknown_00D0 = this->position[0];
+  particle->unknown_00D8 = this->position[2];
+  particle->destinationBlend = 6;
+  particle->unknown_00D4 = this->position[1] - 8.0f;
+}
 
 // OFFSET: 0x00B7D4D0
+// FUNCTION: fn_19232
+void CThrowItemEffect::InitPotionParticle(CParticle* particle, int kind) {
+  this->unknown_002C = 300;
+  this->unknown_00E0 = 30.0f;
+  this->InitTrajectory(particle);
+  particle->scale = 1.5f;
+  particle->unknown_00C4 = 0;
+  particle->alpha = 255;
+  particle->unknown_00C0 = particle->unknown_0054 / 25.0f;
+  particle->unknown_00D0 = this->position[0];
+  particle->unknown_00D8 = this->position[2];
+  particle->unknown_00D4 = this->position[1] - 8.0f;
+
+  if (kind != 6) {
+    particle->destinationBlend = 6;
+  }
+
+  switch (kind) {
+  case 1:
+    particle->SetColor(255, 135, 135);
+    break;
+  case 2:
+    particle->SetColor(255, 205, 135);
+    break;
+  case 3:
+    particle->SetColor(255, 255, 135);
+    break;
+  case 4:
+    particle->SetColor(255, 255, 255);
+    break;
+  case 5:
+    particle->SetColor(135, 135, 255);
+    break;
+  case 6:
+    particle->SetColor(255, 255, 255);
+    break;
+  }
+}
 
 // OFFSET: 0x00B7D810
 // FUNCTION: fn_19233
@@ -345,6 +398,30 @@ void CThrowItemEffect::Slot04() {
 }
 
 // OFFSET: 0x00B7E700
+// FUNCTION: fn_19238
+void CThrowItemEffect::InitTrajectory(CParticle* particle) {
+  const float deltaX = this->sourcePosition[0] - this->position[0];
+  const float deltaZ = this->sourcePosition[2] - this->position[2];
+  this->unknown_00DC = this->sourcePosition[1] - this->position[1];
+
+  const unsigned short heading = static_cast<unsigned short>(static_cast<int>(DirectionAngle(deltaX, deltaZ)));
+  unsigned short offset = 0;
+  if (this->id == 981) {
+    offset = static_cast<unsigned short>(static_cast<short>(360 / this->unknown_00D4) * static_cast<short>(particle->unknown_0010));
+  }
+
+  particle->unknown_004C = static_cast<short>(heading + offset) % 360;
+
+  const float distance = SquareRoot(deltaZ * deltaZ + deltaX * deltaX);
+  particle->unknown_0054 = distance;
+
+  for (int step = 0; step < 100; ++step) {
+    if (static_cast<float>(step) * particle->unknown_00C0 > distance) {
+      this->unknown_00CC = step;
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00B7EA40
 // FUNCTION: fn_19240
