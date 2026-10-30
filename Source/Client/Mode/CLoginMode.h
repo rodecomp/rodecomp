@@ -19,6 +19,8 @@ struct LoginErrorPacket;
 struct LoginErrorDetailPacket;
 struct CharacterPagePacket;
 struct RefuseLoginPacket;
+struct NotifyZoneServerPacket;
+struct NotifyZoneServer2Packet;
 
 #pragma pack(push, 1)
 struct CharacterInfo {
@@ -104,6 +106,9 @@ public:
   void ReceiveBillingInfo(const unsigned char* packet);
   void ReceiveNotifyBan(const unsigned char* packet);
   void SubD9E170(int);
+  void ConnectZoneServer(std::uint32_t gid, std::string mapName, std::uint32_t ip, int port, std::string host);
+  void ReceiveNotifyZoneServer(const NotifyZoneServerPacket* packet);
+  void ReceiveNotifyZoneServer2(const NotifyZoneServer2Packet* packet);
 };
 
 extern bool g_loginModeFlag;

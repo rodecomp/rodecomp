@@ -15,6 +15,7 @@
 #include "Security/NProtectGameGuardMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
@@ -1085,4 +1086,68 @@ int CLoginMode::Run() {
 
   FadeOutMode(*g_renderer, *GetRenderSystemHolder()->system, ResourceMgr::Instance(), 0, false, 0.0f, 0.0f);
   return 1;
+}
+
+#pragma pack(push, 1)
+struct NotifyZoneServerPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t gid;
+  /* 0006 */ unsigned char mapName[16];
+  /* 0016 */ std::uint32_t ip;
+  /* 001A */ std::int16_t port;
+};
+
+struct NotifyZoneServer2Packet {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t gid;
+  /* 0006 */ unsigned char mapName[16];
+  /* 0016 */ std::uint32_t ip;
+  /* 001A */ std::int16_t port;
+  /* 001C */ char host[128];
+};
+#pragma pack(pop)
+
+// GLOBAL: gl_25028
+char g_zoneServerIp[16];
+
+// GLOBAL: gl_25079
+int g_zoneServerPort;
+
+// GLOBAL: gl_25080
+char g_zoneServerHost[129];
+
+// OFFSET: 0x00D929A0
+// FUNCTION: fn_22290
+void CLoginMode::ConnectZoneServer(std::uint32_t gid, std::string mapName, std::uint32_t ip, int port, std::string host) {
+  g_session.m_gid = gid;
+  static_cast<CMode*>(g_charViewMode)->SendMsg(10009, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0);
+  if (g_windowMgr.window_03D4) {
+    g_windowMgr.Schedule(g_windowMgr.window_03D4);
+  }
+
+  std::string name = mapName;
+  name.resize(name.size() - 4);
+  g_session.SetNavigationPlayerMap(name.c_str());
+
+  in_addr address;
+  address.s_addr = ip;
+  strcpy(g_zoneServerIp, inet_ntoa(address));
+  g_zoneServerPort = port;
+  memcpy_s(g_zoneServerHost, sizeof(g_zoneServerHost), host.c_str(), std::min<std::size_t>(host.size() + 1, sizeof(g_zoneServerHost)));
+
+  GetRagConnection().Close();
+  this->pendingCursorType = 12;
+}
+
+// OFFSET: 0x00D90740
+// FUNCTION: fn_22285
+void CLoginMode::ReceiveNotifyZoneServer(const NotifyZoneServerPacket* packet) {
+  this->ConnectZoneServer(packet->gid, std::string(std::begin(packet->mapName), std::end(packet->mapName)).c_str(), packet->ip, packet->port, std::string());
+}
+
+// OFFSET: 0x00D971E0
+// FUNCTION: fn_22299
+void CLoginMode::ReceiveNotifyZoneServer2(const NotifyZoneServer2Packet* packet) {
+  std::string host(std::begin(packet->host), std::end(packet->host));
+  this->ConnectZoneServer(packet->gid, std::string(std::begin(packet->mapName), std::end(packet->mapName)).c_str(), packet->ip, packet->port, host.c_str());
 }

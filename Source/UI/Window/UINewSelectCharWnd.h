@@ -13,6 +13,7 @@ class UIStaticText;
 class CUIControl;
 
 extern void* g_charViewMode;
+extern char g_selectedSlotIndex;
 
 struct CharSlotInfo {
   CharSlotInfo();
