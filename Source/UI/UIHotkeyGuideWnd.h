@@ -13,6 +13,9 @@ struct HotkeyGuideEntry {
   /* 0000 */ int id;
   /* 0004 */ int firstKey;
   /* 0008 */ int secondKey;
+
+  HotkeyGuideEntry(int id, int firstKey, int secondKey) : id(id), firstKey(firstKey), secondKey(secondKey) {
+  }
 };
 
 struct HotkeyGuideKey {
@@ -33,6 +36,9 @@ struct HotkeyGuideLabel {
   /* 0018 */ HotkeyGuideKey key;
   /* 0028 */ HotkeyGuideKey altKey;
 
+  // INLINED
+  HotkeyGuideLabel() {
+  }
   HotkeyGuideLabel(std::string text, HotkeyGuideKey key, HotkeyGuideKey altKey);
   ~HotkeyGuideLabel();
 };
@@ -40,7 +46,9 @@ struct HotkeyGuideLabel {
 class UIHotkeyGuideWnd : public UIFrameWnd {
 public:
   UIHotkeyGuideWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  void Slot15(int width, int height) override;
   void Slot19() override;
+  void Paint() override;
 
   void DrawKey(const HotkeyGuideKey* key);
   void DrawKeyLabel(std::string text, const HotkeyGuideKey* key);
