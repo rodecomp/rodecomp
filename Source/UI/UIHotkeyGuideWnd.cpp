@@ -10,6 +10,7 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 
 // OFFSET: 0x009663D0
@@ -279,6 +280,25 @@ void UIHotkeyGuideWnd::Slot19() {
     this->m_current = 4698;
     this->Invalidate();
   }
+}
+
+// OFFSET: 0x0096C260
+// FUNCTION: fn_13167
+int UIHotkeyGuideWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    if (a == 342) {
+      UIWindow* window = this->m_frameContext->windows.EnsureWindow(156);
+      if (window) {
+        window->SendMsg(this, 22, 1, 0, 0, 0);
+      }
+    }
+
+    if (a == 201 || a == 342) {
+      this->m_frameContext->windows.CloseWindow(303);
+    }
+  }
+
+  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
 
 // OFFSET: 0x0096C5A0
