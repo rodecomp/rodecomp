@@ -1608,3 +1608,12 @@ bool CSevereRainStorm::Slot06() {
 }
 
 // OFFSET: 0x00727C70
+// FUNCTION: fn_07426
+void CSevereRainStorm::Slot04() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
+    EZ2STREmitter* emitter = *it;
+    if (emitter) {
+      AsParticle(emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    }
+  }
+}
