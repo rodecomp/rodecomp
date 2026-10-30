@@ -24,6 +24,7 @@ public:
   };
 
   void Slot19() override;
+  void Slot32(int x, int y) override;
 
   /* 00F0 */ std::vector<lcData> logs;
   /* 00FC */ int unknown_00FC;
