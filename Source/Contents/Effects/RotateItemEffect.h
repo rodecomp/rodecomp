@@ -12,8 +12,11 @@ class CRotateItemEffect : public CEffect {
 public:
   CRotateItemEffect();
 
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
+  void Close() override;
+  bool Slot06() override;
 
   /* 00CC */ int alpha;
   /* 00D0 */ float angle;

@@ -4,6 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectMemoryMgr.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -13,6 +14,16 @@
 // OFFSET: 0x00B73840
 // FUNCTION: fn_19146
 CRotateItemEffect::CRotateItemEffect() : CEffect(-1), alpha(0), angle(0) {
+}
+
+// OFFSET: 0x00B739B0
+
+// OFFSET: 0x00B739F0
+
+// OFFSET: 0x00B73AC0
+// FUNCTION: fn_19150
+bool CRotateItemEffect::Slot06() {
+  return !this->IsFinished();
 }
 
 // OFFSET: 0x00B73AD0
