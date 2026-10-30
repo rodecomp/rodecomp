@@ -27,11 +27,17 @@ public:
   void SendShopRequest();
   void AddActionButton();
   void SetSuspended(unsigned char suspend);
+  int CommitPrice(int next);
+  void PrintBuyList();
   void Slot32(int x, int y) override;
 
   /* 00BC */ unsigned char unknown_00BC[0x10];
   /* 00CC */ UIEditCtrl* unknown_00CC;
-  /* 00D0 */ unsigned char unknown_00D0[0x58];
+  /* 00D0 */ unsigned char unknown_00D0[0x8];
+  /* 00D8 */ int editIndex;
+  /* 00DC */ unsigned char unknown_00DC[0x4];
+  /* 00E0 */ UIEditCtrl* priceEdits[13];
+  /* 0114 */ UIEditCtrl* quantityEdits[5];
   /* 0128 */ UIEditCtrl* unknown_0128;
   /* 012C */ int unknown_012C;
   /* 0130 */ int mode;
@@ -61,6 +67,9 @@ protected:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(UIMerchantShopMakeWnd, unknown_00CC) == 0xCC);
+static_assert(offsetof(UIMerchantShopMakeWnd, editIndex) == 0xD8);
+static_assert(offsetof(UIMerchantShopMakeWnd, priceEdits) == 0xE0);
+static_assert(offsetof(UIMerchantShopMakeWnd, unknown_0128) == 0x128);
 static_assert(offsetof(UIMerchantShopMakeWnd, items) == 0x148);
 static_assert(offsetof(UIMerchantShopMakeWnd, saved) == 0x150);
 static_assert(offsetof(UIMerchantShopMakeWnd, unknown_018C) == 0x18C);

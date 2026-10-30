@@ -71,9 +71,14 @@
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/PriceCommission.h"
+#include "UI/Shop/PriceColor.h"
+#include "UI/Window/WindowDialogs.h"
+#include "Utility/Text/GroupedInteger.h"
 
 #include <algorithm>
 #include <cstdint>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <list>
@@ -2123,6 +2128,95 @@ void UIMerchantItemShopWnd::StartTimer(std::uint32_t value) {
 void UIItemStoreFindWnd::SetSearchText(std::string text) {
   this->searchText = text;
 }
+
+// OFFSET: 0x00971490
+// FUNCTION: fn_13263
+int UIMerchantShopMakeWnd::CommitPrice(int next) {
+  if (this->editIndex == -1 || g_session.unknown_5C00[1] == 0) {
+    this->editIndex = next;
+    return 1;
+  }
+
+  UIEditCtrl* edit = this->priceEdits[this->editIndex];
+  WindowDialogs& dialogs = reinterpret_cast<WindowDialogs&>(g_windowMgr);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  char text[24];
+  std::sprintf(text, "%s ", edit->Text());
+  if (!g_session.IsNumberWithCommas(text)) {
+    dialogs.Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
+    edit->SetText("0");
+    focus.Set(edit);
+    edit->SelectAll();
+    return 0;
+  }
+
+  std::int64_t price = _atoi64(text);
+  if (price <= 0x7FFFFFFF && price < 0) {
+    price = 0;
+  } else if (price > 0x7FFFFFFF || price > 1000000000) {
+    if (dialogs.Confirm(LookupMessage(2467), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+      edit->SetText("0");
+      focus.Set(edit);
+      edit->SelectAll();
+      return 0;
+    }
+
+    price = 1000000000;
+    edit->SetText(_itoa(1000000000, text, 10));
+    this->Invalidate();
+  }
+
+  if (price >= std::atoi(LookupMessage(2476))) {
+    ITEM_INFO item = g_session.GetItem1768At(this->editIndex);
+    char name[128];
+    int capacity = 128;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.Name(item, name, capacity, 0);
+    std::string message = FormatOwnedString(LookupMessage(2473), name);
+
+    const int high = static_cast<int>(price / std::atoi(LookupMessage(2474)));
+    if (high > 0) {
+      message += FormatOwnedString(LookupMessage(2475), high);
+    }
+
+    const int low = static_cast<int>(price % std::atoi(LookupMessage(2474))) / std::atoi(LookupMessage(2476));
+    if (low > 0) {
+      message += FormatOwnedString(LookupMessage(2477), low);
+    }
+
+    message += std::string(LookupMessage(2478));
+    if (dialogs.Confirm(message.c_str(), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+      edit->SetText("0");
+      focus.Set(edit);
+      edit->SelectAll();
+      return 0;
+    }
+  }
+
+  const PriceColors colors = PriceColor(price);
+  edit->TextColor(colors.primary, colors.secondary);
+  FormatGroupedInteger(price, text, sizeof(text));
+  edit->SetText(text);
+
+  this->editIndex = next;
+  if (next == -1) {
+    focus.Set(nullptr);
+    return 1;
+  }
+
+  this->priceEdits[next]->TextColor(0, 0xFFFFFFFF);
+  focus.Set(this->priceEdits[next]);
+  this->priceEdits[next]->SelectAll();
+  return 1;
+}
+
+// OFFSET: 0x009719C0
+
+// OFFSET: 0x00972100
+
+// OFFSET: 0x00972120
+
+// OFFSET: 0x009721F0
 
 // OFFSET: 0x009722A0
 // FUNCTION: fn_13269
