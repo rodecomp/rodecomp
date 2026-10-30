@@ -122,6 +122,11 @@ public:
   void ReceiveBillingInfo(const unsigned char* packet);
   void ReceiveActorMessage32(const unsigned char* packet);
   void ReceiveStatusNotice(const unsigned char* packet);
+  void ReceivePartyBookingRegisterResult(const unsigned char* packet);
+  void ReceivePartyBookingSearchResult(const unsigned char* packet);
+  void ReceivePartyBookingDelete(const unsigned char* packet);
+  void ReceivePartyBookingInsert(const unsigned char* packet);
+  void ReceivePartyBookingUpdate(const unsigned char* packet);
   void ReceiveWindow181Message(const unsigned char* packet);
   void ReceiveNamedResultNotice(const unsigned char* packet);
   void ReceiveResultNotice0118(const unsigned char* packet);

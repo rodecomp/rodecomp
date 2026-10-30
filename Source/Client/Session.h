@@ -4,6 +4,7 @@
 #include "Contents/InstantVar.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Messenger/MessengerMember.h"
+#include "Contents/Party/PartyBookingMgr.h"
 #include "Contents/Skills/PlayerSkillBundle.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Resource/XmlNode.h"
@@ -297,7 +298,9 @@ public:
   /* 59D0 */ int unknown_59D0;
   /* 59D4 */ int unknown_59D4;
   /* 59D8 */ LuaScript* m_hotkeyScript;
-  /* 59DC */ unsigned char unknown_59DC[0x1E4];
+  /* 59DC */ unsigned char unknown_59DC[0x19C];
+  /* 5B78 */ PartyBookingMgr m_partyBooking;
+  /* 5BBC */ unsigned char unknown_5BBC[0x04];
   /* 5BC0 */ int unknown_5BC0;
   /* 5BC4 */ unsigned char unknown_5BC4[0x2C];
   /* 5BF0 */ std::uint32_t unknown_5BF0;
@@ -833,6 +836,7 @@ static_assert(offsetof(CSession, m_imfNames) == 0xF84);
 static_assert(offsetof(CSession, m_fogParameters) == 0x5230);
 static_assert(offsetof(CSession, m_normalItemSlots) == 0x6AC);
 static_assert(offsetof(CSession, unknown_5468) == 0x5468);
+static_assert(offsetof(CSession, m_partyBooking) == 0x5B78);
 static_assert(offsetof(CSession, unknown_61A4) == 0x61A4);
 static_assert(offsetof(CSession, unknown_6B68) == 0x6B68);
 static_assert(offsetof(CSession, unknown_7F94) == 0x7F94);

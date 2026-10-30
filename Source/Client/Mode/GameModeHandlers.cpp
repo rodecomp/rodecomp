@@ -112,6 +112,74 @@ int g_pendingGid;
 // GLOBAL: gl_24929
 unsigned char g_toggleNoticeState;
 
+// OFFSET: 0x00D3B690
+// FUNCTION: fn_21781
+void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
+  switch (*reinterpret_cast<const std::int16_t*>(packet + 2)) {
+  case 2:
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1828), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 3:
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1829), 0, true, false, 0, "Message", 280, 120, 0);
+    [[fallthrough]];
+  case 0:
+  case 1:
+    g_windowMgr.CloseWindow(164);
+    break;
+  }
+}
+
+// OFFSET: 0x00D3B7F0
+// FUNCTION: fn_21783
+void CGameMode::ReceivePartyBookingSearchResult(const unsigned char* packet) {
+  const int size = *reinterpret_cast<const std::int16_t*>(packet + 2) - 5;
+  const int count = size / sizeof(PARTY_BOOKING_AD_INFO);
+  PARTY_BOOKING_AD_INFO* infos = new PARTY_BOOKING_AD_INFO[count];
+  std::memcpy(infos, packet + 5, size);
+  g_session.m_partyBooking.m_filterEnabled = true;
+  UIWindow* window = g_windowMgr.LookupWindow(169);
+  if (!window) {
+    return;
+  }
+
+  if (size == 0) {
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1827), 0, true, false, 0, "Message", 280, 120, 0);
+    g_session.m_partyBooking.m_lastPage = false;
+    window->Invalidate();
+    return;
+  }
+
+  g_session.m_partyBooking.AddEntries(infos, count, packet[4]);
+  window->Invalidate();
+}
+
+// OFFSET: 0x00D3B8D0
+// FUNCTION: fn_21784
+void CGameMode::ReceivePartyBookingDelete(const unsigned char* packet) {
+  g_session.m_partyBooking.Remove(*reinterpret_cast<const int*>(packet + 2));
+  if (UIWindow* window = g_windowMgr.LookupWindow(169)) {
+    window->Invalidate();
+  }
+}
+
+// OFFSET: 0x00D3B910
+// FUNCTION: fn_21785
+void CGameMode::ReceivePartyBookingInsert(const unsigned char* packet) {
+  g_session.m_partyBooking.OnAdvertisement(*reinterpret_cast<const PARTY_BOOKING_AD_INFO*>(packet + 2));
+  if (UIWindow* window = g_windowMgr.LookupWindow(169)) {
+    window->Invalidate();
+  }
+}
+
+// OFFSET: 0x00D3B960
+// FUNCTION: fn_21786
+void CGameMode::ReceivePartyBookingUpdate(const unsigned char* packet) {
+  g_session.m_partyBooking.SetJobs(*reinterpret_cast<const int*>(packet + 2), reinterpret_cast<const short*>(packet + 6));
+  if (UIWindow* window = g_windowMgr.LookupWindow(169)) {
+    window->Invalidate();
+  }
+}
+
 // OFFSET: 0x00D3B9A0
 // FUNCTION: fn_21787
 void CGameMode::ReceiveToggleNotice(const unsigned char* packet) {
