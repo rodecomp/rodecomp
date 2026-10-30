@@ -2139,6 +2139,20 @@ int UIListBox_NaviSearch::SendMsg(
 }
 
 // OFFSET: 0x005C7C70
+// FUNCTION: fn_03625
+int UINavigationRuideWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intptr_t, std::intptr_t, std::intptr_t) {
+  if (message == 6) {
+    if (a == 201) {
+      this->m_frameContext->windows.CloseWindow(314);
+    }
+  } else if (message != 60) {
+    return 0;
+  }
+
+  this->RefreshRoute();
+  this->Invalidate();
+  return 0;
+}
 
 // OFFSET: 0x005C8F70
 
