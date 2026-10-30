@@ -268,6 +268,8 @@ public:
   void ClearItemLists(const unsigned char* packet);
   void RefreshItemListWindow(unsigned char listType, bool partial);
   void sub_CEB8E0();
+  void Slot7(int value) override;
+  void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

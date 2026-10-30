@@ -2,11 +2,15 @@
 #include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
+#include "Contents/Actors/GameActor.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/World/World.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Render/Renderer.h"
+#include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
@@ -273,4 +277,63 @@ void CGameMode::sub_CEB8E0() {
     replay.cipherKey,
   };
   recorder.Record(static_cast<std::uint16_t>(record.length), &record, 0x2A, 0);
+}
+
+// OFFSET: 0x00CDD350
+// FUNCTION: fn_21316
+void CGameMode::PlaceWindowAtActor(UIWindow* window, CGameActor* actor) {
+  const int width = window->geometry.width;
+  const int height = window->geometry.height;
+  const bool raised = g_serviceOptions.Get(0x5C) != 0;
+  int offsetX = 0;
+  int offsetY = 0;
+  switch (actor->render.unknown_00A8 != 0 ? raised : 0) {
+  case 0:
+    offsetX = -(width / 2);
+    offsetY = static_cast<int>(static_cast<float>(g_renderer->viewport.height * 20 / 480) * actor->render.unknown_005C);
+    break;
+  case 1:
+    offsetX = -(width / 2);
+    offsetY = static_cast<int>(static_cast<float>(g_renderer->viewport.height * -100 / 480) * actor->render.unknown_005C);
+    break;
+  case 2:
+    offsetX = static_cast<int>(
+      static_cast<float>(g_renderer->viewport.width * -30 / 640) * actor->render.unknown_005C - static_cast<float>(width / 2)
+    );
+    offsetY = static_cast<int>(
+      static_cast<float>(g_renderer->viewport.height * -25 / 480) * actor->render.unknown_005C - static_cast<float>(height / 2)
+    );
+    break;
+  case 3:
+    offsetX = static_cast<int>(
+      static_cast<float>(g_renderer->viewport.width * 30 / 640) * actor->render.unknown_005C - static_cast<float>(width / 2)
+    );
+    offsetY = static_cast<int>(
+      static_cast<float>(g_renderer->viewport.height * -25 / 480) * actor->render.unknown_005C - static_cast<float>(height / 2)
+    );
+    break;
+  }
+
+  int x = actor->render.screenX + offsetX;
+  int y = actor->render.screenY + offsetY;
+  if (x < -3) {
+    x = -3;
+  }
+  const int maximumX = g_renderer->viewport.width - window->geometry.width + 3;
+  if (maximumX < x) {
+    x = maximumX;
+  }
+  if (y < -3) {
+    y = -3;
+  }
+  const int maximumY = g_renderer->viewport.height - window->geometry.height + 3;
+  if (maximumY < y) {
+    y = maximumY;
+  }
+  window->Move(x, y);
+}
+
+// OFFSET: 0x00CDD790
+// FUNCTION: fn_21318
+void CGameMode::Slot7(int value) {
 }
