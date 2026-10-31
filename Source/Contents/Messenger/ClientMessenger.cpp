@@ -3708,10 +3708,14 @@ int __stdcall sub_6A9910(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 1;
-  int valuePosition = 1;
-  int indexPosition = -1;
-  int keyPosition = -1;
+  int count;
+  int valuePosition;
+  int indexPosition;
+  int keyPosition;
+  keyPosition = -1;
+  indexPosition = -1;
+  valuePosition = 1;
+  count = 1;
   g_equipmentPropertiesMgr->ApplyProperty("SplashAttack", state, count, valuePosition, indexPosition, keyPosition);
   return 0;
 }
