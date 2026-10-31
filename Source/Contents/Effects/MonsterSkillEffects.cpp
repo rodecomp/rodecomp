@@ -4445,6 +4445,7 @@ void CGravityControlEffect::Close() {
 }
 
 // OFFSET: 0x007182E0
+// FUNCTION: fn_07291
 void CGravityControlEffect::Slot03() {
   CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
   if (!actor) {
