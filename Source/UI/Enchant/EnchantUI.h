@@ -60,6 +60,7 @@ public:
   /* 00E8 */ CUIGameItem* itemIcon;
   /* 00EC */ CUIStaticText* name;
 
+  void Slot15(int width, int height) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void SetFrozen(bool frozen) override;
@@ -71,6 +72,7 @@ public:
   /* 00EC */ CUIStaticImage* unknown_00EC;
   /* 00F0 */ CUIStaticText* unknown_00F0;
 
+  void Slot15(int width, int height) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void SetSelected(bool selected) override;
@@ -167,6 +169,7 @@ public:
 
   void Slot54(CUIEnchantItem* item, const CEnchantItemData& data) override;
   void Slot55() override;
+  bool Slot56() override;
 };
 
 class CUIMainPage : public CUIControl {

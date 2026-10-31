@@ -124,6 +124,39 @@ CUITabButton::CUITabButton(UIWindowContext& context)
 // OFFSET: 0x009F74E0
 
 namespace EnchantUI {
+// OFFSET: 0x009F9CE0
+// FUNCTION: fn_14816
+void CUIEnchantItem::Slot15(int width, int height) {
+  this->itemIcon = new CUIGameItem(*this->m_context);
+  this->itemIcon->SetMode(0);
+  this->itemIcon->SetScale(100);
+  this->itemIcon->Move(2, 3);
+  this->itemIcon->unknown_0084 = 1;
+  this->itemIcon->unknown_0085 = 1;
+  this->AddChild(this->itemIcon);
+
+  this->name = new CUIStaticText(*this->m_context);
+  this->name->SetSize(101, 12);
+  this->name->Move(28, 9);
+  this->name->SetText("", 0);
+  this->name->SetFitText(1);
+  this->name->SetAlign(0, 6);
+  {
+    const std::uint8_t fontSource[] = {0xC8, 0xEC, 0x87, 0x64, 0xD8, 0x7F};
+    // GLOBAL: gl_25222
+    thread_local EncryptedName<sizeof(fontSource), 0x39FF7FB50DEB998FULL> fontName(fontSource);
+    const std::string font(fontName.Text());
+    this->name->SetFont(font);
+  }
+  this->name->SetFontHeight(12);
+  this->name->SetBold(1);
+  this->name->SetColor(0xC89682);
+  this->name->SetShadow(0, 0xFFFFFF);
+  this->name->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->name);
+}
+
+// OFFSET: 0x00A00880
 
 // OFFSET: 0x009F9880
 // FUNCTION: fn_14809
@@ -964,4 +997,6 @@ bool CUIUpgradeRandom::Slot56() {
   this->SetCost(*reinterpret_cast<const EnchantPerfectInfo*>(&base->second));
   return true;
 }
+
+// OFFSET: 0x00A07440
 }
