@@ -1269,7 +1269,7 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   switch (message) {
   case 6:
     if (argument1 == 201) {
-      reinterpret_cast<void(__thiscall*)(UIWindowMgr*, int)>(0x00A8CF20)(&g_windowMgr, 270);
+      g_windowMgr.CloseWindow(270);
       this->Invalidate();
       return 0;
     }
