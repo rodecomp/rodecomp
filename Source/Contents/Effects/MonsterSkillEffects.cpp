@@ -18,6 +18,10 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
 #include "Contents/Effects/EffectTypes.h"
+#include "Contents/Effects/EZ2STREffectEx.h"
+#include "Resource/World/TerrainResource.h"
+#include "Script/LuaScript.h"
+#include "Utility/Text/StringUtil.h"
 #include <windows.h>
 #include <cstdlib>
 #include <cstring>
@@ -1021,10 +1025,117 @@ bool CFootprintEffect::Slot33() {
   return actor->EffectVisible();
 }
 
+// OFFSET: 0x00712410
+// FUNCTION: fn_07239
+void CFootprintEffect::Slot01() {
+  char* leftFile = nullptr;
+  char* rightFile = nullptr;
+  g_luaScript->Call("GetFootprintPngFile", "d>ss", this->unknown_00C4, &leftFile, &rightFile);
+  if (!leftFile || std::strlen(leftFile) == 0 || !rightFile || std::strlen(rightFile) == 0) {
+    return;
+  }
+
+  this->unknown_00D4 = leftFile;
+  this->unknown_00EC = rightFile;
+
+  double scale = 5.0;
+  g_luaScript->Call("GetFootprintPngScale", "d>l", this->unknown_00C4, &scale);
+  *reinterpret_cast<float*>(&this->unknown_0048) = static_cast<float>(scale);
+
+  int alpha = 250;
+  g_luaScript->Call("GetFootprintPngAplha", "d>d", this->unknown_00C4, &alpha);
+  *reinterpret_cast<int*>(this->unknown_0054) = alpha;
+
+  int duration = 10;
+  g_luaScript->Call("GetFootprintPngDuration", "d>d", this->unknown_00C4, &duration);
+  this->unknown_002C = duration;
+
+  g_luaScript->Call("GetFootprintStride", "d>l", this->unknown_00C4, &this->stepDistance);
+  this->unknown_0120 = 0.0f;
+}
+
 // OFFSET: 0x007127A0
 // FUNCTION: fn_07240
 bool CFootprintEffect::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x007127B0
+// FUNCTION: fn_07241
+CParticle* CFootprintEffect::SpawnFootprint() {
+  const std::string& texture = this->unknown_0110 ? this->unknown_00D4 : this->unknown_00EC;
+  if (texture.size() == 0) {
+    return nullptr;
+  }
+
+  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+  if (!particle) {
+    return particle;
+  }
+
+  particle->alpha = *reinterpret_cast<int*>(this->unknown_0054);
+  particle->life = static_cast<float>(this->unknown_002C);
+  particle->sourceBlend = 5;
+  particle->destinationBlend = 6;
+  particle->unknown_00C0 = static_cast<float>(*reinterpret_cast<int*>(this->unknown_0054)) / static_cast<float>(this->unknown_002C * 60);
+  particle->SetTexture(texture);
+  InitParticleQuad(particle->vertices);
+
+  const float angle =
+    ScreenAngle(&this->lastPosition.x, this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values) + 90.0f;
+  const float scale = *reinterpret_cast<float*>(&this->unknown_0048);
+  matrix world;
+  world.SetScale(scale, scale, 0.0f);
+  world.AppendXRotation(1.5707964f);
+  world.AppendYRotation((angle + static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw) / 180.0f * 3.141592f);
+  world.AppendTranslate(this->position);
+
+  for (int i = 0; i < 4; ++i) {
+    RenderVertex& vertex = particle->vertices[i];
+    const float x = vertex.x * world.values[0] + vertex.y * world.values[3] + 0.0f * world.values[6] + world.values[9];
+    const float z = vertex.x * world.values[2] + vertex.y * world.values[5] + 0.0f * world.values[8] + world.values[11];
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    float y = mode->scene->terrain->Grid().PlaneHeight(x, z) - 2.0f;
+    if (this->unknown_0120 != -1000.0f && y - this->unknown_0120 > 5.0f) {
+      y = this->unknown_0120;
+    }
+    this->unknown_0120 = y;
+    vertex.x = x;
+    vertex.y = y;
+    vertex.z = z;
+  }
+
+  this->unknown_0110 = this->unknown_0110 == 0;
+  this->lastPosition.x = this->position[0];
+  this->lastPosition.y = this->position[1];
+  this->lastPosition.z = this->position[2];
+  return particle;
+}
+
+// OFFSET: 0x00712A90
+// FUNCTION: fn_07242
+void CFootprintEffect::Slot03() {
+  const float dx = this->position[0] - this->lastPosition.x;
+  const float dy = this->position[1] - this->lastPosition.y;
+  const float dz = this->position[2] - this->lastPosition.z;
+  if (static_cast<double>(dx * dx + dy * dy + dz * dz) > this->stepDistance) {
+    CParticle* particle = this->SpawnFootprint();
+    if (particle) {
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    }
+  }
+
+  for (auto it = this->emitters.begin(); it != this->emitters.end();) {
+    CParticle* particle = AsParticle(*it);
+    if (particle->life == 0.0f || particle->life * 60.0f > static_cast<float>(particle->unknown_00E8)) {
+      particle->alpha = static_cast<int>(std::max(0.0f, static_cast<float>(particle->alpha) - particle->unknown_00C0));
+      ++particle->unknown_00E8;
+      ++it;
+    } else {
+      FreeParticle(particle);
+      it = this->emitters.erase(it);
+    }
+  }
 }
 
 // OFFSET: 0x00712C50
@@ -1071,10 +1182,133 @@ bool CFootprintStrEffect::Slot33() {
   return actor->EffectVisible();
 }
 
+// OFFSET: 0x007133C0
+// FUNCTION: fn_07249
+void CFootprintStrEffect::Slot01() {
+  char* leftFile = nullptr;
+  char* rightFile = nullptr;
+  g_luaScript->Call("GetFootprintStrFileBottom", "d>ss", this->unknown_00C4, &leftFile, &rightFile);
+  if (!IsNullOrEmpty(leftFile) && !IsNullOrEmpty(rightFile)) {
+    this->unknown_00DC = leftFile;
+    this->unknown_00F4 = rightFile;
+  }
+
+  g_luaScript->Call("GetFootprintStrFileTop", "d>ss", this->unknown_00C4, &leftFile, &rightFile);
+  if (!IsNullOrEmpty(leftFile) && !IsNullOrEmpty(rightFile)) {
+    this->unknown_010C = leftFile;
+    this->unknown_0124 = rightFile;
+  }
+
+  if (this->unknown_00DC.size() == 0 && this->unknown_00F4.size() == 0 && this->unknown_010C.size() == 0 &&
+      this->unknown_0124.size() == 0) {
+    return;
+  }
+
+  g_luaScript->Call("GetFootprintStrScale", "d>ll", this->unknown_00C4, &this->unknown_0140, &this->unknown_0148);
+  g_luaScript->Call("GetFootprintStrTopHeight", "d>l", this->unknown_00C4, &this->unknown_0150);
+  g_luaScript->Call("GetFootprintStride", "d>l", this->unknown_00C4, &this->unknown_0158);
+  g_luaScript->Call("GetFootprintStrGap", "d>l", this->unknown_00C4, &this->unknown_0160);
+  g_luaScript->Call("IsFootprintStrAdjustAngle", "d>b", this->unknown_00C4, &this->unknown_0168);
+}
+
 // OFFSET: 0x00713830
 // FUNCTION: fn_07250
 bool CFootprintStrEffect::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x00713960
+// FUNCTION: fn_07251
+void CFootprintStrEffect::SpawnFootprint() {
+  vector3d direction;
+  direction.x = this->position[0] - this->unknown_016C.x;
+  direction.y = 0.0f;
+  direction.z = this->position[2] - this->unknown_016C.z;
+  const float inverse = 1.0f / SquareRoot(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
+  direction.x = inverse * direction.x;
+  direction.y = inverse * direction.y;
+  direction.z = inverse * direction.z;
+
+  matrix rotation;
+  rotation.MakeYRotation(1.5707964f);
+  const float side = static_cast<float>((this->unknown_0169 != 0) * 2 - 1);
+  const float gap = static_cast<float>(this->unknown_0160);
+  vector3d point;
+  point.x =
+    (direction.x * rotation.values[0] + direction.y * rotation.values[3] + direction.z * rotation.values[6] + rotation.values[9]) * gap * side +
+    this->position[0];
+  point.z =
+    (direction.x * rotation.values[2] + direction.y * rotation.values[5] + direction.z * rotation.values[8] + rotation.values[11]) * gap * side +
+    this->position[2];
+  point.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Grid().Height(point.x, point.z);
+  vector3d spawn = point;
+
+  const std::string& bottom = this->unknown_0169 ? this->unknown_00DC : this->unknown_00F4;
+  if (bottom.size() != 0) {
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&spawn, 5));
+    if (particle) {
+      float angle;
+      if (this->unknown_0168) {
+        angle = ScreenAngle(&this->unknown_016C.x, &spawn.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values) + 90.0f;
+      } else {
+        angle = 0.0f;
+      }
+      particle->Open(bottom);
+      particle->m_scale = static_cast<float>(this->unknown_0140);
+      particle->m_angle = angle;
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    }
+  }
+
+  const std::string& top = this->unknown_0169 ? this->unknown_010C : this->unknown_0124;
+  if (top.size() != 0) {
+    spawn.x = point.x + 0.0f;
+    spawn.y = point.y + static_cast<float>(-this->unknown_0150);
+    spawn.z = point.z + 0.0f;
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&spawn, 5));
+    if (particle) {
+      particle->Open(top);
+      particle->depthOffset = 0.000035f;
+      particle->m_scale = static_cast<float>(this->unknown_0148);
+      this->unknown_00D4.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+    }
+  }
+
+  this->unknown_0169 = this->unknown_0169 == 0;
+  this->unknown_016C.x = this->position[0];
+  this->unknown_016C.y = this->position[1];
+  this->unknown_016C.z = this->position[2];
+}
+
+// OFFSET: 0x00713E00
+// FUNCTION: fn_07252
+void CFootprintStrEffect::Slot03() {
+  const float dx = this->position[0] - this->unknown_016C.x;
+  const float dy = this->position[1] - this->unknown_016C.y;
+  const float dz = this->position[2] - this->unknown_016C.z;
+  if (static_cast<double>(dx * dx + dy * dy + dz * dz) > this->unknown_0158) {
+    this->SpawnFootprint();
+  }
+
+  for (auto it = this->emitters.begin(); it != this->emitters.end();) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (particle->Process(0.0f, 0.0f, 0.0f)) {
+      ++it;
+    } else {
+      FreeParticle(particle);
+      it = this->emitters.erase(it);
+    }
+  }
+
+  for (auto it = this->unknown_00D4.begin(); it != this->unknown_00D4.end();) {
+    CEZ2STRParticle* particle = AsParticle(*it);
+    if (particle->Process(0.0f, 0.0f, 0.0f)) {
+      ++it;
+    } else {
+      FreeParticle(particle);
+      it = this->unknown_00D4.erase(it);
+    }
+  }
 }
 
 // OFFSET: 0x00713F70

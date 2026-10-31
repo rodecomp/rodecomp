@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+class CParticle;
+
 class CCrimsonArrowEffect : public CEffect {
 public:
   CCrimsonArrowEffect();
@@ -201,10 +203,13 @@ public:
 class CFootprintEffect : public CEffect {
 public:
   CFootprintEffect();
+  void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   bool Slot33() override;
   void Close() override;
+  CParticle* SpawnFootprint();
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::string unknown_00D4;
@@ -221,10 +226,13 @@ public:
 class CFootprintStrEffect : public CEffect {
 public:
   CFootprintStrEffect();
+  void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   bool Slot33() override;
   void Close() override;
+  void SpawnFootprint();
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;
