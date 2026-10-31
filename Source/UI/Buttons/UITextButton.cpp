@@ -3155,9 +3155,35 @@ void UIMonsterGage::Paint() {
 // OFFSET: 0x0088D6C0
 
 // OFFSET: 0x00890DC0
+// FUNCTION: fn_11438
+void UIImgMenu::Slot31(int x, int y) {
+  this->hovered = this->ItemAt(x, y);
+  if (this->hovered != -1 && !this->unknown_0094[this->hovered]) {
+    if (UIWindow* target = g_windowMgr.LookupWindow(this->unknown_00C8)) {
+      target->SendMsg(nullptr, 48, this->hovered, this->geometry.id, 0, 0);
+    }
+    reinterpret_cast<void(__thiscall*)(UIWindowMgr*, int)>(0x00A8CF20)(&g_windowMgr, 0x7A);
+  }
+}
 
 #include "Contents/Items/ItemInfo.h"
 
 // OFFSET: 0x00890EE0
+// FUNCTION: fn_11441
+void UIString::Slot31(int, int) {
+  if (!this->unknown_0084.empty()) {
+    UIWindow* window = g_windowMgr.EnsureWindow(201);
+    window->SendMsg(nullptr, 62, reinterpret_cast<std::intptr_t>(this->unknown_0084.c_str()), 1, 0, 0);
+    UIWindow* frame = g_windowMgr.LookupWindow(10008);
+    UIWindow* parent = this->parent;
+    window->Move(
+      frame->geometry.x + (parent->geometry.x + 100 + this->geometry.x), frame->geometry.y + (parent->geometry.y - 60 + this->geometry.y)
+    );
+  } else if (!this->unknown_00AC.empty()) {
+    ITEM_INFO item;
+    item.itemId = this->unknown_00AC;
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x0088F6C0
