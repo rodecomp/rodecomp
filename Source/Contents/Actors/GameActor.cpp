@@ -22,7 +22,7 @@
 #include "UI/Gauges/UIPcGage.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
-
+#include "Contents/Effects/RagEffect.h"
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
@@ -584,17 +584,21 @@ void CGameActor::UpdateStateEffects() {
     return;
   }
 
-  timeGetTime();
+  const DWORD now = timeGetTime();
   if (StateFlag00(this->stateFlags) && static_cast<unsigned>(this->unknown_02D8) >= static_cast<unsigned>(EffectLifetime(22))) {
     this->unknown_02D8 = 0;
-    this->LaunchEffect(22, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    return;
+    CRagEffect* effect = this->LaunchEffect(22, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (effect) {
+      effect->SendMsg(nullptr, 44, 0, static_cast<std::int64_t>((static_cast<std::uint64_t>(now) >> 4) % 10 + 1), 0, 0, 0, 0);
+    }
   }
 
   if (StateFlag13(this->stateFlags) && static_cast<unsigned>(this->unknown_02D8) >= static_cast<unsigned>(EffectLifetime(33))) {
     this->unknown_02D8 = 0;
-    this->LaunchEffect(33, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    return;
+    CRagEffect* effect = this->LaunchEffect(33, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (effect) {
+      effect->SendMsg(nullptr, 44, 0, static_cast<std::int64_t>((static_cast<std::uint64_t>(now) >> 4) % 10 + 1), 0, 0, 0, 0);
+    }
   }
 
   ++this->unknown_02D8;
