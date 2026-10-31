@@ -13,8 +13,12 @@
 #include <windows.h>
 
 // OFFSET: 0x0096D300
+// FUNCTION: fn_13194
+UICandidateWnd::UICandidateWnd(UIWindowContext& windowContext, UIFrameContext& frameContext) : UIFrameWnd(windowContext, frameContext, 0) {}
 
 // OFFSET: 0x0096D370
+// FUNCTION: fn_13195
+UICompositionWnd::UICompositionWnd(UIWindowContext& windowContext, UIFrameContext& frameContext) : UIFrameWnd(windowContext, frameContext, 0) {}
 
 // OFFSET: 0x0096D3F0
 // FUNCTION: fn_13196
