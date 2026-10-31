@@ -264,5 +264,37 @@ void CUIRecommendedQuestInfo::SetQuest(unsigned int questId) {
 namespace RecommendedQuestInfo {
 
 // OFFSET: 0x00A58E80
+// FUNCTION: fn_16352
+void CUIScrollWindow::SetQuest(unsigned int questId) {
+  for (CUIQuestInfo* info : this->questInfos) {
+    info->textViewer->Clear();
+  }
+
+  const auto found = g_renewQuestMgr->m_recommendedQuests.find(questId);
+  if (found != g_renewQuestMgr->m_recommendedQuests.end()) {
+    const RenewQuestRecommendedInfo& quest = found->second;
+    this->background->SetImage("유저인터페이스\\renew_questui\\" + quest.unknown_00B4);
+
+    for (std::size_t i = 0; i < std::min<std::size_t>(this->questInfos.size(), 3); ++i) {
+      for (std::string line : quest.m_descriptions[i]) {
+        this->questInfos[i]->textViewer->AddLine(line);
+      }
+    }
+
+    if (quest.unknown_007C.size() == 0) {
+      this->npcSprite->Show(0);
+    } else {
+      this->npcSprite->SetSprite(75, 145, quest.unknown_007C);
+      if (quest.unknown_0094.size() != 0) {
+        this->npcSprite->SetDestination(quest.unknown_0094, quest.unknown_00AC, quest.unknown_00B0);
+      }
+      this->npcSprite->Move(this->geometry.width - this->npcSprite->geometry.width - 40, this->geometry.height - this->npcSprite->geometry.height - 10);
+      this->npcSprite->Show(1);
+    }
+  } else {
+    std::string text = std::format("Not found Quest Info = %lu", questId);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+  }
+}
 
 }
