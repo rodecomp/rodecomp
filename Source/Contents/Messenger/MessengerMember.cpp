@@ -1217,6 +1217,599 @@ void UIMessengerGroupWnd::UpdateGauges() {
 }
 
 // OFFSET: 0x0073D980
+// FUNCTION: fn_07718
+int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 0x22: {
+      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      if (!gameMode || this->mode == 0) {
+        return 0;
+      }
+      int index = 0;
+      for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index) {
+        if (it->valid && !it->offline && it->accountId == static_cast<std::uint32_t>(b)) {
+          CRenderObject* actor;
+          if (it->accountId == g_session.m_aid) {
+            actor = gameMode->scene->player;
+            c = g_session.unknown_5568;
+            d = g_session.unknown_556C;
+          } else {
+            actor = gameMode->scene->GetGameActorByAID(it->accountId);
+          }
+          if (actor) {
+            this->gauges[index]->SetValues(c, d);
+          }
+          this->UpdateGauges();
+          this->Invalidate();
+          return 1;
+        }
+      }
+      return 0;
+    }
+    case 0xC9:
+      g_windowMgr.CloseWindow(0x45);
+      return 0;
+    case 0xCA:
+      this->iconIndex = 1;
+      this->iconModeButtons[1]->Enable(1);
+      this->iconModeButtons[0]->Enable(0);
+      this->SendMsg(sender, 0xE, 7, 0xF3, 0xB3, 0);
+      return 0;
+    case 0xD7: {
+      UIWindow* clicked = sender;
+      if (b) {
+        clicked = this->tabs[b - 1];
+      }
+      const int previous = this->mode;
+      for (int index = 0; index < 2; ++index) {
+        this->tabs[index]->Invalidate();
+        if (clicked == this->tabs[index]) {
+          this->mode = index;
+          this->tabs[index]->SendMsg(this, 0xD, 1, 0, 0, 0);
+        } else {
+          this->tabs[index]->SendMsg(this, 0xD, 0, 0, 0, 0);
+        }
+      }
+      int secondTip;
+      int firstTip;
+      if (this->mode == 0) {
+        secondTip = 0x15F;
+        firstTip = 0x163;
+      } else {
+        secondTip = 0x61;
+        firstTip = 0x65;
+      }
+      static_cast<UIButton*>(this->buttons[3])->SetTooltip(LookupMessage(firstTip));
+      static_cast<UIButton*>(this->buttons[4])->SetTooltip(LookupMessage(secondTip));
+      if (this->mode != previous) {
+        this->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+      }
+      this->SendMsg(nullptr, 0xE, 7, this->geometry.width, this->geometry.height, 0);
+      return 0;
+    }
+    case 0xE7:
+      if (!g_messengerGroupCollapsed && this->selected != -1) {
+        MessengerMember member = this->MemberAtIndex(this->selected);
+      }
+      return 0;
+    case 0xE8:
+      if (!g_messengerGroupCollapsed && this->selected != -1) {
+        MessengerMember member = this->MemberAtIndex(this->selected);
+        if (member.valid && !(member.name == g_session.DecodePlayerName())) {
+          const char* tag;
+          if (g_windowMgr.IsFriend(member.name.c_str())) {
+            tag = LookupMessage(0x66);
+          } else {
+            tag = g_session.IsGuildMemberCharacter(member.characterId) ? "GuildMember" : nullptr;
+          }
+          g_windowMgr.SendNotice(
+            14, reinterpret_cast<std::intptr_t>(member.name.c_str()), reinterpret_cast<std::intptr_t>(tag),
+            reinterpret_cast<std::intptr_t>(ShortcutFilename(member.characterId).c_str()), 0, 0
+          );
+        }
+      }
+      return 0;
+    case 0xE9:
+      if (!g_messengerGroupCollapsed && this->selected != -1) {
+        MessengerMember member = this->MemberAtIndex(this->selected);
+        if (member.valid) {
+          reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0xBF), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+        }
+      }
+      return 0;
+    case 0xEA:
+      if (!g_messengerGroupCollapsed) {
+        if (g_windowMgr.unknown_042C) {
+          g_windowMgr.CloseWindow(0xD0);
+        }
+        if (this->mode == 0) {
+          if (!g_windowMgr.CloseWindow(0x44)) {
+            g_windowMgr.EnsureWindow(0x44);
+          }
+        } else if (!g_windowMgr.CloseWindow(0x35) && ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount() && this->mode == 1) {
+          g_windowMgr.EnsureWindow(0x35);
+        }
+
+        UIWindow* window;
+        if (this->mode == 0) {
+          g_windowMgr.CloseWindow(0x35);
+          window = g_windowMgr.unknown_033C;
+        } else {
+          g_windowMgr.CloseWindow(0x44);
+          window = g_windowMgr.unknown_030C;
+        }
+        if (window) {
+          int x = 0;
+          int y = 0;
+          this->ToScreen(x, y);
+          window->Move(x + 2 + this->geometry.width, y);
+        }
+      }
+      return 0;
+    case 0xEB:
+      if (!g_messengerGroupCollapsed && this->selected != -1) {
+        MessengerMember member = this->MemberAtIndex(this->selected);
+        if (member.valid) {
+          if (this->mode == 0) {
+            if (reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0x164), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+              g_modeMgr.gameMode->SendMsg(0xB0, member.accountId, member.characterId, 0, 0);
+            }
+          } else if (!(member.name == g_session.DecodePlayerName())) {
+            if (reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0x16B), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+              g_modeMgr.gameMode->SendMsg(0x3E, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
+            }
+          }
+        }
+      }
+      return 0;
+    case 0xEC:
+      if (!g_messengerGroupCollapsed && this->selected != -1) {
+        MessengerMember member = this->MemberAtIndex(this->selected);
+        if (member.valid && member.name == g_session.DecodePlayerName()) {
+          if (reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0x165), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+            g_modeMgr.gameMode->SendMsg(0x3D, 0, 0, 0, 0);
+          }
+        }
+      }
+      return 0;
+    case 0x16C:
+      if (g_messengerGroupCollapsed != true) {
+        g_windowMgr.RearrangeMiniPartyWindows();
+      }
+      return 0;
+    case 0x179:
+      if (sender == this->buttons[5]) {
+        g_messengerGroupCollapsed = false;
+        this->buttons[6]->Move(sender->geometry.x, sender->geometry.y);
+      } else if (sender == this->buttons[6]) {
+        g_messengerGroupCollapsed = true;
+        this->buttons[5]->Move(sender->geometry.x, sender->geometry.y);
+      } else {
+        return 0;
+      }
+      sender->Move(-100, -100);
+      return 0;
+    case 0x1BD:
+      if (!g_messengerGroupCollapsed) {
+        if (g_windowMgr.unknown_033C) {
+          g_windowMgr.CloseWindow(0x44);
+        }
+        if (!g_windowMgr.CloseWindow(0x35) && !ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount()) {
+          if (this->mode != 1) {
+            return 0;
+          }
+          g_windowMgr.EnsureWindow(0xCF);
+        }
+        if (this->mode == 1) {
+          if (UIWindow* window = g_windowMgr.unknown_030C) {
+            int x = 0;
+            int y = 0;
+            this->ToScreen(x, y);
+            window->Move(x + 2 + this->geometry.width, y);
+          }
+        }
+      }
+      return 0;
+    case 0x1BE:
+      if (!g_messengerGroupCollapsed) {
+        if (reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0x165), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+          g_modeMgr.gameMode->SendMsg(0x3D, 0, 0, 0, 0);
+          if (g_windowMgr.unknown_042C) {
+            g_windowMgr.CloseWindow(0xD0);
+          }
+        }
+      }
+      return 0;
+    case 0x1BF:
+      if (!g_messengerGroupCollapsed) {
+        if (g_windowMgr.unknown_033C) {
+          g_windowMgr.CloseWindow(0x44);
+        }
+        if (g_windowMgr.unknown_030C) {
+          g_windowMgr.CloseWindow(0x35);
+        }
+        if (!g_windowMgr.CloseWindow(0xD0)) {
+          if (g_session.unknown_5464) {
+            g_windowMgr.EnsureWindow(0xD0);
+          } else {
+            reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0x816), 4, true, false, 0, "Message", 0x118, 0x78, 0);
+          }
+        }
+        if (this->mode == 1) {
+          if (UIWindow* window = g_windowMgr.unknown_042C) {
+            int x = 0;
+            int y = 0;
+            this->ToScreen(x, y);
+            window->Move(x + 2 + this->geometry.width, y);
+          }
+        }
+      }
+      return 0;
+    case 0x20B:
+      this->iconIndex = 0;
+      this->iconModeButtons[1]->Enable(0);
+      this->iconModeButtons[0]->Enable(1);
+      this->SendMsg(sender, 0xE, 7, 0x111, 0x146, 0);
+      return 0;
+    case 0x220:
+      if (!g_windowMgr.CloseWindow(0x144)) {
+        g_windowMgr.EnsureWindow(0x144);
+      }
+      return 0;
+    }
+    return 0;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->scrollTop;
+    if (message == 9) {
+      this->scrollTop = previous - this->visibleRows + 1;
+    } else if (message == 10) {
+      this->scrollTop = this->visibleRows - 1 + previous;
+    } else {
+      this->scrollTop = a + previous;
+    }
+    if (previous != this->scrollTop) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return this->scrollTop - previous;
+  }
+  case 0xE:
+    if (a == 7) {
+      int width = static_cast<int>(b);
+      int height = static_cast<int>(c);
+      if (this->iconIndex == 0) {
+        width = 0x111;
+        height = std::max(height, 0x146);
+      } else if (this->iconIndex == 1) {
+        width = 0xF3;
+        if (height < 0xB3) {
+          height = 0xB3;
+        }
+      }
+      this->rowHeight = this->mode ? this->iconPositions[this->iconIndex].size : 23;
+      int body = height - 58;
+      if (body / this->rowHeight > 12) {
+        body = this->rowHeight * 12;
+        height = body + 58;
+      }
+      height -= body % this->rowHeight;
+      if (width != this->geometry.width || height != this->geometry.height) {
+        this->scrollTop = 0;
+        this->Resize(width, height);
+      }
+      this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 58);
+      if (this->mode) {
+        this->visibleRows = this->scrollBar->geometry.height / this->rowHeight;
+      } else {
+        this->visibleRows = (this->geometry.height - 180) / this->rowHeight + 5;
+      }
+      this->closeButton->Move(this->geometry.width - 14, 3);
+      this->scrollBar->Move(this->geometry.width - 15, 17);
+      this->resizeButton->Move(this->geometry.width - 15, this->geometry.height - 15);
+      this->iconModeButtons[0]->Move(this->geometry.width - 28, 3);
+      this->iconModeButtons[1]->Move(this->geometry.width - 28, 3);
+      if (this->iconIndex == 0) {
+        this->iconModeButtons[0]->Enable(1);
+        this->iconModeButtons[1]->Enable(0);
+      } else {
+        this->iconModeButtons[1]->Enable(1);
+        this->iconModeButtons[0]->Enable(0);
+      }
+      UIWindow** tab = this->tabs;
+      for (int x = 4; x < 124; x += 60, ++tab) {
+        (*tab)->Move(x, this->geometry.height - 16);
+      }
+      this->LayoutButtons();
+      switch (g_serviceType) {
+      case 10:
+      case 12:
+      case 15:
+      case 18:
+        this->visibleRows = this->scrollBar->geometry.height / this->rowHeight;
+        break;
+      }
+
+      char title[64];
+      memset(title, 0, sizeof(title));
+      const char* titles[2] = {LookupMessage(0x66), LookupMessage(0x67)};
+      if (this->mode == 1) {
+        if (g_session.unknown_54C4.size()) {
+          sprintf(title, "%s(%s)", titles[1], g_session.unknown_54C4.c_str());
+        } else {
+          sprintf(title, "%s", titles[1]);
+        }
+      } else {
+        sprintf(title, "%s(%d/%d)", titles[this->mode], this->members.size(), 40);
+      }
+      this->titleText->Resize(this->geometry.width - 57, 12);
+      this->titleText->SetTextFitted(title);
+      this->titleText->Move(16, 3);
+      this->UpdateScroll();
+      UIWindow* window = g_windowMgr.unknown_030C;
+      if (this->mode == 0) {
+        window = g_windowMgr.unknown_033C;
+      }
+      if (window) {
+        int x = 0;
+        int y = 0;
+        this->ToScreen(x, y);
+        window->Move(x + 2 + this->geometry.width, y);
+      }
+      this->m_frameContext->snapping.Store(this);
+    }
+    return 0;
+  case 0x17: {
+    this->members.clear();
+    for (int index = 0; index < 40; ++index) {
+      this->gauges[index]->Move(-100, -100);
+    }
+    if (this->mode == 0) {
+      const int count = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.FriendCount();
+      for (int index = 0; index < count; ++index) {
+        MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.FriendAt(index);
+        if (member.valid) {
+          this->members.push_back(member);
+        }
+      }
+      this->rowHeight = 23;
+    } else if (this->mode == 1) {
+      const int count = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount();
+      for (int index = 0; index < count; ++index) {
+        MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyAt(index);
+        if (member.valid) {
+          this->members.push_back(member);
+        }
+        this->rowHeight = this->iconPositions[this->iconIndex].size;
+      }
+    }
+
+    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (gameMode && this->mode != 0) {
+      int index = 0;
+      for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index) {
+        if (it->valid && !it->offline) {
+          if (it->accountId == g_session.m_aid) {
+            if (gameMode->scene->player) {
+              this->gauges[index]->SetValues(g_session.unknown_5568, g_session.unknown_556C);
+            }
+          } else if (CRenderObject* actor = gameMode->scene->GetGameActorByAID(it->accountId)) {
+            UIPcGage* gauge = static_cast<UIPcGage*>(static_cast<CPc*>(static_cast<CGameActor*>(actor))->unknown_0490);
+            int current;
+            int maximum;
+            if (gauge) {
+              current = gauge->current;
+              maximum = gauge->maximum;
+            } else {
+              current = 0;
+              maximum = 0;
+            }
+            this->gauges[index]->SetValues(current, maximum);
+          }
+          this->jobIcons[index]->unknown_0120 = 0;
+        } else {
+          this->jobIcons[index]->unknown_0120 = 1;
+        }
+
+        char path[256];
+        memset(path, 0, sizeof(path));
+        bool dead = false;
+        if (it->dead == 1) {
+          dead = true;
+        } else if (g_session.m_aid == it->accountId) {
+          dead = gameMode->unknown_0250 == 1;
+        }
+        std::string prefix = "유저인터페이스\\renewalparty\\";
+        sprintf(path, dead ? "%sicon_jobs_%d_die.bmp" : "%sicon_jobs_%d.bmp", prefix.c_str(), it->job);
+        this->jobIcons[index]->SetBitmap(path, 0, 0);
+        this->jobIcons[index]->SetBitmap(path, 1, 0);
+        this->jobIcons[index]->SetBitmap(path, 2, 0);
+        this->jobIcons[index]->Invalidate();
+      }
+    }
+
+    this->UpdateScroll();
+    this->Invalidate();
+    char title[64];
+    const char* titles[2] = {LookupMessage(0x66), LookupMessage(0x67)};
+    if (this->mode == 1) {
+      if (g_session.unknown_54C4.size()) {
+        sprintf(title, "%s(%s)", titles[1], g_session.unknown_54C4.c_str());
+      } else {
+        sprintf(title, "%s", titles[1]);
+      }
+    } else {
+      sprintf(title, "%s(%d/%d)", titles[this->mode], this->members.size(), 40);
+    }
+    this->titleText->SetTextFitted(title);
+    if (g_windowMgr.modal) {
+      g_windowMgr.modal->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    }
+
+    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[0]);
+    int tooltip;
+    if (this->mode == 0) {
+      button->SetDisabled(1);
+      button->Invalidate();
+      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 0, 0);
+      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 1, 0);
+      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 2, 0);
+      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 3, 0);
+      tooltip = 0x62;
+    } else {
+      button->SetDisabled(0);
+      button->Invalidate();
+      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01.bmp", 0, 0);
+      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_a.bmp", 1, 0);
+      button->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_b.bmp", 2, 0);
+      tooltip = 0xDBA;
+    }
+    button->SetTooltip(LookupMessage(tooltip));
+    this->LayoutButtons();
+    return 0;
+  }
+  case 0x22:
+    this->saved = reinterpret_cast<MessengerGroupWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+    this->iconIndex = this->saved->unknown_0018;
+    this->SendMsg(nullptr, 0xE, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 0x30: {
+    if (this->menuItems.begin() == this->menuItems.end()) {
+      return 0;
+    }
+    MessengerMember member = this->MemberAtIndex(this->selected);
+    if (member.name.find(g_messengerNamelessTag, 0) != std::string::npos) {
+      reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0xBE1), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      return 0;
+    }
+    if (!member.valid) {
+      return 0;
+    }
+    switch (this->menuItems[a].value) {
+    case 0:
+    case 0x13:
+      this->SendMsg(nullptr, 6, 0xEB, 0, 0, 0);
+      return 0;
+    case 3:
+      this->SendMsg(nullptr, 6, 0xE9, 0, 0, 0);
+      return 0;
+    case 5:
+      if (this->selected != -1) {
+        MessengerMember target = this->MemberAtIndex(this->selected);
+        if (target.valid) {
+          g_modeMgr.gameMode->SendMsg(0x3B, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
+        }
+      }
+      return 0;
+    case 6:
+      this->SendMsg(nullptr, 6, 0xE7, 0, 0, 0);
+      return 0;
+    case 7:
+      this->SendMsg(nullptr, 6, 0xE8, 0, 0, 0);
+      return 0;
+    case 9:
+      this->SendMsg(nullptr, 6, 0xEC, 0, 0, 0);
+      return 0;
+    case 0x14:
+      this->SendMsg(nullptr, 0x47, 0, 0, 0, 0);
+      return 0;
+    case 0x2B:
+      if (this->selected != -1) {
+        MessengerMember target = this->MemberAtIndex(this->selected);
+        if (target.valid && !target.offline) {
+          if (reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(0x5FD), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+            g_modeMgr.gameMode->SendMsg(0x104, target.accountId, 0, 0, 0);
+          }
+        } else {
+          g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x5FE)), 0xFF, 3, 0, 0);
+        }
+      }
+      return 0;
+    case 0x3A: {
+      MessengerMember target = this->MemberAtIndex(this->selected);
+      if (target.valid) {
+        g_modeMgr.gameMode->SendMsg(0x10C, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
+      }
+      return 0;
+    }
+    case 0x3C: {
+      MessengerMember target = this->MemberAtIndex(this->selected);
+      if (target.valid && g_session.FindRecord0734(target.accountId).unknown_0000 != 1) {
+        this->OpenMiniPartyWnd(g_windowMgr.FindMiniPartyCell(), target);
+      }
+      return 0;
+    }
+    case 0x3D: {
+      MessengerMember target = this->MemberAtIndex(this->selected);
+      if (target.valid) {
+        g_windowMgr.sub_A8C4B0(target.accountId);
+      }
+      return 0;
+    }
+    }
+    return 0;
+  }
+  case 0x31:
+    this->menuItems.clear();
+    if (g_windowMgr.unknown_0210) {
+      g_windowMgr.CloseWindow(0x12);
+    }
+    if (this->selected != -1) {
+      if (this->mode == 0) {
+        this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x168)).c_str(), 7));
+        this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0xAF8)).c_str(), 0x3A));
+        this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x15F)).c_str(), 0x13));
+        MessengerMember member = this->MemberAtIndex(this->selected);
+        if (member.valid && !member.offline && g_session.unknown_5464
+            && !ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByName(member.name.c_str()).valid) {
+          char text[200];
+          sprintf(text, LookupMessage(0x532), member.name.c_str());
+          this->menuItems.push_back(MiniPartyInfoEntry(text, 5));
+        }
+      } else {
+        MessengerMember member = this->MemberAtIndex(this->selected);
+        if (member.valid) {
+          this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0xAF8)).c_str(), 0x3A));
+          if (member.name == g_session.DecodePlayerName()) {
+            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x60)).c_str(), 9));
+          } else {
+            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x168)).c_str(), 7));
+            if (g_session.unknown_5464) {
+              this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x61)).c_str(), 0));
+              this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0x5FC)).c_str(), 0x2B));
+            }
+          }
+          if (!member.offline) {
+            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0xC1D)).c_str(), 0x3C));
+            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(0xC1E)).c_str(), 0x3D));
+          }
+        }
+      }
+    }
+    if (this->menuItems.size()) {
+      UIWindow* menu = g_windowMgr.EnsureWindow(0x12);
+      for (unsigned index = 0; index < this->menuItems.size(); ++index) {
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(this->menuItems[index].text.c_str()), 0, 0, 0);
+      }
+      menu->SendMsg(nullptr, 0x53, 0x22, 0, 0, 0);
+      menu->SendMsg(nullptr, 0x1E, 0, 0, 0, 0);
+      menu->Move(
+        std::min(std::max(g_screenWidth + 1, 1), g_renderer->viewport.width - menu->geometry.width),
+        std::min(std::max(g_screenHeight + 1, 1), g_renderer->viewport.height - menu->geometry.height)
+      );
+    }
+    return 0;
+  }
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+}
 
 // OFFSET: 0x0089CFD0
 // FUNCTION: fn_11596
