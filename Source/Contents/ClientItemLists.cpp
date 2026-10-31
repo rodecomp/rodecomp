@@ -15,6 +15,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowOrdering.h"
+#include "Utility/Text/FormatString.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -1183,6 +1184,47 @@ bool CSession::EquipUnknown17F0(const ITEM_INFO& item, const char* name) {
   }
   g_equipmentPropertiesMgr->EquipWearable(&item, *name == '\0');
   reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+  return true;
+}
+
+// OFFSET: 0x00DFC9B0
+// FUNCTION: fn_23599
+bool CSession::OnItemEquipped(ITEM_INFO& item) {
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s %s", item.DisplayName(0).c_str(), LookupMessage(0xAA)).c_str()), 0xC8FF00, 7, 0, 0);
+  if (item.unknown_0064 == 1) {
+    item.unknown_0064 = 2;
+  }
+
+  if (g_session.IsCostumeLocation(item.unknown_0000[3])) {
+    char name[1] = "";
+    g_session.EquipItem2B50(item, name);
+  } else {
+    const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+    const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
+
+    for (int index = 0; index < 3; ++index) {
+      const int slot = order[index];
+      if (slot != -1 && slot < 10) {
+        ITEM_INFO& equipped = this->unknown_17F0[slot];
+        equipped = item;
+        equipped.quantity = 1;
+      }
+    }
+
+    RequestBasicInfoRefresh();
+    if (g_equipmentPropertiesMgr == nullptr) {
+      g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+    }
+    g_equipmentPropertiesMgr->EquipWearable(&item, true);
+    reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+  }
+
+  if (item.unknown_0000[3] != 0x8000) {
+    reinterpret_cast<ClientItemLists*>(this)->RemoveItem1710(item.unknown_0000[1], 1);
+  }
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_022C)) {
+    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
   return true;
 }
 
