@@ -3179,6 +3179,7 @@ quit:
 }
 
 // OFFSET: 0x008BE200
+// FUNCTION: fn_11804
 int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == 6) {
     if (a == 185) {
