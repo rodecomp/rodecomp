@@ -165,6 +165,7 @@ public:
 
 class CHalluPC2 : public CPc {
 public:
+  CHalluPC2(CPc* source);
   ~CHalluPC2() override;
   bool OnProcess() override;
   void SendMsg(
@@ -172,7 +173,7 @@ public:
   ) override;
   void Render(int argument) override;
 
-  /* 0510 */ int unknown_0510;
+  /* 0510 */ CPc* unknown_0510;
   /* 0514 */ int unknown_0514;
 };
 

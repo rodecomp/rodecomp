@@ -3,8 +3,10 @@
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/EffectActors.h"
 #include "Contents/Actors/GndRiser.h"
+#include "Contents/Actors/MercenaryAI.h"
 #include "Contents/Actors/Npc.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/Effects/MsgEffect.h"
 #include "Contents/MapSkyMgr.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Client/Mode/ModeMgr.h"
@@ -27,6 +29,27 @@
 #include <cstdlib>
 #include <windows.h>
 #include <timeapi.h>
+
+// GLOBAL: gl_24786
+int g_groundMarkEnabled;
+
+// GLOBAL: gl_25141
+std::uint32_t g_groundMarkAid;
+
+// GLOBAL: gl_25142
+std::uint32_t g_groundMarkAltAid;
+
+// GLOBAL: gl_25143
+std::uint32_t g_groundMarkAltEnabled;
+
+static bool CallSlot14(CGameActor* actor) {
+  union {
+    void (CGameActor::*asVoid)();
+    bool (CGameActor::*asBool)();
+  } slot14;
+  slot14.asVoid = &CGameActor::Slot14;
+  return (actor->*slot14.asBool)();
+}
 
 // OFFSET: 0x00DA1190
 // FUNCTION: fn_22354
@@ -918,3 +941,52 @@ void CNpc::UpdateBubblePositions() {
 
   this->UpdateHpGauge();
 }
+
+// OFFSET: 0x00DA1470
+// FUNCTION: fn_22357
+CHalluPC2::CHalluPC2(CPc* source) {
+  this->unknown_0510 = source;
+  this->render.visible = 1;
+  this->render.unknown_00A4Bytes[0] = 0;
+  this->render.unknown_008C = timeGetTime();
+  this->SetUnknown0260(source->unknown_0260);
+  this->SetActorJob(source->GetEffectiveJob(-1));
+  this->SetUnknown0404(source->GetUnknown0404());
+  this->Slot47(source->unknown_02CC);
+  this->SetUnknown03C4(source->Slot55());
+  this->render.position = source->render.position;
+  this->render.unknown_005C = source->render.unknown_005C;
+  this->render.unknown_0078 = source->render.unknown_0078;
+  this->render.scale = source->render.scale;
+  this->render.animation = source->render.animation;
+  this->render.previousAnimation = source->render.previousAnimation;
+  this->render.curMotion = source->render.curMotion;
+  this->SetActionName(ResourceMgr::Instance(), source->GetActName());
+  this->render.unknown_00A2 = source->render.unknown_00A2;
+  this->render.unknown_0080 = source->render.unknown_0080;
+  this->render.isLieOnGround = source->render.isLieOnGround;
+  this->render.isSingleColor = source->render.isSingleColor;
+  this->render.unknown_007C = source->render.unknown_007C;
+  this->render.unknown_0048 = 0;
+  this->unknown_0444 = source->unknown_0444;
+  this->stateFlags = source->Slot13();
+  this->unknown_0478 = source->unknown_0478;
+  this->LoadEquipSprites(source->GetEquipSpriteNames());
+  this->LoadEquipActions(source->GetEquipActionNames());
+  this->unknown_0418 = source->unknown_0418;
+  this->guildId = source->Slot50();
+  this->render.accountId = source->render.accountId;
+  this->unknown_04F8 = 0.0f;
+  this->unknown_050C = 0;
+  this->unknown_04FC = 0x10000000;
+  this->render.unknown_0048 = source->render.unknown_0048;
+  this->render.name = source->render.name;
+  this->unknown_049C = 0;
+  this->unknown_0450 = 0;
+  this->unknown_0454 = 0;
+  this->unknown_0458 = 0;
+}
+
+// OFFSET: 0x00DA28B0
+
+// OFFSET: 0x00DA3360

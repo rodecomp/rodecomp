@@ -25,8 +25,11 @@ public:
   void Slot30() override;
 
   void UpdateBubblePositions();
+  void UpdateMinimapMarker();
 
-  /* 0410 */ unsigned char unknown_0410[0x1C];
+  /* 0410 */ unsigned char unknown_0410[0x14];
+  /* 0424 */ std::uint32_t unknown_0424;
+  /* 0428 */ unsigned char unknown_0428[0x04];
   /* 042C */ UIWindow* unknown_042C;
   /* 0430 */ UIWindow* unknown_0430;
   /* 0434 */ CGameObject* unknown_0434;
@@ -83,6 +86,7 @@ static_assert(sizeof(CCharacterNpc) == 0x448);
 static_assert(sizeof(CHalluNPC) == 0x458);
 static_assert(sizeof(CHalluPlant) == 0x448);
 static_assert(offsetof(CNpc, unknown_042C) == 0x42C);
+static_assert(offsetof(CNpc, unknown_0424) == 0x424);
 static_assert(offsetof(CNpc, unknown_0434) == 0x434);
 static_assert(offsetof(CNpc, unknown_0438) == 0x438);
 static_assert(offsetof(CCharacterNpc, unknown_0440) == 0x440);
