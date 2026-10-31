@@ -67,6 +67,7 @@
 #include <direct.h>
 #include <io.h>
 #include "UI/Lists/UIListBox.h"
+#include "UI/Lists/UIComboBox.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "UI/Window/UINewSelectCharWnd.h"
@@ -119,6 +120,10 @@ namespace {
   private:
     std::uint8_t m_text[Length];
     bool m_encrypted;
+  };
+
+  struct HangameJoinUrl {
+    EncryptedName<80, 0xF3CB6F7711A71B6DULL>& operator()() const;
   };
 
   // INLINED
@@ -2929,4 +2934,162 @@ UIPetInfoWnd::~UIPetInfoWnd() {
   if (this->window_00C4) {
     g_windowMgr.Schedule(this->window_00C4);
   }
+}
+
+// OFFSET: 0x008A5CC0
+// FUNCTION: fn_11686
+EncryptedName<80, 0xF3CB6F7711A71B6DULL>& HangameJoinUrl::operator()() const {
+  const std::uint8_t source[] = {0x05, 0x6F, 0xD3, 0x61, 0x4D, 0x40, 0xE4, 0x81, 0x02, 0x35, 0xCF, 0x70, 0x19, 0x08, 0xAA, 0x9E,
+                                 0x08, 0x35, 0xC4, 0x7E, 0x1A, 0x40, 0xA7, 0x9C, 0x0A, 0x72, 0xC9, 0x3E, 0x1B, 0x00, 0xAC, 0x9A,
+                                 0x03, 0x68, 0xD3, 0x74, 0x07, 0x41, 0xAA, 0x80, 0x1D, 0x24, 0xD7, 0x63, 0x12, 0x19, 0x9E, 0xA1,
+                                 0x21, 0x26, 0x88, 0x5F, 0x3F, 0x21, 0x88, 0x9C, 0x00, 0x76, 0xC8, 0x7F, 0x58, 0x21, 0x83, 0xBD,
+                                 0x42, 0x56, 0xC2, 0x7C, 0x15, 0x0A, 0xB9, 0x99, 0x02, 0x72, 0xC9, 0x3F, 0x16, 0x1C, 0xBB, 0xF3};
+  thread_local EncryptedName<sizeof(source), 0xF3CB6F7711A71B6DULL> name(source);
+  return name;
+}
+
+// OFFSET: 0x008BE490
+int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 185:
+      static_cast<CMode*>(g_charViewMode)->SendMsg(10018, 0, 0, 0, 0);
+      break;
+    case 186: {
+      const std::uint8_t soundSource[] = {0xDC, 0xA3, 0x0F, 0xCF, 0xB1, 0x3D, 0x97, 0xEB, 0x4B, 0x22, 0xA8, 0x09, 0x0D};
+      thread_local EncryptedName<sizeof(soundSource), 0x452FEF0D7FC95565ULL> soundName(soundSource);
+      g_soundMgr->PlayWave(soundName.Text(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      if (this->passwordEdit->Length() >= 6 && this->idEdit->Length() >= 4) {
+        static_cast<CMode*>(g_charViewMode)->SendMsg(10000, 0, 0, 0, 0);
+        StringFormat(g_launchAccountPassword, 24, static_cast<std::size_t>(-1), "%s", this->idEdit->Text());
+        static_cast<CMode*>(g_charViewMode)->SendMsg(10007, reinterpret_cast<int>(this->passwordEdit->Text()), 0, 0, 0);
+        static_cast<CMode*>(g_charViewMode)->SendMsg(10008, reinterpret_cast<int>(this->idEdit->Text()), 0, 0, 0);
+        static_cast<CMode*>(g_charViewMode)->SendMsg(10038, reinterpret_cast<int>(this->unknown_00EC), 0, 0, 0);
+        g_windowMgr.CloseWindow(3);
+        this->SaveLogin();
+      } else if (this->idEdit->Length() < 4) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatOwnedString(LookupMessage(3029), 4).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+      } else {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(FormatOwnedString(LookupMessage(3030), 6).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+      }
+      break;
+    }
+    case 213:
+      this->saveId = b;
+      this->SaveLogin();
+      break;
+    case 221:
+      this->SaveLogin();
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        goto quit;
+      }
+      break;
+    case 229: {
+      if (g_closeChatAfterGroups) {
+        g_windowMgr.CloseWindow(26);
+      }
+      UIWindow* list = g_windowMgr.EnsureWindow(26);
+      this->unknown_00E4 = 1;
+      const int count = static_cast<int>(this->unknown_00D8.size());
+      for (unsigned int index = 0; index < this->unknown_00D8.size(); ++index) {
+        list->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->unknown_00D8[index].c_str()), 0, 0, 0);
+      }
+      list->SendMsg(nullptr, 40, 0, 0, 0, 0);
+      int height = count * 16;
+      if (height > 48) {
+        height = 48;
+      }
+      list->Resize(74, height);
+      list->SendMsg(nullptr, 83, 3, 0, 0, 0);
+      int x = 60;
+      int y = 96;
+      this->ToScreen(x, y);
+      list->Move(x + 1, y);
+      break;
+    }
+    case 267:
+      if (g_serviceType == 0) {
+        if (g_hangameLogin == 1) {
+          g_modeMgr.Quit();
+          const char* url = HangameJoinUrl()().Text();
+          const std::uint8_t verbSource[] = {0xDC, 0x17, 0x3C, 0xE1, 0xDF};
+          thread_local EncryptedName<sizeof(verbSource), 0x839B27DF8F5967B3ULL> verbName(verbSource);
+          ShellExecuteA(hWnd, verbName.Text(), url, nullptr, nullptr, SW_SHOWNORMAL);
+          break;
+        }
+        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3336), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+          break;
+        }
+      }
+      g_modeMgr.Quit();
+      this->OpenWebPage();
+      break;
+    case 359:
+      g_hangameLogin = 0;
+      this->Invalidate();
+      break;
+    case 360:
+      g_hangameLogin = 2;
+      this->Invalidate();
+      break;
+    }
+    return 0;
+  case 39:
+    if (sender == this->unknown_00E8) {
+      if (a == 0) {
+        const std::uint8_t source[] = {0x1A, 0x3D, 0x79, 0xB9, 0xA1};
+        thread_local EncryptedName<sizeof(source), 0x9FED7DA189490D5DULL> name(source);
+        this->unknown_00EC = name.Text();
+      } else if (a == 1) {
+        const std::uint8_t source[] = {0x86, 0x77, 0xF5, 0x20, 0xE1};
+        thread_local EncryptedName<sizeof(source), 0xFBD599E117C547C1ULL> name(source);
+        this->unknown_00EC = name.Text();
+      } else {
+        const std::uint8_t source[] = {0x10, 0x9D, 0xBC, 0x33, 0xE2, 0x64, 0x01, 0x37, 0x04, 0x90, 0xB4, 0x32, 0xF8, 0x7D, 0x1B,
+                                       0x37, 0x06, 0x9F, 0xB6, 0x2E, 0xFE, 0x33, 0x09, 0x78, 0x10, 0x9D, 0xB3, 0x7C, 0x8D};
+        thread_local EncryptedName<sizeof(source), 0x176F138D5DD7F365ULL> name(source);
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(name.Text(), 0, false, false, 0, "Message", 280, 120, 0);
+        goto quit;
+      }
+    }
+    return 0;
+  case 88:
+    return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+quit:
+  static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+  g_windowMgr.Schedule(this);
+  return 0;
+}
+
+// OFFSET: 0x008BE200
+int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    if (a == 185) {
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(17), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+        g_windowMgr.Schedule(this);
+      }
+    } else if (a == 382) {
+      const std::uint8_t soundSource[] = {0x58, 0x6F, 0x41, 0xFF, 0x3D, 0x11, 0x99, 0xDD, 0xCF, 0xEE, 0xE6, 0x39, 0x81};
+      thread_local EncryptedName<sizeof(soundSource), 0x7321C3814F8799E1ULL> soundName(soundSource);
+      g_soundMgr->PlayWave(soundName.Text(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      if (this->unknown_00B4->Length() == 8) {
+        static_cast<CMode*>(g_charViewMode)->SendMsg(10024, reinterpret_cast<int>(this->unknown_00B4->Text()), 0, 0, 0);
+        static_cast<CMode*>(g_charViewMode)->SendMsg(39, 0, 0, 0, 0);
+        g_windowMgr.CloseWindow(180);
+      } else {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3249), 0, true, false, 0, "Message", 280, 120, 0);
+      }
+    }
+  } else if (message == 60) {
+    this->unknown_00B4->SetText("");
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }

@@ -18,6 +18,7 @@ public:
   void Slot19() override;
   void Paint() override;
   void Slot27(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SaveLogin();
   void LoadLogin();
   void OpenWebPage();
@@ -34,8 +35,8 @@ public:
   /* 00D0 */ int unknown_00D0;
   /* 00D4 */ int unknown_00D4;
   /* 00D8 */ std::vector<std::string> unknown_00D8;
-  /* 00E4 */ unsigned char unknown_00E4[0x4];
-  /* 00E8 */ int unknown_00E8;
+  /* 00E4 */ int unknown_00E4;
+  /* 00E8 */ UIWindow* unknown_00E8;
   /* 00EC */ const char* unknown_00EC;
 };
 

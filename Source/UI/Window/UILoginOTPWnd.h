@@ -15,6 +15,7 @@ public:
   void Slot18() override;
   void Slot19() override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00B4 */ UIEditCtrl* unknown_00B4;
   /* 00B8 */ int unknown_00B8;
