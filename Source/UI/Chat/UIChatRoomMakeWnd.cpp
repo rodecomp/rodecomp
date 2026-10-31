@@ -15,3 +15,5 @@ UIChatRoomChangeWnd::UIChatRoomChangeWnd(UIWindowContext& windows, UIFrameContex
 }
 
 // OFFSET: 0x008CA5F0
+// FUNCTION: fn_11994
+UIChatRoomMakeWnd::~UIChatRoomMakeWnd() = default;
