@@ -947,7 +947,7 @@ void UINewSkillListWnd::LayoutButtons() {
     if (!this->m_locked) {
       for (const CSkillInfo& skill : list) {
         const unsigned int slot = skill.unknown_0024 - this->m_columns * this->m_firstRow;
-        if (slot < 42 && skill.available != 0 && skill.unknown_0024 != 0xFFFFFFFF && skill.unknown_0018 != 0 &&
+        if (slot < 42 && skill.available != 0 && skill.unknown_0024 != 0xFFFFFFFF && skill.level != 0 &&
             CSkillInfo::UsesLevel(*g_luaScript, skill.id)) {
           const int y = static_cast<int>(slot) / this->m_columns * 56 + 70;
           const int x = static_cast<int>(slot) % this->m_columns * 68;
