@@ -47,6 +47,7 @@ protected:
 
 class UIBmpRadioBtn2 : public UIBmpRadioBtn {
 public:
+  void Invalidate() override;
   void Slot47() override;
   void Slot48() override;
 };

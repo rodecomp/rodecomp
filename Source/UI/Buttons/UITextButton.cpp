@@ -350,6 +350,16 @@ void UIBmpRadioBtn::AddText(int id, int height, std::uint32_t color, bool bold, 
   this->m_texts.push_back(text);
 }
 
+// OFFSET: 0x008816B0
+// FUNCTION: fn_11298
+void UIBmpRadioBtn2::Invalidate() {
+  UIWindow::Invalidate();
+
+  if (this->parent != nullptr && !this->parent->IsCached()) {
+    this->parent->SendMsg(this, 60, 0, 0, 0, 0);
+  }
+}
+
 // OFFSET: 0x007C7CA0
 // FUNCTION: fn_09408
 void UIBmpRadioBtn2::Slot47() {

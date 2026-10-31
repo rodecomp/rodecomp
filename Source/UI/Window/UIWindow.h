@@ -212,6 +212,10 @@ public:
     return this->unknown_0048;
   }
 
+  bool IsCached() const {
+    return this->m_cached != 0;
+  }
+
   /* 0010 */ UIWindow* parent;
   /* 0014 */ WindowGeometry geometry;
 
