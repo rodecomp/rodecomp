@@ -55,7 +55,7 @@ public:
   void Close() override;
   bool Slot06() override;
   ~CSprArrowEffect() override;
-
+  void SetBulletSprite(int job);
   /* 00CC */ int unknown_00CC;
   /* 00D0 */ int unknown_00D0;
   /* 00D4 */ float unknown_00D4;

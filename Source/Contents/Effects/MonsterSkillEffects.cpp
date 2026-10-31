@@ -22,7 +22,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <timeapi.h>
-
+#include <format>
 // INLINED
 static void SetScreenVertex(RenderVertex& vertex, float x, float y, std::uint32_t color, float u, float v) {
   vertex.x = x;
@@ -204,6 +204,99 @@ void CSprArrowEffect::Slot04() {
   if (this->unknown_00CC != 0 && this->unknown_00FC) {
     AsSprite(reinterpret_cast<EZ2STREmitter*>(this->unknown_00CC))->sub_B40F30(1);
   }
+}
+
+// OFFSET: 0x0070CBA0
+// FUNCTION: fn_07140
+void CSprArrowEffect::SetBulletSprite(int job) {
+  CSpriteParticle* particle = reinterpret_cast<CSpriteParticle*>(this->unknown_00CC);
+  if (!particle) {
+    return;
+  }
+
+  const char* name;
+  switch (job) {
+  case 20936:
+  case 21052:
+  case 22216:
+  case 22218:
+  case 22219:
+  case 22232:
+  case 22234:
+  case 22235:
+    name = "canon_bullet";
+    break;
+  case 22175:
+  case 22176:
+    name = "RIGEL_BULLET";
+    break;
+  case 22204:
+    name = "phylla_bullet";
+    break;
+  case 22197:
+  case 22198:
+  case 22199:
+    name = "mg_corruption_root_h_bullet";
+    break;
+  case 22214:
+  case 22215:
+  case 22226:
+  case 22227:
+    name = "mg_corruption_root_bullet";
+    break;
+  case 22245:
+    name = "VR_MD_DREGG1_bullet";
+    break;
+  case 22246:
+    name = "VR_MD_DREGG2_bullet";
+    break;
+  case 22322:
+    name = "EP21_YORKER_Bullet";
+    break;
+  case 22326:
+    name = "EP21_YOSTER_D_bullet";
+    break;
+  case 22327:
+    name = "EP21_YOSTER_E_bullet";
+    break;
+  case 22354:
+  case 22418:
+    name = "EP21_YORMI_bullet";
+    break;
+  case 22355:
+  case 22366:
+  case 22416:
+    name = "EP21_YORDOS_Bullet";
+    break;
+  case 22359:
+  case 22420:
+    name = "EP21_YOSCOPUS_Bullet";
+    break;
+  case 22383:
+  case 22384:
+    name = "violen_bullet";
+    break;
+  case 22464:
+    name = "CH1_SHADOW_JAILER_bullet";
+    break;
+  case 22467:
+    name = "CH1_SCABIOSA_bullet";
+    break;
+  case 22468:
+    name = "CH1_LOBELIA_bullet";
+    break;
+  default:
+    name = "skel_archer_arrow";
+    break;
+  }
+
+  if (std::strlen(name) == 0) {
+    this->unknown_00FD = false;
+    return;
+  }
+
+  particle->SetSprite(std::format("몬스터\\{}.spr", name).c_str());
+  reinterpret_cast<CSpriteParticle*>(this->unknown_00CC)->SetAction(std::format("몬스터\\{}.act", name).c_str());
 }
 
 // OFFSET: 0x0070CEA0
