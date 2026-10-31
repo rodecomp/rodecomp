@@ -11,6 +11,7 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/XmlNode.h"
 #include "UI/Text/UIBalloonText.h"
 #include "Utility/Cipher/XorBytes.h"
 
@@ -61,6 +62,21 @@ char g_launchServerName[24];
 
 // GLOBAL: gl_25024
 std::vector<std::string> g_loadingScreens;
+
+// GLOBAL: gl_25276
+bool g_hideAccountList;
+
+// GLOBAL: gl_25277
+bool g_extendedSlot;
+
+// GLOBAL: gl_25278
+bool g_readFolder;
+
+// GLOBAL: gl_25279
+bool g_clientInfoLoaded;
+
+// GLOBAL: gl_25280
+char g_homepageUrl[256];
 
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedText {
@@ -334,4 +350,129 @@ void sub_AD1270() {
   if (g_loadingScreens.empty()) {
     LoadLoadingScreens(0);
   }
+}
+
+// OFFSET: 0x00AD2A00
+// FUNCTION: fn_17818
+void ReadClientInfo(XmlNode* clientInfo) {
+  XmlNode* serviceType =
+      clientInfo->FindChild(DecryptText<0x5B8F49AF09390D1BULL>({0x68, 0x68, 0x4B, 0x7F, 0xC6, 0x2A, 0xEA, 0x2F, 0x62, 0x7D, 0x5C, 0x09}));
+  if (serviceType) {
+    if (serviceType->Text() == std::string(DecryptText<0x3F557BE333F95F6DULL>({0x06, 0x30, 0x8B, 0x56, 0x82, 0x7B}))) {
+      g_serviceType = 0;
+    } else if (serviceType->Text() == std::string(DecryptText<0x474DC581D5E98357ULL>({0x36, 0xEE, 0x8C, 0xA7, 0xE8, 0xA6, 0x2C, 0x47}))) {
+      g_serviceType = 1;
+    } else if (serviceType->Text() == std::string(DecryptText<0x01FF9313695DD9DFULL>({0xB5, 0xB8, 0x2D, 0x08, 0x7D, 0x93}))) {
+      g_serviceType = 2;
+    } else if (serviceType->Text() == std::string(DecryptText<0x1BF915E1F37DFDFDULL>({0x9E, 0x95, 0x14, 0x9D, 0x80, 0x15}))) {
+      g_serviceType = 3;
+    } else if (serviceType->Text() == std::string(DecryptText<0x49C3759B77DBD3C1ULL>({0xB5, 0xB2, 0xB2, 0x00, 0xFA, 0x1B, 0xC3}))) {
+      g_serviceType = 4;
+    } else if (serviceType->Text() == std::string(DecryptText<0x6DED3DD1CF75AD9BULL>({0xEF, 0xC5, 0x14, 0xA6, 0xD1}))) {
+      g_serviceType = 5;
+    } else if (serviceType->Text() ==
+               std::string(DecryptText<0x91E147EBBD47C39FULL>({0xF6, 0xAD, 0x23, 0xD2, 0x85, 0x22, 0x92, 0xF8, 0xFE, 0xC3}))) {
+      g_serviceType = 6;
+    } else if (serviceType->Text() ==
+               std::string(DecryptText<0xD1538513DF975701ULL>({0x71, 0x3F, 0xFE, 0xB3, 0x7A, 0xF5, 0x23, 0xB8, 0x6F, 0x32, 0x97}))) {
+      g_serviceType = 7;
+    } else if (serviceType->Text() ==
+               std::string(DecryptText<0xA1A55B4D1597EDD3ULL>({0xBE, 0x8C, 0xFB, 0x74, 0x34, 0x28, 0xCC, 0xC0, 0xD3}))) {
+      g_serviceType = 8;
+    } else if (serviceType->Text() ==
+               std::string(DecryptText<0x4F1791FB1503C713ULL>({0x60, 0xAE, 0x6D, 0x72, 0x9A, 0xE1, 0x78, 0x3D, 0x76, 0xC7}))) {
+      g_serviceType = 9;
+    } else if (serviceType->Text() ==
+               std::string(DecryptText<0x7D993F650D2785FFULL>({0x98, 0xE0, 0x55, 0x60, 0x04, 0x51, 0xE0, 0x7D}))) {
+      g_serviceType = 10;
+    } else if (serviceType->Text() == std::string(DecryptText<0x61FF87ED7BF39BE1ULL>({0x88, 0xF5, 0x97, 0x12, 0x8C, 0x87}))) {
+      g_serviceType = 11;
+    } else if (serviceType->Text() == std::string(DecryptText<0x151F77EBEBBB2147ULL>({0x25, 0x53, 0xDA, 0x91, 0x82, 0x1B, 0x1F}))) {
+      g_serviceType = 12;
+    } else if (serviceType->Text() ==
+               std::string(DecryptText<0x2D394DBD0F332733ULL>({0x52, 0x52, 0x40, 0x7B, 0xCF, 0x2C, 0x55, 0x44, 0x52, 0x27}))) {
+      g_serviceType = 13;
+    } else if (serviceType->Text() == std::string(DecryptText<0x69D345DB950F336DULL>({0x1F, 0x46, 0x7C, 0xE6, 0xB2, 0x24, 0xD3}))) {
+      g_serviceType = 14;
+    } else if (serviceType->Text() ==
+               std::string(DecryptText<0xC7912587FFF31B71ULL>({0x07, 0x72, 0x96, 0x8B, 0xE9, 0x44, 0xFC, 0xC7}))) {
+      g_serviceType = 15;
+    } else if (serviceType->Text() == std::string(DecryptText<0x2D3B15774149D5DDULL>({0xBE, 0xBD, 0x20, 0x2D, 0x12, 0x15}))) {
+      g_serviceType = 17;
+    } else if (serviceType->Text() == std::string(DecryptText<0x9B17C9EFDBB39F2FULL>({0x49, 0xED, 0xD2, 0xB5, 0x8C, 0xAC, 0x17}))) {
+      g_serviceType = 18;
+    } else if (serviceType->Text() == std::string(DecryptText<0x0BEB63A5C905B3A7ULL>({0xD2, 0xD2, 0x60, 0xC9}))) {
+      g_serviceType = 19;
+    } else if (serviceType->Text() == std::string(DecryptText<0x8B3FEB5B8BD5C3C3ULL>({0xA6, 0xB6, 0xD5}))) {
+      g_serviceType = 20;
+    } else {
+      ShowErrorDialog(GetRenderSystemHolder()->system,
+                      DecryptText<0x8F1B5BFD5F6175B5ULL>({0xE6, 0x10, 0x13, 0x29, 0x94, 0x38, 0x7E, 0xDB, 0xCC, 0x05, 0x04,
+                                                          0x7F, 0xB8, 0x29, 0x69, 0xE0, 0xC7, 0x55, 0x40, 0x7E, 0xFD}),
+                      0);
+    }
+  } else if (!g_clientInfoLoaded) {
+    ShowErrorDialog(GetRenderSystemHolder()->system,
+                    DecryptText<0x078333BB9725B7C9ULL>(
+                        {0x87, 0xD8, 0x05, 0xC4, 0xDE, 0x41, 0xF5, 0x6E, 0xAA, 0xD2, 0x71, 0xEE, 0xCB, 0x56, 0xA3, 0x26, 0xE8, 0xB7}),
+                    0);
+  }
+
+  XmlNode* serverType =
+      clientInfo->FindChild(DecryptText<0xF5657D1F3DE5CDC7ULL>({0xB4, 0xA8, 0x97, 0x4B, 0x7A, 0x0F, 0x11, 0x8C, 0xB7, 0xA8, 0xE5}));
+  if (serverType) {
+    if (serverType->Text() == std::string(DecryptText<0x69FD1D9733D3CFC1ULL>({0xB1, 0xBD, 0xBA, 0x5E, 0xF6, 0x6F, 0x84, 0x69}))) {
+      g_serviceMode = g_serviceMode == 13 ? 13 : 0;
+    } else if (serverType->Text() == std::string(DecryptText<0xF7530137154D8FE5ULL>({0x96, 0xEE, 0x26, 0x67, 0x56, 0x78, 0x53}))) {
+      g_serviceMode = 1;
+    } else if (serverType->Text() == std::string(DecryptText<0x8B65CD61012B5931ULL>({0x5D, 0x36, 0x48, 0x60, 0x0D, 0xCD}))) {
+      g_serviceMode = 2;
+    } else if (serverType->Text() == std::string(DecryptText<0x17359BF953C367B3ULL>({0xC3, 0x0C, 0xC3}))) {
+      g_serviceMode = 5;
+    } else {
+      ShowErrorDialog(GetRenderSystemHolder()->system,
+                      DecryptText<0x2FF3C5036D070127ULL>({0x74, 0x64, 0x75, 0x1B, 0x66, 0xB7, 0xA7, 0x56, 0x57, 0x64,
+                                                          0x27, 0x28, 0x71, 0xB7, 0x9C, 0x5D, 0x07, 0x20, 0x26, 0x6D}),
+                      0);
+    }
+  } else if (!g_clientInfoLoaded) {
+    ShowErrorDialog(
+        GetRenderSystemHolder()->system,
+        DecryptText<0x93E7A3A1F587CDC5ULL>({0x8B, 0xA2, 0xA7, 0xA6, 0xC4, 0xD1, 0x91, 0xF6, 0xB7, 0x99, 0xFE, 0x85, 0xC4, 0x83, 0xC6, 0xB2, 0xC5}),
+        0);
+  }
+
+  if (clientInfo->FindChild(DecryptText<0xC52FB5FBB94FF917ULL>(
+          {0x7F, 0x90, 0x2B, 0xDC, 0x9A, 0xD6, 0x4C, 0xAA, 0x62, 0x97, 0x3B, 0xD5, 0x92, 0xC6, 0x5B, 0xC5}))) {
+    g_hideAccountList = true;
+  }
+
+  if (clientInfo->FindChild(DecryptText<0x812BE72BCD5707B7ULL>({0xD2, 0x7F, 0x23, 0xA8, 0x45, 0x83, 0x4E, 0xE5, 0xC4, 0x6B, 0x38, 0xB9, 0x2B}))) {
+    g_extendedSlot = true;
+  }
+
+  if (clientInfo->FindChild(DecryptText<0x59278F63D79F3DA1ULL>({0xD3, 0x58, 0xFE, 0xB3, 0x05, 0xE0, 0x4B, 0x3D, 0xC4, 0x4F, 0x9F}))) {
+    g_readFolder = true;
+  }
+
+  XmlNode* loading = clientInfo->FindChild(DecryptText<0x1D6D75EDE7CD311FULL>({0x73, 0x5E, 0xAC, 0x83, 0x84, 0x1B, 0x0A, 0x1D}));
+  if (loading) {
+    for (XmlNode* image = loading->FindChild(DecryptText<0x3375B1C7DBB5FD55ULL>({0x3C, 0x90, 0xD4, 0xBC, 0xA2, 0xB1})); image;
+         image = image->FindSibling(DecryptText<0xD98F03A52D35636DULL>({0x04, 0x0E, 0x54, 0x4A, 0xC0, 0x03}))) {
+      char path[256];
+      std::sprintf(path,
+                   DecryptText<0x0F0F8B6B8F9D19D1ULL>(
+                       {0x11, 0xB6, 0x5D, 0x75, 0xAB, 0x45, 0xCA, 0xC2, 0x17, 0xFD, 0x5D, 0x43, 0xD6, 0x31, 0x53, 0x2A, 0xA2, 0x19}),
+                   image->Text().c_str());
+      g_loadingScreens.push_back(std::string(path));
+    }
+  }
+
+  XmlNode* homepage =
+      clientInfo->FindChild(DecryptText<0x31D7C1EDA345E36DULL>({0x1B, 0x8A, 0x20, 0xD4, 0x85, 0xAE, 0xBA, 0x54, 0x1D, 0x82, 0x22, 0xC6, 0xED}));
+  if (homepage) {
+    sprintf_s(g_homepageUrl, sizeof(g_homepageUrl), "%s", homepage->Text().c_str());
+  }
+
+  g_clientInfoLoaded = true;
 }
