@@ -4125,3 +4125,11 @@ void CGameMode::ReceiveGuildMemberMemoList(const unsigned char* data) {
 // OFFSET: 0x00D3A630
 
 // OFFSET: 0x00D3A770
+
+struct ACTSTRUCT {
+  virtual ~ACTSTRUCT();
+};
+
+// OFFSET: 0x00D051F0
+// FUNCTION: fn_21563
+ACTSTRUCT::~ACTSTRUCT() = default;
