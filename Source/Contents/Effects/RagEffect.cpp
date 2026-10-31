@@ -3339,10 +3339,7 @@ void CRagEffect::TorchDustRing(const char* name, char kind, std::int16_t angle) 
 // OFFSET: 0x00C6E6F0
 // FUNCTION: fn_20303
 void CRagEffect::TexturedDualSpin(const char* first, const char* second, int) {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -3360,9 +3357,12 @@ void CRagEffect::TexturedDualSpin(const char* first, const char* second, int) {
   this->state.unknown_11C84->slots[2].life = 0;
   this->state.unknown_11C84->slots[3].life = 0;
   this->state.unknown_11C84->slots[0].process = 0;
-  this->state.unknown_11C84->slots[0].distance = this->state.param[0] >= 5.0f ? this->state.param[0] : 20.0f;
-  const float spin = this->state.param[1];
-  this->state.unknown_11C84->slots[0].rotStart = spin < 0.0f || spin >= 360.0f ? 45 : static_cast<std::int16_t>(spin);
+
+  const float distance = this->state.param[0];
+  this->state.unknown_11C84->slots[0].distance = distance < 5.0f ? 20.0f : distance;
+
+  const float rotation = this->state.param[1];
+  this->state.unknown_11C84->slots[0].rotStart = static_cast<std::int16_t>(rotation < 0.0f || rotation >= 360.0f ? 45 : static_cast<int>(rotation));
   this->state.unknown_11C84->slots[0].riseAngle = static_cast<std::int16_t>(std::max(rand() % 360, 0));
   this->state.unknown_11C84->slots[0].height[0] = -2.0f;
   this->state.unknown_11C84->slots[0].height[1] = 0.0f;
