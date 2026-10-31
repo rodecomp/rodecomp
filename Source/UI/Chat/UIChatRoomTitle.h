@@ -20,6 +20,7 @@ struct ChatRoomTitleInfo {
 
 class UIChatRoomTitle : public UIWindow {
   friend class UIWindowMgr;
+  friend class CGameMode;
 
 public:
   explicit UIChatRoomTitle(UIWindowContext& context);

@@ -197,6 +197,7 @@ public:
   std::vector<unsigned char> SaveUnknown024C();
   std::vector<unsigned char> SaveNameCardState();
   std::vector<unsigned char> SaveGroundItems();
+  std::vector<unsigned char> SaveActorStates();
   void WorldCell(float x, float z, int& column, int& row) const;
   void SubcellPosition(int column, int row, int subColumn, int subRow, float& x, float& z) const;
   void PlayerCell(int* column, int* row) const;

@@ -1860,6 +1860,236 @@ std::vector<unsigned char> CGameMode::SaveNameCardState() {
   return data;
 }
 
+#include "UI/Chat/UIChatRoomTitle.h"
+#include "UI/Shop/UIMerchantShopTitle.h"
+#include "UI/Text/UIStaticText.h"
+
+#pragma pack(push, 1)
+struct ChatRoomEntryPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint16_t packetLength;
+  /* 0004 */ std::uint32_t aid;
+  /* 0008 */ std::uint32_t roomId;
+  /* 000C */ std::uint16_t maxCount;
+  /* 000E */ std::uint16_t curCount;
+  /* 0010 */ unsigned char type;
+};
+
+struct ShopEntryPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ char name[0x50];
+};
+
+struct ProgressPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t color;
+  /* 0006 */ std::uint32_t seconds;
+};
+
+struct GameModeStoredRecord0191 {
+  /* 0000 */ std::uint16_t value0000;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::uint16_t value0006;
+  /* 0008 */ int value0008;
+  /* 000C */ int value000C;
+  /* 0010 */ int count;
+  /* 0014 */ int value0014;
+  /* 0018 */ int value0018;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ChatRoomEntryPacket) == 0x11);
+static_assert(sizeof(ShopEntryPacket) == 0x56);
+static_assert(sizeof(ProgressPacket) == 0xA);
+static_assert(sizeof(GameModeStoredRecord0191) == 0x1C);
+static_assert(sizeof(GameModeStoredRecord00DA) == 0x3F);
+
+// OFFSET: 0x00CEA510
+// FUNCTION: fn_21350
+std::vector<unsigned char> CGameMode::SaveActorStates() {
+  std::vector<unsigned char> data;
+
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 10000;
+    header->size = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  std::vector<unsigned char> scratch;
+  for (std::list<CRenderObject*>::iterator it = this->scene->actors.begin(); it != this->scene->actors.end(); ++it) {
+    CGameActor* actor = static_cast<CGameActor*>(*it);
+    CPc* pc = static_cast<CPc*>(actor);
+
+    if (actor->unknown_03E0Low == 0) {
+      if (actor->render.unknown_0070 == 1) {
+        std::vector<char> entry = this->BuildActorEntryPacket(actor, 0x9FD);
+        std::vector<unsigned char> chunk(entry.size() + sizeof(GameModeChunkHeader), 0);
+        auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+        header->type = 0xD6;
+        header->size = entry.size();
+        if (entry.size() != 0) {
+          std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), entry.data(), entry.size());
+        }
+        data.insert(data.end(), chunk.begin(), chunk.end());
+      } else {
+        std::vector<char> entry = this->BuildActorEntryPacket(actor, 0x9FF);
+        std::vector<unsigned char> chunk(entry.size() + sizeof(GameModeChunkHeader), 0);
+        auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+        header->type = 0xD9;
+        header->size = entry.size();
+        if (entry.size() != 0) {
+          std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), entry.data(), entry.size());
+        }
+        data.insert(data.end(), chunk.begin(), chunk.end());
+      }
+    }
+
+    UIChatRoomTitle* room = reinterpret_cast<UIChatRoomTitle*>(actor->unknown_0264[1]);
+    if (room != nullptr) {
+      scratch.resize(sizeof(ChatRoomEntryPacket), 0);
+      auto* packet = reinterpret_cast<ChatRoomEntryPacket*>(scratch.data());
+      packet->type = 0xD7;
+      packet->packetLength = static_cast<std::uint16_t>(room->title.size() + sizeof(ChatRoomEntryPacket));
+      packet->aid = actor->render.accountId;
+      packet->roomId = room->roomId;
+      packet->maxCount = static_cast<std::uint16_t>(room->memberLimit);
+      packet->curCount = static_cast<std::uint16_t>(room->memberCount);
+      packet->type = static_cast<unsigned char>(room->roomType);
+      scratch.insert(scratch.end(), room->title.begin(), room->title.end());
+
+      std::vector<unsigned char> chunk(scratch.size() + sizeof(GameModeChunkHeader));
+      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+      header->type = 0xC9;
+      header->size = scratch.size();
+      if (scratch.size() != 0) {
+        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), scratch.data(), scratch.size());
+      }
+      data.insert(data.end(), chunk.begin(), chunk.end());
+    }
+
+    if (actor->unknown_03E0Low == 1) {
+      std::vector<unsigned char> record;
+      record.resize(sizeof(GameModeStoredRecord00DA), 0);
+      auto* stored = reinterpret_cast<GameModeStoredRecord00DA*>(record.data());
+      stored->value0002 = actor->render.accountId;
+      stored->value0006 = actor->GetEffectiveJob(-1);
+      stored->value000E = static_cast<unsigned char>(actor->unknown_0260);
+      stored->value000A = static_cast<std::uint16_t>(actor->unknown_0158[5]);
+      stored->value000C = static_cast<std::uint16_t>(*reinterpret_cast<const int*>(actor->unknown_0170));
+      stored->value000F = static_cast<std::uint16_t>(pc->unknown_0440);
+      const std::int64_t value = actor->Slot35();
+      stored->value0011 = static_cast<int>(value);
+      stored->value0015 = static_cast<int>(value >> 32);
+      stored->value0019 = static_cast<std::uint16_t>(pc->unknown_0450);
+      stored->value001B = static_cast<std::uint16_t>(pc->unknown_0454);
+      stored->value001D = static_cast<std::uint16_t>(pc->unknown_0458);
+      stored->value001F = static_cast<std::uint16_t>(pc->unknown_0444);
+      stored->value0021 = static_cast<std::uint16_t>(actor->render.unknown_0048);
+      stored->value0023 = static_cast<std::uint16_t>(pc->unknown_049C);
+      stored->value003D = static_cast<std::uint16_t>(actor->Slot46());
+      {
+        std::string name = this->nameCard.Name(actor->render.accountId);
+        std::memcpy(stored->text, name.c_str(), sizeof(stored->text));
+      }
+
+      std::vector<unsigned char> chunk(record.size() + sizeof(GameModeChunkHeader));
+      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+      header->type = 0xDA;
+      header->size = record.size();
+      if (record.size() != 0) {
+        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), record.data(), record.size());
+      }
+      data.insert(data.end(), chunk.begin(), chunk.end());
+    }
+
+    UIMerchantShopTitle* shop = reinterpret_cast<UIMerchantShopTitle*>(actor->unknown_0264[2]);
+    if (shop != nullptr) {
+      scratch.resize(sizeof(ShopEntryPacket), 0);
+      auto* packet = reinterpret_cast<ShopEntryPacket*>(scratch.data());
+      packet->packetType = 0x131;
+      packet->aid = actor->render.accountId;
+      std::memcpy(packet->name, shop->label->tooltip.c_str(), sizeof(packet->name));
+
+      std::vector<unsigned char> chunk(scratch.size() + sizeof(GameModeChunkHeader));
+      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+      header->type = 0xCA;
+      header->size = scratch.size();
+      if (scratch.size() != 0) {
+        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), scratch.data(), scratch.size());
+      }
+      data.insert(data.end(), chunk.begin(), chunk.end());
+    }
+
+    if (actor->unknown_0264[3] != 0) {
+      scratch.resize(sizeof(ProgressPacket), 0);
+      auto* packet = reinterpret_cast<ProgressPacket*>(scratch.data());
+      packet->color = 0;
+      packet->packetType = 0x2F0;
+      packet->seconds = (actor->unknown_0280 - actor->unknown_0284) / 1000;
+
+      std::vector<unsigned char> chunk(scratch.size() + sizeof(GameModeChunkHeader));
+      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+      header->type = 0xCB;
+      header->size = scratch.size();
+      if (scratch.size() != 0) {
+        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), scratch.data(), scratch.size());
+      }
+      data.insert(data.end(), chunk.begin(), chunk.end());
+    }
+
+    UIMerchantShopTitle* buyingShop = reinterpret_cast<UIMerchantShopTitle*>(actor->unknown_0264[4]);
+    if (buyingShop != nullptr) {
+      scratch.resize(sizeof(ShopEntryPacket), 0);
+      auto* packet = reinterpret_cast<ShopEntryPacket*>(scratch.data());
+      packet->packetType = 0x814;
+      packet->aid = actor->render.accountId;
+      std::memcpy(packet->name, buyingShop->label->tooltip.c_str(), sizeof(packet->name));
+
+      std::vector<unsigned char> chunk(scratch.size() + sizeof(GameModeChunkHeader), 0);
+      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+      header->type = 0xCC;
+      header->size = scratch.size();
+      if (scratch.size() != 0) {
+        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), scratch.data(), scratch.size());
+      }
+      data.insert(data.end(), chunk.begin(), chunk.end());
+    }
+
+    const int count = actor->Slot56();
+    if (count > 0) {
+      GameModeStoredRecord0191 record;
+      record.value000C = 9999;
+      record.value0000 = 0;
+      record.count = count;
+      record.value0014 = 0;
+      record.value0008 = 9999;
+      record.aid = actor->render.accountId;
+      record.value0006 = 0x47D;
+      record.value0018 = 0;
+
+      std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader) + sizeof(record), 0);
+      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+      header->type = 0x191;
+      header->size = sizeof(record);
+      *reinterpret_cast<GameModeStoredRecord0191*>(chunk.data() + sizeof(GameModeChunkHeader)) = record;
+      data.insert(data.end(), chunk.begin(), chunk.end());
+    }
+  }
+
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader), 0);
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 10001;
+    header->size = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  return data;
+}
+
 #pragma pack(push, 1)
 struct ItemEntryPacket {
   /* 0000 */ std::int16_t packetType;
