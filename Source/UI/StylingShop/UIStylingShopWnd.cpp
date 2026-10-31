@@ -499,8 +499,14 @@ UI2ndCostumeWnd::UI2ndCostumeWnd(UIWindowContext& context) : UIStylingshopTabPar
 }
 
 // OFFSET: 0x00822E00
+// FUNCTION: fn_10287
+UIBasicStylingWnd::UIBasicStylingWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context) {
+}
 
 // OFFSET: 0x00822EA0
+// FUNCTION: fn_10288
+UICostumeChangeWnd::UICostumeChangeWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context) {
+}
 
 // OFFSET: 0x00822F20
 // FUNCTION: fn_10289

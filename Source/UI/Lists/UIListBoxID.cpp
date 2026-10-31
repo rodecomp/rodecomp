@@ -9,6 +9,9 @@ UIComboBoxID::UIComboBoxID() {
 }
 
 // OFFSET: 0x00871120
+// FUNCTION: fn_11106
+UIListBoxID::~UIListBoxID() {
+}
 
 // OFFSET: 0x0087B5F0
 // FUNCTION: fn_11244

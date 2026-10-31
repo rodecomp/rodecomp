@@ -37,6 +37,10 @@ void ChatItemTagRemoval::Remove(UIWindow* child) {
 }
 
 // OFFSET: 0x00870DF0
+// FUNCTION: fn_11104
+UIItemTagCtrl::~UIItemTagCtrl() {
+  reinterpret_cast<ItemTagRetirement*>(this)->Clear();
+}
 
 // OFFSET: 0x00879830
 // FUNCTION: fn_11218
