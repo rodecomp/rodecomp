@@ -180,6 +180,8 @@ public:
   bool GetIntVectorValue(const JsonValue& node, const std::string& key, std::vector<int>* out);
   bool GetBoolValue(const JsonValue& node, const std::string& key, bool* out);
   bool sub_4F3C70(std::vector<unsigned char>& buffer, bool bson);
+  bool sub_4F3DF0(std::vector<unsigned char>& buffer);
+  bool sub_4F4040(std::vector<unsigned char>& buffer);
   bool sub_50C2A0(std::map<std::string, EZ2STREffectRecord>* out);
   bool sub_50AE30(std::map<int, ReputeGroupRecord>* out);
   bool sub_50B830(std::map<int, ReputeInfoRecord>* out);

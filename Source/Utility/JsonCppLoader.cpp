@@ -4,6 +4,29 @@
 #include <cstdio>
 #include <cstring>
 
+// OFFSET: 0x004F3C70
+// FUNCTION: fn_00486
+bool JsonCppLoader::sub_4F3C70(std::vector<unsigned char>& buffer, bool bson) {
+  if (buffer.empty()) {
+    this->Fail("error : JsonCppLoader::Load failed (reason : 비어있는 버퍼가 전달되었습니다.)");
+    return false;
+  }
+
+  bool parsed;
+  if (bson) {
+    parsed = this->sub_4F3DF0(buffer);
+  } else {
+    parsed = this->sub_4F4040(buffer);
+  }
+
+  if (parsed) {
+    this->loaded = true;
+    return true;
+  }
+
+  return false;
+}
+
 // OFFSET: 0x004F4180
 // FUNCTION: fn_00491
 void JsonCppLoader::Fail(const char* format, ...) {
