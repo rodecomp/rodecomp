@@ -918,56 +918,59 @@ void UINewSkillListWnd::Slot33(int x, int y) {
   if (this->m_selectedSkill == -1) {
     this->m_showDetail = false;
     this->m_values.clear();
-    for (int i = 0; i < static_cast<int>(this->m_tabs->labels.size()); ++i) {
-      this->m_tabs->colors[i] = 0xFFFFFFFF;
+    for (int tab = 0; tab < static_cast<int>(this->m_tabs->labels.size()); ++tab) {
+      this->m_tabs->colors[tab] = 0xFFFFFFFF;
       this->m_tabs->Invalidate();
     }
-  } else if (this->m_detailId == this->m_selectedSkill) {
-    this->m_showDetail = !this->m_showDetail;
-  } else {
+  } else if (this->m_selectedSkill != this->m_detailId) {
     this->m_showDetail = true;
     this->sub_9B2CD0();
+  } else {
+    this->m_showDetail = !this->m_showDetail;
   }
 
   if (this->m_showDetail) {
     this->m_detailId = this->m_selectedSkill;
   }
+
   this->m_needsRedraw = 1;
   this->Invalidate();
 
-  std::pair<CSkillInfo*, bool> found = this->SkillPtr(this->m_selectedSkill, false);
-  if (!found.second) {
+  const std::pair<CSkillInfo*, bool> selected = this->SkillPtr(this->m_selectedSkill, false);
+  if (!selected.second) {
     return;
   }
-  CSkillInfo* skill = found.first;
 
-  UISkillDescribeWnd* current = static_cast<UISkillDescribeWnd*>(g_windowMgr.LookupWindow(46));
-  if (current && (current->m_skillId == static_cast<int>(skill->id) || skill->available == 0)) {
+  const CSkillInfo& skill = *selected.first;
+  UISkillDescribeWnd* describe = static_cast<UISkillDescribeWnd*>(g_windowMgr.LookupWindow(46));
+  if (describe && (describe->m_skillId == static_cast<int>(skill.id) || !skill.available)) {
     g_windowMgr.CloseWindow(46);
     return;
   }
 
   UIWindow* window = g_windowMgr.EnsureWindow(46);
-  if (window) {
-    window->SendMsg(nullptr, 61, skill->id, skill->unknown_0018, skill->level, 1);
-    int screenX = 0;
-    int screenY = 0;
-    this->ToScreen(screenX, screenY);
-    x += screenX + 24;
-    y += screenY;
-    if (g_renderer->viewport.width < window->geometry.width + x) {
-      x += -48 - window->geometry.width;
-    }
-    int top = y - window->geometry.height;
-    if (window->geometry.height + y <= g_renderer->viewport.height) {
-      top = y;
-    }
-    if (top < 0) {
-      top = 0;
-    }
-    window->Move(x, top);
-    reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(46, 1);
+  if (!window) {
+    return;
   }
+
+  window->SendMsg(nullptr, 61, skill.id, skill.unknown_0018, skill.level, 1);
+
+  int originX = 0;
+  int originY = 0;
+  this->ToScreen(originX, originY);
+  int left = x + originX + 24;
+  const int bottom = y + originY;
+  if (left + window->geometry.width > g_renderer->viewport.width) {
+    left -= window->geometry.width + 48;
+  }
+
+  int top = bottom + window->geometry.height <= g_renderer->viewport.height ? bottom : bottom - window->geometry.height;
+  if (top < 0) {
+    top = 0;
+  }
+
+  window->Move(left, top);
+  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(46, 1);
 }
 
 // OFFSET: 0x009B2CD0
