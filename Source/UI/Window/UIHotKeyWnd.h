@@ -12,7 +12,9 @@ class UIButton;
 class UIHotKeyWnd : public UIFrameWnd {
 public:
   UIHotKeyWnd(UIWindowContext& windows, UIFrameContext& frames);
+  void Slot25(int x, int y) override;
   void Slot32(int x, int y) override;
+  int RowFromPoint(int x, int y);
   void UpdatePageButtons();
   void SaveHotkeys();
   void SetHotkey(int tab, int index, HotkeyInfo info);
