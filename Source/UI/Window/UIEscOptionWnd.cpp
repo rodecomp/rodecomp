@@ -93,8 +93,6 @@ int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  using OpenWindow = UIWindow* (__thiscall*)(UIWindowMgr*, int);
-  OpenWindow openWindow = reinterpret_cast<OpenWindow>(0x00A978D0);
   const int id = static_cast<int>(argument1);
   if (id > 0x173) {
     if (id == 0x174) {
@@ -110,13 +108,13 @@ int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     if (id == 0x1C9) {
       if (!g_windowMgr.CloseWindow(0xEC)) {
-        openWindow(&g_windowMgr, 0xEC);
+        g_windowMgr.EnsureWindow(0xEC);
       }
       return 0;
     }
     if (id == 0x1CA) {
       if (!g_windowMgr.CloseWindow(0x271E)) {
-        openWindow(&g_windowMgr, 0x271E);
+        g_windowMgr.EnsureWindow(0x271E);
       }
       return 0;
     }
@@ -161,7 +159,7 @@ int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   }
   if (id == 0x172) {
     if (!g_windowMgr.CloseWindow(0x9C)) {
-      openWindow(&g_windowMgr, 0x9C);
+      g_windowMgr.EnsureWindow(0x9C);
     }
     return 0;
   }
