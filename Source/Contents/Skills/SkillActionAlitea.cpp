@@ -71,6 +71,7 @@ public:
 
 class CSkillAction_DamageWereRaptorForm : public CSkillAction_AnimalForm, public CSkillAction_Direction {
 public:
+  void sub_5A4760(int sourceActor, CGameActor* target);
   __declspec(noinline) void sub_5A4930(int level, CGameActor* source);
   __declspec(noinline) void sub_5A4B00(int level, CGameActor* source);
   void Slot16(int level, CGameActor* source, CGameActor* target) override;
@@ -2015,6 +2016,18 @@ void CSkillAction_AT_FERAL_CLAW::Slot11(int level, CGameActor* source, CGameActo
 
 // GLOBAL: gl_25058
 const float g_featherOffsets[3] = {0.0f, 0.1f, -0.1f};
+
+// OFFSET: 0x005A4760
+// FUNCTION: fn_03152
+void CSkillAction_DamageWereRaptorForm::sub_5A4760(int sourceActor, CGameActor* target) {
+  CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
+  if (source && target) {
+    const std::uint8_t bytes[] = {0x46, 0x75, 0x73, 0x0C, 0x60, 0xAE, 0xAC, 0x1F, 0x17, 0x01};
+    thread_local EncryptedName<sizeof(bytes), 0x2FF3C5036D070127ULL> name(bytes);
+    const std::string effectName = name.Text();
+    this->SpawnDirectionalEffect(source, target, effectName);
+  }
+}
 
 // OFFSET: 0x005A4930
 // FUNCTION: fn_03153
