@@ -1293,6 +1293,66 @@ void UIItemStoreWnd::Slot32(int x, int y) {
 }
 
 // OFFSET: 0x00989520
+// FUNCTION: fn_13399
+void UIItemWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->GetItemAt(x, y);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+    if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
+      if (g_windowMgr.unknown_01F0 || g_windowMgr.unknown_01F8) {
+        return;
+      }
+
+      item = LookupClientItemByIdentity(g_session.m_inventoryItems, item.unknown_0000[1]);
+      ItemDescriptions descriptions{g_itemDescriptions};
+      mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 1, item, item.quantity, -1);
+      if (mode->ConfirmDraggedItemUse()) {
+        return;
+      }
+
+      if (g_windowMgr.window_0288) {
+        if (mode->unknown_05CE) {
+          mode->unknown_05CE = 0;
+          mode->SendMsg(55, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+        }
+      } else if (g_windowMgr.LookupWindow(10011)) {
+        if (mode->unknown_05CE) {
+          mode->unknown_05CE = 0;
+          mode->SendMsg(51, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+        }
+      } else if (g_windowMgr.unknown_02F4 && mode->unknown_05CE) {
+        mode->unknown_05CE = 0;
+        mode->SendMsg(76, static_cast<int>(item.unknown_0000[1]), item.quantity, 0, 0);
+      }
+    } else if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+      if (this->tabs) {
+        mode->SendMsg(334, static_cast<int>(item.unknown_0000[1]), this->tabs->unknown_007C == 3, 0, 0);
+      }
+    } else if (HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
+      if (item.unknown_0000[1] > 0 && !g_session.IsPetEgg(item.GetItemId())) {
+        const int magnifiers =
+          LookupClientItem(g_session.m_inventoryItems, 611, 0).quantity + LookupClientItem(g_session.m_inventoryItems, 12325, 0).quantity;
+        if (magnifiers <= 0) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2735)), 255, 0, 0, 0);
+        }
+
+        if (this->unknown_010C == 1 && !item.identified) {
+          struct {
+            unsigned short packetType;
+            unsigned short index;
+          } packet;
+          packet.packetType = ID_CZ_REQ_ONECLICK_ITEMIDENTIFY;
+          packet.index = static_cast<unsigned short>(item.unknown_0000[1]);
+          GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+        }
+      }
+    } else {
+      g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00989960
 // FUNCTION: fn_13401
