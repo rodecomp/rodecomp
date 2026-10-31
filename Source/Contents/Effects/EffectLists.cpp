@@ -1073,12 +1073,32 @@ CEffect* CEffectAllocator<CStarEmperorEffect>::Create() {
 }
 
 // OFFSET: 0x00B20720
+// FUNCTION: fn_18647
+template <>
+CEffect* CEffectAllocator<CStemSpearEffect>::Create() {
+  return new (std::nothrow) CStemSpearEffect();
+}
 
 // OFFSET: 0x00B207A0
+// FUNCTION: fn_18648
+template <>
+CEffect* CEffectAllocator<CStormCannonEffect>::Create() {
+  return new (std::nothrow) CStormCannonEffect();
+}
 
 // OFFSET: 0x00B20820
+// FUNCTION: fn_18649
+template <>
+CEffect* CEffectAllocator<CStormKickEffect>::Create() {
+  return new (std::nothrow) CStormKickEffect();
+}
 
 // OFFSET: 0x00B208A0
+// FUNCTION: fn_18650
+template <>
+CEffect* CEffectAllocator<CSunStanceEffect>::Create() {
+  return new (std::nothrow) CSunStanceEffect();
+}
 
 // OFFSET: 0x00B20920
 
