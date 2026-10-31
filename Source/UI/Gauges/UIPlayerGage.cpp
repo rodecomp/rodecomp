@@ -1,5 +1,24 @@
 #include "UI/Gauges/UIPcGage.h"
 
+// OFFSET: 0x0086D2D0
+
+// OFFSET: 0x0086E120
+// FUNCTION: fn_11065
+UIPcGage::UIPcGage() : unknown_009C(0), current(0), maximum(0), unknown_00A8(0), unknown_00AC(0) {
+}
+
+// OFFSET: 0x0086E3A0
+// FUNCTION: fn_11069
+UIRechargeGage::UIRechargeGage() : current(0), maximum(100) {
+}
+
+// OFFSET: 0x0086E210
+// FUNCTION: fn_11067
+UIPlayerGage::UIPlayerGage() : unknown_009C(0) {
+}
+
+// OFFSET: 0x0086DE90
+
 // OFFSET: 0x00882450
 // FUNCTION: fn_11304
 bool UIPlayerGage::Slot03() {

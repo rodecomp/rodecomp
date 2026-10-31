@@ -32,6 +32,7 @@ public:
 
 class UIRechargeGage : public UIGage {
 public:
+  UIRechargeGage();
   void Paint() override;
   void SetValues(int current, int maximum);
 
@@ -41,6 +42,7 @@ public:
 
 class UIPlayerGage : public UIGage {
 public:
+  UIPlayerGage();
   bool Slot03() override;
   void SetFirstValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
   void SetSecondValues(std::function<std::int64_t()> current, std::function<std::int64_t()> maximum);
@@ -60,6 +62,7 @@ public:
 
 class UIMonsterGage : public UIPcGage {
 public:
+  UIMonsterGage();
   void Paint() override;
   void SetMode(int mode);
 
