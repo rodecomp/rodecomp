@@ -28,12 +28,13 @@ public:
     short midAccessory, int robe, unsigned char flags, int shield, int bodyStyle, int headPalette, int action, int motion, int time
   );
   virtual ~FuncDrawWNDChar();
-  void Draw(int option);
+  void Draw(bool option);
   bool DrawOnTop();
   std::list<int> DrawOrder();
   int IsSpecialLayer(int layer);
   FuncDrawOffset BodyAnchorOffset(const ActionFrame* frame, bool keepScale);
   FuncDrawOffset LayerAnchorOffset(int layer, const ActionFrame** frame, CActRes* act);
+  void LoadResources(const std::list<int>& layers);
 
   /* 0004 */ UIWindow* m_window;
   /* 0008 */ int m_x;

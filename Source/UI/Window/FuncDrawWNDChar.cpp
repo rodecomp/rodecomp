@@ -4,10 +4,168 @@
 #include "Contents/SpriteRidingOffset.h"
 #include "Contents/SpriteRidingPolicy.h"
 #include "Resource/Sprites/ActionResource.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Skills/ClientSkills.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Render/DeviceContext/DeviceContext.h"
+#include "Render/Renderer.h"
+#include "Render/Textures/SpriteAtlas.h"
+#include "Render/Textures/SpritePixels.h"
+#include "Render/Textures/Texture.h"
+#include "Resource/PaletteResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "Script/LuaScript.h"
+#include "UI/Window/UIWindow.h"
 
 // OFFSET: 0x007D4840
 // FUNCTION: fn_09582
 FuncDrawWNDChar::~FuncDrawWNDChar() = default;
+
+// OFFSET: 0x007E3E60
+// FUNCTION: fn_09727
+void FuncDrawWNDChar::Draw(bool option) {
+  std::list<int> layers = this->DrawOrder();
+  this->LoadResources(layers);
+  for (int layer : layers) {
+    if (this->m_resources.find(layer) == this->m_resources.end()) {
+      continue;
+    }
+
+    std::pair<CSprRes*, CActRes*> resources = this->m_resources[layer];
+    CSprRes* sprite = resources.first;
+    CActRes* act = resources.second;
+    if (!sprite || !act) {
+      continue;
+    }
+
+    int key = layer;
+    FuncDrawOffset offset;
+    if (g_session.IsDoramJob(this->m_job) == true) {
+      int x = 0;
+      int y = 0;
+      int turn = 0;
+      if (this->m_motion == 2) {
+        turn = -1;
+      } else if (this->m_motion == 1) {
+        turn = 1;
+      }
+
+      int direction = this->m_action % 8 + turn;
+      if (direction < 0) {
+        direction = 7;
+      }
+      if (direction > 7) {
+        direction = 0;
+      }
+
+      g_luaScript->Call("OffsetItemPos_GetOffsetForDoram", "ddd>dd", this->m_layers[key], direction, g_session.SyncUnknown0E98(), &x, &y);
+      offset.x = x;
+      offset.y = y;
+    }
+
+    const ActionFrame* frame = &act->Frame(this->m_action, this->m_motion);
+    switch (layer) {
+      case 2: {
+        FuncDrawOffset body = this->BodyAnchorOffset(frame, option);
+        if (this->unknown_0094 == 1) {
+          continue;
+        }
+
+        offset.x += body.x;
+        offset.y += body.y;
+        break;
+      }
+      case 3:
+      case 4:
+      case 5:
+      case 6: {
+        if (!this->unknown_0088 && this->m_resources.find(2) != this->m_resources.end() && this->m_resources[2].second) {
+          CActRes* bodyAct = this->m_resources.find(2) != this->m_resources.end() ? this->m_resources[2].second : nullptr;
+          this->BodyAnchorOffset(&bodyAct->Frame(this->m_action, this->m_motion), option);
+        }
+
+        FuncDrawOffset anchor = this->LayerAnchorOffset(layer, &frame, act);
+        offset.x += anchor.x;
+        offset.y += anchor.y;
+        break;
+      }
+      case 0:
+      case 7: {
+        int baseMotion = this->m_motion;
+        int syncedMotion = this->m_motion;
+        CActRes* layerAct = this->m_resources.find(layer) != this->m_resources.end() ? this->m_resources[layer].second : nullptr;
+        int action = this->m_action;
+        if ((action >= 0 && action < 8) || static_cast<unsigned>(action - 16) <= 7) {
+          baseMotion = 0;
+        }
+
+        CActRes* bodyAct = this->m_resources.find(1) != this->m_resources.end() ? this->m_resources[1].second : nullptr;
+        g_session.GetSyncedFrame(bodyAct, layerAct, action, baseMotion, this->m_time, &syncedMotion);
+        frame = &layerAct->Frame(this->m_action, syncedMotion);
+        break;
+      }
+    }
+
+    const std::uint32_t* palette = sprite->palette;
+    if (layer == 1) {
+      if (this->m_bodyStyle > 0) {
+        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->unknown_0050))->palette;
+      }
+    } else if (layer == 2 && this->m_headPalette > 0) {
+      palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->unknown_0068))->palette;
+    }
+
+    const SpriteFrameCell& cell = frame->Cell(this->IsSpecialLayer(layer));
+    if (option == true) {
+      if (cell.image == -1) {
+        continue;
+      }
+
+      SpriteAtlasRecord record{};
+      const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+      if (cell.imageType == 0 && !g_renderer->atlas.Find(image, palette, record)) {
+        g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      }
+
+      float scale = GetSkillFactor(this->m_job);
+      int offsetX = static_cast<int>(static_cast<float>(offset.x) * scale);
+      int offsetY = static_cast<int>(static_cast<float>(offset.y) * scale);
+      UIWindow* window = this->m_window;
+      window->AddSpriteCellOverlay(
+        this->m_x + offsetX, this->m_y + offsetY, reinterpret_cast<int>(act), reinterpret_cast<int>(sprite), image, &cell, scale,
+        static_cast<float>(cell.unknown_001C), window->Color(), palette, 1.0f
+      );
+    } else {
+      if (cell.image == -1) {
+        continue;
+      }
+
+      SpriteAtlasRecord record{};
+      const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+      CTexture* texture;
+      if (cell.imageType == 0) {
+        texture = g_renderer->atlas.Find(image, palette, record);
+        if (!texture) {
+          texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
+        }
+      } else {
+        texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+      }
+
+      int x = this->m_x + cell.x + offset.x;
+      int y = cell.y + this->m_y + offset.y;
+      int clip = y < 0 ? y : 0;
+      int top = y < 0 ? 0 : y;
+      if (clip <= top) {
+        this->m_window->geometry.surface->DrawSurface(
+          x, top, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f - static_cast<float>(clip)), image->width,
+          image->height + clip, cell.mirrored, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+        );
+      }
+    }
+  }
+}
 
 // OFFSET: 0x007E4680
 // FUNCTION: fn_09728
@@ -182,3 +340,5 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
 
   return offset;
 }
+
+// OFFSET: 0x007E5A30
