@@ -302,6 +302,12 @@ class CUIEditCtrl;
 
 class CUIEditBox : public CUIControl {
 public:
+  // INLINED
+  explicit CUIEditBox(UIWindowContext& context)
+      : CUIControl(context), backgroundColor(0xF7F7F7), borderColor(0xC6C6C6), borderWidth(1), editLeft(0), editTop(0), editRight(0), editBottom(0),
+        edit(nullptr), onSubmit() {
+  }
+
   void Resize(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
