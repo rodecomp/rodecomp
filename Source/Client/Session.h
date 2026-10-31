@@ -297,7 +297,9 @@ public:
   /* 54A8 */ int unknown_54A8;
   /* 54AC */ std::string unknown_54AC;
   /* 54C4 */ std::string unknown_54C4;
-  /* 54DC */ unsigned char unknown_54DC[0x60];
+  /* 54DC */ unsigned char unknown_54DC[0x30];
+  /* 550C */ std::string unknown_550C;
+  /* 5524 */ unsigned char unknown_5524[0x18];
   /* 553C */ std::string m_serverName;
   /* 5554 */ unsigned char unknown_5554[4];
   /* 5558 */ int unknown_5558;
@@ -668,6 +670,7 @@ public:
   std::string GetWeaponEffectActName(int job, int sex, int weapon, int weaponItem, int effect, int costume);
   std::string GetWeaponEffectSprName(int job, int sex, int weapon, int weaponItem, int effect, int costume);
   void CollectCardItems();
+  std::uint32_t ReadReplayCharacter(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayStats(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayCompanions(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayMessenger(const std::vector<unsigned char>& data);
