@@ -160,6 +160,80 @@ int UITagListBox::DecodeNumber(std::string text) {
   return result;
 }
 
+// OFFSET: 0x009B8510
+// FUNCTION: fn_13873
+void UITagListBox::DecodeItemFields(const std::string& text, std::vector<int>& fields) {
+  char delimiters[] = "!#$%&'()*+,-/";
+  const int size = static_cast<int>(text.size()) + 1;
+  if (size < 6) {
+    return;
+  }
+
+  char* buffer = new char[size];
+  strcpy_s(buffer, size, text.c_str());
+  std::string value;
+  std::vector<int> options;
+  int optionCount = 0;
+  int cardIndex = 0;
+
+  fields.resize(260);
+  fields[6] = -1;
+
+  value += buffer[0];
+  value += buffer[1];
+  value += buffer[2];
+  value += buffer[3];
+  value += buffer[4];
+  fields[0] = this->DecodeNumber(value);
+  value.clear();
+
+  value += buffer[5];
+  fields[1] = this->DecodeNumber(value);
+  value.clear();
+
+  int index = 2;
+  for (int position = 6; static_cast<unsigned int>(position) < text.size() + 1; ++position) {
+    if (buffer[position] >= '0') {
+      value += buffer[position];
+      continue;
+    }
+
+    for (int type = 0; type < 14; ++type) {
+      if (delimiters[type] != buffer[position]) {
+        continue;
+      }
+
+      if (type == 7) {
+        if (!value.empty()) {
+          fields[index] = this->DecodeNumber(value);
+        }
+        int end = static_cast<int>(text.size());
+        cardIndex = this->DecodeCards(fields, buffer, position, delimiters[7], end, 6);
+      } else if (type == 9) {
+        ++optionCount;
+        if (!value.empty()) {
+          fields[index] = this->DecodeNumber(value);
+        }
+        int end = static_cast<int>(text.size());
+        this->DecodeValues(options, buffer, position, end, delimiters[10], delimiters[11]);
+      } else if (!value.empty()) {
+        fields[index] = this->DecodeNumber(value);
+      }
+
+      value.clear();
+      index = type;
+      break;
+    }
+  }
+
+  if (optionCount != 0) {
+    fields[cardIndex + 8] = optionCount;
+    for (unsigned int option = 0; option < options.size(); ++option) {
+      fields[cardIndex + 9 + option] = options[option];
+    }
+  }
+}
+
 // OFFSET: 0x009BA9E0
 // FUNCTION: fn_13884
 bool UITagListBox::ItemFromFields(const std::vector<int>& fields, ITEM_INFO& item) {
