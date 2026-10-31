@@ -761,6 +761,16 @@ void UITabControl::RecalculateWidths() {
   this->FitToTabs();
 }
 
+// OFFSET: 0x008970F0
+// FUNCTION: fn_11524
+void UIChatHisBox::Resize(int width, int height, bool flag) {
+  const int oldWidth = this->geometry.width;
+  this->Resize(width, height);
+  if (this->geometry.width != oldWidth && flag) {
+    this->sub_89C080();
+  }
+}
+
 // OFFSET: 0x00897370
 // FUNCTION: fn_11526
 void UIChatHisBox3::Resize(int width, int height) {

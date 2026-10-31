@@ -29,6 +29,8 @@ public:
   void ShiftNaviLinks();
   void ClearNaviLinks();
   void CopyHistory(const UIChatHisBox& other);
+  void Resize(int width, int height, bool flag);
+  void sub_89C080();
 
   /* 00DC */ std::list<std::vector<UINaviLinkButton*>> naviLinks;
   /* 00E4 */ std::vector<int> unknown_00E4;
