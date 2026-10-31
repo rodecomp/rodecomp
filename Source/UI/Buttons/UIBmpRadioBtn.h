@@ -21,7 +21,7 @@ struct UIBmpRadioBtnText {
 };
 
 class UIBmpRadioBtn : public UIWindow {
-  friend class UICashShopWnd;
+  friend class UICashShopWnd; friend class UINewMakeCharWnd;
 
 public:
   UIBmpRadioBtn(UIWindowContext& windows, UIButtonContext& controls);

@@ -2,7 +2,14 @@
 #define RAGNAROK_SOURCE_UI_WINDOW_UINEWMAKECHARWND_H
 
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UIBmpRadioBtn.h"
+#include "UI/Buttons/UIBmpTextButton.h"
+#include "UI/Buttons/UIDescriptRace.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Text/UIStaticText.h"
+#include "UI/Window/InputFocus.h"
 #include "UI/Window/UIFrameWnd.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <cstdint>
 
@@ -21,6 +28,10 @@ public:
 
 class UIHairStyleButton : public UIBitmapButton {
 public:
+  // INLINED
+  UIHairStyleButton(UIWindowContext& windows, UIButtonContext& controls, int style, int sex)
+      : UIBitmapButton(windows, controls), m_style(style), m_sex(sex), m_race(0), m_preview(nullptr), m_selected(false) {
+  }
   void Slot15(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -52,6 +63,7 @@ static_assert(sizeof(MakeCharacterStatus) == 0x50);
 class UINewMakeCharWnd : public UIFrameWnd {
 public:
   UINewMakeCharWnd();
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot19() override;
   void sub_7DBFD0();
@@ -86,20 +98,33 @@ public:
   /* 029B */ unsigned char unknown_029B[0x23];
   /* 02BE */ unsigned char m_sex;
   /* 02BF */ unsigned char unknown_02BF;
-  /* 02C0 */ int unknown_02C0;
+  union {
+    /* 02C0 */ int unknown_02C0;
+    UIEditCtrl2* m_nameEdit;
+  };
   /* 02C4 */ int m_race;
   /* 02C8 */ UIWindow* m_raceViews[2];
-  /* 02D0 */ int unknown_02D0[6];
-  /* 02E8 */ unsigned char unknown_02E8[0x48];
-  /* 0330 */ int unknown_0330[2];
-  /* 0338 */ unsigned char unknown_0338;
-  /* 0339 */ unsigned char unknown_0339[0x1B];
-  /* 0354 */ short unknown_0354;
-  /* 0356 */ unsigned char unknown_0356[0x06];
+  union {
+    /* 02D0 */ int unknown_02D0[6];
+    UIHairStyleButton* m_hairStyleButtons[24];
+  };
+  union {
+    struct {
+      /* 0330 */ int unknown_0330[2];
+      /* 0338 */ unsigned char unknown_0338;
+    };
+    UIBmpRadioBtn* m_hairColorButtons[9];
+  };
+  union {
+    /* 0354 */ short unknown_0354;
+    UIBitmapButton* m_genderButtons[2];
+  };
   /* 035C */ int unknown_035C;
   /* 0360 */ unsigned long m_startTime;
   /* 0364 */ int unknown_0364;
   /* 0368 */ int unknown_0368;
+  UIButtonContext* m_controls;
+  UIEditContext* m_editContext;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -113,6 +138,9 @@ static_assert(offsetof(UINewMakeCharWnd, m_race) == 0x2C4);
 static_assert(offsetof(UINewMakeCharWnd, m_status) == 0x214);
 static_assert(offsetof(UINewMakeCharWnd, m_slot) == 0x29A);
 static_assert(offsetof(UINewMakeCharWnd, m_startTime) == 0x360);
+static_assert(offsetof(UINewMakeCharWnd, m_hairStyleButtons) == 0x2D0);
+static_assert(offsetof(UINewMakeCharWnd, m_hairColorButtons) == 0x330);
+static_assert(offsetof(UINewMakeCharWnd, m_genderButtons) == 0x354);
 #endif
 
 #endif

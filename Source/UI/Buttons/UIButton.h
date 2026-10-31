@@ -38,7 +38,7 @@ class UIButton : public UIWindow {
   friend class UIAchListWnd;
   friend class UIStylingshopTabParentWnd;
   friend class UIDisplayCharacter;
-  friend class UIPrivateAirplaneWnd;
+  friend class UIPrivateAirplaneWnd; friend class UINewMakeCharWnd;
 
 public:
   UIButton(UIWindowContext& windowContext, UIButtonContext& buttonContext);

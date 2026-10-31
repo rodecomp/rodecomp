@@ -336,3 +336,177 @@ void UINewMakeCharWnd::sub_7DBFD0() {
 
   this->m_raceOffsets = GetBodyImfName(this->m_job, this->m_sex, this->m_head, this->m_costumeJob);
 }
+
+// OFFSET: 0x007DA340
+// FUNCTION: fn_09614
+void UINewMakeCharWnd::Slot15(int width, int height) {
+  UIBitmapButton* closeButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  closeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_close_normal.bmp", 0, 0);
+  closeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_close_over.bmp", 1, 0);
+  closeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_close_press.bmp", 2, 0);
+  closeButton->SetSize(closeButton->BitmapWidth(), closeButton->BitmapHeight());
+  closeButton->Move(0x300, 9);
+  closeButton->SetId(0xB9);
+  this->AddChild(closeButton);
+
+  UIBmpTextButton* makeButton = new UIBmpTextButton(*this->m_context, *this->m_controls);
+  makeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_normal.bmp", 0, 0);
+  makeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_over.bmp", 1, 0);
+  makeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_press.bmp", 2, 0);
+  makeButton->SetSize(makeButton->BitmapWidth(), makeButton->BitmapHeight());
+  makeButton->Move(0x268, 0x17B);
+  makeButton->SetText(LookupMessage(0xD11));
+  makeButton->AddTextStyle(0, 0xE, 0x313131, 1, 1, -1000, -1000);
+  makeButton->AddTextStyle(1, 0xE, 0x313131, 1, 1, -1000, -1000);
+  makeButton->AddTextStyle(2, 0xE, 0x313131, 1, 1, -1000, -1000);
+  makeButton->SetId(0xB8);
+  this->AddChild(makeButton);
+
+  UIBmpTextButton* cancelButton = new UIBmpTextButton(*this->m_context, *this->m_controls);
+  cancelButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_normal.bmp", 0, 0);
+  cancelButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_over.bmp", 1, 0);
+  cancelButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_press.bmp", 2, 0);
+  cancelButton->SetSize(cancelButton->BitmapWidth(), cancelButton->BitmapHeight());
+  cancelButton->Move(0x19, 0x17B);
+  cancelButton->SetText(LookupMessage(0xD17));
+  cancelButton->AddTextStyle(0, 0xE, 0x313131, 1, 1, -1000, -1000);
+  cancelButton->AddTextStyle(1, 0xE, 0x313131, 1, 1, -1000, -1000);
+  cancelButton->AddTextStyle(2, 0xE, 0x313131, 1, 1, -1000, -1000);
+  cancelButton->SetId(0xB9);
+  this->AddChild(cancelButton);
+
+  this->m_nameEdit = new UIEditCtrl2(*this->m_context, *this->m_editContext);
+  this->m_nameEdit->SetSize(0x82, 0x14);
+  this->m_nameEdit->Move(0x1B3, 0x10C);
+  this->m_nameEdit->maximum = 0x17;
+  this->AddChild(this->m_nameEdit);
+
+  UIDescriptRace* human = new UIDescriptRace(0);
+  human->SetBitmap("유저인터페이스\\make_character_ver2\\img_human_off.bmp", 0, 0);
+  human->SetBitmap("유저인터페이스\\make_character_ver2\\img_human_on.bmp", 1, 0);
+  human->SetBitmap("유저인터페이스\\make_character_ver2\\img_human_on.bmp", 2, 0);
+  human->SetSize(human->BitmapWidth(), human->BitmapHeight());
+  human->Move(0x15, 0x24);
+  this->m_raceViews[0] = human;
+  this->AddChild(human);
+
+  UIDescriptRace* doram = new UIDescriptRace(1);
+  const char* doramNormal;
+  const char* doramActive;
+  if (!g_doramCreationEnabled) {
+    doramActive = "유저인터페이스\\make_character_ver2\\img_doram_comingSoon.bmp";
+    doramNormal = doramActive;
+  } else {
+    doramActive = "유저인터페이스\\make_character_ver2\\img_doram_on.bmp";
+    doramNormal = "유저인터페이스\\make_character_ver2\\img_doram_off.bmp";
+  }
+  doram->SetBitmap(doramNormal, 0, 0);
+  doram->SetBitmap(doramActive, 1, 0);
+  doram->SetBitmap(doramActive, 2, 0);
+  doram->SetSize(doram->BitmapWidth(), doram->BitmapHeight());
+  doram->Move(0x15, 0xCA);
+  this->m_raceViews[1] = doram;
+  this->AddChild(doram);
+
+  this->m_genderButtons[1] = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_genderButtons[1]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_off.bmp", 0, 0);
+  this->m_genderButtons[1]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_over.bmp", 1, 0);
+  this->m_genderButtons[1]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_press.bmp", 2, 0);
+  this->m_genderButtons[1]->SetSize(this->m_genderButtons[1]->BitmapWidth(), this->m_genderButtons[1]->BitmapHeight());
+  this->m_genderButtons[1]->Move(0x1B5, 0x3B);
+  this->m_genderButtons[1]->SetId(0x20D);
+  this->AddChild(this->m_genderButtons[1]);
+
+  this->m_genderButtons[0] = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_genderButtons[0]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_off.bmp", 0, 0);
+  this->m_genderButtons[0]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_over.bmp", 1, 0);
+  this->m_genderButtons[0]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_press.bmp", 2, 0);
+  this->m_genderButtons[0]->SetSize(this->m_genderButtons[0]->BitmapWidth(), this->m_genderButtons[0]->BitmapHeight());
+  this->m_genderButtons[0]->Move(500, 0x3B);
+  this->m_genderButtons[0]->SetId(0x20D);
+  this->AddChild(this->m_genderButtons[0]);
+
+  if (this->m_sex == 1) {
+    this->m_genderButtons[1]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_on.bmp", 0, 0);
+  } else if (this->m_sex == 0) {
+    this->m_genderButtons[0]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_on.bmp", 0, 0);
+  }
+
+  UIBitmapButton* leftTurn = new UIBitmapButton(*this->m_context, *this->m_controls);
+  leftTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_leftTurn_normal.bmp", 0, 0);
+  leftTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_leftTurn_over.bmp", 1, 0);
+  leftTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_leftTurn_press.bmp", 2, 0);
+  leftTurn->SetSize(leftTurn->BitmapWidth(), leftTurn->BitmapHeight());
+  leftTurn->Move(0x1AA, 0xB3);
+  leftTurn->SetId(0xE3);
+  leftTurn->m_argument = 0;
+  leftTurn->SetTooltip(LookupMessage(0x87E));
+  this->AddChild(leftTurn);
+
+  UIBitmapButton* rightTurn = new UIBitmapButton(*this->m_context, *this->m_controls);
+  rightTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_rightTurn_normal.bmp", 0, 0);
+  rightTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_rightTurn_over.bmp", 1, 0);
+  rightTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_rightTurn_press.bmp", 2, 0);
+  rightTurn->SetSize(rightTurn->BitmapWidth(), rightTurn->BitmapHeight());
+  rightTurn->Move(0x227, 0xB3);
+  rightTurn->SetId(0xE2);
+  rightTurn->m_argument = 0;
+  rightTurn->SetTooltip(LookupMessage(0x87F));
+  this->AddChild(rightTurn);
+
+  UIStaticText* hairStyleTitle = new UIStaticText(*this->m_context, *this->m_controls);
+  hairStyleTitle->SetSize(100, 0xF);
+  hairStyleTitle->SetText(LookupMessage(0xD12), 0);
+  hairStyleTitle->SetColor(0x40, 0x40, 0x40);
+  hairStyleTitle->SetFont(0, 0xB, 1, 0);
+  hairStyleTitle->Move(0x261, 0x2E);
+  this->AddChild(hairStyleTitle);
+
+  for (int index = 0; index < 24; ++index) {
+    this->m_hairStyleButtons[index] = new UIHairStyleButton(*this->m_context, *this->m_controls, index, this->m_sex);
+    this->m_hairStyleButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_normal.bmp", 0, 0);
+    this->m_hairStyleButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_over.bmp", 1, 0);
+    this->m_hairStyleButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_select.bmp", 2, 0);
+    this->m_hairStyleButtons[index]->SetSize(0x24, 0x25);
+    this->m_hairStyleButtons[index]->SetId(0x20C);
+    this->m_hairStyleButtons[index]->Move((index % 4) * 0x26 + 0x25E, (index / 4) * 0x25 + 0x3B);
+    this->AddChild(this->m_hairStyleButtons[index]);
+    if (index == 0) {
+      this->m_hairStyleButtons[0]->SendMsg(this, 13, 1, 0, 0, 0);
+    }
+  }
+
+  UIStaticText* hairColorTitle = new UIStaticText(*this->m_context, *this->m_controls);
+  hairColorTitle->SetSize(100, 0xF);
+  hairColorTitle->SetText(LookupMessage(0xD13), 0);
+  hairColorTitle->SetColor(0x40, 0x40, 0x40);
+  hairColorTitle->SetFont(0, 0xB, 1, 0);
+  hairColorTitle->Move(0x261, 0x11F);
+  this->AddChild(hairColorTitle);
+
+  char name[128];
+  memset(name, 0, sizeof(name));
+  for (int index = 0; index < 9; ++index) {
+    UIBmpRadioBtn* button = new UIBmpRadioBtn(*this->m_context, *this->m_controls);
+    memset(name, 0, 0x40);
+    sprintf(name, "유저인터페이스\\make_character_ver2\\color%02d_off.bmp", index + 1);
+    button->SetBitmap(name, 0);
+    memset(name, 0, 0x40);
+    sprintf(name, "유저인터페이스\\make_character_ver2\\color%02d_over.bmp", index + 1);
+    button->SetBitmap(name, 1);
+    memset(name, 0, 0x40);
+    sprintf(name, "유저인터페이스\\make_character_ver2\\color%02d_on.bmp", index + 1);
+    button->SetBitmap(name, 2);
+    if (index == 0) {
+      button->SendMsg(this, 13, 1, 0, 0, 0);
+    }
+    button->m_value = 0x1EF;
+    button->Move((index % 5) * 0x1B + 0x26B, (index / 5) * 0x18 + 0x132);
+    this->m_hairColorButtons[index] = button;
+    this->AddChild(button);
+  }
+
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_nameEdit);
+  this->m_message0 = 0xB8;
+}
