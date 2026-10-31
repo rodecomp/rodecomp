@@ -131,11 +131,16 @@ struct UIEditCtrl3Table {
 class UIEditCtrl3 : public UIEditCtrl2 {
 public:
   UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
+  UIEditCtrl3(const UIEditCtrl3& other);
+  void Slot15(int width, int height) override;
   void Resize(int width, int height) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  void SetText(const char* value) override;
   void Slot35(int value) override;
   void Trim() override;
   virtual void UpdateScrollBar();
+  void HandleInputMessage(unsigned key, std::intptr_t data);
 
   void PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int& unused);
   std::string TakePendingText();
@@ -155,9 +160,9 @@ public:
   /* 0158 */ int unknown_0158;
   /* 015C */ short unknown_015C;
   /* 015E */ unsigned char unknown_015E;
-  /* 0160 */ int unknown_0160;
-  /* 0164 */ int unknown_0164;
-  /* 0168 */ std::vector<int> unknown_0168;
+  /* 0160 */ char* unknown_0160;
+  /* 0164 */ char* unknown_0164;
+  /* 0168 */ std::vector<std::string> unknown_0168;
   /* 0174 */ UIEditCtrl3Table unknown_0174;
   /* 0184 */ short unknown_0184;
 };
@@ -226,6 +231,7 @@ public:
 class UIWhisperEditCtrl : public UIEditCtrl {
 public:
   void Slot23() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SetText(const char* value) override;
 
   /* 011C */ std::vector<std::string> history;

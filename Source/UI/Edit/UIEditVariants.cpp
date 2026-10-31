@@ -4,8 +4,10 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
+#include "UI/Buttons/UIButton.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Lists/UIScrollBar.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Text/FormatString.h"
 #include <cstring>
@@ -40,6 +42,10 @@ int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   return 0;
 }
 
+// OFFSET: 0x00863C70
+
+// OFFSET: 0x0085E420
+
 // OFFSET: 0x0084F570
 // FUNCTION: fn_10659
 UIEditCtrl3::UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl2(windows, edit) {
@@ -61,6 +67,17 @@ UIEditCtrl3::UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit) : UIEdit
   this->unknown_0164 = 0;
 }
 
+// OFFSET: 0x0084F2B0
+
+// OFFSET: 0x0085AC40
+// FUNCTION: fn_10786
+void UIEditCtrl3::Slot15(int width, int height) {
+  auto* scrollBar = new UIScrollBar(*this->m_context);
+  this->unknown_0130 = scrollBar;
+  scrollBar->Configure(width - 10, 0, 1, height);
+  this->AddChild(scrollBar);
+}
+
 // OFFSET: 0x00863280
 // FUNCTION: fn_10906
 void UIEditCtrl3::Resize(int width, int height) {
@@ -70,6 +87,32 @@ void UIEditCtrl3::Resize(int width, int height) {
   using ResizeHandler = void(__thiscall*)(UIEditCtrl3*);
   reinterpret_cast<ResizeHandler>((*reinterpret_cast<void***>(this))[58])(this);
 }
+
+// OFFSET: 0x00865220
+// FUNCTION: fn_10922
+int UIWhisperEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 18) {
+    if (!this->history.empty()) {
+      if (this->historyIndex != 0) {
+        --this->historyIndex;
+      }
+      this->SetText(this->history[this->historyIndex].c_str());
+      this->Slot23();
+    }
+  } else if (message == 19) {
+    if (!this->history.empty() && static_cast<std::size_t>(this->historyIndex) < this->history.size()) {
+      ++this->historyIndex;
+      this->SetText(this->historyIndex == static_cast<int>(this->history.size()) ? "" : this->history[this->historyIndex].c_str());
+      this->Slot23();
+    }
+  } else {
+    return this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00867FC0
 
 // OFFSET: 0x00853760
 // FUNCTION: fn_10741
