@@ -3,6 +3,11 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Contents/MapInfoMgr.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/World/World.h"
+#include "File/ShortcutFilename.h"
+#include "Render/Renderer.h"
+#include "UI/Buttons/UITextButton.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
@@ -142,6 +147,251 @@ void UIMiniPartyInfoWnd::Slot33(int, int) {
   if (!g_messengerGroupCollapsed) {
     this->SendMsg(nullptr, 0x31, 0, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x007412A0
+// FUNCTION: fn_07735
+int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 34: {
+      CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+      CRenderObject* actor;
+      if (static_cast<std::uint32_t>(argument2) == g_session.m_aid) {
+        actor = world->player;
+      } else {
+        actor = world->GetGameActorByAID(argument2);
+      }
+      if (actor) {
+        this->m_gauge->Move(52, 32);
+        this->m_gauge->SetValues(argument3, argument4);
+        this->Invalidate();
+        return 0;
+      }
+      this->m_gauge->Move(-100, -100);
+      this->Invalidate();
+      break;
+    }
+    case 231:
+      if (!g_messengerGroupCollapsed) {
+        this->m_owner->GetMember();
+        return 0;
+      }
+      break;
+    case 232:
+      if (!g_messengerGroupCollapsed) {
+        if (this->m_owner->GetMember().valid && !(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
+          const char* group;
+          if (g_windowMgr.IsFriend(this->m_owner->GetMember().name.c_str())) {
+            group = LookupMessage(102);
+          } else {
+            group = g_session.IsGuildMemberCharacter(this->m_owner->GetMember().characterId) ? "GuildMember" : nullptr;
+          }
+          g_windowMgr.SendNotice(
+            14, reinterpret_cast<std::intptr_t>(this->m_owner->GetMember().name.c_str()), reinterpret_cast<std::intptr_t>(group),
+            reinterpret_cast<std::intptr_t>(ShortcutFilename(this->m_owner->GetMember().characterId).c_str()), 0, 0
+          );
+          return 0;
+        }
+      }
+      break;
+    case 233:
+      if (!g_messengerGroupCollapsed && this->m_owner->GetMember().valid) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(191), 0, true, false, 0, "Message", 280, 120, 0);
+        return 0;
+      }
+      break;
+    case 234:
+      if (!g_messengerGroupCollapsed) {
+        if (g_windowMgr.unknown_042C) {
+          g_windowMgr.CloseWindow(208);
+        }
+        if (!g_windowMgr.CloseWindow(53) && ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount()) {
+          g_windowMgr.EnsureWindow(53);
+        }
+        g_windowMgr.CloseWindow(68);
+        UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_030C);
+        if (window) {
+          int x = 0;
+          int y = 0;
+          this->ToScreen(x, y);
+          window->Move(x + 2 + this->geometry.width, y);
+          return 0;
+        }
+      }
+      break;
+    case 235:
+      if (!g_messengerGroupCollapsed && this->m_owner->GetMember().valid) {
+        if (!(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
+          if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(363), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+            g_modeMgr.gameMode->SendMsg(62, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
+            return 0;
+          }
+        }
+      }
+      break;
+    case 236:
+      if (!g_messengerGroupCollapsed) {
+        if (this->m_owner->GetMember().valid && this->m_owner->GetMember().name == g_session.DecodePlayerName()) {
+          if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(357), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+            g_modeMgr.gameMode->SendMsg(61, 0, 0, 0, 0);
+            return 0;
+          }
+        }
+      }
+      break;
+    }
+    return 0;
+  case 23: {
+    if (this->m_owner->GetMember().valid && !this->m_owner->GetMember().valid) {
+      return 0;
+    }
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (this->m_owner->GetMember().offline) {
+      this->m_gauge->Move(-100, -100);
+      return 0;
+    }
+
+    int current = 0;
+    int maximum = 0;
+    const bool self = this->m_owner->GetMember().accountId == g_session.m_aid;
+    CWorld* world = mode->scene;
+    CRenderObject* actor;
+    if (self) {
+      actor = world->player;
+      current = g_session.unknown_5568;
+      maximum = g_session.unknown_556C;
+    } else {
+      actor = world->GetGameActorByAID(this->m_owner->GetMember().accountId);
+      if (actor) {
+        UIPcGage* gauge = reinterpret_cast<UIPcGage*&>(static_cast<CPc*>(actor)->unknown_0490);
+        if (gauge) {
+          current = gauge->current;
+          maximum = gauge->maximum;
+        } else {
+          current = 0;
+          maximum = 0;
+        }
+      }
+    }
+    if (!actor) {
+      this->m_gauge->Move(-100, -100);
+      return 0;
+    }
+    this->m_gauge->Move(52, 32);
+    this->m_gauge->SetValues(current, maximum);
+    return 0;
+  }
+  case 48:
+    if (!this->m_owner->GetMember().valid) {
+      return 0;
+    }
+    if (this->m_entries.empty()) {
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3236), 0, false, false, 0, "Message", 280, 120, 0);
+      return 0;
+    }
+    switch (this->m_entries[argument1].value) {
+    case 0:
+    case 19:
+      this->SendMsg(nullptr, 6, 235, 0, 0, 0);
+      return 0;
+    case 3:
+      this->SendMsg(nullptr, 6, 233, 0, 0, 0);
+      return 0;
+    case 5:
+      if (this->m_owner->m_cell != -1 && this->m_owner->GetMember().valid) {
+        g_modeMgr.gameMode->SendMsg(59, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
+        return 0;
+      }
+      break;
+    case 6:
+      this->SendMsg(nullptr, 6, 231, 0, 0, 0);
+      return 0;
+    case 7:
+      this->SendMsg(nullptr, 6, 232, 0, 0, 0);
+      return 0;
+    case 9:
+      this->SendMsg(nullptr, 6, 236, 0, 0, 0);
+      return 0;
+    case 20:
+      this->SendMsg(nullptr, 71, 0, 0, 0, 0);
+      return 0;
+    case 43:
+      if (this->m_owner->m_cell != -1) {
+        if (this->m_owner->GetMember().valid && this->m_owner->GetMember().offline == 0) {
+          if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1533), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+            g_modeMgr.gameMode->SendMsg(260, this->m_owner->GetMember().accountId, 0, 0, 0);
+            return 0;
+          }
+        } else {
+          g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1534)), 255, 3, 0, 0);
+          return 0;
+        }
+      }
+      break;
+    case 58:
+      if (this->m_owner->GetMember().valid) {
+        g_modeMgr.gameMode->SendMsg(268, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
+        return 0;
+      }
+      break;
+    case 61:
+      if (this->m_owner->GetMember().valid) {
+        g_windowMgr.sub_A8C4B0(this->m_owner->GetMember().accountId);
+        return 0;
+      }
+      break;
+    }
+    return 0;
+  case 49:
+    this->m_entries.clear();
+    if (g_windowMgr.unknown_0210) {
+      g_windowMgr.CloseWindow(18);
+    }
+    if (this->m_owner->GetMember().valid) {
+      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(2808)).c_str(), 58));
+      if (this->m_owner->GetMember().name == g_session.DecodePlayerName()) {
+        this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(96)).c_str(), 9));
+      } else {
+        this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(360)).c_str(), 7));
+        if (g_session.unknown_5464) {
+          this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(97)).c_str(), 0));
+          this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(1532)).c_str(), 43));
+        }
+      }
+      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(3102)).c_str(), 61));
+    }
+    if (this->m_entries.size()) {
+      UIWindow* menu = g_windowMgr.EnsureWindow(18);
+      menu->SendMsg(nullptr, 75, 0, 0, 0, 0);
+      for (unsigned index = 0; index < this->m_entries.size(); ++index) {
+        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_entries[index].text.c_str()), 0, 0, 0);
+      }
+      menu->SendMsg(nullptr, 83, 301, this->m_owner->m_cell, 0, 0);
+      menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
+      int x = g_screenWidth + 1;
+      int y = g_screenHeight + 1;
+      if (x < 1) {
+        x = 1;
+      }
+      if (x > g_renderer->viewport.width - menu->geometry.width) {
+        x = g_renderer->viewport.width - menu->geometry.width;
+      }
+      if (y < 1) {
+        y = 1;
+      }
+      if (y > g_renderer->viewport.height - menu->geometry.height) {
+        y = g_renderer->viewport.height - menu->geometry.height;
+      }
+      menu->Move(x, y);
+      return 0;
+    }
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
 // OFFSET: 0x00742E10
