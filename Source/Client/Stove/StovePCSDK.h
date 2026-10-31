@@ -32,6 +32,36 @@ namespace Stove::PCSDK {
       /* 0000 */ std::uint8_t unknown_0000[20];
     };
   }
+
+  namespace IAP {
+    struct __declspec(dllimport) StovePCPaymentOption {
+      void SetOperation(int operation);
+
+      /* 0000 */ std::uint8_t unknown_0000[24];
+    };
+
+    struct __declspec(dllimport) StovePCTermsOption : StovePCPaymentOption {
+      StovePCTermsOption();
+    };
+
+    struct __declspec(dllimport) StovePCFetchProductParam {
+      StovePCFetchProductParam();
+      ~StovePCFetchProductParam();
+      void SetCategoryId(const wchar_t* categoryId);
+      void SetPageNumber(int pageNumber);
+      void SetPageSize(int pageSize);
+
+      /* 0000 */ std::uint8_t unknown_0000[12];
+    };
+
+    inline void FetchTermsAgreement(StovePCTermsOption* option, void (*callback)(CallbackResult)) {
+      reinterpret_cast<void(__cdecl*)(StovePCTermsOption*, void (*)(CallbackResult))>(0x00E6CD71)(option, callback);
+    }
+
+    inline void FetchProducts(StovePCFetchProductParam* param, void (*callback)(CallbackResult)) {
+      reinterpret_cast<void(__cdecl*)(StovePCFetchProductParam*, void (*)(CallbackResult))>(0x00E6CD5F)(param, callback);
+    }
+  }
 }
 
 extern "C" {

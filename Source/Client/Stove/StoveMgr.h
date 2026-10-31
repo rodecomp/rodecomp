@@ -27,6 +27,8 @@ public:
   const char* GetAccessToken();
   void FetchUser();
   void WaitForCallback();
+  void FetchCategoryProducts();
+  void FetchAllProducts();
   void OnInitializeCallback(Stove::PCSDK::CallbackResult callbackResult);
 };
 

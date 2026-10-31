@@ -16,6 +16,34 @@
 // GLOBAL: gl_24904
 bool g_stoveWaitingCallback;
 
+void sub_63A7F0(Stove::PCSDK::CallbackResult callbackResult);
+void sub_63A8D0(Stove::PCSDK::CallbackResult callbackResult);
+void sub_63A860(Stove::PCSDK::CallbackResult callbackResult);
+void sub_DD8A20(int value);
+
+// STRING: st_01259
+const wchar_t g_stoveCategoryIdA[] = L"44C71118750747D";
+
+// STRING: st_01260
+const wchar_t g_stoveCategoryIdB[] = L"14A6891F90E24D7";
+
+// OFFSET: 0x0063EEE0
+
+// OFFSET: 0x0063F030
+// FUNCTION: fn_04801
+void FetchStoveTermsAgreement() {
+  Stove::PCSDK::IAP::StovePCTermsOption option;
+  option.SetOperation(0);
+  Stove::PCSDK::IAP::FetchTermsAgreement(&option, sub_63A7F0);
+  g_stoveWaitingCallback = true;
+  do {
+    Base_RunCallback();
+    Sleep(200);
+  } while (g_stoveWaitingCallback);
+}
+
+// OFFSET: 0x0063E910
+
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
