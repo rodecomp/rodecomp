@@ -17,8 +17,7 @@
 
 namespace {
   struct CRollingCutterRagEffect : CRagEffect {
-    CRollingCutterRagEffect() : duration(60), elapsed(0) {
-    }
+    CRollingCutterRagEffect();
 
     bool OnProcess() override;
     int GetDuration() override;
@@ -43,6 +42,11 @@ namespace {
     std::memcpy(recent + 1, g_launchInfo, sizeof(recent) - sizeof(recent[0]));
     std::memcpy(g_launchInfo, recent, sizeof(recent));
   }
+}
+
+// OFFSET: 0x00611ED0
+// FUNCTION: fn_04336
+CRollingCutterRagEffect::CRollingCutterRagEffect() : duration(60), elapsed(0) {
 }
 
 // OFFSET: 0x00612000
