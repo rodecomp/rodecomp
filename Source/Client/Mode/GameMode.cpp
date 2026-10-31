@@ -1496,3 +1496,96 @@ void CPingLiveSchedule::Process(const std::uint64_t& now) {
     GetRagConnection().Send(sizeof(packet), &packet);
   }
 }
+
+#include "Client/Application/ApplicationWindow.h"
+#include "Client/Mode/CLoginMode.h"
+#include "Client/ModeFadeOut.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Render/RenderSystemBase.h"
+#include "Resource/ResourceMgr.h"
+#include "Security/NProtectGameGuardMgr.h"
+#include "Utility/Cipher/XorBytes.h"
+
+namespace {
+
+template <std::size_t Length, std::uint64_t Key>
+class GameModeEncryptedName {
+public:
+  explicit GameModeEncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~GameModeEncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  /* 0000 */ std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+
+}
+
+// OFFSET: 0x00CDEF00
+// FUNCTION: fn_21322
+int CGameMode::Run() {
+  while (this->running) {
+    if (g_modalImmediate) {
+      break;
+    }
+
+    if (g_windowMgr.modalWindows.empty() || g_windowMgr.modalWindows.back() == nullptr) {
+      if (!g_windowMgr.persistentWindows.empty()) {
+        if (g_windowMgr.retainedPersistentWindow) {
+          for (UIWindow* window : g_windowMgr.persistentWindows) {
+            g_windowMgr.Schedule(window);
+          }
+          g_windowMgr.retainedPersistentWindow = false;
+        }
+        g_windowMgr.persistentWindows.clear();
+      }
+
+      if (this->pendingCursorType != -1) {
+        this->cursorType = this->pendingCursorType;
+        this->cursorFrame = 0;
+        this->pendingCursorType = -1;
+        this->Slot7(this->cursorType);
+      }
+    }
+
+    if (g_nProtectGameGuardMgr->HasError()) {
+      GetRagConnection().Close();
+      g_modeMgr.Quit();
+      std::string message = g_nProtectGameGuardMgr->ErrorMessage();
+      if (!message.empty()) {
+        const std::uint8_t source[] = {0x53, 0x11, 0xF9, 0xA6, 0x8D, 0x7E, 0xA6, 0xD9, 0x1D, 0x06,
+                                       0xEA, 0xA4, 0x9C, 0x5C, 0xB0, 0xCC, 0x4F, 0x25, 0x8B};
+        thread_local GameModeEncryptedName<sizeof(source), 0xADC51BF9C98B413DULL> name(source);
+        MessageBoxA(hWnd, message.c_str(), name.Text(), 0);
+      }
+    }
+
+    this->Update();
+    Sleep(1);
+  }
+
+  FadeOutMode(*g_renderer, *GetRenderSystemHolder()->system, ResourceMgr::Instance(), 0, false, 0.0f, 0.0f);
+  return 1;
+}
+
+#include "Client/Input/Mouse.h"
+
+// OFFSET: 0x00CDFC40

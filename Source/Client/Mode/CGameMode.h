@@ -450,6 +450,8 @@ public:
     int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth,
     int eleventh, int twelfth, int thirteenth, int fourteenth, std::string text, int fifteenth
   );
+  int Run() override;
+  void TargetActorByAid(int aid);
   void Slot7(int value) override;
   void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);
   void ReceiveSummonHpInit(const unsigned char* buffer);
