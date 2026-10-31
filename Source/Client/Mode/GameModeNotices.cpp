@@ -2364,6 +2364,52 @@ void CGameMode::ReceiveTypedNotice(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D6BE80
+// FUNCTION: fn_22076
+void CGameMode::ReceiveRodexMailReturn(const unsigned char* data) {
+  if (g_windowMgr.unknown_045C) {
+    reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.unknown_045C)->SetZenyButtonDisabled(0);
+  }
+
+  const auto* packet = reinterpret_cast<const RodexMailReturnPacket*>(data);
+  switch (packet->result) {
+  case 0: {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2591)), 0x64FFFF, 0, 0, 0);
+
+    std::map<std::int64_t, RodexMail>::iterator mail;
+    switch (packet->type) {
+    case 0:
+      mail = g_rodexMailStore->m_mails0.find(packet->mailId);
+      if (mail != g_rodexMailStore->m_mails0.end()) {
+        mail->second.unknown_0001 -= 2;
+      }
+      break;
+    case 1:
+      mail = g_rodexMailStore->m_mails1.find(packet->mailId);
+      if (mail != g_rodexMailStore->m_mails1.end()) {
+        mail->second.unknown_0001 -= 2;
+      }
+      break;
+    case 2:
+      mail = g_rodexMailStore->m_mails2.find(packet->mailId);
+      if (mail != g_rodexMailStore->m_mails2.end()) {
+        mail->second.unknown_0001 -= 2;
+      }
+      break;
+    }
+
+    if (g_windowMgr.unknown_045C) {
+      reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.unknown_045C)->DisableZenyButton();
+    }
+    break;
+  }
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2592)), 0x64FFFF, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2593)), 0x64FFFF, 0, 0, 0);
+    break;
+  }
+}
 
 // OFFSET: 0x00D73E00
 
