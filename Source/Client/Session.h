@@ -728,6 +728,7 @@ public:
   std::uint32_t ReadReplayItems(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayShops(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayExtra(const std::vector<unsigned char>& data);
+  std::uint32_t ReadReplayShortcuts(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayReserved(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayEntryQueue(const std::vector<unsigned char>& data);
   std::vector<unsigned char> BuildShortcutReplayRecords();

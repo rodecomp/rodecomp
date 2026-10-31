@@ -912,6 +912,46 @@ std::uint32_t CSession::ReadReplayQuests(const std::vector<unsigned char>& data)
   return offset;
 }
 
+// OFFSET: 0x00E482B0
+// FUNCTION: fn_24218
+std::uint32_t CSession::ReadReplayShortcuts(const std::vector<unsigned char>& data) {
+  if (data.begin() == data.end()) {
+    return 0xFFFFFFFF;
+  }
+
+  std::uint32_t offset = 6;
+  ReplayBlockHeader header{};
+  std::memcpy(&header, data.data(), sizeof(header));
+  if (header.id != 7000) {
+    return 0xFFFFFFFF;
+  }
+
+  while (offset < data.size()) {
+    header = {};
+    std::memcpy(&header, data.data() + offset, sizeof(header));
+    offset += 6;
+    switch (header.id) {
+    case 7001:
+      return offset;
+    case 7100:
+      g_session.ClearShortcutSlots();
+      std::memcpy(this->m_shortcutSlots, data.data() + offset, header.bytes);
+      offset += header.bytes;
+      break;
+    case 7101:
+      g_session.ClearSlots06EB();
+      std::memcpy(&this->unknown_06EB, data.data() + offset, header.bytes);
+      offset += header.bytes;
+      break;
+    default:
+      offset += header.bytes;
+      break;
+    }
+  }
+
+  return offset;
+}
+
 // OFFSET: 0x00E488C0
 // FUNCTION: fn_24221
 void CSession::UpdateBodyStyle(int job, int style, int renderJob) {
