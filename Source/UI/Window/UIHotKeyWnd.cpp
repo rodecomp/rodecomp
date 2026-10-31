@@ -1,6 +1,7 @@
 #include "UI/Window/UIHotKeyWnd.h"
 
 #include "Client/Session.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
 #include "Contents/MessageTable.h"
 #include "Script/LuaScript.h"
@@ -11,6 +12,7 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -260,6 +262,26 @@ UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve
   }
 
   return entry;
+}
+
+// OFFSET: 0x009317E0
+// FUNCTION: fn_12708
+void UIHotKeyWnd::ShowHotkeyTooltip(int x, int y) {
+  const int index = this->RowFromPoint(x, y);
+  if (index < 0) {
+    return;
+  }
+
+  const int column = index / this->m_rowsPerPage;
+  const int row = index % this->m_rowsPerPage;
+  int screenX = this->geometry.width / 2 * column + 0x14;
+  int screenY = (row - 1) * this->unknown_00D0 + this->unknown_00CC + this->unknown_00C4 + this->unknown_00BC;
+  this->ToScreen(screenX, screenY);
+
+  const HotkeyEntry entry = this->GetHotkey(this->m_tab, index + (this->m_page * 9 - 9) * 4, true);
+  if (!entry.info.text.empty()) {
+    reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(entry.info.text.c_str(), screenX, screenY, 0xFFFFFFFF, 0, 1);
+  }
 }
 
 // OFFSET: 0x0091CA10

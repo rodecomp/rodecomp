@@ -29,6 +29,7 @@ public:
   void SaveHotkeys();
   void SetHotkey(int tab, int index, HotkeyInfo info);
   HotkeyEntry GetHotkey(int tab, int index, bool resolve);
+  void ShowHotkeyTooltip(int x, int y);
   void ReloadHotkeys();
   int AssignSelectedHotkey(int mode);
   int CheckHotkeyConflict();
