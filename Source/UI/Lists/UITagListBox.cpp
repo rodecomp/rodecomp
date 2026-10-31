@@ -5,9 +5,43 @@
 #include "Network/TextEncoding.h"
 #include "UI/Buttons/UITagButton.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Text/ColoredText.h"
+#include "UI/Text/PixelTextWrapping.h"
+#include "UI/Text/TextWrapping.h"
 
+#include <algorithm>
 #include <cstdint>
 #include <cstring>
+#include <windows.h>
+
+namespace {
+// INLINED
+const char* SegmentEnd(const char* text, const char* end, unsigned short codePage) {
+  const char* current = text;
+
+  while (current < end) {
+    if (*current == '^' && end - current >= 6) {
+      bool color = true;
+
+      for (int index = 1; index <= 6; ++index) {
+        const unsigned char digit = static_cast<unsigned char>(current[index]);
+        if (!((digit >= '0' && digit <= '9') || (digit >= 'a' && digit <= 'f') || (digit >= 'A' && digit <= 'F'))) {
+          color = false;
+          break;
+        }
+      }
+
+      if (color) {
+        return current;
+      }
+    }
+
+    current = CharNextExA(codePage, current, 0);
+  }
+
+  return current;
+}
+}
 
 // OFFSET: 0x009B7A10
 // FUNCTION: fn_13869
@@ -29,6 +63,63 @@ void UITagListBox::Clear() {
 // OFFSET: 0x009B9E80
 // FUNCTION: fn_13879
 void UITagListBox::Slot25(int, int) {
+}
+
+// OFFSET: 0x009B9CB0
+// FUNCTION: fn_13877
+void UITagListBox::Paint() {
+  if (this->transparent != 0) {
+    this->ClearSurface(0xFFFF00FF);
+
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+  } else {
+    this->ClearSurface(
+      (this->backgroundRed & 255) | ((this->backgroundGreen & 255) << 8) | ((this->backgroundBlue & 255) << 16)
+    );
+  }
+
+  const int first = this->topLine;
+  int divisor = this->lineHeight - this->bottomMargin;
+  if (divisor == 0) {
+    divisor = 1;
+  }
+  const int limit = (this->geometry.height / divisor + first);
+  const int end =
+    static_cast<int>(std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(limit)));
+  std::uint32_t color = 0;
+  auto& owner = *this->m_listContext;
+
+  for (int index = 0; index < first; ++index) {
+    const std::string& line = this->lines[index];
+    const char* text = line.c_str();
+    const char* endText = text + line.size();
+
+    while (text < endText) {
+      text = ParseColorCode(SegmentEnd(text, endText, owner.codePage), color);
+    }
+  }
+
+  if (first < end) {
+    if ((this->unknown_00BC & 255) == 0) {
+      for (int index = first; index < end; ++index) {
+        const std::string& line = this->lines[index];
+        const int y = (index - first) * this->lineHeight + 4;
+        DrawColoredText(
+          *this, owner.codePage, 3, y, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false
+        );
+      }
+    } else {
+      for (int index = first; index < end; ++index) {
+        const std::string& line = this->lines[index];
+        const int y = (index - first) * this->lineHeight + 4;
+        DrawOutlinedText(
+          *this, 3, y, line.c_str(), static_cast<unsigned>(line.size()), 0, 0xFFFFFF, 0, 12, 0, 0
+        );
+      }
+    }
+  }
 }
 
 // OFFSET: 0x009B9E70
@@ -220,4 +311,43 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   }
 
   return 0;
+}
+
+// OFFSET: 0x009B9EA0
+// FUNCTION: fn_13881
+void UITagListBox::sub_9B9EA0(std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  char* text = reinterpret_cast<char*>(argument1);
+  const int width = static_cast<int>(argument2);
+  auto& owner = *this->m_listContext;
+  std::vector<std::string> lines;
+
+  if (width == 138) {
+    WrapPlainText(text, lines, 38, owner.codePage);
+
+    for (const std::string& line : lines) {
+      this->AddLine(line.c_str());
+    }
+
+    this->unknown_00BC = (this->unknown_00BC & ~255) | 1;
+  } else {
+    if (argument4 != 0) {
+      int extra = 0;
+      if (argument3 != 0) {
+        extra = this->verticalBar->geometry.width + 2;
+      }
+      WrapPixelText(*this->geometry.surface, owner.codePage, text, lines, this->geometry.width - extra - 4);
+
+      for (const std::string& line : lines) {
+        this->AddLine(line.c_str());
+      }
+    } else {
+      std::vector<STagInfoV2> tags;
+      const std::string parsed = this->sub_9B8AA0(std::string(text));
+      this->sub_9BB8E0(parsed, tags, width == 0 ? 35 : width);
+    }
+
+    this->unknown_00BC &= ~255;
+  }
+
+  this->Invalidate();
 }
