@@ -3822,7 +3822,7 @@ void CRagEffect::TexturedSwirl(unsigned char clockwise, const char* name) {
 
 // OFFSET: 0x00C470D0
 // FUNCTION: fn_20155
-void CRagEffect::TexturedFlare(const char* name, char size) {
+void CRagEffect::TexturedFlare(const char* name, char size, int, int) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
@@ -4333,7 +4333,7 @@ void CRagEffect::TexturedCrossFade(const char* name) {
     this->state.unknown_11C84->slots[index].alphaB = 0;
     this->state.unknown_11C84->slots[index].distance = 20.0f - static_cast<float>(index) * 0.5f;
     this->state.unknown_11C84->slots[index].riseAngle = 50;
-    this->state.unknown_11C84->slots[index].vecBNow.z = 0.0f;
+    this->state.unknown_11C84->slots[index].vecBNow.y = 0.0f;
 
     for (int height = 0; height < 21; ++height) {
       this->state.unknown_11C84->slots[index].height[height] = 0.0f;
@@ -4580,7 +4580,7 @@ void CRagEffect::TexturedGlow(const char* name, char size) {
   this->state.unknown_11C84->slots[0].alphaB = static_cast<std::int16_t>(50 - std::max(rand() % 10, 0));
   this->state.unknown_11C84->slots[0].riseAngle = 90;
   this->state.unknown_11C84->slots[0].alphaT = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-  this->state.unknown_11C84->slots[0].vecBNow.z = 0.0f;
+  this->state.unknown_11C84->slots[0].vecBNow.y = 0.0f;
 
   for (int index = 0; index < 21; ++index) {
     this->state.unknown_11C84->slots[0].height[index] = 0.0f;
@@ -4827,7 +4827,7 @@ void CRagEffect::TexturedCrossStaged(const char* name, char level) {
 
 // OFFSET: 0x00C4E3F0
 // FUNCTION: fn_20177
-void CRagEffect::ElectricArc(char kind) {
+void CRagEffect::ElectricArc(char kind, std::int16_t) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;

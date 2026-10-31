@@ -69,7 +69,7 @@ struct CRagEffect : CRenderObject {
   void TexturedComet(const char* name, char kind);
   void WhiteSpray(char kind);
   void BlueRingStack();
-  void ElectricArc(char kind);
+  void ElectricArc(char kind, std::int16_t);
   void TexturedCrossStaged(const char* name, char level);
   void TexturedShieldThrow(const char* name);
   void LineStreakKind(std::int16_t kind);
@@ -87,7 +87,7 @@ struct CRagEffect : CRenderObject {
   void TexturedOrbit(const char* name);
   void TexturedSlashCross(const char* name);
   void TexturedHalo(const char* name, char kind);
-  void TexturedFlare(const char* name, char size);
+  void TexturedFlare(const char* name, char size, int, int);
   void TexturedSwirl(unsigned char clockwise, const char* name);
   void TexturedBeams(const char* name, char flag);
   void TexturedSlashWave(const char* name, char kind);
