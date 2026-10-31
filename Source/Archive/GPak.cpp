@@ -2312,6 +2312,7 @@ bool PakDecryptor::sub_64BCE0(std::span<const std::uint8_t> data, std::span<cons
 }
 
 // OFFSET: 0x0064BF20
+// FUNCTION: fn_04947
 bool PakDecryptor::sub_64BF20(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithAes(sub_644480, 0x10, 0x20, AES::CFB, 0, 0x400, data, keyData, block, input, output);
