@@ -13,7 +13,11 @@
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Text/UITextViewer.h"
+#include "UI/Window/UIChatRoomWnd.h"
 #include "UI/Window/UICntWnd.h"
+#include "UI/Window/UIHomunInfoWnd.h"
+#include "UI/Window/UILoginOTPWnd.h"
+#include "UI/Window/UILoginWnd.h"
 #include "UI/Window/UIMonsterInfoWnd.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
@@ -581,4 +585,46 @@ int UICntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intpt
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+}
+
+// OFFSET: 0x008A34B0
+// FUNCTION: fn_11653
+UIAllyGuildAcceptWnd::UIAllyGuildAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+}
+
+// OFFSET: 0x008A3510
+// FUNCTION: fn_11654
+UIBank_NewWnd::UIBank_NewWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& editContext)
+    : UIFrameWnd(windows, frames, 0), m_amountEdit(nullptr), m_status(), m_controls(&controls), m_editContext(&editContext) {
+}
+
+// OFFSET: 0x008A35A0
+// FUNCTION: fn_11655
+UIChatRoomWnd::UIChatRoomWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), title(), unknown_00CC(), unknown_010C(), unknown_0114(), saved(nullptr), m_controls(&controls) {
+}
+
+// OFFSET: 0x008A36A0
+// FUNCTION: fn_11656
+UICntWnd::UICntWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& editContext)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_editContext(&editContext) {
+}
+
+// OFFSET: 0x008A37F0
+// FUNCTION: fn_11658
+UIHomunInfoWnd::UIHomunInfoWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), unknown_00D0(0), unknown_00D4(0) {
+}
+
+// OFFSET: 0x008A3860
+// FUNCTION: fn_11659
+UILoginOTPWnd::UILoginOTPWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), unknown_00B4(0), unknown_00B8(0), timerText(nullptr), unknown_00C0(0), m_controls(&controls) {
+}
+
+// OFFSET: 0x008A38E0
+// FUNCTION: fn_11660
+UILoginWnd::UILoginWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), idEdit(nullptr), passwordEdit(nullptr), unknown_00BC(0), unknown_00C4(0), saveId(0), unknown_00CC(1), unknown_00D0(0),
+      unknown_00D4(0), unknown_00D8(), unknown_00E8(0), unknown_00EC("G000") {
 }

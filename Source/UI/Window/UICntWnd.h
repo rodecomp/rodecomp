@@ -10,6 +10,7 @@ struct UIEditContext;
 
 class UICntWnd : public UIFrameWnd {
 public:
+  UICntWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& editContext);
   ~UICntWnd() override;
 
   void Slot15(int width, int height) override;

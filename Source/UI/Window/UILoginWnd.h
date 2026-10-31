@@ -10,6 +10,7 @@ class UIEditCtrl;
 
 class UILoginWnd : public UIFrameWnd {
 public:
+  UILoginWnd(UIWindowContext& windows, UIFrameContext& frames);
   ~UILoginWnd() override;
 
   void Slot11() override;
@@ -23,14 +24,19 @@ public:
 
   /* 00B4 */ UIEditCtrl* idEdit;
   /* 00B8 */ UIEditCtrl* passwordEdit;
-  /* 00BC */ unsigned char unknown_00BC[0x4];
+  /* 00BC */ int unknown_00BC;
   /* 00C0 */ bool idPlaceholder;
   /* 00C1 */ bool passwordPlaceholder;
-  /* 00C2 */ unsigned char unknown_00C2[0x6];
+  /* 00C2 */ unsigned char unknown_00C2[0x2];
+  /* 00C4 */ int unknown_00C4;
   /* 00C8 */ int saveId;
-  /* 00CC */ unsigned char unknown_00CC[0xC];
+  /* 00CC */ int unknown_00CC;
+  /* 00D0 */ int unknown_00D0;
+  /* 00D4 */ int unknown_00D4;
   /* 00D8 */ std::vector<std::string> unknown_00D8;
-  /* 00E4 */ unsigned char unknown_00E4[0xC];
+  /* 00E4 */ unsigned char unknown_00E4[0x4];
+  /* 00E8 */ int unknown_00E8;
+  /* 00EC */ const char* unknown_00EC;
 };
 
 #endif

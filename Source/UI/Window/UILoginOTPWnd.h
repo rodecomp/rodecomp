@@ -8,12 +8,15 @@ class UIStaticText;
 
 class UILoginOTPWnd : public UIFrameWnd {
 public:
+  UILoginOTPWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot18() override;
   void Slot19() override;
   void Paint() override;
 
-  /* 00B4 */ unsigned char unknown_00B4[0x8];
+  /* 00B4 */ int unknown_00B4;
+  /* 00B8 */ int unknown_00B8;
   /* 00BC */ UIStaticText* timerText;
+  /* 00C0 */ int unknown_00C0;
 
 protected:
   UIButtonContext* m_controls;
