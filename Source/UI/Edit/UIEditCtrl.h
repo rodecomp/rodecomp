@@ -104,6 +104,7 @@ private:
   bool RemoveInvalidLink(std::list<UIWindow*>::iterator& entry);
   void SnapLinkSelection(std::size_t prefix, std::size_t bytes);
   void InsertLink(const char* value);
+  std::string BracketFittedText(const std::string& name);
 };
 
 class UIEditCtrlWheel : public UIEditCtrl {

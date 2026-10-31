@@ -159,12 +159,21 @@ void UIEditCtrl::UpdateLinks() {
   this->linkedText += remaining;
 }
 
+// OFFSET: 0x0085A5D0
+// FUNCTION: fn_10779
+std::string UIEditCtrl::BracketFittedText(const std::string& name) {
+  std::string result;
+  result = '<';
+  result += FitText(*this->geometry.surface, name, this->geometry.width / 2);
+  result += '>';
+  return result;
+}
+
 // INLINED
 void UIEditCtrl::InsertLink(const char* value) {
   const std::string name = FormatNavigationLink(value, false);
 
-  FitText(*this->geometry.surface, name, this->geometry.width / 2);
-  const std::string display = "<" + name + ">";
+  const std::string display = this->BracketFittedText(name);
   std::string before;
   bool removed = false;
   std::size_t position = std::string::npos;
