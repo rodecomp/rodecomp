@@ -517,7 +517,7 @@ void CUIItem::BindItem(CUIItemInfo* item, const CItemData& data) {
 void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
   switch (data.type) {
   case 1:
-    reinterpret_cast<void(__thiscall*)(CUIQuestInfo*, int)>(0x009E0350)(owner, data.id);
+    owner->SetTitle(data.id);
     owner->SetViewerLines(data.rewards);
     owner->unknown_00F8 = data.title;
     reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->Clear();
@@ -526,7 +526,7 @@ void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
     owner->unknown_00E8->Show(g_renewQuestMgr->IsNewQuest(data.questId));
     break;
   case 3:
-    reinterpret_cast<void(__thiscall*)(CUIQuestInfo*, int)>(0x009E0350)(owner, data.id);
+    owner->SetTitle(data.id);
     owner->SetViewerLines(data.rewards);
     owner->unknown_00F8 = data.title;
     reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->Clear();
@@ -534,7 +534,7 @@ void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
     owner->unknown_00E8->Show(0);
     return;
   case 4:
-    reinterpret_cast<void(__thiscall*)(CUIQuestInfo*, int)>(0x009DE7D0)(owner, data.id);
+    owner->SetTip(data.id);
     owner->SetViewerLines(data.rewards);
     owner->unknown_00F8 = data.title;
     reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->Clear();
@@ -924,8 +924,7 @@ void CUIAdventureGuide::Slot16() {
   };
 
   for (const auto& [type, intro] : g_adventureGuideMgr->m_intros) {
-    AdventureGuide::CUITab* tab =
-        reinterpret_cast<AdventureGuide::CUITab*(__thiscall*)(CUIListBox<AdventureGuide::CUITab>*)>(0x009DB4B0)(this->tabs);
+    AdventureGuide::CUITab* tab = this->tabs->CreateItem();
     tab->type = type;
     tab->unknown_00E8->SetText(intro.text.c_str(), intro.text.size());
     tab->unknown_00F0 = intro.title;
@@ -947,8 +946,7 @@ void CUIAdventureGuide::Slot16() {
         CUIListBox<AdventureGuide::CUISubTab>* subTabs = tab->CreateSubTabList();
         subTabs->Resize(subTabs->geometry.width, subTabs->rowHeight * static_cast<int>(details.size()));
         for (const auto& [id, detail] : details) {
-          AdventureGuide::CUISubTab* subTab =
-              reinterpret_cast<AdventureGuide::CUISubTab*(__thiscall*)(CUIListBox<AdventureGuide::CUISubTab>*)>(0x009DB280)(subTabs);
+          AdventureGuide::CUISubTab* subTab = subTabs->CreateItem();
           subTab->unknown_00E8->SetText(detail.text.c_str(), detail.text.size());
           subTab->id = id;
           subTab->unknown_00F4 = detail.unknown_0008;
@@ -968,7 +966,7 @@ void CUIAdventureGuide::Slot16() {
   if (!this->tabs->items.empty()) {
     AdventureGuide::CUITab* first = this->tabs->items.front();
     if (first) {
-      reinterpret_cast<void(__thiscall*)(CUIListBox<AdventureGuide::CUITab>*, CUIListItem*)>(0x009DE560)(this->tabs, first);
+      this->tabs->SelectItem(first);
     }
   }
   g_renewQuestMgr->SendQuestStatusRequest();

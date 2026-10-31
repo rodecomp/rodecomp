@@ -246,6 +246,7 @@ public:
   }
 
   void SelectItem(CUIListItem* item);
+  T* CreateItem();
 
   // INLINED
   void SetOnSelect(std::function<void(T*)> handler) {
