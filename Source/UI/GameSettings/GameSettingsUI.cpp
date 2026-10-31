@@ -1815,31 +1815,100 @@ CUIRadioButton::CUIRadioButton(UIWindowContext& context) : CUICheckBox(context),
 }
 
 // OFFSET: 0x00A3C390
+// FUNCTION: fn_15886
+GameSettingsUI::CUIBasicPage::CUIBasicPage(UIWindowContext& context) : CUIPage(context), m_skin(nullptr), m_sound(nullptr), m_emblem(nullptr), m_rodexSpam(nullptr), m_processPriority(nullptr), m_logInOut(nullptr) {
+}
 
 // OFFSET: 0x00A3C5D0
+// FUNCTION: fn_15889
+GameSettingsUI::CUIGraphicsPage::CUIGraphicsPage(UIWindowContext& context) : CUIPage(context), m_graphicsApi(nullptr), m_graphics(nullptr), m_spriteDetailLevel(nullptr), m_textureDetailLevel(nullptr), m_fullscreen(nullptr), m_trilinear(nullptr) {
+}
 
 // OFFSET: 0x00A3C680
+// FUNCTION: fn_15890
+GameSettingsUI::CUIGroupEmblem::CUIGroupEmblem(UIWindowContext& context) : CUIGroup(context), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+}
 
 // OFFSET: 0x00A3C730
+// FUNCTION: fn_15891
+GameSettingsUI::CUIGroupFullscreen::CUIGroupFullscreen(UIWindowContext& context) : CUIGroup(context), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+}
 
 // OFFSET: 0x00A3C910
+// FUNCTION: fn_15893
+GameSettingsUI::CUIGroupGraphicsAPI::CUIGroupGraphicsAPI(UIWindowContext& context) : CUIGroup(context), m_combo(nullptr), m_backend(-1), m_pendingBackend(-1) {
+}
 
 // OFFSET: 0x00A3C9B0
+// FUNCTION: fn_15894
+GameSettingsUI::CUIGroupLogInOut::CUIGroupLogInOut(UIWindowContext& context) : CUIGroup(context), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+}
 
 // OFFSET: 0x00A3CA60
+// FUNCTION: fn_15895
+GameSettingsUI::CUIGroupProcessPriority::CUIGroupProcessPriority(UIWindowContext& context) : CUIGroup(context), m_highButton(nullptr), m_highText(nullptr), m_normalButton(nullptr), m_normalText(nullptr), m_idleButton(nullptr), m_idleText(nullptr) {
+}
 
 // OFFSET: 0x00A3CB20
+// FUNCTION: fn_15896
+GameSettingsUI::CUIGroupRodexSpam::CUIGroupRodexSpam(UIWindowContext& context) : CUIGroup(context), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+}
 
 // OFFSET: 0x00A3CBD0
+// FUNCTION: fn_15897
+GameSettingsUI::CUIGroupSkin::CUIGroupSkin(UIWindowContext& context) : CUIGroup(context), m_combo(nullptr) {
+}
 
 // OFFSET: 0x00A3CC60
+// FUNCTION: fn_15898
+GameSettingsUI::CUIGroupSound::CUIGroupSound(UIWindowContext& context) : CUIGroup(context), m_bgmText(nullptr), m_bgmSlider(nullptr), m_bgmMute(nullptr), unknown_0090(nullptr), m_effectText(nullptr), m_effectSlider(nullptr), m_effectMute(nullptr), unknown_00A0(nullptr) {
+}
 
 // OFFSET: 0x00A3CD30
+// FUNCTION: fn_15899
+GameSettingsUI::CUIGroupSpriteDetailLevel::CUIGroupSpriteDetailLevel(UIWindowContext& context) : CUIGroup(context), m_slider(nullptr) {
+}
 
 // OFFSET: 0x00A3CDC0
+// FUNCTION: fn_15900
+GameSettingsUI::CUIGroupTextureDetailLevel::CUIGroupTextureDetailLevel(UIWindowContext& context) : CUIGroup(context), m_slider(nullptr) {
+}
 
 // OFFSET: 0x00A3CE50
+// FUNCTION: fn_15901
+GameSettingsUI::CUIGroupTrilinear::CUIGroupTrilinear(UIWindowContext& context) : CUIGroup(context), m_onButton(nullptr), m_onText(nullptr), m_offButton(nullptr), m_offText(nullptr) {
+}
 
 // OFFSET: 0x00A3CF00
+// FUNCTION: fn_15902
+GameSettingsUI::CUIListPage::CUIListPage(UIWindowContext& context) : CUIControl(context), m_optionList(nullptr) {
+}
 
 // OFFSET: 0x00A1F620
+// FUNCTION: fn_15389
+void GameSettingsUI::CUIBasicPage::Slot15(int width, int height) {
+  this->m_skin = new CUIGroupSkin(*this->m_context);
+  this->m_skin->SetSize(400, 36);
+  this->m_skin->Move(0, 0);
+  this->AddChild(this->m_skin);
+  this->m_sound = new CUIGroupSound(*this->m_context);
+  this->m_sound->SetSize(400, 60);
+  this->m_sound->Move(0, 36);
+  this->AddChild(this->m_sound);
+  this->m_emblem = new CUIGroupEmblem(*this->m_context);
+  this->m_emblem->SetSize(400, 36);
+  this->m_emblem->Move(0, 96);
+  this->AddChild(this->m_emblem);
+  this->m_rodexSpam = new CUIGroupRodexSpam(*this->m_context);
+  this->m_rodexSpam->SetSize(400, 60);
+  this->m_rodexSpam->Move(0, 132);
+  this->AddChild(this->m_rodexSpam);
+  this->m_processPriority = new CUIGroupProcessPriority(*this->m_context);
+  this->m_processPriority->SetSize(400, 36);
+  this->m_processPriority->Move(0, 192);
+  this->AddChild(this->m_processPriority);
+  this->m_logInOut = new CUIGroupLogInOut(*this->m_context);
+  this->m_logInOut->SetSize(400, 36);
+  this->m_logInOut->Move(0, 228);
+  this->AddChild(this->m_logInOut);
+}
