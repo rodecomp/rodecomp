@@ -82,6 +82,11 @@ struct ProhibitionLogEntry {
   /* 0034 */ char ownerName[32];
 };
 
+struct SessionRequestTimer {
+  /* 0000 */ int requestId;
+  /* 0004 */ unsigned long readyTime;
+};
+
 struct SessionRecord0734 {
   /* 0000 */ std::uint32_t unknown_0000 = 0;
   /* 0004 */ int id;
@@ -300,7 +305,8 @@ public:
   /* 5370 */ unsigned char unknown_5370[0x30];
   /* 53A0 */ unsigned char unknown_53A0[0x30];
   /* 53D0 */ unsigned char unknown_53D0[0x30];
-  /* 5400 */ unsigned char unknown_5400[0x48];
+  /* 5400 */ unsigned char unknown_5400[0x40];
+  /* 5440 */ std::list<SessionRequestTimer> m_requestTimers;
   /* 5448 */ int unknown_5448;
   /* 544C */ unsigned char unknown_544C[0x04];
   /* 5450 */ int unknown_5450;
@@ -465,7 +471,9 @@ public:
   /* 7FC0 */ unsigned char unknown_7FC0[0xB4];
   /* 8074 */ int unknown_8074;
   /* 8078 */ const char* const* m_jobSpriteNames;
-  /* 807C */ unsigned char unknown_807C[0x38];
+  /* 807C */ unsigned char unknown_807C[0x20];
+  /* 809C */ std::vector<std::string> unknown_809C;
+  /* 80A8 */ unsigned char unknown_80A8[0x0C];
   /* 80B4 */ std::map<std::string, int> m_nameToId;
   /* 80BC */ std::map<int, SessionShop> m_shops;
   /* 80C4 */ int m_damageSkinIndex;
@@ -891,6 +899,11 @@ public:
   void SetUnknown7EC8(std::uint32_t value);
   void NotifyUnknown7F94Name(std::uint32_t id, const char* name);
   void sub_DE3D90(char* text);
+  std::pair<int, int> GetShopEntry(unsigned int index, int key);
+  bool HasUnknown809C(std::string name);
+  void SetUnknown16EC(std::uint32_t value);
+  bool IsRequestReady(int requestId);
+  void ClearAchievements();
   void SetNavigationPlayerMap(const char* name);
   int SetFriendOffline(std::uint32_t accountId, std::uint32_t characterId, unsigned char offline);
   void SetHomunSkillLevel(int skillId, int level);

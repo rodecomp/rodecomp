@@ -10,6 +10,10 @@
 #include "Contents/Skills/SkillId.h"
 #include "Contents/World/World.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Effects/RagEffect.h"
+#include "Contents/Skills/ClientSkills.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "File/File.h"
 #include "Network/Connection/Connection.h"
@@ -835,6 +839,17 @@ std::uint16_t CSession::FindInventoryIndexByItemId(int itemId) {
 }
 
 // OFFSET: 0x00DDD400
+// FUNCTION: fn_23385
+std::vector<int> CSession::FindInventoryIndicesByItemId(int itemId, unsigned char identifiedOnly) {
+  std::vector<int> indices;
+  for (const ITEM_INFO& item : this->m_inventoryItems) {
+    if (std::atoi(item.itemId.c_str()) == itemId && (identifiedOnly != 1 || item.identified == 1)) {
+      indices.push_back(static_cast<int>(item.unknown_0000[1]));
+    }
+  }
+
+  return indices;
+}
 
 // OFFSET: 0x00DDD710
 // FUNCTION: fn_23388
@@ -1560,6 +1575,8 @@ void SetMemberFlags(std::uint32_t* flags) {
   *flags |= 0x40;
 }
 
+// OFFSET: 0x00DFF8B0
+
 // OFFSET: 0x00DFFA00
 // FUNCTION: fn_23626
 int CSession::SetFriendOffline(std::uint32_t accountId, std::uint32_t characterId, unsigned char offline) {
@@ -1714,6 +1731,21 @@ ITEM_INFO CSession::GetItem61B8(int index) const {
   return ITEM_INFO(0);
 }
 
+// OFFSET: 0x00E31DE0
+// FUNCTION: fn_24177
+bool CSession::IsRequestReady(int requestId) {
+  std::list<SessionRequestTimer>::iterator it = this->m_requestTimers.begin();
+  for (; it != this->m_requestTimers.end(); ++it) {
+    if (requestId == it->requestId || it->requestId == 0x241) {
+      break;
+    }
+  }
+  if (it != this->m_requestTimers.end() && it->readyTime - 100 > timeGetTime()) {
+    return false;
+  }
+  return true;
+}
+
 // OFFSET: 0x00DF9400
 // FUNCTION: fn_23514
 void CSession::RefreshHpSpWindows() {
@@ -1789,6 +1821,12 @@ bool CSession::HasItem1740Number(int value) const {
   }
 
   return false;
+}
+
+// OFFSET: 0x00DFA420
+// FUNCTION: fn_23574
+bool CSession::HasUnknown809C(std::string name) {
+  return std::find(this->unknown_809C.begin(), this->unknown_809C.end(), name) != this->unknown_809C.end();
 }
 
 // OFFSET: 0x00DFA4C0
@@ -1977,6 +2015,24 @@ unsigned char CSession::GetShopType(int id) {
   return it->second.unknown_0000;
 }
 
+// OFFSET: 0x00DE3930
+// FUNCTION: fn_23484
+std::pair<int, int> CSession::GetShopEntry(unsigned int index, int key) {
+  auto name = this->m_nameToId.find(std::string(this->m_navigationPlayerMap));
+  if (name != this->m_nameToId.end()) {
+    auto shop = this->m_shops.find(name->second);
+    if (shop != this->m_shops.end() && index < shop->second.unknown_0004.size()) {
+      std::map<int, std::pair<int, int>>& entries = shop->second.unknown_0004[index];
+      auto entry = entries.find(key);
+      if (entry != entries.end()) {
+        return entry->second;
+      }
+    }
+  }
+
+  return std::pair<int, int>(0, 0);
+}
+
 // OFFSET: 0x00DE3CE0
 // FUNCTION: fn_23487
 bool CSession::HasControlCharacter(std::string text) {
@@ -1993,6 +2049,8 @@ bool CSession::HasControlCharacter(std::string text) {
 
   return false;
 }
+
+// OFFSET: 0x00DE3D90
 
 // OFFSET: 0x00DE9430
 // FUNCTION: fn_23501
@@ -2387,3 +2445,5 @@ void CSession::ClearEntryList5BD4() {
   this->unknown_5BEC = -1;
   this->unknown_5BF0 = 0xFFFFFFFF;
 }
+
+// OFFSET: 0x00D8D9E0

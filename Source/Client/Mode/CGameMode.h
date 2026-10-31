@@ -549,6 +549,7 @@ static_assert(offsetof(CGameMode, unknown_0628) == 0x628);
 static_assert(sizeof(CGameMode) == 0x670);
 #endif
 
+extern char g_pendingWhisperCount;
 extern int g_whisperRecord;
 
 #endif
