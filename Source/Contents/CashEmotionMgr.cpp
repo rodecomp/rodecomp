@@ -183,6 +183,7 @@ public:
 
 class UICashEmotionListChildWnd_Abstract : public UICashEmotionScrollWnd {
 public:
+  UICashEmotionListChildWnd_Abstract(UIWindowContext& windows, int width, int height, unsigned char cached);
   void Slot35(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   virtual void Refresh(const char* filter) = 0;
@@ -191,6 +192,7 @@ public:
 
 class UICashEmotionListChildWnd_Basic : public UICashEmotionListChildWnd_Abstract {
 public:
+  UICashEmotionListChildWnd_Basic(UIWindowContext& windows, int width, int height, unsigned char cached);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
@@ -205,6 +207,7 @@ protected:
 
 class UICashEmotionListChildWnd_Purchase : public UICashEmotionListChildWnd_Abstract {
 public:
+  UICashEmotionListChildWnd_Purchase(UIWindowContext& windows, int width, int height);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -220,19 +223,21 @@ protected:
 
 class UICashEmotionListChildWnd_Search : public UICashEmotionListChildWnd_Abstract {
 public:
+  UICashEmotionListChildWnd_Search(UIWindowContext& windows, int width, int height);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   const char* Filter() override;
 
 protected:
-  /* 00B0 */ std::uint8_t unknown_00B0[0xC];
+  /* 00B0 */ std::vector<UICashEmotionPack*> m_items;
   /* 00BC */ ICashEmotionAction* m_action;
   /* 00C0 */ std::string m_filter;
 };
 
 class UICashEmotionListChildWnd_UnPurchased : public UICashEmotionListChildWnd_Abstract {
 public:
+  UICashEmotionListChildWnd_UnPurchased(UIWindowContext& windows, int width, int height);
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -1379,6 +1384,12 @@ int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
   return 1;
 }
 
+// OFFSET: 0x007C37A0
+// FUNCTION: fn_09340
+UICashEmotionListChildWnd_Abstract::UICashEmotionListChildWnd_Abstract(UIWindowContext& windows, int width, int height, unsigned char cached)
+    : UICashEmotionScrollWnd(windows, width, height, cached) {
+}
+
 // OFFSET: 0x007C3990
 // FUNCTION: fn_09343
 void UICashEmotionScrollWnd::UpdateScrollBars() {
@@ -1452,6 +1463,15 @@ int UICashEmotionListChildWnd_Abstract::SendMsg(UIWindow* sender, int message, s
   return 0;
 }
 
+// OFFSET: 0x007C3D60
+// FUNCTION: fn_09347
+UICashEmotionListChildWnd_Basic::UICashEmotionListChildWnd_Basic(UIWindowContext& windows, int width, int height, unsigned char cached)
+    : UICashEmotionListChildWnd_Abstract(windows, width, height, cached) {
+  this->m_selectAction = new (std::nothrow) CCashEmotionAction_Play();
+  this->m_playAction = new (std::nothrow) CCashEmotionAction_Register();
+  this->Slot15(width, height);
+}
+
 // OFFSET: 0x007C4100
 // FUNCTION: fn_09351
 const char* UICashEmotionListChildWnd_Basic::Filter() {
@@ -1500,6 +1520,14 @@ int UICashEmotionListChildWnd_Basic::SendMsg(UIWindow* sender, int message, std:
   return 0;
 }
 
+// OFFSET: 0x007C4810
+// FUNCTION: fn_09362
+UICashEmotionListChildWnd_Purchase::UICashEmotionListChildWnd_Purchase(UIWindowContext& windows, int width, int height)
+    : UICashEmotionListChildWnd_Abstract(windows, width, height, 0) {
+  this->unknown_00BC = new (std::nothrow) CCashEmotionAction_Play();
+  this->Slot15(width, height);
+}
+
 // OFFSET: 0x007C4D10
 // FUNCTION: fn_09366
 const char* UICashEmotionListChildWnd_Purchase::Filter() {
@@ -1545,6 +1573,14 @@ void UICashEmotionListChildWnd_Purchase::UpdateExpiry(int packId, Timestamp* exp
   }
 }
 
+// OFFSET: 0x007C5590
+// FUNCTION: fn_09375
+UICashEmotionListChildWnd_Search::UICashEmotionListChildWnd_Search(UIWindowContext& windows, int width, int height)
+    : UICashEmotionListChildWnd_Abstract(windows, width, height, 0) {
+  this->m_action = new (std::nothrow) CCashEmotionAction_Play();
+  this->Slot15(width, height);
+}
+
 // OFFSET: 0x007C5980
 // FUNCTION: fn_09380
 const char* UICashEmotionListChildWnd_Search::Filter() {
@@ -1573,6 +1609,13 @@ int UICashEmotionListChildWnd_Search::SendMsg(UIWindow* sender, int message, std
     this->m_action->Execute(argument1, argument2);
   }
   return 0;
+}
+
+// OFFSET: 0x007C6030
+// FUNCTION: fn_09389
+UICashEmotionListChildWnd_UnPurchased::UICashEmotionListChildWnd_UnPurchased(UIWindowContext& windows, int width, int height)
+    : UICashEmotionListChildWnd_Abstract(windows, width, height, 0) {
+  this->Slot15(width, height);
 }
 
 // OFFSET: 0x007C6520
