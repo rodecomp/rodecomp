@@ -15,6 +15,7 @@ class UITextButton : public UIButton {
   friend class UIMessageBox;
   friend class UIEditCtrl3;
   friend class UIAchTracingWnd;
+  friend class UIAchSummaryWnd;
 
 public:
   friend void OpenTextButtonLink(UITextButton* button);

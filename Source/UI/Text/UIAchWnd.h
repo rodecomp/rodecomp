@@ -37,6 +37,11 @@ public:
 
 class UICustomGageBar : public UIWindow {
 public:
+  __declspec(noinline) explicit UICustomGageBar(UIWindowContext& windows)
+      : UIWindow(windows, 0), value(-1), maximum(-1), text(), barColor(0xCE7B52), backgroundColor(0xFFFFFF), outerBorderColor(0xEFE7E7),
+        innerBorderColor(0xADADAD) {
+  }
+
   /* 007C */ int value;
   /* 0080 */ int maximum;
   /* 0084 */ std::string text;
@@ -235,6 +240,7 @@ public:
   /* 0098 */ UIWindow* buttons[2];
 
   void Show(int visible) override;
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 

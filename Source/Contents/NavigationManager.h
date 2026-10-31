@@ -331,6 +331,7 @@ public:
   std::vector<char> WriteTarget(NavigationTarget target);
   std::vector<char> WriteObject(CNavi_Object* object);
   std::vector<unsigned char> WriteReplayState();
+  std::vector<unsigned char> WriteStates();
   CNavi_Link* ReadObject(const char* record);
   NavigationTarget ReadTarget(const char* data, int size);
   CNavi_Object* ReadTargetObject(const char* record);

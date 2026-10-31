@@ -598,6 +598,39 @@ float CNavigationManager::FitToSquare(int* offsetX, int* offsetY, int width, int
   return scale;
 }
 
+// OFFSET: 0x00B9C0D0
+// FUNCTION: fn_19619
+std::vector<unsigned char> CNavigationManager::WriteStates() {
+  std::vector<unsigned char> buffer;
+  if (this->states.empty()) {
+    return buffer;
+  }
+
+  buffer.resize(4, 0);
+  std::size_t offset = 4;
+  *reinterpret_cast<int*>(buffer.data()) = static_cast<int>(this->states.size());
+  for (auto it = this->states.begin(); it != this->states.end(); ++it) {
+    CNaviInfo* info = static_cast<CNaviInfo*>(it->object);
+    if (info == nullptr) {
+      continue;
+    }
+    buffer.resize(it->name.size() + 0x24 + offset, 0);
+    *reinterpret_cast<int*>(buffer.data() + offset) = it->type;
+    offset += 4;
+    std::memcpy(buffer.data() + offset, info->GetName(), info->GetNameLength());
+    *reinterpret_cast<int*>(buffer.data() + offset + 0x14) = it->x;
+    *reinterpret_cast<int*>(buffer.data() + offset + 0x18) = it->y;
+    const int length = static_cast<int>(it->name.size());
+    *reinterpret_cast<int*>(buffer.data() + offset + 0x1C) = length;
+    offset += 0x20;
+    if (length > 0) {
+      std::memcpy(buffer.data() + offset, it->name.c_str(), length);
+      offset += length;
+    }
+  }
+  return buffer;
+}
+
 // OFFSET: 0x00B888F0
 // FUNCTION: fn_19378
 NaviCell* CNaviData::GetCell(NaviCell* out) {
