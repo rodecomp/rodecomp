@@ -200,6 +200,7 @@ public:
   int DrawTitleBarAt(FontCache& fonts, const TextLocale& locale, int x, int width, bool closeButton, const char* title);
   void DrawPanelBackground(int y, int width, const char* bitmapName);
   void DrawPanelBackgroundAt(int x, int y, int width, const char* bitmapName);
+  void DrawRobeSprite(int job, int sex, int robe, int x, int y, bool overlay, int animation, int frame);
   int DrawButtonBar(int style, int width, int rows);
   int DrawButtonBarAt(int style, int x, int width, int rows);
   CBitmapRes* LoadStyledBitmap(int style, const char* format, const char* name);
