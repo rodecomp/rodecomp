@@ -290,6 +290,12 @@ struct CRagEffect : CRenderObject {
   void TexturedMagicRing(char type);
   void TexturedRisingRing(const char* name);
   bool TexturedRisingRingStages(const char* name, char level);
+  void TexturedGroundRing(const char* name, char flag, int unused1, int unused2);
+  void TexturedQuadRingSized(std::int16_t baseAlpha, const char* name, char kind);
+  void TexturedFireWall(const char* name, int unused);
+  void TeleportSpiral(const char* name);
+  void TexturedAura(const char* name, char kind);
+  void PortalRings();
 
   virtual void Slot08();
   virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);
