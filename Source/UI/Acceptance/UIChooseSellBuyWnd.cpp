@@ -2212,6 +2212,14 @@ void UICardItemIllustWnd::Slot15(int, int) {
   this->AddCloseButton(*this->m_controls, "", 0);
 }
 
+// OFFSET: 0x008E3C80
+// FUNCTION: fn_12183
+void UIMonsterDisplayWnd::Slot15(int, int) {
+  this->unknown_00E4 = 0;
+  this->unknown_00CC = LookupMessage(527);
+  this->AddCloseButton(*this->m_controls, "", 0);
+}
+
 // OFFSET: 0x008E3090
 // FUNCTION: fn_12179
 void UIItemParamChangeDisplayWnd::Slot15(int, int) {
