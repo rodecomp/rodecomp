@@ -1298,6 +1298,183 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
   }
 }
 
+// OFFSET: 0x00823AA0
+// FUNCTION: fn_10297
+UIShowInfoWnd::~UIShowInfoWnd() {
+}
+
+// OFFSET: 0x00823180
+// FUNCTION: fn_10290
+UIMyStyleWnd::UIMyStyleWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context), m_selectedSlot(0), m_slots{} {
+}
+
+// OFFSET: 0x00823210
+// FUNCTION: fn_10291
+UIShowInfoWnd::UIShowInfoWnd(UIWindowContext& context)
+    : UIWindow(context, 0), m_display(nullptr), unknown_00A0(0), unknown_00A1(0), unknown_00A2(0), m_checkTop(5), unknown_00A8(12), unknown_00AD{},
+      unknown_00B1(0), unknown_00BC(0), unknown_00C0(0), unknown_00C4(0), unknown_00C8(0), unknown_00CC(0), m_offBitmap(nullptr) {
+}
+
+// OFFSET: 0x008232F0
+// FUNCTION: fn_10292
+UISlotOfMyStyleWnd::UISlotOfMyStyleWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context) {
+}
+
+// OFFSET: 0x00823370
+// FUNCTION: fn_10293
+UIStylingShopWnd::UIStylingShopWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+}
+
+#include "Contents/Items/ItemInfo.h"
+#include "UI/UIStaticBitmap.h"
+
+// OFFSET: 0x0082CDA0
+// FUNCTION: fn_10368
+int UIAccessoryShowCase::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  char table[64];
+  UIWindow* shop = g_windowMgr.LookupWindow(281);
+  if (message == 6) {
+    if (argument1 == 189 && sender) {
+      UIAccBitmapButton* button = static_cast<UIAccBitmapButton*>(sender);
+      for (unsigned int i = 0; i < this->m_itemFrames.size(); ++i) {
+        this->m_itemFrames[i]->SetBitmap(i == button->Argument() - 1 ? "유저인터페이스\\styleshop\\shadow_item_on.bmp" : "유저인터페이스\\styleshop\\shadow_item_off.bmp");
+      }
+
+      memset(table, 0, sizeof(table));
+      switch (button->m_slot) {
+      case 0:
+        strcpy_s(table, sizeof(table), "TopAccessory");
+        break;
+      case 1:
+        strcpy_s(table, sizeof(table), "MidAccessory");
+        break;
+      case 2:
+        strcpy_s(table, sizeof(table), "BottomAccessory");
+        break;
+      }
+
+      bool apply = true;
+      if (g_session.IsDoramJob(g_session.GetDisplayJob()) == true) {
+        g_luaScript->Call("StylingShop_GetIsDoram_by_goods", "sd>b", table, button->m_itemId, &apply);
+      }
+
+      if (apply == true) {
+        ToggleStylingAccessory(button->m_itemId, button->m_slot);
+      }
+    }
+  } else if (message == 101) {
+    if (sender) {
+      UIAccBitmapButton* button = static_cast<UIAccBitmapButton*>(sender);
+      memset(table, 0, sizeof(table));
+      switch (button->m_slot) {
+      case 0:
+        strcpy_s(table, sizeof(table), "TopAccessory");
+        break;
+      case 1:
+        strcpy_s(table, sizeof(table), "MidAccessory");
+        break;
+      case 2:
+        strcpy_s(table, sizeof(table), "BottomAccessory");
+        break;
+      }
+
+      ITEM_DESC desc = FindItemDescription(button->m_itemId);
+      ITEM_INFO item;
+      item.SetItemId(button->m_itemId);
+      item.SetName(desc.identifiedName);
+      item.identified = 1;
+      UIWindow* window = g_windowMgr.EnsureWindow(12);
+      if (window) {
+        window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+      }
+    }
+  } else {
+    shop->Invalidate();
+    shop->InvalidateChildren();
+    return UIScrollWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x0082DCC0
+// FUNCTION: fn_10375
+int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  switch (argument1) {
+  case 200:
+  case 496:
+  case 497:
+  case 498:
+  case 583:
+    if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) || g_session.IsTreeGroupTwo(g_session.GetDisplayJob()) || argument1 != 583) {
+      std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it;
+      for (it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
+        if (it->second->geometry.visible == 1) {
+          if (it->first->geometry.id != 496) {
+            static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281))->m_preview->CopyStyle(it->second->m_display);
+          }
+          break;
+        }
+      }
+
+      for (it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
+        if (it->first->geometry.id == argument1) {
+          if (it->first->geometry.id != 496) {
+            it->second->m_display->CopyStyle(this->m_preview);
+          }
+          if (it->first->geometry.id == 498) {
+            UI2ndCostumeWnd* costume = static_cast<UI2ndCostumeWnd*>(it->second);
+            costume->m_hideCheckBox->SetChecked(costume->m_display->job == 0);
+            costume->m_showCheckBox->SetChecked(costume->m_hideCheckBox->geometry.unknown_0030 == 0);
+          }
+          it->second->Show(1);
+          it->second->InvalidateChildren();
+        } else {
+          static_cast<UIButton*>(it->first)->SetState(0);
+          it->second->Show(0);
+        }
+      }
+      this->Invalidate();
+    }
+    break;
+  case 201:
+    g_windowMgr.CloseWindow(281);
+    break;
+  case 224:
+    if (this->m_buyButton->Argument() == 0 &&
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2818), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+      for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
+        UIStylingshopTabParentWnd* tab = it->second;
+        if (tab->geometry.visible == 0) {
+          continue;
+        }
+        if (it->first->geometry.id == 496) {
+          UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(tab);
+          UISlotOfMyStyleWnd* slot = myStyle->m_slots[myStyle->m_selectedSlot];
+          if (slot && slot->m_showInfo && slot->m_showInfo->SendStyleChange() == true) {
+            myStyle->RemoveChild(myStyle->m_slots[myStyle->m_selectedSlot], 1);
+            myStyle->m_slots[myStyle->m_selectedSlot] = nullptr;
+            myStyle->unknown_0094[myStyle->m_selectedSlot]->Enable(0);
+          }
+        } else if (tab->m_showInfo) {
+          tab->m_showInfo->SendStyleChange();
+        }
+      }
+      this->Invalidate();
+      return 0;
+    }
+    break;
+  }
+
+  this->Invalidate();
+  return 0;
+}
+
 #pragma pack(push, 1)
 struct StyleChangeHeader {
   /* 0000 */ unsigned short packetType;

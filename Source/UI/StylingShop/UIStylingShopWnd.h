@@ -47,6 +47,8 @@ public:
 
 class UIShowInfoWnd : public UIWindow {
 public:
+  explicit UIShowInfoWnd(UIWindowContext& context);
+  ~UIShowInfoWnd() override;
   void ResetCheckBoxes();
   void ArrangeCheckBoxes(const int& layout);
   void CheckColoringGoods(bool* coloring);
@@ -110,6 +112,8 @@ void ToggleStylingAccessory(int itemId, int slot);
 
 class UIStylingShopWnd : public UIFrameWnd {
 public:
+  UIStylingShopWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+
   /* 00B4 */ UIStylingShopButton* m_buyButton;
   /* 00B8 */ UIDisplayCharacter* m_preview;
   /* 00BC */ std::map<UIWindow*, UIStylingshopTabParentWnd*> m_tabs;
@@ -120,11 +124,14 @@ public:
   void RefreshFavoriteButton();
   bool AddToMyStyle();
   void SetBuyEnabled(bool enabled);
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
 
 class UI2ndCostumeCheckBox;
 
 class UI2ndCostumeWnd : public UIStylingshopTabParentWnd {
+  friend class UIStylingShopWnd;
+
 public:
   explicit UI2ndCostumeWnd(UIWindowContext& context);
   void Paint() override;
@@ -141,9 +148,15 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
 
+class UIStaticBitmap;
+
 class UIAccessoryShowCase : public UIScrollWnd {
 public:
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+  /* 00B0 */ unsigned char unknown_00B0[12];
+  /* 00BC */ std::vector<UIStaticBitmap*> m_itemFrames;
 };
 
 class UIBasicStylingWnd : public UIStylingshopTabParentWnd {
@@ -160,6 +173,7 @@ class UISlotOfMyStyleWnd;
 
 class UIMyStyleWnd : public UIStylingshopTabParentWnd {
 public:
+  explicit UIMyStyleWnd(UIWindowContext& context);
   void SaveLikeList();
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -173,9 +187,7 @@ public:
 
 class UISlotOfMyStyleWnd : public UIStylingshopTabParentWnd {
 public:
-  // INLINED
-  explicit UISlotOfMyStyleWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context) {
-  }
+  explicit UISlotOfMyStyleWnd(UIWindowContext& context);
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -197,6 +209,10 @@ public:
   void SetArgument(int argument) {
     this->m_argument = argument;
   }
+  // INLINED
+  int Argument() const {
+    return this->m_argument;
+  }
   void Slot27(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
@@ -204,7 +220,14 @@ public:
 
 class UIAccBitmapButton : public UIBitmapButton {
 public:
+  // INLINED
+  int Argument() const {
+    return this->m_argument;
+  }
   void Slot33(int x, int y) override;
+
+  /* 0120 */ int m_slot;
+  /* 0124 */ int m_itemId;
 };
 
 #endif
