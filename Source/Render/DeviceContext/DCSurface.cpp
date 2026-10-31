@@ -276,3 +276,9 @@ void CDCSurface::Brighten(int, int, int, int, int) {
 // FUNCTION: fn_01882
 void CDCSurface::Dim(int, int, int, int, int) {
 }
+
+// OFFSET: 0x00E30A70
+// FUNCTION: fn_24170
+int CSession::RenderSystemResetPolicy() {
+  return std::max(this->m_hotkeyScript->GlobalInteger("RenderSystemReset"), 0);
+}

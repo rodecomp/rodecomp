@@ -487,6 +487,7 @@ public:
   void ClearUnknown1738(int id);
   std::uint32_t SyncServerTime(std::uint32_t serverTime);
   __declspec(noinline) int DefaultRenderBackend();
+  int RenderSystemResetPolicy();
   void LoadNavigationScripts();
   bool IsNavigationAllowed() const;
   void LoadRobeAlpha();
