@@ -3369,5 +3369,227 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 }
 
 // OFFSET: 0x008B2820
+// FUNCTION: fn_11747
+void UIPetInfoWnd::Slot15(int, int) {
+  auto& controls = *this->m_controls;
+  this->AddCloseButton(controls, "", 0);
+  this->nameEdit = new UIEditCtrl2(*this->m_context, *this->m_editContext);
+  this->nameEdit->SetSize(80, 16);
+  if (std::strcmp(g_session.unknown_1018, "") == 0) {
+    std::sprintf(g_session.unknown_1018, g_session.GetJobName(g_session.unknown_103C, -1));
+  }
+  this->nameEdit->Move(135, 24);
+  this->nameEdit->SetText(g_session.unknown_1018);
+  this->nameEdit->maximum = 50;
+  this->nameEdit->Background(232, 232, 232);
+  this->AddChild(this->nameEdit);
+  {
+    const std::string prefix("유저인터페이스\\");
+    this->unknown_00BC = new UIBitmapButton(*this->m_context, controls);
+    this->unknown_00BC->SetBitmap((prefix + "btn_rewrite" + ".bmp").c_str(), 0, 0);
+    this->unknown_00BC->SetBitmap((prefix + "btn_rewrite_a" + ".bmp").c_str(), 1, 0);
+    this->unknown_00BC->SetBitmap((prefix + "btn_rewrite_b" + ".bmp").c_str(), 2, 0);
+    this->unknown_00BC->SetSize(this->unknown_00BC->BitmapWidth(), this->unknown_00BC->BitmapHeight());
+    this->unknown_00BC->Move(230, 21);
+    this->unknown_00BC->SetId(184);
+    this->AddChild(this->unknown_00BC);
+  }
+
+  const char tooltip[] = "Pet Command";
+  this->unknown_00C0 = new UINoneVisibleButton(*this->m_context, controls);
+  this->unknown_00C0->SetSize(120, 18);
+  this->unknown_00C0->Move(150, 44);
+  this->unknown_00C0->SetId(268);
+  this->AddChild(this->unknown_00C0);
+  {
+    const std::string prefix("유저인터페이스\\basic_interface\\");
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context, controls);
+    button->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(270 - button->BitmapWidth(), 44);
+    button->SetTooltip(tooltip);
+    button->SetId(268);
+    this->AddChild(button);
+  }
+
+  this->friendlyText = LookupMessage(676);
+  this->friendlyGauge = new UIPetInfoBarGraph(*this->m_context);
+  this->friendlyGauge->SetSize(120, 9);
+  this->friendlyGauge->Move(145, 105);
+  this->AddChild(this->friendlyGauge);
+  this->UpdateFriendlyGauge();
+  this->m_message0 = 201;
+
+  const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_activePetEggIndex).itemId.c_str());
+  this->unknown_00E4 = g_petEvolutionMgr->IsAutoFeeding(petEgg);
+  if (this->unknown_00E4 == true) {
+    this->unknown_00E8 = new UICheckBox(*this->m_context, controls);
+    this->unknown_00E8->SetSize(12, 12);
+    this->unknown_00E8->Move(this->TextWidth(controls.fonts, controls.locale, LookupMessage(2577), 0, 0, 12, 0, 0) + 110, 159);
+    this->unknown_00E8->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
+    this->unknown_00E8->SetChecked(g_petAutoFeed);
+    this->AddChild(this->unknown_00E8);
+  }
+}
 
 // OFFSET: 0x008BFE80
+// FUNCTION: fn_11812
+int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (this->window_00C4 && sender != this->window_00C4) {
+    return 0;
+  }
+
+  switch (message) {
+  case 0:
+    return 0;
+  case 39: {
+    CMode* mode = g_modeMgr.GetGameMode();
+    switch (a) {
+    case 467:
+      if (g_windowMgr.unknown_0458) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2985)), 255, 0, 0, 0);
+        break;
+      }
+      this->window_00C4 = new UINormalMB(*this->m_context, *this->m_frameContext);
+      this->window_00C4->Create(this, LookupMessage(601), 2, true, nullptr, 280, 120, nullptr);
+      g_windowMgr.AddRendered(this->window_00C4);
+      g_windowMgr.CloseWindow(260);
+      return 0;
+    case 468:
+      mode->SendMsg(150, 2, 0, 0, 0);
+      g_windowMgr.CloseWindow(260);
+      return 0;
+    case 469:
+      mode->SendMsg(150, 4, 0, 0, 0);
+      g_windowMgr.CloseWindow(260);
+      return 0;
+    case 470:
+      mode->SendMsg(150, 3, 0, 0, 0);
+      g_windowMgr.CloseWindow(260);
+      return 0;
+    case 471:
+      if (g_session.m_petFriendly > 900) {
+        g_windowMgr.CloseWindow(260);
+        UIWindow* window = g_windowMgr.EnsureWindow(261);
+        const int petEgg = LookupClientItemByIdentity(g_session.m_inventoryItems, g_activePetEggIndex).GetItemId();
+        window->SendMsg(nullptr, 142, petEgg, b, 0, 0);
+        this->SendMsg(nullptr, 6, 201, 0, 0, 0);
+        g_windowMgr.CloseWindow(260);
+        return 0;
+      }
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2576)), 255, 0, 0, 0);
+      break;
+    }
+    g_windowMgr.CloseWindow(260);
+    return 0;
+  }
+  case 6:
+    if (a == 184 || a == 201) {
+      this->m_recorder->Record(this->geometry.id, static_cast<int>(a), b, c, d);
+    }
+
+    switch (a) {
+    case 184:
+      if (std::strlen(this->nameEdit->Text()) >= 24) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(682), 0, true, false, 0, "Message", 280, 120, 0);
+      } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
+                 _mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
+      } else {
+        char text[512];
+        std::sprintf(text, LookupMessage(2931), this->nameEdit->Text());
+        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+          if (this->m_forbiddenWords->Contains(this->nameEdit->Text()) != true) {
+            g_modeMgr.GetGameMode()->SendMsg(145, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
+            std::sprintf(g_session.unknown_1018, this->nameEdit->Text());
+            this->Invalidate();
+            return 0;
+          }
+
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2948), 0, true, false, 0, "Message", 280, 120, 0);
+        }
+
+        this->nameEdit->SetText(g_session.unknown_1018);
+        this->nameEdit->Invalidate();
+      }
+      return 0;
+    case 201:
+      g_windowMgr.CloseWindow(88);
+      return 0;
+    case 213:
+      if (sender == this->unknown_00E8) {
+        if (b > 0) {
+          g_session.SendPetAutoFeedOption(1);
+        } else {
+          g_session.SendPetAutoFeedOption(0);
+        }
+      }
+      return 0;
+    case 268: {
+      UIWindow* menu = g_windowMgr.EnsureWindow(260);
+      std::string feed;
+      std::string performance;
+      std::string returnToEgg;
+      std::string unequip;
+      feed = LookupMessage(592);
+      performance = LookupMessage(593);
+      returnToEgg = LookupMessage(594);
+      unequip = LookupMessage(595);
+      menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(feed.c_str()), 467, 0, 0);
+      menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(performance.c_str()), 468, 0, 0);
+      menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(unequip.c_str()), 469, 0, 0);
+      menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(returnToEgg.c_str()), 470, 0, 0);
+      const int petEgg = LookupClientItemByIdentity(g_session.m_inventoryItems, g_activePetEggIndex).GetItemId();
+      const std::pair<bool, std::vector<int>> targets = g_petEvolutionMgr->GetEvolutionTargets(petEgg);
+      if (targets.first == true) {
+        for (auto it = targets.second.begin(); it != targets.second.end(); ++it) {
+          const int job = g_session.GetPetJobByEggItem(*it);
+          std::string text;
+          const char* name = g_session.GetPetString(job);
+          if (name == nullptr) {
+            text = FormatOwnedString(LookupMessage(2568), g_session.GetJobName(job, -1));
+          } else {
+            text = FormatOwnedString(LookupMessage(2568), name);
+          }
+          menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(text.c_str()), 471, *it, 0);
+        }
+      }
+      menu->SendMsg(nullptr, 40, 0, 0, 0, 0);
+      menu->Resize(110, (static_cast<int>(targets.second.size()) + 4) * 16);
+      menu->SendMsg(nullptr, 83, 88, 0, 0, 0);
+      int x = 160;
+      int y = 44;
+      this->ToScreen(x, y);
+      menu->Move(x, y);
+      return 0;
+    }
+    case 488: {
+      CMode* mode = g_modeMgr.GetGameMode();
+      if (sender == this->window_00C4 && b == 187) {
+        if (g_windowMgr.LookupWindow(10011)) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3550)), 255, 0, 0, 0);
+          this->window_00C4 = nullptr;
+          return 0;
+        }
+        mode->SendMsg(150, 1, 0, 0, 0);
+      }
+      this->window_00C4 = nullptr;
+      return 0;
+    }
+    default:
+      return 0;
+    }
+  case 34:
+    this->saved = reinterpret_cast<PetInfoWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
