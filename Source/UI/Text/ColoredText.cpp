@@ -4,7 +4,9 @@
 #include "UI/Text/ColoredText.h"
 #include "UI/Window/UIWindow.h"
 
+#include <algorithm>
 #include <cstring>
+#include <deque>
 #include <string>
 #include <windows.h>
 
@@ -298,4 +300,10 @@ std::string StripColorCodes(const char* text, unsigned bytes) {
   }
 
   return result;
+}
+
+// OFFSET: 0x00A874B0
+// FUNCTION: fn_17063
+bool ContainsValue(const std::deque<int>& values, const int& value) {
+  return std::find(values.begin(), values.end(), value) != values.end();
 }
