@@ -49,6 +49,7 @@ class UIChangeMaterialWnd_CheckBox : public UICheckBox {
 public:
   // INLINED
   UIChangeMaterialWnd_CheckBox(UIWindowContext& windows, UIButtonContext& controls) : UICheckBox(windows, controls) {}
+  void Paint() override;
 
   /* 010C */ std::string ascendingText;
   /* 0124 */ std::string descendingText;

@@ -740,3 +740,34 @@ void UIChangeMaterialWnd::Slot15(int width, int height) {
   this->AddChild(list);
   list->SendMsg(nullptr, 23, 0, 0, 0, 0);
 }
+
+// OFFSET: 0x005E1E20
+// FUNCTION: fn_03879
+void UIChangeMaterialWnd_CheckBox::Paint() {
+  if (this->m_checked.empty() || this->m_unchecked.empty()) {
+    return;
+  }
+
+  if (this->m_disabled == 1) {
+    this->ClearSurface(0xFFFF00FFu);
+    return;
+  }
+
+  if (this->m_hidden == 1) {
+    return;
+  }
+
+  if (this->geometry.unknown_0030 == 0) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str())));
+    this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+    if (!this->ascendingText.empty()) {
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0xc, 1, this->ascendingText.c_str(), 0, 0, 0xc, 0, 0, 0);
+    }
+  } else if (this->geometry.unknown_0030 == 1) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
+    this->DrawBitmap(0, 0, bitmap ? &bitmap->image : nullptr, false);
+    if (!this->descendingText.empty()) {
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0xc, 1, this->descendingText.c_str(), 0, 0, 0xc, 0, 0, 0);
+    }
+  }
+}
