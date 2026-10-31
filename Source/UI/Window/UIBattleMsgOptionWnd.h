@@ -13,6 +13,7 @@ struct UIButtonContext;
 class UIBattleMsgOptionWnd : public UIFrameWnd {
 public:
   UIBattleMsgOptionWnd(UIWindowContext& windows, UIFrameContext& frames);
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;

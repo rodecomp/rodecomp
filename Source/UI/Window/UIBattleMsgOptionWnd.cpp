@@ -67,6 +67,8 @@ UIBattleMsgOptionWnd::UIBattleMsgOptionWnd(UIWindowContext& windows, UIFrameCont
   this->text = LookupMessage(0x509);
 }
 
+// OFFSET: 0x0091EC40
+
 // OFFSET: 0x0091BA20
 // FUNCTION: fn_12606
 int UIBattleMsgOptionWnd::RowAt(int x, int y) {
