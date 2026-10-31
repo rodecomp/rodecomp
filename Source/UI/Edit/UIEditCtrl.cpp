@@ -2173,10 +2173,49 @@ int ItemTypeSortRank(int type) {
 extern "C" void sub_96E320(void* head, size_t size, ...);
 
 // OFFSET: 0x00996870
+// FUNCTION: fn_13470
+bool UIItemStoreSubWnd::Sort1() {
+  if (!this->sub_996950()) {
+    return false;
+  }
+  struct Flag {
+    char val;
+  } flag{0};
+  void* head = *reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0xe8);
+  size_t size = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(this) + 0xec);
+  sub_96E320(head, size, flag);
+  return true;
+}
 
 // OFFSET: 0x009968B0
+// FUNCTION: fn_13471
+bool UIItemStoreSubWnd::Sort2() {
+  if (!this->sub_996AF0()) {
+    return false;
+  }
+  struct Flag {
+    char val;
+  } flag{0};
+  void* head = *reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0xe8);
+  size_t size = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(this) + 0xec);
+  sub_96E320(head, size, flag);
+  return true;
+}
 
 // OFFSET: 0x009968F0
+// FUNCTION: fn_13472
+bool UIItemStoreSubWnd::Sort3() {
+  if (!this->sub_996C90()) {
+    return false;
+  }
+  struct Flag {
+    char val;
+  } flag{0};
+  void* head = *reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0xe8);
+  size_t size = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(this) + 0xec);
+  sub_96E320(head, size, flag);
+  return true;
+}
 
 // OFFSET: 0x00996940
 // FUNCTION: fn_13473
