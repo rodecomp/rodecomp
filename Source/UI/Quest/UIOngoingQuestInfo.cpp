@@ -500,4 +500,52 @@ void CUIRewardItem::Slot15(int width, int height) {
   this->AddChild(this->countText);
 }
 
+// OFFSET: 0x00A53170
+// FUNCTION: fn_16230
+void CUIScrollWindow::Slot15(int width, int height) {
+  this->firstContents = new CUIContents(*this->m_context);
+  this->firstContents->SetSize(335, 59);
+  this->firstContents->Move(0, 0);
+  this->AddChild(this->firstContents);
+
+  this->firstLine = new CUIStaticImage(*this->m_context);
+  this->firstLine->SetSize(334, 1);
+  this->firstLine->Move(1, 59);
+  this->firstLine->SetImage("유저인터페이스\\Renew_QuestUI\\img_line.bmp");
+  this->AddChild(this->firstLine);
+
+  this->secondContents = new CUIContents(*this->m_context);
+  this->secondContents->SetSize(335, 59);
+  this->secondContents->Move(0, 60);
+  this->AddChild(this->secondContents);
+
+  this->secondLine = new CUIStaticImage(*this->m_context);
+  this->secondLine->SetSize(334, 1);
+  this->secondLine->Move(1, 119);
+  this->secondLine->SetImage("유저인터페이스\\Renew_QuestUI\\img_line.bmp");
+  this->AddChild(this->secondLine);
+
+  this->rewards = new CUIRewards(*this->m_context);
+  this->rewards->SetSize(335, 122);
+  this->rewards->Move(0, 120);
+  this->AddChild(this->rewards);
+
+  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar->SetSize(7, 322);
+  this->scrollBar->Move(335, 0);
+  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
+  this->scrollBar->SetTotal(322);
+  this->scrollBar->SetVisible(322);
+  this->scrollBar->step = 15;
+  this->scrollBar->SetButtonImages(
+    "유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_upper.bmp", "유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_down.bmp"
+  );
+  this->scrollBar->SetBackground(std::string());
+  this->scrollBar->SetThumbImages(
+    "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_up.bmp", "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_mid.bmp",
+    "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_down.bmp"
+  );
+  this->AddChild(this->scrollBar);
+}
+
 }

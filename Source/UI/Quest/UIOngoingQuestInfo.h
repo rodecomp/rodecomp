@@ -41,6 +41,9 @@ public:
 
 class CUIContents : public CUIControl {
 public:
+  __declspec(noinline) explicit CUIContents(UIWindowContext& context) : CUIControl(context), title(nullptr), textViewer(nullptr), icon(nullptr) {
+  }
+
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
@@ -71,6 +74,11 @@ public:
 
 class CUIRewards : public CUIControl {
 public:
+  __declspec(noinline) explicit CUIRewards(UIWindowContext& context)
+      : CUIControl(context), title(nullptr), firstLabel(nullptr), firstText(nullptr), secondLabel(nullptr), secondText(nullptr), thirdLabel(nullptr),
+        rewardList(nullptr), npcSprite(nullptr) {
+  }
+
   void Slot16() override;
   void Paint() override;
 
@@ -95,6 +103,11 @@ public:
 
 class CUIScrollWindow : public CUIControl {
 public:
+  __declspec(noinline) explicit CUIScrollWindow(UIWindowContext& context)
+      : CUIControl(context), firstLine(nullptr), secondContents(nullptr), secondLine(nullptr), rewards(nullptr), scrollBar(nullptr), firstContents(nullptr) {
+  }
+
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
   void Slot35(int value) override;
@@ -113,9 +126,9 @@ public:
     return total;
   }
 
-  /* 0084 */ unsigned char unknown_0084[0x04];
+  /* 0084 */ CUIStaticImage* firstLine;
   /* 0088 */ CUIContents* secondContents;
-  /* 008C */ unsigned char unknown_008C[0x04];
+  /* 008C */ CUIStaticImage* secondLine;
   /* 0090 */ CUIRewards* rewards;
   /* 0094 */ CUIVScrollBar* scrollBar;
   /* 0080 */ CUIContents* firstContents;
