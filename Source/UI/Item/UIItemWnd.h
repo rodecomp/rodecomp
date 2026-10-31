@@ -24,6 +24,7 @@ public:
   void ReleaseSelection(unsigned char keep);
   void DrawNewItemMark(int x, int y);
   void RefreshOptionBox();
+  void RefreshItems();
 
   /* 00F0 */ ItemWndInfo* saved;
   /* 00F4 */ unsigned char unknown_00F4[0xC];

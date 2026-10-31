@@ -87,6 +87,7 @@
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowRegistration.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include <algorithm>
 #include <cstdarg>
 #include <cstdint>
@@ -94,6 +95,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <list>
+#include <mbstring.h>
 #include <map>
 #include <string>
 #include <windows.h>
@@ -126,6 +128,7 @@ struct ClientItemLists {
   void RemoveItem1730(const ITEM_INFO& item);
   void RemoveItem1720ByName(const ITEM_INFO& item);
   void CopyItems1740To1750();
+  void ClearItems1760And1748();
 };
 
 struct SessionItemLists {
@@ -134,6 +137,8 @@ struct SessionItemLists {
 
 struct SessionMessengerContext {
   int GetList1Size() const;
+  int GetList0Size() const;
+  int GetList10Size() const;
   int GetList4Size() const;
   int GetList6Size() const;
   int GetList7Size() const;
@@ -6044,3 +6049,85 @@ void UIMerchantShopMakeWnd::Paint() {
     }
   }
 }
+
+// GLOBAL: gl_25363
+bool g_sortPrivateTab;
+
+// OFFSET: 0x00990810
+// FUNCTION: fn_13428
+int UIMerchantItemPurchaseMSGWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  switch (a) {
+  case 184:
+    static_cast<CMode*>(g_charViewMode)->SendMsg(83, reinterpret_cast<std::intptr_t>(this->m_controls), this->unknown_00D0, 0, 0);
+  case 185:
+    g_windowMgr.CloseWindow(230);
+    reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1760And1748();
+    break;
+  }
+  return 0;
+}
+
+// OFFSET: 0x00995170
+
+// OFFSET: 0x00995E10
+// FUNCTION: fn_13466
+bool UIItemStoreSubWnd::FilterByName1(std::string query) {
+  if (!this->sub_996950()) {
+    return false;
+  }
+
+  for (auto it = this->items.begin(); it != this->items.end();) {
+    ITEM_INFO item = *it;
+    const std::string& name = item.unknown_0044;
+    auto next = std::next(it);
+    if (!_mbsstr(reinterpret_cast<const unsigned char*>(name.c_str()), reinterpret_cast<const unsigned char*>(query.c_str()))) {
+      this->items.erase(it);
+    }
+    it = next;
+  }
+  return true;
+}
+
+// OFFSET: 0x00996090
+// FUNCTION: fn_13467
+bool UIItemStoreSubWnd::FilterByName2(std::string query) {
+  if (!this->sub_996AF0()) {
+    return false;
+  }
+
+  for (auto it = this->items.begin(); it != this->items.end();) {
+    ITEM_INFO item = *it;
+    const std::string& name = item.unknown_0044;
+    if (name.find(query) == std::string::npos) {
+      it = this->items.erase(it);
+    } else {
+      ++it;
+    }
+  }
+  return true;
+}
+
+// OFFSET: 0x00996440
+// FUNCTION: fn_13468
+bool UIItemStoreSubWnd::FilterByName3(std::string query) {
+  if (!this->sub_996C90()) {
+    return false;
+  }
+
+  for (auto it = this->items.begin(); it != this->items.end();) {
+    ITEM_INFO item = *it;
+    const std::string& name = item.unknown_0044;
+    if (name.find(query) == std::string::npos) {
+      it = this->items.erase(it);
+    } else {
+      ++it;
+    }
+  }
+  return true;
+}
+
+// OFFSET: 0x00996E30

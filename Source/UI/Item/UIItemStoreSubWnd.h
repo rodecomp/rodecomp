@@ -34,6 +34,9 @@ public:
   bool sub_996950();
   bool sub_996AF0();
   bool sub_996C90();
+  bool FilterByName1(std::string query);
+  bool FilterByName2(std::string query);
+  bool FilterByName3(std::string query);
   void Slot15(int width, int height) override;
 
   /* 00F0 */ unsigned char unknown_00F0[0x20];
