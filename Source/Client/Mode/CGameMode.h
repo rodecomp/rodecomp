@@ -165,7 +165,7 @@ public:
   void sub_CFE480(int actorId);
   void NotifyUnknown0604(int value);
   void UpdatePetFriendlyWindow(int previousFriendly);
-  bool SaveEmblemFile(const std::vector<unsigned char>& data);
+  __declspec(noinline) bool SaveEmblemFile(const std::vector<unsigned char>& data);
   void SendNpcInputText(std::uint32_t npcId, const char* text, const char* replacement, int unused);
   std::string HuntTargetText(const RenewQuestOngoingInfo& quest, int index);
   std::vector<unsigned char> SaveActiveSkillEffects();
@@ -438,6 +438,7 @@ public:
   void AddUnknown0604(UIWindow* window);
   void RequestAdminStatus();
   void sub_CEB8E0();
+  unsigned sub_CEBBB0(const std::vector<unsigned char>& data);
   unsigned sub_CEBF30(const std::vector<unsigned char>& data);
   unsigned sub_CEC100(const std::vector<unsigned char>& data);
   unsigned sub_CEC6A0(const std::vector<unsigned char>& data);

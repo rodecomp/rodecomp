@@ -1692,3 +1692,63 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
   }
   return output;
 }
+
+// OFFSET: 0x00CEBBB0
+// FUNCTION: fn_21353
+unsigned CGameMode::sub_CEBBB0(const std::vector<unsigned char>& data) {
+  if (data.empty()) {
+    return 0xFFFFFFFFu;
+  }
+
+  GameModeChunkHeader header = {};
+  std::vector<unsigned char> record;
+  unsigned offset = 6;
+  std::uint32_t guildId = 0;
+  header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
+  if (header.type == 13000) {
+    while (offset < data.size()) {
+      header = {};
+      header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
+      offset += 6;
+
+      if (static_cast<int>(header.size) > 0) {
+        record.resize(header.size);
+      }
+
+      switch (header.type) {
+      case 13001:
+        goto finished;
+      case 13002:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->SaveEmblemFile(record);
+        break;
+      case 13003:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->nameCard.Load(reinterpret_cast<const std::vector<char>&>(record));
+        break;
+      case 13004:
+        std::memcpy(&guildId, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 13005: {
+        int emblemVersion = 0;
+        std::memcpy(&emblemVersion, data.data() + offset, header.size);
+        offset += header.size;
+        this->scene->player->Slot49(guildId, emblemVersion);
+        g_guildId = guildId;
+        break;
+      }
+      default:
+        offset += header.size;
+        break;
+      }
+    }
+  } else {
+    offset = 0xFFFFFFFFu;
+  }
+
+finished:
+  return offset;
+}
