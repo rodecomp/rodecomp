@@ -277,6 +277,7 @@ class CUIGraphicsPage : public CUIPage {
 public:
   __declspec(noinline) explicit CUIGraphicsPage(UIWindowContext& context);
   __declspec(noinline) bool IsModified();
+  void ApplySettings();
   int GetPendingBackend();
   void LoadAdapters();
 
@@ -330,6 +331,7 @@ std::string GetHotkeyText(int tab, int index);
 
 class CUIGameSettingsUI : public UIFrameWnd {
 public:
+  void Slot16() override;
   void Slot25(int x, int y) override;
 
   void sub_A3F0F0();

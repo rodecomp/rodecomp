@@ -1,4 +1,5 @@
 #include "UI/GameSettings/GameSettingsUI.h"
+#include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/GameSettingsMgr.h"
@@ -12,12 +13,17 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/DisplayMode.h"
 #include "Render/DX7/RenderSystemDX7.h"
+#include "Render/DeviceSelection.h"
+#include "Render/Renderer.h"
+#include "Render/Textures/TextureCache.h"
 #include "Render/RenderAdapter.h"
 #include "Render/RenderBackends.h"
+#include "Resource/ResourcePreload.h"
 #include "Script/LuaScript.h"
 #include "UI/Buttons/UIRadioButton.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Text/UIStaticTextControl.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIRoulletteWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
@@ -86,6 +92,9 @@ int g_textureDetailLevel;
 
 // GLOBAL: gl_25086
 std::map<int, int> g_optionHotkeys;
+
+// GLOBAL: gl_25229
+bool g_restartClient;
 
 template <>
 __declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::SelectItem(CUIListItem* item);
@@ -2997,4 +3006,105 @@ CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::~CUIListBoxEx() {
 // FUNCTION: fn_15352
 template <>
 CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::~CUIListBoxEx() {
+}
+
+// OFFSET: 0x00A40900
+// FUNCTION: fn_15978
+void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
+  if (this->IsModified()) {
+    CUIGroupGraphicsAPI* graphicsApi = this->m_graphicsApi;
+    graphicsApi->m_backend = graphicsApi->m_pendingBackend;
+    g_configuredRenderBackend = graphicsApi->m_pendingBackend;
+
+    CUIGroupGraphics* graphics = this->m_graphics;
+    graphics->m_adapter = graphics->m_pendingAdapter;
+    graphics->m_mode = graphics->m_pendingMode;
+    if (g_configuredRenderBackend == 1) {
+      strncpy_s(g_deviceName, sizeof(g_deviceName), graphics->m_pendingAdapter.description.c_str(), _TRUNCATE);
+      std::memcpy(g_guidDevice, &graphics->m_pendingAdapter.renderGuid, sizeof(GUID));
+      std::memcpy(g_guidDriver, &graphics->m_pendingAdapter.drawGuid, sizeof(GUID));
+      g_configuredDeviceCount = graphics->m_adapterCombo->listBox->selected;
+      g_configuredModeCount = graphics->m_modeCombo->listBox->selected;
+    } else if (g_configuredRenderBackend == 2) {
+      g_configuredDeviceGuid = graphics->m_pendingAdapter.deviceGuid;
+      strncpy_s(g_configuredDeviceName, sizeof(g_configuredDeviceName), graphics->m_pendingAdapter.deviceName.c_str(), _TRUNCATE);
+    }
+    g_configuredScreenWidth = graphics->m_pendingMode.width;
+    g_configuredScreenHeight = graphics->m_pendingMode.height;
+    g_configuredBitsPerPixel = graphics->m_pendingMode.bitsPerPixel;
+    g_configuredFullscreen = this->m_fullscreen->m_onButton->checked;
+    g_restartClient = true;
+    GetRagConnection().Close();
+    if (g_charViewMode) {
+      static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+    }
+    return;
+  }
+
+  const int spriteLevel = this->m_spriteDetailLevel->m_slider->position;
+  if (spriteLevel != g_effectDetailLevel) {
+    g_effectDetailLevel = spriteLevel;
+    switch (spriteLevel) {
+    case 0:
+      g_spriteHalfWidth = 1;
+      g_spriteHalfHeight = 1;
+      break;
+    case 1:
+      g_spriteHalfWidth = 0;
+      g_spriteHalfHeight = 1;
+      break;
+    default:
+      g_spriteHalfWidth = 0;
+      g_spriteHalfHeight = 0;
+      break;
+    }
+  }
+
+  bool reloadTextures = false;
+  const int textureLevel = this->m_textureDetailLevel->m_slider->position;
+  if (textureLevel != g_textureDetailLevel) {
+    g_textureDetailLevel = textureLevel;
+    int reduction = 1;
+    if (textureLevel == 0) {
+      reduction = 4;
+    } else if (textureLevel == 1) {
+      reduction = 2;
+    }
+    if (reduction != g_textureReduction) {
+      g_textureReduction = reduction;
+      reloadTextures = true;
+    }
+  }
+
+  const bool trilinear = this->m_trilinear->m_onButton->checked;
+  if (trilinear != (g_textureFiltering != 0)) {
+    g_textureFiltering = trilinear;
+    GetRenderSystemHolder()->UpdateOption();
+    g_texMgr.Reload();
+  } else if (reloadTextures) {
+    g_texMgr.Reload();
+  }
+}
+
+// OFFSET: 0x00A40C40
+// FUNCTION: fn_15986
+void CUIGameSettingsUI::Slot16() {
+  this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
+  const char* title = LookupMessage(0x946);
+  static_cast<CUITitleBar*>(this->m_titleBar)->SetTitle(title, std::strlen(title));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(0))->SetText(LookupMessage(0x102E));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(1))->SetText(LookupMessage(0x102F));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(2))->SetText(LookupMessage(0x1030));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(3))->SetText(LookupMessage(0x1031));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(4))->SetText(LookupMessage(0x107E));
+
+  for (UIWindow* child : this->m_currentPage->m_children) {
+    static_cast<GameSettingsUI::CUIGroup*>(child)->Refresh();
+  }
+  for (UIWindow* child : this->m_graphicsPage->m_children) {
+    static_cast<GameSettingsUI::CUIGroup*>(child)->Refresh();
+  }
+  for (GameSettingsUI::CUIListPage* page : this->m_pages) {
+    page->LoadOptions(this->m_tab->FindButton(page)->geometry.id);
+  }
 }
