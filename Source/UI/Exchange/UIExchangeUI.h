@@ -22,6 +22,7 @@ public:
   /* 00F0 */ CUIStaticText* unknown_00F0;
   /* 00F4 */ CUIStaticText* unknown_00F4;
 
+  CUIItem();
   void Slot15(int width, int height) override;
   void Paint() override;
   void Slot16() override;

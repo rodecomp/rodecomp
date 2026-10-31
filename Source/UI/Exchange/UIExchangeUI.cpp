@@ -665,6 +665,11 @@ CUIExchangeUI::CUIExchangeUI()
       lockButton(nullptr), tradeButton(nullptr), unknown_0118(nullptr) {
 }
 
+// OFFSET: 0x00A16E10
+// FUNCTION: fn_15283
+ExchangeUI::CUIItem::CUIItem() : CUIListItem(), unknown_00E8(nullptr), itemIcon(nullptr), unknown_00F0(nullptr), unknown_00F4(nullptr) {
+}
+
 // OFFSET: 0x00A10030
 // FUNCTION: fn_15187
 CUIExchangeUI* CreateExchangeUI() {
