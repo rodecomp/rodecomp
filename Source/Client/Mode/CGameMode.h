@@ -403,6 +403,12 @@ public:
   void ReceiveMacroBlackListResult(int result);
   void ReceiveMacroDetectorResult(int result);
   void ReceiveMacroBlackListCode(unsigned char state, const char* code);
+  void ReceivePartyJobLevel(const unsigned char* packet);
+  void ReceivePartyDead(const unsigned char* packet);
+  void ReceiveShopItemList(const std::vector<ITEM_INFO>& items, int value, int unused1, int argument, int unused2, std::uint32_t duration, unsigned char myShop);
+  void ReceivePacket0B2E(short result);
+  void ReceiveUnknownD2A1F0(const unsigned char* packet);
+  void ReceiveActorMessage7(const unsigned char* packet);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

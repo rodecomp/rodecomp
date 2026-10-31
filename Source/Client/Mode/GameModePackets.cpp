@@ -13,6 +13,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
+#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/RouletteMgr.h"
 #include "Contents/World/World.h"
@@ -23,6 +24,7 @@
 #include "UI/Window/UIHomunInfoWnd.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "UI/Shop/UIMerchantItemMyShopWnd.h"
+#include "UI/Shop/UIMerchantItemShopWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
@@ -47,9 +49,18 @@ struct SessionMessengerContext {
 struct ClientItemLists {
   bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
   bool AddItem1740(const ITEM_INFO& item);
+  void AddItem1758(const ITEM_INFO& item);
+  void AddItem1748(const ITEM_INFO& item);
   void RemoveItem1758(ITEM_INFO& item);
   void RemoveItem1758ByItemId(ITEM_INFO& item);
+  void ClearItems1758();
+  void ClearItems1760();
+  void ClearItems1748();
+  void ResetEquipped();
+  bool Equip(const ITEM_INFO& item);
 };
+
+void __fastcall sub_DFF150(CSession* session);
 
 // GLOBAL: gl_24992
 char g_pendingWhisperCount;
@@ -1666,4 +1677,118 @@ int sub_D64A40(const unsigned char* entries) {
     ++count;
   }
   return count;
+}
+
+// OFFSET: 0x00D77C60
+// FUNCTION: fn_22153
+void CGameMode::ReceivePartyJobLevel(const unsigned char* packet) {
+  ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.SetPartyJobLevel(
+    *reinterpret_cast<const std::uint32_t*>(packet + 2), *reinterpret_cast<const std::uint16_t*>(packet + 6),
+    *reinterpret_cast<const std::uint16_t*>(packet + 8)
+  );
+  sub_DFF150(&g_session);
+}
+
+// OFFSET: 0x00D8A260
+// FUNCTION: fn_22217
+void CGameMode::ReceivePartyDead(const unsigned char* packet) {
+  ClientMessenger messenger{g_session.m_partyMembers, g_session.m_friends};
+  MessengerMember member = messenger.PartyByAccount(*reinterpret_cast<const std::uint32_t*>(packet + 2));
+  if (member.valid != 0) {
+    messenger.SetPartyDead(*reinterpret_cast<const std::uint32_t*>(packet + 2), packet[6]);
+    sub_DFF150(&g_session);
+  }
+}
+
+// OFFSET: 0x00D5AB80
+// FUNCTION: fn_21962
+void CGameMode::ReceiveShopItemList(
+  const std::vector<ITEM_INFO>& items, int value, int unused1, int argument, int unused2, std::uint32_t duration, unsigned char myShop
+) {
+  ClientItemLists* lists = reinterpret_cast<ClientItemLists*>(&g_session);
+  if (myShop == 1) {
+    lists->ClearItems1758();
+    for (ITEM_INFO item : items) {
+      lists->AddItem1758(item);
+    }
+
+    if (UIMerchantItemMyShopWnd* window = static_cast<UIMerchantItemMyShopWnd*>(g_windowMgr.EnsureWindow(45))) {
+      window->OpenShop();
+      window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+      window->SendMsg(nullptr, 0x1C, value, 0, 0, 0);
+      window->SetDuration(duration);
+    }
+  } else {
+    lists->ClearItems1748();
+    lists->ClearItems1760();
+    for (ITEM_INFO item : items) {
+      lists->AddItem1748(item);
+    }
+
+    if (UIMerchantItemShopWnd* window = static_cast<UIMerchantItemShopWnd*>(g_windowMgr.EnsureWindow(43))) {
+      window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+      window->SendMsg(nullptr, 0x1C, value, 0, 0, 0);
+      window->StartTimer(duration);
+    }
+
+    if (UIWindow* window = g_windowMgr.EnsureWindow(44)) {
+      window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+      window->SendMsg(nullptr, 0x1C, value, argument, 0, 0);
+    }
+  }
+
+  this->unknown_024C = 1;
+}
+
+// OFFSET: 0x00D79AF0
+// FUNCTION: fn_22177
+void CGameMode::ReceivePacket0B2E(short result) {
+  switch (result) {
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x442)), 0xff, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xe31)), 0xff, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D2A1F0
+// FUNCTION: fn_21702
+void CGameMode::ReceiveUnknownD2A1F0(const unsigned char* packet) {
+  switch (*reinterpret_cast<const std::int16_t*>(packet + 2)) {
+  case 3:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x6CF)), 0xFF, 0, 0, 0);
+    break;
+  case 4:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x6D0)), 0xFF, 0, 0, 0);
+    break;
+  }
+
+  this->SendMsg(0x28, 0, 0, 0, 0);
+  g_windowMgr.CloseWindow(0xB0);
+}
+
+// OFFSET: 0x00D7A0E0
+// FUNCTION: fn_22187
+void CGameMode::ReceiveActorMessage7(const unsigned char* packet) {
+  const std::int16_t length = *reinterpret_cast<const std::int16_t*>(packet + 2) - 8;
+  if (length == 0) {
+    return;
+  }
+
+  const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(packet + 4);
+  CRenderObject* actor = aid == g_session.m_aid ? this->scene->player : this->scene->GetGameActorByAID(aid);
+  if (!actor) {
+    return;
+  }
+
+  char text[256];
+  std::memcpy(text, packet + 8, length);
+  const std::int64_t value = reinterpret_cast<std::intptr_t>(text);
+  actor->SendMsg(
+    nullptr, 7, 0, static_cast<int>(value), static_cast<int>(value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  );
 }
