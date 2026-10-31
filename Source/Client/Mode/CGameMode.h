@@ -147,6 +147,7 @@ public:
   bool IsEffectId994Group(int id);
   bool ConfirmDraggedItemUse();
   void sub_CFE480(int actorId);
+  void NotifyUnknown0604(int value);
   void WorldCell(float x, float z, int& column, int& row) const;
   void SubcellPosition(int column, int row, int subColumn, int subRow, float& x, float& z) const;
   void PlayerCell(int* column, int* row) const;
@@ -407,8 +408,8 @@ public:
   void sub_D63D70(const unsigned char* record);
   void sub_D65FC0(const unsigned char* record);
   void sub_D7B170(
-    int first, std::string text, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth,
-    int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth
+    int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth,
+    int eleventh, int twelfth, int thirteenth, int fourteenth, std::string text, int fifteenth
   );
   void Slot7(int value) override;
   void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);

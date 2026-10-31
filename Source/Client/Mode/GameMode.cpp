@@ -955,3 +955,52 @@ ReplayTime CGameMode::StopReplayRecording() {
   Replay::Instance().CloseFile();
   return duration;
 }
+
+#pragma pack(push, 1)
+struct GameModeChunkHeader {
+  /* 0000 */ std::int16_t type;
+  /* 0002 */ std::uint32_t size;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GameModeChunkHeader) == 6);
+
+#pragma pack(push, 1)
+struct GameModeStoredRecord00DA {
+  /* 0000 */ std::uint16_t type;
+  /* 0002 */ int value0002;
+  /* 0006 */ int value0006;
+  /* 000A */ std::uint16_t value000A;
+  /* 000C */ std::uint16_t value000C;
+  /* 000E */ unsigned char value000E;
+  /* 000F */ std::uint16_t value000F;
+  /* 0011 */ int value0011;
+  /* 0015 */ int value0015;
+  /* 0019 */ std::uint16_t value0019;
+  /* 001B */ std::uint16_t value001B;
+  /* 001D */ std::uint16_t value001D;
+  /* 001F */ std::uint16_t value001F;
+  /* 0021 */ std::uint16_t value0021;
+  /* 0023 */ std::uint16_t value0023;
+  /* 0025 */ char text[0x18];
+  /* 003D */ std::uint16_t value003D;
+};
+#pragma pack(pop)
+
+static_assert(offsetof(GameModeStoredRecord00DA, text) == 0x25);
+static_assert(offsetof(GameModeStoredRecord00DA, value003D) == 0x3D);
+
+static_assert(sizeof(GameModeTextRecord) == 0x190);
+static_assert(offsetof(GameModeTextRecord, buffer) == 0x1E);
+
+// OFFSET: 0x00CFE4D0
+// FUNCTION: fn_21433
+void CGameMode::NotifyUnknown0604(int value) {
+  for (std::list<UIWindow*>::iterator it = this->unknown_0604.begin(); it != this->unknown_0604.end(); ++it) {
+    (*it)->SendMsg(nullptr, 60, value, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00CEBF30
+
+// OFFSET: 0x00CEC100
