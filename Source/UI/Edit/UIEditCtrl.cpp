@@ -1170,6 +1170,61 @@ void UIItemStoreWnd::Slot32(int x, int y) {
   }
 }
 
+// OFFSET: 0x00989960
+// FUNCTION: fn_13401
+void UIMerchantItemPurchaseWnd::Slot32(int x, int y) {
+  const int previous = this->hovered;
+  this->hovered = this->GetItemIndexAt(x, y);
+
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+
+  ITEM_INFO item = this->GetItemByIndex(this->hovered);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+    if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
+      if (g_windowMgr.unknown_0300) {
+        item = g_session.FindItem1760ByItemId(item.itemId.c_str());
+        ItemDescriptions descriptions{g_itemDescriptions};
+        mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 13, item, item.quantity, -1);
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0300)->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      }
+    } else {
+      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00989B00
+// FUNCTION: fn_13402
+void UIMerchantItemShopWnd::Slot32(int x, int y) {
+  const int previous = this->hovered;
+  this->hovered = this->GetItemIndexAt(x, y);
+
+  if (previous != this->hovered) {
+    this->Invalidate();
+  }
+
+  ITEM_INFO item = this->GetItemByIndex(this->hovered);
+
+  if (item.unknown_0000[1] > 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+
+    if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
+      if (g_windowMgr.unknown_0308) {
+        ItemDescriptions descriptions{g_itemDescriptions};
+        mode->drag.BeginItem(this->m_frameContext->windows, descriptions, 12, item, item.quantity, -1);
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0308)->SendMsg(nullptr, 38, 0, 0, 0, 0);
+      }
+    } else {
+      this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
+
 // OFFSET: 0x00989C40
 // FUNCTION: fn_13403
 void UIMerchantItemWnd::Slot32(int x, int y) {
@@ -2600,6 +2655,26 @@ void UIMerchantItemWnd::Slot10(int x, int y, std::intptr_t value) {
 
   reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 8, 0, 0, 0);
+}
+
+// OFFSET: 0x0097BC00
+// FUNCTION: fn_13321
+void UIMerchantItemShopWnd::Slot15(int width, int height) {
+  if (this->unknown_010C) {
+    this->notice = new UIStaticText(*this->m_context, *this->m_controls);
+    this->notice->SetSize(160, 15);
+    char text[80];
+    std::sprintf(text, LookupMessage(1735), 0);
+    this->notice->SetTextAutoWidth(text);
+    this->notice->Move(12, this->geometry.height - 21);
+    this->AddChild(this->notice);
+  }
+
+  const unsigned rows = static_cast<unsigned>(height - this->unknown_0118 - 17) / 32;
+  this->visibleRows = rows;
+  this->columns = 1;
+  this->unknown_00F0 = this->geometry.height - rows * 32;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0089CAE0
