@@ -41,3 +41,6 @@ void UIItemStoreComboBoxWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x0086D590
+// FUNCTION: fn_11048
+UIItemStoreComboBoxWnd::UIItemStoreComboBoxWnd(UIWindowContext& windows, UIComboBoxHeaderContext& controls) : UIComboBoxDefWnd(windows, controls), pink(0) {
+}

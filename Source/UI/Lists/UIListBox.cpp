@@ -441,3 +441,6 @@ void UIListBoxID::AddLine(const char* text, int id) {
 }
 
 // OFFSET: 0x0086D8C0
+// FUNCTION: fn_11054
+UIListBox2::UIListBox2(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list), fontFamily(0), fontHeight(12), bold(0), italic(0) {
+}
