@@ -5365,6 +5365,68 @@ struct SpecialBroadcastPacket {
 #pragma pack(pop)
 
 // OFFSET: 0x00D44F50
+// FUNCTION: fn_21838
+void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const SpecialBroadcastPacket*>(data);
+  CPlayer* player = this->scene->player;
+  UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon();
+  if (!balloon) {
+    return;
+  }
+
+  std::string text;
+  switch (packet->type) {
+  case 0:
+    text.assign(FormatOwnedString(LookupMessage(packet->index + 837), g_session.DecodePlayerName(), packet->name));
+    break;
+  case 1:
+    text.assign(FormatOwnedString(LookupMessage(packet->index + 840), g_session.DecodePlayerName(), packet->name));
+    player->LaunchEffect(543, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_soundMgr->PlayWave("effect\\T_피링.wav", 0.0f, -250.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 10:
+    text.assign(FormatOwnedString(LookupMessage(packet->index + 843), g_session.DecodePlayerName(), g_session.GetJobName(packet->value, -1)));
+    break;
+  case 11:
+    text.assign(FormatOwnedString(LookupMessage(packet->index + 846), g_session.DecodePlayerName(), g_session.GetJobName(packet->value, -1)));
+    player->LaunchEffect(543, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_soundMgr->PlayWave("effect\\T_피링.wav", 0.0f, -250.0f, 0.0f, 250, 40, 1.0f, 0);
+    break;
+  case 20:
+    text.assign(FormatOwnedString(LookupMessage(927), packet->name, packet->index));
+    player->LaunchEffect(543, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 21:
+    text.assign(FormatOwnedString(LookupMessage(1190), packet->name));
+    player->LaunchEffect(543, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 22: {
+    ITEM_INFO item;
+    item.SetItemId(packet->value);
+    char itemName[256];
+    int capacity = sizeof(itemName);
+    ItemDescriptions{g_itemDescriptions}.Name(item, itemName, capacity, 0);
+    text.assign(FormatOwnedString(LookupMessage(1265), itemName));
+    player->LaunchEffect(543, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  }
+  case 30:
+    text = LookupMessage(1033);
+    player->LaunchEffect(432, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 40:
+    text = std::format("Target HP : {}", packet->value);
+    break;
+  }
+
+  BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+  message.start = std::chrono::system_clock::now();
+  message.fontHeight = 14;
+  std::uint32_t color = 0xFFC8C8;
+  message.lines.emplace_back(text, color);
+  balloon->AddMessage(0, message);
+}
+
 
 #pragma pack(push, 1)
 struct QuestHuntUpdateEntry {
