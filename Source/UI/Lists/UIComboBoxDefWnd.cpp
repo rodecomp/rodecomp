@@ -602,3 +602,50 @@ void UIDescriptRace::sub_8A0B10() {
     );
   }
 }
+
+// OFFSET: 0x0089F610
+
+// OFFSET: 0x008A0480
+// FUNCTION: fn_11625
+int UITextViewEX::AddWords(std::string text, int attached, int red, int green, int blue) {
+  TrimLeading(text, " \t");
+  TrimTrailing(text, " \t");
+
+  std::size_t position = 0;
+  for (;;) {
+    const std::size_t space = text.find_first_of(" \t\n", position);
+    std::string word = text.substr(position, space - position);
+    if (position == space) {
+      if (text[position] != '\n') {
+        position = space + 1;
+        continue;
+      }
+      word = "\n";
+    } else if (word.size() == 1 && word[0] == '\r') {
+      position = space + 1;
+      continue;
+    }
+
+    if (position >= text.size()) {
+      break;
+    }
+
+    UIString* label = new UIString(*this->m_context);
+    label->SetText(100, 100, word);
+    label->Show(0);
+    label->unknown_0080 = attached;
+    label->unknown_009C = red;
+    label->unknown_00A0 = green;
+    label->unknown_00A4 = blue;
+    attached = 0;
+    this->AddChild(label);
+    this->extraLinks.push_back(label);
+    if (space == std::string::npos) {
+      break;
+    }
+
+    position = space + 1;
+  }
+
+  return attached;
+}
