@@ -15,6 +15,7 @@ extern int g_partyBookingLevelMax;
 
 class UISeekPartyWnd : public UIFrameWnd {
 public:
+  UISeekPartyWnd();
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -32,7 +33,8 @@ protected:
   /* 00D0 */ std::uint32_t m_elapsed;
   /* 00D4 */ std::uint32_t m_frameElapsed;
   /* 00D8 */ std::uint32_t m_frameTick;
-  /* 00DC */ unsigned char unknown_00DC[0x108];
+  /* 00DC */ unsigned char unknown_00DC[0x104];
+  /* 01E0 */ int unknown_01E0;
   /* 01E4 */ unsigned char m_minimized;
   /* 01E5 */ unsigned char unknown_01E5[3];
   /* 01E8 */ SeekPartyWndInfo* m_saved;

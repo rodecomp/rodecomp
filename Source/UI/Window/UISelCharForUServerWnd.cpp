@@ -6,6 +6,8 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 
+#include <timeapi.h>
+
 extern const char* LookupMessage(int id);
 
 #pragma pack(push, 1)
@@ -16,6 +18,8 @@ struct PACKET_CZ_SELECT_CHARACTERS {
   /* 000A */ int characterIds[9];
 };
 #pragma pack(pop)
+
+// OFFSET: 0x009120E0
 
 // OFFSET: 0x0093A7F0
 // FUNCTION: fn_12758

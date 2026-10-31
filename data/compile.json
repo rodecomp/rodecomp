@@ -1037,6 +1037,7 @@
   "Source/UI/Window/UISeekPartyMBWnd.cpp": 2,
   "Source/UI/Window/UISeekPartyWnd.cpp": 2,
   "Source/UI/Window/UISelCharForUServerWnd.cpp": 2,
+  "Source/UI/Window/UISerachStoreInfoWnd.cpp": 2,
   "Source/UI/Window/UIShowWarpWnd.cpp": 2,
   "Source/UI/Window/UITab.cpp": 2,
   "Source/UI/Window/UITransMenuWnd.cpp": 2,

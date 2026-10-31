@@ -1,5 +1,6 @@
 #include "UI/Window/UISeekPartyWnd.h"
 
+#include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Text/UIStaticText.h"
@@ -15,6 +16,22 @@ int g_partyBookingLevelLimit;
 
 // GLOBAL: gl_24978
 int g_partyBookingLevelMax;
+
+// OFFSET: 0x00912010
+// FUNCTION: fn_12525
+UISeekPartyWnd::UISeekPartyWnd() : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0) {
+  this->m_label = nullptr;
+  this->m_cancelButton = nullptr;
+  this->m_level = 1;
+  this->m_type = 0;
+  this->m_frameDuration = 1000;
+  this->m_elapsed = 0;
+  this->m_frameElapsed = 0;
+  this->m_frameTick = 0;
+  this->unknown_01E0 = 0;
+  this->m_minimized = 0;
+  this->m_elapsed = GetTickCount() - g_session.m_partyBooking.unknown_0034;
+}
 
 // OFFSET: 0x009281A0
 // FUNCTION: fn_12651
