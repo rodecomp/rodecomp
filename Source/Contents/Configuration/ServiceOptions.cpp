@@ -99,6 +99,13 @@ float g_serviceOptionJitterScale = 400.0f;
 
 void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage);
 
+// OFFSET: 0x006C48C0
+// FUNCTION: fn_45461
+void GreetFriends() {
+  g_session.sub_DE3D90(nullptr);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("[ To Friends ] : (Hi) *^_^*"), 0x1EFFFF, 0, 0, 0);
+}
+
 // OFFSET: 0x006BFE60
 // FUNCTION: fn_06299
 CGameSettingsMgr::CGameSettingsMgr() {
