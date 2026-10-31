@@ -1656,11 +1656,12 @@ void CGravityControlEffect::Slot04() {
 }
 
 // OFFSET: 0x007184D0
+// FUNCTION: fn_07294
 CHawkVumerangEffect::CHawkVumerangEffect()
     : CEffect(1968),
       unknown_00E0(10),
       unknown_00E4(0),
-      unknown_00E8(6.283185307179586),
+      unknown_00E8(6.283184051513672),
       unknown_00F0(0),
       unknown_00F4(-17.0f),
       unknown_00F8(0),
@@ -1741,9 +1742,10 @@ void CHawkVumerangEffect::Slot04() {
 }
 
 // OFFSET: 0x00719030
+// FUNCTION: fn_07303
 CDropItemEffect::CDropItemEffect()
     : CEffect(-1), emitterCount(2), soundPath("wav\\effect\\"), position{} {
-  this->emitters.resize(this->emitterCount);
+  this->emitters.reserve(this->emitterCount);
 }
 
 // OFFSET: 0x00719400
