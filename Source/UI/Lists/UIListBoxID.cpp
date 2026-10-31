@@ -28,6 +28,30 @@ void UIListBoxID::Configure(int x, int y, int width, int height, unsigned char t
   this->Slot22(width, height);
 }
 
+// OFFSET: 0x00886070
+// FUNCTION: fn_11322
+void UIComboBoxID::Slot15(int width, int height) {
+  auto* vertical = new UIScrollBar(*this->m_context);
+  this->verticalBar = vertical;
+  const int verticalWidth = vertical->thickness;
+  vertical->vertical = 1;
+  vertical->UIWindow::Resize(verticalWidth, height);
+  vertical->Move(width - 13, 0);
+  vertical->Slot15(verticalWidth, height);
+  vertical->Slot22(verticalWidth, height);
+  this->AddChild(this->verticalBar);
+
+  auto* horizontal = new UIScrollBar(*this->m_context);
+  this->horizontalBar = horizontal;
+  const int horizontalHeight = horizontal->thickness;
+  horizontal->vertical = 0;
+  horizontal->UIWindow::Resize(width - 13, horizontalHeight);
+  horizontal->Move(0, height - 13);
+  horizontal->Slot15(width - 13, horizontalHeight);
+  horizontal->Slot22(width - 13, horizontalHeight);
+  this->AddChild(this->horizontalBar);
+}
+
 // OFFSET: 0x008991B0
 // FUNCTION: fn_11554
 int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
