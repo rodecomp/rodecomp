@@ -768,6 +768,7 @@ public:
   void NormalizeHead(int* head, int job);
   int GetDisplayJob();
   const char* GetHitWaveName(int job);
+  const char* GetWeaponHitWaveName(int weapon);
   void InitJobHitWaveNames();
   const char* GetEFSTImgFileName(int efstId, int type);
   int IsTreeGroupTwo(int job) const;

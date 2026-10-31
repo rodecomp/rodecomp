@@ -55,6 +55,48 @@ const char* CSession::GetHitWaveName(int job) {
   return weaponWaves[weapon].c_str();
 }
 
+// OFFSET: 0x00DE3680
+// FUNCTION: fn_23481
+const char* CSession::GetWeaponHitWaveName(int weapon) {
+  const int realWeapon = GetRealWeaponId(weapon);
+  if (realWeapon == -1) {
+    switch (std::rand() % 4) {
+    case 0:
+      return "_enemy_hit_normal1.wav";
+    case 1:
+      return "_enemy_hit_normal2.wav";
+    case 2:
+      return "_enemy_hit_normal3.wav";
+    case 3:
+      return "_enemy_hit_normal4.wav";
+    }
+  }
+
+  const std::vector<std::string>& weaponWaves = reinterpret_cast<const std::vector<std::string>&>(this->unknown_525C[0x18]);
+  if (weaponWaves.empty() || weaponWaves.size() <= static_cast<unsigned int>(realWeapon)) {
+    return nullptr;
+  }
+
+  if (this->GetDisplayJob() == 4046 || this->GetDisplayJob() == 4225) {
+    return weaponWaves[realWeapon].c_str();
+  }
+
+  if (realWeapon == 0) {
+    switch (std::rand() % 4) {
+    case 0:
+      return "_hit_fist1.wav";
+    case 1:
+      return "_hit_fist2.wav";
+    case 2:
+      return "_hit_fist3.wav";
+    case 3:
+      return "_hit_fist4.wav";
+    }
+  }
+
+  return weaponWaves[realWeapon].c_str();
+}
+
 // OFFSET: 0x00DE5BD0
 // FUNCTION: fn_23494
 void CSession::InitJobHitWaveNames() {
