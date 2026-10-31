@@ -132,7 +132,9 @@ public:
   /* 000C */ CPlayerSkillBundle m_skillBundle;
   /* 0084 */ std::list<CSkillInfo> m_homunSkills;
   /* 008C */ std::list<CSkillInfo> m_mercSkills;
-  /* 0094 */ unsigned char unknown_0094[0x28];
+  /* 0094 */ unsigned char unknown_0094[0x20];
+  /* 00B4 */ int m_simplifiedSkillList;
+  /* 00B8 */ int m_showSkillDescription;
   /* 00BC */ unsigned char m_hotkeyPage;
   /* 00BD */ unsigned char unknown_00BD[3];
   /* 00C0 */ std::string m_hotkeyDescriptions[36];
@@ -195,7 +197,11 @@ public:
   /* 0F44 */ unsigned char unknown_0F44[8];
   /* 0F4C */ int unknown_0F4C;
   /* 0F50 */ int unknown_0F50;
-  /* 0F54 */ unsigned char unknown_0F54[0x18];
+  /* 0F54 */ unsigned char unknown_0F54[0x04];
+  /* 0F58 */ int m_autoOpenWhisperWindow;
+  /* 0F5C */ int m_whisperOpenSound;
+  /* 0F60 */ int m_autoOpenFriendWhisperWindow;
+  /* 0F64 */ unsigned char unknown_0F64[0x08];
   /* 0F6C */ const char* const* m_humanMaleHeadNames;
   /* 0F70 */ unsigned char unknown_0F70[0x08];
   /* 0F78 */ const char* const* m_humanFemaleHeadNames;
@@ -412,7 +418,15 @@ public:
   /* 59D0 */ int unknown_59D0;
   /* 59D4 */ int unknown_59D4;
   /* 59D8 */ LuaScript* m_hotkeyScript;
-  /* 59DC */ unsigned char unknown_59DC[0x19C];
+  union {
+    /* 59DC */ unsigned char unknown_59DC[0x19C];
+    struct {
+      /* 59DC */ unsigned char unknown_59DC_0000[0x194];
+      /* 5B70 */ bool m_lockMouse;
+      /* 5B71 */ unsigned char unknown_5B71[3];
+      /* 5B74 */ int m_channelCopId;
+    };
+  };
   /* 5B78 */ PartyBookingMgr m_partyBooking;
   /* 5BBC */ unsigned char unknown_5BBC[0x04];
   /* 5BC0 */ int unknown_5BC0;
@@ -427,7 +441,16 @@ public:
   /* 5BEC */ int unknown_5BEC;
   /* 5BF0 */ std::uint32_t unknown_5BF0;
   /* 5BF4 */ int m_pairValues[3];
-  /* 5C00 */ unsigned char unknown_5C00[0x1C];
+  union {
+    /* 5C00 */ unsigned char unknown_5C00[0x1C];
+    struct {
+      /* 5C00 */ bool m_lockItemDrop;
+      /* 5C01 */ bool m_skipPriceWarning;
+      /* 5C02 */ unsigned char unknown_5C02[0x12];
+      /* 5C14 */ bool m_muteSellSound;
+      /* 5C15 */ unsigned char unknown_5C15[7];
+    };
+  };
   /* 5C1C */ int unknown_5C1C;
   /* 5C20 */ long long m_bankBalance;
   /* 5C28 */ unsigned char unknown_5C28[0x40];
@@ -449,7 +472,19 @@ public:
   /* 6198 */ const char* const* m_doramFemaleHeadNames;
   /* 619C */ unsigned char unknown_619C[0x08];
   /* 61A4 */ int unknown_61A4;
-  /* 61A8 */ unsigned char unknown_61A8[0x10];
+  union {
+    /* 61A8 */ unsigned char unknown_61A8[0x10];
+    struct {
+      /* 61A8 */ unsigned char unknown_61A8_0000[0x08];
+      /* 61B0 */ bool m_guildMemberListSort;
+      /* 61B1 */ unsigned char unknown_61B1;
+      /* 61B2 */ bool m_blockPrivateTab;
+      /* 61B3 */ bool m_itemDefaultSort;
+      /* 61B4 */ bool m_itemAscendingOrder;
+      /* 61B5 */ bool m_itemDescendingOrder;
+      /* 61B6 */ unsigned char unknown_61B6[2];
+    };
+  };
   /* 61B8 */ ITEM_INFO unknown_61B8[10];
   /* 6B68 */ ITEM_INFO unknown_6B68[10];
   /* 7518 */ unsigned char unknown_7518[0x9B0];
@@ -458,7 +493,8 @@ public:
   /* 7ED0 */ int unknown_7ED0;
   /* 7ED4 */ std::uint32_t unknown_7ED4;
   /* 7ED8 */ int m_swapEquipmentMode = 0;
-  /* 7EDC */ unsigned char unknown_7EDC[4];
+  /* 7EDC */ bool m_showMenuIcon;
+  /* 7EDD */ unsigned char unknown_7EDD[3];
   /* 7EE0 */ std::map<int, RobeAlpha> m_robeAlpha;
   /* 7EE8 */ unsigned char unknown_7EE8[4];
   /* 7EEC */ int m_maxLevel;
@@ -467,7 +503,8 @@ public:
   /* 7F70 */ int m_maxLevelEffect4thSub;
   /* 7F74 */ unsigned char unknown_7F74[8];
   /* 7F7C */ bool m_homunculusAutoFeed;
-  /* 7F7D */ unsigned char unknown_7F7D[0x13];
+  /* 7F7D */ unsigned char unknown_7F7D[0x0F];
+  /* 7F8C */ int m_priorityClass;
   /* 7F90 */ int m_showRankingSchedule;
   /* 7F94 */ std::set<std::uint32_t> unknown_7F94;
   /* 7F9C */ int m_pingLiveSchedule;
@@ -522,6 +559,8 @@ public:
   std::uint32_t SyncServerTime(std::uint32_t serverTime);
   __declspec(noinline) int DefaultRenderBackend();
   int RenderSystemResetPolicy();
+  void LoadOptionInfo();
+  void SaveOptionInfo();
   void LoadNavigationScripts();
   bool IsNavigationAllowed() const;
   void LoadRobeAlpha();
@@ -969,6 +1008,13 @@ static_assert(offsetof(CSession, m_pairValues) == 0x5BF4);
 static_assert(offsetof(CSession, m_zeny) == 0x16F0);
 static_assert(offsetof(CSession, m_weight) == 0x1700);
 static_assert(offsetof(CSession, m_bankBalance) == 0x5C20);
+static_assert(offsetof(CSession, m_showSkillDescription) == 0xB8);
+static_assert(offsetof(CSession, m_autoOpenFriendWhisperWindow) == 0xF60);
+static_assert(offsetof(CSession, m_channelCopId) == 0x5B74);
+static_assert(offsetof(CSession, m_muteSellSound) == 0x5C14);
+static_assert(offsetof(CSession, m_itemDescendingOrder) == 0x61B5);
+static_assert(offsetof(CSession, m_showMenuIcon) == 0x7EDC);
+static_assert(offsetof(CSession, m_priorityClass) == 0x7F8C);
 static_assert(offsetof(CSession, m_mercenaryStats) == 0x564C);
 static_assert(offsetof(CSession, m_mercenaryExpiration) == 0x5694);
 static_assert(offsetof(CSession, m_homunJob) == 0x55BC);

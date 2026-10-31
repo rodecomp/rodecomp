@@ -24,6 +24,7 @@ struct ServiceOptions {
 
 extern ServiceOptions g_serviceOptions;
 extern float g_serviceOptionJitterScale;
+extern bool g_showBattleFieldIcon;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ServiceOptions) == 0x20);

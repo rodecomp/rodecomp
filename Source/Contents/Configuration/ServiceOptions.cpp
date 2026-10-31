@@ -5,6 +5,16 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MapSkyMgr.h"
 #include "Contents/MessageTable.h"
+#include "Contents/Configuration/OptionWriter.h"
+#include "Contents/SkinMgr.h"
+#include "File/File.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "File/ResourcePath.h"
+#include "Render/DX7/RenderSystemDX7.h"
+#include "Render/Textures/TextureCache.h"
+#include "Resource/ResourcePreload.h"
+#include "UI/GameSettings/GameSettingsUI.h"
+#include "UI/Window/UIRoulletteWnd.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
 #include "Contents/World/World.h"
@@ -1018,3 +1028,195 @@ void ShowPlayerLocation() {
     g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(text.c_str()), 0x64FFFF, 0, 0, 0);
   }
 }
+
+
+// GLOBAL: gl_25208
+bool g_showBattleFieldIcon;
+
+// GLOBAL: gl_25209
+int g_configuredOldWidth;
+
+// GLOBAL: gl_25210
+int g_configuredOldHeight;
+
+// GLOBAL: gl_25211
+int g_configuredDeviceCount;
+
+// GLOBAL: gl_25212
+int g_configuredModeCount;
+
+// GLOBAL: gl_25213
+int g_renderSystemReset;
+
+// GLOBAL: gl_25214
+GUID g_configuredDeviceGuid;
+
+// GLOBAL: gl_25215
+char g_configuredDeviceName[0x20];
+
+// GLOBAL: gl_25216
+int g_viewportWidth = 1024;
+
+// GLOBAL: gl_25217
+int g_viewportHeight = 768;
+
+// GLOBAL: gl_24767
+extern const GUID g_defaultDrawGuidDX7 = {};
+
+// OFFSET: 0x00DFE4E0
+// FUNCTION: fn_23604
+void CSession::LoadOptionInfo() {
+  ScriptOptions& options = reinterpret_cast<ScriptOptions&>(*this);
+
+  g_luaScript->Call("SetCmdOnOffList", "");
+  ResourceExists("OptionInfo.lua", 1);
+  g_textureFiltering = options.Integer("Trilinear", 0);
+
+  const int effectVolume = options.Integer("Effect_Volume", 100);
+  CSoundMgr::SetVolume(g_soundMgr, options.Integer("Bgm_Volume", 100));
+  g_soundMgr->SetTargetVolume(CSoundMgr::Volume(g_soundMgr));
+  g_soundMgr->SetSampleVolume(effectVolume);
+  g_soundMgr->Set3DVolume(effectVolume);
+
+  this->m_autoOpenWhisperWindow = options.Integer("AutoOpen1to1Window", 1);
+  this->m_autoOpenFriendWhisperWindow = options.Integer("AutoOpen1to1Window_Friend", 1);
+  this->m_whisperOpenSound = options.Integer("PlaySound_Open1to1Window", 1);
+  this->m_simplifiedSkillList = options.Integer("Simplicity_SkillList", 0);
+  this->m_showSkillDescription = options.Integer("Show_SkillDescript", 0);
+  g_windowCloseByte = options.Integer("ChangeChatMode", 1) != 0;
+  this->m_lockMouse = options.Integer("LockMouse", 0) != 0;
+  this->m_channelCopId = options.Integer("ChannelCopID", 0);
+
+  g_outdoorCameraPitch = this->GetOptionFloat("Outdoor_ViewLatitude", -45.0f);
+  g_outdoorCameraDistance = this->GetOptionFloat("Outdoor_ViewDistance", 300.0f);
+  g_indoorCameraPitch = this->GetOptionFloat("Indoor_ViewLatitude", -45.0f);
+  g_indoorCameraDistance = this->GetOptionFloat("Indoor_ViewDistance", 300.0f);
+
+  if (g_indoorCameraPitch < -55.0f) {
+    g_indoorCameraPitch = -55.0f;
+  } else if (g_indoorCameraPitch > -35.0f) {
+    g_indoorCameraPitch = -35.0f;
+  }
+
+  if (g_indoorCameraDistance < g_cameraMinDistance) {
+    g_indoorCameraDistance = g_cameraMinDistance;
+  }
+
+  if (g_indoorCameraDistance > g_cameraBaseDistance) {
+    g_indoorCameraDistance = g_cameraBaseDistance;
+  }
+
+  Singleton<CGameSettingsMgr>::GetInstance();
+  ::SetOption(LookupMessage(0xDB9), options.Integer(LookupMessage(0xDB9), 0) != 0);
+  g_serviceOptionJitterScale = g_serviceOptions.Get(0xF1) ? 730.0f : g_jitterDistanceScale;
+
+  if (g_outdoorCameraPitch < -65.0f) {
+    g_outdoorCameraPitch = -65.0f;
+  } else if (g_outdoorCameraPitch > -25.0f) {
+    g_outdoorCameraPitch = -25.0f;
+  }
+
+  if (g_outdoorCameraDistance < g_cameraMinDistance) {
+    g_outdoorCameraDistance = g_cameraMinDistance;
+  }
+
+  if (g_outdoorCameraDistance > g_serviceOptionJitterScale) {
+    g_outdoorCameraDistance = g_serviceOptionJitterScale;
+  }
+
+  g_skinInfo.m_name = options.String("SkinName", "<Basic Skin>");
+  this->unknown_1708 = g_serviceOptions.Get(0x2E);
+  g_showBattleFieldIcon = options.Integer("ShowBattleFieldIcon", 1) != 0;
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(ConfineCursor, "MouseExclusive", options);
+
+  const int resetPolicy = this->RenderSystemResetPolicy();
+  const int defaultBackend = this->DefaultRenderBackend();
+  g_renderSystemReset = options.Integer("RenderSystemReset", 1);
+
+  if (resetPolicy != g_renderSystemReset) {
+    g_configuredRenderBackend = defaultBackend;
+    g_renderSystemReset = resetPolicy;
+  } else {
+    g_configuredRenderBackend = options.Integer("RENDERSYSTEM", defaultBackend);
+  }
+
+  g_configuredDeviceGuid = options.Guid("DX9DEVICEID", g_defaultDrawGuidDX7);
+  strncpy_s(g_configuredDeviceName, sizeof(g_configuredDeviceName), options.String("DX9DEVICENAME", "").c_str(), _TRUNCATE);
+
+  g_configuredFullscreen = options.Integer("ISFULLSCREENMODE", 0);
+  g_configuredScreenWidth = options.Integer("WIDTH", 1024);
+  g_configuredScreenHeight = options.Integer("HEIGHT", 768);
+  g_configuredOldWidth = options.Integer("OLD_WIDTH", 0);
+  g_configuredOldHeight = options.Integer("OLD_HEIGHT", 0);
+
+  if (static_cast<unsigned int>(g_configuredScreenHeight) < 664) {
+    g_configuredScreenWidth = 1024;
+    g_configuredScreenHeight = 768;
+  }
+
+  g_viewportWidth = g_configuredScreenWidth;
+  g_viewportHeight = g_configuredScreenHeight;
+  g_configuredBitsPerPixel = options.Integer("BITPERPIXEL", 16);
+
+  OSVERSIONINFOA version = {sizeof(version)};
+  GetVersionExA(&version);
+
+  if (version.dwMajorVersion >= 6 && version.dwMinorVersion >= 2) {
+    g_configuredBitsPerPixel = 32;
+  }
+
+  g_configuredDeviceCount = options.Integer("DEVICECNT", 0);
+  g_configuredModeCount = options.Integer("MODECNT", 0);
+
+  g_effectDetailLevel = options.Integer("SPRITEMODE", 2);
+  switch (g_effectDetailLevel) {
+  case 0:
+    g_spriteHalfWidth = 1;
+    [[fallthrough]];
+  case 1:
+    g_spriteHalfHeight = 1;
+    break;
+  default:
+    g_spriteHalfWidth = 0;
+    g_spriteHalfHeight = 0;
+    break;
+  }
+
+  g_textureDetailLevel = options.Integer("TEXTUREMODE", 2);
+  switch (g_textureDetailLevel) {
+  case 0:
+    g_textureReduction = 4;
+    break;
+  case 1:
+    g_textureReduction = 2;
+    break;
+  default:
+    g_textureReduction = 1;
+    break;
+  }
+
+  this->m_lockItemDrop = options.Integer("bLockItemDropFromItemWnd", 0) != 0;
+  this->m_skipPriceWarning = options.Integer("bWarningPriceCheck", 0) == 0;
+  this->m_muteSellSound = options.Integer("bSoundEffectInItemSellWnd", 0) == 0;
+  this->m_guildMemberListSort = options.Integer("bGuildMemberListSort", 1) != 0;
+  this->m_blockPrivateTab = options.Integer("bBlockPrivateTab", 0) != 0;
+  this->m_itemDefaultSort = options.Integer("bItemDefaultSort", 0) != 0;
+  this->m_itemAscendingOrder = options.Integer("bItemAscendingOrder", 0) != 0;
+  this->m_itemDescendingOrder = options.Integer("bItemDescendingOrder", 0) != 0;
+  this->m_showMenuIcon = options.Integer("bShowMenuIcon", 1) != 0;
+
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0xF3, LookupMessage(0xDC6), options);
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10B, "bExtendDamage", options);
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10C, "bShowMapName", options);
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10D, "bShowOnlyMineFootprint", options);
+
+  this->m_damageSkinIndex = options.Integer("DamageSkin", 0);
+  this->m_damageSkinMode = options.Integer("DamageDir", 0);
+  this->m_priorityClass = options.Integer("PriorityClass", 32);
+
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10A, "bSummonTranslucent", options);
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x109, "bHidePlayer", options);
+  Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(0x10E, "bQuickSlot", options);
+}
+
+// OFFSET: 0x00E01770

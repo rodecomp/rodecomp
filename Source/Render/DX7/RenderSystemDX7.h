@@ -50,6 +50,16 @@ extern int g_configuredFullscreen;
 extern int g_configuredBitsPerPixel;
 extern int g_configuredScreenWidth;
 extern int g_configuredScreenHeight;
+extern int g_configuredOldWidth;
+extern int g_configuredOldHeight;
+extern int g_configuredDeviceCount;
+extern int g_configuredModeCount;
+extern int g_renderSystemReset;
+extern GUID g_configuredDeviceGuid;
+extern char g_configuredDeviceName[0x20];
+extern int g_viewportWidth;
+extern int g_viewportHeight;
+extern const GUID g_defaultDrawGuidDX7;
 
 void ClearDirectDrawModes();
 
