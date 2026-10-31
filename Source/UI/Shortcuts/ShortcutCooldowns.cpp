@@ -15,6 +15,12 @@
 #include "UI/Window/UISeekPartyMBWnd.h"
 #include "UI/Window/UISeekPartyWnd.h"
 #include "UI/Window/UISeekPartyListWnd.h"
+#include "UI/Window/UIRoMapWnd.h"
+#include "UI/Window/UIJobListWnd.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
 #include "Contents/Party/PartyBookingMgr.h"
@@ -231,6 +237,20 @@ void ShortcutCooldowns::Paint(
 void UIRebirthWnd::Paint() {
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox1.bmp")));
   this->DrawBitmap(0, 0, &background->image, false);
+}
+
+// OFFSET: 0x0092DE20
+// FUNCTION: fn_12674
+void UIRoMapWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  this->DrawMapNames();
+  this->DrawRecordBorders();
+  this->DrawFieldLabels();
+  this->DrawHoverTooltip();
+  this->DrawSelectedMapPreview();
+  this->FillSurface(0xFFFF00FF, reinterpret_cast<const RECT*>(&this->m_kafraLeft));
+  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, "", 0);
+  this->FillRegion(0, 16, this->geometry.width, 2, 0xF7DFC6);
 }
 
 // OFFSET: 0x0092DE90
@@ -501,6 +521,52 @@ void UISeekPartyMBWnd::Slot11() {
     this->m_saved->x = this->geometry.x;
     this->m_saved->y = this->geometry.y;
   }
+}
+
+// OFFSET: 0x0093A640
+// FUNCTION: fn_12757
+int UISeekPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 201: {
+      std::int16_t packetType = 0x806;
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetType), &packetType);
+      g_windowMgr.CloseWindow(170);
+      break;
+    }
+    case 202:
+      if (this->m_minimized) {
+        this->Resize(this->geometry.width, this->unknown_01E0);
+      } else {
+        this->unknown_01E0 = this->geometry.height;
+        this->Resize(this->geometry.width, 44);
+      }
+      this->m_minimized = !this->m_minimized;
+      this->m_cancelButton->Move(this->geometry.width - 46, this->geometry.height - 24);
+      this->m_rewriteButton->Move(this->geometry.width - 92, this->geometry.height - 24);
+      this->Invalidate();
+      break;
+    case 284:
+      g_windowMgr.EnsureWindow(170);
+      if (auto* jobs = static_cast<UIJobListWnd*>(g_windowMgr.LookupWindow(170))) {
+        jobs->RefreshJobs();
+      }
+      break;
+    }
+    break;
+  case 34:
+    this->m_saved = reinterpret_cast<SeekPartyWndInfo*>(argument1);
+    if (!this->m_saved->IsValid()) {
+      this->m_saved->Reset();
+    }
+    this->Move(this->m_saved->x, this->m_saved->y);
+    this->SendMsg(nullptr, 14, 3, this->m_saved->width, this->m_saved->height, 0);
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    return 0;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
 // OFFSET: 0x00940FA0
