@@ -21,6 +21,7 @@
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/UIStaticBitmap.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstddef>
@@ -209,6 +210,21 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
   this->Invalidate();
 }
 
+// OFFSET: 0x007FA100
+// FUNCTION: fn_09947
+int UIOngoingQuestScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2,
+                                     std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    if (argument1 == 0xC9) {
+      g_windowMgr.CloseWindow(0x142);
+    }
+  } else if (message == 0x17) {
+    this->RefreshHuntTexts();
+  }
+
+  return UIScrollWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
 // OFFSET: 0x007FAF70
 // FUNCTION: fn_09949
 UIRecommededQuestScrollWnd::UIRecommededQuestScrollWnd(UIWindowContext& windows, int width, int height)
@@ -245,6 +261,17 @@ void UIRecommededQuestScrollWnd::Slot35(int delta) {
     }
     this->SendMsg(this->scrollBar, 7, -15, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x007FB140
+// FUNCTION: fn_09955
+int UIRecommededQuestScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2,
+                                        std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6 && argument1 == 0xC9) {
+    g_windowMgr.CloseWindow(0x142);
+  }
+
+  return UIScrollWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
 // OFFSET: 0x007FB6C0
@@ -310,6 +337,31 @@ void UIRenewDetailQuestInfoWnd::Slot25(int x, int y) {
   if (y < 17) {
     UIFrameWnd::Slot25(x, y);
   }
+}
+
+// OFFSET: 0x007FBAF0
+// FUNCTION: fn_09962
+int UIRenewDetailQuestInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2,
+                                       std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    if (argument1 == 0xC9) {
+      g_windowMgr.CloseWindow(0x142);
+    }
+
+    return 0;
+  }
+
+  if (message != 0x17) {
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  if (this->m_recommended == 0) {
+    this->m_ongoingWnd->SendMsg(this, 0x17, 0, 0, 0, 0);
+  } else {
+    this->m_recommendedWnd->SendMsg(this, 0x17, 0, 0, 0, 0);
+  }
+
+  return 0;
 }
 
 // OFFSET: 0x007FBFD0
