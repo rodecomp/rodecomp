@@ -64,6 +64,7 @@ public:
   const char* Text();
   std::string LinkedText();
   void Background(int red, int green, int blue);
+  int MeasureText(const std::string& text, const int& bytes);
   void Border(int red, int green, int blue);
   void TextColor(std::uint32_t primary, std::uint32_t secondary);
   void UpdateLinks();

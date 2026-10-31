@@ -1,5 +1,7 @@
 #include "Client/Input/Language.h"
 #include "Contents/SkinMgr.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
@@ -133,6 +135,13 @@ void UIEditCtrl_OldList::RecallHistory(int step) {
   this->SetText(this->history[this->historyIndex].c_str());
   this->Slot23();
   this->Invalidate();
+}
+
+// OFFSET: 0x00853810
+// FUNCTION: fn_10742
+int UIEditCtrl::MeasureText(const std::string& text, const int& bytes) {
+  const TextLocale locale = {};
+  return this->TextWidth(g_fontCache, locale, text.c_str(), bytes, 0, 12, 0, 0);
 }
 
 // OFFSET: 0x0084F7B0
