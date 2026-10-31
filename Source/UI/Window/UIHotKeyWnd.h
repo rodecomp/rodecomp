@@ -14,6 +14,7 @@ public:
   UIHotKeyWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Slot32(int x, int y) override;
   void UpdatePageButtons();
+  void SaveHotkeys();
   void SetHotkey(int tab, int index, HotkeyInfo info);
 
   /* 00B4 */ int m_selectedRow;

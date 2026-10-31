@@ -1,6 +1,13 @@
 #include "UI/Window/UIHotKeyWnd.h"
 
+#include "Contents/MessageTable.h"
+#include "Script/LuaScript.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
+
+#include <cstring>
+#include <string>
 
 // OFFSET: 0x00932F70
 // FUNCTION: fn_12721
@@ -26,4 +33,27 @@ UIHotKeyWnd::UIHotKeyWnd(UIWindowContext& windows, UIFrameContext& frames)
 // FUNCTION: fn_12585
 void UIHotKeyWnd::SetHotkey(int tab, int index, HotkeyInfo info) {
   this->hotkeys[tab][index] = info;
+}
+
+// OFFSET: 0x00934360
+// FUNCTION: fn_12740
+void UIHotKeyWnd::SaveHotkeys() {
+  for (int tab = 0; tab < 4; ++tab) {
+    for (const auto& entry : this->hotkeys[tab]) {
+      g_luaScript->Call("ChangeUserHotKey", "ddsdd", tab + 1, entry.first, entry.second.description.c_str(), entry.second.key1, entry.second.key2);
+      if (tab == 1) {
+        g_windowMgr.sub_AAB0B0();
+      }
+    }
+  }
+
+  std::string path = "SaveData\\UserKeys";
+  path = path + ".lua";
+  if (!path.empty()) {
+    g_luaScript->Call("SaveUserHotKeys2", "s", path.c_str());
+    char message[500];
+    std::memset(message, 0, sizeof(message));
+    StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), "%s", LookupMessage(3572));
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 1, 0, 0);
+  }
 }
