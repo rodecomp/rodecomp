@@ -1090,6 +1090,14 @@ void CFootprintStrEffect::Slot04() {
 }
 
 // OFFSET: 0x00714250
+// FUNCTION: fn_07259
+CFromTheAbyssEffect::CFromTheAbyssEffect() : CEffect(-1), maxLevel(5), level(0) {
+  this->unknown_00E0[0] = AbyssWave{0.8f, {-4.8f, -9.1f, 0.0f}};
+  this->unknown_00E0[1] = AbyssWave{0.6f, {-3.4f, -12.8f, 0.0f}};
+  this->unknown_00E0[2] = AbyssWave{0.5f, {-0.7f, -14.0f, 0.0f}};
+  this->unknown_00E0[3] = AbyssWave{0.7f, {2.7f, -14.0f, 0.0f}};
+  this->unknown_00E0[4] = AbyssWave{0.4f, {4.3f, -10.0f, 0.0f}};
+}
 
 // OFFSET: 0x00715160
 // FUNCTION: fn_07265
@@ -1424,6 +1432,45 @@ bool CHawkVumerangEffect::Slot06() {
 }
 
 // OFFSET: 0x00718BA0
+// FUNCTION: fn_07300
+void CHawkVumerangEffect::Slot03() {
+  if (this->emitters.size() == 0) {
+    return;
+  }
+
+  EZ2STREmitter* emitter = this->emitters.back();
+  this->emitters.pop_back();
+
+  const DWORD elapsed = timeGetTime() - this->unknown_00FC;
+  double angle = static_cast<double>(elapsed) / static_cast<double>(this->unknown_002C * 2) * this->unknown_00E8;
+  if (angle < this->unknown_00E8) {
+    angle += this->unknown_0130;
+    if (angle > 6.283184f) {
+      angle -= 6.283184f;
+    }
+
+    AsParticle(emitter)->m_angle = 360.0f - static_cast<float>(angle) / 3.141592f * 180.0f;
+    const float sine = static_cast<float>(std::sin(static_cast<float>(angle)) * this->unknown_0128);
+    const float cosine = static_cast<float>(std::cos(static_cast<float>(angle)) * this->unknown_0128);
+    emitter->position.z = this->unknown_0118.z + sine + this->unknown_00F8;
+    emitter->position.x = cosine + this->unknown_0118.x + this->unknown_00F0;
+    emitter->position.y = this->unknown_0118.y + 0.0f + this->unknown_00F4;
+    this->emitters.emplace_front(emitter);
+  } else {
+    this->unknown_00D4.push_back(emitter);
+  }
+
+  long long index = this->count - this->emitters.size();
+  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it, ++index) {
+    EZ2STREmitter* current = *it;
+    if (current) {
+      const double alpha = 1.0f - 1.0f / static_cast<float>(this->count) * static_cast<float>(index);
+      AsParticle(current)->m_scale = static_cast<float>(alpha);
+      AsParticle(current)->m_alpha = static_cast<float>(alpha);
+      AsParticle(current)->Process(0.0f, 0.0f, 0.0f);
+    }
+  }
+}
 
 // OFFSET: 0x00718E70
 // FUNCTION: fn_07301
