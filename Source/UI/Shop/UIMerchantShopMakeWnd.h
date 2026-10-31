@@ -22,6 +22,7 @@ public:
   void Slot35(int value) override;
 
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
+  void UpdateLayout();
   void SetSelection(short row, short column);
   bool HasSelection() const;
   void SendShopRequest();
@@ -36,7 +37,7 @@ public:
   /* 00CC */ UIEditCtrl* unknown_00CC;
   /* 00D0 */ unsigned char unknown_00D0[0x8];
   /* 00D8 */ int editIndex;
-  /* 00DC */ unsigned char unknown_00DC[0x4];
+  /* 00DC */ UIWindow* notice;
   /* 00E0 */ UIEditCtrl* priceEdits[13];
   /* 0114 */ UIEditCtrl* quantityEdits[5];
   /* 0128 */ UIEditCtrl* unknown_0128;
@@ -52,8 +53,7 @@ public:
   /* 0154 */ int unknown_0154;
   /* 0158 */ int unknown_0158;
   /* 015C */ int visibleRows;
-  /* 0160 */ int unknown_0160;
-  /* 0164 */ int unknown_0164;
+  /* 0160 */ UIWindow* actionButtons[2];
   /* 0168 */ UIBasicButton* unknown_0168;
   /* 016C */ int unknown_016C;
   /* 0170 */ std::string unknown_0170;

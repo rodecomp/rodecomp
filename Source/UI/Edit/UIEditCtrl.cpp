@@ -3166,6 +3166,72 @@ void UISkillListWnd::UpdateScrollBar() {
   this->scrollBar->Invalidate();
 }
 
+// OFFSET: 0x0098A3F0
+// FUNCTION: fn_13414
+void UIMerchantShopMakeWnd::UpdateLayout() {
+  if (!this->scrollBar) {
+    return;
+  }
+
+  const int top = this->unknown_0154 - this->unknown_0140 * 42;
+  int rows = (g_renderer->viewport.height - top) / 42;
+  this->unknown_0158 = rows;
+  if (rows > this->unknown_012C) {
+    this->unknown_0158 = this->unknown_012C;
+    rows = this->unknown_012C;
+  }
+
+  const int count = static_cast<int>(this->items.size());
+  if (count >= this->unknown_0140) {
+    UIScrollBar* bar = static_cast<UIScrollBar*>(this->scrollBar);
+    if (count > rows) {
+      this->unknown_0144 = 1;
+      bar->SetRange(count - rows, rows, count);
+      int position = this->scroll;
+      if (position < 0) {
+        this->scroll = 0;
+        position = 0;
+      }
+
+      const int last = count - this->unknown_0158;
+      if (position > last) {
+        this->scroll = last;
+        position = last;
+      }
+
+      static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(position);
+    } else {
+      this->unknown_0144 = 0;
+      this->scroll = 0;
+      bar->SetRange(0, rows, count);
+      rows = count;
+    }
+
+    this->Resize(this->geometry.width, rows * 42 + top);
+    if (this->mode == 0) {
+      this->notice->Move(12, this->geometry.height - 20);
+    }
+
+    for (UIWindow* button : this->actionButtons) {
+      button->Move(button->geometry.x, this->geometry.height - 24);
+    }
+
+    if (this->unknown_0168) {
+      this->unknown_0168->Move(this->unknown_0168->geometry.x, this->geometry.height - 24);
+    }
+
+    this->scrollBar->Resize(1, this->geometry.height - 58);
+  }
+
+  int visible = (this->geometry.height - top) / 42;
+  if (visible < this->unknown_0140) {
+    visible = this->unknown_0140;
+  }
+
+  this->visibleRows = visible;
+  this->scrollBar->Invalidate();
+}
+
 // OFFSET: 0x0098A2B0
 // FUNCTION: fn_13410
 void UIItemStoreFindWnd::Slot35(int value) {
