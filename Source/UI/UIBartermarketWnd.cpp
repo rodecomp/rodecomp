@@ -447,6 +447,178 @@ void UIExpandedBartermarketWnd::UpdateScrollBar() {
 }
 
 // OFFSET: 0x00849210
+// FUNCTION: fn_10598
+int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6: {
+    CMode* mode = g_modeMgr.GetGameMode();
+    if (a == 184) {
+      if (this->Purchase()) {
+        mode->SendMsg(321, 0, 0, 0, 0);
+        mode->SendMsg(40, 0, 0, 0, 0);
+        g_expandedBarterMarketItemMgr->Clear();
+      }
+    } else if (a == 185) {
+      mode->SendMsg(40, 0, 0, 0, 0);
+      g_expandedBarterMarketItemMgr->Clear();
+    }
+    return 0;
+  }
+
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->unknown_00C4;
+    if (message == 9) {
+      this->unknown_00C4 = previous - this->rowCount + 1;
+    } else {
+      if (message == 10) {
+        a = this->rowCount - 1;
+      }
+      this->unknown_00C4 = a + previous;
+    }
+
+    if (previous != this->unknown_00C4) {
+      this->UpdateScrollBar();
+      this->Invalidate();
+    }
+    return this->unknown_00C4 - previous;
+  }
+
+  case 14: {
+    if (a != 3) {
+      return 0;
+    }
+
+    int height = c;
+    if (height < 366) {
+      height = 366;
+    } else if (height > 549.0f) {
+      height = 549;
+    }
+    height = height / 64 * 64;
+
+    if (height != this->geometry.height) {
+      this->Resize(this->geometry.width, height);
+      this->rowCount = (height - 46) / 64;
+      this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+      this->scrollBar->Move(this->geometry.width - 15, 14);
+      this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 46);
+      this->UpdateScrollBar();
+    }
+
+    this->buyButton->Move(this->geometry.width - 105, this->geometry.height - 24);
+    this->cancelButton->Move(this->geometry.width - 60, this->geometry.height - 24);
+    this->m_frameContext->snapping.Store(this);
+    return 0;
+  }
+
+  case 23: {
+    this->Entries().erase(this->Entries().begin(), this->Entries().end());
+    std::vector<BarterMarketEntry>* entries = g_expandedBarterMarketItemMgr->GetEntries();
+    for (std::vector<BarterMarketEntry>::iterator it = entries->begin(); it != entries->end(); ++it) {
+      this->Entries().emplace_back(*it);
+    }
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  }
+
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    std::pair<bool, BarterMarketEntry> found = g_expandedBarterMarketItemMgr->FindItem(mode->drag.unknown_03B0);
+    if (!found.first) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3554)), 255, 0, 0, 0);
+      mode->SendMsg(18, 0, 0, 0, 0);
+      return 0;
+    }
+
+    found.second.value = mode->drag.quantity;
+    for (std::vector<BarterChunk16>::iterator chunk = found.second.chunks.begin(); chunk != found.second.chunks.end(); ++chunk) {
+      ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, chunk->field_0);
+      bool missing = owned.unknown_0000[1] > 0;
+      if (!missing && g_session.HasItemCount(chunk->field_0, chunk->field_4) == true) {
+        const int itemId = chunk->field_0;
+        const int refine = chunk->field_4;
+        const int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size();
+        int available = 0;
+        for (int i = 0; i < count; ++i) {
+          ITEM_INFO item = g_session.GetInventoryItemAt(i);
+          if (std::atoi(item.itemId.c_str()) == itemId && item.unknown_0060 >= refine) {
+            available = item.quantity;
+            break;
+          }
+        }
+        missing = available <= 0;
+      }
+
+      if (missing) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3665)), 255, 0, 0, 0);
+        return 0;
+      }
+    }
+
+    if (g_session.IsEquipItemType(mode->drag.type) == true) {
+      if (g_expandedBarterMarketItemMgr->HasEntryByName(mode->drag.name) == true) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(119)), 255, 0, 0, 0);
+        return 0;
+      }
+    } else if (g_session.IsShadowItemType(mode->drag.type) == true) {
+      if (g_expandedBarterMarketItemMgr->HasEntryByName(mode->drag.name) == true) {
+        mode->SendMsg(18, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3569)), 255, 0, 0, 0);
+        return 0;
+      }
+    }
+
+    if (mode->drag.quantity + g_expandedBarterMarketItemMgr->GetValueById(mode->drag.unknown_03B0) > 30000) {
+      char buffer[200];
+      std::memset(buffer, 0, sizeof(buffer));
+      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(3692), 30000);
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(buffer), 255, 0, 0, 0);
+      return 0;
+    }
+
+    const int factor = static_cast<int>(g_expandedBarterMarketItemMgr->GetItemFactorById(mode->drag.unknown_03B0));
+    if (factor < 0) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3554)), 255, 0, 0, 0);
+      mode->SendMsg(18, 0, 0, 0, 0);
+      return 0;
+    }
+
+    if (factor > 0) {
+      const int available = g_session.m_maxWeight - g_session.m_weight;
+      const float remaining = static_cast<float>(available) - g_expandedBarterMarketItemMgr->GetWeightedTotal();
+      if (static_cast<int>(remaining) / factor < mode->drag.quantity) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(56)), 255, 0, 0, 0);
+        mode->SendMsg(18, 0, 0, 0, 0);
+        return 0;
+      }
+    }
+
+    if (static_cast<__int64>(mode->drag.quantity * found.second.field_8) + g_expandedBarterMarketItemMgr->total > g_session.m_zeny) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(55)), 255, 0, 0, 0);
+      mode->SendMsg(18, 0, 0, 0, 0);
+      return 0;
+    }
+
+    g_expandedBarterMarketItemMgr->AddEntry(found.second);
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    g_windowMgr.LookupWindow(341)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
 
 // OFFSET: 0x00849B30
 // FUNCTION: fn_10599
@@ -768,6 +940,23 @@ void UIBarterItemPurchaseWnd::Slot28(int x, int y) {
 }
 
 // OFFSET: 0x008436B0
+// FUNCTION: fn_10559
+void UIBartermarketWnd::Slot28(int x, int y) {
+  std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
+  if (found.first) {
+    int tooltipX = (x - 40) / 32 * 32 + 40;
+    int tooltipY = (y - 17) / 32 * 32 + 1;
+    this->ToScreen(tooltipX, tooltipY);
+    std::string text;
+    ITEM_DESC description = FindItemDescription(found.second.field_2c);
+    text = FormatOwnedString(LookupMessage(3553), description.identifiedName, found.second.field_28);
+    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+    ITEM_INFO info = found.second.ToItemInfo();
+    if (tooltip) {
+      tooltip->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
+    }
+  }
+}
 
 // OFFSET: 0x008484A0
 // FUNCTION: fn_10589
@@ -1315,6 +1504,25 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 }
 
 // OFFSET: 0x00842570
+// FUNCTION: fn_10553
+void UIBartermarketWnd::Slot15(int width, int height) {
+  this->resizer = new UIResizer(*this->m_context);
+  this->resizer->SetSize(16, 16);
+  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
+  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  this->scrollBar = new UIScrollBar(*this->m_context);
+  static_cast<UIScrollBar*>(this->scrollBar)->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - this->unknown_0104 - 17);
+  this->AddChild(this->scrollBar);
+
+  this->columns = 1;
+  this->visibleRows = (height - this->unknown_0104 - 17) / 32;
+
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x00845220
 // FUNCTION: fn_10575
@@ -1380,3 +1588,21 @@ bool UIExpandedBarterItemPurchaseWnd::Purchase() {
 }
 
 // OFFSET: 0x00847290
+// FUNCTION: fn_10584
+void UIExpandedBartermarketWnd::Slot15(int width, int height) {
+  this->unknown_00BC = new UIResizer(*this->m_context);
+  this->unknown_00BC->SetSize(16, 16);
+  static_cast<UIResizer*>(this->unknown_00BC)->SetDirection(7);
+  static_cast<UIResizer*>(this->unknown_00BC)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->unknown_00BC->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->unknown_00BC)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->unknown_00BC);
+
+  this->scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 46);
+  this->AddChild(this->scrollBar);
+
+  this->rowCount = (height - 46) / 64;
+
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
