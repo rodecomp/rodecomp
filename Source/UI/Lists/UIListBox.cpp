@@ -6,12 +6,18 @@
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Lists/UIListBoxID.h"
+#include "UI/Lists/UIMemberListBox.h"
 #include "Render/Text/FontCache.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Text/NavigationLink.h"
+#include "UI/Text/PixelTextWrapping.h"
+#include "UI/TextTags.h"
 #include "UI/Window/WindowManagerWindows.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <cstring>
+#include <mbstring.h>
 
 namespace {}
 
@@ -110,6 +116,32 @@ void UIListBox::Resize(int width, int height) {
   this->Refresh();
   this->topLine = 0;
 }
+
+// OFFSET: 0x008750D0
+// FUNCTION: fn_11197
+void UIChatHisBox::AddTextWrapped(const char* text, int color, const char* style) {
+  const int width = this->verticalBar ? (this->geometry.width - 16) : this->geometry.width;
+  const std::string value(text);
+
+  if (g_navigationLinkParser->HasLink(value)) {
+    this->AddText(text, color, style);
+    return;
+  }
+
+  std::vector<std::string> lines;
+  WrapPixelText(*this->geometry.surface, this->m_listContext->codePage, text, lines, width);
+
+  for (const std::string& line : lines) {
+    char* copy = static_cast<char*>(std::malloc(line.size() + 1));
+    std::strcpy(copy, line.c_str());
+    this->AddText(copy, color, style);
+    std::free(copy);
+  }
+}
+
+// OFFSET: 0x008752F0
+
+// OFFSET: 0x00875520
 
 // OFFSET: 0x00875A70
 // FUNCTION: fn_11201

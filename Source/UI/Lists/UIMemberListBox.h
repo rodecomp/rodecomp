@@ -25,6 +25,7 @@ public:
   void Paint() override;
   void Slot15(int width, int height) override;
   void Resize(int width, int height) override;
+  virtual void AddText(const char* text, int color);
 
   /* 0130 */ int unknown_0130;
   /* 0134 */ int unknown_0134;

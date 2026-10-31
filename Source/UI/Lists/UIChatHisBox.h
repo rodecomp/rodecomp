@@ -25,6 +25,8 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Configure(int x, int y, int width, int height, unsigned char transparent) override;
   void Clear() override;
+  virtual void AddText(const char* text, int color, const char* style);
+  void AddTextWrapped(const char* text, int color, const char* style);
   const char* HistoryText(unsigned int index);
   bool SaveChatLog(const char* path);
   void PlaceNaviLinks(int line);
@@ -32,7 +34,7 @@ public:
   void ShiftNaviLinks();
   void ClearNaviLinks();
   void DropOldestRecords();
-  void ResetContents();
+  virtual void ResetContents();
   void ShiftItemTags();
   void PlaceItemTags(int line);
   void CopyHistory(const UIChatHisBox& other);
@@ -46,7 +48,7 @@ public:
 
   /* 00DC */ std::list<std::vector<UINaviLinkButton*>> naviLinks;
   /* 00E4 */ std::vector<int> unknown_00E4;
-  /* 00F0 */ unsigned char unknown_00F0[0x4];
+  /* 00F0 */ int maxLines;
   /* 00F4 */ std::vector<std::string> history;
   /* 0100 */ std::vector<std::string> unknown_0100;
   /* 010C */ std::vector<int> unknown_010C;
