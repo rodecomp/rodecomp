@@ -106,6 +106,7 @@
 #include "Network/Packets/PacketLengths.h"
 #include "Utility/Text/GroupedInteger.h"
 #include "Client/Mode/ModeTooltip.h"
+#include <algorithm>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -139,6 +140,9 @@ static const char bookmarkKeySuffixText[] = "\\BookMark";
 
 // GLOBAL: gl_24751
 const char* g_bookmarkKeySuffix = bookmarkKeySuffixText;
+
+// GLOBAL: gl_25188
+bool g_passwordInputAlternate;
 
 // OFFSET: 0x0087B500
 // FUNCTION: fn_11241
@@ -2264,6 +2268,49 @@ void UIFrameWnd::DrawTextLines(int x, int y, int family, int lineHeight, const F
   }
 }
 
+// OFFSET: 0x008D8EE0
+// FUNCTION: fn_12132
+void UIFrameWnd::SplitHighlightText(
+  const char* text, const char* highlight, const int& highlightColor, const int& color, const std::vector<char*>& breaks,
+  std::vector<std::pair<int, std::string>>& segments
+) {
+  if (!highlight) {
+    segments.emplace_back(color, text);
+    return;
+  }
+
+  std::vector<char*> points = breaks;
+  points.erase(std::unique(points.begin(), points.end()), points.end());
+  auto it = std::find(points.begin(), points.end(), highlight);
+  if (it == points.end()) {
+    segments.emplace_back(color, text);
+  } else if (it + 1 == points.end()) {
+    segments.emplace_back(highlightColor, text);
+  } else {
+    std::string full(text);
+    std::string word = full.substr(*it - text, *(it + 1) - *it);
+    if (g_inlineCharset) {
+      std::string::size_type marker = 0;
+      while ((marker = full.find('|', marker)) != std::string::npos) {
+        if (marker + 2 < full.size()) {
+          full.erase(marker, 3);
+        }
+      }
+    }
+
+    std::string::size_type pos = full.find(word);
+    if (pos != std::string::npos) {
+      if (pos != 0) {
+        segments.push_back(std::make_pair(color, full.substr(0, pos)));
+      }
+      segments.push_back(std::make_pair(highlightColor, full.substr(pos, word.size())));
+      if (word.size() + pos < full.size()) {
+        segments.push_back(std::make_pair(color, full.substr(word.size() + pos)));
+      }
+    }
+  }
+}
+
 // OFFSET: 0x0090AB10
 // FUNCTION: fn_12416
 int UIWindow::DrawItemNameSegments(
@@ -3607,6 +3654,12 @@ UINpcEditDialogWnd::UINpcEditDialogWnd(UIWindowContext& windows, UIFrameContext&
     : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
 }
 
+// OFFSET: 0x008C8890
+// FUNCTION: fn_11962
+UINpcTextEditDialogWnd::UINpcTextEditDialogWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UINpcEditDialogWnd(windows, frames, controls), m_tagCtrl(nullptr) {
+}
+
 // OFFSET: 0x008C8B50
 // FUNCTION: fn_11968
 UIProhibitListWnd::UIProhibitListWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
@@ -3649,14 +3702,103 @@ UInCash_CallWnd::UInCash_CallWnd(UIWindowContext& windows, UIFrameContext& frame
     : UIFrameWnd(windows, frames, 0) {
 }
 
+// OFFSET: 0x008C8F00
+// FUNCTION: fn_11973
+UISelectCartWnd::UISelectCartWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), unknown_00B4(0), unknown_00B8(0), unknown_00BC(0), unknown_00C0(0) {
+}
+
+// OFFSET: 0x008C9280
+// FUNCTION: fn_11979
+UIStorePasswordInputWnd::UIStorePasswordInputWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), unknown_00BC(-1), unknown_00C0(2) {
+  std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+  std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+  std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+  this->unknown_00F0 = 0;
+  this->unknown_0108 = 0;
+  this->unknown_00F4 = 0;
+  this->unknown_00EC = 0;
+  this->unknown_00F8 = 40;
+  this->unknown_00FC = 40;
+  this->unknown_0100 = 80;
+  this->unknown_0104 = 119;
+  if (g_passwordInputAlternate) {
+    this->unknown_00F4 = 2;
+    this->unknown_00F8 = 80;
+    this->unknown_00EC = 0;
+    this->unknown_00F0 = 0;
+    std::memset(this->unknown_00D0, 0, sizeof(this->unknown_00D0));
+    std::memset(this->unknown_00D9, 0, sizeof(this->unknown_00D9));
+    std::memset(this->unknown_00E2, 0, sizeof(this->unknown_00E2));
+  }
+}
+
+// OFFSET: 0x008C8D40
+// FUNCTION: fn_11972
+UISecondPasswordInputWnd::UISecondPasswordInputWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIStorePasswordInputWnd(windows, frames), unknown_010C(4), unknown_011C(0), unknown_0120(0), unknown_0124(), unknown_014C(0),
+      unknown_0150(0), unknown_0154(0), unknown_0158(0), unknown_0164(0) {
+}
+
 // OFFSET: 0x008C8F80
+// FUNCTION: fn_11974
+UISkillDescribeWnd::UISkillDescribeWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_text(nullptr) {
+}
 
 // OFFSET: 0x008C9430
+// FUNCTION: fn_11981
+UITipboxWnd::UITipboxWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), unknown_00B4(0), unknown_00B8(0),
+      unknown_00BC(0), unknown_00C8(0), unknown_00CC(0), unknown_00D0(0), unknown_00D4(0), unknown_00D8(0), m_buildTime(0), m_frameTime(0),
+      unknown_00FC(false), unknown_0100(0) {
+  this->unknown_00C0 = 0;
+  this->unknown_00C4 = 0;
+}
 
 // OFFSET: 0x008C86B0
 // FUNCTION: fn_11958
-UINotifyItemObtainWnd::UINotifyItemObtainWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), m_identified(false) {
+UINotifyItemObtainWnd::UINotifyItemObtainWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_identified(false) {
+}
+
+// OFFSET: 0x008C7CB0
+// FUNCTION: fn_11943
+UIItemCollectionWnd::UIItemCollectionWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), unknown_0214(0) {
+  this->m_placement = nullptr;
+  this->m_item.Reset();
+  this->unknown_0238 = 0;
+  this->unknown_0218 = -1;
+  this->unknown_021A = -1;
+  this->unknown_021C = -1;
+  this->unknown_0236 = 0xFFFF;
+  this->m_previewTick = 0;
+  this->unknown_0208 = 0;
+  this->m_compare = 0;
+  this->unknown_01FC = 0;
+  this->m_moveInfo = nullptr;
+  this->unknown_023C = 0;
+  this->m_extraHeight = 0;
+}
+
+// OFFSET: 0x008C7570
+// FUNCTION: fn_11933
+UICombinedCardItemCollectionWnd::UICombinedCardItemCollectionWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIItemCollectionWnd(windows, frames), m_cardPlacement(nullptr) {
+}
+
+// OFFSET: 0x008C75D0
+// FUNCTION: fn_11934
+UICombinedCardItemCollection_ComparisonWnd::UICombinedCardItemCollection_ComparisonWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIItemCollectionWnd(windows, frames) {
+}
+
+// OFFSET: 0x008C7E40
+// FUNCTION: fn_11944
+UIItemCollection_ComparisonWnd::UIItemCollection_ComparisonWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIItemCollectionWnd(windows, frames) {
 }
 
 // OFFSET: 0x008C6FA0

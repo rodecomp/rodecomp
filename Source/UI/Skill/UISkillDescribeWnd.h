@@ -7,7 +7,7 @@
 
 class UISkillDescribeWnd : public UIFrameWnd {
 public:
-  UISkillDescribeWnd();
+  UISkillDescribeWnd(UIWindowContext& windows, UIFrameContext& frames);
 
   /* 00B4 */ unsigned char unknown_00B4[0x8];
   /* 00BC */ std::string unknown_00BC;

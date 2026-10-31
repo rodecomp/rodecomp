@@ -29,6 +29,7 @@ protected:
 
 class UINpcTextEditDialogWnd : public UINpcEditDialogWnd {
 public:
+  UINpcTextEditDialogWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot15(int width, int height) override;
   void InsertItemTag(const ITEM_INFO& item);
   void InsertSkillTag(int tagId);

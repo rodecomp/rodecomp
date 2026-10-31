@@ -47,6 +47,10 @@ public:
   void DrawBorder(int x, int y, int width, int height);
   void FitLastTextLine(int width, unsigned lineCount, int family, int height, FrameTextLines& lines);
   void DrawTextLines(int x, int y, int family, int lineHeight, const FrameTextLines& lines);
+  void SplitHighlightText(
+    const char* text, const char* highlight, const int& highlightColor, const int& color, const std::vector<char*>& breaks,
+    std::vector<std::pair<int, std::string>>& segments
+  );
 
 protected:
   /* 007C */ int m_dragX;
