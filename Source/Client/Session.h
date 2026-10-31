@@ -726,6 +726,7 @@ public:
   std::string GetRobeSprName(int job, int sex, int robe, bool riding, int unused, int costumeJob);
   std::string GetRobeName(unsigned int robe);
   std::string GetBodyPalName(int job, int sex, int palette, int costumeJob, int costume, int unused);
+  std::string GetBodySprName(int job, int sex, int costumeJob, int costume);
   std::string GetRaceBodyResourceName(int type, int raceJob, int job, int sex, int costumeJob);
   int GetItemDescription40(int id);
   std::uint32_t GetUnknown0420(int index);

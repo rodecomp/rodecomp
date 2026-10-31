@@ -313,3 +313,9 @@ std::string CSession::GetPlayerHeadSprName() {
   const int job = this->GetDisplayJob();
   return resources->GetHeadName(1, job, sex, &this->m_head);
 }
+
+// OFFSET: 0x00DDE6B0
+// FUNCTION: fn_23397
+std::string CSession::GetBodySprName(int job, int sex, int costumeJob, int costume) {
+  return g_equipmentResourceMgr->GetBodyResourceName(1, job, sex, costumeJob, costume);
+}
