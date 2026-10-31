@@ -301,3 +301,25 @@ int UIMakeTargetResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 // OFFSET: 0x0099FB70
 // FUNCTION: fn_13592
 UIItemRepairWnd::~UIItemRepairWnd() = default;
+
+// OFFSET: 0x009A0280
+// FUNCTION: fn_13599
+std::vector<unsigned char> UIItemRepairWnd::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(22150, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  for (const UIItemRepairEntry& entry : this->entries) {
+    std::vector<unsigned char> record(sizeof(entry) + 6, 0);
+    *reinterpret_cast<std::uint16_t*>(record.data()) = 22152;
+    *reinterpret_cast<std::uint32_t*>(record.data() + 2) = sizeof(entry);
+    std::memcpy(record.data() + 6, &entry, sizeof(entry));
+    records.insert(records.end(), record.cbegin(), record.cend());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(22151, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
