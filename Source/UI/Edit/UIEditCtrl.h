@@ -130,6 +130,7 @@ class UIEditCtrl3 : public UIEditCtrl2 {
 public:
   UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit);
   UIEditCtrl3(const UIEditCtrl3& other);
+  ~UIEditCtrl3() override;
   void Slot15(int width, int height) override;
   void Resize(int width, int height) override;
   void Paint() override;

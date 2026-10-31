@@ -113,6 +113,13 @@ UIEditCtrl3::UIEditCtrl3(const UIEditCtrl3& other) : UIEditCtrl2(other) {
   }
 }
 
+// OFFSET: 0x00852770
+// FUNCTION: fn_10715
+UIEditCtrl3::~UIEditCtrl3() {
+  this->ClearLineState();
+  this->pendingText.clear();
+}
+
 // OFFSET: 0x0085AC40
 // FUNCTION: fn_10786
 void UIEditCtrl3::Slot15(int width, int height) {
