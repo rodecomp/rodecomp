@@ -1002,5 +1002,149 @@ void CGameMode::NotifyUnknown0604(int value) {
 }
 
 // OFFSET: 0x00CEBF30
+// FUNCTION: fn_21354
+unsigned CGameMode::sub_CEBF30(const std::vector<unsigned char>& data) {
+  if (data.empty()) {
+    return 0xFFFFFFFFu;
+  }
+
+  GameModeChunkHeader header = {};
+  unsigned offset = 6;
+  header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
+  if (header.type == 15000) {
+    while (offset < data.size()) {
+      header = {};
+      header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
+      offset += 6;
+
+      if (header.type == 0xCF) {
+        std::vector<unsigned char> record(0x13);
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D2DB80(record.data());
+      } else if (header.type == 15001) {
+        break;
+      } else {
+        offset += header.size;
+      }
+    }
+  } else {
+    offset = 0xFFFFFFFFu;
+  }
+
+  return offset;
+}
 
 // OFFSET: 0x00CEC100
+// FUNCTION: fn_21355
+unsigned CGameMode::sub_CEC100(const std::vector<unsigned char>& data) {
+  if (data.empty()) {
+    return 0xFFFFFFFFu;
+  }
+
+  GameModeChunkHeader header = {};
+  unsigned offset = 6;
+  header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
+  if (header.type == 10000) {
+    std::vector<unsigned char> record;
+    while (offset < data.size()) {
+      header = {};
+      header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
+      offset += 6;
+
+      if (static_cast<int>(header.size) > 0) {
+        record.resize(header.size);
+      }
+
+      if (header.type == 10001) {
+        break;
+      }
+
+      switch (header.type) {
+      case 0xC9:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D3F130(record.data());
+        break;
+      case 0xCA:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D51A90(record.data());
+        break;
+      case 0xCB:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D3D2F0(record.data());
+        break;
+      case 0xCC:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D24430(record.data());
+        break;
+      case 0xD0:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D350A0(record.data());
+        break;
+      case 0xD2:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D37A10(record.data());
+        break;
+      case 0xD4:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D619E0(record.data());
+        break;
+      case 0xD5:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D61390(record.data());
+        break;
+      case 0xD6:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D616B0(record.data());
+        break;
+      case 0xD7:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D63D70(record.data());
+        break;
+      case 0xD8:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D63720(record.data());
+        break;
+      case 0xD9:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D63A40(record.data());
+        break;
+      case 0xDA: {
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        const auto* stored = reinterpret_cast<const GameModeStoredRecord00DA*>(record.data());
+        this->sub_D7B170(
+          stored->value0002, stored->value0006, stored->value000A, stored->value000C, stored->value000E, stored->value000F,
+          stored->value0011, stored->value0015, stored->value0019, stored->value001B, stored->value001D, stored->value001F,
+          stored->value0021, stored->value0023, stored->text, stored->value003D
+        );
+        break;
+      }
+      case 0x191:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->sub_D65FC0(record.data());
+        break;
+      default:
+        offset += header.size;
+        break;
+      }
+    }
+  } else {
+    offset = 0xFFFFFFFFu;
+  }
+
+  return offset;
+}
