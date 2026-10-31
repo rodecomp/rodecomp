@@ -17,6 +17,13 @@ public:
   CooldownState* Find(unsigned id);
   void Erase(unsigned id);
   // INLINED
+  void Remove(unsigned id) {
+    const auto entry = this->m_values.find(id);
+    if (entry != this->m_values.end()) {
+      this->m_values.erase(entry);
+    }
+  }
+  // INLINED
   CooldownDrawing& Drawing() {
     return this->m_drawing;
   }

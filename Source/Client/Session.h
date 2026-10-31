@@ -8,6 +8,7 @@
 #include "Contents/Skills/PlayerSkillBundle.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Resource/XmlNode.h"
+#include "UI/Cooldowns/CooldownState.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -85,6 +86,9 @@ struct ProhibitionLogEntry {
 struct SessionRequestTimer {
   /* 0000 */ int requestId;
   /* 0004 */ unsigned long readyTime;
+  /* 0008 */ std::uint32_t duration;
+  /* 000C */ std::list<CooldownState> main;
+  /* 0014 */ std::list<CooldownState> alternate;
 };
 
 struct SessionRecord0734 {
@@ -450,7 +454,9 @@ public:
   /* 6B68 */ ITEM_INFO unknown_6B68[10];
   /* 7518 */ unsigned char unknown_7518[0x9B0];
   /* 7EC8 */ std::uint32_t unknown_7EC8;
-  /* 7ECC */ unsigned char unknown_7ECC[0x0C];
+  /* 7ECC */ unsigned char unknown_7ECC[0x04];
+  /* 7ED0 */ int unknown_7ED0;
+  /* 7ED4 */ std::uint32_t unknown_7ED4;
   /* 7ED8 */ int m_swapEquipmentMode = 0;
   /* 7EDC */ unsigned char unknown_7EDC[4];
   /* 7EE0 */ std::map<int, RobeAlpha> m_robeAlpha;

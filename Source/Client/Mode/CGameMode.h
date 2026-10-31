@@ -598,6 +598,9 @@ public:
   void ReceiveVendingItemSoldNow(const unsigned char* data);
   void ReceiveNotifyGroundSkill(const unsigned char* packet);
   void ReceiveAcceptEnter(const unsigned char* data);
+  void ApplyStatusChange(
+    std::uint32_t aid, unsigned char on, int type, std::uint32_t remaining, int value1, int value2, int value3, unsigned char flag, std::uint32_t total
+  );
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

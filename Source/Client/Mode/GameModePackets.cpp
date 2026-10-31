@@ -27,6 +27,7 @@
 #include "Contents/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/PlayerNameDictionary.h"
+#include "Contents/RodexMailStore.h"
 #include "Contents/RouletteMgr.h"
 #include "Contents/World/World.h"
 #include "Network/Connection/Connection.h"
@@ -34,6 +35,7 @@
 #include "Network/TextEncoding.h"
 #include "UI/Item/UIItemStoreWnd.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/Cooldowns/CooldownOwner.h"
 #include "UI/UIBarGraph.h"
 #include "UI/Window/UIHomunInfoWnd.h"
 #include "Contents/Sound/SoundMgr.h"
@@ -49,6 +51,7 @@
 #include "Contents/GuildMgr.h"
 #include <direct.h>
 #include <io.h>
+#include <timeapi.h>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -4167,4 +4170,1593 @@ void CGameMode::ReceiveSearchStoreOpen(const unsigned char* packet) {
   g_session.unknown_5BE0 = packet[4];
   reinterpret_cast<std::int16_t*>(&g_session.unknown_5BE4)[1] = *reinterpret_cast<const std::int16_t*>(packet + 2);
   g_windowMgr.EnsureWindow(181);
+}
+
+// OFFSET: 0x00D55AB0
+// FUNCTION: fn_21953
+void CGameMode::ApplyStatusChange(
+  std::uint32_t aid, unsigned char on, int type, std::uint32_t remaining, int value1, int value2, int value3, unsigned char flag, std::uint32_t total
+) {
+  std::uint32_t now;
+  if (g_replayAnimationScaling != 0) {
+    now = Replay::Instance().elapsed;
+  } else {
+    now = timeGetTime();
+  }
+
+  if (type == 64) {
+    type = value1 + 897;
+  }
+
+  if (aid != g_session.m_aid) {
+    CRenderObject* actor = this->scene->GetGameActorByAID(aid);
+    if (actor) {
+      actor->SendMsg(
+        nullptr, 110, 0, type, type >> 31, on, 0, value1, value1 >> 31, value2, value2 >> 31, flag, 0, value3, value3 >> 31
+      );
+    }
+
+    if (type == 432 && actor) {
+      const unsigned char element = static_cast<unsigned char>(value3);
+      if (element == 19) {
+        g_effectMgr->Spawn(actor->render.accountId, 1665, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1666, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      } else if (element == 20) {
+        g_effectMgr->Spawn(actor->render.accountId, 1669, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      } else if (element == 14) {
+        g_effectMgr->Spawn(actor->render.accountId, 1667, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1668, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      }
+    }
+  }
+
+  MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByAccount(aid);
+  if (aid != g_session.m_aid && (!member.valid || member.offline)) {
+    return;
+  }
+
+  char name[256];
+  std::sprintf(name, "");
+  if (aid != g_session.m_aid) {
+    std::sprintf(name, LookupMessage(1275), member.name.c_str());
+  }
+
+  char message[256];
+  std::memset(message, 0, sizeof(message));
+
+  std::uint32_t color;
+  if (on) {
+    if (aid == g_session.m_aid) {
+      if (type == 696) {
+        if (this->scene->player) {
+          this->scene->player->SetUnknown0305(1, value2);
+        }
+      } else if (type == 46) {
+        SessionRequestTimer timer;
+        timer.requestId = 577;
+        timer.readyTime = now + remaining;
+        timer.duration = total;
+        g_session.m_requestTimers.push_back(timer);
+      } else if (type == 684) {
+        SessionRequestTimer timer;
+        timer.requestId = 9999;
+        timer.readyTime = now + remaining;
+        timer.duration = total;
+        g_session.m_requestTimers.push_back(timer);
+      } else if (type == 175) {
+        SessionRequestTimer timer;
+        for (int requestId = 10000; requestId < 10020; ++requestId) {
+          std::list<SessionRequestTimer>::iterator it = g_session.m_requestTimers.begin();
+          for (; it != g_session.m_requestTimers.end(); ++it) {
+            if (it->requestId == requestId) {
+              break;
+            }
+          }
+
+          timer.requestId = requestId;
+          timer.readyTime = now + remaining;
+          timer.duration = total;
+          if (it == g_session.m_requestTimers.end()) {
+            g_session.m_requestTimers.push_back(timer);
+          } else {
+            it->readyTime = timer.readyTime;
+          }
+        }
+      } else if (type == 824) {
+        g_rodexMailStore->unknown_0014 = value2;
+      }
+
+      if (type != 824) {
+        ActiveSkillEffect effect;
+        effect.id = type;
+        effect.unknown_0004 = remaining == 9999 ? 999999 : now + remaining;
+        if (type >= 363 && type <= 367) {
+          effect.unknown_0008 = value1 & 3;
+        } else if (type == 339 || type == 895 || type == 1149) {
+          effect.unknown_0008 = value1;
+        }
+
+        if (type == 1152 || type == 1196) {
+          effect.unknown_0008 = value1;
+        } else if (type == 1244) {
+          effect.unknown_0008 = value2;
+        } else if (CSkillActionMgr::GetInstance()->HasEfstAction(type) == true) {
+          effect.unknown_000C = value2;
+          effect.unknown_0008 = value1;
+          effect.unknown_0010 = value3;
+        }
+
+        for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end();) {
+          if (it->id == type && (it->id != 895 || it->unknown_0008 == effect.unknown_0008)) {
+            g_cooldownOwner->Remove(it->id);
+            g_activeSkillEffects.erase(it);
+            it = g_activeSkillEffects.begin();
+          } else {
+            ++it;
+          }
+        }
+
+        effect.unknown_0014 = total;
+        effect.unknown_0018 = remaining;
+        if (effect.unknown_0004 != 999999) {
+          g_cooldownOwner->Register(effect.id, total, now, total - remaining);
+        }
+        g_activeSkillEffects.push_back(effect);
+      }
+    }
+
+    color = 0xFFFF00;
+    switch (type) {
+    case 2:
+    case 37:
+    case 38:
+    case 39:
+    case 40:
+    case 68:
+    case 161:
+      std::sprintf(message, LookupMessage(463));
+      break;
+    case 70:
+    case 71:
+    case 72:
+    case 73:
+    case 74:
+    case 75:
+    case 76:
+    case 77:
+    case 78:
+    case 79:
+    case 80:
+    case 81:
+    case 82:
+    case 83:
+    case 84:
+    case 363:
+    case 364:
+    case 365:
+    case 366:
+    case 367:
+    case 448:
+    case 452:
+    case 453:
+    case 454:
+    case 645:
+    case 646:
+    case 655:
+    case 656:
+    case 657:
+    case 659:
+    case 660:
+    case 674:
+    case 716:
+    case 717:
+    case 718:
+    case 719:
+    case 720:
+    case 721:
+    case 728:
+    case 730:
+    case 734:
+    case 735:
+    case 736:
+    case 737:
+    case 755:
+    case 760:
+    case 779:
+    case 822:
+    case 823:
+    case 825:
+    case 826:
+    case 849:
+    case 856:
+    case 857:
+    case 859:
+    case 863:
+    case 864:
+    case 872:
+    case 895:
+    case 896:
+    case 917:
+    case 919:
+    case 937:
+    case 982:
+    case 1016:
+    case 1017:
+    case 1018:
+    case 1019:
+    case 1020:
+    case 1021:
+    case 1022:
+    case 1023:
+    case 1024:
+    case 1025:
+    case 1038:
+    case 1039:
+    case 1040:
+    case 1041:
+    case 1043:
+    case 1050:
+    case 1055:
+    case 1126:
+    case 1139:
+    case 1141:
+    case 1142:
+    case 1148:
+    case 1150:
+    case 1165:
+    case 1166:
+    case 1167:
+    case 1176:
+    case 1184:
+    case 1190:
+    case 1196:
+    case 1197:
+    case 1205:
+    case 1206:
+    case 1207:
+    case 1208:
+    case 1209:
+    case 1210:
+    case 1211:
+    case 1212:
+    case 1213:
+    case 1214:
+    case 1215:
+    case 1216:
+    case 1230:
+    case 1231:
+    case 1232:
+    case 1233:
+    case 1234:
+    case 1258:
+    case 1318:
+    case 1319:
+    case 1337:
+    case 1338:
+    case 1339:
+    case 1688:
+      break;
+    case 339:
+      if (aid == g_session.m_aid) {
+        CPlayer* player = this->scene->player;
+        for (int i = 0; i < 10; ++i) {
+          g_effectMgr->Retire(player->render.accountId, 1300 + i);
+          g_effectMgr->Retire(player->render.accountId, 1467 + i);
+        }
+        g_effectMgr->Spawn(
+          player->render.accountId, g_serviceOptions.Get(229) ? value1 + 1466 : value1 + 1299, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+        );
+        std::sprintf(message, "");
+      }
+      break;
+    case 434:
+      if (aid == g_session.m_aid) {
+        CPlayer* player = this->scene->player;
+        player->SendMsg(nullptr, 109, 0, 879, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        player->LaunchEffect(879, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        std::sprintf(message, "");
+      }
+      break;
+    case 439:
+      if (aid == g_session.m_aid) {
+        CPlayer* player = this->scene->player;
+        player->SendMsg(nullptr, 109, 0, 865, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        player->LaunchEffect(865, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        std::sprintf(message, "");
+      }
+      break;
+    case 441:
+      if (aid == g_session.m_aid) {
+        CPlayer* player = this->scene->player;
+        player->SendMsg(nullptr, 109, 0, 867, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        player->LaunchEffect(867, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        std::sprintf(message, "");
+      }
+      break;
+    case 451:
+      if (aid == g_session.m_aid) {
+        CPlayer* player = this->scene->player;
+        player->SendMsg(nullptr, 109, 0, 871, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        player->LaunchEffect(871, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        std::sprintf(message, "");
+      }
+      break;
+    case 435:
+      if (aid == g_session.m_aid) {
+        this->scene->player->SendMsg(nullptr, 69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        std::sprintf(message, "");
+      }
+      break;
+    case 433:
+      if (aid == g_session.m_aid) {
+        this->scene->player->SendMsg(nullptr, 109, 0, 453, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        std::sprintf(message, "");
+      }
+      break;
+    case 358:
+      if (aid == g_session.m_aid) {
+        this->scene->player->LaunchEffect(752, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        std::sprintf(message, "");
+      }
+      break;
+    case 15:
+      std::sprintf(message, LookupMessage(3463));
+      break;
+    case 16:
+      std::sprintf(message, LookupMessage(467));
+      break;
+    case 6:
+      std::sprintf(message, LookupMessage(469));
+      break;
+    case 17:
+    case 64:
+      std::sprintf(message, LookupMessage(470));
+      break;
+    case 18:
+      std::sprintf(message, LookupMessage(472));
+      break;
+    case 19:
+      std::sprintf(message, LookupMessage(474));
+      break;
+    case 24:
+      std::sprintf(message, LookupMessage(476));
+      break;
+    case 25:
+    case 188:
+      std::sprintf(message, LookupMessage(465));
+      break;
+    case 26:
+      std::sprintf(message, LookupMessage(480));
+      break;
+    case 12:
+    case 41:
+    case 42:
+      std::sprintf(message, LookupMessage(209));
+      break;
+    case 13:
+      std::sprintf(message, LookupMessage(210));
+      break;
+    case 7:
+      std::sprintf(message, LookupMessage(620));
+      break;
+    case 8:
+      std::sprintf(message, LookupMessage(622));
+      break;
+    case 9:
+      std::sprintf(message, LookupMessage(3435));
+      break;
+    case 10:
+      std::sprintf(message, LookupMessage(3434));
+      break;
+    case 14:
+      std::sprintf(message, LookupMessage(630));
+      break;
+    case 20:
+      std::sprintf(message, LookupMessage(632));
+      break;
+    case 21:
+      std::sprintf(message, LookupMessage(634));
+      break;
+    case 22:
+      std::sprintf(message, LookupMessage(636));
+      break;
+    case 23:
+    case 147:
+      std::sprintf(message, LookupMessage(638));
+      break;
+    case 29:
+      std::sprintf(message, "");
+      if (aid == g_session.m_aid) {
+        this->scene->player->SetAction(64, 4, 1);
+        this->scene->player->render.isMotionFreezed = true;
+      }
+      break;
+    case 30:
+      std::sprintf(message, LookupMessage(3433));
+      break;
+    case 31:
+      std::sprintf(message, LookupMessage(648));
+      break;
+    case 32:
+      std::sprintf(message, LookupMessage(650));
+      break;
+    case 33:
+      std::sprintf(message, LookupMessage(652));
+      break;
+    case 182:
+      if (aid == g_session.m_aid) {
+        g_soundMgr->PlayWave("lava_golem_move.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      }
+      std::sprintf(message, "");
+      break;
+    case 0:
+    case 1:
+    case 3:
+    case 4:
+    case 5:
+    case 11:
+    case 27:
+    case 28:
+    case 34:
+    case 54:
+    case 55:
+    case 56:
+    case 57:
+    case 61:
+    case 86:
+    case 87:
+    case 95:
+    case 97:
+    case 98:
+    case 103:
+    case 104:
+    case 105:
+    case 107:
+    case 110:
+    case 112:
+    case 113:
+    case 114:
+    case 115:
+    case 116:
+    case 117:
+    case 118:
+    case 120:
+    case 121:
+    case 122:
+    case 123:
+    case 124:
+    case 125:
+    case 130:
+    case 132:
+    case 133:
+    case 134:
+    case 135:
+    case 137:
+    case 139:
+    case 141:
+    case 143:
+    case 145:
+    case 149:
+    case 150:
+    case 151:
+    case 152:
+    case 153:
+    case 156:
+    case 157:
+    case 158:
+    case 159:
+    case 160:
+    case 165:
+    case 166:
+    case 167:
+    case 169:
+    case 170:
+    case 171:
+    case 181:
+    case 184:
+    case 186:
+    case 191:
+    case 197:
+    case 198:
+    case 199:
+    case 200:
+    case 201:
+    case 203:
+    case 204:
+    case 205:
+    case 206:
+    case 207:
+    case 208:
+    case 209:
+    case 210:
+    case 211:
+    case 212:
+    case 213:
+    case 214:
+    case 215:
+    case 216:
+    case 217:
+    case 218:
+    case 219:
+    case 220:
+    case 221:
+    case 222:
+    case 223:
+    case 224:
+    case 225:
+    case 226:
+    case 227:
+    case 228:
+    case 229:
+    case 230:
+    case 231:
+    case 232:
+    case 233:
+    case 234:
+    case 235:
+    case 236:
+    case 238:
+    case 239:
+    case 240:
+    case 254:
+    case 255:
+    case 256:
+    case 257:
+    case 258:
+    case 259:
+    case 261:
+    case 262:
+    case 263:
+    case 264:
+    case 265:
+    case 266:
+    case 267:
+    case 268:
+    case 269:
+    case 270:
+    case 282:
+    case 286:
+    case 289:
+    case 290:
+    case 291:
+    case 292:
+    case 293:
+    case 294:
+    case 295:
+    case 296:
+    case 297:
+    case 298:
+    case 299:
+    case 300:
+    case 301:
+    case 302:
+    case 313:
+    case 314:
+    case 316:
+    case 318:
+    case 319:
+    case 320:
+    case 321:
+    case 322:
+    case 323:
+    case 328:
+    case 330:
+    case 333:
+    case 334:
+    case 336:
+    case 337:
+    case 341:
+    case 342:
+    case 343:
+    case 344:
+    case 345:
+    case 346:
+    case 347:
+    case 348:
+    case 349:
+    case 350:
+    case 351:
+    case 352:
+    case 353:
+    case 355:
+    case 357:
+    case 360:
+    case 361:
+    case 362:
+    case 374:
+    case 375:
+    case 377:
+    case 379:
+    case 381:
+    case 382:
+    case 383:
+    case 384:
+    case 385:
+    case 386:
+    case 387:
+    case 388:
+    case 389:
+    case 390:
+    case 393:
+    case 394:
+    case 396:
+    case 397:
+    case 398:
+    case 399:
+    case 401:
+    case 402:
+    case 403:
+    case 404:
+    case 405:
+    case 407:
+    case 408:
+    case 409:
+    case 410:
+    case 411:
+    case 412:
+    case 413:
+    case 414:
+    case 415:
+    case 416:
+    case 417:
+    case 418:
+    case 419:
+    case 421:
+    case 422:
+    case 423:
+    case 425:
+    case 426:
+    case 427:
+    case 429:
+    case 430:
+    case 436:
+    case 437:
+    case 438:
+    case 440:
+    case 442:
+    case 443:
+    case 444:
+    case 445:
+    case 446:
+    case 447:
+    case 450:
+    case 461:
+    case 463:
+    case 464:
+    case 472:
+    case 473:
+    case 476:
+    case 491:
+    case 492:
+    case 493:
+    case 494:
+    case 495:
+    case 496:
+    case 571:
+    case 577:
+    case 580:
+    case 581:
+    case 584:
+    case 605:
+    case 606:
+    case 607:
+    case 608:
+    case 611:
+    case 613:
+    case 618:
+    case 648:
+    case 649:
+    case 670:
+    case 869:
+    case 1056:
+    case 1057:
+    case 1058:
+    case 1059:
+    case 1121:
+      std::sprintf(message, "");
+      break;
+    case 354:
+      if (aid == g_session.m_aid) {
+        this->scene->player->LaunchEffect(729, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+      std::printf(message, "");
+      break;
+    case 260:
+      if (aid == g_session.m_aid) {
+        g_seasonalMonsterSprites = 1;
+      }
+      std::sprintf(message, "");
+      break;
+    case 241:
+    case 271:
+      std::sprintf(message, LookupMessage(1231));
+      break;
+    case 242:
+    case 272:
+      std::sprintf(message, LookupMessage(1233));
+      break;
+    case 243:
+    case 273:
+      std::sprintf(message, LookupMessage(1235));
+      break;
+    case 244:
+    case 274:
+      std::sprintf(message, LookupMessage(1239));
+      break;
+    case 245:
+    case 275:
+      std::sprintf(message, LookupMessage(1237));
+      break;
+    case 246:
+    case 276:
+      std::sprintf(message, LookupMessage(1241));
+      break;
+    case 247:
+      std::sprintf(message, LookupMessage(1243));
+      break;
+    case 248:
+      std::sprintf(message, LookupMessage(1245));
+      break;
+    case 249:
+      std::sprintf(message, LookupMessage(1247));
+      break;
+    case 250:
+    {
+      const int minutes = remaining / 60000;
+      if (minutes > 0) {
+        const std::string text = FormatOwnedString(LookupMessage(2031), minutes, value1);
+        std::strcpy(message, text.c_str());
+      } else {
+        message[0] = '\0';
+      }
+      break;
+    }
+    case 251:
+      std::sprintf(message, LookupMessage(1250));
+      break;
+    case 252:
+    {
+      const int minutes = remaining / 60000;
+      if (minutes > 0) {
+        const int hours = minutes / 60;
+        if (hours > 0) {
+          const std::string text = FormatOwnedString(LookupMessage(2472), hours, minutes % 60, value1);
+          std::strcpy(message, text.c_str());
+        } else {
+          const std::string text = FormatOwnedString(LookupMessage(2471), minutes, value1);
+          std::strcpy(message, text.c_str());
+        }
+      } else {
+        message[0] = '\0';
+      }
+      break;
+    }
+    case 253:
+      if (aid == g_session.m_aid) {
+        this->unknown_05CC[0] = 1;
+      }
+      std::sprintf(message, LookupMessage(1252));
+      break;
+    case 312:
+    {
+      const int minutes = remaining / 60000;
+      if (minutes > 0) {
+        const std::string text = FormatOwnedString(LookupMessage(2462), minutes, value1);
+        std::strcpy(message, text.c_str());
+      } else {
+        message[0] = '\0';
+      }
+      break;
+    }
+    case 636:
+    {
+      const std::string text = FormatOwnedString(LookupMessage(1924), value2, value1 / 100.0 + 1.0);
+      std::sprintf(message, text.c_str());
+      break;
+    }
+    case 621:
+    case 651:
+    case 665:
+      if (aid == g_session.m_aid) {
+        this->scene->player->SendMsg(nullptr, 110, 0, type, type >> 31, on, 0, value1, value1 >> 31, 0, 0, 0, 0, 0, 0);
+        this->sub_CFE480(aid);
+      }
+      return;
+    case 673:
+      if (aid == g_session.m_aid) {
+        g_session.SetUnknown5C1C(value1);
+      }
+      break;
+    case 675:
+      if (aid == g_session.m_aid) {
+        this->scene->player->SendMsg(nullptr, 110, 0, 675, 0, on, 0, value1, value1 >> 31, 0, 0, 0, 0, 0, 0);
+        this->sub_CFE480(aid);
+      }
+      return;
+    case 676:
+      if (aid == g_session.m_aid) {
+        this->scene->player->SendMsg(nullptr, 110, 0, 676, 0, on, 0, value1, value1 >> 31, 0, 0, 0, 0, 0, 0);
+        this->sub_CFE480(aid);
+      }
+      break;
+    case 710:
+      if (aid == g_session.m_aid) {
+        this->scene->player->SendMsg(nullptr, 110, 0, 710, 0, on, 0, value1, value1 >> 31, 0, 0, 0, 0, 0, 0);
+        this->sub_CFE480(aid);
+      }
+      break;
+    case 933:
+      if (aid == g_session.m_aid) {
+        this->scene->player->Slot15(48, 1);
+        this->scene->player->render.isMotionFreezed = true;
+      }
+      break;
+    case 893:
+      if (aid == g_session.m_aid) {
+        this->scene->GetGameActorByAID(aid);
+        this->scene->player->Slot15(47, 1);
+      }
+      break;
+    case 373:
+      g_session.unknown_7ED4 = timeGetTime();
+      g_session.unknown_7ED0 = value2 == 0 ? value1 : 0;
+      if (value1 == 0) {
+        for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end();) {
+          if (it->id == 373) {
+            g_activeSkillEffects.erase(it);
+            it = g_activeSkillEffects.begin();
+          } else {
+            ++it;
+          }
+        }
+      }
+      break;
+    case 1013:
+      color = 0xFF;
+      std::sprintf(message, LookupMessage(3247));
+      break;
+    case 1125:
+      g_effectMgr->Spawn(aid, 1362, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_soundMgr->PlayWave("effect\\s포이즌버스터.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case 1149:
+    {
+      CGameActor* actor;
+      if (aid == g_session.m_aid) {
+        actor = this->scene->player;
+      } else {
+        actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+      }
+      if (!actor) {
+        break;
+      }
+
+      if (value1 == 2) {
+        actor->Slot57(2);
+        if (aid == g_session.m_aid) {
+          g_session.unknown_8074 = 2;
+        }
+      } else {
+        actor->Slot57(1);
+        if (aid == g_session.m_aid) {
+          g_session.unknown_8074 = 1;
+        }
+      }
+      actor->SendMsg(nullptr, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    }
+    case 432:
+    {
+      CRenderObject* actor = this->scene->GetGameActorByAidIncludeMe(aid);
+      if (!actor) {
+        break;
+      }
+
+      const unsigned char element = static_cast<unsigned char>(value3);
+      if (element == 19) {
+        g_effectMgr->Spawn(actor->render.accountId, 1665, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1666, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      } else if (element == 20) {
+        g_effectMgr->Spawn(actor->render.accountId, 1669, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      } else if (element == 14) {
+        g_effectMgr->Spawn(actor->render.accountId, 1667, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, 1668, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      }
+      break;
+    }
+    case 1160:
+      _snprintf_s(message, 256, LookupMessage(3726));
+      break;
+    case 1162:
+      _snprintf_s(message, 256, LookupMessage(3728));
+      break;
+    case 1161:
+      _snprintf_s(message, 256, LookupMessage(3730));
+      break;
+    case 1228:
+      _snprintf_s(message, 256, LookupMessage(3732));
+      break;
+    case 1227:
+      _snprintf_s(message, 256, LookupMessage(3734));
+      break;
+    case 1201:
+      _snprintf_s(message, 256, LookupMessage(3736));
+      break;
+    case 1200:
+      _snprintf_s(message, 256, LookupMessage(3738));
+      break;
+    case 1199:
+      _snprintf_s(message, 256, LookupMessage(3740));
+      break;
+    case 1198:
+      _snprintf_s(message, 256, LookupMessage(3742));
+      break;
+    case 1221:
+      _snprintf_s(message, 256, LookupMessage(3758));
+      break;
+    case 1152:
+      _snprintf_s(message, 256, LookupMessage(3760));
+      break;
+    case 1194:
+      _snprintf_s(message, 256, LookupMessage(3764));
+      break;
+    case 1247:
+      _snprintf_s(message, 256, LookupMessage(3782));
+      break;
+    case 1248:
+      _snprintf_s(message, 256, LookupMessage(3778));
+      break;
+    case 1249:
+      _snprintf_s(message, 256, LookupMessage(3784));
+      break;
+    case 1237:
+      StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3788));
+      break;
+    case 1236:
+      StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3786));
+      break;
+    case 1261:
+      StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3799));
+      break;
+    case 1250:
+      color = 0xFF;
+      StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3807));
+      break;
+    case 1245:
+      StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3815));
+      break;
+    case 1271:
+      StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(3812));
+      break;
+    default:
+      if (CSkillActionMgr::GetInstance()->HasEfstAction(type) != true) {
+        this->sub_CFE480(aid);
+        return;
+      }
+      {
+        const EfstActionMessage action = CSkillActionMgr::GetInstance()->EfstSlot03(type);
+        if (action.text) {
+          color = action.color;
+          StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", action.text);
+        }
+      }
+      break;
+    }
+  } else {
+    if (aid == g_session.m_aid) {
+      for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end();) {
+        if (it->id == type && (it->id != 895 || it->unknown_0008 == value1)) {
+          g_activeSkillEffects.erase(it);
+          it = g_activeSkillEffects.begin();
+        } else {
+          ++it;
+        }
+      }
+    }
+
+    color = 0xFF;
+    switch (type) {
+    case 2:
+    case 37:
+    case 38:
+    case 39:
+    case 68:
+    case 161:
+      std::sprintf(message, LookupMessage(464));
+      break;
+    case 15:
+      std::sprintf(message, LookupMessage(3464));
+      break;
+    case 16:
+      std::sprintf(message, LookupMessage(468));
+      break;
+    case 6:
+    case 17:
+    case 64:
+      std::sprintf(message, LookupMessage(471));
+      break;
+    case 18:
+      std::sprintf(message, LookupMessage(473));
+      break;
+    case 19:
+      std::sprintf(message, LookupMessage(475));
+      break;
+    case 24:
+      std::sprintf(message, LookupMessage(477));
+      break;
+    case 25:
+    case 188:
+      std::sprintf(message, LookupMessage(466));
+      break;
+    case 26:
+      std::sprintf(message, LookupMessage(481));
+      break;
+    case 13:
+      std::sprintf(message, LookupMessage(209));
+      break;
+    case 7:
+      std::sprintf(message, LookupMessage(621));
+      break;
+    case 8:
+      std::sprintf(message, LookupMessage(623));
+      break;
+    case 9:
+      std::sprintf(message, LookupMessage(625));
+      break;
+    case 10:
+      std::sprintf(message, LookupMessage(627));
+      break;
+    case 14:
+      std::sprintf(message, LookupMessage(631));
+      break;
+    case 20:
+      std::sprintf(message, LookupMessage(633));
+      break;
+    case 21:
+      std::sprintf(message, LookupMessage(635));
+      break;
+    case 22:
+      std::sprintf(message, LookupMessage(637));
+      break;
+    case 23:
+    case 147:
+      std::sprintf(message, LookupMessage(639));
+      break;
+    case 29:
+      std::sprintf(message, "");
+      if (aid == g_session.m_aid) {
+        this->scene->player->Slot15(0, 1);
+        this->scene->player->render.isMotionFreezed = false;
+      }
+      break;
+    case 30:
+      std::sprintf(message, LookupMessage(647));
+      break;
+    case 31:
+      std::sprintf(message, LookupMessage(649));
+      break;
+    case 40:
+    case 12:
+    case 42:
+      if (aid == g_session.m_aid) {
+        for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end();) {
+          if (it->id == type) {
+            g_activeSkillEffects.erase(it);
+            it = g_activeSkillEffects.begin();
+          } else {
+            ++it;
+          }
+        }
+      }
+      std::sprintf(message, LookupMessage(210));
+      break;
+    case 41:
+      std::sprintf(message, LookupMessage(210));
+      break;
+    case 363:
+    case 364:
+    case 365:
+    case 366:
+    case 367:
+      if (aid != g_session.m_aid) {
+        break;
+      }
+      {
+        CPlayer* player = this->scene->player;
+        const int stage = value1 & 3;
+        if (stage == 0) {
+          player->SendMsg(nullptr, 109, 0, 735, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        } else if (stage == 1) {
+          player->SendMsg(nullptr, 109, 0, 736, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        } else if (stage == 2) {
+          player->SendMsg(nullptr, 109, 0, 737, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        } else if (stage == 3) {
+          player->SendMsg(nullptr, 109, 0, 738, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
+      }
+      std::sprintf(message, "");
+      break;
+    case 0:
+    case 1:
+    case 3:
+    case 4:
+    case 5:
+    case 11:
+    case 27:
+    case 28:
+    case 32:
+    case 33:
+    case 34:
+    case 54:
+    case 55:
+    case 56:
+    case 57:
+    case 86:
+    case 87:
+    case 95:
+    case 97:
+    case 98:
+    case 103:
+    case 104:
+    case 105:
+    case 107:
+    case 110:
+    case 112:
+    case 113:
+    case 114:
+    case 115:
+    case 116:
+    case 117:
+    case 118:
+    case 120:
+    case 121:
+    case 122:
+    case 123:
+    case 124:
+    case 125:
+    case 130:
+    case 132:
+    case 133:
+    case 134:
+    case 135:
+    case 137:
+    case 139:
+    case 141:
+    case 143:
+    case 145:
+    case 149:
+    case 150:
+    case 151:
+    case 152:
+    case 153:
+    case 156:
+    case 157:
+    case 158:
+    case 159:
+    case 160:
+    case 165:
+    case 166:
+    case 167:
+    case 169:
+    case 170:
+    case 171:
+    case 181:
+    case 182:
+    case 184:
+    case 186:
+    case 191:
+    case 197:
+    case 198:
+    case 199:
+    case 200:
+    case 201:
+    case 203:
+    case 204:
+    case 205:
+    case 206:
+    case 207:
+    case 208:
+    case 209:
+    case 210:
+    case 211:
+    case 212:
+    case 213:
+    case 214:
+    case 215:
+    case 216:
+    case 217:
+    case 218:
+    case 219:
+    case 220:
+    case 221:
+    case 222:
+    case 223:
+    case 224:
+    case 225:
+    case 226:
+    case 227:
+    case 228:
+    case 229:
+    case 230:
+    case 231:
+    case 232:
+    case 233:
+    case 234:
+    case 235:
+    case 236:
+    case 238:
+    case 239:
+    case 240:
+    case 250:
+    case 251:
+    case 252:
+    case 254:
+    case 255:
+    case 256:
+    case 257:
+    case 258:
+    case 259:
+    case 261:
+    case 262:
+    case 263:
+    case 264:
+    case 265:
+    case 266:
+    case 267:
+    case 268:
+    case 269:
+    case 270:
+    case 282:
+    case 286:
+    case 289:
+    case 290:
+    case 291:
+    case 292:
+    case 293:
+    case 294:
+    case 295:
+    case 296:
+    case 297:
+    case 298:
+    case 299:
+    case 300:
+    case 301:
+    case 302:
+    case 312:
+    case 313:
+    case 314:
+    case 316:
+    case 318:
+    case 319:
+    case 320:
+    case 321:
+    case 322:
+    case 323:
+    case 328:
+    case 330:
+    case 333:
+    case 334:
+    case 336:
+    case 337:
+    case 341:
+    case 342:
+    case 343:
+    case 344:
+    case 345:
+    case 346:
+    case 347:
+    case 348:
+    case 349:
+    case 350:
+    case 351:
+    case 352:
+    case 353:
+    case 354:
+    case 355:
+    case 357:
+    case 360:
+    case 361:
+    case 362:
+    case 373:
+    case 374:
+    case 375:
+    case 377:
+    case 379:
+    case 381:
+    case 382:
+    case 383:
+    case 384:
+    case 385:
+    case 386:
+    case 387:
+    case 388:
+    case 389:
+    case 390:
+    case 393:
+    case 394:
+    case 396:
+    case 397:
+    case 398:
+    case 399:
+    case 401:
+    case 402:
+    case 403:
+    case 404:
+    case 405:
+    case 407:
+    case 408:
+    case 409:
+    case 410:
+    case 411:
+    case 412:
+    case 413:
+    case 414:
+    case 415:
+    case 416:
+    case 417:
+    case 418:
+    case 419:
+    case 421:
+    case 422:
+    case 423:
+    case 425:
+    case 426:
+    case 427:
+    case 429:
+    case 430:
+    case 436:
+    case 437:
+    case 438:
+    case 439:
+    case 440:
+    case 441:
+    case 442:
+    case 443:
+    case 444:
+    case 445:
+    case 446:
+    case 447:
+    case 450:
+    case 451:
+    case 461:
+    case 463:
+    case 464:
+    case 472:
+    case 473:
+    case 476:
+    case 491:
+    case 492:
+    case 493:
+    case 494:
+    case 495:
+    case 496:
+    case 571:
+    case 577:
+    case 580:
+    case 581:
+    case 584:
+    case 605:
+    case 606:
+    case 607:
+    case 608:
+    case 611:
+    case 613:
+    case 618:
+    case 636:
+    case 648:
+    case 649:
+    case 670:
+    case 869:
+    case 1056:
+    case 1057:
+    case 1058:
+    case 1059:
+    case 1121:
+      std::sprintf(message, "");
+      break;
+    case 339:
+      if (aid == g_session.m_aid) {
+        CPlayer* player = this->scene->player;
+        for (int i = 0; i < 10; ++i) {
+          g_effectMgr->Retire(player->render.accountId, 1300 + i);
+          g_effectMgr->Retire(player->render.accountId, 1467 + i);
+        }
+      }
+      std::sprintf(message, "");
+      break;
+    case 434:
+      if (aid == g_session.m_aid) {
+        this->scene->player->SendMsg(nullptr, 109, 0, 879, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      std::sprintf(message, "");
+      break;
+    case 435:
+      if (aid == g_session.m_aid) {
+        this->scene->player->SendMsg(nullptr, 70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      std::sprintf(message, "");
+      break;
+    case 433:
+      if (aid == g_session.m_aid) {
+        this->scene->player->SendMsg(nullptr, 109, 0, 453, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      std::sprintf(message, "");
+      break;
+    case 358:
+      if (aid == g_session.m_aid) {
+        CPlayer* player = this->scene->player;
+        while (player->state.Attachments().HasId(752)) {
+          player->SendMsg(nullptr, 109, 0, 752, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
+        std::sprintf(message, "");
+      }
+      break;
+    case 260:
+      if (aid == g_session.m_aid) {
+        g_seasonalMonsterSprites = 0;
+      }
+      std::sprintf(message, "");
+      break;
+    case 241:
+    case 271:
+      std::sprintf(message, LookupMessage(1232));
+      break;
+    case 242:
+    case 272:
+      std::sprintf(message, LookupMessage(1234));
+      break;
+    case 243:
+    case 273:
+      std::sprintf(message, LookupMessage(1236));
+      break;
+    case 244:
+    case 274:
+      std::sprintf(message, LookupMessage(1240));
+      break;
+    case 245:
+    case 275:
+      std::sprintf(message, LookupMessage(1238));
+      break;
+    case 246:
+    case 276:
+      std::sprintf(message, LookupMessage(1242));
+      break;
+    case 247:
+      std::sprintf(message, LookupMessage(1244));
+      break;
+    case 248:
+      std::sprintf(message, LookupMessage(1246));
+      break;
+    case 249:
+      std::sprintf(message, LookupMessage(1248));
+      break;
+    case 253:
+      if (aid == g_session.m_aid) {
+        this->unknown_05CC[0] = 0;
+      }
+      break;
+    case 933:
+      if (aid == g_session.m_aid) {
+        this->scene->player->Slot15(0, 1);
+        this->scene->player->render.isMotionFreezed = false;
+      }
+      break;
+    case 893:
+      if (aid == g_session.m_aid) {
+        this->scene->player->Slot15(0, 1);
+      }
+      break;
+    case 1013:
+      color = 0xFFFF00;
+      std::sprintf(message, LookupMessage(3247));
+      break;
+    case 1125:
+    {
+      CEffect* effect = g_effectMgr->Find(aid, 1362);
+      if (effect) {
+        g_effectMgr->Retire(effect, 1);
+      }
+      break;
+    }
+    case 70:
+    case 71:
+    case 72:
+    case 73:
+    case 74:
+    case 75:
+    case 76:
+    case 77:
+    case 78:
+    case 79:
+    case 80:
+    case 81:
+    case 82:
+    case 83:
+    case 84:
+    case 448:
+    case 452:
+    case 453:
+    case 454:
+    case 673:
+    case 674:
+    case 716:
+    case 717:
+    case 718:
+    case 719:
+    case 720:
+    case 721:
+    case 728:
+    case 730:
+    case 734:
+    case 735:
+    case 736:
+    case 737:
+    case 779:
+    case 822:
+    case 823:
+    case 825:
+    case 826:
+    case 849:
+    case 856:
+    case 857:
+    case 859:
+    case 863:
+    case 864:
+    case 872:
+    case 895:
+    case 896:
+    case 917:
+    case 919:
+    case 937:
+    case 982:
+    case 1016:
+    case 1017:
+    case 1018:
+    case 1019:
+    case 1020:
+    case 1021:
+    case 1022:
+    case 1023:
+    case 1024:
+    case 1025:
+    case 1038:
+    case 1039:
+    case 1040:
+    case 1041:
+    case 1043:
+    case 1050:
+    case 1055:
+    case 1126:
+    case 1139:
+    case 1141:
+    case 1142:
+    case 1149:
+    case 1165:
+    case 1166:
+    case 1167:
+    case 1176:
+    case 1184:
+    case 1197:
+    case 1227:
+    case 1688:
+      break;
+    default:
+      this->sub_CFE480(aid);
+      return;
+    }
+  }
+
+  this->sub_CFE480(aid);
+  if (std::strlen(message) > 1) {
+    char text[512];
+    std::sprintf(text, "%s%s", name, message);
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), color, std::strlen(name) > 1 ? 10 : 8, 0, 0);
+  }
+
+  if (aid == g_session.m_aid) {
+    this->scene->player->SendMsg(
+      nullptr, 110, 0, type, type >> 31, on, 0, value1, value1 >> 31, value2, value2 >> 31, flag, 0, value3, value3 >> 31
+    );
+  }
 }
