@@ -261,7 +261,7 @@ void CSkill::sub_E55100(const float* box, float x, float y) {
       info->bottom += pad;
       info->top -= pad;
     }
-    reinterpret_cast<CActorPickNode*>(0x01349870)->AddPickInfo(reinterpret_cast<ActorPickInfo*>(info));
+    g_actorPickNode.AddPickInfo(reinterpret_cast<ActorPickInfo*>(info));
   }
   this->SetTlvert(x, y);
 }
