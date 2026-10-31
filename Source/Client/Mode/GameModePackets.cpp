@@ -11,7 +11,7 @@
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GameActor.h"
-#include "Client/Mode/ModeMgr.h"
+#include "Contents/GuildInfo.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -44,7 +44,7 @@
 #include "Utility/Math/Vector3d.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/StringUtil.h"
-
+#include "Contents/GuildMgr.h"
 #include <direct.h>
 #include <io.h>
 #include <cstddef>
@@ -59,10 +59,12 @@ struct SessionMessengerContext {
   void UpdateRandomStats();
   int GetList9Size() const;
   void KeepEquipment();
+  void ResetEquipment();
 };
 
 struct SessionItemLists {
   void ClearTradeItems();
+  void RemoveEquipment();
 };
 
 #pragma pack(push, 1)
@@ -99,6 +101,8 @@ struct ClientItemLists {
   void ResetEquipped();
   bool Equip(const ITEM_INFO& item);
   void RemoveItem1710(std::uint32_t id, int quantity);
+  bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
+  bool EquipItem6B68(const ITEM_INFO& item);
 };
 
 void __fastcall sub_DFF150(CSession* session);
@@ -2901,3 +2905,117 @@ void CGameMode::ReceiveBuyingStoreItemList(const unsigned char* packet) {
 
   this->unknown_024C = 1;
 }
+
+#include "Contents/Jobs/JobInheritance.h"
+
+// OFFSET: 0x00D5F3E0
+
+// OFFSET: 0x00D79BB0
+// FUNCTION: fn_22180
+void CGameMode::ReceiveShopName(const char* text, int shopId) {
+  std::string name = text;
+  name.resize(name.size() - 4);
+  if (!g_session.AddShopName(name, shopId)) {
+    ValuePacket packet;
+    packet.id = 0x0BBD;
+    packet.value = shopId;
+    GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+  }
+}
+
+void SetPlayerName(std::uint32_t id, std::string name);
+
+namespace {
+  struct FriendRecord {
+    /* 0000 */ std::uint32_t accountId;
+    /* 0004 */ std::uint32_t characterId;
+    /* 0008 */ char name[24];
+  };
+
+  static_assert(sizeof(FriendRecord) == 0x20);
+}
+
+// OFFSET: 0x00D2AB70
+
+namespace {
+#pragma pack(push, 1)
+  struct SwapEquipmentRecord {
+    /* 0000 */ std::uint16_t index;
+    /* 0002 */ int location;
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(SwapEquipmentRecord) == 6);
+
+#pragma pack(push, 1)
+  struct StatusBonusPacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ int type;
+    /* 0006 */ int value;
+    /* 000A */ int bonus;
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(StatusBonusPacket) == 0xE);
+}
+
+namespace EquipmentProperties {
+class CEquipmentPropertiesMgr {
+public:
+  CEquipmentPropertiesMgr();
+  virtual ~CEquipmentPropertiesMgr();
+  void RefreshPretend();
+  unsigned char unknown_0004[0x1F8];
+};
+}
+
+// OFFSET: 0x00D4CAD0
+
+// OFFSET: 0x00D27EC0
+
+// OFFSET: 0x00D8A600
+
+namespace {
+#pragma pack(push, 1)
+  struct GuildMemberRecord {
+    /* 0000 */ int accountId;
+    /* 0004 */ int characterId;
+    /* 0008 */ std::int16_t unknown_0008;
+    /* 000A */ std::int16_t unknown_000A;
+    /* 000C */ std::int16_t unknown_000C;
+    /* 000E */ std::int16_t job;
+    /* 0010 */ std::int16_t level;
+    /* 0012 */ int exp;
+    /* 0016 */ int online;
+    /* 001A */ int positionId;
+    /* 001E */ int unknown_001E;
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(GuildMemberRecord) == 0x22);
+}
+
+// OFFSET: 0x00D89F20
+
+namespace {
+#pragma pack(push, 1)
+  struct GuildMemberMemoRecord {
+    /* 0000 */ int accountId;
+    /* 0004 */ int characterId;
+    /* 0008 */ std::int16_t unknown_0008;
+    /* 000A */ std::int16_t unknown_000A;
+    /* 000C */ std::int16_t unknown_000C;
+    /* 000E */ std::int16_t job;
+    /* 0010 */ std::int16_t level;
+    /* 0012 */ int exp;
+    /* 0016 */ int online;
+    /* 001A */ int positionId;
+    /* 001E */ char memo[50];
+    /* 0050 */ char name[24];
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(GuildMemberMemoRecord) == 0x68);
+}
+
+// OFFSET: 0x00D4EE00

@@ -448,6 +448,14 @@ public:
   void ReceiveActorMessage7(const unsigned char* packet);
   void ReceiveUnknownD78010(const unsigned char* packet);
   void ReceiveUnknownD89C60(const unsigned char* packet);
+  void ReceiveEquipItemList(const unsigned char* packet);
+  void ReceiveSwapEquipmentList(const unsigned char* packet);
+  void ReceiveStatusBonus(const unsigned char* packet);
+  void ReceiveGuildMemberList(const unsigned char* packet);
+  void SetActorNameCard(std::uint32_t id, const char* name, const char* value1, const char* value2, const char* value3, int job);
+  void ReceiveShopName(const char* text, int shopId);
+  void ReceiveFriendList(const unsigned char* packet);
+  void ReceiveGuildMemberMemoList(const unsigned char* packet);
   void sub_D591A0(std::uint32_t aid, int state, int flag, int options);
   void sub_D5EEF0(
     const char* first, int second, const char* third, int fourth, unsigned char fifth, std::uint16_t sixth, std::uint16_t seventh,
