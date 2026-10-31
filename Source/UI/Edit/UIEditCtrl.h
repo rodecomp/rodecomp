@@ -261,6 +261,7 @@ bool HasNaviLinkTag(const std::string& text);
 
 class UIShowAndEditTimeCtrl : public UIWindow {
 public:
+  explicit UIShowAndEditTimeCtrl(UIWindowContext& windows);
   void Paint() override;
   void Slot15(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -269,6 +270,10 @@ public:
 
 protected:
   UIEditContext* m_edit;
+
+public:
+  /* 0084 */ int unknown_0084;
+  /* 0088 */ int unknown_0088;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

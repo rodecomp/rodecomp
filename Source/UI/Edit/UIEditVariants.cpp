@@ -555,3 +555,10 @@ void UIEditCtrl3::ClearLineState() {
     this->unknown_0164 = nullptr;
   }
 }
+
+// OFFSET: 0x0086E7D0
+// FUNCTION: fn_11077
+UIShowAndEditTimeCtrl::UIShowAndEditTimeCtrl(UIWindowContext& windows) : UIWindow(windows, 0) {
+  this->unknown_0084 = 0;
+  this->unknown_0088 = 0;
+}
