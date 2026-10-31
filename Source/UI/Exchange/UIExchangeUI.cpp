@@ -70,6 +70,12 @@ bool UnusedTrueA0F7B0() {
 }
 
 // OFFSET: 0x00A0F840
+// FUNCTION: fn_15180
+template <>
+CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
 
 // OFFSET: 0x00A0FA00
 // FUNCTION: fn_15181
