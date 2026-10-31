@@ -25,12 +25,19 @@
 #include "Contents/RodexMailStore.h"
 #include "Contents/RouletteMgr.h"
 #include "Contents/World/World.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Render/Renderer.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/UICaptchaRegisterWnd.h"
 #include "UI/UIGradeEnchantWnd.h"
+#include "UI/UILapineScrollBar.h"
+#include "UI/UILapineUpgradeBoxWnd.h"
+#include "UI/UIMacroBlackListCheckWnd.h"
+#include "UI/UIMacroDetectorWnd.h"
 #include "UI/UIRefiningWnd.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
@@ -97,6 +104,25 @@ struct RouletteResultPacket {
 struct ByteValuePacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ unsigned char value;
+};
+
+struct PacketIdOnly {
+  /* 0000 */ std::int16_t id;
+};
+
+struct RouletteInfoSlot {
+  /* 0000 */ std::int16_t row;
+  /* 0002 */ std::int16_t column;
+  /* 0004 */ int itemId;
+  /* 0008 */ std::int16_t count;
+  /* 000A */ std::int16_t unknown_000A;
+};
+
+struct RouletteInfoPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ RouletteInfoSlot slots[42];
 };
 #pragma pack(pop)
 
@@ -1164,5 +1190,197 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
     }
     break;
   }
+  }
+}
+
+// OFFSET: 0x00D691A0
+// FUNCTION: fn_22045
+void CGameMode::ReceiveCharacterRenameResult(const unsigned char* packet) {
+  switch (reinterpret_cast<const ByteValuePacket*>(packet)->value) {
+  case 0: {
+    PacketIdOnly request;
+    request.id = 0xA48;
+    GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2836), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.CloseWindow(281);
+    break;
+  }
+  case 1:
+  case 2:
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1575), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D6B010
+// FUNCTION: fn_22066
+void CGameMode::ReceiveLapineUpgradeResult(std::int16_t result) {
+  if (result != 0) {
+    UIWindow* window = g_windowMgr.LookupWindow(290);
+    if (window) {
+      static_cast<UILapineUpgradeBoxWnd*>(window)->SetWaiting(0);
+    }
+  } else if (g_windowMgr.LookupWindow(302)) {
+    g_windowMgr.CloseWindow(302);
+  }
+}
+
+// OFFSET: 0x00D6B070
+// FUNCTION: fn_22067
+void CGameMode::ReceiveLapineBoxResult(std::uint16_t result) {
+  if (result != 0) {
+    UIWindow* window = g_windowMgr.LookupWindow(290);
+    if (window) {
+      static_cast<UILapineBoxWnd*>(window)->SetWaiting(0);
+    }
+  }
+
+  switch (result) {
+  case 0:
+    if (g_windowMgr.LookupWindow(290)) {
+      g_windowMgr.CloseWindow(290);
+    }
+    break;
+  case 5:
+  case 7: {
+    UIWindow* window = g_windowMgr.LookupWindow(290);
+    if (window) {
+      window->SendMsg(nullptr, 111, reinterpret_cast<std::intptr_t>(LookupMessage(2897)), 0, 0, 0);
+    }
+    break;
+  }
+  }
+}
+
+// OFFSET: 0x00D6BB10
+// FUNCTION: fn_22072
+void CGameMode::ReceiveRouletteInfo(const unsigned char* packet) {
+  const auto* info = reinterpret_cast<const RouletteInfoPacket*>(packet);
+  for (int i = 0; i < 42; ++i) {
+    RouletteSlot slot;
+    slot.row = info->slots[i].row;
+    slot.column = info->slots[i].column;
+    slot.itemId = info->slots[i].itemId;
+    slot.count = info->slots[i].count;
+    g_rouletteMgr->AddItem(slot);
+  }
+
+  g_rouletteMgr->SetAdditionItem(g_rouletteMgr->m_additionItemId);
+  if (g_rouletteMgr->m_resultShown == 1) {
+    g_rouletteMgr->SetResult(static_cast<unsigned short>(g_rouletteMgr->m_index), 1, 0);
+  }
+
+  if (!g_windowMgr.unknown_0464) {
+    g_windowMgr.EnsureWindow(269);
+  }
+}
+
+// OFFSET: 0x00D6D080
+// FUNCTION: fn_22084
+void CGameMode::BeginCaptchaImage(unsigned short size, const char* key) {
+  if (g_windowMgr.LookupWindow(285)) {
+    return;
+  }
+
+  UIMacroDetectorWnd* window = static_cast<UIMacroDetectorWnd*>(g_windowMgr.EnsureWindow(285));
+  if (window) {
+    if (std::strncmp(window->m_captchaKey, key, 4) != 0) {
+      window->ClearImageData();
+    }
+    window->Show(0);
+    memcpy_s(window->m_captchaKey, 4, key, 4);
+    window->InitImageData(size);
+  }
+}
+
+// OFFSET: 0x00D6D130
+// FUNCTION: fn_22085
+void CGameMode::ReceiveCaptchaImageData(const char* key, const void* data, unsigned short size) {
+  UIMacroDetectorWnd* window = static_cast<UIMacroDetectorWnd*>(g_windowMgr.LookupWindow(285));
+  if (window && std::strncmp(window->m_captchaKey, key, 4) == 0) {
+    window->AddImageData(data, size);
+  }
+}
+
+// OFFSET: 0x00D6D180
+// FUNCTION: fn_22086
+void CGameMode::ReceiveWindow99Values(int count, const int* values) {
+  if (count <= 0 || !values) {
+    return;
+  }
+
+  char positive = 0;
+  for (int i = 0; i < count; ++i) {
+    if (values[i] > 0) {
+      ++positive;
+    }
+  }
+
+  if (positive > 0) {
+    UIWindow* window = g_windowMgr.EnsureWindow(99);
+    if (window) {
+      for (int i = 0; i < count; ++i) {
+        if (values[i] > 0) {
+          window->SendMsg(nullptr, 31, values[i], 0, 0, 0);
+        }
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00D6E450
+// FUNCTION: fn_22100
+void CGameMode::ReceiveMacroBlackListResult(int result) {
+  switch (result) {
+  case 0:
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2869), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 1:
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2870), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 2:
+    g_windowMgr.CloseWindow(359);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2871), 0, true, false, 0, "Message", 280, 120, 0);
+    return;
+  default:
+    return;
+  }
+
+  GetRagConnection().Close();
+  static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D6E520
+// FUNCTION: fn_22101
+void CGameMode::ReceiveMacroDetectorResult(int result) {
+  switch (result) {
+  case 0:
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2869), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 1:
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2870), 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 2:
+    g_windowMgr.CloseWindow(285);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2871), 0, true, false, 0, "Message", 280, 120, 0);
+    return;
+  default:
+    return;
+  }
+
+  GetRagConnection().Close();
+  static_cast<CMode*>(g_charViewMode)->SendMsg(2, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D71600
+// FUNCTION: fn_22134
+void CGameMode::ReceiveMacroBlackListCode(unsigned char state, const char* code) {
+  UIMacroBlackListCheckWnd* window = static_cast<UIMacroBlackListCheckWnd*>(g_windowMgr.EnsureWindow(359));
+  if (window) {
+    window->SetCode(state, code);
+
+    PacketIdOnly request;
+    request.id = 0xBC4;
+    GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
   }
 }

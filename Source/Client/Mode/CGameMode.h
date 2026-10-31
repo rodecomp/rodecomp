@@ -351,6 +351,16 @@ public:
   void Slot7(int value) override;
   void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);
   bool UpdateReplayPause(bool resume);
+  void ReceiveCharacterRenameResult(const unsigned char* packet);
+  void ReceiveLapineUpgradeResult(std::int16_t result);
+  void ReceiveLapineBoxResult(std::uint16_t result);
+  void ReceiveRouletteInfo(const unsigned char* packet);
+  void BeginCaptchaImage(unsigned short size, const char* key);
+  void ReceiveCaptchaImageData(const char* key, const void* data, unsigned short size);
+  void ReceiveWindow99Values(int count, const int* values);
+  void ReceiveMacroBlackListResult(int result);
+  void ReceiveMacroDetectorResult(int result);
+  void ReceiveMacroBlackListCode(unsigned char state, const char* code);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
