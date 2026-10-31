@@ -33,6 +33,7 @@ struct TextureRegion;
 struct vector3d;
 struct ItemCardSlots;
 struct ItemSlotOptions;
+struct ReputePointEntry;
 
 struct MiniMapMember {
   /* 0000 */ int x;
@@ -632,6 +633,13 @@ public:
   void UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count);
   void Zc_Mer_Init(const unsigned char* data);
   void Zc_Mer_Par_Change(const unsigned char* data);
+  void ReceiveItemReformOpen(int itemId);
+  void ReceiveReputeInfo(bool received, unsigned int count, const ReputePointEntry* entries);
+  void ReceiveEnchantResult(int messageId, int itemId);
+  void ReceiveReputeOpen(std::uint64_t groupId, std::uint64_t reputeId);
+  void ReceiveUiOpen(unsigned char type, std::uint64_t data);
+  void RefreshEmotionPurchaseSchedule();
+  void RefreshEmotionSaleSchedule();
   void ReceiveTypedNotice(const unsigned char* packet);
   void ReceiveRodexMailReturn(const unsigned char* packet);
   void ReceiveActorStatusValuePacket(const unsigned char* packet);

@@ -1,9 +1,14 @@
 #ifndef RAGNAROK_SOURCE_SCRIPT_LUAINSTANCE_H
 #define RAGNAROK_SOURCE_SCRIPT_LUAINSTANCE_H
 
+#if __has_include(<lua.h>)
 extern "C" {
 #include <lua.h>
 }
+#else
+struct lua_State;
+typedef int (*lua_CFunction)(lua_State* state);
+#endif
 
 #include <map>
 #include <string>

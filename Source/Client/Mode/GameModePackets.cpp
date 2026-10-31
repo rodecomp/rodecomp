@@ -52,6 +52,12 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/StringUtil.h"
 #include "Contents/GuildMgr.h"
+#include "Contents/EnchantMgr.h"
+#include "Contents/Items/ItemReformMgr.h"
+#include "Contents/ReputeMgr.h"
+#include "Contents/Schedule/CheckGDISchedule.h"
+#include "Contents/Schedule/EmotionSchedule.h"
+#include "Contents/Schedule/TimeScheduler.h"
 #include <direct.h>
 #include <io.h>
 #include <timeapi.h>
@@ -6786,3 +6792,36 @@ static_assert(sizeof(RandomOptionSimulationRecord) == 0x25);
 // OFFSET: 0x00D2A290
 
 // OFFSET: 0x00D31390
+
+struct ReputePointEntry {
+  /* 0000 */ std::uint64_t id;
+  /* 0008 */ std::int64_t point;
+};
+
+// OFFSET: 0x00D78060
+// FUNCTION: fn_22158
+void CGameMode::ReceiveItemReformOpen(int itemId) {
+  UIWindow* window = g_windowMgr.EnsureWindow(0x15C);
+  if (!g_itemReformMgr) {
+    g_itemReformMgr = new (std::nothrow) CItemReformMgr;
+  }
+  if (g_itemReformMgr->HasItem(itemId) == true) {
+    if (window) {
+      window->SendMsg(nullptr, 0x17, itemId, 0, 0, 0);
+    }
+  } else {
+    g_windowMgr.CloseWindow(0x15C);
+  }
+}
+
+// OFFSET: 0x00D79880
+
+// OFFSET: 0x00D79D90
+
+// OFFSET: 0x00D7B4C0
+
+// OFFSET: 0x00D7B550
+
+// OFFSET: 0x00D17AD0
+
+// OFFSET: 0x00D17BF0
