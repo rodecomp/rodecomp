@@ -45,13 +45,13 @@
 #include "UI/UIMacroDetectorWnd.h"
 #include "UI/UIMacroUserInfoWnd.h"
 #include "UI/UIRefiningWnd.h"
+#include "UI/Status/UIStatusWnd.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIRodexContentsWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
-
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -3068,3 +3068,16 @@ static void FillVendingItem(ITEM_INFO& item, const VendingItemRecord2& record) {
 }
 
 // OFFSET: 0x00D70790
+
+// OFFSET: 0x00D6C410
+// FUNCTION: fn_22080
+void CGameMode::ReceiveTraitStatusChangeAck(unsigned char result, unsigned short statusId, unsigned char value) {
+  this->unknown_02D4 = 0;
+  if (result == 1) {
+    std::map<int, int>& traitStats = reinterpret_cast<std::map<int, int>&>(g_session.unknown_7FC0);
+    traitStats[statusId] = value;
+    if (UIStatusWnd* window = reinterpret_cast<UIStatusWnd*>(g_windowMgr.unknown_01C4)) {
+      window->ValidatePlacement();
+    }
+  }
+}

@@ -562,6 +562,7 @@ public:
   void ReceiveWindow348Result(unsigned char result, std::int16_t index);
   void ReceiveRodexItemReturn(const unsigned char* packet);
   void ReceiveExpGainNotice(const unsigned char* packet);
+  void ReceiveTraitStatusChangeAck(unsigned char result, unsigned short statusId, unsigned char value);
   void ReceiveBankDepositAck(const unsigned char* packet);
   void ReceiveBankWithdrawAck(const unsigned char* packet);
   void ReceiveBankCheck(const unsigned char* packet);
