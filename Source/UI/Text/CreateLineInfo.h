@@ -64,12 +64,8 @@ public:
   static std::tuple<bool, std::string, std::string> SplitLinkInfo(std::string text, int type);
   static std::vector<std::string> SplitString(std::string text, const std::string& delimiter);
   static tagSIZE MeasureText(UIWindow* window, std::string text, const LineTextStyle& style);
-  static std::string FitText(
-    FontCache& fonts, const TextLocale& locale, UIWindow* window, std::string text, const LineTextStyle& style, int width
-  );
-  static std::vector<std::string> SplitLines(
-    FontCache& fonts, const TextLocale& locale, UIWindow* window, std::string text, const LineTextStyle& style, int width
-  );
+  static std::string FitText(UIWindow* window, std::string text, const LineTextStyle& style, int width);
+  static std::vector<std::string> SplitLines(UIWindow* window, std::string text, const LineTextStyle& style, int width);
 
   /* 0004 */ UIWindow* m_parent;
   /* 0008 */ int m_width;

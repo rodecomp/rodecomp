@@ -687,8 +687,48 @@ std::size_t CCreateLineInfo::FindTag(std::string text, std::string keyword, bool
 }
 
 // OFFSET: 0x00839420
+// FUNCTION: fn_10458
+std::vector<std::string> CCreateLineInfo::SplitLines(UIWindow* window, std::string text, const LineTextStyle& style, int width) {
+  std::vector<std::string> lines;
+  const int length = static_cast<int>(text.size());
+  int position = 0;
+
+  while (position < length) {
+    const std::string rest = text.substr(position, length - position);
+    if (MeasureText(window, rest, style).cx + 1 <= width) {
+      lines.push_back(text.substr(position, length - position));
+      break;
+    }
+
+    const std::string line = FitText(window, rest, style, width);
+    lines.push_back(line);
+    position += static_cast<int>(line.size());
+  }
+
+  return lines;
+}
 
 // OFFSET: 0x00839860
+// FUNCTION: fn_10459
+std::string CCreateLineInfo::FitText(UIWindow* window, std::string text, const LineTextStyle& style, int width) {
+  const int length = static_cast<int>(text.size());
+  int position = 0;
+  int total = 0;
+
+  while (position < length) {
+    const std::string rest = text.substr(position, length - position);
+    const std::string character = NextCharacter(rest);
+    if (!character.empty()) {
+      total += MeasureText(window, character, style).cx;
+      if (total > width) {
+        return text.substr(0, position);
+      }
+      position += static_cast<int>(character.size());
+    }
+  }
+
+  return text;
+}
 
 // OFFSET: 0x00839D60
 // FUNCTION: fn_10460
