@@ -42,6 +42,7 @@ public:
   std::string AsString() const;
   const JsonObject& GetObject() const;
   const JsonArray& GetArray() const;
+  const JsonArray& ArrayRange() const;
 
   /* 0000 */ unsigned char type;
   /* 0001 */ unsigned char unknown_0001;
@@ -157,12 +158,27 @@ inline const JsonArray& JsonValue::GetArray() const {
   return *static_cast<const JsonArray*>(this->Dereference()->pointer);
 }
 
+inline const JsonArray& JsonValue::ArrayRange() const {
+  if ((this->type & 0x0f) != 9) {
+    throw std::domain_error("Not an array");
+  }
+
+  return *static_cast<const JsonArray*>(this->pointer);
+}
+
 class JsonCppLoader {
 public:
   JsonValue& GetValue(JsonValue& out, const std::string& key, const JsonValue& node, int expectedType);
   void Fail(const char* format, ...);
 
+  bool GetIntValue(const JsonValue& node, const std::string& key, int* out);
+  bool GetStringValue(const JsonValue& node, const std::string& key, std::string* out);
+  bool GetMapStringIntValue(const JsonValue& node, const std::string& key, std::map<std::string, int>* out);
+  bool GetMapStringStringValue(const JsonValue& node, const std::string& key, std::map<std::string, std::string>* out);
+  bool GetMapStringIntVectorValue(const JsonValue& node, const std::string& key, std::map<std::string, std::vector<int> >* out);
   bool GetMapStringBoolValue(const JsonValue& node, const std::string& key, std::map<std::string, bool>* out);
+  bool GetIntVectorValue(const JsonValue& node, const std::string& key, std::vector<int>* out);
+  bool GetBoolValue(const JsonValue& node, const std::string& key, bool* out);
   bool sub_4F3C70(std::vector<unsigned char>& buffer, bool bson);
   bool sub_50C2A0(std::map<std::string, EZ2STREffectRecord>* out);
   bool sub_50AE30(std::map<int, ReputeGroupRecord>* out);
