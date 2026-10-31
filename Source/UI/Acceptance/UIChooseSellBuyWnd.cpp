@@ -2984,3 +2984,17 @@ void UInCashWnd::Slot35(int delta) {
 // OFFSET: 0x008D7660
 
 // OFFSET: 0x008FFBE0
+// FUNCTION: fn_12363
+int UINotifyLevelUpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message != 6) {
+    return UIWindow::SendMsg(sender, message, a, b, c, d);
+  }
+  if (a == 192) {
+    UIWindow* window = g_windowMgr.EnsureWindow(11);
+    if (window->geometry.height == 17) {
+      window->SendMsg(nullptr, 6, 0xCA, 0, 0, 0);
+    }
+    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
+  }
+  return 0;
+}
