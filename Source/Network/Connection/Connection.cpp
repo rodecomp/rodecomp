@@ -339,6 +339,14 @@ void ReleaseConnectionBlocks(int, ConnectionBlockList& list) {
 }
 
 // OFFSET: 0x00C7DF30
+// FUNCTION: fn_20411
+int PacketCodecStub(void* data, std::size_t size, std::size_t* outSize, int) {
+  unsigned char buffer[0x400];
+  std::memcpy(buffer, data, size);
+  std::memcpy(data, buffer, size);
+  *outSize = size;
+  return 0;
+}
 
 // OFFSET: 0x00C7E030
 // FUNCTION: fn_20412
