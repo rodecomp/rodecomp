@@ -766,6 +766,8 @@ void UIEditCtrl::DrawSelection(int x, int width) {
   }
 }
 
+// OFFSET: 0x0096F410
+
 // INLINED
 UIEditCtrlWheel::UIEditCtrlWheel(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit) {
 }

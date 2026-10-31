@@ -3,13 +3,16 @@
 
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include "UI/Party/UIMiniPartyWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstddef>
 #include <list>
+#include <vector>
 
 class UISkillListWnd : public UIFrameWnd {
 public:
+  UISkillListWnd();
   bool Slot03() override;
   void Slot11() override;
   void Slot25(int x, int y) override;
@@ -37,7 +40,7 @@ public:
   /* 0128 */ int unknown_0128;
   /* 012C */ std::list<CSkillInfo> skills;
   /* 0134 */ SkillListWndInfo* saved;
-  /* 0138 */ unsigned char unknown_0138[0xC];
+  /* 0138 */ std::vector<MiniPartyInfoEntry> unknown_0138;
   /* 0144 */ int skillTab;
 };
 

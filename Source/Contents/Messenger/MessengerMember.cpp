@@ -85,6 +85,7 @@ public:
 
 class UIFriendOptionWnd : public UIFrameWnd {
 public:
+  UIFriendOptionWnd();
   ~UIFriendOptionWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
@@ -103,6 +104,7 @@ private:
 
 class UIJobIconButton : public UIBitmapButton {
 public:
+  UIJobIconButton();
   ~UIJobIconButton() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -114,12 +116,15 @@ public:
 
 class UIMessengerGroupWnd : public UIFrameWnd {
 public:
+  UIMessengerGroupWnd();
+  ~UIMessengerGroupWnd() override;
   void Slot11() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot35(int delta) override;
+  MessengerMember MemberAt(int x, int y);
   MessengerMember MemberAtIndex(int index);
   void UpdateScroll();
   void LayoutButtons();
@@ -146,9 +151,7 @@ public:
   /* 00F4 */ int unknown_00F4;
   /* 00F8 */ int unknown_00F8;
   /* 00FC */ std::list<MessengerMember> members;
-  /* 0104 */ int unknown_0104;
-  /* 0108 */ int unknown_0108;
-  /* 010C */ int unknown_010C;
+  /* 0104 */ std::vector<MiniPartyInfoEntry> menuItems;
   /* 0110 */ int scrollable;
   /* 0114 */ int scrollTop;
   /* 0118 */ int columns;
@@ -481,6 +484,8 @@ void UIPcGage::SetLimits(int first, int second) {
   this->Invalidate();
 }
 
+// OFFSET: 0x00738E10
+
 // OFFSET: 0x00738EC0
 // FUNCTION: fn_07680
 UIFriendOptionWnd::~UIFriendOptionWnd() = default;
@@ -579,6 +584,8 @@ void UIFriendOptionWnd::Slot11() {
   }
 }
 
+// OFFSET: 0x00739330
+
 // OFFSET: 0x007393E0
 // FUNCTION: fn_07686
 UIJobIconButton::~UIJobIconButton() = default;
@@ -646,6 +653,35 @@ void UIJobIconButton::Slot33(int x, int y) {
 // OFFSET: 0x00739BF0
 // FUNCTION: fn_07697
 MiniPartyInfoEntry::MiniPartyInfoEntry(const char* text, int value) : text(text), value(value) {
+}
+
+// OFFSET: 0x00739C80
+
+// OFFSET: 0x0073A080
+// FUNCTION: fn_07700
+UIMessengerGroupWnd::~UIMessengerGroupWnd() = default;
+
+// OFFSET: 0x0073A3F0
+// FUNCTION: fn_07704
+MessengerMember UIMessengerGroupWnd::MemberAt(int x, int y) {
+  this->selected = -1;
+  if (x < 2 || x > this->geometry.width - 2) {
+    return MessengerMember(0);
+  }
+
+  if (y >= 17 && y < this->visibleRows * this->rowHeight + 17) {
+    this->selected = (y - 17) / this->rowHeight + this->scrollTop;
+    int position = 0;
+    for (auto it = this->members.begin(); it != this->members.end(); ++it, ++position) {
+      if (position == this->selected) {
+        return *it;
+      }
+    }
+
+    this->selected = -1;
+  }
+
+  return MessengerMember(0);
 }
 
 // OFFSET: 0x0073A540
