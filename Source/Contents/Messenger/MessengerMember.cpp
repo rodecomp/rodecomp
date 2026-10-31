@@ -689,6 +689,41 @@ MiniPartyInfoEntry::MiniPartyInfoEntry(const char* text, int value) : text(text)
 UIMessengerGroupWnd::~UIMessengerGroupWnd() = default;
 
 // OFFSET: 0x0073A1C0
+// FUNCTION: fn_07702
+__declspec(noinline) void UIMessengerGroupWnd::DropMember(int x, int y, int index) {
+  g_windowMgr.RetireTransientWindow();
+  if (x > this->geometry.x && x < this->geometry.x + this->geometry.width && y > this->geometry.y && y < this->geometry.y + this->geometry.height) {
+    return;
+  }
+
+  MessengerMember member = this->MemberAtIndex(index);
+  SessionRecord0734 record = g_session.FindRecord0734(member.accountId);
+  UIWindow* window = g_windowMgr.LookupWindow(307);
+  if (record.unknown_0000 != 1) {
+    int top = static_cast<int>(static_cast<float>(g_renderer->viewport.width) * 0.3f);
+    if (window) {
+      top = window->geometry.y + window->geometry.height;
+    }
+
+    int cell;
+    if (x < g_messengerDropColumnWidth + 23 && y > top) {
+      int row = (y - top) / (g_messengerDropRowHeight + 3);
+      if (g_windowMgr.FindSnapExcludedWindow(row)) {
+        cell = g_windowMgr.FindMiniPartyCell();
+      } else {
+        cell = row;
+      }
+    } else {
+      cell = g_windowMgr.FindMiniPartyCell();
+    }
+
+    if (x < 0 || x < g_windowMgr.unknown_047C || y < 0 || y < g_windowMgr.unknown_0480) {
+      cell = g_windowMgr.FindMiniPartyCell();
+    }
+
+    this->OpenMiniPartyWnd(cell, member);
+  }
+}
 
 // OFFSET: 0x0073A3F0
 // FUNCTION: fn_07704
