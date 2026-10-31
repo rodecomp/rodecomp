@@ -34,6 +34,7 @@
 #include <string>
 
 // OFFSET: 0x005E03B0
+// FUNCTION: fn_03861
 UIChangeMaterialWnd::UIChangeMaterialWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edits)
     : UIFrameWnd(windows, frames, 0), m_sortBox(nullptr), m_button(nullptr), m_resultX(168), m_resultY(131), m_resultItem(),
       m_materialPos{{90, 86}, {246, 86}, {168, 222}, {168, 40}, {90, 176}, {246, 176}}, m_materials(), m_resultAmount(0), m_resultText(),
