@@ -5,6 +5,8 @@
 
 #include <climits>
 #include <cstring>
+#include <memory>
+#include <new>
 
 namespace {
   // STATIC: 0x01387270
@@ -102,6 +104,12 @@ CTextureDX7::CTextureDX7(TextureDX7Context& context) : m_owner(&context.owner), 
 CTextureDX7::CTextureDX7(TextureDX7Context& context, int width, int height, int format) : m_owner(&context.owner), m_surface(nullptr), m_context(&context) {
   this->Create(width, height, format);
   this->SetImageSize(width, height);
+}
+
+// OFFSET: 0x0056AF60
+// FUNCTION: fn_02306
+std::unique_ptr<CTextureDX7> CreateTextureDX7(TextureDX7Context*& context) {
+  return std::unique_ptr<CTextureDX7>(new CTextureDX7(*context));
 }
 
 // OFFSET: 0x00543DC0

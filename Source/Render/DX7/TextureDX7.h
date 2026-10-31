@@ -5,6 +5,7 @@
 #include "Render/DX7/TextureAllocationDX7.h"
 
 #include <ddraw.h>
+#include <memory>
 
 class DeviceOwnerDX7;
 class CRenderSystemBase;
@@ -22,7 +23,7 @@ struct TextureDX7Context {
 
 class CTextureDX7 : public CTexture {
 public:
-  explicit CTextureDX7(TextureDX7Context& context);
+  __declspec(noinline) explicit CTextureDX7(TextureDX7Context& context);
   CTextureDX7(TextureDX7Context& context, int width, int height, int format);
   ~CTextureDX7() override;
   bool Resize(int width, int height) override;
@@ -50,5 +51,7 @@ protected:
 
   TextureDX7Context* m_context;
 };
+
+std::unique_ptr<CTextureDX7> CreateTextureDX7(TextureDX7Context*& context);
 
 #endif
