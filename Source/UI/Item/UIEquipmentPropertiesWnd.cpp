@@ -172,6 +172,42 @@ private:
 }
 
 // OFFSET: 0x00A0C9C0
+// FUNCTION: fn_15036
+void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::Slot15(int width, int height) {
+  this->unknown_00E8 = new CUIStaticText(*this->m_context);
+  this->unknown_00E8->SetSize(44, 12);
+  this->unknown_00E8->Move(0, 4);
+  this->unknown_00E8->SetText("", 0);
+  this->unknown_00E8->SetFitText(0);
+  this->unknown_00E8->SetAlign(6, 0);
+  const std::uint8_t titleFontSource[] = {0x9E, 0x8C, 0x8D, 0x8A, 0x00, 0x15};
+  // GLOBAL: gl_25121
+  thread_local EncryptedName<sizeof(titleFontSource), 0x2BAD156DE3E1F9D9ULL> titleFont(titleFontSource);
+  this->unknown_00E8->SetFont(std::string(titleFont.Text()));
+  this->unknown_00E8->SetFontHeight(12);
+  this->unknown_00E8->SetBold(0);
+  this->unknown_00E8->SetColor(0xFF2A00);
+  this->unknown_00E8->SetShadow(0, 0xFFFFFF);
+  this->unknown_00E8->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->unknown_00E8);
+
+  this->unknown_00EC = new CUIStaticText(*this->m_context);
+  this->unknown_00EC->SetSize(216, 12);
+  this->unknown_00EC->Move(49, 4);
+  this->unknown_00EC->SetText("", 0);
+  this->unknown_00EC->SetFitText(1);
+  this->unknown_00EC->SetAlign(0, 0);
+  const std::uint8_t textFontSource[] = {0x8E, 0x80, 0x33, 0xE2, 0xE2, 0xD5};
+  // GLOBAL: gl_25122
+  thread_local EncryptedName<sizeof(textFontSource), 0x23BBD58F8B5FF5C9ULL> textFont(textFontSource);
+  this->unknown_00EC->SetFont(std::string(textFont.Text()));
+  this->unknown_00EC->SetFontHeight(12);
+  this->unknown_00EC->SetBold(0);
+  this->unknown_00EC->SetColor(0);
+  this->unknown_00EC->SetShadow(0, 0xFFFFFF);
+  this->unknown_00EC->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->unknown_00EC);
+}
 
 // OFFSET: 0x00A0EE90
 // FUNCTION: fn_15155
