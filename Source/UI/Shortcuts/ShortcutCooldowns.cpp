@@ -17,6 +17,9 @@
 #include "UI/Window/UISeekPartyListWnd.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
+#include "Contents/Party/PartyBookingMgr.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -228,6 +231,66 @@ void ShortcutCooldowns::Paint(
 void UIRebirthWnd::Paint() {
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\win_msgbox1.bmp")));
   this->DrawBitmap(0, 0, &background->image, false);
+}
+
+// OFFSET: 0x0092DE90
+// FUNCTION: fn_12675
+void UISeekPartyListWnd::Paint() {
+  const TextLocale locale = {};
+  this->DrawTitleBar(g_fontCache, locale, true, "", 0);
+  if (this->m_minimized) {
+    return;
+  }
+
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+
+  if (g_friendRows.size() != 0) {
+    int drawn = 0;
+    int index = 0;
+    int y = 124;
+    for (auto it = g_friendRows.begin(); it != g_friendRows.end(); ++it, ++index) {
+      if (index < this->m_firstRow * this->m_columnCount) {
+        continue;
+      }
+      if (drawn >= 5) {
+        break;
+      }
+
+      const PartyBookingEntry entry = it->second;
+      const int row = index + 1;
+      this->FillRegion(20, y, 510, 40, 0xCECECE);
+      if (it->second.isEnd) {
+        this->FillRegion(21, y + 1, 508, (row + 1 != static_cast<int>(g_friendRows.size())) + 38, 0xFFFFFF);
+        auto* more = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\more_info.bmp")));
+        this->DrawBitmap(22, y + 2, &more->image, false);
+      } else {
+        this->FillRegion(21, y + 1, 508, (row != static_cast<int>(g_friendRows.size())) + 38, 0xFFFFFF);
+        if (this->m_hoverIndex == index) {
+          this->FillRegion(20, y, 510, 40, 0xEF9C73);
+        }
+
+        const int textY = y + 3;
+        this->DrawTextAt(g_fontCache, locale, 22, textY, entry.time.c_str(), 0, 0, 12, 0, 0, 0);
+        const char* charName =
+          reinterpret_cast<const char*(__thiscall*)(UIWindow*, const char*, int, int, int, unsigned char)>(0x00A829D0)(this, entry.charName.c_str(), 130, 0, 12, 0);
+        this->DrawTextAt(g_fontCache, locale, 76, textY, charName, 0, 0, 12, 0, 0, 0);
+        this->DrawTextAt(g_fontCache, locale, 215, textY, entry.level.c_str(), 0, 0, 12, 0, 0, 0);
+        this->DrawTextAt(g_fontCache, locale, 280, textY, entry.location.c_str(), 0, 0, 12, 0, 0, 0);
+        this->DrawTextAt(g_fontCache, locale, 22, y + 23, entry.jobs.c_str(), 0, 0, 12, 0, 0, 0);
+      }
+
+      y += 40;
+      ++drawn;
+    }
+
+    this->UpdateScrollBar();
+  }
+
+  this->DrawButtonBar(2, 0, 1);
 }
 
 // OFFSET: 0x0092E230

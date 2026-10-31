@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_WINDOW_UISEEKPARTYLISTWND_H
 
 #include "Contents/Party/PartyBookingInfo.h"
+#include "Contents/Party/PartyBookingMgr.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <map>
@@ -13,6 +14,8 @@ class UIComboBoxDefWnd;
 class UIScrollBar;
 struct SeekPartyListWndInfo;
 
+extern std::map<int, PartyBookingEntry> g_friendRows;
+
 struct SeekPartyMapEntry {
   /* 0000 */ std::string name;
   /* 0018 */ unsigned int color;
@@ -21,6 +24,7 @@ struct SeekPartyMapEntry {
 class UISeekPartyListWnd : public UIFrameWnd {
 public:
   void Slot11() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot35(int delta) override;
@@ -57,7 +61,9 @@ protected:
   /* 01B0 */ int m_visibleRows;
   /* 01B4 */ int unknown_01B4;
   /* 01B8 */ int m_scrollable;
-  /* 01BC */ unsigned char unknown_01BC[0x8];
+  /* 01BC */ unsigned char unknown_01BC[0x4];
+  /* 01C0 */ unsigned char m_minimized;
+  /* 01C1 */ unsigned char unknown_01C1[0x3];
   /* 01C4 */ short m_filterLevel;
   /* 01C6 */ short m_filterMap;
   /* 01C8 */ short m_filterJob;
