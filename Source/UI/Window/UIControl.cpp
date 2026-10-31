@@ -1883,6 +1883,7 @@ void CUITextViewer::Clear() {
 }
 
 // OFFSET: 0x009EA2C0
+// FUNCTION: fn_14518
 void CUITextViewer::Relayout() {
   std::vector<std::string> lines;
   lines = std::move(this->lines);
@@ -2184,6 +2185,7 @@ CUIButton::~CUIButton() {
 }
 
 // OFFSET: 0x009BFED0
+// FUNCTION: fn_13964
 CUIImageButton::~CUIImageButton() = default;
 
 // OFFSET: 0x009E1840
@@ -2191,6 +2193,7 @@ CUIImageButton::~CUIImageButton() = default;
 CUITextButton::~CUITextButton() = default;
 
 // OFFSET: 0x009E1730
+// FUNCTION: fn_14395
 CUIBasicButton::~CUIBasicButton() = default;
 
 namespace AdventureGuide {
