@@ -444,6 +444,7 @@ public:
   void InitializeWindowPolicy();
   void ResetWindows();
   void Shutdown();
+  void sub_AA6B80();
   void SetScreenSize(int width, int height);
   void ArrangeMiniPartyWindows();
   void RearrangeMiniPartyWindows();

@@ -14,6 +14,7 @@
 #include "Render/TextureQuad.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
+#include "UI/Dialogs/UIMemorialDunWnd.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Lists/UIDropDownBox.h"
 #include "UI/Chat/ChatSuggestions.h"
@@ -50,6 +51,9 @@ UIWindowMgr g_windowMgr;
 
 // GLOBAL: gl_25090
 unsigned char g_windowCloseByte;
+
+// GLOBAL: gl_24686
+int g_closeWindow137State;
 
 // OFFSET: 0x00A94FD0
 // FUNCTION: fn_17179
@@ -624,6 +628,120 @@ void UIWindowMgr::Shutdown() {
   this->snapRectangles.clear();
   this->messageBoxes.clear();
   this->ResetWindows();
+
+  for (UIWindow*& window : this->snapExcluded) {
+    this->Destroy(window);
+    window = nullptr;
+  }
+  this->snapExcluded.clear();
+}
+
+// OFFSET: 0x00AA6B80
+// FUNCTION: fn_17234
+void UIWindowMgr::sub_AA6B80() {
+  if (!this->modalWindows.empty() && this->modalWindows.back()) {
+    this->activeWindowId = 185;
+  }
+
+  this->SaveVisibleWindowIds();
+  if (!this->window_01C8) {
+    this->Shutdown();
+    return;
+  }
+
+  if (this->window_0A30 && this->window_0A30->geometry.visible) {
+    static_cast<CUIDropDownBox*>(this->window_0A30)->Detach();
+    this->window_0A30->Show(0);
+  }
+
+  for (auto entry = this->rendered.begin(); entry != this->rendered.end();) {
+    bool unregistered = true;
+    for (unsigned index = 0; index < this->retainedWindows.size(); ++index) {
+      if (*entry == this->retainedWindows[static_cast<int>(index)]) {
+        unregistered = false;
+      }
+    }
+    if (!unregistered) {
+      ++entry;
+      continue;
+    }
+
+    UIWindow* window = *entry;
+    if (this->window_01C8 == window || window == this->window_4F1EC || window->geometry.id == 67) {
+      ++entry;
+      continue;
+    }
+
+    if (window == reinterpret_cast<UIWindow*>(this->unknown_03F8) && g_closeWindow137State != 0) {
+      g_memorialDunWndX = window->geometry.x;
+      g_memorialDunWndY = window->geometry.y;
+    }
+
+    if (!this->modalWindows.empty() && this->modalWindows.back()) {
+      if (this->persistentWindows.find(window) != this->persistentWindows.end()) {
+        this->retainedPersistentWindow = true;
+        ++entry;
+        continue;
+      }
+      if (std::find(this->modalWindows.begin(), this->modalWindows.end(), window) != this->modalWindows.end()) {
+        ++entry;
+        continue;
+      }
+    }
+
+    this->persistentWindows.erase(window);
+    window->Slot11();
+    delete window;
+    entry = this->rendered.erase(entry);
+  }
+
+  for (auto entry = this->retired.begin(); entry != this->retired.end();) {
+    bool unregistered = true;
+    for (unsigned index = 0; index < this->retainedWindows.size(); ++index) {
+      if (*entry == this->retainedWindows[static_cast<int>(index)]) {
+        unregistered = false;
+      }
+    }
+    if (!unregistered || this->window_01C8 == *entry) {
+      ++entry;
+      continue;
+    }
+
+    entry = this->retired.erase(entry);
+  }
+
+  for (auto entry = this->snapRectangles.begin(); entry != this->snapRectangles.end();) {
+    if (this->window_01C8 == entry->first) {
+      ++entry;
+    } else {
+      entry = this->snapRectangles.erase(entry);
+    }
+  }
+
+  std::uint32_t saved03E4 = 0;
+  if (this->unknown_03E4) {
+    saved03E4 = this->unknown_03E4;
+  }
+  std::uint32_t saved03E8 = 0;
+  if (this->unknown_03E8) {
+    saved03E8 = this->unknown_03E8;
+  }
+  std::uint32_t saved03F0 = 0;
+  if (this->unknown_03F0) {
+    saved03F0 = this->unknown_03F0;
+  }
+  UIWindow* saved01C8 = nullptr;
+  if (this->window_01C8) {
+    saved01C8 = this->window_01C8;
+  }
+
+  std::map<int, UIWindow*> savedWindows(this->retainedWindows);
+  this->ResetWindows();
+  this->window_01C8 = saved01C8;
+  this->unknown_03E4 = saved03E4;
+  this->unknown_03F0 = saved03F0;
+  this->unknown_03E8 = saved03E8;
+  this->retainedWindows = savedWindows;
 
   for (UIWindow*& window : this->snapExcluded) {
     this->Destroy(window);
