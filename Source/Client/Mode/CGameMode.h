@@ -418,6 +418,15 @@ public:
   void ReceiveMacroBlackListResult(int result);
   void ReceiveMacroDetectorResult(int result);
   void ReceiveMacroBlackListCode(unsigned char state, const char* code);
+  void OpenServiceWindow(unsigned char type);
+  void ReceiveWindow328Result(int result, int value);
+  void ReceiveRouletteClose(const unsigned char* packet);
+  void ReceiveWindow227Result(const unsigned char* packet);
+  void ReceiveRouletteOpen(const unsigned char* packet);
+  void ReceiveRodexOpen(const unsigned char* packet);
+  void ReceiveCaptchaPreview(int result, unsigned short size, const char* key);
+  void ReceiveStackedItemReturn(const unsigned char* packet);
+  void ReceiveRodexRecipient(int id, unsigned short job, unsigned short level, const char* name);
   void ReceivePartyJobLevel(const unsigned char* packet);
   void ReceivePartyDead(const unsigned char* packet);
   void ReceiveShopItemList(const std::vector<ITEM_INFO>& items, int value, int unused1, int argument, int unused2, std::uint32_t duration, unsigned char myShop);

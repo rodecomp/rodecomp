@@ -29,6 +29,10 @@
 #include "Network/Packets/PacketLengths.h"
 #include "Render/Renderer.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
+#include "UI/Dialogs/UISayDialogWnd.h"
+#include "UI/Rodex/UIRodexComposeWnd.h"
+#include "UI/Text/UITagTextViewer.h"
+#include "UI/UICaptchaPreviewWnd.h"
 #include "UI/UICaptchaRegisterWnd.h"
 #include "UI/UIGradeEnchantWnd.h"
 #include "UI/UILapineScrollBar.h"
@@ -37,10 +41,9 @@
 #include "UI/UIMacroDetectorWnd.h"
 #include "UI/UIMacroUserInfoWnd.h"
 #include "UI/UIRefiningWnd.h"
-#include "UI/Window/UIWindow.h"
 #include "UI/Window/UINewSelectCharWnd.h"
-#include "UI/Dialogs/UISayDialogWnd.h"
-#include "UI/Text/UITagTextViewer.h"
+#include "UI/Window/UIRodexContentsWnd.h"
+#include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
@@ -111,6 +114,44 @@ struct ByteValuePacket {
 
 struct PacketIdOnly {
   /* 0000 */ std::int16_t id;
+};
+
+struct AccountRequestPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+};
+
+struct Window227ResultPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t first;
+  /* 0004 */ std::uint16_t second;
+  /* 0006 */ unsigned char result;
+};
+
+struct RouletteOpenPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char result;
+  /* 0003 */ int serial;
+  /* 0007 */ unsigned char stage;
+  /* 0008 */ unsigned char index;
+  /* 0009 */ int additionItemId;
+  /* 000D */ int goldPoint;
+  /* 0011 */ int silverPoint;
+  /* 0015 */ int bronzePoint;
+};
+
+struct RodexOpenPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ char text[24];
+  /* 001A */ unsigned char result;
+};
+
+struct StackedItemReturnPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char result;
+  /* 0003 */ std::int16_t index;
+  /* 0005 */ std::uint16_t count;
+  /* 0007 */ std::uint16_t value;
 };
 
 struct RouletteInfoSlot {
@@ -1500,5 +1541,193 @@ void __stdcall sub_D6C460(int count, int unknown01738784, short unknown01738788,
   UIWindow* window = g_windowMgr.LookupWindow(0x10E);
   if (window != nullptr) {
     window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D1A0A0
+// FUNCTION: fn_21615
+void CGameMode::OpenServiceWindow(unsigned char type) {
+  switch (type) {
+  case 0:
+    if (!g_windowMgr.LookupWindow(251)) {
+      AccountRequestPacket request;
+      request.id = 0x9AB;
+      request.aid = g_session.m_aid;
+      GetRagConnection().Send(6, &request);
+    }
+    break;
+  case 1:
+    if (g_windowMgr.LookupWindow(16)) {
+      this->SendMsg(89, 0, 0, 0, 0);
+    }
+    if (!g_windowMgr.LookupWindow(281)) {
+      g_windowMgr.EnsureWindow(281);
+    }
+    break;
+  case 2:
+    g_windowMgr.EnsureWindow(284);
+    break;
+  case 3:
+    g_windowMgr.EnsureWindow(286);
+    break;
+  case 9:
+    g_windowMgr.EnsureWindow(344);
+    break;
+  }
+}
+
+// OFFSET: 0x00D693E0
+// FUNCTION: fn_22047
+void CGameMode::ReceiveWindow328Result(int result, int value) {
+  if (result == 0) {
+    UIWindow* window = g_windowMgr.LookupWindow(328);
+    if (window) {
+      window->SendMsg(nullptr, 34, value * 10 + 1, 0, 0, 0);
+    }
+  } else if (result == 1) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3472)), 0xFF, 0, 0, 0);
+    g_windowMgr.CloseWindow(328);
+  }
+}
+
+// OFFSET: 0x00D69460
+// FUNCTION: fn_22048
+void CGameMode::ReceiveRouletteClose(const unsigned char* packet) {
+  switch (reinterpret_cast<const ByteValuePacket*>(packet)->value) {
+  case 0:
+    g_rouletteMgr->Reset();
+    if (g_windowMgr.unknown_0464) {
+      g_windowMgr.CloseWindow(269);
+    }
+    break;
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2633)), 0x6464FF, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D6A920
+// FUNCTION: fn_22059
+void CGameMode::ReceiveWindow227Result(const unsigned char* packet) {
+  const auto* result = reinterpret_cast<const Window227ResultPacket*>(packet);
+  const unsigned short first = result->first;
+  const unsigned short second = result->second;
+
+  switch (result->result) {
+  case 0: {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2171)), 0x64FFFF, 0, 0, 0);
+    UIWindow* window = g_windowMgr.LookupWindow(227);
+    if (window) {
+      window->SendMsg(nullptr, 60, first, second, 0, 0);
+    }
+    break;
+  }
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2172)), 0xFF, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2173)), 0xFF, 0, 0, 0);
+    break;
+  }
+
+  g_windowMgr.CloseWindow(227);
+}
+
+// OFFSET: 0x00D6AB60
+// FUNCTION: fn_22061
+void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
+  const auto* open = reinterpret_cast<const RouletteOpenPacket*>(packet);
+  switch (open->result) {
+  case 0:
+    g_rouletteMgr->unknown_0004 = open->serial;
+    g_rouletteMgr->m_stage = open->stage;
+    g_rouletteMgr->SetAdditionItem(open->additionItemId);
+    g_rouletteMgr->m_goldPoint = open->goldPoint;
+    g_rouletteMgr->m_silverPoint = open->silverPoint;
+    g_rouletteMgr->m_bronzePoint = open->bronzePoint;
+    g_rouletteMgr->SetResult(open->index, open->index != 0xFF, 0);
+    if (open->index != 0xFF) {
+      g_rouletteMgr->SetQuad((open->index + open->stage) * 36 + 173, 341 - open->stage * 40,
+        static_cast<int>(g_renderer->viewport.width * 0.5 - 320.0), static_cast<int>(g_renderer->viewport.height * 0.5 - 240.0));
+    }
+
+    if (g_rouletteMgr->m_items.size() == 0) {
+      PacketIdOnly request;
+      request.id = 0xA1B;
+      GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
+    } else if (!g_windowMgr.unknown_0464) {
+      g_windowMgr.EnsureWindow(269);
+    }
+    break;
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2632)), 0x6464FF, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D6ACE0
+// FUNCTION: fn_22062
+void CGameMode::ReceiveRodexOpen(const unsigned char* packet) {
+  const auto* open = reinterpret_cast<const RodexOpenPacket*>(packet);
+  if (open->result != 1) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2604)), 0x64FFFF, 0, 0, 0);
+    return;
+  }
+
+  if (g_windowMgr.unknown_0458) {
+    return;
+  }
+
+  g_session.RestoreItems5C68();
+  g_session.ClearItemQuantities();
+  g_windowMgr.EnsureWindow(264);
+  const char* text = open->text;
+  if (text) {
+    reinterpret_cast<UIRodexContentsWnd*>(g_windowMgr.unknown_0458)->SetContentsText(text);
+  }
+}
+
+// OFFSET: 0x00D6ADA0
+// FUNCTION: fn_22064
+void CGameMode::ReceiveCaptchaPreview(int result, unsigned short size, const char* key) {
+  if (result == 0) {
+    UICaptchaPreviewWnd* window = static_cast<UICaptchaPreviewWnd*>(g_windowMgr.LookupWindow(288));
+    if (!window) {
+      window = static_cast<UICaptchaPreviewWnd*>(g_windowMgr.EnsureWindow(288));
+      if (!window) {
+        return;
+      }
+    }
+
+    if (std::strncmp(window->m_captchaKey, key, 4) != 0) {
+      window->ClearImageData();
+    }
+    window->Show(0);
+    memcpy_s(window->m_captchaKey, 4, key, 4);
+    window->InitImageData(size);
+  } else if (result == 1) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("wrong captcha ID."), 0xFF, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D6B8F0
+// FUNCTION: fn_22070
+void CGameMode::ReceiveStackedItemReturn(const unsigned char* packet) {
+  const auto* result = reinterpret_cast<const StackedItemReturnPacket*>(packet);
+  if (result->result == 1) {
+    g_session.ReturnStackedItem(result->index, result->count);
+    g_session.unknown_6140 = result->value;
+  } else {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2602)), 0x64FFFF, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D6E0B0
+// FUNCTION: fn_22095
+void CGameMode::ReceiveRodexRecipient(int id, unsigned short job, unsigned short level, const char* name) {
+  if (id == 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2615)), 0x64FFFF, 0, 0, 0);
+  } else if (g_windowMgr.unknown_0458) {
+    reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->SetRecipient(id, job, level, name);
   }
 }
