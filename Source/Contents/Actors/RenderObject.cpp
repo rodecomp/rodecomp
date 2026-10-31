@@ -23,6 +23,7 @@
 #include "Contents/Effects/TetraBallEffect.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/MapSkyMgr.h"
+#include "Contents/MessageTable.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Messenger/ClientMessenger.h"
@@ -1313,6 +1314,19 @@ void CGameActor::Slot21(int) {
 // FUNCTION: fn_21152
 void CGameActor::Slot23(int, int) {
 }
+
+// INLINED
+static bool HasEffectOfType(const std::list<RagEffectState*>& effects, int type) {
+  for (RagEffectState* effect : effects) {
+    if (effect && effect->type == type) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00CC2E50
 
 // OFFSET: 0x00CA9E50
 // FUNCTION: fn_21013
