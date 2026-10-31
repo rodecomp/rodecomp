@@ -40,6 +40,7 @@ public:
   /* 0038 */ std::unordered_map<std::uint32_t, std::function<void()>, SkillIdHash> functions;
 
   bool Load();
+  bool LoadSettings();
   bool ReadOptionTable();
   void ResetToDefaults();
   void ToggleOption(int id);

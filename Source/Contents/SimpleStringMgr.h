@@ -24,6 +24,7 @@ public:
   virtual ~CSimpleStringMgr() {
   }
 
+  static bool Create();
   static void Destroy();
   void Init();
   void LoadCsv(const char* name, std::function<std::vector<std::string>(std::vector<std::string>&)> transform,

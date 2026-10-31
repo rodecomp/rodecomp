@@ -21,6 +21,8 @@
 #include "Contents/World/World.h"
 #include "Contents/Items/RuneSystem.h"
 #include "Contents/Skills/SkillInfo.h"
+#include "Contents/SimpleStringMgr.h"
+#include "Contents/Configuration/GameSettingsMgr.h"
 
 #include <algorithm>
 #include <array>
@@ -5451,6 +5453,7 @@ struct SessionMessengerContext {
 
   void UpdateRandomStats();
   void sub_DD9D50();
+  void sub_DF33B0();
   void ClearMemberLists();
   void PurgeMatchingMembers1();
   void ClearLists();
@@ -6645,9 +6648,6 @@ HANDLE g_embedFontFiles;
 // OFFSET: 0x00DD9D50
 // FUNCTION: fn_23337
 void SessionMessengerContext::sub_DD9D50() {
-  using SessionCall = void (__thiscall*)(SessionMessengerContext*);
-  using SettingsCall = void (__thiscall*)(CGameSettingsMgr*);
-
   if (!g_itemInfoMgr->Load()) {
     const std::uint8_t caption[] = {0x2A, 0x0F, 0x89, 0x4C, 0x03, 0x07};
     const std::uint8_t message[] = {0x80, 0x81, 0x3A, 0xE6, 0xC6, 0xBB, 0xDD, 0x4C, 0xE9, 0x93, 0x36, 0xE7, 0xEA, 0xF5, 0xF2, 0x4D, 0xA0, 0x81, 0x5F};
@@ -6673,15 +6673,15 @@ void SessionMessengerContext::sub_DD9D50() {
     ShowEncryptedFailure<6, 0x4F99DF03C3EF31B7ULL, 0x11, 0xE52DF30DCBAF7125ULL>(caption, message);
   }
 
-  reinterpret_cast<bool (*)()>(0x007A9580)();
+  static_cast<void>(CSimpleStringMgr::Create());
   static_cast<void>(CCashEmotionMgr::Initialize());
   srand(static_cast<unsigned int>(_time32(nullptr)));
   this->UpdateRandomStats();
-  reinterpret_cast<SessionCall>(0x00DF33B0)(this);
+  this->sub_DF33B0();
   static_cast<void>(g_mapInfoMgr->LoadScript());
 
   CGameSettingsMgr* settings = Singleton<CGameSettingsMgr>::GetInstance();
-  reinterpret_cast<SettingsCall>(0x006C1180)(settings);
+  static_cast<void>(settings->LoadSettings());
   reinterpret_cast<CSession*>(this)->LoadOptionInfo();
   reinterpret_cast<CSession*>(this)->LoadDamageSkinSettings();
 
