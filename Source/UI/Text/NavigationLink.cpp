@@ -1710,8 +1710,20 @@ bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
 }
 
 // OFFSET: 0x00836D40
+// FUNCTION: fn_10435
+UIEmotion::UIEmotion(UIWindowContext& windows, const char* sprite, const char* action) : UIWindow(windows, 0), m_animation(0), m_frame(0), m_maxLoops(0) {
+  this->m_sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(sprite));
+  this->m_action = static_cast<CActRes*>(ResourceMgr::Instance().Load(action));
+  this->m_startTime = timeGetTime();
+}
 
 // OFFSET: 0x00836DF0
+// FUNCTION: fn_10436
+UIEmotion::UIEmotion(UIWindowContext& windows) : UIWindow(windows, 0), m_animation(0), m_frame(0), m_maxLoops(0) {
+  this->m_sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\emotion.spr"));
+  this->m_action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\emotion.act"));
+  this->m_startTime = timeGetTime();
+}
 
 // OFFSET: 0x00836EA0
 
