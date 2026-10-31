@@ -24,7 +24,6 @@ public:
   void SetMacroText(const char* text, int index);
 
   UIBitmapButton* AddCloseButton(const char* tooltip, int width = 0);
-  int DrawTitleBar(bool closeButton, const char* title, int width = 0);
 };
 
 #endif

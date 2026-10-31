@@ -7,6 +7,11 @@
 #include "Contents/MessageTable.h"
 #include "Contents/UserData/AccountLinkedUserDataMgr.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
+#include "Contents/Async/AsyncWorkMgr.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Script/LuaScript.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Text/UIStaticText.h"
@@ -33,10 +38,6 @@ UIBitmapButton* UIEmotionWnd::AddCloseButton(const char* tooltip, int width) {
   this->AddChild(button);
 
   return button;
-}
-
-int UIEmotionWnd::DrawTitleBar(bool closeButton, const char* title, int width) {
-  return reinterpret_cast<int(__thiscall*)(UIWindow*, bool, const char*, int)>(0x008D2CE0)(this, closeButton, title, width);
 }
 
 // OFFSET: 0x008A2980
@@ -96,7 +97,8 @@ void UIEmotionWnd::Slot15(int, int) {
 // OFFSET: 0x008A3000
 // FUNCTION: fn_11645
 void UIEmotionWnd::Paint() {
-  int titleHeight = this->DrawTitleBar(true, LookupMessage(574), 0);
+  const TextLocale locale = {};
+  int titleHeight = this->UIWindow::DrawTitleBar(g_fontCache, locale, true, LookupMessage(574), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }
@@ -118,14 +120,14 @@ int UIEmotionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
   if (message == 6) {
     if (argument1 == 201) {
-      reinterpret_cast<void(__thiscall*)(UIWindowMgr*, int)>(0x00A8CF20)(&g_windowMgr, 0x56);
+      g_windowMgr.CloseWindow(0x56);
       return 0;
     }
     if (argument1 == 283) {
       if (g_cashEmotionListWnd == nullptr) {
-        reinterpret_cast<void(__thiscall*)(UIWindowMgr*, int)>(0x00A978D0)(&g_windowMgr, 0x57);
+        g_windowMgr.EnsureWindow(0x57);
       } else {
-        reinterpret_cast<void(__thiscall*)(UIWindowMgr*, int)>(0x00A8CF20)(&g_windowMgr, 0x57);
+        g_windowMgr.CloseWindow(0x57);
       }
       return 0;
     }
@@ -181,5 +183,8 @@ void UIEmotionWnd::Slot11() {
     }
   }
 
-  reinterpret_cast<void(__thiscall*)(CAccountLinkedUserDataMgr*)>(0x005BCE50)(g_accountLinkedUserDataMgr);
+  g_accountLinkedUserDataMgr->Save(
+    *reinterpret_cast<EmotionHotkeys*>(&g_session.unknown_0FF8), *g_luaScript, g_session.m_aid, GetRenderSystemHolder()->system,
+    reinterpret_cast<const char*>(&g_session.unknown_807C[8]), *g_asyncWorkMgr
+  );
 }
