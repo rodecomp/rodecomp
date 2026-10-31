@@ -729,6 +729,25 @@ void UIBasicItemCtrl::Slot10(int, int, std::intptr_t argument3) {
 }
 
 // OFFSET: 0x0087E080
+// FUNCTION: fn_11262
+void UIBasicSkillCtrl::Slot10(int, int, std::intptr_t argument3) {
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(argument3);
+  if (drag->skill) {
+    std::string name = drag->skillName;
+    CSkillInfo skill = reinterpret_cast<const ClientSkills&>(g_session).Lookup(drag->id);
+    if (skill.level && skill.available && skill.unknown_0014) {
+      this->m_skillId = static_cast<int>(drag->id);
+      this->m_level = drag->skillLevel;
+      if (this->Root()) {
+        this->Root()->Invalidate();
+        this->Root()->InvalidateChildren();
+      } else {
+        this->Invalidate();
+      }
+    }
+  }
+  static_cast<CMode*>(g_charViewMode)->SendMsg(18, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x0087E190
 // FUNCTION: fn_11263
@@ -990,6 +1009,30 @@ void UIChatHisBox::DropOldestRecords() {
 }
 
 // OFFSET: 0x0087CEC0
+// FUNCTION: fn_11258
+void UIChatHisBox::ShiftItemTags() {
+  const unsigned int half = static_cast<unsigned int>(this->lines.size()) / 2;
+  std::list<std::vector<UIItemTagButton*>>::iterator row = this->ItemTags().begin();
+  while (row != this->ItemTags().end()) {
+    bool removed = false;
+    for (unsigned int index = 0; index < row->size(); ++index) {
+      (*row)[index]->line -= half;
+      if ((*row)[index]->line < 0) {
+        removed = true;
+        this->RemoveChild((*row)[index], 1);
+      }
+    }
+
+    if (!removed) {
+      ++row;
+      continue;
+    }
+
+    std::vector<UIItemTagButton*> buttons;
+    buttons.swap(*row);
+    row = this->ItemTags().erase(row);
+  }
+}
 
 // OFFSET: 0x0087EF30
 
