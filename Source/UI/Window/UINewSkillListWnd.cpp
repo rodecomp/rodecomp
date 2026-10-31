@@ -21,6 +21,7 @@
 #include "UI/Window/UIResizer.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UITabControl.h"
+#include "UI/Window/WindowMouseHit.h"
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
 #include "UI/Window/InputFocus.h"
@@ -786,8 +787,7 @@ bool UINewSkillListWnd::IsSkillArea(int x, int y) {
 // FUNCTION: fn_13814
 void UINewSkillListWnd::Slot15(int width, int height) {
   this->m_tabs = new UITabControl(*this->m_context, *this->m_controls);
-  reinterpret_cast<void(__thiscall*)(UITabControl*, int, int, int, int, int, int, int, int, int, int, int, int)>(0x0087C3F0)(
-    this->m_tabs, 0, 17, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  this->m_tabs->Configure(0, 17, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   this->m_tabs->Move(0, 6);
   this->AddChild(this->m_tabs);
 
@@ -1033,7 +1033,7 @@ void UINewSkillListWnd::Slot31(int x, int y) {
 // OFFSET: 0x009B28F0
 // FUNCTION: fn_13819
 void UINewSkillListWnd::Slot28(int x, int y) {
-  const int gate = *reinterpret_cast<const int*>(0x017326EC);
+  const int gate = g_mouseRefreshGate;
   if (!this->IsSkillArea(x, y) || (gate != 0 && x > 96)) {
     return;
   }
@@ -1047,7 +1047,7 @@ void UINewSkillListWnd::Slot28(int x, int y) {
       int tooltipY = -20;
       this->ToScreen(tooltipX, tooltipY);
       const char* name = skill.first->DisplayName(*g_luaScript);
-      (*reinterpret_cast<ModeTooltip**>(0x013495BC))->Show(name, tooltipX + x, tooltipY + y, -1, 0, 1);
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(name, tooltipX + x, tooltipY + y, -1, 0, 1);
     }
   }
 
