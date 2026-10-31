@@ -1,21 +1,32 @@
 #include "UI/EntryQueue/UIEntryQueueWnd.h"
 
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/ReplayPacketRecorder.h"
+#include "Client/Session.h"
+#include "Contents/GuildInfo.h"
+#include "Contents/GuildMgr.h"
+#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/EntryQueueMgr.h"
 #include "Contents/MessageTable.h"
 #include "Render/Renderer.h"
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
+#include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
+#include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/WindowDialogs.h"
+#include <cstddef>
 #include <cstdio>
 #include <cstring>
+#include <map>
+#include <string>
 #include <utility>
 #include <windows.h>
 
@@ -314,9 +325,206 @@ int UIEntryQueueWnd::SelectedIndex() {
   return this->m_list->selected;
 }
 
+// OFFSET: 0x00BA6420
+// FUNCTION: fn_19707
+void UIEntryQueueWnd::Slot15(int width, int height) {
+  auto& controls = this->m_entryQueue->text.buttons;
+
+  this->Resize(350, 350);
+  this->AddBaseButton(controls);
+  this->AddCloseButton(controls, "", 0);
+
+  this->m_list = new UIEntryQueueListBox(*this->m_context, *this->m_listContext);
+  this->m_list->SetSize(130, 270);
+  this->m_list->Move(10, 40);
+  this->m_list->backgroundRed = 240;
+  this->m_list->backgroundGreen = 240;
+  this->m_list->backgroundBlue = 240;
+  this->AddChild(this->m_list);
+
+  for (std::map<int, EntryQueueInfo*>::iterator it = g_entryQueueList.begin(); it != g_entryQueueList.end(); ++it) {
+    this->m_list->AddEntry(it->second->displayName, it->second->id);
+  }
+
+  std::map<int, EntryQueueInfo*>::iterator first = g_entryQueueList.begin();
+  g_entryQueueMgr->current = first->second;
+
+  const char* labels[7] = {
+    LookupMessage(0x85B), LookupMessage(0x85C), LookupMessage(0x85D), LookupMessage(0x85E),
+    LookupMessage(0x85F), LookupMessage(0x860), LookupMessage(0x861),
+  };
+  int index = 0;
+  for (int y = 165; y < 305; y += 20, ++index) {
+    this->m_labels[index] = new UIStaticText(*this->m_context, controls);
+    if (this->m_labels[index]) {
+      const char* label = labels[index];
+      const TextLocale locale = {};
+      this->m_labels[index]->SetSize(this->TextWidth(g_fontCache, locale, label, 0, 0, 12, 0, 0), 25);
+      this->m_labels[index]->SetText(label, 0);
+      this->m_labels[index]->Move(157, y);
+      this->AddChild(this->m_labels[index]);
+    }
+  }
+
+  for (int value = 0; value < 7; ++value) {
+    this->m_values[value] = new UIStaticText(*this->m_context, controls);
+    if (this->m_labels[value]) {
+      this->m_values[value]->SetSize(157, 25);
+      this->AddChild(this->m_values[value]);
+    }
+  }
+
+  this->SelectQueue(first->second);
+
+  const std::string path = "유저인터페이스\\battle_field\\";
+  const char* names[9] = {
+    "apply_individual", "apply_individual_a", "apply_individual_b", "apply_party", "apply_party_a",
+    "apply_party_b",    "apply_guild",        "apply_guild_a",      "apply_guild_b",
+  };
+  int id = 0;
+  const char** name = names;
+  for (int x = 8; x < 287; x += 93, name += 3) {
+    this->m_applyButtons[id] = new UIBitmapButton(*this->m_context, controls);
+    this->m_applyButtons[id]->SetBitmap((path + name[0] + ".bmp").c_str(), 0, 0);
+    this->m_applyButtons[id]->SetBitmap((path + name[1] + ".bmp").c_str(), 1, 0);
+    this->m_applyButtons[id]->SetBitmap((path + name[2] + ".bmp").c_str(), 2, 0);
+    this->m_applyButtons[id]->SetSize(this->m_applyButtons[id]->BitmapWidth(), this->m_applyButtons[id]->BitmapHeight());
+    this->m_applyButtons[id]->Move(x, height - 24);
+    this->m_applyButtons[id]->SetId(id);
+    this->AddChild(this->m_applyButtons[id]);
+    ++id;
+  }
+
+  this->m_helpButton = new UIBitmapButton(*this->m_context, controls);
+  this->m_helpButton->SetBitmap((path + "btn_help" + ".bmp").c_str(), 0, 0);
+  this->m_helpButton->SetBitmap((path + "btn_help" + "_a.bmp").c_str(), 1, 0);
+  this->m_helpButton->SetBitmap((path + "btn_help" + "_b.bmp").c_str(), 2, 0);
+  this->m_helpButton->SetSize(this->m_helpButton->BitmapWidth(), this->m_helpButton->BitmapHeight());
+  this->m_helpButton->Move(width - 62, height - 24);
+  this->m_helpButton->SetId(3);
+  this->AddChild(this->m_helpButton);
+}
+
+// OFFSET: 0x00BA7250
+// FUNCTION: fn_19708
+void UIEntryQueueWnd::Paint() {
+  const TextLocale locale = {};
+  this->DrawTitleBar(g_fontCache, locale, true, LookupMessage(0x603), 0);
+  this->DrawPanelBackground(17, 0, "");
+  this->DrawButtonBar(2, 0, 1);
+
+  EntryQueueInfo* info = g_entryQueueMgr->current;
+  if (info) {
+    const std::string path = "유저인터페이스\\battle_field\\";
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + info->unknown_0634).c_str())));
+    if (bitmap) {
+      this->DrawBitmap(157, 25, &bitmap->image, false);
+    }
+  }
+
+  this->DrawShadowedText(10, 23, LookupMessage(0x865), static_cast<int>(std::strlen(LookupMessage(0x865))), 0, 0xC0C0C0, 0, 12, 0);
+}
+
 // OFFSET: 0x00BA7440
 // FUNCTION: fn_19709
 void __stdcall Nullsub429() {
+}
+
+// OFFSET: 0x00BA7450
+// FUNCTION: fn_19710
+int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  EntryQueueInfo* info = g_entryQueueMgr->current;
+  if (message == 6) {
+    int error;
+    switch (a) {
+    case 0:
+      if (g_session.GetMapProperty13() == 1) {
+        error = 0x86B;
+      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsActiveSkillEffectId(0x29C)) {
+        error = 0x86C;
+      } else {
+        if (this->ConfirmApply(LookupMessage(0x862))) {
+          g_entryQueueMgr->SendApply(1, info->name);
+        }
+        return 0;
+      }
+      break;
+    case 1:
+      if (g_session.GetMapProperty13() == 1) {
+        error = 0x86B;
+      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsActiveSkillEffectId(0x29C)) {
+        error = 0x86C;
+      } else if (ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount() == 0) {
+        error = 0x86D;
+      } else if (g_session.unknown_5464 == 0) {
+        error = 0x86E;
+      } else if (static_cast<unsigned>(g_entryQueueMgr->current->unknown_020C) <
+                 static_cast<unsigned>(ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.OnlinePartyCount())) {
+        error = 0x86F;
+      } else {
+        if (this->ConfirmApply(LookupMessage(0x863))) {
+          g_entryQueueMgr->SendApply(2, info->name);
+        }
+        return 0;
+      }
+      break;
+    case 2: {
+      GuildInfo* guild = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+      if (g_session.GetMapProperty13() == 1) {
+        error = 0x86B;
+      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsActiveSkillEffectId(0x29C)) {
+        error = 0x86C;
+      } else if (guild->m_guildId < 1) {
+        error = 0x870;
+      } else if (guild->unknown_00B4 == 0) {
+        error = 0x871;
+      } else if (static_cast<unsigned>(g_entryQueueMgr->current->unknown_020C) < static_cast<unsigned>(guild->unknown_0068)) {
+        error = 0x872;
+      } else {
+        if (this->ConfirmApply(LookupMessage(0x864))) {
+          g_entryQueueMgr->SendApply(4, info->name);
+        }
+        return 0;
+      }
+      break;
+    }
+    case 3:
+      if (!this->m_frameContext->windows.CloseWindow(211)) {
+        this->m_frameContext->windows.EnsureWindow(211);
+      }
+      return 0;
+    case 4:
+    case 201:
+      this->m_entryQueue->recorder.Record(this->geometry.id, static_cast<int>(a), b, c, d);
+      this->m_frameContext->windows.CloseWindow(157);
+      return 0;
+    default:
+      return 0;
+    }
+
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(error), 0, false, false, 0, "Message", 280, 120, 0);
+    return 0;
+  }
+
+  if (message == 34) {
+    this->saved = reinterpret_cast<EntryQueueWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  }
+
+  if (message == 135 && this->m_list) {
+    const int value = this->m_list->EntryValue(static_cast<int>(b));
+    std::map<int, EntryQueueInfo*>::iterator it = g_entryQueueList.find(value);
+    if (it != g_entryQueueList.end() && it->second) {
+      this->SelectQueue(it->second);
+    }
+  }
+
+  return 0;
 }
 
 // OFFSET: 0x00BA78A0

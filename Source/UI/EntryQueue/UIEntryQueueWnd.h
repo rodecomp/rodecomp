@@ -101,15 +101,24 @@ class UIEntryQueueWnd : public UIFrameWnd {
 public:
   ~UIEntryQueueWnd() override;
   void Slot11() override;
+  void Slot15(int width, int height) override;
+  void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   int SelectedIndex();
   void SelectQueue(EntryQueueInfo* info);
   bool ConfirmApply(const char* type);
 
   /* 00BC */ unsigned char unknown_00BC[0x8];
-  /* 00C4 */ UIWindow* m_labels[7];
+  /* 00C4 */ UIStaticText* m_labels[7];
   /* 00E0 */ UIStaticText* m_values[7];
   /* 00FC */ UIEntryQueueListBox* m_list;
-  /* 0100 */ WindowPlacement* saved;
+  /* 0100 */ EntryQueueWndInfo* saved;
+
+protected:
+  UIEntryQueueContext* m_entryQueue;
+  UIListBoxContext* m_listContext;
+  UIBitmapButton* m_applyButtons[3];
+  UIBitmapButton* m_helpButton;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
