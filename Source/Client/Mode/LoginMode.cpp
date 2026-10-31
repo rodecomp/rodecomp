@@ -10,6 +10,7 @@
 #include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
+#include "Contents/RenewQuestMgr.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -21,12 +22,14 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
+#include "UI/Dialogs/UIWaitWnd.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -1557,4 +1560,100 @@ void CLoginMode::Initialize(const char* name) {
   g_session.unknown_8074 = 0;
   g_session.unknown_0784.clear();
   g_session.unknown_078C.clear();
+}
+
+#pragma pack(push, 1)
+struct AcceptEnterPositionPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t startTime;
+  /* 0006 */ unsigned char posDir[3];
+  /* 0009 */ unsigned char xSize;
+  /* 000A */ unsigned char ySize;
+  /* 000B */ unsigned char font;
+};
+#pragma pack(pop)
+
+// GLOBAL: gl_25025
+bool g_pingLogEnabled;
+
+// GLOBAL: gl_25026
+std::uint32_t g_pingLogFirstTick;
+
+// GLOBAL: gl_25027
+std::list<std::uint32_t> g_pingLogTicks;
+
+// OFFSET: 0x00D9DC50
+// FUNCTION: fn_22317
+void CLoginMode::Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet) {
+  g_session.m_startTimeTicks = std::chrono::system_clock::now().time_since_epoch().count();
+  g_session.m_loginTimeTicks = std::chrono::system_clock::now().time_since_epoch().count();
+  g_session.SetServerTime(packet->startTime);
+  g_session.SetOption(11, 1, 0);
+  g_session.SetPlayerPosition((packet->posDir[0] << 2) | (packet->posDir[1] >> 6), ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4),
+    packet->posDir[2] & 0xF);
+  g_session.unknown_0F30[0] = packet->font;
+
+  char mapName[36];
+  sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
+  g_modeMgr.Switch(1, mapName);
+  static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(6))->SetMessage(LookupMessage(121), 17, 1);
+  GetRagConnection().SetBlock(0);
+  g_session.SetOption(17, 0, 0);
+
+  if (g_pingLogEnabled) {
+    FILE* file = fopen("PingLog.txt", "at");
+    if (file) {
+      __time32_t now;
+      _time32(&now);
+      fprintf(file, "\n");
+      fprintf(file, "server:%s\n", g_session.m_accountName.c_str());
+      fprintf(file, "ip:%s\n", g_zoneServerIp);
+      fprintf(file, "map:%s.gat\n", g_session.m_navigationPlayerMap);
+      fprintf(file, "time:%s\n\n", _ctime32(&now));
+      fclose(file);
+    }
+    g_pingLogTicks.clear();
+    g_pingLogFirstTick = 0;
+  }
+
+  g_session.SetUnknown5C1C(0);
+  g_session.unknown_809C.clear();
+  for (unsigned int i = 0; i < 68; ++i) {
+    std::string name = this->characters[i].name;
+    g_session.unknown_809C.push_back(name);
+  }
+
+  SecureZeroMemory(this->characters, sizeof(this->characters));
+  g_renewQuestMgr->m_newQuests.clear();
+  g_renewQuestMgr->m_statusRequests.clear();
+}
+
+// OFFSET: 0x00D9DFC0
+// FUNCTION: fn_22318
+void CLoginMode::Zc_Accept_Enter2(const AcceptEnterPositionPacket* packet) {
+  g_session.SetServerTime(packet->startTime);
+  g_session.SetPlayerPosition((packet->posDir[0] << 2) | (packet->posDir[1] >> 6), ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4),
+    packet->posDir[2] & 0xF);
+
+  char mapName[36];
+  sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
+  g_modeMgr.Switch(1, mapName);
+  static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(6))->SetMessage(LookupMessage(121), 17, 1);
+  GetRagConnection().SetBlock(0);
+
+  if (g_pingLogEnabled) {
+    FILE* file = fopen("PingLog.txt", "at");
+    if (file) {
+      __time32_t now;
+      _time32(&now);
+      fprintf(file, "\n");
+      fprintf(file, "server:%s\n", g_session.m_accountName.c_str());
+      fprintf(file, "ip:%s\n", g_zoneServerIp);
+      fprintf(file, "map:%s.gat\n", g_session.m_navigationPlayerMap);
+      fprintf(file, "time:%s\n\n", _ctime32(&now));
+      fclose(file);
+    }
+    g_pingLogTicks.clear();
+    g_pingLogFirstTick = 0;
+  }
 }

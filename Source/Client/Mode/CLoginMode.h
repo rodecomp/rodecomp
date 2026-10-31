@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <list>
 #include <string>
 #include <vector>
 
@@ -24,6 +25,7 @@ struct RefuseLoginPacket;
 struct NotifyZoneServerPacket;
 struct NotifyZoneServer2Packet;
 struct PasswordModePacket;
+struct AcceptEnterPositionPacket;
 
 #pragma pack(push, 1)
 struct CharacterInfo {
@@ -34,7 +36,8 @@ struct CharacterInfo {
   /* 0058 */ std::int16_t unknown_0058;
   /* 005A */ unsigned char unknown_005A[0x10];
   /* 006A */ std::int16_t bodyStyle;
-  /* 006C */ unsigned char unknown_006C[0x1E];
+  /* 006C */ char name[24];
+  /* 0084 */ unsigned char unknown_0084[0x6];
   /* 008A */ unsigned char slot;
   /* 008B */ unsigned char unknown_008B[0x3];
   /* 008E */ char mapName[16];
@@ -88,7 +91,8 @@ public:
   /* 6F10 */ unsigned char unknown_6F10[0x4];
   /* 6F14 */ UIWindow* window_6F14;
   /* 6F18 */ int passwordRetryCount;
-  /* 6F1C */ unsigned char unknown_6F1C[0x34];
+  /* 6F1C */ std::vector<int> unknown_6F1C;
+  /* 6F28 */ unsigned char unknown_6F28[0x28];
   /* 6F50 */ std::string unknown_6F50;
   /* 6F68 */ std::vector<MapStateEntry> mapStates;
   /* 6F74 */ bool unknown_6F74;
@@ -130,12 +134,17 @@ public:
   void ConnectZoneServer(std::uint32_t gid, std::string mapName, std::uint32_t ip, int port, std::string host);
   void ReceiveNotifyZoneServer(const NotifyZoneServerPacket* packet);
   void ReceiveNotifyZoneServer2(const NotifyZoneServer2Packet* packet);
+  void Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet);
+  void Zc_Accept_Enter2(const AcceptEnterPositionPacket* packet);
 };
 
 extern bool g_loginModeFlag;
 extern int g_loginStartMode;
 extern int g_isStopByLogin;
 extern int g_modalImmediate;
+extern bool g_pingLogEnabled;
+extern std::uint32_t g_pingLogFirstTick;
+extern std::list<std::uint32_t> g_pingLogTicks;
 
 int GetClientType();
 std::string GetMacAddress();
@@ -144,6 +153,7 @@ void OpenAccountRegistration();
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CharacterInfo) == 0xAF);
+static_assert(offsetof(CharacterInfo, name) == 0x6C);
 static_assert(offsetof(CharacterInfo, slot) == 0x8A);
 static_assert(offsetof(CharacterInfo, mapName) == 0x8E);
 static_assert(offsetof(CharacterInfo, sex) == 0xAE);
