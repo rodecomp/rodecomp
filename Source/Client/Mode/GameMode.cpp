@@ -58,6 +58,17 @@ struct GameModeTextRecord {
 };
 #pragma pack(pop)
 
+#pragma pack(push, 1)
+struct GameModeReplayPacket {
+  /* 0000 */ std::uint32_t header;
+  /* 0004 */ std::uint16_t length;
+  /* 0006 */ unsigned char info[0x19];
+  /* 001F */ unsigned char data[0xDF];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GameModeReplayPacket) == 0xFE);
+
 static_assert(sizeof(GameModeTextRecord) == 0x190);
 static_assert(offsetof(GameModeTextRecord, buffer) == 0x1E);
 
@@ -785,4 +796,40 @@ void __stdcall sub_CDBC30(const vector3d* position, int actorId, float scale, in
     effect->unknown_00F4 = scale;
     effect->SetBulletSprite(job);
   }
+}
+
+// OFFSET: 0x00CE8F10
+// FUNCTION: fn_21344
+void __stdcall sub_CE8F10(const void* info, const unsigned char* data) {
+  if (Replay::Instance().state != 2) {
+    return;
+  }
+
+  if (Replay::Instance().header.options.recordRestricted == 0) {
+    return;
+  }
+
+  GameModeReplayPacket packet;
+  packet.header = 0x038A08AE;
+  packet.length = 0xFE;
+  std::memcpy(&packet.info, info, sizeof(packet.info));
+  std::memcpy(packet.data, data, sizeof(packet.data));
+
+  Replay& replay = Replay::Instance();
+  ReplayPacketRecorder recorder = {
+    g_packetLengths,
+    replay.baseFrame,
+    replay.started,
+    replay.frame,
+    replay.header.key0,
+    replay.header.key1,
+    replay.header.options.recordRestricted,
+    replay.file,
+    replay.fileOffset,
+    replay.records,
+    replay.cipherIndex,
+    replay.cipherBase,
+    replay.cipherKey,
+  };
+  recorder.Record(packet.length, &packet, 0x2A, 0);
 }
