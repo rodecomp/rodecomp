@@ -79,11 +79,16 @@ struct SignBoardInfo {
 
 class CSignBoardMgr {
 public:
+  void Initialize();
   void LoadList();
 
   /* 0000 */ bool unknown_0000;
   /* 0004 */ std::vector<SignBoardInfo> m_entries;
 };
+
+extern CSignBoardMgr* s_signBoardMgr;
+bool CreateSignBoardMgr();
+void DestroySignBoardMgr();
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CIcon) == 0x138);

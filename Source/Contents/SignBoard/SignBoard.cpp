@@ -16,6 +16,39 @@
 #include <windows.h>
 #include <timeapi.h>
 
+// GLOBAL: gl_24892
+CSignBoardMgr* s_signBoardMgr = nullptr;
+
+// OFFSET: 0x0081FC30
+// FUNCTION: fn_10244
+bool CreateSignBoardMgr() {
+  if (s_signBoardMgr == nullptr) {
+    s_signBoardMgr = new (std::nothrow) CSignBoardMgr{};
+    if (s_signBoardMgr != nullptr) {
+      s_signBoardMgr->unknown_0000 = true;
+    }
+    if (s_signBoardMgr != nullptr && s_signBoardMgr->unknown_0000) {
+      return true;
+    }
+    if (s_signBoardMgr != nullptr) {
+      delete s_signBoardMgr;
+      s_signBoardMgr = nullptr;
+    }
+  }
+  return false;
+}
+
+// OFFSET: 0x0081FE30
+// FUNCTION: fn_10245
+void DestroySignBoardMgr() {
+  if (s_signBoardMgr != nullptr) {
+    delete s_signBoardMgr;
+    s_signBoardMgr = nullptr;
+  }
+}
+
+// OFFSET: 0x0081FE50
+
 // OFFSET: 0x00820BD0
 // FUNCTION: fn_10248
 void CSignBoardMgr::LoadList() {
