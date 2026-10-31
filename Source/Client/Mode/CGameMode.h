@@ -140,6 +140,8 @@ public:
   bool GetClosestValidCell(int* x, int* y);
   void ReceiveActorNameAll(const ActorNameAllPacket* packet);
   void ReceiveColoredNotice(const unsigned char* packet);
+  void ReceiveNamedActionResult(const unsigned char* packet);
+  void ReceiveStatDump(const unsigned char* packet);
   void ReceiveActorText(const unsigned char* packet);
   void ReceiveRentalItemTime(const unsigned char* packet);
   void ReceiveMemorialDungeonInfo(const unsigned char* packet);

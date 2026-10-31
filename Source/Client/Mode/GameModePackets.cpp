@@ -235,6 +235,89 @@ void CGameMode::ReceiveColoredNotice(const unsigned char* packet) {
   }
 }
 
+// OFFSET: 0x00D1D690
+// FUNCTION: fn_21630
+void CGameMode::ReceiveNamedActionResult(const unsigned char* packet) {
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  const std::string name = reinterpret_cast<const char*>(packet + 2);
+  const int result = *reinterpret_cast<const int*>(packet + 0x1A);
+
+  switch (result) {
+  case 0:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x50)), 0xFF, 0, 0, 0);
+    break;
+  case 1: {
+    const std::string text = name + LookupMessage(0x80C);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
+    break;
+  }
+  case 2: {
+    const std::string text = name + LookupMessage(0x80D);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF00, 0, 0, 0);
+    break;
+  }
+  case 3:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x53)), 0xFF, 0, 0, 0);
+    break;
+  case 4:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x260)), 0xFF, 0, 0, 0);
+    break;
+  }
+
+  switch (result) {
+  case 5:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x52C)), 0xFF, 0, 0, 0);
+    break;
+  case 7:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x47)), 0xFF, 0, 0, 0);
+    break;
+  case 8: {
+    char text[256];
+    std::sprintf(text, LookupMessage(0x56C));
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+    break;
+  }
+  case 9:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x74F)), 0xFF, 0, 0, 0);
+    break;
+  case 10:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBD3)), 0xFF, 0, 0, 0);
+    break;
+  case 11:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xC9A)), 0xFF, 0, 0, 0);
+    break;
+  case 18:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xE32)), 0xFF, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D1E610
+// FUNCTION: fn_21634
+void CGameMode::ReceiveStatDump(const unsigned char* packet) {
+  char text[256];
+  const short* values = reinterpret_cast<const short*>(packet);
+
+  std::sprintf(
+    text, "             STR=%3d      AGI=%3d      VIT=%3d      INT=%3d      DEX=%3d      LUK=%d", packet[2], packet[4], packet[6], packet[8], packet[10], packet[12]
+  );
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+  std::sprintf(
+    text, "standard STR=%3d      AGI=%3d      VIT=%3d      INT=%3d      DEX=%3d      LUK=%2d", packet[3], packet[5], packet[7], packet[9], packet[11], packet[13]
+  );
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF37, 0, 0, 0);
+  std::sprintf(
+    text, "    attPower=%3d    refiningPow=%3d    MAXmatPow=%3d    MINmatPower=%3d       ASPD=%3d", values[7], values[8], values[9], values[10], values[19]
+  );
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+  std::sprintf(
+    text, "itemdefPow=%3d     plusdefPow=%3d    mdefPower=%3d    plusmdefPow=%3d    plusASPD=%3d", values[11], values[12], values[13], values[14], values[20]
+  );
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF37, 0, 0, 0);
+  std::sprintf(text, "hitSuccessVal=%3d    avoidSuccessVal=%3d    plusAvoidSuccessValue=%3d", values[15], values[16], values[17]);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+}
+
 // OFFSET: 0x00D24430
 // FUNCTION: fn_21666
 void CGameMode::ReceiveActorText(const unsigned char* packet) {
