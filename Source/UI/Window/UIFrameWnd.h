@@ -45,6 +45,8 @@ public:
   );
   UICheckBox* AddCheckBox(UIButtonContext& controls, int id, int width, int height, const char* text, int x, int y, int checked, const char* tooltip);
   void DrawBorder(int x, int y, int width, int height);
+  void FitLastTextLine(int width, unsigned lineCount, int family, int height, FrameTextLines& lines);
+  void DrawTextLines(int x, int y, int family, int lineHeight, const FrameTextLines& lines);
 
 protected:
   /* 007C */ int m_dragX;

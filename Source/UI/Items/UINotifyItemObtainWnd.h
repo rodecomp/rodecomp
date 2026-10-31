@@ -8,6 +8,8 @@
 
 class UINotifyItemObtainWnd : public UIFrameWnd {
 public:
+  UINotifyItemObtainWnd();
+
   /* 00B4 */ std::string m_itemId;
   /* 00CC */ std::string m_message;
   /* 00E4 */ std::uint32_t m_shownTick;

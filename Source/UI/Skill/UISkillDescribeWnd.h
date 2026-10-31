@@ -3,9 +3,16 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+#include <string>
+
 class UISkillDescribeWnd : public UIFrameWnd {
 public:
-  /* 00B4 */ unsigned char unknown_00B4[0x50];
+  UISkillDescribeWnd();
+
+  /* 00B4 */ unsigned char unknown_00B4[0x8];
+  /* 00BC */ std::string unknown_00BC;
+  /* 00D4 */ std::string unknown_00D4;
+  /* 00EC */ std::string unknown_00EC;
   /* 0104 */ int m_skillId;
   /* 0108 */ UIWindow* m_text;
 

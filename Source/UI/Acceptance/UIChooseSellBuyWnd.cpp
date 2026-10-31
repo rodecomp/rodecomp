@@ -2222,6 +2222,48 @@ void UIItemParamChangeDisplayWnd::Slot15(int, int) {
 void UIMenuWnd::Slot15(int, int) {
 }
 
+// OFFSET: 0x008CED30
+// FUNCTION: fn_12072
+void UIFrameWnd::FitLastTextLine(int width, unsigned lineCount, int family, int height, FrameTextLines& lines) {
+  if (lines.begin() == lines.end()) {
+    return;
+  }
+
+  if (static_cast<unsigned>(lines.end() - lines.begin()) < lineCount - 1) {
+    return;
+  }
+
+  auto& last = lines.back();
+  if (last.begin() == last.end()) {
+    return;
+  }
+
+  int total = 0;
+  for (auto it = last.begin(); it != last.end(); ++it) {
+    int segment = this->TextWidth(this->m_context->fonts, this->m_context->locale, it->second.c_str(), it->second.size(), 0, 12, 0, 0);
+    total += segment;
+    if (total >= width) {
+      it->second = this->FitDisplayText(width - total + segment, it->second.c_str(), family, height, 0);
+      last.erase(it + 1, last.end());
+      break;
+    }
+  }
+}
+
+// OFFSET: 0x0090AD60
+// FUNCTION: fn_12417
+void UIFrameWnd::DrawTextLines(int x, int y, int family, int lineHeight, const FrameTextLines& lines) {
+  y -= (static_cast<int>(lines.end() - lines.begin()) - 1) * (lineHeight / 2);
+  for (auto line = lines.begin(); line != lines.end(); ++line) {
+    int left = x;
+    for (auto it = line->begin(); it != line->end(); ++it) {
+      this->DrawShadowedText(left, y, it->second.c_str(), it->second.size(), it->first, 0xE0E0E0, family, 12, 0);
+      left += this->TextWidth(this->m_context->fonts, this->m_context->locale, it->second.c_str(), it->second.size(), 0, 12, 0, 0);
+    }
+    y += lineHeight;
+  }
+}
+
 // OFFSET: 0x0090AB10
 // FUNCTION: fn_12416
 int UIWindow::DrawItemNameSegments(
@@ -3605,6 +3647,16 @@ UIWaitWnd::UIWaitWnd(UIWindowContext& windows, UIFrameContext& frames)
 // FUNCTION: fn_11987
 UInCash_CallWnd::UInCash_CallWnd(UIWindowContext& windows, UIFrameContext& frames)
     : UIFrameWnd(windows, frames, 0) {
+}
+
+// OFFSET: 0x008C8F80
+
+// OFFSET: 0x008C9430
+
+// OFFSET: 0x008C86B0
+// FUNCTION: fn_11958
+UINotifyItemObtainWnd::UINotifyItemObtainWnd()
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), m_identified(false) {
 }
 
 // OFFSET: 0x008C6FA0

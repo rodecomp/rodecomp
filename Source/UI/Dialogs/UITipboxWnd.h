@@ -30,16 +30,28 @@ struct TipBoxDot {
 
 class UITipboxWnd : public UIFrameWnd {
 public:
+  UITipboxWnd();
   void ShowTip(int id);
   void TrimAt(std::string& text, const char* marker);
   void UpdateAnimations();
   bool BuildAnimations();
 
-  /* 00B4 */ unsigned char unknown_00B4[0x28];
+  /* 00B4 */ int unknown_00B4;
+  /* 00B8 */ int unknown_00B8;
+  /* 00BC */ int unknown_00BC;
+  /* 00C0 */ int unknown_00C0;
+  /* 00C4 */ int unknown_00C4;
+  /* 00C8 */ int unknown_00C8;
+  /* 00CC */ int unknown_00CC;
+  /* 00D0 */ int unknown_00D0;
+  /* 00D4 */ int unknown_00D4;
+  /* 00D8 */ int unknown_00D8;
   /* 00DC */ std::vector<TipBoxAnimation> m_animations;
   /* 00E8 */ std::vector<TipBoxDot> m_dots;
   /* 00F4 */ std::uint32_t m_buildTime;
   /* 00F8 */ std::uint32_t m_frameTime;
+  /* 00FC */ bool unknown_00FC;
+  /* 0100 */ int unknown_0100;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
