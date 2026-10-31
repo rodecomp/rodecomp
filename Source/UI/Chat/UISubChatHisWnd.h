@@ -7,6 +7,7 @@
 
 class UIChatHisBox;
 class UIEditCtrl;
+class UIWindowMgr;
 struct SubChatHisWndInfo;
 
 struct SubChatHistoryState {
@@ -20,7 +21,10 @@ struct SubChatHistoryState {
 };
 
 class UISubChatHisWnd : public UIFrameWnd {
+  friend class UIWindowMgr;
+
 public:
+  UISubChatHisWnd();
   void Move(int x, int y) override;
   void Slot11() override;
   void Paint() override;

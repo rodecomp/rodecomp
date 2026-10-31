@@ -1017,6 +1017,7 @@
   "Source/UI/Window/UIPetEvolutionWnd.cpp": 2,
   "Source/UI/Window/UIRPImageWnd2.cpp": 2,
   "Source/UI/Window/UIRebirthWnd.cpp": 2,
+  "Source/UI/Window/UIRegisterMgr.cpp": 2,
   "Source/UI/Window/UIResizer.cpp": 2,
   "Source/UI/Window/UIRoMapWnd.cpp": 2,
   "Source/UI/Window/UIRodexContentsWnd.cpp": 2,

@@ -1,6 +1,10 @@
+#include "Render/Renderer.h"
+#include "UI/Chat/UISubChatHisWnd.h"
 #include "Client/Browser/WebBrowser.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
+#include "Client/ReplayPacketRecorder.h"
+#include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Network/Connection/Connection.h"
@@ -8,7 +12,9 @@
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Lists/UIDropDownBox.h"
+#include "UI/Chat/ChatSuggestions.h"
 #include "UI/Window/MiniPartyWndAreaMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -36,6 +42,9 @@ CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr = nullptr;
 
 // GLOBAL: gl_24366
 UIWindowMgr g_windowMgr;
+
+// GLOBAL: gl_25090
+unsigned char g_windowCloseByte;
 
 // OFFSET: 0x00A94FD0
 // FUNCTION: fn_17179
@@ -1001,4 +1010,166 @@ std::vector<unsigned char> UIWindowMgr::SaveReplayWindows() {
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
   return data;
+}
+
+void __fastcall sub_DFF150(CSession* session);
+
+// OFFSET: 0x00A8C4B0
+// FUNCTION: fn_17132
+void UIWindowMgr::sub_A8C4B0(int id) {
+  g_session.EraseRecord0734(id);
+  this->unknown_4F248.push_back(id);
+  sub_DFF150(&g_session);
+}
+
+__forceinline void RecordEditTextsNoArg(UIWindow* window) {
+  union {
+    int (UIWindow::*method)(WindowReplayRecorder&);
+    void (__thiscall* call)(UIWindow*);
+  } convert;
+  convert.method = &UIWindow::RecordEditTexts;
+  convert.call(window);
+}
+
+// OFFSET: 0x00A8CA20
+// FUNCTION: fn_17139
+bool UIWindowMgr::sub_A8CA20() {
+  if (g_replayAnimationScaling != 0) {
+    return false;
+  }
+
+  bool handled = true;
+  if (!this->modalWindows.empty() && this->modalWindows.back() != nullptr) {
+    reinterpret_cast<const WindowDialogs*>(this)->Top()->SendMsg(nullptr, 0, 0, 0, 0, 0);
+    return true;
+  }
+
+  UIWindow* window = reinterpret_cast<UIWindow*>(static_cast<std::uintptr_t>(this->unknown_0234));
+  if (window == nullptr) {
+    window = reinterpret_cast<UIWindow*>(static_cast<std::uintptr_t>(this->unknown_0314));
+    if (window != nullptr) {
+      if (Replay::Instance().state == 2) {
+        RecordEditTextsNoArg(window);
+      }
+      window->SendMsg(nullptr, 0, 0, 0, 0, 0);
+      return true;
+    }
+    window = reinterpret_cast<UIWindow*>(static_cast<std::uintptr_t>(this->unknown_0318));
+    if (window != nullptr) {
+      if (Replay::Instance().state == 2) {
+        RecordEditTextsNoArg(window);
+      }
+      window->SendMsg(nullptr, 0, 0, 0, 0, 0);
+      return true;
+    }
+    window = this->unknown_01F8;
+    if (window == nullptr) {
+      window = this->unknown_01F0;
+    }
+    if (window == nullptr) {
+      window = this->unknown_01F4;
+    }
+    if (window == nullptr) {
+      window = this->unknown_0214;
+    }
+    if (window == nullptr) {
+      window = this->unknown_021C;
+      if (window != nullptr) {
+        window->SendMsg(nullptr, 0x13, 0, 0, 0, 0);
+        return true;
+      }
+      window = this->unknown_020C;
+      if (window == nullptr) {
+        window = this->unknown_0374;
+      }
+      if (window == nullptr) {
+        window = reinterpret_cast<UIWindow*>(static_cast<std::uintptr_t>(this->unknown_0378));
+      }
+      if (window == nullptr) {
+        window = reinterpret_cast<UIWindow*>(static_cast<std::uintptr_t>(this->unknown_030C));
+      }
+      if (window == nullptr) {
+        if (this->hoverWindow != nullptr) {
+          if (this->window_01C8 != nullptr && this->hoverWindow->parent == this->window_01C8) {
+            if (reinterpret_cast<const ChatSuggestions*>(this->window_01C8)->Visible()) {
+              UIWindow* child = *reinterpret_cast<UIWindow**>(reinterpret_cast<unsigned char*>(this->window_01C8) + 0x13C);
+              if (child != nullptr) {
+                child->SendMsg(nullptr, 0xB0, 0xD, 0, 0, 0);
+                return true;
+              }
+            }
+            handled = false;
+          }
+          if (Replay::Instance().state == 2 && handled) {
+            RecordEditTextsNoArg(this->hoverWindow->Root());
+          }
+          if (g_windowCloseByte == 0) {
+            handled = true;
+          } else if (!handled) {
+            return false;
+          }
+          this->hoverWindow->SendMsg(nullptr, 0, 0, 0, 0, 0);
+          return handled;
+        }
+        window = this->window_03D4;
+        if (window == nullptr) {
+          if (this->window_01C8 != nullptr && reinterpret_cast<const unsigned char*>(&g_windowCloseByte)[-2] == 1) {
+            handled = false;
+            RecordEditTextsNoArg(this->window_01C8);
+            window = this->window_01C8;
+          } else {
+            for (UIWindow* item : this->rendered) {
+              if (!item->Slot02()) {
+                continue;
+              }
+              if (g_replayAnimationScaling == 0) {
+                RecordEditTextsNoArg(item->Root());
+              }
+              item->SendMsg(nullptr, 0, 0, 0, 0, 0);
+            }
+            return false;
+          }
+        }
+      }
+    }
+  }
+
+  window->SendMsg(nullptr, 0, 0, 0, 0, 0);
+  return handled;
+}
+
+// OFFSET: 0x00A97580
+// FUNCTION: fn_17205
+UIWindow* UIWindowMgr::sub_A97580(int id, int x, int y, int width, int height) {
+  if (x == -1 && y == -1) {
+    x = (id + 10) * 10;
+    y = (id + 5) * 20;
+  }
+  if (width == 0 || width > g_renderer->viewport.width) {
+    width = 300;
+  }
+  if (height == 0 || height > g_renderer->viewport.height) {
+    height = 0x5F;
+  }
+  int posX = g_renderer->viewport.width - width;
+  if (x <= g_renderer->viewport.width) {
+    posX = x;
+  }
+  int posY = y;
+  if (y > g_renderer->viewport.height) {
+    posY = 100;
+  }
+
+  UIWindow* window = this->retainedWindows[id];
+  if (window == nullptr) {
+    UISubChatHisWnd* created = new UISubChatHisWnd();
+    created->m_index = id;
+    created->SetSize(width, height);
+    created->Move(posX, posY);
+    this->rendered.push_back(created);
+    this->retainedWindows[id] = created;
+    window = created;
+  }
+  window->Show(1);
+  return window;
 }

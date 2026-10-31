@@ -500,6 +500,9 @@ public:
   bool IsOrderFixed(int id);
   void RemoveOrder(int id);
   void BringToFront(int id);
+  void sub_A8C4B0(int id);
+  bool sub_A8CA20();
+  UIWindow* sub_A97580(int id, int x, int y, int width, int height);
   void SetCapture(UIWindow* window);
   void ReleaseCapture();
   UIWindow* Capture() const;
