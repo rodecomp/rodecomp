@@ -13,7 +13,8 @@ class UIIngredientInfoWnd : public UIFrameWnd {
   friend class UILapineBox_IngredientListWnd;
 
 public:
-  // INLINED
+  // OFFSET: 0x005FEF40
+  // FUNCTION: fn_04139
   UIIngredientInfoWnd(UIWindowContext& windows, UIFrameContext& frames)
       : UIFrameWnd(windows, frames, 0), selected(0), insufficient(0), quantity(0) {}
   ~UIIngredientInfoWnd() override;
