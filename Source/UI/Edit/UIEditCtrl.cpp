@@ -2922,6 +2922,108 @@ int UIEditCtrl3::DecodeLinkCards(std::vector<int>& fields, const char* text, int
   return count;
 }
 
+// OFFSET: 0x00975CD0
+// FUNCTION: fn_13310
+void UIItemSellWnd2::Slot15(int width, int height) {
+  this->total = new UIStaticText(*this->m_context, *this->m_controls);
+  this->total->SetSize(160, 15);
+  this->total->SetTextAutoWidth("");
+  this->total->Move(12, this->geometry.height - 21);
+  this->AddChild(this->total);
+
+  UIStaticText* title = new UIStaticText(*this->m_context, *this->m_controls);
+  title->SetSize(90, 15);
+  title->SetText(LookupMessage(1569), 0);
+  title->Move(16, 2);
+  title->shadow = 1;
+  this->AddChild(title);
+
+  this->resizer = new UIResizer(*this->m_context);
+  this->resizer->SetSize(16, 16);
+  static_cast<UIResizer*>(this->resizer)->SetDirection(3);
+  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
+  this->AddChild(this->scrollBar);
+
+  const std::string prefix("유저인터페이스\\");
+  const char* names[2][3] = {{"btn_exchange", "btn_exchange_a", "btn_exchange_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+  int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
+  int ids[2] = {184, 185};
+  for (int index = 0; index < 2; ++index) {
+    this->buttons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    this->buttons[index]->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    this->buttons[index]->Move(positions[index][0], positions[index][1]);
+    this->buttons[index]->SetId(ids[index]);
+    this->AddChild(this->buttons[index]);
+  }
+
+  this->columns = 1;
+  this->visibleRows = (height - 38) / 32;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x009768A0
+// FUNCTION: fn_13311
+void UIItemSellWnd::Slot15(int width, int height) {
+  this->total = new UIStaticText(*this->m_context, *this->m_controls);
+  this->total->SetSize(160, 15);
+  char text[80];
+  std::sprintf(text, "Total : %d Zeny", 0);
+  this->total->SetTextAutoWidth(text);
+  this->total->Move(12, this->geometry.height - 21);
+  this->AddChild(this->total);
+
+  UIStaticText* title = new UIStaticText(*this->m_context, *this->m_controls);
+  title->SetSize(90, 15);
+  title->SetText(LookupMessage(168), 0);
+  title->Move(16, 2);
+  title->shadow = 1;
+  this->AddChild(title);
+
+  this->resizer = new UIResizer(*this->m_context);
+  this->resizer->SetSize(16, 16);
+  static_cast<UIResizer*>(this->resizer)->SetDirection(3);
+  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
+  this->AddChild(this->scrollBar);
+
+  const std::string prefix("유저인터페이스\\");
+  const char* names[2][3] = {{"btn_sell", "btn_sell_a", "btn_sell_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+  int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
+  int ids[2] = {184, 185};
+  for (int index = 0; index < 2; ++index) {
+    this->buttons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    this->buttons[index]->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    this->buttons[index]->Move(positions[index][0], positions[index][1]);
+    this->buttons[index]->SetId(ids[index]);
+    this->AddChild(this->buttons[index]);
+  }
+
+  this->columns = 1;
+  this->visibleRows = (height - 38) / 32;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
+
 // OFFSET: 0x00977510
 // FUNCTION: fn_13312
 void UIItemShopWnd2::Slot15(int width, int height) {

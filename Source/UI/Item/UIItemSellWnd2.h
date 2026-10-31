@@ -7,6 +7,7 @@
 #include <cstddef>
 
 struct WindowReplayRecorder;
+class UIStaticText;
 
 class UIItemSellWnd2 : public UIItemBaseWnd {
 public:
@@ -18,9 +19,13 @@ public:
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  void Slot15(int width, int height) override;
 
 protected:
-  WindowReplayRecorder* m_recorder;
+  union {
+    WindowReplayRecorder* m_recorder;
+    /* 00F0 */ UIStaticText* total;
+  };
 
 public:
   /* 00F4 */ ItemSellWndInfo* saved;
