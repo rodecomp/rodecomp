@@ -3267,6 +3267,46 @@ void UITabControl::Paint() {
 #include "UI/Text/UITextViewer.h"
 
 // OFFSET: 0x0088F8D0
+// FUNCTION: fn_11393
+void UITextViewEX::Paint() {
+  if (this->transparent) {
+    this->ClearSurface(0xFFFF00FF);
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+  } else {
+    this->ClearSurface(this->backgroundColor);
+  }
+
+  const int top = this->topLine;
+  int y = 7;
+  int line = 0;
+  for (auto it = this->lineLinks.begin(); it != this->lineLinks.end(); ++it, ++line) {
+    std::vector<UITextButton*> buttons = *it;
+    if (line >= top) {
+      int x = 0;
+      for (UITextButton* button : buttons) {
+        UIString* text = reinterpret_cast<UIString*>(button);
+        if (text->unknown_00DC != "\n") {
+          text->Show(1);
+          x = text->unknown_0080 == 0 ? x : x - 5;
+          if (x < 0) {
+            x = 0;
+          }
+          text->Move(x, !text->unknown_00AC.empty() ? y - 7 : y);
+          x = text->geometry.width + x + 5;
+        }
+      }
+      y += 21;
+    } else {
+      for (UITextButton* button : buttons) {
+        button->Show(0);
+      }
+    }
+  }
+
+  this->Refresh();
+}
 
 #include "UI/Window/UIRPImageWnd.h"
 
