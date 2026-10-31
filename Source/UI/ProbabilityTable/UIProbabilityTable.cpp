@@ -48,6 +48,61 @@ private:
 
 }
 
+struct ProbabilityTableFreezeCallback {
+  virtual ~ProbabilityTableFreezeCallback() = default;
+
+  /* 0004 */ CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>* list;
+
+  void operator()(CUIListItem* const& item);
+};
+
+struct ProbabilityTableSelectCallback {
+  virtual ~ProbabilityTableSelectCallback() = default;
+
+  /* 0004 */ CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>* list;
+
+  void operator()(CUIListItem* const& item);
+};
+
+// OFFSET: 0x00A4CD60
+// FUNCTION: fn_16148
+void ProbabilityTableFreezeCallback::operator()(CUIListItem* const& item) {
+  CUIListItem* selectedItem = item;
+  for (ProbabilityTable::CUIItem* row : this->list->items) {
+    row->SetHighlighted(selectedItem == row);
+  }
+}
+
+// OFFSET: 0x00A4CE10
+// FUNCTION: fn_16152
+void ProbabilityTableSelectCallback::operator()(CUIListItem* const& item) {
+  CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>* list = this->list;
+  CUIListItem* selectedItem = item;
+  if (!list->unknown_00C4) {
+    for (ProbabilityTable::CUIItem* row : list->items) {
+      if (selectedItem != row) {
+        row->SetSelected(false);
+      }
+    }
+
+    selectedItem->SetSelected(true);
+    if (selectedItem->index != static_cast<int>(list->selected) || !list->unknown_00E0) {
+      ProbabilityTable::CUIItem* probabilityItem = dynamic_cast<ProbabilityTable::CUIItem*>(selectedItem);
+      if (probabilityItem) {
+        list->selected = probabilityItem->index;
+        if (list->onSelect && probabilityItem->index >= 0 &&
+            static_cast<unsigned int>(probabilityItem->index) < list->data.size()) {
+          auto node = list->data.begin();
+          for (int index = probabilityItem->index; index > 0; --index) {
+            ++node;
+          }
+          list->onSelect(probabilityItem, *node);
+        }
+      }
+    }
+  }
+}
+
 template <>
 void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnScroll(int position);
 
