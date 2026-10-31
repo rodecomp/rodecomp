@@ -146,7 +146,8 @@ public:
   /* 05FC */ UIWindow* unknown_05FC;
   /* 0600 */ unsigned char unknown_0600[0x4];
   /* 0604 */ std::list<UIWindow*> unknown_0604;
-  /* 060C */ unsigned char unknown_060C[0x10];
+  /* 060C */ unsigned char unknown_060C[0x4];
+  /* 0610 */ std::vector<std::uint32_t> spriteMirrorActorIds;
   /* 061C */ UIBroadcastBalloon* broadcastBalloon;
   /* 0620 */ unsigned char unknown_0620[0x8];
   /* 0628 */ std::unordered_set<int> unknown_0628;
@@ -513,6 +514,7 @@ public:
   void ReceiveItemDropEntry(const unsigned char* data);
   void ReceiveSpriteChange(const unsigned char* data);
   void ReceiveSpriteChange2(const unsigned char* data);
+  void ReceiveSpriteChange2Mirrored(const unsigned char* packet);
   void ReceiveMapProperty(const unsigned char* data);
   void ReceiveStovePurchaseResult(const unsigned char* data);
   void ReceiveOngoingQuestList(const unsigned char* data);

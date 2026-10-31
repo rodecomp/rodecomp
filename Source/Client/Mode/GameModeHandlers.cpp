@@ -2327,3 +2327,28 @@ void CGameMode::ReceiveSimulationResult(const unsigned char* packet) {
     break;
   }
 }
+
+#pragma pack(push, 1)
+struct SpriteChange2RelayPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ std::int64_t value;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D67850
+// FUNCTION: fn_22034
+void CGameMode::ReceiveSpriteChange2Mirrored(const unsigned char* packet) {
+  this->ReceiveSpriteChange2(packet);
+  if (*reinterpret_cast<const std::uint32_t*>(packet + 2) == g_session.m_aid) {
+    for (std::uint32_t aid : this->spriteMirrorActorIds) {
+      SpriteChange2RelayPacket relay;
+      relay.id = 0x1D7;
+      relay.aid = aid;
+      relay.type = packet[6];
+      relay.value = *reinterpret_cast<const std::int64_t*>(packet + 7);
+      this->ReceiveSpriteChange2(reinterpret_cast<const unsigned char*>(&relay));
+    }
+  }
+}
