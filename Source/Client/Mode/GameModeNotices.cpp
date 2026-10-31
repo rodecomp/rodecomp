@@ -1339,6 +1339,12 @@ void CGameMode::ReceiveWindow99Values(int count, const int* values) {
   }
 }
 
+// OFFSET: 0x00D6E440
+// FUNCTION: fn_22099
+void sub_D6E440() {
+  reinterpret_cast<void(__thiscall*)(UIWindowMgr*, int)>(0x00A8CF20)(&g_windowMgr, 0x154);
+}
+
 // OFFSET: 0x00D6E450
 // FUNCTION: fn_22100
 void CGameMode::ReceiveMacroBlackListResult(int result) {
