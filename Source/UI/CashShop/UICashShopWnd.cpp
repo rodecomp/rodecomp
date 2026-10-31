@@ -114,6 +114,25 @@ UICashShopWnd::UICashShopWnd(UIWindowContext& windows, UIFrameContext& frames)
       m_pageCount(0), unknown_00E0(nullptr), unknown_00E8(0), unknown_00EC(0), unknown_00F0(0), unknown_00F4(nullptr), m_cart(nullptr) {
 }
 
+// OFFSET: 0x007CD750
+UICashShopWnd_Banner::UICashShopWnd_Banner(UIWindowContext& windows, UIButtonContext& controls)
+    : UIWindow(windows, 0), m_index(0), m_lastTick(timeGetTime()), m_controls(&controls) {
+}
+
+// OFFSET: 0x007CD800
+UICashShopWnd_Cart::UICashShopWnd_Cart(UIWindowContext& windows, UIButtonContext& controls)
+    : UIWindow(windows, 0), m_scrollBar(nullptr), m_visibleCount(6), m_scrollIndex(0), m_controls(&controls) {
+}
+
+// OFFSET: 0x007CD8C0
+UICashShopWnd_CartItem::UICashShopWnd_CartItem(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), m_controls(&controls) {
+}
+
+// OFFSET: 0x007CDE30
+// FUNCTION: fn_09521
+UICashShopWnd::~UICashShopWnd() {
+}
+
 // OFFSET: 0x007CE110
 // FUNCTION: fn_09523
 EncryptedName<85, 0x3B915119EFD523EFULL>& CashShopReplaceCartItemText::operator()() const {

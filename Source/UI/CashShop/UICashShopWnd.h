@@ -44,9 +44,7 @@ public:
 
 class UICashShopWnd_CartItem : public UIWindow {
 public:
-  // INLINED
-  UICashShopWnd_CartItem(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), m_controls(&controls) {
-  }
+  UICashShopWnd_CartItem(UIWindowContext& windows, UIButtonContext& controls);
 
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
@@ -64,10 +62,7 @@ public:
 
 class UICashShopWnd_Cart : public UIWindow {
 public:
-  // INLINED
-  UICashShopWnd_Cart(UIWindowContext& windows, UIButtonContext& controls)
-      : UIWindow(windows, 0), m_scrollBar(nullptr), m_visibleCount(6), m_scrollIndex(0), m_controls(&controls) {
-  }
+  UICashShopWnd_Cart(UIWindowContext& windows, UIButtonContext& controls);
 
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
@@ -108,6 +103,7 @@ public:
 class UICashShopWnd : public UIFrameWnd {
 public:
   UICashShopWnd(UIWindowContext& windows, UIFrameContext& frames);
+  ~UICashShopWnd() override;
   bool Slot03() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
