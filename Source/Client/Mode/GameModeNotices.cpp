@@ -17,6 +17,7 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
+#include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
@@ -132,6 +133,48 @@ struct StatusChangeAckPacket {
   /* 0005 */ unsigned char value;
 };
 
+struct ItemSlotOption {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t value;
+  /* 0004 */ unsigned char parameter;
+};
+
+struct ItemSlotAddOptionsPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ int slot;
+  /* 000B */ unsigned char identified;
+  /* 000C */ unsigned char damaged;
+  /* 000D */ unsigned char refine;
+  /* 000E */ unsigned char cards[16];
+  /* 001E */ ItemSlotOption options[5];
+  /* 0037 */ std::uint32_t expireTime;
+  /* 003B */ std::uint16_t bindType;
+};
+
+struct ItemSlotAddGradePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ int slot;
+  /* 000B */ unsigned char identified;
+  /* 000C */ unsigned char damaged;
+  /* 000D */ unsigned char cards[16];
+  /* 001D */ ItemSlotOption options[5];
+  /* 0036 */ std::uint32_t expireTime;
+  /* 003A */ std::uint16_t bindType;
+  /* 003C */ unsigned char refine;
+  /* 003D */ unsigned char grade;
+};
+
+struct ItemOptionsRefreshPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t index;
+  /* 0004 */ std::uint16_t refine;
+  /* 0006 */ ItemSlotOption options[5];
+};
+
 struct PacketIdOnly {
   /* 0000 */ std::int16_t id;
 };
@@ -189,6 +232,17 @@ struct RouletteInfoPacket {
   /* 0008 */ RouletteInfoSlot slots[42];
 };
 #pragma pack(pop)
+
+// INLINED
+static int CountItemSlotOptions(const ItemSlotOption* options) {
+  int count = 0;
+  for (int index = 0; index < 5; ++index) {
+    if (options[index].id != 0) {
+      ++count;
+    }
+  }
+  return count;
+}
 
 // OFFSET: 0x00D45740
 // FUNCTION: fn_21839
@@ -1961,4 +2015,288 @@ void __stdcall ReceiveBuyingStoreResult(const BuyingStoreResultPacket* packet) {
 
   std::sprintf(text, LookupMessage(message));
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+}
+
+// OFFSET: 0x00D18BA0
+// FUNCTION: fn_21600
+void CGameMode::SetActorUnknown02E4(std::uint32_t aid, int value) {
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+  if (actor) {
+    actor->SetUnknown02E4(value);
+  }
+}
+
+// OFFSET: 0x00D197D0
+// FUNCTION: fn_21608
+void CGameMode::IgnoreRemovedPacket13(const unsigned char*) {
+}
+
+// OFFSET: 0x00D197E0
+// FUNCTION: fn_21609
+void CGameMode::IgnoreRemovedPacket14(const unsigned char*) {
+}
+
+// OFFSET: 0x00D198E0
+// FUNCTION: fn_21611
+void CGameMode::IgnoreRemovedPacket15(const unsigned char*) {
+}
+
+// OFFSET: 0x00D19EE0
+// FUNCTION: fn_21614
+void CGameMode::IgnoreRemovedPacket16(const unsigned char*) {
+}
+
+// OFFSET: 0x00D6C080
+// FUNCTION: fn_22078
+void CGameMode::ReceiveItemSlotAddOptions(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ItemSlotAddOptionsPacket*>(data);
+  if (packet->slot < 0) {
+    g_modeMgr.gameMode->SendMsg(0x35, 0, 0, 0, 0);
+  }
+
+  if (packet->itemId == 0) {
+    g_session.SetUnknown5214(packet->slot);
+    return;
+  }
+
+  ITEM_INFO item;
+  item.unknown_0000[0] = packet->type;
+  item.SetItemId(packet->itemId);
+  item.quantity = packet->slot;
+  item.unknown_005D = packet->damaged;
+  item.identified = packet->identified;
+  item.unknown_0060 = packet->refine;
+  std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
+  item.unknown_0000[1] = 0xFFFFFFFF;
+  item.unknown_0098 = CountItemSlotOptions(packet->options);
+  for (int index = 0; index < item.unknown_0098; ++index) {
+    reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[index] = packet->options[index];
+  }
+  item.unknown_0000[2] = packet->expireTime;
+  item.unknown_0070 = packet->bindType;
+  g_session.AddItemSlot(item);
+}
+
+// OFFSET: 0x00D6C240
+// FUNCTION: fn_22079
+void CGameMode::ReceiveItemSlotAddGrade(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ItemSlotAddGradePacket*>(data);
+  if (packet->slot < 0) {
+    g_modeMgr.gameMode->SendMsg(0x35, 0, 0, 0, 0);
+  }
+
+  if (packet->itemId == 0) {
+    g_session.SetUnknown5214(packet->slot);
+    return;
+  }
+
+  ITEM_INFO item;
+  item.unknown_0000[0] = packet->type;
+  item.SetItemId(packet->itemId);
+  item.quantity = packet->slot;
+  item.unknown_005D = packet->damaged;
+  item.identified = packet->identified;
+  item.unknown_0060 = packet->refine;
+  std::memcpy(item.unknown_001C, packet->cards, sizeof(packet->cards));
+  item.unknown_0000[1] = 0xFFFFFFFF;
+  item.unknown_0098 = CountItemSlotOptions(packet->options);
+  for (int index = 0; index < item.unknown_0098; ++index) {
+    reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[index] = packet->options[index];
+  }
+  item.unknown_0000[2] = packet->expireTime;
+  item.unknown_0070 = packet->bindType;
+  item.unknown_0088 = packet->grade;
+  g_session.AddItemSlot(item);
+}
+
+// OFFSET: 0x00D6D7E0
+// FUNCTION: fn_22090
+void CGameMode::ReceiveGuildUnknown0114Change(unsigned char value, std::uint32_t removeAid, std::uint32_t addAid) {
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  if (g_session.IsLocalPlayerAid(removeAid) == 1) {
+    guildInfo->RemoveUnknown0114(value);
+  } else if (g_session.IsLocalPlayerAid(addAid) == 0) {
+    guildInfo->AddUnknown0114(value);
+  }
+
+  if (g_windowMgr.window_0320) {
+    g_windowMgr.window_0320->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D6DDD0
+// FUNCTION: fn_22093
+void CGameMode::ReceiveItemOptionsRefresh(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ItemOptionsRefreshPacket*>(data);
+  if (!packet) {
+    return;
+  }
+
+  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
+  if (item.unknown_0000[1] != 0) {
+    item.unknown_0060 = packet->refine;
+    item.unknown_0098 = CountItemSlotOptions(packet->options);
+    for (int index = 0; index < item.unknown_0098; ++index) {
+      reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[index] = packet->options[index];
+    }
+    g_session.UpdateInventoryItem(item, 1);
+  }
+}
+
+// OFFSET: 0x00D06410
+// FUNCTION: fn_21575
+int GetBaseJob(int job) {
+  switch (job) {
+  case JT_NOVICE_H:
+  case JT_NOVICE_B:
+    return JT_NOVICE;
+  case JT_SWORDMAN_H:
+  case JT_SWORDMAN_B:
+    return JT_SWORDMAN;
+  case JT_MAGICIAN_H:
+  case JT_MAGICIAN_B:
+    return JT_MAGICIAN;
+  case JT_ARCHER_H:
+  case JT_ARCHER_B:
+    return JT_ARCHER;
+  case JT_ACOLYTE_H:
+  case JT_ACOLYTE_B:
+    return JT_ACOLYTE;
+  case JT_MERCHANT_H:
+  case JT_MERCHANT_B:
+    return JT_MERCHANT;
+  case JT_THIEF_H:
+  case JT_THIEF_B:
+    return JT_THIEF;
+  case JT_KNIGHT_H:
+  case JT_KNIGHT_B:
+  case JT_RUNE_KNIGHT:
+  case JT_RUNE_KNIGHT_H:
+  case JT_RUNE_KNIGHT_B:
+  case JT_DRAGON_KNIGHT:
+    return JT_KNIGHT;
+  case JT_PRIEST_H:
+  case JT_PRIEST_B:
+  case JT_ARCHBISHOP:
+  case JT_ARCHBISHOP_H:
+  case JT_ARCHBISHOP_B:
+  case JT_CARDINAL:
+    return JT_PRIEST;
+  case JT_WIZARD_H:
+  case JT_WIZARD_B:
+  case JT_WARLOCK:
+  case JT_WARLOCK_H:
+  case JT_WARLOCK_B:
+  case JT_ARCH_MAGE:
+    return JT_WIZARD;
+  case JT_BLACKSMITH_H:
+  case JT_BLACKSMITH_B:
+  case JT_MECHANIC:
+  case JT_MECHANIC_H:
+  case JT_MECHANIC_B:
+  case JT_MEISTER:
+    return JT_BLACKSMITH;
+  case JT_HUNTER_H:
+  case JT_HUNTER_B:
+  case JT_RANGER:
+  case JT_RANGER_H:
+  case JT_RANGER_B:
+  case JT_WINDHAWK:
+    return JT_HUNTER;
+  case JT_ASSASSIN_H:
+  case JT_ASSASSIN_B:
+  case JT_GUILLOTINE_CROSS:
+  case JT_GUILLOTINE_CROSS_H:
+  case JT_GUILLOTINE_CROSS_B:
+  case JT_SHADOW_CROSS:
+    return JT_ASSASSIN;
+  case JT_CRUSADER_H:
+  case JT_CRUSADER_B:
+  case JT_ROYAL_GUARD:
+  case JT_ROYAL_GUARD_H:
+  case JT_ROYAL_GUARD_B:
+  case JT_IMPERIAL_GUARD:
+    return JT_CRUSADER;
+  case JT_MONK_H:
+  case JT_MONK_B:
+  case JT_SURA:
+  case JT_SURA_H:
+  case JT_SURA_B:
+  case JT_INQUISITOR:
+    return JT_MONK;
+  case JT_SAGE_H:
+  case JT_SAGE_B:
+  case JT_SORCERER:
+  case JT_SORCERER_H:
+  case JT_SORCERER_B:
+  case JT_ELEMENTAL_MASTER:
+    return JT_SAGE;
+  case JT_ROGUE_H:
+  case JT_ROGUE_B:
+  case JT_SHADOW_CHASER:
+  case JT_SHADOW_CHASER_H:
+  case JT_SHADOW_CHASER_B:
+  case JT_ABYSS_CHASER:
+    return JT_ROGUE;
+  case JT_ALCHEMIST_H:
+  case JT_ALCHEMIST_B:
+  case JT_GENETIC:
+  case JT_GENETIC_H:
+  case JT_GENETIC_B:
+  case JT_BIOLO:
+    return JT_ALCHEMIST;
+  case JT_BARD_H:
+  case JT_BARD_B:
+  case JT_MINSTREL:
+  case JT_MINSTREL_H:
+  case JT_MINSTREL_B:
+  case JT_TROUBADOUR:
+    return JT_BARD;
+  case JT_DANCER_H:
+  case JT_DANCER_B:
+  case JT_WANDERER:
+  case JT_WANDERER_H:
+  case JT_WANDERER_B:
+  case JT_TROUVERE:
+    return JT_DANCER;
+  case JT_SUPERNOVICE_B:
+  case JT_SUPERNOVICE2:
+  case JT_SUPERNOVICE2_B:
+  case JT_HYPER_NOVICE:
+    return JT_SUPERNOVICE;
+  case JT_REBELLION:
+  case JT_GUNSLINGER_B:
+  case JT_REBELLION_B:
+  case JT_NIGHT_WATCH:
+    return JT_GUNSLINGER;
+  case JT_KAGEROU:
+  case JT_OBORO:
+  case JT_NINJA_B:
+  case JT_KAGEROU_B:
+  case JT_OBORO_B:
+  case JT_SHINKIRO:
+  case JT_SHIRANUI:
+    return JT_NINJA;
+  case JT_TAEKWON_B:
+    return JT_TAEKWON;
+  case JT_STAR_B:
+  case JT_STAR_EMPEROR:
+  case JT_STAR_EMPEROR_B:
+  case JT_SKY_EMPEROR:
+    return JT_STAR;
+  case JT_LINKER_B:
+  case JT_SOUL_REAPER:
+  case JT_SOUL_REAPER_B:
+  case JT_SOUL_ASCETIC:
+    return JT_LINKER;
+  case JT_DO_SUMMONER_B:
+  case JT_SPIRIT_HANDLER:
+    return JT_DO_SUMMONER;
+  case JT_DRUID_B:
+  case JT_KARNOS:
+  case JT_KARNOS_B:
+  case JT_ALITEA:
+    return JT_DRUID;
+  }
+  return job;
 }

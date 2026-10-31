@@ -441,6 +441,15 @@ public:
   void ReceiveStatus(const unsigned char* data);
   void ReceiveStatusChange(const unsigned char* data);
   void ReceiveStatusChangeAck(const unsigned char* data);
+  void SetActorUnknown02E4(std::uint32_t aid, int value);
+  void IgnoreRemovedPacket13(const unsigned char* packet);
+  void IgnoreRemovedPacket14(const unsigned char* packet);
+  void IgnoreRemovedPacket15(const unsigned char* packet);
+  void IgnoreRemovedPacket16(const unsigned char* packet);
+  void ReceiveItemSlotAddOptions(const unsigned char* data);
+  void ReceiveItemSlotAddGrade(const unsigned char* data);
+  void ReceiveGuildUnknown0114Change(unsigned char value, std::uint32_t removeAid, std::uint32_t addAid);
+  void ReceiveItemOptionsRefresh(const unsigned char* data);
   void ReceivePartyJobLevel(const unsigned char* packet);
   void ReceivePartyDead(const unsigned char* packet);
   void ReceiveShopItemList(const std::vector<ITEM_INFO>& items, int value, int unused1, int argument, int unused2, std::uint32_t duration, unsigned char myShop);
