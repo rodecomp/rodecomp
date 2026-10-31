@@ -16,6 +16,7 @@ public:
   UIParaItemPurchaseWnd();
   void Slot25(int x, int y) override;
   void Slot10(int x, int y, std::intptr_t value) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
 
 class UIParaItemShopWnd : public UIItemShopWnd {
@@ -23,6 +24,11 @@ public:
   UIParaItemShopWnd();
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot32(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+  /* 0104 */ int unknown_0104;
+  /* 0108 */ int unknown_0108;
+  /* 010C */ int unknown_010C;
 };
 
 class UIParaResultWnd : public UIItemBaseWnd {

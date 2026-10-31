@@ -8,6 +8,8 @@
 #include <cstdint>
 
 struct WindowReplayRecorder;
+class UICheckBox;
+class UIStaticText;
 
 class UIItemShopWnd : public UIItemBaseWnd {
 public:
@@ -19,10 +21,13 @@ public:
   void Slot32(int x, int y) override;
 
 protected:
-  WindowReplayRecorder* m_recorder;
+  union {
+    WindowReplayRecorder* m_recorder;
+    /* 00F0 */ UIStaticText* title;
+  };
 
 public:
-  /* 00F4 */ unsigned char unknown_00F4[0x4];
+  /* 00F4 */ UICheckBox* checkBox;
   /* 00F8 */ int unknown_00F8;
   /* 00FC */ ItemShopWndInfo* saved;
   /* 0100 */ int hovered;
