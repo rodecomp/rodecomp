@@ -77,6 +77,7 @@ public:
     float startX, float startY, float endX, float endY, int stepWidth, int thickness, CTexture* body, int headSize, CTexture* head, float progress,
     std::uint32_t color, int offset
   );
+  void DrawMapMarker(const RoMapMarker& marker, unsigned char skipSelected);
   void RefreshPartyRecords();
   bool LocateRecord(WorldViewRecord& record);
 

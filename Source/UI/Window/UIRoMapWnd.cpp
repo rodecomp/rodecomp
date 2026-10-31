@@ -605,6 +605,26 @@ void CKafraMoveMapServiceInfo::Update(UIRoMapWnd* wnd, float elapsed) {
   this->markers.clear();
 }
 
+// OFFSET: 0x009409E0
+// FUNCTION: fn_12779
+void UIRoMapWnd::DrawMapMarker(const RoMapMarker& marker, unsigned char skipSelected) {
+  if (skipSelected == 1) {
+    const WorldViewRecord* selected = this->unknown_00C0;
+    if (marker.area.left == selected->left && marker.area.right == selected->right && marker.area.top == selected->top &&
+        marker.area.bottom == selected->bottom) {
+      return;
+    }
+  }
+
+  DrawRoundedBorder(*this, marker.area.left, marker.area.top, static_cast<int>(marker.width), static_cast<int>(marker.height), 0xFFFFFF);
+  DrawAlphaRectangle(
+    g_renderer->primitives, g_renderer->queues, marker.area.left, marker.area.top, static_cast<int>(marker.width), static_cast<int>(marker.height), 0x66000000,
+    g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+  );
+  std::string name = g_session.GetMapDisplayName(marker.name.c_str());
+  DrawOutlinedText(*this, marker.area.left + 2, marker.area.top + 5, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
+}
+
 // OFFSET: 0x009144B0
 // FUNCTION: fn_12541
 UIRoMapWnd::~UIRoMapWnd() {
