@@ -41,6 +41,10 @@ struct MenuIconOpenUiPacket {
 // GLOBAL: gl_24966
 static bool s_menuIconExpanded;
 
+// OFFSET: 0x0084A1E0
+// FUNCTION: fn_10606
+UIMenuIcon::UIMenuIcon() {}
+
 // OFFSET: 0x0084A240
 // FUNCTION: fn_10607
 UIMenuIconWnd::UIMenuIconWnd(UIWindowContext& windowContext, UIFrameContext& frameContext)

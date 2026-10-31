@@ -9,8 +9,7 @@
 
 class UIMenuIcon : public UIBitmapButton {
 public:
-  // INLINED
-  UIMenuIcon() {}
+  UIMenuIcon();
 
   void Slot27(int x, int y) override;
 };
