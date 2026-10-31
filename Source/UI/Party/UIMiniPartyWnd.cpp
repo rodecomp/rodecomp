@@ -81,6 +81,21 @@ void UIMiniPartyWnd::Slot25(int x, int y) {
   this->m_frameContext->snapping.graph.CaptureOrigins(this);
 }
 
+// OFFSET: 0x00740B80
+// FUNCTION: fn_07731
+void UIMiniPartyInfoWnd::Slot25(int x, int y) {
+  if (!g_messengerGroupCollapsed) {
+    this->m_owner->Slot25(x, y);
+  }
+
+  if (this->m_owner->GetMember().valid && this->m_owner->GetMember().offline == 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode) {
+      mode->TargetActorByAid(this->m_owner->GetMember().accountId);
+    }
+  }
+}
+
 // OFFSET: 0x00740D10
 // FUNCTION: fn_07732
 void UIMiniPartyInfoWnd::Slot31(int x, int y) {
