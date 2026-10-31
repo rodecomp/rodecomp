@@ -2378,10 +2378,125 @@ void CUITextButton::Slot54(int) {
 }
 
 // OFFSET: 0x009F1210
+// FUNCTION: fn_14688
+void CUITabButton::Slot54(int padding) {
+  if (this->orientation == 1) {
+    const int height = this->VerticalTextHeight(
+      this->m_context->fonts, this->m_context->locale, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold
+    );
+    this->Resize(this->geometry.width, padding + height);
+    if (this->verticalAlign == 0) {
+      this->textY = 0;
+    } else if (this->verticalAlign == 6) {
+      this->textY = (this->geometry.height - height) / 2;
+    } else if (this->verticalAlign == 8) {
+      this->textY = this->geometry.height - height;
+    }
+  } else {
+    const int width = this->TextWidth(
+      this->m_context->fonts, this->m_context->locale, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
+    );
+    this->Resize(width + 2, this->geometry.height);
+    if (this->horizontalAlign == 0) {
+      this->textX = 0;
+    } else if (this->horizontalAlign == 6) {
+      this->textX = (this->geometry.width - width) / 2;
+    } else if (this->horizontalAlign == 2) {
+      this->textX = this->geometry.width - width;
+    }
+  }
+}
 
 // OFFSET: 0x009ECA30
+// FUNCTION: fn_14562
+void CUITextButton::Slot55() {
+  if (this->displayText.size() == 0) {
+    return;
+  }
+
+  if (this->orientation == 1) {
+    this->DrawVerticalLabel();
+    return;
+  }
+
+  if (this->disabled) {
+    this->DrawTextAt(
+      this->m_context->fonts, this->m_context->locale, this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight,
+      this->disabledTextColor, this->bold, 0
+    );
+    return;
+  }
+
+  if (this->state == 1) {
+    if (this->shadow) {
+      this->DrawTextAt(
+        this->m_context->fonts, this->m_context->locale, this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight,
+        this->shadowColor, this->bold, 0
+      );
+    }
+    if (!this->outline) {
+      this->DrawTextAt(
+        this->m_context->fonts, this->m_context->locale, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->fontIndex,
+        this->fontHeight, this->textColors[this->state], this->bold, 0
+      );
+      return;
+    }
+    DrawOutlinedText(
+      *this, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->textColors[this->state], this->outlineColor, this->fontIndex,
+      this->fontHeight, this->bold, 0
+    );
+    return;
+  }
+
+  if (this->shadow) {
+    this->DrawTextAt(
+      this->m_context->fonts, this->m_context->locale, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, this->fontIndex,
+      this->fontHeight, this->shadowColor, this->bold, 0
+    );
+  }
+  if (this->outline) {
+    DrawOutlinedText(
+      *this, this->textX, this->textY, this->displayText.c_str(), 0, this->textColors[this->state], this->outlineColor, this->fontIndex,
+      this->fontHeight, this->bold, 0
+    );
+    return;
+  }
+  this->DrawTextAt(
+    this->m_context->fonts, this->m_context->locale, this->textX, this->textY, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight,
+    this->textColors[this->state], this->bold, 0
+  );
+}
 
 // OFFSET: 0x009E1E20
+// FUNCTION: fn_14404
+void CUIBasicButton::Slot55() {
+  if (this->displayText.size() == 0) {
+    return;
+  }
+
+  FontCache& fonts = this->m_context->fonts;
+  const TextLocale& locale = this->m_context->locale;
+  if (this->disabled) {
+    this->DrawTextAt(fonts, locale, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xE2E2E2, 0, 0);
+    this->DrawTextAt(fonts, locale, this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0x6F6F6F, 0, 0);
+    return;
+  }
+
+  switch (this->state) {
+  case 0:
+    this->DrawTextAt(fonts, locale, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xD7D7D7, 0, 0);
+    this->DrawTextAt(fonts, locale, this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0, 0, 0);
+    break;
+  case 1:
+    this->DrawTextAt(fonts, locale, this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(fonts, locale, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0, 0, 0);
+    break;
+  case 2:
+    this->DrawTextAt(fonts, locale, this->textX + 1, this->textY + 1, this->displayText.c_str(), 0, 0, 12, 0xC7A796, 0, 0);
+    this->DrawTextAt(fonts, locale, this->textX, this->textY, this->displayText.c_str(), 0, 0, 12, 0, 0, 0);
+    break;
+  }
+}
 
 // OFFSET: 0x009F0980
 // FUNCTION: fn_14669
@@ -2411,10 +2526,83 @@ void CUIStaticText::Paint() {
 }
 
 // OFFSET: 0x009E80C0
+// FUNCTION: fn_14489
+void CUIImageTextButton::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  CBitmapRes* image = nullptr;
+  if (!this->disabled) {
+    const auto found = this->images.find(this->state);
+    if (found != this->images.end()) {
+      image = found->second;
+    }
+  } else {
+    image = this->disabledImage;
+  }
+
+  if (image) {
+    this->DrawBitmap(0, 0, &image->image, false);
+  }
+  this->CUITextButton::Slot55();
+}
 
 // OFFSET: 0x009F1320
+// FUNCTION: fn_14689
+void CUITabButton::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (!this->useSkinColors) {
+    this->CUIImageTextButton::Paint();
+    return;
+  }
+
+  const int width = this->geometry.width;
+  const int height = this->geometry.height;
+  if (this->orientation == 1) {
+    if (this->state != 1) {
+      this->FillRegion(2, 1, width - 3, height - 2, this->normalColor);
+      this->FillRegion(1, 2, 1, height - 4, this->borderColor);
+      this->FillRegion(2, 1, 1, 1, this->borderColor);
+      this->FillRegion(2, height - 2, 1, 1, this->borderColor);
+      this->FillRegion(3, 0, width - 3, 1, this->borderColor);
+      this->FillRegion(3, height - 1, width - 3, 1, this->borderColor);
+      this->FillRegion(width - 1, 0, 1, height, this->borderColor);
+    } else {
+      this->FillRegion(1, 1, width - 1, height - 2, this->selectedColor);
+      this->FillRegion(0, 2, 1, height - 4, this->borderColor);
+      this->FillRegion(1, 1, 1, 1, this->borderColor);
+      this->FillRegion(1, height - 2, 1, 1, this->borderColor);
+      this->FillRegion(2, 0, width - 2, 1, this->borderColor);
+      this->FillRegion(2, height - 1, width - 2, 1, this->borderColor);
+    }
+  } else if (this->state == 1) {
+    this->FillRegion(1, 1, width - 2, height - 1, this->selectedColor);
+    this->FillRegion(2, 0, width - 4, 1, this->borderColor);
+    this->FillRegion(1, 1, 1, 1, this->borderColor);
+    this->FillRegion(width - 2, 1, 1, 1, this->borderColor);
+    this->FillRegion(0, 2, 1, height - 2, this->borderColor);
+    this->FillRegion(width - 1, 2, 1, height - 2, this->borderColor);
+  } else {
+    this->FillRegion(1, 2, width - 2, height - 3, this->normalColor);
+    this->FillRegion(2, 1, width - 4, 1, this->borderColor);
+    this->FillRegion(1, 2, 1, 1, this->borderColor);
+    this->FillRegion(width - 2, 2, 1, 1, this->borderColor);
+    this->FillRegion(0, 3, 1, height - 3, this->borderColor);
+    this->FillRegion(width - 1, 3, 1, height - 3, this->borderColor);
+    this->FillRegion(0, height - 1, width, 1, this->borderColor);
+  }
+  this->CUITextButton::Slot55();
+}
 
 // OFFSET: 0x009EC430
+// FUNCTION: fn_14559
+CUITextButton::CUITextButton(UIWindowContext& context)
+    : CUIButton(context), text(), displayText(), fullText(), fitText(false), orientation(0), horizontalAlign(0), verticalAlign(0), fontIndex(0), fontHeight(12),
+      bold(0), textColors(), disabledTextColor(0x808080), shadow(0), shadowColor(0xFFFFFF), outline(0), outlineColor(0xFFFFFF), textX(0), textY(0),
+      tooltipText() {
+  this->textColors[0] = 0;
+  this->textColors[1] = 0;
+  this->textColors[2] = 0;
+}
 
 // OFFSET: 0x009E1250
 
