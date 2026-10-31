@@ -37,6 +37,8 @@ void CUIListItem::SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitm
   this->Invalidate();
 }
 
+// OFFSET: 0x00A0EBF0
+// FUNCTION: fn_15152
 EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::CUIItemEquipmentPropertiesLine(UIWindowContext& context)
     : CUIListItem(context), unknown_00E8(nullptr), unknown_00EC(nullptr), evenRowColor(0), oddRowColor(0) {
 }
