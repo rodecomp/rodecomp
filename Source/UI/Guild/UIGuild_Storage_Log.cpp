@@ -4,6 +4,31 @@
 
 #include <algorithm>
 
+// GLOBAL: gl_25103
+std::vector<GuildStorageLogEntry> g_guildStorageLogs[3];
+
+// OFFSET: 0x009469D0
+// FUNCTION: fn_12849
+UIGuild_Storage_Log::UIGuild_Storage_Log(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->unknown_0184 = 0;
+  this->unknown_0188 = 0;
+  this->unknown_018C = 0;
+  this->m_category = 0;
+  this->m_offset = 0;
+  this->m_state = 1;
+  this->unknown_0174 = 0;
+  const int first = static_cast<int>(g_guildStorageLogs[0].size());
+  this->unknown_0178[0] = first;
+  const int second = static_cast<int>(g_guildStorageLogs[1].size());
+  this->unknown_0178[1] = second;
+  const int third = static_cast<int>(g_guildStorageLogs[2].size());
+  this->m_page = 1;
+  this->unknown_0178[2] = third;
+  this->m_pageCounts[0] = (first + 9) / 10;
+  this->m_pageCounts[1] = (second + 9) / 10;
+  this->m_pageCounts[2] = (third + 9) / 10;
+}
+
 // OFFSET: 0x00950450
 // FUNCTION: fn_12941
 int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
