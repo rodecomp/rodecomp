@@ -25,6 +25,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void sub_90C970(int value);
+  void sub_90C9B0(int);
 };
 
 #endif

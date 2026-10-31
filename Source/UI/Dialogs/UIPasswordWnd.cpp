@@ -11,3 +11,7 @@ void UIPasswordWnd::sub_90C970(int value) {
     this->unknown_0164->SetText(LookupMessage(0xa06), 0);
   }
 }
+
+// OFFSET: 0x0090C9B0
+// FUNCTION: fn_12452
+void UIPasswordWnd::sub_90C9B0(int) {}
