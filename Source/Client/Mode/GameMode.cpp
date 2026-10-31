@@ -1752,3 +1752,116 @@ unsigned CGameMode::sub_CEBBB0(const std::vector<unsigned char>& data) {
 finished:
   return offset;
 }
+
+#include "Contents/Actors/Item.h"
+#include <cstdlib>
+
+// OFFSET: 0x00CE93E0
+// FUNCTION: fn_21347
+std::vector<unsigned char> CGameMode::SaveNameCardState() {
+  std::vector<unsigned char> data;
+
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 13000;
+    header->size = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  std::vector<char> buffer;
+  std::vector<std::string> names;
+  if (static_cast<int>(this->nameCard.Save(buffer)) > 0) {
+    std::vector<unsigned char> chunk(buffer.size() + sizeof(GameModeChunkHeader));
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 13003;
+    header->size = buffer.size();
+    if (buffer.size() != 0) {
+      std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), buffer.data(), buffer.size());
+    }
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  {
+    const int emblemVersion = g_guildMgr->GetEmblemVersion(this->scene->player->Slot50());
+    if (this->AppendGuildEmblem(buffer, names, this->scene->player->Slot50(), emblemVersion)) {
+      std::vector<unsigned char> chunk(buffer.size() + sizeof(GameModeChunkHeader));
+      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+      header->type = 13002;
+      header->size = buffer.size();
+      if (buffer.size() != 0) {
+        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), buffer.data(), buffer.size());
+      }
+      data.insert(data.end(), chunk.begin(), chunk.end());
+    }
+  }
+
+  {
+    const int guildId = this->scene->player->Slot50();
+    std::vector<unsigned char> chunk(sizeof(GameModeStoredValue));
+    auto* record = reinterpret_cast<GameModeStoredValue*>(chunk.data());
+    record->header.type = 13004;
+    record->header.size = sizeof(int);
+    record->value = guildId;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  {
+    const int emblemVersion = g_guildMgr->GetEmblemVersion(this->scene->player->Slot50());
+    std::vector<unsigned char> chunk(sizeof(GameModeStoredValue));
+    auto* record = reinterpret_cast<GameModeStoredValue*>(chunk.data());
+    record->header.type = 13005;
+    record->header.size = sizeof(int);
+    record->value = emblemVersion;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  for (CRenderObject* object : this->scene->actors) {
+    CGameActor* actor = static_cast<CGameActor*>(object);
+    const int emblemVersion = g_guildMgr->GetEmblemVersion(actor->Slot50());
+    if (this->AppendGuildEmblem(buffer, names, actor->Slot50(), emblemVersion)) {
+      std::vector<unsigned char> chunk(buffer.size() + sizeof(GameModeChunkHeader));
+      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+      header->type = 13002;
+      header->size = buffer.size();
+      if (buffer.size() != 0) {
+        std::memcpy(chunk.data() + sizeof(GameModeChunkHeader), buffer.data(), buffer.size());
+      }
+      data.insert(data.end(), chunk.begin(), chunk.end());
+    }
+  }
+
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 13001;
+    header->size = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  return data;
+}
+
+#pragma pack(push, 1)
+struct ItemEntryPacket {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::uint32_t itemId;
+  /* 000A */ unsigned char identified;
+  /* 000B */ std::int16_t x;
+  /* 000D */ std::int16_t y;
+  /* 000F */ std::int16_t count;
+  /* 0011 */ unsigned char subX;
+  /* 0012 */ unsigned char subY;
+};
+
+struct GameModeStoredItemEntry {
+  /* 0000 */ GameModeChunkHeader header;
+  /* 0006 */ ItemEntryPacket packet;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ItemEntryPacket) == 0x13);
+static_assert(sizeof(GameModeStoredItemEntry) == 0x19);
+
+// OFFSET: 0x00CEA0C0
