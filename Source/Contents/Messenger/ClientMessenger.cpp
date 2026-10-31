@@ -360,6 +360,7 @@ namespace EquipmentProperties {
     void ApplyProperty(const char* name, lua_State* state, const int& count, const int& valuePosition, const int& indexPosition, const int& keyPosition);
     void EquipItem(const int& itemId, bool notify);
     void UnequipItem(const int& itemId, bool notify);
+    void UnequipWearable(const int& mask);
     void AddExpansion(const int& kind, const int& itemId, bool notify);
     void RemoveExpansion(const int& kind, const int& itemId);
     void RefreshExpansion(const int& kind, const int& itemId);
@@ -3938,6 +3939,7 @@ struct SessionMessengerContext {
   /* 5574 */ int bound74;
 
   void UpdateRandomStats();
+  void sub_DD9D50();
   void ClearMemberLists();
   void PurgeMatchingMembers1();
   void ClearLists();
@@ -5073,4 +5075,140 @@ void CGameMode::Zc_Mer_Par_Change(const unsigned char* data) {
   }
 
   g_session.RefreshMercenaryInfo();
+}
+
+#include "Contents/CashEmotionMgr.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Items/ItemInfoMgr.h"
+#include "Contents/MapInfoMgr.h"
+#include "Contents/SpecialPopupMgr.h"
+#include "Contents/TipBoxTitles.h"
+#include "Render/Text/EmbedFont.h"
+#include "Utility/Cipher/XorBytes.h"
+
+#include <cstdint>
+#include <ctime>
+
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  /* 0000 */ std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+
+template <std::size_t CaptionLength, std::uint64_t CaptionKey, std::size_t MessageLength, std::uint64_t MessageKey>
+void ShowEncryptedFailure(const std::uint8_t (&captionBytes)[CaptionLength], const std::uint8_t (&messageBytes)[MessageLength]) {
+  thread_local EncryptedName<CaptionLength, CaptionKey> caption(captionBytes);
+  thread_local EncryptedName<MessageLength, MessageKey> message(messageBytes);
+  const char* captionText = caption.Text();
+  const char* messageText = message.Text();
+  MessageBoxA(nullptr, messageText, captionText, 0);
+}
+
+// GLOBAL: gl_25251
+HANDLE g_embedFontFiles;
+
+// OFFSET: 0x00DD9D50
+// FUNCTION: fn_23337
+void SessionMessengerContext::sub_DD9D50() {
+  using SessionCall = void (__thiscall*)(SessionMessengerContext*);
+  using SettingsCall = void (__thiscall*)(CGameSettingsMgr*);
+
+  if (!g_itemInfoMgr->Load()) {
+    const std::uint8_t caption[] = {0x2A, 0x0F, 0x89, 0x4C, 0x03, 0x07};
+    const std::uint8_t message[] = {0x80, 0x81, 0x3A, 0xE6, 0xC6, 0xBB, 0xDD, 0x4C, 0xE9, 0x93, 0x36, 0xE7, 0xEA, 0xF5, 0xF2, 0x4D, 0xA0, 0x81, 0x5F};
+    ShowEncryptedFailure<6, 0xCD8F077123FB7D6FULL, 0x13, 0x23BBD58F8B5FF5C9ULL>(caption, message);
+  }
+
+  if (!CSpecialPopupMgr::Init()) {
+    const std::uint8_t caption[] = {0x72, 0x35, 0xDF, 0x56, 0xCD, 0xE5};
+    const std::uint8_t message[] = {0x10, 0x79, 0x16, 0x64, 0x9C, 0xFE, 0x05, 0xC9, 0x0C, 0x79, 0x06, 0x77, 0xF5, 0xD9, 0x20, 0xF5, 0x26, 0x09, 0x1A, 0x49, 0xBC, 0xCB, 0x49};
+    ShowEncryptedFailure<6, 0x17A9E5BF39AD4737ULL, 0x17, 0x9949BFD527532943ULL>(caption, message);
+  }
+
+  if (!g_runeSystemMgr->LoadScripts()) {
+    const std::uint8_t caption[] = {0x1A, 0x47, 0xDD, 0xFA, 0xEF, 0x89};
+    const std::uint8_t message[] = {0x24, 0xF9, 0xE4, 0xCB, 0xC4, 0x6C, 0x9A, 0x60, 0x13, 0xCE, 0xFC, 0xE8, 0xC6, 0x4D, 0xC3, 0x75, 0x0E, 0xC7, 0xF4, 0x85, 0xE8, 0x51, 0x8A, 0x67, 0x67};
+    ShowEncryptedFailure<6, 0xCFF3899D95AF355FULL, 0x19, 0x13E33FA1A591AB67ULL>(caption, message);
+  }
+
+  static_cast<void>(CTipBoxMgr::Create());
+  if (!g_itemTagOwner->RegisterLuaFunctions()) {
+    const std::uint8_t caption[] = {0xF2, 0x43, 0x9D, 0xAC, 0x71, 0xDF};
+    const std::uint8_t message[] = {0x71, 0x18, 0xDF, 0x89, 0x62, 0x8B, 0x0D, 0x83, 0x4C, 0x1D, 0xCA, 0xEB, 0x44, 0x9D, 0x44, 0x91, 0x25};
+    ShowEncryptedFailure<6, 0x4F99DF03C3EF31B7ULL, 0x11, 0xE52DF30DCBAF7125ULL>(caption, message);
+  }
+
+  reinterpret_cast<bool (*)()>(0x007A9580)();
+  static_cast<void>(CCashEmotionMgr::Initialize());
+  srand(static_cast<unsigned int>(_time32(nullptr)));
+  this->UpdateRandomStats();
+  reinterpret_cast<SessionCall>(0x00DF33B0)(this);
+  static_cast<void>(g_mapInfoMgr->LoadScript());
+
+  CGameSettingsMgr* settings = Singleton<CGameSettingsMgr>::GetInstance();
+  reinterpret_cast<SettingsCall>(0x006C1180)(settings);
+  reinterpret_cast<SessionCall>(0x00DFE4E0)(this);
+  reinterpret_cast<CSession*>(this)->LoadDamageSkinSettings();
+
+  if (g_serviceType == 0) {
+    InitEmbedFont();
+    SetEmbedFontRootUrl("http://www.ragnarok.co.kr");
+    LoadEmbedFont(&g_embedFontFiles, "RixSquirrel_10.eot");
+    LoadEmbedFont(&g_embedFontFiles, "RixLoveangel_10.eot");
+    LoadEmbedFont(&g_embedFontFiles, "RixNHCgogo_10.eot");
+    LoadEmbedFont(&g_embedFontFiles, "RixDiary_10.eot");
+    LoadEmbedFont(&g_embedFontFiles, "RixMiniHeart_10.eot");
+    LoadEmbedFont(&g_embedFontFiles, "RixFreshman_10.eot");
+    LoadEmbedFont(&g_embedFontFiles, "RixKid_10.eot");
+    LoadEmbedFont(&g_embedFontFiles, "RixMagic_10.eot");
+    LoadEmbedFont(&g_embedFontFiles, "RixJJangu_10.eot");
+  }
+}
+
+// OFFSET: 0x006B6F10
+// FUNCTION: fn_06203
+void EquipmentProperties::CEquipmentPropertiesMgr::UnequipWearable(const int& mask) {
+  this->m_dirty = true;
+  const int key = GetEquipLocationIndex(mask);
+  for (auto found = this->properties1.begin(); found != this->properties1.end(); ++found) {
+    if (found->first != key) {
+      continue;
+    }
+    CEquipmentWearable* wearable = found->second;
+    for (CEquipmentAttachable& attachable : wearable->GetAttachables()) {
+      this->UnequipItem(attachable.GetId(), true);
+    }
+    this->UnequipItem(wearable->GetId(), true);
+    wearable->Clear();
+    delete wearable;
+    this->properties1.erase(found);
+    break;
+  }
+  if (this->unknown_0020 != nullptr) {
+    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
 }
