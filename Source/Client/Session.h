@@ -210,7 +210,13 @@ public:
   /* 0F38 */ int cartMaxCount;
   /* 0F3C */ int cartWeight;
   /* 0F40 */ int cartMaxWeight;
-  /* 0F44 */ unsigned char unknown_0F44[8];
+  union {
+    /* 0F44 */ unsigned char unknown_0F44[8];
+    struct {
+      /* 0F44 */ int m_vendingSlotCount;
+      /* 0F48 */ int m_buyingStoreSlotCount;
+    };
+  };
   /* 0F4C */ int unknown_0F4C;
   /* 0F50 */ int unknown_0F50;
   /* 0F54 */ unsigned char unknown_0F54[0x04];
@@ -1032,6 +1038,9 @@ static_assert(offsetof(CSession, m_homunculusAutoFeed) == 0x7F7C);
 static_assert(offsetof(CSession, m_options) == 0x7FA8);
 static_assert(offsetof(CSession, m_nameToId) == 0x80B4);
 static_assert(offsetof(CSession, m_level) == 0x1650);
+static_assert(offsetof(CSession, m_vendingSlotCount) == 0xF44);
+static_assert(offsetof(CSession, m_buyingStoreSlotCount) == 0xF48);
+static_assert(offsetof(CSession, unknown_0F4C) == 0xF4C);
 static_assert(offsetof(CSession, m_hotkeyPage) == 0xBC);
 static_assert(offsetof(CSession, m_pairValues) == 0x5BF4);
 static_assert(offsetof(CSession, m_zeny) == 0x16F0);

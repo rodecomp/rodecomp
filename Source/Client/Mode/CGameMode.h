@@ -620,6 +620,10 @@ public:
   void ReceiveFormattedMessage(const unsigned char* packet);
   void ReceiveParaItemResult(unsigned char success, int count, const unsigned char* data);
   void ReceiveResultNotice4327(const unsigned char* packet);
+  void OpenBuyingStoreMake(unsigned char slotCount);
+  void OpenVendingMake(unsigned char slotCount, int itemCount, const short* items);
+  void ReceiveAgitNotice(unsigned char agitId, int first, int second);
+  void ReceiveItemFallEntry(const unsigned char* packet);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

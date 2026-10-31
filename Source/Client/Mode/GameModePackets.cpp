@@ -5938,3 +5938,100 @@ void CGameMode::ReceiveResultNotice4327(const unsigned char* packet) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
   }
 }
+
+// OFFSET: 0x00D78130
+// FUNCTION: fn_22159
+void CGameMode::OpenBuyingStoreMake(unsigned char slotCount) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (mode) {
+    const ModeDragState* drag = &mode->drag;
+    if (drag && drag->source) {
+      this->SendMsg(299, 0, 0, 0, 0);
+      return;
+    }
+  }
+
+  const unsigned int count = slotCount;
+  if (count < 2) {
+    g_session.m_buyingStoreSlotCount = 2;
+  } else {
+    g_session.m_buyingStoreSlotCount = count > 5 ? 5 : count;
+  }
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+  if (!g_windowMgr.window_027C && !g_windowMgr.window_0274 && !g_windowMgr.unknown_02FC) {
+    g_windowMgr.EnsureWindow(174);
+    if (g_windowMgr.unknown_040C) {
+      static_cast<UIMerchantShopMakeWnd*>(g_windowMgr.unknown_040C)->SetItems(0, nullptr);
+    }
+    return;
+  }
+
+  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
+  this->SendMsg(299, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D78210
+// FUNCTION: fn_22160
+void CGameMode::OpenVendingMake(unsigned char slotCount, int itemCount, const short* items) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (mode) {
+    const ModeDragState* drag = &mode->drag;
+    if (drag && drag->source) {
+      this->SendMsg(297, 0, 0, 0, 0);
+      return;
+    }
+  }
+
+  const unsigned int count = slotCount;
+  if (count < 3) {
+    g_session.m_vendingSlotCount = 3;
+  } else {
+    g_session.m_vendingSlotCount = count > 13 ? 13 : count;
+  }
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+  if (!g_windowMgr.window_027C && !g_windowMgr.window_0274) {
+    g_windowMgr.EnsureWindow(41);
+    if (g_windowMgr.unknown_02FC) {
+      static_cast<UIMerchantShopMakeWnd*>(g_windowMgr.unknown_02FC)->SetItems(itemCount, items);
+    }
+    return;
+  }
+
+  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
+  this->SendMsg(297, 0, 0, 0, 0);
+}
+
+#include "Script/LuaScript.h"
+
+// OFFSET: 0x00D799C0
+// FUNCTION: fn_22176
+void CGameMode::ReceiveAgitNotice(unsigned char agitId, int first, int second) {
+  if (!g_windowMgr.window_0320) {
+    return;
+  }
+
+  char text[256] = {};
+  const char* agitName = nullptr;
+  g_luaScript->Call("get_agit_name", "d>s", agitId, &agitName);
+  sprintf_s(text, LookupMessage(3632), agitName, second, 100, first, 100);
+  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, false, 0, "Message", 250, 130, 0);
+}
+
+#include "Contents/Actors/Item.h"
+
+struct ItemFallEntry {
+  /* 0000 */ char itemId[0x20];
+  /* 0020 */ std::uint32_t aid;
+  /* 0024 */ int column;
+  /* 0028 */ int row;
+  /* 002C */ int subColumn;
+  /* 0030 */ int subRow;
+  /* 0034 */ int falling;
+  /* 0038 */ int count;
+  /* 003C */ unsigned char identified;
+  /* 003E */ std::uint16_t unknown_003E;
+  /* 0040 */ unsigned char showEffect;
+  /* 0042 */ std::uint16_t grade;
+};
+
+// OFFSET: 0x00D2DB80
