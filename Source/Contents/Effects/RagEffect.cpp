@@ -198,6 +198,8 @@ void CRagEffect::FireBall() {
   Owner(this->state.unknown_11C84).InitSegment();
 }
 
+// OFFSET: 0x00C147D0
+
 // OFFSET: 0x00C15E40
 // FUNCTION: fn_20054
 void CRagEffect::FrostDiver(char type) {
@@ -8639,6 +8641,8 @@ void CRagEffect::StoneCurseRing() {
   this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\alpha_center.tga", 0, false, true, false);
 }
 
+// OFFSET: 0x00C49300
+
 // OFFSET: 0x00C49E60
 // FUNCTION: fn_20167
 void CRagEffect::SnowDrift(char flag) {
@@ -12036,6 +12040,8 @@ void CRagEffect::QuadRingStack(const char* name) {
     this->state.unknown_11C84->slots[3].flag1[height] = 0;
   }
 }
+
+// OFFSET: 0x00C43430
 // OFFSET: 0x00C44290
 // FUNCTION: fn_20143
 void CRagEffect::QuadRingStackSized(const char* name, char kind) {
