@@ -65,6 +65,9 @@
 #include "Contents/EnchantMgr.h"
 #include "Contents/Items/ItemReformMgr.h"
 #include "Contents/ReputeMgr.h"
+#include "Contents/RenewQuestMgr.h"
+#include "Contents/Items/BarterMarketItemMgr.h"
+#include "Contents/Skills/SkillInfo.h"
 #include "Contents/Schedule/CheckGDISchedule.h"
 #include "Contents/Schedule/EmotionSchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
@@ -6364,7 +6367,6 @@ void CGameMode::ReceiveWindow107List(const unsigned char* packet) {
   }
 }
 
-
 // OFFSET: 0x00D39AE0
 // FUNCTION: fn_21772
 void CGameMode::ReceiveActorColorChat(const unsigned char* packet) {
@@ -7148,7 +7150,6 @@ void CGameMode::ReceivePartyItemPickupNotice(const unsigned char* packet) {
   }
 }
 
-
 // OFFSET: 0x00D64940
 // FUNCTION: fn_21995
 void CGameMode::ReceiveEquipCardChange(const unsigned char* packet) {
@@ -7415,3 +7416,137 @@ void CGameMode::ReceiveActorMessage34(const unsigned char* packet) {
   UIWindow* window = g_windowMgr.EnsureWindow(0x1C);
   window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&message), 0, 0, 0);
 }
+
+#pragma pack(push, 1)
+struct AddQuestPacket {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ unsigned int questId;
+  /* 0006 */ unsigned char state;
+  /* 0007 */ __time32_t startTime;
+  /* 000B */ __time32_t endTime;
+  /* 000F */ std::int16_t huntCount;
+};
+
+struct AddQuestHunt64 {
+  /* 0000 */ std::int64_t huntId;
+  /* 0008 */ int unknown_0008;
+  /* 000C */ int mobId;
+  /* 0010 */ std::int16_t unknown_0010;
+  /* 0012 */ std::int16_t unknown_0012;
+  /* 0014 */ std::int16_t unknown_0014;
+  /* 0016 */ char name[24];
+};
+
+struct AddQuestHunt {
+  /* 0000 */ int huntId;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ int mobId;
+  /* 000C */ std::int16_t unknown_000C;
+  /* 000E */ std::int16_t unknown_000E;
+  /* 0010 */ std::int16_t unknown_0010;
+  /* 0012 */ char name[24];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(AddQuestPacket) == 0x11);
+static_assert(sizeof(AddQuestHunt64) == 0x2E);
+static_assert(sizeof(AddQuestHunt) == 0x2A);
+
+// OFFSET: 0x00D20C00
+
+// OFFSET: 0x00D20EF0
+
+#pragma pack(push, 1)
+struct BarterMarketItemListPacket {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t length;
+};
+
+struct BarterMarketItemRecord {
+  /* 0000 */ int itemId;
+  /* 0004 */ unsigned char type;
+  /* 0005 */ int amount;
+  /* 0009 */ int currencyItemId;
+  /* 000D */ int currencyAmount;
+  /* 0011 */ int weight;
+  /* 0015 */ int index;
+  /* 0019 */ std::uint16_t viewSprite;
+  /* 001B */ int location;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(BarterMarketItemRecord) == 0x1F);
+
+// OFFSET: 0x00D215B0
+
+// OFFSET: 0x00D17D30
+// FUNCTION: fn_21598
+void CGameMode::ReceiveNotifyBan(const unsigned char* packet) {
+  const int code = packet[2];
+  GetRagConnection().Close();
+  std::string text;
+  switch (code) {
+  case 0:
+    text = text + LookupMessage(3) + "(" + IntToString(0, 0) + ")";
+    break;
+  case 1:
+    text = text + LookupMessage(4) + "(" + IntToString(1, 0) + ")";
+    break;
+  case 2:
+    text = text + LookupMessage(5) + "(" + IntToString(2, 0) + ")";
+    break;
+  case 3:
+    text = text + LookupMessage(241) + "(" + IntToString(3, 0) + ")";
+    break;
+  case 4:
+    text = text + LookupMessage(264) + "(" + IntToString(4, 0) + ")";
+    break;
+  case 5:
+    text = text + LookupMessage(305) + "(" + IntToString(5, 0) + ")";
+    break;
+  case 9:
+    text = text + LookupMessage(529) + "(" + IntToString(9, 0) + ")";
+    break;
+  case 10:
+    text = text + LookupMessage(530) + "(" + IntToString(10, 0) + ")";
+    break;
+  case 15:
+    if (g_serviceType == 4) {
+      text = text + LookupMessage(579) + "(" + IntToString(15, 0) + ")";
+    }
+    break;
+  case 110:
+    text = text + LookupMessage(1589) + "(" + IntToString(110, 0) + ")";
+    break;
+  case 113:
+    text = text + LookupMessage(2021) + "(" + IntToString(113, 0) + ")";
+    break;
+  case 115:
+    text = text + LookupMessage(2347) + "(" + IntToString(115, 0) + ")";
+    break;
+  default:
+    text = text + LookupMessage(3) + "(" + IntToString(code, 0) + ")";
+    break;
+  }
+
+  if (text.size() == 0) {
+    text = LookupMessage(0x718);
+  }
+  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
+  this->SendMsg(2, 0, 0, 0, 0);
+}
+
+#pragma pack(push, 1)
+struct SkillFailurePacket {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint16_t skillId;
+  /* 0004 */ int value;
+  /* 0008 */ int itemId;
+  /* 000C */ unsigned char result;
+  /* 000D */ unsigned char cause;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(SkillFailurePacket) == 0xE);
+
+// OFFSET: 0x00D1E840

@@ -745,6 +745,11 @@ public:
   void ProcessUiMessage(unsigned char* message);
   void ReceiveUiDragMessage(const unsigned char* message);
   void PlayItemUseEffect(int itemId, std::uint32_t aid);
+  void ReceiveAddQuest64(const unsigned char* data);
+  void ReceiveAddQuest(const unsigned char* data);
+  void ReceiveBarterMarketItemList(const unsigned char* data);
+  void ReceiveNotifyBan(const unsigned char* packet);
+  void ReceiveSkillFailure(const unsigned char* data);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);
