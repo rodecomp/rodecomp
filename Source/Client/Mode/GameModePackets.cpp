@@ -7388,3 +7388,30 @@ void CGameMode::AddMiniMapEffectMarker(const unsigned char* packet) {
 
   g_miniMapEffectMarkers.emplace(marker->key, MiniMapEffectMarker{0x78, marker->x, marker->y});
 }
+
+struct ActorMessage32 {
+  /* 0000 */ std::string text;
+  /* 0018 */ std::string extra;
+  /* 0030 */ int unknown_0030;
+  /* 0034 */ int unknown_0034;
+  /* 0038 */ int unknown_0038;
+  /* 003C */ int unknown_003C;
+};
+
+// OFFSET: 0x00D25AC0
+// FUNCTION: fn_21675
+void CGameMode::ReceiveActorMessage34(const unsigned char* packet) {
+  this->unknown_01AC[*reinterpret_cast<const std::uint32_t*>(packet + 8)] = *reinterpret_cast<const std::uint32_t*>(packet + 4);
+  ActorMessage32 message;
+  message.text.assign(reinterpret_cast<const char*>(packet + 17), *reinterpret_cast<const std::int16_t*>(packet + 2) - 17);
+  message.unknown_0030 = packet[16];
+  message.unknown_0034 = *reinterpret_cast<const std::int16_t*>(packet + 14);
+  message.unknown_0038 = *reinterpret_cast<const std::int16_t*>(packet + 12);
+  message.unknown_003C = *reinterpret_cast<const int*>(packet + 8);
+  if (message.text.size() > 60) {
+    message.text.resize(60);
+  }
+
+  UIWindow* window = g_windowMgr.EnsureWindow(0x1C);
+  window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(&message), 0, 0, 0);
+}

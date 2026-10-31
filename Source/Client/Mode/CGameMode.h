@@ -271,6 +271,7 @@ public:
   void IgnoreRemovedPacket2(const unsigned char* packet);
   void ReceiveBillingInfo(const unsigned char* packet);
   void ReceiveActorMessage32(const unsigned char* packet);
+  void ReceiveActorMessage34(const unsigned char* packet);
   void ReceiveStatusNotice(const unsigned char* packet);
   void ReceivePartyBookingRegisterResult(const unsigned char* packet);
   void ReceivePartyBookingSearchResult(const unsigned char* packet);
