@@ -12,24 +12,35 @@
 #include <vector>
 #include <windows.h>
 #include <shellapi.h>
+#include <shlwapi.h>
 #include <timeapi.h>
 
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Input/InputCharset.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Client/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemLink.h"
+#include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "Contents/TipBoxTitles.h"
 #include "Network/TextEncoding.h"
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Dialogs/UITipboxWnd.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/CreateLineInfo.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/TextTokens.h"
@@ -62,12 +73,13 @@ namespace LineCutter {
 class UIEmotion : public UIWindow {
 public:
   void Slot19() override;
+  void Paint() override;
 
 protected:
   /* 007C */ unsigned m_animation;
   /* 0080 */ unsigned m_frame;
   /* 0084 */ unsigned m_maxLoops;
-  /* 0088 */ std::uint32_t unknown_0088;
+  /* 0088 */ CSprRes* m_sprite;
   /* 008C */ CActRes* m_action;
   /* 0090 */ std::uint32_t m_startTime;
   /* 0094 */ unsigned m_loops;
@@ -76,6 +88,8 @@ protected:
 class UIItemImage : public UIWindow {
 public:
   void Paint() override;
+  void Slot28(int x, int y) override;
+  void Slot32(int x, int y) override;
 
 protected:
   /* 007C */ std::string m_itemId;
@@ -1284,4 +1298,113 @@ std::vector<std::string> CCreateLineInfo::SplitString(std::string text, const st
 
   parts.push_back(text);
   return parts;
+}
+
+// OFFSET: 0x0083AF50
+// FUNCTION: fn_10469
+void UIEmotion::Paint() {
+  if (!this->geometry.surface) {
+    return;
+  }
+
+  this->ClearSurface(0xFFFF00FF);
+
+  if (!this->m_sprite || !this->m_action) {
+    return;
+  }
+
+  const ActionFrame* frame = &this->m_action->Frame(this->m_animation, this->m_frame);
+  if (!frame) {
+    return;
+  }
+
+  const std::uint32_t* palette = this->m_sprite->palette;
+  if (!palette) {
+    return;
+  }
+
+  for (unsigned index = 0; index < frame->cells.size(); ++index) {
+    const SpriteFrameCell& cell = frame->Cell(index);
+    if (cell.image == -1 || cell.imageType >= 2) {
+      continue;
+    }
+
+    const std::vector<SpriteRleImage*>& images = this->m_sprite->images[cell.imageType];
+    if (static_cast<unsigned>(cell.image) < images.size()) {
+      SpriteRleImage* image = images[cell.image];
+      if (image) {
+        this->AddRotatedSpriteCellOverlay(
+          static_cast<int>(this->geometry.width * 0.5), static_cast<int>(this->geometry.height * 0.5), reinterpret_cast<int>(this->m_action),
+          reinterpret_cast<int>(this->m_sprite), image, &cell, palette
+        );
+      }
+    }
+  }
+}
+
+// OFFSET: 0x0083B2B0
+// FUNCTION: fn_10475
+void UIItemImage::Slot28(int, int) {
+  ITEM_INFO item;
+  item.itemId = this->m_itemId;
+  item.identified = 1;
+  int x = 0;
+  int y = -17;
+  this->ToScreen(x, y);
+
+  if (g_charViewMode) {
+    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_charViewMode);
+    const std::uint32_t color = g_session.GetItemNameColor(item);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    tooltip->Show(naming.DisplayName(item, 0).c_str(), x, y, color, 0, 1);
+  }
+}
+
+// OFFSET: 0x0083B550
+// FUNCTION: fn_10479
+void UIItemImage::Slot32(int, int) {
+  ITEM_INFO item;
+  item.itemId = this->m_itemId;
+  item.identified = 1;
+  UIWindow* window = g_windowMgr.EnsureWindow(0xC);
+  if (window) {
+    window->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00832000
+// FUNCTION: fn_10406
+bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
+  if (!StrStrIA(text.c_str(), g_itemLinkTag.c_str())) {
+    return false;
+  }
+
+  std::string work = text;
+  int offset = 0;
+
+  for (;;) {
+    std::string link;
+    if (!ExtractInnerItemLink(work, link, offset, text.c_str())) {
+      return false;
+    }
+
+    const int itemId = ItemLinkMessageId(link);
+    if (link.substr(0, 6) == "00000T" && itemId <= g_itemTagOwner->unknown_0118) {
+      offset += static_cast<int>(link.size() + g_itemLinkTag.size() + g_itemLinkCloseTag.size());
+      continue;
+    }
+
+    const bool unowned = !(LookupClientItem(g_session.m_inventoryItems, itemId, 0).unknown_0000[1] > 0 || g_session.HasItemId(itemId) ||
+                           g_session.HasItem1740Number(itemId));
+    if (!unowned) {
+      offset += static_cast<int>(link.size() + g_itemLinkTag.size() + g_itemLinkCloseTag.size());
+      continue;
+    }
+
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xE8D)), 0xFF, 0, 0, 0);
+    return true;
+  }
 }

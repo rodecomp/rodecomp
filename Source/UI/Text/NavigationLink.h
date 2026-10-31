@@ -7,6 +7,7 @@ struct NavigationLinkParser {
   NavigationLinkParser();
   ~NavigationLinkParser();
 
+  bool HasUnownedItemLink(std::string text);
   bool HasLink(std::string text);
   std::string ExpandMessages(std::string text);
 
