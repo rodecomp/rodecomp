@@ -1,21 +1,33 @@
 #include "UI/Window/UINavigationWnd.h"
 
+#include "Client/Application/Launcher.h"
 #include "Client/Replay.h"
+#include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Contents/NavigationManager.h"
+#include "File/FileEnumeration.h"
+#include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Renderer.h"
+#include "Render/Textures/Texture.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Lists/UIComboBox.h"
 #include "UI/Lists/UIComboBoxDefWnd.h"
 #include "UI/Lists/UIListBoxNavi.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Window/UIResizer.h"
 #include "UI/Window/UIRoMapWnd.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
+#include "Utility/Text/FormatString.h"
 
 #include <cstdio>
 #include <cstring>
+#include <string>
 
 // GLOBAL: gl_24609
 bool g_navigationMinimized;
@@ -37,6 +49,39 @@ bool g_unknown16FC585;
 
 // GLOBAL: gl_25096
 bool g_unknown16FC586;
+
+// GLOBAL: gl_24612
+int g_navigationSearchType;
+
+// GLOBAL: gl_25130
+std::string g_navigationSearchText;
+
+// GLOBAL: gl_24614
+int g_navigationActiveLabel;
+
+// GLOBAL: gl_25081
+int g_navigationMapCellX;
+
+// GLOBAL: gl_25082
+int g_navigationMapCellY;
+
+// GLOBAL: gl_25083
+float g_navigationPointScale = 0.0078125f;
+
+// GLOBAL: gl_25084
+float g_navigationMarkerScale = 0.453125f;
+
+// GLOBAL: gl_24616
+CActRes* g_navigationActions;
+
+// GLOBAL: gl_24617
+CSprRes* g_navigationSprites;
+
+// GLOBAL: gl_24615
+std::vector<NaviCell> g_navigationPoints;
+
+// GLOBAL: gl_24618
+std::vector<NaviRouteLine> g_navigationLabels;
 
 // OFFSET: 0x00921A70
 // FUNCTION: fn_12643
@@ -521,5 +566,65 @@ void UINavigationWnd::Slot11() {
       this->geometry.y = 0;
     }
     this->m_saved->y = this->geometry.y;
+  }
+}
+
+// OFFSET: 0x0092CEF0
+
+// OFFSET: 0x00935A00
+
+// OFFSET: 0x0093D620
+// FUNCTION: fn_12769
+void UINavigationWnd::FillRouteList() {
+  this->m_routePanel->Invalidate();
+  this->m_routePanel->Clear();
+  const int count = g_navigationManager.StateCount();
+  if (count == 0) {
+    return;
+  }
+
+  char text[64];
+  std::memset(text, 0, sizeof(text));
+  std::sprintf(text, LookupMessage(0x8AE), count);
+  this->SendMsg(nullptr, 0x1F, 0x150, reinterpret_cast<std::intptr_t>(text), 0, 0);
+  this->m_routePanel->lineOffset = 1;
+
+  for (int index = 0; index < g_navigationManager.StateCount(); ++index) {
+    std::memset(text, 0, sizeof(text));
+    NavigationTarget state = g_navigationManager.GetState(index);
+    if (state.type == 2) {
+      CNavi_Object* object = static_cast<CNavi_Object*>(state.object);
+      std::sprintf(text, LookupMessage(0x8AF), object->GetInfo()->GetName(), object->GetName());
+    } else if (state.type == 3) {
+      CNavi_Object* object = static_cast<CNavi_Object*>(state.object);
+      const int flag = object->GetFlag();
+      if (flag < 1) {
+        std::sprintf(text, LookupMessage(0x8B0), object->GetInfo()->GetName(), object->GetName());
+      } else {
+        const char* kind;
+        if (flag >= 100) {
+          kind = LookupMessage(0x991);
+        } else if (flag > 0x31) {
+          kind = LookupMessage(0x992);
+        } else if (static_cast<unsigned int>(flag - 0x14) < 0x1E) {
+          kind = LookupMessage(0x993);
+        } else if (static_cast<unsigned int>(flag - 5) < 0xF) {
+          kind = LookupMessage(0x994);
+        } else {
+          kind = LookupMessage(0x995);
+        }
+        std::sprintf(text, LookupMessage(0x98F), object->GetInfo()->GetName(), object->GetName(), kind);
+      }
+    } else if (state.type == 1) {
+      std::sprintf(text, LookupMessage(0x8B1), static_cast<CNaviInfo*>(state.object)->GetName());
+    } else if (state.type == 0) {
+      CNaviInfo* info = static_cast<CNaviInfo*>(state.object);
+      if (state.name.empty()) {
+        std::sprintf(text, LookupMessage(0x975), info->GetName(), state.x, state.y);
+      } else {
+        std::sprintf(text, LookupMessage(0x976), state.name.c_str(), info->GetName(), state.x, state.y);
+      }
+    }
+    this->SendMsg(nullptr, 0x1F, 0x150, reinterpret_cast<std::intptr_t>(text), 0, 0);
   }
 }

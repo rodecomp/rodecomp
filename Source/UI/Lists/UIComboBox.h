@@ -20,5 +20,6 @@ public:
   /* 00DC */ int targetId;
 };
 
+extern int g_closeChatAfterGroups;
 
 #endif

@@ -4,6 +4,7 @@
 #include "UI/Window/UIFrameWnd.h"
 
 #include <string>
+#include <vector>
 
 class UIBitmapButton;
 class UIButton;
@@ -34,7 +35,9 @@ class UINavigationWnd : public UIFrameWnd {
 public:
   void Slot11() override;
   void Slot15(int width, int height) override;
+  void Paint() override;
   void Slot31(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void LayoutTabs();
   void ApplyMinimized();
   void RefreshHeaderTexts(int mode);
@@ -42,6 +45,7 @@ public:
   void RefreshWorldMapSelection();
   void RefreshWorldMapLevels();
   void RefreshRouteList();
+  void FillRouteList();
 
 protected:
   /* 00B4 */ UIWindow* m_closeButton;
@@ -69,6 +73,7 @@ protected:
   /* 0120 */ UIBitmapButton* unknown_0120;
   /* 0124 */ NavigationWndInfo* m_saved;
   /* 0128 */ UIResizer* unknown_0128;
+  /* 012C */ std::vector<std::string> m_history;
 
   UIButtonContext* m_controls;
   UIListBoxContext* m_listContext;
