@@ -498,6 +498,57 @@ struct ActorMessage32 {
 };
 
 // OFFSET: 0x00D3E8B0
+// FUNCTION: fn_21810
+void CGameMode::ReceiveServerRateNotice(const unsigned char* packet) {
+  g_session.unknown_54A0 = *reinterpret_cast<const int*>(packet + 2);
+  g_session.unknown_54A4 = packet[6];
+  g_session.unknown_54A8 = packet[7];
+  if (g_windowMgr.unknown_030C) {
+    reinterpret_cast<UIWindow*>(g_windowMgr.unknown_030C)->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+
+  char text[128];
+  std::memset(text, 0, sizeof(text));
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  switch (g_session.unknown_54A0) {
+  case 0:
+    std::sprintf(text, "%s - %s : %s", LookupMessage(291), LookupMessage(292), LookupMessage(287));
+    break;
+  case 1:
+    std::sprintf(text, "%s - %s : %s", LookupMessage(291), LookupMessage(292), LookupMessage(288));
+    break;
+  case 2:
+    std::sprintf(text, "%s - %s : %s(%s)", LookupMessage(291), LookupMessage(292), LookupMessage(287), LookupMessage(1535));
+    break;
+  }
+  if (std::strlen(text) != 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
+  }
+
+  switch (g_session.unknown_54A4) {
+  case 0:
+    std::sprintf(text, "%s - %s : %s", LookupMessage(291), LookupMessage(293), LookupMessage(287));
+    break;
+  case 1:
+    std::sprintf(text, "%s - %s : %s", LookupMessage(291), LookupMessage(293), LookupMessage(290));
+    break;
+  }
+  if (std::strlen(text) != 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
+  }
+
+  switch (g_session.unknown_54A8) {
+  case 0:
+    std::sprintf(text, "%s - %s : %s", LookupMessage(291), LookupMessage(738), LookupMessage(287));
+    break;
+  case 1:
+    std::sprintf(text, "%s - %s : %s", LookupMessage(291), LookupMessage(738), LookupMessage(288));
+    break;
+  }
+  if (std::strlen(text) != 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
+  }
+}
 
 // OFFSET: 0x00D3F130
 // FUNCTION: fn_21811
@@ -523,6 +574,51 @@ void CGameMode::ReceiveActorMessage32(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D3F3E0
+// FUNCTION: fn_21812
+void CGameMode::ReceiveRequestResult(const unsigned char* packet) {
+  std::string text;
+  switch (*reinterpret_cast<const std::int16_t*>(packet + 6)) {
+  case 0:
+  case 8: {
+    UIWindow* window = g_windowMgr.LookupWindow(318);
+    if (window) {
+      window->SendMsg(nullptr, 122, *reinterpret_cast<const int*>(packet + 8), *reinterpret_cast<const int*>(packet + 12), 0, 0);
+    }
+    if (*reinterpret_cast<const std::int16_t*>(packet + 6) == 8) {
+      text = LookupMessage(1814);
+    }
+    break;
+  }
+  case 9:
+    text = LookupMessage(1944);
+    break;
+  case 10:
+    text = LookupMessage(1945);
+    break;
+  case 11:
+    text = LookupMessage(1946);
+    break;
+  case 12:
+    text = LookupMessage(1947);
+    break;
+  case 303:
+    text = "- " + IntToString(303, 0) + " : " + LookupMessage(3940);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, false, false, 0, "Error", 280, 120, 0);
+    break;
+  case 304:
+    text = "- " + IntToString(304, 0) + " : " + LookupMessage(3941);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text.c_str(), 0, false, false, 0, "Error", 280, 120, 0);
+    break;
+  default:
+    text = LookupMessage(57);
+    break;
+  }
+
+  if (!text.empty()) {
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00D3F760
 // FUNCTION: fn_21813
@@ -644,6 +740,56 @@ void CGameMode::ReceiveResultNotice0118(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D652E0
+// FUNCTION: fn_21998
+void CGameMode::ReceivePackageItemTest(const unsigned char* packet) {
+  const PackageItemTestEntry* entry = reinterpret_cast<const PackageItemTestEntry*>(packet + 8);
+  char packageName[260];
+  std::memset(packageName, 0, sizeof(packageName));
+  ITEM_INFO item;
+  item.SetItemId(*reinterpret_cast<const int*>(packet + 4));
+  int capacity = sizeof(packageName);
+  ItemDescriptions{g_itemDescriptions}.Name(item, packageName, capacity, 0);
+
+  char path[2048];
+  std::memset(path, 0, sizeof(path));
+  int suffix = 0;
+  std::sprintf(path, "%s\\PackageItemTest", g_applicationDirectory);
+  if (_access(path, 0) != 0 && _mkdir(path) != 0) {
+    return;
+  }
+
+  SYSTEMTIME time;
+  GetLocalTime(&time);
+  std::sprintf(path, "%s\\PackageItemTest\\%s(%d_%d_%d).txt", g_applicationDirectory, packageName, time.wYear, time.wMonth, time.wDay);
+  while (_access(path, 0) == 0) {
+    ++suffix;
+    std::sprintf(path, "%s\\PackageItemTest\\%s(%d_%d_%d)_%d.txt", g_applicationDirectory, packageName, time.wYear, time.wMonth, time.wDay, suffix);
+  }
+
+  std::FILE* file = std::fopen(path, "w");
+  if (!file) {
+    return;
+  }
+
+  int total = 0;
+  const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 8) / sizeof(PackageItemTestEntry);
+  std::fprintf(file, "============================START============================\n");
+  for (int i = 0; i < count; ++i) {
+    char itemName[260];
+    std::memset(itemName, 0, sizeof(itemName));
+    const PackageItemTestEntry current = *entry;
+    item.SetItemId(current.itemId);
+    int nameCapacity = sizeof(itemName);
+    ItemDescriptions{g_itemDescriptions}.Name(item, itemName, nameCapacity, 0);
+    std::fprintf(file, "%s\t\t\t%d\t%c%d%c\n", itemName, current.count, '(', current.unknown_0004, ')');
+    total += current.count;
+    ++entry;
+  }
+
+  std::fprintf(file, "============================END============================\n");
+  std::fprintf(file, "Unpacked %d Packages\n", total);
+  std::fclose(file);
+}
 
 #pragma pack(push, 1)
 struct SummonHpInitPacket {
@@ -1010,6 +1156,40 @@ void CGameMode::ReceiveGameOptionResult(int command, int result, int enabled) {
 }
 
 // OFFSET: 0x00D679E0
+// FUNCTION: fn_22037
+void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
+  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t*>(packet + 2));
+  if (item.unknown_0000[1]) {
+    const int result = *reinterpret_cast<const int*>(packet + 6);
+    if (result == 0 || result == 2) {
+      if (result == 0) {
+        item.unknown_0060 = 0;
+      }
+      item.unknown_0088 = *reinterpret_cast<const std::int16_t*>(packet + 4);
+      g_session.UpdateInventoryItem(item, 1);
+    }
+  }
+
+  auto* window = static_cast<UIGradeEnchantWnd*>(g_windowMgr.LookupWindow(343));
+  if (window) {
+    const int result = *reinterpret_cast<const int*>(packet + 6);
+    switch (result) {
+    case 0:
+      window->SetResult(2, 0);
+      g_effectMgr->Spawn(g_session.m_aid, 1607, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(g_session.m_aid, 1608, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->Slot16(2800);
+      break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+      window->SetResult(2, result);
+      g_effectMgr->Spawn(g_session.m_aid, 1607, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(g_session.m_aid, 1609, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->Slot16(2800);
+      break;
+    }
+  }
+}
 
 // OFFSET: 0x00D686F0
 // FUNCTION: fn_22042
