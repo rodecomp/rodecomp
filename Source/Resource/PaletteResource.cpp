@@ -6,7 +6,8 @@
 
 #include <string>
 
-// INLINED
+// OFFSET: 0x0075DB60
+// FUNCTION: fn_08043
 CPaletteRes::CPaletteRes() : sourcePalette{}, palette{} {
 }
 
