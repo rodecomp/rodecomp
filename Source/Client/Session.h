@@ -829,6 +829,7 @@ public:
   std::vector<unsigned char> BuildReservedReplayRecords(); std::vector<unsigned char> BuildShopReplayRecords(); std::vector<unsigned char> BuildExtraReplayRecords(); std::vector<unsigned char> BuildStatsReplayRecords();
   std::vector<unsigned char> BuildItemReplayRecords();
   std::vector<unsigned char> BuildCompanionReplayRecords();
+  std::vector<unsigned char> BuildMessengerReplayRecords();
   std::vector<unsigned char> BuildSkillListReplayPacket(short id);
   void SetHomunculusAutoFeed(bool enabled);
   void SetPetAutoFeed(bool enabled);

@@ -1913,3 +1913,48 @@ std::vector<unsigned char> CSession::BuildStatsReplayRecords() {
   }
   return records;
 }
+
+// OFFSET: 0x00E40C60
+// FUNCTION: fn_24199
+std::vector<unsigned char> CSession::BuildMessengerReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(4000, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(4010, &this->unknown_5938, 1);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(4011, &this->unknown_5460, sizeof(this->unknown_5460));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(4012, &this->unknown_5464, sizeof(this->unknown_5464));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(4013, this->unknown_54AC.c_str(), this->unknown_54AC.size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(4014, this->unknown_54C4.c_str(), this->unknown_54C4.size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeMessengerMembers(this->m_partyMembers);
+    const auto record = MakeFramedMessage(4015, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeMessengerMembers(this->m_friends);
+    const auto record = MakeFramedMessage(4016, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(4001, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
