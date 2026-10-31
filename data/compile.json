@@ -1024,6 +1024,7 @@
   "Source/UI/Window/UIOpenRoulletteWnd.cpp": 2,
   "Source/UI/Window/UIPartyBookingHelpWnd.cpp": 2,
   "Source/UI/Window/UIPetEvolutionWnd.cpp": 2,
+  "Source/UI/Window/UIRPImageWnd.cpp": 2,
   "Source/UI/Window/UIRPImageWnd2.cpp": 2,
   "Source/UI/Window/UIRebirthWnd.cpp": 2,
   "Source/UI/Window/UIRegisterMgr.cpp": 2,
