@@ -1,6 +1,7 @@
 #include "UI/UIReputeWnd.h"
 #include "Contents/MessageTable.h"
 #include "Contents/ReputeMgr.h"
+#include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UIComboBoxDefWnd.h"
@@ -29,6 +30,85 @@ CReputeMgr* Singleton<CReputeMgr>::GetInstance() {
 // FUNCTION: fn_04312
 bool UIReputeWnd::Slot02() {
   return true;
+}
+
+// OFFSET: 0x0060F180
+// FUNCTION: fn_04313
+void UIReputeWnd::Slot15(int width, int height) {
+  this->AddBaseButton(*this->m_controls);
+  this->AddCloseButton(*this->m_controls, "", 0);
+
+  this->m_groupCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_groupCombo->dropdownHeight = 160;
+  this->m_groupCombo->SetSize(122, 18);
+  this->m_groupCombo->Move(8, 25);
+  this->m_groupCombo->red = 239;
+  this->m_groupCombo->green = 239;
+  this->m_groupCombo->blue = 239;
+  this->m_groupCombo->borderRed = 99;
+  this->m_groupCombo->borderGreen = 99;
+  this->m_groupCombo->borderBlue = 99;
+  this->AddChild(this->m_groupCombo);
+
+  this->m_searchEdit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_searchEdit->SetSize(200, 18);
+  this->m_searchEdit->Move(136, 25);
+  this->m_searchEdit->maximum = 20;
+  this->m_searchEdit->preserveInput = 1;
+  this->m_searchEdit->Background(239, 239, 239);
+  this->m_searchEdit->Border(99, 99, 99);
+  this->m_searchEdit->flat = 0;
+  this->AddChild(this->m_searchEdit);
+
+  UIBitmapButton* search = new UIBitmapButton(*this->m_context, *this->m_controls);
+  search->SetBitmap("유저인터페이스\\Reputation\\btn_search.bmp", 0, 0);
+  search->SetBitmap("유저인터페이스\\Reputation\\btn_search_over.bmp", 1, 0);
+  search->SetBitmap("유저인터페이스\\Reputation\\btn_search_press.bmp", 2, 0);
+  search->SetSize(search->BitmapWidth(), search->BitmapHeight());
+  const std::string searchLabel = LookupMessage(3777);
+  search->label = searchLabel;
+  search->Move(336, 25);
+  search->SetId(321);
+  this->AddChild(search);
+  this->m_message0 = 321;
+
+  this->m_prevButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_prevButton->SetBitmap("유저인터페이스\\Reputation\\arrow_prev.bmp", 0, 0);
+  this->m_prevButton->SetBitmap("유저인터페이스\\Reputation\\arrow_prev.bmp", 1, 0);
+  this->m_prevButton->SetBitmap("유저인터페이스\\Reputation\\arrow_prev.bmp", 2, 0);
+  this->m_prevButton->SetSize(this->m_prevButton->BitmapWidth(), this->m_prevButton->BitmapHeight());
+  this->m_prevButton->Move(567, 402);
+  this->m_prevButton->Enable(0);
+  this->m_prevButton->SetTooltip(LookupMessage(1053));
+  this->m_prevButton->SetId(316);
+  this->AddChild(this->m_prevButton);
+
+  this->m_nextButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_nextButton->SetBitmap("유저인터페이스\\Reputation\\arrow_next.bmp", 0, 0);
+  this->m_nextButton->SetBitmap("유저인터페이스\\Reputation\\arrow_next.bmp", 1, 0);
+  this->m_nextButton->SetBitmap("유저인터페이스\\Reputation\\arrow_next.bmp", 2, 0);
+  this->m_nextButton->SetSize(this->m_nextButton->BitmapWidth(), this->m_nextButton->BitmapHeight());
+  this->m_nextButton->Move(623, 402);
+  this->m_nextButton->Enable(0);
+  this->m_nextButton->SetTooltip(LookupMessage(1054));
+  this->m_nextButton->SetId(317);
+  this->AddChild(this->m_nextButton);
+
+  UIBasicButton* close = new UIBasicButton(*this->m_context, *this->m_controls);
+  close->Configure(42, LookupMessage(3045));
+  close->Move(589, 425);
+  close->SetId(201);
+  this->AddChild(close);
+
+  this->m_groupCombo->AddOption(LookupMessage(3829), 0);
+  const std::vector<std::string> groups = Singleton<CReputeMgr>::GetInstance()->GetGroupNames();
+  for (auto it = groups.begin(); it != groups.end(); ++it) {
+    this->m_groupCombo->AddOption(*it, 0);
+  }
+
+  this->m_groupCombo->Select(0);
+  this->m_reputes = Singleton<CReputeMgr>::GetInstance()->GetAllReputes();
+  this->SetPage(1);
 }
 
 // OFFSET: 0x006104F0
