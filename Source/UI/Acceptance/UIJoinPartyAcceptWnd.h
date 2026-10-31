@@ -74,6 +74,36 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
 
+class UICoupleAcceptWnd : public UIExchangeAcceptWnd {
+public:
+  UICoupleAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance);
+};
+
+class UIJoinFriendAcceptWnd : public UIExchangeAcceptWnd {
+public:
+  UIJoinFriendAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance);
+};
+
+class UIJoinGuildAcceptWnd : public UIExchangeAcceptWnd {
+public:
+  UIJoinGuildAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance);
+};
+
+class UIMixAcceptWnd : public UIExchangeAcceptWnd {
+public:
+  UIMixAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance);
+};
+
+class UIStarPlaceAcceptWnd : public UIExchangeAcceptWnd {
+public:
+  UIStarPlaceAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance);
+};
+
+class UIYourItemWnd : public UIExchangeAcceptWnd {
+public:
+  UIYourItemWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance);
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UIChooseSellBuyWnd) == 200);
 static_assert(sizeof(UIExchangeAcceptWnd) == 204);

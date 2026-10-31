@@ -3506,3 +3506,41 @@ UInCash_CallWnd::UInCash_CallWnd(UIWindowContext& windows, UIFrameContext& frame
 // OFFSET: 0x008C9060
 
 // OFFSET: 0x008C91F0
+
+// OFFSET: 0x008C7710
+// FUNCTION: fn_11937
+UICoupleAcceptWnd::UICoupleAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+}
+
+// OFFSET: 0x008C8120
+// FUNCTION: fn_11948
+UIJoinFriendAcceptWnd::UIJoinFriendAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+}
+
+// OFFSET: 0x008C81B0
+// FUNCTION: fn_11949
+UIJoinGuildAcceptWnd::UIJoinGuildAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+}
+
+// OFFSET: 0x008C8510
+// FUNCTION: fn_11955
+UIMixAcceptWnd::UIMixAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+}
+
+// OFFSET: 0x008C9160
+// FUNCTION: fn_11977
+UIStarPlaceAcceptWnd::UIStarPlaceAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+}
+
+// OFFSET: 0x008C97F0
+// FUNCTION: fn_11985
+UIYourItemWnd::UIYourItemWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+}
+
+// OFFSET: 0x008C8C70
