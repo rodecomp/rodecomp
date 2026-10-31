@@ -2956,6 +2956,7 @@ void UIItemCollectionWnd::SetHeight(int height) {
 
 class UIAutoMessageWnd : public UIFrameWnd {
 public:
+  UIAutoMessageWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Paint() override;
 };
 
@@ -3379,3 +3380,129 @@ void UInCashWnd::Slot32(int x, int y) {
     g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
 }
+
+// OFFSET: 0x008C6E20
+// FUNCTION: fn_11923
+UIAutoMessageWnd::UIAutoMessageWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0) {
+}
+
+// OFFSET: 0x008C6E80
+// FUNCTION: fn_11924
+UIBabyAcceptWnd2::UIBabyAcceptWnd2(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+}
+
+// OFFSET: 0x008C6F10
+// FUNCTION: fn_11925
+UIBabyAcceptWnd::UIBabyAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance)
+    : UIExchangeAcceptWnd(windows, frames, acceptance) {
+}
+
+// OFFSET: 0x008C7630
+// FUNCTION: fn_11935
+UIComboBoxIDWnd::UIComboBoxIDWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_list(nullptr), m_owner(nullptr) {
+}
+
+// OFFSET: 0x008C76A0
+// FUNCTION: fn_11936
+UIComboBoxWnd::UIComboBoxWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_list(nullptr), m_owner(nullptr) {
+}
+
+// OFFSET: 0x008C77A0
+// FUNCTION: fn_11938
+UIDisconnectedServerMsgWnd::UIDisconnectedServerMsgWnd(UIWindowContext& windows, UIFrameContext& frames, UITextViewerContext& text)
+    : UIFrameWnd(windows, frames, 0), m_viewer(nullptr), m_textContext(&text) {
+}
+
+// OFFSET: 0x008C82D0
+// FUNCTION: fn_11951
+UILoadingWnd::UILoadingWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_progressBar(nullptr) {
+}
+
+// OFFSET: 0x008C8650
+// FUNCTION: fn_11957
+UINoticeConfirmWnd::UINoticeConfirmWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_event(28) {
+}
+
+// OFFSET: 0x008C8770
+// FUNCTION: fn_11959
+UINotifyLevelUpWnd::UINotifyLevelUpWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0) {
+}
+
+// OFFSET: 0x008C87D0
+// FUNCTION: fn_11960
+UINotifyQuestWnd::UINotifyQuestWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0) {
+}
+
+// OFFSET: 0x008C8830
+// FUNCTION: fn_11961
+UINpcEditDialogWnd::UINpcEditDialogWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+}
+
+// OFFSET: 0x008C8B50
+// FUNCTION: fn_11968
+UIProhibitListWnd::UIProhibitListWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_count(0), m_controls(&controls) {
+}
+
+// OFFSET: 0x008C8BB0
+// FUNCTION: fn_11969
+UIQuitWnd::UIQuitWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0) {
+}
+
+// OFFSET: 0x008C8C10
+// FUNCTION: fn_11970
+UIRestartWnd::UIRestartWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0) {
+}
+
+// OFFSET: 0x008C93D0
+// FUNCTION: fn_11980
+UITipOfTheDayWnd::UITipOfTheDayWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+}
+
+// OFFSET: 0x008C9560
+// FUNCTION: fn_11982
+UIToolTipWnd::UIToolTipWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0) {
+}
+
+// OFFSET: 0x008C95C0
+// FUNCTION: fn_11983
+UIWaitWnd::UIWaitWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_button(nullptr) {
+}
+
+// OFFSET: 0x008C9990
+// FUNCTION: fn_11987
+UInCash_CallWnd::UInCash_CallWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0) {
+}
+
+// OFFSET: 0x008C6FA0
+
+// OFFSET: 0x008C7070
+
+// OFFSET: 0x008C8390
+
+// OFFSET: 0x008C85A0
+
+// OFFSET: 0x008C8900
+
+// OFFSET: 0x008C8980
+
+// OFFSET: 0x008C8AB0
+
+// OFFSET: 0x008C9060
+
+// OFFSET: 0x008C91F0

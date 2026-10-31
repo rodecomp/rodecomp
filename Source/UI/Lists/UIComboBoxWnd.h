@@ -8,6 +8,7 @@ class UIListBoxID;
 
 class UIComboBoxWnd : public UIFrameWnd {
 public:
+  UIComboBoxWnd(UIWindowContext& windows, UIFrameContext& frames);
   /* 00B4 */ UIListBox* m_list;
   /* 00B8 */ UIWindow* m_owner;
 
@@ -20,6 +21,7 @@ public:
 
 class UIComboBoxIDWnd : public UIFrameWnd {
 public:
+  UIComboBoxIDWnd(UIWindowContext& windows, UIFrameContext& frames);
   /* 00B4 */ UIListBoxID* m_list;
   /* 00B8 */ UIWindow* m_owner;
 

@@ -19,6 +19,7 @@ struct UIBookContext {
 
 class UIBookWnd : public UIFrameWnd {
 public:
+  UIBookWnd(UIWindowContext& windows, UIFrameContext& frames, UIBookContext& book);
   /* 00B4 */ UITextViewer* m_viewer;
   /* 00B8 */ UIWindow* unknown_00B8;
   /* 00BC */ char m_bookName[100];

@@ -8,6 +8,7 @@ struct StatusWndInfo;
 
 class UIStatusWnd : public UIFrameWnd {
 public:
+  UIStatusWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   /* 00B4 */ unsigned char unknown_00B4[0x18];
   /* 00CC */ int m_expandedHeight;
   /* 00D0 */ StatusWndInfo* m_info;

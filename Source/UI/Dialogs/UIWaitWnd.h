@@ -8,6 +8,7 @@ class UITextViewer;
 
 class UIWaitWnd : public UIFrameWnd {
 public:
+  UIWaitWnd(UIWindowContext& windows, UIFrameContext& frames);
   /* 00B4 */ UITextViewer* m_textViewer;
   /* 00B8 */ UIBitmapButton* m_button;
 

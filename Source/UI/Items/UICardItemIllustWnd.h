@@ -9,6 +9,7 @@ struct UIButtonContext;
 
 class UICardItemIllustWnd : public UIFrameWnd {
 public:
+  UICardItemIllustWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot15(int width, int height) override;
 
   /* 00B4 */ std::string m_bitmapPath;

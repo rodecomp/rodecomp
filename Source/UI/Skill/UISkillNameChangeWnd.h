@@ -9,6 +9,7 @@ struct UIButtonContext;
 
 class UISkillNameChangeWnd : public UIFrameWnd {
 public:
+  UISkillNameChangeWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   /* 00B4 */ unsigned char unknown_00B4[0x08];
   /* 00BC */ std::string m_name;
 

@@ -7,6 +7,7 @@ struct UIButtonContext;
 
 class UITipOfTheDayWnd : public UIFrameWnd {
 public:
+  UITipOfTheDayWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Paint() override;
 
 protected:

@@ -8,6 +8,7 @@ class UIEditCtrl;
 
 class UINpcEditDialogWnd : public UIFrameWnd {
 public:
+  UINpcEditDialogWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Paint() override;
 
 protected:

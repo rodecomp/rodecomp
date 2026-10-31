@@ -9,6 +9,7 @@ struct WindowPlacement;
 
 class UIPartySettingWnd : public UIFrameWnd {
 public:
+  UIPartySettingWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot11() override;
   /* 00B4 */ unsigned char unknown_00B4[0x20];
   /* 00D4 */ WindowPlacement* m_placement;
@@ -24,6 +25,7 @@ protected:
 
 class UIPartyInvitationToWnd : public UIPartySettingWnd {
 public:
+  UIPartyInvitationToWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 

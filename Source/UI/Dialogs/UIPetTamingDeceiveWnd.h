@@ -5,6 +5,7 @@
 
 class UIPetTamingDeceiveWnd : public UIFrameWnd {
 public:
+  UIPetTamingDeceiveWnd(UIWindowContext& windows, UIFrameContext& frames);
   /* 00B4 */ int m_delay;
   /* 00B8 */ int m_state;
   /* 00BC */ int m_tick;
