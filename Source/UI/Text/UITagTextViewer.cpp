@@ -2,7 +2,10 @@
 
 #include <algorithm>
 
+#include "UI/Buttons/UITextButton.h"
 #include "UI/Lists/UIScrollBar.h"
+
+void sub_83B7F0(UITextButton* button);
 
 // OFFSET: 0x0083E1B0
 // FUNCTION: fn_10515
@@ -154,6 +157,68 @@ int TagTextViewer::UIScroll::SendMsg(
     this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
     break;
   }
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x0083F280
+// FUNCTION: fn_10531
+int UITagTextViewer::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  switch (message) {
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scrollPos;
+    if (message == 9) {
+      this->m_scrollPos = previous - 30;
+    } else if (message == 10) {
+      this->m_scrollPos = previous + 30;
+    } else {
+      this->m_scrollPos = previous + static_cast<int>(argument1);
+    }
+
+    if (previous != this->m_scrollPos) {
+      this->UpdateScroll();
+    }
+    return this->m_scrollPos - previous;
+  }
+  case 0x12:
+    this->SendMsg(this->m_scrollBar, 9, 0, 0, 0, 0);
+    break;
+  case 0x13:
+    this->SendMsg(this->m_scrollBar, 10, 0, 0, 0, 0);
+    break;
+  case 0x1D:
+    if (argument1 != 0) {
+      const std::string text(reinterpret_cast<const char*>(argument1));
+      this->AddText(text);
+    }
+    break;
+  case 0x3C:
+    this->Layout();
+    break;
+  case 0x62:
+    switch (argument1) {
+    case 0x1B5:
+      OpenTextButtonLink(static_cast<UITextButton*>(sender));
+      break;
+    case 0x1B6:
+      sub_83B7F0(static_cast<UITextButton*>(sender));
+      break;
+    case 0x1D0:
+      ShowTextButtonItem(static_cast<UITextButton*>(sender));
+      break;
+    case 0x205:
+      ShowTextButtonTip(static_cast<UITextButton*>(sender));
+      break;
+    case 0x21B:
+      RequestTextButtonService(static_cast<UITextButton*>(sender));
+      break;
+    }
+    break;
+  }
+
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
