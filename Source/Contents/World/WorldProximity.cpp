@@ -1,6 +1,10 @@
 #include "Contents/World/WorldProximity.h"
 #include "Contents/World/World.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
@@ -103,6 +107,49 @@ bool CWorld::IsGuildMaster(std::uint32_t aid) {
 
       return gameActor->Slot42() == static_cast<int>(g_proximityCompareId);
     }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00AC8750
+// FUNCTION: fn_17677
+bool CWorld::IsExistGuildMasterNearby(const float& x, const float& z) {
+  if (!this->player || this->player->Slot50() < 1) {
+    return false;
+  }
+
+  if (!this->actorCells.empty()) {
+    for (float cellX = x - static_cast<float>(this->nearbyRange); cellX <= static_cast<float>(this->nearbyRange) + x; cellX += 1.0f) {
+      for (float cellZ = z - static_cast<float>(this->nearbyRange); cellZ <= static_cast<float>(this->nearbyRange) + z; cellZ += 1.0f) {
+        const float position[2] = {cellX, cellZ};
+        if (this->FindActorInCell(position, [this](std::uint32_t aid) { return this->IsGuildMaster(aid); }) == true) {
+          return true;
+        }
+      }
+    }
+  }
+
+  for (std::uint32_t aid : this->unindexedActorIds) {
+    if (!this->IsGuildMaster(aid)) {
+      continue;
+    }
+
+    CRenderObject* actor = g_session.FindGameActor(aid);
+    if (actor->render.unknown_0070 == 1) {
+      float centerX = 0.0f;
+      float centerZ = 0.0f;
+      int column = 0;
+      int row = 0;
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      mode->WorldCell(actor->render.position.x + 0.5f, actor->render.position.z + 0.5f, column, row);
+      mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      mode->scene->terrain->Grid().CellCenter(column, row, centerX, centerZ);
+      return std::fabs(centerX - x) <= static_cast<float>(this->nearbyRange) && std::fabs(centerZ - z) <= static_cast<float>(this->nearbyRange);
+    }
+
+    return std::fabs(actor->render.position.x - x) <= static_cast<float>(this->nearbyRange) &&
+      std::fabs(actor->render.position.z - z) <= static_cast<float>(this->nearbyRange);
   }
 
   return false;
