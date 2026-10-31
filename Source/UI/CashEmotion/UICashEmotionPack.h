@@ -14,6 +14,7 @@ class UIStaticText;
 
 class UICashEmotionPack : public UIWindow {
   friend class UICashEmotionListChildWnd_Purchase;
+  friend class UICashEmotionListChildWnd_UnPurchased;
 
 public:
   explicit UICashEmotionPack(UIWindowContext& windows);

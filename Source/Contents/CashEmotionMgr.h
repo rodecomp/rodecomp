@@ -179,12 +179,15 @@ public:
   static int InsertOrderList(lua_State* state);
   static int InsertEmotionEnum(lua_State* state);
   static int InsertEmotionListTable(lua_State* state);
+  static int InsertEmotionVarientListTable(lua_State* state);
 
   void RefreshCommands();
   int GetActFilePath(const char* name, bool add);
   int GetSprFilePath(const char* name, bool add);
   int RegisterFileName(std::unordered_map<std::string, int>& ids, CashEmotionFileNames& names, std::function<int()> nextId, const char* name, bool add);
   bool AddEmotion(int packId, int emotionId, const char* name, int unknown20, int unknown24, const char* actFile, const char* sprFile);
+  void LoadScripts();
+  void InsertEmotion(int packId, int emotionId, int unknown20, int unknown24, const char* actFile, const char* sprFile);
   void AcquirePack(int packId, unsigned int expiry);
 
 protected:

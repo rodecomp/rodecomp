@@ -219,6 +219,7 @@ public:
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  void Refresh(const char* filter) override;
   const char* Filter() override;
 
   void UpdateExpiry(int packId, Timestamp* expiry);
@@ -253,6 +254,7 @@ public:
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  void Refresh(const char* filter) override;
   const char* Filter() override;
 
 protected:
@@ -1021,6 +1023,30 @@ int CCashEmotionMgr::GetPackUnknown24(int packId) {
   return it->second.unknown_0024;
 }
 
+// OFFSET: 0x0059AD80
+// FUNCTION: fn_02966
+void CCashEmotionMgr::LoadScripts() {
+  g_luaScript->Register("c_InsertPackInfo", InsertPackInfo);
+  g_luaScript->Register("c_InsertEmotionEnum", InsertEmotionEnum);
+  g_luaScript->Register("c_InsertEmotionListTable", InsertEmotionListTable);
+  g_luaScript->Register("c_InsertEmotionMsgListTable", InsertEmotionMsgListTable);
+  g_luaScript->Register("c_InsertEmotionMsgListTableForCustom", InsertEmotionMsgListTableForCustom);
+  g_luaScript->Register("c_InsertEmotionVarientListTable", InsertEmotionVarientListTable);
+  g_luaScript->Register("c_InsertEmotionGroup", InsertEmotionGroup);
+  g_luaScript->Register("c_InsertOrderList", InsertOrderList);
+
+  g_luaScript->Load("Lua Files\\CashEmotion\\CashEmotionClientSetting", true, false);
+  g_luaScript->Call("getEmotionClientSetting", "s>d", "IntendedDelay", &this->unknown_01CC);
+
+  g_luaScript->Load("Lua Files\\CashEmotion\\CashEmotionListDefine_F", true, false);
+  g_luaScript->Load("Lua Files\\CashEmotion\\CashEmotionListDefine", true, false);
+  g_luaScript->Load("Lua Files\\CashEmotion\\CashEmotionList_F", true, false);
+  g_luaScript->Load("Lua Files\\CashEmotion\\CashEmotionList", true, false);
+  g_luaScript->Call("main_emotion", "");
+
+  this->m_action = new (std::nothrow) CCashEmotionAction_Play;
+}
+
 // OFFSET: 0x0059B320
 // FUNCTION: fn_02967
 int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type) {
@@ -1103,6 +1129,32 @@ bool CCashEmotionMgr::AddEmotion(int packId, int emotionId, const char* name, in
   }
 
   return inserted;
+}
+
+// OFFSET: 0x0059BC30
+// FUNCTION: fn_02971
+void CCashEmotionMgr::InsertEmotion(const int packId, const int emotionId, int unknown20, int unknown24, const char* actFile, const char* sprFile) {
+  const char* packName = this->GetPackTitle(packId);
+  if (!packName) {
+    return;
+  }
+
+  const char* baseName = this->GetEmotionName(this->unknown_000C, emotionId);
+  if (!baseName) {
+    return;
+  }
+
+  std::string name = FormatOwnedString("%s_%s", baseName, packName);
+  this->AddEmotion(packId, emotionId, name.c_str(), unknown20, unknown24, actFile, sprFile);
+
+  const char* key = name.c_str();
+  if (key && std::strlen(key) != 0) {
+    this->m_searchIndex.try_emplace(key, packId, emotionId);
+  }
+
+  if (std::strlen(baseName) > 1) {
+    this->AddShortcut(baseName + 1, packId, emotionId);
+  }
 }
 
 // OFFSET: 0x0059C4F0
@@ -1496,6 +1548,20 @@ int CCashEmotionMgr::InsertEmotionMsgListTableForCustom(lua_State* state) {
   return 1;
 }
 
+// OFFSET: 0x005A0940
+// FUNCTION: fn_03037
+int CCashEmotionMgr::InsertEmotionVarientListTable(lua_State* state) {
+  const int packId = luaL_checkinteger(state, 1);
+  const int emotionId = luaL_checkinteger(state, 2);
+  const int unknown20 = luaL_checkinteger(state, 3);
+  const int unknown24 = luaL_checkinteger(state, 4);
+  const std::string actFile = FromUtf8(luaL_checkstring(state, 5), g_textCodePage);
+  const std::string sprFile = FromUtf8(luaL_checkstring(state, 6), g_textCodePage);
+
+  g_cashEmotionMgr->InsertEmotion(packId, emotionId, unknown20, unknown24, actFile.c_str(), sprFile.c_str());
+  return 1;
+}
+
 // OFFSET: 0x005A0B80
 // FUNCTION: fn_03038
 int CCashEmotionMgr::InsertOrderList(lua_State* state) {
@@ -1732,6 +1798,65 @@ const char* UICashEmotionListChildWnd_Purchase::Filter() {
   return this->m_filter.c_str();
 }
 
+// OFFSET: 0x007C4D30
+// FUNCTION: fn_09367
+__declspec(noinline) void UICashEmotionListChildWnd_Purchase::Refresh(const char* filter) {
+  this->m_filter = filter ? filter : "";
+  for (UICashEmotionPack* item : this->m_items) {
+    this->RemoveChild(item, 0);
+  }
+  this->scrollPosition = 0;
+  this->unknown_009C = 0;
+
+  std::list<UICashEmotionPack*> unused(this->m_items.begin(), this->m_items.end());
+  this->m_items.clear();
+
+  std::vector<int> packs = g_cashEmotionMgr->SortOwnedPacks(filter);
+  std::string expiryFormat = g_simpleStringMgr->GetString("EMSG_EMOTION_USEABLE_EXPIRE_TIME");
+  int y = 0;
+  for (int packId : packs) {
+    CashEmotionPack* info = g_cashEmotionMgr->GetPack(packId);
+    if (!info || !g_cashEmotionMgr->GetPackEmotionTable(packId)) {
+      continue;
+    }
+
+    UICashEmotionPack* pack;
+    int height;
+    auto it = std::find_if(unused.begin(), unused.end(), [packId](UICashEmotionPack* item) { return item->unknown_00A8 == packId; });
+    if (it != unused.end() && (pack = *it) != nullptr) {
+      unused.remove(pack);
+      height = pack->geometry.height;
+    } else {
+      pack = new (std::nothrow) UICashEmotionPack_Purchase(*this->m_context);
+      if (!pack) {
+        continue;
+      }
+      pack->SetSize(243, 159);
+      height = pack->Slot53(packId, true, true);
+    }
+
+    pack->SetSaleBadge(info->unknown_0028);
+    Timestamp* expiry = g_cashEmotionMgr->FindExpiry(packId);
+    if (expiry) {
+      pack->SetTitle(expiryFormat.c_str());
+      pack->UpdateExpiry(expiry);
+    } else {
+      pack->SetTitle(nullptr);
+    }
+    pack->m_limited = g_cashEmotionMgr->GetPackUnknown24(packId) > 0;
+    pack->Move(9, y);
+    y += height;
+    this->AddChild(pack);
+    this->m_items.push_back(pack);
+  }
+
+  for (UICashEmotionPack* item : unused) {
+    delete item;
+  }
+  unused.clear();
+  this->UpdateScrollBars();
+}
+
 // OFFSET: 0x007C5290
 // FUNCTION: fn_09368
 void UICashEmotionListChildWnd_Purchase::Slot15(int, int) {
@@ -1886,6 +2011,65 @@ UICashEmotionListChildWnd_UnPurchased::UICashEmotionListChildWnd_UnPurchased(UIW
 // FUNCTION: fn_09392
 const char* UICashEmotionListChildWnd_UnPurchased::Filter() {
   return this->m_filter.c_str();
+}
+
+// OFFSET: 0x007C6540
+// FUNCTION: fn_09393
+__declspec(noinline) void UICashEmotionListChildWnd_UnPurchased::Refresh(const char* filter) {
+  this->m_filter = filter ? filter : "";
+  for (UICashEmotionPack* item : this->m_items) {
+    this->RemoveChild(item, 0);
+  }
+  this->scrollPosition = 0;
+  this->unknown_009C = 0;
+
+  std::list<UICashEmotionPack*> unused(this->m_items.begin(), this->m_items.end());
+  this->m_items.clear();
+
+  std::string endFormat = g_simpleStringMgr->GetString("EMSG_EMOTION_SALE_END_TIME");
+  std::vector<int> packs = g_cashEmotionMgr->SortUnownedPacks(filter);
+  int y = 0;
+  for (int packId : packs) {
+    CashEmotionPack* info = g_cashEmotionMgr->GetPack(packId);
+    if (!info || !g_cashEmotionMgr->GetPackEmotionTable(packId)) {
+      continue;
+    }
+
+    UICashEmotionPack* pack;
+    int height;
+    auto it = std::find_if(unused.begin(), unused.end(), [packId](UICashEmotionPack* item) { return item->unknown_00A8 == packId; });
+    if (it != unused.end() && (pack = *it) != nullptr) {
+      unused.remove(pack);
+      height = pack->geometry.height;
+    } else {
+      pack = new (std::nothrow) UICashEmotionPack_Unpurchase(*this->m_context);
+      if (!pack) {
+        continue;
+      }
+      pack->SetSize(243, 159);
+      height = pack->Slot53(packId, false, false);
+    }
+
+    pack->SetSaleBadge(info->unknown_0028);
+    const unsigned int endTime = g_cashEmotionMgr->GetPackEndTime(packId);
+    if (endTime) {
+      pack->SetTitle(endFormat.c_str());
+      pack->ShowExpiry(endTime);
+    } else {
+      pack->SetTitle(nullptr);
+    }
+    pack->m_limited = g_cashEmotionMgr->GetPackUnknown24(packId) > 0;
+    pack->Move(9, y);
+    y += height;
+    this->AddChild(pack);
+    this->m_items.push_back(pack);
+  }
+
+  for (UICashEmotionPack* item : unused) {
+    delete item;
+  }
+  unused.clear();
+  this->UpdateScrollBars();
 }
 
 // OFFSET: 0x007C6AA0
