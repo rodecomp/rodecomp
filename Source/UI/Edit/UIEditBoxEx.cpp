@@ -317,9 +317,102 @@ void CUIEditBoxEx::Create(int width, int height, bool withScrollBar) {
   this->SetSize(width, height);
 }
 
-// OFFSET: 0x009E45F0
+#include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x009E4660
+// FUNCTION: fn_14435
+void CUIEditCtrlEx::PaintTextLines() {
+  if (this->selectedAll) {
+    void** vtable = *reinterpret_cast<void***>(this);
+    reinterpret_cast<void(__thiscall*)(CUIEditCtrlEx*)>(vtable[56])(this);
+    this->selectedAll = 0;
+  }
+
+  int width = this->geometry.width;
+  if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0) {
+    width -= this->unknown_0130->geometry.width;
+  }
+
+  if (this->lines.empty()) {
+    int x = this->unknown_01B4;
+    if (this->alignment == 2) {
+      const int caretWidth = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, "|", 0, 0, 12, 0, 0);
+      x = width - this->unknown_01B4 - caretWidth;
+    } else if (this->alignment == 6) {
+      x = width / 2;
+    }
+    this->DrawCaret(x, this->verticalPadding);
+    return;
+  }
+
+  const int lineCount = static_cast<int>(this->lines.size());
+  const int visibleLines = (this->geometry.height - this->verticalPadding) / this->unknown_0138;
+  int linesToDraw = visibleLines;
+  if (linesToDraw < 1) {
+    linesToDraw = 1;
+  }
+
+  int endLine = this->scrollPosition + linesToDraw;
+  if (lineCount < endLine) {
+    endLine = lineCount;
+  }
+
+  for (int lineIndex = this->scrollPosition; lineIndex < endLine; ++lineIndex) {
+    EditLine& line = this->lines[lineIndex];
+    const char* text = line.text.c_str();
+    const int textWidth = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, text, 0, 0, 12, 0, 0);
+
+    int x = this->unknown_01B4;
+    if (this->alignment == 2) {
+      x = width - x - textWidth;
+    } else if (this->alignment == 6) {
+      x = (width - textWidth) / 2;
+    }
+    const int y = (lineIndex - this->scrollPosition) * this->unknown_0138 + this->verticalPadding;
+
+    if (!line.text.empty()) {
+      if (g_windowMgr.GetHoverWindow() == this && line.selectionEnd > line.selectionBegin) {
+        int selectionBeginWidth = 0;
+        if (line.selectionBegin >= 1) {
+          selectionBeginWidth = this->TextWidth(
+            this->m_edit->buttons.fonts, this->m_edit->buttons.locale, text, static_cast<unsigned>(line.selectionBegin), 0, 12, 0, 0
+          );
+        }
+
+        int selectionEndWidth = 0;
+        if (line.selectionEnd >= 1) {
+          selectionEndWidth = this->TextWidth(
+            this->m_edit->buttons.fonts, this->m_edit->buttons.locale, text, static_cast<unsigned>(line.selectionEnd), 0, 12, 0, 0
+          );
+        }
+
+        this->DrawSelectionAt(x + selectionBeginWidth, y, selectionEndWidth - selectionBeginWidth);
+      }
+
+      this->PlaceLinks(line.text, y, lineIndex, this->scrollPosition, endLine);
+
+      if (this->unknown_0190 == 0) {
+        this->DrawTextAt(
+          this->m_edit->buttons.fonts, this->m_edit->buttons.locale, x, this->verticalPadding + y, text, 0, 0, 12, this->textColor, 0, 0
+        );
+      } else {
+        this->DrawEmboldenedText(x, this->verticalPadding + y, text, this->textColor, this->secondColor, 0, 0, 12);
+      }
+
+      this->PlaceTags(x, y, this->scrollPosition, endLine, lineIndex, this->unknown_013C);
+    }
+
+    if (g_windowMgr.GetHoverWindow() == this && lineIndex == this->line) {
+      int caretOffset = 0;
+      if (this->column >= 1) {
+        caretOffset = this->TextWidth(
+          this->m_edit->buttons.fonts, this->m_edit->buttons.locale, text, static_cast<unsigned>(this->column), 0, 12, 0, 0
+        );
+      }
+      this->DrawCaret(x - 2 + caretOffset, y);
+    }
+  }
+}
 
 CUIEditCtrlEx::CUIEditCtrlEx(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl3(windows, edit) {
   this->normalColor = 0;
