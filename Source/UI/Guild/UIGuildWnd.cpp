@@ -1897,5 +1897,176 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
 }
 
 // OFFSET: 0x00964500
+// FUNCTION: fn_13132
+int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
+  switch (message) {
+  case 6:
+    switch (a1) {
+    case 201:
+      this->m_frameContext->windows.CloseWindow(59);
+      return 0;
+    case 184:
+      if (this->m_hoverIndex != -1) {
+        CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
+        if (skill.level != 0) {
+          this->SendMsg(nullptr, 58, reinterpret_cast<std::intptr_t>(&skill), 0, 0, 0);
+        }
+        return 0;
+      }
+      break;
+    case 239:
+    case 240:
+    case 241:
+    case 242:
+    case 243:
+    case 244:
+    case 245:
+      if (g_session.m_guildSkillPoint != 0) {
+        CSkillInfo skill = this->SkillAt(this->m_scrollTop + a1 - 239);
+        if (skill.available != 0) {
+          g_modeMgr.gameMode->SendMsg(67, skill.id, 0, 0, 0);
+        }
+        return 0;
+      }
+      break;
+    case 253:
+    case 254:
+    case 255:
+    case 256:
+    case 257:
+    case 258:
+    case 259: {
+      CSkillInfo skill = this->SkillAt(this->m_scrollTop + a1 - 253);
+      if (skill.available != 0) {
+        int level = reinterpret_cast<CharacterConfigSave*>(&g_session)->UseLevel(skill.id) - 1;
+        if (level <= 0) {
+          level = 1;
+        }
+        if (level > skill.level) {
+          level = skill.level;
+        }
+        g_session.m_skillBundle.SetUnknownValue(skill.id, level);
+        this->Invalidate();
+      }
+      return 0;
+    }
+    case 260:
+    case 261:
+    case 262:
+    case 263:
+    case 264:
+    case 265:
+    case 266: {
+      CSkillInfo skill = this->SkillAt(this->m_scrollTop + a1 - 260);
+      if (skill.available != 0) {
+        int level = reinterpret_cast<CharacterConfigSave*>(&g_session)->UseLevel(skill.id) + 1;
+        if (level <= 0) {
+          level = 1;
+        }
+        if (level > skill.level) {
+          level = skill.level;
+        }
+        g_session.m_skillBundle.SetUnknownValue(skill.id, level);
+        this->Invalidate();
+      }
+      return 0;
+    }
+    }
+    break;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scrollTop;
+    int top;
+    if (message == 9) {
+      top = previous - this->m_visibleRows + 1;
+    } else if (message == 10) {
+      top = this->m_visibleRows - 1 + previous;
+    } else {
+      top = a1 + previous;
+    }
+    this->m_scrollTop = top;
+    if (previous != top) {
+      this->UpdateScroll();
+      this->UpdateSkillButtons();
+      this->Invalidate();
+    }
+    return this->m_scrollTop - previous;
+  }
+  case 23: {
+    this->m_skills.clear();
+    const int count = static_cast<int>(g_session.m_additionalSkills.size());
+    for (int index = 0; index < count; ++index) {
+      CSkillInfo skill = g_session.AdditionalSkillAt(index);
+      if (skill.available != 0 && (skill.unknown_0018 != 0 || skill.level != 0)) {
+        this->m_skills.push_back(skill);
+      }
+    }
+    this->Invalidate();
+    this->UpdateScroll();
+    this->UpdateSkillButtons();
+    return 0;
+  }
+  case 48:
+    if (this->m_hoverIndex != -1) {
+      CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
+      if (skill.available != 0) {
+        const int command = this->m_menuItems[a1].value;
+        if (command == 3) {
+          this->m_frameContext->windows.EnsureWindow(46)->SendMsg(nullptr, 61, skill.id, 0, 0, 0);
+        } else if (command == 14) {
+          this->m_frameContext->windows.EnsureWindow(55)->SendMsg(nullptr, 68, skill.id, 0, 0, 0);
+        }
+      }
+      return 0;
+    }
+    break;
+  case 49:
+    this->m_menuItems.clear();
+    if (g_windowMgr.unknown_0210 != 0) {
+      this->m_frameContext->windows.CloseWindow(18);
+    }
+    if (this->m_hoverIndex != -1) {
+      CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
+      if (skill.available != 0) {
+        const std::string text = LookupMessage(322);
+        this->m_menuItems.push_back(MiniPartyInfoEntry(text.c_str(), 3));
+      }
+    }
+    if (!this->m_menuItems.empty()) {
+      UIWindow* menu = this->m_frameContext->windows.EnsureWindow(18);
+      for (std::size_t index = 0; index < this->m_menuItems.size(); ++index) {
+        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->m_menuItems[index].text.c_str()), 0, 0, 0);
+      }
+      menu->SendMsg(nullptr, 83, 63, 0, 0, 0);
+      menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
+
+      int x = std::max(1, g_mouse.x + 1);
+      int maxX = g_renderer->viewport.width - menu->geometry.width;
+      if (x > maxX) {
+        x = maxX;
+      }
+      int y = std::max(1, g_mouse.y + 1);
+      int maxY = g_renderer->viewport.height - menu->geometry.height;
+      if (y > maxY) {
+        y = maxY;
+      }
+      menu->Move(x, y);
+      return 0;
+    }
+    break;
+  case 58: {
+    const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a1);
+    if (skill->level != 0) {
+      g_modeMgr.gameMode->SendMsg(113, a1, reinterpret_cast<CharacterConfigSave*>(&g_session)->UseLevel(skill->id), 0, 0);
+    }
+    break;
+  }
+  default:
+    return UIGuildWnd::SendMsg(sender, message, a1, a2, a3, a4);
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00963E10
