@@ -19,6 +19,8 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/TextEncoding.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "UI/Window/UIBasicInfoWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowOrdering.h"
@@ -2021,6 +2023,21 @@ int CSession::CountItems17F0() const {
   }
 
   return count;
+}
+
+// OFFSET: 0x00DF9490
+// FUNCTION: fn_23516
+void CSession::RefreshSkillTree() {
+  JobInheritance inheritance{*this->m_hotkeyScript};
+  inheritance.InitializeSkillTree(this->m_skillBundle, this->m_job);
+  if (g_windowMgr.window_02C4) {
+    g_windowMgr.window_02C4->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+
+  if (g_windowMgr.unknown_01DC) {
+    UIBasicInfoWnd* info = reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC);
+    info->SetHeight(info->geometry.height);
+  }
 }
 
 // OFFSET: 0x00DF9500

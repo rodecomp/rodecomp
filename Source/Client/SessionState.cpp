@@ -16,6 +16,7 @@
 #include "Contents/World/World.h"
 #include "Script/LuaScript.h"
 #include "UI/Items/UIEquipWnd.h"
+#include "UI/Window/UIBasicInfoWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
@@ -286,6 +287,25 @@ void CSession::UnequipItem61B8(const ITEM_INFO& item) {
     static_cast<UIEquipWnd*>(g_windowMgr.unknown_01E0)->NotifyEquipmentChanged();
   }
   RefreshItemWindows(&g_windowMgr);
+}
+
+// OFFSET: 0x00E49200
+// FUNCTION: fn_24231
+void CSession::SetJob(int job) {
+  const int previous = this->m_job;
+  this->m_job = job;
+  if (this->IsTreeGroupThree(previous) != this->IsTreeGroupThree(job)) {
+    if (g_windowMgr.unknown_01DC) {
+      reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->RefreshLayout();
+    }
+
+    if (g_modeMgr.GetGameMode()) {
+      g_modeMgr.GetGameMode()->SendMsg(0x144, 0, 0, 0, 0);
+    }
+  }
+
+  this->InvalidateWindowFrames();
+  this->RefreshSkillTree();
 }
 
 // OFFSET: 0x00E497F0

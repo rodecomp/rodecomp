@@ -968,6 +968,8 @@ public:
   void RefreshMercenaryInfo();
   bool IsBlankString(const char* text) const;
   void InvalidateWindowFrames();
+  void RefreshSkillTree();
+  void SetJob(int job);
   void EraseRecord0734(int id);
   void IgnoreText(std::string text);
   void SaveMiniPartyInfo();
