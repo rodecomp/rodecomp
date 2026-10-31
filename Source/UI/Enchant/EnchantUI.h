@@ -27,8 +27,8 @@ class CUIReset;
 
 class CUIEnchantUI : public CUIFrameWnd {
 public:
-  /* 00D8 */ CUIControl* background;
-  /* 00DC */ CUIControl* titleBar;
+  /* 00D8 */ CUIStaticImage* background;
+  /* 00DC */ CUITitleBar* titleBar;
   /* 00E0 */ CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>* targetList;
   /* 00E4 */ CUITab* tab;
   /* 00E8 */ EnchantUI::CUIMainPage* normalPage;
@@ -46,11 +46,13 @@ public:
   }
   ~CUIEnchantUI() override;
   bool CanHitTest() override;
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Slot25(int x, int y) override;
   virtual void Slot53();
   void sub_A06C40(uint64_t group);
   void OnSelectTarget(EnchantUI::CUITargetItem* item, const ITEM_INFO& info);
+  void OnClickClose();
 };
 
 namespace EnchantUI {
@@ -177,6 +179,8 @@ public:
 
 class CUIReset : public CUIEnchantPage {
 public:
+  using CUIEnchantPage::CUIEnchantPage;
+
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Slot55() override;
@@ -216,7 +220,7 @@ public:
 
 class CUIMainPage : public CUIControl {
 public:
-  explicit CUIMainPage(UIWindowContext& context);
+  __declspec(noinline) explicit CUIMainPage(UIWindowContext& context);
 
   /* 0080 */ CUIEnchantPage* firstPage;
   /* 0084 */ CUIEnchantPage* secondPage;
