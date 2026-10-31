@@ -314,6 +314,7 @@ public:
 
 class CUIOptionItem : public CUIListItem {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
   void RunFunction();
