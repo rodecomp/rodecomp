@@ -11,6 +11,7 @@ struct UIButtonContext;
 
 class UIPetEvolutionWnd : public UIFrameWnd {
 public:
+  UIPetEvolutionWnd(UIWindowContext& windows, UIFrameContext& frames);
   ~UIPetEvolutionWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;

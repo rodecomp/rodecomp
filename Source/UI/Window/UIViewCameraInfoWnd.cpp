@@ -9,6 +9,11 @@
 
 #include <string>
 
+// OFFSET: 0x00A78B00
+// FUNCTION: fn_16892
+UIViewCameraInfoWnd::UIViewCameraInfoWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+}
+
 // OFFSET: 0x00A78C20
 // FUNCTION: fn_16894
 bool UIViewCameraInfoWnd::Slot08() {

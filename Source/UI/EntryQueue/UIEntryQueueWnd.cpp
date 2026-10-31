@@ -30,6 +30,11 @@
 #include <utility>
 #include <windows.h>
 
+// OFFSET: 0x00BA3920
+// FUNCTION: fn_19677
+UIEntryQueueHelpWnd::UIEntryQueueHelpWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0), m_viewer(nullptr), m_close(nullptr) {
+}
+
 // OFFSET: 0x00BA4260
 // FUNCTION: fn_19680
 void UIEntryQueueHelpWnd::Slot18() {

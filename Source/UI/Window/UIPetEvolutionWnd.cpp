@@ -14,6 +14,13 @@
 #include <cstring>
 #include <string>
 
+// OFFSET: 0x009AAF30
+// FUNCTION: fn_13761
+UIPetEvolutionWnd::UIPetEvolutionWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->m_petEggId = -1;
+  this->m_evolvedEggId = -1;
+}
+
 // OFFSET: 0x009AB0E0
 // FUNCTION: fn_13762
 UIPetEvolutionWnd::~UIPetEvolutionWnd() {
