@@ -13,18 +13,21 @@ struct WindowResponseRecorder;
 
 class UIParaItemPurchaseWnd : public UIItemPurchaseWnd {
 public:
+  UIParaItemPurchaseWnd();
   void Slot25(int x, int y) override;
   void Slot10(int x, int y, std::intptr_t value) override;
 };
 
 class UIParaItemShopWnd : public UIItemShopWnd {
 public:
+  UIParaItemShopWnd();
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot32(int x, int y) override;
 };
 
 class UIParaResultWnd : public UIItemBaseWnd {
 public:
+  UIParaResultWnd();
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Slot28(int x, int y) override;

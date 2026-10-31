@@ -33,6 +33,18 @@ struct SessionItemLists {
   void ClearTradeItems();
 };
 
+// OFFSET: 0x009A7D30
+// FUNCTION: fn_13739
+UIParaItemPurchaseWnd::UIParaItemPurchaseWnd() {
+}
+
+// OFFSET: 0x009A7D90
+// FUNCTION: fn_13740
+UIParaItemShopWnd::UIParaItemShopWnd() {
+}
+
+// OFFSET: 0x009A7DF0
+
 // OFFSET: 0x009A80F0
 // FUNCTION: fn_13745
 void UIParaResultWnd::AddItem(const RawItemBasic& item, int quantity) {
