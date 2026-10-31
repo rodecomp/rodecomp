@@ -8,7 +8,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Lists/UIComboBoxWnd.h"
 #include <cstdio>
-
+#include "UI/Text/UITextViewer.h"
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
 }
@@ -381,4 +381,15 @@ int UINewComboBoxCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     this->Root()->Invalidate();
   }
   return 0;
+}
+
+// OFFSET: 0x008A1640
+// FUNCTION: fn_11636
+void UITextViewEX::AddLineLinks(UITextButton* const* first, UITextButton* const* last) {
+  std::vector<UITextButton*> links;
+  for (; first != last; ++first) {
+    links.push_back(*first);
+  }
+
+  this->lineLinks.push_back(std::vector<UITextButton*>(links));
 }
