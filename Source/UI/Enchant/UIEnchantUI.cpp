@@ -1618,6 +1618,34 @@ bool CUIReset::Slot56() {
 }
 
 // OFFSET: 0x00A079E0
+// FUNCTION: fn_15014
+bool CUIEnchantPage::SetItem(const ITEM_INFO& item) {
+  if (item.unknown_0000[1] == 0) {
+    return false;
+  }
+
+  this->gameItem->SetItem(item);
+  for (const auto& entry : this->unknown_0088) {
+    CUISlot* slot = entry.second;
+    int card = 0;
+    if (entry.first < 4) {
+      std::memcpy(&card, item.unknown_001C + entry.first * 4, sizeof(card));
+    }
+    if (card > 0) {
+      ITEM_INFO cardInfo;
+      cardInfo.SetItemId(card);
+      cardInfo.identified = 1;
+      slot->itemIcon->SetItem(cardInfo);
+      slot->radioButton->tooltip = slot->itemIcon->name;
+      slot->description->Clear();
+      slot->description->AddLine(cardInfo.DisplayName(0));
+      slot->Show(1);
+    } else {
+      slot->Show(0);
+    }
+  }
+  return true;
+}
 
 // OFFSET: 0x00A07BA0
 // FUNCTION: fn_15015
