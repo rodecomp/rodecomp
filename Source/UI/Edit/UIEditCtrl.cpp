@@ -2,6 +2,7 @@
 #include "Client/Input/Language.h"
 #include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
+#include "File/File.h"
 #include "Network/TextEncoding.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
@@ -106,6 +107,9 @@ bool g_vendingSaleAlarm;
 
 // GLOBAL: gl_24635
 bool g_inputSuggestionsEnabled;
+
+// GLOBAL: gl_24653
+int g_skillTooltipActive;
 
 // GLOBAL: gl_24651
 static const std::string g_itemLinkOpen = "<ITEML>";
@@ -1644,6 +1648,165 @@ void UINoticeMessageBox_LockSellItem::Paint() {
   const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\popup_itemDeal_lock.bmp")));
   this->DrawBitmap(0, 0, &background->image, false);
   this->DrawCenteredText(0, 5, LookupMessage(2951), this->geometry.width, 0, 12, 0xFFFFFF, 0);
+}
+
+// OFFSET: 0x00983550
+// FUNCTION: fn_13346
+void UISkillListWnd::Paint() {
+  CFile file;
+  char text[80];
+
+  const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
+    g_skillTooltipActive ? "유저인터페이스\\basic_interface\\titlebar_left2.bmp" : "유저인터페이스\\basic_interface\\titlebar_left.bmp"
+  )));
+  this->DrawBitmap(0, 0, &left->image, false);
+  const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
+    g_skillTooltipActive ? "유저인터페이스\\basic_interface\\titlebar_right2.bmp" : "유저인터페이스\\basic_interface\\titlebar_right.bmp"
+  )));
+  this->DrawBitmap(this->geometry.width - right->image.width, 0, &right->image, false);
+  int count = (this->geometry.width - 24) / 12 + ((this->geometry.width - 24) % 12 != 0);
+  for (int x = 12; count > 0; --count, x += 12) {
+    const auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
+      g_skillTooltipActive ? "유저인터페이스\\basic_interface\\titlebar_mid2.bmp" : "유저인터페이스\\basic_interface\\titlebar_mid.bmp"
+    )));
+    this->DrawBitmap(x, 0, &middle->image, false);
+  }
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* itemLeft = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &itemLeft->image, false);
+  }
+
+  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* itemRight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - itemRight->image.width, y, &itemRight->image, false);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
+  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  this->DrawButtonBar(2, 0, 1);
+
+  const int slotColumns = (this->geometry.width - 40) / 32;
+  const int slotRows = (this->geometry.height - 38) / 32;
+  int slots = slotRows;
+  for (int y = 17; slots > 0; --slots, y += 32) {
+    DrawItemSlotBackground(*this, 40, y);
+  }
+
+  unsigned fillBlue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, fillBlue);
+  this->FillRegion(72, 17, slotColumns * 32 - 32, slotRows * 32, RGB(red, green, fillBlue));
+
+  if (this->skillTab == 0) {
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 17, 4, LookupMessage(0x3A9), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 16, 3, LookupMessage(0x3A9), 0, 0, 12, 0, 0, 0);
+    std::sprintf(text, LookupMessage(0x11C), *reinterpret_cast<const int*>(g_session.unknown_1664));
+  } else if (this->skillTab == 1) {
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 17, 4, LookupMessage(0x4EE), 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 16, 3, LookupMessage(0x4EE), 0, 0, 12, 0, 0, 0);
+  }
+
+  if (this->skillTab != 1) {
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 16, this->geometry.height - 20, text, 0, 0, 12, 0, 0, 0);
+  }
+
+  int drawn = 0;
+  int index = 0;
+  int skillLevel;
+  int spLevel;
+  for (auto it = this->skills.begin(); it != this->skills.end(); ++index) {
+    if (index < this->scroll * this->columns) {
+      ++it;
+      continue;
+    }
+
+    const int top = drawn / this->columns * 32;
+    int x = drawn % this->columns * 32;
+    if (this->hovered == index) {
+      unsigned selectRed, selectGreen, selectBlue;
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, selectRed, selectGreen, selectBlue);
+      if (it->level == 0) {
+        SkinPaletteChannels(ResourceMgr::Instance(), 10, 2, selectRed, selectGreen, selectBlue);
+      } else if (it->unknown_0014 == 0) {
+        SkinPaletteChannels(ResourceMgr::Instance(), 14, 2, selectRed, selectGreen, selectBlue);
+      }
+      this->FillRegion(x + 104, top + 19, 164, 28, RGB(selectRed, selectGreen, selectBlue));
+    }
+
+    g_session.ItemBitmapPath(it->name, text);
+    const auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
+    this->DrawBitmap(x + 44, top + 21, &icon->image, true);
+
+    int shade;
+    if (it->level == 0) {
+      shade = 120;
+    } else {
+      const char* format;
+      int levelX;
+      if (CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, static_cast<int>(it->id))) {
+        std::sprintf(text, g_serviceType != 12 ? "Lv :" : "Nv :");
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x + 124, top + 34, text, 0, 0, 12, 0, 0, 0);
+        if (this->skillTab == 0) {
+          skillLevel = g_session.HomunSkillLevel(static_cast<int>(it->id));
+        } else if (this->skillTab == 1) {
+          skillLevel = g_session.MercSkillLevel(static_cast<int>(it->id));
+        }
+        if (skillLevel <= 0 || skillLevel > it->level) {
+          skillLevel = it->level;
+        }
+        std::sprintf(text, "%2d", skillLevel);
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x + 149, top + 34, text, 0, 0, 12, skillLevel != it->level ? 0xFF : 0, 0, 0);
+        format = "/ %2d";
+        levelX = 168;
+      } else {
+        format = g_serviceType != 12 ? "Lv : %d" : "Nv : %d";
+        levelX = 113;
+      }
+      std::sprintf(text, format, it->level);
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, levelX + x, top + 34, text, 0, 0, 12, 0, 0, 0);
+
+      if (it->unknown_000C == 0) {
+        std::sprintf(text, LookupMessage(0x11E));
+      } else {
+        int sp = static_cast<int>(it->unknown_0014);
+        if (CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, static_cast<int>(it->id))) {
+          if (this->skillTab == 0) {
+            spLevel = g_session.HomunSkillLevel(static_cast<int>(it->id));
+          } else if (this->skillTab == 1) {
+            spLevel = g_session.MercSkillLevel(static_cast<int>(it->id));
+          }
+          const int amount = it->UseSpAmount(*g_session.m_hotkeyScript, spLevel);
+          if (amount != 0 && spLevel <= it->level) {
+            sp = amount;
+          }
+        }
+        const int ap = it->UseApAmount(*g_session.m_hotkeyScript, it->level);
+        if (ap != 0) {
+          std::sprintf(text, "Sp : %d , Ap : %d", sp, ap);
+        } else {
+          std::sprintf(text, "Sp : %d", sp);
+        }
+      }
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x + 212, top + 34, text, 0, 0, 12, 0, 0, 0);
+      shade = 0;
+    }
+
+    x += 112;
+    std::string name = this->FitDisplayText(this->geometry.width - x - 20, it->DisplayName(*g_session.m_hotkeyScript), 0, 12, 0);
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, top + 22, name.c_str(), 0, 0, 12, RGB(shade, shade, shade), 0, 0);
+    if (++drawn == this->visibleRows * this->columns) {
+      break;
+    }
+    ++it;
+  }
 }
 
 // OFFSET: 0x00983F80

@@ -15,6 +15,7 @@ public:
   UISkillListWnd(UIWindowContext& windows, UIFrameContext& frames);
   bool Slot03() override;
   void Slot11() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot32(int x, int y) override;
