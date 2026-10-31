@@ -140,6 +140,7 @@ public:
   bool IsEffectId990Group(int id);
   bool IsEffectId994Group(int id);
   bool ConfirmDraggedItemUse();
+  void sub_CFE480(int actorId);
   void WorldCell(float x, float z, int& column, int& row) const;
   void SubcellPosition(int column, int row, int subColumn, int subRow, float& x, float& z) const;
   void PlayerCell(int* column, int* row) const;

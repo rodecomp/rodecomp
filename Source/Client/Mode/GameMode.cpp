@@ -9,6 +9,7 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/DummyEffectLauncher.h"
+#include "Contents/Effects/RagEffect.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
@@ -757,4 +758,12 @@ bool CGameMode::ConfirmDraggedItemUse() {
   }
 
   return false;
+}
+
+// OFFSET: 0x00CFE480
+// FUNCTION: fn_21432
+void CGameMode::sub_CFE480(int actorId) {
+  if (g_windowMgr.unknown_0508 != 2 && actorId == *reinterpret_cast<const int*>(0x01733C3C)) {
+    this->scene->player->unknown_0544->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
+  }
 }
