@@ -100,6 +100,49 @@ bool UIScrollWnd::Update(int redraw) {
 }
 
 // OFFSET: 0x009ACB50
+// FUNCTION: fn_13779
+bool UIScrollWnd::UpdateCached(int redraw) {
+  for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
+    it->first->Move(it->second.first, it->second.second);
+  }
+
+  if (this->m_dirty == 1) {
+    this->Paint();
+    this->m_dirty = 0;
+    redraw = 1;
+  }
+
+  bool changed = false;
+  for (UIWindow* child : this->m_children) {
+    if (child->geometry.visible == 1) {
+      changed |= child->Update(redraw);
+    }
+  }
+
+  if (redraw == 1 || changed == 1) {
+    std::list<RenderPrimitive*> primitives(this->m_primitives);
+    for (UIWindow* child : this->m_children) {
+      if (child != this->horizontalBar && child != this->scrollBar) {
+        primitives.push_back(child->DrawPrimitive());
+      } else {
+        static_cast<CDCBitmap*>(child->geometry.surface)->UploadTexture(this->m_context->renderSystem, child->m_texture);
+        primitives.push_back(this->BuildPrimitive(
+          child->geometry.x + this->unknown_009C, child->geometry.y + this->scrollPosition, 0, 0, child->geometry.width, child->geometry.height,
+          child->m_texture, child->Color()
+        ));
+      }
+    }
+    g_renderer->RenderToTexture(
+      this->contentWidth + this->scrollBarWidth, this->contentHeight + this->scrollBarHeight, primitives, this->m_texture
+    );
+    changed = true;
+  }
+
+  for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
+    it->first->Move(it->second.first - this->unknown_009C, it->second.second - this->scrollPosition);
+  }
+  return changed;
+}
 
 // OFFSET: 0x009ACF80
 // FUNCTION: fn_13780
