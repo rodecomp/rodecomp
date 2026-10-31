@@ -2378,6 +2378,26 @@ int ItemTypeSortRank(int type) {
   }
 }
 
+struct ItemTypeNameLess {
+  bool operator()(const ITEM_INFO& left, const ITEM_INFO& right) const;
+};
+
+// OFFSET: 0x009700C0
+// FUNCTION: fn_13240
+bool ItemTypeNameLess::operator()(const ITEM_INFO& left, const ITEM_INFO& right) const {
+  const int leftRank = ItemTypeSortRank(left.unknown_0000[0]);
+  const int rightRank = ItemTypeSortRank(right.unknown_0000[0]);
+  if (leftRank != rightRank) {
+    return leftRank < rightRank;
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  return naming.DisplayName(left, 0) < naming.DisplayName(right, 0);
+}
+
 extern "C" void sub_96E320(void* head, size_t size, ...);
 
 // OFFSET: 0x00996870

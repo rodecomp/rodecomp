@@ -12,7 +12,7 @@
 
 class UISkillListWnd : public UIFrameWnd {
 public:
-  UISkillListWnd();
+  UISkillListWnd(UIWindowContext& windows, UIFrameContext& frames);
   bool Slot03() override;
   void Slot11() override;
   void Slot25(int x, int y) override;
@@ -28,8 +28,8 @@ public:
   void UpdateScrollBar();
   void UpdateRowButtons();
 
-  /* 00B4 */ int unknown_00B4;
-  /* 00B8 */ UIWindow* scrollBar;
+  /* 00BC */ UIWindow* scrollBar;
+  /* 00C0 */ int unknown_00C0;
   /* 00C4 */ UIWindow* upgradeButtons[7];
   /* 00E0 */ UIWindow* levelButtons[7];
   /* 00FC */ UIWindow* levelLabels[7];
@@ -45,6 +45,8 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(UISkillListWnd, scrollBar) == 0xBC);
+static_assert(offsetof(UISkillListWnd, unknown_00C0) == 0xC0);
 static_assert(offsetof(UISkillListWnd, hovered) == 0x118);
 static_assert(offsetof(UISkillListWnd, skills) == 0x12C);
 static_assert(offsetof(UISkillListWnd, saved) == 0x134);
