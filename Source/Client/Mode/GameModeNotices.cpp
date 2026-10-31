@@ -1,11 +1,14 @@
+#include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
+#include "Client/Stove/StoveMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/Item.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/ClientState.h"
@@ -23,6 +26,7 @@
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
+#include "Contents/MapPropertyMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/PlayerNameDictionary.h"
@@ -40,6 +44,7 @@
 #include "Render/Renderer.h"
 #include "Resource/World/TerrainResource.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
+#include "UI/CashShop/UICashShopWnd.h"
 #include "UI/Dialogs/UISayDialogWnd.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "UI/Text/UITagTextViewer.h"
@@ -68,6 +73,7 @@
 #include <cstring>
 #include <map>
 #include <string>
+#include <vector>
 #include <xtimec.h>
 
 #pragma pack(push, 1)
@@ -4188,3 +4194,501 @@ void CGameMode::ReceiveRodexMailList(const unsigned char* packet) {
     }
   }
 }
+
+#pragma pack(push, 1)
+struct StatusChangeListPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::uint32_t aid;
+  /* 0008 */ unsigned char on;
+  /* 0009 */ std::uint16_t values[1];
+};
+
+struct StatusChangeExtendedPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t type;
+  /* 0004 */ std::uint32_t aid;
+  /* 0008 */ unsigned char on;
+  /* 0009 */ std::uint32_t remaining;
+  /* 000D */ int value1;
+  /* 0011 */ int value2;
+  /* 0015 */ int value3;
+};
+
+struct Window227EntriesPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::uint16_t entries[1];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D6EB70
+// FUNCTION: fn_22116
+void CGameMode::ReceiveStatusChangeList(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const StatusChangeListPacket*>(data);
+  const unsigned int count = (packet->length - 9u) >> 1;
+  for (int index = 0; index < static_cast<int>(count); ++index) {
+    this->ApplyStatusChange(packet->aid, packet->on, 0x37F, 0, packet->values[index], 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D71A30
+// FUNCTION: fn_22139
+void CGameMode::ReceiveStatusChangeExtended(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const StatusChangeExtendedPacket*>(data);
+  switch (packet->type) {
+  case 0x46:
+  case 0x47:
+  case 0x48:
+  case 0x49:
+  case 0x4A:
+  case 0x4B:
+  case 0x4C:
+  case 0x4D:
+  case 0x4E:
+  case 0x4F:
+  case 0x50:
+  case 0x51:
+  case 0x52:
+  case 0x53:
+  case 0x54:
+  case 0x1C6:
+  case 0x4ED:
+  case 0x4EE:
+  case 0x4EF:
+    return;
+  }
+
+  this->ApplyStatusChange(packet->aid, packet->on, packet->type, packet->remaining, packet->value1, packet->value2, packet->value3, 0, 0);
+}
+
+// OFFSET: 0x00D71790
+// FUNCTION: fn_22137
+void CGameMode::ReceiveWindow227Entries(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const Window227EntriesPacket*>(data);
+  const unsigned int count = (packet->length - 4u) >> 1;
+  if (count == 0) {
+    PacketIdOnly request;
+    request.id = 0x974;
+    GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
+    return;
+  }
+
+  std::vector<std::uint16_t> entries(packet->entries, packet->entries + count);
+  UIWindow* window = g_windowMgr.EnsureWindow(227);
+  if (window) {
+    window->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(entries.data()), count, 0, 0);
+  }
+}
+
+#pragma pack(push, 1)
+struct ItemDropPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ int itemId;
+  /* 000A */ std::uint16_t type;
+  /* 000C */ unsigned char identified;
+  /* 000D */ std::int16_t column;
+  /* 000F */ std::int16_t row;
+  /* 0011 */ unsigned char subColumn;
+  /* 0012 */ unsigned char subRow;
+  /* 0013 */ std::int16_t count;
+  /* 0015 */ unsigned char showEffect;
+  /* 0016 */ std::uint16_t grade;
+};
+#pragma pack(pop)
+
+struct ItemFallEntry {
+  /* 0000 */ char itemId[0x20];
+  /* 0020 */ std::uint32_t aid;
+  /* 0024 */ int column;
+  /* 0028 */ int row;
+  /* 002C */ int subColumn;
+  /* 0030 */ int subRow;
+  /* 0034 */ int falling;
+  /* 0038 */ int count;
+  /* 003C */ unsigned char identified;
+  /* 003E */ std::uint16_t unknown_003E;
+  /* 0040 */ unsigned char showEffect;
+  /* 0042 */ std::uint16_t grade;
+};
+
+// OFFSET: 0x00D6FB20
+// FUNCTION: fn_22126
+void CGameMode::ReceiveItemDropEntry(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ItemDropPacket*>(data);
+  ItemFallEntry entry = {};
+  _itoa(packet->itemId, entry.itemId, 10);
+  entry.column = packet->column;
+  entry.aid = packet->aid;
+  entry.row = packet->row;
+  entry.subColumn = packet->subColumn;
+  entry.subRow = packet->subRow;
+  entry.count = packet->count;
+  entry.identified = packet->identified;
+  entry.unknown_003E = packet->type;
+  entry.showEffect = packet->showEffect;
+  entry.grade = packet->grade;
+  entry.falling = 1;
+
+  CItem* item = this->scene->GetItemByAID(packet->aid);
+  if (!item) {
+    item = new CItem;
+    this->scene->objects.push_back(item);
+    this->scene->unknown_0018.push_back(item);
+  }
+
+  const int entryAddress = reinterpret_cast<int>(&entry);
+  item->SendMsg(nullptr, 4, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+#pragma pack(push, 1)
+struct SpriteChangePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ unsigned char value;
+};
+
+struct SpriteChange2Packet {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ std::int64_t value;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D44C90
+// FUNCTION: fn_21837
+void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const SpriteChangePacket*>(data);
+  const int bodyCostume = g_session.m_bodyCostume;
+  const int bodyStyle = g_session.m_bodyStyle;
+  CGameActor* actor;
+  if (packet->aid == g_session.m_aid) {
+    actor = this->scene->player;
+    switch (packet->type) {
+    case 0:
+      g_session.UpdateBodyStyle(g_session.GetDisplayJob(), bodyStyle, bodyCostume);
+      g_session.SetJob(packet->value);
+      break;
+    case 1:
+      g_session.m_head = packet->value;
+      break;
+    case 2:
+      *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x4]) = packet->value;
+      *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x8]) = 0;
+      break;
+    case 3:
+      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x0]) = packet->value;
+      break;
+    case 4:
+      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x4]) = packet->value;
+      break;
+    case 5:
+      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x8]) = packet->value;
+      break;
+    case 6:
+      g_session.m_headPalette = packet->value;
+      break;
+    case 7: {
+      const unsigned char style = packet->value;
+      g_session.UpdateBodyStyle(g_session.GetDisplayJob(), style, bodyCostume);
+      break;
+    }
+    case 8:
+      *reinterpret_cast<int*>(&g_session.unknown_0EDC[0xC]) = packet->value;
+      break;
+    }
+    if (!actor) {
+      return;
+    }
+  } else {
+    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+    if (!actor) {
+      CRenderObject* skill = this->scene->GetSkillByAID(packet->aid);
+      if (!skill) {
+        return;
+      }
+      if (packet->type == 0) {
+        skill->SendMsg(nullptr, 47, 0, packet->value, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      return;
+    }
+  }
+
+  switch (packet->type) {
+  case 0:
+    actor->SetActorJob(packet->value);
+    actor->Slot30();
+    actor->Slot31();
+    actor->Slot32();
+    break;
+  case 1:
+    actor->Slot22(packet->value);
+    actor->Slot30();
+    actor->Slot31();
+    actor->Slot60();
+    break;
+  case 2:
+    actor->Slot23(packet->value, 0);
+    break;
+  case 3:
+    actor->Slot25(packet->value);
+    break;
+  case 4:
+    actor->Slot26(packet->value);
+    break;
+  case 5:
+    actor->Slot27(packet->value);
+    break;
+  case 6:
+    actor->Slot34(packet->value);
+    break;
+  case 7:
+    actor->Slot33(packet->value);
+    break;
+  case 8:
+    actor->Slot28(packet->value);
+    break;
+  }
+}
+
+// OFFSET: 0x00D44760
+// FUNCTION: fn_21836
+void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const SpriteChange2Packet*>(data);
+  const int bodyCostume = g_session.m_bodyCostume;
+  const int bodyStyle = g_session.m_bodyStyle;
+  const int value = static_cast<int>(packet->value);
+  CGameActor* actor;
+  if (packet->aid == g_session.m_aid) {
+    actor = this->scene->player;
+    switch (packet->type) {
+    case 0:
+      g_session.UpdateBodyStyle(g_session.GetDisplayJob(), bodyStyle, bodyCostume);
+      if (g_session.m_job != packet->value) {
+        g_session.SetJob(value);
+      }
+      break;
+    case 1:
+      g_session.m_head = value;
+      break;
+    case 2: {
+      *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x4]) = value;
+      const int shield = static_cast<int>(packet->value >> 32);
+      *reinterpret_cast<int*>(&g_session.unknown_0EDC[0x8]) = shield;
+      if (value != 0 && GetWeaponViewValue(shield) == -1) {
+        *reinterpret_cast<int*>(&g_session.unknown_0EDC[0xC]) = shield;
+      }
+      break;
+    }
+    case 3:
+      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x0]) = value;
+      break;
+    case 4:
+      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x4]) = value;
+      break;
+    case 5:
+      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x8]) = value;
+      break;
+    case 6:
+      g_session.m_headPalette = value;
+      break;
+    case 7:
+      g_session.UpdateBodyStyle(g_session.GetDisplayJob(), value, bodyCostume);
+      break;
+    case 11:
+      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x0]) = 0;
+      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x4]) = 0;
+      *reinterpret_cast<int*>(&g_session.unknown_0EF4[0x8]) = 0;
+      g_session.m_robe = 0;
+      break;
+    case 12:
+      g_session.m_robe = value;
+      break;
+    case 13:
+      g_session.m_bodyCostume = value;
+      break;
+    case 14:
+      g_session.SetFlag(static_cast<char>(value));
+      actor->Slot62(value);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(4137)), 0, 0, 0, 0);
+      break;
+    }
+    if (!actor) {
+      return;
+    }
+  } else {
+    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+    if (!actor) {
+      CRenderObject* skill = this->scene->GetSkillByAID(packet->aid);
+      if (!skill) {
+        return;
+      }
+      if (packet->type == 0) {
+        skill->SendMsg(nullptr, 47, 0, value, static_cast<int>(packet->value >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      return;
+    }
+  }
+
+  switch (packet->type) {
+  case 0:
+    actor->SetActorJob(value);
+    if (packet->aid == g_session.m_aid) {
+      actor->Slot33(g_session.m_bodyStyle);
+    }
+    actor->Slot30();
+    actor->Slot31();
+    actor->Slot32();
+    break;
+  case 1:
+    actor->Slot22(value);
+    actor->Slot30();
+    actor->Slot31();
+    actor->Slot60();
+    break;
+  case 2: {
+    const int shield = static_cast<int>(packet->value >> 32);
+    const int weapon = value;
+    const int view = GetWeaponViewValue(shield);
+    switch (actor->GetEffectiveJob(-1)) {
+    case 0xC:
+    case 0xFAD:
+    case 0xFC3:
+    case 0xFDB:
+    case 0xFE1:
+    case 0x1005:
+    case 0x109E:
+      actor->Slot24(value, shield);
+      break;
+    default:
+      actor->Slot24(weapon, weapon >> 31);
+      break;
+    }
+    if (view == -1 || shield == 0) {
+      actor->Slot28(shield);
+    }
+    break;
+  }
+  case 3:
+    actor->Slot25(value);
+    break;
+  case 4:
+    actor->Slot26(value);
+    break;
+  case 5:
+    actor->Slot27(value);
+    break;
+  case 6:
+    actor->Slot34(value);
+    break;
+  case 7:
+    actor->Slot33(value);
+    break;
+  case 9:
+    actor->Slot29(value);
+    break;
+  case 11:
+    actor->Slot25(0);
+    actor->Slot26(0);
+    actor->Slot27(0);
+    actor->Slot43(0, 0);
+    break;
+  case 12:
+    actor->Slot43(value, 0);
+    break;
+  case 13:
+    actor->Slot44(value, 1);
+    if (StateFlag04(actor->Slot13())) {
+      actor->SendMsg(nullptr, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    if (StateFlag20(actor->Slot13())) {
+      actor->SendMsg(nullptr, 138, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, 137, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    break;
+  case 14:
+    actor->Slot62(value);
+    break;
+  }
+}
+
+#pragma pack(push, 1)
+struct MapPropertyPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t mapId;
+  /* 0004 */ std::uint32_t flags;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D19B30
+// FUNCTION: fn_21613
+void CGameMode::ReceiveMapProperty(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const MapPropertyPacket*>(data);
+  g_mapPropertyMgr->SetValue(packet->mapId, 7, packet->flags & 1);
+  g_mapPropertyMgr->SetValue(packet->mapId, 8, (packet->flags >> 1) & 1);
+  g_mapPropertyMgr->SetValue(packet->mapId, 9, (packet->flags >> 2) & 1);
+  g_mapPropertyMgr->SetValue(packet->mapId, 15, (packet->flags >> 3) & 1);
+  g_mapPropertyMgr->SetValue(packet->mapId, 16, (packet->flags >> 4) & 1);
+  g_mapPropertyMgr->SetValue(packet->mapId, 17, (packet->flags >> 5) & 1);
+  g_mapPropertyMgr->SetValue(packet->mapId, 18, (packet->flags >> 6) & 1);
+  g_mapPropertyMgr->SetValue(packet->mapId, 19, (packet->flags >> 7) & 1);
+  g_mapPropertyMgr->SetValue(packet->mapId, 20, (packet->flags >> 8) & 1);
+  g_mapPropertyMgr->SetValue(packet->mapId, 40, (packet->flags >> 9) & 1);
+  g_mapPropertyMgr->SetValue(packet->mapId, 41, (packet->flags >> 10) & 1);
+  g_session.unknown_0000 = packet->mapId;
+
+  g_serviceOptions.Set(229, *reinterpret_cast<int*>(&g_session.unknown_5454[0x0]) != 0);
+  *reinterpret_cast<int*>(&g_session.unknown_5454[0x4]) = 0;
+  *reinterpret_cast<int*>(&g_session.unknown_5454[0x8]) = 0;
+  g_session.unknown_5460 = 0;
+  if (g_session.GetMapProperty0F()) {
+    g_serviceOptions.Set(229, 1);
+  }
+  if (g_session.GetMapProperty10()) {
+    *reinterpret_cast<int*>(&g_session.unknown_5454[0x4]) = 1;
+  }
+  if (g_session.GetMapProperty11()) {
+    *reinterpret_cast<int*>(&g_session.unknown_5454[0x8]) = 1;
+  }
+  if (g_session.GetMapProperty12()) {
+    g_session.unknown_5460 = 1;
+  }
+  if (g_session.GetMapProperty09()) {
+    this->scene->unknown_004C = 1;
+  }
+  if (g_session.GetMapProperty13()) {
+    this->scene->unknown_0050 = 1;
+  }
+
+  if (GetBaseJob(g_session.GetDisplayJob()) == 0xFCF && !g_mapPropertyMgr->GetValue(g_session.unknown_0000, 41)) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2381)), 0xFFFF64, 0, 0, 0);
+  }
+  if (GetBaseJob(g_session.GetDisplayJob()) == 0x1082 && !g_mapPropertyMgr->GetValue(g_session.unknown_0000, 41)) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2381)), 0xFFFF64, 0, 0, 0);
+  }
+  if ((g_session.GetDisplayJob() == 0x108F || g_session.GetDisplayJob() == 0x1091 || g_session.GetDisplayJob() == 0x10CE) &&
+      !g_mapPropertyMgr->GetValue(g_session.unknown_0000, 41)) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2381)), 0xFFFF64, 0, 0, 0);
+  }
+  if (g_mapPropertyMgr->GetValue(packet->mapId, 20)) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1772)), 0xFFFF64, 0, 0, 0);
+  }
+
+  PacketIdOnly request;
+  request.id = 0x447;
+  GetRagConnection().Send(g_packetLengths.FixedLength(request.id), &request);
+}
+
+#pragma pack(push, 1)
+struct StovePurchaseResultPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ int result;
+  /* 0006 */ int itemId;
+  /* 000A */ int count;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D6B5C0

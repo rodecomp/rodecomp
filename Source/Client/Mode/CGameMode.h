@@ -496,6 +496,14 @@ public:
   void ReceiveStatusChange(const unsigned char* data);
   void ReceiveStatusChangeEffect(const unsigned char* data);
   void ReceiveStatusChangeAck(const unsigned char* data);
+  void ReceiveStatusChangeList(const unsigned char* data);
+  void ReceiveStatusChangeExtended(const unsigned char* data);
+  void ReceiveWindow227Entries(const unsigned char* data);
+  void ReceiveItemDropEntry(const unsigned char* data);
+  void ReceiveSpriteChange(const unsigned char* data);
+  void ReceiveSpriteChange2(const unsigned char* data);
+  void ReceiveMapProperty(const unsigned char* data);
+  void ReceiveStovePurchaseResult(const unsigned char* data);
   void SetActorUnknown02E4(std::uint32_t aid, int value);
   void IgnoreRemovedPacket13(const unsigned char* packet);
   void IgnoreRemovedPacket14(const unsigned char* packet);

@@ -49,4 +49,6 @@ static_assert(offsetof(CStoveMgr, unknown_02B8) == 0x02B8);
 
 extern CStoveMgr* g_stoveMgr;
 
+void FetchStoveTermsAgreement();
+
 #endif
