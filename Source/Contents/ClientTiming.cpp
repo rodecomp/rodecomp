@@ -778,6 +778,54 @@ void CSession::LoadDamageSkinSettings() {
 }
 
 // OFFSET: 0x00DE5620
+// FUNCTION: fn_23492
+bool CSession::LoadFogParameters() {
+  this->m_fogParameters.clear();
+
+  CFile file;
+  if (!file.Open("fogParameterTable.txt", 0, true, false)) {
+    return false;
+  }
+
+  const char* cursor = static_cast<const char*>(file.GetData());
+  const char* end = cursor + file.GetSize();
+  std::string name;
+  std::vector<std::string> values;
+
+  for (const char* start = cursor; cursor < end; ++cursor) {
+    const char value = *cursor;
+    if (value == '\n' || value == '\r') {
+      start = cursor + 1;
+      continue;
+    }
+
+    if (value != '#') {
+      continue;
+    }
+
+    if (name.empty()) {
+      name.assign(start, cursor - start);
+    } else if (values.size() < 3) {
+      values.push_back(std::string(start, cursor));
+    } else {
+      std::string last(start, cursor);
+      values.push_back(last);
+      this->m_fogParameters.push_back(std::make_pair(name, values));
+      name.clear();
+      values.clear();
+    }
+
+    start = cursor + 1;
+  }
+
+  std::sort(this->m_fogParameters.begin(), this->m_fogParameters.end(),
+            [](const std::pair<std::string, std::vector<std::string>>& left,
+               const std::pair<std::string, std::vector<std::string>>& right) {
+              return std::strcmp(left.first.c_str(), right.first.c_str()) < 0;
+            });
+  file.Close();
+  return true;
+}
 
 // OFFSET: 0x00DE5B40
 // FUNCTION: fn_23493
