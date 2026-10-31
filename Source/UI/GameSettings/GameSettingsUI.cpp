@@ -1673,8 +1673,20 @@ void GameSettingsUI::CUIGroupTrilinear::Slot16() {
 }
 
 // OFFSET: 0x00A19560
+// FUNCTION: fn_15342
+template <>
+CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
 
 // OFFSET: 0x00A19720
+// FUNCTION: fn_15343
+template <>
+CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::CUIListBoxEx(UIWindowContext& context)
+    : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), unknown_00C4(0), selected(static_cast<unsigned int>(-1)),
+      unknown_00E0(1), rebind(0) {
+}
 
 // OFFSET: 0x00A198E0
 
