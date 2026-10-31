@@ -5217,6 +5217,75 @@ struct RodexReadMailPacket {
 #pragma pack(pop)
 
 // OFFSET: 0x00D6B120
+// FUNCTION: fn_22068
+void CGameMode::ReceiveRodexReadMail(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const RodexReadMailPacket*>(data);
+  g_session.ClearItemQuantities();
+  g_rodexMailStore->currentMailId = packet->mailId;
+  g_rodexMailStore->unknown_0010 = packet->type;
+
+  std::map<std::int64_t, RodexMail>* mails;
+  switch (packet->type) {
+  case 0:
+    mails = &g_rodexMailStore->m_mails0;
+    break;
+  case 1:
+    mails = &g_rodexMailStore->m_mails1;
+    break;
+  case 2:
+    mails = &g_rodexMailStore->m_mails2;
+    break;
+  default:
+    return;
+  }
+
+  std::map<std::int64_t, RodexMail>::iterator found = mails->find(packet->mailId);
+  if (found == mails->end()) {
+    return;
+  }
+
+  RodexMail& mail = found->second;
+  if (!mail.isRead && --g_rodexMailStore->unknown_0018 == 0) {
+    if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
+      window->SendMsg(nullptr, 6, 286, 476, 0, 0);
+    }
+  }
+
+  mail.unknown_003C.append(packet->text, packet->textLength);
+  mail.hasItem = packet->itemCount;
+  mail.zeny = packet->zeny;
+  mail.isRead = 1;
+
+  auto* mailItems = reinterpret_cast<RodexMailItem*>(mail.unknown_0055.data());
+  const auto* packetItems = reinterpret_cast<const RodexMailItem*>(packet->text + packet->textLength);
+  for (long long i = 0; i < packet->itemCount; ++i) {
+    RodexMailItem& record = mailItems[i];
+    memcpy_s(&record, sizeof(RodexMailItem), &packetItems[i], sizeof(RodexMailItem));
+
+    ITEM_INFO item;
+    item.unknown_0000[0] = record.type;
+    item.unknown_0000[2] = record.expireTime;
+    item.quantity = record.quantity;
+    std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
+    item.SetItemId(record.itemId);
+    item.identified = record.identified;
+    item.unknown_005D = record.damaged;
+    item.unknown_0060 = record.refine;
+    item.unknown_0064 = record.unknown_001F;
+    item.unknown_0070 = record.bindType;
+    item.unknown_0098 = CountItemSlotOptions(record.options);
+    for (long long option = 0; option < item.unknown_0098; ++option) {
+      reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[option] = record.options[option];
+    }
+    item.unknown_0088 = record.grade;
+    g_session.AddItemToFreeSlot(item);
+  }
+
+  if (!g_windowMgr.CloseWindow(265)) {
+    g_windowMgr.EnsureWindow(265);
+    g_windowMgr.unknown_045C->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
 
 #pragma pack(push, 1)
 struct RodexMailPageEntry {
@@ -5241,6 +5310,41 @@ struct RodexMailPagePacket {
 #pragma pack(pop)
 
 // OFFSET: 0x00D70BF0
+// FUNCTION: fn_22132
+void CGameMode::ReceiveRodexMailListRefresh(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const RodexMailPagePacket*>(data);
+  const RodexMailPageEntry* entry = packet->entries;
+  g_rodexMailStore->unknown_0010 = packet->type;
+  g_rodexMailStore->unknown_001C = packet->isEnd;
+
+  std::map<std::int64_t, RodexMail>* mails;
+  if (g_rodexMailStore->unknown_0010 == 0) {
+    mails = &g_rodexMailStore->m_mails0;
+  } else if (g_rodexMailStore->unknown_0010 == 1) {
+    mails = &g_rodexMailStore->m_mails1;
+  } else if (g_rodexMailStore->unknown_0010 == 2) {
+    mails = &g_rodexMailStore->m_mails2;
+  }
+  mails->clear();
+
+  for (int i = 0; i < packet->count; ++i) {
+    RodexMail mail;
+    mail.isRead = entry->isRead;
+    mail.unknown_0001 = entry->type;
+    mail.unknown_0020 = _time32(nullptr) + entry->expireTime;
+    mail.unknown_0004.assign(entry->sender, (std::min)(std::strlen(entry->sender), static_cast<std::size_t>(24)));
+    mail.unknown_0024.assign(entry->title, entry->titleLength);
+    if (mails->find(entry->mailId) == mails->end()) {
+      mails->insert(std::make_pair(entry->mailId, mail));
+    }
+    entry = reinterpret_cast<const RodexMailPageEntry*>(reinterpret_cast<const char*>(entry) + 0x2C + entry->titleLength);
+  }
+
+  if (g_windowMgr.unknown_0454) {
+    reinterpret_cast<UIRodexInboxWnd*>(g_windowMgr.unknown_0454)->InitializeMailActions();
+    reinterpret_cast<UIRodexInboxWnd*>(g_windowMgr.unknown_0454)->SetButtonsDisabled(0);
+  }
+}
 
 // OFFSET: 0x00D6A0D0
 
