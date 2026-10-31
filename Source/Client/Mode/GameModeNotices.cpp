@@ -3067,6 +3067,15 @@ static void FillVendingItem(ITEM_INFO& item, const VendingItemRecord2& record) {
   item.unknown_0070 = record.sprite;
 }
 
+// OFFSET: 0x00D47720
+// FUNCTION: fn_21850
+void CGameMode::ReceiveVendingItemSoldNow(const unsigned char* data) {
+  const int itemId = *reinterpret_cast<const int*>(data + 2);
+  const short quantity = *reinterpret_cast<const short*>(data + 6);
+  const int field8 = *reinterpret_cast<const int*>(data + 8);
+  sub_D08670(static_cast<int>(_time32(nullptr)), itemId, quantity, field8, 0, 0);
+}
+
 // OFFSET: 0x00D70790
 
 // OFFSET: 0x00D6C410

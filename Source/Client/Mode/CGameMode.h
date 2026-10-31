@@ -588,10 +588,12 @@ public:
   void ReceiveTypedItemList(const unsigned char* packet);
   void ReceiveVendingItemList(int aid, int storeId, char own, int count, std::uint32_t duration, const unsigned char* data, int value, int unused);
   void ReceiveVendingItemList2(int aid, int storeId, char own, int count, std::uint32_t duration, const unsigned char* data);
+  void ReceiveVendingItemSoldNow(const unsigned char* data);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);
 void __stdcall sub_CDBC30(const vector3d* position, int actorId, float scale, int job);
+void __stdcall sub_D08670(int field14, int itemId, int quantity, int field8, int fieldC, int field10);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CGameMode, mapName) == 0x68);
