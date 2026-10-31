@@ -19,6 +19,8 @@ public:
   void ReleaseModel();
   void LaunchGroundEffects(int effectId, int unused, int duration);
   void Render(int argument) override;
+  void sub_E55100(const float* box, float x, float y);
+  void sub_E55320(const char* modelName);
 
   /* 0410 */ int unknown_0410;
   /* 0414 */ unsigned m_effectTimer;

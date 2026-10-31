@@ -1,5 +1,6 @@
 #include "Contents/Actors/Skill.h"
 
+#include "ActorPickNode.h"
 #include "Contents/Actors/GraffiSkill.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -10,13 +11,17 @@
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/Models/ModelActor.h"
 #include "Contents/World/World.h"
+#include "Resource/Models/ModelResource.h"
+#include "Resource/ResourceMgr.h"
 #include "Contents/World/WorldObjects.h"
 #include "Render/Renderer.h"
 #include "Render/SpriteGeometry.h"
 #include "Resource/World/TerrainResource.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include <cstring>
 #include <cstdlib>
+#include <new>
 
 // OFFSET: 0x00E4A350
 // FUNCTION: fn_24252
@@ -200,4 +205,95 @@ void CSkill::LaunchGroundEffects(int effectId, int, int duration) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchDummyEffect(&position, effectId, interval + 20, 0);
     }
   }
+}
+
+struct SkillPickInfo {
+  /* 0000 */ float left;
+  /* 0004 */ float top;
+  /* 0008 */ float depth;
+  /* 000C */ float right;
+  /* 0010 */ float bottom;
+  /* 0014 */ float depthOffset;
+  /* 0018 */ std::uint32_t aid;
+  /* 001C */ int job;
+  /* 0020 */ int kind;
+  /* 0024 */ float unused;
+};
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(SkillPickInfo) == 0x28);
+#endif
+
+// OFFSET: 0x00E55100
+// FUNCTION: fn_24303
+void CSkill::sub_E55100(const float* box, float x, float y) {
+  if (this->render.unknown_00A4Bytes[1] != 0) {
+    // GLOBAL: gl_25171
+    static int minimum = static_cast<int>(g_renderer->UiScaleX() * 34.0f);
+    auto* info = static_cast<SkillPickInfo*>(operator new(sizeof(SkillPickInfo)));
+    if (info != nullptr) {
+      info->left = 0.0f;
+      info->top = 0.0f;
+      info->depth = 0.0f;
+      info->right = 0.0f;
+      info->bottom = 0.0f;
+      info->depthOffset = 0.0f;
+    }
+    info->left = box[0] < box[2] ? box[0] : box[2];
+    info->top = box[1];
+    info->depth = box[4] + 350.0f;
+    info->right = box[0] > box[2] ? box[0] : box[2];
+    info->bottom = box[3];
+    info->depthOffset = box[4] + 350.0f;
+    info->aid = this->skillAid;
+    info->job = this->GetEffectiveJob(-1);
+    info->kind = 2;
+    info->unused = 0.0f;
+    const int width = static_cast<int>(info->right - info->left);
+    if (width < minimum) {
+      const float pad = static_cast<float>((minimum - width) / 2);
+      info->right += pad;
+      info->left -= pad;
+    }
+    const int height = static_cast<int>(info->bottom - info->top);
+    if (height < minimum) {
+      const float pad = static_cast<float>((minimum - height) / 2);
+      info->bottom += pad;
+      info->top -= pad;
+    }
+    reinterpret_cast<CActorPickNode*>(0x01349870)->AddPickInfo(reinterpret_cast<ActorPickInfo*>(info));
+  }
+  this->SetTlvert(x, y);
+}
+
+// OFFSET: 0x00E55320
+// FUNCTION: fn_24304
+void CSkill::sub_E55320(const char* modelName) {
+  if (modelName == nullptr || this->render.enabled == 0) {
+    return;
+  }
+
+  this->ReleaseModel();
+  const float diffuse[3] = {0.5f, 0.7f, 0.5f};
+  const float white[3] = {1.0f, 1.0f, 1.0f};
+  const float ambient[3] = {0.5f, 0.5f, 0.5f};
+  auto* resource = static_cast<C3dModelRes*>(ResourceMgr::Instance().Load(modelName));
+  if (resource->major == 1) {
+    this->m_model = new C3dActorV1;
+  } else if (resource->major == 2) {
+    this->m_model = new C3dActorV2;
+  }
+
+  this->m_model->CopyVolumes(resource->volumes);
+  this->m_model->SetSpeed(1.0f);
+  std::memcpy(this->m_model->position, &this->render.position.x, sizeof(this->m_model->position));
+  this->m_model->dirty = 1;
+  this->m_model->Assign(*resource);
+  this->m_model->Animate(3.0);
+  this->m_model->occlusionEnabled = 0;
+  this->m_model->playback = 0;
+  using PrepareFn = void (__thiscall*)(C3dActor*, const float*, const float*, const float*);
+  const PrepareFn prepare = reinterpret_cast<PrepareFn>((*reinterpret_cast<void***>(this->m_model))[4]);
+  prepare(this->m_model, diffuse, white, ambient);
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->spatial.InsertModel(*this->m_model, 0);
 }
