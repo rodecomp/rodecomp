@@ -842,3 +842,46 @@ void __stdcall sub_CE8F10(const void* info, const unsigned char* data) {
   };
   recorder.Record(packet.length, &packet, 0x2A, 0);
 }
+
+// OFFSET: 0x00CDFAF0
+// FUNCTION: fn_21325
+void CGameMode::IgnorePacket() {
+}
+
+// OFFSET: 0x00CE8EC0
+// FUNCTION: fn_21343
+void CGameMode::RemoveUnknown01A4(int value) {
+  for (std::list<int>::iterator it = this->unknown_01A4.begin(); it != this->unknown_01A4.end(); ++it) {
+    if (*it == value) {
+      this->unknown_01A4.erase(it);
+      return;
+    }
+  }
+}
+
+#pragma pack(push, 1)
+struct GameModeMessageRecord {
+  /* 0000 */ std::uint32_t header;
+  /* 0004 */ std::uint16_t length;
+  /* 0006 */ int message;
+  /* 000A */ int value;
+  /* 000E */ int first;
+  /* 0012 */ int second;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GameModeMessageRecord) == 0x16);
+
+// OFFSET: 0x00CE8FC0
+
+// OFFSET: 0x00CED260
+// FUNCTION: fn_21364
+void CGameMode::UpdateReplayActionSpeeds() {
+  CPlayer* player = this->scene->player;
+  player->SetActionSpeed(Replay::Instance().AnimationScale());
+  for (CRenderObject* actor : this->scene->actors) {
+    actor->SetActionSpeed(Replay::Instance().AnimationScale());
+  }
+}
+
+// OFFSET: 0x00CF1060

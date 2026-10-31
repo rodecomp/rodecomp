@@ -465,6 +465,11 @@ public:
   void Zc_Start_Capture(const unsigned char* packet);
   void Zc_Start_Collection(const unsigned char* packet);
   void Zc_Start_Couple(const unsigned char* packet);
+  void IgnorePacket();
+  void RemoveUnknown01A4(int value);
+  bool RecordReplayMessage(int message, int value, int first, int second);
+  void UpdateReplayActionSpeeds();
+  struct ReplayTime StopReplayRecording();
   void ReceivePacket0AB8(const unsigned char* packet);
   void ReceivePacket0A29(int value);
   void ReceiveCashShopBanner(int value1, int value2, int value3);
