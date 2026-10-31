@@ -2909,6 +2909,15 @@ void CGameMode::ReceiveBuyingStoreItemList(const unsigned char* packet) {
 #include "Contents/Jobs/JobInheritance.h"
 
 // OFFSET: 0x00D5F3E0
+// FUNCTION: fn_21969
+void CGameMode::SetActorNameCard(std::uint32_t id, const char* name, const char* value1, const char* value2, const char* value3, int job) {
+  if (id == g_session.m_aid) {
+    g_session.unknown_615C = job;
+  }
+
+  std::string jobTitle = GetJobTitleString(job);
+  this->nameCard.Set(id, name, value1, value2, value3, jobTitle, std::string(), 0);
+}
 
 // OFFSET: 0x00D79BB0
 // FUNCTION: fn_22180
@@ -2970,10 +2979,125 @@ public:
 }
 
 // OFFSET: 0x00D4CAD0
+// FUNCTION: fn_21869
+void CGameMode::ReceiveStatusBonus(const unsigned char* data) {
+  const StatusBonusPacket* packet = reinterpret_cast<const StatusBonusPacket*>(data);
+  int* traitBonus = reinterpret_cast<int*>(g_session.unknown_7FC0 + 8);
+  switch (packet->type) {
+  case 13:
+    g_session.m_standardStats[0] = packet->value;
+    g_session.InvalidateWindowFrames();
+    g_session.unknown_166C = packet->bonus;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 14:
+    g_session.m_standardStats[1] = packet->value;
+    g_session.InvalidateWindowFrames();
+    g_session.unknown_1670 = packet->bonus;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 15:
+    g_session.m_standardStats[2] = packet->value;
+    g_session.InvalidateWindowFrames();
+    g_session.unknown_1674 = packet->bonus;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 16:
+    g_session.m_standardStats[3] = packet->value;
+    g_session.InvalidateWindowFrames();
+    g_session.unknown_1678 = packet->bonus;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 17:
+    g_session.m_standardStats[4] = packet->value;
+    g_session.InvalidateWindowFrames();
+    g_session.unknown_167C = packet->bonus;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 18:
+    g_session.m_standardStats[5] = packet->value;
+    g_session.InvalidateWindowFrames();
+    g_session.unknown_1680 = packet->bonus;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 219:
+    g_session.SetTraitStat(219, packet->value);
+    traitBonus[0] = packet->bonus;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 220:
+    g_session.SetTraitStat(220, packet->value);
+    traitBonus[1] = packet->bonus;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 221:
+    g_session.SetTraitStat(221, packet->value);
+    traitBonus[2] = packet->bonus;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 222:
+    g_session.SetTraitStat(222, packet->value);
+    traitBonus[3] = packet->bonus;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 223:
+    g_session.SetTraitStat(223, packet->value);
+    traitBonus[4] = packet->bonus;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 224:
+    g_session.SetTraitStat(224, packet->value);
+    traitBonus[5] = packet->bonus;
+    g_session.InvalidateWindowFrames();
+    break;
+  }
+
+  switch (packet->type) {
+  case 13:
+  case 14:
+  case 15:
+  case 16:
+  case 17:
+  case 18:
+  case 219:
+  case 220:
+  case 221:
+  case 222:
+  case 223:
+  case 224:
+    if (g_equipmentPropertiesMgr == nullptr) {
+      g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+    }
+    g_equipmentPropertiesMgr->RefreshPretend();
+    break;
+  }
+}
 
 // OFFSET: 0x00D27EC0
 
 // OFFSET: 0x00D8A600
+// FUNCTION: fn_22220
+void CGameMode::ReceiveSwapEquipmentList(const unsigned char* data) {
+  g_session.ResetItems61B8();
+  g_session.ResetItems6B68();
+
+  const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
+  const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(SwapEquipmentRecord);
+  const SwapEquipmentRecord* record = reinterpret_cast<const SwapEquipmentRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    ITEM_INFO item = g_session.FindItemByIdentity(record->index, record->location);
+    item.unknown_0000[3] = record->location;
+    if (item.unknown_0000[1] == 0) {
+      break;
+    }
+
+    if (g_session.IsCostumeLocation(record->location)) {
+      reinterpret_cast<ClientItemLists*>(&g_session)->EquipItem6B68(item);
+    } else {
+      g_session.EquipItem61B8(item);
+    }
+  }
+}
 
 namespace {
 #pragma pack(push, 1)
@@ -2996,6 +3120,40 @@ namespace {
 }
 
 // OFFSET: 0x00D89F20
+// FUNCTION: fn_22215
+void CGameMode::ReceiveGuildMemberList(const unsigned char* data) {
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
+  const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildMemberRecord);
+  guildInfo->unknown_0064 = count;
+  guildInfo->ClearMembers();
+
+  const GuildMemberRecord* record = reinterpret_cast<const GuildMemberRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    GuildInfo::Member member;
+    member.accountId = record->accountId;
+    member.characterId = record->characterId;
+    member.unknown_0020 = record->unknown_0008;
+    member.unknown_0024 = record->unknown_000A;
+    member.job = record->job;
+    member.unknown_002C = record->unknown_000C;
+    member.positionId = record->positionId;
+    member.level = record->level;
+    member.exp = record->exp;
+    member.online = record->online;
+    member.expRatio = 0.0f;
+    *reinterpret_cast<int*>(member.unknown_0074) = record->unknown_001E;
+    if (member.characterId == g_session.m_gid) {
+      member.name = g_session.DecodePlayerName();
+    }
+
+    member.positionName.clear();
+    guildInfo->AddMember(member);
+  }
+
+  guildInfo->UpdateMemberExpRatios();
+  g_windowMgr.RefreshGuildWindows();
+}
 
 namespace {
 #pragma pack(push, 1)
