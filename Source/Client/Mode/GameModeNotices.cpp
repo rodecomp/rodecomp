@@ -2412,6 +2412,11 @@ void CGameMode::ReceiveRodexMailReturn(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D73E00
+// FUNCTION: fn_22144
+void CGameMode::ReceiveActorStatusValuePacket(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ActorStatusValuePacket*>(data);
+  this->ReceiveActorStatusValue(packet->aid, packet->status, packet->value, packet->value >> 31);
+}
 
 // OFFSET: 0x00D73E20
 
