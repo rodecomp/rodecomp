@@ -652,6 +652,50 @@ void CGameMode::ReceiveActorSequenceDeadline(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D26E50
+// FUNCTION: fn_21685
+void CGameMode::ReceiveDevotionList(const unsigned char* packet) {
+  const auto* list = reinterpret_cast<const DevotionListPacket*>(packet);
+
+  if (!g_serviceOptions.Get(8)) {
+    return;
+  }
+
+  CGameActor* actor;
+  if (list->aid == g_session.m_aid) {
+    actor = this->scene->player;
+  } else {
+    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(list->aid));
+  }
+
+  if (actor != nullptr) {
+    for (int index = 0; index < 5; ++index) {
+      actor->SendMsg(nullptr, 109, 0, 232, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  for (int index = 0; index < 5; ++index) {
+    if (list->devotees[index] == 0) {
+      continue;
+    }
+
+    vector3d position{static_cast<float>(list->aid), static_cast<float>(list->devotees[index]), 0.0f};
+    if (position.y == position.y && position.x == position.x) {
+      if (actor != nullptr) {
+        CRagEffect* effect = actor->LaunchEffect(232, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        if (effect != nullptr) {
+          effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+        }
+      }
+    } else {
+      char message[256];
+      sprintf(message, "DEVOTION OVERFLOW : %d -- %d , %d , %d , %d , %d", list->aid, list->devotees[0], list->devotees[1], list->devotees[2],
+        list->devotees[3], list->devotees[4]);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0x3232FA, 0, 0, 0);
+      sprintf(message, "DEVOTION OVERFLOW : 그라비티에 메일로 문의해주십시요");
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0x3232FA, 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x00D27060
 // FUNCTION: fn_21686
@@ -662,6 +706,53 @@ void CGameMode::ReceiveActorSignal(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D2A990
+// FUNCTION: fn_21705
+void CGameMode::ReceiveFormatStringMessage(const unsigned char* packet) {
+  const auto* message = reinterpret_cast<const FormatStringMessagePacket*>(packet);
+  const char* format = LookupMessage(message->messageId);
+
+  int count = 0;
+  const char* cursor = format;
+  while (*cursor != '\0') {
+    if (IsDBCSLeadByte(*cursor)) {
+      cursor += 2;
+    } else if (cursor[0] == '%' && cursor[1] == 's') {
+      ++count;
+      cursor += 2;
+    } else {
+      ++cursor;
+    }
+  }
+
+  char text[261];
+  std::memset(text, 0, sizeof(text));
+
+  const char* first = reinterpret_cast<const char*>(message + 1);
+  switch (count) {
+  case 0:
+    _snprintf(text, 260, format);
+    break;
+  case 1:
+    _snprintf(text, 260, format, first);
+    break;
+  case 2: {
+    const char* second = first + std::strlen(first) + 1;
+    _snprintf(text, 260, format, first, second);
+    break;
+  }
+  case 3: {
+    const char* second = first + std::strlen(first) + 1;
+    const char* third = second + std::strlen(second) + 1;
+    _snprintf(text, 260, format, first, second, third);
+    break;
+  }
+  default:
+    sprintf(text, "unknown argment list");
+    return;
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFFFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00D2AF90
 // FUNCTION: fn_21707
