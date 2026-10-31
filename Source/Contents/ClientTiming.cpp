@@ -126,6 +126,14 @@ CNavi_Object::CNavi_Object(int type, int index, const char* name, const char* ti
 }
 
 // OFFSET: 0x00B8C520
+// FUNCTION: fn_19423
+CNavi_Link::CNavi_Link() : unknown_0080(0), unknown_0084(0) {
+  this->type = 200;
+  this->linkedInfo = nullptr;
+  this->unknown_0080 = 0;
+  this->unknown_0084 = 0;
+  this->depth = -1;
+}
 
 // OFFSET: 0x00B8C2B0
 // FUNCTION: fn_19422
