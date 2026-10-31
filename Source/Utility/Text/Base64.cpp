@@ -81,6 +81,12 @@ std::string DecodeBase64(std::string encoded, bool removeLinebreaks) {
   return decoded;
 }
 
+// OFFSET: 0x00619CF0
+// FUNCTION: fn_04412
+std::string Base64Decode(const std::string& encoded, bool removeLinebreaks) {
+  return DecodeBase64(encoded, removeLinebreaks);
+}
+
 // OFFSET: 0x00619D70
 // FUNCTION: fn_04413
 std::string EncodeBase64(const std::string& input, bool urlSafe) {
