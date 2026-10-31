@@ -1,3 +1,4 @@
+#include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
 #include "Contents/SkinMgr.h"
 #include "Render/Text/FontCache.h"
@@ -8,6 +9,8 @@
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Window/InputFocus.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Chat/ChatSuggestions.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "Network/TextEncoding.h"
@@ -46,8 +49,254 @@ int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 }
 
 // OFFSET: 0x00863C70
+// FUNCTION: fn_10912
+int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  using NextCharHandler = const char*(__thiscall*)(InputCharset*, const char*, int);
+  CLanguage& input = this->m_edit->input;
+  unsigned char* const scrolling = reinterpret_cast<unsigned char*>(&this->unknown_015C);
+  unsigned char* const lineMove = reinterpret_cast<unsigned char*>(&this->unknown_0184);
+
+  if (message == 0) {
+    if (lineMove[1] == 0 || (static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8) != 0 || lineMove[1] == 0) {
+      char newline[] = "\r\n";
+      input.Insert(newline);
+      return 0;
+    }
+
+    this->UIWindow::SendMsg(sender, 0, a, b, c, d);
+    return 0;
+  }
+
+  if (message == 7 || message == 9 || message == 10) {
+    const int previous = this->unknown_0158;
+    const int visible = this->geometry.height / this->unknown_0138;
+    scrolling[0] = 1;
+
+    if (message == 9) {
+      this->unknown_0158 = previous - visible + 1;
+    } else if (message == 10) {
+      this->unknown_0158 = previous - 1 + visible;
+    } else {
+      this->unknown_0158 = previous + a;
+    }
+
+    if (this->unknown_0158 < 0) {
+      this->unknown_0158 = 0;
+    }
+
+    const int last = this->unknown_013C - this->geometry.height / this->unknown_0138;
+    if (this->unknown_0158 > last) {
+      this->unknown_0158 = last;
+    }
+
+    static_cast<UIScrollBar*>(this->unknown_0130)->SetPosition(this->unknown_0158);
+    this->unknown_0130->Invalidate();
+    this->Invalidate();
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+
+    return this->unknown_0158 - previous;
+  }
+
+  if (message == 18) {
+    lineMove[0] = 0;
+
+    const unsigned count = this->unknown_0168.size();
+    if (count < 2 && (count != 1 || !this->unknown_0174[0])) {
+      return 0;
+    }
+
+    input.Selection(this->anchor, this->cursor);
+    if (this->unknown_0150 < 1 || this->unknown_0154 != this->cursor || scrolling[1] != 0) {
+      const char* current = this->unknown_0160;
+      this->unknown_015E = 0;
+      int bytes = 0;
+      int width = 0;
+      const char* const end = current + std::strlen(current);
+      int column = 0;
+
+      if (this->unknown_0144 != 0) {
+        while (current < end) {
+          const int previousBytes = bytes;
+          const int previousWidth = width;
+          const char* const start = current;
+          current = reinterpret_cast<NextCharHandler>((*reinterpret_cast<void***>(g_serverLanguage))[5])(g_serverLanguage, start, static_cast<int>(end - start));
+          const int length = static_cast<int>(current - start);
+          const TextLocale locale = {};
+          width += this->TextWidth(g_fontCache, locale, start, length, 0, 12, 0, 0);
+          bytes += length;
+
+          if (length == 1 && *start == '\n') {
+            column = bytes - 1;
+            break;
+          }
+
+          column = bytes;
+          if (width > this->unknown_014C) {
+            if (width - this->unknown_014C > this->unknown_014C - previousWidth) {
+              column = previousBytes;
+            }
+            break;
+          }
+        }
+      }
+
+      this->unknown_0150 = static_cast<int>(std::strlen(this->unknown_0160)) + this->unknown_0144 - column;
+    }
+
+    input.RetreatCursor(this->unknown_0150);
+    scrolling[1] = 1;
+    lineMove[0] = 1;
+  } else if (message == 19) {
+    lineMove[0] = 0;
+
+    const unsigned count = this->unknown_0168.size();
+    if ((count < 2 || count - 1 <= static_cast<unsigned>(this->textY)) && (count != 1 || !this->unknown_0174[0] || this->unknown_0148 < 1)) {
+      return 0;
+    }
+
+    input.Selection(this->anchor, this->cursor);
+    if (this->unknown_0150 < 1 || this->unknown_0154 != this->cursor || this->unknown_015E != 0) {
+      scrolling[1] = 0;
+      int bytes = 0;
+      int width = 0;
+      int column = 0;
+      const unsigned lines = this->unknown_0168.size();
+
+      if (lines >= 2 && lines - 1 > static_cast<unsigned>(this->textY)) {
+        const char* current = this->unknown_0164;
+        const char* const end = current + std::strlen(current);
+
+        while (current < end) {
+          const int previousBytes = bytes;
+          const int previousWidth = width;
+          const char* const start = current;
+          current = reinterpret_cast<NextCharHandler>((*reinterpret_cast<void***>(g_serverLanguage))[5])(g_serverLanguage, start, static_cast<int>(end - start));
+          const int length = static_cast<int>(current - start);
+          const TextLocale locale = {};
+          width += this->TextWidth(g_fontCache, locale, start, length, 0, 12, 0, 0);
+          bytes += length;
+
+          if (length == 1 && *start == '\n') {
+            column = bytes - 1;
+            break;
+          }
+
+          column = bytes;
+          if (width > this->unknown_014C) {
+            if (width - this->unknown_014C > this->unknown_014C - previousWidth) {
+              column = previousBytes;
+            }
+            break;
+          }
+        }
+      }
+
+      this->unknown_0150 = this->unknown_0148 + column;
+    }
+
+    input.AdvanceCursor(this->unknown_0150);
+    this->unknown_015E = 1;
+  } else if (message == 256) {
+    scrolling[0] = 0;
+    this->HandleInputMessage(a, b);
+    return 3;
+  } else {
+    this->UIEditCtrl::SendMsg(sender, message, a, b, c, d);
+    return 0;
+  }
+
+  input.Selection(this->anchor, this->cursor);
+  this->unknown_0154 = this->cursor;
+  return 0;
+}
 
 // OFFSET: 0x0085E420
+// FUNCTION: fn_10829
+void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
+  CLanguage& input = this->m_edit->input;
+  const bool password = this->m_edit->password != 0;
+  UIWindow* const chatWindow = g_chatSuggestions ? g_chatSuggestions->window : nullptr;
+
+  this->unknown_0150 = 0;
+  this->unknown_0154 = 0;
+
+  switch (key) {
+  case VK_BACK:
+    if (this->unknown_0168.size() != 0) {
+      input.Selection(this->anchor, this->cursor);
+      int length = 0;
+      for (int line = 0; line < this->textY; ++line) {
+        length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+      }
+      if (length == this->cursor && this->unknown_0174[this->textY - 1]) {
+        input.Character(VK_BACK, data, g_textCodePage);
+      }
+    }
+    break;
+  case VK_END:
+    if (this->unknown_0168.size() != 0) {
+      input.Selection(this->anchor, this->cursor);
+      int offset = this->cursor;
+      for (int line = 0; line < this->textY; ++line) {
+        offset -= static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+      }
+      const int length = static_cast<int>(std::strlen(this->unknown_0168[this->textY].c_str()));
+      input.AdvanceCursor(this->unknown_0174[this->textY] ? length - offset - 2 : length - offset);
+      input.Selection(this->anchor, this->cursor);
+    }
+    reinterpret_cast<unsigned char*>(&this->unknown_0184)[0] = 1;
+    return;
+  case VK_HOME:
+    if (this->unknown_0168.size() != 0) {
+      input.Selection(this->anchor, this->cursor);
+      int offset = this->cursor;
+      for (int line = 0; line < this->textY; ++line) {
+        offset -= static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+      }
+      input.RetreatCursor(offset);
+      input.Selection(this->anchor, this->cursor);
+    }
+    break;
+  case VK_LEFT:
+    if (this->textY > 0) {
+      input.Selection(this->anchor, this->cursor);
+      int length = 0;
+      for (int line = 0; line < this->textY; ++line) {
+        length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+      }
+      if (length == this->cursor && this->unknown_0174[this->textY - 1]) {
+        input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+      }
+    }
+    input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    break;
+  case VK_RIGHT:
+    input.Selection(this->anchor, this->cursor);
+    if (static_cast<unsigned>(this->textY) < this->unknown_0168.size()) {
+      int length = 0;
+      for (int line = 0; line <= this->textY; ++line) {
+        length += static_cast<int>(std::strlen(this->unknown_0168[line].c_str()));
+      }
+      if (length - 2 == this->cursor && this->unknown_0174[this->textY]) {
+        input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+        input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+        return;
+      }
+    }
+    input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    break;
+  case VK_INSERT:
+  case VK_DELETE:
+  case 'A':
+  case 'C':
+  case 'V':
+  case 'X':
+    input.KeyDown(key, data, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    break;
+  }
+}
 
 // OFFSET: 0x0084F570
 // FUNCTION: fn_10659
@@ -113,7 +362,9 @@ UIEditCtrl3::UIEditCtrl3(const UIEditCtrl3& other) : UIEditCtrl2(other) {
   }
 }
 
+// OFFSET: 0x00851630
 // OFFSET: 0x00852770
+// FUNCTION: fn_10693
 // FUNCTION: fn_10715
 UIEditCtrl3::~UIEditCtrl3() {
   this->ClearLineState();
