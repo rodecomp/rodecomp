@@ -13,6 +13,7 @@
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
+#include "Contents/RouletteMgr.h"
 #include "Contents/World/World.h"
 #include "Network/TextEncoding.h"
 #include "UI/Item/UIItemStoreWnd.h"
@@ -1252,4 +1253,63 @@ void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
   }
 
   g_session.RefreshItem1740Window();
+}
+
+// OFFSET: 0x00D26800
+// FUNCTION: fn_21682
+void CGameMode::ReceiveUnknownD26800(const unsigned char* packet) {
+  const unsigned char value = packet[2];
+  *reinterpret_cast<int*>(g_session.unknown_5974) = value;
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(value != 0 ? 0x54F : 0x54E)), 0x64FFFF, 0, 0, 0);
+  if (g_windowMgr.unknown_01E0) {
+    g_windowMgr.unknown_01E0->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D79660
+
+// OFFSET: 0x00D79E90
+// FUNCTION: fn_22183
+void CGameMode::ReceiveUnknownD79E90(std::int16_t result, std::intptr_t value) {
+  switch (result) {
+  case 0:
+    if (UIWindow* window = g_windowMgr.LookupWindow(340)) {
+      window->SendMsg(nullptr, 0x40, 0, value, 0, 0);
+    }
+    break;
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x9D1)), 0xFF, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D79440
+
+// OFFSET: 0x00D611B0
+// FUNCTION: fn_21977
+void CGameMode::ReceiveDynamicNpcNotice(const unsigned char* packet) {
+  char text[0x400];
+  const char* message;
+  switch (*reinterpret_cast<const int*>(packet + 2)) {
+  case 1:
+    std::memset(text, 0, sizeof(text));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "dynamic npc create error found(unknown) ");
+    message = text;
+    break;
+  case 2:
+    std::memset(text, 0, sizeof(text));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "dynamic npc not found ");
+    message = text;
+    break;
+  case 3:
+    message = LookupMessage(0xA47);
+    break;
+  case 4:
+    message = LookupMessage(0xFA2);
+    break;
+  default:
+    return;
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
 }
