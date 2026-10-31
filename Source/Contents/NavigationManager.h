@@ -183,6 +183,7 @@ public:
   bool AddMob(CNavi_Object* mob);
   bool AddLink(CNavi_Link* link);
   const char* GetName() const;
+  std::size_t GetNameLength() const;
   const char* GetTitle() const;
   bool IsVisited() const;
   void SetVisited(bool visited);

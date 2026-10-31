@@ -60,6 +60,7 @@ class CRagConnection : public CConnection {
 public:
   CRagConnection();
   ~CRagConnection() override;
+  short GetPacketType(const char* packet);
 
 private:
   /* 006C */ unsigned char unknown_006C;

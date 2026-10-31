@@ -109,6 +109,12 @@ void CConnection::Close() {
   g_session.m_options.Set(5, 0);
 }
 
+// OFFSET: 0x00C7C9C0
+// FUNCTION: fn_20392
+short CRagConnection::GetPacketType(const char* packet) {
+  return *reinterpret_cast<const short*>(packet);
+}
+
 // OFFSET: 0x00C7CA40
 // FUNCTION: fn_20397
 bool CConnection::Receive() {

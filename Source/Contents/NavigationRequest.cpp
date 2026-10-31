@@ -59,6 +59,12 @@ const char* CNaviInfo::GetName() const {
   return this->name.c_str();
 }
 
+// OFFSET: 0x00B8E820
+// FUNCTION: fn_19486
+std::size_t CNaviInfo::GetNameLength() const {
+  return this->name.size();
+}
+
 // OFFSET: 0x00B8E840
 // FUNCTION: fn_19488
 int CNavi_Object::GetIndex() const {
