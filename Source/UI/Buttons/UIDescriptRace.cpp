@@ -13,6 +13,12 @@ UIDescriptRace::UIDescriptRace(int race) : m_race(race), unknown_0284(0) {
   this->m_noRace = race == 0;
 }
 
+// OFFSET: 0x008861C0
+// FUNCTION: fn_11323
+void UIDescriptRace::Slot15(int, int) {
+  this->SendMsg(nullptr, 13, this->m_noRace, 0, 0, 0);
+}
+
 // OFFSET: 0x008985D0
 // FUNCTION: fn_11548
 int UIDescriptRace::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {

@@ -1120,6 +1120,8 @@ void UIMessageBoxAutoreturn::Slot19() {
   this->gauge->SetValue(static_cast<float>(progress));
 }
 
+// OFFSET: 0x008AA9D0
+
 // OFFSET: 0x008AAA10
 // FUNCTION: fn_11724
 void UIMonsterInfoWnd::DrawResistance(int x, int y, const char* label, int value, std::uint32_t border, std::uint32_t fill) {

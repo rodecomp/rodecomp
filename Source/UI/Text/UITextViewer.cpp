@@ -5,6 +5,7 @@
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/ItemLinkDisplay.h"
 #include "UI/Text/TextMarkup.h"
+#include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Buttons/UITextButton.h"
 #include "UI/Text/UITextViewer.h"
@@ -274,4 +275,29 @@ void UITextViewEX::Refresh() {
   }
 
   this->verticalBar->Invalidate();
+}
+
+// OFFSET: 0x00874DF0
+// FUNCTION: fn_11194
+void UIItemTagCtrl::AddTagButton(UIWindow* button) {
+  UIWindow* window = g_windowMgr.GetHoverWindow();
+  if (window) {
+    window->AddChild(button);
+  }
+}
+
+// OFFSET: 0x00874E10
+// FUNCTION: fn_11195
+void UIItemTagOnMail::AddTagButton(UIWindow* button) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0458)) {
+    window->AddChild(button);
+  }
+}
+
+// OFFSET: 0x00874E30
+// FUNCTION: fn_11196
+void UIItemTagOnMegaPhone::AddTagButton(UIWindow* button) {
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0318)) {
+    window->AddChild(button);
+  }
 }

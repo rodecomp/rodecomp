@@ -13,6 +13,7 @@ struct ITEM_INFO;
 class UIItemTagCtrl : public UIEditCtrl {
 public:
   virtual bool CanInsertTag(const std::string& name, int width);
+  virtual void AddTagButton(UIWindow* button);
 
   std::string AppendTag(const std::string& name);
   int MeasureText(const std::string& text, const unsigned& bytes);
@@ -37,9 +38,15 @@ public:
 class UIItemTagOnMail : public UIItemTagCtrl {
 public:
   bool CanInsertTag(const std::string& name, int width) override;
+  void AddTagButton(UIWindow* button) override;
   void SetLines(const std::vector<std::string>& lines);
 
   /* 015C */ std::vector<std::string> m_lines;
+};
+
+class UIItemTagOnMegaPhone : public UIItemTagCtrl {
+public:
+  void AddTagButton(UIWindow* button) override;
 };
 
 #endif

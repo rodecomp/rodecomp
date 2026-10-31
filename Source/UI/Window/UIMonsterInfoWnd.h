@@ -27,6 +27,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void DrawResistance(int x, int y, const char* label, int value, std::uint32_t border, std::uint32_t fill);
+  void DrawNewItemIcon(int x, int y);
 
   /* 00B4 */ MonsterInfo info;
   /* 00D4 */ int unknown_00D4;
