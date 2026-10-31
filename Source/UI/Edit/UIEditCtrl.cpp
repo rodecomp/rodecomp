@@ -996,6 +996,32 @@ void UIItemStoreFindWnd::Slot10(int x, int y, std::intptr_t value) {
 }
 
 // OFFSET: 0x00972570
+// FUNCTION: fn_13273
+void UIItemStoreSubWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source != 1 && drag->source != 9) {
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+
+  if (static_cast<CGameMode*>(mode)->ConfirmDraggedItemUse()) {
+    return;
+  }
+
+  if (drag->quantity == 1) {
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  }
+
+  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.window_01EC->SendMsg(nullptr, 13, 7, 0, 0, 0);
+}
 
 // OFFSET: 0x009727F0
 // FUNCTION: fn_13275
@@ -2220,10 +2246,52 @@ bool UIItemStoreSubWnd::Sort3() {
 }
 
 // OFFSET: 0x00995CF0
+// FUNCTION: fn_13463
+bool UIItemStoreSubWnd::SortReversed1() {
+  if (!this->sub_996950()) {
+    return false;
+  }
+  struct Flag {
+    char val;
+  } flag{0};
+  void* head = *reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0xe8);
+  size_t size = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(this) + 0xec);
+  sub_96E320(head, size, flag);
+  this->items.reverse();
+  return true;
+}
 
 // OFFSET: 0x00995D50
+// FUNCTION: fn_13464
+bool UIItemStoreSubWnd::SortReversed2() {
+  if (!this->sub_996AF0()) {
+    return false;
+  }
+  struct Flag {
+    char val;
+  } flag{0};
+  void* head = *reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0xe8);
+  size_t size = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(this) + 0xec);
+  sub_96E320(head, size, flag);
+  this->items.reverse();
+  return true;
+}
 
 // OFFSET: 0x00995DB0
+// FUNCTION: fn_13465
+bool UIItemStoreSubWnd::SortReversed3() {
+  if (!this->sub_996C90()) {
+    return false;
+  }
+  struct Flag {
+    char val;
+  } flag{0};
+  void* head = *reinterpret_cast<void**>(reinterpret_cast<char*>(this) + 0xe8);
+  size_t size = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(this) + 0xec);
+  sub_96E320(head, size, flag);
+  this->items.reverse();
+  return true;
+}
 
 // OFFSET: 0x00996940
 // FUNCTION: fn_13473
@@ -2507,6 +2575,32 @@ void UIMerchantItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
 }
 
 // OFFSET: 0x00972C00
+// FUNCTION: fn_13278
+void UIMerchantItemWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (g_windowMgr.LookupWindow(10011) || g_windowMgr.unknown_01F0 || g_windowMgr.unknown_01F8) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source != 1 && drag->source != 6) {
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+
+  if (static_cast<CGameMode*>(mode)->ConfirmDraggedItemUse()) {
+    return;
+  }
+
+  if (drag->quantity == 1) {
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  }
+
+  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.window_01EC->SendMsg(nullptr, 13, 8, 0, 0, 0);
+}
 
 // OFFSET: 0x0089CAE0
 // FUNCTION: fn_11591
@@ -2878,6 +2972,17 @@ void UIItemBaseWnd::Slot35(int value) {
 }
 
 // OFFSET: 0x0098A3A0
+// FUNCTION: fn_13413
+void UISkillListWnd::Slot35(int value) {
+  if (this->unknown_0128) {
+    int step = this->visibleRows - 1;
+    if (step > 3) {
+      step = 3;
+    }
+
+    this->SendMsg(this->scrollBar, 7, value < 0 ? step : -step, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x0098A6F0
 // FUNCTION: fn_13416
