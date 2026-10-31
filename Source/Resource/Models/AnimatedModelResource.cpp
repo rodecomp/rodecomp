@@ -241,6 +241,18 @@ GrannyAnimationLibrary::~GrannyAnimationLibrary() {
   }
 }
 
+// OFFSET: 0x00755340
+// FUNCTION: fn_07981
+C3dGrannyModelRes::C3dGrannyModelRes() {
+  this->position[0] = 0.0f;
+  this->position[1] = 0.0f;
+  this->position[2] = 0.0f;
+  this->instance = nullptr;
+  this->model = nullptr;
+  this->job = 0;
+  this->unknown_03B0 = 0;
+}
+
 // INLINED
 C3dGrannyModelRes::C3dGrannyModelRes(ModelResourceContext& context) : m_context(&context) {
   this->position[0] = 0.0f;

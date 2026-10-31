@@ -29,6 +29,14 @@
 // GLOBAL: gl_24874
 unsigned long g_swapEquipmentTick;
 
+// OFFSET: 0x0082F560
+// FUNCTION: fn_10387
+UISwapEquipmentWnd::UISwapEquipmentWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_swapButton(nullptr), unknown_00BC(0), unknown_00C0(timeGetTime()), unknown_00D4(-1), unknown_00D8(-1),
+      unknown_00DC(-1) {
+  this->geometry.unknown_0030 = 0;
+}
+
 // OFFSET: 0x0082F990
 // FUNCTION: fn_10390
 void UISwapEquipmentWnd::Slot10(int x, int y, std::intptr_t value) {

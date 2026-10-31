@@ -46,6 +46,13 @@ struct PACKET_CZ_ACTIVE_QUEST {
 // GLOBAL: gl_25172
 bool g_renewQuestTitlesPending = true;
 
+// OFFSET: 0x007F9070
+// FUNCTION: fn_09931
+UINpcSprWnd::UINpcSprWnd(UIWindowContext& context)
+    : UIWindow(context, 0), m_mapName(), m_action(nullptr), m_sprite(nullptr), m_destinationX(0), m_destinationY(0) {
+  this->m_mapName.clear();
+}
+
 // OFFSET: 0x007F9240
 // FUNCTION: fn_09933
 void UINpcSprWnd::SetSprite(int width, int height, std::string name) {

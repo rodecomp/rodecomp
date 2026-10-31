@@ -53,6 +53,15 @@ namespace {
 }
 
 // INLINED
+CBitmapRes::CBitmapRes() {
+}
+
+// OFFSET: 0x0074A250
+// FUNCTION: fn_07862
+CGifRes::CGifRes() : loopCount(0), unknown_0132(0), currentFrame(0), lastFrameTime(0), animated(false), frameChanged(false) {
+}
+
+// INLINED
 CGifRes::CGifRes(BitmapResourceContext& context)
     : CBitmapRes(context), loopCount(0), unknown_0132(0), currentFrame(0), lastFrameTime(0), animated(false), frameChanged(false) {
 }

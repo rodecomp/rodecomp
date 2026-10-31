@@ -12,6 +12,7 @@ class CGifRes : public CBitmapRes {
 public:
   using Frame = std::pair<std::uint16_t, std::uint32_t*>;
 
+  CGifRes();
   explicit CGifRes(BitmapResourceContext& context);
   ~CGifRes() override;
   void Slot02() override;

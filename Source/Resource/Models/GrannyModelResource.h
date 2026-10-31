@@ -220,6 +220,7 @@ struct GrannyHairPivot {
 
 class C3dGrannyModelRes : public CRes {
 public:
+  C3dGrannyModelRes();
   explicit C3dGrannyModelRes(ModelResourceContext& context);
   C3dGrannyModelRes* Create() override;
   bool Load(const char* name) override;
