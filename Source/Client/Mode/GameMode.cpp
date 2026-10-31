@@ -1150,8 +1150,59 @@ unsigned CGameMode::sub_CEC100(const std::vector<unsigned char>& data) {
 }
 
 // OFFSET: 0x00CCFD70
+// FUNCTION: fn_21248
+void CGameMode::UpdatePetFriendlyWindow(int previousFriendly) {
+  if (!g_serviceOptions.Get(0x128)) {
+    return;
+  }
+
+  if (g_session.GetPetFriendlyState(g_session.m_petFriendly) == 0 && g_session.m_petFriendly <= 100) {
+    if (this->unknown_0628.find(g_session.unknown_1010) == this->unknown_0628.end()) {
+      if (g_windowMgr.window_038C == nullptr) {
+        g_windowMgr.EnsureWindow(0x58);
+      }
+
+      this->UpdateUnknown0628(g_session.unknown_1010, true);
+    }
+  }
+
+  if (previousFriendly < g_session.m_petFriendly && g_session.m_petFriendly > 99) {
+    auto it = this->unknown_0628.find(g_session.unknown_1010);
+    if (it != this->unknown_0628.end()) {
+      this->unknown_0628.erase(it);
+    }
+  }
+}
 
 // OFFSET: 0x00CECE30
+// FUNCTION: fn_21362
+bool CGameMode::SaveEmblemFile(const std::vector<unsigned char>& data) {
+  if (data.empty()) {
+    return false;
+  }
+
+  const int nameLength = *reinterpret_cast<const int*>(data.data());
+  std::string name;
+  name.assign(reinterpret_cast<const char*>(data.data() + 4), nameLength);
+
+  char path[260];
+  std::memset(path, 0, sizeof(path));
+  std::sprintf(path, "%s\\_tmpEmblem\\%s", g_applicationDirectory, name.c_str());
+
+  CFile file;
+  if (file.Open(path, 0, true, false)) {
+    file.Close();
+  } else {
+    file.Close();
+    std::FILE* output = std::fopen(path, "wb");
+    if (output != nullptr) {
+      std::fwrite(data.data() + 4 + nameLength, data.size() - nameLength - 4, 1, output);
+      std::fclose(output);
+    }
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00CF0E30
 
@@ -1184,6 +1235,23 @@ void WriteMyLog(const char* file, int line, const char* format, ...) {
 }
 
 // OFFSET: 0x00CF0090
+// FUNCTION: fn_21411
+std::string CGameMode::HuntTargetText(const RenewQuestOngoingInfo& quest, int index) {
+  std::string text;
+  if (std::strlen(quest.m_huntName[index]) == 0) {
+    text.assign(g_renewQuestMgr->GetMonsterConditionText(quest.m_huntUnknown01A0[index], quest.m_huntUnknown01AC[index], quest.m_huntUnknown01B2[index]));
+  } else {
+    text.assign(FormatOwnedString("%s", quest.m_huntName[index]));
+  }
+
+  if (quest.m_huntUnknown00E0[index] == quest.m_huntUnknown0180[index]) {
+    text.assign(FormatOwnedString("%s [ %s ]", text.c_str(), LookupMessage(0x7EE)));
+  } else {
+    text.assign(FormatOwnedString("%s [ %d / %d ]", text.c_str(), quest.m_huntUnknown00E0[index], quest.m_huntUnknown0180[index]));
+  }
+
+  return text;
+}
 
 #pragma pack(push, 1)
 struct GameModeStoredSkillEffect {
@@ -1204,5 +1272,71 @@ struct GameModeStoredValue {
 static_assert(sizeof(GameModeStoredValue) == 0xA);
 
 // OFFSET: 0x00CE9050
+// FUNCTION: fn_21346
+std::vector<unsigned char> CGameMode::SaveActiveSkillEffects() {
+  std::vector<unsigned char> data;
+
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 19000;
+    header->size = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  for (ActiveSkillEffect effect : g_activeSkillEffects) {
+    if (effect.unknown_0004 != 0 && effect.unknown_0004 != 999999) {
+      effect.unknown_0004 -= timeGetTime();
+    }
+
+    std::vector<unsigned char> chunk(sizeof(GameModeStoredSkillEffect));
+    auto* record = reinterpret_cast<GameModeStoredSkillEffect*>(chunk.data());
+    record->header.type = 0x4A43;
+    record->header.size = sizeof(ActiveSkillEffect);
+    record->effect = effect;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 19001;
+    header->size = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  return data;
+}
 
 // OFFSET: 0x00CE9DB0
+// FUNCTION: fn_21348
+std::vector<unsigned char> CGameMode::SaveUnknown024C() {
+  std::vector<unsigned char> data;
+
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 14000;
+    header->size = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeStoredValue));
+    auto* record = reinterpret_cast<GameModeStoredValue*>(chunk.data());
+    record->header.type = 14011;
+    record->header.size = sizeof(int);
+    record->value = this->unknown_024C;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 14001;
+    header->size = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  return data;
+}
