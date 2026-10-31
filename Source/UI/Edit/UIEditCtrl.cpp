@@ -6125,8 +6125,124 @@ void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
 }
 
 // OFFSET: 0x00980340
+// FUNCTION: fn_13335
+void UIItemStoreFindWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, true, "", 0);
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+  this->DrawButtonBar(0, 0, 1);
+
+  const int columns = (this->geometry.width - 40) / 32;
+  const int rows = (this->geometry.height - 38) / 32;
+  int slots = rows;
+  for (int y = 17; slots > 0; --slots, y += 32) {
+    DrawItemSlotBackground(*this, 10, y);
+  }
+
+  unsigned fillRed, fillGreen, fillBlue;
+  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int top = visible / this->columns * 32;
+    const int left = visible % this->columns * 32 + 10;
+    const int width = this->geometry.width - left - 66;
+    const int x = left + 4;
+    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    this->DrawWrappedItemName(left + 40, top + 29, width, &*it, 0, 0, 12);
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+
+  this->DrawTextAt(controls.fonts, controls.locale, 16, this->geometry.height - 20, this->unknown_0124.c_str(), 0, 0, 12, 0, 0, 0);
+}
 
 // OFFSET: 0x00980610
+// FUNCTION: fn_13336
+void UIItemStoreSubWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, true, "", 0);
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+  this->DrawButtonBar(0, 0, 1);
+
+  const int columns = (this->geometry.width - 40) / 32;
+  const int rows = (this->geometry.height - 38) / 32;
+  int slots = rows;
+  for (int y = 17; slots > 0; --slots, y += 32) {
+    DrawItemSlotBackground(*this, 10, y);
+  }
+
+  unsigned fillRed, fillGreen, fillBlue;
+  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int top = visible / this->columns * 32;
+    const int left = visible % this->columns * 32 + 10;
+    const int width = this->geometry.width - left - 66;
+    const int x = left + 4;
+    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    this->DrawWrappedItemName(left + 40, top + 29, width, &*it, 0, 0, 12);
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+
+  this->DrawTextAt(controls.fonts, controls.locale, 16, this->geometry.height - 20, this->unknown_0120.c_str(), 0, 0, 12, 0, 0, 0);
+}
 
 // OFFSET: 0x0097E7A0
 // FUNCTION: fn_13330
@@ -6255,12 +6371,435 @@ void UIItemPurchaseWnd::Paint() {
 }
 
 // OFFSET: 0x0097F220
+// FUNCTION: fn_13332
+void UIItemSellWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  char price[64];
+  char text[64];
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &left->image, false);
+  }
+
+  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
+  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
+
+  const int columns = (this->geometry.width - 40) / 32;
+  const int slotRows = (this->geometry.height - 38) / 32;
+  int slots = slotRows;
+  for (int y = 17; slots > 0; --slots, y += 32) {
+    DrawItemSlotBackground(*this, 40, y);
+  }
+
+  unsigned fillRed, fillGreen, fillBlue;
+  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int column = visible % this->columns * 32;
+    const int top = visible / this->columns * 32;
+    if (this->hovered == index) {
+      unsigned hoverRed, hoverGreen, hoverBlue;
+      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
+    }
+
+    const int x = column + 44;
+    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+
+    int nameWidth = 100;
+    const int amount = static_cast<int>(it->unknown_0014[0]);
+    if (amount != static_cast<int>(it->unknown_0014[1])) {
+      if (amount >= 10000) {
+        nameWidth = 45;
+      } else if (amount >= 1000) {
+        nameWidth = 55;
+      } else if (amount >= 100) {
+        nameWidth = 70;
+      } else if (amount >= 10) {
+        nameWidth = 80;
+      }
+    }
+    this->DrawWrappedItemName(column + 76, top + 29, nameWidth, &*it, 0, 0, 12);
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    int length;
+    if (it->unknown_0014[0] == it->unknown_0014[1]) {
+      length = sprintf(text, " %s Zeny", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), price, 64));
+    } else {
+      length = sprintf(text, " %d -> %s Zeny", it->unknown_0014[0], FormatGroupedInteger(static_cast<int>(it->unknown_0014[1]), price, 64));
+    }
+    this->DrawRightAlignedText(this->geometry.width - 18, top + 29, text, length, 0, 12, 0, 0);
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+}
 
 // OFFSET: 0x0097FBF0
+// FUNCTION: fn_13334
+void UIItemShopWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  int rows = (this->geometry.height - this->unknown_0104 - 17) / 8 + ((this->geometry.height - this->unknown_0104 - 17) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &left->image, false);
+  }
+
+  rows = (this->geometry.height - this->unknown_0104 - 17) / 8 + ((this->geometry.height - this->unknown_0104 - 17) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->unknown_0104 - 17, RGB(red, green, blue));
+  this->FillRegion(
+    20, (this->geometry.height - this->unknown_0104 - 17) / 32 * 32 + 17, this->geometry.width - 24,
+    (this->geometry.height - this->unknown_0104 - 17) % 32, RGB(red, green, blue)
+  );
+  this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
+
+  const int columns = (this->geometry.width - 40) / 32;
+  int slotRows = (this->geometry.height - this->unknown_0108 - this->unknown_0104 - 17) / 32;
+  int slots = slotRows;
+  for (int y = 17; slots > 0; --slots, y += 32) {
+    DrawItemSlotBackground(*this, 40, y);
+  }
+
+  if (this->unknown_010C != 0) {
+    slotRows = (this->geometry.height - this->unknown_0104 - 17) / 32;
+  }
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(red, green, blue));
+  if (this->unknown_010C != 0) {
+    this->FillRegion(40, slotRows * 32 - 15, 32, 32, RGB(red, green, blue));
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int column = visible % this->columns * 32;
+    const int top = visible / this->columns * 32;
+    if (this->hovered == index) {
+      unsigned hoverRed, hoverGreen, hoverBlue;
+      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
+    }
+
+    const int x = column + 44;
+    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+
+    int nameWidth = 100;
+    const int amount = static_cast<int>(it->unknown_0014[0]);
+    if (amount != static_cast<int>(it->unknown_0014[1])) {
+      if (amount >= 10000) {
+        nameWidth = 45;
+      } else if (amount >= 1000) {
+        nameWidth = 55;
+      } else if (amount >= 100) {
+        nameWidth = 70;
+      } else if (amount >= 10) {
+        nameWidth = 80;
+      }
+    }
+    this->DrawWrappedItemName(column + 76, top + 29, nameWidth, &*it, 0, 0, 12);
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    char currency[8];
+    sprintf(currency, "Z");
+    if (this->unknown_010C != 0) {
+      const char* name;
+      if (g_serviceType == 6) {
+        name = "K";
+      } else if (g_serviceType == 0) {
+        name = *reinterpret_cast<const int*>(&g_session.unknown_59DC[0x198]) != 1 ? "C" : "H";
+      } else {
+        name = "P";
+      }
+      sprintf(currency, name);
+    }
+
+    char price[64];
+    char text[64];
+    int length;
+    if (it->unknown_0014[0] != it->unknown_0014[1]) {
+      length = sprintf(text, " %d -> %s %s", it->unknown_0014[0], FormatGroupedInteger(static_cast<int>(it->unknown_0014[1]), price, 64), currency);
+    } else {
+      length = sprintf(text, " %s %s", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), price, 64), currency);
+    }
+    this->DrawRightAlignedText(this->geometry.width - 18, top + 29, text, length, 0, 12, 0, 0);
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+
+  if (this->unknown_010C != 0) {
+    int message;
+    if (g_serviceType == 0 && *reinterpret_cast<const int*>(&g_session.unknown_59DC[0x198]) == 1) {
+      message = 1290;
+    } else {
+      message = 1210;
+    }
+
+    char text[352];
+    const int aid = *reinterpret_cast<const int*>(&g_session.unknown_5913[0x1D]);
+    const char* name = this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0);
+    int length = sprintf(text, LookupMessage(message), name, aid);
+    this->DrawTextAt(controls.fonts, controls.locale, 12, this->geometry.height - 21, text, length, 0, 12, 0, 0, 0);
+
+    const int gid = *reinterpret_cast<const int*>(&g_session.unknown_5913[0x21]);
+    name = this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0);
+    length = sprintf(text, LookupMessage(1305), name, gid);
+    this->DrawTextAt(controls.fonts, controls.locale, 12, this->geometry.height - this->unknown_0104 - 21, text, length, 0, 12, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x009808E0
+// FUNCTION: fn_13337
+void UIItemStoreWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &left->image, false);
+  }
+
+  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
+  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  this->DrawButtonBar(this->unknown_00B8 != 0 ? 3 : 0, 0, 1);
+
+  const int columns = (this->geometry.width - 40) / 32;
+  const int slotRows = (this->geometry.height - 74) / 32;
+  if (!this->unknown_0190) {
+    this->scrollBar->Show(0);
+    unsigned fillRed, fillGreen, fillBlue;
+    SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+    this->FillRegion(40, 17, columns * 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+    DrawRoundedBorder(*this, 55, 131, 187, 139, 0xCE9484);
+    DrawFilledRoundedBorder(*this, 56, 132, 185, 137, 0xFFE7DE);
+    DrawFilledRoundedBorder(*this, 61, 137, 175, 127, 0xFFFFFF);
+    const auto* poring = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp")));
+    this->DrawBitmap(116, 151, &poring->image, true);
+    this->DrawCenteredText(20, 210, LookupMessage(3540), 257, 0, 12, 0, 0);
+    this->DrawCenteredText(20, 236, LookupMessage(3191), 257, 0, 15, 0xC89482, 1);
+    this->DrawCenteredText(20, 272, LookupMessage(3603), 257, 0, 12, 0x6464DC, 1);
+    return;
+  }
+
+  this->scrollBar->Show(1);
+  int slots = slotRows;
+  for (int y = 17; slots > 0; --slots, y += 32) {
+    DrawItemSlotBackground(*this, 40, y);
+  }
+
+  unsigned fillRed, fillGreen, fillBlue;
+  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int top = visible / this->columns * 32;
+    const int column = visible % this->columns * 32;
+    const int x = column + 44;
+    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    this->DrawWrappedItemName(column + 80, top + 29, 180, &*it, 0, 0, 12);
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+
+  const auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp")));
+  this->DrawBitmap(6, this->geometry.height - 21, &icon->image, true);
+  const std::uint32_t color = this->unknown_0188 >= this->unknown_018C ? 0xFF : 0x232323;
+  this->DrawTextAt(controls.fonts, controls.locale, 22, this->geometry.height - 19, FormatOwnedString("%d", this->unknown_0188).c_str(), 0, 0, 11, color, 0, 0);
+  const int width = this->TextWidth(controls.fonts, controls.locale, FormatOwnedString("%d", this->unknown_0188).c_str(), 0, 0, 11, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, width + 23, this->geometry.height - 19, FormatOwnedString("/%d", this->unknown_018C).c_str(), 0, 0, 11, 0, 0, 0);
+}
 
 // OFFSET: 0x009819C0
+// FUNCTION: fn_13341
+void UIMerchantItemPurchaseWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &left->image, false);
+  }
+
+  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
+  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
+
+  const int columns = (this->geometry.width - 40) / 32;
+  const int slotRows = (this->geometry.height - 38) / 32;
+  int slots = slotRows;
+  for (int y = 17; slots > 0; --slots, y += 32) {
+    DrawItemSlotBackground(*this, 40, y);
+  }
+
+  unsigned fillRed, fillGreen, fillBlue;
+  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int column = visible % this->columns * 32;
+    const int top = visible / this->columns * 32;
+    if (this->hovered == index) {
+      unsigned hoverRed, hoverGreen, hoverBlue;
+      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
+    }
+
+    const int x = column + 44;
+    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    this->DrawWrappedItemName(column + 76, top + 29, 90, &*it, 0, 0, 12);
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    char price[64];
+    char text[64];
+    int length;
+    if (it->unknown_0014[0] == it->unknown_0014[1]) {
+      length = sprintf(text, " %s Zeny", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), price, 64));
+    } else {
+      length = sprintf(text, " %d -> %s Zeny", it->unknown_0014[0], FormatGroupedInteger(static_cast<int>(it->unknown_0014[1]), price, 64));
+    }
+    this->DrawRightAlignedText(this->geometry.width - 18, top + 29, text, length, 0, 12, 0, 0);
+    ++visible;
+  }
+}
 
 // OFFSET: 0x00981EE0
 
@@ -6646,4 +7185,152 @@ bool UIEditCtrl3::LinkDisplayName(const std::string& encoded, std::string& outpu
   }
 
   return decoded;
+}
+// FUNCTION: fn_13342
+void UIMerchantItemShopWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  unsigned rows = static_cast<unsigned>(this->geometry.height - this->unknown_0118 - 17) / 8 +
+                  (static_cast<unsigned>(this->geometry.height - this->unknown_0118 - 17) % 8 != 0);
+  for (int y = 17; rows != 0; --rows, y += 8) {
+    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &left->image, false);
+  }
+
+  rows = static_cast<unsigned>(this->geometry.height - this->unknown_0118 - 17) / 8 +
+         (static_cast<unsigned>(this->geometry.height - this->unknown_0118 - 17) % 8 != 0);
+  for (int y = 17; rows != 0; --rows, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->unknown_0118 - 17, RGB(red, green, blue));
+  this->FillRegion(
+    20, static_cast<unsigned>(this->geometry.height - this->unknown_0118 - 17) / 32 * 32 + 17, this->geometry.width - 24,
+    static_cast<unsigned>(this->geometry.height - this->unknown_0118 - 17) % 32, RGB(red, green, blue)
+  );
+  this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
+
+  const int columns = (this->geometry.width - 40) / 32;
+  const unsigned slotRows = static_cast<unsigned>(this->geometry.height - this->unknown_0118 - 17) / 32;
+  unsigned slots = slotRows;
+  for (int y = 17; slots != 0; --slots, y += 32) {
+    DrawItemSlotBackground(*this, 40, y);
+  }
+
+  unsigned fillRed, fillGreen, fillBlue;
+  SkinPaletteChannels(controls.resources, 2, 2, fillRed, fillGreen, fillBlue);
+  this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+
+  {
+    std::string actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(this->unknown_0100);
+    const char* label = LookupMessage(this->unknown_010C == 0 ? 227 : 1737);
+    char title[128];
+    if (!actor.empty()) {
+      sprintf(title, "%s - %s", label, actor.c_str());
+    } else {
+      this->m_context->registration.Add(this);
+      sprintf(title, "%s", label);
+    }
+    this->DrawTextAt(controls.fonts, controls.locale, 17, 3, title, 0, 0, 12, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, 16, 2, title, 0, 0, 12, 0, 0, 0);
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int column = visible % this->columns * 32;
+    const int top = visible / this->columns * 32;
+    const int left = column + 40;
+    if (this->hovered == index) {
+      unsigned hoverRed, hoverGreen, hoverBlue;
+      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      this->FillRegion(left + 32, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
+    }
+
+    char price[128];
+    int x;
+    if (this->unknown_010C != 0) {
+      sprintf(price, LookupMessage(182), it->quantity);
+      const int quantityX = this->geometry.width - this->TextWidth(controls.fonts, controls.locale, "  100,000,000Z", 0, 0, 12, 0, 0) -
+                            this->TextWidth(controls.fonts, controls.locale, price, 0, 0, 12, 0, 0) - 18;
+      this->DrawTextAt(controls.fonts, controls.locale, quantityX, top + 29, price, 0, 0, 12, 0xFF, 0, 0);
+      x = left + 4;
+      DrawItemIcon(*this, controls.resources, descriptions, x, top + 21, *it, 0);
+    } else {
+      x = column + 44;
+      DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+    }
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    int width = this->TextWidth(controls.fonts, controls.locale, "Z", 0, 0, 12, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, this->geometry.width - width - 18, top + 29, "Z", 0, 0, 12, 0, 0, 0);
+
+    char text[128];
+    if (it->unknown_0014[0] != it->unknown_0014[1]) {
+      sprintf(text, " %d -> %s ", it->unknown_0014[0], FormatGroupedInteger(static_cast<int>(it->unknown_0014[1]), price, 128));
+    } else {
+      sprintf(text, " %s ", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), price, 128));
+    }
+    width += this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0);
+    this->DrawAmount(controls.fonts, controls.locale, static_cast<int>(it->unknown_0014[0]), text, this->geometry.width - width - 18, top + 29);
+
+    int nameWidth = this->geometry.width - width - left - 66;
+    if (nameWidth > 130) {
+      nameWidth = 130;
+    }
+    this->DrawWrappedItemName(column + 76, top + 29, nameWidth, &*it, 0, 0, 12);
+    ++visible;
+  }
+
+  if (this->unknown_0118 == 57) {
+    this->DrawButtonBar(3, 0, 1);
+  }
+
+  if (this->duration != 0) {
+    const int remaining = static_cast<int>(this->startTick + this->duration - timeGetTime());
+    if (remaining > 0) {
+      const int days = remaining / 86400000;
+      const int hours = remaining / 3600000 % 24;
+      const int minutes = remaining / 60000 % 60;
+      const int seconds = remaining / 1000 % 60;
+      if (remaining <= 60000) {
+        this->DrawTextAt(
+          controls.fonts, controls.locale, 20, this->geometry.height - 50,
+          FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0, 0, 12, 0xFF, 1, 0
+        );
+      } else {
+        this->DrawTextAt(
+          controls.fonts, controls.locale, 20, this->geometry.height - 50,
+          FormatOwnedString(LookupMessage(2927), days, hours, minutes, seconds).c_str(), 0, 0, 12, 0, 1, 0
+        );
+      }
+
+      if (this->unknown_010C == 1) {
+        this->notice->Move(170, this->geometry.height - 20);
+      }
+    }
+  }
 }
