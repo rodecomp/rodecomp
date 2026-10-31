@@ -26,7 +26,7 @@ public:
   void Slot27(int x, int y) override;
   void Slot35(int argument) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  virtual int Slot53(int packId, bool showTooltip, bool hoverable) = 0;
+  virtual int Slot53(int packId, bool showTooltip, bool hoverable);
   virtual void UpdateExpiry(Timestamp* expiry);
   virtual void ShowExpiry(__time32_t expiry);
 
@@ -36,7 +36,7 @@ public:
 
 protected:
   /* 007C */ std::vector<UICashEmotionPiece*> m_pieces;
-  /* 0088 */ UIWindow* unknown_0088;
+  /* 0088 */ UIStaticText* unknown_0088;
   /* 008C */ UIStaticText* m_titleText;
   /* 0090 */ std::string m_background;
   /* 00A8 */ int unknown_00A8;

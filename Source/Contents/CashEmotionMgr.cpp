@@ -122,6 +122,8 @@ public:
   explicit UICashEmotionPack_Search(UIWindowContext& windows) : UICashEmotionPack(windows) {
   }
   void Paint() override;
+
+  int SetResults(const char* title, const std::vector<std::pair<int, int>>& results);
 };
 
 class UICashEmotionPack_Search_Normal : public UICashEmotionPack_Search {
@@ -152,6 +154,8 @@ public:
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+
+  int Slot53(int packId, bool showTooltip, bool hoverable) override;
 
   void SetPressed(bool pressed, bool force);
 
@@ -231,6 +235,8 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   const char* Filter() override;
+
+  void AddResults(char type, const std::vector<std::pair<int, int>>& results, int& y);
 
 protected:
   /* 00B0 */ std::vector<UICashEmotionPack*> m_items;
@@ -1782,6 +1788,8 @@ const char* UICashEmotionListChildWnd_Search::Filter() {
   return this->m_filter.c_str();
 }
 
+// OFFSET: 0x007C59A0
+
 // OFFSET: 0x007C5D80
 // FUNCTION: fn_09383
 void UICashEmotionListChildWnd_Search::Slot15(int, int) {
@@ -2586,6 +2594,8 @@ std::string UICashEmotionPack::GetPriceText(int packId) {
   return std::vformat(format, std::make_format_args(price));
 }
 
+// OFFSET: 0x007CA2C0
+
 // OFFSET: 0x007CA550
 // FUNCTION: fn_09445
 void UICashEmotionPack::Slot15(int, int) {
@@ -2790,6 +2800,8 @@ int UICashEmotionPack_Purchase::SendMsg(
   }
 }
 
+// OFFSET: 0x007CAF60
+
 // OFFSET: 0x007CB160
 // FUNCTION: fn_09465
 void UICashEmotionPack_Search::Paint() {
@@ -2866,6 +2878,14 @@ UICashEmotionPack_Unpurchase::UICashEmotionPack_Unpurchase(UIWindowContext& wind
   this->m_background = Resolve("유저인터페이스\\cashemotion\\bg_list_normal.bmp");
   this->m_pressed = false;
   this->Invalidate();
+}
+
+// OFFSET: 0x007CB790
+// FUNCTION: fn_09473
+int UICashEmotionPack_Unpurchase::Slot53(int packId, bool showTooltip, bool hoverable) {
+  const int height = UICashEmotionPack::Slot53(packId, showTooltip, hoverable);
+  this->unknown_00E4 = this->GetPriceText(packId);
+  return height;
 }
 
 // OFFSET: 0x007CB850
