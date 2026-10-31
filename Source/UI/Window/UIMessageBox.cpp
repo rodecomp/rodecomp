@@ -3814,3 +3814,76 @@ void UIReplayControlWnd::Slot15(int, int) {
 
   this->RefreshInfo();
 }
+
+// OFFSET: 0x008A9D40
+// FUNCTION: fn_11722
+void UIFrameWnd::DrawSkinBox(const char* name, int x, int y, int width, int height, bool tiled) {
+  std::string prefix("유저인터페이스\\sysbox_");
+  if (name) {
+    prefix = name;
+  }
+  if (width <= 0) {
+    width = this->geometry.width;
+  }
+  if (height <= 0) {
+    height = this->geometry.height;
+  }
+
+  const int innerWidth = width - 28;
+  const int left = x + 14;
+  const int top = y + 14;
+  if (tiled == true) {
+    const int columns = innerWidth / 14 + (innerWidth % 14 != 0);
+    const int rows = (height - 28) / 14 + ((height - 28) % 14 != 0);
+    for (int row = 0; row < rows; ++row) {
+      for (int column = 0; column < columns; ++column) {
+        const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "bg.bmp").c_str())));
+        this->DrawBitmap(left + column * 14, top + row * 14, &bitmap->image, false);
+      }
+    }
+  } else {
+    unsigned red, green, blue;
+    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    this->FillRegion(left, top, innerWidth, height - 28, RGB(red, green, blue));
+  }
+
+  const int columns = innerWidth / 14 + (innerWidth % 14 != 0);
+  for (int i = 0; i < columns; ++i) {
+    const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "mu.bmp").c_str())));
+    this->DrawBitmap(left + i * 14, y, &bitmap->image, false);
+  }
+
+  const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "lu.bmp").c_str())));
+  this->DrawBitmap(x, y, &bitmap->image, false);
+  bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "ru.bmp").c_str())));
+  if (bitmap) {
+    this->DrawBitmap(x - bitmap->image.width + width, y, &bitmap->image, false);
+  }
+
+  const int rows = (height - 28) / 14 + ((height - 28) % 14 != 0);
+  for (int i = 0; i < rows; ++i) {
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "lm.bmp").c_str())));
+    this->DrawBitmap(x, top + i * 14, &bitmap->image, false);
+  }
+  for (int i = 0; i < rows; ++i) {
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "rm.bmp").c_str())));
+    if (bitmap) {
+      this->DrawBitmap(x - bitmap->image.width + width, top + i * 14, &bitmap->image, false);
+    }
+  }
+  for (int i = 0; i < columns; ++i) {
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "md.bmp").c_str())));
+    if (bitmap) {
+      this->DrawBitmap(left + i * 14, y - bitmap->image.height + height, &bitmap->image, false);
+    }
+  }
+
+  bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "ld.bmp").c_str())));
+  if (bitmap) {
+    this->DrawBitmap(x, y - bitmap->image.height + height, &bitmap->image, false);
+  }
+  bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((prefix + "rd.bmp").c_str())));
+  if (bitmap) {
+    this->DrawBitmap(x - bitmap->image.width + width, y - bitmap->image.height + height, &bitmap->image, false);
+  }
+}
