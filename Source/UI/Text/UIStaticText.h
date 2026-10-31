@@ -25,6 +25,7 @@ public:
   void SetText(const char* value, int outline);
   void SetColor(int redValue, int greenValue, int blueValue);
   void SetTextFitted(const char* value);
+  void SetTextFittedCodePage(const char* value);
   void SetTextAutoWidth(const char* value);
   void SetNumber(int value);
   void SetTextWithinWidth(const char* value, int outlineValue);

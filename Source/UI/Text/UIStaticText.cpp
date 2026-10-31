@@ -78,6 +78,68 @@ void UIStaticText::SetTextFitted(const char* value) {
   this->Invalidate();
 }
 
+// OFFSET: 0x00868C00
+// FUNCTION: fn_10966
+void UIStaticText::SetTextFittedCodePage(const char* value) {
+  this->tooltip = value;
+  this->tooltipEnabled = 0;
+
+  if (this->geometry.surface == nullptr) {
+    this->text = value;
+    this->Invalidate();
+    return;
+  }
+
+  int width = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, value, 0, this->fontFamily, this->fontHeight, 0, 0);
+  this->TextWidth(this->m_controls->fonts, this->m_controls->locale, "...", 0, this->fontFamily, this->fontHeight, 0, 0);
+  if (this->geometry.width >= width) {
+    this->text = value;
+    this->Invalidate();
+    return;
+  }
+
+  this->tooltipEnabled = 1;
+  const int wideLength = MultiByteToWideChar(3, 0, value, -1, nullptr, 0);
+  std::wstring truncated;
+  if (wideLength > 0) {
+    truncated.resize(wideLength);
+    MultiByteToWideChar(3, 0, value, -1, truncated.data(), wideLength);
+    truncated.resize(wideLength - 1);
+  }
+
+  while (this->geometry.width < width) {
+    if (truncated.size() < 2) {
+      const int byteLength = WideCharToMultiByte(3, 0, truncated.c_str(), -1, nullptr, 0, nullptr, nullptr);
+      std::string fitted;
+      if (byteLength > 0) {
+        fitted.resize(byteLength);
+        WideCharToMultiByte(3, 0, truncated.c_str(), -1, fitted.data(), byteLength, nullptr, nullptr);
+        fitted.resize(byteLength - 1);
+      }
+      this->text = fitted + "...";
+      break;
+    }
+
+    const std::size_t size = truncated.size();
+    const bool removePair = (static_cast<unsigned char>(truncated[size - 2]) & 0x80) != 0 &&
+                            (static_cast<unsigned char>(truncated[size - 1]) & 0x80) != 0;
+    truncated.resize(size - (removePair ? 2 : 1));
+
+    const int byteLength = WideCharToMultiByte(3, 0, truncated.c_str(), -1, nullptr, 0, nullptr, nullptr);
+    std::string fitted;
+    if (byteLength > 0) {
+      fitted.resize(byteLength);
+      WideCharToMultiByte(3, 0, truncated.c_str(), -1, fitted.data(), byteLength, nullptr, nullptr);
+      fitted.resize(byteLength - 1);
+    }
+    this->text = fitted + "...";
+    width = this->TextWidth(
+      this->m_controls->fonts, this->m_controls->locale, this->text.c_str(), 0, this->fontFamily, this->fontHeight, 0, 0
+    );
+  }
+
+  this->Invalidate();
+}
 // OFFSET: 0x0085DE70
 // FUNCTION: fn_10820
 void UIStaticText::Paint() {
