@@ -20,6 +20,8 @@ std::string DisplayTextTag(std::string text, const std::string& begin, const std
 std::string DisplayItemTextTag(const std::string& text);
 std::string DisplayNavigationTextTag(const std::string& text);
 std::string DisplayQuestTextTag(const std::string& text);
+std::string DisplayTipBoxTextTag(const std::string& text);
+std::string DisplayUrlTextTag(const std::string& text);
 std::string RemoveTextLinkInfo(std::string text);
 void ExtractTextLinks(std::string text, const std::string& begin, const std::string& end, std::vector<TextLink>& links);
 void SplitTextLinkArguments(std::string text, std::vector<std::string>& arguments);

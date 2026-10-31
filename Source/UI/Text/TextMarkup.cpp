@@ -177,6 +177,18 @@ std::string DisplayQuestTextTag(const std::string& text) {
   return DisplayTextTag(text, g_questTagBegin, g_questTagEnd);
 }
 
+// OFFSET: 0x00A7FE50
+// FUNCTION: fn_16967
+std::string DisplayTipBoxTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_tipBoxTagBegin, g_tipBoxTagEnd);
+}
+
+// OFFSET: 0x00A7FEC0
+// FUNCTION: fn_16968
+std::string DisplayUrlTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_urlTagBegin, g_urlTagEnd);
+}
+
 // OFFSET: 0x00A7EF40
 // FUNCTION: fn_16962
 std::string RemoveTextLinkInfo(std::string text) {
