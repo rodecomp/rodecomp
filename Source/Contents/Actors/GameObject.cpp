@@ -27,7 +27,7 @@
 #include "Render/Textures/SpritePixels.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
-
+#include "Contents/ChampionMonsterMgr.h"
 #include <algorithm>
 #include <cstdio>
 #include <list>
@@ -188,7 +188,165 @@ void CRenderObject::Render(int argument) {
   }
 }
 
+// GLOBAL: gl_24732
+int g_seasonalMonsterSprites;
+
 // OFFSET: 0x00CB20F0
+// FUNCTION: fn_21103
+void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
+  const float* matrix = reinterpret_cast<const float*>(argument);
+  CSprRes* sprite = this->render.sprite;
+  CActRes* action = this->render.action;
+
+  if (g_seasonalMonsterSprites == 1 && seasonal == true) {
+    SYSTEMTIME time;
+    GetLocalTime(&time);
+    int job;
+    if (time.wDay % 3 == 0) {
+      job = 0x520;
+    } else if (time.wDay % 3 == 1) {
+      job = 0x56D;
+    } else {
+      job = 0x4F8;
+    }
+
+    char path[256];
+    std::sprintf(path, "몬스터\\%s.act", g_session.GetJobName(job, -1));
+    action = static_cast<CActRes*>(ResourceMgr::Instance().Load(path));
+    std::sprintf(path, "몬스터\\%s.spr", g_session.GetJobName(job, -1));
+    sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(path));
+  }
+
+  const ActionFrame& frame = action->Frame(this->render.previousAnimation, this->render.curMotion);
+
+  const float* origin = &this->render.position.x;
+  float position[3];
+  position[0] = origin[0] * matrix[0] + origin[1] * matrix[3] + origin[2] * matrix[6] + matrix[9];
+  position[1] = origin[0] * matrix[1] + origin[1] * matrix[4] + origin[2] * matrix[7] + matrix[10];
+  position[2] = origin[0] * matrix[2] + origin[1] * matrix[5] + origin[2] * matrix[8] + matrix[11];
+
+  float x;
+  float y;
+  float reciprocalDepth;
+  g_renderer->ProjectViewport(origin, matrix, &x, &y, &reciprocalDepth);
+  float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
+
+  float extra = offset;
+  if (CEffect* effect = g_effectMgr->Find(static_cast<int>(this->render.accountId), 2374)) {
+    extra += *reinterpret_cast<const float*>(&effect->unknown_0048);
+  }
+  if (g_championMonsterMgr->IsChampion(static_cast<int>(this->render.unknown_010C))) {
+    extra += g_championMonsterMgr->GetValue(static_cast<int>(this->render.unknown_010C));
+  }
+  if (extra != 0.0f) {
+    distanceScale *= extra;
+  }
+
+  this->render.unknown_005C = distanceScale / g_heightScale;
+  const float scale =
+    g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->render.unknown_0078)) * this->render.scale) * this->render.unknown_005C;
+
+  bool drawn = false;
+  RenderBounds bounds;
+  bounds.left = static_cast<float>(g_renderer->viewport.width);
+  bounds.top = static_cast<float>(g_renderer->viewport.height);
+  bounds.right = 0.0f;
+  bounds.bottom = 0.0f;
+  bounds.offset = reciprocalDepth;
+  this->ScaleByPulse(distanceScale);
+
+  for (int index = 0; index < frame.cellCount; ++index) {
+    const SpriteFrameCell& cell = frame.Cell(index);
+    if (cell.image == -1) {
+      continue;
+    }
+
+    const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    float bottomRhw;
+    float topRhw;
+    SpriteQuad quad;
+    int box[4];
+    std::uint32_t color;
+    if (!static_cast<CGameActor*>(this)->Slot09(
+          index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0
+        )) {
+      continue;
+    }
+
+    drawn = true;
+    if (this->render.unknown_00A4Bytes[1] != 0) {
+      const float minX = quad.left < quad.right ? quad.left : quad.right;
+      const float maxX = quad.left > quad.right ? quad.left : quad.right;
+      if (bounds.left > minX) {
+        bounds.left = minX;
+      }
+      if (bounds.top > quad.top) {
+        bounds.top = quad.top;
+      }
+      if (maxX > bounds.right) {
+        bounds.right = maxX;
+      }
+      if (quad.bottom > bounds.bottom) {
+        bounds.bottom = quad.bottom;
+      }
+    }
+
+    const std::uint32_t* palette = sprite->palette;
+    if (this->render.unknown_0048 != 0) {
+      palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->render.name.c_str()))->palette;
+    }
+
+    int blend = 257;
+    this->DrawSpriteEffects(&quad, &cell, box, scale, bottomRhw, topRhw, palette, image, &blend, color);
+
+    if (this->render.unknown_010C == 0x235) {
+      quad.bottomRhw = bottomRhw - 0.0000003f;
+      quad.topRhw = topRhw - 0.0000003f;
+    }
+
+    if (IsScreenShakeActive()) {
+      quad.angle = 180.0f;
+      this->DrawQuad(quad, palette, blend, (x - quad.right) + (x - quad.left), (y - quad.bottom) + (y - quad.top), 0);
+    } else {
+      this->DrawQuad(quad, palette, blend, 0.0f, 0.0f, 0);
+    }
+
+    SpriteQuad overlay = quad;
+    if ((this->render.flags & 0x100) != 0) {
+      const short level = this->render.unknown_00F4;
+      bool draw = true;
+      if (level <= 5) {
+        overlay.color = (static_cast<short>(level * 50) << 24) + 0xFFFFFF;
+      } else if (level <= 8) {
+        overlay.color = 0xFFFFFFFF;
+      } else if (level <= 11) {
+        overlay.color = (static_cast<short>(895 - level * 80) << 24) + 0xFFFFFF;
+      } else {
+        draw = false;
+      }
+
+      if (draw) {
+        this->DrawQuad(overlay, palette, 5, 0.0f, 0.0f, 0);
+      }
+    }
+
+    if ((this->render.flags & 0x4000) != 0) {
+      this->DrawTintedQuad(overlay, 5, 5, 255, palette);
+    }
+
+    if ((this->render.flags & 0x40000) != 0) {
+      this->DrawTintedQuad(overlay, 255, 5, 5, palette);
+    }
+  }
+
+  if (drawn) {
+    this->SetRenderInfo(&bounds.left, x, y);
+  } else {
+    this->SetTlvert(x, y);
+  }
+
+  this->render.unknown_00ECBytes[0] = 1;
+}
 
 // OFFSET: 0x00CB2830
 // FUNCTION: fn_21104
