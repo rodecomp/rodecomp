@@ -19,6 +19,7 @@ public:
   void SetDefaultLineColor(std::uint32_t color);
   void SetLineColor(int line, std::uint32_t color);
   void ResetLineColors();
+  void SetLineOffset(int offset);
   int LineOffset();
 };
 
