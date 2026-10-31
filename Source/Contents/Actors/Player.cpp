@@ -2014,6 +2014,97 @@ void CPc::Slot19(int first, int second, int third, int fourth, int fifth, int si
 }
 
 // OFFSET: 0x00DB1AE0
+// FUNCTION: fn_22640
+void CPc::Slot21(int job) {
+  if (job == JT_BARD || job == JT_BARD_H || job == JT_BARD_B) {
+    if (this->unknown_0260 == 0) {
+      this->unknown_0260 = 1;
+    }
+  } else if (job == JT_DANCER || job == JT_DANCER_H || job == JT_DANCER_B) {
+    if (this->unknown_0260 == 1) {
+      this->unknown_0260 = 0;
+    }
+  } else if (job == JT_MINSTREL) {
+    if (this->unknown_0260 == 0) {
+      this->unknown_0260 = 1;
+    }
+  } else if (job == JT_WANDERER) {
+    if (this->unknown_0260 == 1) {
+      this->unknown_0260 = 0;
+    }
+  } else if (job == JT_MINSTREL_H) {
+    if (this->unknown_0260 == 0) {
+      this->unknown_0260 = 1;
+    }
+  } else if (job == JT_WANDERER_H) {
+    if (this->unknown_0260 == 1) {
+      this->unknown_0260 = 0;
+    }
+  } else if (job == JT_TROUBADOUR) {
+    if (this->unknown_0260 == 0) {
+      this->unknown_0260 = 1;
+    }
+  } else if (job == JT_TROUVERE) {
+    if (this->unknown_0260 == 1) {
+      this->unknown_0260 = 0;
+    }
+  }
+
+  this->render.unknown_0054 = g_session.GetNpcLocationRadius(job, this->unknown_02CC == 1);
+
+  if (this->Slot55() > 0) {
+    this->LoadEquipAction(0, g_session.GetMonsterActName(this->Slot55()).c_str());
+    this->LoadEquipSprite(0, g_session.GetMonsterSprName(this->Slot55()).c_str());
+  } else if (StateFlag12(this->stateFlags) == true || job == JT_MARRIED) {
+    this->LoadEquipAction(0, g_session.GetRaceBodyResourceName(0, this->unknown_04D4, JT_MARRIED, this->unknown_0260, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetRaceBodyResourceName(1, this->unknown_04D4, JT_MARRIED, this->unknown_0260, 0).c_str());
+  } else if (StateFlag16(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+    this->LoadEquipAction(0, GetBodyActionResourceName(JT_SANTA, this->unknown_0260, 0, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SANTA, this->unknown_0260, 0, 0).c_str());
+  } else if (StateFlag18(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+    this->LoadEquipAction(0, GetBodyActionResourceName(JT_SUMMER, this->unknown_0260, 0, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SUMMER, this->unknown_0260, 0, 0).c_str());
+  } else if (StateFlag27(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+    this->LoadEquipAction(0, GetBodyActionResourceName(JT_HANBOK, this->unknown_0260, 0, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_HANBOK, this->unknown_0260, 0, 0).c_str());
+  } else if (StateFlag28(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+    this->LoadEquipAction(0, GetBodyActionResourceName(JT_OKTOBERFEST, this->unknown_0260, 0, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_OKTOBERFEST, this->unknown_0260, 0, 0).c_str());
+  } else if (this->unknown_03DC == 1 && !StateFlag15(this->stateFlags)) {
+    this->LoadEquipAction(0, GetBodyActionResourceName(JT_SUMMER2, this->unknown_0260, 0, 0).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SUMMER2, this->unknown_0260, 0, 0).c_str());
+  } else if (this->unknown_02CC != 0) {
+    this->LoadEquipAction(
+      0, GetBodyActionResourceName(g_session.GetRidingJob(job), this->unknown_0260, this->unknown_04D0, 0).c_str()
+    );
+    this->LoadEquipSprite(0, g_session.GetBodySprName(g_session.GetRidingJob(job), this->unknown_0260, this->unknown_04D0, 0).c_str());
+  } else {
+    const int effectiveJob = this->GetEffectiveJob(JobNames::BaseJob(job));
+    switch (effectiveJob) {
+      case JT_MADOGEAR:
+      case JT_MADOGEAR_H:
+      case JT_MEISTER_MADOGEAR:
+        if (this->Slot56() == 2) {
+          this->render.unknown_0054 = 1.5f;
+        }
+        break;
+      case JT_MADOGEAR_B:
+        if (this->Slot56() == 2) {
+          this->render.unknown_0054 = 1.12f;
+        }
+        break;
+    }
+
+    this->LoadEquipAction(
+      0, GetBodyActionResourceName(effectiveJob, this->unknown_0260, this->unknown_04D0, this->Slot56()).c_str()
+    );
+    this->LoadEquipSprite(0, g_session.GetBodySprName(effectiveJob, this->unknown_0260, this->unknown_04D0, this->Slot56()).c_str());
+  }
+
+  this->SetActionName(ResourceMgr::Instance(), this->equipActions[0] ? this->equipActions[0]->GetName() : "");
+  this->SetSpriteName(ResourceMgr::Instance(), this->equipSprites[0] ? this->equipSprites[0]->GetName() : "");
+  this->Slot30();
+}
 
 // OFFSET: 0x00DB4E70
 // FUNCTION: fn_22653
