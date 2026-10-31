@@ -1201,6 +1201,12 @@ void UIBitmapButton2::Slot33(int x, int y) {
   g_windowMgr.ReleaseCapture();
 }
 
+// OFFSET: 0x00882410
+// FUNCTION: fn_11301
+bool UIChatHisBox2::Slot08() {
+  return false;
+}
+
 // OFFSET: 0x0087B4B0
 // FUNCTION: fn_11240
 void UIChatHisBox2::Configure(int x, int y, int width, int height, unsigned char) {

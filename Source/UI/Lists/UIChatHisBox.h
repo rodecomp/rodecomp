@@ -11,6 +11,7 @@ class UINaviLinkButton;
 
 class UIChatHisBox : public UIListBox {
 public:
+  bool Slot08() override;
   void Resize(int width, int height) override;
   void Show(int visible) override;
   void Slot15(int width, int height) override;

@@ -474,6 +474,12 @@ const char* UIChatHisBox::HistoryText(unsigned int index) {
   return nullptr;
 }
 
+// OFFSET: 0x00882420
+// FUNCTION: fn_11302
+bool UIChatHisBox::Slot08() {
+  return true;
+}
+
 // OFFSET: 0x00879F10
 // FUNCTION: fn_11222
 void UIChatHisBox::Clear() {

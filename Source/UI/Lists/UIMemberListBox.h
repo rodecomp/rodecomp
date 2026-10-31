@@ -7,6 +7,7 @@ struct UIButtonContext;
 
 class UIChatHisBox2 : public UIChatHisBox {
 public:
+  bool Slot08() override;
   void Slot15(int width, int height) override;
   void Configure(int x, int y, int width, int height, unsigned char transparent) override;
   void Slot33(int x, int y) override;
