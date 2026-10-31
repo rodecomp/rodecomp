@@ -109,7 +109,7 @@ void CTipBoxMgr::AddParagraph(int id, std::string text) {
     text.replace(pos, 2, "\n");
   }
 
-  this->m_entries[id].paragraphs.push_back(text);
+  this->m_entries[id].paragraphs.push_back(std::move(text));
 }
 
 // FUNCTION: fn_09123
@@ -423,5 +423,69 @@ int sub_7AEAF0(lua_State* state) {
   }
 
   lua_pushstring(state, message);
+  return 2;
+}
+
+// OFFSET: 0x007AE900
+int sub_7AE900(lua_State* state) {
+  if (!lua_isnumber(state, -1)) { lua_pushboolean(state, 0); lua_pushstring(state, "3nd argment is must number"); return 2; }
+  if (!lua_isnumber(state, -2)) { lua_pushboolean(state, 0); lua_pushstring(state, "2nd argment is must number"); return 2; }
+  if (!lua_isnumber(state, -3)) { lua_pushboolean(state, 0); lua_pushstring(state, "1st argment is must number"); return 2; }
+
+  const int id = static_cast<int>(lua_tonumber(state, -3));
+  TipBoxEntry& entry = g_itemTagOwner->m_entries[id];
+  entry.unknown_0044 = static_cast<int>(lua_tonumber(state, -2));
+  entry.unknown_0048 = static_cast<int>(lua_tonumber(state, -1));
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
+  return 2;
+}
+
+// OFFSET: 0x007AEA20
+// FUNCTION: fn_09144
+int sub_7AEA20(lua_State* state) {
+  if (!lua_isnumber(state, -2)) { lua_pushboolean(state, 0); lua_pushstring(state, "2 argment is must number"); return 2; }
+  if (!lua_isnumber(state, -1)) { lua_pushboolean(state, 0); lua_pushstring(state, "1 argment is must number"); return 2; }
+
+  const int id = static_cast<int>(lua_tonumber(state, -2));
+  g_itemTagOwner->m_entries[id].searchable = static_cast<int>(lua_tonumber(state, -1)) != 0;
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
+  return 2;
+}
+
+// OFFSET: 0x007AEC00
+int sub_7AEC00(lua_State* state) {
+  if (!lua_isstring(state, -1)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "4th argment is must string");
+    return 2;
+  }
+  if (!lua_isnumber(state, -2)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "3nd argment is must number");
+    return 2;
+  }
+  if (!lua_isstring(state, -3)) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "2st argment is must string");
+    return 2;
+  }
+  if (lua_tonumber(state, -4) == 0.0) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, "1st argment is must number");
+    return 2;
+  }
+
+  const int id = static_cast<int>(lua_tonumber(state, -4));
+  TipBoxEntry& entry = g_itemTagOwner->m_entries[id];
+  if (id > g_itemTagOwner->m_maximumId) {
+    g_itemTagOwner->m_maximumId = id;
+  }
+  entry.title = lua_tostring(state, -3);
+  entry.searchable = static_cast<int>(lua_tonumber(state, -2)) == 1;
+  entry.unknown_001C = lua_tostring(state, -1);
+  lua_pushboolean(state, 1);
+  lua_pushstring(state, "good");
   return 2;
 }
