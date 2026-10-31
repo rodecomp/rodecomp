@@ -17,6 +17,12 @@
 #include <cstring>
 #include <windows.h>
 
+// OFFSET: 0x00544A60
+// FUNCTION: fn_01820
+std::uint32_t __fastcall sub_544A60(const CRenderer* renderer) {
+  return renderer->unknown_0044;
+}
+
 // OFFSET: 0x0055D150
 // FUNCTION: fn_02097
 float CRenderer::ScaleDistance(float distance) const {
