@@ -1217,6 +1217,72 @@ void UIAchSummaryWnd::Slot15(int, int) {
 // OFFSET: 0x007B80A0
 
 // OFFSET: 0x007B8340
+// FUNCTION: fn_09249
+int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6:
+    if (argument1 == 201) {
+      reinterpret_cast<void(__thiscall*)(UIWindowMgr*, int)>(0x00A8CF20)(&g_windowMgr, 270);
+      this->Invalidate();
+      return 0;
+    }
+    break;
+  case 22:
+    if (argument1 == -1 && argument2 == -1) {
+      this->SelectTab(this->group, this->sub);
+      this->Invalidate();
+      return 0;
+    }
+    this->SelectTab(argument1, argument2);
+    this->Invalidate();
+    return 0;
+  case 60: {
+    this->view->UpdateInfo();
+    this->summary->UpdateInfo();
+
+    const int completed = g_achievementMgr->GetCompletedCount(this->group, this->sub);
+    const int total = g_achievementMgr->GetAchievementCount(this->group, this->sub);
+    UIAchUpperWnd* upper = this->upper;
+    upper->unknown_009C = completed;
+    upper->unknown_00A8->value = completed;
+    upper->unknown_00A0 = total;
+    upper->unknown_00A8->maximum = total;
+    upper->unknown_00A8->Invalidate();
+
+    upper = this->upper;
+    upper->unknown_0094 = g_achievementCompleted;
+    upper->unknown_00A4->value = g_achievementCompleted;
+    upper->unknown_0098 = g_achievementTotal;
+    upper->unknown_00A4->maximum = g_achievementTotal;
+    upper->unknown_00A4->Invalidate();
+
+    this->upper->Invalidate();
+    this->Invalidate();
+    break;
+  }
+  case 135: {
+    UIAchViewWnd* view = this->view;
+    if (this->achievements.find(argument1) == this->achievements.end()) {
+      view->achievementId = -1;
+      view->info = nullptr;
+      view->UpdateInfo();
+      this->Invalidate();
+      return 0;
+    }
+
+    view->achievementId = argument1;
+    view->info = &this->achievements[argument1];
+    view->UpdateInfo();
+    this->Invalidate();
+    return 0;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  this->Invalidate();
+  return 0;
+}
 
 // OFFSET: 0x007B9030
 // FUNCTION: fn_09255
