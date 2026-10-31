@@ -695,7 +695,7 @@ void UIRoMapWnd::Slot31(int x, int y) {
       }
 
       g_navigationMinimized = false;
-      reinterpret_cast<bool(__thiscall*)(CNavigationManager*, std::string, int, bool)>(0x00B995D0)(&g_navigationManager, name, 0, false);
+      g_navigationManager.sub_B995D0(name, 0, false);
       if (g_navigationWindow) {
         static_cast<UINavigationV4Wnd*>(g_navigationWindow)->SelectRoute(0);
         static_cast<UINavigationV4Wnd*>(g_navigationWindow)->SelectRouteNode(0);
