@@ -12,6 +12,7 @@ class CSpriteParticle;
 
 class CHealSp : public CEffect {
 public:
+  ~CHealSp() override;
   void Slot01() override;
   void Slot03() override;
   void Slot04() override;

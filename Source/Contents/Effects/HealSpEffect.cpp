@@ -9,6 +9,11 @@
 #include <algorithm>
 #include <cstdlib>
 
+// OFFSET: 0x00B45200
+// FUNCTION: fn_18896
+CHealSp::~CHealSp() {
+}
+
 // OFFSET: 0x00B45370
 // FUNCTION: fn_18898
 void CHealSp::AddRing(float inner, float outer, float height, int duration) {
