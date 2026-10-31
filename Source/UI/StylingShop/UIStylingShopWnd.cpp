@@ -2046,3 +2046,25 @@ void UIMyStyleWnd::Slot15(int, int) {
     this->AddChild(this->unknown_00A4[i]);
   }
 }
+// FUNCTION: fn_10333
+void UIAccessoryCusWnd::Slot15(int, int) {
+  this->m_display = new (std::nothrow) UIDisplayCharacter(*this->m_context);
+  this->m_display->SetSize(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.552f)),
+                           static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)));
+  this->m_display->LoadCostumes();
+  this->m_display->Move(0, 0);
+  this->AddChild(this->m_display);
+
+  this->m_showInfo = new (std::nothrow) UIShowInfoWnd(*this->m_context);
+  this->m_showInfo->SetSize(this->m_display->geometry.width, static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.4f)));
+  const int layout = 497;
+  this->m_showInfo->ArrangeCheckBoxes(layout);
+  this->m_showInfo->Move(0, this->m_display->geometry.height);
+  this->m_showInfo->m_display = this->m_display;
+  this->AddChild(this->m_showInfo);
+
+  UIAccessoryShowCase* showCase =
+    new UIAccessoryShowCase(*this->m_context, static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.46f)), this->geometry.height);
+  showCase->Move(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.6f)), 13);
+  this->AddChild(showCase);
+}
