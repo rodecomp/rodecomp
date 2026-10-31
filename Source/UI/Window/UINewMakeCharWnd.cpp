@@ -1,5 +1,6 @@
 #include "UI/Window/UINewMakeCharWnd.h"
 
+#include "Client/Mode/CMode.h"
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -17,10 +18,97 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "Resource/TextureNames.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 
 #include <cstdio>
 #include <cstring>
 #include <new>
+#include <timeapi.h>
+
+// OFFSET: 0x007D9A50
+// FUNCTION: fn_09609
+UINewMakeCharWnd::UINewMakeCharWnd()
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0),
+      unknown_02C0(0),
+      m_race(0),
+      m_raceViews() {
+  this->geometry.unknown_0034 = 0;
+
+  const int* preset = reinterpret_cast<const int*>(static_cast<CMode*>(g_charViewMode)->SendMsg(10016, 0, 0, 0, 0));
+  this->m_stats[0] = static_cast<unsigned char>(preset[0]);
+  this->m_stats[1] = static_cast<unsigned char>(preset[1]);
+  this->m_stats[2] = static_cast<unsigned char>(preset[2]);
+  this->m_stats[3] = static_cast<unsigned char>(preset[3]);
+  this->m_stats[4] = static_cast<unsigned char>(preset[4]);
+  this->m_stats[5] = static_cast<unsigned char>(preset[5]);
+  this->m_headPalette = static_cast<short>(preset[6]);
+  this->m_head = static_cast<short>(preset[7]);
+
+  this->m_name[0] = 0;
+  this->m_job = 0;
+  this->m_level = 1;
+  this->m_skillPoint = 1;
+  this->m_status.jobPoint = 0;
+  this->m_status.hp = 100;
+  this->m_status.maxHp = 100;
+  this->m_status.sp = 100;
+  this->m_status.maxSp = 100;
+  this->m_status.exp = 0;
+  this->m_slot = g_selectedSlotIndex;
+  this->m_headPalette = 0;
+  this->m_bodyPalette = 0;
+  this->m_shield = 0;
+  this->unknown_0274 = 0;
+  this->unknown_0276 = 0;
+  this->m_costumeJob = 0;
+  this->m_sex = static_cast<unsigned char>(g_doramSex);
+  this->m_viewX = 500;
+  this->m_viewY = 228;
+  this->unknown_01FC = 0;
+  this->m_action = 0;
+  this->m_frame = 0;
+
+  this->m_raceActions[0].assign(GetBodyActionResourceName(this->m_job, this->m_sex, 0, 0));
+  this->m_raceSprites[0].assign(g_session.GetBodySprName(this->m_job, this->m_sex, 0, 0));
+
+  if (!g_session.IsDoramJob(this->m_job) && this->m_sex == 1 && this->m_head == 13) {
+    this->m_head = 14;
+  }
+
+  int head = this->m_head;
+  this->m_raceActions[1].assign(g_session.GetHeadActName(this->m_job, this->m_sex, &head));
+  this->m_raceSprites[1].assign(g_session.GetHeadSprName(this->m_job, this->m_sex, &head));
+
+  const int bodyPalette = this->m_bodyPalette;
+  this->m_head = static_cast<short>(head);
+  this->m_racePaletteEnabled[1] = bodyPalette;
+  if (bodyPalette > 0) {
+    this->m_racePalettes[1].assign(g_session.GetBodyPalName(this->m_job, this->m_sex, bodyPalette, 0, 0, 0));
+  }
+
+  const int headPalette = this->m_headPalette;
+  this->m_racePaletteEnabled[0] = headPalette;
+  if (headPalette > 0) {
+    this->m_racePalettes[0].assign(g_session.GetHeadPalName(head, this->m_job, this->m_sex, headPalette));
+  }
+
+  this->m_raceOffsets = GetBodyImfName(this->m_job, this->m_sex, this->m_head, this->m_costumeJob);
+
+  this->unknown_035C = 0;
+  this->m_startTime = timeGetTime();
+  this->unknown_0364 = 0;
+  this->unknown_0368 = 0;
+  this->unknown_02D0[0] = 0;
+  this->unknown_02D0[1] = 0;
+  this->unknown_02D0[2] = 0;
+  this->unknown_02D0[3] = 0;
+  this->unknown_02D0[4] = 0;
+  this->unknown_02D0[5] = 0;
+  this->unknown_0330[0] = 0;
+  this->unknown_0330[1] = 0;
+  this->unknown_0338 = 0;
+  this->unknown_0354 = 0;
+}
 
 // OFFSET: 0x007DB320
 // FUNCTION: fn_09617

@@ -14,6 +14,7 @@ class CUIControl;
 
 extern void* g_charViewMode;
 extern char g_selectedSlotIndex;
+extern int g_doramSex;
 
 struct CharSlotInfo {
   CharSlotInfo();
