@@ -17,9 +17,11 @@
 #include "Render/Text/FontCache.h"
 #include "Script/LuaScript.h"
 #include "UI/Text/ColoredText.h"
+#include "UI/Window/UIRegisterMgr.h"
 
 #include <algorithm>
 #include <cmath>
+#include <new>
 #include <windows.h>
 // OFFSET: 0x009EF520
 // FUNCTION: fn_14635
@@ -2667,4 +2669,15 @@ void CUIEditCtrl::DrawBlinkingCaret(const std::uint32_t& color) {
   if (this == g_windowMgr.GetHoverWindow()) {
     this->UIEditCtrl3::DrawBlinkingCaret(color);
   }
+}
+
+// OFFSET: 0x00AB10B0
+// FUNCTION: fn_17331
+template <>
+CUIRegisterMgr* Singleton<CUIRegisterMgr>::GetInstance() {
+  if (!s_instance) {
+    s_instance = new (std::nothrow) CUIRegisterMgr;
+  }
+
+  return s_instance;
 }
