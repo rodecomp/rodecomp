@@ -10,6 +10,9 @@
 
 extern const char* LookupMessage(int id);
 
+// GLOBAL: gl_24772
+int g_charViewCount;
+
 #pragma pack(push, 1)
 struct PACKET_CZ_SELECT_CHARACTERS {
   /* 0000 */ std::int16_t id;
@@ -20,6 +23,23 @@ struct PACKET_CZ_SELECT_CHARACTERS {
 #pragma pack(pop)
 
 // OFFSET: 0x009120E0
+// FUNCTION: fn_12526
+UISelCharForUServerWnd::UISelCharForUServerWnd()
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), m_columns(6) {
+  if (g_charViewCount > 12) {
+    this->m_columns = 9;
+  }
+
+  this->unknown_19E8 = 0;
+  this->m_checkedCount = 0;
+  this->geometry.unknown_0034 = 0;
+  this->unknown_19E4 = 0;
+  for (int index = 0; index < g_charViewCount; ++index) {
+    this->m_slotEnabled[index] = 1;
+  }
+
+  this->m_startTime = timeGetTime();
+}
 
 // OFFSET: 0x0093A7F0
 // FUNCTION: fn_12758
