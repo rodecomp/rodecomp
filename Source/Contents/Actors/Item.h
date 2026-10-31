@@ -1,27 +1,29 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_ACTORS_ITEM_H
 #define RAGNAROK_SOURCE_CONTENTS_ACTORS_ITEM_H
 
-#include "Contents/Actors/RenderObject.h"
+#include "Contents/Effects/EffectActor.h"
 
 #include <cstddef>
 #include <cstdint>
 #include <string>
 
-class CItem : public CRenderObject {
+class CItem : public EffectActor {
 public:
   void SubD8B5A0();
   void SubD8B5B0();
   bool OnProcess() override;
+  void SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) override;
   void Render(int argument) override;
 
-  /* 0138 */ unsigned char unknown_0138[0x20];
   /* 0158 */ std::string name;
-  /* 0170 */ unsigned char unknown_0170[0x0C];
+  /* 0170 */ std::uint32_t itemId;
+  /* 0174 */ unsigned char identified;
+  /* 0178 */ int itemIndex;
   /* 017C */ std::uint32_t itemAid;
   /* 0180 */ std::uint32_t isFalling;
   /* 0184 */ float fallVelocity;
   /* 0188 */ float fallOrigin;
-  /* 018C */ std::uint32_t unknown_018C;
+  /* 018C */ std::uint16_t unknown_018C;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
