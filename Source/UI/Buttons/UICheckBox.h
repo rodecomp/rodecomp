@@ -6,6 +6,7 @@
 class UICheckBox : public UIWindow {
   friend class CMergeItemWnd;
   friend class UIFrameWnd;
+  friend class UIItemShopWnd2;
   friend class UIParaItemShopWnd;
   friend class UIRenewQuestWnd;
   friend class UIRodexInboxWnd;

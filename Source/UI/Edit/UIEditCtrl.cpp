@@ -120,6 +120,9 @@ struct ClientItemLists {
   void AddItem1730(const ITEM_INFO& item);
   void ReduceItem1718(const ITEM_INFO& item);
   void ClearItems1760();
+  void MergeItem1718(const ITEM_INFO& item);
+  void RemoveItem1730(const ITEM_INFO& item);
+  void RemoveItem1720ByName(const ITEM_INFO& item);
   void CopyItems1740To1750();
 };
 
@@ -128,6 +131,7 @@ struct SessionItemLists {
 };
 
 struct SessionMessengerContext {
+  int GetList1Size() const;
   int GetList4Size() const;
   int GetList6Size() const;
   int GetList7Size() const;
@@ -5533,3 +5537,107 @@ UIItemStoreWnd::~UIItemStoreWnd() {
 // OFFSET: 0x0096FC10
 // FUNCTION: fn_13239
 UIItemWnd::~UIItemWnd() = default;
+
+// OFFSET: 0x0098D1F0
+// FUNCTION: fn_13423
+int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    if (a == 213) {
+      g_windowMgr.unknown_0064 = b;
+      return 0;
+    }
+    break;
+  case 14:
+    if (a == 7) {
+      int width = b <= 320 ? b : 320;
+      int height = c <= 336 ? c : 336;
+      if (width < 232) {
+        width = 232;
+      }
+      if (height < 120) {
+        height = 120;
+      }
+
+      const int newWidth = (width - 280) / 32 * 32 + 280;
+      const int newHeight = (height - 120) / 32 * 32 + 120;
+      if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
+        this->Resize(newWidth, newHeight);
+        this->columns = 1;
+        this->visibleRows = (newHeight - this->unknown_0108 - this->unknown_0104 - 17) / 32;
+        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - this->unknown_0108 - this->unknown_0104 - 17);
+        this->checkBox->Move(12, this->geometry.height - 20);
+        this->UpdateScrollBar();
+      }
+
+      this->m_frameContext->snapping.Store(this);
+      return 0;
+    }
+    break;
+  case 23: {
+    this->items.erase(this->items.begin(), this->items.end());
+    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList1Size();
+    for (int i = 0; i < size; ++i) {
+      ITEM_INFO item = g_session.GetItem1718At(i);
+      if (item.unknown_0000[1] != 0) {
+        this->items.push_back(item);
+      }
+    }
+
+    this->Invalidate();
+    this->UpdateScrollBar();
+    break;
+  }
+  case 34:
+    this->saved = reinterpret_cast<ItemShopWndInfo*>(a);
+    if (!static_cast<ItemShopWndInfo*>(this->saved)->IsValid()) {
+      static_cast<ItemShopWndInfo*>(this->saved)->Reset();
+    }
+
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 36:
+    this->unknown_00F8 = 1;
+    this->showQuantity = 1;
+    this->title->SetTextAutoWidth(LookupMessage(1568));
+    this->checkBox->m_disabled = 0;
+    return 0;
+  case 38:
+    if (a == 0) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      ITEM_INFO item;
+      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1720ByName(item);
+      if (g_windowMgr.unknown_0258) {
+        g_windowMgr.unknown_0258->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+
+      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      mode->SendMsg(18, 0, 0, 0, 0);
+      return 0;
+    }
+    if (a == 1) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      ITEM_INFO item;
+      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      ClientItemLists* lists = reinterpret_cast<ClientItemLists*>(&g_session);
+      lists->MergeItem1718(item);
+      lists->RemoveItem1730(item);
+      if (g_windowMgr.unknown_0260) {
+        g_windowMgr.unknown_0260->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+
+      this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      mode->SendMsg(18, 0, 0, 0, 0);
+      return 0;
+    }
+    break;
+  default:
+    return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
+}
