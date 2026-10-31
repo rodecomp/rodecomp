@@ -49,6 +49,8 @@
 #include "Client/Replay.h"
 #include "Client/Application/Launcher.h"
 #include "UI/Lists/UIChatHisBox.h"
+#include "UI/Lists/UIMemberListBox.h"
+#include "UI/Window/UIResizer.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/UIBarGraph.h"
@@ -1529,11 +1531,76 @@ void UILoginWnd::Slot27(int, int) {
 void UIMakeCharWnd::Slot19() {
 }
 
+// OFFSET: 0x008AC490
+
+// OFFSET: 0x008B0B60
+// FUNCTION: fn_11743
+void UIMakeCharWnd::Slot15(int, int) {
+  static_cast<CMode*>(g_charViewMode)->SendMsg(10014, 0, 0, 0, 0);
+  this->m_nameEdit = new UIBitmapEditCtrl();
+  this->m_nameEdit->SetBitmapName("유저인터페이스\\login_interface\\name-edit.bmp");
+  this->m_nameEdit->SetSize(this->m_nameEdit->geometry.width, this->m_nameEdit->geometry.height);
+  this->m_nameEdit->Move(40, 142);
+  this->m_nameEdit->maximum = 24;
+  this->m_nameEdit->SetId(184);
+  this->AddChild(this->m_nameEdit);
+  this->InitHairControls();
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_nameEdit);
+  this->m_message0 = 184;
+}
+
 // OFFSET: 0x008AD130
 // FUNCTION: fn_11734
 void UIChatRoomWnd::Move(int x, int y) {
   this->geometry.Move(x, y);
   this->Slot36();
+}
+
+// OFFSET: 0x008AD3C0
+// FUNCTION: fn_11738
+void UIChatRoomWnd::Slot15(int, int) {
+  this->m_message0 = 184;
+
+  this->resizer = new UIResizer(*this->m_context);
+  this->resizer->SetSize(16, 16);
+  this->resizer->SetDirection(7);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  this->edit = new UIChatEditCtrl(*this->m_context, *this->m_editContext);
+  this->edit->SetSize(this->geometry.width - 30, 16);
+  this->edit->Move(3, this->geometry.height - 18);
+  this->edit->maximum = 70;
+  this->edit->Background(242, 242, 242);
+  this->AddChild(this->edit);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->edit);
+  this->edit->SetId(494);
+
+  UIChatHisBox2* history = new UIChatHisBox2(*this->m_context, *this->m_listContext);
+  this->history = history;
+  history->Configure(0, 0, this->geometry.width - this->geometry.width * 56 / 280 - 3, this->geometry.height - 38, 0);
+  this->history->Move(1, 17);
+  this->history->SetId(184);
+  this->AddChild(this->history);
+
+  this->memberList = new UIMemberListBox(*this->m_context, *this->m_listContext);
+  this->memberList->Configure(0, 0, this->geometry.width * 56 / 280, this->geometry.height - 38, 0);
+  this->memberList->Move(this->geometry.width - this->geometry.width * 56 / 280 - 1, 17);
+  this->memberList->SetId(184);
+  this->AddChild(this->memberList);
+
+  this->closeButton = this->AddCloseButton(*this->m_controls, "/q", 0);
+
+  this->titleText = new UIStaticText(*this->m_context, *this->m_controls);
+  this->titleText->SetSize(this->geometry.width - 30, 15);
+  this->titleText->Move(9, 2);
+  this->titleText->SetTextFitted("");
+  this->titleText->SetFont(0, 12, 0, 0);
+  this->AddChild(this->titleText);
 }
 
 // OFFSET: 0x008B1760
