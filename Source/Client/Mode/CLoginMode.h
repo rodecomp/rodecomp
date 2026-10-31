@@ -26,6 +26,7 @@ struct NotifyZoneServerPacket;
 struct NotifyZoneServer2Packet;
 struct PasswordModePacket;
 struct AcceptEnterPositionPacket;
+struct AcceptLoginPacket;
 
 #pragma pack(push, 1)
 struct CharacterInfo {
@@ -99,7 +100,7 @@ public:
   /* 01E0 */ bool characterDeleted;
   /* 01E1 */ unsigned char unknown_01E1[0x3];
   /* 01E4 */ std::uint32_t otpStarted;
-  /* 01E8 */ unsigned char unknown_01E8[0x3E80];
+  /* 01E8 */ unsigned char serverList[0x3E80];
   /* 4068 */ CharacterInfo characters[68];
   /* 6EE4 */ std::string wallpaperName;
   /* 6EFC */ CharacterSlotExtension slotExtension;
@@ -159,6 +160,7 @@ public:
   void Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet);
   void Zc_Accept_Enter2(const AcceptEnterPositionPacket* packet);
   void ShowLoginError(int code, int argument);
+  void ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version);
 };
 
 extern bool g_loginModeFlag;

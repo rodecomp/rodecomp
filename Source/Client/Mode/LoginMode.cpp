@@ -1,6 +1,7 @@
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Application/Launcher.h"
+#include "Archive/PakRegistry.h"
 #include "Client/Stove/StoveMgr.h"
 #include "Client/ModeFadeOut.h"
 #include "Client/Application/ErrorDialog.h"
@@ -38,6 +39,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <string>
@@ -123,6 +125,32 @@ struct RefuseLoginPacket {
   /* 0002 */ unsigned char result;
   /* 0003 */ char blockDate[20];
 };
+
+struct AcceptLoginPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ int authCode;
+  /* 0008 */ std::uint32_t aid;
+  /* 000C */ int userLevel;
+  /* 0010 */ std::uint32_t lastLoginIp;
+  /* 0014 */ char lastLoginTime[26];
+  /* 002E */ unsigned char sex;
+  /* 002F */ unsigned char body[1];
+};
+
+struct ServerAddress {
+  /* 0000 */ std::uint32_t ip;
+  /* 0004 */ std::int16_t port;
+  /* 0006 */ char name[20];
+  /* 001A */ std::uint16_t userCount;
+  /* 001C */ std::int16_t state;
+  /* 001E */ std::int16_t property;
+};
+
+struct ServerAddress2 {
+  /* 0000 */ ServerAddress address;
+  /* 0020 */ char domain[128];
+};
 #pragma pack(pop)
 
 // GLOBAL: gl_25054
@@ -134,7 +162,24 @@ int g_loginStartMode = 3;
 // GLOBAL: gl_25148
 const char* g_loginWallpaperName = "";
 
+struct SessionAccount {
+  /* 0000 */ int sex;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ int authCode;
+  /* 000C */ int userLevel;
+  /* 0010 */ std::uint32_t lastLoginIp;
+  /* 0014 */ char lastLoginTime[27];
+};
+
+// GLOBAL: gl_25169
+std::uint32_t g_loginAcceptTime;
+// GLOBAL: gl_25252
+unsigned char g_loginExitFlag;
+
 static_assert(sizeof(CharacterSlotsPacket) == 0x1D);
+static_assert(offsetof(AcceptLoginPacket, body) == 0x2F);
+static_assert(sizeof(ServerAddress) == 0x20);
+static_assert(sizeof(ServerAddress2) == 0xA0);
 static_assert(offsetof(AcceptEnterPacket, characters) == 0x1B);
 
 template <std::size_t Length, std::uint64_t Key>
@@ -2043,4 +2088,90 @@ bool CLoginMode::ShowNotice(int notice, bool append) {
   }
 
   return true;
+}
+
+static void ComputeLoginDigest(unsigned char* digest, const void* data, int size) {
+}
+
+// OFFSET: 0x00D8CD60
+// FUNCTION: fn_22264
+void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version) {
+  g_loginAcceptTime = timeGetTime();
+  *reinterpret_cast<std::string*>(&g_session.unknown_56B8[4]) = LookupMessage(940);
+
+  SessionAccount& account = *reinterpret_cast<SessionAccount*>(g_session.unknown_0E9C);
+  account.authCode = packet->authCode;
+  account.userLevel = packet->userLevel;
+  g_session.m_aid = packet->aid;
+
+  unsigned char digest[16] = {};
+  ComputeLoginDigest(digest, packet, offsetof(AcceptLoginPacket, body));
+  g_pakRegistry.ApplyAuxiliary(digest, sizeof(digest));
+  SecureZeroMemory(digest, sizeof(digest));
+
+  if (packet->sex >= 10) {
+    g_session.SetFlag(packet->sex - 10);
+    g_doramSex = packet->sex - 10;
+  } else {
+    if (g_loginExitFlag == 1) {
+      exit(0);
+    }
+    g_session.SetFlag(packet->sex);
+    g_doramSex = packet->sex;
+  }
+
+  if (g_serviceType == 6 || g_serviceType == 10 || g_serviceType == 12) {
+    g_serviceOptions.Set(0x6C, 0);
+  }
+  const unsigned char flags = g_serviceOptions.Get(0x6C);
+  SetServiceFlags(flags, flags);
+
+  account.lastLoginIp = packet->lastLoginIp;
+  memcpy_s(account.lastLoginTime, sizeof(packet->lastLoginTime), packet->lastLoginTime, sizeof(packet->lastLoginTime));
+  account.lastLoginTime[26] = '\0';
+
+  unsigned int count;
+  switch (version) {
+  case 2:
+    count = (packet->length - (offsetof(AcceptLoginPacket, body) + 4)) / sizeof(ServerAddress);
+    this->unknown_01C4 = count;
+    memcpy(this->serverList, packet->body + 4, count * sizeof(ServerAddress));
+    break;
+  case 3:
+    count = (packet->length - (offsetof(AcceptLoginPacket, body) + 17)) / sizeof(ServerAddress);
+    this->unknown_01C4 = count;
+    memcpy(this->serverList, packet->body + 17, count * sizeof(ServerAddress));
+    memcpy(&g_session.unknown_807C[8], packet->body, 16);
+    break;
+  case 4:
+    count = (packet->length - offsetof(AcceptLoginPacket, body)) / sizeof(ServerAddress2);
+    this->unknown_01C4 = count;
+    memcpy(this->serverList, packet->body, count * sizeof(ServerAddress2));
+    break;
+  case 5:
+    count = (packet->length - (offsetof(AcceptLoginPacket, body) + 17)) / sizeof(ServerAddress2);
+    this->unknown_01C4 = count;
+    memcpy(this->serverList, packet->body + 17, count * sizeof(ServerAddress2));
+    memcpy(&g_session.unknown_807C[8], packet->body, 16);
+    break;
+  case 6:
+  case 7:
+  case 8:
+  case 9:
+    break;
+  default:
+    count = (packet->length - offsetof(AcceptLoginPacket, body)) / sizeof(ServerAddress);
+    this->unknown_01C4 = count;
+    memcpy(this->serverList, packet->body, count * sizeof(ServerAddress));
+    break;
+  }
+
+  CNProtectGameGuardMgr* gameGuard = g_nProtectGameGuardMgr;
+  const std::uint32_t aid = packet->aid;
+  const std::uint8_t source[] = {0x4C, 0x7B, 0x77};
+  thread_local EncryptedName<sizeof(source), 0x637B959D55771F69ULL> format(source);
+  gameGuard->Send(FormatString(format.Text(), aid));
+  GetRagConnection().Close();
+  g_loginFailCount = 0;
+  this->pendingCursorType = 6;
 }
