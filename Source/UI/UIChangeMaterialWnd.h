@@ -36,6 +36,12 @@ struct MaterialListEntry {
   /* 0010 */ std::vector<MaterialResult> results;
 };
 
+struct MaterialNameLess {
+  bool operator()(unsigned int first, unsigned int second) const;
+
+  /* 0000 */ std::vector<MaterialListEntry> entries;
+};
+
 class UIChangeMaterialWnd_ScrollBar : public UIScrollBar {
 public:
   // VTABLE: vt_00211

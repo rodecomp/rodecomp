@@ -771,3 +771,11 @@ void UIChangeMaterialWnd_CheckBox::Paint() {
     }
   }
 }
+
+// OFFSET: 0x005E0A20
+// FUNCTION: fn_03866
+bool MaterialNameLess::operator()(unsigned int first, unsigned int second) const {
+  const std::string left = first < this->entries.size() ? ItemDisplayName(this->entries[first].results[0].id) : std::string();
+  const std::string right = second < this->entries.size() ? ItemDisplayName(this->entries[second].results[0].id) : std::string();
+  return left < right;
+}
