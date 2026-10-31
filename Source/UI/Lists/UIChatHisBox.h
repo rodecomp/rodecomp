@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+class UIItemTagButton;
 class UINaviLinkButton;
 
 class UIChatHisBox : public UIListBox {
@@ -15,6 +16,7 @@ public:
   bool Slot08() override;
   void Resize(int width, int height) override;
   void Show(int visible) override;
+  void Paint() override;
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
@@ -28,9 +30,17 @@ public:
   void DropOldestLines();
   void ShiftNaviLinks();
   void ClearNaviLinks();
+  void DropOldestRecords();
+  void ShiftItemTags();
+  void PlaceItemTags(int line);
   void CopyHistory(const UIChatHisBox& other);
   void Resize(int width, int height, bool flag);
   void sub_89C080();
+
+  // INLINED
+  std::list<std::vector<UIItemTagButton*>>& ItemTags() {
+    return *reinterpret_cast<std::list<std::vector<UIItemTagButton*>>*>(reinterpret_cast<unsigned char*>(this) + 0xD4);
+  }
 
   /* 00DC */ std::list<std::vector<UINaviLinkButton*>> naviLinks;
   /* 00E4 */ std::vector<int> unknown_00E4;

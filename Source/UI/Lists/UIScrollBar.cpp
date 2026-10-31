@@ -23,6 +23,9 @@
 #include "Render/Text/TextContext.h"
 #include "UI/Buttons/UIBitmapButton2.h"
 #include "UI/Buttons/UINaviLinkButton.h"
+#include "UI/Buttons/UIItemTagButton.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/TipOfTheDay.h"
 #include "Contents/MessageTable.h"
 #include "UI/Window/WindowDialogs.h"
 #include <algorithm>
@@ -961,6 +964,36 @@ void UIChatHisBox::ClearNaviLinks() {
     row = this->naviLinks.erase(row);
   }
 }
+
+// OFFSET: 0x0087CC30
+// FUNCTION: fn_11256
+void UIChatHisBox::DropOldestRecords() {
+  unsigned int half = static_cast<unsigned int>(this->unknown_0100.size()) / 2;
+  for (unsigned int index = 0; index < half; ++index) {
+    this->unknown_0100[index] = this->unknown_0100[index + half];
+  }
+  this->unknown_0100.erase(this->unknown_0100.begin() + half, this->unknown_0100.end());
+
+  half = static_cast<unsigned int>(this->unknown_010C.size()) / 2;
+  for (int index = 0; index < static_cast<int>(half); ++index) {
+    this->unknown_010C[index] = this->unknown_010C[index + half];
+  }
+  this->unknown_010C.resize(half);
+
+  half = static_cast<unsigned int>(this->unknown_0118.size()) / 2;
+  for (unsigned int index = 0; index < half; ++index) {
+    this->unknown_0118[index] = this->unknown_0118[index + half];
+  }
+  this->unknown_0118.erase(this->unknown_0118.begin() + half, this->unknown_0118.end());
+
+  this->sub_89C080();
+}
+
+// OFFSET: 0x0087CEC0
+
+// OFFSET: 0x0087EF30
+
+// OFFSET: 0x00889710
 
 // OFFSET: 0x0089ADD0
 // FUNCTION: fn_11563
