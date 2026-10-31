@@ -611,6 +611,7 @@ public:
   bool EquipUnknown17F0(const ITEM_INFO& item, const char* name);
   bool OnItemEquipped(ITEM_INFO& item);
   bool EquipItem2B50(const ITEM_INFO& item, const char* name);
+  bool UnequipItem2B50(int location);
   bool EquipItem3500(const ITEM_INFO& item);
   void AddStackedItem(ITEM_INFO item);
   void ReturnStackedItem(int index, int count);

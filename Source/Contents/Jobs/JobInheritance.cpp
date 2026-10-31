@@ -1,8 +1,12 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/CGameMode.h"
+#include "Contents/ClientItemLists.h"
+#include "Contents/ClientState.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/WeaponType.h"
+#include "Contents/MessageTable.h"
+#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Client/Session.h"
 #include "Contents/Actors/GameActor.h"
@@ -18,11 +22,16 @@
 #include "Contents/World/World.h"
 #include "File/MapName.h"
 #include "Script/LuaScript.h"
+#include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstring>
+#include <list>
+#include <new>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 // GLOBAL: gl_24496
 int g_screenShakeDuration;
@@ -1614,6 +1623,124 @@ bool CSession::IsCostumeJob(int job) const {
   default:
     return false;
   }
+}
+
+int GetEquipLocationIndex(const int& mask);
+
+namespace EquipmentProperties {
+class CEquipmentProperties;
+
+class CEquipment {
+public:
+  virtual ~CEquipment();
+  virtual void Load(bool force) = 0;
+  virtual void Clear();
+  virtual int GetType() = 0;
+  virtual int GetValue(const int& key);
+  int& GetId();
+
+  /* 0004 */ int m_id;
+  /* 0008 */ void* m_info;
+  /* 000C */ unsigned char m_properties[0x28];
+  /* 0034 */ bool m_pretend;
+};
+
+class CEquipmentAttachable : public CEquipment {
+public:
+  void Load(bool force) override;
+  int GetType() override;
+  CEquipment* GetOwner();
+
+  /* 0038 */ int unknown_0038;
+  /* 003C */ CEquipment* m_owner;
+};
+
+class CEquipmentWearable : public CEquipment {
+public:
+  void Load(bool force) override;
+  void Clear() override;
+  int GetType() override;
+  std::vector<CEquipmentAttachable>& GetAttachables();
+  bool IsActive();
+
+  /* 0038 */ bool m_active;
+  /* 003C */ int m_type;
+  /* 0040 */ int unknown_0040;
+  /* 0044 */ std::vector<CEquipmentAttachable> m_attachables;
+  /* 0050 */ std::list<CEquipmentProperties*> m_children;
+};
+
+class CEquipmentPropertiesMgr {
+public:
+  virtual ~CEquipmentPropertiesMgr();
+  /* 0004 */ unsigned char unknown_0004[0x9];
+  /* 000D */ bool m_dirty;
+  /* 000E */ unsigned char unknown_000E[0x12];
+  /* 0020 */ UIWindow* unknown_0020;
+  /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
+
+  CEquipmentPropertiesMgr();
+  CEquipmentWearable* FindProperty1(const int& key);
+  void UnequipItem(const int& itemId, bool notify);
+  void RemoveWearable(const int& location);
+};
+
+void CEquipmentPropertiesMgr::RemoveWearable(const int& location) {
+  this->m_dirty = true;
+  const int key = GetEquipLocationIndex(location);
+  CEquipmentWearable* wearable = this->FindProperty1(key);
+  if (wearable != nullptr) {
+    for (CEquipmentAttachable& attachable : wearable->GetAttachables()) {
+      this->UnequipItem(attachable.GetId(), true);
+    }
+    this->UnequipItem(wearable->GetId(), true);
+    wearable->Clear();
+    delete wearable;
+    this->properties1.erase(key);
+  }
+  if (this->unknown_0020 != nullptr) {
+    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+}
+}
+
+// OFFSET: 0x00E24B30
+// FUNCTION: fn_23899
+bool CSession::UnequipItem2B50(int location) {
+  if (location == 0x8000) {
+    this->SetUnknown16EC(0);
+  } else {
+    const EquipSlots slots = g_session.GetEquipSlots(location);
+    if (slots.values[2] < 10) {
+      if (slots.values[2] != -1) {
+        ITEM_INFO& item = this->unknown_2B50[slots.values[2]];
+        const char* message = LookupMessage(0xAB);
+        const std::string name = item.DisplayName(0);
+        const std::string text = FormatOwnedString("%s%s", name.c_str(), message);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);
+        item.unknown_0000[3] = 0;
+        reinterpret_cast<ClientItemLists*>(this)->AddItem1710(item, 1);
+        item.Reset();
+      }
+      if (slots.values[1] != -1 && slots.values[1] < 10) {
+        this->unknown_2B50[slots.values[1]].Reset();
+      }
+      if (slots.values[0] != -1 && slots.values[0] < 10) {
+        this->unknown_2B50[slots.values[0]].Reset();
+      }
+    }
+    RequestBasicInfoRefresh();
+  }
+
+  this->InvalidateWindowFrames();
+  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_022C)) {
+    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
+  }
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  g_equipmentPropertiesMgr->RemoveWearable(location);
+  return true;
 }
 
 // OFFSET: 0x00E24DE0
