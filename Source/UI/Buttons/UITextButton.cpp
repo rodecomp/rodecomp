@@ -2110,6 +2110,36 @@ void UIScrollBar_Custom::Paint() {
 }
 
 // OFFSET: 0x0088FE20
+// FUNCTION: fn_11396
+void UIZeroQuestScrollBar::Paint() {
+  this->ClearSurface(0xFFD9C8B8);
+  this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, 0xFFFFFFFF);
+
+  if (this->maximum == 0) {
+    return;
+  }
+
+  const auto* up = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_arrow_up.bmp"));
+  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(up), true);
+
+  const auto* down = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_arrow_down.bmp"));
+  this->DrawBitmap(0, this->geometry.height - this->arrowLength, reinterpret_cast<const BitmapImage*>(down), true);
+
+  const int extent = this->vertical == 0 ? this->geometry.width : this->geometry.height;
+  int y = this->arrowLength + (this->position * (extent - this->arrowLength * 2 - this->ThumbLength())) / this->maximum;
+
+  const auto* thumbUp = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_up.bmp"));
+  this->DrawBitmap(0, y, reinterpret_cast<const BitmapImage*>(thumbUp), true);
+
+  const int bottom = y + this->ThumbLength() - 4;
+  for (y += 4; y < bottom; y += 4) {
+    const auto* thumbMiddle = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_mid.bmp"));
+    this->DrawBitmap(0, y, reinterpret_cast<const BitmapImage*>(thumbMiddle), true);
+  }
+
+  const auto* thumbDown = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_down.bmp"));
+  this->DrawBitmap(0, bottom, reinterpret_cast<const BitmapImage*>(thumbDown), true);
+}
 
 // OFFSET: 0x00884DD0
 // FUNCTION: fn_11313
