@@ -120,6 +120,39 @@ void UINewSkillListWnd::Slot35(int delta) {
 }
 
 // OFFSET: 0x009AE730
+// FUNCTION: fn_13800
+void UINewSkillListWnd::sub_9AE730() {
+  if (*reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4) == 0) {
+    for (const NewSkillListValue& entry : this->m_unknown_02A0) {
+      const int id = entry.id;
+      const int value = entry.value;
+      CSkillInfo* skill = g_session.m_skillBundle.FindGrouped(id);
+      if (skill != nullptr && skill->available != 0) {
+        const int next = skill->unknown_0030 + 1;
+        if (next <= value) {
+          for (int count = value - next + 1; count != 0; --count) {
+            g_modeMgr.gameMode->SendMsg(0x43, id, 0, 0, 0);
+          }
+        }
+      }
+    }
+    this->m_unknown_02A0.clear();
+  } else {
+    std::list<CSkillInfo>& live = this->SkillList(this->m_tab, true);
+    std::list<CSkillInfo>& pending = this->SkillList(this->m_tab, false);
+    auto current = live.begin();
+    for (auto it = pending.begin(); it != pending.end(); ++it, ++current) {
+      if (current->available != 0 && current->id == it->id && current->level < it->level) {
+        for (int i = 0; i < it->level - current->level; ++i) {
+          g_modeMgr.gameMode->SendMsg(0x43, current->id, 0, 0, 0);
+        }
+      }
+    }
+  }
+
+  this->m_locked = 0;
+  this->LayoutButtons();
+}
 
 // OFFSET: 0x009B0370
 // FUNCTION: fn_13805

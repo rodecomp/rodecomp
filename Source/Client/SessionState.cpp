@@ -194,6 +194,32 @@ bool CSession::IsThirdJobOrHigher(int job) {
 }
 
 // OFFSET: 0x00E2ECD0
+// FUNCTION: fn_24150
+bool CSession::EquipItem61B8(const ITEM_INFO& item) {
+  const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(item.unknown_0000[3]));
+  int order[3];
+  order[0] = slots.values[2];
+  order[1] = slots.values[1];
+  order[2] = slots.values[0];
+  if (item.unknown_0000[3] == 0x8000) {
+    g_session.SetUnknown7EC8(item.unknown_0000[1]);
+  }
+
+  for (int i = 0; i < 3; ++i) {
+    const int slot = order[i];
+    if (slot == -1 || slot >= 10) {
+      break;
+    }
+    this->unknown_61B8[slot] = item;
+    this->unknown_61B8[slot].quantity = 1;
+  }
+
+  if (g_windowMgr.unknown_01E0) {
+    static_cast<UIEquipWnd*>(g_windowMgr.unknown_01E0)->NotifyEquipmentChanged();
+  }
+  RefreshItemWindows(&g_windowMgr);
+  return true;
+}
 
 // OFFSET: 0x00E3D8A0
 // FUNCTION: fn_24192
