@@ -24,6 +24,7 @@
 #include "Render/Renderer.h"
 #include "Resource/World/TerrainResource.h"
 #include "Script/LuaScript.h"
+#include "UI/UIBroadcastBalloon.h"
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -234,6 +235,8 @@ void CGameMode::UpdateUnknown0628(int id, bool add) {
   }
 }
 
+// OFFSET: 0x00CEFFC0
+
 // OFFSET: 0x00CF0070
 // FUNCTION: fn_21410
 const char* CGameMode::Unknown04DCText() {
@@ -257,6 +260,16 @@ MinimapMarker* CGameMode::FindMinimapMarker(std::uint32_t key) {
     return nullptr;
   }
   return &it->second;
+}
+
+// OFFSET: 0x00CF05E0
+// FUNCTION: fn_21415
+std::string CGameMode::GetUnknown0084(unsigned int index) {
+  if (!this->unknown_0084.empty() && index <= this->unknown_0084.size()) {
+    return this->unknown_0084[index];
+  }
+
+  return "";
 }
 
 // OFFSET: 0x00CF06B0

@@ -15,6 +15,7 @@
 #include <vector>
 
 class CView;
+class UIBroadcastBalloon;
 class CMousePointer;
 class CCorpse;
 class CMsgEffect;
@@ -61,7 +62,9 @@ public:
   CGameMode();
   /* 0058 */ unsigned char unknown_0058[0x10];
   /* 0068 */ char mapName[16];
-  /* 0078 */ unsigned char unknown_0078[0x54];
+  /* 0078 */ unsigned char unknown_0078[0xC];
+  /* 0084 */ std::vector<std::string> unknown_0084;
+  /* 0090 */ unsigned char unknown_0090[0x3C];
   /* 00CC */ CWorld* scene;
   /* 00D0 */ CView* camera;
   /* 00D4 */ CMousePointer* mousePointer;
@@ -121,11 +124,15 @@ public:
   /* 05E8 */ std::uint32_t replayPauseTick;
   /* 05EC */ unsigned char unknown_05EC[0x18];
   /* 0604 */ std::list<UIWindow*> unknown_0604;
-  /* 060C */ unsigned char unknown_060C[0x1C];
+  /* 060C */ unsigned char unknown_060C[0x10];
+  /* 061C */ UIBroadcastBalloon* broadcastBalloon;
+  /* 0620 */ unsigned char unknown_0620[0x8];
   /* 0628 */ std::unordered_set<int> unknown_0628;
   /* 0648 */ unsigned char unknown_0648[0x28];
 
   std::string MapName();
+  UIBroadcastBalloon* EnsureBroadcastBalloon();
+  std::string GetUnknown0084(unsigned int index);
   void RequestPlayerAction(int target, int argument);
   void UpdateLoopSounds();
   void AddSceneObject(CRenderObject* object);
@@ -421,7 +428,9 @@ static_assert(offsetof(CGameMode, unknown_019C) == 0x19C);
 static_assert(offsetof(CGameMode, unknown_01A4) == 0x1A4);
 static_assert(offsetof(CGameMode, unknown_01AC) == 0x1AC);
 static_assert(offsetof(CGameMode, unknown_0118) == 0x118);
+static_assert(offsetof(CGameMode, unknown_0084) == 0x84);
 static_assert(offsetof(CGameMode, scene) == 0xCC);
+static_assert(offsetof(CGameMode, broadcastBalloon) == 0x61C);
 static_assert(offsetof(CGameMode, camera) == 0xD0);
 static_assert(offsetof(CGameMode, nameCard) == 0x160);
 static_assert(offsetof(CGameMode, unknown_01BC) == 0x1BC);
