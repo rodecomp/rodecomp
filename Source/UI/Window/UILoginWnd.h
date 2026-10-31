@@ -3,10 +3,15 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+#include <string>
+#include <vector>
+
 class UIEditCtrl;
 
 class UILoginWnd : public UIFrameWnd {
 public:
+  ~UILoginWnd() override;
+
   void Slot11() override;
   void Slot18() override;
   void Slot19() override;
@@ -23,6 +28,9 @@ public:
   /* 00C1 */ bool passwordPlaceholder;
   /* 00C2 */ unsigned char unknown_00C2[0x6];
   /* 00C8 */ int saveId;
+  /* 00CC */ unsigned char unknown_00CC[0xC];
+  /* 00D8 */ std::vector<std::string> unknown_00D8;
+  /* 00E4 */ unsigned char unknown_00E4[0xC];
 };
 
 #endif

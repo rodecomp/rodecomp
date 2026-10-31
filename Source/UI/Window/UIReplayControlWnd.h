@@ -9,6 +9,8 @@ class UIStaticText;
 
 class UIReplayControlWnd : public UIFrameWnd {
 public:
+  UIReplayControlWnd(UIWindowContext& windows, UIFrameContext& frames);
+
   bool Slot03() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;

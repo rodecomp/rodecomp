@@ -10,6 +10,8 @@ struct UIListBoxContext;
 
 class UISelectReplayDataWnd : public UIFrameWnd {
 public:
+  UISelectReplayDataWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& listContext);
+
   void Slot15(int width, int height) override;
   void Slot18() override;
   void Paint() override;

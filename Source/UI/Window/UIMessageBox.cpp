@@ -2563,3 +2563,40 @@ void UIMonsterInfoWnd::Slot15(int, int) {
   }
   this->name = this->FitDisplayText(100, this->name.c_str(), 0, 12, 0);
 }
+
+// OFFSET: 0x008A4300
+
+// OFFSET: 0x008A43E0
+// FUNCTION: fn_11668
+UIReplayButton::UIReplayButton(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls) {
+}
+
+// OFFSET: 0x008A4440
+// FUNCTION: fn_11669
+UIReplayControlWnd::UIReplayControlWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->m_paused = false;
+}
+
+// OFFSET: 0x008A4500
+
+// OFFSET: 0x008A45A0
+
+// OFFSET: 0x008A4640
+
+// OFFSET: 0x008A46E0
+
+// OFFSET: 0x008A4E00
+// FUNCTION: fn_11677
+UICntWnd::~UICntWnd() = default;
+
+// OFFSET: 0x008A5050
+// FUNCTION: fn_11679
+UILoginWnd::~UILoginWnd() = default;
+
+// OFFSET: 0x008A54C0
+// FUNCTION: fn_11681
+UIPetInfoWnd::~UIPetInfoWnd() {
+  if (this->window_00C4) {
+    g_windowMgr.Schedule(this->window_00C4);
+  }
+}

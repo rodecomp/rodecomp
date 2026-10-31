@@ -5,6 +5,8 @@
 
 class UIReplayButton : public UIBitmapButton {
 public:
+  UIReplayButton(UIWindowContext& windows, UIButtonContext& controls);
+
   void Slot31(int x, int y) override;
 };
 
