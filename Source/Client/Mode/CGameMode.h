@@ -403,6 +403,9 @@ public:
   );
   void Slot7(int value) override;
   void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);
+  void ReceiveSummonHpInit(const unsigned char* buffer);
+  void ReceiveSummonHpUpdate(const unsigned char* buffer);
+  void ReceiveGameOptionResult(int command, int result, int enabled);
   bool UpdateReplayPause(bool resume);
   void ReceiveCharacterRenameResult(const unsigned char* packet);
   void ReceiveLapineUpgradeResult(std::int16_t result);

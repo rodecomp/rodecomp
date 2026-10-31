@@ -17,6 +17,7 @@
 #include "Contents/World/World.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "UI/GameSettings/GameSettingsUI.h"
 #include "UI/UIGradeEnchantWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -643,6 +644,60 @@ void CGameMode::ReceiveResultNotice0118(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D652E0
+
+#pragma pack(push, 1)
+struct SummonHpInitPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int32_t summonId;
+  /* 0006 */ std::int32_t hp;
+  /* 000A */ std::int32_t maxHp;
+};
+
+struct SummonHpUpdatePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int32_t summonId;
+  /* 0006 */ std::uint16_t varId;
+  /* 0008 */ std::int32_t value;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D655E0
+// FUNCTION: fn_21999
+void CGameMode::ReceiveSummonHpInit(const unsigned char* buffer) {
+  const SummonHpInitPacket* packet = reinterpret_cast<const SummonHpInitPacket*>(buffer);
+  g_session.unknown_0784[packet->summonId] = packet->hp;
+  g_session.unknown_078C[packet->summonId] = packet->maxHp;
+
+  CRenderObject* actor = this->scene->GetGameActorByAID(packet->summonId);
+  if (actor != nullptr) {
+    const std::int64_t id = packet->summonId;
+    actor->SendMsg(nullptr, 34, 0, static_cast<int>(id), static_cast<int>(id >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D65680
+// FUNCTION: fn_22000
+void CGameMode::ReceiveSummonHpUpdate(const unsigned char* buffer) {
+  const SummonHpUpdatePacket* packet = reinterpret_cast<const SummonHpUpdatePacket*>(buffer);
+  if (g_session.FindUnknown078C(packet->summonId) == -1) {
+    return;
+  }
+
+  switch (packet->varId) {
+  case 5:
+    g_session.unknown_0784[packet->summonId] = packet->value;
+    break;
+  case 6:
+    g_session.unknown_078C[packet->summonId] = packet->value;
+    break;
+  }
+
+  CRenderObject* actor = this->scene->GetGameActorByAID(packet->summonId);
+  if (actor != nullptr) {
+    const std::int64_t id = packet->summonId;
+    actor->SendMsg(nullptr, 34, 0, static_cast<int>(id), static_cast<int>(id >> 32), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00D65730
 // FUNCTION: fn_22001
