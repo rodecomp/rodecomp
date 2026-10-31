@@ -1,12 +1,15 @@
 #include "UI/UIChangeMaterialWnd.h"
 
+#include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ChangeMaterialMgr.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
+#include "Contents/PlayerNameDictionary.h"
 #include "Network/Connection/Connection.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -227,35 +230,42 @@ void UIChangeMaterialWnd_List::ApplyFilter(std::string text) {
 void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
   this->m_entries.clear();
 
-  const std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess> library = g_changeMaterialMgr->m_library;
-  for (const auto& node : library) {
-    const std::vector<ChangeMaterialRecipe> recipes = node.second.m_recipes;
-    for (const ChangeMaterialRecipe& recipe : recipes) {
-      MaterialListEntry entry{};
-
-      for (const ChangeMaterialEntry& material : recipe.materials) {
-        MaterialReq material_;
-        material_.id = material.itemId;
-        material_.quantity = material.count;
-        entry.materials.push_back(material_);
+  std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess> library = g_changeMaterialMgr->m_library;
+  for (auto it = library.begin(); it != library.end(); ++it) {
+    std::vector<ChangeMaterialRecipe> recipes = it->second.m_recipes;
+    for (auto recipe = recipes.begin(); recipe != recipes.end(); ++recipe) {
+      MaterialListEntry entry = {};
+      if (recipe->materials.empty() || recipe->products.empty()) {
+        continue;
       }
 
-      for (const ChangeMaterialProduct& product : recipe.products) {
-        MaterialResult result;
-        result.id = product.itemId;
-        result.quantity = product.count;
-        result.amount = product.rate;
-        entry.results.push_back(result);
+      entry.materials.resize(recipe->materials.size());
+      auto material = entry.materials.begin();
+      for (auto source = recipe->materials.begin(); source != recipe->materials.end(); ++source, ++material) {
+        material->id = source->itemId;
+        material->quantity = source->count;
       }
 
-      entry.state = 1;
-      for (const MaterialReq& material : entry.materials) {
-        const ITEM_INFO stock = LookupClientItem(g_session.m_inventoryItems, material.id, 1);
-        if (stock.quantity < material.quantity) {
-          entry.state = 0;
+      entry.results.resize(recipe->products.size());
+      auto result = entry.results.begin();
+      for (auto source = recipe->products.begin(); source != recipe->products.end(); ++source, ++result) {
+        result->id = source->itemId;
+        result->quantity = source->count;
+        result->amount = source->rate;
+      }
+
+      bool available = true;
+      for (auto required = entry.materials.begin(); required != entry.materials.end(); ++required) {
+        const ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, required->id, 1);
+        if (item.quantity < required->quantity) {
+          available = false;
         }
       }
 
+      entry.state = available;
+      std::sort(entry.results.begin(), entry.results.end(), [](const MaterialResult& left, const MaterialResult& right) {
+        return left.quantity < right.quantity;
+      });
       this->m_entries.push_back(entry);
     }
   }
@@ -532,61 +542,61 @@ void UIChangeMaterialWnd::Paint() {
 // OFFSET: 0x005E1F20
 // FUNCTION: fn_03880
 void UIChangeMaterialWnd_List::Paint() {
-  UIWindowContext& controls = *this->m_context;
-  ItemDescriptions descriptions{g_itemDescriptions};
-  const int rowHeight = *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
-
   this->ClearSurface(0xFFFF00FF);
 
-  if (this->m_pageSize <= 0) {
-    return;
-  }
-
   for (int row = 0; row < this->m_pageSize; ++row) {
+    const int index = row + this->m_scrollOffset;
     const MaterialListEntry* entry = nullptr;
-    const unsigned int index = static_cast<unsigned int>(row + this->m_scrollOffset);
-    if (index < this->m_items.size()) {
-      const int entryIndex = this->m_items[index];
-      if (static_cast<unsigned int>(entryIndex) < this->m_entries.size()) {
+    if (static_cast<unsigned int>(index) < this->m_items.size()) {
+      const unsigned int entryIndex = static_cast<unsigned int>(this->m_items[index]);
+      if (entryIndex < this->m_entries.size()) {
         entry = &this->m_entries[entryIndex];
       }
     }
 
-    const int y = row * rowHeight;
+    const int rowHeight = *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
     if (!entry) {
-      CBitmapRes* disabled = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\btn_material_disable.bmp")));
-      this->DrawBitmap(0, y, disabled ? &disabled->image : nullptr, true);
+      CRes* disabled = ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\btn_material_disable.bmp"));
+      this->DrawBitmap(0, rowHeight * row, reinterpret_cast<const BitmapImage*>(disabled), true);
       continue;
     }
 
-    const char* image = "유저인터페이스\\ChangeMaterial\\btn_material_out.bmp";
-    if (row == this->m_selectedIndex) {
-      image = "유저인터페이스\\ChangeMaterial\\btn_material_press.bmp";
-    } else if (row == this->m_hoverIndex) {
-      image = "유저인터페이스\\ChangeMaterial\\btn_material_over.bmp";
+    const char* bitmap;
+    if (index == this->m_selectedIndex) {
+      bitmap = "유저인터페이스\\ChangeMaterial\\btn_material_press.bmp";
+    } else if (index == this->m_hoverIndex) {
+      bitmap = "유저인터페이스\\ChangeMaterial\\btn_material_over.bmp";
+    } else {
+      bitmap = "유저인터페이스\\ChangeMaterial\\btn_material_out.bmp";
     }
 
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(image)));
-    this->DrawBitmap(0, y, bitmap ? &bitmap->image : nullptr, true);
+    CRes* background = ResourceMgr::Instance().Load(Resolve(bitmap));
+    this->DrawBitmap(0, rowHeight * row, reinterpret_cast<const BitmapImage*>(background), true);
 
     ITEM_INFO item;
-    item.SetItemId(entry->results.front().id);
+    item.SetItemId(entry->results[0].id);
+    item.quantity = entry->results[0].quantity;
     item.identified = 1;
-    const int quantity = entry->results.front().quantity;
-    std::string name = ItemDisplayName(entry->results.front().id);
-    if (this->TextWidth(controls.fonts, controls.locale, name.c_str(), 0, 0, 12, 0, 0) > 100) {
+
+    UIWindowContext& context = *this->m_context;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    std::string name = naming.DisplayName(item, 0);
+    if (this->TextWidth(context.fonts, context.locale, name.c_str(), 0, 0, 12, 0, 0) > 100) {
       name = this->FitDisplayText(100, name.c_str(), 0, 12, 0);
     }
 
-    const std::string amount = FormatOwnedString(LookupMessage(0xB6), quantity);
+    const int y = rowHeight * row;
     if (entry->state == 1) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, controls.fonts, controls.locale, 0, y, item, 1, 0);
-      this->DrawTextAt(controls.fonts, controls.locale, 0x1E, y + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
-      this->DrawRightAlignedText(0xA3, y + 6, amount.c_str(), 0, 0, 12, 0, 0);
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, context.fonts, context.locale, 0, y, item, 1, 0);
+      this->DrawTextAt(context.fonts, context.locale, 30, y + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(182), item.quantity).c_str(), 0, 0, 12, 0, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, descriptions, controls.fonts, controls.locale, 1, 0, y, item, 1, 0);
-      this->DrawTextAt(controls.fonts, controls.locale, 0x1E, y + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
-      this->DrawRightAlignedText(0xA3, y + 6, amount.c_str(), 0, 0, 12, 0xAAAAAA, 0);
+      DrawItemWithQuantityAuxiliary(*this, descriptions, context.fonts, context.locale, 1, 0, y, item, 1, 0);
+      this->DrawTextAt(context.fonts, context.locale, 30, y + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
+      this->DrawRightAlignedText(163, y + 6, FormatOwnedString(LookupMessage(182), item.quantity).c_str(), 0, 0, 12, 0xAAAAAA, 0);
     }
   }
 }
