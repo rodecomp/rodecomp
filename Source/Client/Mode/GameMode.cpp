@@ -1589,3 +1589,55 @@ int CGameMode::Run() {
 #include "Client/Input/Mouse.h"
 
 // OFFSET: 0x00CDFC40
+// FUNCTION: fn_21327
+void CGameMode::TargetActorByAid(int aid) {
+  if (this->unknown_0250 != 0) {
+    return;
+  }
+
+  const unsigned char selfTargetOption = g_serviceOptions.Get(0x69);
+  const unsigned char forceOption = g_serviceOptions.Get(0x6D);
+  const int shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
+  int force = shiftHeld;
+  const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->unknown_0408);
+  const bool skillMode = mode == 2 || mode == 4;
+  const bool allowed = aid != static_cast<int>(g_session.m_aid) || mode == 4;
+
+  if (skillMode == true) {
+    const bool support = IsSupportSkill(this->unknown_040C);
+    const bool optionalSelf = IsOptionalSelfTargetSkill(this->unknown_040C);
+    if (support == true) {
+      force = 1;
+    }
+    if ((selfTargetOption != 0 || shiftHeld != 0) && optionalSelf == true) {
+      force = 1;
+    }
+
+    CWorld* scene = this->scene;
+    if (scene->unknown_0048 == 0 && scene->unknown_0054 == 0) {
+      if (scene->unknown_004C != 0) {
+        CGameActor* actor = static_cast<CGameActor*>(scene->GetGameActorByAID(aid));
+        if (actor != nullptr && !g_session.IsLocalPlayerAid(actor->Slot50())) {
+          GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+          if (!guildInfo->HasRelatedGuild(actor->Slot50())) {
+            force = 1;
+          }
+        }
+      }
+    } else if (!g_session.IsPartyMember(aid, true)) {
+      force = 1;
+    }
+  }
+
+  if (allowed && g_mouse.buttons[0] == 1 && force != 0 && !HIBYTE(GetAsyncKeyState(VK_MENU))) {
+    this->SendMsg(0x1A, 1, 0, 0, 0);
+    *reinterpret_cast<int*>(&this->unknown_00D8[0x20]) = 0;
+    if (g_session.GetSceneUnknown004C() == 0 && (HIBYTE(GetAsyncKeyState(VK_CONTROL)) || forceOption != 0)) {
+      this->RequestPlayerAction(aid, 0);
+      *reinterpret_cast<int*>(&this->unknown_04F4[0xBC]) = 1;
+      return;
+    }
+    this->RequestPlayerAction(aid, 1);
+    *reinterpret_cast<int*>(&this->unknown_04F4[0xBC]) = 0;
+  }
+}
