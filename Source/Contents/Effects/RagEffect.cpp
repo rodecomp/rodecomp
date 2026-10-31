@@ -199,6 +199,47 @@ void CRagEffect::FireBall() {
 }
 
 // OFFSET: 0x00C147D0
+// FUNCTION: fn_20047
+void CRagEffect::FireSparks() {
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->pattern |= 4u;
+  this->state.unknown_11C84->pattern |= 0x80u;
+  this->state.unknown_11C84->duration = 140;
+  this->state.duration = 140;
+  this->state.unknown_11C84->speed = static_cast<float>(std::max(rand() % 35, 0) + 15) / 100.0f;
+  this->state.unknown_11C84->longitude = static_cast<float>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->latitude = static_cast<float>(std::max(rand() % 360, 0));
+  EffectPrimitiveState& yaw = *this->state.unknown_11C84;
+  reinterpret_cast<matrix*>(yaw.transform)->MakeYRotation(GetRadian(static_cast<int>(yaw.longitude)));
+  EffectPrimitiveState& pitch = *this->state.unknown_11C84;
+  reinterpret_cast<matrix*>(pitch.transform)->AppendXRotation(GetRadian(static_cast<int>(pitch.latitude)));
+  const float* m = this->state.unknown_11C84->transform;
+  const float distance = static_cast<float>(std::max(rand() % 13, 0) + 2);
+  EffectPrimitiveState& moving = *this->state.unknown_11C84;
+  moving.deltaPos2.x = (((m[3] * 0.0f + m[0] * 0.0f) + distance * m[6]) + m[9]) + 0.0f;
+  moving.deltaPos2.y = (((m[1] * 0.0f + m[4] * 0.0f) + distance * m[7]) + m[10]) - 10.0f;
+  moving.deltaPos2.z = (((m[5] * 0.0f + m[2] * 0.0f) + distance * m[8]) + m[11]) + 0.0f;
+  this->state.unknown_11C84->chCnt = std::max(rand() % 25, 0) + 5;
+  this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 70, 0) + 30) / 100.0f;
+  this->state.unknown_11C84->alpha = 0.0f;
+  this->state.unknown_11C84->maxAlpha = 80.0f;
+  this->state.unknown_11C84->alphaSpeed = this->state.unknown_11C84->maxAlpha / 1.5f;
+  this->state.unknown_11C84->unknown_014C.z = std::bit_cast<float>(1u);
+  this->state.unknown_11C84->unknown_01D8 = 0;
+  this->state.unknown_11C84->chPoint.push_back(40.0f);
+  this->state.unknown_11C84->chVal1.push_back(120.0f);
+  this->state.unknown_11C84->chVal2.push_back(200.0f);
+  this->state.unknown_11C84->chPoint.push_back(100.0f);
+  this->state.unknown_11C84->chVal1.push_back(0.0f);
+  this->state.unknown_11C84->chVal2.push_back(80.0f);
+  Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+  Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+  Owner(this->state.unknown_11C84).InitSegment();
+}
 
 // OFFSET: 0x00C15E40
 // FUNCTION: fn_20054
@@ -12085,6 +12126,117 @@ void CRagEffect::QuadRingStack(const char* name) {
 }
 
 // OFFSET: 0x00C43430
+// FUNCTION: fn_20141
+void CRagEffect::AsuraStrike(char kind) {
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt == 0) {
+    if (this->state.duration < 350) {
+      this->state.duration = 350;
+    }
+
+    PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+    this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 2);
+    this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 2);
+  }
+
+  if (this->state.stateCnt == 1) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 68, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->renderFlag = 0;
+    this->state.unknown_11C84->renderFlag |= 1u;
+    this->state.unknown_11C84->renderFlag |= 5u;
+    this->state.unknown_11C84->duration = this->state.duration;
+    this->state.unknown_11C84->totalTexture = 3;
+    AllocateTextures(*this->state.unknown_11C84);
+
+    if (kind == 0) {
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\asura3.tga", 0, false, true, false);
+      this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\asura2.tga", 0, false, true, false);
+      this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\asura1.tga", 0, false, true, false);
+    } else {
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\asura13.tga", 0, false, true, false);
+      this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\asura12.tga", 0, false, true, false);
+      this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\asura11.tga", 0, false, true, false);
+    }
+
+    this->state.unknown_11C84->size = 0.0f;
+
+    for (int index = 0; index < 4; ++index) {
+      this->state.unknown_11C84->slots[index].life = 0;
+    }
+
+    for (int index = 0; index < 3; ++index) {
+      this->state.unknown_11C84->slots[index].life = 1;
+      this->state.unknown_11C84->slots[index].process = index * 20 - 40;
+      this->state.unknown_11C84->slots[index].alphaB = 0;
+      this->state.unknown_11C84->slots[index].flag1[0] = static_cast<char>(index);
+
+      if (kind == 0) {
+        this->state.unknown_11C84->slots[index].distance = 18.0f;
+        this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(-6 - index * 12);
+        this->state.unknown_11C84->slots[index].flag1[4] = 0;
+      } else {
+        this->state.unknown_11C84->slots[index].distance = 24.0f;
+        this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(-8 - index * 16);
+        this->state.unknown_11C84->slots[index].flag1[4] = 3;
+      }
+
+      for (int height = 1; height < 11; ++height) {
+        this->state.unknown_11C84->slots[index].height[height] = 0.0f;
+      }
+    }
+  }
+
+  if (this->state.stateCnt == 21) {
+    this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 68, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+    this->state.unknown_11C84->renderFlag = 0;
+    this->state.unknown_11C84->renderFlag |= 1u;
+    this->state.unknown_11C84->renderFlag |= 5u;
+    this->state.unknown_11C84->duration = this->state.duration;
+    this->state.unknown_11C84->totalTexture = 3;
+    AllocateTextures(*this->state.unknown_11C84);
+
+    if (kind == 0) {
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\asura4.tga", 0, false, true, false);
+      this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\asura5.tga", 0, false, true, false);
+      this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\asura6.tga", 0, false, true, false);
+    } else {
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\asura14.tga", 0, false, true, false);
+      this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\asura15.tga", 0, false, true, false);
+      this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\asura16.tga", 0, false, true, false);
+    }
+
+    this->state.unknown_11C84->size = 0.0f;
+
+    for (int index = 0; index < 4; ++index) {
+      this->state.unknown_11C84->slots[index].life = 0;
+    }
+
+    for (int index = 0; index < 3; ++index) {
+      this->state.unknown_11C84->slots[index].life = 1;
+      this->state.unknown_11C84->slots[index].process = -40 - index * 20;
+      this->state.unknown_11C84->slots[index].alphaB = 0;
+      this->state.unknown_11C84->slots[index].flag1[0] = static_cast<char>(index);
+
+      if (kind == 0) {
+        this->state.unknown_11C84->slots[index].distance = 18.0f;
+        this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(6 + index * 12);
+        this->state.unknown_11C84->slots[index].flag1[4] = 0;
+      } else {
+        this->state.unknown_11C84->slots[index].distance = 24.0f;
+        this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(8 + index * 16);
+        this->state.unknown_11C84->slots[index].flag1[4] = 3;
+      }
+
+      for (int height = 1; height < 11; ++height) {
+        this->state.unknown_11C84->slots[index].height[height] = 0.0f;
+      }
+    }
+  }
+}
 // OFFSET: 0x00C44290
 // FUNCTION: fn_20143
 void CRagEffect::QuadRingStackSized(const char* name, char kind) {
