@@ -42,6 +42,16 @@ struct SessionRecord6144 {
   /* 0036 */ std::int16_t day;
 };
 
+#pragma pack(push, 1)
+struct AchievementRecordPacket {
+  /* 0000 */ int id;
+  /* 0004 */ unsigned char completed;
+  /* 0005 */ std::uint32_t objectives[10];
+  /* 002D */ __time32_t completedAt;
+  /* 0031 */ unsigned char rewarded;
+};
+#pragma pack(pop)
+
 struct SessionRecord6178Entry {
   /* 0000 */ std::string unknown_0000;
   /* 0018 */ int unknown_0018;
@@ -569,6 +579,7 @@ public:
   std::int64_t FindUnknown0784(std::int64_t key) const;
   std::int64_t FindUnknown078C(std::int64_t key) const;
   SessionRecord6144 FindRecord6144(int key) const;
+  void UpdateRecord6144(const AchievementRecordPacket& packet);
   int GetBeginEffectId(int skillId) const;
   bool IsPartyMember(std::uint32_t aid, bool onlineOnly);
   bool IsPvpMap();

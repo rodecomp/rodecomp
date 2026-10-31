@@ -547,6 +547,29 @@ SessionRecord6144 CSession::FindRecord6144(int key) const {
   return SessionRecord6144();
 }
 
+// OFFSET: 0x00E06FD0
+// FUNCTION: fn_23738
+void CSession::UpdateRecord6144(const AchievementRecordPacket& packet) {
+  auto found = this->unknown_6144.find(packet.id);
+  if (found != this->unknown_6144.end()) {
+    SessionRecord6144& record = found->second;
+    reinterpret_cast<unsigned char*>(&record.unknown_0000)[1] = packet.completed;
+    std::memcpy(record.unknown_0004, packet.objectives, sizeof(record.unknown_0004));
+    record.unknown_002C = packet.completedAt;
+    record.unknown_0030 = packet.rewarded;
+    this->SplitDate(packet.completedAt, reinterpret_cast<std::uint16_t&>(record.year), reinterpret_cast<std::uint16_t&>(record.month), reinterpret_cast<std::uint16_t&>(record.day));
+    return;
+  }
+
+  SessionRecord6144 record;
+  record.unknown_0000 = static_cast<std::uint16_t>(1 | packet.completed << 8);
+  std::memcpy(record.unknown_0004, packet.objectives, sizeof(record.unknown_0004));
+  record.unknown_002C = packet.completedAt;
+  record.unknown_0030 = packet.rewarded;
+  this->SplitDate(packet.completedAt, reinterpret_cast<std::uint16_t&>(record.year), reinterpret_cast<std::uint16_t&>(record.month), reinterpret_cast<std::uint16_t&>(record.day));
+  this->unknown_6144.insert({packet.id, record});
+}
+
 // OFFSET: 0x00E08A00
 // FUNCTION: fn_23769
 int CSession::GetBeginEffectId(int skillId) const {
