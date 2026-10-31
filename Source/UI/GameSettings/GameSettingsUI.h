@@ -221,6 +221,9 @@ public:
   void Slot16() override;
   void Paint() override;
   virtual void Slot54(CUIOptionItem* item, const TALKTYPE& type);
+  bool SetOptionChecked(int id);
+
+  /* 0080 */ CUIListBoxEx<CUIOptionItem, TALKTYPE>* m_optionList;
 };
 
 class CUIComboItem : public CUIListItem {
@@ -234,6 +237,10 @@ class CUIOptionItem : public CUIListItem {
 public:
   void Slot16() override;
   void Paint() override;
+
+  /* 00E8 */ CUICheckBox* m_check;
+  /* 00EC */ unsigned char unknown_00EC[0x0C];
+  /* 00F8 */ int m_optionId;
 };
 
 std::string GetHotkeyText(int tab, int index);
@@ -253,12 +260,13 @@ public:
   void sub_A433A0();
   void sub_A433B0();
   void sub_A433C0();
+  void sub_A43590(int id);
 
   /* 00B8 */ unsigned char unknown_00B8[0x1C];
   /* 00D8 */ CUIControl* m_titleBar;
-  /* 00DC */ unsigned char unknown_00DC[0x04];
+  /* 00DC */ GameSettingsUI::CUIPage* m_currentPage;
   /* 00E0 */ GameSettingsUI::CUIGraphicsPage* m_graphicsPage;
-  /* 00E4 */ unsigned char unknown_00E4[0x0C];
+  /* 00E4 */ std::vector<GameSettingsUI::CUIListPage*> m_pages;
   /* 00F0 */ CUITab* m_tab;
   /* 00F4 */ CUIControl* m_pageContainer;
   /* 00F8 */ CUIControl* m_applyButton;

@@ -1381,3 +1381,88 @@ void ToggleGameSettingsTab4() {
 
   settings->SelectTab4();
 }
+
+// OFFSET: 0x00A1BFD0
+// FUNCTION: fn_15374
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::ClearItems() {
+  for (GameSettingsUI::CUIComboItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x00A1C030
+// FUNCTION: fn_15375
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::ClearItems() {
+  for (GameSettingsUI::CUIComboItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x00A1C090
+// FUNCTION: fn_15376
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::ClearItems() {
+  for (GameSettingsUI::CUIComboItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x00A1C0F0
+// FUNCTION: fn_15377
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::ClearItems() {
+  for (GameSettingsUI::CUIComboItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x00A1C150
+// FUNCTION: fn_15378
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::ClearItems() {
+  for (GameSettingsUI::CUIOptionItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+}
+
+// OFFSET: 0x00A43B00
+// FUNCTION: fn_16044
+bool GameSettingsUI::CUIListPage::SetOptionChecked(int id) {
+  for (GameSettingsUI::CUIOptionItem* item : this->m_optionList->items) {
+    if (item->m_optionId == id) {
+      CUICheckBox* check = item->m_check;
+      check->checked = IsServiceOption(id) ^ g_serviceOptions.Get(id);
+      check->Invalidate();
+      return true;
+    }
+  }
+  return false;
+}
+
+// OFFSET: 0x00A43590
+// FUNCTION: fn_16031
+void CUIGameSettingsUI::sub_A43590(int id) {
+  for (GameSettingsUI::CUIListPage* page : this->m_pages) {
+    for (GameSettingsUI::CUIOptionItem* item : page->m_optionList->items) {
+      if (item->m_optionId == id) {
+        CUICheckBox* check = item->m_check;
+        check->checked = IsServiceOption(id) ^ g_serviceOptions.Get(id);
+        check->Invalidate();
+        return;
+      }
+    }
+  }
+  this->m_currentPage->Refresh();
+}
