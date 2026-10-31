@@ -612,3 +612,22 @@ UIRoMapWnd::~UIRoMapWnd() {
   delete this->unknown_00C0;
   this->unknown_00D0 = 0;
 }
+
+// OFFSET: 0x0091E4D0
+// FUNCTION: fn_12627
+bool CFlyingShipRouteInfo::IsRouteMap(std::string mapName) {
+  if (this->unknown_002C == 0) {
+    if ((mapName.size() == 10 && std::memcmp(mapName.c_str(), "izlude.rsw", 10) == 0) ||
+        (mapName.size() == 13 && std::memcmp(mapName.c_str(), "ra_fild12.rsw", 13) == 0) ||
+        (mapName.size() == 8 && std::memcmp(mapName.c_str(), "yuno.rsw", 8) == 0)) {
+      return true;
+    }
+  } else if (this->unknown_002C == 1) {
+    if ((mapName.size() == 12 && std::memcmp(mapName.c_str(), "einbroch.rsw", 12) == 0) ||
+        (mapName.size() == 15 && std::memcmp(mapName.c_str(), "lighthalzen.rsw", 15) == 0) ||
+        (mapName.size() == 9 && std::memcmp(mapName.c_str(), "hugel.rsw", 9) == 0)) {
+      return true;
+    }
+  }
+  return false;
+}

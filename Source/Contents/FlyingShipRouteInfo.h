@@ -25,6 +25,8 @@ public:
   CFlyingShipRouteInfo();
   virtual ~CFlyingShipRouteInfo() = default;
 
+  bool IsRouteMap(std::string mapName);
+
   /* 0004 */ std::vector<FlyingShipRouteEntry> entries;
   /* 0010 */ int unknown_0010;
   /* 0014 */ int unknown_0014;
