@@ -18,6 +18,7 @@ public:
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
+  void Paint() override;
 
   /* 00F0 */ int unknown_00F0;
   /* 00F4 */ UIStaticText* total;

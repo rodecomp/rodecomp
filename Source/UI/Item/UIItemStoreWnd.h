@@ -19,6 +19,7 @@ public:
   void Slot32(int x, int y) override;
   void Slot11() override;
   void Slot25(int x, int y) override;
+  void Paint() override;
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetTabChecked(int index, bool checked);
   void SetTitle(std::string title);

@@ -20,6 +20,7 @@ public:
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot35(int value) override;
+  void Paint() override;
 
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetTabIndex(int index);

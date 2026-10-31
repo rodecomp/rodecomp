@@ -85,6 +85,8 @@
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/UserData/CharacterConfigSave.h"
 #include "UI/Edit/UIItemTagCtrl.h"
+#include "UI/Window/WindowBorder.h"
+#include "UI/Window/WindowRegistration.h"
 #include <algorithm>
 #include <cstdarg>
 #include <cstdint>
@@ -5667,3 +5669,143 @@ void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
   this->m_edit->input.Insert(tag.c_str());
   this->unknown_0144->sub_89CFE0(item, 0x12B8A4);
 }
+
+// OFFSET: 0x00980340
+
+// OFFSET: 0x00980610
+
+// OFFSET: 0x0097E7A0
+// FUNCTION: fn_13330
+void UIItemPurchaseWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &left->image, false);
+  }
+
+  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
+  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  this->DrawButtonBar(this->unknown_00B8 != 0 ? 2 : 0, 0, 1);
+
+  const int height = this->geometry.height;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(40, 17, this->geometry.width - 50, (height - 38) / 32 * 32, RGB(red, green, blue));
+
+  int slots = (height - 58) / 32;
+  for (int y = 17; slots > 0; --slots, y += 32) {
+    DrawItemSlotBackground(*this, 40, y);
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+
+  for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int column = visible % this->columns * 32;
+    const int top = visible / this->columns * 32;
+    if (this->hovered == index) {
+      unsigned hoverRed, hoverGreen, hoverBlue;
+      SkinPaletteChannels(controls.resources, 6, 2, hoverRed, hoverGreen, hoverBlue);
+      this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
+    }
+
+    const int x = column + 44;
+    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+
+    int nameWidth = 110;
+    const int amount = static_cast<int>(it->unknown_0014[0]);
+    if (amount != static_cast<int>(it->unknown_0014[1])) {
+      if (amount >= 10000) {
+        nameWidth = 45;
+      } else if (amount >= 1000) {
+        nameWidth = 55;
+      } else if (amount >= 100) {
+        nameWidth = 70;
+      } else if (amount >= 10) {
+        nameWidth = 80;
+      }
+    }
+    this->DrawWrappedItemName(column + 76, top + 29, nameWidth, &*it, 0, 0, 12);
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    char currency[10];
+    StringFormat(currency, 10, static_cast<std::size_t>(-1), "Z");
+    if (this->unknown_00FC != 0) {
+      const char* name;
+      if (g_serviceType == 6) {
+        name = "Koin";
+      } else if (g_serviceType == 0) {
+        if (*reinterpret_cast<const int*>(&g_session.unknown_59DC[0x198]) == 1) {
+          name = "한코인";
+        } else {
+          name = LookupMessage(1307);
+        }
+      } else {
+        name = "Point";
+      }
+      sprintf(currency, name);
+    }
+
+    char price[64];
+    char text[64];
+    int length;
+    if (it->unknown_0014[0] != it->unknown_0014[1]) {
+      length = sprintf(text, " %d -> %s %s", it->unknown_0014[0], FormatGroupedInteger(static_cast<int>(it->unknown_0014[1]), price, 64), currency);
+    } else {
+      length = sprintf(text, " %s %s", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), price, 64), currency);
+    }
+    this->DrawRightAlignedText(this->geometry.width - 18, top + 29, text, length, 0, 12, 0, 0);
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+
+  if (this->unknown_00FC != 0) {
+    this->DrawTextAt(controls.fonts, controls.locale, 12, this->geometry.height - 48, LookupMessage(1306), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, 179, this->geometry.height - 48, LookupMessage(1307), 0, 0, 12, 0, 0, 0);
+    this->FillRegion(109, this->geometry.height - 51, 66, 18, 0x8E8E8E);
+  }
+}
+
+// OFFSET: 0x0097F220
+
+// OFFSET: 0x0097FBF0
+
+// OFFSET: 0x009808E0
+
+// OFFSET: 0x009819C0
+
+// OFFSET: 0x00981EE0
