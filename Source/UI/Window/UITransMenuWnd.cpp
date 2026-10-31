@@ -113,3 +113,7 @@ UITransMenuWnd::UITransMenuWnd(UIWindowContext& windows, UIFrameContext& frames,
 }
 
 // OFFSET: 0x009487A0
+// FUNCTION: fn_12879
+void UITransMenuWnd::ClearItems() {
+  this->m_items.clear();
+}
