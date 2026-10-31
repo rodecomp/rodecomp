@@ -601,6 +601,7 @@ CUIRewards::CUIRewards(UIWindowContext& context)
 }
 
 // OFFSET: 0x00A54FF0
+// FUNCTION: fn_16293
 CUIScrollWindow::CUIScrollWindow(UIWindowContext& context)
     : CUIControl(context), firstLine(nullptr), secondContents(nullptr), secondLine(nullptr), rewards(nullptr), scrollBar(nullptr), firstContents(nullptr) {
 }
