@@ -2814,6 +2814,119 @@ UICashEmotionSprBtn::UICashEmotionSprBtn(UIWindowContext& windowContext, UIButto
     : UISpriteButton2(windowContext, buttonContext, target), m_selected(false) {
 }
 
+// OFFSET: 0x007CC990
+// FUNCTION: fn_09501
+void UICashEmotionSprBtn::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (!this->m_selected) {
+    UISpriteButton::Paint();
+    return;
+  }
+
+  CDC* surface = this->geometry.surface;
+  if (!surface) {
+    return;
+  }
+
+  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->actionName.c_str()));
+  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->spriteName.c_str()));
+  if (!action || !sprite) {
+    return;
+  }
+
+  CPaletteRes* paletteRes = nullptr;
+  if (this->unknown_00FC.size() != 0) {
+    paletteRes = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->unknown_00FC.c_str()));
+  }
+
+  const ActionFrame* frame = &action->Frame(this->unknown_00BC, this->unknown_00C0);
+  if (!frame) {
+    return;
+  }
+
+  const int width = this->geometry.width;
+  const int height = this->geometry.height;
+  SpriteAtlasRecord record{};
+  int halfWidth = 0;
+  int halfHeight = 0;
+  int baseX = 0;
+  int baseY = 0;
+  const std::uint32_t* palette = paletteRes ? paletteRes->palette : sprite->palette;
+  for (unsigned index = 0; index < frame->cells.size(); ++index) {
+    record = SpriteAtlasRecord{};
+    const SpriteFrameCell* cell = &frame->Cell(index);
+    if (!cell || cell->image == -1) {
+      continue;
+    }
+
+    const SpriteRleImage* image = sprite->images[cell->imageType][cell->image];
+    if (!image) {
+      continue;
+    }
+
+    CTexture* texture;
+    if (cell->imageType == 0) {
+      texture = g_renderer->atlas.Find(image, palette, record);
+      if (!texture) {
+        texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      }
+    } else {
+      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+    }
+
+    if (!texture) {
+      continue;
+    }
+
+    int x;
+    int y;
+    if (index == 0) {
+      halfWidth = image->width / 2;
+      x = width / 2 - halfWidth;
+      halfHeight = image->height / 2;
+      y = height / 2 - halfHeight;
+      baseX = cell->x;
+      baseY = cell->y;
+    } else {
+      x = width / 2 + (cell->x - baseX - halfWidth);
+      y = height / 2 + (cell->y - baseY - halfHeight);
+    }
+
+    const int clipX = x < 0 ? -x : 0;
+    const int clipY = y < 0 ? -y : 0;
+    int drawWidth = image->width;
+    if (drawWidth + x > width) {
+      drawWidth = width - x;
+    }
+    drawWidth -= clipX;
+
+    int drawHeight = image->height;
+    if (drawHeight + y > height) {
+      drawHeight = height - y;
+    }
+    drawHeight -= clipY;
+
+    const int sourceX = static_cast<int>(record.u0 * 256.0f + clipX);
+    const int sourceY = static_cast<int>(record.v0 * 256.0f + clipY);
+    surface->DrawSurface(
+      x < 0 ? 0 : x, y < 0 ? 0 : y, texture, sourceX < 0 ? 0 : sourceX, sourceY < 0 ? 0 : sourceY, drawWidth < 0 ? 0 : drawWidth,
+      drawHeight < 0 ? 0 : drawHeight, cell->mirrored != 0, image->unknown_0004 + 1, image->unknown_0006 + 1, 1, 0
+    );
+  }
+
+  if (this->unknown_00C4) {
+    ++this->unknown_00C0;
+    if (this->unknown_00BC >= static_cast<int>(action->animations.size())) {
+      this->unknown_00BC = 0;
+      this->unknown_00C0 = 0;
+    }
+
+    if (this->unknown_00C0 >= static_cast<int>(action->FrameCount(this->unknown_00BC))) {
+      this->unknown_00C0 = 0;
+    }
+  }
+}
+
 // OFFSET: 0x007CCE10
 // FUNCTION: fn_09503
 void UICashEmotionSprBtn::SetSelected(bool selected) {
