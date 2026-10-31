@@ -26,6 +26,11 @@ public:
   void AddTab(const char* label, const char* tooltip);
   void SetFlag(int index, bool value);
   void HideEdit();
+  void Configure(
+    int layout, int tabHeight, int tabPadding, unsigned char uniformWidths, unsigned char unknownA9, unsigned char unknownA8, std::uint32_t activeFillColor,
+    std::uint32_t inactiveFillColor, std::uint32_t activeBorderColor, std::uint32_t inactiveBorderColor, std::uint32_t activeTextColor,
+    std::uint32_t inactiveTextColor
+  );
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Slot25(int x, int y) override;

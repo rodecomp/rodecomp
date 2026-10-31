@@ -1277,3 +1277,26 @@ UIListBoxID::UIListBoxID()
   const SkinPaletteCell cell = {3, 2};
   this->selectionColor = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
 }
+
+// OFFSET: 0x0087C2A0
+// FUNCTION: fn_11252
+void UIString::SetText(int width, int height, std::string text) {
+  this->SetSize(width, height);
+  if (text.size() == 1 && text[0] == '\n') {
+    this->Resize(5, 5);
+    this->unknown_00DC = text;
+    return;
+  }
+
+  this->ParseTags(text);
+  if (this->unknown_00AC.size() != 0) {
+    this->Resize(this->TextWidth(this->m_context->fonts, this->m_context->locale, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0) + 24, 24);
+  } else {
+    this->Resize(
+      this->TextWidth(this->m_context->fonts, this->m_context->locale, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0),
+      this->TextHeight(this->m_context->fonts, this->m_context->locale, this->unknown_00DC.c_str(), static_cast<unsigned>(this->unknown_00DC.size()), 0, 12, 0, 0)
+    );
+  }
+}
+
+// OFFSET: 0x0087C3F0

@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_LISTS_UISCROLLBARVARIANTS_H
 
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Text/UIString.h"
 
 #include <string>
 
