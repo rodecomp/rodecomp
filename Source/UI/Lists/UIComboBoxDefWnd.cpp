@@ -9,6 +9,7 @@
 #include "UI/Lists/UIComboBoxWnd.h"
 #include <cstdio>
 #include "UI/Text/UITextViewer.h"
+#include "UI/Text/UIString.h"
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
 }
@@ -392,4 +393,95 @@ void UITextViewEX::AddLineLinks(UITextButton* const* first, UITextButton* const*
   }
 
   this->lineLinks.push_back(std::vector<UITextButton*>(links));
+}
+
+// INLINED
+static void TrimLeading(std::string& text, const char* characters) {
+  if (!text.empty()) {
+    const std::size_t first = text.find_first_not_of(characters);
+    if (first != 0) {
+      text.erase(0, first);
+    }
+  }
+}
+
+// OFFSET: 0x008A1880
+// FUNCTION: fn_11638
+void UIString::ParseTags(std::string text) {
+  TrimLeading(text, " \t");
+
+  if (text[0] != '<') {
+    this->unknown_00DC = text;
+    return;
+  }
+
+  const std::size_t begin = text.find_first_not_of("<");
+  const std::size_t end = text.find_first_of(">", begin);
+  std::string tags = text.substr(begin, end - begin);
+  std::size_t position = 0;
+
+  for (;;) {
+    std::size_t index = tags.find_first_of("=", position);
+    if (index == std::string::npos) {
+      break;
+    }
+
+    std::string key = tags.substr(position, index - position);
+    if (key.empty()) {
+      break;
+    }
+
+    TrimLeading(key, " \t");
+    TrimTrailing(key, " \t");
+
+    if (key == "image") {
+      const std::size_t start = tags.find_first_of("\"", index) + 1;
+      index = tags.find_first_of("\"", start);
+      this->unknown_00AC = tags.substr(start, index - start);
+      TrimLeading(this->unknown_00AC, " \t");
+      TrimTrailing(this->unknown_00AC, " \t");
+      TrimLeading(this->unknown_00AC, "\"");
+      TrimTrailing(this->unknown_00AC, "\"");
+    } else if (key == "color") {
+      const std::size_t start = tags.find_first_of(" \t", index) + 1;
+      index = tags.find_first_of(" \t", start);
+      const std::string value = tags.substr(start, index - start);
+      const std::string red = value.substr(0, 2);
+      const std::string green = value.substr(2, 2);
+      const std::string blue = value.substr(4, 2);
+      char* stop;
+      this->unknown_009C = std::strtol(red.c_str(), &stop, 16);
+      this->unknown_00A0 = std::strtol(green.c_str(), &stop, 16);
+      this->unknown_00A4 = std::strtol(blue.c_str(), &stop, 16);
+    } else if (key == "link") {
+      const std::size_t start = tags.find_first_of("\"", index) + 1;
+      index = tags.find_first_of("\"", start);
+      this->unknown_0084 = tags.substr(start, index - start);
+      TrimLeading(this->unknown_0084, " \t");
+      TrimTrailing(this->unknown_0084, " \t");
+      TrimLeading(this->unknown_0084, "\"");
+      TrimTrailing(this->unknown_0084, "\"");
+      this->unknown_009C = 10;
+      this->unknown_00A0 = 10;
+      this->unknown_00A4 = 255;
+    } else if (key == "font") {
+      const std::size_t start = tags.find_first_of("\"", index) + 1;
+      index = tags.find_first_of("\"", start);
+      this->unknown_00C4 = tags.substr(start, index - start);
+      TrimLeading(this->unknown_00C4, " \t");
+      TrimTrailing(this->unknown_00C4, " \t");
+      TrimLeading(this->unknown_00C4, "\"");
+      TrimTrailing(this->unknown_00C4, "\"");
+    } else if (key == "bold") {
+    } else if (key == "size") {
+      const std::size_t start = tags.find_first_of(" \t", index) + 1;
+      index = tags.find_first_of(" \t", start);
+      const std::string value = tags.substr(start, index - start);
+      this->unknown_00A8 = std::atoi(value.c_str());
+    }
+
+    position = index + 1;
+  }
+
+  this->unknown_00DC = text.substr(end + 1, text.find_first_of("<", end + 1) - (end + 1));
 }
