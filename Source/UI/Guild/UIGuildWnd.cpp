@@ -2103,6 +2103,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
 }
 
 // OFFSET: 0x00953F60
+// FUNCTION: fn_13003
 UIGuildTipWnd::UIGuildTipWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
     : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
 }
