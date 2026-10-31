@@ -1,6 +1,8 @@
 #include "Client/Session.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeEvents.h"
+#include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "UI/Shortcuts/ShortcutActivation.h"
 #include "UI/Shortcuts/ShortcutBindings.h"
 #include "UI/Shortcuts/ShortcutControlEvents.h"
@@ -29,6 +31,9 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindowCallBtnWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Contents/MessageTable.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Client/Application/Launcher.h"
 #include "File/File.h"
 #include "Render/Renderer.h"
@@ -42,8 +47,17 @@
 #include <cstdlib>
 #include <cstring>
 #include <map>
+#include <new>
+#include <string>
 
-namespace {}
+namespace {
+#pragma pack(push, 1)
+struct MemorialDungeonCommandPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ int command;
+};
+#pragma pack(pop)
+}
 
 // GLOBAL: gl_24660
 std::uint8_t g_chatInputFlag;
@@ -617,6 +631,32 @@ void UIMemorialDunWnd::Move(int x, int y) {
   }
 }
 
+// OFFSET: 0x00921260
+// FUNCTION: fn_12641
+void UIMemorialDunWnd::Slot15(int, int) {
+  this->AddBaseButton(*this->m_controls);
+  this->AddCloseButton(*this->m_controls, "Alt+B", 0);
+
+  {
+    const std::string name = "유저인터페이스\\btn_ok";
+    this->m_actionButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_actionButton->SetBitmap((name + ".bmp").c_str(), 0, 0);
+    this->m_actionButton->SetBitmap((name + "_a.bmp").c_str(), 1, 0);
+    this->m_actionButton->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    this->m_actionButton->SetSize(this->m_actionButton->BitmapWidth(), this->m_actionButton->BitmapHeight());
+    this->m_actionButton->Move(-100, -100);
+    this->m_actionButton->SetId(184);
+    this->AddChild(this->m_actionButton);
+  }
+
+  this->m_partyButton = new (std::nothrow) UIBasicButton(*this->m_context, *this->m_controls);
+  this->m_partyButton->Configure(125, LookupMessage(3270));
+  this->m_partyButton->Move(-100, -100);
+  this->m_partyButton->SetId(211);
+  this->AddChild(this->m_partyButton);
+  this->ArrangeButtons();
+}
+
 // OFFSET: 0x0091CF00
 // FUNCTION: fn_12621
 void UIMemorialDunWnd::ResetDungeonInfo() {
@@ -790,4 +830,51 @@ void UIMemorialDunWnd::ArrangeButtons() {
   }
 
   this->Invalidate();
+}
+
+// OFFSET: 0x00935850
+// FUNCTION: fn_12747
+int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 0) {
+    this->SendMsg(nullptr, 6, this->m_message0, 0, 0, 0);
+    return 0;
+  }
+
+  if (message == 6) {
+    switch (argument1) {
+    case 184:
+      g_windowMgr.CloseWindow(137);
+      return 0;
+    case 185: {
+      MemorialDungeonCommandPacket packet;
+      packet.id = 0x2CF;
+      if (g_session.unknown_5948 == 0) {
+        packet.command = 0;
+      } else if (g_session.unknown_5948 == 1) {
+        packet.command = 1;
+      }
+      GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+      return 0;
+    }
+    case 201:
+      this->Show(0);
+      if (g_session.unknown_5948 == 2) {
+        g_session.unknown_593C = 0;
+      }
+      return 0;
+    case 211:
+      if (g_session.unknown_5464 != 0) {
+        g_modeMgr.GetGameMode()->SendMsg(0x132, 0, 0, 0, 0);
+      }
+      return 0;
+    }
+    return 0;
+  }
+
+  if (message == 0x3C) {
+    this->ArrangeButtons();
+    return 0;
+  }
+
+  return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
