@@ -98,6 +98,8 @@ struct EquipmentPropertyDefinition {
   /* 005C */ std::map<int, int> unknown_005C;
   /* 0064 */ std::string unknown_0064;
   /* 007C */ int unknown_007C;
+
+  bool IsTwoDimensional() const;
 };
 
 struct EquipmentPropertyGroup {
@@ -469,6 +471,12 @@ const COLORREF g_equipmentClearColor = RGB(255, 0, 0);
 
 // GLOBAL: gl_24925
 const COLORREF g_equipmentApplyColor = RGB(0, 255, 200);
+
+// OFFSET: 0x006BF770
+// FUNCTION: fn_06293
+bool EquipmentPropertyDefinition::IsTwoDimensional() const {
+  return this->unknown_0040 != 0;
+}
 
 // OFFSET: 0x0068A340
 // FUNCTION: fn_05603
