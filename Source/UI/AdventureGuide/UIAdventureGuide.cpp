@@ -1165,3 +1165,13 @@ CUIListBox<CUISubTab>* CUITab::CreateSubTabList() {
 }
 
 }
+
+CUIAdventureGuide::CUIAdventureGuide()
+    : background(nullptr), titleBar(nullptr), characterInfo(nullptr), titleText(nullptr), intro(nullptr), quest(nullptr), monster(nullptr), item(nullptr), tabs(nullptr) {
+}
+
+// OFFSET: 0x009C1230
+// FUNCTION: fn_13986
+CUIAdventureGuide* CreateAdventureGuide() {
+  return new CUIAdventureGuide();
+}

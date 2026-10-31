@@ -17,6 +17,7 @@ class CUIQuest;
 
 class CUIAdventureGuide : public CUIFrameWnd {
 public:
+  __declspec(noinline) CUIAdventureGuide();
   void Slot15(int width, int height) override;
   virtual void Slot53();
 
