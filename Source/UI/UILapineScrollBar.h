@@ -84,6 +84,7 @@ class UILapineBoxWnd : public UIFrameWnd {
   friend class UILapineBox_IngredientListWnd;
 
 public:
+  UILapineBoxWnd();
   ~UILapineBoxWnd() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;

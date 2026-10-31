@@ -44,6 +44,13 @@ struct RandomCombineItemPacket {
 };
 }
 
+// OFFSET: 0x005FEFF0
+// FUNCTION: fn_04140
+UILapineBoxWnd::UILapineBoxWnd()
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), cancelButton(nullptr), makeButton(nullptr),
+      moveButton(nullptr), ingredientList(nullptr), unknown_00C4(0), noticeTick(0), noticeDuration(3000), waiting(0) {
+}
+
 // OFFSET: 0x006006D0
 // FUNCTION: fn_04160
 void UIIngredientInfoWnd::Click(int, int) {
