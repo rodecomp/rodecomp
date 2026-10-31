@@ -98,6 +98,30 @@ std::uint32_t g_windowUid = 0xFFFFFFFFu;
 // GLOBAL: gl_24611
 int g_navigationTab;
 
+// OFFSET: 0x005C2260
+// FUNCTION: fn_03528
+int __fastcall sub_5C2260(const int* object) {
+  return object[0];
+}
+
+// OFFSET: 0x005C22D0
+// FUNCTION: fn_03529
+int __fastcall sub_5C22D0(const int* object) {
+  return object[8];
+}
+
+// OFFSET: 0x005C22E0
+// FUNCTION: fn_03530
+int __fastcall sub_5C22E0(const int* object) {
+  return object[7];
+}
+
+// OFFSET: 0x005C22F0
+// FUNCTION: fn_03531
+int __fastcall sub_5C22F0(const int* object) {
+  return object[9];
+}
+
 // GLOBAL: gl_24632
 CTexture* g_navigationMapTexture;
 
