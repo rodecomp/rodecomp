@@ -10,6 +10,38 @@
 #include <string>
 
 // OFFSET: 0x0094CA20
+// FUNCTION: fn_12899
+void UIShowWarpWnd::Slot15(int width, int height) {
+  auto* list = new UIListBox(*this->m_context, *this->m_listContext);
+  this->m_list = list;
+  width -= 0x18;
+  height -= 0x32;
+  if (width < 0x14) {
+    width = 0x14;
+  }
+  if (height < 0x1e) {
+    height = 0x1e;
+  }
+  list->Configure(0x0c, 0x14, width, height, 0);
+  list->backgroundRed = 0xf0;
+  list->backgroundGreen = 0xf0;
+  list->backgroundBlue = 0xf0;
+  list->selected = -1;
+  list->Invalidate();
+  list->transparent = 0;
+  this->AddChild(list);
+
+  const std::string prefix = "유저인터페이스\\";
+  auto* close = new UIBitmapButton(*this->m_context, *this->m_controls);
+  close->SetBitmap((prefix + "btn_close" + ".bmp").c_str(), 0, 0);
+  close->SetBitmap((prefix + "btn_close_a" + ".bmp").c_str(), 1, 0);
+  close->SetBitmap((prefix + "btn_close_b" + ".bmp").c_str(), 2, 0);
+  close->SetSize(close->BitmapWidth(), close->BitmapHeight());
+  close->Move(this->geometry.width - 0x2e, this->geometry.height - 0x18);
+  close->SetId(0xc9);
+  this->AddChild(close);
+  this->m_message0 = 0xb8;
+}
 
 // OFFSET: 0x0094ECE0
 // FUNCTION: fn_12914
