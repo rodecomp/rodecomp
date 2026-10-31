@@ -463,7 +463,6 @@ if(WIN32)
     Source/Contents/Effects/EffectPrimitiveRendering.cpp
     Source/Contents/Effects/EffectPrimitiveRecords.cpp
     Source/Contents/Effects/EffectParticle.cpp
-    Source/Contents/Effects/PartyEffect.cpp
     Source/Contents/Effects/EffectActor.cpp
     Source/Contents/Effects/AttachedEffect.cpp
     Source/Contents/Effects/PartyMemberEffects.cpp
