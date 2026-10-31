@@ -508,6 +508,13 @@ ItemMoveInfo& FindItemMoveInfo(int id) {
   return entry == g_itemMoveInfo.end() ? missingMoveInfo : entry->second;
 }
 
+// OFFSET: 0x006D5150
+// FUNCTION: fn_06567
+void __fastcall sub_6D5150(std::uint16_t* value) {
+  *value = 0;
+  *reinterpret_cast<std::uint32_t*>(value + 1) = 0;
+}
+
 __declspec(noinline) bool LoadItemMoveInfoTable(std::vector<int>& values, const char* name) {
   values.clear();
   CFile file;
