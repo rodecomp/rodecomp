@@ -1900,6 +1900,106 @@ void UIGuildBanishedMemberWnd::Paint() {
 }
 
 // OFFSET: 0x00956950
+// FUNCTION: fn_13037
+bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, int row) {
+  if (index < this->m_scrollTop * this->m_columns) {
+    ++index;
+    return false;
+  }
+
+  if (row >= 6 - this->m_rowSpacing * 6 / 36) {
+    return false;
+  }
+
+  if (g_modeMgr.GetGameMode()) {
+    const std::string playerName = LookupPlayerName(member.characterId);
+    member.name = playerName;
+  }
+  const std::string& name = member.name;
+  if (member.name.size() == 0) {
+    member.name = LookupMessage(581);
+    member.name += g_guildNamelessTag;
+  }
+
+  if (member.online == 1) {
+    this->FillRegion(6, (this->m_rowSpacing + 36) * row + 67, 375, this->m_rowSpacing + 35, 0xE4FFE2);
+  }
+
+  if (this->m_hoverRow == index) {
+    unsigned red, green, blue;
+    SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+    this->FillRegion(6, (this->m_rowSpacing + 36) * row + 67, 375, this->m_rowSpacing + 35, RGB(red, green, blue));
+  }
+
+  if (member.online == 1) {
+    const std::string headAct = g_session.GetHeadActName(member.job, member.unknown_002C, &member.unknown_0020);
+    const std::string headSpr = g_session.GetHeadSprName(member.job, member.unknown_002C, &member.unknown_0020);
+    CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(headAct.c_str()));
+    CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(headSpr.c_str()));
+    const std::uint32_t* palette = sprite->palette;
+    const SpriteFrameCell& cell = action->Frame(0, 0).Cell(1);
+    if (cell.image == -1) {
+      return false;
+    }
+
+    const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    if (member.unknown_0024 != 0) {
+      const std::string headPal = g_session.GetHeadPalName(member.unknown_0020, member.job, member.unknown_002C, member.unknown_0024);
+      palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(headPal.c_str()))->palette;
+    }
+
+    SpriteAtlasRecord record{};
+    CTexture* texture;
+    if (cell.imageType == 0) {
+      texture = g_renderer->atlas.Find(image, palette, record);
+      if (!texture) {
+        texture = g_renderer->atlas.Insert(this->m_context->renderSystem, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      }
+    } else {
+      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+    }
+
+    this->geometry.surface->DrawSurface(
+      (this->m_rowSpacing - image->width + 36) / 2 + 6, (this->m_rowSpacing + 36) * row + 70, texture, static_cast<int>(record.u0 * 256.0f),
+      static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored != 0, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+    );
+  }
+
+  const int y = this->m_rowSpacing / 2 + (this->m_rowSpacing + 36) * row + 79;
+  this->m_rowTexts[1][row]->SetTextFittedCodePage(this->StripNamelessTag(name).c_str());
+  this->m_rowTexts[1][row]->Move(43, y - this->m_rowSpacing / 2);
+  this->m_rowTexts[2][row]->SetTextFittedCodePage(member.positionName.c_str());
+  this->m_rowTexts[2][row]->Move(g_guildMemberColumnWidths[0] + 11, y);
+  if (this->m_rowButtons[row]) {
+    this->m_rowButtons[row]->Move(150, y - 4);
+  }
+
+  int x = g_guildMemberColumnWidths[0] + g_guildMemberColumnWidths[1] + 8;
+  const std::string job(g_session.GetJobName(member.job, member.unknown_002C));
+  this->m_rowTexts[3][row]->SetTextFittedCodePage(job.c_str());
+  this->m_rowTexts[3][row]->Move(x + 4, y);
+  x += g_guildMemberColumnWidths[2] + 1;
+  this->DrawRightAlignedText(g_guildMemberColumnWidths[3] + x - 4, y, FormatOwnedString("%d", member.level).c_str(), 0, 0, 12, 0, 0);
+  x += g_guildMemberColumnWidths[3] + 1;
+  this->DrawRightAlignedText(g_guildMemberColumnWidths[4] + x - 4, y, FormatOwnedString("%3.0f%%", member.expRatio).c_str(), 0, 0, 12, 0, 0);
+  x += g_guildMemberColumnWidths[4] + 1;
+  if (member.exp < 0x7FFFFFFF) {
+    this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0, 0);
+  } else {
+    this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0xFF, 0);
+  }
+
+  char lastLogin[128];
+  const __time32_t* lastLoginTime = reinterpret_cast<const __time32_t*>(member.unknown_0074);
+  if (*lastLoginTime != 0) {
+    strftime(lastLogin, sizeof(lastLogin), LookupMessage(3011), _localtime32(lastLoginTime));
+  } else {
+    lastLogin[0] = '\0';
+  }
+  auto& controls = *this->m_controls;
+  this->DrawTextAt(controls.fonts, controls.locale, 8, y + 17, FormatOwnedString(LookupMessage(3012), lastLogin).c_str(), 0, 0, 11, 0x404040, 0, 0);
+  return true;
+}
 
 // OFFSET: 0x0095E320
 
@@ -2216,3 +2316,144 @@ void UIGuildSkillWnd::Slot15(int, int height) {
 }
 
 // OFFSET: 0x00963E10
+// FUNCTION: fn_13131
+int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
+  switch (message) {
+  case 6:
+    switch (a1) {
+    case 184:
+      if (this->m_positionMap.size() != 0) {
+        reinterpret_cast<std::map<int, GuildPositionEntry>&>(GuildData().unknown_010C) = this->m_positionMap;
+        g_modeMgr.gameMode->SendMsg(104, 0, 0, 0, 0);
+        this->m_positionMap.clear();
+        this->m_button->Move(-200, -200);
+        this->m_button->SetDisabled(1);
+        this->m_button->Invalidate();
+        this->m_buttonTime = timeGetTime();
+        this->InvalidateChildren();
+        return 0;
+      }
+      return 0;
+    case 201:
+      this->m_frameContext->windows.CloseWindow(59);
+      return 0;
+    case 213:
+      if (this->unknown_00D0[0] && this->unknown_00FC[0] && this->unknown_0128[0]) {
+        for (int index = 0; index < 11; ++index) {
+          if (this->unknown_00D0[index] == sender) {
+            int found;
+            GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + index, &found);
+            if (found) {
+              position.canInvite = a2;
+              this->m_positionMap[position.unknown_0004] = position;
+            }
+          }
+          if (this->unknown_00FC[index] == sender) {
+            int found;
+            GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + index, &found);
+            if (found) {
+              position.canExpel = a2;
+              this->m_positionMap[position.unknown_0004] = position;
+            }
+          }
+          if (this->unknown_0128[index] == sender) {
+            int found;
+            GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + index, &found);
+            if (found) {
+              position.canStorage = a2;
+              this->m_positionMap[position.unknown_0004] = position;
+            }
+          }
+        }
+        break;
+      }
+      return 0;
+    case 275:
+      if (this->unknown_0180[0]) {
+        int row = a1 - 275;
+        for (int index = 0; index < 11; ++index) {
+          if (this->unknown_0180[index] == sender) {
+            row = index;
+            break;
+          }
+        }
+
+        int found;
+        GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + row, &found);
+        if (found) {
+          position.name = this->unknown_0180[row]->Text();
+          this->m_positionMap[position.unknown_0004] = position;
+        }
+        break;
+      }
+      return 0;
+    case 276:
+      if (this->unknown_0154[0]) {
+        int row = a1 - 276;
+        for (int index = 0; index < 11; ++index) {
+          if (this->unknown_0154[index] == sender) {
+            row = index;
+            break;
+          }
+        }
+
+        int found;
+        GuildPositionEntry& position = this->PositionAt(this->m_scrollTop + row, &found);
+        if (found) {
+          position.tax = std::atoi(this->unknown_0154[row]->Text());
+          if (position.tax < 0 || position.tax > 50) {
+            g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(3460), 50, 0).c_str()), 0xFF, 0, 0, 0);
+            if (position.tax < 0) {
+              position.tax = 0;
+            } else if (position.tax > 50) {
+              position.tax = 50;
+            }
+          }
+          this->m_positionMap[position.unknown_0004] = position;
+        }
+        break;
+      }
+      return 0;
+    default:
+      return 0;
+    }
+
+    if (GuildData().unknown_00B4 && this->m_positionMap.size()) {
+      this->m_button->Move(this->geometry.width - 61, this->geometry.height - 23);
+    } else {
+      this->m_button->Move(-200, -200);
+    }
+    this->InvalidateChildren();
+    return 0;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scrollTop;
+    int top;
+    if (message == 9) {
+      top = previous - this->m_visibleRows + 1;
+    } else {
+      top = message == 10 ? this->m_visibleRows - 1 : a1;
+      top += previous;
+    }
+    this->m_scrollTop = top;
+    if (previous != top) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return this->m_scrollTop - previous;
+  }
+  case 60:
+    this->m_positions = reinterpret_cast<const std::list<GuildPositionEntry>&>(GuildData().unknown_00D4);
+    this->InvalidateChildren();
+    if (GuildData().unknown_00B4 && this->m_positionMap.size()) {
+      this->m_button->Move(this->geometry.width - 61, this->geometry.height - 23);
+    } else {
+      this->m_button->Move(-200, -200);
+    }
+    this->UpdateScroll();
+    return 0;
+  default:
+    return UIGuildWnd::SendMsg(sender, message, a1, a2, a3, a4);
+  }
+}
