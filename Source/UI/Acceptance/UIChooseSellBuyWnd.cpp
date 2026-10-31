@@ -3622,9 +3622,63 @@ void UINotifyQuestWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x008E4F50
+// FUNCTION: fn_12188
+void UINpcEditDialogWnd::Slot15(int, int) {
+  this->edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->edit->SetSize(this->geometry.width - 77, 16);
+  this->edit->Move(15, 22);
+  this->edit->maximum = 12;
+  this->edit->Background(232, 232, 232);
+  this->edit->SetText("0");
+  this->AddChild(this->edit);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->edit);
+  this->edit->SelectAll();
+
+  const std::string prefix("유저인터페이스\\");
+  const int x = this->geometry.width - 55;
+  const int y = this->geometry.height - 32;
+  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(x, y);
+  button->SetId(184);
+  this->AddChild(button);
+  this->unknown_00B8 = -1;
+  this->m_message0 = 184;
+}
 
 // OFFSET: 0x008E54B0
+// FUNCTION: fn_12189
+void UINpcTextEditDialogWnd::Slot15(int, int) {
+  this->edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->edit->SetSize(this->geometry.width - 77, 16);
+  this->edit->Move(15, 22);
+  this->edit->maximum = 70;
+  this->edit->Background(232, 232, 232);
+  this->edit->SetText("");
+  this->AddChild(this->edit);
+  this->edit->SetId(492);
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->edit);
+  this->edit->SelectAll();
 
+  const std::string prefix("유저인터페이스\\");
+  const int x = this->geometry.width - 55;
+  const int y = this->geometry.height - 32;
+  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(x, y);
+  button->SetId(184);
+  this->AddChild(button);
+  this->unknown_00B8 = -1;
+  this->m_message0 = 184;
+}
 // OFFSET: 0x008E7660
 // FUNCTION: fn_12195
 void UIQuitWnd::Slot15(int, int) {
