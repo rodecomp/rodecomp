@@ -3909,3 +3909,9 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
     this->unknown_03B0.push_back(effect);
   }
 }
+
+// OFFSET: 0x005A10B0
+// FUNCTION: fn_03040
+CCharacterNpc::CCharacterNpc() : CNpc() {
+  this->unknown_0440 = 0;
+}
