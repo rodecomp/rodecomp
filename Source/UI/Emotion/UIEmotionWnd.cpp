@@ -2,6 +2,7 @@
 
 #include "Client/Session.h"
 #include "Contents/CashEmotionMgr.h"
+#include "Contents/Hotkeys/EmotionHotkeys.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/MessageTable.h"
 #include "Contents/UserData/AccountLinkedUserDataMgr.h"
@@ -13,6 +14,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
+#include <cstdio>
 #include <cstring>
 
 UIBitmapButton* UIEmotionWnd::AddCloseButton(const char* tooltip, int width) {
@@ -38,6 +40,58 @@ int UIEmotionWnd::DrawTitleBar(bool closeButton, const char* title, int width) {
 }
 
 // OFFSET: 0x008A2980
+// FUNCTION: fn_11644
+void UIEmotionWnd::Slot15(int, int) {
+  int y = 23;
+  auto* emotions = reinterpret_cast<EmotionHotkeys*>(&g_session.unknown_0FF8);
+
+  for (int i = 0; i < 10; ++i) {
+    UIEditCtrl2* edit = new UIEditCtrl2(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+    this->m_edits[i] = edit;
+    edit->SetSize(270, 16);
+    edit->Move(83, y - 3);
+    edit->maximum = 50;
+    edit->Background(232, 232, 232);
+    edit->SetText(emotions->current[i].c_str());
+    this->AddChild(edit);
+
+    char buffer[16];
+    std::sprintf(buffer, "Alt + %d", i + 1);
+
+    UIStaticText* label = new UIStaticText(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+    this->m_labels[i] = label;
+    label->SetSize(70, 16);
+    label->Move(20, y);
+    label->SetText(buffer, 0);
+    this->AddChild(label);
+
+    y += 21;
+  }
+
+  this->m_labels[9]->SetText("Alt + 0", 0);
+  this->UIFrameWnd::AddCloseButton(*reinterpret_cast<UIButtonContext*>(nullptr), "Alt+M", 0);
+
+  std::string path = "유저인터페이스\\";
+  this->viewButton = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->viewButton->SetBitmap((path + "btn_view" + ".bmp").c_str(), 0, 0);
+  this->viewButton->SetBitmap((path + "btn_view_a" + ".bmp").c_str(), 1, 0);
+  this->viewButton->SetBitmap((path + "btn_view_b" + ".bmp").c_str(), 2, 0);
+  this->viewButton->SetSize(this->viewButton->BitmapWidth(), this->viewButton->BitmapHeight());
+  this->viewButton->Move(this->geometry.width - 50, this->geometry.height - 25);
+  this->viewButton->SetId(283);
+  this->AddChild(this->viewButton);
+
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_edits[0]);
+  this->m_edits[0]->SetCursor(0xff);
+
+  for (int i = 0; i < 10; ++i) {
+    HotkeyInfo info = GetHotkeyInfo(*g_session.m_hotkeyScript, 2, i);
+    if (!info.description.empty()) {
+      this->m_labels[i]->SetText(info.text.c_str(), 0);
+    }
+  }
+}
 
 // OFFSET: 0x008A3000
 // FUNCTION: fn_11645
