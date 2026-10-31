@@ -44,23 +44,25 @@ class CUIPage;
 
 class CUISubTab : public CUIListItem {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
 
-  /* 00E8 */ unsigned char unknown_00E8[0x04];
-  /* 00EC */ UIWindow* unknown_00EC;
+  /* 00E8 */ CUIStaticText* unknown_00E8;
+  /* 00EC */ CUIStaticImage* unknown_00EC;
   /* 00F0 */ int id;
   /* 00F4 */ unsigned int unknown_00F4;
 };
 
 class CUITab : public CUIListItem {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void SetSelected(bool selected) override;
 
   void OnSelectSubTab(CUISubTab* subTab);
   CUIListBox<CUISubTab>* CreateSubTabList();
 
-  /* 00E8 */ unsigned char unknown_00E8[0x04];
+  /* 00E8 */ CUIStaticText* unknown_00E8;
   /* 00EC */ CUIListBox<CUISubTab>* subTabs;
   /* 00F0 */ std::string unknown_00F0;
   /* 0108 */ int type;
@@ -112,6 +114,7 @@ public:
 
 class CUITabInfo : public CUIListItem {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
 
   /* 00E8 */ CUIStaticText* unknown_00E8;
