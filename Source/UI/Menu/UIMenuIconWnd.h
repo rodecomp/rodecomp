@@ -10,7 +10,7 @@
 class UIMenuIcon : public UIBitmapButton {
 public:
   // INLINED
-  UIMenuIcon(UIWindowContext& windowContext, UIButtonContext& buttonContext) : UIBitmapButton(windowContext, buttonContext) {}
+  UIMenuIcon() {}
 
   void Slot27(int x, int y) override;
 };
@@ -25,7 +25,6 @@ public:
   /* 00CC */ UIBitmapButton* unknown_00CC;
   /* 00D0 */ UIBitmapButton* unknown_00D0;
   /* 00D4 */ UIBitmapButton* unknown_00D4;
-  UIButtonContext* m_controls;
 
   void Move(int x, int y) override;
   bool Slot08() override;

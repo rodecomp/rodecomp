@@ -84,7 +84,7 @@ void UIMenuIconWnd::Slot15(int width, int height) {
     "bank", "rec", "mail", "achievement", "tip", "shop", "keyboard", "attendance", "adventurerAgency", "repute", "adventureguide", "probability",
   };
 
-  int position = 0;
+  unsigned int position = 0;
   for (int index = 0; index < 24; ++index) {
     if (ids[index] == 192 && g_session.IsDoramJob(g_session.m_job) == true) {
       names[index] = "status_doram";
@@ -94,7 +94,7 @@ void UIMenuIconWnd::Slot15(int width, int height) {
       continue;
     }
 
-    UIMenuIcon* icon = new UIMenuIcon(*this->m_context, *this->m_controls);
+    UIMenuIcon* icon = new UIMenuIcon();
     icon->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s.bmp", names[index].c_str()).c_str(), 0, 0);
     icon->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s.bmp", names[index].c_str()).c_str(), 1, 0);
     icon->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s_press.bmp", names[index].c_str()).c_str(), 2, 0);
@@ -113,7 +113,7 @@ void UIMenuIconWnd::Slot15(int width, int height) {
     case 196:
     case 473:
     case 476: {
-      UIMenuIcon* badge = new UIMenuIcon(*this->m_context, *this->m_controls);
+      UIMenuIcon* badge = new UIMenuIcon();
       badge->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s_new.bmp", names[index].c_str()).c_str(), 0, 0);
       badge->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s_new.bmp", names[index].c_str()).c_str(), 1, 0);
       badge->SetBitmap(FormatOwnedString("유저인터페이스\\menu_icon\\bt_%s_new_press.bmp", names[index].c_str()).c_str(), 2, 0);
@@ -130,7 +130,7 @@ void UIMenuIconWnd::Slot15(int width, int height) {
     ++position;
   }
 
-  this->unknown_00CC = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00CC = new UIBitmapButton();
   this->unknown_00CC->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_normal.bmp", 0, 0);
   this->unknown_00CC->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_over.bmp", 1, 0);
   this->unknown_00CC->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_press.bmp", 2, 0);
@@ -139,7 +139,7 @@ void UIMenuIconWnd::Slot15(int width, int height) {
   this->unknown_00CC->SetId(510);
   this->unknown_00CC->Enable(0);
   this->AddChild(this->unknown_00CC);
-  this->unknown_00D0 = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00D0 = new UIBitmapButton();
   this->unknown_00D0->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_new_normal.bmp", 0, 0);
   this->unknown_00D0->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_new_over.bmp", 1, 0);
   this->unknown_00D0->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_new_press.bmp", 2, 0);
@@ -148,7 +148,7 @@ void UIMenuIconWnd::Slot15(int width, int height) {
   this->unknown_00D0->SetId(510);
   this->unknown_00D0->Enable(0);
   this->AddChild(this->unknown_00D0);
-  this->unknown_00D4 = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_00D4 = new UIBitmapButton();
   this->unknown_00D4->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_close_normal.bmp", 0, 0);
   this->unknown_00D4->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_close_over.bmp", 1, 0);
   this->unknown_00D4->SetBitmap("유저인터페이스\\menu_icon\\bt_menu_close_press.bmp", 2, 0);
