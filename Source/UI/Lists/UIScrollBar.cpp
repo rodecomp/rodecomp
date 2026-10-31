@@ -44,6 +44,24 @@
 #include <cstdlib>
 #include <windows.h>
 #include <timeapi.h>
+// OFFSET: 0x0086DDA0
+// FUNCTION: fn_11059
+UIListBoxTitle::UIListBoxTitle() : titleColor(0x92C0FA) {
+  this->lineHeight = 0xF;
+}
+
+// OFFSET: 0x0086E410
+// FUNCTION: fn_11070
+UIScrollBar2::UIScrollBar2() : UIScrollBar(*reinterpret_cast<UIWindowContext*>(nullptr)) {
+  this->arrowLength = 10;
+}
+
+// OFFSET: 0x0086E470
+// FUNCTION: fn_11071
+UIScrollBar3::UIScrollBar3() : UIScrollBar(*reinterpret_cast<UIWindowContext*>(nullptr)) {
+  this->arrowLength = 9;
+}
+
 // OFFSET: 0x0086E550
 // FUNCTION: fn_11073
 UIScrollBar::UIScrollBar(UIWindowContext& windows)

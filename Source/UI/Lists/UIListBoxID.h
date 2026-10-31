@@ -17,7 +17,7 @@ struct IdListLine {
 
 class UIListBoxID : public UIWindow {
 public:
-  UIListBoxID();
+  __declspec(noinline) UIListBoxID();
   ~UIListBoxID() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
@@ -47,6 +47,13 @@ public:
   /* 00B8 */ std::uint32_t selectionColor;
 };
 
+class UIListBoxTitle : public UIListBoxID {
+public:
+  UIListBoxTitle();
+
+  /* 00C0 */ int titleColor;
+};
+
 class UIComboBoxID : public UIListBoxID {
 public:
   UIComboBoxID();
@@ -70,6 +77,7 @@ public:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(IdListLine) == 28);
 static_assert(sizeof(UIListBoxID) == 0xC0);
+static_assert(offsetof(UIListBoxTitle, titleColor) == 0xC0);
 static_assert(offsetof(UIComboBoxID, targetId) == 0xC0);
 #endif
 

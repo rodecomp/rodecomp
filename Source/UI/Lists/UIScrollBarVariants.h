@@ -14,6 +14,7 @@ class CBitmapRes;
 
 class UIScrollBar2 : public UIScrollBar {
 public:
+  UIScrollBar2();
   explicit UIScrollBar2(UIWindowContext& windows) : UIScrollBar(windows) {
     this->arrowLength = 10;
   }
@@ -23,6 +24,7 @@ public:
 
 class UIScrollBar3 : public UIScrollBar {
 public:
+  UIScrollBar3();
   explicit UIScrollBar3(UIWindowContext& windows) : UIScrollBar(windows) {
     this->arrowLength = 9;
   }

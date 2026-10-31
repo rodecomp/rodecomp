@@ -1,9 +1,12 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Lists/UIItemStoreComboBox.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/Window/UIWindow.h"
 
 #include <cstdio>
 #include <string>
+
+// OFFSET: 0x0086D530
 
 // OFFSET: 0x00886200
 // FUNCTION: fn_11325

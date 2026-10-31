@@ -68,6 +68,14 @@ protected:
   UIListBoxContext* m_listContext;
 };
 
+class UIServerListBox : public UIListBox {
+public:
+  UIServerListBox();
+
+  /* 00DC */ int unknown_00DC;
+  /* 00E0 */ int unknown_00E0;
+};
+
 class UIListBox2 : public UIListBox {
 public:
   UIListBox2(UIWindowContext& windows, UIListBoxContext& list);
@@ -81,6 +89,8 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UIListBox) == 220);
+static_assert(offsetof(UIServerListBox, unknown_00DC) == 0xDC);
+static_assert(offsetof(UIServerListBox, unknown_00E0) == 0xE0);
 #endif
 
 #endif

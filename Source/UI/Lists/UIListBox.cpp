@@ -15,6 +15,8 @@
 
 namespace {}
 
+// OFFSET: 0x0086E750
+
 // OFFSET: 0x0086D940
 // FUNCTION: fn_11055
 UIListBox::UIListBox(UIWindowContext& windows, UIListBoxContext& list)
