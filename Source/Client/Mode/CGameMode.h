@@ -24,6 +24,7 @@ struct ActorNameAllPacket;
 struct GameOptionEntry;
 struct CWorld;
 struct TextureRegion;
+struct vector3d;
 
 struct MiniMapMember {
   /* 0000 */ int x;
@@ -250,6 +251,7 @@ public:
   int HandleRuneResult(int result);
   void ApplyRuneSetResult(int result, int tagId, int runeSetId);
   void ApplyRuneSetResultWithRequest(int result, int tagId, int runeSetId, int grade, int slotCount);
+  std::uint64_t LaunchDummyEffect(const vector3d* position, int effectId, int lifeFrames, int value);
   void NotifyWindow4F258(int result);
   void ReceiveNamedResult(std::uint32_t aid, std::string name, int result);
   void ReceiveBasicInfoResult(unsigned char result);

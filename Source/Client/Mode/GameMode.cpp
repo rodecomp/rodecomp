@@ -7,6 +7,7 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/DummyEffectLauncher.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Actors/MousePointer.h"
@@ -25,7 +26,6 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
-
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -554,4 +554,19 @@ void CGameMode::PlaceWindowAtActor(UIWindow* window, CGameActor* actor) {
 // OFFSET: 0x00CDD790
 // FUNCTION: fn_21318
 void CGameMode::Slot7(int value) {
+}
+
+// OFFSET: 0x00CDFA00
+// FUNCTION: fn_21324
+std::uint64_t CGameMode::LaunchDummyEffect(const vector3d* position, int effectId, int lifeFrames, int value) {
+  if (lifeFrames > 0) {
+    CDummyEffectLauncher* launcher = new CDummyEffectLauncher;
+    if (launcher != nullptr) {
+      const int address = reinterpret_cast<int>(position);
+      launcher->SendMsg(nullptr, 14, 0, address, address >> 31, effectId, effectId >> 31, lifeFrames, lifeFrames >> 31, value, value >> 31, 0, 0, 0, 0);
+      this->scene->objects.push_back(launcher);
+      return launcher->identity;
+    }
+  }
+  return 0;
 }
