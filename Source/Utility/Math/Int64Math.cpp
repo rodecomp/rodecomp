@@ -9,3 +9,13 @@ std::int64_t MaxInt64(const std::int64_t& first, const int& second) {
   }
   return first;
 }
+
+// OFFSET: 0x0086BF00
+// FUNCTION: fn_11017
+std::int64_t sub_86BF00(const int& value, const std::int64_t& other) {
+  const std::int64_t extended = value;
+  if (other < extended) {
+    return extended;
+  }
+  return other;
+}
