@@ -196,6 +196,7 @@ public:
     int x, int y, int, int, const SpriteRleImage* image, const SpriteFrameCell* cell, float scale, float angle, std::uint32_t color,
     const std::uint32_t* palette, float extentScale
   );
+  void AddRotatedSpriteCellOverlay(int x, int y, int width, int height, const SpriteRleImage* image, const SpriteFrameCell* cell, const std::uint32_t* palette);
   int DrawTitleBar(FontCache& fonts, const TextLocale& locale, bool closeButton, const char* title, int width);
   int DrawTitleBarAt(FontCache& fonts, const TextLocale& locale, int x, int width, bool closeButton, const char* title);
   void DrawPanelBackground(int y, int width, const char* bitmapName);
