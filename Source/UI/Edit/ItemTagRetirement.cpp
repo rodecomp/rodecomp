@@ -12,9 +12,6 @@
 FocusedItemTagRemoval::FocusedItemTagRemoval(InputFocus& focus) : m_focus(focus) {
 }
 
-// GLOBAL: gl_24635
-bool g_inputSuggestionsEnabled;
-
 // OFFSET: 0x00896EB0
 // FUNCTION: fn_11519
 void FocusedItemTagRemoval::Remove(UIWindow* child) {

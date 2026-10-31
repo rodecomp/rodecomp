@@ -3431,12 +3431,6 @@ int GetCategoryJob(lua_State* state) {
   return 1;
 }
 
-// OFFSET: 0x006BD3C0
-
-// OFFSET: 0x006BD9D0
-
-// OFFSET: 0x006BDCE0
-
 struct EquipLocationSource {
   virtual void Slot00();
   virtual void Slot01();
