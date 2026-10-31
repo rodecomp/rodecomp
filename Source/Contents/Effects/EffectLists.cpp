@@ -1101,24 +1101,74 @@ CEffect* CEffectAllocator<CSunStanceEffect>::Create() {
 }
 
 // OFFSET: 0x00B20920
+// FUNCTION: fn_18651
+template <>
+CEffect* CEffectAllocator<CSvgSpiritEffect>::Create() {
+  return new (std::nothrow) CSvgSpiritEffect();
+}
 
 // OFFSET: 0x00B209A0
+// FUNCTION: fn_18652
+template <>
+CEffect* CEffectAllocator<CTalismanMarkEffect>::Create() {
+  return new (std::nothrow) CTalismanMarkEffect();
+}
 
 // OFFSET: 0x00B20A20
+// FUNCTION: fn_18653
+template <>
+CEffect* CEffectAllocator<CTetraBallEffect>::Create() {
+  return new (std::nothrow) CTetraBallEffect();
+}
 
 // OFFSET: 0x00B20AA0
+// FUNCTION: fn_18654
+template <>
+CEffect* CEffectAllocator<CThrowItemEffect>::Create() {
+  return new (std::nothrow) CThrowItemEffect();
+}
 
 // OFFSET: 0x00B20C70
+// FUNCTION: fn_18656
+template <>
+CEffect* CEffectAllocator<CTriangleShotArrow>::Create() {
+  return new (std::nothrow) CTriangleShotArrow();
+}
 
 // OFFSET: 0x00B20CF0
+// FUNCTION: fn_18657
+template <>
+CEffect* CEffectAllocator<CTunaPartyEffect>::Create() {
+  return new (std::nothrow) CTunaPartyEffect();
+}
 
 // OFFSET: 0x00B20D70
+// FUNCTION: fn_18658
+template <>
+CEffect* CEffectAllocator<CViolentQuakeEffect>::Create() {
+  return new (std::nothrow) CViolentQuakeEffect();
+}
 
 // OFFSET: 0x00B20DF0
+// FUNCTION: fn_18659
+template <>
+CEffect* CEffectAllocator<CWarningPlaneEffect>::Create() {
+  return new (std::nothrow) CWarningPlaneEffect();
+}
 
 // OFFSET: 0x00B21070
+// FUNCTION: fn_18661
+template <>
+CEffect* CEffectAllocator<CWindEffect>::Create() {
+  return new (std::nothrow) CWindEffect();
+}
 
 // OFFSET: 0x00B210F0
+// FUNCTION: fn_18662
+template <>
+CEffect* CEffectAllocator<EffectResourceSwitcher>::Create() {
+  return new (std::nothrow) EffectResourceSwitcher();
+}
 
 template struct CEffectAllocator<CAMachineEffect>;
 template struct CEffectAllocator<CAcidifiedThrow>;
