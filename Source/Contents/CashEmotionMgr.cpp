@@ -279,7 +279,7 @@ public:
   void SetTab(char tab);
   void StartExpirySchedule();
   void UpdateExpiry(int packId, Timestamp* expiry);
-  void RefreshSelection();
+  __declspec(noinline) void RefreshSelection();
   void RestartExpirySchedule();
 
 protected:
@@ -503,9 +503,26 @@ CCashEmotionMgr::~CCashEmotionMgr() {
 // OFFSET: 0x00598C70
 // FUNCTION: fn_02934
 void CCashEmotionMgr::Reset() {
+  this->unknown_0010.clear();
   this->m_emotionsByPack.clear();
+  this->unknown_0050.clear();
+  this->m_searchIndex.clear();
   this->m_packNames.clear();
-  this->m_commands.clear();
+  this->unknown_00B0.clear();
+  this->m_lastActId = 0;
+  this->m_sprNames.clear();
+  this->m_sprIds.clear();
+  this->m_lastSprId = 0;
+
+  for (auto& shortcut : this->m_shortcuts) {
+    delete shortcut.second;
+  }
+  this->m_shortcuts.clear();
+
+  this->ClearCommands();
+  this->unknown_0198.clear();
+  this->m_ownedPacks.clear();
+  this->m_unownedPacks.clear();
 }
 
 // OFFSET: 0x00598F00
@@ -581,6 +598,31 @@ void CCashEmotionMgr::HideSuggestions() {
   }
 }
 
+// OFFSET: 0x00599040
+// FUNCTION: fn_02938
+void CCashEmotionMgr::RefreshCommands() {
+  this->ClearCommands();
+
+  const unsigned int now = _time32(nullptr) - this->unknown_01D0 - this->unknown_01CC;
+  for (auto& shortcut : this->m_shortcuts) {
+    for (const std::pair<int, int>& entry : shortcut.second->entries) {
+      const int packId = entry.first;
+      const int emotionId = entry.second;
+      if (packId != this->unknown_000C && !this->IsOwnedPack(packId) && !this->IsPackAvailable(now, packId)) {
+        continue;
+      }
+
+      auto it = this->m_commands.find(shortcut.first);
+      if (it == this->m_commands.end()) {
+        CashEmotionCommand* command = new CashEmotionCommand(shortcut.first, packId, emotionId);
+        this->m_commands.try_emplace(shortcut.first, reinterpret_cast<int>(command));
+      } else {
+        reinterpret_cast<CashEmotionCommand*>(it->second)->Add(packId, emotionId);
+      }
+    }
+  }
+}
+
 // OFFSET: 0x00599730
 // FUNCTION: fn_02942
 int CCashEmotionMgr::ProcessChatCommand(const char* command) {
@@ -611,6 +653,12 @@ int CCashEmotionMgr::ProcessChatCommand(const char* command) {
   }
 }
 
+// OFFSET: 0x00599840
+// FUNCTION: fn_45457
+int CCashEmotionMgr::GetActFilePath(const char* name, bool add) {
+  return this->RegisterFileName(this->unknown_00B0, this->m_packNames, [this]() { return ++this->m_lastActId; }, name, add);
+}
+
 // OFFSET: 0x005998C0
 // FUNCTION: fn_02943
 const char* CCashEmotionMgr::GetPackName(int packId) {
@@ -638,7 +686,17 @@ std::vector<int> CCashEmotionMgr::FindBaseEmotions(const char* filter) {
     others.reserve(it->second.size());
 
     for (int emotionId : it->second) {
-      const char* name = this->GetEmotionName(this->unknown_000C, emotionId);
+      auto pack = this->m_emotionsByPack.find(this->unknown_000C);
+      if (pack == this->m_emotionsByPack.end()) {
+        continue;
+      }
+
+      auto emotion = pack->second.find(emotionId);
+      if (emotion == pack->second.end()) {
+        continue;
+      }
+
+      const char* name = emotion->second.name.c_str();
       if (name) {
         if (std::strstr(name, filter)) {
           result.push_back(emotionId);
@@ -806,6 +864,34 @@ std::vector<int> CCashEmotionMgr::SortOwnedPacks(const char* filter) {
   return this->SortPacks(this->m_ownedPacks, filter);
 }
 
+// OFFSET: 0x0059A220
+// FUNCTION: fn_02957
+int CCashEmotionMgr::RegisterFileName(
+  std::unordered_map<std::string, int>& ids, CashEmotionFileNames& names, std::function<int()> nextId, const char* name, bool add
+) {
+  std::string lowered(name);
+  std::transform(lowered.begin(), lowered.end(), lowered.begin(), [](unsigned char c) { return static_cast<char>(tolower(c)); });
+
+  auto found = ids.find(name);
+  if (found != ids.end()) {
+    return found->second;
+  }
+
+  if (add == true) {
+    std::function<int()> generator = nextId;
+    int id = generator();
+    if (names.find(id) == names.end()) {
+      auto inserted = ids.emplace(lowered, id);
+      if (inserted.second == true) {
+        names.emplace(id, inserted.first->first.c_str());
+        return id;
+      }
+    }
+  }
+
+  return -1;
+}
+
 // OFFSET: 0x0059A5B0
 // FUNCTION: fn_02958
 unsigned int CCashEmotionMgr::GetPackEndTime(int packId) {
@@ -892,15 +978,21 @@ std::vector<int> CCashEmotionMgr::SortPacks(const std::vector<int>& packs, const
   return matched;
 }
 
+// OFFSET: 0x0059ABC0
+// FUNCTION: fn_45458
+int CCashEmotionMgr::GetSprFilePath(const char* name, bool add) {
+  return this->RegisterFileName(this->m_sprIds, this->m_sprNames, [this]() { return ++this->m_lastSprId; }, name, add);
+}
+
 // OFFSET: 0x0059AC40
 // FUNCTION: fn_02963
 const char* CCashEmotionMgr::GetSprFileName(int sprId) {
   auto it = this->m_sprNames.find(sprId);
-  if (it == this->m_sprNames.end()) {
-    return nullptr;
+  if (it != this->m_sprNames.end()) {
+    return it->second.c_str();
   }
 
-  return it->second.c_str();
+  return nullptr;
 }
 
 // OFFSET: 0x0059ACE0
@@ -982,6 +1074,26 @@ void CCashEmotionMgr::AddShortcut(const std::string& name, int packId, int emoti
   if (shortcut) {
     this->m_shortcuts.try_emplace(name, shortcut);
   }
+}
+
+// OFFSET: 0x0059B8F0
+// FUNCTION: fn_02970
+bool CCashEmotionMgr::AddEmotion(int packId, int emotionId, const char* name, int unknown20, int unknown24, const char* actFile, const char* sprFile) {
+  const int actId = this->GetActFilePath(actFile, true);
+  const int sprId = this->GetSprFilePath(sprFile, true);
+
+  CashEmotionTable* emotions = this->GetPackEmotionTable(packId);
+  if (emotions) {
+    return emotions->try_emplace(emotionId, packId, emotionId, name, unknown20, unknown24, actId, sprId).second;
+  }
+
+  bool inserted = false;
+  CashEmotionTable table;
+  if (table.try_emplace(emotionId, packId, emotionId, name, unknown20, unknown24, actId, sprId).second == true) {
+    inserted = this->m_emotionsByPack.emplace(packId, table).second;
+  }
+
+  return inserted;
 }
 
 // OFFSET: 0x0059C4F0
@@ -1224,6 +1336,24 @@ void CCashEmotionMgr::ShowErrorMessage(const char* key, int value) {
 void CCashEmotionMgr::Unknown59D040(int, int) {
 }
 
+// OFFSET: 0x0059D090
+// FUNCTION: fn_02985
+void CCashEmotionMgr::AcquirePack(int packId, unsigned int expiry) {
+  if (packId <= 0) {
+    return;
+  }
+
+  this->SetOwnedPack(packId, expiry);
+  this->unknown_01C4 = -1;
+
+  UICashEmotionListWnd* listWnd = g_cashEmotionListWnd;
+  if (listWnd) {
+    listWnd->ResetLists();
+    listWnd->RefreshSelection();
+    listWnd->RestartExpirySchedule();
+  }
+}
+
 // OFFSET: 0x0059D2C0
 // FUNCTION: fn_02986
 bool CCashEmotionMgr::sub_59D2C0() {
@@ -1262,6 +1392,15 @@ int CCashEmotionMgr::sub_59FC50() {
   return _time32(nullptr) - this->unknown_01D0 - this->unknown_01CC;
 }
 
+// OFFSET: 0x0059FC70
+// FUNCTION: fn_03032
+int CCashEmotionMgr::InsertEmotionEnum(lua_State* state) {
+  std::string name = FromUtf8(luaL_checkstring(state, 1), g_textCodePage);
+  int id = luaL_checkinteger(state, 2);
+  g_cashEmotionMgr->m_emotionIds.emplace(name, id);
+  return 1;
+}
+
 // OFFSET: 0x0059FDC0
 // FUNCTION: fn_03033
 int CCashEmotionMgr::InsertEmotionGroup(lua_State* state) {
@@ -1273,6 +1412,37 @@ int CCashEmotionMgr::InsertEmotionGroup(lua_State* state) {
     g_cashEmotionMgr->AddShortcut(title, packId, emotionId);
   }
 
+  return 1;
+}
+
+// OFFSET: 0x0059FF10
+// FUNCTION: fn_03034
+int CCashEmotionMgr::InsertEmotionListTable(lua_State* state) {
+  const int packId = luaL_checkinteger(state, 1);
+  const int emotionId = luaL_checkinteger(state, 2);
+  const std::string key = FromUtf8(luaL_checkstring(state, 3), g_textCodePage);
+  const int unknown20 = luaL_checkinteger(state, 4);
+  const int unknown24 = luaL_checkinteger(state, 5);
+  const std::string actFile = FromUtf8(luaL_checkstring(state, 6), g_textCodePage);
+  const std::string sprFile = FromUtf8(luaL_checkstring(state, 7), g_textCodePage);
+
+  const char* result;
+  if (key.empty()) {
+    g_cashEmotionMgr->AddEmotion(packId, emotionId, "", unknown20, unknown24, actFile.c_str(), sprFile.c_str());
+    result = nullptr;
+  } else {
+    const char* name = g_simpleStringMgr->GetString(key.c_str());
+    if (!name) {
+      name = LookupMessage(FindMessageId(key.c_str()));
+    }
+
+    result = nullptr;
+    if (g_cashEmotionMgr->AddEmotion(packId, emotionId, name, unknown20, unknown24, actFile.c_str(), sprFile.c_str())) {
+      result = name;
+    }
+  }
+
+  lua_pushstring(state, result);
   return 1;
 }
 
@@ -2013,7 +2183,18 @@ void UICashEmotionListWnd::SetTab(char tab) {
   }
 
   this->m_tab = tab;
-  this->RefreshSelection();
+  if (this->m_tab == 3) {
+    const int packId = g_cashEmotionMgr->unknown_01C4;
+    if (this->unknown_00E4) {
+      this->unknown_00E4->Enable(packId > 0);
+    }
+    this->SetPeriod(packId);
+  } else {
+    if (this->unknown_00E4) {
+      this->unknown_00E4->Enable(0);
+    }
+    this->SetPeriod(0);
+  }
 
   const bool basic = this->m_currentList == this->m_basicList;
   if (this->m_searchEdit) {

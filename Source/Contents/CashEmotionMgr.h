@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <list>
 #include <string>
 #include <unordered_map>
@@ -128,7 +129,7 @@ public:
   void ClearOwnedPacks();
   void ClearCommands();
   void HideSuggestions();
-  int FindEmotionId(const char* name);
+  __declspec(noinline) int FindEmotionId(const char* name);
   int ProcessChatCommand(const char* command);
   const char* GetPackName(int packId);
   std::vector<int> FindBaseEmotions(const char* filter);
@@ -176,6 +177,15 @@ public:
     return this->unknown_000C;
   }
   static int InsertOrderList(lua_State* state);
+  static int InsertEmotionEnum(lua_State* state);
+  static int InsertEmotionListTable(lua_State* state);
+
+  void RefreshCommands();
+  int GetActFilePath(const char* name, bool add);
+  int GetSprFilePath(const char* name, bool add);
+  int RegisterFileName(std::unordered_map<std::string, int>& ids, CashEmotionFileNames& names, std::function<int()> nextId, const char* name, bool add);
+  bool AddEmotion(int packId, int emotionId, const char* name, int unknown20, int unknown24, const char* actFile, const char* sprFile);
+  void AcquirePack(int packId, unsigned int expiry);
 
 protected:
   /* 0004 */ bool m_enabled;
@@ -183,7 +193,7 @@ protected:
   /* 0008 */ ICashEmotionAction* m_action;
   /* 000C */ int unknown_000C;
   /* 0010 */ std::unordered_map<int, CashEmotionPack, CashEmotionKeyHash> unknown_0010;
-  /* 0030 */ std::unordered_map<int, CashEmotionTable> m_emotionsByPack;
+  /* 0030 */ std::unordered_map<int, CashEmotionTable, CashEmotionKeyHash> m_emotionsByPack;
   /* 0050 */ std::unordered_map<int, std::vector<int>, CashEmotionKeyHash> unknown_0050;
   /* 0070 */ std::unordered_map<std::string, std::pair<int, int>> m_searchIndex;
   /* 0090 */ CashEmotionFileNames m_packNames;
