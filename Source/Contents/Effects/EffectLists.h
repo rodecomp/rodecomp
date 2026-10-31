@@ -47,6 +47,7 @@ public:
   bool RegisterAllocators();
   bool RegisterAllocator(int id, CAllocator* allocator);
   void Update();
+  void LoadMapEffectScript(bool reload);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -63,6 +64,9 @@ float DirectionAngle(float x, float z);
 double ScreenAngle(vector3d from, vector3d to);
 std::string CurrentMapScriptName();
 std::string EffectFunctionName(std::string name);
+bool HasEffectScript(std::string path, std::string name);
+void ReadEffectScriptV1(std::string name);
+void ReadEffectScriptV2(std::string name);
 
 extern EffectLists* g_effectMgr;
 

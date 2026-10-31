@@ -73,6 +73,8 @@
 #include "Render/Renderer.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Contents/Effects/Particle.h"
+#include "Script/LuaScript.h"
 
 #include <cmath>
 #include <cstdint>
@@ -1498,6 +1500,65 @@ void EffectLists::Update() {
     effects.remove_if([](CEffect* effect) { return effect->RetireIfInactive(); });
     for (CEffect* effect : effects) {
       effect->Update(entry.first);
+    }
+  }
+}
+
+// OFFSET: 0x00B3A9C0
+// FUNCTION: fn_18790
+bool HasEffectScript(std::string path, std::string name) {
+  bool exists = false;
+  std::string versionKey = EmitterKey(name.substr(), "effect_version");
+  g_luaScript->Call("IsExistValue", "s>b", versionKey.c_str(), &exists);
+  if (exists) {
+    return true;
+  }
+
+  std::string emitterKey = EmitterKey(name.substr(), "emitterInfo");
+  g_luaScript->Call("IsExistValue", "s>b", emitterKey.c_str(), &exists);
+  return exists;
+}
+
+// OFFSET: 0x00B3B0A0
+// FUNCTION: fn_18795
+void ReadEffectScriptV1(std::string name) {
+  g_luaScript->Call("ReadEmitterInfoz_ver_1_0", "s", EmitterInfoKey(name.substr()).c_str());
+  g_luaScript->Call("ReadEffectInfoz", "s", EffectFunctionName(name.substr()).c_str());
+}
+
+// OFFSET: 0x00B3B240
+// FUNCTION: fn_18796
+void ReadEffectScriptV2(std::string name) {
+  g_luaScript->Call("ReadEmitterInfoz", "s", EmitterKey(name.substr(), "emitterInfo").c_str());
+  g_luaScript->Call("ReadMagicFloorInfoz", "s", EmitterKey(name.substr(), "magicfloorInfo").c_str());
+  g_luaScript->Call("ReadEvilsPawInfoz", "s", EmitterKey(name.substr(), "evilsPawInfo").c_str());
+  g_luaScript->Call("ReadAnimatedEmitterInfoz", "s", EmitterKey(name.substr(), "animatedEmitterInfo").c_str());
+  g_luaScript->Call("ReadEZ2STRInfoz", "s", EmitterKey(name.substr(), "ez2strInfo").c_str());
+  g_luaScript->Call("ReadWindEffectInfoz", "s", EmitterKey(name.substr(), "windEffectInfo").c_str());
+}
+
+// OFFSET: 0x00B3AC30
+// FUNCTION: fn_18792
+void EffectLists::LoadMapEffectScript(bool reload) {
+  if (this->indexed.empty()) {
+    return;
+  }
+
+  std::string directory = "Lua Files\\EffectTool\\";
+  std::string name = CurrentMapScriptName();
+  std::string path = directory + name;
+  if (HasEffectScript(path.c_str(), name.substr()) || g_luaScript->Load(path.c_str(), true, false)) {
+    int version = 0;
+    std::string versionKey = EmitterKey(name.substr(), "effect_version");
+    g_luaScript->Call("GetValue", "s>d", versionKey.c_str(), &version);
+    switch (version) {
+    case 0:
+    case 1:
+      ReadEffectScriptV1(name.substr());
+      break;
+    case 2:
+      ReadEffectScriptV2(name.substr());
+      break;
     }
   }
 }
