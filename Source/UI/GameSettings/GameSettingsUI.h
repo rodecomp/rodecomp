@@ -39,6 +39,7 @@ public:
   int AddItem(const D& value, bool refresh);
   unsigned int Selected() const;
   __declspec(noinline) void UpdateListHeight();
+  void Create(int width, int itemHeight, int visibleItems);
 
   /* 0084 */ int unknown_0084;
   /* 0088 */ CUIImageButton* unknown_0088;

@@ -26,7 +26,9 @@
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIRoulletteWnd.h"
+#include "UI/Lists/UIDropDownBox.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowOrdering.h"
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/StringUtil.h"
@@ -160,7 +162,7 @@ void GameSettingsUI::CUIGroupSkin::Slot15(int width, int height) {
   this->AddChild(this->m_title);
 
   this->m_combo = new CUIComboBox<CUIComboItem, std::string>(*this->m_context);
-  reinterpret_cast<void(__thiscall*)(CUIComboBox<CUIComboItem, std::string>*, int, int, int)>(0x00A1E250)(this->m_combo, 162, 16, 5);
+  this->m_combo->Create(162, 16, 5);
   CUIComboBox<CUIComboItem, std::string>* combo = this->m_combo;
   const std::uint8_t disabledSource[] = {0x0F, 0x74, 0x11, 0xEF, 0x59, 0xE1, 0xAA, 0xDE, 0x09, 0x3F, 0x11, 0xD9, 0x24, 0x95, 0x33, 0x71, 0xAE, 0xA8, 0xB8, 0x76, 0xC6, 0x46, 0x01, 0x67, 0xAA, 0xA9, 0xB7, 0x74, 0xFA, 0x4A, 0x33, 0x67, 0xB7, 0xAF, 0xB3, 0x7A, 0xE1, 0x70, 0x0D, 0x67, 0xA1, 0x84, 0xB0, 0x3B, 0xFB, 0x42, 0x1F, 0x13};
   thread_local EncryptedName<sizeof(disabledSource), 0x136F2F9915D1DBCFULL> disabledImage(disabledSource);
@@ -186,18 +188,19 @@ void GameSettingsUI::CUIGroupSkin::Slot15(int width, int height) {
     combo->unknown_0088->Move(combo->geometry.width - 18, 0);
     combo->unknown_0088->SetImages(normalName, hoverName, pressedName, disabledName);
     combo->unknown_0088->SetOnClick([combo]() {
-      if (!reinterpret_cast<bool(__fastcall*)(UIWindowMgr*)>(0x00A8C750)(&g_windowMgr)) {
+      WindowDropDown dropDown{*reinterpret_cast<UIWindowContext*>(nullptr), reinterpret_cast<WindowOrdering&>(g_windowMgr), reinterpret_cast<CUIDropDownBox*&>(g_windowMgr.window_0A30)};
+      if (!dropDown.Close()) {
         int x = 0;
         int y = combo->geometry.height - 1;
         combo->ToScreen(x, y);
-        reinterpret_cast<void(__thiscall*)(UIWindowMgr*, UIWindow*, UIWindow*, int, int)>(0x00AA27B0)(&g_windowMgr, combo, combo->listBox, x, y);
+        dropDown.Show(combo, combo->listBox, x, y);
       }
     });
     combo->AddChild(combo->unknown_0088);
   }
 
   combo->Move(110, 9);
-  combo->onSelect = [this](CUIComboItem*, const std::string&) { reinterpret_cast<void(__fastcall*)(CUIGroupSkin*)>(0x00A3FB50)(this); };
+  combo->onSelect = [this](CUIComboItem* item, const std::string& name) { this->OnSelect(item, name); };
   const std::function<void(CUIComboItem*, const std::string&)> binder = [this](CUIComboItem* item, const std::string& name) {
     SetComboItemSkinText(item, name);
   };
