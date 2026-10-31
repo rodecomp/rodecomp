@@ -549,3 +549,56 @@ void UIGradeEnchantWnd::SetResult(int state, int result) {
 
   this->Invalidate();
 }
+
+struct SessionMessengerContext {
+  int GetList0Size() const;
+};
+
+// OFFSET: 0x007E7050
+// FUNCTION: fn_09748
+void UIGradeEnchantWnd::sub_7E7050() {
+  this->unknown_011C.clear();
+  if (this->state != 1) {
+    return;
+  }
+
+  std::string message;
+  if (this->unknown_0118 == 0) {
+    this->unknown_011C.push_back(3821);
+    return;
+  }
+
+  if (this->selectedMaterial != -1 && this->materials[this->selectedMaterial].unknown_0010 == 0) {
+    this->unknown_011C.push_back(3822);
+  }
+
+  if (this->selectedMaterial == -1) {
+    this->unknown_011C.push_back(3707);
+  }
+
+  if (this->selectedMaterial != -1 &&
+      LookupClientItem(g_session.m_inventoryItems, this->materials[this->selectedMaterial].itemId, 0).quantity <
+        this->materials[this->selectedMaterial].amount) {
+    this->unknown_011C.push_back(3708);
+  }
+
+  if (g_session.m_zeny < this->SelectedMaterialZeny()) {
+    this->unknown_011C.push_back(3709);
+  }
+
+  if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
+      reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size() + g_session.CountItems17F0() +
+          g_session.CountItems2B50() >=
+        g_session.unknown_7FBC + 100) {
+    this->unknown_011C.push_back(3710);
+  }
+
+  if (this->selectedMaterial != -1 && this->materials[this->selectedMaterial].unknown_0010 == 1) {
+    int warning = this->SuccessRate() < 100 ? 3712 : 3822;
+    this->unknown_011C.push_back(warning);
+  }
+
+  if (this->selectedMaterial != -1 && this->materials[this->selectedMaterial].unknown_000C > 0) {
+    this->unknown_011C.push_back(3713);
+  }
+}

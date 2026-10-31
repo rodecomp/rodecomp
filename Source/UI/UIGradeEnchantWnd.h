@@ -13,7 +13,8 @@ struct GradeEnchantMaterial {
   /* 0000 */ std::uint32_t itemId;
   /* 0004 */ std::int32_t amount;
   /* 0008 */ std::int32_t zeny;
-  /* 000C */ unsigned char unknown_000C[5];
+  /* 000C */ std::int32_t unknown_000C;
+  /* 0010 */ unsigned char unknown_0010;
 };
 #pragma pack(pop)
 

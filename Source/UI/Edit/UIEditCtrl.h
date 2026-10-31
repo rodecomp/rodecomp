@@ -16,6 +16,7 @@ class WindowManagerWindows;
 class NavigationDestination;
 class UINaviLinkButton;
 class UIItemTagButton;
+struct ITEM_INFO;
 
 struct UIEditContext {
   InputFocus& focus;
@@ -70,6 +71,7 @@ public:
   void DrawSelection(int x, int width);
   void MoveCandidateWindow(int x);
   void MoveReadingWindow(int x);
+  bool DecodeItemLink(const std::vector<int>& values, ITEM_INFO& item);
 
   /* 007C */ int anchor;
   /* 0080 */ int cursor;

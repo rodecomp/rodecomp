@@ -3652,3 +3652,57 @@ bool IsInputSuggestionAllowed() {
 
   return true;
 }
+
+// OFFSET: 0x00860080
+// FUNCTION: fn_10898
+bool UIEditCtrl::DecodeItemLink(const std::vector<int>& values, ITEM_INFO& item) {
+  if (values.empty()) {
+    return false;
+  }
+
+  ITEM_DESC description = FindItemDescription(values[2]);
+  item.SetName(description.identifiedName);
+  std::string name(description.identifiedName);
+  LowercaseText(name);
+  if (name.find("unknown item") != std::string::npos) {
+    return false;
+  }
+
+  item.unknown_0000[2] = values[0];
+  item.SetItemId(values[2]);
+  if (values[1] != 0) {
+    item.unknown_0000[0] = 4;
+  }
+
+  if (values.size() > 3) {
+    item.unknown_0060 = values[3];
+  }
+
+  item.unknown_0070 = values[4];
+  int cardCount = 0;
+  item.unknown_0088 = static_cast<std::int16_t>(values[5]);
+  if (values.size() > 6) {
+    cardCount = values[6];
+    for (int i = 1; i < cardCount + 1; ++i) {
+      int index = i - 1;
+      item.SetCard(values[6 + i], index);
+    }
+  }
+
+  if (static_cast<unsigned>(cardCount + 8) < values.size()) {
+    item.unknown_0098 = values[cardCount + 8];
+    int optionCount = item.unknown_0098 + 1;
+    for (int i = 1; i < optionCount; ++i) {
+      const int base = cardCount + 9 + (i - 1) * 3;
+      ItemOption option;
+      option.id = static_cast<std::int16_t>(values[base]);
+      option.value = static_cast<std::int16_t>(values[base + 2]);
+      option.parameter = static_cast<unsigned char>(values[base + 1]);
+      int index = i - 1;
+      item.SetOption(option, index);
+    }
+  }
+
+  item.identified = 1;
+  return true;
+}
