@@ -10,6 +10,7 @@ class UICheckBox : public UIWindow {
   friend class UISeekPartyMBWnd;
 
 public:
+  UICheckBox();
   UICheckBox(UIWindowContext& windowContext, UIButtonContext& controls);
   ~UICheckBox() override;
   void Paint() override;

@@ -31,6 +31,7 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UICheckBox.h"
 #include "UI/Buttons/UISpriteButton.h"
 #include "UI/Chat/UIWhisperWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
@@ -2589,4 +2590,56 @@ int UINotifyJobLevelUpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(g_windowMgr.EnsureWindow(37));
   }
   return 0;
+}
+
+// OFFSET: 0x008E0A20
+// FUNCTION: fn_12173
+void UIExchangeWnd::Slot15(int, int) {
+  this->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  this->unknown_00CC = 0;
+  this->unknown_00D0 = 0;
+  this->unknown_00D4 = 0;
+  this->unknown_00D8 = 0;
+  this->unknown_00DC = 0;
+
+  const std::string path("유저인터페이스\\btn_");
+  const char* const names[3] = {"ok", "exchange", "cancel"};
+  const int ids[3] = {0xB8, 0xE6, 0xB9};
+  const int x[3] = {3, 260, 510};
+  const int y[3] = {
+      this->unknown_00CC * 120, this->unknown_00CC != 0 && this->unknown_00D0 != 0 && this->unknown_00D8 == 0 ? 0 : 120, 0
+  };
+
+  for (int index = 0; index < 3; ++index) {
+    UIBitmapButton* button = new UIBitmapButton();
+    this->m_buttons[index] = button;
+    button->SetBitmap((path + names[index] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((path + names[index] + "_a.bmp").c_str(), 1, 0);
+    button->SetBitmap((path + names[index] + "_b.bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(x[index], this->geometry.height - 23 + y[index]);
+    button->SetId(ids[index]);
+    this->AddChild(button);
+  }
+
+  UIEditCtrl* edit = new UIEditCtrl();
+  this->unknown_00C0 = edit;
+  edit->SetSize(0x58, 0x10);
+  edit->Move(0x91, 0x14A);
+  edit->maximum = 0xD;
+  edit->Background(0xE8, 0xE8, 0xE8);
+  edit->SetText("0");
+  this->AddChild(edit);
+  InputFocus{g_windowMgr.hoverWindow}.Set(edit);
+  edit->SelectAll();
+
+  UICheckBox* checkBox = new UICheckBox();
+  this->unknown_0118 = checkBox;
+  checkBox->SetSize(0x30, 0xC);
+  checkBox->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
+  checkBox->Move(0x69, this->geometry.height - 0x13);
+  checkBox->SetChecked(this->unknown_011C);
+  this->AddChild(checkBox);
+
+  this->m_message0 = 600;
 }
