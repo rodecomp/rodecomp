@@ -258,6 +258,12 @@ public:
 
 class CUITitleBar : public CUIControl {
 public:
+  // INLINED
+  explicit CUITitleBar(UIWindowContext& context)
+      : CUIControl(context), resizable(1), left(), middle(), right(), leftName(), middleName(), rightName(), unknown_00D8(), titleText(nullptr),
+        firstButton(nullptr), secondButton(nullptr) {
+  }
+
   void Resize(int width, int height) override;
   void Paint() override;
   void Slot53(int resolveSkin) override;
