@@ -1074,6 +1074,51 @@ void UIItemStoreSubWnd::Slot10(int x, int y, std::intptr_t value) {
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 7, 0, 0, 0);
 }
 
+// OFFSET: 0x00972630
+// FUNCTION: fn_13274
+void UIItemStoreWnd::Slot10(int x, int y, std::intptr_t value) {
+  char text[256];
+  if (g_unknown_01738268) {
+    if (g_unknown_01738270 == 1) {
+      std::memset(text, 0, 250);
+      std::sprintf(text, LookupMessage(0x9C2));
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+      return;
+    }
+
+    if (!g_unknown_0173826C && !g_unknown_01738270) {
+      std::memset(text, 0, 250);
+      std::sprintf(text, LookupMessage(0x9C5));
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+      return;
+    }
+  }
+
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  if (drag->source != 1 && drag->source != 9) {
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return;
+  }
+
+  if (static_cast<CGameMode*>(mode)->ConfirmDraggedItemUse()) {
+    return;
+  }
+
+  if (drag->quantity == 1) {
+    this->SendMsg(nullptr, 38, 0, 0, 0, 0);
+    return;
+  }
+
+  reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
+  g_windowMgr.window_01EC->SendMsg(nullptr, 13, 7, 0, 0, 0);
+}
+
 // OFFSET: 0x009727F0
 // FUNCTION: fn_13275
 void UIItemWnd::Slot10(int x, int y, std::intptr_t value) {
