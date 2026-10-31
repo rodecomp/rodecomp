@@ -70,10 +70,11 @@ public:
 
 class UIRefiningWnd : public UIFrameWnd {
 public:
-  UIRefiningWnd();
+  UIRefiningWnd(UIWindowContext& windows, UIFrameContext& frames);
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Slot19() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;

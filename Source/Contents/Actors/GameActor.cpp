@@ -24,12 +24,81 @@
 #include "Utility/Text/FormatString.h"
 #include "Contents/Effects/RagEffect.h"
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <windows.h>
 #include <timeapi.h>
 
 // OFFSET: 0x00CB1930
+void CGameActor::ProcessDamageMessages() {
+  for (auto it = this->unknown_02A8.begin(); it != this->unknown_02A8.end();) {
+    if (timeGetTime() < it->time) {
+      ++it;
+      continue;
+    }
+
+    if (it->damage > 0) {
+      const std::uint32_t targetAid = it->targetAid;
+      const std::uint32_t attackerAid = it->attackerAid;
+      char partyNotice[500];
+      char notice[500];
+      notice[0] = '\0';
+      partyNotice[0] = '\0';
+
+      std::string targetName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(targetAid);
+      std::string attackerName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(attackerAid);
+
+      std::size_t position = targetName.find('#');
+      if (position != std::string::npos) {
+        targetName.resize(position);
+      }
+
+      position = attackerName.find('#');
+      if (position != std::string::npos) {
+        attackerName.resize(position);
+      }
+
+      if (targetName.empty()) {
+        const CActorNameCard& card = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LookupNameCard(targetAid);
+        targetName.assign(card.unknown_007C.empty() ? std::string(LookupMessage(1604)) : card.unknown_007C);
+      }
+
+      if (attackerName.empty()) {
+        const CActorNameCard& card = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LookupNameCard(attackerAid);
+        attackerName.assign(card.unknown_007C.empty() ? std::string(LookupMessage(1604)) : card.unknown_007C);
+      }
+
+      if (IsPlayerJob(this->GetEffectiveJob(-1))) {
+        if (g_session.m_aid == targetAid) {
+          std::sprintf(notice, LookupMessage(1605), attackerName.c_str(), it->damage);
+        } else if (g_session.IsPartyMember(targetAid, true)) {
+          std::sprintf(partyNotice, LookupMessage(1606), targetName.c_str(), attackerName.c_str(), it->damage);
+        }
+      } else {
+        if (g_session.m_aid == attackerAid) {
+          std::sprintf(notice, LookupMessage(1607), targetName.c_str(), it->damage);
+        } else if (g_session.IsPartyMember(attackerAid, true)) {
+          std::sprintf(partyNotice, LookupMessage(1608), attackerName.c_str(), targetName.c_str(), it->damage);
+        }
+      }
+
+      if (std::strlen(notice) != 0) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(notice), 0xFFFF, 16, 0, 0);
+      }
+
+      if (std::strlen(partyNotice) != 0) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(partyNotice), 0xC8C8FF, 17, 0, 0);
+      }
+    }
+
+    ActorDamageMessage& message = *it;
+    this->SendMsg(
+      nullptr, message.action, message.action >> 31, reinterpret_cast<int>(&message.targetAid), 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0);
+    it = this->unknown_02A8.erase(it);
+  }
+}
 
 // OFFSET: 0x00CB2040
 // FUNCTION: fn_21100

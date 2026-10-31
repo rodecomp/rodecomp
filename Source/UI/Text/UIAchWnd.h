@@ -35,10 +35,7 @@ public:
 
 class UICustomGageBar : public UIWindow {
 public:
-  __declspec(noinline) explicit UICustomGageBar(UIWindowContext& windows)
-      : UIWindow(windows, 0), value(-1), maximum(-1), text(), barColor(0xCE7B52), backgroundColor(0xFFFFFF), outerBorderColor(0xEFE7E7),
-        innerBorderColor(0xADADAD) {
-  }
+  __declspec(noinline) explicit UICustomGageBar(UIWindowContext& windows);
 
   /* 007C */ int value;
   /* 0080 */ int maximum;
@@ -156,10 +153,7 @@ public:
 
 class UIToolTipBitmapWnd : public UIWindow {
 public:
-  // INLINED
-  UIToolTipBitmapWnd(UIWindowContext& windows, WindowManagerWindows& managed)
-      : UIWindow(windows, 0), bitmap(nullptr), itemId(0), unknown_00B4(0), unknown_00B8(0), m_windows(&managed) {
-  }
+  UIToolTipBitmapWnd(UIWindowContext& windows, WindowManagerWindows& managed);
 
   /* 007C */ std::string tooltip;
   /* 0094 */ CBitmapRes* bitmap;

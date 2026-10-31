@@ -274,6 +274,7 @@ public:
   void NotifyCellMove(const float* x, const float* z);
   void ProcessViewCheck();
   void ProcessActorEffects();
+  void ProcessDamageMessages();
   void UpdateMotionFrame();
   void UpdateDamageMessages();
   void UpdateWorldCell();

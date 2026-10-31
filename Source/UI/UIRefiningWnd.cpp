@@ -15,6 +15,8 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBasicButton.h"
+#include "UI/Shop/ItemDrawing.h"
+#include "UI/Window/WindowBorder.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
@@ -48,8 +50,8 @@ struct RefiningClosePacket {
 
 // OFFSET: 0x007F4920
 // FUNCTION: fn_09890
-UIRefiningWnd::UIRefiningWnd()
-    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), refiningButton(nullptr), returnButton(nullptr),
+UIRefiningWnd::UIRefiningWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), refiningButton(nullptr), returnButton(nullptr),
       unknown_00C0(nullptr), state(0), result(7), frameInterval(100), stateTick(0), frame(0), selectedMaterial(-1), materials(), catalystEnabled(0),
       catalystItemId(0), catalystCount(0), item(0), unknown_01F0(0), nextMaterials(), nextCatalystCount(0), nextItem(0) {
   this->catalystItemId = 6635;
@@ -953,4 +955,158 @@ void UIRefining_Notice::SetNotice(const char* value, int duration, unsigned char
   if (this->parent) {
     this->parent->Invalidate();
   }
+}
+
+// OFFSET: 0x007F6280
+void UIRefiningWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  DrawRectangleBorder(*this, 0, 17, 264, 302, 0xC2C2C2);
+
+  std::string background;
+  switch (this->state) {
+  case 0:
+    background = FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_wait_%02d.bmp", this->frame);
+    break;
+  case 1:
+    background = FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining%s_ready_%02d.bmp", this->catalystCount > 0 ? "A" : "B", this->frame);
+    break;
+  case 2:
+    if (this->frame < 9) {
+      background = FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining%s_process_%02d.bmp", this->catalystEnabled == 1 ? "A" : "B", this->frame);
+    } else {
+      background = FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_process_%02d.bmp", this->frame);
+    }
+    break;
+  case 3:
+    background = FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_success_%02d.bmp", this->frame);
+    break;
+  case 4:
+  case 5:
+  case 6:
+    background = FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_fail_%02d.bmp", this->frame);
+    break;
+  }
+
+  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())));
+  this->DrawBitmap(1, 17, bitmap ? &bitmap->image : nullptr, false);
+
+  UIButtonContext& controls = *this->m_controls;
+  ItemDescriptions descriptions{g_itemDescriptions};
+
+  if (this->state == 1) {
+    if (this->selectedMaterial >= 0) {
+      bitmap = static_cast<CBitmapRes*>(
+        ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\refining_renewal\\slot_select_blue%d.bmp", this->selectedMaterial).c_str()))
+      );
+      this->DrawBitmap(this->selectedMaterial * 49 + 11, 55, bitmap ? &bitmap->image : nullptr, false);
+    }
+
+    if (this->catalystEnabled == 1) {
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\refining_renewal\\slot_select_red.bmp")));
+      this->DrawBitmap(207, 55, bitmap ? &bitmap->image : nullptr, false);
+    }
+
+    const char* color = "^CA152E";
+    int index = 0;
+    int x = 10;
+    for (const RefiningMaterial* material = this->materials.data(); material != this->materials.data() + this->materials.size(); ++material) {
+      ITEM_INFO icon;
+      icon.SetItemId(material->itemId);
+      const int owned = LookupClientItem(g_session.m_inventoryItems, material->itemId, 0).quantity;
+      DrawItemIcon(*this, controls.resources, descriptions, x + 12, 69, icon, 0);
+      const std::string count = FormatOwnedString("%s%d^000000/1", owned != 0 ? "" : color, owned);
+      this->DrawFormattedText(x, 107, count, 48, 6, 0, 12, 0, 0);
+      if (index == this->selectedMaterial && (this->state == 1 || (this->state == 2 && this->frame == 0))) {
+        DrawItemIcon(*this, controls.resources, descriptions, 81, 150, icon, 0);
+      }
+      ++index;
+      x += 49;
+    }
+
+    if (this->catalystItemId > 0 && this->catalystCount > 0) {
+      ITEM_INFO icon;
+      icon.SetItemId(this->catalystItemId);
+      const int owned = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0).quantity;
+      DrawItemIcon(*this, controls.resources, descriptions, 218, 69, icon, 0);
+      const std::string count = FormatOwnedString("%s%d^000000/%d", this->catalystCount <= owned ? "" : color, owned, this->catalystCount);
+      this->DrawFormattedText(206, 107, count, 48, 6, 0, 12, 0, 0);
+      if (this->catalystEnabled == 1 && (this->state == 1 || (this->state == 2 && this->frame < 13))) {
+        DrawItemIcon(*this, controls.resources, descriptions, 161, 150, icon, 0);
+      }
+    }
+  }
+
+  if (this->item.unknown_0000[1] != 0) {
+    DrawItemIcon(*this, controls.resources, descriptions, 120, 212, this->item, 0);
+    if (this->item.unknown_0088 > 0) {
+      bitmap = static_cast<CBitmapRes*>(
+        ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.unknown_0088).c_str()))
+      );
+      this->DrawBitmap(120, 224, bitmap ? &bitmap->image : nullptr, true);
+    }
+  }
+
+  switch (this->state) {
+  case 1:
+    this->DrawCenteredText(0, 246, this->item.unknown_0044.c_str(), 264, 0, 12, 0x462117, 1);
+    break;
+  case 3:
+  case 5:
+  case 6:
+    this->DrawCenteredText(0, 249, this->item.unknown_0044.c_str(), 264, 0, 12, 0x462117, 1);
+    break;
+  case 4:
+    this->DrawCenteredText(0, 249, LookupMessage(3246), 264, 0, 12, 0x462117, 1);
+    break;
+  }
+
+  switch (this->state) {
+  case 0:
+  case 1:
+  case 2: {
+    if (this->state == 2 && this->frame > 3) {
+      break;
+    }
+
+    unsigned char rate = 0;
+    if (this->item.unknown_0000[1] != 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
+        static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
+      rate = this->materials[this->selectedMaterial].unknown_0004;
+    }
+    const std::string label = FormatOwnedString("%s %d%%", LookupMessage(2974), rate);
+    const int labelWidth = this->TextWidth(controls.fonts, controls.locale, label.c_str(), 0, 0, 12, 1, 0);
+
+    rate = 0;
+    if (this->item.unknown_0000[1] != 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
+        static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
+      rate = this->materials[this->selectedMaterial].unknown_0004;
+    }
+    const std::string percent = FormatOwnedString("%d%%", rate);
+    const int percentWidth = this->TextWidth(controls.fonts, controls.locale, percent.c_str(), 0, 0, 12, 1, 0);
+
+    const int x = static_cast<int>((this->geometry.width - labelWidth) * 0.5);
+    this->DrawTextAt(controls.fonts, controls.locale, x, 31, LookupMessage(2974), 0, 0, 12, 0x422B1F, 1, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, x - percentWidth + labelWidth, 31, percent.c_str(), 0, 0, 12, 0xDE612A, 1, 0);
+    break;
+  }
+  case 3: {
+    const int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(2971), 0, 0, 12, 1, 0);
+    this->DrawTextAt(
+      controls.fonts, controls.locale, static_cast<int>((this->geometry.width - width) * 0.5), 31, LookupMessage(2971), 0, 0, 12, 0x422B1F, 1, 0
+    );
+    break;
+  }
+  case 4:
+  case 5:
+  case 6: {
+    const int width = this->TextWidth(controls.fonts, controls.locale, LookupMessage(2972), 0, 0, 12, 1, 0);
+    this->DrawTextAt(
+      controls.fonts, controls.locale, static_cast<int>((this->geometry.width - width) * 0.5), 31, LookupMessage(2972), 0, 0, 12, 0x422B1F, 1, 0
+    );
+    break;
+  }
+  }
+
+  this->DrawButtonBar(2, 0, 1);
+  this->DrawTitleBar(controls.fonts, controls.locale, false, LookupMessage(2966), 0);
 }

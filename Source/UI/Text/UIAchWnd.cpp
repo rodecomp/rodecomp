@@ -1518,3 +1518,14 @@ UIAchViewWnd::UIAchViewWnd(UIWindowContext& windows, UIButtonContext& controls) 
     reward = nullptr;
   }
 }
+
+// OFFSET: 0x007B24F0
+UICustomGageBar::UICustomGageBar(UIWindowContext& windows)
+    : UIWindow(windows, 0), value(-1), maximum(-1), text(), barColor(0xCE7B52), backgroundColor(0xFFFFFF), outerBorderColor(0xEFE7E7),
+      innerBorderColor(0xADADAD) {
+}
+
+// OFFSET: 0x007B25B0
+UIToolTipBitmapWnd::UIToolTipBitmapWnd(UIWindowContext& windows, WindowManagerWindows& managed)
+    : UIWindow(windows, 0), bitmap(nullptr), itemId(0), unknown_00B4(0), unknown_00B8(0), m_windows(&managed) {
+}
