@@ -3530,6 +3530,150 @@ int __stdcall sub_6A90D0(lua_State* state) {
   return 0;
 }
 
+// OFFSET: 0x006A8410
+
+// OFFSET: 0x006A8710
+
+// OFFSET: 0x006A9190
+// FUNCTION: fn_06119
+int __stdcall sub_6A9190(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("RaceSubDamageSelf", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A9250
+// FUNCTION: fn_06120
+int __stdcall sub_6A9250(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("Reincarnation", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A9310
+// FUNCTION: fn_06121
+int __stdcall sub_6A9310(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddDamage_CRI", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A93D0
+// FUNCTION: fn_06122
+int __stdcall sub_6A93D0(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = -1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SetIgnoreDEFClass", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A9490
+// FUNCTION: fn_06123
+int __stdcall sub_6A9490(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = -1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SetIgnoreDEFRace", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A9550
+// FUNCTION: fn_06124
+int __stdcall sub_6A9550(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SetIgnoreDefClass_Percent", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A9610
+// FUNCTION: fn_06125
+int __stdcall sub_6A9610(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SetIgnoreDefRace_Percent", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A96D0
+// FUNCTION: fn_06126
+int __stdcall sub_6A96D0(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SetIgnoreMdefClass", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A9790
+// FUNCTION: fn_06127
+int __stdcall sub_6A9790(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SetIgnoreMdefRace", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A9850
+// FUNCTION: fn_06128
+int __stdcall sub_6A9850(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 0;
+  int valuePosition = -1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SetInvestigate", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
 // OFFSET: 0x006AB520
 // FUNCTION: fn_06168
 void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* name, lua_State* state, const int& count, const int& valuePosition,
