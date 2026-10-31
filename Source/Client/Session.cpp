@@ -2179,8 +2179,6 @@ void CSession::LoadMiniPartyInfo() {
   std::free(data);
 }
 
-namespace {
-
 template <std::size_t Length, std::uint64_t Key>
 class EncryptedName {
 public:
@@ -2209,8 +2207,6 @@ private:
   /* 0000 */ std::uint8_t m_text[Length];
   bool m_encrypted;
 };
-
-}
 
 // OFFSET: 0x00DFD060
 // FUNCTION: fn_23603
@@ -3156,4 +3152,2764 @@ void CSession::InitCommandTables() {
   shortcutCommands.push_back("Alt + M");
   shortcutCommands.push_back("Alt + L");
   shortcutCommands.push_back("Alt + J");
+}
+
+template <>
+const char* EncryptedName<14, 0x072D2D872D259D5BULL>::Text();
+template <>
+const char* EncryptedName<18, 0x9BE3EF737387AD79ULL>::Text();
+template <>
+const char* EncryptedName<14, 0xB96B77B7255F8569ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x11CB35636377DD07ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x4755C1355575FD37ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x9D8F2D37BFFD61B7ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x79DF094DD9616575ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x038535BB092533B7ULL>::Text();
+template <>
+const char* EncryptedName<10, 0xFB2BC75769E777D3ULL>::Text();
+template <>
+const char* EncryptedName<14, 0xB5D7B5AF4FEDFF57ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x9B9D51AD3515F779ULL>::Text();
+template <>
+const char* EncryptedName<14, 0xB5F3F779237315F3ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x67DD5BAB1919D9D1ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x91493751EF33B5FDULL>::Text();
+template <>
+const char* EncryptedName<10, 0x6BC977B3B5993503ULL>::Text();
+template <>
+const char* EncryptedName<10, 0xB7A76BF9CD41F99FULL>::Text();
+template <>
+const char* EncryptedName<10, 0x732B390D63FD47D7ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x1FDB81175D1557E3ULL>::Text();
+template <>
+const char* EncryptedName<10, 0xE3FB23537D2785BFULL>::Text();
+template <>
+const char* EncryptedName<14, 0x8BBF792B47E72173ULL>::Text();
+template <>
+const char* EncryptedName<10, 0xB3CF9BEB7963DB89ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x71A509DB43792991ULL>::Text();
+template <>
+const char* EncryptedName<10, 0xDD69EDFFA18F537DULL>::Text();
+template <>
+const char* EncryptedName<10, 0xFFBF43D1FFD5FF49ULL>::Text();
+template <>
+const char* EncryptedName<10, 0xEB3D4FAB0FC183DBULL>::Text();
+template <>
+const char* EncryptedName<18, 0x8F3F2FA959977F9FULL>::Text();
+template <>
+const char* EncryptedName<14, 0xE51B29334D353B81ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x8B3FA35B5BDDDF89ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x7FE563BD3FB7F925ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x5D6B3B1DEB2397B1ULL>::Text();
+template <>
+const char* EncryptedName<28, 0x7DB1050779034DE7ULL>::Text();
+template <>
+const char* EncryptedName<22, 0x01E7898D9D235DDFULL>::Text();
+template <>
+const char* EncryptedName<10, 0x0DF5B33D9F21EB79ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x9DEFC105A1EB2F71ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x6961FF056999A303ULL>::Text();
+template <>
+const char* EncryptedName<18, 0xBD3F430159B551FDULL>::Text();
+template <>
+const char* EncryptedName<10, 0xC7FB6DF18577D34BULL>::Text();
+template <>
+const char* EncryptedName<10, 0x5B832361BDA77197ULL>::Text();
+template <>
+const char* EncryptedName<34, 0x2B477F9B5B39B301ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x2B8725D7E95325F5ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x899D11BB83695B0DULL>::Text();
+template <>
+const char* EncryptedName<14, 0xBDADDD87C5A50B6BULL>::Text();
+template <>
+const char* EncryptedName<10, 0x7989830DE73B9DBDULL>::Text();
+template <>
+const char* EncryptedName<10, 0xA7471985F93F9BDFULL>::Text();
+template <>
+const char* EncryptedName<10, 0xF535E561137F138DULL>::Text();
+template <>
+const char* EncryptedName<10, 0xD3E5516F89F161D1ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x45E3F103CBB5F157ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x07112F85A39F4FABULL>::Text();
+template <>
+const char* EncryptedName<14, 0x2D33791F67AD47DFULL>::Text();
+template <>
+const char* EncryptedName<10, 0x936F3D2FFDFD87F5ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x2F2701A7E56D3D89ULL>::Text();
+template <>
+const char* EncryptedName<28, 0x6B3301E1A3079125ULL>::Text();
+template <>
+const char* EncryptedName<22, 0x71B7691737C5A1AFULL>::Text();
+template <>
+const char* EncryptedName<10, 0xC39FB559A17D3963ULL>::Text();
+template <>
+const char* EncryptedName<14, 0xFF7D83CB791339D9ULL>::Text();
+template <>
+const char* EncryptedName<10, 0xED5143E7C1B39315ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x393D916561BDC391ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x31956551B311FD95ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x8741152D8FB34B4FULL>::Text();
+template <>
+const char* EncryptedName<34, 0x955D4DF94DE9BB07ULL>::Text();
+template <>
+const char* EncryptedName<14, 0xC399B7091589B50BULL>::Text();
+template <>
+const char* EncryptedName<18, 0xB739073FE921AD6FULL>::Text();
+template <>
+const char* EncryptedName<18, 0x17FFC98B398FAF61ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x9B5B959B954D9333ULL>::Text();
+template <>
+const char* EncryptedName<14, 0xAFA5617F178B6185ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x078143534999254DULL>::Text();
+template <>
+const char* EncryptedName<10, 0x3F5315DFE32B4FAFULL>::Text();
+template <>
+const char* EncryptedName<14, 0xE50B2935073DD3E9ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x7D750DADBDE9C3F1ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x33832D4D3FDFBDBFULL>::Text();
+template <>
+const char* EncryptedName<28, 0x1BF915E1F37DFDFDULL>::Text();
+template <>
+const char* EncryptedName<28, 0x01FF9313695DD9DFULL>::Text();
+template <>
+const char* EncryptedName<28, 0x6DED3DD1CF75AD9BULL>::Text();
+template <>
+const char* EncryptedName<28, 0x49C3759B77DBD3C1ULL>::Text();
+template <>
+const char* EncryptedName<28, 0xD1538513DF975701ULL>::Text();
+template <>
+const char* EncryptedName<28, 0x91E147EBBD47C39FULL>::Text();
+template <>
+const char* EncryptedName<28, 0x4F1791FB1503C713ULL>::Text();
+template <>
+const char* EncryptedName<28, 0xA1A55B4D1597EDD3ULL>::Text();
+template <>
+const char* EncryptedName<28, 0x0753A7E1EFA9E139ULL>::Text();
+template <>
+const char* EncryptedName<28, 0x7FC1015DFFCF6D19ULL>::Text();
+template <>
+const char* EncryptedName<28, 0xCB3FBD4183DB8323ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x7FCD77F9C7CBD14DULL>::Text();
+template <>
+const char* EncryptedName<18, 0x5B8F49AF09390D1BULL>::Text();
+template <>
+const char* EncryptedName<14, 0x3B915119EFD523EFULL>::Text();
+template <>
+const char* EncryptedName<14, 0x474DC581D5E98357ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x3F557BE333F95F6DULL>::Text();
+template <>
+const char* EncryptedName<14, 0x8B3FEB5B8BD5C3C3ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x0BEB63A5C905B3A7ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x078333BB9725B7C9ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x8F1B5BFD5F6175B5ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x69FD1D9733D3CFC1ULL>::Text();
+template <>
+const char* EncryptedName<10, 0xF5657D1F3DE5CDC7ULL>::Text();
+template <>
+const char* EncryptedName<22, 0x8B65CD61012B5931ULL>::Text();
+template <>
+const char* EncryptedName<22, 0xF7530137154D8FE5ULL>::Text();
+template <>
+const char* EncryptedName<22, 0x61FF87ED7BF39BE1ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x7D993F650D2785FFULL>::Text();
+template <>
+const char* EncryptedName<14, 0x2D394DBD0F332733ULL>::Text();
+template <>
+const char* EncryptedName<22, 0x151F77EBEBBB2147ULL>::Text();
+template <>
+const char* EncryptedName<22, 0xC7912587FFF31B71ULL>::Text();
+template <>
+const char* EncryptedName<34, 0x69D345DB950F336DULL>::Text();
+template <>
+const char* EncryptedName<34, 0x9B17C9EFDBB39F2FULL>::Text();
+template <>
+const char* EncryptedName<34, 0x2D3B15774149D5DDULL>::Text();
+template <>
+const char* EncryptedName<10, 0xD98F03A52D35636DULL>::Text();
+template <>
+const char* EncryptedName<10, 0x0F0F8B6B8F9D19D1ULL>::Text();
+template <>
+const char* EncryptedName<14, 0xD3755DD95F47A909ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x31D7C1EDA345E36DULL>::Text();
+template <>
+const char* EncryptedName<10, 0x3FAF85D995034FD7ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x490FFB43A12F0DB9ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x91651D81F559F971ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x73D1674B61DF7B0BULL>::Text();
+template <>
+const char* EncryptedName<10, 0x2FF3C5036D070127ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x17359BF953C367B3ULL>::Text();
+template <>
+const char* EncryptedName<10, 0xC52FB5FBB94FF917ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x93E7A3A1F587CDC5ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x59278F63D79F3DA1ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x812BE72BCD5707B7ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x3375B1C7DBB5FD55ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x1D6D75EDE7CD311FULL>::Text();
+template <>
+const char* EncryptedName<14, 0xCBD1F3239BBBEDF7ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x7DBBD74FA36F3BCBULL>::Text();
+template <>
+const char* EncryptedName<22, 0x4917EB6D71B701ABULL>::Text();
+template <>
+const char* EncryptedName<14, 0xFD4F85BBA7E37D4FULL>::Text();
+template <>
+const char* EncryptedName<10, 0x51C57BB9F1DD9B0FULL>::Text();
+template <>
+const char* EncryptedName<10, 0xC733B7A333F9F571ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x7D61612937C1592DULL>::Text();
+template <>
+const char* EncryptedName<18, 0x8F4B518D839D1581ULL>::Text();
+template <>
+const char* EncryptedName<10, 0xCBD7DDAFDF87F549ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x39E7F13755252F8FULL>::Text();
+template <>
+const char* EncryptedName<14, 0x3D075BD5256F9B6FULL>::Text();
+template <>
+const char* EncryptedName<14, 0xEB074B7FBDA3BFD5ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x03014749B127914FULL>::Text();
+template <>
+const char* EncryptedName<18, 0x251761D7370BA5C3ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x2B034DCBB1812785ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x85FB93CF2F494179ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x894FEDABAFCF45E3ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x8B03E17DA967E943ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x190B8705C141D1CFULL>::Text();
+template <>
+const char* EncryptedName<10, 0xC98BB32777F94371ULL>::Text();
+template <>
+const char* EncryptedName<10, 0xA5F51F3989DBB99FULL>::Text();
+template <>
+const char* EncryptedName<10, 0xB3D5C99B2B05FFEFULL>::Text();
+template <>
+const char* EncryptedName<10, 0xC71BB3CDEB499DD1ULL>::Text();
+template <>
+const char* EncryptedName<22, 0x3939079FF3395587ULL>::Text();
+template <>
+const char* EncryptedName<22, 0xCF391B0F8B9D95DBULL>::Text();
+template <>
+const char* EncryptedName<10, 0x6967633B9D89092BULL>::Text();
+template <>
+const char* EncryptedName<10, 0xAFCD4F69FBDFE157ULL>::Text();
+template <>
+const char* EncryptedName<22, 0x85D9CFCF0FBB71ABULL>::Text();
+template <>
+const char* EncryptedName<22, 0x795383DD11AF7DA7ULL>::Text();
+template <>
+const char* EncryptedName<22, 0xD9FF511B2BB921E7ULL>::Text();
+template <>
+const char* EncryptedName<16, 0x978B51F50DC5FD25ULL>::Text();
+template <>
+const char* EncryptedName<12, 0xC757D96143298511ULL>::Text();
+template <>
+const char* EncryptedName<16, 0xE1F181F923B759E7ULL>::Text();
+template <>
+const char* EncryptedName<12, 0x37D76D8F495113C3ULL>::Text();
+template <>
+const char* EncryptedName<20, 0x7BAD7791F50F5D8DULL>::Text();
+template <>
+const char* EncryptedName<18, 0x2F1337956DC3CFD5ULL>::Text();
+template <>
+const char* EncryptedName<23, 0xC91F9D493F75FDA3ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x1F01A13D8D915327ULL>::Text();
+template <>
+const char* EncryptedName<23, 0xF33D3D3B0BD9C53DULL>::Text();
+template <>
+const char* EncryptedName<10, 0xC74BB3BB110FB10FULL>::Text();
+template <>
+const char* EncryptedName<10, 0x0B5F6D6B23D5AFA7ULL>::Text();
+template <>
+const char* EncryptedName<16, 0x2B7BAB0B6971E3E9ULL>::Text();
+template <>
+const char* EncryptedName<12, 0x8773593DB181D573ULL>::Text();
+template <>
+const char* EncryptedName<16, 0xFBDBDB13A77191BFULL>::Text();
+template <>
+const char* EncryptedName<12, 0x19BBC5910555FB97ULL>::Text();
+template <>
+const char* EncryptedName<18, 0xBBD983C7FD611FE3ULL>::Text();
+template <>
+const char* EncryptedName<18, 0xA1ED494BF319772DULL>::Text();
+template <>
+const char* EncryptedName<18, 0x798B394FF5FF434DULL>::Text();
+template <>
+const char* EncryptedName<18, 0x410DD52D6731BFFDULL>::Text();
+template <>
+const char* EncryptedName<18, 0x07B733370F612D0FULL>::Text();
+template <>
+const char* EncryptedName<14, 0x113DC179F1C795C9ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x31F5C32DD5C53779ULL>::Text();
+template <>
+const char* EncryptedName<10, 0x2F9B717365C1250FULL>::Text();
+template <>
+const char* EncryptedName<10, 0x4FE54379493FB5D5ULL>::Text();
+template <>
+const char* EncryptedName<20, 0x656FAB972B3D21BBULL>::Text();
+template <>
+const char* EncryptedName<20, 0x33CD2BDD5B3927EDULL>::Text();
+template <>
+const char* EncryptedName<18, 0xD97BB73901ED99BFULL>::Text();
+template <>
+const char* EncryptedName<14, 0x5D6B8FCBE3FB97A1ULL>::Text();
+template <>
+const char* EncryptedName<18, 0xE5FDE3151BED831FULL>::Text();
+template <>
+const char* EncryptedName<14, 0x8971CB79C18D8B27ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x8DC5D10DAB1585BDULL>::Text();
+template <>
+const char* EncryptedName<18, 0x21156F4141E35DD9ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x51EB99CBCB075F35ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x1B3B756FE399E1D9ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x3B6D9BFD27A7C7F7ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x451FD72783630709ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x73C32959FDFFA51BULL>::Text();
+template <>
+const char* EncryptedName<14, 0xA15B555BE9CD2B81ULL>::Text();
+template <>
+const char* EncryptedName<14, 0xD9115915B1919533ULL>::Text();
+template <>
+const char* EncryptedName<14, 0xB3F1A10745C1F105ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x99157F159BB99BD9ULL>::Text();
+template <>
+const char* EncryptedName<23, 0x7959FFBF652D07BFULL>::Text();
+template <>
+const char* EncryptedName<25, 0x01C9FBA7819FFBD7ULL>::Text();
+template <>
+const char* EncryptedName<22, 0xABED6971354375C3ULL>::Text();
+template <>
+const char* EncryptedName<29, 0x6BA557130BDFE997ULL>::Text();
+template <>
+const char* EncryptedName<18, 0xFBAD074BDB2B77A1ULL>::Text();
+template <>
+const char* EncryptedName<25, 0x6D05D5271B5D65C3ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x050DF16FC75B25B9ULL>::Text();
+template <>
+const char* EncryptedName<25, 0x0789EBC9F5C1C59FULL>::Text();
+template <>
+const char* EncryptedName<22, 0x3D8387EF97A37DCFULL>::Text();
+template <>
+const char* EncryptedName<29, 0x07A7D947CF7323BFULL>::Text();
+template <>
+const char* EncryptedName<12, 0xD97DC927AFE911F1ULL>::Text();
+template <>
+const char* EncryptedName<26, 0x8BA52B970DD531ADULL>::Text();
+template <>
+const char* EncryptedName<16, 0x47B7BF55EB471557ULL>::Text();
+template <>
+const char* EncryptedName<30, 0xCFB9671DEF4BD9E7ULL>::Text();
+template <>
+const char* EncryptedName<35, 0x2F2103792383718BULL>::Text();
+template <>
+const char* EncryptedName<28, 0x999F5191852D2F6BULL>::Text();
+template <>
+const char* EncryptedName<42, 0x4349ADE96FEB27E5ULL>::Text();
+template <>
+const char* EncryptedName<44, 0xA55B7BEF3D7377E3ULL>::Text();
+template <>
+const char* EncryptedName<30, 0x31E3CF9D358D8705ULL>::Text();
+template <>
+const char* EncryptedName<44, 0x79A58B0F2173CF49ULL>::Text();
+template <>
+const char* EncryptedName<46, 0xF5496753BDE7C5BDULL>::Text();
+template <>
+const char* EncryptedName<26, 0x795787B7779D19DBULL>::Text();
+template <>
+const char* EncryptedName<33, 0x6B3917C939150B9BULL>::Text();
+template <>
+const char* EncryptedName<26, 0x29AB0B59651BDFD5ULL>::Text();
+template <>
+const char* EncryptedName<33, 0xF9B1EF9F7961EFF5ULL>::Text();
+template <>
+const char* EncryptedName<24, 0xA1DFCDAD555BB16DULL>::Text();
+template <>
+const char* EncryptedName<25, 0xAFF9332FD397533FULL>::Text();
+template <>
+const char* EncryptedName<31, 0x194F8339AF753FADULL>::Text();
+template <>
+const char* EncryptedName<26, 0x7DC10333F96DE3E7ULL>::Text();
+template <>
+const char* EncryptedName<33, 0xE9FBAB53D5A1BB17ULL>::Text();
+template <>
+const char* EncryptedName<18, 0x51372B6F4BA14B23ULL>::Text();
+template <>
+const char* EncryptedName<25, 0xB70319D3A78D39CDULL>::Text();
+template <>
+const char* EncryptedName<18, 0x1F79132B518FD389ULL>::Text();
+template <>
+const char* EncryptedName<25, 0xC1FD95811D1F4FA1ULL>::Text();
+template <>
+const char* EncryptedName<24, 0x35F59F6F3DD1C965ULL>::Text();
+template <>
+const char* EncryptedName<31, 0xD7BBEB2DDB295D11ULL>::Text();
+template <>
+const char* EncryptedName<26, 0xBF0F412941076FADULL>::Text();
+template <>
+const char* EncryptedName<33, 0x8DFF0B4B67D9FDE1ULL>::Text();
+template <>
+const char* EncryptedName<30, 0xB59BADC5B365617DULL>::Text();
+template <>
+const char* EncryptedName<37, 0x77D925073D6F19B9ULL>::Text();
+template <>
+const char* EncryptedName<12, 0x91E7A7DFA58F9B6BULL>::Text();
+template <>
+const char* EncryptedName<12, 0x2529F16B0375530DULL>::Text();
+template <>
+const char* EncryptedName<14, 0x91DF1F5D3B014D45ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x0D7FA94DD32361A9ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x2F371DDDADDD53CFULL>::Text();
+template <>
+const char* EncryptedName<9, 0xA5C5D1A3B9457B53ULL>::Text();
+template <>
+const char* EncryptedName<11, 0x61F59D5D41E76519ULL>::Text();
+template <>
+const char* EncryptedName<13, 0x4B670715D543C1C3ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x7155E5EF0DFB0D03ULL>::Text();
+template <>
+const char* EncryptedName<14, 0x4B1D078937DB892BULL>::Text();
+template <>
+const char* EncryptedName<14, 0x875FCDF1E7A1795FULL>::Text();
+template <>
+const char* EncryptedName<14, 0x5FFD7FABB5D1EF57ULL>::Text();
+
+EncryptedName<14, 0x072D2D872D259D5BULL>& WizardBodyPath1();
+EncryptedName<18, 0x9BE3EF737387AD79ULL>& PriestBodyPath1();
+EncryptedName<14, 0xB96B77B7255F8569ULL>& AssassinBodyPath1();
+EncryptedName<14, 0x11CB35636377DD07ULL>& SageBodyPath1();
+EncryptedName<10, 0x4755C1355575FD37ULL>& BardBodyPath1();
+EncryptedName<10, 0x9D8F2D37BFFD61B7ULL>& DancerBodyPath1();
+EncryptedName<10, 0x79DF094DD9616575ULL>& MonkBodyPath1();
+EncryptedName<18, 0x038535BB092533B7ULL>& AlchemistBodyPath1();
+EncryptedName<10, 0xFB2BC75769E777D3ULL>& RogueBodyPath1();
+EncryptedName<14, 0xB5D7B5AF4FEDFF57ULL>& NoviceBodyPath1();
+EncryptedName<10, 0x9B9D51AD3515F779ULL>& SwordmanBodyPath1();
+EncryptedName<14, 0xB5F3F779237315F3ULL>& MagicianBodyPath1();
+EncryptedName<10, 0x67DD5BAB1919D9D1ULL>& ArcherBodyPath1();
+EncryptedName<14, 0x91493751EF33B5FDULL>& AcolyteBodyPath1();
+EncryptedName<10, 0x6BC977B3B5993503ULL>& MerchantBodyPath1();
+EncryptedName<10, 0xB7A76BF9CD41F99FULL>& ThiefBodyPath1();
+EncryptedName<10, 0x732B390D63FD47D7ULL>& ThiefBodyPath2();
+EncryptedName<14, 0x1FDB81175D1557E3ULL>& NoviceBodyPath2();
+EncryptedName<10, 0xE3FB23537D2785BFULL>& SwordmanBodyPath2();
+EncryptedName<14, 0x8BBF792B47E72173ULL>& MagicianBodyPath2();
+EncryptedName<10, 0xB3CF9BEB7963DB89ULL>& ArcherBodyPath2();
+EncryptedName<14, 0x71A509DB43792991ULL>& AcolyteBodyPath2();
+EncryptedName<10, 0xDD69EDFFA18F537DULL>& MerchantBodyPath2();
+EncryptedName<10, 0xFFBF43D1FFD5FF49ULL>& ThiefBodyPath3();
+EncryptedName<10, 0xEB3D4FAB0FC183DBULL>& KnightBodyPath1();
+EncryptedName<18, 0x8F3F2FA959977F9FULL>& PriestBodyPath2();
+EncryptedName<14, 0xE51B29334D353B81ULL>& WizardBodyPath2();
+EncryptedName<14, 0x8B3FA35B5BDDDF89ULL>& BlacksmithBodyPath1();
+EncryptedName<10, 0x7FE563BD3FB7F925ULL>& HunterBodyPath1();
+EncryptedName<14, 0x5D6B3B1DEB2397B1ULL>& AssassinBodyPath2();
+EncryptedName<28, 0x7DB1050779034DE7ULL>& PecoKnightBodyPath1();
+EncryptedName<22, 0x01E7898D9D235DDFULL>& CrusaderBodyPath1();
+EncryptedName<10, 0x0DF5B33D9F21EB79ULL>& MonkBodyPath2();
+EncryptedName<14, 0x9DEFC105A1EB2F71ULL>& SageBodyPath2();
+EncryptedName<10, 0x6961FF056999A303ULL>& RogueBodyPath2();
+EncryptedName<18, 0xBD3F430159B551FDULL>& AlchemistBodyPath2();
+EncryptedName<10, 0xC7FB6DF18577D34BULL>& BardBodyPath2();
+EncryptedName<10, 0x5B832361BDA77197ULL>& DancerBodyPath2();
+EncryptedName<34, 0x2B477F9B5B39B301ULL>& NewPecoCrusaderBodyPath1();
+EncryptedName<14, 0x2B8725D7E95325F5ULL>& NoviceBodyPath3();
+EncryptedName<10, 0x899D11BB83695B0DULL>& SwordmanBodyPath3();
+EncryptedName<14, 0xBDADDD87C5A50B6BULL>& MagicianBodyPath3();
+EncryptedName<10, 0x7989830DE73B9DBDULL>& ArcherBodyPath3();
+EncryptedName<10, 0xA7471985F93F9BDFULL>& MerchantBodyPath3();
+EncryptedName<10, 0xF535E561137F138DULL>& ThiefBodyPath4();
+EncryptedName<10, 0xD3E5516F89F161D1ULL>& KnightBodyPath2();
+EncryptedName<18, 0x45E3F103CBB5F157ULL>& PriestBodyPath3();
+EncryptedName<14, 0x07112F85A39F4FABULL>& WizardBodyPath3();
+EncryptedName<14, 0x2D33791F67AD47DFULL>& BlacksmithBodyPath2();
+EncryptedName<10, 0x936F3D2FFDFD87F5ULL>& HunterBodyPath2();
+EncryptedName<14, 0x2F2701A7E56D3D89ULL>& AssassinBodyPath3();
+EncryptedName<28, 0x6B3301E1A3079125ULL>& PecoKnightBodyPath2();
+EncryptedName<22, 0x71B7691737C5A1AFULL>& CrusaderBodyPath2();
+EncryptedName<10, 0xC39FB559A17D3963ULL>& MonkBodyPath3();
+EncryptedName<14, 0xFF7D83CB791339D9ULL>& SageBodyPath3();
+EncryptedName<10, 0xED5143E7C1B39315ULL>& RogueBodyPath3();
+EncryptedName<18, 0x393D916561BDC391ULL>& AlchemistBodyPath3();
+EncryptedName<10, 0x31956551B311FD95ULL>& BardBodyPath3();
+EncryptedName<10, 0x8741152D8FB34B4FULL>& DancerBodyPath3();
+EncryptedName<34, 0x955D4DF94DE9BB07ULL>& OldPecoCrusaderBodyPath1();
+EncryptedName<14, 0xC399B7091589B50BULL>& NoviceBodyPath4();
+EncryptedName<18, 0xB739073FE921AD6FULL>& TaekwonBodyPath1();
+EncryptedName<18, 0x17FFC98B398FAF61ULL>& TaekwonBodyPath2();
+EncryptedName<18, 0x9B5B959B954D9333ULL>& TaekwonBodyPath3();
+EncryptedName<14, 0xAFA5617F178B6185ULL>& WizardBodyPath4();
+EncryptedName<14, 0x078143534999254DULL>& AcolyteBodyPath3();
+EncryptedName<10, 0x3F5315DFE32B4FAFULL>& KnightBodyPath3();
+EncryptedName<14, 0xE50B2935073DD3E9ULL>& SageBodyPath4();
+EncryptedName<10, 0x7D750DADBDE9C3F1ULL>& KnightBodyPath4();
+EncryptedName<10, 0x33832D4D3FDFBDBFULL>& KnightBodyPath5();
+EncryptedName<28, 0x1BF915E1F37DFDFDULL>& PecoKnightBodyPath3();
+EncryptedName<28, 0x01FF9313695DD9DFULL>& PecoKnightBodyPath4();
+EncryptedName<28, 0x6DED3DD1CF75AD9BULL>& PecoKnightBodyPath5();
+EncryptedName<28, 0x49C3759B77DBD3C1ULL>& PecoKnightBodyPath6();
+EncryptedName<28, 0xD1538513DF975701ULL>& PecoKnightBodyPath7();
+EncryptedName<28, 0x91E147EBBD47C39FULL>& PecoKnightBodyPath8();
+EncryptedName<28, 0x4F1791FB1503C713ULL>& PecoKnightBodyPath9();
+EncryptedName<28, 0xA1A55B4D1597EDD3ULL>& PecoKnightBodyPath10();
+EncryptedName<28, 0x0753A7E1EFA9E139ULL>& PecoKnightBodyPath11();
+EncryptedName<28, 0x7FC1015DFFCF6D19ULL>& PecoKnightBodyPath12();
+EncryptedName<28, 0xCB3FBD4183DB8323ULL>& PecoKnightBodyPath13();
+EncryptedName<18, 0x7FCD77F9C7CBD14DULL>& PriestBodyPath4();
+EncryptedName<18, 0x5B8F49AF09390D1BULL>& PriestBodyPath5();
+EncryptedName<14, 0x3B915119EFD523EFULL>& WizardBodyPath5();
+EncryptedName<14, 0x474DC581D5E98357ULL>& WizardBodyPath6();
+EncryptedName<14, 0x3F557BE333F95F6DULL>& BlacksmithBodyPath3();
+EncryptedName<14, 0x8B3FEB5B8BD5C3C3ULL>& BlacksmithBodyPath4();
+EncryptedName<18, 0x0BEB63A5C905B3A7ULL>& MadogearBodyPath1();
+EncryptedName<18, 0x078333BB9725B7C9ULL>& MadogearBodyPath2();
+EncryptedName<18, 0x8F1B5BFD5F6175B5ULL>& MadogearBodyPath3();
+EncryptedName<10, 0x69FD1D9733D3CFC1ULL>& HunterBodyPath3();
+EncryptedName<10, 0xF5657D1F3DE5CDC7ULL>& HunterBodyPath4();
+EncryptedName<22, 0x8B65CD61012B5931ULL>& RangerWolfBodyPath1();
+EncryptedName<22, 0xF7530137154D8FE5ULL>& RangerWolfBodyPath2();
+EncryptedName<22, 0x61FF87ED7BF39BE1ULL>& RangerWolfBodyPath3();
+EncryptedName<14, 0x7D993F650D2785FFULL>& AssassinBodyPath4();
+EncryptedName<14, 0x2D394DBD0F332733ULL>& AssassinBodyPath5();
+EncryptedName<22, 0x151F77EBEBBB2147ULL>& CrusaderBodyPath3();
+EncryptedName<22, 0xC7912587FFF31B71ULL>& CrusaderBodyPath4();
+EncryptedName<34, 0x69D345DB950F336DULL>& NewPecoCrusaderBodyPath2();
+EncryptedName<34, 0x9B17C9EFDBB39F2FULL>& NewPecoCrusaderBodyPath3();
+EncryptedName<34, 0x2D3B15774149D5DDULL>& NewPecoCrusaderBodyPath4();
+EncryptedName<10, 0xD98F03A52D35636DULL>& MonkBodyPath4();
+EncryptedName<10, 0x0F0F8B6B8F9D19D1ULL>& MonkBodyPath5();
+EncryptedName<14, 0xD3755DD95F47A909ULL>& SageBodyPath5();
+EncryptedName<14, 0x31D7C1EDA345E36DULL>& SageBodyPath6();
+EncryptedName<10, 0x3FAF85D995034FD7ULL>& RogueBodyPath4();
+EncryptedName<10, 0x490FFB43A12F0DB9ULL>& RogueBodyPath5();
+EncryptedName<18, 0x91651D81F559F971ULL>& AlchemistBodyPath4();
+EncryptedName<18, 0x73D1674B61DF7B0BULL>& AlchemistBodyPath5();
+EncryptedName<10, 0x2FF3C5036D070127ULL>& DancerBodyPath4();
+EncryptedName<10, 0x17359BF953C367B3ULL>& DancerBodyPath5();
+EncryptedName<10, 0xC52FB5FBB94FF917ULL>& BardBodyPath4();
+EncryptedName<10, 0x93E7A3A1F587CDC5ULL>& BardBodyPath5();
+EncryptedName<10, 0x59278F63D79F3DA1ULL>& KnightBodyPath6();
+EncryptedName<14, 0x812BE72BCD5707B7ULL>& WizardBodyPath7();
+EncryptedName<10, 0x3375B1C7DBB5FD55ULL>& HunterBodyPath5();
+EncryptedName<18, 0x1D6D75EDE7CD311FULL>& PriestBodyPath6();
+EncryptedName<14, 0xCBD1F3239BBBEDF7ULL>& BlacksmithBodyPath5();
+EncryptedName<14, 0x7DBBD74FA36F3BCBULL>& AssassinBodyPath6();
+EncryptedName<22, 0x4917EB6D71B701ABULL>& CrusaderBodyPath5();
+EncryptedName<14, 0xFD4F85BBA7E37D4FULL>& SageBodyPath7();
+EncryptedName<10, 0x51C57BB9F1DD9B0FULL>& BardBodyPath6();
+EncryptedName<10, 0xC733B7A333F9F571ULL>& DancerBodyPath6();
+EncryptedName<10, 0x7D61612937C1592DULL>& MonkBodyPath6();
+EncryptedName<18, 0x8F4B518D839D1581ULL>& AlchemistBodyPath6();
+EncryptedName<10, 0xCBD7DDAFDF87F549ULL>& RogueBodyPath6();
+EncryptedName<14, 0x39E7F13755252F8FULL>& NoviceBodyPath5();
+EncryptedName<14, 0x3D075BD5256F9B6FULL>& NoviceBodyPath6();
+EncryptedName<14, 0xEB074B7FBDA3BFD5ULL>& NoviceBodyPath7();
+EncryptedName<14, 0x03014749B127914FULL>& NoviceBodyPath8();
+EncryptedName<18, 0x251761D7370BA5C3ULL>& PriestBodyPath7();
+EncryptedName<14, 0x2B034DCBB1812785ULL>& WizardBodyPath8();
+EncryptedName<14, 0x85FB93CF2F494179ULL>& BlacksmithBodyPath6();
+EncryptedName<14, 0x894FEDABAFCF45E3ULL>& BlacksmithBodyPath7();
+EncryptedName<14, 0x8B03E17DA967E943ULL>& BlacksmithBodyPath8();
+EncryptedName<10, 0x190B8705C141D1CFULL>& HunterBodyPath6();
+EncryptedName<10, 0xC98BB32777F94371ULL>& HunterBodyPath7();
+EncryptedName<10, 0xA5F51F3989DBB99FULL>& KnightBodyPath7();
+EncryptedName<10, 0xB3D5C99B2B05FFEFULL>& KnightBodyPath8();
+EncryptedName<10, 0xC71BB3CDEB499DD1ULL>& KnightBodyPath9();
+EncryptedName<22, 0x3939079FF3395587ULL>& CrusaderBodyPath6();
+EncryptedName<22, 0xCF391B0F8B9D95DBULL>& CrusaderBodyPath7();
+EncryptedName<10, 0x6967633B9D89092BULL>& KnightBodyPath10();
+EncryptedName<10, 0xAFCD4F69FBDFE157ULL>& KnightBodyPath11();
+EncryptedName<22, 0x85D9CFCF0FBB71ABULL>& CrusaderBodyPath8();
+EncryptedName<22, 0x795383DD11AF7DA7ULL>& CrusaderBodyPath9();
+EncryptedName<22, 0xD9FF511B2BB921E7ULL>& CrusaderBodyPath10();
+EncryptedName<16, 0x978B51F50DC5FD25ULL>& KagerouBodyPath1();
+EncryptedName<12, 0xC757D96143298511ULL>& OboroBodyPath1();
+EncryptedName<16, 0xE1F181F923B759E7ULL>& KagerouBodyPath2();
+EncryptedName<12, 0x37D76D8F495113C3ULL>& OboroBodyPath2();
+EncryptedName<20, 0x7BAD7791F50F5D8DULL>& RebellionBodyPath1();
+EncryptedName<18, 0x2F1337956DC3CFD5ULL>& SummonerBodyPath1();
+EncryptedName<23, 0xC91F9D493F75FDA3ULL>& SummonerCartBodyPath1();
+EncryptedName<18, 0x1F01A13D8D915327ULL>& SummonerBodyPath2();
+EncryptedName<23, 0xF33D3D3B0BD9C53DULL>& SummonerCartBodyPath2();
+EncryptedName<10, 0xC74BB3BB110FB10FULL>& NinjaBodyPath1();
+EncryptedName<10, 0x0B5F6D6B23D5AFA7ULL>& NinjaBodyPath2();
+EncryptedName<16, 0x2B7BAB0B6971E3E9ULL>& KagerouBodyPath3();
+EncryptedName<12, 0x8773593DB181D573ULL>& OboroBodyPath3();
+EncryptedName<16, 0xFBDBDB13A77191BFULL>& KagerouBodyPath4();
+EncryptedName<12, 0x19BBC5910555FB97ULL>& OboroBodyPath4();
+EncryptedName<18, 0xBBD983C7FD611FE3ULL>& TaekwonBodyPath4();
+EncryptedName<18, 0xA1ED494BF319772DULL>& TaekwonBodyPath5();
+EncryptedName<18, 0x798B394FF5FF434DULL>& TaekwonBodyPath6();
+EncryptedName<18, 0x410DD52D6731BFFDULL>& TaekwonBodyPath7();
+EncryptedName<18, 0x07B733370F612D0FULL>& TaekwonBodyPath8();
+EncryptedName<14, 0x113DC179F1C795C9ULL>& WizardBodyPath9();
+EncryptedName<14, 0x31F5C32DD5C53779ULL>& WizardBodyPath10();
+EncryptedName<10, 0x2F9B717365C1250FULL>& GunslingerBodyPath1();
+EncryptedName<10, 0x4FE54379493FB5D5ULL>& GunslingerBodyPath2();
+EncryptedName<20, 0x656FAB972B3D21BBULL>& RebellionBodyPath2();
+EncryptedName<20, 0x33CD2BDD5B3927EDULL>& RebellionBodyPath3();
+EncryptedName<18, 0xD97BB73901ED99BFULL>& TaekwonBodyPath9();
+EncryptedName<14, 0x5D6B8FCBE3FB97A1ULL>& WizardBodyPath11();
+EncryptedName<18, 0xE5FDE3151BED831FULL>& TaekwonBodyPath10();
+EncryptedName<14, 0x8971CB79C18D8B27ULL>& WizardBodyPath12();
+EncryptedName<18, 0x8DC5D10DAB1585BDULL>& TaekwonBodyPath11();
+EncryptedName<18, 0x21156F4141E35DD9ULL>& TaekwonBodyPath12();
+EncryptedName<18, 0x51EB99CBCB075F35ULL>& TaekwonBodyPath13();
+EncryptedName<14, 0x1B3B756FE399E1D9ULL>& WizardBodyPath13();
+EncryptedName<18, 0x3B6D9BFD27A7C7F7ULL>& TaekwonBodyPath14();
+EncryptedName<14, 0x451FD72783630709ULL>& WizardBodyPath14();
+EncryptedName<14, 0x73C32959FDFFA51BULL>& WizardBodyPath15();
+EncryptedName<14, 0xA15B555BE9CD2B81ULL>& WizardBodyPath16();
+EncryptedName<14, 0xD9115915B1919533ULL>& SageBodyPath8();
+EncryptedName<14, 0xB3F1A10745C1F105ULL>& SageBodyPath9();
+EncryptedName<18, 0x99157F159BB99BD9ULL>& WindhawkBodyPath1();
+EncryptedName<23, 0x7959FFBF652D07BFULL>& WolfWindhawkBodyPath1();
+EncryptedName<25, 0x01C9FBA7819FFBD7ULL>& WindhawkRidingBodyPath1();
+EncryptedName<22, 0xABED6971354375C3ULL>& TroubadourBodyPath1();
+EncryptedName<29, 0x6BA557130BDFE997ULL>& TroubadourRidingBodyPath1();
+EncryptedName<18, 0xFBAD074BDB2B77A1ULL>& TrouvereBodyPath1();
+EncryptedName<25, 0x6D05D5271B5D65C3ULL>& TrouvereRidingBodyPath1();
+EncryptedName<18, 0x050DF16FC75B25B9ULL>& CardinalBodyPath1();
+EncryptedName<25, 0x0789EBC9F5C1C59FULL>& CardinalRidingBodyPath1();
+EncryptedName<22, 0x3D8387EF97A37DCFULL>& InquisitorBodyPath1();
+EncryptedName<29, 0x07A7D947CF7323BFULL>& InquisitorRidingBodyPath1();
+EncryptedName<12, 0xD97DC927AFE911F1ULL>& BioloBodyPath1();
+EncryptedName<26, 0x8BA52B970DD531ADULL>& BioloRidingBodyPath1();
+EncryptedName<16, 0x47B7BF55EB471557ULL>& MeisterBodyPath1();
+EncryptedName<30, 0xCFB9671DEF4BD9E7ULL>& MeisterRidingBodyPath1();
+EncryptedName<35, 0x2F2103792383718BULL>& MeisterMadogear1BodyPath1();
+EncryptedName<28, 0x999F5191852D2F6BULL>& DragonKnightBodyPath1();
+EncryptedName<42, 0x4349ADE96FEB27E5ULL>& DragonKnightRidingBodyPath1();
+EncryptedName<44, 0xA55B7BEF3D7377E3ULL>& DragonKnightChickenBodyPath1();
+EncryptedName<30, 0x31E3CF9D358D8705ULL>& ImperialGuardBodyPath1();
+EncryptedName<44, 0x79A58B0F2173CF49ULL>& ImperialGuardRidingBodyPath1();
+EncryptedName<46, 0xF5496753BDE7C5BDULL>& ImperialGuardChickenBodyPath1();
+EncryptedName<26, 0x795787B7779D19DBULL>& ShadowCrossBodyPath1();
+EncryptedName<33, 0x6B3917C939150B9BULL>& ShadowCrossRidingBodyPath1();
+EncryptedName<26, 0x29AB0B59651BDFD5ULL>& AbyssChaserBodyPath1();
+EncryptedName<33, 0xF9B1EF9F7961EFF5ULL>& AbyssChaserRidingBodyPath1();
+EncryptedName<24, 0xA1DFCDAD555BB16DULL>& SkyEmperorBodyPath1();
+EncryptedName<25, 0xAFF9332FD397533FULL>& SkyEmperor2BodyPath1();
+EncryptedName<31, 0x194F8339AF753FADULL>& SkyEmperorRidingBodyPath1();
+EncryptedName<26, 0x7DC10333F96DE3E7ULL>& SoulAsceticBodyPath1();
+EncryptedName<33, 0xE9FBAB53D5A1BB17ULL>& SoulAsceticRidingBodyPath1();
+EncryptedName<18, 0x51372B6F4BA14B23ULL>& ShinkiroBodyPath1();
+EncryptedName<25, 0xB70319D3A78D39CDULL>& ShinkiroRidingBodyPath1();
+EncryptedName<18, 0x1F79132B518FD389ULL>& ShiranuiBodyPath1();
+EncryptedName<25, 0xC1FD95811D1F4FA1ULL>& ShiranuiRidingBodyPath1();
+EncryptedName<24, 0x35F59F6F3DD1C965ULL>& NightWatchBodyPath1();
+EncryptedName<31, 0xD7BBEB2DDB295D11ULL>& NightWatchRidingBodyPath1();
+EncryptedName<26, 0xBF0F412941076FADULL>& HyperNoviceBodyPath1();
+EncryptedName<33, 0x8DFF0B4B67D9FDE1ULL>& HyperNoviceRidingBodyPath1();
+EncryptedName<30, 0xB59BADC5B365617DULL>& SpiritHandlerBodyPath1();
+EncryptedName<37, 0x77D925073D6F19B9ULL>& SpiritHandlerRidingBodyPath1();
+EncryptedName<12, 0x91E7A7DFA58F9B6BULL>& DruidBodyPath1();
+EncryptedName<12, 0x2529F16B0375530DULL>& DruidBodyPath2();
+EncryptedName<14, 0x91DF1F5D3B014D45ULL>& KarnosBodyPath1();
+EncryptedName<14, 0x0D7FA94DD32361A9ULL>& KarnosBodyPath2();
+EncryptedName<14, 0x2F371DDDADDD53CFULL>& AliteaBodyPath1();
+EncryptedName<6, 0x2F3D75DFCF678FF3ULL>& DruidJobName1();
+EncryptedName<6, 0x3BBB5F0F8F216F31ULL>& DruidJobName2();
+EncryptedName<7, 0x6F9D21B96D71C1FFULL>& KarnosJobName1();
+EncryptedName<7, 0xED730315539785C7ULL>& KarnosJobName2();
+EncryptedName<7, 0x8F61434F0F79DDD7ULL>& AliteaJobName1();
+EncryptedName<9, 0xA5C5D1A3B9457B53ULL>& WerewolfJobName1();
+EncryptedName<11, 0x61F59D5D41E76519ULL>& WereRaptorJobName1();
+EncryptedName<13, 0x4B670715D543C1C3ULL>& DruidRidingName();
+EncryptedName<14, 0x7155E5EF0DFB0D03ULL>& KarnosRidingName();
+EncryptedName<14, 0x4B1D078937DB892BULL>& AliteaRidingName();
+
+// OFFSET: 0x00DE98B0
+// FUNCTION: fn_23502
+void CSession::InitResourceNameTables() {
+  std::vector<const char*>& bodyJobNames = reinterpret_cast<std::vector<const char*>&>(this->m_bodyJobNames);
+  bodyJobNames.resize(28053, "초보자");
+  bodyJobNames[0] = "초보자";
+  bodyJobNames[26] = "산타";
+  bodyJobNames[27] = "여름";
+  bodyJobNames[28] = "한복";
+  bodyJobNames[29] = "옥토버패스트";
+  bodyJobNames[30] = "여름2";
+  bodyJobNames[1] = "검사";
+  bodyJobNames[2] = "마법사";
+  bodyJobNames[3] = "궁수";
+  bodyJobNames[4] = "성직자";
+  bodyJobNames[5] = "상인";
+  bodyJobNames[6] = "도둑";
+  bodyJobNames[7] = "기사";
+  bodyJobNames[8] = "프리스트";
+  bodyJobNames[9] = "위저드";
+  bodyJobNames[10] = "제철공";
+  bodyJobNames[11] = "헌터";
+  bodyJobNames[12] = "어세신";
+  bodyJobNames[13] = "페코페코_기사";
+  bodyJobNames[14] = "크루세이더";
+  bodyJobNames[15] = "몽크";
+  bodyJobNames[16] = "세이지";
+  bodyJobNames[17] = "로그";
+  bodyJobNames[18] = "연금술사";
+  bodyJobNames[19] = "바드";
+  bodyJobNames[20] = "무희";
+  bodyJobNames[21] = "신페코크루세이더";
+  bodyJobNames[23] = "슈퍼노비스";
+  bodyJobNames[22] = "결혼";
+  bodyJobNames[24] = "건너";
+  bodyJobNames[25] = "닌자";
+  bodyJobNames[164] = "두꺼비닌자";
+  bodyJobNames[167] = "두꺼비소울링커";
+  bodyJobNames[165] = "페코건너";
+  bodyJobNames[166] = "페코검사";
+  bodyJobNames[168] = "화이트스미스멧돼지";
+  bodyJobNames[169] = "상인멧돼지";
+  bodyJobNames[170] = "제네릭멧돼지";
+  bodyJobNames[171] = "크리에이터멧돼지";
+  bodyJobNames[172] = "타조궁수";
+  bodyJobNames[173] = "권성포링";
+  bodyJobNames[174] = "노비스포링";
+  bodyJobNames[175] = "몽크알파카";
+  bodyJobNames[176] = "복사알파카";
+  bodyJobNames[177] = "슈라알파카";
+  bodyJobNames[178] = "슈퍼노비스포링";
+  bodyJobNames[179] = "아크비숍알파카";
+  bodyJobNames[180] = "여우마법사";
+  bodyJobNames[181] = "여우세이지";
+  bodyJobNames[182] = "여우소서러";
+  bodyJobNames[183] = "여우워록";
+  bodyJobNames[184] = "여우위저드";
+  bodyJobNames[185] = "여우프로페서";
+  bodyJobNames[186] = "여우하이위저드";
+  bodyJobNames[187] = "연금술사멧돼지";
+  bodyJobNames[188] = "제철공멧돼지";
+  bodyJobNames[189] = "챔피온알파카";
+  bodyJobNames[190] = "켈베로스길로틴크로스";
+  bodyJobNames[191] = "켈베로스도둑";
+  bodyJobNames[192] = "켈베로스로그";
+  bodyJobNames[193] = "켈베로스쉐도우체이서";
+  bodyJobNames[194] = "켈베로스스토커";
+  bodyJobNames[195] = "켈베로스어쎄신";
+  bodyJobNames[196] = "켈베로스어쎄신크로스";
+  bodyJobNames[197] = "타조무희";
+  bodyJobNames[198] = "타조민스트럴";
+  bodyJobNames[199] = "타조바드";
+  bodyJobNames[200] = "타조스나이퍼";
+  bodyJobNames[201] = "타조원더러";
+  bodyJobNames[202] = "타조짚시";
+  bodyJobNames[203] = "타조크라운";
+  bodyJobNames[204] = "타조헌터";
+  bodyJobNames[205] = "태권소년포링";
+  bodyJobNames[206] = "프리스트알파카";
+  bodyJobNames[207] = "하이프리스트알파카";
+  bodyJobNames[208] = "노비스포링";
+  bodyJobNames[209] = "페코검사";
+  bodyJobNames[210] = "여우마법사";
+  bodyJobNames[211] = "타조궁수";
+  bodyJobNames[212] = "복사알파카";
+  bodyJobNames[213] = "상인멧돼지";
+  bodyJobNames[214] = "타조헌터";
+  bodyJobNames[215] = "켈베로스어쎄신";
+  bodyJobNames[216] = "몽크알파카";
+  bodyJobNames[217] = "여우세이지";
+  bodyJobNames[218] = "켈베로스로그";
+  bodyJobNames[219] = "연금술사멧돼지";
+  bodyJobNames[220] = "타조바드";
+  bodyJobNames[221] = "타조무희";
+  bodyJobNames[222] = "슈퍼노비스포링";
+  bodyJobNames[223] = "여우워록";
+  bodyJobNames[224] = "아크비숍알파카";
+  bodyJobNames[225] = "켈베로스길로틴크로스";
+  bodyJobNames[226] = "여우소서러";
+  bodyJobNames[227] = "타조민스트럴";
+  bodyJobNames[228] = "타조원더러";
+  bodyJobNames[229] = "슈라알파카";
+  bodyJobNames[230] = "제네릭멧돼지";
+  bodyJobNames[232] = "켈베로스쉐도우체이서";
+  bodyJobNames[233] = "노비스포링";
+  bodyJobNames[234] = "페코검사";
+  bodyJobNames[235] = "여우마법사";
+  bodyJobNames[236] = "타조궁수";
+  bodyJobNames[237] = "복사알파카";
+  bodyJobNames[238] = "상인멧돼지";
+  bodyJobNames[239] = "켈베로스도둑";
+  bodyJobNames[231] = "켈베로스도둑";
+  bodyJobNames[51] = "초보자";
+  bodyJobNames[52] = "검사";
+  bodyJobNames[53] = "마법사";
+  bodyJobNames[54] = "궁수";
+  bodyJobNames[55] = "성직자";
+  bodyJobNames[56] = "상인";
+  bodyJobNames[57] = "도둑";
+  bodyJobNames[58] = "로드나이트";
+  bodyJobNames[64] = "로드페코";
+  bodyJobNames[60] = "하이위저드";
+  bodyJobNames[61] = "화이트스미스";
+  bodyJobNames[63] = "어쌔신크로스";
+  bodyJobNames[59] = "하이프리";
+  bodyJobNames[62] = "스나이퍼";
+  bodyJobNames[68] = "스토커";
+  bodyJobNames[67] = "프로페서";
+  bodyJobNames[69] = "크리에이터";
+  bodyJobNames[66] = "챔피온";
+  bodyJobNames[70] = "클라운";
+  bodyJobNames[71] = "집시";
+  bodyJobNames[65] = "팔라딘";
+  bodyJobNames[72] = "페코팔라딘";
+  bodyJobNames[73] = "초보자";
+  bodyJobNames[100] = "성직자";
+  bodyJobNames[101] = "기사";
+  bodyJobNames[102] = "세이지";
+  bodyJobNames[74] = "검사";
+  bodyJobNames[75] = "마법사";
+  bodyJobNames[76] = "궁수";
+  bodyJobNames[77] = "성직자";
+  bodyJobNames[78] = "상인";
+  bodyJobNames[79] = "도둑";
+  bodyJobNames[80] = "기사";
+  bodyJobNames[81] = "프리스트";
+  bodyJobNames[82] = "위저드";
+  bodyJobNames[83] = "제철공";
+  bodyJobNames[84] = "헌터";
+  bodyJobNames[85] = "어세신";
+  bodyJobNames[86] = "페코페코_기사";
+  bodyJobNames[87] = "크루세이더";
+  bodyJobNames[88] = "몽크";
+  bodyJobNames[89] = "세이지";
+  bodyJobNames[90] = "로그";
+  bodyJobNames[91] = "연금술사";
+  bodyJobNames[92] = "바드";
+  bodyJobNames[93] = "무희바지";
+  bodyJobNames[94] = "구페코크루세이더";
+  bodyJobNames[95] = "슈퍼노비스";
+  bodyJobNames[96] = "태권소년";
+  bodyJobNames[97] = "권성";
+  bodyJobNames[98] = "권성융합";
+  bodyJobNames[99] = "소울링커";
+  bodyJobNames[104] = "룬나이트";
+  bodyJobNames[110] = "룬나이트";
+  bodyJobNames[130] = "룬나이트쁘띠";
+  bodyJobNames[131] = "룬나이트쁘띠";
+  bodyJobNames[159] = "룬나이트쁘띠";
+  bodyJobNames[138] = "룬나이트쁘띠2";
+  bodyJobNames[139] = "룬나이트쁘띠2";
+  bodyJobNames[140] = "룬나이트쁘띠3";
+  bodyJobNames[141] = "룬나이트쁘띠3";
+  bodyJobNames[142] = "룬나이트쁘띠4";
+  bodyJobNames[143] = "룬나이트쁘띠4";
+  bodyJobNames[144] = "룬나이트쁘띠5";
+  bodyJobNames[145] = "룬나이트쁘띠5";
+  bodyJobNames[105] = "워록";
+  bodyJobNames[111] = "워록";
+  bodyJobNames[106] = "레인져";
+  bodyJobNames[112] = "레인져";
+  bodyJobNames[134] = "레인져늑대";
+  bodyJobNames[135] = "레인져늑대";
+  bodyJobNames[161] = "레인져늑대";
+  bodyJobNames[107] = "아크비숍";
+  bodyJobNames[113] = "아크비숍";
+  bodyJobNames[108] = "미케닉";
+  bodyJobNames[114] = "미케닉";
+  bodyJobNames[136] = "마도기어";
+  bodyJobNames[137] = "마도기어";
+  bodyJobNames[162] = "마도기어";
+  bodyJobNames[109] = "길로틴크로스";
+  bodyJobNames[115] = "길로틴크로스";
+  bodyJobNames[116] = "가드";
+  bodyJobNames[123] = "가드";
+  bodyJobNames[132] = "그리폰가드";
+  bodyJobNames[133] = "그리폰가드";
+  bodyJobNames[160] = "그리폰가드";
+  bodyJobNames[117] = "소서러";
+  bodyJobNames[124] = "소서러";
+  bodyJobNames[118] = "민스트럴";
+  bodyJobNames[125] = "민스트럴";
+  bodyJobNames[119] = "원더러";
+  bodyJobNames[126] = "원더러";
+  bodyJobNames[120] = "슈라";
+  bodyJobNames[127] = "슈라";
+  bodyJobNames[121] = "제네릭";
+  bodyJobNames[128] = "제네릭";
+  bodyJobNames[122] = "쉐도우체이서";
+  bodyJobNames[129] = "쉐도우체이서";
+  bodyJobNames[146] = "룬나이트";
+  bodyJobNames[147] = "워록";
+  bodyJobNames[148] = "레인져";
+  bodyJobNames[149] = "아크비숍";
+  bodyJobNames[150] = "미케닉";
+  bodyJobNames[151] = "길로틴크로스";
+  bodyJobNames[152] = "가드";
+  bodyJobNames[153] = "소서러";
+  bodyJobNames[154] = "민스트럴";
+  bodyJobNames[155] = "원더러";
+  bodyJobNames[156] = "슈라";
+  bodyJobNames[157] = "제네릭";
+  bodyJobNames[158] = "쉐도우체이서";
+  bodyJobNames[240] = "슈퍼노비스";
+  bodyJobNames[241] = "슈퍼노비스";
+  bodyJobNames[242] = "슈퍼노비스포링";
+  bodyJobNames[243] = "슈퍼노비스포링";
+  bodyJobNames[244] = "프리스트알파카";
+  bodyJobNames[245] = "여우위저드";
+  bodyJobNames[246] = "제철공멧돼지";
+  bodyJobNames[247] = "미케닉멧돼지";
+  bodyJobNames[255] = "미케닉멧돼지";
+  bodyJobNames[248] = "타조레인져";
+  bodyJobNames[256] = "타조레인져";
+  bodyJobNames[249] = "사자기사";
+  bodyJobNames[257] = "사자기사";
+  bodyJobNames[250] = "사자로드나이트";
+  bodyJobNames[251] = "사자로얄가드";
+  bodyJobNames[258] = "사자로얄가드";
+  bodyJobNames[252] = "사자룬나이트";
+  bodyJobNames[259] = "사자룬나이트";
+  bodyJobNames[253] = "사자크루세이더";
+  bodyJobNames[260] = "사자크루세이더";
+  bodyJobNames[254] = "사자팔라딘";
+  bodyJobNames[261] = "kagerou";
+  bodyJobNames[262] = "oboro";
+  bodyJobNames[263] = "frog_kagerou";
+  bodyJobNames[264] = "frog_oboro";
+  bodyJobNames[265] = "rebellion";
+  bodyJobNames[266] = "peco_rebellion";
+  bodyJobNames[268] = "summoner";
+  bodyJobNames[269] = "cart_summoner";
+  bodyJobNames[270] = "summoner";
+  bodyJobNames[271] = "cart_summoner";
+  bodyJobNames[272] = "닌자";
+  bodyJobNames[280] = "두꺼비닌자";
+  bodyJobNames[273] = "kagerou";
+  bodyJobNames[281] = "frog_kagerou";
+  bodyJobNames[274] = "oboro";
+  bodyJobNames[282] = "frog_oboro";
+  bodyJobNames[275] = "태권소년";
+  bodyJobNames[283] = "태권소년포링";
+  bodyJobNames[276] = "권성";
+  bodyJobNames[288] = "권성융합";
+  bodyJobNames[284] = "권성포링";
+  bodyJobNames[277] = "소울링커";
+  bodyJobNames[285] = "두꺼비소울링커";
+  bodyJobNames[278] = "건너";
+  bodyJobNames[286] = "페코건너";
+  bodyJobNames[279] = "rebellion";
+  bodyJobNames[287] = "peco_rebellion";
+  bodyJobNames[289] = "성제";
+  bodyJobNames[290] = "소울리퍼";
+  bodyJobNames[291] = "성제";
+  bodyJobNames[292] = "소울리퍼";
+  bodyJobNames[293] = "성제융합";
+  bodyJobNames[294] = "성제융합";
+  bodyJobNames[295] = "해태성제";
+  bodyJobNames[296] = "해태소울리퍼";
+  bodyJobNames[297] = "해태성제";
+  bodyJobNames[298] = "해태소울리퍼";
+  bodyJobNames[302] = "DRAGON_KNIGHT";
+  bodyJobNames[315] = "DRAGON_KNIGHT_RIDING";
+  bodyJobNames[330] = "DRAGON_KNIGHT_CHICKEN";
+  bodyJobNames[308] = "IMPERIAL_GUARD";
+  bodyJobNames[321] = "IMPERIAL_GUARD_RIDING";
+  bodyJobNames[331] = "IMPERIAL_GUARD_CHICKEN";
+  bodyJobNames[305] = "ARCH_MAGE";
+  bodyJobNames[318] = "ARCH_MAGE_RIDING";
+  bodyJobNames[311] = "ELEMETAL_MASTER";
+  bodyJobNames[324] = "ELEMETAL_MASTER_RIDING";
+  bodyJobNames[307] = "WINDHAWK";
+  bodyJobNames[328] = "WOLF_WINDHAWK";
+  bodyJobNames[320] = "WINDHAWK_RIDING";
+  bodyJobNames[313] = "TROUBADOUR";
+  bodyJobNames[326] = "TROUBADOUR_RIDING";
+  bodyJobNames[314] = "TROUVERE";
+  bodyJobNames[327] = "TROUVERE_RIDING";
+  bodyJobNames[306] = "CARDINAL";
+  bodyJobNames[319] = "CARDINAL_RIDING";
+  bodyJobNames[312] = "INQUISITOR";
+  bodyJobNames[325] = "INQUISITOR_RIDING";
+  bodyJobNames[309] = "BIOLO";
+  bodyJobNames[322] = "BIOLO_RIDING";
+  bodyJobNames[303] = "MEISTER";
+  bodyJobNames[316] = "MEISTER_RIDING";
+  bodyJobNames[329] = "MEISTER_MADOGEAR1";
+  bodyJobNames[304] = "SHADOW_CROSS";
+  bodyJobNames[317] = "SHADOW_CROSS_RIDING";
+  bodyJobNames[310] = "ABYSS_CHASER";
+  bodyJobNames[323] = "ABYSS_CHASER_RIDING";
+  bodyJobNames[352] = "SKY_EMPEROR";
+  bodyJobNames[366] = "SKY_EMPEROR2";
+  bodyJobNames[359] = "SKY_EMPEROR_RIDING";
+  bodyJobNames[353] = "SOUL_ASCETIC";
+  bodyJobNames[360] = "SOUL_ASCETIC_RIDING";
+  bodyJobNames[354] = "SHINKIRO";
+  bodyJobNames[361] = "SHINKIRO_RIDING";
+  bodyJobNames[355] = "SHIRANUI";
+  bodyJobNames[362] = "SHIRANUI_RIDING";
+  bodyJobNames[356] = "NIGHT_WATCH";
+  bodyJobNames[363] = "NIGHT_WATCH_RIDING";
+  bodyJobNames[357] = "HYPER_NOVICE";
+  bodyJobNames[364] = "HYPER_NOVICE_RIDING";
+  bodyJobNames[358] = "SPIRIT_HANDLER";
+  bodyJobNames[365] = "SPIRIT_HANDLER_RIDING";
+  {
+    const std::uint8_t source[] = {0xC9, 0xE9, 0x9A, 0x32, 0xD5, 0xA7};
+    thread_local EncryptedName<sizeof(source), 0xB39FA7917BCFBB8DULL> name(source);
+    bodyJobNames[401] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xB3, 0x41, 0x7E, 0xE6, 0xB5, 0x0F};
+    thread_local EncryptedName<sizeof(source), 0x8D1D0FF1AF2B13F7ULL> name(source);
+    bodyJobNames[402] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x12, 0xF6, 0x55, 0x5D, 0x8A, 0x2E, 0x63};
+    thread_local EncryptedName<sizeof(source), 0x4F637DC51307B759ULL> name(source);
+    bodyJobNames[403] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xE0, 0x80, 0x1F, 0x77, 0x28, 0x26, 0xCB};
+    thread_local EncryptedName<sizeof(source), 0x2DCB7567394DC1ABULL> name(source);
+    bodyJobNames[404] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x34, 0x77, 0x4A, 0x7B, 0x56, 0x80, 0xA1};
+    thread_local EncryptedName<sizeof(source), 0x6BA1C1132F033B75ULL> name(source);
+    bodyJobNames[405] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x78, 0x92, 0x17, 0x60, 0x6E, 0xE4, 0x61, 0xE7, 0x2F};
+    thread_local EncryptedName<sizeof(source), 0xA12DAB392545D72FULL> name(source);
+    bodyJobNames[406] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x9A, 0x46, 0x9F, 0x3E, 0xC5, 0x7A, 0x43, 0x67, 0x82, 0x51, 0xCD};
+    thread_local EncryptedName<sizeof(source), 0x33133B977BCD03CDULL> name(source);
+    bodyJobNames[407] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x95, 0x09, 0xC2, 0xAC, 0x7D, 0xD8, 0xB9, 0x66, 0x95, 0x12, 0xD9, 0xA2, 0x39};
+    thread_local EncryptedName<sizeof(source), 0x2FEB8739E5975BD1ULL> name(source);
+    bodyJobNames[408] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x10, 0x12, 0x0D, 0x93, 0xC8, 0xCC, 0xFC, 0x6B, 0x12, 0x17, 0x16, 0x93, 0xC0, 0x9F};
+    thread_local EncryptedName<sizeof(source), 0x39A39F87DD5F535BULL> name(source);
+    bodyJobNames[409] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x36, 0xDB, 0xCE, 0x49, 0x66, 0x12, 0xBE, 0x3D, 0x3E, 0xD3, 0xCE, 0x53, 0x64, 0x53};
+    thread_local EncryptedName<sizeof(source), 0x6FE153231D879777ULL> name(source);
+    bodyJobNames[410] = name.Text();
+  }
+  std::vector<const char*>& imfNames = reinterpret_cast<std::vector<const char*>&>(this->m_imfNames);
+  imfNames.resize(28053, "초보자");
+  imfNames[1] = "검사";
+  imfNames[2] = "마법사";
+  imfNames[3] = "궁수";
+  imfNames[4] = "성직자";
+  imfNames[5] = "상인";
+  imfNames[6] = "도둑";
+  imfNames[7] = "기사";
+  imfNames[8] = "프리스트";
+  imfNames[9] = "위저드";
+  imfNames[10] = "제철공";
+  imfNames[11] = "헌터";
+  imfNames[12] = "어세신";
+  imfNames[13] = "페코페코_기사";
+  imfNames[14] = "크루세이더";
+  imfNames[15] = "몽크";
+  imfNames[16] = "세이지";
+  imfNames[17] = "로그";
+  imfNames[18] = "연금술사";
+  imfNames[19] = "바드";
+  imfNames[20] = "무희";
+  imfNames[21] = "신페코크루세이더";
+  imfNames[23] = "초보자";
+  imfNames[22] = "결혼";
+  imfNames[26] = "결혼";
+  imfNames[27] = "결혼";
+  imfNames[28] = "결혼";
+  imfNames[29] = "결혼";
+  imfNames[30] = "결혼";
+  imfNames[24] = "건너";
+  imfNames[25] = "닌자";
+  imfNames[164] = "두꺼비닌자";
+  imfNames[167] = "두꺼비소울링커";
+  imfNames[165] = "페코건너";
+  imfNames[166] = "페코페코_기사";
+  imfNames[168] = "화이트스미스멧돼지";
+  imfNames[169] = "상인멧돼지";
+  imfNames[170] = "제네릭멧돼지";
+  imfNames[171] = "크리에이터멧돼지";
+  imfNames[172] = "타조궁수";
+  imfNames[173] = "권성포링";
+  imfNames[174] = "노비스포링";
+  imfNames[175] = "몽크알파카";
+  imfNames[176] = "복사알파카";
+  imfNames[177] = "슈라알파카";
+  imfNames[178] = "슈퍼노비스포링";
+  imfNames[179] = "아크비숍알파카";
+  imfNames[180] = "여우마법사";
+  imfNames[181] = "여우세이지";
+  imfNames[182] = "여우소서러";
+  imfNames[183] = "여우워록";
+  imfNames[184] = "여우위저드";
+  imfNames[185] = "여우프로페서";
+  imfNames[186] = "여우하이위저드";
+  imfNames[187] = "연금술사멧돼지";
+  imfNames[188] = "제철공멧돼지";
+  imfNames[189] = "챔피온알파카";
+  imfNames[190] = "켈베로스길로틴크로스";
+  imfNames[191] = "켈베로스도둑";
+  imfNames[192] = "켈베로스로그";
+  imfNames[193] = "켈베로스쉐도우체이서";
+  imfNames[194] = "켈베로스스토커";
+  imfNames[195] = "켈베로스어쎄신";
+  imfNames[196] = "켈베로스어쎄신크로스";
+  imfNames[197] = "타조무희";
+  imfNames[198] = "타조민스트럴";
+  imfNames[199] = "타조바드";
+  imfNames[200] = "타조스나이퍼";
+  imfNames[201] = "타조원더러";
+  imfNames[202] = "타조짚시";
+  imfNames[203] = "타조크라운";
+  imfNames[204] = "타조헌터";
+  imfNames[205] = "태권소년포링";
+  imfNames[206] = "프리스트알파카";
+  imfNames[207] = "하이프리스트알파카";
+  imfNames[208] = "노비스포링";
+  imfNames[209] = "페코페코_기사";
+  imfNames[210] = "여우마법사";
+  imfNames[211] = "타조궁수";
+  imfNames[212] = "복사알파카";
+  imfNames[213] = "상인멧돼지";
+  imfNames[214] = "타조헌터";
+  imfNames[215] = "켈베로스어쎄신";
+  imfNames[216] = "몽크알파카";
+  imfNames[217] = "여우세이지";
+  imfNames[218] = "켈베로스로그";
+  imfNames[219] = "연금술사멧돼지";
+  imfNames[220] = "타조바드";
+  imfNames[221] = "타조무희";
+  imfNames[222] = "슈퍼노비스포링";
+  imfNames[223] = "여우워록";
+  imfNames[224] = "아크비숍알파카";
+  imfNames[225] = "켈베로스길로틴크로스";
+  imfNames[226] = "여우소서러";
+  imfNames[227] = "타조민스트럴";
+  imfNames[228] = "타조원더러";
+  imfNames[229] = "슈라알파카";
+  imfNames[230] = "제네릭멧돼지";
+  imfNames[232] = "켈베로스쉐도우체이서";
+  imfNames[233] = "노비스포링";
+  imfNames[234] = "페코페코_기사";
+  imfNames[235] = "여우마법사";
+  imfNames[236] = "타조궁수";
+  imfNames[237] = "복사알파카";
+  imfNames[238] = "상인멧돼지";
+  imfNames[239] = "켈베로스도둑";
+  imfNames[231] = "켈베로스도둑";
+  imfNames[51] = "초보자";
+  imfNames[52] = "검사";
+  imfNames[53] = "마법사";
+  imfNames[54] = "궁수";
+  imfNames[55] = "성직자";
+  imfNames[56] = "상인";
+  imfNames[57] = "도둑";
+  imfNames[58] = "기사";
+  imfNames[59] = "프리스트";
+  imfNames[60] = "하이위저드";
+  imfNames[61] = "제철공";
+  imfNames[62] = "헌터";
+  imfNames[63] = "어세신크로스";
+  imfNames[64] = "페코페코_기사";
+  imfNames[65] = "크루세이더";
+  imfNames[66] = "몽크";
+  imfNames[67] = "세이지";
+  imfNames[68] = "로그";
+  imfNames[69] = "연금술사";
+  imfNames[70] = "바드";
+  imfNames[71] = "무희";
+  imfNames[72] = "신페코크루세이더";
+  imfNames[73] = "초보자";
+  imfNames[74] = "검사";
+  imfNames[75] = "마법사";
+  imfNames[76] = "궁수";
+  imfNames[77] = "성직자";
+  imfNames[78] = "상인";
+  imfNames[79] = "도둑";
+  imfNames[80] = "기사";
+  imfNames[81] = "프리스트";
+  imfNames[82] = "위저드";
+  imfNames[83] = "제철공";
+  imfNames[84] = "헌터";
+  imfNames[85] = "어세신";
+  imfNames[86] = "페코페코_기사";
+  imfNames[87] = "크루세이더";
+  imfNames[88] = "몽크";
+  imfNames[89] = "세이지";
+  imfNames[90] = "로그";
+  imfNames[91] = "연금술사";
+  imfNames[92] = "바드";
+  imfNames[93] = "무희";
+  imfNames[94] = "신페코크루세이더";
+  imfNames[95] = "초보자";
+  imfNames[96] = "태권소년";
+  imfNames[97] = "태권소년";
+  imfNames[98] = "태권소년";
+  imfNames[99] = "위저드";
+  imfNames[100] = "성직자";
+  imfNames[101] = "기사";
+  imfNames[102] = "세이지";
+  imfNames[104] = "기사";
+  imfNames[110] = "기사";
+  imfNames[130] = "페코페코_기사";
+  imfNames[131] = "페코페코_기사";
+  imfNames[159] = "페코페코_기사";
+  imfNames[138] = "페코페코_기사";
+  imfNames[139] = "페코페코_기사";
+  imfNames[140] = "페코페코_기사";
+  imfNames[141] = "페코페코_기사";
+  imfNames[142] = "페코페코_기사";
+  imfNames[143] = "페코페코_기사";
+  imfNames[144] = "페코페코_기사";
+  imfNames[145] = "페코페코_기사";
+  imfNames[107] = "프리스트";
+  imfNames[113] = "프리스트";
+  imfNames[105] = "워록";
+  imfNames[111] = "워록";
+  imfNames[108] = "마도기어";
+  imfNames[114] = "마도기어";
+  imfNames[136] = "마도기어";
+  imfNames[137] = "마도기어";
+  imfNames[162] = "마도기어";
+  imfNames[106] = "헌터";
+  imfNames[112] = "헌터";
+  imfNames[134] = "레인져늑대";
+  imfNames[135] = "레인져늑대";
+  imfNames[161] = "레인져늑대";
+  imfNames[109] = "어세신크로스";
+  imfNames[115] = "어세신크로스";
+  imfNames[123] = "가드";
+  imfNames[116] = "크루세이더";
+  imfNames[120] = "몽크";
+  imfNames[127] = "몽크";
+  imfNames[117] = "프로페서";
+  imfNames[124] = "프로페서";
+  imfNames[122] = "로그";
+  imfNames[129] = "로그";
+  imfNames[121] = "연금술사";
+  imfNames[128] = "연금술사";
+  imfNames[119] = "무희";
+  imfNames[126] = "무희";
+  imfNames[118] = "바드";
+  imfNames[125] = "바드";
+  imfNames[132] = "신페코크루세이더";
+  imfNames[133] = "신페코크루세이더";
+  imfNames[160] = "신페코크루세이더";
+  imfNames[146] = "기사";
+  imfNames[147] = "위저드";
+  imfNames[148] = "헌터";
+  imfNames[149] = "프리스트";
+  imfNames[150] = "마도기어";
+  imfNames[151] = "어세신크로스";
+  imfNames[152] = "가드";
+  imfNames[153] = "프로페서";
+  imfNames[154] = "바드";
+  imfNames[155] = "무희";
+  imfNames[156] = "몽크";
+  imfNames[157] = "연금술사";
+  imfNames[158] = "로그";
+  imfNames[240] = "초보자";
+  imfNames[241] = "초보자";
+  imfNames[242] = "슈퍼노비스포링";
+  imfNames[243] = "슈퍼노비스포링";
+  imfNames[244] = "프리스트알파카";
+  imfNames[245] = "여우위저드";
+  imfNames[246] = "제철공멧돼지";
+  imfNames[247] = "마도기어";
+  imfNames[255] = "마도기어";
+  imfNames[248] = "타조레인져";
+  imfNames[256] = "타조레인져";
+  imfNames[249] = "사자기사";
+  imfNames[257] = "사자기사";
+  imfNames[250] = "사자로드나이트";
+  imfNames[251] = "사자로얄가드";
+  imfNames[258] = "사자로얄가드";
+  imfNames[252] = "사자룬나이트";
+  imfNames[259] = "사자룬나이트";
+  imfNames[253] = "사자크루세이더";
+  imfNames[260] = "사자크루세이더";
+  imfNames[254] = "사자팔라딘";
+  imfNames[261] = "닌자";
+  imfNames[262] = "닌자";
+  imfNames[263] = "frog_kagerou";
+  imfNames[264] = "frog_oboro";
+  imfNames[265] = "rebellion";
+  imfNames[266] = "peco_rebellion";
+  imfNames[268] = "summoner";
+  imfNames[269] = "cart_summoner";
+  imfNames[270] = "summoner";
+  imfNames[271] = "cart_summoner";
+  imfNames[272] = "닌자";
+  imfNames[280] = "두꺼비닌자";
+  imfNames[273] = "닌자";
+  imfNames[281] = "frog_kagerou";
+  imfNames[274] = "닌자";
+  imfNames[282] = "frog_oboro";
+  imfNames[275] = "태권소년";
+  imfNames[283] = "태권소년포링";
+  imfNames[276] = "태권소년";
+  imfNames[288] = "태권소년";
+  imfNames[284] = "권성포링";
+  imfNames[277] = "위저드";
+  imfNames[285] = "두꺼비소울링커";
+  imfNames[278] = "건너";
+  imfNames[286] = "페코건너";
+  imfNames[279] = "rebellion";
+  imfNames[287] = "peco_rebellion";
+  imfNames[289] = "태권소년";
+  imfNames[290] = "위저드";
+  imfNames[291] = "태권소년";
+  imfNames[292] = "위저드";
+  imfNames[293] = "태권소년";
+  imfNames[294] = "태권소년";
+  imfNames[295] = "태권소년";
+  imfNames[296] = "태권소년";
+  imfNames[297] = "태권소년";
+  imfNames[298] = "태권소년";
+  imfNames[302] = "기사";
+  imfNames[308] = "크루세이더";
+  imfNames[305] = "워록";
+  imfNames[318] = "워록";
+  imfNames[311] = "프로페서";
+  imfNames[324] = "프로페서";
+  imfNames[307] = "WINDHAWK";
+  imfNames[328] = "WOLF_WINDHAWK";
+  imfNames[320] = "WINDHAWK_RIDING";
+  imfNames[313] = "TROUBADOUR";
+  imfNames[326] = "TROUBADOUR_RIDING";
+  imfNames[314] = "TROUVERE";
+  imfNames[327] = "TROUVERE_RIDING";
+  imfNames[306] = "CARDINAL";
+  imfNames[319] = "CARDINAL_RIDING";
+  imfNames[312] = "INQUISITOR";
+  imfNames[325] = "INQUISITOR_RIDING";
+  imfNames[309] = "BIOLO";
+  imfNames[322] = "BIOLO_RIDING";
+  imfNames[303] = "MEISTER";
+  imfNames[316] = "MEISTER_RIDING";
+  imfNames[329] = "MEISTER_MADOGEAR1";
+  imfNames[302] = "DRAGON_KNIGHT";
+  imfNames[315] = "DRAGON_KNIGHT_RIDING";
+  imfNames[330] = "DRAGON_KNIGHT_CHICKEN";
+  imfNames[308] = "IMPERIAL_GUARD";
+  imfNames[321] = "IMPERIAL_GUARD_RIDING";
+  imfNames[331] = "IMPERIAL_GUARD_CHICKEN";
+  imfNames[304] = "SHADOW_CROSS";
+  imfNames[317] = "SHADOW_CROSS_RIDING";
+  imfNames[310] = "ABYSS_CHASER";
+  imfNames[323] = "ABYSS_CHASER_RIDING";
+  imfNames[352] = "SKY_EMPEROR";
+  imfNames[366] = "SKY_EMPEROR2";
+  imfNames[359] = "SKY_EMPEROR_RIDING";
+  imfNames[353] = "SOUL_ASCETIC";
+  imfNames[360] = "SOUL_ASCETIC_RIDING";
+  imfNames[354] = "SHINKIRO";
+  imfNames[361] = "SHINKIRO_RIDING";
+  imfNames[355] = "SHIRANUI";
+  imfNames[362] = "SHIRANUI_RIDING";
+  imfNames[356] = "NIGHT_WATCH";
+  imfNames[363] = "NIGHT_WATCH_RIDING";
+  imfNames[357] = "HYPER_NOVICE";
+  imfNames[364] = "HYPER_NOVICE_RIDING";
+  imfNames[358] = "SPIRIT_HANDLER";
+  imfNames[365] = "SPIRIT_HANDLER_RIDING";
+  imfNames[401] = "DRUID";
+  imfNames[402] = "DRUID";
+  imfNames[403] = "KARNOS";
+  imfNames[404] = "KARNOS";
+  imfNames[405] = "ALITEA";
+  imfNames[406] = "WEREWOLF";
+  imfNames[407] = "WERERAPTOR";
+  imfNames[408] = "DRUID_RIDING";
+  imfNames[409] = "KARNOS_RIDING";
+  imfNames[410] = "ALITEA_RIDING";
+  std::vector<const char*>& sexNames = reinterpret_cast<std::vector<const char*>&>(this->m_sexNames);
+  sexNames.resize(2, "여");
+  sexNames[0] = "여";
+  sexNames[1] = "남";
+  std::vector<const char*>& humanMaleHeadNames = reinterpret_cast<std::vector<const char*>&>(this->m_humanMaleHeadNames);
+  humanMaleHeadNames.resize(46, "2");
+  humanMaleHeadNames[0] = "2";
+  humanMaleHeadNames[1] = "2";
+  humanMaleHeadNames[2] = "1";
+  humanMaleHeadNames[3] = "7";
+  humanMaleHeadNames[4] = "5";
+  humanMaleHeadNames[5] = "4";
+  humanMaleHeadNames[6] = "3";
+  humanMaleHeadNames[7] = "6";
+  humanMaleHeadNames[8] = "8";
+  humanMaleHeadNames[9] = "9";
+  humanMaleHeadNames[10] = "10";
+  humanMaleHeadNames[11] = "12";
+  humanMaleHeadNames[12] = "11";
+  humanMaleHeadNames[13] = "13";
+  humanMaleHeadNames[14] = "14";
+  humanMaleHeadNames[15] = "15";
+  humanMaleHeadNames[16] = "16";
+  humanMaleHeadNames[17] = "17";
+  humanMaleHeadNames[18] = "18";
+  humanMaleHeadNames[19] = "19";
+  humanMaleHeadNames[20] = "20";
+  humanMaleHeadNames[21] = "21";
+  humanMaleHeadNames[22] = "22";
+  humanMaleHeadNames[23] = "23";
+  humanMaleHeadNames[24] = "24";
+  humanMaleHeadNames[25] = "25";
+  humanMaleHeadNames[26] = "26";
+  humanMaleHeadNames[27] = "27";
+  humanMaleHeadNames[28] = "28";
+  humanMaleHeadNames[29] = "29";
+  humanMaleHeadNames[30] = "30";
+  humanMaleHeadNames[31] = "31";
+  humanMaleHeadNames[32] = "32";
+  humanMaleHeadNames[33] = "33";
+  humanMaleHeadNames[34] = "34";
+  humanMaleHeadNames[35] = "35";
+  humanMaleHeadNames[36] = "36";
+  humanMaleHeadNames[37] = "37";
+  humanMaleHeadNames[38] = "38";
+  humanMaleHeadNames[39] = "39";
+  humanMaleHeadNames[40] = "40";
+  humanMaleHeadNames[41] = "41";
+  humanMaleHeadNames[42] = "42";
+  humanMaleHeadNames[43] = "43";
+  humanMaleHeadNames[44] = "44";
+  humanMaleHeadNames[45] = "45";
+  std::vector<const char*>& humanFemaleHeadNames = reinterpret_cast<std::vector<const char*>&>(this->m_humanFemaleHeadNames);
+  humanFemaleHeadNames.resize(46, "2");
+  humanFemaleHeadNames[0] = "2";
+  humanFemaleHeadNames[1] = "2";
+  humanFemaleHeadNames[2] = "4";
+  humanFemaleHeadNames[3] = "7";
+  humanFemaleHeadNames[4] = "1";
+  humanFemaleHeadNames[5] = "5";
+  humanFemaleHeadNames[6] = "3";
+  humanFemaleHeadNames[7] = "6";
+  humanFemaleHeadNames[8] = "12";
+  humanFemaleHeadNames[9] = "10";
+  humanFemaleHeadNames[10] = "9";
+  humanFemaleHeadNames[11] = "11";
+  humanFemaleHeadNames[12] = "8";
+  humanFemaleHeadNames[13] = "13";
+  humanFemaleHeadNames[14] = "14";
+  humanFemaleHeadNames[15] = "15";
+  humanFemaleHeadNames[16] = "16";
+  humanFemaleHeadNames[17] = "17";
+  humanFemaleHeadNames[18] = "18";
+  humanFemaleHeadNames[19] = "19";
+  humanFemaleHeadNames[20] = "20";
+  humanFemaleHeadNames[21] = "21";
+  humanFemaleHeadNames[22] = "22";
+  humanFemaleHeadNames[23] = "23";
+  humanFemaleHeadNames[24] = "24";
+  humanFemaleHeadNames[25] = "25";
+  humanFemaleHeadNames[26] = "26";
+  humanFemaleHeadNames[27] = "27";
+  humanFemaleHeadNames[28] = "28";
+  humanFemaleHeadNames[29] = "29";
+  humanFemaleHeadNames[30] = "30";
+  humanFemaleHeadNames[31] = "31";
+  humanFemaleHeadNames[32] = "32";
+  humanFemaleHeadNames[33] = "33";
+  humanFemaleHeadNames[34] = "34";
+  humanFemaleHeadNames[35] = "35";
+  humanFemaleHeadNames[36] = "36";
+  humanFemaleHeadNames[37] = "37";
+  humanFemaleHeadNames[38] = "38";
+  humanFemaleHeadNames[39] = "39";
+  humanFemaleHeadNames[40] = "40";
+  humanFemaleHeadNames[41] = "41";
+  humanFemaleHeadNames[42] = "42";
+  humanFemaleHeadNames[43] = "43";
+  humanFemaleHeadNames[44] = "44";
+  humanFemaleHeadNames[45] = "45";
+  std::vector<const char*>& doramMaleHeadNames = reinterpret_cast<std::vector<const char*>&>(this->m_doramMaleHeadNames);
+  doramMaleHeadNames.resize(11, "1");
+  doramMaleHeadNames[1] = "1";
+  doramMaleHeadNames[2] = "2";
+  doramMaleHeadNames[3] = "3";
+  doramMaleHeadNames[4] = "4";
+  doramMaleHeadNames[5] = "5";
+  doramMaleHeadNames[6] = "6";
+  doramMaleHeadNames[7] = "7";
+  doramMaleHeadNames[8] = "8";
+  doramMaleHeadNames[9] = "9";
+  doramMaleHeadNames[10] = "10";
+  std::vector<const char*>& doramFemaleHeadNames = reinterpret_cast<std::vector<const char*>&>(this->m_doramFemaleHeadNames);
+  doramFemaleHeadNames.resize(11, "1");
+  doramFemaleHeadNames[1] = "1";
+  doramFemaleHeadNames[2] = "2";
+  doramFemaleHeadNames[3] = "3";
+  doramFemaleHeadNames[4] = "4";
+  doramFemaleHeadNames[5] = "5";
+  doramFemaleHeadNames[6] = "6";
+  doramFemaleHeadNames[7] = "7";
+  doramFemaleHeadNames[8] = "8";
+  doramFemaleHeadNames[9] = "9";
+  doramFemaleHeadNames[10] = "10";
+  std::vector<const char*>& accessoryNames = this->m_accessoryNames;
+  accessoryNames.resize(3000, "_병아리모자");
+  accessoryNames[0] = "";
+  for (int index = 1; index < 3000; ++index) {
+    const char* name = nullptr;
+    if (this->m_hotkeyScript->Call(std::string("ReqAccName", 10), "d>s", index, &name)) {
+      accessoryNames[index] = name;
+    }
+  }
+  std::vector<const char*>& shieldJobNames = reinterpret_cast<std::vector<const char*>&>(this->m_shieldJobNames);
+  {
+    const std::uint8_t source[] = {0xDE, 0x0D, 0xF1, 0x0D, 0x1D, 0xAD, 0x15, 0xE0, 0xD7, 0x7D, 0xF3, 0x75, 0x07, 0x77};
+    thread_local EncryptedName<sizeof(source), 0x234977DDB54BC71DULL> name(source);
+    shieldJobNames.resize(28053, name.Text());
+  }
+  {
+    const std::uint8_t source[] = {0x06, 0xE7, 0x91, 0x87, 0x49, 0xC7, 0x31, 0x2C, 0x0F, 0x97, 0x93, 0xFF, 0x53, 0x1D};
+    thread_local EncryptedName<sizeof(source), 0xEF6D1D893F2B2DC5ULL> name(source);
+    shieldJobNames[0] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xAD, 0xCE, 0x28, 0xCE, 0x2D, 0x93, 0x9C, 0x5E, 0xFA, 0x05};
+    thread_local EncryptedName<sizeof(source), 0xE55723712993051DULL> name(source);
+    shieldJobNames[1] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xF7, 0xD1, 0x54, 0x78, 0xB2, 0xD0, 0x63, 0xC1, 0xF9, 0xDE, 0x10, 0x3E, 0xEE, 0x37};
+    thread_local EncryptedName<sizeof(source), 0x793F370985ED674FULL> name(source);
+    shieldJobNames[2] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xD2, 0x36, 0x5D, 0x89, 0x67, 0x94, 0xDE, 0x77, 0x95, 0xF5};
+    thread_local EncryptedName<sizeof(source), 0xCB1D253B7FE1F563ULL> name(source);
+    shieldJobNames[3] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x75, 0xA9, 0x38, 0x84, 0x39, 0x03, 0x49, 0xCD, 0x73, 0xD2, 0x0E, 0xB3, 0x23, 0xD9};
+    thread_local EncryptedName<sizeof(source), 0x7115D9F973F913C9ULL> name(source);
+    shieldJobNames[4] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x5A, 0x6A, 0x47, 0x81, 0xDD, 0x78, 0xD2, 0xB3, 0x2F, 0x99};
+    thread_local EncryptedName<sizeof(source), 0x7321C3814F8799E1ULL> name(source);
+    shieldJobNames[5] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xFA, 0x14, 0x7A, 0xFA, 0x3F, 0x62, 0xF4, 0xCC, 0x80, 0xA1};
+    thread_local EncryptedName<sizeof(source), 0x7941D76335CFA14FULL> name(source);
+    shieldJobNames[6] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xCE, 0x37, 0x14, 0xBC, 0x37, 0x00, 0xF7, 0xB4, 0x98, 0xD5};
+    thread_local EncryptedName<sizeof(source), 0x0F15B16B5BAFD57FULL> name(source);
+    shieldJobNames[7] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xE4, 0x30, 0x6F, 0xB9, 0x6A, 0xF3, 0x25, 0xD3, 0x7F, 0x36, 0x16, 0xAF, 0x79, 0xF4, 0x59, 0xBB, 0x8D, 0xF1};
+    thread_local EncryptedName<sizeof(source), 0x7DE349D717D7F123ULL> name(source);
+    shieldJobNames[8] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x9D, 0xAA, 0x89, 0x73, 0x14, 0x98, 0xB1, 0x5F, 0xFA, 0xCD, 0xB3, 0x3C, 0x44, 0x7D};
+    thread_local EncryptedName<sizeof(source), 0x9FED7DA189490D5DULL> name(source);
+    shieldJobNames[9] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xA4, 0xF3, 0x0A, 0xC9, 0xBD, 0x17, 0x73, 0x84, 0xC3, 0x96, 0x7F, 0xCF, 0xF5, 0xEF};
+    thread_local EncryptedName<sizeof(source), 0x452FEF0D7FC95565ULL> name(source);
+    shieldJobNames[10] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xAA, 0xFE, 0x62, 0xDC, 0x2B, 0xA8, 0x2E, 0x36, 0xA0, 0x1B};
+    thread_local EncryptedName<sizeof(source), 0xF3CB6F7711A71B6DULL> name(source);
+    shieldJobNames[11] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x0D, 0x89, 0xE5, 0x33, 0x62, 0xE2, 0xC7, 0x3D, 0x5D, 0xDB, 0xE5, 0x32, 0x1A, 0x27};
+    thread_local EncryptedName<sizeof(source), 0x839B27DF8F5967B3ULL> name(source);
+    shieldJobNames[12] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xD1, 0xFF, 0xE9, 0x79, 0x7B, 0x0F, 0x85, 0xD5, 0x48, 0xAA, 0xCF, 0x18, 0x5A, 0xB7, 0x87, 0xEB, 0xD3, 0xC1, 0xEB, 0x47, 0x79, 0x31, 0x1E, 0xBE, 0xF5, 0xA0, 0xCA, 0xA3};
+    thread_local EncryptedName<sizeof(source), 0x0F41EBBDA32D1B17ULL> name(source);
+    shieldJobNames[13] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x28, 0xDC, 0xD6, 0xC4, 0x0B, 0x5F, 0x91, 0xE1, 0x59, 0x80, 0x3D, 0xE6, 0x1E, 0x54, 0xB6, 0x91, 0x51, 0xB5, 0xAD, 0x97, 0x42, 0xE3};
+    thread_local EncryptedName<sizeof(source), 0x2D51E3B7236175EDULL> name(source);
+    shieldJobNames[14] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xDD, 0x0A, 0x12, 0xF4, 0xD1, 0xAB, 0x96, 0xD2, 0xCC, 0xF3};
+    thread_local EncryptedName<sizeof(source), 0x176F138D5DD7F365ULL> name(source);
+    shieldJobNames[15] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x7D, 0xFB, 0x05, 0xDB, 0x20, 0x6F, 0x89, 0x47, 0x7D, 0x87, 0x09, 0xD6, 0x17, 0x99};
+    thread_local EncryptedName<sizeof(source), 0xFBD599E117C547C1ULL> name(source);
+    shieldJobNames[16] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x52, 0xB5, 0x82, 0xFE, 0x11, 0xD2, 0xE3, 0xA8, 0x32, 0x7B};
+    thread_local EncryptedName<sizeof(source), 0x192D654D29337BE5ULL> name(source);
+    shieldJobNames[17] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x5C, 0x79, 0xE2, 0x2A, 0x19, 0xFD, 0x58, 0x54, 0xBF, 0x6A, 0xFF, 0x46, 0x78, 0xBB, 0x19, 0x08, 0x04, 0xD5};
+    thread_local EncryptedName<sizeof(source), 0xB3E307A5F753D5E3ULL> name(source);
+    shieldJobNames[18] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x64, 0x8C, 0xDA, 0x4A, 0xB5, 0xAC, 0x30, 0xCC, 0x38, 0x55};
+    thread_local EncryptedName<sizeof(source), 0x79E915E9AF6F55DDULL> name(source);
+    shieldJobNames[19] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xB8, 0xDE, 0x35, 0x28, 0x73, 0x04, 0x04, 0x7F, 0xF0, 0x75};
+    thread_local EncryptedName<sizeof(source), 0xB7AFBD2FD9FD7501ULL> name(source);
+    shieldJobNames[20] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xEC, 0x68, 0x3B, 0xCF, 0x8B, 0xE9, 0x1A, 0xC2, 0xE6, 0x4A, 0x41, 0x97, 0x8F, 0xFF, 0x6B, 0x9E, 0x0D, 0x10, 0x38, 0xED, 0xAB, 0xF7, 0x05, 0xAE, 0xF8, 0x1A, 0x1A, 0x97, 0xF3, 0xF3, 0x13, 0xDF, 0xA4, 0xAD};
+    thread_local EncryptedName<sizeof(source), 0x6BDF334F2BFDAD51ULL> name(source);
+    shieldJobNames[21] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x82, 0xF7, 0xED, 0xCD, 0xF9, 0x45, 0x11, 0xA4, 0x8B, 0x87, 0xEF, 0xB5, 0xE3, 0x9F};
+    thread_local EncryptedName<sizeof(source), 0x674D9F3975573D41ULL> name(source);
+    shieldJobNames[23] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x9B, 0x36, 0x81, 0x8A, 0x53, 0x61, 0xC2, 0xC3, 0x8E, 0xD7};
+    thread_local EncryptedName<sizeof(source), 0x0B23D10F2F49D72BULL> name(source);
+    shieldJobNames[22] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x7F, 0x3A, 0x19, 0xB0, 0xC5, 0x9F, 0x8E, 0xDB, 0x6A, 0xDB};
+    thread_local EncryptedName<sizeof(source), 0x136F2F9915D1DBCFULL> name(source);
+    shieldJobNames[26] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xF9, 0x8C, 0xB7, 0x46, 0x9B, 0xB1, 0xA8, 0xD9, 0xEC, 0x6D};
+    thread_local EncryptedName<sizeof(source), 0x114901C7E37F6D49ULL> name(source);
+    shieldJobNames[27] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xC1, 0x62, 0xA3, 0xAE, 0x4D, 0xBF, 0xBC, 0xB5, 0xD4, 0x83};
+    thread_local EncryptedName<sizeof(source), 0x7D5D0F110B6B8371ULL> name(source);
+    shieldJobNames[28] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x8D, 0xA0, 0x43, 0x6C, 0xA5, 0xAB, 0x24, 0x65, 0x98, 0x41};
+    thread_local EncryptedName<sizeof(source), 0xADC51BF9C98B413DULL> name(source);
+    shieldJobNames[29] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xE1, 0x14, 0x07, 0xEC, 0xA3, 0xA7, 0x60, 0x17, 0xF4, 0xF5};
+    thread_local EncryptedName<sizeof(source), 0xDF8117FF49CFF551ULL> name(source);
+    shieldJobNames[30] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x5F, 0xEA, 0xE4, 0xC7, 0x99, 0x61, 0x24, 0x34, 0x25, 0x2D};
+    thread_local EncryptedName<sizeof(source), 0x87E3D1C50D572DEFULL> name(source);
+    shieldJobNames[24] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x39, 0x6C, 0x7B, 0xB9, 0xEB, 0x8D, 0x6A, 0x91, 0x57, 0xBD};
+    thread_local EncryptedName<sizeof(source), 0x51BB39B763BBBD8DULL> name(source);
+    shieldJobNames[25] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xED, 0x56, 0xC3, 0xA7, 0x09, 0x7F, 0xF6, 0x1B, 0x83, 0x87};
+    thread_local EncryptedName<sizeof(source), 0xDB27CB557D038759ULL> name(source);
+    shieldJobNames[164] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x3F, 0x44, 0x9D, 0xF9, 0x12, 0x4A, 0xFF, 0xFF, 0x58, 0x23, 0xA7, 0xB6, 0x42, 0xAF};
+    thread_local EncryptedName<sizeof(source), 0x3FA3AFA7035DE3FFULL> name(source);
+    shieldJobNames[167] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xBF, 0x88, 0xF6, 0x65, 0xC1, 0xF5, 0x5E, 0xB0, 0xC5, 0x4F};
+    thread_local EncryptedName<sizeof(source), 0x0399459DAF454F0FULL> name(source);
+    shieldJobNames[165] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x1B, 0x64, 0x36, 0x6A, 0xEF, 0x3D, 0x6C, 0x6E, 0x4C, 0xAF};
+    thread_local EncryptedName<sizeof(source), 0xD5A78DB38D8DAFABULL> name(source);
+    shieldJobNames[166] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x14, 0x9F, 0xE8, 0xFF, 0x57, 0x5F, 0xCB, 0x64, 0x73, 0xFA, 0x9D, 0xF9, 0x1F, 0xA7};
+    thread_local EncryptedName<sizeof(source), 0xA597A7E7492B39D5ULL> name(source);
+    shieldJobNames[168] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xC8, 0x1C, 0x7B, 0x1F, 0x89, 0x58, 0x58, 0x3F, 0xBD, 0xEF};
+    thread_local EncryptedName<sizeof(source), 0xFFABE3D5D1BBEF73ULL> name(source);
+    shieldJobNames[169] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x30, 0xF5, 0xD0, 0x36, 0x09, 0xE3, 0xB8, 0x20, 0xD3, 0xE6, 0xCD, 0x5A, 0x68, 0xA5, 0xF9, 0x7C, 0x68, 0x59};
+    thread_local EncryptedName<sizeof(source), 0xC70319B5EB61598FULL> name(source);
+    shieldJobNames[170] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x68, 0x39, 0xAE, 0x46, 0xED, 0xBF, 0x3C, 0xEC, 0x8B, 0x2A, 0xB3, 0x2A, 0x8C, 0xF9, 0x7D, 0xB0, 0x30, 0x95};
+    thread_local EncryptedName<sizeof(source), 0x0B8745519B1F95D7ULL> name(source);
+    shieldJobNames[171] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xA6, 0x92, 0x5D, 0xB7, 0x65, 0x72, 0x40, 0x3B, 0xE1, 0x51};
+    thread_local EncryptedName<sizeof(source), 0x8783C33941E15117ULL> name(source);
+    shieldJobNames[172] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x5A, 0x1F, 0x32, 0xD8, 0xCB, 0x97, 0xA8, 0xC5, 0xC3, 0x18, 0x41, 0xAE, 0xB0, 0xF9, 0xC9, 0x94, 0x7D, 0xDD};
+    thread_local EncryptedName<sizeof(source), 0x271B45771F83DD9FULL> name(source);
+    shieldJobNames[173] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x22, 0x49, 0x6B, 0x55, 0xD1, 0x5B, 0xE7, 0x02, 0x2B, 0x39, 0x69, 0x2D, 0xCB, 0x81};
+    thread_local EncryptedName<sizeof(source), 0xC1BB8111EDD183E1ULL> name(source);
+    shieldJobNames[174] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x33, 0x64, 0xB2, 0x24, 0xBD, 0x65, 0x9E, 0xD2, 0x22, 0x9D};
+    thread_local EncryptedName<sizeof(source), 0x1767DDE18D779D8BULL> name(source);
+    shieldJobNames[175] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x8D, 0x43, 0x12, 0x0E, 0xDD, 0x95, 0x97, 0xBD, 0x8B, 0x38, 0x24, 0x39, 0xC7, 0x4F};
+    thread_local EncryptedName<sizeof(source), 0x01CB4F1DF9D3F931ULL> name(source);
+    shieldJobNames[176] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x2F, 0x30, 0x0C, 0x32, 0x91, 0x03, 0x48, 0x00, 0x3E, 0xC9};
+    thread_local EncryptedName<sizeof(source), 0xC5B1BBCD9BC9C997ULL> name(source);
+    shieldJobNames[177] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x76, 0x45, 0xFB, 0x9D, 0xD3, 0x27, 0x73, 0xBA, 0x7F, 0x35, 0xF9, 0xE5, 0xC9, 0xFD};
+    thread_local EncryptedName<sizeof(source), 0x792FFD1325418FB5ULL> name(source);
+    shieldJobNames[178] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xF4, 0xA2, 0xED, 0x5F, 0x94, 0x8F, 0x15, 0xE7, 0x6F, 0xA4, 0x94, 0x49, 0x87, 0x88, 0x69, 0x8F, 0x9D, 0x63};
+    thread_local EncryptedName<sizeof(source), 0x49D33529F1556333ULL> name(source);
+    shieldJobNames[179] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xE1, 0x33, 0x3E, 0x84, 0x4C, 0xC8, 0x63, 0x5B, 0xEF, 0x3C, 0x7A, 0xC2, 0x10, 0x2F};
+    thread_local EncryptedName<sizeof(source), 0xE33F2FF779878559ULL> name(source);
+    shieldJobNames[180] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x03, 0xD5, 0x23, 0x01, 0x44, 0x71, 0x03, 0x4D, 0x03, 0xA9, 0x2F, 0x0C, 0x73, 0x87};
+    thread_local EncryptedName<sizeof(source), 0xF15F8785CDE369BFULL> name(source);
+    shieldJobNames[181] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xBD, 0xB1, 0x87, 0x91, 0x2C, 0x7B, 0xA9, 0x3D, 0xBD, 0xCD, 0x8B, 0x9C, 0x1B, 0x8D};
+    thread_local EncryptedName<sizeof(source), 0x81F58DED5D470D01ULL> name(source);
+    shieldJobNames[182] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x0B, 0x4A, 0x73, 0xD1, 0x32, 0xD4, 0x11, 0x85, 0x6C, 0x2D, 0x49, 0x9E, 0x62, 0x31};
+    thread_local EncryptedName<sizeof(source), 0x454D31872BB3EDCBULL> name(source);
+    shieldJobNames[183] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x51, 0xCC, 0xAB, 0xE5, 0x36, 0x2E, 0x93, 0x81, 0x36, 0xAB, 0x91, 0xAA, 0x66, 0xCB};
+    thread_local EncryptedName<sizeof(source), 0x41CFCB831F6B6B91ULL> name(source);
+    shieldJobNames[184] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xC9, 0x83, 0xA1, 0x67, 0xEE, 0x87, 0xBB, 0xE1, 0xC9, 0xFF, 0xAD, 0x6A, 0xD9, 0x71};
+    thread_local EncryptedName<sizeof(source), 0x5DE7712FAB613F75ULL> name(source);
+    shieldJobNames[185] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xD7, 0x7E, 0xF3, 0x53, 0xCC, 0x02, 0xCB, 0xCF, 0xB0, 0x19, 0xC9, 0x1C, 0x9C, 0xE7};
+    thread_local EncryptedName<sizeof(source), 0x0F97E779A933D917ULL> name(source);
+    shieldJobNames[186] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xFE, 0x7D, 0x50, 0x3E, 0xD7, 0xB3, 0x32, 0xD0, 0x1D, 0x6E, 0x4D, 0x52, 0xB6, 0xF5, 0x73, 0x8C, 0xA6, 0xD1};
+    thread_local EncryptedName<sizeof(source), 0x3789496BE3E1D141ULL> name(source);
+    shieldJobNames[187] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x2A, 0xF9, 0xCA, 0x85, 0xCF, 0x59, 0x6D, 0x82, 0x4D, 0x9C, 0xBF, 0x83, 0x87, 0xA1};
+    thread_local EncryptedName<sizeof(source), 0x4331A17F33095FEBULL> name(source);
+    shieldJobNames[188] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xCB, 0xDE, 0x88, 0xE4, 0xA5, 0xD7, 0xFC, 0x14, 0xDA, 0x27};
+    thread_local EncryptedName<sizeof(source), 0xD1056FF94D4D2773ULL> name(source);
+    shieldJobNames[189] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xEF, 0x19, 0xE7, 0xCB, 0x20, 0x64, 0x7B, 0x0F, 0xBF, 0x4B, 0xE7, 0xCA, 0x58, 0xA1};
+    thread_local EncryptedName<sizeof(source), 0xB127A19D775BF751ULL> name(source);
+    shieldJobNames[190] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xE8, 0x5E, 0xC6, 0x86, 0xC7, 0xFC, 0xD4, 0xBA, 0x92, 0xEB};
+    thread_local EncryptedName<sizeof(source), 0x0F61499B4973EB5DULL> name(source);
+    shieldJobNames[191] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xDC, 0x85, 0x0A, 0xD6, 0xDB, 0xD8, 0x67, 0x06, 0xBC, 0x4B};
+    thread_local EncryptedName<sizeof(source), 0xB7A96F8701BB4B6BULL> name(source);
+    shieldJobNames[192] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x7E, 0xCF, 0x5C, 0x38, 0xBB, 0xDE, 0xD1, 0x12, 0x1E, 0x01};
+    thread_local EncryptedName<sizeof(source), 0xA31F69E7EFED01C9ULL> name(source);
+    shieldJobNames[193] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xEE, 0xB1, 0x16, 0x76, 0x4B, 0x72, 0x3B, 0x0E, 0x8E, 0x7F};
+    thread_local EncryptedName<sizeof(source), 0xBFF5C517A1A77F59ULL> name(source);
+    shieldJobNames[194] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x83, 0x93, 0xE9, 0x9D, 0x7C, 0xB0, 0xC5, 0xDB, 0xD3, 0xC1, 0xE9, 0x9C, 0x04, 0x75};
+    thread_local EncryptedName<sizeof(source), 0x659975C121557D3DULL> name(source);
+    shieldJobNames[195] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xC1, 0xB5, 0xC9, 0x19, 0x1A, 0x30, 0xBD, 0x3B, 0x91, 0xE7, 0xC9, 0x18, 0x62, 0xF5};
+    thread_local EncryptedName<sizeof(source), 0x85E1F5A7A5755B7FULL> name(source);
+    shieldJobNames[196] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x9E, 0x0E, 0x5B, 0x6E, 0x5D, 0xEA, 0xCA, 0x65, 0xD6, 0xA5};
+    thread_local EncryptedName<sizeof(source), 0xAD6153019F93A527ULL> name(source);
+    shieldJobNames[197] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xEC, 0xE2, 0x34, 0x12, 0x11, 0x52, 0x74, 0x18, 0xB0, 0x3B};
+    thread_local EncryptedName<sizeof(source), 0xADADEB4DF7813B55ULL> name(source);
+    shieldJobNames[198] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x78, 0x40, 0x78, 0x00, 0xDD, 0x94, 0x9C, 0x6C, 0x24, 0x99};
+    thread_local EncryptedName<sizeof(source), 0xD9452D81E5CD99C1ULL> name(source);
+    shieldJobNames[199] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xAA, 0x5A, 0x10, 0xEA, 0xB7, 0x8E, 0x42, 0x12, 0xA0, 0xBF};
+    thread_local EncryptedName<sizeof(source), 0xD7A749EB27D5BF6DULL> name(source);
+    shieldJobNames[200] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xE0, 0xA6, 0x03, 0x5E, 0x21, 0xDA, 0x3E, 0x79, 0xA8, 0x0D};
+    thread_local EncryptedName<sizeof(source), 0xB195637DAFCB0D59ULL> name(source);
+    shieldJobNames[201] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x6A, 0x92, 0xA7, 0xE0, 0xF5, 0xA6, 0x36, 0x79, 0x22, 0x39};
+    thread_local EncryptedName<sizeof(source), 0xB19D1FA9116F39D3ULL> name(source);
+    shieldJobNames[202] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x16, 0xD0, 0xBC, 0x02, 0x9B, 0x70, 0xB0, 0x20, 0x4A, 0x09};
+    thread_local EncryptedName<sizeof(source), 0x9569C9C7E70909AFULL> name(source);
+    shieldJobNames[203] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x9C, 0x52, 0xA4, 0x94, 0x13, 0x96, 0xF0, 0x32, 0x96, 0xB7};
+    thread_local EncryptedName<sizeof(source), 0xF715514F5961B75BULL> name(source);
+    shieldJobNames[204] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x5C, 0xFB, 0x4C, 0xF6, 0xE9, 0x69, 0x22, 0xA3, 0xC5, 0xFC, 0x3F, 0x80, 0x92, 0x07, 0x43, 0xF2, 0x7B, 0x39};
+    thread_local EncryptedName<sizeof(source), 0x4191BB5531FD3999ULL> name(source);
+    shieldJobNames[205] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xFC, 0x26, 0xB9, 0xB5, 0x7C, 0x1B, 0xED, 0x13, 0x67, 0x20, 0xC0, 0xA3, 0x6F, 0x1C, 0x91, 0x7B, 0x95, 0xE7};
+    thread_local EncryptedName<sizeof(source), 0xBD2BA1C11B01E73BULL> name(source);
+    shieldJobNames[206] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xD6, 0x22, 0xEB, 0x37, 0x0C, 0xE7, 0xB3, 0xE5, 0x4D, 0x24, 0x92, 0x21, 0x1F, 0xE0, 0xCF, 0x8D, 0xBF, 0xE3};
+    thread_local EncryptedName<sizeof(source), 0x4B755DB19953E311ULL> name(source);
+    shieldJobNames[207] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x80, 0xF3, 0xE1, 0xD3, 0xA7, 0xF7, 0x2D, 0x0A, 0x89, 0x83, 0xE3, 0xAB, 0xBD, 0x2D};
+    thread_local EncryptedName<sizeof(source), 0xC9712D676B5B3943ULL> name(source);
+    shieldJobNames[208] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x09, 0xE6, 0x86, 0xD4, 0xD1, 0x23, 0xDE, 0x56, 0x5E, 0x2D};
+    thread_local EncryptedName<sizeof(source), 0xED15938D333D2DB9ULL> name(source);
+    shieldJobNames[209] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xB5, 0xD5, 0x34, 0xF4, 0xFE, 0xB4, 0xD3, 0x61, 0xBB, 0xDA, 0x70, 0xB2, 0xA2, 0x53};
+    thread_local EncryptedName<sizeof(source), 0xD98F5345098D630DULL> name(source);
+    shieldJobNames[210] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x22, 0xB6, 0x63, 0x19, 0x11, 0x92, 0xCC, 0x27, 0x65, 0x75};
+    thread_local EncryptedName<sizeof(source), 0x9B0F234DEFDF7593ULL> name(source);
+    shieldJobNames[211] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x31, 0x3B, 0xD0, 0x04, 0x73, 0x73, 0x35, 0x41, 0x37, 0x40, 0xE6, 0x33, 0x69, 0xA9};
+    thread_local EncryptedName<sizeof(source), 0xFD69A9B3F311818DULL> name(source);
+    shieldJobNames[212] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x90, 0xEC, 0x29, 0x65, 0x9D, 0x44, 0xDE, 0xBF, 0xE5, 0x1F};
+    thread_local EncryptedName<sizeof(source), 0x7F2DFFC1ABE91F2BULL> name(source);
+    shieldJobNames[213] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x3A, 0x24, 0xB6, 0x8E, 0x7B, 0x96, 0xF8, 0xDA, 0x30, 0xC1};
+    thread_local EncryptedName<sizeof(source), 0x1F1D51274373C1FDULL> name(source);
+    shieldJobNames[214] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x2D, 0x75, 0x99, 0x65, 0x98, 0xE8, 0xF1, 0xE3, 0x7D, 0x27, 0x99, 0x64, 0xE0, 0x2D};
+    thread_local EncryptedName<sizeof(source), 0x5DAD2D25D9259B93ULL> name(source);
+    shieldJobNames[215] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x91, 0x36, 0xEC, 0xAE, 0xBF, 0x91, 0x0E, 0xAE, 0x80, 0xCF};
+    thread_local EncryptedName<sizeof(source), 0x6BF729E30729CF29ULL> name(source);
+    shieldJobNames[216] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x9B, 0x2F, 0xBF, 0xC3, 0x9A, 0xE9, 0x6B, 0x81, 0x9B, 0x53, 0xB3, 0xCE, 0xAD, 0x1F};
+    thread_local EncryptedName<sizeof(source), 0x3D371F5B0F7F9327ULL> name(source);
+    shieldJobNames[217] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0xAC, 0x07, 0x70, 0x38, 0x8D, 0xCA, 0xC1, 0xD0, 0xCC, 0xC9};
+    thread_local EncryptedName<sizeof(source), 0x610F7DD1EFC1C91BULL> name(source);
+    shieldJobNames[218] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x36, 0xC7, 0x58, 0x42, 0xF7, 0xA5, 0x22, 0x22, 0xD5, 0xD4, 0x45, 0x2E, 0x96, 0xE3, 0x63, 0x7E, 0x6E, 0x6B};
+    thread_local EncryptedName<sizeof(source), 0xC5995F4B9FE96B89ULL> name(source);
+    shieldJobNames[219] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x3E, 0x7E, 0xF0, 0x96, 0x49, 0x30, 0xAA, 0xBC, 0x62, 0xA7};
+    thread_local EncryptedName<sizeof(source), 0x097389157345A787ULL> name(source);
+    shieldJobNames[220] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x8E, 0xDE, 0x65, 0x56, 0x9F, 0x18, 0x38, 0x97, 0xC6, 0x75};
+    thread_local EncryptedName<sizeof(source), 0x5F93A1C3A7AD7537ULL> name(source);
+    shieldJobNames[221] = name.Text();
+  }
+  {
+    const std::uint8_t source[] = {0x9C, 0xB3, 0x1B, 0x5F, 0x31, 0x17, 0x03, 0x44, 0x95, 0xC3, 0x19, 0x27, 0x2B, 0xCD};
+    thread_local EncryptedName<sizeof(source), 0x875FCDF1E7A1795FULL> name(source);
+    shieldJobNames[222] = name.Text();
+  }
+  shieldJobNames[223] = WizardBodyPath1().Text();
+  shieldJobNames[224] = PriestBodyPath1().Text();
+  shieldJobNames[225] = AssassinBodyPath1().Text();
+  shieldJobNames[226] = SageBodyPath1().Text();
+  shieldJobNames[227] = BardBodyPath1().Text();
+  shieldJobNames[228] = DancerBodyPath1().Text();
+  shieldJobNames[229] = MonkBodyPath1().Text();
+  shieldJobNames[230] = AlchemistBodyPath1().Text();
+  shieldJobNames[232] = RogueBodyPath1().Text();
+  shieldJobNames[233] = NoviceBodyPath1().Text();
+  shieldJobNames[234] = SwordmanBodyPath1().Text();
+  shieldJobNames[235] = MagicianBodyPath1().Text();
+  shieldJobNames[236] = ArcherBodyPath1().Text();
+  shieldJobNames[237] = AcolyteBodyPath1().Text();
+  shieldJobNames[238] = MerchantBodyPath1().Text();
+  shieldJobNames[239] = ThiefBodyPath1().Text();
+  shieldJobNames[231] = ThiefBodyPath2().Text();
+  shieldJobNames[51] = NoviceBodyPath2().Text();
+  shieldJobNames[52] = SwordmanBodyPath2().Text();
+  shieldJobNames[53] = MagicianBodyPath2().Text();
+  shieldJobNames[54] = ArcherBodyPath2().Text();
+  shieldJobNames[55] = AcolyteBodyPath2().Text();
+  shieldJobNames[56] = MerchantBodyPath2().Text();
+  shieldJobNames[57] = ThiefBodyPath3().Text();
+  shieldJobNames[58] = KnightBodyPath1().Text();
+  shieldJobNames[59] = PriestBodyPath2().Text();
+  shieldJobNames[60] = WizardBodyPath2().Text();
+  shieldJobNames[61] = BlacksmithBodyPath1().Text();
+  shieldJobNames[62] = HunterBodyPath1().Text();
+  shieldJobNames[63] = AssassinBodyPath2().Text();
+  shieldJobNames[64] = PecoKnightBodyPath1().Text();
+  shieldJobNames[65] = CrusaderBodyPath1().Text();
+  shieldJobNames[66] = MonkBodyPath2().Text();
+  shieldJobNames[67] = SageBodyPath2().Text();
+  shieldJobNames[68] = RogueBodyPath2().Text();
+  shieldJobNames[69] = AlchemistBodyPath2().Text();
+  shieldJobNames[70] = BardBodyPath2().Text();
+  shieldJobNames[71] = DancerBodyPath2().Text();
+  shieldJobNames[72] = NewPecoCrusaderBodyPath1().Text();
+  shieldJobNames[73] = NoviceBodyPath3().Text();
+  shieldJobNames[74] = SwordmanBodyPath3().Text();
+  shieldJobNames[75] = MagicianBodyPath3().Text();
+  shieldJobNames[76] = ArcherBodyPath3().Text();
+  {
+    const std::uint8_t source[] = {0xEB, 0x55, 0x10, 0x42, 0x6B, 0xA5, 0xA1, 0xE3, 0xED, 0x2E, 0x26, 0x75, 0x71, 0x7F};
+    thread_local EncryptedName<sizeof(source), 0x5FFD7FABB5D1EF57ULL> name(source);
+    shieldJobNames[77] = name.Text();
+  }
+  shieldJobNames[78] = MerchantBodyPath3().Text();
+  shieldJobNames[79] = ThiefBodyPath4().Text();
+  shieldJobNames[80] = KnightBodyPath2().Text();
+  shieldJobNames[81] = PriestBodyPath3().Text();
+  shieldJobNames[82] = WizardBodyPath3().Text();
+  shieldJobNames[83] = BlacksmithBodyPath2().Text();
+  shieldJobNames[84] = HunterBodyPath2().Text();
+  shieldJobNames[85] = AssassinBodyPath3().Text();
+  shieldJobNames[86] = PecoKnightBodyPath2().Text();
+  shieldJobNames[87] = CrusaderBodyPath2().Text();
+  shieldJobNames[88] = MonkBodyPath3().Text();
+  shieldJobNames[89] = SageBodyPath3().Text();
+  shieldJobNames[90] = RogueBodyPath3().Text();
+  shieldJobNames[91] = AlchemistBodyPath3().Text();
+  shieldJobNames[92] = BardBodyPath3().Text();
+  shieldJobNames[93] = DancerBodyPath3().Text();
+  shieldJobNames[94] = OldPecoCrusaderBodyPath1().Text();
+  shieldJobNames[95] = NoviceBodyPath4().Text();
+  shieldJobNames[96] = TaekwonBodyPath1().Text();
+  shieldJobNames[97] = TaekwonBodyPath2().Text();
+  shieldJobNames[98] = TaekwonBodyPath3().Text();
+  shieldJobNames[99] = WizardBodyPath4().Text();
+  shieldJobNames[100] = AcolyteBodyPath3().Text();
+  shieldJobNames[101] = KnightBodyPath3().Text();
+  shieldJobNames[102] = SageBodyPath4().Text();
+  shieldJobNames[104] = KnightBodyPath4().Text();
+  shieldJobNames[110] = KnightBodyPath5().Text();
+  shieldJobNames[130] = PecoKnightBodyPath3().Text();
+  shieldJobNames[131] = PecoKnightBodyPath4().Text();
+  shieldJobNames[159] = PecoKnightBodyPath5().Text();
+  shieldJobNames[138] = PecoKnightBodyPath6().Text();
+  shieldJobNames[139] = PecoKnightBodyPath7().Text();
+  shieldJobNames[140] = PecoKnightBodyPath8().Text();
+  shieldJobNames[141] = PecoKnightBodyPath9().Text();
+  shieldJobNames[142] = PecoKnightBodyPath10().Text();
+  shieldJobNames[143] = PecoKnightBodyPath11().Text();
+  shieldJobNames[144] = PecoKnightBodyPath12().Text();
+  shieldJobNames[145] = PecoKnightBodyPath13().Text();
+  shieldJobNames[107] = PriestBodyPath4().Text();
+  shieldJobNames[113] = PriestBodyPath5().Text();
+  shieldJobNames[105] = WizardBodyPath5().Text();
+  shieldJobNames[111] = WizardBodyPath6().Text();
+  shieldJobNames[108] = BlacksmithBodyPath3().Text();
+  shieldJobNames[114] = BlacksmithBodyPath4().Text();
+  shieldJobNames[136] = MadogearBodyPath1().Text();
+  shieldJobNames[137] = MadogearBodyPath2().Text();
+  shieldJobNames[162] = MadogearBodyPath3().Text();
+  shieldJobNames[106] = HunterBodyPath3().Text();
+  shieldJobNames[112] = HunterBodyPath4().Text();
+  shieldJobNames[134] = RangerWolfBodyPath1().Text();
+  shieldJobNames[135] = RangerWolfBodyPath2().Text();
+  shieldJobNames[161] = RangerWolfBodyPath3().Text();
+  shieldJobNames[109] = AssassinBodyPath4().Text();
+  shieldJobNames[115] = AssassinBodyPath5().Text();
+  shieldJobNames[116] = CrusaderBodyPath3().Text();
+  shieldJobNames[123] = CrusaderBodyPath4().Text();
+  shieldJobNames[132] = NewPecoCrusaderBodyPath2().Text();
+  shieldJobNames[133] = NewPecoCrusaderBodyPath3().Text();
+  shieldJobNames[160] = NewPecoCrusaderBodyPath4().Text();
+  shieldJobNames[120] = MonkBodyPath4().Text();
+  shieldJobNames[127] = MonkBodyPath5().Text();
+  shieldJobNames[117] = SageBodyPath5().Text();
+  shieldJobNames[124] = SageBodyPath6().Text();
+  shieldJobNames[122] = RogueBodyPath4().Text();
+  shieldJobNames[129] = RogueBodyPath5().Text();
+  shieldJobNames[121] = AlchemistBodyPath4().Text();
+  shieldJobNames[128] = AlchemistBodyPath5().Text();
+  shieldJobNames[119] = DancerBodyPath4().Text();
+  shieldJobNames[126] = DancerBodyPath5().Text();
+  shieldJobNames[118] = BardBodyPath4().Text();
+  shieldJobNames[125] = BardBodyPath5().Text();
+  shieldJobNames[146] = KnightBodyPath6().Text();
+  shieldJobNames[147] = WizardBodyPath7().Text();
+  shieldJobNames[148] = HunterBodyPath5().Text();
+  shieldJobNames[149] = PriestBodyPath6().Text();
+  shieldJobNames[150] = BlacksmithBodyPath5().Text();
+  shieldJobNames[151] = AssassinBodyPath6().Text();
+  shieldJobNames[152] = CrusaderBodyPath5().Text();
+  shieldJobNames[153] = SageBodyPath7().Text();
+  shieldJobNames[154] = BardBodyPath6().Text();
+  shieldJobNames[155] = DancerBodyPath6().Text();
+  shieldJobNames[156] = MonkBodyPath6().Text();
+  shieldJobNames[157] = AlchemistBodyPath6().Text();
+  shieldJobNames[158] = RogueBodyPath6().Text();
+  shieldJobNames[240] = NoviceBodyPath5().Text();
+  shieldJobNames[241] = NoviceBodyPath6().Text();
+  shieldJobNames[242] = NoviceBodyPath7().Text();
+  shieldJobNames[243] = NoviceBodyPath8().Text();
+  shieldJobNames[244] = PriestBodyPath7().Text();
+  shieldJobNames[245] = WizardBodyPath8().Text();
+  shieldJobNames[246] = BlacksmithBodyPath6().Text();
+  shieldJobNames[247] = BlacksmithBodyPath7().Text();
+  shieldJobNames[255] = BlacksmithBodyPath8().Text();
+  shieldJobNames[248] = HunterBodyPath6().Text();
+  shieldJobNames[256] = HunterBodyPath7().Text();
+  shieldJobNames[249] = KnightBodyPath7().Text();
+  shieldJobNames[257] = KnightBodyPath8().Text();
+  shieldJobNames[250] = KnightBodyPath9().Text();
+  shieldJobNames[251] = CrusaderBodyPath6().Text();
+  shieldJobNames[258] = CrusaderBodyPath7().Text();
+  shieldJobNames[252] = KnightBodyPath10().Text();
+  shieldJobNames[259] = KnightBodyPath11().Text();
+  shieldJobNames[253] = CrusaderBodyPath8().Text();
+  shieldJobNames[260] = CrusaderBodyPath9().Text();
+  shieldJobNames[254] = CrusaderBodyPath10().Text();
+  shieldJobNames[261] = KagerouBodyPath1().Text();
+  shieldJobNames[262] = OboroBodyPath1().Text();
+  shieldJobNames[263] = KagerouBodyPath2().Text();
+  shieldJobNames[264] = OboroBodyPath2().Text();
+  shieldJobNames[265] = RebellionBodyPath1().Text();
+  shieldJobNames[268] = SummonerBodyPath1().Text();
+  shieldJobNames[269] = SummonerCartBodyPath1().Text();
+  shieldJobNames[270] = SummonerBodyPath2().Text();
+  shieldJobNames[271] = SummonerCartBodyPath2().Text();
+  shieldJobNames[272] = NinjaBodyPath1().Text();
+  shieldJobNames[280] = NinjaBodyPath2().Text();
+  shieldJobNames[273] = KagerouBodyPath3().Text();
+  shieldJobNames[274] = OboroBodyPath3().Text();
+  shieldJobNames[281] = KagerouBodyPath4().Text();
+  shieldJobNames[282] = OboroBodyPath4().Text();
+  shieldJobNames[275] = TaekwonBodyPath4().Text();
+  shieldJobNames[283] = TaekwonBodyPath5().Text();
+  shieldJobNames[276] = TaekwonBodyPath6().Text();
+  shieldJobNames[288] = TaekwonBodyPath7().Text();
+  shieldJobNames[284] = TaekwonBodyPath8().Text();
+  shieldJobNames[277] = WizardBodyPath9().Text();
+  shieldJobNames[285] = WizardBodyPath10().Text();
+  shieldJobNames[278] = GunslingerBodyPath1().Text();
+  shieldJobNames[286] = GunslingerBodyPath2().Text();
+  shieldJobNames[279] = RebellionBodyPath2().Text();
+  shieldJobNames[287] = RebellionBodyPath3().Text();
+  shieldJobNames[289] = TaekwonBodyPath9().Text();
+  shieldJobNames[290] = WizardBodyPath11().Text();
+  shieldJobNames[291] = TaekwonBodyPath10().Text();
+  shieldJobNames[292] = WizardBodyPath12().Text();
+  shieldJobNames[293] = TaekwonBodyPath11().Text();
+  shieldJobNames[294] = TaekwonBodyPath12().Text();
+  shieldJobNames[295] = TaekwonBodyPath13().Text();
+  shieldJobNames[296] = WizardBodyPath13().Text();
+  shieldJobNames[297] = TaekwonBodyPath14().Text();
+  shieldJobNames[298] = WizardBodyPath14().Text();
+  shieldJobNames[305] = WizardBodyPath15().Text();
+  shieldJobNames[318] = WizardBodyPath16().Text();
+  shieldJobNames[311] = SageBodyPath8().Text();
+  shieldJobNames[324] = SageBodyPath9().Text();
+  shieldJobNames[307] = WindhawkBodyPath1().Text();
+  shieldJobNames[328] = WolfWindhawkBodyPath1().Text();
+  shieldJobNames[320] = WindhawkRidingBodyPath1().Text();
+  shieldJobNames[313] = TroubadourBodyPath1().Text();
+  shieldJobNames[326] = TroubadourRidingBodyPath1().Text();
+  shieldJobNames[314] = TrouvereBodyPath1().Text();
+  shieldJobNames[327] = TrouvereRidingBodyPath1().Text();
+  shieldJobNames[306] = CardinalBodyPath1().Text();
+  shieldJobNames[319] = CardinalRidingBodyPath1().Text();
+  shieldJobNames[312] = InquisitorBodyPath1().Text();
+  shieldJobNames[325] = InquisitorRidingBodyPath1().Text();
+  shieldJobNames[309] = BioloBodyPath1().Text();
+  shieldJobNames[322] = BioloRidingBodyPath1().Text();
+  shieldJobNames[303] = MeisterBodyPath1().Text();
+  shieldJobNames[316] = MeisterRidingBodyPath1().Text();
+  shieldJobNames[329] = MeisterMadogear1BodyPath1().Text();
+  shieldJobNames[302] = DragonKnightBodyPath1().Text();
+  shieldJobNames[315] = DragonKnightRidingBodyPath1().Text();
+  shieldJobNames[330] = DragonKnightChickenBodyPath1().Text();
+  shieldJobNames[308] = ImperialGuardBodyPath1().Text();
+  shieldJobNames[321] = ImperialGuardRidingBodyPath1().Text();
+  shieldJobNames[331] = ImperialGuardChickenBodyPath1().Text();
+  shieldJobNames[304] = ShadowCrossBodyPath1().Text();
+  shieldJobNames[317] = ShadowCrossRidingBodyPath1().Text();
+  shieldJobNames[310] = AbyssChaserBodyPath1().Text();
+  shieldJobNames[323] = AbyssChaserRidingBodyPath1().Text();
+  shieldJobNames[352] = SkyEmperorBodyPath1().Text();
+  shieldJobNames[366] = SkyEmperor2BodyPath1().Text();
+  shieldJobNames[359] = SkyEmperorRidingBodyPath1().Text();
+  shieldJobNames[353] = SoulAsceticBodyPath1().Text();
+  shieldJobNames[360] = SoulAsceticRidingBodyPath1().Text();
+  shieldJobNames[354] = ShinkiroBodyPath1().Text();
+  shieldJobNames[361] = ShinkiroRidingBodyPath1().Text();
+  shieldJobNames[355] = ShiranuiBodyPath1().Text();
+  shieldJobNames[362] = ShiranuiRidingBodyPath1().Text();
+  shieldJobNames[356] = NightWatchBodyPath1().Text();
+  shieldJobNames[363] = NightWatchRidingBodyPath1().Text();
+  shieldJobNames[357] = HyperNoviceBodyPath1().Text();
+  shieldJobNames[364] = HyperNoviceRidingBodyPath1().Text();
+  shieldJobNames[358] = SpiritHandlerBodyPath1().Text();
+  shieldJobNames[365] = SpiritHandlerRidingBodyPath1().Text();
+  shieldJobNames[401] = DruidBodyPath1().Text();
+  shieldJobNames[402] = DruidBodyPath2().Text();
+  shieldJobNames[403] = KarnosBodyPath1().Text();
+  shieldJobNames[404] = KarnosBodyPath2().Text();
+  shieldJobNames[405] = AliteaBodyPath1().Text();
+  std::vector<const char*>& unknownNames = reinterpret_cast<std::vector<const char*>&>(this->unknown_0F88[0x08]);
+  unknownNames.resize(2, "f");
+  unknownNames[0] = "f";
+  unknownNames[1] = "";
+  std::vector<const char*>& weaponNames = reinterpret_cast<std::vector<const char*>&>(this->m_weaponNamesBegin);
+  weaponNames.resize(105, "");
+  for (int index = 0; index < 105; ++index) {
+    const char* name = nullptr;
+    if (this->m_hotkeyScript->Call(std::string("ReqWeaponName"), "d>s", index, &name)) {
+      weaponNames[index] = name;
+    }
+  }
+  std::vector<const char*>& palJobNames = this->m_palJobNames;
+  palJobNames.resize(28053, "초보자");
+  palJobNames[401] = DruidJobName1().Text();
+  palJobNames[402] = DruidJobName2().Text();
+  palJobNames[403] = KarnosJobName1().Text();
+  palJobNames[404] = KarnosJobName2().Text();
+  palJobNames[405] = AliteaJobName1().Text();
+  palJobNames[406] = WerewolfJobName1().Text();
+  palJobNames[407] = WereRaptorJobName1().Text();
+  palJobNames[408] = DruidRidingName().Text();
+  palJobNames[409] = KarnosRidingName().Text();
+  palJobNames[410] = AliteaRidingName().Text();
+  palJobNames[268] = "묘족";
+  palJobNames[269] = "고양이카트";
+  palJobNames[270] = "묘족";
+  palJobNames[271] = "고양이카트";
+  palJobNames[272] = "닌자";
+  palJobNames[280] = "닌자";
+  palJobNames[273] = "KAGEROU";
+  palJobNames[274] = "OBORO";
+  palJobNames[281] = "KAGEROU";
+  palJobNames[282] = "OBORO";
+  palJobNames[275] = "태권소년";
+  palJobNames[283] = "태권소년";
+  palJobNames[276] = "권성";
+  palJobNames[288] = "권성";
+  palJobNames[284] = "권성";
+  palJobNames[277] = "소울링커";
+  palJobNames[285] = "태권소년";
+  palJobNames[278] = "건너";
+  palJobNames[286] = "건너";
+  palJobNames[279] = "리벨리온";
+  palJobNames[287] = "리벨리온";
+  palJobNames[14] = "크루";
+  palJobNames[15] = "몽크";
+  palJobNames[16] = "세이지";
+  palJobNames[17] = "로그";
+  palJobNames[18] = "연금술사";
+  palJobNames[19] = "바드";
+  palJobNames[20] = "댄서";
+  palJobNames[21] = "페코페코_크루";
+  palJobNames[87] = "크루";
+  palJobNames[88] = "몽크";
+  palJobNames[89] = "세이지";
+  palJobNames[90] = "로그";
+  palJobNames[91] = "연금술사";
+  palJobNames[92] = "바드";
+  palJobNames[93] = "댄서";
+  palJobNames[94] = "페코페코_크루";
+  palJobNames[24] = "건너";
+  palJobNames[97] = "권성";
+  palJobNames[98] = "권성";
+  palJobNames[25] = "닌자";
+  palJobNames[99] = "소울링커";
+  palJobNames[58] = "로드나이트";
+  palJobNames[64] = "페코로나";
+  palJobNames[72] = "페코팔라";
+  palJobNames[62] = "스나이퍼";
+  palJobNames[68] = "스토커";
+  palJobNames[63] = "어세신크로스";
+  palJobNames[71] = "집시";
+  palJobNames[66] = "챔피온";
+  palJobNames[70] = "크라운";
+  palJobNames[69] = "크리에이터";
+  palJobNames[65] = "팔라딘";
+  palJobNames[67] = "프로페서";
+  palJobNames[60] = "하이위저드";
+  palJobNames[59] = "하이프리스트";
+  palJobNames[61] = "화이트스미스";
+  palJobNames[14] = "기사";
+  palJobNames[15] = "프리스트";
+  palJobNames[16] = "위저드";
+  palJobNames[17] = "어세신";
+  palJobNames[18] = "제철공";
+  palJobNames[19] = "헌터";
+  palJobNames[20] = "헌터";
+  palJobNames[21] = "페코페코_기사";
+  palJobNames[87] = "기사";
+  palJobNames[88] = "프리스트";
+  palJobNames[89] = "위저드";
+  palJobNames[90] = "어세신";
+  palJobNames[91] = "제철공";
+  palJobNames[92] = "헌터";
+  palJobNames[93] = "헌터";
+  palJobNames[94] = "페코페코_기사";
+  palJobNames[24] = "초보자";
+  palJobNames[97] = "태권소년";
+  palJobNames[98] = "태권소년";
+  palJobNames[25] = "초보자";
+  palJobNames[99] = "태권소년";
+  palJobNames[58] = "기사";
+  palJobNames[64] = "페코페코_기사";
+  palJobNames[72] = "페코페코_기사";
+  palJobNames[62] = "헌터";
+  palJobNames[68] = "기사";
+  palJobNames[63] = "어세신";
+  palJobNames[71] = "헌터";
+  palJobNames[66] = "프리스트";
+  palJobNames[70] = "헌터";
+  palJobNames[69] = "제철공";
+  palJobNames[65] = "기사";
+  palJobNames[67] = "위저드";
+  palJobNames[60] = "위저드";
+  palJobNames[59] = "프리스트";
+  palJobNames[61] = "제철공";
+  palJobNames[0] = "초보자";
+  palJobNames[51] = "초보자";
+  palJobNames[73] = "초보자";
+  palJobNames[23] = "슈퍼노비스";
+  palJobNames[95] = "슈퍼노비스";
+  palJobNames[240] = "슈퍼노비스";
+  palJobNames[241] = "슈퍼노비스";
+  palJobNames[96] = "태권소년";
+  palJobNames[100] = "성직자";
+  palJobNames[101] = "기사";
+  palJobNames[102] = "위저드";
+  palJobNames[265] = "리벨리온";
+  palJobNames[1] = "검사";
+  palJobNames[52] = "검사";
+  palJobNames[74] = "검사";
+  palJobNames[7] = "기사";
+  palJobNames[80] = "기사";
+  palJobNames[13] = "페코페코_기사";
+  palJobNames[86] = "페코페코_기사";
+  palJobNames[104] = "룬나이트";
+  palJobNames[146] = "룬나이트";
+  palJobNames[110] = "룬나이트";
+  palJobNames[130] = "룬드래곤";
+  palJobNames[159] = "룬드래곤";
+  palJobNames[131] = "룬드래곤";
+  palJobNames[138] = "룬드래곤";
+  palJobNames[139] = "룬드래곤";
+  palJobNames[140] = "룬드래곤";
+  palJobNames[141] = "룬드래곤";
+  palJobNames[142] = "룬드래곤";
+  palJobNames[143] = "룬드래곤";
+  palJobNames[144] = "룬드래곤";
+  palJobNames[145] = "룬드래곤";
+  palJobNames[116] = "로얄가드";
+  palJobNames[152] = "로얄가드";
+  palJobNames[123] = "로얄가드";
+  palJobNames[132] = "그리폰로얄";
+  palJobNames[160] = "그리폰로얄";
+  palJobNames[133] = "그리폰로얄";
+  palJobNames[2] = "마법사";
+  palJobNames[53] = "마법사";
+  palJobNames[117] = "소서러";
+  palJobNames[124] = "소서러";
+  palJobNames[153] = "소서러";
+  palJobNames[105] = "워록";
+  palJobNames[111] = "워록";
+  palJobNames[147] = "워록";
+  palJobNames[3] = "궁수";
+  palJobNames[54] = "궁수";
+  palJobNames[76] = "궁수";
+  palJobNames[11] = "헌터";
+  palJobNames[84] = "헌터";
+  palJobNames[106] = "레인저";
+  palJobNames[148] = "레인저";
+  palJobNames[112] = "레인저";
+  palJobNames[134] = "울프레인저";
+  palJobNames[161] = "울프레인저";
+  palJobNames[135] = "울프레인저";
+  palJobNames[118] = "민스트럴";
+  palJobNames[154] = "민스트럴";
+  palJobNames[125] = "민스트럴";
+  palJobNames[119] = "원더러";
+  palJobNames[126] = "원더러";
+  palJobNames[155] = "원더러";
+  palJobNames[4] = "성직자";
+  palJobNames[55] = "성직자";
+  palJobNames[77] = "성직자";
+  palJobNames[8] = "프리스트";
+  palJobNames[81] = "프리스트";
+  palJobNames[107] = "아크비숍";
+  palJobNames[149] = "아크비숍";
+  palJobNames[113] = "아크비숍";
+  palJobNames[120] = "슈라";
+  palJobNames[156] = "슈라";
+  palJobNames[127] = "슈라";
+  palJobNames[5] = "상인";
+  palJobNames[56] = "상인";
+  palJobNames[78] = "상인";
+  palJobNames[10] = "제철공";
+  palJobNames[83] = "제철공";
+  palJobNames[121] = "제네릭";
+  palJobNames[128] = "제네릭";
+  palJobNames[157] = "제네릭";
+  palJobNames[108] = "미케닉";
+  palJobNames[114] = "미케닉";
+  palJobNames[150] = "미케닉";
+  palJobNames[136] = "미케닉_마도기어";
+  palJobNames[137] = "미케닉_마도기어";
+  palJobNames[162] = "미케닉_마도기어";
+  palJobNames[6] = "도둑";
+  palJobNames[57] = "도둑";
+  palJobNames[79] = "도둑";
+  palJobNames[12] = "어세신";
+  palJobNames[85] = "어세신";
+  palJobNames[122] = "쉐도우체이서";
+  palJobNames[129] = "쉐도우체이서";
+  palJobNames[158] = "쉐도우체이서";
+  palJobNames[109] = "길로틴크로스";
+  palJobNames[115] = "길로틴크로스";
+  palJobNames[151] = "길로틴크로스";
+  palJobNames[75] = "마법사";
+  palJobNames[9] = "위저드";
+  palJobNames[82] = "위저드";
+  palJobNames[22] = "결혼";
+  palJobNames[26] = "프리스트";
+  palJobNames[27] = "프리스트";
+  palJobNames[28] = "프리스트";
+  palJobNames[29] = "프리스트";
+  palJobNames[30] = "프리스트";
+  palJobNames[174] = "초보자";
+  palJobNames[208] = "초보자";
+  palJobNames[233] = "초보자";
+  palJobNames[178] = "슈퍼노비스";
+  palJobNames[222] = "슈퍼노비스";
+  palJobNames[242] = "슈퍼노비스";
+  palJobNames[243] = "슈퍼노비스";
+  palJobNames[173] = "권성";
+  palJobNames[205] = "태권소년";
+  palJobNames[167] = "태권소년";
+  palJobNames[164] = "닌자";
+  palJobNames[261] = "KAGEROU";
+  palJobNames[262] = "OBORO";
+  palJobNames[263] = "KAGEROU";
+  palJobNames[264] = "OBORO";
+  palJobNames[165] = "건너";
+  palJobNames[266] = "리벨리온";
+  palJobNames[289] = "성제";
+  palJobNames[290] = "소울리퍼";
+  palJobNames[291] = "성제";
+  palJobNames[292] = "소울리퍼";
+  palJobNames[293] = "성제";
+  palJobNames[294] = "성제";
+  palJobNames[166] = "검사";
+  palJobNames[209] = "검사";
+  palJobNames[234] = "검사";
+  palJobNames[249] = "기사";
+  palJobNames[257] = "기사";
+  palJobNames[250] = "기사";
+  palJobNames[253] = "크루";
+  palJobNames[260] = "크루";
+  palJobNames[254] = "팔라딘";
+  palJobNames[176] = "성직자";
+  palJobNames[212] = "성직자";
+  palJobNames[237] = "성직자";
+  palJobNames[206] = "프리스트";
+  palJobNames[244] = "프리스트";
+  palJobNames[207] = "하이프리스트";
+  palJobNames[175] = "몽크";
+  palJobNames[216] = "몽크";
+  palJobNames[189] = "챔피온";
+  palJobNames[180] = "마법사";
+  palJobNames[210] = "마법사";
+  palJobNames[235] = "마법사";
+  palJobNames[184] = "위저드";
+  palJobNames[245] = "위저드";
+  palJobNames[186] = "하이위저드";
+  palJobNames[181] = "세이지";
+  palJobNames[217] = "세이지";
+  palJobNames[185] = "프로페서";
+  palJobNames[169] = "상인";
+  palJobNames[213] = "상인";
+  palJobNames[238] = "상인";
+  palJobNames[188] = "제철공";
+  palJobNames[246] = "제철공";
+  palJobNames[168] = "화이트스미스";
+  palJobNames[187] = "연금술사";
+  palJobNames[219] = "연금술사";
+  palJobNames[171] = "크리에이터";
+  palJobNames[191] = "도둑";
+  palJobNames[231] = "도둑";
+  palJobNames[239] = "도둑";
+  palJobNames[192] = "로그";
+  palJobNames[218] = "로그";
+  palJobNames[194] = "스토커";
+  palJobNames[195] = "어세신";
+  palJobNames[215] = "어세신";
+  palJobNames[196] = "어세신크로스";
+  palJobNames[172] = "궁수";
+  palJobNames[211] = "궁수";
+  palJobNames[236] = "궁수";
+  palJobNames[204] = "헌터";
+  palJobNames[214] = "헌터";
+  palJobNames[200] = "스나이퍼";
+  palJobNames[197] = "댄서";
+  palJobNames[221] = "댄서";
+  palJobNames[202] = "집시";
+  palJobNames[199] = "바드";
+  palJobNames[220] = "바드";
+  palJobNames[203] = "크라운";
+  palJobNames[26] = "SANTA";
+  palJobNames[27] = "SUMMER";
+  palJobNames[28] = "HANBOK";
+  palJobNames[29] = "OKTOBERFEST";
+  palJobNames[30] = "SUMMER2";
+  palJobNames[174] = "노비스포링";
+  palJobNames[178] = "슈퍼노비스포링";
+  palJobNames[165] = "페코건너";
+  palJobNames[266] = "peco_rebellion";
+  palJobNames[164] = "두꺼비닌자";
+  palJobNames[263] = "frog_kagerou";
+  palJobNames[264] = "frog_oboro";
+  palJobNames[205] = "태권소년포링";
+  palJobNames[173] = "권성포링";
+  palJobNames[295] = "해태성제";
+  palJobNames[167] = "두꺼비소울링커";
+  palJobNames[296] = "해태소울리퍼";
+  palJobNames[13] = "페코페코_기사";
+  palJobNames[64] = "로드페코";
+  palJobNames[21] = "신페코크루세이더";
+  palJobNames[72] = "페코팔라딘";
+  palJobNames[132] = "그리폰가드";
+  palJobNames[166] = "페코검사";
+  palJobNames[249] = "사자기사";
+  palJobNames[250] = "사자로드나이트";
+  palJobNames[253] = "사자크루세이더";
+  palJobNames[254] = "사자팔라딘";
+  palJobNames[180] = "여우마법사";
+  palJobNames[184] = "여우위저드";
+  palJobNames[186] = "여우하이위저드";
+  palJobNames[181] = "여우세이지";
+  palJobNames[185] = "여우프로페서";
+  palJobNames[176] = "복사알파카";
+  palJobNames[206] = "프리스트알파카";
+  palJobNames[207] = "하이프리스트알파카";
+  palJobNames[175] = "몽크알파카";
+  palJobNames[189] = "챔피온알파카";
+  palJobNames[169] = "상인멧돼지";
+  palJobNames[188] = "제철공멧돼지";
+  palJobNames[168] = "화이트스미스멧돼지";
+  palJobNames[187] = "연금술사멧돼지";
+  palJobNames[171] = "크리에이터멧돼지";
+  palJobNames[191] = "켈베로스도둑";
+  palJobNames[195] = "켈베로스어쎄신";
+  palJobNames[196] = "켈베로스어쎄신크로스";
+  palJobNames[192] = "켈베로스로그";
+  palJobNames[194] = "켈베로스스토커";
+  palJobNames[172] = "타조궁수";
+  palJobNames[204] = "타조헌터";
+  palJobNames[200] = "타조스나이퍼";
+  palJobNames[199] = "타조바드";
+  palJobNames[203] = "타조크라운";
+  palJobNames[197] = "타조무희";
+  palJobNames[202] = "타조짚시";
+  palJobNames[133] = palJobNames[132];
+  palJobNames[233] = palJobNames[174];
+  palJobNames[242] = palJobNames[178];
+  palJobNames[234] = palJobNames[166];
+  palJobNames[235] = palJobNames[180];
+  palJobNames[237] = palJobNames[176];
+  palJobNames[238] = palJobNames[169];
+  palJobNames[239] = palJobNames[191];
+  palJobNames[236] = palJobNames[172];
+  palJobNames[86] = palJobNames[13];
+  palJobNames[208] = palJobNames[174];
+  palJobNames[209] = palJobNames[166];
+  palJobNames[210] = palJobNames[180];
+  palJobNames[211] = palJobNames[172];
+  palJobNames[212] = palJobNames[176];
+  palJobNames[213] = palJobNames[169];
+  palJobNames[214] = palJobNames[204];
+  palJobNames[215] = palJobNames[195];
+  palJobNames[216] = palJobNames[175];
+  palJobNames[217] = palJobNames[181];
+  palJobNames[218] = palJobNames[192];
+  palJobNames[219] = palJobNames[187];
+  palJobNames[220] = palJobNames[199];
+  palJobNames[221] = palJobNames[197];
+  palJobNames[222] = palJobNames[178];
+  palJobNames[231] = palJobNames[191];
+  palJobNames[243] = palJobNames[242];
+  palJobNames[244] = palJobNames[206];
+  palJobNames[245] = palJobNames[184];
+  palJobNames[246] = palJobNames[188];
+  palJobNames[257] = palJobNames[249];
+  palJobNames[280] = palJobNames[164];
+  palJobNames[281] = palJobNames[263];
+  palJobNames[282] = palJobNames[264];
+  palJobNames[283] = palJobNames[205];
+  palJobNames[284] = palJobNames[173];
+  palJobNames[285] = palJobNames[167];
+  palJobNames[286] = palJobNames[165];
+  palJobNames[287] = palJobNames[266];
+  palJobNames[160] = palJobNames[132];
+  palJobNames[193] = "켈베로스쉐도우체이서";
+  palJobNames[232] = palJobNames[193];
+  palJobNames[190] = "켈베로스길로틴크로스";
+  palJobNames[225] = palJobNames[190];
+  palJobNames[170] = "제네릭멧돼지";
+  palJobNames[230] = palJobNames[170];
+  palJobNames[247] = "미케닉멧돼지";
+  palJobNames[255] = palJobNames[247];
+  palJobNames[251] = "사자로얄가드";
+  palJobNames[258] = palJobNames[251];
+  palJobNames[252] = "사자룬나이트";
+  palJobNames[259] = palJobNames[252];
+  palJobNames[248] = "타조레인져";
+  palJobNames[256] = palJobNames[248];
+  palJobNames[198] = "타조민스트럴";
+  palJobNames[227] = palJobNames[198];
+  palJobNames[201] = "타조원더러";
+  palJobNames[228] = palJobNames[201];
+  palJobNames[179] = "아크비숍알파카";
+  palJobNames[224] = palJobNames[179];
+  palJobNames[177] = "슈라알파카";
+  palJobNames[229] = palJobNames[177];
+  palJobNames[183] = "여우워록";
+  palJobNames[223] = palJobNames[183];
+  palJobNames[182] = "여우소서러";
+  palJobNames[226] = palJobNames[182];
+  palJobNames[295] = "해태성제";
+  palJobNames[297] = "해태성제";
+  palJobNames[296] = "해태소울리퍼";
+  palJobNames[298] = "해태소울리퍼";
+  palJobNames[302] = "DRAGON_KNIGHT";
+  palJobNames[315] = "DRAGON_KNIGHT_RIDING";
+  palJobNames[330] = "DRAGON_KNIGHT_CHICKEN";
+  palJobNames[308] = "IMPERIAL_GUARD";
+  palJobNames[321] = "IMPERIAL_GUARD_RIDING";
+  palJobNames[331] = "IMPERIAL_GUARD_CHICKEN";
+  palJobNames[307] = "WINDHAWK";
+  palJobNames[328] = "WOLF_WINDHAWK";
+  palJobNames[320] = "WINDHAWK_RIDING";
+  palJobNames[313] = "TROUBADOUR";
+  palJobNames[326] = "TROUBADOUR_RIDING";
+  palJobNames[314] = "TROUVERE";
+  palJobNames[327] = "TROUVERE_RIDING";
+  palJobNames[305] = "ARCH_MAGE";
+  palJobNames[318] = "ARCH_MAGE_RIDING";
+  palJobNames[311] = "ELEMETAL_MASTER";
+  palJobNames[324] = "ELEMETAL_MASTER_RIDING";
+  palJobNames[306] = "CARDINAL";
+  palJobNames[319] = "CARDINAL_RIDING";
+  palJobNames[312] = "INQUISITOR";
+  palJobNames[325] = "INQUISITOR_RIDING";
+  palJobNames[309] = "BIOLO";
+  palJobNames[322] = "BIOLO_RIDING";
+  palJobNames[303] = "MEISTER";
+  palJobNames[316] = "MEISTER_RIDING";
+  palJobNames[329] = "MEISTER_MADOGEAR1";
+  palJobNames[304] = "SHADOW_CROSS";
+  palJobNames[317] = "SHADOW_CROSS_RIDING";
+  palJobNames[310] = "ABYSS_CHASER";
+  palJobNames[323] = "ABYSS_CHASER_RIDING";
+  palJobNames[352] = "SKY_EMPEROR";
+  palJobNames[366] = "SKY_EMPEROR2";
+  palJobNames[359] = "SKY_EMPEROR_RIDING";
+  palJobNames[353] = "SOUL_ASCETIC";
+  palJobNames[360] = "SOUL_ASCETIC_RIDING";
+  palJobNames[354] = "SHINKIRO";
+  palJobNames[361] = "SHINKIRO_RIDING";
+  palJobNames[355] = "SHIRANUI";
+  palJobNames[362] = "SHIRANUI_RIDING";
+  palJobNames[356] = "NIGHT_WATCH";
+  palJobNames[363] = "NIGHT_WATCH_RIDING";
+  palJobNames[357] = "HYPER_NOVICE";
+  palJobNames[364] = "HYPER_NOVICE_RIDING";
+  palJobNames[358] = "SPIRIT_HANDLER";
+  palJobNames[365] = "SPIRIT_HANDLER_RIDING";
+  palJobNames[26] = "SANTA";
+  palJobNames[27] = "SUMMER";
+  palJobNames[28] = "HANBOK";
+  palJobNames[29] = "OKTOBERFEST";
+  palJobNames[30] = "SUMMER2";
+  std::vector<const char*>& robeNames = this->m_robeNames;
+  robeNames.resize(5, "");
+  robeNames[0] = "";
+  robeNames[1] = "_가드";
+  robeNames[3] = "_쉴드";
+  robeNames[4] = "_미러쉴드";
+  robeNames[2] = "_버클러";
+  palJobNames[93] = "무희바지";
+  palJobNames[260] = "사자크루세이더";
+  palJobNames[221] = "dancer_b_riding";
+  bodyJobNames[221] = "dancer_b_riding";
+  this->InitJobKeyNames();
 }

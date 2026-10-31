@@ -870,6 +870,7 @@ public:
   const std::vector<std::string>* GetMapViewParameters(const char* rswName, int* found);
   void InitCommandTables();
   void InitJobKeyNames();
+  void InitResourceNameTables();
   const char* GetEFSTImgFileName(int efstId, int type);
   int IsTreeGroupTwo(int job) const;
   bool IsTreeGroupThree(int job) const;
