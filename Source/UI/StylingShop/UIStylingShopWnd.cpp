@@ -480,6 +480,21 @@ int UIStylingshopTabParentWnd::SendMsg(UIWindow*, int, std::intptr_t, std::intpt
   return 0;
 }
 
+// OFFSET: 0x00827610
+// FUNCTION: fn_10327
+void UIDisplayCharacter::LoadSessionStyle() {
+  this->unknown_0088 = g_session.m_robe;
+  this->unknown_008C = g_session.m_head;
+  this->job = g_session.m_bodyCostume;
+  this->unknown_0094 = g_session.m_headPalette;
+  this->unknown_0098 = g_session.m_bodyStyle;
+  this->unknown_009C = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[4]);
+  this->unknown_00A0 = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[8]);
+  this->unknown_00A4 = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0]);
+}
+
+// OFFSET: 0x00822F20
+
 // OFFSET: 0x00823CE0
 // FUNCTION: fn_10298
 void UIDisplayCharacter::CopyStyle(const UIDisplayCharacter* other) {
@@ -661,6 +676,8 @@ void UIStylingShopWnd::Paint() {
     this->DrawBitmap(0, 0, &background->image, false);
   }
 }
+
+// OFFSET: 0x00825910
 
 // OFFSET: 0x00826E50
 // FUNCTION: fn_10325

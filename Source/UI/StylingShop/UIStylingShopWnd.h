@@ -14,6 +14,8 @@
 
 class UIDisplayCharacter : public UIWindow {
 public:
+  UIDisplayCharacter(UIWindowContext& context);
+  void LoadSessionStyle();
   void CopyStyle(const UIDisplayCharacter* other);
   void LoadCostumes();
   void SelectNextStyle(const char* table, int* goods);
@@ -45,9 +47,10 @@ class UIShowInfoWnd : public UIWindow {
 public:
   void ResetCheckBoxes();
   void ArrangeCheckBoxes(const int& layout);
+  void CheckColoringGoods(bool* coloring);
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  /* 007C */ int unknown_007C;
+  /* 007C */ UIDisplayCharacter* m_display;
   /* 0080 */ UICheckBox* m_checks[8];
   /* 00A0 */ unsigned char unknown_00A0;
   /* 00A1 */ unsigned char unknown_00A1;
