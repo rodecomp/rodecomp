@@ -20,6 +20,7 @@ public:
   void Slot19() override;
   void Paint() override;
   void Slot35(int value) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   void SetTextOffset(int x, int y);
   void SetBackgroundColor(std::uint32_t value);

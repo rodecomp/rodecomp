@@ -1,5 +1,6 @@
 #include "UI/Window/UIControl.h"
 #include "UI/Buttons/UIRadioButton.h"
+#include "UI/Buttons/UITextButton.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Lists/UIThumb.h"
 #include "UI/Edit/UIEditCtrl.h"
@@ -1854,6 +1855,31 @@ void CUITextViewer::Slot35(int value) {
   } else if (this->parent) {
     this->parent->Slot35(value);
   }
+}
+
+// OFFSET: 0x009EA6A0
+// FUNCTION: fn_14520
+int CUITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 98) {
+    switch (a) {
+    case 437:
+      OpenTextButtonLink(static_cast<UITextButton*>(sender));
+      break;
+    case 438:
+      OpenTextButtonNavigation(static_cast<UITextButton*>(sender));
+      break;
+    case 464:
+      ShowTextButtonItem(static_cast<UITextButton*>(sender));
+      break;
+    case 517:
+      ShowTextButtonTip(static_cast<UITextButton*>(sender));
+      break;
+    case 539:
+      RequestTextButtonService(static_cast<UITextButton*>(sender));
+      break;
+    }
+  }
+  return UIWindow::SendMsg(sender, message, a, b, c, d);
 }
 
 // OFFSET: 0x009EA7A0
