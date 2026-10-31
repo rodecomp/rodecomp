@@ -16,7 +16,7 @@
 #include "Resource/TextureNames.h"
 #include "Script/LuaScript.h"
 #include "UI/Buttons/UIBitmapButton.h"
-#include "UI/Buttons/UICheckBox.h"
+#include "UI/Window/UIResizer.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Chat/ChatSuggestions.h"
@@ -211,6 +211,251 @@ std::list<CSkillInfo>& UINewSkillListWnd::SkillList(int tab, bool live) {
 }
 
 // OFFSET: 0x009B0820
+// FUNCTION: fn_13810
+void UINewSkillListWnd::InitTabs() {
+  const int initialTabCount = this->m_tabs->labels.size();
+  const std::uint8_t source[23] = {
+    0xEF, 0xF2, 0x0F, 0xAA, 0x08, 0x4E, 0x1B, 0x6F, 0xF1, 0xFC, 0x0F, 0xA6,
+    0x24, 0x42, 0x03, 0x57, 0xC4, 0xFF, 0x23, 0x98, 0x0E, 0x42, 0x77
+  };
+  thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> funcName(source);
+  const char* func = funcName.Text();
+
+  const char* defaultTabs[4] = {};
+  const char* jobTabs[4] = {};
+  g_luaScript->Call(func, "d>ssss", 0, &defaultTabs[0], &defaultTabs[1], &defaultTabs[2], &defaultTabs[3]);
+
+  const unsigned baseJob = JobNames::BaseJob(g_session.GetDisplayJob());
+  int jobKey = baseJob;
+  switch (baseJob) {
+  case 0:
+  case 4001:
+  case 4023:
+    jobKey = 0;
+    break;
+  case 1:
+  case 4002:
+  case 4024:
+    jobKey = 1;
+    break;
+  case 2:
+  case 4003:
+  case 4025:
+    jobKey = 2;
+    break;
+  case 3:
+  case 4004:
+  case 4026:
+    jobKey = 3;
+    break;
+  case 4:
+  case 4005:
+  case 4027:
+    jobKey = 4;
+    break;
+  case 5:
+  case 4006:
+  case 4028:
+    jobKey = 5;
+    break;
+  case 6:
+  case 4007:
+  case 4029:
+    jobKey = 6;
+    break;
+  case 7:
+  case 4008:
+  case 4030:
+  case 4054:
+  case 4060:
+  case 4096:
+  case 4252:
+    jobKey = 7;
+    break;
+  case 8:
+  case 4009:
+  case 4031:
+  case 4057:
+  case 4063:
+  case 4099:
+  case 4256:
+    jobKey = 8;
+    break;
+  case 9:
+  case 4010:
+  case 4032:
+  case 4055:
+  case 4061:
+  case 4097:
+  case 4255:
+    jobKey = 9;
+    break;
+  case 10:
+  case 4011:
+  case 4033:
+  case 4058:
+  case 4064:
+  case 4100:
+  case 4253:
+    jobKey = 10;
+    break;
+  case 11:
+  case 4012:
+  case 4034:
+  case 4056:
+  case 4062:
+  case 4098:
+  case 4257:
+    jobKey = 11;
+    break;
+  case 12:
+  case 4013:
+  case 4035:
+  case 4059:
+  case 4065:
+  case 4101:
+  case 4254:
+    jobKey = 12;
+    break;
+  case 14:
+  case 4015:
+  case 4037:
+  case 4066:
+  case 4073:
+  case 4102:
+  case 4258:
+    jobKey = 14;
+    break;
+  case 15:
+  case 4016:
+  case 4038:
+  case 4070:
+  case 4077:
+  case 4106:
+  case 4262:
+    jobKey = 15;
+    break;
+  case 16:
+  case 4017:
+  case 4039:
+  case 4067:
+  case 4074:
+  case 4103:
+  case 4261:
+    jobKey = 16;
+    break;
+  case 17:
+  case 4018:
+  case 4040:
+  case 4072:
+  case 4079:
+  case 4108:
+  case 4260:
+    jobKey = 17;
+    break;
+  case 18:
+  case 4019:
+  case 4041:
+  case 4071:
+  case 4078:
+  case 4107:
+  case 4259:
+    jobKey = 18;
+    break;
+  case 19:
+  case 4020:
+  case 4042:
+  case 4068:
+  case 4075:
+  case 4104:
+  case 4263:
+    jobKey = 19;
+    break;
+  case 20:
+  case 4021:
+  case 4043:
+  case 4069:
+  case 4076:
+  case 4105:
+  case 4264:
+    jobKey = 20;
+    break;
+  case 23:
+  case 4045:
+  case 4190:
+  case 4191:
+  case 4307:
+    jobKey = 23;
+    break;
+  case 24:
+  case 4215:
+  case 4228:
+  case 4229:
+  case 4306:
+    jobKey = 24;
+    break;
+  case 25:
+  case 4211:
+  case 4212:
+  case 4222:
+  case 4223:
+  case 4224:
+  case 4304:
+  case 4305:
+    jobKey = 25;
+    break;
+  case 4046:
+  case 4225:
+    jobKey = 4046;
+    break;
+  case 4047:
+  case 4226:
+  case 4239:
+  case 4241:
+  case 4302:
+    jobKey = 4047;
+    break;
+  case 4049:
+  case 4227:
+  case 4240:
+  case 4242:
+  case 4303:
+    jobKey = 4049;
+    break;
+  case 4218:
+  case 4220:
+  case 4308:
+    jobKey = 4218;
+    break;
+  case 4351:
+  case 4352:
+  case 4353:
+  case 4354:
+  case 4355:
+    jobKey = 4351;
+    break;
+  default:
+    break;
+  }
+
+  g_luaScript->Call(func, "d>ssss", jobKey, &jobTabs[0], &jobTabs[1], &jobTabs[2], &jobTabs[3]);
+
+  for (size_t i = this->m_tabs->labels.size(); i < 4; ++i) {
+    if (g_session.m_skillBundle.GroupSize(i) > 0) {
+      const char* name = jobTabs[i];
+      if (!name) {
+        name = defaultTabs[i];
+      }
+      this->m_tabs->AddTab(name, "");
+      this->m_tab = i;
+    }
+  }
+
+  if (initialTabCount == 0) {
+    this->m_tabs->AddTab(LookupMessage(1093), "");
+  }
+  this->m_tabs->unknown_007C = this->m_tab;
+}
 
 // OFFSET: 0x009B0E40
 // FUNCTION: fn_13811

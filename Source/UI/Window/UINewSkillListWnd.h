@@ -13,7 +13,7 @@
 struct SkillListWndInfo;
 struct UIButtonContext;
 class UIBitmapButton;
-class UICheckBox;
+class UIResizer;
 class UIScrollBar;
 class UITabControl;
 
@@ -65,7 +65,7 @@ public:
   /* 0198 */ UIBitmapButton* m_btnSkillUps[42];
   /* 0240 */ UIBitmapButton* m_btnApply;
   /* 0244 */ UIBitmapButton* m_btnCancel;
-  /* 0248 */ UICheckBox* m_btnDetail;
+  /* 0248 */ UIResizer* m_btnDetail;
   /* 024C */ SkillListWndInfo* m_saved;
   /* 0250 */ int m_selectedSkill;
   /* 0254 */ int m_tab;
