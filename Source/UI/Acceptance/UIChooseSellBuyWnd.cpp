@@ -2193,6 +2193,34 @@ void UIWhisperWnd::SaveChatLog() {
   }
 }
 
+struct WhisperWndEx {
+  unsigned char unknown_0000[0x110];
+  unsigned char unknown_0110[10];
+  unsigned char unknown_011A[10];
+  UIWindow* unknown_0124[11];
+  UIWindow* unknown_0150[5];
+
+  int sub_90C350(unsigned int target);
+  void sub_90C380();
+};
+
+// OFFSET: 0x0090C350
+
+// OFFSET: 0x0090C380
+// FUNCTION: fn_12444
+void WhisperWndEx::sub_90C380() {
+  for (int i = 0; i < 11; ++i) {
+    UIWindow* window = this->unknown_0124[i];
+    *reinterpret_cast<unsigned char*>(reinterpret_cast<char*>(window) + 0xac) = 1;
+    window->Invalidate();
+  }
+  for (int i = 0; i < 5; ++i) {
+    UIWindow* window = this->unknown_0150[i];
+    *reinterpret_cast<unsigned char*>(reinterpret_cast<char*>(window) + 0xac) = 1;
+    window->Invalidate();
+  }
+}
+
 // OFFSET: 0x0090C8C0
 // FUNCTION: fn_12450
 std::vector<char> MakeFramedMessage(std::uint16_t type, const std::vector<char>& body) {
