@@ -14,3 +14,9 @@ UIBmpRadioBtn::UIBmpRadioBtn(UIWindowContext& windows, UIButtonContext& controls
 UICaptchaImage::UICaptchaImage(UIWindowContext& windows, BitmapResourceContext& bitmaps, UIButtonContext& controls)
     : UIWindow(windows, 0), m_bitmap(bitmaps), m_controls(&controls) {
 }
+
+// OFFSET: 0x00870390
+// FUNCTION: fn_11100
+UICaptchaImage::~UICaptchaImage() {
+  this->m_bitmap.Unload();
+}
