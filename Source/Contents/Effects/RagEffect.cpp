@@ -3173,12 +3173,12 @@ void CRagEffect::TexturedSpiralTall(const char* name, int, int) {
 // OFFSET: 0x00C70D30
 // FUNCTION: fn_20316
 void CRagEffect::TexturedSpiralFade(const char* name, int, int) {
-  const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  const vector3d& origin = this->state.parent->render.position;
+  this->render.position.x = origin.x;
+  this->render.position.y = origin.y;
+  this->render.position.z = origin.z;
 
-  if (this->state.stateCnt >= 3) {
+  if (this->state.stateCnt > 2) {
     return;
   }
 
@@ -3189,21 +3189,21 @@ void CRagEffect::TexturedSpiralFade(const char* name, int, int) {
   AllocateTextures(*this->state.unknown_11C84);
   this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
-  for (int index = 0; index < 4; ++index) {
-    this->state.unknown_11C84->slots[index].life = 0;
+  for (int slot = 0; slot < 4; ++slot) {
+    this->state.unknown_11C84->slots[slot].life = 0;
   }
 
-  for (int index = 0; index < 4; ++index) {
-    this->state.unknown_11C84->slots[index].life = 1;
-    this->state.unknown_11C84->slots[index].process = 0;
-    this->state.unknown_11C84->slots[index].distance = 0.0f;
-    this->state.unknown_11C84->slots[index].height[10] = 0.0f;
-    this->state.unknown_11C84->slots[index].maxHeight = 15.0f;
-    this->state.unknown_11C84->slots[index].alphaB = 0;
-    this->state.unknown_11C84->slots[index].riseAngle = static_cast<std::int16_t>((this->state.stateCnt * 4 + index) * 30);
-    this->state.unknown_11C84->slots[index].rotStart = 0;
-    this->state.unknown_11C84->slots[index].height[0] = -5.0f;
-    this->state.unknown_11C84->slots[index].height[1] = 0.0f;
+  for (int slot = 0; slot < 4; ++slot) {
+    this->state.unknown_11C84->slots[slot].life = 1;
+    this->state.unknown_11C84->slots[slot].process = 0;
+    this->state.unknown_11C84->slots[slot].distance = 0.0f;
+    this->state.unknown_11C84->slots[slot].height[10] = 0.0f;
+    this->state.unknown_11C84->slots[slot].maxHeight = 15.0f;
+    this->state.unknown_11C84->slots[slot].alphaB = 0;
+    this->state.unknown_11C84->slots[slot].riseAngle = static_cast<std::int16_t>((this->state.stateCnt * 4 + slot) * 30);
+    this->state.unknown_11C84->slots[slot].rotStart = 0;
+    this->state.unknown_11C84->slots[slot].height[0] = -5.0f;
+    this->state.unknown_11C84->slots[slot].height[1] = 0.0f;
   }
 }
 
