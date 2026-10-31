@@ -1,6 +1,9 @@
 #include "UI/Window/FuncDrawWNDChar.h"
 #include "Client/Session.h"
 #include "Script/LuaScript.h"
+#include "Contents/SpriteRidingOffset.h"
+#include "Contents/SpriteRidingPolicy.h"
+#include "Resource/Sprites/ActionResource.h"
 
 // OFFSET: 0x007D4840
 // FUNCTION: fn_09582
@@ -99,4 +102,83 @@ int FuncDrawWNDChar::IsSpecialLayer(int layer) {
   }
 
   return layer == 2;
+}
+
+// OFFSET: 0x007E5190
+// FUNCTION: fn_09731
+FuncDrawOffset FuncDrawWNDChar::BodyAnchorOffset(const ActionFrame* frame, bool keepScale) {
+  FuncDrawOffset offset;
+
+  CActRes* act = this->m_resources.find(1) != this->m_resources.end() ? this->m_resources[1].second : nullptr;
+  const ActionFrame& base = act->Frame(this->m_action, this->m_motion);
+  if (frame->anchorCount > 0 && base.anchorCount > 0) {
+    const ActionAnchor* frameAnchor = frame->anchors.data();
+    const ActionAnchor* baseAnchor = base.anchors.data();
+    if (frameAnchor->unknown_0008 == baseAnchor->unknown_0008) {
+      if (this->m_shield != 0) {
+        if (keepScale == true) {
+          offset.x += baseAnchor->x - frameAnchor->x;
+          offset.y += baseAnchor->y - frameAnchor->y;
+        } else {
+          offset.x = static_cast<int>(static_cast<float>(baseAnchor->x) / base.Cell(0).scaleX - static_cast<float>(frameAnchor->x) + static_cast<float>(offset.x));
+          float baseY = static_cast<float>(base.anchors.data()->y);
+          offset.y = static_cast<int>(baseY / base.Cell(0).scaleY - static_cast<float>(frame->anchors.data()->y) + static_cast<float>(offset.y));
+        }
+      } else {
+        offset.x = baseAnchor->x - frameAnchor->x;
+        offset.y = baseAnchor->y - frameAnchor->y;
+      }
+
+      this->unknown_0090 = offset.y;
+      this->unknown_008C = offset.x;
+    }
+  }
+
+  this->unknown_0088 = 1;
+  return offset;
+}
+
+// OFFSET: 0x007E5310
+// FUNCTION: fn_09732
+FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame** frame, CActRes* act) {
+  const ActionFrame* current = *frame;
+  FuncDrawOffset offset;
+
+  CActRes* bodyAct = this->m_resources.find(2) != this->m_resources.end() ? this->m_resources[2].second : nullptr;
+  const ActionFrame& base = bodyAct->Frame(this->m_action, this->m_motion);
+  int syncedMotion = 0;
+  const ActionFrame* synced = g_session.GetSyncedFrame(bodyAct, act, this->m_action, this->m_motion, this->m_time, &syncedMotion);
+  if (synced && syncedMotion != this->m_motion) {
+    *frame = synced;
+    current = synced;
+  }
+
+  if (current->anchorCount > 0 && base.anchorCount > 0) {
+    const ActionAnchor* baseAnchor = base.anchors.data();
+    const ActionAnchor* frameAnchor = current->anchors.data();
+    if (frameAnchor->unknown_0008 == baseAnchor->unknown_0008) {
+      offset.x = baseAnchor->x - frameAnchor->x;
+      offset.y = baseAnchor->y - frameAnchor->y;
+    }
+  }
+
+  offset.x += this->unknown_008C;
+  int ridingOffset;
+  if (IsIgnoredRidingState(this->m_layers[layer], this->m_job, this->m_action - this->m_action % 8, this->m_flags) == true) {
+    ridingOffset = SpriteRidingOffset(&base, this->m_action, this->m_motion, this->m_job, this->m_sex, this->m_body);
+  } else {
+    ridingOffset = this->unknown_0090;
+  }
+
+  offset.y += ridingOffset;
+  if (layer == 4) {
+    short accessory = this->m_topAccessory;
+    if (accessory == 181 || accessory == 197) {
+      offset.y -= 7;
+    } else if (accessory == 200 && g_session.SyncUnknown0E98() == 0) {
+      offset.y -= 4;
+    }
+  }
+
+  return offset;
 }

@@ -9,6 +9,16 @@
 class CActRes;
 class CSprRes;
 class UIWindow;
+struct ActionFrame;
+
+struct FuncDrawOffset {
+  // INLINED
+  FuncDrawOffset() : x(0), y(0) {
+  }
+
+  /* 0000 */ int x;
+  /* 0004 */ int y;
+};
 
 // VTABLE: vt_00803
 class FuncDrawWNDChar {
@@ -22,6 +32,8 @@ public:
   bool DrawOnTop();
   std::list<int> DrawOrder();
   int IsSpecialLayer(int layer);
+  FuncDrawOffset BodyAnchorOffset(const ActionFrame* frame, bool keepScale);
+  FuncDrawOffset LayerAnchorOffset(int layer, const ActionFrame** frame, CActRes* act);
 
   /* 0004 */ UIWindow* m_window;
   /* 0008 */ int m_x;
