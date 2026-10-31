@@ -983,8 +983,88 @@ bool UIShowInfoWnd::CheckPayment(const int& index, const int& zeny, const int& i
 }
 
 // OFFSET: 0x0082B680
+// FUNCTION: fn_10363
+void UIShowInfoWnd::GetPayment(const int& type, int* zeny, int* itemId, int* costumeItemId) {
+  switch (type) {
+  case 1:
+    g_luaScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_0094, zeny, itemId, costumeItemId);
+    break;
+  case 2:
+    g_luaScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_008C, zeny, itemId, costumeItemId);
+    break;
+  case 3:
+    g_luaScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_0098, zeny, itemId, costumeItemId);
+    break;
+  case 4:
+    g_luaScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_00BC, zeny, itemId, costumeItemId);
+    break;
+  case 5:
+    g_luaScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_00C0, zeny, itemId, costumeItemId);
+    break;
+  case 6:
+    g_luaScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->unknown_00C4, zeny, itemId, costumeItemId);
+    break;
+  case 7:
+    g_luaScript->Call("StylingShop_GetPaymentChangeCostume", "dd>ddd", g_session.m_job, this->m_display->job, zeny, itemId, costumeItemId);
+    break;
+  }
+}
 
 // OFFSET: 0x0082C890
+// FUNCTION: fn_10365
+void UIShowInfoWnd::UpdateChangedStyles() {
+  bool coloring = true;
+  this->CheckColoringGoods(&coloring);
+  if (!this->unknown_00AD[0] && this->m_display->unknown_0094 != g_session.m_headPalette && coloring == true) {
+    this->m_checks[this->m_list.size()]->SetChecked(1);
+    this->m_list.push_back(1);
+    this->unknown_00AD[0] = 1;
+  }
+
+  if (!this->unknown_00AD[1] && this->m_display->unknown_008C != g_session.m_head) {
+    this->m_checks[this->m_list.size()]->SetChecked(1);
+    this->m_list.push_back(2);
+    this->unknown_00AD[1] = 1;
+  }
+
+  if (!this->unknown_00AD[2] && this->m_display->unknown_0098 != g_session.m_bodyStyle) {
+    this->m_checks[this->m_list.size()]->SetChecked(1);
+    this->m_list.push_back(3);
+    this->unknown_00AD[2] = 1;
+  }
+
+  int sequence = 0;
+  g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "TopAccessory", this->m_display->unknown_00BC, &sequence);
+  if (!this->unknown_00AD[3] && this->m_display->unknown_009C != *reinterpret_cast<const int*>(&g_session.unknown_0EF4[4]) && this->m_display->unknown_009C != 0 &&
+      sequence != 0) {
+    this->m_checks[this->m_list.size()]->SetChecked(1);
+    this->m_list.push_back(4);
+    this->unknown_00AD[3] = 1;
+  }
+
+  unsigned char* accessoryChanged = reinterpret_cast<unsigned char*>(&this->unknown_00B1);
+  g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "MidAccessory", this->m_display->unknown_00C0, &sequence);
+  if (!accessoryChanged[0] && this->m_display->unknown_00A0 != *reinterpret_cast<const int*>(&g_session.unknown_0EF4[8]) && this->m_display->unknown_00A0 != 0 &&
+      sequence != 0) {
+    this->m_checks[this->m_list.size()]->SetChecked(1);
+    this->m_list.push_back(5);
+    accessoryChanged[0] = 1;
+  }
+
+  g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", "BottomAccessory", this->m_display->unknown_00C4, &sequence);
+  if (!accessoryChanged[1] && this->m_display->unknown_00A4 != *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0]) && this->m_display->unknown_00A4 != 0 &&
+      sequence != 0) {
+    this->m_checks[this->m_list.size()]->SetChecked(1);
+    this->m_list.push_back(6);
+    accessoryChanged[1] = 1;
+  }
+
+  if (!this->unknown_00BC && this->m_display->job != g_session.m_bodyCostume) {
+    this->m_checks[this->m_list.size()]->SetChecked(1);
+    this->m_list.push_back(7);
+    this->unknown_00BC = 1;
+  }
+}
 
 // OFFSET: 0x0082D550
 // FUNCTION: fn_10371
