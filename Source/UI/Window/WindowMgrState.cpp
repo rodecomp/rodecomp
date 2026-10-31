@@ -1150,3 +1150,10 @@ void UIWindowMgr::RestoreHiddenWindows() {
     this->CloseWindow(it->first + 216);
   }
 }
+
+// OFFSET: 0x00A91E80
+// FUNCTION: fn_17174
+void UIWindowMgr::CycleWindowVisibilityTwice() {
+  this->CycleWindowVisibility(4);
+  this->CycleWindowVisibility(4);
+}
