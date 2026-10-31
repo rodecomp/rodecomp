@@ -225,7 +225,7 @@ void UIIngredientInfoWnd::Paint() {
   }
 
   std::string name;
-  name = this->FitDisplayText(100, this->item.unknown_0044.c_str(), 0, 12, 0);
+  name = this->FitDisplayText(100, this->item.unknown_0044.c_str(), 0, 12, 0).c_str();
 
   ItemDescriptions descriptions{g_itemDescriptions};
   std::uint32_t color = 0;
