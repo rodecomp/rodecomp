@@ -2007,6 +2007,61 @@ bool CGrannyPc::OnProcess() {
 }
 
 // OFFSET: 0x00DABBE0
+// FUNCTION: fn_22587
+bool CPc::OnProcess() {
+  this->UpdateStateEffects();
+  this->ProcessActorEffects();
+  this->UpdateGaugePositions();
+  this->UpdateGaugeWindow();
+
+  if (this->render.isSingleColor == true && timeGetTime() > this->render.started + 100) {
+    this->render.overrideColor = 0xFFFF0000;
+    this->render.isSingleColor = false;
+  }
+
+  if (this->render.color != 0xFFFFFFFF) {
+    this->ModifyArgb(8, 8, 8, 8);
+  }
+
+  union {
+    void (CGameActor::*asVoid)();
+    bool (CGameActor::*asBool)();
+  } slot14;
+  slot14.asVoid = &CGameActor::Slot14;
+  const bool result = (this->*slot14.asBool)();
+
+  this->PlayFrameSounds();
+
+  if (this->unknown_0180 != 0) {
+    const vector3d& player =
+      reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+    g_soundMgr->PlayWave(
+      reinterpret_cast<const char*>(this->unknown_0190), this->render.position.x - player.x, 0.0f,
+      this->render.position.z - player.z, 250, 40, 1.0f, 0
+    );
+    this->unknown_0180 = 0;
+  }
+
+  const bool show = this->Slot55() > 0;
+  if (!StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags) && !StateFlag01(this->stateFlags)) {
+    if (show) {
+      if (!this->msgEffect) {
+        CMsgEffect* effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
+        this->AddMsgEffect(effect);
+        effect->SendMsg(this, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->msgEffect = effect;
+      }
+      return result;
+    }
+  }
+
+  if (this->msgEffect) {
+    this->msgEffect->SendMsg(nullptr, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->msgEffect = nullptr;
+  }
+
+  return result;
+}
 
 // OFFSET: 0x00DAC580
 
