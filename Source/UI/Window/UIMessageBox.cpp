@@ -2402,6 +2402,64 @@ void UIChatRoomWnd::SaveChatLog() {
   }
 }
 
+// OFFSET: 0x008AAAF0
+// FUNCTION: fn_11725
+std::vector<unsigned char>& UIChatRoomWnd::SerializeReplayData(std::vector<unsigned char>& records) {
+  records.clear();
+  {
+    const auto record = BuildReplayTaggedRecord(0x5014, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(0x5016, this->saved, 0x10);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(0x5017, this->title.data(), static_cast<std::uint32_t>(this->title.size()));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(0x5018, this->unknown_00CC.data(), static_cast<std::uint32_t>(this->unknown_00CC.size()));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(0x5019, this->unknown_00E4, 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(0x501A, this->unknown_00E4 + 4, 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(0x501B, this->unknown_00E4 + 8, 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(0x501C, this->unknown_00E4 + 12, 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+
+  for (const auto& entry : this->unknown_010C) {
+    if (entry.second == 0) {
+      const auto record = BuildReplayTaggedRecord(0x501E, entry.first.data(), static_cast<std::uint32_t>(entry.first.size()));
+      records.insert(records.end(), record.begin(), record.end());
+    }
+  }
+
+  for (const auto& entry : this->unknown_010C) {
+    if (entry.second != 0) {
+      const auto record = BuildReplayTaggedRecord(0x501F, entry.first.data(), static_cast<std::uint32_t>(entry.first.size()));
+      records.insert(records.end(), record.begin(), record.end());
+    }
+  }
+
+  {
+    const auto record = BuildReplayTaggedRecord(0x5015, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
 // OFFSET: 0x008ABDB0
 // FUNCTION: fn_11728
 void UILoginWnd::LoadLogin() {

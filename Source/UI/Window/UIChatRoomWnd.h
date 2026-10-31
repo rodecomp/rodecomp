@@ -27,6 +27,7 @@ public:
   void Slot15(int width, int height) override;
   void Paint() override;
   void SaveChatLog();
+  std::vector<unsigned char>& SerializeReplayData(std::vector<unsigned char>& records);
 
   /* 00B4 */ std::string title;
   /* 00CC */ std::string unknown_00CC;
