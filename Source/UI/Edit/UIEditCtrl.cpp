@@ -2868,6 +2868,33 @@ void UIMerchantItemWnd::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x0098A7A0
+// FUNCTION: fn_13417
+void UISkillListWnd::UpdateRowButtons() {
+  for (int row = 0, y = 34; y < 258; ++row, y += 32) {
+    CSkillInfo skill = this->GetVisibleSkill(row);
+    int points = 0;
+    if (this->skillTab == 0) {
+      points = reinterpret_cast<int*>(g_session.unknown_1664)[0];
+    } else if (this->skillTab == 1) {
+      points = reinterpret_cast<int*>(g_session.unknown_1664)[1];
+    }
+
+    if (row < this->visibleRows && this->scroll + row < this->skills.size() && points != 0 && skill.available != 0 && skill.unknown_0018 != 0) {
+      this->upgradeButtons[row]->Move(78, y - 13);
+    } else {
+      this->upgradeButtons[row]->Move(-200, y - 17);
+    }
+
+    if (row < this->visibleRows && this->scroll + row < this->skills.size() && skill.available != 0 && skill.level != 0 &&
+        CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, static_cast<int>(skill.id))) {
+      this->levelButtons[row]->Move(112, y);
+      this->levelLabels[row]->Move(192, y);
+    } else {
+      this->levelButtons[row]->Move(-200, y);
+      this->levelLabels[row]->Move(-200, y);
+    }
+  }
+}
 
 struct ThreadFormatBuffer {
   char text[0x800];
