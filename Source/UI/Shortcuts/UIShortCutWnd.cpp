@@ -1042,3 +1042,35 @@ UIMemorialDunWnd::UIMemorialDunWnd(UIWindowContext& windows, UIFrameContext& fra
 UISubChatMiniWnd::UISubChatMiniWnd(UIWindowContext& windows, UIFrameContext& frames)
     : UIFrameWnd(windows, frames, 0), unknown_00B4(2), m_rowHeight(32), m_offsetY(32) {
 }
+
+// OFFSET: 0x00911700
+// FUNCTION: fn_12518
+UINewChatWnd::UINewChatWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->unknown_00BC = 0;
+  this->unknown_00C0 = 0;
+  this->m_inputEdit = nullptr;
+  this->unknown_00B8 = 0;
+  this->unknown_0110 = 10;
+  *reinterpret_cast<unsigned char*>(&g_windowMgr.unknown_03F4) = 1;
+  this->geometry.unknown_0030 = 0;
+  this->unknown_00F0 = 0;
+  this->m_currentTab = 0;
+  this->unknown_0118 = 0;
+  this->m_inputOffsetY = 16;
+  this->m_tabWidth = 71;
+  this->m_inputAreaHeight = 24;
+  switch (g_serviceType) {
+  case 1:
+  case 7:
+  case 11:
+    this->m_tabWidth = 110;
+    break;
+  case 10:
+    this->m_tabWidth = 71;
+    break;
+  case 18:
+    this->m_tabWidth = 90;
+    break;
+  }
+  this->unknown_013C = 0;
+}

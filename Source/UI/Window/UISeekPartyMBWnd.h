@@ -14,6 +14,7 @@ struct SeekPartyMBWndInfo;
 class UICheckBox;
 class UIComboBoxDefWnd;
 class UIEditCtrl;
+class UIStaticText;
 
 #pragma pack(push, 1)
 struct SeekPartyRegistration {
@@ -23,6 +24,7 @@ struct SeekPartyRegistration {
 
 class UISeekPartyMBWnd : public UIFrameWnd {
 public:
+  UISeekPartyMBWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot11() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
@@ -31,16 +33,17 @@ public:
   void ShowJobCategory(int category);
 
 protected:
-  /* 00BC */ unsigned char unknown_00BC[8];
+  /* 00BC */ UIStaticText* unknown_00BC;
+  /* 00C0 */ UIStaticText* unknown_00C0;
   /* 00C4 */ UIEditCtrl* m_levelEdit;
   /* 00C8 */ UIComboBoxDefWnd* m_typeCombo;
   /* 00CC */ UIComboBoxDefWnd* m_subTypeCombo;
   /* 00D0 */ UIComboBoxDefWnd* m_jobCategoryCombo;
   /* 00D4 */ unsigned char unknown_00D4[0x30];
-  /* 0104 */ std::map<unsigned short, UICheckBox*> m_jobChecks[8];
-  /* 0144 */ unsigned char unknown_0144[8];
+  /* 0104 */ std::map<unsigned short, UICheckBox*> m_jobChecks[9];
   /* 014C */ std::map<int, std::vector<std::pair<std::string, int>>> m_subTypes;
-  /* 0154 */ unsigned char unknown_0154[8];
+  /* 0154 */ UIWindow* unknown_0154;
+  /* 0158 */ UIWindow* unknown_0158;
   /* 015C */ int m_jobCategory;
   /* 0160 */ short m_type;
   /* 0162 */ short m_subType;
@@ -50,6 +53,8 @@ protected:
   /* 0179 */ unsigned char unknown_0179[3];
   /* 017C */ SeekPartyMBWndInfo* m_saved;
   UIButtonContext* m_controls;
+  UIStaticText* m_titleText;
+  UIStaticText* m_levelText;
 };
 
 #endif

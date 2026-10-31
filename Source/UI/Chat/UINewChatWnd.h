@@ -12,6 +12,8 @@ extern std::uint8_t g_chatInputFlag;
 
 class UINewChatWnd : public UIFrameWnd {
 public:
+  UINewChatWnd(UIWindowContext& windows, UIFrameContext& frames);
+
   static void SaveChatWndInfo();
 
   void Resize(int width, int height) override;
@@ -36,14 +38,15 @@ private:
   /* 00D0 */ int m_listHeight;
   /* 00D4 */ unsigned char unknown_00D4[0x4];
   /* 00D8 */ std::uint32_t m_listColor;
-  /* 00DC */ unsigned char unknown_00DC[0x18];
+  /* 00DC */ unsigned char unknown_00DC[0x14];
+  /* 00F0 */ int unknown_00F0;
   /* 00F4 */ std::vector<UIWindow*> m_tabs;
   /* 0100 */ unsigned char unknown_0100[0x8];
   /* 0108 */ int m_lockButtonX;
   /* 010C */ int m_chatModeX;
-  /* 0110 */ unsigned char unknown_0110[0x4];
+  /* 0110 */ int unknown_0110;
   /* 0114 */ int m_currentTab;
-  /* 0118 */ unsigned char unknown_0118[0x4];
+  /* 0118 */ int unknown_0118;
   /* 011C */ int m_inputOffsetY;
   /* 0120 */ int m_tabWidth;
   /* 0124 */ int m_inputAreaHeight;
@@ -52,6 +55,8 @@ private:
   /* 0130 */ unsigned char unknown_0130[0x8];
   /* 0138 */ UITabControl* m_tabControl;
   UIWindow* m_inputEdit;
+  int unknown_00B8;
+  int unknown_013C;
 };
 
 #endif
