@@ -1,15 +1,42 @@
 #include "UI/Menu/UIMenuIconWnd.h"
 
+#include "Client/Application/ApplicationWindow.h"
+#include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Replay.h"
 #include "Client/Session.h"
+#include "Contents/EntryQueueMgr.h"
+#include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Script/LuaScript.h"
 #include "UI/Layout/WindowSnapping.h"
+#include "UI/Window/UINavigationWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 
+#include <windows.h>
+#include <shellapi.h>
+
 #include <algorithm>
+#include <cstdint>
 #include <cstring>
 #include <string>
+
+#pragma pack(push, 1)
+struct MenuIconBankingCheckPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+};
+
+struct MenuIconOpenUiPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char type;
+};
+#pragma pack(pop)
 
 // GLOBAL: gl_24966
 static bool s_menuIconExpanded;
@@ -327,3 +354,141 @@ void UIMenuIcon::Slot27(int x, int y) {
 // OFFSET: 0x0084C250
 // FUNCTION: fn_10621
 void UIMenuIconWnd::Slot27(int x, int y) {}
+
+// OFFSET: 0x0084C260
+// FUNCTION: fn_10622
+int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    if (!Replay::Instance().AllowsEvent(argument1)) {
+      switch (argument1) {
+      case 201:
+        s_menuIconExpanded = false;
+        this->Invalidate();
+        break;
+      case 286: {
+        const int id = argument2;
+        auto found = std::find(this->unknown_00C4.begin(), this->unknown_00C4.end(), id);
+        if (argument3 > 0) {
+          if (found == this->unknown_00C4.end()) {
+            this->unknown_00C4.push_back(id);
+          }
+        } else if (found != this->unknown_00C4.end()) {
+          this->unknown_00C4.erase(found);
+        }
+        this->Invalidate();
+        break;
+      }
+      case 192:
+        this->ToggleWindow(11);
+        break;
+      case 195:
+        this->ToggleWindow(10);
+        break;
+      case 194:
+        this->ToggleWindow(8);
+        break;
+      case 196:
+        this->ToggleWindow(37);
+        break;
+      case 199:
+        this->ToggleWindow(69);
+        break;
+      case 373:
+        this->ToggleWindow(static_cast<int>(g_guildId) < 1 ? 212 : 59);
+        break;
+      case 361:
+        this->ToggleWindow(10008);
+        break;
+      case 219:
+        this->ToggleWindow(140);
+        break;
+      case 430:
+        if (g_navigationWindow) {
+          g_navigationWindow->SendMsg(nullptr, 6, 201, 0, 0, 0);
+        } else {
+          g_windowMgr.EnsureWindow(203);
+        }
+        break;
+      case 193:
+        this->ToggleWindow(155);
+        break;
+      case 399:
+        if (Replay::Instance().state == 1) {
+          this->ToggleWindow(198);
+        } else {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm("REC End please", 0, true, false, 0, "Message", 280, 120, 0);
+        }
+        break;
+      case 370:
+        this->ToggleWindow(303);
+        break;
+      case 461: {
+        MenuIconBankingCheckPacket packet;
+        packet.id = ID_CZ_REQ_BANKING_CHECK;
+        packet.aid = g_session.m_aid;
+        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+        break;
+      }
+      case 510:
+        s_menuIconExpanded = true;
+        this->Invalidate();
+        break;
+      case 476:
+        if (g_windowMgr.LookupWindow(295)) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2992)), 255, 0, 0, 0);
+        } else if (g_windowMgr.LookupWindow(343)) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3715)), 255, 0, 0, 0);
+        } else if (g_windowMgr.LookupWindow(10006)) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3843)), 255, 0, 0, 0);
+        } else {
+          this->ToggleWindow(263);
+        }
+        break;
+      case 473:
+        this->ToggleWindow(270);
+        break;
+      case 511:
+        this->ToggleWindow(315);
+        break;
+      case 512:
+        g_modeMgr.GetGameMode()->SendMsg(323, 0, 0, 0, 0);
+        break;
+      case 540:
+        if (g_windowMgr.LookupWindow(328)) {
+          g_windowMgr.CloseWindow(328);
+        } else {
+          MenuIconOpenUiPacket packet;
+          packet.id = 0xA68;
+          packet.type = 5;
+          GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+        }
+        break;
+      case 544:
+        this->ToggleWindow(324);
+        break;
+      case 567:
+        this->ToggleWindow(346);
+        break;
+      case 581:
+        this->ToggleWindow(10002);
+        break;
+      case 587:
+        if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4129), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+          ShellExecuteA(hWnd, "open", LookupMessage(4128), nullptr, nullptr, SW_SHOWNORMAL);
+        }
+        break;
+      }
+    }
+  } else if (message == 60) {
+    this->SendMsg(nullptr, 6, s_menuIconExpanded == true ? 201 : 510, 0, 0, 0);
+  }
+
+  if (message == 6 && argument1 == 376 && !Replay::Instance().AllowsEvent(argument1) && g_entryQueueMgr) {
+    if (reinterpret_cast<const unsigned char*>(g_entryQueueMgr)[0x3C] == 1) {
+      g_entryQueueMgr->SendRankingRequest();
+    }
+    this->ToggleWindow(157);
+  }
+
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
