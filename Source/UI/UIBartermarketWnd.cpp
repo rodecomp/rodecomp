@@ -1643,3 +1643,250 @@ void UIExpandedBartermarketWnd::Slot15(int width, int height) {
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
 }
 
+// OFFSET: 0x008426E0
+// FUNCTION: fn_10554
+void UIBarterItemPurchaseWnd::Paint() {
+  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, LookupMessage(0xE69), 0);
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  const int borderHeight = this->geometry.height - 38;
+  const int borderTiles = borderHeight / 8 + (borderHeight % 8 != 0);
+  for (int tile = 0, y = 17; tile < borderTiles; ++tile, y += 8) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &bitmap->image, false);
+  }
+  for (int tile = 0, y = 17; tile < borderTiles; ++tile, y += 8) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - bitmap->image.width, y, &bitmap->image, false);
+  }
+
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  const std::uint32_t background = RGB(red, green, blue);
+  int rightRemainder = (this->geometry.width - 60) % 32;
+  if (rightRemainder < 0) {
+    rightRemainder += 32;
+  }
+  int bottomRemainder = (this->geometry.height - 38) % 32;
+  if (bottomRemainder < 0) {
+    bottomRemainder += 32;
+  }
+  this->FillRegion(20, 17, rightRemainder, this->geometry.height - 38, background);
+  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, bottomRemainder, background);
+  this->DrawButtonBar(2, 0, 1);
+
+  const int rows = (this->geometry.height - 38) / 32;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(40, 17, this->geometry.width - 50, rows * 32, RGB(red, green, blue));
+
+  for (int row = 0; row < rows; ++row) {
+    DrawItemSlotBackground(*this, 40, row * 32 + 17);
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+  std::list<BarterMarketItem>* items = g_barterMarketItemMgr->GetAllItems();
+  for (std::list<BarterMarketItem>::iterator it = items->begin(); it != items->end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    const int row = visible / this->columns;
+    const int column = visible % this->columns;
+    const int x = column * 32;
+    const int y = row * 32;
+    if (this->hovered == index) {
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      this->FillRegion(x + 72, y + 19, 0xBF, 0x1C, RGB(red, green, blue));
+    }
+
+    const ITEM_INFO item = it->ToItemInfo();
+    DrawItemWithQuantity(*this, this->m_controls->resources, descriptions, this->m_controls->fonts, this->m_controls->locale, x + 44, y + 21, item, 0, 0);
+    this->DrawItemName(x + 76, y + 29, 100, &item, 0, 0, 12);
+    const std::string iconId = std::to_string(it->field_2c);
+    DrawItemIconById(*this, descriptions, this->geometry.width - 70, y + 21, iconId.c_str(), 1);
+    if (it->field_28 > 0) {
+      const std::string amount = std::to_string(it->value * it->field_28);
+      this->DrawRightAlignedText(this->geometry.width - 25, y + 29, amount.c_str(), 0, 0, 12, 0, 0);
+    }
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+}
+
+// OFFSET: 0x00842BF0
+// FUNCTION: fn_10555
+void UIBartermarketWnd::Paint() {
+  this->DrawTitleBar(this->m_controls->fonts, this->m_controls->locale, false, LookupMessage(0xBA), 0);
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  const int leftHeight = this->geometry.height - this->unknown_0104 - 17;
+  const int leftTiles = leftHeight / 8 + (leftHeight % 8 != 0);
+  for (int tile = 0, y = 17; tile < leftTiles; ++tile, y += 8) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &bitmap->image, false);
+  }
+  const int rightHeight = this->geometry.height - this->unknown_0104 - 17;
+  const int rightTiles = rightHeight / 8 + (rightHeight % 8 != 0);
+  for (int tile = 0, y = 17; tile < rightTiles; ++tile, y += 8) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - bitmap->image.width, y, &bitmap->image, false);
+  }
+
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  const std::uint32_t background = RGB(red, green, blue);
+  const int contentHeight = this->geometry.height - this->unknown_0104 - 17;
+  int rightRemainder = (this->geometry.width - 60) % 32;
+  if (rightRemainder < 0) {
+    rightRemainder += 32;
+  }
+  int bottomRemainder = contentHeight % 32;
+  if (bottomRemainder < 0) {
+    bottomRemainder += 32;
+  }
+  this->FillRegion(20, 17, rightRemainder, contentHeight, background);
+  this->FillRegion(20, contentHeight / 32 * 32 + 17, this->geometry.width - 24, bottomRemainder, background);
+  this->DrawButtonBar(2, 0, 1);
+
+  const int rows = (this->geometry.height - this->unknown_0108 - this->unknown_0104 - 17) / 32;
+  const int columns = (this->geometry.width - 40) / 32;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(red, green, blue));
+  for (int row = 0; row < rows; ++row) {
+    DrawItemSlotBackground(*this, 40, row * 32 + 17);
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
+  for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
+    if (index < this->scroll * this->columns) {
+      continue;
+    }
+
+    const int row = visible / this->columns;
+    const int column = visible % this->columns;
+    const int x = column * 32;
+    const int y = row * 32;
+    if (this->hovered == index) {
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      this->FillRegion(x + 72, y + 19, this->geometry.width - 0x58, 0x1C, RGB(red, green, blue));
+    }
+
+    const ITEM_INFO item = it->ToItemInfo();
+    if (it->flag_38) {
+      DrawItemIcon(*this, this->m_controls->resources, descriptions, x + 44, y + 21, item, 0);
+    } else {
+      DrawItemWithQuantity(*this, this->m_controls->resources, descriptions, this->m_controls->fonts, this->m_controls->locale, x + 44, y + 21, item, 0, 0);
+    }
+    this->DrawItemName(x + 76, y + 29, 120, &item, 0, 0, 12);
+    const std::string iconId = std::to_string(it->field_2c);
+    DrawItemIconById(*this, descriptions, this->geometry.width - 70, y + 21, iconId.c_str(), 1);
+    if (it->field_28 > 0) {
+      const std::string amount = std::to_string(it->field_28);
+      this->DrawRightAlignedText(this->geometry.width - 25, y + 29, amount.c_str(), 0, 0, 12, 0, 0);
+    }
+
+    if (++visible == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+}
+
+// OFFSET: 0x008473F0
+// FUNCTION: fn_10585
+void UIExpandedBartermarketWnd::Paint() {
+  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, false, LookupMessage(0xE69), 0);
+
+  const int borderTiles = (this->geometry.height - 46 + 7) / 8;
+  for (int tile = 0, y = 17; tile < borderTiles; ++tile, y += 8) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &bitmap->image, false);
+  }
+  for (int tile = 0, y = 17; tile < borderTiles; ++tile, y += 8) {
+    auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - bitmap->image.width, y, &bitmap->image, false);
+  }
+
+  this->DrawButtonBar(2, 0, 1);
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 46, RGB(red, green, blue));
+  this->DrawButtonBar(2, 0, 1);
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  int visible = 0;
+  int index = 0;
+  for (std::list<BarterMarketEntry>::iterator it = this->Entries().begin(); it != this->Entries().end(); ++it, ++index) {
+    if (index < this->unknown_00C4) {
+      continue;
+    }
+
+    const int y = visible * 64;
+    DrawItemSlotBackground(*this, 40, y + 17);
+    for (int slot = 0; slot < static_cast<int>(it->chunks.size()); ++slot) {
+      DrawItemSlotBackground(*this, 72 + slot * 42, y + 49);
+    }
+    if (this->unknown_00CC == index) {
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      this->FillRegion(72, y + 19, this->geometry.width - 0x5A, 0x3C, RGB(red, green, blue));
+    }
+
+    const ITEM_INFO item = it->ToItemInfo();
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_context->fonts, this->m_context->locale, 44, y + 21, item, 0, 0);
+    this->DrawItemName(76, y + 29, 100, &item, 0, 0, 12);
+
+    if (it->field_28 > 0) {
+      const std::string quantity = FormatOwnedString("+%d", it->field_28);
+      DrawOutlinedText(*this, 50, y + 18, quantity.c_str(), 0, 0xFFFFFF, 200, 0, 12, 1, 0);
+    }
+
+    int chunkIndex = 0;
+    for (std::vector<BarterChunk16>::const_iterator chunk = it->chunks.begin(); chunk != it->chunks.end(); ++chunk) {
+      ITEM_INFO chunkItem;
+      chunkItem.SetItemId(chunk->field_0);
+      chunkItem.quantity = chunk->amount * it->value;
+      chunkItem.unknown_0060 = chunk->field_4;
+      const int chunkX = 84 + chunkIndex * 42;
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, this->m_context->fonts, this->m_context->locale, chunkX - 8, y + 49, chunkItem, 1, 0);
+      if (chunk->field_4 > 0) {
+        const std::string chunkAmount = FormatOwnedString("+%d", chunk->field_4);
+        DrawOutlinedText(*this, chunkX, y + 49, chunkAmount.c_str(), 0, 0xFFFFFF, 200, 0, 12, 1, 0);
+      }
+      ++chunkIndex;
+    }
+
+    const std::string amount = FormatOwnedString("%d z", it->field_8 * it->value);
+    this->DrawRightAlignedText(this->geometry.width - 20, y + 60, amount.c_str(), 0, 0, 12, 0, 0);
+
+    if (++visible == this->rowCount) {
+      ++index;
+      break;
+    }
+  }
+
+  for (int row = index; row < this->rowCount; ++row) {
+    DrawItemSlotBackground(*this, 40, row * 64 + 17);
+    for (int x = 72; x < 156; x += 42) {
+      DrawItemSlotBackground(*this, x, row * 64 + 49);
+    }
+  }
+}
+
+// OFFSET: 0x00847AA0
+

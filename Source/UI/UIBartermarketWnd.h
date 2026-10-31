@@ -20,6 +20,7 @@ public:
   UIExpandedBarterItemPurchaseWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -48,6 +49,7 @@ public:
   UIExpandedBartermarketWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -70,6 +72,7 @@ public:
 
 class UIBarterItemPurchaseWnd : public UIItemPurchaseWnd {
 public:
+  void Paint() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
@@ -84,6 +87,7 @@ public:
 
 class UIBartermarketWnd : public UIItemShopWnd {
 public:
+  void Paint() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
