@@ -1078,3 +1078,256 @@ std::vector<unsigned char> CSession::BuildReservedReplayRecords() {
   std::vector<unsigned char> records;
   return records;
 }
+
+namespace {
+#pragma pack(push, 1)
+struct ReplayShopNameRecord {
+  /* 0000 */ std::int16_t unknown;
+  /* 0002 */ char name[16];
+  /* 0012 */ int shopId;
+};
+#pragma pack(pop)
+
+struct ReplayShopItemRecord {
+  /* 0000 */ int shopId;
+  /* 0004 */ unsigned int index;
+  /* 0008 */ int itemId;
+  /* 000C */ int first;
+  /* 0010 */ int second;
+};
+
+struct ReplayShopFlagRecord {
+  /* 0000 */ int shopId;
+  /* 0004 */ char flag;
+};
+}
+
+// OFFSET: 0x00E41E60
+// FUNCTION: fn_24201
+std::vector<unsigned char> CSession::BuildShopReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(7500, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  for (auto it = this->m_nameToId.begin(); it != this->m_nameToId.end(); ++it) {
+    ReplayShopNameRecord value;
+    value.unknown = 0;
+    value.shopId = it->second;
+    std::memset(value.name, 0, sizeof(value.name));
+    std::memcpy(value.name, it->first.c_str(), (std::min)(it->first.size(), sizeof(value.name)));
+    const auto record = BuildReplayTaggedRecord(7502, &value, sizeof(value));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  for (auto shop = this->m_shops.begin(); shop != this->m_shops.end(); ++shop) {
+    for (unsigned int index = 0; index < shop->second.unknown_0004.size(); ++index) {
+      const std::map<int, std::pair<int, int>>& items = shop->second.unknown_0004[index];
+      for (auto item = items.begin(); item != items.end(); ++item) {
+        ReplayShopItemRecord value;
+        value.shopId = shop->first;
+        value.index = index;
+        value.itemId = item->first;
+        value.first = item->second.first;
+        value.second = item->second.second;
+        const auto record = BuildReplayTaggedRecord(7504, &value, sizeof(value));
+        records.insert(records.end(), record.begin(), record.end());
+      }
+    }
+    ReplayShopFlagRecord value;
+    value.shopId = shop->first;
+    value.flag = shop->second.unknown_0000;
+    const auto record = BuildReplayTaggedRecord(7505, &value, sizeof(value));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(7501, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x00E42600
+// FUNCTION: fn_24202
+std::vector<unsigned char> CSession::BuildExtraReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(5500, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5510, &this->unknown_593C, sizeof(this->unknown_593C));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5511, &this->unknown_5940, sizeof(this->unknown_5940));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5512, &this->unknown_5944, sizeof(this->unknown_5944));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5513, &this->unknown_5948, sizeof(this->unknown_5948));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5514, &this->unknown_594C, sizeof(this->unknown_594C));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5515, this->unknown_5950.c_str(), this->unknown_5950.size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5516, &this->unknown_5968, sizeof(this->unknown_5968));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5517, &this->unknown_596C, sizeof(this->unknown_596C));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5518, &this->unknown_5970, sizeof(this->unknown_5970));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(5501, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x00E3FF30
+// FUNCTION: fn_24198
+std::vector<unsigned char> CSession::BuildStatsReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(2000, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2010, &this->unknown_166C, sizeof(this->unknown_166C));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2011, &this->unknown_1670, sizeof(this->unknown_1670));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2012, &this->unknown_1674, sizeof(this->unknown_1674));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2013, &this->unknown_1678, sizeof(this->unknown_1678));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2014, &this->unknown_167C, sizeof(this->unknown_167C));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2015, &this->unknown_1680, sizeof(this->unknown_1680));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2016, &this->unknown_0F4C, sizeof(this->unknown_0F4C));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2017, &this->m_weight, sizeof(this->m_weight));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2018, &this->m_maxWeight, sizeof(this->m_maxWeight));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2019, &this->unknown_532C, sizeof(this->unknown_532C));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2020, &this->unknown_5330, sizeof(this->unknown_5330));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2021, &this->unknown_5334, sizeof(this->unknown_5334));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2022, &this->unknown_5338, sizeof(this->unknown_5338));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2023, &this->unknown_533C, sizeof(this->unknown_533C));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2024, this->unknown_5340, sizeof(this->unknown_5340));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2025, this->unknown_5370, sizeof(this->unknown_5370));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2026, this->unknown_53A0, sizeof(this->unknown_53A0));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2027, this->unknown_53D0, sizeof(this->unknown_53D0));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2028, this->unknown_5400, 0x30);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2029, &this->unknown_5568, sizeof(this->unknown_5568));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2030, &this->unknown_556C, sizeof(this->unknown_556C));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2031, &this->unknown_5570[0], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2032, &this->unknown_5570[4], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2033, &this->m_prohibitionTarget, sizeof(this->m_prohibitionTarget));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2034, &this->unknown_5480, sizeof(this->unknown_5480));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2035, &this->unknown_5484, sizeof(this->unknown_5484));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2036, &this->unknown_5488, sizeof(this->unknown_5488));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2037, &this->unknown_548C, sizeof(this->unknown_548C));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2038, this->m_accountName.c_str(), this->m_accountName.size());
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2052, &this->unknown_8074, sizeof(this->unknown_8074));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(2001, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}

@@ -740,7 +740,7 @@ public:
   std::uint32_t ReadReplayReserved(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayEntryQueue(const std::vector<unsigned char>& data);
   std::vector<unsigned char> BuildShortcutReplayRecords();
-  std::vector<unsigned char> BuildReservedReplayRecords();
+  std::vector<unsigned char> BuildReservedReplayRecords(); std::vector<unsigned char> BuildShopReplayRecords(); std::vector<unsigned char> BuildExtraReplayRecords(); std::vector<unsigned char> BuildStatsReplayRecords();
   std::vector<unsigned char> BuildSkillListReplayPacket(short id);
   void SetHomunculusAutoFeed(bool enabled);
   void SetPetAutoFeed(bool enabled);
