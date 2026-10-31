@@ -2714,6 +2714,426 @@ void EquipmentProperties::CEquipmentPropertiesMgr::SetWindow(UIWindow* window) {
   this->unknown_0020 = window;
 }
 
+// OFFSET: 0x006A6490
+// FUNCTION: fn_06059
+int __stdcall sub_6A6490(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 1;
+  int indexPosition = 2;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("subspconsumption", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6550
+// FUNCTION: fn_06060
+int __stdcall sub_6A6550(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 1;
+  int indexPosition = 2;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubSPdrain", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6610
+// FUNCTION: fn_06061
+int __stdcall sub_6A6610(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = 1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubSkillDelay", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A66D0
+// FUNCTION: fn_06062
+int __stdcall sub_6A66D0(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubSkillMDamage", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6790
+// FUNCTION: fn_06063
+int __stdcall sub_6A6790(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = 1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubSkillSP", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6850
+// FUNCTION: fn_06064
+int __stdcall sub_6A6850(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = 1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubSpecificSpellCastTime", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6910
+// FUNCTION: fn_06065
+int __stdcall sub_6A6910(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubSpellCastTime", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A69D0
+// FUNCTION: fn_06066
+int __stdcall sub_6A69D0(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubSpellDelay", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6A90
+// FUNCTION: fn_06067
+int __stdcall sub_6A6A90(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddEXPPercent_KillRace", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6B50
+// FUNCTION: fn_06068
+int __stdcall sub_6A6B50(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 3;
+  int valuePosition = 3;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddExtParam", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6C10
+// FUNCTION: fn_06069
+int __stdcall sub_6A6C10(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddGuideAttack", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6CD0
+// FUNCTION: fn_06070
+int __stdcall sub_6A6CD0(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 1;
+  int indexPosition = 2;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddHPdrain", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6D90
+// FUNCTION: fn_06071
+int __stdcall sub_6A6D90(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddHealModifyPercent", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6E50
+// FUNCTION: fn_06072
+int __stdcall sub_6A6E50(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddHealValue", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6F10
+// FUNCTION: fn_06073
+int __stdcall sub_6A6F10(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = 2;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddIgnore_MRES_RacePercent", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A6FD0
+// FUNCTION: fn_06074
+int __stdcall sub_6A6FD0(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = 2;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddIgnore_RES_RacePercent", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A7090
+// FUNCTION: fn_06075
+int __stdcall sub_6A7090(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 3;
+  int valuePosition = 3;
+  int indexPosition = 3;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddMDamage_Property", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A7150
+// FUNCTION: fn_06076
+int __stdcall sub_6A7150(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 3;
+  int valuePosition = 3;
+  int indexPosition = 3;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddMDamage_Size", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A7210
+// FUNCTION: fn_06077
+int __stdcall sub_6A7210(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = 2;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddAttrTolerace", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A72D0
+// FUNCTION: fn_06078
+int __stdcall sub_6A72D0(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = 2;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddMdamage_Class", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A7390
+// FUNCTION: fn_06079
+int __stdcall sub_6A7390(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddMdamage_Race", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A7450
+// FUNCTION: fn_06080
+int __stdcall sub_6A7450(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddMeleeAttackDamage", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A7510
+// FUNCTION: fn_06081
+int __stdcall sub_6A7510(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddMeleeAttackReflect", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A75D0
+// FUNCTION: fn_06082
+int __stdcall sub_6A75D0(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddNeverknockback", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A7690
+// FUNCTION: fn_06083
+int __stdcall sub_6A7690(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = 2;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddRaceTolerace", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A7750
+// FUNCTION: fn_06084
+int __stdcall sub_6A7750(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 2;
+  int valuePosition = 2;
+  int indexPosition = 2;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddRangeAttackDamage", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A7810
+// FUNCTION: fn_06085
+int __stdcall sub_6A7810(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddReceiveItem_Equip", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A78D0
+// FUNCTION: fn_06086
+int __stdcall sub_6A78D0(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddReflectMagic", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A7990
+// FUNCTION: fn_06087
+int __stdcall sub_6A7990(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddReflectTolerace", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006A7A50
+// FUNCTION: fn_06088
+int __stdcall sub_6A7A50(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 3;
+  int valuePosition = 2;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("addattrtolerace", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
 // OFFSET: 0x006AB520
 // FUNCTION: fn_06168
 void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* name, lua_State* state, const int& count, const int& valuePosition,
