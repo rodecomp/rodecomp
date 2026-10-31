@@ -141,3 +141,26 @@ int UIFrameWnd::DrawItemName(int x, int y, int width, const ITEM_INFO* item, int
   );
   return x;
 }
+
+// OFFSET: 0x008D1980
+// FUNCTION: fn_12095
+int UIFrameWnd::DrawWrappedItemName(int x, int y, int width, const ITEM_INFO* item, int, int family, int lineHeight) {
+  char buffer[256] = {};
+  char* highlight = nullptr;
+  char* cursor = buffer;
+  std::vector<char*> breaks;
+  std::size_t remaining = sizeof(buffer);
+  int highlightColor;
+  reinterpret_cast<BuildItemNameFn>(0x008DA690)(
+    this, item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0
+  );
+
+  std::uint32_t color = ItemCardColor(item);
+  if (color == 0x00ADFF2F) {
+    color = 0x00669900;
+  }
+  return this->DrawItemNameSegments(
+    x, y, width, breaks, buffer, highlight, static_cast<std::uint32_t>(highlightColor),
+    (color >> 16 & 0xFF) | ((color & 0xFF) << 16) | (color & 0x0000FF00), family, lineHeight
+  );
+}

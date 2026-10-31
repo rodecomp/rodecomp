@@ -49,6 +49,7 @@ public:
   void FitLastTextLine(int width, unsigned lineCount, int family, int height, FrameTextLines& lines);
   void DrawTextLines(int x, int y, int family, int lineHeight, const FrameTextLines& lines);
   int DrawItemName(int x, int y, int width, const ITEM_INFO* item, int unused, int family, int height);
+  int DrawWrappedItemName(int x, int y, int width, const ITEM_INFO* item, int unused, int family, int lineHeight);
   void SplitHighlightText(
     const char* text, const char* highlight, const int& highlightColor, const int& color, const std::vector<char*>& breaks,
     std::vector<std::pair<int, std::string>>& segments
