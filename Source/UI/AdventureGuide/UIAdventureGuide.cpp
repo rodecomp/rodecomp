@@ -416,6 +416,10 @@ void CUIAdventureGuide::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x009DBF20
+// FUNCTION: fn_45467
+void CUIAdventureGuide::OnClose() {
+  g_windowMgr.CloseWindow(10002);
+}
 
 // OFFSET: 0x009C14F0
 // FUNCTION: fn_13991
