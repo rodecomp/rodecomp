@@ -65,3 +65,17 @@ void UIEscOptionWnd::LayoutButtons() {
 }
 
 // OFFSET: 0x00911250
+// FUNCTION: fn_12512
+UIEscOptionWnd::UIEscOptionWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_titleHeight(17), m_controls(&controls) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  int escMode;
+  if (mode->unknown_0250 == 0) {
+    escMode = 0;
+  } else if (!mode->HasResurrectionItem() && !reinterpret_cast<const ClientSkills&>(g_session).HasEffect(580)) {
+    escMode = 1;
+  } else {
+    escMode = 2;
+  }
+  this->m_mode = escMode;
+}
