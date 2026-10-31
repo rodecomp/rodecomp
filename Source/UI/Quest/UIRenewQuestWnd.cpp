@@ -846,3 +846,148 @@ static void SetRecommendedQuestSummary(CRenewQuestMgr* mgr, unsigned int id, std
 }
 
 // OFFSET: 0x007FD7F0
+// FUNCTION: fn_09981
+int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3,
+                             std::intptr_t argument4) {
+  if (message == 22 || argument1 == 0xD5) {
+    reinterpret_cast<WindowReplayRecorder*>(this)->RecordValues(message, argument1, argument2, argument3, argument4);
+  }
+
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 0xC9:
+      g_windowMgr.CloseWindow(0x141);
+      return 0;
+    case 0xD5:
+      if (g_windowMgr.window_0428) {
+        g_windowMgr.window_0428->Show(argument2);
+        return 0;
+      }
+      break;
+    case 0x185:
+    case 0x186:
+    case 0x187:
+    case 0x188:
+    case 0x189:
+    case 0x18A:
+    case 0x18B:
+    case 0x18C:
+    case 0x18D:
+      if (sender) {
+        const unsigned int questId = this->m_questIds[this->m_tab][this->m_scroll + argument1 - 0x185];
+        const int checkMessage = static_cast<UICheckBox*>(sender)->m_message;
+        if (this->m_tab == 1) {
+          if (checkMessage == 1) {
+            g_renewQuestMgr->SetRecommendedQuestActive(questId, argument2 != 0);
+            this->SendMsg(this, 0x17, 2, 0, 0, 0);
+            g_renewQuestMgr->SaveRecommendedActiveList();
+            return 0;
+          }
+        } else if (checkMessage == 0) {
+          g_renewQuestMgr->SetOngoingSimpleView(questId, argument2 != 0);
+          g_renewQuestMgr->SaveOngoingSimpleViewList();
+          if (g_windowMgr.window_0428) {
+            g_windowMgr.window_0428->Invalidate();
+            return 0;
+          }
+        } else {
+          PACKET_CZ_ACTIVE_QUEST packet;
+          packet.questId = questId;
+          packet.packetType = 0x2B6;
+          packet.active = argument2 != 0;
+          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+          return 0;
+        }
+      }
+      break;
+    }
+    break;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scroll;
+    int delta = argument1;
+    if (message == 9) {
+      delta = -8;
+    } else if (message == 10) {
+      delta = 8;
+    }
+    this->m_scroll = previous + delta;
+    if (previous != this->m_scroll) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return this->m_scroll - previous;
+  }
+  case 0x16:
+    if (this->m_tab != argument1) {
+      this->m_tab = argument1;
+      if (argument1 < 0) {
+        this->m_tab = 0;
+      } else if (argument1 > 3) {
+        this->m_tab = 3;
+      } else if (argument1 == 1 && g_renewQuestTitlesPending) {
+        std::vector<unsigned int>& recommended = this->m_questIds[1];
+        auto it = recommended.begin();
+        if (it != recommended.end()) {
+          for (; it != recommended.end(); ++it) {
+            if (!g_renewQuestMgr->GetRecommendedQuest(*it).m_state) {
+              break;
+            }
+          }
+          if (it == recommended.end()) {
+            it = recommended.begin();
+          }
+          UIRenewDetailQuestInfoWnd* detail = static_cast<UIRenewDetailQuestInfoWnd*>(g_windowMgr.EnsureWindow(0x142));
+          if (detail) {
+            detail->SetQuest(*it, true);
+          }
+        }
+
+        CRenewQuestMgr* mgr = g_renewQuestMgr;
+        if (!mgr->m_recommendedQuests.empty()) {
+          for (auto quest = mgr->m_recommendedQuests.begin(); quest != mgr->m_recommendedQuests.end(); ++quest) {
+            std::string title = quest->second.m_title;
+            title = this->FitDisplayText(250, title.c_str(), 0, 12, 1);
+            SetRecommendedQuestTitle(g_renewQuestMgr, quest->first, title);
+            std::string summary = quest->second.unknown_004C;
+            summary = this->FitDisplayText(250, summary.c_str(), 0, 12, 0);
+            SetRecommendedQuestSummary(g_renewQuestMgr, quest->first, summary);
+          }
+        }
+        g_renewQuestTitlesPending = false;
+      }
+      this->m_selected = 0;
+      this->m_scroll = 0;
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return 0;
+  case 0x17:
+    if (argument2 != 0) {
+      bool found = false;
+      for (int tab = 0; tab < 3 && !found; ++tab) {
+        for (unsigned int id : this->m_questIds[tab]) {
+          if (static_cast<unsigned int>(argument2) == id) {
+            this->SendMsg(this, 0x16, tab, 0, 0, 0);
+            found = true;
+            break;
+          }
+        }
+      }
+      if (!found) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm("not found quest info", 0, true, false, 0, "Message", 280, 120, 0);
+        return 0;
+      }
+    }
+    this->RefreshQuestLists(argument1, argument2);
+    this->UpdateScroll();
+    this->Invalidate();
+    return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  return 0;
+}
