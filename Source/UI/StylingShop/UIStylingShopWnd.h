@@ -189,15 +189,17 @@ class UISlotOfMyStyleWnd;
 class UIMyStyleWnd : public UIStylingshopTabParentWnd {
 public:
   explicit UIMyStyleWnd(UIWindowContext& context);
+  void LoadLikeList();
   void SaveLikeList();
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 0088 */ int m_selectedSlot;
   /* 008C */ UISlotOfMyStyleWnd* m_slots[2];
-  /* 0094 */ UIButton* unknown_0094[2];
-  /* 009C */ UIButton* unknown_009C[2];
-  /* 00A4 */ UIButton* unknown_00A4[2];
+  /* 0094 */ UIBitmapButton* unknown_0094[2];
+  /* 009C */ UIBitmapButton* unknown_009C[2];
+  /* 00A4 */ UIBitmapButton* unknown_00A4[2];
 };
 
 class UISlotOfMyStyleWnd : public UIStylingshopTabParentWnd {
@@ -210,6 +212,9 @@ public:
 
 class UISlotForSelectWnd : public UIWindow {
 public:
+  // INLINED
+  explicit UISlotForSelectWnd(UIWindowContext& context) : UIWindow(context, 0) {
+  }
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
 };

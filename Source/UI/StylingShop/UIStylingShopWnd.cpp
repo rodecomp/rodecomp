@@ -1939,3 +1939,60 @@ void UIAccessoryShowCase::Slot15(int, int) {
 // OFFSET: 0x008267E0
 
 // OFFSET: 0x008280F0
+
+#include "Contents/Items/ItemDescription.h"
+
+// OFFSET: 0x0082AAC0
+
+// OFFSET: 0x00828CA0
+// FUNCTION: fn_10337
+void UIMyStyleWnd::Slot15(int, int) {
+  this->LoadLikeList();
+
+  UISlotForSelectWnd* select = new UISlotForSelectWnd(*this->m_context);
+  select->SetSize(this->geometry.width, this->geometry.height);
+  select->Move(0, 0);
+  select->SetId(204);
+  this->AddChild(select);
+
+  for (int i = 0; i < 2; ++i) {
+    this->unknown_0094[i] = new (std::nothrow) UIBitmapButton();
+    this->unknown_0094[i]->SetBitmap("유저인터페이스\\styleshop\\btn_delete_out.bmp", 0, 0);
+    this->unknown_0094[i]->SetBitmap("유저인터페이스\\styleshop\\btn_delete_over.bmp", 1, 0);
+    this->unknown_0094[i]->SetBitmap("유저인터페이스\\styleshop\\btn_delete_press.bmp", 2, 0);
+    this->unknown_0094[i]->SetSize(this->unknown_0094[i]->BitmapWidth(), this->unknown_0094[i]->BitmapHeight());
+    this->unknown_0094[i]->Move(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.5f)) * i + 7, 4);
+    this->unknown_0094[i]->SetId(201);
+    if (this->m_slots[i] == nullptr) {
+      this->unknown_0094[i]->Enable(0);
+    }
+    this->AddChild(this->unknown_0094[i]);
+  }
+
+  for (int i = 0; i < 2; ++i) {
+    this->unknown_009C[i] = new (std::nothrow) UIBitmapButton();
+    this->unknown_009C[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_l_out.bmp", 0, 0);
+    this->unknown_009C[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_l_over.bmp", 1, 0);
+    this->unknown_009C[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_l_press.bmp", 2, 0);
+    this->unknown_009C[i]->SetSize(this->unknown_009C[i]->BitmapWidth(), this->unknown_009C[i]->BitmapHeight());
+    float ratio = static_cast<float>(i) * 0.5f + 0.25f;
+    this->unknown_009C[i]->Move(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * ratio)) - this->unknown_009C[i]->BitmapWidth(), 213);
+    this->unknown_009C[i]->SetId(227);
+    if (this->m_slots[i] == nullptr) {
+      this->unknown_009C[i]->Enable(0);
+    }
+    this->AddChild(this->unknown_009C[i]);
+
+    this->unknown_00A4[i] = new (std::nothrow) UIBitmapButton();
+    this->unknown_00A4[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_r_out.bmp", 0, 0);
+    this->unknown_00A4[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_r_over.bmp", 1, 0);
+    this->unknown_00A4[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_r_press.bmp", 2, 0);
+    this->unknown_00A4[i]->SetSize(this->unknown_00A4[i]->BitmapWidth(), this->unknown_00A4[i]->BitmapHeight());
+    this->unknown_00A4[i]->Move(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * ratio)), 213);
+    this->unknown_00A4[i]->SetId(226);
+    if (this->m_slots[i] == nullptr) {
+      this->unknown_00A4[i]->Enable(0);
+    }
+    this->AddChild(this->unknown_00A4[i]);
+  }
+}
