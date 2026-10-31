@@ -1789,6 +1789,35 @@ const char* UICashEmotionListChildWnd_Search::Filter() {
 }
 
 // OFFSET: 0x007C59A0
+// FUNCTION: fn_09381
+void UICashEmotionListChildWnd_Search::AddResults(char type, const std::vector<std::pair<int, int>>& results, int& y) {
+  UICashEmotionPack_Search* pack;
+  if (type == 3) {
+    pack = new (std::nothrow) UICashEmotionPack_Search_UnPurchased(*this->m_context);
+  } else {
+    pack = new (std::nothrow) UICashEmotionPack_Search(*this->m_context);
+  }
+  if (!pack) {
+    return;
+  }
+
+  pack->SetSize(243, 135);
+  const char* title = nullptr;
+  if (type == 1) {
+    title = g_simpleStringMgr->GetString("EMSG_SEARCH_WND_BASIC_TITLE");
+  } else if (type == 2) {
+    title = g_simpleStringMgr->GetString("EMSG_SEARCH_WND_PURCHASE_TITLE");
+  } else if (type == 3) {
+    title = g_simpleStringMgr->GetString("EMSG_SEARCH_WND_UNPURCHASED_TITLE");
+  }
+  const int height = pack->SetResults(title, results);
+  pack->Resize(243, height);
+  pack->Move(9, y);
+  y += height;
+
+  this->AddChild(pack);
+  this->m_items.push_back(pack);
+}
 
 // OFFSET: 0x007C5D80
 // FUNCTION: fn_09383
