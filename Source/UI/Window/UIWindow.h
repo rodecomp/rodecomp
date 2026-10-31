@@ -147,6 +147,7 @@ public:
   void sub_A85850(int x, int y, std::string text, int width, int align, std::uint32_t color, int arg7, int arg8, int arg9, int arg10, unsigned char bold);
   void FillRegion(int x, int y, int width, int height, std::uint32_t color);
   int TextWidth(FontCache& fonts, const TextLocale& locale, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
+  int ColoredTextWidth(const char* text, unsigned bytes, int family, int height, unsigned char bold);
   void DrawTextAt(
     FontCache& fonts, const TextLocale& locale, int x, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold,
     unsigned char italic

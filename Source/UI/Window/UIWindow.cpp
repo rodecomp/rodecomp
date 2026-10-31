@@ -136,6 +136,35 @@ int g_navigationRoadIcon;
 CTexture* g_navigationMapTexture;
 
 // INLINED
+static const char* FindColorCode(const char* text, const char* end) {
+  if (!text) {
+    return nullptr;
+  }
+
+  while (text < end) {
+    if (*text == '^' && end - text >= 6) {
+      int index = 1;
+      while (index <= 6) {
+        const unsigned char digit = static_cast<unsigned char>(text[index]);
+        if (!((digit >= '0' && digit <= '9') || (digit >= 'a' && digit <= 'f') || (digit >= 'A' && digit <= 'F'))) {
+          break;
+        }
+
+        ++index;
+      }
+
+      if (index > 6) {
+        return text;
+      }
+    }
+
+    text = CharNextExA(static_cast<WORD>(g_textCodePage), text, 0);
+  }
+
+  return text;
+}
+
+// INLINED
 void UIWindowContext::DestroyDeferredChildren() {
   for (UIWindow* window : this->deferredDeletion) {
     delete window;
@@ -891,6 +920,32 @@ int UIWindow::TextWidth(
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, italic);
   return context.Measure(text, bytes).cx;
+}
+
+// OFFSET: 0x00A7D760
+// FUNCTION: fn_16955
+int UIWindow::ColoredTextWidth(const char* text, unsigned bytes, int family, int height, unsigned char bold) {
+  if (!text) {
+    return 0;
+  }
+
+  if (!bytes) {
+    bytes = static_cast<unsigned>(std::strlen(text));
+    if (!bytes) {
+      return 0;
+    }
+  }
+
+  int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text, bytes, family, height, bold, 0);
+  std::uint32_t color = 0;
+  if (ParseColorCode(FindColorCode(text, text + bytes), color) && color) {
+    TextContext context(*this->geometry.surface);
+    context.SetFont(0, 12, 0, 0);
+    const int marker = context.Measure("^000000", 7).cx;
+    width += (3 - marker) * 2;
+  }
+
+  return width;
 }
 
 // OFFSET: 0x00A84360
@@ -2828,4 +2883,37 @@ void UIPrivateAirplaneWnd::Slot15(int, int) {
     this->AddChild(button);
     this->m_buttons.push_back(button);
   }
+}
+
+// OFFSET: 0x005C8DA0
+// FUNCTION: fn_03628
+int UIPrivateAirplaneWnd::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  switch (message) {
+  case 6:
+    if (argument1 == 201) {
+      if (!g_windowMgr.modalWindows.empty() && g_windowMgr.modalWindows.back()) {
+        g_windowMgr.unknown_0474 = 0xBC;
+      }
+    } else if (argument1 == 500) {
+      const std::string mapName = g_navigationManager.GetCurrentTargetName() + ".gat";
+      g_navigationManager.RequestPrivateAirship(mapName, static_cast<int>(argument2));
+    }
+    break;
+  case 35:
+    for (UIBasicButton* button : this->m_buttons) {
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
+
+    this->Invalidate();
+    break;
+  case 154:
+    this->m_text = reinterpret_cast<const char*>(argument1);
+    this->Invalidate();
+    break;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
