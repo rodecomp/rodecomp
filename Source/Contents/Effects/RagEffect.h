@@ -271,6 +271,7 @@ struct CRagEffect : CRenderObject {
   void TexturedSkillAura(char type);
   void TexturedMagicRing(char type);
   void TexturedRisingRing(const char* name);
+  bool TexturedRisingRingStages(const char* name, char level);
 
   virtual void Slot08();
   virtual void Slot09(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth, int sixteenth, int seventeenth);
