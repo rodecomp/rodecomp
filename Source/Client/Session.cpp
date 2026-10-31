@@ -2505,10 +2505,72 @@ void CSession::ClearAchievements() {
 }
 
 // OFFSET: 0x00DDC9D0
+// FUNCTION: fn_23371
+const std::vector<std::string>* CSession::GetFogParameters(const char* rswName, int* found) {
+  *found = 0;
+  // GLOBAL: gl_24841
+  static std::vector<std::string> s_defaultParameters(4);
+
+  std::string name = rswName;
+  const std::size_t position = name.rfind("@");
+  if (position != std::string::npos && position >= 4) {
+    name.erase(position - 4, 3);
+  }
+
+  const char* key = name.c_str();
+  auto it = std::lower_bound(this->m_fogParameters.begin(), this->m_fogParameters.end(), key,
+                             [](const std::pair<std::string, std::vector<std::string>>& entry, const char* value) {
+                               return std::strcmp(entry.first.c_str(), value) < 0;
+                             });
+  if (it != this->m_fogParameters.end() && std::strcmp(it->first.c_str(), name.c_str()) == 0) {
+    *found = 1;
+    return &it->second;
+  }
+
+  return &s_defaultParameters;
+}
 
 // OFFSET: 0x00DE3410
+// FUNCTION: fn_23479
+const std::vector<std::string>* CSession::GetMapViewParameters(const char* rswName, int* found) {
+  std::vector<std::pair<std::string, std::vector<std::string>>>& parameters =
+    reinterpret_cast<std::vector<std::pair<std::string, std::vector<std::string>>>&>(this->unknown_523C);
+  *found = 0;
+  // GLOBAL: gl_24993
+  static std::vector<std::string> s_defaultParameters(9);
+
+  std::string name = rswName;
+  const std::size_t position = name.rfind("@");
+  if (position != std::string::npos && position >= 4) {
+    name.erase(position - 4, 3);
+  }
+
+  const char* key = name.c_str();
+  auto it = std::lower_bound(parameters.begin(), parameters.end(), key,
+                             [](const std::pair<std::string, std::vector<std::string>>& entry, const char* value) {
+                               return std::strcmp(entry.first.c_str(), value) < 0;
+                             });
+  if (it != parameters.end() && std::strcmp(it->first.c_str(), name.c_str()) == 0) {
+    *found = 1;
+    return &it->second;
+  }
+
+  return &s_defaultParameters;
+}
 
 // OFFSET: 0x00DF8670
+// FUNCTION: fn_23510
+void CSession::InitWeaponHitWaveNames() {
+  std::vector<std::string>& weaponWaves = reinterpret_cast<std::vector<std::string>&>(this->unknown_525C[0x18]);
+  weaponWaves.clear();
+  weaponWaves.resize(105, "_hit_mace.wav");
+  for (int weapon = 0; weapon < 105; ++weapon) {
+    const char* name = nullptr;
+    if (this->m_hotkeyScript->Call("ReqWeaponHitWaveName", "d>s", weapon, &name) && std::strcmp(name, "") != 0) {
+      weaponWaves[weapon] = name;
+    }
+  }
+}
 
 // OFFSET: 0x00DF8C40
 // FUNCTION: fn_23513
