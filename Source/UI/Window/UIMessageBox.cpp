@@ -69,6 +69,16 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "UI/Item/UIItemWnd.h"
+#include "Contents/Sound/SoundMaker.h"
+#include "UI/Buttons/UICheckBox.h"
+#include <mbstring.h>
+
+// GLOBAL: gl_25153
+static const std::string s_messageBoxItemLinkOpening = "<ITEML>";
+
+// GLOBAL: gl_25154
+static const std::string s_messageBoxItemLinkClosing = "</ITEML>";
 
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
@@ -707,6 +717,58 @@ void UIMerInfoWnd::Slot11() {
 }
 
 // OFFSET: 0x008BF720
+// FUNCTION: fn_11807
+int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 0:
+    return 0;
+  case 6:
+    this->m_recorder->Record(this->geometry.id, static_cast<int>(a), b, c, d);
+
+    switch (a) {
+    case 184:
+      this->Invalidate();
+      return 0;
+    case 201:
+      g_windowMgr.CloseWindow(125);
+      return 0;
+    case 349:
+      if (!g_windowMgr.CloseWindow(126)) {
+        g_windowMgr.EnsureWindow(126);
+        return 0;
+      }
+
+      return 0;
+    case 350: {
+      CMode* mode = g_modeMgr.GetGameMode();
+
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1370), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+        mode->SendMsg(186, 2, 0, 0, 0);
+        g_windowMgr.CloseWindow(125);
+        g_windowMgr.CloseWindow(126);
+        g_session.ResetMercenaryStats();
+        g_groundMarkAltEnabled = 0;
+        return 0;
+      }
+
+      return 0;
+    }
+    default:
+      return 0;
+    }
+  case 34:
+    this->saved = reinterpret_cast<MerInfoWndInfo*>(a);
+
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
 
 // OFFSET: 0x008C3670
 // FUNCTION: fn_11828
@@ -917,6 +979,120 @@ void UIReplayRECControlWnd::ApplyMode() {
 }
 
 // OFFSET: 0x008B9790
+// FUNCTION: fn_11771
+void UINoticeWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  const int leftTiles = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int index = 0, y = 17; index < leftTiles; ++index, y += 8) {
+    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &left->image, false);
+  }
+
+  const int rightTiles = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int index = 0, y = 17; index < rightTiles; ++index, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 38, RGB(red, green, blue));
+  this->FillRegion(
+    20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue)
+  );
+  this->DrawButtonBar(2, 0, 1);
+}
+
+// OFFSET: 0x008BFC20
+// FUNCTION: fn_11811
+int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 0:
+    this->SendMsg(nullptr, 6, 184, 0, 0, 0);
+    return 0;
+  case 6:
+    if (a == 184) {
+      g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      FILE* file = std::fopen("notice_read.txt", "wb");
+      const int index = this->m_index;
+      unsigned char position;
+
+      if (index <= 0 && this->m_scroll <= 255 && static_cast<unsigned char>(this->m_scroll) != this->m_bottomPositions[index] - 19) {
+        position = static_cast<unsigned char>(this->m_scroll);
+
+        if (position != 255) {
+          position = static_cast<unsigned char>(this->m_scroll + 19);
+          const int limit = this->m_bottomPositions[index] - 19;
+
+          if (this->m_scroll + 19 > limit) {
+            position = limit < 0 ? 0 : static_cast<unsigned char>(this->m_bottomPositions[index] - 19);
+          }
+        }
+      } else {
+        position = 255;
+      }
+
+      std::fwrite(&position, 1, 1, file);
+      std::fclose(file);
+      g_windowMgr.CloseWindow(93);
+    } else if (a == 218) {
+      ++this->m_index;
+
+      if (this->m_index > this->m_noticeCount) {
+        this->m_index = this->m_noticeCount;
+        return 0;
+      }
+
+      this->m_scroll = this->m_scrollPositions[this->m_index];
+      this->LoadNotice();
+    } else if (a == 246) {
+      if (--this->m_index < 0) {
+        this->m_index = 0;
+        return 0;
+      }
+
+      this->m_scroll = this->m_scrollPositions[this->m_index];
+      this->LoadNotice();
+    }
+
+    return 0;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scroll;
+    std::intptr_t delta = a;
+
+    if (message == 9) {
+      delta = -1;
+    } else if (message == 10) {
+      delta = 1;
+    }
+
+    this->m_scroll = previous + delta;
+
+    if (this->m_scroll > this->m_bottomPositions[this->m_index] - 19) {
+      this->m_scroll = this->m_bottomPositions[this->m_index] - 19;
+    }
+
+    if (this->m_scroll < this->m_scrollPositions[this->m_index]) {
+      this->m_scroll = this->m_scrollPositions[this->m_index];
+    }
+
+    this->LoadNotice();
+    return this->m_scroll - previous;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+}
 
 // OFFSET: 0x008BB070
 // FUNCTION: fn_11793
@@ -1368,6 +1544,11 @@ void UIMessageBoxAutoreturn::Slot19() {
 }
 
 // OFFSET: 0x008AA9D0
+// FUNCTION: fn_11723
+void UIItemWnd::DrawNewItemMark(int x, int y) {
+  const auto* mark = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\new_item.bmp")));
+  this->DrawBitmap(x, y, &mark->image, false);
+}
 
 // OFFSET: 0x008AAA10
 // FUNCTION: fn_11724
@@ -1500,6 +1681,151 @@ void UIReplayRECControlWnd::UpdateRecordTime() {
   this->Invalidate();
   this->InvalidateChildren();
   this->recordStart = timeGetTime();
+}
+
+// OFFSET: 0x008C0DF0
+// FUNCTION: fn_11814
+int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    switch (a) {
+    case 213:
+      if (sender == this->window_0128) {
+        ReplayFileList::Instance().pathEnabled = b != 0;
+        this->replayPathEnabled = ReplayFileList::Instance().pathEnabled;
+        return 0;
+      }
+
+      if (sender == this->window_012C) {
+        ReplayFileList::Instance().unknown_0119 = b != 0;
+        this->replayOption119 = ReplayFileList::Instance().unknown_0119;
+        return 0;
+      }
+
+      if (sender == this->options[9]) {
+        if (b == 1) {
+          for (int index = 0; index < 10; ++index) {
+            if (index != 9) {
+              this->recordOptions[index] = 1;
+              static_cast<UICheckBox*>(this->options[index])->SetChecked(1);
+            }
+          }
+        }
+
+        this->recordOptions[9] = b != 0;
+      } else if (sender == this->options[0]) {
+        if (b == 0) {
+          for (int index = 1; index < 10; ++index) {
+            this->recordOptions[index] = 0;
+            static_cast<UICheckBox*>(this->options[index])->SetChecked(0);
+          }
+        }
+
+        this->recordOptions[0] = b != 0;
+      } else {
+        if (b == 1) {
+          if (this->options[0]->geometry.unknown_0030 == 0) {
+            static_cast<UICheckBox*>(this->options[0])->SetChecked(1);
+            this->recordOptions[0] = 1;
+          }
+        } else if (this->options[9]->geometry.unknown_0030 == 1) {
+          static_cast<UICheckBox*>(this->options[9])->SetChecked(0);
+          this->recordOptions[9] = 0;
+        }
+
+        for (int index = 1; index < 9; ++index) {
+          if (sender == this->options[index]) {
+            this->recordOptions[index] = b != 0;
+          }
+        }
+      }
+
+      Replay::Instance().SetOptions(this->recordOptions, 10);
+      return 0;
+    case 420:
+      if (!this->replayPathEnabled) {
+        this->mode = 1;
+        static_cast<CMode*>(g_charViewMode)->SendMsg(274, 0, 0, 0, 0);
+        this->ApplyMode();
+        return 0;
+      }
+
+      this->mode = 3;
+      this->ApplyMode();
+      return 0;
+    case 421:
+      this->mode = 0;
+      this->ApplyMode();
+      static_cast<CMode*>(g_charViewMode)->SendMsg(275, 0, 0, 0, 0);
+      return 0;
+    case 422: {
+      auto* edit = static_cast<UIEditCtrl*>(this->window_0134);
+      int error;
+
+      if (edit->Length() <= 0) {
+        error = 1972;
+      } else if (_mbsstr(reinterpret_cast<const unsigned char*>(edit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
+                 _mbsstr(reinterpret_cast<const unsigned char*>(edit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
+        error = 2812;
+      } else {
+        ReplayFileList::Instance().SetPath(edit->Text());
+        this->m_focus->Set(nullptr);
+        edit->SetText("");
+        static_cast<CMode*>(g_charViewMode)->SendMsg(274, 0, 0, 0, 0);
+
+        if (Replay::Instance().state == 1) {
+          return 0;
+        }
+
+        this->mode = 1;
+        this->ApplyMode();
+        return 0;
+      }
+
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(error), 0, true, false, 0, "Message", 280, 120, 0);
+      return 0;
+    }
+    case 423:
+      this->mode = 2;
+      this->ApplyMode();
+      return 0;
+    case 424:
+      this->mode = 0;
+      this->ApplyMode();
+      return 0;
+    case 425:
+      this->mode = 0;
+      g_windowMgr.CloseWindow(198);
+      return 0;
+    default:
+      return 0;
+    }
+  case 34:
+    this->saved = reinterpret_cast<ReplayRECControlWndInfo*>(a);
+
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 60:
+    this->Invalidate();
+    this->InvalidateChildren();
+    return 0;
+  case 87:
+    Replay::Instance().unknown_01F4 = this->geometry.x;
+    Replay::Instance().unknown_01F8 = this->geometry.y;
+    return 0;
+  case 116:
+    this->UpdateRecordTime();
+    return 0;
+  case 123:
+  case 251:
+    return 0;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
 }
 
 // OFFSET: 0x008BA820
@@ -2084,6 +2410,79 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
   return 0;
+}
+
+// OFFSET: 0x008B99A0
+// FUNCTION: fn_11773
+void UIPetInfoWnd::Paint() {
+  auto& controls = *this->m_controls;
+  unsigned red;
+  unsigned green;
+  unsigned blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->ClearSurface(RGB(red, green, blue));
+  this->DrawPanelBackground(this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0), 0, "");
+
+  const auto* leftCorner = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, this->geometry.height - leftCorner->image.height, &leftCorner->image, false);
+  const auto* rightCorner = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_rd.bmp")));
+  this->DrawBitmap(
+    this->geometry.width - rightCorner->image.width, this->geometry.height - rightCorner->image.height, &rightCorner->image, false
+  );
+
+  char title[32];
+  StringFormat(title, 32, static_cast<std::size_t>(-1), "%s", LookupMessage(584));
+  this->DrawTextAt(controls.fonts, controls.locale, 5, 2, title, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 24, LookupMessage(407), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 44, LookupMessage(408), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 69, LookupMessage(585), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 100, 89, LookupMessage(586), 0, 0, 12, 0, 0, 0);
+
+  char level[8];
+  char hunger[24];
+  const int fullness = g_session.unknown_1044;
+
+  if (fullness >= 0 && fullness <= 10) {
+    std::strcpy(hunger, LookupMessage(667));
+  } else if (fullness > 10 && fullness <= 25) {
+    std::strcpy(hunger, LookupMessage(668));
+  } else if (fullness > 25 && fullness <= 75) {
+    std::strcpy(hunger, LookupMessage(669));
+  } else if (fullness > 75 && fullness <= 90) {
+    std::strcpy(hunger, LookupMessage(670));
+  } else if (fullness > 90 && fullness <= 100) {
+    std::strcpy(hunger, LookupMessage(671));
+  } else {
+    std::strcpy(hunger, LookupMessage(676));
+  }
+
+  _itoa(g_session.unknown_1040, level, 10);
+  this->DrawTextAt(controls.fonts, controls.locale, 135, 44, level, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 145, 69, hunger, 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(controls.fonts, controls.locale, 145, 89, this->friendlyText.c_str(), 0, 0, 12, 0, 0, 0);
+
+  const int job = g_session.unknown_103C;
+
+  if (job != -1 && ((job > 1000 && job < 3999) || static_cast<unsigned>(job - 20021) < 11979)) {
+    char illust[260];
+    std::memset(illust, 0, sizeof(illust));
+    g_session.GetPetIllustName(job, g_session.unknown_1038, illust);
+
+    if (auto* image = dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(illust)))) {
+      this->DrawBitmap(5, 21, &image->image, false);
+    }
+
+    char command[] = "< Command >";
+    this->FillRegion(160, 44, 110, 18, 0xFAE6E6);
+    const int width = this->TextWidth(controls.fonts, controls.locale, command, 0, 0, 12, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, 206 - width / 2, 48, command, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, 100, 119, LookupMessage(597), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(controls.fonts, controls.locale, 100, 139, LookupMessage(g_session.unknown_1038 == 0 ? 600 : 598), 0, 0, 12, 0, 0, 0);
+
+    if (this->unknown_00E4 == 1) {
+      this->DrawTextAt(controls.fonts, controls.locale, 100, 159, LookupMessage(2577), 0, 0, 12, 0, 0, 0);
+    }
+  }
 }
 
 // OFFSET: 0x008C2E30

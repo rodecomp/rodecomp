@@ -15,6 +15,7 @@ public:
   bool Slot03() override;
   void Slot11() override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void ApplyMode();
   void UpdateRecordTime();
 
@@ -31,12 +32,13 @@ public:
   /* 00EC */ UIWindow* window_00EC;
   /* 00F0 */ std::uint32_t recordStart;
   /* 00F4 */ UIWindow* options[10];
-  /* 011C */ int unknown_011C;
-  /* 0120 */ int unknown_0120;
-  /* 0124 */ int unknown_0124;
+  /* 011C */ unsigned char recordOptions[10];
+  /* 0126 */ unsigned char unknown_0126[2];
   /* 0128 */ UIWindow* window_0128;
   /* 012C */ UIWindow* window_012C;
-  /* 0130 */ int unknown_0130;
+  /* 0130 */ bool replayPathEnabled;
+  /* 0131 */ bool replayOption119;
+  /* 0132 */ unsigned char unknown_0132[2];
   /* 0134 */ UIWindow* window_0134;
   /* 0138 */ ReplayRECControlWndInfo* saved;
 
