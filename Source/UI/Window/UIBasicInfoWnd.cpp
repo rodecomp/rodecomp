@@ -8,6 +8,25 @@
 #include <cstdio>
 
 // OFFSET: 0x00997250
+// FUNCTION: fn_13484
+UIBasicInfoWnd::UIBasicInfoWnd(UIWindowContext& windowContext, UIFrameContext& frameContext) : UIFrameWnd(windowContext, frameContext, 0) {
+  this->saved = nullptr;
+  this->mode = 0;
+  this->layoutOffset = 13;
+  this->collapsedHeight = 55;
+  this->expandedHeight = 134;
+  this->extendedOffset = 28;
+  this->extendedCollapsedHeight = 71;
+  this->extendedExpandedHeight = 149;
+  this->normalOffset = 13;
+  this->normalCollapsedHeight = 55;
+  this->normalExpandedHeight = 134;
+  if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) == true) {
+    this->layoutOffset = this->extendedOffset;
+    this->collapsedHeight = this->extendedCollapsedHeight;
+    this->expandedHeight = this->extendedExpandedHeight;
+  }
+}
 
 // OFFSET: 0x00998190
 // FUNCTION: fn_13489

@@ -8,7 +8,7 @@ class UIStaticText;
 
 class UIBasicInfoWnd : public UIFrameWnd {
 public:
-  UIBasicInfoWnd(UIWindowContext& windowContext, UIFrameContext& frameContext, UIButtonContext& controls);
+  UIBasicInfoWnd(UIWindowContext& windowContext, UIFrameContext& frameContext);
   bool Slot03() override;
   void Slot11() override;
   void Slot25(int x, int y) override;
