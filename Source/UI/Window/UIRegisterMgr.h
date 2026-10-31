@@ -1,18 +1,21 @@
 #ifndef RAGNAROK_SOURCE_UI_WINDOW_UIREGISTERMGR_H
 #define RAGNAROK_SOURCE_UI_WINDOW_UIREGISTERMGR_H
 
+#include "Utility/Singleton.h"
+
 #include <cstddef>
 #include <map>
+#include <utility>
 #include <windows.h>
 
-class CUIRegisterMgr {
+class CUIRegisterMgr : public Singleton<CUIRegisterMgr> {
 public:
+  __declspec(noinline) CUIRegisterMgr();
   bool sub_A970A0(int key);
 
-  /* 0000 */ void* vtable;
   /* 0004 */ std::map<int, int> entries;
-  /* 000C */ std::map<int, int> unknown_000C;
-  /* 0014 */ std::map<int, int> unknown_0014;
+  /* 000C */ std::map<int, std::pair<int, int>> unknown_000C;
+  /* 0014 */ std::map<int, std::pair<int, int>> unknown_0014;
   /* 001C */ CRITICAL_SECTION lock;
 };
 

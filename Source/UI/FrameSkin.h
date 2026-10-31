@@ -8,6 +8,7 @@
 
 class CUIFrameWnd : public UIFrameWnd {
 public:
+  ~CUIFrameWnd() override;
   void Paint() override;
   void RefreshSkinColors();
   void SetSkinColors(int backgroundColumn, int backgroundRow, int borderColumn, int borderRow);
