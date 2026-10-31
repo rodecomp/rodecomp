@@ -56,6 +56,7 @@ class CGameActor : public EffectActor {
 public:
   CGameActor();
   ~CGameActor() override;
+  bool OnProcess() override;
   void SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) override;
 
   /* 0158 */ int unknown_0158[6];
@@ -105,7 +106,9 @@ public:
   /* 02C4 */ int unknown_02C4;
   /* 02C8 */ int unknown_02C8;
   /* 02CC */ unsigned char unknown_02CC;
-  /* 02CD */ unsigned char unknown_02CD[0x0B];
+  /* 02CD */ unsigned char unknown_02CD[0x03];
+  /* 02D0 */ float unknown_02D0;
+  /* 02D4 */ float unknown_02D4;
   /* 02D8 */ int unknown_02D8;
   /* 02DC */ int unknown_02DC;
   /* 02E0 */ int unknown_02E0;
@@ -329,6 +332,8 @@ static_assert(offsetof(CGameActor, unknown_0298) == 0x298);
 static_assert(offsetof(CGameActor, unknown_02A0) == 0x2A0);
 static_assert(offsetof(CGameActor, unknown_02A8) == 0x2A8);
 static_assert(offsetof(CGameActor, unknown_02B8) == 0x2B8);
+static_assert(offsetof(CGameActor, unknown_02D0) == 0x2D0);
+static_assert(offsetof(CGameActor, unknown_02D4) == 0x2D4);
 static_assert(offsetof(CGameActor, unknown_02D8) == 0x2D8);
 static_assert(offsetof(CGameActor, unknown_02EC) == 0x2EC);
 static_assert(offsetof(CGameActor, unknown_0304) == 0x304);
