@@ -1,6 +1,7 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIBmpTextButton.h"
+#include "UI/Buttons/UISlotBmpButton.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -9,6 +10,8 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Utility/Timestamp.h"
+#include "Utility/Text/FormatString.h"
+#include "Client/Session.h"
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
 
@@ -122,6 +125,84 @@ void UINewSelectCharWnd::DisableButtonById(int id) {
 // OFFSET: 0x007D52B0
 
 // OFFSET: 0x007D7330
+// FUNCTION: fn_09591
+void UINewSelectCharWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  for (int index = 0; index < this->m_slotsPerPage; ++index) {
+    const int slot = this->m_page * this->m_slotsPerPage + index;
+    if (slot >= this->m_totalSlots) {
+      continue;
+    }
+
+    const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, slot, 0, 0, 0));
+    const int column = slot % this->m_slotsPerPage;
+    const char* label = nullptr;
+    if (g_premiumSlotCount > 0 && slot >= g_normalSlotCount && slot < g_normalSlotCount + g_premiumSlotCount) {
+      label = "Premium ";
+    } else if (g_billingSlotCount > 0 && slot >= g_normalSlotCount + g_premiumSlotCount && slot < g_billingSlotCount + g_normalSlotCount + g_premiumSlotCount) {
+      label = "Billing ";
+    }
+
+    if (label) {
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, column * 163 + 136, 50, label, 0, 1, 15, 0xFF, 0, 0);
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, column * 163 + 142, 63, "Service", 0, 1, 15, 0xFF, 0, 0);
+    }
+
+    if (this->m_slotStatus[slot] == 0 && info) {
+      const CharSlotInfo& slotInfo = this->m_charSlotInfos[slot];
+      const unsigned char sex = info->sex == 99 ? static_cast<unsigned char>(g_doramSex) : info->sex;
+      FuncDrawWNDChar(
+        this, slotInfo.x, slotInfo.y, sex, info->job, info->job, info->unknown_0058, info->head, info->accessory, info->accessory2, info->accessory3, info->robe,
+        0, 0, info->bodyStyle, info->headPalette, slotInfo.action, slotInfo.frame, this->m_lastTick
+      )
+        .Draw(true);
+    }
+
+    const int page = slot / this->m_slotsPerPage;
+    const int buttonIndex = page != 0 ? slot % (page * this->m_slotsPerPage) : slot;
+    if (buttonIndex < this->m_slotsPerPage) {
+      if (slot >= this->m_totalSlots) {
+        continue;
+      }
+
+      static_cast<UIButton*>(this->m_slotButtons2[buttonIndex])->Enable(1);
+      if (slot < g_producibleSlotCount ? this->m_slotStatus[slot] == 1 && slot >= g_validSlotCount : this->m_slotStatus[slot] == 1) {
+        auto* button = static_cast<UIButton*>(this->m_slotButtons2[buttonIndex]);
+        button->SetDisabled(1);
+        button->Invalidate();
+      }
+    }
+
+    if (slot >= this->m_totalSlots || !info) {
+      continue;
+    }
+
+    if (info->deleteDate == 0) {
+      this->m_charSlotInfos[slot].unknown_0148 = 0;
+      this->m_charSlotInfos[slot].action = 0;
+    } else {
+      Timestamp deleteDate(info->deleteDate);
+      if (slot == this->m_pageSlot && deleteDate.IsBeforeNow() == 1 && static_cast<UIButton*>(this->m_window100)->Disabled() == 1) {
+        static_cast<UIButton*>(this->m_window100)->Enable(1);
+      }
+      this->m_charSlotInfos[slot].unknown_0148 = 16;
+      this->m_charSlotInfos[slot].action = 16;
+    }
+  }
+
+  const CharacterInfo* selected = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
+  if (selected && selected->deleteDate > 0) {
+    Timestamp deleteDate(selected->deleteDate);
+    auto* button = static_cast<UIButton*>(this->m_window100);
+    if (deleteDate.IsBeforeNow() == 1) {
+      button->SetDisabled(0);
+    } else {
+      button->SetDisabled(1);
+    }
+    button->Invalidate();
+  }
+}
 
 // OFFSET: 0x007D7740
 // FUNCTION: fn_09592
@@ -206,8 +287,64 @@ void UINewSelectCharWnd::sub_7D90E0() {
 }
 
 // OFFSET: 0x007D9260
+// FUNCTION: fn_09597
+void UINewSelectCharWnd::sub_7D9260() {
+  for (int index = 0; index < this->m_slotsPerPage; ++index) {
+    const int slot = this->m_page * this->m_slotsPerPage + index;
+    if (slot >= this->m_totalSlots) {
+      continue;
+    }
+
+    static_cast<UISlotBmpButton*>(this->m_slotButtons2[index])->SetSlot(this->m_slotStatus[slot] ? -1 : slot, slot);
+    if (slot < g_producibleSlotCount && this->m_slotStatus[slot] == 1) {
+      this->m_slotButtons2[index]->SendMsg(nullptr, 431, slot >= g_validSlotCount ? 1 : 0, 0, 0, 0);
+    } else {
+      this->m_slotButtons2[index]->SendMsg(nullptr, 431, 1, 0, 0, 0);
+    }
+  }
+
+  this->InvalidateChildren();
+}
 
 // OFFSET: 0x007D9310
+// FUNCTION: fn_09598
+void UINewSelectCharWnd::sub_7D9310() {
+  const int current = this->m_page * this->m_slotsPerPage + this->m_pageSlot;
+  if (current >= this->m_totalSlots) {
+    return;
+  }
+
+  const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, current, 0, 0, 0));
+  if (info) {
+    static_cast<UIStaticText*>(this->m_slotButtons[0])->SetTextFitted(g_session.GetJobName(info->job, info->sex));
+    static_cast<UIStaticText*>(this->m_slotButtons[1])->SetTextFitted(FormatOwnedString("%d", info->level).c_str());
+    static_cast<UIStaticText*>(this->m_slotButtons[2])->SetTextFitted(FormatOwnedString("%lld", info->exp).c_str());
+    static_cast<UIStaticText*>(this->m_slotButtons[3])->SetTextFitted(FormatOwnedString("%lld", info->hp).c_str());
+    static_cast<UIStaticText*>(this->m_slotButtons[4])->SetTextFitted(FormatOwnedString("%lld", info->sp).c_str());
+    static_cast<UIStaticText*>(this->m_slotButtons[5])->SetTextFitted(FormatOwnedString("%d", info->stats[0]).c_str());
+    static_cast<UIStaticText*>(this->m_slotButtons[6])->SetTextFitted(FormatOwnedString("%d", info->stats[1]).c_str());
+    static_cast<UIStaticText*>(this->m_slotButtons[7])->SetTextFitted(FormatOwnedString("%d", info->stats[2]).c_str());
+    static_cast<UIStaticText*>(this->m_slotButtons[8])->SetTextFitted(FormatOwnedString("%d", info->stats[3]).c_str());
+    static_cast<UIStaticText*>(this->m_slotButtons[9])->SetTextFitted(FormatOwnedString("%d", info->stats[4]).c_str());
+    static_cast<UIStaticText*>(this->m_slotButtons[10])->SetTextFitted(FormatOwnedString("%d", info->stats[5]).c_str());
+    static_cast<UIStaticText*>(this->m_slotButtons[11])->SetTextFitted(g_session.GetMapDisplayName(info->mapName));
+  } else {
+    for (int index = 0; index < 12; ++index) {
+      static_cast<UIStaticText*>(this->m_slotButtons[index])->SetText("", 0);
+    }
+  }
+
+  auto* button = static_cast<UIButton*>(this->m_windowFC);
+  if (this->m_slotStatus[current] == 1) {
+    button->SetDisabled(1);
+  } else {
+    button->SetDisabled(0);
+  }
+  button->Invalidate();
+
+  this->sub_7D9260();
+  this->sub_7D90E0();
+}
 
 // OFFSET: 0x007D97B0
 // FUNCTION: fn_09599

@@ -56,7 +56,8 @@ struct CharacterInfo {
   /* 008B */ unsigned char unknown_008B[0x3];
   /* 008E */ char mapName[16];
   /* 009E */ std::int32_t deleteDate;
-  /* 00A2 */ unsigned char unknown_00A2[0x0C];
+  /* 00A2 */ std::int32_t robe;
+  /* 00A6 */ unsigned char unknown_00A6[0x08];
   /* 00AE */ unsigned char sex;
 };
 
