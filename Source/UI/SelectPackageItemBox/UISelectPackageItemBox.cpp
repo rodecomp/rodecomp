@@ -631,3 +631,11 @@ void CUISelectPackageItemBox::Open(int sourceIndex) {
 void CUISelectPackageItemBox::BindTab(SelectPackageItemBox::CUITabInfo* tab, const SelectPackageItemBox::CTabInfoData& data) {
   tab->nameText->SetText(data.name.c_str(), data.name.size());
 }
+
+// OFFSET: 0x00A69350
+
+// OFFSET: 0x00A6F470
+// FUNCTION: fn_16772
+CUISelectPackageItemBox::CUISelectPackageItemBox()
+    : title(nullptr), tabList(nullptr), itemList(nullptr), okButton(nullptr), cancelButton(nullptr), sourceIndex(-1), packageId(0) {
+}
