@@ -1074,6 +1074,12 @@ CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::CUIListBoxEx(UIWindowCo
       unknown_00E0(1), rebind(0) {
 }
 
+// OFFSET: 0x00A59C80
+// FUNCTION: fn_16368
+template <>
+CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::~CUIListBoxEx() {
+}
+
 // OFFSET: 0x00A59BB0
 // FUNCTION: fn_16367
 CUIEditBoxEx::CUIEditBoxEx(UIWindowContext& context)
