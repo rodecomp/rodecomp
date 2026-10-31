@@ -12,13 +12,17 @@
 #include <string>
 
 class CUICheckBox;
+class CUIStaticText;
 
 namespace ExchangeUI {
 class CUIItem : public CUIListItem {
 public:
-  /* 00E8 */ UIWindow* unknown_00E8;
+  /* 00E8 */ CUIStaticImage* unknown_00E8;
   /* 00EC */ CUIGameItem* itemIcon;
+  /* 00F0 */ CUIStaticText* unknown_00F0;
+  /* 00F4 */ CUIStaticText* unknown_00F4;
 
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot16() override;
   void Slot28(int x, int y) override;

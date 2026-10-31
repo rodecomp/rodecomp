@@ -11,6 +11,12 @@ class CUIVScrollBar;
 
 class CUIStaticText : public CUIControl {
 public:
+  explicit CUIStaticText(UIWindowContext& context)
+      : CUIControl(context), unknown_0084(), unknown_0098(), unknown_00B0(), scrollBar(nullptr), unknown_00C4(), fitText(0), horizontalAlign(0),
+        verticalAlign(0), fontIndex(0), fontHeight(12), bold(0), color(0), shadow(0), shadowColor(0xFFFFFF), outline(0), outlineColor(0xFFFFFF), textX(0),
+        textY(0), text() {
+  }
+
   void UpdateText();
   void SetAlign(int horizontal, int vertical);
   void SetFitText(bool enabled);

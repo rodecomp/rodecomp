@@ -232,6 +232,9 @@ public:
 
 class CUIStaticImage : public CUIControl {
 public:
+  explicit CUIStaticImage(UIWindowContext& context) : CUIControl(context), image(), tooltip(), transparent(0), scale(100), imageName() {
+  }
+
   void Paint() override;
   void Slot53(int resolveSkin) override;
 

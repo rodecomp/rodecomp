@@ -11,11 +11,15 @@
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Shop/PriceColor.h"
 #include "UI/Shortcuts/ShortcutVisibility.h"
+#include "UI/Text/UIStaticTextControl.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
+#include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/GroupedInteger.h"
 
+#include <cstddef>
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <functional>
@@ -362,4 +366,92 @@ void CUIExchangeUI::FreezeItems(bool mine) {
   list->UpdateScrollBar();
   list->unknown_00C4 = 1;
   list->Invalidate();
+}
+
+namespace {
+
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+
+}
+
+// OFFSET: 0x00A149B0
+// FUNCTION: fn_15192
+void ExchangeUI::CUIItem::Slot15(int width, int height) {
+  this->unknown_00E8 = new CUIStaticImage(*this->m_context);
+  this->unknown_00E8->SetSize(32, 32);
+  this->unknown_00E8->Move(9, 0);
+  const std::uint8_t backgroundSource[] = {0x4F, 0x12, 0x2F, 0x7D, 0xBD, 0x0B, 0x68, 0xB8, 0x49, 0x59, 0x2F, 0x4B, 0xC0, 0x7F, 0xF1, 0x17,
+                                           0xEE, 0xCE, 0x86, 0xE4, 0x22, 0xAC, 0xC3, 0x01, 0xEA, 0xCF, 0x89, 0xE6, 0x1E, 0xA0, 0xF1, 0x1C,
+                                           0xFB, 0xD8, 0x82, 0xF0, 0x14, 0xAB, 0xF2, 0x18, 0xE6, 0xD9, 0xC1, 0xE5, 0x10, 0xB5, 0xAD};
+  thread_local EncryptedName<sizeof(backgroundSource), 0x75ADC57D87EFBD8FULL> backgroundName(backgroundSource);
+  std::string background(backgroundName.Text());
+  this->unknown_00E8->SetImage(background);
+  this->AddChild(this->unknown_00E8);
+
+  this->itemIcon = new CUIGameItem(*this->m_context);
+  this->itemIcon->SetMode(0);
+  this->itemIcon->SetScale(100);
+  this->itemIcon->Move(13, 1);
+  this->itemIcon->unknown_0084 = 1;
+  this->itemIcon->unknown_0085 = 1;
+  this->AddChild(this->itemIcon);
+
+  this->unknown_00F0 = new CUIStaticText(*this->m_context);
+  this->unknown_00F0->SetSize(100, 13);
+  this->unknown_00F0->Move(25, 15);
+  this->unknown_00F0->SetText("", 0);
+  this->unknown_00F0->SetFitText(0);
+  this->unknown_00F0->SetAlign(0, 6);
+  const std::uint8_t nameFontSource[] = {0x2A, 0xCE, 0xF9, 0x44, 0xFE, 0xFB};
+  thread_local EncryptedName<sizeof(nameFontSource), 0xC517FB932D95BB6DULL> nameFont(nameFontSource);
+  this->unknown_00F0->SetFont(std::string(nameFont.Text()));
+  this->unknown_00F0->SetFontHeight(11);
+  this->unknown_00F0->SetBold(0);
+  this->unknown_00F0->SetColor(0);
+  this->unknown_00F0->SetShadow(0, 0xFFFFFF);
+  this->unknown_00F0->SetOutline(1, 0xFFFFFF);
+  this->AddChild(this->unknown_00F0);
+
+  this->unknown_00F4 = new CUIStaticText(*this->m_context);
+  this->unknown_00F4->SetSize(215, 30);
+  this->unknown_00F4->Move(45, 0);
+  this->unknown_00F4->SetText("", 0);
+  this->unknown_00F4->SetFitText(1);
+  this->unknown_00F4->SetAlign(0, 6);
+  const std::uint8_t countFontSource[] = {0x8E, 0x80, 0x33, 0xE2, 0xE2, 0xD5};
+  thread_local EncryptedName<sizeof(countFontSource), 0x23BBD58F8B5FF5C9ULL> countFont(countFontSource);
+  this->unknown_00F4->SetFont(std::string(countFont.Text()));
+  this->unknown_00F4->SetFontHeight(12);
+  this->unknown_00F4->SetBold(0);
+  this->unknown_00F4->SetColor(0);
+  this->unknown_00F4->SetShadow(0, 0xFFFFFF);
+  this->unknown_00F4->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->unknown_00F4);
 }
