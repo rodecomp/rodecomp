@@ -5,13 +5,15 @@
 #include <string>
 #include <vector>
 
+class UIRoMapWnd;
+
 struct FlyingShipRouteEntry {
   /* 0000 */ std::string name;
   /* 0018 */ int unknown_0018[4];
   /* 0028 */ int unknown_0028;
-  /* 002C */ int unknown_002C[2];
-  /* 0034 */ int unknown_0034;
-  /* 0038 */ int unknown_0038;
+  /* 002C */ float unknown_002C[2];
+  /* 0034 */ float unknown_0034;
+  /* 0038 */ float unknown_0038;
 
   FlyingShipRouteEntry() = default;
   FlyingShipRouteEntry(const FlyingShipRouteEntry& other) = default;
@@ -26,12 +28,13 @@ public:
   virtual ~CFlyingShipRouteInfo() = default;
 
   bool IsRouteMap(std::string mapName);
+  void Draw(UIRoMapWnd* wnd);
 
   /* 0004 */ std::vector<FlyingShipRouteEntry> entries;
   /* 0010 */ int unknown_0010;
   /* 0014 */ int unknown_0014;
   /* 0018 */ int unknown_0018;
-  /* 001C */ int unknown_001C;
+  /* 001C */ float unknown_001C;
   /* 0020 */ int unknown_0020;
   /* 0024 */ int unknown_0024;
   /* 0028 */ unsigned char unknown_0028;
