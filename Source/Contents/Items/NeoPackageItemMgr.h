@@ -74,24 +74,10 @@ NEO_PACKAGEITEM::CNeoPackageItemMgr* Singleton<NEO_PACKAGEITEM::CNeoPackageItemM
 template <>
 NEO_PACKAGEITEM::CPaidPackageItemMgr* Singleton<NEO_PACKAGEITEM::CPaidPackageItemMgr>::s_instance;
 
-// INLINED
 template <>
-inline NEO_PACKAGEITEM::CNeoPackageItemMgr* Singleton<NEO_PACKAGEITEM::CNeoPackageItemMgr>::GetInstance() {
-  if (!s_instance) {
-    s_instance = new (std::nothrow) NEO_PACKAGEITEM::CNeoPackageItemMgr;
-  }
+NEO_PACKAGEITEM::CNeoPackageItemMgr* Singleton<NEO_PACKAGEITEM::CNeoPackageItemMgr>::GetInstance();
 
-  return s_instance;
-}
-
-// INLINED
 template <>
-inline NEO_PACKAGEITEM::CPaidPackageItemMgr* Singleton<NEO_PACKAGEITEM::CPaidPackageItemMgr>::GetInstance() {
-  if (!s_instance) {
-    s_instance = new (std::nothrow) NEO_PACKAGEITEM::CPaidPackageItemMgr;
-  }
-
-  return s_instance;
-}
+NEO_PACKAGEITEM::CPaidPackageItemMgr* Singleton<NEO_PACKAGEITEM::CPaidPackageItemMgr>::GetInstance();
 
 #endif

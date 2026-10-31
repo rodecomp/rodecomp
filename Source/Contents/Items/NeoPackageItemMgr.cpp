@@ -16,6 +16,28 @@ NEO_PACKAGEITEM::CNeoPackageItemMgr* Singleton<NEO_PACKAGEITEM::CNeoPackageItemM
 template <>
 NEO_PACKAGEITEM::CPaidPackageItemMgr* Singleton<NEO_PACKAGEITEM::CPaidPackageItemMgr>::s_instance = nullptr;
 
+// OFFSET: 0x00E5D020
+// FUNCTION: fn_24376
+template <>
+NEO_PACKAGEITEM::CNeoPackageItemMgr* Singleton<NEO_PACKAGEITEM::CNeoPackageItemMgr>::GetInstance() {
+  if (!s_instance) {
+    s_instance = new (std::nothrow) NEO_PACKAGEITEM::CNeoPackageItemMgr;
+  }
+
+  return s_instance;
+}
+
+// OFFSET: 0x00E5D090
+// FUNCTION: fn_24377
+template <>
+NEO_PACKAGEITEM::CPaidPackageItemMgr* Singleton<NEO_PACKAGEITEM::CPaidPackageItemMgr>::GetInstance() {
+  if (!s_instance) {
+    s_instance = new (std::nothrow) NEO_PACKAGEITEM::CPaidPackageItemMgr;
+  }
+
+  return s_instance;
+}
+
 namespace NEO_PACKAGEITEM {
 
 // OFFSET: 0x006D1600
