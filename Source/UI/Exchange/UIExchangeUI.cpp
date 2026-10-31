@@ -44,6 +44,10 @@ template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot35(int value);
 template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int position);
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem();
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot53(int resolveSkin);
 
 // GLOBAL: gl_25004
 int g_exchangeMyZeny;
@@ -674,4 +678,82 @@ ExchangeUI::CUIItem::CUIItem() : CUIListItem(), unknown_00E8(nullptr), itemIcon(
 // FUNCTION: fn_15187
 CUIExchangeUI* CreateExchangeUI() {
   return new CUIExchangeUI();
+}
+
+// OFFSET: 0x00A151F0
+// FUNCTION: fn_15195
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (ExchangeUI::CUIItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count);
+    for (ExchangeUI::CUIItem*& slot : this->items) {
+      ExchangeUI::CUIItem* item = new ExchangeUI::CUIItem();
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (ExchangeUI::CUIItem* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        if (this->unknown_00C4) {
+          return;
+        }
+        for (ExchangeUI::CUIItem* other : this->items) {
+          if (listItem != other) {
+            other->SetSelected(0);
+          }
+        }
+        listItem->SetSelected(1);
+        if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+          return;
+        }
+        ExchangeUI::CUIItem* selectedItem = dynamic_cast<ExchangeUI::CUIItem*>(listItem);
+        if (!selectedItem) {
+          return;
+        }
+        this->selected = selectedItem->index;
+        if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+          auto node = this->data.begin();
+          std::advance(node, static_cast<int>(this->selected));
+          this->onSelect(selectedItem, *node);
+        }
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A15530
+// FUNCTION: fn_15198
+template <>
+void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (ExchangeUI::CUIItem* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
 }
