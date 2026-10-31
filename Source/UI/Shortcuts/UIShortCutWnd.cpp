@@ -32,6 +32,12 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindowCallBtnWnd.h"
+#include "UI/Window/UIRoMapWnd.h"
+#include "UI/Window/UINavigationWnd.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
+#include "Contents/NavigationManager.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
@@ -50,6 +56,7 @@
 #include <direct.h>
 #include <io.h>
 #include <stdio.h>
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <map>
@@ -659,6 +666,64 @@ void UINewChatWnd::Paint() {
 // FUNCTION: fn_12703
 void UINewChatWnd::Slot31(int x, int y) {
   this->UIFrameWnd::Slot31(x, y);
+}
+
+// OFFSET: 0x009313F0
+// FUNCTION: fn_12704
+void UIRoMapWnd::Slot31(int x, int y) {
+  this->unknown_01FC.clear();
+
+  unsigned int mapIndex = 0;
+  if (CWorldViewMap* map = g_worldViewMgr.CurrentWorld()->MapAt(mapIndex, x, y)) {
+    this->unknown_0208 = mapIndex;
+    for (CWorldViewField* field : map->fields) {
+      this->unknown_01FC.push_back(field->unknown_002C);
+    }
+  }
+
+  if (this->unknown_01FC.empty()) {
+    if (this->unknown_00C0) {
+      std::string name = this->unknown_00C0->name;
+      if (name.size() > 4) {
+        name.resize(name.size() - 4);
+      }
+
+      g_navigationMinimized = false;
+      reinterpret_cast<bool(__thiscall*)(CNavigationManager*, std::string, int, bool)>(0x00B995D0)(&g_navigationManager, name, 0, false);
+      if (g_navigationWindow) {
+        static_cast<UINavigationV4Wnd*>(g_navigationWindow)->SelectRoute(0);
+        static_cast<UINavigationV4Wnd*>(g_navigationWindow)->SelectRouteNode(0);
+      }
+      this->UpdateNavigationButtons();
+    }
+    return;
+  }
+
+  if (g_windowMgr.unknown_0214 != 0) {
+    g_windowMgr.CloseWindow(26);
+  }
+
+  if (!this->unknown_01FC.empty()) {
+    UIWindow* menu = g_windowMgr.EnsureWindow(26);
+    const TextLocale locale = {};
+    int width = 0;
+    for (const std::string& name : this->unknown_01FC) {
+      const int textWidth = this->TextWidth(g_fontCache, locale, name.c_str(), 0, 0, 14, 0, 0);
+      if (width < textWidth) {
+        width = textWidth;
+      }
+      menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(name.c_str()), 0, 0, 0);
+    }
+
+    const int height = static_cast<int>((std::min)(this->unknown_01FC.size() * 16, 160u));
+    menu->SendMsg(nullptr, 40, 0, 0, 0, 0);
+    menu->Resize(width, height);
+    menu->SendMsg(nullptr, 83, 140, 0, 0, 0);
+
+    const int menuY = this->geometry.height - (y + 1) - height >= 0 ? y + 1 : this->geometry.height - height;
+    const int menuX = this->geometry.width - (x + 2) - width >= 0 ? x + 2 : this->geometry.width - width;
+    menu->Move(menuX, menuY);
+  }
 }
 
 // OFFSET: 0x0091E960

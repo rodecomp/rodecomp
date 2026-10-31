@@ -54,6 +54,7 @@ public:
   ~UIRoMapWnd() override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
+  void Slot31(int x, int y) override;
   void Slot33(int x, int y) override;
   void ClearRecords();
   void ResetKafraBounds();
