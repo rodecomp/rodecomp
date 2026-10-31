@@ -404,9 +404,8 @@ void CPc::Slot39(int value) {
 
 // OFFSET: 0x00DDD190
 // FUNCTION: fn_23381
-static std::string GetBodyImfName(int job, int sex, int, int costumeJob) {
-  const int spriteJob = g_session.GetSpriteJob(job, costumeJob, true);
-  return FormatOwnedString("%s_%s.imf", g_session.GetBodyJobName(spriteJob).c_str(), g_session.GetSexName(sex).c_str());
+static __declspec(noinline) std::string GetBodyImfName(int job, int sex, int head, int costumeJob) {
+  return g_equipmentResourceMgr->GetBodyImfName(job, sex, head, costumeJob);
 }
 
 // OFFSET: 0x00DB0500
