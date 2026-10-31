@@ -1768,6 +1768,63 @@ __declspec(noinline) static void FillCharacterNpcRenderSecondary(
 }
 
 // OFFSET: 0x005A1530
+// FUNCTION: fn_03053
+void CCharacterNpc::SendMsg(
+  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
+) {
+  if (a != 0 || message < 3 || message > 0x7b) {
+    CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    return;
+  }
+
+  CharacterNpcViewInfo* info = reinterpret_cast<CharacterNpcViewInfo*>(b);
+  switch (message) {
+  case 4:
+    this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    this->render.visible = IsVisibleJob(info->job) ? 1 : 0;
+    this->Slot49(info->unknown_0060, info->unknown_0064);
+    if (this->unknown_0440 != nullptr) {
+      return;
+    }
+    {
+      CCharacterRender* characterRender = new CCharacterRender(0, 0);
+      this->unknown_0440 = reinterpret_cast<CGameObject*>(characterRender);
+      FillCharacterNpcRenderPrimary(this, characterRender, info);
+    }
+    return;
+  case 2:
+  case 3:
+    this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    if (this->unknown_0440 == nullptr) {
+      return;
+    }
+    FillCharacterNpcRenderPrimary(this, reinterpret_cast<CCharacterRender*>(this->unknown_0440), info);
+    return;
+  case 6:
+  case 0x7a:
+    this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    if (this->unknown_0440 != nullptr) {
+      return;
+    }
+    {
+      CCharacterRender* characterRender = new CCharacterRender(0, 0);
+      this->unknown_0440 = reinterpret_cast<CGameObject*>(characterRender);
+      FillCharacterNpcRenderSecondary(this, characterRender, info);
+    }
+    return;
+  case 5:
+  case 0x7b:
+    this->EffectActor::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    if (this->unknown_0440 == nullptr) {
+      return;
+    }
+    FillCharacterNpcRenderSecondary(this, reinterpret_cast<CCharacterRender*>(this->unknown_0440), info);
+    return;
+  default:
+    CNpc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, 0, 0, 0, 0);
+    return;
+  }
+}
 
 // OFFSET: 0x00CAC760
 // FUNCTION: fn_21044
