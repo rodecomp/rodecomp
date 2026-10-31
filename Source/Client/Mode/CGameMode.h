@@ -603,6 +603,7 @@ public:
   void ReceiveFeedConfig2(unsigned char state, unsigned char option, bool petAutoFeed);
   void ReceiveFeedConfig3(unsigned char state, unsigned char option, bool petAutoFeed, bool homunculusAutoFeed);
   void ReceiveFeedConfig4(unsigned char state, unsigned char option, bool petAutoFeed, bool homunculusAutoFeed, int value);
+  void ReceiveParChange(unsigned char* packet);
   void ReceiveLongParChange(const unsigned char* packet);
   void ReceiveNotifyEffect(const unsigned char* packet);
   void ReceiveTypedItemList(const unsigned char* packet);

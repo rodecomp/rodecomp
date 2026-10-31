@@ -14,6 +14,7 @@
 #include "Contents/GuildInfo.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
+#include "Contents/CashEmotionMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
@@ -39,6 +40,8 @@
 #include "UI/UIBarGraph.h"
 #include "UI/Window/UIHomunInfoWnd.h"
 #include "Contents/Sound/SoundMgr.h"
+#include "UI/Status/UIStatusWnd.h"
+#include "UI/Window/UIBasicInfoWnd.h"
 #include "UI/Shop/UIMerchantItemMyShopWnd.h"
 #include "UI/Shop/UIMerchantShopMakeWnd.h"
 #include "UI/Shop/UIMerchantItemShopWnd.h"
@@ -4178,6 +4181,366 @@ void CGameMode::ReceiveSearchStoreOpen(const unsigned char* packet) {
   g_session.unknown_5BE0 = packet[4];
   reinterpret_cast<std::int16_t*>(&g_session.unknown_5BE4)[1] = *reinterpret_cast<const std::int16_t*>(packet + 2);
   g_windowMgr.EnsureWindow(181);
+}
+
+#pragma pack(push, 1)
+struct ParChangePacket {
+  /* 0000 */ std::uint16_t header;
+  /* 0002 */ std::uint16_t type;
+  /* 0004 */ std::int32_t value;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ParChangePacket) == 8);
+
+// OFFSET: 0x00D3A7A0
+// FUNCTION: fn_21780
+void CGameMode::ReceiveParChange(unsigned char* data) {
+  auto* packet = reinterpret_cast<ParChangePacket*>(data);
+  int* derivedStats = reinterpret_cast<int*>(g_session.unknown_169C);
+  std::string text;
+
+  g_modeMgr.GetGameMode();
+
+  switch (packet->type) {
+  case 0:
+    if (*reinterpret_cast<int*>(&g_session.unknown_16F4[0]) != packet->value) {
+      *reinterpret_cast<int*>(&g_session.unknown_16F4[0]) = packet->value;
+      g_session.InvalidateWindowFrames();
+    }
+    break;
+  case 3:
+    *reinterpret_cast<int*>(&g_session.unknown_1704[0]) = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 4:
+    if (packet->value < 0) {
+      text = FormatOwnedString(LookupMessage(664), -packet->value);
+      const int emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::ChatProhibit);
+      this->scene->player->SendMsg(nullptr, 160, 0, 0, 0, emotion, emotion >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    } else {
+      text = LookupMessage(665);
+      this->scene->player->SendMsg(nullptr, 118, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
+    *reinterpret_cast<int*>(&g_session.unknown_16F4[4]) = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 5:
+    if (g_session.unknown_556C > 0 && (packet->value * 100) / g_session.unknown_556C < 25 &&
+        this->scene->GetGameActorByAID(g_session.unknown_1010) && rand() % 100 < 50 &&
+        g_session.CheckInterval(5000)) {
+      const int hungerLevel = g_session.GetPetHungryState(g_session.unknown_1044);
+      const int friendlyLevel = g_session.GetPetFriendlyState(g_session.m_petFriendly);
+      this->SendMsg(148, g_session.GetPetEmotionNumber(g_session.unknown_103C, 2, hungerLevel), 0, 0, 0);
+      this->SendMsg(148, g_session.GetPetActionNumber(hungerLevel, friendlyLevel, 2), 0, 0, 0);
+    }
+    if (g_session.unknown_5568 != packet->value) {
+      g_session.unknown_5568 = packet->value;
+      g_session.RefreshHpSpWindows();
+    }
+    break;
+  case 6:
+    if (g_session.unknown_556C != packet->value) {
+      g_session.unknown_556C = packet->value;
+      g_session.RefreshHpSpWindows();
+    }
+    if (g_windowMgr.window_02C8) {
+      g_windowMgr.window_02C8->SendMsg(nullptr, 6, 34, g_session.m_aid, 0, 0);
+    }
+    break;
+  case 7:
+    if (*reinterpret_cast<int*>(&g_session.unknown_5570[0]) != packet->value) {
+      *reinterpret_cast<int*>(&g_session.unknown_5570[0]) = packet->value;
+      g_session.RefreshHpSpWindows();
+    }
+    break;
+  case 8:
+    if (*reinterpret_cast<int*>(&g_session.unknown_5570[4]) != packet->value) {
+      *reinterpret_cast<int*>(&g_session.unknown_5570[4]) = packet->value;
+      g_session.RefreshHpSpWindows();
+    }
+    break;
+  case 9:
+    *reinterpret_cast<int*>(&g_session.unknown_1654[0]) = packet->value;
+    g_session.InvalidateWindowFrames();
+    if (g_windowMgr.unknown_01C4) {
+      g_windowMgr.unknown_01C4->SendMsg(nullptr, 35, 0, 0, 0, 0);
+    }
+    break;
+  case 11: {
+    g_session.m_level = packet->value;
+    g_session.InvalidateWindowFrames();
+    this->scene->player->unknown_0210 = static_cast<std::uint16_t>(g_session.m_level);
+    g_soundMgr->PlayWave("levelup.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+
+    const int job = g_session.GetDisplayJob();
+    int effectId;
+    if (g_session.IsSuperNoviceClass(job)) {
+      effectId = 338;
+    } else if (job < 4303) {
+      if (job == 4302) {
+        effectId = 582;
+      } else {
+        switch (job) {
+        case 4046:
+        case 4047:
+        case 4048:
+        case 4049:
+        case 4225:
+        case 4226:
+        case 4227:
+        case 4238:
+        case 4239:
+        case 4240:
+        case 4241:
+        case 4242:
+        case 4243:
+        case 4244:
+          effectId = 582;
+          break;
+        case 4050:
+        case 4051:
+        case 4052:
+          effectId = 338;
+          break;
+        default:
+          effectId = 371;
+          break;
+        }
+      }
+    } else if (job == 4303 || job == 4316) {
+      effectId = 582;
+    } else {
+      effectId = 371;
+    }
+    this->scene->player->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+
+    if (g_replayAnimationScaling == 0) {
+      g_windowMgr.EnsureWindow(21);
+    }
+    if (this->scene->GetGameActorByAID(g_session.unknown_1010)) {
+      const int hungerLevel = g_session.GetPetHungryState(g_session.unknown_1044);
+      const int friendlyLevel = g_session.GetPetFriendlyState(g_session.m_petFriendly);
+      this->SendMsg(148, g_session.GetPetEmotionNumber(g_session.unknown_103C, 6, hungerLevel), 0, 0, 0);
+      this->SendMsg(148, g_session.GetPetActionNumber(hungerLevel, friendlyLevel, 6), 0, 0, 0);
+    }
+    if (g_replayAnimationScaling == 0) {
+      if (g_windowMgr.unknown_01DC) {
+        reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->SetHeight(g_windowMgr.unknown_01DC->geometry.height);
+      }
+    }
+    this->RefreshActorJobEffects(true);
+    if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
+      window->SendMsg(nullptr, 6, 286, 192, 1, 0);
+    }
+    break;
+  }
+  case 12:
+    *reinterpret_cast<int*>(&g_session.unknown_165C[0]) = packet->value;
+    g_session.InvalidateWindowFrames();
+    reinterpret_cast<SkillWindows*>(&g_session)->Notify();
+    break;
+  case 13:
+    g_session.m_standardStats[0] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 14:
+    g_session.m_standardStats[1] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 15:
+    g_session.m_standardStats[2] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 16:
+    g_session.m_standardStats[3] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 17:
+    g_session.m_standardStats[4] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 18:
+    g_session.m_standardStats[5] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 24: {
+    packet->value = packet->value / 10;
+    const int oldPercent = (g_session.m_weight * 100) / (g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight);
+    g_session.m_weight = packet->value;
+    g_session.RefreshHpSpWindows();
+    g_session.InvalidateWindowFrames();
+    if (g_session.m_maxWeight == 0) {
+      break;
+    }
+
+    const int percent = (g_session.m_weight * 100) / (g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight);
+    if (oldPercent < percent) {
+      if (percent >= g_unknown173A5BC && oldPercent < g_unknown173A5BC) {
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        text = FormatOwnedString(LookupMessage(3311), g_unknown173A5BC);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 8, 0, 0);
+      }
+      if (percent > 89 && oldPercent < 90) {
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(307)), 0xFF, 8, 0, 0);
+      }
+      break;
+    }
+    if (oldPercent <= percent) {
+      break;
+    }
+    if (percent < g_unknown173A5BC && g_unknown173A5BC <= oldPercent) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(308)), 0xFFFF00, 8, 0, 0);
+    }
+    if (percent > 89) {
+      break;
+    }
+    if (oldPercent >= 90) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(309)), 0xFFFF00, 8, 0, 0);
+    }
+    break;
+  }
+  case 25: {
+    packet->value = packet->value / 10;
+    const int oldMaxWeight = g_session.m_maxWeight;
+    if (g_session.m_maxWeight < 1) {
+      g_session.m_maxWeight = 1;
+    }
+    const int oldPercent = (g_session.m_weight * 100) / g_session.m_maxWeight;
+    g_session.m_maxWeight = packet->value;
+    g_session.RefreshHpSpWindows();
+    g_session.InvalidateWindowFrames();
+    if (oldMaxWeight == 0 || g_session.m_maxWeight <= oldMaxWeight) {
+      break;
+    }
+
+    const int percent = (g_session.m_weight * 100) / (g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight);
+    if (percent < 50) {
+      if (oldPercent > 49) {
+        g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(308)), 0xFFFF00, 8, 0, 0);
+      }
+    } else if (percent > 89) {
+      break;
+    }
+    if (oldPercent >= 90) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(309)), 0xFFFF00, 8, 0, 0);
+    }
+    break;
+  }
+  case 41:
+    derivedStats[7] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 42:
+    derivedStats[12] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 43:
+    derivedStats[13] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 44:
+    derivedStats[14] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 45:
+    derivedStats[10] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 46:
+    derivedStats[11] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 47:
+    derivedStats[8] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 48:
+    derivedStats[15] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 49:
+    derivedStats[16] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 50:
+    derivedStats[17] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 51:
+    derivedStats[19] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 52:
+    derivedStats[18] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 53:
+    derivedStats[6] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 54:
+    derivedStats[9] = packet->value;
+    g_session.InvalidateWindowFrames();
+    break;
+  case 55:
+    g_session.m_jobLevel = packet->value;
+    g_session.InvalidateWindowFrames();
+    this->scene->player->LaunchEffect(packet->value < 51 ? 158 : 337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+
+    if (g_replayAnimationScaling == 0) {
+      g_windowMgr.EnsureWindow(49);
+      if (g_windowMgr.unknown_01DC) {
+        reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.unknown_01DC)->SetHeight(g_windowMgr.unknown_01DC->geometry.height);
+      }
+    }
+    if (UIWindow* window = g_windowMgr.LookupWindow(307)) {
+      window->SendMsg(nullptr, 6, 286, 196, 1, 0);
+    }
+    break;
+  case 60:
+    if (packet->value < -60) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(858)), 0xFFFF, 0, 0, 0);
+    }
+    break;
+  case 169:
+    reinterpret_cast<bool&>(g_session.unknown_8128[4]) = packet->value != 0;
+    break;
+  case 219:
+  case 220:
+  case 221:
+  case 222:
+  case 223:
+  case 224:
+  case 225:
+  case 226:
+  case 227:
+  case 228:
+  case 229:
+  case 230:
+  case 231:
+  case 232:
+  case 233:
+    g_session.SetTraitStat(packet->type, packet->value);
+    if (g_windowMgr.unknown_01C4) {
+      static_cast<UIStatusWnd*>(g_windowMgr.unknown_01C4)->ValidatePlacement();
+    }
+    g_session.InvalidateWindowFrames();
+    break;
+  }
+
+  if (packet->type == 11 || packet->type == 55) {
+    if (g_equipmentPropertiesMgr == nullptr) {
+      g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+    }
+    g_equipmentPropertiesMgr->RefreshPretend();
+  }
 }
 
 // OFFSET: 0x00D55AB0
