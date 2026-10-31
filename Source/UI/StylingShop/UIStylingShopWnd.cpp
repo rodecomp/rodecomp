@@ -955,9 +955,86 @@ std::string UIDisplayCharacter::GetStyleTable(const int& type) {
 }
 
 // OFFSET: 0x00827900
+// FUNCTION: fn_10330
+bool UIShowInfoWnd::CheckPayment(const int& index, const int& zeny, const int& itemId, const int& costumeItemId) {
+  if (zeny) {
+    UICheckBox* check = this->m_checks[index];
+    if (g_session.m_zeny >= zeny) {
+      check->SetTooltip("");
+      return true;
+    }
+
+    check->SetTooltip(LookupMessage(g_session.m_zeny + g_session.m_bankBalance < zeny ? 2780 : 2820));
+    return false;
+  }
+
+  if (itemId) {
+    if (std::atoi(LookupClientItem(g_session.m_inventoryItems, itemId, 0).itemId.c_str()) != itemId) {
+      return false;
+    }
+  } else if (costumeItemId) {
+    if (std::atoi(LookupClientItem(g_session.m_inventoryItems, costumeItemId, 0).itemId.c_str()) != costumeItemId) {
+      return false;
+    }
+    this->m_checks[index]->SetBitmaps("유저인터페이스\\styleshop\\check_disable.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
+  }
+
+  return true;
+}
 
 // OFFSET: 0x0082B680
 
 // OFFSET: 0x0082C890
 
 // OFFSET: 0x0082D550
+// FUNCTION: fn_10371
+int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281));
+  if (message != 6) {
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  switch (argument1) {
+  case 185:
+    this->LoadSessionStyle();
+    break;
+  case 226:
+    if (this->unknown_0084 > 0) {
+      --this->unknown_0084;
+    } else {
+      this->unknown_0084 = 7;
+    }
+    break;
+  case 227:
+    this->unknown_0084 = this->unknown_0084 < 7 ? this->unknown_0084 + 1 : 0;
+    break;
+  case 354:
+    this->SelectPreviousStyle(this->GetStyleTable(3).c_str(), &this->unknown_0098);
+    break;
+  case 355:
+    this->SelectNextStyle(this->GetStyleTable(3).c_str(), &this->unknown_0098);
+    break;
+  case 356:
+    if (this->m_favoriteButton->m_argument == 0) {
+      if (shop->AddToMyStyle() == true) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2819), 0, true, false, 0, "Message", 280, 120, 0);
+      } else {
+        this->m_favoriteButton->SetTooltip(LookupMessage(2817));
+      }
+    }
+    break;
+  case 450:
+    this->SelectPreviousStyle(this->GetStyleTable(2).c_str(), &this->unknown_008C);
+    break;
+  case 451:
+    this->SelectNextStyle(this->GetStyleTable(2).c_str(), &this->unknown_008C);
+    break;
+  case 495:
+    shop->SendMsg(nullptr, 495, 0, 0, 0, 0);
+    break;
+  }
+
+  this->Invalidate();
+  shop->InvalidateChildren();
+  return 0;
+}
