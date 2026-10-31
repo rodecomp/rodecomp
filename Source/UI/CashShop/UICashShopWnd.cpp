@@ -115,16 +115,19 @@ UICashShopWnd::UICashShopWnd(UIWindowContext& windows, UIFrameContext& frames)
 }
 
 // OFFSET: 0x007CD750
+// FUNCTION: fn_09512
 UICashShopWnd_Banner::UICashShopWnd_Banner(UIWindowContext& windows, UIButtonContext& controls)
     : UIWindow(windows, 0), m_index(0), m_lastTick(timeGetTime()), m_controls(&controls) {
 }
 
 // OFFSET: 0x007CD800
+// FUNCTION: fn_09513
 UICashShopWnd_Cart::UICashShopWnd_Cart(UIWindowContext& windows, UIButtonContext& controls)
     : UIWindow(windows, 0), m_scrollBar(nullptr), m_visibleCount(6), m_scrollIndex(0), m_controls(&controls) {
 }
 
 // OFFSET: 0x007CD8C0
+// FUNCTION: fn_09514
 UICashShopWnd_CartItem::UICashShopWnd_CartItem(UIWindowContext& windows, UIButtonContext& controls) : UIWindow(windows, 0), m_controls(&controls) {
 }
 
