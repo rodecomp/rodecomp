@@ -201,6 +201,7 @@ public:
 class CSkillAction_DR_LOW_FLIGHT : public CSkillAction_DamageWereRaptorForm {
 public:
   int Slot02() override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_DR_NATURE_SHIELD : public CSkillAction {
@@ -591,6 +592,65 @@ void CSkillAction_DR_FLICKING_TONADO::Slot11(int level, CGameActor* source, CGam
 // FUNCTION: fn_04499
 int CSkillAction_DR_LOW_FLIGHT::Slot02() {
   return 70;
+}
+
+// OFFSET: 0x00621C10
+// FUNCTION: fn_04500
+void CSkillAction_DR_LOW_FLIGHT::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!target || !this->CanUse(source)) {
+    return;
+  }
+
+  const float angle = ScreenAngle(
+    &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+  );
+  const int direction = this->GetDirection(angle);
+  if (!this->IsValidDirection(direction)) {
+    return;
+  }
+
+  const float scale = source->unknown_0378 * source->render.speed * 16.0f;
+  const bool flag = direction != 1 && direction != 2;
+
+  const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(
+    (direction & 1) != 0 ? [] {
+      const std::uint8_t horizonSource[] = {0x5D, 0x36, 0x5C, 0x5E, 0x07, 0xA1, 0x0C, 0xEC, 0x59, 0x2D, 0x74, 0x69, 0x0E, 0xBF, 0x0C, 0xF1, 0x5E, 0x37, 0x2B};
+      thread_local EncryptedName<sizeof(horizonSource), 0x8B65CD61012B5931ULL> horizonName(horizonSource);
+      return horizonName.Text();
+    }() : [] {
+      const std::uint8_t verticalSource[] = {0x89, 0xE0, 0x3A, 0x4A, 0x51, 0x6D, 0x3A, 0x90, 0x8D, 0xFB, 0x12, 0x63, 0x52, 0x73, 0x27, 0x9E, 0x86, 0xEE, 0x21, 0x15};
+      thread_local EncryptedName<sizeof(verticalSource), 0xF7530137154D8FE5ULL> verticalName(verticalSource);
+      return verticalName.Text();
+    }()
+  );
+
+  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot16(static_cast<int>(scale));
+    float angleOffset = 0.0f;
+    if ((direction & 1) != 0) {
+      effect->Slot26(flag);
+      if (!flag) {
+        angleOffset = -180.0f;
+      }
+    } else {
+      effect->Slot27(flag);
+      if (flag) {
+        angleOffset = -90.0f;
+      } else {
+        angleOffset = -270.0f;
+      }
+    }
+    effect->Slot17(static_cast<float>((static_cast<int>(angle + angleOffset) + 360) % 360));
+  }
+
+  const int bottomId = CEZ2STREffectMgr::GetInstance()->EffectId([] {
+    const std::uint8_t bottomSource[] = {0xAD, 0xA0, 0xA4, 0x6C, 0xF1, 0x71, 0x94, 0x0E, 0xA9, 0xBB, 0x8C, 0x51, 0xF8, 0x69, 0x89, 0x06, 0xAC, 0xCF};
+    thread_local EncryptedName<sizeof(bottomSource), 0x69FD1D9733D3CFC1ULL> bottomName(bottomSource);
+    return bottomName.Text();
+  }());
+  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, bottomId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    effect->Slot16(static_cast<int>(scale));
+  }
 }
 
 // OFFSET: 0x006221F0
