@@ -84,6 +84,8 @@ public:
   void Slot16() override;
   void Slot32(int x, int y) override;
 
+  void SetDescription(int type, const std::vector<const char*>& description);
+
   /* 00E8 */ unsigned char unknown_00E8[0x08];
   /* 00F0 */ CUIStaticText* unknown_00F0;
   /* 00F4 */ CUIStaticText* unknown_00F4;
@@ -112,6 +114,7 @@ class CUIQuestInfo : public CUIListItem {
 public:
   explicit CUIQuestInfo(UIWindowContext& context);
   void Slot16() override;
+  void SetTitle(int id);
   void SetStatusLines(bool first, bool second, bool third);
   void SetViewerLines(const std::vector<std::string>& lines);
 

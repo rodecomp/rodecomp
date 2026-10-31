@@ -4,6 +4,7 @@
 #include "Contents/MessageTable.h"
 #include "Contents/NavigationManager.h"
 #include "Contents/RenewQuestMgr.h"
+#include "Contents/TipBoxTitles.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
@@ -20,6 +21,7 @@
 #include <cstring>
 #include <format>
 #include <list>
+#include <regex>
 #include <utility>
 
 namespace {
@@ -548,6 +550,8 @@ void CUIItemInfo::Slot16() {
   this->unknown_00F8->scrollBar->SetHidden(1);
 }
 
+// OFFSET: 0x009DEF40
+
 // OFFSET: 0x009DD210
 // FUNCTION: fn_14335
 void CUIMonster::Slot16() {
@@ -603,6 +607,40 @@ void CUITabInfo::Slot16() {
 void CUIIntro::BindContents(CUITabInfo* item, const Guide_Intro::Contents& contents) {
   item->unknown_00E8->SetText(contents.first.c_str(), contents.first.size());
   item->unknown_00EC->SetText(contents.second.c_str(), contents.second.size());
+}
+
+// OFFSET: 0x009E0350
+// FUNCTION: fn_14361
+void CUIQuestInfo::SetTitle(int id) {
+  CUITextViewer* viewer = reinterpret_cast<CUITextViewer*>(this->unknown_00EC);
+  viewer->Clear();
+
+  const TipBoxEntry& entry = g_itemTagOwner->GetTip(id);
+  if (entry.title.empty() || entry.paragraphs.empty()) {
+    viewer->AddLine(std::to_string(id));
+    return;
+  }
+
+  std::string text = entry.title;
+  std::cmatch match;
+  if (std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("Q(.+)\\(")) && match.size() > 1) {
+    text = match[1].str();
+  }
+
+  text.erase(0, text.find_first_not_of(" \r\n\t\v\f"));
+  text.erase(text.find_last_not_of(" \r\n\t\v\f") + 1);
+  viewer->SetBold(1);
+  viewer->AddLine(text);
+
+  text = entry.paragraphs[0];
+  if (std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("\n"))) {
+    text = match.prefix().str();
+  }
+
+  text.erase(0, text.find_first_not_of(" \r\n\t\v\f"));
+  text.erase(text.find_last_not_of(" \r\n\t\v\f") + 1);
+  viewer->SetBold(0);
+  viewer->AddLine(text);
 }
 
 // OFFSET: 0x009DFAD0
