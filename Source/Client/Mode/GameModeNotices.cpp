@@ -4692,3 +4692,52 @@ struct StovePurchaseResultPacket {
 #pragma pack(pop)
 
 // OFFSET: 0x00D6B5C0
+// FUNCTION: fn_22069
+void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
+  if (!g_launchPassCommandLine) {
+    return;
+  }
+
+  const auto* packet = reinterpret_cast<const StovePurchaseResultPacket*>(data);
+  std::string message;
+  switch (packet->result) {
+  case 0: {
+    char name[256];
+    std::memset(name, 0, sizeof(name));
+    int capacity = sizeof(name);
+    ITEM_INFO item;
+    item.SetItemId(packet->itemId);
+    ItemDescriptions{g_itemDescriptions}.Name(item, name, capacity, 0);
+    message = FormatOwnedString("%s아이템 %d개 지급 완료", name, packet->count);
+  }
+  case 2:
+    if (g_stoveMgr->unknown_0008 == 2) {
+      FetchStoveTermsAgreement();
+    } else if (g_stoveMgr->unknown_0008 == 3) {
+      g_stoveMgr->unknown_0008 = 0;
+      UICashShopWnd* window = static_cast<UICashShopWnd*>(g_windowMgr.LookupWindow(318));
+      g_stoveMgr->StartPurchase(window->m_cart->m_cartItems);
+    }
+    break;
+  case 1:
+    message = FormatOwnedString("Stove 유저가 아닙니다.");
+    break;
+  case 3:
+  case 4:
+    message = LookupMessage(3022);
+    break;
+  case 5:
+  case 6:
+  case 7:
+    message = FormatOwnedString("아이템 수령 실패");
+    break;
+  default:
+    message = FormatOwnedString("Unknown Error (Stove:%d)", packet->result);
+    break;
+  }
+
+  g_stoveMgr->unknown_0008 = 0;
+  if (message.size() != 0) {
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+  }
+}
