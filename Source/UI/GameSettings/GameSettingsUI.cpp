@@ -1,6 +1,7 @@
 #include "UI/GameSettings/GameSettingsUI.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Contents/Configuration/GameSettingsMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/MessageTable.h"
@@ -82,6 +83,9 @@ int g_textureFiltering;
 
 // GLOBAL: gl_24964
 int g_textureDetailLevel;
+
+// GLOBAL: gl_25086
+std::map<int, int> g_optionHotkeys;
 
 template <>
 __declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::SelectItem(CUIListItem* item);
@@ -2790,4 +2794,183 @@ void GameSettingsUI::CUIGroupTrilinear::Slot15(int width, int height) {
   this->m_offText->SetShadow(0, 0xFFFFFF);
   this->m_offText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->m_offText);
+}
+
+// OFFSET: 0x00A3FB50
+// FUNCTION: fn_15957
+void GameSettingsUI::CUIGroupSkin::OnSelect(CUIComboItem* item, const std::string& name) {
+  const int selected = this->m_combo->listBox->selected;
+  if (selected != -1) {
+    const int skin = selected - 1;
+    if (g_skinInfo.selected != skin) {
+      g_skinInfo.Select(skin);
+    }
+    g_windowMgr.RefreshFrameSkins();
+    g_windowMgr.InvalidateAll();
+  }
+}
+
+// OFFSET: 0x00A3F2A0
+// FUNCTION: fn_15941
+void GameSettingsUI::CUIOptionItem::RunFunction() {
+  if (Singleton<CGameSettingsMgr>::s_instance == nullptr) {
+    Singleton<CGameSettingsMgr>::s_instance = new (std::nothrow) CGameSettingsMgr;
+  }
+  Singleton<CGameSettingsMgr>::s_instance->RunFunction(this->m_optionId);
+}
+
+// OFFSET: 0x00A3F720
+// FUNCTION: fn_15950
+void GameSettingsUI::CUIOptionItem::OnCheck(bool checked) {
+  if (Singleton<CGameSettingsMgr>::s_instance == nullptr) {
+    Singleton<CGameSettingsMgr>::s_instance = new (std::nothrow) CGameSettingsMgr;
+  }
+  Singleton<CGameSettingsMgr>::s_instance->sub_6C0C40(this->m_optionId, IsServiceOption(this->m_optionId) ^ checked, false);
+}
+
+// OFFSET: 0x00A40280
+// FUNCTION: fn_15969
+void GameSettingsUI::CUIListPage::BindOption(CUIOptionItem* item, const TALKTYPE& id) {
+  item->m_optionId = id;
+  if (Singleton<CGameSettingsMgr>::s_instance == nullptr) {
+    Singleton<CGameSettingsMgr>::s_instance = new (std::nothrow) CGameSettingsMgr;
+  }
+  const std::optional<GameSettingsOption*> found = Singleton<CGameSettingsMgr>::s_instance->FindOption(id);
+  if (!found.has_value()) {
+    return;
+  }
+
+  GameSettingsOption* option = *found;
+  item->m_check->Show(option->type == 0);
+  CUICheckBox* check = item->m_check;
+  if (check->geometry.visible) {
+    check->checked = IsServiceOption(item->m_optionId) ^ g_serviceOptions.Get(item->m_optionId);
+    check->Invalidate();
+  }
+  item->unknown_00EC->Show(option->type == 1);
+  item->m_label->SetText(option->title);
+  item->m_label->tooltipText = option->tooltip;
+  item->m_label->disabled = option->tipBoxId <= 0;
+  item->m_label->Invalidate();
+  item->m_label->SetId(option->tipBoxId);
+  item->m_description->SetText(option->description.c_str(), option->description.size());
+}
+
+// OFFSET: 0x00A42290
+// FUNCTION: fn_16014
+void GameSettingsUI::CUIListPage::LoadOptions(int tab) {
+  if (Singleton<CGameSettingsMgr>::s_instance == nullptr) {
+    Singleton<CGameSettingsMgr>::s_instance = new (std::nothrow) CGameSettingsMgr;
+  }
+  const std::list<int> ids = Singleton<CGameSettingsMgr>::s_instance->GetOptionIds(tab);
+  for (const int id : ids) {
+    this->m_optionList->data.push_back(static_cast<TALKTYPE>(id));
+  }
+  this->m_optionList->UpdateScrollBar();
+  this->m_optionList->unknown_00C4 = 1;
+  this->m_optionList->Invalidate();
+  this->RefreshOptions();
+}
+
+// OFFSET: 0x00A43BF0
+// FUNCTION: fn_16047
+void GameSettingsUI::CUIListPage::RefreshOptions() {
+  for (CUIOptionItem* item : this->m_optionList->items) {
+    if (!item->geometry.visible) {
+      continue;
+    }
+    CUICheckBox* check = item->m_check;
+    check->checked = IsServiceOption(item->m_optionId) ^ g_serviceOptions.Get(item->m_optionId);
+    check->Invalidate();
+  }
+  this->RefreshHotkeyLabels();
+}
+
+// OFFSET: 0x00A43410
+// FUNCTION: fn_16030
+void GameSettingsUI::CUIListPage::RefreshHotkeyLabels() {
+  for (CUIOptionItem* item : this->m_optionList->items) {
+    if (!item->geometry.visible) {
+      continue;
+    }
+    const auto hotkey = g_optionHotkeys.find(item->m_optionId);
+    if (hotkey == g_optionHotkeys.end()) {
+      continue;
+    }
+
+    const std::string text = GetHotkeyText(1, hotkey->second);
+    if (text.empty()) {
+      if (Singleton<CGameSettingsMgr>::s_instance == nullptr) {
+        Singleton<CGameSettingsMgr>::s_instance = new (std::nothrow) CGameSettingsMgr;
+      }
+      const std::optional<GameSettingsOption*> option = Singleton<CGameSettingsMgr>::s_instance->FindOption(item->m_optionId);
+      if (option.has_value()) {
+        item->m_label->tooltipText = (*option)->tooltip;
+      }
+    } else {
+      item->m_label->tooltipText = text;
+    }
+  }
+}
+
+// OFFSET: 0x00A43BA0
+// FUNCTION: fn_16046
+void CUIGameSettingsUI::sub_A43BA0() {
+  for (UIWindow* child : this->m_currentPage->m_children) {
+    static_cast<GameSettingsUI::CUIGroup*>(child)->Refresh();
+  }
+  for (GameSettingsUI::CUIListPage* page : this->m_pages) {
+    page->RefreshOptions();
+  }
+}
+
+// OFFSET: 0x00A43C70
+// FUNCTION: fn_16048
+void CUIGameSettingsUI::sub_A43C70() {
+  for (GameSettingsUI::CUIListPage* page : this->m_pages) {
+    for (GameSettingsUI::CUIOptionItem* item : page->m_optionList->items) {
+      if (!item->geometry.visible) {
+        continue;
+      }
+      const auto hotkey = g_optionHotkeys.find(item->m_optionId);
+      if (hotkey == g_optionHotkeys.end()) {
+        continue;
+      }
+
+      const std::string text = GameSettingsUI::GetHotkeyText(1, hotkey->second);
+      if (text.empty()) {
+        if (Singleton<CGameSettingsMgr>::s_instance == nullptr) {
+          Singleton<CGameSettingsMgr>::s_instance = new (std::nothrow) CGameSettingsMgr;
+        }
+        const std::optional<GameSettingsOption*> option = Singleton<CGameSettingsMgr>::s_instance->FindOption(item->m_optionId);
+        if (option.has_value()) {
+          item->m_label->tooltipText = (*option)->tooltip;
+        }
+      } else {
+        item->m_label->tooltipText = text;
+      }
+    }
+  }
+}
+
+// OFFSET: 0x00A3F180
+// FUNCTION: fn_15940
+void CUIGameSettingsUI::ResetToDefaults() {
+  if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(3166), 2, true, false, 0, "Message", 280, 120, 0) == 0xBC) {
+    return;
+  }
+
+  for (UIWindow* child : this->m_currentPage->m_children) {
+    static_cast<GameSettingsUI::CUIGroup*>(child)->Apply();
+  }
+  if (Singleton<CGameSettingsMgr>::s_instance == nullptr) {
+    Singleton<CGameSettingsMgr>::s_instance = new (std::nothrow) CGameSettingsMgr;
+  }
+  Singleton<CGameSettingsMgr>::s_instance->ResetToDefaults();
+  for (UIWindow* child : this->m_currentPage->m_children) {
+    static_cast<GameSettingsUI::CUIGroup*>(child)->Refresh();
+  }
+  for (GameSettingsUI::CUIListPage* page : this->m_pages) {
+    page->RefreshOptions();
+  }
 }

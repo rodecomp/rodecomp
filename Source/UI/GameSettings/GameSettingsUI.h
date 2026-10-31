@@ -7,8 +7,12 @@
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UIFrameWnd.h"
+#include "UI/Window/WindowDialogs.h"
 
 #include <functional>
+#include <map>
+#include <new>
+#include <optional>
 #include <string>
 
 enum TALKTYPE : int;
@@ -17,10 +21,12 @@ class CUICheckBox;
 class CUIRadioButton;
 class CUIStaticText;
 class CUIImageButton;
+class CUITextButton;
 
 extern int g_textureDetailLevel;
 extern int g_textureFiltering;
 extern bool g_gameOptionFlag;
+extern std::map<int, int> g_optionHotkeys;
 
 template <class T, class D> class CUIComboBox : public CUIControl {
 public:
@@ -175,6 +181,7 @@ public:
   void Slot16() override;
   void Apply() override;
   void Refresh() override;
+  void OnSelect(CUIComboItem* item, const std::string& name);
 
   /* 0084 */ CUIComboBox<CUIComboItem, std::string>* m_combo;
 };
@@ -287,6 +294,10 @@ public:
   void Paint() override;
   virtual void Slot54(CUIOptionItem* item, const TALKTYPE& type);
   bool SetOptionChecked(int id);
+  void BindOption(CUIOptionItem* item, const TALKTYPE& id);
+  void LoadOptions(int tab);
+  __declspec(noinline) void RefreshOptions();
+  __declspec(noinline) void RefreshHotkeyLabels();
 
   /* 0080 */ CUIListBoxEx<CUIOptionItem, TALKTYPE>* m_optionList;
 };
@@ -303,9 +314,13 @@ class CUIOptionItem : public CUIListItem {
 public:
   void Slot16() override;
   void Paint() override;
+  void RunFunction();
+  void OnCheck(bool checked);
 
   /* 00E8 */ CUICheckBox* m_check;
-  /* 00EC */ unsigned char unknown_00EC[0x0C];
+  /* 00EC */ UIWindow* unknown_00EC;
+  /* 00F0 */ CUITextButton* m_label;
+  /* 00F4 */ CUIStaticText* m_description;
   /* 00F8 */ int m_optionId;
 };
 
@@ -327,8 +342,9 @@ public:
   void sub_A433B0();
   void sub_A433C0();
   void sub_A43590(int id);
-  void sub_A43BA0();
+  __declspec(noinline) void sub_A43BA0();
   void sub_A43C70();
+  void ResetToDefaults();
 
   /* 00B8 */ unsigned char unknown_00B8[0x1C];
   /* 00D8 */ CUIControl* m_titleBar;
