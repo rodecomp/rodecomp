@@ -59,12 +59,6 @@ struct GuildWndNameEntry {
   /* 0018 */ int id;
 };
 
-struct GuildMemberManageEntry {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-};
-
 class UIGuildWnd : public UIFrameWnd {
 public:
   UIGuildWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
@@ -158,7 +152,7 @@ protected:
   /* 0130 */ UIBitmapButton* m_rowButtons[6];
   /* 0148 */ UIScrollBar* m_scrollBar;
   /* 014C */ UIButton* m_button;
-  /* 0150 */ std::vector<GuildWndNameEntry> unknown_0150;
+  /* 0150 */ std::vector<MiniPartyInfoEntry> unknown_0150;
   /* 015C */ int m_scrollTop;
   /* 0160 */ int m_hoverRow;
   /* 0164 */ int m_columns;

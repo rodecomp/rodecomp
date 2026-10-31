@@ -8,6 +8,12 @@
 #include <string>
 #include <vector>
 
+struct GuildMemberManageEntry {
+  /* 0000 */ int accountId;
+  /* 0004 */ int characterId;
+  /* 0008 */ int positionId;
+};
+
 class GuildInfo {
 public:
   struct Member {
@@ -85,7 +91,7 @@ public:
   /* 00EC */ std::list<Unknown00ECEntry> unknown_00EC;
   /* 00F4 */ std::list<int> unknown_00F4;
   /* 00FC */ std::map<int, std::string> m_positions;
-  /* 0104 */ std::map<int, int> unknown_0104;
+  /* 0104 */ std::map<int, GuildMemberManageEntry> unknown_0104;
   /* 010C */ std::map<int, int> unknown_010C;
   /* 0114 */ std::vector<int> unknown_0114;
 

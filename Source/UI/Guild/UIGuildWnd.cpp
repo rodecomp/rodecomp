@@ -5,11 +5,12 @@
 #include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
+#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/UserData/CharacterConfigSave.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include "File/ShortcutFilename.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/EmblemResource.h"
 #include "Resource/ResourceMgr.h"
@@ -17,7 +18,6 @@
 #include "Resource/TextureNames.h"
 #include "Script/LuaScript.h"
 #include "UI/Buttons/UIBitmapButton.h"
-#include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Guild/UIAgitWnd.h"
@@ -26,6 +26,7 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 #include <windows.h>
@@ -33,7 +34,6 @@
 #include <cstdio>
 #include <cstring>
 #include <cwchar>
-#include <string>
 
 // GLOBAL: gl_24999
 int g_guildMemberColumnWidths[6] = {98, 65, 53, 39, 39, 76};
@@ -2467,4 +2467,390 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
   default:
     return UIGuildWnd::SendMsg(sender, message, a1, a2, a3, a4);
   }
+}
+
+// OFFSET: 0x0095E320
+// FUNCTION: fn_13074
+void UIGuildMemberManageWnd::Paint() {
+  UIGuildWnd::Paint();
+  for (int row = 0; row < 6; ++row) {
+    this->m_rowTexts[1][row]->Move(-200, -200);
+    this->m_rowTexts[2][row]->Move(-200, -200);
+    this->m_rowTexts[3][row]->Move(-200, -200);
+    this->m_rowTexts[0][row]->Move(-200, -200);
+    if (this->m_rowButtons[row]) {
+      this->m_rowButtons[row]->Move(-200, -200);
+    }
+  }
+
+  if (g_guildOnlineFirst) {
+    this->m_members.sort([](const GuildInfo::Member& left, const GuildInfo::Member& right) {
+      return left.online > right.online;
+    });
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+  DrawRectangleBorder(*this, 5, 46, 377, this->m_rowSpacing / 2 + 237, RGB(red, green, blue));
+  this->FillRegion(5, 66, 377, 1, RGB(red, green, blue));
+  const int rows = 6 - this->m_rowSpacing * 6 / 36;
+  for (int row = 1; row <= rows; ++row) {
+    this->FillRegion(5, (this->m_rowSpacing + 36) * row + 66, 377, 1, RGB(red, green, blue));
+  }
+
+  if (this->m_sortColumn == 0) {
+    this->FillRegion(6, 47, g_guildMemberColumnWidths[0], 19, 0xEBD8CE);
+  }
+
+  int x = 0;
+  for (int column = 1; column < 6; ++column) {
+    x += g_guildMemberColumnWidths[column - 1] + 1;
+    this->FillRegion(x + 5, 46, 1, this->m_rowSpacing / 2 + 237, RGB(red, green, blue));
+    if (column == this->m_sortColumn) {
+      this->FillRegion(x + 6, 47, g_guildMemberColumnWidths[this->m_sortColumn], 19, 0xEBD8CE);
+    }
+  }
+
+  const char* headers[6];
+  headers[0] = LookupMessage(407);
+  headers[1] = LookupMessage(503);
+  headers[2] = LookupMessage(504);
+  headers[3] = LookupMessage(408);
+  headers[4] = LookupMessage(506);
+  headers[5] = LookupMessage(507);
+  auto& controls = *this->m_controls;
+  int textX = 10;
+  for (int column = 0; column < 6; ++column) {
+    const char* header = headers[column];
+    this->DrawTextAt(controls.fonts, controls.locale, textX, 51, header, 0, 0, 12, 0, 0, 0);
+    if (column == this->m_sortColumn) {
+      const int arrowX = this->TextWidth(controls.fonts, controls.locale, header, 0, 0, 12, 0, 0) + textX;
+      if (this->m_sortOrders[this->m_sortColumn] == 1) {
+        const auto* arrow = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\guild\\guild_arrow_up.bmp")));
+        this->DrawBitmap(arrowX, 53, arrow ? &arrow->image : nullptr, true);
+      } else if (this->m_sortOrders[this->m_sortColumn] == 2) {
+        const auto* arrow = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\guild\\guild_arrow_down.bmp")));
+        this->DrawBitmap(arrowX, 53, arrow ? &arrow->image : nullptr, true);
+      }
+    }
+    textX += g_guildMemberColumnWidths[column] + 1;
+  }
+
+  int index = 0;
+  int row = 0;
+  for (auto member = this->m_members.begin(); member != this->m_members.end(); ++member) {
+    if (this->DrawMember(*member, index, row)) {
+      ++index;
+      ++row;
+    }
+  }
+}
+
+// OFFSET: 0x00962380
+int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
+  switch (message) {
+  case 6:
+    switch (a1) {
+    case 184:
+      if (!this->unknown_0180.empty()) {
+        GuildData().unknown_0104 = this->unknown_0180;
+        g_modeMgr.gameMode->SendMsg(103, 0, 0, 0, 0);
+        this->unknown_0180.clear();
+        UIButton* button = this->m_button;
+        button->SetDisabled(1);
+        button->Invalidate();
+        this->m_buttonTime = timeGetTime();
+        return 0;
+      }
+      break;
+    case 201:
+      this->m_frameContext->windows.CloseWindow(59);
+      return 0;
+    case 213:
+      g_guildOnlineFirst = !g_guildOnlineFirst;
+      this->Invalidate();
+      return 0;
+    case 273:
+      if (this->m_rowButtons[0]) {
+        int row = 0;
+        for (int index = 0; index < 6; ++index) {
+          if (this->m_rowButtons[index] == sender) {
+            row = index;
+            break;
+          }
+        }
+        this->m_hoverRow = this->unknown_016C = this->m_scrollTop + row;
+        this->Invalidate();
+        if (g_windowMgr.unknown_0214 != nullptr) {
+          this->m_frameContext->windows.CloseWindow(26);
+        }
+        UIWindow* menu = this->m_frameContext->windows.EnsureWindow(26);
+        int index = 0;
+        const int count = static_cast<int>(GuildData().m_positions.size());
+        for (; index < count; ++index) {
+          char text[128];
+          std::sprintf(text, "%s", GuildData().m_positions[index].c_str());
+          menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+        }
+        menu->SendMsg(nullptr, 40, 0, 0, 0, 0);
+        int height = index * 16;
+        if (height > 80) {
+          height = 80;
+        }
+        menu->Resize(150, height);
+        menu->SendMsg(nullptr, 83, 61, 0, 0, 0);
+        int x = 88;
+        int y = (this->m_rowSpacing + 36) * row + this->m_rowSpacing + 101;
+        this->ToScreen(x, y);
+        menu->Move(x + 1, y + 1);
+        return 0;
+      }
+      break;
+    }
+    break;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_scrollTop;
+    int top;
+    if (message == 9) {
+      top = previous - this->m_visibleRows + 1;
+    } else if (message == 10) {
+      top = this->m_visibleRows - 1 + previous;
+    } else {
+      top = a1 + previous;
+    }
+    this->m_scrollTop = top;
+    if (previous != top) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+    return this->m_scrollTop - previous;
+  }
+  case 39: {
+    int index = 0;
+    for (auto member = this->m_members.begin(); member != this->m_members.end(); ++member, ++index) {
+      if (this->m_hoverRow == index) {
+        const bool valid = a1 != 0 && member->positionId != 0;
+        if (member->positionId != a1 && valid) {
+          member->positionId = a1;
+          member->positionName = GuildData().m_positions[member->positionId];
+          this->unknown_0180[member->characterId].accountId = member->accountId;
+          this->unknown_0180[member->characterId].characterId = member->characterId;
+          this->unknown_0180[member->characterId].positionId = member->positionId;
+        }
+        break;
+      }
+    }
+    int x = this->geometry.width - 61;
+    int y = this->geometry.height - 23;
+    if (!GuildData().unknown_00B4 || this->unknown_0180.empty()) {
+      x = -200;
+      y = -200;
+    }
+    this->m_button->Move(x, y);
+    this->Invalidate();
+    return 0;
+  }
+  case 48: {
+    GuildInfo::Member member;
+    if ((this->GetMember(this->m_hoverRow, member) && member.name.find(g_guildNamelessTag, 0) != std::string::npos) ||
+        !g_playerNameDictionary->Contains(member.characterId)) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3041)), 0xFF, 0, 0, 0);
+      return 0;
+    }
+
+    switch (this->unknown_0150[a1].value) {
+    case 5: {
+      GuildInfo::Member target;
+      if (this->GetMember(this->m_hoverRow, target)) {
+        g_modeMgr.gameMode->SendMsg(59, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
+      }
+      break;
+    }
+    case 16: {
+      GuildInfo::Member target;
+      if (this->GetMember(this->m_hoverRow, target)) {
+        struct {
+          std::uint32_t guildId;
+          int accountId;
+          int characterId;
+        } request = {g_guildId, target.accountId, target.characterId};
+        this->m_frameContext->windows.EnsureWindow(76)->SendMsg(nullptr, 34, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
+      }
+      break;
+    }
+    case 17: {
+      GuildInfo::Member target;
+      if (this->GetMember(this->m_hoverRow, target) && target.accountId == static_cast<int>(g_session.m_aid)) {
+        *reinterpret_cast<float*>(g_session.unknown_0F54) = static_cast<float>(static_cast<std::uint32_t>(target.characterId));
+        this->m_frameContext->windows.EnsureWindow(75);
+      }
+      break;
+    }
+    case 18: {
+      GuildInfo::Member target;
+      if (this->GetMember(this->m_hoverRow, target)) {
+        g_modeMgr.gameMode->SendMsg(109, target.accountId, 0, 0, 0);
+      }
+      break;
+    }
+    case 20: {
+      GuildInfo::Member target;
+      if (this->GetMember(this->m_hoverRow, target) == true) {
+        const char* relation;
+        if (g_windowMgr.IsFriend(target.name.c_str()) == true) {
+          relation = LookupMessage(102);
+        } else {
+          relation = g_session.IsGuildMemberCharacter(static_cast<std::uint32_t>(target.characterId)) == true ? "GuildMember" : nullptr;
+        }
+        const std::string filename = ShortcutFilename(target.characterId);
+        g_windowMgr.SendNotice(14, reinterpret_cast<std::intptr_t>(target.name.c_str()), reinterpret_cast<std::intptr_t>(relation),
+                               reinterpret_cast<std::intptr_t>(filename.c_str()), 0, 0);
+      }
+      break;
+    }
+    case 58: {
+      GuildInfo::Member target;
+      if (this->GetMember(this->m_hoverRow, target) == true) {
+        g_modeMgr.GetGameMode()->SendMsg(268, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
+      }
+      break;
+    }
+    case 59: {
+      GuildInfo::Member target;
+      if (this->GetMember(this->m_hoverRow, target) == true) {
+        const std::string text = FormatOwnedString(LookupMessage(2924), target.name.c_str(), target.name.c_str());
+        WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
+        if (dialogs.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+          target.positionId = 0;
+          target.positionName = GuildData().m_positions[target.positionId];
+          this->unknown_0180[target.characterId].accountId = target.accountId;
+          this->unknown_0180[target.characterId].characterId = target.characterId;
+          this->unknown_0180[target.characterId].positionId = target.positionId;
+          GuildData().unknown_0104.clear();
+          GuildData().unknown_0104 = this->unknown_0180;
+          g_modeMgr.GetGameMode()->SendMsg(103, 0, 0, 0, 0);
+        }
+      }
+      break;
+    }
+    }
+    return 0;
+  }
+  case 49:
+    this->unknown_0150.clear();
+    if (g_windowMgr.unknown_0210 != 0) {
+      this->m_frameContext->windows.CloseWindow(18);
+    }
+    if (this->m_hoverRow != -1) {
+      GuildInfo::Member member;
+      if (this->GetMember(this->m_hoverRow, member) == true) {
+        const int master = GuildData().unknown_00D0;
+        if (member.accountId == static_cast<int>(g_session.m_aid)) {
+          if (master != 0) {
+            if (member.accountId != master) {
+              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(508), 17));
+            }
+          } else if (!(member.name == g_guildName)) {
+            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(508), 17));
+          }
+        } else {
+          if (master != 0) {
+            if (master == static_cast<int>(g_session.m_aid)) {
+              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
+              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2923), 59));
+            } else if (GuildData().unknown_00B0 != 0 && member.accountId != master) {
+              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
+            }
+          } else if (g_guildName == g_session.DecodePlayerName()) {
+            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
+            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2923), 59));
+          } else if (GuildData().unknown_00B0 != 0 && !(member.name == g_guildName)) {
+            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(509), 16));
+          }
+
+          if (member.online == 1) {
+            const bool invite = g_session.unknown_5464 != 0 &&
+                                ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByName(member.name.c_str()).valid == 0;
+            if (invite) {
+              this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(1330), 5));
+            }
+            this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2043), 20));
+          }
+          this->unknown_0150.push_back(MiniPartyInfoEntry(LookupMessage(2808), 58));
+        }
+      }
+    }
+    if (!this->unknown_0150.empty()) {
+      UIWindow* menu = this->m_frameContext->windows.EnsureWindow(18);
+      for (std::size_t index = 0; index < this->unknown_0150.size(); ++index) {
+        menu->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(this->unknown_0150[index].text.c_str()), 0, 0, 0);
+      }
+      menu->SendMsg(nullptr, 83, 61, 0, 0, 0);
+      menu->SendMsg(nullptr, 30, 0, 0, 0, 0);
+
+      int x = std::max(1, g_mouse.x + 1);
+      int maxX = g_renderer->viewport.width - menu->geometry.width;
+      if (x > maxX) {
+        x = maxX;
+      }
+      int y = std::max(1, g_mouse.y + 1);
+      int maxY = g_renderer->viewport.height - menu->geometry.height;
+      if (y > maxY) {
+        y = maxY;
+      }
+      menu->Move(x, y);
+      return 0;
+    }
+    break;
+  case 60: {
+    this->unknown_0180.clear();
+    this->m_members = g_guildMembers;
+    this->InvalidateChildren();
+    int x = this->geometry.width - 61;
+    int y = this->geometry.height - 23;
+    if (!GuildData().unknown_00B4 || this->unknown_0180.empty()) {
+      x = -200;
+      y = -200;
+    }
+    this->m_button->Move(x, y);
+    this->UpdateScroll();
+    return 0;
+  }
+  case 106: {
+    this->m_members = g_guildMembers;
+    const bool enabled = GuildData().unknown_00B4 != 0;
+    for (int index = 0; index < 6; ++index) {
+      if (this->m_rowButtons[index]) {
+        this->m_rowButtons[index]->Enable(enabled);
+      } else {
+        const std::string prefix("유저인터페이스\\basic_interface\\");
+        this->m_rowButtons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+        this->m_rowButtons[index]->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
+        this->m_rowButtons[index]->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
+        this->m_rowButtons[index]->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
+        this->m_rowButtons[index]->SetSize(this->m_rowButtons[index]->BitmapWidth(), this->m_rowButtons[index]->BitmapHeight());
+        this->m_rowButtons[index]->Move(142, (this->m_rowSpacing + 36) * index + this->m_rowSpacing + 82);
+        this->m_rowButtons[index]->SetId(273);
+        this->AddChild(this->m_rowButtons[index]);
+      }
+    }
+    if (this->m_sortOrders[this->m_sortColumn] == 1) {
+      this->m_sortOrders[this->m_sortColumn] = 2;
+    } else if (this->m_sortOrders[this->m_sortColumn] == 2) {
+      this->m_sortOrders[this->m_sortColumn] = 1;
+    }
+    this->SortMembers(1);
+    GuildData().ClearMembers();
+    for (GuildInfo::Member member : this->m_members) {
+      GuildData().AddMember(member);
+    }
+    return 0;
+  }
+  default:
+    return UIGuildWnd::SendMsg(sender, message, a1, a2, a3, a4);
+  }
+
+  return 0;
 }
