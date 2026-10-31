@@ -58,6 +58,8 @@ public:
   void UpdateChangedStyles();
   bool SendStyleChange();
   void DrawPaymentItem(const int& type, const int& zeny, const int& itemId, bool enabled, const int& row);
+  void DrawPayments();
+  void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ UIDisplayCharacter* m_display;

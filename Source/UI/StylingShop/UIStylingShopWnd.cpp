@@ -1629,3 +1629,205 @@ void UIDisplayCharacter::Paint() {
   );
   draw.Draw(false);
 }
+
+#include "Render/Text/TextContext.h"
+#include "UI/Text/PixelTextWrapping.h"
+#include "Utility/Text/FormatString.h"
+#include <cstdio>
+#include <vector>
+
+// OFFSET: 0x0082BB70
+// FUNCTION: fn_10364
+void UIShowInfoWnd::DrawPayments() {
+  int positions[8][2];
+  if (dynamic_cast<UIStylingshopTabParentWnd*>(this->parent)->unknown_0084 == true ||
+      dynamic_cast<UIStylingshopTabParentWnd*>(this->parent)->unknown_0086 == true) {
+    for (int i = 0; i < 8; ++i) {
+      positions[i][0] = this->unknown_00C8 + 3;
+      positions[i][1] = this->unknown_00CC + this->geometry.height / 8 * i;
+    }
+  } else {
+    for (int i = 0; i < 4; ++i) {
+      const int left = this->unknown_00C8 - 4;
+      const int right = this->unknown_00C8 + 101;
+      if (i == 0) {
+        positions[i * 2][0] = left;
+        positions[i * 2][1] = this->unknown_00CC;
+        positions[i * 2 + 1][0] = right;
+        positions[i * 2 + 1][1] = this->unknown_00CC;
+      } else {
+        positions[i * 2][0] = left;
+        positions[i * 2][1] = this->geometry.height / 8 * i + this->unknown_00CC;
+        positions[i * 2 + 1][0] = right;
+        positions[i * 2 + 1][1] = this->geometry.height / 8 * i + this->unknown_00CC;
+      }
+    }
+  }
+
+  this->m_buyable = true;
+  int totalZeny = 0;
+  int row = 0;
+  for (std::list<int>::iterator it = this->m_list.begin(); it != this->m_list.end(); ++it, ++row) {
+    const int x = positions[row][0];
+    const int y = positions[row][1];
+    CBitmapRes* off = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_offBitmap)));
+    if (off) {
+      this->DrawBitmap(this->m_checks[row]->geometry.x, this->m_checks[row]->geometry.y, &off->image, false);
+    }
+
+    std::uint32_t color = 0xBFBFBF;
+    int zeny = 0;
+    int itemId = 0;
+    int costumeItemId = 0;
+    this->GetPayment(*it, &zeny, &itemId, &costumeItemId);
+
+    bool payable;
+    if (zeny) {
+      const int total = zeny + totalZeny;
+      const int none = 0;
+      payable = this->CheckPayment(row, total, itemId, none);
+    } else {
+      const int none = 0;
+      payable = this->CheckPayment(row, zeny, itemId, none);
+    }
+
+    if (payable == true) {
+      color = 0x5A5A84;
+      if (this->m_checks[row]->geometry.unknown_0030 != 0) {
+        totalZeny += zeny;
+      }
+      this->m_checks[row]->SetChecked(1);
+    } else {
+      this->m_buyable = false;
+      this->m_checks[row]->SetChecked(0);
+    }
+
+    if (zeny) {
+      this->DrawPaymentItem(*it, zeny, itemId, payable, row);
+      char text[16] = {};
+      std::sprintf(text, "%d\tZeny", zeny);
+      if (!payable) {
+        const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text, this->unknown_00A8, 0, 12, 0, 0);
+        this->FillRegion(x - 2, y + 5, width + 2, 1, color);
+      }
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y, text, 0, 0, this->unknown_00A8, color, 0, 0);
+    } else if (itemId) {
+      this->DrawPaymentItem(*it, zeny, itemId, payable, row);
+      if (!payable) {
+        this->m_checks[row]->SetTooltip(LookupMessage(2814));
+        if (costumeItemId) {
+          const int noZeny = 0;
+          const int noItem = 0;
+          const bool costumePayable = this->CheckPayment(row, noZeny, noItem, costumeItemId);
+          if (costumePayable == true) {
+            this->DrawPaymentItem(*it, zeny, itemId, true, row);
+            this->m_checks[row]->SetTooltip(LookupMessage(2815));
+            ITEM_DESC description = FindItemDescription(costumeItemId);
+            this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y, description.identifiedName, 0, 0, this->unknown_00A8, color, 0, 0);
+          } else {
+            ITEM_DESC description = FindItemDescription(itemId);
+            if (!costumePayable) {
+              const int width =
+                  this->TextWidth(this->m_context->fonts, this->m_context->locale, description.identifiedName, this->unknown_00A8, 0, 12, 0, 0);
+              this->FillRegion(x - 2, y + 5, width + 2, 1, color);
+            }
+            this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y, description.identifiedName, 0, 0, this->unknown_00A8, color, 0, 0);
+          }
+        }
+      } else {
+        ITEM_DESC description = FindItemDescription(itemId);
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y, description.identifiedName, 0, 0, this->unknown_00A8, color, 0, 0);
+      }
+    } else {
+      char text[260];
+      CBitmapRes* icon = nullptr;
+      std::memset(text, 0, sizeof(text));
+      if (*it == 1) {
+        icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\icon_color_off.bmp")));
+        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(3912));
+      } else if (*it == 7) {
+        icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\icon_zeny.bmp")));
+        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d\tZeny", zeny);
+      }
+
+      if (this->unknown_00A1 == 1) {
+        this->DrawBitmap(this->unknown_00C0, this->geometry.height / 8 * row + this->unknown_00C4, icon ? &icon->image : nullptr, false);
+      }
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, y, text, 0, 0, this->unknown_00A8, 0x5A5A84, 0, 0);
+    }
+  }
+
+  if (this->m_list.size() < 8) {
+    for (int i = static_cast<int>(this->m_list.size()); i < 8; ++i) {
+      this->m_checks[i]->SetChecked(0);
+    }
+  }
+
+  if (this->m_list.size() == 0) {
+    for (int i = 0; i < 8; ++i) {
+      positions[i][0] = this->unknown_00C8;
+      positions[i][1] = this->unknown_00CC + this->geometry.height / 8 * i;
+    }
+    this->m_buyable = false;
+
+    if (this->unknown_00A0 == 1) {
+      std::vector<std::string> lines;
+      WrapPixelText(*this->geometry.surface, *this->m_context->locale.serverLanguage, LookupMessage(2835), lines, this->geometry.width - 20);
+      for (unsigned int i = 0; i < lines.size(); ++i) {
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 20, positions[i][1], lines[i].c_str(), 0, 0, 11, 0, 0, 0);
+      }
+    }
+  }
+
+  UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(281));
+  if (!shop) {
+    return;
+  }
+
+  for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
+    if (it->first->geometry.id == 496) {
+      if (it->second->geometry.visible != 0) {
+        for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator tab = shop->m_tabs.begin(); tab != shop->m_tabs.end(); ++tab) {
+          if (tab->first->geometry.id == 496) {
+            UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(tab->second);
+            bool buyable;
+            if (myStyle->m_selectedSlot < 2 && myStyle->m_slots[myStyle->m_selectedSlot]) {
+              buyable = myStyle->m_slots[myStyle->m_selectedSlot]->m_showInfo->m_buyable;
+            } else {
+              buyable = false;
+            }
+            shop->SetBuyEnabled(buyable);
+          }
+        }
+        shop->Invalidate();
+        return;
+      }
+      break;
+    }
+  }
+
+  shop->SetBuyEnabled(this->m_buyable);
+  shop->Invalidate();
+}
+
+// OFFSET: 0x00829F90
+// FUNCTION: fn_10349
+void UIShowInfoWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (!this->m_display) {
+    return;
+  }
+
+  if (this->unknown_00A2 == 1) {
+    for (int i = 0; i < 8; ++i) {
+      CBitmapRes* line = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\line_dotted_1px_light.bmp")));
+      if (line) {
+        UICheckBox* check = this->m_checks[i];
+        this->DrawBitmap(check->geometry.x, check->geometry.y + check->geometry.width, &line->image, false);
+      }
+    }
+  }
+
+  this->UpdateChangedStyles();
+  this->DrawPayments();
+}
