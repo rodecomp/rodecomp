@@ -17,6 +17,12 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 
+// OFFSET: 0x0099E0E0
+// FUNCTION: fn_13571
+UIMerchantItemLogWnd::UIMerchantItemLogWnd(UIWindowContext& windows, UIFrameContext& frames, int mode) : UIItemBaseWnd(windows, frames) {
+  this->unknown_00FC = mode;
+}
+
 // OFFSET: 0x0099E510
 // FUNCTION: fn_13575
 void UIMerchantItemLogWnd::Slot15(int width, int height) {
