@@ -13,3 +13,5 @@ UIChatRoomMakeWnd::UIChatRoomMakeWnd(UIWindowContext& windows, UIFrameContext& f
 UIChatRoomChangeWnd::UIChatRoomChangeWnd(UIWindowContext& windows, UIFrameContext& frames) : UIChatRoomMakeWnd(windows, frames) {
   this->m_title = LookupMessage(126);
 }
+
+// OFFSET: 0x008CA5F0

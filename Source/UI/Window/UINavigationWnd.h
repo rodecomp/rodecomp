@@ -47,6 +47,7 @@ public:
   void RefreshRouteList();
   void FillRouteList();
   bool LoadRoute(int index);
+  bool ClearHistory();
 
 protected:
   /* 00B4 */ UIWindow* m_closeButton;

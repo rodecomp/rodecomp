@@ -4,9 +4,12 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Script/LuaScript.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UIComboBoxDefWnd.h"
+#include "UI/Text/UIStaticText.h"
 #include "UI/Window/UISeekPartyWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
@@ -254,4 +257,172 @@ UISeekPartyMBWnd::UISeekPartyMBWnd(UIWindowContext& windows, UIFrameContext& fra
     : UIFrameWnd(windows, frames, 0), unknown_00BC(nullptr), unknown_00C0(nullptr), m_levelEdit(nullptr), m_typeCombo(nullptr), m_subTypeCombo(nullptr), m_jobCategoryCombo(nullptr),
       m_jobChecks(), m_subTypes(), unknown_0154(nullptr), unknown_0158(nullptr), m_jobCategory(-1), m_subType(0), m_restoreHeight(0), m_minimized(0),
       m_controls(&controls), m_titleText(nullptr), m_levelText(nullptr) {
+}
+
+// OFFSET: 0x009146D0
+
+// OFFSET: 0x009273B0
+// FUNCTION: fn_12650
+void UISeekPartyMBWnd::Slot15(int width, int height) {
+  char title[64];
+  std::memset(title, 0, sizeof(title));
+  std::sprintf(title, LookupMessage(0x698));
+
+  this->m_titleText = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_titleText->SetSize(this->geometry.width - 0x20, 0xF);
+  this->m_titleText->SetTextFitted(title);
+  this->m_titleText->Move(0x10, 2);
+  this->m_titleText->shadow = 1;
+  this->AddChild(this->m_titleText);
+
+  this->AddCloseButton(*this->m_controls, "", 0);
+  this->AddMinimizeButton(*this->m_controls, "", 0);
+
+  std::string label;
+  label = "LEVEL";
+  this->m_levelText = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_levelText->SetSize(this->geometry.width - 10, 0x1E);
+  this->m_levelText->SetText(label.c_str(), 1);
+  this->m_levelText->Move(10, 0x17);
+  this->m_levelText->shadow = 1;
+  this->AddChild(this->m_levelText);
+
+  label = "MAP";
+  this->unknown_00BC = new UIStaticText(*this->m_context, *this->m_controls);
+  this->unknown_00BC->SetSize(this->geometry.width - 10, 0x1E);
+  this->unknown_00BC->SetText(label.c_str(), 1);
+  this->unknown_00BC->Move(10, 0x2D);
+  this->unknown_00BC->shadow = 1;
+  this->AddChild(this->unknown_00BC);
+
+  label = "JOB";
+  this->unknown_00C0 = new UIStaticText(*this->m_context, *this->m_controls);
+  this->unknown_00C0->SetSize(this->geometry.width - 10, 0x1E);
+  this->unknown_00C0->SetText(label.c_str(), 1);
+  this->unknown_00C0->Move(10, 0x46);
+  this->unknown_00C0->shadow = 1;
+  this->AddChild(this->unknown_00C0);
+
+  {
+    std::string path = "유저인터페이스\\";
+    this->unknown_0158 = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->unknown_0158->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
+    this->unknown_0158->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    this->unknown_0158->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    this->unknown_0158->SetSize(this->unknown_0158->BitmapWidth(), this->unknown_0158->BitmapHeight());
+    this->unknown_0158->Move(this->geometry.width - 0x5D, this->geometry.height - 0x18);
+    this->unknown_0158->SetId(0xB8);
+    this->AddChild(this->unknown_0158);
+  }
+
+  {
+    std::string path = "유저인터페이스\\";
+    this->unknown_0154 = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->unknown_0154->SetBitmap((path + "btn_cancel" + ".bmp").c_str(), 0, 0);
+    this->unknown_0154->SetBitmap((path + "btn_cancel_a" + ".bmp").c_str(), 1, 0);
+    this->unknown_0154->SetBitmap((path + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
+    this->unknown_0154->SetSize(this->unknown_0154->BitmapWidth(), this->unknown_0154->BitmapHeight());
+    this->unknown_0154->Move(this->geometry.width - 0x2E, this->geometry.height - 0x18);
+    this->unknown_0154->SetId(0xB9);
+    this->AddChild(this->unknown_0154);
+  }
+
+  this->CreateJobChecks();
+
+  this->m_levelEdit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_levelEdit->SetSize(0x28, 0x10);
+  this->m_levelEdit->Move(0x32, 0x14);
+  this->m_levelEdit->maximum = 5;
+  this->m_levelEdit->Background(0xE8, 0xE8, 0xE8);
+  this->m_levelEdit->Border(0x64, 0x64, 0x64);
+  this->m_levelEdit->flat = 0;
+  UIEditCtrl* edit = this->m_levelEdit;
+  if (const char* tooltip = LookupMessage(0x79D)) {
+    edit->tooltip = tooltip;
+  }
+  this->AddChild(this->m_levelEdit);
+
+  this->m_jobCategoryCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_jobCategoryCombo->dropdownHeight = 0x50;
+  this->m_jobCategoryCombo->SetSize(0x96, 0x12);
+  this->m_jobCategoryCombo->Move(0x32, 0x44);
+  this->m_jobCategoryCombo->borderRed = 0x64;
+  this->m_jobCategoryCombo->borderGreen = 0x64;
+  this->m_jobCategoryCombo->borderBlue = 0x64;
+  this->m_jobCategoryCombo->red = 0xE8;
+  this->m_jobCategoryCombo->green = 0xE8;
+  this->m_jobCategoryCombo->blue = 0xE8;
+  this->AddChild(this->m_jobCategoryCombo);
+
+  this->m_typeCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_typeCombo->dropdownHeight = 0x50;
+  this->m_typeCombo->SetSize(0x64, 0x12);
+  this->m_typeCombo->Move(0x32, 0x2B);
+  this->m_typeCombo->borderRed = 0x64;
+  this->m_typeCombo->borderGreen = 0x64;
+  this->m_typeCombo->borderBlue = 0x64;
+  this->m_typeCombo->red = 0xE8;
+  this->m_typeCombo->green = 0xE8;
+  this->m_typeCombo->blue = 0xE8;
+  this->AddChild(this->m_typeCombo);
+
+  this->m_subTypeCombo = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->m_subTypeCombo->dropdownHeight = 0x50;
+  this->m_subTypeCombo->SetSize(0xBE, 0x12);
+  this->m_subTypeCombo->Move(0x9B, 0x2B);
+  this->m_subTypeCombo->borderRed = 0x64;
+  this->m_subTypeCombo->borderGreen = 0x64;
+  this->m_subTypeCombo->borderBlue = 0x64;
+  this->m_subTypeCombo->red = 0xE8;
+  this->m_subTypeCombo->green = 0xE8;
+  this->m_subTypeCombo->blue = 0xE8;
+  this->AddChild(this->m_subTypeCombo);
+
+  this->LoadRegionMaps();
+  this->InitJobCategoryCombo();
+}
+
+// OFFSET: 0x009458B0
+// FUNCTION: fn_12835
+void UISeekPartyMBWnd::LoadRegionMaps() {
+  g_luaScript->HasTable("map_list");
+  std::string unused;
+
+  int regionCount = 2;
+  for (;; ++regionCount) {
+    int regionId = 0;
+    const char* regionName = nullptr;
+    if (g_luaScript->Call("queryRegionInfo", "d>ds", regionCount, &regionId, &regionName)) {
+      if (!regionName) {
+        break;
+      }
+      this->m_typeCombo->AddOption(regionName, 0);
+    }
+  }
+
+  g_luaScript->HasTable("map_list");
+  for (int region = 2; region < regionCount; ++region) {
+    std::vector<std::pair<std::string, int>> maps;
+    for (int index = 1;; ++index) {
+      int mapId = 0;
+      int level = 0;
+      const char* mapName = nullptr;
+      int red = 0;
+      int green = 0;
+      int blue = 0;
+      if (g_luaScript->Call("queryMapInfo", "dd>ddsddd", region, index, &mapId, &level, &mapName, &red, &green, &blue)) {
+        if (!mapName) {
+          break;
+        }
+        std::string name;
+        name = mapName;
+        const int color = (static_cast<unsigned char>(blue) << 16) | (static_cast<unsigned char>(green) << 8) | static_cast<unsigned char>(red);
+        maps.push_back(std::pair<std::string, int>(name, color));
+      }
+    }
+    this->m_subTypes.insert(std::pair<int, std::vector<std::pair<std::string, int>>>(region, maps));
+  }
+
+  this->m_typeCombo->Select(0);
+  this->SendMsg(this->m_typeCombo, 0x27, 0, 0, 0, 0);
 }

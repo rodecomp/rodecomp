@@ -10,7 +10,10 @@
 #include <vector>
 
 struct UIButtonContext;
+struct UIComboBoxHeaderContext;
+struct UIEditContext;
 struct SeekPartyMBWndInfo;
+class UIBitmapButton;
 class UICheckBox;
 class UIComboBoxDefWnd;
 class UIEditCtrl;
@@ -25,11 +28,14 @@ struct SeekPartyRegistration {
 class UISeekPartyMBWnd : public UIFrameWnd {
 public:
   UISeekPartyMBWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
+  ~UISeekPartyMBWnd() override;
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void CreateJobChecks();
   void InitJobCategoryCombo();
+  void LoadRegionMaps();
   void ShowJobCategory(int category);
 
 protected:
@@ -42,8 +48,8 @@ protected:
   /* 00D4 */ unsigned char unknown_00D4[0x30];
   /* 0104 */ std::map<unsigned short, UICheckBox*> m_jobChecks[9];
   /* 014C */ std::map<int, std::vector<std::pair<std::string, int>>> m_subTypes;
-  /* 0154 */ UIWindow* unknown_0154;
-  /* 0158 */ UIWindow* unknown_0158;
+  /* 0154 */ UIBitmapButton* unknown_0154;
+  /* 0158 */ UIBitmapButton* unknown_0158;
   /* 015C */ int m_jobCategory;
   /* 0160 */ short m_type;
   /* 0162 */ short m_subType;
@@ -55,6 +61,8 @@ protected:
   UIButtonContext* m_controls;
   UIStaticText* m_titleText;
   UIStaticText* m_levelText;
+  UIEditContext* m_editContext;
+  UIComboBoxHeaderContext* m_comboContext;
 };
 
 #endif

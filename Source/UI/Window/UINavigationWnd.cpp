@@ -987,3 +987,13 @@ void UINavigationWnd::FillRouteList() {
     this->SendMsg(nullptr, 0x1F, 0x150, reinterpret_cast<std::intptr_t>(text), 0, 0);
   }
 }
+
+// OFFSET: 0x00917000
+// FUNCTION: fn_12587
+bool UINavigationWnd::ClearHistory() {
+  for (std::string& name : this->m_history) {
+    name.clear();
+  }
+  this->m_history.clear();
+  return true;
+}

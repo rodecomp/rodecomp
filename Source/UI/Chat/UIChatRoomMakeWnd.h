@@ -10,12 +10,13 @@
 class UIChatRoomMakeWnd : public UIFrameWnd {
 public:
   UIChatRoomMakeWnd(UIWindowContext& windows, UIFrameContext& frames);
+  ~UIChatRoomMakeWnd() override;
   void Paint() override;
 
   /* 00B4 */ std::string m_title;
   /* 00CC */ unsigned char unknown_00CC[0x2C];
-  /* 00F8 */ std::vector<std::uint32_t> unknown_00F8;
-  /* 0104 */ std::vector<std::uint32_t> unknown_0104;
+  /* 00F8 */ std::vector<std::string> unknown_00F8;
+  /* 0104 */ std::vector<std::string> unknown_0104;
   /* 0110 */ std::vector<std::uint32_t> unknown_0110;
   /* 011C */ std::vector<std::uint32_t> unknown_011C;
 };
