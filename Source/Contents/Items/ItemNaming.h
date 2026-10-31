@@ -4,6 +4,7 @@
 #include "Contents/Items/ItemDescription.h"
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 #include <windows.h>
 
@@ -54,6 +55,7 @@ ItemCardName& FindItemCardName(int id);
 ItemMoveInfo& FindItemMoveInfo(int id, std::map<int, ItemMoveInfo>& values);
 ItemMoveInfo& FindItemMoveInfo(int id);
 bool IsItemCard(int id);
+std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item);
 std::string ItemDisplayName(int id);
 const char* ItemResourcePath(const ITEM_INFO& item);
 int ItemSlotsCount(const ITEM_INFO& item);
