@@ -104,6 +104,7 @@ public:
   /* 0098 */ CUIStaticText* thirdLabel;
   /* 009C */ CUIListBoxEx<CUIRewardItem, CRewardItemData>* rewardList;
   /* 00A0 */ UINpcSprWnd* npcSprite;
+  /* 0080 */ CUIStaticImage* icon;
 };
 
 class CUIScrollWindow : public CUIControl {
@@ -141,7 +142,7 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(OngoingQuestInfo::CUIContents) == 0x90);
-static_assert(sizeof(OngoingQuestInfo::CUIRewards) == 0xA4);
+static_assert(sizeof(OngoingQuestInfo::CUIRewards) == 0xA8);
 static_assert(sizeof(OngoingQuestInfo::CUIScrollWindow) == 0x9C);
 static_assert(offsetof(OngoingQuestInfo::CUIRewardItem, gameItem) == 0xEC);
 #endif

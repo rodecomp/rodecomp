@@ -692,9 +692,10 @@ CUIOngoingQuestInfo::CUIOngoingQuestInfo()
 
 namespace OngoingQuestInfo {
 // OFFSET: 0x00A54F20
+// FUNCTION: fn_16292
 CUIRewards::CUIRewards(UIWindowContext& context)
     : CUIControl(context), title(nullptr), firstLabel(nullptr), firstText(nullptr), secondLabel(nullptr), secondText(nullptr), thirdLabel(nullptr),
-      rewardList(nullptr), npcSprite(nullptr) {
+      rewardList(nullptr), npcSprite(nullptr), icon(nullptr) {
 }
 
 // OFFSET: 0x00A54FF0
