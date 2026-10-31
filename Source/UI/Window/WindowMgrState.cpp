@@ -11,6 +11,9 @@
 #include "UI/Window/MiniPartyWndAreaMgr.h"
 #include "Render/Renderer.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/CGameMode.h"
+#include "Contents/World/World.h"
+#include "Contents/Actors/Pc.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Textures/Surface.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -19,6 +22,7 @@
 #include "Client/ReplayPacketRecorder.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -1099,4 +1103,26 @@ void UIWindowMgr::FocusWindow01C8Edit() {
 // OFFSET: 0x00A90120
 // FUNCTION: fn_17152
 void __stdcall Nullsub369(int, int, int, int) {
+}
+
+// OFFSET: 0x00A91DB0
+// FUNCTION: fn_17173
+void UIWindowMgr::RestoreHiddenWindows() {
+  for (UIWindow* window : this->rendered) {
+    if (std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), window) != this->hiddenWindows.end()) {
+      window->Show(1);
+    }
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (mode && mode->unknown_0254 == 1) {
+    this->EnsureWindow(14);
+  }
+
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->RefreshEffect164();
+  this->unknown_0508 = 1;
+
+  for (std::map<int, UIWindow*>::iterator it = this->overlays.begin(); it != this->overlays.end(); ++it) {
+    this->CloseWindow(it->first + 216);
+  }
 }

@@ -539,6 +539,7 @@ public:
   void RefreshWindow01C8Edits();
   void SetSurface0478(CBitmapRes* bitmap);
   void SendFlagEffect(int message);
+  void RestoreHiddenWindows();
   std::vector<unsigned char> SaveReplaySettings();
   std::vector<unsigned char> SaveReplayReserved();
   void ApplyReplayOptions(const ReplayOptions& options);
