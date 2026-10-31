@@ -1,22 +1,28 @@
 #ifndef RAGNAROK_SOURCE_UI_WINDOW_UIPAYCONFIRMWND_H
 #define RAGNAROK_SOURCE_UI_WINDOW_UIPAYCONFIRMWND_H
 
-#include "UI/Window/UIFrameWnd.h"
+#include "UI/Window/UIMessageBox.h"
 
 #include <string>
 
 struct BitmapImage;
-class UITextViewer;
 
-class UIPayConfirmWnd : public UIFrameWnd {
+class UIPayConfirmWnd : public UIMessageBox {
 public:
+  // INLINED
+  UIPayConfirmWnd(UIWindowContext& windows, UIFrameContext& frames, UIMessageBoxContext& dialog) : UIMessageBox(windows, frames, dialog) {
+  }
+
   void Configure(const std::string& text, int itemId);
   void Paint() override;
 
-  /* 00B4 */ UITextViewer* viewer;
-  /* 00B8 */ unsigned char unknown_00B8[0x48];
-  /* 0100 */ std::string m_title;
-  /* 0118 */ unsigned char unknown_0118[0x8];
+  // INLINED
+  std::string& Title() {
+    return this->caption;
+  }
+
+  __declspec(property(get = Title)) std::string& m_title;
+
   /* 0120 */ const BitmapImage* m_image;
 
 protected:

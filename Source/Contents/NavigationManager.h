@@ -313,6 +313,7 @@ public:
   void BuildGridLabels();
   bool LoadScript(LuaScript* script);
   bool BuildRoute(int startX, int startY, int destX, int destY, bool collectCells);
+  void RequestPrivateAirship(std::string mapName, int itemId);
   bool SavedTargetText(char* out, int size);
   int RequestRoute(int cellX, int cellY);
   NaviCell* MapCellToView(NaviCell* out, const char* mapName, int cellX, int cellY, float size);

@@ -7,6 +7,7 @@
 #include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
 #include "Resource/ResourceMgr.h"
+#include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
@@ -16,6 +17,7 @@
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Window/UINavigationWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UIPayConfirmWnd.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/RegistryKey.h"
 
@@ -247,6 +249,42 @@ bool CNavigationManager::BuildRoute(int startX, int startY, int destX, int destY
     g_windowMgr.window_4F174->Invalidate();
   }
   return found;
+}
+
+#pragma pack(push, 1)
+struct PrivateAirshipRequestPacket {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ char mapName[16];
+  /* 0012 */ int itemId;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(PrivateAirshipRequestPacket) == 0x16);
+
+// OFFSET: 0x00B97980
+// FUNCTION: fn_19601
+void CNavigationManager::RequestPrivateAirship(std::string mapName, int itemId) {
+  if (mapName.size() == 0) {
+    return;
+  }
+
+  if (itemId == 0x1AFD) {
+    WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(&g_windowMgr);
+    UIPayConfirmWnd* window = new UIPayConfirmWnd(dialogs.windows, dialogs.frames, dialogs.dialog);
+    window->Configure(LookupMessage(0xFC1), 0x1AFD);
+    window->SendMsg(nullptr, 0x9C, 1, 0, 0, 0);
+    window->SetId(0x16B);
+    g_windowMgr.AddRendered(window);
+    if (dialogs.RunModal(window) != 187) {
+      return;
+    }
+  }
+
+  PrivateAirshipRequestPacket packet;
+  packet.id = 0xA49;
+  strcpy_s(packet.mapName, sizeof(packet.mapName), mapName.c_str());
+  packet.itemId = itemId;
+  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
 }
 
 // OFFSET: 0x00B97E90
