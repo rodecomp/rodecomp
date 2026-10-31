@@ -68,3 +68,9 @@ void CRes::Unlock() {
   this->lastUse = timeGetTime();
   --this->references;
 }
+
+// OFFSET: 0x00AEF390
+// FUNCTION: fn_18178
+const char* CRes::GetName() {
+  return this->name.text;
+}

@@ -2123,6 +2123,16 @@ void CGameActor::ClearUnknown037C(int value) {
   }
 }
 
+// OFFSET: 0x00CAB990
+// FUNCTION: fn_21032
+const char* CRenderObject::GetActName() {
+  if (!this->render.action) {
+    return nullptr;
+  }
+
+  return this->render.action->GetName();
+}
+
 // OFFSET: 0x00CAB9B0
 // FUNCTION: fn_21033
 CActRes* CRenderObject::GetActRes() {

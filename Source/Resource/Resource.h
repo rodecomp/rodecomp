@@ -29,6 +29,7 @@ public:
   virtual void MissingFile(CRenderSystemBase* system, const char* name);
   std::uint32_t Lock();
   void Unlock();
+  const char* GetName();
 
   /* 0004 */ std::uint32_t references;
   /* 0008 */ std::uint32_t lastUse;
