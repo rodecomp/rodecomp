@@ -60,6 +60,7 @@ struct MapStateEntry {
 
 class CLoginMode : public CMode {
 public:
+  CLoginMode();
   /* 0058 */ unsigned char unknown_0058[0x174];
   /* 01CC */ int characterCount;
   /* 01D0 */ unsigned char unknown_01D0[0x8];
@@ -113,6 +114,7 @@ public:
 };
 
 extern bool g_loginModeFlag;
+extern int g_modalImmediate;
 
 int GetClientType();
 std::string GetMacAddress();

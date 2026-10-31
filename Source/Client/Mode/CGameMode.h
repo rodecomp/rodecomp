@@ -56,6 +56,7 @@ struct MinimapMarker {
 
 class CGameMode : public CMode {
 public:
+  CGameMode();
   /* 0058 */ unsigned char unknown_0058[0x10];
   /* 0068 */ char mapName[16];
   /* 0078 */ unsigned char unknown_0078[0x54];
