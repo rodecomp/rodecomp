@@ -37,9 +37,7 @@ class RuneSetData;
 
 class UIRuneSetReWard : public UIBitmapButton {
 public:
-  // INLINED
-  UIRuneSetReWard(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), m_itemId(0), m_state(0) {
-  }
+  UIRuneSetReWard(UIWindowContext& windows, UIButtonContext& controls);
 
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -65,9 +63,7 @@ public:
 
 class UIEquipRuneSetWnd : public UIWindow {
 public:
-  // INLINED
-  explicit UIEquipRuneSetWnd(UIWindowContext& windows) : UIWindow(windows, 0) {
-  }
+  explicit UIEquipRuneSetWnd(UIWindowContext& windows);
 
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -91,10 +87,7 @@ public:
 
 class UIRuneSetList : public UIScrollBar {
 public:
-  // INLINED
-  explicit UIRuneSetList(UIWindowContext& windows) : UIScrollBar(windows), m_itemHeight(0x44), unknown_00B8(0x28), m_selected(-1) {
-    this->arrowLength = 6;
-  }
+  explicit UIRuneSetList(UIWindowContext& windows);
 
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -113,10 +106,7 @@ public:
 
 class UIRuneList : public UIRuneSetList {
 public:
-  // INLINED
-  explicit UIRuneList(UIWindowContext& windows) : UIRuneSetList(windows) {
-    this->m_itemHeight = 0x2F;
-  }
+  explicit UIRuneList(UIWindowContext& windows);
 
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -124,10 +114,7 @@ public:
 
 class UIDecomlist : public UIRuneSetList {
 public:
-  // INLINED
-  explicit UIDecomlist(UIWindowContext& windows) : UIRuneSetList(windows) {
-    this->m_itemHeight = 0x2D;
-  }
+  explicit UIDecomlist(UIWindowContext& windows);
 
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -150,10 +137,7 @@ struct RuneSetInfoLine {
 
 class UIRuneSetinfoList : public UIRuneSetList {
 public:
-  // INLINED
-  explicit UIRuneSetinfoList(UIWindowContext& windows) : UIRuneSetList(windows) {
-    this->m_itemHeight = 0x0F;
-  }
+  explicit UIRuneSetinfoList(UIWindowContext& windows);
 
   void Paint() override;
   __declspec(noinline) void AddLine(std::string text, std::uint32_t color, bool bold);
@@ -164,11 +148,7 @@ public:
 
 class UIGage_Circle : public UIWindow {
 public:
-  __declspec(noinline) explicit UIGage_Circle(UIWindowContext& windows) : UIWindow(windows, 0), m_textY(0x45), m_value(0), m_max(false) {
-    this->m_emptyBitmap = "유저인터페이스\\runesystem\\gage_empty.bmp";
-    this->m_fullBitmap = "유저인터페이스\\runesystem\\gage_full.bmp";
-    this->m_maxBitmap = "유저인터페이스\\runesystem\\gage_max.bmp";
-  }
+  __declspec(noinline) explicit UIGage_Circle(UIWindowContext& windows);
 
   void Paint() override;
 
@@ -228,9 +208,7 @@ public:
 
 class UIRuneSet_Info : public UIWindow {
 public:
-  // INLINED
-  explicit UIRuneSet_Info(UIWindowContext& windows) : UIWindow(windows, 0), m_runeSet(nullptr), m_rewards{} {
-  }
+  explicit UIRuneSet_Info(UIWindowContext& windows);
 
   void Slot15(int width, int height) override;
   void Slot19() override;

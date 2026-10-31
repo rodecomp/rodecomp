@@ -2186,3 +2186,50 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
+
+// OFFSET: 0x00814440
+// FUNCTION: fn_10128
+UIDecomlist::UIDecomlist(UIWindowContext& windows) : UIRuneSetList(windows) {
+  this->m_itemHeight = 0x2D;
+}
+
+// OFFSET: 0x008144E0
+// FUNCTION: fn_10129
+UIEquipRuneSetWnd::UIEquipRuneSetWnd(UIWindowContext& windows) : UIWindow(windows, 0) {
+}
+
+// OFFSET: 0x00814540
+// FUNCTION: fn_10130
+UIGage_Circle::UIGage_Circle(UIWindowContext& windows) : UIWindow(windows, 0), m_textY(0x45), m_value(0), m_max(false) {
+  this->m_emptyBitmap = "유저인터페이스\\runesystem\\gage_empty.bmp";
+  this->m_fullBitmap = "유저인터페이스\\runesystem\\gage_full.bmp";
+  this->m_maxBitmap = "유저인터페이스\\runesystem\\gage_max.bmp";
+}
+
+// OFFSET: 0x008148A0
+// FUNCTION: fn_10131
+UIRuneList::UIRuneList(UIWindowContext& windows) : UIRuneSetList(windows) {
+  this->m_itemHeight = 0x2F;
+}
+
+// OFFSET: 0x00814940
+// FUNCTION: fn_10132
+UIRuneSetList::UIRuneSetList(UIWindowContext& windows) : UIScrollBar(windows), m_itemHeight(0x44), unknown_00B8(0x28), m_selected(-1) {
+  this->arrowLength = 6;
+}
+
+// OFFSET: 0x008149C0
+// FUNCTION: fn_10133
+UIRuneSetReWard::UIRuneSetReWard(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), m_itemId(0), m_state(0) {
+}
+
+// OFFSET: 0x00814A50
+// FUNCTION: fn_10134
+UIRuneSet_Info::UIRuneSet_Info(UIWindowContext& windows) : UIWindow(windows, 0), m_runeSet(nullptr), m_rewards{} {
+}
+
+// OFFSET: 0x00814B00
+// FUNCTION: fn_10135
+UIRuneSetinfoList::UIRuneSetinfoList(UIWindowContext& windows) : UIRuneSetList(windows) {
+  this->m_itemHeight = 0x0F;
+}
