@@ -150,6 +150,8 @@ public:
   int DecodeLinkNumber(std::string text);
   void DecodeLinkOptions(std::vector<int>& options, const char* text, int& position, const int& length, const char& separator, const char& alternate);
   int DecodeLinkCards(std::vector<int>& fields, const char* text, int& position, const char& separator, const int& length, int index);
+  void DecodeLinkFields(const std::string& link, std::vector<int>& fields);
+  bool LinkDisplayName(const std::string& encoded, std::string& output);
 
   /* 011C */ std::list<std::vector<UIItemTagButton*>> entries;
   /* 0124 */ std::vector<std::string> pendingText;

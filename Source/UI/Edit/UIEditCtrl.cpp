@@ -89,6 +89,7 @@
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowRegistration.h"
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "Contents/TipBoxTitles.h"
 #include <algorithm>
 #include <cstdarg>
 #include <cstdint>
@@ -101,7 +102,7 @@
 #include <string>
 #include <windows.h>
 #include <timeapi.h>
-
+#include "Contents/Items/ItemLink.h"
 // GLOBAL: gl_24862
 bool g_vendingSaleAlarm;
 
@@ -6535,3 +6536,114 @@ bool UIItemStoreSubWnd::FilterByName3(std::string query) {
 }
 
 // OFFSET: 0x00996E30
+
+// OFFSET: 0x00857420
+// FUNCTION: fn_10762
+void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fields) {
+  char delimiters[] = "!#$%&'()*+,-/";
+  const int length = static_cast<int>(link.size()) + 1;
+  if (length < 6) {
+    return;
+  }
+
+  char* text = new char[length];
+  strcpy_s(text, length, link.c_str());
+
+  std::string value;
+  int optionCount = 0;
+  std::vector<int> options;
+  int cardCount = 0;
+
+  fields.reserve(23);
+  for (int i = 23; i != 0; --i) {
+    fields.push_back(0);
+  }
+
+  fields[6] = -1;
+  for (int i = 0; i < 5; ++i) {
+    value += text[i];
+  }
+
+  fields[0] = this->DecodeLinkNumber(std::string(value.c_str(), value.size()));
+  value.clear();
+  value += text[5];
+  fields[1] = this->DecodeLinkNumber(std::string(value.c_str(), value.size()));
+  value.clear();
+
+  int field = 2;
+  for (int position = 6; static_cast<unsigned>(position) < link.size() + 1; ++position) {
+    const char byte = text[position];
+    if (byte >= '0') {
+      value += byte;
+      continue;
+    }
+
+    for (unsigned int kind = 0; kind < 14; ++kind) {
+      if (delimiters[kind] != byte) {
+        continue;
+      }
+
+      if (kind == 7) {
+        if (!value.empty()) {
+          fields[field] = this->DecodeLinkNumber(std::string(value.c_str(), value.size()));
+        }
+
+        const int size = static_cast<int>(link.size());
+        cardCount = this->DecodeLinkCards(fields, text, position, delimiters[7], size, 6);
+      } else if (kind == 9) {
+        ++optionCount;
+        if (!value.empty()) {
+          fields[field] = this->DecodeLinkNumber(std::string(value.c_str(), value.size()));
+        }
+
+        const int size = static_cast<int>(link.size());
+        this->DecodeLinkOptions(options, text, position, size, delimiters[10], delimiters[11]);
+      } else if (!value.empty()) {
+        fields[field] = this->DecodeLinkNumber(std::string(value.c_str(), value.size()));
+      }
+
+      value.clear();
+      field = kind;
+      break;
+    }
+  }
+
+  if (optionCount) {
+    fields[cardCount + 8] = optionCount;
+    for (unsigned int i = 0; i < options.size(); ++i) {
+      fields[cardCount + 9 + i] = options[i];
+    }
+  }
+
+  delete[] text;
+}
+
+// OFFSET: 0x00859220
+// FUNCTION: fn_10775
+bool UIEditCtrl3::LinkDisplayName(const std::string& encoded, std::string& output) {
+  const bool isTag = encoded.substr(0, 6) == "00000T";
+  if (isTag) {
+    const int id = ItemLinkMessageId(encoded);
+    if (g_itemTagOwner->unknown_0118 >= id) {
+      const unsigned short codePage = static_cast<unsigned short>(g_textCodePage);
+      const TipBoxTitles titles{g_itemTagOwner->m_entries, g_itemTagOwner->m_missing, g_itemTagOwner->m_maximumId, codePage};
+      titles.Title(id, &output, 17);
+      return true;
+    }
+
+    return false;
+  }
+
+  std::vector<int> fields;
+  this->DecodeLinkFields(encoded, fields);
+  ITEM_INFO item;
+  bool decoded;
+  if (this->DecodeItemLink(fields, item)) {
+    output = item.DisplayName(0);
+    decoded = true;
+  } else {
+    decoded = false;
+  }
+
+  return decoded;
+}
