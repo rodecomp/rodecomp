@@ -27,6 +27,7 @@ public:
 
   static bool Create();
   static void Destroy();
+  void SetValue(int mapId, int key, int value);
   void Clear();
   int GetValue(int mapId, int key);
 
