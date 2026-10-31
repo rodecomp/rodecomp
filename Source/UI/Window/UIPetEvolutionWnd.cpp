@@ -1,15 +1,21 @@
 #include "UI/Window/UIPetEvolutionWnd.h"
 
 #include "Client/Session.h"
+#include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
+#include "Contents/PetEvolutionMgr.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UITextButton.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <string>
@@ -111,4 +117,67 @@ void UIPetEvolutionWnd::Paint() {
   }
 
   this->DrawTextAt(this->m_controls->fonts, this->m_controls->locale, 10, this->geometry.height - 52, LookupMessage(2570), 0, 0, 12, 0, 0, 0);
+}
+
+namespace {
+#pragma pack(push, 1)
+  struct PACKET_CZ_PET_EVOLUTION {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t packetLength;
+    /* 0004 */ int evolvedEggId;
+    /* 0008 */ unsigned char materials[252];
+  };
+#pragma pack(pop)
+}
+
+// OFFSET: 0x009AB760
+
+// OFFSET: 0x009ABC20
+// FUNCTION: fn_13766
+void UIPetEvolutionWnd::RebuildButtons() {
+  const char* name = g_session.GetPetString(g_session.GetPetJobByEggItem(this->m_petEggId));
+  if (name) {
+    UITextButton* button = new UITextButton(*this->m_context, *this->m_controls);
+    button->Configure(name, 0xFF6464, 0, 12, 1, 1);
+    button->m_hoverColor = 0x9B9B9B;
+    button->ResizeToTextClipped(button->geometry.width - 10, button->geometry.height);
+    button->SetId(this->m_petEggId);
+    button->Move(10, 171);
+    button->CenterIn(90, button->geometry.height);
+    button->SetTooltip(name);
+    this->AddChild(button);
+  }
+
+  name = g_session.GetPetString(g_session.GetPetJobByEggItem(this->m_evolvedEggId));
+  if (name) {
+    UITextButton* button = new UITextButton(*this->m_context, *this->m_controls);
+    button->Configure(name, 0xFF6464, 0, 12, 1, 1);
+    button->m_hoverColor = 0x9B9B9B;
+    button->ResizeToTextClipped(button->geometry.width - 10, button->geometry.height);
+    button->SetId(this->m_evolvedEggId);
+    button->Move(this->geometry.width - 100, 171);
+    button->CenterIn(90, button->geometry.height);
+    button->SetTooltip(name);
+    this->AddChild(button);
+  }
+
+  this->m_materialButtons.clear();
+  int y = 230;
+  for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
+    ITEM_INFO item;
+    item.SetItemId(it->first);
+    char text[260];
+    std::memset(text, 0, sizeof(text));
+    int capacity = sizeof(text);
+    item.sub_6D5810(text, capacity, 0);
+    UITextButton* button = new UITextButton(*this->m_context, *this->m_controls);
+    button->Configure(text, 0xFF6464, 0, 12, 1, 1);
+    button->m_hoverColor = 0x9B9B9B;
+    button->ResizeToTextClipped(button->geometry.width, button->geometry.height);
+    button->SetId(it->first);
+    button->Move(10, y);
+    this->AddChild(button);
+    this->m_materialButtons.push_back(button);
+    y += 20;
+  }
 }

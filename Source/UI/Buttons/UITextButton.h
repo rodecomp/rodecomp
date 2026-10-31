@@ -12,6 +12,7 @@ extern int g_screenWidth;
 
 class UITextButton : public UIButton {
   friend class UITextViewer;
+  friend class UIPetEvolutionWnd;
   friend class UIMessageBox;
   friend class UIEditCtrl3;
   friend class UIAchTracingWnd;
