@@ -1032,6 +1032,10 @@ bool UINavigationWnd::LoadRoute(int index) {
 }
 
 // OFFSET: 0x00911490
+// FUNCTION: fn_12515
+UIMemorialDunWnd::UIMemorialDunWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_partyButton(nullptr), m_controls(&controls) {
+}
 
 // OFFSET: 0x00912460
 // FUNCTION: fn_12530

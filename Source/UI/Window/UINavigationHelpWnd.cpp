@@ -66,3 +66,7 @@ int UINavigationHelpWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::i
 }
 
 // OFFSET: 0x009115B0
+// FUNCTION: fn_12517
+UINavigationHelpWnd::UINavigationHelpWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UITextViewerContext& text)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_text(&text), m_viewer(nullptr), unknown_00B8(0) {
+}

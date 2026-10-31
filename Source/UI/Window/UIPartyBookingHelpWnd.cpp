@@ -53,3 +53,7 @@ int UIPartyBookingHelpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 }
 
 // OFFSET: 0x00911860
+// FUNCTION: fn_12519
+UIPartyBookingHelpWnd::UIPartyBookingHelpWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UITextViewerContext& text)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_text(&text) {
+}
