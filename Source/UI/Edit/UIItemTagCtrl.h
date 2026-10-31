@@ -30,6 +30,7 @@ public:
 
 class UIItemTagOnChat : public UIItemTagCtrl {
 public:
+  UIItemTagOnChat();
   bool CanInsertTag(const std::string& name, int width) override;
 };
 

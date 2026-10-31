@@ -4,11 +4,13 @@
 #include "UI/Text/TextFitting.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Buttons/UINaviLinkButton.h"
 
 #include <algorithm>
 #include <cstring>
 #include <mbstring.h>
+#include <new>
 
 // OFFSET: 0x00854470
 // FUNCTION: fn_10748
@@ -167,6 +169,27 @@ std::string UIEditCtrl::BracketFittedText(const std::string& name) {
   result += FitText(*this->geometry.surface, name, this->geometry.width / 2);
   result += '>';
   return result;
+}
+
+// OFFSET: 0x0085A870
+// FUNCTION: fn_10780
+void UIChatEditCtrl::InsertItemTag(int tagId) {
+  if (!this->unknown_0144) {
+    this->unknown_0144 = new (std::nothrow) UIItemTagOnChat();
+    if (!this->unknown_0144) {
+      return;
+    }
+  }
+
+  if (static_cast<int>(this->unknown_0144->tags.size()) >= 3 || this->unknown_00F0 + this->text.size() > static_cast<unsigned>(this->maximum)) {
+    return;
+  }
+
+  const std::string tag = this->unknown_0144->sub_874A40(tagId, 0x7F00E4);
+  const std::string combined = this->text + tag;
+  this->m_edit->input.ResetInput();
+  this->m_edit->input.Insert(combined.c_str());
+  this->unknown_0144->taggedText = this->text;
 }
 
 // INLINED

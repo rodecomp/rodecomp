@@ -17,6 +17,7 @@ class NavigationDestination;
 class UINaviLinkButton;
 class UIItemTagButton;
 struct ITEM_INFO;
+class UIItemTagOnChat;
 
 struct UIEditContext {
   InputFocus& focus;
@@ -208,11 +209,12 @@ public:
   UIChatEditCtrl(UIWindowContext& windows, UIEditContext& edit);
   void Slot25(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  void InsertItemTag(int tagId);
 
   /* 011C */ std::vector<std::string> history;
   /* 0128 */ std::string pending;
   /* 0140 */ int unknown_0140;
-  /* 0144 */ int unknown_0144;
+  /* 0144 */ UIItemTagOnChat* unknown_0144;
   /* 0148 */ int historyLimit;
 };
 
