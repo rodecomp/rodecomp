@@ -8,6 +8,7 @@
 #include "UI/Window/UIControl.h"
 #include "UI/Window/UIFrameWnd.h"
 
+#include <functional>
 #include <string>
 
 enum TALKTYPE : int;
@@ -15,6 +16,7 @@ enum TALKTYPE : int;
 class CUICheckBox;
 class CUIRadioButton;
 class CUIStaticText;
+class CUIImageButton;
 
 extern int g_textureDetailLevel;
 extern int g_textureFiltering;
@@ -22,16 +24,24 @@ extern bool g_gameOptionFlag;
 
 template <class T, class D> class CUIComboBox : public CUIControl {
 public:
+  explicit CUIComboBox(UIWindowContext& context)
+      : CUIControl(context), unknown_0084(), unknown_0088(), listBox(nullptr), unknown_0090(), itemHeight(0), visibleItems(1), onSelect(), onChange() {
+  }
+
   void Paint() override;
   int AddItem(const D& value, bool refresh);
   unsigned int Selected() const;
   __declspec(noinline) void UpdateListHeight();
 
-  /* 0084 */ unsigned char unknown_0084[0x08];
+  /* 0084 */ int unknown_0084;
+  /* 0088 */ CUIImageButton* unknown_0088;
   /* 008C */ CUIListBoxEx<T, D>* listBox;
-  /* 0090 */ unsigned char unknown_0090[0x04];
+  /* 0090 */ int unknown_0090;
   /* 0094 */ int itemHeight;
   /* 0098 */ int visibleItems;
+  /* 009C */ int unknown_009C;
+  /* 00A0 */ std::function<void(T*, const D&)> onSelect;
+  /* 00C8 */ std::function<void(T*, const D&)> onChange;
 };
 
 namespace GameSettingsUI {
@@ -139,6 +149,7 @@ public:
 
 class CUIGroupSkin : public CUIGroup {
 public:
+  void Slot15(int width, int height) override;
   void Apply() override;
   void Refresh() override;
 

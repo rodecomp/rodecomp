@@ -19,15 +19,48 @@
 #include "UI/Window/UIRoulletteWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
+#include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/StringUtil.h"
 
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
+#include <functional>
 #include <iterator>
 #include <list>
 #include <string>
 #include <vector>
+
+namespace {
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+}
 
 namespace {
   struct RodexSpamOptionPacket {
@@ -58,6 +91,76 @@ template <>
 __declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::SelectItem(CUIListItem* item);
 template <>
 __declspec(noinline) void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::SelectItem(CUIListItem* item);
+
+void SetComboItemSkinText(GameSettingsUI::CUIComboItem* item, const std::string& name);
+// OFFSET: 0x00A2C3C0
+// FUNCTION: fn_15400
+void GameSettingsUI::CUIGroupSkin::Slot15(int width, int height) {
+  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title->SetSize(75, 13);
+  this->m_title->Move(19, 12);
+  const std::uint8_t titleSource[] = {0x60, 0xEF, 0xAA, 0x1D, 0xE9};
+  thread_local EncryptedName<sizeof(titleSource), 0x79E915E9AF6F55DDULL> titleText(titleSource);
+  const char* title = titleText.Text();
+  this->m_title->SetText(title, std::strlen(title));
+  this->m_title->SetFitText(0);
+  this->m_title->SetAlign(0, 0);
+  const std::uint8_t fontSource[] = {0x46, 0x00, 0x91, 0xB0, 0x42, 0xBD};
+  thread_local EncryptedName<sizeof(fontSource), 0xB7AFBD2FD9FD7501ULL> fontText(fontSource);
+  this->m_title->SetFont(std::string(fontText.Text()));
+  this->m_title->SetFontHeight(12);
+  this->m_title->SetBold(1);
+  this->m_title->SetColor(0);
+  this->m_title->SetShadow(0, 0xFFFFFF);
+  this->m_title->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_title);
+
+  this->m_combo = new CUIComboBox<CUIComboItem, std::string>(*this->m_context);
+  reinterpret_cast<void(__thiscall*)(CUIComboBox<CUIComboItem, std::string>*, int, int, int)>(0x00A1E250)(this->m_combo, 162, 16, 5);
+  CUIComboBox<CUIComboItem, std::string>* combo = this->m_combo;
+  const std::uint8_t disabledSource[] = {0x0F, 0x74, 0x11, 0xEF, 0x59, 0xE1, 0xAA, 0xDE, 0x09, 0x3F, 0x11, 0xD9, 0x24, 0x95, 0x33, 0x71, 0xAE, 0xA8, 0xB8, 0x76, 0xC6, 0x46, 0x01, 0x67, 0xAA, 0xA9, 0xB7, 0x74, 0xFA, 0x4A, 0x33, 0x67, 0xB7, 0xAF, 0xB3, 0x7A, 0xE1, 0x70, 0x0D, 0x67, 0xA1, 0x84, 0xB0, 0x3B, 0xFB, 0x42, 0x1F, 0x13};
+  thread_local EncryptedName<sizeof(disabledSource), 0x136F2F9915D1DBCFULL> disabledImage(disabledSource);
+  const std::string disabledName(disabledImage.Text());
+  const std::uint8_t pressedSource[] = {0xEB, 0x78, 0x89, 0xD5, 0xCF, 0x1F, 0xE6, 0xC6, 0xED, 0x33, 0x89, 0xE3, 0xB2, 0x6B, 0x7F, 0x69, 0x4A, 0xA4, 0x20, 0x4C, 0x50, 0xB8, 0x4D, 0x7F, 0x4E, 0xA5, 0x2F, 0x4E, 0x6C, 0xB4, 0x7F, 0x7F, 0x53, 0xA3, 0x2B, 0x40, 0x77, 0x8E, 0x41, 0x7F, 0x45, 0x88, 0x28, 0x01, 0x6D, 0xBC, 0x53, 0x0B};
+  thread_local EncryptedName<sizeof(pressedSource), 0x0B23D10F2F49D72BULL> pressedImage(pressedSource);
+  const std::string pressedName(pressedImage.Text());
+  const std::uint8_t hoverSource[] = {0x23, 0x7A, 0x93, 0x0D, 0x65, 0xC9, 0x26, 0x7E, 0x25, 0x31, 0x93, 0x3B, 0x18, 0xBD, 0xBF, 0xD1, 0x82, 0xA6, 0x3A, 0x94, 0xFA, 0x6E, 0x8D, 0xC7, 0x86, 0xA7, 0x35, 0x96, 0xC6, 0x62, 0xBF, 0xC7, 0x9B, 0xA1, 0x31, 0x98, 0xDD, 0x58, 0x81, 0xC7, 0x8D, 0x8A, 0x32, 0xD9, 0xC7, 0x6A, 0x93, 0xB3};
+  thread_local EncryptedName<sizeof(hoverSource), 0xB3E307A5F753D5E3ULL> hoverImage(hoverSource);
+  const std::string hoverName(hoverImage.Text());
+  const std::uint8_t normalSource[] = {0x25, 0xD4, 0xF3, 0xD3, 0x8D, 0xAB, 0xE8, 0xD4, 0x23, 0x9F, 0xF3, 0xE5, 0xF0, 0xDF, 0x71, 0x7B, 0x84, 0x08, 0x5A, 0x4A, 0x12, 0x0C, 0x43, 0x6D, 0x80, 0x09, 0x55, 0x48, 0x2E, 0x00, 0x71, 0x6D, 0x9D, 0x0F, 0x51, 0x46, 0x35, 0x3A, 0x4F, 0x6D, 0x8B, 0x24, 0x52, 0x07, 0x2F, 0x08, 0x5D, 0x19};
+  thread_local EncryptedName<sizeof(normalSource), 0x192D654D29337BE5ULL> normalImage(normalSource);
+  const std::string normalName(normalImage.Text());
+  if (combo->unknown_0088 != nullptr) {
+    combo->RemoveChild(combo->unknown_0088, 1);
+    combo->unknown_0088 = nullptr;
+    combo->Resize(combo->geometry.width - 18, combo->geometry.height);
+  }
+  if (combo->unknown_0088 == nullptr) {
+    combo->Resize(combo->geometry.width + 18, combo->geometry.height);
+    combo->unknown_0088 = new CUIImageButton(*this->m_context);
+    combo->unknown_0088->SetSize(18, 18);
+    combo->unknown_0088->Move(combo->geometry.width - 18, 0);
+    combo->unknown_0088->SetImages(normalName, hoverName, pressedName, disabledName);
+    combo->unknown_0088->SetOnClick([combo]() {
+      if (!reinterpret_cast<bool(__fastcall*)(UIWindowMgr*)>(0x00A8C750)(&g_windowMgr)) {
+        int x = 0;
+        int y = combo->geometry.height - 1;
+        combo->ToScreen(x, y);
+        reinterpret_cast<void(__thiscall*)(UIWindowMgr*, UIWindow*, UIWindow*, int, int)>(0x00AA27B0)(&g_windowMgr, combo, combo->listBox, x, y);
+      }
+    });
+    combo->AddChild(combo->unknown_0088);
+  }
+
+  combo->Move(110, 9);
+  combo->onSelect = [this](CUIComboItem*, const std::string&) { reinterpret_cast<void(__fastcall*)(CUIGroupSkin*)>(0x00A3FB50)(this); };
+  const std::function<void(CUIComboItem*, const std::string&)> binder = [this](CUIComboItem* item, const std::string& name) {
+    SetComboItemSkinText(item, name);
+  };
+  combo->onChange = binder;
+  combo->listBox->SetBinder(binder);
+  this->AddChild(this->m_combo);
+}
 
 // OFFSET: 0x00A344D0
 // OFFSET: 0x00A34500
