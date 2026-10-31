@@ -33,6 +33,30 @@
 #include <malloc.h>
 #include <string>
 
+// OFFSET: 0x005E03B0
+UIChangeMaterialWnd::UIChangeMaterialWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edits)
+    : UIFrameWnd(windows, frames, 0), m_sortBox(nullptr), m_button(nullptr), m_resultX(168), m_resultY(131), m_resultItem(),
+      m_materialPos{{90, 86}, {246, 86}, {168, 222}, {168, 40}, {90, 176}, {246, 176}}, m_materials(), m_resultAmount(0), m_resultText(),
+      m_controls(&controls), m_editContext(&edits) {
+  *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4) = 0;
+  *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8) = 0;
+}
+
+// OFFSET: 0x005E0560
+// FUNCTION: fn_03862
+UIChangeMaterialWnd_List::UIChangeMaterialWnd_List(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), m_selectedIndex(0), m_hoverIndex(0), m_scrollOffset(0), m_previousScrollOffset(0), m_scrollBar(nullptr), m_items(),
+      m_entries() {
+  *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4) = 27;
+  *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8) = 16;
+}
+
+// OFFSET: 0x005E0650
+// FUNCTION: fn_03863
+UIChangeMaterialWnd_ScrollBar::UIChangeMaterialWnd_ScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+  this->thickness = 16;
+}
+
 // OFFSET: 0x005E1B30
 // FUNCTION: fn_03877
 void UIChangeMaterialWnd_List::CreateScrollBar(int width, int height) {

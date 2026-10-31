@@ -45,8 +45,7 @@ struct MaterialNameLess {
 class UIChangeMaterialWnd_ScrollBar : public UIScrollBar {
 public:
   // VTABLE: vt_00211
-  // INLINED
-  explicit UIChangeMaterialWnd_ScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {}
+  explicit UIChangeMaterialWnd_ScrollBar(UIWindowContext& windows);
 
   void Paint() override;
 };
@@ -63,6 +62,7 @@ public:
 
 class UIChangeMaterialWnd : public UIFrameWnd {
 public:
+  UIChangeMaterialWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edits);
   void Slot15(int width, int height) override;
   bool Slot02() override;
   void Paint() override;
@@ -91,12 +91,7 @@ protected:
 
 class UIChangeMaterialWnd_List : public UIFrameWnd {
 public:
-  // INLINED
-  UIChangeMaterialWnd_List(UIWindowContext& windows, UIFrameContext& frames)
-      : UIFrameWnd(windows, frames, 0), m_selectedIndex(0), m_hoverIndex(0), m_scrollOffset(0), m_previousScrollOffset(0), m_scrollBar(nullptr), m_items(), m_entries() {
-    *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4) = 27;
-    *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8) = 16;
-  }
+  UIChangeMaterialWnd_List(UIWindowContext& windows, UIFrameContext& frames);
 
   void Paint() override;
   void Move(int x, int y) override;
