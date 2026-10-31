@@ -3907,6 +3907,59 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 }
 
 // OFFSET: 0x0097AA00
+// FUNCTION: fn_13320
+void UIMerchantItemPurchaseWnd::Slot15(int width, int height) {
+  this->total = new UIStaticText(*this->m_context, *this->m_controls);
+  this->total->SetSize(160, 15);
+  char text[80];
+  std::sprintf(text, "Total : %d Zeny", 0);
+  this->total->SetTextAutoWidth(text);
+  this->total->Move(12, this->geometry.height - 21);
+  this->AddChild(this->total);
+
+  UIStaticText* title = new UIStaticText(*this->m_context, *this->m_controls);
+  title->SetSize(160, 15);
+  title->SetText(LookupMessage(this->unknown_0108 ? 168 : 228), 0);
+  title->Move(16, 2);
+  title->shadow = 1;
+  this->AddChild(title);
+
+  const std::string prefix("유저인터페이스\\");
+  int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
+  int ids[2] = {184, 185};
+  if (this->unknown_0108) {
+    const char* names[2][3] = {{"btn_sell", "btn_sell_a", "btn_sell_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+    for (int index = 0; index < 2; ++index) {
+      this->buttons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+      UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+      button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      this->buttons[index]->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      this->buttons[index]->Move(positions[index][0], positions[index][1]);
+      this->buttons[index]->SetId(ids[index]);
+      this->AddChild(this->buttons[index]);
+    }
+  } else {
+    const char* names[2][3] = {{"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+    for (int index = 0; index < 2; ++index) {
+      this->buttons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+      UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+      button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      this->buttons[index]->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      this->buttons[index]->Move(positions[index][0], positions[index][1]);
+      this->buttons[index]->SetId(ids[index]);
+      this->AddChild(this->buttons[index]);
+    }
+  }
+
+  this->visibleRows = (height - 38) / 32;
+  this->columns = 1;
+  this->unknown_00F0 = this->geometry.height - this->visibleRows * 32;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x00979920
 // FUNCTION: fn_13318
