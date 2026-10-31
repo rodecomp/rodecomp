@@ -45,6 +45,7 @@ public:
   UIRodexInboxWnd();
   bool Slot03() override;
   void Slot15(int width, int height) override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Nullsub257();

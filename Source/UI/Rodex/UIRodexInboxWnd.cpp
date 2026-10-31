@@ -386,6 +386,116 @@ void UIRodexInboxWnd::Slot15(int width, int height) {
   this->Invalidate();
 }
 
+// OFFSET: 0x00806D40
+// FUNCTION: fn_10048
+void UIRodexInboxWnd::Paint() {
+  this->ClearSurface(0xFF00FF);
+  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_rodex_list.bmp"))), false);
+  for (int i = 0; i < 6; ++i) {
+    this->unknown_01A8[i]->Enable(0);
+  }
+
+  if (!g_rodexMailStore->unknown_001C) {
+    this->DrawBitmap(0x1F, 0x9A, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\img_notice.bmp"))), true);
+    this->sub_A84400(0x1F, 0xE5, std::string(LookupMessage(0xC76)), 0xF8, 3, 6, 0, 12, 0, 0);
+    this->DrawCenteredText(0x1F, 0x10E, LookupMessage(0xC77), 0xF8, 0, 0x12, 0xC89482, 1);
+    return;
+  }
+
+  unsigned int index = this->unknown_019C * 6;
+  if (this->unknown_01D4 == 1) {
+    for (int row = 0; row < 6; ++row, ++index) {
+      if (index < this->searchResults.size()) {
+        std::map<std::int64_t, RodexMail>* mails = RodexMailsOfType(this->searchResults[index].first);
+        if (mails) {
+          std::map<std::int64_t, RodexMail>::iterator it = mails->find(this->searchResults[index].second);
+          if (it != mails->end()) {
+            this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, this->searchResults[index].first == 2);
+            this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, this->searchResults[index].first == 2);
+            if (this->expired == 1) {
+              this->expired = 0;
+              mails->erase(it);
+            } else {
+              this->SetMailRow(
+                row, this->searchResults[index].second, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190,
+                it->second.unknown_0194
+              );
+            }
+          }
+        }
+      } else {
+        this->checks[row]->Show(0);
+        this->checks[row]->SetChecked(0);
+        this->checks[row]->m_message = 0;
+        this->unknown_0144[row]->Enable(0);
+        this->unknown_015C[row]->Enable(0);
+      }
+    }
+  } else {
+    for (int row = 0; row < 6; ++row, ++index) {
+      this->checks[row]->Show(0);
+      this->unknown_0144[row]->Enable(0);
+      this->unknown_015C[row]->Enable(0);
+      if (g_rodexMailStore->unknown_0010 == 1) {
+        if (index < this->mails1.size()) {
+          std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails1.find(this->mails1[index].second);
+          if (it != g_rodexMailStore->m_mails1.end()) {
+            this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, 0);
+            this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, 0);
+            if (this->expired == 1) {
+              this->expired = 0;
+              g_rodexMailStore->m_mails1.erase(it);
+            } else {
+              this->checks[row]->Show(1);
+              this->unknown_0144[row]->Enable(1);
+              this->unknown_015C[row]->Enable(1);
+              this->SetMailRow(row, it->first, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190, -1);
+            }
+          }
+        }
+      } else if (g_rodexMailStore->unknown_0010 == 2) {
+        if (index < this->mails2.size()) {
+          std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails2.find(this->mails2[index].second);
+          if (it != g_rodexMailStore->m_mails2.end()) {
+            this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, 0);
+            this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, 0);
+            if (this->expired == 1) {
+              this->expired = 0;
+              g_rodexMailStore->m_mails2.erase(it);
+            } else {
+              this->checks[row]->Show(1);
+              this->unknown_0144[row]->Enable(1);
+              this->unknown_015C[row]->Enable(1);
+              this->SetMailRow(row, it->first, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190, -1);
+            }
+          }
+        }
+      } else {
+        this->unknown_0144[row]->Enable(0);
+        this->unknown_015C[row]->Enable(0);
+        if (index < this->mails0.size()) {
+          std::map<std::int64_t, RodexMail>::iterator it = g_rodexMailStore->m_mails0.find(this->mails0[index].second);
+          if (it != g_rodexMailStore->m_mails0.end()) {
+            this->DrawMailIcons(row, it->second.unknown_0001, it->second.isRead, 0);
+            this->DrawExpireTime(row, it->second.unknown_001C, it->second.unknown_0020, 0);
+            if (this->expired == 1) {
+              this->expired = 0;
+              g_rodexMailStore->m_mails0.erase(it);
+            } else {
+              this->SetMailRow(
+                row, it->first, it->second.unknown_0004, it->second.unknown_0024, it->second.isRead, it->second.unknown_0190, it->second.unknown_0194
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+
+  this->DrawRightAlignedText(0x111, 0x2E, FormatOwnedString("%d", g_rodexMailStore->unknown_0014).c_str(), 0, 0, 11, 0xC89482, 1);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x111, 0x2E, LookupMessage(0xBDA), 0, 0, 11, 0xC89482, 1, 0);
+}
+
 // OFFSET: 0x00808FD0
 // FUNCTION: fn_10056
 void UIRodexInboxWnd::SetButtonsDisabled(unsigned char disabled) {
@@ -423,6 +533,64 @@ void UIRodexInboxWnd::SetButtonsDisabled(unsigned char disabled) {
 }
 
 // OFFSET: 0x008090C0
+// FUNCTION: fn_10057
+void UIRodexInboxWnd::SetMailRow(int row, std::int64_t mailId, std::string name, std::string subject, unsigned char read, unsigned char returned, int noAttachment) {
+  std::string nameText = name;
+  std::string subjectText = subject;
+  const std::pair<bool, std::string> stripped = RemoveLineBreakTag(subjectText);
+  subjectText = stripped.second;
+  if (stripped.first == true) {
+    this->unknown_0144[row]->SetTooltip("");
+  }
+
+  nameText = g_navigationLinkParser->ExpandMessages(nameText);
+  subjectText = g_navigationLinkParser->ExpandMessages(subjectText);
+
+  this->checks[row]->Show(1);
+  this->checks[row]->m_message = static_cast<int>(mailId);
+
+  UITextButton* button = this->unknown_0144[row];
+  {
+    const std::string label = nameText.c_str();
+    button->label = label;
+  }
+  this->unknown_0144[row]->ResizeToTextClipped(0x8C, this->unknown_0144[row]->geometry.height);
+  this->unknown_0144[row]->m_value = static_cast<int>(mailId);
+  this->unknown_0144[row]->Enable(1);
+
+  std::uint32_t color;
+  if (noAttachment == 0) {
+    this->unknown_01A8[row]->Enable(1);
+    this->unknown_01A8[row]->m_argument = static_cast<int>(mailId);
+    color = read == 1 ? 0xC8C8E6 : 0xFF;
+  } else {
+    color = read == 1 ? 0xC8C8C8 : 0;
+  }
+
+  this->unknown_015C[row]->m_color = color;
+  button = this->unknown_015C[row];
+  {
+    const std::string label = subjectText.c_str();
+    button->label = label;
+  }
+  this->unknown_015C[row]->ResizeToTextClipped(0x8C, this->unknown_015C[row]->geometry.height);
+  this->unknown_015C[row]->m_value = static_cast<int>(mailId);
+  this->unknown_015C[row]->Enable(1);
+
+  if (returned == 1) {
+    this->checks[row]->m_message = -1;
+    this->unknown_0144[row]->Enable(0);
+    this->unknown_015C[row]->m_color = 0xC8C8C8;
+    button = this->unknown_015C[row];
+    {
+      const std::string label = LookupMessage(0xB5B);
+      button->label = label;
+    }
+    this->unknown_015C[row]->ResizeToTextClipped(0x8C, this->unknown_015C[row]->geometry.height);
+    this->unknown_015C[row]->m_value = -1;
+    this->unknown_015C[row]->Enable(1);
+  }
+}
 
 // OFFSET: 0x00809670
 // FUNCTION: fn_10058
