@@ -51,6 +51,7 @@ extern std::map<int, ItemMoveInfo> g_itemMoveInfo;
 
 ItemCardName& FindItemCardName(int id, std::map<int, ItemCardName>& values);
 ItemCardName& FindItemCardName(int id);
+ItemMoveInfo& FindItemMoveInfo(int id, std::map<int, ItemMoveInfo>& values);
 ItemMoveInfo& FindItemMoveInfo(int id);
 bool IsItemCard(int id);
 std::string ItemDisplayName(int id);

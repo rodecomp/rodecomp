@@ -493,6 +493,15 @@ ItemCardName& FindItemCardName(int id, std::map<int, ItemCardName>& values) {
   return entry == values.end() ? missing : entry->second;
 }
 
+// OFFSET: 0x006D3850
+// FUNCTION: fn_45456
+ItemMoveInfo& FindItemMoveInfo(int id, std::map<int, ItemMoveInfo>& values) {
+  // GLOBAL: gl_24789
+  static ItemMoveInfo missingMoveInfo{};
+  const auto entry = values.find(id);
+  return entry == values.end() ? missingMoveInfo : entry->second;
+}
+
 // OFFSET: 0x006D5630
 // FUNCTION: fn_06574
 ItemCardName& FindItemCardName(int id) {
@@ -502,10 +511,7 @@ ItemCardName& FindItemCardName(int id) {
 // OFFSET: 0x006D58B0
 // FUNCTION: fn_06580
 ItemMoveInfo& FindItemMoveInfo(int id) {
-  // GLOBAL: gl_24789
-  static ItemMoveInfo missingMoveInfo{};
-  const auto entry = g_itemMoveInfo.find(id);
-  return entry == g_itemMoveInfo.end() ? missingMoveInfo : entry->second;
+  return FindItemMoveInfo(id, g_itemMoveInfo);
 }
 
 // OFFSET: 0x006D5150
