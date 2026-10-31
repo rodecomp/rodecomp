@@ -3,12 +3,16 @@
 #include "Client/Session.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
+#include "Contents/Skills/AutomaticSkills.h"
 #include "Contents/MessageTable.h"
 #include "Script/LuaScript.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UICheckBox.h"
 #include "UI/Lists/UITabControl.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/UIBalloonText.h"
+#include "UI/Text/UITransBalloonText.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -77,6 +81,92 @@ namespace {
     void** vtable = *reinterpret_cast<void***>(window);
     reinterpret_cast<SetTextFn>(vtable[53])(window, text);
   }
+}
+
+// OFFSET: 0x0091FFD0
+// FUNCTION: fn_12639
+void UIHotKeyWnd::Slot15(int, int) {
+  UIButtonContext& controls = *reinterpret_cast<UIButtonContext*>(nullptr);
+  reinterpret_cast<AutomaticSkills*>(g_session.unknown_7FB4)->DisableAll();
+  this->AddBaseButton(controls);
+  this->AddCloseButton(controls, "", 0);
+
+  this->m_balloon = new UITransBalloonText(*this->m_context, *reinterpret_cast<BalloonTextContext*>(nullptr));
+  this->m_balloon->SetSize(this->geometry.width, 20);
+  this->m_balloon->SetText(LookupMessage(1486), 60);
+  this->m_balloon->Show(0);
+  g_windowMgr.AddRendered(this->m_balloon);
+
+  this->unknown_0100 = new UITabControl(*this->m_context, controls);
+  this->unknown_0100->Configure(1, this->unknown_00C4 - 3, 20, 1, 1, 0, 0, 0, 0, 0, 0, 0);
+  this->unknown_0100->Move(this->unknown_00C8, this->unknown_00CC + this->unknown_00BC);
+  this->AddChild(this->unknown_0100);
+
+  const char* tabs[4] = {LookupMessage(1491), LookupMessage(3595), LookupMessage(1492), LookupMessage(1493)};
+  for (int index = 0; index < 4; ++index) {
+    this->unknown_0100->AddTab(tabs[index], "");
+  }
+
+  {
+    std::string path = "유저인터페이스\\";
+    const char* names[4] = {"btn_ok", "btn_cancel", "btn_reset", "btn_close"};
+    const int ids[4] = {184, 185, 363, 201};
+    int x = 0;
+    for (int index = 0; index < 4; ++index) {
+      UIBitmapButton* button = new UIBitmapButton();
+      button->SetBitmap((path + names[index] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((path + names[index] + "_a.bmp").c_str(), 1, 0);
+      button->SetBitmap((path + names[index] + "_b.bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+
+      const int id = ids[index];
+      button->SetId(id);
+      this->AddChild(button);
+      if (id == 184) {
+        x = this->geometry.width - 139;
+      } else if (id == 185) {
+        x = this->geometry.width - 92;
+      } else if (id == 363) {
+        x = 5;
+      } else if (id == 201) {
+        x = this->geometry.width - 46;
+      }
+
+      button->Move(x, this->geometry.height - 25);
+    }
+  }
+
+  UICheckBox* checkBox = new UICheckBox();
+  this->unknown_0108 = checkBox;
+  checkBox->SetSize(150, 12);
+  checkBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(1775));
+  checkBox->Move(80, this->geometry.height - 22);
+  checkBox->SetChecked(g_windowCloseByte);
+  this->AddChild(this->unknown_0108);
+
+  this->m_prevButton = new UIBitmapButton();
+  UIBitmapButton* prevButton = static_cast<UIBitmapButton*>(this->m_prevButton);
+  prevButton->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 0, 0);
+  prevButton->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 1, 0);
+  prevButton->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 2, 0);
+  prevButton->SetSize(prevButton->BitmapWidth(), prevButton->BitmapHeight());
+  prevButton->Move(this->geometry.width - 80, 25);
+  prevButton->Enable(0);
+  prevButton->SetTooltip(LookupMessage(1053));
+  prevButton->SetId(316);
+  this->AddChild(this->m_prevButton);
+
+  this->m_nextButton = new UIBitmapButton();
+  UIBitmapButton* nextButton = static_cast<UIBitmapButton*>(this->m_nextButton);
+  nextButton->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 0, 0);
+  nextButton->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 1, 0);
+  nextButton->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 2, 0);
+  nextButton->SetSize(nextButton->BitmapWidth(), nextButton->BitmapHeight());
+  nextButton->Move(this->geometry.width - 20, 25);
+  nextButton->Enable(0);
+  nextButton->SetTooltip(LookupMessage(1054));
+  nextButton->SetId(317);
+  this->AddChild(this->m_nextButton);
 }
 
 // OFFSET: 0x00932F70
