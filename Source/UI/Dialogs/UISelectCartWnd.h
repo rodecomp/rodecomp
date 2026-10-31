@@ -9,6 +9,7 @@ class UISelectCartWnd : public UIFrameWnd {
 public:
   void Paint() override;
   void Slot25(int x, int y) override;
+  void AddCart(int index, int type);
 
 protected:
   UIButtonContext* m_controls;

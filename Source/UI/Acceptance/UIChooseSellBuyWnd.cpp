@@ -1038,6 +1038,72 @@ void UISelectCartWnd::Slot25(int x, int y) {
   }
 }
 
+// OFFSET: 0x008CE2C0
+// FUNCTION: fn_12069
+void UISelectCartWnd::AddCart(int index, int type) {
+  const char* names[] = {
+      "NOTHING_CART",
+      "손수레",
+      "손수레1",
+      "손수레2",
+      "손수레3",
+      "손수레4",
+      "손수레5",
+      "손수레6",
+      "손수레7",
+      "손수레8",
+      "선물상자카트",
+      "포링싣은카트",
+      "포링카트",
+      "마도카트",
+  };
+  std::string name = names[type];
+  int x = (index % 5) * 70;
+  int y = (index / 5) * 82 + 28;
+  switch (type) {
+  case 1:
+  case 2:
+  case 10:
+    y -= 13;
+    break;
+  case 4:
+    x += 18;
+    y -= 10;
+    break;
+  case 5:
+    x += 15;
+    y -= 5;
+    break;
+  case 6:
+  case 7:
+  case 8:
+  case 9:
+    x += 13;
+    break;
+  case 11:
+    x += 16;
+    y -= 13;
+    break;
+  case 12:
+    y -= 23;
+    break;
+  case 13:
+    x += 4;
+    y -= 10;
+    break;
+  }
+  UISpriteButton* button = new UISpriteButton(*this->m_context, *this->m_controls);
+  const std::string prefix = "이팩트\\";
+  button->SetSprite((prefix + name + ".spr").c_str());
+  button->SetActName((prefix + name + ".act").c_str());
+  button->SetSize(100, 100);
+  button->Move(x, y);
+  button->unknown_00BC = 0;
+  button->unknown_00C0 = 0;
+  button->SetId(type + 9000);
+  this->AddChild(button);
+}
+
 // OFFSET: 0x008F3860
 // FUNCTION: fn_12271
 void UIItemCollectionWnd::Slot25(int x, int y) {
