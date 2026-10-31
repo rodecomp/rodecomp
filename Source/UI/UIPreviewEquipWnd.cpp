@@ -20,8 +20,8 @@
 
 // OFFSET: 0x007F2F90
 // FUNCTION: fn_09879
-UIPreviewEquipWnd::UIPreviewEquipWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 1), saved(nullptr), m_render(nullptr), m_leftButton(nullptr), m_rightButton(nullptr), unknown_00C4(0) {
+UIPreviewEquipWnd::UIPreviewEquipWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 1), saved(nullptr), m_render(nullptr), m_leftButton(nullptr), m_rightButton(nullptr), unknown_00C4(0), m_controls(&controls) {
 }
 
 // OFFSET: 0x007F3090
@@ -70,6 +70,64 @@ void UIPreviewEquipWnd::DrawCharacter() {
 }
 
 // OFFSET: 0x007F38A0
+// FUNCTION: fn_09882
+void UIPreviewEquipWnd::Slot15(int width, int height) {
+  UIButtonContext& controls = *this->m_controls;
+
+  this->AddBaseButton(controls);
+  this->AddCloseButton(controls, "", 0);
+
+  UIStaticText* shadow = new UIStaticText(*this->m_context, controls);
+  shadow->SetSize(
+    this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0xB90), 0, 0, 12, 0, 0),
+    this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(0xB90), 0, 0, 12, 0, 0)
+  );
+  shadow->SetText(LookupMessage(0xB90), 0);
+  shadow->SetColor(255, 255, 255);
+  shadow->Move(19, 4);
+  this->AddChild(shadow);
+
+  UIStaticText* title = new UIStaticText(*this->m_context, controls);
+  title->SetSize(
+    this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0xB90), 0, 0, 12, 0, 0),
+    this->TextHeight(this->m_context->fonts, this->m_context->locale, LookupMessage(0xB90), 0, 0, 12, 0, 0)
+  );
+  title->SetText(LookupMessage(0xB90), 0);
+  title->Move(18, 3);
+  this->AddChild(title);
+
+  if (!g_modeMgr.GetGameMode() || !static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
+    return;
+  }
+
+  this->m_render = new CCharacterRender(width, height);
+  this->SyncFromPlayer();
+
+  this->m_leftButton = new UIBitmapButton(*this->m_context, controls);
+  this->m_leftButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_l_out.bmp", 0, 0);
+  this->m_leftButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_l_over.bmp", 1, 0);
+  this->m_leftButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_l_press.bmp", 2, 0);
+  this->m_leftButton->SetSize(this->m_leftButton->BitmapWidth(), this->m_leftButton->BitmapHeight());
+  this->m_leftButton->Move(13, 151);
+  this->m_leftButton->SetId(0x180);
+  this->AddChild(this->m_leftButton);
+
+  this->m_rightButton = new UIBitmapButton(*this->m_context, controls);
+  this->m_rightButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_r_out.bmp", 0, 0);
+  this->m_rightButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_r_over.bmp", 1, 0);
+  this->m_rightButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_r_press.bmp", 2, 0);
+  this->m_rightButton->SetSize(this->m_rightButton->BitmapWidth(), this->m_rightButton->BitmapHeight());
+  this->m_rightButton->Move(this->geometry.width - this->m_rightButton->BitmapWidth() - 13, 151);
+  this->m_rightButton->SetId(0x181);
+  this->AddChild(this->m_rightButton);
+
+  this->unknown_00C4 = new UIBasicButton(*this->m_context, controls);
+  this->unknown_00C4->Configure(80, LookupMessage(0xB9F));
+  this->unknown_00C4->Move(static_cast<int>((this->geometry.width - this->unknown_00C4->geometry.width) * 0.5), this->geometry.height - 30);
+  this->unknown_00C4->SetId(0x16B);
+  this->unknown_00C4->invalidateParent = 1;
+  this->AddChild(this->unknown_00C4);
+}
 
 // OFFSET: 0x007F3CD0
 // FUNCTION: fn_09883
