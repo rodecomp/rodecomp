@@ -10,6 +10,9 @@ class UIStaticText;
 struct UIButtonContext;
 struct SeekPartyWndInfo;
 
+extern int g_partyBookingLevelLimit;
+extern int g_partyBookingLevelMax;
+
 class UISeekPartyWnd : public UIFrameWnd {
 public:
   void Slot11() override;
