@@ -174,3 +174,7 @@ void UIJobListWnd::RefreshJobs() {
 }
 
 // OFFSET: 0x00911410
+// FUNCTION: fn_12514
+UIJobListWnd::UIJobListWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_title(nullptr), m_okButton(nullptr), unknown_00E8(0), m_controls(&controls) {
+}
