@@ -447,7 +447,19 @@ public:
   void Zc_Start_Collection(const unsigned char* packet);
   void Zc_Start_Couple(const unsigned char* packet);
   void ReceivePacket0AB8(const unsigned char* packet);
+  void ReceivePacket0A29(int value);
+  void ReceiveCashShopBanner(int value1, int value2, int value3);
+  void ReceiveWindow308TextEntries(unsigned char* packet);
+  void ReceiveActorStateValue(std::uint32_t aid, int unused, std::int16_t value);
+  void ReceiveChatEntries(unsigned char* data);
+  void ReceiveWindowItemList(const unsigned char* packet);
+  void ReceivePacket0B73(const unsigned char* data);
+  void ReceiveInventoryItemUpdate(const unsigned char* packet);
+  void ReceiveUnknownD25850(const unsigned char* packet);
+  void ReceiveUnknownD31A40(const unsigned char* packet);
 };
+
+void LaunchRollingCutterEffect(CGameActor* actor);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CGameMode, mapName) == 0x68);

@@ -8,10 +8,12 @@
 #include "UI/UICaptchaPreviewWnd.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GameActor.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -23,6 +25,8 @@
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/RouletteMgr.h"
 #include "Contents/World/World.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Network/TextEncoding.h"
 #include "UI/Item/UIItemStoreWnd.h"
 #include "UI/Text/UIStaticText.h"
@@ -33,6 +37,8 @@
 #include "UI/Shop/UIMerchantItemShopWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
+#include "Utility/Math/Vector3d.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/StringUtil.h"
 
@@ -64,6 +70,7 @@ struct ClientItemLists {
   void ClearItems1748();
   void ResetEquipped();
   bool Equip(const ITEM_INFO& item);
+  void RemoveItem1710(std::uint32_t id, int quantity);
 };
 
 void __fastcall sub_DFF150(CSession* session);
@@ -225,6 +232,28 @@ namespace {
     /* 0002 */ std::uint16_t type;
     /* 0004 */ int value;
   };
+
+  struct ValuePacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ int value;
+  };
+
+  struct ChatTextEntry {
+    /* 0000 */ char text[16];
+  };
+
+  struct ChatEntryListPacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::int16_t length;
+    /* 0004 */ std::uint16_t unknown_0004;
+    /* 0006 */ ChatTextEntry entries[1];
+  };
+
+  struct ActorValuePacket {
+    /* 0000 */ std::uint16_t id;
+    /* 0002 */ std::uint32_t accountId;
+    /* 0006 */ short value;
+  };
 #pragma pack(pop)
 
   static_assert(sizeof(ItemStoreListHeader) == 0x1C);
@@ -234,6 +263,10 @@ namespace {
   static_assert(sizeof(PacketLengthHeader) == 0x04);
   static_assert(sizeof(Item1740Record) == 0x22);
   static_assert(sizeof(Item1740EquipRecord) == 0x26);
+  static_assert(sizeof(ValuePacket) == 0x06);
+  static_assert(sizeof(ChatTextEntry) == 0x10);
+  static_assert(sizeof(ChatEntryListPacket) == 0x16);
+  static_assert(sizeof(ActorValuePacket) == 0x08);
 
   // INLINED
   int CountStoreItemOptions(const StoreItemOption* options) {
@@ -2053,5 +2086,155 @@ void CGameMode::ReceiveActorCharm(const unsigned char* packet) {
     static_cast<CGameActor*>(actor)->SetCharm(
       *reinterpret_cast<const std::int16_t*>(packet + 6), *reinterpret_cast<const std::int16_t*>(packet + 8)
     );
+  }
+}
+
+// OFFSET: 0x00D79970
+// FUNCTION: fn_22175
+void CGameMode::ReceivePacket0A29(int value) {
+  ValuePacket packet;
+  packet.id = 0x0A2A;
+  packet.value = value;
+  GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x00D79E10
+// FUNCTION: fn_22182
+void CGameMode::ReceiveCashShopBanner(int value1, int value2, int value3) {
+  if (!g_windowMgr.CloseWindow(0x13e)) {
+    if (UIWindow* window = g_windowMgr.EnsureWindow(0x13e)) {
+      window->SendMsg(nullptr, 0xa4, value3, 0, 0, 0);
+      window->SendMsg(nullptr, 0x78, value1, value2, 0, 0);
+    } else {
+      g_modeMgr.gameMode->SendMsg(0x143, value3, 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00D7A180
+// FUNCTION: fn_22188
+void CGameMode::ReceiveWindow308TextEntries(unsigned char* packet) {
+  g_windowMgr.CloseWindow(0x134);
+  UIWindow* window = g_windowMgr.EnsureWindow(0x134);
+  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / 16;
+  char* text = reinterpret_cast<char*>(packet + 4);
+  for (int i = 0; i < count; ++i, text += 16) {
+    text[15] = '\0';
+    if (std::strlen(text) != 0) {
+      window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00D7B390
+// FUNCTION: fn_22202
+void CGameMode::ReceiveActorStateValue(std::uint32_t aid, int unused, std::int16_t value) {
+  if (aid == 0 || !g_serviceOptions.Get(8)) {
+    return;
+  }
+
+  CGameActor* actor;
+  if (aid == g_session.m_aid) {
+    actor = this->scene->player;
+  } else {
+    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+  }
+  if (actor == nullptr) {
+    return;
+  }
+
+  if (actor->UpdateUnknown03E8(value)) {
+    actor->LaunchEffect(0x2a5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  }
+}
+
+// OFFSET: 0x00D898B0
+// FUNCTION: fn_22209
+void CGameMode::ReceiveChatEntries(unsigned char* data) {
+  ChatEntryListPacket* packet = reinterpret_cast<ChatEntryListPacket*>(data);
+  const int count = (packet->length - 6) / static_cast<int>(sizeof(ChatTextEntry));
+  g_windowMgr.CloseWindow(39);
+  UIWindow* window = g_windowMgr.EnsureWindow(39);
+  window->SendMsg(nullptr, 0x3B, packet->unknown_0004, 0, 0, 0);
+  for (int i = 0; i < count; ++i) {
+    ChatTextEntry* entry = &packet->entries[i];
+    entry->text[15] = '\0';
+    if (std::strlen(entry->text) != 0) {
+      window->SendMsg(nullptr, 0x1B, reinterpret_cast<std::intptr_t>(entry->text), 0, 0, 0);
+    }
+  }
+  window->SendMsg(nullptr, 0x1B, reinterpret_cast<std::intptr_t>("cancel"), 0, 0, 0);
+}
+
+// OFFSET: 0x00D795B0
+
+// OFFSET: 0x00D7A200
+// FUNCTION: fn_22189
+void CGameMode::ReceivePacket0B73(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ActorValuePacket*>(data);
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAidIncludeMe(packet->accountId));
+  if (!actor) {
+    return;
+  }
+
+  const int job = actor->GetEffectiveJob(-1);
+  if (job != 4240 && job != 4242 && job != 4303) {
+    return;
+  }
+
+  if (StateFlag01(actor->Slot13()) || StateFlag02(actor->Slot13())) {
+    g_effectMgr->Retire(actor->render.accountId, 1225);
+  }
+
+  CEffect* effect = g_effectMgr->Find(actor->render.accountId, 1225);
+  if (!effect) {
+    effect = g_effectMgr->Spawn(actor->render.accountId, 1225, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    if (!effect) {
+      return;
+    }
+  }
+
+  effect->unknown_00B0 = packet->value;
+  effect->Slot01();
+}
+
+// OFFSET: 0x00D25850
+// FUNCTION: fn_21673
+void CGameMode::ReceiveUnknownD25850(const unsigned char* packet) {
+  reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1710(*reinterpret_cast<const std::int16_t*>(packet + 2), 1);
+  char number[12];
+  char text[260];
+  _itoa(*reinterpret_cast<const int*>(packet + 4), number, 10);
+  const ITEM_DESC& description = FindItemDescription(std::atoi(number));
+  std::sprintf(text, LookupMessage(1258), description.identifiedName);
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+}
+
+// OFFSET: 0x00D31A40
+
+// OFFSET: 0x00D61100
+// FUNCTION: fn_21976
+void LaunchRollingCutterEffect(CGameActor* actor) {
+  if (!actor || !actor->LaunchEffect(837, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    return;
+  }
+
+  if (static_cast<int>(actor->GetInstant(1)) <= 0) {
+    actor->render.instant.Set(1, 0);
+    actor->render.instant.Set(0, static_cast<std::int64_t>(actor->render.angle * 1000.0f));
+  }
+
+  actor->render.instant.Set(1, static_cast<int>(actor->GetInstant(1)) + 1);
+}
+
+// OFFSET: 0x00D2D8D0
+// FUNCTION: fn_21721
+void CGameMode::ReceiveInventoryItemUpdate(const unsigned char* packet) {
+  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t*>(packet + 2));
+  if (item.unknown_0000[1] != 0) {
+    item.unknown_0074[0] = *reinterpret_cast<const unsigned char*>(packet + 4) == 0;
+    g_session.UpdateInventoryItem(item, 1);
   }
 }
