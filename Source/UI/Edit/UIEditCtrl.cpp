@@ -3499,6 +3499,23 @@ void UIMerchantShopMakeWnd::Slot10(int x, int y, std::intptr_t value) {
   }
 }
 
+// OFFSET: 0x00972E60
+// FUNCTION: fn_13281
+std::vector<unsigned char>* sub_972E60(std::vector<unsigned char>* result) {
+  new (result) std::vector<unsigned char>();
+  const auto first = BuildReplayTaggedRecord(0x50DC, nullptr, 0);
+  result->insert(result->end(), first.begin(), first.end());
+  const auto second = BuildReplayTaggedRecord(0x50DD, nullptr, 0);
+  result->insert(result->end(), second.begin(), second.end());
+  return result;
+}
+
+// OFFSET: 0x00973080
+
+// OFFSET: 0x00973170
+
+// OFFSET: 0x00973670
+
 // OFFSET: 0x009738A0
 // FUNCTION: fn_13290
 int UIItemBaseWnd::GetItemIndexAt(int x, int y) {
