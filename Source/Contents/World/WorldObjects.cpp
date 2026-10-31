@@ -22,11 +22,20 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/HexString.h"
+#include "Contents/World/WorldModelLoading.h"
+#include "Contents/Ground/GroundGeometry.h"
+#include "Contents/Models/ModelActor.h"
+#include "Render/Textures/TextureCache.h"
 
 #include <cstdlib>
 #include <new>
 #include <string>
 #include <vector>
+
+// GLOBAL: gl_24371
+HANDLE hObject;
+// GLOBAL: gl_24757
+std::vector<DeferredWorldModel> g_deferredWorldModels;
 
 // OFFSET: 0x00AC8220
 // FUNCTION: fn_17667
@@ -62,6 +71,31 @@ EffectLists* g_effectMgr;
 std::uint32_t g_worldOverlayColor;
 // GLOBAL: gl_24695
 float g_fogDensity;
+
+// OFFSET: 0x00AC9CA0
+// FUNCTION: fn_17685
+void CWorld::OnExitFrame() {
+  if (hObject) {
+    WaitForSingleObject(hObject, INFINITE);
+    CloseHandle(hObject);
+    hObject = nullptr;
+  }
+
+  g_deferredWorldModels.clear();
+  this->pending = 0;
+  this->spatial.ClearChildren();
+  this->Clear();
+
+  for (C3dActor* model : this->models) {
+    delete model;
+  }
+
+  this->models.clear();
+  delete this->ground;
+  this->ground = nullptr;
+  ResourceMgr::Instance().ClearExpired();
+  g_texMgr.ClearUnused();
+}
 
 // OFFSET: 0x00ACA320
 // FUNCTION: fn_17691

@@ -23,6 +23,9 @@ static_assert(sizeof(DeferredWorldModel) == 8);
 static_assert(offsetof(DeferredWorldModel, placement) == 4);
 #endif
 
+extern HANDLE hObject;
+extern std::vector<DeferredWorldModel> g_deferredWorldModels;
+
 struct WorldModelLoading {
   ResourceMgr& resources;
   BinkMovies& movies;

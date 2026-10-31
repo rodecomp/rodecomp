@@ -29,6 +29,7 @@ public:
   CWorld(const CWorld&) = delete;
   CWorld& operator=(const CWorld&) = delete;
   void Clear();
+  void OnExitFrame();
   bool FindActorInCell(const float* position, std::function<bool(std::uint32_t)> predicate) const;
   CRenderObject* GetGameActorByAID(std::uint32_t aid) const;
   CRenderObject* GetGameActorByAidIncludeMe(std::uint32_t aid) const;
