@@ -84,7 +84,7 @@
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/UserData/CharacterConfigSave.h"
-
+#include "UI/Edit/UIItemTagCtrl.h"
 #include <algorithm>
 #include <cstdarg>
 #include <cstdint>
@@ -5640,4 +5640,30 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   }
 
   return 0;
+}
+
+// OFFSET: 0x00859470
+// FUNCTION: fn_10776
+void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
+  if (!this->unknown_0144) {
+    this->unknown_0144 = new (std::nothrow) UIItemTagOnChat();
+    if (!this->unknown_0144) {
+      return;
+    }
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  if (!this->unknown_0144->CanInsertTag(naming.DisplayName(item, 0), this->geometry.width)) {
+    return;
+  }
+
+  this->unknown_0144->taggedText = this->text;
+  const std::string name = naming.DisplayName(item, 0);
+  const std::string tag = this->unknown_0144->AppendTag(name);
+  this->m_edit->input.ResetInput();
+  this->m_edit->input.Insert(tag.c_str());
+  this->unknown_0144->sub_89CFE0(item, 0x12B8A4);
 }
