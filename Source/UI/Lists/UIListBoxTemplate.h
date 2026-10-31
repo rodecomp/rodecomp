@@ -330,6 +330,7 @@ public:
   bool SelectIndex(int index);
   void AddNewItem() {
   }
+  __declspec(noinline) T* CreateItem();
   void Resize(int width, int height) override {
     UIWindow::Resize(width, height);
   }

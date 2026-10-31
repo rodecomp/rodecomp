@@ -78,6 +78,209 @@ template int CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::ClearData();
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::UpdateScrollBar();
 
+template <>
+__declspec(noinline) void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::AddNewItem();
+template <>
+__declspec(noinline) void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::AddNewItem();
+template <>
+__declspec(noinline) CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::CUIListBoxEx(UIWindowContext& context);
+
+// OFFSET: 0x009F93D0
+// FUNCTION: fn_14806
+template <>
+EnchantUI::CUIEnchantItem* CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::CreateItem() {
+  EnchantUI::CUIEnchantItem* item = new EnchantUI::CUIEnchantItem();
+  item->SetSize(this->itemWidth, this->rowHeight);
+  item->Show(0);
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  item->SetImageResources(images[0], images[1], images[2], images[3]);
+  item->onHover = [this](CUIListItem* listItem) {
+    for (EnchantUI::CUIEnchantItem* other : this->items) {
+      other->SetHighlighted(other == listItem);
+    }
+  };
+  item->onPress = [this](CUIListItem* listItem) {
+    if (this->unknown_00C4) {
+      return;
+    }
+    for (EnchantUI::CUIEnchantItem* other : this->items) {
+      if (listItem != other) {
+        other->SetSelected(0);
+      }
+    }
+    listItem->SetSelected(1);
+    if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+      return;
+    }
+    EnchantUI::CUIEnchantItem* selectedItem = dynamic_cast<EnchantUI::CUIEnchantItem*>(listItem);
+    if (!selectedItem) {
+      return;
+    }
+    this->selected = selectedItem->index;
+    if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+      auto node = this->data.begin();
+      std::advance(node, static_cast<int>(this->selected));
+      this->onSelect(selectedItem, *node);
+    }
+  };
+  this->AddChild(item);
+  return item;
+}
+
+// OFFSET: 0x00A01FB0
+// FUNCTION: fn_14836
+template <>
+void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (EnchantUI::CUIEnchantItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count);
+    for (EnchantUI::CUIEnchantItem*& slot : this->items) {
+      slot = this->CreateItem();
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A022A0
+// FUNCTION: fn_14839
+template <>
+void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (EnchantUI::CUIEnchantItem* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
+}
+
+// OFFSET: 0x00A026C0
+// FUNCTION: fn_14841
+template <>
+void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(this->rowHeight * static_cast<int>(this->data.size()) + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
+// OFFSET: 0x009F9570
+// FUNCTION: fn_14807
+template <>
+EnchantUI::CUITargetItem* CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::CreateItem() {
+  EnchantUI::CUITargetItem* item = new EnchantUI::CUITargetItem();
+  item->SetSize(this->itemWidth, this->rowHeight);
+  item->Show(0);
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  item->SetImageResources(images[0], images[1], images[2], images[3]);
+  item->onHover = [this](CUIListItem* listItem) {
+    for (EnchantUI::CUITargetItem* other : this->items) {
+      other->SetHighlighted(other == listItem);
+    }
+  };
+  item->onPress = [this](CUIListItem* listItem) {
+    if (this->unknown_00C4) {
+      return;
+    }
+    for (EnchantUI::CUITargetItem* other : this->items) {
+      if (listItem != other) {
+        other->SetSelected(0);
+      }
+    }
+    listItem->SetSelected(1);
+    if (listItem->index == static_cast<int>(this->selected) && this->unknown_00E0) {
+      return;
+    }
+    EnchantUI::CUITargetItem* selectedItem = dynamic_cast<EnchantUI::CUITargetItem*>(listItem);
+    if (!selectedItem) {
+      return;
+    }
+    this->selected = selectedItem->index;
+    if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+      auto node = this->data.begin();
+      std::advance(node, static_cast<int>(this->selected));
+      this->onSelect(selectedItem, *node);
+    }
+  };
+  this->AddChild(item);
+  return item;
+}
+
+// OFFSET: 0x00A020C0
+// FUNCTION: fn_14837
+template <>
+void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (EnchantUI::CUITargetItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count);
+    for (EnchantUI::CUITargetItem*& slot : this->items) {
+      slot = this->CreateItem();
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A024B0
+// FUNCTION: fn_14840
+template <>
+void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (EnchantUI::CUITargetItem* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
+}
+
+// OFFSET: 0x00A02740
+// FUNCTION: fn_14842
+template <>
+void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(this->rowHeight * static_cast<int>(this->data.size()) + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
 // OFFSET: 0x006863F0
 // FUNCTION: fn_05565
 template <>
@@ -1518,4 +1721,249 @@ bool CUIUpgradePerfect::Slot56() {
   this->enchantList->UpdateScrollBar();
   return true;
 }
+
+// OFFSET: 0x009F9FE0
+// FUNCTION: fn_14817
+void CUIEnchantPage::Slot15(int width, int height) {
+  this->background = new CUIStaticImage(*this->m_context);
+  this->background->SetSize(470, 377);
+  this->background->Move(0, 0);
+  {
+    const std::uint8_t backgroundSource[] = {
+      0x57, 0x5E, 0x21, 0x27, 0x11, 0x5D, 0x2C, 0xE2, 0x51, 0x15, 0x21, 0x11, 0x6C, 0x29, 0xB5, 0x6A,
+      0xF9, 0x92, 0x89, 0xBC, 0xBF, 0xE7, 0xBC, 0x66, 0xCB, 0x93, 0x86, 0x82, 0xA2, 0xE6, 0x8B, 0x5F,
+      0xF6, 0x96, 0x84, 0xF3, 0xB3, 0xFE, 0x99, 0x2F
+    };
+    // GLOBAL: gl_25259
+    thread_local EncryptedName<sizeof(backgroundSource), 0x2FE993D1DDE1F197ULL> backgroundName(backgroundSource);
+    const std::string image(backgroundName.Text());
+    this->background->SetImage(image);
+  }
+  this->AddChild(this->background);
+
+  this->gameItem = new CUIGameItem(*this->m_context);
+  this->gameItem->SetMode(1);
+  this->gameItem->SetScale(100);
+  this->gameItem->Move(112, 5);
+  this->gameItem->unknown_0084 = 1;
+  this->gameItem->unknown_0085 = 1;
+  this->AddChild(this->gameItem);
+
+  CUISlot* slot = new CUISlot0(*this->m_context);
+  slot->SetSize(106, 84);
+  slot->Move(6, 20);
+  this->AddChild(slot);
+  this->unknown_0088[0] = slot;
+
+  slot = new CUISlot1(*this->m_context);
+  slot->SetSize(106, 84);
+  slot->Move(29, 105);
+  this->AddChild(slot);
+  this->unknown_0088[1] = slot;
+
+  slot = new CUISlot2(*this->m_context);
+  slot->SetSize(106, 84);
+  slot->Move(164, 105);
+  this->AddChild(slot);
+  this->unknown_0088[2] = slot;
+
+  slot = new CUISlot3(*this->m_context);
+  slot->SetSize(106, 84);
+  slot->Move(187, 20);
+  this->AddChild(slot);
+  this->unknown_0088[3] = slot;
+
+  this->enchantList = new CUIListBoxEx<CUIEnchantItem, CEnchantItemData>(*this->m_context);
+  this->enchantList->itemWidth = 150;
+  this->enchantList->rowHeight = 30;
+  this->enchantList->SetSize(169, 377);
+  this->enchantList->Move(300, 0);
+  this->enchantList->onSelect = [this](CUIEnchantItem* item, const CEnchantItemData& data) { this->Slot54(item, data); };
+  this->enchantList->binder = [this](CUIEnchantItem* item, const CEnchantItemData& data) { UpdateEnchantItem(item, &data); };
+  {
+    const std::uint8_t disabledSource[] = {
+      0x3D, 0x16, 0x7B, 0xDB, 0x5F, 0x33, 0x84, 0x84, 0x3B, 0x5D, 0x7B, 0xED, 0x22, 0x47, 0x1D, 0x0C,
+      0x93, 0xDA, 0xD3, 0x40, 0xF1, 0x89, 0x14, 0x00, 0xA1, 0xDB, 0xCF, 0x4F, 0xC0, 0x98, 0x2F, 0x2A,
+      0xA2, 0xD0, 0xCF, 0x44, 0xF2, 0xD3, 0x23, 0x24, 0x8D, 0xB9
+    };
+    // GLOBAL: gl_25260
+    thread_local EncryptedName<sizeof(disabledSource), 0x4941FD9F21BBB9FDULL> disabledName(disabledSource);
+    const std::string disabled(disabledName.Text());
+    const std::uint8_t pressedSource[] = {
+      0xB5, 0x62, 0x2D, 0xA7, 0xAB, 0xAB, 0x20, 0xF8, 0xB3, 0x29, 0x2D, 0x91, 0xD6, 0xDF, 0xB9, 0x70,
+      0x1B, 0xAE, 0x85, 0x3C, 0x05, 0x11, 0xB0, 0x7C, 0x29, 0xAF, 0x99, 0x33, 0x34, 0x00, 0x8B, 0x56,
+      0x2A, 0xA4, 0x99, 0x38, 0x06, 0x3A, 0x8A, 0x43, 0x10, 0xBF, 0xC3, 0x3F, 0x06, 0x15, 0xE5
+    };
+    // GLOBAL: gl_25261
+    thread_local EncryptedName<sizeof(pressedSource), 0x35E5656B5DEDCD75ULL> pressedName(pressedSource);
+    const std::string pressed(pressedName.Text());
+    const std::uint8_t hoverSource[] = {
+      0xBF, 0xBA, 0x4D, 0xEB, 0xF7, 0xC1, 0x4E, 0xE2, 0xB9, 0xF1, 0x4D, 0xDD, 0x8A, 0xB5, 0xD7, 0x6A,
+      0x11, 0x76, 0xE5, 0x70, 0x59, 0x7B, 0xDE, 0x66, 0x23, 0x77, 0xF9, 0x7F, 0x68, 0x6A, 0xE5, 0x4C,
+      0x20, 0x7C, 0xF9, 0x74, 0x5A, 0x50, 0xFB, 0x5D, 0x1A, 0x66, 0xFE, 0x3F, 0x55, 0x62, 0xFB, 0x2F
+    };
+    // GLOBAL: gl_25262
+    thread_local EncryptedName<sizeof(hoverSource), 0x2F8B0F37118D157FULL> hoverName(hoverSource);
+    const std::string hover(hoverName.Text());
+    const std::uint8_t normalSource[] = {
+      0x0D, 0x5E, 0x59, 0x4F, 0x4D, 0x95, 0xC2, 0x60, 0x0B, 0x15, 0x59, 0x79, 0x30, 0xE1, 0x5B, 0xE8,
+      0xA3, 0x92, 0xF1, 0xD4, 0xE3, 0x2F, 0x52, 0xE4, 0x91, 0x93, 0xED, 0xDB, 0xD2, 0x3E, 0x69, 0xCE,
+      0x92, 0x98, 0xED, 0xD0, 0xE0, 0x75, 0x65, 0xC0, 0xBD, 0xF1
+    };
+    // GLOBAL: gl_25263
+    thread_local EncryptedName<sizeof(normalSource), 0xAD075B8DB599F1CDULL> normalName(normalSource);
+    const std::string normal(normalName.Text());
+    this->enchantList->SetImages(normal, hover, pressed, disabled);
+  }
+  this->enchantList->itemX = 3;
+  this->enchantList->itemY = 0;
+  this->enchantList->scrollBar->SetSize(16, 377);
+  this->enchantList->scrollBar->Move(153, 0);
+  this->enchantList->scrollBar->step = 30;
+  {
+    const std::uint8_t downSource[] = {
+      0xAB, 0x16, 0x07, 0xF5, 0xA7, 0x41, 0x38, 0x7A, 0xAD, 0x5D, 0x07, 0xC3, 0xDA, 0x35, 0xA1, 0xF2,
+      0x05, 0xDA, 0xAF, 0x6E, 0x09, 0xFB, 0xA8, 0xFE, 0x37, 0xCA, 0xA4, 0x7D, 0x08, 0xE3, 0x91, 0xE8,
+      0x0A, 0xCB, 0xB5, 0x60, 0x10, 0xD0, 0x99, 0xD8, 0x1C, 0xD4, 0xE9, 0x6D, 0x0A, 0xFF, 0xFD
+    };
+    // GLOBAL: gl_25264
+    thread_local EncryptedName<sizeof(downSource), 0xB7FD8F670FC7B96BULL> downName(downSource);
+    const std::string down(downName.Text());
+    const std::uint8_t upSource[] = {
+      0x3D, 0x78, 0x8D, 0x53, 0x75, 0x41, 0x52, 0x2A, 0x3B, 0x33, 0x8D, 0x65, 0x08, 0x35, 0xCB, 0xA2,
+      0x93, 0xB4, 0x25, 0xC8, 0xDB, 0xFB, 0xC2, 0xAE, 0xA1, 0xA4, 0x2E, 0xDB, 0xDA, 0xE3, 0xFB, 0xB8,
+      0x9C, 0xA5, 0x3F, 0xC6, 0xC2, 0xD0, 0xE2, 0x97, 0xD3, 0xB5, 0x20, 0xD9, 0xB5
+    };
+    // GLOBAL: gl_25265
+    thread_local EncryptedName<sizeof(upSource), 0xE7978FB5A94DD7FDULL> upName(upSource);
+    const std::string up(upName.Text());
+    this->enchantList->scrollBar->SetButtonImages(up, down);
+  }
+  {
+    const std::uint8_t backgroundSource[] = {
+      0xA3, 0x5A, 0x21, 0x85, 0xFB, 0xEB, 0xD8, 0x06, 0xA5, 0x11, 0x21, 0xB3, 0x86, 0x9F, 0x41, 0x8E,
+      0x0D, 0x96, 0x89, 0x1E, 0x55, 0x51, 0x48, 0x82, 0x3F, 0x86, 0x82, 0x0D, 0x54, 0x49, 0x71, 0x94,
+      0x01, 0x92, 0xCF, 0x1D, 0x56, 0x55, 0x1D
+    };
+    // GLOBAL: gl_25266
+    thread_local EncryptedName<sizeof(backgroundSource), 0xCB1D253B7FE1F563ULL> backgroundName(backgroundSource);
+    const std::string image(backgroundName.Text());
+    this->enchantList->scrollBar->SetBackground(image);
+  }
+  {
+    const std::uint8_t thumbSource[] = {
+      0x09, 0xBC, 0x39, 0x89, 0x39, 0x17, 0xD0, 0xBC, 0x0F, 0xF7, 0x39, 0xBF, 0x44, 0x63, 0x49, 0x34,
+      0xA7, 0x70, 0x91, 0x12, 0x97, 0xAD, 0x40, 0x38, 0x95, 0x60, 0x9A, 0x01, 0x96, 0xB5, 0x79, 0x2E,
+      0xAB, 0x67, 0x97, 0x5D, 0x9B, 0xB4, 0x65, 0x71
+    };
+    // GLOBAL: gl_25267
+    thread_local EncryptedName<sizeof(thumbSource), 0x7115D9F973F913C9ULL> thumbName(thumbSource);
+    const std::string image(thumbName.Text());
+    this->enchantList->scrollBar->SetThumbImage(image);
+  }
+  this->enchantList->AddNewItem();
+  this->AddChild(this->enchantList);
+
+  this->unknown_009C = new CUIStaticText(*this->m_context);
+  this->unknown_009C->SetSize(100, 15);
+  this->unknown_009C->Move(150, 309);
+  this->unknown_009C->SetText("", 0);
+  this->unknown_009C->SetFitText(0);
+  this->unknown_009C->SetAlign(2, 6);
+  {
+    const std::uint8_t fontSource[] = {0x5A, 0x70, 0xFF, 0x40, 0x1C, 0x23};
+    // GLOBAL: gl_25268
+    thread_local EncryptedName<sizeof(fontSource), 0xE55723712993051DULL> fontName(fontSource);
+    const std::string font(fontName.Text());
+    this->unknown_009C->SetFont(font);
+  }
+  this->unknown_009C->SetFontHeight(14);
+  this->unknown_009C->SetBold(1);
+  this->unknown_009C->SetColor(0);
+  this->unknown_009C->SetShadow(0, 0xFFFFFF);
+  this->unknown_009C->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->unknown_009C);
+
+  this->unknown_00A0 = new CUIImageButton(*this->m_context);
+  this->unknown_00A0->SetSize(140, 40);
+  this->unknown_00A0->Move(80, 330);
+  this->unknown_00A0->SetOnClick([this]() { this->Slot55(); });
+  this->unknown_00A0->disabled = 0;
+  this->unknown_00A0->Invalidate();
+  this->unknown_00A0->SetImages(
+    std::string("유저인터페이스\\EnchantUI\\btn_enc.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_enc_press.bmp"),
+    std::string("유저인터페이스\\EnchantUI\\btn_enc_over.bmp"), std::string("유저인터페이스\\EnchantUI\\btn_enc_dis.bmp")
+  );
+  this->AddChild(this->unknown_00A0);
+}
+
+// OFFSET: 0x009FCDE0
+// FUNCTION: fn_14820
+void CUINormalPerfect::Slot15(int width, int height) {
+  CUIEnchantPage::Slot15(width, height);
+  {
+    const std::uint8_t backgroundSource[] = {
+      0xBF, 0x7A, 0x6F, 0xA1, 0xAB, 0x7F, 0xD0, 0xC2, 0xB9, 0x31, 0x6F, 0x97, 0xD6, 0x0B, 0x49, 0x4A,
+      0x11, 0xB6, 0xC7, 0x3A, 0x05, 0xC5, 0x40, 0x46, 0x23, 0xB7, 0xC8, 0x04, 0x18, 0xC4, 0x77, 0x7F,
+      0x1E, 0xB2, 0xCA, 0x02, 0x45, 0xD3, 0x78, 0x7F, 0x7F
+    };
+    // GLOBAL: gl_25269
+    thread_local EncryptedName<sizeof(backgroundSource), 0x0F15B16B5BAFD57FULL> backgroundName(backgroundSource);
+    const std::string image(backgroundName.Text());
+    this->background->SetImage(image);
+  }
+}
+
+// OFFSET: 0x009FCFB0
+// FUNCTION: fn_14821
+void CUINormalRandom::Slot15(int width, int height) {
+  CUIEnchantPage::Slot15(width, height);
+  {
+    const std::uint8_t backgroundSource[] = {
+      0x8F, 0xC8, 0x2D, 0x7F, 0xC9, 0xF9, 0xFA, 0xB4, 0x89, 0x83, 0x2D, 0x49, 0xB4, 0x8D, 0x63, 0x3C,
+      0x21, 0x04, 0x85, 0xE4, 0x67, 0x43, 0x6A, 0x30, 0x13, 0x05, 0x8A, 0xDA, 0x7A, 0x42, 0x5D, 0x09,
+      0x2E, 0x00, 0x88, 0xC7, 0x27, 0x55, 0x52, 0x09, 0x4F
+    };
+    // GLOBAL: gl_25270
+    thread_local EncryptedName<sizeof(backgroundSource), 0x793F370985ED674FULL> backgroundName(backgroundSource);
+    const std::string image(backgroundName.Text());
+    this->background->SetImage(image);
+  }
+}
+
+// OFFSET: 0x009FD180
+// FUNCTION: fn_14822
+void CUIReset::Slot15(int width, int height) {
+  CUIEnchantPage::Slot15(width, height);
+  {
+    const std::uint8_t backgroundSource[] = {
+      0x8F, 0x0E, 0x0F, 0xCF, 0xA3, 0x19, 0x84, 0xB4, 0x89, 0x45, 0x0F, 0xF9, 0xDE, 0x6D, 0x1D, 0x3C,
+      0x21, 0xC2, 0xA7, 0x54, 0x0D, 0xA3, 0x14, 0x30, 0x13, 0xC3, 0xA8, 0x6A, 0x10, 0xA2, 0x23, 0x09,
+      0x2E, 0xC6, 0xAA, 0x1B, 0x01, 0xBA, 0x31, 0x79
+    };
+    // GLOBAL: gl_25271
+    thread_local EncryptedName<sizeof(backgroundSource), 0x7941D76335CFA14FULL> backgroundName(backgroundSource);
+    const std::string image(backgroundName.Text());
+    this->background->SetImage(image);
+  }
+}
+
+// OFFSET: 0x00A01AD0
+// FUNCTION: fn_14830
+void CUIUpgradePerfect::Slot15(int width, int height) {
+  CUIUpgradeEnchantPage::Slot15(width, height);
+  {
+    const std::uint8_t backgroundSource[] = {
+      0x21, 0x36, 0x47, 0xB5, 0x41, 0x0D, 0xE4, 0xBE, 0x27, 0x7D, 0x47, 0x83, 0x3C, 0x79, 0x7D, 0x36,
+      0x8F, 0xFA, 0xEF, 0x2E, 0xEF, 0xB7, 0x74, 0x3A, 0xBD, 0xFB, 0xE0, 0x10, 0xF2, 0xB6, 0x43, 0x03,
+      0x80, 0xFE, 0xE2, 0x16, 0xAF, 0xA1, 0x4C, 0x03, 0xE1
+    };
+    // GLOBAL: gl_25272
+    thread_local EncryptedName<sizeof(backgroundSource), 0x7321C3814F8799E1ULL> backgroundName(backgroundSource);
+    const std::string image(backgroundName.Text());
+    this->background->SetImage(image);
+  }
+}
+
+// OFFSET: 0x00A01CA0
 }

@@ -57,6 +57,10 @@ class CUISlot;
 
 class CUIEnchantItem : public CUIListItem {
 public:
+  // INLINED
+  CUIEnchantItem() : itemIcon(nullptr), name(nullptr) {
+  }
+
   /* 00E8 */ CUIGameItem* itemIcon;
   /* 00EC */ CUIStaticText* name;
 
@@ -68,6 +72,10 @@ public:
 
 class CUITargetItem : public CUIListItem {
 public:
+  // INLINED
+  CUITargetItem() : itemIcon(nullptr), unknown_00EC(nullptr), unknown_00F0(nullptr) {
+  }
+
   /* 00E8 */ CUIGameItem* itemIcon;
   /* 00EC */ CUIStaticImage* unknown_00EC;
   /* 00F0 */ CUIStaticText* unknown_00F0;
@@ -101,17 +109,21 @@ class CUIEnchantPage : public CUIControl {
 public:
   explicit CUIEnchantPage(UIWindowContext& context);
 
-  /* 0080 */ unsigned char unknown_0080[0x4];
+  union {
+    /* 0080 */ unsigned char unknown_0080[0x4];
+    /* 0080 */ CUIStaticImage* background;
+  };
   /* 0084 */ CUIGameItem* gameItem;
   /* 0088 */ std::map<int, CUISlot*> unknown_0088;
   /* 0090 */ std::list<CUIIngredient*> unknown_0090;
   /* 0098 */ CUIListBoxEx<CUIEnchantItem, CEnchantItemData>* enchantList;
   /* 009C */ CUIStaticText* unknown_009C;
-  /* 00A0 */ CUIButton* unknown_00A0 = nullptr;
+  /* 00A0 */ CUIImageButton* unknown_00A0 = nullptr;
   /* 00A4 */ EnchantInfo* enchantInfo;
   /* 00A8 */ uint64_t group;
   /* 00B0 */ int unknown_00B0;
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   virtual void Slot54(CUIEnchantItem* item, const CEnchantItemData& data);
   virtual void Slot55() = 0;
@@ -132,6 +144,7 @@ class CUINormalRandom : public CUIEnchantPage {
 public:
   using CUIEnchantPage::CUIEnchantPage;
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Slot55() override;
   bool Slot56() override;
@@ -141,6 +154,7 @@ class CUINormalPerfect : public CUIEnchantPage {
 public:
   using CUIEnchantPage::CUIEnchantPage;
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Slot54(CUIEnchantItem* item, const CEnchantItemData& data) override;
   void Slot55() override;
@@ -149,6 +163,7 @@ public:
 
 class CUIReset : public CUIEnchantPage {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Slot55() override;
   bool Slot56() override;
@@ -167,6 +182,7 @@ class CUIUpgradeRandom : public CUIUpgradeEnchantPage {
 public:
   using CUIUpgradeEnchantPage::CUIUpgradeEnchantPage;
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Slot55() override;
   bool Slot56() override;
@@ -178,6 +194,7 @@ public:
 
   /* 00B8 */ bool unknown_00B8 = false;
 
+  void Slot15(int width, int height) override;
   void Slot54(CUIEnchantItem* item, const CEnchantItemData& data) override;
   void Slot55() override;
   bool Slot56() override;
@@ -216,6 +233,10 @@ public:
 
 class CUISlot : public CUIControl {
 public:
+  // INLINED
+  explicit CUISlot(UIWindowContext& context) : CUIControl(context), radioButton(nullptr), itemIcon(nullptr), description(nullptr) {
+  }
+
   /* 0080 */ CUIRadioButton* radioButton;
   /* 0084 */ CUIGameItem* itemIcon;
   /* 0088 */ CUITextViewer* description;
@@ -230,24 +251,32 @@ public:
 
 class CUISlot0 : public CUISlot {
 public:
+  using CUISlot::CUISlot;
+
   void Slot15(int width, int height) override;
   void Slot16() override;
 };
 
 class CUISlot1 : public CUISlot {
 public:
+  using CUISlot::CUISlot;
+
   void Slot15(int width, int height) override;
   void Slot16() override;
 };
 
 class CUISlot2 : public CUISlot {
 public:
+  using CUISlot::CUISlot;
+
   void Slot15(int width, int height) override;
   void Slot16() override;
 };
 
 class CUISlot3 : public CUISlot {
 public:
+  using CUISlot::CUISlot;
+
   void Slot15(int width, int height) override;
   void Slot16() override;
 };
