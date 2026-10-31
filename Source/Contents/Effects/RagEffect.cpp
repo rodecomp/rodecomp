@@ -1833,29 +1833,30 @@ void CRagEffect::Steal() {
 
   PlayEffectWave(*this, "effect\\EF_Steal.wav");
 
-  for (int index = 0; index < 10; ++index) {
+  for (int count = 0; count < 10; ++count) {
     this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 6, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
     this->state.unknown_11C84->longitude = static_cast<float>(std::max(rand() % 360, 0));
-    this->state.unknown_11C84->latitude = static_cast<float>(-90 + (40 + std::max(rand() % 100, 0)));
-    EffectPrimitiveState& spark = *this->state.unknown_11C84;
-    reinterpret_cast<matrix*>(spark.transform)->MakeYRotation(GetRadian(static_cast<int>(spark.longitude)));
-    reinterpret_cast<matrix*>(spark.transform)->AppendXRotation(GetRadian(static_cast<int>(spark.latitude)));
-    EffectPrimitiveState& moving = *this->state.unknown_11C84;
-    moving.deltaPos3 = RotatedForward(moving.transform, static_cast<float>(std::max(rand() % 4, 0) + 4));
-    EffectPrimitiveState& offset = *this->state.unknown_11C84;
-    offset.deltaPos2 = {offset.deltaPos3.x + 0.0f, offset.deltaPos3.y - 10.0f, offset.deltaPos3.z + 0.0f};
-    EffectPrimitiveState& turn = *this->state.unknown_11C84;
-    reinterpret_cast<matrix*>(turn.transform)->MakeYRotation(GetRadian(static_cast<int>(turn.longitude)));
+    this->state.unknown_11C84->latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
+    EffectPrimitiveState& aimed = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(aimed.transform)->MakeYRotation(GetRadian(static_cast<int>(aimed.longitude)));
+    EffectPrimitiveState& pitched = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(pitched.transform)->AppendXRotation(GetRadian(static_cast<int>(pitched.latitude)));
+    EffectPrimitiveState& launched = *this->state.unknown_11C84;
+    launched.deltaPos3 = RotatedForward(launched.transform, static_cast<float>(std::max(rand() % 4, 0) + 4));
+    EffectPrimitiveState& placed = *this->state.unknown_11C84;
+    placed.deltaPos2 = {placed.deltaPos3.x + 0.0f, placed.deltaPos3.y - 10.0f, placed.deltaPos3.z + 0.0f};
+    EffectPrimitiveState& level = *this->state.unknown_11C84;
+    reinterpret_cast<matrix*>(level.transform)->MakeYRotation(GetRadian(static_cast<int>(level.longitude)));
     this->state.unknown_11C84->duration = this->state.duration;
     this->state.unknown_11C84->speed = static_cast<float>(std::max(rand() % 50, 0) + 50) / 100.0f;
-    EffectPrimitiveState& slow = *this->state.unknown_11C84;
-    slow.accel = -(slow.speed / static_cast<float>(slow.duration)) / 2.0f;
+    EffectPrimitiveState& braking = *this->state.unknown_11C84;
+    braking.accel = -(braking.speed / static_cast<float>(braking.duration)) * g_depthAverageHalf;
     this->state.unknown_11C84->gravSpeed = -static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
     EffectPrimitiveState& falling = *this->state.unknown_11C84;
     falling.gravAccel = -(falling.gravSpeed / static_cast<float>(falling.duration)) * 2.0f;
     this->state.unknown_11C84->size = static_cast<float>(std::max(rand() % 100, 0) + 100) / 100.0f;
-    EffectPrimitiveState& shrink = *this->state.unknown_11C84;
-    shrink.sizeSpeed = -(shrink.size / static_cast<float>(shrink.duration));
+    EffectPrimitiveState& shrinking = *this->state.unknown_11C84;
+    shrinking.sizeSpeed = -(shrinking.size / static_cast<float>(shrinking.duration));
     this->state.unknown_11C84->fadeOutCnt = this->state.unknown_11C84->duration - this->state.unknown_11C84->duration / 3;
     Owner(this->state.unknown_11C84).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle7.spr");
     Owner(this->state.unknown_11C84).SetActionName(ResourceMgr::Instance(), "이팩트\\particle7.act");
@@ -16182,6 +16183,70 @@ void CRagEffect::LineStreakLayered(short kind) {
 }
 
 // OFFSET: 0x00C50980
+// FUNCTION: fn_20185
+void CRagEffect::TorchRedRing(char kind) {
+  this->render.position = this->state.parent->render.position;
+
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->render.position = this->state.parent->render.position;
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 133, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->totalTexture = 13;
+  AllocateTextures(*this->state.unknown_11C84);
+  this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\torch_red01.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\torch_red02.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\torch_red03.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[3] = g_texMgr.Load("effect\\torch_red04.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[4] = g_texMgr.Load("effect\\torch_red05.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[5] = g_texMgr.Load("effect\\torch_red06.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[6] = g_texMgr.Load("effect\\torch_red07.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[7] = g_texMgr.Load("effect\\torch_red08.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[8] = g_texMgr.Load("effect\\torch_red09.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[9] = g_texMgr.Load("effect\\torch_red10.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[10] = g_texMgr.Load("effect\\torch_red11.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[11] = g_texMgr.Load("effect\\torch_red12.bmp", 0, false, true, false);
+  this->state.unknown_11C84->textures[12] = g_texMgr.Load("effect\\torch_red13.bmp", 0, false, true, false);
+
+  this->state.unknown_11C84->size = 0.0f;
+  this->state.unknown_11C84->slots[0].life = 0;
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].distance = 12.0f;
+  this->state.unknown_11C84->slots[0].vecBPre.y = this->render.position.y - 12.0f;
+  this->state.unknown_11C84->slots[0].flag1[2] = 4;
+  this->state.unknown_11C84->slots[0].height[10] = 0.0f;
+  this->state.unknown_11C84->slots[0].fullDisplayAngle = 135;
+  this->state.unknown_11C84->slots[0].height[8] = 0.0f;
+  this->state.unknown_11C84->slots[0].alphaB = 0;
+  this->state.unknown_11C84->deltaPos.x = this->state.deltaPos[0];
+  this->state.unknown_11C84->deltaPos.y = this->state.deltaPos[1];
+  this->state.unknown_11C84->deltaPos.z = this->state.deltaPos[2];
+
+  Get_Angle(
+    this->render.position.x - this->state.deltaPos[0], this->render.position.z - this->state.deltaPos[2],
+    &this->state.unknown_11C84->slots[0].riseAngle
+  );
+  this->state.unknown_11C84->slots[0].riseAngle += 180;
+
+  if (this->state.unknown_11C84->slots[0].riseAngle >= 360) {
+    this->state.unknown_11C84->slots[0].riseAngle -= 360;
+  }
+
+  this->state.unknown_11C84->slots[0].vecBNow.x = this->state.deltaPos[0];
+  this->state.unknown_11C84->slots[0].vecBNow.z = this->state.deltaPos[2];
+  this->state.unknown_11C84->slots[0].vecBNow.y = this->state.unknown_11C84->slots[0].vecBPre.y;
+  this->state.unknown_11C84->slots[0].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+  this->state.unknown_11C84->slots[0].flag1[0] = 0;
+  this->state.unknown_11C84->slots[0].flag1[4] = kind;
+}
 
 // OFFSET: 0x00C510C0
 // FUNCTION: fn_20187
