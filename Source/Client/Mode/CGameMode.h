@@ -104,7 +104,9 @@ public:
   /* 028C */ unsigned char unknown_028C[0x08];
   /* 0294 */ char unknown_0294[0x20];
   /* 02B4 */ UIWindow* itemWindow;
-  /* 02B8 */ unsigned char unknown_02B8[0x1C];
+  /* 02B8 */ unsigned char unknown_02B8[0x14];
+  /* 02CC */ int unknown_02CC;
+  /* 02D0 */ unsigned char unknown_02D0[0x04];
   /* 02D4 */ int unknown_02D4;
   /* 02D8 */ unsigned char unknown_02D8[0x04];
   /* 02DC */ int unknown_02DC;

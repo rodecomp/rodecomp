@@ -4,9 +4,19 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
+#include "Contents/Actors/AttackMotion.h"
 #include "Contents/Actors/Item.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/EffectPrim.h"
+#include "Contents/Effects/EnergyOrbEffect.h"
+#include "Contents/Effects/MonsterSkillEffects.h"
+#include "Contents/Effects/RagEffect.h"
+#include "Contents/Effects/TetraBallEffect.h"
+#include "Contents/Skills/SkillInfo.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/Effects/MsgEffect.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/EquipmentResourceMgr.h"
@@ -23,6 +33,9 @@
 #include "Contents/SpriteRidingOffset.h"
 #include "Contents/World/World.h"
 #include "Contents/Ground/TerrainHeight.h"
+#include "Contents/MovementRouteInterpolation.h"
+#include "Contents/NavigationManager.h"
+#include "Contents/TerrainPathSearch.h"
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
@@ -48,6 +61,9 @@
 
 // GLOBAL: gl_24753
 extern const int g_maxMoveSpeed = 432;
+
+// GLOBAL: gl_25175
+unsigned char g_statusRefreshSuppressed;
 
 // OFFSET: 0x00DA7700
 // FUNCTION: fn_22558
@@ -342,6 +358,8 @@ void CGrannyPc::Slot23(int first, int second) {
   this->unknown_0440 = first;
   this->unknown_0444 = second;
 }
+
+// OFFSET: 0x00DB3C30
 
 // OFFSET: 0x00DBA6C0
 // FUNCTION: fn_22674
@@ -2972,4 +2990,438 @@ void CPlayer::UpdatePendingAction() {
   }
 
   this->SendMsg(nullptr, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00DB68B0
+
+// GLOBAL: gl_25218
+bool g_unknown173AD3F;
+
+struct PlayerSkillRequest {
+  int skill;
+  int x;
+  int y;
+  int level;
+};
+
+// OFFSET: 0x00DB9A00
+// FUNCTION: fn_22672
+void CPlayer::SendMsg(
+  CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
+) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  switch (static_cast<std::int64_t>(a) << 32 | static_cast<std::uint32_t>(message)) {
+  case 0x00: {
+    this->unknown_050C = 0;
+    const int* route = reinterpret_cast<const int*>(b);
+    this->routeStartTick = route[0];
+    if (this->FindRoute(route[1], route[2], route[3], route[4], route[5], route[6], *reinterpret_cast<const int*>(g_session.unknown_16F4))) {
+      this->unknown_0158[5] = route[5];
+      *reinterpret_cast<int*>(this->unknown_0170) = route[6];
+      this->Slot15(1, 1);
+      this->unknown_023C = 0;
+    } else {
+      int column;
+      int row;
+      int subColumn;
+      int subRow;
+      reinterpret_cast<const TerrainHeight*>(mode)->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
+      if (this->FindRoute(column, row, subColumn, subRow, route[5], route[6], *reinterpret_cast<const int*>(g_session.unknown_16F4))) {
+        this->unknown_0158[5] = route[5];
+        *reinterpret_cast<int*>(this->unknown_0170) = route[6];
+        this->Slot15(1, 1);
+      }
+    }
+    g_navigationManager.CheckArrival(this->unknown_0158[5], *reinterpret_cast<const int*>(this->unknown_0170));
+    break;
+  }
+  case 0x08:
+    this->Slot15(0, 1);
+    break;
+  case 0x09:
+    this->unknown_050C = 1;
+    this->unknown_0504 = timeGetTime();
+    reinterpret_cast<int&>(this->unknown_04F8) = b;
+    this->unknown_04FC = d;
+    break;
+  case 0x0A:
+    if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
+      CRenderObject* target = mode->scene->GetGameActorByAID(b);
+      if (target != nullptr) {
+        this->unknown_0508 =
+          static_cast<std::uint32_t>(*reinterpret_cast<const int*>(g_session.unknown_16F4) * 4 / 3) <
+              reinterpret_cast<const std::uint32_t*>(static_cast<CGameActor*>(target)->unknown_0170)[1]
+            ? 5
+            : 1;
+        this->unknown_051C = b;
+        this->unknown_0514 = 0;
+        this->unknown_0510 = d;
+        this->unknown_0520 = 0;
+      }
+    }
+    break;
+  case 0x0D:
+    this->unknown_0514 = 0;
+    this->unknown_0508 = 0;
+    mode->SendMsg(0x1A, 0, 0, 0, 0);
+    break;
+  case 0x0F: {
+    const int attackMode = this->unknown_0508;
+    if (attackMode != 1 && attackMode != 5) {
+      if (attackMode == 3) {
+        mode->SendMsg(0x1A, 0, 0, 0, 0);
+        break;
+      }
+      if (attackMode != 6) {
+        break;
+      }
+    }
+    if (this->unknown_0510 != 0) {
+      this->unknown_0510 = 2;
+      if (this->unknown_0520 != 0) {
+        this->SendMsg(nullptr, 0xD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        mode->SendMsg(0x49, 0, 0, 0, 0);
+      }
+    }
+    break;
+  }
+  case 0x10: {
+    const std::uint32_t state = this->render.unknown_0070;
+    if (state != 0 && state != 4 && state != 6) {
+      break;
+    }
+    float targetX;
+    float targetZ;
+    reinterpret_cast<const TerrainHeight*>(mode)->CellCenter(b, d, targetX, targetZ);
+    const float heading = CRenderObject::Heading(this->render.position.x, this->render.position.z, targetX, targetZ);
+    const float facing = static_cast<float>((CPlayer::AngleToDirection(static_cast<float>(heading + 22.5)) + 4) * 45);
+    int delta = static_cast<int>(this->render.angle - facing);
+    if (delta < 0) {
+      delta += 360;
+    }
+    int direction = delta / 45;
+    if (direction < 0) {
+      direction += 8;
+    } else if (direction >= 8) {
+      direction -= 8;
+    }
+    if (direction == 0 || direction == 4) {
+      this->unknown_043C = 0;
+      this->render.angle = facing;
+    } else if (direction == 1) {
+      if (this->unknown_043C == 1) {
+        this->unknown_043C = 0;
+        this->render.angle = facing;
+      } else {
+        this->unknown_043C = 1;
+      }
+    } else {
+      if (direction == 2 || direction == 3) {
+        this->unknown_043C = 1;
+        const float angle = facing + 45.0f;
+        this->render.angle = angle;
+        if (angle >= 360.0f) {
+          this->render.angle = angle - 360.0f;
+        }
+      }
+      if (direction == 7) {
+        if (this->unknown_043C == 2) {
+          this->unknown_043C = 0;
+          this->render.angle = facing;
+        } else {
+          this->unknown_043C = 2;
+        }
+      } else if (direction == 5 || direction == 6) {
+        const float angle = facing - 45.0f;
+        this->unknown_043C = 2;
+        this->render.angle = angle;
+        if (angle < 0.0f) {
+          this->render.angle = angle + 360.0f;
+        }
+      }
+    }
+    const int motion = this->unknown_043C;
+    this->render.curMotion = motion;
+    this->render.angle = static_cast<float>((CPlayer::AngleToDirection(this->render.angle) + 4) * 45);
+    mode->SendMsg(0x8B, CPlayer::AngleToDirection(this->render.angle), motion, 0, 0);
+    break;
+  }
+  case 0x11:
+    this->SendMsg(nullptr, 0xD, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    if (this->render.unknown_0070 != 0x4B) {
+      if (this->IsSpecialState(this->render.unknown_0070)) {
+        this->unknown_0518 = 1;
+        this->unknown_053C = b;
+        this->unknown_0540 = d;
+      } else {
+        this->unknown_0518 = 0;
+        this->unknown_053C = -1;
+        this->unknown_0540 = -1;
+        this->SendMsg(nullptr, 0x5B, 0, b, b >> 31, d, d >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+    }
+    break;
+  case 0x12:
+    if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
+      this->unknown_0508 = 2;
+      this->unknown_051C = b;
+    }
+    break;
+  case 0x1D:
+    mode->SendMsg(0x89, 0, this->unknown_051C, 0, 0);
+    break;
+  case 0x1F:
+    if (!StateFlag01(this->stateFlags)) {
+      if (this->render.unknown_0070 == 0) {
+        mode->SendMsg(0x89, 2, this->unknown_051C, 0, 0);
+      } else if (this->render.unknown_0070 == 6) {
+        mode->SendMsg(0x89, 3, this->unknown_051C, 0, 0);
+      }
+    }
+    break;
+  case 0x28: {
+    CRenderObject* target = mode->scene->GetGameActorByAID(this->unknown_051C);
+    if (target == nullptr || static_cast<CGameActor*>(target)->unknown_0314 != 7) {
+      mode->SendMsg(0x89, 7, this->unknown_051C, 0, 0);
+    }
+    break;
+  }
+  case 0x29:
+    if (this->render.unknown_0070 != 6 &&
+        (!StateFlag01(this->stateFlags) || (d == 0x89 && e == 0) || (d == 0xD4 && e == 0) || (d == 0x211 && e == 0) ||
+         (d == 0x212 && e == 0) || (d == 0x250 && e == 0))) {
+      this->unknown_0508 = 3;
+      this->unknown_051C = b;
+      this->unknown_052C = d;
+    }
+    break;
+  case 0x2A:
+    mode->SendMsg(0x45, this->unknown_052C, this->unknown_051C, this->unknown_0530, 0);
+    break;
+  case 0x3C:
+    if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
+      const int attackMode = this->unknown_0508 == 1 ? 5 : 1;
+      this->unknown_0524 = timeGetTime() - 1200;
+      this->unknown_0508 = attackMode;
+      this->unknown_051C = b;
+      this->unknown_0514 = 0;
+      this->unknown_0520 = 0;
+      reinterpret_cast<int&>(this->unknown_04F8) = -1;
+      this->unknown_04FC = -1;
+    }
+    break;
+  case 0x41:
+    if (this->render.unknown_0070 != 6 &&
+        (!StateFlag01(this->stateFlags) || (b == 0x89 && c == 0) || (b == 0xD4 && c == 0) || (b == 0x211 && c == 0) ||
+         (b == 0x212 && c == 0))) {
+      this->unknown_0508 = 4;
+      this->unknown_052C = b;
+      this->unknown_0534 = d;
+      this->unknown_0538 = f;
+      this->unknown_051C = 0;
+    }
+    break;
+  case 0x42: {
+    PlayerSkillRequest request;
+    request.skill = this->unknown_052C;
+    request.x = this->unknown_0534;
+    request.y = this->unknown_0538;
+    request.level = this->unknown_0530;
+    if (request.skill == 0x7D) {
+      g_windowMgr.EnsureWindow(0x54)->SendMsg(nullptr, 0x44, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
+    } else if (request.skill == 0xDC) {
+      g_windowMgr.EnsureWindow(0x65)->SendMsg(nullptr, 0x44, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
+    } else if (request.skill == 0x108 || request.skill == 0xA04) {
+      int metadata = 0;
+      int column = 0;
+      int row = 0;
+      int subColumn = 0;
+      int subRow = 0;
+      reinterpret_cast<const TerrainHeight*>(g_modeMgr.GetGameMode())
+        ->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
+      MovementRouteInterpolation route;
+      if (g_pathFinder.FindPath(timeGetTime(), column, row, subColumn, subRow, this->unknown_0534, this->unknown_0538, 150, route, 15) == true) {
+        metadata = route.EndMetadata();
+      }
+      mode->SendMsg(0x46, reinterpret_cast<int>(&request), metadata, 0, 0);
+    } else {
+      mode->SendMsg(0x46, reinterpret_cast<int>(&request), 0, 0, 0);
+    }
+    break;
+  }
+  case 0x5A:
+    this->unknown_0530 = b;
+    break;
+  case 0x5B:
+    g_unknown173AD3F = false;
+    if (timeGetTime() > this->unknown_0528 + 350) {
+      this->unknown_0528 = timeGetTime();
+      mode->SendMsg(0x8A, b, d, 0, 0);
+    }
+    break;
+  case 0x67:
+    if (this->render.unknown_0070 != 6 && !StateFlag01(this->stateFlags)) {
+      const int* skill = reinterpret_cast<const int*>(d);
+      this->unknown_0508 = 6;
+      this->unknown_052C = skill[1];
+      this->unknown_0530 = skill[3];
+      this->unknown_051C = b;
+      this->unknown_0510 = f;
+      this->unknown_0514 = 0;
+      this->unknown_0520 = 0;
+    }
+    break;
+  case 0x95:
+    this->route.points.clear();
+    break;
+  default:
+    this->CPc::SendMsg(sender, message, a, b, c, d, e, f, g, h, i, j, k, l, m);
+    break;
+  }
+}
+
+// OFFSET: 0x00DAC750
+// FUNCTION: fn_22596
+void CGrannyPc::RenderModel(
+  const matrix& view, const GrannyPcLight& light, C3dGrannyModelRes* model, int layer, C3dGrannyModelRes* animation
+) {
+  if (!this->render.visible || this->render.accountId == 0xFFFFFFFF) {
+    return;
+  }
+
+  CTexture* texture = nullptr;
+  std::uint16_t* indices = nullptr;
+
+  this->brightness = (this->alpha << 24) + 0xFFFFFF;
+  g_modeMgr.GetGameMode();
+  union {
+    void (CGrannyPc::*asVoid)(C3dGrannyModelRes*);
+    granny_world_pose* (CGrannyPc::*asPose)(C3dGrannyModelRes*);
+  } update;
+  update.asVoid = &CGrannyPc::UpdateAnimation;
+  granny_world_pose* pose = nullptr;
+  RenderCommand** commands = this->layerCommands[layer];
+  if (!model) {
+    model = this->model;
+    this->unknown_2550 = (this->*update.asPose)(nullptr);
+    commands = this->commands;
+  } else if (animation) {
+    pose = (this->*update.asPose)(animation);
+  } else {
+    pose = this->unknown_2550;
+  }
+
+  matrix rotation;
+  rotation.MakeXRotation(1.570796f);
+  rotation.AppendYRotation((this->angle + 180.0f) / 180.0f * 3.141592f);
+  rotation.AppendScale(0.3f, 0.3f, 0.3f);
+  vector3d position;
+  position.x = this->render.position.x - 2.0f;
+  position.y = this->render.position.y;
+  position.z = this->render.position.z - 2.0f;
+  rotation.AppendTranslate(&position.x);
+
+  float screenX;
+  float screenY;
+  float reciprocalDepth;
+  g_renderer->ProjectViewport(&this->render.position.x, view.values, &screenX, &screenY, &reciprocalDepth);
+
+  bool attached = false;
+  matrix inverse;
+  inverse.MakeInverse(view);
+  vector3d direction;
+  direction.x = light.direction.x * inverse.values[0] + light.direction.y * inverse.values[3] + light.direction.z * inverse.values[6] + inverse.values[9];
+  direction.y = light.direction.x * inverse.values[1] + light.direction.y * inverse.values[4] + light.direction.z * inverse.values[7] + inverse.values[10];
+  direction.z = light.direction.x * inverse.values[2] + light.direction.y * inverse.values[5] + inverse.values[8] * light.direction.z + inverse.values[11];
+  const float scale = 1.0f / SquareRoot(direction.y * direction.y + direction.x * direction.x + direction.z * direction.z);
+  const float lightX = scale * direction.x;
+  const float lightY = scale * direction.y;
+  const float lightZ = scale * direction.z;
+
+  float bounds[5];
+  bounds[0] = static_cast<float>(g_renderer->viewport.width);
+  bounds[1] = static_cast<float>(g_renderer->viewport.height);
+  bounds[2] = 0.0f;
+  bounds[3] = 0.0f;
+  bounds[4] = reciprocalDepth;
+
+  for (int mesh = 0; mesh < model->instance->meshCount; ++mesh) {
+    if (layer == 0) {
+      model->deformBuffer = this->vertices[mesh];
+    } else {
+      model->deformBuffer = this->layerVertices[layer][mesh];
+    }
+
+    int triangleCount;
+    matrix transform;
+    const GrannyPNT332Vertex* source = static_cast<const GrannyPNT332Vertex*>(
+      model->GetMeshRenderData(mesh, &texture, &indices, &triangleCount, &transform, pose)
+    );
+    if (!source || !texture) {
+      continue;
+    }
+
+    const matrix* attachment;
+    if (layer == this->attachLayer) {
+      attached = true;
+      attachment = &this->attachTransform;
+    } else {
+      attachment = &transform;
+    }
+
+    matrix local;
+    local.Compose(*attachment, rotation);
+    matrix world;
+    world.Compose(local, view);
+
+    int vertexCount = 0;
+    RenderCommand* command = commands[mesh];
+    for (int triangle = 0; triangle < triangleCount; ++triangle) {
+      for (int corner = 3; corner != 0; --corner) {
+        const GrannyPNT332Vertex& vertex = source[indices[vertexCount]];
+        RenderVertex& output = command->vertices[vertexCount];
+        ++vertexCount;
+        position.x = vertex.position[0];
+        position.y = vertex.position[1];
+        position.z = vertex.position[2];
+        if (attached == true && mesh > 0) {
+          const vector3d point = position;
+          position.x = point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9];
+          position.y = transform.values[4] * point.y + transform.values[1] * point.x + transform.values[7] * point.z + transform.values[10];
+          position.z = transform.values[5] * point.y + transform.values[2] * point.x + transform.values[8] * point.z + transform.values[11];
+        }
+
+        g_renderer->viewport.Projection().Project(&position.x, world.values, output);
+        output.u = vertex.uv[0];
+        output.v = vertex.uv[1];
+        const float shade = lightY * vertex.normal[1] + lightX * vertex.normal[0] + lightZ * vertex.normal[2];
+        const unsigned brightness = static_cast<unsigned>(
+          std::max(0.0f, std::min(1.0f, 1.0f - shade)) * static_cast<float>(light.intensity) + static_cast<float>(255 - light.intensity)
+        );
+        this->brightness = brightness;
+        output.diffuse = ((light.red + 0x38 + brightness) << 16 & 0xFF0000) + ((light.green + 0x38 + brightness) << 8 & 0xFF00) +
+                         static_cast<unsigned char>(light.blue + 0x38 + brightness) + (this->alpha << 24);
+      }
+
+      if (layer != 1) {
+        this->unknown_2558.push_back(position);
+      }
+    }
+
+    command->texture = texture;
+    command->vertexCount = vertexCount;
+    g_renderer->queues.Submit(command, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    this->meshTextures[layer][mesh] = texture;
+    this->meshIndices[layer][mesh] = indices;
+    this->meshTriangleCounts[layer][mesh] = triangleCount;
+    this->meshTransforms[mesh] = transform;
+  }
+
+  if (model == this->model) {
+    if (this->model->ProjectBounds(bounds, view, rotation, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.eye)) {
+      this->SetRenderInfo(bounds, screenX, screenY);
+    } else {
+      this->SetTlvert(screenX, screenY);
+    }
+  }
 }

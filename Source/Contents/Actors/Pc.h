@@ -200,6 +200,9 @@ class CPlayer : public CPc {
 public:
   CPlayer();
   bool OnProcess() override;
+  void SendMsg(
+    CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
+  ) override;
   static int AngleToDirection(float angle);
 
   bool Slot09(
@@ -220,6 +223,7 @@ public:
   void Slot36() override;
 
   bool IsSpecialState(int state) const;
+  void ReapplySkillEffects();
   void Slot16() override;
   void Slot17() override;
   void RefreshEffect164();
@@ -253,11 +257,20 @@ static_assert(offsetof(CPlayer, unknown_0544) == 0x544);
 
 extern bool g_refreshWindow289;
 
+struct GrannyPcLight {
+  /* 0000 */ vector3d direction;
+  /* 000C */ int intensity;
+  /* 0010 */ int red;
+  /* 0014 */ int green;
+  /* 0018 */ int blue;
+};
+
 class CGrannyPc : public CGameActor {
 public:
   bool OnProcess() override;
   void SetAction(unsigned animation, int motion, int repeat) override;
   void Slot08() override;
+  void Slot15(int first, int second) override;
   void Slot19(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
   void Slot20(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
   void Slot21(int value) override;
@@ -279,12 +292,13 @@ public:
   void ReleaseMeshes();
   void UpdateGaugeWindow();
   void UpdateAnimation(C3dGrannyModelRes* model);
+  void RenderModel(const matrix& view, const GrannyPcLight& light, C3dGrannyModelRes* model, int layer, C3dGrannyModelRes* animation);
   void RenderCached(const matrix& view, int layer, C3dGrannyModelRes* model);
 
   /* 0410 */ std::string unknown_0410;
   /* 0428 */ int unknown_0428;
   /* 042C */ int unknown_042C;
-  /* 0430 */ unsigned char unknown_0430[4];
+  /* 0430 */ int unknown_0430;
   /* 0434 */ int unknown_0434;
   /* 0438 */ int unknown_0438;
   /* 043C */ unsigned char unknown_043C[4];
@@ -307,7 +321,8 @@ public:
   /* 0F04 */ granny_system_clock clock;
   /* 0F14 */ granny_system_clock lastClock;
   /* 0F24 */ float unknown_0F24;
-  /* 0F28 */ unsigned char unknown_0F28[0x08];
+  /* 0F28 */ int unknown_0F28;
+  /* 0F2C */ int unknown_0F2C;
   /* 0F30 */ float angle;
   /* 0F34 */ unsigned char alpha;
   /* 0F35 */ unsigned char unknown_0F35[0x03];
@@ -325,8 +340,9 @@ public:
   /* 1A08 */ int meshTriangleCounts[10][30];
   /* 1EB8 */ matrix meshTransforms[30];
   /* 2458 */ unsigned char unknown_2458[0xF8];
-  /* 2550 */ int unknown_2550;
-  /* 2554 */ unsigned char unknown_2554[0x10];
+  /* 2550 */ granny_world_pose* unknown_2550;
+  /* 2554 */ int unknown_2554;
+  /* 2558 */ std::vector<vector3d> unknown_2558;
   /* 2564 */ int attachLayer;
   /* 2568 */ int unknown_2568;
   /* 256C */ matrix attachTransform;
@@ -379,5 +395,7 @@ static_assert(offsetof(CPc, unknown_04CC) == 0x4CC);
 static_assert(offsetof(CPc, unknown_04DC) == 0x4DC);
 static_assert(offsetof(CPc, unknown_04E0) == 0x4E0);
 #endif
+
+extern unsigned char g_statusRefreshSuppressed;
 
 #endif

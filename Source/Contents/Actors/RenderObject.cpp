@@ -55,6 +55,8 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Math/ScalarConversion.h"
 #include "Contents/World/WorldObjects.h"
+#include "Contents/ChampionMonsterMgr.h"
+#include "Contents/Effects/EffectPrim.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include <algorithm>
 #include <cstdint>
@@ -69,6 +71,9 @@
 
 // GLOBAL: gl_25002
 std::uint32_t g_proximityCompareId;
+
+// GLOBAL: gl_25173
+int g_playerPoisoned;
 
 // GLOBAL: gl_25144
 CActorPickNode g_actorPickNode;
@@ -4916,3 +4921,5 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
 CCharacterNpc::CCharacterNpc() : CNpc() {
   this->unknown_0440 = 0;
 }
+
+// OFFSET: 0x00CBFC40

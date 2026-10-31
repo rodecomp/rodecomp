@@ -236,6 +236,7 @@ public:
   int GetShield();
   int GetEffectiveJob(int job);
   void LaunchAttackProjectile(int target, float scale);
+  void SetStatusStates(int bodyState, std::uint32_t stateFlags, int effectState, bool notify);
   void PlayGroundSkillEffect(int sender, const int* skill, int argument3, int argument4);
   void ShowPartyMemberEffect(std::uint32_t accountId);
   int GetUnknown0404Job() const;
