@@ -78,6 +78,27 @@ void CUISubTab::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x009D1C80
+// FUNCTION: fn_14009
+void CUITab::Slot15(int width, int height) {
+  this->unknown_00E8 = new CUIStaticText(*this->m_context);
+  this->unknown_00E8->SetSize(98, 40);
+  this->unknown_00E8->Move(0, 0);
+  this->unknown_00E8->SetText("", 0);
+  this->unknown_00E8->SetFitText(0);
+  this->unknown_00E8->SetAlign(6, 6);
+  {
+    CUIStaticText* text = this->unknown_00E8;
+    const std::uint8_t fontSource[] = {0xBA, 0xC0, 0x5F, 0x86, 0x3C, 0x37};
+    thread_local EncryptedName<sizeof(fontSource), 0x91493751EF33B5FDULL> fontName(fontSource);
+    text->SetFont(fontName.Text());
+  }
+  this->unknown_00E8->SetFontHeight(12);
+  this->unknown_00E8->SetBold(1);
+  this->unknown_00E8->SetColor(0x5F3C2C);
+  this->unknown_00E8->SetShadow(0, 0xFFFFFF);
+  this->unknown_00E8->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->unknown_00E8);
+}
 
 // OFFSET: 0x009D1F00
 
