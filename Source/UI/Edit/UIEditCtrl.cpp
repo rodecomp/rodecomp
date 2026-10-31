@@ -1729,6 +1729,96 @@ void UIMerchantItemShopWnd::Slot19() {
   this->Invalidate();
 }
 
+// OFFSET: 0x009886F0
+// FUNCTION: fn_13389
+void UIMerchantShopMakeWnd::Slot19() {
+  if (this->unknown_0128 && this->mode) {
+    std::int64_t total = 0;
+    for (unsigned index = 0; index < this->items.size(); ++index) {
+      char text[24] = {};
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s", this->priceEdits[index]->Text());
+      if (g_session.IsNumberWithCommas(text) == true) {
+        const std::int64_t price = _atoi64(text);
+        const std::int64_t quantity = _atoi64(this->quantityEdits[index]->Text());
+        const double rate = PriceCommission(price) * -0.01;
+        total += (price - static_cast<std::int64_t>(price * rate)) * quantity;
+      }
+    }
+
+    char buffer[128] = {};
+    StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "%lld", total);
+    this->unknown_0128->SetText(buffer);
+    this->InvalidateChildren();
+    return;
+  }
+
+  if (!g_windowMgr.modalWindows.empty() && g_windowMgr.modalWindows.back()) {
+    return;
+  }
+
+  int index = -1;
+  for (int i = 0; i < this->unknown_012C; ++i) {
+    if (this->priceEdits[i] == g_windowMgr.GetHoverWindow()) {
+      index = i;
+      break;
+    }
+  }
+
+  if (this->editIndex != index) {
+    if (index != -1) {
+      this->unknown_0170 = this->priceEdits[index]->Text();
+    }
+    this->CommitPrice(index);
+    this->InvalidateChildren();
+    return;
+  }
+
+  if (index == -1) {
+    return;
+  }
+
+  const int length = this->priceEdits[index]->Length();
+  if (length == this->unknown_016C) {
+    return;
+  }
+  this->unknown_016C = length;
+  if (!length) {
+    return;
+  }
+
+  UIEditCtrl* edit = this->priceEdits[index];
+  InputFocus focus{g_windowMgr.hoverWindow};
+  char text[24];
+  std::sprintf(text, "%s ", edit->Text());
+  if (!g_session.IsNumberWithCommas(text)) {
+    reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(602), 0, true, false, 0, "Message", 280, 120, 0);
+    edit->SetText(this->unknown_0170.c_str());
+    focus.Set(edit);
+    return;
+  }
+
+  std::int64_t price = _atoi64(text);
+  if (price < 0) {
+    price = 0;
+  } else if (price > 1000000000) {
+    const int result = reinterpret_cast<WindowDialogs&>(g_windowMgr).Confirm(LookupMessage(2467), 2, true, false, 0, "Message", 280, 120, 0);
+    price = 1000000000;
+    if (result == 187) {
+      edit->SetText(_itoa(1000000000, text, 10));
+    } else {
+      edit->SetText(_itoa(1000000000, text, 10));
+      focus.Set(edit);
+    }
+  }
+
+  const PriceColors colors = PriceColor(price);
+  edit->TextColor(colors.primary, colors.secondary);
+  edit->SetText(FormatGroupedInteger(price, text, sizeof(text)));
+  this->unknown_0170 = this->priceEdits[index]->Text();
+  this->unknown_016C = this->priceEdits[index]->Length();
+  edit->SetCursor(edit->Length());
+}
+
 // OFFSET: 0x00988C20
 // FUNCTION: fn_13390
 void UINoticeMessageBox_LockSellItem::Slot19() {
