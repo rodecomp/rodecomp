@@ -167,7 +167,9 @@ public:
   /* 0F78 */ const char* const* m_humanFemaleHeadNames;
   /* 0F7C */ unsigned char unknown_0F7C[0x08];
   /* 0F84 */ const char* const* m_imfNames;
-  /* 0F88 */ unsigned char unknown_0F88[0x20];
+  /* 0F88 */ unsigned char unknown_0F88[0x14];
+  /* 0F9C */ const char* const* m_shieldJobNames;
+  /* 0FA0 */ unsigned char unknown_0FA0[0x08];
   /* 0FA8 */ std::vector<const char*> m_jobNameTable;
   /* 0FB4 */ std::map<unsigned, const char*> m_jobNameTableWoman;
   /* 0FBC */ std::map<unsigned, const char*> m_jobNameTableMan;

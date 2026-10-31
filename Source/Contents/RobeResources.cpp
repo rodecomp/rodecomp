@@ -54,3 +54,32 @@ std::string EquipmentResourceMgr::GetRobeSprName(int robe, int) {
   }
   return name;
 }
+
+// OFFSET: 0x00BAC8E0
+// FUNCTION: fn_19757
+std::string EquipmentResourceMgr::GetShieldResourceName(int type, int job, int sex, int shield, int costumeJob) {
+  const int spriteJob = g_session.GetSpriteJob(job, costumeJob, true);
+  std::string path;
+  std::string sexName;
+  std::string shieldName;
+
+  const int shieldView = g_session.GetItemDescription40(shield);
+  sexName = g_session.GetSexName(sex);
+  bool exists = false;
+  if (shield >= 5 && g_session.HasJobShieldSprite(job, shield) == true) {
+    path = FormatOwnedString("방패\\%s_%s_%d_방패.%s", g_session.m_shieldJobNames[spriteJob], sexName.c_str(), shield, g_equipmentResourceExtensions[type]);
+    exists = ResourceMgr::Instance().Exists(path.c_str());
+  }
+
+  if (!exists) {
+    if (!g_session.HasJobShieldSprite(job, shieldView)) {
+      return "";
+    }
+
+    shieldName = g_session.GetRobeName(shieldView);
+    path = FormatOwnedString("방패\\%s_%s%s.%s", g_session.m_shieldJobNames[spriteJob], sexName.c_str(), shieldName.c_str(), g_equipmentResourceExtensions[type]);
+    exists = ResourceMgr::Instance().Exists(path.c_str());
+  }
+
+  return exists ? path : "";
+}

@@ -34,6 +34,7 @@ public:
   std::string GetBodyPalName(int job, int sex, int palette, int costumeJob, int costume, int);
   std::string GetRobeSprName(int robe, int);
   std::string GetRobeResourceName(int type, int job, int sex, int robe, bool riding, int unused, int costumeJob);
+  std::string GetShieldResourceName(int type, int job, int sex, int shield, int costumeJob);
   std::string GetHeadName(int type, int job, int sex, int* head);
   std::string GetHeadPalName(int head, int job, int sex, int palette);
   std::string GetWeaponResourceName(int type, int job, int sex, int weapon, int weaponItem, int costume);
