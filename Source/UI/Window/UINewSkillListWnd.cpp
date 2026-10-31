@@ -924,8 +924,8 @@ void UINewSkillListWnd::Paint() {
   const int points = this->m_skillPoints;
   char text[80];
   std::memset(text, 0, sizeof(text));
-  if (*reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4) == 0) {
-    const int total = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0x165C);
+  if (g_session.m_simplifiedSkillList == 0) {
+    const int total = *reinterpret_cast<const int*>(g_session.unknown_165C);
     if (points < total) {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s^0000ff%d^000000(^ff0000%d^000000) / %d", LookupMessage(2343), points, total - points,
                    total);
