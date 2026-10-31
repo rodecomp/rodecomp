@@ -781,3 +781,123 @@ namespace OngoingQuestInfo {
 CUIRewardItem::CUIRewardItem(UIWindowContext& context) : CUIListItem(context), background(nullptr), gameItem(nullptr), nameText(nullptr), countText(nullptr) {
 }
 }
+
+namespace OngoingQuestInfo {
+// OFFSET: 0x00A51ED0
+// FUNCTION: fn_16229
+void CUIRewards::Slot15(int width, int height) {
+  this->icon = new CUIStaticImage(*this->m_context);
+  this->icon->SetSize(10, 9);
+  this->icon->Move(9, 9);
+  this->icon->SetImage("유저인터페이스\\Renew_QuestUI\\img_poring.bmp");
+  this->AddChild(this->icon);
+
+  this->title = new CUIStaticText(*this->m_context);
+  this->title->SetSize(50, 12);
+  this->title->Move(25, 9);
+  this->title->SetText("", 0);
+  this->title->SetFitText(0);
+  this->title->SetAlign(0, 0);
+  this->title->SetFont("Gulim");
+  this->title->SetFontHeight(12);
+  this->title->SetBold(0);
+  this->title->SetColor(0);
+  this->title->SetShadow(0, 0xFFFFFF);
+  this->title->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->title);
+
+  this->firstLabel = new CUIStaticText(*this->m_context);
+  this->firstLabel->SetSize(50, 12);
+  this->firstLabel->Move(32, 30);
+  this->firstLabel->SetText("", 0);
+  this->firstLabel->SetFitText(0);
+  this->firstLabel->SetAlign(0, 0);
+  this->firstLabel->SetFont("Gulim");
+  this->firstLabel->SetFontHeight(12);
+  this->firstLabel->SetBold(0);
+  this->firstLabel->SetColor(0);
+  this->firstLabel->SetShadow(0, 0xFFFFFF);
+  this->firstLabel->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->firstLabel);
+
+  this->firstText = new CUIStaticText(*this->m_context);
+  this->firstText->SetSize(150, 12);
+  this->firstText->Move(110, 30);
+  this->firstText->SetText("", 0);
+  this->firstText->SetFitText(0);
+  this->firstText->SetAlign(0, 0);
+  this->firstText->SetFont("Gulim");
+  this->firstText->SetFontHeight(12);
+  this->firstText->SetBold(0);
+  this->firstText->SetColor(0xA0551D);
+  this->firstText->SetShadow(0, 0xFFFFFF);
+  this->firstText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->firstText);
+
+  this->secondLabel = new CUIStaticText(*this->m_context);
+  this->secondLabel->SetSize(100, 12);
+  this->secondLabel->Move(32, 51);
+  this->secondLabel->SetText("", 0);
+  this->secondLabel->SetFitText(0);
+  this->secondLabel->SetAlign(0, 0);
+  this->secondLabel->SetFont("Gulim");
+  this->secondLabel->SetFontHeight(12);
+  this->secondLabel->SetBold(0);
+  this->secondLabel->SetColor(0);
+  this->secondLabel->SetShadow(0, 0xFFFFFF);
+  this->secondLabel->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->secondLabel);
+
+  this->secondText = new CUIStaticText(*this->m_context);
+  this->secondText->SetSize(150, 12);
+  this->secondText->Move(110, 51);
+  this->secondText->SetText("", 0);
+  this->secondText->SetFitText(0);
+  this->secondText->SetAlign(0, 0);
+  this->secondText->SetFont("Gulim");
+  this->secondText->SetFontHeight(12);
+  this->secondText->SetBold(0);
+  this->secondText->SetColor(0xA0551D);
+  this->secondText->SetShadow(0, 0xFFFFFF);
+  this->secondText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->secondText);
+
+  this->thirdLabel = new CUIStaticText(*this->m_context);
+  this->thirdLabel->SetSize(100, 12);
+  this->thirdLabel->Move(32, 72);
+  this->thirdLabel->SetText("", 0);
+  this->thirdLabel->SetFitText(0);
+  this->thirdLabel->SetAlign(0, 0);
+  this->thirdLabel->SetFont("Gulim");
+  this->thirdLabel->SetFontHeight(12);
+  this->thirdLabel->SetBold(0);
+  this->thirdLabel->SetColor(0);
+  this->thirdLabel->SetShadow(0, 0xFFFFFF);
+  this->thirdLabel->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->thirdLabel);
+
+  this->rewardList = new CUIListBoxEx<CUIRewardItem, CRewardItemData>(*this->m_context);
+  this->rewardList->itemWidth = 225;
+  this->rewardList->rowHeight = 41;
+  this->rewardList->SetSize(225, 41);
+  this->rewardList->Move(110, 72);
+  this->rewardList->onSelect = [this](CUIRewardItem* item, const CRewardItemData& data) { this->OnPrepareItem(item, data); };
+  this->rewardList->binder = [this](CUIRewardItem* item, const CRewardItemData& data) { this->OnBindItem(item, data); };
+  this->rewardList->SetImages("", "", "", "");
+  this->rewardList->itemX = 0;
+  this->rewardList->itemY = 0;
+  this->rewardList->scrollBar->SetSize(7, 41);
+  this->rewardList->scrollBar->Move(218, 0);
+  this->rewardList->scrollBar->step = 41;
+  this->rewardList->scrollBar->SetButtonImages(
+    "유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_upper.bmp", "유저인터페이스\\Renew_QuestUI\\bt_scrollbar_arrow_down.bmp"
+  );
+  this->rewardList->scrollBar->SetBackground("");
+  this->rewardList->scrollBar->SetThumbImages(
+    "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_up.bmp", "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_mid.bmp",
+    "유저인터페이스\\Renew_QuestUI\\bt_scrollBar_down.bmp"
+  );
+  this->rewardList->AddNewItem();
+  this->AddChild(this->rewardList);
+}
+}

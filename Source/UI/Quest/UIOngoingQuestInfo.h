@@ -85,6 +85,7 @@ class CUIRewards : public CUIControl {
 public:
   __declspec(noinline) explicit CUIRewards(UIWindowContext& context);
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
 
