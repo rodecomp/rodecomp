@@ -49,6 +49,7 @@ class UIMacroReporterWnd : public UIFrameWnd {
 public:
   UIMacroReporterWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
   void Slot25(int x, int y) override;

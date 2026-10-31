@@ -18,7 +18,10 @@
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UICheckBox.h"
+#include "UI/Buttons/UIRadioBtn.h"
 #include "UI/Buttons/UITextButton.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Layout/WindowSnapping.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -433,4 +436,109 @@ void __stdcall SendMacroUserInfoPacket(std::uint16_t first, std::uint16_t second
   CRagConnection* connection = &GetRagConnection();
   const PacketLengths& lengths = reinterpret_cast<const PacketLengths&>(GetRagConnection());
   connection->Send(lengths.FixedLength(packet.id), &packet);
+}
+
+// OFFSET: 0x007F0490
+// FUNCTION: fn_09846
+void UIMacroReporterWnd::Slot15(int, int) {
+  this->AddBaseButton(*this->m_controls);
+  this->AddCloseButton(*this->m_controls, "", 0);
+
+  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar->Configure(186, 56, 1, 216);
+  this->AddChild(this->m_scrollBar);
+
+  UICheckBox* check = new UICheckBox(*this->m_context, *this->m_controls);
+  this->unknown_00D4 = check;
+  check->SetSize(42, 20);
+  check->SetBitmaps("유저인터페이스\\btn_q_active_a.bmp", "유저인터페이스\\btn_q_active.bmp");
+  check->Move(202, 27);
+  check->SetChecked(0);
+  this->AddChild(check);
+
+  UIBitmapButton* report = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_reportButton = report;
+  report->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
+  report->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
+  report->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
+  report->SetBitmap("유저인터페이스\\btn_ok_c.bmp", 3, 0);
+  report->SetSize(report->BitmapWidth(), report->BitmapHeight());
+  report->Move(202, 285);
+  report->SetId(345);
+  this->AddChild(report);
+
+  std::string labels[4] = {LookupMessage(2887), LookupMessage(2888), LookupMessage(4006), LookupMessage(4007)};
+  std::string tooltips[4] = {LookupMessage(2889), LookupMessage(2890), LookupMessage(4008), LookupMessage(4009)};
+
+  int index = 0;
+  for (; index < 2; ++index) {
+    UIRadioBtn* tab = new UIRadioBtn(*this->m_context, *this->m_controls);
+    this->m_tabs[index] = tab;
+    tab->SetSize(50, 12);
+    tab->Move(14 + index * 55, 31);
+    tab->SetText(labels[index].c_str());
+    tab->SetId(215);
+    tab->value = index;
+    tab->SendMsg(this, 13, index == this->m_mode, 0, 0, 0);
+    if (const char* tooltip = tooltips[index].c_str()) {
+      tab->tooltip = tooltip;
+    }
+    this->AddChild(tab);
+  }
+  for (; index < 4; ++index) {
+    UIRadioBtn* tab = new UIRadioBtn(*this->m_context, *this->m_controls);
+    this->m_tabs[index] = tab;
+    tab->SetSize(50, 12);
+    tab->Move(70 + index * 30, 31);
+    tab->SetText(labels[index].c_str());
+    tab->SetId(215);
+    tab->value = index;
+    tab->SendMsg(this, 13, index == this->m_mode, 0, 0, 0);
+    if (const char* tooltip = tooltips[index].c_str()) {
+      tab->tooltip = tooltip;
+    }
+    this->AddChild(tab);
+  }
+
+  int y = 56;
+  for (int row = 0; row < this->m_visibleRows; ++row) {
+    UIEditCtrl* field = new UIEditCtrl();
+    this->m_fields[row] = field;
+    field->SetSize(214, 18);
+    field->Move(14, y);
+    field->flat = 0;
+    field->Border(125, 125, 125);
+    field->preserveInput = 1;
+    field->invalidatesParent = 1;
+    field->disabled = 1;
+    field->Invalidate();
+    if (const char* tooltip = LookupMessage(4012)) {
+      field->tooltip = tooltip;
+    }
+    this->AddChild(field);
+    this->m_names[row] = "";
+    y += 22;
+  }
+  this->m_target = "";
+
+  UIEditCtrl* target = new UIEditCtrl();
+  this->m_edit = target;
+  target->SetSize(15, 14);
+  target->Move(this->TextWidth(this->m_controls->fonts, this->m_controls->locale, labels[1].c_str(), 0, 0, 12, 0, 0) + 83, 30);
+  target->flat = 0;
+  target->Border(125, 125, 125);
+  target->maximum = 1;
+  target->preserveInput = 1;
+  target->invalidatesParent = 1;
+  target->SetText(IntToString(this->unknown_00F4, 0).c_str());
+  if (const char* tooltip = LookupMessage(2891)) {
+    target->tooltip = tooltip;
+  }
+  this->AddChild(target);
+  if (this->m_mode != 1) {
+    target->disabled = 1;
+    target->Invalidate();
+  }
+
+  this->m_entries.clear();
 }
