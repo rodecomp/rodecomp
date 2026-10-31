@@ -1520,6 +1520,7 @@ UIAchViewWnd::UIAchViewWnd(UIWindowContext& windows, UIButtonContext& controls) 
 }
 
 // OFFSET: 0x007B24F0
+// FUNCTION: fn_09187
 UICustomGageBar::UICustomGageBar(UIWindowContext& windows)
     : UIWindow(windows, 0), value(-1), maximum(-1), text(), barColor(0xCE7B52), backgroundColor(0xFFFFFF), outerBorderColor(0xEFE7E7),
       innerBorderColor(0xADADAD) {
