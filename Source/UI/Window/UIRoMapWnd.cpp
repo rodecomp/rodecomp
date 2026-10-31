@@ -605,6 +605,49 @@ void CKafraMoveMapServiceInfo::Update(UIRoMapWnd* wnd, float elapsed) {
   this->markers.clear();
 }
 
+// OFFSET: 0x00940510
+// FUNCTION: fn_12778
+void UIRoMapWnd::DrawKafraMarkers(float elapsed) {
+  if (!this) {
+    return;
+  }
+
+  this->m_kafraMarkers.Update(this, elapsed);
+  this->m_kafraTop = 0;
+  this->m_kafraBottom = 0;
+  this->m_kafraLeft = 0;
+  this->m_kafraRight = 0;
+  if (this->m_kafraMarkers.markers.empty()) {
+    return;
+  }
+
+  std::map<std::string, RoMapMarker> targets;
+  const int count = static_cast<int>(this->m_kafraMarkers.markers.size());
+  for (int i = 0; i < count; ++i) {
+    RoMapMarker from = this->m_kafraMarkers.current;
+    RoMapMarker to = this->m_kafraMarkers.markers[i];
+    targets.insert(std::pair<std::string, RoMapMarker>(to.name, to));
+    if (to.name.size() == 10 && std::memcmp(to.name.c_str(), "izlude.rsw", 10) == 0) {
+      from.centerX = static_cast<float>(from.area.right);
+      to.centerX = to.width * 0.8f + static_cast<float>(to.area.left);
+      to.centerY = static_cast<float>(to.area.top);
+    }
+
+    CTexture* head = g_texMgr.Load("mapArrow_head.bmp", 0, true, true, false);
+    CTexture* body = g_texMgr.Load("mapArrow_body.bmp", 1, true, true, false);
+    this->DrawArrow(
+      from.centerX, from.centerY, to.centerX, to.centerY, static_cast<float>(from.area.left), static_cast<float>(from.area.top),
+      static_cast<float>(from.area.right), static_cast<float>(from.area.bottom), static_cast<float>(to.area.left), static_cast<float>(to.area.top),
+      static_cast<float>(to.area.right), static_cast<float>(to.area.bottom), 10, body, 20, head, this->m_kafraMarkers.blend, 0xAAFFFFFF
+    );
+  }
+
+  this->DrawKafraIcon(static_cast<float>(this->m_kafraMarkers.current.area.right), static_cast<float>(this->m_kafraMarkers.current.area.top));
+  for (std::map<std::string, RoMapMarker>::iterator it = targets.begin(); it != targets.end(); ++it) {
+    this->DrawMapMarker(it->second, 1);
+  }
+}
+
 // OFFSET: 0x009409E0
 // FUNCTION: fn_12779
 void UIRoMapWnd::DrawMapMarker(const RoMapMarker& marker, unsigned char skipSelected) {
