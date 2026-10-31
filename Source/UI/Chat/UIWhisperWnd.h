@@ -7,6 +7,7 @@
 #include <vector>
 
 struct UIButtonContext;
+struct WindowPlacement;
 class UIChatHisBox;
 
 struct WhisperLogLine {
@@ -24,7 +25,7 @@ public:
   /* 00EC */ UIChatHisBox* m_chatHistory;
   /* 00F0 */ unsigned char unknown_00F0[0x4];
   /* 00F4 */ std::vector<WhisperLogLine> m_log;
-  /* 0100 */ int unknown_0100;
+  /* 0100 */ WindowPlacement* unknown_0100;
   /* 0104 */ std::string m_code;
 
   void Move(int x, int y) override;
@@ -33,6 +34,7 @@ public:
   void Slot33(int x, int y) override;
   bool Slot42(void* output) override;
   void Slot43() override;
+  void Slot11() override;
 
   void SaveChatLog();
 

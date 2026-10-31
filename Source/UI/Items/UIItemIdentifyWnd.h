@@ -24,6 +24,8 @@ public:
   void Slot26(int x, int y) override;
   void Slot33(int x, int y) override;
   void Slot35(int delta) override;
+  ITEM_INFO GetItem(int index, int* found);
+  ITEM_INFO GetSelectedItem(int* found);
 };
 
 #endif

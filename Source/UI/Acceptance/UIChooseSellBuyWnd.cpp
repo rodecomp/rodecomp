@@ -98,7 +98,7 @@
 #include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/TextTokens.h"
-#include "UI/Edit/UIEditCtrl.h"
+#include "Client/Mode/ModeTooltip.h"
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -3010,3 +3010,52 @@ int UINotifyLevelUpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
   }
   return 0;
 }
+
+// OFFSET: 0x008D84A0
+
+// OFFSET: 0x008D8580
+
+// OFFSET: 0x008D8D90
+
+// OFFSET: 0x008F31C0
+
+// OFFSET: 0x008F3DD0
+
+// OFFSET: 0x008F5400
+
+// OFFSET: 0x008D86D0
+
+// OFFSET: 0x008F4300
+
+// OFFSET: 0x008F54C0
+
+// OFFSET: 0x008D87F0
+// FUNCTION: fn_12129
+__declspec(noinline) ITEM_INFO UIItemIdentifyWnd::GetItem(int index, int* found) {
+  int position = 0;
+  *found = 1;
+  for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it, ++position) {
+    if (index == position) {
+      return *it;
+    }
+  }
+
+  *found = 0;
+  ITEM_INFO empty(0);
+  return empty;
+}
+
+// OFFSET: 0x008D7F30
+
+// OFFSET: 0x0090A0E0
+
+struct SessionMessengerContext {
+  int GetList1788(int index) const;
+  int GetList2Size() const;
+};
+
+// OFFSET: 0x008D88F0
+
+// OFFSET: 0x008F3A80
+
+// OFFSET: 0x008F58C0

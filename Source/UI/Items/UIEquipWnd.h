@@ -4,13 +4,15 @@
 #include "UI/Window/UIFrameWnd.h"
 
 struct NormalItemSlotWindow;
+struct ITEM_INFO;
 
 class UIEquipWnd : public UIFrameWnd {
 public:
   bool Slot03() override;
   void Move(int x, int y) override;
   void Slot11() override;
-  /* 00B4 */ unsigned char unknown_00B4[0x10];
+  /* 00B4 */ int m_viewOther;
+  /* 00B8 */ int m_highlight[3];
   /* 00C4 */ int m_show;
   /* 00C8 */ NormalItemSlotWindow* m_placement;
   /* 00CC */ unsigned char unknown_00CC[0x24];
@@ -28,13 +30,19 @@ public:
   /* 016C */ std::vector<std::string> m_damageSkinIcons;
 
   void Slot19() override;
+  void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
+  void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
+  void Slot32(int x, int y) override;
   void Slot35(int delta) override;
 
   void DrawDamageSkinPage();
   void NotifyEquipmentChanged();
   void UpdateCharacterView(int reset);
+  ITEM_INFO GetSlotItem(int slot);
+  ITEM_INFO ItemIconAt(int x, int y);
+  ITEM_INFO ItemEntryAt(int x, int y);
 };
 
 #endif
