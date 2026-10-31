@@ -1,6 +1,7 @@
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/MapInfoMgr.h"
 #include "Contents/NavigationManager.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindow.h"
@@ -425,6 +426,12 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   this->unknown_1244 = this->FindObject("prontera");
   this->data.ResetLinkDepths();
   return true;
+}
+
+// OFFSET: 0x00DDE770
+// FUNCTION: fn_23399
+const char* CSession::GetMapDisplayName(const char* mapName) {
+  return g_mapInfoMgr->GetDisplayName(mapName);
 }
 
 // OFFSET: 0x00DE0A50

@@ -616,6 +616,7 @@ public:
   SessionRecord0734 FindRecord0734(int id) const;
   const char* GatName2RswName(const char* gatName);
   const char* GetBgmFileName(const char* rswName);
+  const char* GetMapDisplayName(const char* mapName);
   bool HasItem17D4(int itemId) const;
   bool IsFriendName(const char* name) const;
   bool RemoveFriendByCharacterId(std::uint32_t characterId);
