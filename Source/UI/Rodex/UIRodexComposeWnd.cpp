@@ -298,3 +298,133 @@ std::int64_t UIRodexComposeWnd::GetZeny() {
 }
 
 // OFFSET: 0x008012A0
+// FUNCTION: fn_10013
+int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6:
+    if (argument1 == 201) {
+      g_windowMgr.CloseWindow(264);
+    } else if (argument1 == 213) {
+      if (this->unknown_00B4->Length() != 0 && this->unknown_00B4->Length() < 24) {
+        if (g_navigationLinkParser->HasLink(this->unknown_00B4->Text())) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xAFC)), 0x64FFFF, 0, 0, 0);
+          return 0;
+        }
+
+        RodexCheckRecipientPacket packet;
+        packet.packetType = 0xB97;
+        std::memset(packet.name, 0, sizeof(packet.name));
+        strcpy_s(packet.name, sizeof(packet.name), this->unknown_00B4->Text());
+        if (g_session.HasUnknown809C(packet.name)) {
+          packet.known = 1;
+        } else {
+          packet.known = g_session.IsKnownName(packet.name);
+        }
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        return 0;
+      }
+
+      if (this->unknown_00B4->Length() >= 24) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA27)), 0x64FFFF, 0, 0, 0);
+      }
+      if (g_navigationLinkParser->HasLink(this->unknown_00B4->Text())) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xAFC)), 0x64FFFF, 0, 0, 0);
+      } else {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA23)), 0x64FFFF, 0, 0, 0);
+      }
+    } else if (argument1 == 345) {
+      if (this->unknown_00B4->Length() == 0 && this->unknown_00B8->Length() == 0) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA23)), 0x64FFFF, 0, 0, 0);
+        return 0;
+      }
+      if (this->unknown_00D0->Length() < 4 || this->unknown_00D0->Length() >= 51) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA24)), 0x64FFFF, 0, 0, 0);
+        return 0;
+      }
+      if (this->m_contents->Length() >= 1001) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA44)), 0x64FFFF, 0, 0, 0);
+        return 0;
+      }
+
+      const std::int64_t zeny = this->GetZeny();
+      if (zeny > 0) {
+        if (zeny > g_session.m_zeny) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA35)), 0x64FFFF, 0, 0, 0);
+          return 0;
+        }
+        if (zeny + this->unknown_00F8 > g_session.m_zeny) {
+          g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA53)), 0x64FFFF, 0, 0, 0);
+          return 0;
+        }
+      }
+      if (this->unknown_00F8 > 0 && this->unknown_00F8 > g_session.m_zeny) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA53)), 0x64FFFF, 0, 0, 0);
+        return 0;
+      }
+
+      if (this->unknown_00C8->GetText().length() <= 0) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA33)), 0x64FFFF, 0, 0, 0);
+        return 0;
+      }
+
+      std::string body(this->m_contents->Text());
+      if (g_navigationLinkParser->HasLink(this->m_contents->Text())) {
+        this->m_contents->SetText("");
+        body.clear();
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xBE2)), 0xFF, 0, 0, 0);
+        return 0;
+      }
+
+      if (this->m_contents->links.size() != 0) {
+        body.clear();
+        body = this->m_contents->TakePendingText();
+      }
+
+      auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->unknown_0100);
+      if (tagCtrl && tagCtrl->unknown_0140.size() != 0) {
+        body = tagCtrl->unknown_0140.c_str();
+      }
+
+      RodexSendMailRequest mail;
+      mail.recipientId = this->unknown_00CC;
+      mail.recipient = this->unknown_00B8->Text();
+      mail.title = this->unknown_00D0->Text();
+      mail.body = body;
+      mail.zeny = static_cast<int>(zeny);
+      g_modeMgr.GetGameMode()->SendMsg(0xC0, reinterpret_cast<int>(&mail), 0, 0, 0);
+    }
+    return 0;
+  case 23:
+    this->m_items.clear();
+    for (int i = 0; i < 5; ++i) {
+      ITEM_INFO item = g_session.GetItem5C68(i);
+      if (item.quantity > 0) {
+        this->m_items.push_back(item);
+      }
+    }
+    this->Invalidate();
+    return 0;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    g_modeMgr.GetGameMode()->SendMsg(0xC3, mode->drag.id, mode->drag.quantity, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(0x12, 0, 0, 0, 0);
+    return 0;
+  }
+  case 98:
+    if (argument3 > 0) {
+      UIWindow* window = g_windowMgr.EnsureWindow(12);
+      if (window) {
+        window->SendMsg(nullptr, 24, argument3, 0, 0, 0);
+      }
+    }
+    return 0;
+  case 104: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    g_modeMgr.GetGameMode()->SendMsg(0x126, mode->drag.id, mode->drag.quantity, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(0x12, 0, 0, 0, 0);
+    return 0;
+  }
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+}
