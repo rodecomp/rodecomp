@@ -163,6 +163,7 @@ public:
 
 class CUIGroupSound : public CUIGroup {
 public:
+  void Slot16() override;
   void Paint() override;
   void Refresh() override;
   __declspec(noinline) void SetBgmEnabled(bool enabled);
@@ -180,6 +181,7 @@ public:
   /* 0094 */ CUIStaticText* m_effectText;
   /* 0098 */ CUIVScrollBar* m_effectSlider;
   /* 009C */ CUICheckBox* m_effectMute;
+  /* 00A0 */ CUIStaticText* unknown_00A0;
 };
 
 class CUIGroupSpriteDetailLevel : public CUIGroup {

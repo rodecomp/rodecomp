@@ -1671,3 +1671,28 @@ void GameSettingsUI::CUIGroupTrilinear::Slot16() {
   const char* offText = LookupMessage(0x1034);
   this->m_offText->SetText(offText, std::strlen(offText));
 }
+
+// OFFSET: 0x00A19560
+
+// OFFSET: 0x00A19720
+
+// OFFSET: 0x00A198E0
+
+// OFFSET: 0x00A19AA0
+
+// OFFSET: 0x00A41B60
+// FUNCTION: fn_15995
+void GameSettingsUI::CUIGroupSound::Slot16() {
+  const char* title = LookupMessage(0x5CD);
+  this->m_title->SetText(title, std::strlen(title));
+  const char* bgmText = LookupMessage(0x5D7);
+  this->m_bgmText->SetText(bgmText, std::strlen(bgmText));
+  const char* bgmOffText = LookupMessage(0x1034);
+  this->unknown_0090->SetText(bgmOffText, std::strlen(bgmOffText));
+  const char* effectText = LookupMessage(0x5D8);
+  this->m_effectText->SetText(effectText, std::strlen(effectText));
+  const char* effectOffText = LookupMessage(0x1034);
+  this->unknown_00A0->SetText(effectOffText, std::strlen(effectOffText));
+}
+
+// OFFSET: 0x00A41560
