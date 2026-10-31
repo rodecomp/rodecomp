@@ -2335,60 +2335,70 @@ bool PakDecryptor::sub_64C160(std::span<const std::uint8_t> data, std::span<cons
 }
 
 // OFFSET: 0x0064C3A0
+// FUNCTION: fn_04949
 bool PakDecryptor::sub_64C3A0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithAes(sub_644630, 0, 0x10, AES::CBC, 0x400, 0x400, data, keyData, block, input, output);
 }
 
 // OFFSET: 0x0064C620
+// FUNCTION: fn_04950
 bool PakDecryptor::sub_64C620(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithAes(sub_644B40, 0x10, 0x20, AES::CBC, 0x400, 0x400, data, keyData, block, input, output);
 }
 
 // OFFSET: 0x0064C8A0
+// FUNCTION: fn_04951
 bool PakDecryptor::sub_64C8A0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithAes(sub_644990, 0x2C, 0x1C, AES::CFB, 0x400, 0x400, data, keyData, block, input, output);
 }
 
 // OFFSET: 0x0064CB20
+// FUNCTION: fn_04952
 bool PakDecryptor::sub_64CB20(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithAes(sub_6447E0, 0x10, 0x20, AES::CFB, 0, 0x800, data, keyData, block, input, output);
 }
 
 // OFFSET: 0x0064CD60
+// FUNCTION: fn_04953
 bool PakDecryptor::sub_64CD60(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithAes(sub_644E80, 0x14, 0x24, AES::CFB, 0x400, 0x800, data, keyData, block, input, output);
 }
 
 // OFFSET: 0x0064CFE0
+// FUNCTION: fn_04954
 bool PakDecryptor::sub_64CFE0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithAes(sub_6442D0, 0x2C, 0x18, AES::CFB, 0x400, 0x400, data, keyData, block, input, output);
 }
 
 // OFFSET: 0x0064D260
+// FUNCTION: fn_04955
 bool PakDecryptor::sub_64D260(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithAes(sub_644CE0, 0x2C, 0x10, AES::CBC, 0x800, 0x400, data, keyData, block, input, output);
 }
 
 // OFFSET: 0x0064D4E0
+// FUNCTION: fn_04956
 bool PakDecryptor::sub_64D4E0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithAes(sub_644B40, 0x10, 0x20, AES::CFB, 0x800, 0x400, data, keyData, block, input, output);
 }
 
 // OFFSET: 0x0064D760
+// FUNCTION: fn_04957
 bool PakDecryptor::sub_64D760(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithAes(sub_645020, 0x2C, 0, AES::CFB, 0x400, 0x400, data, keyData, block, input, output);
 }
 
 // OFFSET: 0x0064D9E0
+// FUNCTION: fn_04958
 bool PakDecryptor::sub_64D9E0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithAes(sub_644480, 0x10, 0, AES::CFB, 0x400, 0x400, data, keyData, block, input, output);
@@ -2433,102 +2443,119 @@ __forceinline bool DecryptWithCipherMode(PakBlockTransform transform, std::uint3
 }
 
 // OFFSET: 0x0064F000
+// FUNCTION: fn_04959
 bool PakDecryptor::sub_64F000(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646B40>(sub_644CE0, 0x1C, 0x10, 0x2C, 8, 0x400, data, seed, block, input, output);
 }
 
 // OFFSET: 0x0064F2F0
+// FUNCTION: fn_04960
 bool PakDecryptor::sub_64F2F0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646EE0>(sub_644CE0, 0x20, 0x10, 0x10, 8, 0, data, seed, block, input, output);
 }
 
 // OFFSET: 0x0064F560
+// FUNCTION: fn_04961
 bool PakDecryptor::sub_64F560(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646E30>(sub_644E80, 0x2C, 0x10, 0x1C, 8, 0x400, data, seed, block, input, output);
 }
 
 // OFFSET: 0x0064F7F0
+// FUNCTION: fn_04962
 bool PakDecryptor::sub_64F7F0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646B40>(sub_644B40, 0, 0x10, 0x20, 8, 0x800, data, seed, block, input, output);
 }
 
 // OFFSET: 0x0064FAE0
+// FUNCTION: fn_04963
 bool PakDecryptor::sub_64FAE0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_647030>(sub_644630, 0x10, 0x10, 0x20, 8, 0, data, seed, block, input, output);
 }
 
 // OFFSET: 0x0064FDC0
+// FUNCTION: fn_04964
 bool PakDecryptor::sub_64FDC0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646BE0>(sub_6447E0, 0x10, 0x10, 0x20, 8, 0, data, seed, block, input, output);
 }
 
 // OFFSET: 0x006500A0
+// FUNCTION: fn_04965
 bool PakDecryptor::sub_6500A0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646B40>(sub_644630, 0, 0x10, 0x20, 8, 0, data, seed, block, input, output);
 }
 
 // OFFSET: 0x00650350
+// FUNCTION: fn_04966
 bool PakDecryptor::sub_650350(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646E30>(sub_6442D0, 0x2C, 0x10, 0x10, 8, 0x400, data, seed, block, input, output);
 }
 
 // OFFSET: 0x006505E0
+// FUNCTION: fn_04967
 bool PakDecryptor::sub_6505E0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646E30>(sub_644E80, 0x2C, 0x10, 0, 8, 0, data, seed, block, input, output);
 }
 
 // OFFSET: 0x00650840
+// FUNCTION: fn_04968
 bool PakDecryptor::sub_650840(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646EE0>(sub_644630, 0x18, 0x10, 0x2C, 8, 0, data, seed, block, input, output);
 }
 
 // OFFSET: 0x00650AB0
+// FUNCTION: fn_04969
 bool PakDecryptor::sub_650AB0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646BE0>(sub_644480, 0x18, 0x10, 0x20, 8, 0x400, data, seed, block, input, output);
 }
 
 // OFFSET: 0x00650DD0
+// FUNCTION: fn_04970
 bool PakDecryptor::sub_650DD0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646B40>(sub_645020, 0x10, 0x10, 0x20, 8, 0, data, seed, block, input, output);
 }
 
 // OFFSET: 0x00651080
+// FUNCTION: fn_04971
 bool PakDecryptor::sub_651080(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_6469E0>(sub_644E80, 0x1C, 0x10, 0x2C, 0x10, 0x400, data, seed, block, input, output);
 }
 
 // OFFSET: 0x00651310
+// FUNCTION: fn_04972
 bool PakDecryptor::sub_651310(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646EE0>(sub_644630, 0, 0x10, 0x10, 8, 0x800, data, seed, block, input, output);
 }
 
 // OFFSET: 0x006515C0
+// FUNCTION: fn_04973
 bool PakDecryptor::sub_6515C0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_647030>(sub_644480, 0x2C, 0x10, 0x18, 8, 0x400, data, seed, block, input, output);
 }
 
 // OFFSET: 0x006518E0
+// FUNCTION: fn_04974
 bool PakDecryptor::sub_6518E0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_646F90>(sub_644B40, 0x2C, 0x10, 0x10, 8, 0x400, data, seed, block, input, output);
 }
 
 // OFFSET: 0x00651BD0
+// FUNCTION: fn_04975
 bool PakDecryptor::sub_651BD0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block,
                                 std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const {
   return DecryptWithCipherMode<GPakEx::CipherModeFinal_6469E0>(sub_6442D0, 0, 0x10, 0x20, 0x10, 0, data, seed, block, input, output);
