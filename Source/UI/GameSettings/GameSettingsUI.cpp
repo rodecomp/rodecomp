@@ -125,6 +125,16 @@ template <>
 void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Slot53(int resolveSkin);
 template <>
 void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Slot53(int resolveSkin);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Resize(int width, int height);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::Resize(int width, int height);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::Resize(int width, int height);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Resize(int width, int height);
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Resize(int width, int height);
 
 void SetComboItemSkinText(GameSettingsUI::CUIComboItem* item, const std::string& name);
 // OFFSET: 0x00A2C3C0
@@ -428,6 +438,71 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Slot53(int resolveSk
   for (GameSettingsUI::CUIOptionItem* item : this->items) {
     item->SetImageResources(images[0], images[1], images[2], images[3]);
   }
+}
+
+// OFFSET: 0x00A35EF0
+// FUNCTION: fn_15432
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(this->rowHeight * static_cast<int>(this->data.size()) + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
+// OFFSET: 0x00A35F70
+// FUNCTION: fn_15433
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(this->rowHeight * static_cast<int>(this->data.size()) + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
+// OFFSET: 0x00A35FF0
+// FUNCTION: fn_15434
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(this->rowHeight * static_cast<int>(this->data.size()) + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
+// OFFSET: 0x00A36070
+// FUNCTION: fn_15435
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(this->rowHeight * static_cast<int>(this->data.size()) + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
+}
+
+// OFFSET: 0x00A360F0
+// FUNCTION: fn_15436
+template <>
+void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(this->rowHeight * static_cast<int>(this->data.size()) + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
 }
 
 // OFFSET: 0x00A36170
