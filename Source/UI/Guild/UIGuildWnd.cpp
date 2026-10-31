@@ -345,6 +345,15 @@ UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows, UIF
 }
 
 // OFFSET: 0x00953E80
+// FUNCTION: fn_13002
+UIGuildSkillWnd::UIGuildSkillWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls) : UIGuildWnd(windows, frames, controls) {
+  this->m_actionButtons[0] = nullptr;
+  this->m_actionButtons[1] = nullptr;
+  this->m_hoverIndex = -1;
+  this->m_columns = 1;
+  this->m_saved = nullptr;
+  this->m_scrollTop = 0;
+}
 
 // OFFSET: 0x00956050
 // FUNCTION: fn_13035
