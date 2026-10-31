@@ -157,6 +157,52 @@ void CUIEnchantItem::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x00A00880
+// FUNCTION: fn_14828
+void CUITargetItem::Slot15(int width, int height) {
+  this->itemIcon = new CUIGameItem(*this->m_context);
+  this->itemIcon->SetMode(0);
+  this->itemIcon->SetScale(100);
+  this->itemIcon->Move(6, 13);
+  this->itemIcon->unknown_0084 = 1;
+  this->itemIcon->unknown_0085 = 1;
+  this->AddChild(this->itemIcon);
+
+  this->unknown_00EC = new CUIStaticImage(*this->m_context);
+  this->unknown_00EC->SetSize(12, 12);
+  this->unknown_00EC->Move(166, 7);
+  {
+    const std::uint8_t gradeIconSource[] = {
+      0x4F, 0x12, 0x2F, 0x7D, 0xBD, 0x0B, 0x68, 0xB8, 0x49, 0x59, 0x2F, 0x4B, 0xC0, 0x7F, 0xF1, 0x12,
+      0xFD, 0xDC, 0x8B, 0xE2, 0x22, 0xA0, 0xC3, 0x16, 0xE7, 0xDC, 0x81, 0xF3, 0x21, 0xA2, 0xDF, 0x14,
+      0xEB, 0xD8, 0xB0, 0xEE, 0x1E, 0xAA, 0xC3, 0x44, 0xA1, 0xDF, 0x82, 0xF7, 0x7D
+    };
+    // GLOBAL: gl_25223
+    thread_local EncryptedName<sizeof(gradeIconSource), 0x75ADC57D87EFBD8FULL> gradeIconName(gradeIconSource);
+    const std::string gradeIcon(gradeIconName.Text());
+    this->unknown_00EC->SetImage(gradeIcon);
+  }
+  this->AddChild(this->unknown_00EC);
+
+  this->unknown_00F0 = new CUIStaticText(*this->m_context);
+  this->unknown_00F0->SetSize(152, 12);
+  this->unknown_00F0->Move(38, 23);
+  this->unknown_00F0->SetText("", 0);
+  this->unknown_00F0->SetFitText(1);
+  this->unknown_00F0->SetAlign(0, 0);
+  {
+    const std::uint8_t fontSource[] = {0x2A, 0xCE, 0xF9, 0x44, 0xFE, 0xFB};
+    // GLOBAL: gl_25224
+    thread_local EncryptedName<sizeof(fontSource), 0xC517FB932D95BB6DULL> fontName(fontSource);
+    const std::string font(fontName.Text());
+    this->unknown_00F0->SetFont(font);
+  }
+  this->unknown_00F0->SetFontHeight(12);
+  this->unknown_00F0->SetBold(1);
+  this->unknown_00F0->SetColor(0x959595);
+  this->unknown_00F0->SetShadow(0, 0xFFFFFF);
+  this->unknown_00F0->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->unknown_00F0);
+}
 
 // OFFSET: 0x009F9880
 // FUNCTION: fn_14809
@@ -1243,4 +1289,37 @@ bool CUIUpgradeRandom::Slot56() {
 }
 
 // OFFSET: 0x00A07440
+// FUNCTION: fn_15012
+bool CUIUpgradePerfect::Slot56() {
+  if (this->unknown_00B0 == -1) {
+    return false;
+  }
+
+  std::optional<EnchantOptionInfo*> option = this->FindOption(this->unknown_00B0);
+  if (!option) {
+    return false;
+  }
+
+  this->unknown_00B8 = (*option)->isUpgrade;
+  if ((*option)->perfectUpgrades.size() == 0) {
+    return false;
+  }
+
+  const int baseItemId = std::atoi(this->unknown_0088[this->unknown_00B0]->itemIcon->GetItemInfo()->itemId.c_str());
+  auto base = (*option)->perfectUpgrades.find(baseItemId);
+  if (base == (*option)->perfectUpgrades.end() || base->second.size() == 0) {
+    return false;
+  }
+
+  for (const auto& entry : base->second) {
+    const bool lackZeny = g_session.m_zeny < entry.second.cost;
+    const bool lackMaterial = std::any_of(entry.second.materials.begin(), entry.second.materials.end(), [](const std::pair<const int, int>& material) {
+      return static_cast<unsigned int>(g_session.GetInventoryItemCount(material.first)) < static_cast<unsigned int>(material.second);
+    });
+    this->enchantList->AddData({entry.first, lackZeny || lackMaterial}, false);
+  }
+
+  this->enchantList->UpdateScrollBar();
+  return true;
+}
 }
