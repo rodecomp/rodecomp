@@ -39,6 +39,7 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
 
+#include <cmath>
 #include <cstring>
 #include <windows.h>
 #include <timeapi.h>
@@ -2545,3 +2546,55 @@ void CPc::Slot28(int value) {
   this->LoadEquipAction(7, g_session.GetShieldActName(job, this->unknown_0260, this->unknown_045C, this->unknown_04D0).c_str());
   this->LoadEquipSprite(7, g_session.GetShieldSprName(job, this->unknown_0260, this->unknown_045C, this->unknown_04D0).c_str());
 }
+
+// OFFSET: 0x00DB6670
+// FUNCTION: fn_22668
+void CPlayer::ApplyFollowOffset(CGameActor* target, float x, float z, int* row, int* column) {
+  union {
+    void (CGameActor::*asVoid)();
+    int (CGameActor::*asInt)();
+  } slot45;
+  slot45.asVoid = &CGameActor::Slot45;
+  int step = (target->*slot45.asInt)();
+  if (target->unknown_02E0 == 1) {
+    step = 5;
+  } else if (step == 0) {
+    return;
+  }
+
+  float angle = static_cast<float>(std::atan2(
+    static_cast<double>(x - this->render.position.x), static_cast<double>(-(z - this->render.position.z))
+  )) / 3.141592f * 180.0f;
+  if (angle >= 360.0f) {
+    angle -= 360.0f;
+  }
+  if (angle < 0.0f) {
+    angle += 360.0f;
+  }
+
+  if (angle >= 0.0f && angle < 25.0f) {
+    *row += step;
+  } else if (angle >= 25.0f && angle < 70.0f) {
+    *column += step;
+    *row += step;
+  } else if (angle >= 70.0f && angle < 115.0f) {
+    *column += step;
+  } else if (angle >= 115.0f && angle < 160.0f) {
+    *column += step;
+    *row -= step;
+  } else if (angle >= 160.0f && angle < 205.0f) {
+    *row -= step;
+  } else if (angle >= 205.0f && angle < 250.0f) {
+    *column -= step;
+    *row += step;
+  } else if (angle >= 250.0f && angle < 295.0f) {
+    *column -= step;
+  } else if (angle >= 295.0f && angle < 340.0f) {
+    *column -= step;
+    *row -= step;
+  } else {
+    *row += step;
+  }
+}
+
+// OFFSET: 0x00DB6820

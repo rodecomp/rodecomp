@@ -222,6 +222,8 @@ public:
   void RefreshEffect164();
   void UpdateFootprints(int kind);
   void UpdateMsgEffect(bool show);
+  void ApplyFollowOffset(CGameActor* target, float x, float z, int* row, int* column);
+  float AdjustFollowDistance(CGameActor* target, float distance);
 
   /* 0510 */ unsigned char unknown_0510[0xC];
   /* 051C */ int unknown_051C;
