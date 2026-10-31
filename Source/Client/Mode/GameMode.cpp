@@ -9,6 +9,8 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/DummyEffectLauncher.h"
+#include "Contents/Effects/EffectLists.h"
+#include "Contents/Effects/SkillEffects.h"
 #include "Contents/Effects/RagEffect.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
@@ -31,6 +33,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
+#include "Utility/Math/Vector3d.h"
 #include "Utility/Text/FormatString.h"
 #include <cstddef>
 #include <cstdint>
@@ -765,5 +768,21 @@ bool CGameMode::ConfirmDraggedItemUse() {
 void CGameMode::sub_CFE480(int actorId) {
   if (g_windowMgr.unknown_0508 != 2 && actorId == *reinterpret_cast<const int*>(0x01733C3C)) {
     this->scene->player->unknown_0544->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00CDBC30
+// FUNCTION: fn_21312
+void __stdcall sub_CDBC30(const vector3d* position, int actorId, float scale, int job) {
+  if (actorId == 0) {
+    return;
+  }
+
+  CSprArrowEffect* effect = static_cast<CSprArrowEffect*>(
+    g_effectMgr->Spawn(0, 0x964, position->x, position->y, position->z, actorId, -1, 0, 0)
+  );
+  if (effect != nullptr) {
+    effect->unknown_00F4 = scale;
+    effect->SetBulletSprite(job);
   }
 }
