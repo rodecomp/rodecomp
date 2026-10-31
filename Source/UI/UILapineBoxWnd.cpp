@@ -37,12 +37,6 @@ typedef void(__thiscall* BeginItemOnModeFn)(CGameMode*, int, ITEM_INFO*, int, in
 typedef void(__thiscall* CloseNotifyFn)(UIWindowMgr*, int);
 
 namespace {
-static void SortChildWindows(UILapineBox_IngredientListWnd* window) {
-  typedef void(__thiscall* SortFn)(UILapineBox_IngredientListWnd*);
-  SortFn fn = reinterpret_cast<SortFn>((*reinterpret_cast<void***>(window))[53]);
-  fn(window);
-}
-
 struct RandomCombineItemPacket {
   std::int16_t id;
   std::int16_t length;
@@ -369,7 +363,8 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
                                            std::intptr_t d) {
   switch (message) {
   case 6:
-    for (UIIngredientInfoWnd* entry : this->items) {
+    for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
+      UIIngredientInfoWnd* entry = *it;
       if (sender != entry) {
         entry->selected = 0;
         entry->Invalidate();
@@ -379,89 +374,85 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
     break;
 
   case 0x17:
-    for (const ITEM_INFO& material : this->materials) {
-      const int id = std::atoi(material.itemId.c_str());
-      std::vector<int> ids = g_session.FindInventoryIndicesByItemId(id, 1);
-      for (const int value : ids) {
-        this->AddIngredient(static_cast<std::uint32_t>(value));
+    for (std::vector<ITEM_INFO>::iterator material = this->materials.begin(); material != this->materials.end(); ++material) {
+      std::vector<int> ids = g_session.FindInventoryIndicesByItemId(std::atoi(material->itemId.c_str()), 1);
+      for (std::vector<int>::iterator id = ids.begin(); id != ids.end(); ++id) {
+        this->AddIngredient(*id);
       }
     }
 
-    for (UIIngredientInfoWnd* entry : this->items) {
-      const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, entry->item.unknown_0000[1]);
+    for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
+      ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, (*it)->item.unknown_0000[1]);
       if (owned.unknown_0000[1] == 0) {
-        entry->Show(0);
+        (*it)->Show(0);
       }
     }
     this->SendMsg(this, 0x57, 0, 0, 0, 0);
     break;
 
   case 0x57: {
-    std::vector<UIIngredientInfoWnd*>& items = this->items;
-    std::size_t index = 0;
     int y = 7;
-    while (index < items.size()) {
-      UIIngredientInfoWnd* entry = items[index];
+    for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end();) {
+      UIIngredientInfoWnd* entry = *it;
       if (entry->geometry.visible == 0) {
         entry->Invalidate();
-        items.erase(items.begin() + static_cast<std::ptrdiff_t>(index));
+        it = this->items.erase(it);
       } else {
-        entry->Move(0, y);
-        this->childOrigins[entry] = std::pair<int, int>(0, y);
-        SortChildWindows(this);
-        entry->Invalidate();
-        ++index;
+        this->MoveScrollChild(entry, 0, y);
+        (*it)->Invalidate();
+        ++it;
         y += 0x1E;
       }
     }
-    SortChildWindows(this);
+    this->Slot53();
     this->Invalidate();
     break;
   }
 
   case 0x68: {
-    UIIngredientInfoWnd* selected = nullptr;
-    for (UIIngredientInfoWnd* entry : this->items) {
-      if (static_cast<int>(a) == entry->item.unknown_0000[1]) {
-        selected = entry;
+    std::vector<UIIngredientInfoWnd*>::iterator it;
+    for (it = this->items.begin(); it != this->items.end(); ++it) {
+      if (static_cast<std::uint32_t>(a) == (*it)->item.unknown_0000[1]) {
         break;
       }
     }
-    if (selected == nullptr) {
-      return UIWindow::SendMsg(sender, message, a, b, c, d);
-    }
-
-    std::vector<ITEM_INFO>::iterator found = this->materials.end();
-    for (std::vector<ITEM_INFO>::iterator it = this->materials.begin(); it != this->materials.end(); ++it) {
-      ITEM_INFO copy(*it);
-      if (std::atoi(selected->item.itemId.c_str()) == std::atoi(copy.itemId.c_str())) {
-        found = it;
-        break;
-      }
-    }
-
-    if (found != this->materials.end()) {
-      if (selected->item.quantity < found->quantity) {
-        const char* text = FormatString(LookupMessage(0xB52), found->quantity);
-        this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
-        return -1;
-      }
-
-      if (selected->item.unknown_0060 < found->unknown_0060) {
-        this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xB53)), 0, 0, 0);
-        return -1;
-      }
-
-      selected->item.quantity -= found->quantity;
-      if (selected->item.quantity < 1) {
-        selected->Show(0);
-      } else {
-        selected->insufficient = 1;
-        selected->Invalidate();
-      }
-      this->SendMsg(this, 0x57, 0, 0, 0, 0);
+    if (it == this->items.end()) {
       break;
     }
+
+    UIIngredientInfoWnd* selected = *it;
+    std::vector<ITEM_INFO>::iterator found = this->materials.begin();
+    const std::vector<ITEM_INFO>::iterator end = this->materials.end();
+    for (; found != end; ++found) {
+      ITEM_INFO copy(*found);
+      if (std::atoi(selected->item.itemId.c_str()) == std::atoi(copy.itemId.c_str())) {
+        break;
+      }
+    }
+
+    if (found == this->materials.end()) {
+      break;
+    }
+
+    const int need = found->quantity;
+    if (selected->item.quantity < need) {
+      this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xB52), need).c_str()), 0, 0, 0);
+      return -1;
+    }
+
+    if (selected->item.unknown_0060 < found->unknown_0060) {
+      this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xB53)), 0, 0, 0);
+      return -1;
+    }
+
+    selected->item.quantity -= need;
+    if (selected->item.quantity <= 0) {
+      (*it)->Show(0);
+    } else {
+      (*it)->insufficient = 1;
+      (*it)->Invalidate();
+    }
+    this->SendMsg(this, 0x57, 0, 0, 0, 0);
     break;
   }
 
@@ -469,7 +460,7 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
     break;
   }
 
-  return UIWindow::SendMsg(sender, message, a, b, c, d);
+  return UIScrollWnd::SendMsg(sender, message, a, b, c, d);
 }
 
 // OFFSET: 0x006016C0
@@ -477,26 +468,27 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
 void UILapineBoxWnd::SetIngredient(int id) {
   this->unknown_00C4 = id;
 
-  ITEM_INFO item;
-  item.SetItemId(id);
+  {
+    ITEM_INFO item;
+    item.SetItemId(id);
 
-  char name[0x104];
-  std::memset(name, 0, sizeof(name));
-  int capacity = 0x104;
-  ItemDescriptions descriptions{g_itemDescriptions};
-  descriptions.Name(item, name, capacity, 0);
-  this->title.assign(name, std::strlen(name));
+    char name[0x104];
+    std::memset(name, 0, sizeof(name));
+    int capacity = 0x104;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.Name(item, name, capacity, 0);
+    this->title.assign(name, std::strlen(name));
+  }
 
-  int optionCount = 0;
-  g_luaScript->CallTable("tblLapineDdukddakBox", "set_resource_item_list", "d>d", id, &optionCount);
+  g_luaScript->CallTable("tblLapineDdukddakBox", "set_resource_item_list", "d", id);
 
   int minRefine = 0;
   g_luaScript->CallTable("tblLapineDdukddakBox", "get_min_need_refine", "d>d", id, &minRefine);
   this->ingredientList->minRefine = minRefine;
 
-  int refine = 0;
-  g_luaScript->CallTable("tblLapineDdukddakBox", "get_max_need_refine", "d>d", id, &refine);
-  this->ingredientList->maxRefine = refine;
+  int maxRefine = 0;
+  g_luaScript->CallTable("tblLapineDdukddakBox", "get_max_need_refine", "d>d", id, &maxRefine);
+  this->ingredientList->maxRefine = maxRefine;
 
   this->ingredientList->SendMsg(this, 0x17, 0, 0, 0, 0);
 
