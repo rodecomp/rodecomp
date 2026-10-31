@@ -456,6 +456,7 @@ int sub_7AEA20(lua_State* state) {
 }
 
 // OFFSET: 0x007AEC00
+// FUNCTION: fn_09146
 int sub_7AEC00(lua_State* state) {
   if (!lua_isstring(state, -1)) {
     lua_pushboolean(state, 0);
@@ -479,13 +480,19 @@ int sub_7AEC00(lua_State* state) {
   }
 
   const int id = static_cast<int>(lua_tonumber(state, -4));
-  TipBoxEntry& entry = g_itemTagOwner->m_entries[id];
-  if (id > g_itemTagOwner->m_maximumId) {
-    g_itemTagOwner->m_maximumId = id;
+  const char* title = lua_tostring(state, -3);
+  const double flag = lua_tonumber(state, -2);
+  const char* text = lua_tostring(state, -1);
+  CTipBoxMgr* owner = g_itemTagOwner;
+  const std::string textString(text);
+  const std::string titleString(title);
+  int key = id;
+  if (owner->m_maximumId < key) {
+    owner->m_maximumId = key;
   }
-  entry.title = lua_tostring(state, -3);
-  entry.searchable = static_cast<int>(lua_tonumber(state, -2)) == 1;
-  entry.unknown_001C = lua_tostring(state, -1);
+  owner->m_entries[key].title = titleString;
+  owner->m_entries[key].unknown_0018 = static_cast<int>(flag) == 1;
+  owner->m_entries[key].unknown_001C = textString;
   lua_pushboolean(state, 1);
   lua_pushstring(state, "good");
   return 2;
