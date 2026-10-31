@@ -35,6 +35,7 @@ struct UITextViewerContext {
 
 class UITextViewer : public UIListBox {
   friend class UIWindow;
+  friend class UIQuestDisplay;
 
 public:
   UITextViewer();

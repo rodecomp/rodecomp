@@ -8,8 +8,14 @@
 #include "Render/Renderer.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "UI/Text/ColoredText.h"
+#include "UI/Text/NavigationLink.h"
+#include "UI/Text/TextMarkup.h"
+#include "UI/Text/UITextViewer.h"
+#include "Utility/Text/FormatString.h"
 
 #include <algorithm>
+#include <cstring>
 
 #pragma pack(push, 1)
 struct PACKET_CZ_ACTIVE_QUEST {
@@ -29,6 +35,118 @@ void UIQuestDisplay::Create(int width, int height) {
 // FUNCTION: fn_12887
 bool UIQuestDisplay::Slot08() {
   return true;
+}
+
+// OFFSET: 0x0094D910
+// FUNCTION: fn_12911
+void UIQuestDisplay::Paint() {
+  this->ClearSurface(0xFF00FF);
+
+  CRenewQuestMgr* manager = g_renewQuestMgr;
+  int none = 0;
+  int multiple = 0;
+  int single = 0;
+  for (auto it = manager->m_ongoingQuests.begin(); it != manager->m_ongoingQuests.end(); ++it) {
+    const unsigned int questId = it->first;
+    const RenewQuestOngoingInfo& info = it->second;
+    if (info.m_active != true || info.m_simpleView != true) {
+      continue;
+    }
+
+    const int top = single * 50 + (none + multiple * 2) * 40;
+    std::string title = info.m_title.size() == 0 ? FormatOwnedString("Unknown Quest, ID = %d", questId) : info.m_title;
+    if (questId == reinterpret_cast<std::uintptr_t>(this->m_context)) {
+      this->FillRegion(-12, top - 2, this->geometry.width - 10, 40, 0);
+    }
+    this->DrawShadowedText(0, top, title.c_str(), 0, 0xD6E1, 0, 0, 12, 0);
+
+    std::string description = info.m_descriptions.size() == 0 ? std::string() : info.unknown_004C;
+    description = StripColorCodes(description.c_str(), description.size());
+    description = static_cast<const std::string&>(DisplayUrlTextTag(description));
+    description = static_cast<const std::string&>(DisplayNavigationTextTag(description));
+    description = static_cast<const std::string&>(DisplayTipBoxTextTag(description));
+    description = static_cast<const std::string&>(DisplayItemTextTag(description));
+    description = static_cast<const std::string&>(RemoveTextLinkInfo(description));
+    if (this->m_context->chatConverter) {
+      description = this->m_context->chatConverter->ConvertChat(description);
+    }
+    std::string navigation;
+    DisplayNavigationLink(navigation, description);
+    description = std::move(navigation);
+    description = static_cast<const std::string&>(DisplayQuestTextTag(description));
+
+    if (std::strlen(description.c_str()) > 30) {
+      description = this->TruncateText(description.c_str(), 30);
+      description += std::string("...");
+    }
+    if (std::strlen(description.c_str()) != 0) {
+      this->DrawShadowedText(0, top + 15, description.c_str(), 0, 0xFFFFFF, 0, 0, 12, 0);
+    }
+
+    if (info.m_huntCount == 0 || info.m_huntCount > 3) {
+      ++none;
+    } else {
+      for (int index = 0; index < info.m_huntCount; ++index) {
+        std::string hunt;
+        if (info.m_huntUnknown00D4[index] == 31999) {
+          hunt = static_cast<const std::string&>(
+            g_renewQuestMgr->GetMonsterConditionText(info.m_huntUnknown01A0[index], info.m_huntUnknown01AC[index], info.m_huntUnknown01B2[index])
+          );
+        } else {
+          const short minLevel = info.m_huntUnknown01AC[index];
+          const short maxLevel = info.m_huntUnknown01B2[index];
+          const char* name = info.m_huntName[index];
+          if (minLevel < 0 || maxLevel < 0 || (minLevel == 0 && maxLevel == 0)) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s", name));
+          } else if (minLevel == 0) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, maxLevel));
+          } else if (maxLevel == 0) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, minLevel));
+          } else {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, minLevel, maxLevel));
+          }
+        }
+
+        hunt = StripColorCodes(hunt.c_str(), hunt.size());
+        description = static_cast<const std::string&>(DisplayUrlTextTag(description));
+        description = static_cast<const std::string&>(DisplayNavigationTextTag(description));
+        description = static_cast<const std::string&>(DisplayTipBoxTextTag(description));
+        description = static_cast<const std::string&>(DisplayItemTextTag(description));
+        description = static_cast<const std::string&>(RemoveTextLinkInfo(description));
+        if (this->m_context->chatConverter) {
+          description = this->m_context->chatConverter->ConvertChat(description);
+        }
+        std::string huntNavigation;
+        DisplayNavigationLink(huntNavigation, description);
+        description = std::move(huntNavigation);
+        description = static_cast<const std::string&>(DisplayQuestTextTag(description));
+
+        const short goal = info.m_huntUnknown0180[index];
+        if (goal > 0) {
+          const short count = info.m_huntUnknown00E0[index];
+          if (count == goal) {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s ( %s )", hunt.c_str(), LookupMessage(0x7EE)));
+          } else {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s ( %d / %d )", hunt.c_str(), count, goal));
+          }
+
+          const int y = index * 13 + top;
+          this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 11, y + 29, hunt.c_str(), 0, 0, 12, 0, 0, 0);
+          this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 10, y + 28, hunt.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
+        }
+      }
+
+      if (info.m_huntCount > 1) {
+        ++multiple;
+      } else {
+        ++single;
+      }
+    }
+
+    if (single + multiple + none >= 5) {
+      break;
+    }
+  }
 }
 
 // OFFSET: 0x0094F1D0
