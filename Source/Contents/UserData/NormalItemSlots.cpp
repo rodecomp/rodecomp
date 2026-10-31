@@ -3,7 +3,7 @@
 #include "Contents/MapSkyMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
-
+#include "UI/Window/UIWindowMgr.h"
 #include <json/value.h>
 
 // GLOBAL: gl_24700
@@ -1037,6 +1037,114 @@ void MacroReporterWndInfo::Reset() {
 void PreviewEquipWndInfo::Reset() {
   this->x = static_cast<int>(static_cast<float>(g_renderer->viewport.width - 280) * g_depthAverageHalf);
   this->y = static_cast<int>(static_cast<float>(g_renderer->viewport.height - 260) * g_depthAverageHalf);
+}
+
+// OFFSET: 0x009A6E90
+// FUNCTION: fn_13737
+void UIWindowMgr::ResetUIRectInfo() {
+  // GLOBAL: gl_25071
+  static bool s_resetPending = true;
+  if (!s_resetPending) {
+    return;
+  }
+  s_resetPending = false;
+
+  unsigned char* const base = reinterpret_cast<unsigned char*>(this);
+  reinterpret_cast<BasicInfoWndInfo*>(base + 0x514)->Reset();
+  reinterpret_cast<ItemWndInfo*>(base + 0x528)->Reset();
+
+  int* const questWnd = reinterpret_cast<int*>(base + 0x550);
+  questWnd[0] = 0;
+  questWnd[1] = 120;
+  questWnd[2] = 280;
+  questWnd[3] = 200;
+  questWnd[4] = 200;
+  questWnd[5] = 0;
+  questWnd[6] = 0;
+
+  reinterpret_cast<StatusWndInfo*>(base + 0x574)->Reset();
+  reinterpret_cast<EquipWndInfo*>(base + 0x590)->Reset();
+  reinterpret_cast<UnusedWndInfoB*>(base + 0x5A8)->Reset();
+  reinterpret_cast<UnusedWndInfoC*>(base + 0x5C0)->Reset();
+  reinterpret_cast<UnusedWndInfoD*>(base + 0x5D4)->Reset();
+  reinterpret_cast<SayDialogWndInfo*>(base + 0x5E4)->Reset();
+  reinterpret_cast<ChooseWndInfo*>(base + 0x5F4)->Reset();
+  reinterpret_cast<ChatRoomWndInfo*>(base + 0x604)->Reset();
+  reinterpret_cast<ItemStoreFindListInfo*>(base + 0x614)->Reset();
+
+  ItemStoreFindSlotInfo* const storeSlots = reinterpret_cast<ItemStoreFindSlotInfo*>(base + 0x62C);
+  for (int index = 0; index < 8; ++index) {
+    storeSlots[index].Reset(index);
+  }
+  this->unknown_0058 = 8;
+
+  reinterpret_cast<ItemStoreFindWndInfo*>(base + 0x6AC)->Reset();
+  reinterpret_cast<SeekPartyListWndInfo*>(base + 0x6BC)->Reset();
+  reinterpret_cast<SeekPartyMBWndInfo*>(base + 0x6CC)->Reset();
+  reinterpret_cast<SeekPartyWndInfo*>(base + 0x6DC)->Reset();
+  reinterpret_cast<JobListWndInfo*>(base + 0x6EC)->Reset();
+  reinterpret_cast<ItemShopWndInfo*>(base + 0x6FC)->Reset();
+  reinterpret_cast<ItemSellWndInfo*>(base + 0x70C)->Reset();
+  reinterpret_cast<ItemPurchaseWndInfo*>(base + 0x71C)->Reset();
+  reinterpret_cast<MessengerGroupWndInfo*>(base + 0x72C)->Reset();
+  reinterpret_cast<NormalItemSlotWindow*>(base + 0x748)->Reset();
+  reinterpret_cast<ExchangeAcceptWndInfo*>(base + 0x75C)->Reset();
+  reinterpret_cast<SkillListWndInfo*>(base + 0x76C)->Reset();
+  reinterpret_cast<MerchantItemWndInfo*>(base + 0x780)->Reset();
+  reinterpret_cast<MerchantMirrorItemWndInfo*>(base + 0x794)->Reset();
+  reinterpret_cast<MerchantShopMakeWndInfo*>(base + 0x7A4)->Reset();
+  reinterpret_cast<MerchantItemShopWndInfo*>(base + 0x7B4)->Reset(false);
+  reinterpret_cast<MerchantItemMyShopWndInfo*>(base + 0x7C4)->Reset();
+  reinterpret_cast<MerchantItemPurchaseWndInfo*>(base + 0x7D4)->Reset();
+  reinterpret_cast<ItemCollectionWndInfo*>(base + 0x7E4)->Reset();
+  reinterpret_cast<CombinedCardItemCollectionWndInfo*>(base + 0x7F4)->Reset();
+  reinterpret_cast<ItemParamChangeDisplayWndInfo*>(base + 0x804)->Reset();
+  reinterpret_cast<PartySettingWndInfo*>(base + 0x814)->Reset();
+  reinterpret_cast<UnusedWndInfoA*>(base + 0x824)->Reset();
+  reinterpret_cast<GuildWndInfo*>(base + 0x834)->Reset();
+  reinterpret_cast<WhisperWndInfo*>(base + 0x848)->Reset();
+  reinterpret_cast<ItemCompositionWndInfo*>(base + 0x87C)->Reset();
+  reinterpret_cast<ItemIdentifyWndInfo*>(base + 0x88C)->Reset();
+  reinterpret_cast<EmotionWndInfo*>(base + 0x89C)->Reset();
+  reinterpret_cast<CashEmotionListWndInfo*>(base + 0x8AC)->Reset();
+  reinterpret_cast<PetInfoWndInfo*>(base + 0x8BC)->Reset();
+  reinterpret_cast<HomunInfoWndInfo*>(base + 0x8CC)->Reset();
+  reinterpret_cast<MerInfoWndInfo*>(base + 0x8F0)->Reset();
+  reinterpret_cast<SubChatHisWndInfo*>(base + 0x914)->Reset(0);
+  reinterpret_cast<SubChatHisWndInfo*>(base + 0x924)->Reset(1);
+  reinterpret_cast<QuickSlotWndInfo*>(base + 0x934)->Reset();
+  reinterpret_cast<EntryQueueWndInfo*>(base + 0x944)->Reset();
+  reinterpret_cast<MerchantShopMakeWndInfo*>(base + 0x954)->Reset();
+  reinterpret_cast<MerchantMirrorItemWndInfo*>(base + 0x964)->Reset();
+  reinterpret_cast<MerchantItemMyShopWndInfo*>(base + 0x974)->Reset();
+  reinterpret_cast<MerchantItemShopWndInfo*>(base + 0x984)->Reset(true);
+  reinterpret_cast<MerchantItemPurchaseWndInfo*>(base + 0x994)->Reset();
+  reinterpret_cast<MerchantMirrorItemWndInfo*>(base + 0x9A4)->Reset();
+  reinterpret_cast<NCashWndInfo*>(base + 0x9B4)->Reset();
+  reinterpret_cast<ReplayRECControlWndInfo*>(base + 0x4F154)->Reset();
+
+  NavigationWindowInfo* const navigation = reinterpret_cast<NavigationWindowInfo*>(base + 0x4F178);
+  navigation->x = static_cast<int>(g_renderer->viewport.width * 0.5 - 136.0);
+  navigation->y = static_cast<int>(g_renderer->viewport.height * 0.5 - 169.0);
+  navigation->width = 272;
+  navigation->height = 338;
+  navigation->expanded = 1;
+
+  reinterpret_cast<MiniMapWndInfo*>(base + 0x4F1A8)->Reset();
+  reinterpret_cast<AchTracingWndInfo*>(base + 0x4F1D8)->Reset();
+  reinterpret_cast<MacroReporterWndInfo*>(base + 0x4F200)->Reset();
+  reinterpret_cast<PreviewEquipWndInfo*>(base + 0x4F220)->Reset();
+
+  int* const swapEquipment = reinterpret_cast<int*>(base + 0x4F228);
+  swapEquipment[0] = (g_renderer->viewport.width - 280) / 2;
+  swapEquipment[1] = (g_renderer->viewport.height - 177) / 2;
+  swapEquipment[2] = 280;
+  swapEquipment[3] = 167;
+
+  reinterpret_cast<QuestDisplayInfo*>(base + 0x570)->Reset();
+  reinterpret_cast<RegisterPartyWndInfo*>(base + 0xA00)->Reset();
+  reinterpret_cast<ApplyForPartyWndInfo*>(base + 0xA10)->Reset();
+  reinterpret_cast<AdvenPartyBoardWndInfo*>(base + 0xA20)->Reset();
 }
 
 // OFFSET: 0x009A7CA0

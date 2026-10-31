@@ -6,15 +6,21 @@
 
 class UIItemStoreComboBox : public UIComboBoxEx {
 public:
+  UIItemStoreComboBox(UIWindowContext& windows, UIComboBoxContext& combo) : UIComboBoxEx(windows, combo), pink(false) {}
   void Slot15(int width, int height) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
+
+  /* 00C4 */ bool pink;
 };
 
 class UIItemStoreComboBoxWnd : public UIComboBoxDefWnd {
 public:
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+
+  /* 00A8 */ unsigned char pink;
 };
 
 #endif

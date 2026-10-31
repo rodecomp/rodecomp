@@ -458,6 +458,7 @@ public:
   void LoadShortcutItems();
   void SaveShortcutItems();
   void SaveUIRectInfo();
+  void ResetUIRectInfo();
   UIWindow* LookupWindow(int id);
   void sub_AAB070(int option);
   void sub_AAB090();

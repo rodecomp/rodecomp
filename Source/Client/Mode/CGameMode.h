@@ -150,6 +150,7 @@ public:
   void WorldCell(float x, float z, int& column, int& row) const;
   void SubcellPosition(int column, int row, int subColumn, int subRow, float& x, float& z) const;
   void PlayerCell(int* column, int* row) const;
+  void RefreshActorJobEffects(bool playerOnly);
   int GetSkillAttackRange(int id, int level);
   int TerrainHeight() const;
   int TerrainWidth() const;
