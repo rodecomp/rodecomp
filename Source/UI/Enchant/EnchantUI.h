@@ -130,6 +130,8 @@ public:
 
 class CUINormalRandom : public CUIEnchantPage {
 public:
+  using CUIEnchantPage::CUIEnchantPage;
+
   void Slot16() override;
   void Slot55() override;
   bool Slot56() override;
@@ -137,6 +139,8 @@ public:
 
 class CUINormalPerfect : public CUIEnchantPage {
 public:
+  using CUIEnchantPage::CUIEnchantPage;
+
   void Slot16() override;
   void Slot54(CUIEnchantItem* item, const CEnchantItemData& data) override;
   void Slot55() override;
@@ -181,6 +185,13 @@ public:
   /* 0088 */ CUITab* tab;
 
   void Slot16() override;
+};
+
+class CUINormal : public CUIMainPage {
+public:
+  using CUIMainPage::CUIMainPage;
+
+  void Slot15(int width, int height) override;
 };
 
 class CEnchantItemData {

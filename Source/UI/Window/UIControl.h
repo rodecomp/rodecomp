@@ -86,7 +86,7 @@ class CUITabButton;
 
 class CUITab : public CUIControl {
 public:
-  explicit CUITab(UIWindowContext& context);
+  __declspec(noinline) explicit CUITab(UIWindowContext& context);
 
   void Paint() override;
 
