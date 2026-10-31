@@ -2116,6 +2116,31 @@ std::vector<char> MakeFramedMessage(std::uint16_t type, const std::vector<char>&
   return message;
 }
 
+// OFFSET: 0x00901370
+// FUNCTION: fn_12373
+int UIQuitWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  switch (argument1) {
+  case 220:
+    mode->SendMsg(25, 1, 0, 0, 0);
+    g_windowMgr.CloseWindow(48);
+    break;
+  case 221:
+    mode->SendMsg(88, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(48);
+    break;
+  case 185:
+    g_windowMgr.CloseWindow(48);
+    break;
+  }
+
+  return 0;
+}
+
 // OFFSET: 0x00909830
 // FUNCTION: fn_12392
 int UInCash_CallWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
