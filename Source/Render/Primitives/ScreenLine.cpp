@@ -14,6 +14,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "UI/Chat/UISubChatHisWnd.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cmath>
@@ -43,6 +44,22 @@ void UIRoMapWnd::DrawRecordAreas() {
     );
     ++color;
   }
+}
+
+// OFFSET: 0x00918300
+// FUNCTION: fn_12593
+void UISubChatHisWnd::Slot43() {
+  int x = 0;
+  int y = 0;
+  this->ToScreen(x, y);
+  DrawAlphaRectangle(
+    g_renderer->primitives, g_renderer->queues, x + 1, y + 1, this->m_inputWidth - 2, this->m_inputHeight, 0x66000000, g_renderer->fog.supported != 0,
+    g_depthStart, g_depthEnd
+  );
+  DrawAlphaRectangle(
+    g_renderer->primitives, g_renderer->queues, this->m_state.unknown_0000 + 1, this->m_state.unknown_0004 + 1, this->m_state.unknown_0008 - 2,
+    this->m_state.unknown_000C - 2, this->m_state.unknown_0014, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+  );
 }
 
 // OFFSET: 0x009189C0

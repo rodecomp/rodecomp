@@ -38,6 +38,7 @@ public:
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
   bool Slot42(void* output) override;
+  void Slot43() override;
   UIChatHisBox* ChatBox() const { return m_chatBox; }
   std::string Name() const { return m_name; }
 
