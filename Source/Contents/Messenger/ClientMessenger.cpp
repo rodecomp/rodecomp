@@ -334,7 +334,7 @@ namespace EquipmentProperties {
     /* 0194 */ std::set<std::uint64_t> unknown_0194;
     /* 019C */ std::unordered_map<int, EquipmentValueC> unknown_019C;
     /* 01BC */ std::unordered_map<int, std::unordered_map<int, std::unordered_map<unsigned int, float>>, CEquipmentValueHash> unknown_01BC;
-    /* 01DC */ std::unordered_map<int, std::unordered_map<int, EquipmentEntryB>> unknown_01DC;
+    /* 01DC */ std::unordered_map<int, std::unordered_map<int, std::unordered_map<int, EquipmentEntryB, CEquipmentValueHash>, CEquipmentValueHash>, CEquipmentValueHash> unknown_01DC;
 
     static CEquipmentPropertiesMgr* GetInstance();
 
@@ -353,7 +353,7 @@ namespace EquipmentProperties {
     bool HasUnknown0194(const std::uint64_t& key);
     EquipmentPropertyDefinition* FindDefinition(const std::uint64_t& key);
     int GetUnknown01BC(const int& first, const int& second, const unsigned int& third);
-    void SetCurrentEquipment(CEquipment* equipment);
+    __declspec(noinline) void SetCurrentEquipment(CEquipment* equipment);
     void RefreshPretend();
     void RefreshShop();
     void Rebuild();
@@ -364,12 +364,12 @@ namespace EquipmentProperties {
     void AddExpansion(const int& kind, const int& itemId, bool notify);
     void RemoveExpansion(const int& kind, const int& itemId);
     void RefreshExpansion(const int& kind, const int& itemId);
+    int GetUnknown01DC(const int& first, const int& second, const int& third);
     void LoadADSkill();
     void LoadCombiitem();
     void LoadSkillGroup();
   };
 }
-
 namespace EquipmentProperties {
   struct CEquipmentInfo {
     /* 0000 */ int unknown_0000;
@@ -4114,3 +4114,52 @@ void CGameMode::ReceiveShopItemList(const unsigned char* data) {
     g_equipmentPropertiesMgr->RefreshShop();
   }
 }
+
+// OFFSET: 0x006AC320
+
+// OFFSET: 0x006BD9D0
+// FUNCTION: fn_06279
+int GetEquipTempValue(lua_State* state) {
+  std::vector<int> args;
+  int number = 0;
+  for (int index = -1; index < 0; ++index) {
+    if (!lua_isnumber(state, index)) {
+      lua_pushboolean(state, 0);
+      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      return 2;
+    }
+    args.push_back(static_cast<int>(lua_tonumber(state, index)));
+    ++number;
+  }
+
+  std::unordered_map<int, EquipmentValueC> values = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->GetUnknown019C();
+  auto found = values.find(args[0]);
+  lua_pushnumber(state, found != values.end() ? found->second.value : 0);
+  return 1;
+}
+
+// OFFSET: 0x006BF3F0
+
+#pragma pack(push, 1)
+struct MercenaryInitPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::int16_t stats[8];
+  /* 0016 */ char name[24];
+  /* 002E */ std::int16_t level;
+  /* 0030 */ int hp;
+  /* 0034 */ int maxHp;
+  /* 0038 */ int sp;
+  /* 003C */ int maxSp;
+  /* 0040 */ __time32_t expiration;
+  /* 0044 */ std::int16_t loyalty;
+  /* 0046 */ int summons;
+  /* 004A */ int kills;
+  /* 004E */ std::int16_t attackRange;
+};
+#pragma pack(pop)
+
+static_assert(offsetof(MercenaryInitPacket, name) == 0x16);
+static_assert(offsetof(MercenaryInitPacket, attackRange) == 0x4E);
+
+// OFFSET: 0x00D322A0

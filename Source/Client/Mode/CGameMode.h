@@ -480,6 +480,7 @@ public:
   void ReceiveActorStatusValue(std::uint32_t aid, int status, int amount, int option);
   void ReceiveItem1718List(const unsigned char* packet);
   void Zc_Spirits2(const unsigned char* data);
+  void Zc_Mer_Init(const unsigned char* data);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);
