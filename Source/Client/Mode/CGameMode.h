@@ -648,6 +648,12 @@ public:
   void OpenVendingMake(unsigned char slotCount, int itemCount, const short* items);
   void ReceiveAgitNotice(unsigned char agitId, int first, int second);
   void ReceiveItemFallEntry(const unsigned char* packet);
+  void ReceiveFeedOption(const unsigned char* packet);
+  void ReceiveTakeOffEquipResult(unsigned char result, int location, std::uint16_t identity);
+  void ReceiveHomunculusChange(const unsigned char* packet);
+  void ReceiveItemConsumed(const unsigned char* packet);
+  void ReceivePartyLeaderChange(const unsigned char* packet);
+  void ReceiveItemSellResult(const unsigned char* packet);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

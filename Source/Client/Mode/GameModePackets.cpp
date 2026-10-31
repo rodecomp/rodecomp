@@ -76,6 +76,7 @@ struct SessionMessengerContext {
   int GetList9Size() const;
   void KeepEquipment();
   void ResetEquipment();
+  void ResetSlots();
 };
 
 struct SessionItemLists {
@@ -3955,7 +3956,9 @@ class CEquipmentPropertiesMgr {
 public:
   CEquipmentPropertiesMgr();
   virtual ~CEquipmentPropertiesMgr();
+  static CEquipmentPropertiesMgr* GetInstance();
   void RefreshPretend();
+  void RemoveExpansion(const int& kind, const int& itemId);
   unsigned char unknown_0004[0x1F8];
 };
 }
@@ -6483,4 +6486,187 @@ void CGameMode::ReceiveItemFallEntry(const unsigned char* packet) {
 
   const int entryAddress = reinterpret_cast<int>(&entry);
   item->SendMsg(nullptr, 4, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+#include "Contents/ClientState.h"
+
+// OFFSET: 0x00D266C0
+// FUNCTION: fn_21681
+void CGameMode::ReceiveFeedOption(const unsigned char* packet) {
+  switch (*reinterpret_cast<const int*>(packet + 2)) {
+  case 0:
+    *reinterpret_cast<int*>(g_session.unknown_5974) = *reinterpret_cast<const int*>(packet + 6);
+    g_windowMgr.SendNotice(
+      1, reinterpret_cast<std::intptr_t>(LookupMessage((*reinterpret_cast<int*>(g_session.unknown_5974) != 0) + 0x54E)), 0x64FFFF, 0, 0, 0
+    );
+    if (g_windowMgr.unknown_01E0) {
+      g_windowMgr.unknown_01E0->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    }
+    break;
+  case 1:
+    g_serviceOptions.Set(231, *reinterpret_cast<const int*>(packet + 6) != 0);
+    g_windowMgr.SendNotice(
+      1, reinterpret_cast<std::intptr_t>(LookupMessage((*reinterpret_cast<const int*>(packet + 6) != 0) + 0xBA2)), 0x64FFFF, 0, 0, 0
+    );
+    g_windowMgr.sub_AAB070(231);
+    break;
+  case 2:
+    g_session.SetPetAutoFeed(*reinterpret_cast<const int*>(packet + 6) > 0);
+    break;
+  case 3:
+    g_session.SetHomunculusAutoFeed(*reinterpret_cast<const int*>(packet + 6) > 0);
+    break;
+  case 5:
+    *reinterpret_cast<int*>(g_session.unknown_8128) = *reinterpret_cast<const int*>(packet + 6);
+    break;
+  case 6:
+    sub_E489C0(*reinterpret_cast<const int*>(packet + 6) != 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D1E7B0
+// FUNCTION: fn_21635
+void CGameMode::ReceiveTakeOffEquipResult(unsigned char result, int location, std::uint16_t identity) {
+  *reinterpret_cast<std::uint32_t*>(&this->unknown_0100[0x08]) = timeGetTime() - 2000;
+  switch (result) {
+  case 0:
+    if (location) {
+      if (g_session.IsCostumeLocation(location)) {
+        g_session.UnequipItem2B50(location);
+        return;
+      }
+      g_session.UnequipItem(location, identity);
+    }
+    break;
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1953)), 0xFF, 7, 0, 0);
+    break;
+  }
+}
+
+#include "Contents/Sound/SoundMaker.h"
+
+// OFFSET: 0x00D25E90
+// FUNCTION: fn_21677
+void CGameMode::ReceiveHomunculusChange(const unsigned char* packet) {
+  char text[256];
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4)));
+  switch (static_cast<char>(packet[3])) {
+  case 0:
+    *reinterpret_cast<std::uint32_t*>(&g_session.unknown_5570[0x08]) = *reinterpret_cast<const std::uint32_t*>(packet + 4);
+    if (actor) {
+      g_groundMarkEnabled = 1;
+      g_session.m_homunJob = actor->GetEffectiveJob(-1);
+    }
+    break;
+  case 1:
+    g_session.unknown_55D4 = *reinterpret_cast<const int*>(packet + 8);
+    if (actor) {
+      g_session.m_homunJob = actor->GetEffectiveJob(-1);
+    }
+    if (g_windowMgr.window_03C0) {
+      g_windowMgr.window_03C0->Invalidate();
+    }
+    if (g_session.IsAdminSubMode(3)) {
+      std::sprintf(text, "%d", *reinterpret_cast<const int*>(packet + 8));
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xF5F5F5, 0, 0, 0);
+    }
+    break;
+  case 2:
+    g_session.unknown_55F0 = *reinterpret_cast<const int*>(packet + 8);
+    g_session.RefreshHomunculusInfo();
+    if (actor) {
+      g_session.m_homunJob = actor->GetEffectiveJob(-1);
+    }
+    if (g_windowMgr.window_03C0) {
+      g_windowMgr.window_03C0->Invalidate();
+    }
+    if (g_session.IsAdminSubMode(3)) {
+      std::sprintf(text, "Full : %d", *reinterpret_cast<const int*>(packet + 8));
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0x1EF5F5, 0, 0, 0);
+    }
+    break;
+  case 3:
+    if (actor) {
+      if (*reinterpret_cast<const int*>(packet + 8)) {
+        g_session.unknown_55D8 = *reinterpret_cast<const int*>(packet + 8);
+      } else {
+        g_session.unknown_55D8 = 0;
+        actor->Slot21(actor->GetEffectiveJob(-1));
+      }
+      if (g_session.IsHomunAid(*reinterpret_cast<const std::uint32_t*>(packet + 4)) && g_windowMgr.window_03C0) {
+        g_windowMgr.window_03C0->Invalidate();
+      }
+    }
+    break;
+  }
+}
+
+// OFFSET: 0x00D26950
+// FUNCTION: fn_21683
+void CGameMode::ReceiveItemConsumed(const unsigned char* packet) {
+  if (g_windowMgr.unknown_0458) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2734)), 0x64FFFF, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(293, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(264);
+  }
+
+  if (*reinterpret_cast<int*>(&this->unknown_0100[0x14])) {
+    *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 0;
+    reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+  }
+
+  reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1710(
+    *reinterpret_cast<const std::uint16_t*>(packet + 4), *reinterpret_cast<const std::int16_t*>(packet + 6)
+  );
+  *reinterpret_cast<int*>(&this->unknown_02B8[0x18]) = 0;
+  this->unknown_05CE = 1;
+  if (g_session.unknown_103C != -1 && g_session.unknown_1050 == *reinterpret_cast<const std::uint16_t*>(packet + 4)) {
+    g_session.ResetUnknown1050();
+    EquipmentProperties::CEquipmentPropertiesMgr* properties = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
+    int itemId = -1;
+    int kind = 0;
+    properties->RemoveExpansion(kind, itemId);
+  }
+}
+
+// OFFSET: 0x00D25D50
+// FUNCTION: fn_21676
+void CGameMode::ReceivePartyLeaderChange(const unsigned char* packet) {
+  char text[500];
+  ClientMessenger messenger{g_session.m_partyMembers, g_session.m_friends};
+  MessengerMember member = messenger.PartyByAccount(*reinterpret_cast<const std::uint32_t*>(packet + 6));
+  if (member.valid != 0) {
+    messenger.SetPartyLeader(*reinterpret_cast<const std::uint32_t*>(packet + 2), 1);
+    messenger.SetPartyLeader(*reinterpret_cast<const std::uint32_t*>(packet + 6), 0);
+    g_session.unknown_5464 = *reinterpret_cast<const std::uint32_t*>(packet + 6) == g_session.m_aid;
+    std::sprintf(text, LookupMessage(1552), member.name.c_str());
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 12, 0, 0);
+    sub_DFF150(&g_session);
+    if (g_windowMgr.unknown_03F8) {
+      g_windowMgr.unknown_03F8->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00D2DA10
+// FUNCTION: fn_21723
+void CGameMode::ReceiveItemSellResult(const unsigned char* packet) {
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  const int count = *reinterpret_cast<const std::int16_t*>(packet + 4);
+  const int price = *reinterpret_cast<const int*>(packet + 6);
+  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t*>(packet + 2));
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  g_windowMgr.SendNotice(
+    1,
+    reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1746), naming.DisplayName(item, 0).c_str(), count, price * count).c_str()),
+    0xFFFF64, 0, 0, 0
+  );
+  reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1710(
+    *reinterpret_cast<const std::int16_t*>(packet + 2), *reinterpret_cast<const std::int16_t*>(packet + 4)
+  );
 }
