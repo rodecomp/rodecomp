@@ -20,16 +20,19 @@ struct CharSlotInfo {
   CharSlotInfo();
   ~CharSlotInfo();
 
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ std::string unknown_0008[5];
-  /* 0080 */ std::string unknown_0080[5];
-  /* 00F8 */ std::string unknown_00F8;
-  /* 0110 */ int unknown_0110;
-  /* 0114 */ int unknown_0114;
-  /* 0118 */ std::string unknown_0118;
-  /* 0130 */ std::string unknown_0130;
-  /* 0148 */ unsigned char unknown_0148[20];
+  /* 0000 */ int x;
+  /* 0004 */ int y;
+  /* 0008 */ std::string actionNames[5];
+  /* 0080 */ std::string spriteNames[5];
+  /* 00F8 */ std::string imfName;
+  /* 0110 */ int headPalette;
+  /* 0114 */ int bodyPalette;
+  /* 0118 */ std::string headPaletteName;
+  /* 0130 */ std::string bodyPaletteName;
+  /* 0148 */ int unknown_0148;
+  /* 014C */ int action;
+  /* 0150 */ int frame;
+  /* 0154 */ unsigned char unknown_0154[8];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

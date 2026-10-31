@@ -74,6 +74,14 @@
 #include "Contents/Sound/SoundMaker.h"
 #include "UI/Buttons/UICheckBox.h"
 #include <mbstring.h>
+#include "Contents/Actors/Pc.h"
+#include "Contents/SpriteRidingOffset.h"
+#include "Render/DeviceContext/DeviceContext.h"
+#include "Render/Renderer.h"
+#include "Render/Textures/SpriteAtlas.h"
+#include "Render/Textures/Texture.h"
+#include "Resource/ImfResource.h"
+#include "Resource/PaletteResource.h"
 
 // GLOBAL: gl_25153
 static const std::string s_messageBoxItemLinkOpening = "<ITEML>";
@@ -134,6 +142,75 @@ namespace {
     context.SetColor(color);
     context.Draw(x - width, y, text, bytes);
   }
+}
+
+// OFFSET: 0x008A39C0
+// FUNCTION: fn_11661
+UIMakeCharWnd::UIMakeCharWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), unknown_02C4(0), unknown_02C8(0), unknown_02CC(0), unknown_02D0(0), unknown_02D4(0), unknown_02D8(0) {
+  this->geometry.unknown_0034 = 0;
+  this->m_nameEdit = nullptr;
+  this->m_info.sex = static_cast<unsigned char>(g_doramSex);
+
+  const int* preset = reinterpret_cast<const int*>(static_cast<CMode*>(g_charViewMode)->SendMsg(10016, 0, 0, 0, 0));
+  this->m_info.stats[0] = static_cast<unsigned char>(preset[0]);
+  this->m_info.stats[1] = static_cast<unsigned char>(preset[1]);
+  this->m_info.stats[2] = static_cast<unsigned char>(preset[2]);
+  this->m_info.stats[3] = static_cast<unsigned char>(preset[3]);
+  this->m_info.stats[4] = static_cast<unsigned char>(preset[4]);
+  this->m_info.stats[5] = static_cast<unsigned char>(preset[5]);
+  this->m_info.headPalette = static_cast<std::int16_t>(preset[6]);
+  this->m_info.head = static_cast<std::int16_t>(preset[7]);
+
+  this->m_info.name[0] = 0;
+  this->m_info.job = 0;
+  this->m_info.jobPoint = 0;
+  this->m_info.hp = 100;
+  this->m_info.maxHp = 100;
+  this->m_info.sp = 100;
+  this->m_info.maxSp = 100;
+  this->m_info.exp = 0;
+  this->m_info.level = 1;
+  this->m_info.skillPoint = 1;
+  this->m_info.slot = static_cast<unsigned char>(g_selectedSlotIndex);
+  this->m_info.headPalette = 0;
+  this->m_info.bodyStyle = 0;
+  this->m_info.shield = 0;
+  this->m_info.accessory2 = 0;
+  this->m_info.accessory3 = 0;
+  this->m_view.unknown_0148 = 0;
+  this->m_view.action = 0;
+  this->m_view.frame = 0;
+  this->m_view.x = 70;
+  this->m_view.y = 123;
+
+  this->m_view.actionNames[0].assign(GetBodyActionResourceName(this->m_info.job, this->m_info.sex, 0, 0));
+  this->m_view.spriteNames[0].assign(g_session.GetBodySprName(this->m_info.job, this->m_info.sex, 0, 0));
+
+  if (this->m_info.sex == 1 && this->m_info.head == 13) {
+    this->m_info.head = 14;
+  }
+
+  int head = this->m_info.head;
+  this->m_view.actionNames[1].assign(g_session.GetHeadActName(this->m_info.job, this->m_info.sex, &head));
+  this->m_view.spriteNames[1].assign(g_session.GetHeadSprName(this->m_info.job, this->m_info.sex, &head));
+
+  const int bodyPalette = this->m_info.bodyStyle;
+  this->m_info.head = static_cast<std::int16_t>(head);
+  this->m_view.bodyPalette = bodyPalette;
+  if (bodyPalette) {
+    this->m_view.bodyPaletteName.assign(g_session.GetBodyPalName(this->m_info.job, this->m_info.sex, bodyPalette, this->m_info.unknown_0058, 0, 0));
+  }
+
+  const int headPalette = this->m_info.headPalette;
+  this->m_view.headPalette = headPalette;
+  if (headPalette) {
+    this->m_view.headPaletteName.assign(g_session.GetHeadPalName(head, this->m_info.job, this->m_info.sex, headPalette));
+  }
+
+  this->m_view.imfName = GetBodyImfName(this->m_info.job, this->m_info.sex, this->m_info.head, this->m_info.unknown_0058);
+  this->geometry.currentAlpha = 0x80;
+  this->geometry.targetAlpha = 0xFF;
 }
 
 // OFFSET: 0x008A3F60
@@ -259,6 +336,8 @@ void UISelectServerWnd::Slot18() {
 void UILoginWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
 }
+
+// OFFSET: 0x008B8620
 
 // OFFSET: 0x008B88F0
 // FUNCTION: fn_11767
@@ -1545,6 +1624,8 @@ void UINoticeWnd::Slot15(int, int) {
     this->LoadNotice();
   }
 }
+
+// OFFSET: 0x008B42D0
 
 // OFFSET: 0x008B5A50
 // FUNCTION: fn_11750
