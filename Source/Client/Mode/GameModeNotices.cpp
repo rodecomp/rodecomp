@@ -1414,3 +1414,18 @@ void __stdcall nullsub_468(int) {
 }
 
 // OFFSET: 0x00D6AD60
+// FUNCTION: fn_22063
+void __stdcall sub_D6AD60(int count, const int* aids) {
+  if (count <= 0) {
+    return;
+  }
+
+  UIMacroReporterWnd* window = static_cast<UIMacroReporterWnd*>(g_windowMgr.LookupWindow(286));
+  if (!window) {
+    return;
+  }
+
+  for (int i = 0; i < count; ++i) {
+    window->sub_7EF2E0(aids[i]);
+  }
+}
