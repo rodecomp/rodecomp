@@ -10,6 +10,24 @@
 #include <cstdio>
 #include "UI/Text/UITextViewer.h"
 #include "UI/Text/UIString.h"
+#include "UI/Buttons/UIDescriptRace.h"
+#include "Contents/MessageTable.h"
+#include "Client/Input/InputCharset.h"
+#include "Client/Session.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/SpriteRidingOffset.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Render/Renderer.h"
+#include "Render/Textures/SpriteAtlas.h"
+#include "Render/Textures/Texture.h"
+#include "Resource/ImfResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "UI/Text/TextWrapping.h"
+#include "UI/Window/UINewSelectCharWnd.h"
+#include <timeapi.h>
 namespace {
   constexpr char prefix[] = "유저인터페이스\\";
 }
@@ -484,4 +502,103 @@ void UIString::ParseTags(std::string text) {
   }
 
   this->unknown_00DC = text.substr(end + 1, text.find_first_of("<", end + 1) - (end + 1));
+}
+
+// OFFSET: 0x008A0B10
+// FUNCTION: fn_11630
+void UIDescriptRace::sub_8A0B10() {
+  UIWindowContext& context = *this->m_context;
+  if (this->m_race == 1) {
+    if (!g_doramCreationEnabled) {
+      return;
+    }
+
+    this->DrawTextAt(context.fonts, context.locale, 50, 23, LookupMessage(3018), 0, 0, 12, 0x99634C, 1, 0);
+    this->DrawTextAt(context.fonts, context.locale, 49, 22, LookupMessage(3018), 0, 0, 12, 0xFFFFFF, 1, 0);
+    std::vector<std::string> lines;
+    WrapPlainText(LookupMessage(3021), lines, 40, g_serverLanguage->language);
+    int y = 22;
+    for (unsigned index = 0; index < lines.size(); ++index) {
+      this->DrawTextAt(context.fonts, context.locale, 112, y, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
+      y += 20;
+    }
+  } else if (this->m_race == 0) {
+    this->DrawTextAt(context.fonts, context.locale, 50, 23, LookupMessage(3016), 0, 0, 12, 0x99634C, 1, 0);
+    this->DrawTextAt(context.fonts, context.locale, 49, 22, LookupMessage(3016), 0, 0, 12, 0xFFFFFF, 1, 0);
+    std::vector<std::string> lines;
+    WrapPlainText(LookupMessage(3020), lines, 40, g_serverLanguage->language);
+    int y = 22;
+    for (unsigned index = 0; index < lines.size(); ++index) {
+      this->DrawTextAt(context.fonts, context.locale, 112, y, lines[index].c_str(), 0, 0, 12, 0, 0, 0);
+      y += 20;
+    }
+  }
+
+  const int job = this->m_race == 1 ? 4218 : 0;
+  const int action = this->m_noRace != 0 ? 9 : 1;
+  int frame = 0;
+  for (int layer = 0; layer < 2; ++layer) {
+    CActRes* act = nullptr;
+    CSprRes* sprite = nullptr;
+    CImfRes* imf = nullptr;
+    switch (layer) {
+      case 0:
+        act = static_cast<CActRes*>(ResourceMgr::Instance().Load(GetBodyActionResourceName(job, g_doramSex, job, 0)));
+        sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetBodySprName(job, g_doramSex, job, 0)));
+        imf = static_cast<CImfRes*>(ResourceMgr::Instance().Load(GetBodyImfName(job, g_doramSex, 1, job).c_str()));
+        break;
+      case 1: {
+        int head = 1;
+        act = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetHeadActName(job, g_doramSex, &head).c_str()));
+        sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetHeadSprName(job, g_doramSex, &head).c_str()));
+        imf = static_cast<CImfRes*>(ResourceMgr::Instance().Load(GetBodyImfName(job, g_doramSex, head, job).c_str()));
+        break;
+      }
+    }
+
+    if (this->m_noRace) {
+      if (this->m_createTime + 60 <= timeGetTime()) {
+        int next = this->unknown_0284 + 1;
+        if (next >= static_cast<int>(act->FrameCount(action))) {
+          next = 0;
+        }
+        this->unknown_0284 = next;
+        this->m_createTime = timeGetTime();
+      }
+      frame = this->unknown_0284;
+    }
+
+    const ActionFrame* actionFrame = &act->Frame(action, frame);
+    const std::uint32_t* palette = sprite->palette;
+    POINT point = imf->GetLongPoint(layer, action, frame);
+    if (layer == 1) {
+      const ActionFrame* body = &static_cast<CActRes*>(ResourceMgr::Instance().Load(GetBodyActionResourceName(job, g_doramSex, job, 0)))->Frame(action, frame);
+      if (actionFrame->anchorCount != 0 && body->anchorCount != 0 && actionFrame->anchors[0].unknown_0008 == body->anchors[0].unknown_0008) {
+        point.x += body->anchors[0].x - actionFrame->anchors[0].x;
+        point.y += body->anchors[0].y - actionFrame->anchors[0].y;
+      }
+    }
+
+    const SpriteFrameCell& cell = actionFrame->Cell(layer);
+    if (cell.image == -1) {
+      continue;
+    }
+
+    const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    SpriteAtlasRecord record{};
+    CTexture* texture;
+    if (cell.imageType == 0) {
+      texture = g_renderer->atlas.Find(image, palette, record);
+      if (!texture) {
+        texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      }
+    } else {
+      texture = static_cast<CTexture*>(const_cast<void*>(image->unknown_0008));
+    }
+
+    this->geometry.surface->DrawSurface(
+      cell.x + point.x + 60, cell.y + point.y + 140, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f), image->width,
+      image->height, cell.mirrored, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
+    );
+  }
 }
