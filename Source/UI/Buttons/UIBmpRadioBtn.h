@@ -55,6 +55,7 @@ public:
 class UICaptchaImage : public UIWindow {
 public:
   UICaptchaImage();
+  UICaptchaImage(UIWindowContext& windows, BitmapResourceContext& bitmaps, UIButtonContext& controls);
   void Paint() override;
   void Slot28(int x, int y) override;
 

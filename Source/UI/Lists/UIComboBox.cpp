@@ -294,3 +294,8 @@ int UIListBoxID::sub_8991B0(UIWindow* sender, int message, std::intptr_t argumen
   this->Refresh();
   return 0;
 }
+
+// OFFSET: 0x0086CB40
+// FUNCTION: fn_11033
+UIComboBox::UIComboBox(UIWindowContext& windows, UIListBoxContext& list) : UIListBox(windows, list), targetId(10041) {
+}

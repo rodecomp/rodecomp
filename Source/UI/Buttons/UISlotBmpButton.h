@@ -7,6 +7,7 @@ class UIStaticBitmap;
 
 class UISlotBmpButton : public UIBitmapButton {
 public:
+  UISlotBmpButton(UIWindowContext& windows, UIButtonContext& buttons, int index, bool);
   void Slot15(int width, int height) override;
   void Slot19() override;
   void Slot25(int x, int y) override;
@@ -15,7 +16,9 @@ public:
   void SetSlot(int slot, int fallback);
 
 protected:
-  /* 0120 */ unsigned char unknown_0120[0xC];
+  /* 0120 */ int m_index;
+  /* 0124 */ bool unknown_0124;
+  /* 0128 */ int unknown_0128;
   /* 012C */ int m_slot;
   /* 0130 */ UIStaticBitmap* icon;
   /* 0134 */ short unknown_0134;

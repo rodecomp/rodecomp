@@ -439,3 +439,5 @@ void UIListBoxID::AddLine(const char* text, int id) {
   this->contentWidth = std::max(this->contentWidth, width);
   this->Refresh();
 }
+
+// OFFSET: 0x0086D8C0

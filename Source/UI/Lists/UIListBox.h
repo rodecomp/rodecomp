@@ -22,7 +22,7 @@ struct UIListBoxContext {
 
 class UIListBox : public UIWindow {
 public:
-  UIListBox(UIWindowContext& windows, UIListBoxContext& list);
+  __declspec(noinline) UIListBox(UIWindowContext& windows, UIListBoxContext& list);
   ~UIListBox() override;
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
@@ -70,6 +70,7 @@ protected:
 
 class UIListBox2 : public UIListBox {
 public:
+  UIListBox2(UIWindowContext& windows, UIListBoxContext& list);
   void Paint() override;
 
   /* 00D4 */ int fontFamily;

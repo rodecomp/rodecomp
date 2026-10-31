@@ -39,3 +39,5 @@ void UIItemStoreComboBoxWnd::Slot15(int, int) {
   this->label->shadow = 1;
   this->AddChild(this->label);
 }
+
+// OFFSET: 0x0086D590
