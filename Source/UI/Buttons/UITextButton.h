@@ -8,6 +8,7 @@
 #include <vector>
 
 extern int g_screenHeight;
+extern int g_screenWidth;
 
 class UITextButton : public UIButton {
   friend class UITextViewer;
