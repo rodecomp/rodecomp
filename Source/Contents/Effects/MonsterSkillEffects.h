@@ -148,6 +148,7 @@ public:
 class CEternalSlashAttackEffect : public CEffect {
 public:
   CEternalSlashAttackEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
@@ -171,6 +172,7 @@ public:
 class CFallenAngelEffect : public CEffect {
 public:
   CFallenAngelEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
@@ -186,6 +188,8 @@ public:
 class CFloralFlareRoad : public CEffect {
 public:
   CFloralFlareRoad();
+  void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
@@ -246,16 +250,24 @@ public:
   };
 
   struct AbyssWave {
-    /* 0000 */ unsigned char unknown_0000[0x18];
+    /* 0000 */ float scale;
+    /* 0004 */ vector3d offset;
   };
 
+  CFromTheAbyssEffect();
+  void UpdateParticle(long long key, AbyssParticle particle);
+  void SetLevel(long long level);
+  void Slot03() override;
   void Slot01() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
 
-  /* 00CC */ unsigned char unknown_00CC[0x14];
-  /* 00E0 */ std::map<std::uint64_t, AbyssWave> unknown_00E0;
-  /* 00E8 */ std::map<std::uint64_t, AbyssParticle> unknown_00E8;
+  /* 00CC */ unsigned char unknown_00CC[4];
+  /* 00D0 */ long long maxLevel;
+  /* 00D8 */ long long level;
+  /* 00E0 */ std::map<long long, AbyssWave> unknown_00E0;
+  /* 00E8 */ std::map<long long, AbyssParticle> unknown_00E8;
 };
 
 class CParticle;
@@ -276,8 +288,10 @@ public:
 class CPetitioEffect : public CEffect {
 public:
   CPetitioEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
+  void Close() override;
   bool Slot06() override;
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
@@ -477,16 +491,22 @@ public:
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
+  void Slot03() override;
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::list<EZ2STREmitter*> unknown_00D4;
   /* 00DC */ int unknown_00DC;
-  /* 00E0 */ int unknown_00E0;
-  /* 00E4 */ int unknown_00E4;
+  union {
+    struct {
+      /* 00E0 */ int unknown_00E0;
+      /* 00E4 */ int unknown_00E4;
+    };
+    /* 00E0 */ long long count;
+  };
   /* 00E8 */ double unknown_00E8;
-  /* 00F0 */ int unknown_00F0;
+  /* 00F0 */ float unknown_00F0;
   /* 00F4 */ float unknown_00F4;
-  /* 00F8 */ int unknown_00F8;
+  /* 00F8 */ float unknown_00F8;
   /* 00FC */ unsigned int unknown_00FC;
   /* 0100 */ vector3d unknown_0100;
   /* 010C */ vector3d unknown_010C;

@@ -732,6 +732,30 @@ void CDancingKnifeEffect::Slot04() {
 CEternalSlashAttackEffect::CEternalSlashAttackEffect() : CEffect(-1) {
 }
 
+// OFFSET: 0x00710C80
+// FUNCTION: fn_07209
+void CEternalSlashAttackEffect::Slot01() {
+  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  if (bottom) {
+    bottom->Load(std::string("eternal_slash\\eternal_slash_bottom\\eternal_slash_bottom.str"));
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(bottom);
+    emitter->offset.x = 0.0f;
+    emitter->offset.y = -13.0f;
+    emitter->offset.z = 0.0f;
+    this->emitters.push_back(emitter);
+  }
+
+  CEZ2STRParticle* slash = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  if (slash) {
+    slash->Load(std::string("eternal_slash\\eternal_slash\\eternal_slash.str"));
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(slash);
+    emitter->offset.x = 0.0f;
+    emitter->offset.y = -13.0f;
+    emitter->offset.z = 0.0f;
+    this->emitters.push_back(emitter);
+  }
+}
+
 // OFFSET: 0x00710F50
 // FUNCTION: fn_07210
 bool CEternalSlashAttackEffect::Slot06() {
@@ -839,6 +863,23 @@ void CEternalSlashCountEffect::Slot04() {
 CFallenAngelEffect::CFallenAngelEffect() : CEffect(1140), emitter(nullptr), unknown_00D0(0), unknown_00D4(0), unknown_00D8(0) {
 }
 
+// OFFSET: 0x00711580
+// FUNCTION: fn_07223
+void CFallenAngelEffect::Slot01() {
+  if (!this->emitter) {
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    this->emitter = reinterpret_cast<EZ2STREmitter*>(particle);
+    particle->Open("RL_fallen_angel\\Penne.str");
+  } else {
+    AsParticle(this->emitter)->Restart();
+  }
+
+  InitParticleQuad(AsParticle(this->emitter)->vertices);
+  this->unknown_00D0 = this->position[0];
+  this->unknown_00D4 = this->position[1];
+  this->unknown_00D8 = this->position[2];
+}
+
 // OFFSET: 0x00711690
 // FUNCTION: fn_07224
 bool CFallenAngelEffect::Slot06() {
@@ -891,10 +932,55 @@ void CFallenAngelEffect::SetPosition(vector3d position) {
 CFloralFlareRoad::CFloralFlareRoad() : CEffect(1804) {
 }
 
+// OFFSET: 0x00711A70
+// FUNCTION: fn_07231
+void CFloralFlareRoad::Slot01() {
+  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  this->unknown_00CC = reinterpret_cast<EZ2STREmitter*>(bottom);
+  bottom->Load(std::string("froral_flareroad\\froral_flareroad_bottom\\froral_flareroad_bottom.str"));
+
+  for (int delay = 0; delay < 4500; delay += 300) {
+    vector3d position = {this->position[0], this->position[1], this->position[2]};
+    const int distanceX = std::max(rand() % 20, 0);
+    const int angleX = std::max(rand() % 360, 0);
+    position.x = ClientSine(angleX) * static_cast<float>(distanceX) + position.x;
+    const int distanceZ = std::max(rand() % 20, 0);
+    const int angleZ = std::max(rand() % 360, 0);
+    position.z = ClientCosine(angleZ) * static_cast<float>(distanceZ) + position.z;
+
+    CEZ2STRParticle* flare = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+    flare->Load(std::string("froral_flareroad\\froral_flareroad\\froral_flareroad.str"));
+    flare->m_delay = delay;
+    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(flare));
+    this->AddEvent(0, "effect\\AG_ALL_BLOOM.wav", delay / 16, 0);
+  }
+}
+
 // OFFSET: 0x00711DA0
 // FUNCTION: fn_07232
 bool CFloralFlareRoad::Slot06() {
   return this->ActorExists();
+}
+
+// OFFSET: 0x00711DB0
+// FUNCTION: fn_07233
+void CFloralFlareRoad::Slot03() {
+  if (this->unknown_00CC) {
+    AsParticle(this->unknown_00CC)->Process(0.0f, -80.0f, 0.0f);
+  }
+
+  for (auto it = this->emitters.begin(); it != this->emitters.end();) {
+    EZ2STREmitter* emitter = *it;
+    if (emitter->lifetime == 0.0f || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
+      if (emitter) {
+        AsParticle(emitter)->Process(0.0f, -80.0f, 0.0f);
+      }
+      ++it;
+    } else {
+      FreeParticle(AsParticle(emitter));
+      it = this->emitters.erase(it);
+    }
+  }
 }
 
 // OFFSET: 0x00711ED0
@@ -1003,6 +1089,19 @@ void CFootprintStrEffect::Slot04() {
   }
 }
 
+// OFFSET: 0x00714250
+
+// OFFSET: 0x00715160
+// FUNCTION: fn_07265
+void CFromTheAbyssEffect::Close() {
+  for (auto it = this->unknown_00E8.begin(); it != this->unknown_00E8.end(); ++it) {
+    if (it->second.emitter) {
+      FreeParticle(AsParticle(it->second.emitter));
+    }
+  }
+  this->unknown_00E8.clear();
+}
+
 // OFFSET: 0x00715400
 // FUNCTION: fn_07266
 void CFromTheAbyssEffect::Slot01() {
@@ -1015,6 +1114,70 @@ bool CFromTheAbyssEffect::Slot06() {
   return this->ActorExists();
 }
 
+// OFFSET: 0x00715420
+// FUNCTION: fn_07268
+void CFromTheAbyssEffect::Slot03() {
+  for (auto it = this->unknown_00E8.begin(); it != this->unknown_00E8.end(); ++it) {
+    this->UpdateParticle(it->first, it->second);
+  }
+}
+
+// OFFSET: 0x007154A0
+// FUNCTION: fn_07269
+void CFromTheAbyssEffect::UpdateParticle(long long key, AbyssParticle particle) {
+  EZ2STREmitter* emitter = particle.emitter;
+  if (!emitter) {
+    return;
+  }
+
+  switch (particle.kind) {
+  case 1:
+    if (emitter->lifetime != 0.0f && !(emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed))) {
+      const double scale = AsParticle(emitter)->m_scale;
+      const vector3d offset = emitter->offset;
+      FreeParticle(AsParticle(emitter));
+      EZ2STREmitter* dying =
+          reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+      if (dying) {
+        AsParticle(dying)->Load("from_the_abyss\\from_the_abyss_shadowball\\from_the_abyss_shadowball.str");
+        dying->looping = 1;
+        AsParticle(dying)->m_scale = static_cast<float>(scale);
+        dying->offset = offset;
+      }
+
+      AbyssParticle& entry = this->unknown_00E8[key];
+      entry.kind = 2;
+      entry.emitter = dying;
+      return;
+    }
+    break;
+  case 2:
+    break;
+  case 3:
+    if (emitter->lifetime != 0.0f && !(emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed))) {
+      FreeParticle(AsParticle(emitter));
+      AbyssParticle& entry = this->unknown_00E8[key];
+      entry.kind = 0;
+      entry.emitter = nullptr;
+      return;
+    }
+    break;
+  default:
+    return;
+  }
+
+  const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
+  const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+  const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+  const float viewX = origin.x * view.values[0] + origin.y * view.values[3] + origin.z * view.values[6] + view.values[9] + emitter->offset.x;
+  const float viewY = origin.x * view.values[1] + origin.y * view.values[4] + origin.z * view.values[7] + view.values[10] + emitter->offset.y;
+  const float viewZ = origin.x * view.values[2] + origin.y * view.values[5] + origin.z * view.values[8] + view.values[11] + emitter->offset.z;
+  emitter->position.x = viewX * inverse.values[0] + viewY * inverse.values[3] + viewZ * inverse.values[6] + inverse.values[9];
+  emitter->position.y = viewX * inverse.values[1] + viewY * inverse.values[4] + viewZ * inverse.values[7] + inverse.values[10];
+  emitter->position.z = viewX * inverse.values[2] + viewY * inverse.values[5] + viewZ * inverse.values[8] + inverse.values[11];
+  AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
+}
+
 // OFFSET: 0x00715C80
 // FUNCTION: fn_07270
 void CFromTheAbyssEffect::Slot04() {
@@ -1024,6 +1187,57 @@ void CFromTheAbyssEffect::Slot04() {
       AsParticle(emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
     }
   }
+}
+
+// OFFSET: 0x00715F30
+// FUNCTION: fn_07271
+void CFromTheAbyssEffect::SetLevel(long long level) {
+  if (level < 0 || level > this->maxLevel) {
+    return;
+  }
+
+  if (level > this->level) {
+    for (long long i = this->level; i < level; ++i) {
+      auto it = this->unknown_00E8.find(i);
+      if (it != this->unknown_00E8.end() && it->second.emitter) {
+        FreeParticle(AsParticle(it->second.emitter));
+      }
+
+      EZ2STREmitter* emitter =
+          reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+      if (emitter) {
+        AsParticle(emitter)->Load("from_the_abyss\\from_the_abyss_shadowball_create\\from_the_abyss_shadowball_create.str");
+        AsParticle(emitter)->m_scale = this->unknown_00E0[i].scale;
+        emitter->offset = this->unknown_00E0[i].offset;
+        AbyssParticle& entry = this->unknown_00E8[i];
+        entry.emitter = emitter;
+        entry.kind = 1;
+      }
+    }
+  } else if (level < this->level) {
+    for (long long i = this->level - 1; i > level - 1; --i) {
+      auto it = this->unknown_00E8.find(i);
+      if (it != this->unknown_00E8.end() && it->second.emitter) {
+        EZ2STREmitter* previous = it->second.emitter;
+        const double scale = AsParticle(previous)->m_scale;
+        const vector3d offset = previous->offset;
+        FreeParticle(AsParticle(previous));
+        EZ2STREmitter* emitter =
+            reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+        if (emitter) {
+          AsParticle(emitter)->Load("from_the_abyss\\from_the_abyss_shadowball_die\\from_the_abyss_shadowball_die.str");
+          AsParticle(emitter)->m_scale = static_cast<float>(scale);
+          emitter->offset = offset;
+        }
+
+        AbyssParticle& entry = this->unknown_00E8[i];
+        entry.kind = 3;
+        entry.emitter = emitter;
+      }
+    }
+  }
+
+  this->level = level;
 }
 
 // OFFSET: 0x00716800
@@ -1208,6 +1422,8 @@ void CHawkVumerangEffect::Close() {
 bool CHawkVumerangEffect::Slot06() {
   return this->emitters.size() != 0;
 }
+
+// OFFSET: 0x00718BA0
 
 // OFFSET: 0x00718E70
 // FUNCTION: fn_07301
@@ -1632,6 +1848,30 @@ void CNewCloudKillEffect::Slot03() {
 // OFFSET: 0x0071F5F0
 // FUNCTION: fn_07344
 CPetitioEffect::CPetitioEffect() : CEffect(1911) {
+}
+
+// OFFSET: 0x0071F750
+// FUNCTION: fn_07346
+void CPetitioEffect::Close() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end();) {
+    FreeParticle(AsParticle(*it));
+    it = this->emitters.erase(it);
+  }
+}
+
+// OFFSET: 0x0071F7A0
+// FUNCTION: fn_07347
+void CPetitioEffect::Slot01() {
+  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  bottom->Load(std::string("petitio\\petitio_bottom\\petitio_bottom.str"));
+  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
+
+  CEZ2STRParticle* petitio = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  petitio->Load(std::string("petitio\\petitio\\petitio.str"));
+  this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(petitio));
+
+  this->AddEvent(1, nullptr, 6, 0);
+  this->AddEvent(0, "effect\\CD_PETITIO.wav", 0, 0);
 }
 
 // OFFSET: 0x0071FA30
