@@ -597,6 +597,12 @@ void CGameActor::UpdateGaugePositions() {
   }
 }
 
+// OFFSET: 0x00CA8D70
+// FUNCTION: fn_20994
+CGameActor::~CGameActor() {
+  this->ReleaseAttachments();
+}
+
 // OFFSET: 0x00CAF260
 // FUNCTION: fn_21079
 void CGameActor::ReleaseAttachments() {
