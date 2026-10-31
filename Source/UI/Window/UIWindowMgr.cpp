@@ -649,6 +649,57 @@ UIWindowMgr::~UIWindowMgr() {
   this->savedRectangles.clear();
 }
 
+// OFFSET: 0x00A8B0A0
+// FUNCTION: fn_17121
+void UIWindowMgr::SelectWhisperName(const char* name) {
+  if (!name || !this->window_01C8) {
+    return;
+  }
+
+  char* list = *reinterpret_cast<char**>(reinterpret_cast<char*>(this->window_01C8) + 0xC0);
+  std::vector<std::string>& names = *reinterpret_cast<std::vector<std::string>*>(list + 0x11C);
+  int index = 0;
+  bool found = false;
+  for (const std::string& entry : names) {
+    if (entry == name) {
+      found = true;
+      break;
+    }
+    ++index;
+  }
+
+  if (!found) {
+    names.push_back(std::string(name));
+  }
+
+  UIWindow* field = *reinterpret_cast<UIWindow**>(reinterpret_cast<char*>(this->window_01C8) + 0xC0);
+  *reinterpret_cast<int*>(reinterpret_cast<char*>(field) + 0x128) = index;
+  this->window_01C8->SendMsg(field, 0x27, index, 0, 0, 0);
+}
+
+// OFFSET: 0x00A8B240
+// FUNCTION: fn_17122
+void UIWindowMgr::AddWhisperName(const char* name) {
+  if (!this->window_01C8) {
+    return;
+  }
+
+  char* list = *reinterpret_cast<char**>(reinterpret_cast<char*>(this->window_01C8) + 0xC0);
+  std::vector<std::string>& names = *reinterpret_cast<std::vector<std::string>*>(list + 0x11C);
+  for (const std::string& entry : names) {
+    if (entry == name) {
+      return;
+    }
+  }
+
+  names.push_back(std::string(name));
+  const unsigned count = static_cast<unsigned>(names.size());
+  unsigned& current = *reinterpret_cast<unsigned*>(*reinterpret_cast<char**>(reinterpret_cast<char*>(this->window_01C8) + 0xC0) + 0x128);
+  if (count - 1 <= current) {
+    current = count;
+  }
+}
+
 // OFFSET: 0x00A8B840
 // FUNCTION: fn_17124
 void UIWindowMgr::RegisterNamedWindow(std::string name, UIWindow* window) {

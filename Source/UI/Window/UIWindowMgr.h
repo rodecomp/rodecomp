@@ -516,6 +516,8 @@ public:
   int GetRenderedWindowIds(int* ids);
   void HideWindow01C8();
   bool IsHoverOnWindow01C8Button();
+  void SelectWhisperName(const char* name);
+  void AddWhisperName(const char* name);
   bool HasUnknown030C();
   bool IsDropDownChild(const UIWindow* window);
   bool HasMiniPartyMember(std::uint32_t accountId);
