@@ -364,6 +364,29 @@ void UICashShopWnd::Slot15(int, int) {
   }
 }
 
+// OFFSET: 0x007CF760
+// FUNCTION: fn_09536
+void UICashShopWnd_Cart::Slot15(int, int) {
+  this->m_scrollBar = new UIScrollBar_Custom(*this->m_context);
+  this->m_scrollBar->Configure(this->geometry.width - 7, 0, this->geometry.height, 1, 7, 7);
+  this->m_scrollBar->SetArrowBitmaps("유저인터페이스\\cashshop\\shop_scroll_up.bmp", "유저인터페이스\\cashshop\\shop_scroll_down.bmp");
+  this->m_scrollBar->SetThumbBitmaps(
+    "유저인터페이스\\cashshop\\shop_bar_up.bmp", "유저인터페이스\\cashshop\\shop_bar_mid.bmp", "유저인터페이스\\cashshop\\shop_bar_down.bmp"
+  );
+  this->AddChild(this->m_scrollBar);
+
+  int y = 5;
+  for (int index = 0; index < this->m_visibleCount; ++index) {
+    UICashShopWnd_CartItem* item = new UICashShopWnd_CartItem(*this->m_context, *this->m_controls);
+    item->SetSize(0xAC, 0x36);
+    item->Move(3, y);
+    item->Show(0);
+    this->AddChild(item);
+    this->m_slots.push_back(item);
+    y += 0x39;
+  }
+}
+
 // OFFSET: 0x007CFB20
 // FUNCTION: fn_09537
 void UICashShopWnd_CartItem::Slot15(int, int) {

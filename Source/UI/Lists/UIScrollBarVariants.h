@@ -32,6 +32,11 @@ public:
 
 class UIScrollBar_Custom : public UIScrollBar {
 public:
+  explicit UIScrollBar_Custom(UIWindowContext& windows)
+      : UIScrollBar(windows), m_trackTop(nullptr), m_trackMiddle(nullptr), m_trackBottom(nullptr), m_arrowUp(nullptr), m_arrowDown(nullptr),
+        m_thumbTop(nullptr), m_thumbMiddle(nullptr), m_thumbBottom(nullptr) {
+  }
+
   /* 00B4 */ CBitmapRes* m_trackTop;
   /* 00B8 */ CBitmapRes* m_trackMiddle;
   /* 00BC */ CBitmapRes* m_trackBottom;
