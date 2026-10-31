@@ -2,6 +2,8 @@
 #include "Contents/MessageTable.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Text/UIStaticText_LF.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 
 // OFFSET: 0x0094C2D0
@@ -65,4 +67,29 @@ void UINoteWnd_Scroll::Slot35(int delta) {
 // FUNCTION: fn_12852
 UINoteWnd::UINoteWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
     : UIFrameWnd(windows, frames, 0), m_scroll(nullptr), m_controls(&controls) {
+}
+
+// OFFSET: 0x00950840
+// FUNCTION: fn_12944
+int UINoteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    if (argument1 == 201) {
+      g_windowMgr.CloseWindow(this->geometry.id);
+    }
+  } else if (message == 0x22) {
+    UINoteWnd_Scroll* scroll = this->m_scroll;
+    const std::string text = LookupMessage(static_cast<int>(argument1));
+    UIStaticText_LF* label = new UIStaticText_LF(*this->m_context, 0);
+    scroll->m_text = label;
+    label->SetSize(scroll->geometry.width - 13, 12);
+    label->Move(0, 0);
+    label->SetText(text);
+    scroll->AddScrollChild(label);
+    scroll->horizontalBar->Show(0);
+    scroll->scrollBar->Show(0);
+    scroll->Invalidate();
+    this->Invalidate();
+  }
+
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }

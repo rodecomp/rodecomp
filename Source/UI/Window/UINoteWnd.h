@@ -5,11 +5,12 @@
 #include "UI/Window/UIFrameWnd.h"
 
 struct UIButtonContext;
+class UIStaticText_LF;
 
 class UINoteWnd_Scroll : public UIScrollWnd {
 public:
   // INLINED
-  UINoteWnd_Scroll(UIWindowContext& windows, int width, int height) : UIScrollWnd(windows, width, height, 0), unknown_00B0(0) {
+  UINoteWnd_Scroll(UIWindowContext& windows, int width, int height) : UIScrollWnd(windows, width, height, 0), m_text(nullptr) {
     this->SetSize(width, height);
   }
   void Paint() override;
@@ -17,7 +18,7 @@ public:
   void Slot31(int x, int y) override;
   void Slot35(int delta) override;
 
-  /* 00B0 */ int unknown_00B0;
+  /* 00B0 */ UIStaticText_LF* m_text;
 };
 
 class UINoteWnd : public UIFrameWnd {
@@ -25,6 +26,7 @@ public:
   UINoteWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot15(int width, int height) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
   /* 00B4 */ UINoteWnd_Scroll* m_scroll;
