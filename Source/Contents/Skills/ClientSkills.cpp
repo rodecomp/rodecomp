@@ -1,12 +1,15 @@
 #include "Contents/Skills/ClientSkills.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
+#include "Client/Application/ErrorDialog.h"
 #include "Client/Session.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/ClientState.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
+#include "Contents/MapPropertyMgr.h"
 #include "Contents/UserData/CharacterConfigSave.h"
 #include "Contents/World/World.h"
 #include "File/File.h"
@@ -20,6 +23,7 @@
 #include "Utility/Tokenizer.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <cstring>
 
 struct ClientItemLists {
@@ -28,6 +32,76 @@ struct ClientItemLists {
 
 // GLOBAL: gl_24650
 char g_decodedPlayerName[64];
+
+// OFFSET: 0x00E198F0
+// FUNCTION: fn_23844
+void sub_E198F0() {
+  CFile file;
+  if (!file.Open("MapInfoTable.scp", 0, true, false)) {
+    if (g_serviceType == 0) {
+      ShowErrorDialog(nullptr, "Load MapInfoTable Failed!", 0);
+    } else {
+      g_mapPropertyMgr->Clear();
+    }
+  } else {
+    const int size = file.GetSize();
+    char* buffer = new char[size];
+    file.Read(buffer, size);
+
+    int index = 0;
+    int mapId = 0;
+    int propertyId = 0;
+    while (index < size && mapId <= 39) {
+      char character = buffer[index++];
+      while (index < size) {
+        if (character == '/') {
+          if (buffer[index] == '/') {
+            do {
+              character = buffer[index++];
+            } while (character != '\n');
+          } else if (buffer[index] == '*') {
+            do {
+              do {
+                character = buffer[index++];
+              } while (character != '*');
+            } while (buffer[index] != '/');
+          }
+        } else if (character != ' ' && character != '\t') {
+          if (character == '\r') {
+            ++index;
+          } else {
+            char valueText[16] = {};
+            int textIndex = 0;
+            while (character != ' ' && character != '\t') {
+              valueText[textIndex++] = character;
+              character = buffer[index++];
+              if (character == '\r') {
+                index += 1;
+                break;
+              }
+            }
+
+            g_mapPropertyMgr->m_properties[mapId].SetValue(propertyId, std::atoi(valueText));
+            ++propertyId;
+            if (propertyId >= 27) {
+              ++mapId;
+              propertyId = 0;
+              break;
+            }
+          }
+        }
+
+        if (index >= size) {
+          break;
+        }
+        character = buffer[index++];
+      }
+    }
+
+    delete[] buffer;
+    file.Close();
+  }
+}
 
 namespace {
   // INLINED
