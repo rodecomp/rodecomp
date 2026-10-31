@@ -435,3 +435,12 @@ CUIEditCtrlEx::CUIEditCtrlEx(UIWindowContext& windows, UIEditContext& edit) : UI
   this->scrollPosition = 0;
   this->unknown_01F8 = 0;
 }
+
+// OFFSET: 0x009E45F0
+// FUNCTION: fn_14434
+void CUIEditCtrlEx::DrawCaret(int x, int y) {
+  const int elapsed = static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - this->caretStart).count());
+  if (((elapsed / 500) & 1) == 0 && IsInputSuggestionAllowed()) {
+    this->DrawTextAt(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, x, y, "|", 0, 0, 12, this->textColor, 0, 0);
+  }
+}
