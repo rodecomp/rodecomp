@@ -5,7 +5,9 @@
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/EffectMemoryMgr.h"
+#include "Contents/Effects/EffectTypes.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
@@ -13,6 +15,7 @@
 #include "Render/ScreenRectangle.h"
 #include "Render/TextureQuad.h"
 #include "Script/LuaScript.h"
+#include "Utility/Text/FormatString.h"
 
 #include <string>
 
@@ -1811,3 +1814,177 @@ int CEZ2STRScreenEffect::Slot28() {
 }
 
 // OFFSET: 0x00B52980
+
+// FUNCTION: fn_19039
+void CEZ2STRScreenEffect::Slot01() {
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(
+    CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5)
+  );
+  if (!particle) {
+    return;
+  }
+
+  particle->m_actorId = this->actor;
+
+  if (this->unknown_00C8 == 1) {
+    this->retained = 1;
+    particle->m_loop = true;
+    bool adjustSize = false;
+    g_luaScript->Call("IsAdjustSizeWhenShrinkState", "d>b", this->id - 0x9B5, &adjustSize);
+    particle->m_followActor = adjustSize;
+    bool adjustPosition = false;
+    g_luaScript->Call("IsAdjustPositionWhenShrinkState", "d>b", this->id - 0x9B5, &adjustPosition);
+    this->fadePulse = adjustPosition;
+  }
+
+  switch (this->id) {
+  case 0x3E6:
+  case 0x442:
+  case 0x45F:
+  case 0x470:
+  case 0x473:
+  case 0x4C5:
+  case 0x4DC:
+  case 0x4DD:
+  case 0x4DE:
+  case 0x4DF:
+  case 0x4E0:
+  case 0x4E1:
+  case 0x4E2:
+  case 0x4E3:
+  case 0x4E4:
+  case 0x4E5:
+  case 0x4EE:
+  case 0x4EF:
+  case 0x4F0:
+  case 0x4F1:
+    particle->m_loop = true;
+    break;
+
+  case 0x552:
+  case 0x584:
+  case 0x5A6:
+  case 0x607:
+  case 0x63F:
+  case 0x64B:
+  case 0x64C:
+  case 0x64D:
+  case 0x64E:
+  case 0x64F:
+  case 0x650:
+  case 0x676:
+  case 0x6AE:
+  case 0x6BE:
+  case 0x6BF:
+  case 0x6CD:
+  case 0x6D7:
+  case 0x6EB:
+  case 0x6F1:
+  case 0x701:
+  case 0x702:
+  case 0x703:
+  case 0x712:
+  case 0x719:
+  case 0x72F:
+  case 0x73C:
+  case 0x73D:
+  case 0x752:
+  case 0x756:
+  case 0x75A:
+  case 0x765:
+  case 0x766:
+  case 0x76C:
+  case 0x77F:
+  case 0x7AA:
+  case 0x7B7:
+  case 0x7BA:
+  case 0x7BD:
+  case 0x7BE:
+  case 0x7C1:
+  case 0x7C7:
+  case 0x7D2:
+  case 0x7EF:
+  case 0x7F9:
+  case 0x7FA:
+  case 0x803:
+  case 0x804:
+  case 0x807:
+  case 0x808:
+  case 0x80C:
+  case 0x81E:
+  case 0x81F:
+  case 0x84E:
+  case 0x851:
+  case 0x852:
+  case 0x876:
+  case 0x881:
+  case 0x886:
+  case 0x8A2:
+  case 0x8A3:
+  case 0x8AA:
+  case 0x8AB:
+  case 0x8B2:
+  case 0x8B3:
+  case 0x8BA:
+  case 0x8BB:
+  case 0x8DC:
+  case 0x8DD:
+  case 0x8DE:
+  case 0x8E1:
+  case 0x8E8:
+  case 0x8FE:
+  case 0x948:
+  case 0x949:
+  case 0x94A:
+  case 0x94B:
+  case 0x94C:
+  case 0x94D:
+  case 0x94F:
+  case 0x950:
+  case 0x951:
+  case 0x952:
+  case 0x953:
+  case 0x954:
+  case 0x955:
+  case 0x963:
+    this->retained = 1;
+    particle->m_loop = true;
+    break;
+
+  case 0x6EC:
+    this->AddEvent(0, "effect\\AG_MYSTERY_ILLUSION.wav", 0, 0);
+    this->retained = 1;
+    particle->m_loop = true;
+    break;
+
+  case 0x6F0:
+    this->AddEvent(0, "effect\\AG_TORNADO_STORM.wav", 0, 0);
+    this->retained = 1;
+    particle->m_loop = true;
+    break;
+
+  case 0x710:
+    this->AddEvent(0, "effect\\CD_MEDIALE_VOTUM.wav", 0, 0);
+    break;
+
+  default:
+    break;
+  }
+
+  if (this->unknown_00C4 > 0) {
+    particle->m_loop = true;
+  }
+
+  InitParticleQuad(particle->vertices);
+  this->particle = particle;
+  this->Slot34(particle, this->id);
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  this->cameraAngle = static_cast<double>(mode->camera->camera.yaw);
+
+  if (this->id >= 0x9B5) {
+    g_luaScript->Call("IsAttachedToHead", "d>b", this->id - 0x9B5, &this->jobScaled);
+  }
+}
+
+// OFFSET: 0x00B531E0

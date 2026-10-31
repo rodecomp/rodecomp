@@ -20,6 +20,7 @@ public:
   void Slot04() override;
   void Close() override;
   bool Slot06() override;
+  void Slot12() override;
   void Slot13(int argument) override;
   void Slot14(int argument) override;
   void Slot15(int argument) override;
