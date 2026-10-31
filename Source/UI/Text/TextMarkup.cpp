@@ -1,6 +1,7 @@
 #include "UI/Text/TextMarkup.h"
 
 #include <windows.h>
+#include <utility>
 
 namespace {
   // INLINED
@@ -22,6 +23,18 @@ namespace {
 
     return true;
   }
+}
+
+// GLOBAL: gl_24593
+static const std::string g_naviTagBegin = "<NAVI>";
+
+// GLOBAL: gl_24594
+static const std::string g_naviTagEnd = "</NAVI>";
+
+// OFFSET: 0x00A7CA90
+// FUNCTION: fn_16949
+void ExtractNavigationTextLinks(std::string&& text, std::vector<TextLink>& links) {
+  ExtractTextLinks(std::move(text), g_naviTagBegin, g_naviTagEnd, links);
 }
 
 // OFFSET: 0x00A81A70
