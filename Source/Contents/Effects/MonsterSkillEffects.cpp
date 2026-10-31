@@ -4265,3 +4265,28 @@ void CCurseOfCubeEffect::Slot03() {
     }
   }
 }
+
+// OFFSET: 0x0070C750
+// FUNCTION: fn_07136
+void CSprArrowEffect::Slot01() {
+  CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+  this->unknown_00CC = reinterpret_cast<int>(particle);
+  if (!particle) {
+    return;
+  }
+
+  particle->unknown_0004 = this->id;
+  particle->unknown_000C = 0;
+  particle->unknown_0010 = 0;
+  particle->unknown_0008 = 1;
+  particle->velocity.x = 0.0f;
+  particle->velocity.y = -10.0f;
+  particle->velocity.z = 0.0f;
+  particle->position.x = this->position[0];
+  particle->position.y = this->position[1];
+  particle->position.z = this->position[2];
+  this->unknown_00D0 = static_cast<int>(timeGetTime());
+  this->unknown_00D4 = this->position[0];
+  this->unknown_00D8 = this->position[1];
+  this->unknown_00DC = this->position[2];
+}
