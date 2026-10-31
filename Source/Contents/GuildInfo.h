@@ -89,6 +89,7 @@ public:
   /* 010C */ std::map<int, int> unknown_010C;
   /* 0114 */ std::vector<int> unknown_0114;
 
+  GuildInfo();
   void ChangeMemberPosition(int aid, int cid, int position);
   void ClearUnknown0114();
   void ClearMembers();

@@ -9,6 +9,12 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
+// OFFSET: 0x00AE38C0
+// FUNCTION: fn_18026
+GuildInfo::GuildInfo() {
+  this->Init();
+}
+
 // OFFSET: 0x00AE40C0
 // FUNCTION: fn_18029
 void GuildInfo::AddUnknown00EC(const Unknown00ECEntry& entry) {
