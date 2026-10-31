@@ -27,15 +27,16 @@ public:
 
 class UIScrollBar4 : public UIScrollBar {
 public:
+  explicit UIScrollBar4(UIWindowContext& windows);
+
   void Paint() override;
+
+  /* 00B4 */ int m_thumbLength;
 };
 
 class UIScrollBar_Custom : public UIScrollBar {
 public:
-  explicit UIScrollBar_Custom(UIWindowContext& windows)
-      : UIScrollBar(windows), m_trackTop(nullptr), m_trackMiddle(nullptr), m_trackBottom(nullptr), m_arrowUp(nullptr), m_arrowDown(nullptr),
-        m_thumbTop(nullptr), m_thumbMiddle(nullptr), m_thumbBottom(nullptr) {
-  }
+  explicit UIScrollBar_Custom(UIWindowContext& windows);
 
   /* 00B4 */ CBitmapRes* m_trackTop;
   /* 00B8 */ CBitmapRes* m_trackMiddle;
@@ -53,6 +54,8 @@ public:
 
 class UIZeroQuestScrollBar : public UIScrollBar {
 public:
+  explicit UIZeroQuestScrollBar(UIWindowContext& windows);
+
   void Paint() override;
 };
 

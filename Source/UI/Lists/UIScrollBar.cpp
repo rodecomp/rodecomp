@@ -4,6 +4,7 @@
 #include "Resource/ResourceMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Lists/UIScrollBar.h"
+#include "UI/Lists/UIScrollBarVariants.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
@@ -43,6 +44,28 @@ UIScrollBar::UIScrollBar(UIWindowContext& windows)
 
 // OFFSET: 0x00873FA0
 UIScrollBar::~UIScrollBar() = default;
+
+// OFFSET: 0x0086E4D0
+// FUNCTION: fn_11072
+UIScrollBar4::UIScrollBar4(UIWindowContext& windows) : UIScrollBar(windows) {
+  this->thickness = 6;
+  this->arrowLength = 0;
+  this->m_thumbLength = 12;
+}
+
+// OFFSET: 0x0086E630
+// FUNCTION: fn_11074
+UIScrollBar_Custom::UIScrollBar_Custom(UIWindowContext& windows)
+    : UIScrollBar(windows), m_trackTop(nullptr), m_trackMiddle(nullptr), m_trackBottom(nullptr), m_arrowUp(nullptr), m_arrowDown(nullptr),
+      m_thumbTop(nullptr), m_thumbMiddle(nullptr), m_thumbBottom(nullptr) {
+}
+
+// OFFSET: 0x0086F240
+// FUNCTION: fn_11088
+UIZeroQuestScrollBar::UIZeroQuestScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+  this->arrowLength = 12;
+  this->thickness = 9;
+}
 
 // OFFSET: 0x00897830
 // FUNCTION: fn_11535
