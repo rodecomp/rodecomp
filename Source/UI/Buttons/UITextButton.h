@@ -27,6 +27,7 @@ public:
   friend void ShowTextButtonTip(UITextButton* button);
   friend void ShowTextButtonItem(UITextButton* button);
   friend void RequestTextButtonService(UITextButton* button);
+  friend void OpenTextButtonNavigation(UITextButton* button);
 
   UITextButton(UIWindowContext& windows, UIButtonContext& buttons);
   ~UITextButton() override;

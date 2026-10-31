@@ -28,6 +28,7 @@
 #include "Contents/Items/ItemLink.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
+#include "Contents/NavigationManager.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/TipBoxTitles.h"
 #include "Network/TextEncoding.h"
@@ -1729,6 +1730,52 @@ UIEmotion::UIEmotion(UIWindowContext& windows) : UIWindow(windows, 0), m_animati
 // FUNCTION: fn_10437
 UIItemImage::UIItemImage(UIWindowContext& windows) : UIWindow(windows, 0), m_itemId("") {
   this->m_clip = 1;
+}
+
+// OFFSET: 0x0083B7F0
+// FUNCTION: fn_10484
+void OpenTextButtonNavigation(UITextButton* button) {
+  if (!button) {
+    return;
+  }
+
+  if (button->m_lines.size() == 0) {
+    return;
+  }
+
+  const std::string name = button->GetLine(0);
+  const int x = std::atoi(button->GetLine(1).c_str());
+  const int y = std::atoi(button->GetLine(2).c_str());
+  if (button->m_lines.size() <= 3) {
+    g_navigationManager.sub_B99030(name, 2, 5, false, x, y, 1002);
+    return;
+  }
+
+  const int mode = std::atoi(button->GetLine(3).c_str());
+  int code = std::atoi(button->GetLine(4).c_str());
+  if (code == -222) {
+    std::string tag = "$$DB ";
+    if (mode != 3) {
+      tag.clear();
+    }
+
+    tag += name;
+    g_navigationManager.sub_B995D0(tag, mode, false);
+    return;
+  }
+
+  const int flag = std::atoi(button->GetLine(5).c_str());
+  const int id = std::atoi(button->GetLine(6).c_str());
+  unsigned char hundreds = 0;
+  if (code >= 100) {
+    hundreds = 1;
+    code -= 100;
+  }
+
+  const unsigned char group = code < 10 ? hundreds : static_cast<unsigned char>(hundreds + 2);
+  const int remainder = code < 10 ? code : code - 10;
+  const unsigned char kind = remainder < 1 ? group : static_cast<unsigned char>(group + 4);
+  g_navigationManager.sub_B99030(name, mode, kind, flag == 0, x, y, id);
 }
 
 // OFFSET: 0x0083BAF0
