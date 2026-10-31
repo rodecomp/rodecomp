@@ -18,6 +18,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Party/UIMiniPartyWnd.h"
@@ -132,6 +133,7 @@ public:
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
+  void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot35(int delta) override;
   MessengerMember MemberAt(int x, int y);
@@ -690,7 +692,7 @@ UIMessengerGroupWnd::~UIMessengerGroupWnd() = default;
 
 // OFFSET: 0x0073A3F0
 // FUNCTION: fn_07704
-MessengerMember UIMessengerGroupWnd::MemberAt(int x, int y) {
+__declspec(noinline) MessengerMember UIMessengerGroupWnd::MemberAt(int x, int y) {
   this->selected = -1;
   if (x < 2 || x > this->geometry.width - 2) {
     return MessengerMember(0);
@@ -981,6 +983,53 @@ void UIMessengerGroupWnd::Slot31(int x, int y) {
     transient->geometry.unknown_0030 = 1;
     g_windowMgr.Schedule(g_windowMgr.window_4F250);
     g_windowMgr.window_4F250 = nullptr;
+  }
+}
+
+// OFFSET: 0x0073D0E0
+// FUNCTION: fn_07711
+void UIMessengerGroupWnd::Slot28(int x, int y) {
+  if (y < 17) {
+    UIFrameWnd::Slot28(x, y);
+  }
+
+  if (this->mode == 0) {
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (!mode) {
+    return;
+  }
+
+  const int previous = this->selected;
+  const MessengerMember member = this->MemberAt(x, y);
+  if (previous != this->selected) {
+    this->Invalidate();
+  }
+
+  if (!member.valid) {
+    return;
+  }
+
+  char text[256];
+  std::memset(text, 0, sizeof(text));
+  if (member.map.size() != 0 && member.offline == 0) {
+    const std::string mapName = g_session.GetMapDisplayName(member.map.c_str());
+    std::sprintf(text, "%s(%s)", member.name.c_str(), mapName.c_str());
+  } else {
+    std::sprintf(text, "%s", member.name.c_str());
+  }
+
+  const std::string fitted = this->FitDisplayText(static_cast<int>(this->geometry.width * 0.8 - 80.0), text, 0, 12, 1);
+  if (fitted.find(text, 0, std::strlen(text)) == std::string::npos) {
+    char level[64];
+    std::sprintf(level, "Lv.%d", member.level);
+    int tipX = this->TextWidth(this->m_context->fonts, this->m_context->locale, level, std::strlen(level), 0, 12, 1, 0) +
+               this->iconPositions[this->iconIndex].x + 33;
+    int tipY = this->selected / this->columns * this->rowHeight + 22;
+    this->ToScreen(tipX, tipY);
+    reinterpret_cast<ModeTooltip*>(mode)->Show(text, tipX, tipY, 0xFFFFFFFFu, 0, 1);
   }
 }
 
