@@ -13,6 +13,7 @@ class WindowManagerWindows;
 
 class UIBasicItemCtrl : public UIWindow {
 public:
+  void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Paint() override;
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
@@ -20,7 +21,9 @@ public:
   void DrawItemIcon(int x, int y, int unused, bool compact);
 
 protected:
-  /* 007C */ unsigned char unknown_007C[0xC];
+  /* 007C */ int m_itemType;
+  /* 0080 */ int m_itemMask;
+  /* 0084 */ unsigned char m_identified;
   /* 0088 */ std::string m_tooltip;
   /* 00A0 */ ITEM_INFO m_item;
   ItemNaming* m_naming;
@@ -30,6 +33,7 @@ protected:
 
 class UIBasicSkillCtrl : public UIWindow {
 public:
+  void Slot10(int argument1, int argument2, std::intptr_t argument3) override;
   void Paint() override;
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;

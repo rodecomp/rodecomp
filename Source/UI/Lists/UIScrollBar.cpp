@@ -28,6 +28,12 @@
 #include <cstdio>
 #include <cstring>
 #include "UI/Gauges/UIPcGage.h"
+#include "Client/Mode/CMode.h"
+#include "Client/Mode/ModeDragState.h"
+#include "Client/Session.h"
+#include "Contents/Skills/ClientSkills.h"
+#include "Contents/Skills/SkillInfo.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 // OFFSET: 0x0086E550
 // FUNCTION: fn_11073
 UIScrollBar::UIScrollBar(UIWindowContext& windows)
@@ -672,6 +678,31 @@ void UIScrollBar::SetRange(int maximum, int visible, int total) {
     this->position = this->maximum;
   }
 }
+
+// OFFSET: 0x0087DF00
+// FUNCTION: fn_11261
+void UIBasicItemCtrl::Slot10(int, int, std::intptr_t argument3) {
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(argument3);
+  if (!drag->skill && drag->identified == this->m_identified) {
+    this->m_item = LookupClientItemByIdentity(g_session.m_inventoryItems, drag->id);
+    if ((this->m_itemType == 21 && g_session.IsConsumableItemType(this->m_item.unknown_0000[0])) ||
+        (this->m_itemType == 22 && g_session.IsEquipItemType(this->m_item.unknown_0000[0])) ||
+        (this->m_itemType == 23 && g_session.IsMiscItemType(this->m_item.unknown_0000[0])) || this->m_item.unknown_0000[0] == this->m_itemType ||
+        this->m_itemType == -1) {
+      if ((this->m_itemMask == -1 || (this->m_item.unknown_0000[2] & this->m_itemMask) != 0) && this->m_item.unknown_0000[1] != 0) {
+        if (this->Root()) {
+          this->Root()->Invalidate();
+          this->Root()->InvalidateChildren();
+        } else {
+          this->Invalidate();
+        }
+      }
+    }
+  }
+  static_cast<CMode*>(g_charViewMode)->SendMsg(18, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x0087E080
 
 // OFFSET: 0x0087E190
 // FUNCTION: fn_11263
