@@ -97,3 +97,7 @@ void CUIMacroReport::Reset() {
 }
 
 // OFFSET: 0x00A44170
+// FUNCTION: fn_16051
+CUIFrameWnd* CreateMacroReport() {
+  return new CUIMacroReport();
+}

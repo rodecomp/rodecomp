@@ -2119,5 +2119,99 @@ UIListBoxAgitMenu::UIListBoxAgitMenu(UIWindowContext& windows, UIListBoxContext&
 }
 
 // OFFSET: 0x0095BF90
+// FUNCTION: fn_13064
+void UIGuildSkillWnd::Slot15(int, int height) {
+  this->CreateTabs();
+  if (std::strcmp(g_guildName.c_str(), "") == 0) {
+    g_modeMgr.gameMode->SendMsg(107, 0, 0, 0, 0);
+  }
+
+  GuildData().unknown_00C8 = 1;
+  g_modeMgr.gameMode->SendMsg(107, 3, 0, 0, 0);
+  this->m_scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar->Configure(this->geometry.width - 15, 41, 1, this->geometry.height - 70);
+  this->AddChild(this->m_scrollBar);
+  this->m_columns = 1;
+  this->m_visibleRows = (height - 62) / 32;
+
+  {
+    int ids[7] = {239, 240, 241, 242, 243, 244, 245};
+    std::string normal("유저인터페이스\\basic_interface\\skill_up_a.bmp");
+    std::string hover("유저인터페이스\\basic_interface\\skill_up_b.bmp");
+    std::string pressed("유저인터페이스\\basic_interface\\skill_up_c.bmp");
+    UIBitmapButton** button = this->m_levelUpButtons;
+    int* id = ids;
+    for (int y = 45; y < 283; y += 34, ++button, ++id) {
+      *button = new UIBitmapButton(*this->m_context, *this->m_controls);
+      (*button)->SetBitmap(normal.c_str(), 0, 0);
+      (*button)->SetBitmap(hover.c_str(), 1, 0);
+      (*button)->SetBitmap(pressed.c_str(), 2, 0);
+      (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
+      (*button)->Move(78, y);
+      (*button)->SetId(*id);
+      this->AddChild(*button);
+    }
+  }
+
+  {
+    int ids[7] = {253, 254, 255, 256, 257, 258, 259};
+    std::string bitmap("유저인터페이스\\basic_interface\\arw_left.bmp");
+    UIBitmapButton** button = this->m_previousButtons;
+    int* id = ids;
+    for (int y = 58; y < 296; y += 34, ++button, ++id) {
+      *button = new UIBitmapButton(*this->m_context, *this->m_controls);
+      (*button)->SetBitmap(bitmap.c_str(), 0, 0);
+      (*button)->SetBitmap(bitmap.c_str(), 1, 0);
+      (*button)->SetBitmap(bitmap.c_str(), 2, 0);
+      (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
+      (*button)->Move(112, y);
+      (*button)->SetId(*id);
+      this->AddChild(*button);
+    }
+  }
+
+  {
+    int ids[7] = {260, 261, 262, 263, 264, 265, 266};
+    std::string bitmap("유저인터페이스\\basic_interface\\arw_right.bmp");
+    UIBitmapButton** button = this->m_nextButtons;
+    int* id = ids;
+    for (int y = 58; y < 296; y += 34, ++button, ++id) {
+      *button = new UIBitmapButton(*this->m_context, *this->m_controls);
+      (*button)->SetBitmap(bitmap.c_str(), 0, 0);
+      (*button)->SetBitmap(bitmap.c_str(), 1, 0);
+      (*button)->SetBitmap(bitmap.c_str(), 2, 0);
+      (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
+      (*button)->Move(192, y);
+      (*button)->SetId(*id);
+      this->AddChild(*button);
+    }
+  }
+
+  {
+    const std::string prefix("유저인터페이스\\");
+    const char* names[2][3] = {
+        {"btn_use", "btn_use_a", "btn_use_b"},
+        {"btn_close", "btn_close_a", "btn_close_b"},
+    };
+    int ids[2] = {184, 201};
+    int positions[2][2] = {
+        {46, this->geometry.height - 24},
+        {92, this->geometry.height - 24},
+    };
+    UIBitmapButton** button = this->m_actionButtons;
+    for (int index = 0; index < 2; ++index, ++button) {
+      *button = new UIBitmapButton(*this->m_context, *this->m_controls);
+      (*button)->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+      (*button)->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      (*button)->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
+      (*button)->Move(positions[index][0], positions[index][1]);
+      (*button)->SetId(ids[index]);
+      this->AddChild(*button);
+    }
+
+    this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00963E10

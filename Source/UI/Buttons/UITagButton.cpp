@@ -8,6 +8,9 @@
 std::string g_emptyString;
 
 // OFFSET: 0x009B52E0
+// FUNCTION: fn_13842
+UITagButton::UITagButton(UIWindowContext& windows, UIButtonContext& buttons) : UITextButton(windows, buttons), item(), m_strings() {
+}
 
 // OFFSET: 0x009B54A0
 // FUNCTION: fn_13844
