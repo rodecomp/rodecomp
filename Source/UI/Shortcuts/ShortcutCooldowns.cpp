@@ -325,7 +325,7 @@ void UISeekPartyListWnd::Paint() {
         const int textY = y + 3;
         this->DrawTextAt(g_fontCache, locale, 22, textY, entry.time.c_str(), 0, 0, 12, 0, 0, 0);
         const char* charName =
-          reinterpret_cast<const char*(__thiscall*)(UIWindow*, const char*, int, int, int, unsigned char)>(0x00A829D0)(this, entry.charName.c_str(), 130, 0, 12, 0);
+          this->ClipTextToWidth(entry.charName.c_str(), 130, 0, 12, 0);
         this->DrawTextAt(g_fontCache, locale, 76, textY, charName, 0, 0, 12, 0, 0, 0);
         this->DrawTextAt(g_fontCache, locale, 215, textY, entry.level.c_str(), 0, 0, 12, 0, 0, 0);
         this->DrawTextAt(g_fontCache, locale, 280, textY, entry.location.c_str(), 0, 0, 12, 0, 0, 0);
