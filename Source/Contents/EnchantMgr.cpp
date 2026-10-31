@@ -1,11 +1,13 @@
 #include "Contents/EnchantMgr.h"
 #include "Client/Session.h"
+#include "Contents/Effects/EffectLists.h"
 #include "Contents/ItemDBToIDMgr.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "UI/Enchant/EnchantUI.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstdint>
@@ -64,6 +66,89 @@ void CEnchantMgr::SendCloseEnchant() {
   CRagConnection& connection = GetRagConnection();
   connection.Send(g_packetLengths.FixedLength(packet.packetType), &packet);
   m_unknown_0030 = true;
+}
+
+// OFFSET: 0x00683BC0
+// FUNCTION: fn_05544
+void CEnchantMgr::OpenEnchant(uint64_t group) {
+  if (g_session.m_weight * 100 / g_session.m_maxWeight >= 70) {
+    if (g_windowMgr.LookupWindow(10006)) {
+      g_windowMgr.CloseWindow(10006);
+    }
+  } else {
+    CUIEnchantUI* window = static_cast<CUIEnchantUI*>(g_windowMgr.EnsureWindow(10006));
+    if (window) {
+      window->sub_A06C40(group);
+      this->m_unknown_0030 = false;
+    }
+  }
+}
+
+// OFFSET: 0x006841D0
+// FUNCTION: fn_05551
+void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
+  if (messageId == 0xF11) {
+    auto enchant = this->m_enchants.find(this->m_request.group);
+    if (enchant == this->m_enchants.end()) {
+      return;
+    }
+
+    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, this->m_request.index);
+    if (item.unknown_0000[1] == 0) {
+      return;
+    }
+
+    if (this->m_request.packetType == 0xB9E) {
+      for (int slot : enchant->second.slots) {
+        if (static_cast<uint32_t>(slot) < 4) {
+          item.SetCard(0, slot);
+        }
+      }
+    } else {
+      if (static_cast<uint16_t>(this->m_request.slot) > 3) {
+        return;
+      }
+      item.SetCard(itemId, this->m_request.slot);
+    }
+
+    g_session.UpdateInventoryItem(item, 1);
+    int effect = 0;
+    switch (this->m_request.packetType) {
+    case 0xB9B:
+    case 0xB9C:
+      effect = 0x908;
+      break;
+    case 0xB9D:
+    case 0xBF0:
+    case 0xBF1:
+      effect = 0x90B;
+      break;
+    case 0xB9E:
+      effect = 0x90E;
+      break;
+    }
+    g_effectMgr->Spawn(g_session.m_aid, effect, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  } else if (messageId == 0xF12) {
+    int effect = 0;
+    switch (this->m_request.packetType) {
+    case 0xB9B:
+    case 0xB9C:
+    case 0xB9D:
+    case 0xBF0:
+    case 0xBF1:
+      effect = 0x909;
+      break;
+    case 0xB9E:
+      effect = 0x90F;
+      break;
+    }
+    g_effectMgr->Spawn(g_session.m_aid, effect, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  } else {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(messageId)), 0xFF, 0, 0, 0);
+  }
+
+  g_windowMgr.CloseWindow(10006);
+  this->m_unknown_0030 = false;
 }
 
 // OFFSET: 0x00683C20

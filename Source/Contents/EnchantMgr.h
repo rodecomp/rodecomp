@@ -77,6 +77,8 @@ public:
   bool Init();
   void SetEnchant(uint64_t group, uint32_t optionKey, uint32_t slot, const std::map<std::string, uint64_t>& enchants);
   void SendCloseEnchant();
+  void OpenEnchant(uint64_t group);
+  void HandleEnchantResult(int messageId, int itemId);
   void RequestPerfectEnchant(uint64_t group, int16_t index, int16_t slot, int32_t itemId);
   void RequestRandomEnchant(uint64_t group, int16_t index, int16_t slot);
   void RequestResetEnchant(uint64_t group, int16_t index);
