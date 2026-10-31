@@ -16,6 +16,17 @@
 #include "UI/Window/UIResizer.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/Text/GroupedInteger.h"
+#include "Utility/Timestamp.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
+#include "Resource/TextureNames.h"
+#include "UI/Shop/ItemDrawing.h"
+
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 // OFFSET: 0x0099E0E0
 // FUNCTION: fn_13571
@@ -59,6 +70,94 @@ void UIMerchantItemLogWnd::Slot15(int width, int height) {
 
   this->columns = 1;
   this->visibleRows = (height - 38) / 32;
+}
+
+// OFFSET: 0x0099E7A0
+// FUNCTION: fn_13576
+void UIMerchantItemLogWnd::Paint() {
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawTitleBar(controls.fonts, controls.locale, false, "", 0);
+
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(controls.resources, 2, 2, red, green, blue);
+  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+
+  int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
+    this->DrawBitmap(0, y, &left->image, false);
+  }
+
+  rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
+  for (int y = 17; rows > 0; --rows, y += 8) {
+    const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
+    this->DrawBitmap(this->geometry.width - right->image.width, y, &right->image, false);
+  }
+
+  int slots = (this->geometry.height - 38) / 32;
+  for (int y = 17; slots > 0; --slots, y += 32) {
+    DrawItemSlotBackground(*this, 40, y);
+  }
+
+  ItemDescriptions descriptions{g_itemDescriptions};
+  auto it = this->items.begin();
+  auto log = this->logs.begin();
+
+  for (int index = 0, visible = 0; visible < this->visibleRows; ++index, ++it, ++log) {
+    if (index < this->scroll) {
+      continue;
+    }
+
+    if (this->items.size() < static_cast<unsigned>(index + 1)) {
+      break;
+    }
+
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->unknown_005D) {
+      continue;
+    }
+
+    const int top = visible / this->columns * 32;
+    const int x = visible % this->columns * 32 + 44;
+    DrawItemWithQuantity(*this, controls.resources, descriptions, controls.fonts, controls.locale, x, top + 21, *it, 0, 0);
+
+    if (it->unknown_0088 > 0) {
+      this->DrawBitmap(
+        x, top + 33,
+        &static_cast<CBitmapRes*>(
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->unknown_0088).c_str()))
+        )->image,
+        true
+      );
+    }
+
+    int textX = this->geometry.width - 370;
+    const int textY = top + 29;
+
+    char name[26] = {};
+    StringFormat(name, sizeof(name), static_cast<std::size_t>(-1), "%s", log->name.c_str());
+    this->DrawTextAt(controls.fonts, controls.locale, textX, textY, name, static_cast<int>(std::strlen(name)), 0, 12, 0, 0, 0);
+    textX += 150;
+
+    char price[64];
+    char grouped[64];
+    std::memset(price, 0, sizeof(price));
+    std::memset(grouped, 0, sizeof(grouped));
+    const int length = std::sprintf(price, " %10s Zeny", FormatGroupedInteger(static_cast<int>(it->unknown_0014[0]), grouped, sizeof(grouped)));
+    this->DrawTextAt(controls.fonts, controls.locale, textX, textY, price, length, 0, 12, 0, 0, 0);
+    textX += 110;
+
+    char date[20] = {};
+    Timestamp stamp(log->time);
+    StringFormat(date, sizeof(date), static_cast<std::size_t>(-1), "%02d/%02d - %02d:%02d:%02d", stamp.Month(), stamp.Day(), stamp.Hour(), stamp.Minute(), stamp.Second());
+    this->DrawTextAt(controls.fonts, controls.locale, textX, textY, date, static_cast<int>(std::strlen(date)), 0, 12, 0, 0, 0);
+    ++visible;
+  }
+
+  this->DrawButtonBar(2, 0, 1);
 }
 
 // OFFSET: 0x0099ED00
