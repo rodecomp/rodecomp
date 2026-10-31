@@ -5,6 +5,7 @@
 #include "UI/Text/PixelTextWrapping.h"
 #include "UI/Text/TextMarkup.h"
 #include "UI/Text/TextWrapping.h"
+#include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UIListBoxNavi.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Buttons/UITextButton.h"
@@ -164,7 +165,7 @@ static_assert(offsetof(TextLinkHistory, details) == 0x118);
 // FUNCTION: fn_11207
 void TextLinkHistory::sub_876D50(const char* name, int value, const char* detail) {
   if (this->names.size() >= this->limit) {
-    reinterpret_cast<void(__thiscall*)(TextLinkHistory*)>(0x0087CC30)(this);
+    reinterpret_cast<UIChatHisBox*>(this)->DropOldestRecords();
   }
 
   this->names.push_back(std::string(name));
