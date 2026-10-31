@@ -38,6 +38,8 @@ class CUITitleBar;
 class CUIStaticText;
 class CUIProbabilityTable : public CUIFrameWnd {
 public:
+  __declspec(noinline) CUIProbabilityTable();
+
   void Slot16() override;
   void Paint() override;
   virtual void Slot53();
