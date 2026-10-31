@@ -1213,3 +1213,155 @@ void UIAchSummaryWnd::Slot15(int, int) {
     ++slot;
   }
 }
+
+// OFFSET: 0x007B80A0
+
+// OFFSET: 0x007B8340
+
+// OFFSET: 0x007B9030
+// FUNCTION: fn_09255
+void UIAchSummaryWnd::UpdateInfo() {
+  this->recent.clear();
+
+  int second = 0;
+  int first = 0;
+  g_session.FindTopRecords6144(&second, &first);
+
+  {
+    AchievementInfo info;
+    if (g_achievementMgr->GetAchievement(info, second)) {
+      this->recent.push_back(std::pair<int, AchievementInfo>(second, info));
+    }
+
+    UITextButton* button = static_cast<UITextButton*>(this->buttons[1]);
+    {
+      const std::string title = info.title.c_str();
+      button->label = title;
+    }
+    this->buttons[1]->SetId(second);
+    static_cast<UITextButton*>(this->buttons[1])->ResizeToText();
+
+    if (g_achievementMgr->GetAchievement(info, first)) {
+      this->recent.push_back(std::pair<int, AchievementInfo>(first, info));
+    }
+
+    button = static_cast<UITextButton*>(this->buttons[0]);
+    {
+      const std::string title = info.title.c_str();
+      button->label = title;
+    }
+    this->buttons[0]->SetId(first);
+    static_cast<UITextButton*>(this->buttons[0])->ResizeToText();
+  }
+
+  for (int index = 0; index < this->unknown_007C; ++index) {
+    this->gauges[index]->value = g_achievementMgr->GetCompletedCount(index, -1);
+    this->gauges[index]->maximum = g_achievementMgr->GetAchievementCount(index, -1);
+  }
+
+  this->Invalidate();
+}
+
+// OFFSET: 0x007B9440
+// FUNCTION: fn_09256
+void UIAchViewWnd::UpdateInfo() {
+  this->description->Clear();
+  this->description->Invalidate();
+  for (int index = 0; index < 10; ++index) {
+    this->conditions[index]->Clear();
+    this->conditions[index]->Invalidate();
+    this->conditions[index]->Show(0);
+    this->gauges[index]->Show(0);
+  }
+
+  for (UIToolTipBitmapWnd* reward : this->rewards) {
+    reward->Show(0);
+  }
+
+  this->receiveButton->Enable(0);
+
+  if (this->info) {
+    const SessionRecord6144 record = g_session.FindRecord6144(this->achievementId);
+    this->description->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->info->unknown_0030.c_str()), 50, 0, 0);
+
+    const bool hasReward = this->info->unknown_0054 > 0 || this->info->unknown_0050 > 0 || this->info->unknown_004C > 0;
+    if (hasReward && record.unknown_0030 == 0) {
+      this->receiveButton->Enable(1);
+      this->receiveButton->SetDisabled(1);
+      this->receiveButton->Invalidate();
+      if (static_cast<unsigned char>(record.unknown_0000 >> 8) == 1) {
+        this->receiveButton->SetDisabled(0);
+        this->receiveButton->Invalidate();
+      }
+    }
+
+    for (unsigned int index = 0; index < this->info->rewards.size(); ++index) {
+      UIAchTV* condition = this->conditions[index];
+      condition->Show(1);
+      condition->SetId(this->info->rewards[index].unknown_001C);
+
+      if (this->info->unknown_0064 == 1) {
+        const int progress = record.unknown_0004[index];
+        const int target = this->info->rewards[index].unknown_0018;
+        const std::string text = FormatOwnedString("%s ( %d / %d )", this->info->rewards[index].text.c_str(), progress, target);
+        condition->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 56, 0, 0);
+        this->gauges[index]->Show(1);
+        this->gauges[index]->value = progress;
+        this->gauges[index]->maximum = target;
+        this->gauges[index]->Invalidate();
+      } else {
+        condition->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->info->rewards[index].text.c_str()), 56, 0, 0);
+        this->gauges[index]->Show(0);
+      }
+
+      const int progress = record.unknown_0004[index];
+      if (this->info->unknown_0064 == 0) {
+        if (progress > 0) {
+          this->conditions[index]->textColor = 0xC9977D;
+          condition->underline = 1;
+        } else {
+          this->conditions[index]->textColor = 0x995736;
+        }
+      } else if (this->info->unknown_0064 == 1) {
+        if (progress == this->info->rewards[index].unknown_0018) {
+          condition->textColor = 0xC9977D;
+          condition->underline = 1;
+        } else {
+          this->conditions[index]->textColor = progress == 0 ? 0x995736 : 0x4189E6;
+        }
+      }
+
+      if (this->info->unknown_0064 == 0) {
+        condition->Move(28, 97 + 19 * index);
+      } else if (this->info->unknown_0064 == 1) {
+        condition->Move(28, 123 + 36 * index - 18);
+        this->gauges[index]->Move(28, 123 + 36 * index);
+      }
+    }
+
+    if (this->info->unknown_0054 > 0 || this->info->unknown_0050 > 0 || this->info->unknown_004C > 0) {
+      if (this->info->unknown_0050 > 0) {
+        const std::string bitmap = "유저인터페이스\\achievement_re\\reward_title.bmp";
+        const std::string title = GetJobTitleString(this->info->unknown_0050);
+        this->rewards[0]->Set(bitmap.c_str(), title.c_str(), 0);
+        this->rewards[0]->Show(1);
+      }
+
+      if (this->info->unknown_0054 > 0) {
+        const std::string bitmap = "유저인터페이스\\achievement_re\\reward_buff.bmp";
+        const char* description = nullptr;
+        g_luaScript->Call("GetStateIconDescript", "dd>s", this->info->unknown_0054, 1, &description);
+        this->rewards[1]->Set(bitmap.c_str(), description, 0);
+        this->rewards[1]->Show(1);
+      }
+
+      if (this->info->unknown_004C > 0) {
+        const std::string bitmap = "유저인터페이스\\achievement_re\\reward_item.bmp";
+        this->rewards[2]->Set(bitmap.c_str(), nullptr, this->info->unknown_004C);
+        this->rewards[2]->Show(1);
+      }
+    }
+  }
+
+  this->Invalidate();
+}

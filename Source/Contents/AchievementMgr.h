@@ -79,5 +79,7 @@ public:
 static_assert(sizeof(CAchievementMgr) == 0x1C);
 
 extern CAchievementMgr* g_achievementMgr;
+extern int g_achievementCompleted;
+extern int g_achievementTotal;
 
 #endif

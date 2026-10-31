@@ -2,6 +2,8 @@
 #define RAGNAROK_SOURCE_UI_TEXT_UIACHWND_H
 
 #include "Contents/AchievementMgr.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "Script/LuaScript.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Text/UITextViewer.h"
@@ -84,6 +86,7 @@ public:
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 private:
   UIButtonContext* m_controls;
@@ -206,6 +209,8 @@ public:
   /* 00E0 */ int achievementId;
   /* 00E4 */ AchievementInfo* info;
 
+  void UpdateInfo();
+
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -251,6 +256,8 @@ public:
   /* 008C */ std::vector<std::pair<int, AchievementInfo>> recent;
   /* 0098 */ UIWindow* buttons[2];
 
+  void UpdateInfo();
+
   void Show(int visible) override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -275,6 +282,7 @@ public:
 
   void Slot15(int width, int height) override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   void CreateTab();
   void SelectAchievement(int id);
