@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 
+class UIWindow;
+
 struct CharacterListPacket;
 struct CharacterSlotsPacket;
 struct CharacterResultPacket;
@@ -61,6 +63,7 @@ struct MapStateEntry {
 class CLoginMode : public CMode {
 public:
   CLoginMode();
+  void SubD97780(int value);
   /* 0058 */ unsigned char unknown_0058[0x174];
   /* 01CC */ int characterCount;
   /* 01D0 */ unsigned char unknown_01D0[0x8];
@@ -73,7 +76,9 @@ public:
   /* 4068 */ CharacterInfo characters[68];
   /* 6EE4 */ unsigned char unknown_6EE4[0x18];
   /* 6EFC */ CharacterSlotExtension slotExtension;
-  /* 6F10 */ unsigned char unknown_6F10[0x40];
+  /* 6F10 */ unsigned char unknown_6F10[0x4];
+  /* 6F14 */ UIWindow* window_6F14;
+  /* 6F18 */ unsigned char unknown_6F18[0x38];
   /* 6F50 */ std::string unknown_6F50;
   /* 6F68 */ std::vector<MapStateEntry> mapStates;
   /* 6F74 */ bool unknown_6F74;

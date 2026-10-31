@@ -761,6 +761,95 @@ void CLoginMode::End() {
   this->unknown_6F50.clear();
 }
 
+// OFFSET: 0x00D97780
+// FUNCTION: fn_22302
+void CLoginMode::SubD97780(int value) {
+  int timeout = 0x3A98;
+  if (g_serviceType == 5 || g_serviceType == 7) {
+    timeout = 0x1D4C0;
+  }
+
+  switch (value) {
+  case 4:
+    if (static_cast<int>(timeGetTime()) > this->otpStarted + timeout) {
+      this->SendMsg(0x2725, 0, 0, 0, 0);
+    }
+    if (g_serviceType == 5 || g_serviceType == 7) {
+      if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
+        if (this->window_6F14 == nullptr) {
+          this->window_6F14 = g_windowMgr.EnsureWindow(6);
+          if (this->window_6F14 == nullptr) {
+            break;
+          }
+        }
+        this->window_6F14->SendMsg(nullptr, 0x58, 0, 0, 0, 0);
+        this->window_6F14->Invalidate();
+      }
+    }
+    break;
+  case 5:
+    if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x13880) {
+      GetRagConnection().Close();
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+        this->otpStarted = timeGetTime();
+        g_charServerAccountIdPending = 0;
+        this->pendingCursorType = 3;
+      }
+    }
+    break;
+  case 6:
+    if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
+      GetRagConnection().Close();
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+        g_modeMgr.Quit();
+      }
+    }
+    break;
+  case 12:
+    if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
+      GetRagConnection().Close();
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1), 0, true, false, 0, "Message", 280, 120, 0) != 0x10D) {
+        this->otpStarted = timeGetTime();
+        g_charServerAccountIdPending = 0;
+        this->pendingCursorType = 3;
+      }
+    }
+    break;
+  case 38:
+    if (this->unknown_6F75 == true) {
+      if (static_cast<int>(timeGetTime()) >= this->otpStarted + 0xEA60) {
+        GetRagConnection().Close();
+        if (this->unknown_6F74 == true && this->unknown_6F75 == true) {
+          this->unknown_6F76 = true;
+          if (!g_windowMgr.HasModalWindow()) {
+            if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xD16), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
+              this->unknown_6F75 = false;
+              this->unknown_6F76 = false;
+              this->unknown_6F74 = false;
+              this->otpStarted = timeGetTime();
+              this->pendingCursorType = 3;
+            }
+          }
+        }
+      }
+    } else {
+      if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x13880) {
+        GetRagConnection().Close();
+        if (this->unknown_6F74 == false) {
+          if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xD70), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
+            this->unknown_6F74 = false;
+            this->otpStarted = timeGetTime();
+            this->pendingCursorType = 3;
+          }
+        }
+      }
+    }
+    break;
+  default:
+    break;
+  }
+}
+
 // OFFSET: 0x00D97B20
 // FUNCTION: fn_22303
 void CLoginMode::SubD97B20(int) {
