@@ -312,7 +312,7 @@ void UILapineUpgradeBoxWnd::SetIngredient(int id) {
   this->description.assign(source, std::strlen(source));
 }
 
-// OFFSET: 0x006041E0
+
 
 // OFFSET: 0x00603680
 // FUNCTION: fn_04196
@@ -606,4 +606,81 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
   entry->Show(0);
   this->SendMsg(this, 0x57, 0, 0, 0, 0);
   return true;
+}
+
+// OFFSET: 0x006041E0
+// FUNCTION: fn_04215
+int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    if (a == 201) {
+      g_windowMgr.CloseWindow(302);
+      return 0;
+    }
+
+    if (a == 505) {
+      UILapineUpgradeBox_IngredientInfoWnd* selected = this->ingredientList->FindSelected();
+      if (selected) {
+        this->SendMsg(this, 31, selected->item.unknown_0000[1], 0, 0, 0);
+        return 0;
+      }
+    } else if (a == 509 && this->item.unknown_0000[1] != 0) {
+      LapineUpgradeStartPacket packet;
+      packet.id = 0xAB6;
+      packet.ingredientId = this->ingredientId;
+      packet.itemId = static_cast<std::int16_t>(this->item.unknown_0000[1]);
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      this->waiting = 1;
+      this->upgradeButton->SetDisabled(1);
+      this->upgradeButton->Invalidate();
+      this->Invalidate();
+      return 0;
+    }
+    break;
+  case 23:
+    this->SetIngredient(static_cast<int>(a));
+    return 0;
+  case 31:
+    if (this->item.unknown_0000[1] == 0 && this->ingredientList->CanUseIngredient(static_cast<std::uint32_t>(a)) == 1) {
+      ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(a));
+      if (owned.unknown_0000[1] != 0) {
+        std::vector<char*> breaks;
+        char name[260];
+        std::memset(name, 0, sizeof(name));
+        int highlightColor = 0;
+        char* cursor = name;
+        std::size_t remaining = sizeof(name);
+        char* highlight = nullptr;
+        this->BuildItemName(&owned, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+
+        if (owned.identified == 1 && owned.unknown_0098 != 0) {
+          sprintf_s(name, sizeof(name), LookupMessage(2600), name, owned.unknown_0098);
+        }
+
+        owned.SetName(name);
+        this->item = owned;
+        this->Invalidate();
+      }
+      return 0;
+    }
+    break;
+  case 104:
+    if (this->item.unknown_0000[1] != 0 && this->item.unknown_0000[1] == a) {
+      this->item = ITEM_INFO();
+      this->SendMsg(this, 111, reinterpret_cast<std::intptr_t>(""), 0, 0, 0);
+      this->Invalidate();
+      this->ingredientList->AddIngredient(static_cast<std::uint32_t>(a));
+      return 0;
+    }
+    break;
+  case 111:
+    this->noticeTick = timeGetTime();
+    this->notice = reinterpret_cast<const char*>(a);
+    this->Invalidate();
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
 }
