@@ -6035,3 +6035,27 @@ struct ItemFallEntry {
 };
 
 // OFFSET: 0x00D2DB80
+// FUNCTION: fn_21724
+void CGameMode::ReceiveItemFallEntry(const unsigned char* packet) {
+  ItemFallEntry entry = {};
+  entry.count = *reinterpret_cast<const std::int16_t*>(packet + 0x0F);
+  entry.aid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
+  entry.column = *reinterpret_cast<const std::int16_t*>(packet + 0x0B);
+  entry.row = *reinterpret_cast<const std::int16_t*>(packet + 0x0D);
+  entry.subColumn = packet[0x11];
+  entry.subRow = packet[0x12];
+  entry.falling = 0;
+  _itoa(*reinterpret_cast<const int*>(packet + 6), entry.itemId, 10);
+  entry.falling = 0;
+  entry.identified = packet[0x0A];
+
+  CItem* item = this->scene->GetItemByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2));
+  if (!item) {
+    item = new CItem;
+    this->scene->objects.push_back(item);
+    this->scene->unknown_0018.push_back(item);
+  }
+
+  const int entryAddress = reinterpret_cast<int>(&entry);
+  item->SendMsg(nullptr, 4, 0, entryAddress, entryAddress >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
