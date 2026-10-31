@@ -387,3 +387,411 @@ CMsgEffect* CGameMode::SpawnDamageMsgEffect(const vector3d* position, std::uint3
 }
 
 // OFFSET: 0x00CDA580
+// FUNCTION: fn_21309
+CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, std::uint32_t accountId, bool visible) {
+  std::string sprite;
+  std::string action;
+  int type = 0;
+  int animation = 0;
+
+  switch (effectId) {
+  case 0:
+    sprite = "이팩트\\mvp.spr";
+    action = "이팩트\\mvp.act";
+    type = 2;
+    break;
+  case 1:
+    sprite = "이팩트\\손수레.spr";
+    action = "이팩트\\손수레.act";
+    type = 3;
+    break;
+  case 2:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 8;
+    type = 4;
+    break;
+  case 3:
+    sprite = "이팩트\\얼음땡.spr";
+    action = "이팩트\\얼음땡.act";
+    type = 5;
+    break;
+  case 4:
+    sprite = "이팩트\\얼음땡.spr";
+    action = "이팩트\\얼음땡.act";
+    animation = 1;
+    type = 6;
+    break;
+  case 5:
+    sprite = "이팩트\\smoke.spr";
+    action = "이팩트\\smoke.act";
+    type = 6;
+    break;
+  case 6:
+    sprite = "이팩트\\Status-curse.spr";
+    action = "이팩트\\Status-curse.act";
+    type = 7;
+    break;
+  case 7:
+    sprite = "이팩트\\Status-sleep.spr";
+    action = "이팩트\\Status-sleep.act";
+    type = 8;
+    break;
+  case 8:
+    sprite = "이팩트\\Status-stun.spr";
+    action = "이팩트\\Status-stun.act";
+    type = 9;
+    break;
+  case 9:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 10;
+    type = 10;
+    break;
+  case 10:
+    sprite = FormatOwnedString("%s.spr", g_session.Text80EC());
+    action = FormatOwnedString("%s.act", g_session.Text80EC());
+    animation = 1;
+    type = 11;
+    break;
+  case 11:
+    sprite = FormatOwnedString("%s.spr", g_session.Text80EC());
+    action = FormatOwnedString("%s.act", g_session.Text80EC());
+    animation = 2;
+    type = 12;
+    break;
+  case 12:
+    sprite = FormatOwnedString("%s.spr", g_session.Text80EC());
+    action = FormatOwnedString("%s.act", g_session.Text80EC());
+    animation = 2;
+    type = 15;
+    break;
+  case 13:
+    sprite = FormatOwnedString("%s.spr", g_session.Text80EC());
+    action = FormatOwnedString("%s.act", g_session.Text80EC());
+    animation = 3;
+    type = 17;
+    break;
+  case 14:
+    sprite = "이팩트\\매.spr";
+    action = "이팩트\\매.act";
+    type = 18;
+    break;
+  case 16:
+    sprite = "이팩트\\손수레1.spr";
+    action = "이팩트\\손수레1.act";
+    type = 3;
+    break;
+  case 17:
+    sprite = "이팩트\\손수레2.spr";
+    action = "이팩트\\손수레2.act";
+    type = 3;
+    break;
+  case 18:
+    sprite = "이팩트\\손수레3.spr";
+    action = "이팩트\\손수레3.act";
+    type = 3;
+    break;
+  case 19:
+    sprite = "이팩트\\손수레4.spr";
+    action = "이팩트\\손수레4.act";
+    type = 3;
+    break;
+  case 20:
+    sprite = FormatOwnedString("%s.spr", g_session.Text80EC());
+    action = FormatOwnedString("%s.act", g_session.Text80EC());
+    animation = 1;
+    type = 24;
+    break;
+  case 21:
+    sprite = "이팩트\\슈노손수레.spr";
+    action = "이팩트\\슈노손수레.act";
+    type = 3;
+    break;
+  case 22:
+    sprite = FormatOwnedString("%s.spr", g_session.Text8104());
+    if (g_session.m_damageSkinIndex == 0) {
+      action = "이팩트\\msg.act";
+    } else {
+      action = FormatOwnedString("%s.act", g_session.Text8104());
+    }
+    animation = 2;
+    type = 25;
+    break;
+  case 23:
+    sprite = "이팩트\\매2.spr";
+    action = "이팩트\\매2.act";
+    type = 18;
+    break;
+  case 24:
+    sprite = "이팩트\\매.spr";
+    action = "이팩트\\베이비매.act";
+    type = 18;
+    break;
+  case 25:
+    sprite = "이팩트\\손수레.spr";
+    action = "이팩트\\베이비손수레.act";
+    type = 3;
+    break;
+  case 26:
+    sprite = "이팩트\\손수레1.spr";
+    action = "이팩트\\베이비손수레1.act";
+    type = 3;
+    break;
+  case 27:
+    sprite = "이팩트\\손수레2.spr";
+    action = "이팩트\\베이비손수레2.act";
+    type = 3;
+    break;
+  case 28:
+    sprite = "이팩트\\손수레3.spr";
+    action = "이팩트\\베이비손수레3.act";
+    type = 3;
+    break;
+  case 29:
+    sprite = "이팩트\\손수레4.spr";
+    action = "이팩트\\베이비손수레4.act";
+    type = 3;
+    break;
+  case 30:
+    sprite = "이팩트\\슈노손수레.spr";
+    action = "이팩트\\베이비슈노손수레.act";
+    type = 3;
+    break;
+  case 31:
+    sprite = "cursors.spr";
+    action = "cursors.act";
+    animation = 10;
+    type = 26;
+    break;
+  case 32:
+    sprite = "몬스터\\demon_pungus.spr";
+    action = "몬스터\\demon_pungus.act";
+    type = 18;
+    break;
+  case 33:
+    sprite = "몬스터\\explosion.spr";
+    action = "몬스터\\explosion.act";
+    type = 18;
+    break;
+  case 34:
+    sprite = "몬스터\\lude.spr";
+    action = "몬스터\\lude.act";
+    type = 18;
+    break;
+  case 35:
+    sprite = "몬스터\\워그.spr";
+    action = "몬스터\\워그.act";
+    type = 27;
+    break;
+  case 36:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 80;
+    type = 28;
+    break;
+  case 37:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 81;
+    type = 28;
+    break;
+  case 38:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 82;
+    type = 29;
+    break;
+  case 39:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 83;
+    type = 29;
+    break;
+  case 40:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 84;
+    type = 30;
+    break;
+  case 41:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 85;
+    type = 30;
+    break;
+  case 42:
+    sprite = "몬스터\\워그.spr";
+    action = "몬스터\\베이비워그.act";
+    type = 31;
+    break;
+  case 43:
+    sprite = "이팩트\\shield.spr";
+    action = "이팩트\\shield.act";
+    type = 32;
+    break;
+  case 44:
+    sprite = "이팩트\\costumebody.spr";
+    action = "이팩트\\costumebody.act";
+    type = 33;
+    break;
+  case 45:
+    sprite = "이팩트\\손수레5.spr";
+    action = "이팩트\\손수레5.act";
+    type = 3;
+    break;
+  case 46:
+    sprite = "이팩트\\손수레5베이비.spr";
+    action = "이팩트\\손수레5베이비.act";
+    type = 3;
+    break;
+  case 47:
+    sprite = "이팩트\\손수레6.spr";
+    action = "이팩트\\손수레6.act";
+    type = 3;
+    break;
+  case 48:
+    sprite = "이팩트\\손수레6베이비.spr";
+    action = "이팩트\\손수레6베이비.act";
+    type = 3;
+    break;
+  case 49:
+    sprite = "이팩트\\손수레7.spr";
+    action = "이팩트\\손수레7.act";
+    type = 3;
+    break;
+  case 50:
+    sprite = "이팩트\\손수레7베이비.spr";
+    action = "이팩트\\손수레7베이비.act";
+    type = 3;
+    break;
+  case 51:
+    sprite = "이팩트\\손수레8.spr";
+    action = "이팩트\\손수레8.act";
+    type = 3;
+    break;
+  case 52:
+    sprite = "이팩트\\손수레8베이비.spr";
+    action = "이팩트\\손수레8베이비.act";
+    type = 3;
+    break;
+  case 53:
+    sprite = "이팩트\\OWL.spr";
+    action = "이팩트\\OWL.act";
+    type = 18;
+    break;
+  case 54:
+    sprite = "이팩트\\선물상자카트.spr";
+    action = "이팩트\\선물상자카트.act";
+    type = 3;
+    break;
+  case 55:
+    sprite = "이팩트\\선물상자카트_미니.spr";
+    action = "이팩트\\선물상자카트_미니.act";
+    type = 3;
+    break;
+  case 56:
+    sprite = "이팩트\\포링싣은카트.spr";
+    action = "이팩트\\포링싣은카트.act";
+    type = 3;
+    break;
+  case 57:
+    sprite = "이팩트\\포링싣은카트_미니.spr";
+    action = "이팩트\\포링싣은카트_미니.act";
+    type = 3;
+    break;
+  case 58:
+    sprite = "이팩트\\포링카트.spr";
+    action = "이팩트\\포링카트.act";
+    type = 3;
+    break;
+  case 59:
+    sprite = "이팩트\\포링카트_미니.spr";
+    action = "이팩트\\포링카트_미니.act";
+    type = 3;
+    break;
+  case 60:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 93;
+    type = 34;
+    break;
+  case 61:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 94;
+    type = 35;
+    break;
+  case 62:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 95;
+    type = 30;
+    break;
+  case 63:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 96;
+    type = 29;
+    break;
+  case 64:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 97;
+    type = 36;
+    break;
+  case 65:
+    sprite = "이팩트\\마도카트.spr";
+    action = "이팩트\\마도카트.act";
+    type = 3;
+    break;
+  case 66:
+    sprite = "이팩트\\마도카트_미니.spr";
+    action = "이팩트\\마도카트_미니.act";
+    type = 3;
+    break;
+  case 67:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 5;
+    type = 37;
+    break;
+  case 68:
+    sprite = "이팩트\\emotion.spr";
+    action = "이팩트\\emotion.act";
+    animation = 28;
+    type = 38;
+    break;
+  case 69:
+    sprite = "이팩트\\WINDHAWK_HAWK.spr";
+    action = "이팩트\\WINDHAWK_HAWK.act";
+    type = 18;
+    break;
+  case 70:
+    sprite = "이팩트\\WINDHAWK_WOLF.spr";
+    action = "이팩트\\WINDHAWK_WOLF.act";
+    type = 27;
+    break;
+  default:
+    sprite = "이팩트\\msg.spr";
+    action = "이팩트\\msg.act";
+    break;
+  }
+
+  CMsgEffect* effect = nullptr;
+  if (CMsgEffect::UsesMsgEffect(type)) {
+    effect = new CSummonActorEffect;
+  } else {
+    effect = new CMsgEffect;
+  }
+
+  if (effect) {
+    this->scene->objects.push_back(effect);
+    effect->SendMsg(nullptr, 22, 0, accountId, 0, type, type >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    effect->m_visible = visible;
+    effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(position), reinterpret_cast<int>(position) >> 31, reinterpret_cast<int>(&sprite),
+                    reinterpret_cast<int>(&sprite) >> 31, animation, animation >> 31, 0, 0, 0, 0, 0, 0);
+  }
+
+  return effect;
+}
