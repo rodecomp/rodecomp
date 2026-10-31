@@ -49,6 +49,8 @@ public:
 
 class CUICharacterInfo : public CUIControl {
 public:
+  // OFFSET: 0x009D8F50
+  // FUNCTION: fn_14273
   explicit CUICharacterInfo(UIWindowContext& context) : CUIControl(context), level(nullptr), jobLevel(nullptr), name(nullptr), jobIcon(nullptr) {
   }
 
@@ -63,6 +65,7 @@ public:
 
 class CUIIntro : public CUIPage {
 public:
+  // OFFSET: 0x009D8FE0
   explicit CUIIntro(UIWindowContext& context) : CUIPage(context), image(nullptr), contents(nullptr) {
   }
 
@@ -79,6 +82,8 @@ public:
 
 class CUIItem : public CUIPage {
 public:
+  // OFFSET: 0x009D9080
+  // FUNCTION: fn_14275
   explicit CUIItem(UIWindowContext& context)
       : CUIPage(context), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), location(-1), itemList(nullptr) {
   }
@@ -98,6 +103,8 @@ public:
 
 class CUIMonster : public CUIPage {
 public:
+  // OFFSET: 0x009D9220
+  // FUNCTION: fn_14277
   explicit CUIMonster(UIWindowContext& context) : CUIPage(context), unknown_0084(nullptr), unknown_0088(), monsterList(nullptr) {
   }
 
@@ -115,6 +122,8 @@ public:
 
 class CUIQuest : public CUIPage {
 public:
+  // OFFSET: 0x009D9360
+  // FUNCTION: fn_14279
   explicit CUIQuest(UIWindowContext& context) : CUIPage(context), unknown_0084(nullptr), unknown_0088(nullptr), unknown_008C(), questList(nullptr) {
   }
 
