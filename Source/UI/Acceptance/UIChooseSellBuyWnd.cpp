@@ -2205,6 +2205,15 @@ struct WhisperWndEx {
 };
 
 // OFFSET: 0x0090C350
+// FUNCTION: fn_12443
+int WhisperWndEx::sub_90C350(unsigned int target) {
+  for (int i = 0; i < 10; ++i) {
+    if (this->unknown_0110[i] == target) {
+      return i;
+    }
+  }
+  return -1;
+}
 
 // OFFSET: 0x0090C380
 // FUNCTION: fn_12444
