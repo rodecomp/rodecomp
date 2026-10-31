@@ -26,6 +26,24 @@
 template <>
 void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItemData>::OnScroll(int position);
 
+// OFFSET: 0x00A4F580
+// FUNCTION: fn_16213
+bool UnusedTrueA4F580() {
+  return true;
+}
+
+// OFFSET: 0x00A4F590
+// FUNCTION: fn_16214
+bool UnusedTrueA4F590() {
+  return true;
+}
+
+// OFFSET: 0x00A4F5A0
+// FUNCTION: fn_16215
+bool UnusedTrueA4F5A0() {
+  return true;
+}
+
 // OFFSET: 0x00A4F630
 // FUNCTION: fn_16217
 template <>
