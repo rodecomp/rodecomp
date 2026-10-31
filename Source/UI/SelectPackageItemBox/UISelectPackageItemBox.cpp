@@ -290,10 +290,86 @@ void ListHighlightCallback<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::operat
 }
 
 // OFFSET: 0x00A6E9C0
+// FUNCTION: fn_16710
+template <>
+void ListHighlightCallback<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::operator()(CUIListItem* const& item) {
+  CUIListItem* highlighted = item;
+  for (SelectPackageItemBox::CUITabInfo* entry : this->list->items) {
+    entry->SetHighlighted(highlighted == entry);
+  }
+}
 
 // OFFSET: 0x00A6EA90
+// FUNCTION: fn_16715
+template <>
+void ListSelectCallback<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::operator()(CUIListItem* const& item) {
+  CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>* list = this->list;
+  CUIListItem* selection = item;
+  if (list->unknown_00C4) {
+    return;
+  }
+
+  for (SelectPackageItemBox::CUIItemInfo* entry : list->items) {
+    if (selection != entry) {
+      entry->SetSelected(false);
+    }
+  }
+
+  selection->SetSelected(true);
+  if (selection->index == static_cast<int>(list->selected) && list->unknown_00E0) {
+    return;
+  }
+
+  SelectPackageItemBox::CUIItemInfo* selectedItem = dynamic_cast<SelectPackageItemBox::CUIItemInfo*>(selection);
+  if (!selectedItem) {
+    return;
+  }
+
+  list->selected = selectedItem->index;
+  if (list->onSelect && selectedItem->index >= 0 && static_cast<unsigned int>(selectedItem->index) < list->data.size()) {
+    auto node = list->data.begin();
+    for (int index = selectedItem->index; index > 0; --index) {
+      ++node;
+    }
+    list->onSelect(selectedItem, *node);
+  }
+}
 
 // OFFSET: 0x00A6EB70
+// FUNCTION: fn_16716
+template <>
+void ListSelectCallback<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::operator()(CUIListItem* const& item) {
+  CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>* list = this->list;
+  CUIListItem* selection = item;
+  if (list->unknown_00C4) {
+    return;
+  }
+
+  for (SelectPackageItemBox::CUITabInfo* entry : list->items) {
+    if (selection != entry) {
+      entry->SetSelected(false);
+    }
+  }
+
+  selection->SetSelected(true);
+  if (selection->index == static_cast<int>(list->selected) && list->unknown_00E0) {
+    return;
+  }
+
+  SelectPackageItemBox::CUITabInfo* selectedTab = dynamic_cast<SelectPackageItemBox::CUITabInfo*>(selection);
+  if (!selectedTab) {
+    return;
+  }
+
+  list->selected = selectedTab->index;
+  if (list->onSelect && selectedTab->index >= 0 && static_cast<unsigned int>(selectedTab->index) < list->data.size()) {
+    auto node = list->data.begin();
+    for (int index = selectedTab->index; index > 0; --index) {
+      ++node;
+    }
+    list->onSelect(selectedTab, *node);
+  }
+}
 
 // OFFSET: 0x00A6FBC0
 // FUNCTION: fn_16779
