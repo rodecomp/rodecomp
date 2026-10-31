@@ -1,4 +1,8 @@
 #include "UI/Window/UIWindowMgr.h"
+#include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/MessengerMember.h"
+#include "UI/Party/UIMiniPartyWnd.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Client/Registry.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -114,6 +118,26 @@ void UIWindowMgr::HideWindow01C8() {
 bool UIWindowMgr::HasUnknown030C() {
   const std::uint32_t* unknown = reinterpret_cast<const std::uint32_t*>(this->unknown_030C);
   return unknown != nullptr && unknown[1] != 0;
+}
+
+// OFFSET: 0x00A91F60
+// FUNCTION: fn_17175
+void UIWindowMgr::RestoreMiniPartyWindows() {
+  const int count = static_cast<int>(g_session.unknown_0734.size());
+  WindowDialogs& dialogs = *reinterpret_cast<WindowDialogs*>(this);
+  for (int index = 0; index < count; ++index) {
+    MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyAt(index);
+    if (member.valid == 0) {
+      continue;
+    }
+
+    const SessionRecord0734 record = g_session.FindRecord0734(member.accountId);
+    UIMiniPartyWnd* window = new UIMiniPartyWnd(dialogs.windows, dialogs.frames);
+    window->SetSize(174, 52);
+    window->m_cell = record.unknown_0008;
+    this->AddMiniPartyWindow(window);
+    window->SendMsg(nullptr, 0x17, reinterpret_cast<std::intptr_t>(&member), 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x00A92090

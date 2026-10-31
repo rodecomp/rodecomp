@@ -444,6 +444,7 @@ public:
   void AddMiniPartyWindow(UIWindow* window);
   void RearrangeMiniPartyWindows();
   void RebuildMiniPartyWindows();
+  void RestoreMiniPartyWindows();
   static int ScaleToViewportWidth(int value);
   static int CenterOnViewportX(int x);
   static int CenterOnViewportY(int y);
