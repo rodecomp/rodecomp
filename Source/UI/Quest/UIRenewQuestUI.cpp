@@ -730,6 +730,7 @@ __declspec(noinline) void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long
 class CQuestItemSelector {
 public:
   void SetHighlighted(CUIListItem* const& item);
+  void Select(CUIListItem* const& item);
 
 private:
   /* 0000 */ void* unknown_0000;
@@ -741,6 +742,37 @@ private:
 void CQuestItemSelector::SetHighlighted(CUIListItem* const& item) {
   for (RenewQuestUI::CUIQuestItem* entry : this->listBox->items) {
     entry->SetHighlighted(static_cast<CUIListItem*>(entry) == item);
+  }
+}
+
+// OFFSET: 0x00A64E80
+// FUNCTION: fn_16501
+void CQuestItemSelector::Select(CUIListItem* const& item) {
+  CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox = this->listBox;
+  CUIListItem* selection = item;
+  if (listBox->unknown_00C4) {
+    return;
+  }
+  for (RenewQuestUI::CUIQuestItem* other : listBox->items) {
+    if (selection != other) {
+      other->SetSelected(0);
+    }
+  }
+  selection->SetSelected(1);
+  if (selection->index == static_cast<int>(listBox->selected) && listBox->unknown_00E0) {
+    return;
+  }
+  RenewQuestUI::CUIQuestItem* selectedItem = dynamic_cast<RenewQuestUI::CUIQuestItem*>(selection);
+  if (!selectedItem) {
+    return;
+  }
+  listBox->selected = selectedItem->index;
+  if (listBox->onSelect && static_cast<int>(listBox->selected) >= 0 && listBox->selected < listBox->data.size()) {
+    auto node = listBox->data.begin();
+    for (int count = static_cast<int>(listBox->selected); count > 0; --count) {
+      ++node;
+    }
+    listBox->onSelect(selectedItem, *node);
   }
 }
 
