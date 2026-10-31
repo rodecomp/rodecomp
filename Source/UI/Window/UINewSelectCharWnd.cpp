@@ -14,6 +14,7 @@
 
 #include <windows.h>
 #include <mmsystem.h>
+#include <algorithm>
 #include <cstring>
 
 // GLOBAL: gl_25006
@@ -46,6 +47,43 @@ void* g_charViewMode;
 extern const char* LookupMessage(int id);
 
 // OFFSET: 0x007D4190
+// FUNCTION: fn_09577
+UINewSelectCharWnd::UINewSelectCharWnd() : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0) {
+  this->m_slotsPerPage = 15;
+  this->m_unknown13C = false;
+  this->m_window100 = nullptr;
+  this->m_textButton = nullptr;
+  this->m_button416 = nullptr;
+  this->m_button417 = nullptr;
+  this->m_windowC0 = nullptr;
+  this->m_windowC4 = nullptr;
+
+  this->m_slotButtons.resize(12);
+  this->m_slotButtons2.resize(this->m_slotsPerPage);
+  this->m_characterWindows.resize(this->m_slotsPerPage);
+
+  this->m_unknown118 = false;
+  this->m_page = 0;
+  this->m_pageSlot = 0;
+  this->m_totalCharacters = this->m_maxCharacters = g_normalSlotCount + g_premiumSlotCount + g_billingSlotCount;
+
+  const int slotCount = std::max(static_cast<CLoginMode*>(g_modeMgr.GetLoginMode())->GetMaxCharacterSlot() + 1, this->m_maxCharacters);
+  this->m_pageCount = slotCount / this->m_slotsPerPage;
+  if (slotCount % this->m_slotsPerPage != 0) {
+    this->m_pageCount++;
+  }
+  this->m_totalSlots = this->m_slotsPerPage * this->m_pageCount;
+
+  this->m_charSlotInfos = new CharSlotInfo[this->m_totalSlots];
+  this->m_slotStatus = new char[this->m_totalSlots];
+  this->m_slotShorts = new short[this->m_totalSlots];
+  for (int i = 0; i < this->m_totalSlots; i++) {
+    this->m_slotStatus[i] = 1;
+  }
+
+  this->m_lastTick = timeGetTime();
+  this->m_unknown138 = -1;
+}
 
 UINewSelectCharWnd::~UINewSelectCharWnd() = default;
 
