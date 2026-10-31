@@ -4,11 +4,21 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/GameActor.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
+#include "Contents/Actors/GameActor.h"
+#include "Contents/MapInfoMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/World/World.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Contents/World/World.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UITextButton.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Layout/WindowSnapping.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -25,6 +35,86 @@
 // FUNCTION: fn_09831
 MacroReporterEntry::MacroReporterEntry(std::string name, int id, short unknown_001C)
     : name(name), id(id), unknown_001C(unknown_001C) {}
+
+// OFFSET: 0x007EF2C0
+// FUNCTION: fn_09839
+void UIMacroReporterWnd::sub_7EF2C0(MacroReporterEntry* entry) {
+  if (entry) {
+    this->sub_7EF2E0(entry->id);
+  }
+}
+
+// OFFSET: 0x007EF2E0
+// FUNCTION: fn_09840
+void UIMacroReporterWnd::sub_7EF2E0(int aid) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameActor* actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
+  if (!actor) {
+    return;
+  }
+
+  if (!g_session.IsPlayerJobId(actor->GetEffectiveJob(-1))) {
+    return;
+  }
+
+  mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  std::string name = mode->ActorName(aid);
+
+  for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
+    if (it->id == aid) {
+      goto found;
+    }
+  }
+
+  this->m_entries.push_back(MacroReporterEntry(name, aid, static_cast<short>(actor->GetEffectiveJob(-1))));
+
+found:
+  this->sub_7EF430(aid, name);
+  this->UpdateScrollBar();
+}
+
+struct AccessibleButton : public UIButton {
+  using UIButton::m_argument;
+};
+
+struct AccessibleTextButton : public UITextButton {
+  using UITextButton::m_hoverColor;
+};
+
+// OFFSET: 0x007EF430
+// FUNCTION: fn_09841
+void UIMacroReporterWnd::sub_7EF430(int aid, std::string name) {
+  for (std::size_t i = 0; i < this->m_rows.size(); ++i) {
+    if (this->m_rows[i].second->geometry.id == aid) {
+      return;
+    }
+  }
+
+  auto* btn1 = new UIBitmapButton();
+  btn1->SetBitmap("유저인터페이스\\basic_interface\\que_close_on.bmp", 0, 0);
+  btn1->SetBitmap("유저인터페이스\\basic_interface\\que_close_off.bmp", 1, 0);
+  btn1->SetBitmap("유저인터페이스\\basic_interface\\que_close_off.bmp", 2, 0);
+  btn1->SetSize(btn1->BitmapWidth(), btn1->BitmapHeight());
+  btn1->SetId(211);
+  reinterpret_cast<AccessibleButton*>(btn1)->m_argument = aid;
+  btn1->Enable(0);
+  this->AddChild(btn1);
+
+  std::string truncated = this->sub_7EF680(0x8E, name.c_str(), 0, 13, 0);
+  auto* btn2 = new UITextButton(*this->m_context, *this->m_controls);
+  btn2->Configure("", 0, 0, 13, 0, 1);
+  static_cast<AccessibleTextButton*>(btn2)->m_hoverColor = 0x2D2D2D;
+  btn2->label = truncated;
+  btn2->ResizeToText();
+  btn2->SetTooltip(name.c_str());
+  btn2->SetId(aid);
+  btn2->Enable(0);
+  this->AddChild(btn2);
+
+  this->m_rows.push_back(std::make_pair(btn1, btn2));
+}
+
+// OFFSET: 0x007EF680
 
 // OFFSET: 0x007F0480
 // FUNCTION: fn_09845
@@ -171,6 +261,43 @@ void UIMacroReporterWnd::UpdateScrollBar() {
 
   this->m_scrollBar->Invalidate();
   this->Invalidate();
+}
+
+// OFFSET: 0x007EFE30
+// FUNCTION: fn_09843
+bool UIMacroReporterWnd::ValidateNames(unsigned char notify) {
+  this->m_nameCount = 0;
+  bool invalid = false;
+
+  for (int i = 0; i < this->m_visibleRows; ++i) {
+    std::string name = this->m_names[i];
+    if (name.empty()) {
+      continue;
+    }
+
+    std::string displayName = g_mapInfoMgr->GetDisplayName(name + ".rsw");
+    if (displayName == LookupMessage(187)) {
+      if (notify == 1) {
+        g_windowMgr.SendNotice(
+          1,
+          reinterpret_cast<std::intptr_t>(FormatOwnedString("%d번 %s", i + 1, LookupMessage(4010)).c_str()),
+          0xFF,
+          0,
+          0,
+          0
+        );
+      }
+      invalid = true;
+    } else {
+      ++this->m_nameCount;
+    }
+  }
+
+  if (this->m_nameCount > 0 && !invalid) {
+    return true;
+  }
+
+  return false;
 }
 
 // OFFSET: 0x007F01A0

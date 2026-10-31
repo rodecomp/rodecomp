@@ -55,6 +55,11 @@ public:
 
   void UpdateScrollBar();
   bool ValidateTarget(unsigned char notify);
+  bool ValidateNames(unsigned char notify);
+  void sub_7EF2C0(MacroReporterEntry* entry);
+  void sub_7EF2E0(int aid);
+  void sub_7EF430(int aid, std::string name);
+  std::string sub_7EF680(int maxWidth, const char* text, int font, int height, unsigned char bold);
 
   /* 00B4 */ std::vector<std::pair<UIButton*, UIButton*>> m_rows;
   /* 00C0 */ UIScrollBar* m_scrollBar;
