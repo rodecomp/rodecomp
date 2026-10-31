@@ -16,20 +16,25 @@ public:
   void Paint() override;
 
   /* 0080 */ int m_vertical;
-  /* 0084 */ unsigned char m_backgroundRed;
-  /* 0085 */ unsigned char unknown_0085[3];
-  /* 0088 */ unsigned char m_backgroundGreen;
-  /* 0089 */ unsigned char unknown_0089[3];
-  /* 008C */ unsigned char m_backgroundBlue;
-  /* 008D */ unsigned char unknown_008D[3];
-  /* 0090 */ unsigned char m_fillRed;
-  /* 0091 */ unsigned char unknown_0091[3];
-  /* 0094 */ unsigned char m_fillGreen;
-  /* 0095 */ unsigned char unknown_0095[3];
-  /* 0098 */ unsigned char m_fillBlue;
+  /* 0084 */ int m_backgroundRed;
+  /* 0088 */ int m_backgroundGreen;
+  /* 008C */ int m_backgroundBlue;
+  /* 0090 */ int m_fillRed;
+  /* 0094 */ int m_fillGreen;
+  /* 0098 */ int m_fillBlue;
 };
 
 // OFFSET: 0x0086C190
+// FUNCTION: fn_11022
+UIBarGraph2::UIBarGraph2(UIWindowContext& context) : UIBarGraph(context) {
+  this->m_vertical = 0;
+  this->m_backgroundRed = 0x8E;
+  this->m_backgroundGreen = 0x8E;
+  this->m_backgroundBlue = 0x8E;
+  this->m_fillRed = 0x2A;
+  this->m_fillGreen = 0x4B;
+  this->m_fillBlue = 0x8F;
+}
 
 // OFFSET: 0x0086C240
 // FUNCTION: fn_11023
