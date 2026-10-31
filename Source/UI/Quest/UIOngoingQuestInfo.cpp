@@ -177,6 +177,12 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
 void CUIOngoingQuestInfo::OnFirstAction() {
 }
 
+// OFFSET: 0x00A55660
+// FUNCTION: fn_45468
+void CUIOngoingQuestInfo::OnClose() {
+  g_windowMgr.CloseWindow(10009);
+}
+
 namespace OngoingQuestInfo {
 
 // OFFSET: 0x00A55710

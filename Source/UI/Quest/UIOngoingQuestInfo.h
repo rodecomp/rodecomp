@@ -19,6 +19,7 @@ public:
   __declspec(noinline) CUIOngoingQuestInfo();
   void Slot16() override;
   void OnFirstAction();
+  void OnClose();
   virtual void Slot53();
   void sub_A55B70();
   void SetQuest(unsigned int id);
