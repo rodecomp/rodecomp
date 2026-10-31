@@ -7,13 +7,16 @@
 #include "Network/Packets/PacketLengths.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UICheckBox.h"
+#include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 
 #include <windows.h>
 
+#include <cstdio>
 #include <string>
 
 // GLOBAL: gl_25023
@@ -25,6 +28,34 @@ struct PartyBookingUpdatePacket {
 };
 
 static_assert(sizeof(PartyBookingUpdatePacket) == 14);
+
+// OFFSET: 0x00920D60
+// FUNCTION: fn_12640
+void UIJobListWnd::Slot15(int width, int height) {
+  char title[9] = {};
+  std::sprintf(title, "Job List");
+  this->m_title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->m_title->SetSize(this->geometry.width - 32, 15);
+  this->m_title->SetTextFitted(title);
+  this->m_title->Move(16, 2);
+  this->m_title->shadow = 1;
+  this->AddChild(this->m_title);
+  this->AddCloseButton(*this->m_controls, "", 0);
+
+  const std::string path = "유저인터페이스\\";
+  this->m_okButton = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_okButton->SetBitmap((path + "btn_ok" + ".bmp").c_str(), 0, 0);
+  this->m_okButton->SetBitmap((path + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+  this->m_okButton->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+  this->m_okButton->SetSize(this->m_okButton->BitmapWidth(), this->m_okButton->BitmapHeight());
+  this->m_okButton->Move(this->geometry.width - 92, this->geometry.height - 24);
+  this->m_okButton->SetId(184);
+  this->AddChild(this->m_okButton);
+
+  for (int index = 0; index < 6; ++index) {
+    this->m_jobChecks[index] = nullptr;
+  }
+}
 
 // OFFSET: 0x0092C640
 // FUNCTION: fn_12664
