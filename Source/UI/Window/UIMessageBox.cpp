@@ -730,6 +730,46 @@ void UIHomunInfoWnd::Slot11() {
 }
 
 // OFFSET: 0x008B0CA0
+// FUNCTION: fn_11744
+void UIMerInfoWnd::Slot15(int, int) {
+  this->AddCloseButton(*this->m_controls, "", 0);
+  {
+    const std::string name("유저인터페이스\\btn_fired");
+    this->button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->button->SetBitmap((name + ".bmp").c_str(), 0, 0);
+    this->button->SetBitmap((name + "_a.bmp").c_str(), 1, 0);
+    this->button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
+    this->button->Move(187, 44);
+    this->button->SetId(350);
+    this->AddChild(this->button);
+  }
+  {
+    const std::string name("유저인터페이스\\btn_skill");
+    this->button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->button->SetBitmap((name + ".bmp").c_str(), 0, 0);
+    this->button->SetBitmap((name + "_a.bmp").c_str(), 1, 0);
+    this->button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
+    this->button->Move(232, 44);
+    this->button->SetId(349);
+    this->AddChild(this->button);
+  }
+
+  this->hpBar = new UIBarGraphPlayer(*this->m_context);
+  this->hpBar->SetValues([]() -> std::int64_t { return g_session.m_mercenaryHp; }, []() -> std::int64_t { return g_session.m_mercenaryMaxHp; });
+  this->hpBar->SetSize(85, 9);
+  this->hpBar->Move(117, 73);
+  this->AddChild(this->hpBar);
+
+  this->spBar = new UIBarGraphPlayer(*this->m_context);
+  this->spBar->SetValues([]() -> std::int64_t { return g_session.m_mercenarySp; }, []() -> std::int64_t { return g_session.m_mercenaryMaxSp; });
+  this->spBar->SetSize(85, 9);
+  this->spBar->Move(117, 88);
+  this->AddChild(this->spBar);
+
+  this->m_message0 = 201;
+}
 
 // OFFSET: 0x008C3630
 // FUNCTION: fn_11827
