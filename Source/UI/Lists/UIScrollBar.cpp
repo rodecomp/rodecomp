@@ -1094,6 +1094,59 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 }
 
 // OFFSET: 0x0089E570
+// FUNCTION: fn_11602
+bool UITreeView::DeleteChildNodes(UITreeNode* node) {
+  if (!node) {
+    return false;
+  }
+
+  int remaining = static_cast<int>(node->children.size());
+  if (remaining <= 0) {
+    return false;
+  }
+
+  for (auto it = node->children.begin(); it != node->children.end(); ++it) {
+    UITreeNode* child = *it;
+    if (child->children.size() != 0) {
+      this->DeleteChildNodes(child);
+    }
+
+    if ((*it)->collapseButton) {
+      (*it)->collapseButton->Move(-100, -100);
+      (*it)->collapseButton = nullptr;
+    }
+
+    if ((*it)->expandButton) {
+      (*it)->expandButton->Move(-100, -100);
+      (*it)->expandButton = nullptr;
+    }
+
+    (*it)->labelButton->Move(-100, -100);
+    --remaining;
+    (*it)->labelButton = nullptr;
+
+    if (node->children.size() == 0) {
+      if (node->collapseButton) {
+        node->collapseButton->Move(-100, -100);
+        node->collapseButton = nullptr;
+      }
+
+      if (node->expandButton) {
+        node->expandButton->Move(-100, -100);
+        node->expandButton = nullptr;
+      }
+    }
+
+    delete *it;
+
+    if (remaining == 0) {
+      node->children.clear();
+      return true;
+    }
+  }
+
+  return true;
+}
 
 // OFFSET: 0x0089E6F0
 // FUNCTION: fn_11603
