@@ -2692,3 +2692,42 @@ void UIShowAndEditTimeCtrl::Paint() {
 void __fastcall sub_8906C0(UINaviLinkButton* button, void*, int x, int y) {
   button->UINaviLinkButton::Slot25(x, y);
 }
+
+// OFFSET: 0x0088AEC0
+// FUNCTION: fn_11360
+void UIImgMenu::Paint() {
+  this->FillRegion(0, 0, this->geometry.width, this->geometry.height, 0x99A8AC);
+  this->DrawBitmap(
+    1, 1, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmapName.c_str())))->image, false
+  );
+
+  if (this->hovered < 0) {
+    return;
+  }
+
+  char suffix[12];
+  std::sprintf(suffix, "_%d.bmp", this->hovered);
+  const std::string path = this->baseName + suffix;
+  const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+
+  int offset = 3;
+  if (this->unknown_0090[this->hovered] == 0) {
+    offset = 0;
+  }
+
+  if (this->unknown_0094[this->hovered] == 0) {
+    int x;
+    int y;
+    if (this->horizontal == 0) {
+      x = 1;
+      y = this->itemHeight * this->hovered + 1 + offset;
+    } else {
+      x = this->itemWidth * this->hovered + 1 + offset;
+      y = 1;
+    }
+
+    if (bitmap) {
+      this->DrawBitmap(x, y, &bitmap->image, false);
+    }
+  }
+}
