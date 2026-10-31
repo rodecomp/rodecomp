@@ -6,6 +6,8 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <span>
+#include <string_view>
 #include <vector>
 
 namespace myGPack {
@@ -33,6 +35,7 @@ struct PakAuxiliary {
   ~PakAuxiliary();
 
   void Apply(const void* data, std::uint32_t size, const void* auxData, std::uint32_t auxSize);
+  bool Extract(std::string_view name, const std::uint8_t* data, std::uint32_t size, std::span<const std::uint8_t> scratch, void* output, std::uint32_t outputSize, unsigned flags);
 
   /* 0000 */ std::uint8_t unknown_0000[244];
 };

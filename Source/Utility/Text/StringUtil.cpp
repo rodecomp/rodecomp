@@ -1,4 +1,8 @@
 #include "Utility/Text/StringUtil.h"
+#include "Archive/GPak.h"
+#include "Archive/PakCipher.h"
+#include "Utility/Threading/NSyncObject.h"
+#include "Utility/Compression/Zlib.h"
 
 #include <algorithm>
 #include <cctype>
@@ -7,6 +11,81 @@
 #include <iomanip>
 #include <ranges>
 #include <sstream>
+
+// OFFSET: 0x00AEB710
+// FUNCTION: fn_18127
+bool CGPak::Extract(const myGPack::PakEntry* entry, void* buffer) {
+  NSyncObject lock(&this->m_criticalSection);
+  const std::uint8_t* mapped = this->m_file->Read(entry->dataOffset + 46, entry->alignedSize);
+  if (!mapped) {
+    return false;
+  }
+  if (static_cast<signed char>(entry->flags) < 0) {
+    return this->m_auxiliary.Extract(
+      std::string_view(entry->name.m_name), mapped, entry->alignedSize, this->m_scratch, buffer, entry->originalSize, 0
+    );
+  }
+
+  int decodedLength = 0;
+  const char* name = entry->name.m_name;
+  const char* end = name + std::strlen(name);
+  const char* basename = name;
+  for (const char* current = name; current < end; ++current) {
+    if (*current == '\\' || *current == '/') {
+      basename = current + 1;
+    }
+  }
+  const int nameLength = static_cast<int>(end - basename);
+  std::uint8_t key[8];
+  key[0] = 'n';
+  key[7] = 'k';
+  if (nameLength < 6) {
+    std::memcpy(key + 1, basename, nameLength);
+    std::memcpy(key + 1 + nameLength, basename, 6 - nameLength);
+  } else {
+    std::memcpy(key + 1, basename, 6);
+  }
+  myGPack::PakCipher cipher(key);
+  const std::uint8_t* source;
+  if (entry->flags & 2) {
+    const std::uint32_t size = entry->compressedSize;
+    int cycle;
+    if (size >= 1000000000u) {
+      cycle = 10;
+    } else if (size >= 100000000u) {
+      cycle = 9;
+    } else if (size >= 10000000u) {
+      cycle = 8;
+    } else if (size >= 1000000u) {
+      cycle = 7;
+    } else if (size >= 100000u) {
+      cycle = 6;
+    } else if (size >= 10000u) {
+      cycle = 5;
+    } else if (size >= 1000u) {
+      cycle = 4;
+    } else if (size >= 100u) {
+      cycle = 3;
+    } else {
+      cycle = size >= 10u ? 2 : 1;
+    }
+    cipher.Decode(mapped, static_cast<int>(entry->alignedSize), this->m_scratch.empty() ? nullptr : this->m_scratch.data(), &decodedLength, cycle);
+    source = this->m_scratch.empty() ? nullptr : this->m_scratch.data();
+  } else if (entry->flags & 4) {
+    cipher.DecodePrefix(mapped, static_cast<int>(entry->alignedSize), this->m_scratch.empty() ? nullptr : this->m_scratch.data(), &decodedLength);
+    source = this->m_scratch.empty() ? nullptr : this->m_scratch.data();
+  } else {
+    decodedLength = entry->compressedSize;
+    source = mapped;
+  }
+  if (entry->flags & 1) {
+    unsigned long outputSize = entry->originalSize;
+    uncompress(static_cast<std::uint8_t*>(buffer), &outputSize, source, decodedLength);
+  } else {
+    std::memcpy(buffer, source, entry->originalSize);
+  }
+  return true;
+}
 
 // OFFSET: 0x0058A4D0
 // FUNCTION: fn_02757
