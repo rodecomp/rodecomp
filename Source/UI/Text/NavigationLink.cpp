@@ -688,7 +688,7 @@ CCreateLineInfo::CCreateLineInfo(
       this->m_fontStack.swap(s_fontStackCache);
     }
 
-    this->Rebuild();
+    this->Rebuild(0);
   }
 }
 
@@ -937,6 +937,8 @@ void CCreateLineInfo::BuildWindows() {
     }
   }
 }
+
+// OFFSET: 0x008392C0
 
 // OFFSET: 0x008392C0
 

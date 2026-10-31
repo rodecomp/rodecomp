@@ -116,7 +116,7 @@ public:
   int ParseTag(int index);
   void ArrangeLines();
   void BuildWindows();
-  void Rebuild();
+  void Rebuild(int unused);
   int LayoutEmotion(int x, const std::string& text);
   int LayoutLink(int x, std::string text, int type, LineTextStyle style);
   int LayoutItemImage(int x, const std::string& text);
