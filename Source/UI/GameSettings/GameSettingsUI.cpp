@@ -1741,10 +1741,51 @@ void GameSettingsUI::CUIGroupLogInOut::Slot16() {
 // OFFSET: 0x00A1A5E0
 
 // OFFSET: 0x00A1F890
+// FUNCTION: fn_15390
+void GameSettingsUI::CUIComboItem::Slot15(int width, int height) {
+  this->m_text = new CUIStaticText(*this->m_context);
+  this->m_text->SetSize(155, 16);
+  this->m_text->Move(3, 0);
+  this->m_text->SetText("", 0);
+  this->m_text->SetFitText(1);
+  this->m_text->SetAlign(0, 6);
+  const std::uint8_t fontSource[] = {0x74, 0x16, 0x39, 0x98, 0x44, 0x35};
+  thread_local EncryptedName<sizeof(fontSource), 0x49D33529F1556333ULL> fontText(fontSource);
+  this->m_text->SetFont(std::string(fontText.Text()));
+  this->m_text->SetFontHeight(12);
+  this->m_text->SetBold(0);
+  this->m_text->SetColor(0);
+  this->m_text->SetShadow(0, 0xFFFFFF);
+  this->m_text->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_text);
+}
 
 // OFFSET: 0x00A3F9E0
+// FUNCTION: fn_15953
+void GameSettingsUI::CUIGroupGraphics::OnModeSelect(CUIComboItem* item, const DisplayMode& mode) {
+  CUIListBoxEx<CUIComboItem, DisplayMode>* list = this->m_modeCombo->listBox;
+  if (static_cast<int>(list->selected) >= 0 && list->selected < list->data.size()) {
+    auto node = list->data.begin();
+    std::advance(node, static_cast<int>(list->selected));
+    this->m_pendingMode = *node;
+    CUIGameSettingsUI* wnd = dynamic_cast<CUIGameSettingsUI*>(g_windowMgr.LookupWindow(0x271E));
+    if (wnd) {
+      wnd->sub_A421E0();
+    }
+  }
+}
 
 // OFFSET: 0x00A41910
+// FUNCTION: fn_15994
+void GameSettingsUI::CUIGroupSkin::Slot16() {
+  const char* title = LookupMessage(0x5D9);
+  this->m_title->SetText(title, std::strlen(title));
+  this->m_combo->AddItem(std::string(LookupMessage(0xC12)), false);
+  for (int index = 0; index < static_cast<int>(g_skinInfo.prefixes.size()); ++index) {
+    this->m_combo->AddItem(std::string(g_skinInfo.Name(index)), false);
+  }
+  this->m_combo->UpdateListHeight();
+}
 
 // OFFSET: 0x00A40560
 // FUNCTION: fn_15976
