@@ -114,3 +114,22 @@ StringList& CTipOfTheDay::GetTip(int index) {
 
   return this->m_tipList[index];
 }
+
+struct SubAE7C10 {
+  int a;
+  int b;
+  char c;
+  SubAE7C10();
+};
+
+// OFFSET: 0x00AE7C10
+// FUNCTION: fn_18080
+SubAE7C10::SubAE7C10() : a(0), b(0), c(0) {
+}
+
+// OFFSET: 0x00AE7D20
+// FUNCTION: fn_18081
+int __stdcall sub_AE7D20(void*, void*) {
+  return 0;
+}
+
