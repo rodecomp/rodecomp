@@ -1555,3 +1555,162 @@ bool UINewSkillListWnd::sub_9B3EB0(int skillId) {
 
   return true;
 }
+
+// INLINED
+static bool HasSkillValue(const std::list<NewSkillListValue>& values, int id) {
+  for (const NewSkillListValue& entry : values) {
+    if (entry.id == id) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// INLINED
+static int SkillValueOf(const std::list<NewSkillListValue>& values, int id) {
+  for (const NewSkillListValue& entry : values) {
+    if (entry.id == id) {
+      return entry.value;
+    }
+  }
+  return 0;
+}
+
+// OFFSET: 0x009AF960
+// FUNCTION: fn_13803
+void UINewSkillListWnd::sub_9AF960() {
+  auto& controls = *this->m_controls;
+  LuaScript& script = *g_session.m_hotkeyScript;
+
+  CBitmapRes* emptySlot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\no_skill.bmp")));
+  for (int slot = 0; slot < 42; ++slot) {
+    this->DrawBitmap(slot % this->m_columns * 68 + 76, slot / this->m_columns * 56 + 44, &emptySlot->image, true);
+  }
+
+  for (const CSkillInfo& skill : this->SkillList(this->m_tab, false)) {
+    const int position = static_cast<int>(skill.unknown_0024);
+    if (position == -1) {
+      continue;
+    }
+    const int first = this->m_firstRow * this->m_columns;
+    if (position < first) {
+      continue;
+    }
+    const int slot = position - first;
+    if (slot >= 42) {
+      continue;
+    }
+
+    const int level = skill.level;
+    const int x = slot % this->m_columns * 68 + 72;
+    const int y = slot / this->m_columns * 56;
+
+    if (!this->IsExtraTab(this->m_tab) && HasSkillValue(this->m_values, static_cast<int>(skill.id))) {
+      this->FillRegion(x + 3, y + 43, 26, 26, 0xCCC0FF);
+      DrawRoundedBorder(*this, x + 2, y + 42, 28, 28, 0xC1B6FF);
+    } else if (this->m_skillPoints != 0 && skill.available != 0 && skill.unknown_0018 != 0) {
+      this->FillRegion(x + 3, y + 43, 26, 26, 0xF0C4AF);
+      DrawRoundedBorder(*this, x + 2, y + 42, 28, 28, 0xF0C4AF);
+    } else {
+      this->FillRegion(x + 3, y + 43, 26, 26, 0xFFFFFF);
+    }
+
+    int shade = 102;
+    char text[80];
+    g_session.ItemBitmapPath(skill.name, text);
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
+    if (!bitmap) {
+      std::sprintf(text, "유저인터페이스\\item\\am_berserkpitcher.bmp");
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
+    }
+    if (bitmap) {
+      if (!this->IsExtraTab(this->m_tab) && HasSkillValue(this->m_values, static_cast<int>(skill.id))) {
+        this->DrawAuxiliary(2, x + 4, y + 44, &bitmap->image, true, true);
+        const std::string value = this->ValueText(static_cast<int>(skill.id));
+        if (value.size() != 0) {
+          DrawOutlinedText(*this, x + 30, y + 58, value.c_str(), 0, 0xFFFFFF, 0, 0, 11, 1, 0);
+        }
+      } else if (this->m_skillPoints != 0 && skill.available != 0 && skill.unknown_0018 != 0) {
+        this->DrawAuxiliary(4, x + 4, y + 44, &bitmap->image, true, true);
+      } else if (level == 0) {
+        shade = 120;
+        this->DrawAuxiliary(1, x + 4, y + 44, &bitmap->image, true, true);
+      } else {
+        this->DrawBitmap(x + 4, y + 44, &bitmap->image, true);
+      }
+
+      const int planned = SkillValueOf(this->m_unknown_02A0, static_cast<int>(skill.id));
+      const CSkillInfo* current = g_session.m_skillBundle.FindGrouped(skill.id);
+      if (current) {
+        int added = planned - current->unknown_0030;
+        if (added < 0) {
+          added = 0;
+        }
+        if (added > 0) {
+          this->DrawTextAt(controls.fonts, controls.locale, x + 30, y + 44, FormatString("+%d", added), 0, 0, 11, 0xFF, 0, 0);
+        }
+      }
+    }
+
+    const int maxLevel = this->SkillAt(static_cast<int>(skill.unknown_0024), true).level;
+    int red = shade;
+    int green = shade;
+    int blue = shade;
+    if (level > maxLevel) {
+      red = 127;
+      green = 60;
+      blue = 255;
+    }
+
+    const int textY = y + 70;
+    const std::uint32_t gray = (shade << 8 | shade) << 8 | shade;
+    const bool usesLevel = CSkillInfo::UsesLevel(script, static_cast<int>(skill.id));
+    if (level != 0) {
+      if (!usesLevel) {
+        std::sprintf(text, "%d", skill.level);
+        const int width = this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 11, 1, 0);
+        DrawOutlinedText(*this, (24 - width) / 2 + x + 4, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
+      } else {
+        int useLevel = reinterpret_cast<const CharacterConfigSave*>(&g_session)->UseLevel(static_cast<int>(skill.id));
+        if (useLevel <= 0 || useLevel > skill.level) {
+          useLevel = skill.level;
+        }
+        std::sprintf(text, "%d / %d", useLevel, skill.level);
+        int textX = (24 - this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 11, 1, 0)) / 2 + x + 4;
+        std::sprintf(text, "%d", useLevel);
+        DrawOutlinedText(*this, textX, textY, text, 0, useLevel == skill.level ? gray : 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+        textX += this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 11, 1, 0);
+        DrawOutlinedText(*this, textX, textY, " / ", 0, gray, 0xFFFFFF, 0, 11, 1, 0);
+        textX += this->TextWidth(controls.fonts, controls.locale, " / ", 0, 0, 11, 1, 0);
+
+        const std::uint32_t id = skill.id;
+        int target = SkillValueOf(this->m_unknown_02A0, static_cast<int>(id));
+        const int grouped = g_session.m_skillBundle.GroupedLevel(id);
+        if (target < grouped) {
+          target = grouped;
+        }
+        const CSkillInfo* extra = g_session.m_skillBundle.FindExtra(id);
+        if (extra && target < extra->level) {
+          target = extra->level;
+        }
+        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d", target);
+        DrawOutlinedText(*this, textX, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
+      }
+    }
+
+    const int nameWidth = this->TextWidth(controls.fonts, controls.locale, skill.DisplayName(script), 0, 0, 11, 0, 0);
+    int nameOffset = 0;
+    if (nameWidth < 48) {
+      nameOffset = (48 - nameWidth) / 2;
+    }
+    this->DrawTextAt(
+      controls.fonts, controls.locale, x - 8 + nameOffset, y + 30, this->ClipTextToWidth(skill.DisplayName(script), 48, 0, 11, 0), 0, 0, 11, gray, 0, 0
+    );
+
+    if (g_session.m_skillBundle.HasHigherLevel(skill.id) == true) {
+      this->DrawBitmap(
+        x + 8, y + 58, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\item_skill.bmp")))->image, true
+      );
+    }
+  }
+}

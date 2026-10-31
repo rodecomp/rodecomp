@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_WINDOW_UINEWSKILLLISTWND_H
 
 #include "Contents/Skills/SkillInfo.h"
+#include "UI/Text/ColoredText.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <cstddef>
