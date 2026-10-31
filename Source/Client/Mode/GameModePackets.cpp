@@ -2848,3 +2848,56 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
     effect->SendMsg(nullptr, 14, 0, reinterpret_cast<int>(&count), 0, 0, 0, 0);
   }
 }
+
+#pragma pack(push, 1)
+struct BuyingStoreItemRecord {
+  /* 0000 */ std::uint32_t price;
+  /* 0004 */ std::int16_t count;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ std::int32_t itemId;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D1CFF0
+// FUNCTION: fn_21628
+void CGameMode::ReceiveBuyingStoreItemList(const unsigned char* packet) {
+  ClientItemLists* lists = reinterpret_cast<ClientItemLists*>(&g_session);
+  lists->ClearItems1748();
+  lists->ClearItems1760();
+
+  const BuyingStoreItemRecord* record = reinterpret_cast<const BuyingStoreItemRecord*>(packet + 16);
+  const unsigned count = (static_cast<int>(*reinterpret_cast<const std::int16_t*>(packet + 2)) - 16u) / 11;
+  for (int index = 0; index < static_cast<int>(count);) {
+    const BuyingStoreItemRecord entry = *record;
+    ITEM_INFO item;
+    ++index;
+    item.unknown_0014[0] = entry.price;
+    item.unknown_0014[1] = entry.price;
+    item.unknown_0000[0] = entry.type;
+    item.quantity = entry.count;
+    item.identified = 1;
+    item.unknown_0000[1] = index;
+    item.SetItemId(entry.itemId);
+    lists->AddItem1748(item);
+    ++record;
+  }
+
+  UIWindow* window = g_windowMgr.EnsureWindow(0xB1);
+  window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  window->SendMsg(nullptr, 0x1C, *reinterpret_cast<const std::int32_t*>(packet + 4), 0, 0, 0);
+  window->SendMsg(nullptr, 0x77, *reinterpret_cast<const std::int32_t*>(packet + 12), 0, 0, 0);
+
+  window = g_windowMgr.EnsureWindow(0xB2);
+  window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  window->SendMsg(nullptr, 0x1C, *reinterpret_cast<const std::int32_t*>(packet + 4), *reinterpret_cast<const std::int32_t*>(packet + 8), 0, 0);
+
+  window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0420);
+  if (window) {
+    g_session.RefreshItems1750();
+    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  } else if ((window = g_windowMgr.EnsureWindow(0xB3)) != nullptr) {
+    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+
+  this->unknown_024C = 1;
+}

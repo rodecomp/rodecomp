@@ -1924,3 +1924,41 @@ void CGameMode::ReceiveRodexRecipient(int id, unsigned short job, unsigned short
     reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458)->SetRecipient(id, job, level, name);
   }
 }
+
+struct BuyingStoreResultPacket {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::int16_t result;
+  /* 0004 */ std::int16_t value;
+};
+
+// OFFSET: 0x00D1D460
+// FUNCTION: fn_21629
+void __stdcall ReceiveBuyingStoreResult(const BuyingStoreResultPacket* packet) {
+  char text[256];
+  int message;
+  const std::int16_t result = packet->result;
+  if (result == 0) {
+    std::memset(text, 0, 250);
+    message = 0x9C0;
+  } else if (result == 2) {
+    std::memset(text, 0, 250);
+    message = 0x9C1;
+  } else if (result == 3) {
+    g_unknown_01738270 = 1;
+    std::memset(text, 0, 250);
+    message = 0x9C2;
+  } else if (result == 1) {
+    g_unknown_01738268 = 1;
+    g_unknown_0173826C = packet->value;
+    if (packet->value != 0) {
+      return;
+    }
+    std::memset(text, 0, 250);
+    message = 0x9C5;
+  } else {
+    return;
+  }
+
+  std::sprintf(text, LookupMessage(message));
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+}
