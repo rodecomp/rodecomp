@@ -4,6 +4,7 @@
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/SpriteRidingOffset.h"
+#include "Client/Session.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Buttons/UIBitmapButton.h"
@@ -157,7 +158,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     if (count != 0) {
       PACKET_CZ_SELECT_CHARACTERS packet;
       packet.id = 0x28C;
-      packet.accountId = *reinterpret_cast<int*>(0x01733C3C);
+      packet.accountId = g_session.m_aid;
       packet.count = count;
       for (int index = 0; index < 9; ++index) {
         packet.characterIds[index] = characterIds[index];

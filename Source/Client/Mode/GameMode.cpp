@@ -811,7 +811,7 @@ bool CGameMode::ConfirmDraggedItemUse() {
 // OFFSET: 0x00CFE480
 // FUNCTION: fn_21432
 void CGameMode::sub_CFE480(int actorId) {
-  if (g_windowMgr.unknown_0508 != 2 && actorId == *reinterpret_cast<const int*>(0x01733C3C)) {
+  if (g_windowMgr.unknown_0508 != 2 && actorId == static_cast<int>(g_session.m_aid)) {
     this->scene->player->unknown_0544->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
   }
 }
