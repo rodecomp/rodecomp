@@ -98,6 +98,9 @@
 #include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/TextTokens.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "Network/TextEncoding.h"
+#include "Render/Text/TextContext.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
@@ -1462,6 +1465,35 @@ bool UIStatusWnd::Slot03() {
   return true;
 }
 
+// OFFSET: 0x008DA460
+
+// OFFSET: 0x008DACF0
+// FUNCTION: fn_12149
+void UINpcTextEditDialogWnd::InsertSkillTag(int tagId) {
+  if (!this->m_tagCtrl) {
+    this->m_tagCtrl = new UIItemTagOnMegaPhone;
+    if (!this->m_tagCtrl) {
+      return;
+    }
+  }
+
+  if (this->m_tagCtrl->tags.size() >= 3) {
+    return;
+  }
+
+  if (this->edit->Length() + this->edit->unknown_00F0 > this->edit->maximum) {
+    return;
+  }
+
+  std::string tag = this->m_tagCtrl->sub_874A40(tagId, 0xD630A9);
+  {
+    std::string text = this->edit->Text();
+    this->m_tagCtrl->taggedText = text;
+  }
+  this->edit->SetText((this->edit->Text() + tag).c_str());
+  this->edit->MoveCursorToEnd();
+}
+
 // OFFSET: 0x008DAF40
 // FUNCTION: fn_12150
 void UICombinedCardItemCollectionWnd::Move(int x, int y) {
@@ -2163,6 +2195,8 @@ void UIItemParamChangeDisplayWnd::Slot15(int, int) {
 // FUNCTION: fn_12181
 void UIMenuWnd::Slot15(int, int) {
 }
+
+// OFFSET: 0x0090AB10
 
 // OFFSET: 0x0090AED0
 // FUNCTION: fn_12418

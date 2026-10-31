@@ -175,6 +175,10 @@ public:
   void FlushPrimitives(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
   void FillSurface(std::uint32_t color, const tagRECT* rectangle);
   void sub_8932D0(int* kind, std::vector<std::string>* lines, const std::string& text);
+  int DrawItemNameSegments(
+    int x, int y, int width, const std::vector<char*>& breaks, const char* text, const char* highlight, std::uint32_t highlightColor,
+    std::uint32_t color, int unused, int lineHeight
+  );
   void DrawBitmapScaled(int x, int y, int width, int height, const BitmapImage* image, int option);
   void DrawBitmapRegion(int x, int y, const BitmapImage* image, bool transparent, bool whole, int left, int top, int right, int bottom);
   void DrawAuxiliaryScaled(int mode, int x, int y, int width, int height, BitmapImage* image, int option, bool rebuild);

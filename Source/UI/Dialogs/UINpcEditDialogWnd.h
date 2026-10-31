@@ -5,6 +5,8 @@
 
 struct UIButtonContext;
 class UIEditCtrl;
+class UIItemTagOnMegaPhone;
+struct ITEM_INFO;
 
 struct UIEditContext;
 
@@ -28,6 +30,10 @@ protected:
 class UINpcTextEditDialogWnd : public UINpcEditDialogWnd {
 public:
   void Slot15(int width, int height) override;
+  void InsertItemTag(const ITEM_INFO& item);
+  void InsertSkillTag(int tagId);
+
+  /* 00BC */ UIItemTagOnMegaPhone* m_tagCtrl;
 };
 
 #endif
