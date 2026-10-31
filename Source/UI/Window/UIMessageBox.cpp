@@ -1698,6 +1698,112 @@ void UINoticeWnd::Slot15(int, int) {
 
 // OFFSET: 0x008B42D0
 
+// OFFSET: 0x008B42D0
+// FUNCTION: fn_11749
+void UIReplayRECControlWnd::Slot15(int, int) {
+  const std::string prefix("유저인터페이스\\replay_interface\\");
+  const char* names[11] = {
+    "btn_start_",      "btn_stop_",       "btn_start_",      "btn_save_",       "btn_setup_",      "btn_close_",
+    "replay_recrun_1", "replay_recrun_2", "replay_recrun_3", "replay_recrun_4", "replay_recrun_5",
+  };
+  const char* tooltips[16] = {
+    LookupMessage(0x7B9), LookupMessage(0x7BA), LookupMessage(0x7BB), LookupMessage(0x7BC), LookupMessage(0x7BD), LookupMessage(0x7BE),
+    LookupMessage(0x7BF), LookupMessage(0x64),  LookupMessage(0x68),  LookupMessage(0x6A),  LookupMessage(0x11B), LookupMessage(0x7C0),
+    LookupMessage(0x7C1), LookupMessage(0x7C2), LookupMessage(0x7C3), LookupMessage(0x7C4),
+  };
+  int ids[6] = {420, 421, 422, 423, 424, 425};
+
+  for (int index = 0; index < 2; ++index) {
+    this->buttons[index] = new UIReplayButton(*this->m_context, *this->m_controls);
+    this->buttons[index]->SetBitmap((prefix + names[index] + "a.bmp").c_str(), 0, 0);
+    this->buttons[index]->SetBitmap((prefix + names[index] + "a.bmp").c_str(), 1, 0);
+    this->buttons[index]->SetBitmap((prefix + names[index] + "b.bmp").c_str(), 2, 0);
+    this->buttons[index]->SetSize(this->buttons[index]->BitmapWidth(), this->buttons[index]->BitmapHeight());
+    this->buttons[index]->Move(-100, -100);
+    this->buttons[index]->SetId(ids[index]);
+    this->buttons[index]->SetTooltip(tooltips[index]);
+    this->AddChild(this->buttons[index]);
+  }
+
+  for (int index = 2; index < 6; ++index) {
+    this->buttons[index] = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->buttons[index]->SetBitmap((prefix + names[index] + "a.bmp").c_str(), 0, 0);
+    this->buttons[index]->SetBitmap((prefix + names[index] + "a.bmp").c_str(), 1, 0);
+    this->buttons[index]->SetBitmap((prefix + names[index] + "b.bmp").c_str(), 2, 0);
+    this->buttons[index]->SetSize(this->buttons[index]->BitmapWidth(), this->buttons[index]->BitmapHeight());
+    this->buttons[index]->Move(-100, -100);
+    this->buttons[index]->SetId(ids[index]);
+    this->buttons[index]->SetTooltip(tooltips[index]);
+    this->AddChild(this->buttons[index]);
+  }
+
+  for (int index = 0; index < 5; ++index) {
+    UIStaticBitmap* tab = new UIStaticBitmap(*this->m_context, *this->m_controls);
+    this->tabs[index] = tab;
+    tab->SetBitmap((prefix + names[index + 6] + ".bmp").c_str());
+    tab->SetSize(tab->geometry.width, tab->geometry.height);
+    tab->Move(-100, -100);
+    tab->SetId(reinterpret_cast<int>(tooltips[index]));
+    this->AddChild(tab);
+  }
+
+  int textSizes[2][2] = {{50, 12}, {80, 12}};
+  const char* labels[2] = {"000:00:00", LookupMessage(0x7B3)};
+  for (int index = 0; index < 2; ++index) {
+    this->texts[index] = new UIStaticText(*this->m_context, *this->m_controls);
+    this->texts[index]->SetSize(textSizes[index][0], textSizes[index][1]);
+    this->texts[index]->SetText(labels[index], 0);
+    this->texts[index]->Move(-100, -100);
+    this->texts[index]->SetColor(255, 255, 255);
+    this->AddChild(this->texts[index]);
+  }
+
+  std::memcpy(this->recordOptions, &Replay::Instance().header.options, sizeof(this->recordOptions));
+  const char* optionNames[12] = {
+    "Basicinfo", "Equip", "Item", "Skill", "Guild", "Party", "Chatting", "Shortcut", "Status", "ALL", "User Defined File Name", "Repeated File Check",
+  };
+  for (int index = 0; index < 10; ++index) {
+    UICheckBox* option = new UICheckBox(*this->m_context, *this->m_controls);
+    this->options[index] = option;
+    option->SetSize(70, 12);
+    option->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", optionNames[index]);
+    option->Move(-100, -100);
+    option->SetChecked(Replay::Instance().header.options.Get(static_cast<ReplayRecordOption>(index)));
+    this->AddChild(option);
+  }
+
+  for (int index = 0; index < 2; ++index) {
+    this->fileOptions[index] = new UICheckBox(*this->m_context, *this->m_controls);
+    this->fileOptions[index]->SetSize(150, 12);
+    this->fileOptions[index]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", optionNames[index + 10]);
+    this->fileOptions[index]->Move(-100, -100);
+    this->fileOptions[index]->SetChecked(0);
+    this->AddChild(this->fileOptions[index]);
+  }
+
+  const bool pathEnabled = ReplayFileList::Instance().pathEnabled;
+  this->fileOptions[0]->SetChecked(pathEnabled);
+  this->replayPathEnabled = pathEnabled;
+  const bool option119 = ReplayFileList::Instance().unknown_0119;
+  this->fileOptions[1]->SetChecked(option119);
+  this->replayOption119 = option119;
+
+  UIEditCtrl* edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->window_0134 = edit;
+  edit->SetSize(151, 18);
+  edit->Move(-100, -100);
+  edit->maximum = 80;
+  edit->Background(232, 232, 232);
+  edit->SetText("");
+  if (const char* tooltip = LookupMessage(0x7B4)) {
+    edit->tooltip = tooltip;
+  }
+  this->AddChild(edit);
+  edit->SelectAll();
+  this->ApplyMode();
+  this->Invalidate();
+}
+
 // OFFSET: 0x008B5A50
 // FUNCTION: fn_11750
 void UISelectReplayDataWnd::Slot15(int width, int height) {
