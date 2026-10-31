@@ -984,6 +984,17 @@ void UIChatHisBox::ClearNaviLinks() {
   }
 }
 
+// OFFSET: 0x00879E80
+// FUNCTION: fn_11221
+void UIChatHisBox::ResetContents() {
+  this->unknown_0100.clear();
+  this->unknown_010C.clear();
+  this->unknown_0118.clear();
+  this->Clear();
+  this->ClearNaviLinks();
+  this->ShiftNaviLinks();
+}
+
 // OFFSET: 0x0087CC30
 // FUNCTION: fn_11256
 void UIChatHisBox::DropOldestRecords() {

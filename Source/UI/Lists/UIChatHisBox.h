@@ -31,6 +31,7 @@ public:
   void ShiftNaviLinks();
   void ClearNaviLinks();
   void DropOldestRecords();
+  void ResetContents();
   void ShiftItemTags();
   void PlaceItemTags(int line);
   void CopyHistory(const UIChatHisBox& other);
