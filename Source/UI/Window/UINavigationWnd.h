@@ -5,8 +5,17 @@
 
 #include <string>
 
+class UIBitmapButton;
 class UIButton;
+class UICheckBox;
+class UIComboBoxDefWnd;
+class UIEditCtrl;
 class UIListBoxNavi;
+class UIResizer;
+struct UIButtonContext;
+struct UIComboBoxHeaderContext;
+struct UIEditContext;
+struct UIListBoxContext;
 
 struct NavigationWndInfo {
   /* 0000 */ int x;
@@ -24,6 +33,7 @@ extern bool g_navigationHidden;
 class UINavigationWnd : public UIFrameWnd {
 public:
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Slot31(int x, int y) override;
   void LayoutTabs();
   void ApplyMinimized();
@@ -38,22 +48,32 @@ protected:
   /* 00B8 */ UIButton* m_minimizeButton;
   /* 00BC */ std::string m_title;
   /* 00D4 */ std::string m_subtitle;
-  /* 00EC */ UIWindow* unknown_00EC;
-  /* 00F0 */ UIWindow* m_titleBar;
+  /* 00EC */ UIComboBoxDefWnd* unknown_00EC;
+  /* 00F0 */ UIEditCtrl* m_titleBar;
   /* 00F4 */ UIListBoxNavi* m_routePanel;
   /* 00F8 */ UIListBoxNavi* m_searchPanel;
-  /* 00FC */ UIWindow* unknown_00FC;
-  /* 0100 */ UIWindow* unknown_0100;
-  /* 0104 */ UIWindow* m_routeFooter;
-  /* 0108 */ UIWindow* m_searchFooter;
-  /* 010C */ UIWindow* unknown_010C;
-  /* 0110 */ UIWindow* unknown_0110;
-  /* 0114 */ UIWindow* unknown_0114;
-  /* 0118 */ UIWindow* unknown_0118;
-  /* 011C */ UIWindow* unknown_011C;
-  /* 0120 */ UIWindow* unknown_0120;
+  union {
+    /* 00FC */ UIBitmapButton* m_buttons[6];
+    struct {
+      /* 00FC */ UIWindow* unknown_00FC;
+      /* 0100 */ UIWindow* unknown_0100;
+      /* 0104 */ UIWindow* m_routeFooter;
+      /* 0108 */ UIWindow* m_searchFooter;
+      /* 010C */ UIWindow* unknown_010C;
+      /* 0110 */ UIWindow* unknown_0110;
+    };
+  };
+  /* 0114 */ UICheckBox* unknown_0114;
+  /* 0118 */ UICheckBox* unknown_0118;
+  /* 011C */ UICheckBox* unknown_011C;
+  /* 0120 */ UIBitmapButton* unknown_0120;
   /* 0124 */ NavigationWndInfo* m_saved;
-  /* 0128 */ UIWindow* unknown_0128;
+  /* 0128 */ UIResizer* unknown_0128;
+
+  UIButtonContext* m_controls;
+  UIListBoxContext* m_listContext;
+  UIComboBoxHeaderContext* m_comboContext;
+  UIEditContext* m_editContext;
 };
 
 #endif

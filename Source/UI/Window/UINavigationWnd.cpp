@@ -1,11 +1,17 @@
 #include "UI/Window/UINavigationWnd.h"
 
+#include "Client/Replay.h"
 #include "Contents/MessageTable.h"
 #include "Contents/NavigationManager.h"
 #include "Render/Renderer.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Buttons/UICheckBox.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Lists/UIComboBoxDefWnd.h"
 #include "UI/Lists/UIListBoxNavi.h"
 #include "UI/Navigation/UINavigationV4Wnd.h"
+#include "UI/Window/UIResizer.h"
 #include "UI/Window/UIRoMapWnd.h"
 
 #include <cstdio>
@@ -22,6 +28,147 @@ UIWindow* g_navigationWindow;
 
 // GLOBAL: gl_24608
 bool g_navigationHidden;
+
+// GLOBAL: gl_24613
+bool g_navigationFilter;
+
+// GLOBAL: gl_25095
+bool g_unknown16FC585;
+
+// GLOBAL: gl_25096
+bool g_unknown16FC586;
+
+// OFFSET: 0x00921A70
+// FUNCTION: fn_12643
+void UINavigationWnd::Slot15(int width, int height) {
+  this->m_routePanel = new UIListBoxNavi(*this->m_context, *this->m_listContext);
+  this->m_routePanel->SetSize(215, 96);
+  this->m_routePanel->backgroundRed = 210;
+  this->m_routePanel->backgroundGreen = 210;
+  this->m_routePanel->backgroundBlue = 210;
+  this->m_routePanel->SetId(336);
+  this->m_routePanel->Move(-1000, -1000);
+  this->AddChild(this->m_routePanel);
+
+  this->m_searchPanel = new UIListBoxNavi(*this->m_context, *this->m_listContext);
+  this->m_searchPanel->SetSize(215, 96);
+  this->m_searchPanel->backgroundRed = 210;
+  this->m_searchPanel->backgroundGreen = 210;
+  this->m_searchPanel->backgroundBlue = 210;
+  this->m_searchPanel->SetId(441);
+  this->m_searchPanel->Move(-1000, -1000);
+  this->m_searchPanel->SetDefaultLineColor(0x1414F0);
+  this->AddChild(this->m_searchPanel);
+
+  std::string base = "유저인터페이스\\";
+
+  this->unknown_0128 = new UIResizer(*this->m_context);
+  this->unknown_0128->SetSize(14, 14);
+  this->unknown_0128->SetDirection(7);
+  this->unknown_0128->SetBitmapName((base + "btn_resize.bmp").c_str());
+  this->unknown_0128->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->unknown_0128->Move(-1000, -1000);
+  this->AddChild(this->unknown_0128);
+
+  std::string path = base;
+  path += "navigation_interface\\";
+
+  const char* tooltips[6] = {
+    LookupMessage(0x894), LookupMessage(0x895), LookupMessage(0x896), LookupMessage(0x897), LookupMessage(0x898), LookupMessage(0x899),
+  };
+  const char* names[6] = {"NaviSearch", "NaviStart", "NaviRoute", "NaviList", "Navisyschange2", "navifolder"};
+  const int ids[6] = {321, 184, 189, 190, 284, 191};
+
+  for (int index = 0; index < 6; ++index) {
+    UIBitmapButton* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+    this->m_buttons[index] = button;
+    button->SetBitmap((path + names[index] + "_A.bmp").c_str(), 0, 0);
+    button->SetBitmap((path + names[index] + "_B.bmp").c_str(), 1, 0);
+    button->SetBitmap((path + names[index] + "_C.bmp").c_str(), 2, 0);
+    this->m_buttons[index]->SetSize(this->m_buttons[index]->BitmapWidth(), this->m_buttons[index]->BitmapHeight());
+    this->m_buttons[index]->Move(-1000, -1000);
+    this->m_buttons[index]->SetId(ids[index]);
+    this->m_buttons[index]->SetTooltip(tooltips[index]);
+    this->AddChild(this->m_buttons[index]);
+  }
+
+  this->m_closeButton = this->AddCloseButton(*this->m_controls, LookupMessage(0x89A), 0);
+  this->m_minimizeButton = this->AddMinimizeButton(*this->m_controls, "", 0);
+
+  this->unknown_0120 = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->unknown_0120->SetBitmap((path + "NaviHelp_off.bmp").c_str(), 0, 0);
+  this->unknown_0120->SetBitmap((path + "NaviHelp_on.bmp").c_str(), 1, 0);
+  this->unknown_0120->SetBitmap((path + "NaviHelp_on.bmp").c_str(), 2, 0);
+  this->unknown_0120->SetSize(this->unknown_0120->BitmapWidth(), this->unknown_0120->BitmapHeight());
+  this->unknown_0120->Move(this->geometry.width - 42, 3);
+  this->unknown_0120->SetId(343);
+  this->unknown_0120->SetTooltip(LookupMessage(0x89D));
+  this->AddChild(this->unknown_0120);
+
+  this->unknown_00EC = new UIComboBoxDefWnd(*this->m_context, *this->m_comboContext);
+  this->unknown_00EC->dropdownHeight = 67;
+  this->unknown_00EC->SetSize(56, 18);
+  this->unknown_00EC->Move(-1000, -1000);
+  this->unknown_00EC->borderRed = 100;
+  this->unknown_00EC->borderGreen = 100;
+  this->unknown_00EC->borderBlue = 100;
+  this->unknown_00EC->red = 232;
+  this->unknown_00EC->green = 232;
+  this->unknown_00EC->blue = 232;
+  this->AddChild(this->unknown_00EC);
+  this->unknown_00EC->AddOption(LookupMessage(0x89E), 0);
+  this->unknown_00EC->AddOption(LookupMessage(0x89F), 0);
+  this->unknown_00EC->AddOption(LookupMessage(0x8A0), 0);
+  this->unknown_00EC->AddOption(LookupMessage(0x8A1), 0);
+
+  this->m_titleBar = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  this->m_titleBar->SetSize(226, 18);
+  this->m_titleBar->Move(-1000, -1000);
+  this->m_titleBar->maximum = 60;
+  this->m_titleBar->Background(232, 232, 232);
+  this->m_titleBar->Border(200, 100, 100);
+  this->m_titleBar->flat = 0;
+  UIEditCtrl* edit = this->m_titleBar;
+  const char* tooltip = LookupMessage(0x8A2);
+  if (tooltip) {
+    edit->tooltip = tooltip;
+  }
+  this->AddChild(this->m_titleBar);
+  if (g_replayAnimationScaling) {
+    this->m_titleBar->disabled = 1;
+    this->m_titleBar->Invalidate();
+  }
+
+  UICheckBox* box = new UICheckBox(*this->m_context, *this->m_controls);
+  this->unknown_0118 = box;
+  box->SetSize(this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0x8A3), 10, 0, 12, 0, 0), 12);
+  path = base;
+  this->unknown_0118->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A3));
+  this->unknown_0118->Move(-1000, -1000);
+  this->unknown_0118->SetChecked(g_unknown16FC585);
+  this->unknown_0118->SetTooltip(LookupMessage(0x8A4));
+  this->AddChild(this->unknown_0118);
+
+  box = new UICheckBox(*this->m_context, *this->m_controls);
+  this->unknown_0114 = box;
+  box->SetSize(this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0x8A5), 10, 0, 12, 0, 0), 12);
+  path = base;
+  this->unknown_0114->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A5));
+  this->unknown_0114->Move(-1000, -1000);
+  this->unknown_0114->SetChecked(g_navigationFilter);
+  this->unknown_0114->SetTooltip(LookupMessage(0x8A6));
+  this->AddChild(this->unknown_0114);
+
+  box = new UICheckBox(*this->m_context, *this->m_controls);
+  this->unknown_011C = box;
+  box->SetSize(this->TextWidth(this->m_context->fonts, this->m_context->locale, LookupMessage(0x8A7), 10, 0, 12, 0, 0), 12);
+  path = base;
+  this->unknown_011C->SetImages((path + "checkbox_1.bmp").c_str(), (path + "checkbox_0.bmp").c_str(), LookupMessage(0x8A7));
+  this->unknown_011C->Move(-1000, -1000);
+  this->unknown_011C->SetChecked(g_unknown16FC586);
+  this->unknown_011C->SetTooltip(LookupMessage(0x8A8));
+  this->AddChild(this->unknown_011C);
+}
 
 // OFFSET: 0x00931390
 // FUNCTION: fn_12702
