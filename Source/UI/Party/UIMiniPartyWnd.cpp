@@ -1,10 +1,14 @@
 #include "UI/Party/UIMiniPartyWnd.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Contents/MapInfoMgr.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
+#include "UI/Gauges/UIPcGage.h"
 #include "UI/MiniPartyGrid.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Layout/WindowSnapping.h"
@@ -17,6 +21,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <string>
 
 // OFFSET: 0x007426F0
 // FUNCTION: fn_07737
@@ -242,4 +247,68 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   }
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x00740300
+// FUNCTION: fn_07730
+void UIMiniPartyInfoWnd::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  std::string directory = "유저인터페이스\\renewalparty\\";
+  if (this->m_owner->GetMember().valid == 0) {
+    return;
+  }
+
+  char path[256];
+  const int job = this->m_owner->GetMember().job;
+  int dead = 0;
+  if (this->m_owner->GetMember().dead == 1) {
+    dead = 1;
+  } else if (g_session.m_aid == this->m_owner->GetMember().accountId) {
+    dead = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_0250 == 1;
+  }
+
+  const int leader = this->m_owner->GetMember().leader;
+  std::sprintf(path, dead ? "%sicon_jobs_%d_die.bmp" : "%sicon_jobs_%d.bmp", directory.c_str(), job);
+  CRes* icon = ResourceMgr::Instance().Load(Resolve(path));
+  if (this->m_owner->GetMember().offline == 1) {
+    this->DrawAuxiliary(1, 7, leader == 0 ? 8 : 6, reinterpret_cast<BitmapImage*>(icon), true, false);
+  } else {
+    this->DrawBitmap(7, leader == 0 ? 8 : 6, reinterpret_cast<const BitmapImage*>(icon), true);
+  }
+
+  if (this->m_owner->GetMember().leader == 0) {
+    std::sprintf(path, "%sico_partyCrown.bmp", directory.c_str());
+    CRes* crown = ResourceMgr::Instance().Load(Resolve(path));
+    if (this->m_owner->GetMember().offline == 1) {
+      this->DrawAuxiliary(1, 9, 0, reinterpret_cast<BitmapImage*>(crown), true, false);
+    } else {
+      this->DrawBitmap(9, 0, reinterpret_cast<const BitmapImage*>(crown), true);
+    }
+  }
+
+  if (this->m_owner->m_sizeMode == 0) {
+    this->m_gauge->Move(35, 23);
+  } else {
+    this->m_gauge->Move(-1000, -1000);
+  }
+
+  if (this->m_owner->m_sizeMode == 2) {
+    return;
+  }
+
+  char text[256];
+  std::memset(text, 0, sizeof(text));
+  std::string mapName = g_session.GetMapDisplayName(this->m_owner->GetMember().map.c_str());
+  std::string fitted = text;
+  if (this->m_owner->m_sizeMode == 1) {
+    std::sprintf(text, "%s", this->m_owner->GetMember().name.c_str());
+    fitted = this->FitDisplayText(static_cast<int>(static_cast<float>(this->geometry.width) * 0.532f), text, 0, 12, 1);
+  } else {
+    std::sprintf(text, "Lv.%d %s(%s)", this->m_owner->GetMember().level, this->m_owner->GetMember().name.c_str(), mapName.c_str());
+    fitted = this->FitDisplayText(static_cast<int>(static_cast<float>(this->geometry.width) * 0.6f), text, 0, 12, 1);
+  }
+
+  this->DrawTextAt(
+    this->m_context->fonts, this->m_context->locale, 35, 9, fitted.c_str(), 0, 0, 12, this->m_owner->GetMember().offline == 1 ? 0xAAAAAA : 0xFFFFFF, 1, 0
+  );
 }
