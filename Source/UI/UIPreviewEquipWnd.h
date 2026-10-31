@@ -15,6 +15,7 @@ public:
   void Slot19() override;
   void DrawCharacter();
   void RefreshHeadgearLocations();
+  void SyncFromPlayer();
 
   /* 00B4 */ PreviewEquipWndInfo* saved;
   /* 00B8 */ CCharacterRender* m_render;

@@ -1,10 +1,15 @@
 #include "UI/UIPreviewEquipWnd.h"
 
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/CharacterRender.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Actors/SpriteDrawingPolicy.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Render/Renderer.h"
+#include "Contents/World/World.h"
 #include "UI/Window/FuncDrawWNDChar.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -66,6 +71,36 @@ void UIPreviewEquipWnd::Paint() {
   this->DrawNamed(this->m_context->primitives, 0, 0, "유저인터페이스\\equip_preview\\bg_mounting2.bmp", 0xffffffff, 0, 0);
   void (UIPreviewEquipWnd::*draw)() = &UIPreviewEquipWnd::DrawCharacter;
   (this->*draw)();
+}
+
+// OFFSET: 0x007F3DC0
+// FUNCTION: fn_09885
+void UIPreviewEquipWnd::SyncFromPlayer() {
+  this->m_render->unknown_00B0 = 0;
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CPlayer* player = mode->scene->player;
+  if (player == nullptr) {
+    return;
+  }
+
+  this->m_render->unknown_0010 = player->GetEffectiveJob(-1);
+  this->m_render->unknown_0014 = player->unknown_04D4;
+  this->m_render->unknown_0018[0] = player->unknown_0260;
+  this->m_render->unknown_0018[1] = player->unknown_0440;
+  this->m_render->unknown_0018[2] = static_cast<int>(player->render.previousAnimation);
+  this->m_render->unknown_0018[3] = player->unknown_0444;
+  this->m_render->unknown_0028 = player->unknown_0450;
+  this->m_render->unknown_002C = player->unknown_0454;
+  this->m_render->unknown_0030 = player->unknown_0458;
+  reinterpret_cast<SpriteDrawingPolicy*>(this->m_render)->SetRobe(player->unknown_049C);
+  this->m_render->unknown_0048 = player->Slot56();
+  this->m_render->unknown_004C = player->unknown_02CC;
+  this->m_render->unknown_0050 = player->Slot46();
+  *reinterpret_cast<float*>(&this->m_render->unknown_0054) = -5.0f;
+  this->m_render->unknown_0058 = 136.0f;
+  this->RefreshHeadgearLocations();
+  this->Invalidate();
 }
 
 // OFFSET: 0x007F43E0
