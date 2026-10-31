@@ -1385,7 +1385,7 @@ bool UIWindowMgr::sub_A8CA20() {
         if (this->hoverWindow != nullptr) {
           if (this->window_01C8 != nullptr && this->hoverWindow->parent == this->window_01C8) {
             if (reinterpret_cast<const ChatSuggestions*>(this->window_01C8)->Visible()) {
-              UIWindow* child = *reinterpret_cast<UIWindow**>(reinterpret_cast<unsigned char*>(this->window_01C8) + 0x13C);
+              UIWindow* child = reinterpret_cast<const ChatSuggestions*>(this->window_01C8)->unknown_013C;
               if (child != nullptr) {
                 child->SendMsg(nullptr, 0xB0, 0xD, 0, 0, 0);
                 return true;
@@ -1406,7 +1406,7 @@ bool UIWindowMgr::sub_A8CA20() {
         }
         window = this->window_03D4;
         if (window == nullptr) {
-          if (this->window_01C8 != nullptr && reinterpret_cast<const unsigned char*>(&g_windowCloseByte)[-2] == 1) {
+          if (this->window_01C8 != nullptr && g_inputSuggestionsEnabled == 1) {
             handled = false;
             RecordEditTextsNoArg(this->window_01C8);
             window = this->window_01C8;
