@@ -36,6 +36,7 @@ typedef void(__thiscall* LayoutChildFn)(UILapineBox_IngredientListWnd*, UIWindow
 typedef int(__thiscall* ScrollWndSendMsgFn)(UILapineBox_IngredientListWnd*, UIWindow*, int, std::intptr_t, std::intptr_t, std::intptr_t, std::intptr_t);
 typedef void(__thiscall* BeginItemOnModeFn)(CGameMode*, int, ITEM_INFO*, int, int);
 typedef void(__thiscall* CloseNotifyFn)(UIWindowMgr*, int);
+typedef int(__thiscall* BuildItemNameFn)(UIFrameWnd*, const ITEM_INFO*, int*, std::vector<char*>*, char**, std::size_t*, char**, char, char);
 
 namespace {
 struct RandomCombineItemPacket {
@@ -584,4 +585,30 @@ void UILapineBoxWnd::AddMaterial(int id, int quantity) {
     material.quantity = quantity;
     materials.push_back(material);
   }
+}
+
+// OFFSET: 0x006028C0
+// FUNCTION: fn_04183
+void UIIngredientInfoWnd::sub_6028C0(std::uint32_t id) {
+  this->item = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
+
+  std::vector<char*> breaks;
+  char name[260];
+  std::memset(name, 0, sizeof(name));
+  char* highlight = nullptr;
+  std::size_t remaining = sizeof(name);
+  char* cursor = name;
+  int highlightColor;
+  reinterpret_cast<BuildItemNameFn>(0x008DA690)(this, &this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+
+  if (this->item.identified == 1) {
+    const int count = this->item.unknown_0098;
+    if (count != 0) {
+      sprintf_s(name, sizeof(name), LookupMessage(2600), name, count);
+    }
+  }
+
+  this->item.SetName(name);
+  this->tooltip = name;
+  this->Invalidate();
 }
