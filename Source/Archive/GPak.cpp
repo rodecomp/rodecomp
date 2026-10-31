@@ -3,6 +3,7 @@
 #include "Archive/PakCipher.h"
 #include "Utility/AES.h"
 #include "Utility/Hash/XxHash32.h"
+#include "Utility/Random/RandomBytes.h"
 #include "Utility/XxHash3.h"
 
 #include <algorithm>
@@ -121,20 +122,22 @@ namespace {
 
 // OFFSET: 0x00644260
 // FUNCTION: fn_04842
-void XorWithKey16(const std::uint8_t* key, const std::uint8_t* input, std::size_t length, std::uint8_t* output) {
-  const __m128i mask = _mm_loadu_si128(reinterpret_cast<const __m128i*>(key));
-  if (length >= 16) {
-    std::size_t blocks = length >> 4;
+void XorWithKey16(std::span<const std::uint8_t, 16> key, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) {
+  const __m128i mask = _mm_loadu_si128(reinterpret_cast<const __m128i*>(key.data()));
+  const std::uint8_t* source = input.data();
+  std::uint8_t* destination = output.data();
+  if (input.size() >= 16) {
+    std::size_t blocks = input.size() >> 4;
     do {
-      _mm_storeu_si128(reinterpret_cast<__m128i*>(output), _mm_xor_si128(_mm_loadu_si128(reinterpret_cast<const __m128i*>(input)), mask));
-      input += 16;
-      output += 16;
+      _mm_storeu_si128(reinterpret_cast<__m128i*>(destination), _mm_xor_si128(_mm_loadu_si128(reinterpret_cast<const __m128i*>(source)), mask));
+      source += 16;
+      destination += 16;
     } while (--blocks != 0);
   }
 
-  const std::size_t remainder = length & 0xF;
+  const std::size_t remainder = input.size() & 0xF;
   for (std::size_t i = 0; i < remainder; ++i) {
-    output[i] = input[i] ^ key[i];
+    destination[i] = source[i] ^ key[i];
   }
 }
 
@@ -1887,3 +1890,501 @@ std::uint32_t IdeaMulInv(std::uint32_t x) {
   }
   return y & 0xffff;
 }
+
+// INLINED
+inline void SecureWipe(void* buffer, std::size_t size) {
+  volatile std::uint8_t* bytes = static_cast<std::uint8_t*>(buffer);
+  while (size--) {
+    *bytes++ = 0;
+  }
+}
+
+// INLINED
+template<std::uint32_t Key1, std::uint32_t Key2>
+std::uint32_t Deobfuscate(std::uint32_t value) {
+  volatile std::uint32_t encoded = value ^ Key1 ^ Key2;
+  encoded = encoded ^ Key1;
+  encoded = encoded ^ Key2;
+  return encoded;
+}
+
+namespace GPakEx {
+
+  class BlockCipher {
+  public:
+    /* 0000 */ void* m_vftable;
+
+    void sub_642A60();
+  };
+
+  template<std::size_t StateSize>
+  class FixedStateBlockCipher : public BlockCipher {
+  public:
+    /* 0004 */ std::uint8_t m_state[StateSize];
+  };
+
+  class CipherModeBase {
+  public:
+    /* 0000 */ void* m_vftable;
+    /* 0004 */ BlockCipher* m_cipher;
+    /* 0008 */ std::uint8_t* m_register[3];
+    /* 0014 */ std::uint8_t* m_buffer[3];
+
+    void sub_642A70();
+    std::size_t sub_642C80(std::size_t length, bool padding) const;
+    std::size_t sub_643160(std::span<const std::uint8_t> input, std::span<std::uint8_t> output, bool final);
+    void sub_643480(std::span<const std::uint8_t> key, std::span<const std::uint8_t> iv);
+  };
+
+  static_assert(sizeof(CipherModeBase) == 0x20);
+
+  class CipherModeFinal_6469E0 : public CipherModeBase {
+  public:
+    /* 0020 */ std::uint8_t unknown_0020[0x2C];
+
+    // INLINED
+    CipherModeFinal_6469E0() {
+      this->sub_6469E0();
+    }
+
+    // INLINED
+    ~CipherModeFinal_6469E0() {
+      this->sub_649B50();
+    }
+
+    void sub_6469E0();
+    void sub_649B50();
+  };
+
+  class CipherModeFinal_646B40 : public CipherModeBase {
+  public:
+    /* 0020 */ std::uint8_t unknown_0020[0x20];
+
+    // INLINED
+    CipherModeFinal_646B40() {
+      this->sub_646B40();
+    }
+
+    // INLINED
+    ~CipherModeFinal_646B40() {
+      this->sub_649C50();
+    }
+
+    void sub_646B40();
+    void sub_649C50();
+  };
+
+  class CipherModeFinal_646C80 : public CipherModeBase {
+  public:
+    /* 0020 */ std::uint8_t unknown_0020[0x1C];
+
+    // INLINED
+    CipherModeFinal_646C80() {
+      this->sub_646C80();
+    }
+
+    // INLINED
+    ~CipherModeFinal_646C80() {
+      this->sub_649D80();
+    }
+
+    void sub_646C80();
+    void sub_649D80();
+  };
+
+  class CipherModeFinal_646E30 : public CipherModeBase {
+  public:
+    /* 0020 */ std::uint8_t unknown_0020[0x2C];
+
+    // INLINED
+    CipherModeFinal_646E30() {
+      this->sub_646E30();
+    }
+
+    // INLINED
+    ~CipherModeFinal_646E30() {
+      this->sub_649EB0();
+    }
+
+    void sub_646E30();
+    void sub_649EB0();
+  };
+
+  class CipherModeFinal_646F90 : public CipherModeBase {
+  public:
+    /* 0020 */ std::uint8_t unknown_0020[0x20];
+
+    // INLINED
+    CipherModeFinal_646F90() {
+      this->sub_646F90();
+    }
+
+    // INLINED
+    ~CipherModeFinal_646F90() {
+      this->sub_649FB0();
+    }
+
+    void sub_646F90();
+    void sub_649FB0();
+  };
+
+  class BlockCipher_64A730 : public BlockCipher {
+  public:
+    /* 0004 */ std::uint8_t unknown_0004[0x1C];
+
+    void sub_64A730();
+  };
+
+  class CipherModeFinal_646A90 : public CipherModeBase {
+  public:
+    /* 0020 */ BlockCipher_64A730 m_blockCipher;
+
+    // INLINED
+    CipherModeFinal_646A90() {
+      this->sub_646A90();
+    }
+
+    // INLINED
+    ~CipherModeFinal_646A90() {
+      this->m_blockCipher.sub_64A730();
+      this->sub_642A70();
+    }
+
+    void sub_646A90();
+  };
+
+  class BlockCipher_64A880 : public BlockCipher {
+  public:
+    /* 0004 */ std::uint8_t unknown_0004[0x1C];
+
+    void sub_64A880();
+  };
+
+  class CipherModeFinal_646EE0 : public CipherModeBase {
+  public:
+    /* 0020 */ BlockCipher_64A880 m_blockCipher;
+
+    // INLINED
+    CipherModeFinal_646EE0() {
+      this->sub_646EE0();
+    }
+
+    // INLINED
+    ~CipherModeFinal_646EE0() {
+      this->m_blockCipher.sub_64A880();
+      this->sub_642A70();
+    }
+
+    void sub_646EE0();
+  };
+
+  class CipherModeFinal_646BE0 : public CipherModeBase {
+  public:
+    /* 0020 */ FixedStateBlockCipher<0x10> m_blockCipher;
+
+    // INLINED
+    CipherModeFinal_646BE0() {
+      this->sub_646BE0();
+    }
+
+    // INLINED
+    ~CipherModeFinal_646BE0() {
+      SecureWipe(this->m_blockCipher.m_state, sizeof(this->m_blockCipher.m_state));
+      this->m_blockCipher.sub_642A60();
+      this->sub_642A70();
+    }
+
+    void sub_646BE0();
+  };
+
+  class CipherModeFinal_646D90 : public CipherModeBase {
+  public:
+    /* 0020 */ FixedStateBlockCipher<0xC> m_blockCipher;
+
+    // INLINED
+    CipherModeFinal_646D90() {
+      this->sub_646D90();
+    }
+
+    // INLINED
+    ~CipherModeFinal_646D90() {
+      SecureWipe(this->m_blockCipher.m_state, sizeof(this->m_blockCipher.m_state));
+      this->m_blockCipher.sub_642A60();
+      this->sub_642A70();
+    }
+
+    void sub_646D90();
+  };
+
+  class CipherModeFinal_647030 : public CipherModeBase {
+  public:
+    /* 0020 */ FixedStateBlockCipher<0x10> m_blockCipher;
+
+    // INLINED
+    CipherModeFinal_647030() {
+      this->sub_647030();
+    }
+
+    // INLINED
+    ~CipherModeFinal_647030() {
+      SecureWipe(this->m_blockCipher.m_state, sizeof(this->m_blockCipher.m_state));
+      this->m_blockCipher.sub_642A60();
+      this->sub_642A70();
+    }
+
+    void sub_647030();
+  };
+
+  class CipherModeFinal_6470D0 : public CipherModeBase {
+  public:
+    /* 0020 */ FixedStateBlockCipher<0xD0> m_blockCipher;
+
+    // INLINED
+    CipherModeFinal_6470D0() {
+      this->sub_6470D0();
+    }
+
+    // INLINED
+    ~CipherModeFinal_6470D0() {
+      SecureWipe(this->m_blockCipher.m_state, sizeof(this->m_blockCipher.m_state));
+      this->m_blockCipher.sub_642A60();
+      this->sub_642A70();
+    }
+
+    void sub_6470D0();
+  };
+
+}
+
+using PakBlockTransform = void (*)(std::span<const std::uint8_t>, std::span<const std::uint8_t, 60>, std::span<const std::uint8_t, 16>, std::span<std::uint8_t, 16>);
+
+// INLINED
+__forceinline void EncryptBlockWithDataHash(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::uint32_t ivOffset,
+                                            std::span<const std::uint8_t, 16> input, std::span<std::uint8_t, 16> output) {
+  const auto iv = keyData.subspan(Deobfuscate<0x53F9360C, 0x4CC36824>(ivOffset), Deobfuscate<0x53F9360C, 0x4CC36824>(8));
+  XXH128_hash_t key = XXH3_128bits(data.data(), data.size());
+  GPakEx::CipherModeFinal_6470D0 cipher;
+  cipher.sub_643480(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(&key), sizeof(key)), iv);
+  cipher.sub_643160(input, output, false);
+  SecureWipe(&key, sizeof(key));
+}
+
+// INLINED
+__forceinline void EncryptDataHash(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::uint32_t ivOffset,
+                                   std::span<const std::uint8_t, 16> key, std::span<std::uint8_t, 16> output) {
+  const auto iv = keyData.subspan(Deobfuscate<0x53F9360C, 0x4CC36824>(ivOffset), Deobfuscate<0x53F9360C, 0x4CC36824>(8));
+  XXH128_hash_t hash = XXH3_128bits(data.data(), data.size());
+  GPakEx::CipherModeFinal_6470D0 cipher;
+  cipher.sub_643480(key, iv);
+  cipher.sub_643160(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(&hash), sizeof(hash)), output, false);
+  SecureWipe(&hash, sizeof(hash));
+}
+
+// OFFSET: 0x006442D0
+
+// OFFSET: 0x00644480
+
+// OFFSET: 0x00644630
+
+// OFFSET: 0x006447E0
+
+// OFFSET: 0x00644990
+
+// OFFSET: 0x00644B40
+
+// OFFSET: 0x00644CE0
+
+// OFFSET: 0x00644E80
+
+// OFFSET: 0x00645020
+
+struct PakDecryptor {
+
+  bool sub_64BCE0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64BF20(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64C160(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64C3A0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64C620(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64C8A0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64CB20(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64CD60(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64CFE0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64D260(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64D4E0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64D760(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64D9E0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64F000(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64F2F0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64F560(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64F7F0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64FAE0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_64FDC0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_6500A0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_650350(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_6505E0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_650840(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_650AB0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_650DD0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_651080(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_651310(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_6515C0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_6518E0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_651BD0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_651E30(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_6520E0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_652350(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_6525C0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_6528B0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_652BD0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+  bool sub_652EB0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed, std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) const;
+};
+
+// INLINED
+__forceinline bool DecryptWithAes(PakBlockTransform transform, std::uint32_t keyOffset, std::uint32_t ivOffset, AES::Mode mode, std::size_t prefixSize,
+                                  std::size_t chunkSize, std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData,
+                                  std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) {
+  if (input.empty()) {
+    return true;
+  }
+
+  std::uint8_t mask[16]{};
+  transform(data, keyData, block, mask);
+
+  const auto key = keyData.subspan(Deobfuscate<0x508EF2F3, 0xBFDC0C82>(keyOffset), Deobfuscate<0x508EF2F3, 0xBFDC0C82>(16));
+  const auto iv = keyData.subspan(Deobfuscate<0xA101B199, 0x10F4BC62>(ivOffset), Deobfuscate<0xA101B199, 0x10F4BC62>(16));
+  AES cipher;
+  if (!cipher.Initialize(const_cast<PUCHAR>(key.data()), key.size(), iv.data(), iv.size(), mode)) {
+    return false;
+  }
+
+  if (input.size() <= prefixSize) {
+    XorWithKey16(mask, input, output);
+    return true;
+  }
+
+  XorWithKey16(mask, input.first(prefixSize), output.first(prefixSize));
+  const std::size_t encryptedSize = chunkSize + 16;
+  if (input.size() <= prefixSize + encryptedSize) {
+    const std::span<std::uint8_t> remaining = output.subspan(prefixSize);
+    return cipher.Decrypt(const_cast<PUCHAR>(input.data()) + prefixSize, input.size() - prefixSize, remaining.data(), remaining.size(), 1) == remaining.size();
+  }
+
+  if (cipher.Decrypt(const_cast<PUCHAR>(input.data()) + prefixSize, encryptedSize, output.data() + prefixSize, chunkSize, 1) != chunkSize) {
+    return false;
+  }
+
+  XorWithKey16(mask, input.subspan(prefixSize + encryptedSize), output.subspan(prefixSize + chunkSize));
+  return true;
+}
+
+// OFFSET: 0x0064BCE0
+
+// OFFSET: 0x0064BF20
+
+// OFFSET: 0x0064C160
+
+// OFFSET: 0x0064C3A0
+
+// OFFSET: 0x0064C620
+
+// OFFSET: 0x0064C8A0
+
+// OFFSET: 0x0064CB20
+
+// OFFSET: 0x0064CD60
+
+// OFFSET: 0x0064CFE0
+
+// OFFSET: 0x0064D260
+
+// OFFSET: 0x0064D4E0
+
+// OFFSET: 0x0064D760
+
+// OFFSET: 0x0064D9E0
+
+// INLINED
+template<class CipherMode>
+__forceinline bool DecryptWithCipherMode(PakBlockTransform transform, std::uint32_t keyOffset, std::uint32_t keySize, std::uint32_t ivOffset, std::uint32_t ivSize,
+                                         std::size_t prefixSize, std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> seed,
+                                         std::span<const std::uint8_t, 16> block, std::span<const std::uint8_t> input, std::span<std::uint8_t> output) {
+  if (input.empty()) {
+    return true;
+  }
+
+  std::uint8_t keyData[60];
+  utility::FillRandomBytes(keyData, static_cast<unsigned int>(XXH3_64bits(seed.data(), seed.size())));
+  std::uint8_t mask[16]{};
+  transform(data, keyData, block, mask);
+
+  const std::span<const std::uint8_t, 60> keys = keyData;
+  const auto key = keys.subspan(Deobfuscate<0xC0C9A189, 0x9DD8961C>(keyOffset), Deobfuscate<0xC0C9A189, 0x9DD8961C>(keySize));
+  const auto iv = keys.subspan(Deobfuscate<0x3D1F34CF, 0x7D456D99>(ivOffset), Deobfuscate<0x3D1F34CF, 0x7D456D99>(ivSize));
+  CipherMode cipher;
+  cipher.sub_643480(key, iv);
+  const std::size_t encryptedSize = cipher.sub_642C80(0x400, true);
+
+  bool succeeded = false;
+  if (input.size() <= prefixSize) {
+    XorWithKey16(mask, input, output);
+    succeeded = true;
+  } else {
+    XorWithKey16(mask, input.first(prefixSize), output.first(prefixSize));
+    if (input.size() <= prefixSize + encryptedSize) {
+      const std::span<std::uint8_t> remaining = output.subspan(prefixSize);
+      succeeded = cipher.sub_643160(input.subspan(prefixSize), remaining, true) == remaining.size();
+    } else if (cipher.sub_643160(input.subspan(prefixSize, encryptedSize), output.subspan(prefixSize, 0x400), true) == 0x400) {
+      XorWithKey16(mask, input.subspan(prefixSize + encryptedSize), output.subspan(prefixSize + 0x400));
+      succeeded = true;
+    }
+  }
+  return succeeded;
+}
+
+// OFFSET: 0x0064F000
+
+// OFFSET: 0x0064F2F0
+
+// OFFSET: 0x0064F560
+
+// OFFSET: 0x0064F7F0
+
+// OFFSET: 0x0064FAE0
+
+// OFFSET: 0x0064FDC0
+
+// OFFSET: 0x006500A0
+
+// OFFSET: 0x00650350
+
+// OFFSET: 0x006505E0
+
+// OFFSET: 0x00650840
+
+// OFFSET: 0x00650AB0
+
+// OFFSET: 0x00650DD0
+
+// OFFSET: 0x00651080
+
+// OFFSET: 0x00651310
+
+// OFFSET: 0x006515C0
+
+// OFFSET: 0x006518E0
+
+// OFFSET: 0x00651BD0
+
+// OFFSET: 0x00651E30
+
+// OFFSET: 0x006520E0
+
+// OFFSET: 0x00652350
+
+// OFFSET: 0x006525C0
+
+// OFFSET: 0x006528B0
+
+// OFFSET: 0x00652BD0
+
+// OFFSET: 0x00652EB0
