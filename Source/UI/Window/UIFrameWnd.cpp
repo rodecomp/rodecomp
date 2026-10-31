@@ -1,4 +1,10 @@
 #include "UI/Window/UIWindowMgr.h"
+#include "Client/Session.h"
+#include "Contents/MessageTable.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "UI/Window/InputFocus.h"
+#include "UI/Window/UIBank_NewWnd.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
@@ -18,7 +24,9 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Layout/WindowSnapping.h"
 
+#include <cstdint>
 #include <cstdlib>
+#include <cstring>
 #include <string>
 #include <windows.h>
 #include <timeapi.h>
@@ -438,6 +446,113 @@ int UIAllyGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   text += this->m_acceptance->text.buttons.services.MessageText(393);
   this->viewer->Clear();
   this->viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
+  return 0;
+}
+
+#pragma pack(push, 1)
+struct PACKET_CZ_BANK_TRANSACTION {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ int amount;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x008BB5F0
+// FUNCTION: fn_11799
+int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  const auto notice = [](int id) { g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(id)), 255, 0, 0, 0); };
+  const auto send = [this](std::int16_t id, long long amount) {
+    PACKET_CZ_BANK_TRANSACTION packet;
+    packet.id = id;
+    packet.aid = g_session.m_aid;
+    packet.amount = static_cast<int>(amount);
+    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    this->m_status.clear();
+  };
+
+  int step;
+  switch (a) {
+  case 0xC9:
+    g_windowMgr.EnsureWindow(0x113);
+    return 0;
+  case 0x117:
+    step = 1;
+    break;
+  case 0x118:
+    step = -1;
+    break;
+  case 0x185:
+    if (!this->m_amountEdit) {
+      return 0;
+    }
+    this->m_amountEdit->SetText(LookupMessage(0xADA));
+    InputFocus{g_windowMgr.hoverWindow}.Set(this->m_amountEdit);
+    return 0;
+  case 0x186:
+    step = 10000000;
+    break;
+  case 0x187:
+    step = 1000000;
+    break;
+  case 0x188:
+    step = 100000;
+    break;
+  case 0x1CE: {
+    if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == true) {
+      notice(0x9B9);
+      return 0;
+    }
+    const long long amount = this->TransactionAmount(1);
+    if (amount == 0) {
+      return 0;
+    }
+    if (amount > g_session.m_zeny) {
+      notice(0x998);
+      this->m_status = LookupMessage(0xAE1);
+    } else if (g_session.m_bankBalance + amount < 0x80000000LL) {
+      send(0x9A7, amount);
+    } else {
+      notice(0xAE3);
+      this->m_status = LookupMessage(0xADF);
+    }
+    return 0;
+  }
+  case 0x1CF: {
+    if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == true) {
+      notice(0x9B9);
+      return 0;
+    }
+    const long long amount = this->TransactionAmount(0);
+    if (amount == 0) {
+      return 0;
+    }
+    if (amount > g_session.m_bankBalance) {
+      notice(0x997);
+      this->m_status = LookupMessage(0xAE2);
+    } else if (g_session.m_zeny + amount < 0x80000000LL) {
+      send(0x9A9, amount);
+    } else {
+      notice(0x99B);
+      this->m_status = LookupMessage(0xAE3);
+    }
+    return 0;
+  }
+  default:
+    return 0;
+  }
+
+  const long long amount = this->AdjustAmount(step);
+  char text[260];
+  std::memset(text, 0, sizeof(text));
+  _i64toa(amount, text, 10);
+  if (this->m_amountEdit) {
+    this->m_amountEdit->SetText(text);
+    InputFocus{g_windowMgr.hoverWindow}.Set(this->m_amountEdit);
+  }
   return 0;
 }
 

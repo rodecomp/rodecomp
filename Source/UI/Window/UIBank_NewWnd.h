@@ -14,6 +14,7 @@ public:
   long long AdjustAmount(int amount);
   long long TransactionAmount(unsigned char deposit);
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   bool IsNumeric(std::string text);
   void AnimateLoading();
 
