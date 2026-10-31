@@ -81,6 +81,7 @@ public:
   /* 00A8 */ uint64_t group;
   /* 00B0 */ int unknown_00B0;
 
+  void Slot16() override;
   virtual void Slot54(int argument1, int argument2);
   virtual void Slot55() = 0;
   virtual void Slot56() = 0;
@@ -116,6 +117,7 @@ public:
 
 class CUIUpgradeRandom : public CUIUpgradeEnchantPage {
 public:
+  void Slot16() override;
   void Slot55() override;
 };
 

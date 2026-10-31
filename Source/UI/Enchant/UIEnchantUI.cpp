@@ -379,3 +379,11 @@ void CUIEnchantUI::Slot53() {
   this->Slot15(this->geometry.width, this->geometry.height);
   this->Slot16();
 }
+
+// OFFSET: 0x00A06170
+// FUNCTION: fn_14993
+void EnchantUI::CUIUpgradeRandom::Slot16() {
+  EnchantUI::CUIEnchantPage::Slot16();
+  this->enchantList->unknown_00C4 = 1;
+  this->enchantList->Invalidate();
+}
