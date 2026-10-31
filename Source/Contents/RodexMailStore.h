@@ -48,7 +48,7 @@ public:
   /* 0004 */ int unknown_0004;
   /* 0008 */ int unknown_0008;
   /* 000C */ int unknown_000C;
-  /* 0010 */ bool unknown_0010;
+  /* 0010 */ unsigned char unknown_0010;
   /* 0014 */ int unknown_0014;
   /* 0018 */ int unknown_0018;
   /* 001C */ bool unknown_001C;

@@ -56,6 +56,7 @@ public:
   void SearchBySender(std::string keyword);
   void SearchByTitle(std::string keyword);
   void InitializeMailActions();
+  void RequestAllMailActions();
 
   /* 012C */ unsigned char unknown_012C[0x4];
   /* 0130 */ int unknown_0130;

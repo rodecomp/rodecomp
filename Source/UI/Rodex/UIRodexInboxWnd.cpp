@@ -360,7 +360,7 @@ bool RodexMailEntryLess::operator()(const RodexMailEntry& left, const RodexMailE
 
 // OFFSET: 0x008054D0
 // FUNCTION: fn_10043
-bool RequestRodexMailAction(int type, std::uint64_t mailId) {
+bool __stdcall RequestRodexMailAction(int type, std::uint64_t mailId) {
   std::map<std::int64_t, RodexMail>* mails = RodexMailsOfType(type);
   if (mails == nullptr) {
     return false;
@@ -372,5 +372,57 @@ bool RequestRodexMailAction(int type, std::uint64_t mailId) {
   }
 
   g_modeMgr.GetGameMode()->SendMsg(0xC4, static_cast<int>(mailId), type, 0, 0);
+  if (g_windowMgr.unknown_045C != 0) {
+    g_windowMgr.CloseWindow(265);
+  }
   return true;
+}
+
+// OFFSET: 0x00805570
+// FUNCTION: fn_10044
+void UIRodexInboxWnd::RequestAllMailActions() {
+  int requested = 0;
+  int skipped = 0;
+  if (this->unknown_01D4 == 1) {
+    for (std::vector<RodexMailEntry>::iterator entry = this->searchResults.begin(); entry != this->searchResults.end(); ++entry) {
+      std::map<std::int64_t, RodexMail>* mails = RodexMailsOfType(entry->first);
+      if (mails == nullptr) {
+        continue;
+      }
+
+      std::map<std::int64_t, RodexMail>::iterator mail = mails->find(entry->second);
+      if (mail == mails->end()) {
+        continue;
+      }
+
+      if ((mail->second.unknown_0001 & 6) == 0) {
+        g_modeMgr.GetGameMode()->SendMsg(0xC4, static_cast<int>(entry->second), entry->first, 0, 0);
+        ++requested;
+      } else {
+        ++skipped;
+      }
+    }
+  } else {
+    int type = g_rodexMailStore->unknown_0010;
+    std::map<std::int64_t, RodexMail>* mails = RodexMailsOfType(type);
+    if (mails == nullptr) {
+      return;
+    }
+
+    for (std::map<std::int64_t, RodexMail>::iterator mail = mails->begin(); mail != mails->end(); ++mail) {
+      if ((mail->second.unknown_0001 & 6) == 0) {
+        g_modeMgr.GetGameMode()->SendMsg(0xC4, static_cast<int>(mail->first), type, 0, 0);
+        ++requested;
+      } else {
+        ++skipped;
+      }
+    }
+  }
+
+  if (requested > 0 && g_windowMgr.unknown_045C != 0) {
+    g_windowMgr.CloseWindow(265);
+  }
+  if (skipped > 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA34)), 0x64FFFF, 0, 0, 0);
+  }
 }
