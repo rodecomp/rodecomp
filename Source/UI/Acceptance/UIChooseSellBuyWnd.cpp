@@ -2859,6 +2859,18 @@ void UIStatusWnd::Slot11() {
 }
 
 // OFFSET: 0x00907650
+// FUNCTION: fn_12388
+int UIWaitWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    if (argument1 == 185) {
+      static_cast<CMode*>(g_charViewMode)->SendMsg(10021, 0, 0, 0, 0);
+    }
+  } else if (message == 88) {
+    this->m_button->Move((this->geometry.width - this->m_button->BitmapWidth()) / 2, this->geometry.height - this->m_button->BitmapHeight() - 5);
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x008FF8A0
 // FUNCTION: fn_12360
