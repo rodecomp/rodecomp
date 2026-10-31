@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
@@ -2801,4 +2802,83 @@ void CGameMode::ReceiveSpriteChange2Mirrored(const unsigned char* packet) {
       this->ReceiveSpriteChange2(reinterpret_cast<const unsigned char*>(&relay));
     }
   }
+}
+
+#pragma pack(push, 1)
+struct Item1718PendingRecord {
+  /* 0000 */ std::uint32_t unknown_0000;
+  /* 0004 */ std::uint32_t unknown_0004;
+  /* 0008 */ unsigned char type;
+  /* 0009 */ std::int32_t itemId;
+  /* 000D */ std::uint16_t unknown_000D;
+  /* 000F */ std::uint32_t unknown_000F;
+  /* 0013 */ unsigned char unknown_0013[6];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(Item1718PendingRecord) == 0x19);
+
+struct Unknown015D4818Values {
+  /* 0000 */ std::uint32_t unknown_0000[2];
+  /* 0008 */ std::uint32_t unknown_0008;
+  /* 000C */ std::uint32_t unknown_000C[25];
+  /* 0070 */ std::uint32_t unknown_0070;
+};
+
+struct Unknown015D4818Entry {
+  /* 0000 */ std::uint32_t unknown_0000[2];
+  /* 0008 */ Unknown015D4818Values values;
+};
+
+struct Unknown015D4818 {
+  /* 0000 */ std::uint32_t unknown_0000;
+  /* 0004 */ Unknown015D4818Entry* entry;
+};
+
+// GLOBAL: gl_25368
+Unknown015D4818* g_unknown_015D4818;
+
+// OFFSET: 0x00D3BD40
+// OFFSET: 0x03DEA400
+// FUNCTION: fn_21790
+void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
+  if (g_windowMgr.unknown_01E4 || g_windowMgr.LookupWindow(318)) {
+    return;
+  }
+
+  reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+  if (g_hangameLogin == 1) {
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("한게임 유저는 12월 3일부로 유료아이템 구매가 불가능합니다."), 0xFF, 0, 0, 0);
+    return;
+  }
+
+  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 12) / sizeof(Item1718PendingRecord);
+  const Item1718PendingRecord* record = reinterpret_cast<const Item1718PendingRecord*>(packet + 12);
+  for (int i = 0; i < count; ++i, ++record) {
+    RawItemBasic item = {};
+    _itoa(record->itemId, item.itemId, 10);
+    item.unknown_0004 = record->unknown_0000;
+    item.unknown_0008 = record->unknown_0004;
+    item.unknown_000C = record->type;
+    item.id = -1;
+    item.identified = 1;
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1718(item, 0);
+    if (g_unknown_015D4818 && g_unknown_015D4818->entry) {
+      Unknown015D4818Values& values = g_unknown_015D4818->entry->values;
+      values.unknown_0070 = record->unknown_000D;
+      values.unknown_0008 = record->unknown_000F;
+    }
+  }
+
+  g_pendingAid = *reinterpret_cast<const int*>(packet + 4);
+  g_pendingGid = *reinterpret_cast<const int*>(packet + 8);
+  this->unknown_024C = 1;
+
+  UIWindow* window = g_windowMgr.EnsureWindow(22);
+  window->SendMsg(nullptr, 0x24, 0, 1, 0, 0);
+  window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  window = g_windowMgr.EnsureWindow(23);
+  window->SendMsg(nullptr, 0x24, 1, 0, 0, 0);
+  window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
 }

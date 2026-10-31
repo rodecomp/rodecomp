@@ -278,6 +278,7 @@ public:
   void ReceivePartyBookingInsert(const unsigned char* packet);
   void ReceivePartyBookingUpdate(const unsigned char* packet);
   void ReceivePartyBookingUpdateResult(const unsigned char* packet);
+  void ReceivePendingItem1718List(const unsigned char* packet);
   void ReceiveItem1718BasicList(const unsigned char* packet);
   void ReceiveItem1718Result(const unsigned char* packet);
   void ReceiveItem1718IndexList(const unsigned char* packet);
