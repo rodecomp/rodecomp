@@ -47,6 +47,9 @@
 #include "Contents/NavigationManager.h"
 #include "UI/Window/UINavigationWnd.h"
 #include "Utility/Text/FormatString.h"
+#include "UI/Text/ColoredText.h"
+#include "UI/Text/PixelTextWrapping.h"
+#include "Network/TextEncoding.h"
 #include "File/File.h"
 #include "Render/Renderer.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -60,9 +63,11 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <map>
 #include <new>
 #include <string>
+#include <vector>
 
 namespace {
 #pragma pack(push, 1)
@@ -776,6 +781,92 @@ void UIMemorialDunWnd::ResetDungeonInfo() {
   g_session.unknown_596C = 0;
   g_session.unknown_5970 = 0;
   g_session.unknown_5948 = 0;
+}
+
+// OFFSET: 0x0092C6B0
+// FUNCTION: fn_12665
+void UIMemorialDunWnd::Paint() {
+  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, LookupMessage(0x538), 0);
+  if (this->geometry.height == 17) {
+    return;
+  }
+
+  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 19, 0xFFFFFF);
+  this->FillRegion(1, this->geometry.height - 2, this->geometry.width - 2, 1, 0xFFFFFF);
+  this->FillRegion(2, this->geometry.height - 1, this->geometry.width - 4, 1, 0xFFFFFF);
+
+  std::uint32_t color;
+  char text[500];
+  char timeText[128];
+  const unsigned short codePage = static_cast<unsigned short>(g_textCodePage);
+
+  if (g_session.unknown_5948 != 3) {
+    char nameColor[12];
+    char endColor[12];
+    char name[80];
+    char title[100];
+    sprintf(nameColor, "^%02X%02X%02X", 0x41, 0x69, 0xE1);
+    sprintf(endColor, "^%02X%02X%02X", 0, 0, 0);
+    sprintf(name, "%s[%s]%s", nameColor, g_session.unknown_5950.c_str(), endColor);
+    sprintf(title, LookupMessage(g_session.unknown_5948 + 0x539), name);
+    const int width = this->ColoredTextWidth(title, 0, 0, 12, 0);
+    DrawColoredText(*this, codePage, (this->geometry.width - width) / 2, 30, title, 0, color, 0, 12, false);
+  }
+
+  if (g_session.unknown_5948 == 0) {
+    sprintf(text, LookupMessage(0x53E), g_session.unknown_5968);
+    const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
+    DrawColoredText(*this, codePage, (this->geometry.width - width) / 2, (this->geometry.height - 17) / 2, text, 0, color, 0, 12, false);
+  } else if (g_session.unknown_5948 == 1) {
+    if (g_session.unknown_5970) {
+      strftime(timeText, 128, LookupMessage(0x4EC), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.unknown_5970)));
+      sprintf(text, LookupMessage(0x53F), timeText);
+      std::vector<std::string> lines;
+      WrapPixelText(*this->geometry.surface, codePage, text, lines, this->geometry.width - 20);
+      if (lines.size() > 1) {
+        int y = static_cast<int>((this->geometry.height - lines.size() * 17 - 72) / 2) + 40;
+        for (unsigned int index = 0; index < lines.size(); ++index) {
+          DrawColoredText(*this, codePage, 10, y, lines[index].c_str(), 0, color, 0, 12, false);
+          y += 17;
+        }
+      } else {
+        const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
+        DrawColoredText(*this, codePage, (this->geometry.width - width) / 2, 55, lines[0].c_str(), 0, color, 0, 12, false);
+      }
+    }
+  } else if (g_session.unknown_5948 == 2) {
+    if (g_session.unknown_596C) {
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 10, 55, LookupMessage(0x540), 0, 0, 12, 0, 0, 0);
+      strftime(timeText, 128, LookupMessage(0x4EC), _localtime32(reinterpret_cast<const __time32_t*>(&g_session.unknown_596C)));
+      sprintf(text, "^ff0000%s^ffffff", timeText);
+      const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
+      DrawColoredText(*this, codePage, (this->geometry.width - width) / 2, 75, text, 0, color, 0, 12, false);
+    }
+  } else if (g_session.unknown_5948 == 3) {
+    std::vector<std::string> lines;
+    WrapPixelText(*this->geometry.surface, codePage, LookupMessage(0x53C), lines, this->geometry.width - 20);
+    int y = 55;
+    for (unsigned int index = 0; index < lines.size(); ++index) {
+      DrawColoredText(*this, codePage, 5, y, lines[index].c_str(), 0, color, 0, 12, false);
+      y += 15;
+    }
+
+    WrapPixelText(*this->geometry.surface, codePage, LookupMessage(0x53D), lines, this->geometry.width - 20);
+    y = 70;
+    for (unsigned int index = 0; index < lines.size(); ++index) {
+      DrawColoredText(*this, codePage, 10, y, lines[index].c_str(), 0, color, 0, 12, false);
+      y += 15;
+    }
+  }
+
+  this->FillRegion(2, 0, this->geometry.width - 4, 1, 0x8E8E8E);
+  this->FillRegion(1, 1, 1, 1, 0x8E8E8E);
+  this->FillRegion(0, 2, 1, this->geometry.height - 4, 0x8E8E8E);
+  this->FillRegion(1, this->geometry.height - 2, 1, 1, 0x8E8E8E);
+  this->FillRegion(this->geometry.width - 2, 1, 1, 1, 0x8E8E8E);
+  this->FillRegion(this->geometry.width - 1, 2, 1, this->geometry.height - 4, 0x8E8E8E);
+  this->FillRegion(2, this->geometry.height - 1, this->geometry.width - 4, 1, 0x8E8E8E);
+  this->FillRegion(this->geometry.width - 2, this->geometry.height - 2, 1, 1, 0x8E8E8E);
 }
 
 // OFFSET: 0x0092AFE0
