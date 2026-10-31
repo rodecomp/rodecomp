@@ -2214,6 +2214,11 @@ void GameSettingsUI::CUIGroupSound::Apply() {
   g_serviceOptions.Set(0xB, effect != 0);
 }
 
+// OFFSET: 0x00A19C60
+// FUNCTION: fn_15346
+CUIButton::CUIButton(UIWindowContext& context) : CUIControl(context), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
+}
+
 // OFFSET: 0x00A19D30
 // FUNCTION: fn_15347
 CUIRadioButton::CUIRadioButton(UIWindowContext& context) : CUICheckBox(context), onSelect() {
