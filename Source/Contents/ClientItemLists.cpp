@@ -2,6 +2,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay.h"
 #include "Client/Session.h"
+#include "Contents/ClientState.h"
 #include "Contents/Effects/EffectActor.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/Items/ItemInfo.h"
@@ -12,6 +13,7 @@
 #include "UI/Items/UIEquipWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowOrdering.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -19,6 +21,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <list>
+#include <new>
 #include <string>
 #include <utility>
 #include <vector>
@@ -268,7 +271,43 @@ struct ClientItemLists {
   void ResetItems61B8();
 };
 
+int GetEquipLocationIndex(const int& mask);
+
+namespace EquipmentProperties {
+class CEquipment {
+public:
+  virtual ~CEquipment();
+  virtual void Load(bool force);
+  int& GetId();
+};
+
+class CEquipmentAttachable : public CEquipment {};
+
+class CEquipmentWearable : public CEquipment {
+public:
+  bool IsActive();
+  bool UpdateActive();
+  std::vector<CEquipmentAttachable>& GetAttachables();
+};
+
+class CEquipmentPropertiesMgr {
+public:
+  virtual ~CEquipmentPropertiesMgr();
+  unsigned char unknown_0004[0x9];
+  bool m_dirty;
+  unsigned char unknown_000E[0x12];
+  UIWindow* unknown_0020;
+  unsigned char unknown_0024[0x1D8];
+
+  CEquipmentPropertiesMgr();
+  CEquipmentWearable* FindProperty1(const int& key);
+  void EquipItem(const int& itemId, bool notify);
+  __declspec(noinline) void EquipWearable(const ITEM_INFO* item, bool notify);
+};
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(EquipmentProperties::CEquipmentPropertiesMgr) == 0x1FC);
 static_assert(offsetof(ClientItemLists, inventory) == 0x1710);
 static_assert(offsetof(ClientItemLists, items_1768) == 0x1768);
 static_assert(offsetof(ClientItemLists, items_1784) == 0x1784);
@@ -992,6 +1031,58 @@ bool ClientItemLists::AddItem1738(const ITEM_INFO& item, unsigned char refresh) 
     g_windowMgr.window_0288->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
   return true;
+}
+
+// OFFSET: 0x00DD6D70
+// FUNCTION: fn_23280
+bool CSession::EquipUnknown17F0(const ITEM_INFO& item, const char* name) {
+  const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+  const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
+
+  for (int index = 0; index < 3; ++index) {
+    const int slot = order[index];
+    if (slot != -1 && slot < 10) {
+      ITEM_INFO& equipped = this->unknown_17F0[slot];
+      equipped = item;
+      equipped.quantity = 1;
+    }
+  }
+
+  RequestBasicInfoRefresh();
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  g_equipmentPropertiesMgr->EquipWearable(&item, *name == '\0');
+  reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+  return true;
+}
+
+// OFFSET: 0x006B6C70
+// FUNCTION: fn_06201
+__declspec(noinline) void EquipmentProperties::CEquipmentPropertiesMgr::EquipWearable(const ITEM_INFO* item, bool notify) {
+  if (item == nullptr) {
+    return;
+  }
+
+  this->m_dirty = true;
+  const int index = GetEquipLocationIndex(item->unknown_0000[3]);
+  CEquipmentWearable* existing = this->FindProperty1(index);
+  if (existing != nullptr) {
+    existing->UpdateActive();
+    if (existing->IsActive() == false) {
+      existing->Load(false);
+    } else {
+      existing->Load(notify);
+      this->EquipItem(existing->GetId(), notify);
+      for (CEquipmentAttachable& attachable : existing->GetAttachables()) {
+        this->EquipItem(attachable.GetId(), notify);
+      }
+    }
+  }
+
+  if (this->unknown_0020 != nullptr) {
+    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x00DD7E10

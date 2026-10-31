@@ -28,4 +28,10 @@ struct ClientMessenger {
   void SetPartyLeader(std::uint32_t accountId, int leader);
 };
 
+namespace EquipmentProperties {
+class CEquipmentPropertiesMgr;
+}
+
+extern EquipmentProperties::CEquipmentPropertiesMgr* g_equipmentPropertiesMgr;
+
 #endif

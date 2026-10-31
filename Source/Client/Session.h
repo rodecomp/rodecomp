@@ -568,6 +568,7 @@ public:
   bool UpdateMercSkill(const CSkillInfo& value, unsigned char notify);
   void AddUnknownId(int id);
   EquipSlots GetEquipSlots(int location);
+  bool EquipUnknown17F0(const ITEM_INFO& item, const char* name);
   bool EquipItem3500(const ITEM_INFO& item);
   void AddStackedItem(ITEM_INFO item);
   void ReturnStackedItem(int index, int count);
