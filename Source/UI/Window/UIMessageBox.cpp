@@ -2565,6 +2565,18 @@ void UIMonsterInfoWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x008A4300
+// FUNCTION: fn_11667
+UIPetInfoWnd::UIPetInfoWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), friendlyGauge(nullptr), m_controls(&controls) {
+  this->friendlyText.clear();
+  this->unknown_00E4 = 0;
+  this->unknown_00E8 = 0;
+  this->nameEdit = nullptr;
+  this->saved = nullptr;
+  this->unknown_00BC = 0;
+  this->unknown_00C0 = 0;
+  this->window_00C4 = nullptr;
+}
 
 // OFFSET: 0x008A43E0
 // FUNCTION: fn_11668
@@ -2578,6 +2590,14 @@ UIReplayControlWnd::UIReplayControlWnd(UIWindowContext& windows, UIFrameContext&
 }
 
 // OFFSET: 0x008A4500
+// FUNCTION: fn_11670
+UIReplayRECControlWnd::UIReplayRECControlWnd(UIWindowContext& windows, UIFrameContext& frames, InputFocus& focus, int mode)
+    : UIFrameWnd(windows, frames, 0), mode(mode), recordStart(0), m_focus(&focus) {
+  for (int i = 0; i < 10; ++i) {
+    this->options[i] = nullptr;
+    this->recordOptions[i] = 0;
+  }
+}
 
 // OFFSET: 0x008A45A0
 
