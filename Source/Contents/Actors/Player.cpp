@@ -2259,3 +2259,19 @@ void CPc::Slot32() {
 
   this->render.name.assign(g_session.GetBodyPalName(job, this->unknown_0260, this->render.unknown_0048, costumeJob, this->Slot56(), 0));
 }
+
+// OFFSET: 0x00DB2670
+// FUNCTION: fn_22645
+void CPc::Slot28(int value) {
+  this->unknown_045C = value;
+
+  if (this->unknown_02CC != 0) {
+    this->LoadEquipAction(7, "");
+    this->LoadEquipSprite(7, "");
+    return;
+  }
+
+  const int job = this->GetEffectiveJob(-1);
+  this->LoadEquipAction(7, g_session.GetShieldActName(job, this->unknown_0260, this->unknown_045C, this->unknown_04D0).c_str());
+  this->LoadEquipSprite(7, g_session.GetShieldSprName(job, this->unknown_0260, this->unknown_045C, this->unknown_04D0).c_str());
+}
