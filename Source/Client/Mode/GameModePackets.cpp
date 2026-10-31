@@ -2467,6 +2467,34 @@ void CGameMode::ReceiveItem1740List(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D270B0
+// FUNCTION: fn_21687
+void CGameMode::ReceiveDispel(const unsigned char* packet) {
+  const auto* dispel = reinterpret_cast<const DispelPacket*>(packet);
+
+  if (dispel->aid == g_session.m_aid) {
+    this->scene->player->SendMsg(nullptr, 84, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, 87, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    CPlayer* player = this->scene->player;
+    if (player->render.unknown_0070 == 8) {
+      player->Slot15(0, 1);
+    }
+    return;
+  }
+
+  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(dispel->aid));
+  if (actor == nullptr) {
+    return;
+  }
+
+  actor->SendMsg(nullptr, 84, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  actor->SendMsg(nullptr, 87, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  actor->SendMsg(nullptr, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  g_effectMgr->Retire(dispel->aid, 1114);
+  if (actor->render.unknown_0070 == 8) {
+    actor->Slot15(0, 1);
+  }
+}
 
 // OFFSET: 0x00D32E10
 // FUNCTION: fn_21748
