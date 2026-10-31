@@ -2817,8 +2817,7 @@ void CSkillAction_HN_JACK_FROST_NOVA::Slot08(int level, CGameActor* source) {
 void CSkillAction_HN_JACK_FROST_NOVA::Slot10(int level, CGameActor* source, int argument3, int argument4, int argument5) {
   CMode* mode = g_modeMgr.GetGameMode();
   if (mode) {
-    using ModeAction = void(__thiscall*)(CMode*, void*, int, int, int);
-    reinterpret_cast<ModeAction>(0x00CDFA00)(g_modeMgr.GetGameMode(), &argument3, 0x5A8, level / 24, 0);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchDummyEffect(reinterpret_cast<const vector3d*>(&argument3), 0x5A8, level / 24, 0);
   }
 }
 
