@@ -156,7 +156,7 @@ protected:
 
 class UICashEmotionScrollBar : public UIScrollBar {
 public:
-  explicit UICashEmotionScrollBar(UIWindowContext& windows);
+  __declspec(noinline) explicit UICashEmotionScrollBar(UIWindowContext& windows);
 
   void Paint() override;
 
@@ -1895,6 +1895,16 @@ void UICashEmotionListWnd::SetTab(char tab) {
 
 // OFFSET: 0x007C8A40
 
+// OFFSET: 0x007C8A40
+// FUNCTION: fn_09419
+void UICashEmotionListWnd::StartExpirySchedule() {
+  if (g_cashEmotionMgr->m_expiry.size() != 0) {
+    const std::uint64_t now = _Xtime_get_ticks();
+    const std::int64_t interval = 30000;
+    reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->AddSchedule(new CEmotionPurchaseUseableTimeUISchedule(now, interval, 1));
+  }
+}
+
 // OFFSET: 0x007C8AF0
 // FUNCTION: fn_09420
 void UICashEmotionListWnd::Slot11() {
@@ -2171,6 +2181,12 @@ int UICashEmotionMiniWnd::SendMsg(
 }
 
 // OFFSET: 0x007C9C40
+
+// OFFSET: 0x007C9C40
+// FUNCTION: fn_09438
+UICashEmotionPack::UICashEmotionPack(UIWindowContext& windows)
+    : UIWindow(windows, 0), unknown_0088(nullptr), m_titleText(nullptr), unknown_00A8(-1), m_limited(false) {
+}
 
 // OFFSET: 0x007C9D60
 // FUNCTION: fn_09439
@@ -2702,6 +2718,15 @@ int UICashEmotionPiece::SendMsg(
 }
 
 // OFFSET: 0x007CBF20
+
+// OFFSET: 0x007CBF20
+// FUNCTION: fn_09490
+UICashEmotionScrollBar::UICashEmotionScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
+  this->m_disabled = false;
+  this->horizontalStep = 135;
+  this->verticalStep = 135;
+  this->thickness = 11;
+}
 
 // OFFSET: 0x007CC060
 // FUNCTION: fn_09492
