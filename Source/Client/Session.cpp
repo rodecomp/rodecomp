@@ -1941,6 +1941,34 @@ const char* CSession::GetMonsterW3dName(int job) const {
   return "캐릭터\\mdragon.w3d";
 }
 
+// OFFSET: 0x00DE38E0
+// FUNCTION: fn_23483
+unsigned char CSession::GetShopType(int id) {
+  auto it = this->m_shops.find(id);
+  if (it == this->m_shops.end()) {
+    return 0;
+  }
+
+  return it->second.unknown_0000;
+}
+
+// OFFSET: 0x00DE3CE0
+// FUNCTION: fn_23487
+bool CSession::HasControlCharacter(std::string text) {
+  for (std::string::iterator it = text.begin(); it != text.end(); ++it) {
+    const char c = *it;
+    if (c >= 0) {
+      const unsigned char value = static_cast<unsigned char>(c);
+      if (value <= 0x1F || value == 0x7F || value == 0x81 || value == 0x8D || value == 0x8F || value == 0x90 ||
+          value == 0x9D || value == 0xAD) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 // OFFSET: 0x00DE9430
 // FUNCTION: fn_23501
 void CSession::LoadMiniPartyInfo() {
