@@ -1664,3 +1664,30 @@ void UIString::SetText(int width, int height, std::string text) {
 }
 
 // OFFSET: 0x0087C3F0
+// FUNCTION: fn_11253
+void UITabControl::Configure(
+  int layout, int tabHeight, int tabPadding, unsigned char uniformWidths, unsigned char unknownA9, unsigned char unknownA8, std::uint32_t activeFillColor,
+  std::uint32_t inactiveFillColor, std::uint32_t activeBorderColor, std::uint32_t inactiveBorderColor, std::uint32_t activeTextColor,
+  std::uint32_t inactiveTextColor
+) {
+  this->Slot15(0, 0);
+
+  this->layout = layout;
+  this->tabHeight = tabHeight;
+  this->tabPadding = tabPadding;
+  this->uniformWidths = uniformWidths;
+  this->unknown_00A9 = unknownA9;
+  this->unknown_00A8 = unknownA8;
+  this->activeFillColor = activeFillColor ? activeFillColor : 0xFFFFFF;
+  this->inactiveFillColor = inactiveFillColor ? inactiveFillColor : 0xFFFFFF;
+  this->activeBorderColor = activeBorderColor ? activeBorderColor : 0xC3C3C3;
+  this->inactiveBorderColor = inactiveBorderColor ? inactiveBorderColor : 0xC3C3C3;
+  this->activeTextColor = activeTextColor;
+  this->inactiveTextColor = inactiveTextColor;
+  this->ClearTabs();
+
+  this->edit = new UIEditCtrl2(*this->m_context, *reinterpret_cast<UIEditContext*>(nullptr));
+  this->edit->SetSize(100, 19);
+  this->edit->Move(-100, -100);
+  this->AddChild(this->edit);
+}
