@@ -1865,3 +1865,63 @@ static_assert(sizeof(ItemEntryPacket) == 0x13);
 static_assert(sizeof(GameModeStoredItemEntry) == 0x19);
 
 // OFFSET: 0x00CEA0C0
+// FUNCTION: fn_21349
+std::vector<unsigned char> CGameMode::SaveGroundItems() {
+  std::vector<unsigned char> data;
+
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 15000;
+    header->size = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  for (CRenderObject* object : this->scene->unknown_0018) {
+    CItem* item = static_cast<CItem*>(object);
+    ItemEntryPacket packet;
+    packet.packetType = 0x9D;
+    packet.aid = item->itemAid;
+    packet.itemId = item->itemId;
+    packet.identified = item->identified;
+
+    int column;
+    int row;
+    int subColumn;
+    int subRow;
+    this->scene->terrain->Grid().WorldSubcell(item->render.position.x, item->render.position.z, column, row, subColumn, subRow);
+    packet.x = static_cast<std::int16_t>(column);
+    packet.y = static_cast<std::int16_t>(row);
+    packet.subX = static_cast<unsigned char>(subColumn);
+
+    const int length = static_cast<int>(item->name.size());
+    std::size_t digits = 0;
+    for (int index = length - 4; index >= 0; --index) {
+      if (item->name[index] == ' ') {
+        break;
+      }
+      ++digits;
+    }
+    char text[6] = {};
+    std::memcpy(text, item->name.c_str() + (length - 3) - digits, digits);
+    packet.count = static_cast<std::int16_t>(std::atoi(text));
+
+    std::vector<unsigned char> chunk(sizeof(GameModeStoredItemEntry));
+    auto* record = reinterpret_cast<GameModeStoredItemEntry*>(chunk.data());
+    record->header.type = 0xCF;
+    record->header.size = sizeof(ItemEntryPacket);
+    packet.subY = static_cast<unsigned char>(subRow);
+    record->packet = packet;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  {
+    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader));
+    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+    header->type = 15001;
+    header->size = 0;
+    data.insert(data.end(), chunk.begin(), chunk.end());
+  }
+
+  return data;
+}
