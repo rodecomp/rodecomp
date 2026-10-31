@@ -5,7 +5,10 @@
 #include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Render/DeviceContext/DeviceContext.h"
+#include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "Render/Textures/SpritePixels.h"
 #include "Contents/MessageTable.h"
@@ -297,4 +300,56 @@ void UIMiniMapWnd::Slot11() {
   this->m_saved->unknown_0018 = this->unknown_011C->geometry.unknown_0030 != 0;
   this->m_saved->unknown_001C = this->unknown_0120->geometry.unknown_0030 != 0;
   this->m_saved->unknown_0020 = this->unknown_0124->geometry.unknown_0030 != 0;
+}
+
+// OFFSET: 0x0099C560
+// FUNCTION: fn_13559
+void UIMiniMapWnd::Paint() {
+  int column = 0;
+  int row = 0;
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->PlayerCell(&column, &row);
+  const std::string title =
+    FormatOwnedString("%s ( %s ) %d %d", g_session.GetPlayerMapDisplayName(), g_session.m_navigationPlayerMap, column, row);
+  UIButtonContext& controls = *this->m_controls;
+  this->DrawPanelBackground(this->DrawTitleBar(controls.fonts, controls.locale, true, title.c_str(), 0), 0, "");
+  this->DrawButtonBar(1, 0, 1);
+  this->FillRegion(2, 19, 512, 512, 0xFFAAAAAA);
+
+  const std::string mapName = FormatOwnedString("유저인터페이스\\map\\%s.bmp", g_session.m_navigationPlayerMap);
+  auto* map = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(mapName.c_str())));
+  if (map) {
+    this->DrawBitmap(2, 19, &map->image, true);
+    this->geometry.surface->Brighten(2, 19, 512, 512, -50);
+  }
+
+  auto* warp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\minimap\\warp.bmp")));
+  for (unsigned index = 0; index < this->warpMarks.size(); ++index) {
+    if (warp) {
+      this->DrawBitmap(this->warpMarks[index].x, this->warpMarks[index].y, &warp->image, true);
+    }
+  }
+
+  if (this->unknown_0124->geometry.unknown_0030 != 0) {
+    auto* guild = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\minimap\\guild.bmp")));
+    for (unsigned index = 0; index < this->guildMarks.size(); ++index) {
+      const int x = this->guildMarks[index].x;
+      if (x > 0) {
+        const int y = this->guildMarks[index].y;
+        if (y > 0 && guild) {
+          this->DrawBitmap(x, y, &guild->image, true);
+        }
+      }
+    }
+
+    auto* party = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\minimap\\Party.bmp")));
+    for (unsigned index = 0; index < this->partyMarks.size(); ++index) {
+      const int x = this->partyMarks[index].x;
+      if (x > 0) {
+        const int y = this->partyMarks[index].y;
+        if (y > 0 && party) {
+          this->DrawBitmap(x, y, &party->image, true);
+        }
+      }
+    }
+  }
 }
