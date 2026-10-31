@@ -156,12 +156,7 @@ protected:
 
 class UICashEmotionScrollBar : public UIScrollBar {
 public:
-  UICashEmotionScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {
-    this->m_disabled = false;
-    this->horizontalStep = 135;
-    this->verticalStep = 135;
-    this->thickness = 11;
-  }
+  explicit UICashEmotionScrollBar(UIWindowContext& windows);
 
   void Paint() override;
 
@@ -208,6 +203,7 @@ protected:
 class UICashEmotionListChildWnd_Purchase : public UICashEmotionListChildWnd_Abstract {
 public:
   UICashEmotionListChildWnd_Purchase(UIWindowContext& windows, int width, int height);
+  ~UICashEmotionListChildWnd_Purchase() override;
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -224,6 +220,7 @@ protected:
 class UICashEmotionListChildWnd_Search : public UICashEmotionListChildWnd_Abstract {
 public:
   UICashEmotionListChildWnd_Search(UIWindowContext& windows, int width, int height);
+  ~UICashEmotionListChildWnd_Search() override;
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -269,6 +266,7 @@ public:
   void ResetLists();
   int SetPeriod(int packId);
   void SetTab(char tab);
+  void StartExpirySchedule();
   void UpdateExpiry(int packId, Timestamp* expiry);
   void RefreshSelection();
   void RestartExpirySchedule();
@@ -1528,6 +1526,14 @@ UICashEmotionListChildWnd_Purchase::UICashEmotionListChildWnd_Purchase(UIWindowC
   this->Slot15(width, height);
 }
 
+// OFFSET: 0x007C4AD0
+// FUNCTION: fn_09364
+UICashEmotionListChildWnd_Purchase::~UICashEmotionListChildWnd_Purchase() {
+  delete this->unknown_00BC;
+  this->unknown_00BC = nullptr;
+  this->m_items.clear();
+}
+
 // OFFSET: 0x007C4D10
 // FUNCTION: fn_09366
 const char* UICashEmotionListChildWnd_Purchase::Filter() {
@@ -1579,6 +1585,14 @@ UICashEmotionListChildWnd_Search::UICashEmotionListChildWnd_Search(UIWindowConte
     : UICashEmotionListChildWnd_Abstract(windows, width, height, 0) {
   this->m_action = new (std::nothrow) CCashEmotionAction_Play();
   this->Slot15(width, height);
+}
+
+// OFFSET: 0x007C5720
+// FUNCTION: fn_09377
+UICashEmotionListChildWnd_Search::~UICashEmotionListChildWnd_Search() {
+  delete this->m_action;
+  this->m_action = nullptr;
+  this->m_items.clear();
 }
 
 // OFFSET: 0x007C5980
@@ -1879,6 +1893,8 @@ void UICashEmotionListWnd::SetTab(char tab) {
   }
 }
 
+// OFFSET: 0x007C8A40
+
 // OFFSET: 0x007C8AF0
 // FUNCTION: fn_09420
 void UICashEmotionListWnd::Slot11() {
@@ -2153,6 +2169,8 @@ int UICashEmotionMiniWnd::SendMsg(
 
   return 0;
 }
+
+// OFFSET: 0x007C9C40
 
 // OFFSET: 0x007C9D60
 // FUNCTION: fn_09439
@@ -2682,6 +2700,8 @@ int UICashEmotionPiece::SendMsg(
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 }
+
+// OFFSET: 0x007CBF20
 
 // OFFSET: 0x007CC060
 // FUNCTION: fn_09492
