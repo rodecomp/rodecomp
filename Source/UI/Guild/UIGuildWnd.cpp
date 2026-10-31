@@ -297,12 +297,38 @@ UIGuildWnd::UIGuildWnd(UIWindowContext& windows, UIFrameContext& frames, UIButto
 }
 
 // OFFSET: 0x00953900
+// FUNCTION: fn_12995
+UIGuildBanishedMemberWnd::UIGuildBanishedMemberWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIGuildWnd(windows, frames, controls) {
+}
 
 // OFFSET: 0x009539C0
+// FUNCTION: fn_12997
+UIGuildInfoManageWnd::UIGuildInfoManageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIGuildWnd(windows, frames, controls), unknown_00D8(), unknown_00E0(), unknown_00EC(0), unknown_00F0(0), m_guildId(g_guildId) {
+}
 
 // OFFSET: 0x00953B00
+// FUNCTION: fn_12999
+UIGuildMemberManageWnd::UIGuildMemberManageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIGuildWnd(windows, frames, controls), unknown_0150(), m_scrollTop(0), m_hoverRow(10), m_columns(1), m_visibleRows(6), unknown_016C(0),
+      m_scrollable(0), m_rowSpacing(0), m_members(), unknown_0180(), m_sortOrders() {
+  this->m_buttonTime = 0;
+  this->m_scrollBar = nullptr;
+  for (int index = 0; index < 6; ++index) {
+    this->m_rowButtons[index] = nullptr;
+  }
+  this->m_sortColumn = -1;
+
+  for (auto& order : this->m_sortOrders) {
+    order.second = 0;
+  }
+}
 
 // OFFSET: 0x00953D10
+// FUNCTION: fn_13000
+UIGuildNoticeWnd::UIGuildNoticeWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls) : UIGuildWnd(windows, frames, controls) {
+}
 
 // OFFSET: 0x00953D70
 // FUNCTION: fn_13001

@@ -30,12 +30,25 @@ static const std::string s_itemLinkClosing = "</ITEML>";
 CGuildTip g_guildTip;
 
 // OFFSET: 0x00953960
+// FUNCTION: fn_12996
+UIGuildHelperWnd::UIGuildHelperWnd() : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(0), *reinterpret_cast<UIFrameContext*>(0), 0) {
+}
 
 // OFFSET: 0x00953810
+// FUNCTION: fn_12993
+UICreateGuildWnd::UICreateGuildWnd(int mode) : m_mode(mode) {
+}
 
 // OFFSET: 0x00953A90
+// FUNCTION: fn_12998
+UIGuildLeaveReasonDescWnd::UIGuildLeaveReasonDescWnd()
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(0), *reinterpret_cast<UIFrameContext*>(0), 0), m_reasonEdit(nullptr), m_reasonText(nullptr) {
+}
 
 // OFFSET: 0x00953880
+// FUNCTION: fn_12994
+UIGuildBanReasonDescWnd::UIGuildBanReasonDescWnd() {
+}
 
 // OFFSET: 0x0095DB20
 // FUNCTION: fn_13071
