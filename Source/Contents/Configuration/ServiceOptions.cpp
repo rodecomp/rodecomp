@@ -1220,3 +1220,87 @@ void CSession::LoadOptionInfo() {
 }
 
 // OFFSET: 0x00E01770
+// FUNCTION: fn_23651
+void CSession::SaveOptionInfo() {
+  std::string path = "SaveData\\OptionInfo.lua";
+  this->m_hotkeyScript->Call("SaveToFileCmdOnOffValueEx", "d", 0);
+
+  CFile input;
+  if (!input.Open(path.c_str(), 0, false, true)) {
+    return;
+  }
+
+  const std::uint32_t size = input.GetSize();
+  char* buffer = new char[size + 1];
+  input.Read(buffer, size);
+  buffer[size] = '\0';
+  input.Close();
+
+  CFile output;
+  if (!output.Open(path.c_str(), 0x1001, true, true)) {
+    return;
+  }
+
+  output.Write(buffer, size);
+  delete[] buffer;
+
+  OptionWriter writer{output};
+  writer.Integer("Trilinear", g_textureFiltering);
+  writer.Integer("Bgm_Volume", g_soundMgr->targetVolume);
+  writer.Integer("Effect_Volume", g_soundMgr->sampleVolume);
+  writer.Integer("AutoOpen1to1Window", this->m_autoOpenWhisperWindow);
+  writer.Integer("AutoOpen1to1Window_Friend", this->m_autoOpenFriendWhisperWindow);
+  writer.Integer("PlaySound_Open1to1Window", this->m_whisperOpenSound);
+  writer.Float("Outdoor_ViewLatitude", g_outdoorCameraPitch);
+  writer.Float("Outdoor_ViewDistance", g_outdoorCameraDistance);
+  writer.Float("Indoor_ViewLatitude", g_indoorCameraPitch);
+  writer.Float("Indoor_ViewDistance", g_indoorCameraDistance);
+  writer.String("SkinName", g_skinInfo.Name());
+  writer.Integer("ChannelCopID", this->m_channelCopId);
+
+  RECT rect;
+  GetWindowRect(hWnd, &rect);
+  writer.Integer("Window_XPos", rect.left);
+  writer.Integer("Window_YPos", rect.top);
+  writer.Integer("Simplicity_SkillList", this->m_simplifiedSkillList);
+  writer.Integer("Show_SkillDescript", this->m_showSkillDescription);
+  writer.Integer("ChangeChatMode", g_windowCloseByte);
+  writer.Integer("LockMouse", this->m_lockMouse);
+  writer.Integer("ShowBattleFieldIcon", g_showBattleFieldIcon);
+  writer.Integer("MouseExclusive", g_serviceOptions.Get(ConfineCursor));
+  writer.Integer("RenderSystemReset", g_renderSystemReset);
+  writer.Integer("RENDERSYSTEM", g_configuredRenderBackend);
+  writer.Guid("DX9DEVICEID", g_configuredDeviceGuid);
+  writer.String("DX9DEVICENAME", g_configuredDeviceName);
+  writer.Integer("ISFULLSCREENMODE", g_configuredFullscreen);
+  writer.Integer("WIDTH", g_configuredScreenWidth);
+  writer.Integer("HEIGHT", g_configuredScreenHeight);
+  writer.Integer("OLD_WIDTH", g_configuredScreenWidth);
+  writer.Integer("OLD_HEIGHT", g_configuredScreenHeight);
+  writer.Integer("BITPERPIXEL", g_configuredBitsPerPixel);
+  writer.Integer("DEVICECNT", g_configuredDeviceCount);
+  writer.Integer("MODECNT", g_configuredModeCount);
+  writer.Integer("SPRITEMODE", g_effectDetailLevel);
+  writer.Integer("TEXTUREMODE", g_textureDetailLevel);
+  writer.Integer("bLockItemDropFromItemWnd", this->m_lockItemDrop);
+  writer.Integer("bWarningPriceCheck", !this->m_skipPriceWarning);
+  writer.Integer("bSoundEffectInItemSellWnd", !this->m_muteSellSound);
+  writer.Integer("bGuildMemberListSort", this->m_guildMemberListSort != 0);
+  writer.Integer("bBlockPrivateTab", this->m_blockPrivateTab != 0);
+  writer.Integer("bShowMenuIcon", this->m_showMenuIcon != 0);
+  writer.Integer("bItemDefaultSort", this->m_itemDefaultSort != 0);
+  writer.Integer("bItemAscendingOrder", this->m_itemAscendingOrder != 0);
+  writer.Integer("bItemDescendingOrder", this->m_itemDescendingOrder != 0);
+  writer.Integer(LookupMessage(0xDC6), g_serviceOptions.Get(0xF3));
+  writer.Integer("bExtendDamage", g_serviceOptions.Get(0x10B));
+  writer.Integer("bShowMapName", g_serviceOptions.Get(0x10C));
+  writer.Integer("bShowOnlyMineFootprint", g_serviceOptions.Get(0x10D));
+  writer.Integer(LookupMessage(0xDB9), g_serviceOptions.Get(0xF1));
+  writer.Integer("DamageSkin", this->m_damageSkinIndex);
+  writer.Integer("DamageDir", this->m_damageSkinMode);
+  writer.Integer("PriorityClass", this->m_priorityClass);
+  writer.Integer("bSummonTranslucent", g_serviceOptions.Get(0x10A));
+  writer.Integer("bHidePlayer", g_serviceOptions.Get(0x109));
+  writer.Integer("bQuickSlot", g_serviceOptions.Get(0x10E));
+  output.Close();
+}
