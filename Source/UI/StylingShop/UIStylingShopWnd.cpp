@@ -1,9 +1,9 @@
 #include "UI/StylingShop/UIStylingShopWnd.h"
-
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/MessageTable.h"
+#include "File/File.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -11,8 +11,8 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowPolicy.h"
-
 #include <cstring>
+#include <mbstring.h>
 #include <string>
 
 // OFFSET: 0x00829B50
@@ -1117,4 +1117,110 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   this->Invalidate();
   shop->InvalidateChildren();
   return 0;
+}
+
+
+// OFFSET: 0x0082A350
+// FUNCTION: fn_10361
+void UIMyStyleWnd::SaveLikeList() {
+  char formatted[512];
+  char slotText[512];
+  char text[512];
+  std::string likeList;
+  CFile file;
+  if (file.Open("savedata\\LikeListInfoFile.lua", 0, false, false)) {
+    int size = static_cast<int>(file.GetSize());
+    char* data = new char[size + 1];
+    file.Read(data, size);
+    data[size] = '\0';
+    file.Close();
+
+    struct LikeStyle {
+      int slotNum;
+      int unknown_04;
+      int robe;
+      int headStyle;
+      int bodyStyle;
+      int headPaletteNum;
+      int bodyPaletteNum;
+      int topAccNum;
+      int midAccNum;
+      int bottomAccNum;
+    };
+    LikeStyle style = {};
+    char characterName[24] = {};
+    char* line = data;
+    for (int i = 0; i < size; ++i) {
+      switch (data[i]) {
+      case '*':
+        if (_mbsstr(reinterpret_cast<const unsigned char*>(characterName), reinterpret_cast<const unsigned char*>(g_session.DecodePlayerName())) != nullptr || style.slotNum > 2) {
+          break;
+        }
+        {
+          memset(text, 0, sizeof(text));
+          sprintf_s(text, "characterName:%s\nslotNum:%d\nheadPaletteNum:%d\nheadStyle:%d\nbodyStyle:%d\nbodyPaletteNum:%d\ntopAccNum:%d\nmidAccNum:%d\nbottomAccNum:%d\nRobe:%d\n*\n", characterName, style.slotNum, style.headPaletteNum, style.headStyle, style.bodyStyle, style.bodyPaletteNum, style.topAccNum, style.midAccNum, style.bottomAccNum, style.robe);
+          likeList += text;
+          char* bytes = reinterpret_cast<char*>(&style);
+          for (int j = 0; j < sizeof(style); ++j) {
+            bytes[j] = 0;
+          }
+          style.slotNum = 3;
+        }
+      case '\n':
+      case '\r':
+        line = &data[i + 1];
+        break;
+      case ':':
+        data[i] = '\0';
+        if (_mbsstr(reinterpret_cast<const unsigned char*>("characterName"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
+          ++i;
+          char value[24] = {};
+          for (char* out = value; data[i] != '\n' && data[i] != '\r'; ++i, ++out) {
+            *out += data[i];
+          }
+          strcpy_s(characterName, sizeof(characterName), value);
+        } else if (_mbsstr(reinterpret_cast<const unsigned char*>("slotNum"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
+          style.slotNum = atoi(&data[++i]);
+        } else if (_mbsstr(reinterpret_cast<const unsigned char*>("headPaletteNum"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
+          style.headPaletteNum = atoi(&data[++i]);
+        } else if (_mbsstr(reinterpret_cast<const unsigned char*>("headStyle"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
+          style.headStyle = atoi(&data[++i]);
+        } else if (_mbsstr(reinterpret_cast<const unsigned char*>("bodyPaletteNum"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
+          style.bodyPaletteNum = atoi(&data[++i]);
+        } else if (_mbsstr(reinterpret_cast<const unsigned char*>("topAccNum"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
+          style.topAccNum = atoi(&data[++i]);
+        } else if (_mbsstr(reinterpret_cast<const unsigned char*>("midAccNum"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
+          style.midAccNum = atoi(&data[++i]);
+        } else if (_mbsstr(reinterpret_cast<const unsigned char*>("bottomAccNum"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
+          style.bottomAccNum = atoi(&data[++i]);
+        } else if (_mbsstr(reinterpret_cast<const unsigned char*>("Robe"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
+          style.robe = atoi(&data[++i]);
+        } else if (_mbsstr(reinterpret_cast<const unsigned char*>("bodyStyle"), reinterpret_cast<const unsigned char*>(line)) != nullptr) {
+          style.bodyStyle = atoi(&data[++i]);
+        }
+        break;
+      }
+    }
+    if (data != nullptr) {
+      delete[] data;
+    }
+  }
+
+  for (int i = 0; i < 2; ++i) {
+    UISlotOfMyStyleWnd* slot = this->m_slots[i];
+    if (slot != nullptr) {
+      memset(slotText, 0, sizeof(slotText));
+      memset(formatted, 0, sizeof(formatted));
+      UIDisplayCharacter* display = slot->m_display;
+      sprintf_s(formatted, "characterName:%s\nslotNum:%d\nheadPaletteNum:%d\nheadStyle:%d\nbodyStyle:%d\nbodyPaletteNum:%d\ntopAccNum:%d\nmidAccNum:%d\nbottomAccNum:%d\nRobe:%d\n*\n", g_session.DecodePlayerName(), display->unknown_0080, display->unknown_0094, display->unknown_008C, display->job, display->unknown_0098, display->unknown_009C, display->unknown_00A0, display->unknown_00A4, display->unknown_0088);
+      strcpy_s(slotText, sizeof(slotText), formatted);
+      likeList += slotText;
+    }
+  }
+
+  FILE* fp = fopen("savedata\\LikeListInfoFile.lua", "w");
+  if (fp != nullptr) {
+    fprintf(fp, likeList.c_str());
+    fclose(fp);
+  }
 }
