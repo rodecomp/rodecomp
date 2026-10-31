@@ -6,6 +6,7 @@
 #include "Contents/EffectResourceSwitcher.h"
 #include "Contents/Effects/AMachineEffect.h"
 #include "Contents/Effects/AcidifiedThrow.h"
+#include "Contents/Effects/AnimatedEmitterEffect.h"
 #include "Contents/Effects/AstralStrikeEffect.h"
 #include "Contents/Effects/AxeBoomerang.h"
 #include "Contents/Effects/BindTrapEffect.h"
@@ -702,6 +703,13 @@ CEffect* CEffectAllocator<CSprArrowEffect>::Create() {
 template <>
 CEffect* CEffectAllocator<CChopChopClawMarks>::Create() {
   return new (std::nothrow) CChopChopClawMarks();
+}
+
+// OFFSET: 0x00B1DBD0
+// FUNCTION: fn_18564
+template <>
+CEffect* CEffectAllocator<CAnimatedEmitterEffect>::Create() {
+  return new (std::nothrow) CAnimatedEmitterEffect();
 }
 
 // OFFSET: 0x00B1DAD0
@@ -1448,6 +1456,7 @@ template struct CEffectAllocator<CViolentQuakeEffect>;
 template struct CEffectAllocator<CWarningPlaneEffect>;
 template struct CEffectAllocator<CWindEffect>;
 template struct CEffectAllocator<EffectResourceSwitcher>;
+template struct CEffectAllocator<CAnimatedEmitterEffect>;
 template struct CEffectAllocator<CChopChopClawMarks>;
 template struct CEffectAllocator<CGravityControlEffect>;
 template struct CEffectAllocator<CMeteorEffect>;
