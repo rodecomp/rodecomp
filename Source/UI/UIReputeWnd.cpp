@@ -1,15 +1,21 @@
 #include "UI/UIReputeWnd.h"
 #include "Contents/MessageTable.h"
 #include "Contents/ReputeMgr.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Lists/UIComboBoxDefWnd.h"
 #include "UI/Lists/UIComboBoxEx.h"
+#include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Utility/Text/FormatString.h"
 
 #include <algorithm>
 #include <new>
+#include <string>
 
 // GLOBAL: gl_25000
 template <>
@@ -115,6 +121,106 @@ void UIReputeWnd::Slot15(int width, int height) {
   this->m_groupCombo->Select(0);
   this->m_reputes = Singleton<CReputeMgr>::GetInstance()->GetAllReputes();
   this->SetPage(1);
+}
+
+// OFFSET: 0x0060F8F0
+// FUNCTION: fn_04314
+void UIReputeWnd::Paint() {
+  auto& controls = *this->m_controls;
+  this->ClearSurface(0xFFFFFFFF);
+  const int titleHeight = this->DrawTitleBar(controls.fonts, controls.locale, false, LookupMessage(3827), 0);
+  const int barHeight = this->DrawButtonBar(2, 0, 1);
+  DrawRectangleBorder(*this, 0, titleHeight - 1, this->geometry.width, this->geometry.height - barHeight - titleHeight + 2, 0xC6C6C6);
+  DrawRectangleBorder(*this, 0, titleHeight, this->geometry.width, 1, 0);
+
+  if (Singleton<CReputeMgr>::GetInstance()->m_waitingForPoints) {
+    DrawRoundedBorder(*this, 225, 155, 190, 140, 0xCE9484);
+    DrawFilledRoundedBorder(*this, 226, 156, 188, 138, 0xFFE7DE);
+    DrawFilledRoundedBorder(*this, 231, 161, 178, 128, 0xFFFFFF);
+    CBitmapRes* bitmap =
+      static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp")));
+    this->DrawBitmap(288, 182, &bitmap->image, true);
+    this->DrawCenteredText(225, 260, LookupMessage(3830), 190, 0, 15, 0xC89482, 1);
+    return;
+  }
+
+  for (unsigned int i = 0; i < this->m_perPage; ++i) {
+    const unsigned int index = (this->m_page - 1) * this->m_perPage + i;
+    if (index >= this->m_reputes.size()) {
+      break;
+    }
+
+    const ReputeInfo* info = this->m_reputes[index];
+    if (!info) {
+      continue;
+    }
+
+    const int left = (i & 1) * 316;
+    const int top = (i >> 1) * 86;
+    const char* background = info->updated ? "유저인터페이스\\Reputation\\bg_highlight.bmp" : "유저인터페이스\\Reputation\\bg_info.bmp";
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)));
+    this->DrawBitmap(left + 7, top + 50, &bitmap->image, false);
+    this->DrawTextAt(controls.fonts, controls.locale, left + 12, top + 56, info->name.c_str(), 0, 0, 12, 0, 1, 0);
+
+    const std::int64_t point = info->point;
+    if (point < 0) {
+      const std::int64_t value = -point;
+      for (std::uint64_t k = 0; k < info->unknown_0020 / 1000; ++k) {
+        bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_empty.bmp")));
+        this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, &bitmap->image, true);
+      }
+
+      for (std::uint64_t k = 0; k < value / 1000; ++k) {
+        bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_red.bmp")));
+        this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, &bitmap->image, true);
+      }
+
+      const std::uint64_t remain = value % 1000;
+      this->FillRegion(left + 12, top + 100, static_cast<int>(static_cast<float>(remain) / 1000.0f * 299.0f), 6, 0xFF);
+      this->DrawRightAlignedText(left + 311, top + 114, FormatOwnedString(LookupMessage(3828), remain).c_str(), 0, 0, 12, 0, 1);
+    } else {
+      for (std::uint64_t k = 0; k < info->unknown_0018 / 1000; ++k) {
+        bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_empty.bmp")));
+        this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, &bitmap->image, true);
+      }
+
+      for (std::uint64_t k = 0; k < info->point / 1000; ++k) {
+        bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_blue.bmp")));
+        this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, &bitmap->image, true);
+      }
+
+      const std::uint64_t remain = info->point % 1000;
+      this->FillRegion(left + 12, top + 100, static_cast<int>(static_cast<float>(remain) / 1000.0f * 299.0f), 6, 0xCD9279);
+      this->DrawRightAlignedText(left + 311, top + 114, FormatOwnedString(LookupMessage(3828), remain).c_str(), 0, 0, 12, 0, 1);
+    }
+  }
+
+  if (this->m_groupSelected) {
+    this->FillRegion(375, 26, 256, 16, 0xEFEFEF);
+    DrawRectangleBorder(*this, 374, 25, 258, 18, 0x636363);
+    this->DrawTextAt(controls.fonts, controls.locale, 377, 29, "GROUP :", 0, 0, 12, 0, 1, 0);
+    this->DrawRightAlignedText(627, 29, FormatOwnedString("%I64d P", this->m_totalPoints).c_str(), 0, 0, 12, 0, 1);
+
+    const char* light;
+    if (this->m_totalPoints == 0) {
+      light = "유저인터페이스\\Reputation\\light_empty.bmp";
+    } else if (this->m_totalPoints > 0) {
+      light = "유저인터페이스\\Reputation\\light_blue.bmp";
+    } else {
+      light = "유저인터페이스\\Reputation\\light_red.bmp";
+    }
+
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(light)));
+    this->DrawBitmap(439, 28, &bitmap->image, true);
+  }
+
+  const std::string separator = " / ";
+  const unsigned int separatorWidth = this->TextWidth(controls.fonts, controls.locale, separator.c_str(), 0, 0, 12, 0, 0);
+  this->DrawCenteredText(574, 402, separator.c_str(), 49, 0, 12, 0, 1);
+  this->DrawRightAlignedText(static_cast<int>((49 - separatorWidth) * 0.5 + 574.0), 402, std::to_string(this->m_page).c_str(), 0, 0, 12, 0, 1);
+  this->DrawTextAt(
+    controls.fonts, controls.locale, static_cast<int>((separatorWidth + 49) * 0.5 + 574.0), 402, std::to_string(this->m_pageCount).c_str(), 0, 0, 12, 0, 1, 0
+  );
 }
 
 // OFFSET: 0x006104F0

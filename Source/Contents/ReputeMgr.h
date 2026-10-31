@@ -20,8 +20,8 @@ enum ReputeVisibility : std::int64_t {
 
 struct ReputeInfo {
   /* 0000 */ std::string name;
-  /* 0018 */ std::int64_t unknown_0018;
-  /* 0020 */ std::int64_t unknown_0020;
+  /* 0018 */ std::uint64_t unknown_0018;
+  /* 0020 */ std::uint64_t unknown_0020;
   /* 0028 */ ReputeVisibility visibility;
   /* 0030 */ std::int64_t point;
   /* 0038 */ bool updated;
@@ -33,6 +33,8 @@ struct ReputeGroup {
 };
 
 class CReputeMgr : public Singleton<CReputeMgr> {
+  friend class UIReputeWnd;
+
 public:
   CReputeMgr();
   std::vector<std::string> GetGroupNames() const;
