@@ -453,6 +453,7 @@ public:
   void ConfirmActiveDialog();
   void SaveVisibleWindowIds();
   void UpdateNavigationList();
+  void LoadShortcutItems();
   void SaveShortcutItems();
   void SaveUIRectInfo();
   UIWindow* LookupWindow(int id);

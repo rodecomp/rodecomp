@@ -28,6 +28,10 @@ const char* g_uiRectInfoKeySuffix = "\\UIRectInfo";
 // GLOBAL: gl_24987
 const char* g_shortcutItemKeySuffix = "\\ShortcutItem";
 
+struct ClientItemLists {
+  void ResetHotkeyDescriptions();
+};
+
 // OFFSET: 0x00A911E0
 // FUNCTION: fn_17156
 void UIWindowMgr::NotifyHoverWindow() {
@@ -102,6 +106,65 @@ void UIWindowMgr::HideWindow01C8() {
 bool UIWindowMgr::HasUnknown030C() {
   const std::uint32_t* unknown = reinterpret_cast<const std::uint32_t*>(this->unknown_030C);
   return unknown != nullptr && unknown[1] != 0;
+}
+
+// OFFSET: 0x00A92090
+// FUNCTION: fn_17176
+void UIWindowMgr::LoadShortcutItems() {
+  char path[512];
+  std::strcpy(path, g_subKey);
+  std::strcat(path, g_shortcutItemKeySuffix);
+  std::strcat(path, "\\");
+  if (std::strstr(g_session.m_serverName.c_str(), "사크라이") != nullptr) {
+    std::strcat(path, "사크라이");
+  } else {
+    std::strcat(path, g_session.m_serverName.c_str());
+  }
+
+  HKEY probe;
+  if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, path, 0, KEY_QUERY_VALUE, &probe) == ERROR_SUCCESS) {
+    RegCloseKey(probe);
+    HKEY key;
+    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, path, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
+      reinterpret_cast<ClientItemLists*>(&g_session)->ResetHotkeyDescriptions();
+      g_session.ClearUnknown0420();
+      for (int index = 0; index < 36; ++index) {
+        DWORD type = REG_SZ;
+        DWORD size = 32;
+        char name[36];
+        std::sprintf(name, "SITEM%d%d%d", index, g_serviceType, g_session.unknown_0F50);
+        char description[33] = {};
+        LSTATUS result = RegQueryValueExA(key, name, nullptr, &type, reinterpret_cast<BYTE*>(description), &size);
+        bool hasSkillLevel = false;
+        g_session.m_hotkeyPage = static_cast<unsigned char>(index / 9);
+        if (result == ERROR_SUCCESS) {
+          if (description[0] == '#') {
+            hasSkillLevel = true;
+          } else {
+            g_session.SetHotkeyDescription(description, index);
+          }
+        } else {
+          g_session.SetHotkeyDescription("nothing", index);
+        }
+
+        type = REG_DWORD;
+        size = 4;
+        std::sprintf(name, "S_SKILL_USE_LEVEL%d%d%d", index, g_serviceType, g_session.unknown_0F50);
+        DWORD level = 0;
+        if (RegQueryValueExA(key, name, nullptr, &type, reinterpret_cast<BYTE*>(&level), &size) == ERROR_SUCCESS) {
+          g_session.SetHotkeySkillLevel(level, index);
+        } else {
+          g_session.SetHotkeySkillLevel(0, index);
+          level = 0;
+        }
+        if (hasSkillLevel) {
+          g_session.SetHotkeyDescription(description, level, index);
+        }
+      }
+      RegCloseKey(key);
+    }
+  }
+  g_session.m_hotkeyPage = 0;
 }
 
 // OFFSET: 0x00AAADF0
