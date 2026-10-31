@@ -22,6 +22,31 @@ namespace Stove::PCSDK {
   };
 
   namespace Base {
+    struct __declspec(dllimport) StovePCLogEvent {
+      const wchar_t* GetCategory1() const;
+      void SetCategory1(const wchar_t* category);
+    };
+
+    struct __declspec(dllimport) StovePCToken {
+      const wchar_t* GetAccessToken() const;
+    };
+
+    struct __declspec(dllimport) StovePCShutdown {
+      StovePCShutdown(const StovePCShutdown& other);
+      ~StovePCShutdown();
+
+      /* 0000 */ std::uint8_t unknown_0000[12];
+    };
+
+    struct __declspec(dllimport) StovePCInitializeParam {
+      StovePCInitializeParam();
+      ~StovePCInitializeParam();
+      void SetEnvironment(const wchar_t* environment);
+      void SetApplicationKey(const wchar_t* applicationKey);
+
+      /* 0000 */ std::uint8_t unknown_0000[36];
+    };
+
     struct __declspec(dllimport) StovePCUser {
       StovePCUser();
       ~StovePCUser();
@@ -35,6 +60,8 @@ namespace Stove::PCSDK {
 
   namespace IAP {
     struct __declspec(dllimport) StovePCPaymentOption {
+      StovePCPaymentOption();
+      StovePCPaymentOption(const StovePCPaymentOption& other);
       void SetOperation(int operation);
 
       /* 0000 */ std::uint8_t unknown_0000[24];
@@ -62,12 +89,33 @@ namespace Stove::PCSDK {
       reinterpret_cast<void(__cdecl*)(StovePCFetchProductParam*, void (*)(CallbackResult))>(0x00E6CD5F)(param, callback);
     }
 
+    struct StovePCPurchaseOption : StovePCPaymentOption {
+      StovePCPurchaseOption(const StovePCPaymentOption& other) : StovePCPaymentOption(other) {
+      }
+    };
+
     struct __declspec(dllimport) StovePCChargeInfo {
       const wchar_t* GetChargeTypeName() const;
+      void SetChargeDisplayDeductVal(double value);
+      void SetChargeType(int chargeType);
     };
 
     struct __declspec(dllimport) StovePCOrderProduct {
+      StovePCOrderProduct();
       std::int64_t GetProductId() const;
+      void SetProductId(std::int64_t productId);
+
+      /* 0000 */ std::uint8_t unknown_0000[20];
+    };
+
+    struct __declspec(dllimport) StovePCStartPurchaseParam {
+      StovePCStartPurchaseParam();
+      ~StovePCStartPurchaseParam();
+      void CreateOrderProduct(unsigned int count);
+      void SetOrderProduct(int index, const StovePCOrderProduct* orderProduct);
+      void SetPurchaseOption(StovePCPurchaseOption option);
+
+      /* 0000 */ std::uint8_t unknown_0000[40];
     };
 
     struct __declspec(dllimport) StovePCPurchasedProduct {
@@ -102,6 +150,13 @@ extern "C" {
 Stove::PCSDK::Result Base_GetAccessToken(wchar_t* accessToken, int length);
 Stove::PCSDK::Result Base_GetUser(Stove::PCSDK::Base::StovePCUser* user);
 void Base_RunCallback();
+bool Base_RestartAppIfNecessary(const Stove::PCSDK::Base::StovePCInitializeParam* param);
+void Base_Initialize(const Stove::PCSDK::Base::StovePCInitializeParam* param, void (*callback)(Stove::PCSDK::CallbackResult));
+void Base_GetShutdown(void (*callback)(Stove::PCSDK::CallbackResult, Stove::PCSDK::Base::StovePCShutdown));
+Stove::PCSDK::Result IAP_Initialize(const wchar_t* shopKey);
+void IAP_StartPurchase(const Stove::PCSDK::IAP::StovePCStartPurchaseParam* param,
+                       void (*callback)(Stove::PCSDK::CallbackResult, Stove::PCSDK::IAP::StovePCPurchaseResult));
+void IAP_ConfirmPurchase(std::int64_t transactionNumber, void (*callback)(Stove::PCSDK::CallbackResult, bool, int, unsigned int, int, int));
 }
 
 #endif

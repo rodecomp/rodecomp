@@ -3,6 +3,9 @@
 
 #include <cstddef>
 #include <string>
+#include <vector>
+
+struct ITEM_INFO;
 
 namespace Stove::PCSDK {
   struct CallbackResult;
@@ -31,6 +34,8 @@ public:
   void FetchAllProducts();
   void OnInitializeCallback(Stove::PCSDK::CallbackResult callbackResult);
   void OnOpenUrlCallback(Stove::PCSDK::CallbackResult callbackResult, int unused, const wchar_t* url);
+  bool Initialize();
+  void StartPurchase(const std::vector<ITEM_INFO>& items);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
