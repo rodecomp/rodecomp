@@ -364,6 +364,7 @@ namespace EquipmentProperties {
     void AddExpansion(const int& kind, const int& itemId, bool notify);
     void RemoveExpansion(const int& kind, const int& itemId);
     void RefreshExpansion(const int& kind, const int& itemId);
+    void RefreshWearable(const int& key);
     int GetUnknown01DC(const int& first, const int& second, const int& third);
     void LoadADSkill();
     void LoadCombiitem();
@@ -5171,7 +5172,7 @@ void SessionMessengerContext::sub_DD9D50() {
 
   CGameSettingsMgr* settings = Singleton<CGameSettingsMgr>::GetInstance();
   reinterpret_cast<SettingsCall>(0x006C1180)(settings);
-  reinterpret_cast<SessionCall>(0x00DFE4E0)(this);
+  reinterpret_cast<CSession*>(this)->LoadOptionInfo();
   reinterpret_cast<CSession*>(this)->LoadDamageSkinSettings();
 
   if (g_serviceType == 0) {
@@ -5207,6 +5208,34 @@ void EquipmentProperties::CEquipmentPropertiesMgr::UnequipWearable(const int& ma
     delete wearable;
     this->properties1.erase(found);
     break;
+  }
+  if (this->unknown_0020 != nullptr) {
+    this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x006B71F0
+// FUNCTION: fn_06205
+void EquipmentProperties::CEquipmentPropertiesMgr::RefreshWearable(const int& key) {
+  CEquipmentWearable* wearable = nullptr;
+  for (auto& entry : this->properties1) {
+    if (entry.first == key) {
+      wearable = entry.second;
+      break;
+    }
+  }
+  if (wearable == nullptr) {
+    return;
+  }
+  wearable->IsPretend();
+  auto combinations = this->m_itemCombinations.find(static_cast<unsigned int>(wearable->GetId()));
+  if (combinations != this->m_itemCombinations.end()) {
+    for (const unsigned int& combinationId : combinations->second) {
+      auto combination = this->properties3.find(combinationId);
+      if (combination != this->properties3.end()) {
+        combination->second->IsPretend();
+      }
+    }
   }
   if (this->unknown_0020 != nullptr) {
     this->unknown_0020->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
