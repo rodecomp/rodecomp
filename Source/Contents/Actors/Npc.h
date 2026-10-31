@@ -10,6 +10,7 @@ class UIWindow;
 
 class CNpc : public CGameActor {
 public:
+  CNpc();
   ~CNpc() override;
   bool OnProcess() override;
   void SendMsg(
@@ -18,6 +19,7 @@ public:
   void Render(int argument) override;
   void Slot16() override;
   void Slot17() override;
+  void Slot18(int job, int value, int unused) override;
   void Slot21(int value) override;
   void Slot22(int value) override;
   void Slot23(int first, int second) override;
@@ -27,14 +29,14 @@ public:
   void UpdateBubblePositions();
   void UpdateMinimapMarker();
 
-  /* 0410 */ unsigned char unknown_0410[0x14];
+  /* 0410 */ unsigned char unknown_0410[0x10];
+  /* 0420 */ int unknown_0420;
   /* 0424 */ std::uint32_t unknown_0424;
-  /* 0428 */ unsigned char unknown_0428[0x04];
+  /* 0428 */ int unknown_0428;
   /* 042C */ UIWindow* unknown_042C;
   /* 0430 */ UIWindow* unknown_0430;
   /* 0434 */ CGameObject* unknown_0434;
-  /* 0438 */ std::uint16_t unknown_0438;
-  /* 043A */ std::uint16_t unknown_043A;
+  /* 0438 */ int unknown_0438;
   /* 043C */ int unknown_043C;
 };
 
@@ -52,6 +54,7 @@ public:
 
 class CHalluNPC : public CNpc {
 public:
+  explicit CHalluNPC(CGameActor* source);
   ~CHalluNPC() override;
   bool OnProcess() override;
   void SendMsg(
@@ -69,6 +72,7 @@ public:
 
 class CHalluPlant : public CNpc {
 public:
+  CHalluPlant();
   ~CHalluPlant() override;
   bool OnProcess() override;
   void SendMsg(

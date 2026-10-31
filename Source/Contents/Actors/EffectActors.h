@@ -31,6 +31,7 @@ public:
 
 class CMasterChaser : public CRenderObject {
 public:
+  CMasterChaser();
   ~CMasterChaser() override;
 
   void ClearUnknown0138();
@@ -41,6 +42,7 @@ public:
 
 class CNumEffect : public CRenderObject {
 public:
+  CNumEffect();
   ~CNumEffect() override;
   bool OnProcess() override;
   void SendMsg(

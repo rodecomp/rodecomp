@@ -60,6 +60,106 @@ CCorpse::CCorpse() {
   this->render.unknown_008C = timeGetTime();
 }
 
+// OFFSET: 0x00DA1210
+// FUNCTION: fn_22355
+CGndRiser::CGndRiser() {
+}
+
+// OFFSET: 0x00DA1270
+// FUNCTION: fn_22356
+CHalluNPC::CHalluNPC(CGameActor* source) {
+  this->render.visible = 1;
+  this->render.unknown_00A4Bytes[0] = 0;
+  this->render.unknown_008C = timeGetTime();
+  this->SetUnknown0260(source->unknown_0260);
+  this->SetActorJob(source->GetEffectiveJob(-1));
+  this->unknown_02CC = source->unknown_02CC;
+  this->SetUnknown03C4(source->Slot55());
+  this->render.position = source->render.position;
+  this->render.unknown_005C = source->render.unknown_005C;
+  this->render.unknown_0078 = source->render.unknown_0078;
+  this->render.scale = source->render.scale;
+  this->render.animation = source->render.animation;
+  this->render.previousAnimation = source->render.previousAnimation;
+  this->render.curMotion = source->render.curMotion;
+  this->SetActionName(ResourceMgr::Instance(), source->GetActName());
+  this->render.unknown_00A2 = source->render.unknown_00A2;
+  this->render.unknown_0080 = source->render.unknown_0080;
+  this->render.isLieOnGround = source->render.isLieOnGround;
+  this->render.isSingleColor = source->render.isSingleColor;
+  this->render.unknown_007C = source->render.unknown_007C;
+  this->render.unknown_0048 = 0;
+  this->stateFlags = source->Slot13();
+  this->Slot18(source->GetEffectiveJob(-1), source->unknown_0260, 0);
+  this->guildId = source->Slot50();
+  this->render.accountId = 0;
+  this->unknown_0440 = 0.0f;
+  this->unknown_0454 = 0;
+  this->unknown_0444 = 0x10000000;
+  this->unknown_03E1 = true;
+}
+
+// OFFSET: 0x00DA1AF0
+// FUNCTION: fn_22359
+CHalluPlant::CHalluPlant() {
+  this->render.visible = 1;
+  this->render.unknown_00A4Bytes[0] = 0;
+  this->render.unknown_008C = timeGetTime();
+  this->SetUnknown0260(0);
+  this->SetActorJob(1079);
+  this->unknown_02CC = 0;
+  this->SetUnknown03C4(-1);
+  this->render.position.x = 0.0f;
+  this->render.position.y = 0.0f;
+  this->render.position.z = 0.0f;
+  this->render.unknown_005C = 1.0f;
+  this->render.unknown_0078 = 0;
+  this->render.scale = 1.0f;
+  this->render.animation = 0;
+  this->render.previousAnimation = 4;
+  this->render.curMotion = 0;
+  this->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\blue_plant.act");
+  this->render.unknown_00A2 = 0;
+  this->render.unknown_0080 = 0;
+  this->render.isLieOnGround = false;
+  this->render.isSingleColor = false;
+  this->render.unknown_007C = 0;
+  this->render.unknown_0048 = 0;
+  this->stateFlags = 0;
+  this->Slot18(this->GetEffectiveJob(-1), this->unknown_0260, 0);
+  this->guildId = 0;
+  this->render.accountId = 0;
+  this->unknown_0440 = 0;
+  this->unknown_03E1 = true;
+}
+
+// OFFSET: 0x00DA1CB0
+// FUNCTION: fn_22360
+CMasterChaser::CMasterChaser() {
+  this->unknown_0138 = 0;
+}
+
+// OFFSET: 0x00DA1D10
+// FUNCTION: fn_22361
+CNpc::CNpc() {
+  this->unknown_042C = nullptr;
+  this->unknown_0430 = nullptr;
+  this->unknown_0420 = 0;
+  this->unknown_0424 = timeGetTime();
+  this->unknown_0428 = 0;
+  this->unknown_0434 = nullptr;
+  this->unknown_0438 = 9999;
+}
+
+// OFFSET: 0x00DA1DB0
+// FUNCTION: fn_22362
+CNumEffect::CNumEffect() {
+  this->SetSpriteName(ResourceMgr::Instance(), "이팩트\\숫자.spr");
+  this->SetActionName(ResourceMgr::Instance(), "이팩트\\숫자.act");
+  this->render.animation = 0;
+  this->render.unknown_00A2 = 1;
+}
+
 // OFFSET: 0x00DA1E30
 // FUNCTION: fn_22363
 CSoundMaker::CSoundMaker() {
@@ -683,6 +783,19 @@ void CSoundMaker::SendMsg(
   this->radius = SquareRoot(static_cast<float>(this->width * this->width + this->height * this->height));
   this->cycle = static_cast<std::int64_t>(sound.cycle * 1000.0f);
   this->lastTick = timeGetTime() - this->cycle;
+}
+
+// OFFSET: 0x00DA5820
+// FUNCTION: fn_22431
+void CNpc::Slot18(int job, int value, int) {
+  char name[64];
+  this->SetActorJob(job);
+  this->SetUnknown0260(value);
+  this->render.unknown_0048 = 0;
+  if (g_session.IsGuildMemberCharacter(this->GetEffectiveJob(-1), name)) {
+    this->render.unknown_0048 = 1;
+    this->render.name = name;
+  }
 }
 
 // OFFSET: 0x00DA58A0
