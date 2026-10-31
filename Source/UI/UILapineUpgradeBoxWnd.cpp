@@ -18,6 +18,7 @@
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/UILapineScrollBar.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
@@ -33,8 +34,14 @@ namespace {
   struct LapineUpgradeClosePacket {
     /* 0000 */ std::int16_t id;
   };
+  struct LapineUpgradeStartPacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ std::int32_t ingredientId;
+    /* 0006 */ std::int16_t itemId;
+  };
 #pragma pack(pop)
   static_assert(sizeof(LapineUpgradeClosePacket) == 2);
+  static_assert(sizeof(LapineUpgradeStartPacket) == 8);
 }
 
 // OFFSET: 0x00602D30
@@ -260,8 +267,6 @@ void UILapineUpgradeBox_IngredientInfoWnd::Slot32(int x, int y) {
   }
 }
 
-// OFFSET: 0x006059B0
-
 // OFFSET: 0x00605BB0
 // FUNCTION: fn_04225
 void UILapineUpgradeBoxWnd::SetWaiting(unsigned char value) {
@@ -272,6 +277,34 @@ void UILapineUpgradeBoxWnd::SetWaiting(unsigned char value) {
 }
 
 // OFFSET: 0x006049B0
+// FUNCTION: fn_04217
+void UILapineUpgradeBoxWnd::SetIngredient(int id) {
+  this->ingredientId = id;
+
+  ITEM_INFO item;
+  item.SetItemId(id);
+  char name[0x104];
+  std::memset(name, 0, sizeof(name));
+  int capacity = sizeof(name);
+  ItemDescriptions descriptions{g_itemDescriptions};
+  descriptions.Name(item, name, capacity, 0);
+  this->title.assign(name, std::strlen(name));
+
+  int minimumRefine = 0;
+  int maximumRefine = 0;
+  g_luaScript->CallTable("tblLapineUpgradeBox", "get_min_need_refine", "d>d", id, &minimumRefine);
+  this->ingredientList->minRefine = minimumRefine;
+  g_luaScript->CallTable("tblLapineUpgradeBox", "get_max_need_refine", "d>d", id, &maximumRefine);
+  this->ingredientList->maxRefine = maximumRefine;
+  g_luaScript->CallTable("tblLapineUpgradeBox", "get_min_need_option", "d>d", id, &this->minOptionCount);
+  this->ingredientList->minOptionCount = this->minOptionCount;
+  g_luaScript->CallTable("tblLapineUpgradeBox", "set_resource_item_list", "d", id);
+  this->ingredientList->SendMsg(this, 0x17, 0, 0, 0, 0);
+
+  const char* source = nullptr;
+  g_luaScript->CallTable("tblLapineUpgradeBox", "get_need_source_string", "d>s", id, &source);
+  this->description.assign(source, std::strlen(source));
+}
 
 // OFFSET: 0x006041E0
 
@@ -492,6 +525,30 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
   this->items.push_back(entry);
   this->SendMsg(this, 0x57, 0, 0, 0, 0);
   return true;
+}
+
+// OFFSET: 0x006059B0
+// FUNCTION: fn_04224
+__declspec(noinline) void UILapineUpgradeBox_IngredientInfoWnd::SetItem(std::uint32_t identity) {
+  this->item = LookupClientItemByIdentity(g_session.m_inventoryItems, identity);
+
+  char name[0x104];
+  std::memset(name, 0, sizeof(name));
+  int capacity = sizeof(name);
+  ItemDescriptions descriptions{g_itemDescriptions};
+  descriptions.Name(this->item, name, capacity, 0);
+
+  if (this->item.identified == 1 && this->item.unknown_0098 != 0) {
+    char formatted[0x104];
+    StringFormat(formatted, sizeof(formatted), static_cast<std::size_t>(-1), LookupMessage(0xA28), name, this->item.unknown_0098);
+    this->item.SetName(formatted);
+    this->tooltip.assign(formatted, std::strlen(formatted));
+  } else {
+    this->item.SetName(name);
+    this->tooltip.assign(name, std::strlen(name));
+  }
+
+  this->Invalidate();
 }
 
 // OFFSET: 0x00605750
