@@ -1,12 +1,18 @@
 #include "UI/ProbabilityTable/UIProbabilityTable.h"
 
 #include "UI/Lists/UIVScrollBar.h"
+#include "UI/Window/UIControl.h"
 #include "UI/Window/WindowBorder.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Text/UIStaticTextControl.h"
+#include "Contents/MessageTable.h"
+#include "Render/Renderer.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <string>
 
 namespace {
@@ -265,6 +271,24 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Selec
 // OFFSET: 0x00A4DC90
 // FUNCTION: fn_16195
 void CUIProbabilityTable::OnButtonClick() {
+}
+
+// OFFSET: 0x00A4E280
+// FUNCTION: fn_16203
+void CUIProbabilityTable::Slot16() {
+  UIWindow* anchor = g_windowMgr.LookupWindow(12);
+  if (anchor) {
+    this->Move(anchor->geometry.x + anchor->geometry.width, anchor->geometry.y);
+  } else {
+    this->Move(g_renderer->viewport.centerX, (g_renderer->viewport.height - this->geometry.height) / 2);
+  }
+
+  const char* title = LookupMessage(0x1017);
+  this->m_titleBar->SetTitle(title, std::strlen(title));
+  const char* name = LookupMessage(0x1018);
+  this->m_nameHeader->SetText(name, std::strlen(name));
+  const char* probability = LookupMessage(0x1019);
+  this->m_probabilityHeader->SetText(probability, std::strlen(probability));
 }
 
 // OFFSET: 0x00A4E030

@@ -33,16 +33,22 @@ public:
 
 }
 class CUIEditBoxEx;
+class CUITitleBar;
+class CUIStaticText;
 class CUIProbabilityTable : public CUIFrameWnd {
 public:
+  void Slot16() override;
   void Paint() override;
   virtual void Slot53();
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void OnButtonClick();
   void OnPrepareItem(ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data);
 
-  /* 00D8 */ unsigned char unknown_00D8[0x08];
+  /* 00D8 */ CUITitleBar* m_titleBar;
+  /* 00DC */ CUIStaticText* m_nameHeader;
   /* 00E0 */ CUIEditBoxEx* m_searchEdit;
+  /* 00E4 */ unsigned char unknown_00E4[0x08];
+  /* 00EC */ CUIStaticText* m_probabilityHeader;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
