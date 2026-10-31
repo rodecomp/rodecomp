@@ -441,6 +441,97 @@ void CUIScrollWindow::SetQuest(unsigned int id) {
 
 }
 
+// OFFSET: 0x00A50970
+// FUNCTION: fn_16227
+void CUIOngoingQuestInfo::Slot15(int width, int height) {
+  this->titleBar = new CUITitleBar(*this->m_context);
+  this->titleBar->SetSize(342, 17);
+  this->titleBar->Move(0, 0);
+  this->titleBar->SetImages(
+    "유저인터페이스\\basic_interface\\titlebar_left.bmp", "유저인터페이스\\basic_interface\\titlebar_mid.bmp",
+    "유저인터페이스\\basic_interface\\titlebar_right.bmp"
+  );
+  this->AddChild(this->titleBar);
+
+  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  title->SetSize(100, 17);
+  title->Move(18, 0);
+  title->SetText("QUEST", 5);
+  title->SetFitText(0);
+  title->SetAlign(0, 6);
+  title->SetFont("Gulim");
+  title->SetFontHeight(13);
+  title->SetBold(0);
+  title->SetColor(0);
+  title->SetShadow(0, 0xFFFFFF);
+  title->SetOutline(0, 0xFFFFFF);
+  this->titleBar->titleText = title;
+  this->titleBar->AddChild(title);
+
+  CUIImageButton* menuButton = new CUIImageButton(*this->m_context);
+  menuButton->SetSize(11, 11);
+  menuButton->Move(3, 3);
+  menuButton->SetOnClick([this]() { this->OnFirstAction(); });
+  menuButton->disabled = 0;
+  menuButton->Invalidate();
+  menuButton->SetImages(
+    "유저인터페이스\\basic_interface\\sys_base_off.bmp", "유저인터페이스\\basic_interface\\sys_base_on.bmp",
+    "유저인터페이스\\basic_interface\\sys_base_on.bmp", "유저인터페이스\\basic_interface\\sys_base_off.bmp"
+  );
+  this->titleBar->AddChild(menuButton);
+
+  this->background = new CUIStaticImage(*this->m_context);
+  this->background->SetSize(342, 395);
+  this->background->Move(0, 17);
+  this->background->SetImage("유저인터페이스\\Renew_QuestUI\\bg_detail_quest.bmp");
+  this->AddChild(this->background);
+
+  this->titleText = new CUIStaticText(*this->m_context);
+  this->titleText->SetSize(342, 12);
+  this->titleText->Move(0, 39);
+  this->titleText->SetText("", 0);
+  this->titleText->SetFitText(1);
+  this->titleText->SetAlign(6, 0);
+  this->titleText->SetFont("Gulim");
+  this->titleText->SetFontHeight(12);
+  this->titleText->SetBold(1);
+  this->titleText->SetColor(0x55321D);
+  this->titleText->SetShadow(0, 0xFFFFFF);
+  this->titleText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->titleText);
+
+  this->scrollWindow = new OngoingQuestInfo::CUIScrollWindow(*this->m_context);
+  this->scrollWindow->SetSize(342, 322);
+  this->scrollWindow->Move(0, 62);
+  this->AddChild(this->scrollWindow);
+
+  this->dateText = new CUIStaticText(*this->m_context);
+  this->dateText->SetSize(270, 12);
+  this->dateText->Move(13, 393);
+  this->dateText->SetText("", 0);
+  this->dateText->SetFitText(0);
+  this->dateText->SetAlign(0, 0);
+  this->dateText->SetFont("Gulim");
+  this->dateText->SetFontHeight(12);
+  this->dateText->SetBold(0);
+  this->dateText->SetColor(0x161BD2);
+  this->dateText->SetShadow(0, 0xFFFFFF);
+  this->dateText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->dateText);
+
+  this->closeButton = new CUIImageButton(*this->m_context);
+  this->closeButton->SetSize(42, 20);
+  this->closeButton->Move(288, 388);
+  this->closeButton->SetOnClick([this]() { this->OnClose(); });
+  this->closeButton->disabled = 0;
+  this->closeButton->Invalidate();
+  this->closeButton->SetImages(
+    "유저인터페이스\\basic_interface\\btn_close.bmp", "유저인터페이스\\basic_interface\\btn_close_b.bmp",
+    "유저인터페이스\\basic_interface\\btn_close_a.bmp","유저인터페이스\\basic_interface\\btn_close.bmp"
+  );
+  this->AddChild(this->closeButton);
+}
+
 namespace OngoingQuestInfo {
 
 // OFFSET: 0x00A4FFE0

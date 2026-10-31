@@ -17,6 +17,7 @@ class CUIScrollWindow;
 class CUIOngoingQuestInfo : public CUIFrameWnd {
 public:
   __declspec(noinline) CUIOngoingQuestInfo();
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void OnFirstAction();
   void OnClose();
@@ -25,11 +26,17 @@ public:
   void SetQuest(unsigned int id);
 
   /* 00D8 */ CUITitleBar* titleBar;
-  /* 00DC */ unsigned char unknown_00DC[0x04];
+  union {
+    /* 00DC */ unsigned char unknown_00DC[0x04];
+    /* 00DC */ CUIStaticImage* background;
+  };
   /* 00E0 */ CUIStaticText* titleText;
   /* 00E4 */ OngoingQuestInfo::CUIScrollWindow* scrollWindow;
   /* 00E8 */ CUIStaticText* dateText;
-  /* 00EC */ unsigned char unknown_00EC[0x04];
+  union {
+    /* 00EC */ unsigned char unknown_00EC[0x04];
+    /* 00EC */ CUIImageButton* closeButton;
+  };
   /* 00F0 */ unsigned int questId;
 };
 
