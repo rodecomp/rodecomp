@@ -28,6 +28,7 @@ public:
   virtual ~CWorld();
   CWorld(const CWorld&) = delete;
   CWorld& operator=(const CWorld&) = delete;
+  void LoadMapEffects();
   void Clear();
   void OnExitFrame();
   void OnProcess();

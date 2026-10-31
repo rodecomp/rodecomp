@@ -653,6 +653,7 @@
   "Source/Contents/UserData/NormalItemSlots.cpp": 4,
   "Source/Contents/World/SkyBox.cpp": 3,
   "Source/Contents/World/WorldActors.cpp": 4,
+  "Source/Contents/World/WorldEffects.cpp": 3,
   "Source/Contents/World/WorldModelLoading.cpp": 3,
   "Source/Contents/World/WorldModelView.cpp": 3,
   "Source/Contents/World/WorldObjects.cpp": 4,
