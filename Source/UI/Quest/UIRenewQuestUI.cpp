@@ -1099,6 +1099,14 @@ int CUIRenewQuestUI::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 }
 
 // OFFSET: 0x00A5C380
+// FUNCTION: fn_16433
+template <>
+void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Slot15(int width, int height) {
+  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar->Show(0);
+  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
+  this->AddChild(this->scrollBar);
+}
 
 // OFFSET: 0x00A63B90
 // FUNCTION: fn_16440
