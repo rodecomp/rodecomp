@@ -3,6 +3,66 @@
 #include "Contents/Effects/CharacterParticleBundle.h"
 #include "Contents/Effects/GravityControlEffect.h"
 #include "Contents/Effects/SkillEffects.h"
+#include "Contents/EffectResourceSwitcher.h"
+#include "Contents/Effects/AMachineEffect.h"
+#include "Contents/Effects/AcidifiedThrow.h"
+#include "Contents/Effects/AstralStrikeEffect.h"
+#include "Contents/Effects/AxeBoomerang.h"
+#include "Contents/Effects/BindTrapEffect.h"
+#include "Contents/Effects/BlastForge.h"
+#include "Contents/Effects/CaneOfEvilEyeEffect.h"
+#include "Contents/Effects/CartCannon.h"
+#include "Contents/Effects/CellRangeEffect.h"
+#include "Contents/Effects/ChangeSizeEffect.h"
+#include "Contents/Effects/ChargingPierceEffect.h"
+#include "Contents/Effects/CherryBlossomEffect.h"
+#include "Contents/Effects/ClimaxEffect.h"
+#include "Contents/Effects/CloudEffect.h"
+#include "Contents/Effects/CloudKillEffect.h"
+#include "Contents/Effects/CommonFloorEffect.h"
+#include "Contents/Effects/Competentia.h"
+#include "Contents/Effects/CresciveBolt.h"
+#include "Contents/Effects/EZ2STREffect.h"
+#include "Contents/Effects/EZ2STREffectEx.h"
+#include "Contents/Effects/EmitterEffect.h"
+#include "Contents/Effects/EnergyOrbEffect.h"
+#include "Contents/Effects/EvilLandEffect.h"
+#include "Contents/Effects/EvilsPawEffect.h"
+#include "Contents/Effects/FriggSongEffect.h"
+#include "Contents/Effects/FuumaShouakuEffect.h"
+#include "Contents/Effects/HealEffect.h"
+#include "Contents/Effects/JupitelThunderStormEffect.h"
+#include "Contents/Effects/Level150Effect.h"
+#include "Contents/Effects/Level99Effect.h"
+#include "Contents/Effects/Level99Orb1Effect.h"
+#include "Contents/Effects/Level99Orb2Effect.h"
+#include "Contents/Effects/LightSphereEffect.h"
+#include "Contents/Effects/MagicFloorEffect.h"
+#include "Contents/Effects/MapChainEffect.h"
+#include "Contents/Effects/MonsterSkillEffects.h"
+#include "Contents/Effects/NyanggrassEffect.h"
+#include "Contents/Effects/PowderingEffect.h"
+#include "Contents/Effects/RectUpEffect.h"
+#include "Contents/Effects/RotateItemEffect.h"
+#include "Contents/Effects/RotateLineEffect.h"
+#include "Contents/Effects/ScatterEffect.h"
+#include "Contents/Effects/ShadowExceedEffect.h"
+#include "Contents/Effects/ShowEffect.h"
+#include "Contents/Effects/SmokeEffect.h"
+#include "Contents/Effects/SoulCollectEffect.h"
+#include "Contents/Effects/SoulUnityEffect.h"
+#include "Contents/Effects/SpriteEffect.h"
+#include "Contents/Effects/SquareRangeEffect.h"
+#include "Contents/Effects/StarEmperorEffect.h"
+#include "Contents/Effects/StormCannonEffect.h"
+#include "Contents/Effects/StormKickEffect.h"
+#include "Contents/Effects/SunStanceEffect.h"
+#include "Contents/Effects/TalismanMarkEffect.h"
+#include "Contents/Effects/TetraBallEffect.h"
+#include "Contents/Effects/ThrowEffects.h"
+#include "Contents/Effects/TriangleShotArrow.h"
+#include "Contents/Effects/ViolentQuakeEffect.h"
+#include "Contents/Effects/WindEffect.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
@@ -644,6 +704,485 @@ CEffect* CEffectAllocator<CChopChopClawMarks>::Create() {
   return new (std::nothrow) CChopChopClawMarks();
 }
 
+// OFFSET: 0x00B1DAD0
+
+// OFFSET: 0x00B1DB50
+
+// OFFSET: 0x00B1DC50
+
+// OFFSET: 0x00B1DCD0
+
+// OFFSET: 0x00B1DD50
+
+// OFFSET: 0x00B1DDD0
+
+// OFFSET: 0x00B1DE50
+
+// OFFSET: 0x00B1DED0
+
+// OFFSET: 0x00B1DF50
+
+// OFFSET: 0x00B1DFD0
+
+// OFFSET: 0x00B1E050
+
+// OFFSET: 0x00B1E0D0
+
+// OFFSET: 0x00B1E150
+
+// OFFSET: 0x00B1E290
+
+// OFFSET: 0x00B1E310
+
+// OFFSET: 0x00B1E390
+
+// OFFSET: 0x00B1E410
+
+// OFFSET: 0x00B1E490
+
+// OFFSET: 0x00B1E510
+
+// OFFSET: 0x00B1E590
+
+// OFFSET: 0x00B1E610
+
+// OFFSET: 0x00B1E690
+
+// OFFSET: 0x00B1E710
+
+// OFFSET: 0x00B1E790
+
+// OFFSET: 0x00B1E810
+
+// OFFSET: 0x00B1E890
+
+// OFFSET: 0x00B1E910
+
+// OFFSET: 0x00B1E990
+
+// OFFSET: 0x00B1EA10
+
+// OFFSET: 0x00B1EA90
+
+// OFFSET: 0x00B1EB10
+
+// OFFSET: 0x00B1EB90
+
+// OFFSET: 0x00B1EC10
+
+// OFFSET: 0x00B1EC90
+
+// OFFSET: 0x00B1ED10
+
+// OFFSET: 0x00B1ED90
+
+// OFFSET: 0x00B1EE10
+
+// OFFSET: 0x00B1EE90
+// FUNCTION: fn_18601
+template <>
+CEffect* CEffectAllocator<CFullScreenEffect>::Create() {
+  return new (std::nothrow) CFullScreenEffect();
+}
+
+// OFFSET: 0x00B1EF10
+// FUNCTION: fn_18602
+template <>
+CEffect* CEffectAllocator<CFuumaShouakuEffect>::Create() {
+  return new (std::nothrow) CFuumaShouakuEffect();
+}
+
+// OFFSET: 0x00B1EF90
+// FUNCTION: fn_18603
+template <>
+CEffect* CEffectAllocator<CGaleStorm>::Create() {
+  return new (std::nothrow) CGaleStorm();
+}
+
+// OFFSET: 0x00B1F0C0
+// FUNCTION: fn_18605
+template <>
+CEffect* CEffectAllocator<CHawkVumerangEffect>::Create() {
+  return new (std::nothrow) CHawkVumerangEffect();
+}
+
+// OFFSET: 0x00B1F140
+// FUNCTION: fn_18606
+template <>
+CEffect* CEffectAllocator<CHealEffect>::Create() {
+  return new (std::nothrow) CHealEffect();
+}
+
+// OFFSET: 0x00B1F1C0
+// FUNCTION: fn_18607
+template <>
+CEffect* CEffectAllocator<CDropItemEffect>::Create() {
+  return new (std::nothrow) CDropItemEffect();
+}
+
+// OFFSET: 0x00B1F240
+// FUNCTION: fn_18608
+template <>
+CEffect* CEffectAllocator<CJupitelThunderHit>::Create() {
+  return new (std::nothrow) CJupitelThunderHit();
+}
+
+// OFFSET: 0x00B1F2C0
+// FUNCTION: fn_18609
+template <>
+CEffect* CEffectAllocator<CJupitelThunderStormEffect>::Create() {
+  return new (std::nothrow) CJupitelThunderStormEffect();
+}
+
+// OFFSET: 0x00B1F340
+// FUNCTION: fn_18610
+template <>
+CEffect* CEffectAllocator<CLevel150Effect>::Create() {
+  return new (std::nothrow) CLevel150Effect();
+}
+
+// OFFSET: 0x00B1F3C0
+// FUNCTION: fn_18611
+template <>
+CEffect* CEffectAllocator<CLevel150SubEffect>::Create() {
+  return new (std::nothrow) CLevel150SubEffect();
+}
+
+// OFFSET: 0x00B1F440
+// FUNCTION: fn_18612
+template <>
+CEffect* CEffectAllocator<CLevel99Effect>::Create() {
+  return new (std::nothrow) CLevel99Effect();
+}
+
+// OFFSET: 0x00B1F4C0
+// FUNCTION: fn_18613
+template <>
+CEffect* CEffectAllocator<CLevel99Orb1Effect>::Create() {
+  return new (std::nothrow) CLevel99Orb1Effect();
+}
+
+// OFFSET: 0x00B1F540
+// FUNCTION: fn_18614
+template <>
+CEffect* CEffectAllocator<CLevel99Orb2Effect>::Create() {
+  return new (std::nothrow) CLevel99Orb2Effect();
+}
+
+// OFFSET: 0x00B1F5C0
+// FUNCTION: fn_18615
+template <>
+CEffect* CEffectAllocator<CLightSphereEffect>::Create() {
+  return new (std::nothrow) CLightSphereEffect();
+}
+
+// OFFSET: 0x00B1F640
+// FUNCTION: fn_18616
+template <>
+CEffect* CEffectAllocator<CMagicFloorEffect>::Create() {
+  return new (std::nothrow) CMagicFloorEffect();
+}
+
+// OFFSET: 0x00B1F6C0
+// FUNCTION: fn_18617
+template <>
+CEffect* CEffectAllocator<CMapChainEffect>::Create() {
+  return new (std::nothrow) CMapChainEffect();
+}
+
+// OFFSET: 0x00B1F810
+// FUNCTION: fn_18619
+template <>
+CEffect* CEffectAllocator<CNewCloudKillEffect>::Create() {
+  return new (std::nothrow) CNewCloudKillEffect();
+}
+
+// OFFSET: 0x00B1F890
+// FUNCTION: fn_18620
+template <>
+CEffect* CEffectAllocator<CNyanggrassEffect>::Create() {
+  return new (std::nothrow) CNyanggrassEffect();
+}
+
+// OFFSET: 0x00B1F910
+// FUNCTION: fn_18621
+template <>
+CEffect* CEffectAllocator<CPetitioEffect>::Create() {
+  return new (std::nothrow) CPetitioEffect();
+}
+
+// OFFSET: 0x00B1F990
+// FUNCTION: fn_18622
+template <>
+CEffect* CEffectAllocator<CPneumaticusProcellaEffect>::Create() {
+  return new (std::nothrow) CPneumaticusProcellaEffect();
+}
+
+// OFFSET: 0x00B1FA10
+// FUNCTION: fn_18623
+template <>
+CEffect* CEffectAllocator<CPowderingEffect>::Create() {
+  return new (std::nothrow) CPowderingEffect();
+}
+
+// OFFSET: 0x00B1FA90
+// FUNCTION: fn_18624
+template <>
+CEffect* CEffectAllocator<CRandomHitEffect>::Create() {
+  return new (std::nothrow) CRandomHitEffect();
+}
+
+// OFFSET: 0x00B1FB10
+// FUNCTION: fn_18625
+template <>
+CEffect* CEffectAllocator<CRandomOptEffect>::Create() {
+  return new (std::nothrow) CRandomOptEffect();
+}
+
+// OFFSET: 0x00B1FB90
+// FUNCTION: fn_18626
+template <>
+CEffect* CEffectAllocator<CRectUpEffect>::Create() {
+  return new (std::nothrow) CRectUpEffect();
+}
+
+// OFFSET: 0x00B1FC10
+// FUNCTION: fn_18627
+template <>
+CEffect* CEffectAllocator<CRichsCoinEffect>::Create() {
+  return new (std::nothrow) CRichsCoinEffect();
+}
+
+// OFFSET: 0x00B1FC90
+// FUNCTION: fn_18628
+template <>
+CEffect* CEffectAllocator<CRootTwistEffect>::Create() {
+  return new (std::nothrow) CRootTwistEffect();
+}
+
+// OFFSET: 0x00B1FD10
+// FUNCTION: fn_18629
+template <>
+CEffect* CEffectAllocator<CRotateItemEffect>::Create() {
+  return new (std::nothrow) CRotateItemEffect();
+}
+
+// OFFSET: 0x00B1FD90
+// FUNCTION: fn_18630
+template <>
+CEffect* CEffectAllocator<CRotateLineEffect>::Create() {
+  return new (std::nothrow) CRotateLineEffect();
+}
+
+// OFFSET: 0x00B1FE10
+// FUNCTION: fn_18631
+template <>
+CEffect* CEffectAllocator<CSavageImpactEffect>::Create() {
+  return new (std::nothrow) CSavageImpactEffect();
+}
+
+// OFFSET: 0x00B1FE90
+// FUNCTION: fn_18632
+template <>
+CEffect* CEffectAllocator<CScatterEffect>::Create() {
+  return new (std::nothrow) CScatterEffect();
+}
+
+// OFFSET: 0x00B1FF10
+// FUNCTION: fn_18633
+template <>
+CEffect* CEffectAllocator<CServantWeaponEffect>::Create() {
+  return new (std::nothrow) CServantWeaponEffect();
+}
+
+// OFFSET: 0x00B1FF90
+// FUNCTION: fn_18634
+template <>
+CEffect* CEffectAllocator<CServantWeaponNewEffect>::Create() {
+  return new (std::nothrow) CServantWeaponNewEffect();
+}
+
+// OFFSET: 0x00B20010
+// FUNCTION: fn_18635
+template <>
+CEffect* CEffectAllocator<CSevereRainStorm>::Create() {
+  return new (std::nothrow) CSevereRainStorm();
+}
+
+// OFFSET: 0x00B20090
+// FUNCTION: fn_18636
+template <>
+CEffect* CEffectAllocator<CShadowExceed>::Create() {
+  return new (std::nothrow) CShadowExceed();
+}
+
+// OFFSET: 0x00B20200
+// FUNCTION: fn_18638
+template <>
+CEffect* CEffectAllocator<CShowEffect>::Create() {
+  return new (std::nothrow) CShowEffect();
+}
+
+// OFFSET: 0x00B20280
+// FUNCTION: fn_18639
+template <>
+CEffect* CEffectAllocator<CSmokeEffect>::Create() {
+  return new (std::nothrow) CSmokeEffect();
+}
+
+// OFFSET: 0x00B20300
+// FUNCTION: fn_18640
+template <>
+CEffect* CEffectAllocator<CSoulCollectEffect>::Create() {
+  return new (std::nothrow) CSoulCollectEffect();
+}
+
+// OFFSET: 0x00B20380
+// FUNCTION: fn_18641
+template <>
+CEffect* CEffectAllocator<CSoulUnityEffect>::Create() {
+  return new (std::nothrow) CSoulUnityEffect();
+}
+
+// OFFSET: 0x00B20520
+// FUNCTION: fn_18643
+template <>
+CEffect* CEffectAllocator<CSpriteEffect>::Create() {
+  return new (std::nothrow) CSpriteEffect();
+}
+
+// OFFSET: 0x00B205A0
+// FUNCTION: fn_18644
+template <>
+CEffect* CEffectAllocator<CSpriteMableEffect>::Create() {
+  return new (std::nothrow) CSpriteMableEffect();
+}
+
+// OFFSET: 0x00B20620
+
+// OFFSET: 0x00B206A0
+
+// OFFSET: 0x00B20720
+
+// OFFSET: 0x00B207A0
+
+// OFFSET: 0x00B20820
+
+// OFFSET: 0x00B208A0
+
+// OFFSET: 0x00B20920
+
+// OFFSET: 0x00B209A0
+
+// OFFSET: 0x00B20A20
+
+// OFFSET: 0x00B20AA0
+
+// OFFSET: 0x00B20C70
+
+// OFFSET: 0x00B20CF0
+
+// OFFSET: 0x00B20D70
+
+// OFFSET: 0x00B20DF0
+
+// OFFSET: 0x00B21070
+
+// OFFSET: 0x00B210F0
+
+template struct CEffectAllocator<CAMachineEffect>;
+template struct CEffectAllocator<CAcidifiedThrow>;
+template struct CEffectAllocator<CAstralStrikeEffect>;
+template struct CEffectAllocator<CAxeBoomerang>;
+template struct CEffectAllocator<CBindTrapEffect>;
+template struct CEffectAllocator<CBlastForge>;
+template struct CEffectAllocator<CCaneOfEvilEyeEffect>;
+template struct CEffectAllocator<CCartCannon>;
+template struct CEffectAllocator<CCellRangeEffect>;
+template struct CEffectAllocator<CChangeSizeEffect>;
+template struct CEffectAllocator<CChargingPierceEffect>;
+template struct CEffectAllocator<CChargingPierceNewEffect>;
+template struct CEffectAllocator<CCherryBlossomEffect>;
+template struct CEffectAllocator<CClimaxEffect>;
+template struct CEffectAllocator<CCloud>;
+template struct CEffectAllocator<CCloudKillEffect>;
+template struct CEffectAllocator<CCommonFloorEffect>;
+template struct CEffectAllocator<CCompetentia>;
+template struct CEffectAllocator<CCresciveBolt>;
+template struct CEffectAllocator<CCrimsonArrowEffect>;
+template struct CEffectAllocator<CCurseOfCubeEffect>;
+template struct CEffectAllocator<CCylinderEffect>;
+template struct CEffectAllocator<CDancingKnifeEffect>;
+template struct CEffectAllocator<CEZ2STRScreenEffect>;
+template struct CEffectAllocator<CEZ2STREffectEx>;
+template struct CEffectAllocator<CEmitterEffect>;
+template struct CEffectAllocator<CEnergyOrbEffect>;
+template struct CEffectAllocator<CEternalSlashAttackEffect>;
+template struct CEffectAllocator<CEternalSlashCountEffect>;
+template struct CEffectAllocator<CEvilLandEffect>;
+template struct CEffectAllocator<CEvilsPawEffect>;
+template struct CEffectAllocator<CFallenAngelEffect>;
+template struct CEffectAllocator<CFloralFlareRoad>;
+template struct CEffectAllocator<CFootprintEffect>;
+template struct CEffectAllocator<CFootprintStrEffect>;
+template struct CEffectAllocator<CFriggSongEffect>;
+template struct CEffectAllocator<CFromTheAbyssEffect>;
+template struct CEffectAllocator<CFullScreenEffect>;
+template struct CEffectAllocator<CFuumaShouakuEffect>;
+template struct CEffectAllocator<CGaleStorm>;
+template struct CEffectAllocator<CHawkVumerangEffect>;
+template struct CEffectAllocator<CHealEffect>;
+template struct CEffectAllocator<CDropItemEffect>;
+template struct CEffectAllocator<CJupitelThunderHit>;
+template struct CEffectAllocator<CJupitelThunderStormEffect>;
+template struct CEffectAllocator<CLevel150Effect>;
+template struct CEffectAllocator<CLevel150SubEffect>;
+template struct CEffectAllocator<CLevel99Effect>;
+template struct CEffectAllocator<CLevel99Orb1Effect>;
+template struct CEffectAllocator<CLevel99Orb2Effect>;
+template struct CEffectAllocator<CLightSphereEffect>;
+template struct CEffectAllocator<CMagicFloorEffect>;
+template struct CEffectAllocator<CMapChainEffect>;
+template struct CEffectAllocator<CNewCloudKillEffect>;
+template struct CEffectAllocator<CNyanggrassEffect>;
+template struct CEffectAllocator<CPetitioEffect>;
+template struct CEffectAllocator<CPneumaticusProcellaEffect>;
+template struct CEffectAllocator<CPowderingEffect>;
+template struct CEffectAllocator<CRandomHitEffect>;
+template struct CEffectAllocator<CRandomOptEffect>;
+template struct CEffectAllocator<CRectUpEffect>;
+template struct CEffectAllocator<CRichsCoinEffect>;
+template struct CEffectAllocator<CRootTwistEffect>;
+template struct CEffectAllocator<CRotateItemEffect>;
+template struct CEffectAllocator<CRotateLineEffect>;
+template struct CEffectAllocator<CSavageImpactEffect>;
+template struct CEffectAllocator<CScatterEffect>;
+template struct CEffectAllocator<CServantWeaponEffect>;
+template struct CEffectAllocator<CServantWeaponNewEffect>;
+template struct CEffectAllocator<CSevereRainStorm>;
+template struct CEffectAllocator<CShadowExceed>;
+template struct CEffectAllocator<CShowEffect>;
+template struct CEffectAllocator<CSmokeEffect>;
+template struct CEffectAllocator<CSoulCollectEffect>;
+template struct CEffectAllocator<CSoulUnityEffect>;
+template struct CEffectAllocator<CSpriteEffect>;
+template struct CEffectAllocator<CSpriteMableEffect>;
+template struct CEffectAllocator<CSquareRangeEffect>;
+template struct CEffectAllocator<CStarEmperorEffect>;
+template struct CEffectAllocator<CStemSpearEffect>;
+template struct CEffectAllocator<CStormCannonEffect>;
+template struct CEffectAllocator<CStormKickEffect>;
+template struct CEffectAllocator<CSunStanceEffect>;
+template struct CEffectAllocator<CSvgSpiritEffect>;
+template struct CEffectAllocator<CTalismanMarkEffect>;
+template struct CEffectAllocator<CTetraBallEffect>;
+template struct CEffectAllocator<CThrowItemEffect>;
+template struct CEffectAllocator<CTriangleShotArrow>;
+template struct CEffectAllocator<CTunaPartyEffect>;
+template struct CEffectAllocator<CViolentQuakeEffect>;
+template struct CEffectAllocator<CWarningPlaneEffect>;
+template struct CEffectAllocator<CWindEffect>;
+template struct CEffectAllocator<EffectResourceSwitcher>;
 template struct CEffectAllocator<CChopChopClawMarks>;
 template struct CEffectAllocator<CGravityControlEffect>;
 template struct CEffectAllocator<CMeteorEffect>;
@@ -660,8 +1199,7 @@ CGravityControlEffect::~CGravityControlEffect() {
 CMeteorEffect::~CMeteorEffect() {
 }
 
-CShadowExceedNew::~CShadowExceedNew() {
-}
+// OFFSET: 0x00B1D6E0
 
 CSprArrowEffect::~CSprArrowEffect() {
 }
