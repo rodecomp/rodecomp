@@ -490,6 +490,38 @@ void CUIQuest::OnSelectQuest(CUIQuestInfo* item, const CQuestInfo&) {
   this->unknown_0088->Show(selected);
 }
 
+// OFFSET: 0x009DC770
+// FUNCTION: fn_14323
+void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
+  switch (data.type) {
+  case 1:
+    reinterpret_cast<void(__thiscall*)(CUIQuestInfo*, int)>(0x009E0350)(owner, data.id);
+    owner->SetViewerLines(data.rewards);
+    owner->unknown_00F8 = data.title;
+    reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->Clear();
+    reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->AddLine(data.text);
+    owner->questId = data.questId;
+    owner->unknown_00E8->Show(g_renewQuestMgr->IsNewQuest(data.questId));
+    break;
+  case 3:
+    reinterpret_cast<void(__thiscall*)(CUIQuestInfo*, int)>(0x009E0350)(owner, data.id);
+    owner->SetViewerLines(data.rewards);
+    owner->unknown_00F8 = data.title;
+    reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->Clear();
+    reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->AddLine(data.text);
+    owner->unknown_00E8->Show(0);
+    return;
+  case 4:
+    reinterpret_cast<void(__thiscall*)(CUIQuestInfo*, int)>(0x009DE7D0)(owner, data.id);
+    owner->SetViewerLines(data.rewards);
+    owner->unknown_00F8 = data.title;
+    reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->Clear();
+    reinterpret_cast<CUITextViewer*>(owner->unknown_00F4)->AddLine(data.text);
+    owner->unknown_00E8->Show(0);
+    return;
+  }
+}
+
 // OFFSET: 0x009DC8E0
 // FUNCTION: fn_14324
 void CUIIntro::Paint() {
@@ -851,6 +883,73 @@ void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
       }
     }
   }
+}
+
+// OFFSET: 0x009DC950
+// FUNCTION: fn_14329
+void CUIAdventureGuide::Slot16() {
+  const char* title = LookupMessage(0xFD5);
+  this->titleBar->SetTitle(title, std::strlen(title));
+
+  std::map<int, AdventureGuide::CUIPage*> pages = {
+      {0, this->intro},
+      {1, this->quest},
+      {2, this->monster},
+      {3, this->quest},
+      {4, this->quest},
+      {5, this->item},
+      {6, this->item},
+  };
+
+  for (const auto& [type, intro] : g_adventureGuideMgr->m_intros) {
+    AdventureGuide::CUITab* tab =
+        reinterpret_cast<AdventureGuide::CUITab*(__thiscall*)(CUIListBox<AdventureGuide::CUITab>*)>(0x009DB4B0)(this->tabs);
+    tab->type = type;
+    tab->unknown_00E8->SetText(intro.text.c_str(), intro.text.size());
+    tab->unknown_00F0 = intro.title;
+    tab->unknown_0110 = this->tabs->rowHeight;
+
+    auto page = pages.find(tab->type);
+    if (page != pages.end() && page->first == tab->type) {
+      tab->page = page->second;
+    }
+
+    if (!intro.details.empty()) {
+      std::map<int, AdventureGuideDetail> details;
+      for (const auto& [id, detail] : intro.details) {
+        if (g_adventureGuideMgr->IsAvailable(tab->type, id)) {
+          details[id] = detail;
+        }
+      }
+      if (!details.empty()) {
+        CUIListBox<AdventureGuide::CUISubTab>* subTabs = tab->CreateSubTabList();
+        subTabs->Resize(subTabs->geometry.width, subTabs->rowHeight * static_cast<int>(details.size()));
+        for (const auto& [id, detail] : details) {
+          AdventureGuide::CUISubTab* subTab =
+              reinterpret_cast<AdventureGuide::CUISubTab*(__thiscall*)(CUIListBox<AdventureGuide::CUISubTab>*)>(0x009DB280)(subTabs);
+          subTab->unknown_00E8->SetText(detail.text.c_str(), detail.text.size());
+          subTab->id = id;
+          subTab->unknown_00F4 = detail.unknown_0008;
+          if (tab->type == 1) {
+            const bool isNew = g_renewQuestMgr->IsNewQuest(detail.unknown_0008);
+            subTab->unknown_00EC->Show(isNew);
+            if (!isNew) {
+              g_renewQuestMgr->AddStatusRequest(detail.unknown_0008);
+            }
+          }
+        }
+        tab->Resize(tab->geometry.width, this->tabs->rowHeight + subTabs->geometry.height);
+      }
+    }
+  }
+
+  if (!this->tabs->items.empty()) {
+    AdventureGuide::CUITab* first = this->tabs->items.front();
+    if (first) {
+      reinterpret_cast<void(__thiscall*)(CUIListBox<AdventureGuide::CUITab>*, CUIListItem*)>(0x009DE560)(this->tabs, first);
+    }
+  }
+  g_renewQuestMgr->SendQuestStatusRequest();
 }
 
 // OFFSET: 0x009DEBF0
