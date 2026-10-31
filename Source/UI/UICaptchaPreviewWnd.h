@@ -4,9 +4,11 @@
 #include "UI/Window/UIFrameWnd.h"
 
 class UICaptchaImage;
+struct UIButtonContext;
 
 class UICaptchaPreviewWnd : public UIFrameWnd {
 public:
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
@@ -19,6 +21,7 @@ public:
   /* 00BC */ unsigned char* m_imageData;
   /* 00C0 */ int m_imageSize;
   /* 00C4 */ int m_imageReceived;
+  UIButtonContext* m_controls;
 };
 
 #endif

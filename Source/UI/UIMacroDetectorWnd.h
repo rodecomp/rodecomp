@@ -8,9 +8,11 @@
 
 class UIEditCtrl;
 class UICaptchaImage;
+class UIBitmapButton;
 
 class UIMacroDetectorWnd : public UIFrameWnd {
 public:
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
   void Slot25(int x, int y) override;
@@ -26,7 +28,7 @@ public:
   void SetCountdown(unsigned char count, std::uint32_t duration);
   void InitImageData(unsigned short size);
 
-  /* 00BC */ unsigned char unknown_00BC[4];
+  /* 00BC */ UIBitmapButton* m_button;
   /* 00C0 */ char m_captchaKey[4];
   /* 00C4 */ unsigned char* m_imageData;
   /* 00C8 */ int m_imageSize;

@@ -1,6 +1,10 @@
 #include "UI/UICaptchaPreviewWnd.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIBmpRadioBtn.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include "UI/UIMacroDetectorWnd.h"
+#include "UI/Window/InputFocus.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
@@ -55,6 +59,52 @@ void UIMacroDetectorWnd::AddImageData(const void* data, int size) {
     CRagConnection& connection = GetRagConnection();
     connection.Send(g_packetLengths.FixedLength(packetType), &packetType);
   }
+}
+
+// OFFSET: 0x007ED660
+// FUNCTION: fn_09810
+void UICaptchaPreviewWnd::Slot15(int, int) {
+  this->m_image = new UICaptchaImage();
+  this->m_image->SetSize(220, 90);
+  this->m_image->Move(0, 0);
+  this->AddChild(this->m_image);
+  this->AddCloseButton(*this->m_controls, "", 0);
+}
+
+// OFFSET: 0x007ED710
+// FUNCTION: fn_09811
+void UIMacroDetectorWnd::Slot15(int, int) {
+  this->geometry.currentAlpha = 0xBB;
+  this->geometry.targetAlpha = 0xBB;
+
+  this->m_image = new UICaptchaImage();
+  this->m_image->SetSize(220, 90);
+  this->m_image->Move(60, 159);
+  this->AddChild(this->m_image);
+
+  this->m_editCtrl = new UIEditCtrl();
+  this->m_editCtrl->SetSize(200, 16);
+  this->m_editCtrl->Move(45, 262);
+  this->m_editCtrl->maximum = 16;
+  this->m_editCtrl->Background(255, 255, 255);
+  this->m_editCtrl->flat = 0;
+  this->m_editCtrl->Border(125, 125, 125);
+  this->m_editCtrl->TextColor(0, 0xFFFFFFFF);
+  this->m_editCtrl->preserveInput = 1;
+  this->AddChild(this->m_editCtrl);
+
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_editCtrl);
+
+  UIBitmapButton* button = new UIBitmapButton();
+  this->m_button = button;
+  button->SetBitmap("유저인터페이스\\btn_get.bmp", 0, 0);
+  button->SetBitmap("유저인터페이스\\btn_get_a.bmp", 1, 0);
+  button->SetBitmap("유저인터페이스\\btn_get_b.bmp", 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(253, 261);
+  button->SetId(345);
+  this->AddChild(button);
 }
 
 // OFFSET: 0x007ED950
