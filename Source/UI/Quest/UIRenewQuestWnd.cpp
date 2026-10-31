@@ -252,6 +252,195 @@ int UIOngoingQuestScrollWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 }
 
 // OFFSET: 0x007FA150
+// FUNCTION: fn_09948
+void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
+  const RenewQuestOngoingInfo& quest = g_renewQuestMgr->GetOngoingQuest(questId);
+  this->Clear();
+  this->horizontalBar = nullptr;
+  this->scrollBar = nullptr;
+  this->m_huntTexts.clear();
+  this->m_questId = questId;
+  TextContext context(*this->geometry.surface);
+
+  UIStaticBitmap* bitmap = new UIStaticBitmap();
+  bitmap->SetBitmap("유저인터페이스\\renew_questui\\img_poring.bmp");
+  bitmap->SetSize(bitmap->geometry.width, bitmap->geometry.height);
+  bitmap->Move(9, 9);
+  this->AddScrollChild(bitmap);
+
+  UIStaticText* label = new UIStaticText();
+  context.SetFont(0, 12, 1, 0);
+  SIZE size = context.Measure(LookupMessage(3401), static_cast<int>(std::strlen(LookupMessage(3401))));
+  label->SetSize(size.cx + 4, 12);
+  label->SetText(LookupMessage(3401), 0);
+  label->Move(24, 9);
+  this->AddScrollChild(label);
+
+  UITagTextViewer* viewer = new UITagTextViewer(*this->m_context);
+  viewer->SetSize(290, 200);
+  viewer->Move(32, 30);
+  viewer->m_font = TagTextViewer::TextFont{0x38302E, 12, 0, 0};
+  this->AddScrollChild(viewer);
+
+  int height;
+  if (quest.m_descriptions.empty()) {
+    height = this->m_lineHeight;
+  } else {
+    for (unsigned int index = 0; index < quest.m_descriptions.size(); ++index) {
+      viewer->SendMsg(nullptr, 0x1D, reinterpret_cast<std::intptr_t>(quest.m_descriptions[index].c_str()), 0, 0, 0);
+    }
+    height = viewer->ContentHeight();
+  }
+  viewer->Resize(290, height);
+  int y = height + 30 + this->m_lineHeight;
+
+  bitmap = new UIStaticBitmap();
+  bitmap->SetBitmap("유저인터페이스\\renew_questui\\img_line.bmp");
+  bitmap->SetSize(bitmap->geometry.width, bitmap->geometry.height);
+  bitmap->Move(-1, y);
+  this->AddScrollChild(bitmap);
+  y += bitmap->geometry.height + 8;
+
+  bitmap = new UIStaticBitmap();
+  bitmap->SetBitmap("유저인터페이스\\renew_questui\\img_poring.bmp");
+  bitmap->SetSize(bitmap->geometry.width, bitmap->geometry.height);
+  bitmap->Move(9, y);
+  this->AddScrollChild(bitmap);
+
+  label = new UIStaticText();
+  size = context.Measure(LookupMessage(3402), static_cast<int>(std::strlen(LookupMessage(3402))));
+  label->SetSize(size.cx + 4, 12);
+  label->SetText(LookupMessage(3402), 0);
+  label->Move(24, y);
+  this->AddScrollChild(label);
+  y += 22;
+
+  for (int index = 0; index < quest.m_huntCount; ++index) {
+    UIStaticText* hunt = new UIStaticText();
+    hunt->SetSize(10, 14);
+    hunt->Move(32, y);
+    this->AddScrollChild(hunt);
+    this->m_huntTexts.push_back(hunt);
+    y += 17;
+  }
+  this->RefreshHuntTexts();
+
+  bitmap = new UIStaticBitmap();
+  bitmap->SetBitmap("유저인터페이스\\renew_questui\\img_line.bmp");
+  bitmap->SetSize(bitmap->geometry.width, bitmap->geometry.height);
+  bitmap->Move(-1, y);
+  this->AddScrollChild(bitmap);
+  y += bitmap->geometry.height + 8;
+
+  if (!quest.unknown_007C.empty()) {
+    UINpcSprWnd* npc = new UINpcSprWnd(*this->m_context);
+    npc->SetSprite(75, 145, quest.unknown_007C);
+    npc->Move(this->geometry.width - npc->geometry.width - 30, y);
+    if (!quest.unknown_0094.empty()) {
+      npc->SetDestination(quest.unknown_0094, quest.unknown_00AC, quest.unknown_00B0);
+    }
+    this->AddScrollChild(npc);
+  }
+
+  bitmap = new UIStaticBitmap();
+  bitmap->SetBitmap("유저인터페이스\\renew_questui\\img_poring.bmp");
+  bitmap->SetSize(bitmap->geometry.width, bitmap->geometry.height);
+  bitmap->Move(9, y);
+  this->AddScrollChild(bitmap);
+
+  label = new UIStaticText();
+  size = context.Measure(LookupMessage(3403), static_cast<int>(std::strlen(LookupMessage(3403))));
+  label->SetSize(size.cx + 4, 12);
+  label->SetText(LookupMessage(3403), 0);
+  label->Move(24, y);
+  this->AddScrollChild(label);
+  y += 22;
+
+  label = new UIStaticText();
+  size = context.Measure(LookupMessage(3404), static_cast<int>(std::strlen(LookupMessage(3404))));
+  label->SetSize(size.cx + 4, 12);
+  label->SetText(LookupMessage(3404), 0);
+  label->Move(32, y);
+  this->AddScrollChild(label);
+
+  label = new UIStaticText();
+  size = context.Measure(quest.unknown_01B8.c_str(), static_cast<int>(quest.unknown_01B8.size()));
+  label->SetSize(size.cx + 4, 12);
+  label->SetText(quest.unknown_01B8.c_str(), 0);
+  label->SetColor(29, 85, 160);
+  label->Move(109, y);
+  this->AddScrollChild(label);
+  y += 20;
+
+  label = new UIStaticText();
+  size = context.Measure(LookupMessage(3405), static_cast<int>(std::strlen(LookupMessage(3405))));
+  label->SetSize(size.cx + 4, 12);
+  label->SetText(LookupMessage(3405), 0);
+  label->Move(32, y);
+  this->AddScrollChild(label);
+
+  label = new UIStaticText();
+  size = context.Measure(quest.unknown_01D0.c_str(), static_cast<int>(quest.unknown_01D0.size()));
+  label->SetSize(size.cx + 4, 12);
+  label->SetText(quest.unknown_01D0.c_str(), 0);
+  label->SetColor(29, 85, 160);
+  label->Move(109, y);
+  this->AddScrollChild(label);
+  y += 20;
+
+  label = new UIStaticText();
+  size = context.Measure(LookupMessage(3406), static_cast<int>(std::strlen(LookupMessage(3406))));
+  label->SetSize(size.cx + 4, 12);
+  label->SetText(LookupMessage(3406), 0);
+  label->Move(32, y);
+  this->AddScrollChild(label);
+
+  for (unsigned int index = 0; index < quest.m_rewards.size(); ++index) {
+    UIStaticBitmap* icon = new UIStaticBitmap();
+    icon->SetBitmap("유저인터페이스\\renew_questui\\img_questIocn.bmp");
+    icon->SetSize(icon->geometry.width, icon->geometry.height);
+    icon->Move(109, y);
+    this->AddScrollChild(icon);
+    const int rowHeight = icon->geometry.height;
+
+    if (quest.m_rewards[index].first != 0) {
+      const ITEM_DESC& description = FindItemDescription(quest.m_rewards[index].first);
+      const std::string path = FormatOwnedString("유저인터페이스\\item\\%s.bmp", description.identifiedResource ? description.identifiedResource : "사과");
+      UIStaticBitmap* item = new UIStaticBitmap();
+      item->SetBitmap(path.c_str());
+      item->SetSize(item->geometry.width, item->geometry.height);
+      item->Move(116, y + 7);
+      this->AddScrollChild(item);
+
+      UIStaticText* name = new UIStaticText();
+      size = context.Measure(description.identifiedName, static_cast<int>(std::strlen(description.identifiedName)));
+      name->SetSize(size.cx + 4, 12);
+      name->SetText(description.identifiedName, 0);
+      name->SetColor(0, 0, 0);
+      name->Move(154, y + 5);
+      this->AddScrollChild(name);
+
+      UIStaticText* count = new UIStaticText();
+      const std::string countText = FormatOwnedString(LookupMessage(182), quest.m_rewards[index].second);
+      size = context.Measure(countText.c_str(), static_cast<int>(countText.size()));
+      count->SetSize(size.cx + 4, 12);
+      count->SetText(countText.c_str(), 0);
+      count->SetColor(29, 85, 160);
+      count->Move(154, y + 20);
+      this->AddScrollChild(count);
+      y += rowHeight + 3;
+    }
+  }
+
+  this->horizontalBar = new UIScrollBar(*this->m_context);
+  this->horizontalBar->Configure(0, this->geometry.height - this->scrollBarHeight, 0, this->geometry.width - this->scrollBarWidth);
+  this->AddChild(this->horizontalBar);
+  this->scrollBar = new UIRenewQuestScrollBar(*this->m_context);
+  this->scrollBar->Configure(this->geometry.width - this->scrollBarWidth, 0, 1, this->geometry.height - this->scrollBarHeight);
+  this->AddChild(this->scrollBar);
+  this->Slot53();
+  this->Invalidate();
+}
 
 // OFFSET: 0x007FAF70
 // FUNCTION: fn_09949
