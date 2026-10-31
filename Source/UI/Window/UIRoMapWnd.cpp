@@ -567,7 +567,7 @@ void UIRoMapWnd::Slot27(int x, int y) {
 
 // OFFSET: 0x0091DBB0
 // FUNCTION: fn_12624
-void RoMapKafraMarkers::Build(std::string mapName) {
+void CKafraMoveMapServiceInfo::Build(std::string mapName) {
   std::vector<std::string> names = g_kafraServiceMapList[mapName];
   this->markers.clear();
   for (std::vector<std::string>::iterator it = names.begin(); it != names.end(); ++it) {
@@ -584,7 +584,7 @@ void RoMapKafraMarkers::Build(std::string mapName) {
 
 // OFFSET: 0x00932C80
 // FUNCTION: fn_12716
-void RoMapKafraMarkers::Update(UIRoMapWnd* wnd, float elapsed) {
+void CKafraMoveMapServiceInfo::Update(UIRoMapWnd* wnd, float elapsed) {
   WorldViewRecord* record = wnd->unknown_00C0;
   if (record && g_kafraServiceMapList.find(record->name) != g_kafraServiceMapList.end()) {
     if (this->mapName != record->name) {
@@ -603,4 +603,12 @@ void RoMapKafraMarkers::Update(UIRoMapWnd* wnd, float elapsed) {
 
   this->mapName = "";
   this->markers.clear();
+}
+
+// OFFSET: 0x009144B0
+// FUNCTION: fn_12541
+UIRoMapWnd::~UIRoMapWnd() {
+  delete reinterpret_cast<WorldViewArea*>(this->unknown_00C8);
+  delete this->unknown_00C0;
+  this->unknown_00D0 = 0;
 }

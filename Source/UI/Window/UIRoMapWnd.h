@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_WINDOW_UIROMAPWND_H
 #define RAGNAROK_SOURCE_UI_WINDOW_UIROMAPWND_H
 
+#include "Contents/FlyingShipRouteInfo.h"
 #include "Contents/WorldView/WorldViewData.h"
 #include "UI/Window/UIFrameWnd.h"
 
@@ -34,11 +35,12 @@ extern CWorldViewMgr g_worldViewMgr;
 
 class UIRoMapWnd;
 
-struct RoMapKafraMarkers {
+struct CKafraMoveMapServiceInfo {
+  virtual ~CKafraMoveMapServiceInfo() = default;
+
   void Build(std::string mapName);
   void Update(UIRoMapWnd* wnd, float elapsed);
 
-  /* 0000 */ int unknown_0000;
   /* 0004 */ std::vector<RoMapMarker> markers;
   /* 0010 */ RoMapMarker current;
   /* 004C */ std::string mapName;
@@ -46,9 +48,10 @@ struct RoMapKafraMarkers {
 };
 
 class UIRoMapWnd : public UIFrameWnd {
-  friend struct RoMapKafraMarkers;
+  friend struct CKafraMoveMapServiceInfo;
 
 public:
+  ~UIRoMapWnd() override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot33(int x, int y) override;
@@ -81,11 +84,13 @@ private:
   /* 00D0 */ int unknown_00D0;
   /* 00D4 */ unsigned char m_showLabels;
   /* 00D5 */ unsigned char unknown_00D5[0xB];
-  /* 00E0 */ RoMapKafraMarkers m_kafraMarkers;
-  /* 0148 */ unsigned char unknown_0148[0xA0];
+  /* 00E0 */ CKafraMoveMapServiceInfo m_kafraMarkers;
+  /* 0148 */ CFlyingShipRouteInfo m_flyingShipRoute;
+  /* 0198 */ CFlyingShipRouteInfo m_flyingShipRoute2;
   /* 01E8 */ int m_mouseX;
   /* 01EC */ int m_mouseY;
-  /* 01F0 */ unsigned char unknown_01F0[0x18];
+  /* 01F0 */ unsigned char unknown_01F0[0xC];
+  /* 01FC */ std::vector<std::string> unknown_01FC;
   /* 0208 */ int unknown_0208;
   /* 020C */ unsigned char unknown_020C[0xC];
   /* 0218 */ int m_kafraLeft;
@@ -99,7 +104,8 @@ static_assert(sizeof(RoMapTooltipBox) == 0x14);
 static_assert(sizeof(RoMapMarker) == 0x3C);
 static_assert(offsetof(RoMapMarker, area) == 0x18);
 static_assert(offsetof(RoMapMarker, centerX) == 0x2C);
-static_assert(sizeof(RoMapKafraMarkers) == 0x68);
+static_assert(sizeof(CKafraMoveMapServiceInfo) == 0x68);
+static_assert(offsetof(CKafraMoveMapServiceInfo, markers) == 0x04);
 #endif
 
 #endif
