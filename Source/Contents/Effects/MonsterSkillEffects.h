@@ -343,9 +343,13 @@ class CServantWeaponEffect : public CEffect {
 public:
   CServantWeaponEffect();
   void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
+  void SetShoot(int column);
+  void SetPhantomShot(long long column);
+  void SetSignShot(int column);
 
   /* 00CC */ vector3d offsets[5];
   /* 0108 */ EZ2STREmitter* emitters[3][5];
@@ -356,8 +360,12 @@ public:
   CServantWeaponNewEffect();
   bool Slot06() override;
   void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   void Close() override;
+  void AddWeapon();
+  EZ2STREmitter* CreateShot(float angle, int skill);
+  void Shoot(int skill);
 
   /* 00CC */ std::list<EZ2STREmitter*> emitters;
   /* 00D4 */ std::list<EZ2STREmitter*> trails;

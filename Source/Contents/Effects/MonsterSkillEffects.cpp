@@ -1530,6 +1530,68 @@ CServantWeaponEffect::CServantWeaponEffect() : CEffect(-1), offsets{} {
 CServantWeaponNewEffect::CServantWeaponNewEffect() : CEffect(2460) {
 }
 
+// OFFSET: 0x00722A70
+// FUNCTION: fn_07394
+void CServantWeaponNewEffect::AddWeapon() {
+  if (this->emitters.size() < 5) {
+    float angle = static_cast<float>(this->emitters.size()) * 72.0f + 90.0f;
+    if (angle > 360.0f) {
+      angle -= 360.0f;
+    }
+
+    CEZ2STRParticle* particle =
+        static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    if (particle) {
+      particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANTWEAPON\\servantweapon_cast\\servantweapon_cast.str"));
+      particle->m_scale = 0.12f;
+      EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
+      emitter->angle = angle;
+      this->emitters.push_back(emitter);
+      this->AddEvent(0, "effect\\DK_SERVANTWEAPON.wav", this->frame, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00722F20
+// FUNCTION: fn_07395
+void CServantWeaponEffect::SetShoot(int column) {
+  EZ2STREmitter* emitter =
+      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  AsParticle(emitter)->Load(std::string("servantweapon\\servantweapon_shoot\\servantweapon_shoot.str"));
+  if (this->emitters[2][column] != nullptr) {
+    FreeParticle(AsParticle(this->emitters[2][column]));
+  }
+  this->emitters[2][column] = emitter;
+}
+
+// OFFSET: 0x00723080
+// FUNCTION: fn_07396
+void CServantWeaponEffect::SetPhantomShot(long long column) {
+  if (column < 5) {
+    EZ2STREmitter* emitter =
+        reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    if (emitter) {
+      AsParticle(emitter)->Load(std::string("servant_phantom\\servant_phantom_shot\\servant_phantom_shot.str"));
+      if (this->emitters[2][column] != nullptr) {
+        FreeParticle(AsParticle(this->emitters[2][column]));
+      }
+      this->emitters[2][column] = emitter;
+    }
+  }
+}
+
+// OFFSET: 0x00723210
+// FUNCTION: fn_07397
+void CServantWeaponEffect::SetSignShot(int column) {
+  EZ2STREmitter* emitter =
+      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  AsParticle(emitter)->Load(std::string("servant_sign\\servant_sign_shot\\servant_sign_shot.str"));
+  if (this->emitters[2][column] != nullptr) {
+    FreeParticle(AsParticle(this->emitters[2][column]));
+  }
+  this->emitters[2][column] = emitter;
+}
+
 // OFFSET: 0x007233D0
 // FUNCTION: fn_07399
 void CServantWeaponNewEffect::Close() {
@@ -1592,6 +1654,155 @@ bool CServantWeaponNewEffect::Slot06() {
   return this->ActorExists();
 }
 
+// OFFSET: 0x00723D90
+// FUNCTION: fn_07404
+EZ2STREmitter* CServantWeaponNewEffect::CreateShot(float angle, int skill) {
+  CEZ2STRParticle* particle =
+      static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  if (!particle) {
+    return nullptr;
+  }
+
+  switch (skill) {
+  case 5202:
+    particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANTWEAPON\\servantweapon_shoot\\servantweapon_shoot.str"));
+    break;
+  case 5203:
+    particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANT_W_SIGN\\servant_sign_shot\\servant_sign_shot.str"));
+    break;
+  case 5204:
+    particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANT_W_PHANTOM\\servant_phantom_shot\\servant_phantom_shot.str"));
+    break;
+  case 5205:
+    particle->Load(
+        std::string("DRAGON_KNIGHT\\DK_SERVANT_W_DEMOL\\servant_demolition_shot\\servant_demolition_shot.str"));
+    break;
+  }
+
+  particle->m_scale = 0.12f;
+  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
+  emitter->angle = angle;
+  return emitter;
+}
+
+// INLINED
+static __forceinline bool IsServantEmitterAlive(EZ2STREmitter* emitter) {
+  if (emitter->lifetime == 0.0f) {
+    return true;
+  }
+
+  return emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed);
+}
+
+// INLINED
+static __forceinline void PlaceServantEmitter(CServantWeaponEffect* effect, EZ2STREmitter* emitter, unsigned int column) {
+  if (column >= 5) {
+    return;
+  }
+
+  const vector3d position = {effect->position[0], effect->position[1], effect->position[2]};
+  const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+  const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+  const vector3d& offset = effect->offsets[column];
+  const float viewX =
+      position.x * view.values[0] + position.y * view.values[3] + position.z * view.values[6] + view.values[9] + offset.x;
+  const float viewY =
+      position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10] + offset.y;
+  const float viewZ =
+      position.x * view.values[2] + position.y * view.values[5] + position.z * view.values[8] + view.values[11] + offset.z;
+  emitter->position.x = viewX * inverse.values[0] + viewY * inverse.values[3] + viewZ * inverse.values[6] + inverse.values[9];
+  emitter->position.y = viewX * inverse.values[1] + viewY * inverse.values[4] + viewZ * inverse.values[7] + inverse.values[10];
+  emitter->position.z = viewX * inverse.values[2] + viewY * inverse.values[5] + viewZ * inverse.values[8] + inverse.values[11];
+  AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
+  ++emitter->elapsed;
+}
+
+// OFFSET: 0x00724100
+// FUNCTION: fn_07405
+void CServantWeaponEffect::Slot03() {
+  for (int column = 0; column < 5; ++column) {
+    EZ2STREmitter* emitter = this->emitters[0][column];
+    if (emitter != nullptr) {
+      PlaceServantEmitter(this, emitter, column);
+    }
+
+    emitter = this->emitters[1][column];
+    if (emitter != nullptr) {
+      if (IsServantEmitterAlive(emitter)) {
+        PlaceServantEmitter(this, emitter, column);
+      } else {
+        FreeParticle(AsParticle(emitter));
+        this->emitters[1][column] = nullptr;
+        if (this->emitters[0][column] == nullptr) {
+          CEZ2STRParticle* particle =
+              static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+          particle->Load(std::string("servantweapon\\servantweapon\\servantweapon.str"));
+          particle->m_loop = true;
+          this->emitters[0][column] = reinterpret_cast<EZ2STREmitter*>(particle);
+        }
+      }
+    }
+
+    emitter = this->emitters[2][column];
+    if (emitter != nullptr) {
+      if (IsServantEmitterAlive(emitter)) {
+        PlaceServantEmitter(this, emitter, column);
+      } else {
+        FreeParticle(AsParticle(emitter));
+        this->emitters[2][column] = nullptr;
+      }
+    }
+  }
+}
+
+// INLINED
+static __forceinline void OrbitServantEmitter(const CServantWeaponNewEffect* effect, EZ2STREmitter* emitter) {
+  const float radians = emitter->angle / 180.0f * 3.141592f;
+  const float sine = std::sin(radians) * 13.0f;
+  const float cosine = std::cos(radians) * 13.0f;
+  emitter->position.z = sine + effect->position[2];
+  emitter->position.y = effect->position[1] - 10.0f;
+  emitter->position.x = cosine + effect->position[0];
+}
+
+// OFFSET: 0x00724900
+// FUNCTION: fn_07406
+void CServantWeaponNewEffect::Slot03() {
+  for (auto it = this->emitters.begin(); it != this->emitters.end();) {
+    if (!AsParticle(*it)->Process(0.0f, 0.0f, 0.0f)) {
+      const float angle = (*it)->angle;
+      CEZ2STRParticle* particle =
+          static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+      if (!particle) {
+        FreeParticle(AsParticle(*it));
+        it = this->emitters.erase(it);
+        continue;
+      }
+
+      particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANTWEAPON\\servantweapon\\servantweapon.str"));
+      particle->m_loop = true;
+      particle->m_scale = 0.12f;
+      reinterpret_cast<EZ2STREmitter*>(particle)->angle = angle;
+      FreeParticle(AsParticle(*it));
+      *it = reinterpret_cast<EZ2STREmitter*>(particle);
+    }
+
+    OrbitServantEmitter(this, *it);
+    ++it;
+  }
+
+  for (auto it = this->trails.begin(); it != this->trails.end();) {
+    if (!AsParticle(*it)->Process(0.0f, 0.0f, 0.0f)) {
+      FreeParticle(AsParticle(*it));
+      it = this->trails.erase(it);
+      continue;
+    }
+
+    OrbitServantEmitter(this, *it);
+    ++it;
+  }
+}
+
 // OFFSET: 0x00724EB0
 // FUNCTION: fn_07407
 void CServantWeaponEffect::Slot04() {
@@ -1617,6 +1828,21 @@ void CServantWeaponNewEffect::Slot04() {
 
   for (auto it = this->trails.begin(); it != this->trails.end(); ++it) {
     AsParticle(*it)->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  }
+}
+
+// OFFSET: 0x00725090
+// FUNCTION: fn_07409
+void CServantWeaponNewEffect::Shoot(int skill) {
+  if (!this->emitters.empty()) {
+    EZ2STREmitter* weapon = this->emitters.back();
+    EZ2STREmitter* shot = this->CreateShot(weapon->angle, skill);
+    if (shot) {
+      FreeParticle(AsParticle(weapon));
+      this->emitters.pop_back();
+      this->trails.push_back(shot);
+      this->AddEvent(0, "effect\\DK_SERVANTWEAPON.wav", this->frame, 0);
+    }
   }
 }
 
