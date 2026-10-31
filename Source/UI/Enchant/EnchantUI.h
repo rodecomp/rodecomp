@@ -17,11 +17,31 @@ class CUITab;
 struct EnchantInfo;
 struct EnchantOptionInfo;
 
+namespace EnchantUI {
+class CUITargetItem;
+class CUIMainPage;
+class CUIReset;
+}
+
 class CUIEnchantUI : public CUIFrameWnd {
 public:
   /* 00D8 */ CUIControl* background;
   /* 00DC */ CUIControl* titleBar;
+  /* 00E0 */ CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>* targetList;
+  /* 00E4 */ CUITab* tab;
+  /* 00E8 */ EnchantUI::CUIMainPage* normalPage;
+  /* 00EC */ EnchantUI::CUIMainPage* upgradePage;
+  /* 00F0 */ EnchantUI::CUIReset* resetPage;
+  /* 00F4 */ CUITextViewer* textViewer;
+  /* 00F8 */ uint64_t group;
+  /* 0100 */ EnchantInfo* enchantInfo;
+  /* 0104 */ int unknown_0104;
 
+  // INLINED
+  CUIEnchantUI()
+      : background(nullptr), titleBar(nullptr), targetList(nullptr), tab(nullptr), normalPage(nullptr), upgradePage(nullptr), resetPage(nullptr),
+        textViewer(nullptr), group(0), enchantInfo(nullptr) {
+  }
   ~CUIEnchantUI() override;
   bool CanHitTest() override;
   void Slot16() override;

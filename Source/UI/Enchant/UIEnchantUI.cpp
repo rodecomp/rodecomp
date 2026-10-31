@@ -103,6 +103,12 @@ void CUIEnchantPage::Slot54(int argument1, int argument2) {
 }
 }
 
+// OFFSET: 0x009F9710
+// FUNCTION: fn_14808
+CUIEnchantUI* CreateEnchantUI() {
+  return new CUIEnchantUI();
+}
+
 // OFFSET: 0x00A021D0
 // FUNCTION: fn_14838
 void CUIRadioButton::SetOnSelect(std::function<void(CUIRadioButton*)> callback) {
