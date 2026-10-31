@@ -19,9 +19,9 @@ struct RodexMail {
   /* 0054 */ unsigned char hasItem;
   /* 0055 */ std::array<std::byte, 0x133> unknown_0055;
   /* 0188 */ std::int64_t zeny;
-  /* 0190 */ std::uint8_t unknown_0190;
+  /* 0190 */ std::uint8_t unknown_0190 = 0;
   /* 0191 */ std::array<std::byte, 3> unknown_0191;
-  /* 0194 */ int unknown_0194;
+  /* 0194 */ int unknown_0194 = -1;
 };
 
 class RodexMailStore {

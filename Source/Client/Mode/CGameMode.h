@@ -316,6 +316,7 @@ public:
   void NotifyResult4138(int result);
   void NotifyResult2877(int result);
   void ReceiveRodexMailDeleted(const unsigned char* packet);
+  void ReceiveRodexMailList(const unsigned char* packet);
   void NotifyResult3562(const unsigned char* packet);
   void IgnoreRemovedPacket6();
   void ReceiveRouletteResult(const unsigned char* packet);

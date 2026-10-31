@@ -4126,3 +4126,65 @@ void CGameMode::ReceiveAcceptEnter(const unsigned char* data) {
     g_pingLogFirstTick = 0;
   }
 }
+
+#pragma pack(push, 1)
+struct RodexMailListEntry {
+  /* 0000 */ std::uint8_t openType;
+  /* 0001 */ std::int64_t mailId;
+  /* 0009 */ std::uint8_t isRead;
+  /* 000A */ std::uint8_t type;
+  /* 000B */ char sender[24];
+  /* 0023 */ int expireTime;
+  /* 0027 */ std::int16_t titleLength;
+  /* 0029 */ char title[1];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D68730
+// FUNCTION: fn_22043
+void CGameMode::ReceiveRodexMailList(const unsigned char* packet) {
+  for (int offset = 5; offset < *reinterpret_cast<const std::int16_t*>(packet + 2);) {
+    const RodexMailListEntry* entry = reinterpret_cast<const RodexMailListEntry*>(packet + offset);
+    std::map<std::int64_t, RodexMail>* mails = nullptr;
+    switch (entry->openType) {
+    case 0:
+      mails = &g_rodexMailStore->m_mails0;
+      break;
+    case 1:
+      mails = &g_rodexMailStore->m_mails1;
+      break;
+    case 2:
+      mails = &g_rodexMailStore->m_mails2;
+      break;
+    }
+
+    if (mails) {
+      RodexMail mail;
+      mail.isRead = entry->isRead;
+      mail.unknown_0001 = entry->type;
+      mail.unknown_0024.assign(entry->title, entry->titleLength);
+      mail.unknown_0004.assign(entry->sender, std::min<std::size_t>(std::strlen(entry->sender), 24));
+      mail.unknown_0020 = _time32(nullptr) + entry->expireTime;
+      if (entry->openType == 0 && !(mail.unknown_0001 & 8) && !g_session.HasUnknown809C(mail.unknown_0004)) {
+        mail.unknown_0194 = g_session.IsKnownName(mail.unknown_0004);
+      } else {
+        mail.unknown_0194 = 1;
+      }
+
+      if (mails->find(entry->mailId) == mails->end() && !mail.isRead) {
+        ++g_rodexMailStore->unknown_0018;
+      }
+      mails->insert(std::pair<const std::int64_t, RodexMail>(entry->mailId, mail));
+    }
+
+    offset += entry->titleLength + 0x29;
+  }
+
+  if (packet[4] == 1) {
+    g_rodexMailStore->unknown_001C = true;
+    UIWindow* window = g_windowMgr.LookupWindow(0x107);
+    if (window) {
+      window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+    }
+  }
+}
