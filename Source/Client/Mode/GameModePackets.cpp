@@ -41,6 +41,7 @@
 struct SessionMessengerContext {
   void UpdateRandomStats();
   int GetList9Size() const;
+  void KeepEquipment();
 };
 
 struct ClientItemLists {
@@ -108,6 +109,39 @@ namespace {
     /* 000D */ std::uint16_t total;
     /* 000F */ unsigned char unknown_000F[4];
     /* 0013 */ char name[1];
+  };
+
+  struct PacketLengthHeader {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::int16_t length;
+  };
+
+  struct Item1740Record {
+    /* 0000 */ std::int16_t index;
+    /* 0002 */ int itemId;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ unsigned char identified;
+    /* 0008 */ std::uint16_t location;
+    /* 000A */ std::uint16_t wearState;
+    /* 000C */ unsigned char unknown_000C;
+    /* 000D */ unsigned char refine;
+    /* 000E */ std::uint32_t cards[4];
+    /* 001E */ std::uint32_t expireTime;
+  };
+
+  struct Item1740EquipRecord {
+    /* 0000 */ std::int16_t index;
+    /* 0002 */ int itemId;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ unsigned char identified;
+    /* 0008 */ std::uint16_t location;
+    /* 000A */ std::uint16_t wearState;
+    /* 000C */ unsigned char unknown_000C;
+    /* 000D */ unsigned char refine;
+    /* 000E */ std::uint32_t cards[4];
+    /* 001E */ std::uint32_t expireTime;
+    /* 0022 */ std::uint16_t bindOnEquip;
+    /* 0024 */ std::uint16_t sprite;
   };
 
   struct ItemStoreListHeader {
@@ -180,6 +214,9 @@ namespace {
   static_assert(sizeof(StoreEquipRecord) == 0x29);
   static_assert(sizeof(StoreEquipOptionRecord) == 0x43);
   static_assert(sizeof(StoreNormalRecord) == 0x22);
+  static_assert(sizeof(PacketLengthHeader) == 0x04);
+  static_assert(sizeof(Item1740Record) == 0x22);
+  static_assert(sizeof(Item1740EquipRecord) == 0x26);
 
   // INLINED
   int CountStoreItemOptions(const StoreItemOption* options) {
@@ -1522,4 +1559,84 @@ void __stdcall sub_D08640(const unsigned char* packet) {
     *reinterpret_cast<const int*>(packet + 8),
     *reinterpret_cast<const int*>(packet + 0xC),
     *reinterpret_cast<const int*>(packet + 0x10));
+}
+
+// OFFSET: 0x00D246B0
+// FUNCTION: fn_21668
+void CGameMode::ReceiveItem1740BasicList(const unsigned char* data) {
+  const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
+  const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(Item1740Record);
+  const Item1740Record* record = reinterpret_cast<const Item1740Record*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    ITEM_INFO item;
+    item.unknown_0000[0] = record->type;
+    item.unknown_0000[1] = record->index;
+    item.unknown_0000[2] = record->location;
+    item.unknown_0000[3] = record->wearState;
+    item.quantity = 1;
+    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.SetItemId(record->itemId);
+    item.identified = record->identified;
+    item.unknown_005D = record->unknown_000C;
+    item.unknown_0060 = record->refine;
+    item.unknown_0068 = record->expireTime;
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+  }
+
+  g_session.RefreshItem1740Window();
+}
+
+// OFFSET: 0x00D24810
+// FUNCTION: fn_21669
+void CGameMode::ReceiveItem1740BasicListBind(const unsigned char* data) {
+  const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
+  const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(Item1740EquipRecord);
+  const Item1740EquipRecord* record = reinterpret_cast<const Item1740EquipRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    ITEM_INFO item;
+    item.unknown_0000[0] = record->type;
+    item.unknown_0000[1] = record->index;
+    item.unknown_0000[2] = record->location;
+    item.unknown_0000[3] = record->wearState;
+    item.quantity = 1;
+    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.SetItemId(record->itemId);
+    item.identified = record->identified;
+    item.unknown_005D = record->unknown_000C;
+    item.unknown_0060 = record->refine;
+    item.unknown_0068 = record->expireTime;
+    item.unknown_0064 = record->bindOnEquip;
+    item.unknown_0070 = record->sprite;
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+  }
+
+  g_session.RefreshItem1740Window();
+}
+
+// OFFSET: 0x00D2D770
+// FUNCTION: fn_21720
+void CGameMode::ReceiveItemInventoryList(const unsigned char* data) {
+  reinterpret_cast<SessionMessengerContext*>(&g_session)->KeepEquipment();
+
+  const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
+  const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(StoreNormalRecord);
+  const StoreNormalRecord* record = reinterpret_cast<const StoreNormalRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    ITEM_INFO item;
+    item.unknown_0000[0] = record->type;
+    item.unknown_0000[1] = record->index;
+    item.unknown_0000[3] = record->location;
+    item.unknown_0000[2] = 0;
+    item.quantity = record->amount;
+    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.SetItemId(record->itemId);
+    item.identified = record->flags & 1;
+    item.unknown_005D = 0;
+    item.unknown_0060 = 0;
+    item.unknown_0068 = record->expireTime;
+    item.unknown_0074[0] = (record->flags >> 1) & 1;
+    g_session.UpdateInventoryItem(item, 0);
+  }
+
+  RefreshItemWindows(&g_windowMgr);
 }

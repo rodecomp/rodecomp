@@ -315,6 +315,9 @@ public:
   void ReceiveItem1740Add(const unsigned char* packet);
   void ReceiveItem1740AddOptions(const unsigned char* packet);
   void ReceiveItem1740AddGrade(const unsigned char* packet);
+  void ReceiveItem1740BasicList(const unsigned char* packet);
+  void ReceiveItem1740BasicListBind(const unsigned char* packet);
+  void ReceiveItemInventoryList(const unsigned char* packet);
   void ReceiveUnknown05C4Result(const unsigned char* packet);
   void ReceiveHpSpRecovery(const unsigned char* packet, int variant);
   void ReceiveUnknown173A5BC(const unsigned char* packet);
