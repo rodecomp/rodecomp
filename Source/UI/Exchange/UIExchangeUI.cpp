@@ -51,6 +51,24 @@ int g_exchangeMyZeny;
 // GLOBAL: gl_25005
 int g_exchangeOtherZeny;
 
+// OFFSET: 0x00A0F790
+// FUNCTION: fn_15176
+bool UnusedTrueA0F790() {
+  return true;
+}
+
+// OFFSET: 0x00A0F7A0
+// FUNCTION: fn_15177
+bool UnusedTrueA0F7A0() {
+  return true;
+}
+
+// OFFSET: 0x00A0F7B0
+// FUNCTION: fn_15178
+bool UnusedTrueA0F7B0() {
+  return true;
+}
+
 // OFFSET: 0x00A0F840
 
 // OFFSET: 0x00A0FA00
