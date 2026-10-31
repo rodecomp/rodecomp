@@ -236,6 +236,24 @@ struct CRagEffect : CRenderObject {
   int WarpZone();
   void Enhance();
   void HealSP();
+  void Cloud11Burst(char kind);
+  void White02Burst(char kind);
+  void GrandCrossRings(short angle, char kind);
+  void WaterfallSheets(char first, char second, char third);
+  void EmpShockBurst(const char* name, char flag);
+  void TexturedMagicRing(const char* name, char kind);
+  void TexturedBlueRing(const char* name);
+  void SonicSlashFan(char kind);
+  void IncAgilityCenter(char kind);
+  void RingRedPulse(const char* name, float x, float z);
+  void LineStreakLayered(short kind);
+  void SuperSlashFan(char count, char value);
+  void SuperSlashSpread(char count, char value);
+  void TexturedStorm2(const char* name, char kind);
+  void TorchRedRing(char kind);
+  void TexturedSlashAir(const char* name, char size, char phase);
+
+  void ErasePrimitiveRange(std::list<EffectPrimitiveState*>::iterator* out, std::list<EffectPrimitiveState*>::iterator first, std::list<EffectPrimitiveState*>::iterator last);
   void RedParticleSpray(int count);
   void Hit5();
   void Hit6();

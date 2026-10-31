@@ -19,6 +19,7 @@ struct RenderCommand;
 struct RenderVertex;
 struct granny_control;
 struct granny_model_instance;
+struct CRagEffect;
 
 int GetSlotLayer(int slot);
 bool IsReadyOrAttackAction(int action);
@@ -44,6 +45,7 @@ public:
   void Slot25(int value) override;
   void Slot26(int value) override;
   void Slot27(int value) override;
+  void Slot29(int value) override;
   void Slot30() override;
   void Slot31() override;
   void Slot33(int value) override;
@@ -106,7 +108,7 @@ public:
   /* 0454 */ int unknown_0454;
   /* 0458 */ int unknown_0458;
   /* 045C */ int unknown_045C;
-  /* 0460 */ unsigned char unknown_0460[0x18];
+  /* 0460 */ int unknown_0460[6];
   /* 0478 */ std::string unknown_0478;
   /* 0490 */ unsigned char unknown_0490[0x0C];
   /* 049C */ int unknown_049C;
@@ -177,7 +179,16 @@ public:
   bool IsSpecialState(int state) const;
   void Slot16() override;
   void Slot17() override;
+  void RefreshEffect164();
+
+  /* 0510 */ unsigned char unknown_0510[0x34];
+  /* 0544 */ CRagEffect* unknown_0544;
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(CPlayer) == 0x548);
+static_assert(offsetof(CPlayer, unknown_0544) == 0x544);
+#endif
 
 class CGrannyPc : public CGameActor {
 public:
