@@ -461,6 +461,11 @@ public:
   void sub_D63A40(const unsigned char* record);
   void sub_D63D70(const unsigned char* record);
   void sub_D65FC0(const unsigned char* record);
+  void ReceiveBroadcastBalloonNotice(const unsigned char* packet);
+  void ReceiveUnknownD65870(const unsigned char* packet);
+  void ReceiveStatusChangeEffect2(const unsigned char* packet);
+  void ReceiveActorStatusValuePacket2(const unsigned char* packet);
+  void ReceiveWindow95Data(const unsigned char* packet);
   void sub_D7B170(
     int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth,
     int eleventh, int twelfth, int thirteenth, int fourteenth, std::string text, int fifteenth

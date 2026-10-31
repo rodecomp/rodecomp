@@ -2189,3 +2189,89 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
   output << FormatOwnedString("\nresult item count:%d\n", total);
   output.close();
 }
+
+#include "UI/UIBroadcastBalloon.h"
+
+#include <chrono>
+
+// OFFSET: 0x00D3C9B0
+// FUNCTION: fn_21795
+void CGameMode::ReceiveBroadcastBalloonNotice(const unsigned char* packet) {
+  std::uint32_t color = 0x62B0FF;
+  std::string text = FormatOwnedString(
+    LookupMessage(1271), *reinterpret_cast<const int*>(packet + 2), *reinterpret_cast<const int*>(packet + 6),
+    *reinterpret_cast<const int*>(packet + 10)
+  );
+  if (g_serviceType == 12) {
+    text = LookupMessage(1125);
+  }
+
+  if (!text.empty()) {
+    if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
+      BroadcastBalloonMessage message{{}, {}, std::chrono::seconds(20), 12, 0x40000000, 0, 0};
+      message.start = std::chrono::system_clock::now();
+      message.lines.push_back(BroadcastBalloonLine{text, color, 0});
+      balloon->AddMessage(0, message);
+    }
+    if (g_serviceType == 0) {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0x62B0FF, 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00D65870
+// FUNCTION: fn_22003
+void CGameMode::ReceiveUnknownD65870(const unsigned char* packet) {
+  this->sub_D5EEF0(
+    reinterpret_cast<const char*>(packet + 0x2F), *reinterpret_cast<const int*>(packet + 2), reinterpret_cast<const char*>(packet + 0x47),
+    *reinterpret_cast<const int*>(packet + 10), packet[0x16], *reinterpret_cast<const std::uint16_t*>(packet + 0x0E),
+    *reinterpret_cast<const std::uint16_t*>(packet + 0x10), reinterpret_cast<const char*>(packet + 0x17), packet[0x57], packet[0x58],
+    *reinterpret_cast<const int*>(packet + 6)
+  );
+}
+
+// OFFSET: 0x00D65FC0
+// FUNCTION: fn_22007
+void CGameMode::sub_D65FC0(const unsigned char* record) {
+  this->ApplyStatusChange(
+    *reinterpret_cast<const std::uint32_t*>(record + 2), 1, *reinterpret_cast<const std::int16_t*>(record + 6),
+    *reinterpret_cast<const std::uint32_t*>(record + 0x0C), *reinterpret_cast<const int*>(record + 0x10),
+    *reinterpret_cast<const int*>(record + 0x14), *reinterpret_cast<const int*>(record + 0x18), 1,
+    *reinterpret_cast<const std::uint32_t*>(record + 8)
+  );
+}
+
+// OFFSET: 0x00D66810
+// FUNCTION: fn_22014
+void CGameMode::ReceiveStatusChangeEffect2(const unsigned char* packet) {
+  this->ApplyStatusChange(
+    *reinterpret_cast<const std::uint32_t*>(packet + 4), packet[8], *reinterpret_cast<const std::int16_t*>(packet + 2),
+    *reinterpret_cast<const std::uint32_t*>(packet + 0x0D), *reinterpret_cast<const int*>(packet + 0x11),
+    *reinterpret_cast<const int*>(packet + 0x15), *reinterpret_cast<const int*>(packet + 0x19), 0,
+    *reinterpret_cast<const std::uint32_t*>(packet + 9)
+  );
+}
+
+// OFFSET: 0x00D66A30
+// FUNCTION: fn_22018
+void CGameMode::ReceiveActorStatusValuePacket2(const unsigned char* packet) {
+  this->ReceiveActorStatusValue(
+    *reinterpret_cast<const std::uint32_t*>(packet + 2), *reinterpret_cast<const int*>(packet + 6), *reinterpret_cast<const int*>(packet + 10),
+    *reinterpret_cast<const int*>(packet + 14)
+  );
+}
+
+// OFFSET: 0x00D676C0
+// FUNCTION: fn_22032
+void CGameMode::ReceiveWindow95Data(const unsigned char* packet) {
+  const int size = *reinterpret_cast<const std::int16_t*>(packet + 2) - 8;
+  if (size == 0) {
+    return;
+  }
+
+  std::vector<unsigned char> data;
+  data.insert(data.end(), packet + 8, packet + 8 + size);
+  if (UIWindow* window = g_windowMgr.EnsureWindow(95)) {
+    window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(data.data()), size, *reinterpret_cast<const int*>(packet + 4), 0);
+  }
+}
