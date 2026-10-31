@@ -1327,6 +1327,470 @@ static bool HasEffectOfType(const std::list<RagEffectState*>& effects, int type)
 }
 
 // OFFSET: 0x00CC2E50
+// FUNCTION: fn_21153
+void CGameActor::Slot15(int state, int resetPosition) {
+  g_session.m_homunActionState = 0;
+  g_session.m_mercenaryActionState = 0;
+
+  if (this->render.unknown_0070 == 3 || this->unknown_017C != 0 || state == -1) {
+    return;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (this->render.unknown_0070 == 4 && static_cast<unsigned char>(resetPosition) == 1) {
+    this->render.position.x = this->unknown_02D0;
+    this->render.position.z = this->unknown_02D4;
+    this->render.position.y = mode->scene->terrain->Grid().Height(this->unknown_02D0, this->unknown_02D4);
+  }
+
+  const std::uint32_t aid = this->render.accountId;
+  bool isPlayer;
+  if (g_session.m_aid != aid && this->Slot50() >= 1 && g_session.IsPlayerJobId(this->GetEffectiveJob(-1))) {
+    isPlayer = true;
+  } else {
+    isPlayer = false;
+  }
+
+  if (state != static_cast<int>(this->render.unknown_0070) && this->render.unknown_0070 == 1 && isPlayer) {
+    CellFloatPos pos;
+    pos.x = this->render.position.x;
+    pos.z = this->render.position.z;
+    mode->scene->AddPcPos(aid, pos);
+  }
+
+  int action;
+  if (this->Slot55() > 0) {
+    action = this->ActionBase(state);
+  } else {
+    action = this->WeaponActionBase(state);
+  }
+
+  switch (state) {
+  case 0:
+    this->SetAction(action, 4, 0);
+    if (!IsObfuscatedMessage(this->render.accountId)) {
+      this->render.isMotionFinished = true;
+    }
+    this->Slot16();
+    break;
+  case 1:
+    if (this->unknown_0184 == 0) {
+      this->SetAction(action, 6, 0);
+    }
+    this->Slot17();
+    break;
+  case 7:
+    if (this->render.unknown_0070 == 6) {
+      return;
+    }
+  case 2:
+  case 9:
+    this->SetAction(action, 3, this->unknown_0404 == 1 ? 2 : 1);
+    if (this->render.unknown_0070 != 9 && this->render.unknown_0070 != 2) {
+      if (this->hitTargetAid == g_session.m_aid) {
+        CRenderObject* target = mode->scene->player;
+        if (this->render.accountId != this->hitTargetAid) {
+          this->Face(target->render.position.x, target->render.position.z);
+        }
+      } else {
+        CRenderObject* target = mode->scene->GetGameActorByAID(this->hitTargetAid);
+        if (target) {
+          this->Face(target->render.position.x, target->render.position.z);
+        }
+      }
+    }
+    if (this->GetEffectiveJob(-1) == 0x505) {
+      this->LaunchAttackProjectile(this->hitTargetAid, 28.0f);
+    }
+    this->unknown_0378 = static_cast<float>(this->Slot37());
+    this->Slot16();
+    break;
+  case 3:
+    this->render.unknown_00C8 = 0;
+    this->render.unknown_00D8 = 0;
+    this->render.unknown_00DC = 0;
+    this->render.isMotionFreezed = false;
+    if (this->bodyState == BODYSTATE_FREEZING) {
+      this->SendMsg(nullptr, 0x3b, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, 0x3e, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    this->render.isLieOnGround = true;
+    this->render.isMotionFinished = false;
+    this->render.isMotionFreezed = false;
+    this->SetAction(action, 4, 1);
+    break;
+  case 4: {
+    if (this->render.unknown_00C8 != 0 || this->render.unknown_00D8 != 0 || this->render.unknown_00DC != 0) {
+      return;
+    }
+
+    CRenderObject* target;
+    if (this->hitTargetAid == g_session.m_aid) {
+      target = mode->scene->player;
+    } else {
+      target = mode->scene->GetGameActorByAID(this->hitTargetAid);
+    }
+    if (target) {
+      target->SendMsg(nullptr, 0x57, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    this->SetAction(action, 5, 1);
+    const int job = this->GetEffectiveJob(-1);
+    if (job != 0x8d && job != 0xe6) {
+      this->Slot16();
+    }
+    break;
+  }
+  case 5:
+    this->unknown_0178 = 0;
+    this->render.isMotionFreezed = false;
+  case 0xb:
+    this->SetAction(action, 6, 1);
+    break;
+  case 0xc:
+    this->SetAction(action, 3, 1);
+    this->Slot16();
+    break;
+  case 0xd:
+    if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1))) {
+      const std::int64_t weapon = this->Slot35();
+      IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->unknown_0260, weapon);
+      this->SetAction(action, 4, 1);
+      this->render.isMotionFreezed = true;
+    } else {
+      this->SetAction(16, 4, 1);
+      this->render.isMotionFreezed = true;
+    }
+    break;
+  case 0x10:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 1, 3, 0, 0, 1, 99999999, 1);
+    break;
+  case 0x11:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 1, 3, action, 1, 1, 99999999, 1);
+    break;
+  case 0x12:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 0, 0, action, 0, 1, 3000, 0);
+    break;
+  case 0x13:
+    if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true) {
+      this->render.unknown_00C2 = 10;
+      this->SetAnimationSequence(action, 0, action, 0, action, 0, action, 1, action, 1, 1, 3000, 0);
+    } else {
+      this->render.unknown_00C2 = 10;
+      this->SetAnimationSequence(action, 0, action, 0, action, 0, action, 1, action, 1, 1, 3000, 0);
+      while (HasEffectOfType(this->state.effects, 0x1be)) {
+        this->SendMsg(nullptr, 0x6d, 0, 0x1be, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      while (HasEffectOfType(this->state.effects, 0x1bd)) {
+        this->SendMsg(nullptr, 0x6d, 0, 0x1bd, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->LaunchEffect(0x1bd, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(0x19b, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    break;
+  case 0x14:
+    this->render.unknown_00C2 = 10;
+    this->SetAnimationSequence(action, 1, action, 1, action, 1, action, 1, 8, 5, 1, 3000, 0);
+    break;
+  case 0x15:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 0, 0, action, 0, 1, 2000, 0);
+    this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 0x16:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 2, 2, action, 2, 1, 2000, 0);
+    this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 0x17:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 3, 3, action, 3, 1, 2000, 0);
+    this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 0x18:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 4, 4, action, 4, 1, 2000, 0);
+    this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 0x19:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 1, 1, action, 1, 1, 2000, 0);
+    this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 0x1a: {
+    this->render.unknown_00C2 = 4;
+    int frame0;
+    int frame1;
+    int frame2;
+    int frame3;
+    int frame4;
+    if (this->GetEffectiveJob(-1) == 0xfd1 || this->GetEffectiveJob(-1) == 0x1083 || this->GetEffectiveJob(-1) == 0x1090 ||
+        this->GetEffectiveJob(-1) == 0x1092) {
+      frame0 = 4;
+      frame1 = 5;
+      frame2 = 6;
+      frame3 = 7;
+      frame4 = 2;
+    } else {
+      frame0 = 2;
+      frame1 = 3;
+      frame2 = 4;
+      frame3 = 4;
+      frame4 = 4;
+    }
+    this->SetAnimationSequence(action, frame0, action, frame1, action, frame2, action, frame3, action, frame4, 1, 500, 0);
+    break;
+  }
+  case 0x1b:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 5, 5, action, 5, 1, 3000, 0);
+    break;
+  case 0x1c:
+    this->render.unknown_00C2 = 10;
+    this->SetAnimationSequence(action, 0, action, 1, action, 2, action, 3, action, 4, 1, 1000, 0);
+    break;
+  case 0x1e:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 1, 1, action, 1, 1, 2000, 0);
+    break;
+  case 0x1f:
+    this->render.unknown_00C2 = 5;
+    this->SetAnimationSequence(0x50, 3, 0x50, 5, 0x50, 7, 0x50, 8, 0x50, 2, 1, 500, 0);
+    break;
+  case 0x20:
+    this->render.unknown_00C2 = 5;
+    this->SetAnimationSequence(action, 4, action, 5, action, 6, action, 7, action, 2, 1, 500, 0);
+    break;
+  case 0x21:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 2, 2, action, 2, 1, 1000, 0);
+    break;
+  case 0x22:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 3, 3, action, 3, 1, 1000, 0);
+    break;
+  case 0x38:
+    this->render.isMotionFinished = false;
+  case 0x23:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 0, 1, action, 1, 1, 500, 0);
+    break;
+  case 0x24:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 2, 5, action, 5, 1, 1000, 0);
+    break;
+  case 0x25: {
+    this->render.unknown_00C2 = 10;
+    int random = rand() % 2;
+    random = random < 0 ? 0 : random;
+    const int frame = (random != 0) + 2;
+    this->SetFrameSequence(action, frame, frame, action, frame, 1, 500, 0);
+    break;
+  }
+  case 0x26: {
+    this->render.unknown_00C2 = 6;
+    int random = rand() % 2;
+    random = random < 0 ? 0 : random;
+    if (random != 0) {
+      this->SetAnimationSequence(action, 3, action, 2, action, 1, action, 0, action, 0, 1, 1000, 0);
+    } else {
+      this->SetFrameSequence(action, 0, 3, action, 3, 1, 1000, 0);
+    }
+    break;
+  }
+  case 0x27:
+  case 0x30:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 4, 5, action, 5, 1, 500, 0);
+    break;
+  case 0x28:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 0, 2, action, 2, 1, 500, 0);
+    break;
+  case 0x29: {
+    this->render.unknown_00C2 = 10;
+    int random = rand() % 2;
+    random = random < 0 ? 0 : random;
+    const int frame = (random != 0) + 1;
+    this->SetFrameSequence(action, frame, frame, action, frame, 1, 500, 0);
+    break;
+  }
+  case 0x2a:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 0, 0, action, 0, 1, 500, 0);
+    break;
+  case 0x2b:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 5, 5, action, 5, 1, 500, 0);
+    break;
+  case 0x2c:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 4, 4, action, 4, 1, 500, 0);
+    break;
+  case 0x2d:
+  case 0x34:
+  case 0x35:
+  case 0x36:
+  case 0x3a:
+  case 0x3b:
+    this->SetAction(action, 3, 1);
+    break;
+  case 0x2e:
+    this->render.unknown_00C2 = 20;
+    this->SetAnimationSequence(action, 0, action, 0, action, 0, action, 1, action, 1, 1, 3000, 0);
+    while (HasEffectOfType(this->state.effects, 0x1be)) {
+      this->SendMsg(nullptr, 0x6d, 0, 0x1be, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    while (HasEffectOfType(this->state.effects, 0x430)) {
+      this->SendMsg(nullptr, 0x6d, 0, 0x430, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    this->LaunchEffect(0x430, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(0x19b, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 0x2f:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 0, 3, action, 3, 1, 9999999, 1);
+    break;
+  case 0x31:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 0, 7, action, 7, 1, 1000, 0);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x32:
+    this->render.unknown_00C2 = 10;
+    this->SetFrameSequence(action, 0, 0, action, 0, 1, 9999999, 0);
+    break;
+  case 0x33:
+    this->render.unknown_00C2 = 4;
+    this->SetAnimationSequence(action, 2, action, 3, action, 4, action, 4, action, 4, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x37:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 2, 4, action, 4, 1, 500, 0);
+    break;
+  case 0x39:
+    this->render.isMotionFinished = false;
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 5, 5, action, 5, 1, 500, 0);
+    break;
+  case 0x3c:
+  case 0x3d:
+  case 0x42:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 0, 0, action, 0, 1, 500, 0);
+    break;
+  case 0x3e:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 1, 7, action, 7, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    this->unknown_0378 = 6.0f;
+    break;
+  case 0x3f:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 1, 7, action, 7, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x40:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 1, 4, action, 4, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    this->unknown_0378 = 6.0f;
+    break;
+  case 0x41:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 1, 4, action, 4, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x43:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 1, 5, action, 5, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    this->unknown_0378 = 6.0f;
+    break;
+  case 0x44:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 1, 5, action, 5, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x45:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 0, 8, action, 8, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x46:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 0, 7, action, 7, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    this->unknown_0378 = 6.0f;
+    break;
+  case 0x47:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 4, 8, action, 8, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x48:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 0, 4, action, 4, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x49:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 3, 7, action, 7, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    this->unknown_0378 = 6.0f;
+    break;
+  case 0x4b:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 2, 5, action, 5, 1, 500, 1);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x4c:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 0, 7, action, 7, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x4d:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 3, 7, action, 7, 1, 500, 0);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x4e:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 1, 4, action, 4, 1, 500, 1);
+    this->render.isMotionFinished = false;
+    this->unknown_0378 = 6.0f;
+    break;
+  case 0x4f:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 1, 8, action, 4, 1, 500, 1);
+    this->render.isMotionFinished = false;
+    this->unknown_0378 = 6.0f;
+    break;
+  case 0x50:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 0, 5, action, 5, 1, 500, 1);
+    this->render.isMotionFinished = false;
+    break;
+  case 0x51:
+    this->render.unknown_00C2 = 6;
+    this->SetFrameSequence(action, 5, 5, action, 5, 1, 9999999, 0);
+    break;
+  }
+
+  this->render.previousAnimation = this->Get8Dir(this->render.angle) + this->render.animation;
+  const int previous = this->render.unknown_0070;
+  if (previous == 0 || previous == 6) {
+    this->render.unknown_0074 = previous;
+  }
+  this->render.unknown_0070 = state;
+  if (state == 7 || state == 0x31) {
+    this->render.unknown_0070 = 7;
+  }
+  this->render.unknown_008C = timeGetTime();
+}
 
 // OFFSET: 0x00CA9E50
 // FUNCTION: fn_21013
