@@ -2646,6 +2646,13 @@ void UIDescriptRace::Slot25(int, int) {
   }
 }
 
+// OFFSET: 0x0088ACF0
+// FUNCTION: fn_11358
+void UIDescriptRace::Paint() {
+  UIBitmapButton::Paint();
+  this->sub_8A0B10();
+}
+
 // OFFSET: 0x00890330
 // FUNCTION: fn_11410
 void UITabControl::Slot26(int, int) {
