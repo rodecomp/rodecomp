@@ -17,6 +17,7 @@ class UITextButton : public UIButton {
   friend class UIAchTracingWnd;
   friend class UIAchSummaryWnd;
   friend class CCreateLineInfo;
+  friend class UISerachStoreInfoWnd;
 
 public:
   friend void OpenTextButtonLink(UITextButton* button);
