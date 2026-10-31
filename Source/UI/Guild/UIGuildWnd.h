@@ -3,13 +3,31 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+#include "Client/Input/Mouse.h"
+#include "Contents/ForbiddenWords.h"
 #include "Contents/GuildInfo.h"
+#include "Contents/PlayerNameDictionary.h"
 #include "Contents/Skills/SkillInfo.h"
+#include "Render/DeviceContext/DeviceContext.h"
+#include "Render/Renderer.h"
+#include "Render/Textures/SpriteAtlas.h"
+#include "Render/Textures/SpritePixels.h"
+#include "Render/Textures/Texture.h"
+#include "Resource/PaletteResource.h"
+#include "Resource/Sprites/ActionResource.h"
+#include "Resource/Sprites/SpriteResource.h"
+#include "UI/Party/UIMiniPartyWnd.h"
+#include "UI/Text/UITextViewer.h"
+#include "UI/Window/WindowBorder.h"
 
+#include <algorithm>
 #include <cstdint>
+#include <cstdlib>
+#include <ctime>
 #include <list>
 #include <map>
 #include <string>
+#include <vector>
 
 class UIBitmapButton;
 class UIButton;
@@ -22,6 +40,7 @@ class UIStaticText;
 struct UIButtonContext;
 struct UIListBoxContext;
 struct GuildWndInfo;
+struct ForbiddenWords;
 
 bool CompareWideText(const char* left, const char* right);
 
@@ -57,6 +76,7 @@ class UIGuildBanishedMemberWnd : public UIGuildWnd {
 public:
   int Tab() override;
   void Slot15(int width, int height) override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot35(int delta) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -71,6 +91,7 @@ protected:
   /* 0134 */ int m_columns;
   /* 0138 */ int m_visibleRows;
   /* 013C */ int m_scrollable;
+  ForbiddenWords* m_forbiddenWords;
 };
 
 class UIGuildInfoManageWnd : public UIGuildWnd {
@@ -103,13 +124,16 @@ public:
   int Tab() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void UpdateScroll();
 
 protected:
+  bool DrawMember(GuildInfo::Member& member, int& index, int row);
   bool GetMember(int index, GuildInfo::Member& member);
   void SortMembers(int column);
 
@@ -138,10 +162,12 @@ class UIGuildNoticeWnd : public UIGuildWnd {
 public:
   void Paint() override;
   void Slot25(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
   /* 00D0 */ UIEditCtrl* m_titleEdit;
   /* 00D4 */ UIEditCtrl* m_bodyEdit;
+  ForbiddenWords* m_forbiddenWords;
 };
 
 class UIGuildPositionManageWnd : public UIGuildWnd {
@@ -153,11 +179,12 @@ public:
   void Slot32(int x, int y) override;
   void Invalidate() override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void UpdateScroll();
 
 protected:
   int PositionIndexAt(int x, int y);
-  const GuildPositionEntry& PositionAt(int index, int* found);
+  GuildPositionEntry& PositionAt(int index, int* found);
 
   /* 00D0 */ UICheckBox* unknown_00D0[11];
   /* 00FC */ UICheckBox* unknown_00FC[11];
@@ -186,6 +213,7 @@ public:
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void UpdateScroll();
 
 protected:
@@ -206,7 +234,7 @@ protected:
   /* 0140 */ int m_visibleRows;
   /* 0144 */ int m_scrollable;
   /* 0148 */ std::list<CSkillInfo> m_skills;
-  /* 0150 */ unsigned char unknown_0150[0x0C];
+  /* 0150 */ std::vector<MiniPartyInfoEntry> m_menuItems;
 };
 
 class UIGuildTotalInfoWnd : public UIGuildWnd {

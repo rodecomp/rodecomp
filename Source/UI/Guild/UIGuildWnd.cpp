@@ -365,7 +365,7 @@ int UIGuildPositionManageWnd::PositionIndexAt(int x, int y) {
 
 // OFFSET: 0x00957A90
 // FUNCTION: fn_13041
-const GuildPositionEntry& UIGuildPositionManageWnd::PositionAt(int index, int* found) {
+GuildPositionEntry& UIGuildPositionManageWnd::PositionAt(int index, int* found) {
   *found = 1;
   // GLOBAL: gl_24922
   static GuildPositionEntry s_emptyGuildPosition;
@@ -1761,3 +1761,49 @@ void UIGuildMemberManageWnd::Slot15(int, int) {
   this->AddChild(this->m_onlineCheck);
   this->UpdateScroll();
 }
+
+// OFFSET: 0x00956130
+// FUNCTION: fn_13036
+void UIAgitMessageBox::sub_956130(const char* text, int width, int height) {
+  this->SetSize(width, height);
+  this->Slot15(width, height);
+  this->Slot22(width, height);
+
+  UITextViewer* viewer = new UITextViewer();
+  viewer->Configure(10, 22, width - 20, height - 55, 0);
+  unsigned int red = 0;
+  unsigned int green = 0;
+  unsigned int blue = 0;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  viewer->backgroundColor = 0xFF000000 | (blue << 16) | (green << 8) | red;
+  viewer->Invalidate();
+  this->AddChild(viewer);
+  viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(text), width / 6, 0, 0);
+
+  const std::string prefix("유저인터페이스\\");
+  const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+  int ids[2] = {187, 188};
+
+  for (int index = 0; index < 2; ++index) {
+    UIBitmapButton* button = new UIBitmapButton();
+    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(this->geometry.width - (button->BitmapWidth() + 5) * (2 - index), height - 24);
+    button->SetId(ids[index]);
+    this->AddChild(button);
+  }
+}
+
+// OFFSET: 0x0095D640
+
+// OFFSET: 0x00956950
+
+// OFFSET: 0x0095E320
+
+// OFFSET: 0x00963BF0
+
+// OFFSET: 0x00964500
+
+// OFFSET: 0x00963E10
