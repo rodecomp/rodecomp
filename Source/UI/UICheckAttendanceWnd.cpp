@@ -4,6 +4,7 @@
 #include "Client/Mode/ModeCursor.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeTooltip.h"
+#include "Client/Session.h"
 #include "Contents/CheckAttendanceMgr.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -12,6 +13,7 @@
 #include "Render/TextureQuad.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
+#include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
 #include "Contents/MessageTable.h"
@@ -20,13 +22,18 @@
 #include "Script/LuaScript.h"
 #include "UI/Buttons/UIBmpRadioBtn.h"
 #include "UI/Buttons/UIBmpTextButton.h"
+#include "UI/Shop/ItemDrawing.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
 #include <windows.h>
 #include <shellapi.h>
 #include <timeapi.h>
+#include <algorithm>
 #include <cstring>
 #include <ctime>
+#include <list>
+#include <string>
 
 struct CheckAttendanceRequestPacket {
   /* 0000 */ std::int16_t id;
@@ -120,6 +127,81 @@ void UICheckAttendanceWnd::Slot15(int, int) {
   this->m_banner->SetSize(441, 41);
   this->m_banner->Move(this->geometry.width / 2 - this->m_banner->geometry.width / 2, 85);
   this->AddChild(this->m_banner);
+}
+
+// OFFSET: 0x007DD2E0
+// FUNCTION: fn_09640
+void UICheckAttendanceWnd::Paint() {
+  UIWindowContext& controls = *this->m_context;
+  ItemDescriptions descriptions{g_itemDescriptions};
+
+  const char* backgroundName = this->m_banner->m_entries.size() != 0 ? "유저인터페이스\\check_attendance\\attendance_bg_ad.bmp"
+                                                                     : "유저인터페이스\\check_attendance\\attendance_bg.bmp";
+  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(backgroundName)));
+  this->DrawBitmap(0, 0, background ? &background->image : nullptr, false);
+
+  this->DrawCenteredText(0, 41, FormatOwnedString(LookupMessage(3465), g_session.m_serverName.c_str()).c_str(), this->geometry.width, 0, 13, 0x203F66, 1);
+
+  const int start = g_checkAttendanceMgr->m_config0;
+  const int end = g_checkAttendanceMgr->m_config1;
+  this->DrawCenteredText(
+    0, 70, FormatOwnedString(LookupMessage(3466), start % 10000 / 100, start % 100, end % 10000 / 100, end % 100).c_str(), this->geometry.width, 0, 12,
+    0x3950A4, 1
+  );
+
+  const int bannerHeight = this->BannerHeight();
+  this->DrawCenteredText(345, bannerHeight + 289, LookupMessage(3470), 109, 0, 14, 0x595939, 1);
+  if (this->m_daysLeft > 0) {
+    this->DrawCenteredText(368, bannerHeight + 309, IntToString(this->m_daysLeft, 0).c_str(), 54, 0, 22, 0xFFFFFF, 1);
+  }
+  this->DrawCenteredText(425, bannerHeight + 318, LookupMessage(3471), 0, 0, 12, 0x595939, 1);
+
+  {
+    std::string message;
+    if (this->m_blinking == 1) {
+      message = FormatOwnedString(LookupMessage(3468), this->m_checkedDays + 1);
+    } else {
+      message = FormatOwnedString(LookupMessage(3469), this->m_checkedDays);
+    }
+
+    if (!message.empty()) {
+      std::list<std::string> lines;
+      this->WrapFormattedText(message, &lines, 112, 0, 12, 1);
+      const int top = static_cast<int>((77 - lines.size() * 15) * 0.5 + 95);
+      int line = 0;
+      for (auto it = lines.begin(); it != lines.end(); ++it, ++line) {
+        this->DrawCenteredText(343, bannerHeight + top + line * 12 + std::max(line - 1, 0) * 3, it->c_str(), 112, 0, 12, 0x613CA5, 1);
+      }
+    }
+  }
+
+  if (this->m_blinking == 1) {
+    CBitmapRes* slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\check_attendance\\bt_slot_a.bmp")));
+    switch (this->m_highlight) {
+    case 0:
+      slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\check_attendance\\bt_slot_a.bmp")));
+      break;
+    case 1:
+      slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\check_attendance\\bt_slot_b.bmp")));
+      break;
+    case 2:
+      slot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\check_attendance\\bt_slot_press.bmp")));
+      break;
+    }
+    this->DrawBitmap(this->m_checkedDays % 5 * 62 + 26, this->m_checkedDays / 5 * 64 + 95 + bannerHeight, slot ? &slot->image : nullptr, true);
+  }
+
+  for (int day = 1; day <= this->m_rewardCount; ++day) {
+    ITEM_INFO item;
+    item.SetItemId(g_checkAttendanceMgr->GetReward(day).first);
+    item.quantity = g_checkAttendanceMgr->GetReward(day).second;
+    g_checkAttendanceMgr->GetReward(day);
+
+    const int x = (day - 1) % 5 * 62;
+    const int y = (day - 1) / 5 * 64;
+    DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, controls.fonts, controls.locale, x + 43, y + 109 + bannerHeight, item, 1, 0);
+    this->DrawCenteredText(x + 26, y + 140 + bannerHeight, FormatOwnedString(LookupMessage(3467), day).c_str(), 58, 0, 12, 0xA44F3B, 1);
+  }
 }
 
 // OFFSET: 0x007DDA90
