@@ -342,7 +342,16 @@ void CUIEnchantItem::SetFrozen(bool frozen) {
 }
 
 // OFFSET: 0x00A05860
-
+// FUNCTION: fn_14977
+void UpdateEnchantItem(CUIEnchantItem* item, const CEnchantItemData* data) {
+  ITEM_INFO info;
+  info.SetItemId(data->itemId);
+  info.identified = 1;
+  item->itemIcon->SetItem(info);
+  const std::string name = info.DisplayName(0);
+  item->name->SetText(name.c_str(), static_cast<unsigned>(name.size()));
+  item->SetFrozen(data->frozen);
+}
 // OFFSET: 0x00A05E20
 // FUNCTION: fn_14984
 void CUIMainPage::Slot16() {
