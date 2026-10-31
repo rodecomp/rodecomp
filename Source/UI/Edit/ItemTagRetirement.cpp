@@ -53,16 +53,19 @@ void ChatItemTagRemoval::Remove(UIWindow* child) {
 }
 
 // OFFSET: 0x0086D670
+// FUNCTION: fn_11050
 UIItemTagCtrl::UIItemTagCtrl() : unknown_011C(0), tagWidth(0) {
   this->taggedText.clear();
   this->unknown_0140.clear();
 }
 
 // OFFSET: 0x0086D780
+// FUNCTION: fn_11051
 UIItemTagOnChat::UIItemTagOnChat() {
 }
 
 // OFFSET: 0x0086D7E0
+// FUNCTION: fn_11052
 UIItemTagOnMail::UIItemTagOnMail() {
 }
 
