@@ -644,12 +644,125 @@ void CGameMode::ReceivePlayerMessage82(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D3D390
+// FUNCTION: fn_21802
+void CGameMode::ReceiveHomunculusInfo(const unsigned char* data) {
+  const HomunculusInfoPacket* packet = reinterpret_cast<const HomunculusInfoPacket*>(data);
+  char* name = reinterpret_cast<char*>(&g_session.unknown_5570[0x0C]);
+  int* stats = reinterpret_cast<int*>(&g_session.unknown_5570[0x2C]);
+  if (g_serviceType == 10 || g_serviceType == 12 || g_serviceType == 15) {
+    std::sprintf(name, "%s", packet->name);
+  } else {
+    std::sprintf(name, packet->name);
+  }
+
+  g_session.unknown_55D4 = packet->unknown_001F;
+  g_session.unknown_55D8 = packet->unknown_0021;
+  g_session.unknown_55F8 = packet->unknown_001A;
+  for (int i = 0; i < 8; ++i) {
+    stats[i] = packet->stats[i];
+  }
+  *reinterpret_cast<int*>(g_session.unknown_55C0) = packet->unknown_001B;
+  g_session.m_homunHp = packet->hp;
+  g_session.RefreshHomunculusInfo();
+  g_session.m_homunSp = packet->sp;
+  g_session.RefreshHomunculusInfo();
+  *reinterpret_cast<int*>(g_session.unknown_55C8) = packet->maxHp;
+  g_session.RefreshHomunculusInfo();
+  g_session.unknown_55D0 = packet->maxSp;
+  g_session.RefreshHomunculusInfo();
+  g_session.m_homunExp = packet->exp;
+  g_session.RefreshHomunculusInfo();
+  g_session.m_homunMaxExp = packet->maxExp;
+  g_session.RefreshHomunculusInfo();
+  g_session.unknown_55F0 = packet->unknown_001D;
+  g_session.RefreshHomunculusInfo();
+  *reinterpret_cast<int*>(g_session.unknown_1664) = packet->unknown_0045;
+  g_session.InvalidateWindowFrames();
+  *reinterpret_cast<int*>(&g_session.unknown_5620[4]) = packet->unknown_0047;
+  if (g_windowMgr.window_03C4) {
+    g_windowMgr.window_03C4->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+
+  int& notified = *reinterpret_cast<int*>(&g_session.unknown_5620[0]);
+  const std::int16_t state = packet->unknown_001D;
+  if ((state == 1 || state == 5 || state == 10) && notified != state) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1018)), 0xFF, 0, 0, 0);
+    notified = packet->unknown_001D;
+  }
+}
 
 // OFFSET: 0x00D3D710
 
 // OFFSET: 0x00D3D910
+// FUNCTION: fn_21804
+void CGameMode::ReceiveHomunculusInfo2(const unsigned char* data) {
+  const HomunculusInfoPacket2* packet = reinterpret_cast<const HomunculusInfoPacket2*>(data);
+  char* name = reinterpret_cast<char*>(&g_session.unknown_5570[0x0C]);
+  int* stats = reinterpret_cast<int*>(&g_session.unknown_5570[0x2C]);
+  if (g_serviceType == 10 || g_serviceType == 12 || g_serviceType == 15) {
+    std::sprintf(name, "%s", packet->name);
+  } else {
+    std::sprintf(name, packet->name);
+  }
+
+  g_session.unknown_55D4 = packet->unknown_001F;
+  g_session.unknown_55F8 = packet->unknown_001A;
+  for (int i = 0; i < 8; ++i) {
+    stats[i] = packet->stats[i];
+  }
+  *reinterpret_cast<int*>(g_session.unknown_55C0) = packet->unknown_001B;
+  g_session.m_homunHp = packet->hp;
+  g_session.RefreshHomunculusInfo();
+  g_session.m_homunSp = packet->sp;
+  g_session.RefreshHomunculusInfo();
+  *reinterpret_cast<int*>(g_session.unknown_55C8) = packet->maxHp;
+  g_session.RefreshHomunculusInfo();
+  g_session.unknown_55D0 = packet->maxSp;
+  g_session.RefreshHomunculusInfo();
+  g_session.m_homunExp = packet->exp;
+  g_session.RefreshHomunculusInfo();
+  g_session.m_homunMaxExp = packet->maxExp;
+  g_session.RefreshHomunculusInfo();
+  g_session.unknown_55F0 = packet->unknown_001D;
+  g_session.RefreshHomunculusInfo();
+  *reinterpret_cast<int*>(g_session.unknown_1664) = packet->unknown_0045;
+  g_session.InvalidateWindowFrames();
+  *reinterpret_cast<int*>(&g_session.unknown_5620[4]) = packet->unknown_0047;
+  if (g_windowMgr.window_03C4) {
+    g_windowMgr.window_03C4->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+
+  int& notified = *reinterpret_cast<int*>(&g_session.unknown_5620[0]);
+  const std::int16_t state = packet->unknown_001D;
+  if ((state == 1 || state == 5 || state == 10) && notified != state) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1018)), 0xFF, 0, 0, 0);
+    notified = packet->unknown_001D;
+  }
+}
 
 // OFFSET: 0x00D3DC00
+// FUNCTION: fn_21805
+void CGameMode::ReceiveMinimapMarker(const unsigned char* data) {
+  const MinimapMarkerPacket* packet = reinterpret_cast<const MinimapMarkerPacket*>(data);
+  std::int16_t x = packet->x;
+  std::int16_t y = packet->y;
+  if (packet->type == 9999) {
+    x = -1;
+    y = -1;
+  }
+
+  this->minimapMarkers[packet->key].unknown_0000 = x;
+  this->minimapMarkers[packet->key].unknown_0002 = y;
+  this->minimapMarkers[packet->key].unknown_0004 = packet->type;
+  this->minimapMarkers[packet->key].unknown_0006 = packet->color;
+  if (g_windowMgr.window_4F1CC) {
+    for (auto it = this->minimapMarkers.begin(); it != this->minimapMarkers.end(); ++it) {
+      if (it->second.unknown_0006 != 0) {
+        g_windowMgr.window_4F1CC->SendMsg(nullptr, 485, it->second.unknown_0004, it->second.unknown_0006, it->second.unknown_0000, it->second.unknown_0002);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00D3DD20
 // FUNCTION: fn_21806
@@ -1410,6 +1523,52 @@ void CGameMode::ReceiveRuneRewardSteps(const unsigned char* data) {
 // OFFSET: 0x00D66B10
 
 // OFFSET: 0x00D67360
+// FUNCTION: fn_22027
+void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int64_t id, int grade, int gradeLevel) {
+  if (this->HandleRuneResult(result) == 0) {
+    const int previousSlots = g_runeSystemMgr->GetCurSlotCount();
+    const int state = g_runeSystemMgr->SetRuneGrade(tagId, type, id, grade, gradeLevel);
+    if (state == 2) {
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, 2397, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      const vector3d offset = {784.0f, 161.0f, 0.0f};
+      const int* words = reinterpret_cast<const int*>(&offset);
+      effect->Slot24(words[0], words[1], words[2], 1, 361);
+    } else if (state == 1) {
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, 2398, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      const vector3d offset = {784.0f, 161.0f, 0.0f};
+      const int* words = reinterpret_cast<const int*>(&offset);
+      effect->Slot24(words[0], words[1], words[2], 1, 361);
+    } else {
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, type != 0 ? 2395 : 2396, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      vector3d offset = {0.0f, 0.0f, 0.0f};
+      if (type == 0) {
+        offset.x = 473.0f;
+        offset.y = 286.0f;
+      } else {
+        offset.x = 598.0f;
+        offset.y = 271.0f;
+      }
+      const int* words = reinterpret_cast<const int*>(&offset);
+      effect->Slot24(words[0], words[1], words[2], 1, 361);
+    }
+
+    if (RuneSetData* runeSet = g_runeSystemMgr->GetCurRuneSet()) {
+      const int slots = runeSet->CountActiveSlots();
+      if (previousSlots != slots) {
+        g_runeSystemMgr->SetCurSlotCount(slots);
+        const int itemId = -1;
+        const int kind = 1;
+        EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshExpansion(kind, itemId);
+      }
+    }
+  }
+
+  g_runeSystemMgr->SetRequestPending(false);
+  if (UIWindow* window = g_windowMgr.LookupWindow(361)) {
+    window->SendMsg(window, 0x3C, type, 0, 0, 0);
+    window->SendMsg(nullptr, 0x69, 1000, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00D66CE0
 // FUNCTION: fn_22022
