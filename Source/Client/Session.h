@@ -10,6 +10,7 @@
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Resource/XmlNode.h"
 #include "UI/Cooldowns/CooldownState.h"
+#include "UI/Shortcuts/ShortcutCooldowns.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -149,7 +150,9 @@ public:
   /* 000C */ CPlayerSkillBundle m_skillBundle;
   /* 0084 */ std::list<CSkillInfo> m_homunSkills;
   /* 008C */ std::list<CSkillInfo> m_mercSkills;
-  /* 0094 */ unsigned char unknown_0094[0x20];
+  /* 0094 */ std::list<ShortcutCooldownIcon> m_mainCooldownIcons;
+  /* 009C */ std::list<ShortcutCooldownIcon> m_alternateCooldownIcons;
+  /* 00A4 */ unsigned char unknown_00A4[0x10];
   /* 00B4 */ int m_simplifiedSkillList;
   /* 00B8 */ int m_showSkillDescription;
   /* 00BC */ unsigned char m_hotkeyPage;
@@ -1101,6 +1104,8 @@ static_assert(offsetof(CSession, m_homunSkills) == 0x84);
 static_assert(offsetof(CSession, m_mercSkills) == 0x8C);
 static_assert(offsetof(CSession, unknown_0420) == 0x420);
 static_assert(offsetof(CSession, m_shortcutSlots) == 0x4B0);
+static_assert(offsetof(CSession, m_mainCooldownIcons) == 0x94);
+static_assert(offsetof(CSession, m_alternateCooldownIcons) == 0x9C);
 static_assert(offsetof(CSession, m_secondaryShortcutSlots) == 0x5AC);
 static_assert(offsetof(CSession, unknown_06EB) == 0x6EB);
 static_assert(offsetof(CSession, unknown_06F2) == 0x6F2);

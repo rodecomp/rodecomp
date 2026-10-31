@@ -40,6 +40,21 @@ struct MiniMapMember {
   /* 0008 */ std::uint32_t color;
 };
 
+#pragma pack(push, 1)
+struct PartyRosterEntry {
+  /* 0000 */ std::uint32_t accountId;
+  /* 0004 */ std::uint32_t characterId;
+  /* 0008 */ char name[24];
+  /* 0020 */ char mapName[16];
+  /* 0030 */ unsigned char member;
+  /* 0031 */ unsigned char offline;
+  /* 0032 */ std::int16_t x;
+  /* 0034 */ std::int16_t y;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(PartyRosterEntry) == 0x36);
+
 struct GameModeLoopSound {
   /* 0000 */ std::string name;
   /* 0018 */ std::uint32_t npcId;
@@ -90,7 +105,8 @@ public:
   /* 01BC */ std::map<std::uint32_t, MiniMapMember> unknown_01BC;
   /* 01C4 */ std::map<std::uint32_t, MiniMapPing> unknown_01C4;
   /* 01CC */ std::vector<int> actorMenuIds;
-  /* 01D8 */ unsigned char unknown_01D8[0x0C];
+  /* 01D8 */ std::list<std::uint32_t> m_skillUnitIds;
+  /* 01E0 */ unsigned char unknown_01E0[4];
   /* 01E4 */ std::vector<GameModeLoopSound> loopSounds;
   /* 01F0 */ std::map<std::uint32_t, MinimapMarker> minimapMarkers;
   /* 01F8 */ unsigned char unknown_01F8[0x54];
@@ -457,6 +473,13 @@ public:
   void sub_D350A0(const unsigned char* record);
   void sub_D37A10(const unsigned char* record);
   void sub_D40730(const unsigned char* record);
+  void ReceiveGroundSkill8(const unsigned char* record);
+  void ReceiveGroundSkill32(const unsigned char* record);
+  void ReceiveGroundSkillExtended(const unsigned char* record);
+  void ReceivePartyRoster(const unsigned char* packet);
+  void sub_D59FD0(const char* partyName, std::vector<PartyRosterEntry>* members);
+  void SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int value, std::int16_t x, std::int16_t y, int type, signed char level, unsigned char visible, unsigned char flags);
+  void sub_D60D70(std::uint32_t aid, std::uint32_t owner, std::int16_t x, std::int16_t y);
   void sub_D41250(const unsigned char* record);
   void sub_D51A90(const unsigned char* record);
   void sub_D61390(const unsigned char* record);
@@ -599,6 +622,7 @@ public:
   void ReceiveItem1748List(const unsigned char* packet);
   void ReceiveActorStatusValue(std::uint32_t aid, int status, int amount, int option);
   void ReceiveActorSkillResult(const unsigned char* packet);
+  void UpdateSkillCooldown(std::uint16_t skill, std::uint32_t remaining, std::uint32_t duration);
   void sub_D5B030(
     std::uint32_t source, std::uint32_t target, std::uint16_t skill, std::uint16_t x, std::uint16_t y,
     int tick, int level, unsigned char flag, int result
@@ -697,6 +721,7 @@ static_assert(offsetof(CGameMode, nameCard) == 0x160);
 static_assert(offsetof(CGameMode, unknown_01BC) == 0x1BC);
 static_assert(offsetof(CGameMode, unknown_01C4) == 0x1C4);
 static_assert(offsetof(CGameMode, actorMenuIds) == 0x1CC);
+static_assert(offsetof(CGameMode, m_skillUnitIds) == 0x1D8);
 static_assert(offsetof(CGameMode, unknown_00E4) == 0xE4);
 static_assert(offsetof(CGameMode, loopSounds) == 0x1E4);
 static_assert(offsetof(CGameMode, minimapMarkers) == 0x1F0);

@@ -3,9 +3,12 @@
 #include "Client/Application/Launcher.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Session.h"
+#include "Client/Replay.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/ClanInfo.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/Actors/Skill.h"
+#include "Contents/Actors/GraffiSkill.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -48,6 +51,7 @@
 #include <ctime>
 #include <fstream>
 #include <map>
+#include <new>
 #include <string>
 #include <utility>
 #include <vector>
@@ -256,6 +260,58 @@ struct SimulationResultPacket {
   /* 0002 */ std::int16_t length;
   /* 0004 */ std::uint32_t kind;
 };
+
+struct GroundSkillPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::uint32_t owner;
+  /* 000A */ std::int16_t x;
+  /* 000C */ std::int16_t y;
+  /* 000E */ unsigned char type;
+  /* 000F */ unsigned char visible;
+  /* 0010 */ unsigned char graffiti;
+  /* 0011 */ char text[1];
+};
+
+struct GroundSkillPacket8 {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::uint32_t aid;
+  /* 0008 */ std::uint32_t owner;
+  /* 000C */ std::int16_t x;
+  /* 000E */ std::int16_t y;
+  /* 0010 */ unsigned char type;
+  /* 0011 */ signed char level;
+  /* 0012 */ unsigned char visible;
+  /* 0013 */ char text[1];
+};
+
+struct GroundSkillPacket32 {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::uint32_t aid;
+  /* 0008 */ std::uint32_t owner;
+  /* 000C */ std::int16_t x;
+  /* 000E */ std::int16_t y;
+  /* 0010 */ int type;
+  /* 0014 */ signed char level;
+  /* 0015 */ unsigned char visible;
+  /* 0016 */ char text[1];
+};
+
+struct GroundSkillPacketExtended {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::uint32_t aid;
+  /* 0008 */ std::uint32_t owner;
+  /* 000C */ std::int16_t x;
+  /* 000E */ std::int16_t y;
+  /* 0010 */ int type;
+  /* 0014 */ signed char level;
+  /* 0015 */ unsigned char visible;
+  /* 0016 */ unsigned char flags;
+  /* 0017 */ char text[1];
+};
 #pragma pack(pop)
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -277,9 +333,159 @@ public:
 };
 }
 
+struct GroundSkillSpawnData {
+  /* 0000 */ std::uint32_t aid;
+  /* 0004 */ std::uint32_t owner;
+  /* 0008 */ int type;
+  /* 000C */ int x;
+  /* 0010 */ int y;
+  /* 0014 */ unsigned char visible;
+  /* 0018 */ int level;
+};
+
+static_assert(sizeof(GroundSkillSpawnData) == 0x1C);
+
+struct GroundSkillExtendedData {
+  /* 0000 */ GroundSkillSpawnData skill;
+  /* 001C */ unsigned flags;
+};
+
+struct GroundSkillArgumentData {
+  /* 0000 */ GroundSkillExtendedData extended;
+  /* 0020 */ int value;
+};
+
+static_assert(sizeof(GroundSkillExtendedData) == 0x20);
+static_assert(sizeof(GroundSkillArgumentData) == 0x24);
+
 struct SessionItemLists {
   void ClearTradeItems();
 };
+
+// OFFSET: 0x00D66230
+// FUNCTION: fn_22010
+void CGameMode::ReceivePartyRoster(const unsigned char* packet) {
+  std::vector<PartyRosterEntry> members;
+  const unsigned count = (static_cast<unsigned>(*reinterpret_cast<const std::int16_t*>(packet + 2)) - 28u) / sizeof(PartyRosterEntry);
+  const PartyRosterEntry* entry = reinterpret_cast<const PartyRosterEntry*>(packet + 28);
+  for (unsigned i = 0; i < count; ++i) {
+    members.push_back(*entry++);
+  }
+  this->sub_D59FD0(reinterpret_cast<const char*>(packet + 4), &members);
+}
+
+// OFFSET: 0x00D40E40
+// FUNCTION: fn_21822
+void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
+  const GroundSkillPacketExtended& packet = *reinterpret_cast<const GroundSkillPacketExtended*>(record);
+  if (packet.type == 176) {
+    if (packet.length <= 23) {
+      return;
+    }
+    CGraffiSkill* skill = new CGraffiSkill;
+    skill->SendMsg(nullptr, 22, 0, packet.aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const int address = reinterpret_cast<int>(packet.text);
+    const int x = packet.x;
+    const int y = packet.y;
+    skill->SendMsg(nullptr, 117, 0, address, address >> 31, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0);
+    this->scene->objects.push_back(skill);
+    this->scene->unknown_0020.push_back(skill);
+    return;
+  }
+  if (packet.type == 0x126) {
+    this->sub_D60D70(packet.aid, packet.owner, packet.x, packet.y);
+    return;
+  }
+
+  GroundSkillExtendedData data;
+  data.skill.aid = packet.aid;
+  data.skill.owner = packet.owner;
+  data.skill.type = packet.type;
+  data.skill.x = packet.x;
+  data.skill.y = packet.y;
+  data.skill.visible = packet.visible;
+  data.skill.level = packet.level;
+  data.flags = packet.flags;
+  if (data.skill.owner == g_session.m_aid) {
+    if (data.skill.visible) {
+      this->m_skillUnitIds.push_back(packet.aid);
+    }
+  } else if (!data.skill.visible) {
+    const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), data.skill.aid);
+    if (found != this->m_skillUnitIds.end()) {
+      this->m_skillUnitIds.erase(found);
+      data.skill.visible = 0;
+    }
+  } else {
+    this->m_skillUnitIds.push_back(packet.aid);
+  }
+
+  CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(packet.aid));
+  if (!skill) {
+    const int type = packet.type;
+    if (!((type >= 45 && type <= 999) || (type >= 1001 && type <= 3998) ||
+          static_cast<unsigned>(type) - 20021u <= 11978u)) {
+      return;
+    }
+    skill = new (std::nothrow) CSkill(packet.aid);
+    this->scene->objects.push_back(skill);
+    this->scene->unknown_0020.push_back(skill);
+    if (!skill) {
+      return;
+    }
+  }
+  skill->unknown_0410 = packet.owner;
+  const int address = reinterpret_cast<int>(&data);
+  skill->SendMsg(nullptr, 45, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D413F0
+// FUNCTION: fn_21824
+void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int value, std::int16_t x, std::int16_t y, int type, signed char level, unsigned char visible, unsigned char flags) {
+  if (type == 0x126) {
+    this->sub_D60D70(aid, owner, x, y);
+    return;
+  }
+  GroundSkillArgumentData data;
+  data.extended.skill.aid = aid;
+  data.extended.skill.owner = owner;
+  data.extended.skill.type = type;
+  data.extended.skill.x = x;
+  data.extended.skill.y = y;
+  data.extended.skill.visible = visible;
+  data.extended.skill.level = level;
+  data.extended.flags = flags;
+  data.value = value;
+  if (owner == g_session.m_aid) {
+    if (visible) {
+      this->m_skillUnitIds.push_back(aid);
+    }
+  } else if (!visible) {
+    const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), aid);
+    if (found != this->m_skillUnitIds.end()) {
+      this->m_skillUnitIds.erase(found);
+      data.extended.skill.visible = 0;
+    }
+  } else {
+    this->m_skillUnitIds.push_back(aid);
+  }
+  CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(aid));
+  if (!skill) {
+    if (!((type >= 45 && type <= 999) || (type >= 1001 && type <= 3998) ||
+          static_cast<unsigned>(type) - 20021u <= 11978u)) {
+      return;
+    }
+    skill = new (std::nothrow) CSkill(aid);
+    this->scene->objects.push_back(skill);
+    this->scene->unknown_0020.push_back(skill);
+    if (!skill) {
+      return;
+    }
+  }
+  skill->unknown_0410 = owner;
+  const int address = reinterpret_cast<int>(&data);
+  skill->SendMsg(nullptr, 45, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
 
 struct ClientItemLists {
   void AddItem1718(const RawItemBasic& item, int mode);
@@ -2326,6 +2532,250 @@ void CGameMode::ReceiveSimulationResult(const unsigned char* packet) {
     this->ReceiveRandomUpgradeSimulation(packet);
     break;
   }
+}
+
+// OFFSET: 0x00D415C0
+// FUNCTION: fn_21825
+void CGameMode::UpdateSkillCooldown(std::uint16_t skill, std::uint32_t remaining, std::uint32_t duration) {
+  SessionRequestTimer value;
+  value.requestId = skill;
+  const std::uint32_t now = g_replayAnimationScaling == 1 ? Replay::Instance().elapsed : timeGetTime();
+  value.readyTime = now + remaining;
+  value.duration = duration;
+
+  for (const ShortcutCooldownIcon& icon : g_session.m_mainCooldownIcons) {
+    if (icon.id == skill) {
+      value.main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, value.readyTime - remaining, duration - remaining, 0));
+    }
+  }
+
+  for (const ShortcutCooldownIcon& icon : g_session.m_alternateCooldownIcons) {
+    if (icon.id == skill) {
+      value.alternate.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, value.readyTime - remaining, duration - remaining, 0));
+    }
+  }
+
+  const auto found = std::find_if(g_session.m_requestTimers.begin(), g_session.m_requestTimers.end(), [skill](const SessionRequestTimer& timer) {
+    return timer.requestId == skill;
+  });
+  if (found == g_session.m_requestTimers.end()) {
+    g_session.m_requestTimers.push_back(value);
+  }
+}
+
+// OFFSET: 0x00D41250
+// FUNCTION: fn_21823
+void CGameMode::sub_D41250(const unsigned char* record) {
+  GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(const_cast<unsigned char*>(record));
+  GroundSkillSpawnData data;
+  data.aid = packet.aid;
+  data.owner = packet.owner;
+  data.type = packet.type;
+  data.x = packet.x;
+  data.y = packet.y;
+  data.visible = true;
+  data.level = 0;
+  packet.visible = 1;
+
+  CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(data.aid));
+  if (data.owner == g_session.m_aid) {
+    if (data.visible) {
+      this->m_skillUnitIds.push_back(packet.aid);
+    }
+  } else if (!data.visible) {
+    const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), packet.aid);
+    if (found != this->m_skillUnitIds.end()) {
+      this->m_skillUnitIds.erase(found);
+      packet.visible = 0;
+      data.visible = false;
+    }
+  } else {
+    this->m_skillUnitIds.push_back(packet.aid);
+  }
+
+  if (!skill) {
+    if (packet.type < 45) {
+      return;
+    }
+    skill = new CSkill(packet.aid);
+    this->scene->objects.push_back(skill);
+    this->scene->unknown_0020.push_back(skill);
+  }
+
+  skill->unknown_0410 = packet.owner;
+  const int address = reinterpret_cast<int>(&data);
+  skill->SendMsg(nullptr, 45, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D40730
+// FUNCTION: fn_21819
+void CGameMode::sub_D40730(const unsigned char* record) {
+  GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(const_cast<unsigned char*>(record));
+  GroundSkillSpawnData data;
+  data.aid = packet.aid;
+  data.owner = packet.owner;
+  data.type = packet.type;
+  data.x = packet.x;
+  data.y = packet.y;
+  data.visible = true;
+  data.level = 0;
+  packet.visible = 1;
+
+  if (packet.graffiti == 1) {
+    CGraffiSkill* skill = new CGraffiSkill;
+    this->scene->objects.push_back(skill);
+    this->scene->unknown_0020.push_back(skill);
+    skill->SendMsg(nullptr, 22, 0, packet.aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const int address = reinterpret_cast<int>(packet.text);
+    skill->SendMsg(nullptr, 117, 0, address, address >> 31, data.x, data.x >> 31, data.y, data.y >> 31, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+
+  CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(data.aid));
+  if (data.owner == g_session.m_aid) {
+    if (data.visible) {
+      this->m_skillUnitIds.push_back(packet.aid);
+    }
+  } else if (!data.visible) {
+    const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), packet.aid);
+    if (found != this->m_skillUnitIds.end()) {
+      this->m_skillUnitIds.erase(found);
+      packet.visible = 0;
+      data.visible = false;
+    }
+  } else {
+    this->m_skillUnitIds.push_back(packet.aid);
+  }
+
+  if (!skill) {
+    if (packet.type < 45) {
+      return;
+    }
+    skill = new CSkill(0);
+    this->scene->objects.push_back(skill);
+    this->scene->unknown_0020.push_back(skill);
+  }
+
+  const int address = reinterpret_cast<int>(&data);
+  skill->SendMsg(nullptr, 45, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D40970
+// FUNCTION: fn_21820
+void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
+  const GroundSkillPacket8& packet = *reinterpret_cast<const GroundSkillPacket8*>(record);
+  if (packet.type == 176) {
+    if (packet.length < 20) {
+      return;
+    }
+    CGraffiSkill* skill = new CGraffiSkill;
+    this->scene->objects.push_back(skill);
+    this->scene->unknown_0020.push_back(skill);
+    skill->SendMsg(nullptr, 22, 0, packet.aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const int address = reinterpret_cast<int>(packet.text);
+    const int x = packet.x;
+    const int y = packet.y;
+    skill->SendMsg(nullptr, 117, 0, address, address >> 31, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+
+  GroundSkillSpawnData data;
+  data.aid = packet.aid;
+  data.owner = packet.owner;
+  data.type = packet.type;
+  data.x = packet.x;
+  data.y = packet.y;
+  data.visible = packet.visible;
+  data.level = packet.level;
+  if (data.owner == g_session.m_aid) {
+    if (data.visible) {
+      this->m_skillUnitIds.push_back(packet.aid);
+    }
+  } else if (!data.visible) {
+    const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), data.aid);
+    if (found != this->m_skillUnitIds.end()) {
+      this->m_skillUnitIds.erase(found);
+      data.visible = 0;
+    }
+  } else {
+    this->m_skillUnitIds.push_back(packet.aid);
+  }
+
+  CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(packet.aid));
+  if (!skill) {
+    if (packet.type < 45) {
+      return;
+    }
+    skill = new CSkill(packet.aid);
+    this->scene->objects.push_back(skill);
+    this->scene->unknown_0020.push_back(skill);
+    if (!skill) {
+      return;
+    }
+  }
+  skill->unknown_0410 = packet.owner;
+  const int address = reinterpret_cast<int>(&data);
+  skill->SendMsg(nullptr, 45, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D40BC0
+// FUNCTION: fn_21821
+void CGameMode::ReceiveGroundSkill32(const unsigned char* record) {
+  const GroundSkillPacket32& packet = *reinterpret_cast<const GroundSkillPacket32*>(record);
+  if (packet.type == 176) {
+    if (packet.length < 23) {
+      return;
+    }
+    CGraffiSkill* skill = new CGraffiSkill;
+    this->scene->objects.push_back(skill);
+    this->scene->unknown_0020.push_back(skill);
+    skill->SendMsg(nullptr, 22, 0, packet.aid, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    const int address = reinterpret_cast<int>(packet.text);
+    const int x = packet.x;
+    const int y = packet.y;
+    skill->SendMsg(nullptr, 117, 0, address, address >> 31, x, x >> 31, y, y >> 31, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+
+  GroundSkillSpawnData data;
+  data.aid = packet.aid;
+  data.owner = packet.owner;
+  data.type = packet.type;
+  data.x = packet.x;
+  data.y = packet.y;
+  data.visible = packet.visible;
+  data.level = packet.level;
+  if (data.owner == g_session.m_aid) {
+    if (data.visible) {
+      this->m_skillUnitIds.push_back(packet.aid);
+    }
+  } else if (!data.visible) {
+    const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), data.aid);
+    if (found != this->m_skillUnitIds.end()) {
+      this->m_skillUnitIds.erase(found);
+      data.visible = 0;
+    }
+  } else {
+    this->m_skillUnitIds.push_back(packet.aid);
+  }
+
+  CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(packet.aid));
+  if (!skill) {
+    const int type = packet.type;
+    if (!((type >= 45 && type <= 999) || (type >= 1001 && type <= 3998) ||
+          static_cast<unsigned>(type) - 20021u <= 11978u)) {
+      return;
+    }
+    skill = new (std::nothrow) CSkill(packet.aid);
+    this->scene->objects.push_back(skill);
+    this->scene->unknown_0020.push_back(skill);
+    if (!skill) {
+      return;
+    }
+  }
+  skill->unknown_0410 = packet.owner;
+  const int address = reinterpret_cast<int>(&data);
+  skill->SendMsg(nullptr, 45, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 #pragma pack(push, 1)
