@@ -25,6 +25,7 @@ public:
   /* 0150 */ UIButton* unknown_0150[5];
   /* 0164 */ UIStaticText* unknown_0164;
 
+  void Show(int visible) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void sub_90C970(int value);

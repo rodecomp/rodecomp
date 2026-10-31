@@ -8,6 +8,7 @@ struct UIButtonContext;
 class UIChangeNameWnd : public UIFrameWnd {
 public:
   void Paint() override;
+  int IsNameWithinLimit(std::string name, int limit);
 
 protected:
   UIButtonContext* m_controls;

@@ -11,6 +11,7 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
+#include "Contents/Items/ItemNaming.h"
 #include "Contents/TipBoxTitles.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
@@ -87,8 +88,10 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/Text/UITagTextViewer.h"
 #include "UI/Text/UITextViewer.h"
+#include "UI/Window/UIChangeNameWnd.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIMonsterDisplayWnd.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -102,6 +105,8 @@
 #include <cstring>
 #include <direct.h>
 #include <io.h>
+#include <mbctype.h>
+#include <mbstring.h>
 #include <string>
 #include <vector>
 #include <windows.h>
@@ -2797,4 +2802,121 @@ void UIItemIdentifyWnd::UpdateScroll() {
   }
 
   bar->Invalidate();
+}
+
+// OFFSET: 0x00909CD0
+// FUNCTION: fn_12398
+void UIPasswordWnd::Show(int visible) {
+  this->geometry.Show(visible);
+}
+
+// OFFSET: 0x00907610
+// FUNCTION: fn_12387
+int UIToolTipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  if (argument1 == 184 || argument1 == 185) {
+    g_windowMgr.Schedule(this);
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x00900D50
+// FUNCTION: fn_12371
+int UIPetTamingDeceiveWnd::SendMsg(
+  UIWindow*, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  if (message == 80) {
+    if (argument1 == 0) {
+      this->m_target = static_cast<int>(argument2);
+      return 0;
+    }
+
+    this->m_frame = static_cast<int>(argument2);
+    this->m_delay = 7;
+    this->m_maxDelay = 7;
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x0090A080
+// FUNCTION: fn_12412
+void UIStatusWnd::Slot11() {
+  if (this->m_info == nullptr) {
+    return;
+  }
+
+  this->m_info->width = this->geometry.width;
+  this->m_info->height = this->geometry.height;
+  this->m_info->x = this->geometry.x;
+  this->m_info->y = this->geometry.y;
+  this->m_info->unknown_0010 = this->m_expandedHeight;
+  this->m_info->unknown_0018 = this->m_extended == 1;
+}
+
+// OFFSET: 0x00907650
+
+// OFFSET: 0x008FF8A0
+
+// OFFSET: 0x0090BF40
+// FUNCTION: fn_12435
+int UIChangeNameWnd::IsNameWithinLimit(std::string name, int limit) {
+  _setmbcp(949);
+  int width = 0;
+  for (std::size_t index = 0; index < name.size(); ++index) {
+    switch (_mbsbtype(reinterpret_cast<const unsigned char*>(name.c_str()), index)) {
+    case _MBC_SINGLE:
+      ++width;
+      break;
+    case _MBC_TRAIL:
+      width += 2;
+      break;
+    }
+  }
+  return width < limit;
+}
+
+// OFFSET: 0x008F6840
+// FUNCTION: fn_12323
+void UIItemCollectionWnd::SetHeight(int height) {
+  const int minimum = (this->m_compare == 1 ? 175 : 120) + this->m_extraHeight;
+  if (height < minimum) {
+    height = minimum;
+  }
+  if (height > 450) {
+    height = 450;
+  }
+  if (height == this->geometry.height) {
+    return;
+  }
+
+  const int moveInfoId = FindItemMoveInfo(std::atoi(this->m_itemIdText.c_str())).itemId;
+  if (moveInfoId != 0) {
+    this->Resize(this->geometry.width, height + this->m_moveInfo->geometry.height + 3);
+    this->m_moveInfo->m_moveIndex = std::atoi(this->m_itemIdText.c_str());
+  } else {
+    this->Resize(this->geometry.width, height);
+  }
+
+  int resizerY;
+  if (this->m_compare != 0) {
+    this->m_viewer->Resize(this->geometry.width - 98, height - this->m_extraHeight - 69);
+    resizerY = this->geometry.height - this->m_extraHeight - 46;
+  } else {
+    this->m_viewer->Resize(this->geometry.width - 98, height - this->m_extraHeight - 40);
+    resizerY = this->geometry.height - this->m_extraHeight - 17;
+  }
+  this->m_resizer->Move(this->geometry.width - 17, resizerY);
+
+  if (moveInfoId != 0) {
+    const int bottom = this->m_viewer->geometry.y + this->m_viewer->geometry.height;
+    this->m_moveInfo->Move(this->m_viewer->geometry.x, this->m_compare != 0 ? bottom - 29 : bottom);
+  } else {
+    this->m_moveInfo->Move(-1000, -1000);
+  }
+  this->m_viewer->SendMsg(nullptr, 7, 0, 0, 0, 0);
 }
