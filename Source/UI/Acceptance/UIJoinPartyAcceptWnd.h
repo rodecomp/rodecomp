@@ -78,11 +78,16 @@ public:
 class UICoupleAcceptWnd : public UIExchangeAcceptWnd {
 public:
   UICoupleAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance);
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
 
 class UIJoinFriendAcceptWnd : public UIExchangeAcceptWnd {
 public:
   UIJoinFriendAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance);
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+
+  /* 00C0 */ int m_accountId;
+  /* 00C4 */ int m_characterId;
 };
 
 class UIJoinGuildAcceptWnd : public UIExchangeAcceptWnd {
@@ -93,16 +98,26 @@ public:
 class UIMixAcceptWnd : public UIExchangeAcceptWnd {
 public:
   UIMixAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance);
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+
+  /* 00C0 */ unsigned char m_kind;
 };
 
 class UIStarPlaceAcceptWnd : public UIExchangeAcceptWnd {
 public:
   UIStarPlaceAcceptWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance);
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+
+  /* 00C0 */ char m_place;
 };
 
 class UIYourItemWnd : public UIExchangeAcceptWnd {
 public:
   UIYourItemWnd(UIWindowContext& windows, UIFrameContext& frames, UIAcceptanceContext& acceptance);
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+
+  /* 00C0 */ int m_index;
+  /* 00C4 */ int m_location;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

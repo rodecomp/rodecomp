@@ -6,6 +6,8 @@
 class UIButton;
 class UIEditCtrl;
 class UIStaticText;
+struct UIButtonContext;
+struct UIEditContext;
 
 class UIItemDropCntWnd : public UIFrameWnd {
 public:
@@ -31,6 +33,11 @@ public:
   void sub_90C970(int value);
   void sub_90C9B0(int);
   void sub_90DE10();
+  void Slot15(int width, int height) override;
+
+protected:
+  UIButtonContext* m_controls;
+  UIEditContext* m_editContext;
 };
 
 extern int g_passwordWndMode;
