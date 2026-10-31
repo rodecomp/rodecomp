@@ -125,6 +125,7 @@ public:
 
 class CUITextButton : public CUIButton {
 public:
+  explicit CUITextButton(UIWindowContext& context);
   void Slot28(int x, int y) override;
   void Paint() override;
   virtual void Slot54(int value);
@@ -163,6 +164,9 @@ public:
 
 class CUIImageTextButton : public CUITextButton {
 public:
+  explicit CUIImageTextButton(UIWindowContext& context);
+  ~CUIImageTextButton() override;
+  void Paint() override;
   void Slot53(int resolveSkin) override;
 
   void SetImages(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& inactive);

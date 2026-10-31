@@ -1287,6 +1287,14 @@ bool CUIRadioItem::IsChecked() {
   return this->radioButton->checked;
 }
 
+// OFFSET: 0x009E7D60
+
+// OFFSET: 0x009E7EB0
+// FUNCTION: fn_14487
+CUIImageTextButton::~CUIImageTextButton() = default;
+
+// OFFSET: 0x009E80C0
+
 // OFFSET: 0x009E8150
 // FUNCTION: fn_14490
 void CUIImageTextButton::Slot53(int resolveSkin) {
