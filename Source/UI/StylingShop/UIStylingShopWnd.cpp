@@ -1504,6 +1504,7 @@ struct StyleChangePacket {
 #include "Utility/Text/GroupedInteger.h"
 #include <new>
 #include <string>
+#include <timeapi.h>
 
 // OFFSET: 0x00827AE0
 // FUNCTION: fn_10331
@@ -2068,3 +2069,34 @@ void UIAccessoryCusWnd::Slot15(int, int) {
   showCase->Move(static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.6f)), 13);
   this->AddChild(showCase);
 }
+
+// OFFSET: 0x008270A0
+
+// OFFSET: 0x00828B90
+// FUNCTION: fn_10336
+void UIDisplayCharacter::Slot15(int width, int height) {
+  this->Resize(width, height);
+  this->unknown_00A8 = timeGetTime();
+  if (!*reinterpret_cast<unsigned char*>(&this->unknown_00B0)) {
+    this->CreateButtons();
+  }
+
+  this->unknown_0088 = g_session.m_robe;
+  this->unknown_008C = g_session.m_head;
+  this->job = g_session.m_bodyCostume;
+  this->unknown_0094 = g_session.m_headPalette;
+  this->unknown_0098 = g_session.m_bodyStyle;
+  this->unknown_009C = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[4]);
+  this->unknown_00A0 = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[8]);
+  this->unknown_00A4 = *reinterpret_cast<const int*>(&g_session.unknown_0EF4[0]);
+  this->unknown_00B4 = static_cast<int>(roundf(static_cast<float>(this->geometry.width) * 0.55f) - 40.0f);
+  this->unknown_00B8 = static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.877f) - 17.0f);
+}
+
+// OFFSET: 0x00829080
+
+// OFFSET: 0x00827D00
+
+// OFFSET: 0x00828380
+
+// OFFSET: 0x008288C0

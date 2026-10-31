@@ -21,6 +21,8 @@ public:
   void SelectNextStyle(const char* table, int* goods);
   void SelectPreviousStyle(const char* table, int* goods);
   std::string GetStyleTable(const int& type);
+  void CreateButtons();
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -59,6 +61,7 @@ public:
   bool SendStyleChange();
   void DrawPaymentItem(const int& type, const int& zeny, const int& itemId, bool enabled, const int& row);
   void DrawPayments();
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -105,6 +108,7 @@ public:
 class UICostumeChangeWnd : public UIStylingshopTabParentWnd {
 public:
   explicit UICostumeChangeWnd(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -139,6 +143,7 @@ class UI2ndCostumeWnd : public UIStylingshopTabParentWnd {
 
 public:
   explicit UI2ndCostumeWnd(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -177,6 +182,7 @@ public:
 class UIBasicStylingWnd : public UIStylingshopTabParentWnd {
 public:
   explicit UIBasicStylingWnd(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -221,6 +227,9 @@ public:
 
 class UI2ndCostumeCheckBox : public UICheckBox {
 public:
+  // INLINED
+  UI2ndCostumeCheckBox(UIWindowContext& windowContext, UIButtonContext& controls) : UICheckBox(windowContext, controls) {
+  }
   void Slot25(int x, int y) override;
 };
 
