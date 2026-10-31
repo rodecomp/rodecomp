@@ -376,6 +376,7 @@ public:
   void NotifyCaptchaRegistered();
   void ReceiveItem1784List(const unsigned char* packet);
   void ReceiveItemListPart(unsigned char listType, int count, const unsigned char* data);
+  void ReceiveEquipListPart(unsigned char listType, int count, const unsigned char* data);
   void ClearItemLists(const unsigned char* packet);
   void RefreshItemListWindow(unsigned char listType, bool partial);
   void ClearUnknown04DC();

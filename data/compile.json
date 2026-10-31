@@ -261,6 +261,7 @@
   "Source/Client/Mode/GameMode.cpp": 0,
   "Source/Client/Mode/GameModeEquipWindow.cpp": 0,
   "Source/Client/Mode/GameModeHandlers.cpp": 0,
+  "Source/Client/Mode/GameModeItemLists.cpp": 0,
   "Source/Client/Mode/GameModeMiniMap.cpp": 0,
   "Source/Client/Mode/GameModeNames.cpp": 0,
   "Source/Client/Mode/GameModeNotices.cpp": 0,
