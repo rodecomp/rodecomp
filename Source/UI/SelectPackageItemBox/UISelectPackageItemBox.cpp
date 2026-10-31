@@ -633,6 +633,10 @@ void CUISelectPackageItemBox::BindTab(SelectPackageItemBox::CUITabInfo* tab, con
 }
 
 // OFFSET: 0x00A69350
+// FUNCTION: fn_16658
+CUIFrameWnd* CreateSelectPackageItemBox() {
+  return new CUISelectPackageItemBox();
+}
 
 // OFFSET: 0x00A6F470
 // FUNCTION: fn_16772
