@@ -27,6 +27,7 @@ public:
   virtual void Configure(int x, int y, int width, int height, unsigned char transparent);
   virtual void Clear();
   virtual void Refresh();
+  void AddLine(const char* text, int id);
   int sub_8991B0(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4);
 
   /* 007C */ unsigned char unknown_007C[0xC];
@@ -56,6 +57,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Refresh() override;
   void AddIndexedLine(const char* text, std::intptr_t argument, std::intptr_t value);
+  void AddLine(const char* text, int id, int data);
 
   /* 00C0 */ int targetId;
   /* 00C4 */ std::map<int, int> unknown_00C4;

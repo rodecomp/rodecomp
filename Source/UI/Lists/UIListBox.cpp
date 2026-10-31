@@ -5,6 +5,8 @@
 #include "UI/Text/ColoredText.h"
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UIListBox.h"
+#include "UI/Lists/UIListBoxID.h"
+#include "Render/Text/FontCache.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/WindowManagerWindows.h"
 
@@ -411,4 +413,29 @@ void UIChatHisBox::CopyHistory(const UIChatHisBox& other) {
   }
 
   reinterpret_cast<void(__thiscall*)(UIChatHisBox*)>(0x0089C080)(this);
+}
+
+// OFFSET: 0x00875860
+// FUNCTION: fn_11200
+void UIComboBoxID::AddLine(const char* text, int id, int data) {
+  const int index = static_cast<int>(this->lines.size());
+  this->lines.emplace(index, IdListLine{id, text});
+  const TextLocale locale = {};
+  const int width = this->TextWidth(g_fontCache, locale, text, 0, 0, 12, 0, 0);
+  this->contentWidth = std::max(this->contentWidth, width);
+  this->Refresh();
+
+  if (data != 0) {
+    this->unknown_00C4.try_emplace(index, data);
+  }
+}
+
+// OFFSET: 0x00875DD0
+// FUNCTION: fn_11203
+void UIListBoxID::AddLine(const char* text, int id) {
+  this->lines.emplace(static_cast<int>(this->lines.size()), IdListLine{id, text});
+  const TextLocale locale = {};
+  const int width = this->TextWidth(g_fontCache, locale, text, 0, 0, 12, 0, 0);
+  this->contentWidth = std::max(this->contentWidth, width);
+  this->Refresh();
 }
