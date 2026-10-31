@@ -2,10 +2,13 @@
 
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/ModeCursor.h"
+#include "Client/ReplayPacketRecorder.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/MessageTable.h"
 #include "Contents/RenewQuestMgr.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Renderer.h"
 #include "Render/Text/TextContext.h"
@@ -26,10 +29,22 @@
 #include "UI/UIStaticBitmap.h"
 #include "UI/Window/UITab.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstddef>
 #include <cstring>
+
+#pragma pack(push, 1)
+struct PACKET_CZ_ACTIVE_QUEST {
+  short packetType;
+  unsigned int questId;
+  unsigned char active;
+};
+#pragma pack(pop)
+
+// GLOBAL: gl_25172
+bool g_renewQuestTitlesPending = true;
 
 // OFFSET: 0x007F9240
 // FUNCTION: fn_09933
@@ -747,3 +762,87 @@ void UIRenewQuestWnd::UpdateScroll() {
 
   this->RefreshRows();
 }
+
+// OFFSET: 0x007FD500
+// FUNCTION: fn_09980
+void UIRenewQuestWnd::RefreshQuestLists(int type, unsigned int questId) {
+  if (type == 0 || type == 1) {
+    this->m_questIds[0].clear();
+    this->m_questIds[2].clear();
+    this->m_questIds[3].clear();
+    CRenewQuestMgr* mgr = g_renewQuestMgr;
+    for (auto it = mgr->m_ongoingQuests.begin(); it != mgr->m_ongoingQuests.end(); ++it) {
+      if (it->second.unknown_01F8 == 1) {
+        this->m_questIds[3].push_back(it->first);
+      } else if (it->second.m_state == 1) {
+        this->m_questIds[0].push_back(it->first);
+      } else {
+        this->m_questIds[2].push_back(it->first);
+      }
+    }
+  }
+
+  if (type == 0 || type == 2) {
+    this->m_questIds[1].clear();
+    CRenewQuestMgr* mgr = g_renewQuestMgr;
+    for (auto it = mgr->m_recommendedQuests.begin(); it != mgr->m_recommendedQuests.end(); ++it) {
+      if (it->second.m_state == 1) {
+        this->m_questIds[1].push_back(it->first);
+      }
+    }
+    for (auto it = mgr->m_recommendedQuests.begin(); it != mgr->m_recommendedQuests.end(); ++it) {
+      if (it->second.m_state == 0) {
+        this->m_questIds[1].push_back(it->first);
+      }
+    }
+  }
+
+  if (questId == 0) {
+    this->m_selected = 0;
+    return;
+  }
+
+  const std::vector<unsigned int>& ids = this->m_questIds[this->m_tab];
+  unsigned int index = 0;
+  const unsigned int count = static_cast<unsigned int>(ids.size());
+  if (count != 0) {
+    const unsigned int* id = ids.data();
+    do {
+      if (questId == *id) {
+        break;
+      }
+      ++index;
+      ++id;
+    } while (index < count);
+  }
+
+  this->m_selected = index;
+  if (this->m_selected >= 9) {
+    this->m_scroll = this->m_selected - 8;
+    this->UpdateScroll();
+    this->Invalidate();
+  }
+
+  UIRenewDetailQuestInfoWnd* detail = static_cast<UIRenewDetailQuestInfoWnd*>(g_windowMgr.EnsureWindow(0x142));
+  if (detail) {
+    const std::vector<unsigned int>& current = this->m_questIds[this->m_tab];
+    const bool recommended = this->m_tab == 1;
+    if (current.empty()) {
+      detail->SetQuest(0, recommended);
+    } else {
+      detail->SetQuest(current[this->m_selected], recommended);
+    }
+  }
+}
+
+// INLINED
+static void SetRecommendedQuestTitle(CRenewQuestMgr* mgr, unsigned int id, std::string title) {
+  mgr->m_recommendedQuests[id].m_title = title;
+}
+
+// INLINED
+static void SetRecommendedQuestSummary(CRenewQuestMgr* mgr, unsigned int id, std::string summary) {
+  mgr->m_recommendedQuests[id].unknown_004C = summary;
+}
+
+// OFFSET: 0x007FD7F0

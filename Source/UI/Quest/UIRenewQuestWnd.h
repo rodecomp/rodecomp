@@ -123,8 +123,11 @@ public:
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3,
+              std::intptr_t argument4) override;
   void RefreshRows();
   void UpdateScroll();
+  void RefreshQuestLists(int type, unsigned int questId);
 
   /* 00B4 */ UITab* m_tabs;
   /* 00B8 */ UIRenewQuestScrollBar* m_scrollBar;
