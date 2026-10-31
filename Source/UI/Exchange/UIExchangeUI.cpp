@@ -493,6 +493,27 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 }
 
 // OFFSET: 0x00A18660
+// FUNCTION: fn_15305
+void CUIExchangeUI::BindItem(ExchangeUI::CUIItem* item, const ExchangeUI::CItemData& data) {
+  const int quantity = data.item.quantity;
+  const bool visible = quantity > 0;
+  item->itemIcon->Show(visible);
+  item->unknown_00F0->Show(visible);
+  item->unknown_00F4->Show(visible);
+  item->itemIcon->SetItem(data.item);
+
+  const std::string count = quantity > 0 ? std::to_string(data.item.quantity) : std::string();
+  item->unknown_00F0->SetText(count.c_str(), count.size());
+
+  const std::string name = quantity > 0 ? data.item.DisplayName(0) : std::string();
+  item->unknown_00F4->SetText(name.c_str(), name.size());
+  item->unknown_00F4->SetTooltip("", 0);
+
+  if (data.frozen) {
+    item->SetFrozen(true);
+    item->unknown_00E8->Show(0);
+  }
+}
 
 // OFFSET: 0x00A18940
 // FUNCTION: fn_15306
