@@ -149,16 +149,16 @@ char g_pendingWhisperCount;
 int g_whisperRecord;
 
 // GLOBAL: gl_25097
-UIWindow* g_saleOpenWindow = reinterpret_cast<UIWindow*>(0x039E23A6);
+UIWindow* g_saleOpenWindow;
 
 // GLOBAL: gl_25098
-UIWindow* g_saleResultWindow = reinterpret_cast<UIWindow*>(0x039E3603);
+UIWindow* g_saleResultWindow;
 
 // GLOBAL: gl_25099
-UIWindow* g_vendingOpenWindow = reinterpret_cast<UIWindow*>(0x039E2CDC);
+UIWindow* g_vendingOpenWindow;
 
 // GLOBAL: gl_25100
-UIWindow* g_vendingOpenResultWindow = reinterpret_cast<UIWindow*>(0x039E2DC6);
+UIWindow* g_vendingOpenResultWindow;
 
 namespace {
 #pragma pack(push, 1)
