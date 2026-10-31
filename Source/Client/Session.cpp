@@ -58,6 +58,14 @@ std::string g_guildName;
 // GLOBAL: gl_25140
 static std::string s_messageEndTag = "</MSG>";
 
+namespace EquipmentProperties {
+class CEquipmentPropertiesMgr {
+public:
+  static CEquipmentPropertiesMgr* GetInstance();
+  void RefreshWearable(const int& key);
+};
+}
+
 // OFFSET: 0x00DDE860
 // FUNCTION: fn_23401
 int CSession::MercSkillLevel(int skillId) const {
@@ -1561,6 +1569,15 @@ void CSession::UpdateFriendName(std::uint32_t characterId, const char* name) {
   }
 }
 
+// OFFSET: 0x00DFF830
+// FUNCTION: fn_23621
+void CSession::SetEquipItem2B50(unsigned int index, const ITEM_INFO& item) {
+  if (index < 10) {
+    this->unknown_2B50[index] = item;
+    EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshWearable(reinterpret_cast<const int&>(item.unknown_0000[3]));
+  }
+}
+
 // OFFSET: 0x00DFF870
 // FUNCTION: fn_23622
 void CSession::SetNavigationPlayerMap(const char* name) {
@@ -1607,6 +1624,15 @@ void CSession::SetUnknown16EC(std::uint32_t value) {
 
   if (mode->scene && mode->scene->player && mode->scene->player->unknown_0544) {
     mode->scene->player->unknown_0544->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00DFF9C0
+// FUNCTION: fn_23625
+void CSession::SetEquipItem17F0(unsigned int index, const ITEM_INFO& item) {
+  if (index < 10) {
+    this->unknown_17F0[index] = item;
+    EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshWearable(reinterpret_cast<const int&>(item.unknown_0000[3]));
   }
 }
 

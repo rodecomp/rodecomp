@@ -603,6 +603,8 @@ public:
   bool LoadMapPosTable();
   bool ScaleMapPositions();
   bool LoadFogParameters();
+  void SetEquipItem2B50(unsigned int index, const ITEM_INFO& item);
+  void SetEquipItem17F0(unsigned int index, const ITEM_INFO& item);
   void ClearHomunStatus();
   std::pair<int, int>* InsertPair(int key, int value);
   int SetPairValue(int value, int slot);
