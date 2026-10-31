@@ -10,6 +10,7 @@ public:
   bool Slot03() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot11() override;
+  void Slot35(int delta) override;
 
   /* 00B4 */ unsigned char unknown_00B4[0x4C];
   /* 0100 */ WindowPlacement* m_placement;

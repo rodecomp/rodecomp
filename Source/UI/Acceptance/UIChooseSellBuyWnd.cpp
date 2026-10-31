@@ -2941,3 +2941,46 @@ void UIItemCollectionWnd::SetHeight(int height) {
   }
   this->m_viewer->SendMsg(nullptr, 7, 0, 0, 0, 0);
 }
+
+class UIAutoMessageWnd : public UIFrameWnd {
+public:
+  void Paint() override;
+};
+
+// OFFSET: 0x008ECE20
+// FUNCTION: fn_12210
+void UIAutoMessageWnd::Paint() {
+  this->DrawBorder(0, 0, 0, 0);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 15, 6, LookupMessage(0x3B0), 0, 0, 12, 0, 0, 0);
+}
+
+// OFFSET: 0x008FFC40
+// FUNCTION: fn_12364
+int UINotifyQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message != 6) {
+    return UIWindow::SendMsg(sender, message, a, b, c, d);
+  }
+  if (a == 192) {
+    if (UIWindow* window = g_windowMgr.EnsureWindow(0x2718)) {
+      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(window);
+    }
+  }
+  return 0;
+}
+
+// OFFSET: 0x008F5AA0
+// FUNCTION: fn_12312
+void UInCashWnd::Slot35(int delta) {
+  if (static_cast<int>(g_session.unknown_1720.size()) < 4) {
+    return;
+  }
+  if (delta < 0) {
+    this->SendMsg(this, 10, 0, 0, 0, 0);
+  } else {
+    this->SendMsg(this, 9, 0, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x008D7660
+
+// OFFSET: 0x008FFBE0
