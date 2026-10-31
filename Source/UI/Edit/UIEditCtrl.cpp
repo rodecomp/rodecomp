@@ -1292,6 +1292,8 @@ void UIItemStoreWnd::Slot32(int x, int y) {
   }
 }
 
+// OFFSET: 0x00989520
+
 // OFFSET: 0x00989960
 // FUNCTION: fn_13401
 void UIMerchantItemPurchaseWnd::Slot32(int x, int y) {
@@ -1855,6 +1857,92 @@ void UIItemStoreSubWnd::Slot26(int, int) {
   this->SendMsg(nullptr, 6, 232, 0, 0, 0);
 }
 
+// OFFSET: 0x00984170
+// FUNCTION: fn_13353
+void UIItemWnd::Slot26(int x, int y) {
+  if (y < 17) {
+    this->SendMsg(this, 6, 202, 0, 0, 0);
+    return;
+  }
+
+  if (GetAsyncKeyState(VK_SHIFT)) {
+    return;
+  }
+
+  ITEM_INFO item = this->GetItemAt(x, y);
+  if (item.unknown_0000[1] == 0) {
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  switch (item.unknown_0000[0]) {
+  case 0:
+  case 1:
+  case 2:
+    if (item.GetItemId() == 12802 &&
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(2373), 2, false, false, 0, "Message", 280, 120, 0) == 188) {
+      break;
+    }
+    mode->SendMsg(27, static_cast<int>(item.unknown_0000[1]), 0, 0, 0);
+    break;
+  case 4:
+  case 5:
+  case 8:
+  case 9:
+  case 11:
+  case 12:
+  case 13:
+  case 14:
+  case 15:
+    if (!item.identified) {
+      break;
+    }
+    if (item.unknown_0000[1] == 0 || item.unknown_0000[2] == 0 || item.unknown_0000[3] != 0) {
+      if (!g_session.IsPetAccessory(item.GetItemId())) {
+        break;
+      }
+    }
+    if (GetAsyncKeyState(VK_CONTROL) && g_session.m_swapEquipmentMode) {
+      mode->SendMsg(302, static_cast<int>(item.unknown_0000[1]), static_cast<int>(item.unknown_0000[2]), 0, 0);
+    } else if (g_windowMgr.LookupWindow(295)) {
+      g_windowMgr.LookupWindow(295)->SendMsg(this, 23, item.unknown_0000[1], 0, 0, 0);
+    } else if (g_windowMgr.LookupWindow(343)) {
+      g_windowMgr.LookupWindow(343)->SendMsg(this, 23, item.unknown_0000[1], 0, 0, 0);
+    } else {
+      mode->SendMsg(19, static_cast<int>(item.unknown_0000[1]), static_cast<int>(item.unknown_0000[2]), 0, 0);
+    }
+    break;
+  case 6:
+    mode->SendMsg(123, static_cast<int>(item.unknown_0000[1]), 0, 0, 0);
+    break;
+  case 10:
+  case 16:
+  case 17:
+  case 19:
+    if (item.unknown_0000[1] == 0 || item.unknown_0000[3] != 0) {
+      break;
+    }
+    if (GetAsyncKeyState(VK_CONTROL) && g_session.m_swapEquipmentMode) {
+      mode->SendMsg(302, static_cast<int>(item.unknown_0000[1]), static_cast<int>(item.unknown_0000[2]), 0, 0);
+    } else {
+      mode->SendMsg(87, static_cast<int>(item.unknown_0000[1]), static_cast<int>(item.unknown_0000[2]), 0, 0);
+    }
+    break;
+  case 18:
+    if (*reinterpret_cast<const int*>(&g_session.unknown_16F4[4]) >= 0) {
+      ItemDescriptions descriptions{g_itemDescriptions};
+      bool languagePrefix = false;
+      WORD language = g_serverLanguage->language;
+      ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)
+              ->Confirm(FormatOwnedString(LookupMessage(1226), naming.DisplayName(item, 0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+        mode->SendMsg(27, static_cast<int>(item.unknown_0000[1]), 0, 0, 0);
+      }
+    }
+    break;
+  }
+}
+
 // OFFSET: 0x00985380
 // FUNCTION: fn_13364
 void UIMerchantItemMyShopWnd::Slot25(int x, int y) {
@@ -1981,6 +2069,7 @@ void UIMerchantShopMakeWnd::Slot19() {
   this->unknown_016C = this->priceEdits[index]->Length();
   edit->SetCursor(edit->Length());
 }
+
 
 // OFFSET: 0x00988C20
 // FUNCTION: fn_13390
@@ -5320,6 +5409,8 @@ void UIItemShopWnd2::Slot28(int x, int y) {
 
   reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
 }
+
+// OFFSET: 0x00986970
 
 // OFFSET: 0x00987000
 // FUNCTION: fn_13376
