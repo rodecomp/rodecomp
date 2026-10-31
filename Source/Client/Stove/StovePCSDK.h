@@ -61,6 +61,40 @@ namespace Stove::PCSDK {
     inline void FetchProducts(StovePCFetchProductParam* param, void (*callback)(CallbackResult)) {
       reinterpret_cast<void(__cdecl*)(StovePCFetchProductParam*, void (*)(CallbackResult))>(0x00E6CD5F)(param, callback);
     }
+
+    struct __declspec(dllimport) StovePCChargeInfo {
+      const wchar_t* GetChargeTypeName() const;
+    };
+
+    struct __declspec(dllimport) StovePCOrderProduct {
+      std::int64_t GetProductId() const;
+    };
+
+    struct __declspec(dllimport) StovePCPurchasedProduct {
+      const wchar_t* GetCategoryId() const;
+    };
+
+    struct __declspec(dllimport) StovePCShopCategory {
+      int GetDisplayNumber() const;
+    };
+
+    struct __declspec(dllimport) StovePCProduct {
+      const wchar_t* GetCategoryId() const;
+      double GetSalePrice() const;
+      int GetGuidQuantity() const;
+      int GetPurchaseLimitCount() const;
+      std::int64_t GetSaleBeginDate() const;
+      std::int64_t GetSaleEndDate() const;
+
+      /* 0000 */ std::uint8_t unknown_0000[156];
+    };
+
+    struct __declspec(dllimport) StovePCPurchaseResult {
+      StovePCPurchaseResult(const StovePCPurchaseResult& other);
+      ~StovePCPurchaseResult();
+
+      /* 0000 */ std::uint8_t unknown_0000[48];
+    };
   }
 }
 

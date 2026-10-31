@@ -42,4 +42,6 @@ static_assert(offsetof(CStoveMgr, m_gameUserId) == 0x02A0);
 static_assert(offsetof(CStoveMgr, unknown_02B8) == 0x02B8);
 #endif
 
+extern CStoveMgr* g_stoveMgr;
+
 #endif
