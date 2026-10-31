@@ -2942,6 +2942,44 @@ void UIComboBox::Slot31(int x, int y) {
   g_windowMgr.CloseWindow(26);
 }
 
+// OFFSET: 0x00890C20
+// FUNCTION: fn_11436
+void UIComboBoxID::Slot31(int x, int y) {
+  int line = -1;
+
+  if (x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
+    const int index = y / this->lineHeight + this->topLine;
+
+    if (index >= 0 && static_cast<unsigned>(index) < this->lines.size()) {
+      line = index;
+    }
+  }
+
+  this->selected = line;
+
+  if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
+    int extra = 0;
+    const auto found = this->unknown_00C4.find(this->selected);
+
+    if (found != this->unknown_00C4.end()) {
+      extra = found->second;
+    }
+
+    target->SendMsg(nullptr, 39, this->lines[this->selected].id, extra, 0, 0);
+  } else if (this->parent) {
+    int extra = 0;
+    const auto found = this->unknown_00C4.find(this->selected);
+
+    if (found != this->unknown_00C4.end()) {
+      extra = found->second;
+    }
+
+    this->parent->SendMsg(nullptr, 39, this->lines[this->selected].id, extra, 0, 0);
+  }
+
+  g_windowMgr.CloseWindow(26);
+}
+
 // OFFSET: 0x00892990
 // FUNCTION: fn_11480
 void UIBasicSkillCtrl::Slot32(int x, int y) {
