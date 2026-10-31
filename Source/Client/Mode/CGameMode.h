@@ -423,6 +423,24 @@ public:
   void ReceivePacket0B2E(short result);
   void ReceiveUnknownD2A1F0(const unsigned char* packet);
   void ReceiveActorMessage7(const unsigned char* packet);
+  void ReceiveUnknownD78010(const unsigned char* packet);
+  void ReceiveUnknownD89C60(const unsigned char* packet);
+  void sub_D591A0(std::uint32_t aid, int state, int flag, int options);
+  void sub_D5EEF0(
+    const char* first, int second, const char* third, int fourth, unsigned char fifth, std::uint16_t sixth, std::uint16_t seventh,
+    const char* eighth, unsigned char ninth, unsigned char tenth, int eleventh
+  );
+  void ReceiveLapineBoxIngredient(const unsigned char* packet);
+  void ActivateMacroBlackListCheck(unsigned char state, int duration);
+  void SetMacroDetectorCountdown(unsigned char count, std::uint32_t duration);
+  void ReceiveCaptchaPreviewImage(const char* key, const void* data, unsigned short size);
+  void ReceiveLapineUpgradeBoxValue(int value);
+  void Zc_Trycapture_Monster(const unsigned char* packet);
+  void Zc_Trycollection(const unsigned char* packet);
+  void Zc_Msg(const unsigned char* packet);
+  void Zc_Msg_Color(const unsigned char* packet);
+  void ReceiveRouletteBonusPoints(const unsigned char* packet);
+  void ReceiveActorCharm(const unsigned char* packet);
   void Zc_Start_Baby(const unsigned char* packet);
   void Zc_Start_Capture(const unsigned char* packet);
   void Zc_Start_Collection(const unsigned char* packet);

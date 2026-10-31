@@ -2,6 +2,11 @@
 #include "File/ShortcutFilename.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
+#include "UI/UIMacroDetectorWnd.h"
+#include "UI/UIMacroBlackListCheckWnd.h"
+#include "UI/UILapineScrollBar.h"
+#include "UI/UICaptchaPreviewWnd.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
@@ -1832,4 +1837,199 @@ void CGameMode::Zc_Start_Couple(const unsigned char*) {
 // FUNCTION: fn_22201
 void CGameMode::ReceivePacket0AB8(const unsigned char*) {
   this->scene->player->SendMsg(nullptr, 149, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D78010
+// FUNCTION: fn_22156
+void CGameMode::ReceiveUnknownD78010(const unsigned char* packet) {
+  this->sub_D591A0(
+    *reinterpret_cast<const std::uint32_t*>(packet + 2),
+    *reinterpret_cast<const int*>(packet + 6),
+    *reinterpret_cast<const int*>(packet + 0xA),
+    *reinterpret_cast<const int*>(packet + 0xE)
+  );
+}
+
+// OFFSET: 0x00D89C60
+// FUNCTION: fn_22212
+void CGameMode::ReceiveUnknownD89C60(const unsigned char* packet) {
+  this->sub_D5EEF0(
+    reinterpret_cast<const char*>(packet + 0x2B),
+    *reinterpret_cast<const int*>(packet + 2),
+    reinterpret_cast<const char*>(packet + 0x43),
+    *reinterpret_cast<const int*>(packet + 6),
+    packet[0x12],
+    *reinterpret_cast<const std::uint16_t*>(packet + 0xA),
+    *reinterpret_cast<const std::uint16_t*>(packet + 0xC),
+    reinterpret_cast<const char*>(packet + 0x13),
+    packet[0x53],
+    packet[0x54],
+    0
+  );
+}
+
+// OFFSET: 0x00D79390
+// FUNCTION: fn_22165
+void CGameMode::ReceiveLapineBoxIngredient(const unsigned char* packet) {
+  if (g_windowMgr.LookupWindow(0x122) != nullptr) {
+    return;
+  }
+
+  if (UIWindow* window = g_windowMgr.EnsureWindow(0x122)) {
+    static_cast<UILapineBoxWnd*>(window)->SetIngredient(static_cast<int>(reinterpret_cast<std::intptr_t>(packet)));
+  }
+}
+
+// OFFSET: 0x00D79B40
+// FUNCTION: fn_22178
+void CGameMode::ActivateMacroBlackListCheck(unsigned char state, int duration) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(0x167)) {
+    static_cast<UIMacroBlackListCheckWnd*>(window)->Activate(state, duration);
+  }
+}
+
+// OFFSET: 0x00D79B70
+// FUNCTION: fn_22179
+void CGameMode::SetMacroDetectorCountdown(unsigned char count, std::uint32_t duration) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(0x11D)) {
+    window->Show(1);
+    static_cast<UIMacroDetectorWnd*>(window)->SetCountdown(count, duration);
+  }
+}
+
+// OFFSET: 0x00D79340
+// FUNCTION: fn_22164
+void CGameMode::ReceiveCaptchaPreviewImage(const char* key, const void* data, unsigned short size) {
+  UICaptchaPreviewWnd* window = static_cast<UICaptchaPreviewWnd*>(g_windowMgr.LookupWindow(0x120));
+  if (window != nullptr && std::strncmp(window->m_captchaKey, key, 4) == 0) {
+    window->AddImageData(data, size);
+  }
+}
+
+// OFFSET: 0x00D793D0
+// FUNCTION: fn_22166
+void CGameMode::ReceiveLapineUpgradeBoxValue(int value) {
+  if (g_windowMgr.LookupWindow(0x12E) != nullptr) {
+    return;
+  }
+
+  UIWindow* window = g_windowMgr.EnsureWindow(0x12E);
+  if (window == nullptr) {
+    return;
+  }
+
+  window->SendMsg(nullptr, 0x17, value, 0, 0, 0);
+}
+
+// OFFSET: 0x00D7B420
+// FUNCTION: fn_22203
+void CGameMode::Zc_Trycapture_Monster(const unsigned char* packet) {
+  UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0394);
+  if (packet[2] != 0) {
+    if (window) {
+      window->SendMsg(nullptr, 0x50, 1, 7, 0, 0);
+    }
+  } else {
+    if (window) {
+      window->SendMsg(nullptr, 0x50, 1, 3, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00D7B470
+// FUNCTION: fn_22204
+void CGameMode::Zc_Trycollection(const unsigned char* packet) {
+  if (UIWindow* window = g_windowMgr.LookupWindow(0xC4)) {
+    if (packet[2] != 0) {
+      window->SendMsg(nullptr, 0x50, 1, 7, 0, 0);
+    } else {
+      window->SendMsg(nullptr, 0x50, 1, 3, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00D32830
+// FUNCTION: fn_21745
+void CGameMode::Zc_Msg(const unsigned char* packet) {
+  const std::uint16_t message = *reinterpret_cast<const std::uint16_t*>(packet + 2);
+  std::uint32_t color = 0xFFFFFF;
+  switch (message) {
+  case 0x4C5:
+  case 0x4C6:
+  case 0x757:
+  case 0x758:
+  case 0x886:
+    color = 0xFF;
+    break;
+  }
+
+  int type = 0;
+  switch (message) {
+  case 0xD93:
+  case 0xD94:
+    type = 0x17;
+    break;
+  }
+
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), color, type, 0, 0);
+  g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(message)), color, type, 0, 0);
+}
+
+// OFFSET: 0x00D328E0
+// FUNCTION: fn_21746
+void CGameMode::Zc_Msg_Color(const unsigned char* packet) {
+  const std::uint16_t message = *reinterpret_cast<const std::uint16_t*>(packet + 2);
+  std::uint32_t color = *reinterpret_cast<const std::uint32_t*>(packet + 4);
+  switch (message) {
+  case 0x4C5:
+  case 0x4C6:
+  case 0x757:
+  case 0x758:
+  case 0x886:
+    color = 0xFF;
+    break;
+  }
+
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), color, 0, 0, 0);
+  g_windowMgr.SendNotice(19, reinterpret_cast<std::intptr_t>(LookupMessage(message)), color, 0, 0, 0);
+}
+
+// OFFSET: 0x00D7B5E0
+// FUNCTION: fn_22207
+void CGameMode::ReceiveRouletteBonusPoints(const unsigned char* packet) {
+  switch (packet[2]) {
+  case 0:
+    g_rouletteMgr->m_goldPoint = *reinterpret_cast<const int*>(packet + 3);
+    break;
+  case 1:
+    g_rouletteMgr->m_silverPoint = *reinterpret_cast<const int*>(packet + 3);
+    break;
+  case 2:
+    g_rouletteMgr->m_bronzePoint = *reinterpret_cast<const int*>(packet + 3);
+    break;
+  }
+
+  if (g_windowMgr.unknown_0464 != nullptr) {
+    g_windowMgr.RefreshRouletteWnd();
+  }
+}
+
+// OFFSET: 0x00D7AE60
+// FUNCTION: fn_22193
+void CGameMode::ReceiveActorCharm(const unsigned char* packet) {
+  const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
+  CRenderObject* actor;
+  if (aid == *reinterpret_cast<const std::uint32_t*>(reinterpret_cast<const void*>(&g_session.m_aid))) {
+    actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+  } else {
+    actor = g_session.FindGameActor(aid);
+  }
+
+  if (actor) {
+    static_cast<CGameActor*>(actor)->SetCharm(
+      *reinterpret_cast<const std::int16_t*>(packet + 6), *reinterpret_cast<const std::int16_t*>(packet + 8)
+    );
+  }
 }
