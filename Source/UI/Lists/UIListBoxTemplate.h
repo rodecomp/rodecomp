@@ -58,6 +58,7 @@ public:
   void SetSelected(bool selected) override;
 
   void OnSelectSubTab(CUISubTab* subTab);
+  CUIListBox<CUISubTab>* CreateSubTabList();
 
   /* 00E8 */ unsigned char unknown_00E8[0x04];
   /* 00EC */ CUIListBox<CUISubTab>* subTabs;
@@ -160,6 +161,11 @@ struct Contents {
 
 template <class T> class CUIListBox : public CUIControl {
 public:
+  // INLINED
+  explicit CUIListBox(UIWindowContext& context)
+      : CUIControl(context), scrollBar(nullptr), itemWidth(0), rowHeight(0), itemX(0), itemY(0), selected(nullptr), locked(0) {
+  }
+
   void Slot15(int width, int height) override;
   // OFFSET: 0x009D23B0
   // OFFSET: 0x009D23C0
@@ -213,9 +219,29 @@ public:
 
   void SelectItem(CUIListItem* item);
 
-  /* 0084 */ unsigned char unknown_0084[0x2C];
+  // INLINED
+  void SetOnSelect(std::function<void(T*)> handler) {
+    this->onSelect = handler;
+  }
+
+  // INLINED
+  void SetImages(const std::string& normal, const std::string& hover, const std::string& pressed, const std::string& disabled) {
+    this->imageNames[0] = normal;
+    this->imageNames[1] = hover;
+    this->imageNames[2] = pressed;
+    this->disabledName = disabled;
+    this->Slot53(0);
+    this->Invalidate();
+  }
+
+  /* 0084 */ CResPtr<CBitmapRes> unknown_0084;
+  /* 0088 */ CResPtr<CBitmapRes> unknown_0088;
+  /* 008C */ CResPtr<CBitmapRes> unknown_008C;
+  /* 0090 */ std::map<int, std::string> imageNames;
+  /* 0098 */ std::string disabledName;
   /* 00B0 */ CUIVScrollBar* scrollBar;
-  /* 00B4 */ unsigned char unknown_00B4[0x08];
+  /* 00B4 */ int itemWidth;
+  /* 00B8 */ int rowHeight;
   /* 00BC */ int itemX;
   /* 00C0 */ int itemY;
   /* 00C4 */ std::list<T*> items;
