@@ -27,6 +27,7 @@ struct ActorNameTitlePacket;
 struct PlayerNameUpdatePacket;
 struct GameOptionEntry;
 struct CWorld;
+struct RenewQuestOngoingInfo;
 struct TextureRegion;
 struct vector3d;
 
@@ -148,6 +149,12 @@ public:
   bool ConfirmDraggedItemUse();
   void sub_CFE480(int actorId);
   void NotifyUnknown0604(int value);
+  void UpdatePetFriendlyWindow(int previousFriendly);
+  bool SaveEmblemFile(const std::vector<unsigned char>& data);
+  void SendNpcInputText(std::uint32_t npcId, const char* text, const char* replacement);
+  std::string HuntTargetText(const RenewQuestOngoingInfo& quest, int index);
+  std::vector<unsigned char> SaveActiveSkillEffects();
+  std::vector<unsigned char> SaveUnknown024C();
   void WorldCell(float x, float z, int& column, int& row) const;
   void SubcellPosition(int column, int row, int subColumn, int subRow, float& x, float& z) const;
   void PlayerCell(int* column, int* row) const;

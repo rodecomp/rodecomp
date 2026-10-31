@@ -35,9 +35,9 @@
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Math/Vector3d.h"
 #include "Utility/Text/FormatString.h"
-#include <cstddef>
-#include <cstdint>
-#include <cstdio>
+#include "Client/Application/Launcher.h"
+#include "UI/Text/NavigationLink.h"
+#include "Contents/RenewQuestMgr.h"
 #include <cstring>
 #include <string>
 #include <vector>
@@ -1148,3 +1148,61 @@ unsigned CGameMode::sub_CEC100(const std::vector<unsigned char>& data) {
 
   return offset;
 }
+
+// OFFSET: 0x00CCFD70
+
+// OFFSET: 0x00CECE30
+
+// OFFSET: 0x00CF0E30
+
+// OFFSET: 0x00CF0BA0
+// FUNCTION: fn_21423
+void WriteMyLog(const char* file, int line, const char* format, ...) {
+  char message[0x801];
+  std::memset(message, 0, sizeof(message));
+
+  va_list arguments;
+  va_start(arguments, format);
+  _vsnprintf(message, 0x800, format, arguments);
+  va_end(arguments);
+
+  if (std::strrchr(file, '\\') != nullptr) {
+    file = std::strrchr(file, '\\');
+  }
+
+  std::string path = FormatString("mylog(%s).txt", "");
+  std::FILE* output = std::fopen(path.c_str(), "a");
+  if (output != nullptr) {
+    SYSTEMTIME time;
+    GetLocalTime(&time);
+    std::fprintf(
+      output, "%-30s(%04d) %02d-%02d-%02d %02d:%02d:%02d.%03d %s\n", file, line, time.wYear, time.wMonth, time.wDay, time.wHour,
+      time.wMinute, time.wSecond, time.wMilliseconds, message
+    );
+    std::fclose(output);
+  }
+}
+
+// OFFSET: 0x00CF0090
+
+#pragma pack(push, 1)
+struct GameModeStoredSkillEffect {
+  /* 0000 */ GameModeChunkHeader header;
+  /* 0006 */ ActiveSkillEffect effect;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GameModeStoredSkillEffect) == 0x22);
+
+#pragma pack(push, 1)
+struct GameModeStoredValue {
+  /* 0000 */ GameModeChunkHeader header;
+  /* 0006 */ int value;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(GameModeStoredValue) == 0xA);
+
+// OFFSET: 0x00CE9050
+
+// OFFSET: 0x00CE9DB0
