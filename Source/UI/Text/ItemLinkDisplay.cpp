@@ -124,3 +124,13 @@ std::string ItemLinkDisplay::Convert(const std::string& text) {
   result += remaining;
   return result;
 }
+
+// OFFSET: 0x00884460
+// FUNCTION: fn_11307
+std::string ItemLinkDisplay::BracketName(const std::string& name) {
+  std::string result;
+  result += '<';
+  result += FitText(this->surface, name, this->width / 2);
+  result += '>';
+  return result;
+}

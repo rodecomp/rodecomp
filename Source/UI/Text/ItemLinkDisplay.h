@@ -20,6 +20,7 @@ struct ItemLinkDisplay {
   bool Name(const std::string& encoded, std::string& output);
   bool Next(std::string& remaining, std::string& encoded, unsigned& position, const char* original);
   std::string Convert(const std::string& text);
+  std::string BracketName(const std::string& name);
 };
 
 #endif
