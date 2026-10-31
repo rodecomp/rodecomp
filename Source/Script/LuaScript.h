@@ -44,4 +44,7 @@ private:
 extern LuaScript* g_luaScript;
 extern std::map<std::string, std::vector<std::string>> g_kafraServiceMapList;
 
+struct MiniMapPosition;
+extern std::map<std::string, MiniMapPosition> g_exceptionMiniMapPosList;
+
 #endif

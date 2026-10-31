@@ -1,5 +1,12 @@
 #include "UI/Window/UIRoMapWnd.h"
 
+#include "Client/Session.h"
+#include "Render/Textures/TextureCache.h"
+#include "Script/LuaScript.h"
+#include "Script/MiniMapPosition.h"
+#include "UI/Text/ColoredText.h"
+#include "UI/Window/WindowBorder.h"
+
 #include "Contents/MapSkyMgr.h"
 #include "Render/Primitives/AlphaRectangle.h"
 #include "Render/Renderer.h"
@@ -337,4 +344,85 @@ void UIRoMapWnd::DrawArrow(
     const float halfY = size * normalY * g_depthAverageHalf;
     DrawScreenQuad(tipX, tipY, tipX - halfX, tipY - halfY, tipX + halfX, tipY + halfY, size * dirX + tipX, size * dirY + tipY, head, color);
   }
+}
+
+// GLOBAL: gl_24803
+std::uint32_t g_worldMapNameColor;
+
+// OFFSET: 0x00918D70
+// FUNCTION: fn_12596
+void UIRoMapWnd::DrawSelectedMapPreview() {
+  if (this->unknown_00C0 == nullptr) {
+    return;
+  }
+
+  if (this->unknown_00C0->mapIndex < 100) {
+    const WorldViewRecord* record = this->unknown_00C0;
+    DrawRoundedBorder(
+      *this, record->unknown_000C, record->unknown_0010, record->unknown_0014 - record->unknown_000C, record->unknown_0018 - record->unknown_0010,
+      g_worldMapNameColor
+    );
+  }
+
+  {
+    const WorldViewRecord* record = this->unknown_00C0;
+    DrawRoundedBorder(*this, record->left, record->top, record->right - record->left, record->bottom - record->top, g_worldMapNameColor);
+  }
+
+  WorldViewRecord* record = this->unknown_00C0;
+  const int savedLeft = record->left;
+  const int savedTop = record->top;
+  const int savedRight = record->right;
+  const int savedBottom = record->bottom;
+  const int savedUnknown = record->unknown_0048;
+
+  if (g_kafraServiceMapList.find(std::string(record->name)) != g_kafraServiceMapList.end()) {
+    WorldViewRecord* current = this->unknown_00C0;
+    if (g_exceptionMiniMapPosList.find(current->name) != g_exceptionMiniMapPosList.end()) {
+      const MiniMapPosition& offset = g_exceptionMiniMapPosList[current->name];
+      current->left = static_cast<int>(static_cast<float>(current->left) + offset.x);
+      current->top = static_cast<int>(static_cast<float>(current->top) + offset.y);
+      current->right = static_cast<int>(static_cast<float>(current->right) + offset.x);
+      current->bottom = static_cast<int>(static_cast<float>(current->bottom) + offset.y);
+    }
+  }
+
+  record = this->unknown_00C0;
+  record->left = savedLeft;
+  record->top = savedTop;
+  record->right = savedRight;
+  record->bottom = savedBottom;
+  record->unknown_0048 = savedUnknown;
+
+  record = this->unknown_00C0;
+  int x = record->right + 10;
+  if (x + 130 > g_renderer->viewport.width) {
+    x = record->left - 140;
+  }
+
+  const int y = record->top + 140 <= g_renderer->viewport.height ? record->top + 10 : g_renderer->viewport.height - 130;
+
+  WorldViewArea* previous = reinterpret_cast<WorldViewArea*>(this->unknown_00C8);
+  this->unknown_00C8 = reinterpret_cast<int*>(new WorldViewArea{x, y, x + 130, y + 130, 1});
+  delete previous;
+
+  tagRECT area = {x, y, x + 130, y + 130};
+  this->FillSurface(0xFFFF00FF, &area);
+
+  std::string name = this->unknown_00C0->name;
+  if (name.size() > 4) {
+    name.resize(name.size() - 4);
+  }
+
+  DrawOutlinedText(*this, x + 3, y + 115, name.c_str(), 0, 0xFFFFFF, 0x5C5C5C, 0, 12, 1, 0);
+
+  {
+    std::string path = "유저인터페이스\\map\\";
+    path += name;
+    path += ".bmp";
+    this->unknown_00D0 = reinterpret_cast<int>(g_texMgr.Load(path.c_str(), 0, true, true, false));
+  }
+
+  name = g_session.GetMapDisplayName(this->unknown_00C0->name.c_str());
+  DrawOutlinedText(*this, x + 3, y + 3, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
 }
