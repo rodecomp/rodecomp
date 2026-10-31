@@ -8,10 +8,12 @@
 #include "UI/UILapineScrollBar.h"
 #include "UI/UICaptchaPreviewWnd.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/ModeFadeOut.h"
 #include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/MousePointer.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
@@ -27,13 +29,19 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
+#include "Contents/MapSkyMgr.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/RodexMailStore.h"
 #include "Contents/RouletteMgr.h"
 #include "Contents/World/World.h"
+#include "Contents/Camera/Camera.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Render/RenderSystemBase.h"
+#include "Render/Renderer.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Resource/ResourceMgr.h"
 #include "Network/TextEncoding.h"
 #include "UI/Item/UIItemStoreWnd.h"
 #include "UI/Text/UIStaticText.h"
@@ -48,6 +56,7 @@
 #include "UI/Shop/UIMerchantItemShopWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Dialogs/UIWaitWnd.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Math/Vector3d.h"
 #include "Utility/Text/FormatString.h"
@@ -69,6 +78,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <xtimec.h>
 
 // OFFSET: 0x00D7AF70
 // FUNCTION: fn_22198
@@ -1525,6 +1535,30 @@ void CGameMode::IgnorePacket478(const unsigned char*) {
 void CGameMode::ClearUnknown0244(const unsigned char*) {
   *reinterpret_cast<int*>(this->unknown_01F8 + 0x4C) = 0;
 }
+
+#pragma pack(push, 1)
+struct ZoneServerChangePacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ char mapName[16];
+  /* 0012 */ std::int16_t x;
+  /* 0014 */ std::int16_t y;
+  /* 0016 */ std::uint32_t ip;
+  /* 001A */ std::int16_t port;
+  /* 001C */ char host[1];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D3A4C0
+// FUNCTION: fn_21777
+void CGameMode::ReceiveZoneServerChange(const unsigned char* packet) {
+  const auto* change = reinterpret_cast<const ZoneServerChangePacket*>(packet);
+  char mapName[17];
+  std::memcpy(mapName, change->mapName, 16);
+  mapName[16] = '\0';
+  this->ChangeZoneServer(mapName, change->x, change->y, static_cast<int>(change->ip), change->port, change->host);
+}
+
+// OFFSET: 0x00D3A1E0
 
 // OFFSET: 0x00D272A0
 // FUNCTION: fn_21688

@@ -76,6 +76,9 @@
 #include <vector>
 #include <xtimec.h>
 
+// GLOBAL: gl_25253
+int g_localMapMove;
+
 #pragma pack(push, 1)
 struct ActorPairFreezePacket {
   /* 0000 */ std::int16_t id;
@@ -4962,4 +4965,22 @@ void CGameMode::ReceiveShopItemListPacket(const unsigned char* data) {
   }
 
   this->ReceiveShopItemList(items, header->value, 0, header->argument, 0, header->duration, header->myShop);
+}
+
+// OFFSET: 0x00D71720
+// FUNCTION: fn_22136
+void CGameMode::RequestLocalMapMove(const char* mapName, std::uint16_t x, std::uint16_t y) {
+  struct MapMovePacket {
+    /* 0000 */ std::uint16_t id;
+    /* 0002 */ char mapName[16];
+    /* 0012 */ std::uint16_t x;
+    /* 0014 */ std::uint16_t y;
+  } packet;
+
+  g_localMapMove = 1;
+  packet.id = 0x91;
+  strcpy_s(packet.mapName, sizeof(packet.mapName), mapName);
+  packet.x = x;
+  packet.y = y;
+  this->ReceiveNpcAckMapmove(reinterpret_cast<const unsigned char*>(&packet));
 }

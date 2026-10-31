@@ -208,6 +208,9 @@ public:
   bool HasInventoryItem(int id);
   bool HasResurrectionItem();
   void SendMousePointerState(int value);
+  void ReceiveNpcAckMapmove(const unsigned char* packet);
+  void ReceiveZoneServerChange(const unsigned char* packet);
+  void RequestLocalMapMove(const char* mapName, std::uint16_t x, std::uint16_t y);
   bool CanFindPath(int sx, int sy, int cellX, int cellY, int dx, int dy);
   bool IsAllowedPair(int kind, int value);
   bool IsWithinRange(const int& x1, const int& y1, const int& x2, const int& y2, int range);
