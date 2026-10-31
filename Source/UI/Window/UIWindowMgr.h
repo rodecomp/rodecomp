@@ -555,6 +555,7 @@ public:
   void BroadcastMessage21();
   bool HasModalWindow();
   int TranslateHotkey(int key, int keyData);
+  int GetHotkeyBehavior();
   std::vector<unsigned char> SaveReplayWindows();
   bool ProcessHotkeyAction(int action, int pressed);
   void SendEmotionHotkey(int index);

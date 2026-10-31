@@ -8,9 +8,12 @@
 #include "Contents/Effects/EmitterEffect.h"
 #include "Contents/Effects/EvilsPawEffect.h"
 #include "Contents/Effects/WindEffect.h"
+#include "Contents/Hotkeys/HotkeyInfo.h"
 #include "File/File.h"
 #include "File/ResourcePath.h"
 #include "Script/LuaFileOperations.h"
+#include "UI/Chat/ChatSuggestions.h"
+#include "UI/Window/UIWindow.h"
 #include "UI/UICheckAttendanceWnd.h"
 #include "UI/UILapineScrollBar.h"
 #include "UI/UILapineUpgradeBoxWnd.h"
@@ -37,9 +40,6 @@ struct MiniMapPosition {
   /* 0000 */ float x;
   /* 0004 */ float y;
 };
-
-// GLOBAL: gl_24791
-LuaScript* g_luaScript;
 
 // GLOBAL: gl_24913
 std::map<std::string, MiniMapPosition> g_exceptionMiniMapPosList;
@@ -1249,3 +1249,5 @@ int LuaScript::TableInteger(std::string table, int keyType, std::intptr_t key) {
 void LuaScript::Register(std::string name, int (*function)(lua_State*)) {
   lua_register(this->m_state, name.c_str(), function);
 }
+
+// OFFSET: 0x00A91200

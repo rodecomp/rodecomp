@@ -17,6 +17,7 @@ struct HotkeyInfo {
 };
 
 HotkeyInfo GetHotkeyInfo(LuaScript& script, int tab, int index);
+int HotkeyCount(LuaScript& script, int tab);
 std::string SkillTooltipPercent(const char* hotkey, const char* name, int level, int sp, int ap);
 std::string SkillTooltipFlat(const char* hotkey, const char* name, int level, int sp, int ap);
 std::string SkillTooltip(const char* hotkey, const char* name, int level, int sp, int ap, bool percent);

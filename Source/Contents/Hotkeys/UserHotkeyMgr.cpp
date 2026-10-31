@@ -1,4 +1,5 @@
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
+#include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Network/TextEncoding.h"
 
 #include <new>
@@ -43,25 +44,6 @@ namespace {
     }
   }
 
-  // OFFSET: 0x00E0A4C0
-  // FUNCTION: fn_23797
-  int HotkeyCount(LuaScript& script, int tab) {
-    int count = 0;
-    if (script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count)) {
-      if (tab == 1) {
-        int hidden = 0;
-
-        for (int index = HK_FIRST_HIDDEN; index < count; ++index) {
-          hidden += HiddenInterfaceIndex(index);
-        }
-
-        return count - hidden;
-      }
-    }
-
-    return count;
-  }
-
   // OFFSET: 0x00E12E50
   // FUNCTION: fn_23820
   int HotkeyIndex(LuaScript& script, int tab, int index) {
@@ -75,6 +57,25 @@ namespace {
     script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count);
     return index >= count ? -1 : index;
   }
+}
+
+// OFFSET: 0x00E0A4C0
+// FUNCTION: fn_23797
+int HotkeyCount(LuaScript& script, int tab) {
+  int count = 0;
+  if (script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count)) {
+    if (tab == 1) {
+      int hidden = 0;
+
+      for (int index = HK_FIRST_HIDDEN; index < count; ++index) {
+        hidden += HiddenInterfaceIndex(index);
+      }
+
+      return count - hidden;
+    }
+  }
+
+  return count;
 }
 
 // STATIC: 0x013898E4
