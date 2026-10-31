@@ -20,6 +20,14 @@
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Window/MiniPartyWndAreaMgr.h"
 #include "UI/Window/WindowDialogs.h"
+#include "UI/Window/InputFocus.h"
+#include "UI/Window/UINavigationWnd.h"
+#include "UI/Window/UIRoMapWnd.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
+#include "Client/Mode/CLoginMode.h"
+#include "Contents/MessageTable.h"
+#include "Contents/NavigationManager.h"
+#include "Contents/WorldView/WorldViewData.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Render/DeviceContext/DCSurface.h"
@@ -51,6 +59,9 @@ UIWindowMgr g_windowMgr;
 
 // GLOBAL: gl_25090
 unsigned char g_windowCloseByte;
+
+// GLOBAL: gl_25159
+bool g_windowToggleFlag;
 
 // GLOBAL: gl_24686
 int g_closeWindow137State;
@@ -1606,3 +1617,254 @@ void UIWindowMgr::DrawLoginOverlay() {
     }
   }
 }
+
+// OFFSET: 0x00AA2DB0
+// FUNCTION: fn_17220
+bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
+  switch (action) {
+  case 9:
+    if (HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
+      break;
+    }
+
+    if (this->modifierKey == 0) {
+      if (UIWindow* window = this->LookupWindow(140)) {
+        window->SendMsg(nullptr, 6, 192, 0, 0, 0);
+        return false;
+      }
+
+      if (UIWindow* window = this->LookupWindow(37)) {
+        window->SendMsg(nullptr, 6, 216, 0, 0, 0);
+        return false;
+      }
+    }
+
+    if (!this->hoverWindow) {
+      reinterpret_cast<WindowDialogs*>(this)->RestoreInput();
+      return false;
+    }
+
+    if (GetAsyncKeyState(VK_SHIFT)) {
+      if (this->hoverWindow && this->hoverWindow->parent->PreviousFocusable(this->hoverWindow) == nullptr) {
+        InputFocus{this->hoverWindow}.Last();
+      } else {
+        InputFocus{this->hoverWindow}.Previous();
+      }
+    } else if (this->hoverWindow && this->hoverWindow->parent->NextFocusable(this->hoverWindow) == nullptr) {
+      InputFocus{this->hoverWindow}.First();
+    } else {
+      InputFocus{this->hoverWindow}.Next();
+    }
+    return false;
+
+  case 13:
+    if (pressed) {
+      this->sub_A8CA20();
+    }
+    break;
+
+  case 18:
+    if (this->modifierKey == 0) {
+      if (UIWindow* window = this->LookupWindow(140)) {
+        window->SendMsg(nullptr, 6, 219, 0, 0, 0);
+        return false;
+      }
+    }
+    break;
+
+  case 27: {
+    if (!pressed) {
+      break;
+    }
+
+    if (this->unknown_03D0 != 0) {
+      g_windowToggleFlag = false;
+    }
+
+    if ((this->IsHoverOnWindow01C8Button() || (!this->windowHistory.empty() && this->windowHistory.front() == 1)) && this->unknown_0024 != 0 &&
+        this->unknown_0026 != 0) {
+      ChatSuggestions* suggestions = reinterpret_cast<ChatSuggestions*>(this->window_01C8);
+      if (suggestions && suggestions->Visible()) {
+        suggestions->Show(0);
+        return false;
+      }
+
+      this->unknown_0024 = 0;
+      reinterpret_cast<ChatInputLayout*>(this->window_01C8)->Apply();
+      return false;
+    }
+
+    if (this->window_01C8 && this->hoverWindow) {
+      UIWindow* parent = this->hoverWindow->parent;
+      if (parent && this->hoverWindow->geometry.x != -100) {
+        if (parent == reinterpret_cast<ChatSuggestions*>(this->window_01C8)->unknown_0138) {
+          parent->SendMsg(this->hoverWindow, 0, 1, 0, 0, 0);
+          return false;
+        }
+
+        for (const auto& entry : this->retainedWindows) {
+          if (entry.second == parent) {
+            parent->SendMsg(this->hoverWindow, 0, 1, 0, 0, 0);
+            return false;
+          }
+        }
+      }
+    }
+
+    if (this->HasModalWindow()) {
+      this->unknown_0474 = 188;
+      return false;
+    }
+
+    const int id = this->windowHistory.empty() ? -1 : this->windowHistory.front();
+    if (g_replayAnimationScaling != 0 && (static_cast<unsigned int>(id) > 10040 || this->policy[id].actions[3] == 0)) {
+      return false;
+    }
+
+    if (g_windowMgr.CloseWindow(78)) {
+      g_modeMgr.GetGameMode()->SendMsg(100, reinterpret_cast<int>(""), -1, 1, 0);
+    } else if (UIWindow* window = g_windowMgr.LookupWindow(id)) {
+      switch (id) {
+      case 22:
+      case 23:
+      case 24:
+      case 25:
+      case 41:
+      case 44:
+      case 161:
+      case 174:
+      case 178:
+        if (g_replayAnimationScaling != 0) {
+          return false;
+        }
+        window->SendMsg(nullptr, 6, 185, 0, 0, 0);
+        return false;
+      case 132:
+      case 181:
+      case 184:
+      case 203:
+      case 281:
+      case 326:
+        window->SendMsg(nullptr, 6, 201, 0, 0, 0);
+        return false;
+      case 358:
+      case 10024:
+        return false;
+      }
+    }
+
+    if (id != -1) {
+      if (this->CloseWindow(id) == true) {
+        return false;
+      }
+    } else if (g_navigationMode == 2) {
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x8BF), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        g_navigationTab = 0;
+        g_navigationMinimized = false;
+        g_navigationManager.Reset(true);
+        g_worldViewMgr.ClearMarks();
+        g_worldViewMgr.ClearLevels();
+        g_worldViewMgr.ResetSelection();
+        g_windowMgr.CloseWindow(314);
+      }
+      return false;
+    }
+
+    if (g_modalImmediate != 0 || g_modeMgr.running == 0) {
+      return false;
+    }
+
+    if (this->LookupWindow(16) || this->LookupWindow(226)) {
+      return false;
+    }
+
+    if (g_modeMgr.GetGameMode()) {
+      if (g_replayAnimationScaling != 0) {
+        return false;
+      }
+
+      UIWindow* window = this->LookupWindow(10024);
+      if (this->CloseWindow(155) || window) {
+        return false;
+      }
+
+      this->EnsureWindow(155);
+      return false;
+    }
+
+    if (this->LookupWindow(277) && g_loginModeFlag == 1) {
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0xD68), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        g_modeMgr.gameMode->SendMsg(10011, 0, 0, 0, 0);
+      }
+      return false;
+    }
+
+    if (reinterpret_cast<WindowDialogs*>(this)->Confirm(LookupMessage(0x11), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      GetRagConnection().Close();
+      g_modeMgr.gameMode->SendMsg(2, 0, 0, 0, 0);
+    }
+    return false;
+  }
+
+  case 33:
+    if (this->window_4F1D4) {
+      this->window_4F1D4->BroadcastMsg3();
+      return false;
+    }
+    break;
+
+  case 34:
+    if (this->window_4F1D4) {
+      this->window_4F1D4->BroadcastMsg4();
+      return false;
+    }
+    break;
+
+  case 35:
+    if (this->window_4F1D4) {
+      this->window_4F1D4->SendMsg(nullptr, 114, 0, 0, 0, 0);
+    }
+    break;
+
+  case 36:
+    if (this->window_4F1D4) {
+      this->window_4F1D4->SendMsg(nullptr, 179, 0, 0, 0, 0);
+      return false;
+    }
+    break;
+
+  case 37:
+    this->CancelActiveDialog();
+    return false;
+
+  case 38:
+    this->ConfirmActiveDialog();
+    return false;
+
+  case 39:
+    this->BroadcastMessage21();
+    return false;
+
+  case 40:
+    this->SubmitActiveDialog();
+    return false;
+
+  case 44:
+  case 145:
+    if (pressed) {
+      g_modeMgr.gameMode->SendMsg(68, 0, 0, 0, 0);
+      return false;
+    }
+    break;
+
+  case 70:
+    if (HIBYTE(GetAsyncKeyState(VK_CONTROL)) && this->window_4F1D4) {
+      this->window_4F1D4->SendMsg(nullptr, 177, 0, 0, 0, 0);
+      return false;
+    }
+    break;
+  }
+
+  return false;
+}
+

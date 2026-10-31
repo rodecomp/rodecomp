@@ -553,10 +553,12 @@ public:
   bool HasModalWindow();
   int TranslateHotkey(int key, int keyData);
   std::vector<unsigned char> SaveReplayWindows();
+  bool ProcessHotkeyAction(int action, int pressed);
 };
 
 extern UIWindowMgr g_windowMgr;
 extern int g_dragWindowId;
+extern bool g_windowToggleFlag;
 
 void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
 

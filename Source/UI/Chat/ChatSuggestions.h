@@ -17,7 +17,8 @@ struct ChatSuggestions {
   UIEditCtrl* const& input;
   /* 000C */ unsigned char unknown_000C[0xB0];
   /* 00BC */ UIWindow* unknown_00BC;
-  /* 00C0 */ unsigned char unknown_00C0[0x7C];
+  /* 00C0 */ unsigned char unknown_00C0[0x78];
+  /* 0138 */ UIWindow* unknown_0138;
   /* 013C */ UIWindow* unknown_013C;
 
   bool Visible() const;
