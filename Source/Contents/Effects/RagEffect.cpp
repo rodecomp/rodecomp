@@ -2995,6 +2995,68 @@ void CRagEffect::TexturedQuadSpin(const char* name, char phase, char kind) {
 }
 
 // OFFSET: 0x00C42B40
+// FUNCTION: fn_20139
+void CRagEffect::TexturedSkillIcon(const char* name, std::int16_t level, std::int16_t mode) {
+  char iconName[64];
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt != (level != 0 ? level : 0)) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 68, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->totalTexture = 1;
+  this->state.unknown_11C84->textures = new CTexture*[this->state.unknown_11C84->totalTexture];
+
+  if (mode == 2) {
+    std::sprintf(iconName, "유저인터페이스\\item\\%s.bmp", CSkillInfo::IdName(*g_session.m_hotkeyScript, 2285));
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load(iconName, 0, false, true, false);
+  } else if (level > 0) {
+    int skillId;
+    if (rand() % 2 == 0) {
+      skillId = rand() % 12 + 9;
+    } else {
+      skillId = rand() % 13 + 80;
+    }
+
+    std::sprintf(iconName, "유저인터페이스\\item\\%s.bmp", CSkillInfo::IdName(*g_session.m_hotkeyScript, skillId));
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load(iconName, 0, false, true, false);
+  } else {
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  }
+
+  this->state.unknown_11C84->size = 0.0f;
+  this->state.unknown_11C84->slots[0].life = 0;
+  this->state.unknown_11C84->slots[1].life = 0;
+  this->state.unknown_11C84->slots[2].life = 0;
+  this->state.unknown_11C84->slots[3].life = 0;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+
+  if (level > 0) {
+    this->state.unknown_11C84->slots[0].distance = 5.0f;
+    this->state.unknown_11C84->slots[0].height[0] = 1.0f;
+    this->state.unknown_11C84->slots[0].flag1[4] = 4;
+  } else {
+    this->state.unknown_11C84->slots[0].distance = mode == 3 ? 7.0f : 18.0f;
+    this->state.unknown_11C84->slots[0].height[0] = 0.0f;
+    this->state.unknown_11C84->slots[0].flag1[4] = 1;
+  }
+
+  this->state.unknown_11C84->slots[0].alphaB = 0;
+  this->state.unknown_11C84->slots[0].flag1[0] = 0;
+
+  for (int index = 1; index < 21; ++index) {
+    this->state.unknown_11C84->slots[0].height[index] = 0.0f;
+  }
+
+  this->state.unknown_11C84->slots[0].flag1[5] = 0;
+}
 
 // OFFSET: 0x00C59960
 // FUNCTION: fn_20214
