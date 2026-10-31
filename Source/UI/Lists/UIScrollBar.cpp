@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
+#include "UI/Gauges/UIPcGage.h"
 // OFFSET: 0x0086E550
 // FUNCTION: fn_11073
 UIScrollBar::UIScrollBar(UIWindowContext& windows)
@@ -1202,4 +1203,10 @@ int UITreeView::RemoveChildNode(UITreeNode* parent, int id, bool keepButtons) {
   }
 
   return 0;
+}
+
+// OFFSET: 0x0089E470
+// FUNCTION: fn_11600
+bool UIGage::CanHitTest() {
+  return false;
 }
