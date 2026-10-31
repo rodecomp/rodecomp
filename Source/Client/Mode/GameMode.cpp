@@ -4,6 +4,7 @@
 #include "Client/ReplayPacketRecorder.h"
 #include "Client/Session.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -16,6 +17,7 @@
 #include "Contents/PlayerNameDictionary.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Skills/SkillInfo.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
@@ -25,6 +27,7 @@
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 #include <cstddef>
 #include <cstdint>
@@ -612,4 +615,123 @@ std::uint64_t CGameMode::LaunchDummyEffect(const vector3d* position, int effectI
     }
   }
   return 0;
+}
+
+// OFFSET: 0x00CDFB00
+// FUNCTION: fn_21326
+void CGameMode::RequestPlayerAction(int target, int argument) {
+  int value = this->unknown_040C;
+  if (value != 10000) {
+    const int maxWeight = g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight;
+    if (g_session.m_weight * 100 / maxWeight >= 90) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(307)), 0xFF, 0, 0, 0);
+      value = this->unknown_040C;
+      if (value != 40000) {
+        return;
+      }
+    }
+  }
+
+  switch (reinterpret_cast<std::intptr_t>(this->unknown_0408)) {
+  case 0:
+    this->scene->player->SendMsg(nullptr, 10, 0, target, 0, argument, argument >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  case 2:
+  case 4:
+    this->scene->player->SendMsg(nullptr, 41, 0, target, 0, value, value >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, 90, 0, this->unknown_0414, this->unknown_0414 >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00CE45B0
+// FUNCTION: fn_21336
+void CGameMode::UpdateLoopSounds() {
+  for (std::vector<GameModeLoopSound>::iterator it = this->loopSounds.begin(); it != this->loopSounds.end(); ++it) {
+    timeGetTime();
+    if (timeGetTime() < it->nextTick) {
+      continue;
+    }
+
+    if (it->npcId) {
+      CRenderObject* actor = this->scene->GetGameActorByAID(it->npcId);
+      if (actor) {
+        CPlayer* player = this->scene->player;
+        g_soundMgr->PlayWave(it->name.c_str(), player->render.position.x - actor->render.position.x, 0.0f,
+          player->render.position.z - actor->render.position.z, 250, 40, 1.0f, 0);
+      }
+    } else {
+      g_soundMgr->PlayWave(it->name.c_str(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    it->nextTick = timeGetTime() + it->term;
+  }
+}
+
+// OFFSET: 0x00CE81C0
+// FUNCTION: fn_21340
+void CGameMode::AddSceneObject(CRenderObject* object) {
+  if (this->scene && object) {
+    this->scene->objects.push_back(object);
+  }
+}
+
+// OFFSET: 0x00CED2E0
+// FUNCTION: fn_21365
+void CGameMode::SendMousePointerPosition(float x, float y, int value) {
+  float position[2];
+  position[0] = x;
+  position[1] = y;
+  const std::intptr_t address = reinterpret_cast<std::intptr_t>(position);
+  this->mousePointer->SendMsg(nullptr, 1, 0, address, address >> 31, value, value >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00CF08D0
+// FUNCTION: fn_21417
+bool CGameMode::IsEffectId990Group(int id) {
+  bool result = false;
+  switch (id) {
+  case 990:
+  case 991:
+  case 992:
+  case 993:
+    result = true;
+    break;
+  }
+  return result;
+}
+
+// OFFSET: 0x00CF0910
+// FUNCTION: fn_21418
+bool CGameMode::IsEffectId994Group(int id) {
+  bool result = false;
+  switch (id) {
+  case 994:
+  case 995:
+  case 996:
+  case 997:
+    result = true;
+    break;
+  }
+  return result;
+}
+
+// OFFSET: 0x00CF0950
+// FUNCTION: fn_21419
+bool CGameMode::ConfirmDraggedItemUse() {
+  if (g_session.unknown_16EC != this->drag.id) {
+    return false;
+  }
+
+  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, this->drag.id);
+  if (item.unknown_0000[1] > 0) {
+    if (g_replayAnimationScaling) {
+      this->unknown_05EC[0] = 0;
+    }
+    g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(657), 0, true, false, 0, "Message", 280, 120, 0);
+    return true;
+  }
+
+  return false;
 }

@@ -20,6 +20,7 @@ class CCorpse;
 class CMsgEffect;
 class CGameActor;
 class CPlayer;
+class CRenderObject;
 struct ActorNameAllPacket;
 struct GameOptionEntry;
 struct CWorld;
@@ -99,7 +100,8 @@ public:
   /* 0400 */ int unknown_0400;
   /* 0404 */ int unknown_0404;
   /* 0408 */ void* unknown_0408;
-  /* 040C */ unsigned char unknown_040C[0x08];
+  /* 040C */ int unknown_040C;
+  /* 0410 */ unsigned char unknown_0410[0x04];
   /* 0414 */ int unknown_0414;
   /* 0418 */ unsigned char unknown_0418[0x40];
   /* 0458 */ int unknown_0458;
@@ -123,6 +125,13 @@ public:
   /* 0648 */ unsigned char unknown_0648[0x28];
 
   std::string MapName();
+  void RequestPlayerAction(int target, int argument);
+  void UpdateLoopSounds();
+  void AddSceneObject(CRenderObject* object);
+  void SendMousePointerPosition(float x, float y, int value);
+  bool IsEffectId990Group(int id);
+  bool IsEffectId994Group(int id);
+  bool ConfirmDraggedItemUse();
   void WorldCell(float x, float z, int& column, int& row) const;
   void SubcellPosition(int column, int row, int subColumn, int subRow, float& x, float& z) const;
   void PlayerCell(int* column, int* row) const;
