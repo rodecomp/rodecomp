@@ -7,6 +7,7 @@ class UITVBitmapButton : public UIBitmapButton {
   friend class UITreeView;
 
 public:
+  UITVBitmapButton();
   // INLINED
   UITVBitmapButton(UIWindowContext& windowContext, UIButtonContext& buttonContext) : UIBitmapButton(windowContext, buttonContext), m_value(0) {
   }

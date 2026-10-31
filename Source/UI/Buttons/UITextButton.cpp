@@ -3370,3 +3370,11 @@ void UIRPImageWnd::Paint() {
     this->DrawNamed(this->m_context->primitives, 0, 0, this->m_imageName.c_str(), 0xFFFFFFFF, 0, 0);
   }
 }
+
+// OFFSET: 0x0086EBB0
+// FUNCTION: fn_11081
+UITVBitmapButton::UITVBitmapButton()
+    : UIBitmapButton(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr)), m_value(0) {
+}
+
+// OFFSET: 0x0086EC10

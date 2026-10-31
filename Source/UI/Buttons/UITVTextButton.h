@@ -10,6 +10,7 @@ class UITVTextButton : public UIButton {
   friend class UITreeView;
 
 public:
+  UITVTextButton();
   // INLINED
   UITVTextButton(UIWindowContext& windowContext, UIButtonContext& buttonContext)
       : UIButton(windowContext, buttonContext), unknown_00B4(0), unknown_00B5(0), unknown_00B6(0), m_border(0), m_fill(0), m_fillColor(0xFFFFFF),
