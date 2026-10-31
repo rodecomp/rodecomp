@@ -1082,6 +1082,132 @@ std::vector<unsigned char> CSession::BuildReservedReplayRecords() {
   return records;
 }
 
+// OFFSET: 0x00E41290
+// FUNCTION: fn_24200
+std::vector<unsigned char> CSession::BuildItemReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(4500, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(4701, &this->unknown_5210, sizeof(this->unknown_5210));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(4702, &this->unknown_5214, sizeof(this->unknown_5214));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->m_inventoryItems);
+    const auto record = MakeFramedMessage(4510, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->unknown_1718);
+    const auto record = MakeFramedMessage(4511, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->unknown_1720);
+    const auto record = MakeFramedMessage(4512, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->unknown_1728);
+    const auto record = MakeFramedMessage(4513, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->unknown_1730);
+    const auto record = MakeFramedMessage(4514, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->unknown_1738);
+    const auto record = MakeFramedMessage(4515, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->unknown_1740);
+    const auto record = MakeFramedMessage(4516, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->unknown_1748);
+    const auto record = MakeFramedMessage(4517, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->unknown_1750);
+    const auto record = MakeFramedMessage(4518, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->unknown_1758);
+    const auto record = MakeFramedMessage(4519, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->unknown_1760);
+    const auto record = MakeFramedMessage(4520, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->unknown_1768);
+    const auto record = MakeFramedMessage(4521, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto bytes = SerializeItems(this->unknown_1770);
+    const auto record = MakeFramedMessage(4522, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const std::list<ITEM_INFO> items(std::begin(this->unknown_17F0), std::end(this->unknown_17F0));
+    const auto bytes = SerializeItems(items);
+    const auto record = MakeFramedMessage(4601, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const std::list<ITEM_INFO> items(std::begin(this->unknown_21A0), std::end(this->unknown_21A0));
+    const auto bytes = SerializeItems(items);
+    const auto record = MakeFramedMessage(4602, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const std::list<ITEM_INFO> items(std::begin(this->unknown_2B50), std::end(this->unknown_2B50));
+    const auto bytes = SerializeItems(items);
+    const auto record = MakeFramedMessage(4603, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const std::list<ITEM_INFO> items(std::begin(this->unknown_3500), std::end(this->unknown_3500));
+    const auto bytes = SerializeItems(items);
+    const auto record = MakeFramedMessage(4604, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const std::list<ITEM_INFO> items(std::begin(this->m_exchangeItems), std::end(this->m_exchangeItems));
+    const auto bytes = SerializeItems(items);
+    const auto record = MakeFramedMessage(4605, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const std::list<ITEM_INFO> items(std::begin(this->m_itemSlots), std::end(this->m_itemSlots));
+    const auto bytes = SerializeItems(items);
+    const auto record = MakeFramedMessage(4606, reinterpret_cast<const std::vector<char>&>(bytes));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(4501, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}
+
+// OFFSET: 0x00E42F20
+
 namespace {
 #pragma pack(push, 1)
 struct ReplayShopNameRecord {
