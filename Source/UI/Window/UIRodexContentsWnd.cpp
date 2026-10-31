@@ -1,6 +1,7 @@
 #include "UI/Window/UIRodexContentsWnd.h"
 
 #include "Client/Input/InputCharset.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
@@ -8,6 +9,9 @@
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/PlayerNameDictionary.h"
+#include "Contents/RodexMailStore.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -16,12 +20,31 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "UI/Shop/ItemDrawing.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Text/GroupedInteger.h"
 
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <map>
+
+namespace {
+#pragma pack(push, 1)
+struct RodexMailAttachmentRequestPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int64_t mailId;
+  /* 000A */ std::uint8_t mailType;
+};
+
+struct RodexMailReportPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int32_t mailId;
+};
+#pragma pack(pop)
+}
 
 // OFFSET: 0x00801CC0
 // FUNCTION: fn_10014
@@ -161,6 +184,114 @@ void UIRodexContentsWnd::Slot32(int x, int y) {
   if (std::atoi(item.itemId.c_str()) != 0) {
     this->m_frameContext->windows.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
   }
+}
+
+// OFFSET: 0x008029E0
+// FUNCTION: fn_10025
+int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    switch (argument1) {
+    case 0xBD:
+      if (this->m_items.size() != 0) {
+        if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == 1) {
+          break;
+        }
+        RodexMailAttachmentRequestPacket packet;
+        packet.packetType = 0x9F3;
+        packet.mailId = g_rodexMailStore->currentMailId;
+        packet.mailType = g_rodexMailStore->unknown_0010;
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        UIBitmapButton* button = this->m_itemButton;
+        button->SetDisabled(1);
+        button->Invalidate();
+        this->Invalidate();
+      }
+      break;
+    case 0xBE:
+      if (this->m_zeny > 0) {
+        if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == 1) {
+          break;
+        }
+        RodexMailAttachmentRequestPacket packet;
+        packet.packetType = 0x9F1;
+        packet.mailId = g_rodexMailStore->currentMailId;
+        packet.mailType = g_rodexMailStore->unknown_0010;
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        UIBitmapButton* button = this->m_zenyButton;
+        button->SetDisabled(1);
+        button->Invalidate();
+        this->Invalidate();
+      }
+      break;
+    case 0xC9:
+      g_windowMgr.CloseWindow(265);
+      g_rodexMailStore->currentMailId = 0;
+      if (g_windowMgr.unknown_0454) {
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0454)->SendMsg(nullptr, 60, 0, 0, 0, 0);
+      }
+      break;
+    case 0xD3: {
+      RodexMailStore* store = g_rodexMailStore;
+      std::map<std::int64_t, RodexMail>* mails;
+      if (store->unknown_0010 == 0) {
+        mails = &store->m_mails0;
+      } else if (store->unknown_0010 == 1) {
+        mails = &store->m_mails1;
+      } else {
+        mails = &store->m_mails2;
+      }
+
+      std::map<std::int64_t, RodexMail>::iterator mail = mails->find(store->currentMailId);
+      if (mail == mails->end()) {
+        break;
+      }
+
+      if ((mail->second.unknown_0001 & 6) != 0) {
+        g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xA34)), 0x64FFFF, 0, 0, 0);
+        break;
+      }
+
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x164), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+        g_modeMgr.GetGameMode()->SendMsg(0xC4, static_cast<int>(g_rodexMailStore->currentMailId), g_rodexMailStore->unknown_0010, 0, 0);
+        if (g_windowMgr.unknown_045C != 0) {
+          g_windowMgr.CloseWindow(265);
+        }
+      }
+      break;
+    }
+    case 0x131:
+      if (this->unknown_010C != 1) {
+        g_modeMgr.GetGameMode()->SendMsg(0x10C, reinterpret_cast<int>(this->m_title.c_str()), 0, 0, 0);
+      }
+      break;
+    case 0x136: {
+      RodexMailReportPacket packet;
+      packet.packetType = 0xB98;
+      packet.mailId = static_cast<std::int32_t>(g_rodexMailStore->currentMailId);
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+      break;
+    }
+    }
+  } else if (message == 23) {
+    this->m_items.clear();
+    for (int i = 0; i < 5; ++i) {
+      ITEM_INFO item = g_session.GetItem5C68(i);
+      if (item.quantity > 0) {
+        this->m_items.push_back(item);
+      }
+    }
+    this->Invalidate();
+  } else if (message == 106) {
+    if (this->unknown_010C && this->unknown_0108) {
+      UIBasicButton* button = this->unknown_0108;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
+  } else {
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  return 0;
 }
 
 // OFFSET: 0x00803760

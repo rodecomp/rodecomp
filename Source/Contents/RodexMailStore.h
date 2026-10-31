@@ -46,8 +46,13 @@ public:
 
   /* 0000 */ bool m_isValid;
   /* 0004 */ int unknown_0004;
-  /* 0008 */ int unknown_0008;
-  /* 000C */ int unknown_000C;
+  union {
+    struct {
+      /* 0008 */ int unknown_0008;
+      /* 000C */ int unknown_000C;
+    };
+    /* 0008 */ std::int64_t currentMailId;
+  };
   /* 0010 */ unsigned char unknown_0010;
   /* 0014 */ int unknown_0014;
   /* 0018 */ int unknown_0018;
