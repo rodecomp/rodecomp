@@ -1,5 +1,6 @@
 #include "Contents/Actors/Item.h"
 
+#include "ActorPickNode.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/ModeMgr.h"
@@ -16,8 +17,10 @@
 #include "Contents/World/World.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/World/TerrainResource.h"
+#include "Render/Renderer.h"
 #include "Utility/Text/FormatString.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <windows.h>
 #include <timeapi.h>
@@ -36,6 +39,46 @@ struct ItemFallEntry {
   /* 0040 */ unsigned char showEffect;
   /* 0042 */ std::uint16_t grade;
 };
+
+// OFFSET: 0x00D8BE00
+// FUNCTION: fn_22253
+void CItem::SetRenderInfo(const float* bounds, float x, float y) {
+  enum { ItemPickJob = 32003 };
+
+  if (this->render.unknown_00A4Bytes[1]) {
+    // GLOBAL: gl_25149
+    static const int minimumSize = static_cast<int>(g_renderer->UiScaleX() * 34.0f);
+    ActorPickInfo* info = new ActorPickInfo;
+    info->left = std::min(bounds[0], bounds[2]);
+    info->top = bounds[1];
+    info->depth = bounds[4] + 300.0f;
+    info->right = std::max(bounds[0], bounds[2]);
+    info->bottom = bounds[3];
+    info->depthOffset = bounds[4] + 300.0f;
+    info->accountId = this->itemAid;
+    info->job = ItemPickJob;
+    info->unknown_0024 = 0;
+    info->kind = 1;
+
+    const int width = static_cast<int>(info->right - info->left);
+    if (width < minimumSize) {
+      const float grow = static_cast<float>((minimumSize - width) / 2);
+      info->left -= grow;
+      info->right += grow;
+    }
+
+    const int height = static_cast<int>(info->bottom - info->top);
+    if (height < minimumSize) {
+      const float grow = static_cast<float>((minimumSize - height) / 2);
+      info->top -= grow;
+      info->bottom += grow;
+    }
+
+    g_actorPickNode.AddPickInfo(info);
+  }
+
+  this->SetTlvert(x, y);
+}
 
 // OFFSET: 0x00D8B340
 // FUNCTION: fn_22246

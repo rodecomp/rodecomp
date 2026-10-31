@@ -15,6 +15,7 @@ public:
   bool OnProcess() override;
   void SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) override;
   void Render(int argument) override;
+  void SetRenderInfo(const float* bounds, float x, float y) override;
 
   /* 0158 */ std::string name;
   /* 0170 */ std::uint32_t itemId;
