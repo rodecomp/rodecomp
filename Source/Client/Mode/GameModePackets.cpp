@@ -4123,6 +4123,35 @@ void CGameMode::ReceiveGuildMemberMemoList(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D3A630
+// FUNCTION: fn_21778
+void CGameMode::ReceiveOpenStore(const unsigned char* packet) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (mode) {
+    const ModeDragState* drag = &mode->drag;
+    if (drag && drag->source) {
+      this->SendMsg(81, 0, 0, 0, 0);
+      return;
+    }
+  }
+
+  const unsigned int count = packet[2];
+  int& storeCount = *reinterpret_cast<int*>(&g_session.unknown_0F44[4]);
+  if (count < 2) {
+    storeCount = 2;
+  } else {
+    storeCount = count > 5 ? 5 : count;
+  }
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+  if (!g_windowMgr.window_027C && !g_windowMgr.window_0274 && !g_windowMgr.unknown_02FC) {
+    if (UIWindow* window = g_windowMgr.EnsureWindow(174)) {
+      static_cast<UIMerchantShopMakeWnd*>(window)->AddActionButton();
+    }
+    return;
+  }
+
+  reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
+  this->SendMsg(270, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x00D3A770
 
@@ -4133,3 +4162,9 @@ struct ACTSTRUCT {
 // OFFSET: 0x00D051F0
 // FUNCTION: fn_21563
 ACTSTRUCT::~ACTSTRUCT() = default;
+// FUNCTION: fn_21779
+void CGameMode::ReceiveSearchStoreOpen(const unsigned char* packet) {
+  g_session.unknown_5BE0 = packet[4];
+  reinterpret_cast<std::int16_t*>(&g_session.unknown_5BE4)[1] = *reinterpret_cast<const std::int16_t*>(packet + 2);
+  g_windowMgr.EnsureWindow(181);
+}
