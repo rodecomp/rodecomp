@@ -28,6 +28,12 @@ public:
 
 class UILapineUpgradeBox_IngredientListWnd : public UIScrollWnd {
 public:
+  // INLINED
+  UILapineUpgradeBox_IngredientListWnd(UIWindowContext& windows, int width, int height)
+      : UIScrollWnd(windows, width, height, 0), minRefine(0), maxRefine(20) {
+    this->UIWindow::Resize(width, height);
+    this->Slot15(width, height);
+  }
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;
   void Paint() override;

@@ -51,6 +51,48 @@ UILapineUpgradeBoxWnd::~UILapineUpgradeBoxWnd() {
 // FUNCTION: fn_04193
 void UILapineUpgradeBoxWndNoop() {}
 
+// OFFSET: 0x006036E0
+// FUNCTION: fn_04198
+void UILapineUpgradeBoxWnd::Slot15(int, int) {
+  UIButtonContext& controls = *this->m_controls;
+  this->AddBaseButton(controls);
+  this->AddCloseButton(controls, "", 0);
+
+  this->ingredientList = new UILapineUpgradeBox_IngredientListWnd(*this->m_context, 150, 204);
+  this->ingredientList->Move(241, 17);
+  this->AddChild(this->ingredientList);
+
+  this->closeButton = new UIBitmapButton(*this->m_context, controls);
+  this->closeButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_out.bmp", 0, 0);
+  this->closeButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_over.bmp", 1, 0);
+  this->closeButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_press.bmp", 2, 0);
+  this->closeButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_dis.bmp", 3, 0);
+  this->closeButton->SetSize(this->closeButton->BitmapWidth(), this->closeButton->BitmapHeight());
+  this->closeButton->Move(280, 226);
+  this->closeButton->SetId(201);
+  this->AddChild(this->closeButton);
+
+  this->upgradeButton = new UIBitmapButton(*this->m_context, controls);
+  this->upgradeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_out.bmp", 0, 0);
+  this->upgradeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_over.bmp", 1, 0);
+  this->upgradeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_press.bmp", 2, 0);
+  this->upgradeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_dis.bmp", 3, 0);
+  this->upgradeButton->SetSize(this->upgradeButton->BitmapWidth(), this->upgradeButton->BitmapHeight());
+  this->upgradeButton->Move(340, 226);
+  this->upgradeButton->SetId(509);
+  this->AddChild(this->upgradeButton);
+
+  this->selectButton = new UIBitmapButton(*this->m_context, controls);
+  this->selectButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_out.bmp", 0, 0);
+  this->selectButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_over.bmp", 1, 0);
+  this->selectButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_press.bmp", 2, 0);
+  this->selectButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_dis.bmp", 3, 0);
+  this->selectButton->SetSize(this->selectButton->BitmapWidth(), this->selectButton->BitmapHeight());
+  this->selectButton->Move(213, 110);
+  this->selectButton->SetId(505);
+  this->AddChild(this->selectButton);
+}
+
 // OFFSET: 0x00603A90
 // FUNCTION: fn_04199
 void UILapineUpgradeBox_IngredientListWnd::Slot15(int width, int height) {
