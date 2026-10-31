@@ -1,4 +1,5 @@
 #include "Client/ReplayPacketRecorder.h"
+#include "Contents/Items/ItemDescription.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -51,6 +52,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include <cstring>
+#include <format>
 #include "Client/Mode/CGameMode.h"
 #include <cstdio>
 #include <cstdlib>
@@ -914,6 +916,41 @@ void UINoticeWnd::Slot35(int delta) {
     this->SendMsg(this->m_scrollBar, 7, 6, 0, 0, 0);
   } else {
     this->SendMsg(this->m_scrollBar, 7, -6, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x008A8AD0
+// FUNCTION: fn_11715
+void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
+  reinterpret_cast<UIMessageBox*>(this)->Configure(text.c_str(), 2, true, 0, LookupMessage(0xFDF), 0xDC, 0x85, 1, nullptr);
+
+  this->viewer->Resize(0xA5, 0x50);
+  this->viewer->Move(7, 0x17);
+  this->viewer->backgroundColor = 0xFFFF00FF;
+  this->viewer->Invalidate();
+
+  for (UIWindow* child : this->m_children) {
+    if (child->geometry.id == 187) {
+      child->Move(0x59, 0x6D);
+      break;
+    }
+  }
+
+  for (UIWindow* child : this->m_children) {
+    if (child->geometry.id == 188) {
+      auto* button = static_cast<UIBitmapButton*>(child);
+      button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0, 0);
+      button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 1, 0);
+      button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 2, 0);
+      button->Resize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(this->geometry.width - 0xE, 3);
+      break;
+    }
+  }
+
+  std::string resource(FindItemDescription(itemId).identifiedResource);
+  if (!resource.empty()) {
+    this->m_image = reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(std::format("유저인터페이스\\collection\\{}.bmp", resource)));
   }
 }
 
