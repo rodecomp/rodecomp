@@ -780,6 +780,9 @@ public:
   const char* GetHitWaveName(int job);
   const char* GetWeaponHitWaveName(int weapon);
   void InitJobHitWaveNames();
+  void InitWeaponHitWaveNames();
+  const std::vector<std::string>* GetMapViewParameters(const char* rswName, int* found);
+  void InitJobKeyNames();
   const char* GetEFSTImgFileName(int efstId, int type);
   int IsTreeGroupTwo(int job) const;
   bool IsTreeGroupThree(int job) const;
