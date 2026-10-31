@@ -322,6 +322,27 @@ namespace {
     /* 0002 */ std::uint32_t aid;
   };
 
+  struct DevotionListPacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ std::uint32_t aid;
+    /* 0006 */ std::uint32_t devotees[5];
+    /* 001A */ std::int16_t range;
+  };
+
+  struct FormatStringMessagePacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ std::int16_t length;
+    /* 0004 */ std::uint16_t messageId;
+  };
+
+  struct NotifyExpPacket {
+    /* 0000 */ std::int16_t packetType;
+    /* 0002 */ std::uint32_t accountId;
+    /* 0006 */ int amount;
+    /* 000A */ std::uint16_t varId;
+    /* 000C */ std::int16_t expType;
+  };
+
   struct Item1758Record {
     /* 0000 */ std::int32_t price;
     /* 0004 */ std::int16_t quantity;
@@ -391,6 +412,9 @@ namespace {
   }
 
   static_assert(sizeof(DispelPacket) == 6);
+  static_assert(sizeof(DevotionListPacket) == 0x1C);
+  static_assert(sizeof(FormatStringMessagePacket) == 6);
+  static_assert(sizeof(NotifyExpPacket) == 0xE);
   static_assert(sizeof(Item1758Record) == 0xB);
   static_assert(sizeof(Item1758StoreRecord) == 0x39);
   static_assert(sizeof(Item1718Record) == 0x13);
@@ -626,6 +650,8 @@ void CGameMode::ReceiveActorSequenceDeadline(const unsigned char* packet) {
   }
 }
 
+// OFFSET: 0x00D26E50
+
 // OFFSET: 0x00D27060
 // FUNCTION: fn_21686
 void CGameMode::ReceiveActorSignal(const unsigned char* packet) {
@@ -633,6 +659,8 @@ void CGameMode::ReceiveActorSignal(const unsigned char* packet) {
     actor->SendMsg(nullptr, 142, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
+
+// OFFSET: 0x00D2A990
 
 // OFFSET: 0x00D2AF90
 // FUNCTION: fn_21707
@@ -1352,6 +1380,40 @@ void CGameMode::IgnorePacket473(const unsigned char*) {
 // OFFSET: 0x00D33970
 // FUNCTION: fn_21750
 void CGameMode::IgnorePacket474(const unsigned char*) {
+}
+
+// OFFSET: 0x00D34040
+// FUNCTION: fn_21753
+void CGameMode::Zc_Notify_Exp(const unsigned char* packet) {
+  const NotifyExpPacket* data = reinterpret_cast<const NotifyExpPacket*>(packet);
+  std::string text;
+
+  if (g_session.m_aid != data->accountId) {
+    return;
+  }
+
+  const std::uint32_t color = data->expType != 1 ? 0xFFFF : 0xBE58BE;
+  const int amount = data->amount;
+  if (amount == 0) {
+    return;
+  }
+
+  char buffer[256];
+  if (data->varId == 1) {
+    std::sprintf(buffer, LookupMessage(1613), amount);
+    text += buffer;
+  } else if (data->varId == 2) {
+    std::sprintf(buffer, LookupMessage(1614), amount);
+    text += buffer;
+  }
+
+  if (data->amount >= 0) {
+    text += LookupMessage(1615);
+  } else {
+    text += LookupMessage(1616);
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), color, 18, 0, 0);
 }
 
 // OFFSET: 0x00D61290

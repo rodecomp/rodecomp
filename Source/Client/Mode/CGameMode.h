@@ -223,6 +223,9 @@ public:
   void ReceiveHomunculusProperty64(const unsigned char* packet);
   void ReceiveHomunculusProperty(const unsigned char* packet);
   void ReceiveHuntingList(const unsigned char* packet);
+  void ReceiveDevotionList(const unsigned char* packet);
+  void ReceiveFormatStringMessage(const unsigned char* packet);
+  void Zc_Notify_Exp(const unsigned char* packet);
   void ReceiveEquipAck(const unsigned char* packet);
   void ReceiveToggleNotice(const unsigned char* packet);
   void ReceiveSound(const unsigned char* packet);
