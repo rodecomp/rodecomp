@@ -21,7 +21,6 @@ public:
   void ShuffleDigitButtons();
   void Activate(unsigned char state, int duration);
   void SetCode(unsigned char state, const char* code);
-  int DrawTitleBar(bool closeButton, const char* title, int width);
 
   /* 00B4 */ UIBitmapButton* digitButtons[10];
   /* 00DC */ UIBitmapButton* resetButton;

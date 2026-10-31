@@ -4,6 +4,8 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
@@ -91,14 +93,11 @@ void UIMacroBlackListCheckWnd::Slot15(int width, int height) {
   this->geometry.targetAlpha = 176;
 }
 
-int UIMacroBlackListCheckWnd::DrawTitleBar(bool closeButton, const char* title, int width) {
-  return reinterpret_cast<int(__thiscall*)(UIWindow*, bool, const char*, int)>(0x008D2CE0)(this, closeButton, title, width);
-}
-
 // OFFSET: 0x007EC1E0
 // FUNCTION: fn_09795
 void UIMacroBlackListCheckWnd::Paint() {
-  const int titleHeight = this->DrawTitleBar(true, LookupMessage(0x92F), this->geometry.width + 1);
+  const TextLocale locale = {};
+  const int titleHeight = this->UIWindow::DrawTitleBar(g_fontCache, locale, true, LookupMessage(0x92F), this->geometry.width + 1);
   this->DrawPanelBackground(titleHeight, 0x21C, "유저인터페이스\\basic_interface\\blacklist_check_bg.bmp");
   this->DrawButtonBar(2, this->geometry.width + 1, 1);
 
