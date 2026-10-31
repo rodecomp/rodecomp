@@ -15,13 +15,17 @@ public:
   void Slot26(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot33(int x, int y) override;
+  void Slot35(int value) override;
 
   __declspec(noinline) int SkillAt(int x, int y);
   __declspec(noinline) CSkillInfo GetSkillByIndex(int index);
   CSkillInfo GetSkillAt(int x, int y);
   CSkillInfo GetVisibleSkill(int row);
+  void UpdateScrollBar();
 
-  /* 00BC */ unsigned char unknown_00BC[0x5C];
+  /* 00B4 */ int unknown_00B4;
+  /* 00B8 */ UIWindow* scrollBar;
+  /* 00BC */ unsigned char unknown_00BC[0x54];
   /* 0118 */ int hovered;
   /* 011C */ int scroll;
   /* 0120 */ int columns;

@@ -995,6 +995,8 @@ void UIItemStoreFindWnd::Slot10(int x, int y, std::intptr_t value) {
   g_modeMgr.GetGameMode()->SendMsg(18, 0, 0, 0, 0);
 }
 
+// OFFSET: 0x00972570
+
 // OFFSET: 0x009727F0
 // FUNCTION: fn_13275
 void UIItemWnd::Slot10(int x, int y, std::intptr_t value) {
@@ -2217,6 +2219,12 @@ bool UIItemStoreSubWnd::Sort3() {
   return true;
 }
 
+// OFFSET: 0x00995CF0
+
+// OFFSET: 0x00995D50
+
+// OFFSET: 0x00995DB0
+
 // OFFSET: 0x00996940
 // FUNCTION: fn_13473
 void UIItemStoreSubWnd::SetTabIndex(int index) {
@@ -2497,6 +2505,8 @@ void UIMerchantItemShopWnd::Slot10(int x, int y, std::intptr_t value) {
   reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(15, 1);
   g_windowMgr.window_01EC->SendMsg(nullptr, 13, 11, 0, 0, 0);
 }
+
+// OFFSET: 0x00972C00
 
 // OFFSET: 0x0089CAE0
 // FUNCTION: fn_11591
@@ -2865,6 +2875,47 @@ void UIItemBaseWnd::Slot35(int value) {
 
     this->SendMsg(this->scrollBar, 7, value < 0 ? step : -step, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x0098A3A0
+
+// OFFSET: 0x0098A6F0
+// FUNCTION: fn_13416
+void UISkillListWnd::UpdateScrollBar() {
+  UIScrollBar* bar = static_cast<UIScrollBar*>(this->scrollBar);
+  if (!bar) {
+    return;
+  }
+
+  const int visible = this->visibleRows;
+  const int rows = (this->skills.size() % this->columns != 0) + this->skills.size() / this->columns;
+  int overflow = rows - visible;
+  if (overflow < 0) {
+    overflow = 0;
+  }
+
+  this->unknown_0128 = overflow != 0;
+  if (overflow != 0) {
+    bar->SetRange(overflow, visible, rows);
+    int position = this->scroll;
+    if (position < 0) {
+      this->scroll = 0;
+      position = 0;
+    }
+
+    const int last = rows - this->visibleRows;
+    if (position > last) {
+      this->scroll = last;
+      position = last;
+    }
+
+    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(position);
+  } else {
+    this->scroll = 0;
+    bar->SetRange(0, visible, rows);
+  }
+
+  this->scrollBar->Invalidate();
 }
 
 // OFFSET: 0x0098A2B0
