@@ -179,6 +179,18 @@ std::string CSession::GetAccessorySprName(int job, int sex, int head, int access
   return g_equipmentResourceMgr->GetAccessoryResourceName(1, job, sex, head, accessory);
 }
 
+// OFFSET: 0x00DE0C50
+// FUNCTION: fn_23468
+std::string CSession::GetShieldActName(int job, int sex, int shield, int costumeJob) {
+  return g_equipmentResourceMgr->GetShieldResourceName(0, job, sex, shield, costumeJob);
+}
+
+// OFFSET: 0x00DE0CC0
+// FUNCTION: fn_23469
+std::string CSession::GetShieldSprName(int job, int sex, int shield, int costumeJob) {
+  return g_equipmentResourceMgr->GetShieldResourceName(1, job, sex, shield, costumeJob);
+}
+
 // OFFSET: 0x00E0A2C0
 // FUNCTION: fn_23794
 std::string CSession::GetAccessoryName(int id) {

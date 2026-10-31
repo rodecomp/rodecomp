@@ -119,6 +119,8 @@ void UINewSkillListWnd::Slot35(int delta) {
   }
 }
 
+// OFFSET: 0x009AE730
+
 // OFFSET: 0x009B0370
 // FUNCTION: fn_13805
 std::string UINewSkillListWnd::ValueText(int id) {

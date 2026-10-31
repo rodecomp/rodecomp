@@ -193,6 +193,8 @@ bool CSession::IsThirdJobOrHigher(int job) {
   }
 }
 
+// OFFSET: 0x00E2ECD0
+
 // OFFSET: 0x00E3D8A0
 // FUNCTION: fn_24192
 void CSession::UnequipItem6B68(const ITEM_INFO& item) {

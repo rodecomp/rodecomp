@@ -751,6 +751,8 @@ public:
   std::string GetHeadSprName(int job, int sex, int* head);
   std::string GetAccessoryActName(int job, int sex, int head, int accessory);
   std::string GetAccessorySprName(int job, int sex, int head, int accessory);
+  std::string GetShieldActName(int job, int sex, int shield, int costumeJob);
+  std::string GetShieldSprName(int job, int sex, int shield, int costumeJob);
   std::string GetRobeActName(int job, int sex, int robe, bool riding, int unused, int costumeJob);
   std::string GetRobeSprName(int job, int sex, int robe, bool riding, int unused, int costumeJob);
   std::string GetRobeName(unsigned int robe);
@@ -852,6 +854,7 @@ public:
   void UpdateFriendName(std::uint32_t characterId, const char* name);
   void UnequipItem6B68(const ITEM_INFO& item);
   void UnequipItem61B8(const ITEM_INFO& item);
+  bool EquipItem61B8(const ITEM_INFO& item);
   void SetUnknown7EC8(std::uint32_t value);
   void NotifyUnknown7F94Name(std::uint32_t id, const char* name);
   void sub_DE3D90(char* text);
