@@ -186,11 +186,14 @@ public:
 
 class CUIBasicButton : public CUITextButton {
 public:
+  explicit CUIBasicButton(UIWindowContext& context);
   void Resize(int width, int height) override;
   void Paint() override;
   void Slot53(int resolveSkin) override;
+  void Slot55() override;
 
   void Create(int width, int height);
+  void SetAutoWidth(bool enabled);
 
   /* 0190 */ unsigned char unknown_0190;
   /* 0194 */ int defaultWidth;
@@ -208,7 +211,9 @@ public:
   void Slot31(int x, int y) override;
   void Slot47() override;
   void Slot48() override;
+  void Paint() override;
   void Slot53(int resolveSkin) override;
+  void Slot54(int padding) override;
 
   __declspec(noinline) void SetSelected(bool selected);
   void SetSkinColors(int normalColumn, int normalRow, int selectedColumn, int selectedRow, int borderColumn, int borderRow);

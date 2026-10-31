@@ -16,11 +16,11 @@
 #include "UI/Lists/UIVScrollBar.h"
 #include "Render/Text/FontCache.h"
 #include "Script/LuaScript.h"
+#include "UI/Text/ColoredText.h"
 
 #include <algorithm>
 #include <cmath>
 #include <windows.h>
-
 // OFFSET: 0x009EF520
 // FUNCTION: fn_14635
 CBitmapRes* CUIControl::LoadBitmapResource(const std::string& name, bool resolveSkin) {
@@ -42,7 +42,7 @@ CUIControl::CUIControl(UIWindowContext& context) : UIWindow(context, 0), hitEnab
 }
 
 // INLINED
-CUIButton::CUIButton(UIWindowContext& context) : CUIControl(context), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
+__forceinline CUIButton::CUIButton(UIWindowContext& context) : CUIControl(context), state(0), disabled(0), tooltip(), unknown_00C4(nullptr), unknown_00EC(nullptr) {
 }
 
 // OFFSET: 0x009BDF40
@@ -2345,4 +2345,87 @@ void CUITextButton::SetFont(const std::string& name) {
 void CUITextButton::SetText(const std::string& value) {
   this->text = value;
   this->UpdateText();
+}
+
+// OFFSET: 0x009EC930
+// FUNCTION: fn_14561
+void CUITextButton::Slot54(int) {
+  if (this->orientation == 1) {
+    const int height = this->VerticalTextHeight(
+      this->m_context->fonts, this->m_context->locale, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold
+    );
+    this->Resize(this->geometry.width, height);
+    if (this->verticalAlign == 0) {
+      this->textY = 0;
+    } else if (this->verticalAlign == 6) {
+      this->textY = (this->geometry.height - height) / 2;
+    } else if (this->verticalAlign == 8) {
+      this->textY = this->geometry.height - height;
+    }
+  } else {
+    const int width = this->TextWidth(
+      this->m_context->fonts, this->m_context->locale, this->displayText.c_str(), 0, this->fontIndex, this->fontHeight, this->bold, 0
+    );
+    this->Resize(width, this->geometry.height);
+    if (this->horizontalAlign == 0) {
+      this->textX = 0;
+    } else if (this->horizontalAlign == 6) {
+      this->textX = (this->geometry.width - width) / 2;
+    } else if (this->horizontalAlign == 2) {
+      this->textX = this->geometry.width - width;
+    }
+  }
+}
+
+// OFFSET: 0x009F1210
+
+// OFFSET: 0x009ECA30
+
+// OFFSET: 0x009E1E20
+
+// OFFSET: 0x009F0980
+// FUNCTION: fn_14669
+void CUIStaticText::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->unknown_0098.size() == 0) {
+    return;
+  }
+
+  if (this->shadow) {
+    this->DrawTextAt(
+      this->m_context->fonts, this->m_context->locale, this->textX + 1, this->textY + 1, this->unknown_0098.c_str(), 0, this->fontIndex,
+      this->fontHeight, this->shadowColor, this->bold, 0
+    );
+  }
+  if (this->outline) {
+    DrawOutlinedText(
+      *this, this->textX, this->textY + 1, this->unknown_0098.c_str(), 0, this->color, this->outlineColor, this->fontIndex, this->fontHeight, this->bold,
+      0
+    );
+    return;
+  }
+  this->DrawTextAt(
+    this->m_context->fonts, this->m_context->locale, this->textX, this->textY, this->unknown_0098.c_str(), 0, this->fontIndex, this->fontHeight,
+    this->color, this->bold, 0
+  );
+}
+
+// OFFSET: 0x009E80C0
+
+// OFFSET: 0x009F1320
+
+// OFFSET: 0x009EC430
+
+// OFFSET: 0x009E1250
+
+// OFFSET: 0x009E9F00
+
+// OFFSET: 0x009E2D10
+
+// OFFSET: 0x009ED570
+// FUNCTION: fn_14578
+void CUIEditCtrl::DrawBlinkingCaret(const std::uint32_t& color) {
+  if (this == g_windowMgr.GetHoverWindow()) {
+    this->UIEditCtrl3::DrawBlinkingCaret(color);
+  }
 }

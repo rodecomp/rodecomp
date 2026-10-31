@@ -7,6 +7,10 @@
 
 class CUIPadding : public CUIControl {
 public:
+  // INLINED
+  explicit CUIPadding(UIWindowContext& context) : CUIControl(context), color(0xFFFFFF), left(3), top(3), right(3), bottom(3) {
+  }
+
   bool CanHitTest() override;
   void Paint() override;
 

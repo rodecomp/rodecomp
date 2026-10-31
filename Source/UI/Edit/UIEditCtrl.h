@@ -174,6 +174,7 @@ class CUIEditCtrl : public UIEditCtrl3 {
 public:
   void Paint() override;
   void Invalidate() override;
+  void DrawBlinkingCaret(const std::uint32_t& color) override;
 };
 
 class UIEditCtrl4 : public UIEditCtrl {

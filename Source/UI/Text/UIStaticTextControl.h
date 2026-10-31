@@ -18,6 +18,7 @@ public:
   }
 
   void Slot28(int x, int y) override;
+  void Paint() override;
   void UpdateText();
   void SetAlign(int horizontal, int vertical);
   void SetFitText(bool enabled);
