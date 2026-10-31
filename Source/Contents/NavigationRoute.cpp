@@ -1560,5 +1560,194 @@ struct NavigationReplayHeader {
 static_assert(sizeof(NavigationReplayHeader) == 6);
 
 // OFFSET: 0x00B9B080
+// FUNCTION: fn_19616
+int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) {
+  g_windowMgr.CloseWindow(203);
+  this->Reset(true);
+  if (data.empty()) {
+    return -1;
+  }
+
+  std::vector<char> buffer;
+  NavigationReplayHeader header;
+  unsigned offset = 6;
+  header.Read(data.data());
+  if (header.tag != 8000) {
+    offset = static_cast<unsigned>(-1);
+  } else {
+    while (offset < data.size()) {
+      header.Read(data.data() + offset);
+      offset += 6;
+      if (header.tag == 8001) {
+        this->ResumeRoute();
+        break;
+      }
+
+      switch (header.tag) {
+      case 8002:
+        std::memcpy(&this->unknown_127D, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8003:
+        std::memcpy(&this->unknown_127E, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8004:
+        std::memcpy(&this->unknown_127C, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8005:
+        std::memcpy(&this->unknown_1280, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8006: {
+        buffer.resize(header.size + 1);
+        std::memcpy(buffer.data(), data.data() + offset, header.size);
+        offset += header.size;
+        NavigationTarget target = this->ReadTarget(buffer.data(), header.size);
+        if (target.object != nullptr) {
+          this->states.push_back(target);
+        }
+        break;
+      }
+      case 8007:
+        buffer.resize(header.size + 1);
+        std::memcpy(buffer.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->currentTarget = this->ReadTarget(buffer.data(), header.size);
+        break;
+      case 8008:
+        buffer.resize(header.size + 1);
+        std::memcpy(buffer.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->savedTarget = this->ReadTarget(buffer.data(), header.size);
+        break;
+      case 8009:
+        std::memcpy(&this->unknown_124C, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8010:
+        std::memcpy(&this->unknown_1250, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8011:
+        std::memcpy(&this->unknown_1254, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8012:
+        std::memcpy(&this->unknown_1258, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8013:
+        std::memcpy(&this->unknown_125C, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8014:
+        std::memcpy(&this->unknown_1260, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8015:
+        buffer.resize(header.size + 1);
+        std::memcpy(buffer.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->unknown_1264 = buffer.data();
+        break;
+      case 8016:
+        std::memcpy(&this->unknown_1284, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8017:
+        std::memcpy(&this->unknown_117C, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8018:
+        std::memcpy(&this->routeResult, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8019:
+        std::memcpy(&this->unknown_115C, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8020:
+        std::memcpy(&this->selectedNode, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      case 8021: {
+        buffer.resize(header.size + 1);
+        std::memcpy(buffer.data(), data.data() + offset, header.size);
+        offset += header.size;
+        const int* route = reinterpret_cast<const int*>(buffer.data());
+        int x = route[2];
+        int y = route[3];
+        if (this->savedTarget.object != nullptr) {
+          const int type = this->savedTarget.type;
+          CNaviInfo* info;
+          bool found = true;
+          if (type == 2) {
+            CNavi_Object* object = static_cast<CNavi_Object*>(this->savedTarget.object);
+            info = object->GetInfo();
+            NaviCell cell;
+            const NaviCell* position = object->GetCell(&cell);
+            x = position->x;
+            y = position->y;
+          } else if (type == 3) {
+            info = static_cast<CNavi_Object*>(this->savedTarget.object)->GetInfo();
+            x = -1;
+            y = -1;
+          } else if (type == 1) {
+            x = -1;
+            y = -1;
+            info = static_cast<CNaviInfo*>(this->savedTarget.object);
+          } else if (type == 0) {
+            info = static_cast<CNaviInfo*>(this->savedTarget.object);
+          } else {
+            found = false;
+          }
+          if (found) {
+            this->data.SetDestination(info, x, y);
+          }
+        }
+
+        CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        if (mode && mode->scene && mode->scene->terrain) {
+          this->ground = mode->scene->ground;
+          this->pathFinder.attr = mode->scene->terrain;
+        }
+        break;
+      }
+      case 8022: {
+        buffer.resize(header.size + 1);
+        std::memcpy(buffer.data(), data.data() + offset, header.size);
+        offset += header.size;
+        CNavi_Link* node = this->ReadObject(buffer.data());
+        if (node != nullptr) {
+          this->nodes.push_back(node);
+        }
+        break;
+      }
+      case 8023:
+        std::memcpy(&this->unknown_1248, data.data() + offset, header.size);
+        offset += header.size;
+        break;
+      default:
+        offset += header.size;
+        break;
+      }
+    }
+  }
+  return static_cast<int>(offset);
+}
 
 // OFFSET: 0x00B9BFC0
+// FUNCTION: fn_19617
+void CNavigationManager::ResumeRoute() {
+  if (this->unknown_1258 == 1) {
+    this->LoadTargetPreview();
+    g_windowMgr.EnsureWindow(203);
+  } else if (this->unknown_1258 == 2) {
+    this->ShowRouteResult(this->RouteFromPlayer(), 1, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+    if (!this->unknown_1248) {
+      g_windowMgr.EnsureWindow(203);
+    }
+  }
+}

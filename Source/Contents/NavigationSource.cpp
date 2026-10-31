@@ -614,6 +614,153 @@ void CNavigationManager::ClearCurrentObject() {
 }
 
 // OFFSET: 0x00B95280
+// FUNCTION: fn_19573
+int CNavigationManager::RouteFromPlayer() {
+  CNaviInfo* info = this->FindObject(g_session.m_navigationPlayerMap);
+  if (info == nullptr) {
+    const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(g_session.m_navigationPlayerMap);
+    info = this->FindObject(resolved.c_str());
+    if (info == nullptr) {
+      this->unknown_117C = false;
+      this->unknown_115C = false;
+      this->unknown_12B4 = false;
+      return -93;
+    }
+  }
+
+  int result = -96;
+  this->unknown_117C = false;
+  this->unknown_115C = false;
+  this->unknown_12B4 = false;
+  NaviCell player;
+  player.x = 0;
+  player.y = 0;
+  if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+    mode->PlayerCell(&player.x, &player.y);
+  }
+
+  if (this->data.GetInfo() == info) {
+    const int type = this->savedTarget.type;
+    if (type != 2 && type != 0) {
+      int code = type == 1 ? 6 : -96;
+      if (type == 3) {
+        code = 8;
+      }
+      this->CancelRoute();
+      return code;
+    }
+
+    NaviCell cell;
+    if (player.x == this->data.GetCell(&cell)->x && player.y == this->data.GetCell(&cell)->y) {
+      this->movementRoute.points.clear();
+      PathCell point = {player.x, player.y, 0, 0};
+      this->movementRoute.points.push_back(point);
+      this->CancelRoute();
+      return 11;
+    }
+
+    NaviCell destination;
+    if (this->BuildRoute(player.x, player.y, this->data.GetCell(&destination)->x, this->data.GetCell(&cell)->y, true)) {
+      this->nodes.clear();
+      this->routeResult = std::abs(player.x - this->data.GetCell(&destination)->x) + std::abs(player.y - this->data.GetCell(&cell)->y);
+      this->selectedNode = -1;
+      this->currentTarget = this->savedTarget;
+      this->LoadTargetPreview();
+      const int targetType = this->savedTarget.type;
+      result = targetType == 2 ? 7 : -96;
+      this->unknown_117C = true;
+      this->unknown_115C = true;
+      this->unknown_12B4 = true;
+      if (targetType == 0) {
+        result = 9;
+        this->unknown_1258 = 2;
+        return result;
+      }
+      if (targetType == 2) {
+        this->unknown_1258 = 2;
+        return result;
+      }
+    }
+  }
+
+  const NaviCell start = player;
+  if (this->nodes.empty() || info == nullptr) {
+    return result;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (mode && mode->scene && mode->scene->terrain) {
+    this->ground = mode->scene->ground;
+    this->pathFinder.attr = mode->scene->terrain;
+  }
+
+  {
+    std::vector<unsigned int> candidates;
+    for (int index = static_cast<int>(this->nodes.size()) - 1; index > 0; --index) {
+      if (this->nodes[index]->GetInfo() != info) {
+        continue;
+      }
+
+      const NaviCell linked = this->nodes[index - 1]->GetLinkedCell();
+      if (linked.x == start.x && linked.y == start.y) {
+        NaviCell cellX;
+        NaviCell cellY;
+        if (this->BuildRoute(start.x, start.y, this->nodes[index]->GetCell(&cellX)->x, this->nodes[index]->GetCell(&cellY)->y, true)) {
+          this->selectedNode = index;
+          this->SelectTarget(index);
+          this->unknown_117C = true;
+          goto selected;
+        }
+      } else {
+        candidates.push_back(index);
+      }
+    }
+
+    if (this->nodes[0]->GetInfo() == info) {
+      this->movementRoute.points.clear();
+      NaviCell cellX;
+      NaviCell cellY;
+      if (start.x == this->nodes[0]->GetCell(&cellX)->x && start.y == this->nodes[0]->GetCell(&cellY)->y) {
+        PathCell point = {start.x, start.y, 0, 0};
+        this->movementRoute.points.push_back(point);
+      } else if (!this->BuildRoute(start.x, start.y, this->nodes[0]->GetCell(&cellX)->x, this->nodes[0]->GetCell(&cellY)->y, true)) {
+        goto search;
+      }
+      this->selectedNode = 0;
+      this->SelectTarget(0);
+      this->unknown_117C = true;
+      goto selected;
+    }
+
+  search:
+    for (int index = 0; index < static_cast<int>(candidates.size()); ++index) {
+      NaviCell cellX;
+      NaviCell cellY;
+      if (this->BuildRoute(start.x, start.y, this->nodes[candidates[index]]->GetCell(&cellX)->x, this->nodes[candidates[index]]->GetCell(&cellY)->y, true)) {
+        this->selectedNode = candidates[index];
+        this->SelectTarget(candidates[index]);
+        this->unknown_117C = true;
+        goto selected;
+      }
+    }
+
+    this->unknown_117C = false;
+    if (this->nodes[0]->GetType() != 400) {
+      return result;
+    }
+    this->selectedNode = 0;
+    this->SelectTarget(0);
+  }
+
+selected:
+  if (this->selectedNode == 0 && this->nodes[0]->GetType() == 400) {
+    result = 4;
+  } else {
+    result = 5;
+  }
+  this->unknown_1258 = 2;
+  return result;
+}
 
 // OFFSET: 0x00B95AD0
 // FUNCTION: fn_19576
