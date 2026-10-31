@@ -48,6 +48,8 @@ private:
 
 extern int g_configuredFullscreen;
 extern int g_configuredBitsPerPixel;
+extern int g_configuredScreenWidth;
+extern int g_configuredScreenHeight;
 
 void ClearDirectDrawModes();
 
