@@ -1461,6 +1461,151 @@ void CGameActor::ShowPartyMemberEffect(std::uint32_t accountId) {
   }
 }
 
+// OFFSET: 0x00CAE790
+// FUNCTION: fn_21077
+void CGameActor::LaunchAttackProjectile(int target, float scale) {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  switch (this->GetEffectiveJob(-1)) {
+  case 0x3F8:
+  case 0x4A5:
+  case 0x4E5:
+  case 0x4EA:
+  case 0x4FC:
+  case 0x502:
+  case 0x505:
+  case 0x582:
+  case 0x584:
+  case 0x58C:
+  case 0x5AD:
+  case 0x5AF:
+  case 0x5C1:
+  case 0x5D7:
+  case 0x5DA:
+  case 0x5DC:
+  case 0x5FB:
+  case 0x60E:
+  case 0x613:
+  case 0x680:
+  case 0x681:
+  case 0x682:
+  case 0x683:
+  case 0x698:
+  case 0x749:
+  case 0x7E5:
+  case 0x93C:
+  case 0x9AB:
+  case 0xF2A:
+  case 0x1781:
+  case 0x1782:
+  case 0x1783:
+  case 0x1784:
+  case 0x1785:
+  case 0x1786:
+  case 0x1787:
+  case 0x1788:
+  case 0x1789:
+  case 0x178A:
+  case 0x4F32:
+  case 0x4F33:
+  case 0x4F37:
+  case 0x4F90:
+  case 0x505F:
+  case 0x5062:
+  case 0x5069:
+  case 0x5173:
+  case 0x5410:
+  case 0x5455:
+  case 0x55D2:
+  case 0x55E1:
+  case 0x55F1: {
+    using SpawnArrow = void (CGameMode::*)(const vector3d*, int, float, int);
+    const SpawnArrow spawn = reinterpret_cast<SpawnArrow>(&CGameMode::SpawnArrowEffect);
+    (mode->*spawn)(&this->render.position, target, scale, this->GetEffectiveJob(-1));
+    return;
+  }
+  case 0x3FC:
+  case 0x42C:
+  case 0x6A8:
+  case 0x6AD:
+  case 0x6F5:
+  case 0x75C:
+  case 0x75E:
+  case 0x7A5:
+  case 0x7A6:
+  case 0x7A7:
+  case 0x7A8:
+  case 0x7A9:
+  case 0x7C4:
+  case 0xE94:
+  case 0xECF:
+  case 0x500B:
+  case 0x5172:
+  case 0x55BB:
+  case 0x5759:
+  case 0x575C:
+  case 0x577B:
+  case 0x577C:
+  case 0x5781:
+  case 0x5782:
+  case 0x5784:
+  case 0x5788:
+  case 0x578D:
+  case 0x5796:
+  case 0x57B2:
+  case 0x57D2:
+  case 0x57D3: {
+    using SpawnMandra = void (CGameMode::*)(int, int, float);
+    const SpawnMandra spawn = reinterpret_cast<SpawnMandra>(&CGameMode::SpawnMandraAttack);
+    (mode->*spawn)(target, this->GetEffectiveJob(-1), 0.0f);
+    return;
+  }
+  case 0x51C8:
+  case 0x523C:
+  case 0x569F:
+  case 0x56A0:
+  case 0x56B5:
+  case 0x56B6:
+  case 0x56B7:
+  case 0x56BC:
+  case 0x56C6:
+  case 0x56C7:
+  case 0x56C8:
+  case 0x56CA:
+  case 0x56CB:
+  case 0x56D2:
+  case 0x56D3:
+  case 0x56D8:
+  case 0x56DA:
+  case 0x56DB:
+  case 0x56E5:
+  case 0x56E6:
+  case 0x56F0:
+  case 0x5732:
+  case 0x5736:
+  case 0x5737:
+  case 0x5752:
+  case 0x5753:
+  case 0x5757:
+  case 0x575E:
+  case 0x576F:
+  case 0x5770:
+  case 0x5790:
+  case 0x5792:
+  case 0x5794:
+  case 0x57C0:
+  case 0x57C3:
+  case 0x57C4:
+  case 0x57EE:
+  case 0x57F8:
+  case 0x5800:
+  case 0x5812:
+    sub_CDBC30(&this->render.position, target, scale, this->GetEffectiveJob(-1));
+    return;
+  default:
+    return;
+  }
+}
+
 // OFFSET: 0x00CABEB0
 // FUNCTION: fn_21040
 int CGameActor::Slot55() {

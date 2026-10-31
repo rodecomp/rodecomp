@@ -234,6 +234,7 @@ public:
   void ProcessBodyState();
   int GetShield();
   int GetEffectiveJob(int job);
+  void LaunchAttackProjectile(int target, float scale);
   void ShowPartyMemberEffect(std::uint32_t accountId);
   int GetUnknown0404Job() const;
   void SetUnknown03B8(int value, int slot);

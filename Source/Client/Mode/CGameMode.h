@@ -591,6 +591,7 @@ public:
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);
+void __stdcall sub_CDBC30(const vector3d* position, int actorId, float scale, int job);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CGameMode, mapName) == 0x68);
