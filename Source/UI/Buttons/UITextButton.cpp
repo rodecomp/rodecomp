@@ -2510,6 +2510,21 @@ int UIListBoxNavi::LineOffset() {
   return this->lineOffset;
 }
 
+// OFFSET: 0x0088AB70
+// FUNCTION: fn_11356
+void UIComboBoxV2Wnd::Paint() {
+  UIWindowContext& context = *this->m_context;
+  this->ClearSurface(0xFFFF00FF);
+
+  if (!this->text.empty()) {
+    const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->text.c_str())));
+    this->DrawBitmap(0, 0, &bitmap->image, false);
+  }
+
+  const std::string selected = this->SelectedText();
+  this->DrawTextAt(context.fonts, context.locale, 2, 3, selected.c_str(), 0, 0, 12, 0, 0, 0);
+}
+
 // OFFSET: 0x00880CC0
 // FUNCTION: fn_11289
 std::string UIComboBoxV2Wnd::SelectedText() {
