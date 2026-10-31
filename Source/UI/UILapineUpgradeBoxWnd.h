@@ -41,6 +41,7 @@ class UILapineUpgradeBoxWnd : public UIFrameWnd {
   friend class UILapineUpgradeBox_IngredientListWnd;
 
 public:
+  UILapineUpgradeBoxWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   ~UILapineUpgradeBoxWnd() override;
   void Slot10(int x, int y, std::intptr_t value) override;
   void Slot15(int width, int height) override;

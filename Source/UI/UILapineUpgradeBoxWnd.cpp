@@ -37,6 +37,13 @@ namespace {
   static_assert(sizeof(LapineUpgradeClosePacket) == 2);
 }
 
+// OFFSET: 0x00602D30
+// FUNCTION: fn_04187
+UILapineUpgradeBoxWnd::UILapineUpgradeBoxWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), closeButton(nullptr), upgradeButton(nullptr), selectButton(nullptr), ingredientList(nullptr), ingredientId(0),
+      noticeTick(0), noticeDuration(3000), waiting(0), m_controls(&controls) {
+}
+
 // INLINED
 UILapineUpgradeBoxWnd::~UILapineUpgradeBoxWnd() {
   this->item = ITEM_INFO();
