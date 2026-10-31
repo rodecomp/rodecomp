@@ -2783,6 +2783,38 @@ void CGameMode::ReceiveItem1718List(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D77C90
+// FUNCTION: fn_22154
+void ReceiveTradeItems(int count, const TradeItemRecord* records) {
+  reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+
+  for (int i = 0; i < count; ++i) {
+    const TradeItemRecord& record = records[i];
+    ITEM_INFO item;
+    item.SetItemId(record.itemId);
+    item.unknown_0000[0] = record.unknown_0004;
+    item.unknown_006C = record.unknown_000D / 10;
+    item.quantity = record.quantity;
+    item.unknown_0014[0] = record.unknown_0005;
+    item.unknown_0014[1] = record.unknown_0005;
+    item.unknown_0060 = record.unknown_000F;
+    std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
+    item.unknown_0000[1] = record.unknown_0020;
+    item.identified = 1;
+    item.unknown_0074[3] = 1;
+    if (item.quantity > 0) {
+      reinterpret_cast<ClientItemLists*>(&g_session)->AppendItem1718(item);
+    }
+  }
+
+  if (UIWindow* window = g_windowMgr.EnsureWindow(0xfe)) {
+    window->SendMsg(nullptr, 0x24, 0, 0, 0, 0);
+    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+  if (UIWindow* window = g_windowMgr.EnsureWindow(0xff)) {
+    window->SendMsg(nullptr, 0x24, 0, 0, 0, 0);
+    window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x00D7A690
 // FUNCTION: fn_22191
