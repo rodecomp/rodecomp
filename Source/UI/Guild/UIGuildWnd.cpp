@@ -1797,12 +1797,104 @@ void UIAgitMessageBox::sub_956130(const char* text, int width, int height) {
 }
 
 // OFFSET: 0x0095D640
+// FUNCTION: fn_13070
+void UIGuildBanishedMemberWnd::Paint() {
+  UIGuildWnd::Paint();
+  for (int index = 0; index < 11; ++index) {
+    this->m_names[index]->Move(-200, -200);
+    this->m_reasons[index]->Move(-200, -200);
+  }
+
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+  this->FillRegion(4, 45, this->geometry.width - 22, this->geometry.height - g_guildBanishedRowHeight - 69, RGB(red, green, blue));
+
+  const int cellHeight = g_guildBanishedRowHeight - 1;
+  int widths[2];
+  widths[0] = g_guildBanishedColumnWidths[0];
+  widths[1] = g_guildBanishedColumnWidths[1];
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  for (int row = 0; row < 12; ++row) {
+    int x = 0;
+    for (int column = 0; column < 2; ++column) {
+      const int width = widths[column];
+      this->FillRegion(x + 5, row * g_guildBanishedRowHeight + 46, width, cellHeight, RGB(red, green, blue));
+      x += width + 1;
+    }
+  }
+
+  const char* headers[2];
+  headers[0] = LookupMessage(407);
+  headers[1] = LookupMessage(462);
+  auto& controls = *this->m_controls;
+  int x = 0;
+  for (int column = 0; column < 2; ++column) {
+    this->DrawTextAt(controls.fonts, controls.locale, x + 8, 49, headers[column], 0, 0, 12, 0, 0, 0);
+    x += widths[column] + 1;
+  }
+
+  const auto& members = GuildData().unknown_00EC;
+  int drawn = 0;
+  int index = 0;
+  for (auto member = members.begin(); member != members.end(); ++member, ++index) {
+    if (index < this->m_scrollTop * this->m_columns) {
+      continue;
+    }
+
+    const int y = drawn / this->m_columns * g_guildBanishedRowHeight + 68;
+    if (this->m_hoverRow == index) {
+      unsigned hoverRed, hoverGreen, hoverBlue;
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      this->FillRegion(5, y - 3, this->geometry.width - 24, 18, RGB(hoverRed, hoverGreen, hoverBlue));
+    }
+
+    this->m_names[drawn]->SetTextFitted(this->StripNamelessTag(member->name).c_str());
+    this->m_names[drawn]->Move(8, y);
+
+    char reason[260];
+    memset(reason, 0, sizeof(reason));
+    strncpy_s(reason, sizeof(reason), member->unknown_0034.c_str(), member->unknown_0034.size());
+    if (this->m_forbiddenWords->Contains(reason) == true) {
+      std::string masked;
+      this->m_forbiddenWords->Mask(reason, &masked);
+    }
+    this->m_reasons[drawn]->SetTextFitted(reason);
+    this->m_reasons[drawn]->Move(g_guildBanishedColumnWidths[0] + 9, y);
+    if (++drawn == this->m_visibleRows * this->m_columns) {
+      return;
+    }
+  }
+}
 
 // OFFSET: 0x00956950
 
 // OFFSET: 0x0095E320
 
 // OFFSET: 0x00963BF0
+// FUNCTION: fn_13130
+int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
+  if (message == 6) {
+    if (a1 == 201) {
+      this->m_frameContext->windows.CloseWindow(59);
+    } else if (a1 == 277) {
+      std::string body(this->m_bodyEdit->Text());
+      if (this->m_forbiddenWords->Contains(this->m_titleEdit->Text()) == true || this->m_forbiddenWords->Contains(body.c_str()) == true) {
+        this->m_controls->services.Confirm(LookupMessage(14), 0, 1, 0, "Message", 280, 120);
+      } else {
+        if (GuildData().unknown_00B4) {
+          g_modeMgr.gameMode->SendMsg(118, g_guildId, reinterpret_cast<int>(this->m_titleEdit->Text()), reinterpret_cast<int>(body.c_str()), 0);
+        }
+        this->InvalidateChildren();
+      }
+    }
+  } else if (message == 60) {
+    this->InvalidateChildren();
+  } else {
+    return UIGuildWnd::SendMsg(sender, message, a1, a2, a3, a4);
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x00964500
 
