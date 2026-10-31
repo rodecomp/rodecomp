@@ -40,12 +40,44 @@ struct SearchStoreQueryPacket {
 
 static_assert(offsetof(SearchStoreQueryPacket, ids) == 0xF);
 
+struct SearchStoreResult {
+  /* 0000 */ unsigned char unknown_0000[0x60];
+  /* 0060 */ ITEM_INFO item;
+};
+
+static_assert(sizeof(SearchStoreResult) == sizeof(SessionEntry5BD4));
+
 // OFFSET: 0x009121F0
 // FUNCTION: fn_12527
 UISerachStoreInfoWnd::UISerachStoreInfoWnd()
     : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0), unknown_00DC(1), unknown_00E0(-1),
       unknown_00E4(0), unknown_00E8(25), unknown_00EC(0), unknown_00ED(1) {
   this->unknown_00F0.clear();
+}
+
+// OFFSET: 0x0091BBC0
+// FUNCTION: fn_12608
+ITEM_INFO UISerachStoreInfoWnd::ItemAt(int x, int y) {
+  ITEM_INFO item(0);
+  this->unknown_00E0 = -1;
+  if (g_session.unknown_5BD4.empty()) {
+    return item;
+  }
+
+  if (x > 5 && x < this->geometry.width - 10 && y > 100 && y < (this->unknown_00E8 + 10) * 10) {
+    const int row = (y - 100) / this->unknown_00E8;
+    this->unknown_00E0 = row;
+    const unsigned int index = row + (this->unknown_00DC - 1) * 10;
+    if (index >= g_session.unknown_5BD4.size()) {
+      return item;
+    }
+
+    std::vector<SessionEntry5BD4>::iterator it = g_session.unknown_5BD4.begin() + index;
+    if (it != g_session.unknown_5BD4.end()) {
+      item = reinterpret_cast<const SearchStoreResult&>(*it).item;
+    }
+  }
+  return item;
 }
 
 // OFFSET: 0x009296E0
