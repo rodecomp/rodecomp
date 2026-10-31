@@ -37,6 +37,10 @@ public:
     return reinterpret_cast<int&>(this->m_context);
   }
 
+  bool Update(int redraw) override;
+  bool UpdateCached(int redraw);
+  bool UpdateChild(UIWindow* child, int redraw);
+
   /* 0080 */ int viewHeight;
   /* 0084 */ int contentWidth;
   /* 0088 */ int contentHeight;

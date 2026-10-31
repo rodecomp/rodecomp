@@ -1,10 +1,14 @@
 #include "UI/UIScrollWnd.h"
+#include "Render/DeviceContext/DCBitmap.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
+#include "Render/Renderer.h"
 #include "Render/Textures/Texture.h"
 #include "UI/Lists/UIScrollBar.h"
 
 #include <bit>
 #include <cstdint>
+#include <cstdlib>
+#include <list>
 #include <utility>
 
 // OFFSET: 0x009AC2B0
@@ -55,6 +59,103 @@ void UIScrollWnd::MoveScrollChild(UIWindow* child, int x, int y) {
   this->childOrigins[child].first = x;
   this->childOrigins[child].second = y;
   this->Slot53();
+}
+
+// OFFSET: 0x009AC890
+// FUNCTION: fn_13778
+bool UIScrollWnd::Update(int redraw) {
+  if (this->m_cached == 1) {
+    return this->UpdateCached(redraw);
+  }
+
+  for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
+    it->first->Move(it->second.first - this->unknown_009C, it->second.second - this->scrollPosition);
+  }
+
+  if (this->m_dirty == 1) {
+    this->Paint();
+    redraw = 1;
+    this->m_dirty = 0;
+  }
+
+  bool changed = false;
+  for (UIWindow* child : this->m_children) {
+    if (child != this->horizontalBar && child != this->scrollBar) {
+      if (child->geometry.x + child->geometry.width > 0 && child->geometry.x < this->geometry.width && child->geometry.y + child->geometry.height > 0 &&
+          child->geometry.y < this->geometry.height && child->geometry.visible == 1) {
+        changed |= this->UpdateChild(child, redraw);
+      }
+    } else if (child->geometry.visible == 1) {
+      changed |= child->Update(redraw);
+    }
+  }
+
+  if (this->parent && this->parent->m_cached == 0 && (redraw == 1 || changed == 1)) {
+    this->parent->geometry.surface->BlendFrom(
+      this->geometry.x, this->geometry.y, this->geometry.width, this->geometry.height, *static_cast<CDCBitmap*>(this->geometry.surface)
+    );
+    return true;
+  }
+  return false;
+}
+
+// OFFSET: 0x009ACB50
+
+// OFFSET: 0x009ACF80
+// FUNCTION: fn_13780
+__declspec(noinline) bool UIScrollWnd::UpdateChild(UIWindow* child, int redraw) {
+  if (child->m_dirty == 1) {
+    child->Paint();
+    redraw = 1;
+    child->m_dirty = 0;
+  }
+
+  bool changed = false;
+  for (UIWindow* window : child->m_children) {
+    if (window->geometry.visible == 1) {
+      changed |= window->Update(redraw);
+    }
+  }
+
+  if (redraw != 1 && changed != 1) {
+    return false;
+  }
+
+  int x = child->geometry.x;
+  int width = child->geometry.width;
+  int y = child->geometry.y;
+  int height = child->geometry.height;
+  int sourceX = 0;
+  int sourceY = 0;
+
+  const int right = width + x;
+  if (x < 0) {
+    x = 0;
+    sourceX = std::abs(child->geometry.x);
+    if (this->geometry.width < right) {
+      width = this->geometry.width;
+    } else {
+      width -= sourceX;
+    }
+  } else if (this->geometry.width < right) {
+    width = this->geometry.width - std::abs(x);
+  }
+
+  const int bottom = y + height;
+  if (y < 0) {
+    sourceY = std::abs(y);
+    y = 0;
+    if (this->geometry.height < bottom) {
+      height = this->geometry.height;
+    } else {
+      height -= sourceY;
+    }
+  } else if (this->geometry.height < bottom) {
+    height = this->geometry.height - std::abs(y);
+  }
+
+  this->geometry.surface->CopyFrom(x, y, sourceX, sourceY, width, height, *static_cast<CDCBitmap*>(child->geometry.surface));
+  return true;
 }
 
 // OFFSET: 0x009AD0C0
