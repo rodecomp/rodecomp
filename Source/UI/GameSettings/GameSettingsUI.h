@@ -63,6 +63,7 @@ public:
 class CUIGroupEmblem : public CUIGroup {
 public:
   __declspec(noinline) explicit CUIGroupEmblem(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Apply() override;
   void Refresh() override;
@@ -78,6 +79,7 @@ public:
 class CUIGroupFullscreen : public CUIGroup {
 public:
   __declspec(noinline) explicit CUIGroupFullscreen(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Refresh() override;
 
@@ -122,6 +124,7 @@ public:
 class CUIGroupLogInOut : public CUIGroup {
 public:
   __declspec(noinline) explicit CUIGroupLogInOut(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Apply() override;
   void Refresh() override;
@@ -137,6 +140,7 @@ public:
 class CUIGroupProcessPriority : public CUIGroup {
 public:
   __declspec(noinline) explicit CUIGroupProcessPriority(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Refresh() override;
   void OnSelect(CUIRadioButton* button);
@@ -152,6 +156,7 @@ public:
 class CUIGroupRodexSpam : public CUIGroup {
 public:
   __declspec(noinline) explicit CUIGroupRodexSpam(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Apply() override;
   void Refresh() override;
@@ -177,6 +182,7 @@ public:
 class CUIGroupSound : public CUIGroup {
 public:
   __declspec(noinline) explicit CUIGroupSound(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Apply() override;
   void Paint() override;
@@ -202,6 +208,7 @@ public:
 class CUIGroupSpriteDetailLevel : public CUIGroup {
 public:
   __declspec(noinline) explicit CUIGroupSpriteDetailLevel(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
   void Refresh() override;
@@ -212,6 +219,7 @@ public:
 class CUIGroupTextureDetailLevel : public CUIGroup {
 public:
   __declspec(noinline) explicit CUIGroupTextureDetailLevel(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
   void Refresh() override;
@@ -222,6 +230,7 @@ public:
 class CUIGroupTrilinear : public CUIGroup {
 public:
   __declspec(noinline) explicit CUIGroupTrilinear(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Refresh() override;
 

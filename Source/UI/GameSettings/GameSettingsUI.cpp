@@ -1912,3 +1912,304 @@ void GameSettingsUI::CUIBasicPage::Slot15(int width, int height) {
   this->m_logInOut->Move(0, 228);
   this->AddChild(this->m_logInOut);
 }
+
+// INLINED
+inline CUIHScrollBar::CUIHScrollBar(UIWindowContext& context) : CUIVScrollBar(context) {
+}
+
+// OFFSET: 0x00A23070
+// FUNCTION: fn_15393
+void GameSettingsUI::CUIGroupEmblem::Slot15(int width, int height) {
+  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title->SetSize(85, 13);
+  this->m_title->Move(19, 12);
+  const std::uint8_t titleNameSource[] = {0x54, 0xFA, 0xB3, 0xDE, 0xC8, 0x1C, 0x11, 0x86, 0x3C, 0xEA, 0xC7, 0x8B, 0xD1, 0xA1};
+  thread_local EncryptedName<sizeof(titleNameSource), 0x4331A17F33095FEBULL> titleName(titleNameSource);
+  const char* titleText = titleName.Text();
+  this->m_title->SetText(titleText, std::strlen(titleText));
+  this->m_title->SetFitText(0);
+  this->m_title->SetAlign(0, 0);
+  const std::uint8_t titleFontSource[] = {0x34, 0x52, 0x21, 0x24, 0x94, 0x6F};
+  thread_local EncryptedName<sizeof(titleFontSource), 0xD1056FF94D4D2773ULL> titleFont(titleFontSource);
+  this->m_title->SetFont(std::string(titleFont.Text()));
+  this->m_title->SetFontHeight(12);
+  this->m_title->SetBold(1);
+  this->m_title->SetColor(0);
+  this->m_title->SetShadow(0, 0xFFFFFF);
+  this->m_title->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_title);
+  this->m_onButton = new CUIRadioButton(*this->m_context);
+  this->m_onButton->SetSize(12, 12);
+  this->m_onButton->Move(110, 12);
+  this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
+  this->m_onButton->disabled = 0;
+  this->m_onButton->Invalidate();
+  const std::uint8_t onButtonNormalSource[] = {0xD7, 0x76, 0xF3, 0x53, 0xB9, 0x29, 0x52, 0xC2, 0xD1, 0x3D, 0xF3, 0x65, 0xC4, 0x5D, 0xCB, 0x7D, 0x76, 0xBD, 0x5A, 0xC6, 0x1B, 0x93, 0xF9, 0x50, 0x78, 0xBF, 0x55, 0x87, 0x1B, 0x8A, 0xE7, 0x0F};
+  thread_local EncryptedName<sizeof(onButtonNormalSource), 0x0F97E779A933D917ULL> onButtonNormal(onButtonNormalSource);
+  const std::uint8_t onButtonHoverSource[] = {0x81, 0x7E, 0x21, 0x19, 0xAB, 0x87, 0x4C, 0xFA, 0x87, 0x35, 0x21, 0x2F, 0xD6, 0xF3, 0xD5, 0x45, 0x20, 0xB5, 0x88, 0x8C, 0x09, 0x3D, 0xE7, 0x68, 0x2E, 0xBF, 0xCF, 0x81, 0x06, 0x39, 0x89};
+  thread_local EncryptedName<sizeof(onButtonHoverSource), 0x3789496BE3E1D141ULL> onButtonHover(onButtonHoverSource);
+  const std::uint8_t onButtonPressedSource[] = {0xAD, 0x14, 0x55, 0xD7, 0x53, 0x35, 0xD2, 0x08, 0xAB, 0x5F, 0x55, 0xE1, 0x2E, 0x41, 0x4B, 0xB7, 0x0C, 0xDF, 0xFC, 0x42, 0xF1, 0x8F, 0x79, 0x9A, 0x02, 0xDD, 0xF3, 0x03, 0xF1, 0x96, 0x67, 0xC5};
+  thread_local EncryptedName<sizeof(onButtonPressedSource), 0xC517FB932D95BB6DULL> onButtonPressed(onButtonPressedSource);
+  const std::uint8_t onButtonDisabledSource[] = {0x09, 0x5A, 0x9F, 0x71, 0x4F, 0x1B, 0x7E, 0xEE, 0x0F, 0x11, 0x9F, 0x47, 0x32, 0x6F, 0xE7, 0x51, 0xA8, 0x91, 0x36, 0xE4, 0xED, 0xA1, 0xD5, 0x7C, 0xA6, 0x93, 0x39, 0xA5, 0xED, 0xB8, 0xCB, 0x23};
+  thread_local EncryptedName<sizeof(onButtonDisabledSource), 0x23BBD58F8B5FF5C9ULL> onButtonDisabled(onButtonDisabledSource);
+  this->m_onButton->SetImages(std::string(onButtonNormal.Text()), std::string(onButtonHover.Text()), std::string(onButtonPressed.Text()), std::string(onButtonDisabled.Text()));
+  this->m_onButton->checked = false;
+  this->m_onButton->Invalidate();
+  this->AddChild(this->m_onButton);
+  this->m_onText = new CUIStaticText(*this->m_context);
+  this->m_onText->SetSize(50, 13);
+  this->m_onText->Move(127, 12);
+  const std::uint8_t onLabelNameSource[] = {0x3D, 0xAB, 0xAB, 0xB3, 0x88, 0xEB, 0x71};
+  thread_local EncryptedName<sizeof(onLabelNameSource), 0x0B7109397F6B1387ULL> onLabelName(onLabelNameSource);
+  const char* onLabelText = onLabelName.Text();
+  this->m_onText->SetText(onLabelText, std::strlen(onLabelText));
+  this->m_onText->SetFitText(0);
+  this->m_onText->SetAlign(0, 0);
+  const std::uint8_t onLabelFontSource[] = {0xE2, 0xE8, 0x01, 0x90, 0x0E, 0x27};
+  thread_local EncryptedName<sizeof(onLabelFontSource), 0x03772763F96D9DA5ULL> onLabelFont(onLabelFontSource);
+  this->m_onText->SetFont(std::string(onLabelFont.Text()));
+  this->m_onText->SetFontHeight(12);
+  this->m_onText->SetBold(0);
+  this->m_onText->SetColor(0);
+  this->m_onText->SetShadow(0, 0xFFFFFF);
+  this->m_onText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_onText);
+  this->m_offButton = new CUIRadioButton(*this->m_context);
+  this->m_offButton->SetSize(12, 12);
+  this->m_offButton->Move(205, 12);
+  this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
+  this->m_offButton->disabled = 0;
+  this->m_offButton->Invalidate();
+  const std::uint8_t offButtonNormalSource[] = {0xF7, 0xE8, 0x6D, 0xC3, 0x7F, 0x2B, 0x6C, 0xDA, 0xF1, 0xA3, 0x6D, 0xF5, 0x02, 0x5F, 0xF5, 0x65, 0x56, 0x23, 0xC4, 0x56, 0xDD, 0x91, 0xC7, 0x48, 0x58, 0x21, 0xCB, 0x17, 0xDD, 0x88, 0xD9, 0x17};
+  thread_local EncryptedName<sizeof(offButtonNormalSource), 0x17A9E5BF39AD4737ULL> offButtonNormal(offButtonNormalSource);
+  const std::uint8_t offButtonHoverSource[] = {0xA7, 0x04, 0x51, 0x5F, 0x61, 0xF1, 0x26, 0xDE, 0xA1, 0x4F, 0x51, 0x69, 0x1C, 0x85, 0xBF, 0x61, 0x06, 0xCF, 0xF8, 0xCA, 0xC3, 0x4B, 0x8D, 0x4C, 0x08, 0xC5, 0xBF, 0xC7, 0xCC, 0x4F, 0xE3};
+  thread_local EncryptedName<sizeof(offButtonHoverSource), 0x13E33FA1A591AB67ULL> offButtonHover(offButtonHoverSource);
+  const std::uint8_t offButtonPressedSource[] = {0xAF, 0xD2, 0x3B, 0xD9, 0xB1, 0xC9, 0x4A, 0x00, 0xA9, 0x99, 0x3B, 0xEF, 0xCC, 0xBD, 0xD3, 0xBF, 0x0E, 0x19, 0x92, 0x4C, 0x13, 0x73, 0xE1, 0x92, 0x00, 0x1B, 0x9D, 0x0D, 0x13, 0x6A, 0xFF, 0xCD};
+  thread_local EncryptedName<sizeof(offButtonPressedSource), 0xCD8F077123FB7D6FULL> offButtonPressed(offButtonPressedSource);
+  const std::uint8_t offButtonDisabledSource[] = {0x83, 0x86, 0x93, 0xDD, 0x15, 0x71, 0x8C, 0x54, 0x85, 0xCD, 0x93, 0xEB, 0x68, 0x05, 0x15, 0xEB, 0x22, 0x4D, 0x3A, 0x48, 0xB7, 0xCB, 0x27, 0xC6, 0x2C, 0x4F, 0x35, 0x09, 0xB7, 0xD2, 0x39, 0x99};
+  thread_local EncryptedName<sizeof(offButtonDisabledSource), 0x9949BFD527532943ULL> offButtonDisabled(offButtonDisabledSource);
+  this->m_offButton->SetImages(std::string(offButtonNormal.Text()), std::string(offButtonHover.Text()), std::string(offButtonPressed.Text()), std::string(offButtonDisabled.Text()));
+  this->m_offButton->checked = false;
+  this->m_offButton->Invalidate();
+  this->AddChild(this->m_offButton);
+  this->m_offText = new CUIStaticText(*this->m_context);
+  this->m_offText->SetSize(100, 13);
+  this->m_offText->Move(222, 12);
+  const std::uint8_t offLabelNameSource[] = {0xED, 0x70, 0x7C, 0xE3, 0x0A, 0xDF, 0x41};
+  thread_local EncryptedName<sizeof(offLabelNameSource), 0xD1413DBB01CD8B51ULL> offLabelName(offLabelNameSource);
+  const char* offLabelText = offLabelName.Text();
+  this->m_offText->SetText(offLabelText, std::strlen(offLabelText));
+  this->m_offText->SetFitText(0);
+  this->m_offText->SetAlign(0, 0);
+  const std::uint8_t offLabelFontSource[] = {0x2E, 0x6A, 0x1B, 0x3C, 0xF0, 0x95};
+  thread_local EncryptedName<sizeof(offLabelFontSource), 0x637B959D55771F69ULL> offLabelFont(offLabelFontSource);
+  this->m_offText->SetFont(std::string(offLabelFont.Text()));
+  this->m_offText->SetFontHeight(12);
+  this->m_offText->SetBold(0);
+  this->m_offText->SetColor(0);
+  this->m_offText->SetShadow(0, 0xFFFFFF);
+  this->m_offText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_offText);
+}
+
+// OFFSET: 0x00A24510
+// FUNCTION: fn_15394
+void GameSettingsUI::CUIGroupFullscreen::Slot15(int width, int height) {
+  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title->SetSize(130, 13);
+  this->m_title->Move(19, 12);
+  const std::uint8_t titleNameSource[] = {0xC3, 0x18, 0x31, 0xFC, 0x29, 0x0F, 0x69, 0x76, 0xEE, 0xB5};
+  thread_local EncryptedName<sizeof(titleNameSource), 0xC399B7091589B50BULL> titleName(titleNameSource);
+  const char* titleText = titleName.Text();
+  this->m_title->SetText(titleText, std::strlen(titleText));
+  this->m_title->SetFitText(0);
+  this->m_title->SetAlign(0, 0);
+  const std::uint8_t titleFontSource[] = {0x28, 0xD8, 0x4D, 0x80, 0x52, 0x07};
+  thread_local EncryptedName<sizeof(titleFontSource), 0xB739073FE921AD6FULL> titleFont(titleFontSource);
+  this->m_title->SetFont(std::string(titleFont.Text()));
+  this->m_title->SetFontHeight(12);
+  this->m_title->SetBold(1);
+  this->m_title->SetColor(0);
+  this->m_title->SetShadow(0, 0xFFFFFF);
+  this->m_title->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_title);
+  this->m_onButton = new CUIRadioButton(*this->m_context);
+  this->m_onButton->SetSize(12, 12);
+  this->m_onButton->Move(150, 12);
+  this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { sub_A41E50(reinterpret_cast<int>(button)); });
+  this->m_onButton->disabled = 0;
+  this->m_onButton->Invalidate();
+  const std::uint8_t onButtonNormalSource[] = {0x8F, 0xE4, 0x73, 0x75, 0xED, 0xDB, 0x84, 0x4A, 0x89, 0xAF, 0x73, 0x43, 0x90, 0xAF, 0x1D, 0xF5, 0x2E, 0x2F, 0xDA, 0xE0, 0x4F, 0x61, 0x2F, 0xD8, 0x20, 0x2D, 0xD5, 0xA1, 0x4F, 0x78, 0x31, 0x87};
+  thread_local EncryptedName<sizeof(onButtonNormalSource), 0x8741152D8FB34B4FULL> onButtonNormal(onButtonNormalSource);
+  const std::uint8_t onButtonHoverSource[] = {0xC7, 0x14, 0x29, 0xB7, 0x39, 0x83, 0x98, 0x58, 0xC1, 0x5F, 0x29, 0x81, 0x44, 0xF7, 0x01, 0xE7, 0x66, 0xDF, 0x80, 0x22, 0x9B, 0x39, 0x33, 0xCA, 0x68, 0xD5, 0xC7, 0x2F, 0x94, 0x3D, 0x5D};
+  thread_local EncryptedName<sizeof(onButtonHoverSource), 0x955D4DF94DE9BB07ULL> onButtonHover(onButtonHoverSource);
+  const std::uint8_t onButtonPressedSource[] = {0xD7, 0x56, 0x8F, 0x43, 0x3B, 0x7B, 0xEA, 0x08, 0xD1, 0x1D, 0x8F, 0x75, 0x46, 0x0F, 0x73, 0xB7, 0x76, 0x9D, 0x26, 0xD6, 0x99, 0xC1, 0x41, 0x9A, 0x78, 0x9F, 0x29, 0x97, 0x99, 0xD8, 0x5F, 0xC5};
+  thread_local EncryptedName<sizeof(onButtonPressedSource), 0xC52FB5FBB94FF917ULL> onButtonPressed(onButtonPressedSource);
+  const std::uint8_t onButtonDisabledSource[] = {0x05, 0x62, 0x47, 0x0F, 0x61, 0x6D, 0x22, 0x5E, 0x03, 0x29, 0x47, 0x39, 0x1C, 0x19, 0xBB, 0xE1, 0xA4, 0xA9, 0xEE, 0x9A, 0xC3, 0xD7, 0x89, 0xCC, 0xAA, 0xAB, 0xE1, 0xDB, 0xC3, 0xCE, 0x97, 0x93};
+  thread_local EncryptedName<sizeof(onButtonDisabledSource), 0x93E7A3A1F587CDC5ULL> onButtonDisabled(onButtonDisabledSource);
+  this->m_onButton->SetImages(std::string(onButtonNormal.Text()), std::string(onButtonHover.Text()), std::string(onButtonPressed.Text()), std::string(onButtonDisabled.Text()));
+  this->m_onButton->checked = false;
+  this->m_onButton->Invalidate();
+  this->AddChild(this->m_onButton);
+  this->m_onText = new CUIStaticText(*this->m_context);
+  this->m_onText->SetSize(150, 13);
+  this->m_onText->Move(167, 12);
+  const std::uint8_t onLabelNameSource[] = {0xE7, 0xFD, 0xC4, 0xD1, 0xCB, 0x68, 0x4B, 0xC6, 0x07, 0xB9, 0xF7, 0xD8, 0xE6, 0xC5};
+  thread_local EncryptedName<sizeof(onLabelNameSource), 0x2FF3C5036D070127ULL> onLabelName(onLabelNameSource);
+  const char* onLabelText = onLabelName.Text();
+  this->m_onText->SetText(onLabelText, std::strlen(onLabelText));
+  this->m_onText->SetFitText(0);
+  this->m_onText->SetAlign(0, 0);
+  const std::uint8_t onLabelFontSource[] = {0xF4, 0x12, 0xAF, 0x3A, 0x94, 0x9B};
+  thread_local EncryptedName<sizeof(onLabelFontSource), 0x17359BF953C367B3ULL> onLabelFont(onLabelFontSource);
+  this->m_onText->SetFont(std::string(onLabelFont.Text()));
+  this->m_onText->SetFontHeight(12);
+  this->m_onText->SetBold(0);
+  this->m_onText->SetColor(0);
+  this->m_onText->SetShadow(0, 0xFFFFFF);
+  this->m_onText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_onText);
+  this->m_offButton = new CUIRadioButton(*this->m_context);
+  this->m_offButton->SetSize(12, 12);
+  this->m_offButton->Move(270, 12);
+  this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { sub_A41E50(reinterpret_cast<int>(button)); });
+  this->m_offButton->disabled = 0;
+  this->m_offButton->Invalidate();
+  const std::uint8_t offButtonNormalSource[] = {0x95, 0x52, 0x75, 0x21, 0x07, 0x7F, 0xB0, 0xFE, 0x93, 0x19, 0x75, 0x17, 0x7A, 0x0B, 0x29, 0x41, 0x34, 0x99, 0xDC, 0xB4, 0xA5, 0xC5, 0x1B, 0x6C, 0x3A, 0x9B, 0xD3, 0xF5, 0xA5, 0xDC, 0x05, 0x33};
+  thread_local EncryptedName<sizeof(offButtonNormalSource), 0x3375B1C7DBB5FD55ULL> offButtonNormal(offButtonNormalSource);
+  const std::uint8_t offButtonHoverSource[] = {0xDF, 0x9E, 0x0D, 0x1D, 0x2D, 0xBB, 0xA8, 0xD0, 0xD9, 0xD5, 0x0D, 0x2B, 0x50, 0xCF, 0x31, 0x6F, 0x7E, 0x55, 0xA4, 0x88, 0x8F, 0x01, 0x03, 0x42, 0x70, 0x5F, 0xE3, 0x85, 0x80, 0x05, 0x6D};
+  thread_local EncryptedName<sizeof(offButtonHoverSource), 0x1D6D75EDE7CD311FULL> offButtonHover(offButtonHoverSource);
+  const std::uint8_t offButtonPressedSource[] = {0x61, 0x92, 0x5F, 0x2D, 0xA3, 0x41, 0xE2, 0x94, 0x67, 0xD9, 0x5F, 0x1B, 0xDE, 0x35, 0x7B, 0x2B, 0xC0, 0x59, 0xF6, 0xB8, 0x01, 0xFB, 0x49, 0x06, 0xCE, 0x5B, 0xF9, 0xF9, 0x01, 0xE2, 0x57, 0x59};
+  thread_local EncryptedName<sizeof(offButtonPressedSource), 0x59278F63D79F3DA1ULL> offButtonPressed(offButtonPressedSource);
+  const std::uint8_t offButtonDisabledSource[] = {0x77, 0xA8, 0x97, 0x37, 0xEB, 0x29, 0xEE, 0x4C, 0x71, 0xE3, 0x97, 0x01, 0x96, 0x5D, 0x77, 0xF3, 0xD6, 0x63, 0x3E, 0xA2, 0x49, 0x93, 0x45, 0xDE, 0xD8, 0x61, 0x31, 0xE3, 0x49, 0x8A, 0x5B, 0x81};
+  thread_local EncryptedName<sizeof(offButtonDisabledSource), 0x812BE72BCD5707B7ULL> offButtonDisabled(offButtonDisabledSource);
+  this->m_offButton->SetImages(std::string(offButtonNormal.Text()), std::string(offButtonHover.Text()), std::string(offButtonPressed.Text()), std::string(offButtonDisabled.Text()));
+  this->m_offButton->checked = false;
+  this->m_offButton->Invalidate();
+  this->AddChild(this->m_offButton);
+  this->m_offText = new CUIStaticText(*this->m_context);
+  this->m_offText->SetSize(100, 13);
+  this->m_offText->Move(287, 12);
+  const std::uint8_t offLabelNameSource[] = {0xCA, 0x0B, 0x8F, 0xF2, 0x61, 0xB4, 0x55, 0x6B, 0xF9, 0x1C, 0xA2, 0x5F};
+  thread_local EncryptedName<sizeof(offLabelNameSource), 0xD3755DD95F47A909ULL> offLabelName(offLabelNameSource);
+  const char* offLabelText = offLabelName.Text();
+  this->m_offText->SetText(offLabelText, std::strlen(offLabelText));
+  this->m_offText->SetFitText(0);
+  this->m_offText->SetAlign(0, 0);
+  const std::uint8_t offLabelFontSource[] = {0x2A, 0x96, 0x29, 0xCA, 0x80, 0xC1};
+  thread_local EncryptedName<sizeof(offLabelFontSource), 0x31D7C1EDA345E36DULL> offLabelFont(offLabelFontSource);
+  this->m_offText->SetFont(std::string(offLabelFont.Text()));
+  this->m_offText->SetFontHeight(12);
+  this->m_offText->SetBold(0);
+  this->m_offText->SetColor(0);
+  this->m_offText->SetShadow(0, 0xFFFFFF);
+  this->m_offText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_offText);
+}
+
+// OFFSET: 0x00A27D00
+// FUNCTION: fn_15397
+void GameSettingsUI::CUIGroupLogInOut::Slot15(int width, int height) {
+  this->m_title = new CUIStaticText(*this->m_context);
+  this->m_title->SetSize(100, 12);
+  this->m_title->Move(19, 12);
+  const std::uint8_t titleNameSource[] = {0xC8, 0x1B, 0x1E, 0x8C, 0xAB, 0x7F, 0x35, 0xB1, 0xB4, 0x6D, 0x1D, 0x5B};
+  thread_local EncryptedName<sizeof(titleNameSource), 0x0F15B16B5BAFD57FULL> titleName(titleNameSource);
+  const char* titleText = titleName.Text();
+  this->m_title->SetText(titleText, std::strlen(titleText));
+  this->m_title->SetFitText(0);
+  this->m_title->SetAlign(0, 0);
+  const std::uint8_t titleFontSource[] = {0x64, 0x84, 0xBB, 0x7E, 0xBA, 0x49};
+  thread_local EncryptedName<sizeof(titleFontSource), 0x7DE349D717D7F123ULL> titleFont(titleFontSource);
+  this->m_title->SetFont(std::string(titleFont.Text()));
+  this->m_title->SetFontHeight(12);
+  this->m_title->SetBold(1);
+  this->m_title->SetColor(0);
+  this->m_title->SetShadow(0, 0xFFFFFF);
+  this->m_title->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_title);
+  this->m_onButton = new CUIRadioButton(*this->m_context);
+  this->m_onButton->SetSize(12, 12);
+  this->m_onButton->Move(110, 12);
+  this->m_onButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
+  this->m_onButton->disabled = 0;
+  this->m_onButton->Invalidate();
+  const std::uint8_t onButtonNormalSource[] = {0x21, 0x36, 0x47, 0xB5, 0x41, 0x0D, 0xE4, 0xBE, 0x27, 0x7D, 0x47, 0x83, 0x3C, 0x79, 0x7D, 0x01, 0x80, 0xFD, 0xEE, 0x20, 0xE3, 0xB7, 0x4F, 0x2C, 0x8E, 0xFF, 0xE1, 0x61, 0xE3, 0xAE, 0x51, 0x73};
+  thread_local EncryptedName<sizeof(onButtonNormalSource), 0x7321C3814F8799E1ULL> onButtonNormal(onButtonNormalSource);
+  const std::uint8_t onButtonHoverSource[] = {0x8F, 0x0E, 0x0F, 0xCF, 0xA3, 0x19, 0x84, 0xB4, 0x89, 0x45, 0x0F, 0xF9, 0xDE, 0x6D, 0x1D, 0x0B, 0x2E, 0xC5, 0xA6, 0x5A, 0x01, 0xA3, 0x2F, 0x26, 0x20, 0xCF, 0xE1, 0x57, 0x0E, 0xA7, 0x41};
+  thread_local EncryptedName<sizeof(onButtonHoverSource), 0x7941D76335CFA14FULL> onButtonHover(onButtonHoverSource);
+  const std::uint8_t onButtonPressedSource[] = {0x0D, 0xAC, 0x0D, 0x81, 0x57, 0xF5, 0xD6, 0xFE, 0x0B, 0xE7, 0x0D, 0xB7, 0x2A, 0x81, 0x4F, 0x41, 0xAC, 0x67, 0xA4, 0x14, 0xF5, 0x4F, 0x7D, 0x6C, 0xA2, 0x65, 0xAB, 0x55, 0xF5, 0x56, 0x63, 0x33};
+  thread_local EncryptedName<sizeof(onButtonPressedSource), 0x33133B977BCD03CDULL> onButtonPressed(onButtonPressedSource);
+  const std::uint8_t onButtonDisabledSource[] = {0x11, 0xF4, 0x57, 0x1F, 0xF9, 0x49, 0x2E, 0xE2, 0x17, 0xBF, 0x57, 0x29, 0x84, 0x3D, 0xB7, 0x5D, 0xB0, 0x3F, 0xFE, 0x8A, 0x5B, 0xF3, 0x85, 0x70, 0xBE, 0x3D, 0xF1, 0xCB, 0x5B, 0xEA, 0x9B, 0x2F};
+  thread_local EncryptedName<sizeof(onButtonDisabledSource), 0x2FEB8739E5975BD1ULL> onButtonDisabled(onButtonDisabledSource);
+  this->m_onButton->SetImages(std::string(onButtonNormal.Text()), std::string(onButtonHover.Text()), std::string(onButtonPressed.Text()), std::string(onButtonDisabled.Text()));
+  this->m_onButton->checked = false;
+  this->m_onButton->Invalidate();
+  this->AddChild(this->m_onButton);
+  this->m_onText = new CUIStaticText(*this->m_context);
+  this->m_onText->SetSize(100, 12);
+  this->m_onText->Move(127, 12);
+  const std::uint8_t onLabelNameSource[] = {0xB1, 0xEA, 0xB2, 0xCD, 0x13};
+  thread_local EncryptedName<sizeof(onLabelNameSource), 0x6BA1C1132F033B75ULL> onLabelName(onLabelNameSource);
+  const char* onLabelText = onLabelName.Text();
+  this->m_onText->SetText(onLabelText, std::strlen(onLabelText));
+  this->m_onText->SetFitText(0);
+  this->m_onText->SetAlign(0, 0);
+  const std::uint8_t onLabelFontSource[] = {0x68, 0xA2, 0x29, 0x4C, 0x54, 0xAB};
+  thread_local EncryptedName<sizeof(onLabelFontSource), 0xA12DAB392545D72FULL> onLabelFont(onLabelFontSource);
+  this->m_onText->SetFont(std::string(onLabelFont.Text()));
+  this->m_onText->SetFontHeight(12);
+  this->m_onText->SetBold(0);
+  this->m_onText->SetColor(0);
+  this->m_onText->SetShadow(0, 0xFFFFFF);
+  this->m_onText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_onText);
+  this->m_offButton = new CUIRadioButton(*this->m_context);
+  this->m_offButton->SetSize(12, 12);
+  this->m_offButton->Move(205, 12);
+  this->m_offButton->SetOnSelect([this](CUIRadioButton* button) { this->OnSelect(button); });
+  this->m_offButton->disabled = 0;
+  this->m_offButton->Invalidate();
+  const std::uint8_t offButtonNormalSource[] = {0xDD, 0x68, 0x8B, 0x4F, 0x1D, 0xB9, 0x8C, 0xEE, 0xDB, 0x23, 0x8B, 0x79, 0x60, 0xCD, 0x15, 0x51, 0x7C, 0xA3, 0x22, 0xDA, 0xBF, 0x03, 0x27, 0x7C, 0x72, 0xA1, 0x2D, 0x9B, 0xBF, 0x1A, 0x39, 0x23};
+  thread_local EncryptedName<sizeof(offButtonNormalSource), 0x234977DDB54BC71DULL> offButtonNormal(offButtonNormalSource);
+  const std::uint8_t offButtonHoverSource[] = {0x05, 0x82, 0xEB, 0xC5, 0x49, 0xD3, 0xA8, 0x22, 0x03, 0xC9, 0xEB, 0xF3, 0x34, 0xA7, 0x31, 0x9D, 0xA4, 0x49, 0x42, 0x50, 0xEB, 0x69, 0x03, 0xB0, 0xAA, 0x43, 0x05, 0x5D, 0xE4, 0x6D, 0x6D};
+  thread_local EncryptedName<sizeof(offButtonHoverSource), 0xEF6D1D893F2B2DC5ULL> offButtonHover(offButtonHoverSource);
+  const std::uint8_t offButtonPressedSource[] = {0x9B, 0xFC, 0x9F, 0x27, 0x47, 0x51, 0x66, 0xF4, 0x9D, 0xB7, 0x9F, 0x11, 0x3A, 0x25, 0xFF, 0x4B, 0x3A, 0x37, 0x36, 0xB2, 0xE5, 0xEB, 0xCD, 0x66, 0x34, 0x35, 0x39, 0xF3, 0xE5, 0xF2, 0xD3, 0x39};
+  thread_local EncryptedName<sizeof(offButtonPressedSource), 0x39A39F87DD5F535BULL> offButtonPressed(offButtonPressedSource);
+  const std::uint8_t offButtonDisabledSource[] = {0xB7, 0x38, 0x47, 0xE7, 0xE3, 0x9D, 0x24, 0xA2, 0xB1, 0x73, 0x47, 0xD1, 0x9E, 0xE9, 0xBD, 0x1D, 0x16, 0xF3, 0xEE, 0x72, 0x41, 0x27, 0x8F, 0x30, 0x18, 0xF1, 0xE1, 0x33, 0x41, 0x3E, 0x91, 0x6F};
+  thread_local EncryptedName<sizeof(offButtonDisabledSource), 0x6FE153231D879777ULL> offButtonDisabled(offButtonDisabledSource);
+  this->m_offButton->SetImages(std::string(offButtonNormal.Text()), std::string(offButtonHover.Text()), std::string(offButtonPressed.Text()), std::string(offButtonDisabled.Text()));
+  this->m_offButton->checked = false;
+  this->m_offButton->Invalidate();
+  this->AddChild(this->m_offButton);
+  this->m_offText = new CUIStaticText(*this->m_context);
+  this->m_offText->SetSize(100, 12);
+  this->m_offText->Move(222, 12);
+  const std::uint8_t offLabelNameSource[] = {0x05, 0xC5, 0x5E, 0x21, 0x03};
+  thread_local EncryptedName<sizeof(offLabelNameSource), 0x4F99DF03C3EF31B7ULL> offLabelName(offLabelNameSource);
+  const char* offLabelText = offLabelName.Text();
+  this->m_offText->SetText(offLabelText, std::strlen(offLabelText));
+  this->m_offText->SetFitText(0);
+  this->m_offText->SetAlign(0, 0);
+  const std::uint8_t offLabelFontSource[] = {0xB0, 0xBC, 0x0F, 0x00, 0x10, 0x99};
+  thread_local EncryptedName<sizeof(offLabelFontSource), 0x9171997D6963C9F7ULL> offLabelFont(offLabelFontSource);
+  this->m_offText->SetFont(std::string(offLabelFont.Text()));
+  this->m_offText->SetFontHeight(12);
+  this->m_offText->SetBold(0);
+  this->m_offText->SetColor(0);
+  this->m_offText->SetShadow(0, 0xFFFFFF);
+  this->m_offText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->m_offText);
+}
+
+// OFFSET: 0x00A29180
+
+// OFFSET: 0x00A2AEC0
+
+// OFFSET: 0x00A2CF80
+
+// OFFSET: 0x00A2F880
+
+// OFFSET: 0x00A30490
+
+// OFFSET: 0x00A31070
