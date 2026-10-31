@@ -2,8 +2,10 @@
 #define RAGNAROK_SOURCE_UI_LISTS_UITAGLISTBOX_H
 
 #include "UI/Lists/UIListBox.h"
+#include "UI/TextTags.h"
 
 #include <string>
+#include <utility>
 #include <vector>
 
 struct ITEM_INFO;
@@ -32,6 +34,7 @@ public:
   void sub_9B9EA0(std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4);
   void sub_9BC0A0(std::intptr_t type, UIWindow* sender);
   std::string sub_9B8AA0(std::string text);
+  std::pair<std::string, std::string> ParseTag(std::string text, int tagIndex);
   void sub_9BB8E0(std::string text, std::vector<STagInfoV2>& tags, int width);
   int DecodeNumber(std::string text);
   void DecodeItemFields(const std::string& text, std::vector<int>& fields);

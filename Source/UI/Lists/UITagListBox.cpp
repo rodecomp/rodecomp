@@ -425,3 +425,80 @@ void UITagListBox::sub_9B9EA0(std::intptr_t argument1, std::intptr_t argument2, 
 
   this->Invalidate();
 }
+
+// GLOBAL: gl_25151
+std::string infoTagOpening = "<INFO>";
+
+// GLOBAL: gl_25152
+std::string infoTagClosing = "</INFO>";
+
+namespace {
+// INLINED
+std::string ItemName(int id) {
+  ITEM_DESC description = FindItemDescription(id);
+  return description.identifiedName;
+}
+}
+
+// OFFSET: 0x009B94E0
+// FUNCTION: fn_13876
+std::pair<std::string, std::string> UITagListBox::ParseTag(std::string text, int tagIndex) {
+  std::pair<std::string, std::string> result;
+  if (text.size() == 0) {
+    return result;
+  }
+
+  if (text.find(g_textTagRegistry[tagIndex].opening) == std::string::npos) {
+    return result;
+  }
+
+  std::size_t closing = text.find(g_textTagRegistry[tagIndex].closing);
+  if (closing == std::string::npos) {
+    return result;
+  }
+
+  switch (g_textTagRegistry[tagIndex].type) {
+  case 438: {
+    const std::size_t opening = text.find(infoTagOpening, 0);
+    if (opening == std::string::npos) {
+      return result;
+    }
+    closing = text.find(infoTagClosing, 0);
+    if (closing == std::string::npos) {
+      return result;
+    }
+    std::string marker = infoTagOpening;
+    const std::size_t start = g_textTagRegistry[tagIndex].opening.size();
+    result.first += text.substr(start, opening - start);
+    result.second += text.substr(opening + marker.size(), closing - marker.size() - opening);
+    break;
+  }
+  case 464: {
+    const std::size_t opening = text.find(infoTagOpening, 0);
+    if (opening == std::string::npos) {
+      return result;
+    }
+    closing = text.find(infoTagClosing, 0);
+    if (closing == std::string::npos) {
+      return result;
+    }
+    std::string marker = infoTagOpening;
+    const std::size_t start = g_textTagRegistry[tagIndex].opening.size();
+    result.first += text.substr(start, opening - start);
+    result.second += text.substr(opening + marker.size(), closing - marker.size() - opening);
+    break;
+  }
+  case 501: {
+    result.first = text.substr(0, 1);
+    const std::size_t start = g_textTagRegistry[tagIndex].opening.size();
+    result.second = text.substr(start, closing - start);
+    std::vector<int> fields;
+    this->DecodeItemFields(result.second, fields);
+    result.first += ItemName(fields[2]);
+    result.first += text.substr(text.size() - 1, 1);
+    break;
+  }
+  }
+
+  return result;
+}
