@@ -1,6 +1,11 @@
 #include "UI/Window/UISerachStoreInfoWnd.h"
 
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
+#include "Contents/Items/ItemInfo.h"
 #include "Contents/MessageTable.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Buttons/UIRadioBtn.h"
@@ -8,6 +13,32 @@
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
+#include "Utility/Text/FormatString.h"
+
+#include <cstdlib>
+#include <cstring>
+#include <list>
+#include <string>
+
+#pragma pack(push, 1)
+struct SearchStoreRequestHeader {
+  /* 0000 */ std::int16_t packetType;
+};
+
+struct SearchStoreQueryPacket {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ unsigned char searchType;
+  /* 0005 */ int maxPrice;
+  /* 0009 */ int minPrice;
+  /* 000D */ unsigned char itemCount;
+  /* 000E */ unsigned char cardCount;
+  /* 000F */ int ids[508];
+};
+#pragma pack(pop)
+
+static_assert(offsetof(SearchStoreQueryPacket, ids) == 0xF);
 
 // OFFSET: 0x009121F0
 // FUNCTION: fn_12527
@@ -121,4 +152,213 @@ void UISerachStoreInfoWnd::Slot15(int width, int height) {
   this->SendMsg(this, 0x3C, 0, 0, 0, 0);
   InputFocus{g_windowMgr.hoverWindow}.Set(this->m_edits[1]);
   this->m_message0 = 0x16D;
+}
+
+// OFFSET: 0x009331F0
+// FUNCTION: fn_12723
+void UISerachStoreInfoWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->ItemAt(x, y);
+  if (item.itemId.size() != 0 && ((x > 160 && x < 330) || static_cast<unsigned int>(x - 6) <= 43)) {
+    g_modeMgr.GetGameMode();
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 0x18, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x0093A9F0
+// FUNCTION: fn_12759
+int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 201: {
+      SearchStoreRequestHeader packet;
+      packet.packetType = 0x83B;
+      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+      g_session.unknown_5BE8 = -1;
+      g_session.unknown_5BEC = -1;
+      g_session.unknown_5BF0 = 0xFFFFFFFF;
+      g_session.unknown_5BD4.clear();
+      g_windowMgr.CloseWindow(181);
+      break;
+    }
+    case 213:
+      this->unknown_00ED = argument2 != 0;
+      break;
+    case 215:
+      for (int index = 0; index < 2; ++index) {
+        this->m_radios[index]->Invalidate();
+        int checked;
+        if (sender == this->m_radios[index]) {
+          this->unknown_00E4 = index;
+          checked = 1;
+        } else {
+          checked = 0;
+        }
+        this->m_radios[index]->SendMsg(this, 13, checked, 0, 0, 0);
+      }
+      break;
+    case 365: {
+      this->unknown_00EC = 1;
+      this->m_findButton->SetDisabled(1);
+      this->m_findButton->Invalidate();
+      std::string cardName = this->m_edits[0]->Text();
+      std::string itemName = this->m_edits[1]->Text();
+      if (itemName.size() == 0) {
+        this->unknown_00EC = 0;
+        this->unknown_00F0 = LookupMessage(1809);
+      }
+      if (this->unknown_00EC != 0) {
+        std::list<int> itemIds;
+        std::list<int> cardIds;
+        itemIds = SearchItemIds(itemName, 0, this->unknown_00ED);
+        if (itemIds.size() == 0) {
+          this->unknown_00EC = 0;
+          this->unknown_00F0 = LookupMessage(1799);
+        } else if (cardName.size() != 0) {
+          cardIds = SearchItemIds(cardName, 1, this->unknown_00ED);
+          if (cardIds.size() == 0) {
+            this->unknown_00EC = 0;
+            this->unknown_00F0 = LookupMessage(1812);
+          }
+        }
+
+        const int count = static_cast<int>(itemIds.size() + cardIds.size());
+        if (this->unknown_00EC != 0) {
+          if (count > 20) {
+            this->SendMsg(this, 60, 1, 1, 0, 0);
+            return 0;
+          }
+
+          const int minPrice = std::atoi(this->m_edits[2]->Text());
+          const int maxPrice = std::atoi(this->m_edits[3]->Text());
+          const int maxLength = static_cast<int>(std::strlen(this->m_edits[3]->Text()));
+          if (minPrice > maxPrice && maxLength > 0) {
+            this->unknown_00EC = 0;
+          }
+          if (std::strlen(this->m_edits[2]->Text()) != 0) {
+            std::string text = FormatOwnedString("%d", minPrice);
+            if (text != this->m_edits[2]->Text()) {
+              this->unknown_00EC = 0;
+            }
+          }
+          if (maxLength > 0) {
+            std::string text = FormatOwnedString("%d", maxPrice);
+            if (text != this->m_edits[3]->Text()) {
+              this->unknown_00EC = 0;
+            }
+          }
+          if (this->unknown_00EC == 0) {
+            this->unknown_00F0 = LookupMessage(1804);
+          }
+          if (this->unknown_00EC != 0) {
+            const short length = static_cast<short>(count * 4 + 15);
+            const int maximum = std::atoi(this->m_edits[3]->Text());
+            const int minimum = std::atoi(this->m_edits[2]->Text());
+            const unsigned char searchType = static_cast<unsigned char>(this->unknown_00E4);
+            if (length > 0x800) {
+              this->unknown_00EC = 0;
+            } else if (this->unknown_00EC != 0) {
+              SearchStoreQueryPacket packet;
+              packet.maxPrice = maximum;
+              packet.packetType = 0x835;
+              packet.packetLength = length;
+              packet.searchType = searchType;
+              packet.minPrice = minimum;
+              packet.itemCount = static_cast<unsigned char>(itemIds.size());
+              packet.cardCount = static_cast<unsigned char>(cardIds.size());
+              int* id = packet.ids;
+              for (std::list<int>::iterator it = itemIds.begin(); it != itemIds.end(); ++it) {
+                *id++ = *it;
+              }
+              id = packet.ids + itemIds.size();
+              for (std::list<int>::iterator it = cardIds.begin(); it != cardIds.end(); ++it) {
+                *id++ = *it;
+              }
+              GetRagConnection().Send(static_cast<short>(count * 4 + 15), &packet);
+            }
+          }
+        }
+      }
+      if (this->unknown_00EC == 0) {
+        this->m_findButton->SetDisabled(0);
+        this->m_findButton->Invalidate();
+        this->SendMsg(this, 60, 0, 0, 0, 0);
+      }
+      break;
+    }
+    }
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+
+  case 60:
+    if (argument1 != 0) {
+      this->unknown_00F0 = "";
+      if (argument2 == 387) {
+        this->unknown_00DC = 1;
+      } else if (argument2 < 387) {
+        switch (argument2) {
+        case 0:
+          this->unknown_00DC = 1;
+          g_session.unknown_5BD4.clear();
+          reinterpret_cast<unsigned char*>(&g_session.unknown_5BE4)[1] = 0;
+          this->unknown_00F0 = LookupMessage(1803);
+          --g_session.unknown_5BE0;
+          break;
+        case 1:
+          this->unknown_00F0 = LookupMessage(1784);
+          break;
+        case 2:
+          this->unknown_00F0 = LookupMessage(1798);
+          break;
+        case 3:
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1800), 0, true, false, 0, "Message", 280, 120, 0);
+          return 0;
+        case 4:
+          g_session.unknown_5BE8 = -1;
+          g_session.unknown_5BEC = -1;
+          g_session.unknown_5BF0 = 0xFFFFFFFF;
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1797), 0, true, false, 0, "Message", 280, 120, 0);
+          return 0;
+        }
+      }
+      this->unknown_00EC = 0;
+      this->m_findButton->SetDisabled(0);
+      this->m_findButton->Invalidate();
+    } else if (g_session.unknown_5BD4.empty() && this->unknown_00EC != 0) {
+      this->unknown_00F0 = LookupMessage(1102);
+    }
+    this->m_prevButton->Enable(this->unknown_00DC != 1);
+    this->m_nextButton->Enable(reinterpret_cast<unsigned char*>(&g_session.unknown_5BE4)[1]);
+    if (static_cast<unsigned int>(this->unknown_00DC * 10) < g_session.unknown_5BD4.size()) {
+      this->m_nextButton->Enable(1);
+    }
+    this->Invalidate();
+    return 0;
+
+  case 98:
+    if (argument1 == 316) {
+      if (this->unknown_00DC > 1) {
+        this->unknown_00E0 = -1;
+        --this->unknown_00DC;
+        this->SendMsg(this, 60, 0, 0, 0, 0);
+        return 0;
+      }
+    } else if (argument1 == 317) {
+      const int page = this->unknown_00DC;
+      this->unknown_00E0 = -1;
+      if (static_cast<unsigned int>(page * 10) < g_session.unknown_5BD4.size()) {
+        this->unknown_00DC = page + 1;
+        this->SendMsg(this, 60, 0, 0, 0, 0);
+        return 0;
+      }
+      if (reinterpret_cast<unsigned char*>(&g_session.unknown_5BE4)[1] != 0) {
+        this->unknown_00DC = page + 1;
+        SearchStoreRequestHeader packet;
+        packet.packetType = 0x838;
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        return 0;
+      }
+    }
+    return 0;
+  }
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
