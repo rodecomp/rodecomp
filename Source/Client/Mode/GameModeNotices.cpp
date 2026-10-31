@@ -2419,6 +2419,47 @@ void CGameMode::ReceiveActorStatusValuePacket(const unsigned char* data) {
 }
 
 // OFFSET: 0x00D73E20
+// FUNCTION: fn_22145
+void CGameMode::ReceivePartyMemberEffect(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const PartyMemberEffectPacket*>(data);
+  auto* actor = static_cast<EffectActor*>(this->scene->GetGameActorByAID(packet->aid));
+  if (!actor) {
+    return;
+  }
+
+  switch (packet->type) {
+  case 0:
+    actor->LaunchEffect(371, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 1:
+    actor->LaunchEffect(158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 2:
+    actor->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 3:
+    actor->LaunchEffect(154, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 4:
+    g_partyEffectNoticePending = 1;
+    break;
+  case 5:
+    actor->LaunchEffect(305, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 6:
+    actor->LaunchEffect(306, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 7:
+    actor->LaunchEffect(338, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 8:
+    actor->LaunchEffect(337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  case 9:
+    actor->LaunchEffect(582, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    break;
+  }
+}
 
 // OFFSET: 0x00D73960
 // FUNCTION: fn_22141
@@ -2430,6 +2471,30 @@ void CGameMode::ShowFormattedNotice(unsigned short messageId, std::uint32_t colo
 }
 
 // OFFSET: 0x00D6BC40
+// FUNCTION: fn_22074
+void CGameMode::ReceiveCaptchaUploadRequest(const std::uint32_t* sessionId, int result) {
+  int message;
+  switch (result) {
+  case 0: {
+    auto* window = static_cast<UICaptchaRegisterWnd*>(g_windowMgr.LookupWindow(284));
+    if (window) {
+      std::uint64_t now = _Xtime_get_ticks();
+      CCaptchaUploadSchedule* schedule = new CCaptchaUploadSchedule(now, sessionId, window->m_decompressedSize, window->m_decompressedData);
+      reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->AddSchedule(schedule);
+      return;
+    }
+    message = 2881;
+    break;
+  }
+  case 1:
+    message = 2882;
+    break;
+  default:
+    return;
+  }
+
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(message)), 0xFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00D6A9F0
 
