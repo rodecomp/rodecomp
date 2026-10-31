@@ -427,6 +427,7 @@ int sub_7AEAF0(lua_State* state) {
 }
 
 // OFFSET: 0x007AE900
+// FUNCTION: fn_09143
 int sub_7AE900(lua_State* state) {
   if (!lua_isnumber(state, -1)) { lua_pushboolean(state, 0); lua_pushstring(state, "3nd argment is must number"); return 2; }
   if (!lua_isnumber(state, -2)) { lua_pushboolean(state, 0); lua_pushstring(state, "2nd argment is must number"); return 2; }
