@@ -61,6 +61,15 @@ struct PurchaseCheckingMessage {
   EncryptedName<129, 0x2D3B15774149D5DDULL>& operator()() const;
 };
 
+// OFFSET: 0x0063AAE0
+// FUNCTION: fn_04778
+CStoveMgr::CStoveMgr()
+    : vtable(nullptr), m_initialized(false), unknown_0008(0), m_environment(1), unknown_0010(0), unknown_0014(0), unknown_0018(), m_accessToken{},
+      m_memberNumber{}, m_gameUserId{}, unknown_02B8() {
+  this->vtable = reinterpret_cast<void*>(0x0110C63C);
+  reinterpret_cast<unsigned char(__thiscall*)(CStoveMgr*)>(0x0063DC50)(this);
+}
+
 // OFFSET: 0x0063CF60
 // FUNCTION: fn_04786
 EncryptedName<100, 0x3375B1C7DBB5FD55ULL>& AccessTokenFailureMessage::operator()() const {

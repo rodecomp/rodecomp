@@ -10,6 +10,8 @@ namespace Stove::PCSDK {
 
 class CStoveMgr {
 public:
+  CStoveMgr();
+
   /* 0000 */ void* vtable;
   /* 0004 */ bool m_initialized;
   /* 0008 */ int unknown_0008;
