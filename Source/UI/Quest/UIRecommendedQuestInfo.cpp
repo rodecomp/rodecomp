@@ -1,12 +1,16 @@
 #include "UI/Quest/UIRecommendedQuestInfo.h"
 
 #include "Contents/MessageTable.h"
+#include "Contents/RenewQuestMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Quest/UIRenewQuestWnd.h"
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
 
+#include <algorithm>
 #include <cstring>
+#include <format>
 
 // OFFSET: 0x00A568E0
 // FUNCTION: fn_16321
@@ -245,4 +249,20 @@ CUIRecommendedQuestInfo::CUIRecommendedQuestInfo()
 // FUNCTION: fn_16320
 CUIFrameWnd* CreateRecommendedQuestInfo() {
   return new CUIRecommendedQuestInfo();
+}
+
+// OFFSET: 0x00A58E00
+// FUNCTION: fn_16351
+void CUIRecommendedQuestInfo::SetQuest(unsigned int questId) {
+  const auto found = g_renewQuestMgr->m_recommendedQuests.find(questId);
+  if (found != g_renewQuestMgr->m_recommendedQuests.end()) {
+    this->titleText->SetText(found->second.m_title.c_str(), found->second.m_title.size());
+    this->scrollWindow->SetQuest(questId);
+  }
+}
+
+namespace RecommendedQuestInfo {
+
+// OFFSET: 0x00A58E80
+
 }

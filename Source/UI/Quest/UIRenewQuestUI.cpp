@@ -10,6 +10,8 @@
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIRadioButton.h"
 #include "UI/Edit/UIEditBoxEx.h"
+#include "UI/Quest/UIOngoingQuestInfo.h"
+#include "UI/Quest/UIRecommendedQuestInfo.h"
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
@@ -1126,6 +1128,32 @@ void CUIEditBoxEx::SetOnSubmit(std::function<void()> handler) {
 // FUNCTION: fn_16441
 void CUITab::SetOnChange(std::function<void(CUITabButton*)> handler) {
   this->onChange = handler;
+}
+
+// OFFSET: 0x00A664C0
+// FUNCTION: fn_16616
+void RenewQuestUI::CUIQuestList::OnSelectItem(CUIQuestItem* item, const unsigned long& questId) {
+  if (item->questId == 0) {
+    return;
+  }
+
+  if (item->questType == 2) {
+    if (CUIRecommendedQuestInfo* info = dynamic_cast<CUIRecommendedQuestInfo*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(0x271a)))) {
+      info->SetQuest(item->questId);
+      if (UIWindow* other = g_windowMgr.LookupWindow(0x2719)) {
+        info->Move(other->geometry.x, other->geometry.y);
+        g_windowMgr.CloseWindow(0x2719);
+      }
+    }
+  } else {
+    if (CUIOngoingQuestInfo* info = dynamic_cast<CUIOngoingQuestInfo*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(0x2719)))) {
+      info->SetQuest(item->questId);
+      if (UIWindow* other = g_windowMgr.LookupWindow(0x271a)) {
+        info->Move(other->geometry.x, other->geometry.y);
+        g_windowMgr.CloseWindow(0x271a);
+      }
+    }
+  }
 }
 
 // OFFSET: 0x00A665C0

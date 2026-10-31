@@ -50,6 +50,7 @@ public:
 
   void Paint() override;
   void Slot16() override;
+  void OnSelectItem(CUIQuestItem* item, const unsigned long& questId);
   void BindItem(CUIQuestItem* item, const unsigned long& questId);
 
   /* 0080 */ CUIListBoxEx<CUIQuestItem, unsigned long>* list;

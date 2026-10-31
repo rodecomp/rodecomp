@@ -22,6 +22,7 @@ public:
   void OnFirstAction();
   void OnClose();
   virtual void Slot53();
+  void SetQuest(unsigned int questId);
 
   /* 00D8 */ CUITitleBar* titleBar;
   /* 00DC */ CUIStaticImage* background;
@@ -48,6 +49,7 @@ public:
   __declspec(noinline) explicit CUIScrollWindow(UIWindowContext& context);
   void Slot15(int width, int height) override;
   void Slot16() override;
+  void SetQuest(unsigned int questId);
 
   /* 0084 */ CUIStaticImage* background;
   /* 0088 */ CUIStaticImage* topImage;
