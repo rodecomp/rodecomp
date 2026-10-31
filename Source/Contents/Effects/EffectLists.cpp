@@ -1059,8 +1059,18 @@ CEffect* CEffectAllocator<CSpriteMableEffect>::Create() {
 }
 
 // OFFSET: 0x00B20620
+// FUNCTION: fn_18645
+template <>
+CEffect* CEffectAllocator<CSquareRangeEffect>::Create() {
+  return new (std::nothrow) CSquareRangeEffect();
+}
 
 // OFFSET: 0x00B206A0
+// FUNCTION: fn_18646
+template <>
+CEffect* CEffectAllocator<CStarEmperorEffect>::Create() {
+  return new (std::nothrow) CStarEmperorEffect();
+}
 
 // OFFSET: 0x00B20720
 
