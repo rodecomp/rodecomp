@@ -1,4 +1,7 @@
 #include "UI/Party/UIMiniPartyWnd.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
+#include "Contents/MapInfoMgr.h"
 #include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
@@ -11,6 +14,9 @@
 
 #include <windows.h>
 #include <timeapi.h>
+
+#include <cstdio>
+#include <cstring>
 
 // OFFSET: 0x007426F0
 // FUNCTION: fn_07737
@@ -75,6 +81,38 @@ void UIMiniPartyWnd::Slot25(int x, int y) {
 void UIMiniPartyInfoWnd::Slot31(int x, int y) {
   if (g_messengerGroupCollapsed != true && this == g_windowMgr.Capture()) {
     this->m_owner->Slot31(x, y);
+  }
+}
+
+// OFFSET: 0x00740D40
+// FUNCTION: fn_07733
+void UIMiniPartyInfoWnd::Slot28(int, int) {
+  ModeTooltip* mode = reinterpret_cast<ModeTooltip*>(g_modeMgr.GetGameMode());
+  if (!mode) {
+    return;
+  }
+
+  if (this->m_owner->GetMember().valid == 0) {
+    return;
+  }
+
+  char text[256];
+  std::memset(text, 0, sizeof(text));
+  std::string fitted;
+  const std::string mapName = g_mapInfoMgr->GetDisplayName(std::string(this->m_owner->GetMember().map.c_str()));
+  if (this->m_owner->m_sizeMode == 1) {
+    std::sprintf(text, "%s", this->m_owner->GetMember().name.c_str());
+    fitted = this->FitDisplayText(static_cast<int>(static_cast<float>(this->geometry.width) * 0.532f), text, 0, 12, 1);
+  } else {
+    std::sprintf(text, "Lv.%d %s(%s)", this->m_owner->GetMember().level, this->m_owner->GetMember().name.c_str(), mapName.c_str());
+    fitted = this->FitDisplayText(static_cast<int>(static_cast<float>(this->geometry.width) * 0.6f), text, 0, 12, 1);
+  }
+
+  if (fitted.find(text) == std::string::npos) {
+    int x = this->geometry.x + 15;
+    int y = this->geometry.y - 12;
+    this->ToScreen(x, y);
+    mode->Show(text, x, y, 0xFFFFFFFF, 0, 1);
   }
 }
 
