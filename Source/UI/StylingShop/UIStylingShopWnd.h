@@ -21,6 +21,7 @@ public:
   void SelectNextStyle(const char* table, int* goods);
   void SelectPreviousStyle(const char* table, int* goods);
   std::string GetStyleTable(const int& type);
+  void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ const char* unknown_007C;
@@ -119,8 +120,10 @@ public:
   /* 00BC */ std::map<UIWindow*, UIStylingshopTabParentWnd*> m_tabs;
   UIButtonContext* m_controls;
 
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
+  void AddTab(const char* normal, const char* hover, const char* pressed, const int& id, UIStylingshopTabParentWnd* tab, const char* tooltip);
   void RefreshFavoriteButton();
   bool AddToMyStyle();
   void SetBuyEnabled(bool enabled);
@@ -144,6 +147,9 @@ protected:
 
 class UIAccessoryCusWnd : public UIStylingshopTabParentWnd {
 public:
+  // INLINED
+  explicit UIAccessoryCusWnd(UIWindowContext& context) : UIStylingshopTabParentWnd(context) {
+  }
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -188,6 +194,7 @@ public:
 class UISlotOfMyStyleWnd : public UIStylingshopTabParentWnd {
 public:
   explicit UISlotOfMyStyleWnd(UIWindowContext& context);
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 };
@@ -205,6 +212,9 @@ public:
 
 class UIStylingShopButton : public UIBitmapButton {
 public:
+  // INLINED
+  UIStylingShopButton(UIWindowContext& windowContext, UIButtonContext& buttonContext) : UIBitmapButton(windowContext, buttonContext) {
+  }
   // INLINED
   void SetArgument(int argument) {
     this->m_argument = argument;

@@ -1494,3 +1494,138 @@ struct StyleChangePacket {
 #pragma pack(pop)
 
 // OFFSET: 0x00824EE0
+
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/World/World.h"
+#include "UI/Text/UIStaticText.h"
+#include "UI/Window/FuncDrawWNDChar.h"
+#include "Utility/Text/GroupedInteger.h"
+#include <new>
+#include <string>
+
+// OFFSET: 0x00827AE0
+// FUNCTION: fn_10331
+void UIStylingShopWnd::AddTab(const char* normal, const char* hover, const char* pressed, const int& id, UIStylingshopTabParentWnd* tab, const char* tooltip) {
+  UIStylingShopButton* button = new (std::nothrow) UIStylingShopButton(*this->m_context, *this->m_controls);
+  button->SetBitmap(normal, 0, 0);
+  button->SetBitmap(hover, 1, 0);
+  button->SetBitmap(pressed, 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(3, static_cast<int>(this->m_tabs.size()) * button->BitmapHeight() + 21);
+  button->SetId(id);
+  button->SetTooltip(tooltip);
+  this->AddChild(button);
+
+  tab->SetSize(this->geometry.width - (button->geometry.x + button->BitmapWidth()), this->geometry.height - 47);
+  tab->Move(static_cast<int>(this->geometry.width * 0.1), 17);
+  tab->Show(0);
+  this->AddChild(tab);
+  this->m_tabs.insert(std::make_pair(static_cast<UIWindow*>(button), tab));
+}
+
+// OFFSET: 0x00829220
+// FUNCTION: fn_10339
+void UISlotOfMyStyleWnd::Slot15(int, int) {
+  UIDisplayCharacter* display = new (std::nothrow) UIDisplayCharacter(*this->m_context);
+  if (display) {
+    *reinterpret_cast<unsigned char*>(&display->unknown_00B0) = 1;
+  }
+  this->m_display = display;
+
+  CBitmapRes* line = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\styleshop\\line_dotted_2px.bmp")));
+  this->m_display->SetSize(this->geometry.width - line->image.width, static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.73f)));
+  this->m_display->Move(0, 0);
+  this->m_display->LoadCostumes();
+  this->AddChild(this->m_display);
+
+  this->m_showInfo = new (std::nothrow) UIShowInfoWnd(*this->m_context);
+  this->m_showInfo->SetSize(this->geometry.width, static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.36f)));
+  const int layout = 496;
+  this->m_showInfo->ArrangeCheckBoxes(layout);
+  this->m_showInfo->Move(0, static_cast<int>(roundf(static_cast<float>(this->geometry.height) * 0.8f)) - 10);
+  this->m_showInfo->m_display = this->m_display;
+  this->AddChild(this->m_showInfo);
+}
+
+// OFFSET: 0x008294D0
+// FUNCTION: fn_10340
+void UIStylingShopWnd::Slot15(int, int) {
+  this->AddCloseButton(*this->m_controls, "", 0);
+
+  UIBasicStylingWnd* basic = new (std::nothrow) UIBasicStylingWnd(*this->m_context);
+  this->AddTab("유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_on.bmp", 200, basic,
+               LookupMessage(2837));
+  basic->Show(1);
+  static_cast<UIButton*>(this->m_tabs.begin()->first)->SetState(2);
+
+  UIAccessoryCusWnd* accessory = new (std::nothrow) UIAccessoryCusWnd(*this->m_context);
+  this->AddTab("유저인터페이스\\styleshop\\tab_accessories_off.bmp", "유저인터페이스\\styleshop\\tab_accessories_off_over.bmp",
+               "유저인터페이스\\styleshop\\tab_accessories_on.bmp", 497, accessory, LookupMessage(2831));
+
+  if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) != true && g_session.IsTreeGroupTwo(g_session.GetDisplayJob()) != 1) {
+    UICostumeChangeWnd* costume = new UICostumeChangeWnd(*this->m_context);
+    this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", 583,
+                 costume, LookupMessage(2832));
+  } else {
+    UICostumeChangeWnd* costume = new UICostumeChangeWnd(*this->m_context);
+    this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on_over.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on.bmp", 583,
+                 costume, LookupMessage(2832));
+  }
+
+  UIMyStyleWnd* myStyle = new (std::nothrow) UIMyStyleWnd(*this->m_context);
+  this->AddTab("유저인터페이스\\styleshop\\tab_favorite_off.bmp", "유저인터페이스\\styleshop\\tab_favorite_off_over.bmp", "유저인터페이스\\styleshop\\tab_favorite_on.bmp", 496,
+               myStyle, LookupMessage(2833));
+
+  this->m_preview = new UIDisplayCharacter(*this->m_context);
+  this->m_preview->SetSize(120, 120);
+  this->m_preview->Show(0);
+  this->AddChild(this->m_preview);
+
+  this->m_buyButton = static_cast<UIStylingShopButton*>(new (std::nothrow) UIBitmapButton(*this->m_context, *this->m_controls));
+  this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_out.bmp", 0, 0);
+  this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_over.bmp", 1, 0);
+  this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_down.bmp", 2, 0);
+  this->m_buyButton->SetSize(this->m_buyButton->BitmapWidth(), this->m_buyButton->BitmapHeight());
+  this->m_buyButton->Move(396, 306);
+  this->m_buyButton->SetId(224);
+  this->AddChild(this->m_buyButton);
+
+  char zeny[256] = {};
+  std::string text(LookupMessage(2773));
+  text += " ";
+  text += FormatGroupedInteger(g_session.m_zeny, zeny, 256);
+  text += "\tz";
+
+  UIStaticText* label = new (std::nothrow) UIStaticText(*this->m_context, *this->m_controls);
+  label->SetSize(200, 12);
+  label->Move(9, 310);
+  label->SetFont(0, 11, 0, 0);
+  label->SetColor(132, 90, 90);
+  label->SetText(text.c_str(), 0);
+  this->AddChild(label);
+}
+
+// OFFSET: 0x00829D10
+// FUNCTION: fn_10347
+void UIDisplayCharacter::Paint() {
+  this->ClearSurface(0xFFFFFFFF);
+  CBitmapRes* shadow = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->unknown_007C)));
+  if (shadow) {
+    this->DrawBitmap(this->unknown_00B4, this->unknown_00B8, &shadow->image, false);
+  }
+
+  CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+  if (!player) {
+    return;
+  }
+
+  FuncDrawWNDChar draw(
+    this, this->geometry.width / 2, this->geometry.height - 33, static_cast<unsigned char>(player->unknown_0260), static_cast<short>(player->GetEffectiveJob(-1)),
+    player->unknown_04D4, static_cast<short>(this->job), static_cast<short>(this->unknown_008C), static_cast<short>(this->unknown_00A4),
+    static_cast<short>(this->unknown_009C), static_cast<short>(this->unknown_00A0), this->unknown_0088, player->unknown_02CC, player->Slot56(),
+    g_session.GetBodyStyle(player->GetEffectiveJob(-1), this->unknown_0098, this->job), this->unknown_0094, this->unknown_0084, 0, this->unknown_00A8
+  );
+  draw.Draw(false);
+}
