@@ -354,6 +354,7 @@ class CRichsCoinEffect : public CEffect {
 public:
   CRichsCoinEffect();
   void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
@@ -366,6 +367,7 @@ public:
 class CSavageImpactEffect : public CEffect {
 public:
   CSavageImpactEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
@@ -436,13 +438,21 @@ class CGaleStorm : public CEffect {
 public:
   CGaleStorm();
   void Slot01() override;
+  void Slot03() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;
+  void SpawnArrow();
+  void SpawnStorm();
 
   /* 00CC */ std::vector<EZ2STREmitter*> emitters;
-  /* 00D8 */ int unknown_00D8;
-  /* 00DC */ int unknown_00DC;
+  union {
+    struct {
+      /* 00D8 */ int unknown_00D8;
+      /* 00DC */ int unknown_00DC;
+    };
+    /* 00D8 */ long long count;
+  };
 };
 
 class CJupitelThunderHit : public CEffect {
@@ -505,6 +515,7 @@ class CHawkVumerangEffect : public CEffect {
 public:
   CHawkVumerangEffect();
   ~CHawkVumerangEffect() override;
+  void Slot01() override;
   void Slot04() override;
   bool Slot06() override;
   void Close() override;

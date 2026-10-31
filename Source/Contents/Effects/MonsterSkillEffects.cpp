@@ -4536,3 +4536,196 @@ void CGravityControlEffect::Slot03() {
     ++emitter->elapsed;
   }
 }
+
+// OFFSET: 0x00717850
+// FUNCTION: fn_07282
+void CGaleStorm::SpawnArrow() {
+  vector3d position = {this->position[0], this->position[1], this->position[2]};
+  const int spanX = static_cast<int>(this->count) * 5 + 1;
+  const int offsetX = spanX == 0 ? 0 : std::max(rand() % spanX, 0);
+  position.x = static_cast<float>(offsetX) - static_cast<float>(this->count * 5) * 0.5f + position.x;
+  const int spanZ = static_cast<int>(this->count) * 5 + 1;
+  const int offsetZ = spanZ == 0 ? 0 : std::max(rand() % spanZ, 0);
+  position.z = static_cast<float>(offsetZ) - static_cast<float>(this->count * 5) * 0.5f + position.z;
+
+  CEZ2STRParticle* arrow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+  if (arrow) {
+    arrow->Load(std::string("galestorm\\galestorm_arrow\\galestorm_arrow.str"));
+    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(arrow));
+  }
+
+  if (rand() % 7 == 0) {
+    this->AddEvent(0, "effect\\WH_GALESTORM.wav", this->frame + 1, 0);
+  }
+}
+
+// OFFSET: 0x00717B60
+// FUNCTION: fn_07283
+void CGaleStorm::SpawnStorm() {
+  vector3d position = {this->position[0], this->position[1], this->position[2]};
+  const int spanX = static_cast<int>(this->count) * 5 + 1;
+  const int offsetX = spanX == 0 ? 0 : std::max(rand() % spanX, 0);
+  position.x = static_cast<float>(offsetX) - static_cast<float>(this->count * 5) * 0.5f + position.x;
+  const int spanZ = static_cast<int>(this->count) * 5 + 1;
+  const int offsetZ = spanZ == 0 ? 0 : std::max(rand() % spanZ, 0);
+  position.z = static_cast<float>(offsetZ) - static_cast<float>(this->count * 5) * 0.5f + position.z;
+
+  CEZ2STRParticle* storm = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
+  if (storm) {
+    storm->Load(std::string("galestorm\\galestorm\\galestorm.str"));
+    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(storm));
+  }
+}
+
+// OFFSET: 0x00717ED0
+// FUNCTION: fn_07287
+void CGaleStorm::Slot03() {
+  const int frame = this->frame;
+  if (frame <= this->unknown_002C) {
+    if (frame % (100 / this->count) == 0) {
+      this->SpawnStorm();
+    }
+    if (frame % (30 / this->count) == 0) {
+      this->SpawnArrow();
+    }
+  }
+
+  for (auto it = this->emitters.begin(); it != this->emitters.end();) {
+    EZ2STREmitter* emitter = *it;
+    if (emitter->lifetime == 0.0f || emitter->lifetime * 60.0f > static_cast<float>(emitter->elapsed)) {
+      if (emitter) {
+        AsParticle(emitter)->Process(0.0f, 0.0f, 0.0f);
+      }
+      ++it;
+    } else {
+      FreeParticle(AsParticle(emitter));
+      it = this->emitters.erase(it);
+    }
+  }
+}
+
+// OFFSET: 0x007181D0
+// FUNCTION: fn_07290
+void CGravityControlEffect::Slot01() {
+  if (this->id == 0x4B1) {
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    if (particle) {
+      particle->m_loop = true;
+      particle->Open("WL_TELEKINESIS_INTENSE.str");
+      InitParticleQuad(particle->vertices);
+      this->target = reinterpret_cast<int>(particle);
+    }
+  } else if (this->id == 0x960) {
+    this->retained = 1;
+  }
+}
+
+// OFFSET: 0x007188C0
+// FUNCTION: fn_07298
+void CHawkVumerangEffect::Slot01() {
+  this->unknown_00FC = timeGetTime();
+  this->unknown_0100.x = this->position[0];
+  this->unknown_0100.y = this->position[1];
+  this->unknown_0100.z = this->position[2];
+  this->unknown_010C.x = this->sourcePosition[0];
+  this->unknown_010C.y = this->sourcePosition[1];
+  this->unknown_010C.z = this->sourcePosition[2];
+  this->unknown_0118.x = (this->unknown_010C.x + this->unknown_0100.x) * 0.5f;
+  this->unknown_0118.y = (this->unknown_010C.y + this->unknown_0100.y) * 0.5f;
+  this->unknown_0118.z = (this->unknown_010C.z + this->unknown_0100.z) * 0.5f;
+
+  const float dx = this->unknown_010C.x - this->unknown_0100.x;
+  const float dy = this->unknown_010C.y - this->unknown_0100.y;
+  const float dz = this->unknown_010C.z - this->unknown_0100.z;
+  this->unknown_0128 = SquareRoot(dy * dy + dx * dx + dz * dz) * 0.5f;
+  this->unknown_0130 = std::acos(static_cast<double>(this->unknown_0100.x - this->unknown_0118.x) / this->unknown_0128);
+  if (this->unknown_0118.z > this->unknown_0100.z) {
+    this->unknown_0130 = 6.283184f - this->unknown_0130;
+  }
+
+  for (long long i = 0; i < this->count; ++i) {
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    particle->Open("hawkvumerang\\hawkvumerang\\hawkvumerang.str");
+    particle->m_angle = 360.0f - static_cast<float>(this->unknown_0130) / 3.141592f * 180.0f;
+    particle->m_loop = true;
+    this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
+  }
+
+  this->AddEvent(0, "effect\\WH_HAWKBOOMERANG.wav", 0, 0);
+}
+
+// OFFSET: 0x00721AF0
+// FUNCTION: fn_07379
+void CRichsCoinEffect::Slot03() {
+  char name[256];
+
+  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
+    CParticle* particle = *it;
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
+    if (particle) {
+      const float angle = particle->unknown_0054 + 0.015f;
+      particle->unknown_0054 = angle;
+      particle->position.z = static_cast<float>(std::cos(static_cast<double>(angle))) * 7.0f + this->position[2];
+      particle->position.x = static_cast<float>(std::sin(static_cast<double>(angle))) * 7.0f + this->position[0];
+      particle->position.y = this->position[1] - 10.0f;
+
+      float degrees = angle / 3.141592f * 180.0f - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+      if (degrees > 360.0f) {
+        degrees = static_cast<float>(static_cast<int>(degrees) % 360);
+      }
+      while (degrees < 0.0f) {
+        degrees += 360.0f;
+      }
+
+      std::sprintf(name, "effect\\rl_richs_coin_b\\rcoin%d.bmp", static_cast<int>(degrees / 36.0f) % 5 + 1);
+      particle->SetTexture(name);
+    }
+    ++particle->unknown_00E8;
+  }
+
+  for (auto it = this->coins.begin(); it != this->coins.end(); ++it) {
+    CParticle* coin = *it;
+    coin->position.x = this->position[0];
+    coin->position.y = this->position[1];
+    coin->position.z = this->position[2];
+    if (coin) {
+      const float angle = coin->unknown_0054 + 0.015f;
+      coin->unknown_0054 = angle;
+      coin->position.z = static_cast<float>(std::cos(static_cast<double>(angle))) * 7.0f + this->position[2];
+      coin->position.y = this->position[1] - 10.0f;
+      coin->position.x = static_cast<float>(std::sin(static_cast<double>(angle))) * 7.0f + this->position[0];
+    }
+    ++coin->unknown_00E8;
+  }
+}
+
+// OFFSET: 0x007221C0
+// FUNCTION: fn_07384
+void CSavageImpactEffect::Slot01() {
+  this->emitter = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  float toReciprocalDepth = 0.0f;
+  float fromReciprocalDepth = 0.0f;
+  this->offset.x = this->sourcePosition[0] - this->position[0];
+  this->offset.y = this->sourcePosition[1] - this->position[1];
+  this->offset.z = this->sourcePosition[2] - this->position[2];
+
+  float fromX;
+  float fromY;
+  float toX;
+  float toY;
+  g_renderer->ProjectViewport(this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+  g_renderer->ProjectViewport(this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+
+  const float dx = toX - fromX;
+  const float dy = toY - fromY;
+  double angle = static_cast<float>(std::acos(static_cast<double>(dx / SquareRoot(dy * dy + dx * dx)))) / 3.141592f * 180.0f;
+  if (fromY > toY) {
+    angle = 360.0 - angle;
+  }
+
+  AsParticle(this->emitter)->Load(std::string("savage_impact\\savage_impact\\savage_impact.str"));
+  AsParticle(this->emitter)->m_angle = static_cast<float>(angle);
+  this->AddEvent(0, "effect\\SHC_SAVAGE_IMPACT.wav", 0, 0);
+}
