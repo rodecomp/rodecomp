@@ -861,6 +861,7 @@ public:
   void InitJobHitWaveNames();
   void InitWeaponHitWaveNames();
   const std::vector<std::string>* GetMapViewParameters(const char* rswName, int* found);
+  void InitCommandTables();
   void InitJobKeyNames();
   const char* GetEFSTImgFileName(int efstId, int type);
   int IsTreeGroupTwo(int job) const;
