@@ -10,6 +10,11 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/MiniPartyWndAreaMgr.h"
 #include "Render/Renderer.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Render/DeviceContext/DCSurface.h"
+#include "Render/Textures/Surface.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "UI/Edit/UIEditCtrl.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -552,3 +557,42 @@ void UIWindowMgr::SaveUIRectInfo() {
     RegCloseKey(key);
   }
 }
+
+// OFFSET: 0x00AA9F70
+// FUNCTION: fn_17264
+void UIWindowMgr::RefreshWindow01C8Edits() {
+  if (this->window_01C8) {
+    UIEditCtrl* const* edits = reinterpret_cast<UIEditCtrl* const*>(reinterpret_cast<const char*>(this->window_01C8) + 0xBC);
+    if (this->hoverWindow == edits[0]) {
+      edits[0]->SetText("");
+    }
+
+    edits = reinterpret_cast<UIEditCtrl* const*>(reinterpret_cast<const char*>(this->window_01C8) + 0xBC);
+    UIEditCtrl* edit = edits[1];
+    if (this->hoverWindow == edit) {
+      edit->SetText(edit->Text());
+    }
+  }
+}
+
+// OFFSET: 0x00AA9FD0
+// FUNCTION: fn_17265
+void UIWindowMgr::SetSurface0478(CBitmapRes* bitmap) {
+  if (!bitmap) {
+    if (this->unknown_0478) {
+      delete this->unknown_0478;
+      this->unknown_0478 = nullptr;
+    }
+    return;
+  }
+
+  if (!this->unknown_0478) {
+    this->unknown_0478 = reinterpret_cast<UIWindow*>(GetRenderSystemHolder()->CreateSurfaceOrTexture(bitmap->image.width, bitmap->image.height));
+    if (!this->unknown_0478) {
+      return;
+    }
+  }
+  reinterpret_cast<CSurface*>(this->unknown_0478)->Upload(0, 0, bitmap->image.width, bitmap->image.height, bitmap->image.pixels, 0, 0);
+}
+
+// OFFSET: 0x00AAA050

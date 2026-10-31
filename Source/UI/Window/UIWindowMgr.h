@@ -15,6 +15,7 @@
 #include <vector>
 
 class UIWindow;
+class CBitmapRes;
 class CWebBrowser;
 struct MessengerMember;
 struct ReplayOptions;
@@ -522,6 +523,9 @@ public:
   bool HasTitleAtActorCell(std::uint32_t aid);
   void CancelActiveDialog();
   void CenterSurface0478();
+  void RefreshWindow01C8Edits();
+  void SetSurface0478(CBitmapRes* bitmap);
+  void SendFlagEffect(int message);
   std::vector<unsigned char> SaveReplaySettings();
   std::vector<unsigned char> SaveReplayReserved();
   void ApplyReplayOptions(const ReplayOptions& options);
