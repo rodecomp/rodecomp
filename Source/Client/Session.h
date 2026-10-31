@@ -617,6 +617,7 @@ public:
   const char* GatName2RswName(const char* gatName);
   const char* GetBgmFileName(const char* rswName);
   const char* GetMapDisplayName(const char* mapName);
+  const char* GetPlayerMapDisplayName();
   bool HasItem17D4(int itemId) const;
   bool IsFriendName(const char* name) const;
   bool RemoveFriendByCharacterId(std::uint32_t characterId);
@@ -842,6 +843,10 @@ public:
   void SetItem1768Quantity(int index, int quantity);
   void SetUnknown5C1C(int value);
   void UpdateFriendName(std::uint32_t characterId, const char* name);
+  void UnequipItem6B68(const ITEM_INFO& item);
+  void UnequipItem61B8(const ITEM_INFO& item);
+  void SetUnknown7EC8(std::uint32_t value);
+  void NotifyUnknown7F94Name(std::uint32_t id, const char* name);
   void sub_DE3D90(char* text);
   void SetNavigationPlayerMap(const char* name);
   int SetFriendOffline(std::uint32_t accountId, std::uint32_t characterId, unsigned char offline);

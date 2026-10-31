@@ -1,10 +1,23 @@
 #include "Client/Session.h"
+#include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Effects/RagEffect.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemNaming.h"
 #include "Contents/Jobs/JobId.h"
+#include "Contents/MessageTable.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "Contents/Skills/ClientSkills.h"
 #include "Contents/World/World.h"
 #include "Script/LuaScript.h"
+#include "UI/Items/UIEquipWnd.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
 extern "C" {
 void lua_settop(lua_State* L, int index);
@@ -22,7 +35,10 @@ constexpr int LUA_GLOBALSINDEX = -10002;
 constexpr int LUA_TTABLE = 5;
 
 #include <cstddef>
+#include <cstdint>
+#include <cstring>
 #include <map>
+#include <string>
 #include <vector>
 
 struct SkillDelayField {
@@ -37,6 +53,14 @@ static const SkillDelayField g_skillDelayFields[] = {
   {2, "SkillGlobalPostDelay"},
   {3, "SkillSinglePostDelay"},
 };
+
+// OFFSET: 0x00E30940
+// FUNCTION: fn_24168
+const char* CSession::GetPlayerMapDisplayName() {
+  std::string mapName = this->m_navigationPlayerMap;
+  mapName += ".rsw";
+  return this->GetMapDisplayName(mapName.c_str());
+}
 
 // OFFSET: 0x00E31650
 // FUNCTION: fn_24173
@@ -167,4 +191,123 @@ bool CSession::IsThirdJobOrHigher(int job) {
   default:
     return false;
   }
+}
+
+// OFFSET: 0x00E3D8A0
+// FUNCTION: fn_24192
+void CSession::UnequipItem6B68(const ITEM_INFO& item) {
+  const int location = static_cast<int>(item.unknown_0000[3]);
+  if (location == 0x8000) {
+    this->SetUnknown7EC8(0);
+  } else {
+    const EquipSlots slots = g_session.GetEquipSlots(location);
+    if (slots.values[2] < 10) {
+      if (slots.values[2] != -1) {
+        this->unknown_6B68[slots.values[2]].unknown_0000[3] = 0;
+        this->unknown_6B68[slots.values[2]].Reset();
+      }
+      if (slots.values[1] != -1 && slots.values[1] < 10) {
+        this->unknown_6B68[slots.values[1]].Reset();
+      }
+      if (slots.values[0] != -1 && slots.values[0] < 10) {
+        this->unknown_6B68[slots.values[0]].Reset();
+      }
+    }
+  }
+
+  if (g_windowMgr.unknown_01E0) {
+    static_cast<UIEquipWnd*>(g_windowMgr.unknown_01E0)->NotifyEquipmentChanged();
+  }
+  RefreshItemWindows(&g_windowMgr);
+}
+
+// OFFSET: 0x00E3D960
+// FUNCTION: fn_24193
+void CSession::UnequipItem61B8(const ITEM_INFO& item) {
+  const int location = static_cast<int>(item.unknown_0000[3]);
+  if (location == 0x8000) {
+    ITEM_INFO equipped = g_session.FindItemByIdentity(item.unknown_0000[1], location);
+    if (equipped.unknown_0000[1] != 0) {
+      const char* message = LookupMessage(0xAB);
+      ItemDescriptions descriptions{g_itemDescriptions};
+      bool languagePrefix = false;
+      WORD language = g_serverLanguage->language;
+      ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+      const std::string name = naming.DisplayName(equipped, 0);
+      const std::string text = FormatOwnedString("%s%s", name.c_str(), message);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 7, 0, 0);
+    }
+    this->SetUnknown7EC8(0);
+  } else {
+    const EquipSlots slots = g_session.GetEquipSlots(location);
+    if (slots.values[2] < 10) {
+      if (slots.values[2] != -1) {
+        this->unknown_61B8[slots.values[2]].unknown_0000[3] = 0;
+        this->unknown_61B8[slots.values[2]].Reset();
+      }
+      if (slots.values[1] != -1 && slots.values[1] < 10) {
+        this->unknown_61B8[slots.values[1]].Reset();
+      }
+      if (slots.values[0] != -1 && slots.values[0] < 10) {
+        this->unknown_61B8[slots.values[0]].Reset();
+      }
+    }
+  }
+
+  if (g_windowMgr.unknown_01E0) {
+    static_cast<UIEquipWnd*>(g_windowMgr.unknown_01E0)->NotifyEquipmentChanged();
+  }
+  RefreshItemWindows(&g_windowMgr);
+}
+
+// OFFSET: 0x00E497F0
+// FUNCTION: fn_24237
+void CSession::SetUnknown7EC8(std::uint32_t value) {
+  this->unknown_7EC8 = value;
+  this->InvalidateWindowFrames();
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (!mode) {
+    return;
+  }
+
+  auto it = g_activeSkillEffects.begin();
+  for (; it != g_activeSkillEffects.end(); ++it) {
+    if (it->id == 0x2B7) {
+      break;
+    }
+  }
+
+  if (it == g_activeSkillEffects.end()) {
+    if (value) {
+      ActiveSkillEffect effect;
+      effect.id = 0x2B7;
+      g_activeSkillEffects.push_back(effect);
+    }
+  } else if (!value) {
+    g_activeSkillEffects.erase(it);
+  }
+
+  mode->scene->player->unknown_0544->SendMsg(nullptr, 44, 0, 1, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00E49930
+// FUNCTION: fn_24238
+void CSession::NotifyUnknown7F94Name(std::uint32_t id, const char* name) {
+  if (!name || std::strlen(name) == 0) {
+    return;
+  }
+
+  UIWindow* chat = g_windowMgr.window_01C8;
+  if (!chat) {
+    return;
+  }
+
+  if (this->unknown_7F94.find(id) == this->unknown_7F94.end()) {
+    return;
+  }
+
+  chat->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);
+  g_windowMgr.SendNotice(0x9A, reinterpret_cast<std::intptr_t>(name), 0, 0, 0, 0);
+  this->unknown_7F94.erase(id);
 }

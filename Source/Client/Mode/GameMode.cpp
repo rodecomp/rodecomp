@@ -10,6 +10,7 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/DummyEffectLauncher.h"
 #include "Contents/GuildInfo.h"
+#include "Contents/GuildMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Actors/MousePointer.h"
 #include "Contents/Actors/RenderObject.h"
@@ -555,6 +556,15 @@ void CGameMode::RequestAdminStatus() {
 }
 
 // OFFSET: 0x00D06BD0
+// FUNCTION: fn_21578
+void SetPlayerName(std::uint32_t id, std::string name) {
+  g_playerNameDictionary->Set(id, name);
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CompleteUnknown0194(id, name);
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  guildInfo->UpdateCharacterName(id, name.c_str());
+  g_session.NotifyUnknown7F94Name(id, name.c_str());
+  g_session.UpdateFriendName(id, name.c_str());
+}
 
 // OFFSET: 0x00CDD350
 // FUNCTION: fn_21316
