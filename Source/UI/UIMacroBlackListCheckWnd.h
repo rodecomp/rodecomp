@@ -12,6 +12,7 @@ class UIMacroBlackListCheckWnd : public UIFrameWnd {
 public:
   void Slot15(int width, int height) override;
   void Slot19() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
@@ -19,6 +20,7 @@ public:
   void ShuffleDigitButtons();
   void Activate(unsigned char state, int duration);
   void SetCode(unsigned char state, const char* code);
+  int DrawTitleBar(bool closeButton, const char* title, int width);
 
   /* 00B4 */ UIBitmapButton* digitButtons[10];
   /* 00DC */ UIBitmapButton* resetButton;

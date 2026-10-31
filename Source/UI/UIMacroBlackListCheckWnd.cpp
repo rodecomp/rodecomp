@@ -1,8 +1,10 @@
 #include "UI/UIMacroBlackListCheckWnd.h"
 
+#include "Contents/MessageTable.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Utility/Text/FormatString.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -81,6 +83,53 @@ void UIMacroBlackListCheckWnd::Slot15(int width, int height) {
   this->AddChild(this->resetButton);
 
   this->geometry.targetAlpha = 176;
+}
+
+int UIMacroBlackListCheckWnd::DrawTitleBar(bool closeButton, const char* title, int width) {
+  return reinterpret_cast<int(__thiscall*)(UIWindow*, bool, const char*, int)>(0x008D2CE0)(this, closeButton, title, width);
+}
+
+// OFFSET: 0x007EC1E0
+// FUNCTION: fn_09795
+void UIMacroBlackListCheckWnd::Paint() {
+  const int titleHeight = this->DrawTitleBar(true, LookupMessage(0x92F), this->geometry.width + 1);
+  this->DrawPanelBackground(titleHeight, 0x21C, "유저인터페이스\\basic_interface\\blacklist_check_bg.bmp");
+  this->DrawButtonBar(2, this->geometry.width + 1, 1);
+
+  this->sub_A85850(7, 0x24, FormatOwnedString(LookupMessage(0xFB4)), 0x20E, 6, 0, 0, 0, 0xC, 1, 0);
+  this->sub_A85850(7, 0x159, FormatOwnedString(LookupMessage(0xFB5), this->unknown_00E4), 0x20E, 6, 0x3939FF, 0, 0, 0xC, 1, 0);
+  this->sub_A85850(0x4F, 0xF6, FormatOwnedString(LookupMessage(0xFB6), this->unknown_00E4), 0xA2, 6, 0, 0, 0, 0xC, 0, 0);
+
+  std::string stars;
+  for (int i = 0; i < this->inputLength; ++i) {
+    stars += '*';
+  }
+  this->sub_A85850(0x86, 0x109, stars, 0x32, 6, 0x4949FF, 0, 0, 0xC, 0, 0);
+
+  if (this->codeLength > 0) {
+    int x = 0;
+    int base = 0x46;
+    if (this->codeLength == 4) {
+      base = 0x74;
+    } else if (this->codeLength == 5 || this->codeLength == 6) {
+      base = 0x5D;
+    }
+    for (int i = 0; i < this->codeLength; ++i) {
+      this->sub_A85850(x + base, this->charColors[i], std::string(this->code + i), 0, 0, 0, 0, 0, this->charSizes[i], this->charFlags[i], 0);
+      x += 0x17;
+    }
+  }
+
+  const unsigned remainingMs = this->startTick + static_cast<unsigned>(this->duration) - timeGetTime();
+  const unsigned remainingSec = remainingMs / 1000u;
+  if (remainingSec < 60u) {
+    this->sub_A85850(
+      0x4F, 0xA4, FormatOwnedString(LookupMessage(0xFB3), 0, static_cast<int>(remainingSec / 60u), static_cast<int>(remainingSec)), 0xA2, 6, 0xFF, 0, 0,
+      0xD, 1, 0
+    );
+  } else {
+    this->sub_A85850(0x4F, 0xA4, FormatOwnedString(LookupMessage(0xFB3), 0, 0, 0), 0xA2, 6, 0xFF, 0, 0, 0xD, 1, 0);
+  }
 }
 
 // OFFSET: 0x007EC770
