@@ -229,8 +229,210 @@ void CUIEditBoxEx::SetBackgroundColor(std::uint32_t color) {
   this->Invalidate();
 }
 
+#include "Client/Input/Language.h"
+#include "UI/Chat/ChatSuggestions.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
+
+// OFFSET: 0x009E4BF0
+// FUNCTION: fn_14444
+void CUIEditCtrlEx::HandleKeyDown(int key, std::intptr_t lparam) {
+  CLanguage& input = this->m_edit->input;
+  const bool password = this->m_edit->password != 0;
+  UIWindow* const chatWindow = g_chatSuggestions ? g_chatSuggestions->window : nullptr;
+
+  switch (key) {
+  case VK_BACK:
+    if (std::abs(input.cursor - input.anchor) == 0 && input.cursor >= 2 && input.cursor - 1 < this->text.size()) {
+      const bool lineBreak = this->text.substr(input.cursor - 2, 2) == "\r\n";
+      if (lineBreak) {
+        input.Character(VK_BACK, lparam, g_textCodePage);
+      }
+    }
+    this->caretStart = std::chrono::system_clock::now();
+    break;
+  case VK_END:
+    if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
+      input.AdvanceCursor(static_cast<int>(this->text.size()) - input.cursor);
+    } else {
+      input.AdvanceCursor(static_cast<int>(this->lines[this->line].text.size()) - this->column);
+      this->unknown_01DC = 1;
+    }
+    return;
+  case VK_HOME:
+    if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
+      input.RetreatCursor(input.cursor);
+    } else {
+      input.RetreatCursor(this->column);
+    }
+    break;
+  case VK_LEFT:
+    if (input.cursor >= 2 && input.cursor - 1 < this->text.size()) {
+      const bool lineBreak = this->text.substr(input.cursor - 2, 2) == "\r\n";
+      if (lineBreak) {
+        input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+      }
+    }
+    input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    this->caretStart = std::chrono::system_clock::now();
+    break;
+  case VK_UP:
+  case VK_DOWN:
+    return;
+  case VK_RIGHT:
+    if (input.cursor >= 0 && input.cursor + 1 < this->text.size()) {
+      const bool lineBreak = this->text.substr(input.cursor, 2) == "\r\n";
+      if (lineBreak) {
+        input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+      }
+    }
+    input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    this->caretStart = std::chrono::system_clock::now();
+    break;
+  case VK_INSERT:
+  case 'C':
+  case 'V':
+  case 'X':
+    input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    break;
+  case VK_DELETE:
+    if (std::abs(input.cursor - input.anchor) == 0 && input.cursor >= 0 && input.cursor + 1 < this->text.size()) {
+      const bool lineBreak = this->text.substr(input.cursor, 2) == "\r\n";
+      if (lineBreak) {
+        input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+      }
+    }
+    input.KeyDown(key, lparam, g_textCodePage, password, g_windowMgr.window_4F1FC, this->m_edit->windows, chatWindow);
+    this->caretStart = std::chrono::system_clock::now();
+    break;
+  case 'A':
+    if ((static_cast<unsigned short>(GetKeyState(VK_CONTROL)) >> 8) != 0) {
+      input.Select(0, static_cast<int>(this->text.size()));
+    }
+    break;
+  }
+
+  this->ResetDragState();
+}
+
+// OFFSET: 0x009E5B20
+// FUNCTION: fn_14450
+int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  CLanguage& input = this->m_edit->input;
+  int position;
+  switch (message) {
+  case 0:
+    if (reinterpret_cast<const unsigned char*>(&this->unknown_0184)[1] != 0 && (static_cast<unsigned short>(GetKeyState(VK_SHIFT)) >> 8) != 0) {
+      input.Insert("\r\n");
+      return 0;
+    }
+    UIWindow::SendMsg(sender, 0, a, b, c, d);
+    return 0;
+  case 7:
+    position = this->scrollPosition + a;
+    break;
+  case 9:
+    position = this->unknown_01F0 + this->scrollPosition;
+    break;
+  case 10:
+    position = this->scrollPosition - this->unknown_01F0;
+    break;
+  case 18:
+    if (this->line > 0) {
+      if (this->unknown_01D4 == this->line - 1) {
+        input.RetreatCursor(this->unknown_01D8);
+      } else {
+        const EditLine& previous = this->lines[this->line - 1];
+        const std::string& current = this->lines[this->line].text;
+        int offset;
+        if (this->alignment == 2) {
+          const int width = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current.c_str(), 0, 0, 12, 0, 0);
+          const int columnWidth =
+            this->column > 0 ? this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current.c_str(), this->column, 0, 12, 0, 0) : 0;
+          offset = this->TrailingOffsetFitting(previous.text, width - columnWidth);
+        } else {
+          const int columnWidth =
+            this->column > 0 ? this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current.c_str(), this->column, 0, 12, 0, 0) : 0;
+          offset = this->LeadingBytesFitting(previous.text, columnWidth);
+        }
+
+        const int delta = (previous.unknown_0018 != 0 ? 2 : 0) + static_cast<int>(previous.text.size()) - offset + this->column;
+        input.RetreatCursor(delta);
+        this->unknown_01D8 = delta;
+      }
+      this->unknown_01D4 = this->line;
+      this->unknown_01DC = 1;
+    }
+    this->selectedAll = 1;
+    return 0;
+  case 19:
+    if (static_cast<unsigned>(this->line) < this->lines.size() - 1) {
+      if (this->unknown_01D4 == this->line + 1) {
+        input.AdvanceCursor(this->unknown_01D8);
+      } else {
+        const EditLine& next = this->lines[this->line + 1];
+        const std::string& current = this->lines[this->line].text;
+        int offset;
+        if (this->alignment == 2) {
+          const int width = this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current.c_str(), 0, 0, 12, 0, 0);
+          const int columnWidth =
+            this->column > 0 ? this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current.c_str(), this->column, 0, 12, 0, 0) : 0;
+          offset = this->TrailingOffsetFitting(next.text, width - columnWidth);
+        } else {
+          const int columnWidth =
+            this->column > 0 ? this->TextWidth(this->m_edit->buttons.fonts, this->m_edit->buttons.locale, current.c_str(), this->column, 0, 12, 0, 0) : 0;
+          offset = this->LeadingBytesFitting(next.text, columnWidth);
+        }
+
+        const EditLine& line = this->lines[this->line];
+        const int delta = (line.unknown_0018 != 0 ? 2 : 0) + static_cast<int>(line.text.size()) - this->column + offset;
+        input.AdvanceCursor(delta);
+        this->unknown_01D8 = delta;
+      }
+      this->unknown_01D4 = this->line;
+      this->unknown_01DC = 1;
+    }
+    this->selectedAll = 1;
+    return 0;
+  case WM_KEYDOWN:
+    this->HandleKeyDown(a, b);
+    this->selectedAll = 1;
+    return 3;
+  case WM_CHAR:
+    if (this->unknown_01F8 != 0) {
+      if (this->unknown_01F8 == 1) {
+        if ((a < '0' || a > '9') && a != VK_BACK) {
+          return 3;
+        }
+      } else if (this->unknown_01F8 == 2) {
+        if ((a < '0' || a > '9') && a != '.' && a != VK_BACK) {
+          return 3;
+        }
+      } else {
+        return 3;
+      }
+    }
+    input.Character(a, b, g_textCodePage);
+    this->selectedAll = 1;
+    return 3;
+  case WM_IME_COMPOSITION:
+    this->selectedAll = 1;
+    return 0;
+  default:
+    UIEditCtrl::SendMsg(sender, message, a, b, c, d);
+    return 0;
+  }
+
+  if (position > this->scrollMaximum) {
+    position = this->scrollMaximum;
+  } else if (position < 0) {
+    position = 0;
+  }
+  this->scrollPosition = position;
+  static_cast<UIScrollBar*>(this->unknown_0130)->SetPosition(position);
+  this->unknown_0134 = this->scrollMaximum > 0;
+  return 0;
+}
 
 // OFFSET: 0x009E6300
 // FUNCTION: fn_14453

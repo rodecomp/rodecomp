@@ -13,7 +13,7 @@
 
 struct EditLine {
   /* 0000 */ std::string text;
-  /* 0018 */ int unknown_0018;
+  /* 0018 */ unsigned char unknown_0018;
   /* 001C */ int selectionBegin;
   /* 0020 */ int selectionEnd;
 };
@@ -25,8 +25,10 @@ public:
   void Invalidate() override;
   void SelectAll() override;
   void UpdateScrollBar() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   void RefreshPlaceholder();
+  void HandleKeyDown(int key, std::intptr_t lparam);
   void ResetDragState();
   void DrawCaret(int x, int y);
   void PaintTextLines();
