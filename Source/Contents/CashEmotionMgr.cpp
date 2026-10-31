@@ -235,6 +235,7 @@ public:
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  void Refresh(const char* filter) override;
   const char* Filter() override;
 
   void AddResults(char type, const std::vector<std::pair<int, int>>& results, int& y);
@@ -1578,7 +1579,7 @@ UICashEmotionListChildWnd_Abstract::UICashEmotionListChildWnd_Abstract(UIWindowC
 
 // OFFSET: 0x007C3990
 // FUNCTION: fn_09343
-void UICashEmotionScrollWnd::UpdateScrollBars() {
+__declspec(noinline) void UICashEmotionScrollWnd::UpdateScrollBars() {
   if (!this->horizontalBar) {
     this->horizontalBar = new (std::nothrow) UICashEmotionScrollBar(*this->m_context);
     if (this->horizontalBar) {
@@ -1791,7 +1792,7 @@ const char* UICashEmotionListChildWnd_Search::Filter() {
 
 // OFFSET: 0x007C59A0
 // FUNCTION: fn_09381
-void UICashEmotionListChildWnd_Search::AddResults(char type, const std::vector<std::pair<int, int>>& results, int& y) {
+__declspec(noinline) void UICashEmotionListChildWnd_Search::AddResults(char type, const std::vector<std::pair<int, int>>& results, int& y) {
   UICashEmotionPack_Search* pack;
   if (type == 3) {
     pack = new (std::nothrow) UICashEmotionPack_Search_UnPurchased(*this->m_context);
@@ -1818,6 +1819,33 @@ void UICashEmotionListChildWnd_Search::AddResults(char type, const std::vector<s
 
   this->AddChild(pack);
   this->m_items.push_back(pack);
+}
+
+// OFFSET: 0x007C5B10
+// FUNCTION: fn_09382
+__declspec(noinline) void UICashEmotionListChildWnd_Search::Refresh(const char* filter) {
+  g_windowMgr.ClearWindow01B8();
+  this->m_items.clear();
+  this->Clear();
+  this->horizontalBar = nullptr;
+  this->scrollBar = nullptr;
+  if (filter && std::strlen(filter) >= 1) {
+    this->m_filter.assign(filter, std::strlen(filter));
+  } else {
+    this->m_filter.assign("", 0);
+  }
+
+  int y = 0;
+  std::vector<std::pair<int, int>> basePack;
+  std::vector<std::pair<int, int>> ownedPacks;
+  std::vector<std::pair<int, int>> otherPacks;
+  g_cashEmotionMgr->Search(filter, basePack, ownedPacks, otherPacks);
+  if (!basePack.empty() || !ownedPacks.empty() || !otherPacks.empty()) {
+    this->AddResults(1, basePack, y);
+    this->AddResults(2, ownedPacks, y);
+    this->AddResults(3, otherPacks, y);
+  }
+  this->UpdateScrollBars();
 }
 
 // OFFSET: 0x007C5D80
