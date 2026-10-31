@@ -47,6 +47,7 @@ public:
   bool RemoveSkill(std::uint32_t aid);
   void PlayerMove(const float& x, const float& z);
   void PcApproachToPlayer(std::uint32_t accountId, const CellFloatPos& pos);
+  void CreatePlayer();
   void AddPcPos(std::uint32_t aid, const CellFloatPos& cell);
   void AddPcPosFromCell(std::uint32_t aid, const int* cell);
   void AddPcPosUnindexed(std::uint32_t aid, const CellFloatPos& cell);

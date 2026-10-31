@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <memory>
 
 namespace {
   // OFFSET: 0x00573170
@@ -489,4 +490,10 @@ void CTextureDX9::Stretch(int x, int y, int width, int height) {
     *this->m_context->primitives, *this->m_context->queues, x, y, width, height, this->m_context->depthAlpha, this->m_context->depthStart,
     this->m_context->depthEnd
   );
+}
+
+// OFFSET: 0x0056CEE0
+// FUNCTION: fn_02352
+std::unique_ptr<CTextureDX9> CreateTextureDX9(TextureDX9Context** context) {
+  return std::make_unique<CTextureDX9>(**context);
 }

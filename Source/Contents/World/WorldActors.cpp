@@ -1,3 +1,4 @@
+#include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/World/World.h"
 
@@ -11,4 +12,12 @@ CRenderObject* CWorld::GetGameActorByAID(std::uint32_t aid) const {
   }
 
   return nullptr;
+}
+
+// OFFSET: 0x00AC8470
+// FUNCTION: fn_17672
+void CWorld::CreatePlayer() {
+  CPlayer* player = new CPlayer();
+  this->player = player;
+  this->objects.push_back(player);
 }
