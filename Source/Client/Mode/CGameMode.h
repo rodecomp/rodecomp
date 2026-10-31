@@ -348,6 +348,29 @@ public:
   void AddUnknown0604(UIWindow* window);
   void RequestAdminStatus();
   void sub_CEB8E0();
+  unsigned sub_CEBF30(const std::vector<unsigned char>& data);
+  unsigned sub_CEC100(const std::vector<unsigned char>& data);
+  unsigned sub_CEC6A0(const std::vector<unsigned char>& data);
+  void sub_D2DB80(const unsigned char* record);
+  void sub_D3D2F0(const unsigned char* record);
+  void sub_D3F130(const unsigned char* record);
+  void sub_D24430(const unsigned char* record);
+  void sub_D350A0(const unsigned char* record);
+  void sub_D37A10(const unsigned char* record);
+  void sub_D40730(const unsigned char* record);
+  void sub_D41250(const unsigned char* record);
+  void sub_D51A90(const unsigned char* record);
+  void sub_D61390(const unsigned char* record);
+  void sub_D616B0(const unsigned char* record);
+  void sub_D619E0(const unsigned char* record);
+  void sub_D63720(const unsigned char* record);
+  void sub_D63A40(const unsigned char* record);
+  void sub_D63D70(const unsigned char* record);
+  void sub_D65FC0(const unsigned char* record);
+  void sub_D7B170(
+    int first, std::string text, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth,
+    int ninth, int tenth, int eleventh, int twelfth, int thirteenth, int fourteenth, int fifteenth
+  );
   void Slot7(int value) override;
   void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);
   bool UpdateReplayPause(bool resume);

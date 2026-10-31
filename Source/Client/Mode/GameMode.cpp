@@ -408,6 +408,49 @@ void CGameMode::sub_CEB8E0() {
   recorder.Record(static_cast<std::uint16_t>(record.length), &record, 0x2A, 0);
 }
 
+// OFFSET: 0x00CEBF30
+
+// OFFSET: 0x00CEC100
+
+// OFFSET: 0x00CEC6A0
+// FUNCTION: fn_21356
+unsigned CGameMode::sub_CEC6A0(const std::vector<unsigned char>& data) {
+  if (data.empty()) {
+    return 0xFFFFFFFFu;
+  }
+
+  unsigned offset = 6;
+  if (*reinterpret_cast<const std::int16_t*>(data.data()) == 17000) {
+    while (offset < data.size()) {
+      const short type = *reinterpret_cast<const short*>(data.data() + offset);
+      const std::uint32_t size = *reinterpret_cast<const std::uint32_t*>(data.data() + offset + 2);
+      offset += 6;
+
+      if (type == 0xCD) {
+        unsigned char* record = new unsigned char[0x10]();
+        std::memcpy(record, data.data() + offset, size);
+        offset += size;
+        this->sub_D41250(record);
+        delete[] record;
+      } else if (type == 0xCE) {
+        unsigned char* record = new unsigned char[0x61]();
+        std::memcpy(record, data.data() + offset, size);
+        offset += size;
+        this->sub_D40730(record);
+        delete[] record;
+      } else if (type == 0x4269) {
+        break;
+      } else {
+        offset += size;
+      }
+    }
+  } else {
+    offset = 0xFFFFFFFFu;
+  }
+
+  return offset;
+}
+
 // OFFSET: 0x00CEFE50
 // FUNCTION: fn_21407
 void CGameMode::ClearUnknown04DC() {
