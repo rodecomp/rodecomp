@@ -374,6 +374,7 @@ namespace EquipmentProperties {
   struct CEquipmentInfo {
     /* 0000 */ int unknown_0000;
     /* 0004 */ std::unordered_map<int, int, CEquipmentValueHash> values;
+    /* 0024 */ std::unordered_map<int, int, CEquipmentValueHash> unknown_0024;
   };
 
   class CEquipment {
@@ -418,8 +419,9 @@ namespace EquipmentProperties {
     /* 003C */ int m_type;
     /* 0040 */ int unknown_0040;
     /* 0044 */ std::vector<CEquipmentAttachable> m_attachables;
-    /* 0050 */ std::list<CEquipment*> m_children;
+    /* 0050 */ std::list<CEquipmentProperties*> m_children;
 
+    void Load(bool force) override;
     void Clear() override;
     int GetType() override;
 
@@ -450,7 +452,7 @@ namespace EquipmentProperties {
 }
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(EquipmentProperties::CEquipmentInfo) == 0x24);
+static_assert(sizeof(EquipmentProperties::CEquipmentInfo) == 0x44);
 static_assert(offsetof(EquipmentProperties::CEquipment, m_properties) == 0xC);
 static_assert(offsetof(EquipmentProperties::CEquipment, m_pretend) == 0x34);
 static_assert(sizeof(EquipmentProperties::CEquipment) == 0x38);
@@ -883,6 +885,98 @@ void EquipmentProperties::CEquipmentExpansion::Load(bool force) {
   this->m_properties.RemoveDuplicateNames();
   if (force == true) {
     this->NotifyProperties(g_equipmentApplyColor, false, this->GetSuffix());
+  }
+}
+
+// OFFSET: 0x0068C560
+// FUNCTION: fn_05637
+void EquipmentProperties::CEquipmentWearable::Load(bool force) {
+  CLuaInstance* script = &CEquipmentPropertiesMgr::GetInstance()->GetScript();
+  if (script == nullptr) {
+    return;
+  }
+  lua_State* state = script->GetState();
+  if (state == nullptr) {
+    return;
+  }
+
+  this->m_properties.Clear();
+  CEquipmentPropertiesMgr::GetInstance()->SetCurrentEquipment(this);
+  lua_getfield(state, LUA_GLOBALSINDEX, "Item");
+  if (lua_type(state, -1) == LUA_TTABLE) {
+    lua_pushinteger(state, this->m_id);
+    lua_gettable(state, 1);
+    if (lua_type(state, -1) == LUA_TTABLE) {
+      for (auto& entry : this->m_info->unknown_0024) {
+        this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", entry.first), "AddExtParam", -1, entry.second, -1);
+      }
+
+      if (!g_session.IsCostumeLocation(this->m_type) && this->m_info != nullptr) {
+        const ITEM_INFO equipped = g_session.GetItem17F0(this->unknown_0040);
+        if (equipped.unknown_0000[1] > 0) {
+          const int key = this->GetValue(2);
+          const int level = equipped.unknown_0060;
+          if (level > 0) {
+            switch (this->m_info->unknown_0000) {
+            case 2:
+            case 3: {
+              const int bonus = CEquipmentPropertiesMgr::GetInstance()->GetUnknown01BC(1, key, level);
+              if (bonus != 0) {
+                const int rate = CEquipmentPropertiesMgr::GetInstance()->GetUnknown01DC(1, equipped.unknown_0088, 1);
+                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0x29), "AddExtParam", -1,
+                                  static_cast<int>(static_cast<float>(rate * bonus) / 10.0f + static_cast<float>(bonus)), -1);
+                if (this->m_info->unknown_0000 == 2) {
+                  const int magicRate = CEquipmentPropertiesMgr::GetInstance()->GetUnknown01DC(1, equipped.unknown_0088, 2);
+                  this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xC8), "AddExtParam", -1,
+                                    static_cast<int>(static_cast<float>(magicRate * bonus) / 10.0f + static_cast<float>(bonus)), -1);
+                }
+              }
+
+              const int defense = CEquipmentPropertiesMgr::GetInstance()->GetUnknown01BC(2, key, level);
+              if (defense != 0) {
+                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF2), "AddExtParam", -1, defense, -1);
+                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF3), "AddExtParam", -1, defense, -1);
+              }
+              break;
+            }
+            case 1: {
+              const int attack = CEquipmentPropertiesMgr::GetInstance()->GetUnknown01BC(3, key, level);
+              if (attack != 0) {
+                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0x2D), "AddExtParam", -1, attack, -1);
+              }
+
+              const int resist = CEquipmentPropertiesMgr::GetInstance()->GetUnknown01BC(4, key, level);
+              if (resist != 0) {
+                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF4), "AddExtParam", -1, resist, -1);
+                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF5), "AddExtParam", -1, resist, -1);
+              }
+              break;
+            }
+            }
+          }
+        }
+      }
+
+      this->CallOnStartEquip(state);
+      lua_getfield(state, -1, "OnStartPretendEquip");
+      this->m_pretend = lua_type(state, -1) == LUA_TBOOLEAN || g_session.IsPetEgg(this->m_id) != 0;
+      lua_settop(state, -2);
+    }
+    lua_settop(state, -2);
+  }
+  lua_settop(state, -2);
+
+  for (CEquipmentProperties* child : this->m_children) {
+    this->m_properties += child;
+  }
+  for (CEquipmentAttachable& attachable : this->m_attachables) {
+    attachable.Load(force);
+    this->m_properties += attachable.m_properties;
+  }
+
+  this->m_properties.RemoveDuplicateNames();
+  if (force == true) {
+    this->NotifyProperties(g_equipmentApplyColor, false, "");
   }
 }
 
