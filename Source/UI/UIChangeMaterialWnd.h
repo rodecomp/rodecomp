@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_UICHANGEMATERIALWND_H
 
 #include "Contents/Items/ItemInfo.h"
+#include "UI/Buttons/UICheckBox.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/UIFrameWnd.h"
 
@@ -10,6 +11,8 @@
 #include <vector>
 
 class UIButton;
+struct UIButtonContext;
+struct UIEditContext;
 
 struct MaterialSlotPos {
   /* 0000 */ int x;
@@ -42,8 +45,18 @@ public:
   void Paint() override;
 };
 
+class UIChangeMaterialWnd_CheckBox : public UICheckBox {
+public:
+  // INLINED
+  UIChangeMaterialWnd_CheckBox(UIWindowContext& windows, UIButtonContext& controls) : UICheckBox(windows, controls) {}
+
+  /* 010C */ std::string ascendingText;
+  /* 0124 */ std::string descendingText;
+};
+
 class UIChangeMaterialWnd : public UIFrameWnd {
 public:
+  void Slot15(int width, int height) override;
   bool Slot02() override;
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -54,7 +67,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4)
     override;
 
-  /* 00BC */ std::uint32_t unknown_00BC;
+  /* 00BC */ UIChangeMaterialWnd_CheckBox* m_sortBox;
   /* 00C0 */ UIButton* m_button;
   /* 00C4 */ int m_resultX;
   /* 00C8 */ int m_resultY;
@@ -63,10 +76,21 @@ public:
   /* 01F8 */ std::vector<ITEM_INFO> m_materials;
   /* 0204 */ int m_resultAmount;
   /* 0208 */ std::string m_resultText;
+
+protected:
+  UIButtonContext* m_controls;
+  UIEditContext* m_editContext;
 };
 
 class UIChangeMaterialWnd_List : public UIFrameWnd {
 public:
+  // INLINED
+  UIChangeMaterialWnd_List(UIWindowContext& windows, UIFrameContext& frames)
+      : UIFrameWnd(windows, frames, 0), m_selectedIndex(0), m_hoverIndex(0), m_scrollOffset(0), m_previousScrollOffset(0), m_scrollBar(nullptr), m_items(), m_entries() {
+    *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4) = 27;
+    *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB8) = 16;
+  }
+
   void Paint() override;
   void Move(int x, int y) override;
   void Slot28(int x, int y) override;

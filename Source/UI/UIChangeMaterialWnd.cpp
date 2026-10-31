@@ -11,6 +11,9 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Buttons/UIBasicButton.h"
+#include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Shop/ItemDrawing.h"
@@ -649,4 +652,85 @@ void UIChangeMaterialWnd_List::Slot28(int x, int y) {
   const std::string name = ItemDisplayName(entry->results.front().id);
   const std::string text = FormatOwnedString(LookupMessage(0xB7), name.c_str(), entry->results.front().quantity);
   reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
+}
+
+// OFFSET: 0x005E1320
+// FUNCTION: fn_03876
+void UIChangeMaterialWnd::Slot15(int width, int height) {
+  UIBitmapButton* close = new UIBitmapButton(*this->m_context, *this->m_controls);
+  close->SetBitmap("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0, 0);
+  close->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 1, 0);
+  close->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 2, 0);
+  close->SetSize(close->BitmapWidth(), close->BitmapHeight());
+  close->Move(480, 16);
+  close->SetId(201);
+  this->AddChild(close);
+
+  UIEditCtrl* edit = new UIEditCtrl(*this->m_context, *this->m_editContext);
+  *reinterpret_cast<UIEditCtrl**>(reinterpret_cast<char*>(this) + 0xB8) = edit;
+  edit->SetSize(118, 13);
+  edit->Move(313, 262);
+  edit->maximum = 20;
+  edit->preserveInput = 1;
+  edit->SetText(LookupMessage(3776));
+  edit->TextColor(0xB1B1B1, 0xFFFFFFFFu);
+  edit->Background(255, 236, 207);
+  edit->topPadding = -1;
+  this->AddChild(edit);
+
+  UIBmpTextButton* search = new UIBmpTextButton(*this->m_context, *this->m_controls);
+  search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search.bmp", 0, 0);
+  search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_over.bmp", 1, 0);
+  search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_press.bmp", 2, 0);
+  search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_disable.bmp", 3, 0);
+  search->SetSize(search->BitmapWidth(), search->BitmapHeight());
+  search->SetText(LookupMessage(3777));
+  search->Move(432, 259);
+  search->SetId(321);
+  this->AddChild(search);
+
+  UIBitmapButton* refresh = new UIBitmapButton(*this->m_context, *this->m_controls);
+  refresh->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_refresh.bmp", 0, 0);
+  refresh->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_refresh_over.bmp", 1, 0);
+  refresh->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_refresh_press.bmp", 2, 0);
+  refresh->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_refresh_disable.bmp", 3, 0);
+  refresh->SetSize(refresh->BitmapWidth(), refresh->BitmapHeight());
+  refresh->Move(476, 259);
+  refresh->SetId(415);
+  this->AddChild(refresh);
+
+  this->m_sortBox = new UIChangeMaterialWnd_CheckBox(*this->m_context, *this->m_controls);
+  this->m_sortBox->SetSize(74, 14);
+  this->m_sortBox->SetBitmaps("유저인터페이스\\ChangeMaterial\\btn_sort_up.bmp", "유저인터페이스\\ChangeMaterial\\btn_sort_down.bmp");
+  this->m_sortBox->ascendingText = LookupMessage(3722);
+  this->m_sortBox->descendingText = LookupMessage(3775);
+  this->m_sortBox->Invalidate();
+  this->m_sortBox->Move(316, 24);
+  this->m_sortBox->SetId(364);
+  this->m_sortBox->SetChecked(1);
+  this->AddChild(this->m_sortBox);
+
+  UIBitmapButton* change = new UIBitmapButton(*this->m_context, *this->m_controls);
+  this->m_button = change;
+  change->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_start.bmp", 0, 0);
+  change->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_over.bmp", 1, 0);
+  change->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_press.bmp", 2, 0);
+  change->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_disable.bmp", 3, 0);
+  change->SetSize(change->BitmapWidth(), change->BitmapHeight());
+  change->Move(140, 171);
+  change->SetId(184);
+  this->AddChild(change);
+
+  UIBasicButton* cancel = new UIBasicButton(*this->m_context, *this->m_controls);
+  cancel->Configure(42, LookupMessage(3045));
+  cancel->Move(width - cancel->geometry.width - 55, height - cancel->geometry.height - 12);
+  cancel->SetId(201);
+  this->AddChild(cancel);
+
+  UIChangeMaterialWnd_List* list = new UIChangeMaterialWnd_List(*this->m_context, *this->m_frameContext);
+  *reinterpret_cast<UIChangeMaterialWnd_List**>(reinterpret_cast<char*>(this) + 0xB4) = list;
+  list->SetSize(186, 216);
+  list->Move(310, 41);
+  this->AddChild(list);
+  list->SendMsg(nullptr, 23, 0, 0, 0, 0);
 }
