@@ -102,6 +102,7 @@ public:
   void RenderOverlaySprite(const float* matrix, int);
   void UpdateGaugeWindow();
   void DrawLayers(const float* matrix, int unknown0030, char unknown0034);
+  void ChangeState(int state, int resetPosition);
 
   float* GetExtent(float* extent) const override;
 
@@ -232,6 +233,7 @@ public:
   void ApplyFollowOffset(CGameActor* target, float x, float z, int* row, int* column);
   float AdjustFollowDistance(CGameActor* target, float distance);
   void UpdatePendingAction();
+  void Initialize();
 
   /* 0510 */ int unknown_0510;
   /* 0514 */ int unknown_0514;
@@ -268,6 +270,10 @@ struct GrannyPcLight {
 class CGrannyPc : public CGameActor {
 public:
   bool OnProcess() override;
+  void SendMsg(
+    CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m
+  ) override;
+  void Render(int argument) override;
   void SetAction(unsigned animation, int motion, int repeat) override;
   void Slot08() override;
   void Slot15(int first, int second) override;
@@ -294,6 +300,7 @@ public:
   void UpdateAnimation(C3dGrannyModelRes* model);
   void RenderModel(const matrix& view, const GrannyPcLight& light, C3dGrannyModelRes* model, int layer, C3dGrannyModelRes* animation);
   void RenderCached(const matrix& view, int layer, C3dGrannyModelRes* model);
+  void RenderShadow(int argument, vector3d lightDirection, bool cached);
 
   /* 0410 */ std::string unknown_0410;
   /* 0428 */ int unknown_0428;
@@ -310,7 +317,9 @@ public:
   /* 0454 */ int unknown_0454;
   /* 0458 */ unsigned char unknown_0458[8];
   /* 0460 */ std::string unknown_0460;
-  /* 0478 */ unsigned char unknown_0478[0x0C];
+  /* 0478 */ UIWindow* unknown_0478;
+  /* 047C */ int unknown_047C;
+  /* 0480 */ int unknown_0480;
   /* 0484 */ C3dGrannyModelRes* model;
   /* 0488 */ C3dGrannyModelRes* layerModels[10];
   /* 04B0 */ granny_model_instance* instance;
@@ -341,7 +350,7 @@ public:
   /* 1EB8 */ matrix meshTransforms[30];
   /* 2458 */ unsigned char unknown_2458[0xF8];
   /* 2550 */ granny_world_pose* unknown_2550;
-  /* 2554 */ int unknown_2554;
+  /* 2554 */ CTexture* unknown_2554;
   /* 2558 */ std::vector<vector3d> unknown_2558;
   /* 2564 */ int attachLayer;
   /* 2568 */ int unknown_2568;
