@@ -797,3 +797,11 @@ CNavi_Link* CNavigationManager::GetNode(int index) const {
   }
   return nullptr;
 }
+
+// OFFSET: 0x00B96F20
+// FUNCTION: fn_19595
+void CNavigationManager::ResetCurrentTarget() {
+  this->currentTarget = NavigationTarget();
+  this->LoadTargetPreview();
+  this->ClearRouteNodes();
+}

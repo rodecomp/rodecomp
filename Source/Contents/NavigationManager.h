@@ -351,6 +351,7 @@ public:
   bool GetRouteFlag() const;
   int GetSelectedNode() const;
   CNavi_Link* GetNode(int index) const;
+  void ResetCurrentTarget();
   int AddWrappedRouteLines(int kind, int x, int y, const char* text);
   bool SelectState(int index);
   bool SelectNodeState();
