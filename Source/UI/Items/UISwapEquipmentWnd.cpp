@@ -1,16 +1,23 @@
 #include "UI/Items/UISwapEquipmentWnd.h"
 
+#include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/Actors/Pc.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
+#include "Contents/PlayerNameDictionary.h"
 #include "Contents/World/World.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
 
 #include <windows.h>
 #include <timeapi.h>
@@ -210,4 +217,90 @@ void UISwapBitmapButton::Paint() {
   this->SetBitmap(elapsed < 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_press.bmp", 2, 0);
   this->m_textColor = elapsed < 10000 ? 0x969696 : 0x172842;
   this->DrawCenteredText(this->geometry.width / 2, this->geometry.height / 2 - 5, this->label.c_str(), this->label.size(), 0, 12, this->m_textColor, 0);
+}
+
+// OFFSET: 0x00830E20
+// FUNCTION: fn_10397
+void UISwapEquipmentWnd::Slot26(int x, int y) {
+  if (y < 17) {
+    this->SendMsg(this, 6, 0xCA, 0, 0, 0);
+  }
+
+  ITEM_INFO item = this->ItemAtPoint(x, y);
+  if (item.unknown_0000[1] > 0 && item.quantity > 0) {
+    const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[3]);
+    CMode* mode = g_modeMgr.gameMode;
+    if (GetAsyncKeyState(VK_CONTROL)) {
+      mode->SendMsg(0x131, reinterpret_cast<int>(&item), 0, 0, 0);
+    } else {
+      mode->SendMsg(0x12F, slots.values[2], this->unknown_00BC == 2, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00831130
+// FUNCTION: fn_10399
+void UISwapEquipmentWnd::Slot28(int x, int y) {
+  {
+    ITEM_INFO item = this->ItemAtPoint(x, y);
+    if (item.unknown_0000[1] > 0) {
+      int tooltipX = 6;
+      int tooltipY = y - (y - 22) % 26 - 19;
+      if (x >= 170) {
+        tooltipX = 175;
+      } else if (x >= 106) {
+        tooltipX = this->geometry.width / 2 - 20;
+      }
+      this->ToScreen(tooltipX, tooltipY);
+
+      std::string text;
+      ItemDescriptions descriptions{g_itemDescriptions};
+      bool languagePrefix = false;
+      WORD language = g_serverLanguage->language;
+      ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+      if (item.quantity > 1) {
+        if (item.unknown_0098 != 0) {
+          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0x9F7), naming.DisplayName(item, 0)));
+        } else {
+          text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0xB7), naming.DisplayName(item, 0).c_str(), item.quantity));
+        }
+      } else if (item.unknown_0098 != 0) {
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(0xA28), naming.DisplayName(item, 0).c_str(), item.unknown_0098));
+      } else {
+        text = naming.DisplayName(item, 0);
+      }
+
+      reinterpret_cast<ModeTooltip*>(g_modeMgr.GetGameMode())->Show(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    }
+  }
+
+  const int previousD4 = this->unknown_00D4;
+  const int previousD8 = this->unknown_00D8;
+  const int previousDC = this->unknown_00DC;
+  this->unknown_00D4 = -1;
+  this->unknown_00D8 = -1;
+  this->unknown_00DC = -1;
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (mode->drag.source == 1) {
+    if (!((x >= 6 && x < 30) || (x >= 251 && x < 275))) {
+      return;
+    }
+
+    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, mode->drag.id);
+    if (item.unknown_0000[1] > 0 && item.unknown_0000[2] != 0) {
+      const EquipSlots slots = g_session.GetEquipSlots(item.unknown_0000[2]);
+      this->unknown_00D4 = slots.values[2];
+      if (slots.values[1] != -1) {
+        this->unknown_00D8 = slots.values[1];
+      }
+      if (slots.values[0] != -1) {
+        this->unknown_00DC = slots.values[0];
+      }
+    }
+  }
+
+  if (previousD4 != this->unknown_00D4 || previousD8 != this->unknown_00D8 || previousDC != this->unknown_00DC) {
+    this->Invalidate();
+  }
 }
