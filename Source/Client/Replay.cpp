@@ -1153,6 +1153,214 @@ std::vector<unsigned char> MessengerMember::Serialize() const {
 }
 
 // OFFSET: 0x00E3E550
+// FUNCTION: fn_24197
+std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(1000, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1010, &this->m_aid, sizeof(this->m_aid));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1011, &this->m_gid, sizeof(this->m_gid));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1012, &this->m_navigationPlayerMap[0x14], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1013, &this->m_navigationPlayerMap[0x18], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1014, &this->m_job, sizeof(this->m_job));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1015, &this->unknown_162C[0x4], 8);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1016, &this->m_level, sizeof(this->m_level));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1017, this->unknown_1654, 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1018, &this->unknown_162C[0xC], 8);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1019, &this->m_jobLevel, sizeof(this->m_jobLevel));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1020, this->unknown_165C, 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1021, &this->m_guildSkillPoint, sizeof(this->m_guildSkillPoint));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1022, this->unknown_1664, 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1023, &this->unknown_1664[0x4], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1024, &this->m_standardStats[0], sizeof(this->m_standardStats[0]));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1025, &this->m_standardStats[1], sizeof(this->m_standardStats[1]));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1026, &this->m_standardStats[2], sizeof(this->m_standardStats[2]));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1027, &this->m_standardStats[3], sizeof(this->m_standardStats[3]));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1028, &this->m_standardStats[4], sizeof(this->m_standardStats[4]));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1029, &this->m_standardStats[5], sizeof(this->m_standardStats[5]));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1030, this->unknown_169C, 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1031, &this->unknown_169C[0x4], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1032, &this->unknown_169C[0x8], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1033, &this->unknown_169C[0xC], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1034, &this->unknown_169C[0x10], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1035, &this->unknown_169C[0x14], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1036, &this->unknown_169C[0x18], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1037, &this->unknown_169C[0x1C], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1038, &this->unknown_169C[0x20], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1039, &this->unknown_169C[0x24], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1040, &this->unknown_169C[0x28], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1041, &this->unknown_169C[0x2C], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1042, &this->unknown_169C[0x30], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1043, &this->unknown_169C[0x34], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(1044, &this->unknown_169C[0x38], 4);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  AppendBytes(records, BuildReplayTaggedRecord(1045, &this->unknown_169C[0x3C], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1046, &this->unknown_169C[0x40], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1047, &this->unknown_169C[0x44], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1048, &this->unknown_169C[0x48], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1049, &this->unknown_169C[0x4C], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1050, &this->unknown_16EC, sizeof(this->unknown_16EC)));
+  AppendBytes(records, BuildReplayTaggedRecord(1051, &this->m_zeny, sizeof(this->m_zeny)));
+  AppendBytes(records, BuildReplayTaggedRecord(1052, this->unknown_16F4, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1053, &this->unknown_16F4[0x4], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1054, &this->unknown_162C[0x14], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1055, &this->unknown_162C[0x1C], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1056, this->unknown_1704, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1057, &this->unknown_1708, sizeof(this->unknown_1708)));
+  AppendBytes(records, BuildReplayTaggedRecord(1058, this->unknown_170C, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1059, &this->unknown_0E9C[0x34], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1060, &this->m_head, sizeof(this->m_head)));
+  AppendBytes(records, BuildReplayTaggedRecord(1061, &this->unknown_0EDC[0x4], 8));
+  AppendBytes(records, BuildReplayTaggedRecord(1062, &this->unknown_0EDC[0xC], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1063, &this->m_bodyStyle, sizeof(this->m_bodyStyle)));
+  AppendBytes(records, BuildReplayTaggedRecord(1064, &this->m_headPalette, sizeof(this->m_headPalette)));
+  AppendBytes(records, BuildReplayTaggedRecord(1065, this->unknown_0EF4, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1066, &this->unknown_0EF4[0x4], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1067, &this->unknown_0EF4[0x8], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1068, this->unknown_0F0C, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1069, &this->unknown_0F0C[0x4], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1070, &this->m_jobFlags, sizeof(this->m_jobFlags)));
+  AppendBytes(records, BuildReplayTaggedRecord(1071, &this->m_robe, sizeof(this->m_robe)));
+  AppendBytes(records, BuildReplayTaggedRecord(1072, &this->unknown_5974[0x4], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1073, &this->unknown_5974[0x8], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1074, &this->unknown_5974[0xC], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1075, &this->unknown_5974[0x10], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1076, &this->unknown_5974[0x14], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1077, &this->unknown_5974[0x18], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1078, &this->unknown_5974[0x1C], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1079, &this->unknown_5974[0x20], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1080, &this->unknown_5974[0x24], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1081, &this->unknown_5974[0x2C], 0x18));
+  AppendBytes(records, BuildReplayTaggedRecord(1082, this->unknown_0F24, 1));
+  AppendBytes(records, BuildReplayTaggedRecord(1083, &this->m_score1, sizeof(this->m_score1)));
+  AppendBytes(records, BuildReplayTaggedRecord(1084, &this->m_score2, sizeof(this->m_score2)));
+  AppendBytes(records, BuildReplayTaggedRecord(1085, this->unknown_0F30, 1));
+  AppendBytes(records, BuildReplayTaggedRecord(1086, &this->cartCount, sizeof(this->cartCount)));
+  AppendBytes(records, BuildReplayTaggedRecord(1087, &this->cartMaxCount, sizeof(this->cartMaxCount)));
+  AppendBytes(records, BuildReplayTaggedRecord(1088, &this->cartWeight, sizeof(this->cartWeight)));
+  AppendBytes(records, BuildReplayTaggedRecord(1089, &this->cartMaxWeight, sizeof(this->cartMaxWeight)));
+  AppendBytes(records, BuildReplayTaggedRecord(1090, this->unknown_0F44, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1091, &this->unknown_0F44[0x4], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1092, &this->unknown_5490[0x8], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1093, &this->unknown_5490[0xC], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(1094, &this->unknown_54A0, sizeof(this->unknown_54A0)));
+  AppendBytes(records, BuildReplayTaggedRecord(1095, &this->unknown_54A4, sizeof(this->unknown_54A4)));
+  AppendBytes(records, BuildReplayTaggedRecord(1096, &this->unknown_54A8, sizeof(this->unknown_54A8)));
+  AppendBytes(records, BuildReplayTaggedRecord(1097, this->unknown_550C.c_str(), this->unknown_550C.size()));
+  const unsigned char option = g_serviceOptions.Get(0x40);
+  AppendBytes(records, BuildReplayTaggedRecord(1098, &option, sizeof(option)));
+  AppendBytes(records, BuildReplayTaggedRecord(1099, &this->unknown_5468, sizeof(this->unknown_5468)));
+  AppendBytes(records, BuildReplayTaggedRecord(1100, &this->m_bodyCostume, sizeof(this->m_bodyCostume)));
+  AppendBytes(records, BuildReplayTaggedRecord(1101, &this->unknown_7FBC, sizeof(this->unknown_7FBC)));
+  AppendBytes(records, BuildReplayTaggedRecord(1001, nullptr, 0));
+  return records;
+}
 
 // OFFSET: 0x00E41E60
 // FUNCTION: fn_24201
