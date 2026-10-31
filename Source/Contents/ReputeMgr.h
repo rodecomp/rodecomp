@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_REPUTEMGR_H
 #define RAGNAROK_SOURCE_CONTENTS_REPUTEMGR_H
 
+#include "Contents/ReputeRecords.h"
 #include "Script/LuaInstance.h"
 #include "Utility/Singleton.h"
 
@@ -8,6 +9,7 @@
 #include <cstdint>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 enum ReputeVisibility : std::int64_t {
@@ -43,6 +45,20 @@ public:
   void SetPoint(std::uint64_t id, std::int64_t point);
   std::vector<const ReputeInfo*> FindReputes(const std::string& keyword) const;
   void SetPointsReceived(bool received);
+
+  struct GroupInserter {
+    /* 0000 */ CReputeMgr* manager;
+    /* 0004 */ std::map<std::uint64_t, ReputeGroup>* dest;
+
+    void operator()(const std::pair<const int, ReputeGroupRecord>& entry) const;
+  };
+
+  struct InfoInserter {
+    /* 0000 */ CReputeMgr* manager;
+    /* 0004 */ std::map<std::uint64_t, ReputeInfo>* dest;
+
+    void operator()(const std::pair<const int, ReputeInfoRecord>& entry) const;
+  };
 
 protected:
   /* 0004 */ std::map<std::uint64_t, ReputeInfo> m_infos;

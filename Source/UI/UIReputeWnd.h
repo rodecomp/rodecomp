@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_UIREPUTEWND_H
 
 #include "UI/Window/UIFrameWnd.h"
+#include "Contents/ReputeMgr.h"
 
 #include <cstdint>
 #include <string>
@@ -32,4 +33,7 @@ public:
   std::vector<const ReputeInfo*> m_reputes;
 };
 
+#include "Contents/ReputeMgrLoad.inl"
+
 #endif
+

@@ -10,6 +10,8 @@
 #include <utility>
 #include <vector>
 
+#include "Contents/ReputeRecords.h"
+
 struct EZ2STREffectRecord;
 
 class JsonValue;
@@ -39,6 +41,7 @@ public:
   int AsInt() const;
   std::string AsString() const;
   const JsonObject& GetObject() const;
+  const JsonArray& GetArray() const;
 
   /* 0000 */ unsigned char type;
   /* 0001 */ unsigned char unknown_0001;
@@ -150,6 +153,10 @@ inline const JsonObject& JsonValue::GetObject() const {
   return *static_cast<const JsonObject*>(this->Dereference()->pointer);
 }
 
+inline const JsonArray& JsonValue::GetArray() const {
+  return *static_cast<const JsonArray*>(this->Dereference()->pointer);
+}
+
 class JsonCppLoader {
 public:
   JsonValue& GetValue(JsonValue& out, const std::string& key, const JsonValue& node, int expectedType);
@@ -158,6 +165,8 @@ public:
   bool GetMapStringBoolValue(const JsonValue& node, const std::string& key, std::map<std::string, bool>* out);
   bool sub_4F3C70(std::vector<unsigned char>& buffer, bool bson);
   bool sub_50C2A0(std::map<std::string, EZ2STREffectRecord>* out);
+  bool sub_50AE30(std::map<int, ReputeGroupRecord>* out);
+  bool sub_50B830(std::map<int, ReputeInfoRecord>* out);
 
   /* 0000 */ unsigned char unknown_0000[0x08];
   /* 0008 */ JsonValue document;
