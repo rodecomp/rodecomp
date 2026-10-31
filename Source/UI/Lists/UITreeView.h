@@ -13,9 +13,14 @@ class UITVTextButton;
 struct UIButtonContext;
 
 struct UITreeNode {
-  /* 0000 */ unsigned char unknown_0000[0xC];
+  /* 0000 */ int id;
+  /* 0004 */ int expanded;
+  /* 0008 */ unsigned char unknown_0008[0x4];
   /* 000C */ char name[0x100];
-  /* 010C */ unsigned char unknown_010C[0x64];
+  /* 010C */ unsigned char unknown_010C[0x5E];
+  /* 016A */ unsigned char draggable;
+  /* 016B */ unsigned char container;
+  /* 016C */ unsigned char unknown_016C[0x4];
   /* 0170 */ UITreeNode* unknown_0170;
   /* 0174 */ UITVBitmapButton* expandButton;
   /* 0178 */ UITVBitmapButton* collapseButton;
@@ -35,20 +40,23 @@ public:
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot35(int value) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   virtual void Slot53();
 
   void HideNodes(std::list<UITreeNode*>& nodes);
+  bool DeleteChildNodes(UITreeNode* node);
+  int RemoveChildNode(UITreeNode* parent, int id, bool keepButtons);
   void AddNodeButtons(UITreeNode* node, int id);
   void AddNodeLabel(UITreeNode* node, int id);
 
 protected:
   /* 007C */ UIScrollBar* verticalBar;
   /* 0080 */ int verticalOverflow;
-  /* 0084 */ unsigned char unknown_0084[0x4];
-  /* 0088 */ int unknown_0088;
-  /* 008C */ int unknown_008C;
-  /* 0090 */ int unknown_0090;
-  /* 0094 */ unsigned char unknown_0094[0x4];
+  /* 0084 */ UITreeNode* root;
+  /* 0088 */ UITreeNode* unknown_0088;
+  /* 008C */ UITreeNode* unknown_008C;
+  /* 0090 */ UITreeNode* unknown_0090;
+  /* 0094 */ UITreeNode* editNode;
   /* 0098 */ UIEditCtrl2* edit;
   /* 009C */ int itemPadding;
   /* 00A0 */ int itemHeight;

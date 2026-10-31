@@ -13,6 +13,10 @@
 #include "UI/Lists/UIImgMenu.h"
 #include "UI/Lists/UIListBoxEx.h"
 #include "UI/Lists/UITabControl.h"
+#include "UI/Lists/UITreeView.h"
+#include "UI/Buttons/UITVTextButton.h"
+#include "UI/Buttons/UITVBitmapButton.h"
+#include "UI/Window/InputFocus.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Edit/UIEditCtrl_Currency.h"
 #include "Render/Text/TextContext.h"
@@ -22,6 +26,7 @@
 #include "UI/Window/WindowDialogs.h"
 #include <algorithm>
 #include <cstdio>
+#include <cstring>
 // OFFSET: 0x0086E550
 // FUNCTION: fn_11073
 UIScrollBar::UIScrollBar(UIWindowContext& windows)
@@ -901,3 +906,193 @@ void UIChatHisBox::ClearNaviLinks() {
     row = this->naviLinks.erase(row);
   }
 }
+
+// OFFSET: 0x0089ADD0
+// FUNCTION: fn_11563
+int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 0:
+    if (sender == this->edit && this->editNode) {
+      this->SendMsg(nullptr, 110, 0, 1, 0, 0);
+    }
+    break;
+  case 7:
+  case 9:
+  case 10: {
+    this->HideNodes(this->root->children);
+    const int previous = this->unknown_00A8;
+    const int visible = this->geometry.height / this->itemHeight;
+    if (message == 9) {
+      this->unknown_00A8 = previous - visible + 1;
+    } else if (message == 10) {
+      this->unknown_00A8 = previous - 1 + visible;
+    } else {
+      this->unknown_00A8 = previous + static_cast<int>(a);
+    }
+
+    if (this->unknown_00A8 < 0) {
+      this->unknown_00A8 = 0;
+    }
+
+    const int maximum = this->itemCount - visible;
+    if (this->unknown_00A8 > maximum) {
+      this->unknown_00A8 = maximum;
+    }
+
+    this->verticalBar->position = this->unknown_00A8;
+    this->verticalBar->Invalidate();
+    this->Invalidate();
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+    return this->unknown_00A8 - previous;
+  }
+  case 18:
+    if (this->verticalOverflow) {
+      this->SendMsg(this->verticalBar, 7, -1, 0, 0, 0);
+    }
+    break;
+  case 19:
+    if (this->verticalOverflow) {
+      this->SendMsg(this->verticalBar, 7, 1, 0, 0, 0);
+    }
+    break;
+  case 97:
+    this->unknown_0088 = reinterpret_cast<UITreeNode*>(a);
+    if (a) {
+      this->parent->SendMsg(this, 97, a, sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0);
+    }
+    break;
+  case 98:
+  case 99:
+  case 100:
+    this->unknown_008C = nullptr;
+    this->unknown_0090 = nullptr;
+    this->unknown_0088 = reinterpret_cast<UITreeNode*>(a);
+    if (!a) {
+      break;
+    }
+
+    if (message == 99) {
+      this->parent->SendMsg(this, 99, a, sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0);
+      break;
+    }
+
+    if (this->unknown_0088->children.size() != 0) {
+      this->HideNodes(this->root->children);
+      const int x = sender->geometry.x;
+      const int y = message == 98 ? sender->geometry.y - 6 : sender->geometry.y;
+      UIWindow* button;
+      if (this->unknown_0088->expanded == 0) {
+        this->unknown_0088->expanded = 1;
+        button = this->unknown_0088->collapseButton;
+      } else {
+        this->unknown_0088->expanded = 0;
+        button = this->unknown_0088->expandButton;
+      }
+      button->Move(x, y);
+      this->Invalidate();
+    }
+
+    if (message == 98) {
+      this->parent->SendMsg(
+        this, 98, reinterpret_cast<std::intptr_t>(this->unknown_0088), sender->geometry.x + b, sender->geometry.height / 2 + sender->geometry.y, 0
+      );
+    }
+
+    this->unknown_008C = nullptr;
+    this->unknown_0090 = nullptr;
+    break;
+  case 107:
+    this->unknown_008C = reinterpret_cast<UITreeNode*>(a);
+    this->unknown_0088 = reinterpret_cast<UITreeNode*>(a);
+    if (this->unknown_008C->draggable == 0) {
+      this->unknown_008C = nullptr;
+    }
+    break;
+  case 108:
+    this->m_context->cursor.Set(0, this->m_context->cursorTick);
+    if (this->unknown_008C && this->unknown_008C->id != a) {
+      UITreeNode* target = reinterpret_cast<UITreeNode*>(a);
+      this->unknown_0090 = target;
+      if (target->container == 0) {
+        this->unknown_0090 = target->unknown_0170;
+      }
+      this->unknown_0090->expanded = 1;
+      this->Invalidate();
+    }
+    break;
+  case 109:
+    if (sender == this->parent) {
+      this->unknown_0090 = nullptr;
+    }
+
+    if (this->unknown_008C) {
+      if (this->unknown_008C->unknown_0170 == this->unknown_0090) {
+        break;
+      }
+      if (this->unknown_0090 && this->unknown_0090->unknown_0170 == this->unknown_008C) {
+        break;
+      }
+
+      this->m_context->cursor.Set(2, this->m_context->cursorTick);
+      UITreeNode* node = this->unknown_008C;
+      UITVTextButton* label = node->labelButton;
+      this->RemoveChildNode(node->unknown_0170, node->id, true);
+      UITreeNode* previousParent = this->unknown_008C->unknown_0170;
+      this->unknown_008C->unknown_0170 = this->unknown_0090;
+      UITreeNode* target = this->unknown_0090 ? this->unknown_0090 : this->root;
+      target->children.push_back(this->unknown_008C);
+      this->unknown_008C->labelButton = label;
+      if (this->parent) {
+        this->parent->SendMsg(
+          this, 109, reinterpret_cast<std::intptr_t>(this->unknown_008C), reinterpret_cast<std::intptr_t>(this->unknown_0090),
+          reinterpret_cast<std::intptr_t>(previousParent), 0
+        );
+      }
+      this->HideNodes(this->root->children);
+    }
+
+    this->unknown_0088 = nullptr;
+    this->unknown_008C = nullptr;
+    this->unknown_0090 = nullptr;
+    this->Invalidate();
+    break;
+  case 110:
+    if (b == 0) {
+      this->editNode = reinterpret_cast<UITreeNode*>(a);
+      this->edit->maximum = c > 361 ? 361 : static_cast<int>(c);
+      this->edit->SetText(this->editNode->name);
+      InputFocus focus{g_windowMgr.hoverWindow};
+      focus.Set(this->edit);
+      this->Invalidate();
+    } else if (b == 1) {
+      if (g_windowMgr.GetHoverWindow() == this->edit) {
+        const std::size_t length = std::strlen(this->edit->Text());
+        if (this->parent) {
+          this->parent->SendMsg(this, 110, reinterpret_cast<std::intptr_t>(this->edit->Text()), length + 1, 0, 0);
+        }
+      }
+    } else {
+      const int x = this->edit->geometry.x;
+      const int y = this->edit->geometry.y;
+      this->edit->Move(-100, -100);
+      if (c != 0) {
+        std::strcpy(this->editNode->name, this->edit->Text());
+        this->editNode->labelButton->SetLabel(std::string(this->edit->Text()));
+        this->editNode->labelButton->ResizeToText();
+      }
+      this->editNode->labelButton->Move(x, y);
+      this->editNode = nullptr;
+    }
+    break;
+  default:
+    break;
+  }
+
+  return 0;
+}
+
+// OFFSET: 0x0089E570
+
+// OFFSET: 0x0089E6F0
