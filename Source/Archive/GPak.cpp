@@ -2181,48 +2181,57 @@ __forceinline void EncryptDataHash(std::span<const std::uint8_t> data, std::span
 }
 
 // OFFSET: 0x006442D0
+// FUNCTION: fn_04843
 void sub_6442D0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> input, std::span<std::uint8_t, 16> output) {
-  EncryptBlockWithDataHash(data, keyData, 0, input, output);
+  EncryptBlockWithDataHash(data, keyData, 0x30, input, output);
 }
 
 // OFFSET: 0x00644480
+// FUNCTION: fn_04844
 void sub_644480(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> input, std::span<std::uint8_t, 16> output) {
-  EncryptBlockWithDataHash(data, keyData, 1, input, output);
+  EncryptBlockWithDataHash(data, keyData, 0x31, input, output);
 }
 
 // OFFSET: 0x00644630
+// FUNCTION: fn_04845
 void sub_644630(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> input, std::span<std::uint8_t, 16> output) {
-  EncryptBlockWithDataHash(data, keyData, 2, input, output);
+  EncryptBlockWithDataHash(data, keyData, 0x32, input, output);
 }
 
 // OFFSET: 0x006447E0
+// FUNCTION: fn_04846
 void sub_6447E0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> input, std::span<std::uint8_t, 16> output) {
-  EncryptBlockWithDataHash(data, keyData, 3, input, output);
+  EncryptBlockWithDataHash(data, keyData, 0x33, input, output);
 }
 
 // OFFSET: 0x00644990
+// FUNCTION: fn_04847
 void sub_644990(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> input, std::span<std::uint8_t, 16> output) {
-  EncryptBlockWithDataHash(data, keyData, 4, input, output);
+  EncryptBlockWithDataHash(data, keyData, 0x34, input, output);
 }
 
 // OFFSET: 0x00644B40
+// FUNCTION: fn_04848
 void sub_644B40(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> input, std::span<std::uint8_t, 16> output) {
-  EncryptDataHash(data, keyData, 0, input, output);
+  EncryptDataHash(data, keyData, 0x30, input, output);
 }
 
 // OFFSET: 0x00644CE0
+// FUNCTION: fn_04849
 void sub_644CE0(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> input, std::span<std::uint8_t, 16> output) {
-  EncryptDataHash(data, keyData, 1, input, output);
+  EncryptDataHash(data, keyData, 0x31, input, output);
 }
 
 // OFFSET: 0x00644E80
+// FUNCTION: fn_04850
 void sub_644E80(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> input, std::span<std::uint8_t, 16> output) {
-  EncryptDataHash(data, keyData, 2, input, output);
+  EncryptDataHash(data, keyData, 0x32, input, output);
 }
 
 // OFFSET: 0x00645020
+// FUNCTION: fn_04851
 void sub_645020(std::span<const std::uint8_t> data, std::span<const std::uint8_t, 60> keyData, std::span<const std::uint8_t, 16> input, std::span<std::uint8_t, 16> output) {
-  EncryptDataHash(data, keyData, 4, input, output);
+  EncryptDataHash(data, keyData, 0x34, input, output);
 }
 
 struct PakDecryptor {
