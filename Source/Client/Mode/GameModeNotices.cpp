@@ -1193,6 +1193,15 @@ struct ClientItemLists {
   void ClearItems1738();
   void ClearItems1784(int index);
   void RemoveItem1710(std::uint32_t id, int quantity);
+  bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
+  bool AddExchangeItem(ITEM_INFO item);
+  void ClearItemSlotQuantities();
+  void ClearItems1768();
+  void ClearItems1758();
+  void ClearItems1748();
+  void ClearItems1760();
+  void AddItem1758(const ITEM_INFO& item);
+  void AddItem1748(const ITEM_INFO& item);
 };
 
 struct AchievementStatePacket {
@@ -2649,3 +2658,413 @@ void CGameMode::ReceiveExpGainNotice(const unsigned char* data) {
   }
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), color, 18, 0, 0);
 }
+
+#include "UI/Item/UIItemStoreWnd.h"
+#include "UI/Shop/UIMerchantShopMakeWnd.h"
+#include "UI/Text/UIStaticText.h"
+#include "UI/UIBarGraph.h"
+#include "UI/Window/UIBasicInfoWnd.h"
+#include "Contents/Effects/EmitterEffect.h"
+
+#pragma pack(push, 1)
+struct BankDepositAckPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t reason;
+  /* 0004 */ std::int64_t money;
+  /* 000C */ int zeny;
+};
+
+struct BankCheckPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int64_t money;
+  /* 000A */ std::int16_t reason;
+};
+
+struct ExchangeItemAddAckPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t index;
+  /* 0004 */ unsigned char result;
+};
+
+struct ExchangeRequestAckPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ unsigned char result;
+  /* 0003 */ std::uint32_t charId;
+  /* 0007 */ std::int16_t level;
+};
+
+struct SearchStoreOpenPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t openType;
+  /* 0004 */ unsigned char count;
+};
+
+struct StorageListHeader {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+};
+
+struct NamedStorageListHeader {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ char title[24];
+};
+
+struct StorageEquipRecord {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ unsigned char identified;
+  /* 0008 */ std::uint16_t location;
+  /* 000A */ std::uint16_t wearState;
+  /* 000C */ unsigned char damaged;
+  /* 000D */ unsigned char refine;
+  /* 000E */ std::uint32_t cards[4];
+  /* 001E */ int expireTime;
+};
+
+struct StorageEquipRecord2 {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ unsigned char identified;
+  /* 0008 */ std::uint16_t location;
+  /* 000A */ std::uint16_t wearState;
+  /* 000C */ unsigned char damaged;
+  /* 000D */ unsigned char refine;
+  /* 000E */ std::uint32_t cards[4];
+  /* 001E */ int expireTime;
+  /* 0022 */ std::uint16_t bindOnEquip;
+  /* 0024 */ std::uint16_t sprite;
+};
+
+struct StorageEquipRecord3 {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ std::uint16_t location;
+  /* 0009 */ std::uint16_t wearState;
+  /* 000B */ unsigned char refine;
+  /* 000C */ std::uint32_t cards[4];
+  /* 001C */ int expireTime;
+  /* 0020 */ std::uint16_t bindOnEquip;
+  /* 0022 */ std::uint16_t sprite;
+  /* 0024 */ unsigned char flags;
+};
+
+struct StorageEquipRecord4 {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ int location;
+  /* 000B */ int wearState;
+  /* 000F */ unsigned char refine;
+  /* 0010 */ std::uint32_t cards[4];
+  /* 0020 */ int expireTime;
+  /* 0024 */ std::uint16_t bindOnEquip;
+  /* 0026 */ std::uint16_t sprite;
+  /* 0028 */ unsigned char flags;
+};
+
+struct StorageEquipRecord5 {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ int location;
+  /* 000B */ int wearState;
+  /* 000F */ unsigned char refine;
+  /* 0010 */ std::uint32_t cards[4];
+  /* 0020 */ int expireTime;
+  /* 0024 */ std::uint16_t bindOnEquip;
+  /* 0026 */ std::uint16_t sprite;
+  /* 0028 */ unsigned char optionCount;
+  /* 0029 */ ItemSlotOption options[5];
+  /* 0042 */ unsigned char flags;
+};
+
+struct StorageNormalRecord {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ std::int16_t amount;
+  /* 0009 */ std::uint16_t wearState;
+  /* 000B */ std::uint32_t cards[4];
+  /* 001B */ int expireTime;
+  /* 001F */ unsigned char flags;
+};
+
+struct StorageNormalRecord2 {
+  /* 0000 */ std::int16_t index;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ std::int16_t amount;
+  /* 0009 */ int wearState;
+  /* 000D */ std::uint32_t cards[4];
+  /* 001D */ int expireTime;
+  /* 0021 */ unsigned char flags;
+};
+
+struct ItemCardSlots {
+  /* 0000 */ std::uint32_t cards[4];
+};
+
+struct ItemSlotOptions {
+  /* 0000 */ ItemSlotOption options[5];
+};
+
+struct LongParChangePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t type;
+  /* 0004 */ std::int64_t value;
+};
+#pragma pack(pop)
+
+struct SessionMessengerContext {
+  void ResetSlots();
+};
+
+// OFFSET: 0x00D195D0
+// FUNCTION: fn_21606
+void CGameMode::ReceiveBankDepositAck(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const BankDepositAckPacket*>(data);
+  if (packet->reason == 0) {
+    g_session.m_bankBalance = packet->money;
+    g_session.m_zeny = packet->zeny;
+    g_session.RefreshHpSpWindows();
+    g_session.InvalidateWindowFrames();
+    return;
+  }
+
+  char text[256];
+  if (packet->reason == 2) {
+    std::memset(text, 0, 250);
+    std::sprintf(text, LookupMessage(2456));
+  } else if (packet->reason == 3) {
+    std::memset(text, 0, 250);
+    std::sprintf(text, LookupMessage(2465));
+  } else if (packet->reason == 4) {
+    std::memset(text, 0, 250);
+    std::sprintf(text, LookupMessage(2489));
+  } else {
+    std::memset(text, 0, 250);
+    std::sprintf(text, LookupMessage(2454));
+  }
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+}
+
+// OFFSET: 0x00D196E0
+
+// OFFSET: 0x00D197F0
+
+// OFFSET: 0x00D1BE10
+
+// OFFSET: 0x00D1C2B0
+
+// OFFSET: 0x00D1C4E0
+// FUNCTION: fn_21626
+void CGameMode::ReceiveExchangeRequestAck(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const ExchangeRequestAckPacket*>(data);
+  switch (packet->result) {
+  case 3: {
+    this->SendMsg(40, 0, 0, 0, 0);
+    *reinterpret_cast<int*>(&this->unknown_0100[0x14]) = 1;
+    reinterpret_cast<SessionMessengerContext*>(&g_session)->ResetSlots();
+    reinterpret_cast<ClientItemLists*>(&g_session)->ClearItemSlotQuantities();
+    g_windowMgr.CloseWindow(10011);
+    UIWindow* window = g_windowMgr.EnsureWindow(10011);
+    if (window) {
+      const std::string& exchangeName = *reinterpret_cast<const std::string*>(&this->unknown_0130[0x18]);
+      window->SendMsg(nullptr, 50, reinterpret_cast<std::intptr_t>(exchangeName.c_str()), 0, 0, 0);
+    }
+    break;
+  }
+  case 4:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(69)), 0xFF, 0, 0, 0);
+    break;
+  case 0:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(70)), 0xFF, 0, 0, 0);
+    break;
+  case 1:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(71)), 0xFF, 0, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(72)), 0xFF, 0, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D45E90
+
+// OFFSET: 0x00D46000
+
+// OFFSET: 0x00D46460
+
+// OFFSET: 0x00D46680
+
+// OFFSET: 0x00D46A20
+
+// OFFSET: 0x00D46EE0
+
+// OFFSET: 0x00D470E0
+
+// OFFSET: 0x00D6DEF0
+
+// OFFSET: 0x00D6E640
+
+// OFFSET: 0x00D6E6F0
+
+// OFFSET: 0x00D6E7A0
+
+// OFFSET: 0x00D6E860
+
+// OFFSET: 0x00D713E0
+
+// OFFSET: 0x00D73AF0
+// FUNCTION: fn_22143
+void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
+  CRenderObject* actor = this->scene->GetGameActorByAidIncludeMe(*reinterpret_cast<const std::uint32_t*>(packet + 2));
+  if (!actor) {
+    return;
+  }
+
+  int effectId = *reinterpret_cast<const int*>(packet + 6);
+  if (effectId == 0x3FD) {
+    CEmitterEffect* emitter = static_cast<CEmitterEffect*>(g_effectMgr->Spawn(
+      0, 0x3CE, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0
+    ));
+    emitter->velocityMin.x = -2.0f;
+    emitter->velocityMin.y = 2.0f;
+    emitter->velocityMin.z = -2.0f;
+    emitter->velocityMax.x = 0.0f;
+    emitter->velocityMax.y = -1.0f;
+    emitter->velocityMax.z = 0.0f;
+    emitter->acceleration.x = 0.0f;
+    emitter->acceleration.y = -7.5f;
+    emitter->acceleration.z = 0.0f;
+    emitter->spread.x = -1.0f;
+    emitter->spread.y = 2.0f;
+    emitter->spread.z = -1.0f;
+    emitter->red = 255;
+    emitter->green = 255;
+    emitter->blue = 100;
+    emitter->alpha = 100;
+    emitter->rateMin = 20.0f;
+    emitter->rateMax = 100.0f;
+    emitter->scaleMin = 30.0f;
+    emitter->scaleMax = 30.0f;
+    emitter->lifeMin = 5.0f;
+    emitter->lifeMax = 10.0f;
+    emitter->sourceBlend = 5;
+    emitter->destinationBlend = 2;
+    emitter->SetParticleSpeed(3.0f);
+    emitter->SetCount(30);
+    emitter->SetTexture("smoke2.bmp");
+    emitter->duration = 1250;
+    effectId = *reinterpret_cast<const int*>(packet + 6);
+  }
+
+  if (g_serviceOptions.Get(0xE5)) {
+    switch (*reinterpret_cast<const int*>(packet + 6)) {
+    case 0x5A:
+      effectId = 0x48A;
+      break;
+    case 0x5C:
+      effectId = 0x48B;
+      break;
+    case 0x5F:
+      effectId = 0x489;
+      break;
+    }
+  }
+
+  CGameActor* gameActor = static_cast<CGameActor*>(actor);
+  if (!g_effectMgr->Spawn(
+        actor->render.accountId, effectId, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0
+      )) {
+    gameActor->LaunchEffect(*reinterpret_cast<const int*>(packet + 6), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  }
+
+  if (g_session.IsMercenaryJob(gameActor->GetEffectiveJob(-1)) && *reinterpret_cast<const int*>(packet + 6) == 0x238) {
+    ++gameActor->unknown_0210;
+    gameActor->ResetJobEffects();
+    gameActor->sub_CAA4D0();
+  }
+}
+
+#include "Client/Application/Launcher.h"
+
+#pragma pack(push, 1)
+struct TypedItemEntry {
+  /* 0000 */ int itemId;
+  /* 0004 */ std::uint32_t unknown_0004;
+  /* 0008 */ std::uint16_t unknown_0008;
+  /* 000A */ std::uint32_t unknown_000A;
+};
+
+struct TypedItemListPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::int16_t count;
+  /* 0006 */ std::int16_t type;
+  /* 0008 */ TypedItemEntry entries[1];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D1B690
+
+#include "UI/Shop/UIMerchantItemMyShopWnd.h"
+#include "UI/Shop/UIMerchantItemShopWnd.h"
+
+#pragma pack(push, 1)
+struct VendingItemRecord {
+  /* 0000 */ int price;
+  /* 0004 */ std::int16_t amount;
+  /* 0006 */ unsigned char type;
+  /* 0007 */ int itemId;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D70010
+
+#pragma pack(push, 1)
+struct VendingItemRecord2 {
+  /* 0000 */ int price;
+  /* 0004 */ std::int16_t amount;
+  /* 0006 */ std::int16_t index;
+  /* 0008 */ unsigned char type;
+  /* 0009 */ int itemId;
+  /* 000D */ unsigned char identified;
+  /* 000E */ unsigned char damaged;
+  /* 000F */ unsigned char refine;
+  /* 0010 */ std::uint32_t cards[4];
+  /* 0020 */ ItemSlotOption options[5];
+  /* 0039 */ int location;
+  /* 003D */ std::uint16_t sprite;
+};
+#pragma pack(pop)
+
+// INLINED
+static void FillVendingItem(ITEM_INFO& item, const VendingItemRecord2& record) {
+  item.unknown_0000[1] = record.index;
+  item.unknown_0014[0] = record.price;
+  item.unknown_0014[1] = record.price;
+  item.unknown_0000[0] = record.type;
+  item.quantity = record.amount;
+  item.identified = record.identified;
+  item.unknown_005D = record.damaged;
+  item.unknown_0060 = record.refine;
+  item.SetItemId(record.itemId);
+  std::memcpy(item.unknown_001C, record.cards, sizeof(record.cards));
+  item.unknown_0098 = CountItemSlotOptions(record.options);
+  for (int index = 0; index < item.unknown_0098; ++index) {
+    reinterpret_cast<ItemSlotOption*>(item.unknown_009C)[index] = record.options[index];
+  }
+  item.unknown_0000[2] = record.location;
+  item.unknown_0070 = record.sprite;
+}
+
+// OFFSET: 0x00D70790

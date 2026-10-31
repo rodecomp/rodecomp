@@ -30,6 +30,8 @@ struct CWorld;
 struct RenewQuestOngoingInfo;
 struct TextureRegion;
 struct vector3d;
+struct ItemCardSlots;
+struct ItemSlotOptions;
 
 struct MiniMapMember {
   /* 0000 */ int x;
@@ -559,6 +561,31 @@ public:
   void ReceiveWindow348Result(unsigned char result, std::int16_t index);
   void ReceiveRodexItemReturn(const unsigned char* packet);
   void ReceiveExpGainNotice(const unsigned char* packet);
+  void ReceiveBankDepositAck(const unsigned char* packet);
+  void ReceiveBankWithdrawAck(const unsigned char* packet);
+  void ReceiveBankCheck(const unsigned char* packet);
+  void ReceiveExchangeItemAddAck(const unsigned char* packet);
+  void ReceiveExchangeRequestAck2(const unsigned char* packet);
+  void ReceiveExchangeRequestAck(const unsigned char* packet);
+  void ReceiveOpenStore(const unsigned char* packet);
+  void ReceiveSearchStoreOpen(const unsigned char* packet);
+  void ReceiveStorageEquipList(const unsigned char* packet);
+  void ReceiveStorageEquipList2(const unsigned char* packet);
+  void ReceiveStorageEquipList3(const unsigned char* packet);
+  void ReceiveStorageEquipList4(const unsigned char* packet);
+  void ReceiveStorageEquipList5(const unsigned char* packet);
+  void ReceiveStorageNormalList(const unsigned char* packet);
+  void ReceiveStorageNormalList2(const unsigned char* packet);
+  void ReceiveItemUpgrade(std::uint16_t index, std::uint16_t refine, ItemCardSlots cards, ItemSlotOptions options);
+  void ReceiveFeedConfig(unsigned char state, unsigned char option);
+  void ReceiveFeedConfig2(unsigned char state, unsigned char option, bool petAutoFeed);
+  void ReceiveFeedConfig3(unsigned char state, unsigned char option, bool petAutoFeed, bool homunculusAutoFeed);
+  void ReceiveFeedConfig4(unsigned char state, unsigned char option, bool petAutoFeed, bool homunculusAutoFeed, int value);
+  void ReceiveLongParChange(const unsigned char* packet);
+  void ReceiveNotifyEffect(const unsigned char* packet);
+  void ReceiveTypedItemList(const unsigned char* packet);
+  void ReceiveVendingItemList(int aid, int storeId, char own, int count, std::uint32_t duration, const unsigned char* data, int value, int unused);
+  void ReceiveVendingItemList2(int aid, int storeId, char own, int count, std::uint32_t duration, const unsigned char* data);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

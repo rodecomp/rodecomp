@@ -4121,3 +4121,7 @@ void CGameMode::ReceiveGuildMemberMemoList(const unsigned char* data) {
   guildInfo->UpdateMemberExpRatios();
   g_windowMgr.RefreshGuildWindows();
 }
+
+// OFFSET: 0x00D3A630
+
+// OFFSET: 0x00D3A770
