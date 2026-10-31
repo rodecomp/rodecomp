@@ -12,15 +12,18 @@ class UIStaticText;
 class UITabControl;
 
 struct GuildStorageLogEntry {
-  /* 0000 */ int unknown_0000;
-  /* 0004 */ int unknown_0004;
-  /* 0008 */ unsigned char unknown_0008;
-  /* 0009 */ char unknown_0009[24];
-  /* 0021 */ char unknown_0021[27];
+  /* 0000 */ int unknown_0000 = 0;
+  /* 0004 */ int unknown_0004 = 0;
+  /* 0008 */ unsigned char unknown_0008 = 0;
+  /* 0009 */ char unknown_0009[24] = {};
+  /* 0021 */ char unknown_0021[24] = {};
   /* 003C */ std::string unknown_003C;
-  /* 0054 */ unsigned char unknown_0054[0x1C];
-  /* 0070 */ unsigned char unknown_0070;
-  /* 0071 */ unsigned char unknown_0071[3];
+  /* 0054 */ unsigned char unknown_0054 = 0;
+  /* 0058 */ int unknown_0058 = 0;
+  /* 005C */ int unknown_005C = 0;
+  /* 0060 */ unsigned char unknown_0060[16] = {};
+  /* 0070 */ unsigned char unknown_0070 = 0;
+  /* 0072 */ std::int16_t unknown_0072 = 0;
 };
 
 extern std::vector<GuildStorageLogEntry> g_guildStorageLogs[3];

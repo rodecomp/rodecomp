@@ -46,6 +46,7 @@
 #include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/CashShop/UICashShopWnd.h"
 #include "UI/Dialogs/UISayDialogWnd.h"
+#include "UI/Guild/UIGuild_Storage_Log.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "UI/Text/UITagTextViewer.h"
 #include "UI/UICaptchaPreviewWnd.h"
@@ -1240,6 +1241,7 @@ struct ClientItemLists {
   void ClearItems1760();
   void AddItem1758(const ITEM_INFO& item);
   void AddItem1748(const ITEM_INFO& item);
+  void AddItem1718(const RawItemBasic& item, int mode);
 };
 
 struct AchievementStatePacket {
@@ -2859,6 +2861,7 @@ struct LongParChangePacket {
 
 struct SessionMessengerContext {
   void ResetSlots();
+  int GetList0Size() const;
 };
 
 // OFFSET: 0x00D195D0
@@ -2936,6 +2939,52 @@ void CGameMode::ReceiveBankCheck(const unsigned char* data) {
     std::sprintf(text, LookupMessage(2454));
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
   }
+}
+
+#pragma pack(push, 1)
+struct TradeItemFilterPacket {
+  /* 0000 */ std::uint16_t opcode;
+  /* 0002 */ int type;
+};
+#pragma pack(pop)
+
+struct SessionItemLists {
+  void ClearTradeItems();
+};
+
+// OFFSET: 0x00D198F0
+// FUNCTION: fn_21612
+void CGameMode::ReceiveTradeItemFilter(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const TradeItemFilterPacket*>(data);
+  reinterpret_cast<SessionItemLists*>(&g_session)->ClearTradeItems();
+  const int count = reinterpret_cast<SessionMessengerContext*>(&g_session)->GetList0Size();
+  for (int i = 0; i < count; ++i) {
+    ITEM_INFO item = g_session.GetInventoryItemAt(i);
+    if (item.unknown_0000[1] == 0) {
+      continue;
+    }
+    if (packet->type == 1 && !this->IsEffectId994Group(std::atoi(item.itemId.c_str()))) {
+      continue;
+    }
+    if (packet->type == 2 && !this->IsEffectId990Group(std::atoi(item.itemId.c_str()))) {
+      continue;
+    }
+    if (item.unknown_0000[1] == g_session.unknown_16EC) {
+      continue;
+    }
+    RawItemBasic raw = {};
+    raw.id = item.unknown_0000[1];
+    strcpy_s(raw.itemId, sizeof(raw.itemId), item.itemId.c_str());
+    raw.unknown_000C = item.unknown_0000[0];
+    raw.identified = item.identified;
+    raw.unknown_0004 = 1;
+    raw.unknown_0008 = 2;
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1718(raw, 1);
+  }
+  UIWindow* window = g_windowMgr.EnsureWindow(160);
+  window->SendMsg(nullptr, 0x24, 1, 0, 0, 0);
+  window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  g_windowMgr.EnsureWindow(161)->SendMsg(nullptr, 0x17, packet->type, 0, 0, 0);
 }
 
 // OFFSET: 0x00D1BE10
@@ -3050,6 +3099,121 @@ void CGameMode::ReceiveExchangeRequestAck(const unsigned char* data) {
     g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(72)), 0xFF, 0, 0, 0);
     break;
+  }
+}
+
+#pragma pack(push, 1)
+struct GuildStorageLogPacketEntry {
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ int itemId;
+  /* 0008 */ int unknown_0008;
+  /* 000C */ unsigned char unknown_000C;
+  /* 000D */ int refine;
+  /* 0011 */ unsigned char unknown_0011[8];
+  /* 0019 */ unsigned char identified;
+  /* 001A */ std::int16_t count;
+  /* 001C */ unsigned char cards[16];
+  /* 002C */ char name[24];
+  /* 0044 */ char date[24];
+  /* 005C */ unsigned char unknown_005C;
+};
+
+struct GuildStorageLogPacket {
+  /* 0000 */ std::uint16_t opcode;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ std::int16_t result;
+  /* 0006 */ std::int16_t count;
+  /* 0008 */ GuildStorageLogPacketEntry entries[1];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D1C640
+// FUNCTION: fn_21627
+void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const GuildStorageLogPacket*>(data);
+  if (packet->result == 0) {
+    for (int i = 0; i < packet->count; ++i) {
+      const GuildStorageLogPacketEntry& source = packet->entries[i];
+      ITEM_INFO item;
+      item.unknown_00B8[0] = source.unknown_0000;
+      item.unknown_00B8[1] = source.unknown_0008;
+      item.unknown_00C0 = source.unknown_000C;
+      std::strcpy(reinterpret_cast<char*>(item.unknown_00C1), source.name);
+      std::strcpy(reinterpret_cast<char*>(item.unknown_00D9), source.date);
+      char number[16] = {};
+      item.itemId = _itoa(source.itemId, number, 10);
+      item.identified = source.identified;
+      item.unknown_0000[0] = source.count;
+      item.unknown_0060 = source.refine;
+      std::memcpy(item.unknown_001C, source.cards, sizeof(source.cards));
+      GuildStorageLogEntry entry;
+      entry.unknown_0000 = item.unknown_00B8[0];
+      entry.unknown_0004 = item.unknown_00B8[1];
+      entry.unknown_0008 = item.unknown_00C0;
+      std::strcpy(entry.unknown_0009, reinterpret_cast<const char*>(item.unknown_00C1));
+      std::strcpy(entry.unknown_0021, reinterpret_cast<const char*>(item.unknown_00D9));
+      entry.unknown_003C = item.DisplayName(0);
+      entry.unknown_0054 = item.identified;
+      entry.unknown_0058 = item.unknown_0000[0];
+      entry.unknown_005C = item.unknown_0060;
+      std::memcpy(entry.unknown_0060, item.unknown_001C, sizeof(entry.unknown_0060));
+      entry.unknown_0070 = source.unknown_005C;
+      g_guildStorageLogs[0].push_back(entry);
+    }
+  } else if (packet->result == 1) {
+    for (int i = 0; i < packet->count; ++i) {
+      const GuildStorageLogPacketEntry& source = packet->entries[i];
+      ITEM_INFO item;
+      item.unknown_00B8[0] = source.unknown_0000;
+      item.unknown_00B8[1] = source.unknown_0008;
+      item.unknown_00C0 = source.unknown_000C;
+      std::strcpy(reinterpret_cast<char*>(item.unknown_00C1), source.name);
+      std::strcpy(reinterpret_cast<char*>(item.unknown_00D9), source.date);
+      char number[16] = {};
+      item.itemId = _itoa(source.itemId, number, 10);
+      item.identified = source.identified;
+      item.unknown_0000[0] = source.count;
+      item.unknown_0060 = source.refine;
+      std::memcpy(item.unknown_001C, source.cards, sizeof(source.cards));
+      GuildStorageLogEntry entry;
+      entry.unknown_0000 = item.unknown_00B8[0];
+      entry.unknown_0004 = item.unknown_00B8[1];
+      entry.unknown_0008 = item.unknown_00C0;
+      std::strcpy(entry.unknown_0009, reinterpret_cast<const char*>(item.unknown_00C1));
+      std::strcpy(entry.unknown_0021, reinterpret_cast<const char*>(item.unknown_00D9));
+      entry.unknown_003C = item.DisplayName(0);
+      entry.unknown_0054 = item.identified;
+      entry.unknown_0058 = item.unknown_0000[0];
+      entry.unknown_005C = item.unknown_0060;
+      std::memcpy(entry.unknown_0060, item.unknown_001C, sizeof(entry.unknown_0060));
+      entry.unknown_0070 = source.unknown_005C;
+      g_guildStorageLogs[0].push_back(entry);
+    }
+    GuildStorageLogEntry pivot;
+    std::sort(g_guildStorageLogs[0].begin(), g_guildStorageLogs[0].end(), [&pivot](const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) {
+      return std::strcmp(left.unknown_0021, right.unknown_0021) > 0;
+    });
+    for (auto it = g_guildStorageLogs[0].begin(); it != g_guildStorageLogs[0].end(); ++it) {
+      if (it->unknown_0008 == 1) {
+        g_guildStorageLogs[1].push_back(*it);
+      } else {
+        g_guildStorageLogs[2].push_back(*it);
+      }
+    }
+    g_windowMgr.EnsureWindow(253);
+  } else {
+    char text[252];
+    if (packet->result == 2) {
+      std::memset(text, 0, 250);
+      std::sprintf(text, LookupMessage(2543));
+    } else {
+      std::memset(text, 0, 250);
+      std::sprintf(text, LookupMessage(1816));
+    }
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+    g_guildStorageLogs[0].clear();
+    g_guildStorageLogs[1].clear();
+    g_guildStorageLogs[2].clear();
   }
 }
 

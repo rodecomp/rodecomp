@@ -681,6 +681,8 @@ public:
   void ReceiveExchangeItemAddAck(const unsigned char* packet);
   void ReceiveExchangeRequestAck2(const unsigned char* packet);
   void ReceiveExchangeRequestAck(const unsigned char* packet);
+  void ReceiveGuildStorageLog(const unsigned char* packet);
+  void ReceiveTradeItemFilter(const unsigned char* packet);
   void ReceiveOpenStore(const unsigned char* packet);
   void ReceiveSearchStoreOpen(const unsigned char* packet);
   void ReceiveStorageEquipList(const unsigned char* packet);
