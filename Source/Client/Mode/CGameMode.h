@@ -605,6 +605,13 @@ public:
   void ApplyStatusChange(
     std::uint32_t aid, unsigned char on, int type, std::uint32_t remaining, int value1, int value2, int value3, unsigned char flag, std::uint32_t total
   );
+  void ReceiveObjectsDisappear(int count, const std::uint32_t* aids);
+  void ReceiveWindow107List(const unsigned char* packet);
+  void ReceiveActorColorChat(const unsigned char* packet);
+  void ReceiveWearEquipAck(unsigned char result, std::uint16_t index, std::uint16_t look, int location);
+  void ReceiveFormattedMessage(const unsigned char* packet);
+  void ReceiveParaItemResult(unsigned char success, int count, const unsigned char* data);
+  void ReceiveResultNotice4327(const unsigned char* packet);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

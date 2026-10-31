@@ -5768,3 +5768,155 @@ void CGameMode::ApplyStatusChange(
     );
   }
 }
+
+#pragma pack(push, 1)
+struct Window107Entry {
+  /* 0000 */ unsigned char unknown_0000[0x18];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D79540
+// FUNCTION: fn_22170
+void CGameMode::ReceiveObjectsDisappear(int count, const std::uint32_t* aids) {
+  for (int i = 0; i < count; ++i) {
+    const std::uint32_t aid = aids[i];
+    if (this->scene->RemoveItem(aid) == true) {
+      this->SendMsg(13, aid, 0, 0, 0);
+    } else if (this->scene->RemoveGroundItem(aid) == true) {
+      this->RemoveUnknown01A4(aid);
+    } else {
+      this->scene->RemoveSkill(aid);
+    }
+  }
+}
+
+// OFFSET: 0x00D795B0
+
+
+// OFFSET: 0x00D39AE0
+// FUNCTION: fn_21772
+void CGameMode::ReceiveActorColorChat(const unsigned char* packet) {
+  char text[256];
+  std::memset(text, 0, sizeof(text));
+  std::memcpy(text, packet + 12, *reinterpret_cast<const std::uint16_t*>(packet + 2) - 12);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), *reinterpret_cast<const int*>(packet + 8), 0, 0, 0);
+
+  CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4));
+  if (actor != nullptr) {
+    const int color = *reinterpret_cast<const int*>(packet + 8);
+    actor->SendMsg(nullptr, 7, 0, reinterpret_cast<int>(text), reinterpret_cast<int>(text) >> 31, color, color >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  if (g_whisperRecord != 0) {
+    this->WriteChatLog(text);
+  }
+}
+
+// OFFSET: 0x00D1F400
+// FUNCTION: fn_21637
+void CGameMode::ReceiveWearEquipAck(unsigned char result, std::uint16_t index, std::uint16_t look, int location) {
+  *reinterpret_cast<std::uint32_t*>(&this->unknown_0100[0x04]) = timeGetTime() - 2000;
+  switch (result) {
+  case 0: {
+    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+    if (item.unknown_0000[1]) {
+      item.unknown_0070 = look;
+      item.unknown_0000[3] = location;
+      g_session.OnItemEquipped(item);
+    }
+    break;
+  }
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1953)), 0xFF, 7, 0, 0);
+    break;
+  case 2:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(372)), 0xFF, 7, 0, 0);
+    break;
+  }
+}
+
+// OFFSET: 0x00D32A10
+// FUNCTION: fn_21747
+void CGameMode::ReceiveFormattedMessage(const unsigned char* packet) {
+  char text[500];
+  std::memset(text, 0, sizeof(text));
+  const std::uint16_t messageId = *reinterpret_cast<const std::uint16_t*>(packet + 2);
+  if (messageId == 3278) {
+    char name[260];
+    std::memset(name, 0, sizeof(name));
+    ITEM_INFO item;
+    item.SetItemId(*reinterpret_cast<const int*>(packet + 4));
+    int capacity = sizeof(name);
+    ItemDescriptions{g_itemDescriptions}.Name(item, name, capacity, 0);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(3278), name);
+  } else {
+    std::sprintf(text, LookupMessage(messageId), *reinterpret_cast<const int*>(packet + 4));
+  }
+
+  if (std::strlen(text) != 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
+  }
+}
+
+#include "UI/Item/UIParaItemShopWnd.h"
+
+#pragma pack(push, 1)
+struct ParaResultEntry {
+  /* 0000 */ int itemId;
+  /* 0004 */ std::int16_t quantity;
+  /* 0006 */ int location;
+  /* 000A */ unsigned char refine;
+  /* 000B */ int cards[4];
+  /* 001B */ std::uint16_t index;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D77E70
+// FUNCTION: fn_22155
+void CGameMode::ReceiveParaItemResult(unsigned char success, int count, const unsigned char* data) {
+  UIParaResultWnd* window = static_cast<UIParaResultWnd*>(g_windowMgr.EnsureWindow(256));
+  if (window == nullptr) {
+    return;
+  }
+
+  const ParaResultEntry* entry = reinterpret_cast<const ParaResultEntry*>(data);
+  for (int i = 0; i < count; ++i, ++entry) {
+    ITEM_INFO item;
+    item.SetItemId(entry->itemId);
+    item.quantity = entry->quantity;
+    item.unknown_0014[0] = entry->location;
+    item.unknown_0014[1] = entry->location;
+    item.unknown_0060 = entry->refine;
+    std::memcpy(item.unknown_001C, entry->cards, sizeof(entry->cards));
+    item.unknown_0000[1] = entry->index;
+    item.identified = 1;
+    window->AddItem(item);
+  }
+
+  window->SendMsg(nullptr, 36, (count - 2 > 0 ? count : 0) * 32 + 120, 0, 0, 0);
+  window->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  if (!success) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3043)), 0xFF, 0, 0, 0);
+  }
+}
+
+// OFFSET: 0x00D79700
+// FUNCTION: fn_22173
+void CGameMode::ReceiveResultNotice4327(const unsigned char* packet) {
+  std::string text;
+  switch (*reinterpret_cast<const std::int16_t*>(packet + 2)) {
+  case 0:
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(4327)));
+    break;
+  case 1:
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(4327)));
+    break;
+  case 2:
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(4327)));
+    break;
+  }
+
+  if (!text.empty()) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
+  }
+}
