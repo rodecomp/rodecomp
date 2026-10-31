@@ -1,5 +1,6 @@
 #include "Contents/ForbiddenWords.h"
 #include "File/CommonObject.h"
+#include "Network/TextEncoding.h"
 #include "Utility/StackAlloc.h"
 
 #include <atlconv.h>
@@ -9,6 +10,9 @@
 #include <malloc.h>
 #include <mbstring.h>
 #include <windows.h>
+
+// GLOBAL: gl_24641
+ForbiddenWords g_forbiddenWords;
 
 namespace {
   // OFFSET: 0x00AE7060
@@ -30,7 +34,8 @@ bool ForbiddenWords::Load(const char* name, CCommonObject& storage, ResourceByte
   std::vector<char*> tokens;
   const bool loaded = storage.LoadTokens(tokens, name, 1, file);
 
-  for (char* token : tokens) {
+  for (std::vector<char*>::iterator it = tokens.begin(); it != tokens.end(); ++it) {
+    char* token = *it;
     char* first = token;
 
     while (*first == ' ' || *first == '\t') {
@@ -38,7 +43,7 @@ bool ForbiddenWords::Load(const char* name, CCommonObject& storage, ResourceByte
     }
 
     if (*first != '\0') {
-      this->words.push_back(Lowercase(token, this->codePage));
+      this->words.push_back(Lowercase(token, static_cast<unsigned short>(g_textCodePage)));
     }
   }
 
@@ -56,7 +61,7 @@ bool ForbiddenWords::Allows(const char* text) const {
   }
 
   std::strncpy(storage, text, size);
-  const char* current = Lowercase(storage, this->codePage);
+  const char* current = Lowercase(storage, static_cast<unsigned short>(g_textCodePage));
   const char* end = current + std::strlen(current);
 
   while (current < end) {
@@ -67,7 +72,7 @@ bool ForbiddenWords::Allows(const char* text) const {
       const auto skip = reinterpret_cast<const char*>(close) + 8 - reinterpret_cast<const char*>(open);
 
       for (std::ptrdiff_t index = 0; index < skip; ++index) {
-        current = CharNextExA(this->codePage, current, 0);
+        current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
       }
     }
 
@@ -78,7 +83,7 @@ bool ForbiddenWords::Allows(const char* text) const {
       }
     }
 
-    current = CharNextExA(this->codePage, current, 0);
+    current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
   }
 
   _freea(storage);
@@ -117,7 +122,7 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
   }
 
   strcpy_s(scanBuffer, sizeof(scanBuffer), text);
-  char* current = Lowercase(scanBuffer, this->codePage);
+  char* current = Lowercase(scanBuffer, static_cast<unsigned short>(g_textCodePage));
 
   while (std::strlen(current) != 0) {
     const auto* open = _mbsstr(reinterpret_cast<const unsigned char*>(current), reinterpret_cast<const unsigned char*>("<iteml>"));
@@ -129,7 +134,7 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
       char* next = current;
 
       for (std::ptrdiff_t index = 0; index < skip; ++index) {
-        next = CharNextExA(this->codePage, current, 0);
+        next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
       }
 
       current = next;
@@ -143,11 +148,11 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
       }
 
       std::strcpy(matchedWord, word);
-      Lowercase(matchedWord, this->codePage);
+      Lowercase(matchedWord, static_cast<unsigned short>(g_textCodePage));
       advance = 0;
       const char* end = matchedWord + std::strlen(matchedWord);
 
-      for (const char* character = matchedWord; character < end; character = CharNextExA(this->codePage, character, 0)) {
+      for (const char* character = matchedWord; character < end; character = CharNextExA(static_cast<WORD>(g_textCodePage), character, 0)) {
         ++advance;
       }
 
@@ -172,7 +177,7 @@ void ForbiddenWords::Mask(char* text, std::string* value) const {
     }
 
     for (int index = 0; index < advance; ++index) {
-      current = CharNextExA(this->codePage, current, 0);
+      current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
     }
   }
 

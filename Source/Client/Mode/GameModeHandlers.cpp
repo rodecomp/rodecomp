@@ -16,6 +16,7 @@
 #include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/MonsterSkillEffects.h"
+#include "Contents/ForbiddenWords.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/Items/ItemDescription.h"
@@ -2881,4 +2882,27 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
   window = g_windowMgr.EnsureWindow(23);
   window->SendMsg(nullptr, 0x24, 1, 0, 0, 0);
   window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D66860
+// FUNCTION: fn_22016
+void CGameMode::ReceiveClanChat(const unsigned char* packet) {
+  const int messageLength = *reinterpret_cast<const std::int16_t*>(packet + 2) - 28;
+
+  if (messageLength < 0 || messageLength > 220) {
+    return;
+  }
+
+  char message[220];
+  std::memset(message, 0, sizeof(message));
+  strcpy_s(message, sizeof(message), reinterpret_cast<const char*>(packet + 28));
+
+  if (g_forbiddenWords.Contains(message) == true) {
+    std::string masked;
+    g_forbiddenWords.Mask(message, &masked);
+  }
+
+  if (!g_serviceOptions.Get(148)) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0xB4B4FF, 21, 0, 0);
+  }
 }
