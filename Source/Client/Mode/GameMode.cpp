@@ -2524,12 +2524,15 @@ struct ZoneEnterPacket {
   /* 0002 */ std::uint32_t aid;
   /* 0006 */ std::uint32_t gid;
   /* 000A */ int authCode;
-  /* 000E */ std::uint32_t clientTime;
-  /* 0012 */ unsigned char sex;
+  /* 000E */ unsigned char unknown_000E[4];
+  /* 0012 */ std::uint32_t clientTime;
+  /* 0016 */ unsigned char sex;
 };
 #pragma pack(pop)
 
-static_assert(sizeof(ZoneEnterPacket) == 0x13);
+static_assert(sizeof(ZoneEnterPacket) == 0x17);
+static_assert(offsetof(ZoneEnterPacket, clientTime) == 0x12);
+static_assert(offsetof(ZoneEnterPacket, sex) == 0x16);
 
 // OFFSET: 0x00D06CB0
 // FUNCTION: fn_21579
