@@ -12,6 +12,7 @@
 #include "UI/Lists/UIScrollBar.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/Text/StringUtil.h"
 #include <cstring>
 #include <windows.h>
 
@@ -70,6 +71,47 @@ UIEditCtrl3::UIEditCtrl3(UIWindowContext& windows, UIEditContext& edit) : UIEdit
 }
 
 // OFFSET: 0x0084F2B0
+// FUNCTION: fn_10658
+UIEditCtrl3::UIEditCtrl3(const UIEditCtrl3& other) : UIEditCtrl2(other) {
+  this->unknown_0130 = 0;
+  this->UIEditCtrl3::Slot15(other.geometry.width, other.geometry.height);
+
+  this->unknown_0134 = other.unknown_0134;
+  this->unknown_0138 = other.unknown_0138;
+  this->unknown_013C = other.unknown_013C;
+  this->unknown_0140 = other.unknown_0140;
+  this->unknown_0144 = other.unknown_0144;
+  this->unknown_0148 = other.unknown_0148;
+  this->unknown_014C = other.unknown_014C;
+  this->unknown_0150 = other.unknown_0150;
+  this->unknown_0154 = other.unknown_0154;
+  this->unknown_0158 = other.unknown_0158;
+  this->unknown_015C = other.unknown_015C;
+  this->unknown_015E = other.unknown_015E;
+  this->unknown_0184 = other.unknown_0184;
+
+  char* first = other.unknown_0160;
+  if (first != this->unknown_0160) {
+    if (IsNullOrEmpty(first)) {
+      this->unknown_0160 = 0;
+    } else {
+      const std::size_t length = std::strlen(first) + 1;
+      this->unknown_0160 = new char[length];
+      strcpy_s(this->unknown_0160, length, first);
+    }
+  }
+
+  char* second = other.unknown_0164;
+  if (second != this->unknown_0164) {
+    if (IsNullOrEmpty(second)) {
+      this->unknown_0164 = 0;
+    } else {
+      const std::size_t length = std::strlen(second) + 1;
+      this->unknown_0164 = new char[length];
+      strcpy_s(this->unknown_0164, length, second);
+    }
+  }
+}
 
 // OFFSET: 0x0085AC40
 // FUNCTION: fn_10786
