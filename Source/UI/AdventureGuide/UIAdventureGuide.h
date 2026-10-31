@@ -66,7 +66,8 @@ public:
 class CUIIntro : public CUIPage {
 public:
   // OFFSET: 0x009D8FE0
-  explicit CUIIntro(UIWindowContext& context) : CUIPage(context), image(nullptr), contents(nullptr) {
+  // FUNCTION: fn_14274
+  explicit CUIIntro(UIWindowContext& context) : CUIPage(context), image(nullptr), contents(nullptr), unknown_0080(nullptr) {
   }
 
   void Slot16() override;
@@ -78,6 +79,7 @@ public:
 
   /* 0084 */ CUIStaticImage* image;
   /* 0088 */ CUIListBoxEx<CUITabInfo, Guide_Intro::Contents>* contents;
+  /* 0080 */ UIWindow* unknown_0080;
 };
 
 class CUIItem : public CUIPage {
@@ -142,7 +144,7 @@ public:
 }
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(AdventureGuide::CUIIntro) == 0x8C);
+static_assert(sizeof(AdventureGuide::CUIIntro) == 0x90);
 static_assert(sizeof(AdventureGuide::CUIMonster) == 0xA4);
 static_assert(sizeof(AdventureGuide::CUIQuest) == 0xA8);
 #endif
