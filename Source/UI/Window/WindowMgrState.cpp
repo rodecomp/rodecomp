@@ -701,8 +701,52 @@ void UIWindowMgr::SendFlagEffect(int message) {
 }
 
 // OFFSET: 0x00A8FCA0
+// FUNCTION: fn_17149
+bool UIWindowMgr::DropAt(int x, int y, ModeDragState* drag) {
+  UIWindow* window = reinterpret_cast<WindowMouseHit*>(this)->HitTest(x, y);
+  if (!window) {
+    return false;
+  }
+
+  int offsetX = 0;
+  int offsetY = 0;
+  for (UIWindow* node = window; node; node = node->parent) {
+    offsetX += node->geometry.x;
+    offsetY += node->geometry.y;
+  }
+
+  const int localX = x - offsetX;
+  const int localY = y - offsetY;
+  reinterpret_cast<WindowReplayRecorder*>(window)->RecordDrop(localX, localY, *drag, -1);
+  drag->unknown_038C = reinterpret_cast<std::uint32_t>(window);
+  if (this->window_01EC != window->Root()) {
+    window->Slot10(localX, localY, reinterpret_cast<std::intptr_t>(drag));
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00A8FD30
+// FUNCTION: fn_17150
+void UIWindowMgr::FocusWindow01C8Edit() {
+  if (!this->window_01C8) {
+    return;
+  }
+
+  UIWindow* edit = *reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(this->window_01C8) + 0xBC);
+  if (this->hoverWindow) {
+    this->hoverWindow->Slot24(edit && edit->Slot06() == this->hoverWindow);
+  }
+
+  if (edit) {
+    this->hoverWindow = edit->Slot06();
+    if (this->hoverWindow) {
+      this->hoverWindow->Slot23();
+    }
+  } else {
+    this->hoverWindow = nullptr;
+  }
+}
 
 // OFFSET: 0x00A90120
 // FUNCTION: fn_17152
