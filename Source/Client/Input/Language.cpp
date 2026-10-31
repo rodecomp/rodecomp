@@ -1,6 +1,9 @@
 #include "Client/Input/Language.h"
 #include "Contents/CashEmotionMgr.h"
 #include "UI/Chat/ChatSuggestions.h"
+#include "UI/Lists/UIMemberListBox.h"
+#include "UI/UICaptchaPreviewWnd.h"
+#include "UI/UIRoundBoxTooltipWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -374,3 +377,18 @@ void SuggestChatCommand(const char* text) {
 int SubACFCE0() {
   return 0;
 }
+
+// OFFSET: 0x007ECEC0
+
+// OFFSET: 0x0086C7B0
+// FUNCTION: fn_11030
+UIChatHisBox2::UIChatHisBox2(UIWindowContext& windows, UIListBoxContext& list)
+    : UIChatHisBox(windows, list), backgroundRed(255), backgroundGreen(255), backgroundBlue(255) {
+}
+
+// OFFSET: 0x0086C830
+// FUNCTION: fn_11031
+UIChatHisBox3::UIChatHisBox3(UIWindowContext& windows, UIListBoxContext& list) : UIChatHisBox2(windows, list), unknown_0130(1), unknown_0134(12) {
+}
+
+// OFFSET: 0x0099A060
