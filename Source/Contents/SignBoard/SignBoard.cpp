@@ -48,6 +48,11 @@ void DestroySignBoardMgr() {
 }
 
 // OFFSET: 0x0081FE50
+// FUNCTION: fn_10246
+void __fastcall sub_81FE50(CSignBoardMgr* manager) {
+  manager->LoadList();
+  manager->Initialize();
+}
 
 // OFFSET: 0x00820BD0
 // FUNCTION: fn_10248
