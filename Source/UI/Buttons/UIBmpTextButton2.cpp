@@ -3,6 +3,11 @@
 #include "Resource/TextureNames.h"
 #include "UI/Buttons/UIBmpTextButton2.h"
 
+// OFFSET: 0x0084ECB0
+// FUNCTION: fn_10651
+UIBmpTextButton2::UIBmpTextButton2(UIWindowContext& windows, UIButtonContext& buttons) : UIBitmapButton(windows, buttons) {
+}
+
 // OFFSET: 0x0085BCF0
 // FUNCTION: fn_10798
 void UIBmpTextButton2::Paint() {

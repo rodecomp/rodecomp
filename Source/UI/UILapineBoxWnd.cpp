@@ -6,6 +6,7 @@
 #include "Client/Session.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
@@ -239,6 +240,64 @@ __declspec(noinline) void UILapineBoxWnd::ReadMaterial(ITEM_INFO* out, int x, in
     }
   }
   new (out) ITEM_INFO(0);
+}
+
+// OFFSET: 0x00602620
+// FUNCTION: fn_04182
+bool UILapineBox_IngredientListWnd::CanUseIngredient(std::uint32_t identity) {
+  std::vector<UIIngredientInfoWnd*>::iterator entryIt;
+  for (entryIt = this->items.begin(); entryIt != this->items.end(); ++entryIt) {
+    if ((*entryIt)->item.unknown_0000[1] == identity) {
+      break;
+    }
+  }
+  if (entryIt == this->items.end()) {
+    return false;
+  }
+
+  const ITEM_INFO& item = (*entryIt)->item;
+  std::vector<ITEM_INFO>::iterator material;
+  const std::vector<ITEM_INFO>::iterator end = this->materials.end();
+  for (material = this->materials.begin(); material != end; ++material) {
+    ITEM_INFO copy(*material);
+    if (std::atoi(item.itemId.c_str()) == std::atoi(copy.itemId.c_str())) {
+      break;
+    }
+  }
+  if (material == this->materials.end()) {
+    return false;
+  }
+
+  const int required = material->quantity;
+  if (required > item.quantity) {
+    this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xB52), required).c_str()), 0, 0, 0);
+    return false;
+  }
+  if (this->minRefine > item.unknown_0060) {
+    this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xB53)), 0, 0, 0);
+    return false;
+  }
+  if (this->maxRefine < item.unknown_0060) {
+    this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3C)), 0, 0, 0);
+    return false;
+  }
+  if (this->minRefine != 0 && this->minRefine < item.unknown_0060) {
+    this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3D)), 0, 0, 0);
+  }
+
+  const std::uint32_t itemType = item.unknown_0000[0];
+  const bool equipment = itemType == 4 || itemType == 5 || itemType == 8 || itemType == 9 || itemType == 11 || itemType == 12 ||
+                         itemType == 13 || itemType == 14 || itemType == 15 || itemType == 21;
+  if (equipment && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
+    const int* cards = reinterpret_cast<const int*>(item.unknown_001C);
+    for (int index = 0; index < ItemSlotsCount(item); ++index) {
+      if (index < 4 && cards[index] > 0) {
+        this->parent->SendMsg(this, 0x6F, reinterpret_cast<std::intptr_t>(LookupMessage(0xE3E)), 0, 0, 0);
+        return true;
+      }
+    }
+  }
+  return true;
 }
 
 // OFFSET: 0x00602AC0

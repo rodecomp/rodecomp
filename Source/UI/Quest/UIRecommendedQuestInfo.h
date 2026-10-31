@@ -17,6 +17,7 @@ class CUIScrollWindow;
 class CUIRecommendedQuestInfo : public CUIFrameWnd {
 public:
   __declspec(noinline) CUIRecommendedQuestInfo();
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void OnFirstAction();
   void OnClose();
@@ -26,7 +27,7 @@ public:
   /* 00DC */ CUIStaticImage* background;
   /* 00E0 */ CUIStaticText* titleText;
   /* 00E4 */ RecommendedQuestInfo::CUIScrollWindow* scrollWindow;
-  /* 00E8 */ CUIButton* closeButton;
+  /* 00E8 */ CUIImageButton* closeButton;
 };
 
 namespace RecommendedQuestInfo {

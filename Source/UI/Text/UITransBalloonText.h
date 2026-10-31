@@ -53,8 +53,7 @@ public:
 
 class UIAchBalloonText : public UITransBalloonText {
 public:
-  // INLINED
-  UIAchBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UITransBalloonText(windows, text), m_fontFamily(0) {}
+  UIAchBalloonText(UIWindowContext& windows, BalloonTextContext& text);
   void Paint() override;
 
 protected:

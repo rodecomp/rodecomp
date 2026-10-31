@@ -20,6 +20,7 @@ struct BmpTextButtonLabel {
 
 class UIBmpTextButton2 : public UIBitmapButton {
 public:
+  UIBmpTextButton2(UIWindowContext& windows, UIButtonContext& buttons);
   void Paint() override;
   void DrawLabels();
 

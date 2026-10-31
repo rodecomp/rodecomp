@@ -39,6 +39,11 @@ namespace {
 UITransBalloonText::UITransBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UIBalloonText(windows, text), m_borderColor(6052956) {
 }
 
+// OFFSET: 0x0084E8D0
+// FUNCTION: fn_10647
+UIAchBalloonText::UIAchBalloonText(UIWindowContext& windows, BalloonTextContext& text) : UITransBalloonText(windows, text), m_fontFamily(0) {
+}
+
 // OFFSET: 0x00853210
 // OFFSET: 0x00851F40
 // FUNCTION: fn_10700

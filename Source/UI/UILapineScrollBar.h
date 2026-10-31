@@ -66,6 +66,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   unsigned char AddIngredient(std::uint32_t id);
+  bool CanUseIngredient(std::uint32_t identity);
 
   /* 00B0 */ std::vector<ITEM_INFO> materials;
   /* 00BC */ std::vector<UIIngredientInfoWnd*> items;

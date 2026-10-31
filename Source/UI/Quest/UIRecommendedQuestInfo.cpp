@@ -3,6 +3,7 @@
 #include "Contents/MessageTable.h"
 #include "Render/Renderer.h"
 #include "UI/Quest/UIRenewQuestWnd.h"
+#include "UI/Text/UIStaticTextControl.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <cstring>
@@ -16,6 +17,83 @@ void CUIRecommendedQuestInfo::Slot53() {
   this->Move(0, 0);
   this->Slot15(this->geometry.width, this->geometry.height);
   this->Slot16();
+}
+
+// OFFSET: 0x00A570F0
+// FUNCTION: fn_16323
+void CUIRecommendedQuestInfo::Slot15(int width, int height) {
+  this->titleBar = new CUITitleBar(*this->m_context);
+  this->titleBar->SetSize(342, 17);
+  this->titleBar->Move(0, 0);
+  this->titleBar->SetImages(
+    std::string("유저인터페이스\\basic_interface\\titlebar_left.bmp"), std::string("유저인터페이스\\basic_interface\\titlebar_mid.bmp"),
+    std::string("유저인터페이스\\basic_interface\\titlebar_right.bmp")
+  );
+  this->AddChild(this->titleBar);
+
+  CUIStaticText* title = new CUIStaticText(*this->m_context);
+  title->SetSize(100, 17);
+  title->Move(18, 0);
+  title->SetText("QUEST", 5);
+  title->SetFitText(0);
+  title->SetAlign(0, 6);
+  title->SetFont(std::string("Gulim"));
+  title->SetFontHeight(13);
+  title->SetBold(0);
+  title->SetColor(0);
+  title->SetShadow(0, 0xFFFFFF);
+  title->SetOutline(0, 0xFFFFFF);
+  this->titleBar->titleText = title;
+  this->titleBar->AddChild(title);
+
+  CUIImageButton* firstButton = new CUIImageButton(*this->m_context);
+  firstButton->SetSize(11, 11);
+  firstButton->Move(3, 3);
+  firstButton->SetOnClick([this]() { this->OnFirstAction(); });
+  firstButton->disabled = 0;
+  firstButton->Invalidate();
+  firstButton->SetImages(
+    std::string("유저인터페이스\\basic_interface\\sys_base_off.bmp"), std::string("유저인터페이스\\basic_interface\\sys_base_on.bmp"),
+    std::string("유저인터페이스\\basic_interface\\sys_base_on.bmp"), std::string("유저인터페이스\\basic_interface\\sys_base_off.bmp")
+  );
+  this->titleBar->AddChild(firstButton);
+
+  this->background = new CUIStaticImage(*this->m_context);
+  this->background->SetSize(342, 395);
+  this->background->Move(0, 17);
+  this->background->SetImage(std::string("유저인터페이스\\Renew_QuestUI\\bg_detail_recommended.bmp"));
+  this->AddChild(this->background);
+
+  this->titleText = new CUIStaticText(*this->m_context);
+  this->titleText->SetSize(342, 12);
+  this->titleText->Move(0, 39);
+  this->titleText->SetText("", 0);
+  this->titleText->SetFitText(0);
+  this->titleText->SetAlign(6, 0);
+  this->titleText->SetFont(std::string("Gulim"));
+  this->titleText->SetFontHeight(12);
+  this->titleText->SetBold(1);
+  this->titleText->SetColor(0x55321D);
+  this->titleText->SetShadow(0, 0xFFFFFF);
+  this->titleText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->titleText);
+
+  this->scrollWindow = new RecommendedQuestInfo::CUIScrollWindow(*this->m_context);
+  this->scrollWindow->SetSize(342, 322);
+  this->scrollWindow->Move(0, 62);
+  this->AddChild(this->scrollWindow);
+
+  this->closeButton = new CUIImageButton(*this->m_context);
+  this->closeButton->SetSize(42, 20);
+  this->closeButton->Move(288, 388);
+  this->closeButton->SetOnClick([this]() { this->OnClose(); });
+  this->closeButton->disabled = 0;
+  this->closeButton->Invalidate();
+  this->closeButton->SetImages(
+    std::string("유저인터페이스\\basic_interface\\btn_close.bmp"), std::string("유저인터페이스\\basic_interface\\btn_close_b.bmp"),
+    std::string("유저인터페이스\\basic_interface\\btn_close_a.bmp"), std::string("유저인터페이스\\basic_interface\\btn_close.bmp")
+  );
+  this->AddChild(this->closeButton);
 }
 
 // OFFSET: 0x00A58BA0
