@@ -163,6 +163,8 @@ public:
   void ReceiveActorTitle(const unsigned char* packet);
   void ReceiveActorInt8(const unsigned char* packet);
   void ReceiveActorInt64Pair(const unsigned char* packet);
+  void ReceiveItem1740EquipList(const unsigned char* packet);
+  void ReceiveItem1740EquipListOptions(const unsigned char* packet);
   void ReceiveItem1738EquipList(const unsigned char* packet);
   void ReceiveItem1738EquipListOptions(const unsigned char* packet);
   void ReceiveItem1738NormalList(const unsigned char* packet);

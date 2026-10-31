@@ -2,9 +2,11 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
+#include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Effects/EffectActor.h"
+#include "Contents/Effects/EffectLists.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
@@ -38,6 +40,7 @@ struct SessionMessengerContext {
 
 struct ClientItemLists {
   bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
+  bool AddItem1740(const ITEM_INFO& item);
 };
 
 namespace {
@@ -1182,4 +1185,71 @@ void CGameMode::ReceiveActorInt64Pair(const unsigned char* packet) {
       nullptr, 0x91, 0, static_cast<int>(first), static_cast<int>(first >> 32), static_cast<int>(second), static_cast<int>(second >> 32), 0, 0, 0, 0, 0, 0, 0, 0
     );
   }
+}
+
+// OFFSET: 0x00D24C40
+// FUNCTION: fn_21670
+void CGameMode::ReceiveItem1740EquipList(const unsigned char* packet) {
+  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / sizeof(StoreEquipRecord);
+  const StoreEquipRecord* record = reinterpret_cast<const StoreEquipRecord*>(packet + 4);
+  for (int i = 0; i < count; ++i, ++record) {
+    StoreItemOption options[5] = {};
+    ITEM_INFO item;
+    item.unknown_0000[0] = record->type;
+    item.unknown_0000[1] = record->index;
+    item.unknown_0000[2] = record->location;
+    item.unknown_0000[3] = record->wearState;
+    item.quantity = 1;
+    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.SetItemId(record->itemId);
+    item.identified = record->flags & 1;
+    item.unknown_005D = (record->flags >> 1) & 1;
+    item.unknown_0060 = record->refine;
+    item.unknown_0068 = record->expireTime;
+    item.unknown_0064 = record->bindOnEquip;
+    item.unknown_0070 = record->sprite;
+    item.unknown_0074[0] = (record->flags >> 2) & 1;
+    item.unknown_0088 = 0;
+    item.unknown_0098 = CountStoreItemOptions(options);
+    for (int index = 0; index < item.unknown_0098; ++index) {
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = options[index];
+    }
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+  }
+
+  g_session.RefreshItem1740Window();
+}
+
+// OFFSET: 0x00D24EF0
+// FUNCTION: fn_21671
+void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
+  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / sizeof(StoreEquipOptionRecord);
+  const StoreEquipOptionRecord* record = reinterpret_cast<const StoreEquipOptionRecord*>(packet + 4);
+  for (int i = 0; i < count; ++i, ++record) {
+    StoreItemOption options[5];
+    std::memcpy(options, record->options, sizeof(options));
+    ITEM_INFO item;
+    item.unknown_0000[0] = record->type;
+    item.unknown_0000[1] = record->index;
+    item.unknown_0000[2] = record->location;
+    item.unknown_0000[3] = record->wearState;
+    item.quantity = 1;
+    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.SetItemId(record->itemId);
+    item.identified = record->flags & 1;
+    item.unknown_005D = (record->flags >> 1) & 1;
+    item.unknown_0060 = record->refine;
+    item.unknown_0068 = record->expireTime;
+    item.unknown_0064 = record->bindOnEquip;
+    item.unknown_0070 = record->sprite;
+    item.unknown_0074[0] = (record->flags >> 2) & 1;
+    item.unknown_0088 = 0;
+    item.unknown_0098 = CountStoreItemOptions(options);
+    for (int index = 0; index < item.unknown_0098; ++index) {
+      reinterpret_cast<StoreItemOption*>(item.unknown_009C)[index] = options[index];
+    }
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+  }
+
+  g_session.RefreshItem1740Window();
 }
