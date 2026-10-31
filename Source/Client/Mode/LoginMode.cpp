@@ -21,6 +21,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/ResourcePreload.h"
 #include "Security/NProtectGameGuardMgr.h"
+#include "UI/Buttons/UITextButton.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
@@ -1979,4 +1980,67 @@ CLoginMode::CLoginMode() : wallpaperName(), unknown_6F1C(), unknown_6F2C(), unkn
   this->unknown_01D8 = 0;
   this->unknown_01DC = 0;
   this->characterDeleted = false;
+}
+
+// OFFSET: 0x00D92B80
+// FUNCTION: fn_22293
+bool CLoginMode::ShowNotice(int notice, bool append) {
+  UIWindow* window;
+  if (append) {
+    window = g_windowMgr.unknown_0210;
+  } else {
+    this->unknown_6F1C.clear();
+    if (g_windowMgr.unknown_0210) {
+      g_windowMgr.CloseWindow(18);
+    }
+    window = g_windowMgr.EnsureWindow(18);
+  }
+
+  if (!window) {
+    return false;
+  }
+
+  switch (notice) {
+  case 45:
+    window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(LookupMessage(2163)), 0, 0, 0);
+    window->SendMsg(nullptr, 30, 0, 0, 0, 0);
+    this->unknown_6F1C.push_back(45);
+    break;
+  case 46:
+    window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(LookupMessage(2164)), 0, 0, 0);
+    window->SendMsg(nullptr, 30, 0, 0, 0, 0);
+    this->unknown_6F1C.push_back(46);
+    break;
+  case 47:
+    window->SendMsg(nullptr, 31, reinterpret_cast<std::intptr_t>(LookupMessage(2165)), 0, 0, 0);
+    window->SendMsg(nullptr, 30, 0, 0, 0, 0);
+    this->unknown_6F1C.push_back(47);
+    break;
+  }
+
+  if (this->unknown_6F1C.empty()) {
+    return false;
+  }
+
+  if (UIWindow* notices = g_windowMgr.unknown_0210) {
+    int x = g_screenWidth + 1;
+    int y = g_screenHeight + 1;
+    if (x < 1) {
+      x = 1;
+    }
+    int maximumX = g_renderer->viewport.width - notices->geometry.width;
+    if (x <= maximumX) {
+      maximumX = x;
+    }
+    if (y < 1) {
+      y = 1;
+    }
+    int maximumY = g_renderer->viewport.height - notices->geometry.height;
+    if (y <= maximumY) {
+      maximumY = y;
+    }
+    notices->Move(maximumX, maximumY);
+  }
+
+  return true;
 }

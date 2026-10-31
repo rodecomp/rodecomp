@@ -143,6 +143,7 @@ public:
   void ReceiveDeleteReservation(const CharacterDeletePacket* packet, WindowDialogs& dialogs);
   void ReceiveMapStates(const MapStatePacket* packet, WindowDialogs& dialogs);
   void SubD91780(int);
+  bool ShowNotice(int notice, bool append);
   void ReceiveRefuseLogin(const RefuseLoginPacket* packet);
   void SubD97B20(int);
   void SubD97EF0(int);
