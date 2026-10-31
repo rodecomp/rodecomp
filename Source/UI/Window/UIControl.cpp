@@ -34,6 +34,23 @@
 // GLOBAL: gl_25174
 const char* g_uiInfoTempPath = "savedata\\UIInfo.temp";
 
+class CUIListBoxItemSelector {
+public:
+  void SetHighlighted(CUIListItem* const& item);
+
+private:
+  /* 0000 */ void* unknown_0000;
+  /* 0004 */ CUIListBox<CUIListItem>* listBox;
+};
+
+// OFFSET: 0x009E0A80
+// FUNCTION: fn_14371
+void CUIListBoxItemSelector::SetHighlighted(CUIListItem* const& item) {
+  for (CUIListItem* entry : this->listBox->items) {
+    entry->SetHighlighted(entry == item);
+  }
+}
+
 // OFFSET: 0x009EF520
 // FUNCTION: fn_14635
 CBitmapRes* CUIControl::LoadBitmapResource(const std::string& name, bool resolveSkin) {
