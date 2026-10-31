@@ -1840,6 +1840,41 @@ void CGameMode::sub_D08390(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D08110
+// FUNCTION: fn_21585
+void __stdcall sub_D08110(int field8, int itemIdWord, int quantityWord, int field14, int field18) {
+  const int itemId = static_cast<short>(itemIdWord);
+  const int quantity = static_cast<short>(quantityWord);
+  ITEM_INFO item = g_session.FindItem1758(static_cast<unsigned int>(itemId));
+  item.unknown_0000[1] = static_cast<std::uint32_t>(itemId);
+  item.quantity = quantity;
+  item.unknown_0014[0] = static_cast<std::uint32_t>(field14);
+  UIWindow* window = g_windowMgr.EnsureWindow(0x101);
+  window->SendMsg(nullptr, 0x17, reinterpret_cast<std::intptr_t>(&item), field18, field8, 0);
+  reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1758(item);
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  g_windowMgr.SendNotice(
+    1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(0xE7), naming.DisplayName(item, 0).c_str(), quantity).c_str()), 0xFFFF64, 0, 0, 0
+  );
+  if (g_vendingOpenWindow != nullptr) {
+    g_vendingOpenWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+  if (reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList9Size() == 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x137)), 0xFF00, 0, 0, 0);
+    if (g_vendingOpenResultWindow != nullptr) {
+      g_vendingOpenResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+      g_vendingOpenResultWindow->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
+    }
+  } else if (g_vendingOpenResultWindow != nullptr) {
+    g_vendingOpenResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+  if (g_vendingOpenResultWindow != nullptr && g_vendingSaleAlarm) {
+    g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+  }
+}
 
 // OFFSET: 0x00D08670
 // FUNCTION: fn_21592
@@ -6782,14 +6817,140 @@ static_assert(sizeof(RandomOptionSimulationRecord) == 0x25);
 // OFFSET: 0x00D606B0
 
 // OFFSET: 0x00D2A020
+// FUNCTION: fn_21701
+void CGameMode::ReceiveBuyingStoreOpenResult(const unsigned char* packet) {
+  char text[128];
+  switch (*reinterpret_cast<const std::int16_t*>(packet + 2)) {
+  case 1:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1741)), 0xFF, 0, 0, 0);
+    reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+    g_windowMgr.CloseWindow(174);
+    g_windowMgr.CloseWindow(175);
+    break;
+  case 2:
+    std::sprintf(
+      text, LookupMessage(1742),
+      static_cast<int>(
+        static_cast<float>(*reinterpret_cast<const int*>(packet + 4) / 10 + g_session.m_weight) - static_cast<float>(g_session.m_maxWeight) * 0.9f
+      )
+    );
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
+    break;
+  case 9:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1797)), 0xFF, 0, 0, 0);
+    break;
+  case 10:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3229)), 0xFF, 0, 0, 0);
+    reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+    g_windowMgr.CloseWindow(174);
+    g_windowMgr.CloseWindow(175);
+    break;
+  }
+}
 
 // OFFSET: 0x00D316D0
 
 // OFFSET: 0x00D4B050
+// FUNCTION: fn_21863
+void CGameMode::ReceiveItemObtainNotice(const unsigned char* packet) {
+  ITEM_INFO item;
+  item.SetItemId(*reinterpret_cast<const int*>(packet + 6));
+  item.unknown_0060 = 0;
+  item.identified = 1;
+  ItemDescriptions descriptions{g_itemDescriptions};
+  bool languagePrefix = false;
+  WORD language = g_serverLanguage->language;
+  ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+  switch (*reinterpret_cast<const int*>(packet + 2)) {
+  case 0:
+    g_windowMgr.SendNotice(
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(911), naming.DisplayName(item, 0).c_str()).c_str()), 0xFFFF00, 0, 0, 0
+    );
+    break;
+  case 1:
+    g_windowMgr.SendNotice(
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(912), naming.DisplayName(item, 0).c_str()).c_str()), 0xCDCD00, 0, 0, 0
+    );
+    break;
+  case 2:
+    g_windowMgr.SendNotice(
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(913), naming.DisplayName(item, 0).c_str()).c_str()), 0xC8C8FF, 0, 0, 0
+    );
+    break;
+  case 3:
+    g_windowMgr.SendNotice(
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(914), naming.DisplayName(item, 0).c_str()).c_str()), 0xC8C8FF, 0, 0, 0
+    );
+    break;
+  }
+}
 
 // OFFSET: 0x00D8A460
+// FUNCTION: fn_22219
+void CGameMode::ReceiveTakeOffEquipItemResult(const unsigned char* packet) {
+  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t*>(packet + 2));
+  item.unknown_0000[3] = *reinterpret_cast<const std::uint32_t*>(packet + 4);
+  switch (*reinterpret_cast<const std::uint16_t*>(packet + 8)) {
+  case 0: {
+    if (g_session.IsCostumeLocation(*reinterpret_cast<const int*>(packet + 4))) {
+      g_session.UnequipItem6B68(item);
+    } else {
+      g_session.UnequipItem61B8(item);
+    }
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    const char* suffix = LookupMessage(3144);
+    g_windowMgr.SendNotice(
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", naming.DisplayName(item, 0).c_str(), suffix).c_str()), 0xC8FF00, 7, 0, 0
+    );
+    break;
+  }
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3009)), 0xFF, 0, 0, 0);
+    if (g_session.IsCostumeLocation(*reinterpret_cast<const int*>(packet + 4))) {
+      g_session.UnequipItem6B68(item);
+    } else {
+      g_session.UnequipItem61B8(item);
+    }
+    break;
+  }
+}
 
 // OFFSET: 0x00D2A290
+// FUNCTION: fn_21703
+void CGameMode::ReceiveBuyingStoreSellResult(const unsigned char* packet) {
+  switch (*reinterpret_cast<const std::int16_t*>(packet + 2)) {
+  case 5:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(57)), 0xFF, 0, 0, 0);
+    break;
+  case 6: {
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, *reinterpret_cast<const int*>(packet + 4), 0);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    g_windowMgr.SendNotice(
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1747), naming.DisplayName(item, 0).c_str()).c_str()), 0xFF, 0, 0, 0
+    );
+    break;
+  }
+  case 7:
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(1745)), 0xFF, 0, 0, 0);
+    break;
+  }
+
+  g_windowMgr.CloseWindow(177);
+  g_windowMgr.CloseWindow(178);
+  g_windowMgr.CloseWindow(179);
+}
 
 // OFFSET: 0x00D31390
 
@@ -6825,3 +6986,29 @@ void CGameMode::ReceiveItemReformOpen(int itemId) {
 // OFFSET: 0x00D17AD0
 
 // OFFSET: 0x00D17BF0
+// FUNCTION: fn_21733
+void CGameMode::ReceivePartyItemPickupNotice(const unsigned char* packet) {
+  const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
+  MessengerMember member = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByAccount(aid);
+  if (aid != g_session.m_aid && member.valid) {
+    ITEM_INFO item;
+    item.unknown_0000[0] = packet[0x1F];
+    item.unknown_0000[2] = *reinterpret_cast<const std::uint16_t*>(packet + 0x1D);
+    item.unknown_0000[1] = *reinterpret_cast<const std::uint32_t*>(packet + 6);
+    item.unknown_0000[3] = 0;
+    item.SetItemId(*reinterpret_cast<const int*>(packet + 6));
+    std::memcpy(item.unknown_001C, packet + 0x0D, sizeof(item.unknown_001C));
+    item.identified = packet[0x0A];
+    item.unknown_005D = packet[0x0B];
+    item.unknown_0060 = packet[0x0C];
+
+    ItemDescriptions descriptions{g_itemDescriptions};
+    bool languagePrefix = false;
+    WORD language = g_serverLanguage->language;
+    ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
+    g_windowMgr.SendNotice(
+      1, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(1276), member.name.c_str(), naming.DisplayName(item, 0).c_str()).c_str()),
+      0xFFFF00, 9, 0, 0
+    );
+  }
+}
