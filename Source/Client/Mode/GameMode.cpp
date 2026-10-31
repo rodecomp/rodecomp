@@ -1340,3 +1340,58 @@ std::vector<unsigned char> CGameMode::SaveUnknown024C() {
 
   return data;
 }
+
+// OFFSET: 0x00CF0E30
+
+// GLOBAL: gl_25200
+float g_cameraMinDistance = 230.0f;
+
+// GLOBAL: gl_24576
+float g_cameraBaseDistance = 300.0f;
+
+// GLOBAL: gl_25201
+float g_cameraPitch = -45.0f;
+
+// GLOBAL: gl_25202
+float g_indoorCameraPitch = -45.0f;
+
+// GLOBAL: gl_25203
+float g_indoorCameraDistance = 300.0f;
+
+// GLOBAL: gl_25204
+float g_outdoorCameraPitch = -45.0f;
+
+// GLOBAL: gl_25205
+float g_outdoorCameraDistance = 300.0f;
+
+// OFFSET: 0x00CECB90
+
+#include "Contents/Schedule/Schedule.h"
+
+class CPingLiveSchedule : public CSchedule {
+public:
+  void Process(const std::uint64_t& now) override;
+};
+
+// OFFSET: 0x00CDEDF0
+// FUNCTION: fn_21321
+void CPingLiveSchedule::Process(const std::uint64_t& now) {
+  this->timestamp = now;
+  if (GetRagConnection().NativeSocket() == INVALID_SOCKET) {
+    this->active = false;
+    return;
+  }
+
+  const DWORD tick = timeGetTime();
+  if (g_session.m_lastReceiveTick + 60000 < tick) {
+    this->active = false;
+    GetRagConnection().Close();
+    g_windowMgr.EnsureWindow(332);
+    return;
+  }
+
+  if (g_session.m_lastSendTick + 10000 < tick) {
+    std::uint16_t packet = 0xB1C;
+    GetRagConnection().Send(sizeof(packet), &packet);
+  }
+}

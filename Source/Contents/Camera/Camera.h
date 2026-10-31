@@ -9,6 +9,13 @@
 struct CWorld;
 
 extern float g_cameraDistance;
+extern float g_cameraMinDistance;
+extern float g_cameraBaseDistance;
+extern float g_cameraPitch;
+extern float g_indoorCameraPitch;
+extern float g_indoorCameraDistance;
+extern float g_outdoorCameraPitch;
+extern float g_outdoorCameraDistance;
 
 class CView {
 public:

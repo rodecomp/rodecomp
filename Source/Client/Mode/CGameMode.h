@@ -91,7 +91,12 @@ public:
   /* 01F8 */ unsigned char unknown_01F8[0x54];
   /* 024C */ int unknown_024C;
   /* 0250 */ int unknown_0250;
-  /* 0254 */ unsigned char unknown_0254[0x40];
+  /* 0254 */ int unknown_0254;
+  /* 0258 */ int hasViewParameters;
+  /* 025C */ std::int16_t viewParameters[9];
+  /* 026E */ unsigned char unknown_026E[0x1A];
+  /* 0288 */ float unknown_0288;
+  /* 028C */ unsigned char unknown_028C[0x08];
   /* 0294 */ char unknown_0294[0x20];
   /* 02B4 */ UIWindow* itemWindow;
   /* 02B8 */ unsigned char unknown_02B8[0x1C];
@@ -140,6 +145,7 @@ public:
 
   std::string MapName();
   UIBroadcastBalloon* EnsureBroadcastBalloon();
+  void InitializeCamera();
   std::string GetUnknown0084(unsigned int index);
   void RequestPlayerAction(int target, int argument);
   void UpdateLoopSounds();
@@ -153,7 +159,7 @@ public:
   void NotifyUnknown0604(int value);
   void UpdatePetFriendlyWindow(int previousFriendly);
   bool SaveEmblemFile(const std::vector<unsigned char>& data);
-  void SendNpcInputText(std::uint32_t npcId, const char* text, const char* replacement);
+  void SendNpcInputText(std::uint32_t npcId, const char* text, const char* replacement, int unused);
   std::string HuntTargetText(const RenewQuestOngoingInfo& quest, int index);
   std::vector<unsigned char> SaveActiveSkillEffects();
   std::vector<unsigned char> SaveUnknown024C();

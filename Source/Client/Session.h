@@ -464,7 +464,9 @@ public:
   /* 7F7D */ unsigned char unknown_7F7D[0x13];
   /* 7F90 */ int m_showRankingSchedule;
   /* 7F94 */ std::set<std::uint32_t> unknown_7F94;
-  /* 7F9C */ unsigned char unknown_7F9C[0x0C];
+  /* 7F9C */ int m_pingLiveSchedule;
+  /* 7FA0 */ std::uint32_t m_lastReceiveTick;
+  /* 7FA4 */ std::uint32_t m_lastSendTick;
   /* 7FA8 */ CInstantVar m_options;
   /* 7FB4 */ unsigned char unknown_7FB4[0x8];
   /* 7FBC */ int unknown_7FBC;
