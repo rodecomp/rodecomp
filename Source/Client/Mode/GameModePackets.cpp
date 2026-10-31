@@ -76,6 +76,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <map>
 #include <string>
 #include <vector>
 #include <xtimec.h>
@@ -7363,4 +7364,37 @@ void CGameMode::RefreshEmotionSaleSchedule() {
     }
   }
   manager->RefreshCommands();
+}
+
+#pragma pack(push, 1)
+struct MiniMapEffectMarkerPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ int key;
+  /* 0006 */ std::int16_t x;
+  /* 0008 */ std::int16_t y;
+};
+#pragma pack(pop)
+
+struct MiniMapEffectMarker {
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ int x;
+  /* 0008 */ int y;
+};
+
+// GLOBAL: gl_25132
+std::map<int, MiniMapEffectMarker> g_miniMapEffectMarkers;
+
+// OFFSET: 0x00D244B0
+// FUNCTION: fn_21667
+void CGameMode::AddMiniMapEffectMarker(const unsigned char* packet) {
+  const MiniMapEffectMarkerPacket* marker = reinterpret_cast<const MiniMapEffectMarkerPacket*>(packet);
+  auto found = g_miniMapEffectMarkers.find(marker->key);
+  if (found != g_miniMapEffectMarkers.end()) {
+    found->second.x = marker->x;
+    found->second.y = marker->y;
+    found->second.unknown_0000 = 0x78;
+    return;
+  }
+
+  g_miniMapEffectMarkers.emplace(marker->key, MiniMapEffectMarker{0x78, marker->x, marker->y});
 }
