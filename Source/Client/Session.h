@@ -670,6 +670,7 @@ public:
   const char* GetPetString(int id);
   int AddUnknown6160(int id);
   bool ToggleTrackedAchievement(int id);
+  void RefreshTrackedAchievement(int id);
   const char* GetPetTalkName(int job);
   const char* GetPetTalkActionName(int action);
   void GetPetTalkText(int job, int hungerState, int action, char* text);

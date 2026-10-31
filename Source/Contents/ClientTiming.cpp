@@ -1,5 +1,6 @@
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Session.h"
+#include "Contents/AchievementMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MapInfoMgr.h"
 #include "Contents/NavigationManager.h"
@@ -557,6 +558,48 @@ void CSession::SetHotkeyDescription(const char* description, std::uint32_t skill
 // FUNCTION: fn_23915
 void CSession::SetHotkeySkillLevel(std::uint32_t skillLevel, int index) {
   this->unknown_0420[index] = skillLevel;
+}
+
+// OFFSET: 0x00E265C0
+// FUNCTION: fn_23916
+void CSession::RefreshTrackedAchievement(int id) {
+  std::vector<SessionRecord6178>& tracked = this->unknown_6178;
+  auto found = std::find_if(tracked.begin(), tracked.end(), [id](SessionRecord6178 record) { return id == record.id; });
+  if (found == tracked.end()) {
+    return;
+  }
+
+  auto record = g_session.unknown_6144.find(id);
+  SessionRecord6144 progress = record != g_session.unknown_6144.end() ? record->second : SessionRecord6144();
+
+  AchievementInfo info;
+  g_achievementMgr->GetAchievement(info, id);
+  found->unknown_0001 = reinterpret_cast<const unsigned char*>(&progress.unknown_0000)[1];
+
+  for (unsigned int i = 0; i < info.rewards.size(); ++i) {
+    const AchievementReward& reward = info.rewards[i];
+    SessionRecord6178Entry& entry = found->unknown_0020[i];
+
+    if (info.unknown_0064 == 0) {
+      if (reward.text.size() > 40) {
+        entry.text = static_cast<const std::string&>(FormatOwnedString("- %s...", reward.text.substr(0, 40).c_str()));
+      } else {
+        entry.text = static_cast<const std::string&>(FormatOwnedString("- %s", reward.text.c_str()));
+      }
+
+      entry.completed = static_cast<int>(progress.unknown_0004[i]) > 0;
+    } else if (info.unknown_0064 == 1) {
+      int value = progress.unknown_0004[i];
+      std::string count = FormatOwnedString("(%d/%d)", value, reward.unknown_0018);
+      if (reward.text.size() + count.size() > 40) {
+        entry.text = static_cast<const std::string&>(FormatOwnedString("- %s...%s", reward.text.substr(0, 40 - count.size()).c_str(), count.c_str()));
+      } else {
+        entry.text = static_cast<const std::string&>(FormatOwnedString("- %s %s", reward.text.c_str(), count.c_str()));
+      }
+
+      entry.completed = value == reward.unknown_0018;
+    }
+  }
 }
 
 // OFFSET: 0x00E00320
