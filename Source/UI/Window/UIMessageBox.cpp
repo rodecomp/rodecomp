@@ -2074,3 +2074,26 @@ void UIPetInfoWnd::UpdateFriendlyGauge() {
     this->Invalidate();
   }
 }
+
+// OFFSET: 0x008B1240
+// FUNCTION: fn_11745
+void UIMonsterInfoWnd::Slot15(int, int) {
+  const std::string prefix("유저인터페이스\\");
+  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(this->geometry.width - 46, this->geometry.height - 24);
+  button->SetId(184);
+  this->AddChild(button);
+  this->m_message0 = 184;
+
+  this->unknown_00D4 = g_monsterInfoActorId;
+  this->name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(g_monsterInfoActorId);
+  const std::size_t separator = this->name.find("#");
+  if (separator != std::string::npos) {
+    this->name.erase(separator, this->name.size());
+  }
+  this->name = this->FitDisplayText(100, this->name.c_str(), 0, 12, 0);
+}
