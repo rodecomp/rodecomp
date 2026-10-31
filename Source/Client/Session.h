@@ -548,6 +548,7 @@ public:
     return reinterpret_cast<NormalItemSlot*>(reinterpret_cast<unsigned char*>(this) + offsetof(CSession, unknown_06EB))[index];
   }
   void ResetItems2B50();
+  void ResetMercenaryStats();
   const char* GetPetAccActName(int id);
   int GetPetFood(int job);
   std::string GetMonsterActName(int job);

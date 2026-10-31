@@ -22,6 +22,7 @@
 #include "UI/Window/WindowBorder.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIMerInfoWnd.h"
+#include "UI/Window/WindowDialogs.h"
 #include "UI/Window/UIMessageBoxAutoreturn.h"
 #include "UI/Window/UIMonsterInfoWnd.h"
 #include "UI/Window/UITalkboxTrapInputWnd.h"
@@ -698,6 +699,8 @@ void UIMerInfoWnd::Slot11() {
     this->saved->height = this->geometry.height;
   }
 }
+
+// OFFSET: 0x008BF720
 
 // OFFSET: 0x008C3670
 // FUNCTION: fn_11828

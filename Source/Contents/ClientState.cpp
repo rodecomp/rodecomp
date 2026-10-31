@@ -1487,3 +1487,14 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
 
   return offset;
 }
+
+// OFFSET: 0x00DE93F0
+// FUNCTION: fn_23500
+void CSession::ResetMercenaryStats() {
+  this->unknown_56A4 = 0;
+  this->unknown_56A8 = 0;
+  this->unknown_56AC = 0;
+  this->unknown_5698 = 0;
+  this->unknown_569C = 0;
+  this->unknown_56A0 = 0;
+}
