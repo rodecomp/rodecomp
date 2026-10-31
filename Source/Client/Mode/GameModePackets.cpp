@@ -3177,3 +3177,41 @@ namespace {
 }
 
 // OFFSET: 0x00D4EE00
+// FUNCTION: fn_21880
+void CGameMode::ReceiveGuildMemberMemoList(const unsigned char* data) {
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
+  const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildMemberMemoRecord);
+  guildInfo->unknown_0064 = count;
+  guildInfo->ClearMembers();
+
+  const GuildMemberMemoRecord* record = reinterpret_cast<const GuildMemberMemoRecord*>(data + sizeof(PacketLengthHeader));
+  for (int i = 0; i < count; ++i, ++record) {
+    GuildInfo::Member member;
+    member.accountId = record->accountId;
+    member.characterId = record->characterId;
+    member.unknown_0020 = record->unknown_0008;
+    member.unknown_0024 = record->unknown_000A;
+    member.job = record->job;
+    member.unknown_002C = record->unknown_000C;
+    member.positionId = record->positionId;
+    member.level = record->level;
+    member.exp = record->exp;
+    member.online = record->online;
+    member.expRatio = 0.0f;
+
+    char memo[51];
+    std::memcpy(memo, record->memo, sizeof(record->memo));
+    memo[50] = '\0';
+    char name[25];
+    std::memcpy(name, record->name, sizeof(record->name));
+    name[24] = '\0';
+    member.name = name;
+    member.unknown_0050 = memo;
+    member.positionName.clear();
+    guildInfo->AddMember(member);
+  }
+
+  guildInfo->UpdateMemberExpRatios();
+  g_windowMgr.RefreshGuildWindows();
+}
