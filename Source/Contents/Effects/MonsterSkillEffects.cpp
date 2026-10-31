@@ -2465,6 +2465,45 @@ void CPneumaticusProcellaEffect::Slot03() {
 CRandomHitEffect::CRandomHitEffect() : CEffect(-1), active(true) {
 }
 
+// GLOBAL: gl_24963
+static long long s_randomHitIndex;
+
+// OFFSET: 0x007205D0
+// FUNCTION: fn_07360
+void CRandomHitEffect::Slot01() {
+  const double offsetsX[3] = {0.0, 4.0, -4.0};
+  const double offsetsY[3] = {-7.0, -6.0, -5.0};
+  const double angles[3] = {0.0, 320.0, 40.0};
+
+  this->emitter =
+      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  if (this->emitter) {
+    if (this->id == 2080) {
+      AsParticle(this->emitter)->Load(std::string("4ig_secondfalth\\secondfalth_hit\\secondfalth_hit.str"));
+      const int index = static_cast<int>(s_randomHitIndex);
+      AsParticle(this->emitter)->m_angle = static_cast<float>(angles[index]);
+      this->emitter->offset.x = static_cast<float>(offsetsX[index]);
+      this->emitter->offset.y = static_cast<float>(offsetsY[index]);
+      this->emitter->offset.z = 0.0f;
+      AsParticle(this->emitter)->m_delay = index * 200;
+    } else if (this->id == 2082) {
+      AsParticle(this->emitter)->Load(std::string("4iq_secondjudgement\\secondjudgement\\secondjudgement.str"));
+      const int index = static_cast<int>(s_randomHitIndex);
+      AsParticle(this->emitter)->m_angle = static_cast<float>(angles[index]);
+      this->emitter->offset.x = static_cast<float>(offsetsX[index]);
+      this->emitter->offset.y = static_cast<float>(offsetsY[index]);
+      this->emitter->offset.z = 0.0f;
+      AsParticle(this->emitter)->m_delay = index * 200;
+    }
+  }
+
+  if (s_randomHitIndex < 2) {
+    ++s_randomHitIndex;
+  } else {
+    s_randomHitIndex = 0;
+  }
+}
+
 // OFFSET: 0x007208A0
 // FUNCTION: fn_07362
 void CRandomHitEffect::Slot03() {

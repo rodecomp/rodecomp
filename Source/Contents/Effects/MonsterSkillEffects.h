@@ -324,6 +324,7 @@ public:
 class CRandomHitEffect : public CEffect {
 public:
   CRandomHitEffect();
+  void Slot01() override;
   void Slot03() override;
   void Slot04() override;
   void Close() override;
