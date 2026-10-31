@@ -7,6 +7,10 @@
 #include <cstdlib>
 #include <strstream>
 
+// OFFSET: 0x007461C0
+// FUNCTION: fn_07770
+CRmaRes::CRmaRes() = default;
+
 // OFFSET: 0x007467D0
 // FUNCTION: fn_07778
 CRmaRes::~CRmaRes() {

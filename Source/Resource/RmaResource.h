@@ -16,6 +16,7 @@ struct RmaAction {
 
 class CRmaRes : public CRes {
 public:
+  CRmaRes();
   ~CRmaRes() override;
   CRmaRes* Create() override;
   bool Load(const char* name) override;
