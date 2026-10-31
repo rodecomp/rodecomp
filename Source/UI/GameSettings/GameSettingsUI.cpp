@@ -1,5 +1,6 @@
 #include "UI/GameSettings/GameSettingsUI.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/MessageTable.h"
@@ -21,7 +22,6 @@
 #include "UI/Window/WindowBorder.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/StringUtil.h"
-
 #include <algorithm>
 #include <cstdint>
 #include <cstring>
@@ -1732,4 +1732,38 @@ void GameSettingsUI::CUIGroupLogInOut::Slot16() {
   thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> tooltip(source);
   const char* tooltipText = tooltip.Text();
   this->m_title->SetTooltip(tooltipText, std::strlen(tooltipText));
+}
+
+// OFFSET: 0x00A1A320
+
+// OFFSET: 0x00A1A480
+
+// OFFSET: 0x00A1A5E0
+
+// OFFSET: 0x00A1F890
+
+// OFFSET: 0x00A3F9E0
+
+// OFFSET: 0x00A41910
+
+// OFFSET: 0x00A40560
+// FUNCTION: fn_15976
+void GameSettingsUI::CUIGroupSound::Apply() {
+  const std::uint8_t bgmVolumeSource[] = {0xCD, 0xDA, 0x82, 0xD8, 0x2B, 0xAA, 0xC1, 0x00, 0xE2, 0xD8, 0xEF};
+  thread_local EncryptedName<sizeof(bgmVolumeSource), 0x75ADC57D87EFBD8FULL> bgmVolumeName(bgmVolumeSource);
+  this->SetBgmVolume(g_session.GetDefaultOptionValue(bgmVolumeName.Text(), 100));
+  const std::uint8_t bgmSource[] = {0x42, 0xD9, 0xF2, 0x40, 0x93};
+  thread_local EncryptedName<sizeof(bgmSource), 0xC517FB932D95BB6DULL> bgmName(bgmSource);
+  this->SetBgmEnabled(g_session.GetDefaultOptionValue(bgmName.Text(), 1) != 0);
+  const std::uint8_t effectVolumeSource[] = {0x8C, 0x93, 0x39, 0xEE, 0xEC, 0xA1, 0xE4, 0x75, 0xA6, 0x99, 0x2A, 0xE6, 0xEA, 0xD5};
+  thread_local EncryptedName<sizeof(effectVolumeSource), 0x23BBD58F8B5FF5C9ULL> effectVolumeName(effectVolumeSource);
+  this->SetEffectVolume(g_session.GetDefaultOptionValue(effectVolumeName.Text(), 100));
+  const std::uint8_t effectSource[] = {0xA8, 0x60, 0x04, 0x0A, 0x57, 0x6D, 0x71};
+  thread_local EncryptedName<sizeof(effectSource), 0x0B7109397F6B1387ULL> effectName(effectSource);
+  const int effect = g_session.GetDefaultOptionValue(effectName.Text(), 1);
+  const bool muted = effect == 0;
+  this->m_effectSlider->SetTransparent(muted);
+  this->m_effectSlider->dragging = muted;
+  this->m_effectSlider->Invalidate();
+  g_serviceOptions.Set(0xB, effect != 0);
 }

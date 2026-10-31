@@ -88,6 +88,7 @@ public:
   void LoadAdapters();
   void LoadModes();
   void OnAdapterSelect(CUIComboItem* item, const RenderAdapter& adapter);
+  void OnModeSelect(CUIComboItem* item, const DisplayMode& mode);
 
   /* 0084 */ CUIComboBox<CUIComboItem, RenderAdapter>* m_adapterCombo;
   /* 0088 */ CUIStaticText* m_modeText;
@@ -155,6 +156,7 @@ public:
 class CUIGroupSkin : public CUIGroup {
 public:
   void Slot15(int width, int height) override;
+  void Slot16() override;
   void Apply() override;
   void Refresh() override;
 
@@ -164,6 +166,7 @@ public:
 class CUIGroupSound : public CUIGroup {
 public:
   void Slot16() override;
+  void Apply() override;
   void Paint() override;
   void Refresh() override;
   __declspec(noinline) void SetBgmEnabled(bool enabled);
@@ -247,6 +250,7 @@ public:
 
 class CUIComboItem : public CUIListItem {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
 
   /* 00E8 */ CUIStaticText* m_text;
