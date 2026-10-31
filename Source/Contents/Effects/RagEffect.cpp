@@ -16,7 +16,7 @@
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
 #include "Render/Projection/RenderProjection.h"
-#include "Render/Renderer.h"
+#include "Contents/Actors/GroundScope.h"
 #include "Render/Textures/TextureCache.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -8517,6 +8517,181 @@ void CRagEffect::SakuraFireArrow() {
 
 // OFFSET: 0x00C6E370
 
+// OFFSET: 0x00C6D890
+// FUNCTION: fn_20300
+void CRagEffect::BeginSpellSwirl(const char*, char, char alpha) {
+  char name[64];
+
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  g_soundMgr->PlayWave(
+    "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40,
+    1.0f, 0
+  );
+
+  if (this->state.duration < 120) {
+    this->state.duration = 120;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 149, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+
+  if (alpha == 10) {
+    this->state.unknown_11C84->totalTexture = 4;
+    AllocateTextures(*this->state.unknown_11C84);
+
+    for (int index = 0; index < 4; ++index) {
+      std::sprintf(name, "effect\\YBfire_%02d.bmp", index + 1);
+      this->state.unknown_11C84->textures[index] = g_texMgr.Load(name, 0, false, true, false);
+    }
+  } else {
+    this->state.unknown_11C84->totalTexture = 27;
+    AllocateTextures(*this->state.unknown_11C84);
+
+    for (int index = 0; index < 27; ++index) {
+      std::sprintf(name, "effect\\W_bubble%02d.tga", index + 1);
+      this->state.unknown_11C84->textures[index] = g_texMgr.Load(name, 0, false, true, false);
+    }
+  }
+
+  this->state.unknown_11C84->size = 0.0f;
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[0].maxHeight = 23.0f;
+  this->state.unknown_11C84->slots[0].rotStart = 180;
+  this->state.unknown_11C84->slots[0].alphaB = 0;
+  this->state.unknown_11C84->slots[0].distance = 4.3f;
+  this->state.unknown_11C84->slots[0].riseAngle = 75;
+  this->state.unknown_11C84->slots[1].life = 1;
+  this->state.unknown_11C84->slots[1].process = 0;
+  this->state.unknown_11C84->slots[1].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[1].maxHeight = 23.0f;
+  this->state.unknown_11C84->slots[1].rotStart = 270;
+  this->state.unknown_11C84->slots[1].alphaB = 0;
+  this->state.unknown_11C84->slots[1].distance = 4.3f;
+  this->state.unknown_11C84->slots[1].riseAngle = 63;
+  this->state.unknown_11C84->slots[2].life = 1;
+  this->state.unknown_11C84->slots[2].process = 0;
+  this->state.unknown_11C84->slots[2].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[2].maxHeight = 23.0f;
+  this->state.unknown_11C84->slots[2].rotStart = 0;
+  this->state.unknown_11C84->slots[2].alphaB = 0;
+  this->state.unknown_11C84->slots[2].distance = 4.3f;
+  this->state.unknown_11C84->slots[2].riseAngle = 52;
+  this->state.unknown_11C84->slots[3].life = 1;
+  this->state.unknown_11C84->slots[3].process = 0;
+  this->state.unknown_11C84->slots[3].fullDisplayAngle = 360;
+  this->state.unknown_11C84->slots[3].maxHeight = 23.0f;
+  this->state.unknown_11C84->slots[3].rotStart = 90;
+  this->state.unknown_11C84->slots[3].alphaB = 0;
+  this->state.unknown_11C84->slots[3].distance = 4.3f;
+  this->state.unknown_11C84->slots[3].riseAngle = 40;
+
+  for (int index = 0; index < 4; ++index) {
+    this->state.unknown_11C84->slots[index].alphaT = alpha;
+    this->state.unknown_11C84->slots[index].vecBNow.y = 0.0f;
+
+    for (int step = 0; step < 21; ++step) {
+      this->state.unknown_11C84->slots[index].height[step] = 0.0f;
+      this->state.unknown_11C84->slots[index].flag1[step] = 0;
+    }
+  }
+}
+
+// OFFSET: 0x00C6DDC0
+// FUNCTION: fn_20301
+void CRagEffect::SevereRainstormCylinder(const char*, int, char alpha, float distance) {
+  char name[128];
+
+  const RenderObjectState& parent = this->state.parent->render;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
+
+  if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  g_soundMgr->PlayWave(
+    "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40,
+    1.0f, 0
+  );
+
+  if (this->state.duration < 120) {
+    this->state.duration = 120;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 173, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 5;
+  this->state.unknown_11C84->duration = this->state.duration;
+  this->state.unknown_11C84->totalTexture = 9;
+  AllocateTextures(*this->state.unknown_11C84);
+
+  for (int index = 0; index < 9; ++index) {
+    std::sprintf(name, "effect\\new_severerainstorm\\new_severerainstorm_cylinder\\music_%02d.tga", index + 1);
+    this->state.unknown_11C84->textures[index] = g_texMgr.Load(name, 0, false, true, false);
+  }
+
+  this->state.unknown_11C84->size = 0.0f;
+
+  this->state.unknown_11C84->slots[0].life = 1;
+  this->state.unknown_11C84->slots[0].process = 0;
+  this->state.unknown_11C84->slots[0].fullDisplayAngle = 120;
+  this->state.unknown_11C84->slots[0].maxHeight = 20.0f;
+  this->state.unknown_11C84->slots[0].rotStart = 0;
+  this->state.unknown_11C84->slots[0].alphaB = 0;
+  this->state.unknown_11C84->slots[0].distance = distance;
+  this->state.unknown_11C84->slots[0].riseAngle = 60;
+
+  this->state.unknown_11C84->slots[1].life = 1;
+  this->state.unknown_11C84->slots[1].process = 0;
+  this->state.unknown_11C84->slots[1].fullDisplayAngle = 120;
+  this->state.unknown_11C84->slots[1].maxHeight = 20.0f;
+  this->state.unknown_11C84->slots[1].rotStart = 90;
+  this->state.unknown_11C84->slots[1].alphaB = 0;
+  this->state.unknown_11C84->slots[1].distance = distance;
+  this->state.unknown_11C84->slots[1].riseAngle = 55;
+
+  this->state.unknown_11C84->slots[2].life = 1;
+  this->state.unknown_11C84->slots[2].process = 0;
+  this->state.unknown_11C84->slots[2].fullDisplayAngle = 120;
+  this->state.unknown_11C84->slots[2].maxHeight = 20.0f;
+  this->state.unknown_11C84->slots[2].rotStart = 180;
+  this->state.unknown_11C84->slots[2].alphaB = 0;
+  this->state.unknown_11C84->slots[2].distance = distance;
+  this->state.unknown_11C84->slots[2].riseAngle = 65;
+
+  this->state.unknown_11C84->slots[3].life = 1;
+  this->state.unknown_11C84->slots[3].process = 0;
+  this->state.unknown_11C84->slots[3].fullDisplayAngle = 120;
+  this->state.unknown_11C84->slots[3].maxHeight = 20.0f;
+  this->state.unknown_11C84->slots[3].rotStart = 270;
+  this->state.unknown_11C84->slots[3].alphaB = 0;
+  this->state.unknown_11C84->slots[3].distance = distance;
+  this->state.unknown_11C84->slots[3].riseAngle = 70;
+
+  for (int slot = 0; slot < 4; ++slot) {
+    this->state.unknown_11C84->slots[slot].alphaT = alpha;
+    this->state.unknown_11C84->slots[slot].vecBNow.y = 0.0f;
+
+    for (int index = 0; index < 21; ++index) {
+      this->state.unknown_11C84->slots[slot].height[index] = 0.0f;
+      this->state.unknown_11C84->slots[slot].flag1[index] = 0;
+    }
+  }
+}
+
 // OFFSET: 0x00C0E790
 // FUNCTION: fn_20026
 void CRagEffect::AssassinCloaking() {
@@ -14404,6 +14579,72 @@ void CRagEffect::SuperSlashSpread(char count, char value) {
     this->state.unknown_11C84->slots[i].height[14] = static_cast<float>(std::max(rand() % 5, 0));
     this->state.unknown_11C84->slots[i].height[15] = static_cast<float>(std::max(rand() % 360, 0));
     this->state.unknown_11C84->slots[i].flag1[4] = value;
+  }
+}
+
+// OFFSET: 0x00C627C0
+// FUNCTION: fn_20251
+void CPlayer::UpdateFootprints(int kind) {
+  const int interval = kind == 1 ? 12 : 7;
+
+  if (g_updateTick <= 0) {
+    return;
+  }
+
+  ++this->footprintCounter;
+
+  if (this->footprintCounter > interval * 2) {
+    this->footprintCounter = 1;
+  } else {
+    if (this->footprintCounter < 0) {
+      this->footprintCounter = 0;
+    }
+
+    if (this->footprintCounter == 0) {
+      this->footprintPosition = this->render.position;
+    }
+  }
+
+  if (this->footprintCounter != interval && this->footprintCounter != interval * 2) {
+    return;
+  }
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  const float dx = this->render.position.x - this->footprintPosition.x;
+  const float dz = this->render.position.z - this->footprintPosition.z;
+  this->footprintPosition.x = this->render.position.x;
+  this->footprintPosition.z = this->render.position.z;
+  this->footprintPosition.y = this->render.position.y;
+
+  if (dx == 0.0f && dz == 0.0f) {
+    return;
+  }
+
+  const float length = SquareRoot(dz * dz + dx * dx);
+  const float cosine = dx / length;
+  const float sine = dz / length;
+  std::int16_t direction = 180;
+
+  for (std::int16_t index = 0; index <= 180; ++index) {
+    if (cosine >= g_cosTable[index]) {
+      direction = sine < 0.0f ? static_cast<std::int16_t>(360 - index) : index;
+      break;
+    }
+  }
+
+  std::int16_t angle = static_cast<std::int16_t>(direction + 135);
+  if (angle >= 360) {
+    angle = static_cast<std::int16_t>(angle - 360);
+  }
+
+  if (kind == 1) {
+    mode->LaunchDummyEffect(&this->footprintPosition, (this->footprintCounter != interval) + 326, 333, angle);
+  } else if (kind == 2 && static_cast<unsigned>(interval) < this->render.unknown_00F7) {
+    if (this->footprintCounter == interval) {
+      mode->LaunchDummyEffect(&this->footprintPosition, 447, 333, angle);
+    } else {
+      mode->LaunchDummyEffect(&this->footprintPosition, 448, 333, angle);
+    }
   }
 }
 

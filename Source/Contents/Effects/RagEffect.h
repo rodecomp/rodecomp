@@ -210,6 +210,8 @@ struct CRagEffect : CRenderObject {
   void SageMagicRod();
   void SakuraFireArrow();
   void TorchDustRing(const char* name, char kind, std::int16_t angle);
+  void BeginSpellSwirl(const char* name, char, char alpha);
+  void SevereRainstormCylinder(const char* name, int unused, char alpha, float distance);
   void AssassinCloaking();
   bool ProcessEZ2STRRaised();
   void LockOnMarker();

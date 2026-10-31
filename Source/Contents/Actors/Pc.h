@@ -113,7 +113,10 @@ public:
   /* 0454 */ int unknown_0454;
   /* 0458 */ int unknown_0458;
   /* 045C */ int unknown_045C;
-  /* 0460 */ int unknown_0460[6];
+  /* 0460 */ int unknown_0460[1];
+  /* 0464 */ int footprintCounter;
+  /* 0468 */ vector3d footprintPosition;
+  /* 0474 */ int unknown_0474;
   /* 0478 */ std::string unknown_0478;
   /* 0490 */ unsigned char unknown_0490[0x0C];
   /* 049C */ int unknown_049C;
@@ -188,6 +191,7 @@ public:
   void Slot16() override;
   void Slot17() override;
   void RefreshEffect164();
+  void UpdateFootprints(int kind);
   void UpdateMsgEffect(bool show);
 
   /* 0510 */ unsigned char unknown_0510[0xC];
