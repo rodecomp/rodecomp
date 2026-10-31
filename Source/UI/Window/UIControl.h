@@ -332,6 +332,12 @@ public:
 
 class CUIResizer : public CUIControl {
 public:
+  // INLINED
+  explicit CUIResizer(UIWindowContext& context)
+      : CUIControl(context), minWidth(0), minHeight(0), maxWidth(0), maxHeight(0), stepX(1), stepY(1), startX(0), startY(0), startWidth(0), startHeight(0),
+        deltaX(0), deltaY(0), imageName(), onResize(), image() {
+  }
+
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot27(int x, int y) override;
@@ -340,6 +346,11 @@ public:
   void Slot53(int resolveSkin) override;
 
   void SetImage(const std::string& name);
+
+  // INLINED
+  void SetOnResize(std::function<void(int, int)> handler) {
+    this->onResize = handler;
+  }
 
   /* 0084 */ int minWidth;
   /* 0088 */ int minHeight;

@@ -30,13 +30,14 @@ public:
   CUIEquipmentPropertiesWnd();
   /* 00D8 */ CUITitleBar* titleBar;
   /* 00DC */ CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>* list;
-  /* 00E0 */ CUIControl* tabs;
-  /* 00E4 */ CUIControl* resizer;
+  /* 00E0 */ CUITab* tabs;
+  /* 00E4 */ CUIResizer* resizer;
   /* 00E8 */ int currentTab;
 
   bool Slot02() override;
   bool Slot03() override;
   bool Slot08() override;
+  void Slot15(int width, int height) override;
   virtual void Slot53();
   void Grow(int width, int height) override;
   void Paint() override;
@@ -49,6 +50,7 @@ public:
   void OnClickButton7();
   void OnClickButton8();
   void OnClickButton9();
+  void OnClickClose();
   void OnSelectLine(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* line, const std::string& text);
   void BindLine(EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* line, const std::string& text);
   void Slot16() override;
