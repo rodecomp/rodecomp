@@ -14,6 +14,7 @@
 #include "UI/Text/UIStaticTextControl.h"
 #include "UI/Text/UITextViewerControl.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstring>
@@ -538,7 +539,42 @@ void CUIAdventureGuide::OnSelectTab(AdventureGuide::CUITab* tab) {
   }
 }
 
+namespace {
+
+template <std::size_t Length, std::uint64_t Key>
+class EncryptedName {
+public:
+  explicit EncryptedName(const std::uint8_t (&source)[Length]) : m_encrypted(true) {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = source[index];
+    }
+  }
+
+  ~EncryptedName() {
+    for (std::uint64_t index = 0; index < Length; ++index) {
+      this->m_text[index] = 0;
+    }
+  }
+
+  const char* Text() {
+    if (this->m_encrypted) {
+      utility::XorBytes(this->m_text, Length, Key);
+      this->m_encrypted = false;
+    }
+
+    return reinterpret_cast<const char*>(this->m_text);
+  }
+
+private:
+  std::uint8_t m_text[Length];
+  bool m_encrypted;
+};
+
+}
+
 namespace AdventureGuide {
+
+// OFFSET: 0x009C5400
 
 // OFFSET: 0x009DCE10
 // FUNCTION: fn_14330

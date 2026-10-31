@@ -16,6 +16,7 @@ public:
   /* 00F0 */ std::uint32_t evenRowColor;
   /* 00F4 */ std::uint32_t oddRowColor;
 
+  void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
   void Slot53(int resolveSkin) override;

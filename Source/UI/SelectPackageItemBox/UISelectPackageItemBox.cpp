@@ -372,6 +372,29 @@ private:
 
 }
 
+// OFFSET: 0x00A69790
+
+// OFFSET: 0x00A6CDE0
+// FUNCTION: fn_16665
+void SelectPackageItemBox::CUITabInfo::Slot15(int width, int height) {
+  this->nameText = new CUIStaticText(*this->m_context);
+  this->nameText->SetSize(148, 34);
+  this->nameText->Move(11, 0);
+  this->nameText->SetText("", 0);
+  this->nameText->SetFitText(0);
+  this->nameText->SetAlign(0, 6);
+  const std::uint8_t nameFontSource[] = {0xBA, 0xA2, 0x21, 0xC0, 0xD8, 0x8F};
+  // GLOBAL: gl_25123
+  thread_local EncryptedName<sizeof(nameFontSource), 0xE7978FB5A94DD7FDULL> nameFont(nameFontSource);
+  this->nameText->SetFont(std::string(nameFont.Text()));
+  this->nameText->SetFontHeight(12);
+  this->nameText->SetBold(0);
+  this->nameText->SetColor(0);
+  this->nameText->SetShadow(0, 0xFFFFFF);
+  this->nameText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->nameText);
+}
+
 // OFFSET: 0x00A6FE20
 // FUNCTION: fn_16783
 void CUISelectPackageItemBox::BindItem(SelectPackageItemBox::CUIItemInfo* item, const ITEM_INFO& data) {

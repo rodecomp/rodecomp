@@ -30,6 +30,7 @@ public:
 
 class CUICharacterInfo : public CUIControl {
 public:
+  void Slot15(int width, int height) override;
   void Slot16() override;
 
   /* 0084 */ CUIStaticText* level;
