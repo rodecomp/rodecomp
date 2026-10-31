@@ -2751,3 +2751,38 @@ const char* UIWindow::ClipTextToWidth(const char* text, int maxWidth, int family
 }
 
 // OFFSET: 0x009EBF40
+// FUNCTION: fn_14557
+bool CUIRegisterMgr::SaveTemporary() {
+  std::string data;
+
+  if (this->unknown_000C.size() != 0) {
+    data += "TblPos = \r\n";
+    data += "{\r\n";
+    for (const auto& position : this->unknown_000C) {
+      data += std::format("\t[ {} ] = {{ x = {}, y = {} }},\r\n", position.first, position.second.first, position.second.second);
+    }
+    data += "}\r\n";
+  }
+
+  if (this->unknown_0014.size() != 0) {
+    data += "TblSize = \r\n";
+    data += "{\r\n";
+    for (const auto& size : this->unknown_0014) {
+      data += std::format("\t[ {} ] = {{ w = {}, h = {} }},\r\n", size.first, size.second.first, size.second.second);
+    }
+    data += "}\r\n";
+  }
+
+  if (data.size() == 0) {
+    return false;
+  }
+
+  NSyncObject sync(&this->lock);
+  CFile file;
+  if (file.Open(g_uiInfoTempPath, 0x1001, false, true)) {
+    data = EncodeBase64(data, false);
+    file.Write(data.c_str(), data.size());
+    file.Close();
+  }
+  return true;
+}
