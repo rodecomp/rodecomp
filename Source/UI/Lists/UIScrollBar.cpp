@@ -1035,6 +1035,26 @@ void UIChatHisBox::ShiftItemTags() {
 }
 
 // OFFSET: 0x0087EF30
+// FUNCTION: fn_11268
+void UIChatHisBox::PlaceItemTags(int line) {
+  const int top = this->topLine;
+  unsigned int end = static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top);
+  if (this->lines.size() < end) {
+    end = static_cast<unsigned int>(this->lines.size());
+  }
+
+  for (std::vector<UIItemTagButton*>& row : this->ItemTags()) {
+    for (unsigned int index = 0; index < row.size(); ++index) {
+      UIItemTagButton* button = row[index];
+      const int buttonLine = button->line;
+      if (buttonLine < top || buttonLine > static_cast<int>(end - 1)) {
+        button->Move(-100, -100);
+      } else if (line == buttonLine) {
+        button->Move(button->column + 1, (line - top) * this->lineHeight + 2);
+      }
+    }
+  }
+}
 
 // OFFSET: 0x00889710
 
