@@ -467,8 +467,66 @@ void CUIEnchantPage::Slot57() {
 }
 
 // OFFSET: 0x00A06520
+// FUNCTION: fn_15003
+void CUIReset::Slot57() {
+  for (CUIIngredient* ingredient : this->unknown_0090) {
+    ingredient->Show(0);
+  }
+
+  const std::string count = std::to_string(0);
+  this->unknown_009C->SetText(count.c_str(), count.size());
+  this->unknown_00A0->disabled = 1;
+  this->unknown_00A0->Invalidate();
+  this->enchantList->ClearData();
+  this->Slot56();
+}
 
 // OFFSET: 0x00A06800
+// FUNCTION: fn_15004
+void CUIEnchantPage::ResetSlots() {
+  for (const auto& slot : this->unknown_0088) {
+    slot.second->Show(0);
+  }
+
+  for (CUIIngredient* ingredient : this->unknown_0090) {
+    ingredient->Show(0);
+  }
+
+  this->enchantList->ClearData();
+  const std::string count = std::to_string(0);
+  this->unknown_009C->SetText(count.c_str(), count.size());
+  this->unknown_00A0->disabled = 1;
+  this->unknown_00A0->Invalidate();
+  this->Slot59(-1);
+}
 
 // OFFSET: 0x00A06F80
+// FUNCTION: fn_15009
+bool CUINormalPerfect::Slot56() {
+  const int slot = this->FindEmptySlot();
+  if (slot == -1) {
+    return false;
+  }
+
+  std::optional<EnchantOptionInfo*> option = this->FindOption(slot);
+  if (!option) {
+    return false;
+  }
+
+  this->Slot59(slot);
+  if ((*option)->perfectEnchants.size() == 0) {
+    return false;
+  }
+
+  for (const auto& entry : (*option)->perfectEnchants) {
+    const bool lackZeny = g_session.m_zeny < entry.second.cost;
+    const bool lackMaterial = std::any_of(entry.second.materials.begin(), entry.second.materials.end(), [](const std::pair<const int, int>& material) {
+      return static_cast<unsigned int>(g_session.GetInventoryItemCount(material.first)) < static_cast<unsigned int>(material.second);
+    });
+    this->enchantList->AddData({entry.first, lackZeny || lackMaterial}, false);
+  }
+
+  this->enchantList->UpdateScrollBar();
+  return true;
+}
 }
