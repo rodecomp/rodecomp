@@ -38,11 +38,14 @@ public:
   // VTABLE: vt_00211
   // INLINED
   explicit UIChangeMaterialWnd_ScrollBar(UIWindowContext& windows) : UIScrollBar(windows) {}
+
+  void Paint() override;
 };
 
 class UIChangeMaterialWnd : public UIFrameWnd {
 public:
   bool Slot02() override;
+  void Paint() override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   ITEM_INFO* GetItemAt(int x, int y);
@@ -64,13 +67,15 @@ public:
 
 class UIChangeMaterialWnd_List : public UIFrameWnd {
 public:
+  void Paint() override;
   void Move(int x, int y) override;
+  void Slot28(int x, int y) override;
   void Slot27(int x, int y) override;
   void Slot35(int argument) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4)
     override;
 
-  void ApplyFilter(const std::string& text);
+  void ApplyFilter(std::string text);
   void SortItems(bool ascending);
   void RefreshVisibleEntries();
   void sub_5E2A70();

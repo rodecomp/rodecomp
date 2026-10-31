@@ -2,13 +2,21 @@
 
 #include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
+#include "Contents/Items/ChangeMaterialMgr.h"
+#include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
 #include "Network/Connection/Connection.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Shop/ItemDrawing.h"
+#include "UI/Text/ColoredText.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/UINewSelectCharWnd.h"
 #include "Utility/StackAlloc.h"
 #include "Utility/Text/FormatString.h"
 
@@ -182,7 +190,7 @@ void UIChangeMaterialWnd_List::sub_5E2A70() {
 
 // OFFSET: 0x005E2B20
 // FUNCTION: fn_03891
-void UIChangeMaterialWnd_List::ApplyFilter(const std::string& text) {
+void UIChangeMaterialWnd_List::ApplyFilter(std::string text) {
   const int rowHeight = *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
   this->m_pageSize = this->geometry.height / rowHeight;
   this->m_selectedIndex = 0;
@@ -215,6 +223,40 @@ void UIChangeMaterialWnd_List::ApplyFilter(const std::string& text) {
 // FUNCTION: fn_03892
 void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
   this->m_entries.clear();
+
+  const std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess> library = g_changeMaterialMgr->m_library;
+  for (const auto& node : library) {
+    const std::vector<ChangeMaterialRecipe> recipes = node.second.m_recipes;
+    for (const ChangeMaterialRecipe& recipe : recipes) {
+      MaterialListEntry entry{};
+
+      for (const ChangeMaterialEntry& material : recipe.materials) {
+        MaterialReq material_;
+        material_.id = material.itemId;
+        material_.quantity = material.count;
+        entry.materials.push_back(material_);
+      }
+
+      for (const ChangeMaterialProduct& product : recipe.products) {
+        MaterialResult result;
+        result.id = product.itemId;
+        result.quantity = product.count;
+        result.amount = product.rate;
+        entry.results.push_back(result);
+      }
+
+      entry.state = 1;
+      for (const MaterialReq& material : entry.materials) {
+        const ITEM_INFO stock = LookupClientItem(g_session.m_inventoryItems, material.id, 1);
+        if (stock.quantity < material.quantity) {
+          entry.state = 0;
+        }
+      }
+
+      this->m_entries.push_back(entry);
+    }
+  }
+
   this->ApplyFilter(std::string());
   this->sub_5E3B80(0);
 }
@@ -408,9 +450,10 @@ int UIChangeMaterialWnd_List::SendMsg(
 // OFFSET: 0x005E4330
 // FUNCTION: fn_03897
 void UIChangeMaterialWnd_List::SortItems(bool ascending) {
-  std::sort(this->m_items.begin(), this->m_items.end(), [this](int left, int right) {
-    const std::string leftName = ItemDisplayName(this->m_entries[left].results.front().id);
-    const std::string rightName = ItemDisplayName(this->m_entries[right].results.front().id);
+  const std::vector<MaterialListEntry> entries = this->m_entries;
+  std::sort(this->m_items.begin(), this->m_items.end(), [&entries](int left, int right) {
+    const std::string leftName = ItemDisplayName(entries[left].results.front().id);
+    const std::string rightName = ItemDisplayName(entries[right].results.front().id);
     return leftName < rightName;
   });
 
@@ -441,4 +484,169 @@ void UIChangeMaterialWnd_List::ShiftSelectedIndex(int value) {
   }
 
   this->sub_5E3B80(index);
+}
+
+// OFFSET: 0x005E1C00
+// FUNCTION: fn_03878
+void UIChangeMaterialWnd::Paint() {
+  UIWindowContext& controls = *this->m_context;
+  ItemDescriptions descriptions{g_itemDescriptions};
+
+  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\bg_ChangeMaterial.bmp")));
+  this->DrawBitmap(0, 0, background ? &background->image : nullptr, true);
+
+  const std::string mixName = FormatOwnedString("유저인터페이스\\ChangeMaterial\\bg_mix_%d.bmp", static_cast<int>(this->m_materials.size()));
+  CBitmapRes* mix = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(mixName.c_str())));
+  this->DrawBitmap(0x50, 0x1E, mix ? &mix->image : nullptr, true);
+
+  for (std::size_t i = 0; i < this->m_materials.size(); ++i) {
+    const ITEM_INFO& material = this->m_materials[i];
+    const MaterialSlotPos& position = this->m_materialPos[i];
+    if (material.identified == 1) {
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, controls.fonts, controls.locale, position.x, position.y, material, 1, 0);
+    } else {
+      DrawItemWithQuantityAuxiliary(*this, descriptions, controls.fonts, controls.locale, 1, position.x, position.y, material, 1, 0);
+    }
+  }
+
+  DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, controls.fonts, controls.locale, this->m_resultX, this->m_resultY, this->m_resultItem, 1, 0);
+
+  const std::string amount = FormatOwnedString(LookupMessage(0xE8C), this->m_resultAmount / 10);
+  const int width = this->TextWidth(controls.fonts, controls.locale, amount.c_str(), 0, 0x1D, 0x17, 1, 0);
+  DrawOutlinedText(*this, 0x4F + (0xC8 - width) / 2, 0x64, amount.c_str(), 0, 0x5082DC, 0x643C00, 0x1D, 0x17, 1, 0);
+
+  if (!this->m_resultText.empty()) {
+    this->DrawTextAt(controls.fonts, controls.locale, 0x50, 0x103, this->m_resultText.c_str(), 0, 0, 0xC, 0x1E00E6, 0, 0);
+  }
+}
+
+// OFFSET: 0x005E1F20
+// FUNCTION: fn_03880
+void UIChangeMaterialWnd_List::Paint() {
+  UIWindowContext& controls = *this->m_context;
+  ItemDescriptions descriptions{g_itemDescriptions};
+  const int rowHeight = *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
+
+  this->ClearSurface(0xFFFF00FF);
+
+  if (this->m_pageSize <= 0) {
+    return;
+  }
+
+  for (int row = 0; row < this->m_pageSize; ++row) {
+    const MaterialListEntry* entry = nullptr;
+    const unsigned int index = static_cast<unsigned int>(row + this->m_scrollOffset);
+    if (index < this->m_items.size()) {
+      const int entryIndex = this->m_items[index];
+      if (static_cast<unsigned int>(entryIndex) < this->m_entries.size()) {
+        entry = &this->m_entries[entryIndex];
+      }
+    }
+
+    const int y = row * rowHeight;
+    if (!entry) {
+      CBitmapRes* disabled = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\btn_material_disable.bmp")));
+      this->DrawBitmap(0, y, disabled ? &disabled->image : nullptr, true);
+      continue;
+    }
+
+    const char* image = "유저인터페이스\\ChangeMaterial\\btn_material_out.bmp";
+    if (row == this->m_selectedIndex) {
+      image = "유저인터페이스\\ChangeMaterial\\btn_material_press.bmp";
+    } else if (row == this->m_hoverIndex) {
+      image = "유저인터페이스\\ChangeMaterial\\btn_material_over.bmp";
+    }
+
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(image)));
+    this->DrawBitmap(0, y, bitmap ? &bitmap->image : nullptr, true);
+
+    ITEM_INFO item;
+    item.SetItemId(entry->results.front().id);
+    item.identified = 1;
+    const int quantity = entry->results.front().quantity;
+    std::string name = ItemDisplayName(entry->results.front().id);
+    if (this->TextWidth(controls.fonts, controls.locale, name.c_str(), 0, 0, 12, 0, 0) > 100) {
+      name = this->FitDisplayText(100, name.c_str(), 0, 12, 0);
+    }
+
+    const std::string amount = FormatOwnedString(LookupMessage(0xB6), quantity);
+    if (entry->state == 1) {
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, controls.fonts, controls.locale, 0, y, item, 1, 0);
+      this->DrawTextAt(controls.fonts, controls.locale, 0x1E, y + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
+      this->DrawRightAlignedText(0xA3, y + 6, amount.c_str(), 0, 0, 12, 0, 0);
+    } else {
+      DrawItemWithQuantityAuxiliary(*this, descriptions, controls.fonts, controls.locale, 1, 0, y, item, 1, 0);
+      this->DrawTextAt(controls.fonts, controls.locale, 0x1E, y + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
+      this->DrawRightAlignedText(0xA3, y + 6, amount.c_str(), 0, 0, 12, 0xAAAAAA, 0);
+    }
+  }
+}
+
+// OFFSET: 0x005E2370
+// FUNCTION: fn_03881
+void UIChangeMaterialWnd_ScrollBar::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+
+  if (this->maximum == 0) {
+    return;
+  }
+
+  if (this->vertical == 1) {
+    CBitmapRes* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\scroll_arrow_up_br.bmp")));
+    CBitmapRes* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\scroll_arrow_down_br.bmp")));
+    CBitmapRes* track = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\scroll_bg_br.bmp")));
+
+    this->DrawBitmap(0, 0, up ? &up->image : nullptr, true);
+
+    const int segments = (this->geometry.height - up->image.height - down->image.height) / track->image.height;
+    for (std::int64_t index = 0; index < segments; ++index) {
+      const int y = track->image.height * static_cast<int>(index) + up->image.height;
+      this->DrawBitmap(0, y, track ? &track->image : nullptr, true);
+    }
+
+    this->DrawBitmap(0, this->geometry.height - track->image.height - down->image.height, track ? &track->image : nullptr, true);
+    this->DrawBitmap(0, this->geometry.height - down->image.height, down ? &down->image : nullptr, true);
+
+    CBitmapRes* thumb = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\scroll_btn_br.bmp")));
+    const int available = this->geometry.height - thumb->image.height - down->image.height - up->image.height;
+    const int maximum = std::max(this->total - this->visible, 0);
+    const int y = static_cast<int>(
+      static_cast<double>(available) / static_cast<double>(maximum) * static_cast<double>(this->position) + static_cast<double>(up->image.height)
+    );
+    this->DrawBitmap(0, y, thumb ? &thumb->image : nullptr, true);
+  }
+
+  this->minimumThumb = 0;
+  this->parent->Invalidate();
+}
+
+// OFFSET: 0x005E26B0
+// FUNCTION: fn_03885
+void UIChangeMaterialWnd_List::Slot28(int x, int y) {
+  const int rowHeight = *reinterpret_cast<int*>(reinterpret_cast<char*>(this) + 0xB4);
+  const int index = y / rowHeight + this->m_scrollOffset;
+  if (static_cast<unsigned int>(index) >= this->m_items.size()) {
+    return;
+  }
+
+  this->m_hoverIndex = index;
+  this->Invalidate();
+
+  if (static_cast<unsigned int>(index) >= this->m_items.size()) {
+    return;
+  }
+
+  const int entryIndex = this->m_items[index];
+  if (static_cast<unsigned int>(entryIndex) >= this->m_entries.size()) {
+    return;
+  }
+
+  const MaterialListEntry* entry = &this->m_entries[entryIndex];
+  int screenX = x;
+  int screenY = y;
+  this->ToScreen(screenX, screenY);
+
+  const std::string name = ItemDisplayName(entry->results.front().id);
+  const std::string text = FormatOwnedString(LookupMessage(0xB7), name.c_str(), entry->results.front().quantity);
+  reinterpret_cast<ModeTooltip*>(g_charViewMode)->Show(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
 }
