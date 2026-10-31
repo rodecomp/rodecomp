@@ -11,6 +11,7 @@ public:
   /* 00B4 */ int m_count;
   /* 00B8 */ std::uint32_t m_aid;
 
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot19() override;
 

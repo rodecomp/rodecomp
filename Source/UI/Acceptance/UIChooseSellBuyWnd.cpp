@@ -34,6 +34,7 @@
 #include "UI/Acceptance/UIJoinPartyAcceptWnd.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIBmpTextButton.h"
+#include "UI/Buttons/UINoneVisibleButton.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Buttons/UISpriteButton.h"
 #include "UI/Chat/UIChatRoomMakeWnd.h"
@@ -1383,6 +1384,55 @@ void UIExchangeWnd::Slot10(int x, int y, std::intptr_t value) {
 }
 
 // OFFSET: 0x008D0010
+// FUNCTION: fn_12082
+void UIEquipWnd::Slot10(int x, int y, std::intptr_t value) {
+  if (this->m_viewOther != 0) {
+    return;
+  }
+
+  if (g_windowMgr.LookupWindow(10011)) {
+    UIWindow::Slot10(x, y, value);
+    return;
+  }
+
+  CMode* mode = g_modeMgr.GetGameMode();
+  ITEM_INFO item(0);
+  bool fromStorage = false;
+  const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
+  switch (drag->source) {
+  case 1:
+    item = LookupClientItemByIdentity(g_session.m_inventoryItems, drag->id);
+    break;
+  case 17:
+    fromStorage = true;
+    item = g_session.GetItem61B8(drag->slot);
+    break;
+  case 18:
+    fromStorage = true;
+    item = g_session.GetItem6B68(drag->slot);
+    break;
+  }
+
+  if (item.unknown_0000[1] != 0) {
+    switch (item.unknown_0000[0]) {
+    case 10:
+    case 16:
+    case 17:
+    case 19:
+      mode->SendMsg(87, drag->id, item.unknown_0000[2], 0, 0);
+      break;
+    default:
+      if (fromStorage) {
+        mode->SendMsg(305, reinterpret_cast<int>(&item), 0, 0, 0);
+      } else if (item.identified && item.unknown_0000[2] != 0 && item.unknown_0000[3] == 0) {
+        mode->SendMsg(19, drag->id, item.unknown_0000[2], 0, 0);
+      }
+      break;
+    }
+  }
+
+  static_cast<CMode*>(g_charViewMode)->SendMsg(18, 0, 0, 0, 0);
+}
 
 // OFFSET: 0x008D02D0
 // FUNCTION: fn_12084
@@ -2318,6 +2368,55 @@ void UICardItemIllustWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x008E2590
+// FUNCTION: fn_12178
+void UIItemIdentifyWnd::Slot15(int, int) {
+  this->m_title = LookupMessage(521);
+  this->m_scroll = 0;
+  this->m_selected = -1;
+  this->m_columns = 1;
+  this->m_rows = 4;
+  this->m_scrollable = 0;
+  auto* scrollBar = new UIScrollBar(*this->m_context);
+  this->m_scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 34, 1, this->geometry.height - 55);
+  this->AddChild(this->m_scrollBar);
+  this->UpdateScroll();
+
+  {
+    const std::string prefix("유저인터페이스\\");
+    const char* names[1][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}};
+    int positions[1][2] = {{this->geometry.width - 92, this->geometry.height - 24}};
+    int ids[1] = {184};
+    for (int i = 0; i < 1; ++i) {
+      auto* button = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(positions[i][0], positions[i][1]);
+      button->SetId(ids[i]);
+      this->AddChild(button);
+    }
+  }
+  this->m_message0 = 184;
+
+  {
+    const std::string prefix("유저인터페이스\\");
+    const char* names[1][3] = {{"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+    int positions[1][2] = {{this->geometry.width - 46, this->geometry.height - 24}};
+    int ids[1] = {185};
+    for (int i = 0; i < 1; ++i) {
+      auto* button = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(positions[i][0], positions[i][1]);
+      button->SetId(ids[i]);
+      this->AddChild(button);
+    }
+  }
+}
 
 // OFFSET: 0x008E2540
 // FUNCTION: fn_12177
@@ -2328,6 +2427,12 @@ void UIItemCompositionWnd::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x008DE490
+// FUNCTION: fn_12168
+void UIComboBoxWnd::Slot15(int width, int height) {
+  this->m_list = new UIComboBox(*this->m_context, *reinterpret_cast<UIListBoxContext*>(nullptr));
+  this->m_list->Configure(0, 0, width, height, 1);
+  this->AddChild(this->m_list);
+}
 
 // OFFSET: 0x008E85C0
 // FUNCTION: fn_12199
@@ -2446,6 +2551,32 @@ void UISkillNameChangeWnd::Slot15(int, int) {
   this->AddChild(button);
   this->m_skillId = -1;
   this->m_message0 = 184;
+}
+
+// OFFSET: 0x008EA780
+
+// OFFSET: 0x008E7130
+// FUNCTION: fn_12194
+void UIProhibitListWnd::Slot15(int, int) {
+  this->AddCloseButton(*this->m_controls, "", 0);
+  char tooltip[] = "Command";
+
+  auto* area = new UINoneVisibleButton(*this->m_context, *this->m_controls);
+  area->SetSize(120, 18);
+  area->Move(350, 59);
+  area->SetId(268);
+  this->AddChild(area);
+
+  const std::string prefix("유저인터페이스\\basic_interface\\");
+  auto* button = new UIBitmapButton(*this->m_context, *this->m_controls);
+  button->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
+  button->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
+  button->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(270 - button->BitmapWidth(), 44);
+  button->SetTooltip(tooltip);
+  button->SetId(268);
+  this->AddChild(button);
 }
 
 // OFFSET: 0x008E3C80
