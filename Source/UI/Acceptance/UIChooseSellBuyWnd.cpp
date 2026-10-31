@@ -622,6 +622,29 @@ void UIPasswordWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
 }
 
+// OFFSET: 0x009002D0
+// FUNCTION: fn_12367
+int UIPartyInvitationToWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  if (argument1 == 184) {
+    std::string name;
+    name = this->m_edit->Text();
+    this->m_edit->SelectAll();
+    if (std::strlen(name.c_str()) != 0) {
+      g_modeMgr.GetGameMode()->SendMsg(59, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+    } else {
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2072)), 0xFF, 0, 0, 0);
+    }
+  } else if (argument1 == 185) {
+    g_windowMgr.CloseWindow(208);
+  }
+
+  return 0;
+}
+
 // OFFSET: 0x00900A80
 // FUNCTION: fn_12369
 int UIPasswordWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
