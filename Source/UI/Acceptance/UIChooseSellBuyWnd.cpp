@@ -34,6 +34,7 @@
 #include "UI/Buttons/UISpriteButton.h"
 #include "UI/Chat/UIWhisperWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Dialogs/UIBookWnd.h"
 #include "UI/Dialogs/UIChooseWarpWnd.h"
 #include "UI/Dialogs/UIChooseWnd.h"
@@ -46,6 +47,7 @@
 #include "UI/Dialogs/UINoticeConfirmWnd.h"
 #include "UI/Dialogs/UINpcEditDialogWnd.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
+#include "UI/Dialogs/UINotifyJobLevelUpWnd.h"
 #include "UI/Dialogs/UINotifyLevelUpWnd.h"
 #include "UI/Dialogs/UINotifyQuestWnd.h"
 #include "UI/Dialogs/UIPetTamingDeceiveWnd.h"
@@ -78,6 +80,7 @@
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/PixelTextWrapping.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/Text/UITagTextViewer.h"
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIMonsterDisplayWnd.h"
@@ -2436,6 +2439,40 @@ int UILoadingWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::
     char text[100];
     std::sprintf(text, "Loading %d %s", static_cast<int>(argument1), "%");
     this->m_progressBar->SetValue(static_cast<float>(argument1));
+  }
+  return 0;
+}
+
+// OFFSET: 0x008CED00
+// FUNCTION: fn_12071
+int UIItemTagCtrl::MeasureText(const std::string& text, const unsigned& bytes) {
+  return this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), bytes, 0, 12, 0, 0);
+}
+
+// OFFSET: 0x008E8390
+// FUNCTION: fn_12197
+void UISayDialogWnd::Slot15(int width, int height) {
+  auto* viewer = new UITagTextViewer(*this->m_context);
+  this->m_viewer = viewer;
+  viewer->SetSize(width - 20, height - 40);
+  viewer->m_backgroundColor = 0xFFF2F2F2;
+  viewer->Invalidate();
+  viewer->m_textWidth = width - 65;
+  viewer->Move(10, 10);
+  this->AddChild(viewer);
+  this->m_message0 = 600;
+  this->unknown_00CC = 0;
+  this->unknown_00D4 = 0;
+}
+
+// OFFSET: 0x008FFBA0
+// FUNCTION: fn_12362
+int UINotifyJobLevelUpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message != 6) {
+    return UIWindow::SendMsg(sender, message, a, b, c, d);
+  }
+  if (a == 192) {
+    reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(g_windowMgr.EnsureWindow(37));
   }
   return 0;
 }

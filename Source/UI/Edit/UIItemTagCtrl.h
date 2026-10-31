@@ -15,6 +15,7 @@ public:
   virtual bool CanInsertTag(const std::string& name, int width);
 
   std::string AppendTag(const std::string& name);
+  int MeasureText(const std::string& text, const unsigned& bytes);
   bool SyncTagsWithText();
   void SetTaggedText(const std::string& text, int width);
   void sub_89CFE0(const ITEM_INFO& item, unsigned int color);
