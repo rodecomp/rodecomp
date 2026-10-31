@@ -20,6 +20,7 @@ struct RenderVertex;
 struct granny_control;
 struct granny_model_instance;
 struct CRagEffect;
+class CMsgEffect;
 
 int GetSlotLayer(int slot);
 bool IsReadyOrAttackAction(int action);
@@ -39,6 +40,7 @@ public:
   void Slot20(
     int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh
   ) override;
+  void Slot21(int job) override;
   void Slot22(int value) override;
   void Slot23(int first, int second) override;
   void Slot24(int first, int second) override;
@@ -48,6 +50,7 @@ public:
   void Slot29(int value) override;
   void Slot30() override;
   void Slot31() override;
+  void Slot32() override;
   void Slot33(int value) override;
   void Slot34(int value) override;
   std::int64_t Slot35() override;
@@ -94,7 +97,8 @@ public:
 
   float* GetExtent(float* extent) const override;
 
-  /* 0410 */ unsigned char unknown_0410[8];
+  /* 0410 */ unsigned char unknown_0410[4];
+  /* 0414 */ CMsgEffect* msgEffect;
   /* 0418 */ std::string unknown_0418;
   /* 0430 */ int unknown_0430;
   /* 0434 */ int unknown_0434;
@@ -180,6 +184,7 @@ public:
   void Slot16() override;
   void Slot17() override;
   void RefreshEffect164();
+  void UpdateMsgEffect(bool show);
 
   /* 0510 */ unsigned char unknown_0510[0xC];
   /* 051C */ int unknown_051C;
@@ -197,6 +202,7 @@ class CGrannyPc : public CGameActor {
 public:
   void SetAction(unsigned animation, int motion, int repeat) override;
   void Slot08() override;
+  void Slot19(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
   void Slot20(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
   void Slot21(int value) override;
   void Slot22(int value) override;
@@ -236,7 +242,7 @@ public:
   /* 0460 */ std::string unknown_0460;
   /* 0478 */ unsigned char unknown_0478[0x0C];
   /* 0484 */ C3dGrannyModelRes* model;
-  /* 0488 */ unsigned char unknown_0488[0x28];
+  /* 0488 */ C3dGrannyModelRes* layerModels[10];
   /* 04B0 */ granny_model_instance* instance;
   /* 04B4 */ RenderCommand* commands[30];
   /* 052C */ RenderCommand* layerCommands[10][30];
@@ -251,7 +257,9 @@ public:
   /* 0F35 */ unsigned char unknown_0F35[0x03];
   /* 0F38 */ unsigned brightness;
   /* 0F3C */ int motion;
-  /* 0F40 */ unsigned char unknown_0F40[0x110];
+  /* 0F40 */ unsigned char unknown_0F40[4];
+  /* 0F44 */ char modelName[0x104];
+  /* 1048 */ unsigned char unknown_1048[8];
   /* 1050 */ granny_control* controls[20];
   /* 10A0 */ int unknown_10A0;
   /* 10A4 */ int renderFrame;
@@ -281,6 +289,8 @@ static_assert(offsetof(CGrannyPc, lastClock) == 0xF14);
 static_assert(offsetof(CGrannyPc, unknown_0F24) == 0xF24);
 static_assert(offsetof(CGrannyPc, motion) == 0xF3C);
 static_assert(offsetof(CGrannyPc, controls) == 0x1050);
+static_assert(offsetof(CGrannyPc, modelName) == 0xF44);
+static_assert(offsetof(CGrannyPc, layerModels) == 0x488);
 static_assert(offsetof(CGrannyPc, commands) == 0x4B4);
 static_assert(offsetof(CGrannyPc, layerCommands) == 0x52C);
 static_assert(offsetof(CGrannyPc, vertices) == 0x9DC);
@@ -297,6 +307,7 @@ static_assert(offsetof(CGrannyPc, attachTransform) == 0x256C);
 static_assert(sizeof(CBlurPC) == 0x510);
 static_assert(sizeof(CHalluPC) == 0x518);
 static_assert(sizeof(CHalluPC2) == 0x518);
+static_assert(offsetof(CPc, msgEffect) == 0x414);
 static_assert(offsetof(CPc, unknown_0418) == 0x418);
 static_assert(offsetof(CPc, unknown_04E4) == 0x4E4);
 static_assert(offsetof(CPc, unknown_04F0) == 0x4F0);

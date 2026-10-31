@@ -6,6 +6,7 @@
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
+#include "Contents/Effects/MsgEffect.h"
 #include "Contents/CashEmotionMgr.h"
 #include "Contents/EquipmentResourceMgr.h"
 #include "Contents/Items/WeaponType.h"
@@ -15,6 +16,8 @@
 #include "Contents/MapSkyMgr.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
+#include "Contents/SpriteRidingOffset.h"
+#include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
 #include "Render/SpriteGeometry.h"
@@ -30,6 +33,8 @@
 #include "UI/Window/UIWindow.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
+
+#include <cstring>
 
 // GLOBAL: gl_24753
 extern const int g_maxMoveSpeed = 432;
@@ -2006,4 +2011,160 @@ void CPc::Slot19(int first, int second, int third, int fourth, int fifth, int si
   this->Slot30();
   this->Slot31();
   this->Slot32();
+}
+
+// OFFSET: 0x00DB1AE0
+
+// OFFSET: 0x00DB4E70
+// FUNCTION: fn_22653
+void CPlayer::UpdateMsgEffect(bool show) {
+  if (!StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags) && !StateFlag01(this->stateFlags)) {
+    if (show) {
+      if (!this->msgEffect) {
+        CMsgEffect* effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
+        this->AddMsgEffect(effect);
+        effect->SendMsg(this, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->msgEffect = effect;
+      }
+      return;
+    }
+  }
+
+  if (this->msgEffect) {
+    this->msgEffect->SendMsg(nullptr, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->msgEffect = nullptr;
+  }
+}
+
+// OFFSET: 0x00DB0FC0
+// FUNCTION: fn_22634
+void CGrannyPc::Slot19(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
+  this->SetUnknown0260(second);
+  this->unknown_0434 = third;
+  this->unknown_0440 = fourth;
+  this->unknown_0448 = sixth;
+  this->unknown_044C = seventh;
+  this->unknown_0450 = eighth;
+  this->unknown_0454 = ninth;
+  this->unknown_0444 = fifth;
+  this->unknown_0438 = tenth;
+  this->render.unknown_0048 = eleventh;
+  this->SetActorJob(first);
+  this->Slot22(this->unknown_0434);
+  this->Slot23(this->unknown_0440, this->unknown_0444);
+  this->Slot25(this->unknown_0448);
+  this->Slot26(this->unknown_044C);
+  this->Slot27(this->unknown_0450);
+  this->Slot28(this->unknown_0454);
+  this->Slot30();
+  this->Slot31();
+
+  if (this->model) {
+    this->ReleaseMeshes();
+  }
+
+  std::strcpy(this->modelName, "SWM@hd기본_3.gr2");
+  this->model = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(this->modelName));
+  this->instance = GrannyInstantiateModel(this->model->model);
+  for (int mesh = 0; mesh < this->model->instance->meshCount; ++mesh) {
+    ModelRenderCommand* command = new ModelRenderCommand;
+    this->commands[mesh] = reinterpret_cast<RenderCommand*>(command);
+    reinterpret_cast<RenderCommand*>(command)->AllocateTriangles(this->model->GetTriangleCount(mesh));
+    this->vertices[mesh] = new RenderVertex[this->model->GetTriangleCount(mesh) * 3];
+    std::memset(this->vertices[mesh], 0, this->model->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
+  }
+
+  this->unknown_0F24 = 0.0f;
+  this->lastClock = GrannyGetSystemSeconds();
+  this->unknown_02E0 = 0;
+
+  char* tag = std::strstr(this->modelName, "@hd");
+  if (!tag) {
+    return;
+  }
+
+  tag[1] = 'h';
+  tag[2] = 'r';
+  char name[MAX_PATH];
+  std::strcpy(name, tag + 1);
+  int length = 0;
+  while (name[length] != '_') {
+    ++length;
+  }
+
+  name[length + 1] = '9';
+  name[length + 2] = '9';
+  name[length + 3] = '\0';
+  std::strcat(name, ".gr2");
+  this->layerModels[1] = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(name));
+  for (int mesh = 0; mesh < this->layerModels[1]->instance->meshCount; ++mesh) {
+    ModelRenderCommand* command = new ModelRenderCommand;
+    this->layerCommands[1][mesh] = reinterpret_cast<RenderCommand*>(command);
+    reinterpret_cast<RenderCommand*>(command)->AllocateTriangles(this->layerModels[1]->GetTriangleCount(mesh));
+    this->layerVertices[1][mesh] = new RenderVertex[this->layerModels[1]->GetTriangleCount(mesh) * 3];
+    std::memset(this->layerVertices[1][mesh], 0, this->layerModels[1]->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
+  }
+
+  tag[1] = 'b';
+  tag[2] = 'd';
+  this->layerModels[2] = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(this->modelName));
+  this->layerModels[2]->RebindMeshes(*this->model);
+  for (int mesh = 0; mesh < this->layerModels[2]->instance->meshCount; ++mesh) {
+    ModelRenderCommand* command = new ModelRenderCommand;
+    this->layerCommands[2][mesh] = reinterpret_cast<RenderCommand*>(command);
+    reinterpret_cast<RenderCommand*>(command)->AllocateTriangles(this->layerModels[2]->GetTriangleCount(mesh));
+    this->layerVertices[2][mesh] = new RenderVertex[this->layerModels[2]->GetTriangleCount(mesh) * 3];
+    std::memset(this->layerVertices[2][mesh], 0, this->layerModels[2]->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
+  }
+
+  tag[1] = 'p';
+  tag[2] = 't';
+  this->layerModels[3] = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(this->modelName));
+  this->layerModels[3]->RebindMeshes(*this->model);
+  for (int mesh = 0; mesh < this->layerModels[3]->instance->meshCount; ++mesh) {
+    ModelRenderCommand* command = new ModelRenderCommand;
+    this->layerCommands[3][mesh] = reinterpret_cast<RenderCommand*>(command);
+    reinterpret_cast<RenderCommand*>(command)->AllocateTriangles(this->layerModels[3]->GetTriangleCount(mesh));
+    this->layerVertices[3][mesh] = new RenderVertex[this->layerModels[3]->GetTriangleCount(mesh) * 3];
+    std::memset(this->layerVertices[3][mesh], 0, this->layerModels[3]->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
+  }
+
+  tag[1] = 'l';
+  tag[2] = 'e';
+  this->layerModels[4] = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(this->modelName));
+  this->layerModels[4]->RebindMeshes(*this->model);
+  for (int mesh = 0; mesh < this->layerModels[4]->instance->meshCount; ++mesh) {
+    ModelRenderCommand* command = new ModelRenderCommand;
+    this->layerCommands[4][mesh] = reinterpret_cast<RenderCommand*>(command);
+    reinterpret_cast<RenderCommand*>(command)->AllocateTriangles(this->layerModels[4]->GetTriangleCount(mesh));
+    this->layerVertices[4][mesh] = new RenderVertex[this->layerModels[4]->GetTriangleCount(mesh) * 3];
+    std::memset(this->layerVertices[4][mesh], 0, this->layerModels[4]->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
+  }
+
+  if (this->layerModels[1]) {
+    this->model->FindHairPivot();
+    this->attachLayer = 1;
+  }
+}
+
+// OFFSET: 0x00DB0040
+// FUNCTION: fn_22609
+void CPc::Slot32() {
+  if (this->render.unknown_0048 == 0) {
+    return;
+  }
+
+  if (this->Slot55() < 0 && this->IsShapeShifted()) {
+    std::string paletteName;
+    this->render.name.assign(FormatOwnedString("몸\\%s_%d.pal", this->GetShapeShiftName().c_str(), this->render.unknown_0048));
+    return;
+  }
+
+  int job = this->GetEffectiveJob(-1);
+  const int costumeJob = this->unknown_04D0;
+  if (this->unknown_02CC != 0) {
+    job = g_session.GetRidingJob(job);
+  }
+
+  this->render.name.assign(g_session.GetBodyPalName(job, this->unknown_0260, this->render.unknown_0048, costumeJob, this->Slot56(), 0));
 }
