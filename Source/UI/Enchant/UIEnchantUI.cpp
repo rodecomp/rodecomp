@@ -1,4 +1,5 @@
 #include "UI/Enchant/EnchantUI.h"
+#include "Client/Session.h"
 #include "Contents/EnchantMgr.h"
 #include "Render/Renderer.h"
 #include "UI/Buttons/UIRadioButton.h"
@@ -392,4 +393,82 @@ void EnchantUI::CUIUpgradeRandom::Slot16() {
   EnchantUI::CUIEnchantPage::Slot16();
   this->enchantList->unknown_00C4 = 1;
   this->enchantList->Invalidate();
+}
+
+namespace EnchantUI {
+// OFFSET: 0x00A05CF0
+// FUNCTION: fn_14981
+void CUIEnchantPage::Slot16() {
+  for (int i = 0; i < 8; ++i) {
+    CUIIngredient* ingredient = this->CreateIngredient();
+    ingredient->Move(ingredient->geometry.x + i % 4 * 74, ingredient->geometry.y + i / 4 * 52);
+    this->unknown_0090.push_back(ingredient);
+  }
+
+  this->ResetSlots();
+}
+
+// OFFSET: 0x00A05E80
+// FUNCTION: fn_14985
+void CUINormalPerfect::Slot16() {
+  CUIEnchantPage::Slot16();
+  for (const auto& slot : this->unknown_0088) {
+    slot.second->radioButton->disabled = 1;
+    slot.second->radioButton->Invalidate();
+  }
+}
+
+// OFFSET: 0x00A05F10
+// FUNCTION: fn_14986
+void CUINormalRandom::Slot16() {
+  CUIEnchantPage::Slot16();
+  for (const auto& slot : this->unknown_0088) {
+    slot.second->radioButton->disabled = 1;
+    slot.second->radioButton->Invalidate();
+  }
+
+  this->enchantList->unknown_00C4 = 1;
+  this->enchantList->Invalidate();
+}
+
+// OFFSET: 0x00A05FB0
+// FUNCTION: fn_14987
+void CUIReset::Slot16() {
+  CUIEnchantPage::Slot16();
+  for (const auto& slot : this->unknown_0088) {
+    slot.second->radioButton->disabled = 1;
+    slot.second->radioButton->Invalidate();
+  }
+
+  this->enchantList->unknown_00C4 = 1;
+  this->enchantList->Invalidate();
+}
+
+// OFFSET: 0x00A06350
+// FUNCTION: fn_15002
+void CUIEnchantPage::Slot57() {
+  this->enchantList->ClearData();
+  for (CUIIngredient* ingredient : this->unknown_0090) {
+    ingredient->Show(0);
+  }
+
+  const std::string count = std::to_string(0);
+  this->unknown_009C->SetText(count.c_str(), count.size());
+  this->unknown_00A0->disabled = 1;
+  this->unknown_00A0->Invalidate();
+
+  const bool ready = this->Slot56();
+  if (CUIMainPage* mainPage = dynamic_cast<CUIMainPage*>(this->parent)) {
+    if (CUITabButton* button = mainPage->tab->FindButton(this)) {
+      button->disabled = !ready;
+      button->Invalidate();
+    }
+  }
+}
+
+// OFFSET: 0x00A06520
+
+// OFFSET: 0x00A06800
+
+// OFFSET: 0x00A06F80
 }

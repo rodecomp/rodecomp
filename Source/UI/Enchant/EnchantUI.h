@@ -10,6 +10,7 @@
 #include <map>
 #include <optional>
 
+class CUIRadioButton;
 class CUIStaticText;
 class CUITextViewer;
 class CUITab;
@@ -30,6 +31,7 @@ public:
 
 namespace EnchantUI {
 class CEnchantItemData;
+class CUISlot;
 
 class CUIEnchantItem : public CUIListItem {
 public:
@@ -74,10 +76,11 @@ public:
 
   /* 0080 */ unsigned char unknown_0080[0x4];
   /* 0084 */ CUIGameItem* gameItem;
-  /* 0088 */ std::map<int, int> unknown_0088;
-  /* 0090 */ std::list<int> unknown_0090;
+  /* 0088 */ std::map<int, CUISlot*> unknown_0088;
+  /* 0090 */ std::list<CUIIngredient*> unknown_0090;
   /* 0098 */ CUIListBoxEx<CUIEnchantItem, CEnchantItemData>* enchantList;
-  /* 009C */ unsigned char unknown_009C[0x8];
+  /* 009C */ CUIStaticText* unknown_009C;
+  /* 00A0 */ CUIButton* unknown_00A0 = nullptr;
   /* 00A4 */ EnchantInfo* enchantInfo;
   /* 00A8 */ uint64_t group;
   /* 00B0 */ int unknown_00B0;
@@ -85,30 +88,36 @@ public:
   void Slot16() override;
   virtual void Slot54(int argument1, int argument2);
   virtual void Slot55() = 0;
-  virtual void Slot56() = 0;
-  virtual void Slot57() = 0;
+  virtual bool Slot56() = 0;
+  virtual void Slot57();
   virtual void Slot58(int value);
   virtual void Slot59(int value);
 
-  CUIIngredient* CreateIngredient();
-  int FindEmptySlot();
+  __declspec(noinline) CUIIngredient* CreateIngredient();
+  void ResetSlots();
+  __declspec(noinline) int FindEmptySlot();
   std::optional<EnchantOptionInfo*> FindOption(uint32_t key);
 };
 #pragma pack(pop)
 
 class CUINormalRandom : public CUIEnchantPage {
 public:
+  void Slot16() override;
   void Slot55() override;
 };
 
 class CUINormalPerfect : public CUIEnchantPage {
 public:
+  void Slot16() override;
   void Slot55() override;
+  bool Slot56() override;
 };
 
 class CUIReset : public CUIEnchantPage {
 public:
+  void Slot16() override;
   void Slot55() override;
+  void Slot57() override;
 };
 
 class CUIUpgradeEnchantPage : public CUIEnchantPage {
@@ -146,8 +155,8 @@ public:
 
 class CUISlot : public CUIControl {
 public:
-  /* 0080 */ CUIControl* radioButton;
-  /* 0084 */ CUIControl* itemIcon;
+  /* 0080 */ CUIRadioButton* radioButton;
+  /* 0084 */ CUIGameItem* itemIcon;
   /* 0088 */ CUITextViewer* description;
 
   void Slot16() override;
