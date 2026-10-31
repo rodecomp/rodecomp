@@ -2695,3 +2695,281 @@ bool CPlayer::OnProcess() {
 }
 
 // OFFSET: 0x00DB5980
+// FUNCTION: fn_22667
+void CPlayer::UpdatePendingAction() {
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  switch (this->unknown_0508) {
+  case 1:
+  case 5: {
+    CGameActor* target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(this->unknown_051C));
+    if (target == nullptr) {
+      break;
+    }
+    if (target->render.unknown_0070 == 3) {
+      return;
+    }
+
+    int column;
+    int row;
+    mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
+    if (this->GetEffectiveJob(-1) == 16 || this->GetEffectiveJob(-1) == 4017 || this->GetEffectiveJob(-1) == 4039) {
+      const int state = static_cast<int>(this->render.unknown_0070);
+      if (state != 1 && state != 0 && state != 4 && state != 7 && state != 8) {
+        return;
+      }
+    } else if ((this->GetEffectiveJob(-1) >= 4046 && this->GetEffectiveJob(-1) < 4361) || this->GetEffectiveJob(-1) == 24 ||
+               this->GetEffectiveJob(-1) == 25) {
+      const int state = static_cast<int>(this->render.unknown_0070);
+      if (state != 1 && state != 0 && state != 4 && state != 7 && state != 8 && state < 16) {
+        return;
+      }
+    } else {
+      const int state = static_cast<int>(this->render.unknown_0070);
+      if (state != 1 && state != 0 && state != 4) {
+        return;
+      }
+    }
+
+    const float distance = this->AdjustFollowDistance(
+      target, target->CalcDist(this->render.position.x, this->render.position.y, this->render.position.z)
+    );
+    const bool inRange = static_cast<float>(g_session.unknown_0F4C * 5) + 5.5f >= distance;
+    if ((reinterpret_cast<const int&>(this->unknown_04F8) != column || this->unknown_04FC != row) && !inRange) {
+      const std::uint32_t delay = this->unknown_0508 != 5 ? 450 : 1200;
+      const bool elapsed = timeGetTime() > this->unknown_0524 + delay;
+      const int state = static_cast<int>(this->render.unknown_0070);
+      int cellX = target->unknown_0158[5];
+      int cellY = *reinterpret_cast<const int*>(target->unknown_0170);
+      float x;
+      float z;
+      if (this->unknown_0508 == 5) {
+        x = target->render.position.x;
+        z = target->render.position.z;
+      } else {
+        reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(cellX, cellY, x, z);
+      }
+      this->ApplyFollowOffset(target, x, z, &cellY, &cellX);
+      mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, g_session.unknown_0F4C);
+      if ((reinterpret_cast<const int&>(this->unknown_04F8) != cellX || this->unknown_04FC != cellY) && state != 2 &&
+          this->unknown_0514 == 0 && elapsed) {
+        reinterpret_cast<int&>(this->unknown_04F8) = cellX;
+        this->unknown_04FC = cellY;
+        this->unknown_0524 = timeGetTime();
+        this->SendMsg(nullptr, 91, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      return;
+    }
+
+    if (this->unknown_0510 == 2) {
+      this->SendMsg(nullptr, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    if (this->unknown_0514 != 0 || timeGetTime() <= this->unknown_0500 + 1200) {
+      return;
+    }
+    ++this->unknown_0520;
+    this->unknown_0500 = timeGetTime();
+    this->unknown_0514 = 1;
+    if (this->unknown_0510 != 2) {
+      this->SendMsg(nullptr, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->SendMsg(nullptr, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    return;
+  }
+  case 2: {
+    CItem* item = mode->scene->GetItemByAID(this->unknown_051C);
+    if (item == nullptr) {
+      break;
+    }
+
+    int column;
+    int row;
+    mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
+    int itemX;
+    int itemY;
+    mode->WorldCell(item->render.position.x, item->render.position.z, itemX, itemY);
+    const int targetX = itemX;
+    const int targetY = itemY;
+    mode->StepTowardWalkableCell(column, row, itemX, itemY);
+    const int state = static_cast<int>(this->render.unknown_0070);
+    if (state != 0 && state < 16) {
+      return;
+    }
+
+    if (mode->IsWithinRange(column, row, targetX, targetY, 1)) {
+      this->SendMsg(nullptr, 16, 0, targetX, targetX >> 31, targetY, targetY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      if (!mode->HasUnknown01A4(this->unknown_051C)) {
+        mode->PushUnknown01A4(this->unknown_051C);
+        mode->SendMsg(136, this->unknown_051C, 0, 0, 0);
+      }
+      break;
+    }
+
+    if (reinterpret_cast<const int&>(this->unknown_04F8) == itemX && this->unknown_04FC == itemY) {
+      return;
+    }
+    this->unknown_04FC = itemY;
+    reinterpret_cast<int&>(this->unknown_04F8) = itemX;
+    this->SendMsg(nullptr, 91, 0, itemX, itemX >> 31, itemY, itemY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+  case 3: {
+    CGameActor* target;
+    if (this->unknown_051C == g_session.m_aid) {
+      target = this;
+    } else {
+      target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(this->unknown_051C));
+    }
+    if (target == nullptr) {
+      break;
+    }
+
+    int column;
+    int row;
+    mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
+    const float x = target->render.position.x;
+    int cellX = target->unknown_0158[5];
+    int cellY = *reinterpret_cast<const int*>(target->unknown_0170);
+    const float z = target->render.position.z;
+    const int range = mode->GetSkillAttackRange(this->unknown_052C, this->unknown_0530);
+    mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, range);
+    const int state = static_cast<int>(this->render.unknown_0070);
+    if (state != 1 && state != 0 && state != 4 && state < 16) {
+      return;
+    }
+
+    const float distance = this->AdjustFollowDistance(
+      target, target->CalcDist(this->render.position.x, this->render.position.y, this->render.position.z)
+    );
+    const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
+    if ((reinterpret_cast<const int&>(this->unknown_04F8) == column && this->unknown_04FC == row) || inRange) {
+      this->SendMsg(nullptr, 42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    }
+
+    if (reinterpret_cast<const int&>(this->unknown_04F8) == cellX && this->unknown_04FC == cellY) {
+      return;
+    }
+    if (this->render.unknown_0070 == 2) {
+      return;
+    }
+    this->unknown_04FC = cellY;
+    reinterpret_cast<int&>(this->unknown_04F8) = cellX;
+    this->ApplyFollowOffset(target, x, z, &cellY, &cellX);
+    this->SendMsg(nullptr, 91, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+  case 4: {
+    int groundX = this->unknown_0534;
+    int groundY = this->unknown_0538;
+    int column;
+    int row;
+    mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
+    const int range = mode->GetSkillAttackRange(this->unknown_052C, this->unknown_0530);
+    float x;
+    float z;
+    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(groundX, groundY, x, z);
+    mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, groundX, groundY, range);
+    const int state = static_cast<int>(this->render.unknown_0070);
+    if (state != 1 && state != 0 && state != 4 && state < 16) {
+      return;
+    }
+
+    const float distance = this->CalcDist(x, this->render.position.y, z);
+    const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
+    if ((reinterpret_cast<const int&>(this->unknown_04F8) == column && this->unknown_04FC == row) || inRange) {
+      this->SendMsg(nullptr, 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    }
+
+    if (reinterpret_cast<const int&>(this->unknown_04F8) == groundX && this->unknown_04FC == groundY) {
+      return;
+    }
+    if (this->render.unknown_0070 == 2) {
+      return;
+    }
+    this->unknown_04FC = groundY;
+    reinterpret_cast<int&>(this->unknown_04F8) = groundX;
+    this->SendMsg(nullptr, 91, 0, groundX, groundX >> 31, groundY, groundY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+    return;
+  }
+  case 6: {
+    CGameActor* skill = static_cast<CGameActor*>(mode->scene->GetSkillByAID(this->unknown_051C));
+    if (skill == nullptr) {
+      break;
+    }
+
+    int column;
+    int row;
+    mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
+    int cellX;
+    int cellY;
+    mode->WorldCell(skill->render.position.x, skill->render.position.z, cellX, cellY);
+    int range = mode->GetSkillAttackRange(this->unknown_052C, this->unknown_0530);
+    if (mode->SendMsg(95, 0, 0, 0, 0) == 0 && range < 5 && this->unknown_052C != 124) {
+      range = g_session.unknown_0F4C > 5 ? g_session.unknown_0F4C : 5;
+    }
+    float x;
+    float z;
+    reinterpret_cast<const ::TerrainHeight*>(mode)->CellCenter(cellX, cellY, x, z);
+    mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, range);
+    const int state = static_cast<int>(this->render.unknown_0070);
+    if (state != 1 && state != 0 && state != 4 && state < 16) {
+      return;
+    }
+
+    const float distance = this->CalcDist(x, this->render.position.y, z);
+    const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
+    if ((reinterpret_cast<const int&>(this->unknown_04F8) != column || this->unknown_04FC != row) && !inRange) {
+      if (reinterpret_cast<const int&>(this->unknown_04F8) == cellX && this->unknown_04FC == cellY) {
+        return;
+      }
+      if (this->render.unknown_0070 == 2 && skill->GetEffectiveJob(-1) != 141 && skill->GetEffectiveJob(-1) != 143 &&
+          skill->GetEffectiveJob(-1) != 152) {
+        return;
+      }
+      this->unknown_04FC = cellY;
+      reinterpret_cast<int&>(this->unknown_04F8) = cellX;
+      this->SendMsg(nullptr, 91, 0, cellX, cellX >> 31, cellY, cellY >> 31, 0, 0, 0, 0, 0, 0, 0, 0);
+      return;
+    }
+
+    switch (skill->GetEffectiveJob(-1)) {
+    case 141:
+    case 143:
+    case 152:
+    case 218:
+    case 222:
+    case 230:
+    case 20852:
+    case 20853:
+    case 20854:
+    case 20855:
+      if (this->unknown_052C == 0) {
+        if (this->unknown_0510 == 2) {
+          this->SendMsg(nullptr, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
+        if (this->unknown_0514 != 0 || timeGetTime() <= this->unknown_0500 + 1200) {
+          return;
+        }
+        ++this->unknown_0520;
+        this->unknown_0500 = timeGetTime();
+        this->unknown_0514 = 1;
+        if (this->unknown_0510 != 2) {
+          this->SendMsg(nullptr, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        } else {
+          this->SendMsg(nullptr, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
+        return;
+      }
+      break;
+    }
+    this->SendMsg(nullptr, 42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    break;
+  }
+  default:
+    return;
+  }
+
+  this->SendMsg(nullptr, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
