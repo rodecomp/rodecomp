@@ -898,8 +898,14 @@ struct ItemEffectResultPacket {
 #pragma pack(pop)
 
 struct ClientItemLists {
+  void ClearItems1738();
   void ClearItems1784(int index);
   void RemoveItem1710(std::uint32_t id, int quantity);
+};
+
+struct AchievementStatePacket {
+  /* 0000 */ std::int16_t unknown_0000;
+  /* 0002 */ std::int16_t type;
 };
 
 // OFFSET: 0x00D18BD0
@@ -1427,5 +1433,72 @@ void __stdcall sub_D6AD60(int count, const int* aids) {
 
   for (int i = 0; i < count; ++i) {
     window->sub_7EF2E0(aids[i]);
+  }
+}
+
+// GLOBAL: gl_25111
+int g_unknown_01738268;
+
+// GLOBAL: gl_25112
+int g_unknown_0173826C;
+
+// GLOBAL: gl_25113
+int g_unknown_01738270;
+
+// GLOBAL: gl_25114
+int g_unknown_01738784;
+
+// GLOBAL: gl_25115
+short g_unknown_01738788;
+
+// GLOBAL: gl_24957
+int g_achievementCompleted;
+
+// GLOBAL: gl_24958
+int g_achievementTotal;
+
+// OFFSET: 0x00D1C050
+// FUNCTION: fn_21624
+void __stdcall sub_D1C050(const AchievementStatePacket* packet) {
+  UIWindow* window = nullptr;
+  bool notify = true;
+
+  if (packet->type == 2) {
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x9F5), 0, true, true, 0, "Message", 280, 120, 0);
+    window = g_windowMgr.LookupWindow(0x21);
+  } else {
+    window = g_windowMgr.LookupWindow(0x21);
+    notify = window != nullptr;
+  }
+
+  if (notify) {
+    window->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
+    g_windowMgr.CloseWindow(0x21);
+  }
+
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1738();
+  g_unknown_01738268 = 0;
+  g_unknown_0173826C = 0;
+  g_unknown_01738270 = 0;
+}
+
+// OFFSET: 0x00D6C460
+// FUNCTION: fn_22081
+void __stdcall sub_D6C460(int count, int unknown01738784, short unknown01738788, int completed, int total, const AchievementRecordPacket* packets) {
+  g_unknown_01738784 = unknown01738784;
+  g_unknown_01738788 = unknown01738788;
+  g_achievementCompleted = completed;
+  g_achievementTotal = total;
+
+  for (int i = 0; i < count; ++i) {
+    g_session.UpdateRecord6144(packets[i]);
+    if (packets[i].rewarded == 1) {
+      g_session.AddUnknown6160(packets[i].id);
+    }
+  }
+
+  UIWindow* window = g_windowMgr.LookupWindow(0x10E);
+  if (window != nullptr) {
+    window->SendMsg(nullptr, 60, 0, 0, 0, 0);
   }
 }
