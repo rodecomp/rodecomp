@@ -13,6 +13,7 @@ struct EffectVisibilityContext;
 
 struct CEffectPrim : CRenderObject {
   CEffectPrim();
+  void HandleMasterMessage(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g);
 
   bool UpdateFireWall();
   bool UpdateStoneCurse();

@@ -6,6 +6,14 @@
 CEffectPrim::CEffectPrim() : state(this->render) {
 }
 
+// OFFSET: 0x00BE6FC0
+// FUNCTION: fn_19930
+void CEffectPrim::HandleMasterMessage(CGameObject*, int message, int a, int, int, int, int, int, int) {
+  if (message == 0x18 && a == 0) {
+    this->state.master = nullptr;
+  }
+}
+
 // OFFSET: 0x00C1DE70
 // FUNCTION: fn_20076
 CEffectPrim* CreateEffectParticle(
