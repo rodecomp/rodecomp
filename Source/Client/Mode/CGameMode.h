@@ -466,6 +466,10 @@ public:
   void ReceiveInventoryItemUpdate(const unsigned char* packet);
   void ReceiveUnknownD25850(const unsigned char* packet);
   void ReceiveUnknownD31A40(const unsigned char* packet);
+  void OpenWindow154();
+  void ReceiveUnknownD2D990(const unsigned char* packet);
+  void ReceiveUnknownD4E3F0(const unsigned char* packet);
+  void ReceiveUnknownD4E2A0(const unsigned char* packet);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

@@ -2253,3 +2253,60 @@ void CGameMode::ReceiveInventoryItemUpdate(const unsigned char* packet) {
     g_session.UpdateInventoryItem(item, 1);
   }
 }
+
+// OFFSET: 0x00D78030
+// FUNCTION: fn_22157
+void CGameMode::OpenWindow154() {
+  if (g_windowMgr.LookupWindow(0x154) == nullptr) {
+    g_windowMgr.EnsureWindow(0x154);
+  }
+}
+
+// OFFSET: 0x00D2D990
+// FUNCTION: fn_21722
+void CGameMode::ReceiveUnknownD2D990(const unsigned char*) {
+  if (g_windowMgr.unknown_03F8) {
+    g_windowMgr.CloseWindow(137);
+    GetRagConnection().Close();
+    if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(1349), 0, true, true, 0, "Message", 280, 120, 0) != 269) {
+      this->SendMsg(141, 0, 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00D4E3F0
+// FUNCTION: fn_21876
+void CGameMode::ReceiveUnknownD4E3F0(const unsigned char* packet) {
+  unsigned int count = *reinterpret_cast<const std::uint16_t*>(packet + 2) - 4;
+  UIWindow* window = g_windowMgr.EnsureWindow(0x49);
+  window->SendMsg(nullptr, 0x4B, 0, 0, 0, 0);
+  count >>= 1;
+  const std::int16_t* ids = reinterpret_cast<const std::int16_t*>(packet + 4);
+  for (unsigned int index = count; index != 0; --index, ++ids) {
+    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *ids);
+    if (item.unknown_0000[1] != 0) {
+      window->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
+    }
+  }
+
+  window->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00D4E2A0
+// FUNCTION: fn_21875
+void CGameMode::ReceiveUnknownD4E2A0(const unsigned char* packet) {
+  unsigned int count = *reinterpret_cast<const std::uint16_t*>(packet + 2) - 4;
+  UIWindow* window = g_windowMgr.EnsureWindow(0x4A);
+  window->SendMsg(nullptr, 0x4B, 0, 0, 0, 0);
+  window->SendMsg(nullptr, 0x4D, *reinterpret_cast<const int*>(this->unknown_045C), 0, 0, 0);
+  count >>= 1;
+  const std::int16_t* ids = reinterpret_cast<const std::int16_t*>(packet + 4);
+  for (unsigned int index = count; index != 0; --index, ++ids) {
+    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *ids);
+    if (item.unknown_0000[1] != 0) {
+      window->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.unknown_0000[1], 0, 0);
+    }
+  }
+
+  window->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+}
