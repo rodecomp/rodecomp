@@ -1761,13 +1761,428 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 }
 
 // OFFSET: 0x00817EA0
+// FUNCTION: fn_10173
+void UIRune_Decom::Slot15(int, int) {
+  this->m_decomButton = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->AddChild(this->m_decomButton);
+  this->m_decomButton->SetBitmap("유저인터페이스\\runesystem\\bt_decom_nomal.bmp", 0, 0);
+  this->m_decomButton->SetBitmap("유저인터페이스\\runesystem\\bt_decom_mouseon.bmp", 1, 0);
+  this->m_decomButton->SetBitmap("유저인터페이스\\runesystem\\bt_decom_pressed.bmp", 2, 0);
+  this->m_decomButton->SetBitmap("유저인터페이스\\runesystem\\bt_decom_disabled.bmp", 3, 0);
+  this->m_decomButton->SetSize(this->m_decomButton->BitmapWidth(), this->m_decomButton->BitmapHeight());
+  this->m_decomButton->Move(0x102, 0x1ED);
+  this->m_decomButton->SetId(0x197);
+
+  int index = 0;
+  for (int x = 0xDD; x < 0x1AF; x += 0x69) {
+    this->m_radioButtons[index] = new UIRuneSystem_Decom_RadioBtn(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+    this->m_radioButtons[index]->SetSize(0x68, 0x0E);
+    this->m_radioButtons[index]->Move(x, 0x153);
+    const std::string text = FormatOwnedString(LookupMessage(4074), g_runeSystemMgr->GetDecomItem(index));
+    this->m_radioButtons[index]->SetText(text.c_str());
+    this->m_radioButtons[index]->SendMsg(this, 0x0D, index, 0, 0, 0);
+    this->m_radioButtons[index]->SetBitmaps("유저인터페이스\\runesystem\\btn_radio_on.bmp", "유저인터페이스\\runesystem\\btn_radio_off.bmp");
+    this->m_radioButtons[index]->SetDisabledBitmap("유저인터페이스\\runesystem\\btn_radio_disable.bmp");
+    this->m_radioButtons[index]->value = index;
+    this->m_radioButtons[index]->Show(0);
+    this->AddChild(this->m_radioButtons[index]);
+    ++index;
+  }
+
+  this->Reset();
+}
 
 // OFFSET: 0x008177C0
+// FUNCTION: fn_10172
+void UIRuneSystemWnd::Slot15(int, int) {
+  this->m_tab = new UIRuneSystemTab(*this->m_context);
+  this->AddChild(this->m_tab);
+  this->m_tab->SetSize(0x109, 0x1A);
+  this->m_tab->Move(9, 0x12);
+  this->m_tab->Show(1);
+  const int top = this->m_tab->geometry.height + this->m_tab->geometry.y;
+
+  this->m_equipRuneSet = new UIEquipRuneSetWnd(*this->m_context);
+  this->AddChild(this->m_equipRuneSet);
+  this->m_equipRuneSet->SetSize(0x11B, 0x52);
+  this->m_equipRuneSet->Move(0, top);
+
+  this->m_tagList = new UIRuneSystem_tagListWnd(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->AddChild(this->m_tagList);
+  this->m_tagList->SetSize(0x11B, 0x20);
+  this->m_tagList->m_firstTag = 0;
+
+  this->m_lists[0] = new UIRuneSetList(*this->m_context);
+  this->AddChild(this->m_lists[0]);
+  UIRuneSetList* list = this->m_lists[0];
+  list->vertical = 1;
+  list->UIWindow::Resize(0x11B, 0x159);
+  list->Slot15(0x11B, 0x159);
+  list->Slot22(0x11B, 0x159);
+  this->m_lists[0]->Move(0, this->m_equipRuneSet->geometry.height + this->m_tagList->geometry.height + top);
+  int count = g_runeSystemMgr->GetTag(-1)->GetRuneCount(0);
+  this->m_lists[0]->SetRange(std::max(count - 5, 0), 5, count);
+
+  this->m_lists[1] = new UIRuneList(*this->m_context);
+  this->AddChild(this->m_lists[1]);
+  list = this->m_lists[1];
+  list->vertical = 1;
+  list->UIWindow::Resize(0x11B, 0x1AB);
+  list->Slot15(0x11B, 0x1AB);
+  list->Slot22(0x11B, 0x1AB);
+  this->m_lists[1]->Move(0, this->m_tagList->geometry.height + top);
+  count = g_runeSystemMgr->GetTag(-1)->GetRuneCount(1);
+  this->m_lists[1]->SetRange(std::max(count - 9, 0), 9, count);
+
+  this->m_lists[2] = new UIDecomlist(*this->m_context);
+  this->AddChild(this->m_lists[2]);
+  list = this->m_lists[2];
+  list->vertical = 1;
+  list->UIWindow::Resize(0x11B, 0x1CB);
+  list->Slot15(0x11B, 0x1CB);
+  list->Slot22(0x11B, 0x1CB);
+  this->m_lists[2]->Move(0, top);
+
+  this->m_runeSetInfo = new UIRuneSet_Info(*this->m_context);
+  this->AddChild(this->m_runeSetInfo);
+  this->m_runeSetInfo->SetSize(0x273, 0x20A);
+  this->m_runeSetInfo->Move(0x11B, 0x11);
+
+  this->m_runeInfo = new UIRune_Info(*this->m_context);
+  this->AddChild(this->m_runeInfo);
+  this->m_runeInfo->SetSize(0x273, 0x20A);
+  this->m_runeInfo->Move(0x11B, 0x11);
+
+  this->m_runeDecom = new UIRune_Decom(*this->m_context);
+  this->AddChild(this->m_runeDecom);
+  this->m_runeDecom->SetSize(0x273, 0x20A);
+  this->m_runeDecom->Move(0x11B, 0x11);
+
+  this->AddCloseButton(*reinterpret_cast<UIButtonContext*>(nullptr), LookupMessage(3045), 0);
+  this->SelectTab();
+  g_session.CollectCardItems();
+}
 
 // OFFSET: 0x00816CB0
+// FUNCTION: fn_10171
+void UIRuneSet_Info::Slot15(int, int) {
+  this->m_activeWnd = new UIRuneSystem_ActiveWnd(*this->m_context);
+  this->AddChild(this->m_activeWnd);
+  this->m_activeWnd->SetSize(0xE6, 0x8C);
+  this->m_activeWnd->Move(0x46, 0x156);
+
+  this->unknown_0084 = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->AddChild(this->unknown_0084);
+  this->unknown_0084->SetBitmap("유저인터페이스\\runesystem\\bt_active_nomal.bmp", 0, 0);
+  this->unknown_0084->SetBitmap("유저인터페이스\\runesystem\\bt_active_mouseon.bmp", 1, 0);
+  this->unknown_0084->SetBitmap("유저인터페이스\\runesystem\\bt_active_pressed.bmp", 2, 0);
+  this->unknown_0084->SetBitmap("유저인터페이스\\runesystem\\bt_active_disabled.bmp", 3, 0);
+  this->unknown_0084->SetSize(this->unknown_0084->BitmapWidth(), this->unknown_0084->BitmapHeight());
+  this->unknown_0084->Move(0x6F, 0x1EC);
+  this->unknown_0084->SetId(0x23C);
+
+  this->unknown_0088 = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->AddChild(this->unknown_0088);
+  this->unknown_0088->SetBitmap("유저인터페이스\\runesystem\\bt_equip_nomal.bmp", 0, 0);
+  this->unknown_0088->SetBitmap("유저인터페이스\\runesystem\\bt_equip_mouseon.bmp", 1, 0);
+  this->unknown_0088->SetBitmap("유저인터페이스\\runesystem\\bt_equip_pressed.bmp", 2, 0);
+  this->unknown_0088->SetBitmap("유저인터페이스\\runesystem\\bt_equip_disabled.bmp", 3, 0);
+  this->unknown_0088->SetSize(this->unknown_0088->BitmapWidth(), this->unknown_0088->BitmapHeight());
+  this->unknown_0088->Move(0x6F, 0x1EC);
+  this->unknown_0088->SetId(0xC3);
+
+  this->unknown_008C = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->AddChild(this->unknown_008C);
+  this->unknown_008C->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_nomal.bmp", 0, 0);
+  this->unknown_008C->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_mouseon.bmp", 1, 0);
+  this->unknown_008C->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_pressed.bmp", 2, 0);
+  this->unknown_008C->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_disabled.bmp", 3, 0);
+  this->unknown_008C->SetSize(this->unknown_008C->BitmapWidth(), this->unknown_008C->BitmapHeight());
+  this->unknown_008C->Move(0x6F, 0x1EC);
+  this->unknown_008C->SetId(0x158);
+
+  this->m_tab = new UIRuneSystemTab(*this->m_context);
+  this->AddChild(this->m_tab);
+  this->m_tab->SetSize(0xC4, 0x1A);
+  this->m_tab->SendMsg(this->m_tab, 0x16, 3, 0, 0, 0);
+  this->m_tab->Move(0x180, 1);
+  this->m_tab->m_label = "유저인터페이스\\runesystem\\runeset_tab_%d.bmp";
+
+  this->m_gauge = new UIGage_Circle(*this->m_context);
+  this->AddChild(this->m_gauge);
+  this->m_gauge->SetSize(0x89, 0x7F);
+  this->m_gauge->Move(0x1B1, 0x51);
+
+  this->m_gradeText = new UIStaticText(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->AddChild(this->m_gradeText);
+  this->m_gradeText->SetSize(0x89, 0x7F);
+  const std::string gradeTitle = LookupMessage(4044);
+  this->m_gradeText->SetText(gradeTitle.c_str(), 1);
+  this->m_gradeText->SetColor(0xFF, 0xFF, 0xFF);
+  const int titleWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, gradeTitle.c_str(), 0, 0, 12, 0, 0);
+  this->m_gradeText->Move(static_cast<int>(500.0f - static_cast<float>(titleWidth) * 0.5f), 0x82);
+
+  this->m_gradeItems = new UIRuneSystem_ActiveWnd(*this->m_context);
+  this->AddChild(this->m_gradeItems);
+  this->m_gradeItems->SetSize(0xE6, 0x8C);
+  this->m_gradeItems->Move(0x17D, 0x130);
+
+  this->m_gradeButton = new UIBitmapButton(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->AddChild(this->m_gradeButton);
+  this->m_gradeButton->SetBitmap("유저인터페이스\\runesystem\\bt_upgrade_nomal.bmp", 0, 0);
+  this->m_gradeButton->SetBitmap("유저인터페이스\\runesystem\\bt_upgrade_mouseon.bmp", 1, 0);
+  this->m_gradeButton->SetBitmap("유저인터페이스\\runesystem\\bt_upgrade_pressed.bmp", 2, 0);
+  this->m_gradeButton->SetBitmap("유저인터페이스\\runesystem\\bt_upgrade_disabled.bmp", 3, 0);
+  this->m_gradeButton->SetSize(this->m_gradeButton->BitmapWidth(), this->m_gradeButton->BitmapHeight());
+  this->m_gradeButton->Move(0x1BD, this->geometry.height - 0x41);
+  this->m_gradeButton->SetId(0x1FD);
+
+  this->m_infoList = new UIRuneSetinfoList(*this->m_context);
+  this->AddChild(this->m_infoList);
+  UIRuneSetinfoList* infoList = this->m_infoList;
+  infoList->vertical = 1;
+  infoList->UIWindow::Resize(0xF9, 0x192);
+  infoList->Slot15(0xF9, 0x192);
+  infoList->Slot22(0xF9, 0x192);
+  this->m_infoList->Move(0x179, 0x48);
+  this->m_infoList->ClearLines();
+
+  const int rewardX[6] = {398, 486, 540, 540, 486, 398};
+  const int rewardY[6] = {97, 122, 197, 290, 365, 391};
+  const int rewardIds[6] = {0x24E, 0x24F, 0x250, 0x251, 0x252, 0x253};
+  for (int index = 0; index < 6; ++index) {
+    this->m_rewards[index] = new UIRuneSetReWard(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+    this->AddChild(this->m_rewards[index]);
+    this->m_rewards[index]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_nomal.tga", 0, 0);
+    this->m_rewards[index]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_mouseon.tga", 1, 0);
+    this->m_rewards[index]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_pressed.tga", 2, 0);
+    this->m_rewards[index]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_disabled.tga", 3, 0);
+    this->m_rewards[index]->SetSize(this->m_rewards[index]->BitmapWidth(), this->m_rewards[index]->BitmapHeight());
+    this->m_rewards[index]->SendMsg(this, 0x22, 0, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_empty.tga"), 0, 0);
+    this->m_rewards[index]->SendMsg(this, 0x22, 1, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_complete.tga"), 0, 0);
+    this->m_rewards[index]->SendMsg(this, 0x22, 2, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_disabled_mouseon.tga"), 0, 0);
+    this->m_rewards[index]->Move(rewardX[index], rewardY[index]);
+    this->m_rewards[index]->SetId(rewardIds[index]);
+    this->m_rewards[index]->SendMsg(this, 0x66, 0, 0, 0, 0);
+  }
+
+  this->m_rewards[6] = new UIRuneSetReWard(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->AddChild(this->m_rewards[6]);
+  this->m_rewards[6]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_l_nomal.tga", 0, 0);
+  this->m_rewards[6]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_l_mouseon.tga", 1, 0);
+  this->m_rewards[6]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_l_pressed.tga", 2, 0);
+  this->m_rewards[6]->SetBitmap("유저인터페이스\\runesystem\\bt_reward_l_disabled.tga", 3, 0);
+  this->m_rewards[6]->SetSize(this->m_rewards[6]->BitmapWidth(), this->m_rewards[6]->BitmapHeight());
+  this->m_rewards[6]->SendMsg(this, 0x22, 0, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_l_empty.tga"), 0, 0);
+  this->m_rewards[6]->SendMsg(this, 0x22, 1, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_l_complete.tga"), 0, 0);
+  this->m_rewards[6]->SendMsg(this, 0x22, 2, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_l_disabled_mouseon.tga"), 0, 0);
+  this->m_rewards[6]->Move(0x179, 0xCF);
+  this->m_rewards[6]->SetId(0x254);
+  this->m_rewards[6]->SendMsg(this, 0x66, 0, 0, 0, 0);
+
+  this->Refresh();
+}
 
 // OFFSET: 0x008196D0
 
 // OFFSET: 0x0081AF10
 
 // OFFSET: 0x0081DAB0
+// FUNCTION: fn_10225
+int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6:
+    if (argument1 == 0xC9) {
+      g_windowMgr.CloseWindow(0x169);
+    }
+    break;
+  case 7:
+  case 9:
+  case 10:
+    if (this->m_lists[this->m_tab->geometry.unknown_0030]) {
+      this->m_lists[this->m_tab->geometry.unknown_0030]->ScrollBy(argument1);
+      this->Invalidate();
+    }
+    break;
+  case 0x16:
+    g_windowMgr.CloseWindow(0x16A);
+    this->SelectTab();
+    break;
+  case 0x3C: {
+    UIRuneSetList* list = this->m_lists[this->m_tab->geometry.unknown_0030];
+    if (!list) {
+      break;
+    }
+
+    list->Invalidate();
+    switch (this->m_tab->geometry.unknown_0030) {
+    case 0:
+      this->m_equipRuneSet->Invalidate();
+      this->m_runeSetInfo->SendMsg(this, 0x3C, 0, 0, 0, 0);
+      this->m_lists[0]->SendMsg(this, 0x3C, g_runeSystemMgr->GetTag(-1)->GetRuneCount(0), 0, 0, 0);
+      break;
+    case 1:
+      this->m_runeInfo->SendMsg(this, 0x3C, 0, 0, 0, 0);
+      this->m_lists[1]->SendMsg(this, 0x3C, g_runeSystemMgr->GetTag(-1)->GetRuneCount(1), 0, 0, 0);
+      break;
+    case 2: {
+      const int count = g_runeSystemMgr->UpdateOwnedDecomItems();
+      if (this->m_lists[2]->total == count) {
+        this->m_runeDecom->SendMsg(this, 0x3C, 0, 0, 0, 0);
+        break;
+      }
+
+      this->m_lists[2]->SetRange(std::max(count - 10, 0), 10, count);
+      UIRuneSetList* decomList = this->m_lists[2];
+      const int previous = decomList->position;
+      const int next = decomList->maximum < 0 ? decomList->maximum : 0;
+      decomList->m_selected = -1;
+      decomList->position = next;
+      if (previous != next) {
+        decomList->Invalidate();
+      }
+      decomList->Invalidate();
+      this->m_runeDecom->Reset();
+      break;
+    }
+    }
+    this->Invalidate();
+    break;
+  }
+  case 0x61:
+    if (g_runeSystemMgr->GetCurrentRune(0, argument2)) {
+      reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm("보상을 지급 받으시겠습니까?", 2, false, false, 0, "Message", 280, 120, 0);
+    }
+    break;
+  case 0x69:
+    this->m_nextTick = timeGetTime() + static_cast<std::int64_t>(argument1);
+    break;
+  case 0x6A: {
+    const DWORD now = timeGetTime();
+    if (this->m_nextTick < static_cast<std::int64_t>(now)) {
+      this->m_nextTick = static_cast<std::int64_t>(argument1) + now;
+      return 1;
+    }
+    return 0;
+  }
+  case 0xA9:
+    this->m_tab->geometry.unknown_0030 = argument1;
+    this->m_tab->Invalidate();
+    this->SelectTab();
+    if (argument1 == 0) {
+      if (g_runeSystemMgr->GetCurrentRune(0, argument2)) {
+        this->m_lists[0]->Select(argument2);
+        this->SendMsg(this, 0xAB, 0xC2, argument2, 0, 0);
+      }
+    } else if (argument1 == 1) {
+      unsigned int index = 0;
+      if (g_runeSystemMgr->FindRune(-1, 1, argument2, &index)) {
+        this->m_lists[1]->Select(index);
+        this->SendMsg(this, 0xAB, 0xC2, index, 0, 0);
+      }
+    } else {
+      break;
+    }
+    this->Invalidate();
+    break;
+  case 0xAB:
+    if (argument1 == 0xC2) {
+      switch (this->m_tab->geometry.unknown_0030) {
+      case 0: {
+        RuneData* rune = argument2 == -1 ? g_runeSystemMgr->GetCurRuneSet() : g_runeSystemMgr->GetCurrentRune(0, argument2);
+        if (!rune) {
+          break;
+        }
+
+        UIRuneSet_Info* info = this->m_runeSetInfo;
+        info->m_runeSet = static_cast<RuneSetData*>(rune);
+        info->m_activeWnd->m_listId = info->m_runeSet->GetActiveType();
+        info->m_activeWnd->Invalidate();
+        info->m_gradeItems->m_listId = info->m_runeSet->GetGradeValue();
+        info->m_gradeItems->Invalidate();
+        info->RefreshDescription();
+        const int slotCount = info->m_runeSet->CountSlots();
+        const int activeCount = info->m_runeSet->CountActiveSlots();
+        for (int index = 0; index < 7; ++index) {
+          RuneSetData* runeSet = info->m_runeSet;
+          if (runeSet->m_reward.values[0] == 0) {
+            info->m_rewards[index]->SendMsg(info, 0x66, 0, 0, 0, 0);
+            runeSet = info->m_runeSet;
+          }
+
+          const int itemId = static_cast<int>(runeSet->m_reward.values[index + 1]);
+          if (index < runeSet->m_rewardStep) {
+            info->m_rewards[index]->SendMsg(info, 0x66, 3, itemId, 0, 0);
+          } else if (index == 0) {
+            info->m_rewards[0]->SendMsg(info, 0x66, runeSet->IsActive() ? 2 : 1, itemId, 0, 0);
+          } else if (index == 6) {
+            info->m_rewards[6]->SendMsg(info, 0x66, slotCount == activeCount ? 2 : 1, itemId, 0, 0);
+          } else {
+            info->m_rewards[index]->SendMsg(info, 0x66, index < activeCount ? 2 : 1, itemId, 0, 0);
+          }
+        }
+        info->SendMsg(nullptr, 0x3C, 0, 0, 0, 0);
+        this->m_runeSetInfo->Invalidate();
+        break;
+      }
+      case 1: {
+        RuneData* rune = g_runeSystemMgr->GetCurrentRune(1, argument2);
+        UIRune_Info* info = this->m_runeInfo;
+        if (rune) {
+          info->m_rune = rune;
+          info->m_activeWnd->m_listId = rune->GetActiveType();
+          info->m_activeWnd->Invalidate();
+          reinterpret_cast<UIRuneSet_Info*>(info)->UpdateActivation();
+          info->Invalidate();
+        }
+        this->m_runeInfo->Invalidate();
+        break;
+      }
+      case 2:
+        this->m_runeDecom->SetItem(g_runeSystemMgr->GetOwnedDecomItem(argument2));
+        this->m_runeDecom->Invalidate();
+        break;
+      }
+      this->Invalidate();
+    } else if (argument1 == 0xC3) {
+      if (g_runeSystemMgr->GetCurRuneSet()) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4052), 0, true, false, 0, "Message", 280, 120, 0);
+      } else if (!argument2) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4041), 0, true, false, 0, "Message", 280, 120, 0);
+      } else {
+        RuneData* rune = reinterpret_cast<RuneData*>(argument2);
+        RuneSetEquipPacket packet;
+        packet.id = 0x0BD6;
+        packet.runeId = static_cast<int>(rune->GetId());
+        packet.tagId = static_cast<std::uint16_t>(rune->GetTagId());
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      }
+    } else if (argument1 == 0x158) {
+      RuneSetData* runeSet = g_runeSystemMgr->GetCurRuneSet();
+      if (!runeSet) {
+        reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4051), 0, true, false, 0, "Message", 280, 120, 0);
+      } else if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4040), 2, true, false, 0, "Message", 280, 120, 0) != 0xBC) {
+        RuneSetEquipPacket packet;
+        packet.id = 0x0BD6;
+        packet.tagId = static_cast<std::uint16_t>(runeSet->GetTagId());
+        packet.runeId = 0;
+        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      }
+    }
+    break;
+  case 0xB2:
+    if (argument1 == 0xE0) {
+      const vector3d positions[7] = {{712.0f, 144.0f, 0.0f}, {799.0f, 169.0f, 0.0f}, {853.0f, 244.0f, 0.0f}, {853.0f, 337.0f, 0.0f},
+                                     {799.0f, 412.0f, 0.0f}, {711.0f, 438.0f, 0.0f}, {712.0f, 290.0f, 0.0f}};
+      const int effects[7] = {0x975, 0x975, 0x975, 0x975, 0x975, 0x975, 0x976};
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, effects[argument2], 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      if (effect) {
+        const vector3d& position = positions[argument2];
+        effect->Slot24(std::bit_cast<int>(position.x), std::bit_cast<int>(position.y), std::bit_cast<int>(position.z), 1, 0x169);
+      }
+    }
+    break;
+  }
+
+  return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
