@@ -1,6 +1,13 @@
 #include "UI/UIMacroUserInfoWnd.h"
 
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Session.h"
+#include "Contents/Actors/GameActor.h"
 #include "Contents/MessageTable.h"
+#include "Contents/World/World.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Layout/WindowSnapping.h"
@@ -8,8 +15,6 @@
 #include "UI/Window/FrameFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
-#include "Network/Connection/Connection.h"
-#include "Network/Packets/PacketLengths.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
@@ -208,6 +213,17 @@ bool UIMacroReporterWnd::ValidateTarget(unsigned char notify) {
   }
 
   return true;
+}
+
+// OFFSET: 0x007F25C0
+// FUNCTION: fn_09857
+int UIMacroUserInfoWnd::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  if (message == 6 && argument1 == 201) {
+    g_windowMgr.CloseWindow(287);
+  }
+  return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
 
 // OFFSET: 0x007F26C0
