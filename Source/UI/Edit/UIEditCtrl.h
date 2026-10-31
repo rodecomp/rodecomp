@@ -146,6 +146,7 @@ public:
   std::string TakePendingText();
   void SetTagColor(std::uint32_t color);
   void ClearLineState();
+  int DecodeLinkNumber(std::string text);
 
   /* 011C */ std::list<std::vector<UIItemTagButton*>> entries;
   /* 0124 */ std::vector<std::string> pendingText;

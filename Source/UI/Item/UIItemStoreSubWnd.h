@@ -6,6 +6,9 @@
 
 #include <cstddef>
 
+class UIResizer;
+class UIStaticText;
+
 class UIItemStoreSubWnd : public UIItemBaseWnd {
 public:
   void Slot28(int x, int y) override;
@@ -27,8 +30,12 @@ public:
   bool sub_996950();
   bool sub_996AF0();
   bool sub_996C90();
+  void Slot15(int width, int height) override;
 
-  /* 00F0 */ unsigned char unknown_00F0[0x60];
+  /* 00F0 */ unsigned char unknown_00F0[0x20];
+  /* 0110 */ UIResizer* resizeHandle;
+  /* 0114 */ UIStaticText* title;
+  /* 0118 */ unsigned char unknown_0118[0x38];
   /* 0150 */ WindowPlacement* saved;
   /* 0154 */ int tabIndex;
 };
@@ -36,6 +43,7 @@ public:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(UIItemStoreSubWnd, saved) == 0x150);
 static_assert(offsetof(UIItemStoreSubWnd, tabIndex) == 0x154);
+static_assert(offsetof(UIItemStoreSubWnd, title) == 0x114);
 #endif
 
 #endif

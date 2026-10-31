@@ -55,6 +55,7 @@
 #include "UI/Skill/UISkillListWnd.h"
 #include "UI/Buttons/UIBasicButton.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Window/UIResizer.h"
 #include "UI/Buttons/UICheckBox.h"
 #include "UI/Dialogs/UIPasswordWnd.h"
 #include "Client/Session.h"
@@ -84,11 +85,13 @@
 #include "Contents/UserData/CharacterConfigSave.h"
 
 #include <algorithm>
+#include <cstdarg>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <list>
+#include <map>
 #include <string>
 #include <windows.h>
 #include <timeapi.h>
@@ -2714,6 +2717,143 @@ void UIMerchantItemShopWnd::Slot15(int width, int height) {
   this->columns = 1;
   this->unknown_00F0 = this->geometry.height - rows * 32;
   this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00854130
+// FUNCTION: fn_10746
+int UIEditCtrl3::DecodeLinkNumber(std::string text) {
+  char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const int length = static_cast<int>(text.size());
+  int value = 0;
+  char* characters = new char[length + 1];
+  strcpy_s(characters, length + 1, text.c_str());
+
+  for (int position = 0; position < length; ++position) {
+    for (int digit = 0; digit < 62; ++digit) {
+      if (characters[position] != digits[digit]) {
+        continue;
+      }
+
+      int weight = 1;
+      for (int power = 1; power < length - position; ++power) {
+        weight *= 62;
+      }
+
+      value += weight * digit;
+      break;
+    }
+  }
+
+  if (characters) {
+    delete[] characters;
+  }
+
+  return value;
+}
+
+// OFFSET: 0x00977A50
+// FUNCTION: fn_13314
+void UIItemStoreFindWnd::Slot15(int width, int height) {
+  this->scrollBar = new UIScrollBar(*this->m_context);
+  static_cast<UIScrollBar*>(this->scrollBar)->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
+  this->AddChild(this->scrollBar);
+
+  char text[64];
+  std::sprintf(text, "서브창고");
+  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title->SetSize(this->geometry.width - 32, 15);
+  this->title->SetTextFitted(text);
+  this->title->Move(16, 2);
+  this->title->shadow = 1;
+  this->AddChild(this->title);
+
+  this->resizeHandle = new UIResizer(*this->m_context);
+  this->resizeHandle->SetSize(16, 16);
+  this->resizeHandle->SetDirection(7);
+  this->resizeHandle->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizeHandle->Move(this->geometry.width - 15, this->geometry.height - 15);
+  this->resizeHandle->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizeHandle);
+
+  this->closeButton = this->AddCloseButton(*this->m_controls, "", 0);
+  this->closeButton->Move(width - 16, 3);
+}
+
+// OFFSET: 0x00977C40
+// FUNCTION: fn_13315
+void UIItemStoreSubWnd::Slot15(int width, int height) {
+  this->scrollBar = new UIScrollBar(*this->m_context);
+  static_cast<UIScrollBar*>(this->scrollBar)->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
+  this->AddChild(this->scrollBar);
+
+  char text[64];
+  std::sprintf(text, "서브창고");
+  this->title = new UIStaticText(*this->m_context, *this->m_controls);
+  this->title->SetSize(this->geometry.width - 32, 15);
+  this->title->SetTextFitted(text);
+  this->title->Move(16, 2);
+  this->title->shadow = 1;
+  this->AddChild(this->title);
+
+  this->resizeHandle = new UIResizer(*this->m_context);
+  this->resizeHandle->SetSize(16, 16);
+  this->resizeHandle->SetDirection(7);
+  this->resizeHandle->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizeHandle->Move(this->geometry.width - 15, this->geometry.height - 15);
+  this->resizeHandle->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizeHandle);
+}
+
+// OFFSET: 0x0097BD30
+// FUNCTION: fn_13322
+void UIMerchantItemWnd::Slot15(int width, int height) {
+  UIStaticText* title = new UIStaticText(*this->m_context, *this->m_controls);
+  title->SetSize(90, 15);
+  title->SetText(LookupMessage(222), 0);
+  title->Move(16, 2);
+  title->shadow = 1;
+  this->AddChild(title);
+
+  this->info = new UIStaticText(*this->m_context, *this->m_controls);
+  this->info->SetSize(220, 15);
+  char text[128];
+  std::sprintf(text, "Num: %d/%d Weight: %d/%d", g_session.cartCount, g_session.cartMaxCount, g_session.cartWeight, g_session.cartMaxWeight);
+  this->info->SetText(text, 0);
+  this->info->Move(16, this->geometry.height - 19);
+  this->AddChild(this->info);
+
+  this->resizer = new UIResizer(*this->m_context);
+  this->resizer->SetSize(16, 16);
+  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
+  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
+
+  UIScrollBar* scrollBar = new UIScrollBar(*this->m_context);
+  this->scrollBar = scrollBar;
+  scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
+  this->AddChild(this->scrollBar);
+
+  this->closeButton = this->AddCloseButton(*this->m_controls, "Alt+W", 0);
+  this->columns = (width - 40) / 32;
+  this->visibleRows = (height - 38) / 32;
+  this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+  this->info->Show(0);
+}
+
+// OFFSET: 0x0098A7A0
+
+struct ThreadFormatBuffer {
+  char text[0x800];
+};
+
+// OFFSET: 0x00974630
+
+// OFFSET: 0x00994D80
+// FUNCTION: fn_13442
+bool __stdcall ReturnTrue(int) {
+  return true;
 }
 
 // OFFSET: 0x0089CAE0

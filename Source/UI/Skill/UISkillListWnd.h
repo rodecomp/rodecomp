@@ -23,10 +23,13 @@ public:
   CSkillInfo GetSkillAt(int x, int y);
   CSkillInfo GetVisibleSkill(int row);
   void UpdateScrollBar();
+  void UpdateRowButtons();
 
   /* 00B4 */ int unknown_00B4;
   /* 00B8 */ UIWindow* scrollBar;
-  /* 00BC */ unsigned char unknown_00BC[0x54];
+  /* 00C4 */ UIWindow* upgradeButtons[7];
+  /* 00E0 */ UIWindow* levelButtons[7];
+  /* 00FC */ UIWindow* levelLabels[7];
   /* 0118 */ int hovered;
   /* 011C */ int scroll;
   /* 0120 */ int columns;
@@ -34,12 +37,16 @@ public:
   /* 0128 */ int unknown_0128;
   /* 012C */ std::list<CSkillInfo> skills;
   /* 0134 */ SkillListWndInfo* saved;
+  /* 0138 */ unsigned char unknown_0138[0xC];
+  /* 0144 */ int skillTab;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(UISkillListWnd, hovered) == 0x118);
 static_assert(offsetof(UISkillListWnd, skills) == 0x12C);
 static_assert(offsetof(UISkillListWnd, saved) == 0x134);
+static_assert(offsetof(UISkillListWnd, upgradeButtons) == 0xC4);
+static_assert(offsetof(UISkillListWnd, skillTab) == 0x144);
 #endif
 
 #endif

@@ -7,6 +7,10 @@
 #include <cstddef>
 #include <string>
 
+class UIBitmapButton;
+class UIResizer;
+class UIStaticText;
+
 class UIItemStoreFindWnd : public UIItemBaseWnd {
 public:
   void Slot28(int x, int y) override;
@@ -19,8 +23,14 @@ public:
 
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetSearchText(std::string text);
+  void Slot15(int width, int height) override;
 
-  /* 00F0 */ unsigned char unknown_00F0[0x34];
+  /* 00F0 */ unsigned char unknown_00F0[0xC];
+  /* 00FC */ UIBitmapButton* closeButton;
+  /* 0100 */ unsigned char unknown_0100[0x14];
+  /* 0114 */ UIResizer* resizeHandle;
+  /* 0118 */ UIStaticText* title;
+  /* 011C */ unsigned char unknown_011C[0x8];
   /* 0124 */ std::string unknown_0124;
   /* 013C */ std::string searchText;
   /* 0154 */ ItemStoreFindWndInfo* saved;
@@ -30,6 +40,8 @@ public:
 static_assert(offsetof(UIItemStoreFindWnd, unknown_0124) == 0x124);
 static_assert(offsetof(UIItemStoreFindWnd, searchText) == 0x13C);
 static_assert(offsetof(UIItemStoreFindWnd, saved) == 0x154);
+static_assert(offsetof(UIItemStoreFindWnd, closeButton) == 0xFC);
+static_assert(offsetof(UIItemStoreFindWnd, title) == 0x118);
 #endif
 
 #endif

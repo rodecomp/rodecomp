@@ -6,6 +6,9 @@
 
 #include <cstddef>
 
+class UIBitmapButton;
+class UIStaticText;
+
 class UIMerchantItemWnd : public UIItemBaseWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
@@ -13,8 +16,11 @@ public:
   void Paint() override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
+  void Slot15(int width, int height) override;
 
   /* 00F0 */ MerchantItemWndInfo* saved;
+  /* 00F4 */ UIBitmapButton* closeButton;
+  /* 00F8 */ UIStaticText* info;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
