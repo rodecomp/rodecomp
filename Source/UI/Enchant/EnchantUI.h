@@ -21,6 +21,7 @@ public:
   /* 00D8 */ CUIControl* background;
   /* 00DC */ CUIControl* titleBar;
 
+  ~CUIEnchantUI() override;
   bool CanHitTest() override;
   void Slot16() override;
   void Slot25(int x, int y) override;

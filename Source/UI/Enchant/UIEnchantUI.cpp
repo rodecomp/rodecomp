@@ -51,6 +51,12 @@ CEnchantMgr* Singleton<CEnchantMgr>::GetInstance() {
   return s_instance;
 }
 
+// OFFSET: 0x00A04860
+// FUNCTION: fn_14958
+CUIEnchantUI::~CUIEnchantUI() {
+  CEnchantMgr::GetInstance()->SendCloseEnchant();
+}
+
 namespace EnchantUI {
 // OFFSET: 0x009F70C0
 // FUNCTION: fn_14768
