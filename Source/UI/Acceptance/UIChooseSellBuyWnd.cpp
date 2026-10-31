@@ -3012,22 +3012,222 @@ int UINotifyLevelUpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 }
 
 // OFFSET: 0x008D84A0
+// FUNCTION: fn_12126
+ITEM_INFO UIEquipWnd::GetSlotItem(int slot) {
+  if (slot == -1) {
+    return ITEM_INFO(0);
+  }
+
+  if (this->m_page == 1) {
+    if (this->m_viewOther == 0) {
+      return g_session.GetItem2B50(slot);
+    }
+    return g_session.GetItem3500(slot);
+  }
+
+  if (this->m_page != 0) {
+    return ITEM_INFO(0);
+  }
+
+  if (this->m_viewOther == 0) {
+    return g_session.GetItem17F0(slot);
+  }
+  return g_session.GetItem21A0(slot);
+}
 
 // OFFSET: 0x008D8580
+// FUNCTION: fn_12127
+__declspec(noinline) ITEM_INFO UIEquipWnd::ItemIconAt(int x, int y) {
+  int slot = -1;
+  const int top = this->m_contentTop;
+  if (y < top + 17 || y > top + 145) {
+    return ITEM_INFO(0);
+  }
+
+  if ((x >= 6 && x < 30) || (x >= 251 && x < 275)) {
+    slot = (y - top - 17) / 26;
+    if (x / 251 != 0) {
+      slot = slot == 0 ? 9 : slot + 3;
+    } else {
+      slot = slot == 0 ? 8 : slot - 1;
+    }
+  }
+
+  const int center = this->geometry.width / 2;
+  if (center - 25 < x && x < center - 1 && top + 44 < y && y < top + 68) {
+    slot = 15;
+  }
+  return this->GetSlotItem(slot);
+}
 
 // OFFSET: 0x008D8D90
+// FUNCTION: fn_12131
+ITEM_INFO UIEquipWnd::ItemEntryAt(int x, int y) {
+  int slot = -1;
+  const int top = this->m_contentTop;
+  if (y < top + 17 || y > top + 145) {
+    return ITEM_INFO(0);
+  }
+
+  if ((x >= 6 && x < 106) || (x >= 170 && x < this->geometry.width - 6)) {
+    slot = (y - top - 17) / 26;
+    if (x / 170 != 0) {
+      slot = slot == 0 ? 9 : slot + 3;
+    } else {
+      slot = slot == 0 ? 8 : slot - 1;
+    }
+  }
+
+  const int center = this->geometry.width / 2;
+  if (center - 25 < x && x < center - 1 && top + 44 < y && y < top + 68) {
+    slot = 15;
+  }
+  return this->GetSlotItem(slot);
+}
 
 // OFFSET: 0x008F31C0
+// FUNCTION: fn_12263
+void UIEquipWnd::Slot26(int x, int y) {
+  if (y < 17) {
+    this->SendMsg(this, 6, 202, 0, 0, 0);
+  }
+
+  if (this->m_viewOther != 0) {
+    return;
+  }
+
+  ITEM_INFO item = this->ItemIconAt(x, y);
+  if (item.unknown_0000[1] != 0 && item.quantity > 0) {
+    const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(item.unknown_0000[3]));
+    g_modeMgr.gameMode->SendMsg(20, slots.values[2], this->m_page == 1, 0, 0);
+  }
+}
 
 // OFFSET: 0x008F3DD0
+// FUNCTION: fn_12286
+void UIEquipWnd::Slot28(int x, int y) {
+  ITEM_INFO item = this->ItemEntryAt(x, y);
+  if (item.unknown_0000[1] != 0) {
+    item.identified = 1;
+    int tooltipX = 6;
+    int tooltipY = (y - this->m_contentTop - 17) / 24 * 26 - 3 + this->m_contentTop;
+    if (x >= 170) {
+      tooltipX = 175;
+    } else if (x >= 106) {
+      tooltipX = this->geometry.width / 2 - 20;
+    }
+    this->ToScreen(tooltipX, tooltipY);
+
+    ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+    if (item.quantity < 2) {
+      if (item.identified == 1 && item.unknown_0098 != 0) {
+        tooltip->Show(FormatOwnedString(LookupMessage(0xA28), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+                      g_session.GetItemNameColor(item), 0, 1);
+      } else {
+        tooltip->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      }
+    } else if (item.identified == 1 && item.unknown_0098 != 0) {
+      tooltip->Show(FormatOwnedString(LookupMessage(0x9F7), item.DisplayName(0).c_str(), item.unknown_0098, item.quantity).c_str(), tooltipX,
+                    tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    } else {
+      tooltip->Show(FormatOwnedString(LookupMessage(0xB7), item.DisplayName(0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
+                    g_session.GetItemNameColor(item), 0, 1);
+    }
+  }
+
+  const int previous0 = this->m_highlight[0];
+  const int previous1 = this->m_highlight[1];
+  const int previous2 = this->m_highlight[2];
+  this->m_highlight[0] = -1;
+  this->m_highlight[1] = -1;
+  this->m_highlight[2] = -1;
+
+  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  if (mode->drag.source == 1 && x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
+    ITEM_INFO dragged = LookupClientItemByIdentity(g_session.m_inventoryItems, mode->drag.id);
+    if (dragged.unknown_0000[1] != 0 && dragged.unknown_0000[2] != 0) {
+      const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(dragged.unknown_0000[2]));
+      this->m_highlight[0] = slots.values[2];
+      if (slots.values[1] != -1) {
+        this->m_highlight[1] = slots.values[1];
+      }
+      if (slots.values[0] != -1) {
+        this->m_highlight[2] = slots.values[0];
+      }
+    }
+  }
+
+  if (previous0 != this->m_highlight[0] || previous1 != this->m_highlight[1] || previous2 != this->m_highlight[2]) {
+    this->Invalidate();
+  }
+}
 
 // OFFSET: 0x008F5400
+// FUNCTION: fn_12302
+void UIEquipWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->ItemEntryAt(x, y);
+  if (item.unknown_0000[1] != 0) {
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
 
 // OFFSET: 0x008D86D0
+// FUNCTION: fn_12128
+ITEM_INFO UIExchangeWnd::ItemAt(int x, int y) {
+  if (x < 4 || x >= this->geometry.width - 3 || y < 20 || y >= this->geometry.height - 40) {
+    return ITEM_INFO(0);
+  }
+
+  const int row = (y - 17) / this->m_rowHeight;
+  const std::list<ITEM_INFO>& items = x < 280 ? this->m_myItems : this->m_otherItems;
+  auto it = items.begin();
+  for (int index = 0; index < row; ++index) {
+    if (it == items.end()) {
+      return ITEM_INFO(0);
+    }
+    ++it;
+  }
+
+  if (it == items.end()) {
+    return ITEM_INFO(0);
+  }
+  return *it;
+}
 
 // OFFSET: 0x008F4300
+// FUNCTION: fn_12287
+void UIExchangeWnd::Slot28(int x, int y) {
+  int tooltipY = y;
+  ITEM_INFO item = this->ItemAt(x, y);
+  this->m_hoverX = static_cast<short>(x);
+  if (item.unknown_0000[1] == 0) {
+    return;
+  }
+
+  int tooltipX = x >= 280 ? 321 : 42;
+  tooltipY = (tooltipY - 17) / this->m_rowHeight * this->m_rowHeight + 4;
+  this->ToScreen(tooltipX, tooltipY);
+
+  ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
+  item.unknown_0000[0] = 21;
+  if (item.identified == 1 && item.unknown_0098 != 0) {
+    tooltip->Show(FormatOwnedString(LookupMessage(0xA28), item.DisplayName(0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY,
+                  g_session.GetItemNameColor(item), 0, 1);
+  } else {
+    tooltip->Show(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+  }
+}
 
 // OFFSET: 0x008F54C0
+// FUNCTION: fn_12303
+void UIExchangeWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->ItemAt(x, y);
+  if (item.unknown_0000[1] != 0) {
+    if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+    }
+  }
+}
 
 // OFFSET: 0x008D87F0
 // FUNCTION: fn_12129
@@ -3046,8 +3246,22 @@ __declspec(noinline) ITEM_INFO UIItemIdentifyWnd::GetItem(int index, int* found)
 }
 
 // OFFSET: 0x008D7F30
+// FUNCTION: fn_12125
+ITEM_INFO UIItemIdentifyWnd::GetSelectedItem(int* found) {
+  return this->GetItem(this->m_selected, found);
+}
 
 // OFFSET: 0x0090A0E0
+// FUNCTION: fn_12413
+void UIWhisperWnd::Slot11() {
+  if (this->unknown_0100) {
+    this->unknown_0100->width = this->geometry.width;
+    this->unknown_0100->height = this->geometry.height;
+    this->unknown_0100->x = this->geometry.x;
+    this->unknown_0100->y = this->geometry.y;
+  }
+  g_windowMgr.UnregisterNamedWindow(std::string(this->m_target.c_str(), this->m_target.size()));
+}
 
 struct SessionMessengerContext {
   int GetList1788(int index) const;
@@ -3055,7 +3269,113 @@ struct SessionMessengerContext {
 };
 
 // OFFSET: 0x008D88F0
+// FUNCTION: fn_12130
+ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
+  if (static_cast<unsigned>(x - 64) > 556 || y < 50 || y > this->m_listHeight + 440) {
+    return ITEM_INFO(0);
+  }
+
+  const SessionMessengerContext& lists = reinterpret_cast<const SessionMessengerContext&>(g_session);
+  int top = this->m_listTop;
+  if (x < 252) {
+    std::list<ITEM_INFO>::iterator it = this->m_items.begin();
+    for (int row = 0; row < 4; ++row) {
+      if (y >= top && y <= top + this->m_rowHeight) {
+        int index = row + (this->m_page - 1) * 8;
+        int count = lists.GetList1788(this->m_tab);
+        if (this->m_tab == 8) {
+          count = static_cast<int>(this->m_items.size());
+        }
+        if (count <= index) {
+          return ITEM_INFO(0);
+        }
+        this->m_selected = row;
+        for (; index > 0; --index) {
+          ++it;
+        }
+        break;
+      }
+      top += this->m_rowHeight;
+    }
+    return it != this->m_items.end() ? *it : ITEM_INFO(0);
+  }
+
+  if (x < 444) {
+    std::list<ITEM_INFO>::iterator it = this->m_items.begin();
+    for (int row = 0; row < 4; ++row) {
+      if (y >= top && y <= top + this->m_rowHeight) {
+        int index = this->m_page * 8 - 4 + row;
+        int count = lists.GetList1788(this->m_tab);
+        if (this->m_tab == 8) {
+          count = static_cast<int>(this->m_items.size());
+        }
+        if (count <= index) {
+          return ITEM_INFO(0);
+        }
+        this->m_selected = row + 4;
+        for (; index > 0; --index) {
+          ++it;
+        }
+        break;
+      }
+      top += this->m_rowHeight;
+    }
+    return it != this->m_items.end() ? *it : ITEM_INFO(0);
+  }
+
+  int index = 0;
+  int row = 0;
+  for (; row < 4; ++row) {
+    if (y >= top && y <= top + this->m_rowHeight) {
+      index = this->m_firstOther + row;
+      this->m_selected = index;
+      if (lists.GetList2Size() <= index) {
+        return ITEM_INFO(0);
+      }
+      break;
+    }
+    top += this->m_rowHeight;
+  }
+  if (row == 4) {
+    index = this->m_selected;
+  }
+
+  std::list<ITEM_INFO>::iterator it = this->m_otherItems.begin();
+  for (int remaining = index; remaining > 0; --remaining) {
+    ++it;
+  }
+  this->m_selected = ~index;
+  return it != this->m_otherItems.end() ? *it : ITEM_INFO(0);
+}
 
 // OFFSET: 0x008F3A80
+// FUNCTION: fn_12279
+void UInCashWnd::Slot25(int x, int y) {
+  if (y < 17) {
+    this->UIFrameWnd::Slot25(x, y);
+  }
+
+  ITEM_INFO item = this->ItemAt(x, y);
+  if (item.unknown_0000[1] != 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    ItemDescriptions descriptions{g_itemDescriptions};
+    int source;
+    if (this->m_selected < 0) {
+      this->m_selected = ~this->m_selected;
+      source = 4;
+    } else {
+      this->m_selectedIndex = item.unknown_0064;
+      source = 6;
+    }
+    mode->drag.BeginItem(*reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), descriptions, source, item, 1, -1);
+  }
+}
 
 // OFFSET: 0x008F58C0
+// FUNCTION: fn_12306
+void UInCashWnd::Slot32(int x, int y) {
+  ITEM_INFO item = this->ItemAt(x, y);
+  if (item.unknown_0000[1] != 0 && this->m_selected >= 0) {
+    g_windowMgr.EnsureWindow(12)->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
+  }
+}
