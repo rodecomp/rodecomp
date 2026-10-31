@@ -8,6 +8,7 @@
 #include <string>
 
 class CUserHotkeyMgr {
+  friend class UIHotKeyWnd;
 public:
   CUserHotkeyMgr();
   virtual ~CUserHotkeyMgr();

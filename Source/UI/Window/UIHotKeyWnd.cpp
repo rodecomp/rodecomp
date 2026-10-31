@@ -1,16 +1,81 @@
 #include "UI/Window/UIHotKeyWnd.h"
 
 #include "Client/Session.h"
+#include "Contents/Hotkeys/UserHotkeyMgr.h"
 #include "Contents/MessageTable.h"
 #include "Script/LuaScript.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Lists/UITabControl.h"
+#include "UI/Text/ColoredText.h"
 #include "UI/Text/UIBalloonText.h"
+#include "UI/Window/InputFocus.h"
+#include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowBorder.h"
+#include "UI/Window/WindowDialogs.h"
+#include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/WindowOrdering.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstring>
 #include <string>
+
+namespace {
+  bool HiddenHotkeyIndex(int index) {
+    switch (index) {
+    case 30:
+    case 33:
+    case 34:
+    case 36:
+    case 43:
+    case 45:
+    case 53:
+    case 58:
+    case 62:
+    case 64:
+    case 65:
+    case 66:
+    case 67:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  int CountHotkeys(LuaScript& script, int tab) {
+    int count = 0;
+    if (script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count)) {
+      if (tab == 1) {
+        int hidden = 0;
+        for (int index = 30; index < count; ++index) {
+          hidden += HiddenHotkeyIndex(index);
+        }
+        return count - hidden;
+      }
+    }
+    return count;
+  }
+
+  int MapHotkeyIndex(LuaScript& script, int tab, int index) {
+    if (tab == 1 && index >= 30) {
+      for (int candidate = 30; candidate <= index; ++candidate) {
+        index += HiddenHotkeyIndex(candidate);
+      }
+    }
+    int count = 0;
+    script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count);
+    return index >= count ? -1 : index;
+  }
+
+  void SetWindowText(UIWindow* window, const char* text) {
+    if (!window) {
+      return;
+    }
+    using SetTextFn = void(__thiscall*)(UIWindow*, const char*);
+    void** vtable = *reinterpret_cast<void***>(window);
+    reinterpret_cast<SetTextFn>(vtable[53])(window, text);
+  }
+}
 
 // OFFSET: 0x00932F70
 // FUNCTION: fn_12721
@@ -178,3 +243,140 @@ void UIHotKeyWnd::Slot25(int x, int y) {
 
   this->Invalidate();
 }
+
+// OFFSET: 0x0091C720
+// FUNCTION: fn_12617
+UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve) {
+  HotkeyEntry entry;
+  entry.index = resolve ? MapHotkeyIndex(*g_luaScript, tab, index) : index;
+
+  if (entry.index != -1) {
+    const auto it = this->hotkeys[tab].find(entry.index);
+    if (it != this->hotkeys[tab].end() && !it->second.description.empty()) {
+      entry.info = it->second;
+    } else {
+      entry.info = GetHotkeyInfo(*g_luaScript, tab, entry.index);
+    }
+  }
+
+  return entry;
+}
+
+// OFFSET: 0x0091CA10
+
+// OFFSET: 0x00916220
+
+// OFFSET: 0x00916930
+
+// OFFSET: 0x0092BEC0
+// FUNCTION: fn_12663
+void UIHotKeyWnd::Paint() {
+  if (this->geometry.height == this->unknown_00BC) {
+    return;
+  }
+
+  FontCache& fonts = this->m_context->fonts;
+  const TextLocale& locale = this->m_context->locale;
+
+  this->unknown_00BC = this->DrawTitleBar(fonts, locale, true, LookupMessage(1494), 0);
+  this->unknown_00C0 = this->DrawButtonBar(2, 0, 1);
+  this->DrawPanelBackground(this->unknown_00BC, 0, "");
+
+  const int count = CountHotkeys(*g_luaScript, this->m_tab);
+  int visibleRow = 0;
+
+  for (int row = 0; row < count; ++row) {
+    if (this->unknown_0114 && row < 36 * this->m_page - 36) {
+      continue;
+    }
+    if (row >= 36 * this->m_page) {
+      continue;
+    }
+
+    const HotkeyEntry entry = this->GetHotkey(this->m_tab, row, true);
+    if (entry.info.description.empty()) {
+      continue;
+    }
+
+    std::string text = entry.info.text;
+    if (text.empty()) {
+      text = entry.info.key1 ? LookupMessage(1700) : LookupMessage(1518);
+    }
+
+    const int halfWidth = this->geometry.width / 2;
+    const int column = visibleRow / this->m_rowsPerPage;
+    const int rowY = this->unknown_00BC + this->unknown_00C4 + this->unknown_00CC +
+                     (visibleRow % this->m_rowsPerPage) * this->unknown_00D0;
+
+    const int textWidth = this->TextWidth(fonts, locale, text.c_str(), 0, 0, 12, 0, 0);
+    const int textX = (this->unknown_00D4 - textWidth) / 2;
+
+    const int backgroundX = column ? this->geometry.width - this->unknown_00D4 - this->unknown_00C8
+                                   : halfWidth - this->unknown_00D4;
+    const int keyX = column ? halfWidth : this->unknown_00C8;
+
+    std::uint32_t color = 0xDFFFFE;
+    switch (this->m_tab) {
+    case 0:
+      color = 0xFFEFD6;
+      break;
+    case 3:
+      color = 0xEFD6FF;
+      break;
+    default:
+      break;
+    }
+
+    this->FillRegion(backgroundX, rowY, this->unknown_00D4, this->unknown_00D0 - 1, color);
+
+    if (visibleRow == this->m_selectedRow) {
+      this->FillRegion(keyX + 1, rowY, halfWidth - this->unknown_00C8 - 1, 19, 0xE1E1FF);
+    }
+
+    this->FillRegion(keyX, rowY - 1 + this->unknown_00D0, this->unknown_00D4 + this->unknown_00D8, 1, 0xC0C0C0);
+    this->FillRegion(backgroundX, rowY, 1, this->unknown_00D0, 0xC0C0C0);
+
+    const std::string fitted = this->FitDisplayText(130, entry.info.description.c_str(), 0, 12, 0);
+    const int fittedWidth = this->TextWidth(fonts, locale, fitted.c_str(), 0, 0, 12, 0, 0);
+    const int descriptionX = keyX + (halfWidth - this->unknown_00C8 - this->unknown_00D4 - fittedWidth) / 2;
+
+    this->DrawTextAt(fonts, locale, descriptionX, rowY + 5, fitted.c_str(), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(fonts, locale, textX + backgroundX, rowY + 5, text.c_str(), 0, 0, 12, 0, 0, 0);
+
+    ++visibleRow;
+  }
+
+  if (this->unknown_0114) {
+    const std::string pages = FormatOwnedString("%d / %d", this->m_page, this->m_pageCount);
+    const int pagesWidth = this->TextWidth(fonts, locale, pages.c_str(), 0, 0, 12, 0, 0);
+    const int pageX =
+      (this->m_prevButton->geometry.width - pagesWidth + 60) / 2 + this->m_prevButton->geometry.x;
+
+    const std::string current = FormatOwnedString("%d", this->m_page);
+    DrawOutlinedText(*this, pageX, 25, current.c_str(), 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
+
+    const int currentWidth = this->TextWidth(fonts, locale, current.c_str(), 0, 0, 12, 0, 0);
+    const std::string total = FormatOwnedString(" / %d", this->m_pageCount);
+    DrawOutlinedText(*this, pageX + currentWidth, 25, total.c_str(), 0, 0x666666, 0xFFFFFF, 0, 11, 1, 0);
+  }
+
+  const int bottomY = this->unknown_00BC + this->unknown_00C4 + this->unknown_00CC;
+  const int innerWidth = this->geometry.width - 2 * this->unknown_00C8;
+  const int innerHeight =
+    this->geometry.height - 2 * this->unknown_00CC - this->unknown_00C4 - this->unknown_00BC - this->unknown_00C0;
+
+  DrawRectangleBorder(*this, this->unknown_00C8, bottomY, innerWidth, innerHeight, 0xC0C0C0);
+  this->FillRegion(this->geometry.width / 2, bottomY, 1, innerHeight, 0xC0C0C0);
+  this->FillRegion(this->unknown_00C8, bottomY - 3, 1, 3, 0xC0C0C0);
+  this->FillRegion(this->geometry.width - this->unknown_00C8 - 1, bottomY - 3, 1, 3, 0xC0C0C0);
+  this->FillRegion(
+    this->unknown_0100->geometry.width + this->unknown_00C8,
+    bottomY - 3,
+    innerWidth - this->unknown_0100->geometry.width,
+    1,
+    0xC0C0C0
+  );
+}
+
+// OFFSET: 0x00935270
+
