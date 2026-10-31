@@ -62,6 +62,7 @@ namespace {
 
 class UIDragMiniPartyWnd : public UIFrameWnd {
 public:
+  UIDragMiniPartyWnd(UIWindowContext& windowContext, UIFrameContext& frameContext, MessengerMember member);
   ~UIDragMiniPartyWnd() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -205,6 +206,13 @@ MessengerMember& MessengerMember::operator=(const MessengerMember& other) {
   this->dead = other.dead;
 
   return *this;
+}
+
+// OFFSET: 0x007382E0
+// FUNCTION: fn_07664
+UIDragMiniPartyWnd::UIDragMiniPartyWnd(UIWindowContext& windowContext, UIFrameContext& frameContext, MessengerMember member)
+    : UIFrameWnd(windowContext, frameContext, 0), member(member), gauge(nullptr), iconIndex(0) {
+  this->geometry.unknown_0030 = 0;
 }
 
 // OFFSET: 0x007384A0
