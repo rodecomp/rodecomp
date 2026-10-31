@@ -103,10 +103,10 @@ public:
 protected:
   UIEditContext* m_edit;
   void PaintTextWithPolicy(bool alternate, const std::string* placeholder, std::uint32_t placeholderColor, bool placeholderEnabled);
-
-private:
   bool RemoveInvalidLink(std::list<UIWindow*>::iterator& entry);
   void SnapLinkSelection(std::size_t prefix, std::size_t bytes);
+
+private:
   void InsertLink(const char* value);
   std::string BracketFittedText(const std::string& name);
 };
@@ -145,6 +145,7 @@ public:
   void HandleInputMessage(unsigned key, std::intptr_t data);
 
   void PlaceTags(const int& x, const int& y, const int& firstLine, const int& endLine, const int& line, const int& unused);
+  void PlaceLinks(const std::string& value, int y, int line, int firstLine, int endLine);
   std::string TakePendingText();
 
   /* 011C */ std::list<std::vector<UIItemTagButton*>> entries;
