@@ -252,6 +252,7 @@ public:
 class CUIStaticImage : public CUIControl {
 public:
   // OFFSET: 0x009BE0C0
+  // FUNCTION: fn_13945
   explicit CUIStaticImage(UIWindowContext& context) : CUIControl(context), image(), tooltip(), transparent(0), scale(100), imageName() {
   }
 
