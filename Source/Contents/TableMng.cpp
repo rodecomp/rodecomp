@@ -435,167 +435,155 @@ void CTableMng::Release() {
 // FUNCTION: fn_20938
 bool CTableMng::WriteEntryQueueXls() {
   BasicExcel* excel = new BasicExcel();
-  if (excel == nullptr) {
-    return false;
-  }
+  if (excel != nullptr) {
+    if (excel->Load("Data\\Table\\EntryQueue.xls")) {
+      BasicExcelWorksheet* sheet = excel->GetWorksheet(0);
+      if (sheet != nullptr) {
+        BasicExcel* excel2 = new BasicExcel();
+        if (excel2 != nullptr) {
+          excel2->New(1);
+          BasicExcelWorksheet* sheet2 = excel2->GetWorksheet(0);
+          if (sheet2 != nullptr) {
+            int cols = sheet->GetTotalCols();
+            for (int row = 0; row < 3; ++row) {
+              for (int col = 0; col < cols; ++col) {
+                BasicExcelCell* c1 = sheet->Cell(row, col);
+                BasicExcelCell* c2 = sheet2->Cell(row, col);
+                if (c1 != nullptr && c2 != nullptr) {
+                  if (c1->Type() == 3) {
+                    c2->SetString(c1->GetString());
+                  } else if (c1->Type() == 4) {
+                    c2->SetWStringAlt(c1->GetWString());
+                  } else if (c1->Type() == 1) {
+                    c2->SetIntegerAlt(c1->GetInteger());
+                  } else if (c1->Type() == 2) {
+                    c2->SetDouble(c1->GetDouble());
+                  }
+                }
+              }
+            }
 
-  if (!excel->Load("Data\\Table\\EntryQueue.xls")) {
-    delete excel;
-    return false;
-  }
+            int row = 3;
+            for (auto it = this->m_entryQueue.begin(); it != this->m_entryQueue.end(); ++it, ++row) {
+              EntryQueueInfo* info = it->second;
+              BasicExcelCell* cell = sheet2->Cell(row, 0);
+              if (cell != nullptr) {
+                cell->SetInteger(info->id);
+              }
 
-  BasicExcelWorksheet* sheet = excel->GetWorksheet(0);
-  if (sheet == nullptr) {
-    delete excel;
-    return false;
-  }
+              cell = sheet2->Cell(row, 1);
+              if (cell != nullptr) {
+                wchar_t wbuf[260];
+                memset(wbuf, 0, sizeof(wbuf));
+                MultiByteToWideChar(CP_ACP, 0, info->name, -1, wbuf, 260);
+                cell->SetWString(wbuf);
+              }
 
-  BasicExcel* excel2 = new BasicExcel();
-  if (excel2 == nullptr) {
-    delete excel;
-    return false;
-  }
+              cell = sheet2->Cell(row, 2);
+              if (cell != nullptr) {
+                wchar_t wbuf[260];
+                memset(wbuf, 0, sizeof(wbuf));
+                MultiByteToWideChar(CP_ACP, 0, info->description, -1, wbuf, 260);
+                cell->SetWString(wbuf);
+              }
 
-  excel2->New(1);
-  BasicExcelWorksheet* sheet2 = excel2->GetWorksheet(0);
-  if (sheet2 == nullptr) {
-    delete excel2;
-    delete excel;
-    return false;
-  }
+              cell = sheet2->Cell(row, 3);
+              if (cell != nullptr) {
+                cell->SetInteger(info->value020C);
+              }
 
-  int cols = sheet->GetTotalCols();
-  for (int row = 0; row < 3; ++row) {
-    for (int col = 0; col < cols; ++col) {
-      BasicExcelCell* c1 = sheet->Cell(row, col);
-      BasicExcelCell* c2 = sheet2->Cell(row, col);
-      if (c1 != nullptr && c2 != nullptr) {
-        int t = c1->Type();
-        if (t == 3) {
-          c2->SetString(c1->GetString());
-        } else if (t == 4) {
-          c2->SetWStringAlt(c1->GetWString());
-        } else if (t == 1) {
-          c2->SetIntegerAlt(c1->GetInteger());
-        } else if (t == 2) {
-          c2->SetDouble(c1->GetDouble());
+              cell = sheet2->Cell(row, 4);
+              if (cell != nullptr) {
+                cell->SetInteger(info->value0210);
+              }
+
+              cell = sheet2->Cell(row, 5);
+              if (cell != nullptr) {
+                cell->SetInteger(info->flag0214);
+              }
+
+              cell = sheet2->Cell(row, 6);
+              if (cell != nullptr) {
+                cell->SetInteger(info->flag0215);
+              }
+
+              cell = sheet2->Cell(row, 7);
+              if (cell != nullptr) {
+                cell->SetInteger(info->flag0216);
+              }
+
+              cell = sheet2->Cell(row, 8);
+              if (cell != nullptr) {
+                cell->SetInteger(info->flag0217);
+              }
+
+              cell = sheet2->Cell(row, 9);
+              if (cell != nullptr) {
+                cell->SetInteger(info->flag0218);
+              }
+
+              cell = sheet2->Cell(row, 10);
+              if (cell != nullptr) {
+                cell->SetInteger(info->value021C);
+              }
+
+              cell = sheet2->Cell(row, 11);
+              if (cell != nullptr) {
+                cell->SetInteger(info->value0220);
+              }
+
+              cell = sheet2->Cell(row, 12);
+              if (cell != nullptr) {
+                wchar_t wbuf[260];
+                memset(wbuf, 0, sizeof(wbuf));
+                MultiByteToWideChar(CP_ACP, 0, info->text0224, -1, wbuf, 260);
+                cell->SetWString(wbuf);
+              }
+
+              cell = sheet2->Cell(row, 13);
+              if (cell != nullptr) {
+                wchar_t wbuf[260];
+                memset(wbuf, 0, sizeof(wbuf));
+                MultiByteToWideChar(CP_ACP, 0, info->text0328, -1, wbuf, 260);
+                cell->SetWString(wbuf);
+              }
+
+              cell = sheet2->Cell(row, 14);
+              if (cell != nullptr) {
+                wchar_t wbuf[260];
+                memset(wbuf, 0, sizeof(wbuf));
+                MultiByteToWideChar(CP_ACP, 0, info->text042C, -1, wbuf, 260);
+                cell->SetWString(wbuf);
+              }
+
+              cell = sheet2->Cell(row, 15);
+              if (cell != nullptr) {
+                wchar_t wbuf[260];
+                memset(wbuf, 0, sizeof(wbuf));
+                MultiByteToWideChar(CP_ACP, 0, info->text0530, -1, wbuf, 260);
+                cell->SetWString(wbuf);
+              }
+
+              cell = sheet2->Cell(row, 16);
+              if (cell != nullptr) {
+                wchar_t wbuf[260];
+                memset(wbuf, 0, sizeof(wbuf));
+                MultiByteToWideChar(CP_ACP, 0, info->text0634, -1, wbuf, 260);
+                cell->SetWString(wbuf);
+              }
+            }
+
+            delete excel;
+            if (DeleteFileA("Data\\Table\\EntryQueue.xls")) {
+              if (excel2->SaveAs("Data\\Table\\EntryQueue.xls")) {
+                delete excel2;
+                return true;
+              }
+            }
+          }
         }
       }
     }
   }
-
-  int row = 3;
-  wchar_t wbuf[260];
-  for (auto it = this->m_entryQueue.begin(); it != this->m_entryQueue.end(); ++it, ++row) {
-    EntryQueueInfo* info = it->second;
-    BasicExcelCell* cell = sheet2->Cell(row, 0);
-    if (cell != nullptr) {
-      cell->SetInteger(info->id);
-    }
-
-    cell = sheet2->Cell(row, 1);
-    if (cell != nullptr) {
-      memset(wbuf, 0, sizeof(wbuf));
-      MultiByteToWideChar(CP_ACP, 0, info->name, -1, wbuf, 260);
-      cell->SetWString(wbuf);
-    }
-
-    cell = sheet2->Cell(row, 2);
-    if (cell != nullptr) {
-      memset(wbuf, 0, sizeof(wbuf));
-      MultiByteToWideChar(CP_ACP, 0, info->description, -1, wbuf, 260);
-      cell->SetWString(wbuf);
-    }
-
-    cell = sheet2->Cell(row, 3);
-    if (cell != nullptr) {
-      cell->SetInteger(info->value020C);
-    }
-
-    cell = sheet2->Cell(row, 4);
-    if (cell != nullptr) {
-      cell->SetInteger(info->value0210);
-    }
-
-    cell = sheet2->Cell(row, 5);
-    if (cell != nullptr) {
-      cell->SetInteger(info->flag0214);
-    }
-
-    cell = sheet2->Cell(row, 6);
-    if (cell != nullptr) {
-      cell->SetInteger(info->flag0215);
-    }
-
-    cell = sheet2->Cell(row, 7);
-    if (cell != nullptr) {
-      cell->SetInteger(info->flag0216);
-    }
-
-    cell = sheet2->Cell(row, 8);
-    if (cell != nullptr) {
-      cell->SetInteger(info->flag0217);
-    }
-
-    cell = sheet2->Cell(row, 9);
-    if (cell != nullptr) {
-      cell->SetInteger(info->flag0218);
-    }
-
-    cell = sheet2->Cell(row, 10);
-    if (cell != nullptr) {
-      cell->SetInteger(info->value021C);
-    }
-
-    cell = sheet2->Cell(row, 11);
-    if (cell != nullptr) {
-      cell->SetInteger(info->value0220);
-    }
-
-    cell = sheet2->Cell(row, 12);
-    if (cell != nullptr) {
-      memset(wbuf, 0, sizeof(wbuf));
-      MultiByteToWideChar(CP_ACP, 0, info->text0224, -1, wbuf, 260);
-      cell->SetWString(wbuf);
-    }
-
-    cell = sheet2->Cell(row, 13);
-    if (cell != nullptr) {
-      memset(wbuf, 0, sizeof(wbuf));
-      MultiByteToWideChar(CP_ACP, 0, info->text0328, -1, wbuf, 260);
-      cell->SetWString(wbuf);
-    }
-
-    cell = sheet2->Cell(row, 14);
-    if (cell != nullptr) {
-      memset(wbuf, 0, sizeof(wbuf));
-      MultiByteToWideChar(CP_ACP, 0, info->text042C, -1, wbuf, 260);
-      cell->SetWString(wbuf);
-    }
-
-    cell = sheet2->Cell(row, 15);
-    if (cell != nullptr) {
-      memset(wbuf, 0, sizeof(wbuf));
-      MultiByteToWideChar(CP_ACP, 0, info->text0530, -1, wbuf, 260);
-      cell->SetWString(wbuf);
-    }
-
-    cell = sheet2->Cell(row, 16);
-    if (cell != nullptr) {
-      memset(wbuf, 0, sizeof(wbuf));
-      MultiByteToWideChar(CP_ACP, 0, info->text0634, -1, wbuf, 260);
-      cell->SetWString(wbuf);
-    }
-  }
-
-  delete excel;
-  if (DeleteFileA("Data\\Table\\EntryQueue.xls")) {
-    if (excel2->SaveAs("Data\\Table\\EntryQueue.xls")) {
-      delete excel2;
-      return true;
-    }
-  }
-
-  delete excel2;
   return false;
 }
