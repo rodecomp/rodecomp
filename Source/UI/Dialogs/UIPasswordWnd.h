@@ -3,6 +3,7 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+class UIButton;
 class UIEditCtrl;
 class UIStaticText;
 
@@ -19,13 +20,18 @@ public:
   /* 00BC */ int unknown_00BC;
   /* 00C0 */ unsigned char unknown_00C0[0x5C];
   /* 011C */ int unknown_011C;
-  /* 0120 */ unsigned char unknown_0120[0x44];
+  /* 0120 */ unsigned char unknown_0120[4];
+  /* 0124 */ UIButton* unknown_0124[11];
+  /* 0150 */ UIButton* unknown_0150[5];
   /* 0164 */ UIStaticText* unknown_0164;
 
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void sub_90C970(int value);
   void sub_90C9B0(int);
+  void sub_90DE10();
 };
+
+extern int g_passwordWndMode;
 
 #endif
