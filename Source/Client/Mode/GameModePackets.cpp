@@ -7,6 +7,7 @@
 #include "UI/UILapineScrollBar.h"
 #include "UI/UICaptchaPreviewWnd.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GameActor.h"
@@ -34,6 +35,7 @@
 #include "UI/Window/UIHomunInfoWnd.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "UI/Shop/UIMerchantItemMyShopWnd.h"
+#include "UI/Shop/UIMerchantShopMakeWnd.h"
 #include "UI/Shop/UIMerchantItemShopWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -65,6 +67,7 @@ struct ClientItemLists {
   void AddItem1748(const ITEM_INFO& item);
   void RemoveItem1758(ITEM_INFO& item);
   void RemoveItem1758ByItemId(ITEM_INFO& item);
+  void ClearItems1768();
   void ClearItems1758();
   void ClearItems1760();
   void ClearItems1748();
@@ -268,6 +271,18 @@ namespace {
     /* 0024 */ int unknown_0024;
     /* 0028 */ int unknown_0028;
   };
+
+  struct DispelPacket {
+    /* 0000 */ std::int16_t id;
+    /* 0002 */ std::uint32_t aid;
+  };
+
+  struct Item1758Record {
+    /* 0000 */ std::int32_t price;
+    /* 0004 */ std::int16_t quantity;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ std::int32_t itemId;
+  };
 #pragma pack(pop)
 
   static_assert(sizeof(ItemStoreListHeader) == 0x1C);
@@ -293,6 +308,8 @@ namespace {
     return count;
   }
 
+  static_assert(sizeof(DispelPacket) == 6);
+  static_assert(sizeof(Item1758Record) == 0xB);
   static_assert(sizeof(SimulationPacketHeader) == 0x24);
   static_assert(sizeof(EnchantSimulationRecord) == 0x1C);
   static_assert(sizeof(PackageSimulationRecord) == 0x32);
@@ -2421,4 +2438,65 @@ void CGameMode::ReceiveActorSkillMessage(const unsigned char* packet) {
   int action;
   int loopType;
   g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.unknown_0000, &action, &loopType, *reinterpret_cast<WindowDialogs*>(&g_windowMgr));
+}
+
+// OFFSET: 0x00D25310
+// FUNCTION: fn_21672
+void CGameMode::ReceiveItem1740List(const unsigned char* packet) {
+  const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
+  const int count = static_cast<int>(static_cast<unsigned int>(length - 4) / sizeof(StoreNormalRecord));
+  const auto* record = reinterpret_cast<const StoreNormalRecord*>(packet + 4);
+  for (int index = count; index > 0; --index, ++record) {
+    ITEM_INFO item;
+    item.unknown_0000[0] = record->type;
+    item.unknown_0000[1] = record->index;
+    item.unknown_0000[2] = 0;
+    item.unknown_0000[3] = record->location;
+    item.quantity = record->amount;
+    std::memcpy(item.unknown_001C, record->cards, sizeof(record->cards));
+    item.SetItemId(record->itemId);
+    item.unknown_005D = 0;
+    item.identified = record->flags & 1;
+    item.unknown_0060 = 0;
+    item.unknown_0068 = record->expireTime;
+    item.unknown_0074[0] = (record->flags >> 1) & 1;
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1740(item);
+  }
+
+  g_session.RefreshItem1740Window();
+}
+
+// OFFSET: 0x00D270B0
+
+// OFFSET: 0x00D32E10
+// FUNCTION: fn_21748
+void CGameMode::ReceiveItem1758List(const unsigned char* packet) {
+  if (g_replayAnimationScaling == 0) {
+    reinterpret_cast<UIMerchantShopMakeWnd*>(g_windowMgr.unknown_040C)->PrintBuyList();
+  }
+
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1768();
+  g_windowMgr.CloseWindow(0xAE);
+  g_windowMgr.CloseWindow(0xAF);
+  reinterpret_cast<ClientItemLists*>(&g_session)->ClearItems1758();
+
+  const int count = static_cast<unsigned int>(static_cast<int>(*reinterpret_cast<const std::int16_t*>(packet + 2)) - 12) / 11u;
+  const Item1758Record* record = reinterpret_cast<const Item1758Record*>(packet + 12);
+  for (int index = 0; index < count; ++index, ++record) {
+    const Item1758Record entry = *record;
+    ITEM_INFO item;
+    item.unknown_0014[0] = entry.price;
+    item.unknown_0014[1] = entry.price;
+    item.quantity = entry.quantity;
+    item.unknown_0000[0] = entry.type;
+    item.unknown_0000[1] = index + 1;
+    item.identified = 1;
+    item.SetItemId(entry.itemId);
+    reinterpret_cast<ClientItemLists*>(&g_session)->AddItem1758(item);
+  }
+
+  UIWindow* window = g_windowMgr.EnsureWindow(0xB0);
+  window->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  window->SendMsg(nullptr, 0x77, *reinterpret_cast<const int*>(packet + 8), 0, 0, 0);
+  this->unknown_024C = 1;
 }

@@ -472,6 +472,9 @@ public:
   void ReceiveUnknownD2D990(const unsigned char* packet);
   void ReceiveUnknownD4E3F0(const unsigned char* packet);
   void ReceiveUnknownD4E2A0(const unsigned char* packet);
+  void ReceiveItem1740List(const unsigned char* packet);
+  void ReceiveDispel(const unsigned char* packet);
+  void ReceiveItem1758List(const unsigned char* packet);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);
