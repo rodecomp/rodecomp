@@ -898,6 +898,39 @@ struct GameModeMessageRecord {
 static_assert(sizeof(GameModeMessageRecord) == 0x16);
 
 // OFFSET: 0x00CE8FC0
+// FUNCTION: fn_21345
+bool CGameMode::RecordReplayMessage(int message, int value, int first, int second) {
+  if (Replay::Instance().state != 2 || message != 0x45 || value != 10000) {
+    return false;
+  }
+
+  GameModeMessageRecord record;
+  record.header = 0x038908AE;
+  record.length = sizeof(GameModeMessageRecord);
+  record.message = 0x45;
+  record.value = 10000;
+  record.first = first;
+  record.second = second;
+
+  Replay& replay = Replay::Instance();
+  ReplayPacketRecorder recorder = {
+    g_packetLengths,
+    replay.baseFrame,
+    replay.started,
+    replay.frame,
+    replay.header.key0,
+    replay.header.key1,
+    replay.header.options.recordRestricted,
+    replay.file,
+    replay.fileOffset,
+    replay.records,
+    replay.cipherIndex,
+    replay.cipherBase,
+    replay.cipherKey,
+  };
+  recorder.Record(record.length, &record, 0x2A, 0);
+  return true;
+}
 
 // OFFSET: 0x00CED260
 // FUNCTION: fn_21364
@@ -910,3 +943,15 @@ void CGameMode::UpdateReplayActionSpeeds() {
 }
 
 // OFFSET: 0x00CF1060
+// FUNCTION: fn_21425
+ReplayTime CGameMode::StopReplayRecording() {
+  if (Replay::Instance().state != 2) {
+    return ReplayTime();
+  }
+
+  Replay::Instance().SetState(1);
+  Replay::Instance().UpdateDuration();
+  const ReplayTime duration = Replay::Instance().Duration();
+  Replay::Instance().CloseFile();
+  return duration;
+}
