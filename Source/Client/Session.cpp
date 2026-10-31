@@ -15,6 +15,7 @@
 #include "Network/TextEncoding.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/WindowOrdering.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
@@ -1910,4 +1911,10 @@ int CSession::CountItems17F0() const {
   }
 
   return count;
+}
+
+// OFFSET: 0x00DF9500
+// FUNCTION: fn_23518
+void CSession::InvalidateWindowFrames() {
+  reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
 }

@@ -802,6 +802,7 @@ public:
   void RefreshHomunculusInfo();
   void RefreshMercenaryInfo();
   bool IsBlankString(const char* text) const;
+  void InvalidateWindowFrames();
   void EraseRecord0734(int id);
   void IgnoreText(std::string text);
   void SaveMiniPartyInfo();
