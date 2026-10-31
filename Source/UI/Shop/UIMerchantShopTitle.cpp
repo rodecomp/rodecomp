@@ -2,6 +2,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Contents/ForbiddenWords.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -88,7 +89,74 @@ void UIMerchantShopTitle::Slot32(int, int) {
 
 // OFFSET: 0x0084FE60
 // FUNCTION: fn_10667
-UIMerchantShopTitle::UIMerchantShopTitle(UIWindowContext& windows, UIButtonContext& controls, int buyingShop)
-    : UIWindow(windows, 0), buyingShop(buyingShop), m_controls(&controls) {
+UIMerchantShopTitle::UIMerchantShopTitle(UIWindowContext& windows, UIButtonContext& controls, ForbiddenWords& forbiddenWords, int buyingShop)
+    : UIWindow(windows, 0), buyingShop(buyingShop), m_controls(&controls), m_forbiddenWords(&forbiddenWords) {
   this->geometry.id = 189;
+}
+
+// OFFSET: 0x00864DB0
+// FUNCTION: fn_10918
+int UIMerchantShopTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  if (message == 6) {
+    return 0;
+  }
+  if (message == 28) {
+    this->ownerAid = a;
+    return 0;
+  }
+  if (message != 34) {
+    return UIWindow::SendMsg(sender, message, a, b, c, d);
+  }
+
+  char* text = reinterpret_cast<char*>(a);
+  if (this->m_forbiddenWords->Contains(text) == true) {
+    std::string masked;
+    this->m_forbiddenWords->Mask(text, &masked);
+  }
+
+  std::string title(text);
+  const std::size_t end = title.find('\r');
+  if (end != std::string::npos) {
+    title = title.substr(0, end);
+  }
+
+  this->unknown_0084 = static_cast<std::int16_t>(b);
+  switch (this->unknown_0084) {
+  case 1:
+    this->label->fontFamily = 21;
+    break;
+  case 2:
+    this->label->fontFamily = 20;
+    break;
+  case 3:
+    this->label->fontFamily = 22;
+    break;
+  case 4:
+    this->label->fontFamily = 23;
+    break;
+  case 5:
+    this->label->fontFamily = 24;
+    break;
+  case 6:
+    this->label->fontFamily = 25;
+    break;
+  case 7:
+    this->label->fontFamily = 26;
+    break;
+  case 8:
+    this->label->fontFamily = 27;
+    break;
+  case 9:
+    this->label->fontFamily = 28;
+    break;
+  default:
+    this->label->fontFamily = 0;
+    break;
+  }
+  this->label->bold = 0;
+  this->label->italic = 0;
+  this->label->fontHeight = 12;
+  this->label->SetTextFitted(title.c_str());
+  this->Invalidate();
+  return 0;
 }
