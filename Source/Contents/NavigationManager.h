@@ -345,6 +345,7 @@ public:
   void ClearStates();
   void ClearNodes();
   void RefreshSearch();
+  bool UpdateSearchResults();
   int FindNodePath(unsigned int index);
   void SelectNodePath(std::string name);
   int GetRouteResult() const;

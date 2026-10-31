@@ -22,6 +22,7 @@
 #include "Utility/RegistryKey.h"
 
 #include <cstdint>
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -1022,6 +1023,43 @@ void CNavigationManager::RefreshSearch() {
   if (this->data.Search(this->unknown_1264, this->unknown_1260, this->states) && g_windowMgr.window_4F174) {
     static_cast<UINavigationV4Wnd*>(g_windowMgr.window_4F174)->FillRouteGroups();
   }
+}
+
+// OFFSET: 0x00B9C5C0
+// FUNCTION: fn_19620
+bool CNavigationManager::UpdateSearchResults() {
+  this->unknown_125C = 0;
+  if (!this->data.Search(this->unknown_1264, 0, this->states)) {
+    return false;
+  }
+
+  std::sort(this->states.begin(), this->states.end(), [](const NavigationTarget& left, const NavigationTarget& right) { return left > right; });
+  this->ClearNodePaths();
+
+  if (this->unknown_1260 == 0 || this->unknown_1260 == 1) {
+    for (unsigned index = 0; index < this->states.size(); ++index) {
+      if (this->states[index].type == 1) {
+        this->nodePaths.push_back(std::vector<int>(1, static_cast<int>(index)));
+      }
+    }
+  }
+
+  for (unsigned index = 0; index < this->states.size(); ++index) {
+    const int type = this->states[index].type;
+    if ((this->unknown_1260 != 0 && type != this->unknown_1260) || type == 1) {
+      continue;
+    }
+
+    const int path = this->FindNodePath(index);
+    if (path == -1) {
+      this->nodePaths.push_back(std::vector<int>(1, static_cast<int>(index)));
+    } else {
+      this->nodePaths[path].push_back(static_cast<int>(index));
+    }
+  }
+
+  this->SelectNodePath(this->unknown_1264);
+  return true;
 }
 
 // OFFSET: 0x00B9C740
