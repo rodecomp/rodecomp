@@ -1,3 +1,6 @@
+#include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemNaming.h"
+#include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Dialogs/UINpcEditDialogWnd.h"
 #include "UI/Window/InputFocus.h"
@@ -5,8 +8,23 @@
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "UI/Text/TextFitting.h"
+#include "UI/Text/UITextViewer.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Utility/Text/FormatString.h"
+
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+
+#pragma pack(push, 1)
+struct ItemLinkOption {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t value;
+  /* 0004 */ unsigned char parameter;
+};
+#pragma pack(pop)
 
 // INLINED
 FocusedItemTagRemoval::FocusedItemTagRemoval(InputFocus& focus) : m_focus(focus) {
@@ -173,6 +191,107 @@ void UIItemTagOnMail::SetLines(const std::vector<std::string>& lines) {
   for (std::size_t index = 0; index < lines.size(); ++index) {
     this->m_lines.push_back(lines[index]);
   }
+}
+
+// OFFSET: 0x0089CFE0
+// FUNCTION: fn_11597
+void UIItemTagCtrl::sub_89CFE0(const ITEM_INFO& item, unsigned int color) {
+  std::string tag = "<";
+  tag += item.DisplayName(0);
+  tag += ">";
+
+  UIItemTagButton* button = new UIItemTagButton(*this->m_context, this->m_edit->buttons);
+
+  std::string label = "<";
+  label += FitText(*this->geometry.surface, item.DisplayName(0), this->tagWidth / 2);
+  label += ">";
+
+  button->Configure(label.c_str(), color, 0, 12, 0, 0);
+  button->SetTooltip(tag.c_str());
+  button->SetId(0x1D0);
+  button->Move(0, 0);
+  reinterpret_cast<ITEM_INFO&>(button->unknown_00F8) = item;
+  this->AddTagButton(button);
+
+  UITextViewer* links = reinterpret_cast<UITextViewer*>(this);
+  std::string link;
+  char delimiters[] = "!#$%&'()*+,-/";
+  if (links->ItemLinkNumberText(item.unknown_0000[2]).size() <= 5) {
+    for (unsigned int index = 0; index < 5 - links->ItemLinkNumberText(item.unknown_0000[2]).size(); ++index) {
+      link += "0";
+    }
+  }
+
+  link += links->ItemLinkNumberText(item.unknown_0000[2]);
+
+  bool equipment;
+  switch (item.unknown_0000[0]) {
+  case 4:
+  case 5:
+  case 8:
+  case 9:
+  case 11:
+  case 12:
+  case 13:
+  case 14:
+  case 15:
+  case 21:
+    equipment = true;
+    break;
+  default:
+    equipment = false;
+    break;
+  }
+
+  link += equipment ? "1" : "0";
+  link += links->ItemLinkNumberText(std::atoi(item.itemId.c_str()));
+
+  if (item.unknown_0060 != 0) {
+    link += delimiters[3];
+    link += links->ItemLinkNumberText(item.unknown_0060);
+  }
+
+  link += delimiters[4];
+  link += links->ItemLinkNumberText(item.unknown_0070);
+  link += delimiters[5];
+  link += links->ItemLinkNumberText(item.unknown_0088);
+
+  const int* cards = reinterpret_cast<const int*>(item.unknown_001C);
+  int slots = ItemSlotsCount(item);
+  if (slots == 0) {
+    slots = 4;
+  }
+
+  for (int index = 0; index < 4; ++index) {
+    if (cards[index] != 0) {
+      slots = 4;
+    }
+  }
+
+  for (int index = 0; index < slots; ++index) {
+    link += delimiters[7];
+    link += links->ItemLinkNumberText(index < 4 ? cards[index] : 0);
+  }
+
+  const ItemLinkOption* options = reinterpret_cast<const ItemLinkOption*>(item.unknown_009C);
+  for (int index = 0; index < item.unknown_0098; ++index) {
+    link += delimiters[9];
+    link += links->ItemLinkNumberText(options[index].id);
+    link += delimiters[10];
+    link += links->ItemLinkNumberText(options[index].parameter);
+    link += delimiters[11];
+    link += links->ItemLinkNumberText(options[index].value);
+  }
+
+  ItemTagRecord record;
+  char number[64];
+  std::memset(number, 0, sizeof(number));
+  record.child = button;
+  StringFormat(number, sizeof(number), _TRUNCATE, "%s", links->ItemLinkNumberText(std::atoi(item.itemId.c_str())).c_str());
+  StringFormat(record.number, sizeof(record.number), _TRUNCATE, "%s", number);
+  StringFormat(record.name, sizeof(record.name), _TRUNCATE, "%s", item.DisplayName(0).c_str());
+  StringFormat(record.link, sizeof(record.link), _TRUNCATE, "%s", link.c_str());
+  this->tags.push_back(record);
 }
 
 // OFFSET: 0x00881080
