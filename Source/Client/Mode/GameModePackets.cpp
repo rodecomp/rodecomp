@@ -2213,6 +2213,21 @@ void CGameMode::ReceiveUnknownD25850(const unsigned char* packet) {
 }
 
 // OFFSET: 0x00D31A40
+// FUNCTION: fn_21735
+void CGameMode::ReceiveUnknownD31A40(const unsigned char* packet) {
+  char text[512];
+  const unsigned int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) >> 2;
+  const int* ids = reinterpret_cast<const int*>(packet + 4);
+  std::strcpy(text, FindItemDescription(*ids).identifiedName);
+  ++ids;
+  for (unsigned int index = 1; index < count; ++index, ++ids) {
+    std::sprintf(text, "%s %s", text, FindItemDescription(*ids).identifiedName);
+  }
+
+  std::sprintf(text, LookupMessage(2087), text);
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+}
 
 // OFFSET: 0x00D61100
 // FUNCTION: fn_21976
