@@ -655,6 +655,7 @@ public:
   void ReceiveEquipWindowMicroscope2(const unsigned char* packet);
   void ReceiveEquipWindowMicroscope3(const unsigned char* packet);
   void ReceiveGuildMemberAdd(const unsigned char* packet);
+  void ReceiveGuildPositionInfo(const unsigned char* packet);
   void ReceiveRodexMailReturn(const unsigned char* packet);
   void ReceiveActorStatusValuePacket(const unsigned char* packet);
   void ReceivePartyMemberEffect(const unsigned char* packet);

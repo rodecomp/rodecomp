@@ -7228,3 +7228,34 @@ void CGameMode::ReceiveGuildMemberAdd(const unsigned char* packet) {
   guildInfo->UpdateMemberExpRatios();
   g_windowMgr.RefreshGuildWindows();
 }
+
+// OFFSET: 0x00D510C0
+// FUNCTION: fn_21889
+void CGameMode::ReceiveGuildPositionInfo(const unsigned char* packet) {
+  GuildInfo* guildInfo = reinterpret_cast<GuildInfo*>(reinterpret_cast<char*>(&g_guildId) - offsetof(GuildInfo, m_guildId));
+  const int count = static_cast<unsigned>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) >> 4;
+  guildInfo->unknown_00D4.clear();
+
+  const unsigned char* entry = packet + 4;
+  for (int index = 0; index < count; ++index, entry += 16) {
+    const int positionId = *reinterpret_cast<const int*>(entry);
+    std::string name;
+    name = guildInfo->m_positions[positionId];
+
+    const unsigned int mode = *reinterpret_cast<const unsigned int*>(entry + 4);
+    GuildInfo::Unknown00D4Entry position;
+    position.unknown_0000 = *reinterpret_cast<const int*>(entry + 8);
+    position.unknown_0004 = positionId;
+    position.unknown_0008 = name;
+    position.unknown_0020 = mode & 1;
+    position.unknown_0024 = (mode >> 4) & 1;
+    position.unknown_0028 = *reinterpret_cast<const int*>(entry + 12);
+    position.unknown_002C = (mode >> 8) & 1;
+    guildInfo->unknown_00D4.push_back(position);
+  }
+
+  guildInfo->unknown_00D4.sort([](const GuildInfo::Unknown00D4Entry& left, const GuildInfo::Unknown00D4Entry& right) {
+    return left.unknown_0004 < right.unknown_0004;
+  });
+  g_windowMgr.RefreshGuildWindows();
+}
