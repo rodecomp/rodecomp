@@ -800,6 +800,7 @@ public:
   int GetItem1720Quantity(std::uint32_t id) const;
   int GetItem1720Total() const;
   const char* GetMonsterRmaName(int job) const;
+  void ResetInventoryItems();
   unsigned char GetShopType(int id);
   bool HasControlCharacter(std::string text);
   const char* GetMonsterW3dName(int job) const;

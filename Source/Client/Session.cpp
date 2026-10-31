@@ -2301,6 +2301,17 @@ void CSession::ResetCharacterState() {
   traitStats[0xE6] = 0;
 }
 
+// OFFSET: 0x00DF88B0
+// FUNCTION: fn_23511
+void CSession::ResetInventoryItems() {
+  this->m_inventoryItems.erase(this->m_inventoryItems.begin(), this->m_inventoryItems.end());
+  this->m_pingSamples.erase(this->m_pingSamples.begin(), this->m_pingSamples.end());
+
+  for (int index = 0; index < 10; ++index) {
+    this->unknown_17F0[index].Reset();
+  }
+}
+
 // OFFSET: 0x00DF8940
 // FUNCTION: fn_23512
 void CSession::ClearItemContainers() {
