@@ -19,6 +19,7 @@ public:
   __declspec(noinline) CUIRecommendedQuestInfo();
   void Slot16() override;
   void OnFirstAction();
+  void OnClose();
   virtual void Slot53();
 
   /* 00D8 */ CUITitleBar* titleBar;

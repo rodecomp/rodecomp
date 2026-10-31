@@ -23,6 +23,12 @@ void CUIRecommendedQuestInfo::Slot53() {
 void CUIRecommendedQuestInfo::OnFirstAction() {
 }
 
+// OFFSET: 0x00A58BB0
+// FUNCTION: fn_45469
+void CUIRecommendedQuestInfo::OnClose() {
+  g_windowMgr.CloseWindow(0x271A);
+}
+
 // OFFSET: 0x00A58BE0
 // FUNCTION: fn_16349
 void CUIRecommendedQuestInfo::Slot16() {
