@@ -24,6 +24,7 @@ public:
   /* 0150 */ std::function<void(CUIRadioButton*)> onSelect;
 
   void SetOnSelect(std::function<void(CUIRadioButton*)> callback);
+  void Slot25(int x, int y) override;
 };
 
 class CUIRadioItem : public CUIControl {

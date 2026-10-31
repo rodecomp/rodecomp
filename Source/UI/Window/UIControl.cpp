@@ -689,6 +689,16 @@ void CUITextButton::Slot28(int, int) {
   reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->fullText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
 }
 
+// OFFSET: 0x009ED360
+// FUNCTION: fn_14571
+void CUITextButton::SetTextColors(std::uint32_t normal, std::uint32_t hover, std::uint32_t pressed, std::uint32_t disabled) {
+  this->textColors[0] = normal;
+  this->textColors[1] = hover;
+  this->textColors[2] = pressed;
+  this->disabledTextColor = disabled;
+  this->Invalidate();
+}
+
 // OFFSET: 0x009ED430
 // FUNCTION: fn_14574
 void CUITextButton::SetOutline(bool enabled, std::uint32_t color) {
@@ -708,6 +718,16 @@ void CUITextButton::SetShadow(bool enabled, std::uint32_t color) {
 void CUIBasicButton::Resize(int width, int height) {
   UIWindow::Resize(width, height);
   this->Slot53(0);
+}
+
+// OFFSET: 0x009E1DE0
+// FUNCTION: fn_14403
+void CUIBasicButton::Create(int width, int height) {
+  this->defaultWidth = width;
+  this->SetAlign(6, 6);
+  this->Resize(width, height);
+  this->Slot15(width, height);
+  this->Slot16();
 }
 
 // OFFSET: 0x009E1F90
@@ -1593,6 +1613,34 @@ void CUIHScrollBar::SetButtonImages(const std::string& left, const std::string& 
 // FUNCTION: fn_14536
 bool CUIPadding::CanHitTest() {
   return false;
+}
+
+// OFFSET: 0x009EAE20
+// FUNCTION: fn_14543
+void CUIRadioButton::Slot25(int, int) {
+  if (this->disabled) {
+    return;
+  }
+
+  g_windowMgr.SetCapture(this);
+  if (this->checked) {
+    return;
+  }
+
+  if (this->parent) {
+    std::list<UIWindow*> UIWindow::*const children = &CUIRadioButton::m_children;
+    for (UIWindow* child : this->parent->*children) {
+      CUIRadioButton* button = dynamic_cast<CUIRadioButton*>(child);
+      if (button) {
+        button->checked = this == button;
+        button->Invalidate();
+      }
+    }
+  }
+
+  if (this->onSelect) {
+    this->onSelect(this);
+  }
 }
 
 // OFFSET: 0x009EA1B0

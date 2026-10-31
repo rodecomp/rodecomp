@@ -135,13 +135,14 @@ public:
   void SetShadow(bool enabled, std::uint32_t color);
   void SetOutline(bool enabled, std::uint32_t color);
   void UpdateText();
-  void SetAlign(int horizontal, int vertical);
+  __declspec(noinline) void SetAlign(int horizontal, int vertical);
   void SetOrientation(int value);
   void SetFitText(bool enabled);
   void SetBold(unsigned char enabled);
   void SetFontHeight(int height);
   void SetFont(const std::string& name);
   void SetText(const std::string& value);
+  void SetTextColors(std::uint32_t normal, std::uint32_t hover, std::uint32_t pressed, std::uint32_t disabled);
 
   /* 00F0 */ std::string text;
   /* 0108 */ std::string displayText;
@@ -153,7 +154,9 @@ public:
   /* 0148 */ int fontIndex;
   /* 014C */ int fontHeight;
   /* 0150 */ unsigned char bold;
-  /* 0151 */ unsigned char unknown_0151[0x0F];
+  /* 0151 */ unsigned char unknown_0151[0x03];
+  /* 0154 */ std::map<int, std::uint32_t> textColors;
+  /* 015C */ std::uint32_t disabledTextColor;
   /* 0160 */ unsigned char shadow;
   /* 0164 */ std::uint32_t shadowColor;
   /* 0168 */ unsigned char outline;
@@ -185,8 +188,10 @@ public:
   void Paint() override;
   void Slot53(int resolveSkin) override;
 
+  void Create(int width, int height);
+
   /* 0190 */ unsigned char unknown_0190;
-  /* 0194 */ int unknown_0194;
+  /* 0194 */ int defaultWidth;
   /* 0198 */ std::map<int, CResPtr<CBitmapRes>> leftImages;
   /* 01A0 */ CResPtr<CBitmapRes> disabledLeft;
   /* 01A4 */ std::map<int, CResPtr<CBitmapRes>> middleImages;
