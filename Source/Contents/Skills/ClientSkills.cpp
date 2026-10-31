@@ -21,7 +21,7 @@
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Tokenizer.h"
-
+#include "Contents/Messenger/ClientMessenger.h"
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
@@ -984,4 +984,98 @@ void CSession::ReturnStackedItem(int index, int count) {
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_0458)) {
     window->SendMsg(nullptr, 23, 0, 0, 0, 0);
   }
+}
+
+namespace EquipmentProperties {
+class CEquipmentPropertiesMgr {
+public:
+  virtual ~CEquipmentPropertiesMgr();
+  unsigned char unknown_0004[0x1F8];
+
+  CEquipmentPropertiesMgr();
+  __declspec(noinline) void EquipWearable(const ITEM_INFO* item, bool notify);
+};
+}
+
+// OFFSET: 0x00E07150
+
+// OFFSET: 0x00E09900
+// FUNCTION: fn_23785
+ITEM_INFO CSession::GetItem5C68(int index) const {
+  return this->unknown_5C68[index];
+}
+
+// OFFSET: 0x00E09970
+// FUNCTION: fn_23786
+CSkillInfo CSession::MercSkillAt(int index) const {
+  if (this->m_mercSkills.size() == 0) {
+    return CSkillInfo(-1);
+  }
+
+  int position = 0;
+  for (const CSkillInfo& skill : this->m_mercSkills) {
+    if (position == index) {
+      return skill;
+    }
+
+    ++position;
+  }
+
+  return CSkillInfo(-1);
+}
+
+// OFFSET: 0x00E0AAD0
+// FUNCTION: fn_23802
+ITEM_INFO CSession::GetItem3500(int index) const {
+  if (index == 15) {
+    return ITEM_INFO(0);
+  }
+
+  if (index >= 0 && index < 10) {
+    return this->unknown_3500[index];
+  }
+
+  return ITEM_INFO(0);
+}
+
+// OFFSET: 0x00E13000
+
+// OFFSET: 0x00E19580
+// FUNCTION: fn_23842
+void CSession::LoadProhibitionLog() {
+  CFile file;
+  char path[256];
+  GetCurrentDirectoryA(sizeof(path), path);
+  char* data = std::strstr(path, "\\data");
+  if (data) {
+    std::memcpy(path, path, data - path);
+  }
+  std::strcat(path, "\\ProhibitionLog.gd");
+
+  if (file.Open(path, 0, true, false)) {
+    int count = 0;
+    file.Read(&count, 4);
+    for (int index = 0; index < count; ++index) {
+      int length;
+      ProhibitionLogEntry entry;
+      file.Read(&length, 4);
+      file.Read(entry.name, length);
+      file.Read(&length, 4);
+      file.Read(entry.ownerName, length);
+      file.Read(&entry.aid, 4);
+      file.Read(&entry.accountId, 4);
+      file.Read(&entry.minutes, 4);
+      file.Read(&entry.date, 4);
+      file.Read(&entry.time, 4);
+      this->m_prohibitionLog.push_back(entry);
+    }
+    file.Close();
+  }
+}
+
+// OFFSET: 0x00E19B90
+// FUNCTION: fn_23846
+void CSession::ResetUnknown1050() {
+  g_session.unknown_1050 = -1;
+  g_session.unknown_103C = -1;
 }

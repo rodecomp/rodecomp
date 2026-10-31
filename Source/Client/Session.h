@@ -572,6 +572,7 @@ public:
   void AddUnknownId(int id);
   EquipSlots GetEquipSlots(int location);
   bool EquipUnknown17F0(const ITEM_INFO& item, const char* name);
+  bool EquipItem2B50(const ITEM_INFO& item, const char* name);
   bool EquipItem3500(const ITEM_INFO& item);
   void AddStackedItem(ITEM_INFO item);
   void ReturnStackedItem(int index, int count);
@@ -589,10 +590,13 @@ public:
   std::int64_t FindUnknown078C(std::int64_t key) const;
   SessionRecord6144 FindRecord6144(int key) const;
   void UpdateRecord6144(const AchievementRecordPacket& packet);
+  void FindTopRecords6144(int* second, int* first);
   int GetBeginEffectId(int skillId) const;
   bool IsPartyMember(std::uint32_t aid, bool onlineOnly);
   bool IsPvpMap();
   ITEM_INFO GetItem2B50(int index) const;
+  ITEM_INFO GetItem3500(int index) const;
+  ITEM_INFO GetItem5C68(int index) const;
   ITEM_INFO GetItem17F0(int index) const;
   ITEM_INFO GetItem6B68(int index) const;
   ITEM_INFO GetItem61B8(int index) const;
@@ -645,9 +649,12 @@ public:
   int FindUnknown0778(int key) const;
   CSkillInfo AdditionalSkillAt(int index) const;
   CSkillInfo HomunSkillAt(int index) const;
+  CSkillInfo MercSkillAt(int index) const;
   int CountProhibitionLog(std::uint32_t aid);
   void DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes, WindowDialogs& dialogs);
   void AddProhibitionLog(std::uint32_t aid, std::uint32_t minutes);
+  void LoadProhibitionLog();
+  void ResetUnknown1050();
   int ProcessEmotionShortcut(const char* text);
   int IsAdminSubMode(int subMode);
   void GetMonsterSkillInfo(const char* monster, int skill, int* action, int* loopType, WindowDialogs& dialogs);
