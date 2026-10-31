@@ -7067,14 +7067,69 @@ void CGameMode::ReceiveItemReformOpen(int itemId) {
 }
 
 // OFFSET: 0x00D79880
+// FUNCTION: fn_22174
+void CGameMode::ReceiveReputeInfo(bool received, unsigned int count, const ReputePointEntry* entries) {
+  for (unsigned int index = 0; index < count; ++index) {
+    if (!CReputeMgr::s_instance) {
+      CReputeMgr::s_instance = new (std::nothrow) CReputeMgr;
+    }
+    CReputeMgr::s_instance->SetPoint(entries[index].id, entries[index].point);
+  }
+  if (!CReputeMgr::s_instance) {
+    CReputeMgr::s_instance = new (std::nothrow) CReputeMgr;
+  }
+  CReputeMgr::s_instance->SetPointsReceived(received);
+}
 
 // OFFSET: 0x00D79D90
+// FUNCTION: fn_22181
+void CGameMode::ReceiveEnchantResult(int messageId, int itemId) {
+  if (!CEnchantMgr::s_instance) {
+    CEnchantMgr::s_instance = new (std::nothrow) CEnchantMgr;
+  }
+  CEnchantMgr::s_instance->HandleEnchantResult(messageId, itemId);
+}
 
 // OFFSET: 0x00D7B4C0
+// FUNCTION: fn_22205
+void CGameMode::ReceiveReputeOpen(std::uint64_t groupId, std::uint64_t reputeId) {
+  if (!CReputeMgr::s_instance) {
+    CReputeMgr::s_instance = new (std::nothrow) CReputeMgr;
+  }
+  CReputeMgr::s_instance->OpenRepute(groupId, reputeId);
+}
 
 // OFFSET: 0x00D7B550
+// FUNCTION: fn_22206
+void CGameMode::ReceiveUiOpen(unsigned char type, std::uint64_t data) {
+  if (type == 10) {
+    if (!CEnchantMgr::s_instance) {
+      CEnchantMgr::s_instance = new (std::nothrow) CEnchantMgr;
+    }
+    CEnchantMgr::s_instance->OpenEnchant(data);
+  }
+}
 
 // OFFSET: 0x00D17AD0
+// FUNCTION: fn_21596
+void CGameMode::RefreshEmotionPurchaseSchedule() {
+  reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->sub_BA95F0(5);
+  CCashEmotionMgr* manager = g_cashEmotionMgr;
+  if (!manager) {
+    return;
+  }
+
+  manager->sub_59C5A0();
+  const int expiry = manager->GetEarliestExpiry();
+  if (expiry < 0x7FFFFFFF) {
+    const std::uint64_t now = static_cast<std::int64_t>(manager->sub_59FC50()) * 10000000;
+    const std::int64_t interval = (static_cast<std::int64_t>(expiry) * 10000000 - static_cast<std::int64_t>(now)) / 10000;
+    if (interval != 0 && interval >= 0) {
+      reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->AddSchedule(new CEmotionPurchaseExpireSchedule(now, interval, 1));
+    }
+  }
+  manager->RefreshCommands();
+}
 
 // OFFSET: 0x00D17BF0
 // FUNCTION: fn_21733
@@ -7292,4 +7347,22 @@ void CGameMode::ReceiveGuildPositionInfo(const unsigned char* packet) {
     return left.unknown_0004 < right.unknown_0004;
   });
   g_windowMgr.RefreshGuildWindows();
+}
+// FUNCTION: fn_21597
+void CGameMode::RefreshEmotionSaleSchedule() {
+  reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->sub_BA95F0(6);
+  CCashEmotionMgr* manager = g_cashEmotionMgr;
+  if (!manager) {
+    return;
+  }
+
+  const int expiry = manager->RefreshUnownedPacks().nextTime;
+  if (expiry < 0x7FFFFFFF) {
+    const std::uint64_t now = static_cast<std::int64_t>(manager->sub_59FC50()) * 10000000;
+    const std::int64_t interval = (static_cast<std::int64_t>(expiry) * 10000000 - static_cast<std::int64_t>(now)) / 10000;
+    if (interval != 0 && interval >= 0) {
+      reinterpret_cast<CTimeScheduler*>(g_timeScheduler)->AddSchedule(new CEmotionSaleExpireSchedule(now, interval, 1));
+    }
+  }
+  manager->RefreshCommands();
 }
