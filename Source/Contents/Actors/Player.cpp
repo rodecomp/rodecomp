@@ -2598,3 +2598,20 @@ void CPlayer::ApplyFollowOffset(CGameActor* target, float x, float z, int* row, 
 }
 
 // OFFSET: 0x00DB6820
+// FUNCTION: fn_22669
+float CPlayer::AdjustFollowDistance(CGameActor* target, float distance) {
+  if (target->unknown_02E0 == 1) {
+    return std::max(0.0f, distance - 20.0f);
+  }
+
+  union {
+    void (CGameActor::*asVoid)();
+    int (CGameActor::*asInt)();
+  } slot45;
+  slot45.asVoid = &CGameActor::Slot45;
+  if ((target->*slot45.asInt)() <= 0) {
+    return std::max(0.0f, distance);
+  }
+
+  return std::max(0.0f, distance - static_cast<float>((target->*slot45.asInt)() + 1) * 4.0f);
+}
