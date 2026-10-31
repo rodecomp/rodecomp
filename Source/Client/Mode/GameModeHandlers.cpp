@@ -23,6 +23,7 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "File/File.h"
+#include "File/FileCreation.h"
 #include "Script/LuaScript.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
@@ -40,12 +41,16 @@
 #include "Utility/Math/Vector3d.h"
 #include "Utility/Text/FormatString.h"
 
+#include <algorithm>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <fstream>
+#include <map>
 #include <string>
 #include <utility>
+#include <vector>
 #include <direct.h>
 #include <io.h>
 #include <windows.h>
@@ -2123,4 +2128,64 @@ void CGameMode::RequestWindow169(unsigned char enable) {
 void CGameMode::ShowNoticeText(std::string text) {
   const std::string message = FormatOwnedString(LookupMessage(0xF18), text.c_str());
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0x64FFFF, 0, 0, 0);
+}
+
+struct DdukddakBoxTestEntry {
+  /* 0000 */ int itemId;
+  /* 0004 */ int count;
+};
+
+// OFFSET: 0x00D64A90
+// FUNCTION: fn_21997
+void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
+  std::map<int, int> counts;
+  const DdukddakBoxTestEntry* source = reinterpret_cast<const DdukddakBoxTestEntry*>(packet + 8);
+  int total = 0;
+  const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 8) / sizeof(DdukddakBoxTestEntry);
+  for (int i = 0; i < count; ++i) {
+    DdukddakBoxTestEntry entry;
+    memcpy_s(&entry, sizeof(entry), source, sizeof(entry));
+    if (counts.find(entry.itemId) == counts.end()) {
+      counts.insert(std::make_pair(entry.itemId, 0));
+    }
+    counts[entry.itemId] += entry.count;
+    total += entry.count;
+    ++source;
+  }
+
+  std::vector<std::pair<int, int>> items(counts.begin(), counts.end());
+  std::sort(items.begin(), items.end(), [](const std::pair<int, int>& left, const std::pair<int, int>& right) {
+    if (left.second != right.second) {
+      return left.second > right.second;
+    }
+    return left.first < right.first;
+  });
+
+  char name[64];
+  std::memset(name, 0, sizeof(name));
+  ITEM_INFO box;
+  box.SetItemId(*reinterpret_cast<const int*>(packet + 4));
+  int capacity = sizeof(name);
+  ItemDescriptions{g_itemDescriptions}.Name(box, name, capacity, 0);
+
+  SYSTEMTIME time;
+  GetLocalTime(&time);
+  std::string folder = "DdukddakBoxTest";
+  std::string fileName = FormatOwnedString("%d%02d%02d_(%s).txt", time.wYear, time.wMonth, time.wDay, name);
+  std::string path = FormatOwnedString("%s\\%s\\%s", g_applicationDirectory, folder.c_str(), fileName.c_str());
+  path = CreateUniqueFileName(path);
+
+  std::ofstream output(path.c_str());
+  output << FormatOwnedString("%s\t%s\t%s\t%s\n\n", "ID", "name", "count", "property");
+  for (auto item = items.begin(); item != items.end(); ++item) {
+    ITEM_INFO info;
+    info.SetItemId(item->first);
+    ItemDescriptions{g_itemDescriptions}.Name(info, name, capacity, 0);
+    std::string amount = FormatOwnedString("%d", item->second);
+    std::string ratio = FormatOwnedString("%.5f%%", static_cast<float>(item->second) / static_cast<float>(total) * 100.0f);
+    output << FormatOwnedString("%d\t%s\t%s\t%s\n", item->first, name, amount.c_str(), ratio.c_str());
+  }
+
+  output << FormatOwnedString("\nresult item count:%d\n", total);
+  output.close();
 }

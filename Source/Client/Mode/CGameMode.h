@@ -350,6 +350,7 @@ public:
   void ReceiveServerRateNotice(const unsigned char* packet);
   void ReceiveRequestResult(const unsigned char* packet);
   void ReceivePackageItemTest(const unsigned char* packet);
+  void ReceiveDdukddakBoxTest(const unsigned char* packet);
   void ReceiveDeferredReset(const unsigned char* packet);
   void ReceiveGradeEnchantResult(const unsigned char* packet);
   void UpdateUnknown0628(int id, bool add);
