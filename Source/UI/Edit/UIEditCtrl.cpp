@@ -3511,10 +3511,37 @@ std::vector<unsigned char>* sub_972E60(std::vector<unsigned char>* result) {
 }
 
 // OFFSET: 0x00973080
+// FUNCTION: fn_13283
+std::vector<unsigned char>* sub_973080(std::vector<unsigned char>* result) {
+  new (result) std::vector<unsigned char>();
+  const auto first = BuildReplayTaggedRecord(0x510E, nullptr, 0);
+  result->insert(result->end(), first.begin(), first.end());
+  const auto second = BuildReplayTaggedRecord(0x510F, nullptr, 0);
+  result->insert(result->end(), second.begin(), second.end());
+  return result;
+}
 
 // OFFSET: 0x00973170
+// FUNCTION: fn_13284
+std::vector<unsigned char>* sub_973170(std::vector<unsigned char>* result) {
+  new (result) std::vector<unsigned char>();
+  const auto first = BuildReplayTaggedRecord(0x51A4, nullptr, 0);
+  result->insert(result->end(), first.begin(), first.end());
+  const auto second = BuildReplayTaggedRecord(0x51A5, nullptr, 0);
+  result->insert(result->end(), second.begin(), second.end());
+  return result;
+}
 
 // OFFSET: 0x00973670
+// FUNCTION: fn_13288
+std::vector<unsigned char>* sub_973670(std::vector<unsigned char>* result) {
+  new (result) std::vector<unsigned char>();
+  const auto first = BuildReplayTaggedRecord(0x5398, nullptr, 0);
+  result->insert(result->end(), first.begin(), first.end());
+  const auto second = BuildReplayTaggedRecord(0x5399, nullptr, 0);
+  result->insert(result->end(), second.begin(), second.end());
+  return result;
+}
 
 // OFFSET: 0x009738A0
 // FUNCTION: fn_13290
