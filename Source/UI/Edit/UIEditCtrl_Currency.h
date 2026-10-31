@@ -9,6 +9,7 @@
 class UIEditCtrl_Custom : public UIEditCtrl2 {
 public:
   UIEditCtrl_Custom(UIWindowContext& windows, UIEditContext& edit);
+  void PaintText() override;
   void Synchronize() override;
   void Trim() override;
   void DrawLabel(int x, int y, const char* text);

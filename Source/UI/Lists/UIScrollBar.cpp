@@ -38,6 +38,12 @@
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Input/InputCharset.h"
+#include "Client/Input/Language.h"
+#include "Contents/MapSkyMgr.h"
+#include <cstdlib>
+#include <windows.h>
+#include <timeapi.h>
 // OFFSET: 0x0086E550
 // FUNCTION: fn_11073
 UIScrollBar::UIScrollBar(UIWindowContext& windows)
@@ -569,6 +575,74 @@ void UIEditCtrl_Custom::DrawLabel(int x, int y, const char* text) {
   context.Draw(x, y, text, 0);
   context.SetColor(outline);
   context.Draw(x - 1, y, text, 0);
+}
+
+// OFFSET: 0x0087E1F0
+// FUNCTION: fn_11265
+void UIEditCtrl_Custom::PaintText() {
+  int x = this->unknown_0120 + 3;
+  const int y = this->unknown_0124 + this->textY;
+  std::string display;
+  FontCache& fonts = this->m_edit->buttons.fonts;
+  const TextLocale& locale = this->m_edit->buttons.locale;
+  const auto align = [&]() {
+    if (this->unknown_0128 == 1) {
+      x = this->geometry.width - x - this->TextWidth(fonts, locale, display.c_str(), 0, 0, 12, this->unknown_011C, 0);
+    } else if (this->unknown_0128 == 2) {
+      const float center = this->geometry.width * g_depthAverageHalf;
+      x = static_cast<int>(center - this->TextWidth(fonts, locale, display.c_str(), 0, 0, 12, this->unknown_011C, 0) * g_depthAverageHalf);
+    }
+  };
+
+  if (g_windowMgr.GetHoverWindow() == this) {
+    this->Synchronize();
+    int begin;
+    int end;
+    if (this->mask != 0) {
+      display.assign(this->text.size(), static_cast<char>(this->mask));
+      begin = std::min(this->anchor, this->cursor);
+      end = std::max(this->anchor, this->cursor);
+    } else {
+      const char* prefix = g_serverLanguage->Prefix(false);
+      display = prefix + this->text;
+      begin = std::min(this->anchor, this->cursor) + static_cast<int>(std::strlen(prefix));
+      end = std::max(this->anchor, this->cursor) + this->m_edit->candidateCursor + static_cast<int>(std::strlen(prefix));
+    }
+
+    align();
+    const int left = begin ? this->TextWidth(fonts, locale, display.c_str(), begin, 0, 12, 0, 0) : 0;
+    const int right = end ? this->TextWidth(fonts, locale, display.c_str(), end, 0, 12, 0, 0) : 0;
+
+    if (std::abs(this->m_edit->input.cursor - this->m_edit->input.anchor) != 0) {
+      this->DrawSelection(x + left, right - left);
+      this->DrawLabel(x, y, display.c_str());
+    } else if (this->m_edit->candidateCursor != 0) {
+      this->MoveCandidateWindow(left);
+      this->MoveReadingWindow(right);
+      if ((timeGetTime() / 500 & 1) == 0) {
+        this->DrawSelection(x + left, std::max(right - left, 2));
+      }
+      this->DrawLabel(x, y, display.c_str());
+    } else {
+      this->DrawLabel(x, y, display.c_str());
+      if (IsInputSuggestionAllowed() == true && (timeGetTime() / 500 & 1) == 0) {
+        this->DrawTextAt(fonts, locale, x + left - 2, y, "|", 0, 0, 12, this->textColor, 0, 0);
+      }
+    }
+  } else {
+    if (this->mask != 0) {
+      display.assign(this->text.size(), static_cast<char>(this->mask));
+    } else {
+      display = this->text;
+    }
+
+    align();
+    this->DrawLabel(x, y, display.c_str());
+  }
+
+  if (this->invalidatesParent != 0 && this->parent) {
+    this->parent->Invalidate();
+  }
 }
 
 // OFFSET: 0x0087E730
