@@ -20,6 +20,8 @@
 #include "Resource/TextureNames.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "UI/Buttons/UIBasicButton.h"
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Chat/ChatSuggestions.h"
 #include "UI/Edit/UIEditCtrl.h"
@@ -41,7 +43,11 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Window/WindowPolicy.h"
 #include "UI/Window/WindowRegistration.h"
+#include "Utility/Text/FormatString.h"
 #include "Utility/Text/StringUtil.h"
+#include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemInfo.h"
+#include "Contents/PrivateAirplaneMgr.h"
 #include "Contents/MapSkyMgr.h"
 #include <algorithm>
 #include <atlconv.h>
@@ -121,6 +127,9 @@ int __fastcall sub_5C22E0(const int* object) {
 int __fastcall sub_5C22F0(const int* object) {
   return object[9];
 }
+
+// GLOBAL: gl_24626
+int g_navigationRoadIcon;
 
 // GLOBAL: gl_24632
 CTexture* g_navigationMapTexture;
@@ -2716,5 +2725,64 @@ void UIWindow::sub_A85850(
     }
 
     current = next;
+  }
+}
+
+// OFFSET: 0x005C9D00
+// FUNCTION: fn_03635
+void UINavigationV4Wnd::SetRoadIcon(int slot) {
+  if (static_cast<unsigned>(slot - 1) > 7) {
+    return;
+  }
+
+  g_navigationManager.SetViewIcon(slot);
+
+  char normal[100];
+  char over[100];
+  char press[100];
+  std::memset(normal, 0, sizeof(normal));
+  std::memset(over, 0, sizeof(over));
+  std::memset(press, 0, sizeof(press));
+  std::sprintf(normal, "유저인터페이스\\navigation_interface3\\btn_roadIocn_select%d_normal.bmp", slot);
+  std::sprintf(over, "유저인터페이스\\navigation_interface3\\btn_roadIocn_select%d_over.bmp", slot);
+  std::sprintf(press, "유저인터페이스\\navigation_interface3\\btn_roadIocn_select%d_press.bmp", slot);
+
+  UIBitmapButton* button = static_cast<UIBitmapButton*>(this->unknown_00C8);
+  button->SetBitmap(normal, 0, 0);
+  button->SetBitmap(over, 1, 0);
+  button->SetBitmap(press, 2, 0);
+  button->Invalidate();
+  g_navigationManager.BuildGridLabels();
+}
+
+// OFFSET: 0x005C5E50
+// FUNCTION: fn_03583
+void UIPrivateAirplaneWnd::Slot15(int, int) {
+  this->AddBaseButton(*this->m_controls);
+  this->AddCloseButton(*this->m_controls, "", 0);
+
+  const int count = static_cast<int>(g_privateAirplaneItems->m_needItems.size());
+  for (int index = 0, y = 26; index < count; ++index, y += 26) {
+    const int itemId = g_privateAirplaneItems->GetNeedItem(index);
+    ITEM_INFO item;
+    item.SetItemId(itemId);
+
+    char name[260];
+    std::memset(name, 0, sizeof(name));
+    int capacity = 0x104;
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.Name(item, name, capacity, 0);
+    if (std::strlen(name) == 0) {
+      continue;
+    }
+
+    UIBasicButton* button = new UIBasicButton(*this->m_context, *this->m_controls);
+    const std::string text = FormatOwnedString(LookupMessage(0xd01), name);
+    button->Configure(0xc0, text.c_str());
+    button->Move(8, y);
+    button->SetId(500);
+    button->m_argument = itemId;
+    this->AddChild(button);
+    this->m_buttons.push_back(button);
   }
 }

@@ -37,6 +37,7 @@ class UIButton : public UIWindow {
   friend class UIAdvenPartyBoardWnd;
   friend class UIAchListWnd;
   friend class UIStylingshopTabParentWnd;
+  friend class UIPrivateAirplaneWnd;
 
 public:
   UIButton(UIWindowContext& windowContext, UIButtonContext& buttonContext);

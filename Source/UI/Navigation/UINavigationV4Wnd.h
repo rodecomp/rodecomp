@@ -26,6 +26,7 @@ struct NavigationWindowInfo {
 class UINavigationV4Wnd : public UIFrameWnd {
 public:
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Slot31(int x, int y) override;
   bool ClearRouteTexts();
@@ -40,6 +41,7 @@ public:
   std::string MobName(CNavi_Object* mob);
   void SelectRoute(int route);
   void FillRouteGroups();
+  void SetRoadIcon(int slot);
   void InsertNavigationLink(std::string name, int x, int y);
 
   /* 00B4 */ UIWindow* unknown_00B4;
@@ -99,6 +101,7 @@ protected:
 };
 
 extern int g_navigationTab;
+extern int g_navigationRoadIcon;
 extern CTexture* g_navigationMapTexture;
 
 #endif
