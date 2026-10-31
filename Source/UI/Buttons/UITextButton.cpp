@@ -2630,6 +2630,14 @@ void __stdcall Nullsub275(int, int, int, int) {
 #include "UI/Buttons/UIDescriptRace.h"
 #include "UI/Window/InputFocus.h"
 
+// OFFSET: 0x008901E0
+// FUNCTION: fn_11405
+void UIListBoxID::Slot26(int, int) {
+  if (this->selected != -1) {
+    this->parent->SendMsg(this, 6, this->geometry.id, this->lines[this->selected].id, 0, 0);
+  }
+}
+
 // OFFSET: 0x00890230
 // FUNCTION: fn_11406
 void UINewComboBoxCtrl::Slot26(int, int) {
