@@ -148,6 +148,16 @@ struct StatusChangeAckPacket {
   /* 0005 */ unsigned char value;
 };
 
+struct StatusChangeEffectPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ std::int16_t type;
+  /* 0008 */ std::uint32_t remaining;
+  /* 000C */ int value1;
+  /* 0010 */ int value2;
+  /* 0014 */ int value3;
+};
+
 struct ItemSlotOption {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::int16_t value;
@@ -342,6 +352,13 @@ void CGameMode::ReceiveStatusChange(const unsigned char* data) {
   if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.unknown_01C4)) {
     window->SendMsg(nullptr, 35, 0, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x00D6EB40
+// FUNCTION: fn_22115
+void CGameMode::ReceiveStatusChangeEffect(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const StatusChangeEffectPacket*>(data);
+  this->ApplyStatusChange(packet->aid, 1, packet->type, packet->remaining, packet->value1, packet->value2, packet->value3, 1, 0);
 }
 
 // OFFSET: 0x00D45B90

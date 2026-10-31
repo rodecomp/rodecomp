@@ -480,6 +480,7 @@ public:
   void ReceiveRodexRecipient(int id, unsigned short job, unsigned short level, const char* name);
   void ReceiveStatus(const unsigned char* data);
   void ReceiveStatusChange(const unsigned char* data);
+  void ReceiveStatusChangeEffect(const unsigned char* data);
   void ReceiveStatusChangeAck(const unsigned char* data);
   void SetActorUnknown02E4(std::uint32_t aid, int value);
   void IgnoreRemovedPacket13(const unsigned char* packet);
