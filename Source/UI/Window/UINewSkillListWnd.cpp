@@ -832,3 +832,96 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
   return 0;
 }
+
+// OFFSET: 0x009B3EB0
+// FUNCTION: fn_13827
+bool UINewSkillListWnd::sub_9B3EB0(int skillId) {
+  if (this->m_skillPoints <= 0 || this->m_showDetail) {
+    return false;
+  }
+
+  const int gate = *reinterpret_cast<const int*>(reinterpret_cast<const char*>(&g_session) + 0xB4);
+  if (gate != 0) {
+    std::list<CSkillInfo>& list = this->SkillList(this->m_tab, false);
+    for (CSkillInfo& skill : list) {
+      if (static_cast<int>(skill.id) == skillId) {
+        if (skill.level >= static_cast<int>(skill.unknown_0028)) {
+          return false;
+        }
+        ++skill.level;
+        --this->m_skillPoints;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  for (auto it = this->m_values.begin(); it != this->m_values.end(); ++it) {
+    if (this->m_skillPoints <= 0) {
+      break;
+    }
+
+    const int id = it->id;
+    CSkillInfo* info = g_session.m_skillBundle.FindGrouped(id);
+    if (info == nullptr || info->available == 0) {
+      continue;
+    }
+
+    int target;
+    if (id == skillId) {
+      int current = 0;
+      for (const NewSkillListValue& value : this->m_unknown_02A0) {
+        if (value.id == id) {
+          current = value.value;
+          break;
+        }
+      }
+      target = (std::max)(static_cast<int>(info->unknown_0030), current) + 1;
+      if (static_cast<int>(info->unknown_0030) >= static_cast<int>(info->unknown_0028)) {
+        return false;
+      }
+    } else {
+      target = it->value;
+    }
+
+    if (target > static_cast<int>(info->unknown_0028)) {
+      continue;
+    }
+
+    int current = 0;
+    for (const NewSkillListValue& value : this->m_unknown_02A0) {
+      if (value.id == id) {
+        current = value.value;
+        break;
+      }
+    }
+    current = (std::max)(static_cast<int>(info->unknown_0030), current);
+    if (current >= target) {
+      continue;
+    }
+
+    if (static_cast<int>(info->unknown_002C) <= 0) {
+      const char* name = info->DisplayName(*g_luaScript);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(FormatString(LookupMessage(0xDCB), name)), 0xFF, 0, 0, 0);
+      return false;
+    }
+
+    const int added = (std::min)(target - current, this->m_skillPoints);
+    this->m_skillPoints -= added;
+    const int level = current + added;
+
+    bool found = false;
+    for (NewSkillListValue& value : this->m_unknown_02A0) {
+      if (value.id == id) {
+        value.value = level;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      this->m_unknown_02A0.push_back(NewSkillListValue{id, level});
+    }
+  }
+
+  return true;
+}
