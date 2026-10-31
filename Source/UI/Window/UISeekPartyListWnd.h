@@ -9,9 +9,13 @@
 #include <string>
 #include <vector>
 
+class UIBitmapButton;
 class UICheckBox;
 class UIComboBoxDefWnd;
+class UIEditCtrl;
 class UIScrollBar;
+class UIStaticText;
+class UITextButton;
 struct SeekPartyListWndInfo;
 
 extern std::map<int, PartyBookingEntry> g_friendRows;
@@ -24,10 +28,12 @@ struct SeekPartyMapEntry {
 class UISeekPartyListWnd : public UIFrameWnd {
 public:
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void NotifyNewAd();
   void UpdateScrollBar();
   bool MatchesFilter(PARTY_BOOKING_AD_INFO info);
@@ -39,18 +45,30 @@ public:
 protected:
   int HitTestRow(int x, int y);
 
-  /* 00BC */ unsigned char unknown_00BC[0x24];
+  /* 00B4 */ UIStaticText* m_title;
+  /* 00B8 */ UIStaticText* m_levelLabel;
+  /* 00BC */ UIStaticText* m_mapLabel;
+  /* 00C0 */ UIStaticText* m_jobLabel;
+  /* 00C4 */ UIStaticText* m_filterLabel0;
+  /* 00C8 */ UIStaticText* m_filterLabel1;
+  /* 00CC */ UIStaticText* m_filterLabel2;
+  /* 00D0 */ UIStaticText* m_filterLabel3;
+  /* 00DC */ UIEditCtrl* m_searchEdit;
   /* 00E0 */ UIComboBoxDefWnd* m_regionCombo;
   /* 00E4 */ UIComboBoxDefWnd* m_mapCombo;
   /* 00E8 */ UIComboBoxDefWnd* m_jobCategoryCombo;
   /* 00EC */ UIComboBoxDefWnd* m_jobCombo;
   /* 00F0 */ UICheckBox* m_alarmCheck;
-  /* 00F4 */ unsigned char unknown_00F4[0x14];
+  /* 00F4 */ UIBitmapButton* m_findButton;
+  /* 00F8 */ UIBitmapButton* m_okButton;
+  /* 00FC */ UIBitmapButton* m_chatButton;
+  /* 0100 */ UITextButton* m_refreshButton;
+  /* 0104 */ UIBitmapButton* m_tabButton;
   /* 0108 */ UIScrollBar* m_scrollBar;
   /* 010C */ unsigned char unknown_010C[0x4];
   /* 0110 */ std::map<int, std::vector<SeekPartyMapEntry>> m_regionMaps;
   /* 0118 */ std::vector<std::string> m_jobOptions[9];
-  /* 0184 */ int unknown_0184;
+  /* 0184 */ int m_region;
   /* 0188 */ int m_mapIndex;
   /* 018C */ int m_jobCategory;
   /* 0190 */ int m_jobCategoryChanged;
@@ -61,7 +79,7 @@ protected:
   /* 01B0 */ int m_visibleRows;
   /* 01B4 */ int unknown_01B4;
   /* 01B8 */ int m_scrollable;
-  /* 01BC */ unsigned char unknown_01BC[0x4];
+  /* 01BC */ int m_restoreHeight;
   /* 01C0 */ unsigned char m_minimized;
   /* 01C1 */ unsigned char unknown_01C1[0x3];
   /* 01C4 */ short m_filterLevel;
