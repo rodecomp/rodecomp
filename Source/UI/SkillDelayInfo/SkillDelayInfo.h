@@ -57,14 +57,16 @@ public:
   __declspec(noinline) CUISkillDelayInfo();
   void Slot16() override;
   void Paint() override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   virtual void Slot53();
 
   void OnButtonClick();
   void OnSelectItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data);
   void OnUpdateItem(SkillDelayInfo::CUIDelayItem* item, const SkillDelayInfo::CDelayItemData& data);
+  void SetSkill(int skillId);
 
   /* 00D8 */ CUITitleBar* titleBar;
-  /* 00DC */ UIWindow* unknown_00DC;
+  /* 00DC */ CUIStaticText* unknown_00DC;
   /* 00E0 */ CUIStaticText* labels[3];
   /* 00EC */ CUIStaticText* columns[4];
   /* 00FC */ CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>* delayList;

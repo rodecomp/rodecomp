@@ -1,7 +1,9 @@
 #include "UI/SkillDelayInfo/SkillDelayInfo.h"
+#include "Client/Session.h"
 #include "Contents/MessageTable.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/SkinPalette.h"
+#include "Script/LuaScript.h"
 #include "Utility/Text/StringUtil.h"
 #include "UI/Lists/UIVScrollBar.h"
 #include "UI/Text/UIStaticTextControl.h"
@@ -10,7 +12,9 @@
 #include <algorithm>
 #include <cstring>
 #include <iterator>
+#include <map>
 #include <string>
+#include <vector>
 
 template <>
 void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>::Paint();
@@ -484,6 +488,71 @@ void CUITime::SetTime(int milliseconds) {
   const std::string text = FormatDecimal(static_cast<float>(milliseconds) / 1000.0f, 3, true) + LookupMessage(1808);
   this->text->SetText(text.c_str(), text.size());
 }
+}
+
+// OFFSET: 0x00A78190
+// FUNCTION: fn_16888
+int CUISkillDelayInfo::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 60) {
+    if (this->skillId != 7999) {
+      this->SetSkill(this->skillId);
+    }
+    return 0;
+  }
+  return CUIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x00A781C0
+// FUNCTION: fn_16889
+void CUISkillDelayInfo::SetSkill(int skillId) {
+  this->skillId = skillId;
+  this->delayList->data.erase(this->delayList->data.begin(), this->delayList->data.end());
+  this->delayList->selected = static_cast<unsigned int>(-1);
+  this->delayList->UpdateScrollBar();
+
+  const char* skillDescription = nullptr;
+  g_luaScript->Call("GetSkillDescript", "ddd>s", g_session.m_job, skillId, 0, &skillDescription);
+  if (!IsNullOrEmpty(skillDescription)) {
+    std::vector<std::string> lines = Split(skillDescription, "\r\n");
+    if (!lines.empty()) {
+      this->unknown_00DC->SetText(lines[0].c_str(), lines[0].size());
+    }
+  }
+
+  int skillFlag = 0;
+  std::vector<std::map<int, int>> delays;
+  g_session.LoadSkillDelayList(skillId, delays, skillFlag);
+  for (unsigned int index = 0; index < delays.size(); ++index) {
+    this->delayList->data.push_back(SkillDelayInfo::CDelayItemData{static_cast<int>(index), delays[index]});
+  }
+  this->delayList->UpdateScrollBar();
+
+  this->description->Clear();
+  if (skillFlag & 0x1000) {
+    this->description->AddLine(LookupMessage(4329));
+  }
+  if (skillFlag & 4) {
+    if (!this->description->lines.empty()) {
+      this->description->AddLine("\n");
+    }
+    this->description->AddLine(LookupMessage(4330));
+  }
+  if (skillId == 2461) {
+    if (const char* message = LookupMessage(4335)) {
+      this->description->AddLine(message);
+    }
+  }
+
+  this->delayList->Resize(this->delayList->geometry.width, this->delayList->data.size() * this->delayList->rowHeight + this->delayList->itemY);
+  if (this->description->lines.empty()) {
+    this->description->Show(0);
+    this->Resize(this->geometry.width, this->delayList->geometry.y + this->delayList->geometry.height + 10);
+  } else {
+    this->description->Show(1);
+    this->description->Resize(this->description->geometry.width, this->description->contentHeight + this->description->paddingBottom + this->description->paddingTop);
+    this->description->Move(this->description->geometry.x, this->delayList->geometry.y + this->delayList->geometry.height + 10);
+    this->Resize(this->geometry.width, this->description->geometry.y + this->description->geometry.height + 10);
+  }
 }
 
 // OFFSET: 0x00A77DD0
