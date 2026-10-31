@@ -4387,25 +4387,43 @@ void CSprArrowEffect::Slot01() {
   this->unknown_00DC = this->position[2];
 }
 
-// OFFSET: 0x0070F800
-__declspec(noinline) void __fastcall CylinderFrame(const double* values, float* output, double angle) {
-  const double radius = values[0];
-  const double pitch = values[1];
-  const double distance = values[2];
-  const float radians = static_cast<float>(angle);
-  const double sine = std::sin(static_cast<double>(radians));
-  const double cosine = std::cos(static_cast<double>(radians));
-  const float sineRadius = static_cast<float>(sine * radius);
-  const float cosineRadius = static_cast<float>(cosine * radius);
-  const double pitchSine = std::sin(static_cast<double>(static_cast<float>(pitch)));
-  const double pitchCosine = std::cos(static_cast<double>(static_cast<float>(pitch)));
+struct CylinderSlice {
+  /* 0000 */ double radius;
+  /* 0008 */ double pitch;
+  /* 0010 */ double height;
 
-  output[0] = cosineRadius;
-  output[1] = 0.0f;
-  output[2] = sineRadius;
-  output[3] = static_cast<float>(cosine * pitchCosine * distance) + cosineRadius;
-  output[4] = static_cast<float>(-pitchSine * distance);
-  output[5] = static_cast<float>(sine * pitchCosine * distance) + sineRadius;
+  vector3d* ComputePoints(vector3d points[2], double angle);
+};
+
+// OFFSET: 0x0070F800
+// FUNCTION: fn_07190
+vector3d* CylinderSlice::ComputePoints(vector3d points[2], double angle) {
+  const float radians = static_cast<float>(angle);
+  const double radiansAsDouble = static_cast<double>(radians);
+  const float sine = static_cast<float>(std::sin(radiansAsDouble));
+  const float cosine = static_cast<float>(std::cos(radiansAsDouble));
+  const float sineForHeight = static_cast<float>(std::sin(radiansAsDouble));
+  const float pitch = static_cast<float>(this->pitch);
+  const double pitchAsDouble = static_cast<double>(pitch);
+  const float cosinePitchForZ = static_cast<float>(std::cos(pitchAsDouble));
+  const double heightAlongZ = static_cast<double>(cosinePitchForZ) * this->height;
+  const float sinePitch = static_cast<float>(std::sin(pitchAsDouble));
+  const float cosinePitchForX = static_cast<float>(std::cos(pitchAsDouble));
+  const double heightAlongX = static_cast<double>(cosinePitchForX) * this->height;
+  const float cosineForHeight = static_cast<float>(std::cos(radiansAsDouble));
+
+  points[0].x = static_cast<float>(static_cast<double>(cosine) * this->radius);
+  points[0].y = 0.0f;
+  points[0].z = static_cast<float>(static_cast<double>(sine) * this->radius);
+  points[1].x = static_cast<float>(static_cast<double>(cosineForHeight) * heightAlongX) + points[0].x;
+  points[1].y = static_cast<float>(-static_cast<double>(sinePitch) * this->height) + 0.0f;
+  points[1].z = static_cast<float>(static_cast<double>(sineForHeight) * heightAlongZ) + points[0].z;
+  return points;
+}
+
+__declspec(noinline) void __fastcall CylinderFrame(const double* values, float* output, double angle) {
+  CylinderSlice slice{values[0], values[1], values[2]};
+  slice.ComputePoints(reinterpret_cast<vector3d*>(output), angle);
 }
 
 // OFFSET: 0x0070FC80
