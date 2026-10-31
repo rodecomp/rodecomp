@@ -25,7 +25,7 @@ public:
   /* 011C */ int unknown_011C;
   /* 0120 */ std::list<ItemTagRecord> tags;
   /* 0128 */ std::string taggedText;
-  /* 0140 */ unsigned char unknown_0140[0x18];
+  /* 0140 */ std::string unknown_0140;
   /* 0158 */ int tagWidth;
 };
 

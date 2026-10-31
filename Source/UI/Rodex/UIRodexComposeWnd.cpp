@@ -24,9 +24,31 @@
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/MessageTable.h"
 #include "Contents/PlayerNameDictionary.h"
+#include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketLengths.h"
+#include "UI/Text/NavigationLink.h"
 
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
+
+namespace {
+#pragma pack(push, 1)
+struct RodexCheckRecipientPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ char name[24];
+  /* 001A */ std::uint8_t known;
+};
+#pragma pack(pop)
+
+struct RodexSendMailRequest {
+  /* 0000 */ int recipientId;
+  /* 0004 */ std::string recipient;
+  /* 001C */ std::string title;
+  /* 0034 */ std::string body;
+  /* 004C */ int zeny;
+};
+}
 
 // OFFSET: 0x007FF520
 // FUNCTION: fn_10002
@@ -165,25 +187,22 @@ void UIRodexComposeWnd::Slot25(int x, int y) {
 void UIRodexComposeWnd::Slot28(int x, int y) {
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (std::atoi(item.itemId.c_str()) != 0) {
-    int screenX = this->m_itemIndex * 34 + 30;
-    int screenY = 290;
-    this->ToScreen(screenX, screenY);
+    int tooltipX = this->m_itemIndex * 34 + 30;
+    int tooltipY = 290;
+    this->ToScreen(tooltipX, tooltipY);
     ItemDescriptions descriptions{g_itemDescriptions};
     bool languagePrefix = false;
     WORD language = g_serverLanguage->language;
     ItemNaming naming{descriptions, g_itemCardNames, *g_playerNameDictionary, languagePrefix, g_serviceType, language};
     ModeTooltip* tooltip = reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode);
     if (item.identified == 1 && item.unknown_0098 != 0) {
-      unsigned int color = g_session.sub_DDD2C0(item);
-      std::string text = FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098);
-      if (tooltip) {
-        tooltip->Show(text.c_str(), screenX, screenY, color, 0, 1);
-      }
+      std::uint32_t color = g_session.GetItemNameColor(item);
+      tooltip->Show(
+        FormatOwnedString(LookupMessage(2600), naming.DisplayName(item, 0).c_str(), item.unknown_0098).c_str(), tooltipX, tooltipY, color, 0, 1
+      );
     } else {
-      unsigned int color = g_session.sub_DDD2C0(item);
-      if (tooltip) {
-        tooltip->Show(naming.DisplayName(item, 0).c_str(), screenX, screenY, color, 0, 1);
-      }
+      std::uint32_t color = g_session.GetItemNameColor(item);
+      tooltip->Show(naming.DisplayName(item, 0).c_str(), tooltipX, tooltipY, color, 0, 1);
     }
   }
 }
@@ -277,3 +296,5 @@ std::int64_t UIRodexComposeWnd::GetZeny() {
   g_session.IsNumberWithCommas(text);
   return _atoi64(text);
 }
+
+// OFFSET: 0x008012A0
