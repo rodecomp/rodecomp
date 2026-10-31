@@ -590,6 +590,51 @@ void UIWindow::AddChildFront(UIWindow* child) {
   this->m_children.push_front(child);
 }
 
+// OFFSET: 0x00A7AA90
+// FUNCTION: fn_16925
+void UIWindow::PlaceBeside(UIWindow* anchor) {
+  if (!anchor) {
+    return;
+  }
+
+  int anchorX = anchor->geometry.x;
+  int anchorY = anchor->geometry.y;
+  for (UIWindow* node = anchor->parent; node; node = node->parent) {
+    anchorX += node->geometry.x;
+    anchorY += node->geometry.y;
+  }
+
+  const int anchorWidth = anchor->geometry.width;
+  const int width = this->geometry.width;
+  const int screenWidth = g_renderer->viewport.width;
+  int x;
+  if (screenWidth < width + anchorWidth + anchorX) {
+    if (anchorX < width) {
+      x = 0;
+      if (anchorX <= screenWidth - anchorWidth - anchorX) {
+        x = screenWidth - width;
+      }
+    } else {
+      x = anchorX - width;
+    }
+  } else {
+    x = anchorX + anchorWidth;
+  }
+
+  int y = g_renderer->viewport.height - this->geometry.height;
+  if (this->geometry.height + anchorY <= g_renderer->viewport.height) {
+    y = anchorY;
+  }
+
+  int parentX = 0;
+  int parentY = 0;
+  for (UIWindow* node = this->parent; node; node = node->parent) {
+    parentX += node->geometry.x;
+    parentY += node->geometry.y;
+  }
+  this->Move(x - parentX, y - parentY);
+}
+
 // OFFSET: 0x00A81A30
 // FUNCTION: fn_16979
 UIWindow* UIWindow::FindUid(std::uint32_t uid) {
