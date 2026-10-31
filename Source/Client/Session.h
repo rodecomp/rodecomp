@@ -736,7 +736,9 @@ public:
   const char* GetHitWaveName(int job);
   void InitJobHitWaveNames();
   const char* GetEFSTImgFileName(int efstId, int type);
+  int IsTreeGroupTwo(int job) const;
   bool IsTreeGroupThree(int job) const;
+  bool IsThirdJobOrHigher(int job);
   std::string GetSexName(int sex);
   std::string GetHeadActName(int job, int sex, int* head);
   std::string GetPlayerHeadActName();

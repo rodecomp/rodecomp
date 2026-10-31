@@ -16,6 +16,8 @@ class UIDisplayCharacter : public UIWindow {
 public:
   void CopyStyle(const UIDisplayCharacter* other);
   void LoadCostumes();
+  void SelectNextStyle(const char* table, int* goods);
+  void SelectPreviousStyle(const char* table, int* goods);
 
   /* 007C */ const char* unknown_007C;
   /* 0080 */ int unknown_0080;

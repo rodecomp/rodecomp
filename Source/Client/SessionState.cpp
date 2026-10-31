@@ -2,6 +2,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Jobs/JobId.h"
 #include "Contents/World/World.h"
 #include "Script/LuaScript.h"
 
@@ -121,5 +122,49 @@ void CSession::LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& 
       }
     }
     delays[0][3] = delay;
+  }
+}
+
+// OFFSET: 0x00E3D3D0
+// FUNCTION: fn_24190
+bool CSession::IsThirdJobOrHigher(int job) {
+  if (g_session.IsTreeGroupThree(job) == true || g_session.IsTreeGroupTwo(job) == 1) {
+    return true;
+  }
+
+  switch (job) {
+  case JT_SUPERNOVICE2:
+  case JT_SUPERNOVICE2_B:
+  case JT_PORING_SNOVICE2:
+  case JT_PORING_SNOVICE2_B:
+  case JT_KAGEROU:
+  case JT_OBORO:
+  case JT_FROG_KAGEROU:
+  case JT_FROG_OBORO:
+  case JT_REBELLION:
+  case JT_PECO_REBELLION:
+  case JT_DO_SUMMONER:
+  case JT_DO_CART_SUMMONER:
+  case JT_DO_SUMMONER_B:
+  case JT_DO_CART_SUMMONER_B:
+  case JT_KAGEROU_B:
+  case JT_OBORO_B:
+  case JT_REBELLION_B:
+  case JT_PECO_REBELLION_B:
+  case JT_STAR_EMPEROR:
+  case JT_SOUL_REAPER:
+  case JT_STAR_EMPEROR_B:
+  case JT_SOUL_REAPER_B:
+  case JT_STAR2_EMPEROR:
+  case JT_STAR2_EMPEROR_B:
+  case JT_HAETAE_STAR_EMPEROR:
+  case JT_HAETAE_SOUL_REAPER:
+  case JT_HAETAE_STAR_EMPEROR_B:
+  case JT_HAETAE_SOUL_REAPER_B:
+  case JT_KARNOS:
+  case JT_KARNOS_B:
+    return true;
+  default:
+    return false;
   }
 }

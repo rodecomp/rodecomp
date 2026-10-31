@@ -2,6 +2,7 @@
 
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session.h"
+#include "Contents/Jobs/JobId.h"
 #include "Contents/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -10,6 +11,9 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "UI/Window/WindowPolicy.h"
+
+#include <cstring>
+#include <string>
 
 // OFFSET: 0x00829B50
 // FUNCTION: fn_10341
@@ -773,4 +777,68 @@ void ToggleStylingAccessory(int itemId, int slot) {
   }
 
   tab->InvalidateChildren();
+}
+
+// OFFSET: 0x0082E830
+// FUNCTION: fn_10379
+void UIDisplayCharacter::SelectNextStyle(const char* table, int* goods) {
+  int size = 0;
+  g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", table, &size);
+  if (size == 0) {
+    return;
+  }
+
+  if (!g_session.IsThirdJobOrHigher(g_session.GetDisplayJob()) && (std::string(table) == "BodyPalette" || std::string(table) == "DoramBodyPalette")) {
+    size = 3;
+  }
+
+  if (g_session.GetDisplayJob() > JT_2004_JOB_BEGIN && g_session.GetDisplayJob() <= JT_THIEF_H && *goods == 1 && g_session.m_bodyStyle == 1 &&
+    std::strcmp(table, "BodyPalette") == 0) {
+    *goods = 0;
+  }
+
+  int sequence = 0;
+  g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", table, *goods, &sequence);
+  ++sequence;
+  if (sequence > size) {
+    sequence = 1;
+  }
+  g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", table, sequence, goods);
+
+  if (g_session.GetDisplayJob() > JT_2004_JOB_BEGIN && g_session.GetDisplayJob() <= JT_THIEF_H && *goods == 0 && g_session.m_bodyStyle == 1) {
+    *goods = 1;
+  }
+}
+
+// OFFSET: 0x0082ED80
+// FUNCTION: fn_10380
+void UIDisplayCharacter::SelectPreviousStyle(const char* table, int* goods) {
+  int size = 0;
+  g_luaScript->Call("StylingShop_GetSizeInTable", "s>d", table, &size);
+  if (size == 0) {
+    return;
+  }
+
+  if (!g_session.IsThirdJobOrHigher(g_session.GetDisplayJob()) && (std::string(table) == "BodyPalette" || std::string(table) == "DoramBodyPalette")) {
+    size = 3;
+  }
+
+  if (g_session.GetDisplayJob() > JT_2004_JOB_BEGIN && g_session.GetDisplayJob() <= JT_THIEF_H && *goods == 1 && g_session.m_bodyStyle == 1) {
+    *goods = 0;
+  }
+
+  int sequence = 0;
+  g_luaScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", table, *goods, &sequence);
+  --sequence;
+  if (sequence < 1) {
+    sequence = size;
+  }
+  if (sequence <= 0) {
+    sequence = 1;
+  }
+  g_luaScript->Call("StylingShop_GetGoods", "sd>d", table, sequence, goods);
+
+  if (g_session.GetDisplayJob() > JT_2004_JOB_BEGIN && g_session.GetDisplayJob() <= JT_THIEF_H && *goods == 0 && g_session.m_bodyStyle == 1) {
+    *goods = 1;
+  }
 }
