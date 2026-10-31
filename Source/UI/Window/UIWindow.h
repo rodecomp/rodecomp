@@ -18,6 +18,7 @@ struct ModeCursor;
 struct WindowRegistration;
 class UIWindow;
 class UIWindowMgr;
+class CUIGameSettingsUI;
 struct RenderQueues;
 struct BitmapImage;
 class FontCache;
@@ -56,6 +57,7 @@ class UIWindow : public UIRPData {
   friend struct WindowDialogs;
   friend struct InputFocus;
   friend class CUIDropDownBox;
+  friend class CUIGameSettingsUI;
 
 public:
   explicit UIWindow(UIWindowContext& context, unsigned char cached);
@@ -171,6 +173,7 @@ public:
   );
   void FlushPrimitives(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
   void FillSurface(std::uint32_t color, const tagRECT* rectangle);
+  void sub_8932D0(int* kind, std::vector<std::string>* lines, const std::string& text);
   void DrawBitmapScaled(int x, int y, int width, int height, const BitmapImage* image, int option);
   void DrawBitmapRegion(int x, int y, const BitmapImage* image, bool transparent, bool whole, int left, int top, int right, int bottom);
   void DrawAuxiliaryScaled(int mode, int x, int y, int width, int height, BitmapImage* image, int option, bool rebuild);

@@ -1,5 +1,6 @@
 #include "Render/Text/TextContext.h"
 #include "UI/Text/PixelTextWrapping.h"
+#include "UI/Window/UIWindow.h"
 
 #include <cstring>
 #include <mbstring.h>
@@ -137,4 +138,21 @@ void WrapPixelText(
 
     offset = (offset + count);
   }
+}
+
+// OFFSET: 0x008932D0
+// FUNCTION: fn_11504
+void UIWindow::sub_8932D0(int* kind, std::vector<std::string>* lines, const std::string& text) {
+  const char* characters = text.c_str();
+  if (*kind != 3) {
+    reinterpret_cast<void(__thiscall*)(UIWindow*, const char*, std::vector<std::string>*, int)>(0x00A82310)(
+      this, characters, lines, this->geometry.width - 16
+    );
+    return;
+  }
+
+  std::vector<int> wrapped;
+  reinterpret_cast<void(__thiscall*)(UIWindow*, const char*, std::vector<std::string>*, std::vector<int>*, int)>(0x00A81FD0)(
+    this, characters, lines, &wrapped, this->geometry.width - 24
+  );
 }
