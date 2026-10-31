@@ -181,12 +181,15 @@ public:
   void Slot17() override;
   void RefreshEffect164();
 
-  /* 0510 */ unsigned char unknown_0510[0x34];
+  /* 0510 */ unsigned char unknown_0510[0xC];
+  /* 051C */ int unknown_051C;
+  /* 0520 */ unsigned char unknown_0520[0x24];
   /* 0544 */ CRagEffect* unknown_0544;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CPlayer) == 0x548);
+static_assert(offsetof(CPlayer, unknown_051C) == 0x51C);
 static_assert(offsetof(CPlayer, unknown_0544) == 0x544);
 #endif
 

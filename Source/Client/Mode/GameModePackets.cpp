@@ -9,6 +9,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
 #include "Contents/Actors/GameActor.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Effects/EffectActor.h"
@@ -1056,6 +1057,27 @@ void CGameMode::IgnoreRemovedPacket10(const unsigned char*) {
 // OFFSET: 0x00D08900
 // FUNCTION: fn_21594
 void CGameMode::IgnoreRemovedPacket11(const unsigned char*) {
+}
+
+// OFFSET: 0x00D89BD0
+// FUNCTION: fn_22211
+void CGameMode::ReceiveCharViewResult(const unsigned char* packet) {
+  switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
+  case 0: {
+    CMode* mode = g_modeMgr.gameMode;
+    CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    if (player->render.unknown_0070 != 0 && mode != nullptr) {
+      mode->SendMsg(137, 3, player->unknown_051C, 0, 0);
+    }
+    return;
+  }
+  case 1:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3009)), 0xFF, 0, 0, 0);
+    return;
+  default:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3040)), 0xFF, 0, 0, 0);
+    return;
+  }
 }
 
 // OFFSET: 0x00D89CA0
