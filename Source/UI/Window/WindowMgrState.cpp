@@ -15,6 +15,9 @@
 #include "Render/Textures/Surface.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Window/WindowMouseHit.h"
+#include "Client/ReplayPacketRecorder.h"
+#include "Client/Mode/ModeDragState.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -695,4 +698,13 @@ void UIWindowMgr::SendFlagEffect(int message) {
     mode->SendMsg(329, reinterpret_cast<int>("ET_FLAG9"), 0, 0, 0);
     break;
   }
+}
+
+// OFFSET: 0x00A8FCA0
+
+// OFFSET: 0x00A8FD30
+
+// OFFSET: 0x00A90120
+// FUNCTION: fn_17152
+void __stdcall Nullsub369(int, int, int, int) {
 }

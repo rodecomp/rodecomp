@@ -19,6 +19,7 @@ class CBitmapRes;
 class CWebBrowser;
 struct MessengerMember;
 struct ReplayOptions;
+struct ModeDragState;
 
 struct WindowTextEntry {
   /* 0000 */ std::string text;
@@ -520,6 +521,8 @@ public:
   UIWindow* GetHoverWindow();
   int GetRenderedWindowIds(int* ids);
   void HideWindow01C8();
+  bool DropAt(int x, int y, ModeDragState* drag);
+  void FocusWindow01C8Edit();
   bool IsHoverOnWindow01C8Button();
   void SelectWhisperName(const char* name);
   void AddWhisperName(const char* name);
