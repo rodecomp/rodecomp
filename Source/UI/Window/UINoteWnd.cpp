@@ -60,3 +60,9 @@ void UINoteWnd_Scroll::Slot35(int delta) {
     }
   }
 }
+
+// OFFSET: 0x00946D00
+// FUNCTION: fn_12852
+UINoteWnd::UINoteWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_scroll(nullptr), m_controls(&controls) {
+}

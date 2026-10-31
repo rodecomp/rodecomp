@@ -283,3 +283,20 @@ void UISecondCostumeWnd::RefreshList(int tab) {
 bool UISecondCostumeWnd::Slot03() {
   return true;
 }
+
+// OFFSET: 0x00946FB0
+// FUNCTION: fn_12857
+UISecondCostumeWnd::UISecondCostumeWnd(
+  UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& lists, UIComboBoxHeaderContext& combos
+)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_listContext(&lists), m_comboContext(&combos) {
+  this->m_typeCombo = nullptr;
+  this->m_list = nullptr;
+  this->m_tab = 0;
+  this->m_selected[0] = 0;
+  this->m_selected[1] = 0;
+  this->m_selected[2] = 0;
+  this->m_selected[3] = 0;
+  this->unknown_0100 = timeGetTime();
+  this->m_page = 0;
+}

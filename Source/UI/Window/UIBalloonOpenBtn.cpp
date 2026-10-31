@@ -20,3 +20,9 @@ void UIBalloonOpenBtn::Slot19() {
     }
   }
 }
+
+// OFFSET: 0x009468D0
+// FUNCTION: fn_12847
+UIBalloonOpenBtn::UIBalloonOpenBtn(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_openTime(0), m_openDelay(4000), m_balloonId(0), m_balloon(nullptr), m_button(nullptr), m_controls(&controls) {
+}

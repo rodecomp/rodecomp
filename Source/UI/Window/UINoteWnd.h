@@ -22,6 +22,7 @@ public:
 
 class UINoteWnd : public UIFrameWnd {
 public:
+  UINoteWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot15(int width, int height) override;
   void Paint() override;
 

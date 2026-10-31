@@ -14,6 +14,7 @@ struct QuestDisplayMenuItem {
 
 class UIQuestDisplay : public UIWindow {
 public:
+  UIQuestDisplay(UIWindowContext& windows);
   bool Slot08() override;
   void Slot11() override;
   void Slot33(int x, int y) override;

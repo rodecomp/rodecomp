@@ -53,3 +53,9 @@ int UIOpenRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
   return 0;
 }
+
+// OFFSET: 0x00946E40
+// FUNCTION: fn_12854
+UIOpenRoulletteWnd::UIOpenRoulletteWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+}

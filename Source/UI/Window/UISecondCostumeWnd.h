@@ -4,6 +4,8 @@
 #include "UI/Window/UIFrameWnd.h"
 
 #include <string>
+#include <windows.h>
+#include <timeapi.h>
 #include <vector>
 
 class UIComboBoxDefWnd;
@@ -19,6 +21,7 @@ struct SecondCostumeEntry {
 
 class UISecondCostumeWnd : public UIFrameWnd {
 public:
+  UISecondCostumeWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& lists, UIComboBoxHeaderContext& combos);
   bool Slot03() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -40,6 +43,8 @@ protected:
   UIButtonContext* m_controls;
   UIListBoxContext* m_listContext;
   UIComboBoxHeaderContext* m_comboContext;
+  /* 0108 */ std::string unknown_0108[7];
+  /* 01B0 */ std::string unknown_01B0[7];
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

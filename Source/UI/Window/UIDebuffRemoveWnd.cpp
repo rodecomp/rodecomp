@@ -53,3 +53,9 @@ int UIDebuffRemoveWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
   return 0;
 }
+
+// OFFSET: 0x00946970
+// FUNCTION: fn_12848
+UIDebuffRemoveWnd::UIDebuffRemoveWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_button(nullptr), m_controls(&controls) {
+}

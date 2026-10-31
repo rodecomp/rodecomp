@@ -7,6 +7,7 @@ struct UIButtonContext;
 
 class UIOpenRoulletteWnd : public UIFrameWnd {
 public:
+  UIOpenRoulletteWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Slot19() override;
   void Slot15(int width, int height) override;
   void Paint() override;

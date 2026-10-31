@@ -80,3 +80,9 @@ int UIShowWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 }
+
+// OFFSET: 0x009470C0
+// FUNCTION: fn_12858
+UIShowWarpWnd::UIShowWarpWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIListBoxContext& lists, WindowResponseRecorder& recorder)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_listContext(&lists), m_recorder(&recorder) {
+}
