@@ -455,8 +455,14 @@ int UIChangeMaterialWnd_List::SendMsg(
 void UIChangeMaterialWnd_List::SortItems(bool ascending) {
   const std::vector<MaterialListEntry> entries = this->m_entries;
   std::sort(this->m_items.begin(), this->m_items.end(), [&entries](int left, int right) {
-    const std::string leftName = ItemDisplayName(entries[left].results.front().id);
-    const std::string rightName = ItemDisplayName(entries[right].results.front().id);
+    std::string leftName;
+    if (static_cast<std::size_t>(left) < entries.size()) {
+      leftName = ItemDisplayName(entries[left].results.front().id);
+    }
+    std::string rightName;
+    if (static_cast<std::size_t>(right) < entries.size()) {
+      rightName = ItemDisplayName(entries[right].results.front().id);
+    }
     return leftName < rightName;
   });
 
