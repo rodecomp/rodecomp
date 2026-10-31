@@ -237,6 +237,25 @@ struct MinimapMarkerPacket {
   /* 000A */ std::int16_t type;
   /* 000C */ std::int16_t color;
 };
+
+struct ActorSkillResultPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t source;
+  /* 0006 */ std::uint32_t target;
+  /* 000A */ std::uint16_t skill;
+  /* 000C */ std::uint16_t x;
+  /* 000E */ std::uint16_t y;
+  /* 0010 */ int tick;
+  /* 0014 */ int level;
+  /* 0018 */ unsigned char flag;
+  /* 0019 */ int result;
+};
+
+struct SimulationResultPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::uint32_t kind;
+};
 #pragma pack(pop)
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -247,6 +266,7 @@ static_assert(sizeof(HomunculusInfoPacket2) == 0x49);
 static_assert(sizeof(HomunculusInfoPacket3) == 0x55);
 static_assert(sizeof(ItemRewardPacket) == 0x3F);
 static_assert(sizeof(ItemRewardPacket2) == 0x40);
+static_assert(sizeof(ActorSkillResultPacket) == 0x1D);
 #endif
 
 namespace EquipmentProperties {
@@ -2273,5 +2293,37 @@ void CGameMode::ReceiveWindow95Data(const unsigned char* packet) {
   data.insert(data.end(), packet + 8, packet + 8 + size);
   if (UIWindow* window = g_windowMgr.EnsureWindow(95)) {
     window->SendMsg(nullptr, 0x22, reinterpret_cast<std::intptr_t>(data.data()), size, *reinterpret_cast<const int*>(packet + 4), 0);
+  }
+}
+
+// OFFSET: 0x00D679A0
+// FUNCTION: fn_22036
+void CGameMode::ReceiveActorSkillResult(const unsigned char* packet) {
+  const ActorSkillResultPacket& value = *reinterpret_cast<const ActorSkillResultPacket*>(packet);
+  this->sub_D5B030(
+    value.source, value.target, value.skill, value.x, value.y, value.tick, value.level, value.flag, value.result
+  );
+}
+
+// OFFSET: 0x00D66400
+// FUNCTION: fn_22012
+void CGameMode::ReceiveSimulationResult(const unsigned char* packet) {
+  const SimulationResultPacket& value = *reinterpret_cast<const SimulationResultPacket*>(packet);
+  switch (value.kind) {
+  case 0:
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>("Simulator Start Fail!!!!!!!!!!!!"), 255, 0, 0, 0);
+    break;
+  case 1:
+    this->ReceivePackageSimulation(packet);
+    break;
+  case 2:
+    this->sub_D606B0(packet);
+    break;
+  case 3:
+    this->ReceiveEnchantSimulation(packet);
+    break;
+  case 4:
+    this->ReceiveRandomUpgradeSimulation(packet);
+    break;
   }
 }

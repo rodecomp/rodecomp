@@ -350,6 +350,8 @@ public:
   void ReceiveRandomUpgradeSimulation(const unsigned char* packet);
   void ReceiveEnchantSimulation(const unsigned char* packet);
   void ReceivePackageSimulation(const unsigned char* packet);
+  void ReceiveSimulationResult(const unsigned char* packet);
+  void sub_D606B0(const unsigned char* packet);
   void ReceiveWindow154Result(std::int16_t value);
   void ReceivePlayerDuration(const unsigned char* packet);
   void ReceiveFailureNotice(const unsigned char* packet);
@@ -592,6 +594,11 @@ public:
   void ReceiveUnknownD50810(const unsigned char* packet);
   void ReceiveItem1748List(const unsigned char* packet);
   void ReceiveActorStatusValue(std::uint32_t aid, int status, int amount, int option);
+  void ReceiveActorSkillResult(const unsigned char* packet);
+  void sub_D5B030(
+    std::uint32_t source, std::uint32_t target, std::uint16_t skill, std::uint16_t x, std::uint16_t y,
+    int tick, int level, unsigned char flag, int result
+  );
   void ReceiveItem1718List(const unsigned char* packet);
   void Zc_Spirits2(const unsigned char* data);
   void UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count);
