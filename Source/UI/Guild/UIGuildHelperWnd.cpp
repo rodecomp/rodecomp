@@ -29,6 +29,14 @@ static const std::string s_itemLinkClosing = "</ITEML>";
 // GLOBAL: gl_25120
 CGuildTip g_guildTip;
 
+// OFFSET: 0x00953960
+
+// OFFSET: 0x00953810
+
+// OFFSET: 0x00953A90
+
+// OFFSET: 0x00953880
+
 // OFFSET: 0x0095DB20
 // FUNCTION: fn_13071
 void UIGuildHelperWnd::Paint() {

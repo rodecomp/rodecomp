@@ -19,6 +19,7 @@ struct GuildBanTarget {
 
 class UIGuildHelperWnd : public UIFrameWnd {
 public:
+  UIGuildHelperWnd();
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -35,6 +36,7 @@ protected:
 
 class UICreateGuildWnd : public UIGuildHelperWnd {
 public:
+  explicit UICreateGuildWnd(int mode);
   void Slot11() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -63,6 +65,7 @@ protected:
 
 class UIGuildLeaveReasonDescWnd : public UIFrameWnd {
 public:
+  UIGuildLeaveReasonDescWnd();
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -74,6 +77,7 @@ protected:
 
 class UIGuildBanReasonDescWnd : public UIGuildLeaveReasonDescWnd {
 public:
+  UIGuildBanReasonDescWnd();
   void Slot15(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 

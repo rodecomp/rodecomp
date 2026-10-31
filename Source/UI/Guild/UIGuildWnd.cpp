@@ -296,6 +296,14 @@ UIGuildWnd::UIGuildWnd(UIWindowContext& windows, UIFrameContext& frames, UIButto
     : UIFrameWnd(windows, frames, 0), m_saved(nullptr), m_tabs{}, m_controls(&controls) {
 }
 
+// OFFSET: 0x00953900
+
+// OFFSET: 0x009539C0
+
+// OFFSET: 0x00953B00
+
+// OFFSET: 0x00953D10
+
 // OFFSET: 0x00953D70
 // FUNCTION: fn_13001
 UIGuildPositionManageWnd::UIGuildPositionManageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
@@ -1742,7 +1750,7 @@ void UIGuildMemberManageWnd::Slot15(int, int) {
     button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     button->SetBitmap((prefix + "btn_ok_dis" + ".bmp").c_str(), 3, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    if (!GuildData().unknown_00B4 || !this->unknown_0184) {
+    if (!GuildData().unknown_00B4 || this->unknown_0180.empty()) {
       x = -200;
       y = -200;
     }

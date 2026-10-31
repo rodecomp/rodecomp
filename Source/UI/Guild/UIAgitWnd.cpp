@@ -20,6 +20,8 @@
 #include <cstring>
 #include <windows.h>
 
+// OFFSET: 0x009537B0
+// FUNCTION: fn_12992
 UIAgitMessageBox::UIAgitMessageBox()
     : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(0), *reinterpret_cast<UIFrameContext*>(0), 0), m_agitId(0) {
 }

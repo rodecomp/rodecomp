@@ -54,6 +54,17 @@ struct GuildPositionEntry {
   /* 002C */ int canStorage;
 };
 
+struct GuildWndNameEntry {
+  /* 0000 */ std::string name;
+  /* 0018 */ int id;
+};
+
+struct GuildMemberManageEntry {
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ int unknown_0008;
+};
+
 class UIGuildWnd : public UIFrameWnd {
 public:
   UIGuildWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
@@ -74,6 +85,7 @@ protected:
 
 class UIGuildBanishedMemberWnd : public UIGuildWnd {
 public:
+  UIGuildBanishedMemberWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   int Tab() override;
   void Slot15(int width, int height) override;
   void Paint() override;
@@ -96,6 +108,7 @@ protected:
 
 class UIGuildInfoManageWnd : public UIGuildWnd {
 public:
+  UIGuildInfoManageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   int Tab() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -110,7 +123,10 @@ protected:
 
   /* 00D0 */ UIBitmapButton* m_editButton;
   /* 00D4 */ UIBitmapButton* m_disbandButton;
-  /* 00D8 */ unsigned char unknown_00D8[0x1C];
+  /* 00D8 */ std::list<std::string> unknown_00D8;
+  /* 00E0 */ std::vector<GuildWndNameEntry> unknown_00E0;
+  /* 00EC */ int unknown_00EC;
+  /* 00F0 */ int unknown_00F0;
   /* 00F4 */ std::uint32_t m_guildId;
   /* 00F8 */ int m_allyRow;
   /* 00FC */ int m_hostileRow;
@@ -121,6 +137,7 @@ protected:
 
 class UIGuildMemberManageWnd : public UIGuildWnd {
 public:
+  UIGuildMemberManageWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   int Tab() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
@@ -141,7 +158,7 @@ protected:
   /* 0130 */ UIBitmapButton* m_rowButtons[6];
   /* 0148 */ UIScrollBar* m_scrollBar;
   /* 014C */ UIButton* m_button;
-  /* 0150 */ unsigned char unknown_0150[0xC];
+  /* 0150 */ std::vector<GuildWndNameEntry> unknown_0150;
   /* 015C */ int m_scrollTop;
   /* 0160 */ int m_hoverRow;
   /* 0164 */ int m_columns;
@@ -150,8 +167,7 @@ protected:
   /* 0170 */ int m_scrollable;
   /* 0174 */ int m_rowSpacing;
   /* 0178 */ std::list<GuildInfo::Member> m_members;
-  /* 0180 */ int unknown_0180;
-  /* 0184 */ int unknown_0184;
+  /* 0180 */ std::map<int, GuildMemberManageEntry> unknown_0180;
   /* 0188 */ int m_sortColumn;
   /* 018C */ std::map<int, int> m_sortOrders;
   /* 0194 */ UICheckBox* m_onlineCheck;
@@ -160,6 +176,7 @@ protected:
 
 class UIGuildNoticeWnd : public UIGuildWnd {
 public:
+  UIGuildNoticeWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls);
   void Paint() override;
   void Slot25(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
