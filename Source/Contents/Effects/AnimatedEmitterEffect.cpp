@@ -4,6 +4,22 @@
 
 #include <cstdlib>
 
+// OFFSET: 0x006F9EC0
+// FUNCTION: fn_06888
+CAnimatedEmitterEffect::CAnimatedEmitterEffect() {
+  this->acceleration = {0.0f, 0.0f, 0.0f};
+  this->velocityMin = {-3.0f, -1.0f, -3.0f};
+  this->velocityMax = {3.0f, 1.0f, 3.0f};
+  this->spread = {0.0f, 0.0f, 0.0f};
+  this->scaleMin = 10.0f;
+  this->scaleMax = 20.0f;
+  this->lifeMin = 3.0f;
+  this->lifeMax = 4.0f;
+  this->rateMin = 1.0f;
+  this->rateMax = 3.0f;
+  this->count = 4;
+}
+
 // OFFSET: 0x006FA0F0
 // FUNCTION: fn_06890
 void CAnimatedEmitterEffect::Slot01() {
