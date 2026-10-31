@@ -769,6 +769,14 @@ void UIEditCtrl::DrawSelection(int x, int width) {
 }
 
 // OFFSET: 0x0096F410
+// FUNCTION: fn_13233
+UISkillListWnd::UISkillListWnd(UIWindowContext& windows, UIFrameContext& frames) : UIFrameWnd(windows, frames, 0) {
+  this->scrollBar = nullptr;
+  this->unknown_00C0 = 0;
+  this->hovered = -1;
+  this->columns = 1;
+  this->saved = nullptr;
+}
 
 // INLINED
 UIEditCtrlWheel::UIEditCtrlWheel(UIWindowContext& windows, UIEditContext& edit) : UIEditCtrl(windows, edit) {
