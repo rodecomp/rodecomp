@@ -39,6 +39,7 @@ struct RodexMailEntryLess {
 
 class UIRodexInboxWnd : public UIItemWnd {
 public:
+  UIRodexInboxWnd();
   bool Slot03() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;

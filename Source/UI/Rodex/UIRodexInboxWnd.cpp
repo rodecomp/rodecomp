@@ -15,15 +15,51 @@
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
+#include <cstring>
 
 namespace {
 #pragma pack(push, 1)
+struct PACKET_CZ_OPEN_RODEXBOX {
+  std::uint16_t packetType;
+  std::int64_t lastMailId0;
+  std::int64_t lastMailId2;
+  std::int64_t lastMailId1;
+};
+
 struct RodexMailRequestPacket {
   std::uint16_t id;
   std::int64_t mailId;
   std::uint8_t type;
 };
 #pragma pack(pop)
+}
+
+// OFFSET: 0x00804D50
+// FUNCTION: fn_10038
+UIRodexInboxWnd::UIRodexInboxWnd()
+    : UIItemWnd(), unknown_0130(0), unknown_0134(0), unknown_0138(0), unknown_013C(nullptr), unknown_0140(nullptr),
+      unknown_018C(nullptr), unknown_0190(nullptr), unknown_0194(nullptr), unknown_0198(nullptr), unknown_019C(0), unknown_01A0(0),
+      expired(0), unknown_01C8(nullptr), unknown_01CC(0), unknown_01D0(0), unknown_01D4(0), searchResults(), mails0(), mails1(), mails2() {
+  std::memset(this->unknown_0144, 0, sizeof(this->unknown_0144));
+  std::memset(this->unknown_015C, 0, sizeof(this->unknown_015C));
+  std::memset(this->checks, 0, sizeof(this->checks));
+  std::memset(this->unknown_01A8, 0, sizeof(this->unknown_01A8));
+  g_rodexMailStore->unknown_001C = false;
+  PACKET_CZ_OPEN_RODEXBOX packet;
+  packet.packetType = ID_CZ_OPEN_RODEXBOX;
+  packet.lastMailId0 = 0;
+  if (g_rodexMailStore->m_mails0.size() > 0) {
+    packet.lastMailId0 = (--g_rodexMailStore->m_mails0.end())->first;
+  }
+  packet.lastMailId2 = 0;
+  if (g_rodexMailStore->m_mails2.size() > 0) {
+    packet.lastMailId2 = (--g_rodexMailStore->m_mails2.end())->first;
+  }
+  packet.lastMailId1 = 0;
+  if (g_rodexMailStore->m_mails1.size() > 0) {
+    packet.lastMailId1 = (--g_rodexMailStore->m_mails1.end())->first;
+  }
+  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
 }
 
 // OFFSET: 0x00807640
