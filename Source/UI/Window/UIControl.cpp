@@ -2605,10 +2605,61 @@ CUITextButton::CUITextButton(UIWindowContext& context)
 }
 
 // OFFSET: 0x009E1250
+// FUNCTION: fn_14394
+CUIBasicButton::CUIBasicButton(UIWindowContext& context)
+    : CUITextButton(context), unknown_0190(0), defaultWidth(0), leftImages(), disabledLeft(), middleImages(), disabledMiddle(), rightImages(),
+      disabledRight() {
+  this->textColors[0] = 0;
+  this->textColors[1] = 0;
+  this->textColors[2] = 0;
+}
 
 // OFFSET: 0x009E9F00
+// FUNCTION: fn_14513
+void CUITextViewer::Slot15(int width, int height) {
+  this->padding = new CUIPadding(*this->m_context);
+  this->padding->SetSize(width, height);
+  this->AddChild(this->padding);
+
+  this->scrollBar = new CUIVScrollBar(*this->m_context);
+  this->scrollBar->Show(0);
+  const std::function<void(int)> onChange = [this](int position) {
+    int y = this->paddingTop;
+    const CUIVScrollBar* bar = this->scrollBar;
+    if (bar->dragging || bar->total <= bar->visible) {
+      const int space = this->geometry.height - this->paddingBottom - this->paddingTop;
+      if (this->textY == 6) {
+        y += (space - this->contentHeight) / 2;
+      } else if (this->textY == 8) {
+        y += space - this->contentHeight;
+      }
+    }
+
+    for (const auto& child : this->childPositions) {
+      UIWindow* window = child.first;
+      window->Move(this->paddingLeft + child.second.first, child.second.second - position + y);
+      window->Show(window->geometry.y + window->geometry.height >= 0 && window->geometry.y < this->geometry.height);
+    }
+  };
+  this->scrollBar->onChange = onChange;
+  this->AddChild(this->scrollBar);
+}
 
 // OFFSET: 0x009E2D10
+// FUNCTION: fn_14408
+void CUIBasicButton::SetAutoWidth(bool enabled) {
+  this->unknown_0190 = enabled;
+  if (!enabled) {
+    this->Resize(this->defaultWidth, this->geometry.height);
+  } else {
+    const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, this->text.c_str(), 0, 0, 12, 0, 0);
+    if (this->geometry.width < width + 8) {
+      this->Resize(width + 8, this->geometry.height);
+    }
+  }
+  this->SetFitText(!enabled);
+  this->SetText(this->text);
+}
 
 // OFFSET: 0x009ED570
 // FUNCTION: fn_14578
