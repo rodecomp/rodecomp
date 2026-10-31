@@ -224,11 +224,11 @@ public:
 
 class UIEditCtrl_OldList : public UIEditCtrl {
 public:
+  UIEditCtrl_OldList(UIWindowContext& windows, UIEditContext& edit);
   void Paint() override;
   void Slot35(int value) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void RecallHistory(int step);
-
   /* 011C */ std::string bitmapName;
   /* 0134 */ std::vector<std::string> history;
   /* 0140 */ int historyIndex;
@@ -236,12 +236,12 @@ public:
 
 class UIWhisperEditCtrl : public UIEditCtrl {
 public:
+  UIWhisperEditCtrl(UIWindowContext& windows, UIEditContext& edit);
   void Slot23() override;
   void Slot24(int retained) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SetText(const char* value) override;
   void sub_86A060();
-
   /* 011C */ std::vector<std::string> history;
   /* 0128 */ int historyIndex;
 };
