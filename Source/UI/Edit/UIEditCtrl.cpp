@@ -2855,6 +2855,32 @@ void UIEditCtrl3::DecodeLinkOptions(std::vector<int>& options, const char* text,
 }
 
 // OFFSET: 0x00860790
+// FUNCTION: fn_10900
+int UIEditCtrl3::DecodeLinkCards(std::vector<int>& fields, const char* text, int& position, const char& separator, const int& length, int index) {
+  std::string value;
+  std::vector<int> cards;
+  int count = 1;
+  while (++position < length + 1) {
+    const char byte = text[position];
+    if (byte >= '0') {
+      value += byte;
+    } else if (separator == byte) {
+      ++count;
+      cards.push_back(this->DecodeLinkNumber(std::move(value)));
+      value.clear();
+    } else {
+      --position;
+      cards.push_back(this->DecodeLinkNumber(std::move(value)));
+      fields[index] = count;
+      for (unsigned int i = 0; i < cards.size(); ++i) {
+        fields[index + 1 + i] = cards[i];
+      }
+      break;
+    }
+  }
+
+  return count;
+}
 
 // OFFSET: 0x00977A50
 // FUNCTION: fn_13314
