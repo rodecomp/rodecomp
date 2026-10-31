@@ -13,9 +13,7 @@ class UILapineUpgradeBox_IngredientListWnd;
 
 class UILapineUpgradeBox_IngredientInfoWnd : public UIFrameWnd {
 public:
-  // INLINED
-  UILapineUpgradeBox_IngredientInfoWnd(UIWindowContext& windows, UIFrameContext& frames)
-      : UIFrameWnd(windows, frames, 0), selected(0), quantity(0) {}
+  UILapineUpgradeBox_IngredientInfoWnd(UIWindowContext& windows, UIFrameContext& frames);
 
   void Move(int x, int y) override;
   void Slot10(int x, int y, std::intptr_t value) override;

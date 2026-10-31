@@ -51,6 +51,12 @@ UILapineUpgradeBoxWnd::UILapineUpgradeBoxWnd(UIWindowContext& windows, UIFrameCo
       noticeTick(0), noticeDuration(3000), waiting(0), m_controls(&controls) {
 }
 
+// OFFSET: 0x00602E60
+// FUNCTION: fn_04188
+UILapineUpgradeBox_IngredientInfoWnd::UILapineUpgradeBox_IngredientInfoWnd(UIWindowContext& windows, UIFrameContext& frames)
+    : UIFrameWnd(windows, frames, 0), selected(0), quantity(0) {
+}
+
 // INLINED
 UILapineUpgradeBoxWnd::~UILapineUpgradeBoxWnd() {
   this->item = ITEM_INFO();
