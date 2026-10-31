@@ -25,6 +25,7 @@
 #include "UI/Window/UINewSelectCharWnd.h"
 #include "Utility/StackAlloc.h"
 #include "Utility/Text/FormatString.h"
+#include "Client/Mode/ModeMgr.h"
 
 #include <algorithm>
 #include <cctype>
@@ -150,7 +151,7 @@ void UIChangeMaterialWnd::Slot28(int x, int y) {
   this->ToScreen(x, y);
   const int itemId = std::atoi(item->itemId.c_str());
   const std::string name = ItemDisplayName(itemId);
-  (*reinterpret_cast<ModeTooltip**>(0x013495BC))->Show(name.c_str(), x + 5, y - 5, -1, 0, 1);
+  reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(name.c_str(), x + 5, y - 5, -1, 0, 1);
 }
 
 // OFFSET: 0x005E2840
