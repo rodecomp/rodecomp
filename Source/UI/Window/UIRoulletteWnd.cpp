@@ -19,11 +19,16 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UISpriteButton.h"
+#include "UI/Shop/ItemDrawing.h"
+#include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "Render/Text/FontCache.h"
+#include "Render/Text/TextContext.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstdint>
+#include <cstdio>
 
 // GLOBAL: gl_24881
 int g_effectDetailLevel;
@@ -39,6 +44,24 @@ struct RouletteReceiveItemPacket {
   /* 0002 */ unsigned char condition;
 };
 #pragma pack(pop)
+}
+
+// OFFSET: 0x0080B930
+// FUNCTION: fn_10083
+UIRoulletteWnd::UIRoulletteWnd()
+    : UIFrameWnd(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIFrameContext*>(nullptr), 0),
+      m_prizeButton(nullptr),
+      m_prizeSprite(nullptr),
+      m_stageArrow(nullptr),
+      m_enabled(1),
+      m_startButton(nullptr),
+      m_column(0),
+      m_row(0),
+      m_goldText(nullptr),
+      m_silverText(nullptr),
+      m_bronzeText(nullptr),
+      m_startSprite(nullptr) {
+  this->m_items.clear();
 }
 
 // OFFSET: 0x0080BAF0
@@ -78,6 +101,10 @@ ITEM_INFO UIRoulletteWnd::ItemAt(int x, int y) {
 
   return ITEM_INFO(0);
 }
+
+// OFFSET: 0x0080BD10
+
+// OFFSET: 0x0080C220
 
 // OFFSET: 0x0080C490
 // FUNCTION: fn_10088

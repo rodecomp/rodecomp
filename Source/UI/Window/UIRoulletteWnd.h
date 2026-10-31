@@ -14,8 +14,11 @@ extern int g_effectDetailLevel;
 
 class UIRoulletteWnd : public UIFrameWnd {
 public:
+  UIRoulletteWnd();
   ~UIRoulletteWnd() override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
