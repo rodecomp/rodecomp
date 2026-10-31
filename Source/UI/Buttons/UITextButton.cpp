@@ -2654,3 +2654,12 @@ void UINewComboBoxCtrl::Paint() {
     DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, RGB(this->borderRed, this->borderGreen, this->borderBlue));
   }
 }
+
+// OFFSET: 0x0088EB70
+// FUNCTION: fn_11384
+void UIShowAndEditTimeCtrl::Paint() {
+  UIWindowContext& context = *this->m_context;
+  this->ClearSurface(0xFFFF00FF);
+  this->DrawTextAt(context.fonts, context.locale, 22, 3, "m", 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(context.fonts, context.locale, 60, 3, "s", 0, 0, 12, 0, 0, 0);
+}
