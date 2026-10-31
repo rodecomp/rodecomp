@@ -11,6 +11,7 @@ class UINaviLinkButton;
 
 class UIChatHisBox : public UIListBox {
 public:
+  UIChatHisBox(UIWindowContext& windows, UIListBoxContext& list);
   bool Slot08() override;
   void Resize(int width, int height) override;
   void Show(int visible) override;

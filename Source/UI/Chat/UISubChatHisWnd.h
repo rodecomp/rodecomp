@@ -7,8 +7,12 @@
 
 class UIChatHisBox;
 class UIEditCtrl;
+class UIResizer;
 class UIWindowMgr;
 struct SubChatHisWndInfo;
+struct UIButtonContext;
+struct UIEditContext;
+struct UIListBoxContext;
 
 struct SubChatHistoryState {
   /* 0000 */ int unknown_0000;
@@ -27,6 +31,7 @@ public:
   UISubChatHisWnd();
   void Move(int x, int y) override;
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
@@ -39,16 +44,22 @@ public:
 private:
   /* 00B4 */ UIChatHisBox* m_chatBox;
   /* 00B8 */ SubChatHisWndInfo* m_saved;
-  /* 00BC */ unsigned char unknown_00BC[4];
+  /* 00BC */ UIResizer* m_resizer;
   /* 00C0 */ SubChatHistoryState m_state;
-  /* 00DC */ unsigned char unknown_00DC[0xC];
+  /* 00DC */ UIWindow* m_stickButton;
+  /* 00E0 */ UIWindow* m_optionButton;
+  /* 00E4 */ UIWindow* m_miniButton;
   /* 00E8 */ int m_inputHeight;
   /* 00EC */ int m_inputWidth;
   /* 00F0 */ int unknown_00F0;
   /* 00F4 */ int m_index;
-  /* 00F8 */ unsigned char unknown_00F8[0x1C];
+  /* 00F8 */ bool m_options[25];
+  /* 0111 */ unsigned char unknown_0111[3];
   /* 0114 */ std::string m_name;
   /* 012C */ UIEditCtrl* m_edit;
+  UIButtonContext* m_controls;
+  UIEditContext* m_editContext;
+  UIListBoxContext* m_listContext;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
