@@ -412,7 +412,7 @@ void CGameMode::ReceiveItem1738Add(const unsigned char* data) {
 void sub_D1F770(const unsigned char* data) {
   const ItemAddSlotPacket* packet = reinterpret_cast<const ItemAddSlotPacket*>(data);
   if (packet->slot < 0) {
-    (*reinterpret_cast<CMode**>(0x013495BC))->SendMsg(0x35, 0, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x35, 0, 0, 0, 0);
   }
 
   if (packet->itemId == 0) {
@@ -438,7 +438,7 @@ void sub_D1F770(const unsigned char* data) {
 void sub_D1F970(const unsigned char* data) {
   const ItemAddSlotOptionsPacket* packet = reinterpret_cast<const ItemAddSlotOptionsPacket*>(data);
   if (packet->slot < 0) {
-    (*reinterpret_cast<CMode**>(0x013495BC))->SendMsg(0x35, 0, 0, 0, 0);
+    g_modeMgr.gameMode->SendMsg(0x35, 0, 0, 0, 0);
   }
 
   if (packet->itemId == 0) {
