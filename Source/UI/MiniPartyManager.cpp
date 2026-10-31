@@ -1,4 +1,8 @@
+#include "UI/MiniPartyManager.h"
+
 #include "Client/Session.h"
+#include "Contents/ClientItemLists.h"
+#include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/MessengerMember.h"
 #include "UI/MiniPartyGrid.h"
 #include "UI/MiniPartyPlacement.h"
@@ -6,6 +10,8 @@
 #include "UI/Window/MiniPartyWndAreaMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
+#include "UI/Window/WindowManagerWindows.h"
+#include "UI/Window/WindowOrdering.h"
 #include <new>
 
 // OFFSET: 0x007435C0
@@ -68,3 +74,13 @@ void UIWindowMgr::RearrangeMiniPartyWindows() {
     g_session.SetRecord0734Value(member.accountId, index);
   }
 }
+
+// OFFSET: 0x00A8AF20
+// FUNCTION: fn_17119
+void UIWindowMgr::AddMiniPartyWindow(UIWindow* window) {
+  this->rendered.push_back(window);
+  this->snapExcluded.push_back(window);
+  this->ArrangeMiniPartyWindows();
+}
+
+// OFFSET: 0x00A96090

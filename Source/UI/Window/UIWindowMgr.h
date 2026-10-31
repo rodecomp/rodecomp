@@ -363,7 +363,9 @@ public:
   /* 08EC */ int unknown_08EC;
   /* 08F0 */ unsigned char unknown_08F0[0x20];
   /* 0910 */ int unknown_0910;
-  /* 0914 */ unsigned char unknown_0914[0xB0];
+  /* 0914 */ unsigned char unknown_0914[0x20];
+  /* 0934 */ unsigned char unknown_0934[0x10];
+  /* 0944 */ unsigned char unknown_0944[0x80];
   /* 09C4 */ std::map<HWND, CWebBrowser*> browsers;
   /* 09CC */ int unknown_09CC;
   /* 09D0 */ CWebBrowser* browser_09D0;
@@ -439,6 +441,7 @@ public:
   void sub_AA6B80();
   void SetScreenSize(int width, int height);
   void ArrangeMiniPartyWindows();
+  void AddMiniPartyWindow(UIWindow* window);
   void RearrangeMiniPartyWindows();
   static int ScaleToViewportWidth(int value);
   static int CenterOnViewportX(int x);
