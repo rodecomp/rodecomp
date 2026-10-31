@@ -135,7 +135,9 @@ public:
   /* 05D0 */ UIWindow* unknown_05D0;
   /* 05D4 */ unsigned char unknown_05D4[0x14];
   /* 05E8 */ std::uint32_t replayPauseTick;
-  /* 05EC */ unsigned char unknown_05EC[0x18];
+  /* 05EC */ unsigned char unknown_05EC[0x10];
+  /* 05FC */ UIWindow* unknown_05FC;
+  /* 0600 */ unsigned char unknown_0600[0x4];
   /* 0604 */ std::list<UIWindow*> unknown_0604;
   /* 060C */ unsigned char unknown_060C[0x10];
   /* 061C */ UIBroadcastBalloon* broadcastBalloon;

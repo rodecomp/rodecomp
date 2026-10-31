@@ -31,6 +31,9 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/CGameMode.h"
+#include "Contents/Actors/Pc.h"
+#include "Contents/World/World.h"
 #include "Contents/RouletteMgr.h"
 #include "UI/Item/UIItemStoreWnd.h"
 #include "UI/Item/UIItemWnd.h"
@@ -1156,6 +1159,104 @@ int UIWindowMgr::LoadReplayReserved(const std::vector<unsigned char>& data) {
     }
   }
   return static_cast<int>(offset);
+}
+
+// OFFSET: 0x00AA5B00
+// FUNCTION: fn_17225
+void UIWindowMgr::CycleWindowVisibility(int) {
+  for (std::list<UIWindow*>::iterator it = this->hiddenWindows.begin(); it != this->hiddenWindows.end();) {
+    std::list<UIWindow*>::iterator next = it;
+    ++next;
+    if (std::find(this->rendered.begin(), this->rendered.end(), *it) == this->rendered.end()) {
+      this->hiddenWindows.erase(it);
+    }
+    it = next;
+  }
+
+  const int state = this->unknown_0508;
+  if (state == 0) {
+    if (this->unknown_01DC) {
+      this->unknown_01DC->SendMsg(nullptr, 6, 222, 0, 0, 0);
+    }
+    if (this->hiddenWindows.size() == 0) {
+      for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+        if ((*it)->geometry.visible) {
+          this->hiddenWindows.push_back(*it);
+        }
+      }
+    }
+    this->unknown_0508 = 1;
+  } else if (state == 1) {
+    bool closed = false;
+    for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+      UIWindow* window = *it;
+      if (window->geometry.visible) {
+        const int id = window->geometry.id;
+        if (!this->IsOrderFixed(id)) {
+          this->CloseWindow(id);
+          closed = true;
+        } else if (std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), window) == this->hiddenWindows.end()) {
+          this->hiddenWindows.push_back(*it);
+        }
+      }
+    }
+    if (closed) {
+      if (this->unknown_01DC) {
+        this->unknown_01DC->SendMsg(nullptr, 6, 222, 0, 0, 0);
+      }
+      return;
+    }
+
+    for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+      UIWindow* window = *it;
+      if (window != reinterpret_cast<UIWindow*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon())) {
+        window->Show(0);
+      }
+    }
+    this->CloseWindow(14);
+    CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    if (player) {
+      player->SendMsg(nullptr, 109, 0, 164, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      player->unknown_0544 = 0;
+    }
+    this->unknown_0508 = 2;
+  } else if (state == 2) {
+    bool closed = false;
+    for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+      if (*it != reinterpret_cast<UIWindow*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon()) &&
+          *it != static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_05FC && (*it)->geometry.visible) {
+        UIWindow* window = *it;
+        if (std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), window) != this->hiddenWindows.end()) {
+          window->Show(0);
+        } else {
+          this->CloseWindow(window->geometry.id);
+        }
+        closed = true;
+      }
+    }
+    if (closed) {
+      this->ShowWindows189(0);
+      if (this->unknown_01DC) {
+        this->unknown_01DC->SendMsg(nullptr, 6, 222, 0, 0, 0);
+      }
+      return;
+    }
+
+    for (std::list<UIWindow*>::iterator it = this->hiddenWindows.begin(); it != this->hiddenWindows.end(); ++it) {
+      (*it)->Show(1);
+    }
+    for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
+      if ((*it)->geometry.id == 189) {
+        (*it)->Show(g_serviceOptions.Get(250) ? 1 : 0);
+      }
+    }
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode && mode->unknown_0254 == 1) {
+      this->EnsureWindow(14);
+    }
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->RefreshEffect164();
+    this->unknown_0508 = 1;
+  }
 }
 
 // OFFSET: 0x00AA8D10

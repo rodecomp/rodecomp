@@ -546,6 +546,7 @@ public:
   int LoadReplaySettings(const std::vector<unsigned char>& data);
   int LoadReplayReserved(const std::vector<unsigned char>& data);
   int LoadReplayWindows(const std::vector<unsigned char>& data);
+  void CycleWindowVisibility(int unused);
   void BroadcastMessage21();
   bool HasModalWindow();
   int TranslateHotkey(int key, int keyData);
