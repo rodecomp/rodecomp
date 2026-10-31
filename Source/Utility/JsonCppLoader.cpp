@@ -102,8 +102,71 @@ bool JsonCppLoader::GetMapStringIntValue(const JsonValue& node, const std::strin
 }
 
 // OFFSET: 0x00508BD0
+// FUNCTION: fn_00889
+bool JsonCppLoader::GetMapStringStringValue(const JsonValue& node, const std::string& key, std::map<std::string, std::string>* out) {
+  JsonValue value;
+  this->GetValue(value, key, node, JsonValue::OBJECT_VALUE);
+  if (value.IsNull()) {
+    this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
+    return false;
+  }
+
+  const JsonObject& members = value.GetObject();
+  for (JsonObject::const_iterator member = members.begin(); member != members.end(); ++member) {
+    std::string name = member->first;
+    JsonValue element = member->second;
+    if (element.GetType() != JsonValue::STRING_VALUE) {
+      this->Fail("잘못된 데이터가 입력되었습니다. stringValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
+      return false;
+    }
+
+    if (!out->insert(std::make_pair(name, element.AsString())).second) {
+      this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
+      return false;
+    }
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00509130
+// FUNCTION: fn_00890
+bool JsonCppLoader::GetMapStringIntVectorValue(const JsonValue& node, const std::string& key, std::map<std::string, std::vector<int> >* out) {
+  JsonValue value;
+  this->GetValue(value, key, node, JsonValue::OBJECT_VALUE);
+  if (value.IsNull()) {
+    this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
+    return false;
+  }
+
+  const JsonObject& members = value.GetObject();
+  for (JsonObject::const_iterator member = members.begin(); member != members.end(); ++member) {
+    std::string name = member->first;
+    JsonValue element = member->second;
+    if (element.GetType() != JsonValue::ARRAY_VALUE) {
+      this->Fail("잘못된 데이터가 입력되었습니다. arrayValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
+      return false;
+    }
+
+    std::vector<int> values;
+    const JsonArray& items = element.ArrayRange();
+    for (JsonArray::const_iterator item = items.begin(); item != items.end(); ++item) {
+      if (item->GetType() != JsonValue::INT64_VALUE) {
+        this->Fail("잘못된 데이터가 입력되었습니다. intValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
+        return false;
+      }
+
+      values.push_back(item->AsInt());
+    }
+
+    if (!out->insert(std::make_pair(name, values)).second) {
+      this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
+      return false;
+    }
+  }
+
+  return true;
+}
 
 // OFFSET: 0x00509D40
 // FUNCTION: fn_00892
