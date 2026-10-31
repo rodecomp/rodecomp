@@ -5,6 +5,7 @@
 
 struct NormalItemSlotWindow;
 struct ITEM_INFO;
+class UITabControl;
 
 class UIEquipWnd : public UIFrameWnd {
 public:
@@ -15,7 +16,8 @@ public:
   /* 00B8 */ int m_highlight[3];
   /* 00C4 */ int m_show;
   /* 00C8 */ NormalItemSlotWindow* m_placement;
-  /* 00CC */ unsigned char unknown_00CC[0x24];
+  /* 00CC */ unsigned char unknown_00CC[0x20];
+  /* 00EC */ UITabControl* m_tabs;
   /* 00F0 */ int m_page;
   /* 00F4 */ int m_contentTop;
   /* 00F8 */ unsigned char unknown_00F8[0x2C];

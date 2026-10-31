@@ -4,6 +4,14 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "Contents/MessageTable.h"
+#include "UI/Items/UIEquipWnd.h"
+#include "UI/Layout/SnapMgr.h"
+#include "UI/Layout/WindowSnapping.h"
+#include "UI/Lists/UITabControl.h"
+#include "UI/Shortcuts/ShortcutVisibility.h"
+#include "UI/Window/WindowDialogs.h"
+#include "UI/Window/WindowOrdering.h"
 
 #include <cstdio>
 
@@ -172,4 +180,153 @@ void UIBasicInfoWnd::Slot28(int x, int y) {
   int screenY = top - 19;
   this->ToScreen(screenX, screenY);
   this->m_controls->services.Tooltip(text, screenX, screenY, -1, false, true);
+}
+
+// OFFSET: 0x009995A0
+// FUNCTION: fn_13498
+int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 6:
+    switch (argument1) {
+    case 192:
+      if (!g_windowMgr.CloseWindow(11)) {
+        g_windowMgr.EnsureWindow(11);
+      }
+      break;
+    case 193:
+      if (!g_windowMgr.CloseWindow(155)) {
+        g_windowMgr.EnsureWindow(155);
+      }
+      break;
+    case 194:
+      if (!g_windowMgr.CloseWindow(8)) {
+        g_windowMgr.EnsureWindow(8);
+      }
+      break;
+    case 195: {
+      UIEquipWnd* equip = dynamic_cast<UIEquipWnd*>(g_windowMgr.LookupWindow(10));
+      if (equip) {
+        if (equip->m_page == 0) {
+          g_windowMgr.CloseWindow(10);
+          return 0;
+        }
+      } else {
+        equip = dynamic_cast<UIEquipWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(10)));
+        if (!equip) {
+          return 0;
+        }
+      }
+
+      equip->m_tabs->SelectTab(0);
+      break;
+    }
+    case 196:
+      if (!g_windowMgr.CloseWindow(37)) {
+        g_windowMgr.EnsureWindow(37);
+      }
+      break;
+    case 199:
+      if (!g_windowMgr.CloseWindow(69)) {
+        g_windowMgr.EnsureWindow(69);
+      }
+      break;
+    case 202: {
+      const int height = this->geometry.height;
+      this->SetHeight(height == this->collapsedHeight ? this->expandedHeight : this->collapsedHeight);
+      this->m_frameContext->snapping.Store(this);
+      reinterpret_cast<WindowOrdering&>(g_windowMgr).Promote(this);
+      const int delta = this->geometry.height - height;
+      if (delta != 0) {
+        g_snapMgr.MoveEdge(this, 0, delta, 3, this->m_frameContext->snapping);
+      }
+      break;
+    }
+    case 214:
+      if (!g_windowMgr.CloseWindow(27) && !g_windowMgr.window_027C) {
+        if (!g_windowMgr.unknown_02FC && !g_windowMgr.unknown_0304) {
+          g_windowMgr.EnsureWindow(27);
+        } else {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(587), 0, true, false, 0, "Message", 280, 120, 0);
+        }
+      }
+      break;
+    case 219:
+      if (!g_windowMgr.CloseWindow(140)) {
+        g_windowMgr.EnsureWindow(140);
+      }
+      break;
+    case 222:
+      g_windowMgr.CloseWindow(11);
+      g_windowMgr.CloseWindow(13);
+      g_windowMgr.CloseWindow(8);
+      g_windowMgr.CloseWindow(10008);
+      g_windowMgr.CloseWindow(10);
+      g_windowMgr.CloseWindow(69);
+      g_windowMgr.CloseWindow(27);
+      g_windowMgr.CloseWindow(30);
+      g_windowMgr.CloseWindow(37);
+      g_windowMgr.CloseWindow(38);
+      g_windowMgr.CloseWindow(88);
+      g_windowMgr.CloseWindow(86);
+      g_windowMgr.CloseWindow(87);
+      g_windowMgr.CloseWindow(40);
+      g_windowMgr.CloseWindow(59);
+      reinterpret_cast<WindowVisibility&>(g_windowMgr).Show(36, 0);
+      this->SetHeight(this->collapsedHeight);
+      this->m_frameContext->snapping.Store(this);
+      break;
+    case 247:
+      if (!g_windowMgr.LookupWindow(227) && !g_windowMgr.CloseWindow(40) && g_session.unknown_5C1C > 0) {
+        g_windowMgr.EnsureWindow(40);
+      }
+      break;
+    case 361:
+      if (!g_windowMgr.CloseWindow(10008)) {
+        g_windowMgr.EnsureWindow(10008);
+      }
+      break;
+    case 373:
+      if (!g_windowMgr.CloseWindow(59)) {
+        g_windowMgr.EnsureWindow(59);
+      }
+      break;
+    case 578: {
+      UIEquipWnd* equip = dynamic_cast<UIEquipWnd*>(g_windowMgr.LookupWindow(10));
+      if (equip) {
+        if (equip->m_page == 1) {
+          g_windowMgr.CloseWindow(10);
+          return 0;
+        }
+      } else {
+        equip = dynamic_cast<UIEquipWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(10)));
+        if (!equip) {
+          return 0;
+        }
+      }
+
+      equip->m_tabs->SelectTab(1);
+      break;
+    }
+    }
+    break;
+  case 34:
+    this->saved = reinterpret_cast<BasicInfoWndInfo*>(argument1);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->mode = this->saved->unknown_0010 != 0;
+    this->SetHeight(this->saved->height);
+    this->Move(this->saved->x, this->saved->y);
+    break;
+  case 60:
+    if (this->geometry.height != this->expandedHeight) {
+      this->Invalidate();
+    }
+    break;
+  default:
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  return 0;
 }
