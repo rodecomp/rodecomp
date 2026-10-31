@@ -135,3 +135,24 @@ void CUIScrollWindow::Slot16() {
 }
 
 }
+
+namespace RecommendedQuestInfo {
+
+// OFFSET: 0x00A58640
+// FUNCTION: fn_16339
+CUIQuestInfo::CUIQuestInfo(UIWindowContext& context) : CUIControl(context), textViewer(nullptr) {
+}
+
+// OFFSET: 0x00A587C0
+// FUNCTION: fn_16341
+CUIScrollWindow::CUIScrollWindow(UIWindowContext& context)
+    : CUIControl(context), background(nullptr), topImage(nullptr), bottomImage(nullptr), questInfos(), npcSprite(nullptr) {
+}
+
+}
+
+// OFFSET: 0x00A586C0
+// FUNCTION: fn_16340
+CUIRecommendedQuestInfo::CUIRecommendedQuestInfo()
+    : titleBar(nullptr), background(nullptr), titleText(nullptr), scrollWindow(nullptr), closeButton(nullptr) {
+}

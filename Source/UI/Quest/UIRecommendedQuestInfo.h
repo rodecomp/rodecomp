@@ -8,22 +8,31 @@
 #include <vector>
 
 class UINpcSprWnd;
+class CUIStaticText;
+
+namespace RecommendedQuestInfo {
+class CUIScrollWindow;
+}
 
 class CUIRecommendedQuestInfo : public CUIFrameWnd {
 public:
+  CUIRecommendedQuestInfo();
   void Slot16() override;
   void OnFirstAction();
   virtual void Slot53();
 
   /* 00D8 */ CUITitleBar* titleBar;
+  /* 00DC */ CUIStaticImage* background;
+  /* 00E0 */ CUIStaticText* titleText;
+  /* 00E4 */ RecommendedQuestInfo::CUIScrollWindow* scrollWindow;
+  /* 00E8 */ CUIButton* closeButton;
 };
 
 namespace RecommendedQuestInfo {
 
 class CUIQuestInfo : public CUIControl {
 public:
-  __declspec(noinline) explicit CUIQuestInfo(UIWindowContext& context) : CUIControl(context), textViewer(nullptr) {
-  }
+  __declspec(noinline) explicit CUIQuestInfo(UIWindowContext& context);
 
   void Slot15(int width, int height) override;
   void Slot16() override;
@@ -34,6 +43,7 @@ public:
 
 class CUIScrollWindow : public CUIControl {
 public:
+  __declspec(noinline) explicit CUIScrollWindow(UIWindowContext& context);
   void Slot15(int width, int height) override;
   void Slot16() override;
 
