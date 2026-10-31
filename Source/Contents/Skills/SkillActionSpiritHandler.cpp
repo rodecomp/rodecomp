@@ -91,6 +91,7 @@ public:
 class CSkillAction_SH_HYUN_ROK_CANNON : public CSkillAction {
 public:
   void Slot08(int level, CGameActor* source) override;
+  void Slot11(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillObjectAction_SH_HYUN_ROKS_BREEZE : public CSkillObjectAction {
@@ -381,6 +382,23 @@ void CSkillObjectAction_SH_HYUN_ROKS_BREEZE::Slot00(int argument, CRenderObject*
 void CSkillAction_SH_HYUN_ROK_CANNON::Slot08(int level, CGameActor* source) {
   if (source) {
     static_cast<EffectActor*>(source)->LaunchEffect(841, level / 16);
+  }
+}
+
+// OFFSET: 0x007A07A0
+// FUNCTION: fn_08959
+void CSkillAction_SH_HYUN_ROK_CANNON::Slot11(int level, CGameActor* source, CGameActor* target) {
+  if (!source || !target) {
+    return;
+  }
+
+  const float angle = ScreenAngle(
+    &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+  );
+  const vector3d position = source->render.position;
+  if (CEffect* effect =
+        g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_cannon"), position.x, position.y, position.z, 0, -1, 0, 0)) {
+    effect->Slot17(angle);
   }
 }
 
