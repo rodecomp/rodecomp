@@ -1,6 +1,22 @@
 #include "Resource/ImfResource.h"
 #include "File/File.h"
 
+// INLINED
+CImfRes::CImfRes() {
+  for (int priority = 0; priority < 15; ++priority) {
+    this->m_maxAction[priority] = 0;
+    for (int action = 0; action < 104; ++action) {
+      this->m_maxMotion[priority][action] = 0;
+    }
+  }
+}
+
+// OFFSET: 0x0074F0A0
+// FUNCTION: fn_07924
+CImfRes* CImfRes::Create() {
+  return new CImfRes;
+}
+
 // OFFSET: 0x0074F190
 // FUNCTION: fn_07925
 bool CImfRes::Load(const char* name) {
