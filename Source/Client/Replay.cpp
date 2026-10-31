@@ -1,6 +1,7 @@
 #include "Client/Replay.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Skills/SkillInfo.h"
+#include "Client/Session.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -950,6 +951,21 @@ void Replay::RestartClock() {
     this->baseFrame = this->frame;
     this->started = this->previousTick = timeGetTime();
   }
+}
+
+// OFFSET: 0x00E3E460
+// FUNCTION: fn_24196
+std::vector<unsigned char> CSession::BuildStatusReplayPacket() {
+  std::vector<unsigned char> packet(29, 0);
+  unsigned char* data = packet.data();
+  *reinterpret_cast<std::uint16_t*>(data) = 0x983;
+  *reinterpret_cast<std::uint16_t*>(data + 2) = 0x2A1;
+  *reinterpret_cast<std::uint32_t*>(data + 9) = 9999;
+  *reinterpret_cast<std::uint32_t*>(data + 4) = this->m_aid;
+  data[8] = 1;
+  *reinterpret_cast<std::uint32_t*>(data + 13) = 9999;
+  *reinterpret_cast<std::uint32_t*>(data + 17) = this->unknown_5C1C;
+  return packet;
 }
 
 // OFFSET: 0x00E31240
