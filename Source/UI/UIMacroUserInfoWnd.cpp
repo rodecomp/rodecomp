@@ -24,16 +24,21 @@
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Layout/WindowSnapping.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/FrameFocus.h"
+#include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
+#include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
 
 #include <algorithm>
 #include <atlconv.h>
 #include <cstdlib>
 #include <cstring>
+#include <timeapi.h>
+#include <vector>
 
 // OFFSET: 0x007EE980
 // FUNCTION: fn_09831
@@ -541,4 +546,322 @@ void UIMacroReporterWnd::Slot15(int, int) {
   }
 
   this->m_entries.clear();
+}
+
+namespace {
+#pragma pack(push, 1)
+  struct PACKET_CZ_MACRO_REPORT_HEADER {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::uint16_t packetLength;
+    /* 0004 */ char target[16];
+    /* 0014 */ std::uint8_t type;
+    /* 0015 */ std::uint8_t count;
+  };
+
+  struct PACKET_CZ_MACRO_REPORT_ACCOUNT {
+    /* 0000 */ short packetType;
+    /* 0002 */ std::uint32_t accountId;
+  };
+#pragma pack(pop)
+}
+
+// OFFSET: 0x007F1420
+// FUNCTION: fn_09856
+int UIMacroReporterWnd::SendMsg(
+  UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
+) {
+  switch (message) {
+  case 0:
+    if (this->m_mode == 2) {
+      if (sender) {
+        const int index = (sender->geometry.y - 56) / 22;
+        this->m_names[index] = static_cast<UIEditCtrl*>(sender)->Text();
+      }
+    } else if (this->m_mode == 3) {
+      if (sender && sender == this->m_fields[0]) {
+        this->m_target = static_cast<UIEditCtrl*>(this->m_fields[0])->Text();
+      }
+    } else if (sender == this->m_edit) {
+      UIEditCtrl* edit = static_cast<UIEditCtrl*>(this->m_edit);
+      std::string text = edit->Text();
+      if (text.size() > 1) {
+        edit->SetText(IntToString(this->unknown_00F4, 0).c_str());
+      } else if (text.c_str()[0] >= '0' && text.c_str()[0] <= '9') {
+        this->unknown_00F4 = std::atoi(text.c_str());
+        if (this->unknown_00F4 > this->unknown_00F8) {
+          this->unknown_00F4 = this->unknown_00F8;
+          edit->SetText(IntToString(this->unknown_00F8, 0).c_str());
+        }
+      } else {
+        edit->SetText(IntToString(this->unknown_00F4, 0).c_str());
+      }
+    }
+    break;
+
+  case 6:
+    switch (argument1) {
+    case 201:
+      g_windowMgr.CloseWindow(286);
+      break;
+
+    case 211: {
+      for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
+        if (argument2 == it->id) {
+          for (auto next = it + 1; next != this->m_entries.end(); ++next, ++it) {
+            it->name.swap(next->name);
+            it->id = next->id;
+            it->unknown_001C = next->unknown_001C;
+          }
+          this->m_entries.pop_back();
+          break;
+        }
+      }
+      for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
+        if (sender == it->first) {
+          it->first->SetDisabled(1);
+          it->first->Invalidate();
+          this->m_removedRows.push_back(it->first);
+          it->second->SetDisabled(1);
+          it->second->Invalidate();
+          this->m_removedRows.push_back(it->second);
+          this->m_rows.erase(it);
+          break;
+        }
+      }
+      this->UpdateScrollBar();
+      break;
+    }
+
+    case 213:
+      if (this->unknown_00D4 != sender) {
+        break;
+      }
+      this->unknown_010C = argument2 != 0;
+      switch (this->m_mode) {
+      case 0:
+      case 1:
+        if (argument2) {
+          this->geometry.targetAlpha = 128;
+        } else {
+          this->geometry.targetAlpha = 255;
+        }
+        this->geometry.alphaStart = timeGetTime();
+        break;
+      case 2:
+      case 3:
+        this->m_namesValid = this->ValidateNames(1);
+        this->m_targetValid = this->ValidateTarget(1);
+        break;
+      }
+      break;
+
+    case 215: {
+      if (this->unknown_010C == true) {
+        switch (this->m_mode) {
+        case 0:
+        case 1:
+          if (argument2 == 2 || argument2 == 3) {
+            static_cast<UICheckBox*>(this->unknown_00D4)->SetChecked(0);
+          }
+          break;
+        case 2:
+        case 3:
+          if (argument2 == 0 || argument2 == 1) {
+            static_cast<UICheckBox*>(this->unknown_00D4)->SetChecked(0);
+          }
+          break;
+        }
+      }
+
+      if (this->m_mode == 2) {
+        this->ValidateNames(0);
+      } else if (this->m_mode == 3) {
+        this->ValidateTarget(0);
+      }
+
+      this->m_mode = argument2;
+      for (int index = 0; index < 4; ++index) {
+        this->m_tabs[index]->SendMsg(this, 13, 0, 0, 0, 0);
+      }
+      sender->SendMsg(this, 13, 1, 0, 0, 0);
+
+      UIEditCtrl* edit = static_cast<UIEditCtrl*>(this->m_edit);
+      if (sender == this->m_tabs[1]) {
+        edit->disabled = 0;
+      } else {
+        edit->disabled = 1;
+      }
+      edit->Invalidate();
+
+      if (sender == this->m_tabs[0] || sender == this->m_tabs[1]) {
+        InputFocus focus{g_windowMgr.hoverWindow};
+        focus.Set(nullptr);
+        for (int index = 0; index < this->m_visibleRows; ++index) {
+          UIEditCtrl* field = static_cast<UIEditCtrl*>(this->m_fields[index]);
+          field->disabled = 1;
+          field->Invalidate();
+          field->SetText("");
+        }
+        for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
+          it->first->SetDisabled(0);
+          it->first->Invalidate();
+          it->second->SetDisabled(0);
+          it->second->Invalidate();
+          it->first->Enable(1);
+          it->second->Enable(1);
+        }
+      } else {
+        for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
+          it->first->SetDisabled(1);
+          it->first->Invalidate();
+          it->second->SetDisabled(1);
+          it->second->Invalidate();
+          it->first->Enable(0);
+          it->second->Enable(0);
+        }
+        for (int index = 0; index < this->m_visibleRows; ++index) {
+          UIEditCtrl* field = static_cast<UIEditCtrl*>(this->m_fields[index]);
+          field->disabled = 0;
+          field->Invalidate();
+          if (sender == this->m_tabs[2]) {
+            field->SetText(this->m_names[index].c_str());
+          } else if (sender == this->m_tabs[3]) {
+            if (index == 0) {
+              field->SetText(this->m_target.c_str());
+            } else {
+              field->SetText("");
+            }
+          }
+        }
+      }
+      break;
+    }
+
+    case 345:
+      if (this->m_mode == 2 || this->m_mode == 3) {
+        this->m_namesValid = this->ValidateNames(1);
+        this->m_targetValid = this->ValidateTarget(1);
+        if (this->m_namesValid == true && this->m_targetValid == true) {
+          PACKET_CZ_MACRO_REPORT_HEADER header;
+          header.packetType = 0xBDA;
+          strncpy_s(header.target, sizeof(header.target), this->m_target.c_str(), _TRUNCATE);
+          header.count = static_cast<std::uint8_t>(this->m_nameCount);
+          const int length = this->m_nameCount * 16 + sizeof(header);
+          header.type = 6;
+          char buffer[2048];
+          std::memset(buffer + sizeof(header), 0, sizeof(buffer) - sizeof(header));
+          if (length > sizeof(buffer)) {
+            break;
+          }
+          header.packetLength = static_cast<std::uint16_t>(length);
+          std::memcpy(buffer, &header, sizeof(header));
+          for (int index = 0; index < this->m_nameCount; ++index) {
+            if (!this->m_names[index].empty()) {
+              char name[16];
+              strncpy_s(name, sizeof(name), (this->m_names[index] + ".gat").c_str(), _TRUNCATE);
+              memcpy_s(buffer + sizeof(header) + index * 16, 16, name, sizeof(name));
+            }
+          }
+          GetRagConnection().Send(length, buffer);
+        }
+      } else {
+        std::vector<int> accounts;
+        for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
+          if (std::find(accounts.begin(), accounts.end(), it->id) == accounts.end()) {
+            accounts.push_back(it->id);
+          }
+        }
+        const int result = reinterpret_cast<WindowDialogs*>(&g_windowMgr)
+                             ->Confirm(FormatOwnedString(LookupMessage(2876), accounts.size()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
+        if (result != 188) {
+          for (auto it = accounts.begin(); it != accounts.end(); ++it) {
+            PACKET_CZ_MACRO_REPORT_ACCOUNT packet;
+            packet.packetType = 0xA56;
+            packet.accountId = *it;
+            GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+          }
+          this->m_entries.clear();
+          for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {
+            it->first->SetDisabled(1);
+            it->first->Invalidate();
+            this->m_removedRows.push_back(it->first);
+            it->second->SetDisabled(1);
+            it->second->Invalidate();
+            this->m_removedRows.push_back(it->second);
+          }
+          this->m_rows.clear();
+        }
+      }
+      break;
+    }
+    break;
+
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->m_firstRow;
+    if (message == 9) {
+      this->m_firstRow = previous - this->m_visibleRows + 1;
+    } else if (message == 10) {
+      this->m_firstRow = previous + (this->m_visibleRows - 1);
+    } else {
+      this->m_firstRow = previous + argument1;
+    }
+    if (previous != this->m_firstRow) {
+      this->UpdateScrollBar();
+    }
+    return this->m_firstRow - previous;
+  }
+
+  case 34: {
+    this->m_state = reinterpret_cast<MacroReporterState*>(argument1);
+    if (!reinterpret_cast<MacroReporterWndInfo*>(this->m_state)->IsValid()) {
+      reinterpret_cast<MacroReporterWndInfo*>(this->m_state)->Reset();
+    }
+    this->Resize(this->m_state->width, this->m_state->height);
+    this->Move(this->m_state->x, this->m_state->y);
+    this->unknown_010C = this->m_state->unknown_0011;
+    static_cast<UICheckBox*>(this->unknown_00D4)->SetChecked(this->unknown_010C);
+    this->m_entries.clear();
+    for (unsigned int index = 0; index < this->m_state->entries.size(); ++index) {
+      const MacroReporterEntry& entry = this->m_state->entries[index];
+      this->m_entries.push_back(MacroReporterEntry(entry.name, entry.id, entry.unknown_001C));
+      this->sub_7EF430(entry.id, entry.name);
+    }
+    this->UpdateScrollBar();
+    break;
+  }
+
+  case 98: {
+    auto entry = this->m_entries.begin();
+    for (; entry != this->m_entries.end(); ++entry) {
+      if (argument1 == entry->id) {
+        break;
+      }
+    }
+    if (entry == this->m_entries.end()) {
+      break;
+    }
+
+    unsigned int row = 0;
+    for (; row < this->m_rows.size(); ++row) {
+      if (sender == this->m_rows[row].second) {
+        break;
+      }
+    }
+
+    if (!g_windowMgr.CloseWindow(287)) {
+      UIMacroUserInfoWnd* info = static_cast<UIMacroUserInfoWnd*>(g_windowMgr.EnsureWindow(287));
+      info->Move(this->geometry.x + 15, this->geometry.y + row * 22 + 78);
+      const unsigned short job = entry->unknown_001C;
+      std::string name = entry->name;
+      info->m_name = name;
+      info->m_message = g_session.GetJobName(job, -1);
+      info->Invalidate();
+    }
+    break;
+  }
+  }
+
+  return this->UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
