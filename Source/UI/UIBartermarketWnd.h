@@ -23,6 +23,8 @@ public:
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot35(int delta) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  bool Purchase();
   void UpdateScrollBar();
   __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryAt(int x, int y);
   __declspec(noinline) std::pair<bool, BarterMarketEntry> GetEntryOrChunkAt(int x, int y);
@@ -43,6 +45,7 @@ public:
 class UIExpandedBartermarketWnd : public UIFrameWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
@@ -80,6 +83,7 @@ public:
 class UIBartermarketWnd : public UIItemShopWnd {
 public:
   void Slot10(int x, int y, std::intptr_t value) override;
+  void Slot15(int width, int height) override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;

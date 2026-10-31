@@ -446,6 +446,8 @@ void UIExpandedBartermarketWnd::UpdateScrollBar() {
   this->scrollBar->Invalidate();
 }
 
+// OFFSET: 0x00849210
+
 // OFFSET: 0x00849B30
 // FUNCTION: fn_10599
 int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -1311,3 +1313,70 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
   return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
 }
+
+// OFFSET: 0x00842570
+
+// OFFSET: 0x00845220
+// FUNCTION: fn_10575
+bool UIExpandedBarterItemPurchaseWnd::Purchase() {
+  std::map<std::string, int> totals;
+  std::vector<BarterMarketEntry> entries = *g_expandedBarterMarketItemMgr->GetEntries();
+
+  int count = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size();
+  count += g_session.CountItems17F0();
+  count += g_session.CountItems2B50();
+
+  for (std::vector<BarterMarketEntry>::iterator it = entries.begin(); it != entries.end(); ++it) {
+    std::map<std::string, int>::iterator total = totals.find(it->name);
+    if (total != totals.end()) {
+      total->second += it->value;
+    } else {
+      totals.insert(std::make_pair(it->name, it->value));
+    }
+
+    if (g_session.IsEquipItemType(it->field_0) == true || g_session.IsShadowItemType(it->field_0) == true) {
+      ++count;
+    } else {
+      g_session.FindInventoryIndexByItemId(std::atoi(it->name.c_str()));
+    }
+  }
+
+  if (count > g_extraInventorySlots + 100) {
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3568)), 255, 0, 0, 0);
+    this->SendMsg(nullptr, 6, 185, 0, 0, 0);
+    return false;
+  }
+
+  if (!g_expandedBarterMarketItemMgr->HasRequiredItems()) {
+    g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(3556)), 255, 0, 0, 0);
+    this->SendMsg(nullptr, 6, 185, 0, 0, 0);
+    return false;
+  }
+
+  for (std::map<std::string, int>::iterator it = totals.begin(); it != totals.end(); ++it) {
+    const int itemId = std::atoi(it->first.c_str());
+    const int inventoryCount = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size();
+    int owned = 0;
+    for (int i = 0; i < inventoryCount; ++i) {
+      ITEM_INFO item = g_session.GetInventoryItemAt(i);
+      if (std::atoi(item.itemId.c_str()) == itemId) {
+        owned = item.quantity;
+        break;
+      }
+    }
+
+    if (it->second + owned > 30000) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      const std::string text = FormatOwnedString(LookupMessage(3691), 30000);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 255, 0, 0, 0);
+      this->SendMsg(nullptr, 6, 185, 0, 0, 0);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// OFFSET: 0x00847290
