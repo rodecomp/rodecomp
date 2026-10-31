@@ -207,3 +207,26 @@ void UISubChatHisWnd::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x00912340
+// FUNCTION: fn_12529
+UISubChatHisWnd::UISubChatHisWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edit, UIListBoxContext& list)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_editContext(&edit), m_listContext(&list) {
+  this->m_saved = nullptr;
+  this->m_resizer = nullptr;
+  this->m_chatBox = nullptr;
+  this->m_inputHeight = 16;
+  this->m_inputWidth = 71;
+  this->unknown_00F0 = 15;
+  switch (g_serviceType) {
+  case 1:
+  case 7:
+  case 11:
+    this->m_inputWidth = 110;
+    break;
+  case 10:
+    this->m_inputWidth = 71;
+    break;
+  case 18:
+    this->m_inputWidth = 90;
+    break;
+  }
+}

@@ -70,3 +70,6 @@ int UIRebirthWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 }
 
 // OFFSET: 0x00911950
+// FUNCTION: fn_12521
+UIRebirthWnd::UIRebirthWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls) : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+}
