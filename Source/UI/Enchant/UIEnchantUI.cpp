@@ -114,6 +114,13 @@ CUIMainPage::CUIMainPage(UIWindowContext& context) : CUIControl(context), firstP
 CUITab::CUITab(UIWindowContext& context) : CUIControl(context), current(nullptr) {
 }
 
+// OFFSET: 0x009F7420
+// FUNCTION: fn_14772
+CUITabButton::CUITabButton(UIWindowContext& context)
+    : CUIImageTextButton(context), page(nullptr), useSkinColors(0), normalColor(0xFFFFFF), selectedColor(0xFFFFFF), borderColor(0xCECECE), normalCell{0, 0},
+      selectedCell{0, 0}, borderCell{3, 1} {
+}
+
 // OFFSET: 0x009F74E0
 
 namespace EnchantUI {
@@ -131,6 +138,90 @@ CUIIngredient* CUIEnchantPage::CreateIngredient() {
   ingredient->Move(4, 200);
   this->AddChild(ingredient);
   return ingredient;
+}
+
+// OFFSET: 0x009FB800
+// FUNCTION: fn_14818
+void CUIIngredient::Slot15(int width, int height) {
+  this->unknown_0080 = new CUIStaticImage(*this->m_context);
+  this->unknown_0080->SetSize(70, 50);
+  this->unknown_0080->Move(0, 0);
+  {
+    const std::uint8_t offImageSource[] = {
+      0x5B, 0xF8, 0xC3, 0x63, 0xA7, 0xCB, 0xC0, 0xC8, 0x5D, 0xB3, 0xC3, 0x55, 0xDA, 0xBF, 0x59, 0x40,
+      0xF5, 0x34, 0x6B, 0xF8, 0x09, 0x71, 0x50, 0x4C, 0xC7, 0x35, 0x64, 0xC6, 0x02, 0x6B, 0x66, 0x5A,
+      0xF4, 0x31, 0x65, 0xB7, 0x05, 0x68, 0x75, 0x05
+    };
+    // GLOBAL: gl_25225
+    thread_local EncryptedName<sizeof(offImageSource), 0x050505679903579BULL> offImageName(offImageSource);
+    const std::string offImage(offImageName.Text());
+    this->unknown_0080->SetImage(offImage);
+  }
+  this->AddChild(this->unknown_0080);
+
+  this->unknown_0084 = new CUIStaticImage(*this->m_context);
+  this->unknown_0084->SetSize(70, 50);
+  this->unknown_0084->Move(0, 0);
+  {
+    const std::uint8_t onImageSource[] = {
+      0x21, 0xD4, 0x39, 0x2D, 0x15, 0xDD, 0xFC, 0x10, 0x27, 0x9F, 0x39, 0x1B, 0x68, 0xA9, 0x65, 0x98,
+      0x8F, 0x18, 0x91, 0xB6, 0xBB, 0x67, 0x6C, 0x94, 0xBD, 0x19, 0x9E, 0x88, 0xB0, 0x7D, 0x5A, 0x82,
+      0x8E, 0x15, 0xD7, 0xB5, 0xB8, 0x63, 0x39
+    };
+    // GLOBAL: gl_25226
+    thread_local EncryptedName<sizeof(onImageSource), 0xDD3913D5D7F97BE1ULL> onImageName(onImageSource);
+    const std::string onImage(onImageName.Text());
+    this->unknown_0084->SetImage(onImage);
+  }
+  this->AddChild(this->unknown_0084);
+
+  this->itemIcon = new CUIGameItem(*this->m_context);
+  this->itemIcon->SetMode(0);
+  this->itemIcon->SetScale(100);
+  this->itemIcon->Move(6, 10);
+  this->itemIcon->unknown_0084 = 1;
+  this->itemIcon->unknown_0085 = 1;
+  this->AddChild(this->itemIcon);
+
+  this->ownedText = new CUIStaticText(*this->m_context);
+  this->ownedText->SetSize(40, 14);
+  this->ownedText->Move(30, 17);
+  this->ownedText->SetText("", 0);
+  this->ownedText->SetFitText(0);
+  this->ownedText->SetAlign(6, 6);
+  {
+    const std::uint8_t fontSource[] = {0xE0, 0x80, 0x13, 0x50, 0x5C, 0x4B};
+    // GLOBAL: gl_25227
+    thread_local EncryptedName<sizeof(fontSource), 0xBF2B4B31397FF5A7ULL> fontName(fontSource);
+    const std::string font(fontName.Text());
+    this->ownedText->SetFont(font);
+  }
+  this->ownedText->SetFontHeight(12);
+  this->ownedText->SetBold(1);
+  this->ownedText->SetColor(0xF0F0F0);
+  this->ownedText->SetShadow(0, 0xFFFFFF);
+  this->ownedText->SetOutline(1, 0x965532);
+  this->AddChild(this->ownedText);
+
+  this->requiredText = new CUIStaticText(*this->m_context);
+  this->requiredText->SetSize(40, 14);
+  this->requiredText->Move(30, 31);
+  this->requiredText->SetText("", 0);
+  this->requiredText->SetFitText(0);
+  this->requiredText->SetAlign(6, 6);
+  {
+    const std::uint8_t fontSource[] = {0xFA, 0xC8, 0x81, 0x5E, 0xD6, 0xBF};
+    // GLOBAL: gl_25228
+    thread_local EncryptedName<sizeof(fontSource), 0x83EFBFBB37EDBDBDULL> fontName(fontSource);
+    const std::string font(fontName.Text());
+    this->requiredText->SetFont(font);
+  }
+  this->requiredText->SetFontHeight(12);
+  this->requiredText->SetBold(1);
+  this->requiredText->SetColor(0xF0F0F0);
+  this->requiredText->SetShadow(0, 0xFFFFFF);
+  this->requiredText->SetOutline(1, 0x965532);
+  this->AddChild(this->requiredText);
 }
 
 // OFFSET: 0x009F9B30

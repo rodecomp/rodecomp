@@ -84,12 +84,13 @@ public:
       : CUIControl(context), unknown_0080(nullptr), unknown_0084(nullptr), itemIcon(nullptr), ownedText(nullptr), requiredText(nullptr) {
   }
 
-  /* 0080 */ CUIControl* unknown_0080;
-  /* 0084 */ CUIControl* unknown_0084;
+  /* 0080 */ CUIStaticImage* unknown_0080;
+  /* 0084 */ CUIStaticImage* unknown_0084;
   /* 0088 */ CUIGameItem* itemIcon;
   /* 008C */ CUIStaticText* ownedText;
   /* 0090 */ CUIStaticText* requiredText;
 
+  void Slot15(int width, int height) override;
   void SetMaterial(int itemId, int required);
 };
 

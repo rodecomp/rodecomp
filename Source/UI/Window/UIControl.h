@@ -209,6 +209,7 @@ public:
 
 class CUITabButton : public CUIImageTextButton {
 public:
+  explicit CUITabButton(UIWindowContext& context);
   void Slot25(int x, int y) override;
   void Slot31(int x, int y) override;
   void Slot47() override;
