@@ -125,6 +125,7 @@ public:
   void sub_67B650(unsigned int questId);
   void sub_67B690();
   void sub_67B6B0();
+  void SetOngoingQuest(unsigned int id, const RenewQuestOngoingInfo& info);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

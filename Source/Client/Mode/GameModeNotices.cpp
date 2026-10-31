@@ -5243,3 +5243,57 @@ struct RodexMailPagePacket {
 // OFFSET: 0x00D70BF0
 
 // OFFSET: 0x00D6A0D0
+
+// OFFSET: 0x00D19000
+// FUNCTION: fn_21604
+void CRenewQuestMgr::SetOngoingQuest(unsigned int id, const RenewQuestOngoingInfo& info) {
+  this->m_ongoingQuests[id] = info;
+}
+
+#pragma pack(push, 1)
+struct SpecialBroadcastPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ char name[24];
+  /* 001A */ int value;
+  /* 001E */ unsigned char index;
+  /* 001F */ unsigned char type;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D44F50
+
+#pragma pack(push, 1)
+struct QuestHuntUpdateEntry {
+  /* 0000 */ unsigned int questId;
+  /* 0004 */ __int64 huntId;
+  /* 000C */ short maxCount;
+  /* 000E */ short count;
+};
+
+struct QuestHuntUpdatePacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::int16_t unknown_0004;
+  /* 0006 */ QuestHuntUpdateEntry entries[1];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D47760
+
+#pragma pack(push, 1)
+struct QuestHuntUpdateEntry2 {
+  /* 0000 */ unsigned int questId;
+  /* 0004 */ unsigned int huntId;
+  /* 0008 */ short maxCount;
+  /* 000A */ short count;
+};
+
+struct QuestHuntUpdatePacket2 {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::int16_t unknown_0004;
+  /* 0006 */ QuestHuntUpdateEntry2 entries[1];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D47C20

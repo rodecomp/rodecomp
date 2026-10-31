@@ -728,6 +728,9 @@ public:
   void ReceiveItemConsumed(const unsigned char* packet);
   void ReceivePartyLeaderChange(const unsigned char* packet);
   void ReceiveItemSellResult(const unsigned char* packet);
+  void ReceiveSpecialBroadcast(const unsigned char* data);
+  void ReceiveQuestHuntUpdate(const unsigned char* data);
+  void ReceiveQuestHuntUpdate2(const unsigned char* data);
   std::FILE* OpenRandomOptionSimulatorFile(const std::string& folder, const std::string& itemName);
   void ReceiveRandomOptionSimulation(const unsigned char* packet);
   void ReceiveBuyingStoreOpenResult(const unsigned char* packet);
