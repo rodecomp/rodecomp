@@ -52,6 +52,7 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
+#include "UI/Window/UIResizer.h"
 
 #include <direct.h>
 #include <io.h>
@@ -1073,4 +1074,17 @@ UINewChatWnd::UINewChatWnd(UIWindowContext& windows, UIFrameContext& frames) : U
     break;
   }
   this->unknown_013C = 0;
+}
+
+// OFFSET: 0x00933D60
+// FUNCTION: fn_12738
+void UISubChatHisWnd::Resize(int width, int height) {
+  this->UIFrameWnd::Resize(width, height);
+  this->m_chatBox->Resize(this->geometry.width - 8, this->geometry.height - this->unknown_00F0 - this->m_inputHeight - 4, true);
+  this->m_resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  this->m_miniButton->Move(this->m_inputWidth + 26, 5);
+  this->m_state.unknown_0008 = this->geometry.width;
+  this->m_state.unknown_000C = this->geometry.height - this->m_inputHeight;
+  g_session.m_subChatWnds[this->m_index].width = this->geometry.width;
+  g_session.m_subChatWnds[this->m_index].height = this->geometry.height;
 }

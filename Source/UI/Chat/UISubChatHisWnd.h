@@ -31,6 +31,7 @@ class UISubChatHisWnd : public UIFrameWnd {
 public:
   UISubChatHisWnd();
   UISubChatHisWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& edit, UIListBoxContext& list);
+  void Resize(int width, int height) override;
   void Move(int x, int y) override;
   void Slot11() override;
   void Slot15(int width, int height) override;
