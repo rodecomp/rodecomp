@@ -121,6 +121,15 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnScr
 template <>
 bool CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::RebindIndex(int index);
 
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::AddNewItem();
+
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Slot53(int resolveSkin);
+
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Resize(int width, int height);
+
 // OFFSET: 0x00A47EF0
 // FUNCTION: fn_16104
 bool UnusedTrueA47EF0() {
@@ -193,6 +202,11 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Slot1
 
 namespace ProbabilityTable {
 
+// OFFSET: 0x00A4D620
+// FUNCTION: fn_16190
+CUIItem::CUIItem() : CUIListItem(), nameText(nullptr), probabilityText(nullptr), backgroundColor(0xFFFFFFFF) {
+}
+
 // OFFSET: 0x00A48A70
 // FUNCTION: fn_16118
 void CUIItem::Slot15(int width, int height) {
@@ -239,6 +253,76 @@ void CUIItem::Slot15(int width, int height) {
   this->AddChild(this->probabilityText);
 }
 
+}
+
+// OFFSET: 0x00A4C090
+// FUNCTION: fn_16122
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::AddNewItem() {
+  if (this->itemWidth <= 0 || this->rowHeight <= 0) {
+    return;
+  }
+
+  for (ProbabilityTable::CUIItem* item : this->items) {
+    this->RemoveChild(item, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
+
+  if (this->rowHeight <= this->geometry.height) {
+    unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
+    if (this->geometry.height % this->rowHeight > 1) {
+      ++count;
+    }
+    this->items.resize(count, nullptr);
+    for (ProbabilityTable::CUIItem*& slot : this->items) {
+      ProbabilityTable::CUIItem* item = new ProbabilityTable::CUIItem();
+      item->SetSize(this->itemWidth, this->rowHeight);
+      item->Show(0);
+      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->onHover = [this](CUIListItem* listItem) {
+        for (ProbabilityTable::CUIItem* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      };
+      item->onPress = [this](CUIListItem* listItem) {
+        this->SelectItem(listItem);
+      };
+      this->AddChild(item);
+      slot = item;
+    }
+  }
+
+  this->scrollBar->SetTotal(this->geometry.height);
+  this->scrollBar->SetVisible(this->geometry.height);
+}
+
+// OFFSET: 0x00A4C2F0
+// FUNCTION: fn_16123
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Slot53(int resolveSkin) {
+  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
+  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  for (ProbabilityTable::CUIItem* item : this->items) {
+    item->SetImageResources(images[0], images[1], images[2], images[3]);
+  }
+}
+
+// OFFSET: 0x00A4C500
+// FUNCTION: fn_16124
+template <>
+void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Resize(int width, int height) {
+  UIWindow::Resize(width, height);
+  this->AddNewItem();
+  this->scrollBar->Resize(this->scrollBar->geometry.width, height);
+  this->scrollBar->SetTotal(static_cast<int>(this->data.size()) * this->rowHeight + this->itemY);
+  this->scrollBar->SetVisible(this->geometry.height);
+  this->scrollBar->SetPosition(this->scrollBar->position);
+  this->rebind = 1;
 }
 
 // OFFSET: 0x00A4BFF0

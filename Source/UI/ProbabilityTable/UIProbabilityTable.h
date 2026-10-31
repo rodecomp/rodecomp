@@ -21,6 +21,7 @@ public:
 
 class CUIItem : public CUIListItem {
 public:
+  CUIItem();
   void Slot15(int width, int height) override;
   void Slot16() override;
   void Paint() override;
