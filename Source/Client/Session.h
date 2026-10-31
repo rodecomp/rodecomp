@@ -93,6 +93,20 @@ struct SessionShop {
   /* 0004 */ std::vector<std::map<int, std::pair<int, int>>> unknown_0004;
 };
 
+struct SessionEntry5BD4Detail {
+  /* 0000 */ unsigned char unknown_0000[0x2C];
+  /* 002C */ std::string unknown_002C;
+  /* 0044 */ std::string unknown_0044;
+  /* 005C */ unsigned char unknown_005C[0x9C];
+};
+
+struct SessionEntry5BD4 {
+  /* 0000 */ unsigned char unknown_0000[0x60];
+  /* 0060 */ SessionEntry5BD4Detail unknown_0060;
+};
+
+static_assert(sizeof(SessionEntry5BD4) == 0x158);
+
 struct SubChatWndInfo {
   /* 0000 */ std::string name;
   /* 0018 */ bool options[25];
@@ -396,7 +410,11 @@ public:
   /* 5BC8 */ int unknown_5BC8;
   /* 5BCC */ int unknown_5BCC;
   /* 5BD0 */ int unknown_5BD0;
-  /* 5BD4 */ unsigned char unknown_5BD4[0x1C];
+  /* 5BD4 */ std::vector<SessionEntry5BD4> unknown_5BD4;
+  /* 5BE0 */ int unknown_5BE0;
+  /* 5BE4 */ int unknown_5BE4;
+  /* 5BE8 */ int unknown_5BE8;
+  /* 5BEC */ int unknown_5BEC;
   /* 5BF0 */ std::uint32_t unknown_5BF0;
   /* 5BF4 */ int m_pairValues[3];
   /* 5C00 */ unsigned char unknown_5C00[0x1C];
@@ -738,6 +756,7 @@ public:
   int IsPetEgg(int itemId) const;
   const ActionFrame* GetSyncedFrame(CActRes* baseAct, CActRes* act, unsigned action, int baseFrame, std::uint32_t startTime, int* frame);
   float GetNpcLocationRadius(int job, bool riding);
+  void ClearEntryList5BD4();
   int GetRidingJob(int job);
   void InitNpcLocationRadius();
   int GetSpriteJob(int job, int costumeJob, bool spriteIndex);

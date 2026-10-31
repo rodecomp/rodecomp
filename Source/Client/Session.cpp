@@ -2351,3 +2351,14 @@ void CSession::ClearItemContainers() {
   this->unknown_5464 = 0;
   this->ClearItemQuantities();
 }
+
+// OFFSET: 0x00DF3160
+// FUNCTION: fn_23503
+void CSession::ClearEntryList5BD4() {
+  this->unknown_5BD4.clear();
+  this->unknown_5BE0 = 0;
+  this->unknown_5BE4 = 0;
+  this->unknown_5BE8 = -1;
+  this->unknown_5BEC = -1;
+  this->unknown_5BF0 = 0xFFFFFFFF;
+}
