@@ -250,7 +250,8 @@ public:
   /* 5218 */ std::vector<std::pair<const char*, int>> m_commandIds;
   /* 5224 */ std::vector<std::pair<const char*, const char*>> m_bgmFileNames;
   /* 5230 */ std::vector<std::pair<std::string, std::vector<std::string>>> m_fogParameters;
-  /* 523C */ unsigned char unknown_523C[0x18];
+  /* 523C */ unsigned char unknown_523C[0x0C];
+  /* 5248 */ std::vector<const char*> unknown_5248;
   /* 5254 */ std::map<int, float> m_npcLocationRadius;
   /* 525C */ unsigned char unknown_525C[0x38];
   /* 5294 */ const char* const* m_bodyJobNames;
@@ -605,6 +606,7 @@ public:
   bool IsGuildMemberCharacter(std::uint32_t characterId) const;
   bool IsGuildMemberCharacter(int characterId, char* name) const;
   bool IsGuildMemberName(const char* name) const;
+  bool IsUnknownName5248(const char* name) const;
   long long GetItem1760Total() const;
   ITEM_INFO GetItem1748At(int index) const;
   bool HasItem1718(std::uint32_t id) const;

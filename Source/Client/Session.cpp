@@ -1244,6 +1244,19 @@ bool CSession::IsGuildMemberName(const char* name) const {
   return std::strcmp(g_guildName.c_str(), name) == 0;
 }
 
+// OFFSET: 0x00DFA160
+// FUNCTION: fn_23571
+bool CSession::IsUnknownName5248(const char* name) const {
+  std::string value(name);
+  const std::size_t position = value.rfind("@");
+  if (position != std::string::npos && position >= 4) {
+    value.erase(position - 4, 3);
+  }
+
+  return std::binary_search(this->unknown_5248.begin(), this->unknown_5248.end(), value.c_str(),
+                            [](const char* left, const char* right) { return std::strcmp(left, right) < 0; });
+}
+
 // OFFSET: 0x00DDB580
 // FUNCTION: fn_23354
 void CSession::RemovePartyMemberByName(const char* name) {
