@@ -39,8 +39,10 @@ struct SpriteLayerQuad {
 
 class SpriteLayerRenderer {
 public:
+  void Render(const float* matrix, int unknown0030, char unknown0034);
   void QueueQuad(int layer, const SpriteQuad* quad, const std::uint32_t* palette, int blend);
   void DrawLayerOutlines(std::uint32_t color);
+  void DrawRobe(bool drawOnTop);
   int DrawBodyOutline(int layer);
   SpriteLayerCell ResolveCell(
     int layer, const SpriteFrameCell* cell, int cellIndex, CSprRes* sprite, CActRes* action, const ActionFrame* frame,
@@ -48,13 +50,16 @@ public:
   );
   __declspec(noinline) std::pair<int, int> GetItemOffset(int layer);
   __declspec(noinline) const std::uint32_t* GetPalette(int layer, CSprRes* sprite, CActRes* action);
-  std::pair<bool, SpriteLayerResources> FindLayer(int layer);
+  __declspec(noinline) std::pair<bool, SpriteLayerResources> FindLayer(int layer);
   std::pair<bool, std::string> GetLayerSound(int layer, CActRes* action, int sound);
+  void DrawLayer(
+    int index, int layer, const ActionFrame* frame, CSprRes* sprite, CActRes* action, int animation, int frameIndex, bool replaced
+  );
   void LoadLayers();
 
   /* 0000 */ float matrix[12];
-  /* 0030 */ float unknown_0030;
-  /* 0034 */ bool unknown_0034;
+  /* 0030 */ int unknown_0030;
+  /* 0034 */ char unknown_0034;
   /* 0038 */ CPc* pc;
   /* 003C */ vector3d position;
   /* 0048 */ float x;
