@@ -2231,6 +2231,35 @@ int UIQuitWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
   return 0;
 }
 
+// OFFSET: 0x009013F0
+// FUNCTION: fn_12374
+int UIRestartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  switch (argument1) {
+  case 252:
+    mode->SendMsg(25, 1, 0, 0, 0);
+    g_windowMgr.CloseWindow(19);
+    g_windowMgr.CloseWindow(269);
+    break;
+  case 220:
+    mode->SendMsg(25, 0, 0, 0, 0);
+    [[fallthrough]];
+  case 185:
+    g_windowMgr.CloseWindow(19);
+    break;
+  case 251:
+    g_windowMgr.CloseWindow(19);
+    mode->SendMsg(88, 0, 0, 0, 0);
+    break;
+  }
+
+  return 0;
+}
+
 // OFFSET: 0x00909830
 // FUNCTION: fn_12392
 int UInCash_CallWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
