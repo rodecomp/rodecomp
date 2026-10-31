@@ -7,12 +7,14 @@
 #include "Contents/Jobs/JobNames.h"
 #include "Contents/MessageTable.h"
 #include "Contents/Skills/AutomaticSkills.h"
+#include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/UserData/CharacterConfigSave.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Render/Renderer.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
 #include "Resource/TextureNames.h"
 #include "Script/LuaScript.h"
 #include "UI/Buttons/UIBitmapButton.h"
@@ -276,6 +278,127 @@ void UINewSkillListWnd::sub_9AE930() {
       cell.x + offsetX + 48, y < 0 ? 0 : y, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f - clipY), image->width,
       image->height + clipY, cell.mirrored != 0, image->unknown_0004 + 1, image->unknown_0006 + 1, 0, 0
     );
+  }
+}
+
+// OFFSET: 0x009AF300
+// FUNCTION: fn_13802
+void UINewSkillListWnd::sub_9AF300() {
+  auto& controls = *this->m_controls;
+  LuaScript& script = *g_session.m_hotkeyScript;
+  int drawn = 0;
+  int index = 0;
+
+  for (const CSkillInfo& skill : this->SkillList(this->m_tab, false)) {
+    if (index >= this->m_firstRow * this->m_columns) {
+      const int level = skill.level;
+      const int y = drawn / this->m_columns * 32;
+      const int x = drawn % this->m_columns * 32;
+
+      if (this->m_selectedSkill == index) {
+        unsigned red, green, blue;
+        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+        if (skill.level == 0) {
+          SkinPaletteChannels(ResourceMgr::Instance(), 10, 2, red, green, blue);
+        } else if (skill.unknown_0014 == 0) {
+          SkinPaletteChannels(ResourceMgr::Instance(), 14, 2, red, green, blue);
+        }
+        this->FillRegion(x + 104, y + 32, 164, 28, RGB(red, green, blue));
+      }
+
+      int shade = 0;
+      char text[80];
+      g_session.ItemBitmapPath(skill.name, text);
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
+      if (!bitmap) {
+        std::sprintf(text, "유저인터페이스\\item\\am_berserkpitcher.bmp");
+        bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
+      }
+      if (bitmap) {
+        if (level == 0) {
+          shade = 120;
+          this->DrawAuxiliary(1, x + 44, y + 34, &bitmap->image, true, false);
+        } else {
+          this->DrawBitmap(x + 44, y + 34, &bitmap->image, true);
+        }
+      }
+
+      const int maxLevel = this->SkillAt(index, true).level;
+      const int red = level > maxLevel ? 255 : shade;
+      const int green = level > maxLevel ? 0 : shade;
+      const int textX = x + 112;
+      const int textY = y + 47;
+      const bool usesLevel = CSkillInfo::UsesLevel(script, static_cast<int>(skill.id));
+      if (level != 0) {
+        std::sprintf(text, g_serviceType == 12 ? "Nv :" : "Lv :");
+        const int labelX = this->m_locked != 0 || !usesLevel ? textX + 1 : textX + 12;
+        const std::uint32_t gray = RGB(shade, shade, shade);
+        this->DrawTextAt(controls.fonts, controls.locale, labelX, textY, text, 0, 0, 12, gray, 0, 0);
+
+        int levelX;
+        if (usesLevel) {
+          int useLevel = reinterpret_cast<const CharacterConfigSave*>(&g_session)->UseLevel(static_cast<int>(skill.id));
+          if (useLevel <= 0 || useLevel > skill.level) {
+            useLevel = skill.level;
+          }
+          levelX = (this->m_locked == 0 ? 37 : 25) + textX;
+          std::sprintf(text, "%2d", useLevel);
+          this->DrawTextAt(controls.fonts, controls.locale, levelX, textY, text, 0, 0, 12, useLevel == skill.level ? gray : 255, 0, 0);
+          levelX += 7 + this->TextWidth(controls.fonts, controls.locale, text, 0, 0, 12, 0, 0);
+          this->DrawTextAt(controls.fonts, controls.locale, levelX, textY, "/ ", 0, 0, 12, gray, 0, 0);
+          levelX += this->TextWidth(controls.fonts, controls.locale, "/ ", 0, 0, 12, 0, 0);
+          std::sprintf(text, "%2d", skill.level);
+        } else {
+          std::sprintf(text, "%d", skill.level);
+          levelX = textX + 25;
+        }
+        this->DrawTextAt(controls.fonts, controls.locale, levelX, textY, text, 0, 0, 12, RGB(green, green, red), 0, 0);
+
+        if (skill.unknown_000C == 0) {
+          std::sprintf(text, LookupMessage(286));
+        } else {
+          int sp = static_cast<int>(skill.unknown_0014);
+          const int useLevel = reinterpret_cast<const CharacterConfigSave*>(&g_session)->UseLevel(static_cast<int>(skill.id));
+          bool found = false;
+          if (usesLevel) {
+            const std::uint32_t id = skill.id;
+            for (const CSkillInfo& live : this->SkillList(this->m_tab, true)) {
+              if (live.id == id && live.level != 0) {
+                const int amount = skill.UseSpAmount(script, useLevel);
+                if (amount != 0 && useLevel <= skill.level) {
+                  sp = amount;
+                }
+                found = true;
+                break;
+              }
+            }
+          }
+          if (!found) {
+            sp = skill.UseSpAmount(script, skill.level);
+          }
+
+          const int ap = skill.UseApAmount(script, useLevel > 0 ? useLevel : skill.level);
+          if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
+            if (ap != 0) {
+              std::sprintf(text, "Sp : %d%%, Ap : %d", sp, ap);
+            } else {
+              std::sprintf(text, "Sp : %d%%", sp);
+            }
+          } else if (ap != 0) {
+            std::sprintf(text, "Sp : %d, Ap : %d", sp, ap);
+          } else {
+            std::sprintf(text, "Sp : %d", sp);
+          }
+        }
+        this->DrawTextAt(controls.fonts, controls.locale, textX + 100, textY, text, 0, 0, 12, gray, 0, 0);
+      }
+
+      this->DrawTextAt(controls.fonts, controls.locale, textX, y + 35, skill.DisplayName(script), 0, 0, 12, RGB(shade, shade, shade), 0, 0);
+      if (++drawn == this->m_visibleRows * this->m_columns) {
+        break;
+      }
+    }
+    ++index;
   }
 }
 
