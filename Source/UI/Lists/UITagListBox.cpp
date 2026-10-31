@@ -2,15 +2,18 @@
 
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/NavigationManager.h"
 #include "Network/TextEncoding.h"
 #include "UI/Buttons/UITagButton.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Text/PixelTextWrapping.h"
 #include "UI/Text/TextWrapping.h"
+#include "UI/Window/UIWindowMgr.h"
 
 #include <algorithm>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <windows.h>
 
@@ -501,4 +504,61 @@ std::pair<std::string, std::string> UITagListBox::ParseTag(std::string text, int
   }
 
   return result;
+}
+
+// OFFSET: 0x009BC0A0
+// FUNCTION: fn_13889
+void UITagListBox::sub_9BC0A0(std::intptr_t type, UIWindow* sender) {
+  UITagButton* button = static_cast<UITagButton*>(sender);
+  if (!button) {
+    return;
+  }
+
+  switch (type) {
+  case 438: {
+    const int count = button->GetStringCount();
+    if (count == 0) {
+      return;
+    }
+
+    const std::string name = button->GetString(0);
+    const int x = std::atoi(button->GetString(1).c_str());
+    const int y = std::atoi(button->GetString(2).c_str());
+    if (count > 3) {
+      const int mode = std::atoi(button->GetString(3).c_str());
+      int code = std::atoi(button->GetString(4).c_str());
+      if (code == -222) {
+        std::string tag = "$$DB ";
+        if (mode != 3) {
+          tag.clear();
+        }
+
+        tag += name;
+        g_navigationManager.sub_B995D0(tag, mode, false);
+      } else {
+        const int flag = std::atoi(button->GetString(5).c_str());
+        const int id = std::atoi(button->GetString(6).c_str());
+        unsigned char hundreds = 0;
+        if (code >= 100) {
+          hundreds = 1;
+          code -= 100;
+        }
+
+        const unsigned char group = code < 10 ? hundreds : static_cast<unsigned char>(hundreds + 2);
+        const int remainder = code < 10 ? code : code - 10;
+        const unsigned char kind = remainder < 1 ? group : static_cast<unsigned char>(group + 4);
+        g_navigationManager.sub_B99030(name.c_str(), mode, kind, flag == 0, x, y, id);
+      }
+    } else {
+      g_navigationManager.sub_B99030(name.c_str(), 2, 5, false, x, y, 1002);
+    }
+    break;
+  }
+  case 464:
+  case 501:
+    if (UIWindow* window = g_windowMgr.EnsureWindow(12)) {
+      window->SendMsg(nullptr, 24, reinterpret_cast<std::intptr_t>(&button->item), 0, 0, 0);
+    }
+    break;
+  }
 }
