@@ -20,6 +20,8 @@ public:
   void LoadCostumes();
   void SelectNextStyle(const char* table, int* goods);
   void SelectPreviousStyle(const char* table, int* goods);
+  std::string GetStyleTable(const int& type);
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ const char* unknown_007C;
   /* 0080 */ int unknown_0080;
@@ -48,6 +50,9 @@ public:
   void ResetCheckBoxes();
   void ArrangeCheckBoxes(const int& layout);
   void CheckColoringGoods(bool* coloring);
+  bool CheckPayment(const int& index, const int& zeny, const int& itemId, const int& costumeItemId);
+  void GetPayment(const int& type, int* zeny, int* itemId, int* costumeItemId);
+  void UpdateChangedStyles();
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
   /* 007C */ UIDisplayCharacter* m_display;

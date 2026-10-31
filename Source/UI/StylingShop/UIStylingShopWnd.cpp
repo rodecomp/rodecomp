@@ -911,3 +911,53 @@ void UIDisplayCharacter::SelectPreviousStyle(const char* table, int* goods) {
     *goods = 1;
   }
 }
+
+// OFFSET: 0x008264A0
+// FUNCTION: fn_10323
+std::string UIDisplayCharacter::GetStyleTable(const int& type) {
+  std::string table;
+  switch (type) {
+  case 1:
+    table = "HeadPalette";
+    break;
+  case 2:
+    table = "HeadStyle";
+    break;
+  case 3:
+    table = "BodyPalette";
+    break;
+  case 4:
+    table = "TopAccessory";
+    break;
+  case 5:
+    table = "MidAccessory";
+    break;
+  case 6:
+    table = "BottomAccessory";
+    break;
+  case 7:
+    table = "BodyStyle";
+    break;
+  }
+
+  switch (type) {
+  case 1:
+  case 4:
+  case 5:
+  case 6:
+    return table;
+  default:
+    if (g_session.IsDoramJob(g_session.GetDisplayJob()) == true) {
+      table = "Doram" + table;
+    }
+    return table;
+  }
+}
+
+// OFFSET: 0x00827900
+
+// OFFSET: 0x0082B680
+
+// OFFSET: 0x0082C890
+
+// OFFSET: 0x0082D550
