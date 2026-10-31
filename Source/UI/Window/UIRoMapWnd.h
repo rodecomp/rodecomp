@@ -71,6 +71,10 @@ public:
     float x0, float y0, float x1, float y1, float startLeft, float startTop, float startRight, float startBottom, float endLeft, float endTop, float endRight,
     float endBottom, int bodyWidth, CTexture* body, int headWidth, CTexture* head, float progress, std::uint32_t color
   );
+  void DrawDashedArrow(
+    float startX, float startY, float endX, float endY, int stepWidth, int thickness, CTexture* body, int headSize, CTexture* head, float progress,
+    std::uint32_t color, int offset
+  );
   void RefreshPartyRecords();
   bool LocateRecord(WorldViewRecord& record);
 

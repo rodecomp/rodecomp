@@ -23,6 +23,86 @@
 #include <windows.h>
 #include <timeapi.h>
 
+namespace {
+  __declspec(noinline) float ScreenLineSine(float angle) {
+    return static_cast<float>(std::sin(static_cast<double>(angle)));
+  }
+
+  __declspec(noinline) float ScreenLineCosine(float angle) {
+    return static_cast<float>(std::cos(static_cast<double>(angle)));
+  }
+}
+
+// OFFSET: 0x00918380
+// FUNCTION: fn_12594
+void UIRoMapWnd::DrawDashedArrow(
+  float startX, float startY, float endX, float endY, int stepWidth, int thickness, CTexture* body, int headSize, CTexture* head, float progress,
+  std::uint32_t color, int offset
+) {
+  const float deltaY = endY - startY;
+  const float deltaX = endX - startX;
+  const float visibleDistance = SquareRoot(deltaY * deltaY + deltaX * deltaX) * progress;
+  const float directionLength = SquareRoot(deltaY * deltaY + deltaX * deltaX);
+  const float directionX = (1.0f / directionLength) * deltaX;
+  const float directionY = (1.0f / directionLength) * deltaY;
+  float angle = static_cast<float>(std::acos(static_cast<double>(directionX)));
+  if (directionY < 0.0f) {
+    angle = 6.283184f - angle;
+  }
+  angle += 1.570796f;
+
+  const float sine = ScreenLineSine(angle);
+  const float cosine = ScreenLineCosine(angle);
+  const float inverseNormal = 1.0f / SquareRoot(cosine * cosine + sine * sine);
+  const float normalX = cosine * inverseNormal;
+  const float normalY = sine * inverseNormal;
+  const float sideX = static_cast<float>(thickness) * normalX;
+  const float sideY = static_cast<float>(thickness) * normalY;
+  const float stepX = static_cast<float>(stepWidth) * directionX;
+  const float stepY = static_cast<float>(stepWidth) * directionY;
+  float currentX = startX - static_cast<float>(offset) * normalX;
+  float currentY = startY - static_cast<float>(offset) * normalY;
+  float nextX = stepX + currentX;
+  float nextY = stepY + currentY;
+  std::uint32_t segmentColor = 0x33FFFFFF;
+
+  if (SquareRoot((nextY - startY) * (nextY - startY) + (nextX - startX) * (nextX - startX)) < visibleDistance) {
+    const float halfStepX = stepX * g_depthAverageHalf;
+    const float halfStepY = stepY * g_depthAverageHalf;
+    float distanceToNext;
+    do {
+      const float remainingX = (directionX * visibleDistance + startX) - currentX;
+      const float remainingY = (directionY * visibleDistance + startY) - currentY;
+      if (SquareRoot(remainingY * remainingY + remainingX * remainingX) < 100.0f) {
+        DrawScreenQuad(
+          currentX, currentY, currentX + sideX, currentY + sideY, nextX, nextY, nextX + sideX, nextY + sideY, body, segmentColor
+        );
+        segmentColor += 0x33000000;
+      }
+
+      currentX = halfStepX + nextX;
+      currentY = halfStepY + nextY;
+      nextX = currentX + stepX;
+      nextY = currentY + stepY;
+      distanceToNext = SquareRoot((nextY - startY) * (nextY - startY) + (nextX - startX) * (nextX - startX));
+    } while (distanceToNext < visibleDistance);
+  }
+
+  if (progress < 1.0f) {
+    const float tipBaseX = (sideX * g_depthAverageHalf + nextX) - static_cast<float>(thickness) * directionX;
+    const float tipBaseY = (sideY * g_depthAverageHalf + nextY) - static_cast<float>(thickness) * directionY;
+    const float headX = static_cast<float>(headSize);
+    const float tipX = tipBaseX + headX * normalX;
+    const float tipY = tipBaseY + headX * normalY;
+    const float otherBaseX = tipBaseX - headX * normalX;
+    const float otherBaseY = tipBaseY - headX * normalY;
+    const float doubledStepX = headX * directionX + headX * directionX;
+    const float doubledStepY = headX * directionY + headX * directionY;
+    DrawScreenQuad(
+      tipX + doubledStepX, tipY + doubledStepY, doubledStepX + otherBaseX, doubledStepY + otherBaseY, tipX, tipY, otherBaseX, otherBaseY, head, color
+    );
+  }
+}
 // GLOBAL: gl_25021
 std::uint32_t g_roMapRecordColors[12] = {
   0x66DC143C, 0x66FFA500, 0x66FFFF00, 0x66ADFF2F, 0x6600BFFF, 0x66483D8B, 0x669400D3, 0x66FF1493, 0x66FFF5EE, 0x66F5FFFA, 0x66F0F8FF, 0x66778899,
