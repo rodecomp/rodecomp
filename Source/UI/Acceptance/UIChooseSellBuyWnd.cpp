@@ -2762,3 +2762,39 @@ bool IsEquipViewHidden() {
 // OFFSET: 0x008ED080
 
 // OFFSET: 0x008F64B0
+// FUNCTION: fn_12317
+void UIItemIdentifyWnd::UpdateScroll() {
+  if (this->m_scrollBar == nullptr) {
+    return;
+  }
+
+  auto* bar = static_cast<UIScrollBar*>(this->m_scrollBar);
+
+  const int count = static_cast<int>(this->m_items.size());
+  int total = count / this->m_columns;
+  if (count % this->m_columns != 0) {
+    ++total;
+  }
+
+  int maximum = total - this->m_rows;
+  if (maximum < 0) {
+    maximum = 0;
+  }
+  this->m_scrollable = maximum != 0;
+
+  if (maximum == 0) {
+    this->m_scroll = 0;
+    bar->SetRange(0, this->m_rows, total);
+  } else {
+    bar->SetRange(maximum, this->m_rows, total);
+    if (this->m_scroll < 0) {
+      this->m_scroll = 0;
+    }
+    if (this->m_scroll > total - this->m_rows) {
+      this->m_scroll = total - this->m_rows;
+    }
+    bar->SetPosition(this->m_scroll);
+  }
+
+  bar->Invalidate();
+}
