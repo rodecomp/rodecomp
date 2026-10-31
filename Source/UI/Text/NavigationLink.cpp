@@ -17,6 +17,8 @@
 
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Input/InputCharset.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/ModeTooltip.h"
 #include "Client/Session.h"
 #include "Contents/CashEmotionMgr.h"
@@ -82,6 +84,8 @@ namespace LineCutter {
 
 class UIEmotion : public UIWindow {
 public:
+  explicit UIEmotion(UIWindowContext& windows, const char* sprite, const char* action);
+  explicit UIEmotion(UIWindowContext& windows);
   // INLINED
   UIEmotion(UIWindowContext& windows, const char* sprite, const char* action, unsigned animation, unsigned maxLoops)
       : UIWindow(windows, 0), m_animation(animation), m_frame(0), m_maxLoops(maxLoops),
@@ -108,6 +112,7 @@ public:
   UIItemImage(UIWindowContext& windows, const std::string& itemId) : UIWindow(windows, 0), m_itemId(itemId) {
     this->m_clip = 1;
   }
+  explicit UIItemImage(UIWindowContext& windows);
 
   void Paint() override;
   void Slot28(int x, int y) override;
@@ -1702,4 +1707,25 @@ bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
     g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0xE8D)), 0xFF, 0, 0, 0);
     return true;
   }
+}
+
+// OFFSET: 0x00836D40
+
+// OFFSET: 0x00836DF0
+
+// OFFSET: 0x00836EA0
+
+// OFFSET: 0x0083BAF0
+// FUNCTION: fn_10485
+void RequestTextButtonService(UITextButton* button) {
+  if (!button) {
+    return;
+  }
+
+  if (button->m_lines.size() == 0) {
+    return;
+  }
+
+  const int value = std::atoi(button->GetLine(0).c_str());
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveServiceRequest(6, value);
 }
