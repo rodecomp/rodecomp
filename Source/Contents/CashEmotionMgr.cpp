@@ -111,6 +111,9 @@ protected:
 
 class UICashEmotionPack_Search : public UICashEmotionPack {
 public:
+  // INLINED
+  explicit UICashEmotionPack_Search(UIWindowContext& windows) : UICashEmotionPack(windows) {
+  }
   void Paint() override;
 };
 
@@ -125,6 +128,7 @@ protected:
 
 class UICashEmotionPack_Search_UnPurchased : public UICashEmotionPack_Search {
 public:
+  explicit UICashEmotionPack_Search_UnPurchased(UIWindowContext& windows);
   ~UICashEmotionPack_Search_UnPurchased() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -2395,6 +2399,12 @@ int UICashEmotionPack_Search_Normal::SendMsg(
   }
 
   return 0;
+}
+
+// OFFSET: 0x007CB3A0
+// FUNCTION: fn_09468
+UICashEmotionPack_Search_UnPurchased::UICashEmotionPack_Search_UnPurchased(UIWindowContext& windows) : UICashEmotionPack_Search(windows) {
+  this->m_action = new (std::nothrow) CCashEmotionAction_SelectedUnPurchasedPack;
 }
 
 // OFFSET: 0x007CB4C0

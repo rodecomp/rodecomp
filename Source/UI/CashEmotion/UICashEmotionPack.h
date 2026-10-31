@@ -16,6 +16,7 @@ class UICashEmotionPack : public UIWindow {
   friend class UICashEmotionListChildWnd_Purchase;
 
 public:
+  explicit UICashEmotionPack(UIWindowContext& windows);
   ~UICashEmotionPack() override;
   void Slot15(int width, int height) override;
   void Slot19() override;
