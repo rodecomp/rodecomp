@@ -1,4 +1,5 @@
 #include "Client/Application/Launcher.h"
+#include "File/ShortcutFilename.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session.h"
@@ -20,6 +21,8 @@
 #include "UI/Text/UIStaticText.h"
 #include "UI/UIBarGraph.h"
 #include "UI/Window/UIHomunInfoWnd.h"
+#include "Contents/Sound/SoundMgr.h"
+#include "UI/Shop/UIMerchantItemMyShopWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
@@ -37,12 +40,33 @@
 
 struct SessionMessengerContext {
   void UpdateRandomStats();
+  int GetList9Size() const;
 };
 
 struct ClientItemLists {
   bool AddItem1738(const ITEM_INFO& item, unsigned char refresh);
   bool AddItem1740(const ITEM_INFO& item);
+  void RemoveItem1758(ITEM_INFO& item);
+  void RemoveItem1758ByItemId(ITEM_INFO& item);
 };
+
+// GLOBAL: gl_24992
+char g_pendingWhisperCount;
+
+// GLOBAL: gl_25102
+int g_whisperRecord;
+
+// GLOBAL: gl_25097
+UIWindow* g_saleOpenWindow = reinterpret_cast<UIWindow*>(0x039E23A6);
+
+// GLOBAL: gl_25098
+UIWindow* g_saleResultWindow = reinterpret_cast<UIWindow*>(0x039E3603);
+
+// GLOBAL: gl_25099
+UIWindow* g_vendingOpenWindow = reinterpret_cast<UIWindow*>(0x039E2CDC);
+
+// GLOBAL: gl_25100
+UIWindow* g_vendingOpenResultWindow = reinterpret_cast<UIWindow*>(0x039E2DC6);
 
 namespace {
 #pragma pack(push, 1)
@@ -1357,4 +1381,145 @@ void CGameMode::ReceiveDynamicNpcNotice(const unsigned char* packet) {
   }
 
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
+}
+
+// OFFSET: 0x00D079A0
+void CGameMode::sub_D079A0(unsigned char kind, int argument) {
+  std::string& speaker = *reinterpret_cast<std::string*>(this->unknown_01F8 + 0x1C);
+  std::string& target = *reinterpret_cast<std::string*>(this->unknown_01F8 + 0x34);
+
+  switch (kind) {
+  case 0: {
+    std::string line(g_session.DecodePlayerName());
+    line.append(" : ", 3);
+    line.append(speaker.data(), speaker.size());
+    if (reinterpret_cast<int(__thiscall*)(UIWindowMgr*, const char*, const char*, int, int)>(0x00A8B3D0)(
+            &g_windowMgr, target.c_str(), line.c_str(), 0x7800, argument) != 0) {
+      return;
+    }
+
+    const std::string copied = target;
+    const std::string identity = ShortcutFilename(static_cast<std::uint32_t>(argument));
+    std::string message;
+    if (g_windowMgr.IsFriend(target.c_str()) || g_session.IsGuildMemberName(target.c_str())) {
+      message = std::string("[ To ") + copied + " (" + identity + ") ] : " + speaker;
+    } else {
+      message = std::string("( To ") + copied + " (" + identity + ") : " + speaker;
+    }
+
+    if (g_pendingWhisperCount <= 0) {
+      g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+      g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, 2, reinterpret_cast<std::intptr_t>(copied.c_str()), 0);
+    } else {
+      --g_pendingWhisperCount;
+    }
+    if (g_whisperRecord != 0) {
+      reinterpret_cast<void(__thiscall*)(CGameMode*, const char*)>(0x00CED760)(this, message.c_str());
+    }
+    return;
+  }
+  case 1:
+  case 2:
+  case 3: {
+    const int messageId = kind == 1 ? 0x94 : kind == 2 ? 0x95 : 0x96;
+    const std::string text = std::string("(") + target + ")" + LookupMessage(messageId);
+    if (kind == 1 && g_pendingWhisperCount > 0) {
+      --g_pendingWhisperCount;
+      return;
+    }
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
+    return;
+  }
+  default: {
+    const std::string text = std::string("(") + target + ")" + LookupMessage(0x94);
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 2, 0, 0);
+    if (g_whisperRecord != 0) {
+      reinterpret_cast<void(__thiscall*)(CGameMode*, const char*)>(0x00CED760)(this, text.c_str());
+    }
+    return;
+  }
+  }
+}
+
+// OFFSET: 0x00D08390
+void CGameMode::sub_D08390(const unsigned char* packet) {
+  std::string title;
+  title.assign(reinterpret_cast<const char*>(packet + 0x1C), 0x80);
+  std::string name;
+  name.assign(reinterpret_cast<const char*>(packet + 2), 0x10);
+  const int first = *reinterpret_cast<const short*>(packet + 0x12);
+  const int second = *reinterpret_cast<const short*>(packet + 0x14);
+  const int third = *reinterpret_cast<const int*>(packet + 0x16);
+  const int fourth = *reinterpret_cast<const short*>(packet + 0x1A);
+  reinterpret_cast<void(__thiscall*)(CGameMode*, std::string, int, int, int, int, std::string)>(0x00D06CB0)(
+    this, std::string(name.c_str()), first, second, third, fourth, std::string(title.c_str()));
+}
+
+// OFFSET: 0x00D08110
+void __stdcall sub_D08110(int field8, int itemIdWord, int quantityWord, int field14, int field18) {
+  const int itemId = static_cast<short>(itemIdWord);
+  const int quantity = static_cast<short>(quantityWord);
+  ITEM_INFO item = g_session.FindItem1758(static_cast<unsigned int>(itemId));
+  item.unknown_0000[1] = static_cast<std::uint32_t>(itemId);
+  item.quantity = quantity;
+  item.unknown_0014[0] = static_cast<std::uint32_t>(field14);
+  UIWindow* window = reinterpret_cast<UIWindow*(__thiscall*)(UIWindowMgr*, int)>(0x00A978D0)(&g_windowMgr, 0x101);
+  window->SendMsg(nullptr, 0x17, reinterpret_cast<std::intptr_t>(&item), field18, field8, 0);
+  reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1758(item);
+  g_windowMgr.SendNotice(3, 0, 0, 0, 0, 0);
+  std::string name;
+  reinterpret_cast<void(__thiscall*)(ITEM_INFO*, std::string*)>(0x006D59A0)(&item, &name);
+  const std::string text = FormatOwnedString(LookupMessage(0xE7), name.c_str(), item.quantity);
+  g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF64, 0, 0, 0);
+  if (g_vendingOpenWindow != nullptr) {
+    g_vendingOpenWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+  if (reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList9Size() == 0) {
+    g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(0x137)), 0xFF00, 0, 0, 0);
+    if (g_vendingOpenResultWindow != nullptr) {
+      g_vendingOpenResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+      g_vendingOpenResultWindow->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
+    }
+  } else if (g_vendingOpenResultWindow != nullptr) {
+    g_vendingOpenResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+  if (g_vendingOpenResultWindow != nullptr && g_vendingSaleAlarm) {
+    g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+  }
+}
+
+// OFFSET: 0x00D08670
+void __declspec(noinline) __stdcall sub_D08670(int field14, int itemId, int quantity, int field8, int fieldC, int field10) {
+  ITEM_INFO item = g_session.FindItem1758ByItemId(itemId);
+  item.SetItemId(itemId);
+  item.quantity = quantity;
+  item.unknown_0014[0] = static_cast<std::uint32_t>(field8);
+  UIWindow* window = reinterpret_cast<UIWindow*(__thiscall*)(UIWindowMgr*, int)>(0x00A978D0)(&g_windowMgr, 0x102);
+  window->SendMsg(nullptr, 0x17, reinterpret_cast<std::intptr_t>(&item), field10, field14, 0);
+  reinterpret_cast<ClientItemLists*>(&g_session)->RemoveItem1758ByItemId(item);
+  if (g_saleOpenWindow != nullptr) {
+    g_saleOpenWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+  }
+  if (g_saleResultWindow != nullptr) {
+    g_saleResultWindow->SendMsg(nullptr, 0x77, fieldC, 0, 0, 0);
+    g_saleResultWindow->SendMsg(nullptr, 0x17, 0, 0, 0, 0);
+    if (g_vendingSaleAlarm) {
+      g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
+    if (reinterpret_cast<SessionMessengerContext*>(&g_session)->GetList9Size() == 0) {
+      g_saleResultWindow->SendMsg(nullptr, 6, 0xC9, 0, 0, 0);
+    }
+  }
+}
+
+// OFFSET: 0x00D08640
+// FUNCTION: fn_21591
+void __stdcall sub_D08640(const unsigned char* packet) {
+  sub_D08670(
+    *reinterpret_cast<const int*>(packet + 0x14),
+    *reinterpret_cast<const int*>(packet + 2),
+    *reinterpret_cast<const short*>(packet + 6),
+    *reinterpret_cast<const int*>(packet + 8),
+    *reinterpret_cast<const int*>(packet + 0xC),
+    *reinterpret_cast<const int*>(packet + 0x10));
 }

@@ -299,6 +299,8 @@ public:
   void IgnoreRemovedPacket7(const unsigned char* packet);
   void IgnoreRemovedPacket8();
   void IgnoreRemovedPacket9();
+  void sub_D079A0(unsigned char kind, int argument);
+  void sub_D08390(const unsigned char* packet);
   void IgnoreRemovedPacket10(const unsigned char* packet);
   void IgnoreRemovedPacket11(const unsigned char* packet);
   void IgnoreRemovedPacket12(const unsigned char* packet, int value1, int value2, int value3, int value4);
