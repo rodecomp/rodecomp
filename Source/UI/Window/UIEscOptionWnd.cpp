@@ -79,3 +79,91 @@ UIEscOptionWnd::UIEscOptionWnd(UIWindowContext& windows, UIFrameContext& frames,
   }
   this->m_mode = escMode;
 }
+
+#include "Contents/Party/AdventurerAgencyMgr.h"
+#include "Contents/UserData/CharacterLinkedUserDataMgr.h"
+#include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowDialogs.h"
+
+// OFFSET: 0x00934FA0
+// FUNCTION: fn_12744
+int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  CMode* mode = g_modeMgr.GetGameMode();
+  if (message != 6) {
+    return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+
+  using OpenWindow = UIWindow* (__thiscall*)(UIWindowMgr*, int);
+  OpenWindow openWindow = reinterpret_cast<OpenWindow>(0x00A978D0);
+  const int id = static_cast<int>(argument1);
+  if (id > 0x173) {
+    if (id == 0x174) {
+      const int result = reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(
+        LookupMessage(0x60C), 2, false, false, 0, "Message", 0x118, 0x78, 0
+      );
+      if (result != 0xBB) {
+        return 0;
+      }
+      mode->SendMsg(0x19, 0, 0, 0, 0);
+      g_windowMgr.CloseWindow(0x9B);
+      return 0;
+    }
+    if (id == 0x1C9) {
+      if (!g_windowMgr.CloseWindow(0xEC)) {
+        openWindow(&g_windowMgr, 0xEC);
+      }
+      return 0;
+    }
+    if (id == 0x1CA) {
+      if (!g_windowMgr.CloseWindow(0x271E)) {
+        openWindow(&g_windowMgr, 0x271E);
+      }
+      return 0;
+    }
+    return 0;
+  }
+
+  if (id == 0x173) {
+    union SaveSlot {
+      void (CCharacterLinkedUserDataMgr::*member)(CharacterConfigSave&, const char*, CAsyncWorkMgr&);
+      void (__thiscall* function)(CCharacterLinkedUserDataMgr*);
+    };
+    SaveSlot saveSlot;
+    saveSlot.member = &CCharacterLinkedUserDataMgr::Save;
+    saveSlot.function(g_characterLinkedUserDataMgr);
+    union StopSlot {
+      void (CAdventurerAgencyMgr::*member)(AgencyRequestContext&, StopRecruitingContext&);
+      void (__thiscall* function)(CAdventurerAgencyMgr*);
+    };
+    StopSlot stopSlot;
+    stopSlot.member = static_cast<void (CAdventurerAgencyMgr::*)(AgencyRequestContext&, StopRecruitingContext&)>(&CAdventurerAgencyMgr::RequestStop);
+    stopSlot.function(g_adventurerAgencyMgr);
+    mode->SendMsg(0x19, 1, 0, 0, 0);
+    g_windowMgr.CloseWindow(0x9B);
+    g_windowMgr.CloseWindow(0xA4);
+    g_windowMgr.CloseWindow(0x10D);
+    return 0;
+  }
+
+  if (id == 0xB9) {
+    g_windowMgr.CloseWindow(0x9B);
+    return 0;
+  }
+  if (id == 0xFB) {
+    g_windowMgr.CloseWindow(0x9B);
+    mode->SendMsg(0x58, 0, 0, 0, 0);
+    return 0;
+  }
+  if (id == 0x161) {
+    mode->SendMsg(0xFA, 0, 0, 0, 0);
+    g_windowMgr.CloseWindow(0x9B);
+    return 0;
+  }
+  if (id == 0x172) {
+    if (!g_windowMgr.CloseWindow(0x9C)) {
+      openWindow(&g_windowMgr, 0x9C);
+    }
+    return 0;
+  }
+  return 0;
+}
