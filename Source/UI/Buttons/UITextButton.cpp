@@ -3383,6 +3383,12 @@ UITVBitmapButton::UITVBitmapButton()
 #include "Contents/TipOfTheDay.h"
 
 // OFFSET: 0x0086DE10
+// FUNCTION: fn_11060
+UIMemberListBox::UIMemberListBox(UIWindowContext& windows, UIListBoxContext& list) : UIChatHisBox2(windows, list) {
+  this->backgroundRed = 255;
+  this->backgroundGreen = 255;
+  this->backgroundBlue = 255;
+}
 
 // OFFSET: 0x008894B0
 // FUNCTION: fn_11347

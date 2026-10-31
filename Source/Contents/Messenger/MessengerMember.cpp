@@ -21,6 +21,15 @@
 #include "Client/Session.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Party/UIMiniPartyWnd.h"
+#include "UI/Window/WindowBorder.h"
+#include "Contents/PlayerNameDictionary.h"
+#include "Utility/Text/FormatString.h"
+#include "Resource/SkinPalette.h"
+#include "UI/Window/WindowDialogs.h"
+#include "UI/Text/UIStaticText.h"
+#include "File/ShortcutFilename.h"
+#include "UI/Layout/WindowSnapping.h"
+#include "UI/Buttons/UITextButton.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -115,6 +124,7 @@ public:
   UIMessengerGroupWnd();
   ~UIMessengerGroupWnd() override;
   void Slot11() override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
@@ -127,6 +137,7 @@ public:
   void UpdateScroll();
   void LayoutButtons();
   void UpdateGauges();
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   // INLINED
   UIWindow* CompanionWindow() const {
@@ -142,12 +153,11 @@ public:
 
   /* 00B4 */ MessengerGroupWndInfo* saved;
   /* 00B8 */ UIScrollBar* scrollBar;
-  /* 00BC */ int unknown_00BC;
-  /* 00C0 */ int unknown_00C0;
-  /* 00C4 */ int unknown_00C4;
+  /* 00BC */ UIWindow* tabs[2];
+  /* 00C4 */ UIWindow* closeButton;
   /* 00C8 */ UIWindow* buttons[11];
-  /* 00F4 */ int unknown_00F4;
-  /* 00F8 */ int unknown_00F8;
+  /* 00F4 */ UIWindow* resizeButton;
+  /* 00F8 */ UIStaticText* titleText;
   /* 00FC */ std::list<MessengerMember> members;
   /* 0104 */ std::vector<MiniPartyInfoEntry> menuItems;
   /* 0110 */ int scrollable;
@@ -160,8 +170,7 @@ public:
   /* 01C8 */ UIJobIconButton* jobIcons[40];
   /* 0268 */ int iconIndex;
   /* 026C */ std::vector<MiniPartyIconPosition> iconPositions;
-  /* 0278 */ int unknown_0278;
-  /* 027C */ UIWindow* unknown_027C;
+  /* 0278 */ UIButton* iconModeButtons[2];
   /* 0280 */ unsigned char hiddenButtons[11];
   /* 028C */ int mode;
 };
@@ -172,6 +181,8 @@ bool g_messengerGroupCollapsed;
 int g_messengerDropColumnWidth;
 // GLOBAL: gl_25220
 int g_messengerDropRowHeight;
+// GLOBAL: gl_25250
+std::string g_messengerNamelessTag = "<NAMELESS>";
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(MiniPartyIconPosition) == 12);
@@ -719,6 +730,201 @@ __declspec(noinline) MessengerMember UIMessengerGroupWnd::MemberAtIndex(int inde
   return MessengerMember(0);
 }
 
+// OFFSET: 0x0073B9D0
+// FUNCTION: fn_07707
+void UIMessengerGroupWnd::Paint() {
+  this->DrawTitleBar(this->m_context->fonts, this->m_context->locale, true, "", 0);
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+  DrawRectangleBorder(*this, 0, 17, this->geometry.width, this->geometry.height - 38, 0xC0C0C0);
+  this->DrawButtonBar(0, 0, 1);
+
+  const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\mesbtn_left.bmp")));
+  this->DrawBitmap(0, this->geometry.height - 40, &left->image, false);
+  const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\mesbtn_right.bmp")));
+  this->DrawBitmap(this->geometry.width - right->image.width, this->geometry.height - 40, &right->image, false);
+  const int span = this->geometry.width - 14;
+  int count = span / 7 + (span % 7 != 0);
+  for (int x = 7; count > 0; x += 7, --count) {
+    const auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\mesbtn_mid.bmp")));
+    this->DrawBitmap(x, this->geometry.height - 40, &middle->image, false);
+  }
+
+  std::string prefix = "유저인터페이스\\renewalparty\\";
+  char path[256];
+  if (this->mode == 0) {
+    memset(path, 0, sizeof(path));
+    StringFormat(path, sizeof(path), static_cast<std::size_t>(-1), "%simg_friend1.bmp", prefix.c_str());
+    const auto* friend1 = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+    if (this->iconIndex == 0) {
+      this->DrawBitmap(147, 36, &friend1->image, true);
+    }
+    StringFormat(path, sizeof(path), static_cast<std::size_t>(-1), "%simg_friend2.bmp", prefix.c_str());
+    const auto* friend2 = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+    if (this->iconIndex == 0) {
+      this->DrawBitmap(99, 193, &friend2->image, true);
+    }
+  }
+
+  for (int index = 0; index < 40; ++index) {
+    this->jobIcons[index]->Move(-100, -100);
+  }
+
+  int shown = 0;
+  int index = 0;
+  for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index) {
+    if (index < this->scrollTop * this->columns) {
+      continue;
+    }
+
+    const int x = shown % this->columns * 32 + this->iconPositions[this->iconIndex].x;
+    const int top = this->rowHeight * (shown / this->columns) + 17;
+    const std::uint32_t source = it->color;
+    std::uint32_t color = ((source >> 16) & 0xFF) | ((source & 0xFF) << 16) | (source & 0xFF00);
+
+    if (this->mode == 1) {
+      MessengerMember entry = this->MemberAtIndex(index);
+      SessionRecord0734 record = g_session.FindRecord0734(entry.accountId);
+      if (record.unknown_0000 == 1) {
+        this->FillRegion(0, top + 2, this->geometry.width, this->rowHeight, 0xFFE8DD);
+      }
+      if (this->selected == index) {
+        unsigned selectRed, selectGreen, selectBlue;
+        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, selectRed, selectGreen, selectBlue);
+        this->FillRegion(0, top + 2, this->geometry.width, this->rowHeight, RGB(selectRed, selectGreen, selectBlue));
+      }
+
+      std::string jobName = g_session.GetJobName(it->job, 99);
+      this->jobIcons[index]->SetTooltip(jobName.c_str());
+      this->jobIcons[index]->Move(x, this->iconPositions[this->iconIndex].y + top);
+
+      if (it->leader == 0) {
+        char crownPath[256];
+        sprintf(crownPath, "%sico_partyCrown.bmp", prefix.c_str());
+        const auto* crown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(crownPath)));
+        this->DrawBitmap(x + 2, this->iconPositions[this->iconIndex].y + top - 8, &crown->image, true);
+      }
+
+      char level[64];
+      sprintf(level, "Lv.%d", it->level);
+      if (it->map.size() != 0 && it->offline == 0) {
+        std::string mapName = g_session.GetMapDisplayName(it->map.c_str());
+        sprintf(path, "%s(%s)", it->name.c_str(), mapName.c_str());
+      } else {
+        sprintf(path, "%s", it->name.c_str());
+      }
+
+      std::string clipped = this->FitDisplayText(static_cast<int>(this->geometry.width * 0.8 - 80.0), path, 0, 12, 1);
+      std::uint32_t levelColor;
+      if (it->offline == 1) {
+        color = 0xA38A86;
+        levelColor = 0xA38A86;
+      } else {
+        levelColor = 0x493A37;
+      }
+      this->DrawTextAt(
+        this->m_context->fonts, this->m_context->locale, x + 28, this->iconPositions[this->iconIndex].y + top + 3, level,
+        static_cast<int>(strlen(level)), 0, 12, levelColor, 1, 0
+      );
+      const int textY = this->iconPositions[this->iconIndex].y + top + 3;
+      const int levelWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, level, static_cast<unsigned>(strlen(level)), 0, 12, 1, 0);
+      this->DrawTextAt(
+        this->m_context->fonts, this->m_context->locale, levelWidth + x + 33, textY, clipped.c_str(), static_cast<int>(clipped.size()), 0, 12, color,
+        1, 0
+      );
+
+      if (it->offline == 0) {
+        UIPcGage* gauge = this->gauges[index];
+        if (gauge->geometry.x != -100) {
+          char hpText[128];
+          sprintf(hpText, "%d/%d", gauge->current, gauge->maximum);
+          this->DrawTextAt(
+            this->m_context->fonts, this->m_context->locale, this->gauges[index]->geometry.x + 66, this->gauges[index]->geometry.y - 2, hpText,
+            static_cast<int>(strlen(hpText)), 0, 10, 0, 0, 0
+          );
+        }
+      }
+
+      memset(path, 0, sizeof(path));
+      const char* statusIcon;
+      if (it->offline) {
+        statusIcon = "%sicon_party_off.bmp";
+      } else if (it->accountId == g_session.m_aid) {
+        statusIcon = "%sicon_party_me.bmp";
+      } else {
+        statusIcon = "%sicon_party_on.bmp";
+      }
+      sprintf(path, statusIcon, prefix.c_str());
+      const auto* status = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+      this->DrawBitmap(
+        static_cast<int>(static_cast<float>(this->geometry.width) * 0.8f),
+        static_cast<int>(static_cast<float>(this->rowHeight) * 0.65f + static_cast<float>(top)), &status->image, true
+      );
+
+      memset(path, 0, sizeof(path));
+      sprintf(path, "%sbg_partymember.bmp", prefix.c_str());
+      const auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+      this->DrawTextAt(
+        this->m_context->fonts, this->m_context->locale, this->geometry.width - 96, this->geometry.height - 16, LookupMessage(3231), 0, 0, 12, 0, 0, 0
+      );
+      this->DrawBitmap(this->geometry.width - 58, this->geometry.height - 18, &background->image, true);
+
+      memset(path, 0, sizeof(path));
+      sprintf(path, "%d/%d", ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyCount(), 12);
+      this->DrawTextAt(
+        this->m_context->fonts, this->m_context->locale, this->geometry.width - 51, this->geometry.height - 16, path,
+        static_cast<int>(strlen(path)), 0, 12, 0xFFFFFF, 0, 0
+      );
+    } else {
+      MessengerMember entry = ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.FriendAt(index);
+      if (g_modeMgr.GetGameMode() && entry.valid) {
+        entry.name = LookupPlayerName(entry.characterId);
+      }
+
+      if (entry.name.size() == 0) {
+        entry.name = LookupMessage(581) + g_messengerNamelessTag;
+      } else if (!g_session.IsFriendName(entry.name.c_str())) {
+        g_session.UpdateFriendName(entry.characterId, entry.name.c_str());
+      }
+
+      char nameText[80];
+      memset(nameText, 0, sizeof(nameText));
+      std::string display = entry.name;
+      const std::size_t position = entry.name.find(g_messengerNamelessTag);
+      if (position != std::string::npos) {
+        display.clear();
+        display = entry.name.substr(0, position);
+      }
+      sprintf(nameText, "%s", display.c_str());
+
+      if (this->selected == index) {
+        unsigned selectRed, selectGreen, selectBlue;
+        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, selectRed, selectGreen, selectBlue);
+        this->FillRegion(
+          x + 17, top + 4, this->TextWidth(this->m_context->fonts, this->m_context->locale, nameText, 0, 0, 12, 0, 0) + 3, 16,
+          RGB(selectRed, selectGreen, selectBlue)
+        );
+      }
+
+      this->DrawTextAt(
+        this->m_context->fonts, this->m_context->locale, x + 19, top + 6, nameText, static_cast<int>(strlen(nameText)), 0, 12, color, 0, 0
+      );
+
+      if (it->offline == 0) {
+        char onlinePath[256];
+        sprintf(onlinePath, "%s", "유저인터페이스\\basic_interface\\grp_online.bmp");
+        const auto* online = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(onlinePath)));
+        this->DrawBitmap(x + 2, top + 4, &online->image, true);
+      }
+    }
+
+    if (++shown == this->visibleRows * this->columns) {
+      break;
+    }
+  }
+}
+
 // OFFSET: 0x0073CD30
 // FUNCTION: fn_07708
 void UIMessengerGroupWnd::Slot26(int, int) {
@@ -921,6 +1127,8 @@ void UIMessengerGroupWnd::UpdateGauges() {
     }
   }
 }
+
+// OFFSET: 0x0073D980
 
 // OFFSET: 0x0089CFD0
 // FUNCTION: fn_11596
