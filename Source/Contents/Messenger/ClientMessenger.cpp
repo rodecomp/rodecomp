@@ -3726,10 +3726,10 @@ int __stdcall sub_6A99D0(lua_State* state) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  int count = 2;
-  int valuePosition = 2;
-  int indexPosition = -1;
   int keyPosition = -1;
+  int indexPosition = -1;
+  int valuePosition = 2;
+  int count = 2;
   g_equipmentPropertiesMgr->ApplyProperty("SubAttrTolerace", state, count, valuePosition, indexPosition, keyPosition);
   return 0;
 }
