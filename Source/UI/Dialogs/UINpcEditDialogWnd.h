@@ -4,6 +4,7 @@
 #include "UI/Window/UIFrameWnd.h"
 
 struct UIButtonContext;
+class UIEditCtrl;
 
 class UINpcEditDialogWnd : public UIFrameWnd {
 public:
@@ -11,6 +12,9 @@ public:
 
 protected:
   UIButtonContext* m_controls;
+
+public:
+  /* 00B4 */ UIEditCtrl* edit;
 };
 
 #endif

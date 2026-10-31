@@ -68,6 +68,16 @@ protected:
   UIListBoxContext* m_listContext;
 };
 
+class UIListBox2 : public UIListBox {
+public:
+  void Paint() override;
+
+  /* 00D4 */ int fontFamily;
+  /* 00D8 */ int fontHeight;
+  /* 00DC */ unsigned char bold;
+  /* 00DD */ unsigned char italic;
+};
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UIListBox) == 220);
 #endif

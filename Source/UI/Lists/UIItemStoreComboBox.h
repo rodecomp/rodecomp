@@ -8,6 +8,7 @@ class UIItemStoreComboBox : public UIComboBoxEx {
 public:
   UIItemStoreComboBox(UIWindowContext& windows, UIComboBoxContext& combo) : UIComboBoxEx(windows, combo), pink(false) {}
   void Slot15(int width, int height) override;
+  void Paint() override;
   void Slot27(int x, int y) override;
   void Slot31(int x, int y) override;
 

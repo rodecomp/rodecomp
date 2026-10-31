@@ -33,6 +33,7 @@ class UIItemTagOnChat : public UIItemTagCtrl {
 public:
   UIItemTagOnChat();
   bool CanInsertTag(const std::string& name, int width) override;
+  void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused);
 };
 
 class UIItemTagOnMail : public UIItemTagCtrl {
@@ -40,6 +41,7 @@ public:
   bool CanInsertTag(const std::string& name, int width) override;
   void AddTagButton(UIWindow* button) override;
   void SetLines(const std::vector<std::string>& lines);
+  void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused);
 
   /* 015C */ std::vector<std::string> m_lines;
 };
@@ -47,6 +49,9 @@ public:
 class UIItemTagOnMegaPhone : public UIItemTagCtrl {
 public:
   void AddTagButton(UIWindow* button) override;
+  void PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int unused);
+
+  /* 015C */ int textWidth;
 };
 
 #endif

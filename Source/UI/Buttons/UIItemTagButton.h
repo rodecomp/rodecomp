@@ -8,6 +8,7 @@
 class UIItemTagButton : public UITextButton {
 public:
   void Paint() override;
+  void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
 
   /* 00F8 */ unsigned char unknown_00F8[0xF0];

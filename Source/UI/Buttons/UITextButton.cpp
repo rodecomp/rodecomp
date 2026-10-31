@@ -2803,3 +2803,71 @@ void UIScrollBar_Custom::SetThumbBitmaps(std::string top, std::string middle, st
   this->m_thumbBottom = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(bottom.c_str())));
   this->Invalidate();
 }
+
+#include "UI/Edit/UIItemTagCtrl.h"
+#include "UI/Rodex/UIRodexComposeWnd.h"
+#include "UI/Dialogs/UINpcEditDialogWnd.h"
+#include "UI/Dialogs/UITipboxWnd.h"
+#include "UI/Lists/UIComboBoxDefWnd.h"
+#include "UI/Window/UINewSelectCharWnd.h"
+#include "Client/Mode/CMode.h"
+#include "Client/Mode/CLoginMode.h"
+
+// OFFSET: 0x00884720
+
+// OFFSET: 0x00884870
+
+// OFFSET: 0x00884C40
+
+// OFFSET: 0x0088AC80
+// FUNCTION: fn_11357
+void UIComboBox_BmpWnd::Paint() {
+  this->ClearSurface(RGB(this->red, this->green, this->blue));
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->name.c_str())))->image, false);
+}
+
+// OFFSET: 0x008904C0
+
+// OFFSET: 0x00890AC0
+// FUNCTION: fn_11433
+void UIComboBox::Slot31(int x, int y) {
+  this->selected = this->LineAt(x, y);
+  if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
+    target->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
+    g_windowMgr.CloseWindow(26);
+    return;
+  }
+
+  if (this->parent) {
+    this->parent->SendMsg(nullptr, 39, this->selected, 0, 0, 0);
+  }
+
+  g_windowMgr.CloseWindow(26);
+}
+
+// OFFSET: 0x00892990
+// FUNCTION: fn_11480
+void UIBasicSkillCtrl::Slot32(int x, int y) {
+  if (this->m_skillId < 0) {
+    return;
+  }
+
+  UIWindow* window = g_windowMgr.EnsureWindow(46);
+  window->SendMsg(nullptr, 61, this->m_skillId, 0, 0, 0);
+  int screenX = 0;
+  int screenY = 0;
+  this->ToScreen(screenX, screenY);
+  window->Move(screenX + x + 24, screenY + y);
+}
+
+// OFFSET: 0x0089BA90
+
+#include "Network/TextEncoding.h"
+
+// OFFSET: 0x0088BCD0
+
+// OFFSET: 0x0088A7D0
+
+// OFFSET: 0x0088B120
+
+// OFFSET: 0x0088B5A0

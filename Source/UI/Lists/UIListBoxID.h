@@ -20,6 +20,7 @@ public:
   UIListBoxID();
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot35(int value) override;
@@ -50,6 +51,7 @@ public:
   UIComboBoxID();
   void Resize(int width, int height) override;
   void Slot15(int width, int height) override;
+  void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
   void Slot27(int x, int y) override;
