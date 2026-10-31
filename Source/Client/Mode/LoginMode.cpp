@@ -1,5 +1,7 @@
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Application/Launcher.h"
+#include "Client/Stove/StoveMgr.h"
 #include "Client/ModeFadeOut.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Client/Mode/ModeMgr.h"
@@ -30,6 +32,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -1655,5 +1658,308 @@ void CLoginMode::Zc_Accept_Enter2(const AcceptEnterPositionPacket* packet) {
     }
     g_pingLogTicks.clear();
     g_pingLogFirstTick = 0;
+  }
+}
+
+// GLOBAL: gl_25155
+char g_loginFailCount;
+
+// GLOBAL: gl_25156
+int g_hangameLogin;
+
+// OFFSET: 0x00D91790
+// FUNCTION: fn_22289
+void CLoginMode::ShowLoginError(int code, int argument) {
+  std::string message;
+  if (code != 0x12) {
+    GetRagConnection().Close();
+  }
+
+  switch (code) {
+  case 0x1393:
+    message = LookupMessage(0x72F);
+    break;
+  case 0x1394: {
+    const std::string text = FormatOwnedString(LookupMessage(0x337), argument);
+    message = text;
+    break;
+  }
+  case 0x1395:
+  case 0x13BE:
+    message = LookupMessage(0x6FD);
+    break;
+  case 0x1397:
+    if (g_launchPassCommandLine) {
+      std::string url;
+      if (g_stoveMgr->m_environment == 1) {
+        url = "https://member.gate8.com/auth/login/by_game?redirect_url=https%3A%2F%2Fro.game.gate8.com%2Faccount%2Fingamepopup&access_token=";
+      } else {
+        url = "https://member.onstove.com/auth/login/by_game?redirect_url=https://ro.game.onstove.com/account/ingamepopup/&access_token=";
+      }
+      url += g_stoveMgr->GetAccessToken();
+      const std::uint8_t source[] = {0x42, 0x33, 0xC8, 0x47, 0x45};
+      thread_local EncryptedName<sizeof(source), 0xD98F5345098D630DULL> operation(source);
+      ShellExecuteA(nullptr, operation.Text(), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
+      message = "";
+      g_modeMgr.Quit();
+      return;
+    }
+    message = LookupMessage(0x730);
+    break;
+  case 0x1399:
+    message = LookupMessage(0x731);
+    break;
+  case 0x13C7:
+    message = LookupMessage(0x701);
+    break;
+  case 0x13C8:
+    message = LookupMessage(0x702);
+    break;
+  case 0x1396:
+  case 0x1398:
+  case 0x139B:
+  case 0x139D:
+  case 0x13BC:
+  case 0x13BD:
+  case 0x13BF:
+  case 0x13C0:
+  case 0x13C1:
+  case 0x13C2:
+  case 0x13C3:
+  case 0x13C4:
+  case 0x13C5:
+    message = LookupMessage(0x72E);
+    break;
+  case 0x13BA:
+    message = LookupMessage(0x726);
+    break;
+  case 0x13BB:
+    message = LookupMessage(5);
+    break;
+  case 0x14B4:
+    message = LookupMessage(0xDCE);
+    break;
+  case 0x14B5:
+    message = LookupMessage(0xDD3);
+    break;
+  case 33:
+    message = LookupMessage(0xA7A);
+    break;
+  case 0:
+    message = LookupMessage(6);
+    break;
+  case 1:
+    if (g_serviceType == 0 && ++g_loginFailCount >= 3) {
+      message = std::string(PasswordRetryExceededMessage{}().Text());
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
+        if (g_hangameLogin == 1) {
+          const std::uint8_t urlSource[] = {0x17, 0x67, 0xAB, 0xA1, 0xBF, 0x48, 0x56, 0x9A, 0x08, 0x64, 0xF1, 0xB9,
+                                            0xE4, 0x09, 0x1E, 0x8C, 0x12, 0x76, 0xF1, 0xB2, 0xEA, 0x0A, 0x79};
+          thread_local EncryptedName<sizeof(urlSource), 0xED796785D1DF137FULL> url(urlSource);
+          const char* file = url.Text();
+          const std::uint8_t source[] = {0xD2, 0xCD, 0x88, 0x59, 0xBB};
+          thread_local EncryptedName<sizeof(source), 0x83EFBFBB37EDBDBDULL> operation(source);
+          ShellExecuteA(hWnd, operation.Text(), file, nullptr, nullptr, SW_SHOWNORMAL);
+        } else {
+          const std::uint8_t urlSource[] = {0xF7, 0xB1, 0x19, 0xDB, 0xED, 0x06, 0xD2, 0xD7, 0xFE, 0xA2, 0x03,
+                                            0xCA, 0xA5, 0x46, 0x96, 0x8B, 0xFC, 0xAA, 0x43, 0xC0, 0xA5, 0x29};
+          thread_local EncryptedName<sizeof(urlSource), 0xA5FD29D7AB6DC59FULL> url(urlSource);
+          const char* file = url.Text();
+          const std::uint8_t source[] = {0x66, 0x57, 0x4A, 0xD5, 0xBD};
+          thread_local EncryptedName<sizeof(source), 0xD97D5DBDBB2F2709ULL> operation(source);
+          ShellExecuteA(hWnd, operation.Text(), file, nullptr, nullptr, SW_SHOWNORMAL);
+        }
+        g_modeMgr.Quit();
+      }
+      message.clear();
+    } else {
+      message = LookupMessage(0x10B);
+    }
+    break;
+  case 2:
+    message = LookupMessage(8);
+    break;
+  case 4:
+  case 0x13C6:
+    message = LookupMessage(0x10A);
+    break;
+  case 5:
+    message = LookupMessage(0x136);
+    break;
+  case 99:
+    message = LookupMessage(0x170);
+    break;
+  case 6: {
+    const std::string text = FormatOwnedString(LookupMessage(0x1C1), argument);
+    message = text;
+    break;
+  }
+  case 101: {
+    const std::string text = FormatOwnedString(LookupMessage(0x32A), argument);
+    message = text;
+    break;
+  }
+  case 102:
+    message = LookupMessage(0x32B);
+    break;
+  case 103:
+    message = LookupMessage(0x35B);
+    break;
+  case 104:
+    message = LookupMessage(0x35C);
+    break;
+  case 7:
+    message = LookupMessage(0x1B7);
+    break;
+  case 8:
+    message = LookupMessage(0x2A9);
+    break;
+  case 9:
+    message = LookupMessage(0x2BF);
+    break;
+  case 10:
+    message = LookupMessage(0x2C0);
+    break;
+  case 11:
+    message = LookupMessage(0x2C1);
+    break;
+  case 12:
+    message = LookupMessage(0x2C2);
+    break;
+  case 13:
+    message = LookupMessage(0x2C3);
+    break;
+  case 14:
+    message = LookupMessage(0x2C4);
+    break;
+  case 15:
+    message = LookupMessage(0x2C5);
+    break;
+  case 100: {
+    const std::string text = FormatOwnedString(LookupMessage(0x329), argument);
+    message = text;
+    break;
+  }
+  case 16:
+    if (g_serviceType == 0) {
+      const std::uint8_t textSource[] = {0x4B, 0x36, 0x80, 0xD9, 0x37, 0xC0, 0xB7, 0x39, 0x52, 0xE7, 0x83, 0xA6, 0xA7, 0x9F, 0x6F, 0x39,
+                                         0x35, 0xEB, 0x19, 0xBD, 0xCE, 0xC4, 0x8C, 0xD1, 0x30, 0x65, 0x85, 0xDA, 0x37, 0xBE, 0x97, 0x30,
+                                         0x27, 0x7A, 0xFA, 0xB8, 0xF5, 0x59, 0xF6, 0x28, 0x47, 0x3F, 0x8D, 0xC6, 0xA3, 0xA0, 0x61, 0xF1};
+      thread_local EncryptedName<sizeof(textSource), 0xF14F79170939C7F1ULL> text(textSource);
+      message = std::string(text.Text());
+      if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
+        const std::uint8_t urlSource[] = {0x43, 0x6B, 0x9D, 0xDB, 0xFB, 0xD0, 0x02, 0x08, 0x5C, 0x68, 0xC7, 0xD9, 0xA0, 0x98, 0x43, 0x1E,
+                                          0x59, 0x70, 0x82, 0x85, 0xA2, 0x90, 0x03, 0x14, 0x59, 0x30, 0x9A, 0xCE, 0xB5, 0xB1, 0x48, 0x08,
+                                          0x7B, 0x48, 0xC6, 0xDB, 0xA0, 0x8C, 0x5E, 0x08, 0x44, 0x6D, 0x8D, 0xF4, 0xA2, 0x97, 0x4C, 0x11,
+                                          0x4C, 0x7A, 0xB6, 0xCA, 0xA6, 0x8D, 0x48, 0x1A, 0x46, 0x7A, 0x87, 0xDF, 0xEF, 0x9E, 0x5E, 0x0F,
+                                          0x2B};
+        thread_local EncryptedName<sizeof(urlSource), 0x7F2DFFC1ABE91F2BULL> url(urlSource);
+        const char* file = url.Text();
+        const std::uint8_t source[] = {0xE2, 0xF1, 0x74, 0x9D, 0xB3};
+        thread_local EncryptedName<sizeof(source), 0xFD69A9B3F311818DULL> operation(source);
+        ShellExecuteA(hWnd, operation.Text(), file, nullptr, nullptr, SW_SHOWNORMAL);
+        g_modeMgr.Quit();
+      }
+      message.clear();
+    }
+    break;
+  case 106:
+    message = LookupMessage(0x50D);
+    break;
+  case 105:
+    message = LookupMessage(0x55C);
+    break;
+  case 17: {
+    const std::string text = FormatOwnedString(LookupMessage(0x564), argument);
+    message = text;
+    if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 2, true, true, 0, "Message", 280, 120, 0) == 0xBB) {
+      g_modeMgr.Quit();
+    }
+    message.clear();
+    break;
+  }
+  case 18:
+    message = LookupMessage(0x565);
+    break;
+  case 19:
+    message = LookupMessage(0x6D7);
+    break;
+  case 20:
+    message = LookupMessage(0x6D8);
+    break;
+  case 108:
+    message = LookupMessage(0x571);
+    break;
+  case 109:
+    message = LookupMessage(0x572);
+    break;
+  case 22:
+  case 23:
+  case 24:
+  case 25:
+  case 26:
+  case 27:
+  case 30:
+    message = LookupMessage(0xD70);
+    break;
+  case 28:
+    message = LookupMessage(0xAAB);
+    break;
+  case 29:
+    message = LookupMessage(0xAAC);
+    break;
+  case 21:
+  case 0x139A:
+    message = LookupMessage(0x6FA);
+    break;
+  case 110:
+    if (reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(0x929), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
+      const char* file = LookupMessage(0x92A);
+      const std::uint8_t source[] = {0xFC, 0x05, 0xBA, 0x81, 0x4D};
+      thread_local EncryptedName<sizeof(source), 0x9B0F234DEFDF7593ULL> operation(source);
+      ShellExecuteA(hWnd, operation.Text(), file, nullptr, nullptr, SW_SHOWNORMAL);
+      g_modeMgr.Quit();
+    }
+    message = "";
+    break;
+  case 112:
+    message = LookupMessage(0x96A);
+    break;
+  case 242:
+    message = LookupMessage(0xD6F);
+    break;
+  case 36: {
+    const int remaining = this->unknown_6F78;
+    const std::string text = FormatOwnedString(LookupMessage(0xD7D), remaining / 3600, static_cast<int>(std::ceil(static_cast<float>(remaining % 3600) / 60.0f)));
+    message = text;
+    break;
+  }
+  case 243:
+    message = LookupMessage(0xE67);
+    break;
+  case 244:
+    message = LookupMessage(0x105E);
+    break;
+  default: {
+    message = LookupMessage(9);
+    const std::uint8_t source[] = {0x6B, 0x1C, 0x3F, 0x42, 0x67};
+    thread_local EncryptedName<sizeof(source), 0xC9712D676B5B3943ULL> format(source);
+    message += FormatOwnedString(format.Text(), code);
+    break;
+  }
+
+  }
+
+  if (!message.empty()) {
+    reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+    if (code == 5 || code == 99) {
+      this->SendMsg(2, 0, 0, 0, 0);
+    }
+  }
+
+  if (g_loginModeFlag == true) {
+    this->pendingCursorType = 3;
+  } else {
+    g_modeMgr.Quit();
   }
 }

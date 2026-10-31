@@ -136,6 +136,7 @@ public:
   void ReceiveNotifyZoneServer2(const NotifyZoneServer2Packet* packet);
   void Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet);
   void Zc_Accept_Enter2(const AcceptEnterPositionPacket* packet);
+  void ShowLoginError(int code, int argument);
 };
 
 extern bool g_loginModeFlag;
