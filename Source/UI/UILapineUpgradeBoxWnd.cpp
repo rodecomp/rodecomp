@@ -67,6 +67,21 @@ void UILapineUpgradeBox_IngredientListWnd::Slot15(int width, int height) {
 }
 
 // OFFSET: 0x00603CA0
+// FUNCTION: fn_04201
+void UILapineUpgradeBox_IngredientInfoWnd::Paint() {
+  this->ClearSurface(0xFFF7F7);
+  if (this->selected == 1) {
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\list_selected_item.bmp")));
+    this->DrawBitmap(32, 0, bitmap ? &bitmap->image : nullptr, false);
+  }
+
+  UIButtonContext& controls = *this->m_controls;
+  ItemDescriptions descriptions{g_itemDescriptions};
+  DrawItemIcon(*this, controls.resources, descriptions, 4, 3, this->item, 0);
+
+  const std::string name = this->FitDisplayText(100, this->item.unknown_0044.c_str(), 0, 12, 0);
+  this->DrawShadowedText(36, 9, name.c_str(), 0, 0, 0xE0E0E0, 0, 12, 0);
+}
 
 // OFFSET: 0x00603B60
 // FUNCTION: fn_04200
