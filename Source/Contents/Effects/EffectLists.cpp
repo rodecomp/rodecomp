@@ -573,10 +573,6 @@ bool CreateEffectMgr() {
   return true;
 }
 
-__declspec(noinline) bool EffectLists::RegisterAllocators() {
-  return true;
-}
-
 // OFFSET: 0x00B24DE0
 // FUNCTION: fn_18775
 void EffectLists::SpawnLevel99(CRenderObject* actor, unsigned char flag, int extra) {
@@ -1484,6 +1480,3790 @@ CSprArrowEffect::~CSprArrowEffect() {
 }
 
 CChopChopClawMarks::~CChopChopClawMarks() {
+}
+
+// OFFSET: 0x00B25890
+// FUNCTION: fn_18786
+bool EffectLists::RegisterAllocators() {
+  if (!this->RegisterAllocator(EF_LEVEL99, new (std::nothrow) CEffectAllocator<CLevel99Effect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LEVEL99_ORB1, new (std::nothrow) CEffectAllocator<CLevel99Orb1Effect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LEVEL99_ORB2, new (std::nothrow) CEffectAllocator<CLevel99Orb2Effect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SMOKE, new (std::nothrow) CEffectAllocator<CSmokeEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_EMITTER, new (std::nothrow) CEffectAllocator<CEmitterEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LEVEL150, new (std::nothrow) CEffectAllocator<CLevel150Effect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LEVEL150_SUB, new (std::nothrow) CEffectAllocator<CLevel150SubEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MAPCHAIN, new (std::nothrow) CEffectAllocator<CMapChainEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MAGIC_FLOOR, new (std::nothrow) CEffectAllocator<CMagicFloorEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LEVEL160, new (std::nothrow) CEffectAllocator<CLevel150Effect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LEVEL160_SUB, new (std::nothrow) CEffectAllocator<CLevel150SubEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_POTION1, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_POTION2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_POTION3, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_POTION4, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_POTION5, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_POTION6, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_POTION7, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_POTION8, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROWITEM, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROWITEM2, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROWITEM3, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROWITEM4, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROWITEM4_1, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROWITEM5, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROWITEM6, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROWITEM7, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROWITEM8, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROWITEM9, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROWITEM10, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROWITEM11, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROW_BAKURETSU, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROW_HAPPOKUNAI, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THROW_MULTIPLE_COIN, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ROTATE_HUUMARANKA, new (std::nothrow) CEffectAllocator<CRotateItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ROTATE_LINE_GRAY, new (std::nothrow) CEffectAllocator<CRotateLineEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ROTATE_LINE_BLUE, new (std::nothrow) CEffectAllocator<CRotateLineEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CHOOKGI, new (std::nothrow) CEffectAllocator<CEnergyOrbEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CHOOKGI_WATER, new (std::nothrow) CEffectAllocator<CEnergyOrbEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CHOOKGI_GROUND, new (std::nothrow) CEffectAllocator<CEnergyOrbEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CHOOKGI_FIRE, new (std::nothrow) CEffectAllocator<CEnergyOrbEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CHOOKGI_WIND, new (std::nothrow) CEffectAllocator<CEnergyOrbEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KAIHOU, new (std::nothrow) CEffectAllocator<CThrowItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_GROUND_EXPLOSION, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KG_KAGEHUMI, new (std::nothrow) CEffectAllocator<CSquareRangeEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KO_JYUMONJIKIRI, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KO_SETSUDAN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RED_CROSS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KO_IZAYOI, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_OB_GENSOU, new (std::nothrow) CEffectAllocator<CEnergyOrbEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KO_HUUMARANKA, new (std::nothrow) CEffectAllocator<CScatterEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KO_MAKIBISHI, new (std::nothrow) CEffectAllocator<CCellRangeEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KAIHOU1, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_AKAITSUKI, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ZANGETSU, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KG_KYOMU, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_GENSOU, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KO_ZENKAI_WATER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KO_ZENKAI_WIND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KO_ZENKAI_FIRE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_KO_ZENKAI_LAND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CHERRYBLOSSOM, new (std::nothrow) CEffectAllocator<CCherryBlossomEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STORMKICK, new (std::nothrow) CEffectAllocator<CStormKickEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HAT_EFFECT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MOONSTAR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MUSIC_HAT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HAPPINESSSTAR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STRANGELIGHTS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SUPER_STAR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_EVILS_PAW, new (std::nothrow) CEffectAllocator<CEvilsPawEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RA_UNLIMIT, new (std::nothrow) CEffectAllocator<CCommonFloorEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WM_FRIGG_SONG, new (std::nothrow) CEffectAllocator<CFriggSongEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HAMMER_OF_GOD, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FIRE_RAIN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MASS_SPIRAL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BANISHING_BUSTER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SLUGSHOT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_D_TAIL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BIND_TRAP1, new (std::nothrow) CEffectAllocator<CBindTrapEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BIND_TRAP2, new (std::nothrow) CEffectAllocator<CBindTrapEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BIND_TRAP3, new (std::nothrow) CEffectAllocator<CBindTrapEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RL_EXPLOSION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ANIMATED_EMITTER, new (std::nothrow) CEffectAllocator<CAnimatedEmitterEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_C_MAKER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_C_MAKER_1, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_QD_SHOT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_P_ALTER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_S_STORM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CLOUD_KILL, new (std::nothrow) CEffectAllocator<CCloudKillEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FLOWERSMOKE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FSTONE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_QSCARABA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LJOSALFAR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MAPLE_FALLS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MARKING_USE_CHANGEMONSTER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_POWER_OF_GAIA, new (std::nothrow) CEffectAllocator<CRectUpEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MAGICAL_FEATHER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MERMAID_LONGING, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACH_COMPLETE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TIME_ACCESSORY, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SPRITEMABLE, new (std::nothrow) CEffectAllocator<CSpriteMableEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TUNAPARTY, new (std::nothrow) CEffectAllocator<CTunaPartyEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FRESHSHRIMP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1099, new (std::nothrow) CEffectAllocator<CMeteorEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1111, new (std::nothrow) CEffectAllocator<CMeteorEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1106, new (std::nothrow) CEffectAllocator<CMeteorEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1112, new (std::nothrow) CEffectAllocator<CMeteorEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1100, new (std::nothrow) CEffectAllocator<CStemSpearEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_SV_STEMSPEAR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_TUNABELLY, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_SCRATCH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_BITE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_SCAROFTAROU, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_ARCLOUSEDASH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_PICKYPECK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1104, new (std::nothrow) CEffectAllocator<CPowderingEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1110, new (std::nothrow) CEffectAllocator<CRootTwistEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_BUNCHOFSHRIMP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LORD_OF_VERMILLION_VISUAL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_METEOR_STORM_VISUAL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_QUAGMIRE_VISUAL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+
+  std::list<int> hatEffects = g_luaScript->TableKeys("hatEffectTable", 14);
+  for (int hatEffect : hatEffects) {
+    if (!this->RegisterAllocator(hatEffect + 2485, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+      return false;
+    }
+  }
+
+  if (!this->RegisterAllocator(EF_HEAL, new (std::nothrow) CEffectAllocator<CHealEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HEAL2, new (std::nothrow) CEffectAllocator<CHealEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HEAL3, new (std::nothrow) CEffectAllocator<CHealEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HEAL4, new (std::nothrow) CEffectAllocator<CHealEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABSORBSPIRITS, new (std::nothrow) CEffectAllocator<CHealEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1113, new (std::nothrow) CEffectAllocator<CHealEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1143, new (std::nothrow) CEffectAllocator<CHealEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1144, new (std::nothrow) CEffectAllocator<CHealEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1114, new (std::nothrow) CEffectAllocator<CWarningPlaneEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BITE_SCAR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WIDE_CRITICAL_WOUND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_GROOMING, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_CHATTERING, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_LOPE, new (std::nothrow) CEffectAllocator<CNyanggrassEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_HISS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_POWEROFFLOCK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1128, new (std::nothrow) CEffectAllocator<CSvgSpiritEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SU_SVG_SPIRIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PNEUMA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1130, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FIREDANCE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RICHS_COIN_A, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RL_ANTI_MATERIAL_BLAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_E_CHAIN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HEAT_BARREL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_H_MINE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FALLEN_ANGEL, new (std::nothrow) CEffectAllocator<CFallenAngelEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RL_B_TRAP, new (std::nothrow) CEffectAllocator<CRichsCoinEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WE_ONEFOREVER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WE_CHEERUP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1146, new (std::nothrow) CEffectAllocator<CCloud>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1147, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1151, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1152, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1153, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1154, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1155, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1156, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1157, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1158, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1159, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1160, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1187, new (std::nothrow) CEffectAllocator<CRandomOptEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1188, new (std::nothrow) CEffectAllocator<CRandomOptEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1191, new (std::nothrow) CEffectAllocator<CRandomOptEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1192, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1196, new (std::nothrow) CEffectAllocator<CNewCloudKillEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LIGHTSPHERE_SUN, new (std::nothrow) CEffectAllocator<CLightSphereEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LIGHTSPHERE_MOON, new (std::nothrow) CEffectAllocator<CLightSphereEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LIGHTSPHERE_STAR, new (std::nothrow) CEffectAllocator<CLightSphereEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1200, new (std::nothrow) CEffectAllocator<CJupitelThunderHit>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1201, new (std::nothrow) CEffectAllocator<CGravityControlEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NOVAEXPLOSING, new (std::nothrow) CEffectAllocator<CStarEmperorEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STAR_EMPEROR, new (std::nothrow) CEffectAllocator<CStarEmperorEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1211, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1212, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1213, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1214, new (std::nothrow) CEffectAllocator<CSunStanceEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1215, new (std::nothrow) CEffectAllocator<CSunStanceEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1216, new (std::nothrow) CEffectAllocator<CSunStanceEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1217, new (std::nothrow) CEffectAllocator<CSunStanceEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1222, new (std::nothrow) CEffectAllocator<CSoulUnityEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOLARBURST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SJ_DOCUMENT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FALLING_STAR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FLASH_KICK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STORMKICK8, new (std::nothrow) CEffectAllocator<CStormKickEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1225, new (std::nothrow) CEffectAllocator<CSoulCollectEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1226, new (std::nothrow) CEffectAllocator<CLevel150Effect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1227, new (std::nothrow) CEffectAllocator<CLevel150SubEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOUL_GOLEM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEWMOON_KICK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FULLMOON_KICK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BOOK_OF_DIMENSION, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1232, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CURSE_EXPLOSION, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOUL_REAPER, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1235, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1236, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1237, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOUL_CURSE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PROMINENCE_KICK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOUL_EXPLOSION, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOUL_REVOLVE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+
+  for (int id = EF_TEST_EFFECT_00; id <= EF_TEST_EFFECT_09; ++id) {
+    if (!this->RegisterAllocator(id, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+      return false;
+    }
+  }
+
+  if (!this->RegisterAllocator(EF_NEW_METEORSTORM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_METEORSTORM_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ADORAMUS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ADORAMUS_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_CORE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_BALL_1, new (std::nothrow) CEffectAllocator<CTetraBallEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_BALL_2, new (std::nothrow) CEffectAllocator<CTetraBallEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_BALL_3, new (std::nothrow) CEffectAllocator<CTetraBallEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_BALL_4, new (std::nothrow) CEffectAllocator<CTetraBallEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_FIRE_EXP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_WATER_EXP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_WIND_EXP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_EARTH_EXP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_FIRE_GROUND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_WATER_GROUND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_WIND_GROUND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_EARTH_GROUND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_CORE_GROUND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_FIRE_SUB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_WATER_SUB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_WIND_SUB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_EARTH_SUB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CRIMSONROCK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CRIMSONROCK_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CRIMSONROCK_SUB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1276, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SEVERERAINSTORM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DIAMONDDUST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DIAMONDDUST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DIAMONDDUST_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SECRAMENT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SECRAMENT_AURA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_PSYCHICWAVE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_PSYCHICWAVE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_PSYCHICWAVE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARROWSTORM_00, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARROWSTORM_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_TRIANGLESHOT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_TRIANGLESHOT_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1324, new (std::nothrow) CEffectAllocator<CTriangleShotArrow>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_RAMPAGEBLASTER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_RAMPAGEBLASTER_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_FEINTBOMB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_FEINTBOMB_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CROSSRIPPERSLASHER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CROSSRIPPERSLASHER_00, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CROSSRIPPERSLASHER_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CROSSRIPPERSLASHER_03, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CROSSRIPPERSLASHER_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CROSSRIPPERSLASHER_06, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CROSSRIPPERSLASHER_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CROSSRIPPERSLASHER_09, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CROSSRIPPERSLASHER_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ROLLINGCUTTER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ROLLINGCUTTER_COUNT_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ROLLINGCUTTER_COUNT_02, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ROLLINGCUTTER_COUNT_03, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ROLLINGCUTTER_COUNT_04, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ROLLINGCUTTER_COUNT_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ROLLINGCUTTER_COUNT_06, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ROLLINGCUTTER_COUNT_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ROLLINGCUTTER_COUNT_08, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ROLLINGCUTTER_COUNT_09, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ROLLINGCUTTER_COUNT_10, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_TIGERCANNON, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_01_DOWN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_01_UP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_05_DOWN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_05_UP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_07_DOWN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_07_UP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_11_DOWN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_11_UP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_EXPLOSION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_EXPLOSION_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1357, new (std::nothrow) CEffectAllocator<CCartCannon>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CART_CANNON_EXPLOSION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CART_CANNON_EXPLOSION_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CART_CANNON_FIRE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CART_CANNON_FIRE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CART_CANNON_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CART_CANNON_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_QSCARABA_VISUAL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXETORNADO, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXETORNADO_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CART_TORNADO, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CART_TORNADO_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HELP_ANGEL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HELP_ANGEL_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BANISHINGPOINT_TARGET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BANISHINGPOINT_TARGET_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BANISHINGPOINT_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BANISHINGPOINT_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BANISHINGPOINT_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BANISHINGPOINT_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BANISHINGPOINT_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BANISHINGPOINT_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1377, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DRAGONBREATH_BOMB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DRAGONBREATH_BOMB_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DRAGONBREATH_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DRAGONBREATH_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DRAGONBREATH_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DRAGONBREATH_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DRAGONBREATH_WATER_BOMB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DRAGONBREATH_WATER_BOMB_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DRAGONBREATH_WATER_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DRAGONBREATH_WATER_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DRAGONBREATH_WATER_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DRAGONBREATH_WATER_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_COUNTER_SLASH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_COUNTER_SLASH_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_FATAL_MENACE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_FATAL_MENACE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_FATAL_MENACE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_FATAL_MENACE_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CANNON_SPEAR_12, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CANNON_SPEAR_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CANNON_SPEAR_03, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CANNON_SPEAR_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CANNON_SPEAR_06, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CANNON_SPEAR_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CANNON_SPEAR_09, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CANNON_SPEAR_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CANNON_SPEAR_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BASICATTACK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CRITICALATTACK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_RANGEDATTACK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_COMET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_COMET_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_COMET_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_COMET_SUB_EXP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_COMET_SUB_EXP_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_COMET_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1419, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_RAYOFGENESIS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_RAYOFGENESIS_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_RAYOFGENESIS_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_RAYOFGENESIS_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ADORAMUS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ADORAMUS_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TETRA_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TETRA_CORE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TETRA_FIRE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TETRA_WATER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TETRA_WIND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TETRA_EARTH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TETRA_FIRE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TETRA_WATER_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TETRA_WIND_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TETRA_EARTH_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TETRA_CORE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CRIMSONROCK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CRIMSONROCK_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JACKFROST_00, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JACKFROST_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JACKFROST_02, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JACKFROST_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JACKFROST_RUNE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DIAMONDDUST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DIAMONDDUST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DIAMONDDUST_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_SECRAMENT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_PSYCHICWAVE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_PSYCHICWAVE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_PSYCHICWAVE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ARROWSTORM_00, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ARROWSTORM_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TRIANGLESHOT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TRIANGLESHOT_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_RAMPAGEBLASTER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_RAMPAGEBLASTER_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_FEINTBOMB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_FEINTBOMB_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_EARTHGRAVE_VISUAL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_EARTHGRAVE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_EARTHGRAVE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ROLLINGCUTTER_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ROLLINGCUTTER_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ROLLINGCUTTER_02, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ROLLINGCUTTER_03, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ROLLINGCUTTER_04, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ROLLINGCUTTER_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ROLLINGCUTTER_06, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ROLLINGCUTTER_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ROLLINGCUTTER_08, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ROLLINGCUTTER_09, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ROLLINGCUTTER_10, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CROSSRIPPERSLASHER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CROSSRIPPERSLASHER_12, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CROSSRIPPERSLASHER_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CROSSRIPPERSLASHER_03, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CROSSRIPPERSLASHER_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CROSSRIPPERSLASHER_06, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CROSSRIPPERSLASHER_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CROSSRIPPERSLASHER_09, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CROSSRIPPERSLASHER_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ARMSCANNON_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ARMSCANNON_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ARMSCANNON_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ARMSCANNON_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ARMSCANNON_EXPLOSION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ARMSCANNON_EXPLOSION_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ARMSCANNON_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_ARMSCANNON_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_AXETORNADO, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_AXETORNADO_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CART_CANNON_EXPLOSION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CART_CANNON_EXPLOSION_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CART_CANNON_FIRE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CART_CANNON_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CART_CANNON_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CART_TORNADO, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CART_TORNADO_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_BANISHINGPOINT_TARGET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_BANISHINGPOINT_TARGET_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_BANISHINGPOINT_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_BANISHINGPOINT_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_BANISHINGPOINT_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_BANISHINGPOINT_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_BANISHINGPOINT_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_BANISHINGPOINT_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CANNON_SPEAR_12, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CANNON_SPEAR_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CANNON_SPEAR_03, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CANNON_SPEAR_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CANNON_SPEAR_06, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CANNON_SPEAR_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CANNON_SPEAR_09, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CANNON_SPEAR_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_CANNON_SPEAR_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DRAGONBREATH_BOMB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DRAGONBREATH_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DRAGONBREATH_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DRAGONBREATH_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DRAGONBREATH_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DRAGONBREATH_WATER_BOMB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DRAGONBREATH_WATER_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DRAGONBREATH_WATER_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DRAGONBREATH_WATER_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_DRAGONBREATH_WATER_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_TIGERCANNON, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_SEVERERAINSTORM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_COMET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_COMET_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_COMET_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_COMET_SUB_EXP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_COMET_SUB_EXP_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_COMET_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_JACKFROST_00, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_JACKFROST_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_JACKFROST_02, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_JACKFROST_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MINEFFECT_JACKFROST_RUNE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_POISONSMOKE_1, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_POISONSMOKE_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_POISONSMOKE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_FEARBREEZE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_HELLINFERNO, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_HELLINFERNO_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_HELLINFERNO_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_HELLINFERNO_SUB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_HELLINFERNO_SUB_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CLEARANCE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CLEARANCE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CLEARANCE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_VARETYRSPEAR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_VARETYRSPEAR_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_VARETYRSPEAR_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_VARETYRSPEAR_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1555, new (std::nothrow) CEffectAllocator<CEvilLandEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CROSSIMPACT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CROSSIMPACT_TARGET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_REVERBERATION_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_FALLENEMPIRE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_FALLENEMPIRE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_FALLENEMPIRE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_GATEOFHELL_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_GATEOFHELL_TARGET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_HOWLINGOFLION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_HOWLINGOFLION_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_HOWLINGOFLION_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_HOWLINGOFLION_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_HOWLINGOFLION_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_METALLICSOUND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_METALLICSOUND_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_METALLICSOUND_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_REPRODUCE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_REPRODUCE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SOULEXPANSION_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SOULEXPANSION_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SOULEXPANSION_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SOULEXPANSION_LOOP_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SOULEXPANSION_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SOULEXPANSION_HIT_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AROMAOIL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AROMAOIL_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BATHFOAM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BATHFOAM_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_CORE_REUSE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_GRADE_ENCHANT_INTRO, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_GRADE_ENCHANT_SUCCESS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_GRADE_ENCHANT_FAILED, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BLUE_WAVE_1, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BLUE_WAVE_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BLUE_WAVE_3, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RED_WAVE_1, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RED_WAVE_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RED_WAVE_3, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1617, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1618, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1619, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_WALLOFTHORN_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_WALLOFTHORN_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_IGNITIONBREAK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_IGNITIONBREAK_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_IGNITIONBREAK_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JUDEX_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JUDEX_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JUDEX_CAST_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JUDEX_CAST_LOOP_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JUDEX_TARGET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JUDEX_TARGET_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JUDEX_LIGHT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JUDEX_LIGHT_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CHAINLIGHTNING_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CHAINLIGHTNING_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CHAINLIGHTNING_LOCKON, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CHAINLIGHTNING_TARGET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_MANDRAGORA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_MANDRAGORA_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_MANDRAGORA_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SOUNDOFDESTRUCTION_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SOUNDOFDESTRUCTION_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SOUNDOFDESTRUCTION_TARGET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AIMEDBOLT_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AIMEDBOLT_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AIMEDBOLT_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AIMEDBOLT_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AIMEDBOLT_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AIMEDBOLT_END, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AIMEDBOLT_TARGET_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_UNLIMIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_UNLIMIT_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_EPICLESIS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1657, new (std::nothrow) CEffectAllocator<CAxeBoomerang>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXEBOOMERANG_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXEBOOMERANG_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXEBOOMERANG_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1661, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1662, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1663, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SPELLFIST_FIRE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SPELLFIST_FIRE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SPELLFIST_WATER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SPELLFIST_WATER_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_SPELLFIST_WIND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1670, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1671, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1672, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1673, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1674, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CARTBOOST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_CARTBOOST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_OVERBRAND_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_OVERBRAND_03, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_OVERBRAND_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_OVERBRAND_06, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_OVERBRAND_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_OVERBRAND_09, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_OVERBRAND_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_OVERBRAND_12, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_OVERBRAND_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_OVERBRAND_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_OVERBRAND_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_WINDCUTTER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_WINDCUTTER_BOTTOM_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_WINDCUTTER_BOTTOM_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_WINDCUTTER_TARGET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2460, new (std::nothrow) CEffectAllocator<CServantWeaponNewEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1694, new (std::nothrow) CEffectAllocator<CServantWeaponEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1695, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1696, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1697, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_POWERSWING_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_POWERSWING_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_POWERSWING_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_POWERSWING_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_POWERSWING_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_VULCANARM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_VULCANARM_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_VULCANARM_SHOTHOLE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_EARTHDRIVE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_EARTHDRIVE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_EARTHDRIVE_TARGET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1710, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2280, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1711, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1712, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1713, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1714, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1715, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1716, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1717, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1718, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1719, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1720, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1721, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DRAGONIC_AURA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DRAGONIC_AURA_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DRAGONIC_AURA_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DRAGONIC_AURA_HIT_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DRAGONIC_AURA_BUFF, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DRAGONIC_AURA_BUFF_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1728, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1729, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1750, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1751, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AUTOSHADOWSPELL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AUTOSHADOWSPELL_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DESTRUCTIVE_HURRICANE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DESTRUCTIVE_HURRICANE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DESTRUCTIVE_HURRICANE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DESTRUCTIVE_HURRICANE_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DESTRUCTIVE_HURRICANE_CLIMAX, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DESTRUCTIVE_HURRICANE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DEADLY_PROJECTION_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DEADLY_PROJECTION_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DEADLY_PROJECTION_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DEADLY_PROJECTION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOUL_VC_STRIKE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOUL_VC_STRIKE_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOUL_VC_STRIKE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ROCKDOWN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ROCKDOWN_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ROCKDOWN_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ROCKDOWN_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ROCKDOWN_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1752, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RAIN_OF_CRYSTAL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RAIN_OF_CRYSTAL_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1755, new (std::nothrow) CEffectAllocator<CStormCannonEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1756, new (std::nothrow) CEffectAllocator<CCrimsonArrowEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CRIMSON_ARROW_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CRIMSON_ARROW_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CRIMSON_ARROW_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1760, new (std::nothrow) CEffectAllocator<CViolentQuakeEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_VIOLENT_QUAKE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_VIOLENT_QUAKE_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_VIOLENT_QUAKE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_VIOLENT_QUAKE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2461, new (std::nothrow) CEffectAllocator<CChargingPierceNewEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1764, new (std::nothrow) CEffectAllocator<CChargingPierceEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1765, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1766, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1767, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1768, new (std::nothrow) CEffectAllocator<CAstralStrikeEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ASTRAL_STRIKE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ASTRAL_STRIKE_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MYSTERY_ILLUSION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MYSTERY_ILLUSION_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MYSTERY_ILLUSION_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MYSTERY_ILLUSION_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MYSTERY_ILLUSION_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TORNADO_STORM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TORNADO_STORM_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TORNADO_STORM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TORNADO_STORM_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TORNADO_STORM_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROZEN_SLASH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROZEN_SLASH_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROZEN_SLASH_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROZEN_SLASH_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROZEN_SLASH_ICE_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROZEN_SLASH_ICE_02, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROZEN_SLASH_ICE_03, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROZEN_SLASH_ICE_04, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROZEN_SLASH_ICE_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROZEN_SLASH_ICE_06, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROZEN_SLASH_ICE_07, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROZEN_SLASH_ICE_08, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ALL_BLOOM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ALL_BLOOM_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ALL_BLOOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ALL_BLOOM_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1798, new (std::nothrow) CEffectAllocator<CViolentQuakeEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ALL_BLOOM_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1800, new (std::nothrow) CEffectAllocator<CClimaxEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CLIMAX_LIGHT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CLIMAX_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CLIMAX_CAST_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1804, new (std::nothrow) CEffectAllocator<CFloralFlareRoad>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FLORAL_FLARE_ROAD_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FLORAL_FLARE_ROAD_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FLORAL_FLARE_ROAD_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MEDIALE_VOTUM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MEDIALE_VOTUM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MEDIALE_VOTUM_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARGUTUS_VITA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARGUTUS_VITA_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARGUTUS_TELUM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARGUTUS_TELUM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PRESENS_ACIES, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PRESENS_ACIES_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABR_MOTHER_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABR_MOTHER_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABR_MOTHER_02, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_D_MACHINE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_D_MACHINE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_D_MACHINE_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_D_MACHINE_START, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_D_MACHINE_END, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1839, new (std::nothrow) CEffectAllocator<CAMachineEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_A_MACHINE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_A_MACHINE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXE_STOMP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXE_STOMP_12, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXE_STOMP_01, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXE_STOMP_03, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXE_STOMP_05, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXE_STOMP_06, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXE_STOMP_08, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXE_STOMP_09, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXE_STOMP_11, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXE_STOMP_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_AXE_STOMP_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_RUSH_QUAKE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_RUSH_QUAKE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_RUSH_QUAKE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARBITRIUM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARBITRIUM_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARBITRIUM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARBITRIUM_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARBITRIUM_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1829, new (std::nothrow) CEffectAllocator<CDancingKnifeEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1827, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1828, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1830, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_REPARATIO_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_REPARATIO_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_REPARATIO, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_REPARATIO_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_REPARATIO_TARGET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_REPARATIO_TARGET_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1837, new (std::nothrow) CEffectAllocator<CSavageImpactEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ETERNAL_SLASH_HIT_1, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_EFFLIGO, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_EFFLIGO_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_EFFLIGO_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_COMPETENTIA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_COMPETENTIA_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1851, new (std::nothrow) CEffectAllocator<CCompetentia>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_COMPETENTIA_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_COMPETENTIA_LOOP_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CRYSTAL_IMPACT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CRYSTAL_IMPACT_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CRYSTAL_IMPACT_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CRYSTAL_IMPACT_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CRYSTAL_IMPACT_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CRYSTAL_IMPACT_BUFF, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1862, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1863, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RELIGIO, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RELIGIO_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FATAL_SHADOW_CROW, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FATAL_SHADOW_CROW_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FATAL_SHADOW_CROW_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1869, new (std::nothrow) CEffectAllocator<CDropItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1870, new (std::nothrow) CEffectAllocator<CDropItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1871, new (std::nothrow) CEffectAllocator<CDropItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1189, new (std::nothrow) CEffectAllocator<CDropItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1190, new (std::nothrow) CEffectAllocator<CDropItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1186, new (std::nothrow) CEffectAllocator<CDropItemEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FLAME_TRAP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FLAME_TRAP_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FLAME_TRAP_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2467, new (std::nothrow) CEffectAllocator<CShadowExceedNew>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1868, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1867, new (std::nothrow) CEffectAllocator<CShadowExceed>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DEEP_BLIND_TRAP_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DEEP_BLIND_TRAP_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DEEP_BLIND_TRAP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SWIFT_TRAP_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SWIFT_TRAP_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SWIFT_TRAP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOLID_TRAP_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOLID_TRAP_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOLID_TRAP_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOLID_TRAP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BENEDICTUM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BENEDICTUM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BENEDICTUM_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STRATUM_TREMOR_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STRATUM_TREMOR_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STRATUM_TREMOR_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STRATUM_TREMOR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STRATUM_TREMOR_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1895, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1896, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1898, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WIND_SIGN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WIND_SIGN_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABR_INFINITY, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABR_INFINITY_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABR_INFINITY_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABR_INFINITY_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BATTLE_W, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BATTLE_W_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BATTLE_W_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BATTLE_W_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_D_CANNON, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_D_CANNON_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_D_CANNON_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HAWK_RUSH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1911, new (std::nothrow) CEffectAllocator<CPetitioEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PNEUMATICUS_PROCELLA_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1957, new (std::nothrow) CEffectAllocator<CPneumaticusProcellaEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_PRAMEN_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_PRAMEN_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_PRAMEN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DILECTIO_HEAL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DILECTIO_HEAL_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DILECTIO_HEAL_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DILECTIO_HEAL_TARGET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_DILECTIO_HEAL_TARGET_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1912, new (std::nothrow) CEffectAllocator<CEternalSlashAttackEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1913, new (std::nothrow) CEffectAllocator<CEternalSlashCountEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ETERNAL_SLASH_HIT_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1960, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1961, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1962, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_POTENT_VENOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1950, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1951, new (std::nothrow) CEffectAllocator<CCresciveBolt>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1952, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1953, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1954, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1955, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SINCERE_FAITH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SINCERE_FAITH_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_DAGGER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_DAGGER_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1968, new (std::nothrow) CEffectAllocator<CHawkVumerangEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HAWK_BOOMERANG_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HAWK_BOOMERANG_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HAWK_BOOMERANG_START, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_GALE_STORM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_1973, new (std::nothrow) CEffectAllocator<CGaleStorm>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_GALE_STORM_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FIRST_FAITH_POWER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FIRST_FAITH_POWER_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FIRST_FAITH_POWER_START, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_JUDGE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_JUDGE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_JUDGE_START, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_JUDGE_AURA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THIRD_EXOR_FLAME, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THIRD_EXOR_FLAME_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THIRD_EXOR_FLAME_START, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THIRD_EXOR_FLAME_AURA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_OLEUM_SANCTUM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_OLEUM_SANCTUM_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_OLEUM_SANCTUM_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_OLEUM_SANCTUM_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_POWERFUL_FAITH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_INCREASING_ACTIVITY, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_INCREASING_ACTIVITY_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_INCREASING_ACTIVITY_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_EXPLOSION_BLASTER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_EXPLOSION_BLASTER_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_EXPLOSION_BLASTER_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FIRST_BRAND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FIRST_BRAND_AURA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FIRST_BRAND_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FIRST_BRAND_START, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SECOND_FAITH_START, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SECOND_FAITH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SECOND_FAITH_AURA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2080, new (std::nothrow) CEffectAllocator<CRandomHitEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_SLAYER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_SLAYER_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_SLAYER_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MASSIVE_FLAME_BLASTER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MASSIVE_FLAME_BLASTER_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MASSIVE_FLAME_BLASTER_HIT_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THIRD_FLAME_BOMB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THIRD_FLAME_BOMB_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SECOND_FLAME, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SECOND_FLAME_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2082, new (std::nothrow) CEffectAllocator<CRandomHitEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THIRD_CONSECRATION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THIRD_CONSECRATION_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THIRD_PUNISH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THIRD_PUNISH_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FIRM_FAITH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2006, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2007, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2008, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CHAIN_REACTION_SHOT_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CHAIN_REACTION_SHOT_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ETERNAL_SLASH_HIT_3, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CHAIN_REACTION_SHOT_HITSUB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CHAIN_REACTION_SHOT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2000, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2001, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2002, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACTIVITY_BURN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACTIVITY_BURN_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACTIVITY_BURN_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SERPENS_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SERPENS_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SERPENS_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SERPENS_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SERPENS_SHIELD, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SERPENS_DEEP_POISONING, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SERPENS_DEEP_POISONING_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DILUVIO_ICE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DILUVIO_ICE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DILUVIO_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DILUVIO_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DILUVIO_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DILUVIO_ARMOR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DILUVIO_COLD_FORCE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DILUVIO_COLD_FORCE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SPELL_ENCHANTING, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2026, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DIAMOND_STORM_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DIAMOND_STORM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DIAMOND_STORM_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DIAMOND_STORM_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_VENOM_SWAMP_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_VENOM_SWAMP_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_VENOM_SWAMP_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_VENOM_SWAMP_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2046, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2047, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2048, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2049, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2050, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARDOR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARDOR_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARDOR_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARDOR_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARDOR_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARDOR_FLAMEARMOR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARDOR_FLAMETECHNIC, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ARDOR_FLAMETECHNIC_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LIGHTNING_LAND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LIGHTNING_LAND_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LIGHTNING_LAND_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LIGHTNING_LAND_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_LIGHTNING_LAND_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CONFLAGRATION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CONFLAGRATION_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CONFLAGRATION_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CONFLAGRATION_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CONFLAGRATION_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOUND_BLEND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOUND_BLEND_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOUND_BLEND_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SOUND_BLEND_RED, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_METALLIC_FURY, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2065, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2066, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2067, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2068, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2069, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2070, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2071, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2072, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2073, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2074, new (std::nothrow) CEffectAllocator<CCrimsonArrowEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NIFLHEIM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NIFLHEIM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2077, new (std::nothrow) CEffectAllocator<CCylinderEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PROCELLA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PROCELLA_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PROCELLA_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PROCELLA_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PROCELLA_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PROCELLA_STORM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PROCELLA_GRACE_BREEZE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_PROCELLA_GRACE_BREEZE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TERREMOTUS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TERREMOTUS_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TERREMOTUS_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TERREMOTUS_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TERREMOTUS_PROTECT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TERREMOTUS_EARTH_CARE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TERREMOTUS_EARTH_CARE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_STRIKE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_STRIKE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_STRIKE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_STRIKE_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_STRIKE_GROUND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_STRIKE_GROUND_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_STRIKE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2109, new (std::nothrow) CEffectAllocator<CFromTheAbyssEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FROM_THE_ABYSS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_STRIKE_HIT_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DEFT_STAB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_SQUARE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_SQUARE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_DAGGER_HIT_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2114, new (std::nothrow) CEffectAllocator<CCrimsonArrowEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_FRENZY_SHOT_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2116, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2117, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2118, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2119, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2120, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2121, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MUSICAL_INTERLUDE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_MUSICAL_INTERLUDE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2124, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2125, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TERRA_DRIVE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TERRA_DRIVE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TERRA_DRIVE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TERRA_DRIVE_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TERRA_DRIVE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_FIRE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_FIRE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_FIRE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_LAND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_LAND_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_LAND_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_POISON, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_POISON_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_POISON_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_WATER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_WATER_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_WATER_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_WIND, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_WIND_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_WIND_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2154, new (std::nothrow) CEffectAllocator<CCrimsonArrowEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNLUCKY_RUSH_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABYSS_DAGGER_HIT_3, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2157, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2158, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2159, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2160, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ADVANCED_PROTECTION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ADVANCED_PROTECTION_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ADVANCED_PROTECTION_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ADVANCED_PROTECTION_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2462, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2165, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2166, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2167, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2168, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2175, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2176, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2177, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2178, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2179, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2169, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2170, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2171, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2172, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2173, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2174, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2181, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2180, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2182, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2183, new (std::nothrow) CEffectAllocator<CAxeBoomerang>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SHIELD_SHOOTING_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_SHIELD_SHOOTING_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THE_W_PROTECTION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THE_W_PROTECTION_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2188, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2189, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2190, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2191, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2192, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2193, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2194, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2195, new (std::nothrow) CEffectAllocator<CCrimsonArrowEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2196, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2197, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2198, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2199, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2200, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2201, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2202, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_FIRE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_FIRE_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2206, new (std::nothrow) CEffectAllocator<CAcidifiedThrow>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_FIRE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_FIRE_START, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_FIRE_START_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_FIRE_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_FIRE_LOOP_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WATER_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WATER_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2214, new (std::nothrow) CEffectAllocator<CAcidifiedThrow>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WATER_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WATER_START, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WATER_START_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WATER_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WATER_LOOP_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WIND_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WIND_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2222, new (std::nothrow) CEffectAllocator<CAcidifiedThrow>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WIND_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WIND_START, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WIND_START_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WIND_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WIND_LOOP_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_GROUND_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_GROUND_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2230, new (std::nothrow) CEffectAllocator<CAcidifiedThrow>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_GROUND_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_GROUND_START, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_GROUND_START_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_GROUND_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_GROUND_LOOP_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HELLTREE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HELLTREE_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HELLTREE_DUSTY, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HELLTREE_HOWLING, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RESEARCH_REPORT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RESEARCH_REPORT_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RESEARCH_REPORT_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WOODEN_WARRIOR_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WOODEN_WARRIOR_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WOODEN_WARRIOR_ATTACK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WOODEN_WARRIOR_ATTACK_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WOODEN_WARRIOR_THROWROCK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WOODEN_WARRIOR_THROWROCK_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WOODEN_FAIRY_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WOODEN_FAIRY_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_WOODEN_FAIRY_DUSTY, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STATE_LASSITUDE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STATE_SWOONING, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STATE_HOLYFLAME, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STATE_LIGHTNINGSTRIKE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STATE_CONFLAGRATION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STATE_FROSTBITE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STATE_FROSTBITE_FINISH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2272, new (std::nothrow) CEffectAllocator<CFullScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STATE_DEADLYPOISON, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_STATE_CRYSTALLIZATION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2275, new (std::nothrow) CEffectAllocator<CLevel150Effect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2276, new (std::nothrow) CEffectAllocator<CLevel150SubEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_KILLING_AURA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_KILLING_AURA_END, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_KILLING_AURA_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2305, new (std::nothrow) CEffectAllocator<CCurseOfCubeEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2306, new (std::nothrow) CEffectAllocator<CCurseOfCubeEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2307, new (std::nothrow) CEffectAllocator<CCaneOfEvilEyeEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_CANE_OF_EVIL_EYE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UI_ENCHANT_INTRO_YELLOW, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UI_ENCHANT_SUCCESS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UI_ENCHANT_FAIL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UI_ENCHANT_INTRO_BLUE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UI_LEVELUP_SUCCESS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UI_LEVELUP_FAIL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UI_ENCHANT_INTRO_GREEN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UI_RESET_SUCCESS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UI_RESET_FAIL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RUNE_ACTIVE_FINISH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RUNESET_ACTIVE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RUNESET_UPGRADE_SUCCESS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RUNESET_UPGRADE_FAIL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RUNE_BROKEN, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RUNE_SLOT_SMALL, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_RUNE_SLOT_BIG, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TOXIN_OF_MANDARA_BOMB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TOXIN_OF_MANDARA_BOMB_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TOXIN_OF_MANDARA_SHOCK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEEDLE_STINGER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEEDLE_STINGER_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEEDLE_STINGER_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABSOLUTE_ZEPHYR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABSOLUTE_ZEPHYR_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ABSOLUTE_ZEPHYR_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TWISTER_CUTTER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TWISTER_CUTTER_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HEILIGE_PFERD, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HEILIGE_PFERD_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_HEILIGE_PFERD_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_GOLDENE_TONE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_GLANZEN_SPIES, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_GLANZEN_SPIES_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BLAZING_AND_FURIOUS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THE_ONE_FIGHTER_RISES_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TEMPERING, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2341, new (std::nothrow) CEffectAllocator<CBlastForge>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_BLAST_FORGE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2343, new (std::nothrow) CEffectAllocator<CWindEffect>)) {
+    return false;
+  }
+
+  std::vector<int> ez2strEffects = CEZ2STREffectMgr::GetInstance()->EffectIds();
+  for (int id : ez2strEffects) {
+    this->RegisterAllocator(id, new (std::nothrow) CEffectAllocator<CEZ2STREffectEx>);
+  }
+
+  if (!this->RegisterAllocator(EF_UNK_2348, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2349, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2350, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2351, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2354, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2352, new (std::nothrow) CEffectAllocator<CFuumaShouakuEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2355, new (std::nothrow) CEffectAllocator<CTalismanMarkEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2366, new (std::nothrow) CEffectAllocator<CJupitelThunderStormEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_WATER_SUB_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_TETRA_VORTEX_EARTH_SUB_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CHANGE_SIZE, new (std::nothrow) CEffectAllocator<CChangeSizeEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2375, new (std::nothrow) CEffectAllocator<CShowEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_20TH_CRYSTAL_S, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_20TH_CRYSTAL_M, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_20TH_CRYSTAL_L, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_GATE_GREEN_1, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_GATE_PURPLE_1, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_GATE_RED_1, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_GATE_GREEN_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_GATE_PURPLE_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_GATE_RED_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_GATE_GREEN_3, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_GATE_PURPLE_3, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_GATE_RED_3, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_20TH_FIREWORK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NPC_GATE_SKYBLUE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2394, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2400, new (std::nothrow) CEffectAllocator<CGravityControlEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_BATTLE_W_HIT_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_PRAMEN_REUSE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_THE_W_PROTECTION_REUSE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_ELEMENTAL_BUSTER_FIRE_REUSE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_DESTRUCTIVE_HURRICANE_BOTTOM_REUSE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_CRYSTAL_IMPACT_BOTTOM_REUSE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_NEW_JUDEX_TARGET_REUSE, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2404, new (std::nothrow) CEffectAllocator<CSprArrowEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2411, new (std::nothrow) CEffectAllocator<CFootprintEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2412, new (std::nothrow) CEffectAllocator<CFootprintStrEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2420, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2424, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2428, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2429, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2430, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2431, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2441, new (std::nothrow) CEffectAllocator<CThunderingOrb>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2466, new (std::nothrow) CEffectAllocator<CChopChopClawMarks>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2468, new (std::nothrow) CEffectAllocator<CWindBomb>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2472, new (std::nothrow) CEffectAllocator<EffectResourceSwitcher>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2473, new (std::nothrow) CEffectAllocator<EffectResourceSwitcher>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2458, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+  if (!this->RegisterAllocator(EF_UNK_2443, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00B3A430
