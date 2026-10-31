@@ -885,6 +885,7 @@
   "Source/UI/Layout/SnapRectangle.cpp": 2,
   "Source/UI/Layout/WindowCoordinates.cpp": 2,
   "Source/UI/Layout/WindowSnapping.cpp": 2,
+  "Source/UI/Lists/UIComboBox.cpp": 2,
   "Source/UI/Lists/UIComboBoxDefWnd.cpp": 2,
   "Source/UI/Lists/UIComboBoxEx.cpp": 2,
   "Source/UI/Lists/UIDropDownBox.cpp": 2,
