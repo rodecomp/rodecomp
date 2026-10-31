@@ -1057,3 +1057,19 @@ std::vector<unsigned char> CSession::BuildSkillListReplayPacket(short id) {
     return {};
   }
 }
+
+// OFFSET: 0x00B86440
+// FUNCTION: fn_19329
+void Replay::CachePacket(std::uint16_t id, std::uint16_t size, const unsigned char* data) {
+  if (size == 0 || id > 3142 || data == nullptr) {
+    return;
+  }
+  ReplayCachedPacket& packet = this->cachedPackets[static_cast<short>(id)];
+  if (!packet.enabled) {
+    return;
+  }
+  packet.bytes.resize(size, 0);
+  packet.bytes.assign(data, data + size);
+}
+
+// OFFSET: 0x00E42EB0

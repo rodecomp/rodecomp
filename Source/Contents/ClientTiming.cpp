@@ -3,12 +3,14 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/MapInfoMgr.h"
 #include "Contents/NavigationManager.h"
+#include "File/File.h"
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -774,6 +776,8 @@ void CSession::LoadDamageSkinSettings() {
   }
   g_luaScript->Call("GetDamageMillionUnit", "d>d", this->m_damageSkinIndex, &this->m_damageMillionUnit);
 }
+
+// OFFSET: 0x00DE5620
 
 // OFFSET: 0x00DE5B40
 // FUNCTION: fn_23493

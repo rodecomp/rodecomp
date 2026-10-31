@@ -138,6 +138,7 @@ public:
   void ResetFile();
   bool SetOptions(const void* data, int bytes);
   std::vector<unsigned char> ReadSection(int id);
+  void CachePacket(std::uint16_t id, std::uint16_t size, const unsigned char* data);
   bool ReadRecord(unsigned char* buffer, std::uint16_t& id, bool force);
   bool AllowsEvent(int event) const;
   void Rewind();

@@ -988,3 +988,5 @@ void RequestPlayerAction31() {
     player->SendMsg(nullptr, 0x1F, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 }
+
+// OFFSET: 0x006C5B40
