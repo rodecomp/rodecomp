@@ -1,3 +1,4 @@
+#include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Replay.h"
 #include "Client/ReplayPacketRecorder.h"
@@ -1536,6 +1537,43 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
   } while (height < extent);
 
   return fitted;
+}
+
+// OFFSET: 0x00A81E10
+// FUNCTION: fn_16991
+const char* UIWindow::TruncateText(const char* text, int maxBytes) {
+  if (!text) {
+    return nullptr;
+  }
+
+  if (static_cast<int>(std::strlen(text)) > maxBytes) {
+    using NextCharacter = const char* (__thiscall*)(InputCharset*, const char*, int);
+    int bytes = 0;
+    const char* current = text;
+    const char* end = text + std::strlen(text);
+    while (current < end) {
+      const int previous = bytes;
+      const char* next = (*reinterpret_cast<NextCharacter**>(g_serverLanguage))[5](g_serverLanguage, current, static_cast<int>(end - current));
+      bytes += static_cast<int>(next - current);
+      if (bytes > maxBytes) {
+        bytes = previous;
+        break;
+      }
+      current = next;
+    }
+
+    if (bytes > 0) {
+      char* buffer = static_cast<char*>(std::malloc(bytes + 1));
+      std::memcpy(buffer, text, bytes);
+      buffer[bytes] = '\0';
+      // GLOBAL: gl_25070
+      static std::string truncated;
+      truncated = buffer;
+      std::free(buffer);
+      return truncated.c_str();
+    }
+  }
+  return text;
 }
 
 // OFFSET: 0x00A7E120
