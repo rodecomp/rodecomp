@@ -37,6 +37,7 @@ class UITextViewer : public UIListBox {
   friend class UIWindow;
 
 public:
+  UITextViewer();
   UITextViewer(UIWindowContext& windows, UITextViewerContext& text);
   ~UITextViewer() override;
   void Slot15(int width, int height) override;

@@ -9,6 +9,7 @@ struct GuildHelperWndInfo;
 class UIBitmapButton;
 class UIEditCtrl;
 class UIStaticText;
+class UITextViewer;
 
 struct GuildBanTarget {
   /* 0000 */ int unknown_0000;
@@ -50,11 +51,14 @@ protected:
 
 class UIGuildTipWnd : public UIFrameWnd {
 public:
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
   UIButtonContext* m_controls;
+  /* 00B4 */ UITextViewer* m_textViewer;
+  /* 00B8 */ UIBitmapButton* m_closeButton;
 };
 
 class UIGuildLeaveReasonDescWnd : public UIFrameWnd {

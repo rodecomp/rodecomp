@@ -10,6 +10,10 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "UI/Text/UIStaticText.h"
+#include "Contents/GuildTip.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/SkinPalette.h"
+#include "UI/Text/UITextViewer.h"
 
 #include <mbstring.h>
 #include <string>
@@ -21,6 +25,9 @@ static const std::string s_itemLinkOpening = "<ITEML>";
 
 // GLOBAL: gl_24879
 static const std::string s_itemLinkClosing = "</ITEML>";
+
+// GLOBAL: gl_25120
+CGuildTip g_guildTip;
 
 // OFFSET: 0x0095DB20
 // FUNCTION: fn_13071
@@ -305,4 +312,83 @@ void UIGuildBanReasonDescWnd::Slot15(int width, int height) {
   if (this->m_reasonText != nullptr) {
     this->m_reasonText->SetText(LookupMessage(0x20C), 0);
   }
+}
+
+// OFFSET: 0x009597E0
+// FUNCTION: fn_13060
+void UIGuildLeaveReasonDescWnd::Slot15(int, int) {
+  this->m_reasonEdit = new UIEditCtrl();
+  this->m_reasonEdit->SetSize(this->geometry.width - 32, 16);
+  this->m_reasonEdit->Move(15, 22);
+  this->m_reasonEdit->maximum = 39;
+  this->m_reasonEdit->Background(232, 232, 232);
+  this->m_reasonEdit->SetText("");
+  this->AddChild(this->m_reasonEdit);
+
+  InputFocus focus{g_windowMgr.hoverWindow};
+  focus.Set(this->m_reasonEdit);
+
+  this->m_reasonText = new UIStaticText();
+  this->m_reasonText->SetSize(this->geometry.width - 30, 15);
+  this->m_reasonText->Move(15, 6);
+  this->m_reasonText->SetText(LookupMessage(523), 0);
+  this->AddChild(this->m_reasonText);
+
+  {
+    const std::string prefix("유저인터페이스\\");
+    int positions[2][2] = {{this->geometry.width - 101, this->geometry.height - 32}, {this->geometry.width - 55, this->geometry.height - 32}};
+    const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+    int ids[2] = {184, 185};
+
+    for (int i = 0; i < 2; ++i) {
+      auto* button = new UIBitmapButton();
+      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(positions[i][0], positions[i][1]);
+      button->SetId(ids[i]);
+      this->AddChild(button);
+    }
+  }
+
+  this->m_message0 = 184;
+}
+
+// OFFSET: 0x0095CCD0
+// FUNCTION: fn_13065
+void UIGuildTipWnd::Slot15(int width, int height) {
+  this->m_textViewer = new UITextViewer();
+  this->m_textViewer->Configure(10, 22, width - 15, height - 55, 0);
+
+  unsigned int red = 0;
+  unsigned int green = 0;
+  unsigned int blue = 0;
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->m_textViewer->backgroundColor = 0xFF000000 | (blue << 16) | (green << 8) | red;
+  this->m_textViewer->Invalidate();
+  this->AddChild(this->m_textViewer);
+
+  if (!g_guildTip.m_bTryLoading) {
+    g_guildTip.Load();
+  }
+
+  if (!g_guildTip.m_tipList.empty()) {
+    std::vector<StringList> tipList = g_guildTip.GetTipList();
+    for (const auto& tip : tipList) {
+      for (const auto& line : tip) {
+        this->m_textViewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(line.c_str()), 50, 0, 0);
+      }
+    }
+  }
+
+  this->m_closeButton = new UIBitmapButton();
+  const std::string prefix("유저인터페이스\\");
+  this->m_closeButton->SetBitmap((prefix + "btn_close" + ".bmp").c_str(), 0, 0);
+  this->m_closeButton->SetBitmap((prefix + "btn_close_a" + ".bmp").c_str(), 1, 0);
+  this->m_closeButton->SetBitmap((prefix + "btn_close_b" + ".bmp").c_str(), 2, 0);
+  this->m_closeButton->SetSize(this->m_closeButton->BitmapWidth(), this->m_closeButton->BitmapHeight());
+  this->m_closeButton->Move(width - 50, height - 24);
+  this->m_closeButton->SetId(201);
+  this->AddChild(this->m_closeButton);
 }
