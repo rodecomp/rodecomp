@@ -48,6 +48,7 @@ public:
   EZ2STREffectInfo* FindById(int id);
   int EffectId(const std::string& name);
   std::vector<int> EffectIds();
+  bool Load();
 };
 
 class CEZ2STREffect : public CEffect {

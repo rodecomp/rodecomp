@@ -10,6 +10,8 @@
 #include <utility>
 #include <vector>
 
+struct EZ2STREffectRecord;
+
 class JsonValue;
 
 typedef std::pair<std::string, JsonValue> JsonMember;
@@ -154,6 +156,8 @@ public:
   void Fail(const char* format, ...);
 
   bool GetMapStringBoolValue(const JsonValue& node, const std::string& key, std::map<std::string, bool>* out);
+  bool sub_4F3C70(std::vector<unsigned char>& buffer, bool bson);
+  bool sub_50C2A0(std::map<std::string, EZ2STREffectRecord>* out);
 
   /* 0000 */ unsigned char unknown_0000[0x08];
   /* 0008 */ JsonValue document;

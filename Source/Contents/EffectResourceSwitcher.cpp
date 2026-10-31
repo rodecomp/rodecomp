@@ -9,13 +9,17 @@
 #include "Contents/Effects/EffectPrimitiveState.h"
 #include "Contents/Effects/Particle.h"
 #include "Contents/World/World.h"
+#include "File/File.h"
 #include "Network/TextEncoding.h"
 #include "Resource/World/TerrainResource.h"
+#include "Utility/JsonCppLoader.h"
 
 #include <algorithm>
 #include <cctype>
+#include <map>
 #include <new>
 #include <string>
+#include <vector>
 
 // GLOBAL: gl_24485
 template <>
@@ -554,3 +558,30 @@ std::vector<int> CEZ2STREffectMgr::EffectIds() {
   }
   return ids;
 }
+
+// OFFSET: 0x00700E30
+// FUNCTION: fn_06991
+bool CEZ2STREffectMgr::Load() {
+  CFile file;
+  if (!file.Open("ContentData\\EffectData\\EZ2STREffect.bson", 0, true, false)) {
+    return false;
+  }
+
+  const auto* data = static_cast<const unsigned char*>(file.GetData());
+  std::vector<unsigned char> buffer(data, data + file.GetSize());
+
+  JsonCppLoader loader;
+  if (!loader.sub_4F3C70(buffer, true)) {
+    return false;
+  }
+
+  std::map<std::string, EZ2STREffectRecord> records;
+  if (!loader.sub_50C2A0(&records)) {
+    return false;
+  }
+
+  this->effects.clear();
+  std::for_each(records.begin(), records.end(), InfoInserter{this});
+  return true;
+}
+
