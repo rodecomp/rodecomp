@@ -4,6 +4,7 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Effects/EffectLists.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
@@ -11,6 +12,8 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Render/DeviceContext/DeviceContext.h"
+#include "Render/Textures/Texture.h"
+#include "Render/Textures/TextureCache.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UIRadioBtn.h"
 #include "UI/Lists/UIScrollBar.h"
@@ -20,9 +23,12 @@
 #include "UI/Window/WindowDialogs.h"
 
 #include <algorithm>
+#include <bit>
 #include <cstdlib>
 #include <cstdint>
+#include <format>
 #include <string>
+#include <timeapi.h>
 #include <vector>
 
 class Decom_ItemInfo;
@@ -31,6 +37,10 @@ class RuneSetData;
 
 class UIRuneSetReWard : public UIBitmapButton {
 public:
+  // INLINED
+  UIRuneSetReWard(UIWindowContext& windows, UIButtonContext& controls) : UIBitmapButton(windows, controls), m_itemId(0), m_state(0) {
+  }
+
   void Paint() override;
   void Slot28(int x, int y) override;
   void Slot31(int x, int y) override;
@@ -55,6 +65,10 @@ public:
 
 class UIEquipRuneSetWnd : public UIWindow {
 public:
+  // INLINED
+  explicit UIEquipRuneSetWnd(UIWindowContext& windows) : UIWindow(windows, 0) {
+  }
+
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot26(int x, int y) override;
@@ -77,6 +91,11 @@ public:
 
 class UIRuneSetList : public UIScrollBar {
 public:
+  // INLINED
+  explicit UIRuneSetList(UIWindowContext& windows) : UIScrollBar(windows), m_itemHeight(0x44), unknown_00B8(0x28), m_selected(-1) {
+    this->arrowLength = 6;
+  }
+
   void Paint() override;
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
@@ -94,12 +113,22 @@ public:
 
 class UIRuneList : public UIRuneSetList {
 public:
+  // INLINED
+  explicit UIRuneList(UIWindowContext& windows) : UIRuneSetList(windows) {
+    this->m_itemHeight = 0x2F;
+  }
+
   void Paint() override;
   void Slot28(int x, int y) override;
 };
 
 class UIDecomlist : public UIRuneSetList {
 public:
+  // INLINED
+  explicit UIDecomlist(UIWindowContext& windows) : UIRuneSetList(windows) {
+    this->m_itemHeight = 0x2D;
+  }
+
   void Paint() override;
   void Slot28(int x, int y) override;
 };
@@ -121,6 +150,11 @@ struct RuneSetInfoLine {
 
 class UIRuneSetinfoList : public UIRuneSetList {
 public:
+  // INLINED
+  explicit UIRuneSetinfoList(UIWindowContext& windows) : UIRuneSetList(windows) {
+    this->m_itemHeight = 0x0F;
+  }
+
   void Paint() override;
   __declspec(noinline) void AddLine(std::string text, std::uint32_t color, bool bold);
   __declspec(noinline) void ClearLines();
@@ -130,6 +164,12 @@ public:
 
 class UIGage_Circle : public UIWindow {
 public:
+  __declspec(noinline) explicit UIGage_Circle(UIWindowContext& windows) : UIWindow(windows, 0), m_textY(0x45), m_value(0), m_max(false) {
+    this->m_emptyBitmap = "유저인터페이스\\runesystem\\gage_empty.bmp";
+    this->m_fullBitmap = "유저인터페이스\\runesystem\\gage_full.bmp";
+    this->m_maxBitmap = "유저인터페이스\\runesystem\\gage_max.bmp";
+  }
+
   void Paint() override;
 
   /* 007C */ int m_textY;
@@ -164,14 +204,37 @@ public:
 
 class UIRuneSystem_Decom_RadioBtn : public UIRadioBtn {
 public:
+  // INLINED
+  UIRuneSystem_Decom_RadioBtn(UIWindowContext& windows, UIButtonContext& controls) : UIRadioBtn(windows, controls) {
+  }
+
   void Paint() override;
+
+  // INLINED
+  void SetBitmaps(std::string checked, std::string unchecked) {
+    this->checkedBitmap = checked;
+    this->uncheckedBitmap = unchecked;
+    this->Invalidate();
+  }
+
+  // INLINED
+  void SetDisabledBitmap(std::string bitmap) {
+    this->m_disabledBitmap = bitmap;
+    this->Invalidate();
+  }
 
   /* 00F0 */ std::string m_disabledBitmap;
 };
 
 class UIRuneSet_Info : public UIWindow {
 public:
+  // INLINED
+  explicit UIRuneSet_Info(UIWindowContext& windows) : UIWindow(windows, 0), m_runeSet(nullptr), m_rewards{} {
+  }
+
+  void Slot15(int width, int height) override;
   void Slot19() override;
+  void Paint() override;
   void Slot26(int x, int y) override;
   void Slot28(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -196,6 +259,10 @@ public:
 
 class UIRune_Info : public UIWindow {
 public:
+  // INLINED
+  explicit UIRune_Info(UIWindowContext& windows) : UIWindow(windows, 0), m_rune(nullptr) {
+  }
+
   void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
@@ -207,9 +274,22 @@ public:
 
 class UIRune_Decom : public UIWindow {
 public:
+  // INLINED
+  explicit UIRune_Decom(UIWindowContext& windows) : UIWindow(windows, 0) {
+    this->unknown_007C.clear();
+    this->unknown_0094.clear();
+    this->m_ownedCount = 0;
+    this->m_decomList = nullptr;
+    this->m_itemId = 0;
+    this->m_decomType = 0;
+  }
+
+  void Slot15(int width, int height) override;
+  void Paint() override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
-  void Reset();
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  __declspec(noinline) void Reset();
   int HitTestItem(int x, int y);
   void SelectDecomType(unsigned int type);
   __declspec(noinline) void SetItem(int itemId);
@@ -226,6 +306,7 @@ public:
 
 class UIRune_ViewInfo : public UIWindow {
 public:
+  void Slot15(int width, int height) override;
   void Paint() override;
 
   /* 007C */ UIGage_Circle* m_gauge;
@@ -235,6 +316,19 @@ public:
 struct RuneSystemOpenPacket {
   /* 0000 */ std::uint16_t id;
   /* 0002 */ unsigned char open;
+};
+
+struct RuneSetEquipPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint16_t tagId;
+  /* 0004 */ int runeId;
+};
+
+struct RuneDecomRequestPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ int itemId;
+  /* 0006 */ std::uint32_t itemIndex;
+  /* 000A */ int decomType;
 };
 
 struct RuneDecomResultPacket {
@@ -258,9 +352,11 @@ public:
 class UIRuneSystemWnd : public UIFrameWnd {
 public:
   UIRuneSystemWnd(UIWindowContext& windows, UIFrameContext& frames);
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
   void Slot25(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   __declspec(noinline) void SelectTab();
 
   /* 00B4 */ int unknown_00B4;
@@ -277,6 +373,8 @@ public:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RuneSetInfoLine) == 0x24);
 static_assert(sizeof(RuneSystemOpenPacket) == 3);
+static_assert(sizeof(RuneSetEquipPacket) == 8);
+static_assert(sizeof(RuneDecomRequestPacket) == 0x0E);
 static_assert(sizeof(RuneDecomResultPacket) == 0x32);
 #endif
 

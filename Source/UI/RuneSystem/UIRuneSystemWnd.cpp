@@ -1689,3 +1689,85 @@ void UIRune_Decom::SetItem(int itemId) {
     this->SelectDecomType(this->m_decomType);
   }
 }
+
+struct SessionMessengerContext {
+  int GetList0Size() const;
+};
+
+// OFFSET: 0x008184A0
+// FUNCTION: fn_10175
+void UIRune_ViewInfo::Slot15(int, int) {
+  this->m_gauge = new UIGage_Circle(*this->m_context);
+  this->AddChild(this->m_gauge);
+  this->m_gauge->SetSize(0x89, 0x7F);
+  this->m_gauge->Move(0xC0, 0xF7);
+  this->m_gauge->m_textY = 0x5C;
+  this->m_gauge->m_value = 0;
+  this->m_gauge->m_emptyBitmap = "유저인터페이스\\runesystem\\view_gage_empty.bmp";
+  this->m_gauge->m_fullBitmap = "유저인터페이스\\runesystem\\view_gage_full.bmp";
+  this->m_gauge->m_maxBitmap = "유저인터페이스\\runesystem\\view_gage_max.bmp";
+
+  UIStaticText* title = new UIStaticText(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->AddChild(title);
+  std::string text = "룬타블렛-룬도감";
+  int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), text.size(), 0, 12, 0, 0);
+  int x = static_cast<int>(261.0f - static_cast<float>(width) * 0.5f);
+  title->SetSize(width + 10, 20);
+  title->Move(x, 0x12A);
+  title->SetText(text.c_str(), 1);
+  title->SetColor(0xFF, 0xFF, 0xFF);
+
+  UIStaticText* rate = new UIStaticText(*this->m_context, *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->AddChild(rate);
+  text = "수집률";
+  width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), text.size(), 0, 12, 0, 0);
+  x = static_cast<int>(261.0f - static_cast<float>(width) * 0.5f);
+  rate->SetSize(width + 10, 20);
+  rate->Move(x, 0x13B);
+  rate->SetText(text.c_str(), 1);
+  rate->SetColor(0xFF, 0xFF, 0xFF);
+}
+
+// OFFSET: 0x0081E5D0
+// FUNCTION: fn_10228
+int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  if (message == 6) {
+    if (argument1 == 0xD7) {
+      this->SelectDecomType(argument2);
+    } else if (argument1 == 0x197) {
+      g_windowMgr.CloseWindow(0x16A);
+      if (!g_runeSystemMgr->IsRequestPending() && (!this->parent || this->parent->SendMsg(this, 0x6A, 50, 0, 0, 0) != 0) && this->m_ownedCount) {
+        if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
+            reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList0Size() + g_session.CountItems17F0() + g_session.CountItems2B50() + 8 >=
+              g_session.unknown_7FBC + 100) {
+          reinterpret_cast<WindowDialogs*>(&g_windowMgr)->Confirm(LookupMessage(4064), 0, true, false, 0, "Message", 280, 120, 0);
+        } else {
+          ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, this->m_itemId, 0);
+          RuneDecomRequestPacket packet;
+          packet.id = 0x0BD8;
+          packet.itemId = item.GetItemId();
+          packet.itemIndex = item.unknown_0000[1];
+          packet.decomType = this->m_decomType + 1;
+          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+          g_runeSystemMgr->SetRequestPending(true);
+        }
+      }
+    }
+  } else if (message == 0x3C) {
+    this->SetItem(this->m_itemId);
+  }
+
+  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+}
+
+// OFFSET: 0x00817EA0
+
+// OFFSET: 0x008177C0
+
+// OFFSET: 0x00816CB0
+
+// OFFSET: 0x008196D0
+
+// OFFSET: 0x0081AF10
+
+// OFFSET: 0x0081DAB0
