@@ -457,6 +457,9 @@ public:
   void SaveShortcutItems();
   void SaveUIRectInfo();
   UIWindow* LookupWindow(int id);
+  void sub_AAB070(int option);
+  void sub_AAB090();
+  void sub_AAB0B0();
   UIWindow* EnsureWindow(int id);
   void GetMiniPartyUsableArea(RECT* area);
   UIWindow* FindSnapExcludedWindow(int cell);

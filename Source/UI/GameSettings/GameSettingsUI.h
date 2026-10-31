@@ -261,6 +261,8 @@ public:
   void sub_A433B0();
   void sub_A433C0();
   void sub_A43590(int id);
+  void sub_A43BA0();
+  void sub_A43C70();
 
   /* 00B8 */ unsigned char unknown_00B8[0x1C];
   /* 00D8 */ CUIControl* m_titleBar;

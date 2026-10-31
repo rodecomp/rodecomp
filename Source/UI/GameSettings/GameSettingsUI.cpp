@@ -1382,6 +1382,26 @@ void ToggleGameSettingsTab4() {
   settings->SelectTab4();
 }
 
+// OFFSET: 0x00AAB070
+
+// OFFSET: 0x00AAB090
+// FUNCTION: fn_17278
+void UIWindowMgr::sub_AAB090() {
+  CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(this->LookupWindow(0x271E));
+  if (settings) {
+    settings->sub_A43BA0();
+  }
+}
+
+// OFFSET: 0x00AAB0B0
+// FUNCTION: fn_17279
+void UIWindowMgr::sub_AAB0B0() {
+  CUIGameSettingsUI* settings = static_cast<CUIGameSettingsUI*>(this->LookupWindow(0x271E));
+  if (settings) {
+    settings->sub_A43C70();
+  }
+}
+
 // OFFSET: 0x00A1BFD0
 // FUNCTION: fn_15374
 template <>
@@ -1453,7 +1473,7 @@ bool GameSettingsUI::CUIListPage::SetOptionChecked(int id) {
 
 // OFFSET: 0x00A43590
 // FUNCTION: fn_16031
-void CUIGameSettingsUI::sub_A43590(int id) {
+__declspec(noinline) void CUIGameSettingsUI::sub_A43590(int id) {
   for (GameSettingsUI::CUIListPage* page : this->m_pages) {
     for (GameSettingsUI::CUIOptionItem* item : page->m_optionList->items) {
       if (item->m_optionId == id) {
