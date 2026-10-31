@@ -3647,6 +3647,116 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 }
 
 // OFFSET: 0x00991C40
+// FUNCTION: fn_13432
+int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  switch (message) {
+  case 6:
+    break;
+  case 14:
+    if (a == 7) {
+      int width = b <= 320 ? b : 320;
+      int height = c <= 240 ? c : 240;
+      if (width < 232) {
+        width = 232;
+      }
+      if (height < 120) {
+        height = 120;
+      }
+
+      const int newWidth = (width - 280) / 32 * 32 + 280;
+      const int newHeight = (height - 120) / 32 * 32 + 120;
+      if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
+        this->Resize(newWidth, newHeight);
+        this->columns = (newWidth - 40) / 32;
+        this->visibleRows = (newHeight - 38) / 32;
+        this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
+        this->UpdateScrollBar();
+      }
+
+      this->m_frameContext->snapping.Store(this);
+      return 0;
+    }
+    break;
+  case 23: {
+    this->items.erase(this->items.begin(), this->items.end());
+    const int size = reinterpret_cast<const SessionMessengerContext*>(&g_session)->GetList8Size();
+    for (int i = 0; i < size; ++i) {
+      ITEM_INFO item = g_session.GetItem1750At(i);
+      if (item.unknown_0000[1] != 0) {
+        this->items.push_back(item);
+      }
+    }
+
+    this->Invalidate();
+    this->UpdateScrollBar();
+    return 0;
+  }
+  case 34:
+    this->saved = reinterpret_cast<MerchantMirrorItemWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
+    }
+
+    this->SendMsg(nullptr, 14, 7, this->saved->width, this->saved->height, 0);
+    this->Move(this->saved->x, this->saved->y);
+    return 0;
+  case 38: {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    ModeDragState& drag = mode->drag;
+    ITEM_INFO item;
+    item.Assign(reinterpret_cast<const RawItemData&>(drag));
+    ClientItemLists* lists = reinterpret_cast<ClientItemLists*>(&g_session);
+
+    switch (drag.source) {
+    case 10:
+      if (g_session.GetItem1768Quantity(drag.id)) {
+        lists->AddItem1750(item, 0, 1);
+        lists->RemoveItem1768(item, 0);
+      }
+      break;
+    case 19:
+      if (lists->AddItem1750(item, this->unknown_00F4, 1)) {
+        lists->RemoveItem1768(item, this->unknown_00F4 != 0);
+      }
+      break;
+    case 21:
+      lists->AddItem1750(item, this->unknown_00F4, 1);
+      lists->RemoveItem1760(item);
+      if (g_windowMgr.unknown_041C) {
+        reinterpret_cast<UIWindow*>(g_windowMgr.unknown_041C)->SendMsg(nullptr, 23, 0, 0, 0, 0);
+      }
+      break;
+    }
+
+    mode->SendMsg(18, 0, 0, 0, 0);
+    return 0;
+  }
+  case 123: {
+    const auto* bytes = reinterpret_cast<const unsigned char*>(a);
+    ItemListChunkHeader header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
+    unsigned offset = 6;
+    if (header.type == 21400) {
+      while (static_cast<unsigned>(b) > offset) {
+        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+        offset += 6;
+        if (header.type == 21401) {
+          this->SendMsg(nullptr, 23, 0, 0, 0, 0);
+          break;
+        }
+
+        offset += header.size;
+      }
+    }
+    break;
+  }
+  default:
+    return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
+}
 
 // OFFSET: 0x0098C5A0
 // FUNCTION: fn_13421
