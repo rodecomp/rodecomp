@@ -110,6 +110,7 @@ public:
 
   void UpdateExpiry(Timestamp* expiry) override;
   void ShowExpiry(__time32_t expiry) override;
+  int Slot53(int packId, bool showTooltip, bool hoverable) override;
 
 protected:
   /* 00E0 */ ICashEmotionAction* m_selectAction;
@@ -2848,6 +2849,12 @@ void UICashEmotionPack_Purchase::UpdateExpiry(Timestamp* expiry) {
   if (expiry && this->m_titleText && !this->m_title.empty()) {
     this->ShowExpiry(expiry->seconds);
   }
+}
+
+// OFFSET: 0x007CAEA0
+// FUNCTION: fn_09461
+int UICashEmotionPack_Purchase::Slot53(int packId, bool showTooltip, bool hoverable) {
+  return UICashEmotionPack::Slot53(packId, showTooltip, hoverable);
 }
 
 // OFFSET: 0x007CAEB0
