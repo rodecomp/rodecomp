@@ -211,6 +211,8 @@ public:
   void ShowGuildEmblem(CGameActor* actor, int guildId, int unused);
   void RemoveUnknown0604(int window);
   void DrawMiniMapNumber();
+  void DrawTimeAttackTimer();
+  void DrawTimeAttackCountdown(std::uint32_t value, int mode);
   CMsgEffect* SpawnCashEmotion(int aid, int packId, int emotionId, std::uint32_t duration);
   void ApplyMapFog(int enabled);
   void SpawnGrannyCorpse(float x, float y, float z, float angle, const char* name);

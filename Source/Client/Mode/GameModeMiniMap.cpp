@@ -18,6 +18,7 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
 
+#include <timeapi.h>
 #include <windows.h>
 
 // GLOBAL: gl_24934
@@ -440,6 +441,222 @@ void CGameMode::DrawMiniMapNumber() {
     const int y = static_cast<int>(static_cast<float>(g_screenHeight) + this->cursorOffsetY);
     DrawActionSprite(
       reinterpret_cast<CRenderSystemBase&>(*this), x, y, action, sprite, 0, g_minimapCoordinateDigitValues[index], 2.0f, 0.0f, 0xFAFFFFFF, 0x201
+    );
+  }
+}
+
+// GLOBAL: gl_25047
+std::uint32_t g_timeAttackCountdown;
+// GLOBAL: gl_25048
+int g_timeAttackStart;
+// GLOBAL: gl_25049
+int g_timeAttackVisible;
+// GLOBAL: gl_25050
+int g_timeAttackFrame;
+
+// OFFSET: 0x00CD1EE0
+// FUNCTION: fn_21259
+void CGameMode::DrawTimeAttackTimer() {
+  const char* player = reinterpret_cast<const char*>(this->scene->player);
+  const int coordinateX = *reinterpret_cast<const int*>(player + 0x494);
+  const int coordinateY = *reinterpret_cast<const int*>(player + 0x498);
+  if (coordinateY < 1 || coordinateX < 1) {
+    return;
+  }
+  if (coordinateY < 2 || coordinateX != 1) {
+    return;
+  }
+
+  const int start = g_timeAttackStart;
+  if (start == 0) {
+    g_timeAttackVisible = 0;
+  }
+
+  const std::uint32_t elapsed = timeGetTime() - static_cast<std::uint32_t>(start);
+  int seconds = static_cast<int>(elapsed / 1000);
+  int minutes = 0;
+  int hours = 0;
+  int days = 0;
+  if (seconds > 59) {
+    minutes = seconds / 60;
+    seconds %= 60;
+    if (minutes > 59) {
+      hours = minutes / 60;
+      minutes %= 60;
+      if (hours > 23) {
+        days = hours / 24;
+        hours %= 24;
+      }
+    }
+  }
+
+  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.act"));
+  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.spr"));
+
+  int digits[11] = {};
+  int count = 2;
+  int value = seconds;
+  if (value > 9999) {
+    value = 9999;
+  }
+  if (value < 0) {
+    value = 0;
+  }
+  digits[0] = value % 10;
+  digits[1] = value / 10 % 10;
+  if (minutes != 0) {
+    count = 4;
+    digits[3] = minutes % 10;
+    digits[4] = minutes / 10 % 10;
+  }
+  if (hours != 0) {
+    count = 6;
+    digits[6] = hours % 10;
+    digits[7] = hours / 10 % 10;
+  }
+
+  int total;
+  int offset;
+  int startIndex;
+  if (days == 0) {
+    total = count + (count - 2) / 2;
+    offset = total * -20;
+    startIndex = total - 1;
+  } else {
+    digits[9] = days % 10;
+    digits[10] = days / 10 % 10;
+    total = 11;
+    offset = -220;
+    startIndex = 10;
+  }
+
+  const int center = g_renderer->viewport.width / 2;
+  for (int index = 0; index < total; ++index, --startIndex) {
+    const int digit = (index + 1) % 3 == 0 ? 10 : digits[startIndex];
+    DrawActionSprite(
+      reinterpret_cast<CRenderSystemBase&>(*this), center + offset + index * 40, 40, action, sprite, digit, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
+    );
+  }
+
+  if (g_timeAttackStart != 0 && timeGetTime() - static_cast<std::uint32_t>(g_timeAttackStart) < 3000) {
+    CActRes* titleAction = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\TimeAttack.act"));
+    CSprRes* titleSprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\TimeAttack.spr"));
+    const int frame = g_timeAttackFrame / 3;
+    if (frame < static_cast<int>(titleAction->FrameCount(0))) {
+      const int titleX = g_renderer->viewport.width / 2 - titleSprite->images[0][0]->height / 2;
+      DrawActionSprite(
+        reinterpret_cast<CRenderSystemBase&>(*this), titleX, 120, titleAction, titleSprite, 0, frame, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
+      );
+      ++g_timeAttackFrame;
+    }
+  }
+}
+
+// OFFSET: 0x00CD2430
+// FUNCTION: fn_21260
+void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
+  std::uint32_t remaining = 0;
+  switch (mode) {
+    case 0:
+      if (this->unknown_0464 == 0) {
+        this->unknown_0464 = timeGetTime();
+      }
+      remaining = value;
+      if (timeGetTime() - this->unknown_0464 > 5000) {
+        this->unknown_0464 = 0;
+        g_timeAttackVisible = 0;
+      }
+      break;
+    case 1:
+      remaining = timeGetTime() - value;
+      if (value == 0) {
+        g_timeAttackVisible = 0;
+      }
+      break;
+    case 2:
+      remaining = value - timeGetTime();
+      if (remaining == 0) {
+        g_timeAttackVisible = 0;
+      }
+      break;
+    case 3:
+      remaining = g_timeAttackCountdown / 30;
+      --g_timeAttackCountdown;
+      if (remaining == 0) {
+        g_timeAttackVisible = 0;
+      }
+      break;
+    default:
+      break;
+  }
+
+  int seconds = static_cast<int>(remaining / 1000);
+  int minutes = 0;
+  int hours = 0;
+  int days = 0;
+  if (seconds > 59) {
+    minutes = seconds / 60;
+    seconds %= 60;
+    if (minutes > 59) {
+      hours = minutes / 60;
+      minutes %= 60;
+      if (hours > 23) {
+        days = hours / 24;
+        hours %= 24;
+      }
+    }
+  }
+
+  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.act"));
+  CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("이팩트\\TimeFont.spr"));
+
+  int display = mode != 3 ? seconds : static_cast<int>(remaining);
+  if (mode == 3) {
+    minutes = 0;
+    hours = 0;
+    days = 0;
+  }
+  int digits[11] = {};
+  int count = 2;
+  if (display > 9999) {
+    display = 9999;
+  }
+  if (display < 0) {
+    display = 0;
+  }
+  digits[0] = display % 10;
+  digits[1] = display / 10 % 10;
+  if (minutes != 0) {
+    count = 4;
+    digits[3] = minutes % 10;
+    digits[4] = minutes / 10 % 10;
+  }
+  if (hours != 0) {
+    count = 6;
+    digits[6] = hours % 10;
+    digits[7] = hours / 10 % 10;
+  }
+
+  int total;
+  int offset;
+  int startIndex;
+  if (days == 0) {
+    total = count + (count - 2) / 2;
+    offset = total * -20;
+    startIndex = total - 1;
+  } else {
+    digits[9] = days % 10;
+    digits[10] = days / 10 % 10;
+    total = 11;
+    offset = -220;
+    startIndex = 10;
+  }
+
+  const int center = g_renderer->viewport.width / 2;
+  for (int index = 0; index < total; ++index, --startIndex) {
+    const int digit = (index + 1) % 3 == 0 ? 10 : digits[startIndex];
+    DrawActionSprite(
+      reinterpret_cast<CRenderSystemBase&>(*this), center + offset + index * 40, 40, action, sprite, digit, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
     );
   }
 }
