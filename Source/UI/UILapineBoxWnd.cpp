@@ -26,17 +26,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-typedef bool(__thiscall* AddMaterialSlotFn)(UILapineBoxWnd*, int, int);
-typedef void(__thiscall* ReadMaterialFn)(UILapineBoxWnd*, void*, int, int);
-typedef void(__thiscall* MaterialPositionFn)(UILapineBoxWnd*, void*, int);
-typedef void(__thiscall* ReturnMaterialFn)(UILapineBox_IngredientListWnd*, int);
-typedef bool(__thiscall* CheckMaterialFn)(UILapineBox_IngredientListWnd*, int);
-typedef void(__thiscall* FillItemIdsFn)(CSession*, std::vector<int>*, int, unsigned char);
-typedef void(__thiscall* LayoutChildFn)(UILapineBox_IngredientListWnd*, UIWindow*, int, int);
-typedef int(__thiscall* ScrollWndSendMsgFn)(UILapineBox_IngredientListWnd*, UIWindow*, int, std::intptr_t, std::intptr_t, std::intptr_t, std::intptr_t);
-typedef void(__thiscall* BeginItemOnModeFn)(CGameMode*, int, ITEM_INFO*, int, int);
-typedef void(__thiscall* CloseNotifyFn)(UIWindowMgr*, int);
-typedef int(__thiscall* BuildItemNameFn)(UIFrameWnd*, const ITEM_INFO*, int*, std::vector<char*>*, char**, std::size_t*, char**, char, char);
 
 namespace {
 struct RandomCombineItemPacket {
@@ -57,7 +46,7 @@ UILapineBoxWnd::UILapineBoxWnd()
 // FUNCTION: fn_04160
 void UIIngredientInfoWnd::Click(int, int) {
   if (this->insufficient == 1) {
-    reinterpret_cast<ReturnMaterialFn>(0x00602620)(static_cast<UILapineBox_IngredientListWnd*>(this->parent), this->item.unknown_0000[1]);
+    static_cast<UILapineBox_IngredientListWnd*>(this->parent)->CanUseIngredient(this->item.unknown_0000[1]);
     return;
   }
 
@@ -70,7 +59,7 @@ void UIIngredientInfoWnd::Click(int, int) {
   UILapineBoxWnd* box = static_cast<UILapineBoxWnd*>(list->parent);
   if (box->items.size() < static_cast<std::size_t>(box->maxItems)) {
     if (list->SendMsg(list, 0x68, id, 0, 0, 0) >= 0) {
-      reinterpret_cast<AddMaterialSlotFn>(0x00601D20)(box, id, this->quantity);
+      box->AddIngredient(id, this->quantity);
     }
   }
 }
@@ -106,7 +95,7 @@ void UIIngredientInfoWnd::Slot28(int x, int y) {
     int tipX = 0;
     int tipY = -20;
     this->ToScreen(tipX, tipY);
-    (*reinterpret_cast<ModeTooltip**>(0x013495BC))->Show(this->tooltip.c_str(), tipX, tipY, -1, 0, 1);
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(this->tooltip.c_str(), tipX, tipY, -1, 0, 1);
   }
 }
 
@@ -115,10 +104,10 @@ void UIIngredientInfoWnd::Slot28(int x, int y) {
 void UILapineBoxWnd::DropMaterial(int x, int y) {
   alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
   ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
-  reinterpret_cast<ReadMaterialFn>(0x00602410)(this, &item, x, y);
+  this->ReadMaterial(&item, x, y);
 
   if (item.unknown_0000[1] != 0) {
-    if (reinterpret_cast<CheckMaterialFn>(0x00602030)(this->ingredientList, item.unknown_0000[1]) == 1) {
+    if (this->ingredientList->AddIngredient(item.unknown_0000[1]) == 1) {
       this->SendMsg(this, 0x68, item.unknown_0000[1], 0, 0, 0);
     }
   }
@@ -135,10 +124,11 @@ void UILapineBoxWnd::DragIngredient(int x, int y) {
 
   alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
   ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
-  reinterpret_cast<ReadMaterialFn>(0x00602410)(this, &item, x, y);
+  this->ReadMaterial(&item, x, y);
 
   if (item.unknown_0000[1] != 0) {
-    reinterpret_cast<BeginItemOnModeFn>(0x00CFE140)(static_cast<CGameMode*>(g_modeMgr.GetGameMode()), 0x1A, &item, item.quantity, -1);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(*reinterpret_cast<WindowManagerWindows*>(&g_windowMgr), descriptions, 0x1A, item, item.quantity, -1);
   }
 
   item.~ITEM_INFO();
@@ -151,7 +141,7 @@ void UILapineBoxWnd::Slot28(int x, int y) {
 
   alignas(ITEM_INFO) unsigned char storage[sizeof(ITEM_INFO)];
   ITEM_INFO& item = *reinterpret_cast<ITEM_INFO*>(storage);
-  reinterpret_cast<ReadMaterialFn>(0x00602410)(this, &item, x, y);
+  this->ReadMaterial(&item, x, y);
 
   if (item.unknown_0000[1] != 0) {
     int tipX = 0;
@@ -160,7 +150,7 @@ void UILapineBoxWnd::Slot28(int x, int y) {
     for (int index = 0; index < count; ++index) {
       if (this->items[index].unknown_0000[1] == item.unknown_0000[1]) {
         int position[2] = {0, 0};
-        reinterpret_cast<MaterialPositionFn>(0x006024F0)(this, position, index);
+        this->MaterialPosition(position, index);
         tipX = position[0];
         tipY = position[1] - 0x14;
         break;
@@ -168,7 +158,7 @@ void UILapineBoxWnd::Slot28(int x, int y) {
     }
 
     this->ToScreen(tipX, tipY);
-    (*reinterpret_cast<ModeTooltip**>(0x013495BC))->Show(item.unknown_0044.c_str(), tipX, tipY, -1, 0, 1);
+    reinterpret_cast<ModeTooltip*>(g_modeMgr.gameMode)->Show(item.unknown_0044.c_str(), tipX, tipY, -1, 0, 1);
   }
 
   item.~ITEM_INFO();
@@ -382,7 +372,7 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
     }
   } else if (a == 0xC9) {
-    reinterpret_cast<CloseNotifyFn>(0x00A8CF20)(&g_windowMgr, 0x122);
+    g_windowMgr.CloseWindow(0x122);
   } else if (a == 0x1F7) {
     const int count = static_cast<int>(this->items.size());
     const int length = count * 4 + 8;
@@ -414,7 +404,7 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       if (entry->selected == 1) {
         if (entry != nullptr && entry->insufficient != 1) {
           if (this->ingredientList->SendMsg(this, 0x68, entry->item.unknown_0000[1], 0, 0, 0) >= 0) {
-            reinterpret_cast<AddMaterialSlotFn>(0x00601D20)(this, entry->item.unknown_0000[1], entry->quantity);
+            this->AddIngredient(entry->item.unknown_0000[1], entry->quantity);
           }
         }
         break;
@@ -599,7 +589,7 @@ void UIIngredientInfoWnd::sub_6028C0(std::uint32_t id) {
   std::size_t remaining = sizeof(name);
   char* cursor = name;
   int highlightColor;
-  reinterpret_cast<BuildItemNameFn>(0x008DA690)(this, &this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+  this->BuildItemName(&this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
   if (this->item.identified == 1) {
     const int count = this->item.unknown_0098;

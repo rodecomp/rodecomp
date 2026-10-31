@@ -109,11 +109,6 @@ namespace {
     int height;
     int family;
   };
-
-  using BuildItemNameFn = int(__thiscall*)(UIFrameWnd*, const ITEM_INFO*, int*, std::vector<char*>*, char**, std::size_t*, char**, char, char);
-  using DrawItemNameTextFn = void(__thiscall*)(
-    UIFrameWnd*, const ItemNameTextInfo*, const char*, const char*, std::uint32_t, std::uint32_t, int, const std::vector<char*>*
-  );
 }
 
 // OFFSET: 0x008D17C0
@@ -125,9 +120,7 @@ int UIFrameWnd::DrawItemName(int x, int y, int width, const ITEM_INFO* item, int
   char* cursor = buffer;
   std::size_t remaining = sizeof(buffer);
   char* highlight = nullptr;
-  reinterpret_cast<BuildItemNameFn>(0x008DA690)(
-    this, item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0
-  );
+  this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
   std::uint32_t color = ItemCardColor(item);
   if (color == 0x00ADFF2F) {
@@ -136,9 +129,7 @@ int UIFrameWnd::DrawItemName(int x, int y, int width, const ITEM_INFO* item, int
   color = (color >> 16 & 0xFF) | (color & 0x0000FF00) | ((color & 0xFF) << 16);
 
   const ItemNameTextInfo info = {x, y, height, family};
-  reinterpret_cast<DrawItemNameTextFn>(0x0090A2E0)(
-    this, &info, buffer, highlight, color, static_cast<std::uint32_t>(highlightColor), width, &breaks
-  );
+  this->DrawItemNameText(&info, buffer, highlight, color, static_cast<std::uint32_t>(highlightColor), width, &breaks);
   return x;
 }
 
@@ -151,9 +142,7 @@ int UIFrameWnd::DrawWrappedItemName(int x, int y, int width, const ITEM_INFO* it
   std::vector<char*> breaks;
   std::size_t remaining = sizeof(buffer);
   int highlightColor;
-  reinterpret_cast<BuildItemNameFn>(0x008DA690)(
-    this, item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0
-  );
+  this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
   std::uint32_t color = ItemCardColor(item);
   if (color == 0x00ADFF2F) {
