@@ -9,11 +9,12 @@
 #include <string>
 #include <windows.h>
 
-class UIBarGraph2 : public UIWindow {
+class UIBarGraph2 : public UIBarGraph {
 public:
+  explicit UIBarGraph2(UIWindowContext& context);
+
   void Paint() override;
 
-  /* 007C */ float m_value;
   /* 0080 */ int m_vertical;
   /* 0084 */ unsigned char m_backgroundRed;
   /* 0085 */ unsigned char unknown_0085[3];
@@ -27,6 +28,13 @@ public:
   /* 0095 */ unsigned char unknown_0095[3];
   /* 0098 */ unsigned char m_fillBlue;
 };
+
+// OFFSET: 0x0086C190
+
+// OFFSET: 0x0086C240
+// FUNCTION: fn_11023
+UIBarGraph3::UIBarGraph3(UIWindowContext& context) : UIWindow(context, 0), m_current(nullptr), m_maximum(nullptr) {
+}
 
 // OFFSET: 0x0086C310
 // FUNCTION: fn_11024

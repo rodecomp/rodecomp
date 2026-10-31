@@ -70,3 +70,13 @@ void UIPetInfoBarGraph::Paint() {
     this->DrawBitmap(barMiddle->image.width * x + barLeft->image.width, 0, &barRight->image, true);
   }
 }
+
+// OFFSET: 0x0086D380
+// FUNCTION: fn_11045
+UIINT64BarGraph::UIINT64BarGraph(UIWindowContext& context) : UIWindow(context, 0), m_current(0), m_maximum(0) {
+}
+
+// OFFSET: 0x0086E1B0
+// FUNCTION: fn_11066
+UIPetInfoBarGraph::UIPetInfoBarGraph(UIWindowContext& context) : UIWindow(context, 0), unknown_007C(0) {
+}
