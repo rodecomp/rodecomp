@@ -2814,10 +2814,81 @@ void UIScrollBar_Custom::SetThumbBitmaps(std::string top, std::string middle, st
 #include "Client/Mode/CLoginMode.h"
 
 // OFFSET: 0x00884720
+// FUNCTION: fn_11310
+void UIItemTagOnChat::PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int) {
+  UIEditCtrl* edit = static_cast<UIEditCtrl*>(g_windowMgr.GetHoverWindow());
+  if (!edit) {
+    return;
+  }
+
+  const int y = edit->textY;
+  if (x != 0) {
+    button->Move(x, y - 1);
+  } else {
+    int bytes = 0;
+    button->Move(edit->MeasureText(name.c_str(), bytes) + 2, y - 1);
+  }
+}
 
 // OFFSET: 0x00884870
+// FUNCTION: fn_11311
+void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, const int&, int) {
+  if (!g_windowMgr.unknown_0458) {
+    return;
+  }
+
+  unsigned line = 0;
+  int consumed = 0;
+  UIRodexComposeWnd* compose = reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.unknown_0458);
+  const int left = compose->m_contents->geometry.x;
+  const int top = compose->m_contents->geometry.y;
+  const int lineHeight = compose->m_contents->unknown_0138;
+  std::string rest(name.c_str(), name.size());
+  const int firstLine = compose->m_contents->unknown_0158;
+  const int visibleLines = compose->m_contents->geometry.height / lineHeight;
+
+  for (; line < this->m_lines.size(); ++line) {
+    const std::size_t length = this->m_lines[line].size();
+    if (rest.size() < length) {
+      break;
+    }
+
+    rest = rest.substr(length);
+    unsigned bytes = 0;
+    consumed += compose->MeasureText(this->m_lines[line], bytes);
+  }
+
+  unsigned bytes = 0;
+  const int width = compose->MeasureText(name.c_str(), bytes);
+  const int row = static_cast<int>(line) - firstLine;
+  if (row < 0 || static_cast<int>(line) >= firstLine + visibleLines) {
+    button->Move(1000, 1000);
+  } else {
+    button->Move(left + 2 + (width - consumed), row * lineHeight + top);
+  }
+}
 
 // OFFSET: 0x00884C40
+// FUNCTION: fn_11312
+void UIItemTagOnMegaPhone::PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int) {
+  UINpcEditDialogWnd* owner = reinterpret_cast<UINpcEditDialogWnd*>(g_windowMgr.unknown_0318);
+  if (!owner || owner->edit->geometry.id != 492) {
+    return;
+  }
+
+  const int left = owner->edit->geometry.x;
+  const int top = owner->edit->geometry.y;
+  int position = x;
+  unsigned bytes = 0;
+  const int width = reinterpret_cast<UIItemTagCtrl*>(owner)->MeasureText(name.c_str(), bytes);
+  if (owner->edit->geometry.width < this->textWidth + width) {
+    position = 1000;
+  } else if (position == 0) {
+    position = left + 2 + width;
+  }
+
+  button->Move(position, top + 1);
+}
 
 // OFFSET: 0x0088AC80
 // FUNCTION: fn_11357
@@ -2827,6 +2898,32 @@ void UIComboBox_BmpWnd::Paint() {
 }
 
 // OFFSET: 0x008904C0
+// FUNCTION: fn_11417
+void UIItemTagButton::Slot25(int x, int y) {
+  if (this->m_disabled != 0) {
+    return;
+  }
+
+  if (this->m_value == 517) {
+    if (UITipboxWnd* tipbox = static_cast<UITipboxWnd*>(g_windowMgr.EnsureWindow(315))) {
+      tipbox->ShowTip(this->unknown_01F8);
+    }
+    return;
+  }
+
+  if (x < 0 || this->geometry.width <= x || y < 0 || this->geometry.height <= y) {
+    this->geometry.unknown_0030 = 0;
+  } else {
+    this->geometry.unknown_0030 = 1;
+    if (this->parent) {
+      this->parent->SendMsg(this, 98, this->geometry.id, this->m_value, reinterpret_cast<std::intptr_t>(this->unknown_00F8), 0);
+      this->Invalidate();
+      return;
+    }
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x00890AC0
 // FUNCTION: fn_11433
@@ -2861,13 +2958,176 @@ void UIBasicSkillCtrl::Slot32(int x, int y) {
 }
 
 // OFFSET: 0x0089BA90
+// FUNCTION: fn_11576
+void UISlotBmpButton::SetSlot(int slot, int fallback) {
+  this->m_slot = slot;
+  this->m_inRange = g_session.IsWithinUnknown59C0(slot == -1 ? fallback : slot);
+  if (this->m_slot < 0) {
+    this->icon->Show(0);
+    return;
+  }
+
+  const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(static_cast<CMode*>(g_charViewMode)->SendMsg(8, this->m_slot, 0, 0, 0));
+  if (!info) {
+    this->icon->Show(0);
+    return;
+  }
+
+  const std::string directory = "유저인터페이스\\renewalparty\\";
+  char path[256];
+  std::sprintf(path, "%sicon_jobs_%d.bmp", directory.c_str(), info->job);
+  this->icon->Show(1);
+  this->icon->SetBitmap(path);
+}
 
 #include "Network/TextEncoding.h"
 
 // OFFSET: 0x0088BCD0
+// FUNCTION: fn_11368
+void UIListBoxID::Paint() {
+  if (this->transparent != 0) {
+    this->ClearSurface(0xFFFF00FF);
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+  } else {
+    this->ClearSurface(RGB(this->unknown_007C[0], this->unknown_007C[4], this->unknown_007C[8]));
+  }
+
+  const int first = this->topLine;
+  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
+  std::uint32_t color = 0;
+  if (this->lines.size() < end) {
+    end = static_cast<unsigned>(this->lines.size());
+  }
+
+  for (int index = first; index < static_cast<int>(end); ++index) {
+    if (index == this->selected) {
+      this->FillRegion(0, (index - first) * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
+    }
+
+    DrawColoredText(
+      *this, static_cast<unsigned short>(g_textCodePage), 3 - this->horizontalOffset, (index - first) * this->lineHeight, this->lines[index].text.c_str(),
+      static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12, false
+    );
+  }
+}
 
 // OFFSET: 0x0088A7D0
+// FUNCTION: fn_11355
+void UIComboBoxID::Paint() {
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 6, 6, red, green, blue);
+  this->ClearSurface(RGB(red, green, blue));
+  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(red, green, blue));
+
+  this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")))->image, false);
+  const auto* leftDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, this->geometry.height - leftDown->image.height, &leftDown->image, false);
+  const auto* rightUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_ru.bmp")));
+  this->DrawBitmap(this->geometry.width - rightUp->image.width, 0, &rightUp->image, false);
+  const auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
+  this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, &rightDown->image, false);
+
+  const int first = this->topLine;
+  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
+  if (this->lines.size() < end) {
+    end = static_cast<unsigned>(this->lines.size());
+  }
+
+  for (int index = first; index < static_cast<int>(end); ++index) {
+    if (index == this->selected) {
+      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      this->FillRegion(3, (index - first) * this->lineHeight + 1, this->geometry.width - 6, this->lineHeight - 2, RGB(red, green, blue));
+    }
+
+    this->DrawTextAt(
+      this->m_context->fonts, this->m_context->locale, 3 - this->horizontalOffset, (index - first) * this->lineHeight + 2, this->lines[index].text.c_str(), 0, 0, 12,
+      0, 0, 0
+    );
+  }
+
+  if (this->verticalOverflow != 0) {
+    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    this->FillRegion(this->geometry.width - 16, 0, 16, this->geometry.height, RGB(red, green, blue));
+  }
+
+  this->parent->Invalidate();
+}
 
 // OFFSET: 0x0088B120
+// FUNCTION: fn_11362
+void UIItemStoreComboBox::Paint() {
+  const int first = this->topLine;
+  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
+  if (this->lines.size() < end) {
+    end = static_cast<unsigned>(this->lines.size());
+  }
+
+  if (first < static_cast<int>(end)) {
+    char path[260];
+    for (int index = first; index < static_cast<int>(end); ++index) {
+      if (index == this->selected) {
+        if (!this->pink) {
+          std::sprintf(path, "유저인터페이스\\basic_interface\\combobox_blue%d.bmp", this->selected);
+        } else if (this->pink == true) {
+          std::sprintf(path, "유저인터페이스\\basic_interface\\combobox_pink%d.bmp", this->selected);
+        }
+
+        this->DrawBitmap(0, 0, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)))->image, false);
+      }
+    }
+
+    for (int index = first; index < static_cast<int>(end); ++index) {
+      this->DrawTextAt(
+        this->m_listContext->fonts, this->m_listContext->locale, 3 - this->horizontalOffset, (index - first) * this->lineHeight + 2, this->lines[index].text.c_str(), 0,
+        0, 12, this->lines[index].color, 0, 0
+      );
+    }
+  }
+
+  this->Invalidate();
+}
 
 // OFFSET: 0x0088B5A0
+// FUNCTION: fn_11365
+void UIListBox2::Paint() {
+  if (this->transparent != 0) {
+    this->ClearSurface(0xFFFF00FF);
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+  } else {
+    this->ClearSurface(RGB(this->backgroundRed, this->backgroundGreen, this->backgroundBlue));
+  }
+
+  const int first = this->topLine;
+  const unsigned count = static_cast<unsigned>(this->lines.size());
+  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
+  std::uint32_t color = this->textColor;
+  if (count < end) {
+    end = count;
+  }
+
+  auto& owner = *this->m_listContext;
+  for (int row = 0; row + first < static_cast<int>(end); ++row) {
+    const int index = row + first;
+    if (index == this->selected) {
+      this->FillRegion(0, row * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
+    }
+
+    const int x = 3 - this->horizontalOffset;
+    int y = this->lineHeight * row;
+    if (this->centerVertically == 1) {
+      const int lineHeight = this->lineHeight;
+      const int height = this->TextHeight(owner.fonts, owner.locale, this->lines[index].c_str(), 0, 0, 12, 0, 0);
+      y = static_cast<int>(static_cast<float>(lineHeight - height) * 0.5f + static_cast<float>(row * lineHeight));
+    }
+
+    const std::string& line = this->lines[index];
+    DrawStyledColoredText(
+      *this, owner.codePage, x, y, line.c_str(), static_cast<unsigned>(line.size()), color, this->fontFamily, this->fontHeight, this->bold, this->italic, false
+    );
+  }
+}
