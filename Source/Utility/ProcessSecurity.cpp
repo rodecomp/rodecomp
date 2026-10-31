@@ -4,6 +4,12 @@
 #include <cstring>
 #include <io.h>
 
+// OFFSET: 0x00AEA5B0
+// FUNCTION: fn_18120
+int __fastcall sub_AEA5B0(const void* self) {
+  return *reinterpret_cast<const int*>(static_cast<const char*>(self) + 0x20);
+}
+
 // FUNCTION: fn_18122
 int RemoveProtectionTools() {
   if (_access("nconfig.ini", 6) == 0) {
