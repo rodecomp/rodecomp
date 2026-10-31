@@ -361,6 +361,7 @@ public:
   bool RouteToSavedTarget(int cellX, int cellY);
   void SelectTarget(int nodeIndex);
   void CancelRoute();
+  void DrawRoute(const float* matrix);
 
   /* 0000 */ CNaviData data;
   /* 004C */ CPathFinder pathFinder;

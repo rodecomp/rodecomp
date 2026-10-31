@@ -25,6 +25,101 @@
 #include <cstring>
 #include <timeapi.h>
 
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Contents/Ground/GroundGeometry.h"
+#include "Contents/Ground/GroundRendering.h"
+#include "Contents/World/World.h"
+#include "Render/Primitives/RenderQueues.h"
+#include "Render/Projection/RenderProjection.h"
+#include "Render/Renderer.h"
+#include "Render/TextureQuad.h"
+
+namespace {
+  // GLOBAL: gl_25136
+  int g_locationFrame = 1;
+  // GLOBAL: gl_25137
+  DWORD g_locationTick;
+}
+
+// OFFSET: 0x00B99890
+// FUNCTION: fn_19614
+void CNavigationManager::DrawRoute(const float* matrix) {
+  if (!this->unknown_117C || this->movementRoute.points.empty() || this->ground == nullptr) {
+    return;
+  }
+
+  int playerX = 0;
+  int playerY = 0;
+  if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+    mode->PlayerCell(&playerX, &playerY);
+  }
+
+  const RenderProjection projection = g_renderer->viewport.Projection();
+  GroundRenderContext context{
+    projection, g_renderer->primitives, g_renderer->queues, g_renderer->viewport.width, g_renderer->viewport.height, g_renderer->frame,
+    g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
+  };
+
+  int visible = 0;
+  const int maxY = playerY + 10;
+  const int minY = playerY - 10;
+  const int minX = playerX - 10;
+  const int maxX = playerX + 10;
+  const PathCell& last = this->movementRoute.points.back();
+  const int lastX = last.x;
+  const int lastY = last.y;
+
+  if (minX < lastX && lastX < maxX && minY < lastY && lastY < maxY) {
+    visible = 1;
+    std::uint32_t color;
+    if (this->unknown_12B4 && std::strcmp(g_session.m_navigationPlayerMap, this->data.GetInfo()->GetName()) == 0) {
+      color = 0xEEFFFFFF;
+    } else {
+      color = 0xEE64AAFF;
+    }
+
+    const DWORD now = timeGetTime();
+    if (static_cast<int>(now - g_locationTick) >= 0x96) {
+      g_locationTick = now;
+      if (++g_locationFrame > 4) {
+        g_locationFrame = 1;
+      }
+    }
+
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    if (mode && mode->scene && mode->scene->ground) {
+      GroundGeometry* ground = mode->scene->ground;
+      const std::string name = FormatOwnedString("유저인터페이스\\navigation_interface3\\location%d.tga", g_locationFrame);
+      CTexture* texture = g_texMgr.Load(name.c_str(), 0, false, true, false);
+      ground->DrawTerrainOverlay(*mode->scene->terrain, matrix, lastX, lastY, color, texture, context);
+    }
+  }
+
+  const DWORD now = timeGetTime();
+  const int blink = static_cast<int>((now % 1000) / 100);
+  auto& points = this->movementRoute.points;
+
+  if (points.size() - 1 != 0) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    for (unsigned index = 0; index < points.size() - 1; index += 2) {
+      const int x = points[index].x;
+      const int y = points[index].y;
+      if (minX < x && x < maxX && minY < y && y < maxY) {
+        ++visible;
+        CTexture* texture = g_texMgr.Load(this->labels[points[index + 1].metadata].c_str(), 0, false, true, false);
+              constexpr float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
+        const std::uint32_t color = blink == static_cast<int>(index) % 10 ? 0xEEFFFFFF : 0x99FFFFFF;
+        this->ground->DrawGridDecal(*mode->scene->terrain, matrix, x, y, color, *texture, uv, context);
+      }
+    }
+  }
+
+  if (visible == 0 && !points.empty()) {
+    this->BuildRoute(playerX, playerY, points.back().x, points.back().y, true);
+  }
+}
+
 // OFFSET: 0x00B88800
 // FUNCTION: fn_19376
 CNaviInfo* CNavigationManager::FindObject(const char* name) const {
