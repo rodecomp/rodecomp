@@ -519,6 +519,7 @@ public:
   bool IsHoverOnWindow01C8Button();
   void SelectWhisperName(const char* name);
   void AddWhisperName(const char* name);
+  void RefreshFrameSkins();
   bool HasUnknown030C();
   bool IsDropDownChild(const UIWindow* window);
   bool HasMiniPartyMember(std::uint32_t accountId);

@@ -2741,3 +2741,14 @@ void CSession::InitJobKeyNames() {
   names[358] = "SPIRIT_HANDLER";
   names[365] = "SPIRIT_HANDLER_RIDING";
 }
+
+// OFFSET: 0x00E2F860
+// FUNCTION: fn_24159
+std::vector<unsigned char> SerializeMessengerMembers(const std::list<MessengerMember>& members) {
+  std::vector<unsigned char> records;
+  for (std::list<MessengerMember>::const_iterator it = members.begin(); it != members.end(); ++it) {
+    const std::vector<unsigned char> record = it->Serialize();
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
+}

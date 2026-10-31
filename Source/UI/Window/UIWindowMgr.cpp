@@ -46,6 +46,8 @@
 #include <new>
 #include <timeapi.h>
 #include "Render/Textures/Surface.h"
+#include "UI/FrameSkin.h"
+#include "UI/Window/UIRegisterMgr.h"
 namespace {
 #pragma pack(push, 1)
 struct AddFriendPacket {
@@ -847,6 +849,20 @@ void UIWindowMgr::AddWhisperName(const char* name) {
   unsigned& current = *reinterpret_cast<unsigned*>(*reinterpret_cast<char**>(reinterpret_cast<char*>(this->window_01C8) + 0xC0) + 0x128);
   if (count - 1 <= current) {
     current = count;
+  }
+}
+
+// OFFSET: 0x00A8BB20
+// FUNCTION: fn_17127
+void UIWindowMgr::RefreshFrameSkins() {
+  for (UIWindow* window : this->rendered) {
+    if (CUIRegisterMgr::s_instance == nullptr) {
+      CUIRegisterMgr::s_instance = new (std::nothrow) CUIRegisterMgr;
+    }
+    std::map<int, int>& entries = CUIRegisterMgr::s_instance->entries;
+    if (entries.find(window->geometry.id) != entries.end()) {
+      static_cast<CUIFrameWnd*>(window)->RefreshSkinColors();
+    }
   }
 }
 
