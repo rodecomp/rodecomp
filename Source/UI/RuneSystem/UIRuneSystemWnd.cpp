@@ -1984,8 +1984,222 @@ void UIRuneSet_Info::Slot15(int, int) {
 }
 
 // OFFSET: 0x008196D0
+// FUNCTION: fn_10182
+void UIRuneSet_Info::Paint() {
+  if (!this->m_runeSet) {
+    this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp"))), true);
+    this->DrawBitmap(0xF4, 0xB7, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset.bmp"))), true);
+    return;
+  }
+
+  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_center.bmp"))), true);
+  std::string path = FormatOwnedString("유저인터페이스\\runesystem\\runeset\\%s.bmp", this->m_runeSet->GetResName());
+  CBitmapRes* runeSetBitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+  if (this->m_runeSet->IsActive()) {
+    this->DrawBitmap(0x76, 0xBF, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset.bmp"))), true);
+    this->DrawBitmap(0x76, 0xBF, reinterpret_cast<const BitmapImage*>(runeSetBitmap), true);
+    for (int slot = 0; slot < 6; ++slot) {
+      if (!this->m_runeSet->m_slots[slot]) {
+        this->DrawBitmap(
+          g_runeSetSlotX[slot] - 3, g_runeSetSlotY[slot] - 3,
+          reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_empty.bmp"))), true
+        );
+        continue;
+      }
+
+      this->DrawBitmap(
+        g_runeSetSlotX[slot] - 3, g_runeSetSlotY[slot] - 3,
+        reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge.bmp"))), true
+      );
+      path = FormatOwnedString("유저인터페이스\\runesystem\\rune\\%s.bmp", this->m_runeSet->m_slots[slot]->GetResName());
+      CTexture* texture = g_texMgr.Load(path.c_str(), 0, false, true, false);
+      if (texture) {
+        const float scale = 90.0f / static_cast<float>(texture->Width());
+        this->geometry.surface->DrawScaledSurface(
+          g_runeSetSlotX[slot], g_runeSetSlotY[slot], 90, 120, texture, texture->Width(), texture->Height(), scale, scale, 0xFFFFFFFF, false, 0, 0, 0, 0, 0
+        );
+        if (!this->m_runeSet->m_slots[slot]->IsActive()) {
+          this->geometry.surface->Dim(g_runeSetSlotX[slot], g_runeSetSlotY[slot], 90, 120, 55);
+        }
+      }
+    }
+  } else {
+    this->DrawBitmap(0x76, 0x95, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset.bmp"))), true);
+    this->DrawBitmap(0x76, 0x95, reinterpret_cast<const BitmapImage*>(runeSetBitmap), true);
+  }
+
+  const std::uint32_t tab = this->m_tab->geometry.unknown_0030;
+  if (tab == 0) {
+    this->DrawBitmap(
+      0x179, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_desc_title.bmp"))), true
+    );
+    this->DrawBitmap(
+      0x179, this->geometry.height - 0x48,
+      reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_desc_down.bmp"))), true
+    );
+  } else if (tab == 1) {
+    this->DrawBitmap(
+      0x179, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_reward.bmp"))), true
+    );
+    if (this->m_runeSet->m_reward.values[0] == 1) {
+      const int rewardX[7] = {0, 417, 505, 559, 559, 505, 417};
+      const int rewardY[7] = {0, 116, 141, 216, 309, 384, 410};
+      int count = this->m_runeSet->CountSlots();
+      ITEM_INFO item;
+      item.identified = 1;
+      if (count > 6) {
+        count = 6;
+      }
+      for (int index = 1; index <= count; ++index) {
+        const std::int64_t itemId = this->m_runeSet->m_reward.values[index];
+        if (itemId == 0) {
+          continue;
+        }
+
+        item.SetItemId(static_cast<int>(itemId));
+        char iconPath[128];
+        std::memset(iconPath, 0, sizeof(iconPath));
+        ItemDescriptions descriptions{g_itemDescriptions};
+        descriptions.IconPath(iconPath, item.itemId.c_str(), 1);
+        CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(iconPath)));
+        if (icon) {
+          this->DrawBitmap(rewardX[index], rewardY[index], reinterpret_cast<const BitmapImage*>(icon), true);
+        }
+      }
+
+      item.SetItemId(static_cast<int>(this->m_runeSet->m_reward.values[7]));
+      const char* resource = ItemResourcePath(item);
+      const std::string collection = std::format("유저인터페이스\\collection\\{}.bmp", resource);
+      this->DrawBitmap(0x188, 0xE1, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(collection.c_str()))), true);
+      if (this->m_runeSet->m_reward.values[0] != 0) {
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x1BC, 0x30, LookupMessage(4203), 0, 0, 13, 0xFFF0E1, 1, 0);
+        this->DrawTextAt(this->m_context->fonts, this->m_context->locale, 0x1BC, 0x31, LookupMessage(4203), 0, 0, 13, 0x864D43, 1, 0);
+      }
+    }
+  } else {
+    this->DrawBitmap(
+      0x179, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_upgrade.bmp"))), true
+    );
+    if (this->m_runeSet->m_grade < 15) {
+      path = FormatOwnedString(LookupMessage(4045), static_cast<double>(static_cast<float>(g_runeSystemMgr->GetGradeFailValue(this->m_runeSet)) * 0.001f));
+    } else {
+      path = LookupMessage(4046);
+    }
+    const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, path.c_str(), path.size(), 0, 12, 0, 0);
+    this->DrawTextAt(
+      this->m_context->fonts, this->m_context->locale, 0x1F5 - static_cast<int>(static_cast<float>(width) * 0.5f), 0x103, path.c_str(), 0, 0, 12, 0, 0, 0
+    );
+  }
+
+  const std::string title = FormatOwnedString(LookupMessage(4042), this->m_runeSet->GetName());
+  const int titleWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, title.c_str(), title.size(), 0, 13, 1, 0);
+  int x = static_cast<int>(186.0f - static_cast<float>(titleWidth) * 0.5f);
+  if (this->m_runeSet->m_grade) {
+    x += this->m_runeSet->m_grade > 9 ? 13 : 10;
+  }
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, 0x19, title.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
+  this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x, 0x1A, title.c_str(), 0, 0, 13, 0x864D43, 1, 0);
+  if (this->m_runeSet->m_grade) {
+    const std::string grade = FormatOwnedString("+%d", this->m_runeSet->m_grade);
+    this->DrawTextAt(
+      this->m_context->fonts, this->m_context->locale, x - (this->m_runeSet->m_grade > 9 ? 5 : 0) - 20, 0x1A, grade.c_str(), 0, 0, 12, 0xFFF0E1, 1, 0
+    );
+    this->DrawTextAt(
+      this->m_context->fonts, this->m_context->locale, x - (this->m_runeSet->m_grade > 9 ? 5 : 0) - 20, 0x1B, grade.c_str(), 0, 0, 12, 0xEC720F, 1, 0
+    );
+  }
+}
 
 // OFFSET: 0x0081AF10
+// FUNCTION: fn_10191
+void UIRune_Decom::Paint() {
+  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp"))), true);
+  this->DrawBitmap(0xDD, 0x8E, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge_big.bmp"))), true);
+  if (!this->m_decomList || this->unknown_0094.empty()) {
+    return;
+  }
+
+  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_main.bmp"))), true);
+  this->DrawBitmap(0xDD, 0x47, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\rune_edge_big.bmp"))), true);
+  CTexture* texture = g_texMgr.Load(this->unknown_0094.c_str(), 0, false, true, false);
+  if (texture) {
+    const float scale = 180.0f / static_cast<float>(texture->Width());
+    this->geometry.surface->DrawScaledSurface(0xE1, 0x4B, 0xB4, 0xF0, texture, texture->Width(), texture->Height(), scale, scale, 0xFFFFFFFF, false, 0, 0, 0, 0, 0);
+  }
+
+  if (this->unknown_007C.size()) {
+    const int nameWidth = this->TextWidth(this->m_context->fonts, this->m_context->locale, this->unknown_007C.c_str(), this->unknown_007C.size(), 0, 13, 0, 0);
+    const int nameX = static_cast<int>(static_cast<float>(this->geometry.width - nameWidth) * 0.5f);
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, nameX, 0x19, this->unknown_007C.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
+    this->DrawTextAt(this->m_context->fonts, this->m_context->locale, nameX - 1, 0x1A, this->unknown_007C.c_str(), 0, 0, 13, 0x864D43, 1, 0);
+  }
+
+  this->DrawBitmap(200, 0x149, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_radio2.bmp"))), true);
+  unsigned int rowIndex = 0;
+  for (int y = 0x177; y < 0x1E3; y += 0x36, rowIndex += 4) {
+    unsigned int index = rowIndex;
+    for (int x = 0xD8; x < 0x1B0; x += 0x36, ++index) {
+      this->DrawBitmap(
+        x - 1, y - 6, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\iconslot_yellow.bmp"))), true
+      );
+      if (index >= this->m_decomList->size()) {
+        continue;
+      }
+
+      ITEM_INFO item;
+      item.identified = 1;
+      item.SetItemId((*this->m_decomList)[index].m_itemId);
+      char iconPath[128];
+      std::memset(iconPath, 0, sizeof(iconPath));
+      ItemDescriptions descriptions{g_itemDescriptions};
+      descriptions.IconPath(iconPath, item.itemId.c_str(), 1);
+      CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(iconPath)));
+      if (!icon) {
+        icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
+      }
+      if (icon) {
+        this->DrawBitmap(x + 7, y, reinterpret_cast<const BitmapImage*>(icon), true);
+      }
+
+      const int percent = (*this->m_decomList)[index].m_percent;
+      const int fraction = percent % 1000;
+      const int whole = static_cast<int>(static_cast<float>(percent) * 0.001f);
+      std::string text;
+      if (fraction > 0) {
+        int decimals = 3;
+        if (fraction % 10 == 0) {
+          decimals = 2;
+          if (percent % 100 == 0) {
+            decimals = 1;
+          }
+        }
+
+        const double value = static_cast<float>(fraction) * 0.001f + static_cast<float>(whole);
+        if (decimals == 1) {
+          text += FormatOwnedString("%.1f", value);
+        } else if (decimals == 2) {
+          text += FormatOwnedString("%.2f", value);
+        } else {
+          text += FormatOwnedString("%.3f", value);
+        }
+      } else {
+        text = FormatOwnedString("%d", whole);
+      }
+      text += "%";
+
+      int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), text.size(), 0, 12, 0, 0);
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x - width + 0x23, y + 0x13, text.c_str(), 0, 0, 12, 0xFFF7E7, 0, 0);
+      this->DrawTextAt(this->m_context->fonts, this->m_context->locale, x - width + 0x22, y + 0x12, text.c_str(), 0, 0, 12, 0x875F51, 0, 0);
+
+      text = FormatOwnedString("%d ~ %d", (*this->m_decomList)[index].m_minCount, (*this->m_decomList)[index].m_maxCount);
+      width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text.c_str(), text.size(), 0, 12, 0, 0);
+      this->DrawTextAt(
+        this->m_context->fonts, this->m_context->locale, x - static_cast<int>(static_cast<float>(width) * 0.5f) + 0x13, y + 0x23, text.c_str(), 0, 0, 11,
+        0x875F51, 0, 0
+      );
+    }
+  }
+}
 
 // OFFSET: 0x0081DAB0
 // FUNCTION: fn_10225
