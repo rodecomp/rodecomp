@@ -126,6 +126,7 @@ public:
   void UpdateDuration();
   bool WriteFinalSection();
   bool RecordPacket(const std::vector<unsigned char>& packet, int event, std::uint32_t delay);
+  void RecordCachedPackets();
   bool MatchesService(int mode) const;
   int AdvanceFrame();
   void ResetPlayback();
