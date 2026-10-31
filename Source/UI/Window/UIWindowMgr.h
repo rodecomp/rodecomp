@@ -457,6 +457,7 @@ public:
   void UpdateNavigationList();
   void LoadShortcutItems();
   void SaveShortcutItems();
+  void LoadUIRectInfo();
   void SaveUIRectInfo();
   void ResetUIRectInfo();
   UIWindow* LookupWindow(int id);

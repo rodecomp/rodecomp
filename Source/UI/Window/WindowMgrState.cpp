@@ -18,6 +18,7 @@
 #include "UI/Window/WindowMouseHit.h"
 #include "Client/ReplayPacketRecorder.h"
 #include "Client/Mode/ModeDragState.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -168,6 +169,353 @@ void UIWindowMgr::LoadShortcutItems() {
     }
   }
   g_session.m_hotkeyPage = 0;
+}
+
+// OFFSET: 0x00A92630
+// FUNCTION: fn_17178
+void UIWindowMgr::LoadUIRectInfo() {
+  BYTE* const base = reinterpret_cast<BYTE*>(this);
+  char path[512];
+  std::strcpy(path, g_subKey);
+  std::strcat(path, g_uiRectInfoKeySuffix);
+
+  HKEY probe;
+  if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, path, 0, KEY_QUERY_VALUE, &probe) != ERROR_SUCCESS) {
+    this->ResetUIRectInfo();
+    return;
+  }
+
+  RegCloseKey(probe);
+  HKEY key;
+  if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, path, 0, KEY_QUERY_VALUE, &key) != ERROR_SUCCESS) {
+    return;
+  }
+
+  DWORD type = REG_DWORD;
+  DWORD size = 4;
+  char name[256];
+  RegQueryValueExA(key, "m_minimapZoomWnd", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0050), &size);
+  if (RegQueryValueExA(key, "M_ISDRAGALL", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0064), &size) != ERROR_SUCCESS || this->unknown_0064 != 0) {
+    this->unknown_0064 = 1;
+  }
+  if (RegQueryValueExA(key, "M_ISDRAWCOMPASS", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0060), &size) != ERROR_SUCCESS) {
+    this->unknown_0060 = 0;
+  }
+  if (RegQueryValueExA(key, "M_MINIMAPARGB", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_005C), &size) != ERROR_SUCCESS || this->unknown_005C != 0xFFFFFFFF) {
+    this->unknown_005C = 0xAAFFFFFF;
+  }
+  RegQueryValueExA(key, "M_CHATWNDSTATUS", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_004C), &size);
+  RegQueryValueExA(key, "M_CHATWNDHEIGHT", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0038), &size);
+  RegQueryValueExA(key, "M_CHATWNDX", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0030), &size);
+  RegQueryValueExA(key, "M_CHATWNDY", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0034), &size);
+  RegQueryValueExA(key, "M_CHATWNDSHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_003C), &size);
+  RegQueryValueExA(key, "SAYDIALOGWNDINFO.X", nullptr, &type, base + 0x5E4, &size);
+  RegQueryValueExA(key, "SAYDIALOGWNDINFO.Y", nullptr, &type, base + 0x5E8, &size);
+  RegQueryValueExA(key, "SAYDIALOGWNDINFO.W", nullptr, &type, base + 0x5EC, &size);
+  RegQueryValueExA(key, "SAYDIALOGWNDINFO.H", nullptr, &type, base + 0x5F0, &size);
+  RegQueryValueExA(key, "CHOOSEWNDINFO.X", nullptr, &type, base + 0x5F4, &size);
+  RegQueryValueExA(key, "CHOOSEWNDINFO.Y", nullptr, &type, base + 0x5F8, &size);
+  RegQueryValueExA(key, "CHOOSEWNDINFO.W", nullptr, &type, base + 0x5FC, &size);
+  RegQueryValueExA(key, "CHOOSEWNDINFO.H", nullptr, &type, base + 0x600, &size);
+  RegQueryValueExA(key, "BASICINFOWNDINFO.X", nullptr, &type, base + 0x514, &size);
+  RegQueryValueExA(key, "BASICINFOWNDINFO.Y", nullptr, &type, base + 0x518, &size);
+  RegQueryValueExA(key, "BASICINFOWNDINFO.W", nullptr, &type, base + 0x51C, &size);
+  RegQueryValueExA(key, "BASICINFOWNDINFO.H", nullptr, &type, base + 0x520, &size);
+  RegQueryValueExA(key, "BASICINFOWNDINFO.ISSHOW", nullptr, &type, base + 0x524, &size);
+  RegQueryValueExA(key, "ITEMWNDINFO.X", nullptr, &type, base + 0x528, &size);
+  RegQueryValueExA(key, "ITEMWNDINFO.Y", nullptr, &type, base + 0x52C, &size);
+  RegQueryValueExA(key, "ITEMWNDINFO.W", nullptr, &type, base + 0x530, &size);
+  RegQueryValueExA(key, "ITEMWNDINFO.H", nullptr, &type, base + 0x534, &size);
+  RegQueryValueExA(key, "ITEMWNDINFO.ORGHEIGHT", nullptr, &type, base + 0x538, &size);
+  RegQueryValueExA(key, "ITEMWNDINFO.CURTAB", nullptr, &type, base + 0x53C, &size);
+  RegQueryValueExA(key, "ITEMWNDINFO.CURRADIO1", nullptr, &type, base + 0x540, &size);
+  RegQueryValueExA(key, "ITEMWNDINFO.CURRADIO2", nullptr, &type, base + 0x544, &size);
+  RegQueryValueExA(key, "ITEMWNDINFO.CURRADIO3", nullptr, &type, base + 0x548, &size);
+  RegQueryValueExA(key, "ITEMWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_054C), &size);
+  RegQueryValueExA(key, "QUESTWNDINFO.X", nullptr, &type, base + 0x550, &size);
+  RegQueryValueExA(key, "QUESTWNDINFO.Y", nullptr, &type, base + 0x554, &size);
+  RegQueryValueExA(key, "QUESTWNDINFO.W", nullptr, &type, base + 0x558, &size);
+  RegQueryValueExA(key, "QUESTWNDINFO.H", nullptr, &type, base + 0x55C, &size);
+  RegQueryValueExA(key, "QUESTWNDINFO.ORGHEIGHT", nullptr, &type, base + 0x560, &size);
+  RegQueryValueExA(key, "QUESTWNDINFO.CURTAB", nullptr, &type, base + 0x564, &size);
+  RegQueryValueExA(key, "QUESTWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0568), &size);
+  RegQueryValueExA(key, "QUESTDISPWNDINFO.QUESTDISPLAY", nullptr, &type, base + 0x570, &size);
+  RegQueryValueExA(key, "STATUSWNDINFO.X", nullptr, &type, base + 0x574, &size);
+  RegQueryValueExA(key, "STATUSWNDINFO.Y", nullptr, &type, base + 0x578, &size);
+  RegQueryValueExA(key, "STATUSWNDINFO.W", nullptr, &type, base + 0x57C, &size);
+  RegQueryValueExA(key, "STATUSWNDINFO.H", nullptr, &type, base + 0x580, &size);
+  RegQueryValueExA(key, "STATUSWNDINFO.ORGHEIGHT", nullptr, &type, base + 0x584, &size);
+  if (RegQueryValueExA(key, "STATUSWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0588), &size) != ERROR_SUCCESS) {
+    this->unknown_0588 = 0;
+  }
+  RegQueryValueExA(key, "EQUIPWNDINFO.X", nullptr, &type, base + 0x590, &size);
+  RegQueryValueExA(key, "EQUIPWNDINFO.Y", nullptr, &type, base + 0x594, &size);
+  RegQueryValueExA(key, "EQUIPWNDINFO.W", nullptr, &type, base + 0x598, &size);
+  RegQueryValueExA(key, "EQUIPWNDINFO.H", nullptr, &type, base + 0x59C, &size);
+  RegQueryValueExA(key, "EQUIPWNDINFO.ORGHEIGHT", nullptr, &type, base + 0x5A0, &size);
+  if (RegQueryValueExA(key, "EQUIPWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_05A4), &size) != ERROR_SUCCESS) {
+    this->unknown_05A4 = 0;
+  }
+  RegQueryValueExA(key, "OPTIONWNDINFO.X", nullptr, &type, base + 0x5A8, &size);
+  RegQueryValueExA(key, "OPTIONWNDINFO.Y", nullptr, &type, base + 0x5AC, &size);
+  RegQueryValueExA(key, "OPTIONWNDINFO.W", nullptr, &type, base + 0x5B0, &size);
+  RegQueryValueExA(key, "OPTIONWNDINFO.H", nullptr, &type, base + 0x5B4, &size);
+  RegQueryValueExA(key, "OPTIONWNDINFO.ORGHEIGHT", nullptr, &type, base + 0x5B8, &size);
+  if (RegQueryValueExA(key, "OPTIONWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_05BC), &size) != ERROR_SUCCESS) {
+    this->unknown_05BC = 0;
+  }
+  RegQueryValueExA(key, "SHORTENITEMWNDINFO.X", nullptr, &type, base + 0x5C0, &size);
+  RegQueryValueExA(key, "SHORTENITEMWNDINFO.Y", nullptr, &type, base + 0x5C4, &size);
+  RegQueryValueExA(key, "SHORTENITEMWNDINFO.W", nullptr, &type, base + 0x5C8, &size);
+  RegQueryValueExA(key, "SHORTENITEMWNDINFO.H", nullptr, &type, base + 0x5CC, &size);
+  if (RegQueryValueExA(key, "SHORTENITEMWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_05D0), &size) != ERROR_SUCCESS) {
+    this->unknown_05D0 = 0;
+  }
+  RegQueryValueExA(key, "CHATROOMWNDINFO.X", nullptr, &type, base + 0x604, &size);
+  RegQueryValueExA(key, "CHATROOMWNDINFO.Y", nullptr, &type, base + 0x608, &size);
+  RegQueryValueExA(key, "CHATROOMWNDINFO.W", nullptr, &type, base + 0x60C, &size);
+  RegQueryValueExA(key, "CHATROOMWNDINFO.H", nullptr, &type, base + 0x610, &size);
+  RegQueryValueExA(key, "ITEMSTOREWNDINFO.X", nullptr, &type, base + 0x614, &size);
+  RegQueryValueExA(key, "ITEMSTOREWNDINFO.Y", nullptr, &type, base + 0x618, &size);
+  RegQueryValueExA(key, "ITEMSTOREWNDINFO.W", nullptr, &type, base + 0x61C, &size);
+  RegQueryValueExA(key, "ITEMSTOREWNDINFO.H", nullptr, &type, base + 0x620, &size);
+  RegQueryValueExA(key, "ITEMSTOREWNDINFO.subWnd", nullptr, &type, base + 0x624, &size);
+  std::memset(name, 0, sizeof(name) - 1);
+  RegQueryValueExA(key, "ITEMSTOREWNDNUM", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_0058), &size);
+  if (this->unknown_0058 == 8) {
+    for (int index = 0; index < 8; ++index) {
+      std::sprintf(name, "ITEMSTOREWNDINFO_%d.X", index);
+      RegQueryValueExA(key, name, nullptr, &type, base + 0x62C + index * 0x10, &size);
+      std::sprintf(name, "ITEMSTOREWNDINFO_%d.Y", index);
+      RegQueryValueExA(key, name, nullptr, &type, base + 0x630 + index * 0x10, &size);
+      std::sprintf(name, "ITEMSTOREWNDINFO_%d.W", index);
+      RegQueryValueExA(key, name, nullptr, &type, base + 0x634 + index * 0x10, &size);
+      std::sprintf(name, "ITEMSTOREWNDINFO_%d.H", index);
+      RegQueryValueExA(key, name, nullptr, &type, base + 0x638 + index * 0x10, &size);
+    }
+  } else {
+    ItemStoreFindSlotInfo* const storeSlots = reinterpret_cast<ItemStoreFindSlotInfo*>(base + 0x62C);
+    for (int index = 0; index < 8; ++index) {
+      storeSlots[index].Reset(index);
+    }
+    this->unknown_0058 = 8;
+    reinterpret_cast<ItemStoreFindListInfo*>(base + 0x614)->Reset();
+  }
+  RegQueryValueExA(key, "ITEMSTOREWNDINFO.findWnd", nullptr, &type, base + 0x628, &size);
+  RegQueryValueExA(key, "ITEMSTOREFINDWNDINFO.X", nullptr, &type, base + 0x6AC, &size);
+  RegQueryValueExA(key, "ITEMSTOREFINDWNDINFO.Y", nullptr, &type, base + 0x6B0, &size);
+  RegQueryValueExA(key, "ITEMSTOREFINDWNDINFO.W", nullptr, &type, base + 0x6B4, &size);
+  RegQueryValueExA(key, "ITEMSTOREFINDWNDINFO.H", nullptr, &type, base + 0x6B8, &size);
+  RegQueryValueExA(key, "BOOKINGLISTWNDINFO.X", nullptr, &type, base + 0x6BC, &size);
+  RegQueryValueExA(key, "BOOKINGLISTWNDINFO.Y", nullptr, &type, base + 0x6C0, &size);
+  RegQueryValueExA(key, "BOOKINGLISTWNDINFO.W", nullptr, &type, base + 0x6C4, &size);
+  RegQueryValueExA(key, "BOOKINGLISTWNDINFO.H", nullptr, &type, base + 0x6C8, &size);
+  RegQueryValueExA(key, "BOOKINGMBWNDINFO.X", nullptr, &type, base + 0x6CC, &size);
+  RegQueryValueExA(key, "BOOKINGMBWNDINFO.Y", nullptr, &type, base + 0x6D0, &size);
+  RegQueryValueExA(key, "BOOKINGMBWNDINFO.W", nullptr, &type, base + 0x6D4, &size);
+  RegQueryValueExA(key, "BOOKINGMBWNDINFO.H", nullptr, &type, base + 0x6D8, &size);
+  RegQueryValueExA(key, "BOOKINGWNDINFO.X", nullptr, &type, base + 0x6DC, &size);
+  RegQueryValueExA(key, "BOOKINGWNDINFO.Y", nullptr, &type, base + 0x6E0, &size);
+  RegQueryValueExA(key, "BOOKINGWNDINFO.W", nullptr, &type, base + 0x6E4, &size);
+  RegQueryValueExA(key, "BOOKINGWNDINFO.H", nullptr, &type, base + 0x6E8, &size);
+  RegQueryValueExA(key, "BOOKINGMBCHECKWNDINFO.X", nullptr, &type, base + 0x6EC, &size);
+  RegQueryValueExA(key, "BOOKINGMBCHECKWNDINFO.Y", nullptr, &type, base + 0x6F0, &size);
+  RegQueryValueExA(key, "BOOKINGMBCHECKWNDINFO.W", nullptr, &type, base + 0x6F4, &size);
+  RegQueryValueExA(key, "BOOKINGMBCHECKWNDINFO.H", nullptr, &type, base + 0x6F8, &size);
+  RegQueryValueExA(key, "ITEMSHOPWNDINFO.X", nullptr, &type, base + 0x6FC, &size);
+  RegQueryValueExA(key, "ITEMSHOPWNDINFO.Y", nullptr, &type, base + 0x700, &size);
+  RegQueryValueExA(key, "ITEMSHOPWNDINFO.W", nullptr, &type, base + 0x704, &size);
+  RegQueryValueExA(key, "ITEMSHOPWNDINFO.H", nullptr, &type, base + 0x708, &size);
+  RegQueryValueExA(key, "ITEMSELLWNDINFO.X", nullptr, &type, base + 0x70C, &size);
+  RegQueryValueExA(key, "ITEMSELLWNDINFO.Y", nullptr, &type, base + 0x710, &size);
+  RegQueryValueExA(key, "ITEMSELLWNDINFO.W", nullptr, &type, base + 0x714, &size);
+  RegQueryValueExA(key, "ITEMSELLWNDINFO.H", nullptr, &type, base + 0x718, &size);
+  RegQueryValueExA(key, "ITEMPURCHASEWNDINFO.X", nullptr, &type, base + 0x71C, &size);
+  RegQueryValueExA(key, "ITEMPURCHASEWNDINFO.Y", nullptr, &type, base + 0x720, &size);
+  RegQueryValueExA(key, "ITEMPURCHASEWNDINFO.W", nullptr, &type, base + 0x724, &size);
+  RegQueryValueExA(key, "ITEMPURCHASEWNDINFO.H", nullptr, &type, base + 0x728, &size);
+  RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.X", nullptr, &type, base + 0x72C, &size);
+  RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.Y", nullptr, &type, base + 0x730, &size);
+  RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.W", nullptr, &type, base + 0x734, &size);
+  RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.H", nullptr, &type, base + 0x738, &size);
+  if (RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_073C), &size) != ERROR_SUCCESS) {
+    this->unknown_073C = 0;
+  }
+  if (RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.RADIO", nullptr, &type, base + 0x740, &size) != ERROR_SUCCESS) {
+    *reinterpret_cast<int*>(base + 0x740) = 1;
+  }
+  if (RegQueryValueExA(key, "MESSENGERGROUPWNDINFO.SIZEMODE", nullptr, &type, base + 0x744, &size) != ERROR_SUCCESS) {
+    *reinterpret_cast<int*>(base + 0x744) = 0;
+  }
+  RegQueryValueExA(key, "EXCHANGEACCEPTWNDINFO.X", nullptr, &type, base + 0x75C, &size);
+  RegQueryValueExA(key, "EXCHANGEACCEPTWNDINFO.Y", nullptr, &type, base + 0x760, &size);
+  RegQueryValueExA(key, "EXCHANGEACCEPTWNDINFO.W", nullptr, &type, base + 0x764, &size);
+  RegQueryValueExA(key, "EXCHANGEACCEPTWNDINFO.H", nullptr, &type, base + 0x768, &size);
+  RegQueryValueExA(key, "SKILLLISTWNDINFO.X", nullptr, &type, base + 0x76C, &size);
+  RegQueryValueExA(key, "SKILLLISTWNDINFO.Y", nullptr, &type, base + 0x770, &size);
+  RegQueryValueExA(key, "SKILLLISTWNDINFO.W", nullptr, &type, base + 0x774, &size);
+  RegQueryValueExA(key, "SKILLLISTWNDINFO.H", nullptr, &type, base + 0x778, &size);
+  if (RegQueryValueExA(key, "SKILLLISTWNDINFO.SHOW", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_077C), &size) != ERROR_SUCCESS) {
+    this->unknown_077C = 0;
+  }
+  RegQueryValueExA(key, "MERCHANTITEMWNDINFO.X", nullptr, &type, base + 0x780, &size);
+  RegQueryValueExA(key, "MERCHANTITEMWNDINFO.Y", nullptr, &type, base + 0x784, &size);
+  RegQueryValueExA(key, "MERCHANTITEMWNDINFO.W", nullptr, &type, base + 0x788, &size);
+  RegQueryValueExA(key, "MERCHANTITEMWNDINFO.H", nullptr, &type, base + 0x78C, &size);
+  if (RegQueryValueExA(key, "MERCHANTITEMWNDINFO.SHOW", nullptr, &type, base + 0x790, &size) != ERROR_SUCCESS) {
+    *reinterpret_cast<int*>(base + 0x790) = 0;
+  }
+  RegQueryValueExA(key, "MERCHANTMIRRORITEMWNDINFO.X", nullptr, &type, base + 0x794, &size);
+  RegQueryValueExA(key, "MERCHANTMIRRORITEMWNDINFO.Y", nullptr, &type, base + 0x798, &size);
+  RegQueryValueExA(key, "MERCHANTMIRRORITEMWNDINFO.W", nullptr, &type, base + 0x79C, &size);
+  RegQueryValueExA(key, "MERCHANTMIRRORITEMWNDINFO.H", nullptr, &type, base + 0x7A0, &size);
+  RegQueryValueExA(key, "MERCHANTSHOPMAKEWNDINFO.X", nullptr, &type, base + 0x7A4, &size);
+  RegQueryValueExA(key, "MERCHANTSHOPMAKEWNDINFO.Y", nullptr, &type, base + 0x7A8, &size);
+  RegQueryValueExA(key, "MERCHANTSHOPMAKEWNDINFO.W", nullptr, &type, base + 0x7AC, &size);
+  RegQueryValueExA(key, "MERCHANTSHOPMAKEWNDINFO.H", nullptr, &type, base + 0x7B0, &size);
+  RegQueryValueExA(key, "MERCHANTITEMSHOPWNDINFO.X", nullptr, &type, base + 0x7B4, &size);
+  RegQueryValueExA(key, "MERCHANTITEMSHOPWNDINFO.Y", nullptr, &type, base + 0x7B8, &size);
+  RegQueryValueExA(key, "MERCHANTITEMSHOPWNDINFO.W", nullptr, &type, base + 0x7BC, &size);
+  RegQueryValueExA(key, "MERCHANTITEMSHOPWNDINFO.H", nullptr, &type, base + 0x7C0, &size);
+  RegQueryValueExA(key, "MERCHANTITEMMYSHOPWNDINFO.X", nullptr, &type, base + 0x7C4, &size);
+  RegQueryValueExA(key, "MERCHANTITEMMYSHOPWNDINFO.Y", nullptr, &type, base + 0x7C8, &size);
+  RegQueryValueExA(key, "MERCHANTITEMMYSHOPWNDINFO.W", nullptr, &type, base + 0x7CC, &size);
+  RegQueryValueExA(key, "MERCHANTITEMMYSHOPWNDINFO.H", nullptr, &type, base + 0x7D0, &size);
+  RegQueryValueExA(key, "MERCHANTITEMPURCHASEWNDINFO.X", nullptr, &type, base + 0x7D4, &size);
+  RegQueryValueExA(key, "MERCHANTITEMPURCHASEWNDINFO.Y", nullptr, &type, base + 0x7D8, &size);
+  RegQueryValueExA(key, "MERCHANTITEMPURCHASEWNDINFO.W", nullptr, &type, base + 0x7DC, &size);
+  RegQueryValueExA(key, "MERCHANTITEMPURCHASEWNDINFO.H", nullptr, &type, base + 0x7E0, &size);
+  RegQueryValueExA(key, "ITEMCOLLECTIONWNDINFO.X", nullptr, &type, base + 0x7E4, &size);
+  RegQueryValueExA(key, "ITEMCOLLECTIONWNDINFO.Y", nullptr, &type, base + 0x7E8, &size);
+  RegQueryValueExA(key, "ITEMCOLLECTIONWNDINFO.W", nullptr, &type, base + 0x7EC, &size);
+  RegQueryValueExA(key, "ITEMCOLLECTIONWNDINFO.H", nullptr, &type, base + 0x7F0, &size);
+  RegQueryValueExA(key, "COMBINEDCARDITEMCOLLECTIONWNDINFO.X", nullptr, &type, base + 0x7F4, &size);
+  RegQueryValueExA(key, "COMBINEDCARDITEMCOLLECTIONWNDINFO.Y", nullptr, &type, base + 0x7F8, &size);
+  RegQueryValueExA(key, "COMBINEDCARDITEMCOLLECTIONWNDINFO.W", nullptr, &type, base + 0x7FC, &size);
+  RegQueryValueExA(key, "COMBINEDCARDITEMCOLLECTIONWNDINFO.H", nullptr, &type, base + 0x800, &size);
+  RegQueryValueExA(key, "ITEMPARAMCHANGEDISPLAYWNDINFO.X", nullptr, &type, base + 0x804, &size);
+  RegQueryValueExA(key, "ITEMPARAMCHANGEDISPLAYWNDINFO.Y", nullptr, &type, base + 0x808, &size);
+  RegQueryValueExA(key, "ITEMPARAMCHANGEDISPLAYWNDINFO.W", nullptr, &type, base + 0x80C, &size);
+  RegQueryValueExA(key, "ITEMPARAMCHANGEDISPLAYWNDINFO.H", nullptr, &type, base + 0x810, &size);
+  RegQueryValueExA(key, "PARTYSETTINGWNDINFO.X", nullptr, &type, base + 0x814, &size);
+  RegQueryValueExA(key, "PARTYSETTINGWNDINFO.Y", nullptr, &type, base + 0x818, &size);
+  RegQueryValueExA(key, "PARTYSETTINGWNDINFO.W", nullptr, &type, base + 0x81C, &size);
+  RegQueryValueExA(key, "PARTYSETTINGWNDINFO.H", nullptr, &type, base + 0x820, &size);
+  RegQueryValueExA(key, "DETAILLEVELWNDINFO.X", nullptr, &type, base + 0x824, &size);
+  RegQueryValueExA(key, "DETAILLEVELWNDINFO.Y", nullptr, &type, base + 0x828, &size);
+  RegQueryValueExA(key, "DETAILLEVELWNDINFO.W", nullptr, &type, base + 0x82C, &size);
+  RegQueryValueExA(key, "DETAILLEVELWNDINFO.H", nullptr, &type, base + 0x830, &size);
+  RegQueryValueExA(key, "WHISPERWNDINFO.X", nullptr, &type, base + 0x848, &size);
+  RegQueryValueExA(key, "WHISPERWNDINFO.Y", nullptr, &type, base + 0x84C, &size);
+  RegQueryValueExA(key, "WHISPERWNDINFO.W", nullptr, &type, base + 0x850, &size);
+  RegQueryValueExA(key, "WHISPERWNDINFO.H", nullptr, &type, base + 0x854, &size);
+  RegQueryValueExA(key, "FRIENDOPTIONWNDINFO.X", nullptr, &type, base + 0x86C, &size);
+  RegQueryValueExA(key, "FRIENDOPTIONWNDINFO.Y", nullptr, &type, base + 0x870, &size);
+  RegQueryValueExA(key, "FRIENDOPTIONWNDINFO.W", nullptr, &type, base + 0x874, &size);
+  RegQueryValueExA(key, "FRIENDOPTIONWNDINFO.H", nullptr, &type, base + 0x878, &size);
+  RegQueryValueExA(key, "ITEMCOMPOSITIONWNDINFO.X", nullptr, &type, base + 0x87C, &size);
+  RegQueryValueExA(key, "ITEMCOMPOSITIONWNDINFO.Y", nullptr, &type, base + 0x880, &size);
+  RegQueryValueExA(key, "ITEMCOMPOSITIONWNDINFO.W", nullptr, &type, base + 0x884, &size);
+  RegQueryValueExA(key, "ITEMCOMPOSITIONWNDINFO.H", nullptr, &type, base + 0x888, &size);
+  RegQueryValueExA(key, "ITEMIDENTIFYWNDINFO.X", nullptr, &type, base + 0x88C, &size);
+  RegQueryValueExA(key, "ITEMIDENTIFYWNDINFO.Y", nullptr, &type, base + 0x890, &size);
+  RegQueryValueExA(key, "ITEMIDENTIFYWNDINFO.W", nullptr, &type, base + 0x894, &size);
+  RegQueryValueExA(key, "ITEMIDENTIFYWNDINFO.H", nullptr, &type, base + 0x898, &size);
+  RegQueryValueExA(key, "SUBCHATWNDST.X", nullptr, &type, base + 0x914, &size);
+  RegQueryValueExA(key, "SUBCHATWNDST.Y", nullptr, &type, base + 0x918, &size);
+  RegQueryValueExA(key, "SUBCHATWNDST.W", nullptr, &type, base + 0x91C, &size);
+  RegQueryValueExA(key, "SUBCHATWNDST.H", nullptr, &type, base + 0x920, &size);
+  RegQueryValueExA(key, "SUBCHATWNDBT.X", nullptr, &type, base + 0x924, &size);
+  RegQueryValueExA(key, "SUBCHATWNDBT.Y", nullptr, &type, base + 0x928, &size);
+  RegQueryValueExA(key, "SUBCHATWNDBT.W", nullptr, &type, base + 0x92C, &size);
+  RegQueryValueExA(key, "SUBCHATWNDBT.H", nullptr, &type, base + 0x930, &size);
+  RegQueryValueExA(key, "CHATWNDSTICKON", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_03F4), &size);
+  RegQueryValueExA(key, "ONSTSUBCHAT", nullptr, &type, base + 0x3F5, &size);
+  RegQueryValueExA(key, "ONBTSUBCHAT", nullptr, &type, reinterpret_cast<BYTE*>(&this->unknown_03F6), &size);
+  RegQueryValueExA(key, "MEMORIALDUNWND.X", nullptr, &type, reinterpret_cast<BYTE*>(&g_memorialDunWndX), &size);
+  RegQueryValueExA(key, "MEMORIALDUNWND.Y", nullptr, &type, reinterpret_cast<BYTE*>(&g_memorialDunWndY), &size);
+  RegQueryValueExA(key, "QUICKSLOTWNDINFO.X", nullptr, &type, base + 0x934, &size);
+  RegQueryValueExA(key, "QUICKSLOTWNDINFO.Y", nullptr, &type, base + 0x938, &size);
+  RegQueryValueExA(key, "QUICKSLOTWNDINFO.W", nullptr, &type, base + 0x93C, &size);
+  RegQueryValueExA(key, "QUICKSLOTWNDINFO.H", nullptr, &type, base + 0x940, &size);
+  RegQueryValueExA(key, "BATTLEFIELDWNDINFO.X", nullptr, &type, base + 0x944, &size);
+  RegQueryValueExA(key, "BATTLEFIELDWNDINFO.Y", nullptr, &type, base + 0x948, &size);
+  RegQueryValueExA(key, "BATTLEFIELDWNDINFO.W", nullptr, &type, base + 0x94C, &size);
+  RegQueryValueExA(key, "BATTLEFIELDWNDINFO.H", nullptr, &type, base + 0x950, &size);
+  RegQueryValueExA(key, "GUILDHELPERWNDINFO.X", nullptr, &type, base + 0x9D4, &size);
+  RegQueryValueExA(key, "GUILDHELPERWNDINFO.Y", nullptr, &type, base + 0x9D8, &size);
+  RegQueryValueExA(key, "GUILDHELPERWNDINFO.W", nullptr, &type, base + 0x9DC, &size);
+  RegQueryValueExA(key, "GUILDHELPERWNDINFO.H", nullptr, &type, base + 0x9E0, &size);
+  RegQueryValueExA(key, "BUYINGSTOREMAKEWNDINFO.X", nullptr, &type, base + 0x954, &size);
+  RegQueryValueExA(key, "BUYINGSTOREMAKEWNDINFO.Y", nullptr, &type, base + 0x958, &size);
+  RegQueryValueExA(key, "BUYINGSTOREMAKEWNDINFO.W", nullptr, &type, base + 0x95C, &size);
+  RegQueryValueExA(key, "BUYINGSTOREMAKEWNDINFO.H", nullptr, &type, base + 0x960, &size);
+  RegQueryValueExA(key, "BUYINGSTOREMIRRORITEMWNDINFO.X", nullptr, &type, base + 0x964, &size);
+  RegQueryValueExA(key, "BUYINGSTOREMIRRORITEMWNDINFO.Y", nullptr, &type, base + 0x968, &size);
+  RegQueryValueExA(key, "BUYINGSTOREMIRRORITEMWNDINFO.W", nullptr, &type, base + 0x96C, &size);
+  RegQueryValueExA(key, "BUYINGSTOREMIRRORITEMWNDINFO.H", nullptr, &type, base + 0x970, &size);
+  RegQueryValueExA(key, "BUYINGSTOREITEMMYSHOPWNDINFO.X", nullptr, &type, base + 0x974, &size);
+  RegQueryValueExA(key, "BUYINGSTOREITEMMYSHOPWNDINFO.Y", nullptr, &type, base + 0x978, &size);
+  RegQueryValueExA(key, "BUYINGSTOREITEMMYSHOPWNDINFO.W", nullptr, &type, base + 0x97C, &size);
+  RegQueryValueExA(key, "BUYINGSTOREITEMMYSHOPWNDINFO.H", nullptr, &type, base + 0x980, &size);
+  RegQueryValueExA(key, "BUYINGSTOREITEMSHOPWNDINFO.X", nullptr, &type, base + 0x984, &size);
+  RegQueryValueExA(key, "BUYINGSTOREITEMSHOPWNDINFO.Y", nullptr, &type, base + 0x988, &size);
+  RegQueryValueExA(key, "BUYINGSTOREITEMSHOPWNDINFO.W", nullptr, &type, base + 0x98C, &size);
+  RegQueryValueExA(key, "BUYINGSTOREITEMSHOPWNDINFO.H", nullptr, &type, base + 0x990, &size);
+  RegQueryValueExA(key, "BUYINGSTOREITEMSELLWNDINFO.X", nullptr, &type, base + 0x994, &size);
+  RegQueryValueExA(key, "BUYINGSTOREITEMSELLWNDINFO.Y", nullptr, &type, base + 0x998, &size);
+  RegQueryValueExA(key, "BUYINGSTOREITEMSELLWNDINFO.W", nullptr, &type, base + 0x99C, &size);
+  RegQueryValueExA(key, "BUYINGSTOREITEMSELLWNDINFO.H", nullptr, &type, base + 0x9A0, &size);
+  RegQueryValueExA(key, "BUYINGSTOREMIRRORSELLLISTWNDINFO.X", nullptr, &type, base + 0x9A4, &size);
+  RegQueryValueExA(key, "BUYINGSTOREMIRRORSELLLISTWNDINFO.Y", nullptr, &type, base + 0x9A8, &size);
+  RegQueryValueExA(key, "BUYINGSTOREMIRRORSELLLISTWNDINFO.W", nullptr, &type, base + 0x9AC, &size);
+  RegQueryValueExA(key, "BUYINGSTOREMIRRORSELLLISTWNDINFO.H", nullptr, &type, base + 0x9B0, &size);
+  RegQueryValueExA(key, "REPLAYRECCONTROLWNDINFO.X", nullptr, &type, base + 0x4F154, &size);
+  RegQueryValueExA(key, "REPLAYRECCONTROLWNDINFO.Y", nullptr, &type, base + 0x4F158, &size);
+  RegQueryValueExA(key, "REPLAYRECCONTROLWNDINFO.W", nullptr, &type, base + 0x4F15C, &size);
+  RegQueryValueExA(key, "REPLAYRECCONTROLWNDINFO.H", nullptr, &type, base + 0x4F160, &size);
+  RegQueryValueExA(key, "NAVIGATIONWNDINFO.X", nullptr, &type, base + 0x4F178, &size);
+  RegQueryValueExA(key, "NAVIGATIONWNDINFO.Y", nullptr, &type, base + 0x4F17C, &size);
+  RegQueryValueExA(key, "NAVIGATIONWNDINFO.W", nullptr, &type, base + 0x4F180, &size);
+  RegQueryValueExA(key, "NAVIGATIONWNDINFO.H", nullptr, &type, base + 0x4F184, &size);
+  RegQueryValueExA(key, "NAVIGATIONWNDINFO.ISSCREEN", nullptr, &type, base + 0x4F188, &size);
+  reinterpret_cast<MiniMapWndInfo*>(base + 0x4F1A8)->Reset();
+  RegQueryValueExA(key, "MINIMAPWNDINFO.X", nullptr, &type, base + 0x4F1B0, &size);
+  RegQueryValueExA(key, "MINIMAPWNDINFO.Y", nullptr, &type, base + 0x4F1B4, &size);
+  RegQueryValueExA(key, "MINIMAPWNDINFO.SHOWQUEST", nullptr, &type, base + 0x4F1C0, &size);
+  RegQueryValueExA(key, "MINIMAPWNDINFO.WHOWNPC", nullptr, &type, base + 0x4F1C4, &size);
+  RegQueryValueExA(key, "MINIMAPWNDINFO.WHOWMEMBER", nullptr, &type, base + 0x4F1C8, &size);
+  RegQueryValueExA(key, "ACHTRACINGWNDINFO.X", nullptr, &type, base + 0x4F1D8, &size);
+  RegQueryValueExA(key, "ACHTRACINGWNDINFO.Y", nullptr, &type, base + 0x4F1DC, &size);
+  RegQueryValueExA(key, "PREVIEWEQUIPWNDINFO.X", nullptr, &type, base + 0x4F220, &size);
+  RegQueryValueExA(key, "PREVIEWEQUIPWNDINFO.Y", nullptr, &type, base + 0x4F224, &size);
+  RegQueryValueExA(key, "SWAPEQUIPMENTWNDINFO.X", nullptr, &type, base + 0x4F228, &size);
+  RegQueryValueExA(key, "SWAPEQUIPMENTWNDINFO.Y", nullptr, &type, base + 0x4F22C, &size);
+  RegQueryValueExA(key, "PETINFOWNDINFO.X", nullptr, &type, base + 0x8BC, &size);
+  RegQueryValueExA(key, "PETINFOWNDINFO.Y", nullptr, &type, base + 0x8C0, &size);
+  RegQueryValueExA(key, "PETINFOWNDINFO.W", nullptr, &type, base + 0x8C4, &size);
+  RegQueryValueExA(key, "PETINFOWNDINFO.H", nullptr, &type, base + 0x8C8, &size);
+  RegQueryValueExA(key, "HOMUNINFOWNDINFO.X", nullptr, &type, base + 0x8CC, &size);
+  RegQueryValueExA(key, "HOMUNINFOWNDINFO.Y", nullptr, &type, base + 0x8D0, &size);
+  RegQueryValueExA(key, "HOMUNINFOWNDINFO.W", nullptr, &type, base + 0x8D4, &size);
+  RegQueryValueExA(key, "HOMUNINFOWNDINFO.H", nullptr, &type, base + 0x8D8, &size);
+  RegQueryValueExA(key, "MERINFOWNDINFO.X", nullptr, &type, base + 0x8F0, &size);
+  RegQueryValueExA(key, "MERINFOWNDINFO.Y", nullptr, &type, base + 0x8F4, &size);
+  RegQueryValueExA(key, "MERINFOWNDINFO.W", nullptr, &type, base + 0x8F8, &size);
+  RegQueryValueExA(key, "MERINFOWNDINFO.H", nullptr, &type, base + 0x8FC, &size);
+  RegQueryValueExA(key, "ADVEN_REGISTERWNDINFO.X", nullptr, &type, base + 0xA00, &size);
+  RegQueryValueExA(key, "ADVEN_REGISTERWNDINFO.Y", nullptr, &type, base + 0xA04, &size);
+  RegQueryValueExA(key, "ADVEN_REGISTERWNDINFO.W", nullptr, &type, base + 0xA08, &size);
+  RegQueryValueExA(key, "ADVEN_REGISTERWNDINFO.H", nullptr, &type, base + 0xA0C, &size);
+  RegQueryValueExA(key, "ADVEN_JOINWNDINFO.X", nullptr, &type, base + 0xA10, &size);
+  RegQueryValueExA(key, "ADVEN_JOINWNDINFO.Y", nullptr, &type, base + 0xA14, &size);
+  RegQueryValueExA(key, "ADVEN_JOINWNDINFO.W", nullptr, &type, base + 0xA18, &size);
+  RegQueryValueExA(key, "ADVEN_JOINWNDINFO.H", nullptr, &type, base + 0xA1C, &size);
+  RegQueryValueExA(key, "ADVEN_PARTYBOARDWNDINFO.X", nullptr, &type, base + 0xA20, &size);
+  RegQueryValueExA(key, "ADVEN_PARTYBOARDWNDINFO.Y", nullptr, &type, base + 0xA24, &size);
+  RegQueryValueExA(key, "ADVEN_PARTYBOARDWNDINFO.W", nullptr, &type, base + 0xA28, &size);
+  RegQueryValueExA(key, "ADVEN_PARTYBOARDWNDINFO.H", nullptr, &type, base + 0xA2C, &size);
+  RegCloseKey(key);
 }
 
 // OFFSET: 0x00AAADF0
