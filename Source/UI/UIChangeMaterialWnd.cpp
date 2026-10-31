@@ -543,13 +543,12 @@ void UIChangeMaterialWnd::Paint() {
   CBitmapRes* mix = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(mixName.c_str())));
   this->DrawBitmap(0x50, 0x1E, mix ? &mix->image : nullptr, true);
 
-  for (std::size_t i = 0; i < this->m_materials.size(); ++i) {
-    const ITEM_INFO& material = this->m_materials[i];
-    const MaterialSlotPos& position = this->m_materialPos[i];
-    if (material.identified == 1) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, controls.fonts, controls.locale, position.x, position.y, material, 1, 0);
+  const MaterialSlotPos* position = this->m_materialPos;
+  for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it, ++position) {
+    if (it->identified == 1) {
+      DrawItemWithQuantity(*this, ResourceMgr::Instance(), descriptions, controls.fonts, controls.locale, position->x, position->y, *it, 1, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, descriptions, controls.fonts, controls.locale, 1, position.x, position.y, material, 1, 0);
+      DrawItemWithQuantityAuxiliary(*this, descriptions, controls.fonts, controls.locale, 1, position->x, position->y, *it, 1, 0);
     }
   }
 
