@@ -4923,3 +4923,454 @@ CCharacterNpc::CCharacterNpc() : CNpc() {
 }
 
 // OFFSET: 0x00CBFC40
+// FUNCTION: fn_21120
+void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int effectState, bool notify) {
+  const int previousBodyState = this->bodyState;
+  const std::uint32_t previousFlags = this->stateFlags;
+  this->bodyState = bodyState;
+  this->stateFlags = stateFlags;
+  this->unknown_02C4 = effectState;
+  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  unsigned char* const color = reinterpret_cast<unsigned char*>(&this->render.color);
+
+  if (StateFlag00Changed(this->stateFlags, previousFlags) && StateFlag00(this->stateFlags) && world && world->player) {
+    const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+    g_soundMgr->PlayWave(
+      "effect\\EF_Sight.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+    );
+  }
+
+  if (StateFlag13Changed(this->stateFlags, previousFlags) && StateFlag13(this->stateFlags) && world && world->player) {
+    const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+    g_soundMgr->PlayWave(
+      "effect\\EF_Sight.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+    );
+  }
+
+  if (StateFlag01Changed(this->stateFlags, previousFlags)) {
+    this->ResetJobEffects();
+    if (this->GetEffectiveJob(-1) == 45) {
+      this->SendMsg(this, 109, 0, 321, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+
+    if (StateFlag01(this->stateFlags)) {
+      if (notify) {
+        this->SendMsg(nullptr, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        if (this->GetEffectiveJob(-1) != 25 && this->GetEffectiveJob(-1) != 4222) {
+          this->LaunchEffect(16, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        }
+      }
+
+      this->render.enabled = 0;
+      if (this->render.accountId != g_session.m_aid && g_session.IsAdminSubMode(7) == 0) {
+        this->render.unknown_00A4Bytes[0] = 0;
+        this->SendMsg(nullptr, 109, 0, 159, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (this->unknown_02FC > 0) {
+        this->SendMsg(nullptr, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag04(this->stateFlags)) {
+        this->SendMsg(nullptr, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag20(this->stateFlags)) {
+        this->SendMsg(nullptr, 138, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (!g_session.IsGuildMemberAccount(this->render.accountId)) {
+        this->ClearUnknown0188();
+      }
+      if (this->unknown_018C) {
+        g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_018C));
+        this->unknown_018C = 0;
+      }
+    } else {
+      if (notify) {
+        this->SendMsg(nullptr, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+      }
+
+      this->render.enabled = 1;
+      if (this->render.accountId != g_session.m_aid) {
+        this->render.unknown_00A4Bytes[0] = 1;
+      }
+      if (this->unknown_02FC > 0) {
+        this->SendMsg(nullptr, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag04(this->stateFlags)) {
+        this->SendMsg(nullptr, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag20(this->stateFlags)) {
+        this->SendMsg(nullptr, 137, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->RefreshGuildEmblemWindow();
+      if (this->unknown_02B4 != 0) {
+        this->sub_CAA4D0();
+      }
+      if (this->GetEffectiveJob(-1) == 45) {
+        this->LaunchEffect(321, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+    }
+  }
+
+  if (StateFlag02Changed(this->stateFlags, previousFlags)) {
+    this->ResetJobEffects();
+    if (StateFlag02(this->stateFlags)) {
+      this->render.visible = 0;
+      this->render.enabled = 0;
+      if (this->render.accountId != g_session.m_aid && g_session.IsAdminSubMode(7) == 0) {
+        this->render.unknown_00A4Bytes[0] = 0;
+        this->SendMsg(nullptr, 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, 109, 0, 159, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (this->unknown_02FC > 0) {
+        this->SendMsg(nullptr, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag04(this->stateFlags)) {
+        this->SendMsg(nullptr, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag20(this->stateFlags)) {
+        this->SendMsg(nullptr, 138, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (!g_session.IsGuildMemberAccount(this->render.accountId)) {
+        this->ClearUnknown0188();
+      }
+      if (this->unknown_018C) {
+        g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_018C));
+        this->unknown_018C = 0;
+      }
+    } else {
+      this->render.visible = 1;
+      this->render.enabled = 1;
+      if (this->render.accountId != g_session.m_aid) {
+        this->render.unknown_00A4Bytes[0] = 1;
+      }
+      if (this->unknown_02FC > 0) {
+        this->SendMsg(nullptr, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag04(this->stateFlags)) {
+        this->SendMsg(nullptr, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag20(this->stateFlags)) {
+        this->SendMsg(nullptr, 137, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->RefreshGuildEmblemWindow();
+      if (this->unknown_02B4 != 0) {
+        this->sub_CAA4D0();
+      }
+    }
+  }
+
+  if (!StateFlag01(this->stateFlags) && !StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags)) {
+    if (StateFlag04Changed(this->stateFlags, previousFlags)) {
+      this->SendMsg(nullptr, StateFlag04(this->stateFlags) ? 101 : 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    if (StateFlag20Changed(this->stateFlags, previousFlags)) {
+      this->SendMsg(nullptr, StateFlag20(this->stateFlags) ? 137 : 138, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+  }
+
+  if (StateFlag19Changed(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, StateFlag19(this->stateFlags) ? 105 : 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+  if (StateFlag23Changed(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, StateFlag23(this->stateFlags) ? 105 : 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+  if (StateFlag24Changed(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, StateFlag24(this->stateFlags) ? 105 : 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+  if (StateFlag25Changed(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, StateFlag25(this->stateFlags) ? 105 : 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+  if (StateFlag26Changed(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, StateFlag26(this->stateFlags) ? 105 : 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+  if (StateFlag21Changed(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, StateFlag21(this->stateFlags) ? 105 : 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+  if (StateFlag05Changed(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, StateFlag05(this->stateFlags) ? 105 : 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+  if (StateFlag15Changed(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, StateFlag15(this->stateFlags) ? 105 : 106, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  if (StateFlag06Changed(this->stateFlags, previousFlags)) {
+    this->ResetJobEffects();
+    if (StateFlag06(this->stateFlags)) {
+      const int admin = g_session.IsAdminSubMode(8);
+      this->render.unknown_00A4Bytes[0] = 0;
+      if (admin == 0) {
+        this->render.visible = 0;
+        this->SendMsg(nullptr, 109, 0, 159, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        if (this->unknown_03B0.size() != 0) {
+          for (CGameObject* object : this->unknown_03B0) {
+            static_cast<CMsgEffect*>(object)->m_visible = this->render.accountId == g_session.m_aid;
+          }
+        }
+      } else {
+        this->render.visible = 1;
+      }
+      if (this->unknown_02FC > 0) {
+        this->SendMsg(nullptr, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag04(this->stateFlags)) {
+        this->SendMsg(nullptr, 102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag20(this->stateFlags)) {
+        this->SendMsg(nullptr, 138, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (!g_session.IsGuildMemberAccount(this->render.accountId)) {
+        this->ClearUnknown0188();
+      }
+      if (this->unknown_018C) {
+        g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->unknown_018C));
+        this->unknown_018C = 0;
+      }
+    } else {
+      this->render.visible = 1;
+      this->render.unknown_00A4Bytes[0] = 1;
+      if (!this->render.enabled && this->render.accountId != g_session.m_aid) {
+        this->render.unknown_00A4Bytes[0] = 0;
+      }
+      if (this->unknown_03B0.size() != 0) {
+        for (CGameObject* object : this->unknown_03B0) {
+          static_cast<CMsgEffect*>(object)->m_visible = true;
+        }
+      }
+      if (this->unknown_02FC > 0) {
+        this->SendMsg(nullptr, 51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag04(this->stateFlags)) {
+        this->SendMsg(nullptr, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag20(this->stateFlags)) {
+        this->SendMsg(nullptr, 137, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      this->RefreshGuildEmblemWindow();
+      if (this->unknown_02B4 != 0) {
+        this->sub_CAA4D0();
+      }
+    }
+  }
+
+  const std::uint32_t accountId = this->render.accountId;
+  g_championMonsterMgr->ApplyEffects(this->GetEffectiveJob(-1), this, static_cast<int>(accountId));
+
+  if (previousBodyState != this->bodyState) {
+    switch (previousBodyState) {
+    case 1: {
+      const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+      g_soundMgr->PlayWave(
+        "_stone_explosion.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+      );
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+      break;
+    }
+    case 2: {
+      this->SendMsg(nullptr, 59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+      g_soundMgr->PlayWave(
+        "_frozen_explosion.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+      );
+      this->render.isMotionFinished = true;
+      this->render.isMotionFreezed = false;
+      this->render.unknown_00A3 = 0;
+      color[1] = 0xFF;
+      color[2] = 0xFF;
+      color[0] = 0xFF;
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+      break;
+    }
+    case 3:
+      this->SendMsg(nullptr, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+      break;
+    case 4:
+      this->SendMsg(nullptr, 70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->unknown_02CC = 0;
+      break;
+    case 7:
+      this->SendMsg(nullptr, 140, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    case 8:
+      while (this->state.Attachments().HasId(802)) {
+        this->SendMsg(nullptr, 109, 0, 802, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      break;
+    default:
+      break;
+    }
+
+    switch (this->bodyState) {
+    case 1:
+      this->render.isMotionFinished = true;
+      this->render.isMotionFreezed = true;
+      this->render.unknown_00A3 = 1;
+      color[1] = 0x40;
+      color[2] = 0x40;
+      color[0] = 0x40;
+      break;
+    case 2:
+      this->SendMsg(nullptr, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      this->render.isMotionFinished = true;
+      this->render.isMotionFreezed = true;
+      this->render.unknown_00A3 = 1;
+      color[1] = 0x80;
+      color[2] = 0x00;
+      color[0] = 0xFF;
+      if (notify) {
+        const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+        g_soundMgr->PlayWave(
+          "_stonecurse.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+        );
+      }
+      break;
+    case 3:
+      this->SendMsg(nullptr, 71, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      if (notify) {
+        const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+        g_soundMgr->PlayWave(
+          "_stun.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+        );
+      }
+      break;
+    case 4:
+      this->SendMsg(nullptr, 69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    case 6:
+      this->render.unknown_00A3 = 1;
+      color[1] = 0x80;
+      color[2] = 0x80;
+      color[0] = 0x80;
+      break;
+    case 7:
+      this->SendMsg(nullptr, 139, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      break;
+    case 8:
+      if (!this->state.Attachments().HasId(802)) {
+        this->LaunchEffect(802, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+      break;
+    default:
+      break;
+    }
+  }
+
+  bool poisonSound = false;
+  if (this->unknown_02C4 & 0x80) {
+    if (this->render.accountId == g_session.m_aid) {
+      g_playerPoisoned = 1;
+    }
+    this->render.unknown_00A3 = 1;
+    color[1] = 0x32;
+    color[2] = 0xFF;
+    color[0] = 0xFF;
+    poisonSound = true;
+  } else if (this->unknown_02C4 & 0x01) {
+    if (this->render.accountId == g_session.m_aid) {
+      g_playerPoisoned = 1;
+    }
+    if (!this->state.Attachments().HasId(812)) {
+      this->render.unknown_00A3 = 1;
+      color[1] = 0x80;
+      color[2] = 0xFF;
+      color[0] = 0xFF;
+    }
+    poisonSound = true;
+  } else if (this->render.accountId == g_session.m_aid) {
+    if (g_playerPoisoned == 1) {
+      this->SendMsg(nullptr, 109, 0, 335, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    }
+    g_playerPoisoned = 0;
+  }
+
+  if (poisonSound && notify) {
+    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    const vector3d& player = reinterpret_cast<const CRenderObject*>(mode->scene->player)->render.position;
+    g_soundMgr->PlayWave(
+      "_poison.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+    );
+    if (this->render.accountId == g_session.m_aid && !mode->scene->player->state.Attachments().HasId(335)) {
+      this->LaunchEffect(335, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+  }
+
+  if (this->unknown_02C4 & 0x02) {
+    this->SendMsg(nullptr, 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->render.unknown_00A3 = 1;
+    color[1] = 0x32;
+    color[2] = 0xC8;
+    color[0] = 0x32;
+    if (notify) {
+      const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+      g_soundMgr->PlayWave(
+        "_curse.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+      );
+    }
+  } else {
+    this->SendMsg(nullptr, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  if (this->unknown_02C4 & 0x04) {
+    if (notify) {
+      const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+      g_soundMgr->PlayWave(
+        "_silence.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+      );
+    }
+    this->SendMsg(nullptr, 73, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  } else {
+    this->SendMsg(nullptr, 74, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+
+  this->SendMsg(nullptr, (this->unknown_02C4 & 0x20) ? 75 : 76, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+  if ((this->unknown_02C4 & 0x08) && notify) {
+    const vector3d& player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+    g_soundMgr->PlayWave(
+      "_confusion.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+    );
+  }
+
+  if (this->unknown_02C4 & 0x10) {
+    if (this->render.accountId == g_session.m_aid) {
+      g_overrideColor = 1;
+    }
+    if (notify) {
+      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      const vector3d& player = reinterpret_cast<const CRenderObject*>(mode->scene->player)->render.position;
+      g_soundMgr->PlayWave(
+        "_blind.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+      );
+      if (this->render.accountId == g_session.m_aid && !mode->scene->player->state.Attachments().HasId(334)) {
+        this->LaunchEffect(334, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      }
+    }
+  } else if (this->render.accountId == g_session.m_aid) {
+    if (static_cast<int>(this->render.instant.Get(16)) == 0) {
+      if (g_overrideColor == 1) {
+        this->SendMsg(nullptr, 109, 0, 334, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+      }
+      g_overrideColor = 0;
+    }
+  }
+
+  if (this->bodyState == 0) {
+    this->render.isMotionFreezed = false;
+  }
+
+  if ((this->unknown_02C4 & 0x83) == 0 && this->bodyState != 2 && this->bodyState != 1 && this->bodyState != 6 &&
+      static_cast<int>(this->GetInstant(3)) != 1 && static_cast<int>(this->GetInstant(12)) != 1 &&
+      static_cast<int>(this->GetInstant(13)) != 1 && static_cast<int>(this->GetInstant(14)) != 1 &&
+      static_cast<int>(this->GetInstant(15)) != 1) {
+    this->render.unknown_00A3 = 0;
+    color[1] = 0xFF;
+    color[2] = 0xFF;
+    color[0] = 0xFF;
+  }
+
+  if (this->render.accountId == g_session.m_aid && g_statusRefreshSuppressed == 0) {
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->ReapplySkillEffects();
+  }
+}
