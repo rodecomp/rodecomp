@@ -3385,7 +3385,71 @@ UITVBitmapButton::UITVBitmapButton()
 // OFFSET: 0x0086DE10
 
 // OFFSET: 0x008894B0
+// FUNCTION: fn_11347
+void UIChatHisBox2::Paint() {
+  this->ClearSurface(RGB(this->backgroundRed, this->backgroundGreen, this->backgroundBlue));
+
+  const int top = this->topLine;
+  unsigned int end = static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top);
+  if (static_cast<unsigned int>(this->lines.size()) < end) {
+    end = static_cast<unsigned int>(this->lines.size());
+  }
+
+  FontCache& fonts = this->m_listContext->fonts;
+  const TextLocale& locale = this->m_listContext->locale;
+  for (int row = 0; top + row < static_cast<int>(end); ++row) {
+    const int index = top + row;
+    int x;
+    if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
+      const int width = this->TextWidth(fonts, locale, this->lines[index].c_str(), 0, 0, 12, 0, 0);
+      x = this->geometry.width - width - 19;
+    } else {
+      x = 2;
+    }
+    this->DrawTextAt(fonts, locale, x, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->unknown_00E4[index], 0, 0);
+    this->PlaceNaviLinks(index);
+    this->PlaceItemTags(index);
+  }
+}
 
 // OFFSET: 0x00889600
+// FUNCTION: fn_11348
+void UIChatHisBox3::Paint() {
+  if (this->transparent) {
+    this->ClearSurface(0xFFFF00FF);
+    if (this->parent) {
+      this->parent->Invalidate();
+    }
+  } else {
+    this->ClearSurface(RGB(this->UIListBox::backgroundRed, this->UIListBox::backgroundGreen, this->UIListBox::backgroundBlue));
+  }
+
+  const int top = this->topLine;
+  unsigned int end = static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top);
+  if (static_cast<unsigned int>(this->lines.size()) < end) {
+    end = static_cast<unsigned int>(this->lines.size());
+  }
+
+  FontCache& fonts = this->m_listContext->fonts;
+  const TextLocale& locale = this->m_listContext->locale;
+  for (int row = 0; top + row < static_cast<int>(end); ++row) {
+    const int index = top + row;
+    this->DrawTextAt(fonts, locale, 2, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, this->unknown_0134, this->unknown_00E4[index], 0, 0);
+    this->PlaceNaviLinks(index);
+    this->PlaceItemTags(index);
+  }
+}
 
 // OFFSET: 0x0088FDC0
+// FUNCTION: fn_11395
+void UITreeView::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->parent) {
+    this->parent->Invalidate();
+  }
+
+  this->HideNodes(this->root->children);
+  this->itemCount = 0;
+  this->LayoutNodes(this->root->children, 0, 0);
+  this->Slot53();
+}
