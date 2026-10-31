@@ -10,6 +10,7 @@
 #include "Contents/World/World.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "File/File.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/TextEncoding.h"
@@ -25,6 +26,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <mbstring.h>
 #include <list>
 #include <string>
 #include <vector>
@@ -1917,4 +1919,70 @@ int CSession::CountItems17F0() const {
 // FUNCTION: fn_23518
 void CSession::InvalidateWindowFrames() {
   reinterpret_cast<WindowOrdering&>(g_windowMgr).InvalidateFrames(g_windowMgr.unknown_04FC);
+}
+
+// OFFSET: 0x00DE9430
+// FUNCTION: fn_23501
+void CSession::LoadMiniPartyInfo() {
+  CFile file;
+  if (!file.Open("savedata\\MiniPartyInfo.lua", 0, false, false)) {
+    return;
+  }
+
+  const int size = file.GetSize();
+  char* data = new char[size + 1];
+  file.Read(data, size);
+  data[size] = '\0';
+  file.Close();
+
+  int state = 1;
+  char name[24] = {0};
+  char token[24];
+  SessionRecord0734 record;
+  for (int i = 0; i < size; ++i) {
+    record.unknown_0000 = 1;
+    switch (data[i]) {
+    case ',': {
+      if (_mbsstr(reinterpret_cast<const unsigned char*>(name),
+            reinterpret_cast<const unsigned char*>(g_session.DecodePlayerName())) != nullptr) {
+        if (state == 2) {
+          ++i;
+          record.id = std::atoi(&data[i]);
+          state = 3;
+        } else if (state == 3) {
+          ++i;
+          record.unknown_0008 = std::atoi(&data[i]);
+          state = 1;
+        }
+      }
+      break;
+    }
+    case '{': {
+      ++i;
+      std::memset(name, 0, sizeof(name));
+      std::memset(token, 0, sizeof(token));
+      int position = 0;
+      while (data[i] != ',') {
+        token[position] += data[i];
+        ++position;
+        ++i;
+      }
+      strcpy_s(name, sizeof(name), token);
+      if (state == 1) {
+        ++i;
+        record.unknown_0000 = std::atoi(&data[i]);
+        state = 2;
+      }
+      break;
+    }
+    case '}':
+      this->unknown_0734.push_back(record);
+      break;
+    case '\n':
+    case '\r':
+      break;
+    }
+  }
+
+  std::free(data);
 }
