@@ -46,6 +46,7 @@ public:
   virtual void Slot53();
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void OnButtonClick();
+  void OnClose();
   void OnPrepareItem(ProbabilityTable::CUIItem* item, const ProbabilityTable::CItemData& data);
   void Search();
   void SetItem(int itemId);

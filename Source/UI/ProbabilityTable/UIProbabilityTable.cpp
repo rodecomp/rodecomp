@@ -440,6 +440,12 @@ CUIProbabilityTable::CUIProbabilityTable()
 void CUIProbabilityTable::OnButtonClick() {
 }
 
+// OFFSET: 0x00A4E010
+// FUNCTION: fn_45473
+void CUIProbabilityTable::OnClose() {
+  g_windowMgr.CloseWindow(0x271C);
+}
+
 // OFFSET: 0x00A4DCA0
 // FUNCTION: fn_16196
 void CUIProbabilityTable::Search() {
