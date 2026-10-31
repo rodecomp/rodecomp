@@ -4,6 +4,7 @@
 #include "Contents/Jobs/JobId.h"
 #include "Contents/MessageTable.h"
 #include "File/File.h"
+#include "Network/Connection/Connection.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/TextureNames.h"
@@ -13,7 +14,6 @@
 #include "UI/Window/WindowPolicy.h"
 #include <cstring>
 #include <mbstring.h>
-#include <string>
 
 // OFFSET: 0x00829B50
 // FUNCTION: fn_10341
@@ -1224,3 +1224,81 @@ void UIMyStyleWnd::SaveLikeList() {
     fclose(fp);
   }
 }
+
+// OFFSET: 0x008261E0
+// FUNCTION: fn_10322
+void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int& itemId, bool enabled, const int& row) {
+  if (!this->unknown_00A1) {
+    return;
+  }
+
+  CBitmapRes* bitmap = nullptr;
+  int id = itemId;
+  if (zeny != 0) {
+    char path[128];
+    memset(path, 0, sizeof(path));
+    if (type == 4 || type == 5 || type == 6) {
+      if (type == 4) {
+        id = this->m_display->unknown_00BC;
+      } else if (type == 5) {
+        id = this->m_display->unknown_00C0;
+      } else {
+        id = this->m_display->unknown_00C4;
+      }
+
+      char number[32] = {};
+      std::sprintf(number, "%d", id);
+      ItemDescriptions descriptions{g_itemDescriptions};
+      descriptions.IconPath(path, number, 1);
+    } else {
+      strcpy_s(path, sizeof(path), "유저인터페이스\\styleshop\\icon_zeny.bmp");
+    }
+
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+  } else if (id != 0) {
+    if (type == 4) {
+      id = this->m_display->unknown_00BC;
+    } else if (type == 5) {
+      id = this->m_display->unknown_00C0;
+    } else if (type == 6) {
+      id = this->m_display->unknown_00C4;
+    }
+
+    char path[128];
+    memset(path, 0, sizeof(path));
+    char number[32] = {};
+    std::sprintf(number, "%d", id);
+    ItemDescriptions descriptions{g_itemDescriptions};
+    descriptions.IconPath(path, number, 1);
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+  }
+
+  if (!enabled) {
+    this->DrawAuxiliary(1, this->unknown_00C0, this->geometry.height / 8 * row + this->unknown_00C4, bitmap ? &bitmap->image : nullptr, true, false);
+    return;
+  }
+
+  if (bitmap) {
+    this->DrawBitmap(this->unknown_00C0, this->geometry.height / 8 * row + this->unknown_00C4, &bitmap->image, false);
+  }
+}
+
+#pragma pack(push, 1)
+struct StyleChangeHeader {
+  /* 0000 */ unsigned short packetType;
+  /* 0002 */ unsigned short packetLength;
+  /* 0004 */ unsigned short count;
+};
+
+struct StyleChangeItem {
+  /* 0000 */ int kind;
+  /* 0004 */ int value;
+};
+
+struct StyleChangePacket {
+  /* 0000 */ StyleChangeHeader header;
+  /* 0006 */ unsigned char items[2042];
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00824EE0
