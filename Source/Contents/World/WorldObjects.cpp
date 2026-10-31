@@ -29,9 +29,21 @@
 #include "Contents/Movies/BinkMovies.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/Actors/Pc.h"
+#include "ActorPickNode.h"
+#include "Client/Input/Mouse.h"
+#include "Client/Replay.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/GuildMgr.h"
+#include "Contents/Jobs/JobInheritance.h"
+#include "Contents/MessageTable.h"
+#include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/WhisperBlockMgr.h"
+#include "File/ShortcutFilename.h"
 
 #include <atomic>
+#include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <new>
 #include <string>
 #include <vector>
@@ -40,6 +52,10 @@
 HANDLE hObject;
 // GLOBAL: gl_24757
 std::vector<DeferredWorldModel> g_deferredWorldModels;
+// GLOBAL: gl_25238
+int g_guildCanInvite;
+// GLOBAL: gl_25239
+int g_guildIsMaster;
 
 // OFFSET: 0x00AC8220
 // FUNCTION: fn_17667
@@ -413,6 +429,245 @@ void CGameMode::SpawnMandraAttack(std::uint32_t aid, int target, char flag) {
     this->scene->objects.push_back(effect);
     effect->SendMsg(nullptr, 14, 0, aid, 0, reinterpret_cast<int>(&flag), reinterpret_cast<int>(&flag) >> 31, target, target >> 31, 0, 0, 0, 0, 0, 0);
   }
+}
+
+// OFFSET: 0x00CD8FE0
+// FUNCTION: fn_21307
+void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
+  if (g_replayAnimationScaling != 0 || g_mouse.buttons[0] == 2 || HIBYTE(GetAsyncKeyState(VK_SHIFT)) != 0) {
+    return;
+  }
+
+  const bool isAdmin = IsAdminAccount(g_session.m_aid);
+  if (pick == nullptr || handled != 0 || g_mouse.buttons[1] != 3 || g_windowMgr.window_0288 != nullptr) {
+    return;
+  }
+
+  UIWindow* menu;
+  char text[256];
+  const int job = pick->job;
+  CGameActor* actor = nullptr;
+  if ((job >= 45 && job < 1000) || reinterpret_cast<CGameActor*>(&g_session)->IsMonsterClass(job) || g_session.IsSkillIdInRange6001(job) ||
+      pick->kind == 4) {
+    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
+  }
+
+  if (actor != nullptr && g_session.IsHomunAid(actor->render.accountId)) {
+    if (g_windowMgr.unknown_0210 != nullptr) {
+      g_windowMgr.CloseWindow(0x12);
+    }
+    this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
+    menu = g_windowMgr.EnsureWindow(0x12);
+    this->unknown_02E0 = pick->accountId;
+
+    this->actorMenuIds.push_back(0x25);
+    sprintf(text, LookupMessage(0x458));
+    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    this->actorMenuIds.push_back(0x26);
+    sprintf(text, LookupMessage(0x459));
+    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    this->actorMenuIds.push_back(0x27);
+    sprintf(text, LookupMessage(0x45A));
+    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+  } else if (actor != nullptr && g_session.IsMercenaryAid(pick->accountId)) {
+    if (g_windowMgr.unknown_0210 != nullptr) {
+      g_windowMgr.CloseWindow(0x12);
+    }
+    this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
+    menu = g_windowMgr.EnsureWindow(0x12);
+    this->unknown_02E0 = pick->accountId;
+
+    this->actorMenuIds.push_back(0x28);
+    sprintf(text, LookupMessage(0x458));
+    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    this->actorMenuIds.push_back(0x29);
+    sprintf(text, LookupMessage(0x45A));
+    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+  } else if (actor != nullptr && pick->accountId == g_session.unknown_1010 && actor->unknown_0314 == 7) {
+    if (g_windowMgr.unknown_0210 != nullptr) {
+      g_windowMgr.CloseWindow(0x12);
+    }
+    this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
+    menu = g_windowMgr.EnsureWindow(0x12);
+    this->unknown_02E0 = pick->accountId;
+
+    this->actorMenuIds.push_back(0x21);
+    sprintf(text, LookupMessage(0x254));
+    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    this->actorMenuIds.push_back(0x1D);
+    sprintf(text, LookupMessage(0x250));
+    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    this->actorMenuIds.push_back(0x1E);
+    sprintf(text, LookupMessage(0x251));
+    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    this->actorMenuIds.push_back(0x20);
+    sprintf(text, LookupMessage(0x253));
+    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+    this->actorMenuIds.push_back(0x1F);
+    sprintf(text, LookupMessage(0x252));
+    menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
+  } else {
+    if (pick->accountId == g_session.m_aid) {
+      return;
+    }
+    if (!IsPlayerJob(pick->job) && !isAdmin) {
+      return;
+    }
+    if (g_session.IsAllyActor(pick->accountId, pick->job) == 1) {
+      return;
+    }
+    if (!this->nameCard.Contains(pick->accountId) && !isAdmin) {
+      return;
+    }
+    if (this->ActorName(pick->accountId).empty() && !isAdmin) {
+      return;
+    }
+    if (this->unknown_00E4 != g_mouse.x || this->unknown_00E8 != g_mouse.y || !IsPlayerJob(pick->job)) {
+      return;
+    }
+
+    CGameActor* target = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
+    if (target == nullptr) {
+      return;
+    }
+
+    if (target->unknown_03E0Low == 1) {
+      if (isAdmin != true) {
+        return;
+      }
+
+      if (g_windowMgr.unknown_0210 != nullptr) {
+        g_windowMgr.CloseWindow(0x12);
+      }
+      this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
+      menu = g_windowMgr.EnsureWindow(0x12);
+      this->unknown_02E0 = pick->accountId;
+
+      this->actorMenuIds.push_back(0x41);
+      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0xDA5)), 0, 0, 0);
+    } else {
+      std::string name;
+      if (target->unknown_02F8 == 1 && (this->scene->unknown_0048 == 1 || this->scene->unknown_004C == 1)) {
+        name = "??????";
+      } else {
+        name = this->ActorName(pick->accountId);
+      }
+
+      if (g_windowMgr.unknown_0210 != nullptr) {
+        g_windowMgr.CloseWindow(0x12);
+      }
+      this->actorMenuIds.erase(this->actorMenuIds.begin(), this->actorMenuIds.end());
+      menu = g_windowMgr.EnsureWindow(0x12);
+      this->unknown_02E0 = pick->accountId;
+
+      char line[128];
+      std::memset(line, 0, sizeof(line));
+      if (isAdmin) {
+        this->actorMenuIds.push_back(0x1C);
+        sprintf(line, LookupMessage(0x1CA), name.c_str());
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+      }
+
+      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      if (!StateFlag01(player->Slot13()) && !StateFlag02(player->Slot13())) {
+        this->actorMenuIds.push_back(0x2A);
+        sprintf(line, LookupMessage(0x550), name.c_str());
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+      }
+      if (!StateFlag01(player->Slot13()) && !StateFlag02(player->Slot13())) {
+        this->actorMenuIds.push_back(4);
+        sprintf(line, LookupMessage(0x187), name.c_str());
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+      }
+
+      const bool canInviteParty =
+        g_session.unknown_5464 != 0 && ClientMessenger{g_session.m_partyMembers, g_session.m_friends}.PartyByName(name.c_str()).valid == 0;
+      if (canInviteParty) {
+        this->actorMenuIds.push_back(5);
+        sprintf(line, LookupMessage(0x188), name.c_str());
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+      }
+
+      if (g_session.IsPartyRecommendTarget(pick->accountId) == true) {
+        this->actorMenuIds.push_back(0x24);
+        sprintf(line, LookupMessage(0x377), name.c_str());
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+      }
+
+      if (g_guildId != 0) {
+        CGameActor* member = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
+        const std::uint32_t guildId = member != nullptr ? member->Slot50() : 0;
+        if (g_guildCanInvite != 0 && guildId == 0) {
+          this->actorMenuIds.push_back(0x16);
+          sprintf(line, LookupMessage(0x17E), name.c_str());
+          menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+        }
+        if (g_guildIsMaster != 0 && guildId != g_guildId) {
+          menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
+          this->actorMenuIds.push_back(0x19);
+          menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x18F)), 0, 0, 0);
+          this->actorMenuIds.push_back(0x1A);
+          menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x193)), 0, 0, 0);
+        }
+      }
+
+      menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
+      this->actorMenuIds.push_back(0x14);
+      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x168)), 0, 0, 0);
+      if (!IsAdminAccount(pick->accountId) && !g_windowMgr.IsFriend(name.c_str()) && g_serviceMode != 3) {
+        this->actorMenuIds.push_back(10);
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x166)), 0, 0, 0);
+      }
+      this->actorMenuIds.push_back(0x3A);
+      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0xAF8)), 0, 0, 0);
+      menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
+
+      if (g_whisperBlockMgr->Contains(name)) {
+        this->actorMenuIds.push_back(0xD);
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0xEEB)), 0, 0, 0);
+      } else {
+        this->actorMenuIds.push_back(0xC);
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0xEEC)), 0, 0, 0);
+      }
+
+      if (IsAdminAccount(g_session.m_aid)) {
+        menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
+        this->actorMenuIds.push_back(0x2C);
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x636)), 0, 0, 0);
+        if (g_serviceMode != 3) {
+          this->actorMenuIds.push_back(0x17);
+          menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x185)), 0, 0, 0);
+          this->actorMenuIds.push_back(0x18);
+          menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0x186)), 0, 0, 0);
+          sprintf(line, LookupMessage(0x2C9), g_session.CountProhibitionLog(this->unknown_02E0));
+          this->actorMenuIds.push_back(0x23);
+          menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+        }
+        sprintf(line, "%s : %d (GID) : %s", g_session.m_serverName.c_str(), this->unknown_02E0, name.c_str());
+        this->actorMenuIds.push_back(0x22);
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
+      }
+
+      this->unknown_02EC = name;
+      menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
+      this->actorMenuIds.push_back(0x3F);
+      menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(LookupMessage(0xFE3)), 0xFF, 0, 0);
+      menu->SendMsg(nullptr, 0x48, 0, 0, 0, 0);
+
+      if (CPc* pc = dynamic_cast<CPc*>(static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId)))) {
+        const std::string code = std::string("[C-Code] : ") + ShortcutFilename(pc->Slot42());
+        this->actorMenuIds.push_back(0x39);
+        menu->SendMsg(nullptr, 0x1F, reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0, 0);
+      }
+
+      menu->SendMsg(nullptr, 0x1E, 0, 0, 0, 0);
+      menu->Move(g_mouse.x + 1, g_mouse.y + 1);
+      return;
+    }
+  }
+
+  menu->SendMsg(nullptr, 0x1E, 0, 0, 0, 0);
+  menu->Move(g_mouse.x + 1, g_mouse.y + 1);
 }
 
 // OFFSET: 0x00ACA540

@@ -49,6 +49,8 @@ public:
 
 extern CGuildMgr* g_guildMgr;
 extern std::uint32_t g_guildId;
+extern int g_guildCanInvite;
+extern int g_guildIsMaster;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CGuild) == 8);
