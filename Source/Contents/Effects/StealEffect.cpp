@@ -13,6 +13,11 @@
 #include <algorithm>
 #include <cstdlib>
 
+// OFFSET: 0x00B4CCA0
+// FUNCTION: fn_18967
+CSteal::~CSteal() {
+}
+
 // OFFSET: 0x00B4CDF0
 // FUNCTION: fn_18969
 void CSteal::SpawnParticles() {

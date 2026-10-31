@@ -11,6 +11,7 @@ class CSpriteParticle;
 
 class CSteal : public CEffect {
 public:
+  ~CSteal() override;
   void Slot01() override;
   void Slot03() override;
   void Slot04() override;
