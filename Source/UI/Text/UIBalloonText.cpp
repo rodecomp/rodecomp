@@ -10,7 +10,9 @@
 #include "UI/Text/UIBalloonText.h"
 #include "UI/Text/UINameBalloonText.h"
 
+#include <algorithm>
 #include <cstring>
+#include <string>
 
 // GLOBAL: gl_24926
 int g_nameBalloonFontHeight = 12;
@@ -267,4 +269,40 @@ void UINameBalloonText::Slot19() {
 void UIBalloonText::SetFontHeight(int height) {
   this->m_fontHeight = height;
   this->FitText();
+}
+
+// OFFSET: 0x008659A0
+// FUNCTION: fn_10934
+void UINameBalloonText::SetIcon(const char* name, unsigned char framed) {
+  this->iconName = "";
+  this->framed = framed;
+  std::string path = name;
+  if (path.empty() && !framed) {
+    return;
+  }
+
+  const std::size_t extension = path.find(".bmp");
+  if (extension != std::string::npos) {
+    path.replace(extension, path.size() - extension, ".gif");
+    if (!ResourceMgr::Instance().Exists(path)) {
+      path = name;
+    }
+  }
+
+  if (ResourceMgr::Instance().Exists(path)) {
+    this->iconName = path;
+    if (!framed) {
+      this->Resize(this->unknown_00B8 + 25, std::max(this->geometry.height, 24));
+      this->Invalidate();
+      return;
+    }
+  } else if (!framed) {
+    return;
+  }
+
+  if (framed == 1) {
+    this->Resize(this->unknown_00B8 + 29, std::max(this->geometry.height, 28));
+  }
+
+  this->Invalidate();
 }

@@ -10,6 +10,7 @@ public:
   ~UINameBalloonText() override;
   void Slot19() override;
   void Paint() override;
+  virtual void SetIcon(const char* name, unsigned char framed);
 
   /* 00A0 */ std::string iconName;
   /* 00B8 */ int unknown_00B8;
