@@ -4199,6 +4199,36 @@ void CDancingKnifeEffect::Slot03() {
 }
 
 // OFFSET: 0x0070E400
+// FUNCTION: fn_07173
+void CCurseOfCubeEffect::SpawnLoop() {
+  if (this->id == 0x901) {
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    if (bottom) {
+      bottom->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_bottom_loop.str");
+      bottom->m_loop = true;
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
+    }
+    CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    if (cube) {
+      cube->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_loop.str");
+      cube->m_loop = true;
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(cube));
+    }
+  } else if (this->id == 0x902) {
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    if (bottom) {
+      bottom->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_bottom_loop.str");
+      bottom->m_loop = true;
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
+    }
+    CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    if (cube) {
+      cube->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_loop.str");
+      cube->m_loop = true;
+      this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(cube));
+    }
+  }
+}
 
 // OFFSET: 0x0070E770
 // FUNCTION: fn_07174
