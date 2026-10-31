@@ -301,3 +301,56 @@ void UIItemTagOnMegaPhone::AddTagButton(UIWindow* button) {
     window->AddChild(button);
   }
 }
+
+// OFFSET: 0x00899BF0
+// FUNCTION: fn_11561
+int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
+  switch (message) {
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->topLine;
+    const int visible = this->geometry.height / this->lineHeight;
+    const int delta = message == 9 ? (1 - visible) : message == 10 ? (visible - 1) : static_cast<int>(argument1);
+    this->topLine = previous + delta;
+
+    if (this->topLine < 0) {
+      this->topLine = 0;
+    }
+
+    const int maximum = this->bottomMargin + static_cast<int>(this->lineLinks.size()) - visible;
+    if (static_cast<unsigned>(this->topLine) > static_cast<unsigned>(maximum)) {
+      this->topLine = maximum;
+    }
+
+    this->verticalBar->position = this->topLine;
+    this->verticalBar->Invalidate();
+    this->Invalidate();
+
+    if (this->transparent != 0 && this->parent) {
+      this->parent->Invalidate();
+    }
+
+    return this->topLine - previous;
+  }
+  case 18:
+  case 19:
+    if (this->verticalOverflow != 0) {
+      this->SendMsg(this->verticalBar, 7, message == 18 ? -1 : 1, 0, 0, 0);
+    }
+    return 0;
+  case 29: {
+    std::string text(reinterpret_cast<const char*>(argument1));
+    for (UIWindow* link : this->extraLinks) {
+      this->RemoveChild(link, 1);
+    }
+    this->extraLinks.clear();
+    this->lineLinks.clear();
+    this->SetText(text);
+    this->Invalidate();
+    return 0;
+  }
+  default:
+    return UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  }
+}
