@@ -46,3 +46,30 @@ void CMousePointer::SendMsg(CGameObject*, int message, int a, int b, int c, int 
     }
   }
 }
+
+// OFFSET: 0x00CA8630
+// FUNCTION: fn_20990
+CMousePointer::CMousePointer() {
+  this->m_remainingFrames = 0;
+  this->render.unknown_00A2 = 1;
+  this->render.visible = 0;
+  this->render.unknown_008C = timeGetTime();
+
+  if (this->render.sprite) {
+    this->render.sprite->Unlock();
+  }
+  this->render.sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load("cursors.spr"));
+  if (this->render.sprite) {
+    this->render.sprite->Lock();
+  }
+
+  if (this->render.action) {
+    this->render.action->Unlock();
+  }
+  this->render.action = static_cast<CActRes*>(ResourceMgr::Instance().Load("cursors.act"));
+  if (this->render.action) {
+    this->render.action->Lock();
+  }
+
+  this->SetAction(3, 2, 0);
+}

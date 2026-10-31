@@ -2,11 +2,14 @@
 #define RAGNAROK_SOURCE_CONTENTS_ACTORS_MOUSEPOINTER_H
 
 #include "Contents/Actors/RenderObject.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Sprites/SpriteResource.h"
 
 #include <cstddef>
 
 class CMousePointer : public CRenderObject {
 public:
+  CMousePointer();
   bool OnProcess() override;
   void SendMsg(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, int l, int m) override;
 
