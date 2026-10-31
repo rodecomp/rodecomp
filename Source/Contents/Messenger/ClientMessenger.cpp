@@ -4122,6 +4122,104 @@ int __stdcall sub_6AAED0(lua_State* state) {
   return 0;
 }
 
+// OFFSET: 0x006AAF90
+// FUNCTION: fn_06159
+int __stdcall sub_6AAF90(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubReceiveItem_Equip", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006AB050
+// FUNCTION: fn_06160
+int __stdcall sub_6AB050(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubReflectMagic", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006AB110
+// FUNCTION: fn_06161
+int __stdcall sub_6AB110(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubReflectTolerace", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006AB1D0
+// FUNCTION: fn_06162
+int __stdcall sub_6AB1D0(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 3;
+  int valuePosition = 2;
+  int indexPosition = 3;
+  int keyPosition = 1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubSFCTEquipAmount", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006AB290
+// FUNCTION: fn_06163
+int __stdcall sub_6AB290(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 3;
+  int valuePosition = 2;
+  int indexPosition = 3;
+  int keyPosition = 1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubSFCTEquipPermill", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006AB350
+// FUNCTION: fn_06164
+int __stdcall sub_6AB350(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 1;
+  int valuePosition = 1;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("SubSPconsumption", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
+// OFFSET: 0x006AB410
+// FUNCTION: fn_06165
+int __stdcall sub_6AB410(lua_State* state) {
+  if (g_equipmentPropertiesMgr == nullptr) {
+    g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+  }
+  int count = 3;
+  int valuePosition = 3;
+  int indexPosition = -1;
+  int keyPosition = -1;
+  g_equipmentPropertiesMgr->ApplyProperty("AddDamage_Size", state, count, valuePosition, indexPosition, keyPosition);
+  return 0;
+}
+
 // OFFSET: 0x006AB520
 // FUNCTION: fn_06168
 void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* name, lua_State* state, const int& count, const int& valuePosition,
