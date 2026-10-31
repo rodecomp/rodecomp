@@ -18,16 +18,17 @@ public:
   void Slot25(int x, int y) override;
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   void StartTimer(std::uint32_t value);
 
   /* 00F0 */ int unknown_00F0;
-  /* 00F4 */ unsigned char unknown_00F4[0x4];
+  /* 00F4 */ UIStaticText* unknown_00F4;
   /* 00F8 */ MerchantItemShopWndInfo* saved;
   /* 00FC */ int hovered;
-  /* 0100 */ unsigned char unknown_0100[0x4];
+  /* 0100 */ int unknown_0100;
   /* 0104 */ UIStaticText* notice;
-  /* 0108 */ unsigned char unknown_0108[0x4];
+  /* 0108 */ int unknown_0108;
   /* 010C */ int unknown_010C;
   /* 0110 */ std::uint32_t startTick;
   /* 0114 */ std::uint32_t duration;

@@ -17,6 +17,7 @@ public:
   void Slot28(int x, int y) override;
   void Slot32(int x, int y) override;
   void Slot15(int width, int height) override;
+  int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   /* 00F0 */ MerchantItemWndInfo* saved;
   /* 00F4 */ UIBitmapButton* closeButton;
