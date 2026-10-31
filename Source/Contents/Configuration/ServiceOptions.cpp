@@ -990,6 +990,21 @@ void RequestModeAction48() {
   }
 }
 
+// OFFSET: 0x006C5A10
+// FUNCTION: fn_06362
+void ApplyItemWndServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+  if (g_serviceOptions.Get(id) != value) {
+    g_serviceOptions.Set(id, value);
+    if (notify) {
+      NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
+    }
+  }
+
+  if (g_windowMgr.unknown_01D4) {
+    static_cast<UIItemWnd*>(g_windowMgr.unknown_01D4)->RefreshOptionBox();
+  }
+}
+
 // OFFSET: 0x006C5A60
 // FUNCTION: fn_45464
 void RequestModeAction61() {
