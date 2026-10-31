@@ -373,6 +373,45 @@ private:
 }
 
 // OFFSET: 0x00A69790
+// FUNCTION: fn_16664
+void SelectPackageItemBox::CUIItemInfo::Slot15(int width, int height) {
+  this->image = new CUIStaticImage(*this->m_context);
+  this->image->SetSize(200, 34);
+  this->image->Move(0, 0);
+  const std::uint8_t imageSource[] = {0xC9, 0x88, 0xEF, 0x41, 0x7D, 0x93, 0xB8, 0x14, 0xCF, 0xC3, 0xEF, 0x77, 0x00, 0xE7, 0x21,
+                                      0xAA, 0x6C, 0x4B, 0x4A, 0xD8, 0xC9, 0x2D, 0x1C, 0xBA, 0x62, 0x46, 0x48, 0xDE, 0xE1, 0x34,
+                                      0x09, 0xBC, 0x64, 0x78, 0x43, 0xD2, 0xCE, 0x29, 0x53, 0xBB, 0x64, 0x57, 0x2F};
+  // GLOBAL: gl_25124
+  thread_local EncryptedName<sizeof(imageSource), 0xD97D5DBDBB2F2709ULL> imageName(imageSource);
+  std::string background(imageName.Text());
+  this->image->SetImage(background);
+  this->AddChild(this->image);
+
+  this->gameItem = new CUIGameItem(*this->m_context);
+  this->gameItem->SetMode(0);
+  this->gameItem->SetScale(100);
+  this->gameItem->Move(6, 5);
+  this->gameItem->unknown_0084 = 1;
+  this->gameItem->unknown_0085 = 1;
+  this->AddChild(this->gameItem);
+
+  this->nameText = new CUIStaticText(*this->m_context);
+  this->nameText->SetSize(148, 24);
+  this->nameText->Move(45, 5);
+  this->nameText->SetText("", 0);
+  this->nameText->SetFitText(1);
+  this->nameText->SetAlign(0, 6);
+  const std::uint8_t nameFontSource[] = {0x38, 0x66, 0xB3, 0xB8, 0xE8, 0x67};
+  // GLOBAL: gl_25125
+  thread_local EncryptedName<sizeof(nameFontSource), 0xED796785D1DF137FULL> nameFont(nameFontSource);
+  this->nameText->SetFont(std::string(nameFont.Text()));
+  this->nameText->SetFontHeight(12);
+  this->nameText->SetBold(0);
+  this->nameText->SetColor(0);
+  this->nameText->SetShadow(1, 0xE7E7E7);
+  this->nameText->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->nameText);
+}
 
 // OFFSET: 0x00A6CDE0
 // FUNCTION: fn_16665

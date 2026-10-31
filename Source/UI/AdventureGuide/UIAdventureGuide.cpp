@@ -575,6 +575,65 @@ private:
 namespace AdventureGuide {
 
 // OFFSET: 0x009C5400
+// FUNCTION: fn_14000
+void CUICharacterInfo::Slot15(int width, int height) {
+  this->jobIcon = new CUIStaticImage(*this->m_context);
+  this->jobIcon->SetSize(25, 25);
+  this->jobIcon->Move(10, 8);
+  this->jobIcon->SetImage(std::string());
+  this->AddChild(this->jobIcon);
+
+  this->level = new CUIStaticText(*this->m_context);
+  this->level->SetSize(50, 12);
+  this->level->Move(46, 6);
+  this->level->SetText("", 0);
+  this->level->SetFitText(0);
+  this->level->SetAlign(0, 0);
+  const std::uint8_t levelFontSource[] = {0xFE, 0x70, 0x1B, 0x26, 0x66, 0x1D};
+  // GLOBAL: gl_25126
+  thread_local EncryptedName<sizeof(levelFontSource), 0x758F1D0B4F7705B9ULL> levelFont(levelFontSource);
+  this->level->SetFont(std::string(levelFont.Text()));
+  this->level->SetFontHeight(12);
+  this->level->SetBold(0);
+  this->level->SetColor(0);
+  this->level->SetShadow(1, 0xFFFFFF);
+  this->level->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->level);
+
+  this->jobLevel = new CUIStaticText(*this->m_context);
+  this->jobLevel->SetSize(50, 12);
+  this->jobLevel->Move(97, 6);
+  this->jobLevel->SetText("", 0);
+  this->jobLevel->SetFitText(0);
+  this->jobLevel->SetAlign(0, 0);
+  const std::uint8_t jobLevelFontSource[] = {0x70, 0x32, 0xC1, 0x50, 0xD2, 0xE5};
+  // GLOBAL: gl_25127
+  thread_local EncryptedName<sizeof(jobLevelFontSource), 0x17A9E5BF39AD4737ULL> jobLevelFont(jobLevelFontSource);
+  this->jobLevel->SetFont(std::string(jobLevelFont.Text()));
+  this->jobLevel->SetFontHeight(12);
+  this->jobLevel->SetBold(0);
+  this->jobLevel->SetColor(0);
+  this->jobLevel->SetShadow(1, 0xFFFFFF);
+  this->jobLevel->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->jobLevel);
+
+  this->name = new CUIStaticText(*this->m_context);
+  this->name->SetSize(100, 12);
+  this->name->Move(45, 22);
+  this->name->SetText("", 0);
+  this->name->SetFitText(1);
+  this->name->SetAlign(0, 0);
+  const std::uint8_t nameFontSource[] = {0x20, 0xDE, 0xFD, 0xCC, 0xCC, 0x3F};
+  // GLOBAL: gl_25128
+  thread_local EncryptedName<sizeof(nameFontSource), 0x13E33FA1A591AB67ULL> nameFont(nameFontSource);
+  this->name->SetFont(std::string(nameFont.Text()));
+  this->name->SetFontHeight(12);
+  this->name->SetBold(0);
+  this->name->SetColor(0);
+  this->name->SetShadow(1, 0xFFFFFF);
+  this->name->SetOutline(0, 0xFFFFFF);
+  this->AddChild(this->name);
+}
 
 // OFFSET: 0x009DCE10
 // FUNCTION: fn_14330
