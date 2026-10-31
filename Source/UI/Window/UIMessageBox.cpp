@@ -2602,8 +2602,18 @@ UIReplayRECControlWnd::UIReplayRECControlWnd(UIWindowContext& windows, UIFrameCo
 // OFFSET: 0x008A45A0
 
 // OFFSET: 0x008A4640
+// FUNCTION: fn_11672
+UISelectServerWnd::UISelectServerWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls) {
+  this->m_serverList = nullptr;
+  this->m_okButton = nullptr;
+}
 
 // OFFSET: 0x008A46E0
+// FUNCTION: fn_11673
+UITalkboxTrapInputWnd::UITalkboxTrapInputWnd(UIWindowContext& windows, UIFrameContext& frames, UIButtonContext& controls, UIEditContext& editContext)
+    : UIFrameWnd(windows, frames, 0), m_controls(&controls), m_editContext(&editContext) {
+}
 
 // OFFSET: 0x008A4E00
 // FUNCTION: fn_11677
