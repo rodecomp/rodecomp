@@ -3,6 +3,17 @@
 
 #include <cmath>
 
+// OFFSET: 0x00AC6450
+// FUNCTION: fn_17650
+WorldRayQuery::WorldRayQuery() {
+  this->origin[0] = 0.0f;
+  this->origin[1] = 0.0f;
+  this->origin[2] = 0.0f;
+  this->direction[0] = 0.0f;
+  this->direction[1] = 0.0f;
+  this->direction[2] = 0.0f;
+}
+
 // OFFSET: 0x00AC7C50
 // FUNCTION: fn_17661
 bool WorldRayQuery::Intersects(const float* bounds) const {

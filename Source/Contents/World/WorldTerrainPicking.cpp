@@ -4,11 +4,17 @@
 #include "Render/Projection/RenderProjection.h"
 #include "Resource/World/TerrainResource.h"
 
-// INLINED
-bool PickTerrainRay(const float* ray, WorldSpatialTree& root, int& column, int& row) {
+// OFFSET: 0x00CD4060
+// FUNCTION: fn_21274
+bool PickScreenTerrain(
+  const RenderProjection& projection, int x, int y, const float* origin, const float* cameraMatrix, WorldSpatialTree& root, int& column, int& row
+) {
   WorldRayQuery query;
+  float ray[6]{};
+  projection.Ray(x, y, origin, cameraMatrix, ray);
   query.Collect(ray, &root);
   float nearest = 999999.0f;
+  float result = nearest;
 
   for (WorldSpatialTree* node : query.nodes) {
     C3dAttr* terrain = node->terrain;
@@ -26,6 +32,7 @@ bool PickTerrainRay(const float* ray, WorldSpatialTree& root, int& column, int& 
           row = candidateRow;
         }
 
+        result = nearest;
         candidateColumn = candidateColumn + 1;
       }
 
@@ -33,15 +40,5 @@ bool PickTerrainRay(const float* ray, WorldSpatialTree& root, int& column, int& 
     }
   }
 
-  return 999999.0f > nearest;
-}
-
-// OFFSET: 0x00CD4060
-// FUNCTION: fn_21274
-bool PickScreenTerrain(
-  const RenderProjection& projection, int x, int y, const float* origin, const float* cameraMatrix, WorldSpatialTree& root, int& column, int& row
-) {
-  float ray[6]{};
-  projection.Ray(x, y, origin, cameraMatrix, ray);
-  return PickTerrainRay(ray, root, column, row);
+  return result < 999999.0f;
 }

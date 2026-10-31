@@ -12,6 +12,7 @@ struct WorldRayQuery {
   /* 0014 */ float direction[3];
   /* 0020 */ float limit;
 
+  WorldRayQuery();
   bool Intersects(const float* bounds) const;
   void Collect(const float* ray, WorldSpatialTree* root);
   void CollectNode(WorldSpatialTree* node, int depth);
