@@ -9947,6 +9947,171 @@ void CRagEffect::StoneCurseRing() {
 }
 
 // OFFSET: 0x00C49300
+// FUNCTION: fn_20166
+void CRagEffect::SkyCloud(char kind) {
+  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  this->render.position.x = player->render.position.x;
+  this->render.position.y = player->render.position.y;
+  this->render.position.z = player->render.position.z;
+
+  if (this->state.stateCnt == 99999998) {
+    this->state.stateCnt = 0;
+    this->state.duration = 99999999;
+  } else if (this->state.stateCnt != 0) {
+    return;
+  }
+
+  this->state.unknown_11C84 = &CreateEffectParticle(*this, this->render, 33, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+  this->state.unknown_11C84->renderFlag = 0;
+  this->state.unknown_11C84->renderFlag |= 1u;
+  this->state.unknown_11C84->renderFlag |= 5u;
+  this->state.unknown_11C84->duration = this->state.duration;
+
+  if (kind == 3) {
+    this->state.unknown_11C84->totalTexture = 3;
+    AllocateTextures(*this->state.unknown_11C84);
+    const char pick = static_cast<char>(std::max(rand() % 3, 0));
+
+    if (pick == 0) {
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\fog1.tga", 0, false, true, false);
+    } else if (pick == 1) {
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\fog2.tga", 0, false, true, false);
+    } else {
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\fog3.tga", 0, false, true, false);
+    }
+  } else if (kind == 9 || kind == 15) {
+    this->state.unknown_11C84->totalTexture = 6;
+    AllocateTextures(*this->state.unknown_11C84);
+    this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\star01.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[1] = g_texMgr.Load("effect\\star02.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[2] = g_texMgr.Load("effect\\star03.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[3] = g_texMgr.Load("effect\\star04.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[4] = g_texMgr.Load("effect\\star05.bmp", 0, false, true, false);
+    this->state.unknown_11C84->textures[5] = g_texMgr.Load("effect\\star06.bmp", 0, false, true, false);
+  } else {
+    this->state.unknown_11C84->totalTexture = 3;
+    AllocateTextures(*this->state.unknown_11C84);
+    const char pick = static_cast<char>(std::max(rand() % 3, 0));
+
+    if (pick == 0) {
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\cloud4.tga", 0, false, true, false);
+    } else if (pick == 1) {
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\cloud1.tga", 0, false, true, false);
+    } else {
+      this->state.unknown_11C84->textures[0] = g_texMgr.Load("effect\\cloud2.tga", 0, false, true, false);
+    }
+  }
+
+  const float layer = static_cast<float>(kind);
+
+  for (int index = 0; index < 4; ++index) {
+    this->state.unknown_11C84->slots[index].life = 1;
+    this->state.unknown_11C84->slots[index].process = 0;
+    this->state.unknown_11C84->slots[index].height[7] = layer;
+    this->state.unknown_11C84->slots[index].fullDisplayAngle = 45;
+
+    if (kind == 0) {
+      this->state.unknown_11C84->slots[index].height[6] = -152.0f;
+
+      if (this->render.position.y > this->state.unknown_11C84->slots[index].height[6]) {
+        this->state.unknown_11C84->slots[index].process = 300;
+      }
+    }
+
+    this->state.unknown_11C84->slots[index].alphaB = 0;
+    this->state.unknown_11C84->slots[index].flag1[0] = 0;
+    this->state.unknown_11C84->slots[index].rotStart = static_cast<std::int16_t>(std::max(rand() % 200, 0) + 300);
+
+    if (kind == 0) {
+      this->state.unknown_11C84->slots[index].vecBNow.y = static_cast<float>(std::max(rand() % 10, 0)) - 125.0f;
+      this->state.unknown_11C84->slots[index].vecBNow.x = static_cast<float>(std::max(rand() % 300, 0) - 150);
+      this->state.unknown_11C84->slots[index].vecBNow.z = static_cast<float>(std::max(rand() % 300, 0) - 150);
+    } else if (kind == 2) {
+      this->state.unknown_11C84->slots[index].vecBNow.y = static_cast<float>(std::max(rand() % 10, 0)) + 0.0f;
+      this->state.unknown_11C84->slots[index].vecBNow.x = static_cast<float>(std::max(rand() % 300, 0) - 150);
+      this->state.unknown_11C84->slots[index].vecBNow.z = static_cast<float>(std::max(rand() % 300, 0) - 150);
+    } else if (kind == 3) {
+      this->state.unknown_11C84->slots[index].vecBNow.x = static_cast<float>(std::max(rand() % 300, 0) - 150);
+      this->state.unknown_11C84->slots[index].vecBNow.z = static_cast<float>(std::max(rand() % 300, 0) - 150);
+      const CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      const EffectPrimitiveSlot& slot = this->state.unknown_11C84->slots[index];
+      this->state.unknown_11C84->slots[index].vecBNow.y =
+        mode->scene->terrain->Grid().Height(slot.vecBNow.x + this->render.position.x, this->render.position.z + slot.vecBNow.z) - 20.0f -
+        static_cast<float>(std::max(rand() % 5, 0));
+    } else if (kind == 5) {
+      this->state.unknown_11C84->slots[index].vecBNow.y = static_cast<float>(std::max(rand() % 10, 0)) + 20.0f;
+      this->state.unknown_11C84->slots[index].vecBNow.x = static_cast<float>(std::max(rand() % 300, 0) - 150);
+      this->state.unknown_11C84->slots[index].vecBNow.z = static_cast<float>(std::max(rand() % 300, 0) - 150);
+    } else if (kind == 9 || kind == 15) {
+      this->state.unknown_11C84->slots[index].vecBNow.y = static_cast<float>(std::max(rand() % 10, 0)) + 80.0f;
+      this->state.unknown_11C84->slots[index].vecBNow.x = static_cast<float>(std::max(rand() % 200, 0) + 25);
+      this->state.unknown_11C84->slots[index].vecBNow.z = static_cast<float>(std::max(rand() % 200, 0) + 25);
+
+      if (std::string(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName) == "ecl_fild01.rsw") {
+        this->state.unknown_11C84->slots[index].vecBNow.x = static_cast<float>(std::max(rand() % 400, 0) + 25);
+        this->state.unknown_11C84->slots[index].vecBNow.z = static_cast<float>(std::max(rand() % 400, 0) + 25);
+      }
+
+      if (std::max(rand() % 2, 0) == 0) {
+        this->state.unknown_11C84->slots[index].vecBNow.x = this->state.unknown_11C84->slots[index].vecBNow.x * -1.0f;
+      }
+
+      if (std::max(rand() % 2, 0) == 0) {
+        this->state.unknown_11C84->slots[index].vecBNow.z = this->state.unknown_11C84->slots[index].vecBNow.z * -1.0f;
+      }
+    } else {
+      this->state.unknown_11C84->slots[index].vecBNow.y = static_cast<float>(std::max(rand() % 10, 0)) + 40.0f;
+      this->state.unknown_11C84->slots[index].vecBNow.x = static_cast<float>(std::max(rand() % 200, 0) + 25);
+
+      if (std::max(rand() % 2, 0) == 0) {
+        this->state.unknown_11C84->slots[index].vecBNow.x = this->state.unknown_11C84->slots[index].vecBNow.x * -1.0f;
+      }
+
+      this->state.unknown_11C84->slots[index].vecBNow.z = static_cast<float>(std::max(rand() % 200, 0) + 25);
+
+      if (std::max(rand() % 2, 0) == 0) {
+        this->state.unknown_11C84->slots[index].vecBNow.z = this->state.unknown_11C84->slots[index].vecBNow.z * -1.0f;
+      }
+    }
+
+    this->state.unknown_11C84->slots[index].vecBNow.x = this->render.position.x + this->state.unknown_11C84->slots[index].vecBNow.x;
+    this->state.unknown_11C84->slots[index].vecBNow.z = this->render.position.z + this->state.unknown_11C84->slots[index].vecBNow.z;
+    this->state.unknown_11C84->slots[index].height[0] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[index].height[1] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[index].height[2] = static_cast<float>(std::max(rand() % 360, 0));
+    this->state.unknown_11C84->slots[index].height[3] = static_cast<float>(std::max(rand() % 360, 0));
+
+    if (kind == 3) {
+      this->state.unknown_11C84->slots[index].distance = static_cast<float>(std::max(rand() % 10, 0)) + 35.0f;
+    } else {
+      this->state.unknown_11C84->slots[index].distance = static_cast<float>(std::max(rand() % 20, 0)) + 30.0f;
+    }
+
+    this->state.unknown_11C84->slots[index].height[8] = static_cast<float>(std::max(rand() % 360, 0));
+
+    if (kind == 3) {
+      this->state.unknown_11C84->slots[index].flag1[2] = 12;
+    } else if (kind == 5) {
+      this->state.unknown_11C84->slots[index].flag1[2] = 14;
+    } else if (kind == 7) {
+      this->state.unknown_11C84->slots[index].flag1[2] = 16;
+    } else if (kind == 8) {
+      this->state.unknown_11C84->slots[index].flag1[2] = 17;
+    } else if (kind == 9) {
+      this->state.unknown_11C84->slots[index].flag1[2] = 23;
+    } else if (kind == 15) {
+      this->state.unknown_11C84->slots[index].flag1[2] = 25;
+    } else if (kind == 11) {
+      this->state.unknown_11C84->slots[index].flag1[2] = 14;
+    } else if (kind == 12) {
+      this->state.unknown_11C84->slots[index].flag1[2] = 16;
+    } else if (kind == 13) {
+      this->state.unknown_11C84->slots[index].flag1[2] = 17;
+    } else {
+      this->state.unknown_11C84->slots[index].flag1[2] = kind == 14 ? 24 : 0;
+    }
+  }
+}
 
 // OFFSET: 0x00C49E60
 // FUNCTION: fn_20167
