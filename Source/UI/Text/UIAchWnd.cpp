@@ -1215,6 +1215,42 @@ void UIAchSummaryWnd::Slot15(int, int) {
 }
 
 // OFFSET: 0x007B80A0
+// FUNCTION: fn_09244
+int UIAchListWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::intptr_t, std::intptr_t, std::intptr_t) {
+  switch (message) {
+  case 6:
+    if (g_session.sub_E06580(this->ids[this->unknown_008C + argument1])) {
+      UIWindow* window = g_windowMgr.EnsureWindow(271);
+      if (window) {
+        window->Invalidate();
+      }
+    }
+    break;
+  case 7:
+  case 9:
+  case 10: {
+    const int previous = this->unknown_008C;
+    if (message == 9) {
+      this->unknown_008C = previous - this->rowCount + 1;
+    } else {
+      if (message == 10) {
+        argument1 = this->rowCount - 1;
+      }
+      this->unknown_008C = previous + argument1;
+    }
+
+    if (previous != this->unknown_008C) {
+      this->UpdateScroll();
+      this->Invalidate();
+    }
+
+    return this->unknown_008C - previous;
+  }
+  }
+
+  this->Invalidate();
+  return 0;
+}
 
 // OFFSET: 0x007B8340
 // FUNCTION: fn_09249

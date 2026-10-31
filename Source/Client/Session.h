@@ -554,6 +554,7 @@ public:
   int GetMapProperty13() const;
   bool HasUnknown6178Records() const;
   bool HasUnknown6178Record(int id) const;
+  bool sub_E06580(int id);
   int IsBerserkActive() const;
   int IsTrickDeadActive() const;
   int HasActiveSkillEffect(int id) const;
