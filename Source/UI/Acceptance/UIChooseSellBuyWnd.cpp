@@ -13,6 +13,7 @@
 #include "Contents/MessageTable.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/TipBoxTitles.h"
+#include "Contents/SkinMgr.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeEvents.h"
@@ -1581,7 +1582,7 @@ void UIEquipWnd::Slot19() {
 // FUNCTION: fn_12296
 void UIItemCollectionWnd::Slot19() {
   if (this->m_previewTick != 0 && timeGetTime() > this->m_previewTick + 100) {
-    this->m_preview->Invalidate();
+    this->m_readButtons[1]->Invalidate();
     this->m_previewTick = timeGetTime();
   }
 }
@@ -2202,6 +2203,38 @@ void UIBookWnd::Slot15(int width, int height) {
     this->m_buttons[index]->SetTooltip(tooltips[index]);
     this->AddChild(this->m_buttons[index]);
   }
+}
+
+// OFFSET: 0x008E1890
+
+// OFFSET: 0x008DE360
+// FUNCTION: fn_12165
+void UICombinedCardItemCollectionWnd::Slot15(int width, int height) {
+  this->UIItemCollectionWnd::Slot15(width, height);
+  this->m_kind = 82;
+}
+
+// OFFSET: 0x008DE380
+// FUNCTION: fn_12166
+void UICombinedCardItemCollection_ComparisonWnd::Slot15(int width, int height) {
+  this->UIItemCollectionWnd::Slot15(width, height);
+  this->m_closeButton->Enable(0);
+  this->m_kind = 250;
+  const SkinPaletteCell cell = {7, 1};
+  this->m_viewer->backgroundColor = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected()) | 0xFF000000u;
+  this->m_viewer->Invalidate();
+}
+
+// OFFSET: 0x008E24C0
+// FUNCTION: fn_12176
+void UIItemCollection_ComparisonWnd::Slot15(int width, int height) {
+  this->UIItemCollectionWnd::Slot15(width, height);
+  this->m_closeButton->Enable(0);
+  this->m_kind = 234;
+  unsigned red, green, blue;
+  SkinPaletteChannels(ResourceMgr::Instance(), 30, 6, red, green, blue);
+  this->m_viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
+  this->m_viewer->Invalidate();
 }
 
 // OFFSET: 0x008DBD00
@@ -3790,7 +3823,7 @@ UINotifyItemObtainWnd::UINotifyItemObtainWnd(UIWindowContext& windows, UIFrameCo
 // OFFSET: 0x008C7CB0
 // FUNCTION: fn_11943
 UIItemCollectionWnd::UIItemCollectionWnd(UIWindowContext& windows, UIFrameContext& frames)
-    : UIFrameWnd(windows, frames, 0), unknown_0214(0) {
+    : UIFrameWnd(windows, frames, 0), m_helpButton(nullptr) {
   this->m_placement = nullptr;
   this->m_item.Reset();
   this->unknown_0238 = 0;
@@ -3799,7 +3832,7 @@ UIItemCollectionWnd::UIItemCollectionWnd(UIWindowContext& windows, UIFrameContex
   this->unknown_021C = -1;
   this->unknown_0236 = 0xFFFF;
   this->m_previewTick = 0;
-  this->unknown_0208 = 0;
+  this->m_closeButton = nullptr;
   this->m_compare = 0;
   this->unknown_01FC = 0;
   this->m_moveInfo = nullptr;
