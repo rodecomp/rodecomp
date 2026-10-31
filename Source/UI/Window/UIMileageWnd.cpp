@@ -4,7 +4,10 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
+#include "UI/Text/ColoredText.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstddef>
@@ -32,6 +35,31 @@ int g_mileageWndElapsed;
 
 // GLOBAL: gl_24861
 int g_mileageWndBonus;
+
+// OFFSET: 0x0094D4D0
+// FUNCTION: fn_12905
+void UIMileageWnd::Paint() {
+  this->ClearSurface(0xFF00FF);
+
+  std::string text;
+  const std::string background = FormatOwnedString("유저인터페이스\\basic_interface\\mileage_bg%d.bmp", this->m_bonus);
+  text = background;
+  this->DrawBitmap(0, 0, reinterpret_cast<const BitmapImage*>(ResourceMgr::Instance().Load(Resolve(text.c_str()))), true);
+
+  if (this->m_point >= 300) {
+    text = std::string("-- : --");
+  } else {
+    const std::string remaining = FormatOwnedString("%02d : %02d", this->m_remaining / 60, this->m_remaining % 60);
+    text = remaining;
+  }
+
+  int textWidth = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text.c_str(), 0, 0, 12, 0, 0);
+  DrawOutlinedText(*this, (this->geometry.width - textWidth) >> 1, 15, text.c_str(), 0, 0xFFFFFF, 0, 0, 12, 0, 0);
+
+  text = FormatOwnedString("%d", this->m_point).c_str();
+  textWidth = this->TextWidth(this->m_controls->fonts, this->m_controls->locale, text.c_str(), 0, 0, 12, 0, 0);
+  DrawOutlinedText(*this, this->geometry.width - textWidth - 9, this->geometry.height - 16, text.c_str(), 0, 0xFFFFFF, 0, 0, 12, 0, 0);
+}
 
 // OFFSET: 0x0094EE70
 // FUNCTION: fn_12918
