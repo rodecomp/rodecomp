@@ -18,11 +18,22 @@
 #include "Script/LuaScript.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Window/UIRegisterMgr.h"
+#include "Client/Input/InputCharset.h"
+#include "Render/Text/TextContext.h"
+#include "File/File.h"
+#include "UI/Window/UIRegisterMgr.h"
+#include "Utility/Text/Base64.h"
+#include "Utility/Threading/NSyncObject.h"
 
 #include <algorithm>
 #include <cmath>
 #include <new>
+#include <format>
 #include <windows.h>
+
+// GLOBAL: gl_25174
+const char* g_uiInfoTempPath = "savedata\\UIInfo.temp";
+
 // OFFSET: 0x009EF520
 // FUNCTION: fn_14635
 CBitmapRes* CUIControl::LoadBitmapResource(const std::string& name, bool resolveSkin) {
@@ -2687,3 +2698,56 @@ CUIRegisterMgr* Singleton<CUIRegisterMgr>::GetInstance() {
 
   return s_instance;
 }
+
+// OFFSET: 0x00A829D0
+// FUNCTION: fn_16994
+const char* UIWindow::ClipTextToWidth(const char* text, int maxWidth, int family, int height, unsigned char bold) {
+  if (!text) {
+    return nullptr;
+  }
+
+  const int width = this->TextWidth(this->m_context->fonts, this->m_context->locale, text, static_cast<unsigned>(std::strlen(text)), family, height, bold, 0);
+  int ellipsisWidth;
+  {
+    TextContext context(*this->geometry.surface);
+    context.SetFont(family, height, bold, 0);
+    ellipsisWidth = context.Measure("...", 3).cx;
+  }
+
+  if (width > maxWidth) {
+    using NextCharacter = const char* (__thiscall*)(InputCharset*, const char*, int);
+    const char* current = text;
+    const char* end = text + std::strlen(text);
+    if (current < end) {
+      maxWidth -= ellipsisWidth;
+      int bytes = 0;
+      int total = 0;
+      do {
+        const int previous = bytes;
+        const char* start = current;
+        current = (*reinterpret_cast<NextCharacter**>(g_serverLanguage))[5](g_serverLanguage, start, static_cast<int>(end - start));
+        const int step = static_cast<int>(current - start);
+        total += this->TextWidth(this->m_context->fonts, this->m_context->locale, start, step, family, height, bold, 0);
+        bytes += step;
+        if (total > maxWidth) {
+          bytes = previous;
+          break;
+        }
+      } while (current < end);
+
+      if (bytes > 0) {
+        char* buffer = static_cast<char*>(std::malloc(bytes + 1));
+        std::memcpy(buffer, text, bytes);
+        buffer[bytes] = '\0';
+        // GLOBAL: gl_24797
+        static std::string clipped;
+        clipped = buffer + std::string("...");
+        std::free(buffer);
+        return clipped.c_str();
+      }
+    }
+  }
+  return text;
+}
+
+// OFFSET: 0x009EBF40

@@ -12,6 +12,7 @@ class CUIRegisterMgr : public Singleton<CUIRegisterMgr> {
 public:
   __declspec(noinline) CUIRegisterMgr();
   bool sub_A970A0(int key);
+  bool SaveTemporary();
 
   /* 0004 */ std::map<int, int> entries;
   /* 000C */ std::map<int, std::pair<int, int>> unknown_000C;

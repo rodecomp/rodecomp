@@ -195,6 +195,7 @@ public:
   std::string FitVerticalDisplayText(int height, const char* text, int family, int fontHeight, unsigned char bold);
   std::list<int> WrapFormattedText(std::string text, std::list<std::string>* lines, int maxWidth, int family, int height, unsigned char bold);
   const char* TruncateText(const char* text, int maxBytes);
+  const char* ClipTextToWidth(const char* text, int maxWidth, int family, int height, unsigned char bold);
   int RecordEditTexts(WindowReplayRecorder& recorder);
   int RestoreEditTexts(const unsigned char* data);
   void DrawActionSprite(
