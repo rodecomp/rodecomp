@@ -708,6 +708,9 @@ public:
   void ReceiveTakeOffEquipItemResult(const unsigned char* packet);
   void ReceiveBuyingStoreSellResult(const unsigned char* packet);
   void ReceivePartyItemPickupNotice(const unsigned char* packet);
+  void ProcessUiMessage(unsigned char* message);
+  void ReceiveUiDragMessage(const unsigned char* message);
+  void PlayItemUseEffect(int itemId, std::uint32_t aid);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

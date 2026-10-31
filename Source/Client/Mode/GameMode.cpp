@@ -1864,6 +1864,165 @@ struct GameModeStoredItemEntry {
 static_assert(sizeof(ItemEntryPacket) == 0x13);
 static_assert(sizeof(GameModeStoredItemEntry) == 0x19);
 
+#include "Contents/Items/ItemNaming.h"
+#include "Contents/NavigationManager.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
+#include "UI/Window/UINavigationWnd.h"
+#include "Contents/Effects/EffectActor.h"
+
+#pragma pack(push, 1)
+struct GameModeUiMessage {
+  /* 0000 */ std::uint16_t unknown_0000;
+  /* 0002 */ std::uint16_t type;
+  /* 0004 */ std::uint16_t length;
+  /* 0006 */ int values[6];
+  /* 001E */ char text[1];
+};
+
+struct GameModeUiWhisperMessage {
+  /* 0000 */ std::uint16_t unknown_0000;
+  /* 0002 */ std::uint16_t type;
+  /* 0004 */ std::uint16_t length;
+  /* 0006 */ char target[0x19];
+  /* 001F */ char text[1];
+};
+
+struct GameModeUiKindTextMessage {
+  /* 0000 */ std::uint16_t unknown_0000;
+  /* 0002 */ std::uint16_t type;
+  /* 0004 */ std::uint16_t length;
+  /* 0006 */ int kind;
+  /* 000A */ int unknown_000A;
+  /* 000E */ char text[1];
+};
+
+struct GameModeUiNavigationMessage {
+  /* 0000 */ std::uint16_t unknown_0000;
+  /* 0002 */ std::uint16_t type;
+  /* 0004 */ std::uint16_t length;
+  /* 0006 */ char name[0x1E];
+  /* 0024 */ int kind;
+  /* 0028 */ unsigned char mode;
+  /* 0029 */ unsigned char flag;
+  /* 002A */ int x;
+  /* 002E */ int y;
+  /* 0032 */ int id;
+};
+
+struct GameModeUiDestinationMessage {
+  /* 0000 */ std::uint16_t unknown_0000;
+  /* 0002 */ std::uint16_t type;
+  /* 0004 */ std::uint16_t length;
+  /* 0006 */ char mapName[0x1E];
+  /* 0024 */ int x;
+  /* 0028 */ int y;
+};
+
+struct GameModeUiDragMessage {
+  /* 0000 */ std::uint16_t unknown_0000;
+  /* 0002 */ std::uint16_t type;
+  /* 0004 */ std::uint16_t length;
+  /* 0006 */ int windowId;
+  /* 000A */ int x;
+  /* 000E */ int y;
+  /* 0012 */ int source;
+  /* 0016 */ std::uint32_t id;
+  /* 001A */ std::uint32_t unknown_001A;
+  /* 001E */ std::uint32_t unknown_001E;
+  /* 0022 */ int quantity;
+  /* 0026 */ int slot;
+  /* 002A */ std::uint32_t itemType;
+  /* 002E */ std::uint32_t refine;
+  /* 0032 */ unsigned char identified;
+  /* 0033 */ char resource[100];
+  /* 0097 */ char name[100];
+  /* 00FB */ char skillName[100];
+  /* 015F */ int skillLevel;
+  /* 0163 */ unsigned char cards[16];
+  /* 0173 */ unsigned char skill;
+  /* 0174 */ int optionCount;
+  /* 0178 */ unsigned char options[25];
+};
+#pragma pack(pop)
+
+static_assert(offsetof(GameModeUiMessage, text) == 0x1E);
+static_assert(offsetof(GameModeUiWhisperMessage, text) == 0x1F);
+static_assert(offsetof(GameModeUiKindTextMessage, text) == 0x0E);
+static_assert(offsetof(GameModeUiNavigationMessage, id) == 0x32);
+static_assert(offsetof(GameModeUiDestinationMessage, y) == 0x28);
+static_assert(offsetof(GameModeUiDragMessage, options) == 0x178);
+
+// OFFSET: 0x00CCF680
+
+// OFFSET: 0x00CE8400
+// FUNCTION: fn_21341
+void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
+  const GameModeUiDragMessage* packet = reinterpret_cast<const GameModeUiDragMessage*>(message);
+
+  ModeDragState drag;
+  drag.source = packet->source;
+  drag.id = packet->id;
+  drag.unknown_0310 = packet->unknown_001A;
+  drag.unknown_0314 = packet->unknown_001E;
+  drag.quantity = packet->quantity;
+  drag.slot = packet->slot;
+  drag.type = packet->itemType;
+  drag.refine = packet->refine;
+  drag.identified = packet->identified;
+  drag.resource = packet->resource;
+  drag.name = packet->name;
+  drag.skillName = packet->skillName;
+  drag.skillLevel = packet->skillLevel;
+  std::memcpy(drag.cards, packet->cards, sizeof(drag.cards));
+  drag.skill = packet->skill;
+  drag.optionCount = packet->optionCount;
+  if (drag.optionCount > 5) {
+    drag.optionCount = 0;
+  }
+  for (int index = 0; index < drag.optionCount; ++index) {
+    std::memcpy(&drag.options[index * 5], &packet->options[index * 5], 5);
+  }
+
+  UIWindow* window = g_windowMgr.LookupWindow(packet->windowId);
+  this->drag = drag;
+
+  if (this->drag.quantity == 1) {
+    const int kind = packet->windowId;
+    if (kind == 0x17 || kind == 0x2C) {
+      if (packet->itemType <= 3 || packet->itemType == 7) {
+        this->unknown_05EC[0] = this->IsAllowedPair(kind, packet->source);
+      }
+    } else if (kind == 0x16) {
+      if (packet->itemType <= 3 || packet->itemType == 7) {
+        this->unknown_05EC[0] = this->IsAllowedPair(0x16, packet->source);
+      }
+    }
+  } else {
+    this->unknown_05EC[0] = this->IsAllowedPair(packet->windowId, packet->source);
+  }
+
+  if (window != nullptr) {
+    window->Slot10(packet->x, packet->y, reinterpret_cast<std::intptr_t>(&drag));
+  }
+
+  const int kind = packet->windowId;
+  if (kind == 0x24 || kind == 0x9F) {
+    this->unknown_05EC[0] = 0;
+  } else if (this->unknown_05EC[0] == 1 && g_windowMgr.window_01EC != nullptr) {
+    if (drag.type == 6) {
+      const ItemCardName card = FindItemCardName(std::atoi(drag.name.c_str()));
+      g_windowMgr.window_01EC->SendMsg(nullptr, 0x1D, 0, reinterpret_cast<std::intptr_t>(card.name), 0, 0);
+    } else {
+      const ITEM_DESC description = FindItemDescription(std::atoi(drag.name.c_str()));
+      g_windowMgr.window_01EC->SendMsg(nullptr, 0x1D, 0, reinterpret_cast<std::intptr_t>(description.identifiedName), 0, 0);
+    }
+  }
+
+  this->SendMsg(0x12, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x00CDBEB0
+
 // OFFSET: 0x00CEA0C0
 // FUNCTION: fn_21349
 std::vector<unsigned char> CGameMode::SaveGroundItems() {
