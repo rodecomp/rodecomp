@@ -1,5 +1,6 @@
 #include "Contents/ReputeMgr.h"
 #include "Contents/MessageTable.h"
+#include "Network/TextEncoding.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -139,4 +140,27 @@ void CReputeMgr::SetPointsReceived(bool received) {
       window->SendMsg(nullptr, 136, 0, 0, 0, 0);
     }
   }
+}
+
+// OFFSET: 0x0060D440
+// FUNCTION: fn_04287
+void CReputeMgr::InfoInserter::operator()(const std::pair<const int, ReputeInfoRecord>& entry) const {
+  ReputeInfo info{};
+  info.name = FromUtf8(entry.second.name, g_textCodePage);
+  info.unknown_0018 = entry.second.maxPointPositive;
+  info.unknown_0020 = entry.second.maxPointNegative;
+  const std::string& invisible = entry.second.invisible;
+  if (invisible.size() == 12 && invisible[0] == 'V' && invisible[1] == 'I' && invisible[2] == 'S' && invisible[3] == 'I' &&
+      invisible[4] == 'B' && invisible[5] == 'L' && invisible[6] == 'E' && invisible[7] == '_' && invisible[8] == 'T' &&
+      invisible[9] == 'R' && invisible[10] == 'U' && invisible[11] == 'E') {
+    info.visibility = REPUTE_VISIBLE;
+  } else if (invisible.size() == 13 && invisible[0] == 'V' && invisible[1] == 'I' && invisible[2] == 'S' && invisible[3] == 'I' &&
+             invisible[4] == 'B' && invisible[5] == 'L' && invisible[6] == 'E' && invisible[7] == '_' && invisible[8] == 'F' &&
+             invisible[9] == 'A' && invisible[10] == 'L' && invisible[11] == 'S' && invisible[12] == 'E') {
+    info.visibility = REPUTE_HIDDEN;
+  } else {
+    info.visibility = REPUTE_VISIBLE_WITH_POINT;
+  }
+
+  (*this->dest)[static_cast<std::uint64_t>(entry.first)] = std::move(info);
 }
