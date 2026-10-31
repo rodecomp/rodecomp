@@ -3,12 +3,14 @@
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/ReplayPacketRecorder.h"
+#include "Client/Replay.h"
 #include "Client/Session.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
 
 #include <cstdint>
 #include <cstring>
+#include <vector>
 
 struct ClientItemLists {
   bool AddItem1710(const ITEM_INFO& item, unsigned char refresh);
@@ -57,6 +59,25 @@ void UIMakeTargetProcessWnd::Slot10(int x, int y, std::intptr_t value) {
   }
 
   g_modeMgr.gameMode->SendMsg(18, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x009A0690
+// FUNCTION: fn_13601
+std::vector<unsigned char> UIMakeTargetProcessWnd::BuildReplayRecords() {
+  std::vector<unsigned char> records;
+  {
+    const auto record = BuildReplayTaggedRecord(22000, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(22002, &this->makeType, sizeof(this->makeType));
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  {
+    const auto record = BuildReplayTaggedRecord(22001, nullptr, 0);
+    records.insert(records.end(), record.begin(), record.end());
+  }
+  return records;
 }
 
 // OFFSET: 0x009A09E0
