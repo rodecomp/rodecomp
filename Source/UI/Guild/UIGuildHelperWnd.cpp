@@ -9,6 +9,7 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "UI/Text/UIStaticText.h"
 
 #include <mbstring.h>
 #include <string>
@@ -293,5 +294,15 @@ void UIGuildHelperWnd::Slot15(int width, int height) {
     this->m_button->SetId(ids[i]);
     this->AddChild(this->m_button);
     x += 62;
+  }
+}
+
+// OFFSET: 0x00958700
+// FUNCTION: fn_13056
+void UIGuildBanReasonDescWnd::Slot15(int width, int height) {
+  UIGuildLeaveReasonDescWnd::Slot15(width, height);
+
+  if (this->m_reasonText != nullptr) {
+    this->m_reasonText->SetText(LookupMessage(0x20C), 0);
   }
 }

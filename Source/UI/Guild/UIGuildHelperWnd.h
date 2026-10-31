@@ -8,6 +8,7 @@ struct UIEditContext;
 struct GuildHelperWndInfo;
 class UIBitmapButton;
 class UIEditCtrl;
+class UIStaticText;
 
 struct GuildBanTarget {
   /* 0000 */ int unknown_0000;
@@ -58,16 +59,18 @@ protected:
 
 class UIGuildLeaveReasonDescWnd : public UIFrameWnd {
 public:
+  void Slot15(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
   /* 00B4 */ UIEditCtrl* m_reasonEdit;
-  /* 00B8 */ unsigned char unknown_00B8[0x4];
+  /* 00B8 */ UIStaticText* m_reasonText;
 };
 
 class UIGuildBanReasonDescWnd : public UIGuildLeaveReasonDescWnd {
 public:
+  void Slot15(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
