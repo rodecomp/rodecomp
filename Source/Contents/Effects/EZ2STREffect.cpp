@@ -16,7 +16,11 @@
 #include "Render/ScreenRectangle.h"
 #include "Render/TextureQuad.h"
 #include "Script/LuaScript.h"
+#include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
+#include <bit>
+#include <cmath>
+#include <cstdlib>
 #include <string>
 
 // OFFSET: 0x00B51810
@@ -5578,3 +5582,1178 @@ void CEZ2STRScreenEffect::Slot01() {
 }
 
 // OFFSET: 0x00B531E0
+// FUNCTION: fn_19040
+void CEZ2STRScreenEffect::Slot12() {
+  switch (this->id) {
+  case 0xCC:
+  case 0xCD:
+  case 0xCE:
+  case 0xCF:
+  case 0xD2:
+    this->AddEvent(0, "_heal_effect.wav", 0, 0);
+    break;
+
+  case 0xD0:
+  case 0xD1:
+  case 0xD3:
+    this->AddEvent(0, "effect\\흡기.wav", 0, 0);
+    break;
+
+  case 0x426:
+    this->AddEvent(0, "effect\\RL_HAMMER_OF_GOD.wav", 0, 0);
+    break;
+
+  case 0x44E:
+    this->AddEvent(0, "effect\\su_tunabelly.wav", 0, 0);
+    break;
+
+  case 0x44D:
+    this->AddEvent(0, "effect\\su_stemspear.wav", 0, 0);
+    break;
+
+  case 0x44F:
+    this->AddEvent(0, "effect\\su_scratch.wav", 0, 0);
+    break;
+
+  case 0x453:
+    this->AddEvent(0, "effect\\su_scaroftarou.wav", 0, 0);
+    break;
+
+  case 0x455:
+    this->AddEvent(0, "effect\\su_pickypeck.wav", 0, 0);
+    break;
+
+  case 0x45C:
+    this->AddEvent(0, "effect\\su_brunchofshrimp.wav", 0, 0);
+    break;
+
+  case 0x463:
+    this->AddEvent(0, "effect\\su_grooming.wav", 0, 0);
+    break;
+
+  case 0x464:
+    this->AddEvent(0, "effect\\su_chattering.wav", 0, 0);
+    break;
+
+  case 0x466:
+    this->AddEvent(0, "effect\\su_hiss.wav", 0, 0);
+    break;
+
+  case 0x467:
+    this->AddEvent(0, "effect\\su_powerofflock.wav", 0, 0);
+    break;
+
+  case 0x469:
+    this->AddEvent(0, "effect\\su_svg_spirit.wav", 0, 0);
+    break;
+
+  case 0x489: {
+    int random = rand() % 12;
+    random = random < 0 ? 0 : random;
+    if (random == 0) {
+      this->AddEvent(0, "effect\\wizard_quagmire.wav", 0, std::bit_cast<int>(-100.0f));
+    }
+    break;
+  }
+
+  case 0x48A:
+    this->AddEvent(0, "effect\\wizard_meteo.wav", 0, 0);
+    this->AddEvent(0, "effect\\hunter_blastmine.wav", 0, 0);
+    this->AddEvent(0, "effect\\hunter_blastmine.wav", 0xa, 0);
+    this->AddEvent(0, "effect\\wizard_meteo.wav", 0x14, 0);
+    this->AddEvent(0, "effect\\wizard_meteo.wav", 0x32, 0);
+    this->AddEvent(0, "effect\\wizard_meteo.wav", 0x50, 0);
+    this->AddEvent(0, "effect\\wizard_meteo.wav", 0x64, 0);
+    this->AddEvent(0, "effect\\wizard_meteo.wav", 0x82, 0);
+    this->AddEvent(0, "effect\\wizard_meteo.wav", 0x8c, 0);
+    this->AddEvent(0, "effect\\wizard_meteo.wav", 0xb4, 0);
+    this->AddEvent(0, "effect\\wizard_meteo.wav", 0xc8, 0);
+    this->AddEvent(1, nullptr, 0x32, 0);
+    this->AddEvent(1, nullptr, 0x64, 0);
+    this->AddEvent(1, nullptr, 0x96, 0);
+    this->AddEvent(1, nullptr, 0xc8, 0);
+    this->AddEvent(1, nullptr, 0xfa, 0);
+    break;
+
+  case 0x48B:
+    this->AddEvent(0, "effect\\wizard_meteor.wav", 0, 0);
+    this->AddEvent(1, nullptr, 0x28, 0);
+    break;
+
+  case 0x58F:
+  case 0x592:
+  case 0x5DC:
+  case 0x610:
+  case 0x6C7:
+  case 0x6D4:
+  case 0x6E2:
+  case 0x6EE:
+  case 0x6F3:
+  case 0x705:
+  case 0x70A:
+  case 0x740:
+  case 0x763:
+  case 0x7E6:
+  case 0x7F1:
+  case 0x7FC:
+  case 0x85A:
+    this->AddEvent(0, "effect\\EF_BeginSpell.wav", 0, 0);
+    this->particle->flags = 13;
+    break;
+
+  case 0x554:
+  case 0x5D7:
+    this->particle->flags = 13;
+    this->AddEvent(0, "ice_titan_attack.wav", 5, 0);
+    break;
+
+  case 0x573:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\EF_Bash.wav", 0, 0);
+    this->AddEvent(0, "effect\\rog_intimidate.wav", 0x23, 0);
+    break;
+
+  case 0x580:
+  case 0x5EF:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\EF_hit2.wav", 0xa, 0);
+    this->AddEvent(0, "effect\\EF_hit4.wav", 0x14, 0);
+    break;
+
+  case 0x583:
+    this->AddEvent(0, "effect\\EF_hit2.wav", 0, 0);
+    break;
+
+  case 0x590:
+    this->AddEvent(0, "effect\\mon_맹룡과강.wav", 5, 0);
+    this->AddEvent(0, "effect\\mon_맹룡과강.wav", 5, 0);
+    this->AddEvent(0, "effect\\mon_맹룡과강.wav", 5, 0);
+    break;
+
+  case 0x585:
+  case 0x5FE:
+    this->AddEvent(0, "effect\\g크레이지위드.wav", 0, 0);
+    break;
+
+  case 0x60A:
+  case 0x60B:
+  case 0x64B:
+  case 0x64C:
+  case 0x64D:
+  case 0x64E:
+  case 0x64F:
+  case 0x650:
+    this->particle->flags = 5;
+    break;
+
+  case 0x60D:
+    this->AddEvent(0, "effect\\EF_Bash.wav", 0, 0);
+    break;
+
+  case 0x60E:
+    this->AddEvent(0, "hell_in.wav", 0, 0);
+    break;
+
+  case 0x615:
+    this->AddEvent(0, "effect\\샤프슈팅.wav", 0, 0);
+    this->AddEvent(0, "effect\\흡기.wav", 0, 0);
+    break;
+
+  case 0x619:
+    this->AddEvent(0, "effect\\프레셔.wav", 3, 0);
+    this->AddEvent(0, "effect\\S바레티르스피어.wav", 0x16, 0);
+    this->AddEvent(1, nullptr, 0x16, 0);
+    break;
+
+  case 0x61E:
+    this->AddEvent(0, "effect\\EF_StoneCurse.wav", 0, 0);
+    break;
+
+  case 0x638:
+    this->AddEvent(0, "effect\\매직 크래쉬.wav", 0, 0);
+    this->particle->flags = 13;
+    break;
+
+  case 0x647:
+  case 0x648:
+  case 0x907:
+  case 0x908:
+  case 0x90A:
+  case 0x90B:
+  case 0x90D:
+  case 0x90E:
+  case 0x95B:
+  case 0x95C:
+  case 0x95D:
+  case 0x95E:
+  case 0x95F:
+  case 0x975:
+  case 0x976:
+    this->particle->flags = 517;
+    break;
+
+  case 0x649:
+    this->particle->flags = 517;
+    this->AddEvent(1, nullptr, 0xb4, 0);
+    break;
+
+  case 0x666:
+    this->AddEvent(0, "chainlight.wav", 0, 0);
+    break;
+
+  case 0x66C:
+    this->AddEvent(0, "effect\\priest_lexaeterna.wav", 0, 0);
+    break;
+
+  case 0x671:
+  case 0x6CB:
+  case 0x6CF:
+  case 0x6DA:
+  case 0x6DE:
+  case 0x6EA:
+  case 0x6F7:
+  case 0x70E:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\EF_BeginSpell.wav", 0, 0);
+    break;
+
+  case 0x676:
+    this->AddEvent(0, "effect\\EF_GlassWall.wav", 0x1e, 0);
+    break;
+
+  case 0x67E:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\DK_HACKANDSLASHER.wav", 0, 0);
+    break;
+
+  case 0x69A:
+    this->AddEvent(0, "effect\\wl_siennaexecrate.wav", 0, 0);
+    break;
+
+  case 0x6A6:
+  case 0x75D:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\wizard_fire_pillar_b.wav", 0xf, 0);
+    this->AddEvent(1, nullptr, 0x14, 0);
+    break;
+
+  case 0x6AA:
+    this->AddEvent(0, "effect\\wizard_earthspike.wav", 0x14, 0);
+    this->AddEvent(1, nullptr, 0x14, 0);
+    break;
+
+  case 0x6B0:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\DK_SERVANT_W_SIGN.wav", 0x28, 0);
+    break;
+
+  case 0x6B2:
+    this->AddEvent(0, "effect\\DK_SERVANT_W_PHANTOM.wav", 0, 0);
+    break;
+
+  case 0x6BA:
+    this->AddEvent(0, "effect\\DK_DRAGONIC_AURA1.wav", 0, 0);
+    break;
+
+  case 0x6BC:
+    this->AddEvent(0, "effect\\DK_DRAGONIC_AURA2.wav", 1, 0);
+    break;
+
+  case 0x6C0:
+    this->AddEvent(0, "effect\\DK_MADNESS_CRUSHER.wav", 1, 0);
+    break;
+
+  case 0x6C4:
+    this->AddEvent(0, "effect\\AG_DESTRUCTIVE_HURRICANE.wav", 0, 0);
+    break;
+
+  case 0x6CC: {
+    CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
+    if (actor && actor->bodyState == 0 && actor->unknown_02C4 == 0) {
+      this->AddEvent(0, "effect\\AG_DEADLY_PROJECTION.wav", 0, 0);
+    }
+    break;
+  }
+
+  case 0x6D1:
+    this->AddEvent(0, "effect\\AG_ROCK_DOWN.wav", 0, 0);
+    break;
+
+  case 0x6E7:
+    this->AddEvent(0, "effect\\DK_CHARGINGPIERCE1.wav", 0, 0);
+    break;
+
+  case 0x6F5:
+    this->AddEvent(0, "effect\\AG_FROZEN_SLASH.wav", 0, 0);
+    break;
+
+  case 0x6D6:
+    this->AddEvent(0, "effect\\DK_VIGOR.wav", 0, 0);
+    break;
+
+  case 0x6B7:
+    this->AddEvent(0, "effect\\DK_SERVANT_W_DEMOL.wav", 0, 0);
+    break;
+
+  case 0x686:
+  case 0x687:
+  case 0x688:
+  case 0x689:
+  case 0x68A:
+    for (int i = 0; i <= this->id - 0x686; ++i) {
+      this->AddEvent(0, FormatOwnedString("effect\\DK_STORMSLASH%d.wav", rand() % 4 + 1).c_str(), i * 15, 0);
+    }
+    break;
+
+  case 0x76F:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\MT_ABR_NET_REPAIR.wav", 0, 0);
+    break;
+
+  case 0x770:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\MT_ABR_NET_SUPPORT.wav", 0, 0);
+    break;
+
+  case 0x71C:
+    this->AddEvent(0, "effect\\MT_D_MACHINE.wav", 0, 0);
+    this->particle->flags = 13;
+    break;
+
+  case 0x794:
+    this->particle->flags = 13;
+    this->AddEvent(1, nullptr, 0x14, 0);
+    break;
+
+  case 0x824:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\wizard_fire_pillar_b.wav", 0xf, 0);
+    this->AddEvent(1, nullptr, 0x28, 0);
+    break;
+
+  case 0x721:
+    this->AddEvent(0, "effect\\CD_ARBITRIUM.wav", 0, 0);
+    this->particle->flags = 13;
+    break;
+
+  case 0x788:
+    this->AddEvent(0, "effect\\CD_DILECTIO_HEAL.wav", 0, 0);
+    this->particle->flags = 13;
+    break;
+
+  case 0x73A:
+    this->AddEvent(0, "effect\\CD_COMPETENTIA.wav", 0, 0);
+    this->particle->flags = 13;
+    break;
+
+  case 0x73E:
+    this->AddEvent(0, "effect\\AG_CRYSTAL_IMPACT.wav", 0, 0);
+    break;
+
+  case 0x7A9:
+  case 0x7CA:
+  case 0x7D5:
+  case 0x7DB:
+  case 0x7F6:
+  case 0x835:
+  case 0x83A:
+  case 0x858:
+  case 0x87B:
+  case 0x87E:
+  case 0x883:
+  case 0x8BD:
+  case 0x8C8:
+  case 0x8D0:
+    this->particle->flags = 13;
+    [[fallthrough]];
+
+  case 0x625:
+  case 0x62A:
+  case 0x62D:
+  case 0x633:
+  case 0x654:
+  case 0x65D:
+  case 0x663:
+  case 0x669:
+  case 0x66A:
+  case 0x681:
+  case 0x683:
+  case 0x685:
+  case 0x711:
+  case 0x714:
+  case 0x716:
+  case 0x718:
+  case 0x71E:
+  case 0x723:
+  case 0x745:
+  case 0x746:
+  case 0x74C:
+  case 0x758:
+  case 0x760:
+  case 0x785:
+  case 0x79E:
+  case 0x7A6:
+  case 0x7B1:
+  case 0x7B4:
+  case 0x7B8:
+  case 0x7BB:
+  case 0x7BF:
+  case 0x86F:
+  case 0x877:
+  case 0x884:
+  case 0x888:
+  case 0x891:
+  case 0x896:
+    this->AddEvent(0, "effect\\EF_BeginSpell.wav", 0, 0);
+    break;
+
+  case 0x82E:
+    this->AddEvent(0, "effect\\IQ_MASSIVE_F_BLASTER.wav", 0, 0);
+    this->particle->flags = 13;
+    break;
+
+  case 0x826:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\IQ_THIRD_FLAME_BOMB.wav", 0, 0);
+    break;
+
+  case 0x841:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\IQ_THIRD_PUNISH.wav", 0, 0);
+    break;
+
+  case 0x7D8:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\TR_KVASIR_SONATA.wav", 0, 0);
+    break;
+
+  case 0x765:
+    this->AddEvent(0, "effect\\AG_STRANTUM_TREMOR1.wav", 0, 0);
+    [[fallthrough]];
+
+  case 0x766:
+    this->particle->flags = 13;
+    switch (this->unknown_00B0) {
+    case 1:
+      this->Slot22(0.7f);
+      break;
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      this->Slot22(1.25f);
+      break;
+    }
+    break;
+
+  case 0x7A1: {
+    float fromReciprocalDepth = 0.0f;
+    float toReciprocalDepth = 0.0f;
+    float fromX;
+    float fromY;
+    float toX;
+    float toY;
+    g_renderer->ProjectViewport(this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+    g_renderer->ProjectViewport(this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+
+    const float dx = toX - fromX;
+    const float dy = toY - fromY;
+    double angle = static_cast<float>(std::acos(static_cast<double>(dx / SquareRoot(dy * dy + dx * dx)))) / 3.141592f * 180.0f;
+    if (fromY > toY) {
+      angle = 360.0 - angle;
+    }
+
+    if (this->particle) {
+      this->particle->m_angle = static_cast<float>(angle);
+    }
+    break;
+  }
+
+  case 0x7AC:
+    this->particle->flags = 13;
+    [[fallthrough]];
+
+  case 0x7C3:
+  case 0x7CF:
+    this->AddEvent(0, "effect\\IQ_FAITH.wav", 0, 0);
+    break;
+
+  case 0x7C8:
+    this->particle->m_repeat = 2;
+    this->AddEvent(0, "effect\\EM_INCREASING_ACTIVITY.wav", 0, 0);
+    break;
+
+  case 0x7E2: {
+    float fromReciprocalDepth = 0.0f;
+    float toReciprocalDepth = 0.0f;
+    float fromX;
+    float fromY;
+    float toX;
+    float toY;
+    g_renderer->ProjectViewport(this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+    g_renderer->ProjectViewport(this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+
+    const float dx = toX - fromX;
+    const float dy = toY - fromY;
+    double angle = static_cast<float>(std::acos(static_cast<double>(-dx / SquareRoot(dy * dy + dx * dx)))) / 3.141592f * 180.0f;
+    if (toY > fromY) {
+      angle = 360.0 - angle;
+    }
+
+    if (this->particle) {
+      this->particle->m_angle = static_cast<float>(angle);
+    }
+    break;
+  }
+
+  case 0x7D1:
+    this->particle->flags = 13;
+    [[fallthrough]];
+
+  case 0x7D7:
+  case 0x7DE:
+  case 0x7FE:
+  case 0x80D:
+  case 0x812:
+  case 0x815:
+  case 0x817:
+  case 0x81C:
+  case 0x829:
+  case 0x845:
+  case 0x848:
+  case 0x84B:
+  case 0x84D:
+  case 0x84F:
+  case 0x86B:
+  case 0x873:
+  case 0x88B:
+  case 0x89C:
+  case 0x8A4:
+  case 0x8AC:
+  case 0x8B4:
+  case 0x8C2:
+    this->AddEvent(0, "effect\\ef_beginspell.wav", 0, 0);
+    break;
+
+  case 0x7D9:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\EM_SUMMON_ELEMENTAL_SERPENS_2.wav", 0, 0);
+    break;
+
+  case 0x744:
+    this->AddEvent(0, "effect\\CD_RELIGIO.wav", 0, 0);
+    break;
+
+  case 0x75F:
+    this->AddEvent(0, "effect\\CD_BENEDICTUM.wav", 0, 0);
+    break;
+
+  case 0x713:
+  case 0x715:
+    this->AddEvent(0, "effect\\CD_ARGUTUS_VITA.wav", 0, 0);
+    break;
+
+  case 0x737:
+    this->AddEvent(0, "effect\\CD_EFFLIGO.wav", 0, 0);
+    break;
+
+  case 0x717:
+    this->AddEvent(0, "effect\\CD_PRESENS_ACIES.wav", 0, 0);
+    break;
+
+  case 0x789:
+    this->AddEvent(0, "effect\\CD_FRAMEN.wav", 0, 0);
+    break;
+
+  case 0x7E3:
+    this->AddEvent(0, "effect\\EM_SUMMON_ELEMENTAL_DILUVIO_2.wav", 0, 0);
+    break;
+
+  case 0x7EB:
+    this->particle->life = static_cast<float>(EffectLifetime(0x7EB)) / 60.0f;
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\EM_DIAMOND_STORM.wav", 0, 0);
+    break;
+
+  case 0x7ED:
+  case 0x80A:
+    this->AddEvent(0, "effect\\ef_beginspell.wav", 0, 0);
+    this->particle->flags = 13;
+    break;
+
+  case 0x7EF:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\EM_VENOM_SWAMP.wav", 0, 0);
+    break;
+
+  case 0x7F3:
+    this->AddEvent(0, "effect\\EM_SUMMON_ELEMENTAL_ARDOR_2.wav", 0, 0);
+    break;
+
+  case 0x7F9:
+    this->AddEvent(0, "effect\\EM_LIGHTNING_LAND.wav", 0, 0);
+    break;
+
+  case 0x802: {
+    float fromReciprocalDepth = 0.0f;
+    float toReciprocalDepth = 0.0f;
+    float fromX;
+    float fromY;
+    float toX;
+    float toY;
+    g_renderer->ProjectViewport(this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+    g_renderer->ProjectViewport(this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+
+    const float dx = toX - fromX;
+    const float dy = toY - fromY;
+    double angle = static_cast<float>(std::acos(static_cast<double>(-dx / SquareRoot(dy * dy + dx * dx)))) / 3.141592f * 180.0f;
+    if (toY > fromY) {
+      angle = 360.0 - angle;
+    }
+
+    if (this->particle) {
+      this->particle->m_angle = static_cast<float>(angle);
+    }
+
+    this->AddEvent(0, "effect\\TR_ROSEBLOSSOM_SHOT.wav", 0, 0);
+    break;
+  }
+
+  case 0x807:
+    this->AddEvent(0, "effect\\EM_CONFLAGRATION.wav", 0, 0);
+    break;
+
+  case 0x811:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\TR_JAWAII_SERENADE.wav", 0, 0);
+    break;
+
+  case 0x832:
+    this->AddEvent(0, "effect\\EM_SUMMON_ELEMENTAL_PROCELLA_2.wav", 0, 0);
+    break;
+
+  case 0x838:
+    this->AddEvent(0, "effect\\EM_SUMMON_ELEMENTAL_TERREMOTUS_2.wav", 0, 0);
+    break;
+
+  case 0x83E:
+    this->particle->flags = 13;
+    this->AddEvent(0, "effect\\ABC_FROM_THE_ABYSS.wav", 0, 0);
+    break;
+
+  case 0x771:
+    this->AddEvent(0, "effect\\WH_HAWKRUSH.wav", 0, 0);
+    break;
+
+  case 0x76B:
+    this->AddEvent(0, "effect\\WH_WIND_SIGN.wav", 0, 0);
+    break;
+
+  case 0x7A8:
+    this->AddEvent(0, "effect\\WH_CALAMITYGALE.wav", 0, 0);
+    break;
+
+  case 0x752:
+  case 0x756:
+  case 0x75A:
+  case 0x77F:
+    this->AddEvent(0, "effect\\WH_TRAP.wav", 0, 0);
+    break;
+
+  case 0x753:
+    this->AddEvent(0, "effect\\WH_DEEP_BLIND_TRAP_HIT.wav", 0, 0);
+    break;
+
+  case 0x75B:
+    this->AddEvent(0, "effect\\WH_SOLID_TRAP_HIT.wav", 0, 0);
+    break;
+
+  case 0x757:
+    this->AddEvent(0, "effect\\WH_SWIFT_TRAP_HIT.wav", 0, 0);
+    break;
+
+  case 0x782:
+    this->AddEvent(0, "effect\\WH_FLAMETRAP_HIT.wav", 0, 0);
+    break;
+
+  case 0x855:
+    this->AddEvent(0, "effect\\EM_TERRA_DRIVE.wav", 0, 0);
+    break;
+
+  case 0x7A2:
+    this->AddEvent(0, "effect\\SHC_SHADOW_STAB.wav", 0, 0);
+    break;
+
+  case 0x77A:
+    this->AddEvent(0, "effect\\SHC_ETERNAL_SLASH.wav", 0, 0);
+    break;
+
+  case 0x76A:
+    this->AddEvent(0, "effect\\SHC_IMPACT_CRATER.wav", 0, 0);
+    break;
+
+  case 0x748:
+    this->AddEvent(0, "effect\\SHC_FATAL_SHADOW_CROW.wav", 0, 0);
+    break;
+
+  case 0x78D:
+    this->AddEvent(0, "effect\\SHC_POTENT_VENOM.wav", 0, 0);
+    break;
+
+  case 0x795:
+    this->AddEvent(0, "effect\\MT_AXE_STOMP.wav", 0, 0);
+    break;
+
+  case 0x75E:
+    this->AddEvent(0, "effect\\MT_RUSH_QUAKE.wav", 0, 0);
+    break;
+
+  case 0x8CC:
+    this->particle->m_angle = static_cast<float>(ScreenAngle(*reinterpret_cast<const vector3d*>(this->position), *reinterpret_cast<const vector3d*>(this->sourcePosition)) + 180.0);
+    this->AddEvent(0, "effect\\BO_THROWROCK.wav", 0, 0);
+    break;
+
+  case 0x8CA:
+    this->particle->m_angle = static_cast<float>(ScreenAngle(*reinterpret_cast<const vector3d*>(this->position), *reinterpret_cast<const vector3d*>(this->sourcePosition)) + 180.0);
+    this->AddEvent(0, "effect\\BO_WOODEN_ATTACK.wav", 0, 0);
+    break;
+
+  case 0x801:
+    this->AddEvent(0, "effect\\TR_ROSEBLOSSOM_ROSE.wav", 0, 0);
+    break;
+
+  case 0x80C:
+    this->AddEvent(0, "effect\\TR_SOUNDBLEND_SHOT.wav", 0, 0);
+    break;
+
+  case 0x80F:
+    this->AddEvent(0, "effect\\TR_SOUNDBLEND_HIT.wav", 0, 0);
+    break;
+
+  case 0x810:
+    this->AddEvent(0, "effect\\TR_METALIC_FURY.wav", 0, 0);
+    break;
+
+  case 0x844:
+    this->AddEvent(0, "effect\\TR_GEF_NOCTURN.wav", 0, 0);
+    break;
+
+  case 0x847:
+    this->AddEvent(0, "effect\\TR_ROKI_CAPRICCIO.wav", 0, 0);
+    break;
+
+  case 0x84C:
+    this->AddEvent(0, "effect\\TR_AIN_RHAPSODY.wav", 0, 0);
+    break;
+
+  case 0x84A:
+    this->AddEvent(0, "effect\\TR_MUSICAL_INTERLUDE.wav", 0, 0);
+    break;
+
+  case 0x81B:
+    this->AddEvent(0, "effect\\TR_NIPELHEIM_REQUIEM.wav", 0, 0);
+    break;
+
+  case 0x814:
+    this->AddEvent(0, "effect\\TR_PRON_MARCH.wav", 0, 0);
+    break;
+
+  case 0x7D0:
+    this->AddEvent(0, "effect\\TR_MYSTIC_SYMPHONY.wav", 0, 0);
+    break;
+
+  case 0x7C4:
+    this->AddEvent(0, "effect\\IQ_OLEUM_SANCTUM.wav", 0x32, 0);
+    break;
+
+  case 0x7CB:
+    this->AddEvent(0, "effect\\IQ_EXPOSION_BLASTER.wav", 0, 0);
+    break;
+
+  case 0x7B9:
+    this->AddEvent(0, "effect\\IQ_FIRST_FAITH_POWER.wav", 0, 0);
+    break;
+
+  case 0x7BC:
+    this->AddEvent(0, "effect\\IQ_JUDGE.wav", 0, 0);
+    break;
+
+  case 0x7C0:
+    this->AddEvent(0, "effect\\IQ_THIRD_EXOR_FLAME.wav", 0, 0);
+    break;
+
+  case 0x806:
+    this->AddEvent(0, "effect\\IQ_FIRST_BRAND.wav", 0, 0);
+    break;
+
+  case 0x81E:
+    this->AddEvent(0, "effect\\IQ_SECOND_FAITH.wav", 0x14, 0);
+    break;
+
+  case 0x823:
+    this->AddEvent(0, "effect\\IQ_SECOND_FLAME.wav", 0, 0);
+    break;
+
+  case 0x831:
+    this->AddEvent(0, "effect\\IQ_THIRD_CONSECRATION.wav", 0, 0);
+    break;
+
+  case 0x88A:
+    this->AddEvent(0, "apocalips_attack.wav", 0, 0);
+    break;
+
+  case 0x871:
+    this->AddEvent(0, "effect\\BO_ADVANCE_PROTECTION.wav", 0, 0);
+    break;
+
+  case 0x8D1:
+    this->AddEvent(0, "effect\\BO_FAIRY_DUSTY.wav", 0, 0);
+    break;
+
+  case 0x8C1:
+    this->AddEvent(0, "effect\\BO_RESEARCHREPORT.wav", 0, 0);
+    break;
+
+  case 0x8BF:
+    this->AddEvent(0, "effect\\BO_HELL_HOWLING.wav", 0, 0);
+    break;
+
+  case 0x7AE:
+    this->AddEvent(0, "effect\\ABC_ABYSS_DAGGER.wav", 0, 0);
+    break;
+
+  case 0x827:
+    this->AddEvent(0, "effect\\ABC_ABYSS_STRIKE.wav", 0, 0);
+    break;
+
+  case 0x854:
+    this->AddEvent(0, "effect\\ABC_DEFT_STAB1.wav", 0, 0);
+    break;
+
+  case 0x7E9:
+    this->AddEvent(0, "effect\\EM_SPELL_ENCHANTING.wav", 0, 0);
+    break;
+
+  case 0x7D3:
+    this->AddEvent(0, "effect\\EM_ACTIVITY_BURN.wav", 0, 0);
+    break;
+
+  case 0x85B:
+    this->AddEvent(0, "effect\\EM_ELEMETAL_BUSTER_FIRE.wav", 0, 0);
+    break;
+
+  case 0x864:
+    this->AddEvent(0, "effect\\EM_ELEMETAL_BUSTER_WATER.wav", 0, 0);
+    break;
+
+  case 0x861:
+    this->AddEvent(0, "effect\\EM_ELEMETAL_BUSTER_POISON.wav", 0, 0);
+    break;
+
+  case 0x85E:
+    this->AddEvent(0, "effect\\EM_ELEMETAL_BUSTER_GROUND.wav", 0, 0);
+    break;
+
+  case 0x867:
+    this->AddEvent(0, "effect\\EM_ELEMETAL_BUSTER_WIND.wav", 0, 0);
+    break;
+
+  case 0x8D6:
+    this->AddEvent(0, "effect\\EF_FireArrow1.wav", 0, 0);
+    this->AddEvent(1, nullptr, 0, 0);
+    break;
+
+  case 0x8D4:
+    this->AddEvent(0, "effect\\EF_IceArrow1.wav", 0, 0);
+    this->AddEvent(1, nullptr, 0, 0);
+    break;
+
+  case 0x8D8:
+    this->AddEvent(0, "effect\\EF_LightBolt3.wav", 0, 0);
+    this->AddEvent(1, nullptr, 0, 0);
+    break;
+
+  case 0x8DA:
+    this->AddEvent(0, "effect\\wizard_earthspike.wav", 0, 0);
+    this->AddEvent(1, nullptr, 0, 0);
+    break;
+
+  case 0x8D2:
+    this->AddEvent(0, "effect\\ef_detoxication.wav", 0, 0);
+    this->AddEvent(1, nullptr, 0, 0);
+    break;
+
+  case 0x879:
+  case 0x87C:
+    this->AddEvent(0, "effect\\IG_GUARD_STANCE.wav", 0, 0);
+    break;
+
+  case 0x88E:
+    this->AddEvent(0, "effect\\IG_GUARDIAN_SHIELD.wav", 0, 0);
+    break;
+
+  case 0x894:
+    this->AddEvent(0, "effect\\IG_REBOUND_SHIELD.wav", 0, 0);
+    break;
+
+  case 0x898:
+    this->AddEvent(0, "effect\\IG_ULTIMATE_SACRIFICE.wav", 0, 0);
+    break;
+
+  case 0x885:
+    this->AddEvent(0, "effect\\IG_HOLY_SHIELD1.wav", 0, 0);
+    break;
+
+  case 0x886:
+    this->AddEvent(0, "effect\\IG_HOLY_SHIELD2.wav", 0x22, 0);
+    break;
+
+  case 0x87F:
+    this->AddEvent(0, "effect\\IG_GRAND_JUDGEMENT.wav", 0, 0);
+    break;
+
+  case 0x86D:
+    this->AddEvent(0, "effect\\IG_OVERSLASH.wav", 0, 0);
+    break;
+
+  case 0x909:
+  case 0x90C:
+  case 0x90F:
+    this->particle->flags = 0x205;
+    this->AddEvent(1, nullptr, 0, 0);
+    break;
+
+  case 0x943:
+    this->AddEvent(0, "effect\\drop_effect_1.wav", 0, 0);
+    break;
+
+  case 0x944:
+    this->AddEvent(0, "effect\\drop_effect_2.wav", 0, 0);
+    break;
+
+  case 0x94E:
+    this->AddEvent(0, "effect\\pokjuk_jap.wav", 0, 0);
+    break;
+
+  case 0x94F:
+  case 0x950:
+  case 0x951:
+    this->particle->m_scale = 0.6f;
+    break;
+
+  case 0x952:
+  case 0x953:
+  case 0x954:
+    this->particle->m_scale = 0.35f;
+    break;
+
+  case 0x4E7:
+  case 0x4EB:
+  case 0x4F6:
+  case 0x4F7:
+  case 0x4F8:
+  case 0x4F9:
+  case 0x4FB:
+  case 0x4FD:
+  case 0x503:
+  case 0x504:
+  case 0x507:
+  case 0x509:
+  case 0x50A:
+  case 0x511:
+  case 0x51F:
+  case 0x521:
+  case 0x544:
+  case 0x54A:
+  case 0x54C:
+  case 0x54F:
+  case 0x551:
+  case 0x556:
+  case 0x558:
+  case 0x55A:
+  case 0x55C:
+  case 0x563:
+  case 0x569:
+  case 0x56B:
+  case 0x571:
+  case 0x575:
+  case 0x586:
+  case 0x587:
+  case 0x589:
+  case 0x595:
+  case 0x59C:
+  case 0x59D:
+  case 0x59E:
+  case 0x59F:
+  case 0x5A0:
+  case 0x5A2:
+  case 0x5AB:
+  case 0x5AC:
+  case 0x5AD:
+  case 0x5AF:
+  case 0x5B0:
+  case 0x5B4:
+  case 0x5B6:
+  case 0x5B8:
+  case 0x5CE:
+  case 0x5D1:
+  case 0x5D3:
+  case 0x5D5:
+  case 0x5D9:
+  case 0x5DA:
+  case 0x5DE:
+  case 0x5E0:
+  case 0x5E2:
+  case 0x5FF:
+  case 0x600:
+  case 0x602:
+  case 0x60C:
+  case 0x60F:
+  case 0x612:
+  case 0x616:
+  case 0x61A:
+  case 0x61C:
+  case 0x623:
+  case 0x629:
+  case 0x62B:
+  case 0x62E:
+  case 0x632:
+  case 0x634:
+  case 0x636:
+  case 0x63C:
+  case 0x63E:
+  case 0x655:
+  case 0x656:
+  case 0x659:
+  case 0x65C:
+  case 0x65E:
+  case 0x660:
+  case 0x662:
+  case 0x664:
+  case 0x665:
+  case 0x668:
+  case 0x66B:
+  case 0x675:
+  case 0x67B:
+  case 0x682:
+  case 0x684:
+  case 0x68C:
+  case 0x698:
+  case 0x69B:
+  case 0x69C:
+  case 0x6A0:
+  case 0x6A1:
+  case 0x6A8:
+  case 0x6AB:
+  case 0x6B3:
+  case 0x6B5:
+  case 0x6BB:
+  case 0x6BD:
+  case 0x6BF:
+  case 0x6C1:
+  case 0x6C3:
+  case 0x6C5:
+  case 0x6D2:
+  case 0x6E6:
+  case 0x6EC:
+  case 0x6F1:
+  case 0x701:
+  case 0x703:
+  case 0x70B:
+  case 0x71B:
+  case 0x71F:
+  case 0x73D:
+  case 0x741:
+  case 0x747:
+  case 0x768:
+  case 0x773:
+  case 0x774:
+  case 0x786:
+  case 0x78A:
+  case 0x790:
+  case 0x7B7:
+  case 0x7BA:
+  case 0x7BD:
+  case 0x7BE:
+  case 0x7C1:
+  case 0x7DF:
+  case 0x7E4:
+  case 0x7F4:
+  case 0x7FA:
+  case 0x7FF:
+  case 0x804:
+  case 0x808:
+  case 0x80E:
+  case 0x813:
+  case 0x816:
+  case 0x818:
+  case 0x81F:
+  case 0x828:
+  case 0x82A:
+  case 0x82C:
+  case 0x830:
+  case 0x833:
+  case 0x846:
+  case 0x849:
+  case 0x850:
+  case 0x852:
+  case 0x856:
+  case 0x85C:
+  case 0x85F:
+  case 0x862:
+  case 0x865:
+  case 0x868:
+  case 0x86E:
+  case 0x872:
+  case 0x874:
+  case 0x876:
+  case 0x878:
+  case 0x880:
+  case 0x88D:
+  case 0x890:
+  case 0x892:
+  case 0x895:
+  case 0x897:
+  case 0x899:
+  case 0x89D:
+  case 0x8A1:
+  case 0x8A3:
+  case 0x8A5:
+  case 0x8A9:
+  case 0x8AB:
+  case 0x8AD:
+  case 0x8B1:
+  case 0x8B3:
+  case 0x8B5:
+  case 0x8B9:
+  case 0x8BB:
+  case 0x8C3:
+  case 0x8D3:
+  case 0x8D5:
+  case 0x8D7:
+  case 0x8D9:
+  case 0x8DB:
+  case 0x8E7:
+  case 0x8E8:
+  case 0x8FE:
+  case 0x911:
+  case 0x914:
+  case 0x917:
+  case 0x91C:
+  case 0x91D:
+  case 0x923:
+  case 0x968:
+    this->particle->flags = 13;
+    break;
+
+  default:
+    if (this->id >= 0x9B5) {
+      bool renderBefore = false;
+      g_luaScript->Call("IsRenderBeforeCharacter", "d>b", this->id - 0x9B5, &renderBefore);
+      if (renderBefore) {
+        this->particle->flags = 13;
+      }
+    }
+    break;
+  }
+}
