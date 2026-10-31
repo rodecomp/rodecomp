@@ -447,7 +447,7 @@ public:
   void ReceiveGameOptionResult(int command, int result, int enabled);
   void ReceiveCharViewResult(const unsigned char* packet);
   void SpawnArrowEffect(std::uint32_t aid, int target, char flag, int argument);
-  void SpawnArrowEffect64(std::uint32_t aid, int target, char flag);
+  void SpawnArrowEffect64(const vector3d* source, const vector3d* target, float speed);
   void UnusedArrowStub(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j);
   bool UpdateReplayPause(bool resume);
   void ReceiveCharacterRenameResult(const unsigned char* packet);
@@ -589,6 +589,8 @@ public:
   void ReceiveVendingItemList(int aid, int storeId, char own, int count, std::uint32_t duration, const unsigned char* data, int value, int unused);
   void ReceiveVendingItemList2(int aid, int storeId, char own, int count, std::uint32_t duration, const unsigned char* data);
   void ReceiveVendingItemSoldNow(const unsigned char* data);
+  void ReceiveNotifyGroundSkill(const unsigned char* packet);
+  void ReceiveAcceptEnter(const unsigned char* data);
 };
 
 void LaunchRollingCutterEffect(CGameActor* actor);

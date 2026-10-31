@@ -160,6 +160,7 @@ extern int g_modalImmediate;
 extern bool g_pingLogEnabled;
 extern std::uint32_t g_pingLogFirstTick;
 extern std::list<std::uint32_t> g_pingLogTicks;
+extern char g_zoneServerIp[16];
 
 int GetClientType();
 std::string GetMacAddress();

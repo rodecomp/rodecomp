@@ -1,6 +1,8 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
+#include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Replay.h"
 #include "Client/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/GameActor.h"
@@ -10,8 +12,10 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/EffectActor.h"
+#include "Contents/Effects/Effect.h"
 #include "Contents/Effects/EffectLists.h"
 #include "Contents/Effects/RagEffect.h"
+#include "Contents/Effects/EffectTypes.h"
 #include "Contents/GuildInfo.h"
 #include "Contents/GuildMgr.h"
 #include "Contents/Items/ItemDescription.h"
@@ -28,10 +32,13 @@
 #include "Contents/Schedule/CaptchaUploadSchedule.h"
 #include "Contents/Schedule/CheckGDISchedule.h"
 #include "Contents/Schedule/TimeScheduler.h"
+#include "Contents/Skills/SkillInfo.h"
+#include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Render/Renderer.h"
+#include "Resource/World/TerrainResource.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/Dialogs/UISayDialogWnd.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
@@ -52,8 +59,12 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowDialogs.h"
 #include "Utility/Text/FormatString.h"
+#include "Utility/Math/AffineMatrix.h"
+
+#include <algorithm>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <map>
 #include <string>
@@ -3695,3 +3706,18 @@ void CGameMode::ReceiveVendingItemList2(int aid, int storeId, char own, int coun
     this->unknown_024C = 1;
   }
 }
+
+// OFFSET: 0x00D742B0
+
+#pragma pack(push, 1)
+struct GameAcceptEnterPacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::uint32_t startTime;
+  /* 0006 */ unsigned char posDir[3];
+  /* 0009 */ unsigned char xSize;
+  /* 000A */ unsigned char ySize;
+  /* 000B */ unsigned char font;
+};
+#pragma pack(pop)
+
+// OFFSET: 0x00D1B890

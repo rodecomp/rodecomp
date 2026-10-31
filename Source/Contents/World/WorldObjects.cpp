@@ -192,13 +192,13 @@ void CGameMode::SpawnArrowEffect(std::uint32_t aid, int target, char flag, int a
 
 // OFFSET: 0x00CD80C0
 // FUNCTION: fn_21299
-void CGameMode::SpawnArrowEffect64(std::uint32_t aid, int target, char flag) {
+void CGameMode::SpawnArrowEffect64(const vector3d* source, const vector3d* target, float speed) {
   CArrowEffect* effect = new CArrowEffect;
 
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, 64, 0, static_cast<int>(aid), static_cast<int>(aid) >> 31, target, target >> 31, reinterpret_cast<int>(&flag),
-                    reinterpret_cast<int>(&flag) >> 31, 0, 0, 0, 0, 0, 0);
+    effect->SendMsg(nullptr, 64, 0, reinterpret_cast<int>(source), reinterpret_cast<int>(source) >> 31, reinterpret_cast<int>(target),
+                    reinterpret_cast<int>(target) >> 31, reinterpret_cast<int>(&speed), reinterpret_cast<int>(&speed) >> 31, 0, 0, 0, 0, 0, 0);
   }
 }
 
