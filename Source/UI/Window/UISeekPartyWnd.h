@@ -5,18 +5,24 @@
 
 #include <cstdint>
 
+class UIBitmapButton;
+class UIStaticText;
 struct UIButtonContext;
 struct SeekPartyWndInfo;
 
 class UISeekPartyWnd : public UIFrameWnd {
 public:
   void Slot11() override;
+  void Slot15(int width, int height) override;
   void Slot19() override;
   void Paint() override;
   void SetJobs(const std::int16_t* jobs);
 
 protected:
-  /* 00B4 */ unsigned char unknown_00B4[0x10];
+  /* 00B4 */ UIStaticText* m_label;
+  /* 00B8 */ unsigned char unknown_00B8[4];
+  /* 00BC */ UIBitmapButton* m_cancelButton;
+  /* 00C0 */ UIBitmapButton* m_rewriteButton;
   /* 00C4 */ int m_level;
   /* 00C8 */ int m_type;
   /* 00CC */ std::uint32_t m_frameDuration;
