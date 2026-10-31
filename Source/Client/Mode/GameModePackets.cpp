@@ -2945,6 +2945,39 @@ namespace {
 }
 
 // OFFSET: 0x00D2AB70
+// FUNCTION: fn_21706
+void CGameMode::ReceiveFriendList(const unsigned char* packet) {
+  ClientMessenger messenger{g_session.m_partyMembers, g_session.m_friends};
+  messenger.ClearFriends();
+
+  const std::int64_t length = *reinterpret_cast<const std::uint16_t*>(packet + 2);
+  if (length == 4) {
+    return;
+  }
+
+  const std::int64_t count = (length - 4) / static_cast<std::int64_t>(sizeof(FriendRecord));
+  const FriendRecord* records = reinterpret_cast<const FriendRecord*>(packet + 4);
+  for (std::int64_t index = 0; index < count; ++index) {
+    FriendRecord record;
+    memcpy_s(&record, sizeof(record), &records[index], sizeof(record));
+
+    char name[25] = {};
+    StringFormat(name, sizeof(name), static_cast<std::size_t>(-1), "%s", record.name);
+    if (!g_playerNameDictionary->Contains(record.characterId)) {
+      std::string text(name, sizeof(name));
+      SetPlayerName(record.characterId, text.c_str());
+    }
+
+    MessengerMember member;
+    member.name = name;
+    member.accountId = record.accountId;
+    member.characterId = record.characterId;
+    member.offline = 1;
+    messenger.AddFriend(member);
+  }
+
+  g_session.RefreshWindow02C8();
+}
 
 namespace {
 #pragma pack(push, 1)
