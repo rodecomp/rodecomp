@@ -103,6 +103,86 @@ ITEM_INFO UIRoulletteWnd::ItemAt(int x, int y) {
 }
 
 // OFFSET: 0x0080BD10
+// FUNCTION: fn_10086
+void UIRoulletteWnd::Slot15(int, int) {
+  this->AddCloseButton(*reinterpret_cast<UIButtonContext*>(nullptr), "", 0);
+
+  auto* startButton = new UIBitmapButton(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->m_startButton = startButton;
+  startButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\StartRoullette_a.bmp", 0, 0);
+  startButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\StartRoullette_a.bmp", 1, 0);
+  startButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\StartRoullette_b.bmp", 2, 0);
+  startButton->SetSize(startButton->BitmapWidth(), startButton->BitmapHeight());
+  startButton->Move(-100, -100);
+  startButton->SetId(409);
+  this->AddChild(startButton);
+
+  if (g_effectDetailLevel == 2) {
+    auto* startSprite = new UISpriteButton(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+    this->m_startSprite = startSprite;
+    startSprite->SetSprite("roullette\\Start.spr");
+    startSprite->SetActName("roullette\\Start.act");
+    startSprite->SetSize(99, 99);
+    startSprite->Move(-100, -100);
+    startSprite->unknown_00BC = 0;
+    startSprite->unknown_00C0 = 0;
+    startSprite->unknown_00C4 = 1;
+    this->AddChild(startSprite);
+
+    auto* prizeSprite = new UISpriteButton(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+    this->m_prizeSprite = prizeSprite;
+    prizeSprite->SetSprite("roullette\\GetWinPrize.spr");
+    prizeSprite->SetActName("roullette\\GetWinPrize.act");
+    prizeSprite->SetSize(99, 99);
+    prizeSprite->Move(-100, -100);
+    prizeSprite->unknown_00BC = 0;
+    prizeSprite->unknown_00C0 = 0;
+    prizeSprite->unknown_00C4 = 1;
+    this->AddChild(prizeSprite);
+
+    auto* stageArrow = new UISpriteButton(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+    this->m_stageArrow = stageArrow;
+    stageArrow->SetSprite("roullette\\stageArrow.spr");
+    stageArrow->SetActName("roullette\\stageArrow.act");
+    stageArrow->SetSize(35, 40);
+    stageArrow->Move(-100, -100);
+    stageArrow->unknown_00BC = 0;
+    stageArrow->unknown_00C0 = 0;
+    stageArrow->unknown_00C4 = 1;
+    this->AddChild(stageArrow);
+  }
+
+  auto* prizeButton = new UIBitmapButton(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->m_prizeButton = prizeButton;
+  prizeButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\GetWinPrize_a.bmp", 0, 0);
+  prizeButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\GetWinPrize_a.bmp", 1, 0);
+  prizeButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\GetWinPrize_b.bmp", 2, 0);
+  prizeButton->SetSize(prizeButton->BitmapWidth(), prizeButton->BitmapHeight());
+  prizeButton->Move(-100, -100);
+  prizeButton->SetId(410);
+  this->AddChild(prizeButton);
+
+  auto* goldText = new UIStaticText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->m_goldText = goldText;
+  goldText->SetSize(25, 12);
+  goldText->Move(575, 134);
+  goldText->SetColor(0, 0, 0);
+  this->AddChild(goldText);
+
+  auto* silverText = new UIStaticText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->m_silverText = silverText;
+  silverText->SetSize(25, 12);
+  silverText->Move(575, 218);
+  silverText->SetColor(0, 0, 0);
+  this->AddChild(silverText);
+
+  auto* bronzeText = new UIStaticText(*reinterpret_cast<UIWindowContext*>(nullptr), *reinterpret_cast<UIButtonContext*>(nullptr));
+  this->m_bronzeText = bronzeText;
+  bronzeText->SetSize(25, 12);
+  bronzeText->Move(575, 302);
+  bronzeText->SetColor(0, 0, 0);
+  this->AddChild(bronzeText);
+}
 
 // OFFSET: 0x0080C220
 
