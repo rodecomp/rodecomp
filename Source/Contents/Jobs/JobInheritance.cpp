@@ -1615,3 +1615,36 @@ bool CSession::IsCostumeJob(int job) const {
     return false;
   }
 }
+
+// OFFSET: 0x00E24DE0
+// FUNCTION: fn_23901
+bool CSession::PlaySkillGroundEffect(int skillId, vector3d position) {
+  bool hasInfo = false;
+  if (!g_luaScript->Call("HaveSkillEffectInfo", "d>b", skillId, &hasInfo) || !hasInfo) {
+    return false;
+  }
+
+  const char* waveName = nullptr;
+  if (g_luaScript->Call("GetEffectWaveFileName", "d>s", skillId, &waveName) && std::strcmp(waveName, "") != 0) {
+    g_soundMgr->PlayWave(waveName, 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+  }
+
+  int count = 0;
+  if (g_luaScript->Call("GetGroundEffectNum", "d>d", skillId, &count)) {
+    for (int index = 0; index < count; ++index) {
+      int effectId = -1;
+      g_luaScript->Call("GetGroundEffectID", "dd>d", skillId, index + 1, &effectId);
+      if (effectId == -1) {
+        continue;
+      }
+
+      if (g_effectMgr->HasAllocator(effectId)) {
+        g_effectMgr->Spawn(0, effectId, position.x, position.y, position.z, 0, -1, 0, 0);
+      } else {
+        static_cast<CGameMode*>(g_modeMgr.GetGameMode())
+          ->LaunchDummyEffect(&position, effectId, EffectLifetime(effectId) + 10, 0);
+      }
+    }
+  }
+  return true;
+}

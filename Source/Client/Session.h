@@ -26,6 +26,7 @@ class LuaScript;
 struct JobNameInitialization;
 struct ActionFrame;
 struct WindowDialogs;
+struct vector3d;
 
 struct EquipSlots {
   /* 0000 */ int values[3];
@@ -525,6 +526,7 @@ public:
   int IsTrickDeadActive() const;
   int HasActiveSkillEffect(int id) const;
   bool PlaySkillTargetEffect(int skillId, int level, CGameActor* source, CGameActor* target);
+  bool PlaySkillGroundEffect(int skillId, vector3d position);
   int IsState291To303(int state) const;
   int IsType0Or4(int type) const;
   int IsMonsterActor(CGameActor* actor) const;
