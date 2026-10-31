@@ -28,6 +28,7 @@ public:
   void DropOldestLines();
   void ShiftNaviLinks();
   void ClearNaviLinks();
+  void CopyHistory(const UIChatHisBox& other);
 
   /* 00DC */ std::list<std::vector<UINaviLinkButton*>> naviLinks;
   /* 00E4 */ std::vector<int> unknown_00E4;

@@ -3,6 +3,7 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "UI/Text/ColoredText.h"
+#include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UIListBox.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Window/WindowManagerWindows.h"
@@ -392,4 +393,22 @@ int UIListBox::TextLength() {
   }
 
   return length;
+}
+
+// OFFSET: 0x0087AAF0
+// FUNCTION: fn_11238
+void UIChatHisBox::CopyHistory(const UIChatHisBox& other) {
+  if (&this->unknown_0100 != &other.unknown_0100) {
+    this->unknown_0100.assign(other.unknown_0100.begin(), other.unknown_0100.end());
+  }
+
+  if (&this->unknown_010C != &other.unknown_010C) {
+    this->unknown_010C.assign(other.unknown_010C.begin(), other.unknown_010C.end());
+  }
+
+  if (&this->unknown_0118 != &other.unknown_0118) {
+    this->unknown_0118.assign(other.unknown_0118.begin(), other.unknown_0118.end());
+  }
+
+  reinterpret_cast<void(__thiscall*)(UIChatHisBox*)>(0x0089C080)(this);
 }
