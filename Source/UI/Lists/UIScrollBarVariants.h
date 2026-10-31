@@ -5,6 +5,10 @@
 
 #include <string>
 
+#include "Contents/SkinMgr.h"
+#include "Resource/SkinPalette.h"
+#include "UI/Lists/UIListBoxID.h"
+
 class CBitmapRes;
 
 class UIScrollBar2 : public UIScrollBar {

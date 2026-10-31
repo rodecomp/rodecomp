@@ -1264,3 +1264,16 @@ int UITreeView::RemoveChildNode(UITreeNode* parent, int id, bool keepButtons) {
 bool UIGage::CanHitTest() {
   return false;
 }
+
+// OFFSET: 0x0086DBD0
+// FUNCTION: fn_11057
+UIListBoxID::UIListBoxID()
+    : UIWindow(*reinterpret_cast<UIWindowContext*>(nullptr), 0), lines(), selected(0), topLine(0), horizontalOffset(0), contentWidth(0), verticalOverflow(0),
+      bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16) {
+  int* background = reinterpret_cast<int*>(this->unknown_007C);
+  background[0] = 255;
+  background[1] = 255;
+  background[2] = 255;
+  const SkinPaletteCell cell = {3, 2};
+  this->selectionColor = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
+}
