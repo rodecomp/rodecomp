@@ -363,6 +363,10 @@ public:
   void CancelRoute();
   void DrawRoute(const float* matrix);
   void CheckArrival(int cellX, int cellY);
+  int RouteFromPlayer();
+  int Navigate(int cellX, int cellY);
+  int LoadReplayState(const std::vector<unsigned char>& data);
+  void ResumeRoute();
 
   /* 0000 */ CNaviData data;
   /* 004C */ CPathFinder pathFinder;

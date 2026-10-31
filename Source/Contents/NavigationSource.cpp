@@ -1,5 +1,8 @@
 #include "Contents/NavigationManager.h"
+#include "Client/Mode/CGameMode.h"
+#include "Client/Mode/ModeMgr.h"
 #include "Client/Session.h"
+#include "Contents/World/World.h"
 #include "Resource/ResourceMgr.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Window/UINavigationWnd.h"
@@ -609,6 +612,8 @@ void CNavigationManager::ClearCurrentObject() {
   this->currentTarget.type = 0;
   this->currentTarget.object = nullptr;
 }
+
+// OFFSET: 0x00B95280
 
 // OFFSET: 0x00B95AD0
 // FUNCTION: fn_19576

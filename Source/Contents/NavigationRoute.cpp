@@ -1478,3 +1478,87 @@ void CNavigationManager::CancelRoute() {
   }
   g_windowMgr.SendNotice(1, reinterpret_cast<std::intptr_t>(LookupMessage(2309)), 0x62B0FF, 0, 0, 0);
 }
+
+// OFFSET: 0x00B97B90
+// FUNCTION: fn_19602
+int CNavigationManager::Navigate(int cellX, int cellY) {
+  int x = cellX;
+  int y = cellY;
+  if (this->savedTarget.object != nullptr) {
+    const int type = this->savedTarget.type;
+    CNaviInfo* info;
+    if (type == 2) {
+      CNavi_Object* object = static_cast<CNavi_Object*>(this->savedTarget.object);
+      info = object->GetInfo();
+      NaviCell cell;
+      const NaviCell* position = object->GetCell(&cell);
+      x = position->x;
+      y = position->y;
+    } else if (type == 3 || type == 1 || type != 0) {
+      goto request;
+    } else {
+      info = static_cast<CNaviInfo*>(this->savedTarget.object);
+    }
+
+    bool sameMap = std::strcmp(info->GetName(), g_session.m_navigationPlayerMap) == 0;
+    if (!sameMap) {
+      const std::string resolved = ResourceMgr::Instance().aliases.ResolveMapName(g_session.m_navigationPlayerMap);
+      sameMap = std::strcmp(info->GetName(), resolved.c_str()) == 0;
+    }
+
+    if (sameMap) {
+      if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+        int playerX;
+        int playerY;
+        mode->PlayerCell(&playerX, &playerY);
+        if (playerX <= x + 1 && playerX >= x - 1 && playerY <= y + 1 && playerY >= y - 1) {
+          return 11;
+        }
+      }
+    }
+  }
+
+request:
+  if (this->RequestRoute(cellX, cellY) == -99) {
+    if (!this->RouteToSavedTarget(cellX, cellY)) {
+      return -97;
+    }
+    if (!this->CollectStartLinks()) {
+      return -98;
+    }
+    const int type = this->savedTarget.type;
+    this->routeResult =
+      this->data.FindRoute(&this->nodes, type != 2 && type != 0, this->unknown_127C, this->unknown_127D, this->unknown_127E, this->unknown_1280);
+    if (this->routeResult == 0) {
+      return -96;
+    }
+  }
+  return this->RouteFromPlayer();
+}
+
+#pragma pack(push, 1)
+struct NavigationReplayHeader {
+  /* 0000 */ std::int16_t tag;
+  /* 0002 */ int size;
+
+  NavigationReplayHeader() : tag(0), size(0) {
+  }
+
+  ~NavigationReplayHeader() {
+    this->tag = 0;
+    this->size = 0;
+  }
+
+  void Read(const unsigned char* source) {
+    this->size = 0;
+    this->tag = 0;
+    std::memcpy(this, source, sizeof(*this));
+  }
+};
+#pragma pack(pop)
+
+static_assert(sizeof(NavigationReplayHeader) == 6);
+
+// OFFSET: 0x00B9B080
+
+// OFFSET: 0x00B9BFC0
