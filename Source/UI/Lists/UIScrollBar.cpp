@@ -1057,6 +1057,37 @@ void UIChatHisBox::PlaceItemTags(int line) {
 }
 
 // OFFSET: 0x00889710
+// FUNCTION: fn_11349
+void UIChatHisBox::Paint() {
+  this->ClearSurface(0xFFFF00FF);
+  if (this->parent && this->geometry.x >= 0 && this->geometry.y >= 0) {
+    this->parent->SendMsg(this, 116, 0, 0, 0, 0);
+  }
+
+  const int top = this->topLine;
+  unsigned int end = static_cast<unsigned int>(this->geometry.height / this->lineHeight - this->bottomMargin + top);
+  if (this->lines.size() < end) {
+    end = static_cast<unsigned int>(this->lines.size());
+  }
+
+  FontCache& fonts = this->m_listContext->fonts;
+  const TextLocale& locale = this->m_listContext->locale;
+  for (int row = 0; top + row < static_cast<int>(end); ++row) {
+    const int index = top + row;
+    int x;
+    if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
+      const int width = this->TextWidth(fonts, locale, this->lines[index].c_str(), 0, 0, 12, 0, 0);
+      this->DrawTextAt(fonts, locale, this->geometry.width - width - 18, this->lineHeight * row + 4, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0);
+      x = this->geometry.width - width - 19;
+    } else {
+      this->DrawTextAt(fonts, locale, 3, this->lineHeight * row + 4, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0);
+      x = 2;
+    }
+    this->DrawTextAt(fonts, locale, x, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->unknown_00E4[index], 0, 0);
+    this->PlaceNaviLinks(index);
+    this->PlaceItemTags(index);
+  }
+}
 
 // OFFSET: 0x0089ADD0
 // FUNCTION: fn_11563
