@@ -93,6 +93,12 @@ void UIEntryQueueListBox::Slot31(int x, int y) {
   }
 }
 
+// OFFSET: 0x00BA47A0
+// FUNCTION: fn_19689
+UIEntryQueueRequestWnd::UIEntryQueueRequestWnd(UIWindowContext& windows, UIFrameContext& frames, UIEntryQueueContext& entryQueue)
+    : UIFrameWnd(windows, frames, 0), m_entryQueue(&entryQueue), m_interval(1000), m_elapsed(0), m_delta(0), m_lastTick(0) {
+}
+
 // OFFSET: 0x00BA4870
 
 // OFFSET: 0x00BA48E0
@@ -218,6 +224,13 @@ int UIEntryQueueRequestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   return 0;
 }
 
+// OFFSET: 0x00BA5560
+// FUNCTION: fn_19696
+UIEntryQueueStandByWnd::UIEntryQueueStandByWnd(UIWindowContext& windows, UIFrameContext& frames, UIEntryQueueContext& entryQueue)
+    : UIFrameWnd(windows, frames, 0), m_entryQueue(&entryQueue), m_waiting(0), m_ranking(0), m_viewer(nullptr), m_queueText(), m_waitingText(),
+      m_rankingText() {
+}
+
 // OFFSET: 0x00BA5680
 
 // OFFSET: 0x00BA5700
@@ -315,6 +328,13 @@ void UIEntryQueueStandByWnd::SetInfo(const char* queueName, int waiting, int ran
     this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->m_waitingText), 38, 0, 0);
     this->m_viewer->SendMsg(nullptr, 29, reinterpret_cast<std::intptr_t>(this->m_rankingText), 38, 0, 0);
   }
+}
+
+// OFFSET: 0x00BA6000
+// FUNCTION: fn_19704
+UIEntryQueueWnd::UIEntryQueueWnd(UIWindowContext& windows, UIFrameContext& frames, UIEntryQueueContext& entryQueue, UIListBoxContext& list)
+    : UIFrameWnd(windows, frames, 0), unknown_00BC(), m_labels(), m_values(), m_list(nullptr), saved(nullptr), m_entryQueue(&entryQueue),
+      m_listContext(&list), m_applyButtons(), m_helpButton(nullptr) {
 }
 
 // OFFSET: 0x00BA6110

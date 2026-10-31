@@ -51,6 +51,7 @@ public:
 
 class UIEntryQueueRequestWnd : public UIFrameWnd {
 public:
+  UIEntryQueueRequestWnd(UIWindowContext& windows, UIFrameContext& frames, UIEntryQueueContext& entryQueue);
   ~UIEntryQueueRequestWnd() override;
   void Slot18() override;
   void Slot19() override;
@@ -74,6 +75,7 @@ public:
 
 class UIEntryQueueStandByWnd : public UIFrameWnd {
 public:
+  UIEntryQueueStandByWnd(UIWindowContext& windows, UIFrameContext& frames, UIEntryQueueContext& entryQueue);
   ~UIEntryQueueStandByWnd() override;
   void Slot18() override;
   void Slot19() override;
@@ -99,6 +101,7 @@ public:
 
 class UIEntryQueueWnd : public UIFrameWnd {
 public:
+  UIEntryQueueWnd(UIWindowContext& windows, UIFrameContext& frames, UIEntryQueueContext& entryQueue, UIListBoxContext& list);
   ~UIEntryQueueWnd() override;
   void Slot11() override;
   void Slot15(int width, int height) override;
